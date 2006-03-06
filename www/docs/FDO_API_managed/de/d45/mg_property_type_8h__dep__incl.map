@@ -1,0 +1,15 @@
+base referer
+rect $d1/db0/mg_i_data_reader_8h.html 209,7 335,33
+rect $de/dcb/mg_i_data_reader_imp_8h.html 447,32 596,59
+rect $d1/d23/mg_i_s_q_l_data_reader_8h.html 195,108 349,135
+rect $d2/da2/mg_i_s_q_l_data_reader_imp_8h.html 433,133 609,160
+rect $d0/d1a/mg_argument_definition_8h.html 189,209 355,236
+rect $df/df2/mg_function_definition_8h.html 192,260 352,287
+rect $d0/d1b/mg_association_property_definition_8h.html 408,311 635,337
+rect $de/dee/mg_geometric_property_definition_8h.html 411,361 632,388
+rect $d5/df2/mg_property_definition_8h.html 192,412 352,439
+rect $db/d7c/mg_topo_geometry_property_definition_8h.html 687,361 935,388
+rect $db/de2/mg_data_property_definition_8h.html 428,412 615,439
+rect $dc/da6/mg_object_property_definition_8h.html 423,463 620,489
+rect $df/db7/mg_raster_property_definition_8h.html 423,513 620,540
+rect $de/d7f/mg_topo_feature_property_definition_8h.html 404,564 639,591

@@ -1,0 +1,16 @@
+base referer
+rect $dd/d87/mg_data_value_8h.html 195,260 307,287
+rect $db/d99/mg_geometry_value_8h.html 179,311 323,338
+rect $da/dce/mg_boolean_value_8h.html 377,7 511,34
+rect $d2/dda/mg_byte_value_8h.html 388,58 500,84
+rect $dd/dd3/mg_date_time_value_8h.html 372,108 516,135
+rect $d6/d97/mg_decimal_value_8h.html 377,159 511,186
+rect $de/d28/mg_double_value_8h.html 380,210 508,236
+rect $d2/dee/mg_int16_value_8h.html 387,260 501,287
+rect $d8/de8/mg_int32_value_8h.html 387,311 501,338
+rect $d4/d13/mg_int64_value_8h.html 387,362 501,388
+rect $d3/d5e/mg_l_o_b_value_8h.html 388,412 500,439
+rect $d0/ded/mg_single_value_8h.html 383,463 505,490
+rect $d2/d2d/mg_string_value_8h.html 384,514 504,540
+rect $de/def/mg_b_l_o_b_value_8h.html 565,387 685,414
+rect $d7/d7b/mg_c_l_o_b_value_8h.html 564,438 687,464

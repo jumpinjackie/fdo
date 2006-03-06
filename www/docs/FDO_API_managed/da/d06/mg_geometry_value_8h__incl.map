@@ -1,0 +1,4 @@
+base referer
+rect $d4/d40/mg_literal_value_8h.html 202,7 420,33
+rect $dc/d75/mg_value_expression_8h.html 468,7 716,33
+rect $d8/dd6/mg_expression_8h.html 766,7 979,33

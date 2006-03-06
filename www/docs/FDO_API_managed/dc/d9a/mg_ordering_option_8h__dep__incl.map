@@ -1,0 +1,7 @@
+base referer
+rect $de/d2b/mg_i_base_select_8h.html 200,57 323,84
+rect $d1/dd1/mg_i_base_select_imp_8h.html 380,57 527,84
+rect $da/d62/mg_i_select_8h.html 407,108 500,135
+rect $d7/dcd/mg_i_select_aggregates_8h.html 373,7 533,33
+rect $da/db8/mg_i_select_aggregates_imp_8h.html 583,32 767,59
+rect $db/d8d/mg_i_select_imp_8h.html 617,95 732,121
