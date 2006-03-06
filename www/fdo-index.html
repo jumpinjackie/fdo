@@ -1,8 +1,52 @@
 <html>
   <head>
-    <title>Default Project Content</title>
+    <title>Feature Data Objects</title>
   </head>
   <body>
-    This is the default project content.
+   <script type="text/javascript">
+      // This code removes the project page title and information. It may need to change when
+	  // the CEE platform is upgraded.
+   
+      function replaceLinks() {   
+         try {
+		 	var apphead = document.getElementById("apphead");
+			if (apphead != null) {
+				apphead.innerHTML = "";
+			}	
+            var projecthome = document.getElementById("projecthome");
+			if (projecthome != null) {
+				var tableCollection = projecthome.getElementsByTagName("table");
+				if (tableCollection[0] != null)	{
+					rowCount = tableCollection[0].rows.length;
+					for (i = 0; i < rowCount; i++) {
+						tableCollection[0].deleteRow(0);
+					}
+				}    
+			}  
+          } catch (e) {
+          }
+      }
+      window.onload=replaceLinks;
+   </script> 
+   
+  <h1>Feature Data Objects - Project Home</h1>
+  Welcome to the home of Feature Data Objects.
+  <div class="h2"><h2>Description</h2>
+  <p>Feature Data Objects (FDO) is an API for manipulating, defining, and analyzing geospatial information regardless of where it is stored. FDO uses a provider-based model for supporting a variety of geospatial data sources, where each provider typically provides support for a particular data format or data store.</p>
+  <p>At this point Feature Data Objects is being offered as a preview for use with MapGuide Open Source. The links below  allow you to download a full copy of the source code with FDO providers for ESRI SHP and a new format created for MapGuide called the Spatial Database Format (SDF). FDO will become a full open-source project in the coming months, so stay tuned to this page for more information, additional providers, and the launch of FDO as an active open source project. </p>
+  <p>Feature Data Objects is free, open source software licensed under the <a href="lgpl.html">LGPL</a>.</p>
+  </div>
+  
+  <div class="h2">
+  <h2>Announcements</h2>
+  <p></p>
+  </div>
+
+  <div class="h2">
+  <h2>Releases</h2>
+  <p><a href="downloads.html">Downloads</a></p>
+  <p><a href="documentation.html">Documentation</a></p><br>
+  </div>
+
   </body>
 </html>
