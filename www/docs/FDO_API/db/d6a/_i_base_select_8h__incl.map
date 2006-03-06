@@ -1,0 +1,10 @@
+base referer
+rect $d6/d27/_fdo_std_8h.html 813,159 888,185
+rect $d4/df6/_i_feature_command_8h.html 169,57 409,84
+rect $de/d25/_i_connection_8h.html 512,132 717,159
+rect $d1/d33/_lock_type_8h.html 172,159 407,185
+rect $d8/dfd/_lock_strategy_8h.html 161,209 417,236
+rect $dd/d73/_i_feature_reader_8h.html 480,203 749,229
+rect $d6/df7/_i_lock_conflict_reader_8h.html 465,292 764,319
+rect $db/dad/_identifier_collection_8h.html 495,343 735,369
+rect $d5/df3/_ordering_option_8h.html 180,412 399,439
