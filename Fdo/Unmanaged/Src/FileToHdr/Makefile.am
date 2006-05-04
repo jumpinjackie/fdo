@@ -1,0 +1,8 @@
+AUTOMAKE_OPTIONS = foreign
+
+noinst_PROGRAMS = FileToHdr
+
+FileToHdr_SOURCES = FileToHdr.cpp
+
+CXXFLAGS = @CXXFLAGS@ -DFULLPROTO -D__USE_GNU -DLINUX
+

@@ -1,0 +1,55 @@
+s/y.tab.c/yyFgft.cpp/g
+/^# *line/s/\\/\\\\/g
+/^# *line/b
+s/#ifndef YYTOKENTYPE/#if 0 /g
+s/yy/fdo_fgft_yy/g
+s/YY/FDO_FGFT_YY/g
+s/getenv()/getenv(const char*)/g
+s/^char \*gettxt /static char \*gettxt/
+
+s/yyparse ()/yyparse(FdoParseFgft* pParse)/g
+s/yyparse (void)/yyparse(FdoParseFgft* pParse)/g
+
+s/yylex ()/yylex(pParse)/
+
+/int fdo_fgft_yynerrs/D
+/int fdo_fgft_yydebug/D
+/int fdo_fgft_yyerrflag/D
+/int fdo_fgft_yychar/D
+/^short \*fdo_fgft_yyssp/D
+
+#Delete lines like --- short yyssa[YYINITDEPTH];
+/fdo_fgft_yyssa\[/D
+
+#Delete lines like --- register short *yyssp;
+/register short \*fdo_fgft_yyssp;/D
+
+#Delete lines like --- YYSTYPE yyvsa[YYINITDEPTH];
+/fdo_fgft_yyvsa\[/D
+
+#Delete lines like --- register YYSTYPE *yyvsp;
+/register FDO_FGFT_YYSTYPE \*fdo_fgft_yyvsp;/D
+
+#Replace fdo_fgft_yyssa with pParse->fdo_fgft_yyss
+s/fdo_fgft_yyssa/pParse->fdo_fgft_yyss/g
+
+#Replace fdo_fgft_yyvsa with pParse->fdo_fgft_yyvs
+s/fdo_fgft_yyvsa/pParse->fdo_fgft_yyvs/g
+
+s/fdo_fgft_yynerrs/pParse->fdo_fgft_yynerrs/g
+s/fdo_fgft_yydebug/pParse->fdo_fgft_yydebug/g
+s/fdo_fgft_yyerrflag/pParse->fdo_fgft_yyerrflag/g
+s/fdo_fgft_yychar/pParse->fdo_fgft_yychar/g
+s/fdo_fgft_yyssp/pParse->fdo_fgft_yyssp/g
+s/typedef union _FDO_FGFT_YYSTYPE/#if 0/g
+s/} FDO_FGFT_YYSTYPE;/ /g
+/FDO_FGFT_YYSTYPE fdo_fgft_yyval;/D
+/FDO_FGFT_YYSTYPE fdo_fgft_yylval;/D
+s/fdo_fgft_yyvsp/pParse->fdo_fgft_yyvsp/g
+s/fdo_fgft_yyval/pParse->fdo_fgft_yyval/g
+s/fdo_fgft_yylval/pParse->fdo_fgft_yylval/g
+s/fdo_fgft_yylineno/pParse->fdo_fgft_yylineno/g
+s/fdo_fgft_yyerror (/fdo_fgft_yyerror(pParse,/g
+
+#Remove redundant changes for fdo_fgft_yyvaluep
+s/pParse->fdo_fgft_yyvaluep/fdo_fgft_yyvaluep/g

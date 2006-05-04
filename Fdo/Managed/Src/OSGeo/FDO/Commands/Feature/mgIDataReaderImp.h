@@ -1,0 +1,96 @@
+/*
+* Copyright (C) 2004-2006  Autodesk, Inc.
+* 
+* This library is free software; you can redistribute it and/or
+* modify it under the terms of version 2.1 of the GNU Lesser
+* General Public License as published by the Free Software Foundation.
+* 
+* This library is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* Lesser General Public License for more details.
+* 
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+*
+*/
+
+#pragma once
+
+#include "FDO\Commands\Feature\mgIReaderImp.h"
+#include "FDO\Commands\Feature\mgIDataReader.h"
+
+#include "FDO\Schema\mgDataType.h"
+#include "FDO\Schema\mgPropertyType.h"
+
+class FdoIDataReader;
+
+BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
+
+/// \brief
+/// The FdoIDataReader interface provides a forward-only, read-only
+/// iterator for reading relational table data. A reference to an
+/// FdoIDataReader is returned from the SQLCommands ExecuteReader method.
+/// The initial position of the FdoIDataReader interface is prior to the first item.
+/// Thus, you must call ReadNext to begin accessing any data.
+private __gc class IDataReaderImp : public NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp, public NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IDataReader
+{
+public:
+    /// \brief
+    /// Gets the number of propertys in the result set.
+    /// 
+    /// \return
+    /// Returns the number of propertys.
+    /// 
+	System::Int32 GetPropertyCount();
+
+    /// \brief
+    /// Gets the name of the property at the given ordinal position.
+    /// 
+    /// \param index 
+    /// Input the position of the property.
+    /// 
+    /// \return
+    /// Returns the property name
+    /// 
+	System::String* GetPropertyName(System::Int32 index);
+
+    /// \brief
+    /// Gets the data type of the property with the specified name.
+    /// 
+    /// \param name 
+    /// Input the property name.
+    /// 
+    /// \return
+    /// Returns the type of the property.
+    /// 
+	NAMESPACE_OSGEO_FDO_SCHEMA::DataType GetDataType(System::String* name);
+
+    /// \brief
+    /// Gets the FDO property type of a given property. This is used
+    ///  to indicate if a given property is a geometric property or a data property. If the property is
+    ///  a FdoPropertyType_DataProperty, then GetDataType can be used to to find the data type of the property.
+    /// 
+    /// \param name 
+    /// Input the property name.
+    /// 
+    /// \return
+    /// Returns the FDO property type.
+    /// 
+	NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType GetPropertyType(System::String* name);
+
+	System::Void Dispose();
+
+public private:
+	IDataReaderImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp(unmanaged, autoDelete)
+	{
+
+	}
+
+	inline FdoIDataReader* GetImpObj();
+};
+
+END_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
+
+

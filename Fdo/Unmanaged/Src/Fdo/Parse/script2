@@ -1,0 +1,55 @@
+s/y.tab.c/yyFilter.cpp/g
+/^# *line/s/\\/\\\\/g
+/^# *line/b
+s/#ifndef YYTOKENTYPE/#if 0 /g
+s/yy/fdo_filter_yy/g
+s/YY/FDO_FILTER_YY/g
+s/getenv()/getenv(const char*)/g
+s/^char \*gettxt /static char \*gettxt/
+
+s/yyparse ()/yyparse(FdoParse* pParse)/g
+s/yyparse (void)/yyparse(FdoParse* pParse)/g
+
+s/yylex ()/yylex(pParse)/
+
+/int fdo_filter_yynerrs/D
+/int fdo_filter_yydebug/D
+/int fdo_filter_yyerrflag/D
+/int fdo_filter_yychar/D
+/^short \*fdo_filter_yyssp/D
+
+#Delete lines like --- short yyssa[YYINITDEPTH];
+/fdo_filter_yyssa\[/D
+
+#Delete lines like --- register short *yyssp;
+/register short \*fdo_filter_yyssp;/D
+
+#Delete lines like --- YYSTYPE yyvsa[YYINITDEPTH];
+/fdo_filter_yyvsa\[/D
+
+#Delete lines like --- register YYSTYPE *yyvsp;
+/register FDO_FILTER_YYSTYPE \*fdo_filter_yyvsp;/D
+
+#Replace fdo_filter_yyssa with pParse->fdo_filter_yyss
+s/fdo_filter_yyssa/pParse->fdo_filter_yyss/g
+
+#Replace fdo_filter_yyvsa with pParse->fdo_filter_yyvs
+s/fdo_filter_yyvsa/pParse->fdo_filter_yyvs/g
+
+s/fdo_filter_yynerrs/pParse->fdo_filter_yynerrs/g
+s/fdo_filter_yydebug/pParse->fdo_filter_yydebug/g
+s/fdo_filter_yyerrflag/pParse->fdo_filter_yyerrflag/g
+s/fdo_filter_yychar/pParse->fdo_filter_yychar/g
+s/fdo_filter_yyssp/pParse->fdo_filter_yyssp/g
+s/typedef union _FDO_FILTER_YYSTYPE/#if 0/g
+s/} FDO_FILTER_YYSTYPE;/ /g
+/FDO_FILTER_YYSTYPE fdo_filter_yyval;/D
+/FDO_FILTER_YYSTYPE fdo_filter_yylval;/D
+s/fdo_filter_yyvsp/pParse->fdo_filter_yyvsp/g
+s/fdo_filter_yyval/pParse->fdo_filter_yyval/g
+s/fdo_filter_yylval/pParse->fdo_filter_yylval/g
+s/fdo_filter_yylineno/pParse->fdo_filter_yylineno/g
+s/fdo_filter_yyerror (/fdo_filter_yyerror(pParse,/g
+
+#Remove redundant changes for fdo_filter_yyvaluep
+s/pParse->fdo_filter_yyvaluep/fdo_filter_yyvaluep/g

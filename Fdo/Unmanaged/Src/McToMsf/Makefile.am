@@ -1,0 +1,8 @@
+AUTOMAKE_OPTIONS = foreign
+
+noinst_PROGRAMS = McToMsf
+
+McToMsf_SOURCES = McToMsf.cpp
+
+CXXFLAGS = @CXXFLAGS@ -DFULLPROTO -D__USE_GNU -DLINUX
+

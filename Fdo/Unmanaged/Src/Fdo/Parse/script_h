@@ -1,0 +1,7 @@
+/^# *line/s/\\/\\\\/g
+/^# *line/b
+s/#ifndef YYTOKENTYPE/#if 0 /g
+s/yy/fdo_expression_yy/g
+s/YY/FDO_EXPRESSION_YY/g
+s/FDO_EXPRESSION_YYSTYPE _FDO_EXPRESSION_YYSTYPE/_FDO_EXPRESSION_YYSTYPE/g
+/extern /D

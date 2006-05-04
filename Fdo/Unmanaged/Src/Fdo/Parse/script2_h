@@ -1,0 +1,7 @@
+/^# *line/s/\\/\\\\/g
+/^# *line/b
+s/#ifndef YYTOKENTYPE/#if 0 /g
+s/yy/fdo_filter_yy/g
+s/YY/FDO_FILTER_YY/g
+s/FDO_FILTER_YYSTYPE _FDO_FILTER_YYSTYPE/_FDO_FILTER_YYSTYPE/g
+/extern /D

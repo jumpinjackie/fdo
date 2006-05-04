@@ -1,0 +1,43 @@
+s/y.tab.c/yyExpression.cpp/g
+/^# *line/s/\\/\\\\/g
+/^# *line/b
+s/yy/fdo_expression_yy/g
+s/YY/FDO_EXPRESSION_YY/g
+s/fdo_expression_yyparse (FDO_EXPRESSION_YYPARSE_PARAM_ARG)/fdo_expression_yyparse(FdoParse* pParse)/g
+s/fdo_expression_yylex()/fdo_expression_yylex(pParse)/g
+/int fdo_expression_yydebug/D
+/int fdo_expression_yynerrs/D
+/int fdo_expression_yyerrflag/D
+/int fdo_expression_yychar/D
+/^short \*fdo_expression_yyssp/D
+/short \*fdo_expression_yyss/D
+s/fdo_expression_yynerrs/pParse->fdo_expression_yynerrs/g
+s/fdo_expression_yydebug/pParse->fdo_expression_yydebug/g
+s/fdo_expression_yyerrflag/pParse->fdo_expression_yyerrflag/g
+s/fdo_expression_yychar/pParse->fdo_expression_yychar/g
+s/fdo_expression_yyssp/pParse->fdo_expression_yyssp/g
+s/typedef union _FDO_EXPRESSION_YYSTYPE/#if 0/g
+s/} FDO_EXPRESSION_YYSTYPE;/#endif/g
+/FDO_EXPRESSION_YYSTYPE \*fdo_expression_yyvsp/D
+/FDO_EXPRESSION_YYSTYPE fdo_expression_yyval;/D
+/FDO_EXPRESSION_YYSTYPE fdo_expression_yylval;/D
+s/fdo_expression_yyvsp/pParse->fdo_expression_yyvsp/g
+s/fdo_expression_yyval/pParse->fdo_expression_yyval/g
+s/fdo_expression_yylval/pParse->fdo_expression_yylval/g
+s/fdo_expression_yyss;/pParse->fdo_expression_yyss;/g
+s/fdo_expression_yyss /pParse->fdo_expression_yyss /g
+s/fdo_expression_yyss)/pParse->fdo_expression_yyss)/g
+s/fdo_expression_yyss,/pParse->fdo_expression_yyss,/g
+s/fdo_expression_yylineno/pParse->fdo_expression_yylineno/g
+s/  fdo_expression_yyerror(/ fdo_expression_yyerror( pParse,/g
+/FDO_EXPRESSION_YYSTYPE \*fdo_expression_yyvs;/D
+/fdo_expression_yystacksize;/D
+s/fdo_expression_yystacksize/pParse->fdo_expression_yystacksize/g
+s/fdo_expression_yysslim/pParse->fdo_expression_yysslim/g
+s/fdo_expression_yyvs;/pParse->fdo_expression_yyvs;/g
+s/fdo_expression_yyvs /pParse->fdo_expression_yyvs /g
+s/fdo_expression_yyvs,/pParse->fdo_expression_yyvs,/g
+s/int fdo_expression_yygrowstack()/int fdo_expression_yygrowstack(FdoParse *pParse)/g
+s/fdo_expression_yygrowstack()/fdo_expression_yygrowstack(pParse)/g
+s/static int fdo_expression_yygrowstack(FdoParse \*pParse);/class FdoParse; static int fdo_expression_yygrowstack(FdoParse \*pParse);/g
+
