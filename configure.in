@@ -1,0 +1,204 @@
+#------------------configure.in----------------------------------------
+dnl Configure.in for Autodesk FDO providers
+#----------------------------------------------------------------------
+# Variables
+# Following are the makefile directories 
+#----------------------------------------------------------------------
+AC_INIT(FDO,3.2,http://www.osgeo.org)
+AC_CONFIG_SRCDIR(configure.in)
+AM_INIT_AUTOMAKE
+
+AC_PREFIX_DEFAULT(/usr/local/fdo-3.2.0)
+
+AC_LANG_C
+AC_PROG_CC
+AC_LANG_CPLUSPLUS
+AC_PROG_CXX
+AC_PROG_YACC
+AC_DISABLE_STATIC
+AM_PROG_LIBTOOL
+
+# Check for Debug or Release build settings
+AC_ARG_ENABLE([debug],
+               MAP_HELP_STRING([--enable-debug],
+              	              [enable debug build [[default=no]]]),
+	      [enable_debug=$enableval],
+	      [enable_debug=no])
+
+if test $enable_debug = yes; then
+ AC_MSG_NOTICE([Using debug configuration])
+ CXXFLAGS="-g -MMD -MT "
+ AC_SUBST(CXXFLAGS, ["-g -MMD -MT "])
+ CXXFLAGS_SDF="-g "
+ AC_SUBST(CXXFLAGS_SDF, ["-g "])
+else
+ AC_MSG_NOTICE([Using optimized configuration])
+ CXXFLAGS="-MMD -MT "
+ AC_SUBST(CXXFLAGS, ["-MMD -MT "])
+ CXXFLAGS_SDF=""
+ AC_SUBST(CXXFLAGS_SDF, [""])
+fi
+
+##output Makefiles##
+AC_CONFIG_FILES(Makefile)
+AC_CONFIG_FILES(Fdo/Makefile)
+AC_CONFIG_FILES(Providers/Makefile)
+AC_CONFIG_FILES(Thirdparty/Makefile)
+
+#############################################
+## thirdparty
+#############################################
+
+
+#############################################
+## fdo
+#############################################
+#Unmanaged: Src Inc
+#Src: McToMsf Message FileToHdr Nls Common Geometry Spatial Fdo
+AC_CONFIG_FILES([Fdo/Unmanaged/Makefile \
+                 Fdo/Unmanaged/Src/Makefile \
+                 Fdo/Unmanaged/Src/McToMsf/Makefile \
+                 Fdo/Unmanaged/Src/Message/Makefile \
+                 Fdo/Unmanaged/Src/FileToHdr/Makefile \
+                 Fdo/Unmanaged/Src/Nls/Makefile \
+                 Fdo/Unmanaged/Src/Common/Makefile \
+                 Fdo/Unmanaged/Src/Geometry/Makefile \
+                 Fdo/Unmanaged/Src/Spatial/Makefile \
+                 Fdo/Unmanaged/Src/Fdo/Makefile \
+                 Fdo/Unmanaged/Inc/Makefile])
+
+#fdo: Install
+AC_CONFIG_FILES([Fdo/Install/Makefile \
+                 Fdo/Install/XsdInstallPaths/Makefile])
+
+
+#fdo: Docs
+AC_CONFIG_FILES(Fdo/Docs/Makefile)
+
+#fdo: UnitTest
+AC_CONFIG_FILES(Fdo/UnitTest/Makefile)
+
+#############################################
+## providers
+#############################################
+#FdoCommon
+AC_CONFIG_FILES([Providers/Utilities/Makefile  \
+		 Providers/Utilities/Common/Makefile])
+
+#SHP
+AC_CONFIG_FILES([Providers/SHP/Makefile \
+                 Providers/SHP/Inc/Makefile \
+                 Providers/SHP/Src/Makefile \
+                 Providers/SHP/Src/Message/Makefile \
+                 Providers/SHP/Src/ShpRead/Makefile \
+                 Providers/SHP/Src/ShpSpatialIndex/Makefile \
+                 Providers/SHP/Src/Overrides/Makefile \
+                 Providers/SHP/Src/Provider/Makefile \
+                 Providers/SHP/Src/UnitTest/Makefile])
+
+#SQLiteInterface
+AC_CONFIG_FILES([Providers/Utilities/SQLiteInterface/Makefile])
+
+#SDF
+AC_CONFIG_FILES([Providers/SDF/Makefile \
+                 Providers/SDF/Src/Makefile \
+                 Providers/SDF/Inc/Makefile \
+                 Providers/SDF/Src/Message/Makefile \
+                 Providers/SDF/Src/Utils/Makefile \
+                 Providers/SDF/Src/Provider/Makefile \
+                 Providers/SDF/Src/UnitTest/Makefile])
+
+#OWS
+AC_CONFIG_FILES([Providers/Utilities/OWS/Makefile \
+                 Providers/Utilities/OWS/Inc/Makefile \
+                 Providers/Utilities/OWS/Src/Makefile])
+
+#WFS
+AC_CONFIG_FILES([Providers/WFS/Makefile \
+                 Providers/WFS/Src/Makefile \
+                 Providers/WFS/Src/Message/Makefile \
+                 Providers/WFS/Src/Provider/Makefile])
+
+#WMS
+AC_CONFIG_FILES([Providers/WMS/Makefile \
+                 Providers/WMS/Src/Makefile \
+                 Providers/WMS/Inc/Makefile \
+                 Providers/WMS/Src/Message/Makefile \
+                 Providers/WMS/Src/Overrides/Makefile \
+                 Providers/WMS/Src/Provider/Makefile])
+
+#ArcSDE
+AC_CONFIG_FILES([Providers/ArcSDE/Makefile \
+                 Providers/ArcSDE/Src/Makefile \
+                 Providers/ArcSDE/Inc/Makefile \
+                 Providers/ArcSDE/Src/Message/Makefile \
+                 Providers/ArcSDE/Src/Provider/Makefile])
+
+#SchemaMgr
+AC_CONFIG_FILES([Providers/Utilities/SchemaMgr/Makefile \
+                 Providers/Utilities/SchemaMgr/Nls/Makefile \
+                 Providers/Utilities/SchemaMgr/Inc/Makefile \
+                 Providers/Utilities/SchemaMgr/Src/Makefile \
+                 Providers/Utilities/SchemaMgr/Src/Sm/Makefile \
+                 Providers/Utilities/SchemaMgr/Src/Sm/Lp/Makefile \
+		 Providers/Utilities/SchemaMgr/Src/Sm/Ov/Makefile \
+                 Providers/Utilities/SchemaMgr/Src/Sm/Ph/Makefile \
+                 Providers/Utilities/SchemaMgr/Src/Sm/Ph/Cfg/Makefile \
+                 Providers/Utilities/SchemaMgr/Src/Sm/Ph/Mt/Makefile \
+                 Providers/Utilities/SchemaMgr/Src/Sm/Ph/Rb/Makefile \
+                 Providers/Utilities/SchemaMgr/Src/Sm/Ph/Rd/Makefile])
+
+#MySQL
+AC_CONFIG_FILES([Providers/GenericRdbms/Makefile \
+                 Providers/GenericRdbms/Inc/Makefile \
+                 Providers/GenericRdbms/Nls/Makefile \
+                 Providers/GenericRdbms/Src/Makefile \
+                 Providers/GenericRdbms/Src/Fdo/Makefile \
+                 Providers/GenericRdbms/Src/Fdo/Capability/Makefile \
+                 Providers/GenericRdbms/Src/Fdo/Connection/Makefile \
+                 Providers/GenericRdbms/Src/Fdo/Custom/Makefile \
+                 Providers/GenericRdbms/Src/Fdo/DataStore/Makefile \
+                 Providers/GenericRdbms/Src/Fdo/FeatureCommands/Makefile \
+                 Providers/GenericRdbms/Src/Fdo/Filter/Makefile \
+                 Providers/GenericRdbms/Src/Fdo/Lock/Makefile \
+                 Providers/GenericRdbms/Src/Fdo/Lt/Makefile \
+                 Providers/GenericRdbms/Src/Fdo/Other/Makefile \
+                 Providers/GenericRdbms/Src/Fdo/Pvc/Makefile \
+                 Providers/GenericRdbms/Src/Fdo/Schema/Makefile \
+                 Providers/GenericRdbms/Src/Fdo/SpatialContext/Makefile \
+                 Providers/GenericRdbms/Src/Gdbi/Makefile \
+                 Providers/GenericRdbms/Src/Geometry/Makefile \
+                 Providers/GenericRdbms/Src/Geometry/Fgf/Makefile \
+                 Providers/GenericRdbms/Src/LongTransactionManager/Makefile \
+                 Providers/GenericRdbms/Src/MySQL/Makefile \
+                 Providers/GenericRdbms/Src/MySQL/Driver/Makefile \
+                 Providers/GenericRdbms/Src/MySQL/Fdo/Makefile \
+                 Providers/GenericRdbms/Src/MySQL/SchemaMgr/Makefile \
+                 Providers/GenericRdbms/Src/MySQL/SchemaMgr/Lp/Makefile \
+                 Providers/GenericRdbms/Src/MySQL/SchemaMgr/Ov/Makefile \
+                 Providers/GenericRdbms/Src/MySQL/SchemaMgr/Ph/Makefile \
+                 Providers/GenericRdbms/Src/MySQL/SchemaMgr/Ph/Rd/Makefile \
+                 Providers/GenericRdbms/Src/Rdbi/Makefile \
+                 Providers/GenericRdbms/Src/SchemaMgr/Makefile \
+                 Providers/GenericRdbms/Src/SchemaMgr/Lp/Makefile \
+                 Providers/GenericRdbms/Src/SchemaMgr/Ov/Makefile \
+                 Providers/GenericRdbms/Src/SchemaMgr/Ph/Makefile \
+                 Providers/GenericRdbms/Src/SchemaMgr/Ph/Cfg/Makefile \
+                 Providers/GenericRdbms/Src/SchemaMgr/Ph/Rd/Makefile \
+                 Providers/GenericRdbms/Src/Util/Makefile])
+
+#ODBCDriver
+AC_CONFIG_FILES([Providers/GenericRdbms/Src/ODBCDriver/Makefile])
+
+#ODBC
+AC_CONFIG_FILES([Providers/GenericRdbms/Src/ODBC/Makefile \
+		 Providers/GenericRdbms/Src/ODBC/Fdo/Makefile \
+		 Providers/GenericRdbms/Src/ODBC/SchemaMgr/Makefile \
+		 Providers/GenericRdbms/Src/ODBC/SchemaMgr/Lp/Makefile \
+		 Providers/GenericRdbms/Src/ODBC/SchemaMgr/Ov/Makefile \
+		 Providers/GenericRdbms/Src/ODBC/SchemaMgr/Ph/Makefile \
+		 Providers/GenericRdbms/Src/ODBC/SchemaMgr/Ph/Rd/Makefile])
+
+
+AC_OUTPUT
+
