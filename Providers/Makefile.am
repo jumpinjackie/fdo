@@ -1,0 +1,6 @@
+AUTOMAKE_OPTIONS = foreign
+
+SUBDIRS = SHP SDF WFS WMS ArcSDE GenericRdbms
+
+DIST_SUBDIRS = SHP SDF WFS WMS ArcSDE GenericRdbms
+
