@@ -1,0 +1,130 @@
+@echo off
+
+SET TYPEACTIONARCSDE=buildinstall
+SET TYPEBUILDARCSDE=release
+SET FDOINSPATHARCSDE=\Fdo
+SET FDOBINPATHARCSDE=\Fdo\Bin
+SET FDOINCPATHARCSDE=\Fdo\Inc
+SET FDOLIBPATHARCSDE=\Fdo\Lib
+SET FDODOCPATHARCSDE=\Fdo\Docs
+SET DOCENABLEARCSDE=skip
+SET FDOERROR=0
+
+:study_params
+if (%1)==() goto start_build
+
+if "%1"=="-help"    goto help_show
+if "%1"=="-h"       goto help_show
+
+if "%1"=="-o"       goto get_path
+if "%1"=="-outpath" goto get_path
+
+if "%1"=="-c"       goto get_conf
+if "%1"=="-config"  goto get_conf
+
+if "%1"=="-a"       goto get_action
+if "%1"=="-action"  goto get_action
+
+if "%1"=="-d"       goto get_docs
+if "%1"=="-docs"    goto get_docs
+
+goto custom_error
+
+:get_docs
+SET DOCENABLEARCSDE=%2
+if "%2"=="build" goto next_param
+if "%2"=="skip" goto next_param
+goto custom_error
+
+:get_action
+SET TYPEACTIONARCSDE=%2
+if "%2"=="installonly" goto next_param
+if "%2"=="buildonly" goto next_param
+if "%2"=="buildinstall" goto next_param
+goto custom_error
+
+:get_conf
+SET TYPEBUILDARCSDE=%2
+if "%2"=="release" goto next_param
+if "%2"=="debug" goto next_param
+goto custom_error
+
+:get_path
+if (%2)==() goto custom_error
+SET FDOINSPATHARCSDE=%~2\Fdo
+SET FDOBINPATHARCSDE=%~2\Fdo\Bin
+SET FDOINCPATHARCSDE=%~2\Fdo\Inc
+SET FDOLIBPATHARCSDE=%~2\Fdo\Lib
+SET FDODOCPATHARCSDE=%~2\Fdo\Docs
+
+:next_param
+shift
+shift
+goto study_params
+
+:start_build
+if not exist "%FDOINSPATHARCSDE%" mkdir "%FDOINSPATHARCSDE%"
+if not exist "%FDOBINPATHARCSDE%" mkdir "%FDOBINPATHARCSDE%"
+if not exist "%FDOINCPATHARCSDE%" mkdir "%FDOINCPATHARCSDE%"
+if not exist "%FDOLIBPATHARCSDE%" mkdir "%FDOLIBPATHARCSDE%"
+if not exist "%FDODOCPATHARCSDE%" mkdir "%FDODOCPATHARCSDE%"
+
+time /t
+if "%TYPEACTIONARCSDE%"=="installonly" goto install_files_ArcSDE
+
+echo building %TYPEBUILDARCSDE% ArcSDE provider dlls
+pushd Src
+SET FDOACTIVEBUILD=%cd%\ArcSDEOS
+cscript //job:prepare ../../../preparebuilds.wsf
+msbuild ArcSDEOS_temp.sln /t:Rebuild /p:Configuration=%TYPEBUILDARCSDE% /p:Platform="Win32" /nologo
+SET FDOERROR=%errorlevel%
+if exist ArcSDEOS_temp.sln del /Q /F ArcSDEOS_temp.sln
+popd
+if "%FDOERROR%"=="1" goto error
+if "%TYPEACTIONARCSDE%"=="buildonly" goto generate_docs
+
+:install_files_ArcSDE
+echo copy %TYPEBUILDARCSDE% ArcSDE provider output files
+copy /y "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEMessage.dll" "%FDOBINPATHARCSDE%"
+copy /y "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider.dll" "%FDOBINPATHARCSDE%"
+
+echo copy header files
+rem none
+
+:generate_docs
+if "%DOCENABLEARCSDE%"=="skip" goto end
+echo Creating ArcSDE provider html and chm documentation
+if exist "%FDODOCPATHARCSDE%\HTML\Providers\ArcSDE" rmdir /S /Q "%FDODOCPATHARCSDE%\HTML\Providers\ArcSDE"
+if exist "..\Docs\HTML\Providers\ArcSDE" rmdir /S /Q "..\Docs\HTML\Providers\ArcSDE"
+if not exist "..\Docs\HTML\Providers\ArcSDE" mkdir "..\Docs\HTML\Providers\ArcSDE"
+if exist ..\Docs\ArcSDE_Provider_API.chm attrib -r ..\Docs\ArcSDE_Provider_API.chm
+pushd Docs\doc_src
+doxygen Doxyfile_ArcSDE
+popd
+xcopy/CQEYI ..\Docs\HTML\Providers\ArcSDE\* "%FDODOCPATHARCSDE%\HTML\Providers\ArcSDE"
+copy /y "..\Docs\ArcSDE_Provider_API.chm" "%FDODOCPATHARCSDE%"
+
+:end
+time /t
+echo End ArcSDE Build
+exit /B 0
+
+:error
+echo There was a build error.
+time /t
+exit /B 1
+
+:custom_error
+echo The command is not recognized.
+echo Please use the format:
+:help_show
+echo **************************************************************************
+echo build.bat [-h] [-o=OutFolder] [-c=BuildType] [-a=Action] [-d=BuildDocs]
+echo *
+echo Help:           -h[elp]
+echo OutFolder:      -o[utpath]=destination folder for binaries
+echo BuildType:      -c[onfig]=release(default), debug
+echo Action:         -a[ction]=buildinstall(default), buildonly, installonly
+echo BuildDocs:      -d[ocs]=skip(default), build
+echo **************************************************************************
+exit /B 0
