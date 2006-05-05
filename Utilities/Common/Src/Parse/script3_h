@@ -1,0 +1,7 @@
+/^# *line/s/\\/\\\\/g
+/^# *line/b
+s/#ifndef YYTOKENTYPE/#if 0 /g
+s/yy/fdo_constraint_yy/g
+s/YY/FDO_CONSTRAINT_YY/g
+s/FDO_CONSTRAINT_YYSTYPE _FDO_CONSTRAINT_YYSTYPE/_FDO_CONSTRAINT_YYSTYPE/g
+/extern /D
