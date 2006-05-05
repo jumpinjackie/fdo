@@ -1,5 +1,5 @@
 #------------------configure.in----------------------------------------
-dnl Configure.in for Autodesk FDO providers
+dnl Configure.in for OSGeo FDO
 #----------------------------------------------------------------------
 # Variables
 # Following are the makefile directories 
@@ -21,9 +21,9 @@ AM_PROG_LIBTOOL
 # Check for Debug or Release build settings
 AC_ARG_ENABLE([debug],
                MAP_HELP_STRING([--enable-debug],
-              	              [enable debug build [[default=no]]]),
-	      [enable_debug=$enableval],
-	      [enable_debug=no])
+              	             [enable debug build [[default=no]]]),
+	      	             [enable_debug=$enableval],
+	      	             [enable_debug=no])
 
 if test $enable_debug = yes; then
  AC_MSG_NOTICE([Using debug configuration])
@@ -42,16 +42,17 @@ fi
 ##output Makefiles##
 AC_CONFIG_FILES(Makefile)
 AC_CONFIG_FILES(Fdo/Makefile)
+AC_CONFIG_FILES(Utilities/Makefile)
 AC_CONFIG_FILES(Providers/Makefile)
 AC_CONFIG_FILES(Thirdparty/Makefile)
 
 #############################################
-## thirdparty
+## Thirdparty
 #############################################
 
 
 #############################################
-## fdo
+## Fdo
 #############################################
 #Unmanaged: Src Inc
 #Src: McToMsf Message FileToHdr Nls Common Geometry Spatial Fdo
@@ -79,11 +80,37 @@ AC_CONFIG_FILES(Fdo/Docs/Makefile)
 AC_CONFIG_FILES(Fdo/UnitTest/Makefile)
 
 #############################################
-## providers
+## Utilities
 #############################################
 #FdoCommon
-AC_CONFIG_FILES([Providers/Utilities/Makefile  \
-		 Providers/Utilities/Common/Makefile])
+AC_CONFIG_FILES([Utilities/Makefile  \
+                 Utilities/Common/Makefile])
+
+#SQLiteInterface
+AC_CONFIG_FILES([Utilities/SQLiteInterface/Makefile])
+
+#OWS
+AC_CONFIG_FILES([Utilities/OWS/Makefile \
+                 Utilities/OWS/Inc/Makefile \
+                 Utilities/OWS/Src/Makefile])
+
+#SchemaMgr
+AC_CONFIG_FILES([Utilities/SchemaMgr/Makefile \
+                 Utilities/SchemaMgr/Nls/Makefile \
+                 Utilities/SchemaMgr/Inc/Makefile \
+                 Utilities/SchemaMgr/Src/Makefile \
+                 Utilities/SchemaMgr/Src/Sm/Makefile \
+                 Utilities/SchemaMgr/Src/Sm/Lp/Makefile \
+                 Utilities/SchemaMgr/Src/Sm/Ov/Makefile \
+                 Utilities/SchemaMgr/Src/Sm/Ph/Makefile \
+                 Utilities/SchemaMgr/Src/Sm/Ph/Cfg/Makefile \
+                 Utilities/SchemaMgr/Src/Sm/Ph/Mt/Makefile \
+                 Utilities/SchemaMgr/Src/Sm/Ph/Rb/Makefile \
+                 Utilities/SchemaMgr/Src/Sm/Ph/Rd/Makefile])
+
+#############################################
+## Providers
+#############################################
 
 #SHP
 AC_CONFIG_FILES([Providers/SHP/Makefile \
@@ -96,8 +123,6 @@ AC_CONFIG_FILES([Providers/SHP/Makefile \
                  Providers/SHP/Src/Provider/Makefile \
                  Providers/SHP/Src/UnitTest/Makefile])
 
-#SQLiteInterface
-AC_CONFIG_FILES([Providers/Utilities/SQLiteInterface/Makefile])
 
 #SDF
 AC_CONFIG_FILES([Providers/SDF/Makefile \
@@ -107,11 +132,6 @@ AC_CONFIG_FILES([Providers/SDF/Makefile \
                  Providers/SDF/Src/Utils/Makefile \
                  Providers/SDF/Src/Provider/Makefile \
                  Providers/SDF/Src/UnitTest/Makefile])
-
-#OWS
-AC_CONFIG_FILES([Providers/Utilities/OWS/Makefile \
-                 Providers/Utilities/OWS/Inc/Makefile \
-                 Providers/Utilities/OWS/Src/Makefile])
 
 #WFS
 AC_CONFIG_FILES([Providers/WFS/Makefile \
@@ -133,20 +153,6 @@ AC_CONFIG_FILES([Providers/ArcSDE/Makefile \
                  Providers/ArcSDE/Inc/Makefile \
                  Providers/ArcSDE/Src/Message/Makefile \
                  Providers/ArcSDE/Src/Provider/Makefile])
-
-#SchemaMgr
-AC_CONFIG_FILES([Providers/Utilities/SchemaMgr/Makefile \
-                 Providers/Utilities/SchemaMgr/Nls/Makefile \
-                 Providers/Utilities/SchemaMgr/Inc/Makefile \
-                 Providers/Utilities/SchemaMgr/Src/Makefile \
-                 Providers/Utilities/SchemaMgr/Src/Sm/Makefile \
-                 Providers/Utilities/SchemaMgr/Src/Sm/Lp/Makefile \
-		 Providers/Utilities/SchemaMgr/Src/Sm/Ov/Makefile \
-                 Providers/Utilities/SchemaMgr/Src/Sm/Ph/Makefile \
-                 Providers/Utilities/SchemaMgr/Src/Sm/Ph/Cfg/Makefile \
-                 Providers/Utilities/SchemaMgr/Src/Sm/Ph/Mt/Makefile \
-                 Providers/Utilities/SchemaMgr/Src/Sm/Ph/Rb/Makefile \
-                 Providers/Utilities/SchemaMgr/Src/Sm/Ph/Rd/Makefile])
 
 #MySQL
 AC_CONFIG_FILES([Providers/GenericRdbms/Makefile \
