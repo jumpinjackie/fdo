@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="Gdal1.3"
+	ProjectGUID="{F0B80E4B-FD5B-4371-9E47-7B82424EBA53}"
+	RootNamespace="Localization"
+	Keyword="MakeFileProj"
+	>
+	<Platforms>
+		<Platform
+			Name="Win32"
+		/>
+	</Platforms>
+	<ToolFiles>
+	</ToolFiles>
+	<Configurations>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory="."
+			IntermediateDirectory="."
+			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake /f &quot;makefile.vc&quot; /NOLOGO LIBDIR=..\windows\lib\VC8\debug INCDIR=..\windows\include BINDIR=..\windows\bin\VC8\debug&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO LIBDIR=..\windows\lib\VC8\debug INCDIR=..\windows\include BINDIR=..\windows\bin\VC8\debug devinstall"
+				ReBuildCommandLine="nmake /f &quot;makefile.vc&quot; /NOLOGO LIBDIR=..\windows\lib\VC8\debug INCDIR=..\windows\include BINDIR=..\windows\bin\VC8\debug&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO LIBDIR=..\windows\lib\VC8\debug INCDIR=..\windows\include BINDIR=..\windows\bin\VC8\debug devinstall"
+				CleanCommandLine=""
+				Output="Gdal1.3"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory=" ..\windows\bin\VC8\release"
+			IntermediateDirectory=" ..\windows\lib\VC8\release"
+			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake /f &quot;makefile.vc&quot; /NOLOGO LIBDIR=..\windows\lib\VC8\release INCDIR=..\windows\include BINDIR=..\windows\bin\VC8\release&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO LIBDIR=..\windows\lib\VC8\release INCDIR=..\windows\include BINDIR=..\windows\bin\VC8\release devinstall"
+				ReBuildCommandLine="nmake /f &quot;makefile.vc&quot; /NOLOGO LIBDIR=..\windows\lib\VC8\release INCDIR=..\windows\include BINDIR=..\windows\bin\VC8\release&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO LIBDIR=..\windows\lib\VC8\release INCDIR=..\windows\include BINDIR=..\windows\bin\VC8\release devinstall"
+				CleanCommandLine=""
+				Output="Localization"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>
