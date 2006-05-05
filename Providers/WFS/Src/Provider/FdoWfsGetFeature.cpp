@@ -1,0 +1,134 @@
+/*
+ * Copyright (C) 2004-2006  Autodesk, Inc.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of version 2.1 of the GNU Lesser
+ * General Public License as published by the Free Software Foundation.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ */
+
+#include "stdafx.h"
+#include "FdoWfsGetFeature.h"
+#include <OWS/FdoOwsOgcFilterSerializer.h>
+#include "FdoWfsGlobals.h"
+
+FdoWfsGetFeature::FdoWfsGetFeature(FdoString* targetNamespace, FdoString* srsName, 
+                                   FdoStringCollection* propertiesToSelect,
+                                    FdoString* from,
+                                    FdoFilter* where) : FdoOwsRequest(FdoWfsGlobals::WFS, FdoWfsGlobals::GetFeature),
+                                    m_targetNamespace(targetNamespace), m_srsName(srsName),
+                                    m_propertiesToSelect(propertiesToSelect),
+                                    m_from(from), m_where(where)
+{
+    SetVersion(FdoWfsGlobals::WfsVersion);
+    FDO_SAFE_ADDREF(propertiesToSelect);
+    FDO_SAFE_ADDREF(where);
+}
+
+FdoWfsGetFeature::~FdoWfsGetFeature()
+{
+}
+
+FdoWfsGetFeature* FdoWfsGetFeature::Create(FdoString* targetNamespace, FdoString* srsName, FdoStringCollection* propertiesToSelect,
+                            FdoString* from,
+                            FdoFilter* where)
+{
+    return new FdoWfsGetFeature(targetNamespace, srsName, propertiesToSelect, from, where);
+}
+
+FdoStringP FdoWfsGetFeature::EncodeKVP()
+{
+    // for common request, version and service
+    FdoStringP ret = FdoOwsRequest::EncodeKVP();
+    // TYPENAME, mandatory
+    ret += FdoWfsGlobals::And;
+    ret += FdoWfsGlobals::TYPENAME;
+    ret += FdoWfsGlobals::Equal;
+    ret += m_from;
+    // PROPERTYNAME, optional
+    FdoInt32 numProps = 0;
+    if (m_propertiesToSelect != NULL)
+        numProps = m_propertiesToSelect->GetCount();
+    if (numProps > 0)
+    {
+        ret += FdoWfsGlobals::And;
+        ret += FdoWfsGlobals::PROPERTYNAME;
+        ret += FdoWfsGlobals::Equal;
+        //ret += m_from;
+        //ret += L"/";
+        FdoString* prop = m_propertiesToSelect->GetString(0);
+        ret += prop;
+        for (int i = 1; i < numProps; i++)
+        {
+            prop = m_propertiesToSelect->GetString(i);
+            ret += FdoWfsGlobals::Comma;
+            //ret += m_from;
+            //ret += L"/";
+            ret += prop;
+        }
+    }
+    // FILTER, optional
+    if (m_where != NULL)
+    {
+        FdoPtr<FdoIoMemoryStream> stream = FdoIoMemoryStream::Create();
+        FdoPtr<FdoXmlWriter> writer = FdoXmlWriter::Create(stream, false);
+        writer->WriteStartElement(FdoWfsGlobals::Filter);
+
+        // make "ogc" default namespace
+        writer->WriteAttribute(FdoXml::mXmlnsPref, FdoWfsGlobals::OgcUri);
+        // gml namespace
+        FdoStringP ns = FdoXml::mXmlnsPref;
+        ns += L":";
+        ns += FdoXml::mGmlNs;
+        writer->WriteAttribute(ns, FdoXml::mGmlUri);
+        // application namespace
+        //ns = FdoXml::mXmlnsPref;
+        //ns += L":";
+        //ns += FdoWfsGlobals::appns;
+        //writer->WriteAttribute(ns, m_targetNamespace);
+
+        FdoOwsOgcFilterSerializer::Serialize(m_where, writer, m_srsName, NULL);
+        
+        writer = NULL;
+        stream->Reset();
+        FdoInt64 length = stream->GetLength();
+        char* buffer = new char[(size_t)length + 1];
+        stream->Read((FdoByte*)buffer, (FdoSize)length);
+        buffer[length] = '\0';
+		// we must get rid of the preceding  <?xml version="1.0" encoding="UTF-8" ?> 
+		char* buffer1 = buffer;
+		while (*buffer1 != '>') buffer1++;
+		buffer1++;
+        FdoStringP filter = buffer1; 
+		delete[] buffer;
+
+        ret += FdoWfsGlobals::And;
+        ret += FdoWfsGlobals::Filter;
+        ret += FdoWfsGlobals::Equal;
+        ret += filter;
+
+    }
+
+    return ret;
+
+}
+
+FdoStringP FdoWfsGetFeature::EncodeXml()
+{
+    return L"";
+}
+
+
+
+
+
+
