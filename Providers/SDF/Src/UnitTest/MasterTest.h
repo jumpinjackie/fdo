@@ -1,0 +1,124 @@
+// Copyright (C) 2004-2006  Autodesk, Inc.
+// 
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of version 2.1 of the GNU Lesser
+// General Public License as published by the Free Software Foundation.
+// 
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+// This code is provided just for an example. You should delete it from
+// the project once you are ready to compile your test suite.  More information
+// about using CppUnit can be found on the CppUnit homepage.
+// http://cppunit.sourceforge.net/doc/lastest/index.html
+
+// List of all modules can be found here:
+// http://cppunit.sourceforge.net/doc/lastest/modules.html
+
+// More information on the test fixture macros can be found at the following:
+// http://cppunit.sourceforge.net/doc/lastest/group___writing_test_fixture.html
+
+/*
+CPPUNIT_TEST_SUITE(ATestFixtureType) 
+  Begin test suite. 
+ 
+CPPUNIT_TEST_SUB_SUITE(ATestFixtureType, ASuperClass) 
+  Begin test suite (includes parent suite). 
+
+CPPUNIT_TEST_SUITE_END() 
+  End declaration of the test suite. 
+
+CPPUNIT_TEST_SUITE_END_ABSTRACT() 
+  End declaration of an abstract test suite. 
+
+CPPUNIT_TEST_SUITE_ADD_TEST(test)   context.addTest( test ) 
+  Add a test to the suite (for custom test macro). 
+ 
+CPPUNIT_TEST(testMethod) 
+  Add a method to the suite. 
+ 
+CPPUNIT_TEST_EXCEPTION(testMethod, ExceptionType) 
+  Add a test which fail if the specified exception is not caught. 
+ 
+CPPUNIT_TEST_FAIL(testMethod)   CPPUNIT_TEST_EXCEPTION( testMethod, CPPUNIT_NS::Exception ) 
+  Adds a test case which is excepted to fail. 
+
+CPPUNIT_TEST_SUITE_ADD_CUSTOM_TESTS(testAdderMethod)   testAdderMethod( context ) 
+  Adds some custom test cases. 
+
+CPPUNIT_TEST_SUITE_PROPERTY(APropertyKey, APropertyValue) 
+  Adds a property to the test suite builder context. 
+*/ 
+
+
+#ifndef TESTEXAMPLE_H
+#define TESTEXAMPLE_H
+
+#include "cppunit/extensions/HelperMacros.h"
+#include "Fdo.h"
+
+class MasterTest : public CppUnit::TestFixture
+{
+    // This defines the begining of the test suite.
+    // Replace "TestExample" with your own
+    CPPUNIT_TEST_SUITE(MasterTest);
+    // This macro adds your test case to the test suite.
+    // Tests that are not added will not be run
+    CPPUNIT_TEST(rtreeFilter);
+    CPPUNIT_TEST(spatialFilter);
+    CPPUNIT_TEST(stringFilter);
+    CPPUNIT_TEST(computedPropTest);
+    CPPUNIT_TEST(keyFilterBeforeDelete);
+    CPPUNIT_TEST(updateTest);
+    CPPUNIT_TEST(keyFilterBeforeDelete);
+    CPPUNIT_TEST(deleteTest);
+    CPPUNIT_TEST(keyFilterAfterDelete);
+    CPPUNIT_TEST(coordSysTest);
+    CPPUNIT_TEST(selectDistinctTests);
+    CPPUNIT_TEST(selectAggregatesTest);
+	CPPUNIT_TEST(concurencyTest);
+
+
+        
+    // Use this macro to indicate that you are done adding
+    // tests to your test suite.
+    CPPUNIT_TEST_SUITE_END();
+
+    // You may define any private variables that are used in your test
+    // suite here.
+private:
+
+    FdoIConnection* CreateConnection();
+    void openConnection(FdoIConnection* conn, const wchar_t* path, bool readonly = false);
+    
+public:
+
+    MasterTest();
+    virtual ~MasterTest();
+   
+
+    void setUp();
+    void tearDown();
+
+    void deleteTest();
+    void updateTest();
+    void keyFilterBeforeDelete();
+    void keyFilterAfterDelete();
+    void stringFilter();
+    void rtreeFilter();
+    void spatialFilter();
+    void coordSysTest();
+    void computedPropTest();
+    void selectDistinctTests();
+    void selectAggregatesTest();
+	void concurencyTest();
+};
+
+#endif
+

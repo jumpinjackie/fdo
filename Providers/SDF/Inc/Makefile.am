@@ -1,0 +1,10 @@
+AUTOMAKE_OPTIONS = foreign
+
+INSTALL_DIR  = /usr/local/fdo-3.2.0/include
+
+#install header files
+install :
+	@if [ ! -d $(INSTALL_DIR) ]; then mkdir -p $(INSTALL_DIR); fi
+	@if [ ! -d $(INSTALL_DIR)/SDF ]; then mkdir -p $(INSTALL_DIR)/SDF; fi
+	@cp -u -f ./SDF/*.h  $(INSTALL_DIR)/SDF
+

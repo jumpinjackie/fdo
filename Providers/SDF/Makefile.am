@@ -1,0 +1,8 @@
+AUTOMAKE_OPTIONS = foreign
+
+SUBDIRS = Src Inc
+
+DIST_SUBDIRS = Src Inc
+
+EXTRA_DIST = UnitTest
+
