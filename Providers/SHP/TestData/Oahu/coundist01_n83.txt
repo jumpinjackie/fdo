@@ -1,0 +1,38 @@
+Layer Name:      2001 City and County of Honolulu council District Boundaries
+
+Shapefile Name:  CounDist01
+
+Layer Type:      Polygon
+
+Status:          Complete
+
+Geog. Extent:    Island of Oahu only
+
+Projection:      Universal Trans Mercator, Zone 4 (Meters)
+
+Datum:           NAD83
+
+Description:     City and County of Honolulu Council District Boundaries, as adopted
+                 by the State Reapportionment Commission, November, 2001.
+		
+Source:          State of Hawaii, Office of Elections, January, 2002.
+
+History:         Primarily derived from 1:100,000 Tiger Line Files.
+		
+Attributes:      Polygons:
+
+                 AREA         area of polygon (sq. meters)
+                 PERIMETER    perimeter of polygon (meters)
+                 DISTRICT     District Number (Character format)
+                 NDISTRICT    District Number (Numeric format)
+		
+		
+		
+			
+Contact:	Joan Delos Santos, Office of Planning, State of Hawaii, 
+		PO Box 2359, Honolulu, Hi.  96804; (808) 587-2895.
+		email:  JDelos_Santos@dbedt.hawaii.gov
+					
+
+
+

@@ -1,0 +1,35 @@
+#! /bin/sh
+
+## resolve links - $0 may be a link to the home
+PRG="$0"
+progname=`basename "$0"`
+saveddir=`pwd`
+
+# need this for relative symlinks
+dirname_prg=`dirname "$PRG"`
+cd "$dirname_prg"
+  
+while [ -h "$PRG" ] ; do
+  ls=`ls -ld "$PRG"`
+  link=`expr "$ls" : '.*-> \(.*\)$'`
+  if expr "$link" : '/.*' > /dev/null; then
+    PRG="$link"
+  else
+    PRG=`dirname "$PRG"`"/$link"
+  fi
+done
+  
+DATA_DIR=`dirname "$PRG"`
+
+cd "$saveddir"
+
+# make it fully qualified
+DATA_DIR=`cd "$DATA_DIR" && pwd`
+
+rm -rf $DATA_DIR/Testing
+find $DATA_DIR -name "*Generated.*" | xargs rm
+find $DATA_DIR -name "*.idx" | xargs rm
+find $DATA_DIR -name "schema.xml" | xargs rm
+find $DATA_DIR -name "Ontario\Test*.*" | xargs rm
+find $DATA_DIR -name "Ontario\MyClass*.*" | xargs rm
+
