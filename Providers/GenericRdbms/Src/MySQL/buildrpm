@@ -1,0 +1,7 @@
+mkdir -p $HOME/rpm/BUILD
+mkdir -p $HOME/rpm/RPMS/i386
+
+echo %_topdir $HOME/rpm > $HOME/.rpmmacros
+
+rpmbuild -bb FdoMySql.spec
+
