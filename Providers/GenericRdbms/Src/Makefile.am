@@ -44,7 +44,8 @@ libFdoMySQL_la_LIBADD =  \
   $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ph/Cfg/libSmPhCfg.la  \
   $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ph/Mt/libSmPhMt.la  \
   $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ph/Rb/libSmPhRb.la  \
-  $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ph/Rd/libSmPhRd.la
+  $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ph/Rd/libSmPhRd.la \
+  $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ov/libSmOverrides.la
 
 libFdoMySQL_la_LDFLAGS = \
   -shared -version-info 3:2:0  \
@@ -84,10 +85,13 @@ libFdoODBC_la_LIBADD =  \
   $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ph/Cfg/libSmPhCfg.la  \
   $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ph/Mt/libSmPhMt.la  \
   $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ph/Rb/libSmPhRb.la  \
-  $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ph/Rd/libSmPhRd.la
+  $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ph/Rd/libSmPhRd.la \
+  $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ov/libSmOverrides.la \
+  -lodbc
 
 libFdoODBC_la_LDFLAGS = \
   -shared -version-info 3:2:0  \
   -L$(FDOTHIRDPARTY)/apache/xml-xalan/c/lib \
-  -L$(FDOTHIRDPARTY)/apache/xml-xerces/c/lib
+  -L$(FDOTHIRDPARTY)/apache/xml-xerces/c/lib \
+  -L$(FDOODBC)/lib
 
