@@ -20,11 +20,15 @@ libProvidersCommon_la_SOURCES = \
   Src/FdoCommonSelectAggregatesCommand.cpp \
   Src/FdoCommonThreadMutex.cpp \
   Src/FdoCommonThreadUtil.cpp \
-  Src/stdafx.cpp
+  Src/stdafx.cpp \
+  Src/Parse/Lex.cpp \
+  Src/Parse/Parse.cpp \
+  Src/Parse/yyConstraint.cpp
 
 INCLUDES = \
   -I$(FDO)/Unmanaged/Inc \
-  -I./Inc
+  -I./Inc \
+  -I$(FDO)/Unmanaged/Src/Common
 
 libProvidersCommon_la_LDFLAGS = 
 
