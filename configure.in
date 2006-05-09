@@ -151,6 +151,8 @@ AC_CONFIG_FILES([Providers/ArcSDE/Makefile \
 
 #MySQL
 AC_CONFIG_FILES([Providers/GenericRdbms/Makefile \
+                 Providers/GenericRdbms/com/Makefile \
+                 Providers/GenericRdbms/Docs/Makefile \
                  Providers/GenericRdbms/Inc/Makefile \
                  Providers/GenericRdbms/Nls/Makefile \
                  Providers/GenericRdbms/Src/Makefile \
