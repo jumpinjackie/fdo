@@ -1,8 +1,8 @@
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = Unmanaged Install Docs UnitTest
+SUBDIRS = Unmanaged Install UnitTest
 
-DIST_SUBDIRS = Unmanaged Install Docs
+DIST_SUBDIRS = Unmanaged Install
 
 EXTRA_DIST = UnitTest
 
