@@ -37,12 +37,6 @@
 //#include <Inc/ut.h>
 
 
-#ifndef _WIN32
-#define wcsicmp wcscasecmp
-#define wcsnicmp wcsncasecmp
-#define strnicmp strncasecmp
-#endif
-
 // FdoRdbms common headers
 #include "FdoRdbms.h"
 #include "FdoRdbmsConnection.h"

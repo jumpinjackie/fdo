@@ -35,6 +35,8 @@ librdbi_la_SOURCES = \
   msg_issue.c \
   nom_db.c \
   null.c \
+  objects_.c \
+  pkeys_.c \
   get_gen_id.c \
   set_schema.c \
   sql.c \
@@ -46,6 +48,7 @@ librdbi_la_SOURCES = \
   tran_end.c \
   tran_getid.c \
   tran_rolbk.c \
+  users_.c \
   usr_exists.c \
   version.c \
   vis_owner.c \
