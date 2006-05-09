@@ -39,5 +39,4 @@ s/fdo_filter_yyvs /pParse->fdo_filter_yyvs /g
 s/fdo_filter_yyvs,/pParse->fdo_filter_yyvs,/g
 s/int fdo_filter_yygrowstack()/int fdo_filter_yygrowstack(FdoParse *pParse)/g
 s/fdo_filter_yygrowstack()/fdo_filter_yygrowstack(pParse)/g
-s/static int fdo_filter_yygrowstack(FdoParse \*pParse);/class FdoParse;
-static int fdo_filter_yygrowstack(FdoParse \*pParse);/g
+s/static int fdo_filter_yygrowstack(FdoParse \*pParse);/class FdoParse;static int fdo_filter_yygrowstack(FdoParse \*pParse);/g

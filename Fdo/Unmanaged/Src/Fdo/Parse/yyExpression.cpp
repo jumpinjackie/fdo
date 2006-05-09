@@ -13,12 +13,12 @@ fdo_expression_yyrcsid[] = "$FreeBSD: src/usr.bin/yacc/skeleton.c,v 1.28 2000/01
 #define FDO_EXPRESSION_YYRECOVERING() (pParse->fdo_expression_yyerrflag!=0)
 class FdoParse; static int fdo_expression_yygrowstack(FdoParse *pParse);
 #define FDO_EXPRESSION_YYPREFIX "fdo_expression_yy"
-#line 37 "Src/Fdo/Parse/yyExpression.y"
+#line 36 "Parse/yyExpression.y"
 
 #include "Parse.h"
 #pragma warning(disable:4102)	/* unreferenced labels in fdo_expression_yyExpression.cpp*/
 
-#line 44 "Src/Fdo/Parse/yyExpression.y"
+#line 43 "Parse/yyExpression.y"
 #if 0
 {
 	FdoIDisposable*	m_node;		/* expression or filter parse tree node*/
@@ -284,7 +284,7 @@ const char * const fdo_expression_yyrule[] = {
 #endif
 #endif
 #define FDO_EXPRESSION_YYINITSTACKSIZE 200
-#line 212 "Src/Fdo/Parse/yyExpression.y"
+#line 211 "Parse/yyExpression.y"
 ///////////////////////////////////////////////////////////////////////
 
 #include <stdio.h>
@@ -538,167 +538,167 @@ fdo_expression_yyreduce:
     switch (fdo_expression_yyn)
     {
 case 1:
-#line 107 "Src/Fdo/Parse/yyExpression.y"
+#line 106 "Parse/yyExpression.y"
 {pParse->SetRoot(Node_Copy(L"Expression", pParse->fdo_expression_yyvsp[0].m_node));	FDO_EXPRESSION_YYACCEPT;}
 break;
 case 2:
-#line 108 "Src/Fdo/Parse/yyExpression.y"
+#line 107 "Parse/yyExpression.y"
 {Node_Trace(L"ERROR!");	pParse->SetRoot((FdoIDisposable*)NULL);	FDO_EXPRESSION_YYABORT;}
 break;
 case 3:
-#line 112 "Src/Fdo/Parse/yyExpression.y"
+#line 111 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node=Node_Copy(L"(Expression)", pParse->fdo_expression_yyvsp[-1].m_node);}
 break;
 case 4:
-#line 113 "Src/Fdo/Parse/yyExpression.y"
+#line 112 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node=Node_Copy(L"UnaryExpression", pParse->fdo_expression_yyvsp[0].m_node);}
 break;
 case 5:
-#line 114 "Src/Fdo/Parse/yyExpression.y"
+#line 113 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node=Node_Copy(L"BinaryExpression", pParse->fdo_expression_yyvsp[0].m_node);}
 break;
 case 6:
-#line 115 "Src/Fdo/Parse/yyExpression.y"
+#line 114 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node=Node_Copy(L"Function", pParse->fdo_expression_yyvsp[0].m_node);}
 break;
 case 7:
-#line 116 "Src/Fdo/Parse/yyExpression.y"
+#line 115 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node=Node_Copy(L"Identifier", pParse->fdo_expression_yyvsp[0].m_node);}
 break;
 case 8:
-#line 117 "Src/Fdo/Parse/yyExpression.y"
+#line 116 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node=Node_Copy(L"ValueExpression", pParse->fdo_expression_yyvsp[0].m_node);}
 break;
 case 9:
-#line 118 "Src/Fdo/Parse/yyExpression.y"
+#line 117 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node=Node_Copy(L"ComputedIdentifier", pParse->fdo_expression_yyvsp[0].m_node);}
 break;
 case 10:
-#line 122 "Src/Fdo/Parse/yyExpression.y"
+#line 121 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node=Node_Add(L"Add", FdoBinaryExpression::Create((FdoExpression*)pParse->fdo_expression_yyvsp[-2].m_node, FdoBinaryOperations_Add, (FdoExpression*)pParse->fdo_expression_yyvsp[0].m_node));FDO_SAFE_RELEASE(pParse->fdo_expression_yyvsp[-2].m_node); FDO_SAFE_RELEASE(pParse->fdo_expression_yyvsp[0].m_node);}
 break;
 case 11:
-#line 123 "Src/Fdo/Parse/yyExpression.y"
+#line 122 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node=Node_Add(L"Subtract", FdoBinaryExpression::Create((FdoExpression*)pParse->fdo_expression_yyvsp[-2].m_node, FdoBinaryOperations_Subtract, (FdoExpression*)pParse->fdo_expression_yyvsp[0].m_node));FDO_SAFE_RELEASE(pParse->fdo_expression_yyvsp[-2].m_node); FDO_SAFE_RELEASE(pParse->fdo_expression_yyvsp[0].m_node);}
 break;
 case 12:
-#line 124 "Src/Fdo/Parse/yyExpression.y"
+#line 123 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node=Node_Add(L"Multiply", FdoBinaryExpression::Create((FdoExpression*)pParse->fdo_expression_yyvsp[-2].m_node, FdoBinaryOperations_Multiply, (FdoExpression*)pParse->fdo_expression_yyvsp[0].m_node));FDO_SAFE_RELEASE(pParse->fdo_expression_yyvsp[-2].m_node); FDO_SAFE_RELEASE(pParse->fdo_expression_yyvsp[0].m_node);}
 break;
 case 13:
-#line 125 "Src/Fdo/Parse/yyExpression.y"
+#line 124 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node=Node_Add(L"Divide", FdoBinaryExpression::Create((FdoExpression*)pParse->fdo_expression_yyvsp[-2].m_node, FdoBinaryOperations_Divide, (FdoExpression*)pParse->fdo_expression_yyvsp[0].m_node));FDO_SAFE_RELEASE(pParse->fdo_expression_yyvsp[-2].m_node); FDO_SAFE_RELEASE(pParse->fdo_expression_yyvsp[0].m_node);}
 break;
 case 14:
-#line 130 "Src/Fdo/Parse/yyExpression.y"
+#line 129 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node=Node_Copy(L"boolean", pParse->fdo_expression_yyvsp[0].m_node);}
 break;
 case 15:
-#line 132 "Src/Fdo/Parse/yyExpression.y"
+#line 131 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node=Node_Copy(L"datetime", pParse->fdo_expression_yyvsp[0].m_node);}
 break;
 case 16:
-#line 135 "Src/Fdo/Parse/yyExpression.y"
+#line 134 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node=Node_Copy(L"double", pParse->fdo_expression_yyvsp[0].m_node);}
 break;
 case 17:
-#line 137 "Src/Fdo/Parse/yyExpression.y"
+#line 136 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node=Node_Copy(L"integer", pParse->fdo_expression_yyvsp[0].m_node);}
 break;
 case 18:
-#line 139 "Src/Fdo/Parse/yyExpression.y"
+#line 138 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node=Node_Copy(L"string", pParse->fdo_expression_yyvsp[0].m_node);}
 break;
 case 19:
-#line 141 "Src/Fdo/Parse/yyExpression.y"
+#line 140 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node=Node_Copy(L"TODO:BLOB", NULL);}
 break;
 case 20:
-#line 143 "Src/Fdo/Parse/yyExpression.y"
+#line 142 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node=Node_Copy(L"TODO:CLOB", NULL);}
 break;
 case 21:
-#line 145 "Src/Fdo/Parse/yyExpression.y"
+#line 144 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node=Node_Add(L"NULL", FdoDataValue::Create(FdoDataType_Boolean));}
 break;
 case 22:
-#line 149 "Src/Fdo/Parse/yyExpression.y"
+#line 148 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node=Node_Add(L"TRUE", FdoBooleanValue::Create(true));}
 break;
 case 23:
-#line 150 "Src/Fdo/Parse/yyExpression.y"
+#line 149 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node=Node_Add(L"FALSE", FdoBooleanValue::Create(false));}
 break;
 case 24:
-#line 153 "Src/Fdo/Parse/yyExpression.y"
+#line 152 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node=Node_Add(L"STRING", FdoDataValue::Create(pParse->fdo_expression_yyvsp[0].m_string));}
 break;
 case 25:
-#line 156 "Src/Fdo/Parse/yyExpression.y"
+#line 155 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node=Node_Add(L"INTEGER", FdoInt32Value::Create(pParse->fdo_expression_yyvsp[0].m_integer));}
 break;
 case 26:
-#line 159 "Src/Fdo/Parse/yyExpression.y"
+#line 158 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node=Node_Add(L"DOUBLE", FdoDoubleValue::Create(pParse->fdo_expression_yyvsp[0].m_double));}
 break;
 case 27:
-#line 162 "Src/Fdo/Parse/yyExpression.y"
+#line 161 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node=Node_Add(L"DateTime", FdoDataValue::Create(pParse->fdo_expression_yyvsp[0].m_datetime));}
 break;
 case 28:
-#line 167 "Src/Fdo/Parse/yyExpression.y"
+#line 166 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node=Node_Add(L"ExpressionCollection", FdoFunction::Create(((FdoIdentifier*)pParse->fdo_expression_yyvsp[-3].m_node)->GetName(), (FdoExpressionCollection*)pParse->fdo_expression_yyvsp[-1].m_node));FDO_SAFE_RELEASE(pParse->fdo_expression_yyvsp[-3].m_node); FDO_SAFE_RELEASE(pParse->fdo_expression_yyvsp[-1].m_node);}
 break;
 case 29:
-#line 172 "Src/Fdo/Parse/yyExpression.y"
+#line 171 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node=Node_Add(L"ComputedIdentifier", FdoComputedIdentifier::Create(((FdoIdentifier*)pParse->fdo_expression_yyvsp[0].m_node)->GetName(), (FdoExpression*)pParse->fdo_expression_yyvsp[-3].m_node));FDO_SAFE_RELEASE(pParse->fdo_expression_yyvsp[-3].m_node); FDO_SAFE_RELEASE(pParse->fdo_expression_yyvsp[0].m_node);}
 break;
 case 30:
-#line 175 "Src/Fdo/Parse/yyExpression.y"
+#line 174 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node=pParse->AddNodeToDelete(FdoExpressionCollection::Create());}
 break;
 case 31:
-#line 176 "Src/Fdo/Parse/yyExpression.y"
+#line 175 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node=pParse->AddNodeToDelete(FdoExpressionCollection::Create()); ((FdoExpressionCollection*)pParse->fdo_expression_yyval.m_node)->Add((FdoExpression*)pParse->fdo_expression_yyvsp[0].m_node); Node_Trace(L"Expression Arg 1,");FDO_SAFE_RELEASE(pParse->fdo_expression_yyvsp[0].m_node); }
 break;
 case 32:
-#line 177 "Src/Fdo/Parse/yyExpression.y"
+#line 176 "Parse/yyExpression.y"
 {((FdoExpressionCollection*)pParse->fdo_expression_yyval.m_node)->Add((FdoExpression*)pParse->fdo_expression_yyvsp[0].m_node); Node_Trace(L"Expression Arg N,");FDO_SAFE_RELEASE(pParse->fdo_expression_yyvsp[0].m_node); }
 break;
 case 33:
-#line 182 "Src/Fdo/Parse/yyExpression.y"
+#line 181 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node=Node_Add(L"GeomFromText('FGFT')", pParse->FgftToGeometryValue(pParse->fdo_expression_yyvsp[-1].m_string));}
 break;
 case 34:
-#line 187 "Src/Fdo/Parse/yyExpression.y"
+#line 186 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node = Node_Add(L"IDENTIFIER", FdoIdentifier::Create(pParse->fdo_expression_yyvsp[0].m_string));}
 break;
 case 35:
-#line 191 "Src/Fdo/Parse/yyExpression.y"
+#line 190 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node=Node_Copy(L"LiteralValue", pParse->fdo_expression_yyvsp[0].m_node);}
 break;
 case 36:
-#line 192 "Src/Fdo/Parse/yyExpression.y"
+#line 191 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node=Node_Copy(L"Parameter", pParse->fdo_expression_yyvsp[0].m_node);}
 break;
 case 37:
-#line 196 "Src/Fdo/Parse/yyExpression.y"
+#line 195 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node=Node_Copy(L"GeometryValue", pParse->fdo_expression_yyvsp[0].m_node);}
 break;
 case 38:
-#line 197 "Src/Fdo/Parse/yyExpression.y"
+#line 196 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node=Node_Copy(L"DataValue", pParse->fdo_expression_yyvsp[0].m_node);}
 break;
 case 39:
-#line 202 "Src/Fdo/Parse/yyExpression.y"
+#line 201 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node = Node_Add(L"PARAMETER", FdoParameter::Create(pParse->fdo_expression_yyvsp[0].m_string));}
 break;
 case 40:
-#line 204 "Src/Fdo/Parse/yyExpression.y"
+#line 203 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node = Node_Add(L":Parameter", FdoParameter::Create(pParse->fdo_expression_yyvsp[0].m_string));}
 break;
 case 41:
-#line 208 "Src/Fdo/Parse/yyExpression.y"
+#line 207 "Parse/yyExpression.y"
 {pParse->fdo_expression_yyval.m_node = Node_Add(L"UnaryExpression", FdoUnaryExpression::Create(FdoUnaryOperations_Negate, (FdoExpression*)pParse->fdo_expression_yyvsp[0].m_node));FDO_SAFE_RELEASE(pParse->fdo_expression_yyvsp[0].m_node);}
 break;
 #line 717 "yyExpression.cpp"

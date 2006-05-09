@@ -11,13 +11,12 @@ fdo_filter_yyrcsid[] = "$FreeBSD: src/usr.bin/yacc/skeleton.c,v 1.28 2000/01/17 
 #define fdo_filter_yyclearin (pParse->fdo_filter_yychar=(FDO_FILTER_YYEMPTY))
 #define fdo_filter_yyerrok (pParse->fdo_filter_yyerrflag=0)
 #define FDO_FILTER_YYRECOVERING() (pParse->fdo_filter_yyerrflag!=0)
-class FdoParse;
-static int fdo_filter_yygrowstack(FdoParse *pParse);
+class FdoParse;static int fdo_filter_yygrowstack(FdoParse *pParse);
 #define FDO_FILTER_YYPREFIX "fdo_filter_yy"
-#line 37 "Src/Fdo/Parse/yyFilter.y"
+#line 36 "Parse/yyFilter.y"
 #include "Parse.h"
 #pragma warning(disable:4102)	/* unreferenced labels in fdo_filter_yyFilter.cpp*/
-#line 42 "Src/Fdo/Parse/yyFilter.y"
+#line 41 "Parse/yyFilter.y"
 #if 0
 {
 	FdoIDisposable*	m_node;		/* expression or filter parse tree node*/
@@ -399,7 +398,7 @@ const char * const fdo_filter_yyrule[] = {
 #endif
 #endif
 #define FDO_FILTER_YYINITSTACKSIZE 200
-#line 340 "Src/Fdo/Parse/yyFilter.y"
+#line 339 "Parse/yyFilter.y"
 ///////////////////////////////////////////////////////////////////////
 
 #include <stdio.h>
@@ -653,135 +652,135 @@ fdo_filter_yyreduce:
     switch (fdo_filter_yyn)
     {
 case 1:
-#line 121 "Src/Fdo/Parse/yyFilter.y"
+#line 120 "Parse/yyFilter.y"
 {pParse->SetRoot(Node_Copy(L"Filter", pParse->fdo_filter_yyvsp[0].m_node));	FDO_FILTER_YYACCEPT;}
 break;
 case 2:
-#line 122 "Src/Fdo/Parse/yyFilter.y"
+#line 121 "Parse/yyFilter.y"
 {pParse->SetRoot(Node_Copy(L"Filter", pParse->fdo_filter_yyvsp[0].m_node)); FDO_FILTER_YYACCEPT;}
 break;
 case 3:
-#line 123 "Src/Fdo/Parse/yyFilter.y"
+#line 122 "Parse/yyFilter.y"
 {Node_Trace(L"ERROR!");	pParse->SetRoot((FdoIDisposable*)NULL);	FDO_FILTER_YYABORT;}
 break;
 case 4:
-#line 129 "Src/Fdo/Parse/yyFilter.y"
+#line 128 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Copy(L"(Expression)", pParse->fdo_filter_yyvsp[-1].m_node);}
 break;
 case 5:
-#line 130 "Src/Fdo/Parse/yyFilter.y"
+#line 129 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Copy(L"UnaryExpression", pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 6:
-#line 131 "Src/Fdo/Parse/yyFilter.y"
+#line 130 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Copy(L"BinaryExpression", pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 7:
-#line 132 "Src/Fdo/Parse/yyFilter.y"
+#line 131 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Copy(L"Function", pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 8:
-#line 133 "Src/Fdo/Parse/yyFilter.y"
+#line 132 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Copy(L"Identifier", pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 9:
-#line 134 "Src/Fdo/Parse/yyFilter.y"
+#line 133 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Copy(L"ValueExpression", pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 10:
-#line 138 "Src/Fdo/Parse/yyFilter.y"
+#line 137 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Add(L"Add", FdoBinaryExpression::Create((FdoExpression*)pParse->fdo_filter_yyvsp[-2].m_node, FdoBinaryOperations_Add, (FdoExpression*)pParse->fdo_filter_yyvsp[0].m_node));FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[-2].m_node); FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 11:
-#line 139 "Src/Fdo/Parse/yyFilter.y"
+#line 138 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Add(L"Subtract", FdoBinaryExpression::Create((FdoExpression*)pParse->fdo_filter_yyvsp[-2].m_node, FdoBinaryOperations_Subtract, (FdoExpression*)pParse->fdo_filter_yyvsp[0].m_node));FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[-2].m_node); FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 12:
-#line 140 "Src/Fdo/Parse/yyFilter.y"
+#line 139 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Add(L"Multiply", FdoBinaryExpression::Create((FdoExpression*)pParse->fdo_filter_yyvsp[-2].m_node, FdoBinaryOperations_Multiply, (FdoExpression*)pParse->fdo_filter_yyvsp[0].m_node));FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[-2].m_node); FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 13:
-#line 141 "Src/Fdo/Parse/yyFilter.y"
+#line 140 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Add(L"Divide", FdoBinaryExpression::Create((FdoExpression*)pParse->fdo_filter_yyvsp[-2].m_node, FdoBinaryOperations_Divide, (FdoExpression*)pParse->fdo_filter_yyvsp[0].m_node));FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[-2].m_node); FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 14:
-#line 146 "Src/Fdo/Parse/yyFilter.y"
+#line 145 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Copy(L"boolean", pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 15:
-#line 148 "Src/Fdo/Parse/yyFilter.y"
+#line 147 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Copy(L"datetime", pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 16:
-#line 151 "Src/Fdo/Parse/yyFilter.y"
+#line 150 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Copy(L"double", pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 17:
-#line 153 "Src/Fdo/Parse/yyFilter.y"
+#line 152 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Copy(L"integer", pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 18:
-#line 155 "Src/Fdo/Parse/yyFilter.y"
+#line 154 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Copy(L"string", pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 19:
-#line 157 "Src/Fdo/Parse/yyFilter.y"
+#line 156 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Copy(L"TODO:BLOB", NULL);}
 break;
 case 20:
-#line 159 "Src/Fdo/Parse/yyFilter.y"
+#line 158 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Copy(L"TODO:CLOB", NULL);}
 break;
 case 21:
-#line 161 "Src/Fdo/Parse/yyFilter.y"
+#line 160 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Add(L"NULL", FdoDataValue::Create(FdoDataType_Boolean));}
 break;
 case 22:
-#line 165 "Src/Fdo/Parse/yyFilter.y"
+#line 164 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Add(L"TRUE", FdoBooleanValue::Create(true));}
 break;
 case 23:
-#line 166 "Src/Fdo/Parse/yyFilter.y"
+#line 165 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Add(L"FALSE", FdoBooleanValue::Create(false));}
 break;
 case 24:
-#line 169 "Src/Fdo/Parse/yyFilter.y"
+#line 168 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Add(L"STRING", FdoDataValue::Create(pParse->fdo_filter_yyvsp[0].m_string));}
 break;
 case 25:
-#line 172 "Src/Fdo/Parse/yyFilter.y"
+#line 171 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Add(L"INTEGER", FdoInt32Value::Create(pParse->fdo_filter_yyvsp[0].m_integer));}
 break;
 case 26:
-#line 175 "Src/Fdo/Parse/yyFilter.y"
+#line 174 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Add(L"DOUBLE", FdoDoubleValue::Create(pParse->fdo_filter_yyvsp[0].m_double));}
 break;
 case 27:
-#line 178 "Src/Fdo/Parse/yyFilter.y"
+#line 177 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Add(L"DateTime", FdoDataValue::Create(pParse->fdo_filter_yyvsp[0].m_datetime));}
 break;
 case 28:
-#line 183 "Src/Fdo/Parse/yyFilter.y"
+#line 182 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Add(L"ExpressionCollection", FdoFunction::Create(((FdoIdentifier*)pParse->fdo_filter_yyvsp[-3].m_node)->GetName(), (FdoExpressionCollection*)pParse->fdo_filter_yyvsp[-1].m_node));FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[-3].m_node); FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[-1].m_node);}
 break;
 case 29:
-#line 186 "Src/Fdo/Parse/yyFilter.y"
+#line 185 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=pParse->AddNodeToDelete(FdoExpressionCollection::Create());}
 break;
 case 30:
-#line 187 "Src/Fdo/Parse/yyFilter.y"
+#line 186 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=pParse->AddNodeToDelete(FdoExpressionCollection::Create()); ((FdoExpressionCollection*)pParse->fdo_filter_yyval.m_node)->Add((FdoExpression*)pParse->fdo_filter_yyvsp[0].m_node); Node_Trace(L"Expression Arg 1,");FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[0].m_node); }
 break;
 case 31:
-#line 188 "Src/Fdo/Parse/yyFilter.y"
+#line 187 "Parse/yyFilter.y"
 {((FdoExpressionCollection*)pParse->fdo_filter_yyval.m_node)->Add((FdoExpression*)pParse->fdo_filter_yyvsp[0].m_node); Node_Trace(L"Expression Arg N,");FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[0].m_node); }
 break;
 case 32:
-#line 193 "Src/Fdo/Parse/yyFilter.y"
+#line 192 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Add(L"GeomFromText('FGFT')", pParse->FgftToGeometryValue(pParse->fdo_filter_yyvsp[-1].m_string));}
 break;
 case 33:
-#line 198 "Src/Fdo/Parse/yyFilter.y"
+#line 197 "Parse/yyFilter.y"
 {
 						    FdoComputedIdentifier* id = pParse->FindComputedIdentifier( pParse->fdo_filter_yyvsp[0].m_string );
 						    if( id == NULL )
@@ -791,15 +790,15 @@ case 33:
 						}
 break;
 case 34:
-#line 208 "Src/Fdo/Parse/yyFilter.y"
+#line 207 "Parse/yyFilter.y"
 {}
 break;
 case 35:
-#line 209 "Src/Fdo/Parse/yyFilter.y"
+#line 208 "Parse/yyFilter.y"
 {}
 break;
 case 36:
-#line 214 "Src/Fdo/Parse/yyFilter.y"
+#line 213 "Parse/yyFilter.y"
 {
                         FdoComputedIdentifier* id = FdoComputedIdentifier::Create(((FdoIdentifier*)pParse->fdo_filter_yyvsp[0].m_node)->GetName(), (FdoExpression*)pParse->fdo_filter_yyvsp[-3].m_node);
                         Node_Add(L"ComputedIdentifier", id);
@@ -808,203 +807,203 @@ case 36:
                     }
 break;
 case 37:
-#line 223 "Src/Fdo/Parse/yyFilter.y"
+#line 222 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Copy(L"LiteralValue", pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 38:
-#line 224 "Src/Fdo/Parse/yyFilter.y"
+#line 223 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Copy(L"Parameter", pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 39:
-#line 228 "Src/Fdo/Parse/yyFilter.y"
+#line 227 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Copy(L"GeometryValue", pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 40:
-#line 229 "Src/Fdo/Parse/yyFilter.y"
+#line 228 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Copy(L"DataValue", pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 41:
-#line 234 "Src/Fdo/Parse/yyFilter.y"
+#line 233 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node = Node_Add(L"PARAMETER", FdoParameter::Create(pParse->fdo_filter_yyvsp[0].m_string));}
 break;
 case 42:
-#line 236 "Src/Fdo/Parse/yyFilter.y"
+#line 235 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node = Node_Add(L":Parameter", FdoParameter::Create(pParse->fdo_filter_yyvsp[0].m_string));}
 break;
 case 43:
-#line 240 "Src/Fdo/Parse/yyFilter.y"
+#line 239 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node = Node_Add(L"UnaryExpression", FdoUnaryExpression::Create(FdoUnaryOperations_Negate, (FdoExpression*)pParse->fdo_filter_yyvsp[0].m_node));FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 44:
-#line 245 "Src/Fdo/Parse/yyFilter.y"
+#line 244 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Copy(L"(Filter)", pParse->fdo_filter_yyvsp[-1].m_node);}
 break;
 case 45:
-#line 246 "Src/Fdo/Parse/yyFilter.y"
+#line 245 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Copy(L"LogicalOperator", pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 46:
-#line 247 "Src/Fdo/Parse/yyFilter.y"
+#line 246 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Copy(L"SearchCondition", pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 47:
-#line 251 "Src/Fdo/Parse/yyFilter.y"
+#line 250 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Copy(L"BinaryLogicalOperator", pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 48:
-#line 252 "Src/Fdo/Parse/yyFilter.y"
+#line 251 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Copy(L"UnaryLogicalOperator", pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 49:
-#line 256 "Src/Fdo/Parse/yyFilter.y"
+#line 255 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Copy(L"DistanceCondition", pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 50:
-#line 257 "Src/Fdo/Parse/yyFilter.y"
+#line 256 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Copy(L"SpatialCondition", pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 51:
-#line 261 "Src/Fdo/Parse/yyFilter.y"
+#line 260 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=pParse->AddNodeToDelete(FdoValueExpressionCollection::Create()); ((FdoValueExpressionCollection*)pParse->fdo_filter_yyval.m_node)->Add((FdoValueExpression*)pParse->fdo_filter_yyvsp[0].m_node); Node_Trace(L"ValueExpression 1");FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[0].m_node); }
 break;
 case 52:
-#line 263 "Src/Fdo/Parse/yyFilter.y"
+#line 262 "Parse/yyFilter.y"
 {((FdoValueExpressionCollection*)pParse->fdo_filter_yyval.m_node)->Add((FdoValueExpression*)pParse->fdo_filter_yyvsp[0].m_node); Node_Trace(L"ValueExpression n");FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[0].m_node); }
 break;
 case 53:
-#line 268 "Src/Fdo/Parse/yyFilter.y"
+#line 267 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Add(L"ValueExpressionCollection", FdoInCondition::Create((FdoIdentifier*)pParse->fdo_filter_yyvsp[-4].m_node, (FdoValueExpressionCollection*)pParse->fdo_filter_yyvsp[-1].m_node));FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[-4].m_node); FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[-1].m_node);}
 break;
 case 54:
-#line 272 "Src/Fdo/Parse/yyFilter.y"
+#line 271 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Add(L"NULL", FdoNullCondition::Create((FdoIdentifier*)pParse->fdo_filter_yyvsp[-1].m_node));FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[-1].m_node);}
 break;
 case 55:
-#line 276 "Src/Fdo/Parse/yyFilter.y"
+#line 275 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Copy(L"InCondition", pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 56:
-#line 277 "Src/Fdo/Parse/yyFilter.y"
+#line 276 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Copy(L"ComparisonCondition", pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 57:
-#line 278 "Src/Fdo/Parse/yyFilter.y"
+#line 277 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Copy(L"GeometricCondition", pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 58:
-#line 279 "Src/Fdo/Parse/yyFilter.y"
+#line 278 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Copy(L"NullCondition", pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 59:
-#line 284 "Src/Fdo/Parse/yyFilter.y"
+#line 283 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Add(L"Id-SpatialOp-Expression", FdoSpatialCondition::Create((FdoIdentifier*)pParse->fdo_filter_yyvsp[-2].m_node, (FdoSpatialOperations)pParse->fdo_filter_yyvsp[-1].m_id, (FdoExpression*)pParse->fdo_filter_yyvsp[0].m_node));FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[-2].m_node); FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 60:
-#line 288 "Src/Fdo/Parse/yyFilter.y"
+#line 287 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Add(L"NOT", FdoUnaryLogicalOperator::Create((FdoFilter*)pParse->fdo_filter_yyvsp[0].m_node, FdoUnaryLogicalOperations_Not));FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 61:
-#line 292 "Src/Fdo/Parse/yyFilter.y"
+#line 291 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Add(L"AND", FdoBinaryLogicalOperator::Create((FdoFilter*)pParse->fdo_filter_yyvsp[-2].m_node, FdoBinaryLogicalOperations_And, (FdoFilter*)pParse->fdo_filter_yyvsp[0].m_node));FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[-2].m_node); FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 62:
-#line 293 "Src/Fdo/Parse/yyFilter.y"
+#line 292 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Add(L"OR", FdoBinaryLogicalOperator::Create((FdoFilter*)pParse->fdo_filter_yyvsp[-2].m_node, FdoBinaryLogicalOperations_Or, (FdoFilter*)pParse->fdo_filter_yyvsp[0].m_node));FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[-2].m_node); FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 63:
-#line 297 "Src/Fdo/Parse/yyFilter.y"
+#line 296 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Add(L"ComparisonOperations", FdoComparisonCondition::Create((FdoExpression*)pParse->fdo_filter_yyvsp[-2].m_node, (FdoComparisonOperations)pParse->fdo_filter_yyvsp[-1].m_id, (FdoExpression*)pParse->fdo_filter_yyvsp[0].m_node));FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[-2].m_node); FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 64:
-#line 302 "Src/Fdo/Parse/yyFilter.y"
+#line 301 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Add(L"Indentifier-DistanceOp-Expression", FdoDistanceCondition::Create((FdoIdentifier*)pParse->fdo_filter_yyvsp[-3].m_node, (FdoDistanceOperations)pParse->fdo_filter_yyvsp[-2].m_id, (FdoExpression*)pParse->fdo_filter_yyvsp[-1].m_node, ((FdoDoubleValue*)pParse->fdo_filter_yyvsp[0].m_node)->GetDouble()));FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[-3].m_node); FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[-1].m_node);FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 65:
-#line 306 "Src/Fdo/Parse/yyFilter.y"
+#line 305 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_id=FdoComparisonOperations_EqualTo; Node_Trace(L"EQ");}
 break;
 case 66:
-#line 307 "Src/Fdo/Parse/yyFilter.y"
+#line 306 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_id=FdoComparisonOperations_NotEqualTo; Node_Trace(L"NE");}
 break;
 case 67:
-#line 308 "Src/Fdo/Parse/yyFilter.y"
+#line 307 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_id=FdoComparisonOperations_GreaterThan; Node_Trace(L"GT");}
 break;
 case 68:
-#line 309 "Src/Fdo/Parse/yyFilter.y"
+#line 308 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_id=FdoComparisonOperations_GreaterThanOrEqualTo; Node_Trace(L"GE");}
 break;
 case 69:
-#line 310 "Src/Fdo/Parse/yyFilter.y"
+#line 309 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_id=FdoComparisonOperations_LessThan; Node_Trace(L"LT");}
 break;
 case 70:
-#line 311 "Src/Fdo/Parse/yyFilter.y"
+#line 310 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_id=FdoComparisonOperations_LessThanOrEqualTo; Node_Trace(L"LE");}
 break;
 case 71:
-#line 312 "Src/Fdo/Parse/yyFilter.y"
+#line 311 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_id=FdoComparisonOperations_Like; Node_Trace(L"LIKE");}
 break;
 case 72:
-#line 316 "Src/Fdo/Parse/yyFilter.y"
+#line 315 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_id=FdoDistanceOperations_Beyond; Node_Trace(L"BEYOND");}
 break;
 case 73:
-#line 317 "Src/Fdo/Parse/yyFilter.y"
+#line 316 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_id=FdoDistanceOperations_Within; Node_Trace(L"WITHINDISTANCE");}
 break;
 case 74:
-#line 321 "Src/Fdo/Parse/yyFilter.y"
+#line 320 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Contains; Node_Trace(L"CONTAINS");}
 break;
 case 75:
-#line 322 "Src/Fdo/Parse/yyFilter.y"
+#line 321 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Crosses; Node_Trace(L"CROSSES");}
 break;
 case 76:
-#line 323 "Src/Fdo/Parse/yyFilter.y"
+#line 322 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Disjoint; Node_Trace(L"DISJOINT");}
 break;
 case 77:
-#line 324 "Src/Fdo/Parse/yyFilter.y"
+#line 323 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Equals; Node_Trace(L"EQUALS");}
 break;
 case 78:
-#line 325 "Src/Fdo/Parse/yyFilter.y"
+#line 324 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Inside; Node_Trace(L"INSIDE");}
 break;
 case 79:
-#line 326 "Src/Fdo/Parse/yyFilter.y"
+#line 325 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Intersects; Node_Trace(L"INTERSECTS");}
 break;
 case 80:
-#line 327 "Src/Fdo/Parse/yyFilter.y"
+#line 326 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Overlaps; Node_Trace(L"OVERLAPS");}
 break;
 case 81:
-#line 328 "Src/Fdo/Parse/yyFilter.y"
+#line 327 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Touches; Node_Trace(L"TOUCHES");}
 break;
 case 82:
-#line 329 "Src/Fdo/Parse/yyFilter.y"
+#line 328 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Within; Node_Trace(L"WITHIN");}
 break;
 case 83:
-#line 330 "Src/Fdo/Parse/yyFilter.y"
+#line 329 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_CoveredBy; Node_Trace(L"COVEREDBY");}
 break;
 case 84:
-#line 331 "Src/Fdo/Parse/yyFilter.y"
+#line 330 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_EnvelopeIntersects; Node_Trace(L"ENVELOPEINTERSECTS");}
 break;
 case 85:
-#line 335 "Src/Fdo/Parse/yyFilter.y"
+#line 334 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Copy(L"double", pParse->fdo_filter_yyvsp[0].m_node);}
 break;
 case 86:
-#line 336 "Src/Fdo/Parse/yyFilter.y"
+#line 335 "Parse/yyFilter.y"
 {pParse->fdo_filter_yyval.m_node=Node_Add(L"INTEGER", FdoDoubleValue::Create((double)pParse->fdo_filter_yyvsp[0].m_integer));}
 break;
 #line 1022 "yyFilter.cpp"
