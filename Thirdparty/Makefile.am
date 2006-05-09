@@ -18,20 +18,20 @@ xmllib_DATA = \
   GDAL1.3/linux/lib/optimized/libgdal.so.1.9.0
 
 install-data-hook :
-	@ln -s /usr/local/fdo-3.2.0/lib/libxalan-c.so.17.0 /usr/local/fdo-3.2.0/lib/libxalan-c.so.17
-	@ln -s /usr/local/fdo-3.2.0/lib/libxalan-c.so.17.0 /usr/local/fdo-3.2.0/lib/libxalan-c.so
-	@ln -s /usr/local/fdo-3.2.0/lib/libxalanMsg.so.17.0 /usr/local/fdo-3.2.0/lib/libxalanMsg.so.17
-	@ln -s /usr/local/fdo-3.2.0/lib/libxalanMsg.so.17.0 /usr/local/fdo-3.2.0/lib/libxalanMsg.so
-	@ln -s /usr/local/fdo-3.2.0/lib/libxerces-c.so.25.0 /usr/local/fdo-3.2.0/lib/libxerces-c.so.25
-	@ln -s /usr/local/fdo-3.2.0/lib/libxerces-c.so.25.0 /usr/local/fdo-3.2.0/lib/libxerces-c.so
-	@ln -s /usr/local/fdo-3.2.0/lib/libcurl.so.3.0.0 /usr/local/fdo-3.2.0/lib/libcurl.so.3
-	@ln -s /usr/local/fdo-3.2.0/lib/libcurl.so.3.0.0 /usr/local/fdo-3.2.0/lib/libcurl.so
-	@ln -s /usr/local/fdo-3.2.0/lib/libssl.so.0.9.7 /usr/local/fdo-3.2.0/lib/libssl.so.0
-	@ln -s /usr/local/fdo-3.2.0/lib/libssl.so.0.9.7 /usr/local/fdo-3.2.0/lib/libssl.so
-	@ln -s /usr/local/fdo-3.2.0/lib/libcrypto.so.0.9.7 /usr/local/fdo-3.2.0/lib/libcrypto.so.0
-	@ln -s /usr/local/fdo-3.2.0/lib/libcrypto.so.0.9.7 /usr/local/fdo-3.2.0/lib/libcrypto.so
-	@ln -s /usr/local/fdo-3.2.0/lib/libgdal.so.1.9.0 /usr/local/fdo-3.2.0/lib/libgdal.so.1
-	@ln -s /usr/local/fdo-3.2.0/lib/libgdal.so.1.9.0 /usr/local/fdo-3.2.0/lib/libgdal.so
+	@ln -s -f /usr/local/fdo-3.2.0/lib/libxalan-c.so.17.0 /usr/local/fdo-3.2.0/lib/libxalan-c.so.17
+	@ln -s -f /usr/local/fdo-3.2.0/lib/libxalan-c.so.17.0 /usr/local/fdo-3.2.0/lib/libxalan-c.so
+	@ln -s -f /usr/local/fdo-3.2.0/lib/libxalanMsg.so.17.0 /usr/local/fdo-3.2.0/lib/libxalanMsg.so.17
+	@ln -s -f /usr/local/fdo-3.2.0/lib/libxalanMsg.so.17.0 /usr/local/fdo-3.2.0/lib/libxalanMsg.so
+	@ln -s -f /usr/local/fdo-3.2.0/lib/libxerces-c.so.25.0 /usr/local/fdo-3.2.0/lib/libxerces-c.so.25
+	@ln -s -f /usr/local/fdo-3.2.0/lib/libxerces-c.so.25.0 /usr/local/fdo-3.2.0/lib/libxerces-c.so
+	@ln -s -f /usr/local/fdo-3.2.0/lib/libcurl.so.3.0.0 /usr/local/fdo-3.2.0/lib/libcurl.so.3
+	@ln -s -f /usr/local/fdo-3.2.0/lib/libcurl.so.3.0.0 /usr/local/fdo-3.2.0/lib/libcurl.so
+	@ln -s -f /usr/local/fdo-3.2.0/lib/libssl.so.0.9.7 /usr/local/fdo-3.2.0/lib/libssl.so.0
+	@ln -s -f /usr/local/fdo-3.2.0/lib/libssl.so.0.9.7 /usr/local/fdo-3.2.0/lib/libssl.so
+	@ln -s -f /usr/local/fdo-3.2.0/lib/libcrypto.so.0.9.7 /usr/local/fdo-3.2.0/lib/libcrypto.so.0
+	@ln -s -f /usr/local/fdo-3.2.0/lib/libcrypto.so.0.9.7 /usr/local/fdo-3.2.0/lib/libcrypto.so
+	@ln -s -f /usr/local/fdo-3.2.0/lib/libgdal.so.1.9.0 /usr/local/fdo-3.2.0/lib/libgdal.so.1
+	@ln -s -f /usr/local/fdo-3.2.0/lib/libgdal.so.1.9.0 /usr/local/fdo-3.2.0/lib/libgdal.so
 	@chmod a+x /usr/local/fdo-3.2.0/lib/libxalan-c.so.17
 	@chmod a+x /usr/local/fdo-3.2.0/lib/libxalan-c.so
 	@chmod a+x /usr/local/fdo-3.2.0/lib/libxalanMsg.so.17
