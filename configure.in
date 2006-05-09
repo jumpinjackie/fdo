@@ -83,8 +83,7 @@ AC_CONFIG_FILES(Fdo/UnitTest/Makefile)
 ## Utilities
 #############################################
 #FdoCommon
-AC_CONFIG_FILES([Utilities/Makefile  \
-                 Utilities/Common/Makefile])
+AC_CONFIG_FILES([Utilities/Common/Makefile])
 
 #SQLiteInterface
 AC_CONFIG_FILES([Utilities/SQLiteInterface/Makefile])
