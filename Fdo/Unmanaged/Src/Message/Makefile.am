@@ -33,10 +33,13 @@ $(CATALOGS_CAT) : $(CATDIR)/%.cat : %.msf
 	@../McToMsf/McToMsf $(basename $(notdir $<)).mc $(basename $(notdir $<)).msf "*" FDO
 
 
-INSTALL_DIR  = /usr/local/fdo-3.2.0
+INSTALL_DIR  = $(prefix)/nls
 
 #install data
 install :
-	@if [ ! -d $(INSTALL_DIR)/nls ]; then mkdir -p $(INSTALL_DIR)/nls; fi
-	@cp -u -f $(CATDIR)/FDOMessage.cat $(INSTALL_DIR)/nls
+	@if [ ! -d $(INSTALL_DIR) ]; then mkdir -p $(INSTALL_DIR); fi
+	@cp -u -f $(CATDIR)/FDOMessage.cat $(INSTALL_DIR)
+
+uninstall :
+	@rm -f $(INSTALL_DIR)/FDOMessage.cat
 
