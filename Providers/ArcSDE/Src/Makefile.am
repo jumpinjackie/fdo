@@ -21,6 +21,7 @@ libArcSDEProvider_la_LIBADD =  \
   -lsg91
 
 libArcSDEProvider_la_LDFLAGS = \
-  -shared -version-info 3:2:0 \
-  -L$(SDEHOME)/lib 
+  -shared \
+  -release $(VERSION) \
+  -L$(SDEHOME)/lib
 
