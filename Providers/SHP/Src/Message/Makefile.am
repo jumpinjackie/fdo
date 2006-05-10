@@ -34,11 +34,13 @@ $(CATALOGS_CAT) : $(CATDIR)/%.cat : %.msf
 %.msf : %.mc
 	$(FDO)/Unmanaged/Src/McToMsf/McToMsf $< $@ "*" SHPMESSAGE
 
-INSTALL_DIR  = /usr/local/fdo-3.2.0
+INSTALL_DIR  = $(prefix)/nls
 
 #install data
 install :
 	@if [ ! -d $(INSTALL_DIR) ]; then mkdir -p $(INSTALL_DIR); fi
-	@if [ ! -d $(INSTALL_DIR)/nls ]; then mkdir -p $(INSTALL_DIR)/nls; fi
 	@cp -u -f $(CATALOGS_CAT)  $(INSTALL_DIR)/nls
+
+uninstall :
+	@rm -f $(INSTALL_DIR)/ShpMessage.cat
 

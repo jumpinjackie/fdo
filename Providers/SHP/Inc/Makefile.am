@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
-INSTALL_DIR  = /usr/local/fdo-3.2.0/include
+INSTALL_DIR  = $(includedir)
 
 #install header files
 install :
@@ -9,4 +9,7 @@ install :
 	@if [ ! -d $(INSTALL_DIR)/SHP/Override ]; then mkdir -p $(INSTALL_DIR)/SHP/Override; fi
 	@cp -u -f ./SHP/*.h  $(INSTALL_DIR)/SHP
 	@cp -u -f ./SHP/Override/*.h  $(INSTALL_DIR)/SHP/Override
+
+uninstall :
+	@rm -drf $(INSTALL_DIR)/SHP
 
