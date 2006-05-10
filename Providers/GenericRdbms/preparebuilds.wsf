@@ -1,0 +1,70 @@
+<package>
+    <job id="prepare">
+        <script language="VBScript" src="methods.vbs"></script>
+        <script language="VBScript">
+			On Error Resume Next
+			Dim FullPath
+			Dim sourceFile
+			Dim TempFileName
+			Dim repeat
+			
+			Set WshShell = CreateObject("WScript.Shell")
+			FullPath = WshShell.ExpandEnvironmentStrings("%FDOUTILITIES%")
+			sourceFile = WshShell.ExpandEnvironmentStrings("%FDOACTIVEBUILD%")
+			Set WshShell = nothing
+			Set fsc = New FileSystemClass
+			TempFileName = sourceFile & "_temp.sln"
+			If fsc.FolderExist(FullPath) Then
+			    If fsc.FileExist(TempFileName) Then
+			        Call fsc.RemoveReadOnly(TempFileName)
+			        Call fsc.DeleteFile(TempFileName)
+			    End If
+			    If fsc.FileExist(sourceFile & ".sln") Then
+                    Call fsc.CopyFile(sourceFile & ".sln", TempFileName)
+                    Call fsc.RemoveReadOnly(TempFileName)
+                    Do 
+                        repeat = fsc.ReplaceStringInFile(TempFileName, "%FDOUTILITIES%", FullPath)
+                    Loop While repeat = True
+                Else
+                    WScript.Echo ("Invalid file to process!")
+                End If
+            Else
+                WScript.Echo ("Invalid FDO utilities path!")
+            End If
+            Set fsc = Nothing
+        </script>
+    </job>
+    <job id="install">
+        <script language="VBScript" src="methods.vbs"></script>
+        <script language="VBScript">
+			On Error Resume Next
+			Dim repeat
+			Dim InstallPath
+			Dim UseFileName
+			
+			Set WshShell = CreateObject("WScript.Shell")
+			InstallPath = WshShell.ExpandEnvironmentStrings("%FDOBINPATHFDO%")
+			Set WshShell = nothing
+			Set fsc = New FileSystemClass
+		    UseFileName = InstallPath & "\providers.xml"
+		    If fsc.FolderExist(InstallPath) Then
+		        If fsc.FileExist(UseFileName) Then
+		            Call fsc.RemoveReadOnly(UseFileName)
+		            Call fsc.DeleteFile(UseFileName)
+		        End If
+		        If fsc.FileExist("..\providers.windows.template.xml") Then
+                    Call fsc.CopyFile("..\providers.windows.template.xml", UseFileName)
+                    Call fsc.RemoveReadOnly(UseFileName)
+                    Do 
+                        repeat = fsc.ReplaceStringInFile(UseFileName, "%FDOBINPATHFDO%", InstallPath)
+                    Loop While repeat = True
+                Else
+                    WScript.Echo ("Invalid file to process!")
+                End If
+            Else
+                WScript.Echo ("Invalid FDO utilities path!")
+            End If
+            Set fsc = Nothing
+        </script>
+    </job>
+</package>
