@@ -206,7 +206,7 @@ echo checkoutsvn.bat [-h] [-o=OutFolder] [-w=WithModule] [-u=UserId] [-p=UserPas
 echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for files
-echo WithModule:     -w[ith]=all(default), fdo, providers, utilities, shp, sdf, wfs, wms, arcsde, rdbms
+echo WithModule:     -w[ith]=all(default), fdo, thirdparty, providers, utilities, shp, sdf, wfs, wms, arcsde, rdbms
 echo User:           -u[ser]=user id
 echo Password:       -p[assword]=user password
 echo **************************************************************************
