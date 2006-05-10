@@ -1,19 +1,18 @@
 AUTOMAKE_OPTIONS = foreign
 
 SUBDIRS = Fdo Gdbi LongTransactionManager MySQL Rdbi SchemaMgr Util Geometry ODBCDriver ODBC
-
 DIST_SUBDIRS = Fdo Gdbi LongTransactionManager MySQL Rdbi SchemaMgr Util Geometry ODBCDriver ODBC
-
 EXTRA_DIST =
 
 lib_LTLIBRARIES = libFdoMySQL.la libFdoODBC.la
 
-libdir = /usr/local/fdo-3.2.0/lib
+libdir = $libdir
 
 libFdoMySQL_la_SOURCES =
 
 ##building libFdoMySQL.so
 # Dummy C++ source to cause C++ linking.
+
 nodist_EXTRA_libFdoMySQL_la_SOURCES = dummy.cpp
 
 libFdoMySQL_la_LIBADD =  \
@@ -48,7 +47,8 @@ libFdoMySQL_la_LIBADD =  \
   $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ov/libSmOverrides.la
 
 libFdoMySQL_la_LDFLAGS = \
-  -shared -version-info 3:2:0  \
+  -shared \
+  -release $(VERSION) \
   -L$(FDOTHIRDPARTY)/apache/xml-xalan/c/lib \
   -L$(FDOTHIRDPARTY)/apache/xml-xerces/c/lib
 
@@ -57,6 +57,7 @@ libFdoODBC_la_SOURCES =
 
 ##building libFdoODBC.so
 # Dummy C++ source to cause C++ linking.
+
 nodist_EXTRA_libFdoODBC_la_SOURCES = dummy.cpp
 
 libFdoODBC_la_LIBADD =  \
@@ -90,7 +91,8 @@ libFdoODBC_la_LIBADD =  \
   -lodbc
 
 libFdoODBC_la_LDFLAGS = \
-  -shared -version-info 3:2:0  \
+  -shared \
+  -release $(VERSION)  \
   -L$(FDOTHIRDPARTY)/apache/xml-xalan/c/lib \
   -L$(FDOTHIRDPARTY)/apache/xml-xerces/c/lib \
   -L$(FDOODBC)/lib
