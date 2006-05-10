@@ -10,3 +10,6 @@ install :
 	@if [ ! -d $(INSTALL_DIR)/WMS/Override ]; then mkdir -p $(INSTALL_DIR)/WMS/Override; fi
 	@cp -u -f ./WMS/Override/*.h  $(INSTALL_DIR)/WMS/Override
 
+uninstall :
+	@rm -drf $(INSTALL_DIR)/WMS
+
