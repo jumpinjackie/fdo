@@ -136,6 +136,19 @@ shift
 goto study_params
 
 :start_build
+SET FDOACTENVSTUDY="FDOTHIRDPARTY"
+if (%FDOTHIRDPARTY%)==() goto env_error
+if not exist "%FDOTHIRDPARTY%" goto env_path_error
+SET FDOACTENVSTUDY="XALANROOT"
+if (%XALANROOT%)==() goto env_error
+if not exist "%XALANROOT%" goto env_path_error
+SET FDOACTENVSTUDY="XERCESCROOT"
+if (%XERCESCROOT%)==() goto env_error
+if not exist "%XERCESCROOT%" goto env_path_error
+SET FDOACTENVSTUDY="NLSDIR"
+if (%NLSDIR%)==() goto env_error
+if not exist "%NLSDIR%" goto env_path_error
+
 if "%TYPEACTIONTHR%"=="buildonly" goto start_exbuild
 if not exist "%FDOINSPATHTHR%" mkdir "%FDOINSPATHTHR%"
 if not exist "%FDOBINPATHTHR%" mkdir "%FDOBINPATHTHR%"
@@ -258,6 +271,18 @@ rem # End ODBC part #
 echo End Thirdparty Build
 time /t
 exit /B 0
+
+:env_error
+echo Environment variable undefined: %FDOACTENVSTUDY%
+SET FDOERROR=1
+time /t
+exit /B 1
+
+:env_path_error
+echo Environment variable invalid path: %FDOACTENVSTUDY%
+SET FDOERROR=1
+time /t
+exit /B 1
 
 :error
 echo There was a build error.

@@ -24,7 +24,7 @@ I. Windows Notes:
 
    FDO = <FDO OpenSource Location>\Fdo (e.g. D:\OpenSource\Fdo)
 
-   FDOUTILITIES = <FDO OpenSource Location>\Providers\Utilities (e.g. D:\OpenSource\Providers\Utilities)
+   FDOUTILITIES = <FDO OpenSource Location>\Utilities (e.g. D:\OpenSource\Providers\Utilities)
 
    FDOTHIRDPARTY = <FDO OpenSource Location>\ThirdParty folder (e.g. D:\OpenSource\Thridparty)
 
