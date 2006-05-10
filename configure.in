@@ -72,6 +72,9 @@ AC_CONFIG_FILES([Fdo/Unmanaged/Makefile \
 AC_CONFIG_FILES([Fdo/Install/Makefile \
                  Fdo/Install/XsdInstallPaths/Makefile])
 
+#fdo: Docs
+AC_CONFIG_FILES(Fdo/Docs/Makefile)
+
 #fdo: UnitTest
 AC_CONFIG_FILES(Fdo/UnitTest/Makefile)
 
