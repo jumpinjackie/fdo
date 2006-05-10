@@ -63,6 +63,20 @@ shift
 goto study_params
 
 :start_build
+SET FDOACTENVSTUDY="FDO"
+if (%FDO%)==() goto env_error
+if not exist "%FDO%" goto env_path_error
+SET FDOACTENVSTUDY="FDOTHIRDPARTY"
+if (%FDOTHIRDPARTY%)==() goto env_error
+if not exist "%FDOTHIRDPARTY%" goto env_path_error
+SET FDOACTENVSTUDY="FDOUTILITIES"
+if (%FDOUTILITIES%)==() goto env_error
+if not exist "%FDOUTILITIES%" goto env_path_error
+SET FDOACTENVSTUDY="FDOMYSQL"
+if (%FDOMYSQL%)==() goto env_error
+if not exist "%FDOMYSQL%" goto env_path_error
+
+if "%TYPEACTIONMYSQL%"=="buildonly" goto start_exbuild
 if not exist "%FDOINSPATHMYSQL%" mkdir "%FDOINSPATHMYSQL%"
 if not exist "%FDOBINPATHMYSQL%" mkdir "%FDOBINPATHMYSQL%"
 if not exist "%FDOINCPATHMYSQL%" mkdir "%FDOINCPATHMYSQL%"
@@ -70,6 +84,7 @@ if not exist "%FDOLIBPATHMYSQL%" mkdir "%FDOLIBPATHMYSQL%"
 if not exist "%FDODOCPATHMYSQL%" mkdir "%FDODOCPATHMYSQL%"
 if not exist "%FDOBINPATHMYSQL%\com" mkdir "%FDOBINPATHMYSQL%\com"
 
+:start_exbuild
 time /t
 if "%TYPEACTIONMYSQL%"=="installonly" goto install_files_MySQL
 
@@ -125,6 +140,18 @@ popd
 time /t
 echo End MySQL Build
 exit /B 0
+
+:env_error
+echo Environment variable undefined: %FDOACTENVSTUDY%
+SET FDOERROR=1
+time /t
+exit /B 1
+
+:env_path_error
+echo Environment variable invalid path: %FDOACTENVSTUDY%
+SET FDOERROR=1
+time /t
+exit /B 1
 
 :error
 echo There was a build error.
