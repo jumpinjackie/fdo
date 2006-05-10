@@ -67,6 +67,16 @@ shift
 goto study_params
 
 :start_build
+SET FDOACTENVSTUDY="FDO"
+if (%FDO%)==() goto env_error
+if not exist "%FDO%" goto env_path_error
+SET FDOACTENVSTUDY="FDOTHIRDPARTY"
+if (%FDOTHIRDPARTY%)==() goto env_error
+if not exist "%FDOTHIRDPARTY%" goto env_path_error
+SET FDOACTENVSTUDY="FDOUTILITIES"
+if (%FDOUTILITIES%)==() goto env_error
+if not exist "%FDOUTILITIES%" goto env_path_error
+
 if "%TYPEACTIONWMS%"=="buildonly" goto start_exbuild
 if not exist "%FDOINSPATHWMS%" mkdir "%FDOINSPATHWMS%"
 if not exist "%FDOBINPATHWMS%" mkdir "%FDOBINPATHWMS%"
@@ -118,6 +128,18 @@ copy /y "..\Docs\WMS_Provider_API.chm" "%FDODOCPATHWMS%"
 time /t
 echo End WMS Build
 exit /B 0
+
+:env_error
+echo Environment variable undefined: %FDOACTENVSTUDY%
+SET FDOERROR=1
+time /t
+exit /B 1
+
+:env_path_error
+echo Environment variable invalid path: %FDOACTENVSTUDY%
+SET FDOERROR=1
+time /t
+exit /B 1
 
 :error
 echo There was a build error.
