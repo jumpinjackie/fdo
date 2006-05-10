@@ -8,8 +8,6 @@ EXTRA_DIST = UnitTest
 
 lib_LTLIBRARIES = libSHPOverrides.la libSHPProvider.la
 
-libdir = /usr/local/fdo-3.2.0/lib
-
 ##building libSHPOverrides.so
 libSHPOverrides_la_SOURCES =
 
@@ -21,7 +19,9 @@ libSHPOverrides_la_LIBADD =  \
   $(FDOUTILITIES)/Common/libProvidersCommon.la \
   $(FDO)/Unmanaged/Src/libFDO.la
 
-libSHPOverrides_la_LDFLAGS = -shared -version-info 3:2:0
+libSHPOverrides_la_LDFLAGS = \
+  -shared \
+  -release $(VERSION)
 
 
 ##building libSHPProvider.so
@@ -38,5 +38,7 @@ libSHPProvider_la_LIBADD =  \
   Overrides/libSHPOverridesSrc.la \
   $(FDO)/Unmanaged/Src/libFDO.la
 
-libSHPProvider_la_LDFLAGS = -shared -version-info 3:2:0
+libSHPProvider_la_LDFLAGS = \
+  -shared \
+  -release $(VERSION)
 
