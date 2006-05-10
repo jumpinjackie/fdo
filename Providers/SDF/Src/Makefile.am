@@ -9,8 +9,6 @@ EXTRA_DIST = UnitTest
 ##building libSDFProvider.so
 lib_LTLIBRARIES = libSDFProvider.la
 
-libdir = /usr/local/fdo-3.2.0/lib
-
 libSDFProvider_la_SOURCES =
 
 # Dummy C++ source to cause C++ linking.
@@ -29,7 +27,8 @@ libSDFProvider_la_LIBADD =  \
   -lxerces-c
 
 
-libSDFProvider_la_LDFLAGS = -shared -version-info 3:2:0 \
+libSDFProvider_la_LDFLAGS = -shared \
+  -release $(VERSION) \
   -L$(FDOTHIRDPARTY)/apache/xml-xalan/c/lib \
   -L$(FDOTHIRDPARTY)/apache/xml-xerces/c/lib
 
