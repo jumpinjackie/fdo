@@ -6,8 +6,6 @@ DIST_SUBDIRS = McToMsf Message FileToHdr Nls Common Geometry Spatial Fdo
 
 lib_LTLIBRARIES = libFDO.la
 
-libdir = /usr/local/fdo-3.2.0/lib
-
 libFDO_la_SOURCES =
 
 # Dummy C++ source to cause C++ linking.
@@ -25,7 +23,7 @@ libFDO_la_LIBADD =  \
   -ldl
 
 libFDO_la_LDFLAGS = -shared \
-  -version-info 3:2:0 \
+  -release $(VERSION) \
   -L$(FDOTHIRDPARTY)/apache/xml-xalan/c/lib \
   -L$(FDOTHIRDPARTY)/apache/xml-xerces/c/lib
 
