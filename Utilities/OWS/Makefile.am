@@ -22,7 +22,7 @@ libFdoOws_la_LIBADD =  \
   -lpthread
 
 libFdoOws_la_LDFLAGS = -shared \
-  -version-info 3:2:0 \
+  -release $(VERSION) \
   -L$(FDOTHIRDPARTY)/libcurl/lib/linux \
   -L$(FDOTHIRDPARTY)/openssl/lib/linux
 
