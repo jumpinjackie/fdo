@@ -1,11 +1,20 @@
 AUTOMAKE_OPTIONS = foreign
 
-INSTALL_DIR  = /usr/local/fdo-3.2.0
+INSTALL_DIR  = $(includedir)
 
 #install header files
 install :
-	@mkdir -p $(INSTALL_DIR)/include
-	@cp -r -u -f *  $(INSTALL_DIR)/include
-	@rm -f  $(INSTALL_DIR)/include/Common/Xsl/TransformerXalan.h
-	@rm -f  $(INSTALL_DIR)/include/Spatial.h
-	@rm -rf $(INSTALL_DIR)/include/Spatial
+	@mkdir -p $(INSTALL_DIR)
+	@cp -r -u -f *  $(INSTALL_DIR)
+	@rm -f  $(INSTALL_DIR)/Common/Xsl/TransformerXalan.h
+	@rm -f  $(INSTALL_DIR)/Spatial.h
+	@rm -rf $(INSTALL_DIR)/Spatial
+	@rm -rf $(INSTALL_DIR)/Makefile*
+
+uninstall :
+	@rm -f $(INSTALL_DIR)/*.h
+	@rm -drf $(INSTALL_DIR)/Fdo
+	@rm -drf $(INSTALL_DIR)/Common
+	@rm -drf $(INSTALL_DIR)/Geometry
+
+
