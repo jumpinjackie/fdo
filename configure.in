@@ -1,5 +1,4 @@
-#------------------configure.in----------------------------------------
-dnl Configure.in for OSGeo FDO
+dnl Configure.in for OSGeo FDO Core (Fdo, Utilities, Thirdparty)
 #----------------------------------------------------------------------
 # Variables
 # Following are the makefile directories 
@@ -17,6 +16,8 @@ AC_PROG_CXX
 AC_PROG_YACC
 AC_DISABLE_STATIC
 AM_PROG_LIBTOOL
+
+AC_SUBST(VERSION, "3.2.0")
 
 # Check for Debug or Release build settings
 AC_ARG_ENABLE([debug],
