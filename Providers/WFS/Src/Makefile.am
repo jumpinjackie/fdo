@@ -21,5 +21,7 @@ libWFSProvider_la_LIBADD =  \
   $(FDOUTILITIES)/OWS/libFdoOws.la  \
   -lpthread
 
-libWFSProvider_la_LDFLAGS = -shared -version-info 3:2:0
+libWFSProvider_la_LDFLAGS = \
+  -shared \
+  -release $(VERSION)
 
