@@ -33,4 +33,13 @@ $(CATALOGS_CAT) : $(CATDIR)/%.cat : %.msf
 	@echo "@$(FDO)/Unmanaged/Src/McToMsf/McToMsf $(basename $(notdir $<)).mc $(basename $(notdir $<)).msf \"*\" SmMessage "; \
 	$(FDO)/Unmanaged/Src/McToMsf/McToMsf $(basename $(notdir $<)).mc $(basename $(notdir $<)).msf "*" SmMessage 
 
+INSTALL_DIR  = $(prefix)/nls
+
+#install data
+install :
+	@if [ ! -d $(INSTALL_DIR) ]; then mkdir -p $(INSTALL_DIR); fi
+	@cp -u -f $(CATALOGS_CAT)  $(INSTALL_DIR)
+
+uninstall :
+	@rm -f $(INSTALL_DIR)/SmMessage.cat
 
