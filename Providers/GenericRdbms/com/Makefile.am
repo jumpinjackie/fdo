@@ -8,3 +8,5 @@ install :
 	@if [ ! -d $(INSTALL_DIR)/com ]; then mkdir -p $(INSTALL_DIR)/com; fi
 	@cp -u -f *.sql  $(INSTALL_DIR)/com
 
+uninstall :
+	@rm -f $(INSTALL_DIR)/com/*.sql
