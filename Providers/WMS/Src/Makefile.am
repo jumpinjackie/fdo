@@ -17,7 +17,9 @@ libWMSOverrides_la_LIBADD =  \
   $(FDOUTILITIES)/Common/libProvidersCommon.la \
   $(FDO)/Unmanaged/Src/libFDO.la
 
-libWMSOverrides_la_LDFLAGS = -shared -version-info 3:2:0
+libWMSOverrides_la_LDFLAGS = \
+  -shared \
+  -release $(VERSION)
 
 
 ##building libWMSProvider.so
@@ -38,7 +40,8 @@ libWMSProvider_la_LIBADD =  \
   -lpthread
 
 libWMSProvider_la_LDFLAGS = \
-  -shared -version-info 3:2:0 \
+  -shared \
+  -release $(VERSION) \
   -L$(FDOTHIRDPARTY)/GDAL1.3/linux/lib/optimized
 
 
