@@ -38,7 +38,7 @@ INSTALL_DIR  = $(prefix)/nls
 #install data
 install :
 	@if [ ! -d $(INSTALL_DIR) ]; then mkdir -p $(INSTALL_DIR); fi
-	@cp -u -f $(CATALOGS_CAT)  $(INSTALL_DIR)/nls
+	@cp -u -f $(CATALOGS_CAT)  $(INSTALL_DIR)
 
 uninstall :
 	@rm -f $(INSTALL_DIR)/fdordbmsmsg.cat

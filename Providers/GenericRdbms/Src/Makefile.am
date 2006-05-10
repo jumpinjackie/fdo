@@ -6,7 +6,7 @@ EXTRA_DIST =
 
 lib_LTLIBRARIES = libFdoMySQL.la libFdoODBC.la
 
-libdir = $libdir
+libdir = $(prefix)/lib
 
 libFdoMySQL_la_SOURCES =
 
