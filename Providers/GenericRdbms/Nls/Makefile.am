@@ -33,11 +33,13 @@ $(CATALOGS_CAT) : $(CATDIR)/%.cat : %.msf
 	@echo "@$(FDO)/Unmanaged/Src/McToMsf/McToMsf $(basename $(notdir $<)).mc $(basename $(notdir $<)).msf "*" FDORDBMS"; \
 	$(FDO)/Unmanaged/Src/McToMsf/McToMsf $(basename $(notdir $<)).mc $(basename $(notdir $<)).msf  "*"  FDORDBMS
 
-INSTALL_DIR  = /usr/local/fdo-3.2.0
+INSTALL_DIR  = $(prefix)/nls
 
 #install data
 install :
 	@if [ ! -d $(INSTALL_DIR) ]; then mkdir -p $(INSTALL_DIR); fi
-	@if [ ! -d $(INSTALL_DIR)/nls ]; then mkdir -p $(INSTALL_DIR)/nls; fi
 	@cp -u -f $(CATALOGS_CAT)  $(INSTALL_DIR)/nls
+
+uninstall :
+	@rm -f $(INSTALL_DIR)/fdordbmsmsg.cat
 

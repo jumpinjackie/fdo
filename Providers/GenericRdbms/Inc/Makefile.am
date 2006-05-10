@@ -15,3 +15,6 @@ install :
 	@cp -u -f  Rdbms/Override/MySQL/*.h $(INSTALL_DIR)/Rdbms/Override/MySql
 	@cp -u -f  Rdbms/Override/ODBC/*.h $(INSTALL_DIR)/Rdbms/Override/Odbc
 
+uninstall :
+	@rm -drf $(INSTALL_DIR)/Rdbms
+
