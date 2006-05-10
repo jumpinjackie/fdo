@@ -33,11 +33,13 @@ $(CATALOGS_CAT) : $(CATDIR)/%.cat : %.msf
 SDFMessage.msf : SDFMessage.mc
 	$(FDO)/Unmanaged/Src/McToMsf/McToMsf SDFMessage.mc SDFMessage.msf SDF
 
-INSTALL_DIR  = /usr/local/fdo-3.2.0
+INSTALL_DIR  = $(prefix)/nls
 
 #install data
 install :
 	@if [ ! -d $(INSTALL_DIR) ]; then mkdir -p $(INSTALL_DIR); fi
-	@if [ ! -d $(INSTALL_DIR)/nls ]; then mkdir -p $(INSTALL_DIR)/nls; fi
 	@cp -u -f $(CATDIR)/SDFMessage.cat  $(INSTALL_DIR)/nls
+
+uninstall :
+	@rm -f $(INSTALL_DIR)/SDFMessage.cat
 
