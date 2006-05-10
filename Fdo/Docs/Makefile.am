@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
-INSTALL_DIR  = /usr/local/fdo-3.2.0
+INSTALL_DIR  = $(prefix)
 
 #install Docs
 install :
@@ -16,3 +16,7 @@ install :
 	@cp -u -f XmlSchema/Gml/CopyRight.txt $(INSTALL_DIR)/Docs/XmlSchema/Gml
 	@cp -u -f XmlSchema/Xlink/CopyRight.txt $(INSTALL_DIR)/Docs/XmlSchema/Xlink
 	@cp -u -f XmlSchema/XmlSchema/base.css $(INSTALL_DIR)/Docs/XmlSchema/XmlSchema
+
+uninstall :
+	@rm -drf $(INSTALL_DIR)/Docs
+
