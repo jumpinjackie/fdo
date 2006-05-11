@@ -1,6 +1,7 @@
 
 TYPEACTION=buildinstall
 TYPEBUILD=release
+TYPECONFUGURE=no
 
 ### study parameters ###
 while test $# -gt 0
@@ -19,6 +20,8 @@ do
         TYPEACTION=buildonly
     elif test "$1" == installonly; then
         TYPEACTION=installonly
+    elif test "$1" == configure; then
+        TYPECONFIGURE=yes
     else
         echo "Invalid parameter"
 	exit 1
@@ -54,18 +57,18 @@ done
 ### end of study parameters ###
 
 if test "$SHOWHELP" == yes; then
-   echo "**************************************************************************"
+   echo "**************************************************************************"***********
    echo "build_linux.sh [--h] [-c=BuildType] [-a=Action] "
    echo "*"
    echo "Help:           --h[elp]"
    echo "BuildType:      --c[onfig] release(default), debug"
-   echo "Action:         --a[ction] buildinstall(default), buildonly, installonly"
-   echo "**************************************************************************"
+   echo "Action:         --a[ction] buildinstall(default), buildonly, installonly, configure"
+   echo "**************************************************************************"***********
    exit 0
 fi
 
 ### start build ###
-if test "$TYPEACTION" == buildinstall && test "$TYPEACTION" == buildonly ; then
+if test "$TYPECONFIGURE" == yes ; then
    aclocal
    libtoolize --force
    automake --add-missing --copy
@@ -76,11 +79,13 @@ if test "$TYPEACTION" == buildinstall && test "$TYPEACTION" == buildonly ; then
    else
       ./configure --enable-debug=yes
    fi
+fi
    
+if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == buildonly ; then
    make
 fi
 
-if test "$TYPEACTION" == buildinstall && test "$TYPEACTION" == installonly ; then
+if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == installonly ; then
    make install
 fi
 
