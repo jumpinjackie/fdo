@@ -1,7 +1,8 @@
+#!/bin/sh
 
 TYPEACTION=buildinstall
 TYPEBUILD=release
-TYPECONFUGURE=no
+TYPECONFIGURE=no
 
 ### study parameters ###
 while test $# -gt 0
