@@ -4,7 +4,7 @@ dnl Configure.in for OSGeo FDO ArcSDE Provider
 # Variables
 # Following are the makefile directories 
 #----------------------------------------------------------------------
-AC_INIT(FDO,3.2,http://www.osgeo.org)
+AC_INIT(FDO,3.2,https://fdoarcsde.osgeo.org)
 AC_CONFIG_SRCDIR(configure.in)
 AM_INIT_AUTOMAKE
 
@@ -45,10 +45,9 @@ fi
 AC_CONFIG_FILES(Makefile)
 
 #############################################
-## Providers
+## ArcSDE
 #############################################
 
-#ArcSDE
 AC_CONFIG_FILES([Src/Makefile \
                  Inc/Makefile \
                  Src/Message/Makefile \
