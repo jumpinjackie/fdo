@@ -122,14 +122,37 @@ done
 ### end of study parameters ###
 
 if test "$SHOWHELP" == yes; then
+
    echo "**************************************************************************"
    echo "build_linux.sh [--h] [-c=BuildType] [-a=Action] [--w WithModule] "
    echo "*"
    echo "Help:           --h[elp]"
    echo "BuildType:      --c[onfig] release(default), debug"
    echo "Action:         --a[ction] buildinstall(default), buildonly, installonly, configure"
-   echo "WithModule:     --w[ith] fdocore(default), fdo, thirdparty, providers, utilities, shp, sdf, wfs, wms, arcsde, rdbms"
+
+   HELPSTRINGWITH= WithModule: --w[ith] fdocore(default), fdo, thirdparty, providers
+   if test ! -e "Providers/SHP/build_linux.sh"; then
+   HELPSTRINGWITH=$HELPSTRINGWITH, shp
+   fi
+   if test ! -e "Providers/SDF/build_linux.sh"; then
+   HELPSTRINGWITH=$HELPSTRINGWITH, sdf
+   fi
+   if test ! -e "Providers/WFS/build_linux.sh"; then
+   HELPSTRINGWITH=$HELPSTRINGWITH, wfs
+   fi
+   if test ! -e "Providers/WMS/build_linux.sh"; then
+   HELPSTRINGWITH=$HELPSTRINGWITH, wms
+   fi
+   if test ! -e "Providers/ArcSDE/build_linux.sh"; then
+   HELPSTRINGWITH=$HELPSTRINGWITH, arcsde
+   fi
+   if test ! -e "Providers/GenericRdbms/build_linux.sh"; then
+   HELPSTRINGWITH=$HELPSTRINGWITH, rdbms
+   fi
+   
+   echo "$HELPSTRINGWITH"
    echo "**************************************************************************"
+
    exit 0
 fi
 
@@ -148,6 +171,8 @@ if test "$TYPECONFIGURE" == configure ; then
 fi
 
 ### start build ###
+
+CMDEX="--c $TYPEBUILD --a $TYPEACTION --a $TYPECONFIGURE"
 
 #build Thirdparty
 if test "$THRPENABLE" == yes; then
@@ -198,7 +223,7 @@ if test "$SHPENABLE" == yes; then
    fi
 
    pushd Providers/SHP >& /dev/null
-   ./build_linux.sh --c $TYPEBUILD --a $TYPEACTION --a $TYPECONFIGURE
+   ./build_linux.sh $CMDEX
    popd >& /dev/null
 fi
 
@@ -210,7 +235,7 @@ if test "$SDFENABLE" == yes; then
    fi
 
    pushd Providers/SDF >& /dev/null
-   ./build_linux.sh --c $TYPEBUILD --a $TYPEACTION --a $TYPECONFIGURE
+   ./build_linux.sh $CMDEX
    popd >& /dev/null
 fi
 
@@ -222,7 +247,7 @@ if test "$WFSENABLE" == yes; then
    fi
 
    pushd Providers/WFS >& /dev/null
-   ./build_linux.sh --c $TYPEBUILD --a $TYPEACTION --a $TYPECONFIGURE
+   ./build_linux.sh $CMDEX
    popd >& /dev/null
 fi
 
@@ -234,7 +259,7 @@ if test "$WMSENABLE" == yes; then
    fi
 
    pushd Providers/WMS >& /dev/null
-   ./build_linux.sh --c $TYPEBUILD --a $TYPEACTION --a $TYPECONFIGURE
+   ./build_linux.sh $CMDEX
    popd >& /dev/null
 fi
 
@@ -246,7 +271,7 @@ if test "$ARCENABLE" == yes; then
    fi
 
    pushd Providers/ArcSDE >& /dev/null
-   ./build_linux.sh --c $TYPEBUILD --a $TYPEACTION --a $TYPECONFIGURE
+   ./build_linux.sh $CMDEX
    popd >& /dev/null
 fi
 
@@ -258,7 +283,7 @@ if test "$RDBMSENABLE" == yes; then
    fi
 
    pushd Providers/GenericRdbms >& /dev/null
-   ./build_linux.sh --c $TYPEBUILD --a $TYPEACTION --a $TYPECONFIGURE
+   ./build_linux.sh $CMDEX
    popd >& /dev/null
 fi
 
