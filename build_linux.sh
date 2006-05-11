@@ -151,14 +151,14 @@ fi
 
 #build Thirdparty
 if test "$THRPENABLE" == yes; then
-   if test ! -e "Thirdparty/thirdparty.sh"; then
+   if test ! -e "Thirdparty/Thirdparty.sh"; then
       echo "Thirdparty/Thirdparty.sh is missing!"
       exit 1;
    fi
 
    pushd "Thirdparty" >& /dev/null
    if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == buildonly ; then
-      ./thirdparty.sh
+      ./Thirdparty.sh
    fi
    if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == installonly ; then
       make install
