@@ -1,7 +1,8 @@
+#!/bin/sh
 
 TYPEACTION=buildinstall
 TYPEBUILD=release
-TYPECONFUGURE=
+TYPECONFIGURE=
 
 DEFMODIFY=no
 THRPENABLE=yes
@@ -151,7 +152,7 @@ fi
 #build Thirdparty
 if test "$THRPENABLE" == yes; then
    if test ! -e "Thirdparty/thirdparty.sh"; then
-      echo "Thirdparty/thirdparty.sh is missing!"
+      echo "Thirdparty/Thirdparty.sh is missing!"
       exit 1;
    fi
 
