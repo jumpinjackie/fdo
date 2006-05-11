@@ -44,7 +44,7 @@ if not exist "%FDOUTILITIES%" goto error
 SET SDEHOME=%FDOTHIRDPARTY%\ESRI\ArcSDEClient91\Windows
 SET ACTIVEPATHCHECK=%SDEHOME%
 SET ACTIVENAMECHECK="Fdo thirdparty ESRI libraries"
-if not exist "%FDOTHIRDPARTY%" goto error
+if not exist "%SDEHOME%" goto error
 
 SET FDOMYSQL=C:\Program Files\MySQL\MySQL Server 5.0
 SET ACTIVEPATHCHECK=%FDOMYSQL%
