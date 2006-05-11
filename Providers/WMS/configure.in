@@ -4,7 +4,7 @@ dnl Configure.in for OSGeo FDO WMS Provider
 # Variables
 # Following are the makefile directories 
 #----------------------------------------------------------------------
-AC_INIT(FDO,3.2,http://www.osgeo.org)
+AC_INIT(FDO,3.2,https://fdowms.osgeo.org)
 AC_CONFIG_SRCDIR(configure.in)
 AM_INIT_AUTOMAKE
 
