@@ -1,6 +1,7 @@
 @echo off
 
 SET TYPEACTIONWMS=buildinstall
+SET MSACTIONWMS=Rebuild
 SET TYPEBUILDWMS=release
 SET TYPEBUILDWMSPATH=rel
 SET FDOORGPATHWMS=%cd%
@@ -43,6 +44,7 @@ SET TYPEACTIONWMS=%2
 if "%2"=="installonly" goto next_param
 if "%2"=="buildonly" goto next_param
 if "%2"=="buildinstall" goto next_param
+if "%2"=="clean" goto next_param
 goto custom_error
 
 :get_conf
@@ -68,16 +70,22 @@ goto study_params
 
 :start_build
 SET FDOACTENVSTUDY="FDO"
-if (%FDO%)==() goto env_error
+if ("%FDO%")==("") goto env_error
 if not exist "%FDO%" goto env_path_error
 SET FDOACTENVSTUDY="FDOTHIRDPARTY"
-if (%FDOTHIRDPARTY%)==() goto env_error
+if ("%FDOTHIRDPARTY%")==("") goto env_error
 if not exist "%FDOTHIRDPARTY%" goto env_path_error
 SET FDOACTENVSTUDY="FDOUTILITIES"
-if (%FDOUTILITIES%)==() goto env_error
+if ("%FDOUTILITIES%")==("") goto env_error
 if not exist "%FDOUTILITIES%" goto env_path_error
+SET FDOACTENVSTUDY="Sed & Bison"
+if exist %FDO%\Err.log del /F /Q %FDO%\Err.log
+SET FDOACTIVEPATHCHECK=GnuWin32\bin
+cscript //job:envcheck ../../preparebuilds.wsf
+if exist %FDO%\Err.log goto env_path_error_ex
 
 if "%TYPEACTIONWMS%"=="buildonly" goto start_exbuild
+if "%TYPEACTIONWMS%"=="clean" goto start_exbuild
 if not exist "%FDOINSPATHWMS%" mkdir "%FDOINSPATHWMS%"
 if not exist "%FDOBINPATHWMS%" mkdir "%FDOBINPATHWMS%"
 if not exist "%FDOINCPATHWMS%" mkdir "%FDOINCPATHWMS%"
@@ -86,17 +94,19 @@ if not exist "%FDODOCPATHWMS%" mkdir "%FDODOCPATHWMS%"
 
 :start_exbuild
 time /t
+if "%TYPEACTIONWMS%"=="clean" SET MSACTIONWMS=Clean
 if "%TYPEACTIONWMS%"=="installonly" goto install_files_wms
 
-echo building %TYPEBUILDWMS% WMS provider dlls
+echo %MSACTIONWMS% %TYPEBUILDWMS% WMS provider dlls
 pushd Src
 SET FDOACTIVEBUILD=%cd%\WMSOS
 cscript //job:prepare ../../../preparebuilds.wsf
-msbuild WMSOS_temp.sln /t:Rebuild /p:Configuration=%TYPEBUILDWMS% /p:Platform="Win32" /nologo
+msbuild WMSOS_temp.sln /t:%MSACTIONWMS% /p:Configuration=%TYPEBUILDWMS% /p:Platform="Win32" /nologo
 SET FDOERROR=%errorlevel%
 if exist WMSOS_temp.sln del /Q /F WMSOS_temp.sln
 popd
 if "%FDOERROR%"=="1" goto error
+if "%TYPEACTIONWMS%"=="clean" goto end
 if "%TYPEACTIONWMS%"=="buildonly" goto generate_docs
 
 :install_files_wms
@@ -126,7 +136,7 @@ copy /y "..\Docs\WMS_Provider_API.chm" "%FDODOCPATHWMS%"
 
 :end
 time /t
-echo End WMS Build
+echo End WMS %MSACTIONWMS%
 exit /B 0
 
 :env_error
@@ -141,8 +151,14 @@ SET FDOERROR=1
 time /t
 exit /B 1
 
+:env_path_error_ex
+echo Unable to find path (in $PATH) to the : %FDOACTENVSTUDY%
+SET FDOERROR=1
+time /t
+exit /B 1
+
 :error
-echo There was a build error.
+echo There was a %MSACTIONWMS% error.
 time /t
 exit /B 1
 
@@ -156,7 +172,7 @@ echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
-echo Action:         -a[ction]=buildinstall(default), buildonly, installonly
+echo Action:         -a[ction]=buildinstall(default), buildonly, installonly, clean
 echo BuildDocs:      -d[ocs]=skip(default), build
 echo **************************************************************************
 exit /B 0
