@@ -1,6 +1,7 @@
 @echo off
 
 SET TYPEACTIONMYSQL=buildinstall
+SET MSACTIONMYSQL=Rebuild
 SET TYPEBUILDMYSQL=release
 SET FDOINSPATHMYSQL=\Fdo
 SET FDOBINPATHMYSQL=\Fdo\Bin
@@ -41,6 +42,7 @@ SET TYPEACTIONMYSQL=%2
 if "%2"=="installonly" goto next_param
 if "%2"=="buildonly" goto next_param
 if "%2"=="buildinstall" goto next_param
+if "%2"=="clean" goto next_param
 goto custom_error
 
 :get_conf
@@ -64,19 +66,25 @@ goto study_params
 
 :start_build
 SET FDOACTENVSTUDY="FDO"
-if (%FDO%)==() goto env_error
+if ("%FDO%")==("") goto env_error
 if not exist "%FDO%" goto env_path_error
 SET FDOACTENVSTUDY="FDOTHIRDPARTY"
-if (%FDOTHIRDPARTY%)==() goto env_error
+if ("%FDOTHIRDPARTY%")==("") goto env_error
 if not exist "%FDOTHIRDPARTY%" goto env_path_error
 SET FDOACTENVSTUDY="FDOUTILITIES"
-if (%FDOUTILITIES%)==() goto env_error
+if ("%FDOUTILITIES%")==("") goto env_error
 if not exist "%FDOUTILITIES%" goto env_path_error
 SET FDOACTENVSTUDY="FDOMYSQL"
-if (%FDOMYSQL%)==() goto env_error
+if ("%FDOMYSQL%")==("") goto env_error
 if not exist "%FDOMYSQL%" goto env_path_error
+SET FDOACTENVSTUDY="Sed & Bison"
+if exist %FDO%\Err.log del /F /Q %FDO%\Err.log
+SET FDOACTIVEPATHCHECK=GnuWin32\bin
+cscript //job:envcheck ../../../../preparebuilds.wsf
+if exist %FDO%\Err.log goto env_path_error_ex
 
 if "%TYPEACTIONMYSQL%"=="buildonly" goto start_exbuild
+if "%TYPEACTIONMYSQL%"=="clean" goto start_exbuild
 if not exist "%FDOINSPATHMYSQL%" mkdir "%FDOINSPATHMYSQL%"
 if not exist "%FDOBINPATHMYSQL%" mkdir "%FDOBINPATHMYSQL%"
 if not exist "%FDOINCPATHMYSQL%" mkdir "%FDOINCPATHMYSQL%"
@@ -86,15 +94,17 @@ if not exist "%FDOBINPATHMYSQL%\com" mkdir "%FDOBINPATHMYSQL%\com"
 
 :start_exbuild
 time /t
+if "%TYPEACTIONMYSQL%"=="clean" SET MSACTIONMYSQL=Clean
 if "%TYPEACTIONMYSQL%"=="installonly" goto install_files_MySQL
 
-echo building %TYPEBUILDMYSQL% MySQL provider dlls
+echo %MSACTIONMYSQL% %TYPEBUILDMYSQL% MySQL provider dlls
 SET FDOACTIVEBUILD=%cd%\MySQL
 cscript //job:prepare ../../../../preparebuilds.wsf
-msbuild MySQL_temp.sln /t:Rebuild /p:Configuration=%TYPEBUILDMYSQL% /p:Platform="Win32" /nologo
+msbuild MySQL_temp.sln /t:%MSACTIONMYSQL% /p:Configuration=%TYPEBUILDMYSQL% /p:Platform="Win32" /nologo
 SET FDOERROR=%errorlevel%
 if exist MySQL_temp.sln del /Q /F MySQL_temp.sln
 if "%FDOERROR%"=="1" goto error
+if "%TYPEACTIONMYSQL%"=="clean" goto end
 if "%TYPEACTIONMYSQL%"=="buildonly" goto generate_docs
 
 :install_files_MySQL
@@ -138,7 +148,7 @@ popd
 
 :end
 time /t
-echo End MySQL Build
+echo End MySQL %MSACTIONMYSQL%
 exit /B 0
 
 :env_error
@@ -153,8 +163,14 @@ SET FDOERROR=1
 time /t
 exit /B 1
 
+:env_path_error_ex
+echo Unable to find path (in $PATH) to the : %FDOACTENVSTUDY%
+SET FDOERROR=1
+time /t
+exit /B 1
+
 :error
-echo There was a build error.
+echo There was a %MSACTIONMYSQL% error.
 time /t
 exit /B 1
 
@@ -168,7 +184,7 @@ echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
-echo Action:         -a[ction]=buildinstall(default), buildonly, installonly
+echo Action:         -a[ction]=buildinstall(default), buildonly, installonly, clean
 echo BuildDocs:      -d[ocs]=skip(default), build
 echo **************************************************************************
 exit /B 0

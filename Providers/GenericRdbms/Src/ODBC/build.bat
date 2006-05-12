@@ -1,6 +1,7 @@
 @echo off
 
 SET TYPEACTIONODBC=buildinstall
+SET MSACTIONODBC=Rebuild
 SET TYPEBUILDODBC=release
 SET FDOINSPATHODBC=\Fdo
 SET FDOBINPATHODBC=\Fdo\Bin
@@ -41,6 +42,7 @@ SET TYPEACTIONODBC=%2
 if "%2"=="installonly" goto next_param
 if "%2"=="buildonly" goto next_param
 if "%2"=="buildinstall" goto next_param
+if "%2"=="clean" goto next_param
 goto custom_error
 
 :get_conf
@@ -64,16 +66,22 @@ goto study_params
 
 :start_build
 SET FDOACTENVSTUDY="FDO"
-if (%FDO%)==() goto env_error
+if ("%FDO%")==("") goto env_error
 if not exist "%FDO%" goto env_path_error
 SET FDOACTENVSTUDY="FDOTHIRDPARTY"
-if (%FDOTHIRDPARTY%)==() goto env_error
+if ("%FDOTHIRDPARTY%")==("") goto env_error
 if not exist "%FDOTHIRDPARTY%" goto env_path_error
 SET FDOACTENVSTUDY="FDOUTILITIES"
-if (%FDOUTILITIES%)==() goto env_error
+if ("%FDOUTILITIES%")==("") goto env_error
 if not exist "%FDOUTILITIES%" goto env_path_error
+SET FDOACTENVSTUDY="Sed & Bison"
+if exist %FDO%\Err.log del /F /Q %FDO%\Err.log
+SET FDOACTIVEPATHCHECK=GnuWin32\bin
+cscript //job:envcheck ../../../../preparebuilds.wsf
+if exist %FDO%\Err.log goto env_path_error_ex
 
 if "%TYPEACTIONODBC%"=="buildonly" goto start_exbuild
+if "%TYPEACTIONODBC%"=="clean" goto start_exbuild
 if not exist "%FDOINSPATHODBC%" mkdir "%FDOINSPATHODBC%"
 if not exist "%FDOBINPATHODBC%" mkdir "%FDOBINPATHODBC%"
 if not exist "%FDOINCPATHODBC%" mkdir "%FDOINCPATHODBC%"
@@ -82,15 +90,17 @@ if not exist "%FDODOCPATHODBC%" mkdir "%FDODOCPATHODBC%"
 
 :start_exbuild
 time /t
+if "%TYPEACTIONODBC%"=="clean" SET MSACTIONODBC=Clean
 if "%TYPEACTIONODBC%"=="installonly" goto install_files_ODBC
 
-echo building %TYPEBUILDODBC% ODBC provider dlls
+echo %MSACTIONODBC% %TYPEBUILDODBC% ODBC provider dlls
 SET FDOACTIVEBUILD=%cd%\ODBC
 cscript //job:prepare ../../../../preparebuilds.wsf
-msbuild ODBC_temp.sln /t:Rebuild /p:Configuration=%TYPEBUILDODBC% /p:Platform="Win32" /nologo
+msbuild ODBC_temp.sln /t:%MSACTIONODBC% /p:Configuration=%TYPEBUILDODBC% /p:Platform="Win32" /nologo
 SET FDOERROR=%errorlevel%
 if exist ODBC_temp.sln del /Q /F ODBC_temp.sln
 if "%FDOERROR%"=="1" goto error
+if "%TYPEACTIONODBC%"=="clean" goto end
 if "%TYPEACTIONODBC%"=="buildonly" goto generate_docs
 
 :install_files_ODBC
@@ -132,7 +142,7 @@ popd
 
 :end
 time /t
-echo End ODBC Build
+echo End ODBC %MSACTIONODBC%
 exit /B 0
 
 :env_error
@@ -147,8 +157,14 @@ SET FDOERROR=1
 time /t
 exit /B 1
 
+:env_path_error_ex
+echo Unable to find path (in $PATH) to the : %FDOACTENVSTUDY%
+SET FDOERROR=1
+time /t
+exit /B 1
+
 :error
-echo There was a build error.
+echo There was a %MSACTIONODBC% error.
 time /t
 exit /B 1
 
@@ -162,7 +178,7 @@ echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
-echo Action:         -a[ction]=buildinstall(default), buildonly, installonly
+echo Action:         -a[ction]=buildinstall(default), buildonly, installonly, clean
 echo BuildDocs:      -d[ocs]=skip(default), build
 echo **************************************************************************
 exit /B 0
