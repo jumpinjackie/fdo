@@ -47,8 +47,7 @@ INCLUDES = \
   -I../../Gdbi \
   -I../../LongTransactionManager \
   -I../../LockManager \
-  -I../../ODBCDriver \
-  -I$(FDOODBC)/include
+  -I../../ODBCDriver
 
 libFdoRdbmsODBC_Fdo_la_LDFLAGS =
 

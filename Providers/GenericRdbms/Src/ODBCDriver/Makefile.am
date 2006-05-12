@@ -46,7 +46,6 @@ xlt_status.c
 INCLUDES = \
   -I../../Inc \
   -I../.. \
-  -I$(FDOODBC)/include \
   -I$(FDO)/Unmanaged/Inc
 
 libFdoODBCDriver_la_LDFLAGS =
