@@ -443,7 +443,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="echo bison yyConstraint.y&#x0D;&#x0A;set path=$(FDOTHIRDPARTY)\util\GnuWin32\bin;%PATH%&#x0D;&#x0A;bison -y -ldv Src\Parse\yyConstraint.y&#x0D;&#x0A;sed -f Src\Parse\script3 &lt; y.tab.c &gt;Src\Parse\yyConstraintWin.cpp&#x0D;&#x0A;del y.tab.c&#x0D;&#x0A;sed -f Src\Parse\script3_h &lt; y.tab.h &gt;Inc\Parse\yyConstraintWin.h&#x0D;&#x0A;del y.tab.h&#x0D;&#x0A;if not exist debug md debug&#x0D;&#x0A;copy y.output debug\yyConstraint.out&#x0D;&#x0A;del y.output&#x0D;&#x0A;"
+						CommandLine="echo bison yyConstraint.y&#x0D;&#x0A;bison -y -ldv Src\Parse\yyConstraint.y&#x0D;&#x0A;sed -f Src\Parse\script3 &lt; y.tab.c &gt;Src\Parse\yyConstraintWin.cpp&#x0D;&#x0A;del y.tab.c&#x0D;&#x0A;sed -f Src\Parse\script3_h &lt; y.tab.h &gt;Inc\Parse\yyConstraintWin.h&#x0D;&#x0A;del y.tab.h&#x0D;&#x0A;if not exist debug md debug&#x0D;&#x0A;copy y.output debug\yyConstraint.out&#x0D;&#x0A;del y.output&#x0D;&#x0A;"
 						Outputs="Src\Parse\yyConstraintWin.cpp;Inc\Parse\yyConstraintWin.h"
 					/>
 				</FileConfiguration>
@@ -452,7 +452,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="echo bison yyConstraint.y&#x0D;&#x0A;set path=$(FDOTHIRDPARTY)\util\GnuWin32\bin;%PATH%&#x0D;&#x0A;bison -y -ldv Src\Parse\yyConstraint.y&#x0D;&#x0A;sed -f Src\Parse\script3 &lt; y.tab.c &gt;Src\Parse\yyConstraintWin.cpp&#x0D;&#x0A;del y.tab.c&#x0D;&#x0A;sed -f Src\Parse\script3_h &lt; y.tab.h &gt;Inc\Parse\yyConstraintWin.h&#x0D;&#x0A;del y.tab.h&#x0D;&#x0A;if not exist release md release&#x0D;&#x0A;copy y.output release\yyConstraint.out&#x0D;&#x0A;del y.output&#x0D;&#x0A;"
+						CommandLine="echo bison yyConstraint.y&#x0D;&#x0A;bison -y -ldv Src\Parse\yyConstraint.y&#x0D;&#x0A;sed -f Src\Parse\script3 &lt; y.tab.c &gt;Src\Parse\yyConstraintWin.cpp&#x0D;&#x0A;del y.tab.c&#x0D;&#x0A;sed -f Src\Parse\script3_h &lt; y.tab.h &gt;Inc\Parse\yyConstraintWin.h&#x0D;&#x0A;del y.tab.h&#x0D;&#x0A;if not exist release md release&#x0D;&#x0A;copy y.output release\yyConstraint.out&#x0D;&#x0A;del y.output&#x0D;&#x0A;"
 						Outputs="Src\Parse\yyConstraintWin.cpp;Inc\Parse\yyConstraintWin.h"
 					/>
 				</FileConfiguration>

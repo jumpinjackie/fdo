@@ -2283,7 +2283,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="echo bison yyExpression.y&#x0D;&#x0A;set path=$(FDOTHIRDPARTY)\util\GnuWin32\bin;%PATH%&#x0D;&#x0A;bison -y -ldv Src\Fdo\Parse\yyExpression.y&#x0D;&#x0A;sed -f Src\Fdo\Parse\script &lt; y.tab.c &gt;Src\Fdo\Parse\yyExpressionWin.cpp&#x0D;&#x0A;del y.tab.c&#x0D;&#x0A;sed -f Src\Fdo\Parse\script_h &lt; y.tab.h &gt;Src\Fdo\Parse\yyExpressionWin.h&#x0D;&#x0A;del y.tab.h&#x0D;&#x0A;if not exist Src\Fdo\debug md Src\Fdo\debug&#x0D;&#x0A;copy y.output Src\Fdo\debug\yyExpression.out&#x0D;&#x0A;del y.output&#x0D;&#x0A;"
+						CommandLine="echo bison yyExpression.y&#x0D;&#x0A;bison -y -ldv Src\Fdo\Parse\yyExpression.y&#x0D;&#x0A;sed -f Src\Fdo\Parse\script &lt; y.tab.c &gt;Src\Fdo\Parse\yyExpressionWin.cpp&#x0D;&#x0A;del y.tab.c&#x0D;&#x0A;sed -f Src\Fdo\Parse\script_h &lt; y.tab.h &gt;Src\Fdo\Parse\yyExpressionWin.h&#x0D;&#x0A;del y.tab.h&#x0D;&#x0A;if not exist Src\Fdo\debug md Src\Fdo\debug&#x0D;&#x0A;copy y.output Src\Fdo\debug\yyExpression.out&#x0D;&#x0A;del y.output&#x0D;&#x0A;"
 						Outputs="Src\Fdo\Parse\yyExpressionWin.cpp;Src\Fdo\Parse\yyExpressionWin.h"
 					/>
 				</FileConfiguration>
@@ -2292,7 +2292,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="echo bison yyExpression.y&#x0D;&#x0A;set path=$(FDOTHIRDPARTY)\util\GnuWin32\bin;%PATH%&#x0D;&#x0A;bison -y -ldv Src\Fdo\Parse\yyExpression.y&#x0D;&#x0A;sed -f Src\Fdo\Parse\script &lt; y.tab.c &gt;Src\Fdo\Parse\yyExpressionWin.cpp&#x0D;&#x0A;del y.tab.c&#x0D;&#x0A;sed -f Src\Fdo\Parse\script_h &lt; y.tab.h &gt;Src\Fdo\Parse\yyExpressionWin.h&#x0D;&#x0A;del y.tab.h&#x0D;&#x0A;&#x0D;&#x0A;"
+						CommandLine="echo bison yyExpression.y&#x0D;&#x0A;bison -y -ldv Src\Fdo\Parse\yyExpression.y&#x0D;&#x0A;sed -f Src\Fdo\Parse\script &lt; y.tab.c &gt;Src\Fdo\Parse\yyExpressionWin.cpp&#x0D;&#x0A;del y.tab.c&#x0D;&#x0A;sed -f Src\Fdo\Parse\script_h &lt; y.tab.h &gt;Src\Fdo\Parse\yyExpressionWin.h&#x0D;&#x0A;del y.tab.h&#x0D;&#x0A;&#x0D;&#x0A;"
 						Outputs="Src\Fdo\Parse\yyExpressionWin.cpp;Src\Fdo\Parse\yyExpressionWin.h"
 					/>
 				</FileConfiguration>
@@ -2305,7 +2305,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="echo bison yyFilter.y&#x0D;&#x0A;set path=$(FDOTHIRDPARTY)\util\GnuWin32\bin;%PATH%&#x0D;&#x0A;bison -y -ldv Src\Fdo\Parse\yyFilter.y&#x0D;&#x0A;sed -f Src\Fdo\Parse\script2&lt; y.tab.c &gt;Src\Fdo\Parse\yyFilterWin.cpp&#x0D;&#x0A;del y.tab.c&#x0D;&#x0A;sed -f Src\Fdo\Parse\script2_h &lt; y.tab.h &gt;Src\Fdo\Parse\yyFilterWin.h&#x0D;&#x0A;del y.tab.h&#x0D;&#x0A;if not exist Src\Fdo\debug md Src\Fdo\debug&#x0D;&#x0A;copy y.output Src\Fdo\debug\yyFilter.out&#x0D;&#x0A;del y.output&#x0D;&#x0A;"
+						CommandLine="echo bison yyFilter.y&#x0D;&#x0A;bison -y -ldv Src\Fdo\Parse\yyFilter.y&#x0D;&#x0A;sed -f Src\Fdo\Parse\script2&lt; y.tab.c &gt;Src\Fdo\Parse\yyFilterWin.cpp&#x0D;&#x0A;del y.tab.c&#x0D;&#x0A;sed -f Src\Fdo\Parse\script2_h &lt; y.tab.h &gt;Src\Fdo\Parse\yyFilterWin.h&#x0D;&#x0A;del y.tab.h&#x0D;&#x0A;if not exist Src\Fdo\debug md Src\Fdo\debug&#x0D;&#x0A;copy y.output Src\Fdo\debug\yyFilter.out&#x0D;&#x0A;del y.output&#x0D;&#x0A;"
 						Outputs="Src\Fdo\Parse\yyFilterWin.cpp;Src\Fdo\Parse\yyFilterWin.h"
 					/>
 				</FileConfiguration>
@@ -2314,7 +2314,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="echo bison yyFilter.y&#x0D;&#x0A;set path=$(FDOTHIRDPARTY)\util\GnuWin32\bin;%PATH%&#x0D;&#x0A;bison -y -ldv Src\Fdo\Parse\yyFilter.y&#x0D;&#x0A;sed -f Src\Fdo\Parse\script2&lt; y.tab.c &gt;Src\Fdo\Parse\yyFilterWin.cpp&#x0D;&#x0A;del y.tab.c&#x0D;&#x0A;sed -f Src\Fdo\Parse\script2_h &lt; y.tab.h &gt;Src\Fdo\Parse\yyFilterWin.h&#x0D;&#x0A;del y.tab.h&#x0D;&#x0A;"
+						CommandLine="echo bison yyFilter.y&#x0D;&#x0A;bison -y -ldv Src\Fdo\Parse\yyFilter.y&#x0D;&#x0A;sed -f Src\Fdo\Parse\script2&lt; y.tab.c &gt;Src\Fdo\Parse\yyFilterWin.cpp&#x0D;&#x0A;del y.tab.c&#x0D;&#x0A;sed -f Src\Fdo\Parse\script2_h &lt; y.tab.h &gt;Src\Fdo\Parse\yyFilterWin.h&#x0D;&#x0A;del y.tab.h&#x0D;&#x0A;"
 						Outputs="Src\Fdo\Parse\yyFilterWin.cpp;Src\Fdo\Parse\yyFilterWin.h"
 					/>
 				</FileConfiguration>

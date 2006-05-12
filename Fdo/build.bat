@@ -1,6 +1,7 @@
 @echo off
 
 SET TYPEACTIONFDO=buildinstall
+SET MSACTIONFDO=Rebuild
 SET TYPEBUILDFDO=release
 SET FDOORGPATHFDO=%cd%
 SET FDOINSPATHFDO=%cd%\Fdo
@@ -42,6 +43,7 @@ SET TYPEACTIONFDO=%2
 if "%2"=="installonly" goto next_param
 if "%2"=="buildonly" goto next_param
 if "%2"=="buildinstall" goto next_param
+if "%2"=="clean" goto next_param
 goto custom_error
 
 :get_conf
@@ -66,13 +68,19 @@ goto study_params
 
 :start_build
 SET FDOACTENVSTUDY="FDO"
-if (%FDO%)==() goto env_error
+if ("%FDO%")==("") goto env_error
 if not exist "%FDO%" goto env_path_error
 SET FDOACTENVSTUDY="FDOTHIRDPARTY"
-if (%FDOTHIRDPARTY%)==() goto env_error
+if ("%FDOTHIRDPARTY%")==("") goto env_error
 if not exist "%FDOTHIRDPARTY%" goto env_path_error
+SET FDOACTENVSTUDY="Sed & Bison"
+if exist %FDO%\Err.log del /F /Q %FDO%\Err.log
+SET FDOACTIVEPATHCHECK=GnuWin32\bin
+cscript //job:envcheck ../preparebuilds.wsf
+if exist %FDO%\Err.log goto env_path_error_ex
 
 if "%TYPEACTIONFDO%"=="buildonly" goto start_exbuild
+if "%TYPEACTIONFDO%"=="clean" goto start_exbuild
 if not exist "%FDOINSPATHFDO%" mkdir "%FDOINSPATHFDO%"
 if not exist "%FDOBINPATHFDO%" mkdir "%FDOBINPATHFDO%"
 if not exist "%FDOINCPATHFDO%" mkdir "%FDOINCPATHFDO%"
@@ -81,13 +89,15 @@ if not exist "%FDODOCPATHFDO%" mkdir "%FDODOCPATHFDO%"
 
 :start_exbuild
 time /t
+if "%TYPEACTIONFDO%"=="clean" SET MSACTIONFDO=Clean
 if "%TYPEACTIONFDO%"=="installonly" goto install_files
 
-echo building %TYPEBUILDFDO% Fdo dlls
-msbuild FDO.sln /t:Rebuild /p:Configuration=%TYPEBUILDFDO% /p:Platform="Win32" /nologo
+echo %MSACTIONFDO% %TYPEBUILDFDO% Fdo dlls
+msbuild FDO.sln /t:%MSACTIONFDO% /p:Configuration=%TYPEBUILDFDO% /p:Platform="Win32" /nologo
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
 if "%TYPEACTIONFDO%"=="buildonly" goto generate_docs
+if "%TYPEACTIONFDO%"=="clean" goto end
 
 :install_files
 echo copy FDO %TYPEBUILDFDO% output files
@@ -137,7 +147,7 @@ if exist "..\FDO_API.pdf" copy /y "..\FDO_API.pdf" "%FDODOCPATHFDO%"
 popd
 
 :end
-echo End FDO Build
+echo End FDO %MSACTIONFDO%
 time /t
 exit /B 0
 
@@ -153,8 +163,14 @@ SET FDOERROR=1
 time /t
 exit /B 1
 
+:env_path_error_ex
+echo Unable to find path (in $PATH) to the : %FDOACTENVSTUDY%
+SET FDOERROR=1
+time /t
+exit /B 1
+
 :error
-echo There was a build error.
+echo There was a %MSACTIONFDO% error.
 time /t
 exit /B 1
 
@@ -168,7 +184,7 @@ echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
-echo Action:         -a[ction]=buildinstall(default), buildonly, installonly
+echo Action:         -a[ction]=buildinstall(default), buildonly, installonly, clean
 echo BuildDocs:      -d[ocs]=skip(default), build
 echo **************************************************************************
 exit /B 0

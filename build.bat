@@ -126,6 +126,7 @@ SET TYPEACTION=%2
 if "%2"=="installonly" goto next_param
 if "%2"=="buildonly" goto next_param
 if "%2"=="buildinstall" goto next_param
+if "%2"=="clean" goto next_param
 goto custom_error
 
 :get_conf
@@ -148,6 +149,7 @@ goto study_params
 
 :start_build
 if "%TYPEACTION%"=="buildonly" goto start_exbuild
+if "%TYPEACTION%"=="clean" goto start_exbuild
 if not exist "%FDOORGPATH%" mkdir "%FDOORGPATH%"
 
 :start_exbuild
@@ -242,7 +244,7 @@ echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
-echo Action:         -a[ction]=buildinstall(default), buildonly, installonly
+echo Action:         -a[ction]=buildinstall(default), buildonly, installonly, clean
 SET MROVBYPROVP=
 SET MPROVECAPABP=WithModule:     -w[ith]=all(default), thirdparty, fdo
 :shp_check

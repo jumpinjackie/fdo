@@ -249,11 +249,11 @@
 				>
 			</File>
 			<File
-				RelativePath="Src\Geometry\Fgf\GeometryImpl.h"
+				RelativePath="Src\Geometry\GeometryImpl.h"
 				>
 			</File>
 			<File
-				RelativePath="Src\Geometry\GeometryImpl.h"
+				RelativePath="Src\Geometry\Fgf\GeometryImpl.h"
 				>
 			</File>
 			<File
@@ -578,7 +578,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="echo bison yyFgft.y&#x0D;&#x0A;set path=$(FDOTHIRDPARTY)\util\GnuWin32\bin;%PATH%&#x0D;&#x0A;bison -y -ldv Src\Geometry\Parse\yyFgft.y&#x0D;&#x0A;sed -f Src/Geometry/Parse/script&lt; y.tab.c &gt;Src\Geometry\Parse\yyFgftWin.cpp&#x0D;&#x0A;del y.tab.c&#x0D;&#x0A;sed -f Src/Geometry/Parse/script_h &lt; y.tab.h &gt;Src\Geometry\Parse\yyFgftWin.h&#x0D;&#x0A;del y.tab.h&#x0D;&#x0A;&#x0D;&#x0A;"
+						CommandLine="echo bison yyFgft.y&#x0D;&#x0A;bison -y -ldv Src\Geometry\Parse\yyFgft.y&#x0D;&#x0A;sed -f Src/Geometry/Parse/script&lt; y.tab.c &gt;Src\Geometry\Parse\yyFgftWin.cpp&#x0D;&#x0A;del y.tab.c&#x0D;&#x0A;sed -f Src/Geometry/Parse/script_h &lt; y.tab.h &gt;Src\Geometry\Parse\yyFgftWin.h&#x0D;&#x0A;del y.tab.h&#x0D;&#x0A;&#x0D;&#x0A;"
 						Outputs="Src\Geometry\Parse\yyFgftWin.cpp;Src\Geometry\Parse\yyFgfWint.h"
 					/>
 				</FileConfiguration>
@@ -587,7 +587,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="echo bison yyFgft.y&#x0D;&#x0A;set path=$(FDOTHIRDPARTY)\util\GnuWin32\bin;%PATH%&#x0D;&#x0A;bison -y -ldv Src\Geometry\Parse\yyFgft.y&#x0D;&#x0A;sed -f Src/Geometry/Parse/script&lt; y.tab.c &gt;Src\Geometry\Parse\yyFgftWin.cpp&#x0D;&#x0A;del y.tab.c&#x0D;&#x0A;sed -f Src/Geometry/Parse/script_h &lt; y.tab.h &gt;Src\Geometry\Parse\yyFgftWin.h&#x0D;&#x0A;del y.tab.h&#x0D;&#x0A;if not exist Src\Geometry\debug md Src\Geometry\debug&#x0D;&#x0A;copy y.output Src\Geometry\Debug\yyFgft.out&#x0D;&#x0A;del y.output&#x0D;&#x0A;"
+						CommandLine="echo bison yyFgft.y&#x0D;&#x0A;bison -y -ldv Src\Geometry\Parse\yyFgft.y&#x0D;&#x0A;sed -f Src/Geometry/Parse/script&lt; y.tab.c &gt;Src\Geometry\Parse\yyFgftWin.cpp&#x0D;&#x0A;del y.tab.c&#x0D;&#x0A;sed -f Src/Geometry/Parse/script_h &lt; y.tab.h &gt;Src\Geometry\Parse\yyFgftWin.h&#x0D;&#x0A;del y.tab.h&#x0D;&#x0A;if not exist Src\Geometry\debug md Src\Geometry\debug&#x0D;&#x0A;copy y.output Src\Geometry\Debug\yyFgft.out&#x0D;&#x0A;del y.output&#x0D;&#x0A;"
 						Outputs="Src\Geometry\Parse\yyFgftWin.cpp;Src\Geometry\Parse\yyFgftWin.h"
 					/>
 				</FileConfiguration>

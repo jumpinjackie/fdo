@@ -1,6 +1,7 @@
 @echo off
 
 SET TYPEACTIONTHR=buildinstall
+SET MSACTIONTHR=Rebuild
 SET TYPEBUILDTHR=release
 SET FDOBASPATHTHR=%cd%
 SET FDOINSPATHTHR=%cd%\Fdo
@@ -112,6 +113,7 @@ SET TYPEACTIONTHR=%2
 if "%2"=="installonly" goto next_param
 if "%2"=="buildonly" goto next_param
 if "%2"=="buildinstall" goto next_param
+if "%2"=="clean" goto next_param
 goto custom_error
 
 :get_conf
@@ -137,19 +139,20 @@ goto study_params
 
 :start_build
 SET FDOACTENVSTUDY="FDOTHIRDPARTY"
-if (%FDOTHIRDPARTY%)==() goto env_error
+if ("%FDOTHIRDPARTY%")==("") goto env_error
 if not exist "%FDOTHIRDPARTY%" goto env_path_error
 SET FDOACTENVSTUDY="XALANROOT"
-if (%XALANROOT%)==() goto env_error
+if ("%XALANROOT%")==("") goto env_error
 if not exist "%XALANROOT%" goto env_path_error
 SET FDOACTENVSTUDY="XERCESCROOT"
-if (%XERCESCROOT%)==() goto env_error
+if ("%XERCESCROOT%")==("") goto env_error
 if not exist "%XERCESCROOT%" goto env_path_error
 SET FDOACTENVSTUDY="NLSDIR"
-if (%NLSDIR%)==() goto env_error
+if ("%NLSDIR%")==("") goto env_error
 if not exist "%NLSDIR%" goto env_path_error
 
 if "%TYPEACTIONTHR%"=="buildonly" goto start_exbuild
+if "%TYPEACTIONTHR%"=="clean" goto start_exbuild
 if not exist "%FDOINSPATHTHR%" mkdir "%FDOINSPATHTHR%"
 if not exist "%FDOBINPATHTHR%" mkdir "%FDOBINPATHTHR%"
 if not exist "%FDOINCPATHTHR%" mkdir "%FDOINCPATHTHR%"
@@ -158,12 +161,16 @@ if not exist "%FDOLIBPATHTHR%" mkdir "%FDOLIBPATHTHR%"
 :start_exbuild
 time /t
 
+if "%TYPEACTIONTHR%"=="clean" SET MSACTIONTHR=Clean
+rem # Clean operation is not supported by thirdparty #
+if "%TYPEACTIONTHR%"=="clean" goto end
+
 rem # Begin FDO part #
 :rebuild_fdo
 if "%FDOENABLETHR%"=="no" goto rebuild_sdf
 if "%TYPEACTIONTHR%"=="installonly" goto install_fdo_files
 
-echo building %TYPEBUILDTHR% Thirdparty FDO dlls
+echo Rebuild %TYPEBUILDTHR% Thirdparty FDO dlls
 msbuild Thirdparty_fdo.sln /t:Rebuild /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
@@ -186,7 +193,7 @@ rem # Begin SDF part #
 if "%SDFENABLETHR%"=="no" goto rebuild_wfs
 if "%TYPEACTIONTHR%"=="installonly" goto install_sdf_files
 
-echo building %TYPEBUILDTHR% Thirdparty SDF dlls
+echo Rebuild %TYPEBUILDTHR% Thirdparty SDF dlls
 msbuild Thirdparty_sdf.sln /t:Rebuild /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
@@ -202,7 +209,7 @@ rem # Begin WFS part #
 if "%WFSENABLETHR%"=="no" goto rebuild_wms
 if "%TYPEACTIONTHR%"=="installonly" goto install_wfs_files
 
-echo building %TYPEBUILDTHR% Thirdparty WFS dlls
+echo Rebuild %TYPEBUILDTHR% Thirdparty WFS dlls
 msbuild Thirdparty_wfs.sln /t:Rebuild /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
@@ -222,7 +229,7 @@ rem # Begin WMS part #
 if "%WMSENABLETHR%"=="no" goto rebuild_shp
 if "%TYPEACTIONTHR%"=="installonly" goto install_wms_files
 
-echo building %TYPEBUILDTHR% Thirdparty WMS dlls
+echo Rebuild %TYPEBUILDTHR% Thirdparty WMS dlls
 msbuild Thirdparty_wms.sln /t:Rebuild /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
@@ -268,7 +275,7 @@ rem # End ODBC part #
 
 
 :end
-echo End Thirdparty Build
+echo End Thirdparty %MSACTIONTHR%
 time /t
 exit /B 0
 
@@ -285,7 +292,7 @@ time /t
 exit /B 1
 
 :error
-echo There was a build error.
+echo There was a %MSACTIONTHR% error.
 time /t
 exit /B 1
 
@@ -299,7 +306,7 @@ echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
-echo Action:         -a[ction]=buildinstall(default), buildonly, installonly
+echo Action:         -a[ction]=buildinstall(default), buildonly, installonly, clean
 SET TROVBYPROVP=
 SET TPROVECAPABP=WithModule:     -w[ith]=all(default), fdo
 :shp_check

@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Check that we have a working $echo.
 if test "X$1" = X--no-reexec; then
   # Discard the --no-reexec flag, and continue.
@@ -23,7 +25,7 @@ EOF
 fi
 
 DEFMODIFYCHK=no
-ALLENABLECHK=yes
+FDOCOREENABLECHK=yes
 THRPENABLECHK=no
 FDOENABLECHK=no
 UTILENABLECHK=no
@@ -78,7 +80,7 @@ do
   --w | --with)
      if test "$DEFMODIFYCHK" == no; then
 	DEFMODIFYCHK=yes
-	ALLENABLECHK=no
+	FDOCOREENABLECHK=no
 	THRPENABLECHK=no
 	FDOENABLECHK=no
 	SHPENABLECHK=no
@@ -100,7 +102,7 @@ do
 	ARCENABLECHK=yes
 	RDBMSENABLECHK=yes
      elif test "$1" == all; then
-	ALLENABLECHK=yes
+	FDOCOREENABLECHK=yes
 	THRPENABLECHK=no
 	FDOENABLECHK=no
 	UTILENABLECHK=no
@@ -110,6 +112,11 @@ do
 	WMSENABLECHK=yes
 	ARCENABLECHK=yes
 	RDBMSENABLECHK=yes
+     elif test "$1" == fdocore; then
+	FDOCOREENABLECHK=yes
+	THRPENABLECHK=no
+	FDOENABLECHK=no
+	UTILENABLECHK=no
      elif test "$1" == thirdparty; then
         THRPENABLECHK=yes
      elif test "$1" == utilities; then
@@ -167,16 +174,16 @@ if test ! -e "$FDO_SVN_ROOT"; then
    mkdir "$FDO_SVN_ROOT"
 fi
 
-if test "$ALLENABLECHK" == no && test "$FDOENABLECHK" == yes; then
+if test "$FDOCOREENABLECHK" == no && test "$FDOENABLECHK" == yes; then
    svn checkout https://fdocore.osgeo.org/svn/fdocore/trunk/Fdo "$FDO_SVN_ROOT/Fdo" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
 fi
-if test "$ALLENABLECHK" == no && test "$THRPENABLECHK" == yes; then
+if test "$FDOCOREENABLECHK" == no && test "$THRPENABLECHK" == yes; then
    svn checkout https://fdocore.osgeo.org/svn/fdocore/trunk/Thirdparty "$FDO_SVN_ROOT/Thirdparty" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
 fi
-if test "$ALLENABLECHK" == no && test "$UTILENABLECHK" == yes; then
+if test "$FDOCOREENABLECHK" == no && test "$UTILENABLECHK" == yes; then
    svn checkout https://fdocore.osgeo.org/svn/fdocore/trunk/Utilities "$FDO_SVN_ROOT/Utilities" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
 fi
-if test "$ALLENABLECHK" == yes; then
+if test "$FDOCOREENABLECHK" == yes; then
    svn checkout https://fdocore.osgeo.org/svn/fdocore/trunk "$FDO_SVN_ROOT" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
 fi
 if test "$SHPENABLECHK" == yes; then
