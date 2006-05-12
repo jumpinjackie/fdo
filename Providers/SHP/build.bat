@@ -1,6 +1,7 @@
 @echo off
 
 SET TYPEACTIONSHP=buildinstall
+SET MSACTIONSHP=Rebuild
 SET TYPEBUILDSHP=release
 SET FDOORGPATHSHP=%cd%
 SET FDOINSPATHSHP=%cd%\Fdo
@@ -42,6 +43,7 @@ SET TYPEACTIONSHP=%2
 if "%2"=="installonly" goto next_param
 if "%2"=="buildonly" goto next_param
 if "%2"=="buildinstall" goto next_param
+if "%2"=="clean" goto next_param
 goto custom_error
 
 :get_conf
@@ -66,16 +68,22 @@ goto study_params
 
 :start_build
 SET FDOACTENVSTUDY="FDO"
-if (%FDO%)==() goto env_error
+if ("%FDO%")==("") goto env_error
 if not exist "%FDO%" goto env_path_error
 SET FDOACTENVSTUDY="FDOTHIRDPARTY"
-if (%FDOTHIRDPARTY%)==() goto env_error
+if ("%FDOTHIRDPARTY%")==("") goto env_error
 if not exist "%FDOTHIRDPARTY%" goto env_path_error
 SET FDOACTENVSTUDY="FDOUTILITIES"
-if (%FDOUTILITIES%)==() goto env_error
+if ("%FDOUTILITIES%")==("") goto env_error
 if not exist "%FDOUTILITIES%" goto env_path_error
+SET FDOACTENVSTUDY="Sed & Bison"
+if exist %FDO%\Err.log del /F /Q %FDO%\Err.log
+SET FDOACTIVEPATHCHECK=GnuWin32\bin
+cscript //job:envcheck ../../preparebuilds.wsf
+if exist %FDO%\Err.log goto env_path_error_ex
 
 if "%TYPEACTIONSHP%"=="buildonly" goto start_exbuild
+if "%TYPEACTIONSHP%"=="clean" goto start_exbuild
 if not exist "%FDOINSPATHSHP%" mkdir "%FDOINSPATHSHP%"
 if not exist "%FDOBINPATHSHP%" mkdir "%FDOBINPATHSHP%"
 if not exist "%FDOINCPATHSHP%" mkdir "%FDOINCPATHSHP%"
@@ -84,17 +92,19 @@ if not exist "%FDODOCPATHSHP%" mkdir "%FDODOCPATHSHP%"
 
 :start_exbuild
 time /t
+if "%TYPEACTIONSHP%"=="clean" SET MSACTIONSHP=Clean
 if "%TYPEACTIONSHP%"=="installonly" goto install_files_shp
 
-echo building %TYPEBUILDSHP% SHP provider dlls
+echo %MSACTIONSHP% %TYPEBUILDSHP% SHP provider dlls
 pushd Src
 SET FDOACTIVEBUILD=%cd%\SHP
 cscript //job:prepare ../../../preparebuilds.wsf
-msbuild SHP_temp.sln /t:Rebuild /p:Configuration=%TYPEBUILDSHP% /p:Platform="Win32" /nologo
+msbuild SHP_temp.sln /t:%MSACTIONSHP% /p:Configuration=%TYPEBUILDSHP% /p:Platform="Win32" /nologo
 SET FDOERROR=%errorlevel%
 if exist SHP_temp.sln del /Q /F SHP_temp.sln
 popd
 if "%FDOERROR%"=="1" goto error
+if "%TYPEACTIONSHP%"=="clean" goto end
 if "%TYPEACTIONSHP%"=="buildonly" goto generate_docs
 
 :install_files_shp
@@ -123,7 +133,7 @@ copy /y "..\Docs\SHP_Provider_API.chm" "%FDODOCPATHSHP%"
 
 :end
 time /t
-echo End SHP Build
+echo End SHP %MSACTIONSHP%
 exit /B 0
 
 :env_error
@@ -138,8 +148,14 @@ SET FDOERROR=1
 time /t
 exit /B 1
 
+:env_path_error_ex
+echo Unable to find path (in $PATH) to the : %FDOACTENVSTUDY%
+SET FDOERROR=1
+time /t
+exit /B 1
+
 :error
-echo There was a build error.
+echo There was a %MSACTIONSHP% error.
 time /t
 exit /B 1
 
@@ -153,7 +169,7 @@ echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
-echo Action:         -a[ction]=buildinstall(default), buildonly, installonly
+echo Action:         -a[ction]=buildinstall(default), buildonly, installonly, clean
 echo BuildDocs:      -d[ocs]=skip(default), build
 echo **************************************************************************
 exit /B 0
