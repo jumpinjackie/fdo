@@ -98,6 +98,7 @@ SET TYPEACTIONPRO=%2
 if "%2"=="installonly" goto next_param
 if "%2"=="buildonly" goto next_param
 if "%2"=="buildinstall" goto next_param
+if "%2"=="clean" goto next_param
 goto custom_error
 
 :get_conf
@@ -120,6 +121,7 @@ goto study_params
 
 :start_build
 if "%TYPEACTIONPRO%"=="buildonly" goto start_exbuild
+if "%TYPEACTIONPRO%"=="clean" goto start_exbuild
 if not exist "%FDOORGPATHPRO%" mkdir "%FDOORGPATHPRO%"
 
 :start_exbuild
@@ -194,12 +196,12 @@ if "%FDOERROR%"=="1" goto error
 rem # End ODBC part #
 
 :end
-echo End Providers Build
+echo End Providers action
 time /t
 exit /B 0
 
 :error
-echo There was a build error.
+echo There was an error.
 time /t
 exit /B 1
 
@@ -213,7 +215,7 @@ echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
-echo Action:         -a[ction]=buildinstall(default), buildonly, installonly
+echo Action:         -a[ction]=buildinstall(default), buildonly, installonly, clean
 SET PROVBYPROVP=
 SET PROVECAPABP=WithModule:     -w[ith]=providers(default)
 :shp_check
