@@ -1,6 +1,7 @@
 @echo off
 
 SET TYPEACTIONSDF=buildinstall
+SET MSACTIONSDF=Rebuild
 SET TYPEBUILDSDF=release
 SET FDOORGPATHSDF=%cd%
 SET FDOINSPATHSDF=%cd%\Fdo
@@ -42,6 +43,7 @@ SET TYPEACTIONSDF=%2
 if "%2"=="installonly" goto next_param
 if "%2"=="buildonly" goto next_param
 if "%2"=="buildinstall" goto next_param
+if "%2"=="clean" goto next_param
 goto custom_error
 
 :get_conf
@@ -66,16 +68,22 @@ goto study_params
 
 :start_build
 SET FDOACTENVSTUDY="FDO"
-if (%FDO%)==() goto env_error
+if ("%FDO%")==("") goto env_error
 if not exist "%FDO%" goto env_path_error
 SET FDOACTENVSTUDY="FDOTHIRDPARTY"
-if (%FDOTHIRDPARTY%)==() goto env_error
+if ("%FDOTHIRDPARTY%")==("") goto env_error
 if not exist "%FDOTHIRDPARTY%" goto env_path_error
 SET FDOACTENVSTUDY="FDOUTILITIES"
-if (%FDOUTILITIES%)==() goto env_error
+if ("%FDOUTILITIES%")==("") goto env_error
 if not exist "%FDOUTILITIES%" goto env_path_error
+SET FDOACTENVSTUDY="Sed & Bison"
+if exist %FDO%\Err.log del /F /Q %FDO%\Err.log
+SET FDOACTIVEPATHCHECK=GnuWin32\bin
+cscript //job:envcheck ../../preparebuilds.wsf
+if exist %FDO%\Err.log goto env_path_error_ex
 
 if "%TYPEACTIONSDF%"=="buildonly" goto start_exbuild
+if "%TYPEACTIONSDF%"=="clean" goto start_exbuild
 if not exist "%FDOINSPATHSDF%" mkdir "%FDOINSPATHSDF%"
 if not exist "%FDOBINPATHSDF%" mkdir "%FDOBINPATHSDF%"
 if not exist "%FDOINCPATHSDF%" mkdir "%FDOINCPATHSDF%"
@@ -84,17 +92,19 @@ if not exist "%FDODOCPATHSDF%" mkdir "%FDODOCPATHSDF%"
 
 :start_exbuild
 time /t
+if "%TYPEACTIONSDF%"=="clean" SET MSACTIONSDF=Clean
 if "%TYPEACTIONSDF%"=="installonly" goto install_files_sdf
 
-echo building %TYPEBUILDSDF% SDF provider dlls
+echo %MSACTIONSDF% %TYPEBUILDSDF% SDF provider dlls
 pushd Src
 SET FDOACTIVEBUILD=%cd%\SDFOS
 cscript //job:prepare ../../../preparebuilds.wsf
-msbuild SDFOS_temp.sln /t:Rebuild /p:Configuration=%TYPEBUILDSDF% /p:Platform="Win32" /nologo
+msbuild SDFOS_temp.sln /t:%MSACTIONSDF% /p:Configuration=%TYPEBUILDSDF% /p:Platform="Win32" /nologo
 SET FDOERROR=%errorlevel%
 if exist SDFOS_temp.sln del /Q /F SDFOS_temp.sln
 popd
 if "%FDOERROR%"=="1" goto error
+if "%TYPEACTIONSDF%"=="clean" goto end
 if "%TYPEACTIONSDF%"=="buildonly" goto generate_docs
 
 :install_files_sdf
@@ -120,7 +130,7 @@ copy /y "..\Docs\SDF_Provider_API.chm" "%FDODOCPATHSDF%"
 
 :end
 time /t
-echo End SDF Build
+echo End SDF %MSACTIONSDF%
 exit /B 0
 
 :env_error
@@ -135,8 +145,14 @@ SET FDOERROR=1
 time /t
 exit /B 1
 
+:env_path_error_ex
+echo Unable to find path (in $PATH) to the : %FDOACTENVSTUDY%
+SET FDOERROR=1
+time /t
+exit /B 1
+
 :error
-echo There was a build error.
+echo There was a %MSACTIONSDF% error.
 time /t
 exit /B 1
 
@@ -150,7 +166,7 @@ echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
-echo Action:         -a[ction]=buildinstall(default), buildonly, installonly
+echo Action:         -a[ction]=buildinstall(default), buildonly, installonly, clean
 echo BuildDocs:      -d[ocs]=skip(default), build
 echo **************************************************************************
 exit /B 0
