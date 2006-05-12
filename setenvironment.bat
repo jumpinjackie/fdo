@@ -12,6 +12,11 @@ SET ACTIVENAMECHECK="Graphviz"
 if not exist %ACTIVEPATHCHECK% goto error
 set PATH=%PATH%;%ACTIVEPATHCHECK%
 
+SET ACTIVEPATHCHECK="c:\Program Files\GnuWin32\bin"
+SET ACTIVENAMECHECK="Sed & Bison"
+if not exist %ACTIVEPATHCHECK% goto error
+set PATH=%PATH%;%ACTIVEPATHCHECK%
+
 SET ACTIVEPATHCHECK="C:\Program Files\doxygen\bin"
 SET ACTIVENAMECHECK="doxygen"
 if not exist %ACTIVEPATHCHECK% goto error
