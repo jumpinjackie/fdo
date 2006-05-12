@@ -172,7 +172,10 @@ fi
 
 ### start build ###
 
-CMDEX="--c $TYPEBUILD --a $TYPEACTION --a $TYPECONFIGURE"
+CMDEX= --c $TYPEBUILD --a $TYPEACTION
+if test "$TYPECONFIGURE" == configure ; then
+   CMDEX=$CMDEX --a $TYPECONFIGURE
+fi
 
 #build Thirdparty
 if test "$THRPENABLE" == yes; then
