@@ -1,6 +1,7 @@
 @echo off
 
 SET TYPEACTIONARCSDE=buildinstall
+SET MSACTIONARCSDE=Rebuild
 SET TYPEBUILDARCSDE=release
 SET FDOINSPATHARCSDE=\Fdo
 SET FDOBINPATHARCSDE=\Fdo\Bin
@@ -41,6 +42,7 @@ SET TYPEACTIONARCSDE=%2
 if "%2"=="installonly" goto next_param
 if "%2"=="buildonly" goto next_param
 if "%2"=="buildinstall" goto next_param
+if "%2"=="clean" goto next_param
 goto custom_error
 
 :get_conf
@@ -64,17 +66,22 @@ goto study_params
 
 :start_build
 SET FDOACTENVSTUDY="FDO"
-if (%FDO%)==() goto env_error
+if ("%FDO%")==("") goto env_error
 if not exist "%FDO%" goto env_path_error
 SET FDOACTENVSTUDY="FDOTHIRDPARTY"
-if (%FDOTHIRDPARTY%)==() goto env_error
+if ("%FDOTHIRDPARTY%")==("") goto env_error
 if not exist "%FDOTHIRDPARTY%" goto env_path_error
 SET FDOACTENVSTUDY="FDOUTILITIES"
-if (%FDOUTILITIES%)==() goto env_error
+if ("%FDOUTILITIES%")==("") goto env_error
 if not exist "%FDOUTILITIES%" goto env_path_error
 SET FDOACTENVSTUDY="SDEHOME"
-if (%SDEHOME%)==() goto env_error
+if ("%SDEHOME%")==("") goto env_error
 if not exist "%SDEHOME%" goto env_path_error
+SET FDOACTENVSTUDY="Sed & Bison"
+if exist %FDO%\Err.log del /F /Q %FDO%\Err.log
+SET FDOACTIVEPATHCHECK=GnuWin32\bin
+cscript //job:envcheck ../../preparebuilds.wsf
+if exist %FDO%\Err.log goto env_path_error_ex
 
 if not exist "%FDOINSPATHARCSDE%" mkdir "%FDOINSPATHARCSDE%"
 if not exist "%FDOBINPATHARCSDE%" mkdir "%FDOBINPATHARCSDE%"
@@ -83,17 +90,19 @@ if not exist "%FDOLIBPATHARCSDE%" mkdir "%FDOLIBPATHARCSDE%"
 if not exist "%FDODOCPATHARCSDE%" mkdir "%FDODOCPATHARCSDE%"
 
 time /t
+if "%TYPEACTIONARCSDE%"=="clean" SET MSACTIONARCSDE=Clean
 if "%TYPEACTIONARCSDE%"=="installonly" goto install_files_ArcSDE
 
-echo building %TYPEBUILDARCSDE% ArcSDE provider dlls
+echo %MSACTIONARCSDE% %TYPEBUILDARCSDE% ArcSDE provider dlls
 pushd Src
 SET FDOACTIVEBUILD=%cd%\ArcSDEOS
 cscript //job:prepare ../../../preparebuilds.wsf
-msbuild ArcSDEOS_temp.sln /t:Rebuild /p:Configuration=%TYPEBUILDARCSDE% /p:Platform="Win32" /nologo
+msbuild ArcSDEOS_temp.sln /t:%MSACTIONARCSDE% /p:Configuration=%TYPEBUILDARCSDE% /p:Platform="Win32" /nologo
 SET FDOERROR=%errorlevel%
 if exist ArcSDEOS_temp.sln del /Q /F ArcSDEOS_temp.sln
 popd
 if "%FDOERROR%"=="1" goto error
+if "%TYPEACTIONARCSDE%"=="clean" goto end
 if "%TYPEACTIONARCSDE%"=="buildonly" goto generate_docs
 
 :install_files_ArcSDE
@@ -119,7 +128,7 @@ copy /y "..\Docs\ArcSDE_Provider_API.chm" "%FDODOCPATHARCSDE%"
 
 :end
 time /t
-echo End ArcSDE Build
+echo End ArcSDE %MSACTIONARCSDE%
 exit /B 0
 
 :env_error
@@ -134,8 +143,14 @@ SET FDOERROR=1
 time /t
 exit /B 1
 
+:env_path_error_ex
+echo Unable to find path (in $PATH) to the : %FDOACTENVSTUDY%
+SET FDOERROR=1
+time /t
+exit /B 1
+
 :error
-echo There was a build error.
+echo There was a %MSACTIONARCSDE% error.
 time /t
 exit /B 1
 
@@ -149,7 +164,7 @@ echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
-echo Action:         -a[ction]=buildinstall(default), buildonly, installonly
+echo Action:         -a[ction]=buildinstall(default), buildonly, installonly, clean
 echo BuildDocs:      -d[ocs]=skip(default), build
 echo **************************************************************************
 exit /B 0
