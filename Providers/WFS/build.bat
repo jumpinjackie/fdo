@@ -1,6 +1,7 @@
 @echo off
 
 SET TYPEACTIONWFS=buildinstall
+SET MSACTIONWFS=Rebuild
 SET TYPEBUILDWFS=release
 SET FDOORGPATHWFS=%cd%
 SET FDOINSPATHWFS=%cd%\Fdo
@@ -42,6 +43,7 @@ SET TYPEACTIONWFS=%2
 if "%2"=="installonly" goto next_param
 if "%2"=="buildonly" goto next_param
 if "%2"=="buildinstall" goto next_param
+if "%2"=="clean" goto next_param
 goto custom_error
 
 :get_conf
@@ -66,16 +68,22 @@ goto study_params
 
 :start_build
 SET FDOACTENVSTUDY="FDO"
-if (%FDO%)==() goto env_error
+if ("%FDO%")==("") goto env_error
 if not exist "%FDO%" goto env_path_error
 SET FDOACTENVSTUDY="FDOTHIRDPARTY"
-if (%FDOTHIRDPARTY%)==() goto env_error
+if ("%FDOTHIRDPARTY%")==("") goto env_error
 if not exist "%FDOTHIRDPARTY%" goto env_path_error
 SET FDOACTENVSTUDY="FDOUTILITIES"
-if (%FDOUTILITIES%)==() goto env_error
+if ("%FDOUTILITIES%")==("") goto env_error
 if not exist "%FDOUTILITIES%" goto env_path_error
+SET FDOACTENVSTUDY="Sed & Bison"
+if exist %FDO%\Err.log del /F /Q %FDO%\Err.log
+SET FDOACTIVEPATHCHECK=GnuWin32\bin
+cscript //job:envcheck ../../preparebuilds.wsf
+if exist %FDO%\Err.log goto env_path_error_ex
 
 if "%TYPEACTIONWFS%"=="buildonly" goto start_exbuild
+if "%TYPEACTIONWFS%"=="clean" goto start_exbuild
 if not exist "%FDOINSPATHWFS%" mkdir "%FDOINSPATHWFS%"
 if not exist "%FDOBINPATHWFS%" mkdir "%FDOBINPATHWFS%"
 if not exist "%FDOINCPATHWFS%" mkdir "%FDOINCPATHWFS%"
@@ -84,17 +92,19 @@ if not exist "%FDODOCPATHWFS%" mkdir "%FDODOCPATHWFS%"
 
 :start_exbuild
 time /t
+if "%TYPEACTIONWFS%"=="clean" SET MSACTIONWFS=Clean
 if "%TYPEACTIONWFS%"=="installonly" goto install_files_wfs
 
-echo building %TYPEBUILDWFS% WFS provider dlls
+echo %MSACTIONWFS% %TYPEBUILDWFS% WFS provider dlls
 pushd Src
 SET FDOACTIVEBUILD=%cd%\WFSOS
 cscript //job:prepare ../../../preparebuilds.wsf
-msbuild WFSOS_temp.sln /t:Rebuild /p:Configuration=%TYPEBUILDWFS% /p:Platform="Win32" /nologo
+msbuild WFSOS_temp.sln /t:%MSACTIONWFS% /p:Configuration=%TYPEBUILDWFS% /p:Platform="Win32" /nologo
 SET FDOERROR=%errorlevel%
 if exist WFSOS_temp.sln del /Q /F WFSOS_temp.sln
 popd
 if "%FDOERROR%"=="1" goto error
+if "%TYPEACTIONWFS%"=="clean" goto end
 if "%TYPEACTIONWFS%"=="buildonly" goto generate_docs
 
 :install_files_wfs
@@ -121,7 +131,7 @@ copy /y "..\Docs\WFS_Provider_API.chm" "%FDODOCPATHWFS%"
 
 :end
 time /t
-echo End WFS Build
+echo End WFS %MSACTIONWFS%
 exit /B 0
 
 :env_error
@@ -136,8 +146,14 @@ SET FDOERROR=1
 time /t
 exit /B 1
 
+:env_path_error_ex
+echo Unable to find path (in $PATH) to the : %FDOACTENVSTUDY%
+SET FDOERROR=1
+time /t
+exit /B 1
+
 :error
-echo There was a build error.
+echo There was a %MSACTIONWFS% error.
 time /t
 exit /B 1
 
@@ -151,7 +167,7 @@ echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
-echo Action:         -a[ction]=buildinstall(default), buildonly, installonly
+echo Action:         -a[ction]=buildinstall(default), buildonly, installonly, clean
 echo BuildDocs:      -d[ocs]=skip(default), build
 echo **************************************************************************
 exit /B 0
