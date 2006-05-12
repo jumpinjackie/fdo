@@ -130,24 +130,24 @@ if test "$SHOWHELP" == yes; then
    echo "BuildType:      --c[onfig] release(default), debug"
    echo "Action:         --a[ction] buildinstall(default), buildonly, installonly, configure"
 
-   HELPSTRINGWITH= WithModule: --w[ith] fdocore(default), fdo, thirdparty, providers
-   if test ! -e "Providers/SHP/build_linux.sh"; then
-   HELPSTRINGWITH=$HELPSTRINGWITH, shp
+   HELPSTRINGWITH="WithModule:     --w[ith] fdocore(default), fdo, thirdparty, providers"
+   if test -e "Providers/SHP/build_linux.sh"; then
+   HELPSTRINGWITH="$HELPSTRINGWITH, shp"
    fi
-   if test ! -e "Providers/SDF/build_linux.sh"; then
-   HELPSTRINGWITH=$HELPSTRINGWITH, sdf
+   if test -e "Providers/SDF/build_linux.sh"; then
+   HELPSTRINGWITH="$HELPSTRINGWITH, sdf"
    fi
-   if test ! -e "Providers/WFS/build_linux.sh"; then
-   HELPSTRINGWITH=$HELPSTRINGWITH, wfs
+   if test -e "Providers/WFS/build_linux.sh"; then
+   HELPSTRINGWITH="$HELPSTRINGWITH, wfs"
    fi
-   if test ! -e "Providers/WMS/build_linux.sh"; then
-   HELPSTRINGWITH=$HELPSTRINGWITH, wms
+   if test -e "Providers/WMS/build_linux.sh"; then
+   HELPSTRINGWITH="$HELPSTRINGWITH, wms"
    fi
-   if test ! -e "Providers/ArcSDE/build_linux.sh"; then
-   HELPSTRINGWITH=$HELPSTRINGWITH, arcsde
+   if test -e "Providers/ArcSDE/build_linux.sh"; then
+   HELPSTRINGWITH="$HELPSTRINGWITH, arcsde"
    fi
-   if test ! -e "Providers/GenericRdbms/build_linux.sh"; then
-   HELPSTRINGWITH=$HELPSTRINGWITH, rdbms
+   if test -e "Providers/GenericRdbms/build_linux.sh"; then
+   HELPSTRINGWITH="$HELPSTRINGWITH, rdbms"
    fi
    
    echo "$HELPSTRINGWITH"
@@ -158,23 +158,26 @@ fi
 
 ### configure build ###
 if test "$TYPECONFIGURE" == configure ; then
-   aclocal
-   libtoolize --force
-   automake --add-missing --copy
-   autoconf
+   if test "$THRPENABLE" == yes || test "$FDOENABLE" == yes || test "$UTILENABLE" == yes; then
+      echo "configuring fdocore"
+      aclocal
+      libtoolize --force
+      automake --add-missing --copy
+      autoconf
 
-   if test "$TYPEBUILD" == release; then
-      ./configure
-   else
-      ./configure --enable-debug=yes
+      if test "$TYPEBUILD" == release; then
+         ./configure
+      else
+         ./configure --enable-debug=yes
+      fi
    fi
 fi
 
 ### start build ###
 
-CMDEX= --c $TYPEBUILD --a $TYPEACTION
+CMDEX="--c $TYPEBUILD --a $TYPEACTION"
 if test "$TYPECONFIGURE" == configure ; then
-   CMDEX=$CMDEX --a $TYPECONFIGURE
+   CMDEX="$CMDEX --a $TYPECONFIGURE"
 fi
 
 #build Thirdparty
