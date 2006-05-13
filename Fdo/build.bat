@@ -158,19 +158,19 @@ time /t
 exit /B 1
 
 :env_path_error
-echo Environment variable invalid path: %FDOACTENVSTUDY%
+echo Invalid path contained in FDO environment variable: %FDOACTENVSTUDY%
 SET FDOERROR=1
 time /t
 exit /B 1
 
 :env_path_error_ex
-echo Unable to find path (in $PATH) to the : %FDOACTENVSTUDY%
+echo Unable to find location of %FDOACTENVSTUDY% in the Windows System PATH
 SET FDOERROR=1
 time /t
 exit /B 1
 
 :error
-echo There was a %MSACTIONFDO% error.
+echo There was a build error executing action: %MSACTIONFDO%
 time /t
 exit /B 1
 
