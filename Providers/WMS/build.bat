@@ -78,11 +78,6 @@ if not exist "%FDOTHIRDPARTY%" goto env_path_error
 SET FDOACTENVSTUDY="FDOUTILITIES"
 if ("%FDOUTILITIES%")==("") goto env_error
 if not exist "%FDOUTILITIES%" goto env_path_error
-SET FDOACTENVSTUDY="Sed & Bison"
-if exist %FDO%\Err.log del /F /Q %FDO%\Err.log
-SET FDOACTIVEPATHCHECK=GnuWin32\bin
-cscript //job:envcheck ../../preparebuilds.wsf
-if exist %FDO%\Err.log goto env_path_error_ex
 
 if "%TYPEACTIONWMS%"=="buildonly" goto start_exbuild
 if "%TYPEACTIONWMS%"=="clean" goto start_exbuild
@@ -146,19 +141,19 @@ time /t
 exit /B 1
 
 :env_path_error
-echo Environment variable invalid path: %FDOACTENVSTUDY%
+echo Invalid path contained in FDO environment variable: %FDOACTENVSTUDY%
 SET FDOERROR=1
 time /t
 exit /B 1
 
 :env_path_error_ex
-echo Unable to find path (in $PATH) to the : %FDOACTENVSTUDY%
+echo Unable to find location of %FDOACTENVSTUDY% in the Windows System PATH
 SET FDOERROR=1
 time /t
 exit /B 1
 
 :error
-echo There was a %MSACTIONWMS% error.
+echo There was a build error executing action: %MSACTIONFDO%
 time /t
 exit /B 1
 
