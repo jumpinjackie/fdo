@@ -104,7 +104,8 @@ libSchemaMgr_OV_la_SOURCES =
 nodist_EXTRA_libSchemaMgr_OV_la_SOURCES = dummy.cpp
 
 libSchemaMgr_OV_la_LIBADD =  \
-  $(FDO)/Unmanaged/Src/libFDO.la
+  $(FDO)/Unmanaged/Src/libFDO.la \
+  SchemaMgr/Ov/libSchemaMgr_OV.la
 
 libSchemaMgr_OV_la_LDFLAGS = \
   -shared \
