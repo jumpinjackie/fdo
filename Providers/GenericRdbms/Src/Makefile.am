@@ -4,7 +4,7 @@ SUBDIRS = Fdo Gdbi LongTransactionManager MySQL Rdbi SchemaMgr Util Geometry ODB
 DIST_SUBDIRS = Fdo Gdbi LongTransactionManager MySQL Rdbi SchemaMgr Util Geometry ODBCDriver ODBC
 EXTRA_DIST =
 
-lib_LTLIBRARIES = libFdoMySQL.la libFdoODBC.la
+lib_LTLIBRARIES = libFdoMySQL.la libFdoODBC.la libSchemaMgr_OV.la
 
 libdir = $(prefix)/lib
 
@@ -97,3 +97,15 @@ libFdoODBC_la_LDFLAGS = \
   -L$(FDOTHIRDPARTY)/apache/xml-xerces/c/lib \
   -L$(FDOODBC)/lib
 
+libSchemaMgr_OV_la_SOURCES =
+##building libSchemaMgr_OV.so
+# Dummy C++ source to cause C++ linking.
+
+nodist_EXTRA_libSchemaMgr_OV_la_SOURCES = dummy.cpp
+
+libSchemaMgr_OV_la_LIBADD =  \
+  $(FDO)/Unmanaged/Src/libFDO.la
+
+libSchemaMgr_OV_la_LDFLAGS = \
+  -shared \
+  -release $(VERSION)
