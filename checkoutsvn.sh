@@ -174,6 +174,9 @@ if test ! -e "$FDO_SVN_ROOT"; then
    mkdir "$FDO_SVN_ROOT"
 fi
 
+svn checkout -N https://fdocore.osgeo.org/svn/fdocore/trunk "$FDO_SVN_ROOT" --username $FDO_SVN_USERNAME --password $FDO_SVN_PASSWORD >>nul
+svn checkout -N https://fdocore.osgeo.org/svn/fdocore/trunk/Providers "$FDO_SVN_ROOT/Providers" --username $FDO_SVN_USERNAME --password $FDO_SVN_PASSWORD >>nul
+
 if test "$FDOCOREENABLECHK" == no && test "$FDOENABLECHK" == yes; then
    svn checkout https://fdocore.osgeo.org/svn/fdocore/trunk/Fdo "$FDO_SVN_ROOT/Fdo" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
 fi
