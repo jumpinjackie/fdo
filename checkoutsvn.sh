@@ -157,6 +157,7 @@ do
   esac
 done
 
+
 if test "$SHOWHELP" == yes; then
    echo "**************************************************************************"
    echo "checkoutsvn.sh [--h] [--o OutFolder] [--w WithModule] [--u UserId] [--p UserPassword]"
@@ -210,4 +211,3 @@ fi
 echo "End checkout"
 
 exit 0
-
