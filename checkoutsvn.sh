@@ -36,6 +36,8 @@ WMSENABLECHK=yes
 ARCENABLECHK=yes
 RDBMSENABLECHK=yes
 SHOWHELP=no
+FDO_SVN_USERNAME=
+FDO_SVN_PASSWORD=
 
 if test -z "$FDO_SVN_ROOT"; then
    FDO_SVN_ROOT=$PWD
@@ -161,7 +163,7 @@ done
 if test "$SHOWHELP" == yes; then
    echo "**************************************************************************"
    echo "checkoutsvn.sh [--h] [--o OutFolder] [--w WithModule] [--u UserId] [--p UserPassword]"
-   echo "*"
+   echo " "
    echo "Help:           --h[elp]"
    echo "OutFolder:      --o[utpath]=destination folder for files"
    echo "WithModule:     --w[ith]=all(default), fdo, thirdparty, providers, utilities, shp, sdf, wfs, wms, arcsde, rdbms"
@@ -175,37 +177,52 @@ if test ! -e "$FDO_SVN_ROOT"; then
    mkdir "$FDO_SVN_ROOT"
 fi
 
-svn checkout -N https://fdocore.osgeo.org/svn/fdocore/trunk "$FDO_SVN_ROOT" --username $FDO_SVN_USERNAME --password $FDO_SVN_PASSWORD >>nul
-svn checkout -N https://fdocore.osgeo.org/svn/fdocore/trunk/Providers "$FDO_SVN_ROOT/Providers" --username $FDO_SVN_USERNAME --password $FDO_SVN_PASSWORD >>nul
+#Enabling this call causes subsequent recursive checkout to fail
+#echo "Checking out root files from https://fdocore.osgeo.org/svn/fdocore/trunk"
+#svn checkout https://fdocore.osgeo.org/svn/fdocore/trunk "$FDO_SVN_ROOT" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD" --non-recursive
+
+#Enabling this call causes subsequent recursive checkout to fail
+#echo "Checking out root files from https://fdocore.osgeo.org/svn/fdocore/trunk/Providers"
+#svn checkout https://fdocore.osgeo.org/svn/fdocore/trunk/Providers "$FDO_SVN_ROOT/Providers" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD" --non-recursive
 
 if test "$FDOCOREENABLECHK" == no && test "$FDOENABLECHK" == yes; then
+   echo "Checking out https://fdocore.osgeo.org/svn/fdocore/trunk/Fdo"
    svn checkout https://fdocore.osgeo.org/svn/fdocore/trunk/Fdo "$FDO_SVN_ROOT/Fdo" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
 fi
 if test "$FDOCOREENABLECHK" == no && test "$THRPENABLECHK" == yes; then
+   echo "Checking out https://fdocore.osgeo.org/svn/fdocore/trunk/Thirdparty"
    svn checkout https://fdocore.osgeo.org/svn/fdocore/trunk/Thirdparty "$FDO_SVN_ROOT/Thirdparty" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
 fi
 if test "$FDOCOREENABLECHK" == no && test "$UTILENABLECHK" == yes; then
+   echo "Checking out https://fdocore.osgeo.org/svn/fdocore/trunk/Utilities"
    svn checkout https://fdocore.osgeo.org/svn/fdocore/trunk/Utilities "$FDO_SVN_ROOT/Utilities" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
 fi
 if test "$FDOCOREENABLECHK" == yes; then
+   echo "Recursively checking out https://fdocore.osgeo.org/svn/fdocore/trunk"
    svn checkout https://fdocore.osgeo.org/svn/fdocore/trunk "$FDO_SVN_ROOT" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
 fi
 if test "$SHPENABLECHK" == yes; then
+   echo "Checking out https://fdoshp.osgeo.org/svn/fdoshp/trunk/Providers/SHP"
    svn checkout https://fdoshp.osgeo.org/svn/fdoshp/trunk/Providers/SHP "$FDO_SVN_ROOT/Providers/SHP" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
 fi
 if test "$SDFENABLECHK" == yes; then
+   echo "Checking out https://fdosdf.osgeo.org/svn/fdosdf/trunk/Providers/SDF"
    svn checkout https://fdosdf.osgeo.org/svn/fdosdf/trunk/Providers/SDF "$FDO_SVN_ROOT/Providers/SDF" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
 fi
 if test "$WFSENABLECHK" == yes; then
+   echo "Checking out https://fdowfs.osgeo.org/svn/fdowfs/trunk/Providers/WFS"
    svn checkout https://fdowfs.osgeo.org/svn/fdowfs/trunk/Providers/WFS "$FDO_SVN_ROOT/Providers/WFS" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
 fi
 if test "$WMSENABLECHK" == yes; then
+   echo "Checking out https://fdowms.osgeo.org/svn/fdowms/trunk/Providers/WMS"
    svn checkout https://fdowms.osgeo.org/svn/fdowms/trunk/Providers/WMS "$FDO_SVN_ROOT/Providers/WMS" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
 fi
 if test "$ARCENABLECHK" == yes; then
+   echo "Checking out https://fdoarcsde.osgeo.org/svn/fdoarcsde/trunk/Providers/ArcSDE"
    svn checkout https://fdoarcsde.osgeo.org/svn/fdoarcsde/trunk/Providers/ArcSDE "$FDO_SVN_ROOT/Providers/ArcSDE" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
 fi
 if test "$RDBMSENABLECHK" == yes; then
+   echo "Checking out https://fdordbms.osgeo.org/svn/fdordbms/trunk/Providers/GenericRdbms"
    svn checkout https://fdordbms.osgeo.org/svn/fdordbms/trunk/Providers/GenericRdbms "$FDO_SVN_ROOT/Providers/GenericRdbms" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
 fi
 echo "End checkout"
