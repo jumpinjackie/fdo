@@ -1,0 +1,8 @@
+base referer
+rect $_sql_server_ov_data_property_definition_8h.html 291,7 536,33
+rect $_sql_server_ov_geometric_property_definition_8h.html 274,57 554,84
+rect $_sql_server_ov_object_property_definition_8h.html 286,108 542,135
+rect $_sql_server_ov_property_definition_collection_8h.html 275,159 552,185
+rect $_sql_server_ov_class_definition_8h.html 655,83 855,109
+rect $_sql_server_ov_data_property_definition_collection_8h.html 603,7 907,33
+rect $_sql_server_ov_association_property_definition_8h.html 612,159 898,185

@@ -1,0 +1,4 @@
+base referer
+rect $class_fdo_rdbms_ov_table.html 8,32 144,59
+rect $class_fdo_odbc_ov_table.html 208,7 334,34
+rect $class_fdo_sql_server_ov_table.html 194,58 348,84

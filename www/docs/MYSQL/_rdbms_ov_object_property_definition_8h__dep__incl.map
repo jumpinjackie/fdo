@@ -1,0 +1,5 @@
+base referer
+rect $_my_sql_ov_object_property_definition_8h.html 295,7 530,34
+rect $_rdbms_ov_class_definition_8h.html 322,58 503,84
+rect $_my_sql_ov_class_definition_8h.html 582,7 760,34
+rect $_rdbms_ov_class_collection_8h.html 579,58 763,84

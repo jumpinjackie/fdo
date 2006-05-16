@@ -1,0 +1,16 @@
+base referer
+rect $_odbc_ov_property_definition_8h.html 295,57 484,84
+rect $_rdbms_ov_data_property_definition_8h.html 275,108 504,135
+rect $_rdbms_ov_geometric_property_definition_8h.html 259,159 520,185
+rect $_rdbms_ov_object_property_definition_8h.html 269,260 509,287
+rect $_rdbms_ov_property_definition_collection_8h.html 260,209 519,236
+rect $_sql_server_ov_property_definition_8h.html 280,311 499,337
+rect $_odbc_ov_data_property_definition_8h.html 600,7 819,33
+rect $_odbc_ov_geometric_property_definition_8h.html 583,57 836,84
+rect $_odbc_ov_property_definition_collection_8h.html 585,108 833,135
+rect $_rdbms_ov_class_definition_8h.html 619,159 800,185
+rect $_sql_server_ov_data_property_definition_8h.html 587,260 832,287
+rect $_sql_server_ov_geometric_property_definition_8h.html 569,311 849,337
+rect $_sql_server_ov_object_property_definition_8h.html 581,412 837,439
+rect $_rdbms_ov_association_property_definition_8h.html 575,209 844,236
+rect $_sql_server_ov_property_definition_collection_8h.html 571,361 848,388

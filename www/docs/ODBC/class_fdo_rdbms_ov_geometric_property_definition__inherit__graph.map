@@ -1,0 +1,4 @@
+base referer
+rect $class_fdo_odbc_ov_geometric_property_definition.html 7,711 271,807
+rect $class_fdo_sql_server_ov_geometric_property_definition.html 295,695 585,823
+rect $class_fdo_rdbms_ov_property_definition.html 168,7 411,167

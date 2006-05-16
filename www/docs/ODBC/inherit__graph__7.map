@@ -1,0 +1,14 @@
+base referer
+rect $class_fdo_rdbms_ov_property_definition.html 8,133 219,160
+rect $class_fdo_odbc_ov_property_definition.html 308,7 511,33
+rect $class_fdo_rdbms_ov_association_property_definition.html 269,209 549,236
+rect $class_fdo_rdbms_ov_data_property_definition.html 289,57 529,84
+rect $class_fdo_rdbms_ov_geometric_property_definition.html 272,108 547,135
+rect $class_fdo_rdbms_ov_object_property_definition.html 284,260 535,287
+rect $class_fdo_sql_server_ov_property_definition.html 295,159 524,185
+rect $class_fdo_odbc_ov_data_property_definition.html 633,7 863,33
+rect $class_fdo_odbc_ov_geometric_property_definition.html 616,57 880,84
+rect $class_fdo_sql_server_ov_association_property_definition.html 599,209 897,236
+rect $class_fdo_sql_server_ov_data_property_definition.html 619,108 877,135
+rect $class_fdo_sql_server_ov_geometric_property_definition.html 603,159 893,185
+rect $class_fdo_sql_server_ov_object_property_definition.html 613,260 883,287
