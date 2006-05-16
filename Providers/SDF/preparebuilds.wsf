@@ -67,4 +67,26 @@
             Set fsc = Nothing
         </script>
     </job>
+    <job id="envcheck">
+        <script language="VBScript" src="methods.vbs"></script>
+        <script language="VBScript">
+			On Error Resume Next
+			Dim InstallPath
+			Dim SrchVal
+			Dim pathFDO
+			Dim nStrPos
+			
+			Set fsc = New FileSystemClass
+			Set WshShell = CreateObject("WScript.Shell")
+			InstallPath = WshShell.ExpandEnvironmentStrings("%PATH%")
+			SrchVal = WshShell.ExpandEnvironmentStrings("%FDOACTIVEPATHCHECK%")
+			pathFDO = WshShell.ExpandEnvironmentStrings("%FDO%")
+			Set WshShell = nothing
+			nStrPos = InStr(InstallPath, SrchVal)
+		    If nStrPos = 0 Then
+		        Call fsc.WriteStringToFile(pathFDO & "\Err.log", "Unable to find " & SrchVal & " in %PATH%")
+            End If
+            Set fsc = Nothing
+        </script>
+    </job>
 </package>
