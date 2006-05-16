@@ -166,7 +166,7 @@ HRESULT APIENTRY DllUnregisterServer (void)
 }
 #else
 
-const char *RDBMS_LIB_NAME = "libFdoMySql.so";
+const char *RDBMS_LIB_NAME = "libFdoMySQL.so";
 #include <link.h>
 #include <wchar.h>
 #include "Fdo/FdoRdbmsMySqlConnection.h"

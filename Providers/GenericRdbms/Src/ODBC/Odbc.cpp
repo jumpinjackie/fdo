@@ -166,7 +166,7 @@ HRESULT APIENTRY DllUnregisterServer (void)
 }
 #else
 
-const char *RDBMS_LIB_NAME = "libODBCProvider.so";
+const char *RDBMS_LIB_NAME = "libFdoODBC.so";
 #include <link.h>
 #include <wchar.h>
 #include "Fdo/FdoRdbmsOdbcConnection.h"
