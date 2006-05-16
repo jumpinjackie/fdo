@@ -84,7 +84,6 @@ AC_CONFIG_FILES([Utilities/SQLiteInterface/Makefile])
 
 #OWS
 AC_CONFIG_FILES([Utilities/OWS/Makefile \
-                 Utilities/OWS/Inc/Makefile \
                  Utilities/OWS/Src/Makefile])
 
 #SchemaMgr

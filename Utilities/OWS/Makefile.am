@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = Src Inc
+SUBDIRS = Src
 
 ##building libFdoOws.so
 lib_LTLIBRARIES = libFdoOws.la
