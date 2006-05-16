@@ -1,8 +1,0 @@
-base referer
-rect $d3/d94/class_gis_i_stream_reader_tmpl.html 15,343 210,503
-rect $d3/d94/class_gis_i_stream_reader_tmpl.html 234,343 468,503
-rect $d9/dd7/class_gis_i_disposable.html 163,7 299,167
-rect $d7/d6f/class_gis_io_object_stream_reader.html 7,551 218,727
-rect $d7/dee/class_fdo_b_l_o_b_stream_reader.html 254,599 422,679
-rect $d7/d6f/class_gis_io_object_stream_reader.html 446,551 696,727
-rect $d9/dc7/class_gis_io_byte_stream_reader.html 487,775 655,887
