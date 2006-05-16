@@ -140,9 +140,6 @@ goto study_params
 :start_checkout
 if not exist "%FDO_SVN_ROOT%" mkdir "%FDO_SVN_ROOT%"
 
-svn checkout -N https://fdocore.osgeo.org/svn/fdocore/trunk "%FDO_SVN_ROOT%" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD% >>nul
-svn checkout -N https://fdocore.osgeo.org/svn/fdocore/trunk/Providers "%FDO_SVN_ROOT%\Providers" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD% >>nul
-
 if "%FDOCOREENABLECHK%"=="yes" goto checkout_all
 
 :checkout_fdo

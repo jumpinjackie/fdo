@@ -177,14 +177,6 @@ if test ! -e "$FDO_SVN_ROOT"; then
    mkdir "$FDO_SVN_ROOT"
 fi
 
-#Enabling this call causes subsequent recursive checkout to fail
-#echo "Checking out root files from https://fdocore.osgeo.org/svn/fdocore/trunk"
-#svn checkout https://fdocore.osgeo.org/svn/fdocore/trunk "$FDO_SVN_ROOT" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD" --non-recursive
-
-#Enabling this call causes subsequent recursive checkout to fail
-#echo "Checking out root files from https://fdocore.osgeo.org/svn/fdocore/trunk/Providers"
-#svn checkout https://fdocore.osgeo.org/svn/fdocore/trunk/Providers "$FDO_SVN_ROOT/Providers" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD" --non-recursive
-
 if test "$FDOCOREENABLECHK" == no && test "$FDOENABLECHK" == yes; then
    echo "Checking out https://fdocore.osgeo.org/svn/fdocore/trunk/Fdo"
    svn checkout https://fdocore.osgeo.org/svn/fdocore/trunk/Fdo "$FDO_SVN_ROOT/Fdo" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
