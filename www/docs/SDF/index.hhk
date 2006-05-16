@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML><HEAD></HEAD><BODY>
+<OBJECT type="text/site properties">
+<param name="FrameName" value="right">
+</OBJECT>
+<UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_fdo_i_create_s_d_f_file_05550ca7007c3e389b7029c41baa1587.html#05550ca7007c3e389b7029c41baa1587"><param name="Name" value="Execute"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_fdo_i_create_s_d_f_file.html"><param name="Name" value="FdoICreateSDFFile"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_fdo_i_create_s_d_f_file.html#05550ca7007c3e389b7029c41baa1587"><param name="Name" value="Execute"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_fdo_i_create_s_d_f_file.html#0b8020c31deb9acc05311fd11f260c7d"><param name="Name" value="GetCoordinateSystemWKT"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_fdo_i_create_s_d_f_file.html#0bde059736005f052076c6735c8b2453"><param name="Name" value="GetFileName"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_fdo_i_create_s_d_f_file.html#4d74d6f8e45e76d8c8606953ae4cb307"><param name="Name" value="GetSpatialContextDescription"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_fdo_i_create_s_d_f_file.html#647ff5d7f47cf47422c32645074cce8d"><param name="Name" value="GetSpatialContextName"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_fdo_i_create_s_d_f_file.html#4a2bb60374b5db4f9dca173de2845803"><param name="Name" value="GetXYTolerance"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_fdo_i_create_s_d_f_file.html#8b2fc8bbd39311d609c316fac75d765b"><param name="Name" value="GetZTolerance"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_fdo_i_create_s_d_f_file.html#8bb4c31009cf0ab76fc094eadcf4ca91"><param name="Name" value="SetCoordinateSystemWKT"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_fdo_i_create_s_d_f_file.html#e92b777da3c498180dd72fe4629ee788"><param name="Name" value="SetFileName"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_fdo_i_create_s_d_f_file.html#86b4ac8510f46ad6629e42023f184cee"><param name="Name" value="SetSpatialContextDescription"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_fdo_i_create_s_d_f_file.html#bda73a210df146335a62e933ebe19948"><param name="Name" value="SetSpatialContextName"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_fdo_i_create_s_d_f_file.html#b3e528dda87b952a83786b2d01343524"><param name="Name" value="SetXYTolerance"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_fdo_i_create_s_d_f_file.html#2937b06fdf37207301200042b40e8d71"><param name="Name" value="SetZTolerance"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_fdo_i_create_s_d_f_file_0b8020c31deb9acc05311fd11f260c7d.html#0b8020c31deb9acc05311fd11f260c7d"><param name="Name" value="GetCoordinateSystemWKT"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_fdo_i_create_s_d_f_file_0bde059736005f052076c6735c8b2453.html#0bde059736005f052076c6735c8b2453"><param name="Name" value="GetFileName"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_fdo_i_create_s_d_f_file_4d74d6f8e45e76d8c8606953ae4cb307.html#4d74d6f8e45e76d8c8606953ae4cb307"><param name="Name" value="GetSpatialContextDescription"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_fdo_i_create_s_d_f_file_647ff5d7f47cf47422c32645074cce8d.html#647ff5d7f47cf47422c32645074cce8d"><param name="Name" value="GetSpatialContextName"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_fdo_i_create_s_d_f_file_4a2bb60374b5db4f9dca173de2845803.html#4a2bb60374b5db4f9dca173de2845803"><param name="Name" value="GetXYTolerance"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_fdo_i_create_s_d_f_file_8b2fc8bbd39311d609c316fac75d765b.html#8b2fc8bbd39311d609c316fac75d765b"><param name="Name" value="GetZTolerance"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_sdf_command_type_8h_86597e57635d4329ec6b9d0a67f969d7.html#86597e57635d4329ec6b9d0a67f969d7"><param name="Name" value="SDF_FIRST_PROVIDER_COMMAND"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_sdf_command_type_8h.html"><param name="Name" value="SdfCommandType.h"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_sdf_command_type_8h.html#86597e57635d4329ec6b9d0a67f969d7"><param name="Name" value="SDF_FIRST_PROVIDER_COMMAND"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_sdf_command_type_8h.html#4ac92492e0d58aeace1b0c0f96cefea3"><param name="Name" value="SdfCommandType"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_sdf_command_type_8h.html#4ac92492e0d58aeace1b0c0f96cefea348c2e525ef9f5e6ae1db0962a09cff37"><param name="Name" value="SdfCommandType_CreateSDFFile"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_sdf_command_type_8h_4ac92492e0d58aeace1b0c0f96cefea3.html#4ac92492e0d58aeace1b0c0f96cefea3"><param name="Name" value="SdfCommandType"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_sdf_command_type_8h_4ac92492e0d58aeace1b0c0f96cefea3.html#4ac92492e0d58aeace1b0c0f96cefea348c2e525ef9f5e6ae1db0962a09cff37"><param name="Name" value="SdfCommandType_CreateSDFFile"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_fdo_i_create_s_d_f_file_8bb4c31009cf0ab76fc094eadcf4ca91.html#8bb4c31009cf0ab76fc094eadcf4ca91"><param name="Name" value="SetCoordinateSystemWKT"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_fdo_i_create_s_d_f_file_e92b777da3c498180dd72fe4629ee788.html#e92b777da3c498180dd72fe4629ee788"><param name="Name" value="SetFileName"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_fdo_i_create_s_d_f_file_86b4ac8510f46ad6629e42023f184cee.html#86b4ac8510f46ad6629e42023f184cee"><param name="Name" value="SetSpatialContextDescription"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_fdo_i_create_s_d_f_file_bda73a210df146335a62e933ebe19948.html#bda73a210df146335a62e933ebe19948"><param name="Name" value="SetSpatialContextName"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_fdo_i_create_s_d_f_file_b3e528dda87b952a83786b2d01343524.html#b3e528dda87b952a83786b2d01343524"><param name="Name" value="SetXYTolerance"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_fdo_i_create_s_d_f_file_2937b06fdf37207301200042b40e8d71.html#2937b06fdf37207301200042b40e8d71"><param name="Name" value="SetZTolerance"></OBJECT>
+</UL>
