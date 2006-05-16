@@ -89,7 +89,6 @@ AC_CONFIG_FILES([Utilities/OWS/Makefile \
 #SchemaMgr
 AC_CONFIG_FILES([Utilities/SchemaMgr/Makefile \
                  Utilities/SchemaMgr/Nls/Makefile \
-                 Utilities/SchemaMgr/Inc/Makefile \
                  Utilities/SchemaMgr/Src/Makefile \
                  Utilities/SchemaMgr/Src/Sm/Makefile \
                  Utilities/SchemaMgr/Src/Sm/Lp/Makefile \
