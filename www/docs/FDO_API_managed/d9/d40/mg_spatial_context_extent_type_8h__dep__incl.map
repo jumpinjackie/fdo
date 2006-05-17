@@ -1,0 +1,9 @@
+base referer
+rect $d7/d5f/mg_i_create_spatial_context_8h.html 271,7 455,33
+rect $de/d04/mg_i_create_spatial_context_imp_8h.html 516,32 721,59
+rect $da/dc6/mg_i_spatial_context_reader_8h.html 269,159 456,185
+rect $d8/def/mg_i_spatial_context_reader_imp_8h.html 513,121 724,148
+rect $d2/d41/mg_xml_spatial_context_reader_8h.html 516,197 721,224
+rect $de/dd5/mg_i_connection_capabilities_8h.html 267,260 459,287
+rect $d0/d91/mg_xml_spatial_context_writer_8h.html 264,311 461,337
+rect $d8/dfa/mg_i_connection_capabilities_imp_8h.html 511,260 727,287
