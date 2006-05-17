@@ -84,68 +84,8 @@ I. Windows Notes:
 
    
       FDO has been tested using Bison 1.875 and Sed 4.1.4
-
-      The Bison and Sed files MUST be extracted to the following FDO build location: 
-
-        %FDOTHIRDPARTY%\util\GnuWin32
-
-      The FDO build expects the following list of files:
-
-        thirdparty/util/GnuWin32/bin/bison.exe
-        thirdparty/util/GnuWin32/bin/libiconv2.dll
-        thirdparty/util/GnuWin32/bin/libintl3.dll
-        thirdparty/util/GnuWin32/bin/m4.exe
-        thirdparty/util/GnuWin32/bin/sed.exe
-        thirdparty/util/GnuWin32/share/bison/c.m4
-        thirdparty/util/GnuWin32/share/bison/glr.c
-        thirdparty/util/GnuWin32/share/bison/lalr1.cc
-        thirdparty/util/GnuWin32/share/bison/m4sugar/m4sugar.m4
-        thirdparty/util/GnuWin32/share/bison/yacc.c
-        thirdparty/util/GnuWin32/share/locale/af/LC_MESSAGES/sed.mo
-        thirdparty/util/GnuWin32/share/locale/ca/LC_MESSAGES/sed.mo
-        thirdparty/util/GnuWin32/share/locale/cs/LC_MESSAGES/sed.mo
-        thirdparty/util/GnuWin32/share/locale/da/LC_MESSAGES/bison.mo
-        thirdparty/util/GnuWin32/share/locale/da/LC_MESSAGES/sed.mo
-        thirdparty/util/GnuWin32/share/locale/de/LC_MESSAGES/bison.mo
-        thirdparty/util/GnuWin32/share/locale/de/LC_MESSAGES/sed.mo
-        thirdparty/util/GnuWin32/share/locale/el/LC_MESSAGES/sed.mo
-        thirdparty/util/GnuWin32/share/locale/eo/LC_MESSAGES/sed.mo
-        thirdparty/util/GnuWin32/share/locale/es/LC_MESSAGES/bison.mo
-        thirdparty/util/GnuWin32/share/locale/es/LC_MESSAGES/sed.mo
-        thirdparty/util/GnuWin32/share/locale/et/LC_MESSAGES/bison.mo
-        thirdparty/util/GnuWin32/share/locale/et/LC_MESSAGES/sed.mo
-        thirdparty/util/GnuWin32/share/locale/fi/LC_MESSAGES/sed.mo
-        thirdparty/util/GnuWin32/share/locale/fr/LC_MESSAGES/bison.mo
-        thirdparty/util/GnuWin32/share/locale/fr/LC_MESSAGES/sed.mo
-        thirdparty/util/GnuWin32/share/locale/ga/LC_MESSAGES/sed.mo
-        thirdparty/util/GnuWin32/share/locale/gl/LC_MESSAGES/sed.mo
-        thirdparty/util/GnuWin32/share/locale/he/LC_MESSAGES/sed.mo
-        thirdparty/util/GnuWin32/share/locale/hr/LC_MESSAGES/bison.mo
-        thirdparty/util/GnuWin32/share/locale/hr/LC_MESSAGES/sed.mo
-        thirdparty/util/GnuWin32/share/locale/hu/LC_MESSAGES/sed.mo
-        thirdparty/util/GnuWin32/share/locale/id/LC_MESSAGES/bison.mo
-        thirdparty/util/GnuWin32/share/locale/id/LC_MESSAGES/sed.mo
-        thirdparty/util/GnuWin32/share/locale/it/LC_MESSAGES/bison.mo
-        thirdparty/util/GnuWin32/share/locale/it/LC_MESSAGES/sed.mo
-        thirdparty/util/GnuWin32/share/locale/ja/LC_MESSAGES/bison.mo
-        thirdparty/util/GnuWin32/share/locale/ja/LC_MESSAGES/sed.mo
-        thirdparty/util/GnuWin32/share/locale/ko/LC_MESSAGES/sed.mo
-        thirdparty/util/GnuWin32/share/locale/nl/LC_MESSAGES/bison.mo
-        thirdparty/util/GnuWin32/share/locale/nl/LC_MESSAGES/sed.mo
-        thirdparty/util/GnuWin32/share/locale/pl/LC_MESSAGES/sed.mo
-        thirdparty/util/GnuWin32/share/locale/pt_BR/LC_MESSAGES/bison.mo
-        thirdparty/util/GnuWin32/share/locale/pt_BR/LC_MESSAGES/sed.mo
-        thirdparty/util/GnuWin32/share/locale/ro/LC_MESSAGES/sed.mo
-        thirdparty/util/GnuWin32/share/locale/ru/LC_MESSAGES/bison.mo
-        thirdparty/util/GnuWin32/share/locale/ru/LC_MESSAGES/sed.mo
-        thirdparty/util/GnuWin32/share/locale/sk/LC_MESSAGES/sed.mo
-        thirdparty/util/GnuWin32/share/locale/sl/LC_MESSAGES/sed.mo
-        thirdparty/util/GnuWin32/share/locale/sr/LC_MESSAGES/sed.mo
-        thirdparty/util/GnuWin32/share/locale/sv/LC_MESSAGES/bison.mo
-        thirdparty/util/GnuWin32/share/locale/sv/LC_MESSAGES/sed.mo
-        thirdparty/util/GnuWin32/share/locale/tr/LC_MESSAGES/bison.mo
-        thirdparty/util/GnuWin32/share/locale/tr/LC_MESSAGES/sed.mo
-        thirdparty/util/GnuWin32/share/locale/zh_CN/LC_MESSAGES/sed.mo
+      The Bison and Sed files MUST be installed in the same location 
+      e.g.  C:\Program Files\GnuWin32
 
    4. OPTIONAL: The FDO build process allows it's documentation to be regenerated. 
       If this is required, install the OpenSource Doxygen documentation generation
@@ -174,78 +114,22 @@ I. Windows Notes:
    5. Ensure that the tools that the FDO build process use are in the build 
       environment's PATH.
 
-        MsBuild -- e.g. C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727
-        devenv  -- e.g. C:\Program Files\Microsoft Visual Studio 8\Common7\IDE
-        Doxygen -- e.g. C:\Program Files\doxygen\bin
-        Dot     -- e.g. C:\Program Files\ATT\Graphviz\bin
-        
+        MsBuild    -- e.g. C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727
+        devenv     -- e.g. C:\Program Files\Microsoft Visual Studio 8\Common7\IDE
+        Doxygen    -- e.g. C:\Program Files\doxygen\bin
+        Dot        -- e.g. C:\Program Files\ATT\Graphviz\bin
+        Sed/Bison  -- e.g. C:\Program Files\GnuWin32
+
         e.g.
         
         set PATH=%PATH%;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727
         set PATH=%PATH%;C:\Program Files\Microsoft Visual Studio 8\Common7\IDE
         set PATH=%PATH%;C:\Program Files\doxygen\bin
         set PATH=%PATH%;C:\Program Files\ATT\Graphviz\bin
+        set PATH=%PATH%;C:\Program Files\GnuWin32\bin
 
 
-   6. The expected list of release binaries that are expected from the  
-      FDO build are as follows:
-
-      %FDOTHIRDPARTY%\apache\xml-xalan\c\Build\Win32\VC8\Release
-           Xalan-C_1_7_0.dll
-           XalanMessages_1_7_0.dll
-
-      %FDOTHIRDPARTY%\apache\xml-xerces\c\Build\Win32\VC8\Release
-           xerces-c_2_5_0.dll
-
-      %FDO%\Unmanaged\Bin\Win32\Release
-           FDO.dll
-           FDOMessage.dll
-           FDOCommon.dll
-           FDOGeometry.dll
-           FDOSpatial.dll
-
-      <FDO OpenSource Location>\Providers\SHP\Bin\Win32\Release
-           SHPMessage.dll
-           SHPOverrides.dll
-           SHPProvider.dll
-
-      <FDO OpenSource Location>\Providers\SDF\Bin\Win32\Release
-           SDFProvider.dll
-           SDFMessage.dll
- 
-     The expected list of debug binaries that are expected from the  
-      FDO build are as follows:
-
-      %FDOTHIRDPARTY%\apache\xml-xalan\c\Build\Win32\VC8\Debug
-           Xalan-C_1_7_0D.dll
-           XalanMessages_1_7_0D.dll
-
-      %FDOTHIRDPARTY%\apache\xml-xerces\c\Build\Win32\VC8\Debug
-           xerces-c_2_5_0D.dll
-
-      %FDO%\Unmanaged\Bin\Win32\Debug
-           FDO.dll
-           FDOMessage.dll
-           FDOCommon.dll
-           FDOGeometry.dll
-           FDOSpatial.dll
-
-      <FDO OpenSource Location>\Providers\SHP\Bin\Win32\Debug
-           SHPMessage.dll
-           SHPOverrides.dll
-           SHPProvider.dll
-
-      <FDO OpenSource Location>\Providers\SDF\Bin\Win32\Debug
-           SDFProvider.dll
-           SDFMessage.dll
- 
-      The above binaries can be installed in any user-defined location as long
-      as FDO.dll, FDOMessage.dll, FDOCommon.dll, FDOGeometry.dll
-      and FDOSpatial.dll location are referenced by the windows environment PATH 
-      location.
-
-
-   7. The FDO OpenSource Distribution files contains a providers.xml file.
+   6. The FDO OpenSource Distribution files contains a providers.xml file.
       The providers.xml file is used by FDO to identify where FDO provider
       binaries are installed. 
 
@@ -255,49 +139,93 @@ I. Windows Notes:
 
       In order for the providers.xml file to be used on a Windows environment
       the names and path locations of the provider libraries must be changed
-      to be windows specific. This can be done according to the following  
-      template:
+      to be windows specific. This will be done as a part of the Windows build 
+      process. 
 
-      <?xml version="1.0" encoding="UTF-8" standalone="no" ?> 
+      This can also be done manually according to the following template:
+
+      <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
       <FeatureProviderRegistry>
-          <FeatureProvider>
-              <Name>OSGeo.SDF.3.2</Name>
-              <DisplayName>OSGeo FDO Provider for SDF</DisplayName>
-              <Description>FDO Provider for SDF</Description>
-              <IsManaged>False</IsManaged>
-              <Version>3.2.0.0</Version>
-              <FeatureDataObjectsVersion>3.2.0.0</FeatureDataObjectsVersion>
-              <LibraryPath>.\SDFProvider.dll</LibraryPath>
-          </FeatureProvider>
-          <FeatureProvider>
+        <FeatureProvider>
+          <Name>OSGeo.SDF.3.2</Name>
+          <DisplayName>OSGeo FDO Provider for SDF</DisplayName>
+          <Description>Read/write access to Autodesk's spatial database format, 
+          a file-based personal geodatabase that supports multiple features/attributes, 
+          spatial indexing, and file-locking.</Description>
+          <IsManaged>False</IsManaged>
+          <Version>3.2.0.0</Version>
+          <FeatureDataObjectsVersion>3.2.0.0</FeatureDataObjectsVersion>
+          <LibraryPath>.\SDFProvider.dll</LibraryPath>
+        </FeatureProvider>
+        <FeatureProvider>
           <Name>OSGeo.SHP.3.2</Name>
-              <DisplayName>OSGeo FDO Provider for SHP</DisplayName>
-              <Description>OSGeo FDO Provider for SHP</Description>
-              <IsManaged>False</IsManaged>
-              <Version>3.2.0.0</Version>
-              <FeatureDataObjectsVersion>3.2.0.0</FeatureDataObjectsVersion>
-              <LibraryPath>.\ShpProvider.dll</LibraryPath>
-          </FeatureProvider>
+          <DisplayName>OSGeo FDO Provider for SHP</DisplayName>
+          <Description>Read/write access to spatial and attribute data in an ESRI SHP file.</Description>
+          <IsManaged>False</IsManaged>
+          <Version>3.2.0.0</Version>
+          <FeatureDataObjectsVersion>3.2.0.0</FeatureDataObjectsVersion>
+          <LibraryPath>.\SHPProvider.dll</LibraryPath>
+        </FeatureProvider>
+        <FeatureProvider>
+          <Name>OSGeo.ArcSDE.3.2</Name>
+          <DisplayName>OSGeo FDO Provider for ArcSDE</DisplayName>
+          <Description>Read/write access to an ESRI ArcSDE-based data store, using Oracle and SQL Server.</Description>
+          <IsManaged>False</IsManaged>
+          <Version>3.2.0.0</Version>
+          <FeatureDataObjectsVersion>3.2.0.0</FeatureDataObjectsVersion>
+          <LibraryPath>.\ArcSDEProvider.dll</LibraryPath>
+        </FeatureProvider>
+        <FeatureProvider>
+          <Name>OSGeo.WFS.3.2</Name>
+          <DisplayName>OSGeo FDO Provider for WFS</DisplayName>
+          <Description>Read access to OGC WFS-based data store.</Description>
+          <IsManaged>False</IsManaged>
+          <Version>3.2.0.0</Version>
+          <FeatureDataObjectsVersion>3.2.0.0</FeatureDataObjectsVersion>
+          <LibraryPath>.\WFSProvider.dll</LibraryPath>
+        </FeatureProvider>
+        <FeatureProvider>
+          <Name>OSGeo.WMS.3.2</Name>
+          <DisplayName>OSGeo FDO Provider for WMS</DisplayName>
+          <Description>Read access to OGC WMS-based data store.</Description>
+          <IsManaged>False</IsManaged>
+          <Version>3.2.0.0</Version>
+          <FeatureDataObjectsVersion>3.2.0.0</FeatureDataObjectsVersion>
+          <LibraryPath>.\WMSProvider.dll</LibraryPath>
+        </FeatureProvider>
+        <FeatureProvider>
+          <Name>OSGeo.ODBC.3.2</Name> 
+          <DisplayName>OSGeo FDO Provider for ODBC</DisplayName> 
+          <Description>Autodesk FDO Provider for ODBC</Description> 
+          <IsManaged>False</IsManaged> 
+          <Version>3.2.0.0</Version> 
+          <FeatureDataObjectsVersion>3.2.0.0</FeatureDataObjectsVersion>
+          <LibraryPath>.\ODBCProvider.dll</LibraryPath>
+        </FeatureProvider>
+        <FeatureProvider>
+          <Name>OSGeo.MySQL.3.2</Name> 
+          <DisplayName>OSGeo FDO Provider for MySQL</DisplayName> 
+          <Description>FDO Provider for MySql</Description>
+          <IsManaged>False</IsManaged>
+          <Version>3.2.0.0</Version>
+          <FeatureDataObjectsVersion>3.2.0.0</FeatureDataObjectsVersion>
+          <LibraryPath>.\MySQLProvider.dll</LibraryPath>
+        </FeatureProvider>
       </FeatureProviderRegistry>
 
-      NOTE: In the above xml content, replace [FDOLIBS] with the FDO install 
-      location. e.g. \Program Files\Common Files\OSGeo\FDO\3.2\
-
-      On Windows the providers.xml file will need to be located where the
-      the FDO.dll is located. If the providers.xml file is not found in 
-      the same directory as FDO.dll, FDO will search providers.xml under:
-      \Program Files\Common Files\OSGeo\FDO\3.2\
+     On Windows the providers.xml file will need to be located where FDO.dll is located. 
 
 
    8. In order to build the ArcSDE Provider, you will need to have the
-      ArcSDE 9.1 Client SDK installed at one of the following location:
+      ArcSDE 9.1 Client SDK installed and the following environment variable set that 
+      points to the installation location:
 
-        %SDEHOME%/
+        set SDEHOME==<ArcSDE developer components path> 
 
       Note that ArcSDE is licensed software and must be obtained from an
       ESRI vendor.
 
-      The list of files expected under these locations is as follows:
+      The list of files expected under the installation location is as follows:
 
         .../lib/icuuc.lib
         .../lib/pe91.lib
@@ -347,12 +275,10 @@ I. Windows Notes:
 
    Following the installation, set the following FDO environment variable:
 
-        FDOMYSQL=<MySQL developer components path> 
+        set FDOMYSQL=<MySQL developer components path> 
 
    e.g. \Program Files\MySQL\MySQL Server 5.0
 
-   In the MySQL developer components path you will need to have two folders 
-   used by MySQL provider: include and lib.        
 
 II. Windows steps for open source build: 
 
@@ -363,25 +289,33 @@ II. Windows steps for open source build:
             gunzip fdo-3.2.0.tar.gz
             tar -xvf fdo-3.2.0.tar
 
+            gunzip fdosdf-3.2.0.tar.gz
+            tar -xvf fdosdf-3.2.0.tar
+
+	    etc...
+
        - or -
 
        Use Windows Winzip utility as follows:
 
             WINZIP32.EXE fdo-3.2.0.tar.gz
+            WINZIP32.EXE fdosdf-3.2.0.tar.gz
+	    etc...
 
   2.   Use the build.bat file to build the FDO OpenSource binaries. The following 
        is a general guideline on how to use build.bat
   
-**************************************************************************
-build.bat [-h] [-o=OutFolder] [-c=BuildType] [-a=Action] [-w=WithModule] [-d=BuildDocs]
-*
-Help:               -h[elp]
-OutFolder:      -o[utpath]=destination folder for binaries
-BuildType:      -c[onfig]=release(default), debug
-Action:            -a[ction]=buildinstall(default), buildonly, installonly
-WithModule:   -w[ith]=all(default), thirdparty, fdo, providers, shp, sdf, wfs, wms, arcsde, odbc, mysql
-BuildDocs:      -d[ocs]=skip(default), build
-**************************************************************************
+       **************************************************************************
+       build.bat [-h] [-o=OutFolder] [-c=BuildType] [-a=Action] [-w=WithModule] [-d=BuildDocs]
+       *
+       Help:        -h[elp]
+       OutFolder:   -o[utpath]=destination folder for binaries
+       BuildType:   -c[onfig]=release(default), debug
+       Action:      -a[ction]=buildinstall(default), buildonly, installonly
+       WithModule:  -w[ith]=all(default), thirdparty, fdo, providers, shp, sdf, wfs, wms, arcsde, odbc, mysql
+       BuildDocs:   -d[ocs]=skip(default), build
+       **************************************************************************
+
             e.g.
 
             **** Display help for build.bat
@@ -389,10 +323,10 @@ BuildDocs:      -d[ocs]=skip(default), build
             **** ReBuild all components excluding documentation
             build -a=buildonly
             **** ReBuild all components excluding documentation 
-            **** and copy output files to C:\Fdo
+            **** and install output files to C:\Fdo
             build -o=C:\Fdo
             **** ReBuild all components and documentation
-            **** and copy output and documentation files to C:\Fdo
+            **** and installoutput and documentation files to C:\Fdo
             build -o=C:\Fdo -d=build
             **** ReBuild FDO library
             build -a=buildonly -w=fdo
@@ -402,7 +336,7 @@ BuildDocs:      -d[ocs]=skip(default), build
             build -a=buildonly -w=shp
             **** ReBuild FDO SDF Provider
             build -a=buildonly -w=sdf
-            **** Build only documentation and copy files to C:\Fdo
+            **** Build only documentation and install files to C:\Fdo
             build -o=C:\Fdo -d=build -a=installonly
 
 -----------------------------
@@ -424,30 +358,20 @@ I. Linux Notes:
 
   3. Ensure that the FDO Environment Variables are set as follows:
 
-   FDO = <FDO OpenSource Location>/Fdo (e.g. /home/OpenSource/Fdo)
+      FDO = <FDO OpenSource Location>/Fdo (e.g. /home/OpenSource/Fdo)
 
-   FDOUTILITIES = <FDO OpenSource Location>/Providers/Utilities (e.g. /home/OpenSource/Providers/Utilities)
+      FDOUTILITIES = <FDO OpenSource Location>/Providers/Utilities (e.g. /home/OpenSource/Providers/Utilities)
 
-   FDOTHIRDPARTY = <FDO OpenSource Location>/ThirdParty (e.g. /home/OpenSource/Thridparty)
+      FDOTHIRDPARTY = <FDO OpenSource Location>/ThirdParty (e.g. /home/OpenSource/Thridparty)
 
  
- 4.  If any Makefile.am or configure.in file is modified, before "./configure" 
-      you must run:
+  4.  To run the unit test, you must set LD_LIBRARY_PATH as follows:
 
-       autoconf
-
-       automake
-
-
-  5.  To run the unit test, you must set LD_LIBRARY_PATH as follows:
-
-       $ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/fdo-3.2.0/lib:
-         $FDOTHIRDPARTY/linux/cppunit/lib
-      (Note: The path should be entered all on one line.)
-
-  6.  providers.xml will be installed to /usr/local/fdo-3.2.0/lib.
+       $ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/fdo-3.2.0/lib:$FDOTHIRDPARTY/linux/cppunit/lib
  
-  7.  Several known problems exist if auto-mounted drives are used as locations for the
+  5.  providers.xml will be installed to /usr/local/fdo-3.2.0/lib.
+ 
+  6.  Several known problems exist if auto-mounted drives are used as locations for the
       FDO Linux builds. It is recommended that users not use auto-mounted drives 
       when building FDO.
 
@@ -467,7 +391,7 @@ I. Linux Notes:
       mv fails because root has no privilege to mv files on auto-mounted directories 
       created during the make process by another user.
 
-  8.  In order to build the ArcSDE Provider, you will need to have the
+  7.  In order to build the ArcSDE Provider, you will need to have the
       ArcSDE 9.1 Client SDK installed at one of the following location:
 
         $SDEHOME/
@@ -509,9 +433,9 @@ I. Linux Notes:
         .../include/sg.h
         .../include/sgerr.h
 
-   9. In order to build the MySQL Provider, you will need to download 
-   and extract the Linux (non RPM package - Linux (x86)  Standard verion 5.0)
-   files using either gunzip/tar.
+   8. In order to build the MySQL Provider, you will need to download 
+      and extract the Linux (non RPM package - Linux (x86)  Standard verion 5.0)
+      files using either gunzip/tar.
  
         Home Page: 
         http://dev.mysql.com/
@@ -519,25 +443,96 @@ I. Linux Notes:
         Download Location: 
         http://dev.mysql.com/downloads/mysql/5.0.html
  
-   Following the installation, set the following FDO environment variable:
+      Following the installation, set the following FDO environment variable:
   
         FDOMYSQL=<MySQL developer components path>
  
-   e.g. /home/mysql-standard-5.0-linux-i686-glibc23
+      e.g. /home/mysql-standard-5.0-linux-i686-glibc23
 
-   In the MySQL developer components path you will need to have two folders 
-   used by MySQL provider: include and lib.
+      In the MySQL developer components path you will need to have two folders 
+      used by MySQL provider: include and lib.
 
+   10. In order to build the ODBC Provider, you will need to either 
+
+       a) download and install unixODBC-CORE and unixODBC-devel
+ 
+           Home Page: 
+           http://www.unixodbc.org/
+
+           Download Location: 
+           http://sourceforge.net/project/showfiles.php?group_id=1544
+
+           Download Files: 
+           unixODBC-CORE    - unixODBC-2.2.11-1.i386.rpm
+           unixODBC-devel   - unixODBC-devel-2.2.11-1.i386.rpm
+
+           Such an installation will install the unixODBC driver manager libraries 
+           and header files  in
+
+           usr/lib and usr/include
+
+           The FDO ODBC provider build will automatically locate thee files in this liocation.
+
+       b) Install an unixODBC driver such as the EasySofy Oracle ODBC driver. This installation 
+          will include the driver libraries as well as the unixODBC manager libraries. 
+          If such an installation occurs the manager libraries and headers will not be 
+          installed under /usr/lib or usr/include but will be installed in a custom location
+          as specified by the driver RPM package. If this is the case, you will need to set 
+          the following FDO environment variable to point to the location of the unixODBC 
+          components
+
+           FDOODBC=<unixODBC developer components path>
 
 II. Linux steps for open source build:
 
-  1.  gunzip fdo-3.2.0.tar.gz
+   1.  Extract the FDO OpenSource files using gunzip/tar.
 
-  2.  tar -xvf fdo-3.2.0.tar
+       Use gunzip and tar utilities as follows:
 
-  3.  cd OpenSource_FDO 
+            gunzip fdo-3.2.0.tar.gz
+            tar -xvf fdo-3.2.0.tar
 
-  4.  sh build_linux.sh
+            gunzip fdosdf-3.2.0.tar.gz
+            tar -xvf fdosdf-3.2.0.tar
 
-  5.  make install
+	    etc...
+
+  2.   cd <FDO OpenSource Location>
+
+  3.   Use the build_linux.sh script to build and install the FDO OpenSource libraries. 
+       The following is a general guideline on how to use build_linux.sh
+
+       echo "**************************************************************************"
+       echo "build_linux.sh [--h] [-c BuildType] [-a Action] [--w WithModule] "
+       echo "*"
+       echo "Help:       --h[elp]"
+       echo "BuildType:  --c[onfig] release(default), debug"
+       echo "Action:     --a[ction] buildinstall(default), buildonly, installonly, configure"
+       echo "WithModule: --w[ith] fdocore(default), fdo, thirdparty, providers, shp, sdf, wfs, wms, arcsde, rdbms"
+       echo "**************************************************************************"
+
+           e.g.
+
+            **** Display help for build.bat
+            build_linux.sh --h
+            **** ReBuild and Install all components without running configure
+            build_linux.sh
+            **** Configure and ReBuild all components
+            build_linux.sh --a buildonly --a configure
+            **** Configure, ReBuild and Install all components
+            build_linux.sh --a buildinstall --a configure
+            **** ReBuild all components
+            build_linux.sh --a buildonly
+            **** Install all components
+            build_linux.sh --a installonly
+            **** ReBuild FDO library
+            build_linux.sh --a buildonly -w fdo
+            **** ReBuild all FDO Providers
+            build_linux.sh --a buildonly --w providers
+            **** ReBuild FDO Shape Provider
+            build_linux.sh --a buildonly --w shp
+            **** ReBuild FDO SDF Provider
+            build_linux.sh --a buildonly --w sdf
+
+ 
 <end>
