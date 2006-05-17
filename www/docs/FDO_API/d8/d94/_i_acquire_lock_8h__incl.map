@@ -1,0 +1,7 @@
+base referer
+rect $d7/daa/_std_8h.html 828,159 881,185
+rect $d4/df6/_i_feature_command_8h.html 176,121 419,148
+rect $de/d25/_i_connection_8h.html 524,196 732,223
+rect $d1/d33/_lock_type_8h.html 177,223 417,249
+rect $d8/dfd/_lock_strategy_8h.html 168,273 427,300
+rect $d6/df7/_i_lock_conflict_reader_8h.html 477,285 779,312

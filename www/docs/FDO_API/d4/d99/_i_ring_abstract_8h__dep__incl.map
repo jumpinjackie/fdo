@@ -1,0 +1,9 @@
+base referer
+rect $d2/dd9/_i_linear_ring_8h.html 170,163 271,189
+rect $dc/dce/_i_ring_8h.html 188,315 252,341
+rect $d7/dfb/_geometry_std_8h.html 576,264 688,291
+rect $d6/d46/_geometry_stream_reader_8h.html 319,87 498,113
+rect $d1/db7/_geometry_stream_writer_8h.html 547,137 718,164
+rect $d1/d4e/_geometry_8h.html 768,163 859,189
+rect $d3/d65/_i_polygon_8h.html 366,188 451,215
+rect $d6/d7e/_i_curve_polygon_8h.html 348,340 468,367
