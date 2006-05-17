@@ -1,0 +1,5 @@
+base referer
+rect $dd/d87/mg_data_value_8h.html 191,32 407,59
+rect $d4/d40/mg_literal_value_8h.html 455,7 679,34
+rect $d4/d6c/mg_data_type_8h.html 470,58 664,84
+rect $dc/d75/mg_value_expression_8h.html 727,7 980,34
