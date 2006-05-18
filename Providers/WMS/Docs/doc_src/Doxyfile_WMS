@@ -73,7 +73,7 @@ WARN_LOGFILE           = warning_logfile.txt
 # configuration options related to the input files
 #---------------------------------------------------------------------------
 INPUT                  = group_and_page_definitions \
-                         ../../inc/WMS/Override
+                         ../../Inc/WMS/Override
 FILE_PATTERNS          = *.h
 RECURSIVE              = YES
 EXCLUDE                = 
