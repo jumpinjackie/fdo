@@ -1,0 +1,121 @@
+<package>
+    <job id="pack">
+        <script language="VBScript" src="methods.vbs"></script>
+        <script language="VBScript">
+			On Error Resume Next
+			Dim FullPath
+            Dim oFile
+            Dim lineFile
+            Dim EndFile
+            Dim activePath
+            Dim basePath
+            Dim chgFileName
+            Dim infoFileName
+            Dim modLine
+            Dim ChangeName
+            Dim ZipName
+            
+            chgFileName = "FilesChanges.log"
+            infoFileName = "Read_Me_FilesChanges.txt"
+            ZipName = ChangeName & ".zip"
+            Set WshShell = WScript.CreateObject("WScript.Shell")
+            ChangeName = WshShell.ExpandEnvironmentStrings("%CHANGENAME%")
+            Set fsc = new FileSystemClass
+   		    basePath = fsc.BasePath(WScript.ScriptFullName)
+		    If fsc.FileExist(infoFileName) Then
+		        Call fsc.RemoveReadOnly(infoFileName)
+		        Call fsc.DeleteFile(infoFileName)
+		    End If
+		    If fsc.FileExist(ZipName) Then
+		        Call fsc.RemoveReadOnly(ZipName)
+		        Call fsc.DeleteFile(ZipName)
+		    End If    
+			Set fs = WScript.CreateObject("Scripting.FileSystemObject")
+			If fs.FileExists(chgFileName) Then
+               Set oinfFile = fs.CreateTextFile(infoFileName, true)
+               Set oFile = fs.OpenTextFile(chgFileName)
+               EndFile = false
+               Do
+                lineFile = oFile.ReadLine
+                Select Case lineFile
+                    Case "end"
+                        EndFile = True
+                    Case "$(.)"
+                        oinfFile.WriteLine("*")
+                        oinfFile.WriteLine("******Fdocore******")
+                        activePath = basePath & "\"
+                    Case "$(Thirdparty)"
+                        activePath = basePath & "\Thirdparty\"
+                    Case "$(Fdo)"
+                        activePath = basePath & "\Fdo\"
+                    Case "$(Providers)"
+                        activePath = basePath & "\Providers\"
+                    Case "$(Utilities)"
+                        activePath = basePath & "\Utilities\"
+                    Case "$(www)"
+                        activePath = basePath & "\www\"
+                    Case "$(ArcSDE)"
+                        oinfFile.WriteLine("*")
+                        oinfFile.WriteLine("******ArcSDE******")
+                        activePath = basePath & "\Providers\ArcSDE\"
+                    Case "$(GenericRdbms)"
+                        oinfFile.WriteLine("*")
+                        oinfFile.WriteLine("******Rdbms******")
+                        activePath = basePath & "\Providers\GenericRdbms\"
+                    Case "$(SDF)"
+                        oinfFile.WriteLine("*")
+                        oinfFile.WriteLine("******SDF******")
+                        activePath = basePath & "\Providers\SDF\"
+                    Case "$(SHP)"
+                        oinfFile.WriteLine("*")
+                        oinfFile.WriteLine("******SHP******")
+                        activePath = basePath & "\Providers\SHP\"
+                    Case "$(WFS)"
+                        oinfFile.WriteLine("*")
+                        oinfFile.WriteLine("******WFS******")
+                        activePath = basePath & "\Providers\WFS\"
+                    Case "$(WMS)"
+                        oinfFile.WriteLine("*")
+                        oinfFile.WriteLine("******WMS******")
+                        activePath = basePath & "\Providers\WMS\"
+                    Case Else
+                        modLine = Left(lineFile, 7)
+                        If not Instr(modLine, "M") = 0 Then
+                            WScript.Echo ("M: " & modLine)
+                            modLine = activePath & Right(lineFile, Len(lineFile) - 7)
+                            oinfFile.WriteLine("Modified : " & modLine)
+                            Call WshShell.Run("wzzip -P " & ChangeName & ".zip " & modLine, 0, true)
+                        ElseIf not Instr(modLine, "A") = 0 Then
+                            WScript.Echo ("A: " & modLine)
+                            modLine = activePath & Right(lineFile, Len(lineFile) - 7)
+                            oinfFile.WriteLine("Added : " & modLine)
+                            Call WshShell.Run("wzzip -P " & ChangeName & ".zip " & modLine, 0, true)
+                        ElseIf not Instr(modLine, "D") = 0 Then
+                            WScript.Echo ("D: " & modLine)
+                            modLine = activePath & Right(lineFile, Len(lineFile) - 7)
+                            oinfFile.WriteLine("Deleted : " & modLine)
+                            Call WshShell.Run("wzzip -P " & ChangeName & ".zip " & modLine, 0, true)
+                        End If
+                End Select
+               Loop While EndFile = False
+               modLine = basePath & "\" & infoFileName
+               Call WshShell.Run("wzzip -P " & ChangeName & ".zip " & modLine, 0, true)
+               oinfFile.Close
+               oFile.Close
+               Set oFile = Nothing
+               Set oinfFile = Nothing
+		    End If
+		    If fsc.FileExist(chgFileName) Then
+		        Call fsc.RemoveReadOnly(chgFileName)
+		        Call fsc.DeleteFile(chgFileName)
+		    End If
+		    If fsc.FileExist(infoFileName) Then
+		        Call fsc.RemoveReadOnly(infoFileName)
+		        Call fsc.DeleteFile(infoFileName)
+		    End If
+            Set WshShell = nothing
+            Set fsc = nothing
+            Set fs = Nothing
+        </script>
+    </job>
+</package>

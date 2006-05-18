@@ -3,6 +3,7 @@
 TYPEACTION=buildinstall
 TYPEBUILD=release
 TYPECONFIGURE=
+BUILDDOCS=skip
 
 DEFMODIFY=no
 THRPENABLE=yes
@@ -37,7 +38,18 @@ do
     elif test "$1" == configure; then
         TYPECONFIGURE=configure
     else
-        echo "Invalid parameter"
+        echo "$arg Invalid parameter $1"
+	exit 1
+    fi
+    shift
+    ;;
+  --d | --docs)
+    if test "$1" == skip; then
+        BUILDDOCS=skip
+    elif test "$1" == build; then
+        BUILDDOCS=build
+    else
+        echo "$arg Invalid parameter $1"
 	exit 1
     fi
     shift
@@ -48,7 +60,7 @@ do
     elif test "$1" == release; then
         TYPEBUILD=release
     else
-        echo "Invalid parameter"
+        echo "$arg Invalid parameter $1"
 	exit 1
     fi
     shift
@@ -67,7 +79,7 @@ do
 	UTILENABLE=no
      fi
      if test -z "$1"; then
-        echo "Invalid parameter"
+        echo "$arg Invalid parameter $1"
 	exit 1
      elif test "$1" == fdocore; then
 	THRPENABLE=yes
@@ -99,7 +111,7 @@ do
      elif test "$1" == rdbms; then
         RDBMSENABLE=yes
      else
-        echo "Invalid parameter"
+        echo "$arg Invalid parameter $1"
 	exit 1
      fi
      shift
@@ -112,7 +124,7 @@ do
     ;;
 
   *)
-    echo "The command is not recognized."
+    echo "The command is not recognized: $arg"
     echo "Please use the format:"
     SHOWHELP=yes
     break
@@ -124,11 +136,12 @@ done
 if test "$SHOWHELP" == yes; then
 
    echo "**************************************************************************"
-   echo "build_linux.sh [--h] [-c=BuildType] [-a=Action] [--w WithModule] "
+   echo "build_linux.sh [--h] [--c BuildType] [--a Action] [--w WithModule] [--d BuildDocs]"
    echo "*"
    echo "Help:           --h[elp]"
    echo "BuildType:      --c[onfig] release(default), debug"
    echo "Action:         --a[ction] buildinstall(default), buildonly, installonly, configure"
+   echo "BuildDocs:      --d[ocs] skip(default), build"
 
    HELPSTRINGWITH="WithModule:     --w[ith] fdocore(default), fdo, thirdparty, providers"
    if test -e "Providers/SHP/build_linux.sh"; then
@@ -175,7 +188,7 @@ fi
 
 ### start build ###
 
-CMDEX="--c $TYPEBUILD --a $TYPEACTION"
+CMDEX="--c $TYPEBUILD --a $TYPEACTION --d $BUILDDOCS"
 if test "$TYPECONFIGURE" == configure ; then
    CMDEX="$CMDEX --a $TYPECONFIGURE"
 fi
@@ -205,6 +218,25 @@ if test "$FDOENABLE" == yes; then
    fi
    if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == installonly ; then
       make install
+   fi
+   if test "$BUILDDOCS" == build ; then
+      echo Creating Fdo unmanaged html documentation
+      if test -e "../Docs/HTML/FDO_API"; then
+          rm -rf ../Docs/HTML/FDO_API
+      fi
+      if test ! -e "../Docs"; then
+       mkdir ../Docs
+      fi
+      if test ! -e "../Docs/HTML"; then
+          mkdir ../Docs/HTML
+      fi
+      if test ! -e "../Docs/HTML/FDO_API"; then
+          mkdir ../Docs/HTML/FDO_API
+      fi
+
+      pushd Docs/doc_src >& /dev/null
+      doxygen Doxyfile_FDOmanaged >& /dev/null
+      popd >& /dev/null
    fi
    popd >& /dev/null
 fi
