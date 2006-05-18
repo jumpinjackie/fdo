@@ -3,6 +3,7 @@
 TYPEACTION=buildinstall
 TYPEBUILD=release
 TYPECONFIGURE=no
+BUILDDOCS=no
 
 ### study parameters ###
 while test $# -gt 0
@@ -24,7 +25,18 @@ do
     elif test "$1" == configure; then
         TYPECONFIGURE=yes
     else
-        echo "Invalid parameter"
+        echo "$arg Invalid parameter $1"
+	exit 1
+    fi
+    shift
+    ;;
+  --d | --docs)
+    if test "$1" == skip; then
+        BUILDDOCS=no
+    elif test "$1" == build; then
+        BUILDDOCS=yes
+    else
+        echo "$arg Invalid parameter $1"
 	exit 1
     fi
     shift
@@ -35,7 +47,7 @@ do
     elif test "$1" == release; then
         TYPEBUILD=release
     else
-        echo "Invalid parameter"
+        echo "$arg Invalid parameter $1"
 	exit 1
     fi
     shift
@@ -48,7 +60,7 @@ do
     ;;
 
   *)
-    echo "The command is not recognized."
+    echo "The command is not recognized: $arg"
     echo "Please use the format:"
     SHOWHELP=yes
     break
@@ -59,11 +71,12 @@ done
 
 if test "$SHOWHELP" == yes; then
    echo "**************************************************************************"***********
-   echo "build_linux.sh [--h] [-c=BuildType] [-a=Action] "
+   echo "build_linux.sh [--h] [-c BuildType] [-a Action] [--d BuildDocs]"
    echo "*"
    echo "Help:           --h[elp]"
    echo "BuildType:      --c[onfig] release(default), debug"
    echo "Action:         --a[ction] buildinstall(default), buildonly, installonly, configure"
+   echo "BuildDocs:      --d[ocs] skip(default), build"
    echo "**************************************************************************"***********
    exit 0
 fi
@@ -88,6 +101,29 @@ fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == installonly ; then
    make install
+fi
+
+if test "$BUILDDOCS" == yes ; then
+   echo Creating WFS provider html documentation
+   if test -e "../Docs/HTML/Providers/WFS"; then
+       rm -rf ../Docs/HTML/Providers/WFS
+   fi
+   if test ! -e "../Docs"; then
+       mkdir ../Docs
+   fi
+   if test ! -e "../Docs/HTML"; then
+       mkdir ../Docs/HTML
+   fi
+   if test ! -e "../Docs/HTML/Providers"; then
+       mkdir ../Docs/HTML/Providers
+   fi
+   if test ! -e "../Docs/HTML/Providers/WFS"; then
+       mkdir ../Docs/HTML/Providers/WFS
+   fi
+
+   pushd Docs/doc_src >& /dev/null
+   doxygen Doxyfile_WFS >& /dev/null
+   popd >& /dev/null
 fi
 
 exit 0
