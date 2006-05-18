@@ -106,7 +106,7 @@ IGNORE_PREFIX          =
 # configuration options related to the HTML output
 #---------------------------------------------------------------------------
 GENERATE_HTML          = YES
-HTML_OUTPUT            = ../../../Docs/HTML/Providers\SDF
+HTML_OUTPUT            = ../../../Docs/HTML/Providers/SDF
 HTML_FILE_EXTENSION    = .html
 HTML_HEADER            = headers_and_footers/header.html
 HTML_FOOTER            = headers_and_footers/footer.html
