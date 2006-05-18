@@ -124,6 +124,28 @@ if test "$BUILDDOCS" == yes ; then
    pushd Docs/doc_src >& /dev/null
    doxygen Doxyfile_SHP >& /dev/null
    popd >& /dev/null
+
+fi
+
+if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == installonly ; then
+   if test -e "/usr/local/fdo-3.2.0/Docs/HTML/Providers/SHP"; then
+      rm -rf "/usr/local/fdo-3.2.0/Docs/HTML/Providers/SHP"
+   fi
+   if test ! -e "/usr/local/fdo-3.2.0"; then
+         mkdir "/usr/local/fdo-3.2.0"
+   fi
+   if test ! -e "/usr/local/fdo-3.2.0/Docs"; then
+      mkdir "/usr/local/fdo-3.2.0/Docs"
+   fi
+   if test ! -e "/usr/local/fdo-3.2.0/Docs/HTML"; then
+      mkdir "/usr/local/fdo-3.2.0/Docs/HTML"
+   fi
+   if test ! -e "/usr/local/fdo-3.2.0/Docs/HTML/Providers"; then
+      mkdir "/usr/local/fdo-3.2.0/Docs/HTML/Providers"
+   fi
+   if test -e "../Docs/HTML/Providers/SHP"; then
+      cp --force --recursive "../Docs/HTML/Providers/SHP" "/usr/local/fdo-3.2.0/Docs/HTML/Providers"
+   fi
 fi
 
 exit 0
