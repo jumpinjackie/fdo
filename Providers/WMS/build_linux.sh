@@ -105,46 +105,19 @@ fi
 
 if test "$BUILDDOCS" == yes ; then
    echo Creating WMS provider html documentation
-   if test -e "../Docs/HTML/Providers/WMS"; then
-       rm -rf ../Docs/HTML/Providers/WMS
-   fi
-   if test ! -e "../Docs"; then
-       mkdir ../Docs
-   fi
-   if test ! -e "../Docs/HTML"; then
-       mkdir ../Docs/HTML
-   fi
-   if test ! -e "../Docs/HTML/Providers"; then
-       mkdir ../Docs/HTML/Providers
-   fi
-   if test ! -e "../Docs/HTML/Providers/WMS"; then
-       mkdir ../Docs/HTML/Providers/WMS
-   fi
+   rm -rf ../Docs/HTML/Providers/WMS
+   mkdir -p ../Docs/HTML/Providers/WMS
 
    pushd Docs/doc_src >& /dev/null
    doxygen Doxyfile_WMS >& /dev/null
    popd >& /dev/null
-
 fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == installonly ; then
-   if test -e "/usr/local/fdo-3.2.0/Docs/HTML/Providers/WMS"; then
-      rm -rf "/usr/local/fdo-3.2.0/Docs/HTML/Providers/WMS"
-   fi
-   if test ! -e "/usr/local/fdo-3.2.0"; then
-         mkdir "/usr/local/fdo-3.2.0"
-   fi
-   if test ! -e "/usr/local/fdo-3.2.0/Docs"; then
-      mkdir "/usr/local/fdo-3.2.0/Docs"
-   fi
-   if test ! -e "/usr/local/fdo-3.2.0/Docs/HTML"; then
-      mkdir "/usr/local/fdo-3.2.0/Docs/HTML"
-   fi
-   if test ! -e "/usr/local/fdo-3.2.0/Docs/HTML/Providers"; then
-      mkdir "/usr/local/fdo-3.2.0/Docs/HTML/Providers"
-   fi
+   rm -rf "/usr/local/fdo-3.2.0/docs/HTML/Providers/WMS"
+   mkdir -p "/usr/local/fdo-3.2.0/docs/HTML/Providers"
    if test -e "../Docs/HTML/Providers/WMS"; then
-      cp --force --recursive "../Docs/HTML/Providers/WMS" "/usr/local/fdo-3.2.0/Docs/HTML/Providers"
+      cp --force --recursive "../Docs/HTML/Providers/WMS" "/usr/local/fdo-3.2.0/docs/HTML/Providers"
    fi
 fi
 
