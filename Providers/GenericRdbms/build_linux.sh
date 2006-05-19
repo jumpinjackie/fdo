@@ -105,27 +105,10 @@ fi
 
 if test "$BUILDDOCS" == yes ; then
    echo Creating Rdbms providers html documentation
-   if test -e "../Docs/HTML/Providers/MySQL"; then
-       rm -rf ../Docs/HTML/Providers/MySQL
-   fi
-   if test -e "../Docs/HTML/Providers/ODBC"; then
-       rm -rf ../Docs/HTML/Providers/ODBC
-   fi
-   if test ! -e "../Docs"; then
-       mkdir ../Docs
-   fi
-   if test ! -e "../Docs/HTML"; then
-       mkdir ../Docs/HTML
-   fi
-   if test ! -e "../Docs/HTML/Providers"; then
-       mkdir ../Docs/HTML/Providers
-   fi
-   if test ! -e "../Docs/HTML/Providers/MySQL"; then
-       mkdir ../Docs/HTML/Providers/MySQL
-   fi
-   if test ! -e "../Docs/HTML/Providers/ODBC"; then
-       mkdir ../Docs/HTML/Providers/ODBC
-   fi
+   rm -rf ../Docs/HTML/Providers/MySQL
+   rm -rf ../Docs/HTML/Providers/ODBC
+   mkdir -p ../Docs/HTML/Providers/MySQL
+   mkdir -p ../Docs/HTML/Providers/ODBC
 
    pushd Docs/doc_src >& /dev/null
    doxygen Doxyfile_MySQL >& /dev/null
@@ -134,33 +117,17 @@ if test "$BUILDDOCS" == yes ; then
    pushd Docs/doc_src >& /dev/null
    doxygen Doxyfile_ODBC >& /dev/null
    popd >& /dev/null
-
 fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == installonly ; then
-   if test -e "/usr/local/fdo-3.2.0/Docs/HTML/Providers/MySQL"; then
-      rm -rf "/usr/local/fdo-3.2.0/Docs/HTML/Providers/MySQL"
-   fi
-   if test -e "/usr/local/fdo-3.2.0/Docs/HTML/Providers/ODBC"; then
-      rm -rf "/usr/local/fdo-3.2.0/Docs/HTML/Providers/ODBC"
-   fi
-   if test ! -e "/usr/local/fdo-3.2.0"; then
-         mkdir "/usr/local/fdo-3.2.0"
-   fi
-   if test ! -e "/usr/local/fdo-3.2.0/Docs"; then
-      mkdir "/usr/local/fdo-3.2.0/Docs"
-   fi
-   if test ! -e "/usr/local/fdo-3.2.0/Docs/HTML"; then
-      mkdir "/usr/local/fdo-3.2.0/Docs/HTML"
-   fi
-   if test ! -e "/usr/local/fdo-3.2.0/Docs/HTML/Providers"; then
-      mkdir "/usr/local/fdo-3.2.0/Docs/HTML/Providers"
-   fi
+   rm -rf "/usr/local/fdo-3.2.0/docs/HTML/Providers/MySQL"
+   rm -rf "/usr/local/fdo-3.2.0/docs/HTML/Providers/ODBC"
+   mkdir -p "/usr/local/fdo-3.2.0/docs/HTML/Providers"
    if test -e "../Docs/HTML/Providers/MySQL"; then
-      cp --force --recursive "../Docs/HTML/Providers/MySQL" "/usr/local/fdo-3.2.0/Docs/HTML/Providers"
+      cp --force --recursive "../Docs/HTML/Providers/MySQL" "/usr/local/fdo-3.2.0/docs/HTML/Providers"
    fi
    if test -e "../Docs/HTML/Providers/ODBC"; then
-      cp --force --recursive "../Docs/HTML/Providers/ODBC" "/usr/local/fdo-3.2.0/Docs/HTML/Providers"
+      cp --force --recursive "../Docs/HTML/Providers/ODBC" "/usr/local/fdo-3.2.0/docs/HTML/Providers"
    fi
 fi
 
