@@ -33,7 +33,6 @@ AC_ARG_WITH([fdo],
 		[custom_fdo=DEFAULT])
 
 if test $custom_fdo = "DEFAULT"; then
-  FDO="$PWD"/Fdo
   if test -d $FDO; then
   	AC_MSG_NOTICE([Building with default location of FDO API files at $FDO])
   else
@@ -55,7 +54,6 @@ AC_ARG_WITH([fdo-utilities],
 		[custom_fdo_utilities=DEFAULT])
 
 if test $custom_fdo_utilities = "DEFAULT"; then
-  FDOUTILITIES="$PWD/Utilities"
   if test -d $FDOUTILITIES; then
   	AC_MSG_NOTICE([Building with default location of FDO Utility files at $FDOUTILITIES])
   else
@@ -77,7 +75,6 @@ AC_ARG_WITH([fdo-thirdparty],
 		[custom_fdo_thirdparty=DEFAULT])
 
 if test $custom_fdo_thirdparty = "DEFAULT"; then
-  FDOTHIRDPARTY="$PWD/Thirdparty"
   if test -d $FDOTHIRDPARTY; then
   	AC_MSG_NOTICE([Building with default location of FDO Thirdparty files at $FDOTHIRDPARTY])
   else
@@ -92,13 +89,35 @@ else
   fi
 fi
 
+AC_ARG_WITH([sde-home],
+	    FDO_HELP_STRING([--with-sde-home],
+              	        [specifies directory for ESRI ArcSDE SDK files [[default=DEFAULT]]]),
+		[custom_sde_home=$withval],
+		[custom_sde_home=DEFAULT])
+
+if test $custom_sde_home = "DEFAULT"; then
+  if test -d $SDEHOME; then
+  	AC_MSG_NOTICE([Building with default location of ESRI ArcSDE SDK files at $SDEHOME])
+  else
+ 	AC_MSG_ERROR([The default ESRI ArcSDE path $custom_sde_home is not a valid directory. Please use the custom option])
+  fi
+else 
+  if test -d $custom_sde_home; then
+  	SDEHOME="$custom_sde_home"
+  	AC_MSG_NOTICE([Building with custom location of ESRI ArcSDE SDK directory at $SDEHOME])
+  else 
+	AC_MSG_ERROR([The specified FDO Thirdparty path $custom_sde_home is not a valid directory])
+  fi
+fi
+
 AC_SUBST(FDO)
 AC_SUBST(FDOUTILITIES)
 AC_SUBST(FDOTHIRDPARTY)
+AC_SUBST(SDEHOME)
 
 # Check for Debug or Release build settings
 AC_ARG_ENABLE([debug],
-               MAP_HELP_STRING([--enable-debug],
+               FDO_HELP_STRING([--enable-debug],
               	             [enable debug build [[default=no]]]),
 	      	             [enable_debug=$enableval],
 	      	             [enable_debug=no])
