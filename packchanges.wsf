@@ -98,12 +98,12 @@
                         End If
                 End Select
                Loop While EndFile = False
-               modLine = basePath & "\" & infoFileName
-               Call WshShell.Run("wzzip -P " & ChangeName & ".zip " & modLine, 0, true)
                oinfFile.Close
                oFile.Close
                Set oFile = Nothing
                Set oinfFile = Nothing
+               modLine = basePath & "\" & infoFileName
+               Call WshShell.Run("wzzip -P " & ChangeName & ".zip " & modLine, 0, true)
 		    End If
 		    If fsc.FileExist(chgFileName) Then
 		        Call fsc.RemoveReadOnly(chgFileName)
