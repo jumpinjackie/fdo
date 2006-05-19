@@ -221,37 +221,19 @@ if test "$FDOENABLE" == yes; then
    fi
    if test "$BUILDDOCS" == build ; then
       echo Creating Fdo unmanaged html documentation
-      if test -e "Docs/HTML/FDO_API"; then
-          rm -rf Docs/HTML/FDO_API
-      fi
-      if test ! -e "Docs"; then
-       mkdir Docs
-      fi
-      if test ! -e "Docs/HTML"; then
-          mkdir Docs/HTML
-      fi
-      if test ! -e "Docs/HTML/FDO_API"; then
-          mkdir Docs/HTML/FDO_API
-      fi
+      rm -rf Docs/HTML/FDO_API
+      mkdir -p Docs/HTML/FDO_API
 
       pushd Docs/doc_src >& /dev/null
       doxygen Doxyfile_FDOunmanaged >& /dev/null
       popd >& /dev/null
    fi
    if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == installonly ; then
-      if test -e "/usr/local/fdo-3.2.0/docs/HTML/FDO_API"; then
-         rm -rf "/usr/local/fdo-3.2.0/docs/HTML/FDO_API"
+      rm -rf "/usr/local/fdo-3.2.0/docs/HTML/FDO_API"
+      mkdir -p "/usr/local/fdo-3.2.0/docs/HTML"
+      if test -e "Docs/HTML/FDO_API"; then
+         cp --force --recursive "Docs/HTML/FDO_API" "/usr/local/fdo-3.2.0/docs/HTML"
       fi
-      if test ! -e "/usr/local/fdo-3.2.0"; then
-         mkdir "/usr/local/fdo-3.2.0"
-      fi
-      if test ! -e "/usr/local/fdo-3.2.0/docs"; then
-         mkdir "/usr/local/fdo-3.2.0/docs"
-      fi
-      if test ! -e "/usr/local/fdo-3.2.0/docs/HTML"; then
-         mkdir "/usr/local/fdo-3.2.0/docs/HTML"
-      fi
-      cp --force --recursive "Docs/HTML/FDO_API" "/usr/local/fdo-3.2.0/docs/HTML"
    fi
    popd >& /dev/null
 fi
