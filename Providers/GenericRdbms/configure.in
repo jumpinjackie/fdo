@@ -92,8 +92,8 @@ fi
 AC_ARG_WITH([fdo-mysql],
 	    FDO_HELP_STRING([--with-fdo-mysql],
               	        [specifies directory for MySQL SDK files [[default=DEFAULT]]]),
-		[custom_sde_home=$withval],
-		[custom_sde_home=DEFAULT])
+		[custom_fdo_mysql=$withval],
+		[custom_fdo_mysql=DEFAULT])
 
 if test $custom_fdo_mysql = "DEFAULT"; then
   if test -d $FDOMYSQL && test ! $FDOMYSQL = ""; then
@@ -103,7 +103,7 @@ if test $custom_fdo_mysql = "DEFAULT"; then
   fi
 else 
   if test -d $custom_fdo_mysql; then
-  	SDEHOME="$custom_fdo_mysql"
+  	FDOMYSQL="$custom_fdo_mysql"
   	AC_MSG_NOTICE([Building with custom location of MySQL SDK files at $FDOMYSQL])
   else 
 	AC_MSG_ERROR([The specified MySQL SDK path $custom_fdo_mysql is not a valid directory])
@@ -113,8 +113,8 @@ fi
 AC_ARG_WITH([fdo-odbc],
 	    FDO_HELP_STRING([--with-fdo-odbc],
               	        [specifies directory for ODBC SDK files [[default=DEFAULT]]]),
-		[custom_sde_home=$withval],
-		[custom_sde_home=DEFAULT])
+		[custom_fdo_odbc=$withval],
+		[custom_fdo_odbc=DEFAULT])
 
 if test $custom_fdo_odbc = "DEFAULT"; then
   if test -d $FDOODBC && test ! $FDOODBC = ""; then
@@ -124,7 +124,7 @@ if test $custom_fdo_odbc = "DEFAULT"; then
   fi
 else 
   if test -d $custom_fdo_odbc; then
-  	SDEHOME="$custom_fdo_odbc"
+  	FDOODBC="$custom_fdo_odbc"
   	AC_MSG_NOTICE([Building with custom location of ODBC SDK files at $FDOODBC])
   else 
 	AC_MSG_ERROR([The specified ODBC SDK path $custom_fdo_odbc is not a valid directory])
