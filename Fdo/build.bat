@@ -142,8 +142,7 @@ xcopy/CQEYI "..\HTML\FDO_API_managed\*" "%FDODOCPATHFDO%\HTML\FDO_API_managed"
 copy /y "..\FDO_API_managed.chm" "%FDODOCPATHFDO%"
 copy /y "..\FDO_API.chm" "%FDODOCPATHFDO%"
 if exist "..\FDG_FDODevGuide.pdf" copy /y "..\FDG_FDODevGuide.pdf" "%FDODOCPATHFDO%"
-if exist "..\FGS_FDOGettingStarted.pdf" copy /y "..\FGS_FDOGettingStarted.pdf" "%FDODOCPATHFDO%"
-if exist "..\FDO_API.pdf" copy /y "..\FDO_API.pdf" "%FDODOCPATHFDO%"
+if exist "..\FET_TheEssentialFDO.pdf" copy /y "..\FET_TheEssentialFDO.pdf" "%FDODOCPATHFDO%"
 popd
 
 :end
