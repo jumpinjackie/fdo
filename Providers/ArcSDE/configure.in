@@ -33,7 +33,7 @@ AC_ARG_WITH([fdo],
 		[custom_fdo=DEFAULT])
 
 if test $custom_fdo = "DEFAULT"; then
-  if test -d $FDO; then
+  if test -d $FDO && test ! $FDO = ""; then
   	AC_MSG_NOTICE([Building with default location of FDO API files at $FDO])
   else
  	AC_MSG_ERROR([The default FDO API path $FDO is not a valid directory. Please use the custom option])
@@ -54,7 +54,7 @@ AC_ARG_WITH([fdo-utilities],
 		[custom_fdo_utilities=DEFAULT])
 
 if test $custom_fdo_utilities = "DEFAULT"; then
-  if test -d $FDOUTILITIES; then
+  if test -d $FDOUTILITIES && test ! $FDOUTILITIES = ""; then
   	AC_MSG_NOTICE([Building with default location of FDO Utility files at $FDOUTILITIES])
   else
  	AC_MSG_ERROR([the default FDO Utilities path $FDOUTILITIES is not a valid directory. Please use the custom option])
@@ -75,7 +75,7 @@ AC_ARG_WITH([fdo-thirdparty],
 		[custom_fdo_thirdparty=DEFAULT])
 
 if test $custom_fdo_thirdparty = "DEFAULT"; then
-  if test -d $FDOTHIRDPARTY; then
+  if test -d $FDOTHIRDPARTY && test ! $FDOTHIRDPARTY = ""; then
   	AC_MSG_NOTICE([Building with default location of FDO Thirdparty files at $FDOTHIRDPARTY])
   else
  	AC_MSG_ERROR([The default FDO Thirdparty path $custom_fdo_thirdparty is not a valid directory. Please use the custom option])
@@ -83,7 +83,7 @@ if test $custom_fdo_thirdparty = "DEFAULT"; then
 else 
   if test -d $custom_fdo_thirdparty; then
   	FDOTHIRDPARTY="$custom_fdo_thirdparty"
-  	AC_MSG_NOTICE([Building with custom location of FDO Thirdperty directory at $FDOUTILITIES])
+  	AC_MSG_NOTICE([Building with custom location of FDO Thirdperty directory at $FDOTHIRDPARTY])
   else 
 	AC_MSG_ERROR([The specified FDO Thirdparty path $custom_fdo_thirdparty is not a valid directory])
   fi
@@ -96,17 +96,17 @@ AC_ARG_WITH([sde-home],
 		[custom_sde_home=DEFAULT])
 
 if test $custom_sde_home = "DEFAULT"; then
-  if test -d $SDEHOME; then
+  if test -d $SDEHOME && test ! $SDEHOME = ""; then
   	AC_MSG_NOTICE([Building with default location of ESRI ArcSDE SDK files at $SDEHOME])
   else
- 	AC_MSG_ERROR([The default ESRI ArcSDE path $custom_sde_home is not a valid directory. Please use the custom option])
+ 	AC_MSG_ERROR([The default ESRI ArcSDE SDK path $custom_sde_home is not a valid directory. Please use the custom option])
   fi
 else 
   if test -d $custom_sde_home; then
   	SDEHOME="$custom_sde_home"
-  	AC_MSG_NOTICE([Building with custom location of ESRI ArcSDE SDK directory at $SDEHOME])
+  	AC_MSG_NOTICE([Building with custom location of ESRI ArcSDE SDK files at $SDEHOME])
   else 
-	AC_MSG_ERROR([The specified FDO Thirdparty path $custom_sde_home is not a valid directory])
+	AC_MSG_ERROR([The specified ESRI ArcSDE SDK path $custom_sde_home is not a valid directory])
   fi
 fi
 
