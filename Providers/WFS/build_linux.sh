@@ -22,6 +22,8 @@ do
         TYPEACTION=buildonly
     elif test "$1" == installonly; then
         TYPEACTION=installonly
+    elif test "$1" == clean; then
+        TYPEACTION=clean
     elif test "$1" == configure; then
         TYPECONFIGURE=yes
     else
@@ -75,7 +77,7 @@ if test "$SHOWHELP" == yes; then
    echo "*"
    echo "Help:           --h[elp]"
    echo "BuildType:      --c[onfig] release(default), debug"
-   echo "Action:         --a[ction] buildinstall(default), buildonly, installonly, configure"
+   echo "Action:         --a[ction] buildinstall(default), buildonly, installonly, clean, configure"
    echo "BuildDocs:      --d[ocs] skip(default), build"
    echo "**************************************************************************"***********
    exit 0
@@ -95,6 +97,10 @@ if test "$TYPECONFIGURE" == yes ; then
    fi
 fi
    
+if test "$TYPEACTION" == clean ; then
+  make clean
+fi
+
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == buildonly ; then
    make
 fi
