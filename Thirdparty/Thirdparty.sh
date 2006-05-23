@@ -61,7 +61,6 @@ mkdir -p lib/linux
 rm -f ./lib/linux/*.*
 chmod a+x ./config
 ./config shared
-make clean
 make
 mv -f ./libssl.a ./lib/linux/libssl.a
 mv -f ./libssl.so ./lib/linux/libssl.so
