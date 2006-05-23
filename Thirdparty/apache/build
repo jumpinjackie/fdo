@@ -1,5 +1,6 @@
 export XERCESCROOT=$PWD/xml-xerces/c
 export XALANCROOT=$PWD/xml-xalan/c
+export NLSDIR=$XALANCROOT/Src/xalanc/NLS
 cd xml-xerces/c/src/xercesc
 ./runConfigure -p linux
 make
