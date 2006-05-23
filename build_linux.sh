@@ -35,6 +35,8 @@ do
         TYPEACTION=buildonly
     elif test "$1" == installonly; then
         TYPEACTION=installonly
+    elif test "$1" == clean; then
+        TYPEACTION=clean
     elif test "$1" == configure; then
         TYPECONFIGURE=configure
     else
@@ -140,7 +142,7 @@ if test "$SHOWHELP" == yes; then
    echo "*"
    echo "Help:           --h[elp]"
    echo "BuildType:      --c[onfig] release(default), debug"
-   echo "Action:         --a[ction] buildinstall(default), buildonly, installonly, configure"
+   echo "Action:         --a[ction] buildinstall(default), buildonly, installonly, clean, configure"
    echo "BuildDocs:      --d[ocs] skip(default), build"
 
    HELPSTRINGWITH="WithModule:     --w[ith] fdocore(default), fdo, thirdparty, providers"
@@ -213,6 +215,9 @@ fi
 #build Fdo
 if test "$FDOENABLE" == yes; then
    pushd Fdo >& /dev/null
+   if test "$TYPEACTION" == clean ; then
+      make clean
+   fi
    if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == buildonly ; then
       make
    fi
@@ -241,6 +246,9 @@ fi
 #build Utilities
 if test "$UTILENABLE" == yes; then
    pushd Utilities >& /dev/null
+   if test "$TYPEACTION" == clean ; then
+      make clean
+   fi
    if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == buildonly ; then
       make
    fi
