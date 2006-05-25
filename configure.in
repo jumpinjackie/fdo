@@ -86,7 +86,7 @@ if test $custom_fdo_thirdparty = "DEFAULT"; then
 else 
   if test -d $custom_fdo_thirdparty; then
   	FDOTHIRDPARTY="$custom_fdo_thirdparty"
-  	AC_MSG_NOTICE([Building with custom location of FDO Thirdperty directory at $FDOUTILITIES])
+  	AC_MSG_NOTICE([Building with custom location of FDO Thirdperty directory at $FDOTHIRDPARTY])
   else 
 	AC_MSG_ERROR([The specified FDO Thirdparty path $custom_fdo_thirdparty is not a valid directory])
   fi
