@@ -121,6 +121,7 @@ fi
 AC_CONFIG_FILES(Makefile)
 AC_CONFIG_FILES(Fdo/Makefile)
 AC_CONFIG_FILES(Utilities/Makefile)
+AC_CONFIG_FILES(Providers/Makefile)
 AC_CONFIG_FILES(Thirdparty/Makefile)
 
 #############################################

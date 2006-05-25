@@ -4,5 +4,5 @@ SUBDIRS = Thirdparty Fdo Utilities Providers
 
 DIST_SUBDIRS = Thirdparty Fdo Utilities Providers
 
-xmldir = /usr/local/fdo-3.2.0/lib
+xmldir = $(libdir)
 xml_DATA = providers.xml

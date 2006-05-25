@@ -8305,8 +8305,8 @@ echo "$as_me: error: The default FDO Thirdparty path $custom_fdo_thirdparty is n
 else
   if test -d $custom_fdo_thirdparty; then
   	FDOTHIRDPARTY="$custom_fdo_thirdparty"
-  	{ echo "$as_me:$LINENO: Building with custom location of FDO Thirdperty directory at $FDOUTILITIES" >&5
-echo "$as_me: Building with custom location of FDO Thirdperty directory at $FDOUTILITIES" >&6;}
+  	{ echo "$as_me:$LINENO: Building with custom location of FDO Thirdperty directory at $FDOTHIRDPARTY" >&5
+echo "$as_me: Building with custom location of FDO Thirdperty directory at $FDOTHIRDPARTY" >&6;}
   else
 	{ { echo "$as_me:$LINENO: error: The specified FDO Thirdparty path $custom_fdo_thirdparty is not a valid directory" >&5
 echo "$as_me: error: The specified FDO Thirdparty path $custom_fdo_thirdparty is not a valid directory" >&2;}
@@ -8353,6 +8353,8 @@ fi
           ac_config_files="$ac_config_files Fdo/Makefile"
 
           ac_config_files="$ac_config_files Utilities/Makefile"
+
+          ac_config_files="$ac_config_files Providers/Makefile"
 
           ac_config_files="$ac_config_files Thirdparty/Makefile"
 
@@ -8967,6 +8969,7 @@ do
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
   "Fdo/Makefile" ) CONFIG_FILES="$CONFIG_FILES Fdo/Makefile" ;;
   "Utilities/Makefile" ) CONFIG_FILES="$CONFIG_FILES Utilities/Makefile" ;;
+  "Providers/Makefile" ) CONFIG_FILES="$CONFIG_FILES Providers/Makefile" ;;
   "Thirdparty/Makefile" ) CONFIG_FILES="$CONFIG_FILES Thirdparty/Makefile" ;;
   "Fdo/Unmanaged/Makefile" ) CONFIG_FILES="$CONFIG_FILES Fdo/Unmanaged/Makefile" ;;
   "Fdo/Unmanaged/Src/Makefile" ) CONFIG_FILES="$CONFIG_FILES Fdo/Unmanaged/Src/Makefile" ;;
