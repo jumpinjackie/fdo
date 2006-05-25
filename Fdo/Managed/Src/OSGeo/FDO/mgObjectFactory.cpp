@@ -83,6 +83,8 @@
 #include "FDO\Schema\mgUniqueConstraint.h"
 #include "FDO\Schema\mgUniqueConstraintCollection.h"
 #include "FDO\Schema\mgPropertyValueConstraint.h"
+#include "FDO\Schema\mgPropertyValueConstraintRange.h"
+#include "FDO\Schema\mgPropertyValueConstraintList.h"
 #include "FDO\Raster\mgDataValueCollection.h"
 #include "FDO\Raster\mgRasterDataModel.h"
 #include "FDO\Raster\mgIRasterImp.h"
@@ -320,8 +322,6 @@ NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* NAMESPACE_OSGEO_FDO::ObjectFactory::C
 	return NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateXmlSaxContext(ptr, autoDispose);
 }
 
-//----------------------------------------------------------------------------------------------------------------
-
 NAMESPACE_OSGEO_FDO::IConnectionManager* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIConnectionManager(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
@@ -345,8 +345,6 @@ NAMESPACE_OSGEO_FDO::IDisposableCollection* NAMESPACE_OSGEO_FDO::ObjectFactory::
 
     return new NAMESPACE_OSGEO_FDO::IDisposableCollection(ptr, autoDispose);
 }
-
-//----------------------------------------------------------------------------------------------------------------
 
 NAMESPACE_OSGEO_FDO_XML::XmlFlags* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateXmlFlags(System::IntPtr ptr, System::Boolean autoDispose)
 {
@@ -447,8 +445,6 @@ NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter* NAMESPACE_OSGEO_FDO::ObjectFa
 	return new NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter(ptr, autoDispose);
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-
 NAMESPACE_OSGEO_FDO_CLIENTSERVICES::Provider* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateProvider(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
@@ -465,12 +461,20 @@ NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection* NAMESPACE_OSGEO_FDO::Obj
     return new NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection(ptr, autoDispose);
 }
 
-//----------------------------------------------------------------------------------------------------------------------------------
-
 NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraint* NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePropertyValueConstraint(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
 		return NULL;
+
+	FdoIDisposable* p = (FdoIDisposable*)ptr.ToPointer();
+
+	NAMESPACE_OSGEO_RUNTIME::Disposable* wrap;
+
+	// Note:
+	// Here we need keep dynamic_cast to decide the real type of "ptr"
+
+	if (wrap = CHECK<FdoPropertyValueConstraintRange, NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintRange>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintRange*>(wrap);
+	if (wrap = CHECK<FdoPropertyValueConstraintList, NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintList>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintList*>(wrap);
 
 	return new NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraint(ptr, autoDispose);
 }
@@ -746,8 +750,6 @@ NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement* NAMESPACE_OSGEO_FDO::ObjectFactory::C
     return new NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement(ptr, autoDispose);
 }
 
-//----------------------------------------------------------------------------------------------------------------------------------
-
 NAMESPACE_OSGEO_FDO_RASTER::DataValueCollection* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateDataValueCollection(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
@@ -779,7 +781,6 @@ NAMESPACE_OSGEO_FDO_RASTER::RasterDataModel* NAMESPACE_OSGEO_FDO::ObjectFactory:
 
     return new NAMESPACE_OSGEO_FDO_RASTER::RasterDataModel(ptr, autoDispose);
 }
-//---------------------------------------------------------------------------------------------------------------------------------------
 
 NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateDataValue(System::IntPtr ptr, System::Boolean autoDispose)
 {
@@ -960,7 +961,6 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::DataValueCollection* NAMESPACE_OSGEO_FDO::Object
 
     return new NAMESPACE_OSGEO_FDO_EXPRESSION::DataValueCollection(ptr, autoDispose);
 }
-//---------------------------------------------------------------------------------------------------------------------------------------
 
 NAMESPACE_OSGEO_FDO_FILTER::Filter* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateFilter(System::IntPtr ptr, System::Boolean autoDispose)
 {
@@ -998,8 +998,6 @@ NAMESPACE_OSGEO_FDO_FILTER::ValueExpressionCollection* NAMESPACE_OSGEO_FDO::Obje
     return new NAMESPACE_OSGEO_FDO_FILTER::ValueExpressionCollection(ptr, autoDispose);
 }
 
-//---------------------------------------------------------------------------------------------------------------------------------------
-
 NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIConnection(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
@@ -1031,8 +1029,6 @@ NAMESPACE_OSGEO_FDO_CONNECTIONS::ITransaction* NAMESPACE_OSGEO_FDO::ObjectFactor
 
     return new NAMESPACE_OSGEO_FDO_CONNECTIONS::ITransactionImp(ptr, autoDispose);
 }
-
-//---------------------------------------------------------------------------------------------------------------------------------------
 
 NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ArgumentDefinition* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateArgumentDefinition(System::IntPtr ptr, System::Boolean autoDispose)
 {
@@ -1129,8 +1125,6 @@ NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollecti
 
     return new NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection(ptr, autoDispose);
 }
-
-//---------------------------------------------------------------------------------------------------------------------------------------
 
 NAMESPACE_OSGEO_FDO_COMMANDS::ICommand* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateICommand(System::IntPtr ptr, System::Boolean autoDispose, NAMESPACE_OSGEO_FDO_COMMANDS::CommandType type)
 {
@@ -1357,8 +1351,6 @@ NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection* NAMESPACE_OSGEO_FDO::Obje
     return new NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection(ptr, autoDispose);
 }
 
-//---------------------------------------------------------------------------------------------------------------------------------------
-
 NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReader* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateISQLDataReader(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
@@ -1366,8 +1358,6 @@ NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReader* NAMESPACE_OSGEO_FDO::ObjectFac
 
     return new NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReaderImp(ptr, autoDispose);
 }
-
-//---------------------------------------------------------------------------------------------------------------------------------------
 
 NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IDataReader* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIDataReader(System::IntPtr ptr, System::Boolean autoDispose)
 {
@@ -1393,8 +1383,6 @@ NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader* NAMESPACE_OSGEO_FDO::Objec
 
     return new NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReaderImp(ptr, autoDispose);
 }
-
-//---------------------------------------------------------------------------------------------------------------------------------------
 
 NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMappingCollection* NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePhysicalSchemaMappingCollection(System::IntPtr ptr, System::Boolean autoDispose)
 {
@@ -1443,8 +1431,6 @@ NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping* NAMESPACE_OSGEO_FDO
     return new NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping(ptr, autoDispose);
 }
 
-//---------------------------------------------------------------------------------------------------------------------------------------
-
 NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::IMeasureUnitReader* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIMeasureUnitReader(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
@@ -1452,8 +1438,6 @@ NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::IMeasureUnitReader* NAMESPACE_OSGEO_
 
     return new NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::IMeasureUnitReaderImp(ptr, autoDispose);
 }
-
-//---------------------------------------------------------------------------------------------------------------------------------------
 
 NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockConflictReader* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILockConflictReader(System::IntPtr ptr, System::Boolean autoDispose)
 {
@@ -1479,8 +1463,6 @@ NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockOwnersReader* NAMESPACE_OSGEO_FDO::Ob
     return new NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockOwnersReaderImp(ptr, autoDispose);
 }
 
-//---------------------------------------------------------------------------------------------------------------------------------------
-
 NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::ISpatialContextReader* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateISpatialContextReader(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
@@ -1488,10 +1470,6 @@ NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::ISpatialContextReader* NAMESPACE_OS
 
     return new NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::ISpatialContextReaderImp(ptr, autoDispose);
 }
-
-//---------------------------------------------------------------------------------------------------------------------------------------
-
-//---------------------------------------------------------------------------------------------------------------------------------------
 
 NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionCheckpointReader* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILongTransactionCheckpointReader(System::IntPtr ptr, System::Boolean autoDispose)
 {
@@ -1533,8 +1511,6 @@ NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionConflictDirectiveE
 	return new NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionConflictDirectiveEnumeratorImp(ptr, autoDispose);
 }
 
-//---------------------------------------------------------------------------------------------------------------------------------------
-
 NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStorePropertyDictionary* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIDataStorePropertyDictionary(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
@@ -1550,5 +1526,3 @@ NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStoreReader* NAMESPACE_OSGEO_FDO::O
 
     return new NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStoreReaderImp(ptr, autoDispose);
 }
-//---------------------------------------------------------------------------------------------------------------------------------------
-
