@@ -72,6 +72,13 @@
 
 #include "../SchemaMgr/Ph/Mgr.h"
 
+#ifdef _WIN32
+#include <FdoCommonOSUtil.h>
+#include <FdoCommonMiscUtil.h>
+#include <DelayImp.h>  // For delay-load types
+#endif
+
+
 FdoRdbmsConnection::FdoRdbmsConnection() :
     mConnectionString (NULL),
     mConnectionStringValid(false),
@@ -196,9 +203,64 @@ void FdoRdbmsConnection::Close ()
 //    FdoSmBase::Report();
 }
 
+#ifdef _WIN32
+
+LONG WINAPI DelayLoadDllExceptionFilter(PEXCEPTION_POINTERS pExcPointers, wchar_t* errorMessage)
+{
+    wchar_t *moduleName;
+    wchar_t procName[512];
+    LONG lDisposition = EXCEPTION_EXECUTE_HANDLER;  
+    PDelayLoadInfo pDelayLoadInfo = 
+        PDelayLoadInfo(pExcPointers->ExceptionRecord->ExceptionInformation[0]);
+
+    switch (pExcPointers->ExceptionRecord->ExceptionCode) {
+    case VcppException(ERROR_SEVERITY_ERROR, ERROR_MOD_NOT_FOUND):
+        multibyte_to_wide(moduleName, pDelayLoadInfo->szDll);
+        wcscpy(errorMessage, NlsMsgGet1(FDORDBMS_481, "The runtime was not found (module %1$ls).", moduleName));
+        break;
+
+    case VcppException(ERROR_SEVERITY_ERROR, ERROR_PROC_NOT_FOUND):
+        multibyte_to_wide(moduleName, pDelayLoadInfo->szDll);
+        if (pDelayLoadInfo->dlp.fImportByName)
+            FdoCommonOSUtil::swprintf(procName, ELEMENTS(procName), L"%s", pDelayLoadInfo->dlp.szProcName);
+        else
+            FdoCommonOSUtil::swprintf(procName, ELEMENTS(procName), L"%d", pDelayLoadInfo->dlp.dwOrdinal);
+        wcscpy(errorMessage, NlsMsgGet2(FDORDBMS_482, "The runtime was not found (procedure %1$ls in module %2$ls).", procName, moduleName));
+        break;
+
+    default:
+        wcscpy(errorMessage, L"");
+        lDisposition = EXCEPTION_CONTINUE_SEARCH;
+        break;
+    }
+
+    return(lDisposition);
+}
+#endif
+
+
 FdoConnectionState FdoRdbmsConnection::Open ()
 {
     return Open(false);
+}
+
+void FdoRdbmsConnection::DbiOpen(bool skipPending)
+{
+#ifdef _WIN32
+    wchar_t errorMessage[1024];
+    errorMessage[0] = L'';
+    __try
+    {
+#endif
+        mState = mDbiConnection->Open(skipPending);
+        
+#ifdef _WIN32
+    }
+    __except(DelayLoadDllExceptionFilter(GetExceptionInformation(), errorMessage))
+    {
+        throw FdoException::Create (errorMessage);
+    }
+#endif
 }
 
 FdoConnectionState FdoRdbmsConnection::Open (
@@ -216,7 +278,9 @@ FdoConnectionState FdoRdbmsConnection::Open (
     mDbiConnection->SetConnectionString( mConnectionString );
     if( mDbiConnection != NULL )
     {
-        mState = mDbiConnection->Open(skipPending);
+        // This is done in a separate method since we need to use __try/__except to catch the delay-loader's
+        // Structured Exceptions, which is incompatible with having destructible objects on the stack:
+        DbiOpen(skipPending);
     }
 
     if( mState == FdoConnectionState_Open )

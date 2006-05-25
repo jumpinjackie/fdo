@@ -279,6 +279,8 @@ private:
     // Prevent the use of the Assignment Operation by definning it and not implemeting it.
     // DO NOT IMPLEMENT
     FdoRdbmsConnection & operator=(const FdoRdbmsConnection &right);
+
+    void DbiOpen(bool skipPending);
 };
 
 #endif // FDORDBMSCONNECTION_H

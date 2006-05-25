@@ -1648,3 +1648,14 @@ SymbolicName=FDORDBMS_480
 Language=English
 Incomplete date/time setting.
 .
+MessageId=2705
+SymbolicName=FDORDBMS_481
+Language=English
+The runtime was not found (module %1$ls).
+.
+MessageId=2706
+SymbolicName=FDORDBMS_482
+Language=English
+The runtime was not found (procedure %1$ls in module %2$ls).
+.
+
