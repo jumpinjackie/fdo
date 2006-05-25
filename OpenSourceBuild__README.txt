@@ -225,44 +225,7 @@ I. Windows Notes:
       Note that ArcSDE is licensed software and must be obtained from an
       ESRI vendor.
 
-      The list of files expected under the installation location is as follows:
 
-        .../lib/icuuc.lib
-        .../lib/pe91.lib
-        .../lib/sde91.lib
-        .../lib/sg91.lib
-        .../include/sg.h
-        .../include/sgerr.h
-        .../include/pe.h
-        .../include/pe_coordsys_from_prj.h
-        .../include/pedef.h
-        .../include/pef.h
-        .../include/sdeerno.h
-        .../include/sderaster.h
-        .../include/sdetype.h
-        .../bin/edgemt.dll
-        .../bin/gsrvrdb291.dll
-        .../bin/gsrvrinf91.dll
-        .../bin/gsrvrora8i91.dll
-        .../bin/gsrvrora9i91.dll
-        .../bin/gsrvrsql91.dll
-        .../bin/icudt22l.dll
-        .../bin/icuuc22.dll
-        .../bin/libtiff.dll
-        .../bin/loceng.dll
-        .../bin/locssa.dll
-        .../bin/mtchloc.dll
-        .../bin/mtchmt.dll
-        .../bin/pe91.dll
-        .../bin/sde91.dll
-        .../bin/sdedb2srvr91.dll
-        .../bin/sdeinfsrvr91.dll
-        .../bin/sdeora8isrvr91.dll
-        .../bin/sdeora9isrvr91.dll
-        .../bin/sdesqlsrvr91.dll
-        .../bin/sg91.dll
-        .../bin/xerces-c_2_1_0.dll
-        
    9. In order to build the MySQL Provider, you will need to download 
    and install the MySQL client (Windows (x86) version 5.0), including
    the developer components.
@@ -271,7 +234,7 @@ I. Windows Notes:
         http://dev.mysql.com/
 
         Download Location: 
-        http://dev.mysql.com/downloads/mysql/5.0.html
+	http://dev.mysql.com/get/Downloads/MySQL-5.0/mysql-standard-5.0.21-linux-i686-glibc23.tar.gz/from/http://mysql.mirrors.pair.com/
 
    Following the installation, set the following FDO environment variable:
 
@@ -339,6 +302,19 @@ II. Windows steps for open source build:
             **** Build only documentation and install files to C:\Fdo
             build -o=C:\Fdo -d=build -a=installonly
 
+ 3.   In order to run the SHP and SDF Provider Unit Tests
+
+        SDF:
+
+            cd <FDO OpenSource Location>\Providers\SDF\Src\UnitTest
+            ..\..\bin\win32\Debug\UnitTest
+ 
+        SHP:
+
+            cd <FDO OpenSource Location>\Providers\SHP\Src\UnitTest
+            ..\..\bin\win32\Debug\UnitTest
+
+
 -----------------------------
 
 Linux Redhat 3.0 Instructions
@@ -351,10 +327,8 @@ I. Linux Notes:
      will have to switch to root.
 
       /usr/local
-
   
   2.  FDO Libraries will be installed under /usr/local/fdo-3.2.0/lib
-
 
   3. Ensure that the FDO Environment Variables are set as follows:
 
@@ -399,40 +373,6 @@ I. Linux Notes:
       Note that ArcSDE is licensed software and must be obtained from an
       ESRI vendor.
 
-      The list of files expected under these locations is as follows:
-
-        .../lib/libgsrvrdb291.so
-        .../lib/libgsrvrora9i91.so
-        .../lib/libicudata.so.22.0
-        .../lib/libicuuc.so.22.0
-        .../lib/libloceng.so
-        .../lib/liblocssa.so
-        .../lib/libmtchloc.so
-        .../lib/libmtchmt.so
-        .../lib/libpe91.a
-        .../lib/libpe91.so
-        .../lib/libsde91.a
-        .../lib/libsde91.so
-        .../lib/libsdedb2srvr91.so
-        .../lib/libsdejavautil.so
-        .../lib/libsdeora9isrvr91.so
-        .../lib/libsg91.a
-        .../lib/libsg91.so
-        .../lib/libxerces-c.so.21.0
-        .../lib/concurrent.jar
-        .../lib/jpe91_sdk.jar
-        .../lib/jsde91_sdk.jar
-        .../lib/libedgemt.so
-        .../include/pe.h
-        .../include/pe_coordsys_from_prj.h
-        .../include/pedef.h
-        .../include/pef.h
-        .../include/sdeerno.h
-        .../include/sderaster.h
-        .../include/sdetype.h
-        .../include/sg.h
-        .../include/sgerr.h
-
    8. In order to build the MySQL Provider, you will need to download 
       and extract the Linux (non RPM package - Linux (x86)  Standard verion 5.0)
       files using either gunzip/tar.
@@ -441,16 +381,13 @@ I. Linux Notes:
         http://dev.mysql.com/
         
         Download Location: 
-        http://dev.mysql.com/downloads/mysql/5.0.html
+ 	http://dev.mysql.com/get/Downloads/MySQL-5.0/mysql-standard-5.0.21-linux-i686-glibc23.tar.gz/from/http://mysql.mirrors.pair.com/
  
       Following the installation, set the following FDO environment variable:
   
         FDOMYSQL=<MySQL developer components path>
  
-      e.g. /home/mysql-standard-5.0-linux-i686-glibc23
-
-      In the MySQL developer components path you will need to have two folders 
-      used by MySQL provider: include and lib.
+      e.g. /home/mysql-5.0
 
    10. In order to build the ODBC Provider, you will need to either 
 
@@ -463,8 +400,8 @@ I. Linux Notes:
            http://sourceforge.net/project/showfiles.php?group_id=1544
 
            Download Files: 
-           unixODBC-CORE    - unixODBC-2.2.11-1.i386.rpm
-           unixODBC-devel   - unixODBC-devel-2.2.11-1.i386.rpm
+           unixODBC-CORE  - unixODBC-2.2.11-1.i386.rpm
+           unixODBC-devel - unixODBC-devel-2.2.11-1.i386.rpm
 
            Such an installation will install the unixODBC driver manager libraries 
            and header files  in
@@ -473,7 +410,7 @@ I. Linux Notes:
 
            The FDO ODBC provider build will automatically locate thee files in this liocation.
 
-       b) Install an unixODBC driver such as the EasySofy Oracle ODBC driver. This installation 
+       b) install an unixODBC driver such as the EasySofy Oracle ODBC driver. This installation 
           will include the driver libraries as well as the unixODBC manager libraries. 
           If such an installation occurs the manager libraries and headers will not be 
           installed under /usr/lib or usr/include but will be installed in a custom location
@@ -534,5 +471,17 @@ II. Linux steps for open source build:
             **** ReBuild FDO SDF Provider
             build_linux.sh --a buildonly --w sdf
 
+
+ 4.   In order to run the SHP and SDF Provider Unit Tests:
+
+        SDF:
+
+            cd <FDO OpenSource Location>/Providers/SDF/Src/UnitTest
+            ./UnitTest
+ 
+        SHP:
+
+            cd <FDO OpenSource Location>/Providers/SHP/Src/UnitTest
+            ./UnitTest
  
 <end>
