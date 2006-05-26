@@ -150,7 +150,7 @@ FdoFeatureSchema* SchemaDb::ReadSchema(FdoString *schemaName)
         return NULL;
     }
 
-    FdoFeatureSchema* schema = FdoFeatureSchema::Create(NULL,NULL);
+    FdoPtr<FdoFeatureSchema>schema = FdoFeatureSchema::Create(NULL,NULL);
 
     //check that we have something in there
     _ASSERT(data.get_size() > 0);
@@ -200,7 +200,7 @@ FdoFeatureSchema* SchemaDb::ReadSchema(FdoString *schemaName)
 
     delete [] recs;
     
-    return schema;
+    return schema.Detach();
 }
 
 
