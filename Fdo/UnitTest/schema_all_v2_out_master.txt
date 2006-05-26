@@ -3,13 +3,13 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.autodesk.com/Acad" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:gml="http://www.opengis.net/gml" xmlns:Acad="http://www.autodesk.com/Acad" elementFormDefault="qualified" attributeFormDefault="unqualified">
 <xs:annotation>
 <xs:documentation>
-
+
 AutoCAD schema</xs:documentation>
 </xs:annotation>
 <xs:complexType name="AcXDataType" abstract="false">
 <xs:annotation>
 <xs:documentation>
-
+
 Xdata</xs:documentation>
 </xs:annotation>
 <xs:sequence>
@@ -19,14 +19,14 @@ Xdata</xs:documentation>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation>
-
+
 seq</xs:documentation>
 </xs:annotation>
 </xs:element>
 <xs:element name="Datavalue">
 <xs:annotation>
 <xs:documentation>
-
+
 datavalue</xs:documentation>
 </xs:annotation>
 <xs:simpleType>
@@ -48,7 +48,7 @@ datavalue</xs:documentation>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation>
-
+
 seq</xs:documentation>
 </xs:annotation>
 </xs:element>
@@ -73,7 +73,7 @@ seq</xs:documentation>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation>
-
+
 seq</xs:documentation>
 </xs:annotation>
 </xs:element>
@@ -93,7 +93,7 @@ seq</xs:documentation>
 <xs:complexType name="AcDbEntityType" abstract="false" fdo:hasGeometry="false">
 <xs:annotation>
 <xs:documentation>
-
+
 AutoCAD entity base class</xs:documentation>
 </xs:annotation>
 <xs:complexContent>
@@ -105,14 +105,14 @@ AutoCAD entity base class</xs:documentation>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation>
-
+
 id</xs:documentation>
 </xs:annotation>
 </xs:element>
 <xs:element name="Layer" minOccurs="0">
 <xs:annotation>
 <xs:documentation>
-
+
 Acad layer</xs:documentation>
 </xs:annotation>
 <xs:simpleType>
@@ -127,14 +127,14 @@ Acad layer</xs:documentation>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation>
-
+
 Acad Colour</xs:documentation>
 </xs:annotation>
 </xs:element>
 <xs:element name="xdata" type="Acad:AcXDataType" minOccurs="0" maxOccurs="unbounded" fdo:identityProperty="Seq" fdo:order="ascending">
 <xs:annotation>
 <xs:documentation>
-
+
 xdata</xs:documentation>
 </xs:annotation>
 </xs:element>
@@ -151,7 +151,7 @@ xdata</xs:documentation>
 <xs:complexType name="AcDb3dPolylineType" abstract="false" fdo:hasGeometry="false">
 <xs:annotation>
 <xs:documentation>
-
+
 AutoCAD 3d polyline</xs:documentation>
 </xs:annotation>
 <xs:complexContent>
@@ -163,7 +163,7 @@ AutoCAD 3d polyline</xs:documentation>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation>
-
+
 line width</xs:documentation>
 </xs:annotation>
 </xs:element>
@@ -173,7 +173,7 @@ line width</xs:documentation>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation>
-
+
 is first and last points the same</xs:documentation>
 </xs:annotation>
 </xs:element>
@@ -195,7 +195,7 @@ is first and last points the same</xs:documentation>
 <xs:complexType name="AcDbHatchType" abstract="false" fdo:hasGeometry="false">
 <xs:annotation>
 <xs:documentation>
-
+
 AutoCAD hatched polygon</xs:documentation>
 </xs:annotation>
 <xs:complexContent>
@@ -242,7 +242,7 @@ AutoCAD hatched polygon</xs:documentation>
 <xs:complexType name="TestLayerType" abstract="false">
 <xs:annotation>
 <xs:documentation>
-
+
 A network test Layer class</xs:documentation>
 </xs:annotation>
 <xs:complexContent>
@@ -251,7 +251,7 @@ A network test Layer class</xs:documentation>
 <xs:element name="LayerPropertyOne">
 <xs:annotation>
 <xs:documentation>
-
+
 A layer test property</xs:documentation>
 </xs:annotation>
 <xs:simpleType>
@@ -307,7 +307,7 @@ A layer test property</xs:documentation>
 <xs:complexType name="TestNetworkType" abstract="false">
 <xs:annotation>
 <xs:documentation>
-
+
 A network test class</xs:documentation>
 </xs:annotation>
 <xs:complexContent>
@@ -316,7 +316,7 @@ A network test class</xs:documentation>
 <xs:element name="NetworkPropertyOne">
 <xs:annotation>
 <xs:documentation>
-
+
 A network test property</xs:documentation>
 </xs:annotation>
 <xs:simpleType>
@@ -351,7 +351,7 @@ A network test property</xs:documentation>
 <xs:complexType name="TestNetworkParentNodeType" abstract="false" fdo:hasGeometry="false">
 <xs:annotation>
 <xs:documentation>
-
+
 A parent network node test class</xs:documentation>
 </xs:annotation>
 <xs:complexContent>
@@ -402,7 +402,7 @@ A parent network node test class</xs:documentation>
 <xs:complexType name="TestNetworkNodeType" abstract="false" fdo:hasGeometry="false" fdo:costElement="Speed">
 <xs:annotation>
 <xs:documentation>
-
+
 A network node test class</xs:documentation>
 </xs:annotation>
 <xs:complexContent>
@@ -414,7 +414,7 @@ A network node test class</xs:documentation>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation>
-
+
 A speed property</xs:documentation>
 </xs:annotation>
 </xs:element>
@@ -466,7 +466,7 @@ A speed property</xs:documentation>
 <xs:complexType name="TestNetworkLinkType" abstract="false" fdo:hasGeometry="false" fdo:costElement="Speed">
 <xs:annotation>
 <xs:documentation>
-
+
 A network link test class</xs:documentation>
 </xs:annotation>
 <xs:complexContent>
@@ -478,7 +478,7 @@ A network link test class</xs:documentation>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation>
-
+
 A speed property</xs:documentation>
 </xs:annotation>
 </xs:element>
@@ -514,7 +514,7 @@ A speed property</xs:documentation>
 <xs:element name="LayerPropertyOne">
 <xs:annotation>
 <xs:documentation>
-
+
 A layer test property</xs:documentation>
 </xs:annotation>
 <xs:simpleType>
@@ -530,7 +530,7 @@ A layer test property</xs:documentation>
 <xs:complexType name="TestLayer2Type" abstract="false">
 <xs:annotation>
 <xs:documentation>
-
+
 A network test Layer class</xs:documentation>
 </xs:annotation>
 <xs:complexContent>
@@ -539,7 +539,7 @@ A network test Layer class</xs:documentation>
 <xs:element name="LayerPropertyTwo" minOccurs="0">
 <xs:annotation>
 <xs:documentation>
-
+
 A layer test property</xs:documentation>
 </xs:annotation>
 <xs:simpleType>
@@ -580,7 +580,7 @@ A layer test property</xs:documentation>
 <xs:element name="NetworkPropertyOne">
 <xs:annotation>
 <xs:documentation>
-
+
 A network test property</xs:documentation>
 </xs:annotation>
 <xs:simpleType>
@@ -596,7 +596,7 @@ A network test property</xs:documentation>
 <xs:complexType name="TestNetwork2Type" abstract="false">
 <xs:annotation>
 <xs:documentation>
-
+
 A network test class</xs:documentation>
 </xs:annotation>
 <xs:complexContent>
@@ -605,7 +605,7 @@ A network test class</xs:documentation>
 <xs:element name="NetworkPropertyTwo" minOccurs="0">
 <xs:annotation>
 <xs:documentation>
-
+
 A network test property</xs:documentation>
 </xs:annotation>
 <xs:simpleType>
@@ -639,7 +639,7 @@ A network test property</xs:documentation>
 <xs:complexType name="TestNetworkParentNode2Type" abstract="false" fdo:hasGeometry="false">
 <xs:annotation>
 <xs:documentation>
-
+
 A parent network node test class</xs:documentation>
 </xs:annotation>
 <xs:complexContent>
@@ -666,7 +666,7 @@ A parent network node test class</xs:documentation>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation>
-
+
 A speed property</xs:documentation>
 </xs:annotation>
 </xs:element>
@@ -677,7 +677,7 @@ A speed property</xs:documentation>
 <xs:complexType name="TestNetworkNode2Type" abstract="false" fdo:hasGeometry="false">
 <xs:annotation>
 <xs:documentation>
-
+
 A network node test class</xs:documentation>
 </xs:annotation>
 <xs:complexContent>
@@ -716,7 +716,7 @@ A network node test class</xs:documentation>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation>
-
+
 A speed property</xs:documentation>
 </xs:annotation>
 </xs:element>
@@ -727,7 +727,7 @@ A speed property</xs:documentation>
 <xs:complexType name="TestNetworkLink2Type" abstract="false" fdo:hasGeometry="false">
 <xs:annotation>
 <xs:documentation>
-
+
 A network link test class</xs:documentation>
 </xs:annotation>
 <xs:complexContent>
@@ -751,11 +751,11 @@ A network link test class</xs:documentation>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.autodesk.com/Electrical" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:gml="http://www.opengis.net/gml" xmlns:Electrical="http://www.autodesk.com/Electrical" xmlns:Acad="http://www.autodesk.com/Acad" elementFormDefault="qualified" attributeFormDefault="unqualified">
 <xs:annotation>
 <xs:documentation>
-
+
 Electrical schema</xs:documentation>
 <xs:appinfo source="http://fdo.osgeo.org/schemas">
 <fdo:attribute name="Author">
-
+
 Thomas Edison</fdo:attribute>
 </xs:appinfo>
 </xs:annotation>
@@ -768,7 +768,7 @@ Thomas Edison</fdo:attribute>
 <xs:complexType name="Electric-x20-DeviceType" abstract="true" fdo:geometryName="Geometry">
 <xs:annotation>
 <xs:documentation>
-
+
 electic base class</xs:documentation>
 </xs:annotation>
 <xs:complexContent>
@@ -777,18 +777,18 @@ electic base class</xs:documentation>
 <xs:element name="furniture" type="Acad:AcDbEntityType" minOccurs="0">
 <xs:annotation>
 <xs:documentation>
-
+
 Acad entity</xs:documentation>
 </xs:annotation>
 </xs:element>
 <xs:element name="Geometry" type="gml:AbstractGeometryType" fdo:geometryReadOnly="true" fdo:hasMeasure="true" fdo:hasElevation="false" fdo:srsName="SC_0" fdo:geometricTypes="point curve surface solid ">
 <xs:annotation>
 <xs:documentation>
-
+
 location and shape</xs:documentation>
 <xs:appinfo source="http://fdo.osgeo.org/schemas">
 <fdo:attribute name="Measure Units">
-
+
 metres</fdo:attribute>
 </xs:appinfo>
 </xs:annotation>
@@ -818,10 +818,10 @@ metres</fdo:attribute>
 <xs:documentation/>
 <xs:appinfo source="http://fdo.osgeo.org/schemas">
 <fdo:attribute name="Rules DLL">
-
+
 transformer.dll</fdo:attribute>
 <fdo:attribute name="Entrypoint">
-
+
 start_transformer</fdo:attribute>
 </xs:appinfo>
 </xs:annotation>
@@ -831,11 +831,11 @@ start_transformer</fdo:attribute>
 <xs:element name="Voltage">
 <xs:annotation>
 <xs:documentation>
-
+
 voltage</xs:documentation>
 <xs:appinfo source="http://fdo.osgeo.org/schemas">
 <fdo:attribute name="Calculable">
-
+
 yes</fdo:attribute>
 </xs:appinfo>
 </xs:annotation>
@@ -849,7 +849,7 @@ yes</fdo:attribute>
 <xs:element name="Phase">
 <xs:annotation>
 <xs:documentation>
-
+
 A, B or C</xs:documentation>
 </xs:annotation>
 <xs:simpleType>
@@ -923,7 +923,7 @@ A, B or C</xs:documentation>
 <xs:element name="Name">
 <xs:annotation>
 <xs:documentation>
-
+
 type name</xs:documentation>
 </xs:annotation>
 <xs:simpleType>
@@ -952,7 +952,7 @@ type name</xs:documentation>
 <xs:element name="Name">
 <xs:annotation>
 <xs:documentation>
-
+
 type name</xs:documentation>
 </xs:annotation>
 <xs:simpleType>
@@ -1008,14 +1008,14 @@ type name</xs:documentation>
 <xs:element name="Location" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point ">
 <xs:annotation>
 <xs:documentation>
-
+
 point location</xs:documentation>
 </xs:annotation>
 </xs:element>
 <xs:element name="Shape" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="SC_1" fdo:geometricTypes="curve ">
 <xs:annotation>
 <xs:documentation>
-
+
 pole shape</xs:documentation>
 </xs:annotation>
 </xs:element>
@@ -1030,7 +1030,7 @@ pole shape</xs:documentation>
 <xs:element name="Mounted-x20-Transformer" minOccurs="0" maxOccurs="1" fdo:deleteRule="Cascade">
 <xs:annotation>
 <xs:documentation>
-
+
 sits on pole</xs:documentation>
 </xs:annotation>
 <xs:complexType>
@@ -1280,7 +1280,7 @@ sits on pole</xs:documentation>
 <xs:complexType name="TestLayerType" abstract="false">
 <xs:annotation>
 <xs:documentation>
-
+
 A network test Layer class</xs:documentation>
 </xs:annotation>
 <xs:complexContent>
@@ -1289,7 +1289,7 @@ A network test Layer class</xs:documentation>
 <xs:element name="LayerPropertyOne">
 <xs:annotation>
 <xs:documentation>
-
+
 A layer test property</xs:documentation>
 </xs:annotation>
 <xs:simpleType>
@@ -1334,7 +1334,7 @@ A layer test property</xs:documentation>
 <xs:complexType name="TestNetworkType" abstract="false">
 <xs:annotation>
 <xs:documentation>
-
+
 A network test class</xs:documentation>
 </xs:annotation>
 <xs:complexContent>
@@ -1343,7 +1343,7 @@ A network test class</xs:documentation>
 <xs:element name="NetworkPropertyOne">
 <xs:annotation>
 <xs:documentation>
-
+
 A network test property</xs:documentation>
 </xs:annotation>
 <xs:simpleType>
@@ -1377,7 +1377,7 @@ A network test property</xs:documentation>
 <xs:complexType name="TestNetworkParentNodeType" abstract="false" fdo:hasGeometry="false">
 <xs:annotation>
 <xs:documentation>
-
+
 A parent network node test class</xs:documentation>
 </xs:annotation>
 <xs:complexContent>
@@ -1405,7 +1405,7 @@ A parent network node test class</xs:documentation>
 <xs:complexType name="TestNetworkNodeType" abstract="false" fdo:hasGeometry="false">
 <xs:annotation>
 <xs:documentation>
-
+
 A network node test class</xs:documentation>
 </xs:annotation>
 <xs:complexContent>
@@ -1417,7 +1417,7 @@ A network node test class</xs:documentation>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation>
-
+
 A speed property</xs:documentation>
 </xs:annotation>
 </xs:element>
@@ -1447,7 +1447,7 @@ A speed property</xs:documentation>
 <xs:complexType name="TestNetworkLinkType" abstract="false" fdo:hasGeometry="false">
 <xs:annotation>
 <xs:documentation>
-
+
 A network link test class</xs:documentation>
 </xs:annotation>
 <xs:complexContent>
@@ -1459,7 +1459,7 @@ A network link test class</xs:documentation>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation>
-
+
 A speed property</xs:documentation>
 </xs:annotation>
 </xs:element>
@@ -1495,7 +1495,7 @@ A speed property</xs:documentation>
 <xs:element name="LayerPropertyOne">
 <xs:annotation>
 <xs:documentation>
-
+
 A layer test property</xs:documentation>
 </xs:annotation>
 <xs:simpleType>
@@ -1511,7 +1511,7 @@ A layer test property</xs:documentation>
 <xs:complexType name="TestLayer2Type" abstract="false">
 <xs:annotation>
 <xs:documentation>
-
+
 A network test Layer class</xs:documentation>
 </xs:annotation>
 <xs:complexContent>
@@ -1520,7 +1520,7 @@ A network test Layer class</xs:documentation>
 <xs:element name="LayerPropertyTwo" minOccurs="0">
 <xs:annotation>
 <xs:documentation>
-
+
 A layer test property</xs:documentation>
 </xs:annotation>
 <xs:simpleType>
@@ -1572,7 +1572,7 @@ A layer test property</xs:documentation>
 <xs:element name="NetworkPropertyOne">
 <xs:annotation>
 <xs:documentation>
-
+
 A network test property</xs:documentation>
 </xs:annotation>
 <xs:simpleType>
@@ -1588,7 +1588,7 @@ A network test property</xs:documentation>
 <xs:complexType name="TestNetwork2Type" abstract="false">
 <xs:annotation>
 <xs:documentation>
-
+
 A network test class</xs:documentation>
 </xs:annotation>
 <xs:complexContent>
@@ -1597,7 +1597,7 @@ A network test class</xs:documentation>
 <xs:element name="NetworkPropertyTwo" minOccurs="0">
 <xs:annotation>
 <xs:documentation>
-
+
 A network test property</xs:documentation>
 </xs:annotation>
 <xs:simpleType>
@@ -1643,7 +1643,7 @@ A network test property</xs:documentation>
 <xs:complexType name="TestNetworkParentNode2Type" abstract="false" fdo:hasGeometry="false">
 <xs:annotation>
 <xs:documentation>
-
+
 A parent network node test class</xs:documentation>
 </xs:annotation>
 <xs:complexContent>
@@ -1693,7 +1693,7 @@ A parent network node test class</xs:documentation>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation>
-
+
 A speed property</xs:documentation>
 </xs:annotation>
 </xs:element>
@@ -1704,7 +1704,7 @@ A speed property</xs:documentation>
 <xs:complexType name="TestNetworkNode2Type" abstract="false" fdo:hasGeometry="false">
 <xs:annotation>
 <xs:documentation>
-
+
 A network node test class</xs:documentation>
 </xs:annotation>
 <xs:complexContent>
@@ -1768,7 +1768,7 @@ A network node test class</xs:documentation>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation>
-
+
 A speed property</xs:documentation>
 </xs:annotation>
 </xs:element>
@@ -1779,7 +1779,7 @@ A speed property</xs:documentation>
 <xs:complexType name="TestNetworkLink2Type" abstract="false" fdo:hasGeometry="false">
 <xs:annotation>
 <xs:documentation>
-
+
 A network link test class</xs:documentation>
 </xs:annotation>
 <xs:complexContent>
@@ -1838,7 +1838,7 @@ A network link test class</xs:documentation>
 <xs:element name="NetworkPropertyOne">
 <xs:annotation>
 <xs:documentation>
-
+
 A network test property</xs:documentation>
 </xs:annotation>
 <xs:simpleType>
@@ -1850,7 +1850,7 @@ A network test property</xs:documentation>
 <xs:element name="NetworkPropertyTwo" minOccurs="0">
 <xs:annotation>
 <xs:documentation>
-
+
 A network test property</xs:documentation>
 </xs:annotation>
 <xs:simpleType>
@@ -1866,7 +1866,7 @@ A network test property</xs:documentation>
 <xs:complexType name="TestNetwork3Type" abstract="false">
 <xs:annotation>
 <xs:documentation>
-
+
 A network test class</xs:documentation>
 </xs:annotation>
 <xs:complexContent>
@@ -1875,7 +1875,7 @@ A network test class</xs:documentation>
 <xs:element name="NetworkPropertyThree" minOccurs="0">
 <xs:annotation>
 <xs:documentation>
-
+
 A network test property</xs:documentation>
 </xs:annotation>
 <xs:simpleType>

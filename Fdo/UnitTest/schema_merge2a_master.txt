@@ -3,7 +3,7 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.autodesk.com/Acad" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:gml="http://www.opengis.net/gml" xmlns:Acad="http://www.autodesk.com/Acad" elementFormDefault="qualified" attributeFormDefault="unqualified">
 <xs:annotation>
 <xs:documentation>
-
+
 AutoCAD modified schema</xs:documentation>
 </xs:annotation>
 <xs:complexType name="AcXDataType" abstract="false">
@@ -70,7 +70,7 @@ A vertex</xs:documentation>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation>
-
+
 seq</xs:documentation>
 </xs:annotation>
 </xs:element>
@@ -724,7 +724,7 @@ A network link test class</xs:documentation>
 <xs:complexType name="AcDbComplexPolylineType" abstract="false" fdo:hasGeometry="false">
 <xs:annotation>
 <xs:documentation>
-
+
 AutoCAD hatched polygon</xs:documentation>
 </xs:annotation>
 <xs:complexContent>
@@ -743,14 +743,14 @@ AutoCAD hatched polygon</xs:documentation>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.autodesk.com/Electrical" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:gml="http://www.opengis.net/gml" xmlns:Electrical="http://www.autodesk.com/Electrical" xmlns:Acad="http://www.autodesk.com/Acad" elementFormDefault="qualified" attributeFormDefault="unqualified">
 <xs:annotation>
 <xs:documentation>
-
+
 Electrical schema</xs:documentation>
 <xs:appinfo source="http://fdo.osgeo.org/schemas">
 <fdo:attribute name="Owner">
-
+
 Ontario Hydro</fdo:attribute>
 <fdo:attribute name="Create Date">
-
+
 2004/06/10</fdo:attribute>
 </xs:appinfo>
 </xs:annotation>
@@ -763,7 +763,7 @@ Ontario Hydro</fdo:attribute>
 <xs:complexType name="Electric-x20-DeviceType" abstract="true" fdo:geometryName="Geometry">
 <xs:annotation>
 <xs:documentation>
-
+
 electical base class</xs:documentation>
 </xs:annotation>
 <xs:complexContent>
@@ -772,18 +772,18 @@ electical base class</xs:documentation>
 <xs:element name="furniture" type="Acad:AcDb3dPolylineType" minOccurs="0" maxOccurs="unbounded">
 <xs:annotation>
 <xs:documentation>
-
+
 Acad entity</xs:documentation>
 </xs:annotation>
 </xs:element>
 <xs:element name="Geometry" type="gml:AbstractGeometryType" fdo:geometryReadOnly="true" fdo:hasMeasure="true" fdo:hasElevation="false" fdo:srsName="SC_1" fdo:geometricTypes="point curve surface solid ">
 <xs:annotation>
 <xs:documentation>
-
+
 positional info</xs:documentation>
 <xs:appinfo source="http://fdo.osgeo.org/schemas">
 <fdo:attribute name="Measure Units">
-
+
 feet</fdo:attribute>
 </xs:appinfo>
 </xs:annotation>
@@ -794,7 +794,7 @@ feet</fdo:attribute>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation>
-
+
 id</xs:documentation>
 </xs:annotation>
 </xs:element>
@@ -823,7 +823,7 @@ id</xs:documentation>
 <xs:documentation/>
 <xs:appinfo source="http://fdo.osgeo.org/schemas">
 <fdo:attribute name="Rules DLL">
-
+
 transformer.dll</fdo:attribute>
 </xs:appinfo>
 </xs:annotation>
@@ -836,11 +836,11 @@ transformer.dll</fdo:attribute>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation>
-
+
 voltage</xs:documentation>
 <xs:appinfo source="http://fdo.osgeo.org/schemas">
 <fdo:attribute name="Calculable">
-
+
 no</fdo:attribute>
 </xs:appinfo>
 </xs:annotation>
@@ -891,7 +891,7 @@ no</fdo:attribute>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation>
-
+
 A, B or C</xs:documentation>
 </xs:annotation>
 </xs:element>
@@ -997,14 +997,14 @@ type name</xs:documentation>
 <xs:element name="Location" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="SC_2" fdo:geometricTypes="point ">
 <xs:annotation>
 <xs:documentation>
-
+
 pole shape</xs:documentation>
 </xs:annotation>
 </xs:element>
 <xs:element name="Shape" type="gml:AbstractGeometryType" fdo:hasMeasure="true" fdo:hasElevation="true" fdo:srsName="SC_0" fdo:geometricTypes="curve ">
 <xs:annotation>
 <xs:documentation>
-
+
 point location</xs:documentation>
 </xs:annotation>
 </xs:element>
