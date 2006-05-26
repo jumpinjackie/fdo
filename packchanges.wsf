@@ -8,6 +8,7 @@
             Dim lineFile
             Dim EndFile
             Dim activePath
+            Dim activeRelPath
             Dim basePath
             Dim chgFileName
             Dim infoFileName
@@ -44,57 +45,69 @@
                         oinfFile.WriteLine("*")
                         oinfFile.WriteLine("******Fdocore******")
                         activePath = basePath & "\"
+                        activeRelPath = ""
                     Case "$(Thirdparty)"
                         activePath = basePath & "\Thirdparty\"
+                        activeRelPath = "Thirdparty/"
                     Case "$(Fdo)"
                         activePath = basePath & "\Fdo\"
+                        activeRelPath = "Fdo/"
                     Case "$(Providers)"
                         activePath = basePath & "\Providers\"
+                        activeRelPath = "Providers/"
                     Case "$(Utilities)"
                         activePath = basePath & "\Utilities\"
+                        activeRelPath = "Utilities/"
                     Case "$(www)"
                         activePath = basePath & "\www\"
+                        activeRelPath = "www/"
                     Case "$(ArcSDE)"
                         oinfFile.WriteLine("*")
                         oinfFile.WriteLine("******ArcSDE******")
                         activePath = basePath & "\Providers\ArcSDE\"
+                        activeRelPath = "Providers/ArcSDE/"
                     Case "$(GenericRdbms)"
                         oinfFile.WriteLine("*")
                         oinfFile.WriteLine("******Rdbms******")
                         activePath = basePath & "\Providers\GenericRdbms\"
+                        activeRelPath = "Providers/GenericRdbms/"
                     Case "$(SDF)"
                         oinfFile.WriteLine("*")
                         oinfFile.WriteLine("******SDF******")
                         activePath = basePath & "\Providers\SDF\"
+                        activeRelPath = "Providers/SDF/"
                     Case "$(SHP)"
                         oinfFile.WriteLine("*")
                         oinfFile.WriteLine("******SHP******")
                         activePath = basePath & "\Providers\SHP\"
+                        activeRelPath = "Providers/SHP/"
                     Case "$(WFS)"
                         oinfFile.WriteLine("*")
                         oinfFile.WriteLine("******WFS******")
                         activePath = basePath & "\Providers\WFS\"
+                        activeRelPath = "Providers/WFS/"
                     Case "$(WMS)"
                         oinfFile.WriteLine("*")
                         oinfFile.WriteLine("******WMS******")
                         activePath = basePath & "\Providers\WMS\"
+                        activeRelPath = "Providers/WMS/"
                     Case Else
                         modLine = Left(lineFile, 7)
                         If not Instr(modLine, "M") = 0 Then
                             WScript.Echo ("M: " & modLine)
-                            modLine = activePath & Right(lineFile, Len(lineFile) - 7)
-                            oinfFile.WriteLine("Modified : " & modLine)
-                            Call WshShell.Run("wzzip -P " & ChangeName & ".zip " & modLine, 0, true)
+                            modLine = Right(lineFile, Len(lineFile) - 7)
+                            oinfFile.WriteLine("Modified : " & activeRelPath & modLine)
+                            Call WshShell.Run("wzzip -P " & ChangeName & ".zip " & activePath & modLine, 0, true)
                         ElseIf not Instr(modLine, "A") = 0 Then
                             WScript.Echo ("A: " & modLine)
-                            modLine = activePath & Right(lineFile, Len(lineFile) - 7)
-                            oinfFile.WriteLine("Added : " & modLine)
-                            Call WshShell.Run("wzzip -P " & ChangeName & ".zip " & modLine, 0, true)
+                            modLine = Right(lineFile, Len(lineFile) - 7)
+                            oinfFile.WriteLine("Added : " & activeRelPath & modLine)
+                            Call WshShell.Run("wzzip -P " & ChangeName & ".zip " & activePath & modLine, 0, true)
                         ElseIf not Instr(modLine, "D") = 0 Then
                             WScript.Echo ("D: " & modLine)
-                            modLine = activePath & Right(lineFile, Len(lineFile) - 7)
-                            oinfFile.WriteLine("Deleted : " & modLine)
-                            Call WshShell.Run("wzzip -P " & ChangeName & ".zip " & modLine, 0, true)
+                            modLine = Right(lineFile, Len(lineFile) - 7)
+                            oinfFile.WriteLine("Deleted : " & activeRelPath & modLine)
+                            Call WshShell.Run("wzzip -P " & ChangeName & ".zip " & activePath & modLine, 0, true)
                         End If
                 End Select
                Loop While EndFile = False
