@@ -1,5 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 
+EXTRA_DIST = resource.h WFSMessage.mc WFSMessage.vcproj WFSMessageStatic.h WFSMessageStatic.rc
+
 CATDIR = ../../nls/linux/en_US
 
 CATALOGS = WFSMessage.msf
@@ -9,7 +11,9 @@ CATALOGS_CAT = $(patsubst %.msf,$(CATDIR)/%.cat,$(CATALOGS))
 all: catalog_init inc_init $(CATALOGS_CAT)
 
 clean:
-	@rm -rf $(CATDIR)/*.cat  
+	@rm -rf WFSMessage.msf
+	@rm -rf Inc/*.h
+	@rm -rf $(CATDIR)/*.cat
 
 catalog_init::
 	@if [ ! -d $(CATDIR) ]; then mkdir -p $(CATDIR); fi

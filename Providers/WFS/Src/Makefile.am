@@ -4,6 +4,8 @@ SUBDIRS = Message Provider
 
 DIST_SUBDIRS = Message Provider
 
+EXTRA_DIST = WFSOS.sln
+
 ##building libWFSProvider.so
 lib_LTLIBRARIES = libWFSProvider.la
 

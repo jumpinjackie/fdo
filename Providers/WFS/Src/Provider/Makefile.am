@@ -1,5 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 
+EXTRA_DIST = WFSProvider.vcproj FdoWfsProvider.rc
+
 noinst_LTLIBRARIES = libWFSProviderSrc.la
 
 libWFSProviderSrc_la_SOURCES = \
@@ -34,6 +36,50 @@ libWFSProviderSrc_la_SOURCES = \
   ./FdoWfsTopologyCapabilities.cpp \
   ./FdoWfsUtils.cpp \
   ./stdafx.cpp
+
+
+noinst_HEADERS = $(libWFSProviderSrc_la_SOURCES) \
+  ./FdoWfsCapabilitiesSaxContext.h \
+  ./FdoWfsExpressionCapabilities.h \
+  ./FdoWfsNamedIoStream.h \
+  ./FdoWfsSchemaCopyHandler.h \
+  ./feature.h \
+  ./FdoWfsCommandCapabilities.h \
+  ./FdoWfsFeatureReader.h \
+  ./FdoWfsOgcFilterCapabilities.h \
+  ./FdoWfsSchemaMerger.h \
+  ./geometry.h \
+  ./FdoWfsConnectionCapabilities.h \
+  ./FdoWfsFeatureType.h \
+  ./FdoWfsOgcScalarCapabilities.h \
+  ./FdoWfsSchemaRefHandler.h \
+  ./resource.h \
+  ./FdoWfsConnection.h \
+  ./FdoWfsFeatureTypeList.h \
+  ./FdoWfsOgcSpatialCapabilities.h \
+  ./FdoWfsSelectAggregatesCommand.h  \
+  ./stdafx.h \
+  ./FdoWfsConnectionInfo.h \
+  ./FdoWfsFilterCapabilities.h \
+  ./FdoWfsOperations.h \
+  ./FdoWfsSelectCommand.h \
+  ./xlinks.h \
+  ./FdoWfsDataReader.h \
+  ./FdoWfsGeometryCapabilities.h \
+  ./FdoWfsProvider.h \
+  ./FdoWfsServiceMetadata.h \
+  ./FdoWfsDelegate.h \
+  ./FdoWfsGetFeature.h \
+  ./FdoWfsRasterCapabilities.h \
+  ./FdoWfsSpatialContextReader.h \
+  ./FdoWfsDescribeFeatureType.h \
+  ./FdoWfsGetSpatialContexts.h \
+  ./FdoWfsReader.h \
+  ./FdoWfsTopologyCapabilities.h \
+  ./FdoWfsDescribeSchemaCommand.h \
+  ./FdoWfsGlobals.h \
+  ./FdoWfsSchemaCapabilities.h \
+  ./FdoWfsUtils.h
 
 libWFSProviderSrc_la_LDFLAGS =
 
