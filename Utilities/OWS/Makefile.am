@@ -20,6 +20,7 @@ libFdoOws_la_LIBADD =  \
   $(FDOTHIRDPARTY)/libcurl/lib/linux/libcurl.a  \
   $(FDOTHIRDPARTY)/openssl/lib/linux/libssl.a \
   $(FDOTHIRDPARTY)/openssl/lib/linux/libcrypto.a \
+  -lz \
   -lpthread
 
 libFdoOws_la_LDFLAGS = -shared \
