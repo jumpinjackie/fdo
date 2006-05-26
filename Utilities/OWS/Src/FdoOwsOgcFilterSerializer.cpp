@@ -70,8 +70,10 @@ void FdoOwsOgcFilterSerializer::ProcessBinaryLogicalOperator (FdoBinaryLogicalOp
         throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_86_UNSUPPORTED_BINARY_OPERATION), "Unsupported FDO binary operation."));
 	}
 	
-	this->Serialize (filter.GetLeftOperand());
-	this->Serialize (filter.GetRightOperand());	
+	FdoPtr<FdoFilter> lFilter = filter.GetLeftOperand ();
+	this->Serialize (lFilter);
+	FdoPtr<FdoFilter> rFilter = filter.GetRightOperand ();
+	this->Serialize (rFilter);	
 
 	mWriter->WriteEndElement();	
 }
@@ -83,11 +85,13 @@ void FdoOwsOgcFilterSerializer::ProcessUnaryLogicalOperator (FdoUnaryLogicalOper
 	switch (ulo)
 	{
 		case FdoUnaryLogicalOperations_Not:
+		{
 			mWriter->WriteStartElement (FdoOwsGlobals::Logical_Not);
-			this->Serialize (filter.GetOperand());
+			FdoPtr<FdoFilter> operand = filter.GetOperand ();
+			this->Serialize (operand);
 			mWriter->WriteEndElement();
 			break;
-			
+		}
 		default:
             throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_87_UNSUPPORTED_UNARY_OPERATION), "Unsupported FDO unary operation."));
 	}
@@ -135,7 +139,8 @@ void FdoOwsOgcFilterSerializer::ProcessComparisonCondition (FdoComparisonConditi
 		mWriter->WriteCharacters(filter.GetLeftExpression()->ToString());			
 		mWriter->WriteEndElement();
 		mWriter->WriteStartElement(FdoOwsGlobals::Literal);
-		FdoPtr<FdoStringValue> literal = static_cast<FdoStringValue *>(filter.GetRightExpression());
+		FdoPtr<FdoExpression> rExpr = filter.GetRightExpression ();
+		FdoPtr<FdoStringValue> literal = static_cast<FdoStringValue *>(rExpr.p);
 		if (literal == NULL)
             throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_109_INVALID_FDO_COMPARISON_CONDITION), "Invalid FDO In condition."));
 		mWriter->WriteCharacters(literal->GetString());
@@ -151,8 +156,10 @@ void FdoOwsOgcFilterSerializer::ProcessComparisonCondition (FdoComparisonConditi
 	}
 
 	mWriter->WriteStartElement(startElement);	
-	filter.GetLeftExpression()->Process(this);
-	filter.GetRightExpression()->Process(this);	
+	FdoPtr<FdoExpression> lExpr = filter.GetLeftExpression ();
+	lExpr->Process(this);
+	FdoPtr<FdoExpression> rExpr = filter.GetRightExpression ();
+	rExpr->Process(this);	
 	mWriter->WriteEndElement();
 }
 
@@ -168,14 +175,16 @@ void FdoOwsOgcFilterSerializer::ProcessInCondition (FdoInCondition& filter)
 	}
 	else if (cnt == 1)
 	{
-		_serializeNameValuePair(prop, propValues->GetItem(0));
+		FdoPtr<FdoValueExpression> propValue = propValues->GetItem (0);
+		_serializeNameValuePair(prop, propValue);
 	}
 	else
 	{
 		mWriter->WriteStartElement(FdoOwsGlobals::Logical_Or);
 		for (FdoInt32 i=0; i<cnt; i++)
 		{
-			_serializeNameValuePair(prop, propValues->GetItem(i));
+			FdoPtr<FdoValueExpression> propValue = propValues->GetItem (i);
+			_serializeNameValuePair(prop, propValue);
 		}
 
 		mWriter->WriteEndElement();		
@@ -235,7 +244,8 @@ void FdoOwsOgcFilterSerializer::ProcessSpatialCondition (FdoSpatialCondition& fi
 	}
 	mWriter->WriteCharacters(filter.GetPropertyName()->ToString());
 	mWriter->WriteEndElement ();
-	filter.GetGeometry()->Process(this);
+	FdoPtr<FdoExpression> geomExpr = filter.GetGeometry ();
+	geomExpr->Process(this);
 	mWriter->WriteEndElement();
 }
 
@@ -310,8 +320,10 @@ void FdoOwsOgcFilterSerializer::ProcessBinaryExpression (FdoBinaryExpression& ex
         throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_86_UNSUPPORTED_BINARY_OPERATION), "Unsupported FDO binary operation."));
 	}
 
-	expr.GetLeftExpression()->Process(this);
-	expr.GetRightExpression()->Process(this);
+	FdoPtr<FdoExpression> lExpr = expr.GetLeftExpression ();
+	lExpr->Process(this);
+	FdoPtr<FdoExpression> rExpr = expr.GetRightExpression ();
+	rExpr->Process(this);
 	mWriter->WriteEndElement();	
 }
 
