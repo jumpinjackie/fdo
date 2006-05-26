@@ -71,7 +71,7 @@ public:
 
 	bool cursor_is_valid();
 
-	bool needs_a_flush();
+	bool needs_a_flush(bool partial=false);
 
 	void flush();
 

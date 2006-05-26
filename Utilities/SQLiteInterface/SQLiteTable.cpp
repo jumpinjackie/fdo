@@ -562,8 +562,11 @@ bool SQLiteTable::cursor_is_valid()
 	return (pmCur != NULL);
 }
 
-bool SQLiteTable::needs_a_flush()
+bool SQLiteTable::needs_a_flush( bool partial )
 {
+	if( partial )
+		return (mCacheSize > 0 );
+
 	return ( (mCacheSize+1) >= mMaxCacheSize && mTabCache );
 }
 
