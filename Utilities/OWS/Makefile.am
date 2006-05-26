@@ -15,15 +15,13 @@ libFdoOws_la_LIBADD =  \
   $(FDO)/Unmanaged/Src/libFDO.la \
   $(FDO)/Unmanaged/Src/Geometry/libFDOGeometry.la  \
   $(FDO)/Unmanaged/Src/Common/libFDOCommon.la  \
-  -lcurl  \
   $(FDOUTILITIES)/Common/libProvidersCommon.la \
   $(FDOTHIRDPARTY)/boost_1_32_0/bin/boost/libs/thread/build/libboost_thread.a/gcc/release/runtime-link-static/threading-multi/libboost_thread-gcc-mt-s-1_32.a \
-  -lssl \
+  $(FDOTHIRDPARTY)/libcurl/lib/linux/libcurl.a  \
+  $(FDOTHIRDPARTY)/openssl/lib/linux/libssl.a \
+  $(FDOTHIRDPARTY)/openssl/lib/linux/libcrypto.a \
   -lpthread
 
 libFdoOws_la_LDFLAGS = -shared \
-  -release $(VERSION) \
-  -L$(FDOTHIRDPARTY)/libcurl/lib/linux \
-  -L$(FDOTHIRDPARTY)/openssl/lib/linux
-
+  -release $(VERSION)
 
