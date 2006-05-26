@@ -18,10 +18,12 @@ do
   --a | --action)
     if test "$1" == buildinstall; then
         TYPEACTION=buildinstall
-    elif test "$1" == buildonly; then
-        TYPEACTION=buildonly
-    elif test "$1" == installonly; then
-        TYPEACTION=installonly
+    elif test "$1" == build; then
+        TYPEACTION=build
+    elif test "$1" == install; then
+        TYPEACTION=install
+    elif test "$1" == uninstall; then
+        TYPEACTION=uninstall
     elif test "$1" == clean; then
         TYPEACTION=clean
     elif test "$1" == configure; then
@@ -72,14 +74,14 @@ done
 ### end of study parameters ###
 
 if test "$SHOWHELP" == yes; then
-   echo "**************************************************************************"***********
+   echo "*************************************************************************************"
    echo "build_linux.sh [--h] [-c BuildType] [-a Action] [--d BuildDocs]"
    echo "*"
    echo "Help:           --h[elp]"
    echo "BuildType:      --c[onfig] release(default), debug"
-   echo "Action:         --a[ction] buildinstall(default), buildonly, installonly, clean, configure"
+   echo "Action:         --a[ction] buildinstall(default), build, install, uninstall, clean, configure"
    echo "BuildDocs:      --d[ocs] skip(default), build"
-   echo "**************************************************************************"***********
+   echo "*************************************************************************************"
    exit 0
 fi
 
@@ -101,12 +103,16 @@ if test "$TYPEACTION" == clean ; then
   make clean
 fi
 
-if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == buildonly ; then
+if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
    make
 fi
 
-if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == installonly ; then
+if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
    make install
+fi
+
+if test "$TYPEACTION" == uninstall ; then
+   make uninstall
 fi
 
 if test "$BUILDDOCS" == yes ; then
@@ -119,7 +125,7 @@ if test "$BUILDDOCS" == yes ; then
    popd >& /dev/null
 fi
 
-if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == installonly ; then
+if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
    rm -rf "/usr/local/fdo-3.2.0/docs/HTML/Providers/SHP"
    mkdir -p "/usr/local/fdo-3.2.0/docs/HTML/Providers"
    if test -e "../Docs/HTML/Providers/SHP"; then
