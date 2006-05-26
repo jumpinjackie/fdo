@@ -31,10 +31,12 @@ do
   --a | --action)
     if test "$1" == buildinstall; then
         TYPEACTION=buildinstall
-    elif test "$1" == buildonly; then
-        TYPEACTION=buildonly
-    elif test "$1" == installonly; then
-        TYPEACTION=installonly
+    elif test "$1" == build; then
+        TYPEACTION=build
+    elif test "$1" == install; then
+        TYPEACTION=install
+    elif test "$1" == uninstall; then
+        TYPEACTION=uninstall
     elif test "$1" == clean; then
         TYPEACTION=clean
     elif test "$1" == configure; then
@@ -137,12 +139,12 @@ done
 
 if test "$SHOWHELP" == yes; then
 
-   echo "**************************************************************************"
+   echo "*************************************************************************************"
    echo "build_linux.sh [--h] [--c BuildType] [--a Action] [--w WithModule] [--d BuildDocs]"
    echo "*"
    echo "Help:           --h[elp]"
    echo "BuildType:      --c[onfig] release(default), debug"
-   echo "Action:         --a[ction] buildinstall(default), buildonly, installonly, clean, configure"
+   echo "Action:         --a[ction] buildinstall(default), build, install, uninstall, clean, configure"
    echo "BuildDocs:      --d[ocs] skip(default), build"
 
    HELPSTRINGWITH="WithModule:     --w[ith] fdocore(default), fdo, thirdparty, providers"
@@ -166,7 +168,7 @@ if test "$SHOWHELP" == yes; then
    fi
    
    echo "$HELPSTRINGWITH"
-   echo "**************************************************************************"
+   echo "*************************************************************************************"
 
    exit 0
 fi
@@ -203,27 +205,40 @@ if test "$THRPENABLE" == yes; then
    fi
 
    pushd "Thirdparty" >& /dev/null
-   if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == buildonly ; then
+   
+   if test "$TYPEACTION" == clean ; then
+      make clean
+   fi
+   if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
       ./Thirdparty.sh
    fi
-   if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == installonly ; then
+   if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
       make install
    fi
+   if test "$TYPEACTION" == uninstall ; then
+      make uninstall
+   fi
+
    popd >& /dev/null
 fi
 
 #build Fdo
 if test "$FDOENABLE" == yes; then
    pushd Fdo >& /dev/null
+   
    if test "$TYPEACTION" == clean ; then
       make clean
    fi
-   if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == buildonly ; then
+   if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
       make
    fi
-   if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == installonly ; then
+   if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
       make install
    fi
+   if test "$TYPEACTION" == uninstall ; then
+      make uninstall
+   fi
+   
    if test "$BUILDDOCS" == build ; then
       echo Creating Fdo unmanaged html documentation
       rm -rf Docs/HTML/FDO_API
@@ -233,28 +248,35 @@ if test "$FDOENABLE" == yes; then
       doxygen Doxyfile_FDOunmanaged >& /dev/null
       popd >& /dev/null
    fi
-   if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == installonly ; then
+   
+   if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
       rm -rf "/usr/local/fdo-3.2.0/docs/HTML/FDO_API"
       mkdir -p "/usr/local/fdo-3.2.0/docs/HTML"
       if test -e "Docs/HTML/FDO_API"; then
          cp --force --recursive "Docs/HTML/FDO_API" "/usr/local/fdo-3.2.0/docs/HTML"
       fi
    fi
+   
    popd >& /dev/null
 fi
 
 #build Utilities
 if test "$UTILENABLE" == yes; then
    pushd Utilities >& /dev/null
+   
    if test "$TYPEACTION" == clean ; then
       make clean
    fi
-   if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == buildonly ; then
+   if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
       make
    fi
-   if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == installonly ; then
+   if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
       make install
    fi
+   if test "$TYPEACTION" == uninstall ; then
+      make uninstall
+   fi
+   
    popd >& /dev/null
 fi
 
