@@ -32,6 +32,7 @@
 #include "ProviderDef.h"
 #include <Fdo/ClientServices/Provider.h>
 #include <Fdo/ClientServices/ClientServiceException.h>
+#include <Fdo/ClientServices/ProviderNameTokens.h>
 
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/parsers/XercesDOMParser.hpp>
@@ -177,6 +178,12 @@ void FdoRegistryUtility::GetLibraryLocation(const wchar_t* providerName, std::ws
     XMLPlatformUtils::Initialize();
     
     try {
+
+        FdoPtr<FdoProviderNameTokens> inputTokens = FdoProviderNameTokens::Create(providerName);
+        FdoVectorP inputVersionTokens = inputTokens->GetVersionTokens();
+        FdoVectorP currentTokens;
+        FdoStringP currentLibraryPath;
+
         XMLTransService::Codes failReason;
         XMLCh* tmpCh = XMLString::transcode("UTF-8");
         transcoder = XMLPlatformUtils::fgTransService->makeNewTranscoderFor(tmpCh, failReason, 1024);
@@ -201,52 +208,128 @@ void FdoRegistryUtility::GetLibraryLocation(const wchar_t* providerName, std::ws
         {
             XMLString::release(&tmp);
             int numberFeatureProviders = featureProviders->getLength();
-            for (int i=0; i<numberFeatureProviders && !bFound; i++)
+            // Search thru the registry two times. The first time an exact match is needed.
+            // The second time 
+            for (int h = 0; h < 2; h++)
             {
-                DOMNode *featureProvider = featureProviders->item(i);
-				FdoStringP pFeatureProvider = FdoXmlUtilXrcs::Xrcs2Unicode(featureProvider->getNodeName());
-                if (wcscmp(pFeatureProvider, c_featureProviderNameW.c_str()) == 0)
+                if (bFound == true)
+                    break;
+                for (int i=0; i<numberFeatureProviders; i++)
                 {
-                    DOMNodeList *properties = featureProvider->getChildNodes();
-                    int numberProperties = properties->getLength();
-                    for (int j=0; j<numberProperties && !bFound; j++)
+                    if (h == 0)
                     {
-                        DOMNode *property = properties->item(j);
-						FdoStringP pNodeName = FdoXmlUtilXrcs::Xrcs2Unicode(property->getNodeName());
-                        if (wcscmp(pNodeName, c_keyNameValue.c_str()) == 0)
+                        if (bFound == true)
+                            break;
+                    }
+                        
+                    DOMNode *featureProvider = featureProviders->item(i);
+				    FdoStringP pFeatureProvider = FdoXmlUtilXrcs::Xrcs2Unicode(featureProvider->getNodeName());
+                    if (wcscmp(pFeatureProvider, c_featureProviderNameW.c_str()) == 0)
+                    {
+                        DOMNodeList *properties = featureProvider->getChildNodes();
+                        int numberProperties = properties->getLength();
+                        for (int j=0; j<numberProperties; j++)
                         {
-                            DOMNodeList *names = property->getChildNodes();
-                            if (names == NULL || names->getLength() == 0)
+                            if (h == 0)
                             {
-                                throw FdoClientServiceException::Create(FdoClientServiceException::NLSGetMessage(FDO_NLSID(CLNT_11_PARSER_ERROR)));
+                                if (bFound == true)
+                                    break;
                             }
-                            DOMNode *nameNode = names->item(0);
-                            FdoStringP nameValue;
-                            unsigned int chars = 0;
-                            unsigned int length = XMLString::stringLen(nameNode->getNodeValue());
-                            XMLByte *res = new XMLByte[length*6];
-                            transcoder->transcodeTo(nameNode->getNodeValue(), length+1, res, length*6, chars, XMLTranscoder::UnRep_Throw);
-                            nameValue = (char*) res;
-                            delete[] res;
-
-                            if (wcscmp(nameValue, providerName) == 0)
+                            DOMNode *property = properties->item(j);
+						    FdoStringP pNodeName = FdoXmlUtilXrcs::Xrcs2Unicode(property->getNodeName());
+                            if (wcscmp(pNodeName, c_keyNameValue.c_str()) == 0)
                             {
-                                for (int k=0; k<numberProperties; k++)
+                                DOMNodeList *names = property->getChildNodes();
+                                if (names == NULL || names->getLength() == 0)
                                 {
-                                    DOMNode *prop = properties->item(k);
-									FdoStringP pProp = FdoXmlUtilXrcs::Xrcs2Unicode(prop->getNodeName());
-                                    if (wcscmp(pProp, c_keyLibraryValue.c_str()) == 0)
+                                    throw FdoClientServiceException::Create(FdoClientServiceException::NLSGetMessage(FDO_NLSID(CLNT_11_PARSER_ERROR)));
+                                }
+                                DOMNode *nameNode = names->item(0);
+                                FdoStringP nameValue;
+                                unsigned int chars = 0;
+                                unsigned int length = XMLString::stringLen(nameNode->getNodeValue());
+                                XMLByte *res = new XMLByte[length*6];
+                                transcoder->transcodeTo(nameNode->getNodeValue(), length+1, res, length*6, chars, XMLTranscoder::UnRep_Throw);
+                                nameValue = (char*) res;
+                                delete[] res;
+
+                                bool bEqual = true;
+                                if (h == 0)
+                                {
+                                    bEqual = wcscmp(nameValue, providerName) == 0;
+                                }
+                                else
+                                {
+                                    FdoPtr<FdoProviderNameTokens> registryTokens = FdoProviderNameTokens::Create(nameValue);
+                                    FdoVectorP registryVersionTokens = registryTokens->GetVersionTokens();
+
+                                    FdoSize len1 = inputTokens->GetNameTokens()->GetCount();
+                                    FdoSize len2 = registryTokens->GetNameTokens()->GetCount();
+                                    FdoSize destLen = len1 > len2 ? len1 : len2;
+
+                                    if ( destLen > 2 ) 
+                                        destLen = 2;
+
+                                    // Compare the vendor and local name tokens.
+                                    for ( int k = 0; k < destLen; k++ )
                                     {
-                                        DOMNodeList *libraries = prop->getChildNodes();
-                                        if (libraries == NULL || libraries->getLength() == 0)
+                                        FdoStringP tok1 = (k < len1) ? inputTokens->GetNameTokens()->GetString( (int) k) : L"";
+                                        FdoStringP tok2 = (k < len2) ? registryTokens->GetNameTokens()->GetString( (int) k) : L"";
+                                        if ( tok1 != tok2 ) 
                                         {
-                                            throw FdoClientServiceException::Create(FdoClientServiceException::NLSGetMessage(FDO_NLSID(CLNT_11_PARSER_ERROR)));
+                                            bEqual = false;
+                                            break;
                                         }
-                                        DOMNode *libNode = libraries->item(0);
-										FdoStringP pPath = FdoXmlUtilXrcs::Xrcs2Unicode(libNode->getNodeValue());
-                                        libraryLocation = (FdoString*)pPath;
-                                        bFound = true;
-                                        break;
+                                    }
+
+
+                                    if (bEqual)
+                                    {
+                                        FdoSize len1 = inputVersionTokens->GetCount();
+                                        FdoSize len2 = registryVersionTokens->GetCount();
+                                        FdoSize destLen = len1;
+                                        for ( int k = 0; k < destLen; k++ )
+                                        {
+                                            double val1 = (k < len1) ? inputVersionTokens->GetValue(k) : -1;
+                                            double val2 = (k < len2) ? registryVersionTokens->GetValue(k) : -1;
+                                            if (val1 != val2)
+                                            {
+                                                bEqual = false;
+                                                break;
+                                            }
+
+                                        }
+            
+                                        if (bEqual)
+                                        {
+                                            bEqual = false;
+                                            if (!currentTokens || registryVersionTokens > currentTokens)
+                                            {
+                                                currentTokens = registryVersionTokens;
+                                                bEqual = true;
+                                            }
+                                        }
+                                    }
+                                }
+                                if (bEqual == true)          
+                                {
+                                    for (int k=0; k<numberProperties; k++)
+                                    {
+                                        DOMNode *prop = properties->item(k);
+									    FdoStringP pProp = FdoXmlUtilXrcs::Xrcs2Unicode(prop->getNodeName());
+                                        if (wcscmp(pProp, c_keyLibraryValue.c_str()) == 0)
+                                        {
+                                            DOMNodeList *libraries = prop->getChildNodes();
+                                            if (libraries == NULL || libraries->getLength() == 0)
+                                            {
+                                                throw FdoClientServiceException::Create(FdoClientServiceException::NLSGetMessage(FDO_NLSID(CLNT_11_PARSER_ERROR)));
+                                            }
+                                            DOMNode *libNode = libraries->item(0);
+										    FdoStringP pPath = FdoXmlUtilXrcs::Xrcs2Unicode(libNode->getNodeValue());
+                                            libraryLocation = (FdoString*)pPath;
+                                            bFound = true;
+                                            break;
+                                        }
                                     }
                                 }
                             }
