@@ -81,9 +81,10 @@ FdoStringP FdoGeometrySerializer::GetDirectPositionCoordinates(FdoIDirectPositio
 
 void FdoGeometrySerializer::SerializePoint(FdoIPoint* point, FdoXmlWriter* writer)
 {	
+	FdoPtr<FdoIDirectPosition> pos = point->GetPosition ();	
 	writer->WriteStartElement(L"gml:Point");
 	writer->WriteStartElement(L"gml:coordinates");	
-	writer->WriteCharacters(FdoGeometrySerializer::GetDirectPositionCoordinates(point->GetPosition()));
+	writer->WriteCharacters(FdoGeometrySerializer::GetDirectPositionCoordinates(pos));
 	writer->WriteEndElement();
 	writer->WriteEndElement();
 }
@@ -98,14 +99,14 @@ void FdoGeometrySerializer::SerializeLineString(FdoILineString* lineString, FdoX
 	// The coordinates are separated by a blank(" ").
 	if (cnt > 0)
 	{
-		FdoIDirectPosition* pos = lineString->GetItem(0);
+		FdoPtr<FdoIDirectPosition> pos = lineString->GetItem(0);
 		writer->WriteCharacters(GetDirectPositionCoordinates(pos));
 	}
 	
 	for (FdoInt32 i=1; i<cnt; i++)
 	{
 		writer->WriteCharacters(L" ");
-		FdoIDirectPosition* pos = lineString->GetItem(i);
+		FdoPtr<FdoIDirectPosition> pos = lineString->GetItem(i);
 		writer->WriteCharacters(GetDirectPositionCoordinates(pos));		
 	}
 
@@ -123,7 +124,7 @@ void FdoGeometrySerializer::SerializeLinearRing(FdoILinearRing* linearRing, FdoX
 	writer->WriteStartElement(L"gml:coordinates");
 	for (FdoInt32 i=0; i<cntPos; i++)
 	{
-		FdoIDirectPosition* pos = linearRing->GetItem(i);
+		FdoPtr<FdoIDirectPosition> pos = linearRing->GetItem(i);
 		writer->WriteCharacters(GetDirectPositionCoordinates(pos));
 		if (i < cntPos-1)
 			writer->WriteCharacters(L" ");
@@ -138,7 +139,7 @@ void FdoGeometrySerializer::SerializePolygon(FdoIPolygon* polygon, FdoXmlWriter*
 	writer->WriteAttribute(L"srsName", srsName);
 
 	// serialzie the exterior ring
-	FdoILinearRing* outer = polygon->GetExteriorRing();
+	FdoPtr<FdoILinearRing> outer = polygon->GetExteriorRing();
 	writer->WriteStartElement(L"gml:outerBoundaryIs");
 	FdoGeometrySerializer::SerializeLinearRing(outer, writer);
 	writer->WriteEndElement();
@@ -146,7 +147,7 @@ void FdoGeometrySerializer::SerializePolygon(FdoIPolygon* polygon, FdoXmlWriter*
 	FdoInt32 cntRing = polygon->GetInteriorRingCount();	
 	for (FdoInt32 i=0; i<cntRing; i++)
 	{
-		FdoILinearRing* inner = polygon->GetInteriorRing(i);
+		FdoPtr<FdoILinearRing> inner = polygon->GetInteriorRing(i);
 		writer->WriteStartElement(L"gml:innerBoundaryIs");
 		FdoGeometrySerializer::SerializeLinearRing(inner, writer);
 		writer->WriteEndElement();
@@ -163,7 +164,8 @@ void FdoGeometrySerializer::SerializeMultiPoint(FdoIMultiPoint* multiPoint, FdoX
 	FdoInt32 cntPoint = multiPoint->GetCount();
 	for (FdoInt32 i=0; i<cntPoint; i++)
 	{
-		FdoGeometrySerializer::SerializePoint(multiPoint->GetItem(i), writer);
+		FdoPtr<FdoIPoint> point = multiPoint->GetItem(i);
+		FdoGeometrySerializer::SerializePoint(point, writer);
 	}
 	writer->WriteEndElement();
 	writer->WriteEndElement();
@@ -176,7 +178,8 @@ void FdoGeometrySerializer::SerializeMultiLineString(FdoIMultiLineString* mlStri
 	FdoInt32 cntLineString = mlString->GetCount();
 	for (FdoInt32 i=0; i<cntLineString; i++)
 	{
-		FdoGeometrySerializer::SerializeLineString(mlString->GetItem(i), writer);
+		FdoPtr<FdoILineString> lString = mlString->GetItem(i);
+		FdoGeometrySerializer::SerializeLineString(lString, writer);
 	}
 	writer->WriteEndElement();
 	writer->WriteEndElement();
@@ -189,7 +192,8 @@ void FdoGeometrySerializer::SerializeMultiPolygon(FdoIMultiPolygon* mPolygon, Fd
 	FdoInt32 cntPolygon = mPolygon->GetCount();
 	for (FdoInt32 i=0; i<cntPolygon; i++)
 	{
-		FdoGeometrySerializer::SerializePolygon(mPolygon->GetItem(i), writer, srsName);
+		FdoPtr<FdoIPolygon> polygon = mPolygon->GetItem(i);
+		FdoGeometrySerializer::SerializePolygon(polygon, writer, srsName);
 	}
 	writer->WriteEndElement();
 	writer->WriteEndElement();
@@ -202,7 +206,7 @@ void FdoGeometrySerializer::SerializeMultiGeometry(FdoIMultiGeometry* mGeometry,
 	FdoInt32 cntGeometry = mGeometry->GetCount();
 	for (FdoInt32 i=0; i<cntGeometry; i++)
 	{
-		FdoIGeometry* geometry = mGeometry->GetItem(i);
+		FdoPtr<FdoIGeometry> geometry = mGeometry->GetItem(i);
 		FdoGeometrySerializer::SerializeGeometry(geometry, writer, srsName);
 	}
 	writer->WriteEndElement();
