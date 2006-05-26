@@ -142,6 +142,7 @@ int SQLiteSqlUpdateCache::flush( )
     {
         mCur->close(); // Close the write cursor
         delete mCur;
+		mCur = NULL;
     }
 
     if( m_pDb->BTree()->cursor( mTabId, &mCur, 0 ) != SQLITE_OK ) // Open a read-only cursor
@@ -156,6 +157,9 @@ int SQLiteSqlUpdateCache::flush( )
 		delete pmCur;
 
 		mCur->close(); // Close the read cursor and open a write cursor
+		delete mCur;
+		mCur = NULL;
+
 		// Start a write transaction again before leaving
 		if( m_pDb->begin_transaction() != SQLITE_OK )
 			return SQLITE_ERROR;
@@ -197,8 +201,9 @@ int SQLiteSqlUpdateCache::flush( )
     mCur->close(); // Close the read-only cursor
     delete mCur;
     delete m_pDb;
-
-   m_pDb = new SQLiteMemoryDataBase( );
+	mCur = NULL;
+    
+	m_pDb = new SQLiteMemoryDataBase( );
     
     if( m_pDb->begin_transaction() != SQLITE_OK )
         return SQLITE_ERROR;
