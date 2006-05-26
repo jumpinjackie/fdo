@@ -44,7 +44,7 @@ public:
     
 	void CloseCursor();
 
-	bool NeedsAFlush() { return m_db->needs_a_flush(); }
+	bool NeedsAFlush(bool partial=false) { return m_db->needs_a_flush(partial); }
 
 	void Flush();
 

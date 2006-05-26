@@ -45,7 +45,7 @@ public:
 
 	bool CurrentDataIsValid();
 
-	bool NeedsAFlush() { return m_db->needs_a_flush(); }
+	bool NeedsAFlush(bool partial=false) { return m_db->needs_a_flush(partial); }
 
 	void Flush() { m_db->flush(); }
 
