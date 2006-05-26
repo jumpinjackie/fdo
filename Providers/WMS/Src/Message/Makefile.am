@@ -1,5 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 
+EXTRA_DIST = resource.h FdoWmsMessage.mc WMSMessage.vcproj FdoWmsMessageStatic.rc
+
 CATDIR = ../../nls/linux/en_US
 
 CATALOGS = FdoWmsMessage.mc
@@ -9,6 +11,7 @@ CATALOGS_CAT = $(patsubst %.mc,$(CATDIR)/%.cat,$(CATALOGS))
 all : catalog_init inc_init $(CATALOGS_CAT)
 
 clean :
+	@rm -rf Inc/*.h
 	@rm -rf $(CATDIR)/*.cat
 	@rm -f *.msf
 

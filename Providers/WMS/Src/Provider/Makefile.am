@@ -1,5 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 
+EXTRA_DIST = WMSProvider.vcproj FdoWmsProvider.rc
+
 noinst_LTLIBRARIES = libWMSProviderSrc.la
 
 libWMSProviderSrc_la_SOURCES = \
@@ -39,6 +41,53 @@ libWMSProviderSrc_la_SOURCES = \
   FdoWmsStyle.cpp \
   FdoWmsDimensionCollection.cpp \
   FdoWmsGetMap.cpp 
+
+noinst_HEADERS = $(libWMSProviderSrc_la_SOURCES) \
+  FdoWmsActivateSpatialContextCommand.h \
+  FdoWmsGetSpatialContextsCommand.h \
+  FdoWmsBandRasterGdal.h \
+  FdoWmsGlobals.h \
+  FdoWmsBoundingBoxCollection.h \
+  FdoWmsImage.h \
+  FdoWmsBoundingBox.h \
+  FdoWmsLayerCollection.h \
+  FdoWmsCapabilities.h \
+  FdoWmsLayer.h \
+  FdoWmsCommandCapabilities.h \
+  FdoWmsRasterCapabilities.h \
+  FdoWmsCommand.h \
+  FdoWmsRasterGdal.h \
+  FdoWmsConnectionCapabilities.h \
+  FdoWmsRasterPropertyDictionaryGdal.h \
+  FdoWmsConnection.h \
+  FdoWmsReader.h \
+  FdoWmsConnectionInfo.h \
+  FdoWmsRect.h \
+  FdoWmsDataReader.h \
+  FdoWmsSchemaCapabilities.h \
+  FdoWmsDelegate.h \
+  FdoWmsSelectCommand.h \
+  FdoWmsDescribeSchemaCommand.h \
+  FdoWmsServiceMetadata.h \
+  FdoWmsDescribeSchemaMappingCommand.h \
+  FdoWmsSpatialContextReader.h \
+  FdoWmsDimensionCollection.h \
+  FdoWmsStreamReaderGdalByRow.h \
+  FdoWmsDimension.h \
+  FdoWmsStyleCollection.h \
+  FdoWmsEnvelope.h \
+  FdoWmsStyle.h \
+  FdoWmsExpressionCapabilities.h \
+  FdoWmsTopologyCapabilities.h \
+  FdoWmsFeatureCommand.h \
+  FdoWmsUtils.h \
+  FdoWmsFeatureReader.h \
+  FdoWmsXmlGlobals.h \
+  FdoWmsFilterCapabilities.h \
+  resource.h \
+  FdoWmsGeometryCapabilities.h \
+  stdafx.h \
+  FdoWmsGetMap.h
 
 libWMSProviderSrc_la_LDFLAGS =
 

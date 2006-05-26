@@ -1,5 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 
+EXTRA_DIST = WMS
+
 INSTALL_DIR  = $(includedir)
 
 #install header files

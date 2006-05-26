@@ -4,6 +4,8 @@ SUBDIRS = Message Overrides Provider
 
 DIST_SUBDIRS = Message Overrides Provider
 
+EXTRA_DIST = WMSOS.sln
+
 lib_LTLIBRARIES = libWMSOverrides.la libWMSProvider.la
 
 ##building libWMSOverrides.so

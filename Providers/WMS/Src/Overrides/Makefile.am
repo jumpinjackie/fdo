@@ -1,5 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 
+EXTRA_DIST = WMSOverrides.vcproj FdoWmsOverrides.rc
+
 noinst_LTLIBRARIES = libWMSOverridesSrc.la
 
 libWMSOverridesSrc_la_SOURCES = \
@@ -11,6 +13,12 @@ libWMSOverridesSrc_la_SOURCES = \
   FdoWmsOvStyleDefinition.cpp \
   FdoWmsOvRasterDefinition.cpp \
   FdoWmsOverrides.cpp
+
+noinst_HEADERS = $(libWMSOverridesSrc_la_SOURCES) \
+  FdoWmsOverrides.h \
+  FdoWmsXmlGlobals.h \
+  resource.h \
+  stdafx.h
 
 libWMSOverridesSrc_la_LDFLAGS =
 
