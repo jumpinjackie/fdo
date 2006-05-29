@@ -167,7 +167,7 @@ if test "$FDOCOREENABLECHK" == yes; then
    svn export "$FDOSVNROOT"/Thirdparty "$FDOTARZIPFOLDER"/Thirdparty --force
    find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
    rm -f fdo-3.2.0_"$FDOBUILDNUMBER".tar
-   tar -cvf fdo-3.2.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
+   tar -cf fdo-3.2.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
    rm -f fdo-3.2.0_"$FDOBUILDNUMBER".tar.gz
    gzip -9 fdo-3.2.0_"$FDOBUILDNUMBER".tar
    rm -rf "$FDOTARZIPFOLDER"
@@ -177,7 +177,7 @@ if test "$SHPENABLECHK" == yes; then
    svn export "$FDOSVNROOT"/Providers/SHP "$FDOTARZIPFOLDER"/Providers/SHP --force
    find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
    rm -f fdoshp-3.2.0_"$FDOBUILDNUMBER".tar
-   tar -cvf fdoshp-3.2.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
+   tar -cf fdoshp-3.2.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
    rm -f fdoshp-3.2.0_"$FDOBUILDNUMBER".tar.gz
    gzip -9 fdoshp-3.2.0_"$FDOBUILDNUMBER".tar
    rm -rf "$FDOTARZIPFOLDER"
@@ -187,7 +187,7 @@ if test "$SDFENABLECHK" == yes; then
    svn export "$FDOSVNROOT"/Providers/SDF "$FDOTARZIPFOLDER"/Providers/SDF --force
    find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
    rm -f fdosdf-3.2.0_"$FDOBUILDNUMBER".tar
-   tar -cvf fdosdf-3.2.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
+   tar -cf fdosdf-3.2.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
    rm -f fdosdf-3.2.0_"$FDOBUILDNUMBER".tar.gz
    gzip -9 fdosdf-3.2.0_"$FDOBUILDNUMBER".tar
    rm -rf "$FDOTARZIPFOLDER"
@@ -197,7 +197,7 @@ if test "$WFSENABLECHK" == yes; then
    svn export "$FDOSVNROOT"/Providers/WFS "$FDOTARZIPFOLDER"/Providers/WFS --force
    find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
    rm -f fdowfs-3.2.0_"$FDOBUILDNUMBER".tar
-   tar -cvf fdowfs-3.2.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
+   tar -cf fdowfs-3.2.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
    rm -f fdowfs-3.2.0_"$FDOBUILDNUMBER".tar.gz
    gzip -9 fdowfs-3.2.0_"$FDOBUILDNUMBER".tar
    rm -rf "$FDOTARZIPFOLDER"
@@ -207,7 +207,7 @@ if test "$WMSENABLECHK" == yes; then
    svn export "$FDOSVNROOT"/Providers/WMS "$FDOTARZIPFOLDER"/Providers/WMS --force
    find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
    rm -f fdowms-3.2.0_"$FDOBUILDNUMBER".tar
-   tar -cvf fdowms-3.2.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
+   tar -cf fdowms-3.2.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
    rm -f fdowms-3.2.0_"$FDOBUILDNUMBER".tar.gz
    gzip -9 fdowms-3.2.0_"$FDOBUILDNUMBER".tar
    rm -rf "$FDOTARZIPFOLDER"
@@ -217,7 +217,7 @@ if test "$ARCENABLECHK" == yes; then
    svn export "$FDOSVNROOT"/Providers/ArcSDE "$FDOTARZIPFOLDER"/Providers/ArcSDE --force
    find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
    rm -f fdoarcsde-3.2.0_"$FDOBUILDNUMBER".tar
-   tar -cvf fdoarcsde-3.2.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
+   tar -cf fdoarcsde-3.2.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
    rm -f fdoarcsde-3.2.0_"$FDOBUILDNUMBER".tar.gz
    gzip -9 fdoarcsde-3.2.0_"$FDOBUILDNUMBER".tar
    rm -rf "$FDOTARZIPFOLDER"
@@ -227,7 +227,7 @@ if test "$RDBMSENABLECHK" == yes; then
    svn export "$FDOSVNROOT"/Providers/GenericRdbms "$FDOTARZIPFOLDER"/Providers/GenericRdbms --force
    find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
    rm -f fdordbms-3.2.0_"$FDOBUILDNUMBER".tar
-   tar -cvf fdordbms-3.2.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
+   tar -cf fdordbms-3.2.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
    rm -f fdordbms-3.2.0_"$FDOBUILDNUMBER".tar.gz
    gzip -9 fdordbms-3.2.0_"$FDOBUILDNUMBER".tar
    rm -rf "$FDOTARZIPFOLDER"
