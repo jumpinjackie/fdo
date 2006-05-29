@@ -1,5 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 
+EXTRA_DIST = ShpProvider.vcproj ShpProvider.rc resource.h
+
 noinst_LTLIBRARIES = libSHPProviderSrc.la
 
 libSHPProviderSrc_la_SOURCES = \
@@ -38,6 +40,46 @@ libSHPProviderSrc_la_SOURCES = \
   ShpLpClassDefinition.cpp \
   ShpLpFeatureSchema.cpp \
   ShpLpPropertyDefinition.cpp
+
+noinst_HEADERS = $(libSHPProviderSrc_la_SOURCES) \
+   resource.h \
+   ShpFeatureReader.h \
+   ShpRasterCapabilities.h \
+   ShpApplySchemaCommand.h \
+   ShpFileSet.h \
+   ShpReader.h \
+   ShpCommandCapabilities.h \
+   ShpFilterCapabilities.h \
+   ShpSchemaCapabilities.h \
+   ShpConnectionCapabilities.h \
+   ShpFilterExecutor.h \
+   ShpSchemaUtilities.h \
+   ShpConnection.h \
+   ShpGeometryCapabilities.h \
+   ShpSelectAggregates.h \
+   ShpConnectionInfo.h \
+   ShpGetSpatialContextsCommand.h \
+   ShpSelectCommand.h \
+   ShpDeleteCommand.h \
+   ShpInsertCommand.h \
+   ShpSpatialContext.h \
+   ShpDescribeSchemaCommand.h \
+   ShpLpClassDefinition.h \
+   ShpSpatialContextReader.h \
+   ShpDescribeSchemaMappingCommand.h \
+   ShpLpFeatureSchema.h \
+   ShpSpatialExtentsAggregateReader.h \
+   ShpDestroySchemaCommand.h \
+   ShpLpPropertyDefinition.h \
+   ShpTopologyCapabilities.h \
+   ShpExpressionCapabilities.h \
+   ShpPhysicalSchema.h \
+   ShpUpdateCommand.h \
+   ShpFeatIdQueryEvaluator.h \
+   ShpProvider.h \
+   stdafx.h \
+   ShpFeatIdQueryTester.h \
+   ShpQueryOptimizer.h
 
 libSHPProviderSrc_la_LDFLAGS = 
 

@@ -2,9 +2,9 @@ AUTOMAKE_OPTIONS = foreign
 
 SUBDIRS = Message ShpRead ShpSpatialIndex Overrides Provider UnitTest
 
-DIST_SUBDIRS = Message ShpRead ShpSpatialIndex Overrides Provider
+DIST_SUBDIRS = Message ShpRead ShpSpatialIndex Overrides Provider UnitTest
 
-EXTRA_DIST = UnitTest
+EXTRA_DIST = SHP.sln
 
 lib_LTLIBRARIES = libSHPOverrides.la libSHPProvider.la
 

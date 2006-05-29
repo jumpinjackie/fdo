@@ -1,5 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 
+EXTRA_DIST = resource.h ShpMessage.mc ShpMessage.vcproj ShpMessageStatic.h ShpMessageStatic.rc
+
 CATDIR = ../../nls/linux/en_US
 
 CATALOGS = ShpMessage.mc

@@ -1,5 +1,13 @@
 AUTOMAKE_OPTIONS = foreign
 
+EXTRA_DIST = \
+  UnitTest.vcproj \
+  providers.xml \
+  ShpOverridesConfig.xml \
+  ShpEmptySchemaConfig.xml \
+  ShpSchemaConfig.xml \
+  Pch.cpp
+
 noinst_PROGRAMS = UnitTest
 
 UnitTest_SOURCES = \
@@ -23,6 +31,29 @@ UnitTest_SOURCES = \
   FidelityTests.cpp \
   UnitTestUtil.cpp \
   BigPerformanceTests.cpp
+
+noinst_HEADERS = $(UnitTest_SOURCES) \
+  BigPerformanceTests.h \
+  FileAccessTests.h \
+  Pch.h \
+  SelectTests.h \
+  XmlFormatter.h \
+  ComparisonTests.h \
+  FilterTests.h \
+  PerformanceTests.h \
+  ShpTests.h \
+  ConnectTests.h \
+  IndexTests.h \
+  ReadOnlyTests.h \
+  SpatialFilterTests.h \
+  DeleteTests.h \
+  InsertTests.h \
+  SchemaTests.h \
+  UnitTestUtil.h \
+  FidelityTests.h \
+  OverridesTest.h \
+  SelectAggregatesTests.h \
+  UpdateTests.h
 
 INCLUDES = \
   -I../ShpRead \

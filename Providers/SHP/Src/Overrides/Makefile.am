@@ -1,5 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 
+EXTRA_DIST = ShpOverrides.vcproj FdoShpOverrides.rc resource.h 
+
 noinst_LTLIBRARIES = libSHPOverridesSrc.la
 
 libSHPOverridesSrc_la_SOURCES = \
@@ -9,6 +11,10 @@ libSHPOverridesSrc_la_SOURCES = \
   FdoShpClassDefinition.cpp \
   FdoShpClassCollection.cpp \
   FdoShpPropertyDefinitionCollection.cpp
+
+noinst_HEADERS = $(libSHPOverridesSrc_la_SOURCES) \
+  FdoShpXmlGlobals.h \
+  stdafx.h
 
 libSHPOverridesSrc_la_LDFLAGS = 
 

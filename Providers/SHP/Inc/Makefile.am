@@ -1,5 +1,15 @@
 AUTOMAKE_OPTIONS = foreign
 
+EXTRA_DIST = \
+   SHP/FdoShpOverrides.h \
+   SHP/FdoShpProvider.h \
+   SHP/Override/FdoShpClassCollection.h \
+   SHP/Override/FdoShpClassDefinition.h \
+   SHP/Override/FdoShpColumnDefinition.h \
+   SHP/Override/FdoShpPhysicalSchemaMapping.h \
+   SHP/Override/FdoShpPropertyDefinition.h \
+   SHP/Override/FdoShpPropertyDefinitionCollection.h
+
 INSTALL_DIR  = $(includedir)
 
 #install header files

@@ -1,5 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 
+EXTRA_DIST = ShpSpatialIndex.vcproj
+
 noinst_LTLIBRARIES = libSHPSpatialIndex.la
 
 libSHPSpatialIndex_la_SOURCES = \
@@ -10,6 +12,15 @@ libSHPSpatialIndex_la_SOURCES = \
   ShpSpatialIndexHandle.cpp \
   ShpSpatialIndex.cpp \
   stdafx.cpp
+
+noinst_HEADERS = $(libSHPSpatialIndex_la_SOURCES) \
+  ShpSpatialIndexCallBack.h \
+  ShpSpatialIndex.h \
+  ShpSpatialIndexHeader.h \
+  stdafx.h \
+  ShpSpatialIndexFile.h \
+  ShpSpatialIndexHandle.h \
+  ShpSpatialIndexNode.h
 
 INCLUDES = \
   -I$(FDO)/Unmanaged/Inc \

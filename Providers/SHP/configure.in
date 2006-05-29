@@ -4,7 +4,7 @@ dnl Configure.in for OSGeo FDO SHP Provider
 # Variables
 # Following are the makefile directories 
 #----------------------------------------------------------------------
-AC_INIT(FDO,3.2.0,https://fdoshp.osgeo.org)
+AC_INIT(FDOSHP,3.2.0,http://www.fdo.osgeo.org)
 AC_CONFIG_SRCDIR(configure.in)
 AM_INIT_AUTOMAKE
 
@@ -117,11 +117,6 @@ fi
 ##output Makefiles##
 AC_CONFIG_FILES(Makefile)
 
-#############################################
-## Providers
-#############################################
-
-#SHP
 AC_CONFIG_FILES([Inc/Makefile \
                  Src/Makefile \
                  Src/Message/Makefile \
@@ -131,6 +126,10 @@ AC_CONFIG_FILES([Inc/Makefile \
                  Src/Provider/Makefile \
                  Src/UnitTest/Makefile])
 
+AC_CONFIG_FILES([Docs/Makefile \
+                 Docs/doc_src/Makefile \
+		 Docs/doc_src/group_and_page_definitions/Makefile \
+                 Docs/doc_src/headers_and_footers/Makefile])
 
 AC_OUTPUT
 
