@@ -147,7 +147,7 @@ if test "$SHOWHELP" == yes; then
    echo "Action:         --a[ction] buildinstall(default), build, install, uninstall, clean, configure"
    echo "BuildDocs:      --d[ocs] skip(default), build"
 
-   HELPSTRINGWITH="WithModule:     --w[ith] fdocore(default), fdo, thirdparty, providers"
+   HELPSTRINGWITH="WithModule:     --w[ith] fdocore(default), fdo, thirdparty, utilities, providers"
    if test -e "Providers/SHP/build_linux.sh"; then
    HELPSTRINGWITH="$HELPSTRINGWITH, shp"
    fi
