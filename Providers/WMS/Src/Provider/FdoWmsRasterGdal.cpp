@@ -22,6 +22,7 @@
 #include <FdoWmsBandRasterGdal.h>
 #include <FdoWmsRect.h>
 #include <FdoWmsImage.h>
+#include <Geometry/EnvelopeImpl.h>
 
 
 FdoWmsRasterGdal::FdoWmsRasterGdal(GDALDataset* gdalDataSet, FdoWmsRect* bounds)
@@ -144,8 +145,16 @@ void FdoWmsRasterGdal::SetNull ()
 /// The bounds are transformed to the active spatial context.
 FdoByteArray* FdoWmsRasterGdal::GetBounds ()
 {
-	FdoWmsBandRasterGdalP bandRaster = _getRasterBands()->GetItem(m_currentBand);
-	return bandRaster->GetBounds();
+	if (!m_bounds)
+		return NULL;
+	// By its current implemention, all binds share the same bounds that was input when constructing
+	// this object, so it's unnecessary to get the bounds from each band. In other words, all bands
+	// have been constructed unnecessarily in order to get the bounds of a specific bind.
+	FdoPtr<FdoFgfGeometryFactory> geomfactory = FdoFgfGeometryFactory::GetInstance();
+	FdoPtr<FdoEnvelopeImpl> envelope = FdoEnvelopeImpl::Create(m_bounds->m_minX, m_bounds->m_minY, m_bounds->m_maxX, m_bounds->m_maxY);
+	FdoPtr<FdoIGeometry> iGeometery = geomfactory->CreateGeometry(envelope);
+	FdoPtr<FdoByteArray> bounds = geomfactory->GetFgf(iGeometery);
+	return FDO_SAFE_ADDREF(bounds.p);
 }
 
 /// Set the minimum bounding box around the image.
