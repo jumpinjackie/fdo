@@ -40,6 +40,7 @@ libWMSProviderSrc_la_SOURCES = \
   FdoWmsDelegate.cpp \
   FdoWmsStyle.cpp \
   FdoWmsDimensionCollection.cpp \
+  FdoWmsRequestMetadata.cpp \
   FdoWmsGetMap.cpp 
 
 noinst_HEADERS = $(libWMSProviderSrc_la_SOURCES) \
@@ -86,6 +87,7 @@ noinst_HEADERS = $(libWMSProviderSrc_la_SOURCES) \
   FdoWmsFilterCapabilities.h \
   resource.h \
   FdoWmsGeometryCapabilities.h \
+  FdoWmsRequestMetadata.h \
   stdafx.h \
   FdoWmsGetMap.h
 
