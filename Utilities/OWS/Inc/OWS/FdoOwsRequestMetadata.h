@@ -34,10 +34,10 @@ private:
     FdoPtr<FdoStringCollection> m_httpURLs;
 
 protected:
-    FdoOwsRequestMetadata();
-    FdoOwsRequestMetadata(FdoString* name);
-    virtual ~FdoOwsRequestMetadata();
-    virtual void Dispose() { delete this; }
+    FDOOWS_API FdoOwsRequestMetadata();
+    FDOOWS_API FdoOwsRequestMetadata(FdoString* name);
+    FDOOWS_API virtual ~FdoOwsRequestMetadata();
+    FDOOWS_API virtual void Dispose() { delete this; }
 
 public:
     FDOOWS_API static FdoOwsRequestMetadata* Create(FdoString* name);

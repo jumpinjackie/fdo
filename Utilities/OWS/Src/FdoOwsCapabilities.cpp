@@ -101,8 +101,7 @@ FdoBoolean FdoOwsCapabilities::XmlEndElement(FdoXmlSaxContext* context, FdoStrin
         }
         else
         {
-            //if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::Request) == 0)
-			if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::GetCapabilities) == 0)
+            if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::Request) == 0)			
                 myContext->SetStateCapability(0);
         }
 	}

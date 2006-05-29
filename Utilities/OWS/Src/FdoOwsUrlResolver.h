@@ -39,7 +39,7 @@ protected:
 public:
     static FdoOwsUrlResolver* Create(FdoOwsRequestMetadataCollection* requestMetadatas);
 
-    FdoString* GetUrl(bool& bGet);
+    FdoStringP GetUrl(bool& bGet, FdoString* requestName);
 };
 
 typedef FdoPtr<FdoOwsUrlResolver> FdoOwsUrlResolverP;

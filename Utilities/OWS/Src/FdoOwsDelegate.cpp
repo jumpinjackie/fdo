@@ -48,13 +48,13 @@ void FdoOwsDelegate::SetRequestMetadatas(FdoOwsRequestMetadataCollection* reques
 FdoOwsResponse* FdoOwsDelegate::Invoke(FdoOwsRequest* request)
 {
     bool bGet = true;
-    FdoString* url = m_defaultUrl;
+    FdoStringP url = m_defaultUrl;
 
     if (m_requestMetadatas != NULL)
     {
         if (m_urlResolver == NULL)
             m_urlResolver = FdoOwsUrlResolver::Create(m_requestMetadatas);
-        FdoString* rv = m_urlResolver->GetUrl(bGet);
+        FdoStringP rv = m_urlResolver->GetUrl(bGet, request->GetRequest ());
         if (rv != NULL)
             url = rv;
     }

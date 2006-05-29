@@ -39,12 +39,27 @@ FdoOwsUrlResolver* FdoOwsUrlResolver::Create(FdoOwsRequestMetadataCollection* re
     return new FdoOwsUrlResolver(requestMetadatas);
 }
 
-
-FdoString* FdoOwsUrlResolver::GetUrl(bool& bGet)
+FdoStringP FdoOwsUrlResolver::GetUrl(bool& bGet, FdoString* requestName)
 {
-    return NULL;
+    FdoStringP ret;
+    int cnt = m_requestMetadatas->GetCount();
+    for (int i=0; i<cnt; i++)
+    {
+        FdoPtr<FdoOwsRequestMetadata> metadata = m_requestMetadatas->GetItem(i);
+        if (FdoCommonOSUtil::wcsicmp(metadata->GetName (), requestName) == 0)
+        {
+            FdoStringsP urls;
+            if (bGet)
+                urls = metadata->GetHttpGetUrls();
+            else
+                urls = metadata->GetHttpPostUrls();
+
+            // If there are more than one URL, use the first one as default.
+            if (urls->GetCount() > 0)
+                ret = urls->GetString (0);
+            break;
+        }
+    }
+
+    return ret;
 }
-
-
-
-
