@@ -30,13 +30,12 @@ class FdoWmsCapabilities : public FdoOwsCapabilities
 	typedef FdoOwsCapabilities BaseType;
 
 public:
-   static FdoWmsCapabilities* Create();
+   FDOWMS_API static FdoWmsCapabilities* Create();
 
 public:
-    FdoWmsLayerCollection* GetLayers() const;
-    FdoXmlSaxHandler* XmlStartElement(FdoXmlSaxContext* context, FdoString* uri, FdoString* name, FdoString* qname, FdoXmlAttributeCollection* atts);
-    FdoBoolean XmlEndElement(FdoXmlSaxContext* context, FdoString* uri, FdoString* name, FdoString* qname);
-	FdoStringCollection* GetMIMETypes ();
+    FDOWMS_API FdoWmsLayerCollection* GetLayers() const;
+    FDOWMS_API FdoXmlSaxHandler* XmlStartElement(FdoXmlSaxContext* context, FdoString* uri, FdoString* name, FdoString* qname, FdoXmlAttributeCollection* atts);
+    FDOWMS_API FdoBoolean XmlEndElement(FdoXmlSaxContext* context, FdoString* uri, FdoString* name, FdoString* qname);
 
     /// \brief
     /// Gets all supported spatial context names supported by the server.
@@ -44,7 +43,7 @@ public:
     /// \return
     /// Returns a collection of the spatial contexts supported.
     /// 
-	FdoStringCollection* GetCRSNames ();
+	FDOWMS_API FdoStringCollection* GetCRSNames ();
 
     /// \brief
     /// Gets the extents of the supported spatial contexts. 
@@ -54,12 +53,13 @@ public:
     /// \return
     /// Returns a collection of the spatial context extents.
     /// 
-	FdoWmsBoundingBoxCollection* GetCRSExtents ();
+	FDOWMS_API FdoWmsBoundingBoxCollection* GetCRSExtents ();
     
 protected:
     FdoWmsCapabilities(void);
     virtual ~FdoWmsCapabilities(void);
     void Dispose();
+    virtual FdoOwsRequestMetadata* OnCreateRequestMetadata(FdoString* name);
 
 private:
 	void _buildUpCRS ();
@@ -72,8 +72,6 @@ private:
 
     FdoWmsLayerCollectionP                 mLayers;
 	FdoXmlCharDataHandlerP                 mXmlContentHandler;
-	FdoStringsP                            mMIMETypes;
-	FdoBoolean                             mbParsingMIMETypes;
 	FdoStringsP                            mCRSNames;
 	FdoWmsBoundingBoxCollectionP           mCRSExtents; 
 };

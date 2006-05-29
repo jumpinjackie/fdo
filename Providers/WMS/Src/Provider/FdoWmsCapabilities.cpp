@@ -18,13 +18,12 @@
 
 #include <stdafx.h>
 #include "FdoWmsCapabilities.h"
+#include <FdoWmsRequestMetadata.h>
 #include "FdoWmsXmlGlobals.h"
 
 FdoWmsCapabilities::FdoWmsCapabilities(void)
 {
     mLayers = FdoWmsLayerCollection::Create();
-	mMIMETypes = FdoStringCollection::Create ();
-	mbParsingMIMETypes = false;
 }
 
 FdoWmsCapabilities::~FdoWmsCapabilities(void)
@@ -61,15 +60,6 @@ FdoXmlSaxHandler* FdoWmsCapabilities::XmlStartElement(FdoXmlSaxContext* context,
 
                 pRet = pLayer;
             }
-			else if (FdoCommonOSUtil::wcsicmp(name, FdoWmsXmlGlobals::WmsCapabilitiesGetMap) == 0)
-			{
-				mbParsingMIMETypes = true;
-			}
-			else if (FdoCommonOSUtil::wcsicmp(name, FdoWmsXmlGlobals::WmsCapabilitiesFormat) == 0)
-			{
-                mXmlContentHandler = FdoXmlCharDataHandler::Create();
-                pRet = mXmlContentHandler;
-			}
         }
     }
     catch (FdoException* e) 
@@ -83,30 +73,12 @@ FdoXmlSaxHandler* FdoWmsCapabilities::XmlStartElement(FdoXmlSaxContext* context,
 
 FdoBoolean FdoWmsCapabilities::XmlEndElement(FdoXmlSaxContext* context, FdoString* uri, FdoString* name, FdoString* qname)
 {
-    FdoBoolean bRet = BaseType::XmlEndElement(context, uri, name, qname);
-	if (FdoCommonOSUtil::wcsicmp(name, FdoWmsXmlGlobals::WmsCapabilitiesFormat) == 0)
-	{
-		if (mbParsingMIMETypes)
-			mMIMETypes->Add (mXmlContentHandler->GetString ());
-	}
-	else if (FdoCommonOSUtil::wcsicmp(name, FdoWmsXmlGlobals::WmsCapabilitiesGetMap) == 0)
-	{
-		mbParsingMIMETypes = false;
-	}
-
-    FDO_SAFE_RELEASE(mXmlContentHandler.p);
-
-	return bRet;
+	return BaseType::XmlEndElement(context, uri, name, qname);
 }
 
 FdoWmsLayerCollection* FdoWmsCapabilities::GetLayers() const
 {
     return FDO_SAFE_ADDREF(mLayers.p);
-}
-
-FdoStringCollection* FdoWmsCapabilities::GetMIMETypes ()
-{
-	return FDO_SAFE_ADDREF(mMIMETypes.p);
 }
 
 /// <summary>Gets all supported spatial context names supported by the server.</summary>
@@ -316,4 +288,9 @@ void FdoWmsCapabilities::_calcLayerGeographicBoundingBox (FdoWmsLayer* layer, Fd
 		FdoWmsLayerP childLayer = childLayers->GetItem (i);
 		_calcLayerGeographicBoundingBox (childLayer, bbox);
 	}
+}
+
+FdoOwsRequestMetadata* FdoWmsCapabilities::OnCreateRequestMetadata(FdoString* name)
+{
+    return FdoWmsRequestMetadata::Create(name);
 }

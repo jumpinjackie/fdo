@@ -548,7 +548,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FdoWmsRequestMetadata.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FdoWmsLayerCollection.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FdoWmsRequestMetadata.h"
 				>
 			</File>
 			<File

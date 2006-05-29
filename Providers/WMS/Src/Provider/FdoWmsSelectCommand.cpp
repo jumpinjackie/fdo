@@ -20,8 +20,10 @@
 #include "FdoWmsSelectCommand.h"
 #include "FdoWmsFeatureReader.h"
 #include "FdoWmsGlobals.h"
+#include "FdoWmsXmlGlobals.h"
 #include "FdoWmsLayer.h"
 #include "FdoWmsLayerCollection.h"
+#include "FdoWmsRequestMetadata.h"
 #include <WMS/Override/FdoWmsOvPhysicalSchemaMapping.h>
 
 #include <malloc.h>
@@ -590,11 +592,14 @@ FdoStringP FdoWmsSelectCommand::_getImageFormat (FdoWmsOvFormatType formatType)
 
 FdoStringP FdoWmsSelectCommand::_getDefaultImageFormat ()
 {
-	FdoStringP imageFormat;
+	FdoStringP imageFormat = FdoWmsGlobals::RasterMIMEFormat_PNG;
 
 	FdoWmsServiceMetadataP metadata = mConnection->GetWmsServiceMetadata ();
-	FdoPtr<FdoWmsCapabilities> capa = dynamic_cast<FdoWmsCapabilities *> (metadata->GetCapabilities ());
-	FdoStringsP imageFormats = capa->GetMIMETypes ();
+	FdoPtr<FdoWmsCapabilities> capa = static_cast<FdoWmsCapabilities *> (metadata->GetCapabilities ());
+    FdoPtr<FdoOwsRequestMetadataCollection> reqMetadatas = capa->GetRequestMetadatas ();
+    FdoPtr<FdoOwsRequestMetadata> reqMetadata = reqMetadatas->FindItem (FdoWmsXmlGlobals::WmsGetMapRequest);
+    FdoWmsRequestMetadata* getMapMetadata = static_cast<FdoWmsRequestMetadata*>(reqMetadata.p);
+    FdoStringsP imageFormats = getMapMetadata->GetFormats ();
 
 	// Find the most suitable image format which the server supports. If the user doesn't use
 	// configuration file, the image format will be determined as following:
@@ -821,7 +826,12 @@ FdoWmsDelegate* FdoWmsSelectCommand::_getWmsDelegate ()
     FdoStringP user = dictionary->GetProperty (FdoWmsGlobals::ConnectionPropertyUsername);
     FdoStringP password = dictionary->GetProperty (FdoWmsGlobals::ConnectionPropertyPassword);
 
-    return FdoWmsDelegate::Create(location, user, password);
+    FdoPtr<FdoWmsDelegate> ret = FdoWmsDelegate::Create(location, user, password);
+    FdoPtr<FdoWmsServiceMetadata> svcMetadata = mConnection->GetWmsServiceMetadata ();
+    FdoPtr<FdoOwsCapabilities> capa = svcMetadata->GetCapabilities ();
+    FdoPtr<FdoOwsRequestMetadataCollection> reqMetadatas = capa->GetRequestMetadatas ();
+    ret->SetRequestMetadatas (reqMetadatas);
+    return FDO_SAFE_ADDREF (ret.p);
 }
 
 // Get the default image height which is specified by the user in the connection string.
