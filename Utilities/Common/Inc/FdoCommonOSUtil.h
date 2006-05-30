@@ -88,6 +88,9 @@ public:
 
     /// Fetch a wide char from input:
     static wint_t _getwch(void);
+
+    /// Set an environment variable:
+    static void setenv(const char *varname, const char *varvalue);
 };
 
 #endif // FdoCommonOSUtil___H

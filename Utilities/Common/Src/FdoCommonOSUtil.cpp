@@ -338,6 +338,19 @@ wint_t FdoCommonOSUtil::_getwch(void)
 #endif
 }
 
+void FdoCommonOSUtil::setenv(const char *varname, const char *varvalue)
+{
+#ifdef _WIN32
+    char* setstring = (char*)alloca(sizeof(char) * strlen(varname) + strlen(varvalue) + 2);
+    sprintf(setstring, "%hs=%hs", varname, varvalue);
+    _putenv(setstring);
+#else
+    if ((varvalue==NULL) || (strlen(varvalue)==0))
+        ::unsetenv(varname);
+    else
+        ::setenv(varname, varvalue, 1);
+#endif
+}
 
 
 
