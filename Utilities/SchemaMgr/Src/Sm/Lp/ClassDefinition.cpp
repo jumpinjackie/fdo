@@ -1067,7 +1067,7 @@ bool FdoSmLpClassBase::Is_DbObjectCreator() const
     return isDbObjectCreator;
 }
 
-bool FdoSmLpClassBase::VldDbObjectName( FdoStringP objectName )
+bool FdoSmLpClassBase::VldDbObjectName( FdoStringP objectName, bool bFromConfigFile )
 {
     bool bValid = true;
     FdoSmPhMgrP pPhysical = GetLogicalPhysicalSchema()->GetPhysicalSchema();
@@ -1078,7 +1078,7 @@ bool FdoSmLpClassBase::VldDbObjectName( FdoStringP objectName )
 	FdoStringP workName = pPhysical->CensorDbObjectName(objectName);
 
     // When workName is different, column name has an invalid character.
-    if ( workName != objectName ) {
+    if ( workName != objectName && !bFromConfigFile) {
        AddTableCharError( objectName );
        bValid = false;
     }
@@ -1088,7 +1088,7 @@ bool FdoSmLpClassBase::VldDbObjectName( FdoStringP objectName )
         bValid = false;
     }
 
-    if ( pPhysical->IsDbObjectNameReserved( workName) ) {
+    if ( pPhysical->IsDbObjectNameReserved( workName) && !bFromConfigFile ) {
         AddTableReservedError( objectName );
         bValid = false;
     }
@@ -1311,8 +1311,13 @@ void FdoSmLpClassBase::SetDbObjectName( FdoStringP objectName )
             ValidateForeignObjectName( mRootDbObjectName );
         }
 
-        // Generate name for view that will be put around the foreign table.
-        mDbObjectName = pPhysical->GetOwner()->UniqueDbObjectName( mRootDbObjectName );
+        if ( pPhysical->GetOwner()->GetHasMetaSchema() ) {
+            // Generate name for view that will be put around the foreign table.
+            mDbObjectName = pPhysical->GetOwner()->UniqueDbObjectName( mRootDbObjectName );
+        }
+        else {
+            mDbObjectName = mRootDbObjectName;
+        }
     }
     else {
         if ( objectName.GetLength() > 0 ) {

@@ -465,7 +465,9 @@ protected:
     virtual bool Is_DbObjectCreator() const;
  
     /// Returns true if objectName is a valid object name in the current datastore.
-	bool VldDbObjectName( FdoStringP objectName );
+    /// The bFromConfigFile input argument should be set to true iff the 
+    /// given object was originally defined from a configuration file.
+	bool VldDbObjectName( FdoStringP objectName, bool bFromConfigFile );
 
     /// Add a primary key to the class table if it doesn't already have one.
     /// The primary key columns are set to the identity property columns.
