@@ -58,7 +58,7 @@ int odbcdr_set_schema (
 
     rdbi_status = RDBI_SUCCESS;
 
-    if (ODBCDriverType_SQLServer == connData->driver_type && NULL != schema_name)
+    if (ODBCDriverType_SQLServer == connData->driver_type && NULL != schema_name && (strlen(schema_name) > 0))
     {
 	    (void) sprintf(sql_buf, "USE %s", schema_name);
 
