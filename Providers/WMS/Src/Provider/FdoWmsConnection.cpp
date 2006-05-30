@@ -772,6 +772,8 @@ void FdoWmsConnection::_setDefaultSpatialContextAssociation (FdoClassDefinition*
 				FdoRasterPropertyDefinition* rasterProp = dynamic_cast<FdoRasterPropertyDefinition *> (baseProp.p);
 				if (rasterProp != NULL)
 				{
+					if (rasterProp->GetSpatialContextAssociation() == NULL ||
+						(rasterProp->GetSpatialContextAssociation(), L"") == 0)
 					rasterProp->SetSpatialContextAssociation (crsName);
 					return;
 				}

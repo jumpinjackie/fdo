@@ -880,24 +880,25 @@ void FdoWmsSelectCommand::_calcLayerBoundingBox (FdoWmsLayer* layer, FdoString* 
     // the layer's parents when it's necessary.
     bool bFound = false;
 
-    FdoPtr<FdoStringCollection> srsNames = layer->GetCoordinateReferenceSystems ();
-    FdoInt32 idx = srsNames->IndexOf (srsName);
-    if (idx != -1)
+    FdoPtr<FdoWmsBoundingBoxCollection> bboxes = layer->GetBoundingBoxes ();
+    for (int i=0; i<bboxes->GetCount(); i++)
     {
-        FdoPtr<FdoWmsBoundingBoxCollection> bboxes = layer->GetBoundingBoxes ();
-        FdoWmsBoundingBoxP extent = bboxes->GetItem (idx);
-        bbox->SetMaxX (extent->GetMaxX ());
-        bbox->SetMinX (extent->GetMinX ());
-        bbox->SetMaxY (extent->GetMaxY ());
-        bbox->SetMinY (extent->GetMinY ());
-        bFound = true;
+        FdoPtr<FdoWmsBoundingBox> tempBBox = bboxes->GetItem(i);
+        if (wcscmp(tempBBox->GetCRS (), srsName) == 0)
+        {
+            bbox->SetMaxX (tempBBox->GetMaxX ());
+            bbox->SetMinX (tempBBox->GetMinX ());
+            bbox->SetMaxY (tempBBox->GetMaxY ());
+            bbox->SetMinY (tempBBox->GetMinY ());
+            bFound = true;
+        }
     }
     // We need special care for EPSG:4326. Sometimes some layers support EPSG:4326,
     // however they don't provide the corresponding extents for EPSG:4326. Instead,
     // they provide "LatLongBoundingBox". In this case, we will make use of the 
     // "LatLongBoundingBox" and take it as same as "EPSG:4326". Although they are not
     // exactly the same.
-    else if (wcscmp (srsName, L"EPSG:4326") == 0)
+    if ( !bFound && wcscmp (srsName, L"EPSG:4326") == 0)
     {
         FdoPtr<FdoOwsGeographicBoundingBox> geoBBox = layer->GetGeographicBoundingBox ();
         if (geoBBox != NULL)
