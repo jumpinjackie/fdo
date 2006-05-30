@@ -456,7 +456,11 @@ get_drivertype(
     {
         *driver_type = ODBCDriverType_Access;
     }
-    else if (0==_stricmp((const char*)szDriverName, ODBCDR_DRIVER_MYSQL_DRIVERNAME_MB))
+    // NOTE: the MySQL ODBC reported driver names are actually *reversed* on Windows and Linux,
+    //       i.e. On Windows the reported driver name is "libmyodbc3.so" and on Linux the reported driver name is "myodbc3.dll"
+    else if ((0==_stricmp((const char*)szDriverName, ODBCDR_DRIVER_MYSQL_DRIVERNAME_LINUX_MB))
+	     || (0==_stricmp((const char*)szDriverName, ODBCDR_DRIVER_MYSQL_DRIVERNAME_WINDOWS_MB)))
+
     {
         *driver_type = ODBCDriverType_MySQL;
     }

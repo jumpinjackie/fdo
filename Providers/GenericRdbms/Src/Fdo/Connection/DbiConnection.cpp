@@ -592,8 +592,7 @@ DbiConnection::ParseInfo* DbiConnection::parseConnectString ( const wchar_t *con
 #ifdef _WIN32
                 if (NULL != (token = wcstok (NULL, DELIMITER2)))
 #else
-                wchar_t *state2;
-                if (NULL != (token = wcstok (NULL, DELIMITER2, &state2)))
+                if (NULL != (token = wcstok (NULL, DELIMITER2, &state)))
 #endif
                 {
                     size = (int)wcslen (token) * 3;
