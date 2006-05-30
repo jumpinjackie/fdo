@@ -2,7 +2,7 @@
 
 TYPEACTION=buildinstall
 TYPEBUILD=release
-TYPECONFIGURE=no
+TYPECONFIGURE=configure
 BUILDDOCS=no
 
 ### study parameters ###
@@ -26,8 +26,17 @@ do
         TYPEACTION=uninstall
     elif test "$1" == clean; then
         TYPEACTION=clean
-    elif test "$1" == configure; then
-        TYPECONFIGURE=yes
+    else
+        echo "$arg Invalid parameter $1"
+	exit 1
+    fi
+    shift
+    ;;
+  --m | --makefile)
+    if test "$1" == configure; then
+        TYPECONFIGURE=configure
+    elif test "$1" == noconfigure; then
+        TYPECONFIGURE=noconfigure
     else
         echo "$arg Invalid parameter $1"
 	exit 1
@@ -74,19 +83,20 @@ done
 ### end of study parameters ###
 
 if test "$SHOWHELP" == yes; then
-   echo "*************************************************************************************"
-   echo "build_linux.sh [--h] [-c BuildType] [-a Action] [--d BuildDocs]"
+   echo "************************************************************************************************************"
+   echo "build_linux.sh [--h] [--c BuildType] [--a Action] [--w WithModule] [--d BuildDocs] [--m ConfigMakefiles]"
    echo "*"
-   echo "Help:           --h[elp]"
-   echo "BuildType:      --c[onfig] release(default), debug"
-   echo "Action:         --a[ction] buildinstall(default), build, install, uninstall, clean, configure"
-   echo "BuildDocs:      --d[ocs] skip(default), build"
-   echo "*************************************************************************************"
+   echo "Help:            --h[elp]"
+   echo "BuildType:       --c[onfig] release(default), debug"
+   echo "Action:          --a[ction] buildinstall(default), build, install, uninstall, clean"
+   echo "BuildDocs:       --d[ocs] skip(default), build"
+   echo "ConfigMakefiles: --m[akefile] configure(default), noconfigure"
+   echo "************************************************************************************************************"
    exit 0
 fi
 
 ### start build ###
-if test "$TYPECONFIGURE" == yes ; then
+if test "$TYPECONFIGURE" == configure ; then
    aclocal
    libtoolize --force
    automake --add-missing --copy
