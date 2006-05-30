@@ -84,7 +84,7 @@ done
 
 if test "$SHOWHELP" == yes; then
    echo "************************************************************************************************************"
-   echo "build_linux.sh [--h] [--c BuildType] [--a Action] [--w WithModule] [--d BuildDocs] [--m ConfigMakefiles]"
+   echo "build_linux.sh [--h] [--c BuildType] [--a Action] [--d BuildDocs] [--m ConfigMakefiles]"
    echo "*"
    echo "Help:            --h[elp]"
    echo "BuildType:       --c[onfig] release(default), debug"
@@ -110,7 +110,7 @@ if test "$TYPECONFIGURE" == configure ; then
 fi
    
 if test "$TYPEACTION" == clean ; then
-  make clean
+   make clean
 fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
