@@ -1,5 +1,5 @@
-#ifndef _TYPES_H_
-#define _TYPES_H_
+#ifndef _FDOTYPES_H_
+#define _FDOTYPES_H_
 // 
 
 //
@@ -206,6 +206,6 @@ public:
     FdoInt8     minute;
     float       seconds;
 };
-#endif
+#endif // _FDOTYPES_H_
 
 
