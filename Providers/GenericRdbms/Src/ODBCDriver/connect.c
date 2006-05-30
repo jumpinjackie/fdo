@@ -119,7 +119,7 @@
 #endif
 
 
-static int do_connect(odbcdr_context_def *context, int connect_id, char *uid, char *pswd, char *connect_string, odbcdr_DriverType driver_type);
+static int do_connect(odbcdr_context_def *context, int connect_id, char *uid, char *pswd, char *connect_string);
 static int alter_session(void);
 static int get_dbversion(unsigned long *dbversion);
 static int get_drivertype(odbcdr_connData_def * connData, odbcdr_DriverType *driver_type);
@@ -142,7 +142,6 @@ int odbcdr_connect(
 	char				user_local[ODBCDR_CONNECTION_SIZE];
 	char				pswd_local[ODBCDR_CONNECTION_SIZE];
 	char				connect_string_local[ODBCDR_CONNECTION_SIZE];
-    odbcdr_DriverType   driver_type = ODBCDriverType_Undetermined;
 	int					rdbi_status = RDBI_GENERIC_ERROR;
 
 	debug_on1("odbcdr_connect", "connect_string '%s'", (connect_string==NULL) );
@@ -181,11 +180,6 @@ int odbcdr_connect(
     			strcpy( new_connData->db_name, user );
 			new_connData->dbversion = ODBCDR_DBVERS8;  /* MS SQL Sever 5K */
 
-	        if( (connect_string != NULL && connect_string[0] != '0') ) {
-                if (NULL != strstr(connect_string, "DRIVER={SQL Server}"))
-                    driver_type = ODBCDriverType_SQLServer;
-            }
-
 			found_connect = i;
 		} 
 	} 
@@ -222,8 +216,7 @@ int odbcdr_connect(
                               found_connect,
 							  user_local,
 							  pswd_local,
-							  connect_string_local,
-                              driver_type );
+							  connect_string_local);
 
 	/*
 	 * No specific connect area required -- we keep it internal
@@ -262,8 +255,7 @@ int	do_connect(
 	int				 connect_id,
 	char			*uid,
 	char			*pswd,
-	char			*connect_string,
-    odbcdr_DriverType driver_type
+	char			*connect_string
 	)
 {
 
@@ -299,35 +291,13 @@ int	do_connect(
 		odbcdr_service_ctx_def	hDbc = SQL_NULL_HDBC;
 		rc = SQLAllocHandle(SQL_HANDLE_DBC,	context->odbcdr_env, &hDbc);
 
-		/*
-		** Set up default connection properties
-		*/
-        if (ODBCDriverType_SQLServer == driver_type)
-        {
-		    // Do not close open server cursors if a transaction is committed
 #ifdef _WIN32
-		    rc = SQLSetConnectAttr(hDbc, SQL_COPT_SS_PRESERVE_CURSORS, (SQLPOINTER)SQL_PC_ON, SQL_IS_INTEGER); 
+        // For SQL Server ODBC Driver only: enable SQL_COPT_SS_PRESERVE_CURSORS (Do not close open server cursors if a transaction is committed);
+        // This connection setting must be set before connecting and we do not have enough info about the driver at this point to determine
+        // whether or not we are using SQL Server or another ODBC data source, so we always set it.
+        // Other drivers should safely ignore this setting since it is SQLServer-specific, so ignore the returned error code:
+        rc = SQLSetConnectAttr(hDbc, SQL_COPT_SS_PRESERVE_CURSORS, (SQLPOINTER)SQL_PC_ON, SQL_IS_INTEGER); 
 #endif
-
-		    // Use server side cursors by default
-		    rc = SQLSetConnectAttr(hDbc, SQL_ATTR_CURSOR_TYPE, (SQLPOINTER)SQL_CURSOR_STATIC, SQL_IS_INTEGER); 
-		    rc = SQLSetConnectAttr(hDbc, SQL_ATTR_CONCURRENCY, (SQLPOINTER)SQL_CONCUR_READ_ONLY, SQL_IS_INTEGER); 
-		    rc = SQLSetConnectAttr(hDbc, SQL_ATTR_ROW_ARRAY_SIZE, (SQLPOINTER)1, SQL_IS_INTEGER); 
-
-            // TODO: investigate "[Microsoft][ODBC Driver Manager] Option type out of range"
-            //if ( rc == SQL_ERROR )
-            //    DumpError2(SQL_HANDLE_DBC, hDbc);
-
-		    // Operate in syncronous mode
-		    rc = SQLSetConnectAttr(hDbc, SQL_ATTR_ASYNC_ENABLE, SQL_ASYNC_ENABLE_OFF, SQL_IS_INTEGER);
-            if ( rc == SQL_ERROR )
-                DumpError2(SQL_HANDLE_DBC, hDbc);
-
-		    // Use autocommit mode
-		    rc = SQLSetConnectAttr(hDbc, SQL_ATTR_AUTOCOMMIT, (SQLPOINTER)SQL_AUTOCOMMIT_ON, SQL_IS_UINTEGER);
-            if ( rc == SQL_ERROR )
-                DumpError2(SQL_HANDLE_DBC, hDbc);
-        }
 
         /* There are two distinct cases:
          * 1. The "connect_string" is just that -- a fully-qualified
@@ -397,6 +367,28 @@ int	do_connect(
 			    //Destroy the statement handles
 			    rc = SQLFreeHandle(SQL_HANDLE_STMT, hStmt);
 			    rc = SQLFreeHandle(SQL_HANDLE_STMT, hStmt5);
+
+		        /*
+		        ** Set up default connection properties
+		        */
+		        // Use server side cursors by default
+		        rc = SQLSetConnectAttr(hDbc, SQL_ATTR_CURSOR_TYPE, (SQLPOINTER)SQL_CURSOR_STATIC, SQL_IS_INTEGER); 
+		        rc = SQLSetConnectAttr(hDbc, SQL_ATTR_CONCURRENCY, (SQLPOINTER)SQL_CONCUR_READ_ONLY, SQL_IS_INTEGER); 
+		        rc = SQLSetConnectAttr(hDbc, SQL_ATTR_ROW_ARRAY_SIZE, (SQLPOINTER)1, SQL_IS_INTEGER); 
+                // TODO: investigate "[Microsoft][ODBC Driver Manager] Option type out of range"
+                //if ( rc == SQL_ERROR )
+                //    DumpError2(SQL_HANDLE_DBC, hDbc);
+
+		        // Operate in syncronous mode
+		        rc = SQLSetConnectAttr(hDbc, SQL_ATTR_ASYNC_ENABLE, SQL_ASYNC_ENABLE_OFF, SQL_IS_INTEGER);
+                if ( rc == SQL_ERROR )
+                    DumpError2(SQL_HANDLE_DBC, hDbc);
+
+		        // Use autocommit mode
+		        rc = SQLSetConnectAttr(hDbc, SQL_ATTR_AUTOCOMMIT, (SQLPOINTER)SQL_AUTOCOMMIT_ON, SQL_IS_UINTEGER);
+                if ( rc == SQL_ERROR )
+                    DumpError2(SQL_HANDLE_DBC, hDbc);
+
             }
             else if (ODBCDriverType_MySQL == context->odbcdr_conns[connect_id]->driver_type)
             {
