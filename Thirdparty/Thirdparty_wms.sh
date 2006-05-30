@@ -33,12 +33,10 @@ mkdir -p lib/linux
 rm -f ./lib/linux/*.*
 chmod a+x ./config
 ./config
-make clean
 make
 mv -f ./libssl.a ./lib/linux/libssl.a
 mv -f ./libcrypto.a ./lib/linux/libcrypto.a
 popd >& /dev/null
-
 
 ## Thirdparty_WMS
 pushd . >& /dev/null

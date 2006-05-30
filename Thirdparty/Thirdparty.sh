@@ -49,9 +49,6 @@ make
 mkdir -p lib/linux
 rm -f ./lib/linux/*.*
 cp -f ./lib/.libs/libcurl.a ./lib/linux
-cp -f ./lib/.libs/libcurl.so ./lib/linux
-cp -f ./lib/.libs/libcurl.so.3 ./lib/linux
-cp -f ./lib/.libs/libcurl.so.3.0.0 ./lib/linux
 popd >& /dev/null
 
 pushd . >& /dev/null
@@ -60,16 +57,10 @@ echo Building openssl
 mkdir -p lib/linux
 rm -f ./lib/linux/*.*
 chmod a+x ./config
-./config shared
+./config
 make
 mv -f ./libssl.a ./lib/linux/libssl.a
-mv -f ./libssl.so ./lib/linux/libssl.so
-mv -f ./libssl.so.0 ./lib/linux/libssl.so.0
-mv -f ./libssl.so.0.9.7 ./lib/linux/libssl.so.0.9.7
 mv -f ./libcrypto.a ./lib/linux/libcrypto.a
-mv -f ./libcrypto.so ./lib/linux/libcrypto.so
-mv -f ./libcrypto.so.0 ./lib/linux/libcrypto.so.0
-mv -f ./libcrypto.so.0.9.7 ./lib/linux/libcrypto.so.0.9.7
 popd >& /dev/null
 
 
@@ -81,11 +72,20 @@ mkdir -p linux/lib/optimized
 rm -f linux/lib/optimized/*.*
 cd src
 chmod a+x ./configure
-./configure
+echo Build GDAL library with the following settings:
+echo     gif support         - internal
+echo     jpeg support        - internal
+echo     png support         - internal
+echo     tiff support        - internal
+echo     geotiff support     - internal
+echo     libz support        - internal
+echo     python support      - no
+echo     OGR support         - no
+echo     postgreSQL support  - no
+./configure --with-gif=internal --with-jpeg=internal --with-png=internal --with-libtiff=internal --with-geotiff=internal --without-ogr --with-pg=no --with-python=no --with-libz=internal
 make
 cp -f ./.libs/libgdal.a ../linux/lib/optimized
 cp -f ./.libs/libgdal.so ../linux/lib/optimized
 cp -f ./.libs/libgdal.so.1 ../linux/lib/optimized
 cp -f ./.libs/libgdal.so.1.9.0 ../linux/lib/optimized
 popd >& /dev/null
-
