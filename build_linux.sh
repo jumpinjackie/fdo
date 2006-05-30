@@ -2,19 +2,20 @@
 
 TYPEACTION=buildinstall
 TYPEBUILD=release
-TYPECONFIGURE=
+TYPECONFIGURE=configure
 BUILDDOCS=skip
 
 DEFMODIFY=no
-THRPENABLE=yes
-FDOENABLE=yes
-UTILENABLE=yes
-SHPENABLE=no
-SDFENABLE=no
-WFSENABLE=no
-WMSENABLE=no
-ARCENABLE=no
-RDBMSENABLE=no
+FDOCOREENABLE=yes
+THRPENABLE=no
+FDOENABLE=no
+UTILENABLE=no
+SHPENABLE=yes
+SDFENABLE=yes
+WFSENABLE=yes
+WMSENABLE=yes
+ARCENABLE=yes
+RDBMSENABLE=yes
 SHOWHELP=no
 
 
@@ -39,8 +40,17 @@ do
         TYPEACTION=uninstall
     elif test "$1" == clean; then
         TYPEACTION=clean
-    elif test "$1" == configure; then
+    else
+        echo "$arg Invalid parameter $1"
+	exit 1
+    fi
+    shift
+    ;;
+  --m | --makefile)
+    if test "$1" == configure; then
         TYPECONFIGURE=configure
+    elif test "$1" == noconfigure; then
+        TYPECONFIGURE=noconfigure
     else
         echo "$arg Invalid parameter $1"
 	exit 1
@@ -72,6 +82,7 @@ do
   --w | --with)
      if test "$DEFMODIFY" == no; then
 	DEFMODIFY=yes
+	FDOCOREENABLE=no
 	THRPENABLE=no
 	FDOENABLE=no
 	SHPENABLE=no
@@ -85,10 +96,16 @@ do
      if test -z "$1"; then
         echo "$arg Invalid parameter $1"
 	exit 1
+     elif test "$1" == all; then
+	FDOCOREENABLE=yes
+	SHPENABLE=yes
+	SDFENABLE=yes
+	WFSENABLE=yes
+	WMSENABLE=yes
+	ARCENABLE=yes
+	RDBMSENABLE=yes
      elif test "$1" == fdocore; then
-	THRPENABLE=yes
-	FDOENABLE=yes
-	UTILENABLE=yes
+	FDOCOREENABLE=yes
      elif test "$1" == providers; then
 	SHPENABLE=yes
 	SDFENABLE=yes
@@ -139,15 +156,16 @@ done
 
 if test "$SHOWHELP" == yes; then
 
-   echo "*************************************************************************************"
-   echo "build_linux.sh [--h] [--c BuildType] [--a Action] [--w WithModule] [--d BuildDocs]"
+   echo "************************************************************************************************************"
+   echo "build_linux.sh [--h] [--c BuildType] [--a Action] [--w WithModule] [--d BuildDocs] [--m ConfigMakefiles]"
    echo "*"
-   echo "Help:           --h[elp]"
-   echo "BuildType:      --c[onfig] release(default), debug"
-   echo "Action:         --a[ction] buildinstall(default), build, install, uninstall, clean, configure"
-   echo "BuildDocs:      --d[ocs] skip(default), build"
+   echo "Help:            --h[elp]"
+   echo "BuildType:       --c[onfig] release(default), debug"
+   echo "Action:          --a[ction] buildinstall(default), build, install, uninstall, clean"
+   echo "BuildDocs:       --d[ocs] skip(default), build"
+   echo "ConfigMakefiles: --m[akefile] configure(default), noconfigure"
 
-   HELPSTRINGWITH="WithModule:     --w[ith] fdocore(default), fdo, thirdparty, utilities, providers"
+   HELPSTRINGWITH="WithModule:      --w[ith] all(default), fdocore, fdo, thirdparty, utilities, providers"
    if test -e "Providers/SHP/build_linux.sh"; then
    HELPSTRINGWITH="$HELPSTRINGWITH, shp"
    fi
@@ -168,14 +186,14 @@ if test "$SHOWHELP" == yes; then
    fi
    
    echo "$HELPSTRINGWITH"
-   echo "*************************************************************************************"
+   echo "************************************************************************************************************"
 
    exit 0
 fi
 
 ### configure build ###
 if test "$TYPECONFIGURE" == configure ; then
-   if test "$THRPENABLE" == yes || test "$FDOENABLE" == yes || test "$UTILENABLE" == yes; then
+   if test "$FDOCOREENABLE" == yes || test "$THRPENABLE" == yes || test "$FDOENABLE" == yes || test "$UTILENABLE" == yes; then
       echo "configuring fdocore"
       aclocal
       libtoolize --force
@@ -192,9 +210,25 @@ fi
 
 ### start build ###
 
-CMDEX="--c $TYPEBUILD --a $TYPEACTION --d $BUILDDOCS"
-if test "$TYPECONFIGURE" == configure ; then
-   CMDEX="$CMDEX --a $TYPECONFIGURE"
+CMDEX="--c $TYPEBUILD --a $TYPEACTION --d $BUILDDOCS --m $TYPECONFIGURE"
+
+#build all of fdocore
+if test "$FDOCOREENABLE" == yes; then
+   if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
+      pushd "Thirdparty" >& /dev/null
+      ./Thirdparty.sh
+      popd >& /dev/null
+      make
+   fi
+   if test "$TYPEACTION" == clean ; then
+      make clean
+   fi
+   if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
+      make install
+   fi
+   if test "$TYPEACTION" == uninstall ; then
+      make uninstall
+   fi
 fi
 
 #build Thirdparty
