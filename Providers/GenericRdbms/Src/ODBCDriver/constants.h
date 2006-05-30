@@ -119,6 +119,7 @@ typedef enum
     ODBCDriverType_OracleNonNative,
     ODBCDriverType_SQLServer,
     ODBCDriverType_Access,
+    ODBCDriverType_MySQL,
     ODBCDriverType_Other  // determined, but not an ODBC driver we distinguish specifically
 } odbcdr_DriverType;
 
@@ -126,6 +127,7 @@ typedef enum
 #define ODBCDR_DRIVER_ORACLE_DRIVERNAME_MB        "SQORA32.DLL"
 #define ODBCDR_DRIVER_SQLSERVER_DRIVERNAME_MB     "SQLSRV32.DLL"
 #define ODBCDR_DRIVER_ACCESS_DRIVERNAME_MB        "ODBCJT32.DLL"
+#define ODBCDR_DRIVER_MYSQL_DRIVERNAME_MB         "LIBMYODBC3.SO"
 #define ODBCDR_DRIVER_ORACLE_ROWID_NAME           "ROWID"
 #define ODBCDR_DRIVER_ORACLE_OWM_TABLE_SUFFIX     "_LT"
 #define ODBCDR_DRIVER_ORACLE_OWM_COLUMN_VERSION   "VERSION"

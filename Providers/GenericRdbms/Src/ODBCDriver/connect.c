@@ -398,7 +398,14 @@ int	do_connect(
 			    rc = SQLFreeHandle(SQL_HANDLE_STMT, hStmt);
 			    rc = SQLFreeHandle(SQL_HANDLE_STMT, hStmt5);
             }
-		}
+            else if (ODBCDriverType_MySQL == context->odbcdr_conns[connect_id]->driver_type)
+            {
+                rc = SQLAllocHandle(SQL_HANDLE_STMT,	hDbc,&hStmt5);
+                sprintf(sql_buf, "set sql_mode='ANSI_QUOTES'");
+                rc = SQLExecDirect(hStmt5, (SQLCHAR*)sql_buf, SQL_NTS);
+                rc = SQLFreeHandle(SQL_HANDLE_STMT, hStmt5);
+            }
+        }
 	}	/* end of ODBC connection block */
     
 	debug_return(NULL, rdbi_status);
@@ -448,6 +455,10 @@ get_drivertype(
     else if (0==_stricmp((const char*)szDriverName, ODBCDR_DRIVER_ACCESS_DRIVERNAME_MB))
     {
         *driver_type = ODBCDriverType_Access;
+    }
+    else if (0==_stricmp((const char*)szDriverName, ODBCDR_DRIVER_MYSQL_DRIVERNAME_MB))
+    {
+        *driver_type = ODBCDriverType_MySQL;
     }
     else
     {
