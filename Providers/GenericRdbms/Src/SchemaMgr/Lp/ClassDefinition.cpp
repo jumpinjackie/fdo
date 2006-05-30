@@ -159,10 +159,12 @@ void FdoSmLpGrdClassDefinition::UpdateTable( FdoStringP database, FdoStringP own
     // Check for a mapping override for table name.
     if ( Get_TableMapping() != FdoSmOvTableMappingType_BaseTable ) {
 
+        bool bFromConfigFile = (GetElementState() == FdoSchemaElementState_Unchanged) && GetIsFromFdo();
+
         if ( tableOverrides && (wcslen(tableOverrides->GetName()) > 0) ) {
             ovTableName = tableOverrides->GetName();
         }
-        else if ( (GetElementState() == FdoSchemaElementState_Unchanged) && GetIsFromFdo() ) {
+        else if ( bFromConfigFile ) {
             // Always override table name when this object is from an FDO config document.
             // This prevents the table name from being later adjusted. Classes from config docs
             // always attach to existing table so must not mangle table name.
@@ -170,7 +172,7 @@ void FdoSmLpGrdClassDefinition::UpdateTable( FdoStringP database, FdoStringP own
         }
 
         if ( ovTableName != L"" ) {
-            if ( !VldDbObjectName(ovTableName) ) {
+            if ( !VldDbObjectName(ovTableName, bFromConfigFile) ) {
                 ovTableName = L"";
             }
         }

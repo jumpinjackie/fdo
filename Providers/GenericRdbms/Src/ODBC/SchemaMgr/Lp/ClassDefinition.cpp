@@ -184,6 +184,8 @@ void FdoSmLpOdbcClassDefinition::SetPhysicalAddWriter( FdoSmPhClassWriterP write
 
 void FdoSmLpOdbcClassDefinition::Init()
 {
+    // ODBC currently never creates tables, so tables are always 'fixed':
+    SetIsFixedDbObject(true);
 }
 
 
