@@ -39,8 +39,8 @@ goto custom_error
 
 :get_action
 SET TYPEACTIONARCSDE=%2
-if "%2"=="installonly" goto next_param
-if "%2"=="buildonly" goto next_param
+if "%2"=="install" goto next_param
+if "%2"=="build" goto next_param
 if "%2"=="buildinstall" goto next_param
 if "%2"=="clean" goto next_param
 goto custom_error
@@ -78,15 +78,18 @@ SET FDOACTENVSTUDY="SDEHOME"
 if ("%SDEHOME%")==("") goto env_error
 if not exist "%SDEHOME%" goto env_path_error
 
+if "%TYPEACTIONARCSDE%"=="build" goto start_exbuild
+if "%TYPEACTIONARCSDE%"=="clean" goto start_exbuild
 if not exist "%FDOINSPATHARCSDE%" mkdir "%FDOINSPATHARCSDE%"
 if not exist "%FDOBINPATHARCSDE%" mkdir "%FDOBINPATHARCSDE%"
 if not exist "%FDOINCPATHARCSDE%" mkdir "%FDOINCPATHARCSDE%"
 if not exist "%FDOLIBPATHARCSDE%" mkdir "%FDOLIBPATHARCSDE%"
 if not exist "%FDODOCPATHARCSDE%" mkdir "%FDODOCPATHARCSDE%"
 
+:start_exbuild
 time /t
 if "%TYPEACTIONARCSDE%"=="clean" SET MSACTIONARCSDE=Clean
-if "%TYPEACTIONARCSDE%"=="installonly" goto install_files_ArcSDE
+if "%TYPEACTIONARCSDE%"=="install" goto install_files_ArcSDE
 
 echo %MSACTIONARCSDE% %TYPEBUILDARCSDE% ArcSDE provider dlls
 pushd Src
@@ -98,7 +101,7 @@ if exist ArcSDEOS_temp.sln del /Q /F ArcSDEOS_temp.sln
 popd
 if "%FDOERROR%"=="1" goto error
 if "%TYPEACTIONARCSDE%"=="clean" goto end
-if "%TYPEACTIONARCSDE%"=="buildonly" goto generate_docs
+if "%TYPEACTIONARCSDE%"=="build" goto generate_docs
 
 :install_files_ArcSDE
 echo copy %TYPEBUILDARCSDE% ArcSDE provider output files
@@ -109,17 +112,20 @@ echo copy header files
 rem none
 
 :generate_docs
-if "%DOCENABLEARCSDE%"=="skip" goto end
+if "%DOCENABLEARCSDE%"=="skip" goto install_docs
 echo Creating ArcSDE provider html and chm documentation
-if exist "%FDODOCPATHARCSDE%\HTML\Providers\ArcSDE" rmdir /S /Q "%FDODOCPATHARCSDE%\HTML\Providers\ArcSDE"
 if exist "..\Docs\HTML\Providers\ArcSDE" rmdir /S /Q "..\Docs\HTML\Providers\ArcSDE"
 if not exist "..\Docs\HTML\Providers\ArcSDE" mkdir "..\Docs\HTML\Providers\ArcSDE"
 if exist ..\Docs\ArcSDE_Provider_API.chm attrib -r ..\Docs\ArcSDE_Provider_API.chm
 pushd Docs\doc_src
 doxygen Doxyfile_ArcSDE
 popd
-xcopy/CQEYI ..\Docs\HTML\Providers\ArcSDE\* "%FDODOCPATHARCSDE%\HTML\Providers\ArcSDE"
-copy /y "..\Docs\ArcSDE_Provider_API.chm" "%FDODOCPATHARCSDE%"
+if "%TYPEACTIONARCSDE%"=="build" goto end
+
+:install_docs
+if exist "%FDODOCPATHARCSDE%\HTML\Providers\ArcSDE" rmdir /S /Q "%FDODOCPATHARCSDE%\HTML\Providers\ArcSDE"
+if exist ..\Docs\HTML\Providers\ArcSDE xcopy/CQEYI ..\Docs\HTML\Providers\ArcSDE\* "%FDODOCPATHARCSDE%\HTML\Providers\ArcSDE"
+if exist "..\Docs\ArcSDE_Provider_API.chm" copy /y "..\Docs\ArcSDE_Provider_API.chm" "%FDODOCPATHARCSDE%"
 
 :end
 time /t
@@ -159,7 +165,7 @@ echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
-echo Action:         -a[ction]=buildinstall(default), buildonly, installonly, clean
+echo Action:         -a[ction]=buildinstall(default), build, install, clean
 echo BuildDocs:      -d[ocs]=skip(default), build
 echo **************************************************************************
 exit /B 0
