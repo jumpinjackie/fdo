@@ -1,16 +1,16 @@
 AUTOMAKE_OPTIONS = foreign
 
 EXTRA_DIST = \
-   WMS/Inc/WMS/FdoWmsOvProvider.h \
-   WMS/Inc/WMS/Override/FdoWmsOvClassCollection.h \
-   WMS/Inc/WMS/Override/FdoWmsOvClassDefinition.h \
-   WMS/Inc/WMS/Override/FdoWmsOvFormatType.h \
-   WMS/Inc/WMS/Override/FdoWmsOvLayerCollection.h \
-   WMS/Inc/WMS/Override/FdoWmsOvLayerDefinition.h \
-   WMS/Inc/WMS/Override/FdoWmsOvOverrides.h \
-   WMS/Inc/WMS/Override/FdoWmsOvPhysicalSchemaMapping.h \
-   WMS/Inc/WMS/Override/FdoWmsOvRasterDefinition.h \
-   WMS/Inc/WMS/Override/FdoWmsOvStyleDefinition.h
+   WMS/FdoWmsOvProvider.h \
+   WMS/Override/FdoWmsOvClassCollection.h \
+   WMS/Override/FdoWmsOvClassDefinition.h \
+   WMS/Override/FdoWmsOvFormatType.h \
+   WMS/Override/FdoWmsOvLayerCollection.h \
+   WMS/Override/FdoWmsOvLayerDefinition.h \
+   WMS/Override/FdoWmsOvOverrides.h \
+   WMS/Override/FdoWmsOvPhysicalSchemaMapping.h \
+   WMS/Override/FdoWmsOvRasterDefinition.h \
+   WMS/Override/FdoWmsOvStyleDefinition.h
 
 INSTALL_DIR  = $(includedir)
 
