@@ -1,6 +1,16 @@
 AUTOMAKE_OPTIONS = foreign
 
-EXTRA_DIST = WMS
+EXTRA_DIST = \
+   WMS/Inc/WMS/FdoWmsOvProvider.h \
+   WMS/Inc/WMS/Override/FdoWmsOvClassCollection.h \
+   WMS/Inc/WMS/Override/FdoWmsOvClassDefinition.h \
+   WMS/Inc/WMS/Override/FdoWmsOvFormatType.h \
+   WMS/Inc/WMS/Override/FdoWmsOvLayerCollection.h \
+   WMS/Inc/WMS/Override/FdoWmsOvLayerDefinition.h \
+   WMS/Inc/WMS/Override/FdoWmsOvOverrides.h \
+   WMS/Inc/WMS/Override/FdoWmsOvPhysicalSchemaMapping.h \
+   WMS/Inc/WMS/Override/FdoWmsOvRasterDefinition.h \
+   WMS/Inc/WMS/Override/FdoWmsOvStyleDefinition.h
 
 INSTALL_DIR  = $(includedir)
 
