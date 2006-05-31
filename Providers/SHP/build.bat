@@ -40,8 +40,8 @@ goto custom_error
 
 :get_action
 SET TYPEACTIONSHP=%2
-if "%2"=="installonly" goto next_param
-if "%2"=="buildonly" goto next_param
+if "%2"=="install" goto next_param
+if "%2"=="build" goto next_param
 if "%2"=="buildinstall" goto next_param
 if "%2"=="clean" goto next_param
 goto custom_error
@@ -77,7 +77,7 @@ SET FDOACTENVSTUDY="FDOUTILITIES"
 if ("%FDOUTILITIES%")==("") goto env_error
 if not exist "%FDOUTILITIES%" goto env_path_error
 
-if "%TYPEACTIONSHP%"=="buildonly" goto start_exbuild
+if "%TYPEACTIONSHP%"=="build" goto start_exbuild
 if "%TYPEACTIONSHP%"=="clean" goto start_exbuild
 if not exist "%FDOINSPATHSHP%" mkdir "%FDOINSPATHSHP%"
 if not exist "%FDOBINPATHSHP%" mkdir "%FDOBINPATHSHP%"
@@ -88,7 +88,7 @@ if not exist "%FDODOCPATHSHP%" mkdir "%FDODOCPATHSHP%"
 :start_exbuild
 time /t
 if "%TYPEACTIONSHP%"=="clean" SET MSACTIONSHP=Clean
-if "%TYPEACTIONSHP%"=="installonly" goto install_files_shp
+if "%TYPEACTIONSHP%"=="install" goto install_files_shp
 
 echo %MSACTIONSHP% %TYPEBUILDSHP% SHP provider dlls
 pushd Src
@@ -100,7 +100,7 @@ if exist SHP_temp.sln del /Q /F SHP_temp.sln
 popd
 if "%FDOERROR%"=="1" goto error
 if "%TYPEACTIONSHP%"=="clean" goto end
-if "%TYPEACTIONSHP%"=="buildonly" goto generate_docs
+if "%TYPEACTIONSHP%"=="build" goto generate_docs
 
 :install_files_shp
 echo copy %TYPEBUILDSHP% SHP provider output files
@@ -114,17 +114,20 @@ echo copy header files
 xcopy /S /C /Q /R /Y Inc\SHP\*.h "%FDOINCPATHSHP%\SHP\"
 
 :generate_docs
-if "%DOCENABLESHP%"=="skip" goto end
+if "%DOCENABLESHP%"=="skip" goto install_docs
 echo Creating SHP provider html and chm documentation
-if exist "%FDODOCPATHSHP%\HTML\Providers\SHP" rmdir /S /Q "%FDODOCPATHSHP%\HTML\Providers\SHP"
 if exist "..\Docs\HTML\Providers\SHP" rmdir /S /Q "..\Docs\HTML\Providers\SHP"
 if not exist "..\Docs\HTML\Providers\SHP" mkdir "..\Docs\HTML\Providers\SHP"
 if exist ..\Docs\SHP_Provider_API.chm attrib -r ..\Docs\SHP_Provider_API.chm
 pushd Docs\doc_src
 doxygen Doxyfile_SHP
 popd
-xcopy/CQEYI ..\Docs\HTML\Providers\SHP\* "%FDODOCPATHSHP%\HTML\Providers\SHP"
-copy /y "..\Docs\SHP_Provider_API.chm" "%FDODOCPATHSHP%"
+if "%TYPEACTIONSHP%"=="build" goto end
+
+:install_docs
+if exist "%FDODOCPATHSHP%\HTML\Providers\SHP" rmdir /S /Q "%FDODOCPATHSHP%\HTML\Providers\SHP"
+if exist ..\Docs\HTML\Providers\SHP xcopy/CQEYI ..\Docs\HTML\Providers\SHP\* "%FDODOCPATHSHP%\HTML\Providers\SHP"
+if exist "..\Docs\SHP_Provider_API.chm" copy /y "..\Docs\SHP_Provider_API.chm" "%FDODOCPATHSHP%"
 
 :end
 time /t
@@ -164,7 +167,7 @@ echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
-echo Action:         -a[ction]=buildinstall(default), buildonly, installonly, clean
+echo Action:         -a[ction]=buildinstall(default), build, install, clean
 echo BuildDocs:      -d[ocs]=skip(default), build
 echo **************************************************************************
 exit /B 0
