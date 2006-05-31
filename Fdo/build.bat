@@ -40,8 +40,8 @@ goto custom_error
 
 :get_action
 SET TYPEACTIONFDO=%2
-if "%2"=="installonly" goto next_param
-if "%2"=="buildonly" goto next_param
+if "%2"=="install" goto next_param
+if "%2"=="build" goto next_param
 if "%2"=="buildinstall" goto next_param
 if "%2"=="clean" goto next_param
 goto custom_error
@@ -79,7 +79,7 @@ SET FDOACTIVEPATHCHECK=GnuWin32\bin
 cscript //job:envcheck ../preparebuilds.wsf
 if exist %FDO%\Err.log goto env_path_error_ex
 
-if "%TYPEACTIONFDO%"=="buildonly" goto start_exbuild
+if "%TYPEACTIONFDO%"=="build" goto start_exbuild
 if "%TYPEACTIONFDO%"=="clean" goto start_exbuild
 if not exist "%FDOINSPATHFDO%" mkdir "%FDOINSPATHFDO%"
 if not exist "%FDOBINPATHFDO%" mkdir "%FDOBINPATHFDO%"
@@ -90,13 +90,13 @@ if not exist "%FDODOCPATHFDO%" mkdir "%FDODOCPATHFDO%"
 :start_exbuild
 time /t
 if "%TYPEACTIONFDO%"=="clean" SET MSACTIONFDO=Clean
-if "%TYPEACTIONFDO%"=="installonly" goto install_files
+if "%TYPEACTIONFDO%"=="install" goto install_files
 
 echo %MSACTIONFDO% %TYPEBUILDFDO% Fdo dlls
 msbuild FDO.sln /t:%MSACTIONFDO% /p:Configuration=%TYPEBUILDFDO% /p:Platform="Win32" /nologo
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
-if "%TYPEACTIONFDO%"=="buildonly" goto generate_docs
+if "%TYPEACTIONFDO%"=="build" goto generate_docs
 if "%TYPEACTIONFDO%"=="clean" goto end
 
 :install_files
@@ -122,14 +122,10 @@ rmdir /S /Q "%FDOINCPATHFDO%\Spatial"
 
 
 :generate_docs
-if "%DOCENABLEFDO%"=="skip" goto end
+if "%DOCENABLEFDO%"=="skip" goto install_docs
 echo Creating FDO Unmanaged and Managed html and chm API documentation
-if exist "%FDODOCPATHFDO%\HTML\FDO_API" rmdir /S /Q "%FDODOCPATHFDO%\HTML\FDO_API"
-if exist "%FDODOCPATHFDO%\HTML\FDO_API_managed" rmdir /S /Q "%FDODOCPATHFDO%\HTML\FDO_API_managed"
 if exist "Docs\HTML\FDO_API" rmdir /S /Q "Docs\HTML\FDO_API"
 if exist "Docs\HTML\FDO_API_managed" rmdir /S /Q "Docs\HTML\FDO_API_managed"
-if not exist "%FDODOCPATHFDO%\HTML\FDO_API" mkdir "%FDODOCPATHFDO%\HTML\FDO_API"
-if not exist "%FDODOCPATHFDO%\HTML\FDO_API_managed" mkdir "%FDODOCPATHFDO%\HTML\FDO_API_managed"
 if not exist "Docs\HTML\FDO_API" mkdir "Docs\HTML\FDO_API"
 if not exist "Docs\HTML\FDO_API_managed" mkdir "Docs\HTML\FDO_API_managed"
 if exist Docs\FDO_API.chm attrib -r Docs\FDO_API.chm
@@ -137,10 +133,20 @@ if exist Docs\FDO_API_managed.chm attrib -r Docs\FDO_API_managed.chm
 pushd Docs\doc_src
 doxygen Doxyfile_FDOunmanaged
 doxygen Doxyfile_FDOmanaged
-xcopy/CQEYI "..\HTML\FDO_API\*" "%FDODOCPATHFDO%\HTML\FDO_API"
-xcopy/CQEYI "..\HTML\FDO_API_managed\*" "%FDODOCPATHFDO%\HTML\FDO_API_managed"
-copy /y "..\FDO_API_managed.chm" "%FDODOCPATHFDO%"
-copy /y "..\FDO_API.chm" "%FDODOCPATHFDO%"
+popd
+if "%TYPEACTIONFDO%"=="build" goto end
+
+:install_docs
+pushd Docs\doc_src
+if exist "%FDODOCPATHFDO%\HTML\FDO_API" rmdir /S /Q "%FDODOCPATHFDO%\HTML\FDO_API"
+if exist "%FDODOCPATHFDO%\HTML\FDO_API_managed" rmdir /S /Q "%FDODOCPATHFDO%\HTML\FDO_API_managed"
+if not exist "%FDODOCPATHFDO%\HTML\FDO_API" mkdir "%FDODOCPATHFDO%\HTML\FDO_API"
+if not exist "%FDODOCPATHFDO%\HTML\FDO_API_managed" mkdir "%FDODOCPATHFDO%\HTML\FDO_API_managed"
+
+if exist "..\HTML\FDO_API\" xcopy/CQEYI "..\HTML\FDO_API\*" "%FDODOCPATHFDO%\HTML\FDO_API"
+if exist "..\HTML\FDO_API_managed\" xcopy/CQEYI "..\HTML\FDO_API_managed\*" "%FDODOCPATHFDO%\HTML\FDO_API_managed"
+if exist "..\FDO_API_managed.chm" copy /y "..\FDO_API_managed.chm" "%FDODOCPATHFDO%"
+if exist "..\FDO_API.chm" copy /y "..\FDO_API.chm" "%FDODOCPATHFDO%"
 if exist "..\FDG_FDODevGuide.pdf" copy /y "..\FDG_FDODevGuide.pdf" "%FDODOCPATHFDO%"
 if exist "..\FET_TheEssentialFDO.pdf" copy /y "..\FET_TheEssentialFDO.pdf" "%FDODOCPATHFDO%"
 popd
@@ -183,7 +189,7 @@ echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
-echo Action:         -a[ction]=buildinstall(default), buildonly, installonly, clean
+echo Action:         -a[ction]=buildinstall(default), build, install, clean
 echo BuildDocs:      -d[ocs]=skip(default), build
 echo **************************************************************************
 exit /B 0

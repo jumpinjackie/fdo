@@ -110,8 +110,8 @@ goto next_param
 
 :get_action
 SET TYPEACTIONTHR=%2
-if "%2"=="installonly" goto next_param
-if "%2"=="buildonly" goto next_param
+if "%2"=="install" goto next_param
+if "%2"=="build" goto next_param
 if "%2"=="buildinstall" goto next_param
 if "%2"=="clean" goto next_param
 goto custom_error
@@ -151,7 +151,7 @@ SET FDOACTENVSTUDY="NLSDIR"
 if ("%NLSDIR%")==("") goto env_error
 if not exist "%NLSDIR%" goto env_path_error
 
-if "%TYPEACTIONTHR%"=="buildonly" goto start_exbuild
+if "%TYPEACTIONTHR%"=="build" goto start_exbuild
 if "%TYPEACTIONTHR%"=="clean" goto start_exbuild
 if not exist "%FDOINSPATHTHR%" mkdir "%FDOINSPATHTHR%"
 if not exist "%FDOBINPATHTHR%" mkdir "%FDOBINPATHTHR%"
@@ -168,7 +168,7 @@ if "%TYPEACTIONTHR%"=="clean" goto end
 rem # Begin FDO part #
 :rebuild_fdo
 if "%FDOENABLETHR%"=="no" goto rebuild_sdf
-if "%TYPEACTIONTHR%"=="installonly" goto install_fdo_files
+if "%TYPEACTIONTHR%"=="install" goto install_fdo_files
 
 echo Rebuild %TYPEBUILDTHR% Thirdparty FDO dlls
 msbuild Thirdparty_fdo.sln /t:Rebuild /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo
@@ -179,7 +179,7 @@ if "%FDOERROR%"=="1" goto error
 if not exist util\UpdateVersion\bin mkdir util\UpdateVersion\bin
 copy /y util\UpdateVersion\build\UpdateVersion.exe util\UpdateVersion\bin
 
-if "%TYPEACTIONTHR%"=="buildonly" goto rebuild_sdf
+if "%TYPEACTIONTHR%"=="build" goto rebuild_sdf
 
 :install_fdo_files
 echo copy %TYPEBUILDTHR% Thirdparty FDO dlls
@@ -191,7 +191,7 @@ rem # End FDO part #
 rem # Begin SDF part #
 :rebuild_sdf
 if "%SDFENABLETHR%"=="no" goto rebuild_wfs
-if "%TYPEACTIONTHR%"=="installonly" goto install_sdf_files
+if "%TYPEACTIONTHR%"=="install" goto install_sdf_files
 
 echo Rebuild %TYPEBUILDTHR% Thirdparty SDF dlls
 msbuild Thirdparty_sdf.sln /t:Rebuild /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo
@@ -207,7 +207,7 @@ rem # End SDF part #
 rem # Begin WFS part #
 :rebuild_wfs
 if "%WFSENABLETHR%"=="no" goto rebuild_wms
-if "%TYPEACTIONTHR%"=="installonly" goto install_wfs_files
+if "%TYPEACTIONTHR%"=="install" goto install_wfs_files
 
 echo Rebuild %TYPEBUILDTHR% Thirdparty WFS dlls
 msbuild Thirdparty_wfs.sln /t:Rebuild /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo
@@ -217,7 +217,7 @@ msbuild boost_1_32_0\boost_1_32_0.vcproj /t:Rebuild /p:Configuration=%TYPEBUILDT
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
 
-if "%TYPEACTIONTHR%"=="buildonly" goto rebuild_wms
+if "%TYPEACTIONTHR%"=="build" goto rebuild_wms
 
 :install_wfs_files
 echo copy %TYPEBUILDTHR% Thirdparty WFS dlls
@@ -227,7 +227,7 @@ rem # End WFS part #
 rem # Begin WMS part #
 :rebuild_wms
 if "%WMSENABLETHR%"=="no" goto rebuild_shp
-if "%TYPEACTIONTHR%"=="installonly" goto install_wms_files
+if "%TYPEACTIONTHR%"=="install" goto install_wms_files
 
 echo Rebuild %TYPEBUILDTHR% Thirdparty WMS dlls
 msbuild Thirdparty_wms.sln /t:Rebuild /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo
@@ -237,7 +237,7 @@ msbuild boost_1_32_0\boost_1_32_0.vcproj /t:Rebuild /p:Configuration=%TYPEBUILDT
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
 
-if "%TYPEACTIONTHR%"=="buildonly" goto rebuild_shp
+if "%TYPEACTIONTHR%"=="build" goto rebuild_shp
 
 :install_wms_files
 echo copy %TYPEBUILDTHR% Thirdparty WMS dlls
@@ -248,28 +248,28 @@ rem # End WMS part #
 rem # Begin SHP part #
 :rebuild_shp
 if "%SHPENABLETHR%"=="no" goto rebuild_arc
-if "%TYPEACTIONTHR%"=="installonly" goto rebuild_arc
+if "%TYPEACTIONTHR%"=="install" goto rebuild_arc
 echo No dependencies to build for SHP.
 rem # End SHP part #
 
 rem # Begin ArcSDE part #
 :rebuild_arc
 if "%ARCENABLETHR%"=="no" goto rebuild_mysql
-if "%TYPEACTIONTHR%"=="installonly" goto rebuild_mysql
+if "%TYPEACTIONTHR%"=="install" goto rebuild_mysql
 echo No dependencies to build for ArcSDE.
 rem # End ArcSDE part #
 
 rem # Begin MySQL part #
 :rebuild_mysql
 if "%MYSQLENABLETHR%"=="no" goto rebuild_odbc
-if "%TYPEACTIONTHR%"=="installonly" goto rebuild_odbc
+if "%TYPEACTIONTHR%"=="install" goto rebuild_odbc
 echo No dependencies to build for MySQL.
 rem # End MySQL part #
 
 rem # Begin ODBC part #
 :rebuild_odbc
 if "%ODBCENABLETHR%"=="no" goto end
-if "%TYPEACTIONTHR%"=="installonly" goto end
+if "%TYPEACTIONTHR%"=="install" goto end
 echo No dependencies to build for ODBC.
 rem # End ODBC part #
 
@@ -306,7 +306,7 @@ echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
-echo Action:         -a[ction]=buildinstall(default), buildonly, installonly, clean
+echo Action:         -a[ction]=buildinstall(default), build, install, clean
 SET TROVBYPROVP=
 SET TPROVECAPABP=WithModule:     -w[ith]=all(default), fdo
 :shp_check
