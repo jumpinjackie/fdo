@@ -40,8 +40,8 @@ goto custom_error
 
 :get_action
 SET TYPEACTIONWFS=%2
-if "%2"=="installonly" goto next_param
-if "%2"=="buildonly" goto next_param
+if "%2"=="install" goto next_param
+if "%2"=="build" goto next_param
 if "%2"=="buildinstall" goto next_param
 if "%2"=="clean" goto next_param
 goto custom_error
@@ -77,7 +77,7 @@ SET FDOACTENVSTUDY="FDOUTILITIES"
 if ("%FDOUTILITIES%")==("") goto env_error
 if not exist "%FDOUTILITIES%" goto env_path_error
 
-if "%TYPEACTIONWFS%"=="buildonly" goto start_exbuild
+if "%TYPEACTIONWFS%"=="build" goto start_exbuild
 if "%TYPEACTIONWFS%"=="clean" goto start_exbuild
 if not exist "%FDOINSPATHWFS%" mkdir "%FDOINSPATHWFS%"
 if not exist "%FDOBINPATHWFS%" mkdir "%FDOBINPATHWFS%"
@@ -88,7 +88,7 @@ if not exist "%FDODOCPATHWFS%" mkdir "%FDODOCPATHWFS%"
 :start_exbuild
 time /t
 if "%TYPEACTIONWFS%"=="clean" SET MSACTIONWFS=Clean
-if "%TYPEACTIONWFS%"=="installonly" goto install_files_wfs
+if "%TYPEACTIONWFS%"=="install" goto install_files_wfs
 
 echo %MSACTIONWFS% %TYPEBUILDWFS% WFS provider dlls
 pushd Src
@@ -100,7 +100,7 @@ if exist WFSOS_temp.sln del /Q /F WFSOS_temp.sln
 popd
 if "%FDOERROR%"=="1" goto error
 if "%TYPEACTIONWFS%"=="clean" goto end
-if "%TYPEACTIONWFS%"=="buildonly" goto generate_docs
+if "%TYPEACTIONWFS%"=="build" goto generate_docs
 
 :install_files_wfs
 echo copy %TYPEBUILDWFS% WFS provider output files
@@ -112,17 +112,20 @@ echo copy header files
 rem none
 
 :generate_docs
-if "%DOCENABLEWFS%"=="skip" goto end
+if "%DOCENABLEWFS%"=="skip" goto install_docs
 echo Creating WFS provider html and chm documentation
-if exist "%FDODOCPATHWFS%\HTML\Providers\WFS" rmdir /S /Q "%FDODOCPATHWFS%\HTML\Providers\WFS"
 if exist "..\Docs\HTML\Providers\WFS" rmdir /S /Q "..\Docs\HTML\Providers\WFS"
 if not exist "..\Docs\HTML\Providers\WFS" mkdir "..\Docs\HTML\Providers\WFS"
 if exist ..\Docs\WFS_Provider_API.chm attrib -r ..\Docs\WFS_Provider_API.chm
 pushd Docs\doc_src
 doxygen Doxyfile_WFS
 popd
-xcopy/CQEYI ..\Docs\HTML\Providers\WFS\* "%FDODOCPATHWFS%\HTML\Providers\WFS"
-copy /y "..\Docs\WFS_Provider_API.chm" "%FDODOCPATHWFS%"
+if "%TYPEACTIONWFS%"=="build" goto end
+
+:install_docs
+if exist "%FDODOCPATHWFS%\HTML\Providers\WFS" rmdir /S /Q "%FDODOCPATHWFS%\HTML\Providers\WFS"
+if exist ..\Docs\HTML\Providers\WFS xcopy/CQEYI ..\Docs\HTML\Providers\WFS\* "%FDODOCPATHWFS%\HTML\Providers\WFS"
+if exist "..\Docs\WFS_Provider_API.chm" copy /y "..\Docs\WFS_Provider_API.chm" "%FDODOCPATHWFS%"
 
 :end
 time /t
@@ -162,7 +165,7 @@ echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
-echo Action:         -a[ction]=buildinstall(default), buildonly, installonly, clean
+echo Action:         -a[ction]=buildinstall(default), build, install, clean
 echo BuildDocs:      -d[ocs]=skip(default), build
 echo **************************************************************************
 exit /B 0
