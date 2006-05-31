@@ -39,8 +39,8 @@ goto custom_error
 
 :get_action
 SET TYPEACTIONODBC=%2
-if "%2"=="installonly" goto next_param
-if "%2"=="buildonly" goto next_param
+if "%2"=="install" goto next_param
+if "%2"=="build" goto next_param
 if "%2"=="buildinstall" goto next_param
 if "%2"=="clean" goto next_param
 goto custom_error
@@ -75,7 +75,7 @@ SET FDOACTENVSTUDY="FDOUTILITIES"
 if ("%FDOUTILITIES%")==("") goto env_error
 if not exist "%FDOUTILITIES%" goto env_path_error
 
-if "%TYPEACTIONODBC%"=="buildonly" goto start_exbuild
+if "%TYPEACTIONODBC%"=="build" goto start_exbuild
 if "%TYPEACTIONODBC%"=="clean" goto start_exbuild
 if not exist "%FDOINSPATHODBC%" mkdir "%FDOINSPATHODBC%"
 if not exist "%FDOBINPATHODBC%" mkdir "%FDOBINPATHODBC%"
@@ -86,7 +86,7 @@ if not exist "%FDODOCPATHODBC%" mkdir "%FDODOCPATHODBC%"
 :start_exbuild
 time /t
 if "%TYPEACTIONODBC%"=="clean" SET MSACTIONODBC=Clean
-if "%TYPEACTIONODBC%"=="installonly" goto install_files_ODBC
+if "%TYPEACTIONODBC%"=="install" goto install_files_ODBC
 
 echo %MSACTIONODBC% %TYPEBUILDODBC% ODBC provider dlls
 SET FDOACTIVEBUILD=%cd%\ODBC
@@ -96,7 +96,7 @@ SET FDOERROR=%errorlevel%
 if exist ODBC_temp.sln del /Q /F ODBC_temp.sln
 if "%FDOERROR%"=="1" goto error
 if "%TYPEACTIONODBC%"=="clean" goto end
-if "%TYPEACTIONODBC%"=="buildonly" goto generate_docs
+if "%TYPEACTIONODBC%"=="build" goto generate_docs
 
 :install_files_ODBC
 echo copy %TYPEBUILDODBC% ODBC provider output files
@@ -121,18 +121,23 @@ if exist "%FDOINCPATHODBC%\Rdbms\FdoSqlServer.h" del /Q /F "%FDOINCPATHODBC%\Rdb
 if exist "%FDOINCPATHODBC%\Rdbms\FdoOracle.h" del /Q /F "%FDOINCPATHODBC%\Rdbms\FdoOracle.h"
 
 :generate_docs
-if "%DOCENABLEODBC%"=="skip" goto end
+if "%DOCENABLEODBC%"=="skip" goto install_docs
 pushd ..\..\
 echo Creating ODBC provider html and chm documentation
-if exist "%FDODOCPATHODBC%\HTML\Providers\ODBC" rmdir /S /Q "%FDODOCPATHODBC%\HTML\Providers\ODBC"
 if exist "..\Docs\HTML\Providers\ODBC" rmdir /S /Q "..\Docs\HTML\Providers\ODBC"
 if not exist "..\Docs\HTML\Providers\ODBC" mkdir "..\Docs\HTML\Providers\ODBC"
 if exist ..\Docs\ODBC_Provider_API.chm attrib -r ..\Docs\ODBC_Provider_API.chm
 pushd Docs\doc_src
 doxygen Doxyfile_ODBC
 popd
-xcopy/CQEYI ..\Docs\HTML\Providers\ODBC\* "%FDODOCPATHODBC%\HTML\Providers\ODBC"
-copy /y "..\Docs\ODBC_Provider_API.chm" "%FDODOCPATHODBC%"
+popd
+if "%TYPEACTIONODBC%"=="build" goto end
+
+:install_docs
+pushd ..\..\
+if exist "%FDODOCPATHODBC%\HTML\Providers\ODBC" rmdir /S /Q "%FDODOCPATHODBC%\HTML\Providers\ODBC"
+if exist ..\Docs\HTML\Providers\ODBC xcopy/CQEYI ..\Docs\HTML\Providers\ODBC\* "%FDODOCPATHODBC%\HTML\Providers\ODBC"
+if exist "..\Docs\ODBC_Provider_API.chm" copy /y "..\Docs\ODBC_Provider_API.chm" "%FDODOCPATHODBC%"
 popd
 
 :end
@@ -173,7 +178,7 @@ echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
-echo Action:         -a[ction]=buildinstall(default), buildonly, installonly, clean
+echo Action:         -a[ction]=buildinstall(default), build, install, clean
 echo BuildDocs:      -d[ocs]=skip(default), build
 echo **************************************************************************
 exit /B 0

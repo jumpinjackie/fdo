@@ -39,8 +39,8 @@ goto custom_error
 
 :get_action
 SET TYPEACTIONMYSQL=%2
-if "%2"=="installonly" goto next_param
-if "%2"=="buildonly" goto next_param
+if "%2"=="install" goto next_param
+if "%2"=="build" goto next_param
 if "%2"=="buildinstall" goto next_param
 if "%2"=="clean" goto next_param
 goto custom_error
@@ -78,7 +78,7 @@ SET FDOACTENVSTUDY="FDOMYSQL"
 if ("%FDOMYSQL%")==("") goto env_error
 if not exist "%FDOMYSQL%" goto env_path_error
 
-if "%TYPEACTIONMYSQL%"=="buildonly" goto start_exbuild
+if "%TYPEACTIONMYSQL%"=="build" goto start_exbuild
 if "%TYPEACTIONMYSQL%"=="clean" goto start_exbuild
 if not exist "%FDOINSPATHMYSQL%" mkdir "%FDOINSPATHMYSQL%"
 if not exist "%FDOBINPATHMYSQL%" mkdir "%FDOBINPATHMYSQL%"
@@ -90,7 +90,7 @@ if not exist "%FDOBINPATHMYSQL%\com" mkdir "%FDOBINPATHMYSQL%\com"
 :start_exbuild
 time /t
 if "%TYPEACTIONMYSQL%"=="clean" SET MSACTIONMYSQL=Clean
-if "%TYPEACTIONMYSQL%"=="installonly" goto install_files_MySQL
+if "%TYPEACTIONMYSQL%"=="install" goto install_files_MySQL
 
 echo %MSACTIONMYSQL% %TYPEBUILDMYSQL% MySQL provider dlls
 SET FDOACTIVEBUILD=%cd%\MySQL
@@ -100,7 +100,7 @@ SET FDOERROR=%errorlevel%
 if exist MySQL_temp.sln del /Q /F MySQL_temp.sln
 if "%FDOERROR%"=="1" goto error
 if "%TYPEACTIONMYSQL%"=="clean" goto end
-if "%TYPEACTIONMYSQL%"=="buildonly" goto generate_docs
+if "%TYPEACTIONMYSQL%"=="build" goto generate_docs
 
 :install_files_MySQL
 echo copy %TYPEBUILDMYSQL% MySQL provider output files
@@ -127,18 +127,23 @@ if exist "%FDOINCPATHODBC%\Rdbms\FdoSqlServer.h" del /Q /F "%FDOINCPATHODBC%\Rdb
 if exist "%FDOINCPATHODBC%\Rdbms\FdoOracle.h" del /Q /F "%FDOINCPATHODBC%\Rdbms\FdoOracle.h"
 
 :generate_docs
-if "%DOCENABLEMYSQL%"=="skip" goto end
+if "%DOCENABLEMYSQL%"=="skip" goto install_docs
 pushd ..\..\
 echo Creating MySQL provider html and chm documentation
-if exist "%FDODOCPATHMYSQL%\HTML\Providers\MYSQL" rmdir /S /Q "%FDODOCPATHMYSQL%\HTML\Providers\MYSQL"
 if exist "..\Docs\HTML\Providers\MYSQL" rmdir /S /Q "..\Docs\HTML\Providers\MYSQL"
 if not exist "..\Docs\HTML\Providers\MYSQL" mkdir "..\Docs\HTML\Providers\MYSQL"
 if exist ..\Docs\MYSQL_Provider_API.chm attrib -r ..\Docs\MYSQL_Provider_API.chm
 pushd Docs\doc_src
 doxygen Doxyfile_MYSQL
 popd
-xcopy/CQEYI ..\Docs\HTML\Providers\MYSQL\* "%FDODOCPATHMYSQL%\HTML\Providers\MYSQL"
-copy /y "..\Docs\MYSQL_Provider_API.chm" "%FDODOCPATHMYSQL%"
+popd
+if "%TYPEACTIONMYSQL%"=="build" goto end
+
+:install_docs
+pushd ..\..\
+if exist "%FDODOCPATHMYSQL%\HTML\Providers\MYSQL" rmdir /S /Q "%FDODOCPATHMYSQL%\HTML\Providers\MYSQL"
+if exist ..\Docs\HTML\Providers\MYSQL xcopy/CQEYI ..\Docs\HTML\Providers\MYSQL\* "%FDODOCPATHMYSQL%\HTML\Providers\MYSQL"
+if exist "..\Docs\MYSQL_Provider_API.chm" copy /y "..\Docs\MYSQL_Provider_API.chm" "%FDODOCPATHMYSQL%"
 popd
 
 :end
@@ -179,7 +184,7 @@ echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
-echo Action:         -a[ction]=buildinstall(default), buildonly, installonly, clean
+echo Action:         -a[ction]=buildinstall(default), build, install, clean
 echo BuildDocs:      -d[ocs]=skip(default), build
 echo **************************************************************************
 exit /B 0
