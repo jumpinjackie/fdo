@@ -65,7 +65,7 @@ public:
 	virtual ~FdoRdbmsLongTransactionPvcInsertSelectHandler();
     /// <summary>Given a PVC operation, execute the handler.</summary>
     /// <returns>Returns the number of affected objects</returns> 
-    virtual long Execute( const FdoSmLpClassDefinition *classDefinition, FdoPropertyValueCollection  *propValCollection, bool revisionNumberUpdate = false);
+    virtual long Execute( const FdoSmLpClassDefinition *classDefinition, FdoPropertyValueCollection  *propValCollection, bool revisionNumberUpdate = false, bool handleForeignAutoincrementedId=false );
 };
 
 #endif
