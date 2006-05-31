@@ -41,8 +41,8 @@ goto custom_error
 
 :get_action
 SET TYPEACTIONWMS=%2
-if "%2"=="installonly" goto next_param
-if "%2"=="buildonly" goto next_param
+if "%2"=="install" goto next_param
+if "%2"=="build" goto next_param
 if "%2"=="buildinstall" goto next_param
 if "%2"=="clean" goto next_param
 goto custom_error
@@ -79,7 +79,7 @@ SET FDOACTENVSTUDY="FDOUTILITIES"
 if ("%FDOUTILITIES%")==("") goto env_error
 if not exist "%FDOUTILITIES%" goto env_path_error
 
-if "%TYPEACTIONWMS%"=="buildonly" goto start_exbuild
+if "%TYPEACTIONWMS%"=="build" goto start_exbuild
 if "%TYPEACTIONWMS%"=="clean" goto start_exbuild
 if not exist "%FDOINSPATHWMS%" mkdir "%FDOINSPATHWMS%"
 if not exist "%FDOBINPATHWMS%" mkdir "%FDOBINPATHWMS%"
@@ -90,7 +90,7 @@ if not exist "%FDODOCPATHWMS%" mkdir "%FDODOCPATHWMS%"
 :start_exbuild
 time /t
 if "%TYPEACTIONWMS%"=="clean" SET MSACTIONWMS=Clean
-if "%TYPEACTIONWMS%"=="installonly" goto install_files_wms
+if "%TYPEACTIONWMS%"=="install" goto install_files_wms
 
 echo %MSACTIONWMS% %TYPEBUILDWMS% WMS provider dlls
 pushd Src
@@ -102,7 +102,7 @@ if exist WMSOS_temp.sln del /Q /F WMSOS_temp.sln
 popd
 if "%FDOERROR%"=="1" goto error
 if "%TYPEACTIONWMS%"=="clean" goto end
-if "%TYPEACTIONWMS%"=="buildonly" goto generate_docs
+if "%TYPEACTIONWMS%"=="build" goto generate_docs
 
 :install_files_wms
 echo copy %TYPEBUILDWMS% WMS provider output files
@@ -117,17 +117,20 @@ echo copy header files
 xcopy /S /C /Q /R /Y Inc\WMS\*.h "%FDOINCPATHWMS%\WMS\"
 
 :generate_docs
-if "%DOCENABLEWMS%"=="skip" goto end
+if "%DOCENABLEWMS%"=="skip" goto install_docs
 echo Creating WMS provider html and chm documentation
-if exist "%FDODOCPATHWMS%\HTML\Providers\WMS" rmdir /S /Q "%FDODOCPATHWMS%\HTML\Providers\WMS"
 if exist "..\Docs\HTML\Providers\WMS" rmdir /S /Q "..\Docs\HTML\Providers\WMS"
 if not exist "..\Docs\HTML\Providers\WMS" mkdir "..\Docs\HTML\Providers\WMS"
 if exist ..\Docs\WMS_Provider_API.chm attrib -r ..\Docs\WMS_Provider_API.chm
 pushd Docs\doc_src
 doxygen Doxyfile_WMS
 popd
-xcopy/CQEYI ..\Docs\HTML\Providers\WMS\* "%FDODOCPATHWMS%\HTML\Providers\WMS"
-copy /y "..\Docs\WMS_Provider_API.chm" "%FDODOCPATHWMS%"
+if "%TYPEACTIONWMS%"=="build" goto end
+
+:install_docs
+if exist "%FDODOCPATHWMS%\HTML\Providers\WMS" rmdir /S /Q "%FDODOCPATHWMS%\HTML\Providers\WMS"
+if exist ..\Docs\HTML\Providers\WMS xcopy/CQEYI ..\Docs\HTML\Providers\WMS\* "%FDODOCPATHWMS%\HTML\Providers\WMS"
+if exist "..\Docs\WMS_Provider_API.chm" copy /y "..\Docs\WMS_Provider_API.chm" "%FDODOCPATHWMS%"
 
 :end
 time /t
@@ -167,7 +170,7 @@ echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
-echo Action:         -a[ction]=buildinstall(default), buildonly, installonly, clean
+echo Action:         -a[ction]=buildinstall(default), build, install, clean
 echo BuildDocs:      -d[ocs]=skip(default), build
 echo **************************************************************************
 exit /B 0
