@@ -40,8 +40,8 @@ goto custom_error
 
 :get_action
 SET TYPEACTIONSDF=%2
-if "%2"=="installonly" goto next_param
-if "%2"=="buildonly" goto next_param
+if "%2"=="install" goto next_param
+if "%2"=="build" goto next_param
 if "%2"=="buildinstall" goto next_param
 if "%2"=="clean" goto next_param
 goto custom_error
@@ -77,7 +77,7 @@ SET FDOACTENVSTUDY="FDOUTILITIES"
 if ("%FDOUTILITIES%")==("") goto env_error
 if not exist "%FDOUTILITIES%" goto env_path_error
 
-if "%TYPEACTIONSDF%"=="buildonly" goto start_exbuild
+if "%TYPEACTIONSDF%"=="build" goto start_exbuild
 if "%TYPEACTIONSDF%"=="clean" goto start_exbuild
 if not exist "%FDOINSPATHSDF%" mkdir "%FDOINSPATHSDF%"
 if not exist "%FDOBINPATHSDF%" mkdir "%FDOBINPATHSDF%"
@@ -88,7 +88,7 @@ if not exist "%FDODOCPATHSDF%" mkdir "%FDODOCPATHSDF%"
 :start_exbuild
 time /t
 if "%TYPEACTIONSDF%"=="clean" SET MSACTIONSDF=Clean
-if "%TYPEACTIONSDF%"=="installonly" goto install_files_sdf
+if "%TYPEACTIONSDF%"=="install" goto install_files_sdf
 
 echo %MSACTIONSDF% %TYPEBUILDSDF% SDF provider dlls
 pushd Src
@@ -100,7 +100,7 @@ if exist SDFOS_temp.sln del /Q /F SDFOS_temp.sln
 popd
 if "%FDOERROR%"=="1" goto error
 if "%TYPEACTIONSDF%"=="clean" goto end
-if "%TYPEACTIONSDF%"=="buildonly" goto generate_docs
+if "%TYPEACTIONSDF%"=="build" goto generate_docs
 
 :install_files_sdf
 echo copy %TYPEBUILDSDF% SDF provider output files
@@ -111,17 +111,20 @@ echo copy header files
 xcopy /S /C /Q /R /Y Inc\SDF\*.h "%FDOINCPATHSDF%\SDF\"
 
 :generate_docs
-if "%DOCENABLESDF%"=="skip" goto end
+if "%DOCENABLESDF%"=="skip" goto install_docs
 echo Creating SDF provider html and chm documentation
-if exist "%FDODOCPATHSDF%\HTML\Providers\SDF" rmdir /S /Q "%FDODOCPATHSDF%\HTML\Providers\SDF"
 if exist "..\Docs\HTML\Providers\SDF" rmdir /S /Q "..\Docs\HTML\Providers\SDF"
 if not exist "..\Docs\HTML\Providers\SDF" mkdir "..\Docs\HTML\Providers\SDF"
 if exist ..\Docs\SDF_Provider_API.chm attrib -r ..\Docs\SDF_Provider_API.chm
 pushd Docs\doc_src
 doxygen Doxyfile_SDF
 popd
-xcopy/CQEYI ..\Docs\HTML\Providers\SDF\* "%FDODOCPATHSDF%\HTML\Providers\SDF"
-copy /y "..\Docs\SDF_Provider_API.chm" "%FDODOCPATHSDF%"
+if "%TYPEACTIONSDF%"=="build" goto end
+
+:install_docs
+if exist "%FDODOCPATHSDF%\HTML\Providers\SDF" rmdir /S /Q "%FDODOCPATHSDF%\HTML\Providers\SDF"
+if exist ..\Docs\HTML\Providers\SDF xcopy/CQEYI ..\Docs\HTML\Providers\SDF\* "%FDODOCPATHSDF%\HTML\Providers\SDF"
+if exist "..\Docs\SDF_Provider_API.chm" copy /y "..\Docs\SDF_Provider_API.chm" "%FDODOCPATHSDF%"
 
 :end
 time /t
@@ -161,7 +164,7 @@ echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
-echo Action:         -a[ction]=buildinstall(default), buildonly, installonly, clean
+echo Action:         -a[ction]=buildinstall(default), build, install, clean
 echo BuildDocs:      -d[ocs]=skip(default), build
 echo **************************************************************************
 exit /B 0
