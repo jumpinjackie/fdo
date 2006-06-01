@@ -1,5 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 
+EXTRA_DIST = ArcSDEProvider.vcproj ArcSDEProvider.rc resource.h
+
 noinst_LTLIBRARIES = libArcSDEProviderSrc.la
 
 libArcSDEProviderSrc_la_SOURCES = \
@@ -63,6 +65,68 @@ libArcSDEProviderSrc_la_SOURCES = \
   ArcSDEListDataStores.cpp \
   ConnectionStringParser.cpp \
   stdafx.cpp
+
+noinst_HEADERS = $(libArcSDEProviderSrc_la_SOURCES) \
+   ArcSDEAcquireLockCommand.h \
+   ArcSDEActivateLongTransactionCommand.h \
+   ArcSDEActivateSpatialContext.h \
+   ArcSDEApplySchemaCommand.h \
+   ArcSDEBLOBStreamReader.h \
+   ArcSDECommand.h \
+   ArcSDECommandCapabilities.h \
+   ArcSDECommitLongTransactionCommand.h \
+   ArcSDEConnection.h \
+   ArcSDEConnectionCapabilities.h \
+   ArcSDEConnectionInfo.h \
+   ArcSDEConnectionPropertyDictionary.h \
+   ArcSDECreateLongTransactionCommand.h \
+   ArcSDECreateSpatialContext.h \
+   ArcSDEDataReader.h \
+   ArcSDEDataStoreReader.h \
+   ArcSDEDeactivateLongTransactionCommand.h \
+   ArcSDEDeleteCommand.h \
+   ArcSDEDescribeSchemaCommand.h \
+   ArcSDEDestroySchemaCommand.h \
+   ArcSDEDestroySpatialContext.h \
+   ArcSDEExpressionCapabilities.h \
+   ArcSDEFeatureCommand.h \
+   ArcSDEFeatureInfoReader.h \
+   ArcSDEFeatureReader.h \
+   ArcSDEFilterCapabilities.h \
+   ArcSDEFilterToSql.h \
+   ArcSDEGetLockedObjectsCommand.h \
+   ArcSDEGetLockInfoCommand.h \
+   ArcSDEGetLockOwnersCommand.h \
+   ArcSDEGetLongTransactionsCommand.h \
+   ArcSDEGetSpatialContexts.h \
+   ArcSDEInsertCommand.h \
+   ArcSDEListDataStores.h \
+   ArcSDELockConflictReader.h \
+   ArcSDELockedObjectReader.h \
+   ArcSDELockOwnersReader.h \
+   ArcSDELockUtility.h \
+   ArcSDELongTransactionConflictDirectiveEnumerator.h \
+   ArcSDELongTransactionReader.h \
+   ArcSDELongTransactionUtility.h \
+   ArcSDEProvider.h \
+   ArcSDEReader.h \
+   ArcSDEReleaseLockCommand.h \
+   ArcSDERollbackLongTransactionCommand.h \
+   ArcSDESchemaCapabilities.h \
+   ArcSDESchemaManager.h \
+   ArcSDESelectAggregatesCommand.h \
+   ArcSDESelectCommand.h \
+   ArcSDESpatialContextReader.h \
+   ArcSDESpatialContextUtility.h \
+   ArcSDESQLCommand.h \
+   ArcSDESQLDataReader.h \
+   ArcSDETransaction.h \
+   ArcSDEUpdateCommand.h \
+   ArcSDEUtils.h \
+   ConnectionStringParser.h \
+   FdoSde.h \
+   resource.h \
+   stdafx.h
 
 libArcSDEProviderSrc_la_LDFLAGS =
 

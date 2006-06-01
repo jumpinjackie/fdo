@@ -1,5 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 
+EXTRA_DIST = resource.h ArcSDEMessage.mc ArcSDEMessage.vcproj ArcSDEMessageStatic.rc
+
 CATDIR = ../nls/linux/en_US
 
 CATALOGS = ArcSDEMessage.msf
@@ -10,7 +12,8 @@ all: init_dirs $(CATALOGS_CAT)
 
 clean:
 	@rm -rf $(CATDIR)/*.cat  
-	@rm -r *.msf
+	@rm -f Inc/*.h
+	@rm -f *.msf
 
 init_dirs::
 	@mkdir -p $(CATDIR)
@@ -18,6 +21,7 @@ init_dirs::
 
 
 $(CATALOGS_CAT) : $(CATDIR)/%.cat : %.msf
+	@mkdir -p "Inc/"
 	@rm -f "./$(basename $(notdir $<)).h"
 	@echo "$(FDOTHIRDPARTY)/linux/mkcatdefs/mkcatdefs $(basename $(notdir $<)) $< | gencat $@"; \
 	$(FDOTHIRDPARTY)/linux/mkcatdefs/mkcatdefs $(basename $(notdir $<)) $< > $(addsuffix .tmp, $(basename $(notdir $<))); \
@@ -40,3 +44,5 @@ install :
 	@if [ ! -d $(INSTALL_DIR)/nls ]; then mkdir -p $(INSTALL_DIR)/nls; fi
 	@cp -u -f $(CATALOGS_CAT)  $(INSTALL_DIR)/nls
 
+uninstall :
+	@rm -f $(INSTALL_DIR)/nls/ArcSDEMessage.cat

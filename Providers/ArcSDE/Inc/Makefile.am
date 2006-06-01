@@ -1,5 +1,11 @@
 AUTOMAKE_OPTIONS = foreign
 
+EXTRA_DIST = \
+   ArcSDE/Override/FdoArcSDEClassMapping.h \
+   ArcSDE/Override/FdoArcSDEIndexMapping.h \
+   ArcSDE/Override/FdoArcSDEPropertyMapping.h \
+   ArcSDE/Override/FdoArcSDESchemaMapping.h
+
 INSTALL_DIR  = $(includedir)
 
 #install header files

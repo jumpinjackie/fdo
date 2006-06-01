@@ -1,8 +1,10 @@
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = Message Provider 
+SUBDIRS = Message Provider
 
 DIST_SUBDIRS = Message Provider
+
+EXTRA_DIST = ArcSDEOS.sln
 
 lib_LTLIBRARIES = libArcSDEProvider.la
 
