@@ -1,24 +1,25 @@
 AUTOMAKE_OPTIONS = foreign
 
+EXTRA_DIST = resource.h SDFMessage.mc SDFMessage.vcproj SDFMessageStatic.rc
+
 CATDIR = ./nls/linux/en_US
 
 CATALOGS = SDFMessage.msf
 
 CATALOGS_CAT = $(patsubst %.msf,$(CATDIR)/%.cat,$(CATALOGS))
 
-all : catalog_init inc_init $(CATALOGS_CAT)
+all : catalog_init $(CATALOGS_CAT)
 
 clean :
 	@rm -rf $(CATDIR)/*.cat  
+	@rm -f Inc/*.h
+	@rm -f *.msf
 
-catalog_init::
+catalog_init ::
 	@if [ ! -d $(CATDIR) ]; then mkdir -p $(CATDIR); fi
 
-inc_init::
-	@if [ ! -d Inc ]; then mkdir -p Inc; fi
-
-
 $(CATALOGS_CAT) : $(CATDIR)/%.cat : %.msf
+	@mkdir -p "Inc/"
 	@rm -f "./Inc/$(basename $(notdir $<)).h"
 	@echo "$(FDOTHIRDPARTY)/linux/mkcatdefs/mkcatdefs $(basename $(notdir $<)) $< | gencat $@"; \
     	$(FDOTHIRDPARTY)/linux/mkcatdefs/mkcatdefs $(basename $(notdir $<)) $< > $(addsuffix .tmp, $(basename $(notdir $<))); \

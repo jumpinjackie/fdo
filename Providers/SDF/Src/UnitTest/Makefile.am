@@ -1,5 +1,9 @@
 AUTOMAKE_OPTIONS = foreign
 
+EXTRA_DIST = \
+  UnitTest.vcproj \
+  providers.xml
+
 noinst_PROGRAMS = UnitTest
 
 UnitTest_SOURCES = \
@@ -12,6 +16,18 @@ UnitTest_SOURCES = \
   AssociationUpdateTest.cpp \
   AssociationDeleteTest.cpp \
   SelectTest.cpp
+
+noinst_HEADERS = $(UnitTest_SOURCES) \
+  AssociationDeleteTest.h \
+  AssociationInsertTest.h \
+  AssociationSchemaTest.h \
+  AssociationSelectTest.h \
+  AssociationUpdateTest.h \
+  FdoMultiThreadTest.h \
+  FgfStreamWriter.h \
+  MasterTest.h \
+  SelectTest.h \
+  tester-linux.h
 
 INCLUDES = \
   -I$(FDO)/Unmanaged/Inc \

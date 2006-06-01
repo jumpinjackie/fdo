@@ -2,13 +2,13 @@ AUTOMAKE_OPTIONS = foreign
 
 SUBDIRS = Message Utils Provider UnitTest
 
-DIST_SUBDIRS = Message Utils Provider
+DIST_SUBDIRS = Message Utils Provider UnitTest
 
-EXTRA_DIST = UnitTest
+EXTRA_DIST = SDFOS.sln
 
-##building libSDFProvider.so
 lib_LTLIBRARIES = libSDFProvider.la
 
+##building libSDFProvider.so
 libSDFProvider_la_SOURCES =
 
 # Dummy C++ source to cause C++ linking.

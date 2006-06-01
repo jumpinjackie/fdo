@@ -1,5 +1,9 @@
 AUTOMAKE_OPTIONS = foreign
 
+EXTRA_DIST = \
+   SDF/ICreateSDFFile.h \
+   SDF/SdfCommandType.h
+
 INSTALL_DIR  = $(includedir)
 
 #install header files

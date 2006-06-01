@@ -1,5 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 
+EXTRA_DIST = FDOUtils.vcproj
+
 noinst_LTLIBRARIES = libSDFUtils.la
 
 libSDFUtils_la_SOURCES = \
@@ -13,6 +15,21 @@ libSDFUtils_la_SOURCES = \
   FilterExecutor.cpp \
   PropertyIndex.cpp \
   OSUtils.cpp
+
+noinst_HEADERS = $(libSDFUtils_la_SOURCES) \
+   BooleanValue.h \
+   DataValue.h \
+   DataValuePool.h \
+   DataValueStack.h \
+   DateTimeValue.h \
+   DoubleValue.h \
+   FilterExecutor.h \
+   Int64Value.h \
+   NullValue.h \
+   OSUtils.h \
+   PropertyIndex.h \
+   stdafx.h \
+   StringValue.h
 
 libSDFUtils_la_LDFLAGS = 
 

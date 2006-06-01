@@ -1,5 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 
+EXTRA_DIST = SDF.vcproj SDF.rc resource.h
+
 noinst_LTLIBRARIES = libSDFProviderSrc.la
 
 libSDFProviderSrc_la_SOURCES = \
@@ -46,6 +48,58 @@ libSDFProviderSrc_la_SOURCES = \
   SdfPropertyDictionary.cpp \
   SdfSpatialExtentsAggregateReader.cpp \
   SDF.cpp
+
+noinst_HEADERS = $(libSDFProviderSrc_la_SOURCES) \
+   BinaryReader.h \
+   BinaryWriter.h \
+   DataDb.h \
+   DataIO.h \
+   KeyDb.h \
+   resource.h \
+   RTree.h \
+   RTreeInfrastructure.h \
+   SchemaDb.h \
+   SDF.h \
+   SdfApplySchema.h \
+   SdfCollection.h \
+   SdfCommand.h \
+   SdfCommandCapabilities.h \
+   SdfConnection.h \
+   SdfConnectionCapabilities.h \
+   SdfConnectionInfo.h \
+   SdfConnectionPropertyDictionary.h \
+   SdfCreateDatastore.h \
+   SdfCreateSDFFile.h \
+   SdfCreateSpatialContext.h \
+   SdfDataReader.h \
+   SdfDataStorePropertyDictionary.h \
+   SdfDataValidator.h \
+   SdfDelete.h \
+   SdfDeleteDataStore.h \
+   SdfDeletingFeatureReader.h \
+   SdfDescribeSchema.h \
+   SdfDistinctDataReader.h \
+   SdfExpressionCapabilities.h \
+   SdfFeatureCommand.h \
+   SdfFilterCapabilities.h \
+   SdfGeometryCapabilities.h \
+   SdfGetSpatialContexts.h \
+   SdfInsert.h \
+   SdfPropertyDictionary.h \
+   SDFProvider.h \
+   SdfQueryOptimizer.h \
+   SdfRasterCapabilities.h \
+   SdfSchemaCapabilities.h \
+   SdfSelect.h \
+   SdfSelectAggregates.h \
+   SdfSimpleFeatureReader.h \
+   SdfSpatialContextReader.h \
+   SdfSpatialExtentsAggregateReader.h \
+   SdfTopologyCapabilities.h \
+   SdfUpdate.h \
+   SdfUpdatingFeatureReader.h \
+   stdafx.h \
+   utf8_.h
 
 libSDFProviderSrc_la_LDFLAGS = 
 
