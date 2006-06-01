@@ -72,7 +72,11 @@ echo *
 echo Help:          -h[elp]
 echo ZipFileName:   ZipFileName name e.g. ZipFDO10
 echo *
-echo You must have installed wzzip (command line winzip)
+echo In order to use this script, you will need to download and install the 7-Zip
+echo Download Location:             http://www.7-zip.org
+echo Following the installation, ensure that in the environment's PATH you have:
+echo      7-Zip  -- e.g.          c:\Program Files\7-Zip
+echo      e.g.:                   set PATH=PATH;c:\Program Files\7-Zip
 echo The output file will be ZipFDO10.zip
 echo This zip will contain all modified/added files from your SubVersion folder
 echo Also it will contain a readme file with all modified/added/deleted files.
