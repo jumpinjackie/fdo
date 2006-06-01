@@ -12,6 +12,7 @@ all : catalog_init $(CATALOGS_CAT)
 
 clean :
 	@rm -rf $(CATDIR)/*.cat
+	@rm -f Inc/*.h
 	@rm -f *.msf
 
 catalog_init ::
