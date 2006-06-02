@@ -1,5 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 
+EXTRA_DIST = resource.h fdordbmsmsg.mc fdordbms.vcproj fdordbmsmsgStatic.rc
+
 CATDIR = nls/linux/en_US
 
 CATALOGS = \
@@ -11,13 +13,15 @@ all: catalog_init $(CATALOGS_CAT)
 
 clean:
 	@rm -rf $(CATDIR)/*.cat  
-	@rm -rf *.msf
+	@rm -f ../Inc/Nls/*.h
+	@rm -f *.msf
 
 catalog_init::
 	@if [ ! -d $(CATDIR) ]; then mkdir -p $(CATDIR); fi
 
 
 $(CATALOGS_CAT) : $(CATDIR)/%.cat : %.msf
+	@mkdir -p "../Inc/Nls/"
 	@rm -f "../Inc/Nls/$(basename $(notdir $<)).h"
 	@echo "$(FDOTHIRDPARTY)/linux/mkcatdefs/mkcatdefs $(basename $(notdir $<)) $< | gencat $@"; \
     	$(FDOTHIRDPARTY)/linux/mkcatdefs/mkcatdefs $(basename $(notdir $<)) $< > $(addsuffix .tmp, $(basename $(notdir $<))); \

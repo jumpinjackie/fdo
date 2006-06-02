@@ -4,7 +4,7 @@ dnl Configure.in for OSGeo FDO GenericRdbms Providers - MySQL and ODBC
 # Variables
 # Following are the makefile directories 
 #----------------------------------------------------------------------
-AC_INIT(FDO,3.2.0,https://fdordbms.osgeo.org)
+AC_INIT(FDORDBMS,3.2.0,http://www.fdo.osgeo.org)
 AC_CONFIG_SRCDIR(configure.in)
 AM_INIT_AUTOMAKE
 
@@ -161,10 +161,6 @@ fi
 ##output Makefiles##
 AC_CONFIG_FILES(Makefile)
 
-#############################################
-## Providers
-#############################################
-
 #MySQL
 AC_CONFIG_FILES([com/Makefile \
                  Docs/Makefile \
@@ -188,6 +184,7 @@ AC_CONFIG_FILES([com/Makefile \
                  Src/Geometry/Makefile \
                  Src/Geometry/Fgf/Makefile \
                  Src/LongTransactionManager/Makefile \
+                 Src/LockManager/Makefile \
                  Src/MySQL/Makefile \
                  Src/MySQL/Driver/Makefile \
                  Src/MySQL/Fdo/Makefile \
@@ -217,6 +214,14 @@ AC_CONFIG_FILES([Src/ODBC/Makefile \
 		     Src/ODBC/SchemaMgr/Ph/Makefile \
 		     Src/ODBC/SchemaMgr/Ph/Rd/Makefile])
 
+AC_CONFIG_FILES([Docs/Makefile \
+		     Docs/doc_src/Makefile \
+		     Docs/doc_src/group_and_page_definitions/Makefile \
+		     Docs/doc_src/headers_and_footers/Makefile \
+		     Docs/doc_src/headers_and_footers/MySQL/Makefile \
+		     Docs/doc_src/headers_and_footers/ODBC/Makefile \
+		     Docs/doc_src/group_and_page_definitions/MySQL/Makefile \
+		     Docs/doc_src/group_and_page_definitions/ODBC/Makefile])
 
 AC_OUTPUT
 
