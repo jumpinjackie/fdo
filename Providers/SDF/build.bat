@@ -119,9 +119,9 @@ if exist ..\Docs\SDF_Provider_API.chm attrib -r ..\Docs\SDF_Provider_API.chm
 pushd Docs\doc_src
 doxygen Doxyfile_SDF
 popd
-if "%TYPEACTIONSDF%"=="build" goto end
 
 :install_docs
+if "%TYPEACTIONSDF%"=="build" goto end
 if exist "%FDODOCPATHSDF%\HTML\Providers\SDF" rmdir /S /Q "%FDODOCPATHSDF%\HTML\Providers\SDF"
 if exist ..\Docs\HTML\Providers\SDF xcopy/CQEYI ..\Docs\HTML\Providers\SDF\* "%FDODOCPATHSDF%\HTML\Providers\SDF"
 if exist "..\Docs\SDF_Provider_API.chm" copy /y "..\Docs\SDF_Provider_API.chm" "%FDODOCPATHSDF%"
