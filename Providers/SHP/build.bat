@@ -122,9 +122,9 @@ if exist ..\Docs\SHP_Provider_API.chm attrib -r ..\Docs\SHP_Provider_API.chm
 pushd Docs\doc_src
 doxygen Doxyfile_SHP
 popd
-if "%TYPEACTIONSHP%"=="build" goto end
 
 :install_docs
+if "%TYPEACTIONSHP%"=="build" goto end
 if exist "%FDODOCPATHSHP%\HTML\Providers\SHP" rmdir /S /Q "%FDODOCPATHSHP%\HTML\Providers\SHP"
 if exist ..\Docs\HTML\Providers\SHP xcopy/CQEYI ..\Docs\HTML\Providers\SHP\* "%FDODOCPATHSHP%\HTML\Providers\SHP"
 if exist "..\Docs\SHP_Provider_API.chm" copy /y "..\Docs\SHP_Provider_API.chm" "%FDODOCPATHSHP%"
