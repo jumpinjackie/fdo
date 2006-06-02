@@ -137,9 +137,9 @@ pushd Docs\doc_src
 doxygen Doxyfile_MYSQL
 popd
 popd
-if "%TYPEACTIONMYSQL%"=="build" goto end
 
 :install_docs
+if "%TYPEACTIONMYSQL%"=="build" goto end
 pushd ..\..\
 if exist "%FDODOCPATHMYSQL%\HTML\Providers\MYSQL" rmdir /S /Q "%FDODOCPATHMYSQL%\HTML\Providers\MYSQL"
 if exist ..\Docs\HTML\Providers\MYSQL xcopy/CQEYI ..\Docs\HTML\Providers\MYSQL\* "%FDODOCPATHMYSQL%\HTML\Providers\MYSQL"

@@ -131,9 +131,9 @@ pushd Docs\doc_src
 doxygen Doxyfile_ODBC
 popd
 popd
-if "%TYPEACTIONODBC%"=="build" goto end
 
 :install_docs
+if "%TYPEACTIONODBC%"=="build" goto end
 pushd ..\..\
 if exist "%FDODOCPATHODBC%\HTML\Providers\ODBC" rmdir /S /Q "%FDODOCPATHODBC%\HTML\Providers\ODBC"
 if exist ..\Docs\HTML\Providers\ODBC xcopy/CQEYI ..\Docs\HTML\Providers\ODBC\* "%FDODOCPATHODBC%\HTML\Providers\ODBC"
