@@ -120,9 +120,9 @@ if exist ..\Docs\WFS_Provider_API.chm attrib -r ..\Docs\WFS_Provider_API.chm
 pushd Docs\doc_src
 doxygen Doxyfile_WFS
 popd
-if "%TYPEACTIONWFS%"=="build" goto end
 
 :install_docs
+if "%TYPEACTIONWFS%"=="build" goto end
 if exist "%FDODOCPATHWFS%\HTML\Providers\WFS" rmdir /S /Q "%FDODOCPATHWFS%\HTML\Providers\WFS"
 if exist ..\Docs\HTML\Providers\WFS xcopy/CQEYI ..\Docs\HTML\Providers\WFS\* "%FDODOCPATHWFS%\HTML\Providers\WFS"
 if exist "..\Docs\WFS_Provider_API.chm" copy /y "..\Docs\WFS_Provider_API.chm" "%FDODOCPATHWFS%"
