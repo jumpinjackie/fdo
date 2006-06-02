@@ -134,9 +134,9 @@ pushd Docs\doc_src
 doxygen Doxyfile_FDOunmanaged
 doxygen Doxyfile_FDOmanaged
 popd
-if "%TYPEACTIONFDO%"=="build" goto end
 
 :install_docs
+if "%TYPEACTIONFDO%"=="build" goto end
 pushd Docs\doc_src
 if exist "%FDODOCPATHFDO%\HTML\FDO_API" rmdir /S /Q "%FDODOCPATHFDO%\HTML\FDO_API"
 if exist "%FDODOCPATHFDO%\HTML\FDO_API_managed" rmdir /S /Q "%FDODOCPATHFDO%\HTML\FDO_API_managed"
