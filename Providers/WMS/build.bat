@@ -125,9 +125,9 @@ if exist ..\Docs\WMS_Provider_API.chm attrib -r ..\Docs\WMS_Provider_API.chm
 pushd Docs\doc_src
 doxygen Doxyfile_WMS
 popd
-if "%TYPEACTIONWMS%"=="build" goto end
 
 :install_docs
+if "%TYPEACTIONWMS%"=="build" goto end
 if exist "%FDODOCPATHWMS%\HTML\Providers\WMS" rmdir /S /Q "%FDODOCPATHWMS%\HTML\Providers\WMS"
 if exist ..\Docs\HTML\Providers\WMS xcopy/CQEYI ..\Docs\HTML\Providers\WMS\* "%FDODOCPATHWMS%\HTML\Providers\WMS"
 if exist "..\Docs\WMS_Provider_API.chm" copy /y "..\Docs\WMS_Provider_API.chm" "%FDODOCPATHWMS%"
