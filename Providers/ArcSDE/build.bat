@@ -120,9 +120,9 @@ if exist ..\Docs\ArcSDE_Provider_API.chm attrib -r ..\Docs\ArcSDE_Provider_API.c
 pushd Docs\doc_src
 doxygen Doxyfile_ArcSDE
 popd
-if "%TYPEACTIONARCSDE%"=="build" goto end
 
 :install_docs
+if "%TYPEACTIONARCSDE%"=="build" goto end
 if exist "%FDODOCPATHARCSDE%\HTML\Providers\ArcSDE" rmdir /S /Q "%FDODOCPATHARCSDE%\HTML\Providers\ArcSDE"
 if exist ..\Docs\HTML\Providers\ArcSDE xcopy/CQEYI ..\Docs\HTML\Providers\ArcSDE\* "%FDODOCPATHARCSDE%\HTML\Providers\ArcSDE"
 if exist "..\Docs\ArcSDE_Provider_API.chm" copy /y "..\Docs\ArcSDE_Provider_API.chm" "%FDODOCPATHARCSDE%"
