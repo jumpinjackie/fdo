@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../inc/rdbi;../;../../;../../inc/fdo;../../inc;./Other;./Capability;./Connection;./Custom;./FeatureCommands;./Filter;./Lock;./Lt;./Schema;./SpatialContext;./Topo;$(FDO)\Unmanaged;$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged/src/geometry;$(FDOUTILITIES)\SchemaMgr/inc;$(FDOUTILITIES)\Common\inc;..\Gdbi;..\LongTransactionManager;..\LockManager"
+				AdditionalIncludeDirectories="../../inc/rdbi;../;../../;../../inc/fdo;../../inc;./Other;./Capability;./Connection;./Custom;./FeatureCommands;./Filter;./Lock;./Lt;./Schema;./SpatialContext;$(FDO)\Unmanaged;$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged/src/geometry;$(FDOUTILITIES)\SchemaMgr/inc;$(FDOUTILITIES)\Common\inc;..\Gdbi;..\LongTransactionManager;..\LockManager"
 				PreprocessorDefinitions="WIN32;_DEBUG;FDORDBMS_EXPORTS;_LIB;FULLPROTO;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE"
 				IgnoreStandardIncludePath="false"
 				MinimalRebuild="true"
@@ -112,7 +112,7 @@
 				Optimization="0"
 				InlineFunctionExpansion="0"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="../../inc/rdbi;../;../../;../../inc/fdo;../../inc;./Other;./Capability;./Connection;./Custom;./FeatureCommands;./Filter;./Lock;./Lt;./Schema;./SpatialContext;./Topo;$(FDO)\Unmanaged;$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged/src/geometry;$(FDOUTILITIES)\SchemaMgr/inc;$(FDOUTILITIES)\Common\inc;..\Gdbi;..\LongTransactionManager;..\LockManager"
+				AdditionalIncludeDirectories="../../inc/rdbi;../;../../;../../inc/fdo;../../inc;./Other;./Capability;./Connection;./Custom;./FeatureCommands;./Filter;./Lock;./Lt;./Schema;./SpatialContext;$(FDO)\Unmanaged;$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged/src/geometry;$(FDOUTILITIES)\SchemaMgr/inc;$(FDOUTILITIES)\Common\inc;..\Gdbi;..\LongTransactionManager;..\LockManager"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;FDORDBMS_EXPORTS;_LIB;FULLPROTO;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"
 				RuntimeLibrary="2"

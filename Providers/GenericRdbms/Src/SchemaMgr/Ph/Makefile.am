@@ -2,6 +2,8 @@ AUTOMAKE_OPTIONS = foreign
 
 SUBDIRS = Cfg Rd
 
+DIST_SUBDIRS = Cfg Rd
+
 noinst_LTLIBRARIES = libSmPhGrd.la
 
 libSmPhGrd_la_SOURCES = \
@@ -15,6 +17,18 @@ libSmPhGrd_la_SOURCES = \
   SpatialContextWriter.cpp \
   Table.cpp \
   View.cpp
+
+noinst_HEADERS = $(libSmPhGrd_la_SOURCES) \
+  ClassWriter.h \
+  CommandWriter.h \
+  Fkey.h \
+  Index.h \
+  Mgr.h \
+  Owner.h \
+  SpatialContextGroupWriter.h \
+  SpatialContextWriter.h \
+  Table.h \
+  View.h
 
 INCLUDES = \
   -I.. \

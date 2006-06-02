@@ -14,6 +14,18 @@ libFdoRdbmsMySQL_SchemaMgr_Lp_la_SOURCES = \
   SchemaCollection.cpp \
   Schema.cpp
 
+noinst_HEADERS = $(libFdoRdbmsMySQL_SchemaMgr_Lp_la_SOURCES) \
+  AssociationPropertyDefinition.h \
+  Class.h \
+  ClassDefinition.h \
+  DataPropertyDefinition.h \
+  FeatureClass.h \
+  GeometricPropertyDefinition.h \
+  ObjectPropertyClass.h \
+  ObjectPropertyDefinition.h \
+  Schema.h \
+  SchemaCollection.h
+
 INCLUDES = \
   -I../../ \
   -I$(FDO)/Unmanaged/Inc \
@@ -37,7 +49,6 @@ INCLUDES = \
   -I../../../../Src/Fdo/Lt \
   -I../../../../Src/Fdo/Schema \
   -I../../../../Src/Fdo/SpatialContext \
-  -I../../../../Src/Fdo/Topo \
   -I$(FDO)/Unmanaged \
   -I$(FDO)/Unmanaged/Inc \
   -I$(FDO)/Unmanaged/Src/Geometry \

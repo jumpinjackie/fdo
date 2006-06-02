@@ -2,6 +2,8 @@ AUTOMAKE_OPTIONS = foreign
 
 SUBDIRS = Rd
 
+DIST_SUBDIRS = Rd
+
 noinst_LTLIBRARIES = libFdoRdbmsMySQL_SchemaMgr_Ph.la
 
 libFdoRdbmsMySQL_SchemaMgr_Ph_la_SOURCES = \
@@ -18,6 +20,32 @@ libFdoRdbmsMySQL_SchemaMgr_Ph_la_SOURCES = \
   Table.cpp \
   TempObject.cpp \
   View.cpp
+
+noinst_HEADERS = $(libFdoRdbmsMySQL_SchemaMgr_Ph_la_SOURCES) \
+  ColTypeMapper.h \
+  Column.h \
+  ColumnBLOB.h \
+  ColumnBool.h \
+  ColumnByte.h \
+  ColumnChar.h \
+  ColumnDate.h \
+  ColumnDecimal.h \
+  ColumnDouble.h \
+  ColumnGeom.h \
+  ColumnInt16.h \
+  ColumnInt32.h \
+  ColumnInt64.h \
+  ColumnSingle.h \
+  ColumnUnknown.h \
+  Database.h \
+  DbObject.h \
+  Fkey.h \
+  Index.h \
+  Mgr.h \
+  Owner.h \
+  Table.h \
+  TempObject.h \
+  View.h
 
 INCLUDES = \
   -I$(FDO)/Unmanaged/Inc \
@@ -41,7 +69,6 @@ INCLUDES = \
   -I../../../../Src/Fdo/Lt \
   -I../../../../Src/Fdo/Schema \
   -I../../../../Src/Fdo/SpatialContext \
-  -I../../../../Src/Fdo/Topo \
   -I$(FDO)/Unmanaged \
   -I$(FDO)/Unmanaged/Inc \
   -I$(FDO)/Unmanaged/Src/Geometry \

@@ -10,6 +10,15 @@ libFdoRdbms_Capability_la_SOURCES = \
   FdoRdbmsExpressionCapabilities.cpp \
   FdoRdbmsTopologyCapabilities.cpp
 
+noinst_HEADERS = $(libFdoRdbms_Capability_la_SOURCES) \
+  FdoRdbmsCommandCapabilities.h \
+  FdoRdbmsConnectionCapabilities.h \
+  FdoRdbmsExpressionCapabilities.h \
+  FdoRdbmsFilterCapabilities.h \
+  FdoRdbmsGeometryCapabilities.h \
+  FdoRdbmsSchemaCapabilities.h \
+  FdoRdbmsTopologyCapabilities.h
+
 INCLUDES = \
   -I$(FDO)/Unmanaged/Inc \
   -I$(FDO)/Unmanaged \
@@ -32,7 +41,6 @@ INCLUDES = \
   -I.././Lt \
   -I.././Schema \
   -I.././SpatialContext \
-  -I.././Topo \
   -I$(FDO)/Unmanaged \
   -I$(FDO)/Unmanaged/Inc \
   -I$(FDO)/Unmanaged/src/geometry \

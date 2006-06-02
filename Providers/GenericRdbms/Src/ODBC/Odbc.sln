@@ -51,12 +51,13 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LongTransactionManager", "..\LongTransactionManager\LongTransactionManager.vcproj", "{A97744C0-DCC5-4D58-91B5-7DB006BD40C1}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9BF08D0E-CD3B-4687-86E2-6DB8270E94E9} = {9BF08D0E-CD3B-4687-86E2-6DB8270E94E9}
+		{080C612A-C598-476E-A0CC-5D98FA48B738} = {080C612A-C598-476E-A0CC-5D98FA48B738}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OdbcOverrides", "SchemaMgr\OdbcOverrides.vcproj", "{24301E71-2ADE-4969-BBF5-3BCDB42F5541}"
 	ProjectSection(ProjectDependencies) = postProject
-		{4D87353A-981A-4B99-9262-516D4F677535} = {4D87353A-981A-4B99-9262-516D4F677535}
 		{2CFF7B5C-2CC5-435B-8E8E-C4AC3ACFEF83} = {2CFF7B5C-2CC5-435B-8E8E-C4AC3ACFEF83}
+		{4D87353A-981A-4B99-9262-516D4F677535} = {4D87353A-981A-4B99-9262-516D4F677535}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OdbcSchemaMgr", "SchemaMgr\OdbcSchemaMgr.vcproj", "{04DB2F81-CD63-4F4A-8A97-BDB51D6868DC}"
@@ -121,6 +122,11 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SmOverrides", "%FDOUTILITIES%\SchemaMgr\Overrides.vcproj", "{2CFF7B5C-2CC5-435B-8E8E-C4AC3ACFEF83}"
 	ProjectSection(ProjectDependencies) = postProject
 		{11793E23-75E5-4407-AF82-BE0FC6994EBD} = {11793E23-75E5-4407-AF82-BE0FC6994EBD}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LockManager", "..\LockManager\LockManager.vcproj", "{080C612A-C598-476E-A0CC-5D98FA48B738}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9BF08D0E-CD3B-4687-86E2-6DB8270E94E9} = {9BF08D0E-CD3B-4687-86E2-6DB8270E94E9}
 	EndProjectSection
 EndProject
 Global
@@ -217,6 +223,10 @@ Global
 		{2CFF7B5C-2CC5-435B-8E8E-C4AC3ACFEF83}.Debug|Win32.Build.0 = Debug|Win32
 		{2CFF7B5C-2CC5-435B-8E8E-C4AC3ACFEF83}.Release|Win32.ActiveCfg = Release|Win32
 		{2CFF7B5C-2CC5-435B-8E8E-C4AC3ACFEF83}.Release|Win32.Build.0 = Release|Win32
+		{080C612A-C598-476E-A0CC-5D98FA48B738}.Debug|Win32.ActiveCfg = Debug|Win32
+		{080C612A-C598-476E-A0CC-5D98FA48B738}.Debug|Win32.Build.0 = Debug|Win32
+		{080C612A-C598-476E-A0CC-5D98FA48B738}.Release|Win32.ActiveCfg = Release|Win32
+		{080C612A-C598-476E-A0CC-5D98FA48B738}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

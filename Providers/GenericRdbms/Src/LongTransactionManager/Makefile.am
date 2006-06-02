@@ -1,5 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 
+EXTRA_DIST = LongTransactionManager.vcproj
+
 noinst_LTLIBRARIES = libLTManager.la
 
 libLTManager_la_SOURCES = \
@@ -12,6 +14,25 @@ libLTManager_la_SOURCES = \
   LongTransactionConflictInfos.cpp \
   stdafx.cpp \
   LongTransactionConflicts.cpp
+
+noinst_HEADERS = $(libLTManager_la_SOURCES) \
+  Disposable.h \
+  LongTransactionConflict.h \
+  LongTransactionConflictInfo.h \
+  LongTransactionConflictInfos.h \
+  LongTransactionConflicts.h \
+  LongTransactionConflictSolution.h \
+  LongTransactionConstants.h \
+  LongTransactionDataRequestType.h \
+  LongTransactionEnvInfo.h \
+  LongTransactionFreezeOperation.h \
+  LongTransactionInfo.h \
+  LongTransactionInfos.h \
+  LongTransactionLTQueryHandler.h \
+  LongTransactionManager.h \
+  LongTransactionManagerService.h \
+  LongTransactionQueryModes.h \
+  stdafx.h
 
 INCLUDES = \
   -I$(FDO)/Unmanaged/Inc \
@@ -35,10 +56,9 @@ INCLUDES = \
   -I../Fdo/Lt \
   -I../Fdo/Schema \
   -I../Fdo/SpatialContext \
-  -I../Fdo/Topo \
   -I$(FDO)/Unmanaged \
   -I$(FDO)/Unmanaged/Inc \
-  -I$(FDO)/Unmanaged/src/geometry \
+  -I$(FDO)/Unmanaged/Src/Geometry \
   -I$(FDOUTILITIES)/SchemaMgr/Inc \
   -I$(FDOUTILITIES)/Common/Inc \
   -I../Gdbi \

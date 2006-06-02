@@ -11,6 +11,21 @@ libFdoRdbmsMySQL_Fdo_la_SOURCES = \
   FdoRdbmsMySqlCommandCapabilities.cpp \
   FdoRdbmsMySqlConnectionInfo.cpp
 
+noinst_HEADERS = $(libFdoRdbmsMySQL_Fdo_la_SOURCES) \
+  FdoRdbmsMySqlCommandCapabilities.h \
+  FdoRdbmsMySqlConnection.h \
+  FdoRdbmsMySqlConnectionCapabilities.h \
+  FdoRdbmsMySqlConnectionInfo.h \
+  FdoRdbmsMySqlConnectionPropertyDictionary.h \
+  FdoRdbmsMySqlCreateDataStore.h \
+  FdoRdbmsMySqlDataStorePropertyDictionary.h \
+  FdoRdbmsMySqlDeleteDataStore.h \
+  FdoRdbmsMySqlFilterCapabilities.h \
+  FdoRdbmsMySqlFilterProcessor.h \
+  FdoRdbmsMySqlGeometryCapabilities.h \
+  FdoRdbmsMySqlProviderInfo.h \
+  FdoRdbmsMySqlSchemaCapabilities.h
+
 INCLUDES = \
   -I../ \
   -I$(FDO)/Unmanaged/Inc \
@@ -34,7 +49,6 @@ INCLUDES = \
   -I../../../Src/Fdo/Lt \
   -I../../../Src/Fdo/Schema \
   -I../../../Src/Fdo/SpatialContext \
-  -I../../../Src/Fdo/Topo \
   -I$(FDO)/Unmanaged \
   -I$(FDO)/Unmanaged/Inc \
   -I$(FDO)/Unmanaged/Src/Geometry \

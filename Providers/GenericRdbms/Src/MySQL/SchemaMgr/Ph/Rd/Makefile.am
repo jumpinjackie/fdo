@@ -11,6 +11,15 @@ libFdoRdbmsMySQL_SchemaMgr_Ph_Rd_la_SOURCES = \
   OwnerReader.cpp \
   PkeyReader.cpp
 
+noinst_HEADERS = $(libFdoRdbmsMySQL_SchemaMgr_Ph_Rd_la_SOURCES) \
+  ColumnReader.h \
+  ConstraintReader.h \
+  DbObjectReader.h \
+  FkeyReader.h \
+  IndexReader.h \
+  OwnerReader.h \
+  PkeyReader.h
+
 INCLUDES = \
   -I../../../ \
   -I$(FDO)/Unmanaged/Inc \
@@ -34,7 +43,6 @@ INCLUDES = \
   -I../../../../../Src/Fdo/Lt \
   -I../../../../../Src/Fdo/Schema \
   -I../../../../../Src/Fdo/SpatialContext \
-  -I../../../../../Src/Fdo/Topo \
   -I$(FDO)/Unmanaged \
   -I$(FDO)/Unmanaged/Inc \
   -I$(FDO)/Unmanaged/Src/Geometry \

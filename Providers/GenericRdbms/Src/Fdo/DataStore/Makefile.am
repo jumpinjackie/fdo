@@ -7,6 +7,13 @@ libFdoRdbms_DataStore_la_SOURCES = \
   FdoRdbmsGetDataStores.cpp \
   FdoRdbmsDataStoreReader.cpp
 
+noinst_HEADERS = $(libFdoRdbms_DataStore_la_SOURCES) \
+  FdoRdbmsCreateDatastore.h \
+  FdoRdbmsDataStorePropertyDictionary.h \
+  FdoRdbmsDataStoreReader.h \
+  FdoRdbmsDeleteDataStore.h \
+  FdoRdbmsGetDataStores.h
+
 INCLUDES = \
   -I../ \
   -I$(FDO)/Unmanaged/Inc \
@@ -30,7 +37,6 @@ INCLUDES = \
   -I.././Lt \
   -I.././Schema \
   -I.././SpatialContext \
-  -I.././Topo \
   -I$(FDO)/Unmanaged \
   -I$(FDO)/Unmanaged/Inc \
   -I$(FDO)/Unmanaged/src/geometry \

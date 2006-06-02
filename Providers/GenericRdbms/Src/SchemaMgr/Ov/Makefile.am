@@ -23,6 +23,9 @@ libSchemaMgr_OV_la_SOURCES = \
   RdbmsOvTable.cpp \
   stdafx.cpp
 
+noinst_HEADERS = $(libSchemaMgr_OV_la_SOURCES) \
+  stdafx.h
+
 INCLUDES = \
   -I../../../Inc \
   -I$(FDO)/Unmanaged/Inc  \

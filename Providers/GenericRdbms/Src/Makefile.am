@@ -1,8 +1,9 @@
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = Fdo Gdbi LongTransactionManager MySQL Rdbi SchemaMgr Util Geometry ODBCDriver ODBC
-DIST_SUBDIRS = Fdo Gdbi LongTransactionManager MySQL Rdbi SchemaMgr Util Geometry ODBCDriver ODBC
-EXTRA_DIST =
+SUBDIRS = Fdo Gdbi LongTransactionManager LockManager MySQL Rdbi SchemaMgr Util Geometry ODBCDriver ODBC
+DIST_SUBDIRS = Fdo Gdbi LongTransactionManager LockManager MySQL Rdbi SchemaMgr Util Geometry ODBCDriver ODBC
+
+EXTRA_DIST = 
 
 lib_LTLIBRARIES = libFdoMySQL.la libFdoODBC.la libSchemaMgr_OV.la
 
@@ -25,6 +26,7 @@ libFdoMySQL_la_LIBADD =  \
   -lxerces-c \
   Gdbi/libGdbi.la  \
   LongTransactionManager/libLTManager.la  \
+  LockManager/libLockManager.la  \
   Util/libutil.la  \
   $(FDOMYSQL)/lib/libmysqlclient.a \
   $(FDOMYSQL)/lib/libz.a \
@@ -70,6 +72,7 @@ libFdoODBC_la_LIBADD =  \
   -lxerces-c \
   Gdbi/libGdbi.la  \
   LongTransactionManager/libLTManager.la  \
+  LockManager/libLockManager.la  \
   Util/libutil.la  \
   $(FDO)/Unmanaged/Src/Spatial/libFDOSpatial.la   \
   $(FDOUTILITIES)/Common/libProvidersCommon.la \

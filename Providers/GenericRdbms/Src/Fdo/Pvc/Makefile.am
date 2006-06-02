@@ -8,6 +8,12 @@ libFdoRdbms_Pvc_la_SOURCES = \
   FdoRdbmsPvcOperation.cpp      \
   FdoRdbmsPvcUpdateHandler.cpp
 
+noinst_HEADERS = $(libFdoRdbms_Pvc_la_SOURCES) \
+  FdoRdbmsPvcHandler.h \
+  FdoRdbmsPvcInsertHandler.h \
+  FdoRdbmsPvcOperation.h \
+  FdoRdbmsPvcProcessor.h \
+  FdoRdbmsPvcUpdateHandler.h
 
 INCLUDES = \
   -I../ \
@@ -32,7 +38,6 @@ INCLUDES = \
   -I.././Lt \
   -I.././Schema \
   -I.././SpatialContext \
-  -I.././Topo \
   -I$(FDO)/Unmanaged \
   -I$(FDO)/Unmanaged/Inc \
   -I$(FDO)/Unmanaged/src/geometry \

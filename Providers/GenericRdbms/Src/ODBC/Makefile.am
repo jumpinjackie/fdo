@@ -2,11 +2,18 @@ AUTOMAKE_OPTIONS = foreign
 
 SUBDIRS = Fdo SchemaMgr
 
+DIST_SUBDIRS = Fdo SchemaMgr
+
+EXTRA_DIST = Odbc.sln Odbc.vcproj build.bat resource.h Odbc.rc
+
 noinst_LTLIBRARIES = libFdoRdbmsODBC.la
 
 libFdoRdbmsODBC_la_SOURCES  = \
   Odbc.cpp \
   stdafx.cpp
+
+noinst_HEADERS = $(libFdoRdbmsODBC_la_SOURCES) \
+  stdafx.h
 
 libFdoRdbmsODBC_la_LDFLAGS = \
   Fdo/libFdoRdbmsODBC_Fdo.la \
@@ -38,7 +45,6 @@ INCLUDES = \
   -I../Fdo/Lt \
   -I../Fdo/Schema \
   -I../Fdo/SpatialContext \
-  -I../Fdo/Topo \
   -I$(FDO)/Unmanaged \
   -I$(FDO)/Unmanaged/Inc \
   -I$(FDO)/Unmanaged/Src/Geometry \

@@ -2,6 +2,13 @@ AUTOMAKE_OPTIONS = foreign
 
 SUBDIRS = Capability Connection Custom DataStore FeatureCommands Filter Lock Lt Other Pvc Schema SpatialContext
 
+DIST_SUBDIRS = Capability Connection Custom DataStore FeatureCommands Filter Lock Lt Other Pvc Schema SpatialContext
+
+EXTRA_DIST = \
+   Fdo.vcproj \
+   stdafx.h \
+   stdafx.cpp
+
 noinst_LTLIBRARIES = libFdoRdbms.la
 
 libFdoRdbms_la_SOURCES =

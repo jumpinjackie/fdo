@@ -15,6 +15,24 @@ FdoRdbmsOdbcSchemaCapabilities.cpp \
 FdoRdbmsOdbcSpatialManager.cpp \
 FdoRdbmsOdbcSpatialSqlFilter.cpp
 
+noinst_HEADERS = $(libFdoRdbmsODBC_Fdo_la_SOURCES) \
+  FdoRdbmsOdbcCommandCapabilities.h \
+  FdoRdbmsOdbcConnection.h \
+  FdoRdbmsOdbcConnectionCapabilities.h \
+  FdoRdbmsOdbcConnectionInfo.h \
+  FdoRdbmsOdbcConnectionPropertyDictionary.h \
+  FdoRdbmsOdbcCreateDataStore.h \
+  FdoRdbmsOdbcDataStorePropertyDictionary.h \
+  FdoRdbmsOdbcDeleteDataStore.h \
+  FdoRdbmsOdbcExpressionCapabilities.h \
+  FdoRdbmsOdbcFilterCapabilities.h \
+  FdoRdbmsOdbcFilterProcessor.h \
+  FdoRdbmsOdbcGeometryCapabilities.h \
+  FdoRdbmsOdbcProviderInfo.h \
+  FdoRdbmsOdbcSchemaCapabilities.h \
+  FdoRdbmsOdbcSpatialManager.h \
+  FdoRdbmsOdbcSpatialSqlFilter.h
+
 INCLUDES = \
   -I../ \
   -I$(FDO)/Unmanaged/Inc \
@@ -38,7 +56,6 @@ INCLUDES = \
   -I../../../Src/Fdo/Lt \
   -I../../../Src/Fdo/Schema \
   -I../../../Src/Fdo/SpatialContext \
-  -I../../../Src/Fdo/Topo \
   -I$(FDO)/Unmanaged \
   -I$(FDO)/Unmanaged/Inc \
   -I$(FDO)/Unmanaged/Src/Geometry \

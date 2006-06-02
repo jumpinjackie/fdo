@@ -13,6 +13,19 @@ libFdoRdbms_Other_la_SOURCES = \
   FdoRdbmsUtil.cpp  \
   FdoRdbmsPrimaryKeyColumn.cpp
 
+noinst_HEADERS = $(libFdoRdbms_Other_la_SOURCES) \
+  Collection.h \
+  Disposable.h \
+  FdoRdbms.h \
+  FdoRdbmsBLOBStreamReader.h \
+  FdoRdbmsException.h \
+  FdoRdbmsFeatureTransaction.h \
+  FdoRdbmsLobUtility.h \
+  FdoRdbmsPrimaryKey.h \
+  FdoRdbmsPrimaryKeyColumn.h \
+  FdoRdbmsSQLCommand.h \
+  FdoRdbmsSQLDataReader.h \
+  FdoRdbmsUtil.h
 
 INCLUDES = \
   -I../ \
@@ -37,7 +50,6 @@ INCLUDES = \
   -I.././Lt \
   -I.././Schema \
   -I.././SpatialContext \
-  -I.././Topo \
   -I$(FDO)/Unmanaged \
   -I$(FDO)/Unmanaged/Inc \
   -I$(FDO)/Unmanaged/src/geometry \

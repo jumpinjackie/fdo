@@ -1,5 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 
+EXTRA_DIST = Rdbi.vcproj
+
 noinst_LTLIBRARIES = librdbi.la
 
 librdbi_la_SOURCES = \
@@ -54,6 +56,9 @@ librdbi_la_SOURCES = \
   vis_owner.c \
   vndr_info.c \
   vndr_name.c
+
+noinst_HEADERS = $(librdbi_la_SOURCES) \
+  global.h
 
 INCLUDES = \
   -I../.. \

@@ -23,6 +23,9 @@ libFdoRdbmsMySQL_SchemaMgr_Ov_la_SOURCES = \
   MySqlOvTable.cpp \
   stdafx.cpp
 
+noinst_HEADERS = $(libFdoRdbmsMySQL_SchemaMgr_Ov_la_SOURCES) \
+  stdafx.h
+
 INCLUDES = \
   -I../../ \
   -I$(FDO)/Unmanaged/Inc \
@@ -45,7 +48,6 @@ INCLUDES = \
   -I../../../../Src/Fdo/Lt \
   -I../../../../Src/Fdo/Schema \
   -I../../../../Src/Fdo/SpatialContext \
-  -I../../../../Src/Fdo/Topo \
   -I$(FDO)/Unmanaged \
   -I$(FDO)/Unmanaged/Inc \
   -I$(FDO)/Unmanaged/Src/Geometry \

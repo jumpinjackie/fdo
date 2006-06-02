@@ -1,5 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 
+EXTRA_DIST = util.vcproj
+
 noinst_LTLIBRARIES = libutil.la
 
 libutil_la_SOURCES = \
@@ -9,6 +11,9 @@ libutil_la_SOURCES = \
   itoa.c \
   thread.c \
   trace.c
+
+noinst_HEADERS = $(libutil_la_SOURCES) \
+  stdafx.h
 
 INCLUDES = \
   -I../.. \

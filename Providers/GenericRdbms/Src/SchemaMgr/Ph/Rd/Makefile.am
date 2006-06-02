@@ -6,7 +6,14 @@ libSmPhRdGrd_la_SOURCES = \
   FieldArray.cpp \
   QueryReader.cpp \
   RowArray.cpp
-  
+
+noinst_HEADERS = $(libSmPhRdGrd_la_SOURCES) \
+  FieldArray.h \
+  FieldArrayCollection.h \
+  QueryReader.h \
+  RowArray.h \
+  RowArrayCollection.h
+
 INCLUDES = \
   -I../.. \
   -I$(FDO)/Unmanaged/Inc \

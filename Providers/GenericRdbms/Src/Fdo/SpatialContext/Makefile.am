@@ -9,6 +9,13 @@ libFdoRdbms_SpatialContext_la_SOURCES = \
   FdoRdbmsSpatialContextReader.cpp \
   FdoRdbmsDestroySpatialContext.cpp
 
+noinst_HEADERS = $(libFdoRdbms_SpatialContext_la_SOURCES) \
+  FdoRdbmsActivateSpatialContext.h \
+  FdoRdbmsCreateSpatialContext.h \
+  FdoRdbmsDestroySpatialContext.h \
+  FdoRdbmsGetSpatialContexts.h \
+  FdoRdbmsSpatialContextReader.h
+
 INCLUDES = \
   -I../ \
   -I$(FDO)/Unmanaged/Inc \
@@ -32,7 +39,6 @@ INCLUDES = \
   -I.././Lt \
   -I.././Schema \
   -I.././SpatialContext \
-  -I.././Topo \
   -I$(FDO)/Unmanaged \
   -I$(FDO)/Unmanaged/Inc \
   -I$(FDO)/Unmanaged/src/geometry \

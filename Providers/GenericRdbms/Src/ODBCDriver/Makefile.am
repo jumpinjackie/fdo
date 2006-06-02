@@ -1,5 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 
+EXTRA_DIST = odbcdr.vcproj
+
 noinst_LTLIBRARIES = libFdoODBCDriver.la
 
 libFdoODBCDriver_la_SOURCES = \
@@ -42,6 +44,13 @@ usr_exists.c \
 vndr_info.c \
 vndr_name.c \
 xlt_status.c
+
+noinst_HEADERS = $(libFdoODBCDriver_la_SOURCES) \
+  constants.h \
+  context.h \
+  init.h \
+  proto_p.h \
+  structs.h
 
 INCLUDES = \
   -I../../Inc \

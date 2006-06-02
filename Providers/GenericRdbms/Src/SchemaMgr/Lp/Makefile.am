@@ -12,6 +12,16 @@ libSmLpGrd_la_SOURCES = \
   PropertyMappingSingle.cpp \
   Schema.cpp
 
+noinst_HEADERS = $(libSmLpGrd_la_SOURCES) \
+  ClassDefinition.h \
+  DataPropertyDefinition.h \
+  GeometricPropertyDefinition.h \
+  ObjectPropertyClass.h \
+  ObjectPropertyDefinition.h \
+  PropertyMappingConcrete.h \
+  PropertyMappingSingle.h \
+  Schema.h
+
 INCLUDES = \
   -I.. \
   -I$(FDO)/Unmanaged/Inc \

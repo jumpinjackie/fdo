@@ -2,3 +2,5 @@ AUTOMAKE_OPTIONS = foreign
 
 SUBDIRS = Fgf
 
+DIST_SUBDIRS = Fgf
+

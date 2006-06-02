@@ -11,6 +11,19 @@ libFdoRdbms_FeatureCommands_la_SOURCES = \
   FdoRdbmsUpdateCommand.cpp  \
   FdoRdbmsFeatureSubsetReader.cpp
 
+noinst_HEADERS = $(libFdoRdbms_FeatureCommands_la_SOURCES) \
+  FdoRdbmsCommand.h \
+  FdoRdbmsDataReader.h \
+  FdoRdbmsDeleteCommand.h \
+  FdoRdbmsFeatureCommand.h \
+  FdoRdbmsFeatureInfoReader.h \
+  FdoRdbmsFeatureReader.h \
+  FdoRdbmsFeatureSubsetReader.h \
+  FdoRdbmsInsertCommand.h \
+  FdoRdbmsSelectAggregates.h \
+  FdoRdbmsSelectCommand.h \
+  FdoRdbmsUpdateCommand.h
+
 INCLUDES = \
   -I../ \
   -I$(FDO)/Unmanaged/Inc \
@@ -34,7 +47,6 @@ INCLUDES = \
   -I.././Lt \
   -I.././Schema \
   -I.././SpatialContext \
-  -I.././Topo \
   -I$(FDO)/Unmanaged \
   -I$(FDO)/Unmanaged/Inc \
   -I$(FDO)/Unmanaged/src/geometry \

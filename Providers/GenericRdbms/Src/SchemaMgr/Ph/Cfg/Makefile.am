@@ -7,6 +7,11 @@ libSmPhCfgGrd_la_SOURCES = \
   PropertyReader.cpp \
   SchemaReader.cpp
 
+noinst_HEADERS = $(libSmPhCfgGrd_la_SOURCES) \
+  ClassReader.h \
+  PropertyReader.h \
+  SchemaReader.h
+
 INCLUDES = \
   -I../.. \
   -I$(FDO)/Unmanaged/Inc \

@@ -2,11 +2,24 @@ AUTOMAKE_OPTIONS = foreign
 
 SUBDIRS = Driver Fdo SchemaMgr
 
+DIST_SUBDIRS = Driver Fdo SchemaMgr
+
+EXTRA_DIST = \
+   MySql.sln \
+   MySql.vcproj \
+   build.bat \
+   resource.h \
+   MySql.rc \
+   ReadMe.txt
+
 noinst_LTLIBRARIES = libFdoRdbmsMySQL.la
 
 libFdoRdbmsMySQL_la_SOURCES  = \
   MySql.cpp \
   stdafx.cpp
+
+noinst_HEADERS = $(libFdoRdbmsMySQL_la_SOURCES) \
+  stdafx.h
 
 libFdoRdbmsMySQL_la_LDFLAGS = \
   Fdo/libFdoRdbmsMySQL_Fdo.la \
@@ -34,7 +47,6 @@ INCLUDES = \
   -I$(FDOUTILITIES)/Common/Inc \
   -I../Gdbi \
   -I../LongTransactionManager  \
-  -I../GenericLongTransactionManager \
   -I../LockManager
 
 CXXFLAGS = @CXXFLAGS@ -DFULLPROTO -D__USE_GNU -DLINUX

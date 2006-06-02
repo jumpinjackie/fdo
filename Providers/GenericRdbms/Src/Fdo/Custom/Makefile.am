@@ -8,6 +8,12 @@ libFdoRdbms_Custom_la_SOURCES = \
   FdoRdbmsDestroySpatialIndex.cpp  \
   FdoRdbmsSpatialIndexReader.cpp
 
+noinst_HEADERS = $(libFdoRdbms_Custom_la_SOURCES) \
+  FdoRdbmsCreateSpatialIndex.h \
+  FdoRdbmsDestroySpatialIndex.h \
+  FdoRdbmsGetSpatialIndexes.h \
+  FdoRdbmsSpatialIndexReader.h
+
 INCLUDES = \
   -I../ \
   -I$(FDO)/Unmanaged/Inc \
@@ -31,7 +37,6 @@ INCLUDES = \
   -I.././Lt \
   -I.././Schema \
   -I.././SpatialContext \
-  -I.././Topo \
   -I$(FDO)/Unmanaged \
   -I$(FDO)/Unmanaged/Inc \
   -I$(FDO)/Unmanaged/src/geometry \

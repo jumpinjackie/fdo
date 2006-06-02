@@ -21,8 +21,6 @@
 
 #include "FdoRdbms.h"
 #include <Rdbms/Override/MySQL/MySqlOvPhysicalSchemaMapping.h>
-#include "../../GenericLongTransactionManager/GenericLongTransactionManager.h"
-#include "../LongTransactionManagerService/MySqlLongTransactionManagerService.h"
 
 class FdoRdbmsMySqlFilterProcessor;
 

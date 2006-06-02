@@ -12,6 +12,19 @@ libFdoRdbms_Lt_la_SOURCES = \
   FdoRdbmsLongTransactionReader.cpp \
   FdoRdbmsRollbackLongTransaction.cpp
 
+noinst_HEADERS = $(libFdoRdbms_Lt_la_SOURCES) \
+  cfl_obj.h \
+  FdoRdbmsActivateLongTransaction.h \
+  FdoRdbmsCommitLongTransaction.h \
+  FdoRdbmsCreateLongTransaction.h \
+  FdoRdbmsDeactivateLongTransaction.h \
+  FdoRdbmsGetLongTransactions.h \
+  FdoRdbmsLongTransactionConflictDirectiveEnumerator.h \
+  FdoRdbmsLongTransactionReader.h \
+  FdoRdbmsRollbackLongTransaction.h \
+  prim_key_obj.h \
+  tab_cfl_list_obj.h \
+  version_info.h
 
 INCLUDES = \
   -I../ \
@@ -36,7 +49,6 @@ INCLUDES = \
   -I.././Lt \
   -I.././Schema \
   -I.././SpatialContext \
-  -I.././Topo \
   -I$(FDO)/Unmanaged \
   -I$(FDO)/Unmanaged/Inc \
   -I$(FDO)/Unmanaged/src/geometry \

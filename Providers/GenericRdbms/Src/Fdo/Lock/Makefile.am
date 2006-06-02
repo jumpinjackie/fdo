@@ -15,6 +15,20 @@ libFdoRdbms_Lock_la_SOURCES = \
   LockUtility.cpp \
   FdoRdbmsLockConflicts.cpp
 
+noinst_HEADERS = $(libFdoRdbms_Lock_la_SOURCES) \
+  FdoRdbmsAcquireLock.h \
+  FdoRdbmsGetLockedObjects.h \
+  FdoRdbmsGetLockInfo.h \
+  FdoRdbmsGetLockOwners.h \
+  FdoRdbmsLockConflictReader.h \
+  FdoRdbmsLockConflicts.h \
+  FdoRdbmsLockedObjectsReader.h \
+  FdoRdbmsLockInfoReader.h \
+  FdoRdbmsLockOwnersReader.h \
+  FdoRdbmsReleaseLock.h \
+  lk_data_obj.h \
+  lknm_spec.h \
+  LockUtility.h
 
 INCLUDES = \
   -I../ \
@@ -39,7 +53,6 @@ INCLUDES = \
   -I.././Lt \
   -I.././Schema \
   -I.././SpatialContext \
-  -I.././Topo \
   -I$(FDO)/Unmanaged \
   -I$(FDO)/Unmanaged/Inc \
   -I$(FDO)/Unmanaged/src/geometry \

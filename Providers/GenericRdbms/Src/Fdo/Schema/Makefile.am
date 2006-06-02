@@ -9,6 +9,12 @@ libFdoRdbms_Schema_la_SOURCES = \
   FdoRdbmsSchemaUtil.cpp \
   FdoRdbmsDescribeSchemaMappingCommand.cpp
 
+noinst_HEADERS = $(libFdoRdbms_Schema_la_SOURCES) \
+  FdoRdbmsApplySchemaCommand.h \
+  FdoRdbmsDescribeSchemaCommand.h \
+  FdoRdbmsDescribeSchemaMappingCommand.h \
+  FdoRdbmsDestroySchemaCommand.h \
+  FdoRdbmsSchemaUtil.h
 
 INCLUDES = \
   -I../ \
@@ -33,7 +39,6 @@ INCLUDES = \
   -I.././Lt \
   -I.././Schema \
   -I.././SpatialContext \
-  -I.././Topo \
   -I$(FDO)/Unmanaged \
   -I$(FDO)/Unmanaged/Inc \
   -I$(FDO)/Unmanaged/src/geometry \
