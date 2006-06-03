@@ -51,9 +51,11 @@ INCLUDES = \
   -I../Fdo/Lt \
   -I../Fdo/Schema \
   -I../Fdo/SpatialContext \
+  -I../ \
   -I../../ \
   -I../../Inc \
   -I../Gdbi \
+  -I../LongTransactionManager \
   -I../LockManager
 
 libLockManager_la_LDFLAGS =

@@ -53,9 +53,8 @@ public:
 	virtual bool						IsTableEmpty			  () = 0;
 
 //protected:
-//	FdoRdbmsLockConflictQueryHandler()
-//	{};
-//	~FdoRdbmsLockConflictQueryHandler()
+	FdoRdbmsLockConflictQueryHandler();
+	~FdoRdbmsLockConflictQueryHandler();
 };
 
 #endif
