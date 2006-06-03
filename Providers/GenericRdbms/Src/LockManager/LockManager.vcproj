@@ -162,6 +162,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\LockConflictQueryHandler.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\LockInfo.cpp"
 				>
 			</File>
