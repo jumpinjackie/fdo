@@ -214,8 +214,7 @@ AC_CONFIG_FILES([Src/ODBC/Makefile \
 		     Src/ODBC/SchemaMgr/Ph/Makefile \
 		     Src/ODBC/SchemaMgr/Ph/Rd/Makefile])
 
-AC_CONFIG_FILES([Docs/Makefile \
-		     Docs/doc_src/Makefile \
+AC_CONFIG_FILES([    Docs/doc_src/Makefile \
 		     Docs/doc_src/group_and_page_definitions/Makefile \
 		     Docs/doc_src/headers_and_footers/Makefile \
 		     Docs/doc_src/headers_and_footers/MySQL/Makefile \
