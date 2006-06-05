@@ -10,6 +10,7 @@ extern "C" {
 //////////////////////////////////////////////////////////////////////
 // ODBC Driver Setup DLL functions
 //////////////////////////////////////////////////////////////////////
+
 BOOL INSTAPI ConfigDriver(
     HWND            hwndParent, 
     WORD            fRequest, 
@@ -37,13 +38,69 @@ SQLRETURN SQL_API SQLAllocHandle(
     SQLHANDLE       InputHandle, 
     SQLHANDLE       *OutputHandle);
 
+SQLRETURN SQL_API SQLFreeHandle(
+    SQLSMALLINT     HandleType, 
+    SQLHANDLE       Handle);
+
 SQLRETURN SQL_API SQLFreeStmt(
     SQLHSTMT        StatementHandle,
     SQLUSMALLINT    Option);
 
-SQLRETURN SQL_API SQLFreeHandle(
-    SQLSMALLINT     HandleType, 
-    SQLHANDLE       Handle);
+
+//////////////////////////////////////////////////////////////////////
+// ODBC Connection
+//////////////////////////////////////////////////////////////////////
+
+SQLRETURN SQL_API SQLConnect(
+    SQLHDBC         hdbc,
+    SQLCHAR         *szDSN,
+    SQLSMALLINT     cbDSN,
+    SQLCHAR         *szUID,
+    SQLSMALLINT     cbUID,
+    SQLCHAR         *szAuthStr,
+    SQLSMALLINT     cbAuthStr);
+
+SQLRETURN SQL_API SQLConnectW(
+    SQLHDBC         hdbc,
+    SQLWCHAR        *szDSN,
+    SQLSMALLINT     cbDSN,
+    SQLWCHAR        *szUID,
+    SQLSMALLINT     cbUID,
+    SQLWCHAR        *szAuthStr,
+    SQLSMALLINT     cbAuthStr);
+
+SQLRETURN SQL_API SQLDriverConnect(
+    SQLHDBC         hdbc,
+    SQLHWND         hwnd,
+    SQLCHAR         *szConnStrIn,
+    SQLSMALLINT     cbConnStrIn,
+    SQLCHAR         *szConnStrOut,
+    SQLSMALLINT     cbConnStrOutMax,
+    SQLSMALLINT     *pcbConnStrOut,
+    SQLUSMALLINT    fDriverCompletion);
+
+SQLRETURN SQL_API SQLDriverConnectW(
+    SQLHDBC         hdbc,
+    SQLHWND         hwnd,
+    SQLWCHAR        *szConnStrIn,
+    SQLSMALLINT     cbConnStrIn,
+    SQLWCHAR        *szConnStrOut,
+    SQLSMALLINT     cbConnStrOutMax,
+    SQLSMALLINT     *pcbConnStrOut,
+    SQLUSMALLINT    fDriverCompletion);
+
+SQLRETURN SQL_API SQLGetConnectAttr(
+    SQLHDBC         hdbc,
+    SQLINTEGER      fAttribute,
+    SQLPOINTER      rgbValue,
+    SQLINTEGER      cbValueMax,
+    SQLINTEGER      *pcbValue);
+
+SQLRETURN SQL_API SQLSetConnectAttr(
+    SQLHDBC         hdbc,
+    SQLINTEGER      fAttribute,
+    SQLPOINTER      rgbValue,
+    SQLINTEGER      cbValue);
 
 //////////////////////////////////////////////////////////////////////
 // ODBC
@@ -104,15 +161,6 @@ ODBCDRIVER_API SQLRETURN SQL_API SQLColAttributesW(
     SQLSMALLINT     *pcbDesc,
     SQLLEN          *pfDesc);
 
-ODBCDRIVER_API SQLRETURN SQL_API SQLConnectW(
-    SQLHDBC         hdbc,
-    SQLWCHAR        *szDSN,
-    SQLSMALLIN      cbDSN,
-    SQLWCHAR        *szUID,
-    SQLSMALLINT     cbUID,
-    SQLWCHAR        *szAuthStr,
-    SQLSMALLINT     cbAuthStr);
-
 ODBCDRIVER_API SQLRETURN SQL_API SQLDescribeColW(
     SQLHSTMT        hstmt,
     SQLUSMALLINT    icol,
@@ -139,12 +187,6 @@ ODBCDRIVER_API SQLRETURN SQL_API SQLExecDirectW(
     SQLWCHAR        *szSqlStr,
     SQLINTEGER      cbSqlStr);
 
-ODBCDRIVER_API SQLRETURN SQL_API SQLGetConnectAttrW(
-    SQLHDBC         hdbc,
-    SQLINTEGER      fAttribute,
-    SQLPOINTER      rgbValue,
-    SQLINTEGER      cbValueMax,
-    SQLINTEGER      *pcbValue);
 
 ODBCDRIVER_API SQLRETURN SQL_API SQLGetCursorNameW(
     SQLHSTMT        hstmt,
@@ -204,12 +246,6 @@ ODBCDRIVER_API SQLRETURN SQL_API SQLPrepareW(
     SQLWCHAR        *szSqlStr,
     SQLINTEGER      cbSqlStr);
 
-ODBCDRIVER_API SQLRETURN SQL_API SQLSetConnectAttrW(
-    SQLHDBC         hdbc,
-    SQLINTEGER      fAttribute,
-    SQLPOINTER      rgbValue,
-    SQLINTEGER      cbValue);
-
 ODBCDRIVER_API SQLRETURN SQL_API SQLSetCursorNameW(
     SQLHSTMT        hstmt,
     SQLWCHAR        *szCursor,
@@ -226,11 +262,6 @@ ODBCDRIVER_API SQLRETURN SQL_API SQLColumnsW(
     SQLWCHAR        *szColumnName,
     SQLSMALLINT     cbColumnName);
 
-ODBCDRIVER_API SQLRETURN SQL_API SQLGetConnectOptionW(
-    SQLHDBC         hdbc,
-    SQLUSMALLINT    fOption,
-    SQLPOINTER      pvParam);
-
 ODBCDRIVER_API SQLRETURN SQL_API SQLGetInfoW(
     SQLHDBC         hdbc,
     SQLUSMALLINT    fInfoType,
@@ -242,10 +273,6 @@ ODBCDRIVER_API SQLRETURN SQL_API SQLGetTypeInfoW(
     SQLHSTMT        StatementHandle,
     SQLSMALLINT     DataType);
 
-ODBCDRIVER_API SQLRETURN SQL_API SQLSetConnectOptionW(
-    SQLHDBC         hdbc,
-    SQLUSMALLINT    fOption,
-    SQLULEN         vParam);
 
 ODBCDRIVER_API SQLRETURN SQL_API SQLSpecialColumnsW(
     SQLHSTMT        hstmt,
@@ -290,24 +317,6 @@ ODBCDRIVER_API SQLRETURN SQL_API SQLDataSourcesW(
     SQLWCHAR        *szDescription,
     SQLSMALLINT     cbDescriptionMax,
     SQLSMALLINT     *pcbDescription);
-
-ODBCDRIVER_API SQLRETURN SQL_API SQLDriverConnectW(
-    SQLHDBC         hdbc,
-    SQLHWND         hwnd,
-    SQLWCHAR        *szConnStrIn,
-    SQLSMALLINT     cbConnStrIn,
-    SQLWCHAR        *szConnStrOut,
-    SQLSMALLINT     cbConnStrOutMax,
-    SQLSMALLINT     *pcbConnStrOut,
-    SQLUSMALLINT    fDriverCompletion);
-
-ODBCDRIVER_API SQLRETURN SQL_API SQLBrowseConnectW(
-    SQLHDBC         hdbc,
-    SQLWCHAR        *szConnStrIn,
-    SQLSMALLINT     cbConnStrIn,
-    SQLWCHAR        *szConnStrOut,
-    SQLSMALLINT     cbConnStrOutMax,
-    SQLSMALLINT     *pcbConnStrOut);
 
 ODBCDRIVER_API SQLRETURN SQL_API SQLColumnPrivilegesW(
     SQLHSTMT        hstmt,
@@ -459,13 +468,6 @@ ODBCDRIVER_API SQLRETURN SQL_API SQLExecDirectA(
     SQLCHAR         *szSqlStr,
     SQLINTEGER      cbSqlStr);
 
-ODBCDRIVER_API SQLRETURN SQL_API SQLGetConnectAttrA(
-    SQLHDBC         hdbc,
-    SQLINTEGER      fAttribute,
-    SQLPOINTER      rgbValue,
-    SQLINTEGER      cbValueMax,
-    SQLINTEGER      *pcbValue);
-
 ODBCDRIVER_API SQLRETURN SQL_API SQLGetCursorNameA(
     SQLHSTMT        hstmt,
     SQLCHAR         *szCursor,
@@ -528,12 +530,6 @@ ODBCDRIVER_API SQLRETURN SQL_API SQLPrepareA(
     SQLCHAR         *szSqlStr,
     SQLINTEGER      cbSqlStr);
 
-ODBCDRIVER_API SQLRETURN SQL_API SQLSetConnectAttrA(
-    SQLHDBC         hdbc,
-    SQLINTEGER      fAttribute,
-    SQLPOINTER      rgbValue,
-    SQLINTEGER      cbValue);
-
 ODBCDRIVER_API SQLRETURN SQL_API SQLSetCursorNameA(
     SQLHSTMT        hstmt,
     SQLCHAR         *szCursor,
@@ -550,11 +546,6 @@ ODBCDRIVER_API SQLRETURN SQL_API SQLColumnsA(
     SQLCHAR         *szColumnName,
     SQLSMALLINT     cbColumnName);
 
-ODBCDRIVER_API SQLRETURN SQL_API SQLGetConnectOptionA(
-    SQLHDBC         hdbc,
-    SQLUSMALLINT    fOption,
-    SQLPOINTER      pvParam);
-
 ODBCDRIVER_API SQLRETURN SQL_API SQLGetInfoA(
     SQLHDBC         hdbc,
     SQLUSMALLINT    fInfoType,
@@ -566,11 +557,6 @@ ODBCDRIVER_API SQLRETURN SQL_API SQLGetStmtOptionA(
     SQLHSTMT        hstmt,
     SQLUSMALLINT    fOption,
     SQLPOINTER      pvParam);
-
-ODBCDRIVER_API SQLRETURN SQL_API SQLSetConnectOptionA(
-    SQLHDBC         hdbc,
-    SQLUSMALLINT    fOption,
-    SQLULEN         vParam);
 
 ODBCDRIVER_API SQLRETURN SQL_API SQLSetStmtOptionA(
     SQLHSTMT        hstmt,
@@ -630,14 +616,6 @@ ODBCDRIVER_API SQLRETURN SQL_API SQLDriverConnectA(
     SQLSMALLINT     cbConnStrOutMax,
     SQLSMALLINT     *pcbConnStrOut,
     SQLUSMALLINT    fDriverCompletion);
-
-ODBCDRIVER_API SQLRETURN SQL_API SQLBrowseConnectA(
-    SQLHDBC         hdbc,
-    SQLCHAR         *szConnStrIn,
-    SQLSMALLINT     cbConnStrIn,
-    SQLCHAR         *szConnStrOut,
-    SQLSMALLINT     cbConnStrOutMax,
-    SQLSMALLINT     *pcbConnStrOut);
 
 ODBCDRIVER_API SQLRETURN SQL_API SQLColumnPrivilegesA(
     SQLHSTMT        hstmt,

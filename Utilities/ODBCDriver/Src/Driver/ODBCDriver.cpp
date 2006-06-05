@@ -76,6 +76,10 @@ BOOL InstallDriver(CHAR* lpszDriverPath)
                         "FileUsage=2\0"
                         "SQLLevel=0\0"
                         "\0";
+    LPCSTR lpszArgs = "TestOptionA=1\0TestOptionB=2\0TestOptionC=3\0\0";
+    CHAR lpszMsg[1024];
+    WORD cbMsgMax = 1024;
+    WORD cbMsgOut = 0;
 
     bResult = UninstallDriver();
     if (bResult == FALSE) {
@@ -112,10 +116,10 @@ BOOL InstallDriver(CHAR* lpszDriverPath)
          NULL,                          
          ODBC_INSTALL_DRIVER,           
          lpszDriverName,    
-         "",                           
-         "",                           
-         0,                             
-         NULL );                        
+         lpszArgs,                           
+         lpszMsg,                           
+         cbMsgMax,                             
+         &cbMsgOut );    
 
     if (bResult == FALSE) {
         ThrowDriverError();

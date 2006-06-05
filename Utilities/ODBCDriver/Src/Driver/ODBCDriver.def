@@ -1,2 +1,15 @@
 LIBRARY	"ODBCDriver"
 
+EXPORTS
+
+ConfigDriver
+ConfigDriverW
+SQLAllocHandle
+SQLFreeStmt
+SQLFreeHandle
+SQLConnect
+SQLConnectW
+SQLDriverConnect
+SQLDriverConnectW
+SQLGetConnectAttr
+SQLSetConnectAttr

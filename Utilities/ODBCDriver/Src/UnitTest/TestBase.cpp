@@ -26,6 +26,7 @@
 
 TestBase::TestBase(void)
 {
+    CallTest();
 }
 
 TestBase::~TestBase(void)

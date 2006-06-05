@@ -27,4 +27,8 @@ VOID ThrowDriverError();
 BOOL UninstallDriver();
 BOOL InstallDriver(CHAR* lpszDriverPath);
 
+// Temprary Testing Functions...
+ODBCDRIVER_API inline void CallTest() {return;};
+
+
 #endif // ___ODBCDRIVER_H
