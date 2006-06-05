@@ -52,9 +52,6 @@ public:
 	virtual	FdoString				   *GetConflictDbObject		   () = 0;
 	virtual bool						IsTableEmpty			  () = 0;
 
-//protected:
-	FdoRdbmsLockConflictQueryHandler();
-	~FdoRdbmsLockConflictQueryHandler();
 };
 
 #endif

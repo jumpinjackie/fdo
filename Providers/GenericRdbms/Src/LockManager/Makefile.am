@@ -7,7 +7,6 @@ noinst_LTLIBRARIES = libLockManager.la
 libLockManager_la_SOURCES = \
   Disposable.cpp \
   LockConflict.cpp \
-  LockConflictQueryHandler.cpp \
   LockInfo.cpp \
   LockType.cpp \
   LockTypes.cpp \
