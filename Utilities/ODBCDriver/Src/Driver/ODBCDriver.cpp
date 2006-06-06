@@ -65,12 +65,12 @@ BOOL InstallDriver(CHAR* lpszDriverPath)
     WORD wPathOutMax = MAX_PATH;
     WORD wPathOut = 0;
     RETCODE retcode = SQL_ERROR;
-    LPCSTR lpszDriverName = "Autodesk FDO SDF Driver";
-    LPCSTR lpszDriver = "Autodesk FDO SDF Driver\0"
+    LPCSTR lpszDriverName = "OSGeo FDO SDF Driver (*.sdf)";
+    LPCSTR lpszDriver = "OSGeo FDO SDF Driver (*.sdf)\0"
                         "Driver=ODBCDriver.dll\0"
-                        "Setup=ODBCDriver.dll\0"
+                        "Setup=ODBCSetup.dll\0"
                         "APILevel=0\0"
-                        "ConnectFunctions=YYN\0"
+                        "ConnectFunctions=YYY\0"
                         "DriverODBCVer=03.00\0"
                         "FileExtns=*.sdf\0"
                         "FileUsage=2\0"
@@ -137,7 +137,7 @@ BOOL UninstallDriver()
     CHAR* lpszBuf_P = lpszBuf;
     WORD cbBufMax = 10240;
     WORD wBufOut = 0;
-    LPCSTR lpszDriver = "Autodesk FDO SDF Driver";
+    LPCSTR lpszDriver = "OSGeo FDO SDF Driver (*.sdf)";
 
     bResult = SQLGetInstalledDrivers(
          lpszBuf,

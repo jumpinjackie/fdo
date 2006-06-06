@@ -1,5 +1,5 @@
-#include "StdHdr.h"
-#include "ODBC.h"
+#include "Stdafx.h"
+#include "ODBCConfig.h"
 
 
 BOOL INSTAPI ConfigDriver(
@@ -22,6 +22,24 @@ BOOL INSTAPI ConfigDriverW(
     LPWSTR          lpszMsg, 
     WORD            cbMsgMax, 
     WORD 	        *pcbMsgOut)
+{
+    return TRUE;
+}
+
+BOOL INSTAPI ConfigDSN (
+    HWND	        hwndParent,
+    WORD	        fRequest,
+    LPCSTR	        lpszDriver,
+    LPCSTR	        lpszAttributes)
+{
+    return TRUE;
+}
+
+BOOL INSTAPI ConfigDSNW (
+    HWND	        hwndParent,
+    WORD	        fRequest,
+    LPCWSTR	        lpszDriver,
+    LPCWSTR	        lpszAttributes)
 {
     return TRUE;
 }

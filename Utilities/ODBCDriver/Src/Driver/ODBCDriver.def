@@ -2,8 +2,6 @@ LIBRARY	"ODBCDriver"
 
 EXPORTS
 
-ConfigDriver
-ConfigDriverW
 SQLAllocHandle
 SQLFreeStmt
 SQLFreeHandle

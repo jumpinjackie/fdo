@@ -69,13 +69,13 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "Comments", "OSGeo Foundation"
+            VALUE "CompanyName", "Open Source Geospatial Foundation"
             VALUE "FileDescription", " SDF ODBC Driver Dynamic Link Library"
             VALUE "FileVersion", "3, 2, 0, 0"
             VALUE "InternalName", "ODBCDriver"
             VALUE "LegalCopyright", "Copyright (C) 2006"
             VALUE "OriginalFilename", "ODBCDriver.dll"
-            VALUE "ProductName", " SDF ODBC Driver Dynamic Link Library"
+            VALUE "ProductName", "Feature Data Objects"
             VALUE "ProductVersion", "3, 2, 0, 0"
         END
     END

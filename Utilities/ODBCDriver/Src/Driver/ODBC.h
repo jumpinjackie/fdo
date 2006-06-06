@@ -28,6 +28,19 @@ BOOL INSTAPI ConfigDriverW(
     LPWSTR          lpszMsg, 
     WORD            cbMsgMax, 
     WORD 	        *pcbMsgOut);
+
+BOOL INSTAPI ConfigDSN(
+    HWND	        hwndParent,
+    WORD	        fRequest,
+    LPCSTR	        lpszDriver,
+    LPCSTR	        lpszAttributes);
+
+BOOL INSTAPI ConfigDSNW(
+    HWND	        hwndParent,
+    WORD	        fRequest,
+    LPCWSTR	        lpszDriver,
+    LPCWSTR	        lpszAttributes);
+
     
 //////////////////////////////////////////////////////////////////////
 // ODBC Handles

@@ -32,5 +32,6 @@
 #include <sqlext.h>
 #include <odbcinst.h>
 #include <Common.h>
+#include <Fdo.h>
 
 #endif // _ODBCDRIVER_H

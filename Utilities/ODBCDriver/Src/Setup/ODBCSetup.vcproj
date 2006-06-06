@@ -2,10 +2,10 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="ODBCDriver"
-	ProjectGUID="{B09BDED0-A3DC-41A0-A85E-5956743B0CAB}"
-	RootNamespace="ODBCDriver"
-	Keyword="Win32Proj"
+	Name="ODBCSetup"
+	ProjectGUID="{FC53868A-2D34-4A9C-A982-5A684D51AA57}"
+	RootNamespace="ODBCSetup"
+	Keyword="MFCDLLProj"
 	>
 	<Platforms>
 		<Platform
@@ -20,6 +20,7 @@
 			OutputDirectory="..\..\Bin\Win32\Debug"
 			IntermediateDirectory=".\Debug"
 			ConfigurationType="2"
+			UseOfMFC="2"
 			CharacterSet="1"
 			>
 			<Tool
@@ -36,17 +37,17 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="false"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(FDO)\Unmanaged\Inc"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;ODBCDRIVER_EXPORTS;_CRT_SECURE_NO_DEPRECATE;SQL_NOUNICODEMAP"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_USRDLL;_WINDLL;_AFXDLL;$(NOINHERIT)"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="StdHdr.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
@@ -56,20 +57,19 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"
+				AdditionalIncludeDirectories="$(IntDir)"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDOCommon.lib FDO.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(FDO)\Unmanaged\lib\win32\debug"
-				ModuleDefinitionFile="ODBCDriver.def"
+				ModuleDefinitionFile=".\ODBCSetup.def"
 				GenerateDebugInformation="true"
-				MapExports="true"
 				SubSystem="2"
-				ImportLibrary="../../Lib/Win32/Debug/$(TargetName).lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -104,6 +104,7 @@
 			OutputDirectory="..\..\Bin\Win32\Release"
 			IntermediateDirectory=".\Release"
 			ConfigurationType="2"
+			UseOfMFC="2"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -121,14 +122,14 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="false"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="$(FDO)\Unmanaged\Inc"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;ODBCDRIVER_EXPORTS;_CRT_SECURE_NO_DEPRECATE;SQL_NOUNICODEMAP"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;_USRDLL"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="StdHdr.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
@@ -138,21 +139,21 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"
+				AdditionalIncludeDirectories="$(IntDir)"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDOCommon.lib FDO.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(FDO)\Unmanaged\lib\win32\release"
-				ModuleDefinitionFile="ODBCDriver.def"
+				ModuleDefinitionFile=".\ODBCSetup.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				ImportLibrary="..\..\Lib\Win32\Release\$(TargetName).lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -192,34 +193,26 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<Filter
-				Name="Odbc Files"
+				Name="UI Files"
 				>
 				<File
-					RelativePath=".\ODBCConnect.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ODBCDriver.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ODBCDriver.def"
-					>
-				</File>
-				<File
-					RelativePath=".\ODBCHandle.cpp"
+					RelativePath=".\FdoOdbcUISetup.cpp"
 					>
 				</File>
 			</Filter>
 			<Filter
-				Name="Driver Files"
+				Name="Odbc Files"
 				>
 				<File
-					RelativePath=".\FdoOdbcDbcHandle.cpp"
+					RelativePath=".\ODBCConfig.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\FdoOdbcEnvHandle.cpp"
+					RelativePath=".\ODBCSetup.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ODBCSetup.def"
 					>
 				</File>
 			</Filter>
@@ -227,7 +220,7 @@
 				Name="Project Files"
 				>
 				<File
-					RelativePath=".\StdHdr.cpp"
+					RelativePath=".\stdafx.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -254,34 +247,30 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<Filter
-				Name="Project Files"
-				>
-				<File
-					RelativePath=".\StdHdr.h"
-					>
-				</File>
-			</Filter>
-			<Filter
 				Name="Odbc Files"
 				>
 				<File
-					RelativePath=".\ODBC.h"
+					RelativePath=".\ODBCConfig.h"
 					>
 				</File>
 				<File
-					RelativePath=".\ODBCDriver.h"
+					RelativePath=".\ODBCSetup.h"
 					>
 				</File>
 			</Filter>
 			<Filter
-				Name="Driver Files"
+				Name="UI Files"
 				>
 				<File
-					RelativePath=".\FdoOdbcDbcHandle.h"
+					RelativePath=".\FdoOdbcUISetup.h"
 					>
 				</File>
+			</Filter>
+			<Filter
+				Name="Project Files"
+				>
 				<File
-					RelativePath=".\FdoOdbcEnvHandle.h"
+					RelativePath=".\stdafx.h"
 					>
 				</File>
 			</Filter>
@@ -292,15 +281,27 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
-				RelativePath=".\ODBCDriver.rc"
+				RelativePath=".\ODBCSetup.rc"
 				>
 			</File>
 			<File
-				RelativePath=".\resource.h"
+				RelativePath=".\res\ODBCSetup.rc2"
+				>
+			</File>
+			<File
+				RelativePath=".\Resource.h"
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\ReadMe.txt"
+			>
+		</File>
 	</Files>
 	<Globals>
+		<Global
+			Name="RESOURCE_FILE"
+			Value="ODBCSetup.rc"
+		/>
 	</Globals>
 </VisualStudioProject>

@@ -1,0 +1,8 @@
+LIBRARY "ODBCSetup"
+
+EXPORTS
+
+ConfigDriver
+ConfigDriverW
+ConfigDSN
+ConfigDSNW
