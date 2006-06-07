@@ -17,7 +17,7 @@
 
 #include <Inc/Nls/rdbi_msg.h>
 #include <stdio.h>
-#include "Geometry.h"
+#include "FdoGeometry.h"
 
 #include <Inc/Geometry/Fgf/AllGeometry_c.h>	
 

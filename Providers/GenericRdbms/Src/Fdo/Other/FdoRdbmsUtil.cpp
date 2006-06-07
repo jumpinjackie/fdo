@@ -25,7 +25,7 @@
 
 //#include "../../../src/fdo/Rdbms/SchemaMgr/LogicalPhysical/ClassDefinition.h"
 //#include "../../../src/fdo/Rdbms/SchemaMgr/LogicalPhysical/GeometricPropertyDefinition.h"
-#include "Geometry.h"
+#include "FdoGeometry.h"
 
 #ifdef _WIN32
 char *fdordbms_cat = "RdbmsMsg.dll";

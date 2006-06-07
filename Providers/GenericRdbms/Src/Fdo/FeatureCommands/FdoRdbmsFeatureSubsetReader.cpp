@@ -19,7 +19,7 @@
 #include "stdafx.h"
 #include "FdoRdbmsSchemaUtil.h"
 
-#include "Common.h"
+#include "FdoCommon.h"
 
 #include "FdoRdbmsFeatureSubsetReader.h"
 #include "FdoRdbmsDescribeSchemaCommand.h"

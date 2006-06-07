@@ -21,7 +21,7 @@
 #ifdef _WIN32
 #pragma once
 #endif
-#include <Std.h>
+#include <FdoStd.h>
 #include "Fdo/Commands/DataStore/IDataStoreReader.h"
 #include "FdoRdbmsDataStorePropertyDictionary.h"
 

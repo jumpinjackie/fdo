@@ -22,7 +22,7 @@
 #endif
 
 #include "FdoRdbms.h"
-#include "Std.h"
+#include "FdoStd.h"
 
 #include "FdoRdbmsCommand.h"
 #include "FdoRdbmsDataStoreReader.h"

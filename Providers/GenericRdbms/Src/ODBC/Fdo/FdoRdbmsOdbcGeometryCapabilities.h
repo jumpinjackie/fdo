@@ -21,7 +21,7 @@
 #ifdef _WIN32
 #pragma once
 #endif
-#include <Std.h>
+#include <FdoStd.h>
 #include <Common/GeometryType.h>
 
 class FdoRdbmsOdbcGeometryCapabilities : public FdoIGeometryCapabilities

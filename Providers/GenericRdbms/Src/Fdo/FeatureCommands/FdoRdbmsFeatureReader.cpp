@@ -18,7 +18,7 @@
  */
 #include "stdafx.h"
 #include <assert.h>
-#include "Common.h"
+#include "FdoCommon.h"
 #include "DbiConnection.h"
 #include "FdoRdbmsFeatureReader.h"
 #include "FdoRdbmsDescribeSchemaCommand.h"

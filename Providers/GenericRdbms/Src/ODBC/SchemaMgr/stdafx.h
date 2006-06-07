@@ -28,7 +28,7 @@
 #include <windows.h>
 #endif
 #include <stdio.h>
-#include <Common.h>
+#include <FdoCommon.h>
 #include <Fdo.h>
 #include <Rdbms/Override/RdbmsOv.h>
 #include <Rdbms/Override/ODBC/OdbcOv.h>

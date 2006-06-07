@@ -31,7 +31,7 @@
 #include "Inc/Rdbi/context.h"
 #include "Inc/Util/thread.h"
 
-#include "Common.h"
+#include "FdoCommon.h"
 typedef FdoByteArray ByteArray; // This helps defer some changes to existing code.
 
 typedef long    dbi_pn_id_t;

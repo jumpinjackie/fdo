@@ -22,7 +22,7 @@
 /// FdoRdbms.lib
 /// </library>
 
-#include <Common.h>
+#include <FdoCommon.h>
 #include <Rdbms/Override/RdbmsOv.h>
 #include <Rdbms/Override/RdbmsOvPropertyMappingDefinition.h>
 

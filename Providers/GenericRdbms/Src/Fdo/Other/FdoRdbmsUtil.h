@@ -19,7 +19,7 @@
  */
 
 #include "Fdo/Schema/ClassDefinition.h"
-#include "Geometry.h"
+#include "FdoGeometry.h"
 #include "../../Gdbi/GdbiTypes.h"
 #include "../../Gdbi/GdbiException.h"
 

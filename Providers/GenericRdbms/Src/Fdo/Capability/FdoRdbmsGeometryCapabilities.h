@@ -18,7 +18,7 @@
 #ifdef _WIN32
 #pragma once
 #endif
-#include <Std.h>
+#include <FdoStd.h>
 #include <Common/GeometryType.h>
 
 /// <summary>The FdoRdbmsGeometryCapabilities class delineates available support for raster processing from a provider.</summary>

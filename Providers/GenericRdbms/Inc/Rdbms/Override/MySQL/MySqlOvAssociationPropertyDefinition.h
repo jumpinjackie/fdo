@@ -17,7 +17,7 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
-#include <Common.h>
+#include <FdoCommon.h>
 #include <Rdbms/Override/MySQL/MySqlOv.h>
 #include <Rdbms/Override/MySQL/MySqlOvPropertyDefinitionCollection.h>
 #include <Rdbms/Override/RdbmsOvAssociationPropertyDefinition.h>
