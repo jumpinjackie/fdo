@@ -18,7 +18,7 @@
 #include "stdafx.h"
 #include "SdfInsert.h"
 
-#include <Spatial.h>
+#include <FdoSpatial.h>
 #include "SdfConnection.h"
 #include "DataIO.h"
 #include "DataDb.h"

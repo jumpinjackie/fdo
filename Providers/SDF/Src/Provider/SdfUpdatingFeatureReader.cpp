@@ -19,7 +19,7 @@
 #include "PropertyIndex.h"
 #include "SdfUpdatingFeatureReader.h"
 
-#include <Spatial.h>
+#include <FdoSpatial.h>
 #include "RTree.h"
 #include "KeyDb.h"
 #include "SdfConnection.h"

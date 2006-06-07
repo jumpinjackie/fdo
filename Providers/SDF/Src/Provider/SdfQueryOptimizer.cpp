@@ -24,8 +24,8 @@
 #include <algorithm>
 #include <functional>
 
-#include <Geometry.h>
-#include <Spatial.h>
+#include <FdoGeometry.h>
+#include <FdoSpatial.h>
 #include "Int64Value.h"
 #include "DoubleValue.h"
 #include "StringValue.h"

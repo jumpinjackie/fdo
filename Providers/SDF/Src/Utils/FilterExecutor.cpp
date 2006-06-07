@@ -25,7 +25,7 @@
 #include "BooleanValue.h"
 #include "DateTimeValue.h"
 #include "NullValue.h"
-#include <Spatial.h>
+#include <FdoSpatial.h>
 
 
 FilterExecutor::FilterExecutor(FdoIFeatureReader* featureReader, PropertyIndex* propIndex, FdoIdentifierCollection* compIdents, FdoClassDefinition* classDef)
