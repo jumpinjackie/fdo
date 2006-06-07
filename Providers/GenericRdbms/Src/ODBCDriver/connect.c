@@ -350,22 +350,10 @@ int	do_connect(
 
             if (ODBCDriverType_SQLServer == context->odbcdr_conns[connect_id]->driver_type)
             {
-			    /*
-			    ** switch to SQL Server database. Use 'master' database.
-			    ** In SQL Server schema object namespace is specified by 
-			    ** the database, not the login username
-			    */
-			    rc = SQLAllocHandle(SQL_HANDLE_STMT,	hDbc,&hStmt);
-                strcpy(sql_buf, "USE master" );
-			    rc = SQLExecDirect(hStmt, (SQLCHAR*)sql_buf, SQL_NTS);
-                DumpError2(SQL_HANDLE_DBC, hDbc);
-
 			    rc = SQLAllocHandle(SQL_HANDLE_STMT,	hDbc,&hStmt5);
 			    sprintf(sql_buf, "SET NOCOUNT OFF");
 			    rc = SQLExecDirect(hStmt5, (SQLCHAR*)sql_buf, SQL_NTS);
 
-			    //Destroy the statement handles
-			    rc = SQLFreeHandle(SQL_HANDLE_STMT, hStmt);
 			    rc = SQLFreeHandle(SQL_HANDLE_STMT, hStmt5);
 
 		        /*

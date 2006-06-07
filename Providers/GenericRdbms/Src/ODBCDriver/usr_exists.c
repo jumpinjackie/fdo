@@ -52,94 +52,11 @@ int odbcdr_usr_exists(
 	int  *exists
 	)
 {
-	char				 sql_buf[1054];
-	int 				 rows;
-	odbcdr_cursor_def	*c;
-	odbcdr_connData_def	*connData;
-    char 	            user_name2[ODBCDR_NAME_SIZE];
-    long 	            returned_count2;
-
 	int 				rdbi_status = RDBI_GENERIC_ERROR;
 
-	debug_on1("odbcdr_usr_exists", "user_name '%s'", ISNULL(user_name));
+    // This is an obsolete function.
 
-
-// CMB: THIS NEEDS TO BE CONVERTED TO SQL SERVER
-// For now, just go right to the exit
-	// odbcdr_usr_exists is not implemented in the SQL Server Driver
-	*exists = TRUE;
-	goto the_exit;
-
-// CMB: DO NOT EXECUTE ANY OF THIS ON SQL SERVER. It has not been implemented yet
-
-	/* assume user does not exist */
-	*exists = FALSE;
-
-	ODBCDR_RDBI_ERR( odbcdr_get_curr_conn( context, &connData ) );
-
-	c = connData->usr_exists;
-
-	strcpy(user_name2, user_name);
-
-	ut_to_upper(user_name2);
-
-	if (c == (odbcdr_cursor_def *)NULL) {
-		/* establish cursor */
-		rdbi_status = odbcdr_est_cursor(context, (char **)&c);
-		_check_status;
-
-		connData->usr_exists = c;
-
-		/*
-		*************************************************************
-		** This has to be converted to a metadata stored procedure call
-		** in SQL Server. Also, instead of searching for a username,
-		** in SQL Server, we have to search for a database name instead.
-		*************************************************************
-		*/
-		strcpy(sql_buf,
-				"select count(*) from sys.user$ where name = :1");
-
-		debug1("%.150s", sql_buf);
-		debug_trace( sql_buf, (wchar_t *)NULL, NULL );
-
-		/* parse command */
-
-		rdbi_status = odbcdr_sql( context, (char *)c, sql_buf, FALSE, (char *)NULL,
-									(void *)NULL, (char *) NULL);
-		_check_status;
-
-		/* bind the input user name    */
-		rdbi_status = odbcdr_bind( context, (char *)c, "1", RDBI_STRING, ODBCDR_NAME_SIZE,
-											user_name2,(SQLLEN *) NULL);
-		_check_status;
-
-		/* define output locations */
-
-		rdbi_status = odbcdr_define( context, (char *)c, "1", RDBI_LONG, sizeof(long),
-										(char *) &returned_count2, (SQLLEN *)NULL);
-		_check_status;
-
-	}
-
-	/* execute the SQL statement & fetch row */
-	rdbi_status = odbcdr_fetch2( context, (char *)c, 1, TRUE, TRUE, &rows);
-	_check_status;
-
-	if( returned_count2 != 0 ) {
-		*exists = TRUE;
-	}
-
-the_exit:
-	/*
-	*****************************************************************
-	** While we are waiting for the metadata query to be converted to a
-	** SQL Server version, we will assume the user/database exists, and
-	** return RDBI_SUCCESS
-	*****************************************************************
-	*/
-	*exists=TRUE;
-	rdbi_status = RDBI_SUCCESS;
+    *exists=FALSE;
 	debug_return(NULL, rdbi_status);
 
 }

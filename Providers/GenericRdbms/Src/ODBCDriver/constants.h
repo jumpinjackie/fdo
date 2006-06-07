@@ -35,13 +35,6 @@
 #define INIT_M_ONE      -1
 #define INIT_SLASH      "/"
 
-#define ODBCDR_NAME_SIZE		31	//adb_mrs_index_locate allocates 35 bytes for the return values (DBI_TABLE_NAME_SIZE)
-#define ODBCDR_UNIQUENESS_SIZE  10
-#define ODBCDR_FETCH_SIZE		19	/* approx. 5K bytes buf */
-#define ODBCDR_TYPE_SIZE        12
-
-
-
 #define ODBCDR_CONNECT_STRING_DEFAULT	OS_ODBCDR_CONNECT_STRING
 
 #define ODBCDR_DEFAULT_SCHEMA_NAME      "Default"

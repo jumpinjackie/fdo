@@ -207,15 +207,17 @@ int odbcdr_col_act(
 
     if (owner_set)
     {
-        if (strlen(owner) > ODBCDR_NAME_SIZE || strlen(object_name) > ODBCDR_NAME_SIZE)
+        const char * formatStr = "select * from %s.\"%s\" where 1 = 2";
+        if (strlen(owner) + strlen(object_name) + strlen(formatStr) >= sizeof(szSql))
             goto the_exit;
-        (void) sprintf(szSql, "select * from %s.\"%s\" where 1 = 2", owner, object_name);
+        (void) sprintf(szSql, formatStr, owner, object_name);
     }
     else
     {
-        if (strlen(object_name) > ODBCDR_NAME_SIZE)
+        const char * formatStr = "select * from \"%s\" where 1 = 2";
+        if (strlen(object_name) + strlen(formatStr) >= sizeof(szSql))
             goto the_exit;
-        (void) sprintf(szSql, "select * from \"%s\" where 1 = 2", object_name);
+        (void) sprintf(szSql, formatStr, object_name);
     }
 
     ODBCDR_RDBI_ERR( odbcdr_sql( context, (char *) c, szSql, TRUE, NULL, NULL, NULL ) );

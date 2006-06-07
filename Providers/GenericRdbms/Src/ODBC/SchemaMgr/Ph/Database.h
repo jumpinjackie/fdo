@@ -49,6 +49,8 @@ public:
 
     virtual void UnsetCurrentOwner();
 
+    FdoSmPhOwnerP FindOwner(FdoStringP owner);
+
 protected:
     virtual FdoSmPhOwnerP NewOwner(
         FdoStringP owner,

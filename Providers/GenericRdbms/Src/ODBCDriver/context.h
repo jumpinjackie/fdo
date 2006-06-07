@@ -99,9 +99,6 @@ typedef struct _odbcdr_context_def
     short   odbcdr_last_rc; 
 	char	odbcdr_last_err_msg[ODBCDR_MAX_BUFF_SIZE];
 
-    char 	odbcdr_owner[ODBCDR_NAME_SIZE];
-    char 	odbcdr_object_name[ODBCDR_NAME_SIZE];
-
 	long	odbcdr_nameListNextPosition_cols;
 	long	odbcdr_nameListNextPosition_pkeys;
 	long	odbcdr_nameListNextPosition_objs;

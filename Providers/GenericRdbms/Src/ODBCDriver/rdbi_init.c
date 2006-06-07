@@ -218,8 +218,6 @@ static void context_init( odbcdr_context_def *context)
 
     context->odbcdr_last_rc = INIT_ZERO;
 
-    context->odbcdr_owner[0] = '\0';
-    context->odbcdr_object_name[0] = '\0';
 	context->odbcdr_last_err_msg[0] = '\0';
 
 	context->odbcdr_nameListNextPosition_cols = -1;
