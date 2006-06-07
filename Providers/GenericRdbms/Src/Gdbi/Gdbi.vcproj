@@ -216,6 +216,10 @@
 				>
 			</File>
 			<File
+				RelativePath="GdbiQueryIdentifier.h"
+				>
+			</File>
+			<File
 				RelativePath="GdbiQueryResult.h"
 				>
 			</File>
