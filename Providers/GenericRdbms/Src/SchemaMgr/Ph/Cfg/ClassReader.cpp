@@ -78,7 +78,8 @@ FdoSmPhReaderP FdoSmPhCfgGrdClassReader::MakeReader(FdoSmPhRowsP rows, FdoString
     FdoSmPhGrdMgrP              grdMgr = mgr.p->SmartCast<FdoSmPhGrdMgr>();
 
     // Get the schema override set for the current schema.
-    mConfigMapping = (FdoRdbmsOvPhysicalSchemaMapping*) mappings->GetItem(providerName, schemaName);
+    if ( mappings )
+        mConfigMapping = (FdoRdbmsOvPhysicalSchemaMapping*) mappings->GetItem(providerName, schemaName);
    
     // Record database and owner if schema is foreign.
     mDatabase = grdMgr->GetOverrideDatabase(mConfigMapping);
