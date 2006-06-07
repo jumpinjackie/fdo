@@ -62,7 +62,7 @@ public:
     const FdoSmPhOwner* RefOwner(FdoStringP owner) const;
 
     /// Get a read-write smart pointer, NULL if owner not in database
-    FdoSmPhOwnerP FindOwner(FdoStringP owner);
+    virtual FdoSmPhOwnerP FindOwner(FdoStringP owner);
 
     /// Get a read-write smart pointer, throws FdoSchemaException if owner not in database
     FdoSmPhOwnerP GetOwner(FdoStringP owner);
