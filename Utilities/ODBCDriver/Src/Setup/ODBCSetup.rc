@@ -114,12 +114,13 @@ BEGIN
     LTEXT           "&Description:",IDC_STATIC,7,24,68,13
     EDITTEXT        IDC_EDIT2,77,22,154,12,ES_AUTOHSCROLL
     GROUPBOX        "SDF File",IDC_STATIC,7,39,227,62
-    LTEXT           "File Name:",IDC_STATIC,14,55,36,13
-    LTEXT           "C:\\SDFFile.sdf",IDC_STATIC,77,55,156,10
-    PUSHBUTTON      "&Select SDF File...",IDC_BUTTON1,77,72,74,14
+    LTEXT           "File:",IDC_STATIC,15,55,24,13
+    LTEXT           "C:\\SDFFile.sdf",IDC_STATIC,37,55,156,10
+    PUSHBUTTON      "&Select...",IDC_BUTTON1,15,71,74,14
     PUSHBUTTON      "&Options >>",IDC_BUTTON2,241,87,50,14
     GROUPBOX        "Driver",IDC_STATIC,7,106,228,40
     CONTROL         "Read On&ly",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,123,129,10
+    PUSHBUTTON      "&Create...",IDC_BUTTON3,95,71,74,14
 END
 
 
