@@ -24,7 +24,7 @@
 #pragma once
 #endif
 
-#include <Common.h>
+#include <FdoCommon.h>
 
 /// \brief
 /// The FdoIEnvelope class is a three-dimensional, axis-aligned box.  This is a

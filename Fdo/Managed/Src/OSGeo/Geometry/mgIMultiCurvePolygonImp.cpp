@@ -20,7 +20,7 @@
 
 #include "stdafx.h"
 #include "mgIMultiCurvePolygonImp.h"
-#include <Geometry.h>
+#include <FdoGeometry.h>
 #include "mgICurvePolygon.h"
 #include "mgObjectFactory.h"
 

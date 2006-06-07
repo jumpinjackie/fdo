@@ -22,7 +22,7 @@
 #ifdef _WIN32
 #pragma once
 #endif
-#include <Std.h>
+#include <FdoStd.h>
 
 /// \brief
 /// FdoReadOnlyCollection is an abstract template class used to define a collection

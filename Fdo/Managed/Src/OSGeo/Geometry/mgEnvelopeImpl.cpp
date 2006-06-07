@@ -19,7 +19,7 @@
 
 #include "stdafx.h"
 #include "mgEnvelopeImpl.h"
-#include <Geometry.h>
+#include <FdoGeometry.h>
 #include <Geometry/EnvelopeImpl.h>
 #include "mgIEnvelopeImp.h"
 #include "mgIDirectPositionImp.h"

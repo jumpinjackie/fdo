@@ -22,7 +22,7 @@
 #pragma once
 #endif
 
-#include <Std.h>
+#include <FdoStd.h>
 #include <Fdo/Schema/NetworkFeatureClass.h>
 #include <Fdo/Schema/ClassType.h>
 

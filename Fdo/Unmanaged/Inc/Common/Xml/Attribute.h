@@ -19,7 +19,7 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include <Common.h>
+#include <FdoCommon.h>
 
 /// \brief
 /// FdoXmlAttribute contains the name and value of a single attribute

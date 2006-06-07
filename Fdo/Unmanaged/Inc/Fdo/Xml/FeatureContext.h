@@ -22,7 +22,7 @@
 #pragma once
 #endif
 
-#include <Std.h>
+#include <FdoStd.h>
 #include <Common/Xml/SaxContext.h>
 
 class FdoXmlFeaturePropertyReader;

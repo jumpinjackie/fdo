@@ -23,7 +23,7 @@
 #pragma once
 #endif
 
-#include <Std.h>
+#include <FdoStd.h>
 #include <Geometry/ILinearRing.h>
 
 #include "Geometry.h"

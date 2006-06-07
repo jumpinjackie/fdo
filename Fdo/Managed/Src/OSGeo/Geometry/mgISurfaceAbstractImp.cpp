@@ -19,7 +19,7 @@
 
 
 #include "stdafx.h"
-#include <Geometry.h>
+#include <FdoGeometry.h>
 
 #include "mgISurfaceAbstractImp.h"
 

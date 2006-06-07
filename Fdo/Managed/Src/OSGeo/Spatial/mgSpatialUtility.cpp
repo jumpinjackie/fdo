@@ -18,7 +18,7 @@
 */
 
 #include "stdafx.h"
-#include <Spatial.h>
+#include <FdoSpatial.h>
 
 #include "mgSpatialUtility.h"
 #include "mgSpatialGeometryValidity.h"

@@ -19,7 +19,7 @@
 
 #include "stdafx.h"
 #include "mgIMultiPolygonImp.h"
-#include <Geometry.h>
+#include <FdoGeometry.h>
 #include "mgIPolygon.h"
 #include "mgObjectFactory.h"
 

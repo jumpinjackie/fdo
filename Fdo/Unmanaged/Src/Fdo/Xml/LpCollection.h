@@ -22,7 +22,7 @@
 #ifdef _WIN32
 #pragma once
 #endif
-#include <Std.h>
+#include <FdoStd.h>
 
 template <class OBJ> class FdoXmlLpCollection : public FdoNamedCollection<OBJ, FdoSchemaException>
 {

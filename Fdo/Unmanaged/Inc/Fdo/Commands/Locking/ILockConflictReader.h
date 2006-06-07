@@ -23,7 +23,7 @@
 #pragma once
 #endif
 
-#include <Std.h>
+#include <FdoStd.h>
 #include <Fdo/Commands/Locking/ConflictType.h>
 #include <Fdo/Commands/PropertyValueCollection.h>
 

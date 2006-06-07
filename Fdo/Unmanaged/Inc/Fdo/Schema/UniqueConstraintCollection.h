@@ -23,7 +23,7 @@
 #pragma once
 #endif
 
-#include <Std.h>
+#include <FdoStd.h>
 #include <Fdo/Schema/UniqueConstraint.h>
 #include <Fdo/Schema/SchemaException.h>
 

@@ -22,7 +22,7 @@
 #pragma once
 #endif
 
-#include <Std.h>
+#include <FdoStd.h>
 #include <Fdo/Schema/FeatureClass.h>
 #include <Fdo/Schema/AssociationPropertyDefinition.h>
 #include <Fdo/Schema/ClassType.h>

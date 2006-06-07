@@ -24,7 +24,7 @@
 #pragma once
 #endif
 
-#include <Common.h>
+#include <FdoCommon.h>
 #include <Common/Collection.h>
 #include <Geometry/IDirectPosition.h>
 #include <Geometry/IEnvelope.h>

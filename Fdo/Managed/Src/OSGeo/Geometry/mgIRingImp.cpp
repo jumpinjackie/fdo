@@ -20,7 +20,7 @@
 
 #include "stdafx.h"
 #include "mgIRingImp.h"
-#include <Geometry.h>
+#include <FdoGeometry.h>
 #include "mgICurveSegmentAbstractImp.h"
 #include "mgObjectFactory.h"
 

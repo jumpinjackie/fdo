@@ -19,7 +19,7 @@
 
 #include "stdafx.h"
 #include "mgICurveStringImp.h"
-#include <Geometry.h>
+#include <FdoGeometry.h>
 #include "mgICurveSegmentAbstractImp.h"
 #include "mgICurveAbstractImp.h"
 #include "mgObjectFactory.h"

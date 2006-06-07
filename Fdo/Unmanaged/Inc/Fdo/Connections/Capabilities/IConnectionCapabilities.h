@@ -23,7 +23,7 @@
 #pragma once
 #endif
 
-#include <Std.h>
+#include <FdoStd.h>
 #include <Fdo/Connections/Capabilities/ThreadCapability.h>
 #include <Fdo/Commands/SpatialContext/SpatialContextExtentType.h>
 #include <Fdo/Commands/Locking/LockType.h>

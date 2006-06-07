@@ -27,7 +27,7 @@
 #include <limits.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <Common.h>
+#include <FdoCommon.h>
 
 FdoIoFileStream::FdoIoFileStream(FdoString* fileName, FdoString* accessModes ) :
     mbMyFp(true),

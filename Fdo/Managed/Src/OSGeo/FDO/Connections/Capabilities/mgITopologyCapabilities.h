@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <Std.h>
+#include <FdoStd.h>
 #include <Fdo\Connections\Capabilities\ITopologyCapabilities.h>
 
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES

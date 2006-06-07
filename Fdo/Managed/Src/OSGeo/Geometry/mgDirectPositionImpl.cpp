@@ -20,7 +20,7 @@
 #include "stdafx.h"
 #include "mgDirectPositionImpl.h"
 #include "mgIDirectPositionImp.h"
-#include <Geometry.h>
+#include <FdoGeometry.h>
 
 FdoDirectPositionImpl *NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::GetImpObj()
 {

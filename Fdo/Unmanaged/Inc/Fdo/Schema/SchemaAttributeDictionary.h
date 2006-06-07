@@ -22,7 +22,7 @@
 #pragma once
 #endif
 
-#include <Std.h>
+#include <FdoStd.h>
 
 class FdoSchemaElement;
 class FdoSchemaXmlContext;

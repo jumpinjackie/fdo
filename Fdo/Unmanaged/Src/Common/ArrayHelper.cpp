@@ -17,7 +17,7 @@
 //  
 #include <memory.h>
 
-#include <Common.h>
+#include <FdoCommon.h>
 
 #define MIN_ALLOC 1
 #define GROWTH_FACTOR 1     /* Proportion of array size to grow when needed. */

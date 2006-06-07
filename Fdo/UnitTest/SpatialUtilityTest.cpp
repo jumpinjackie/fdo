@@ -15,8 +15,8 @@
 
 #include "Pch.h"
 #include "SpatialUtilityTest.h"
-#include <Geometry.h>
-#include <Spatial.h>
+#include <FdoGeometry.h>
+#include <FdoSpatial.h>
 #include <math.h>
 
 #ifdef _DEBUG

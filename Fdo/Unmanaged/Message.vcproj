@@ -200,9 +200,9 @@
 				>
 				<Tool
 					Name="VCCustomBuildTool"
-					Description="Performing Custom Build Step:  Building Message.h and Message.rc from Message.mc"
-					CommandLine="mc -U -h Inc\ -r Src\Message\ Src/Message/Message.mc&#x0D;&#x0A;ren Src\Message\Message.rc MessageDynamic.rc&#x0D;&#x0A;copy Src\Message\MessageStatic.rc+Src\Message\MessageDynamic.rc Src\Message\Message.rc&#x0D;&#x0A;del Src\Message\MessageDynamic.rc&#x0D;&#x0A;"
-					Outputs="Inc\Message.h;Src\Message\Message.rc"
+					Description="Performing Custom Build Step:  Building FdoMessage.h and Message.rc from Message.mc"
+					CommandLine="mc -U -h Inc\ -r Src\Message\ Src/Message/Message.mc&#x0D;&#x0A;ren Src\Message\Message.rc MessageDynamic.rc&#x0D;&#x0A;copy Src\Message\MessageStatic.rc+Src\Message\MessageDynamic.rc Src\Message\Message.rc&#x0D;&#x0A;del Src\Message\MessageDynamic.rc&#x0D;&#x0A;ren Inc\Message.h FdoMessage.h"
+					Outputs="Inc\FdoMessage.h;Src\Message\Message.rc"
 				/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -210,10 +210,10 @@
 				>
 				<Tool
 					Name="VCCustomBuildTool"
-					Description="Performing Custom Build Step:  Building Message.h and Message.rc from Message.mc"
-					CommandLine="mc -U -h Inc\ -r Src\Message\ Src/Message/Message.mc&#x0D;&#x0A;ren Src\Message\Message.rc MessageDynamic.rc&#x0D;&#x0A;copy Src\Message\MessageStatic.rc+Src\Message\MessageDynamic.rc Src\Message\Message.rc&#x0D;&#x0A;del Src\Message\MessageDynamic.rc&#x0D;&#x0A;"
+					Description="Performing Custom Build Step:  Building FdoMessage.h and Message.rc from Message.mc"
+					CommandLine="mc -U -h Inc\ -r Src\Message\ Src/Message/Message.mc&#x0D;&#x0A;ren Src\Message\Message.rc MessageDynamic.rc&#x0D;&#x0A;copy Src\Message\MessageStatic.rc+Src\Message\MessageDynamic.rc Src\Message\Message.rc&#x0D;&#x0A;del Src\Message\MessageDynamic.rc&#x0D;&#x0A;ren Inc\Message.h FdoMessage.h"
 					AdditionalDependencies=""
-					Outputs="Inc\Message.h;Src\Message\Message.rc"
+					Outputs="Inc\FdoMessage.h;Src\Message\Message.rc"
 				/>
 			</FileConfiguration>
 		</File>

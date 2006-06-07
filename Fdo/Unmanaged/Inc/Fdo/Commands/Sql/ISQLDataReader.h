@@ -21,7 +21,7 @@
 #pragma once
 #endif
 
-#include <Std.h>
+#include <FdoStd.h>
 
 /// \brief
 /// The FdoISQLDataReader interface provides a forward-only, read-only

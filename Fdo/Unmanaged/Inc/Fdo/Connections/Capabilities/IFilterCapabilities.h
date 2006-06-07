@@ -23,7 +23,7 @@
 #pragma once
 #endif
 
-#include <Std.h>
+#include <FdoStd.h>
 #include <Fdo/Filter/ConditionType.h>
 #include <Fdo/Filter/DistanceOperations.h>
 #include <Fdo/Filter/SpatialOperations.h>

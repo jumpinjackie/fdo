@@ -24,7 +24,7 @@
 #pragma once
 #endif
 
-#include <Common.h>
+#include <FdoCommon.h>
 #include <Common/Dimensionality.h>
 #include <Geometry/IDirectPosition.h>
 #include <Geometry/ILinearRing.h>

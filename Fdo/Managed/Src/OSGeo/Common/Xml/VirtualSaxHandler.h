@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <Common.h>
+#include <FdoCommon.h>
 #include "Runtime\ProtocolExt.h"
 #include "Common\Xml\mgXmlSaxHandler.h"
 

@@ -23,7 +23,7 @@
 #pragma once
 #endif
 
-#include <Std.h>
+#include <FdoStd.h>
 #include <Fdo/Connections/Capabilities/ArgumentDefinition.h>
 #include <Fdo/Connections/ConnectionException.h>
 

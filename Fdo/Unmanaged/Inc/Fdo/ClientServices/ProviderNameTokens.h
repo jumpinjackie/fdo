@@ -26,8 +26,8 @@
 #endif
 
 // Include definitions
-#include <Std.h>
-#include <Common.h>
+#include <FdoStd.h>
+#include <FdoCommon.h>
 #include <Common/Vector.h>
 #include <Fdo/ClientServices/ClientServices.h>
 

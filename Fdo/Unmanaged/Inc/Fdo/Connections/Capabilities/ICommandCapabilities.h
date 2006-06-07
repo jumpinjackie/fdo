@@ -23,7 +23,7 @@
 #pragma once
 #endif
 
-#include <Std.h>
+#include <FdoStd.h>
 
 /// \brief
 /// The FdoICommandCapabilities interface declares the feature provider's level

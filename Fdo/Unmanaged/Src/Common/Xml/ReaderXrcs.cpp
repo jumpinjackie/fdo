@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //  
-#include <Common.h>
+#include <FdoCommon.h>
 #include "ReaderXrcs.h"
 #include <Common/Xml/UtilXrcs.h>
 #include <Common/Semaphore.h>

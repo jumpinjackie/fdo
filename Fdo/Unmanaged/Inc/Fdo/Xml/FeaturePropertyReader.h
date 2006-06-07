@@ -23,7 +23,7 @@
 #pragma once
 #endif
 
-#include <Std.h>
+#include <FdoStd.h>
 
 class FdoXmlFeatureContext;
 class FdoXmlFeatureFlags;

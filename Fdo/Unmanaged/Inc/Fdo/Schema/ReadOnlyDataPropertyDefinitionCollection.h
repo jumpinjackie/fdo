@@ -22,7 +22,7 @@
 #pragma once
 #endif
 
-#include <Std.h>
+#include <FdoStd.h>
 #include <Fdo/Schema/SchemaElement.h>
 #include <Fdo/Schema/SchemaException.h>
 #include <Fdo/Schema/ClassDefinition.h>

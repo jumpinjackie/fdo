@@ -23,7 +23,7 @@
 #pragma once
 #endif
 
-#include <Std.h>
+#include <FdoStd.h>
 #include <Fdo/Connections/IConnection.h>
 #include <Fdo/Commands/SpatialContext/ISpatialContextReader.h>
 #include <Fdo/Commands/ICommand.h>

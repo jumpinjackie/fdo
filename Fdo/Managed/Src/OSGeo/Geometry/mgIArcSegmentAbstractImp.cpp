@@ -19,7 +19,7 @@
 
 #include "stdafx.h"
 #include "mgIArcSegmentAbstractImp.h"
-#include <Geometry.h>
+#include <FdoGeometry.h>
 #include "mgIDirectPosition.h"
 #include "mgICurveSegmentAbstractImp.h"
 #include "mgObjectFactory.h"

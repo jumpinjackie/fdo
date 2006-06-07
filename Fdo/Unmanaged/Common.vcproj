@@ -465,7 +465,7 @@
 				>
 			</File>
 			<File
-				RelativePath="Inc\Common.h"
+				RelativePath="Inc\FdoCommon.h"
 				>
 			</File>
 			<File

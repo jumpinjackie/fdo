@@ -23,7 +23,7 @@
 #pragma once
 #endif
 
-#include <Message.h>
+#include <FdoMessage.h>
 #include <stdarg.h>
 
 #ifdef  _DEBUG

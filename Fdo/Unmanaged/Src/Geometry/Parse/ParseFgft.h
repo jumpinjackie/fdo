@@ -22,13 +22,13 @@
 #include <stdint.h>
 #endif
 
-#include <Common.h>
+#include <FdoCommon.h>
 #ifdef _WIN32
 typedef unsigned _int32	FdoUInt32;
 #else
 typedef uint32_t FdoUInt32;
 #endif
-#include <Geometry.h>
+#include <FdoGeometry.h>
 #include "LexFgft.h"
 #ifdef _DEBUG
 #include <stdio.h>

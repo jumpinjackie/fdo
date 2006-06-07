@@ -23,7 +23,7 @@
 #define FdoSpatialUtilityGeometryExtents___H	1
 
 #include <math.h>
-#include <Common.h>
+#include <FdoCommon.h>
 
 class FdoSpatialUtilityGeometryExtents
 {

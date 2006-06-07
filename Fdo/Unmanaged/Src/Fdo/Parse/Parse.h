@@ -22,7 +22,7 @@
 #ifndef _WIN32
 #include <stdint.h>
 #endif
-#include "Std.h"
+#include "FdoStd.h"
 #ifdef _WIN32
 typedef unsigned _int16	FdoUInt16;
 typedef unsigned _int32	FdoUInt32;

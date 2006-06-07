@@ -23,7 +23,7 @@
 #pragma once
 #endif
 
-#include <Std.h>
+#include <FdoStd.h>
 
 /// \brief
 /// The FdoConnectionException class is the exception type thrown from classes in the Connections package.

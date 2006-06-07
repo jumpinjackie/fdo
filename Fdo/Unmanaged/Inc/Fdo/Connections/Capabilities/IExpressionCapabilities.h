@@ -23,7 +23,7 @@
 #pragma once
 #endif
 
-#include <Std.h>
+#include <FdoStd.h>
 #include <Fdo/Expression/ExpressionType.h>
 #include <Fdo/Connections/Capabilities/FunctionDefinitionCollection.h>
 

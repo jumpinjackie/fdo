@@ -23,7 +23,7 @@
 #pragma once
 #endif
 
-#include <Common.h>
+#include <FdoCommon.h>
 #include <Utilities/SchemaMgr/Overrides/GeometricContentType.h>
 
 class FdoSmOvGeometricContentTypeMapper

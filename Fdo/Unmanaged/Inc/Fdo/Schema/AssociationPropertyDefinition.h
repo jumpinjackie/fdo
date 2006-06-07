@@ -22,7 +22,7 @@
 #pragma once
 #endif
 
-#include <Std.h>
+#include <FdoStd.h>
 #include <Fdo/Schema/PropertyDefinition.h>
 #include <Fdo/Schema/DeleteRule.h>
 #include <Fdo/Schema/ClassDefinition.h>

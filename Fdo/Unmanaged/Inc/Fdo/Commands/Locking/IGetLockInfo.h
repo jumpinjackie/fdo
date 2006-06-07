@@ -23,7 +23,7 @@
 #pragma once
 #endif
 
-#include <Std.h>
+#include <FdoStd.h>
 #include <Fdo/Commands/IFeatureCommand.h>
 #include <Fdo/Connections/IConnection.h>
 #include <Fdo/Commands/Locking/ILockedObjectReader.h>

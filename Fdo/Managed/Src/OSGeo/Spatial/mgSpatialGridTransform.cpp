@@ -19,7 +19,7 @@
 
 #include "stdafx.h"
 #include "mgSpatialGridTransform.h"
-#include <Spatial.h>
+#include <FdoSpatial.h>
 
 FdoSpatialGridTransform* NAMESPACE_OSGEO_SPATIAL::SpatialGridTransform::GetImpObj()
 {

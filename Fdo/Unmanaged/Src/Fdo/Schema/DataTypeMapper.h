@@ -23,7 +23,7 @@
 
 #include <map>
 #include <string>
-#include <Std.h>
+#include <FdoStd.h>
 #include <Fdo/Schema/DataType.h>
 #include <Fdo/Schema/SchemaException.h>
 

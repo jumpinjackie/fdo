@@ -20,7 +20,7 @@
 
 #include "stdafx.h"
 #include "mgICircularArcSegmentImp.h"
-#include <Geometry.h>
+#include <FdoGeometry.h>
 
 FdoICircularArcSegment *NAMESPACE_OSGEO_GEOMETRY::ICircularArcSegmentImp::GetImpObj()
 {

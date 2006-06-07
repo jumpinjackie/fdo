@@ -20,7 +20,7 @@
 
 #include "stdafx.h"
 #include "mgILinearRingImp.h"
-#include <Geometry.h>
+#include <FdoGeometry.h>
 #include "mgIDirectPositionImp.h"
 #include "mgObjectFactory.h"
 

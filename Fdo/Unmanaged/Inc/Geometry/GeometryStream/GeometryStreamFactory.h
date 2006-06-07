@@ -24,7 +24,7 @@
 #pragma once
 #endif
 
-#include <Common.h>
+#include <FdoCommon.h>
 #include <Geometry/GeometryStream/GeometryStreamReader.h>
 #include <Geometry/GeometryStream/GeometryStreamWriter.h>
 

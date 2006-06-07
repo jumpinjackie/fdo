@@ -22,7 +22,7 @@
 #pragma once
 #endif
 
-#include <Std.h>
+#include <FdoStd.h>
 
 /// \brief
 /// FdoXmlFeaturePropertyWriter writes features in GML format. It is similar to 

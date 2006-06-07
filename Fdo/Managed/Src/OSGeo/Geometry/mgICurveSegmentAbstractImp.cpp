@@ -19,7 +19,7 @@
 
 
 #include "stdafx.h"
-#include <Geometry.h>
+#include <FdoGeometry.h>
 #include <Geometry/ienvelope.h>
 
 #include "mgICurveSegmentAbstractImp.h"

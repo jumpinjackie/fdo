@@ -15,7 +15,7 @@
 
 #include "Pch.h"
 #include "GeometryTest.h"
-#include <Geometry.h>
+#include <FdoGeometry.h>
 #include <Common/StringP.h>
 #include <../Src/Common/StringUtility.h>
 

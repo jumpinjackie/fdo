@@ -20,7 +20,7 @@
 
 #include "stdafx.h"
 #include "mgIGeometryImp.h"
-#include <Geometry.h>
+#include <FdoGeometry.h>
 #include "mgIEnvelope.h"
 #include "mgObjectFactory.h"
 

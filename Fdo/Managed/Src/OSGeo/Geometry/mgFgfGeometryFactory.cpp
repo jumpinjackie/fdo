@@ -19,7 +19,7 @@
 
 #include "stdafx.h"
 #include "mgFgfGeometryFactory.h"
-#include <Geometry.h>
+#include <FdoGeometry.h>
 
 #include "mgIArcSegmentAbstractImp.h"
 #include "mgICircularArcSegmentImp.h"

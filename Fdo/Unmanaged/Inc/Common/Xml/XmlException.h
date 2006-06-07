@@ -23,7 +23,7 @@
 #pragma once
 #endif
 
-#include <Common.h>
+#include <FdoCommon.h>
 
 /// \brief
 /// FdoXmlException is a root class for exception type thrown from the

@@ -21,7 +21,7 @@
 #pragma once
 #endif
 
-#include <Common.h>
+#include <FdoCommon.h>
 #include <Geometry/IGeometry.h>
 #include "GeometryUtility.h"
 

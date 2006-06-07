@@ -23,7 +23,7 @@
 #pragma once
 #endif
 
-#include <Std.h>
+#include <FdoStd.h>
 #include <Fdo/Commands/ICommand.h>
 #include <Fdo/Schema/FeatureSchema.h>
 #include <Fdo/Commands/Schema/PhysicalSchemaMapping.h>

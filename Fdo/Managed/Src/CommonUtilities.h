@@ -19,7 +19,7 @@
 #pragma once
 
 #include <string.h>
-#include <Common.h>
+#include <FdoCommon.h>
 
 class StringToUni
 {

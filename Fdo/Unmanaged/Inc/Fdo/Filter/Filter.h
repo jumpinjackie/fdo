@@ -23,7 +23,7 @@
 #pragma once
 #endif
 
-#include <Std.h>
+#include <FdoStd.h>
 #include <Fdo/Filter/BinaryLogicalOperations.h>
 #include <Fdo/Commands/IdentifierCollection.h>
 

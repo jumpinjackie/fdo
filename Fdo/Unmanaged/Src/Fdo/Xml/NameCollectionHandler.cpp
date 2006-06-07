@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //  
-#include <Common.h>
+#include <FdoCommon.h>
 #include <Common/Xml/CharDataHandler.h>
 #include <Fdo/Xml/Context.h>
 #include <Fdo/Xml/NameCollectionHandler.h>

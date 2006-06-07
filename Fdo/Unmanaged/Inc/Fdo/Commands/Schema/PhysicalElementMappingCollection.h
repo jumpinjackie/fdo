@@ -23,7 +23,7 @@
 #pragma once
 #endif
 
-#include <Std.h>
+#include <FdoStd.h>
 #include <Common/NamedCollection.h>
 #include <Fdo/Commands/CommandException.h>
 #include <Fdo/Commands/Schema/PhysicalElementMapping.h>

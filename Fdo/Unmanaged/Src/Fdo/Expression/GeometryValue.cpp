@@ -18,7 +18,7 @@
 #include <Fdo/Expression/GeometryValue.h>
 #include <Fdo/Expression/IExpressionProcessor.h>
 #include "StringUtility.h"
-#include <Geometry.h>
+#include <FdoGeometry.h>
 
 // Constructs a default instance of a GeometryValue with a value of null.
 FdoGeometryValue* FdoGeometryValue::Create()

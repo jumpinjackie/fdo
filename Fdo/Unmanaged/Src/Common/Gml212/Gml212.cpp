@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //  
-#include <Common.h>
+#include <FdoCommon.h>
 
 const FdoStringP FdoGml212::mAbstractGeometry(      L"AbstractGeometry", true );
 const FdoStringP FdoGml212::mPoint(	                L"Point", true );

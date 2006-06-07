@@ -18,7 +18,7 @@
 #ifndef FdoSpatialUtilityCircularArc___H
 #define FdoSpatialUtilityCircularArc___H	1
 
-#include <Geometry.h>
+#include <FdoGeometry.h>
 #include <Geometry/EnvelopeImpl.h>
 
 #include "SpatialUtilityVectorAngle.h"

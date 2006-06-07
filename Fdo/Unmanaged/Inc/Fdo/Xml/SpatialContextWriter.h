@@ -22,7 +22,7 @@
 #pragma once
 #endif
 
-#include <Std.h>
+#include <FdoStd.h>
 #include <Fdo/Commands/SpatialContext/SpatialContextExtentType.h>
 #include <Fdo/Xml/SpatialContextFlags.h>
 

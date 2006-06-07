@@ -18,7 +18,7 @@
 #ifdef _WIN32
 #pragma once
 #endif
-#include <Common.h>
+#include <FdoCommon.h>
 
 class FdoStringUtility
 {

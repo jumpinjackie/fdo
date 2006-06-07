@@ -20,7 +20,7 @@
 //
 
 
-#include <Common.h>
+#include <FdoCommon.h>
 #include <xercesc/util/BinInputStream.hpp>
 #define XALAN_USE_NATIVE_WCHAR_T 1
 #include <xalanc/XalanTransformer/XalanTransformer.hpp>

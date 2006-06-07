@@ -17,7 +17,7 @@
 #ifndef FdoSpatialGridTransform___H
 #define FdoSpatialGridTransform___H	1
 
-#include <Common.h>
+#include <FdoCommon.h>
 
 
 /// \brief

@@ -25,8 +25,8 @@
 #error wchar_t must be defined (/Zc:wchar or project~properties~C/C++~Language~"Treat wchar_t as built in type"="Yes")
 #endif
 #endif
-#include <Std.h>
-#include <Geometry.h>
+#include <FdoStd.h>
+#include <FdoGeometry.h>
 
 ////////////////////////////////////////////////////////////////
 // Commands

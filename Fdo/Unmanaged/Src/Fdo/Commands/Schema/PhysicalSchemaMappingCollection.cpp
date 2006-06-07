@@ -17,7 +17,7 @@
 //  
 #include <iostream>
 #include <fstream>
-#include <Std.h>
+#include <FdoStd.h>
 #include <Common/Vector.h>
 #include <Fdo/Xml/Context.h>
 #include <Fdo/Commands/Schema/PhysicalSchemaMappingCollection.h>

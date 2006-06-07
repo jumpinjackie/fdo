@@ -20,7 +20,7 @@
 
 #include "stdafx.h"
 #include "mgIGeometricAggregateAbstractImp.h"
-#include <Geometry.h>
+#include <FdoGeometry.h>
 
 FdoIGeometricAggregateAbstract * NAMESPACE_OSGEO_GEOMETRY::IGeometricAggregateAbstractImp::GetImpObj()
 {

@@ -23,7 +23,7 @@
 #pragma once
 #endif
 
-#include <Std.h>
+#include <FdoStd.h>
 #include <Fdo/Filter/BinaryLogicalOperator.h>
 #include <Fdo/Filter/ComparisonCondition.h>
 #include <Fdo/Filter/DistanceCondition.h>

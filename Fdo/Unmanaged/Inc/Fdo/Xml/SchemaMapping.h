@@ -22,7 +22,7 @@
 #pragma once
 #endif
 
-#include <Std.h>
+#include <FdoStd.h>
 #include <Fdo/Xml/Serializable.h>
 #include <Fdo/Commands/Schema/PhysicalSchemaMapping.h>
 #include <Fdo/Xml/ClassMappingCollection.h>

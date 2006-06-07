@@ -16,7 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //  
 #include <malloc.h>
-#include <Common.h>
+#include <FdoCommon.h>
 #include <xercesc/sax2/SAX2XMLReader.hpp>
 #include "../ConvertUTF.h"
 #include <Common/Xml/UtilXrcs.h>

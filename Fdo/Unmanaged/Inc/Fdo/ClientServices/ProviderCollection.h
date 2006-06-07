@@ -27,7 +27,7 @@
 
 // Include definitions
 #include <vector>
-#include <Std.h>
+#include <FdoStd.h>
 #include <Fdo/ClientServices/ClientServices.h>
 #include <Fdo/ClientServices/Provider.h>
 

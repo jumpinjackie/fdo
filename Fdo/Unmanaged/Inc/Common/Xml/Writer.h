@@ -20,7 +20,7 @@
 //
 
 
-#include <Common.h>
+#include <FdoCommon.h>
 
 /// \brief
 /// FdoXmlWriter writes an XML document to a text or binary stream. 

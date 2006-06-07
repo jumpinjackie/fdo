@@ -19,7 +19,7 @@
 
 #include "stdafx.h"
 #include "mgObjectFactory.h"
-#include <Geometry.h>
+#include <FdoGeometry.h>
 #include <Geometry/EnvelopeImpl.h>
 
 #include "mgGeometryFactoryAbstract.h"

@@ -24,7 +24,7 @@
 #endif
 #include <vector>
 
-#include <Std.h>
+#include <FdoStd.h>
 
 class FdoXmlCoordinateGroup;
 class FdoXmlGeometry;

@@ -19,7 +19,7 @@
 
 #include "stdafx.h"
 #include "mgIMultiPointImp.h"
-#include <Geometry.h>
+#include <FdoGeometry.h>
 #include "mgIPoint.h"
 #include "mgObjectFactory.h"
 

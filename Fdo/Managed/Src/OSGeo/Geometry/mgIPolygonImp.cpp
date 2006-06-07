@@ -19,7 +19,7 @@
 
 #include "stdafx.h"
 #include "mgIPolygonImp.h"
-#include <Geometry.h>
+#include <FdoGeometry.h>
 #include "mgILinearRing.h"
 #include "mgObjectFactory.h"
 

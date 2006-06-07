@@ -17,7 +17,7 @@
 //  
 #include <string.h>
 #include <limits.h>
-#include <Common.h>
+#include <FdoCommon.h>
 
 FdoIoMemoryStream::FdoIoMemoryStream( FdoSize bufferSize ) :
     mBufferSize(bufferSize),

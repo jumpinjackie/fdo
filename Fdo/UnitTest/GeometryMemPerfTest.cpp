@@ -28,7 +28,7 @@
 #include    <errno.h>
 #endif
 
-#include "Geometry.h"
+#include "FdoGeometry.h"
 
 static bool VERBOSE = true;
 

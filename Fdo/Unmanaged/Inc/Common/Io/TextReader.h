@@ -20,7 +20,7 @@
 //
 
 
-#include <Common.h>
+#include <FdoCommon.h>
 
 /// \brief
 /// FdoIoTextReader reads from a binary stream containing UTF8 characters.

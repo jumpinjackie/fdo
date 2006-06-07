@@ -17,7 +17,7 @@
 #ifndef FdoSpatialUtility___H
 #define FdoSpatialUtility___H	1
 
-#include <Geometry.h>
+#include <FdoGeometry.h>
 
 #include <Spatial/SpatialGeometryValidity.h>
 #include <Fdo/Filter/SpatialCondition.h>

@@ -21,7 +21,7 @@
 #pragma once
 #endif
 
-#include <Std.h>
+#include <FdoStd.h>
 #include <Fdo/Raster/RasterDataModelType.h>
 #include <Fdo/Raster/RasterDataOrganization.h>
 #include <Fdo/Raster/IRasterPropertyDictionary.h>

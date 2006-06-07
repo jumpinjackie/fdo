@@ -23,7 +23,7 @@
 #pragma once
 #endif
 
-#include <Std.h>
+#include <FdoStd.h>
 #include <Common/IStreamReaderTmpl.h>
 
 /// \brief

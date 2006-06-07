@@ -23,7 +23,7 @@
 #pragma once
 #endif
 
-#include <Std.h>
+#include <FdoStd.h>
 #include <Fdo/Schema/ClassDefinition.h>
 #include <Fdo/Raster/IRaster.h>
 #include <Fdo/Expression/LOBValue.h>

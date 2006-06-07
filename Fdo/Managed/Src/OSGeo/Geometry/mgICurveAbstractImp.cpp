@@ -20,7 +20,7 @@
 
 #include "stdafx.h"
 #include "mgICurveAbstractImp.h"
-#include <Geometry.h>
+#include <FdoGeometry.h>
 #include "mgIDirectPosition.h"
 #include "mgObjectFactory.h"
 

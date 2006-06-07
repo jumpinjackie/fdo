@@ -21,7 +21,7 @@
 #pragma once
 #endif
 
-#include <Std.h>
+#include <FdoStd.h>
 
 /// \brief
 /// The FdoRasterDataType enumeration specifies the type of data stored in the Raster Image.

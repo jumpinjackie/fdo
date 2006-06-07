@@ -20,7 +20,7 @@
 
 #include "stdafx.h"
 #include "mgIEnvelopeImp.h"
-#include <Geometry.h>
+#include <FdoGeometry.h>
 
 FdoIEnvelope * NAMESPACE_OSGEO_GEOMETRY::IEnvelopeImp::GetImpObj()
 {

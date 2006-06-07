@@ -19,7 +19,7 @@
 
 #include "stdafx.h"
 #include "mgIMultiLineStringImp.h"
-#include <Geometry.h>
+#include <FdoGeometry.h>
 #include "mgILineString.h"
 #include "mgObjectFactory.h"
 

@@ -23,7 +23,7 @@
 #pragma once
 #endif
 
-#include <Std.h>
+#include <FdoStd.h>
 #include <Fdo/Connections/IConnection.h>
 #include <Fdo/Connections/ITransaction.h>
 #include <Fdo/Commands/ParameterValueCollection.h>

@@ -25,7 +25,7 @@
 
 class FdoCommonParse;
 
-#include <Std.h>
+#include <FdoStd.h>
 #include <Fdo/Expression/DataValue.h>
 #include <Parse/Types.h>
 
