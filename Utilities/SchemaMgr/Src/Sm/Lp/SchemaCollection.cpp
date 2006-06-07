@@ -180,10 +180,13 @@ void FdoSmLpSchemaCollection::Load()
             // There is a config doc so load schemas from it first.
             for ( i = 0; i < schemas->GetCount(); i++ ) {
                 FdoFeatureSchemaP schema = schemas->GetItem(i);
-                FdoPhysicalSchemaMappingP mapping = mappings->GetItem(
-                    providerName, 
-                    schema->GetName() 
-                );
+                FdoPhysicalSchemaMappingP mapping;
+                
+                if ( mappings ) 
+                    mapping = mappings->GetItem(
+                        providerName, 
+                        schema->GetName() 
+                    );
 
                 FdoSmLpSchemaP lpSchema = NewSchema( schema, true );
 

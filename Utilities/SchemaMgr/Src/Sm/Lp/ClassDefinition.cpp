@@ -481,7 +481,7 @@ FdoStringP FdoSmLpClassBase::UniqueColumnName(
 
         // Set column name to the adjusted valid name, to prevent duplicate error
         // messages for inherited classes.
-        outName = (FdoString*) workName.Mid( 0, colNameMaxLen - 1, true );
+        outName = (FdoString*) workName.Mid( 0, colNameMaxLen, true );
     }
     else {
         outName = pPhysical->GetDcColumnName(workName);
@@ -1834,8 +1834,7 @@ void FdoSmLpClassBase::FinalizePhDbObject()
         }
     }
     else {
-        switch ( GetElementState() ) {
-	    case FdoSchemaElementState_Added:
+        if ( (GetElementState() == FdoSchemaElementState_Added) || GetIsFromFdo() ) {
 
             if ( mTableMapping != FdoSmOvTableMappingType_BaseTable ) {
                 if ( mDbObjectName == L"" ) 
@@ -1854,6 +1853,8 @@ void FdoSmLpClassBase::FinalizePhDbObject()
                         mDbObjectName = pPhysical->GetDcDbObjectName( mDbObjectName );
     
                     if ( mbIsFixedDbObject &&  dbObject ) {
+                        // When db Object is fixed, always latch onto db object,
+                        // don't create a new one.
                         mPhDbObject = dbObject;
                     }
                     else {
@@ -1871,11 +1872,8 @@ void FdoSmLpClassBase::FinalizePhDbObject()
                     }
 		        }
             }
-
-		    break;
-
-        default:
-
+        }
+        else {
             // Load the class table
 
             mPhDbObject = FindPhDbObject();
@@ -1885,8 +1883,6 @@ void FdoSmLpClassBase::FinalizePhDbObject()
                     viewObj->SetRootObject( pPhysical->FindDbObject(mRootDbObjectName, mOwner, mDatabase) );
                 }
             }
-
-            break;
         }
     }
 }
@@ -2122,30 +2118,42 @@ FdoSmLpDbObjectP FdoSmLpClassBase::FinalizeNewDbObject(
 	else {
 		// There may not be an explicit dependency to join a class table to this class's
 		// class table. In this case, join them using their primary key columns.
-		if ( FdoStringP(L"F_FEATURE").ICompare(lpDbObject->GetName()) == 0 ) {
+        if ( FdoStringP(L"F_FEATURE").ICompare(lpDbObject->GetName()) == 0 ) {
+            bool hasIdCols = true;
+            for ( int i = 0; i < mIdentityProperties->GetCount(); i++ ) { 
+                if ( !(FdoSmLpDataPropertyP(mIdentityProperties->GetItem(i))->GetColumn()) ) {
+                    hasIdCols = false;
+                    break;
+                }
+            }
 
-            // When the table is F_Feature then try to join to this class's feature id column.
-			FdoSmLpDataPropertyP pFeatIdProp = GetFeatIdProperty();
-			
-			if ( pFeatIdProp && pFeatIdProp->GetColumn() && ( pFeatIdProp->RefContainingDbObject()->GetQName() == mDbObject->GetDbObject()->GetQName() ) )  {
-				lpDbObject->SetPathDist(1);
-				lpDbObject->SetTargetDbObject(mDbObject);
-				lpDbObject->AddSourceColumn( lpDbObject->GetPkeyColumns()->GetItem(0) );
-				lpDbObject->AddTargetColumn( GetFeatIdProperty()->GetColumn() );
-			}
-		}
-		else {
-			// Otherwise try to join to this class's identity property columns.
-			if ( bClassTable && (mIdentityProperties->GetCount() > 0) && (lpDbObject->GetPkeyColumns()->GetCount() == mIdentityProperties->GetCount()) ) {
-				lpDbObject->SetPathDist(1);
-				lpDbObject->SetTargetDbObject(mDbObject);
-				for ( int i = 0; i < lpDbObject->GetPkeyColumns()->GetCount(); i++ ) 
-					lpDbObject->AddSourceColumn( lpDbObject->GetPkeyColumns()->GetItem(i) );
-				for ( int i = 0; i < mIdentityProperties->GetCount(); i++ ) 
-					lpDbObject->AddTargetColumn( FdoSmLpDataPropertyP(mIdentityProperties->GetItem(i))->GetColumn() );
-			}
-		}
-	}
+            // Set the join columns only if they all
+            // exist.
+            if ( hasIdCols ) {
+
+                // When the table is F_Feature then try to join to this class's feature id column.
+		        FdoSmLpDataPropertyP pFeatIdProp = GetFeatIdProperty();
+    			
+		        if ( pFeatIdProp && pFeatIdProp->GetColumn() && ( pFeatIdProp->RefContainingDbObject()->GetQName() == mDbObject->GetDbObject()->GetQName() ) )  {
+			        lpDbObject->SetPathDist(1);
+			        lpDbObject->SetTargetDbObject(mDbObject);
+			        lpDbObject->AddSourceColumn( lpDbObject->GetPkeyColumns()->GetItem(0) );
+			        lpDbObject->AddTargetColumn( GetFeatIdProperty()->GetColumn() );
+                }
+            }
+            else {
+		        // Otherwise try to join to this class's identity property columns.
+		        if ( bClassTable && (mIdentityProperties->GetCount() > 0) && (lpDbObject->GetPkeyColumns()->GetCount() == mIdentityProperties->GetCount()) ) {
+			        lpDbObject->SetPathDist(1);
+			        lpDbObject->SetTargetDbObject(mDbObject);
+			        for ( int i = 0; i < lpDbObject->GetPkeyColumns()->GetCount(); i++ ) 
+				        lpDbObject->AddSourceColumn( lpDbObject->GetPkeyColumns()->GetItem(i) );
+			        for ( int i = 0; i < mIdentityProperties->GetCount(); i++ ) 
+				        lpDbObject->AddTargetColumn( FdoSmLpDataPropertyP(mIdentityProperties->GetItem(i))->GetColumn() );
+                }
+            }
+        }
+    }
 
 	return( lpDbObject );
 }

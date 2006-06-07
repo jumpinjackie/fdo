@@ -461,8 +461,9 @@ void FdoSmLpGeometricPropertyDefinition::Finalize()
 	    SetContainingDbObject(pPhDbObject, pDbObjectName);
 
         // Determine column depending on whether this is a new property.
-        switch ( GetElementState() ) {
-        case FdoSchemaElementState_Added:
+        if ( (GetElementState() == FdoSchemaElementState_Added) || 
+            (GetIsFromFdo() && (FdoSmOvGeometricColumnType_Double != columnType))
+        ) {
 
             if ( pPrevProperty && (FdoStringP(this->GetContainingDbObjectName()).ICompare(pPrevProperty->GetContainingDbObjectName()) == 0) ) {
 	    	    // New property in same table as the base property. New property
@@ -499,10 +500,8 @@ void FdoSmLpGeometricPropertyDefinition::Finalize()
 #pragma message ("ToDo: Support inherited SI columns and persisted SI column names")
             if (mWantSiColumns)
                 AddSiColumns();
-
-	        break;
-
-        case FdoSchemaElementState_Modified:
+        }
+        else if ( GetElementState() == FdoSchemaElementState_Modified ) {
 	        if ( pPhDbObject ) {
                 if (FdoSmOvGeometricColumnType_Double == columnType) {
     		        SetColumnX( pPhDbObject->GetColumns()->FindItem(GetColumnNameX()) );
@@ -524,9 +523,8 @@ void FdoSmLpGeometricPropertyDefinition::Finalize()
                 if (pPhColumnGeom != NULL)
                     pPhColumnGeom->SetSpatialContextInfo( scInfo );
             }
-            break;
-
-        default:
+        }
+        else {
             // For existing property, find the column in the containing table.
 	        if ( pPhDbObject ) {
                 if (FdoSmOvGeometricColumnType_Double == columnType) {
@@ -595,8 +593,6 @@ void FdoSmLpGeometricPropertyDefinition::Finalize()
                     }
                 }
             }
-
-	        break;
         }
     }
 }

@@ -221,23 +221,24 @@ void FdoSmLpSimplePropertyDefinition::CreateColumn( FdoSmPhDbObjectP dbObject )
             // For foreign columns, a column in the referencing view is 
             // always created.
 
-            const FdoSmPhColumn* foundColumn = NULL;
+            FdoSmPhColumnP foundColumn;
             if ( (!ColumnIsForeign()) && GetIsFixedColumn() ) {
                 // By default, column override is match to column
                 // by case-sensitive name compare
-                foundColumn = dbObject->RefColumns()->RefItem(columnName);
+                foundColumn = dbObject->GetColumns()->FindItem(columnName);
                 if ( !foundColumn ) {
                     // However, if no case-sensitive match, a match to column
                     // of default case is done if such a column exists.
                     FdoStringP CiColumnName = pPhysical->GetDcColumnName(columnName);
                     if ( CiColumnName != columnName ) {
                         columnName = CiColumnName;
-                        foundColumn = dbObject->RefColumns()->RefItem(columnName);
-                        // Matched to default case column so change case of 
+                        foundColumn = dbObject->GetColumns()->FindItem(columnName);
+                        // Matched to default case so change case of
                         // property's column name.
                         SetColumnName(columnName);
                     }
                 }
+                SetColumn( foundColumn );
             }
 
 

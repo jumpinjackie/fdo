@@ -616,8 +616,7 @@ void FdoSmLpDataPropertyDefinition::Finalize()
             (!GetNullable()) )
 			AddNotNullBaseMappingError();
 
-        switch ( GetElementState() ) {
-		case FdoSchemaElementState_Added:
+        if ( (GetElementState() == FdoSchemaElementState_Added) || GetIsFromFdo() ) {
 
             if ( pPrevProperty && (FdoStringP(this->GetContainingDbObjectName()).ICompare(pPrevProperty->GetContainingDbObjectName()) == 0) ) {
     			// New property in same table as the previous property. New property
@@ -629,11 +628,8 @@ void FdoSmLpDataPropertyDefinition::Finalize()
 			    FdoSmPhDbObjectP dbObject = GetContainingDbObject();
 			    CreateColumn(dbObject);
             }
-
-            break;
-
-        default:
-
+        }
+        else {
             // Get the column only if the dataproperty's table exists.
         	if ( GetContainingDbObject() ) 
 		        SetColumn( GetContainingDbObject()->GetColumns()->FindItem(GetColumnName()) );
@@ -676,8 +672,6 @@ void FdoSmLpDataPropertyDefinition::Finalize()
 		        if ( dbObjectName.ICompare(baseDbObjectName) != 0 ) 
 			        ((FdoSmPhColumn*) GetColumn())->SetElementState( GetElementState() );
 	        }
-
-            break;
         }
     }
 
