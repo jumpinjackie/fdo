@@ -20,7 +20,7 @@
 #include "stdafx.h"
 #include "PolygonShape.h"
 
-#include <Spatial.h>
+#include <FdoSpatial.h>
 
 PolygonShape::PolygonShape (int nRecordNumber, void* pMemory, bool bOverlay, int nParts, int nPoints, BoundingBoxEx *box) :
     PolyShape (nRecordNumber, pMemory, bOverlay,

@@ -21,7 +21,7 @@
 #include "PolygonShape.h"
 #include "PolygonMShape.h"
 
-#include <Spatial.h>
+#include <FdoSpatial.h>
 
 PolygonMShape::PolygonMShape (int nRecordNumber, void* pMemory, bool bOverlay, void* pMValues, int nParts, int nPoints, BoundingBoxEx *box, bool initialize_m) :
     PolygonShape (nRecordNumber, pMemory, bOverlay, nParts, nPoints, box),

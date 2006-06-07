@@ -20,7 +20,7 @@
 #include "Pch.h"
 #include "UpdateTests.h"
 
-#include <Spatial.h>
+#include <FdoSpatial.h>
 #include <FdoCommonFile.h>
 
 #ifdef _WIN32

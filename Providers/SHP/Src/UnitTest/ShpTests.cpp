@@ -19,7 +19,7 @@
 
 #include "Pch.h"
 #include "ShpTests.h"
-#include <Spatial.h>
+#include <FdoSpatial.h>
 
 #include <FdoCommonFile.h>
 
