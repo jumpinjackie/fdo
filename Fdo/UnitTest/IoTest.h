@@ -28,6 +28,7 @@ class FdoIoTest : public CppUnit::TestCase
     FDO_CPPUNIT_DEFINE(testFileContext);
     FDO_CPPUNIT_DEFINE(testFileCapabilities);
     FDO_CPPUNIT_DEFINE(testMemoryStream);
+    FDO_CPPUNIT_DEFINE(testTextFile);
     FDO_CPPUNIT_DEFINE(testLargeFile);
 
     CPPUNIT_TEST_SUITE(FdoIoTest);
@@ -39,6 +40,7 @@ class FdoIoTest : public CppUnit::TestCase
     CPPUNIT_TEST(testFileContext);
     CPPUNIT_TEST(testFileCapabilities);
     CPPUNIT_TEST(testMemoryStream);
+    CPPUNIT_TEST(testTextFile);
 // This test is very time-consuming so not part of the regular test suite.
 //    CPPUNIT_TEST(testLargeFile);
     CPPUNIT_TEST_SUITE_END();
@@ -59,6 +61,7 @@ protected:
     void testFileContext();
     void testFileCapabilities();
     void testMemoryStream();
+    void testTextFile();
     void testLargeFile();
 
     void populateStream( FdoIoStream* stream );
@@ -67,6 +70,7 @@ protected:
     void streamedWrite( FdoIoStream* inStream, FdoIoStream* outStream );
     void fdoArrayRead( FdoIoStream* stream );
     void CheckContext( FdoIoStream* stream, FILE* fp );
+    void copyViaMemoryStream( FdoSize bufSize, int lineCount );
 };
 
 #endif

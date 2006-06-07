@@ -226,9 +226,14 @@ void FdoIoFileStream::Write( FdoIoStream* stream, FdoSize count )
 
     // Keep reading from the given stream until its end is reached
     // or the maximum bytes to read has been reached.
-    while( (readCount >= mBufferSize) && ((count == 0) ||(bytesLeft > 0)) ) {
+    while ( (count == 0) ||(bytesLeft > 0) ) {
+        readCount = stream->Read( 
+            buffer, 
+            ((bytesLeft > 0) && (bytesLeft < mBufferSize)) ? bytesLeft : mBufferSize 
+        );
+        if ( readCount <= 0 ) 
+            break;
 
-        readCount = stream->Read( buffer, mBufferSize );
         Write( buffer, readCount );
 
         if ( bytesLeft > 0 ) 

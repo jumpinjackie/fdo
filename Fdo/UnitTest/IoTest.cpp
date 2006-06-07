@@ -638,6 +638,75 @@ void FdoIoTest::testMemoryStream()
     }
 }
 
+// Defect 763288 regression test.
+// Ensures that streams do not get confused by the crlf to \n conversion
+// that Windows does when reading text files.
+void FdoIoTest::testTextFile()
+{
+    int lineCount = 2000;
+    int ix;
+
+    // Create the test data.
+    FILE* fp = fopen("nums.txt", "wt" );
+    FDO_CPPUNIT_ASSERT( fp );
+
+    for ( ix = 0; ix < lineCount; ix++ )
+        fprintf( fp, "0123456789\n" );
+
+    fclose(fp);
+
+    // Copy to output file via MemoryStream. Try various buffer sizes
+    // for the memory stream.
+    copyViaMemoryStream( 10, lineCount );
+    copyViaMemoryStream( 150, lineCount );
+    copyViaMemoryStream( 4096, lineCount );
+
+    // Copy directly from input to output file.
+    FdoIoFileStreamP inFile = FdoIoFileStream::Create( L"nums.txt", L"rt" );
+    FdoIoFileStreamP outFile = FdoIoFileStream::Create( L"numsB.txt", L"wt" );
+    outFile->Write( inFile );
+    outFile = NULL;
+
+    // Verify that everything got copied
+    char buffer[50];
+    fp = fopen("numsB.txt", "rt" );
+    FDO_CPPUNIT_ASSERT( fp != NULL );
+
+    ix = 0;
+    while ( fgets(buffer, 49, fp) ) {
+        ix++;
+        FDO_CPPUNIT_ASSERT( strcmp(buffer,"0123456789\n") == 0 );
+        buffer[0] = 0;
+    }
+
+    FDO_CPPUNIT_ASSERT( ix == lineCount );
+
+    // 2nd copy (first 150 char only)
+    inFile = FdoIoFileStream::Create( L"nums.txt", L"rt" );
+    outFile = FdoIoFileStream::Create( L"numsB.txt", L"wt" );
+    outFile->Write( inFile, 150 );
+    outFile = NULL;
+
+    // Verify that only first 150 char were copied
+    fp = fopen("numsB.txt", "rt" );
+    FDO_CPPUNIT_ASSERT( fp != NULL );
+
+    ix = 0;
+    while ( fgets(buffer, 49, fp) ) {
+        ix++;
+        if ( ix < 14 ) {
+            FDO_CPPUNIT_ASSERT( strcmp(buffer,"0123456789\n") == 0 );
+        }
+        else {
+            FDO_CPPUNIT_ASSERT( strcmp(buffer,"0123456") == 0 );
+            break;
+        }
+        buffer[0] = 0;
+    }
+
+    FDO_CPPUNIT_ASSERT( ix == 14 );
+}
+
 // 
 // gcc complains that "integer constant is too large for "long" type" inside this function
 // 
@@ -830,5 +899,67 @@ void FdoIoTest::CheckContext( FdoIoStream* stream, FILE* fp  )
     else {
         FDO_CPPUNIT_ASSERT( stream->HasContext() == false );
     }
+}
+
+void FdoIoTest::copyViaMemoryStream( FdoSize bufSize, int lineCount )
+{
+    int ix;
+    char outFileName[50];
+    wchar_t outFileNameW[50];
+
+    sprintf( outFileName, "nums%d.txt", lineCount );
+    swprintf( outFileNameW, 49, L"%hs", outFileName ); 
+
+    // 1st test copies entire input file
+    FdoIoFileStreamP inFile = FdoIoFileStream::Create( L"nums.txt", L"rt" );
+    FdoIoFileStreamP outFile = FdoIoFileStream::Create( outFileNameW, L"wt" );
+    FdoIoMemoryStreamP intStream = FdoIoMemoryStream::Create(bufSize);
+
+    intStream->Write( inFile );
+    intStream->Reset();
+    outFile->Write( intStream );
+    outFile = NULL;
+
+    // Verify that entire file was copied.
+    char buffer[50];
+    FILE* fp = fopen((const char*) outFileName, "rt" );
+    FDO_CPPUNIT_ASSERT( fp != NULL );
+
+    ix = 0;
+    while ( fgets(buffer, 49, fp) ) {
+        ix++;
+        FDO_CPPUNIT_ASSERT( strcmp(buffer,"0123456789\n") == 0 );
+        buffer[0] = 0;
+    }
+
+    FDO_CPPUNIT_ASSERT( ix == lineCount );
+
+    // 2nd test just copies the 1st 150 char.
+    inFile = FdoIoFileStream::Create( L"nums.txt", L"rt" );
+    outFile = FdoIoFileStream::Create( outFileNameW, L"wt" );
+    intStream = FdoIoMemoryStream::Create(bufSize);
+
+    intStream->Write( inFile, 150 );
+    intStream->Reset();
+    outFile->Write( intStream );
+
+    // Verify that only 1st 150 char were copied.
+    fp = fopen((const char*) outFileName, "rt" );
+    FDO_CPPUNIT_ASSERT( fp != NULL );
+
+    ix = 0;
+    while ( fgets(buffer, 49, fp) ) {
+        ix++;
+        if ( ix < 14 ) {
+            FDO_CPPUNIT_ASSERT( strcmp(buffer,"0123456789\n") == 0 );
+        }
+        else {
+            FDO_CPPUNIT_ASSERT( strcmp(buffer,"0123456") == 0 );
+            break;
+        }
+        buffer[0] = 0;
+    }
+
+    FDO_CPPUNIT_ASSERT( ix == 14 );
 }
 

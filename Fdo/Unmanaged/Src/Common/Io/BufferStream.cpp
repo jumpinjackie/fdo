@@ -104,8 +104,21 @@ void FdoIoBufferStream::Write( FdoIoStream* stream, FdoSize count )
             )
         );
 
-    lCount = stream->Read( &mpBuffer[mPos], (FdoSize) lCount );
-    mPos += (FdoSize) lCount;
+    // When stream is on text file, the number of bytes read can be less than
+    // the number requested even when the end of file has not been reached.
+    // This happens on Windows since each crlf sequence is converted to one byte
+    // (/n).
+    // For the above reason, the following loops until no more bytes are read
+    // or the requested count is reached.
+    while ( lCount > 0 ) {
+        FdoInt64 bytesRead = stream->Read( &mpBuffer[mPos], (FdoSize) lCount );
+        if ( bytesRead <= 0 ) 
+            break;
+
+        mPos += (FdoSize) bytesRead;
+        lCount = lCount - bytesRead;
+    }
+
     mLength = ( mPos > mLength) ? mPos : mLength;
 }
 
