@@ -106,7 +106,7 @@ bool FdoSmPhMySqlOwner::Add()
     // Need to revisit this issue at some point.
     FdoStringP sqlStmt = FdoStringP::Format(
         L"create database %ls character set latin1 collate latin1_bin",
-        GetName()
+        (FdoString*) GetDbName()
     );
 
     // Create the owner (datastore)
@@ -158,7 +158,7 @@ bool FdoSmPhMySqlOwner::Delete()
 
     FdoStringP sqlStmt = FdoStringP::Format(
         L"drop database if exists %ls",
-        GetName()
+        (FdoString*) GetDbName()
     );
 
     gdbiConn->ExecuteNonQuery( (const char*) sqlStmt );

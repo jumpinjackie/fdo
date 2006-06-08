@@ -328,7 +328,7 @@ FdoInt32 FdoRdbmsUpdateCommand::Execute ()
 							{
 								const FdoSmLpDbObject* table = ltPvcOp->GetClass()->RefDbObject();
 
-								ltManager->AddLtInTableInfo( (const wchar_t*)FdoStringP(mConnection->GetSchema()), table->GetName() );
+								ltManager->AddLtInTableInfo( mConnection->GetSchema(), table->GetName() );
 							}
 						}
 					}

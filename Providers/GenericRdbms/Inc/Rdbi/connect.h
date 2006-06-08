@@ -45,10 +45,7 @@ typedef struct rdbi_connect_def {
     char   *vendor_data;                        /* rdbms-specific information               */
     int     in_use;                             /* TRUE if this connect structure allocated */
     int     connect_id;                         /* identifies db connection (vendor generated ) */
-    char    dataset[RDBI_DATASET_NAME_SIZE];    /* data identifier (Oracle username)        */
     char    cuserid[RDBI_DATASET_NAME_SIZE];    /* OS user name                             */
-    char    db_name[RDBI_DATASET_NAME_SIZE];    /* Database name we're referencing          */
-    char    prev_name[RDBI_DATASET_NAME_SIZE];  /* Keep track of (stack) the previous db    */
     int     uncommitted_data;                   /* TRUE when an update transaction active   */
     int     read_only;                          /* TRUE when transaction is read-only       */
     int     autocommit_on;                      /* TRUE if in autocommit mode               */

@@ -115,7 +115,8 @@ odbcdr_rdbi_init(
 	    methods->desc_slct	= (int  (*)(void*,char*,int,int,char*,int*,int*,int*))odbcdr_desc_slct;
 		methods->desc_slctW	= (int  (*)(void*,char*,int,int,wchar_t*,int*,int*,int*))odbcdr_desc_slctW;
 	    methods->desc_bind	= (int  (*)(void*,char*,int,int,char*))odbcdr_desc_bind;
-        methods->set_schema = (int  (*)(void*,char*))odbcdr_set_schema;
+        methods->set_schema = NULL;
+        methods->set_schemaW = (int  (*)(void*,wchar_t*))odbcdr_set_schemaW;
         methods->run_sql    = (int  (*)(void*,char*,int,int*))odbcdr_run_sql;
 		methods->run_sqlW    = (int  (*)(void*,wchar_t*,int,int*))odbcdr_run_sqlW;
 		methods->lob_create_ref = NULL;

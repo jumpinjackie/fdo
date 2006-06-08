@@ -71,7 +71,7 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
     //
     // Update the atributes using a command of the following form: update tab set col1=val1,col2=val2.. where id in (select id from tab where ...)
     const FdoSmLpDbObject* table = classDefinition->RefDbObject();
-    const wchar_t *tableName = table->GetName();
+    FdoStringP tableName = table->RefDbObject()->GetDbQName();
 	FdoStringP updateString;
 	const FdoSmLpPropertyDefinition *pDef = classDefinition->RefProperties()->RefItem(L"RevisionNumber");
 	if (pDef && revisionNumberUpdate)
@@ -184,7 +184,7 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
             }
         }
 
-        const wchar_t *colName = NULL;
+        FdoStringP colName;
         const FdoSmLpPropertyDefinition *propertyDefinition = classDefinition->RefProperties()->RefItem(name);
         FdoPropertyType propType = FdoPropertyType_DataProperty;
 
@@ -196,7 +196,7 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
                const FdoSmLpDataPropertyDefinition* dataProp =
                     static_cast<const FdoSmLpDataPropertyDefinition*>(propertyDefinition);
                 const FdoSmPhColumn *column = dataProp->RefColumn();
-                colName = column->GetName();
+                colName = column->GetDbName();
            }
            else if ( propType == FdoPropertyType_GeometricProperty)
            {
@@ -207,13 +207,13 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
 				if( columnType != FdoSmOvGeometricColumnType_Double )
 				{
 					const FdoSmPhColumn *column = geomProp->RefColumn();
-					colName = column->GetName();
+					colName = column->GetDbName();
 				}
 				else
 				{
 					const FdoSmPhColumn *columnX = geomProp->RefColumnX();
 					if( columnX != NULL )
-						colName = columnX->GetName();
+						colName = columnX->GetDbName();
 
 					// We'll handle the Y and Z below
 				}
@@ -253,17 +253,16 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
                         if( propType == FdoPropertyType_DataProperty )
                         {
                             const FdoSmLpDataPropertyDefinition* dataProp =
-                                    static_cast<const FdoSmLpDataPropertyDefinition*>(propertyDefinition);
-                                const FdoSmPhColumn *column = dataProp->RefColumn();
-                                colName = column->GetName();
+                                static_cast<const FdoSmLpDataPropertyDefinition*>(propertyDefinition);
+                            const FdoSmPhColumn *column = dataProp->RefColumn();
+                            colName = column->GetDbName();
                         }
                         else if ( propType == FdoPropertyType_GeometricProperty )
                         {
                             const FdoSmLpGeometricPropertyDefinition* geomProp =
                                 static_cast<const FdoSmLpGeometricPropertyDefinition*>(propertyDefinition);
                             const FdoSmPhColumn *column = geomProp->RefColumn();
-                            colName = column->GetName();
-
+                            colName = column->GetDbName();
                         }
                         else
                         {
@@ -320,7 +319,7 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
                                     bSkip = true;
                                 }
                             }
-                            colName = assocProp->GetReverseIdentityColumns()->GetString( i );
+                            colName = assocProp->GetReverseIdentityColumns()->GetDbString( i );
                             break;
                         }
                     }
@@ -332,7 +331,7 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
                 continue;
             }
         }
-        if( colName == NULL ) //TODO: Should never happen; May be it needs an exception
+        if( colName == L"" ) //TODO: Should never happen; May be it needs an exception
             colName =  mConnection->GetSchemaUtil()->Property2ColName( classDefinition->GetName(), name );
 
         if( ! first )
@@ -374,11 +373,11 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
 					if (NULL != columnSi1 && NULL != columnSi2)
 					{
 						updateString += L", ";
-						updateString += columnSi1->GetName() ;
+						updateString += columnSi1->GetDbName() ;
 						updateString += L"=";
 						updateString += mFdoConnection->GetBindString( bindIndex++ );
 						updateString += L", ";
-						updateString += columnSi2->GetName() ;
+						updateString += columnSi2->GetDbName() ;
 						updateString += L"=";
 						updateString += mFdoConnection->GetBindString( bindIndex++ );
 					}
@@ -391,13 +390,13 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
                     if (NULL != columnY )
                     {
 						updateString += L", ";
-						updateString += columnY->GetName() ;
+						updateString += columnY->GetDbName() ;
 						updateString += L"=";
 						updateString += mFdoConnection->GetBindString( bindIndex++ );
 						if( NULL != columnZ )
 						{
 							updateString += L", ";
-							updateString += columnZ->GetName() ;
+							updateString += columnZ->GetDbName() ;
 							updateString += L"=";
 							updateString += mFdoConnection->GetBindString( bindIndex++ );
 						}
@@ -420,7 +419,7 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
             updateString += L" where ";
         else
             updateString += L" and ";
-        updateString += properties->RefItem(i)->GetColumnName();
+        updateString += mConnection->GetSchemaUtil()->GetColumnSqlName(properties->RefItem(i));
         updateString += L" =";
         updateString += mFdoConnection->GetBindString( bindIndex++ );
     }

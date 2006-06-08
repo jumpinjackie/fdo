@@ -66,3 +66,24 @@ int rdbi_set_schema (rdbi_context_def *context, char *schema_name)
 
 }
 
+int rdbi_set_schemaW (rdbi_context_def *context, wchar_t *schema_name)
+{
+    int   status;
+	wchar_t			sql[200];
+	int             trace_line_num;
+
+    debug_on("rdbi_usr_exists");
+	
+	swprintf(sql, 199, L"set current_schema = %ls", schema_name);
+	debug_trace((char*) NULL, sql, &trace_line_num);
+
+    status = (*(context->dispatch.set_schemaW))(context->drvr, schema_name);
+
+	swprintf(sql, 199, L"Status: %d", status);
+	debug_trace((char*) NULL, sql, NULL);
+
+    context->rdbi_last_status = status;
+
+    debug_return(NULL, status);
+
+}

@@ -403,10 +403,6 @@
 				>
 			</File>
 			<File
-				RelativePath="nom_db.c"
-				>
-			</File>
-			<File
 				RelativePath="null.c"
 				>
 			</File>

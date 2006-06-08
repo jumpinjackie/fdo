@@ -40,7 +40,7 @@ void FdoSmPhGrdTable::ExecuteDDL( FdoStringP sqlStmt, FdoSmPhGrdTable* refTable,
     FdoSmPhGrdMgrP      mgr = GetManager().p->SmartCast<FdoSmPhGrdMgr>();
     GdbiConnection*     gdbiConn = mgr->GetGdbiConnection();
 
-    gdbiConn->ExecuteNonQuery( (const char*) sqlStmt, isDDL );
+    gdbiConn->ExecuteNonQuery( (FdoString*) sqlStmt, isDDL );
 }
 
 void FdoSmPhGrdTable::ClearRows()
@@ -98,15 +98,6 @@ bool FdoSmPhGrdTable::AddColumn( FdoSmPhColumnP column )
 
 bool FdoSmPhGrdTable::ModifyColumn( FdoSmPhColumnP column )
 {
-/* TODO Get rid of this exception if ModifyColumn ends up handling geom association 
-    throw FdoSchemaException::Create (
-        NlsMsgGet1 (
-            FDORDBMS_147,
-            "Cannot modify column '%1$ls', operation is not supported.",
-            (FdoString*)column->GetQName()
-        )
-    );
-*/
     return true;
 }
 
@@ -122,7 +113,7 @@ bool FdoSmPhGrdTable::DeleteColumn( FdoSmPhColumnP column )
         FdoStringP sqlStmt = FdoStringP::Format(
             L"%ls %ls",
             (FdoString*) GetDeleteColSql(),
-            column->GetName()
+            (FdoString*) column->GetDbName()
         );
 
         ExecuteDDL( sqlStmt );

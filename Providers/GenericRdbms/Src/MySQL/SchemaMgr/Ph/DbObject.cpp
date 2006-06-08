@@ -77,7 +77,7 @@ FdoSmPhMySqlDbObject::~FdoSmPhMySqlDbObject(void)
 
 FdoStringP FdoSmPhMySqlDbObject::GetDbQName() const
 {
-    return ( FdoStringP(GetParent()->GetName()) + L"." + GetName() );
+    return ( ((const FdoSmPhDbElement*)GetParent())->GetDbName() + L"." + GetDbName() );
 }
 
 void FdoSmPhMySqlDbObject::ActivateOwnerAndExecute( FdoStringP sqlStmt )

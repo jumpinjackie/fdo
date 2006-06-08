@@ -157,7 +157,7 @@ void  FdoRdbmsLobUtility::FetchLobLocators( DbiConnection *connection,
             throw FdoSchemaException::Create(NlsMsgGet1(FDORDBMS_388, "Schema error class '%1$ls': a row must be unique in order to insert a streamed LOB", (const wchar_t*) classDefinition->GetQName() ));
 
         FdoStringP  gql = FdoStringP::Format(L"SELECT %ls FROM %ls WHERE %ls FOR UPDATE",
-                                             (const wchar_t *)lobColsListString, (const wchar_t *)classDefinition->RefDbObject()->GetName(), (const wchar_t *)whereString);
+                                             (const wchar_t *)lobColsListString, (const wchar_t *)(connection->GetSchemaUtil()->GetDbObjectSqlName(classDefinition)), (const wchar_t *)whereString);
 
         (void) connection->dbi_gql( (char *)(const char *)(gql), &qid );
 

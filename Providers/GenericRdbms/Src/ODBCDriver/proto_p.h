@@ -83,7 +83,7 @@ void odbcdr_set_nnull( odbcdr_context_def *context, SQLLEN *null_ind, int start,
 int odbcdr_is_null( odbcdr_context_def  *context, SQLLEN *null_ind, int offset );
 
 int odbcdr_xlt_status( odbcdr_context_def *context, SQLRETURN odbcdr_status, SQLSMALLINT handle_type, SQLHANDLE handle);
-int odbcdr_set_schema( odbcdr_context_def *context, char *schema_name);
+int odbcdr_set_schemaW( odbcdr_context_def *context, wchar_t *schema_name);
 int odbcdr_term( void **contextp );
 
 int odbcdr_geom_bindColumn( odbcdr_context_def *context, odbcdr_cursor_def *cursor, int position, char *address );

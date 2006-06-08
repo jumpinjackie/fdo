@@ -111,7 +111,7 @@ FdoSmPhReaderP FdoSmPhCfgGrdClassReader::MakeReader(FdoSmPhRowsP rows, FdoString
         // don't belong to the current feature schema
         pSubReader = new FdoSmPhRdClassReader( 
             rows, 
-            schemaName, 
+            L"", 
             mgr,
             false,
             mDatabase,

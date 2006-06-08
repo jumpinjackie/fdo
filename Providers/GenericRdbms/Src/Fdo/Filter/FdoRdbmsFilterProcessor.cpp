@@ -451,8 +451,8 @@ void FdoRdbmsFilterProcessor::ProcessIdentifier( FdoIdentifier& expr, bool useOu
                    // if( objProp->GetObjectType() == FdoObjectType_OrderedCollection || objProp->GetObjectType() == FdoObjectType_Collection )
                    //     mRequiresDistinct = true;
 
-                    const wchar_t* pkTable = currentClass->GetDbObjectName();
-                    const wchar_t* fkTable = objProp->GetContainingDbObjectName();
+                    FdoStringP pkTable = mDbiConnection->GetSchemaUtil()->GetDbObjectSqlName(currentClass);
+                    FdoStringP fkTable = mDbiConnection->GetSchemaUtil()->GetDbObjectSqlName(objProp);
                     const FdoSmPhColumnCollection* pkCols = NULL;
                     const FdoSmPhColumnCollection* fkCols = NULL;
                     currentClass = objProp->RefTargetClass();
@@ -497,15 +497,15 @@ void FdoRdbmsFilterProcessor::ProcessIdentifier( FdoIdentifier& expr, bool useOu
                     assocProp = static_cast<const FdoSmLpAssociationPropertyDefinition*>(propertyDefinition);
 
 
-                    const wchar_t* pkTable = currentClass->GetDbObjectName();
-                    const wchar_t* fkTable = assocProp->RefAssociatedClass()->GetDbObjectName();
-                    const FdoStringsP revIdentCols = assocProp->GetReverseIdentityColumns();
-                    const FdoStringsP identCols = assocProp->GetIdentityColumns();
+                    FdoStringP pkTable = mDbiConnection->GetSchemaUtil()->GetDbObjectSqlName(currentClass);
+                    FdoStringP fkTable = mDbiConnection->GetSchemaUtil()->GetDbObjectSqlName(assocProp->RefAssociatedClass());
+                    const FdoSmPhColumnListP revIdentCols = assocProp->GetReverseIdentityColumns();
+                    const FdoSmPhColumnListP identCols = assocProp->GetIdentityColumns();
                     for( int i=0; i<identCols->GetCount(); i++ )
                     {
                         AddNewTableRelation(
-                             pkTable, revIdentCols->GetString(i),
-                             fkTable, identCols->GetString(i)
+                             pkTable, revIdentCols->GetDbString(i),
+                             fkTable, identCols->GetDbString(i)
                         );
                     }
                     currentClass = assocProp->RefAssociatedClass();
@@ -530,10 +530,11 @@ void FdoRdbmsFilterProcessor::ProcessIdentifier( FdoIdentifier& expr, bool useOu
             {
                 const FdoSmLpDataPropertyDefinition* dataProp =
                             static_cast<const FdoSmLpDataPropertyDefinition*>(propertyDefinition);
+                FdoStringP tableName = mDbiConnection->GetSchemaUtil()->GetDbObjectSqlName(currentClass);
                 const FdoSmPhColumn *column = dataProp->RefColumn();
-                AppendString(  GetTableAlias( currentClass->GetDbObjectName() ) );
+                AppendString(  GetTableAlias( tableName ) );
                 AppendString( L"." );
-                AppendString( column->GetName() );
+                AppendString( (FdoString*)(column->GetDbName()) );
             }
             break;
 
@@ -557,7 +558,8 @@ void FdoRdbmsFilterProcessor::ProcessIdentifier( FdoIdentifier& expr, bool useOu
                 if( pkCols->GetCount() != 1 )
                     throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_20, "Case not handled yet"));
 
-                AppendString( GetTableAlias( currentClass->GetDbObjectName() ) );
+                FdoStringP sqlTableName = mDbiConnection->GetSchemaUtil()->GetDbObjectSqlName(currentClass);
+                AppendString( GetTableAlias( sqlTableName ) );
                 AppendString( L"." );
                 AppendString( pkCols->RefItem(0)->GetName() );
 
@@ -573,7 +575,8 @@ void FdoRdbmsFilterProcessor::ProcessIdentifier( FdoIdentifier& expr, bool useOu
                 if (FdoSmOvGeometricColumnType_Double == columnType &&
                     FdoSmOvGeometricContentType_Ordinates == contentType)
                 {
-                    FdoString * tableAlias = GetTableAlias( currentClass->GetDbObjectName() );
+                    FdoStringP sqlTableName = mDbiConnection->GetSchemaUtil()->GetDbObjectSqlName(currentClass);
+                    FdoString * tableAlias = GetTableAlias( sqlTableName );
                     const FdoSmPhColumn *columnX = geomProp->RefColumnX();
                     const FdoSmPhColumn *columnY = geomProp->RefColumnY();
                     const FdoSmPhColumn *columnZ = geomProp->RefColumnZ();
@@ -581,17 +584,17 @@ void FdoRdbmsFilterProcessor::ProcessIdentifier( FdoIdentifier& expr, bool useOu
                         throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_22, "Internal error"));
                     AppendString( tableAlias );
                     AppendString( L"." );
-                    AppendString( columnX->GetName() );
+                    AppendString( (FdoString*)(columnX->GetDbName()) );
                     AppendString( L"," );
                     AppendString( tableAlias );
                     AppendString( L"." );
-                    AppendString( columnY->GetName() );
+                    AppendString( (FdoString*)(columnY->GetDbName()) );
                     if (NULL != columnZ)
                     {
                         AppendString( L"," );
                         AppendString( tableAlias );
                         AppendString( L"." );
-                        AppendString( columnZ->GetName() );
+                        AppendString( (FdoString*)(columnZ->GetDbName()) );
                     }
                 }
                 else // Single-column storage
@@ -599,9 +602,11 @@ void FdoRdbmsFilterProcessor::ProcessIdentifier( FdoIdentifier& expr, bool useOu
                     const FdoSmPhColumn *column = geomProp->RefColumn();
                     if (NULL == column)
                         throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_22, "Internal error"));
-                    AppendString( GetTableAlias( currentClass->GetDbObjectName() ) );
+                    FdoStringP sqlTableName = mDbiConnection->GetSchemaUtil()->GetDbObjectSqlName(currentClass);
+                    FdoString * tableAlias = GetTableAlias( sqlTableName );
+                    AppendString( tableAlias );
                     AppendString( L"." );
-                    AppendString( column->GetName() );
+                    AppendString( (FdoString*)(column->GetDbName()) );
                 }
             }
             break;
@@ -890,20 +895,21 @@ void FdoRdbmsFilterProcessor::FollowRelation( FdoStringP    &relationColumns, co
 		AddNewClass( pClass );
         for( int j=0; j<assocProp->GetIdentityColumns()->GetCount(); j++ )
         {
+           FdoStringP pkTableName = mDbiConnection->GetSchemaUtil()->GetDbObjectSqlName(pClass);
+           FdoStringP fkTableName = mDbiConnection->GetSchemaUtil()->GetDbObjectSqlName(assocProp->RefAssociatedClass());
            AddNewTableRelation(
-                pClass->GetDbObjectName(),
-                (const wchar_t*)assocProp->GetReverseIdentityColumns()->GetString(j),
-                (const wchar_t*)assocProp->RefAssociatedClass()->GetDbObjectName(),
-                (const wchar_t*)assocProp->GetIdentityColumns()->GetString(j), true );
+                (const wchar_t*)pkTableName,
+                (const wchar_t*)assocProp->GetReverseIdentityColumns()->GetDbString(j),
+                (const wchar_t*)fkTableName,
+                (const wchar_t*)assocProp->GetIdentityColumns()->GetDbString(j), true );
             if( j == 0 )
             {
                 bool skip = false;
-                FdoStringP  newTableName = assocProp->RefAssociatedClass()->GetDbObjectName();
                 // Make sure we didn't already add this entry
                 if( relationColumns.GetLength() != 0 )
                 {
                     const wchar_t* allTabs = (const wchar_t*)relationColumns;
-                    const wchar_t* newTab = (const wchar_t*)newTableName;
+                    const wchar_t* newTab = (const wchar_t*)fkTableName;
                     for(int i=0; allTabs[i]!='\0';i++)
                     {
                         if( i==0 || allTabs[i-1]==',' )
@@ -919,7 +925,7 @@ void FdoRdbmsFilterProcessor::FollowRelation( FdoStringP    &relationColumns, co
                 }
                 if( !skip )
                 {
-                    relationColumns += newTableName;
+                    relationColumns += fkTableName;
                     relationColumns += L".*,";
                 }
             }
@@ -1217,7 +1223,7 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter  *filter, const w
     wcscpy( mCurrentClassName, className );
 
     const FdoSmLpClassDefinition *identClass = NULL;
-    const wchar_t  *tableName = mDbiConnection->GetTable( mCurrentClassName );
+    FdoStringP tableName = mDbiConnection->GetSchemaUtil()->GetDbObjectSqlName(classDefinition);
     const FdoSmLpDataPropertyDefinitionCollection *identProperties = GetIdentityProperties( mCurrentClassName, &identClass );
 
     // When class has no id, treat it as read-only.
@@ -1421,7 +1427,8 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter  *filter, const w
             if( cmdType == SqlCommandType_Update )
             {
                 // Use only the identity columns.
-                const  wchar_t* table = GetTableAlias(mDbiConnection->GetSchemaUtil()->GetTable(mCurrentClassName));
+                FdoStringP sqlTableName = mDbiConnection->GetSchemaUtil()->GetDbObjectSqlName(mDbiConnection->GetSchemaUtil()->GetClass(mCurrentClassName));
+                const  wchar_t* table = GetTableAlias(sqlTableName);
                 bool featIdAdded = false;
                 for (j=0; j<identProperties->GetCount(); j++)
                 {
@@ -1429,7 +1436,7 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter  *filter, const w
                         PrependString( L"," );
                     const FdoSmLpDataPropertyDefinition *idProperty = identProperties->RefItem(j);
                     const FdoSmPhColumn *column = idProperty->RefColumn();
-                    PrependString(column->GetName());
+                    PrependString( (FdoString*)(column->GetDbName()) );
                     PrependString(L".");
                     PrependString(table);
                     first = false;
@@ -1445,7 +1452,7 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter  *filter, const w
                     if (first == false)
                         PrependString( L"," );
                     const FdoSmPhColumn *column = pFeatIdProp->RefColumn();
-                    PrependString( column->GetName() );
+                    PrependString( (FdoString*)(column->GetDbName()) );
                     PrependString(L".");
                     PrependString(table);
                     first = false;
@@ -1522,7 +1529,8 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter  *filter, const w
             // change the returned result.
             if( (! isFeatIdOnlyQuery && ! filterConstraint->distinct) && !( useAggregateFunctions && !mRequiresDistinct  ))
             {
-                const  wchar_t* table = GetTableAlias( mDbiConnection->GetSchemaUtil()->GetTable(mCurrentClassName) );
+                FdoStringP sqlTableName = mDbiConnection->GetSchemaUtil()->GetDbObjectSqlName(mDbiConnection->GetSchemaUtil()->GetClass(mCurrentClassName));
+                const  wchar_t* table = GetTableAlias(sqlTableName);
                 for (j=0; j<identProperties->GetCount(); j++)
                 {
                     if (bExist[j] == false)
@@ -1531,7 +1539,7 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter  *filter, const w
                             PrependString( L"," );
                         const FdoSmLpDataPropertyDefinition *idProperty = identProperties->RefItem(j);
                         const FdoSmPhColumn *column = idProperty->RefColumn();
-                        PrependString( column->GetName() );
+                        PrependString( (FdoString*)(column->GetDbName()) );
                         PrependString(L".");
                         PrependString(table);
                         first = false;
@@ -1684,8 +1692,9 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter  *filter, const w
             const FdoSmLpDataPropertyDefinition * id = objProp->RefIdentityProperty();
             if (id)
             {
-                const wchar_t *columnName = id->GetColumnName();
-                if (columnName)
+                const FdoSmPhColumn* column = id->RefColumn();
+                FdoStringP columnName = column ? column->GetDbName() : FdoStringP();
+                if (columnName != L"")
                 {
                     bool added = false;
                     if( !( filterConstraint->orderByProperties != NULL  && filterConstraint->orderByProperties->GetCount() != 0) )
@@ -1709,7 +1718,7 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter  *filter, const w
                     }
                     if( ! added )
                     {
-                        AppendString( columnName );
+                        AppendString( (FdoString*)(columnName) );
                         AppendString( L" ");
                         if (objProp->GetOrderType() == FdoOrderType_Descending)
                         {

@@ -403,6 +403,7 @@ int rdbi_get_gen_id(
 	    );
 
 int rdbi_set_schema (rdbi_context_def *context, char *schema_name);
+int rdbi_set_schemaW (rdbi_context_def *context, wchar_t *schema_name);
 int rdbi_est_cursor_obj(rdbi_context_def *context, int *sqlid);
 int rdbi_init_context(rdbi_context_def *context);
 

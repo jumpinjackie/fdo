@@ -41,12 +41,12 @@
 #include <stdio.h>
 
 /* Makes the given schema (SqlServer database) the current schema */
-int odbcdr_set_schema (
+int odbcdr_set_schemaW (
     odbcdr_context_def *context,
-    char *schema_name
+    wchar_t *schema_name
 )
 {
-    char                 sql_buf[100];
+    wchar_t              sql_buf[100];
     int                  rows;
     odbcdr_cursor_def    *c;
     odbcdr_connData_def  *connData;
@@ -58,17 +58,17 @@ int odbcdr_set_schema (
 
     rdbi_status = RDBI_SUCCESS;
 
-    if (ODBCDriverType_SQLServer == connData->driver_type && NULL != schema_name && (strlen(schema_name) > 0))
+    if (ODBCDriverType_SQLServer == connData->driver_type && NULL != schema_name && (wcslen(schema_name) > 0))
     {
-	    (void) sprintf(sql_buf, "USE %s", schema_name);
+	    (void) swprintf(sql_buf, 99, L"USE \"%ls\"", schema_name);
 
-        debug1("%.120s", sql_buf);
+        debug1("%.120ls", sql_buf);
 
         /* establish cursor */
         if (RDBI_SUCCESS == (rdbi_status = odbcdr_est_cursor (context, (char **)&c)))
         {
             /* parse command */
-            if (RDBI_SUCCESS == (rdbi_status = odbcdr_sql (context, (char *)c, sql_buf,
+            if (RDBI_SUCCESS == (rdbi_status = odbcdr_sqlW (context, (char *)c, sql_buf,
                 FALSE, "", (void *)NULL, (char *) NULL)))
             {
                 /* execute the SQL statement */
@@ -76,13 +76,6 @@ int odbcdr_set_schema (
             }
             odbcdr_fre_cursor (context, (char **)&c);
         }
-    }
-
-    if (RDBI_SUCCESS == rdbi_status)
-    {
-        connData->db_name[0] = '\0';
-        if (NULL != schema_name)
-            (void) strcpy (connData->db_name, schema_name);
     }
 
 the_exit:

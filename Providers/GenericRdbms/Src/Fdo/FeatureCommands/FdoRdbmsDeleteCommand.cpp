@@ -606,7 +606,7 @@ FdoInt32 FdoRdbmsDeleteCommand::DeleteRelatedObjects( const wchar_t* scope, cons
         {
             FdoStringP  delAllStmt = "delete from ";
             FdoStringP  queyQualificationClause;
-            delAllStmt += currentClass->GetDbObjectName();
+            delAllStmt += mConnection->GetSchemaUtil()->GetDbObjectSqlName(currentClass);
             GetLtQualification(currentClass, queyQualificationClause);
 		    if( ((const wchar_t*)queyQualificationClause)[0] != '\0' )
 		    {
@@ -614,7 +614,7 @@ FdoInt32 FdoRdbmsDeleteCommand::DeleteRelatedObjects( const wchar_t* scope, cons
                 delAllStmt += (const wchar_t *)queyQualificationClause;
 		    }
 
-            mConnection->DoSql( (char*)(const char*)delAllStmt, &count, true);
+            count = mConnection->GetGdbiConnection()->ExecuteNonQuery( (FdoString*)delAllStmt );
             return (count+deletedObjects);
         }
     }
@@ -640,7 +640,7 @@ FdoInt32 FdoRdbmsDeleteCommand::DeleteRelatedObjects( const wchar_t* scope, cons
     if( idx == size )
         return deletedObjects;
 
-    FdoStringP  tableName = currentClass->GetDbObjectName();
+    FdoStringP  tableName = mConnection->GetSchemaUtil()->GetDbObjectSqlName(currentClass);
 
     FdoStringP  delStmt = L"delete from ";
 
@@ -677,7 +677,7 @@ FdoInt32 FdoRdbmsDeleteCommand::DeleteRelatedObjects( const wchar_t* scope, cons
             }
             delStmt += tableName;
             delStmt += L".";
-            delStmt += fkProps->RefItem(k)->RefColumn()->GetName();
+            delStmt += mConnection->GetSchemaUtil()->GetColumnSqlName(fkProps->RefItem(k));
         }
 		if( fkProps->GetCount() > 1 )
 			delStmt += L")";
@@ -690,7 +690,7 @@ FdoInt32 FdoRdbmsDeleteCommand::DeleteRelatedObjects( const wchar_t* scope, cons
             }
             delStmt += flterProcessor->GetTableAlias(tableName);
             delStmt += L".";
-            delStmt += fkProps->RefItem(k)->RefColumn()->GetName();
+            delStmt += mConnection->GetSchemaUtil()->GetColumnSqlName(fkProps->RefItem(k));
         }
 
         delStmt += &sqlBuffer[idx];
@@ -716,7 +716,7 @@ FdoInt32 FdoRdbmsDeleteCommand::DeleteRelatedObjects( const wchar_t* scope, cons
         }
         queryStmt += flterProcessor->GetTableAlias(tableName);
         queryStmt += L".";
-        queryStmt += fkProps->RefItem(k)->RefColumn()->GetName();
+        queryStmt += mConnection->GetSchemaUtil()->GetColumnSqlName(fkProps->RefItem(k));
     }
 
     queryStmt += &sqlBuffer[idx];
@@ -733,7 +733,7 @@ FdoInt32 FdoRdbmsDeleteCommand::DeleteRelatedObjects( const wchar_t* scope, cons
 			}
 			subDelStmt += tableName;
 			subDelStmt += L".";
-			subDelStmt += fkProps->RefItem(k)->RefColumn()->GetName();
+			subDelStmt += mConnection->GetSchemaUtil()->GetColumnSqlName(fkProps->RefItem(k));
 			subDelStmt += L"='";
 			subDelStmt += result->GetString( k+1, NULL, NULL );
 			subDelStmt += L"'";

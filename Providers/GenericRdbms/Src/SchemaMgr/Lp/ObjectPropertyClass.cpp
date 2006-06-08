@@ -233,14 +233,18 @@ void FdoSmLpGrdObjectPropertyClass::InitProperties (
 	    // First, check the Metadata (F_AttributeDependency row) for the 
 	    // source and target columns.
 
-	    FdoStringsP pkColumnNames = 
-            RefDependency() ? RefDependency()->GetPkColumnNames() : FdoStringsP(FdoStringCollection::Create());
+	    FdoSmPhColumnListP pkColumnNames = 
+            RefDependency() ? 
+            RefDependency()->GetPkColumnNames() : 
+            FdoSmPhColumnListP(FdoSmPhColumnList::Create(GetLogicalPhysicalSchema()->GetPhysicalSchema()));
+   
+	    FdoSmPhColumnListP fkColumnNames =
+		    RefDependency() ? 
+            RefDependency()->GetFkColumnNames() : 
+            FdoSmPhColumnListP(FdoSmPhColumnList::Create(GetLogicalPhysicalSchema()->GetPhysicalSchema()));
 
-	    FdoStringsP fkColumnNames =
-		    RefDependency() ? RefDependency()->GetFkColumnNames() : FdoStringsP(FdoStringCollection::Create());
-
-        FdoStringsP sourceColumnNames = FdoStringCollection::Create();
-	    FdoStringsP targetColumnNames = FdoStringCollection::Create();
+        FdoSmPhColumnListP sourceColumnNames = FdoSmPhColumnList::Create( GetLogicalPhysicalSchema()->GetPhysicalSchema() );
+	    FdoSmPhColumnListP targetColumnNames = FdoSmPhColumnList::Create( GetLogicalPhysicalSchema()->GetPhysicalSchema() );
 
 	    if ( pkColumnNames && (pkColumnNames->GetCount() > 0) ) {
 		    /* pkey columns for joining object property table with containing class table
@@ -294,13 +298,13 @@ void FdoSmLpGrdObjectPropertyClass::InitProperties (
 
             // column name is prefixed by the containing' class's table name.
             // Use the name of the foreign table if class is mapped to a foreign schema.
-            FdoStringP srcTableName = 
+            FdoStringP substSrcTableName = 
                 (wcslen(pDefiningClass->GetRootDbObjectName()) > 0) ?
-                    pDefiningClass->GetRootDbObjectName() : 
-                    pDefiningClass->GetDbObjectName();
+                    pDefiningClass->GetSubstRootDbObjectName() : 
+                    pDefiningClass->GetSubstDbObjectName();
 
 		    for ( int i = 0; i < pContainingIdProps->GetCount(); i++ ) {
-                FdoStringP targetColName = srcTableName + L"_" + sourceColumnNames->GetString(i);
+                FdoStringP targetColName = substSrcTableName + L"_" + sourceColumnNames->GetString(i);
                       
                 // Adjust target column name to be unique only if this object did 
                 // not originate from an FDO config doc. In this case, the target

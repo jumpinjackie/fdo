@@ -33,11 +33,22 @@ static const wchar_t* StripTable( const wchar_t *ColName )
 {
     // FIXME; use the column name only for now untill rdbi supports fully qualified names.
     const wchar_t* newName = ColName;
-    while( *(newName) != '.' && *(newName) != '\0' ) newName++;
-    if( *(newName) == '\0' )
-        newName = ColName;
-    else
-        newName++; // get passed the "."
+    const wchar_t* dotPos = NULL;
+    const wchar_t* currPos = ColName;
+
+    // Column name is the part after the last dot. 
+    // On SqlServer, there can be multiple dots.
+    while ( *(currPos) != '\0' ) 
+    {
+        if ( *(currPos) == '.' ) 
+            dotPos = currPos;
+
+        currPos++;
+    }
+    if( dotPos ) {
+        newName = dotPos;
+        newName++;
+    }
 
     return newName;
 }

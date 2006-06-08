@@ -58,9 +58,10 @@ FdoStringP FdoSmPhMySqlView::GetRootNameSql()
        );
 
     return FdoStringP::Format(
-        L"%ls%ls%ls",
+        L"%ls%ls%ls\"%ls\"",
+        (rootOwner == L"" ) ? L"" : L"\"",
         (FdoString*) rootOwner,
-        (rootOwner == L"" ) ? L"" : L".",
+        (rootOwner == L"" ) ? L"" : L"\".",
         (FdoString*) rootObject
     );
 }

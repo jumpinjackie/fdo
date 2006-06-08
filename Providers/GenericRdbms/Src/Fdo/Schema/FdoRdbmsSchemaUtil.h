@@ -43,6 +43,8 @@ using namespace std ;
 #include "Fdo/Pvc/FdoRdbmsPvcOperation.h"
 #include <Collection.h>
 
+#include <Sm/Lp/ObjectPropertyClass.h>
+#include <Sm/Lp/ObjectPropertyDefinition.h>
 
 class FdoRdbmsSchemaUtil
 {
@@ -97,6 +99,21 @@ public:
     FdoPropertyValueCollection* GetPropertyValues( const wchar_t* className, bool bGetAutoGen = false );
 
     void CheckClass(const wchar_t* className);
+
+    // Given a class, returns its table name formated for a SQL statement
+    // (Adds enclosing ANSI quotes if RDBMS supports them).
+    // Throws exception if table is not in the RDBMS.
+    FdoStringP GetDbObjectSqlName( const FdoSmLpClassDefinition *classDefinition );
+
+    // Given an object property, returns its table name formated for a SQL statement
+    // (Adds enclosing ANSI quotes if RDBMS supports them.
+    // Throws exception if table is not in the RDBMS.
+    FdoStringP GetDbObjectSqlName( const FdoSmLpObjectPropertyDefinition *propertyDefinition );
+
+    // Given a property, returns its column name formated for a SQL statement
+    // (Adds enclosing ANSI quotes if RDBMS supports them.
+    // Throws exception if column is not in the RDBMS.
+    FdoStringP GetColumnSqlName( const FdoSmLpSimplePropertyDefinition *propertyDefinition );
 
     // Check the geometry property dimensionality against a geometry value
     void CheckGeomPropOrdDimensionality( const FdoSmLpClassDefinition *classDefinition,

@@ -938,6 +938,16 @@ SymbolicName=FDORDBMS_266
 Language=English
 Creating/Updating a standalone instance for class '%1$ls' is not allowed
 .
+MessageId=2479
+SymbolicName=FDORDBMS_267
+Language=English
+Column does not exist for property '%1$ls'
+.
+MessageId=2480
+SymbolicName=FDORDBMS_268
+Language=English
+Table does not exist for object property '%1$ls'
+.
 MessageId=2485
 SymbolicName=FDORDBMS_273
 Language=English

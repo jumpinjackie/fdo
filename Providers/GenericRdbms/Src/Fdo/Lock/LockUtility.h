@@ -304,8 +304,8 @@ class LockUtility
 
     static bool ActivateLock (
                             FdoRdbmsConnection              *dbi_connection,
-                            char                       *lock_name,
-                            char                       *lock_user);
+                            const wchar_t                   *lock_name,
+                            wchar_t                         *lock_user);
     static bool ExecuteDbiCommand (
                             FdoRdbmsConnection              *dbi_connection,
                             char                       *dbi_cmd,

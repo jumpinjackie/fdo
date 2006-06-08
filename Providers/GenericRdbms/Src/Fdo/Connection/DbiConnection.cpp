@@ -95,7 +95,8 @@ DbiConnection::DbiConnection( ):
     mFilterProcessor( NULL ),
     mSchemaUtil( NULL ),
     mIndex(0),
-    mContext(NULL)
+    mContext(NULL),
+    mParsedConnection(NULL)
 {
     mConnectionString = NULL;
 
@@ -119,6 +120,9 @@ DbiConnection::~DbiConnection(void)
     if( mConnectionString != NULL )
         delete [] mConnectionString;
 
+    if( mParsedConnection != NULL )
+        delete  mParsedConnection;
+
     if( mFilterProcessor != NULL )
         delete mFilterProcessor;
 
@@ -133,6 +137,11 @@ void DbiConnection::SetConnectionString( const wchar_t* connString )
     if( mConnectionString != NULL )
         delete [] mConnectionString;
 
+    if( mParsedConnection != NULL ) {
+        delete mParsedConnection;
+        mParsedConnection = NULL;
+    }
+
     mConnectionString = new wchar_t[wcslen( connString  ) + 1];
     if( mConnectionString != NULL )
         wcscpy( mConnectionString, connString );
@@ -142,11 +151,9 @@ FdoConnectionState DbiConnection::Open (
     bool skipPending
     )
 {
-    ParseInfo* info = NULL;
-
     if ( mOpen != FdoConnectionState_Open )
     {
-        info = parseConnectString ( mConnectionString );
+        parseConnectString ();
 
         if ( mOpen == FdoConnectionState_Closed )
         {
@@ -160,10 +167,10 @@ FdoConnectionState DbiConnection::Open (
             // disrupting the other drivers just to get the special case.  Only
             // ODBC Provider currently supports a property actually called
             // "ConnectionString".
-            if (NULL == info->mConnectionStringProperty)
-                rdbi_status = rdbi_connect ( mContext, info->mDataSource, info->mUser, info->mPassword, &mDbiContextId );
+            if (mParsedConnection->mConnectionStringProperty.GetLength() == 0)
+                rdbi_status = rdbi_connect ( mContext, (char*)(const char*)(mParsedConnection->mDataSource), (char*)(const char*)(mParsedConnection->mUser), (char*)(const char*)(mParsedConnection->mPassword), &mDbiContextId );
             else
-                rdbi_status = rdbi_connect ( mContext, info->mConnectionStringProperty, NULL, NULL, &mDbiContextId );
+                rdbi_status = rdbi_connect ( mContext, (char*)(const char*)(mParsedConnection->mConnectionStringProperty), NULL, NULL, &mDbiContextId );
 
             if( rdbi_status == RDBI_SUCCESS ) {
                 mOpen = FdoConnectionState_Pending;
@@ -174,9 +181,16 @@ FdoConnectionState DbiConnection::Open (
             }
         }
 
-        if ( skipPending || info->mSchema )
+        if ( skipPending || (mParsedConnection->mSchema.GetLength() > 0) )
         {
-            if ( rdbi_set_schema( mContext, info->mSchema ) == RDBI_SUCCESS ) {
+            int rc;
+
+            if ( mGdbiConnection && mGdbiConnection->GetCommands()->SupportsUnicode() ) 
+                rc =  rdbi_set_schemaW( mContext, (wchar_t*)(const wchar_t*)(mParsedConnection->mSchema) );
+            else 
+                rc =  rdbi_set_schema( mContext, (char*)(const char*)(mParsedConnection->mSchema) );
+
+            if ( rc == RDBI_SUCCESS ) {
 				if ( rdbi_autocommit_off(mContext) == RDBI_SUCCESS )
 					mOpen = FdoConnectionState_Open;
             }
@@ -191,13 +205,10 @@ FdoConnectionState DbiConnection::Open (
             }
         }
         if (this->mGdbiConnection != NULL)
-            mGdbiConnection->SetIsGeometryFromOrdinatesWanted(info->mIsGeometryFromOrdinatesWanted);
+            mGdbiConnection->SetIsGeometryFromOrdinatesWanted((char*)(const char*)(mParsedConnection->mIsGeometryFromOrdinatesWanted));
     }
     
-    mDbSchemaName = info->mSchema;
-
-    if( NULL != info )
-        delete info;
+    mDbSchemaName = mParsedConnection->mSchema;
 
     return mOpen;
 }
@@ -276,95 +287,42 @@ bool DbiConnection::SetTransactionLock( const char *sqlStatement )
     return ret;
 }
 
-char* DbiConnection::GetUser()
+FdoStringP DbiConnection::GetUser()
 {
+    parseConnectString ();
 
-    ParseInfo* info;
-
-    info = parseConnectString (mConnectionString);
-
-    char *user = NULL;
-    if (NULL != info->mUser)
-    {
-        user = new char[strlen(info->mUser)+1];
-        strcpy(user, info->mUser);
-    }
-    else
-    {
-        user = new char[1];
-        user[0] = '\0';
-    }
-    delete info;
-    return user;
-
+    return mParsedConnection->mUser;
 }
 
-char* DbiConnection::GetPassword()
+FdoStringP DbiConnection::GetPassword()
 {
-	ParseInfo* info;
+    parseConnectString ();
 
-	info = parseConnectString (mConnectionString);
-
-	char *password = NULL;
-	if (NULL != info->mPassword)
-	{
-		password = new char[strlen(info->mPassword)+1];
-		strcpy(password, info->mPassword);
-	}
-	else
-	{
-		password = new char[1];
-		password[0] = '\0';
-	}
-	delete info;
-	return password;
+    return mParsedConnection->mPassword;
 }
 
-char* DbiConnection::GetSchema()
+FdoStringP DbiConnection::GetSchema()
 {
+    parseConnectString ();
 
-    ParseInfo* info;
-
-    info = parseConnectString (mConnectionString);
-
-    char *schema = NULL;
-    if (NULL != info->mSchema)
-    {
-        schema = new char[strlen(info->mSchema)+1];
-        strcpy(schema, info->mSchema);
-    }
-	else
-	{
-		schema = new char[1];
-		schema[0] = '\0';
-	}
-    delete info;
-    return schema;
-
+    return mParsedConnection->mSchema;
 }
 
-char* DbiConnection::GetDataSource()
+
+FdoStringP DbiConnection::GetDataSource()
 {
+    parseConnectString ();
 
-    ParseInfo* info;
-
-    info = parseConnectString (mConnectionString);
-
-    char *datasource = NULL;
-    if (NULL != info->mDataSource)
-    {
-        datasource = new char[strlen(info->mDataSource)+1];
-        strcpy(datasource, info->mDataSource);
-    }
-	else
-	{
-		datasource = new char[1];
-		datasource[0] = '\0';
-	}
-    delete info;
-    return datasource;
-
+    return mParsedConnection->mDataSource;
 }
+
+
+void DbiConnection::parseConnectString ()
+{
+    if ( !mParsedConnection ) 
+        mParsedConnection = parseConnectString( mConnectionString);
+}
+
 
 DbiConnection::ParseInfo* DbiConnection::parseConnectString ( const wchar_t *connStr )
 {
@@ -373,14 +331,14 @@ DbiConnection::ParseInfo* DbiConnection::parseConnectString ( const wchar_t *con
     wchar_t     *token;
     wchar_t     *start;
     int         size;
-    char        *user = NULL;
-    char        *password = NULL;
-    char        *schema = NULL;
-    char        *remainder;
-    char        *datasource = NULL;
-    char        *connectionStringProperty = NULL;
-    char        *defaultGeometryWanted = NULL;
-    char        *temp;
+    wchar_t     *user = NULL;
+    wchar_t     *password = NULL;
+    wchar_t     *schema = NULL;
+    wchar_t     *remainder;
+    wchar_t     *datasource = NULL;
+    wchar_t     *connectionStringProperty = NULL;
+    wchar_t     *defaultGeometryWanted = NULL;
+    wchar_t     *temp;
     ParseInfo   *ret;
 
     size = (int)((1 + wcslen (connStr)) * sizeof (wchar_t));
@@ -413,12 +371,12 @@ DbiConnection::ParseInfo* DbiConnection::parseConnectString ( const wchar_t *con
                 start += 1;
                 while (iswspace(*start))
                     start++;
-                size = (int)wcslen (start) * 3;
+                size = (int)wcslen (start);
                 if (0 != size)
                 {
-                    user = (char*) alloca((size + 1)*sizeof(char));
+                    user = (wchar_t*) alloca((size + 1)*sizeof(wchar_t));
                     memset (user, 0, size + 1);
-                    ut_utf8_from_unicode( start, user, size );
+                    wcscpy( user, start );
                 }
             }
         }
@@ -434,12 +392,12 @@ DbiConnection::ParseInfo* DbiConnection::parseConnectString ( const wchar_t *con
                 start += 1;
                 while (iswspace(*start))
                     start++;
-                size = (int)wcslen (start) * 3;
+                size = (int)wcslen (start);
                 if (0 != size)
                 {
-                    user = (char*) alloca((size + 1)*sizeof(char));
+                    user = (wchar_t*) alloca((size + 1)*sizeof(wchar_t));
                     memset (user, 0, size + 1);
-                    ut_utf8_from_unicode( start, user, size );
+                    wcscpy( user, start );
                 }
             }
         }
@@ -455,12 +413,12 @@ DbiConnection::ParseInfo* DbiConnection::parseConnectString ( const wchar_t *con
                 start += 1;
                 while (iswspace(*start))
                     start++;
-                size = (int)wcslen (start) * 3;
+                size = (int)wcslen (start);
                 if (0 != size)
                 {
-                    password = (char*) alloca((size + 1)*sizeof(char));
+                    password = (wchar_t*) alloca((size + 1)*sizeof(wchar_t));
                     memset (password, 0, size + 1);
-                    ut_utf8_from_unicode( start, password, size );
+                    wcscpy( password, start );
                 }
             }
         }
@@ -476,12 +434,12 @@ DbiConnection::ParseInfo* DbiConnection::parseConnectString ( const wchar_t *con
                 start += 1;
                 while (iswspace(*start))
                     start++;
-                size = (int)wcslen (start) * 3;
+                size = (int)wcslen (start);
                 if (0 != size)
                 {
-                    schema = (char*) alloca((size + 1)*sizeof(char));
+                    schema = (wchar_t*) alloca((size + 1)*sizeof(wchar_t));
                     memset (schema, 0, size + 1);
-                    ut_utf8_from_unicode( start, schema, size );
+                    wcscpy( schema, start );
                 }
             }
         }
@@ -497,12 +455,12 @@ DbiConnection::ParseInfo* DbiConnection::parseConnectString ( const wchar_t *con
                 start += 1;
                 while (iswspace(*start))
                     start++;
-                size = (int)wcslen (start) * 3;
+                size = (int)wcslen (start);
                 if (0 != size)
                 {
-                    datasource = (char*) alloca((size + 1)*sizeof(char));
+                    datasource = (wchar_t*) alloca((size + 1)*sizeof(wchar_t));
                     memset (datasource, 0, size + 1);
-                    ut_utf8_from_unicode( start, datasource, size );
+                    wcscpy( datasource, start );
                 }
             }
         }
@@ -518,12 +476,12 @@ DbiConnection::ParseInfo* DbiConnection::parseConnectString ( const wchar_t *con
                 start += 1;
                 while (iswspace(*start))
                     start++;
-                size = (int)wcslen (start) * 3;
+                size = (int)wcslen (start);
                 if (0 != size)
                 {
-                    datasource = (char*) alloca((size + 1)*sizeof(char));
+                    datasource = (wchar_t*) alloca((size + 1)*sizeof(wchar_t));
                     memset (datasource, 0, size + 1);
-                    ut_utf8_from_unicode( start, datasource, size );
+                    wcscpy( datasource, start );
                 }
             }
         }
@@ -539,12 +497,12 @@ DbiConnection::ParseInfo* DbiConnection::parseConnectString ( const wchar_t *con
                 start += 1;
                 while (iswspace(*start))
                     start++;
-                size = (int)wcslen (start) * 3;
+                size = (int)wcslen (start);
                 if (0 != size)
                 {
-                    defaultGeometryWanted = (char*) alloca((size + 1)*sizeof(char));
+                    defaultGeometryWanted = (wchar_t*) alloca((size + 1)*sizeof(wchar_t));
                     memset (defaultGeometryWanted, 0, size + 1);
-                    ut_utf8_from_unicode( start, defaultGeometryWanted, size );
+                    wcscpy( defaultGeometryWanted, start );
                 }
             }
         }
@@ -595,35 +553,35 @@ DbiConnection::ParseInfo* DbiConnection::parseConnectString ( const wchar_t *con
                 if (NULL != (token = wcstok (NULL, DELIMITER2, &state)))
 #endif
                 {
-                    size = (int)wcslen (token) * 3;
+                    size = (int)wcslen (token);
                     if ( 0 != size ) 
                     {
-                        connectionStringProperty = (char*) alloca((size + 1)*sizeof(char));
+                        connectionStringProperty = (wchar_t*) alloca((size + 1)*sizeof(wchar_t));
                         memset (connectionStringProperty, 0, size + 1);
-                        ut_utf8_from_unicode( token, connectionStringProperty, size );
+                        wcscpy( connectionStringProperty, token );
                     }
                 }
             }
         }
         else
         {
-            size = (int)wcslen (token) * 3;
+            size = (int)wcslen (token);
             if (0 != size)
             {
                 if (NULL != remainder)
-                    size += (int)strlen (remainder) + 1;
-                temp = (char*) alloca((size + 1)*sizeof(char));
+                    size += (int)wcslen (remainder) + 1;
+                temp = (wchar_t*) alloca((size + 1)*sizeof(wchar_t));
                 memset (temp, 0, size + 1);
                 if (NULL != remainder)
                 {
-                    strcpy (temp, remainder);
-                    strcat (temp, ";");
+                    wcscpy (temp, remainder);
+                    wcscat (temp, L";");
                     remainder = temp;
-                    temp = remainder + strlen (remainder);
+                    temp = remainder + wcslen (remainder);
                 }
                 else
                     remainder = temp;
-                ut_utf8_from_unicode( token, temp, size );
+                wcscpy( token, temp );
             }
         }
         rover = NULL;
@@ -633,68 +591,19 @@ DbiConnection::ParseInfo* DbiConnection::parseConnectString ( const wchar_t *con
     return (ret);
 }
 
-DbiConnection::ParseInfo::ParseInfo (char *datasource, char *user, char *password, char *schema, char *connectionString, char * defaultGeometryWanted, char *remainder) :
-    mDataSource (NULL),
-    mUser (NULL),
-    mPassword (NULL),
-    mSchema (NULL),
-    mConnectionStringProperty(NULL),
-    mIsGeometryFromOrdinatesWanted(NULL),
-    mRemainder (NULL)
+DbiConnection::ParseInfo::ParseInfo (wchar_t *datasource, wchar_t *user, wchar_t *password, wchar_t *schema, wchar_t *connectionString, wchar_t * defaultGeometryWanted, wchar_t *remainder) :
+    mDataSource (datasource),
+    mUser (user),
+    mPassword (password),
+    mSchema (schema),
+    mConnectionStringProperty(connectionString),
+    mIsGeometryFromOrdinatesWanted(defaultGeometryWanted),
+    mRemainder (remainder)
 {
-    if (NULL != datasource)
-    {
-        mDataSource = new char[strlen (datasource) + 1];
-        strcpy (mDataSource, datasource);
-    }
-    if (NULL != user)
-    {
-        mUser = new char[strlen (user) + 1];
-        strcpy (mUser, user);
-    }
-    if (NULL != password)
-    {
-        mPassword = new char[strlen (password) + 1];
-        strcpy (mPassword, password);
-    }
-    if (NULL != schema)
-    {
-        mSchema = new char[strlen (schema) + 1];
-        strcpy (mSchema, schema);
-    }
-    if (NULL != connectionString)
-    {
-        mConnectionStringProperty = new char[strlen (connectionString) + 1];
-        strcpy (mConnectionStringProperty, connectionString);
-    }
-    if (NULL != defaultGeometryWanted)
-    {
-        mIsGeometryFromOrdinatesWanted = new char[strlen (defaultGeometryWanted) + 1];
-        strcpy (mIsGeometryFromOrdinatesWanted, defaultGeometryWanted);
-    }
-    if (NULL != remainder)
-    {
-        mRemainder = new char[strlen (remainder) + 1];
-        strcpy (mRemainder, remainder);
-    }
 }
 
 DbiConnection::ParseInfo::~ParseInfo ()
 {
-    if (NULL != mDataSource)
-        delete [] (mDataSource);
-    if (NULL != mUser)
-        delete [] (mUser);
-    if (NULL != mPassword)
-        delete [] (mPassword);
-    if (NULL != mSchema)
-        delete [] (mSchema);
-    if (NULL != mConnectionStringProperty)
-        delete [] (mConnectionStringProperty);
-    if (NULL != mIsGeometryFromOrdinatesWanted)
-        delete [] (mIsGeometryFromOrdinatesWanted);
-    if (NULL != mRemainder)
-        delete [] (mRemainder);
 }
 /**
  * Perform a sql statement without going through the dbgql parser.

@@ -433,8 +433,7 @@ void  FdoRdbmsFeatureReader::FetchProperties ()
         {
             const FdoSmLpSchema *schema = mConnection->GetSchemaUtil()->GetSchema(mCurrentClassName);
             const FdoSmLpClassDefinition *classDefinition = schema->RefClasses()->RefItem(mCurrentClassName);
-            const FdoSmLpDbObject* table = classDefinition->RefDbObject();
-            const wchar_t *tableName = table->GetName();
+            FdoStringP tableName = mConnection->GetSchemaUtil()->GetDbObjectSqlName(classDefinition);
 
             const FdoSmLpPropertyDefinitionCollection *propertyDefinitions = classDefinition->RefProperties();
 
@@ -756,15 +755,15 @@ FdoIFeatureReader* FdoRdbmsFeatureReader::GetAssociatedObject( const FdoSmLpAsso
     if( mLevel > 0 || ! FdoPtr<FdoRdbmsFilterProcessor>(mFdoConnection->GetFilterProcessor())->CanOptimizeRelationQuery( mClassDefinition,  propertyDefinition) )
     {
         GdbiQueryResult *queryResult;
-        FdoStringP selectString = FdoStringP::Format(L"select * from %ls where ", associatedClass->GetDbObjectName());
-        const FdoStringsP identCols = propertyDefinition->GetIdentityColumns();
-        const FdoStringsP revIdentCols = propertyDefinition->GetReverseIdentityColumns();
+        FdoStringP selectString = FdoStringP::Format(L"select * from %ls where ", (FdoString*)(mConnection->GetSchemaUtil()->GetDbObjectSqlName(associatedClass)));
+        const FdoSmPhColumnListP identCols = propertyDefinition->GetIdentityColumns();
+        const FdoSmPhColumnListP revIdentCols = propertyDefinition->GetReverseIdentityColumns();
         char    **bindArray = new char*[identCols->GetCount()];
         for( int i=0; i<identCols->GetCount(); i++ )
         {
             if( i != 0 )
                 selectString += L" and ";
-            selectString += FdoStringP::Format(L"%ls=",(const wchar_t *)(identCols->GetString(i)));
+            selectString += FdoStringP::Format(L"%ls=",(const wchar_t *)(identCols->GetDbString(i)));
 			selectString += mFdoConnection->GetBindString( i+1 );
         }
 
@@ -850,6 +849,7 @@ FdoIFeatureReader* FdoRdbmsFeatureReader::GetFeatureObject( const wchar_t* prope
         if( pkCols == NULL || fkCols == NULL || pkCols->GetCount() == 0 || pkCols->GetCount() != fkCols->GetCount() )
             throw FdoFilterException::Create( NlsMsgGet2( FDORDBMS_66, "Missing or badly defined target class for property '%1$ls' of class '%2$ls'", propertyName, mLastClassName));
 
+        FdoStringP targetTableName = pTargetTable->RefDbObject()->GetDbQName();
 
         FdoStringP selectString;
 		FdoStringP  ltWhereCondition;
@@ -893,12 +893,11 @@ FdoIFeatureReader* FdoRdbmsFeatureReader::GetFeatureObject( const wchar_t* prope
                         {
                             const FdoSmLpDataPropertyDefinition* dataProp =
                                 static_cast<const FdoSmLpDataPropertyDefinition*>(propertyDefinition);
-                            const FdoSmPhColumn *column = dataProp->RefColumn();
-                            const wchar_t *colName = column->GetName();
+                            FdoStringP colName = mConnection->GetSchemaUtil()->GetColumnSqlName(dataProp);
 
                             if (first == false)
                                 str += ",";
-							str += pTargetTable->GetName();
+							str += targetTableName;
 							str += ".";
                             str += colName;
                             first = false;
@@ -912,11 +911,10 @@ FdoIFeatureReader* FdoRdbmsFeatureReader::GetFeatureObject( const wchar_t* prope
                 const FdoSmLpDataPropertyDefinition *idProperty = properties->RefItem(i);
                 const FdoSmLpDataPropertyDefinition* dataProp =
                     static_cast<const FdoSmLpDataPropertyDefinition*>(idProperty);
-                const FdoSmPhColumn *column = idProperty->RefColumn();
-                const wchar_t *colName = column->GetName();
+                FdoStringP colName = mConnection->GetSchemaUtil()->GetColumnSqlName(idProperty);
                 if (first == false)
                     str += ",";
-				str += pTargetTable->GetName();
+				str += targetTableName;
 				str += ".";
                 str += colName;
                 first = false;
@@ -926,7 +924,7 @@ FdoIFeatureReader* FdoRdbmsFeatureReader::GetFeatureObject( const wchar_t* prope
 			flterProcessor->GetLtTableExpression( pTargetClass, ltWhereCondition, ltTableExp, FdoCommandType_Select );
 			if( ((const wchar_t*)ltWhereCondition)[0] != '\0' )
 				comma = L",";
-            selectString = FdoStringP::Format(L"select %ls from %ls%ls%ls where ", (const wchar_t *) str, pTargetTable->GetName(),comma,(const wchar_t*)(ltTableExp));
+            selectString = FdoStringP::Format(L"select %ls from %ls%ls%ls where ", (const wchar_t *) str, (const wchar_t *) targetTableName,comma,(const wchar_t*)(ltTableExp));
 
         }
         else
@@ -935,7 +933,7 @@ FdoIFeatureReader* FdoRdbmsFeatureReader::GetFeatureObject( const wchar_t* prope
 			flterProcessor->GetLtTableExpression( pTargetClass, ltWhereCondition, ltTableExp, FdoCommandType_Select );
 			if( ((const wchar_t*)ltWhereCondition)[0] != '\0' )
 				comma = L",";
-            selectString = FdoStringP::Format(L"select * from %ls%ls%ls where ", pTargetTable->GetName(),comma,(const wchar_t*)(ltTableExp));
+            selectString = FdoStringP::Format(L"select * from %ls%ls%ls where ", (const wchar_t *)targetTableName,comma,(const wchar_t*)(ltTableExp));
         }
 
         char    **bindArray = new char*[pkCols->GetCount()];
@@ -946,7 +944,7 @@ FdoIFeatureReader* FdoRdbmsFeatureReader::GetFeatureObject( const wchar_t* prope
                 selectString += L" and ";
             FdoStringP colName = FdoStringP::Format(L"%ls.%ls",(const wchar_t *)mClassDefinition->GetDbObjectName(), pkCols->RefItem(i)->GetName() );
             const wchar_t* tmpVal = mAttrQueryCache[mAttrsQidIdx].query->GetString( (const wchar_t *)colName,NULL, NULL);
-            selectString += pTargetTable->GetName();
+            selectString += targetTableName;
 			selectString += L".";
 			selectString += fkCols->RefItem(i)->GetName();
             selectString += L" = ";
@@ -975,11 +973,12 @@ FdoIFeatureReader* FdoRdbmsFeatureReader::GetFeatureObject( const wchar_t* prope
             const FdoSmLpDataPropertyDefinition * id = objProp->RefIdentityProperty();
             if (id)
             {
-                const wchar_t *columnName = id->GetColumnName();
-                if (columnName)
+                const FdoSmPhColumn* column = id->RefColumn();
+                FdoStringP columnName = column ? column->GetDbName() : FdoStringP();
+                if (columnName != L"")
                 {
                     selectString += " order by ";
-					selectString += pTargetTable->GetName();
+					selectString += targetTableName;
 					selectString += L".";
                     selectString += columnName;
                     selectString += " ";
@@ -1314,7 +1313,7 @@ bool FdoRdbmsFeatureReader::IsNull( const wchar_t *propertyName )
                 if( propertyDefinition == NULL )
                     return true;
                 const FdoSmLpAssociationPropertyDefinition* associProp = static_cast<const FdoSmLpAssociationPropertyDefinition*>(propertyDefinition);
-                const FdoStringsP identCol = associProp->GetReverseIdentityColumns();
+                const FdoSmPhColumnListP identCol = associProp->GetReverseIdentityColumns();
                 for( int i=0; i<identCol->GetCount(); i++ )
                 {
                     FdoStringP colName = FdoStringP::Format(L"%ls.%ls",(const wchar_t *)mClassDefinition->GetDbObjectName(), (const wchar_t *)identCol->GetString(i) );

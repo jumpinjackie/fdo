@@ -35,7 +35,6 @@ librdbi_la_SOURCES = \
   init.c \
   lob_.c \
   msg_issue.c \
-  nom_db.c \
   null.c \
   objects_.c \
   pkeys_.c \

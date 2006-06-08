@@ -51,16 +51,12 @@ FdoSmPhOdbcDbObject::~FdoSmPhOdbcDbObject(void)
 
 FdoStringP FdoSmPhOdbcDbObject::GetDbQName() const
 {
-    //TODO: the follow means that:
-    //   - the Schema Manager can only access tables or views for the current
-    //     user, from the current schema
-    //   - only tables or views owned by dbo can be accessed from other schemas.
-    //This needs to be revisited to better support objects owned by various users.
+    FdoStringP dbQName = GetDbName();
 
-    if ( ((FdoSmPhOdbcDbObject*) this)->GetManager()->GetDefaultOwnerName().ICompare(GetParent()->GetName()) == 0 ) 
-        return GetName();
-    else
-        return ( FdoStringP(GetParent()->GetName()) + L".dbo." + GetName() );
+    if ( ((FdoSmPhOdbcDbObject*) this)->GetManager()->GetDefaultOwnerName().ICompare(GetParent()->GetName()) != 0 ) 
+        dbQName = ((const FdoSmPhDbElement*) GetParent())->GetDbName() + L"." + dbQName;
+
+    return dbQName;
 }
 
 void FdoSmPhOdbcDbObject::ActivateOwnerAndExecute( FdoStringP sqlStmt )

@@ -1198,8 +1198,8 @@ bool LockUtility::IsValidName (FdoString *name)
 }  //  IsValidName ()
 
 bool LockUtility::ActivateLock (FdoRdbmsConnection   *dbi_connection,
-                                char            *lock_name,
-                                char            *lock_user)
+                                const wchar_t        *lock_name,
+                                wchar_t              *lock_user)
 
 // +---------------------------------------------------------------------------
 // | The function activates the lock associated with the given lock owner.

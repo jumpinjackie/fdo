@@ -49,7 +49,7 @@ bool FdoSmPhMySqlIndex::Add()
     FdoStringP sqlStmt = FdoStringP::Format(
         L"create %lsindex %ls on %ls ( %ls )",
         GetIsUnique() ? L"unique " : L"",
-        (FdoString*) GetName(),
+        (FdoString*) GetDbName(),
         (FdoString*) table->GetDbQName(),
         (FdoString*) GetRefColsSql()->ToString( L", " )
     );
@@ -71,7 +71,7 @@ bool FdoSmPhMySqlIndex::Delete()
     FdoStringP sqlStmt = FdoStringP::Format(
         L"alter table %ls drop index %ls",
         (FdoString*) table->GetDbQName(),
-        (FdoString*) GetName()
+        (FdoString*) GetDbName()
     );
 
     gdbiConn->ExecuteNonQuery( (const char*) sqlStmt, true );

@@ -120,9 +120,6 @@ rdbi_connect(
      * Initialize variables for this connection
      */
     if (status == RDBI_SUCCESS) {
-        strcpy(context->rdbi_cnct->dataset,    (NULL==dataset) ? "" : dataset);
-        strcpy(context->rdbi_cnct->db_name,    (NULL==dataset) ? "" : dataset);
-        strcpy(context->rdbi_cnct->prev_name,  "");
         context->rdbi_cnct->in_use           = TRUE;
         context->rdbi_cnct->connect_id       = *connect_id;
         context->rdbi_cnct->uncommitted_data = FALSE;

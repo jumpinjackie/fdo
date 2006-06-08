@@ -170,7 +170,7 @@ FdoILockConflictReader* FdoRdbmsReleaseLock::Execute ()
 
     bool                       is_administrator_op   = FALSE;
 
-    char                       *current_user         = NULL;
+    FdoStringP                 current_user;
 
     FdoCommandException        *fdo_cmd_ex           = NULL;
 
@@ -221,8 +221,6 @@ FdoILockConflictReader* FdoRdbmsReleaseLock::Execute ()
 
       // Clean up.
 
-      if (current_user != NULL) { delete[] current_user; current_user = NULL; }
-
       // Return the lock conflict reader back to the caller.
 
       return lock_conflict_reader;
@@ -232,8 +230,6 @@ FdoILockConflictReader* FdoRdbmsReleaseLock::Execute ()
     catch (FdoException *ex) {
 
       // Clean up.
-
-      if (current_user != NULL) { delete[] current_user; current_user = NULL; }
 
       fdo_cmd_ex = FdoCommandException::Create(ex->GetExceptionMessage(), ex);
       ex->Release();
@@ -245,7 +241,6 @@ FdoILockConflictReader* FdoRdbmsReleaseLock::Execute ()
 
       // Clean up.
 
-      if (current_user != NULL) { delete[] current_user; current_user = NULL; }
       throw;
 
     }  //  catch ( ... ) ...
@@ -257,7 +252,7 @@ FdoILockConflictReader* FdoRdbmsReleaseLock::Execute ()
 // --                          Supporting functions                          --
 // ----------------------------------------------------------------------------
 
-bool FdoRdbmsReleaseLock::UserIsAdministrator (char *current_user)
+bool FdoRdbmsReleaseLock::UserIsAdministrator (const wchar_t *current_user)
 
 // +---------------------------------------------------------------------------
 // | The function returns TRUE if the user identified by the given name has
@@ -272,7 +267,7 @@ bool FdoRdbmsReleaseLock::UserIsAdministrator (char *current_user)
 
 }  //  UserIsAdministrator ()
 
-bool FdoRdbmsReleaseLock::LockOwnerIsUser (char *current_user)
+bool FdoRdbmsReleaseLock::LockOwnerIsUser (const wchar_t *current_user)
 
 // +---------------------------------------------------------------------------
 // | The function returns TRUE if the lock owner is the current user, FALSE
@@ -285,17 +280,11 @@ bool FdoRdbmsReleaseLock::LockOwnerIsUser (char *current_user)
 
     bool lock_owner_is_user;
 
-    char *current_lock_owner  = NULL;
-
     // Determine whether or not the current user is identical with the one
     // identified by the lock owner property.
 
-    current_lock_owner =
-                    LockUtility::ConvertString(dbi_connection->GetUtility(),
-                                               lock_owner);
     lock_owner_is_user =
-                       (FdoCommonOSUtil::stricmp(current_user, current_lock_owner) == 0);
-    delete[] current_lock_owner;
+                    (FdoCommonOSUtil::wcsicmp(current_user, lock_owner) == 0);
 
     return lock_owner_is_user;
 
@@ -315,9 +304,9 @@ FdoRdbmsLockConflictReader *FdoRdbmsReleaseLock::ExecuteUnlockRequest (bool is_a
                             transaction_started                 = FALSE,
                             class_name_modified                 = FALSE;
 
-    char                    *current_lock                       = NULL,
-                            *current_user                       = NULL,
-                            lock_user[PROCESS_NAME_LENGTH+1];
+    FdoStringP              current_lock,
+                            current_user;
+    wchar_t                 lock_user[PROCESS_NAME_LENGTH+1];
 
     FdoFilter               *fdo_filter                         = NULL;
 
@@ -364,8 +353,7 @@ FdoRdbmsLockConflictReader *FdoRdbmsReleaseLock::ExecuteUnlockRequest (bool is_a
       // the command.
 
       current_lock = (lock_owner != NULL)
-                   ? LockUtility::ConvertString(dbi_connection->GetUtility(),
-                                                lock_owner)
+                   ? FdoStringP(lock_owner)
                    : dbi_connection->GetUser();
 
       current_user = dbi_connection->GetUser();
@@ -374,12 +362,6 @@ FdoRdbmsLockConflictReader *FdoRdbmsReleaseLock::ExecuteUnlockRequest (bool is_a
       // schema.
 
       //if (!LockUtility::MaintainLockData(fdo_rdbms_connection,current_lock)) {
-
-      //    delete[] current_lock;
-      //    delete[] current_user;
-
-      //    current_lock = NULL;
-      //    current_user = NULL;
 
       //    return NULL;
 
@@ -395,12 +377,6 @@ FdoRdbmsLockConflictReader *FdoRdbmsReleaseLock::ExecuteUnlockRequest (bool is_a
           if (!LockUtility::ActivateLock(fdo_rdbms_connection,
                                          current_lock,
                                          lock_user      )) {
-
-              delete[] current_lock;
-              delete[] current_user;
-
-              current_lock = NULL;
-              current_user = NULL;
 
               return FALSE;
 
@@ -466,12 +442,6 @@ FdoRdbmsLockConflictReader *FdoRdbmsReleaseLock::ExecuteUnlockRequest (bool is_a
                    LockUtility::ActivateLock(fdo_rdbms_connection,
                                              current_user,
                                              lock_user      );
-
-               delete[] current_lock;
-               delete[] current_user;
-
-               current_lock = NULL;
-               current_user = NULL;
 
                return FALSE;
 
@@ -549,12 +519,6 @@ FdoRdbmsLockConflictReader *FdoRdbmsReleaseLock::ExecuteUnlockRequest (bool is_a
                                     current_user,
                                     lock_user      );
 
-      delete[] current_lock;
-      delete[] current_user;
-
-      current_lock = NULL;
-      current_user = NULL;
-
       return conflictReader;
 
     }  //  try ...
@@ -585,12 +549,6 @@ FdoRdbmsLockConflictReader *FdoRdbmsReleaseLock::ExecuteUnlockRequest (bool is_a
           LockUtility::ActivateLock(fdo_rdbms_connection,
                                     current_user,
                                     lock_user      );
-
-      delete[] current_lock;
-      delete[] current_user;
-
-      current_lock = NULL;
-      current_user = NULL;
 
       throw;
 

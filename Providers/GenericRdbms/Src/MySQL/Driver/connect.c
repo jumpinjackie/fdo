@@ -20,6 +20,7 @@
 
 #include "connect.h"
 #include "Inc/ut.h"
+#include "run_sql.h"
 #include <malloc.h>
 
 int mysql_connect (
@@ -39,6 +40,7 @@ int mysql_connect (
     int index;
     MYSQL *mysql;
     MYSQL *handle;
+    int rows_processed;
     int ret;
 
     ret = RDBI_SUCCESS;
@@ -102,14 +104,21 @@ int mysql_connect (
 							context->mysql_connections[index] = handle;
 
 							*connect_id = index;
+                            // The following allows RDBMS object names to be double quote
+                            // delimited in SQL statements, thus allowing queries on tables
+                            // and columns with special characters in their names.
+                            ret = mysql_run_sql( context, "set sql_mode='ANSI_QUOTES'", false, &rows_processed );
 						}
 						else if (context->mysql_current_connect2 == -1)
 						{
 							context->mysql_connect_count++;
 							context->mysql_current_connect2 = index;
 							context->mysql_connections[index] = handle;
+                            // See note 10 lines above.
+                            ret = mysql_run_sql( context, "set sql_mode='ANSI_QUOTES'", true, &rows_processed );
 							break;
 						}
+
                     }
                 }
             }

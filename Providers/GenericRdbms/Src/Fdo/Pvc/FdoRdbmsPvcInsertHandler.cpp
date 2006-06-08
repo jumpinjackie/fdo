@@ -138,7 +138,7 @@ long FdoRdbmsPvcInsertHandler::Execute( const FdoSmLpClassDefinition *classDefin
                 return 0;
         }
         const FdoSmLpDbObject* table = classDefinition->RefDbObject();
-        const wchar_t *tableName = table->GetName();
+        FdoStringP tableName = table->RefDbObject()->GetDbQName();
 
         const wchar_t *name = classDefinition->GetName();
 		if( mInsertAutoIncrementProperties )
@@ -456,11 +456,11 @@ void FdoRdbmsPvcInsertHandler::CreateInsertString(const FdoSmLpClassDefinition *
                     const FdoStringsP   identCollection = associationPropertyDefinition->GetIdentityProperties();
                     if( identCollection->GetCount() == 0  )
                     {
-                        const FdoStringsP identCols  = associationPropertyDefinition->GetReverseIdentityColumns();
+                        const FdoSmPhColumnListP identCols  = associationPropertyDefinition->GetReverseIdentityColumns();
                         for(int i=0; i<identCols->GetCount() && ! scanOnly ; i++ )
                         {
 							CreateInsertStringForColumn(
-								(const wchar_t * ) identCols->GetString(i),
+								(const wchar_t * ) identCols->GetDbString(i),
 								insertString, valuesString,
 								bindCount );
                         }
@@ -480,30 +480,12 @@ void FdoRdbmsPvcInsertHandler::CreateInsertString(const FdoSmLpClassDefinition *
                             FdoPtr<FdoPropertyValue> identPropertyValue;
                             FdoPtr<FdoValueExpression> assoVal;
                             FdoPtr<FdoValueExpression> identVal;
-                            try
-                            {
-                                assocPropertyValue = propValCollection->GetItem( (const wchar_t*)assoPropName );
-                                assoVal = assocPropertyValue->GetValue();
-                            }
-                            catch(FdoException *exp )
-                            {
-                                exp->Release();
-                                assocPropertyValue = NULL;
-                                assoVal = NULL;
-                            }
+                            assocPropertyValue = propValCollection->FindItem( (const wchar_t*)assoPropName );
+                            assoVal = assocPropertyValue ? assocPropertyValue->GetValue() : NULL;
 
                             FdoStringP  revIdenName = revIdentCollection->GetString(i);
-                            try
-                            {
-                                identPropertyValue = propValCollection->GetItem( (const wchar_t*)(revIdenName) );
-                                identVal = identPropertyValue->GetValue();
-                            }
-                            catch(FdoException *exp )
-                            {
-                                exp->Release();
-                                identPropertyValue = NULL;
-                                identVal = NULL;
-                            }
+                            identPropertyValue = propValCollection->FindItem( (const wchar_t*)(revIdenName) );
+                            identVal = identPropertyValue ? identPropertyValue->GetValue() : NULL;
                             if( assocPropertyValue != NULL && identPropertyValue != NULL &&  assoVal != NULL && identVal != NULL )
                             {
                                 if( FdoRdbmsUtil::StrCmp(assoVal->ToString(), identVal->ToString() ) )
@@ -604,7 +586,7 @@ void FdoRdbmsPvcInsertHandler::CreateInsertStringForColumn(
 	if( ((const wchar_t*)insertString)[0] == '\0' )
 		insertString += L" (";  // Start of the columns spec
 
-    const wchar_t *colName = column->GetName();
+    FdoStringP colName = column->GetDbName();
     if( bindCount != 0 )
         insertString += (const wchar_t * )comma;
     insertString += (const wchar_t * ) colName;
@@ -1322,7 +1304,7 @@ void FdoRdbmsPvcInsertHandler::SetBindVariables(const FdoSmLpClassDefinition *cu
                 if( identCollection->GetCount() == 0 )
                 {
                     const FdoSmLpDataPropertyDefinitionCollection *identPropCol =  associationPropertyDefinition->RefAssociatedClass()->RefIdentityProperties();
-                    const FdoStringsP identCols  = associationPropertyDefinition->GetReverseIdentityColumns();
+                    const FdoSmPhColumnListP identCols  = associationPropertyDefinition->GetReverseIdentityColumns();
                     if( identCols->GetCount() != identPropCol->GetCount() )
                         throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_292, "Association identity properties and identity columns mismatch"));
 

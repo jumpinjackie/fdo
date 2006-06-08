@@ -65,8 +65,8 @@ class FdoRdbmsReleaseLock : public FdoRdbmsFeatureCommand<FdoIReleaseLock>
     virtual ~FdoRdbmsReleaseLock ();
 
     FdoRdbmsLockConflictReader    *ExecuteUnlockRequest (bool is_administrator_op);
-    bool    LockOwnerIsUser      (char           *current_user);
-    bool    UserIsAdministrator  (char           *current_user);
+    bool    LockOwnerIsUser      (const wchar_t        *current_user);
+    bool    UserIsAdministrator  (const wchar_t        *current_user);
     void    SetToZero            ();
     void    FreeMemory           ();
 

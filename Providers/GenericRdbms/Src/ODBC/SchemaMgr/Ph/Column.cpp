@@ -40,7 +40,7 @@ FdoStringP FdoSmPhOdbcColumn::GetAddSql()
     if (m_computedExpression.GetLength() == 0)
         addSql = FdoSmPhColumn::GetAddSql();
     else
-        addSql = FdoStringP::Format(L"%ls as %ls", GetName(), (FdoString*)m_computedExpression);
+        addSql = FdoStringP::Format(L"%ls as %ls", (FdoString*) GetDbName(), (FdoString*)m_computedExpression);
    
     return addSql;
 }

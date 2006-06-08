@@ -54,6 +54,11 @@ public:
 
    	void SetOptions();
 
+    // Generates Fdo Feature Schema name from owner name.
+    // If this owner has a name then it becomes the schema name.
+    // If owner name is blank then "Default" is returned.
+    virtual FdoStringP GetBestSchemaName() const;
+
 protected:
 
     // Table and View creation implementors

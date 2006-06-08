@@ -450,6 +450,38 @@ void FdoRdbmsSchemaUtil::CheckClass(const wchar_t* className)
     }
 }
 
+FdoStringP FdoRdbmsSchemaUtil::GetDbObjectSqlName( const FdoSmLpClassDefinition *classDefinition )
+{
+    const FdoSmLpDbObject* lpObject = classDefinition->RefDbObject();
+
+    if (lpObject == NULL)
+        throw FdoSchemaException::Create(NlsMsgGet1(FDORDBMS_265, "Table does not exist for class '%1$ls'", (FdoString*)(classDefinition->GetQName())));
+
+    return lpObject->RefDbObject()->GetDbQName();
+}
+
+FdoStringP FdoRdbmsSchemaUtil::GetDbObjectSqlName( const FdoSmLpObjectPropertyDefinition *propertyDefinition )
+{
+    const FdoSmPhDbObject* phObject = propertyDefinition->RefContainingDbObject();
+
+    if (phObject == NULL)
+        throw FdoSchemaException::Create(NlsMsgGet1(FDORDBMS_268, "Table does not exist for object property '%1$ls'", (FdoString*)(propertyDefinition->GetQName())));
+
+    return phObject->GetDbQName();
+}
+
+FdoStringP FdoRdbmsSchemaUtil::GetColumnSqlName( const FdoSmLpSimplePropertyDefinition *propertyDefinition )
+{
+    const FdoSmPhColumn* phColumn = propertyDefinition->RefColumn();
+
+    if (phColumn == NULL)
+        throw FdoSchemaException::Create(NlsMsgGet1(FDORDBMS_267, "Column does not exist for property '%1$ls'", (FdoString*)(propertyDefinition->GetQName())));
+
+    return phColumn->GetDbName();
+}
+
+
+
 ////////////////////////////////////////////////////////////////////////////////
 void FdoRdbmsSchemaUtil::CheckGeomPropOrdDimensionality( const FdoSmLpClassDefinition *classDefinition,
                                                       const wchar_t*    geomPropName,

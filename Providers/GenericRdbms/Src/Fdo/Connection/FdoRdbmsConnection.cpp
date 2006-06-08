@@ -332,9 +332,9 @@ FdoConnectionState FdoRdbmsConnection::Open (
     return mState;
 }
 
-char* FdoRdbmsConnection::GetUser()
+FdoStringP FdoRdbmsConnection::GetUser()
 {
-    return (mDbiConnection == NULL) ? NULL : mDbiConnection->GetUser();
+    return (mDbiConnection == NULL) ? FdoStringP() : mDbiConnection->GetUser();
 }
 
 // The function returns the unique user number for the current user.
@@ -753,9 +753,7 @@ FdoSchemaManagerP FdoRdbmsConnection::GetSchemaManager()
 
 FdoSchemaManagerP FdoRdbmsConnection::CreateSchemaManager()
 {
-    char *user = GetDbiConnection()->GetUser();
-    FdoStringP currUser = FdoStringP(user);
-    delete [] user;
+    FdoStringP currUser = GetDbiConnection()->GetUser();
     FdoStringP currSchema = GetDbiConnection()->GetDbSchemaName();
 
     // There is one rollback cache per connection

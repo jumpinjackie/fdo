@@ -97,6 +97,7 @@ int mysql_rdbi_init (void **contextp, rdbi_methods methods)
             methods->get_con_var = NULL;
             methods->do_break   = NULL;
             methods->set_schema = (int (*)(void*, char*))mysql_set_schema;
+            methods->set_schemaW = NULL;
             methods->vndr_info  = (int (*)(void*, rdbi_vndr_info_def*))mysql_vndr_info;
             methods->geom_srid_set = NULL;
             methods->geom_dimens_set = NULL;

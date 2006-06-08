@@ -101,6 +101,11 @@ FdoPtr<FdoSmPhRdConstraintReader> FdoSmPhOdbcOwner::CreateConstraintReader( FdoS
     return new FdoSmPhRdOdbcConstraintReader( FDO_SAFE_ADDREF(pOwner), tableName, constraintType );
 }
 
+FdoStringP FdoSmPhOdbcOwner::GetBestSchemaName() const
+{
+    return ( wcslen(GetName()) > 0 ) ? GetName() : L"Default";
+}
+
 bool FdoSmPhOdbcOwner::Add()
 {
     FdoSmPhOdbcMgrP mgr = GetManager()->SmartCast<FdoSmPhOdbcMgr>();

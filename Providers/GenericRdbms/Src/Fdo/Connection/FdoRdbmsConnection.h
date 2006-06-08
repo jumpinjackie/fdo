@@ -95,7 +95,7 @@ public:
     /// <summary>
     /// The function returns the current user.
     /// </summary>
-    virtual char *GetUser();
+    virtual FdoStringP GetUser();
 
     /// <summary>
     /// The function returns the unique user number for the current user.

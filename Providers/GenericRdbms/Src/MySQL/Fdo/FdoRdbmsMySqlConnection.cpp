@@ -365,7 +365,10 @@ void FdoRdbmsMySqlConnection::logOpen(char accessMode)
 				(FdoString*)FDO_OPENDATE_COLUMN, (FdoString*)FDO_SESSION_COLUMN);
 			insertStmt = GetDbiConnection()->GetGdbiConnection()->Prepare((const wchar_t*)sql_stmt);
 		}
-		insertStmt->Bind(1, GDBI_DB_NAME_SIZE, (const char *)GetDbiConnection()->GetUser(), NULL);
+
+        FdoStringP user = GetDbiConnection()->GetUser();
+
+		insertStmt->Bind(1, GDBI_DB_NAME_SIZE, (const char *)user, NULL);
 		insertStmt->Bind(2, sizeof(char), (const char *)&lower_access, NULL);
 		insertStmt->Bind(3, &new_user_num, NULL);
 		try	{

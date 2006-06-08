@@ -143,6 +143,8 @@ FdoStringP FdoSmPhGrdMgr::ClassifyDbObject( FdoStringP tableName, FdoRdbmsOvSche
         }
     }
 
+    className = className.Replace(L":",L"_").Replace(L".",L"_");
+
     if ( className != L"" ) 
         className = FdoStringP(mapping->GetName()) + L":" + className;
 

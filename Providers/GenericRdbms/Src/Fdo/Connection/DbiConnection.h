@@ -69,21 +69,23 @@ private:
     class ParseInfo
     {
         public:
-            char *mDataSource;
-            char *mUser;
-            char *mPassword;
-            char *mSchema;
-            char *mConnectionStringProperty;    // A connection property actually named "ConnectionString"
-            char *mIsGeometryFromOrdinatesWanted;   // Unspecified if empty.  Can be "true" or "false".
-            char *mRemainder;
+            FdoStringP mDataSource;
+            FdoStringP mUser;
+            FdoStringP mPassword;
+            FdoStringP mSchema;
+            FdoStringP mConnectionStringProperty;    // A connection property actually named "ConnectionString"
+            FdoStringP mIsGeometryFromOrdinatesWanted;   // Unspecified if empty.  Can be "true" or "false".
+            FdoStringP mRemainder;
 
-            ParseInfo (char *datasource, char *user, char *password, char *schema, char *connectionString, char * defaultGeometryWanted, char *remainder);
+            ParseInfo (wchar_t *datasource, wchar_t *user, wchar_t *password, wchar_t *schema, wchar_t *connectionString, wchar_t *defaultGeometryWanted, wchar_t *remainder);
             virtual ~ParseInfo ();
     };
 
     int     mDbiContextId; // Dbi database id
 
     wchar_t *mConnectionString; // connection string for the database
+
+    ParseInfo* mParsedConnection;
 
     FdoStringP mDbSchemaName;
 
@@ -104,6 +106,7 @@ private:
     /// <summary>
     /// Extract dbuser and password from the connection string, leaving the remainder.
     /// </summary>
+    void parseConnectString ();
     ParseInfo* parseConnectString ( const wchar_t *connStr );
 
 public:
@@ -123,10 +126,10 @@ public:
     }
 
     bool IsWorkspaceManagerEnvironment ();
-    char *GetUser ();
-	char *GetPassword();
-    char *GetSchema ();
-    char *GetDataSource ();
+    FdoStringP GetUser ();
+    FdoStringP GetPassword();
+    FdoStringP GetSchema ();
+    FdoStringP GetDataSource ();
     FDORDBMS_TEST  void Close ();
 
     //dbi_context_def *GetCtxt() { return mContext; }

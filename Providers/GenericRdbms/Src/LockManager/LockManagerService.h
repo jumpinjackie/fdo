@@ -34,7 +34,7 @@ class FdoRdbmsLockManagerService : public FdoLkDisposable
 
     public:
 		virtual void	   Activate() = 0;
-		virtual FdoInt64   GetLockId(char *dbUser) = 0;
+		virtual FdoInt64   GetLockId(wchar_t *dbUser) = 0;
 		virtual FdoStringP SelectStmt(const FdoSmPhColumnCollection *colList, 
 									  FdoString *tableName, FdoString *whereClause) = 0;
 		virtual FdoStringP CreateConflictDbObject(const FdoSmPhColumnCollection *colList, 

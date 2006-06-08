@@ -95,6 +95,7 @@ typedef struct rdbi_methods_def {
     int  (*get_con_var)(void*,char*);
     int  (*do_break)(void*);
     int  (*set_schema)(void*,char*);
+    int  (*set_schemaW)(void*,wchar_t*);
     int  (*vndr_info)(void*, rdbi_vndr_info_def *);
     int  (*geom_srid_set)(void*,char*,long);
     int  (*geom_dimens_set)(void*,char*,int);
