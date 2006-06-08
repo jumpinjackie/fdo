@@ -19,6 +19,7 @@ libSmPhysical_la_SOURCES = \
   ColumnDate.cpp \
   ColumnDecimal.cpp \
   ColumnGeom.cpp \
+  ColumnList.cpp \
   ColumnUnknown.cpp \
   ColumnVarlen.cpp \
   CommandWriter.cpp \

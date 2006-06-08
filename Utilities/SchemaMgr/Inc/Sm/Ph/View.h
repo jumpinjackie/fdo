@@ -36,6 +36,8 @@ public:
     const FdoSmPhDbObject* RefRootObject() const;
     FdoSmPhDbObjectP GetRootObject();
 
+    virtual FdoSmPhDbObjectP GetLowestRootObject();
+
     /// Get the underlying table name if this is a view over a foreign table
     FdoStringP GetRootObjectName() const
     {
@@ -82,6 +84,9 @@ protected:
     );
 
 	~FdoSmPhView(void);
+
+    /// Commit modifications to child objects
+    virtual void CommitChildren( bool isBeforeParent );
 
     /// Get SQL "create view" statement
     virtual FdoStringP GetAddSql();

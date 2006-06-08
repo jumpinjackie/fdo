@@ -93,7 +93,7 @@ void FdoSmLpFeatureClass::Commit( bool fromParent )
 {
 	FdoSmPhMgrP                     pPhysical = GetLogicalPhysicalSchema()->GetPhysicalSchema();
     FdoSmPhDependencyWriterP        pDepWriter = pPhysical->GetDependencyWriter();
-    FdoStringsP                     classIdColNames = FdoStringCollection::Create();
+    FdoSmPhColumnListP              classIdColNames = FdoSmPhColumnList::Create( GetLogicalPhysicalSchema()->GetPhysicalSchema() );
     FdoStringP                      classDefTable(pPhysical->GetDcDbObjectName("f_classdefinition"));
 
     classIdColNames->Add( FdoStringP(pPhysical->GetDcColumnName(L"classid")) );

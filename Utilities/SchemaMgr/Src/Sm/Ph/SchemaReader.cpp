@@ -146,7 +146,7 @@ FdoSmPhReaderP FdoSmPhSchemaReader::MakeReader( FdoSmPhOwnerP owner, bool dsInfo
         }
         else {
             // F_SCHEMAINFO does not exist, read from native physical schema
-            pSubReader = MakeRdReader( rows, owner, dsInfo );
+            pSubReader = owner->GetManager()->CreateRdSchemaReader( rows, owner, dsInfo );
         }
     }
 
@@ -157,12 +157,6 @@ FdoSmPhReaderP FdoSmPhSchemaReader::MakeMtReader( FdoSmPhRowsP rows, FdoSmPhOwne
 {
     return new FdoSmPhMtSchemaReader( rows, owner, dsInfo );
 }
-
-FdoSmPhReaderP FdoSmPhSchemaReader::MakeRdReader( FdoSmPhRowsP rows, FdoSmPhOwnerP owner, bool dsInfo )
-{
-    return new FdoSmPhRdSchemaReader( rows, owner, dsInfo );
-}
-
 
 bool FdoSmPhSchemaReader::ReadNext()
 {

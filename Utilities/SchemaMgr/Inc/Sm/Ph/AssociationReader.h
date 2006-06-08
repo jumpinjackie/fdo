@@ -23,6 +23,7 @@
 #endif
 
 #include <Sm/Ph/Reader.h>
+#include <Sm/Ph/ColumnList.h>
 
 // This class retrieves all the association definitions from the 
 // current connection
@@ -77,7 +78,7 @@ public:
 
     /// Primary key columns. Columns in the Primary Key table
     /// that relate to the Foreign Key table.
-	FdoStringsP GetPkColumnNames();
+	FdoSmPhColumnListP GetPkColumnNames();
 
     /// Primary Key table name. This is also the table
     /// of the associated class.
@@ -85,7 +86,7 @@ public:
 
     /// Foreign key columns. Columns in the Foreign Key table
     /// that relate to the Primary Key table.
-	FdoStringsP GetFkColumnNames();
+	FdoSmPhColumnListP GetFkColumnNames();
 
     /// The multiplicity column.
 	FdoStringP GetMultiplicity();

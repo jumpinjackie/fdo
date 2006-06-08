@@ -23,6 +23,7 @@
 #endif
 
 #include <Sm/Ph/SchemaElement.h>
+#include <Sm/Ph/ColumnList.h>
 
 // Represents a single row from the F_AttributeDepencencies table.
 
@@ -35,9 +36,9 @@ public:
     /// 	fkTableName: the property's table.
 	FdoSmPhDependency(
 		FdoStringP pkTableName, 
-		FdoStringsP pPkColumnNames,
+		FdoSmPhColumnListP pPkColumnNames,
 		FdoStringP fkTableName, 
-		FdoStringsP pFkColumnNames,
+		FdoSmPhColumnListP pFkColumnNames,
 		FdoStringP identityColumn,
 		FdoStringP orderType,
 		long lCardinality,
@@ -52,7 +53,7 @@ public:
 
     /// Primary key columns. Columns in the Primary Key table
     /// that relate to the Foreign Key table.
-	FdoStringsP GetPkColumnNames() const;
+	FdoSmPhColumnListP GetPkColumnNames() const;
 
     /// Primary Key table name. This is also the table
     /// where the property is stored.
@@ -60,7 +61,7 @@ public:
 
     /// Foreign key columns. Columns in the Foreign Key table
     /// that relate to the Primary Key table.
-	FdoStringsP GetFkColumnNames() const;
+	FdoSmPhColumnListP GetFkColumnNames() const;
 
     /// Order column from the Foreign Key table.
     /// Specified only when the property
@@ -89,9 +90,9 @@ protected:
 
 private:
 	FdoStringP mPkTableName; 
-	FdoStringsP mpPkColumnNames;
+	FdoSmPhColumnListP mpPkColumnNames;
 	FdoStringP mFkTableName;
-	FdoStringsP mpFkColumnNames;
+	FdoSmPhColumnListP mpFkColumnNames;
 	FdoStringP mIdentityColumn;
 	FdoStringP mOrderType;
 	long mlCardinality;

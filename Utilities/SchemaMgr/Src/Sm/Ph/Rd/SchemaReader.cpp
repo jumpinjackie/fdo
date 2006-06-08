@@ -52,7 +52,7 @@ bool FdoSmPhRdSchemaReader::ReadNext()
                 // FDO MetaSchema has a special  schema named the same as the default 
                 // physical schema. Therefore, this feature schema needs to be prefixed to
                 // prevent it from being named the same as this special schema.
-                pField->SetFieldValue( FdoSmPhMgr::RdSchemaPrefix + mOwner->GetName() );
+                pField->SetFieldValue( mOwner->GetBestSchemaName() );
             }
         }
 

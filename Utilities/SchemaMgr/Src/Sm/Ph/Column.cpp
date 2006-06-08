@@ -78,6 +78,14 @@ FdoStringP FdoSmPhColumn::GetRootName() const
 	return mRootName;
 }
 
+FdoStringP FdoSmPhColumn::GetDbRootName()
+{
+    if ( GetManager()->SupportsAnsiQuotes() ) 
+        return FdoStringP(L"\"") + GetRootName() + L"\"";
+    else
+        return GetRootName();
+}
+
 FdoStringP FdoSmPhColumn::GetTypeName() const
 {
 	return mTypeName;
@@ -165,11 +173,17 @@ void FdoSmPhColumn::SetDimensionality(int value)
 	miDimensionality = value;
 }
 
+FdoStringP FdoSmPhColumn::GetBestPropertyName() const
+{
+    // Filter out characters not allowed in schema element names.
+    return FdoStringP(GetName()).Replace(L":",L"_").Replace(L".",L"_");
+}
+
 FdoStringP FdoSmPhColumn::GetAddSql()
 {
     FdoStringP sqlClause = FdoStringP::Format(
         L"%ls %ls %ls %ls",
-        GetName(),
+        (FdoString*) GetDbName(),
         (FdoString*) GetTypeSql(),
 		(FdoString*) GetAutoincrementSql(),
         (FdoString*) GetNullabilitySql()
@@ -236,7 +250,7 @@ bool FdoSmPhColumn::GetHasValues()
     FdoStringP sqlString = FdoStringP::Format(
         L"select 1 from %ls where (%ls is not null)", 
         (FdoString*) (GetContainingDbObject()->GetDbQName()),
-        GetName()
+        (FdoString*) GetDbName()
     );
 
     FdoSmPhRowP row = new FdoSmPhRow( GetManager(), L"GetHasData" );

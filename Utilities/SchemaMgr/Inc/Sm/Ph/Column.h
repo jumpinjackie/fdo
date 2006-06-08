@@ -41,6 +41,8 @@ public:
     /// in this table.
     /// returns L"" if column is not in such a view.
     FdoStringP GetRootName() const;
+    // returns root column name formatted for inclusion in a SQL statement.
+    FdoStringP GetDbRootName();
 
     /// Gets the native RDBMS data type of this property.
     FdoStringP GetTypeName() const;
@@ -141,6 +143,9 @@ public:
     /// TODO: instead of having a setter, figure out how to 
     /// retrieve the root column name from the RDBMS.
     void SetRootName( FdoStringP rootName );
+
+    // Reverse-engineer a property name from this column's name.
+    virtual FdoStringP GetBestPropertyName() const;
 
     /// Get SQL clause for adding a column
     virtual FdoStringP GetAddSql();

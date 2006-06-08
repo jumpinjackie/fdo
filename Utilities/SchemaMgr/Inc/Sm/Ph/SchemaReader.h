@@ -90,9 +90,6 @@ protected:
     /// Create inner reader for MetaSchema
     FdoSmPhReaderP MakeMtReader( FdoSmPhRowsP pTables, FdoSmPhOwnerP owner, bool dsInfo );
 
-    /// Create inner reader for native physical schema
-    FdoSmPhReaderP MakeRdReader( FdoSmPhRowsP pTables, FdoSmPhOwnerP owner, bool dsInfo );
-
 private:
 	bool mbSchemaOptionsTableDefined;
 	FdoPtr<FdoSmPhSOReader> mpSOReader;

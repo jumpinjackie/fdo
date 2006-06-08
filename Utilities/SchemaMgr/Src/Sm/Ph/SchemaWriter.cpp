@@ -123,12 +123,12 @@ void FdoSmPhSchemaWriter::SetDescription(FdoStringP sValue)
 
 void FdoSmPhSchemaWriter::SetDatabase(FdoStringP sValue)
 {
-	SetString(L"", L"tablelinkname", sValue.Upper());
+	SetString(L"", L"tablelinkname", sValue);
 }
 
 void FdoSmPhSchemaWriter::SetOwner(FdoStringP sValue)
 {
-	SetString(L"", L"tableowner", sValue.Upper());
+	SetString(L"", L"tableowner", sValue);
 }
 
 void FdoSmPhSchemaWriter::SetTableStorage(FdoStringP sValue)

@@ -23,14 +23,15 @@
 
 FdoSmPhDependencyReader::FdoSmPhDependencyReader(long classId, FdoStringP fkTableName, FdoSmPhMgrP mgr) : 
     FdoSmPhReader( 
-        MakeReader( MakeClauses(classId, fkTableName), mgr, true )
+        MakeReader( MakeClauses(mgr, classId, fkTableName), mgr, true )
     )
 {
 }
 
 FdoSmPhDependencyReader::FdoSmPhDependencyReader(FdoStringP pkTableName, FdoStringP fkTableName, bool bAnd, FdoSmPhMgrP mgr) : 
     FdoSmPhReader( 
-        MakeReader( MakeClauses(pkTableName, fkTableName, bAnd), mgr )
+        MakeReader( MakeClauses(mgr, pkTableName, fkTableName, bAnd), mgr )
+
     )
 {
 }
@@ -61,10 +62,10 @@ FdoStringP FdoSmPhDependencyReader::GetPkTableName()
 	return(GetString(L"",L"pktablename"));
 }
 
-FdoStringsP FdoSmPhDependencyReader::GetPkColumnNames()
+FdoSmPhColumnListP FdoSmPhDependencyReader::GetPkColumnNames()
 {
-	// Parse the column list into a collection of column names.
-    return( FdoStringCollection::Create(GetString(L"",L"pkcolumnnames"), L" ,", false) );
+    // Parse the column list into a collection of column names.
+    return( FdoSmPhColumnList::Create(GetManager(), GetString(L"",L"pkcolumnnames"), L" ,") );
 }
 
 FdoStringP FdoSmPhDependencyReader::GetFkTableName()
@@ -72,10 +73,10 @@ FdoStringP FdoSmPhDependencyReader::GetFkTableName()
 	return(GetString(L"",L"fktablename"));
 }
 
-FdoStringsP FdoSmPhDependencyReader::GetFkColumnNames()
+FdoSmPhColumnListP FdoSmPhDependencyReader::GetFkColumnNames()
 {
-	// Parse the column list into a collection of column names.
-    return( FdoStringCollection::Create(GetString(L"",L"fkcolumnnames"), L" ,", false) );
+    // Parse the column list into a collection of column names.
+    return( FdoSmPhColumnList::Create(GetManager(), GetString(L"",L"fkcolumnnames"), L" ,") );
 }
 
 FdoStringP FdoSmPhDependencyReader::GetIdentityColumn()
@@ -122,32 +123,46 @@ FdoSmPhReaderP FdoSmPhDependencyReader::MakeReader( FdoStringP where, FdoSmPhMgr
     return pSubReader;
 }
 
-FdoStringP FdoSmPhDependencyReader::MakeClauses( long classId, FdoStringP fkTableName )
+FdoStringP FdoSmPhDependencyReader::MakeClauses( FdoSmPhMgrP mgr, long classId, FdoStringP fkTableName )
 {
 	return( 
         FdoStringP::Format( 
-            L"where f_attributedependencies.pktablename = f_classdefinition.tablename and f_classdefinition.classid = %d and fktablename = '%ls'", 
+            L"where f_attributedependencies.pktablename = f_classdefinition.tablename and f_classdefinition.classid = %d and fktablename = %ls", 
             classId, 
-            (FdoString*) (fkTableName)
+            (FdoString*) (mgr->FormatSQLVal(fkTableName,FdoSmPhColType_String))
         ) 
     );
 }
 
-FdoStringP FdoSmPhDependencyReader::MakeClauses( FdoStringP pkTableName, FdoStringP fkTableName, bool bAnd )
+FdoStringP FdoSmPhDependencyReader::MakeClauses( FdoSmPhMgrP mgr, FdoStringP pkTableName, FdoStringP fkTableName, bool bAnd )
 {
 	FdoStringP stmt;
 
 	if ( (pkTableName.GetLength() == 0) && (fkTableName.GetLength() == 0) )
 		return(stmt);
 
-	if ( pkTableName.GetLength() == 0 ) 
-		return( stmt + FdoStringP::Format( L" where fktablename = '%ls'", (FdoString*) fkTableName ) );
-
-	if ( fkTableName.GetLength() == 0 ) 
-		return( stmt + FdoStringP::Format( L" where pktablename = '%ls'", (FdoString*) pkTableName ) );
-
-	if ( bAnd ) 
-		return( stmt + FdoStringP::Format( L" where pktablename = '%ls' and fktablename = '%ls'", (FdoString*) pkTableName, (FdoString*) fkTableName ) );
+   	if ( pkTableName.GetLength() == 0 ) 
+		return( stmt + FdoStringP::Format( 
+            L" where fktablename = %ls", 
+            (FdoString*) mgr->FormatSQLVal(fkTableName,FdoSmPhColType_String) 
+        ) );
+   
+   	if ( fkTableName.GetLength() == 0 ) 
+		return( stmt + FdoStringP::Format( 
+        L" where pktablename = %ls", 
+        (FdoString*) mgr->FormatSQLVal(pkTableName,FdoSmPhColType_String) 
+     ) );
+   
+   	if ( bAnd ) 
+		return( stmt + FdoStringP::Format( 
+            L" where pktablename = %ls and fktablename = %ls", 
+            (FdoString*) mgr->FormatSQLVal(pkTableName,FdoSmPhColType_String), 
+            (FdoString*) mgr->FormatSQLVal(fkTableName,FdoSmPhColType_String) 
+        ) );
 	else 
-		return( stmt + FdoStringP::Format( L" where pktablename = '%ls' or fktablename = '%ls'", (FdoString*) pkTableName, (FdoString*) fkTableName ) );
+		return( stmt + FdoStringP::Format( 
+            L" where pktablename = %ls or fktablename = %ls", 
+            (FdoString*) mgr->FormatSQLVal(pkTableName,FdoSmPhColType_String), 
+            (FdoString*) mgr->FormatSQLVal(fkTableName,FdoSmPhColType_String) 
+        ) );
 }

@@ -137,25 +137,13 @@ bool FdoSmPhReadWrite::GetBoolean( FdoStringP tableName, FdoStringP fieldName )
 FdoSmPhFieldP FdoSmPhReadWrite::GetField( FdoStringP tableName, FdoStringP fieldName )
 {
     FdoSmPhFieldP field;
-    FdoInt32 cidx;
 
     if ( mSubReadWrite ) {
-        return mSubReadWrite->GetField( tableName, fieldName );
+        field = mSubReadWrite->GetField( tableName, fieldName );
     }
     else {
         if ( mRows ) {
-            if ( tableName.GetLength() > 0 ) {
-                FdoSmPhRowP row = mRows->GetItem( tableName );
-                field = row ? row->GetFields()->GetItem( fieldName ) : NULL;
-            }
-            else {
-                for ( cidx = 0; cidx < mRows->GetCount(); cidx++ ) {
-                    FdoSmPhRowP row = mRows->GetItem(cidx);
-                    field = row->GetFields()->FindItem( fieldName );
-                    if ( field ) 
-                        break;
-                }
-            }
+            field = mRows->GetField( tableName, fieldName );
         }
     }
 

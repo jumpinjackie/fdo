@@ -43,6 +43,14 @@ bool FdoSmPhDbElement::GetExists() const
 	return (elementState != FdoSchemaElementState_Added);
 }
 
+FdoStringP FdoSmPhDbElement::GetDbName() const
+{
+    if ( (wcslen(GetName()) > 0) && ((FdoSmPhDbElement*) this)->GetManager()->SupportsAnsiQuotes() ) 
+        return FdoStringP(L"\"") + GetName() + L"\"";
+    else
+        return GetName();
+}
+
 FdoStringP FdoSmPhDbElement::GetQName() const
 {
     FdoStringP qName;

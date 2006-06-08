@@ -123,7 +123,7 @@ bool FdoSmPhRdClassReader::ReadNext()
 
                         // Class name is table name
                         pField = pFrom->GetFields()->GetItem(L"classname");
-                        pField->SetFieldValue( classifiedObjectName );
+                        pField->SetFieldValue( pObject->GetBestClassName() );
 
                         // Class type id not relevant when no MetaSchema
                         // but set it anyway
@@ -185,14 +185,20 @@ FdoStringP FdoSmPhRdClassReader::ClassifyObject( FdoStringP objectName, FdoSmPhD
         dbObject = mOwner->FindDbObject( classifiedObjectName );
 
         if ( dbObject ) {
-            // Find out if the table has a key.
-            FdoSmPhTable* pTable = dbObject ? dynamic_cast<FdoSmPhTable*>((FdoSmPhDbObject*) dbObject) : NULL;
-            if ( pTable ) {
-                hasKey = (pTable->GetBestIdentity() != NULL);
+            if ( (mSchemaName == L"") || (dbObject->GetBestSchemaName() == mSchemaName) ) {
+                // Find out if the table has a key.
+                FdoSmPhTable* pTable = dbObject ? dynamic_cast<FdoSmPhTable*>((FdoSmPhDbObject*) dbObject) : NULL;
+                if ( pTable ) {
+                    hasKey = (pTable->GetBestIdentity() != NULL);
+                }
+            }
+            else {
+                // DbObject is for a different feature schema.
+                classifiedObjectName = L"";
             }
         }
         else {
-            // DbObject can't be found, skip it.
+             // DbObject can't be found, skip it.
             // This can happen in the Oracle Provider for a number of 
             // tables named 'bin$...'. These definitely need to be skipped.
             classifiedObjectName = L"";

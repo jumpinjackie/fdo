@@ -97,14 +97,14 @@ FdoStringP FdoSmPhFkey::GetAddSql()
 
     if ( fkeyColumns->GetCount() > 0 ) {
 	    for ( i = 0; i < fkeyColumns->GetCount(); i++ )
-	        fkColNames->Add( fkeyColumns->RefItem(i)->GetName() );
+	        fkColNames->Add( fkeyColumns->RefItem(i)->GetDbName() );
     
         for ( i = 0; i < pkeyColumns->GetCount(); i++ )
-	        pkColNames->Add( pkeyColumns->RefItem(i)->GetName() );
+	        pkColNames->Add( pkeyColumns->RefItem(i)->GetDbName() );
 
         fkeySql = FdoStringP::Format( 
             L"constraint %ls foreign key ( %ls ) references %ls ( %ls ) ",
-            (FdoString*) GetName(),
+            (FdoString*) GetDbName(),
             (FdoString*) fkColNames->ToString(),
             (FdoString*) pkeyTable->GetDDLQName(),
             (FdoString*) pkColNames->ToString()

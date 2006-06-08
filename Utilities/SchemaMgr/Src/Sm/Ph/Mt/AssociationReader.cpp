@@ -52,9 +52,9 @@ FdoSmPhReaderP FdoSmPhMtAssociationReader::MakeReader( FdoSmPhMgrP mgr, FdoSmPhR
 {
     // Generate the where clause
 	FdoStringP where = FdoStringP::Format( 
-        L"where f_associationdefinition.pktablename = f_classdefinition.tablename and f_classdefinition.classid = %d and fktablename = '%ls'", 
+        L"where f_associationdefinition.pktablename = f_classdefinition.tablename and f_classdefinition.classid = %d and fktablename = %ls", 
         classId, 
-        (FdoString*) (fkTableName) 
+        (FdoString*) (mgr->FormatSQLVal(fkTableName,FdoSmPhColType_String)) 
     );
 
     // Create a query reader to wrap around
@@ -69,13 +69,27 @@ FdoSmPhReaderP FdoSmPhMtAssociationReader::MakeReader( FdoSmPhMgrP mgr, FdoSmPhR
 
     // Generate the where clause
     if ( pkTableName.GetLength() == 0 ) 
-		where = FdoStringP::Format( L" where fktablename = '%ls'", (FdoString*) (fkTableName) );
+		where = FdoStringP::Format( 
+            L" where fktablename = %ls", 
+            (FdoString*) (mgr->FormatSQLVal(fkTableName,FdoSmPhColType_String)) 
+        );
 	else if ( fkTableName.GetLength() == 0 ) 
-		where = FdoStringP::Format( L" where pktablename = '%ls'", (FdoString*) (pkTableName) );
+		where = FdoStringP::Format( 
+            L" where pktablename = %ls", 
+            (FdoString*) (mgr->FormatSQLVal(pkTableName,FdoSmPhColType_String)) 
+        );
 	else if ( bAnd ) 
-		where = FdoStringP::Format( L" where pktablename = '%ls' and fktablename = '%ls'", (FdoString*) (pkTableName), (FdoString*) (fkTableName) );
+		where = FdoStringP::Format( 
+            L" where pktablename = %ls and fktablename = %ls", 
+            (FdoString*) (mgr->FormatSQLVal(pkTableName,FdoSmPhColType_String)), 
+            (FdoString*) (mgr->FormatSQLVal(fkTableName,FdoSmPhColType_String)) 
+        );
 	else 
-		where = FdoStringP::Format( L" where pktablename = '%ls' or fktablename = '%ls'", (FdoString*) (pkTableName), (FdoString*) (fkTableName) );
+		where = FdoStringP::Format( 
+            L" where pktablename = %ls or fktablename = %ls", 
+            (FdoString*) (mgr->FormatSQLVal(pkTableName,FdoSmPhColType_String)), 
+            (FdoString*) (mgr->FormatSQLVal(fkTableName,FdoSmPhColType_String)) 
+        );
 
     // Create a query reader to wrap around
     FdoSmPhRdQueryReaderP subReader = mgr->CreateQueryReader( rows, where );

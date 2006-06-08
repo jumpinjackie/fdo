@@ -63,6 +63,10 @@ public:
     /// where this databaseobject is the foreign key "table".	
     const FdoSmPhDependencyCollection* GetDependenciesUp() const;
 
+    // Gets the lowest root object if this object is based on
+    // a root object. Returns this if not based on a root object.
+    virtual FdoPtr<FdoSmPhDbObject> GetLowestRootObject();
+
     /// Returns the name of the containing database.
     FdoStringP GetDatabase() const
     {
@@ -81,6 +85,16 @@ public:
     /// Get the name for referencing this database object in DDL statements.
     /// By default, this function returns the same thing as GetDbQName.
     virtual FdoStringP GetDDLQName() const;
+
+    // Reverse-engineers an FDO feature schema name from this object.
+    // Default implementation returns best schema name for owning datastore.
+    virtual FdoStringP GetBestSchemaName() const;
+
+    // Reverse-engineers an FDO class name from this object.
+    // Default implementation returns this object's name with 
+    // characters, not allowed in class names (':','.') converted
+    // to '_'.
+    virtual FdoStringP GetBestClassName() const;
 
     /// Returns true this database object has data.
 	virtual bool GetHasData();

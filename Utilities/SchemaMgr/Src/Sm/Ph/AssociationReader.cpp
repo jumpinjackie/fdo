@@ -54,10 +54,10 @@ FdoStringP FdoSmPhAssociationReader::GetPkTableName()
 	return(GetString(L"", L"pktablename"));
 }
 
-FdoStringsP FdoSmPhAssociationReader::GetPkColumnNames()
+FdoSmPhColumnListP FdoSmPhAssociationReader::GetPkColumnNames()
 {
-	// Parse the column list into a collection of column names.
-    return( FdoStringCollection::Create( GetString(L"", L"pkcolumnnames"), L" ", false) );
+    // Parse the column list into a collection of column names.
+    return( FdoSmPhColumnList::Create( GetManager(), GetString(L"", L"pkcolumnnames"), L" ") );
 }
 
 FdoStringP FdoSmPhAssociationReader::GetFkTableName()
@@ -65,10 +65,10 @@ FdoStringP FdoSmPhAssociationReader::GetFkTableName()
 	return(GetString(L"", L"fktablename"));
 }
 
-FdoStringsP FdoSmPhAssociationReader::GetFkColumnNames()
+FdoSmPhColumnListP FdoSmPhAssociationReader::GetFkColumnNames()
 {
-	// Parse the column list into a collection of column names.
-    return( FdoStringCollection::Create( GetString(L"", L"fkcolumnnames"), L" ", false) );
+    // Parse the column list into a collection of column names.
+    return( FdoSmPhColumnList::Create( GetManager(), GetString(L"", L"fkcolumnnames"), L" ") );
 }
 
 FdoStringP FdoSmPhAssociationReader::GetMultiplicity()

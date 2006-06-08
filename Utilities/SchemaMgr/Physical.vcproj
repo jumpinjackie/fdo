@@ -211,6 +211,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Src\Sm\Ph\ColumnList.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Src\Sm\Ph\ColumnUnknown.cpp"
 				>
 			</File>
@@ -1004,6 +1008,10 @@
 			</File>
 			<File
 				RelativePath=".\Inc\Sm\Ph\ColumnInt64.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Inc\Sm\Ph\ColumnList.h"
 				>
 			</File>
 			<File

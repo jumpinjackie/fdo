@@ -29,6 +29,8 @@ public:
     /// Returns true if this database element exists 
 	bool GetExists() const;
 
+    virtual FdoStringP GetDbName() const;
+
     /// Get the fully qualified name for this element.
     /// This varies between element type so some types override this
     /// functions

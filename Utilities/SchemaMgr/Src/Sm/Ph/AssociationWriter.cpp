@@ -33,10 +33,10 @@ FdoStringP FdoSmPhAssociationWriter::GetPkTableName()
 	return(GetString(L"", L"pktablename"));
 }
 
-FdoStringsP FdoSmPhAssociationWriter::GetPkColumnNames()
+FdoSmPhColumnListP FdoSmPhAssociationWriter::GetPkColumnNames()
 {
-	// Parse the column list into a collection of column names.
-    return( FdoStringCollection::Create(GetString(L"", L"pkcolumnnames"), L" ", false) );
+    // Parse the column list into a collection of column names.
+    return( FdoSmPhColumnList::Create(GetManager(), GetString(L"", L"pkcolumnnames"), L" ") );
 }
 
 FdoStringP FdoSmPhAssociationWriter::GetFkTableName()
@@ -44,10 +44,10 @@ FdoStringP FdoSmPhAssociationWriter::GetFkTableName()
 	return(GetString(L"", L"fktablename"));
 }
 
-FdoStringsP FdoSmPhAssociationWriter::GetFkColumnNames()
+FdoSmPhColumnListP FdoSmPhAssociationWriter::GetFkColumnNames()
 {
-	// Parse the column list into a collection of column names.
-    return( FdoStringCollection::Create(GetString(L"", L"fkcolumnnames"), L" ", false) );
+    // Parse the column list into a collection of column names.
+    return( FdoSmPhColumnList::Create(GetManager(), GetString(L"", L"fkcolumnnames"), L" ") );
 }
 
 FdoStringP FdoSmPhAssociationWriter::GetMultiplicity()
@@ -85,7 +85,7 @@ void FdoSmPhAssociationWriter::SetPkTableName(FdoStringP sValue)
 	SetString(L"", L"pktablename", sValue);
 }
 
-void FdoSmPhAssociationWriter::SetPkColumnNames(FdoStringsP sValues)
+void FdoSmPhAssociationWriter::SetPkColumnNames(FdoSmPhColumnListP sValues)
 {
 	SetString(L"", L"pkcolumnnames", sValues->ToString(L" ") );
 }
@@ -95,7 +95,7 @@ void FdoSmPhAssociationWriter::SetFkTableName(FdoStringP sValue)
 	SetString(L"", L"fktablename", sValue);
 }
 
-void FdoSmPhAssociationWriter::SetFkColumnNames(FdoStringsP sValues)
+void FdoSmPhAssociationWriter::SetFkColumnNames(FdoSmPhColumnListP sValues)
 {
 	SetString(L"", L"fkcolumnnames", sValues->ToString(L" ") );
 }
@@ -139,9 +139,9 @@ void FdoSmPhAssociationWriter::Modify( FdoStringP pkTableName, FdoStringP fkTabl
 {
     FdoSmPhWriter::Modify(
         FdoStringP::Format( 
-            L"where pktablename = '%ls' and fktablename = '%ls'",
-			(FdoString*) pkTableName,
-            (FdoString*) fkTableName
+            L"where pktablename = %ls and fktablename = %ls",
+            (FdoString*) GetManager()->FormatSQLVal(pkTableName,FdoSmPhColType_String),
+            (FdoString*) GetManager()->FormatSQLVal(fkTableName,FdoSmPhColType_String) 
 		)
 	);
 }
@@ -150,9 +150,9 @@ void FdoSmPhAssociationWriter::Delete( FdoStringP pkTableName, FdoStringP fkTabl
 {
     FdoSmPhWriter::Delete(
         FdoStringP::Format( 
-            L"where pktablename = '%ls' and fktablename = '%ls'",
-			(FdoString*) pkTableName,
-            (FdoString*) fkTableName
+            L"where pktablename = %ls and fktablename = %ls",
+            (FdoString*) GetManager()->FormatSQLVal(pkTableName,FdoSmPhColType_String),
+            (FdoString*) GetManager()->FormatSQLVal(fkTableName,FdoSmPhColType_String) 
 		)
     );
 }

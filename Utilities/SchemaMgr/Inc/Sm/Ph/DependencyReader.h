@@ -24,6 +24,7 @@
 
 #include <Sm/Ph/Reader.h>
 #include <Sm/Ph/Dependency.h>
+#include <Sm/Ph/ColumnList.h>
 
 // This class retrieves all attribute dependencies for a
 // given property ( usually an object property ).
@@ -86,7 +87,7 @@ public:
 
     /// Primary key columns. Columns in the Primary Key table
     /// that relate to the Foreign Key table.
-	FdoStringsP GetPkColumnNames();
+	FdoSmPhColumnListP GetPkColumnNames();
 
     /// Primary Key table name. This is also the table
     /// where the property is stored.
@@ -94,7 +95,7 @@ public:
 
     /// Foreign key columns. Columns in the Foreign Key table
     /// that relate to the Primary Key table.
-	FdoStringsP GetFkColumnNames();
+	FdoSmPhColumnListP GetFkColumnNames();
 
     /// Identity column from the Foreign Key table. Specified only when the 
     /// property is a collection property.
@@ -122,9 +123,9 @@ private:
     /// Create the inner query reader for retrieving the dependencies
     FdoSmPhReaderP MakeReader( FdoStringP where, FdoSmPhMgrP mgr, bool bAddClassDef = false );
     /// Make where clause for retrieving by property classid and property table
-    FdoStringP MakeClauses( long classId, FdoStringP fkTableName );
+    FdoStringP MakeClauses( FdoSmPhMgrP mgr, long classId, FdoStringP fkTableName );
     /// Make where clause for retrieving by primary and foreign table
-    FdoStringP MakeClauses( FdoStringP pkTableName, FdoStringP fkTableName, bool bAnd );
+    FdoStringP MakeClauses( FdoSmPhMgrP mgr, FdoStringP pkTableName, FdoStringP fkTableName, bool bAnd );
 };
 
 typedef FdoPtr<FdoSmPhDependencyReader> FdoSmPhDependencyReaderP;

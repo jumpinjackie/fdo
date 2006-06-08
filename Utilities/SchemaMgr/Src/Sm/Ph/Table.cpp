@@ -558,7 +558,7 @@ FdoStringP FdoSmPhTable::GetAddHdgSql()
 {
     return FdoStringP::Format( 
         L"create table %ls", 
-        (FdoString*) GetQName() 
+        (FdoString*) GetDbQName() 
     );
 }
 
@@ -606,12 +606,13 @@ FdoStringP FdoSmPhTable::GetAddPkeySql()
     FdoStringsP         pkColNames = FdoStringCollection::Create();
     FdoStringP          pkeySql;
 	bool				autoincrColAdded = false;
+    bool                ansiQuotes = GetManager()->SupportsAnsiQuotes();
 
     if ( pkeyColumns->GetCount() > 0 ) {
 	    for ( i = 0; i < pkeyColumns->GetCount(); i++ )
 		{
 			FdoSmPhColumnP	pkeyColumn = pkeyColumns->GetItem(i);
-	        pkColNames->Add( pkeyColumn->GetName() );
+	        pkColNames->Add( pkeyColumn->GetDbName() );
 			if ( !autoincrColAdded && pkeyColumn->GetAutoincrement() )
 				autoincrColAdded = true;
 		}
@@ -624,13 +625,15 @@ FdoStringP FdoSmPhTable::GetAddPkeySql()
 			{
 				FdoSmPhColumnP	column = columns->GetItem(i);
 				if ( column->GetAutoincrement() )
-					pkColNames->Add( column->GetName() );
+					pkColNames->Add( column->GetDbName() );
 			}		
 		}
 
         pkeySql = FdoStringP::Format( 
-            L"constraint %ls primary key ( %ls )",
+            L"constraint %ls%ls%ls primary key ( %ls )",
+            ansiQuotes ? L"\"" : L"",
             (FdoString*) this->GenPkeyName(),
+            ansiQuotes ? L"\"" : L"",
             (FdoString*) pkColNames->ToString()
         );
     }
@@ -703,7 +706,7 @@ FdoStringP FdoSmPhTable::GenPkeyName()
 {
     if ( mPkeyName == L"" ) {
         FdoSmPhOwner* pOwner = dynamic_cast<FdoSmPhOwner*>((FdoSmPhSchemaElement*) GetParent());
-        mPkeyName = pOwner->UniqueDbObjectName( FdoStringP(L"PK_") + GetName() );
+        mPkeyName = pOwner->UniqueDbObjectName( FdoStringP(L"PK_") + FdoStringP(GetName()) ).Replace(L".",L"_");
     }
 
     return mPkeyName;

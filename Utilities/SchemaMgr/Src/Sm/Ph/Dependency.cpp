@@ -22,9 +22,9 @@
 
 FdoSmPhDependency::FdoSmPhDependency(
 		FdoStringP pkTableName, 
-		FdoStringsP pPkColumnNames,
+		FdoSmPhColumnListP pPkColumnNames,
 		FdoStringP fkTableName, 
-		FdoStringsP pFkColumnNames,
+		FdoSmPhColumnListP pFkColumnNames,
 		FdoStringP identityColumn,
 		FdoStringP orderType,
 		long lCardinality,
@@ -50,7 +50,7 @@ FdoStringP FdoSmPhDependency::GetPkTableName() const
 	return(mPkTableName);
 }
 
-FdoStringsP FdoSmPhDependency::GetPkColumnNames() const
+FdoSmPhColumnListP FdoSmPhDependency::GetPkColumnNames() const
 {
 	return(mpPkColumnNames);
 }
@@ -60,7 +60,7 @@ FdoStringP FdoSmPhDependency::GetFkTableName() const
 	return(mFkTableName);
 }
 
-FdoStringsP FdoSmPhDependency::GetFkColumnNames() const
+FdoSmPhColumnListP FdoSmPhDependency::GetFkColumnNames() const
 {
 	return(mpFkColumnNames);
 }

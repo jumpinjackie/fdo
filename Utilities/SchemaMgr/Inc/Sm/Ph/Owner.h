@@ -105,6 +105,13 @@ public:
     /// as a read-write smart pointer (exception thrown if not found)
     FdoSmPhDbObjectP GetDbObject(FdoStringP dbObject);
 
+    // Reverse-engineers an FDO feature schema name from this datastore.
+    // Default implementation returns datastore name prepended by "Fdo".
+    // "Fdo" is prepended to prevent name conflict with special schema 
+    // that exists in all datastores with metaschema. The special schema
+    // holds the datastore description.
+    virtual FdoStringP GetBestSchemaName() const;
+
     /// Convert the given database object name to one that is unique and provider-acceptable.
 	FdoStringP UniqueDbObjectName( FdoStringP objectName );
 

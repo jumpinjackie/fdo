@@ -54,9 +54,22 @@ FdoSmPhDbObjectP FdoSmPhView::GetRootObject()
     return mRootObject;
 }
 
+FdoSmPhDbObjectP FdoSmPhView::GetLowestRootObject()
+{
+    FdoSmPhDbObjectP rootObject = GetRootObject();
+
+    if ( rootObject ) 
+        rootObject = rootObject->GetLowestRootObject();
+
+    return rootObject;
+}
+
 void FdoSmPhView::SetRootObject( FdoSmPhDbObjectP rootObject )
 {
     mRootObject = rootObject;
+    mRootObjectName = rootObject ? rootObject->GetName() : L"";
+    mRootOwner = rootObject ? rootObject->GetParent()->GetName() : L"";
+    mRootDatabase = rootObject ? rootObject->GetParent()->GetParent()->GetName() : L"";
 }
 
 void FdoSmPhView::XMLSerialize( FILE* xmlFp, int ref ) const
@@ -79,11 +92,39 @@ void FdoSmPhView::XMLSerialize( FILE* xmlFp, int ref ) const
 
 }
 
+void FdoSmPhView::CommitChildren( bool isBeforeParent )
+{
+    int                     i;
+
+    if ( isBeforeParent && 
+         ((GetElementState() == FdoSchemaElementState_Unchanged) ||
+          (GetElementState() == FdoSchemaElementState_Modified))
+    ) {
+        FdoSmPhColumnsP columns = GetColumns();
+
+        for ( i = (columns->GetCount() - 1); i >= 0; i-- ) {
+            FdoSmPhColumnP column = columns->GetItem(i);
+
+            FdoSchemaElementState colState = column->GetElementState();
+
+            if ( colState != FdoSchemaElementState_Unchanged ) {
+                SetElementState( FdoSchemaElementState_Modified );
+                column->Commit( true, isBeforeParent );
+                if ( colState == FdoSchemaElementState_Deleted ) {
+                    column->SetElementState( FdoSchemaElementState_Detached );
+                    // Remove deleted columns from the cache.
+                    columns->Remove( (FdoSmPhColumn*) column );
+                }
+            }
+        }
+    }
+}
+
 FdoStringP FdoSmPhView::GetAddSql()
 {
     return FdoStringP::Format( 
         L"create view %ls", 
-        (FdoString*) GetQName() 
+        (FdoString*) GetDbQName() 
     );
 }
 
@@ -107,7 +148,7 @@ FdoStringP FdoSmPhView::GetAddRootSql()
     FdoStringsP     colClauses = FdoStringCollection::Create();
 
     for ( i = 0; i < columns->GetCount(); i++ ) {
-        colClauses->Add( columns->GetItem(i)->GetRootName() );
+        colClauses->Add( columns->GetItem(i)->GetDbRootName() );
     }
 
     FdoStringP selClause = FdoStringP::Format(

@@ -263,9 +263,19 @@ FdoString* FdoSmLpClassBase::GetDbObjectName() const
 	return mDbObjectName;
 }
 
+FdoStringP FdoSmLpClassBase::GetSubstDbObjectName() const
+{
+	return GetDbObjectName();
+}
+
 FdoString* FdoSmLpClassBase::GetRootDbObjectName() const
 {
 	return mRootDbObjectName;
+}
+
+FdoStringP FdoSmLpClassBase::GetSubstRootDbObjectName() const
+{
+	return GetRootDbObjectName();
 }
 
 FdoStringP FdoSmLpClassBase::GetDbObjectQName( bool includeDefaultOwner ) const
@@ -1880,7 +1890,7 @@ void FdoSmLpClassBase::FinalizePhDbObject()
             if ( mPhDbObject && (mOwner != L"") ) {
                 viewObj = mPhDbObject->SmartCast<FdoSmPhView>();
                 if ( viewObj && !viewObj->GetRootObject() ) {
-                    viewObj->SetRootObject( pPhysical->FindDbObject(mRootDbObjectName, mOwner, mDatabase) );
+                    viewObj->SetRootObject( pPhysical->FindDbObject(mRootDbObjectName, mOwner, mDatabase, false) );
                 }
             }
         }
@@ -2076,8 +2086,8 @@ FdoSmLpDbObjectP FdoSmLpClassBase::FinalizeNewDbObject(
 
 		// First the columns from this table for joining to the next table.
 
-		FdoStringsP sSrcCols = pPathDep->GetFkColumnNames();
-		FdoStringsP sTargCols = pPathDep->GetPkColumnNames();
+		FdoSmPhColumnListP sSrcCols = pPathDep->GetFkColumnNames();
+		FdoSmPhColumnListP sTargCols = pPathDep->GetPkColumnNames();
 
 		if ( sSrcCols->GetCount() == 0 || ( sSrcCols->GetCount() != sTargCols->GetCount() ) ) {
 			if ( GetElementState() != FdoSchemaElementState_Deleted ) 

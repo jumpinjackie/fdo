@@ -24,6 +24,7 @@
 
 #include <Sm/Ph/Writer.h>
 #include <Sm/Ph/Dependency.h>
+#include <Sm/Ph/ColumnList.h>
 
 // This class writes attribute dependencies 
 // to the f_attributedependencies table.
@@ -48,7 +49,7 @@ public:
 
     /// Primary key columns. Columns in the Primary Key table
     /// that relate to the Foreign Key table.
-	FdoStringsP GetPkColumnNames();
+	FdoSmPhColumnListP GetPkColumnNames();
 
     /// Primary Key table name. This is also the table
     /// where the property is stored.
@@ -56,7 +57,7 @@ public:
 
     /// Foreign key columns. Columns in the Foreign Key table
     /// that relate to the Primary Key table.
-	FdoStringsP GetFkColumnNames();
+	FdoSmPhColumnListP GetFkColumnNames();
 
     /// Identity column from the Foreign Key table. Specified only when the 
     /// property is a collection property.
@@ -84,7 +85,7 @@ public:
 
     /// Primary key columns. Columns in the Primary Key table
     /// that relate to the Foreign Key table.
-	void SetPkColumnNames(FdoStringsP sValues);
+	void SetPkColumnNames(FdoSmPhColumnListP sValues);
 
     /// Primary Key table name. This is also the table
     /// where the property is stored.
@@ -92,7 +93,7 @@ public:
 
     /// Foreign key columns. Columns in the Foreign Key table
     /// that relate to the Primary Key table.
-	void SetFkColumnNames(FdoStringsP sValues);
+	void SetFkColumnNames(FdoSmPhColumnListP sValues);
 
     /// Identity column from the Foreign Key table. Specified only when the 
     /// property is a collection property.

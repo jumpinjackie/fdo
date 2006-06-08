@@ -103,7 +103,7 @@ bool FdoSmPhRdPropertyReader::ReadNext()
                         // Set the property attributes from the column attributes
 
                         FdoSmPhFieldP field = row->GetFields()->GetItem(L"attributename");
-                        field->SetFieldValue( column->GetName() );
+                        field->SetFieldValue( column->GetBestPropertyName() );
 
                         field = row->GetFields()->GetItem(L"columnname");
                         field->SetFieldValue( column->GetName() );
@@ -193,10 +193,9 @@ bool FdoSmPhRdPropertyReader::ReadNext()
                         if ( pPkeyTable ) {
                             field = row->GetFields()->GetItem(L"attributetype");
                             field->SetFieldValue( 
-                                FdoStringP(L"Fdo") + 
-                                pPkeyTable->GetParent()->GetName() + 
+                                pPkeyTable->GetBestSchemaName() +
                                 L":" + 
-                                pPkeyTable->GetName()
+                                pPkeyTable->GetBestClassName()
                             );
 
                             rowFound = true;
@@ -208,7 +207,7 @@ bool FdoSmPhRdPropertyReader::ReadNext()
 
                 if ( row ) {
                     FdoSmPhFieldP field = row->GetFields()->GetItem(L"classname");
-                    field->SetFieldValue( FdoStringP(mDbObject->GetName()) );
+                    field->SetFieldValue( mDbObject->GetBestClassName() );
                 }
 
                 SetBOF(false);
@@ -314,4 +313,4 @@ bool FdoSmPhRdPropertyReader::CheckColumn( FdoSmPhColumnP column )
     // If required, a property for this type of column must be 
     // specified in a config document.
     return( !isOrdinate && column && (column->GetType() != FdoSmPhColType_Unknown) );
- }
+}

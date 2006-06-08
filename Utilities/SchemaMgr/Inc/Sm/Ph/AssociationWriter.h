@@ -23,6 +23,7 @@
 #endif
 
 #include <Sm/Ph/CommandWriter.h>
+#include <Sm/Ph/ColumnList.h>
 
 // This class writes association definitions 
 // to the f_associationdefinition table.
@@ -46,7 +47,7 @@ public:
 
     /// Primary key columns. Columns in the Primary Key table
     /// that relate to the Foreign Key table.
-	FdoStringsP GetPkColumnNames();
+	FdoSmPhColumnListP GetPkColumnNames();
 
     /// Primary Key table name. This is also the table
     /// of the associated class.
@@ -54,7 +55,7 @@ public:
 
     /// Foreign key columns. Columns in the Foreign Key table
     /// that relate to the Primary Key table.
-	FdoStringsP GetFkColumnNames();
+	FdoSmPhColumnListP GetFkColumnNames();
 
     /// The multiplicity column.
 	FdoStringP GetMultiplicity();
@@ -84,7 +85,7 @@ public:
 
     /// Primary key columns. Columns in the Primary Key table
     /// that relate to the Foreign Key table.
-	void SetPkColumnNames(FdoStringsP sValues);
+	void SetPkColumnNames(FdoSmPhColumnListP sValues);
 
     /// Primary Key table name. This is also the table
     /// where the property is stored.
@@ -92,7 +93,7 @@ public:
 
     /// Foreign key columns. Columns in the Foreign Key table
     /// that relate to the Primary Key table.
-	void SetFkColumnNames(FdoStringsP sValues);
+	void SetFkColumnNames(FdoSmPhColumnListP sValues);
 
     /// The multiplicity column.
 	void SetMultiplicity(FdoStringP sValue);

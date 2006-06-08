@@ -37,6 +37,7 @@
 #include <Sm/Ph/SpatialContextWriter.h>
 #include <Sm/Ph/SpatialContextGroupWriter.h>
 #include <Sm/Ph/SpatialContextGeomWriter.h>
+#include <Sm/Ph/Rd/SchemaReader.h>
 #include <Sm/Ph/Rd/ClassReader.h>
 #include <Sm/Ph/Rd/PropertyReader.h>
 
@@ -119,7 +120,18 @@ FdoPtr<FdoSmPhSpatialContextGeomReader> FdoSmPhMgr::CreateSpatialContextGeomRead
 	return( new FdoSmPhSpatialContextGeomReader(FDO_SAFE_ADDREF(this)) );
 }
 
-FdoPtr<FdoSmPhRdClassReader> FdoSmPhMgr::CreateRdClassReader( FdoPtr<FdoSmPhRowCollection> rows, FdoStringP schemaName )
+FdoPtr<FdoSmPhRdSchemaReader> FdoSmPhMgr::CreateRdSchemaReader( FdoSmPhRowsP rows, FdoSmPhOwnerP owner, bool dsInfo )
+{
+    return new FdoSmPhRdSchemaReader( rows, owner, dsInfo );
+}
+
+FdoPtr<FdoSmPhRdClassReader> FdoSmPhMgr::CreateRdClassReader( 
+    FdoPtr<FdoSmPhRowCollection> rows, 
+    FdoStringP schemaName, 
+    FdoBoolean keyedOnly,
+    FdoStringP database,
+    FdoStringP owner
+)
 {
     return new FdoSmPhRdClassReader( rows, schemaName, FDO_SAFE_ADDREF(this) );
 }
@@ -520,6 +532,17 @@ void FdoSmPhMgr::Commit()
 		FdoSmPhDatabaseP(mDatabases->GetItem(i))->Commit();
 }
 
+bool FdoSmPhMgr::SupportsAnsiQuotes()
+{
+    return true;
+}
+
+bool FdoSmPhMgr::IsRdbObjNameAscii7()
+{
+//future    return !IsRdbUnicode();
+    return true;
+}
+
 FdoSize FdoSmPhMgr::TableNameMaxLen()
 {
     return DbObjectNameMaxLen();
@@ -527,22 +550,27 @@ FdoSize FdoSmPhMgr::TableNameMaxLen()
 
 FdoStringP FdoSmPhMgr::GetDcDatabaseName( FdoStringP databaseName )
 {
-    return GetDcDbObjectName( databaseName);
+    return GetDcRdbmsObjectName( databaseName );
 }
 
 FdoStringP FdoSmPhMgr::GetDcOwnerName( FdoStringP ownerName )
 {
-    return GetDcDbObjectName( ownerName);
+    return GetDcRdbmsObjectName( ownerName );
 }
 
 FdoStringP FdoSmPhMgr::GetDcDbObjectName( FdoStringP objectName )
 {
-    return objectName.Lower();
+    return GetDcRdbmsObjectName( objectName );
 }
 
 FdoStringP FdoSmPhMgr::GetDcColumnName( FdoStringP columnName )
 {
-    return GetDcDbObjectName( columnName );
+    return GetDcRdbmsObjectName( columnName );
+}
+
+FdoStringP FdoSmPhMgr::GetDcRdbmsObjectName( FdoStringP objectName )
+{
+    return objectName.Lower();
 }
 
 FdoStringP FdoSmPhMgr::CensorDbObjectName( FdoStringP objName )
@@ -563,7 +591,7 @@ FdoStringP FdoSmPhMgr::CensorDbObjectName( FdoStringP objName )
             // the isalnum test. Due to the unicode-utf8 conversion, the 8-bit characters
             // in the utf8 string won't look anything like the unicode characters anyway.
             if ( (!isalnum(workChar[j])) || (workChar[j] & 0x80) ) {
-                if ( workChar[j] != '$' ) {
+                if ( workChar[j] != '$' && workChar[j] != '.' ) {
                         // Not all chars ok so change the current unicode character.
                         workString[i] = '_';
                         break;

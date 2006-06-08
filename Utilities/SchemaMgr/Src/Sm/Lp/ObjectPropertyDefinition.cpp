@@ -513,8 +513,8 @@ void FdoSmLpObjectPropertyDefinition::Commit( bool fromParent )
             (pkTableName.ICompare(fkTableName) != 0) &&
             (!bDepInherited) 
         ) {
-			FdoStringsP srcColNames = FdoStringCollection::Create();
-			FdoStringsP targColNames = FdoStringCollection::Create();
+			FdoSmPhColumnListP srcColNames = FdoSmPhColumnList::Create( GetLogicalPhysicalSchema()->GetPhysicalSchema() );
+			FdoSmPhColumnListP targColNames = FdoSmPhColumnList::Create( GetLogicalPhysicalSchema()->GetPhysicalSchema() );
 			FdoStringP idColName;
 
 			if ( pLpTable ) {
@@ -862,7 +862,17 @@ void FdoSmLpObjectPropertyDefinition::FinalizeTable( const FdoSmLpClassDefinitio
                     mpClass->GetRootDbObjectName() :
                     mpClass->GetDbObjectName();
 
-    mDefaultDbObjectName = parentTable + L"_" + classTable;
+    // Generate default object property table name from parent and class
+    // table substrings. On SqlServer, this ensures that user name doesn't
+    // get into the generated name multiple times.
+    FdoStringP substParentTable = (wcslen(pParentClass->GetRootDbObjectName()) > 0) ?
+                    pParentClass->GetSubstRootDbObjectName() :
+                    pParentClass->GetSubstDbObjectName();
+    FdoStringP substClassTable = (wcslen(mpClass->GetRootDbObjectName()) > 0) ?
+                    mpClass->GetSubstRootDbObjectName() :
+                    mpClass->GetSubstDbObjectName();
+
+    mDefaultDbObjectName = substParentTable + L"_" + substClassTable;
 
     if ( GetIsFromFdo() || (GetElementState() == FdoSchemaElementState_Added) ) {
         // Generate table for new property

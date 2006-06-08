@@ -134,6 +134,7 @@ class FdoSmPhOptionsReader;
 class FdoSmPhCfgSchemaReader;
 class FdoSmPhCfgClassReader;
 class FdoSmPhCfgPropertyReader;
+class FdoSmPhRdSchemaReader;
 class FdoSmPhRdClassReader;
 class FdoSmPhRdPropertyReader;
 class FdoSmPhSpatialContextReader;
@@ -253,7 +254,19 @@ public:
     virtual FdoPtr<FdoSmPhCfgPropertyReader> CreateCfgPropertyReader( FdoStringP schemaName, FdoStringP className, FdoSmPhDbObjectP dbObject ) = 0;
 
     /// Create various readers for AutoGenerating schemas directly from the RDBMS.
-    virtual FdoPtr<FdoSmPhRdClassReader> CreateRdClassReader( FdoPtr<FdoSmPhRowCollection> rows, FdoStringP schemaName );
+    /// Create various readers for AutoGenerating schemas directly from the RDBMS.
+    virtual FdoPtr<FdoSmPhRdSchemaReader> CreateRdSchemaReader( 
+        FdoPtr<FdoSmPhRowCollection> rows, 
+        FdoPtr<FdoSmPhOwner> owner, 
+        bool dsInfo 
+    );
+    virtual FdoPtr<FdoSmPhRdClassReader> CreateRdClassReader( 
+        FdoPtr<FdoSmPhRowCollection> rows, 
+        FdoStringP schemaName,
+        FdoBoolean keyedOnly = true,// If true, skip tables without key.
+        FdoStringP database = L"",  // Database where RDBMS schema resides (current connection by default)
+        FdoStringP owner = L""      // the RDBMS schema (defaults to current schema)
+    );
     virtual FdoPtr<FdoSmPhRdPropertyReader> CreateRdPropertyReader( FdoSmPhDbObjectP dbObject );
 
     /// The following functions retrieve a database from the current connection.
@@ -439,7 +452,11 @@ public:
     /// pos is 0-based.
     virtual FdoStringP FormatBindField( int pos ) = 0;    
     
+    virtual bool SupportsAnsiQuotes();
+
     virtual bool IsRdbUnicode() = 0;
+
+    virtual bool IsRdbObjNameAscii7();
 
     /// Gets the provider-specific maximum length of a database object (table, view etc.) 
     /// name.
@@ -465,6 +482,8 @@ public:
     virtual FdoStringP GetDcDbObjectName( FdoStringP objectName );
 
     virtual FdoStringP GetDcColumnName( FdoStringP columnName );
+
+    virtual FdoStringP GetDcRdbmsObjectName( FdoStringP columnName );
 
     /// Censor a database object name. Only alphanumeric characters 
     /// ( or '_' or '$' ) are allowed in a table or column name.

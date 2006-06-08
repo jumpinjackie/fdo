@@ -74,11 +74,26 @@ const FdoSmPhDependencyCollection* FdoSmPhDbObject::GetDependenciesUp() const
 	return (FdoSmPhDependencyCollection*) mDependenciesUp;
 }
 
+FdoSmPhDbObjectP FdoSmPhDbObject::GetLowestRootObject()
+{
+    return FDO_SAFE_ADDREF(this);
+}
+
 FdoStringP FdoSmPhDbObject::GetDDLQName() const
 {
     return GetDbQName();
 }
 
+FdoStringP FdoSmPhDbObject::GetBestSchemaName() const
+{
+    return ((FdoSmPhOwner*) GetParent())->GetBestSchemaName();
+}
+
+FdoStringP FdoSmPhDbObject::GetBestClassName() const
+{
+    // Filter out characters not allowed in schema element names.
+    return FdoStringP(GetName()).Replace(L":",L"_").Replace(L".",L"_");
+}
 
 bool FdoSmPhDbObject::GetHasData()
 {
@@ -125,7 +140,7 @@ FdoStringsP FdoSmPhDbObject::GetRefColsSql()
     FdoStringsP     colClauses = FdoStringCollection::Create();
 
     for ( i = 0; i < columns->GetCount(); i++ ) {
-        colClauses->Add( columns->GetItem(i)->GetName() );
+        colClauses->Add( columns->GetItem(i)->GetDbName() );
     }
 
     return colClauses;

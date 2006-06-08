@@ -25,6 +25,7 @@
 #include <Sm/Lp/DataPropertyDefinition.h>
 //#include <Sm/Lp/PropertyMappingDefinition.h>
 #include <Sm/Lp/PropertyDefinitionCollection.h>
+#include <Sm/Ph/ColumnList.h>
 
 class ClassDefinition;
 // AssociationPropertyDefinition derives from PropertyDefinition and represents
@@ -89,7 +90,7 @@ public:
     /// Returns a a string collection containing the name of the columns added to the current 
     /// class that are used to navigate to the associated class.
     /// Return value is always valid (never null).
-    const FdoStringsP GetIdentityColumns() const { 
+    const FdoSmPhColumnListP GetIdentityColumns() const {
     	((FdoSmLpAssociationPropertyDefinition*) this)->Finalize();
         return mpIdentColumns; 
     }
@@ -97,7 +98,7 @@ public:
     /// Returns a a string collection containing the name of the columns added to the current 
     /// class that are used to navigate to the associated class.
     /// Return value is always valid (never null).
-    const FdoStringsP GetReverseIdentityColumns() const { 
+    const FdoSmPhColumnListP GetReverseIdentityColumns() const { 
     	((FdoSmLpAssociationPropertyDefinition*) this)->Finalize();
         return mpReverseIdentColumns; 
     }
@@ -242,9 +243,9 @@ private:
 
     FdoStringsP mpReverseIndProperties;
 
-    FdoStringsP mpIdentColumns;
+    FdoSmPhColumnListP mpIdentColumns;
 
-    FdoStringsP mpReverseIdentColumns;
+    FdoSmPhColumnListP mpReverseIdentColumns;
 
 };
 

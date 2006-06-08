@@ -136,11 +136,19 @@ public:
 */
     /// Returns the class table name. L"" if the class has no table.
 	FdoString* GetDbObjectName() const;
+    // Returns a class table name substring that can be used to build other
+    // names, such as object property table names.
+    // Returns GetDbObjectName() by default.
+    virtual FdoStringP GetSubstDbObjectName() const;
 
     /// Returns the foreign table name when class table is actually a view
     /// on a foreign table.
     /// Returns L"" if class table is not a view.
 	FdoString* GetRootDbObjectName() const;
+    // Returns a class root table name substring that can be used to build other
+    // names, such as object property table names.
+    // Returns GetRootDbObjectName() by default.
+    virtual FdoStringP GetSubstRootDbObjectName() const;
 
     /// Returns the class table name. L"" if the class has no table.
 	FdoStringP GetDbObjectQName( 
@@ -513,7 +521,7 @@ protected:
     void SetOwner( FdoString* owner );
 
     /// Set name class table
-    void SetDbObjectName( FdoStringP objectName );
+    virtual void SetDbObjectName( FdoStringP objectName );
 
     /// Set class table primary key name (new classes only).
     void SetNewPkeyName( FdoStringP newPkeyName )

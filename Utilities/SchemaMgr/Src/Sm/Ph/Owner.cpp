@@ -189,6 +189,11 @@ FdoSmPhDbObjectP FdoSmPhOwner::GetDbObject(FdoStringP dbObject)
     return(pDbObject);
 }
 
+FdoStringP FdoSmPhOwner::GetBestSchemaName() const
+{
+    return FdoSmPhMgr::RdSchemaPrefix + GetName();
+}
+
 FdoStringP FdoSmPhOwner::UniqueDbObjectName( FdoStringP objectName )
 {
 	// Censor out characters not allowed.
@@ -212,7 +217,13 @@ FdoStringP FdoSmPhOwner::UniqueDbObjectName( FdoStringP objectName )
 		for ( int i = 1; ; i++ ) {
 			// Truncate and tack on a unique number
 			outName = FdoStringP::Format( L"%ls%d",
-							(FdoString*) GetManager()->GetDcDbObjectName( workName.Mid( 0, tableMaxSize - ((int) log10((double)i)) - 1, true ) ),
+							(FdoString*) GetManager()->GetDcDbObjectName( 
+                                workName.Mid( 
+                                    0, 
+                                    tableMaxSize - ((int) log10((double)i)) - 1, 
+                                    !(GetManager()->IsRdbUnicode()) 
+                                ) 
+                            ),
 							i
 					);
 

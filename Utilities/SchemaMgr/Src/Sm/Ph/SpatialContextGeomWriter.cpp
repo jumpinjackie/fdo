@@ -82,8 +82,9 @@ void FdoSmPhSpatialContextGeomWriter::Modify( FdoStringP geomTableName, FdoStrin
 {
     FdoSmPhWriter::Modify(
    		FdoStringP::Format( 
-        L"where geomtablename = '%ls' and geomcolumnname = '%ls'",
-        (FdoString *) geomTableName, (FdoString *) geomColumnName )
+        L"where geomtablename = %ls and geomcolumnname = %ls",
+        (FdoString *) GetManager()->FormatSQLVal(geomTableName,FdoSmPhColType_String), 
+        (FdoString *) GetManager()->FormatSQLVal(geomColumnName,FdoSmPhColType_String) )
 	);
 }
 
@@ -91,8 +92,9 @@ void FdoSmPhSpatialContextGeomWriter::Delete( FdoStringP geomTableName, FdoStrin
 {
     FdoSmPhWriter::Delete( 
         FdoStringP::Format(
-    L"where geomtablename = '%ls' and geomcolumnname = '%ls'",
-    (FdoString *) geomTableName, (FdoString *) geomColumnName )
+        L"where geomtablename = %ls and geomcolumnname = %ls",
+        (FdoString *) GetManager()->FormatSQLVal(geomTableName,FdoSmPhColType_String), 
+        (FdoString *) GetManager()->FormatSQLVal(geomColumnName,FdoSmPhColType_String) )
     );
 }
 

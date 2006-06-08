@@ -107,7 +107,7 @@ const FdoSmLpPropertyDefinition* FdoSmLpAssociationPropertyDefinition::ColName2P
 			FdoSmLpAssociationPropertyDefinition::Cast( pProperties->RefItem(i) );
 
 		if ( pAssProp ) {
-            FdoStringsP colNames = pAssProp->GetIdentityColumns();
+            FdoSmPhColumnListP colNames = pAssProp->GetIdentityColumns();
             for(int j=0; j<colNames->GetCount(); j++ )
             {
 			    if ( util_str_cmp(columnName, colNames->GetString(j)) == 0 ) 
@@ -138,8 +138,8 @@ FdoSmLpAssociationPropertyDefinition::FdoSmLpAssociationPropertyDefinition(FdoSm
 {
     mpIndProperties = FdoStringCollection::Create();
     mpReverseIndProperties = FdoStringCollection::Create();
-    mpIdentColumns = FdoStringCollection::Create();
-    mpReverseIdentColumns = FdoStringCollection::Create();
+    mpIdentColumns = FdoSmPhColumnList::Create( GetLogicalPhysicalSchema()->GetPhysicalSchema() );
+    mpReverseIdentColumns = FdoSmPhColumnList::Create( GetLogicalPhysicalSchema()->GetPhysicalSchema() );
 }
 
 FdoSmLpAssociationPropertyDefinition::FdoSmLpAssociationPropertyDefinition(
@@ -157,8 +157,8 @@ FdoSmLpAssociationPropertyDefinition::FdoSmLpAssociationPropertyDefinition(
 {
     mpIndProperties = FdoStringCollection::Create();
     mpReverseIndProperties = FdoStringCollection::Create();
-    mpIdentColumns = FdoStringCollection::Create();
-    mpReverseIdentColumns = FdoStringCollection::Create();
+    mpIdentColumns = FdoSmPhColumnList::Create( GetLogicalPhysicalSchema()->GetPhysicalSchema() );
+    mpReverseIdentColumns = FdoSmPhColumnList::Create( GetLogicalPhysicalSchema()->GetPhysicalSchema() );
     SetReadOnly( pFdoProp->GetIsReadOnly() );
     mReverseName = pFdoProp->GetReverseName();
 }
@@ -201,8 +201,8 @@ FdoSmLpAssociationPropertyDefinition::FdoSmLpAssociationPropertyDefinition(
     mReverseMultiplicity = pBaseProperty->GetReverseMultiplicity();
     mpIndProperties = pBaseProperty->GetIdentityProperties();
     mpReverseIndProperties = pBaseProperty->GetReverseIdentityProperties();
-    mpIdentColumns = FdoStringCollection::Create();
-    mpReverseIdentColumns = FdoStringCollection::Create();
+    mpIdentColumns = FdoSmPhColumnList::Create( GetLogicalPhysicalSchema()->GetPhysicalSchema() );
+    mpReverseIdentColumns = FdoSmPhColumnList::Create( GetLogicalPhysicalSchema()->GetPhysicalSchema() );
     mReverseName = pBaseProperty->GetReverseName();
 
 }
