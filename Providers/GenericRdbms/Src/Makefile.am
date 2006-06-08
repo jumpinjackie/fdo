@@ -52,10 +52,10 @@ libFdoMySQL_la_LIBADD =  \
 libFdoMySQL_la_LDFLAGS = \
   -shared \
   -release $(VERSION) \
-  -L$(FDOTHIRDPARTY)/apache/xml-xalan/c/lib \
-  -L$(FDOTHIRDPARTY)/apache/xml-xerces/c/lib \
+  -L/usr/lib/mysql \
   -L$(FDOMYSQL)/lib \
-  -L/usr/lib/mysql
+  -L$(FDOTHIRDPARTY)/apache/xml-xalan/c/lib \
+  -L$(FDOTHIRDPARTY)/apache/xml-xerces/c/lib
 
 #ODBC
 libFdoODBC_la_SOURCES =
