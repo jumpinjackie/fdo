@@ -64,6 +64,7 @@ noinst_HEADERS = $(libmysqldr_la_SOURCES) \
 
 INCLUDES = \
   -I../../.. \
+  -I/usr/include/mysql \
   -I$(FDOMYSQL)/include \
   -I$(FDO)/Unmanaged/Inc
 
