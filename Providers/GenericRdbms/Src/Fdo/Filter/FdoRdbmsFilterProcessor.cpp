@@ -281,6 +281,8 @@ const wchar_t * FdoRdbmsFilterProcessor::PropertyNameToColumnName( const wchar_t
                 const FdoSmLpDataPropertyDefinition* dataProp =
                             static_cast<const FdoSmLpDataPropertyDefinition*>(propertyDefinition);
                 const FdoSmPhColumn *column = dataProp->RefColumn();
+                if (NULL == column)
+                    throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_22, "Internal error"));
                 return column->GetName();
             }
             break;
@@ -324,6 +326,8 @@ const wchar_t * FdoRdbmsFilterProcessor::PropertyNameToColumnName( const wchar_t
                 }
 
                 const FdoSmPhColumn *column = geomProp->RefColumn();
+                if (NULL == column)
+                    throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_22, "Internal error"));
                 return  column->GetName();
             }
             break;
@@ -532,6 +536,8 @@ void FdoRdbmsFilterProcessor::ProcessIdentifier( FdoIdentifier& expr, bool useOu
                             static_cast<const FdoSmLpDataPropertyDefinition*>(propertyDefinition);
                 FdoStringP tableName = mDbiConnection->GetSchemaUtil()->GetDbObjectSqlName(currentClass);
                 const FdoSmPhColumn *column = dataProp->RefColumn();
+                if (NULL == column)
+                    throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_22, "Internal error"));
                 AppendString(  GetTableAlias( tableName ) );
                 AppendString( L"." );
                 AppendString( (FdoString*)(column->GetDbName()) );

@@ -400,12 +400,15 @@ const wchar_t *FdoRdbmsSchemaUtil::ColName2Property(const wchar_t *className, co
             const FdoSmLpDataPropertyDefinition* dataProp =
                 static_cast<const FdoSmLpDataPropertyDefinition*>(propertyDefinition);
             const FdoSmPhColumn *column = dataProp->RefColumn();
-            const wchar_t *colName = column->GetName();
-			if (FdoCommonOSUtil::wcsicmp(colName, columnName) == 0)
+            if (NULL != column)
             {
-                //string = mUtility->UnicodeToUtf8(propertyDefinition->GetName());
-                //break;
-                return propertyDefinition->GetName();
+                const wchar_t *colName = column->GetName();
+			    if (FdoCommonOSUtil::wcsicmp(colName, columnName) == 0)
+                {
+                    //string = mUtility->UnicodeToUtf8(propertyDefinition->GetName());
+                    //break;
+                    return propertyDefinition->GetName();
+                }
             }
         }
         else
@@ -414,7 +417,7 @@ const wchar_t *FdoRdbmsSchemaUtil::ColName2Property(const wchar_t *className, co
         }
     }
     //if( i == propertyDefinitions->GetCount() )
-        throw FdoSchemaException::Create(NlsMsgGet(FDORDBMS_45, "Schema error; no primary key found"));
+        throw FdoSchemaException::Create(NlsMsgGet2(FDORDBMS_406, "Property '%1$ls' from class '%2$ls' has no database mapping", columnName, className));
     //return string;
 }
 
