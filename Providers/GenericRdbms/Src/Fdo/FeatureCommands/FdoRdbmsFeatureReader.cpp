@@ -300,7 +300,7 @@ FdoInt32 FdoRdbmsFeatureReader::GetPropertyCount()
         // NOTE: I are assuming that column name matches computed identifier name (in case-insensitive manner):
         // TODO: this may fail if the alias contains a special character like a space
         mColList[k].c_alias[0] = '\0';
-        for (int i=0; i<mProperties->GetCount(); i++)
+        for (int i=0; mProperties && i<mProperties->GetCount(); i++)
         {
             FdoPtr<FdoIdentifier> id = mProperties->GetItem(i);
             FdoComputedIdentifier* pComputedId = dynamic_cast<FdoComputedIdentifier *>( id.p );
