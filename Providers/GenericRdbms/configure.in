@@ -99,7 +99,7 @@ if test $custom_fdo_mysql = "DEFAULT"; then
   if test -d $FDOMYSQL && test ! $FDOMYSQL = ""; then
   	AC_MSG_NOTICE([Building with default location of MySQL SDK files at $FDOMYSQL])
   else
- 	AC_MSG_ERROR([The default MySQL SDK path $custom_fdo_mysql is not a valid directory. Please use the custom option])
+  	FDOMYSQL="/usr/local/mysql"
   fi
 else 
   if test -d $custom_fdo_mysql; then
@@ -120,7 +120,7 @@ if test $custom_fdo_odbc = "DEFAULT"; then
   if test -d $FDOODBC && test ! $FDOODBC = ""; then
   	AC_MSG_NOTICE([Building with default location of ODBC SDK files at $FDOODBC])
   else
- 	AC_MSG_ERROR([The default ODBC SDK path $custom_fdo_odbc is not a valid directory. Please use the custom option])
+  	FDOODBC="/usr"
   fi
 else 
   if test -d $custom_fdo_odbc; then
