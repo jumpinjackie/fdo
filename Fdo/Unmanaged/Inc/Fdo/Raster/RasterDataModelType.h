@@ -85,7 +85,7 @@ enum FdoRasterDataModelType
 
     /// Data is monochrome but backed by a pallette (value->pallette->colour) pixels.
     /// It is necessary to know the BitsPerPixel value to interpret the data.
-    FdoRasterDataModelType_Palette,
+    FdoRasterDataModelType_Palette
 };
 
 #endif // _RASTERDATAMODELTYPE_H_

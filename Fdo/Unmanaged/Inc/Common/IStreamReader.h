@@ -30,7 +30,7 @@
 enum FdoStreamReaderType {
         FdoStreamReaderType_Byte,
         FdoStreamReaderType_Char,
-        FdoStreamReaderType_WChar,
+        FdoStreamReaderType_WChar
 };
 
 

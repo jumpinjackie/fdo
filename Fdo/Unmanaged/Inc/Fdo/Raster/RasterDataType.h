@@ -50,7 +50,7 @@ enum FdoRasterDataType
 
     FdoRasterDataType_Float,
 
-    FdoRasterDataType_Double,
+    FdoRasterDataType_Double
 };
 
 #endif // _RASTERDATATYPE_H_

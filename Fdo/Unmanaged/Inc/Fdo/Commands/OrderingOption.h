@@ -37,7 +37,7 @@ enum FdoOrderingOption{
     FdoOrderingOption_Ascending,
 
     /// Used for descending option.
-    FdoOrderingOption_Descending,
+    FdoOrderingOption_Descending
 };
 
 

@@ -106,7 +106,7 @@ enum FdoDataType
 
     /// Represents a character large object stored as a collection of
     /// characters.
-    FdoDataType_CLOB,
+    FdoDataType_CLOB
 };
 #endif
 

@@ -57,7 +57,7 @@ enum FdoRasterDataOrganization
     /// Data is interleaved by image, with all data of a channel for a complete
     /// image contiguous in memory, followed by a complete image of the next
     /// channel, etc.
-    FdoRasterDataOrganization_Image,
+    FdoRasterDataOrganization_Image
 };
 
 #endif // _RASTERDATAORGANIZATION_H_

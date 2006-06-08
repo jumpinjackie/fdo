@@ -60,7 +60,7 @@ public:
     /// \return
     /// The data type of the property.
     /// 
-    FDO_API virtual FdoDataType FdoIRasterPropertyDictionary::GetPropertyDataType (FdoString* name) = 0;
+    FDO_API virtual FdoDataType GetPropertyDataType (FdoString* name) = 0;
 
     /// \brief
     /// Gets the value of the specified property (or its default).
@@ -71,7 +71,7 @@ public:
     /// \return
     /// The value of the property.
     /// 
-    FDO_API virtual FdoDataValue* FdoIRasterPropertyDictionary::GetProperty (FdoString* name) = 0;
+    FDO_API virtual FdoDataValue* GetProperty (FdoString* name) = 0;
 
     /// \brief
     /// Sets the value of the specified property.
@@ -81,7 +81,7 @@ public:
     /// \param value 
     /// The new value for the property.
     /// 
-    FDO_API virtual void FdoIRasterPropertyDictionary::SetProperty (FdoString* name, FdoDataValue* value) = 0;
+    FDO_API virtual void SetProperty (FdoString* name, FdoDataValue* value) = 0;
 
     /// \brief
     /// Gets the default value for the specified property.
@@ -92,7 +92,7 @@ public:
     /// \return
     /// The default value of the property.
     /// 
-    FDO_API virtual FdoDataValue* FdoIRasterPropertyDictionary::GetPropertyDefault (FdoString* name) = 0;
+    FDO_API virtual FdoDataValue* GetPropertyDefault (FdoString* name) = 0;
 
     /// \brief
     /// Predicate to determine if the property is required to be set.
@@ -103,7 +103,7 @@ public:
     /// \return
     /// Returns true if the specified property is required, false if it is optional.
     /// 
-    FDO_API virtual bool FdoIRasterPropertyDictionary::IsPropertyRequired (FdoString* name) = 0;
+    FDO_API virtual bool IsPropertyRequired (FdoString* name) = 0;
 
     /// \brief
     /// Predicate to determine if the property is enumerable (has more than one value).
@@ -115,7 +115,7 @@ public:
     /// Returns true if the possible values for the specified property
     /// can be enumerated via the GetPropertyValues method.
     /// 
-    FDO_API virtual bool FdoIRasterPropertyDictionary::IsPropertyEnumerable (FdoString* name) = 0;
+    FDO_API virtual bool IsPropertyEnumerable (FdoString* name) = 0;
 
     /// \brief
     /// Access the values of the specified enumerable property.
@@ -127,7 +127,7 @@ public:
     /// \return
     /// A collection of datavaluesfor the enumerable property.
     /// 
-    FDO_API virtual FdoDataValueCollection* FdoIRasterPropertyDictionary::GetPropertyValues (FdoString* name) = 0;
+    FDO_API virtual FdoDataValueCollection* GetPropertyValues (FdoString* name) = 0;
 
     /// \brief
     /// Set the values of the specified enumerable property.
@@ -142,7 +142,7 @@ public:
     /// \param collection 
     /// The collection of values for the enumerable property.
     /// 
-    FDO_API virtual void FdoIRasterPropertyDictionary::SetPropertyValues (FdoString* name, FdoDataValueCollection* collection) = 0;
+    FDO_API virtual void SetPropertyValues (FdoString* name, FdoDataValueCollection* collection) = 0;
 
     /// The FdoDataValueCollection object is a subclass of the standard collection template with FdoDataValue elements.
 };

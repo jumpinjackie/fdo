@@ -54,7 +54,7 @@ enum FdoPropertyType
     FdoPropertyType_AssociationProperty,
 
     /// Represents a Raster (image) Property type.
-    FdoPropertyType_RasterProperty,
+    FdoPropertyType_RasterProperty
 };
 #endif
 
