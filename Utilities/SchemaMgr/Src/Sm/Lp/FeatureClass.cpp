@@ -155,7 +155,10 @@ bool FdoSmLpFeatureClass::IsGeomInMetaschema()
 {
     bool                bGeomInMetaschema   = true;
  	FdoSmPhMgrP         pPhysical           = GetLogicalPhysicalSchema()->GetPhysicalSchema();
-    FdoSmPhDbObjectP    pClassTable         = pPhysical->FindDbObject(L"f_classdefinition");
+    FdoSmPhDbObjectP    pClassTable;
+
+    if (pPhysical->GetOwner()->GetHasMetaSchema())
+        pClassTable = pPhysical->FindDbObject(L"f_classdefinition");
 
     if ( pClassTable ) 
         bGeomInMetaschema = (pClassTable->GetColumns()->RefItem(L"geometryproperty") != NULL);

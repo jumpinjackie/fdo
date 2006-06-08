@@ -258,7 +258,11 @@ void FdoSmLpGeometricPropertyDefinition::Update(
 void FdoSmLpGeometricPropertyDefinition::SynchPhysical(bool bRollbackOnly)
 {	
 	FdoSmPhMgrP pPhysical	        = GetLogicalPhysicalSchema()->GetPhysicalSchema();
-	FdoSmPhDbObjectP pPhDbObject	= pPhysical->FindDbObject( GetContainingDbObjectName() );
+    FdoSmPhDbObjectP pPhDbObject;
+    if (GetLogicalPhysicalSchema()->GetPhysicalSchema()->GetOwner()->GetHasMetaSchema())
+	    pPhDbObject = pPhysical->FindDbObject( GetContainingDbObjectName());
+    else
+	    pPhDbObject = pPhysical->FindDbObject( GetContainingDbObjectName(), RefParentClass()->GetOwner() );
 
     // Proceed if synchronizing everything or a change to this property has been rolled back.
 	if ( pPhDbObject && (!bRollbackOnly || pPhysical->RefRollbackColumn(pPhDbObject->GetQName(), GetColumnName())) ) {
@@ -455,7 +459,10 @@ void FdoSmLpGeometricPropertyDefinition::Finalize()
         // Geometry column is kept in the target class table.
         // Copied columns are also kept in the target class table.
         FdoStringP dbObjectName = pContainingClass->GetDbObjectName();
-        pPhDbObject = pPhysical->FindDbObject(dbObjectName);
+        if (GetLogicalPhysicalSchema()->GetPhysicalSchema()->GetOwner()->GetHasMetaSchema())
+            pPhDbObject = pPhysical->FindDbObject(dbObjectName);
+        else
+            pPhDbObject = pPhysical->FindDbObject(dbObjectName, RefParentClass()->GetOwner());
 
         // Containing table can now be set.
 	    SetContainingDbObject(pPhDbObject, pDbObjectName);
@@ -674,7 +681,11 @@ void FdoSmLpGeometricPropertyDefinition::AddSiColumns()
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_4_UNREADY)));
 
 	FdoSmPhMgrP pPhysical	        = GetLogicalPhysicalSchema()->GetPhysicalSchema();
-	FdoSmPhDbObjectP pPhDbObject    = pPhysical->FindDbObject( GetContainingDbObjectName() );
+	FdoSmPhDbObjectP pPhDbObject;
+    if (pPhysical->GetOwner()->GetHasMetaSchema())
+    	pPhDbObject = pPhysical->FindDbObject( GetContainingDbObjectName());
+    else
+    	pPhDbObject = pPhysical->FindDbObject( GetContainingDbObjectName(), RefParentClass()->GetOwner() );
 
     if (NULL != pPhDbObject.p)
     {
@@ -979,7 +990,11 @@ bool FdoSmLpGeometricPropertyDefinition::TableHasSpatialIndexColumns()
         return hasSiColumns;
 
 	FdoSmPhMgrP pPhysical	        = GetLogicalPhysicalSchema()->GetPhysicalSchema();
-	FdoSmPhDbObjectP pPhDbObject    = pPhysical->FindDbObject( GetContainingDbObjectName() );
+    FdoSmPhDbObjectP pPhDbObject;
+    if (pPhysical->GetOwner()->GetHasMetaSchema())
+    	pPhDbObject = pPhysical->FindDbObject( GetContainingDbObjectName());
+    else
+    	pPhDbObject = pPhysical->FindDbObject( GetContainingDbObjectName(), RefParentClass()->GetOwner() );
 
     if (NULL != pPhDbObject.p)
     {

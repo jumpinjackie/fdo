@@ -311,7 +311,7 @@ public:
     }
 
     /// Set the config document information.
-    void SetConfiguration( 
+    virtual void SetConfiguration( 
         FdoStringP providerName,
         FdoIoStreamP configDoc,
         FdoFeatureSchemasP configSchemas,
@@ -612,11 +612,15 @@ private:
 
     FdoStringP mDefaultOwnerName;
 
+protected:
+    // These members are protected instead of private to allow access by 
+    // an overridden constructor.
     FdoStringP mProviderName;
     FdoIoStreamP mConfigDoc;
     FdoFeatureSchemasP mConfigSchemas;
     FdoSchemaMappingsP mConfigMappings;
 
+private:
     FdoDictionaryP mDbObjectClassification;
 };
 

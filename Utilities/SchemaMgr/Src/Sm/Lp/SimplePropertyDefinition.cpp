@@ -207,12 +207,14 @@ void FdoSmLpSimplePropertyDefinition::CreateColumn( FdoSmPhDbObjectP dbObject )
 
 	if ( dbObject ) {
 		try {
+            FdoSmPhOwnerP owner = pPhysical->GetOwner();
+
     		// Column name is property name adjusted to be RDBMS-friendly.
 	    	columnName = ((FdoSmLpClassDefinition*)RefParentClass())->UniqueColumnName( 
                 dbObject, 
                 this, 
                 columnName.GetLength() > 0 ? (FdoString*) columnName : GetName(), 
-                GetIsFixedColumn() && (!ColumnIsForeign()) 
+                GetIsFixedColumn() && (!ColumnIsForeign() || !owner->GetHasMetaSchema()) 
             );
 
             // skip column creation for  pre-existing non-foreign columns
@@ -222,7 +224,7 @@ void FdoSmLpSimplePropertyDefinition::CreateColumn( FdoSmPhDbObjectP dbObject )
             // always created.
 
             FdoSmPhColumnP foundColumn;
-            if ( (!ColumnIsForeign()) && GetIsFixedColumn() ) {
+            if ( (!ColumnIsForeign() || !owner->GetHasMetaSchema()) && GetIsFixedColumn() ) {
                 // By default, column override is match to column
                 // by case-sensitive name compare
                 foundColumn = dbObject->GetColumns()->FindItem(columnName);
@@ -242,7 +244,7 @@ void FdoSmLpSimplePropertyDefinition::CreateColumn( FdoSmPhDbObjectP dbObject )
             }
 
 
-            if ( (ColumnIsForeign()) || (!GetIsFixedColumn()) || (!foundColumn) ) {
+            if ( owner->GetHasMetaSchema() && ((ColumnIsForeign()) || (!GetIsFixedColumn()) || (!foundColumn)) ) {
     		    // Create the column 
                 if ( (!ColumnIsForeign()) || (!GetIsSystem()) ) {
         		    SetColumn( NewColumn(dbObject, columnName) );
@@ -273,13 +275,14 @@ void FdoSmLpSimplePropertyDefinition::CreateColumn( FdoSmPhDbObjectP dbObject )
 		// This property has no table but properties inherited or copied from it
 		// might have a table. Set the column name for these inherited or copied
 		// properties to use.
+        FdoSmPhOwnerP owner = pPhysical->GetOwner();
 		SetColumn( (FdoSmPhColumn*) NULL );
         SetColumnName( 
             ((FdoSmLpClassDefinition*)RefParentClass())->UniqueColumnName( 
                 dbObject, 
                 this, 
                 columnName.GetLength() > 0 ? (FdoString*) columnName : GetName(), 
-                GetIsFixedColumn() && (!ColumnIsForeign()) 
+                GetIsFixedColumn() && (!ColumnIsForeign() || !owner->GetHasMetaSchema()) 
             ) 
         );
 	}

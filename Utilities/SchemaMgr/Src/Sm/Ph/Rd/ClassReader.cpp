@@ -136,6 +136,13 @@ bool FdoSmPhRdClassReader::ReadNext()
                         pField = pFrom->GetFields()->GetItem(L"tablename");
                         pField->SetFieldValue( objectName );
 
+                        pField = pFrom->GetFields()->GetItem(L"tableowner");
+                        FdoSmPhMgrP mgr = this->GetManager();
+                        if ( mgr->GetOwner() == mOwner )
+                            pField->SetFieldValue( L"" );
+                        else
+                            pField->SetFieldValue( mOwner->GetName() );
+
                         // No MetaSchema so table is fixed and was not created by
                         // Schema Manager.
                         pField = pFrom->GetFields()->GetItem(L"isfixedtable");

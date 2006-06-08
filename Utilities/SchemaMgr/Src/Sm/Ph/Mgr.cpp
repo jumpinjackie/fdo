@@ -133,7 +133,7 @@ FdoPtr<FdoSmPhRdClassReader> FdoSmPhMgr::CreateRdClassReader(
     FdoStringP owner
 )
 {
-    return new FdoSmPhRdClassReader( rows, schemaName, FDO_SAFE_ADDREF(this) );
+    return new FdoSmPhRdClassReader( rows, schemaName, FDO_SAFE_ADDREF(this), keyedOnly, database, owner );
 }
 
 FdoPtr<FdoSmPhRdPropertyReader> FdoSmPhMgr::CreateRdPropertyReader( FdoSmPhDbObjectP dbObject )

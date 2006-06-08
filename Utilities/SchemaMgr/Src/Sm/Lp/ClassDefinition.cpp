@@ -84,10 +84,6 @@ FdoSmLpClassBase::FdoSmLpClassBase(
 			AddBaseNoSchemaError( pBaseClass->GetName() );
 		}
 	}
-
-    // Extract the class and class table Physical Mapping overrides.
-
-    const FdoSmLpSchema* pSchema = GetLogicalPhysicalSchema();
 }
 
 FdoSmLpClassBase::FdoSmLpClassBase(
@@ -226,8 +222,13 @@ FdoSmPhDbObjectP FdoSmLpClassBase::FindPhDbObject()
     FdoSmPhMgrP         pPhysical = GetLogicalPhysicalSchema()->GetPhysicalSchema();
     FdoSmPhDbObjectP    dbObject;
 
+    FdoStringP ownerName;
+
+    if (!pPhysical->GetOwner()->GetHasMetaSchema())
+        ownerName = mOwner;
+
     if ( mDbObjectName.GetLength() > 0 ) {
-        dbObject = pPhysical->FindDbObject( mDbObjectName, L"", L"", false );
+        dbObject = pPhysical->FindDbObject( mDbObjectName, ownerName, L"", false );
 /* TODO
         if ( dbObject && 
             (dbObject->GetElementState() != FdoSchemaElementState_Added) &&
@@ -745,8 +746,13 @@ void FdoSmLpClassBase::SynchPhysical(bool bRollbackOnly)
 			}
 			else {
 				if ( !mPhDbObject ) {
+
                     // Class has id but no table. If table exists, attach to it.
-					mPhDbObject = pPhysical->FindDbObject(mDbObjectName);
+                    if (pPhysical->GetOwner()->GetHasMetaSchema())
+    					mPhDbObject = pPhysical->FindDbObject(mDbObjectName);
+                    else
+    					mPhDbObject = pPhysical->FindDbObject(mDbObjectName, mOwner);
+
                     if ( !mPhDbObject ) {
                         // This class owns the Table but it doesn't exist, create it.
                         if ( mRootDbObjectName.GetLength() > 0 ) 
@@ -1855,7 +1861,11 @@ void FdoSmLpClassBase::FinalizePhDbObject()
 	            if ( mbHasFdoIdentity ) {
                     // Skip table name creation only if already exists and was 
                     // specified through an override. 
-                    FdoSmPhDbObjectP dbObject = pPhysical->FindDbObject( mDbObjectName, L"", L"", false );
+                    FdoSmPhDbObjectP dbObject;
+                    if (pPhysical->GetOwner()->GetHasMetaSchema())
+                        dbObject = pPhysical->FindDbObject( mDbObjectName, L"", L"", false );
+                    else
+                        dbObject = pPhysical->FindDbObject( mDbObjectName, mOwner, L"", false );
 
                     if ( dbObject )
                         mDbObjectName = dbObject->GetName();
@@ -2055,8 +2065,12 @@ FdoSmLpDbObjectP FdoSmLpClassBase::FinalizeNewDbObject(
 			FdoSmLpDbObjectP pCurrDbObject;
 
 			// Get the primary key table and Finalize it.
-			FdoSmPhDbObjectP pDepDbObject = 
-				GetLogicalPhysicalSchema()->GetPhysicalSchema()->FindDbObject( pDep->GetPkTableName() );
+            FdoSmPhMgrP      pPhysical = GetLogicalPhysicalSchema()->GetPhysicalSchema();
+            FdoSmPhDbObjectP pDepDbObject;
+            if (pPhysical->GetOwner()->GetHasMetaSchema())
+			    pDepDbObject = pPhysical->FindDbObject( pDep->GetPkTableName() );
+            else
+			    pDepDbObject = pPhysical->FindDbObject( pDep->GetPkTableName(), mOwner );
 
 			if ( pDepDbObject ) 
 				pCurrDbObject = FinalizeDbObject( pDepDbObject, dbObjects, iLevel + 1, pProp );

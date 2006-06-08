@@ -60,7 +60,6 @@ FdoSmLpSchema::FdoSmLpSchema(
 	// this is the schema 
 	SetLogicalPhysicalSchema(FDO_SAFE_ADDREF(this));
 	mClasses = new FdoSmLpClassCollection();
-
 }	
 
 FdoSmLpSchema::~FdoSmLpSchema(void)

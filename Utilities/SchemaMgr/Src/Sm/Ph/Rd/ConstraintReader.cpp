@@ -26,6 +26,14 @@ FdoSmPhRdConstraintReader::FdoSmPhRdConstraintReader(
 {
 }
 
+FdoSmPhRdConstraintReader::FdoSmPhRdConstraintReader(
+    FdoSmPhMgrP         mgr,
+    FdoSmPhRowsP        rows
+) :
+	FdoSmPhReader(mgr, rows)
+{
+}
+
 
 FdoSmPhRdConstraintReader::~FdoSmPhRdConstraintReader(void)
 {

@@ -35,6 +35,11 @@ protected:
         FdoSmPhReaderP reader    // inner reader created by implementing class
     );
 
+	FdoSmPhRdConstraintReader(
+        FdoSmPhMgrP         mgr,                // Physical Schema Manager
+        FdoSmPhRowsP        rows                // row and field layout
+    );
+
     /// Deactivates the reader.
 	~FdoSmPhRdConstraintReader(void);
 

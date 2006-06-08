@@ -34,9 +34,13 @@ FdoSmLpPropertyDefinition::FdoSmLpPropertyDefinition(FdoSmPhClassPropertyReaderP
 	mpDefiningClass(parent),
 	mpParentClass(parent),
 	mContainingDbObjectName( propReader->GetTableName() ),
-	mContainingDbObject( GetLogicalPhysicalSchema()->GetPhysicalSchema()->FindDbObject(mContainingDbObjectName) ),
     mTopProperty(NULL)
 {
+    if (GetLogicalPhysicalSchema()->GetPhysicalSchema()->GetOwner()->GetHasMetaSchema())
+        mContainingDbObject = GetLogicalPhysicalSchema()->GetPhysicalSchema()->FindDbObject(mContainingDbObjectName);
+    else
+        mContainingDbObject = GetLogicalPhysicalSchema()->GetPhysicalSchema()->FindDbObject(mContainingDbObjectName, mpParentClass->GetOwner());
+
 	// Load the Schema Attribute Dictionary
 
 	FdoSmPhClassPropertySADReaderP pSADReader = propReader->GetSADReader();
@@ -468,7 +472,11 @@ void FdoSmLpPropertyDefinition::Finalize()
 
         if ( (mContainingDbObjectName.GetLength() > 0) && (!mContainingDbObject) ) {
         	// Set the containing table to the containing class's table.
-   	        mContainingDbObject = GetLogicalPhysicalSchema()->GetPhysicalSchema()->FindDbObject( mContainingDbObjectName );
+	        FdoSmPhMgrP pPhysical = GetLogicalPhysicalSchema()->GetPhysicalSchema();
+            if (pPhysical->GetOwner()->GetHasMetaSchema())
+   	            mContainingDbObject = GetLogicalPhysicalSchema()->GetPhysicalSchema()->FindDbObject( mContainingDbObjectName);
+            else
+   	            mContainingDbObject = GetLogicalPhysicalSchema()->GetPhysicalSchema()->FindDbObject( mContainingDbObjectName, mpParentClass->GetOwner() );
         }
 
         SetState( FdoSmObjectState_Final );
