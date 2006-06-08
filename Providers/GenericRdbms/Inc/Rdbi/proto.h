@@ -270,6 +270,7 @@ int rdbi_tran_rolbk(
         );
 int rdbi_pkeys_act(
     	rdbi_context_def *context,
+        const char *owner,
         const char *object
         );
 int rdbi_pkeys_deac(

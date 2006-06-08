@@ -66,6 +66,7 @@
 
 int odbcdr_pkeys_act(
     odbcdr_context_def *context,
+    char *owner,
     const char *object
 	)
 {
@@ -174,45 +175,47 @@ int odbcdr_pkeys_act(
         connData->keys = c;
 #endif
 
-        ODBCDR_ODBC_ERR( SQLPrimaryKeys(
+        ret = SQLPrimaryKeys(
             c->hStmt,
             NULL, 
             0,
             NULL, 
             0,
             (SQLCHAR*)objectNameOWM, 
-            SQL_NTS),
-            SQL_HANDLE_STMT, c->hStmt, L"SQLPrimaryKeys", L"Fetching OWM primary keys" );
+            SQL_NTS);
 
-        ODBCDR_ODBC_ERR( SQLBindCol(
-            c->hStmt, 4,  SQL_C_CHAR, szColumnName, sizeof(szColumnName), &cbColumnName),
-            SQL_HANDLE_STMT, c->hStmt, L"SQLBindCol", L"Fetching primary keys" );
+        if (ret == SQL_SUCCESS)
+        {
+            ODBCDR_ODBC_ERR( SQLBindCol(
+                c->hStmt, 4,  SQL_C_CHAR, szColumnName, sizeof(szColumnName), &cbColumnName),
+                SQL_HANDLE_STMT, c->hStmt, L"SQLBindCol", L"Fetching primary keys" );
 
-        while (ret != SQL_NO_DATA) {
-            szColumnName[0] = '\0';
+            while (ret != SQL_NO_DATA) {
+                szColumnName[0] = '\0';
 
-            ret = SQLFetch(c->hStmt);
-            if (ret != SQL_SUCCESS && ret != SQL_NO_DATA)
-            goto the_exit;
+                ret = SQLFetch(c->hStmt);
+                if (ret != SQL_SUCCESS && ret != SQL_NO_DATA)
+                goto the_exit;
 
-            if (ret == SQL_NO_DATA)
-                break;
+                if (ret == SQL_NO_DATA)
+                    break;
 
-            // Filter out workspace-manager-specific primary key columns:
-            if (0!=_strnicmp((char*)szColumnName, ODBCDR_DRIVER_ORACLE_OWM_COLUMN_VERSION, sizeof(szColumnName)) &&
-                0!=_strnicmp((char*)szColumnName, ODBCDR_DRIVER_ORACLE_OWM_COLUMN_NEXTVER, sizeof(szColumnName)) &&
-                0!=_strnicmp((char*)szColumnName, ODBCDR_DRIVER_ORACLE_OWM_COLUMN_DELSTATUS, sizeof(szColumnName)) &&
-                0!=_strnicmp((char*)szColumnName, ODBCDR_DRIVER_ORACLE_OWM_COLUMN_LTLOCK, sizeof(szColumnName))
-               )
-            {
-                odbcdr_NameListEntry_pkey_def newNle;
-                (void) strcpy(newNle.name, (char*)szColumnName);
-                if (NULL == ut_da_append( &context->odbcdr_nameList_pkeys, 1L, (void *) &newNle ))
+                // Filter out workspace-manager-specific primary key columns:
+                if (0!=_strnicmp((char*)szColumnName, ODBCDR_DRIVER_ORACLE_OWM_COLUMN_VERSION, sizeof(szColumnName)) &&
+                    0!=_strnicmp((char*)szColumnName, ODBCDR_DRIVER_ORACLE_OWM_COLUMN_NEXTVER, sizeof(szColumnName)) &&
+                    0!=_strnicmp((char*)szColumnName, ODBCDR_DRIVER_ORACLE_OWM_COLUMN_DELSTATUS, sizeof(szColumnName)) &&
+                    0!=_strnicmp((char*)szColumnName, ODBCDR_DRIVER_ORACLE_OWM_COLUMN_LTLOCK, sizeof(szColumnName))
+                   )
                 {
-                    rdbi_status = RDBI_MALLOC_FAILED;
-                    goto the_exit;
+                    odbcdr_NameListEntry_pkey_def newNle;
+                    (void) strcpy(newNle.name, (char*)szColumnName);
+                    if (NULL == ut_da_append( &context->odbcdr_nameList_pkeys, 1L, (void *) &newNle ))
+                    {
+                        rdbi_status = RDBI_MALLOC_FAILED;
+                        goto the_exit;
+                    }
+                    bFoundIdentityProperties = true;
                 }
-                bFoundIdentityProperties = true;
             }
         }
     }
@@ -391,7 +394,7 @@ int odbcdr_pkeys_act(
 	    int  position;
 	    int  eof = FALSE;
 
-        ODBCDR_RDBI_ERR( odbcdr_col_act( context, NULL, (char *)object, NULL ) );
+        ODBCDR_RDBI_ERR( odbcdr_col_act( context, owner, (char *)object, NULL ) );
 
         while (!eof && rdbi_status == RDBI_SUCCESS)
         {
@@ -438,7 +441,7 @@ int odbcdr_pkeys_act(
 	    int  position;
 	    int  eof = FALSE;
 
-        ODBCDR_RDBI_ERR( odbcdr_col_act( context, NULL, (char *)object, NULL ) );
+        ODBCDR_RDBI_ERR( odbcdr_col_act( context, owner, (char *)object, NULL ) );
 
         while (!eof && rdbi_status == RDBI_SUCCESS)
         {

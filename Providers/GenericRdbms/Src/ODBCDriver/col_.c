@@ -65,6 +65,7 @@ typedef struct
 {
     int             odbcDataType;
     int             odbcDataTypeDateTimeSubcode;  // only used when odbcDataType is SQL_DATETIME or SQL_INTERVAL
+    const char *    odbcDataTypeName;             // only for special cases
     const char *    name;
 } TypeNameMapEntry;
 
@@ -75,66 +76,73 @@ typedef struct
  */
 TypeNameMapEntry typeNameMap_S[] =
 {
-    { SQL_CHAR,             -1,                  "char" },
-    { SQL_VARCHAR,          -1,                  "varchar" },
-    { SQL_LONGVARCHAR,      -1,                  "longvarchar" },
-    { SQL_WCHAR,            -1,                  "wchar" },
-    { SQL_WVARCHAR,         -1,                  "wvarchar" },
-    { SQL_WLONGVARCHAR,     -1,                  "wlongvarchar" },
-    { SQL_TINYINT,          -1,                  "tinyint" },
-    { SQL_SMALLINT,         -1,                  "smallint" },
-    { SQL_INTEGER,          -1,                  "integer" },
-    { SQL_BIGINT,           -1,                  "bigint" },
-    { SQL_DECIMAL,          -1,                  "decimal" },
-    { SQL_NUMERIC,          -1,                  "numeric" },
-    { SQL_REAL,             -1,                  "real" },
-    { SQL_FLOAT,            -1,                  "float" },
-    { SQL_DOUBLE,           -1,                  "double" },
-    { SQL_DATETIME,         SQL_CODE_DATE,       "date"},
-    { SQL_DATETIME,         SQL_CODE_TIME,       "time"},
-    { SQL_DATETIME,         SQL_CODE_TIMESTAMP,  "timestamp"},
-    { SQL_TYPE_DATE,        -1,                  "date" },
-    { SQL_TYPE_TIME,        -1,                  "time" },
-    { SQL_TYPE_TIMESTAMP,   -1,                  "timestamp" },
-    { SQL_BINARY,           -1,                  "binary" },
-    { SQL_VARBINARY,        -1,                  "varbinary" },
-    { SQL_LONGVARBINARY,    -1,                  "longvarbinary" },
-    { SQL_UNKNOWN_TYPE,     -1,                  "unknown" },
-    { SQL_BIT,              -1,                  "bit" },
-    { SQL_INTERVAL_MONTH,               -1,      "unsupported" },
-    { SQL_INTERVAL_YEAR,                -1,      "unsupported" },
-    { SQL_INTERVAL_YEAR_TO_MONTH,       -1,      "unsupported" },
-    { SQL_INTERVAL_DAY,                 -1,      "unsupported" },
-    { SQL_INTERVAL_HOUR,                -1,      "unsupported" },
-    { SQL_INTERVAL_MINUTE,              -1,      "unsupported" },
-    { SQL_INTERVAL_SECOND,              -1,      "unsupported" },
-    { SQL_INTERVAL_DAY_TO_HOUR,         -1,      "unsupported" },
-    { SQL_INTERVAL_DAY_TO_MINUTE,       -1,      "unsupported" },
-    { SQL_INTERVAL_DAY_TO_SECOND,       -1,      "unsupported" },
-    { SQL_INTERVAL_HOUR_TO_MINUTE,      -1,      "unsupported" },
-    { SQL_INTERVAL_HOUR_TO_SECOND,      -1,      "unsupported" },
-    { SQL_INTERVAL_MINUTE_TO_SECOND,    -1,      "unsupported" },
-    { SQL_GUID,                         -1,      "unsupported" },
-    { SQL_INTERVAL_MONTH,               -1,      "unsupported" },
-    { SQL_INTERVAL_MONTH,               -1,      "unsupported" },
-    { SQL_INTERVAL_MONTH,               -1,      "unsupported" }
+    { SQL_CHAR,             -1,                  NULL, "char" },
+    { SQL_VARCHAR,          -1,                  NULL, "varchar" },
+    { SQL_LONGVARCHAR,      -1,                  NULL, "longvarchar" },
+    { SQL_WCHAR,            -1,                  NULL, "wchar" },
+    { SQL_WVARCHAR,         -1,                  NULL, "wvarchar" },
+    { SQL_WLONGVARCHAR,     -1,                  NULL, "wlongvarchar" },
+    { SQL_TINYINT,          -1,                  NULL, "tinyint" },
+    { SQL_SMALLINT,         -1,                  NULL, "smallint" },
+    { SQL_INTEGER,          -1,                  NULL, "integer" },
+    { SQL_BIGINT,           -1,                  NULL, "bigint" },
+    { SQL_DECIMAL,          -1,                  NULL, "decimal" },
+    { SQL_NUMERIC,          -1,                  NULL, "numeric" },
+    { SQL_REAL,             -1,                  NULL, "real" },
+    { SQL_FLOAT,            -1,                  NULL, "float" },
+    { SQL_DOUBLE,           -1,                  NULL, "double" },
+    { SQL_DATETIME,         SQL_CODE_DATE,       NULL, "date"},
+    { SQL_DATETIME,         SQL_CODE_TIME,       NULL, "time"},
+    { SQL_DATETIME,         SQL_CODE_TIMESTAMP,  NULL, "timestamp"},
+    { SQL_TYPE_DATE,        -1,                  NULL, "date" },
+    { SQL_TYPE_TIME,        -1,                  NULL, "time" },
+    { SQL_TYPE_TIMESTAMP,   -1,                  NULL, "timestamp" },
+    { SQL_BINARY,           -1,                  NULL, "binary" },
+    { SQL_VARBINARY,        -1,                  NULL, "varbinary" },
+    { SQL_LONGVARBINARY,    -1,                  "SDO_GEOMETRY", "unsupported" },
+    { SQL_LONGVARBINARY,    -1,                  NULL, "longvarbinary" },
+    { SQL_UNKNOWN_TYPE,     -1,                  NULL, "unknown" },
+    { SQL_BIT,              -1,                  NULL, "bit" },
+    { SQL_INTERVAL_MONTH,               -1,      NULL, "unsupported" },
+    { SQL_INTERVAL_YEAR,                -1,      NULL, "unsupported" },
+    { SQL_INTERVAL_YEAR_TO_MONTH,       -1,      NULL, "unsupported" },
+    { SQL_INTERVAL_DAY,                 -1,      NULL, "unsupported" },
+    { SQL_INTERVAL_HOUR,                -1,      NULL, "unsupported" },
+    { SQL_INTERVAL_MINUTE,              -1,      NULL, "unsupported" },
+    { SQL_INTERVAL_SECOND,              -1,      NULL, "unsupported" },
+    { SQL_INTERVAL_DAY_TO_HOUR,         -1,      NULL, "unsupported" },
+    { SQL_INTERVAL_DAY_TO_MINUTE,       -1,      NULL, "unsupported" },
+    { SQL_INTERVAL_DAY_TO_SECOND,       -1,      NULL, "unsupported" },
+    { SQL_INTERVAL_HOUR_TO_MINUTE,      -1,      NULL, "unsupported" },
+    { SQL_INTERVAL_HOUR_TO_SECOND,      -1,      NULL, "unsupported" },
+    { SQL_INTERVAL_MINUTE_TO_SECOND,    -1,      NULL, "unsupported" },
+    { SQL_GUID,                         -1,      NULL, "unsupported" },
+    { SQL_INTERVAL_MONTH,               -1,      NULL, "unsupported" },
+    { SQL_INTERVAL_MONTH,               -1,      NULL, "unsupported" },
+    { SQL_INTERVAL_MONTH,               -1,      NULL, "unsupported" }
 };
 
 #define ODBCDR_LONGVARCHAR_LENGTH       (1073741824)
 
-static const char * typeNumberToName(int odbcType, int odbcTypeDateTimeSubcode)
+static const char * typeNumberToName(int odbcType, int odbcTypeDateTimeSubcode, const char * odbcTypeName)
 {
     int i;
     int array_size = sizeof(typeNameMap_S) / sizeof(typeNameMap_S[0]);
     static const char * unsupported = "unsupported";
     const char * name = unsupported;
+    int found = FALSE;
 
-    for (i=0;  i < array_size && name != NULL;  i++)
+    for (i=0;  !found && i < array_size && name != NULL;  i++)
     {
         if ( (typeNameMap_S[i].odbcDataType == odbcType)
              && (    (odbcTypeDateTimeSubcode == typeNameMap_S[i].odbcDataTypeDateTimeSubcode)
-                  || ((odbcType != SQL_DATETIME) && (odbcType != SQL_INTERVAL)) ) )
-            name = typeNameMap_S[i].name;
+                  || ((odbcType != SQL_DATETIME) && (odbcType != SQL_INTERVAL)) )
+             && (    (typeNameMap_S[i].odbcDataTypeName == NULL || odbcTypeName == NULL)
+                  || strcmp(typeNameMap_S[i].odbcDataTypeName, odbcTypeName) == 0) )
+        {
+                name = typeNameMap_S[i].name;
+                found = TRUE;
+        }
     }
 
     return name;
@@ -271,7 +279,7 @@ int odbcdr_col_act(
             SQL_HANDLE_STMT, c->hStmt, L"SQLColAttribute", L"Getting type" );
         if (ssDataType == SQL_LONGVARCHAR)
             isLongType = TRUE;
-        ssDataType2 = ssDataType;   /* Sve from overwriting by Easysoft's driver. */
+        ssDataType2 = ssDataType;   /* Save from overwriting by Easysoft's driver. */
 
         ret = SQLColAttribute(
             c->hStmt,
@@ -283,7 +291,7 @@ int odbcdr_col_act(
             &ssDataTypeDateTimeSubcode );
         if (ret != ODBCDR_SUCCESS)
             ssDataTypeDateTimeSubcode = -1; /* Some drivers do not support this subcode. */
-        (void) strcpy(newNle.type, typeNumberToName((int)ssDataType2, ssDataTypeDateTimeSubcode));
+        (void) strcpy(newNle.type, typeNumberToName((int)ssDataType2, ssDataTypeDateTimeSubcode, NULL));
 
         ODBCDR_ODBC_ERR( SQLColAttribute(
             c->hStmt,
@@ -327,6 +335,14 @@ int odbcdr_col_act(
             &ssScale  ),
             SQL_HANDLE_STMT, c->hStmt, L"SQLColAttribute", L"Getting scale" );
         newNle.scale = ssScale;
+
+        if (newNle.length <=0 && newNle.scale <= 0 && ssDataType2 == SQL_DECIMAL)
+        {
+            // Some drivers' SQLColAttribute do not give size of zero-scale numerics.
+            // Force an error so that we'll fall back to the SQLColumns method.
+            rdbi_status = RDBI_GENERIC_ERROR;
+            goto the_exit;
+        }
 
         ODBCDR_ODBC_ERR( SQLColAttribute(
             c->hStmt,
@@ -397,7 +413,7 @@ the_exit:
 		ODBCDR_RDBI_ERR( odbcdr_fre_cursor(context, (char **)(&connData->cols)) );
         connData->cols = NULL;
     }
-    if (rdbi_status != RDBI_SUCCESS)
+    if (rdbi_status != RDBI_SUCCESS || context->odbcdr_last_rc != ODBCDR_SUCCESS)
     {
         /* Try the SQLColumns approach. */
         rdbi_status = odbcdr_col_act_SQLColumns(context, owner, object_name);
@@ -587,7 +603,7 @@ static int odbcdr_col_act_SQLColumns(
                 (_stricmp((const char*)szIsNullable, "YES")==0);
 
             (void) strcpy(newNle.name, (char*)szColumnName);
-            (void) strcpy(newNle.type, typeNumberToName((int)ssDataType, -1));
+            (void) strcpy(newNle.type, typeNumberToName((int)ssDataType, -1, (const char *)szTypeName));
 #if 0
             /* Calling code may support "Description" attrbibute later.  Use Remarks when needed. */
             (void) strcpy(newNle.remarks, szRemarks);

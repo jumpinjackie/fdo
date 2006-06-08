@@ -21,6 +21,7 @@
 #include "Database.h"
 #include "TempObject.h"
 #include <Rdbms/Override/ODBC/OdbcOvPhysicalSchemaMapping.h>
+#include <Sm/Ph/Rd/ClassReader.h>
 
 FdoSmPhOdbcMgr::OdbcStringMap FdoSmPhOdbcMgr::mOdbcReservedDbObjectNames;
 
@@ -63,6 +64,55 @@ FdoPtr<FdoSmPhCfgClassReader> FdoSmPhOdbcMgr::CreateCfgClassReader( FdoSmPhRowsP
 FdoPtr<FdoSmPhCfgPropertyReader> FdoSmPhOdbcMgr::CreateCfgPropertyReader( FdoStringP schemaName, FdoStringP className, FdoSmPhDbObjectP dbObject )
 {
     return new FdoSmPhCfgGrdPropertyReader( schemaName, className, dbObject, FDO_SAFE_ADDREF(this) );
+}
+
+FdoPtr<FdoSmPhRdSchemaReader> FdoSmPhOdbcMgr::CreateRdSchemaReader( FdoSmPhRowsP rows, FdoSmPhOwnerP owner, bool dsInfo )
+{
+    return new FdoSmPhRdOdbcSchemaReader( rows, owner, dsInfo );
+}
+
+FdoPtr<FdoSmPhRdClassReader> FdoSmPhOdbcMgr::CreateRdClassReader( 
+    FdoPtr<FdoSmPhRowCollection> rows, 
+    FdoStringP schemaName, 
+    FdoBoolean keyedOnly,
+    FdoStringP database,
+    FdoStringP owner
+)
+{
+#pragma message ("TODO: look up schema object to get owner name")
+    // Ideally, we would not exclude based on RdSchemaPrefix, but rather
+    // look up an approprate owner name, based on schemaName, or adjust the calling
+    // code to pass in the right owner name -- which may be an empty string
+    // on data sources that do not support named physical schemas.
+    if (schemaName != NULL && schemaName.GetLength() > 0 &&
+        schemaName != this->RdSchemaPrefix &&
+        (owner == NULL || owner.GetLength() <= 0) )
+    {
+        owner = schemaName;
+    }
+
+    return FdoSmPhMgr::CreateRdClassReader(rows, schemaName, keyedOnly, database, owner);
+}
+
+void FdoSmPhOdbcMgr::SetConfiguration( 
+    FdoStringP providerName,
+    FdoIoStreamP configDoc,
+    FdoFeatureSchemasP configSchemas,
+    FdoSchemaMappingsP configMappings 
+)
+{
+    // This does what base class' FdoSmPhMgr::SetConfiguration() does, except
+    // that we do not check for metaschema here.
+
+    mProviderName = providerName;
+    mConfigDoc = configDoc;
+    mConfigSchemas = configSchemas;
+    mConfigMappings = configMappings;
+}
+
+FdoStringP FdoSmPhOdbcMgr::GetDcRdbmsObjectName( FdoStringP objectName )
+{
+    return objectName;
 }
 
 FdoStringP FdoSmPhOdbcMgr::GetOverrideDatabase(FdoRdbmsOvSchemaMappingP mapping)

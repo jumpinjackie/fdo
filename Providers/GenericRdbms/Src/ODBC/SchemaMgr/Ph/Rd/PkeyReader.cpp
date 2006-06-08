@@ -34,10 +34,12 @@ FdoSmPhRdOdbcPkeyReader::FdoSmPhRdOdbcPkeyReader(
     rdbi_context = pMgr->GetRdbiContext();
 
     FdoStringP objectName = dbObject->GetName();
+    FdoStringP ownerName = dbObject->GetOwner();
 
     INVOKE_RDBI_FUNC(
         rdbi_pkeys_act(
             rdbi_context,
+            (char*)(const char*) ownerName,
             (char*)(const char*) objectName
         )
     );

@@ -19,6 +19,11 @@
 
 #include <malloc.h>
 #include <time.h>
+
+#ifdef _WIN32
+#include <tchar.h>
+#endif
+
 #include <Inc/ut.h>
 #include "FdoRdbmsOdbcConnectionInfo.h"
 #include "FdoRdbmsOdbcConnection.h"
@@ -174,6 +179,39 @@ FdoSchemaManagerP FdoRdbmsOdbcConnection::NewSchemaManager(
     return schMgr;
 }
 
+FdoSchemaManagerP FdoRdbmsOdbcConnection::CreateSchemaManager()
+ {
+    FdoStringP userName = GetDbiConnection()->GetUser();
+    FdoStringP schemaName = GetSchemaNameFromDsn();
+
+    if (schemaName.GetLength() > 0)
+    {
+        // If the DSN contained a schema name, take that as the only one that
+        // we want to see, and which will be specified in all future requests
+        // from this provider.
+        // If this is not set, all schemas will be visible (occasionally more
+        // useful, but also can be slow).
+        GetDbiConnection()->SetDbSchemaName(schemaName);
+    }
+
+    // Use the login user name as a default for the active schema.
+    if (userName.GetLength() > 0 && schemaName.GetLength() <= 0)
+        schemaName = userName;
+
+    if (schemaName.GetLength() > 0)
+    {
+        // Set sane default for the RDBMS' schema (where things go for cases where
+        // we do not specify a schema in this provider).
+        GetDbiConnection()->SetActiveSchema(schemaName);
+    }
+
+    // Call base class' method.
+    FdoSchemaManagerP schMgr = FdoRdbmsConnection::CreateSchemaManager();
+
+    return schMgr;
+}
+
+
  //
 // Converts a Odbc string date of a specific format to a FdoDateTime (time_t) format.
 FdoDateTime  FdoRdbmsOdbcConnection::DbiToFdoTime( const char* timeStr )
@@ -320,4 +358,89 @@ FdoIDataStorePropertyDictionary*  FdoRdbmsOdbcConnection::CreateDataStorePropert
 FdoRdbmsLockManager *FdoRdbmsOdbcConnection::CreateLockManager()
 {
 	return NULL;
+}
+
+#ifdef _WIN32
+static HKEY GetRegistryKey(HKEY topkey, const char * subkeyName)
+{
+    HKEY hkey = NULL;
+    TCHAR value[ODBCDR_CONNECTION_SIZE];
+    DWORD size = sizeof(value) / sizeof(value[0]);;
+    LONG errStatus = ERROR_SUCCESS;
+    int status = FALSE;
+
+    if (ERROR_SUCCESS != RegOpenKeyEx (
+        topkey,
+        _T(subkeyName),     /* subkey name */
+        0L,                 /* reserved */
+        KEY_QUERY_VALUE,    /* security access mask */
+        &hkey))             /* handle to open key */
+    {
+        hkey = NULL;
+    }
+    return hkey;
+}
+
+static FdoStringP GetRegistryValue(HKEY hkey, const char * name)
+{
+    TCHAR value[ODBCDR_CONNECTION_SIZE];
+    DWORD size = sizeof(value) / sizeof(value[0]);;
+    LONG errStatus = ERROR_SUCCESS;
+    DWORD type;
+    FdoStringP valueP;
+
+    errStatus = RegQueryValueEx (
+        hkey,         /* handle to key */
+        _T(name),     /* value name */
+        NULL,         /* reserved */
+        &type,        /* type buffer */
+        (LPBYTE)value,/* data buffer */
+        &size);       /* size of data buffer */
+
+    if (ERROR_SUCCESS == errStatus)
+    {
+        valueP = FdoStringP::Format(L"%hs", (char *) value);
+    }
+    return valueP;
+}
+
+#endif
+
+#define SUBKEYNAME_PREFIX           "Software\\ODBC\\ODBC.INI\\"
+#define KEYNAME_DRIVER              "Driver"
+#define KEYNAME_USERID_ORACLENATIVE "UserID"
+#define DRIVER_NAME_ORACLENATIVE    L"SQORA32.DLL"
+
+FdoStringP FdoRdbmsOdbcConnection::GetSchemaNameFromDsn()
+{
+    FdoStringP schemaName;
+
+#ifdef _WIN32
+    // For Oracle on Windows, get the UserId field.
+    // This field is normally just a default for the username, so this use does overload
+    // it.  However, Oracle's driver does not offer a separate "schema" field as other
+    // drivers do.
+
+    FdoStringP dsn = GetDbiConnection()->GetDataSource();
+    HKEY hkey = NULL;
+    char subkeyName[ODBCDR_CONNECTION_SIZE];
+    size_t subkeyNameSize = sizeof(subkeyName) / sizeof(subkeyName[0]);
+    (void) _snprintf(subkeyName, subkeyNameSize-1, "%s%ls", SUBKEYNAME_PREFIX, (const wchar_t *)dsn);
+
+    hkey = GetRegistryKey(HKEY_CURRENT_USER, subkeyName);
+    if (NULL == hkey)
+        hkey = GetRegistryKey(HKEY_LOCAL_MACHINE, subkeyName);
+    if (NULL != hkey)
+    {
+        FdoStringP driver = GetRegistryValue(hkey, KEYNAME_DRIVER);
+        if (driver.Contains(DRIVER_NAME_ORACLENATIVE))
+        {
+            FdoStringP userId = GetRegistryValue(hkey, KEYNAME_USERID_ORACLENATIVE);
+            if (userId.GetLength() > 0)
+                schemaName = userId;
+        }
+    }
+#endif
+
+    return schemaName;
 }

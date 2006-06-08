@@ -29,7 +29,7 @@ int odbcdr_bind( odbcdr_context_def *context, char *cursor, char *name, int data
 int odbcdr_col_act( odbcdr_context_def *context, char *owner, char *object_name, char *dbaselink );
 int odbcdr_col_get( odbcdr_context_def *context, char *column_name, char *type, int *length, int *scale, int *nullable, int *is_autoincrement, int *position, int *eof );
 int odbcdr_col_deac( odbcdr_context_def *context );
-int odbcdr_pkeys_act( odbcdr_context_def *context, const char *target );
+int odbcdr_pkeys_act( odbcdr_context_def *context, char *owner, const char *target );
 int odbcdr_pkeys_get( odbcdr_context_def *context, char *name, int *eof );
 int odbcdr_pkeys_deac( odbcdr_context_def *context );
 int odbcdr_users_act( odbcdr_context_def *context, const char *target );
@@ -83,6 +83,7 @@ void odbcdr_set_nnull( odbcdr_context_def *context, SQLLEN *null_ind, int start,
 int odbcdr_is_null( odbcdr_context_def  *context, SQLLEN *null_ind, int offset );
 
 int odbcdr_xlt_status( odbcdr_context_def *context, SQLRETURN odbcdr_status, SQLSMALLINT handle_type, SQLHANDLE handle);
+int odbcdr_set_schema( odbcdr_context_def *context, char *schema_name);
 int odbcdr_set_schemaW( odbcdr_context_def *context, wchar_t *schema_name);
 int odbcdr_term( void **contextp );
 

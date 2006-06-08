@@ -41,6 +41,10 @@ FdoSmLpOdbcClassDefinition::FdoSmLpOdbcClassDefinition(
 	FdoSmLpGrdClassDefinition(pFdoClass, bIgnoreStates, parent),
 	FdoSmLpClassBase(pFdoClass, bIgnoreStates, parent)
 {
+ 	FdoSmLpSchemaP         pSchema = GetLogicalPhysicalSchema();
+
+    this->SetOwner(pSchema->GetOwner());
+
     Init();
 }
 

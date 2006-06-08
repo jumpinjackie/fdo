@@ -34,11 +34,12 @@ FdoSmPhRdOdbcColumnReader::FdoSmPhRdOdbcColumnReader(
     rdbi_context = pMgr->GetRdbiContext();
 
     FdoStringP objectName = dbObject->GetName();
+    FdoStringP ownerName = dbObject->GetOwner();
 
     INVOKE_RDBI_FUNC(
         rdbi_col_act(
             rdbi_context,
-            NULL,
+            (char*)(const char*) ownerName,
             (char*)(const char*) objectName,
             NULL
         )

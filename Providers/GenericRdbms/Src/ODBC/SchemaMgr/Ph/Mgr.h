@@ -26,6 +26,7 @@
 #include "../../../SchemaMgr/Ph/Cfg/SchemaReader.h"
 #include "../../../SchemaMgr/Ph/Cfg/ClassReader.h"
 #include "../../../SchemaMgr/Ph/Cfg/PropertyReader.h"
+#include "Rd/SchemaReader.h"
 #include <Sm/Ph/Reader.h>
 
 // Odbc Provider implementation of the Physical Schema Manager
@@ -46,6 +47,30 @@ public:
     virtual FdoPtr<FdoSmPhCfgSchemaReader> CreateCfgSchemaReader( FdoSmPhRowsP rows );
     virtual FdoPtr<FdoSmPhCfgClassReader> CreateCfgClassReader( FdoSmPhRowsP rows, FdoStringP schemaName );
     virtual FdoPtr<FdoSmPhCfgPropertyReader> CreateCfgPropertyReader( FdoStringP schemaName, FdoStringP className, FdoSmPhDbObjectP dbObject );
+
+    virtual FdoPtr<FdoSmPhRdSchemaReader> CreateRdSchemaReader( 
+        FdoPtr<FdoSmPhRowCollection> rows, 
+        FdoPtr<FdoSmPhOwner> owner, 
+        bool dsInfo 
+    );
+
+    virtual FdoPtr<FdoSmPhRdClassReader> CreateRdClassReader( 
+        FdoPtr<FdoSmPhRowCollection> rows, 
+        FdoStringP schemaName,
+        FdoBoolean keyedOnly = true,// If true, skip tables without key.
+        FdoStringP database = L"",  // Database where RDBMS schema resides (current connection by default)
+        FdoStringP owner = L""      // the RDBMS schema (defaults to current schema)
+    );
+
+    virtual void SetConfiguration( 
+        FdoStringP providerName,
+        FdoIoStreamP configDoc,
+        FdoFeatureSchemasP configSchemas,
+        FdoSchemaMappingsP configMappings 
+    );
+
+    // Override default (always lowercase) -- we want to preserve case.
+    virtual FdoStringP GetDcRdbmsObjectName( FdoStringP columnName );
 
     // Extract the Odbc server name from a Schema Override set
     virtual FdoStringP GetOverrideDatabase(FdoRdbmsOvSchemaMappingP mapping);

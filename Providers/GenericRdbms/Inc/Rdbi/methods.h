@@ -82,7 +82,7 @@ typedef struct rdbi_methods_def {
     int  (*objects_act)(void*, const char *, const char *);
     int  (*objects_get)(void*, char *, char *, int*);
     int  (*objects_deac)(void*);
-    int  (*pkeys_act)(void*, const char *);
+    int  (*pkeys_act)(void*, const char *, const char *);
     int  (*pkeys_get)(void*, char*, int*);
     int  (*pkeys_deac)(void*);
     int  (*users_act)(void*, const char *);

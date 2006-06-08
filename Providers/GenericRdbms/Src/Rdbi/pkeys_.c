@@ -49,6 +49,7 @@ static char     *tran_id = "auto-pkeys";
 
 int rdbi_pkeys_act(
 	rdbi_context_def *context,
+    const char *owner,
     const char *object)
 {
     int     status;
@@ -61,7 +62,7 @@ int rdbi_pkeys_act(
         tran_begun = TRUE;
     }
 
-    status = (*(context->dispatch.pkeys_act))(context->drvr, object);
+    status = (*(context->dispatch.pkeys_act))(context->drvr, owner, object);
 
     context->rdbi_last_status = status;
 

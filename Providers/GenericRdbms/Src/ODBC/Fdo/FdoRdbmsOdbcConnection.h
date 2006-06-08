@@ -44,6 +44,9 @@ protected:
     virtual ~FdoRdbmsOdbcConnection ();
     FdoRdbmsOdbcConnection ();
 
+    // Look up the schema name that we want from any specially-supported DSN's.
+    FdoStringP GetSchemaNameFromDsn();
+
 public:
 	FDORDBMS_API static FdoRdbmsOdbcConnection* Create();
     
@@ -59,6 +62,8 @@ public:
         FdoStringP currUser,
         FdoStringP currSchema
     );
+
+    virtual FdoSchemaManagerP CreateSchemaManager();
 
     // Creates an empty Schema Mapping set appropriate for the Odbc Provider 
     virtual FdoPhysicalSchemaMapping* CreateSchemaMapping()

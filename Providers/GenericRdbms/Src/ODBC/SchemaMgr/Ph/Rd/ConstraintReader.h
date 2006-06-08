@@ -51,20 +51,7 @@ public:
 
 private:
 
-    FdoSmPhReaderP MakeReader(
-        FdoSmPhOwnerP owner,
-        FdoStringP constraintName
-    );
-
-    FdoSmPhReaderP MakeReader(
-        FdoSmPhOwnerP owner,
-		FdoStringP	tableName,
-        FdoStringP constraintName
-    );
-
-    FdoSmPhOwnerP mOwner;
-    FdoStringP mConstraintName;
-	FdoStringP	mTableName;
+    bool ReadNext();
 };
 
 #endif

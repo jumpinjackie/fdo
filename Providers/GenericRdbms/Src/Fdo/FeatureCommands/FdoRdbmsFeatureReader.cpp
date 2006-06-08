@@ -548,6 +548,7 @@ FdoClassDefinition *FdoRdbmsFeatureReader::GetClassDefinition()
     if( mSchemaCollection == NULL )
     {
         FdoRdbmsDescribeSchemaCommand*  pDescSchemaCmd = new FdoRdbmsDescribeSchemaCommand( mConnection );
+        pDescSchemaCmd->SetSchemaName(mClassDefinition->RefLogicalPhysicalSchema()->GetName());
         mSchemaCollection = pDescSchemaCmd->Execute();
         pDescSchemaCmd->Release();
     }

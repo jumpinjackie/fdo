@@ -155,6 +155,25 @@ typedef enum
 	} \
 }
 
+#define ODBCDR_ODBC_ERR2( functionCall_I, handle_type_I, handle_I, functionName_I, purpose_I ) \
+{ \
+	short	_odbcValue = (functionCall_I); \
+	if ( _odbcValue != ODBCDR_SUCCESS ) \
+	{ \
+		debug2( "%s for %s FAILED.", functionName_I, purpose_I ); \
+		rdbi_status = odbcdr_xlt_status( context, _odbcValue, handle_type_I, handle_I  ); \
+		context->odbcdr_last_rc = _odbcValue; \
+        if ( _odbcValue == SQL_SUCCESS_WITH_INFO && rdbi_status == RDBI_SUCCESS ) \
+            rdbi_status = RDBI_GENERIC_ERROR; \
+		goto the_exit; \
+	} \
+	else \
+	{ \
+		debug2( "%s for %s succeeded.", functionName_I, purpose_I ); \
+		context->odbcdr_last_rc = _odbcValue; \
+	} \
+}
+
 
 /* ODBCDR_RDBI_ERR() -- Call an RDBI function, set status, exit if error
  *	Assume local variable:	int rdbi_status

@@ -208,7 +208,7 @@ public:
     FdoSchemaManagerP GetSchemaManager();
 
     // Creates a Schema Manager for the current provider.
-    FdoSchemaManagerP CreateSchemaManager();
+    virtual FdoSchemaManagerP CreateSchemaManager();
 
 	// Returns a DataStorePropertyDictionary object for this provider.
 	virtual FdoIDataStorePropertyDictionary* CreateDataStoreProperties( int action ) = 0;

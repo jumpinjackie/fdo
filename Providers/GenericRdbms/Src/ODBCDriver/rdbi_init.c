@@ -103,7 +103,7 @@ odbcdr_rdbi_init(
 	    methods->objects_act	= (int  (*)(void*, const char *, const char *))odbcdr_objects_act;
 	    methods->objects_get	= (int  (*)(void*, char *, char *, int*))odbcdr_objects_get;
 	    methods->objects_deac	= (int  (*)(void*))odbcdr_objects_deac;
-	    methods->pkeys_act	= (int  (*)(void*, const char *))odbcdr_pkeys_act;
+	    methods->pkeys_act	= (int  (*)(void*, const char *, const char *))odbcdr_pkeys_act;
 	    methods->pkeys_get	= (int  (*)(void*, char*, int*))odbcdr_pkeys_get;
 	    methods->pkeys_deac	= (int  (*)(void*))odbcdr_pkeys_deac;
 	    methods->users_act	= (int  (*)(void*, const char *))odbcdr_users_act;

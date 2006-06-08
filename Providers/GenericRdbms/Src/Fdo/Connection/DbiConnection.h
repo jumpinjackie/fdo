@@ -589,6 +589,10 @@ public:
     // Get the schema (database) name for this connection.
     FdoStringP GetDbSchemaName();
 
+    void SetDbSchemaName(const wchar_t * schemaName);
+
+    void SetActiveSchema(const wchar_t * schemaName);
+
     const wchar_t *Property2ColName(const wchar_t *className, const wchar_t *attribute);
     const wchar_t *ColName2Property(const wchar_t *className, const wchar_t *column);
 

@@ -1098,6 +1098,37 @@ FdoStringP DbiConnection::GetDbSchemaName()
     return mDbSchemaName;
 }
 
+void DbiConnection::SetDbSchemaName(const wchar_t * schemaName)
+{
+    mDbSchemaName = schemaName;
+}
+
+
+void DbiConnection::SetActiveSchema(const wchar_t * schemaName)
+{
+    FdoStringP schemaNameP = schemaName;
+
+    if (mOpen == FdoConnectionState_Open || mOpen == FdoConnectionState_Pending)
+    {
+        int rc = RDBI_GENERIC_ERROR;
+
+        if ( mGdbiConnection && mGdbiConnection->GetCommands()->SupportsUnicode() ) 
+            rc =  rdbi_set_schemaW( mContext, (wchar_t*)(const wchar_t*)(schemaNameP) );
+        else 
+            rc =  rdbi_set_schema( mContext, (char*)(const char*)(schemaNameP) );
+
+        if ( rc != RDBI_SUCCESS )
+        {
+			wchar_t	err_msg[RDBI_MSG_SIZE+1];
+            rdbi_get_msg( mContext );
+			wcsncpy(err_msg, mContext->last_error_msg, RDBI_MSG_SIZE);
+			err_msg[RDBI_MSG_SIZE] = '\0';
+            Close();
+			ThrowLastError(err_msg);
+        }
+    }
+}
+
 // the following will be replaced with the new FindClass method
 const FdoSmLpSchema* DbiConnection::GetSchema(const wchar_t *className)
 {

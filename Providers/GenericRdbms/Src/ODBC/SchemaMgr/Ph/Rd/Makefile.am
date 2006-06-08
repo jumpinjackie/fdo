@@ -9,6 +9,7 @@ DbObjectReader.cpp \
 FkeyReader.cpp \
 IndexReader.cpp \
 OwnerReader.cpp \
+SchemaReader.cpp \
 PkeyReader.cpp
 
 noinst_HEADERS = $(libFdoRdbmsODBC_SchemaMgr_Ph_Rd_la_SOURCES) \
