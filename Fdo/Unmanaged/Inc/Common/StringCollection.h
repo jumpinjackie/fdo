@@ -186,12 +186,12 @@ public:
 
 protected:
 /// \cond DOXYGEN-IGNORE
-	FdoStringCollection(void);
-	FdoStringCollection( const FdoStringCollection& src);
-	FdoStringCollection( const FdoStringCollection* src);
-	FdoStringCollection( const FdoStringP& inString, const FdoString* delimiters, bool bNullTokens = false );
+	FDO_API_COMMON FdoStringCollection(void);
+	FDO_API_COMMON FdoStringCollection( const FdoStringCollection& src);
+	FDO_API_COMMON FdoStringCollection( const FdoStringCollection* src);
+	FDO_API_COMMON FdoStringCollection( const FdoStringP& inString, const FdoString* delimiters, bool bNullTokens = false );
 
-	virtual ~FdoStringCollection(void);
+	FDO_API_COMMON virtual ~FdoStringCollection(void);
 
 /// \endcond
     FDO_API_COMMON virtual void Dispose()
