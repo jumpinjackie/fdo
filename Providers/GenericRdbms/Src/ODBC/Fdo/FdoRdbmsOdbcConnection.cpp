@@ -194,9 +194,11 @@ FdoSchemaManagerP FdoRdbmsOdbcConnection::CreateSchemaManager()
         GetDbiConnection()->SetDbSchemaName(schemaName);
     }
 
+#if 0
     // Use the login user name as a default for the active schema.
     if (userName.GetLength() > 0 && schemaName.GetLength() <= 0)
         schemaName = userName;
+#endif
 
     if (schemaName.GetLength() > 0)
     {

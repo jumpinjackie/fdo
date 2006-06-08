@@ -123,6 +123,7 @@ TypeNameMapEntry typeNameMap_S[] =
 };
 
 #define ODBCDR_LONGVARCHAR_LENGTH       (1073741824)
+#define ODBCDR_DECIMAL_LENGTH           (16)
 
 static const char * typeNumberToName(int odbcType, int odbcTypeDateTimeSubcode, const char * odbcTypeName)
 {
@@ -336,9 +337,9 @@ int odbcdr_col_act(
             SQL_HANDLE_STMT, c->hStmt, L"SQLColAttribute", L"Getting scale" );
         newNle.scale = ssScale;
 
-        if (newNle.length <=0 && newNle.scale <= 0 && ssDataType2 == SQL_DECIMAL)
+        if (newNle.length <=0 && ssDataType2 == SQL_DECIMAL)
         {
-            // Some drivers' SQLColAttribute do not give size of zero-scale numerics.
+            // Some drivers' SQLColAttribute do not give size of numerics.
             // Force an error so that we'll fall back to the SQLColumns method.
             rdbi_status = RDBI_GENERIC_ERROR;
             goto the_exit;
