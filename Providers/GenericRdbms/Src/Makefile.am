@@ -17,21 +17,19 @@ libFdoMySQL_la_SOURCES =
 nodist_EXTRA_libFdoMySQL_la_SOURCES = dummy.cpp
 
 libFdoMySQL_la_LIBADD =  \
+  -lxalan-c \
+  -lxalanMsg \
+  -lxerces-c \
+  -lmysqlclient \
+  -lz \
   MySQL/libFdoRdbmsMySQL.la  \
   Fdo/libFdoRdbms.la   \
   Rdbi/librdbi.la  \
   MySQL/Driver/libmysqldr.la   \
-  $(FDO)/Unmanaged/Src/libFDO.la   \
-  -lxalan-c -lxalanMsg \
-  -lxerces-c \
   Gdbi/libGdbi.la  \
   LongTransactionManager/libLTManager.la  \
   LockManager/libLockManager.la  \
   Util/libutil.la  \
-  $(FDOMYSQL)/lib/libmysqlclient.a \
-  $(FDOMYSQL)/lib/libz.a \
-  $(FDO)/Unmanaged/Src/Spatial/libFDOSpatial.la   \
-  $(FDOUTILITIES)/Common/libProvidersCommon.la \
   Geometry/Fgf/libgeometry_fgf.la  \
   SchemaMgr/Lp/libSmLpGrd.la  \
   SchemaMgr/libSmGrd.la   \
@@ -39,6 +37,9 @@ libFdoMySQL_la_LIBADD =  \
   SchemaMgr/Ph/Cfg/libSmPhCfgGrd.la  \
   SchemaMgr/Ph/libSmPhGrd.la   \
   SchemaMgr/Ph/Rd/libSmPhRdGrd.la  \
+  $(FDO)/Unmanaged/Src/libFDO.la   \
+  $(FDO)/Unmanaged/Src/Spatial/libFDOSpatial.la   \
+  $(FDOUTILITIES)/Common/libProvidersCommon.la \
   $(FDOUTILITIES)/SchemaMgr/Src/Sm/libSchemaMgr.la \
   $(FDOUTILITIES)/SchemaMgr/Src/Sm/Lp/libSmLogicalPhysical.la  \
   $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ph/libSmPhysical.la  \
@@ -52,7 +53,9 @@ libFdoMySQL_la_LDFLAGS = \
   -shared \
   -release $(VERSION) \
   -L$(FDOTHIRDPARTY)/apache/xml-xalan/c/lib \
-  -L$(FDOTHIRDPARTY)/apache/xml-xerces/c/lib
+  -L$(FDOTHIRDPARTY)/apache/xml-xerces/c/lib \
+  -L$(FDOMYSQL)/lib \
+  -L/usr/lib/mysql
 
 #ODBC
 libFdoODBC_la_SOURCES =
@@ -63,19 +66,17 @@ libFdoODBC_la_SOURCES =
 nodist_EXTRA_libFdoODBC_la_SOURCES = dummy.cpp
 
 libFdoODBC_la_LIBADD =  \
+  -lxalan-c -lxalanMsg \
+  -lxerces-c \
+  -lodbc \
   ODBC/libFdoRdbmsODBC.la  \
   Fdo/libFdoRdbms.la   \
   Rdbi/librdbi.la  \
   ODBCDriver/libFdoODBCDriver.la   \
-  $(FDO)/Unmanaged/Src/libFDO.la   \
-  -lxalan-c -lxalanMsg \
-  -lxerces-c \
   Gdbi/libGdbi.la  \
   LongTransactionManager/libLTManager.la  \
   LockManager/libLockManager.la  \
   Util/libutil.la  \
-  $(FDO)/Unmanaged/Src/Spatial/libFDOSpatial.la   \
-  $(FDOUTILITIES)/Common/libProvidersCommon.la \
   Geometry/Fgf/libgeometry_fgf.la  \
   SchemaMgr/Lp/libSmLpGrd.la  \
   SchemaMgr/libSmGrd.la   \
@@ -83,6 +84,9 @@ libFdoODBC_la_LIBADD =  \
   SchemaMgr/Ph/Cfg/libSmPhCfgGrd.la  \
   SchemaMgr/Ph/libSmPhGrd.la   \
   SchemaMgr/Ph/Rd/libSmPhRdGrd.la  \
+  $(FDO)/Unmanaged/Src/libFDO.la   \
+  $(FDO)/Unmanaged/Src/Spatial/libFDOSpatial.la   \
+  $(FDOUTILITIES)/Common/libProvidersCommon.la \
   $(FDOUTILITIES)/SchemaMgr/Src/Sm/libSchemaMgr.la \
   $(FDOUTILITIES)/SchemaMgr/Src/Sm/Lp/libSmLogicalPhysical.la  \
   $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ph/libSmPhysical.la  \
@@ -90,8 +94,7 @@ libFdoODBC_la_LIBADD =  \
   $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ph/Mt/libSmPhMt.la  \
   $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ph/Rb/libSmPhRb.la  \
   $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ph/Rd/libSmPhRd.la \
-  $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ov/libSmOverrides.la \
-  -lodbc
+  $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ov/libSmOverrides.la
 
 libFdoODBC_la_LDFLAGS = \
   -shared \
@@ -101,14 +104,14 @@ libFdoODBC_la_LDFLAGS = \
   -L$(FDOODBC)/lib
 
 libSchemaMgr_OV_la_SOURCES =
-##building libSchemaMgr_OV.so
+## building libSchemaMgr_OV.so
 # Dummy C++ source to cause C++ linking.
 
 nodist_EXTRA_libSchemaMgr_OV_la_SOURCES = dummy.cpp
 
 libSchemaMgr_OV_la_LIBADD =  \
-  $(FDO)/Unmanaged/Src/libFDO.la \
   SchemaMgr/Ov/libSchemaMgr_OV.la \
+  $(FDO)/Unmanaged/Src/libFDO.la \
   $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ov/libSmOverrides.la
 
 libSchemaMgr_OV_la_LDFLAGS = \
