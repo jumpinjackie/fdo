@@ -1,7 +1,7 @@
 @echo off
 
 SET TYPEACTIONTHR=buildinstall
-SET MSACTIONTHR=Rebuild
+SET MSACTIONTHR=Build
 SET TYPEBUILDTHR=release
 SET FDOBASPATHTHR=%cd%
 SET FDOINSPATHTHR=%cd%\Fdo
@@ -170,8 +170,8 @@ rem # Begin FDO part #
 if "%FDOENABLETHR%"=="no" goto rebuild_sdf
 if "%TYPEACTIONTHR%"=="install" goto install_fdo_files
 
-echo Rebuild %TYPEBUILDTHR% Thirdparty FDO dlls
-msbuild Thirdparty_fdo.sln /t:Rebuild /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo
+echo Build %TYPEBUILDTHR% Thirdparty FDO dlls
+msbuild Thirdparty_fdo.sln /t:Build /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
 
@@ -193,8 +193,8 @@ rem # Begin SDF part #
 if "%SDFENABLETHR%"=="no" goto rebuild_wfs
 if "%TYPEACTIONTHR%"=="install" goto install_sdf_files
 
-echo Rebuild %TYPEBUILDTHR% Thirdparty SDF dlls
-msbuild Thirdparty_sdf.sln /t:Rebuild /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo
+echo Build %TYPEBUILDTHR% Thirdparty SDF dlls
+msbuild Thirdparty_sdf.sln /t:Build /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
 
@@ -209,11 +209,11 @@ rem # Begin WFS part #
 if "%WFSENABLETHR%"=="no" goto rebuild_wms
 if "%TYPEACTIONTHR%"=="install" goto install_wfs_files
 
-echo Rebuild %TYPEBUILDTHR% Thirdparty WFS dlls
-msbuild Thirdparty_wfs.sln /t:Rebuild /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo
+echo Build %TYPEBUILDTHR% Thirdparty WFS dlls
+msbuild Thirdparty_wfs.sln /t:Build /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
-msbuild boost_1_32_0\boost_1_32_0.vcproj /t:Rebuild /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo
+msbuild boost_1_32_0\boost_1_32_0.vcproj /t:Build /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
 
@@ -229,11 +229,11 @@ rem # Begin WMS part #
 if "%WMSENABLETHR%"=="no" goto rebuild_shp
 if "%TYPEACTIONTHR%"=="install" goto install_wms_files
 
-echo Rebuild %TYPEBUILDTHR% Thirdparty WMS dlls
-msbuild Thirdparty_wms.sln /t:Rebuild /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo
+echo Build %TYPEBUILDTHR% Thirdparty WMS dlls
+msbuild Thirdparty_wms.sln /t:Build /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
-msbuild boost_1_32_0\boost_1_32_0.vcproj /t:Rebuild /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo
+msbuild boost_1_32_0\boost_1_32_0.vcproj /t:Build /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
 
@@ -292,7 +292,7 @@ time /t
 exit /B 1
 
 :error
-echo There was a build error executing action: %MSACTIONFDO%
+echo There was a build error executing action: %MSACTIONTHR%
 time /t
 exit /B 1
 
