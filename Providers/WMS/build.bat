@@ -1,7 +1,7 @@
 @echo off
 
 SET TYPEACTIONWMS=buildinstall
-SET MSACTIONWMS=Rebuild
+SET MSACTIONWMS=Build
 SET TYPEBUILDWMS=release
 SET TYPEBUILDWMSPATH=rel
 SET FDOORGPATHWMS=%cd%
@@ -156,7 +156,7 @@ time /t
 exit /B 1
 
 :error
-echo There was a build error executing action: %MSACTIONFDO%
+echo There was a build error executing action: %MSACTIONWMS%
 time /t
 exit /B 1
 
