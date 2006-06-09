@@ -1,7 +1,7 @@
 @echo off
 
 SET TYPEACTIONARCSDE=buildinstall
-SET MSACTIONARCSDE=Rebuild
+SET MSACTIONARCSDE=Build
 SET TYPEBUILDARCSDE=release
 SET FDOINSPATHARCSDE=\Fdo
 SET FDOBINPATHARCSDE=\Fdo\Bin
@@ -151,7 +151,7 @@ time /t
 exit /B 1
 
 :error
-echo There was a build error executing action: %MSACTIONFDO%
+echo There was a build error executing action: %MSACTIONARCSDE%
 time /t
 exit /B 1
 
