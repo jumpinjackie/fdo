@@ -2,7 +2,7 @@ AUTOMAKE_OPTIONS = foreign
 
 CATDIR = ../../nls/linux/en_US
 
-CATALOGS = Message.mc
+CATALOGS = FDOMessage.mc
 
 CATALOGS_CAT = $(patsubst %.mc,$(CATDIR)/%.cat,$(CATALOGS))
 
@@ -27,7 +27,6 @@ $(CATALOGS_CAT) : $(CATDIR)/%.cat : %.msf
 	@rm $(addsuffix _msg.h, $(basename $(notdir $<))) \
     	$(addsuffix .tmp, $(basename $(notdir $<)))
 	@mv ../../Inc/$(basename $(notdir $<))_msg.h ../../Inc/Fdo$(basename $(notdir $<)).h
-	@mv $(CATDIR)/Message.cat $(CATDIR)/FDOMessage.cat
 
 %.msf : %.mc
 	@../McToMsf/McToMsf $(basename $(notdir $<)).mc $(basename $(notdir $<)).msf "*" FDO
