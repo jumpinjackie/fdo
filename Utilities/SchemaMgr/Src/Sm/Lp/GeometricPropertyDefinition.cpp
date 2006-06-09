@@ -1005,8 +1005,10 @@ bool FdoSmLpGeometricPropertyDefinition::TableHasSpatialIndexColumns()
         {
             FdoStringP name1 = columnName;
             name1 += FDOSMLP_SI_COLUMN_1_NAME;
+            name1 = name1.Upper();
             FdoStringP name2 = columnName;
-            name2 += FDOSMLP_SI_COLUMN_1_NAME;
+            name2 += FDOSMLP_SI_COLUMN_2_NAME;
+            name2 = name2.Upper();
             if (NULL != columns->RefItem(name1) && NULL != columns->RefItem(name2))
                 hasSiColumns = true;
         }
