@@ -20,7 +20,7 @@
 #include "SchemaReader.h"
 #include "../Mgr.h"
 #include "../../../../SchemaMgr/Ph/Rd/QueryReader.h"
-#include "inc/rdbi/proto.h"
+#include "Inc/Rdbi/proto.h"
 
 FdoSmPhRdOdbcSchemaReader::FdoSmPhRdOdbcSchemaReader(FdoSmPhRowsP rows, FdoSmPhOwnerP owner, bool dsInfo) :
 	FdoSmPhRdSchemaReader(rows, owner, dsInfo),

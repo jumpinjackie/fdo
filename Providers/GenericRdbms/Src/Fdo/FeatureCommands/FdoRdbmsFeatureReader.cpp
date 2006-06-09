@@ -476,7 +476,7 @@ void  FdoRdbmsFeatureReader::FetchProperties ()
             if( primKey == NULL || type != FdoPropertyType_DataProperty )
                 throw "";
 
-            mAttrQueryCache[mAttrsQidIdx].statement = mConnection->GetGdbiConnection()->Prepare( (const wchar_t*)FdoStringP::Format(gql_query,tableName, primKey) );
+            mAttrQueryCache[mAttrsQidIdx].statement = mConnection->GetGdbiConnection()->Prepare( (const wchar_t*)FdoStringP::Format(gql_query,(FdoString *)tableName, primKey) );
             mAttrQueryCache[mAttrsQidIdx].statement->Bind( 1, &mFeatNum, NULL);
             FeatIdProp->Release();
         }

@@ -19,7 +19,7 @@
  */
 
 #include <Sm/Ph/Rd/SchemaReader.h>
-#include <inc/rdbi/context.h>
+#include <Inc/Rdbi/context.h>
 
 // This reader reads all of the feature schemas for the current datastore, when no MetaSchema
 // information is present. It returns a schema for each user that owns objects

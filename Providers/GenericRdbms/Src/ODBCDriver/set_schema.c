@@ -39,6 +39,7 @@
 #include	<Inc/debugext.h>
 #include "proto_p.h"
 #include <stdio.h>
+#include <wchar.h>
 
 /* Makes the given schema (SqlServer database) the current schema */
 int odbcdr_set_schemaW (

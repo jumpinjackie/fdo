@@ -75,9 +75,9 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
 	FdoStringP updateString;
 	const FdoSmLpPropertyDefinition *pDef = classDefinition->RefProperties()->RefItem(L"RevisionNumber");
 	if (pDef && revisionNumberUpdate)
-		updateString = FdoStringP::Format(L"update %ls set revisionnumber = revisionnumber+1, ", tableName );
+		updateString = FdoStringP::Format(L"update %ls set revisionnumber = revisionnumber+1, ", (FdoString *) tableName );
 	else
-		updateString = FdoStringP::Format(L"update %ls set ", tableName );
+		updateString = FdoStringP::Format(L"update %ls set ", (FdoString*) tableName );
 
     bool updateProperties = false;
     bool first = true;
