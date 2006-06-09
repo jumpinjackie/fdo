@@ -93,6 +93,9 @@ FdoDataType  FdoRdbmsUtil::DbiToFdoType( int type /* Inc/rdbi.h */ )
         case RDBI_STRING:
             fdotype = FdoDataType_String;
             break;
+        case RDBI_WSTRING:
+            fdotype = FdoDataType_String;
+            break;
         case RDBI_CHAR:
             fdotype = FdoDataType_String;
             break;
