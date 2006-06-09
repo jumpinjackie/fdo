@@ -1,7 +1,7 @@
 @echo off
 
 SET TYPEACTIONMYSQL=buildinstall
-SET MSACTIONMYSQL=Rebuild
+SET MSACTIONMYSQL=Build
 SET TYPEBUILDMYSQL=release
 SET FDOINSPATHMYSQL=\Fdo
 SET FDOBINPATHMYSQL=\Fdo\Bin
@@ -170,7 +170,7 @@ time /t
 exit /B 1
 
 :error
-echo There was a build error executing action: %MSACTIONFDO%
+echo There was a build error executing action: %MSACTIONMYSQL%
 time /t
 exit /B 1
 

@@ -1,7 +1,7 @@
 @echo off
 
 SET TYPEACTIONODBC=buildinstall
-SET MSACTIONODBC=Rebuild
+SET MSACTIONODBC=Build
 SET TYPEBUILDODBC=release
 SET FDOINSPATHODBC=\Fdo
 SET FDOBINPATHODBC=\Fdo\Bin
@@ -164,7 +164,7 @@ time /t
 exit /B 1
 
 :error
-echo There was a build error executing action: %MSACTIONFDO%
+echo There was a build error executing action: %MSACTIONODBC%
 time /t
 exit /B 1
 
