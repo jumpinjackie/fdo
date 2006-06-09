@@ -187,24 +187,51 @@ const char* FdoRdbmsMySqlConnection::FdoToDbiTime( FdoDateTime  when )
 {
     char *ret = GetDbiConnection()->GetUtility()->newCharP();
 
-    if ((0 != when.hour) || (0 != when.minute) || (0 != when.seconds))
-    {
-        // "1979-11-30 00:00:00"
-        sprintf (ret, "%4d-%02d-%02d %02d:%02d:%02d",
-            when.year,
-            when.month,
-            when.day,
-            when.hour,
-            when.minute,
-            when.seconds);
+	bool isDateSupplied = ((when.year != -1) || (when.month != -1) || (when.day != -1));
+    bool isValidDate    = isDateSupplied && ((when.year != -1) && (when.month != -1) && (when.day != -1));
+
+	bool isTimeSupplied = ((when.hour != -1) || (when.minute != -1));
+    bool isValidTime    = isTimeSupplied && ((when.hour != -1) && (when.minute != -1));
+
+	if ((isDateSupplied  && !isValidDate)    ||
+        (isTimeSupplied  && !isValidTime)    ||
+        (!isDateSupplied && !isTimeSupplied)    )
+		 throw FdoException::Create(NlsMsgGet(FDORDBMS_480,
+                                              "Incomplete date/time setting."));
+
+    if (isDateSupplied) 
+	{
+		if (!isTimeSupplied)
+		{
+			// "1979-11-30"
+			sprintf (ret, "%4d-%02d-%02d",
+				when.year,
+				when.month,
+				when.day);
+		}
+		else
+        {
+            // "1979-11-30 00:00:00"
+            sprintf (ret, "%4d-%02d-%02d %02d:%02d:%02.2f",
+                when.year,
+                when.month,
+                when.day,
+                when.hour,
+                when.minute,
+                when.seconds);
+        }
     }
     else
     {
-        // "1979-11-30"
-        sprintf (ret, "%4d-%02d-%02d",
-            when.year,
-            when.month,
-            when.day);
+		// MySQL accepts time only dates, but it needs the date fields too,
+		// otherwise time could be interpreted as date '2010-45-45' which is 
+		// illegal and therefore changed to '0000-00-00'.
+
+		// "0000-00-00 10:45:05"
+		sprintf (ret, "0000-00-00 %02d:%02d:%02.2f",
+				when.hour,
+				when.minute,
+				when.seconds);
     }
 
     return (ret);

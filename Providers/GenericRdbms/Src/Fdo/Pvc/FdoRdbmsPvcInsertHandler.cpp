@@ -843,6 +843,19 @@ void FdoRdbmsPvcInsertHandler::SetBindValues(const FdoSmLpClassDefinition *class
                 {
                     // FdoDataType_BLOB by ref. have NULL dataValue
                     int dataType = dataValue ? dataValue->GetDataType() : bind[j].type;
+                    // get the scale value for DOUBLE/DECIMAL types
+                    const FdoSmLpPropertyDefinitionCollection * propertyDefs = classDefinition->RefProperties();
+                    const FdoSmLpPropertyDefinition * propertyDef = propertyDefs->RefItem(bind[j].propertyName);
+                    const FdoSmLpSimplePropertyDefinition* simplePropDef =
+                        static_cast<const FdoSmLpSimplePropertyDefinition*>(propertyDef);
+
+                    int scale = -100; // -100 is not a valid scale value
+                    if (simplePropDef != NULL)
+                    {
+                        const FdoSmPhColumn *columnDef = simplePropDef->RefColumn();
+                        if (columnDef)
+                            scale = columnDef->GetScale();
+                    }
 
                     switch ( dataType )   {
                         case FdoDataType_Boolean:
@@ -871,7 +884,7 @@ void FdoRdbmsPvcInsertHandler::SetBindValues(const FdoSmLpClassDefinition *class
                         case FdoDataType_Decimal:
                             {
                                 double decimalValue = (static_cast<FdoDecimalValue*>(dataValue))->GetDecimal();
-                                sprintf((char*)bind[j].value.strvalue, "%.8f", decimalValue);
+                                sprintf((char*)bind[j].value.strvalue, "%.*f", (scale != -100) ? scale : 8, decimalValue);
                             }
                             break;
 
@@ -927,7 +940,7 @@ void FdoRdbmsPvcInsertHandler::SetBindValues(const FdoSmLpClassDefinition *class
                         case FdoDataType_Single:
                             {
                                 float singleValue = (static_cast<FdoSingleValue*>(dataValue))->GetSingle();
-                                sprintf((char*)bind[j].value.strvalue, "%.8f", singleValue);
+                                sprintf((char*)bind[j].value.strvalue, "%.*f", (scale != -100) ? scale : 8, singleValue);
                             }
                             break;
 

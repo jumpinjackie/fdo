@@ -87,7 +87,7 @@ int mysql_to_rdbi_type (enum enum_field_types type, int size, int precision)
     switch (type)
     {
         case MYSQL_TYPE_TINY:
-            ret = RDBI_DOUBLE; /* this should be fixed */
+            ret = RDBI_FIXED_CHAR;
             break;
         case MYSQL_TYPE_SHORT:
             ret = RDBI_DOUBLE; /* this should be fixed */
