@@ -156,6 +156,8 @@ public:
 
     void WriteSSIHeader();
 
+    void FlushNodeCache (BOOL writeModified);
+
 protected:
 
     // methods to create, read, and write the SSI header block
@@ -220,7 +222,6 @@ protected:
     ShpSpatialIndexNode *GetCachedNode (unsigned long ssiOffset) const;
     ShpSpatialIndexNode *GetLRUNode ();
     void UpdateLRUStamp ();
-    void FlushNodeCache (BOOL writeModified);
     void AllocateNode (unsigned nodeLevel, unsigned long &ssiOffset);
     void AddNodeToFreeList (ShpSpatialIndexNode *node);
     void InitializeNodeStack ();

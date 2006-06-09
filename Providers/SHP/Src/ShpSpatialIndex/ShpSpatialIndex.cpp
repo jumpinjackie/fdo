@@ -3088,6 +3088,9 @@ void ShpSpatialIndex::FlushNodeCache(BOOL writeModified)
 {
     // write out any modified nodes, and reinitialize each node 
 
+	if ( m_nodeCache == NULL )
+		return;
+
     for (int i = 0; i < NODE_CACHE_SIZE; i++)
     {
         if (writeModified && m_nodeCache[i]->m_nodeModified)

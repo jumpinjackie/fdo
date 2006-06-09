@@ -958,7 +958,14 @@ void ShpFileSet::ReopenFileset( FdoCommonFile::OpenFlags flags )
 			this->GetShapeIndexFile()->Reopen( flags );
 		
 		if (!this->GetSpatialIndex ()->IsReadOnly ())
+		{
+			if ( !this->GetSpatialIndex ()->IsTemporaryFile() ) 
+			{
+				this->GetSpatialIndex()->WriteSSIHeader();
+				this->GetSpatialIndex()->FlushNodeCache(TRUE);
+			}
 			this->GetSpatialIndex()->Reopen( flags );
+		}
 	}
 }
 
