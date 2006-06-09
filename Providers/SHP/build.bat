@@ -1,7 +1,7 @@
 @echo off
 
 SET TYPEACTIONSHP=buildinstall
-SET MSACTIONSHP=Rebuild
+SET MSACTIONSHP=Build
 SET TYPEBUILDSHP=release
 SET FDOORGPATHSHP=%cd%
 SET FDOINSPATHSHP=%cd%\Fdo
@@ -153,7 +153,7 @@ time /t
 exit /B 1
 
 :error
-echo There was a build error executing action: %MSACTIONFDO%
+echo There was a build error executing action: %MSACTIONSHP%
 time /t
 exit /B 1
 
