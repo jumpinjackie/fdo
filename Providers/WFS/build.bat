@@ -1,7 +1,7 @@
 @echo off
 
 SET TYPEACTIONWFS=buildinstall
-SET MSACTIONWFS=Rebuild
+SET MSACTIONWFS=Build
 SET TYPEBUILDWFS=release
 SET FDOORGPATHWFS=%cd%
 SET FDOINSPATHWFS=%cd%\Fdo
@@ -151,7 +151,7 @@ time /t
 exit /B 1
 
 :error
-echo There was a build error executing action: %MSACTIONFDO%
+echo There was a build error executing action: %MSACTIONWFS%
 time /t
 exit /B 1
 
