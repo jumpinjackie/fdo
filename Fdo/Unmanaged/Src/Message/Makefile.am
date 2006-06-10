@@ -26,7 +26,7 @@ $(CATALOGS_CAT) : $(CATDIR)/%.cat : %.msf
 	../../Inc/$(addsuffix _msg.h, $(basename $(notdir $<)))
 	@rm $(addsuffix _msg.h, $(basename $(notdir $<))) \
     	$(addsuffix .tmp, $(basename $(notdir $<)))
-	@mv ../../Inc/$(basename $(notdir $<))_msg.h ../../Inc/Fdo$(basename $(notdir $<)).h
+	@mv ../../Inc/$(basename $(notdir $<))_msg.h ../../Inc/FdoMessage.h
 
 %.msf : %.mc
 	@../McToMsf/McToMsf $(basename $(notdir $<)).mc $(basename $(notdir $<)).msf "*" FDO
