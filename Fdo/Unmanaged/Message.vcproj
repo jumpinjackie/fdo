@@ -185,7 +185,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Creating Library and Versioning FDOMessage.dll"
-				CommandLine="echo $(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.2.0.0%FDO_VERSION%&quot; -v&quot;..\SubDoc\Fdo.version&quot; $(OutDir)\FDOMessage.dll&#x0D;&#x0A;"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.2.0.0%FDO_VERSION%&quot; -v&quot;..\SubDoc\Fdo.version&quot; $(OutDir)\FDOMessage.dll&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -201,7 +201,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Performing Custom Build Step:  Building FdoMessage.h and Message.rc from FDOMessage.mc"
-					CommandLine="mc -U -h Inc\ -r Src\Message\ Src/Message/FDOMessage.mc&#x0D;&#x0A;ren Src\Message\Message.rc MessageDynamic.rc&#x0D;&#x0A;copy Src\Message\MessageStatic.rc+Src\Message\MessageDynamic.rc Src\Message\Message.rc&#x0D;&#x0A;del Src\Message\MessageDynamic.rc&#x0D;&#x0A;ren Inc\FDOMessage.h FdoMessage.h&#x0D;&#x0A;"
+					CommandLine="mc -U -h Inc\ -r Src\Message\ Src/Message/FDOMessage.mc&#x0D;&#x0A;ren Src\Message\FDOMessage.rc MessageDynamic.rc&#x0D;&#x0A;copy Src\Message\MessageStatic.rc+Src\Message\MessageDynamic.rc Src\Message\Message.rc&#x0D;&#x0A;del Src\Message\MessageDynamic.rc&#x0D;&#x0A;ren Inc\FDOMessage.h FdoMessage.h&#x0D;&#x0A;"
 					Outputs="Inc\FdoMessage.h;Src\Message\Message.rc"
 				/>
 			</FileConfiguration>
@@ -211,7 +211,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Performing Custom Build Step:  Building FdoMessage.h and Message.rc from FDOMessage.mc"
-					CommandLine="mc -U -h Inc\ -r Src\Message\ Src/Message/FDOMessage.mc&#x0D;&#x0A;ren Src\Message\Message.rc MessageDynamic.rc&#x0D;&#x0A;copy Src\Message\MessageStatic.rc+Src\Message\MessageDynamic.rc Src\Message\Message.rc&#x0D;&#x0A;del Src\Message\MessageDynamic.rc&#x0D;&#x0A;ren Inc\FDOMessage.h FdoMessage.h"
+					CommandLine="mc -U -h Inc\ -r Src\Message\ Src/Message/FDOMessage.mc&#x0D;&#x0A;ren Src\Message\FDOMessage.rc MessageDynamic.rc&#x0D;&#x0A;copy Src\Message\MessageStatic.rc+Src\Message\MessageDynamic.rc Src\Message\Message.rc&#x0D;&#x0A;del Src\Message\MessageDynamic.rc&#x0D;&#x0A;ren Inc\FDOMessage.h FdoMessage.h&#x0D;&#x0A;"
 					AdditionalDependencies=""
 					Outputs="Inc\FdoMessage.h;Src\Message\Message.rc"
 				/>
