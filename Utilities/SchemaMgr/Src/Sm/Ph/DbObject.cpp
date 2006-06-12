@@ -135,17 +135,16 @@ const FdoLockType* FdoSmPhDbObject::GetLockTypes(FdoInt32& size) const
 
 FdoStringsP FdoSmPhDbObject::GetRefColsSql()
 {
-    FdoInt32        i;
-    FdoSmPhColumnsP columns = GetColumns();
-    FdoStringsP     colClauses = FdoStringCollection::Create();
-
-    for ( i = 0; i < columns->GetCount(); i++ ) {
-        colClauses->Add( columns->GetItem(i)->GetDbName() );
-    }
-
-    return colClauses;
+    return _getRefColsSql( GetColumns() );
 }
-
+   
+FdoStringsP FdoSmPhDbObject::GetKeyColsSql( FdoSmPhColumnCollection* columns )
+{
+    // By Default, key column references have the same syntax as other 
+    // references, such as view column references.
+    return _getRefColsSql( columns );
+}
+   
 FdoStringP FdoSmPhDbObject::XMLSerializeProviderAtts() const
 {
     return FdoStringP::mEmptyString;
@@ -554,14 +553,30 @@ void FdoSmPhDbObject::LoadDependencies()
 			FdoSmPhDependencyP pDep = rdr->GetDependency(this);
 
 			// If this table is the pkey table then this is a down dependency.
-			if ( myName.ICompare(rdr->GetPkTableName()) == 0 )
+			if ( (myName == rdr->GetPkTableName()) ||
+                 (myName == GetManager()->GetDcDbObjectName(rdr->GetPkTableName()))
+            )
 				mDependenciesDown->Add( pDep );
 
 			// If this table is the fkey table then this is an up dependency.
-			if ( myName.ICompare(rdr->GetFkTableName()) == 0 )
+			if ( (myName == rdr->GetFkTableName()) ||
+                 (myName == GetManager()->GetDcDbObjectName(rdr->GetFkTableName()))
+            )
 				mDependenciesUp->Add( pDep );
 		}
     }
+}
+
+FdoStringsP FdoSmPhDbObject::_getRefColsSql( FdoSmPhColumnCollection* columns )
+{
+    FdoInt32        i;
+    FdoStringsP     colClauses = FdoStringCollection::Create();
+
+    for ( i = 0; i < columns->GetCount(); i++ ) {
+        colClauses->Add( columns->GetItem(i)->GetDbName() );
+    }
+
+    return colClauses;
 }
 
 void FdoSmPhDbObject::SetLtMode( FdoLtLockModeType mode )

@@ -467,15 +467,18 @@ bool FdoSmPhOwner::IsDbObjectNameReserved( FdoStringP objectName )
 
         FdoSmPhDbObjectP classDef = FindDbObject( GetManager()->GetDcDbObjectName(L"F_CLASSDEFINITION") );
         FdoSmPhDbObjectP attDef = FindDbObject( GetManager()->GetDcDbObjectName(L"F_ATTRIBUTEDEFINITION") );
+        FdoStringP localObjectName = GetManager()->DbObject2MetaSchemaName(objectName);
 
         if ( classDef && attDef ) {
 		    FdoStringP statement = 
 			    FdoStringP::Format( 
-				    L"select 1 from %ls where tablename = %ls union select 1 from %ls where tablename = %ls",
+				    L"select 1 from %ls where tablename in ( %ls, %ls ) union select 1 from %ls where tablename in ( %ls, %ls )",
 				    (FdoString*)(GetManager()->GetDcDbObjectName(L"F_CLASSDEFINITION")),
                     (FdoString*) GetManager()->FormatSQLVal(objectName, FdoSmPhColType_String),
+                    (FdoString*) GetManager()->FormatSQLVal(localObjectName, FdoSmPhColType_String),
                     (FdoString*)(GetManager()->GetDcDbObjectName(L"F_ATTRIBUTEDEFINITION")),
-				    (FdoString*) GetManager()->FormatSQLVal(objectName, FdoSmPhColType_String)
+				    (FdoString*) GetManager()->FormatSQLVal(objectName, FdoSmPhColType_String),
+				    (FdoString*) GetManager()->FormatSQLVal(localObjectName, FdoSmPhColType_String)
 			    );
 
 		    // Running a query for each table is not the most efficient way to do 

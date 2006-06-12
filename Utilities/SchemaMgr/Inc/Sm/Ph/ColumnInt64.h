@@ -39,19 +39,9 @@ public:
         return FdoSmPhColType_Int64;
     }
 
-    /// Default bind size
-    virtual int GetBindSize()
+    // Size in bytes.
+    virtual int GetBinarySize()
     {
-    /// pick a large size to be safe.
-    /// derived types must override when larger size required,
-        return sizeof(FdoInt64);
-    }
-
-    /// Default define size
-    virtual int GetDefineSize()
-    {
-    /// pick a large size to be safe.
-    /// derived types must override when larger size required,
         return sizeof(FdoInt64);
     }
 

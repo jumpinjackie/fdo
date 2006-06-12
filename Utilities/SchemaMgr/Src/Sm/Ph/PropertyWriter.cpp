@@ -235,7 +235,7 @@ void FdoSmPhPropertyWriter::SetScale( int iValue )
 
 void FdoSmPhPropertyWriter::SetTableName( FdoStringP sValue )
 {
-	SetString(L"", L"tablename", sValue);
+	SetString(L"", L"tablename", GetManager()->DbObject2MetaSchemaName(sValue));
 }
 
 void FdoSmPhPropertyWriter::SetRootObjectName( FdoStringP sValue )
@@ -243,9 +243,9 @@ void FdoSmPhPropertyWriter::SetRootObjectName( FdoStringP sValue )
     FdoSmPhFieldP pField = GetField( L"", L"rootobjectname" );
 
     if ( pField && pField->GetColumn() ) 
-    	SetString(L"", L"rootobjectname", sValue);
+    	SetString(L"", L"rootobjectname", GetManager()->DbObject2MetaSchemaName(sValue));
     else
-    	SetString(L"", L"roottablename", sValue);
+    	SetString(L"", L"roottablename", GetManager()->DbObject2MetaSchemaName(sValue));
 }
 
 void FdoSmPhPropertyWriter::SetUser( FdoStringP sValue )

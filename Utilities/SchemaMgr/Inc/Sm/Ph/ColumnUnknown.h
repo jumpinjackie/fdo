@@ -56,20 +56,16 @@ public:
 		return( mScale );
 	}
 
-    /// Length is likely sufficient for bind size but be conservative
-    /// and add scale.
-    virtual int GetBindSize()
+    // Estimated size in bytes.
+    virtual int GetBinarySize()
     {
-        return GetLength() + GetScale() + 1;
-    }
+        // Overestimate by adding lenght and scale plus 1
+        // If length is zero, best guess is default size.
 
-    /// Length is likely sufficient for bind size but be conservative
-    /// and add scale.
-    virtual int GetDefineSize()
-    {
-        return GetLength() + GetScale() + 1;
+        return (GetLength() > 0) ? 
+            GetLength() + GetScale() + 1 : 
+            FdoSmPhColumn::GetBinarySize();
     }
-
 
     virtual FdoStringP GetBestFdoType()
     {

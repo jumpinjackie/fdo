@@ -103,12 +103,12 @@ bool FdoSmPhClassReader::GetIsTableCreator()
 
 FdoStringP FdoSmPhClassReader::GetTableName()
 {
-	return(GetString(L"", L"tablename"));
+	return(GetManager()->GetRealDbObjectName(GetString(L"", L"tablename")));
 }
 
 FdoStringP FdoSmPhClassReader::GetRootTableName()
 {
-	return(GetString(L"", L"roottablename"));
+	return(GetManager()->GetRealDbObjectName(GetString(L"", L"roottablename")));
 }
 
 FdoStringP FdoSmPhClassReader::GetTableMapping()

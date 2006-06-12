@@ -573,6 +573,16 @@ FdoStringP FdoSmPhMgr::GetDcRdbmsObjectName( FdoStringP objectName )
     return objectName.Lower();
 }
 
+FdoStringP FdoSmPhMgr::GetRealDbObjectName( FdoStringP objectName)
+{
+    return objectName;
+}
+
+FdoStringP FdoSmPhMgr::DbObject2MetaSchemaName( FdoStringP objectName )
+{
+    return objectName;
+}
+
 FdoStringP FdoSmPhMgr::CensorDbObjectName( FdoStringP objName )
 {
     wchar_t* workString = (wchar_t*) alloca((objName.GetLength()+1) * sizeof(wchar_t));

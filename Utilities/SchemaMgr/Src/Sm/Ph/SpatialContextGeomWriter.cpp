@@ -60,7 +60,7 @@ void FdoSmPhSpatialContextGeomWriter::SetScId( FdoInt64 lValue)
 
 void FdoSmPhSpatialContextGeomWriter::SetGeomTableName( FdoStringP sValue )
 {
-	SetString(L"",  L"geomtablename", sValue );
+	SetString(L"",  L"geomtablename", GetManager()->DbObject2MetaSchemaName(sValue) );
 }
 
 void FdoSmPhSpatialContextGeomWriter::SetGeomColumnName( FdoStringP sValue )
@@ -80,20 +80,26 @@ void FdoSmPhSpatialContextGeomWriter::Add()
 
 void FdoSmPhSpatialContextGeomWriter::Modify( FdoStringP geomTableName, FdoStringP geomColumnName )
 {
+    FdoStringP localGeomTableName = GetManager()->DbObject2MetaSchemaName(geomTableName);
+
     FdoSmPhWriter::Modify(
    		FdoStringP::Format( 
-        L"where geomtablename = %ls and geomcolumnname = %ls",
+        L"where geomtablename in ( %ls, %ls ) and geomcolumnname = %ls",
         (FdoString *) GetManager()->FormatSQLVal(geomTableName,FdoSmPhColType_String), 
+        (FdoString *) GetManager()->FormatSQLVal(localGeomTableName,FdoSmPhColType_String), 
         (FdoString *) GetManager()->FormatSQLVal(geomColumnName,FdoSmPhColType_String) )
 	);
 }
 
 void FdoSmPhSpatialContextGeomWriter::Delete( FdoStringP geomTableName, FdoStringP geomColumnName )
 {
+    FdoStringP localGeomTableName = GetManager()->DbObject2MetaSchemaName(geomTableName);
+
     FdoSmPhWriter::Delete( 
         FdoStringP::Format(
-        L"where geomtablename = %ls and geomcolumnname = %ls",
+        L"where geomtablename in ( %ls, %ls ) and geomcolumnname = %ls",
         (FdoString *) GetManager()->FormatSQLVal(geomTableName,FdoSmPhColType_String), 
+        (FdoString *) GetManager()->FormatSQLVal(localGeomTableName,FdoSmPhColType_String), 
         (FdoString *) GetManager()->FormatSQLVal(geomColumnName,FdoSmPhColType_String) )
     );
 }

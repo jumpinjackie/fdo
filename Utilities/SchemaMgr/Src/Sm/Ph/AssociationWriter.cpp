@@ -82,7 +82,7 @@ FdoStringP FdoSmPhAssociationWriter::GetPseudoColumnName()
 
 void FdoSmPhAssociationWriter::SetPkTableName(FdoStringP sValue)
 {
-	SetString(L"", L"pktablename", sValue);
+	SetString(L"", L"pktablename", GetManager()->DbObject2MetaSchemaName(sValue));
 }
 
 void FdoSmPhAssociationWriter::SetPkColumnNames(FdoSmPhColumnListP sValues)
@@ -92,7 +92,7 @@ void FdoSmPhAssociationWriter::SetPkColumnNames(FdoSmPhColumnListP sValues)
 
 void FdoSmPhAssociationWriter::SetFkTableName(FdoStringP sValue)
 {
-	SetString(L"", L"fktablename", sValue);
+	SetString(L"", L"fktablename", GetManager()->DbObject2MetaSchemaName(sValue));
 }
 
 void FdoSmPhAssociationWriter::SetFkColumnNames(FdoSmPhColumnListP sValues)
@@ -137,22 +137,32 @@ void FdoSmPhAssociationWriter::Add()
 
 void FdoSmPhAssociationWriter::Modify( FdoStringP pkTableName, FdoStringP fkTableName )
 {
+    FdoStringP localPkTableName = GetManager()->DbObject2MetaSchemaName(pkTableName);
+    FdoStringP localFkTableName = GetManager()->DbObject2MetaSchemaName(fkTableName);
+
     FdoSmPhWriter::Modify(
         FdoStringP::Format( 
-            L"where pktablename = %ls and fktablename = %ls",
+            L"where pktablename in ( %ls, %ls ) and fktablename in ( %ls, %ls )",
             (FdoString*) GetManager()->FormatSQLVal(pkTableName,FdoSmPhColType_String),
-            (FdoString*) GetManager()->FormatSQLVal(fkTableName,FdoSmPhColType_String) 
+            (FdoString*) GetManager()->FormatSQLVal(localPkTableName,FdoSmPhColType_String),
+            (FdoString*) GetManager()->FormatSQLVal(fkTableName,FdoSmPhColType_String), 
+            (FdoString*) GetManager()->FormatSQLVal(localFkTableName,FdoSmPhColType_String) 
 		)
 	);
 }
 
 void FdoSmPhAssociationWriter::Delete( FdoStringP pkTableName, FdoStringP fkTableName )
 {
+    FdoStringP localPkTableName = GetManager()->DbObject2MetaSchemaName(pkTableName);
+    FdoStringP localFkTableName = GetManager()->DbObject2MetaSchemaName(fkTableName);
+
     FdoSmPhWriter::Delete(
         FdoStringP::Format( 
-            L"where pktablename = %ls and fktablename = %ls",
+            L"where pktablename in ( %ls, %ls ) and fktablename in ( %ls, %ls )",
             (FdoString*) GetManager()->FormatSQLVal(pkTableName,FdoSmPhColType_String),
-            (FdoString*) GetManager()->FormatSQLVal(fkTableName,FdoSmPhColType_String) 
+            (FdoString*) GetManager()->FormatSQLVal(localPkTableName,FdoSmPhColType_String),
+            (FdoString*) GetManager()->FormatSQLVal(fkTableName,FdoSmPhColType_String), 
+            (FdoString*) GetManager()->FormatSQLVal(localFkTableName,FdoSmPhColType_String) 
 		)
     );
 }

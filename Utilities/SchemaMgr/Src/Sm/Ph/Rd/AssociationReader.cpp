@@ -38,6 +38,7 @@ FdoSmPhRdAssociationReader::~FdoSmPhRdAssociationReader(void)
 bool FdoSmPhRdAssociationReader::ReadNext()
 {
     bool found = false;
+    int ix;
 
     while ( !IsEOF() && (!found) ) {
         mFkeyIdx++;
@@ -60,14 +61,26 @@ bool FdoSmPhRdAssociationReader::ReadNext()
                 FdoSmPhFieldP pField = pFrom->GetFields()->GetItem(L"fktablename");
                 pField->SetFieldValue( pPkeyTable->GetName() );
 
+                // quote delimit the key columns if they can contain
+                // spaces in their names.
+                FdoStringsP colList = FdoStringCollection::Create();
+                for ( ix = 0; ix < pFkey->GetPkeyColumns()->GetCount(); ix++ )
+                    colList->Add( FdoSmPhColumnP(pFkey->GetPkeyColumns()->GetItem(ix))->GetDbName() );
+
                 pField = pFrom->GetFields()->GetItem(L"fkcolumnnames");
-                pField->SetFieldValue( pFkey->GetPkeyColumns()->ToString() );
+                pField->SetFieldValue( colList->ToString(L" ") );
 
                 pField = pFrom->GetFields()->GetItem(L"pktablename");
                 pField->SetFieldValue( mpTable->GetName() );
 
+                // quote delimit the key columns if they can contain
+                // spaces in their names.
+                colList = FdoStringCollection::Create();
+                for ( ix = 0; ix < pFkey->GetFkeyColumns()->GetCount(); ix++ )
+                    colList->Add( FdoSmPhColumnP(pFkey->GetFkeyColumns()->GetItem(ix))->GetDbName() );
+
                 pField = pFrom->GetFields()->GetItem(L"pkcolumnnames");
-                pField->SetFieldValue( pFkey->GetFkeyColumns()->ToString() );
+                pField->SetFieldValue( colList->ToString(L" ") );
 
                 found = true;
             }

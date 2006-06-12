@@ -82,6 +82,33 @@ public:
     /// Returns NULL when size is 0.
 	virtual const FdoLockType* GetLockTypes(FdoInt32& size) const;
 
+    /// Get SQL "create table" statement.
+    virtual FdoStringP GetAddSql();
+
+    /// Get SQL "drop table" statement
+    virtual FdoStringP GetDeleteSql();
+
+    /// Get SQL "create table" heading
+    virtual FdoStringP GetAddHdgSql();
+
+    /// Get SQL "create table" column list
+    virtual FdoStringsP GetAddColsSql();
+
+    /// Get SQL clause for adding a single column
+    virtual FdoStringP GetAddColSql();
+
+    /// Get SQL clause for dropping a column
+    virtual FdoStringP GetDeleteColSql();
+
+    /// Get SQL for creating primary key on new table
+    FdoStringP GetAddPkeySql();
+
+    /// Get SQL for creating UNIQUE constraints on new table
+    FdoStringP GetAddUkeySql();
+
+    /// Get SQL for creating CHECK constraints on new table
+    FdoStringP GetAddCkeySql();
+
     /// Set the long transaction mode.
     /// Can only be changed on new tables.
     virtual void SetLtMode( FdoLtLockModeType mode );
@@ -204,33 +231,6 @@ protected:
 
     /// Commit modifications to columns
     virtual void CommitColumns( bool isBeforeParent );
-
-    /// Get SQL "create table" statement.
-    virtual FdoStringP GetAddSql();
-
-    /// Get SQL "drop table" statement
-    virtual FdoStringP GetDeleteSql();
-
-    /// Get SQL "create table" heading
-    virtual FdoStringP GetAddHdgSql();
-
-    /// Get SQL "create table" column list
-    virtual FdoStringsP GetAddColsSql();
-
-    /// Get SQL clause for adding a single column
-    virtual FdoStringP GetAddColSql();
-
-    /// Get SQL clause for dropping a column
-    virtual FdoStringP GetDeleteColSql();
-
-    /// Get SQL for creating primary key on new table
-    FdoStringP GetAddPkeySql();
-
-    /// Get SQL for creating UNIQUE constraints on new table
-    FdoStringP GetAddUkeySql();
-
-    /// Get SQL for creating CHECK constraints on new table
-    FdoStringP GetAddCkeySql();
 
     /// Autogenerate a unique primary key name for this table.
 	virtual FdoStringP GenPkeyName();

@@ -42,7 +42,7 @@ FdoSmLpObjectPropertyDefinition::FdoSmLpObjectPropertyDefinition(
 	mpDependency(NULL),
     mbFixedDbObject(propReader->GetIsFixedColumn()),
     mbDbObjectCreator(propReader->GetIsColumnCreator()),
-    mRootDbObjectName(propReader->GetRootObjectName())
+    mRootDbObjectName(GetLogicalPhysicalSchema()->GetPhysicalSchema()->GetRealDbObjectName(propReader->GetRootObjectName()))
 {
 }
 

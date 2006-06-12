@@ -95,7 +95,7 @@ FdoStringP FdoSmPhColumnList::GetDbString( FdoInt32 idx )
 {
     FdoStringP delim;
 
-    if ( !(mMgr->IsRdbObjNameAscii7()) )
+    if ( mMgr->SupportsAnsiQuotes() )
         delim = "\"";
 
     return delim + GetString(idx) + delim;
@@ -105,13 +105,11 @@ FdoStringP FdoSmPhColumnList::ToString( const wchar_t* separator )
 {
     FdoStringP retVal;
     FdoStringP sep;
-    FdoStringP delim;
-
-    if ( !(mMgr->IsRdbObjNameAscii7()) )
-        delim = "\"";
 
     for ( int i = 0; i < GetCount(); i++ ) {
-        retVal += sep + GetDbString(i);
+        retVal += sep + 
+            (mMgr->IsRdbObjNameAscii7() ? 
+                FdoStringP(GetString(i)) : GetDbString(i));
         sep = separator;
     }
 
@@ -122,7 +120,7 @@ FdoStringP FdoSmPhColumnList::ToString( const wchar_t* separator )
 #if 0
 FdoStringCollection* FdoStringsP::operator=( FdoStringCollection* src )
 {
-    GIS_SAFE_RELEASE(p);
+    FDO_SAFE_RELEASE(p);
     p = src;
     return p;
 }

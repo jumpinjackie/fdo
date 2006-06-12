@@ -145,7 +145,7 @@ FdoStringP FdoSmPhPropertyReader::GetDefaultValue()
 
 FdoStringP FdoSmPhPropertyReader::GetTableName()
 {
-	return(GetString(L"", L"tablename"));
+	return(GetManager()->GetRealDbObjectName(GetString(L"", L"tablename")));
 }
 
 FdoStringP FdoSmPhPropertyReader::GetRootObjectName()

@@ -51,7 +51,7 @@ FdoSmPhAssociationReader::~FdoSmPhAssociationReader(void)
 
 FdoStringP FdoSmPhAssociationReader::GetPkTableName()
 {
-	return(GetString(L"", L"pktablename"));
+	return(GetManager()->GetRealDbObjectName(GetString(L"", L"pktablename")));
 }
 
 FdoSmPhColumnListP FdoSmPhAssociationReader::GetPkColumnNames()
@@ -62,7 +62,7 @@ FdoSmPhColumnListP FdoSmPhAssociationReader::GetPkColumnNames()
 
 FdoStringP FdoSmPhAssociationReader::GetFkTableName()
 {
-	return(GetString(L"", L"fktablename"));
+	return(GetManager()->GetRealDbObjectName(GetString(L"", L"fktablename")));
 }
 
 FdoSmPhColumnListP FdoSmPhAssociationReader::GetFkColumnNames()

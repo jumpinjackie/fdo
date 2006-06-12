@@ -154,12 +154,12 @@ void FdoSmPhClassWriter::SetDescription( FdoStringP sValue )
 
 void FdoSmPhClassWriter::SetTableName( FdoStringP sValue )
 {
-	SetString(L"",  L"tablename", sValue );
+	SetString(L"",  L"tablename", GetManager()->DbObject2MetaSchemaName(sValue) );
 }
 
 void FdoSmPhClassWriter::SetRootTableName( FdoStringP sValue )
 {
-	SetString(L"",  L"roottablename", sValue );
+	SetString(L"",  L"roottablename", GetManager()->DbObject2MetaSchemaName(sValue) );
 }
 
 void FdoSmPhClassWriter::SetTableMapping(FdoStringP sValue)

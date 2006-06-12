@@ -109,21 +109,38 @@ public:
         return L"";
     }
 
-    /// Default bind size
+    /// Default size for bind variables for this column
     virtual int GetBindSize()
+    {
+        // By default it is the column's binary size
+        return GetBinarySize();
+    }
+   
+    /// Default size for when this column is defined as
+    /// a retrieval field in a query.
+    virtual int GetDefineSize()
+    {
+        // By default it is the column's binary size
+        return GetBinarySize();
+    }
+
+    /// Default binary size. Maximum size of values in
+    /// memory for this column. Measured in bytes.
+    virtual int GetBinarySize()
     {
     /// pick a large size to be safe.
     /// derived types must override when larger size required,
         return 50;
     }
 
-    /// Default define size
-    virtual int GetDefineSize()
+    /// Default binary size. Maximum space required for 
+    /// column values in the DBMS.
+    virtual FdoInt64 GetDbBinarySize()
     {
-    /// pick a large size to be safe.
-    /// derived types must override when larger size required,
-        return 50;
+        // Same as size in memory by default.
+        return GetBinarySize();
     }
+
 
     /// Returns the RDBI type for this column
     virtual int GetRdbType() = 0;

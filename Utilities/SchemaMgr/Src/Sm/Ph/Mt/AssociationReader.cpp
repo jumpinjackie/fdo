@@ -50,11 +50,14 @@ FdoSmPhMtAssociationReader::~FdoSmPhMtAssociationReader(void)
 
 FdoSmPhReaderP FdoSmPhMtAssociationReader::MakeReader( FdoSmPhMgrP mgr, FdoSmPhRowsP rows, long classId, FdoStringP fkTableName )
 {
+    FdoStringP localFkTableName = mgr->DbObject2MetaSchemaName(fkTableName);
+
     // Generate the where clause
 	FdoStringP where = FdoStringP::Format( 
-        L"where f_associationdefinition.pktablename = f_classdefinition.tablename and f_classdefinition.classid = %d and fktablename = %ls", 
+        L"where f_associationdefinition.pktablename = f_classdefinition.tablename and f_classdefinition.classid = %d and fktablename in ( %ls, %ls )", 
         classId, 
-        (FdoString*) (mgr->FormatSQLVal(fkTableName,FdoSmPhColType_String)) 
+        (FdoString*) (mgr->FormatSQLVal(fkTableName,FdoSmPhColType_String)), 
+        (FdoString*) (mgr->FormatSQLVal(localFkTableName,FdoSmPhColType_String)) 
     );
 
     // Create a query reader to wrap around
@@ -67,28 +70,37 @@ FdoSmPhReaderP FdoSmPhMtAssociationReader::MakeReader( FdoSmPhMgrP mgr, FdoSmPhR
 {
 	FdoStringP where;
 
+    FdoStringP localPkTableName = mgr->DbObject2MetaSchemaName(pkTableName);
+    FdoStringP localFkTableName = mgr->DbObject2MetaSchemaName(fkTableName);
+
     // Generate the where clause
     if ( pkTableName.GetLength() == 0 ) 
 		where = FdoStringP::Format( 
-            L" where fktablename = %ls", 
-            (FdoString*) (mgr->FormatSQLVal(fkTableName,FdoSmPhColType_String)) 
+            L" where fktablename in ( %ls, %ls )", 
+            (FdoString*) (mgr->FormatSQLVal(fkTableName,FdoSmPhColType_String)),
+            (FdoString*) (mgr->FormatSQLVal(localFkTableName,FdoSmPhColType_String)) 
         );
 	else if ( fkTableName.GetLength() == 0 ) 
 		where = FdoStringP::Format( 
-            L" where pktablename = %ls", 
-            (FdoString*) (mgr->FormatSQLVal(pkTableName,FdoSmPhColType_String)) 
+            L" where pktablename in ( %ls, %ls )", 
+            (FdoString*) (mgr->FormatSQLVal(pkTableName,FdoSmPhColType_String)), 
+            (FdoString*) (mgr->FormatSQLVal(localPkTableName,FdoSmPhColType_String)) 
         );
 	else if ( bAnd ) 
 		where = FdoStringP::Format( 
-            L" where pktablename = %ls and fktablename = %ls", 
+            L" where pktablename in ( %ls, %ls ) and fktablename in ( %ls, %ls )", 
             (FdoString*) (mgr->FormatSQLVal(pkTableName,FdoSmPhColType_String)), 
-            (FdoString*) (mgr->FormatSQLVal(fkTableName,FdoSmPhColType_String)) 
+            (FdoString*) (mgr->FormatSQLVal(localPkTableName,FdoSmPhColType_String)), 
+            (FdoString*) (mgr->FormatSQLVal(fkTableName,FdoSmPhColType_String)), 
+            (FdoString*) (mgr->FormatSQLVal(localFkTableName,FdoSmPhColType_String)) 
         );
 	else 
 		where = FdoStringP::Format( 
-            L" where pktablename = %ls or fktablename = %ls", 
+            L" where pktablename in ( %ls, %ls ) or fktablename in ( %ls, %ls )", 
             (FdoString*) (mgr->FormatSQLVal(pkTableName,FdoSmPhColType_String)), 
-            (FdoString*) (mgr->FormatSQLVal(fkTableName,FdoSmPhColType_String)) 
+            (FdoString*) (mgr->FormatSQLVal(localPkTableName,FdoSmPhColType_String)), 
+            (FdoString*) (mgr->FormatSQLVal(fkTableName,FdoSmPhColType_String)), 
+            (FdoString*) (mgr->FormatSQLVal(localFkTableName,FdoSmPhColType_String)) 
         );
 
     // Create a query reader to wrap around

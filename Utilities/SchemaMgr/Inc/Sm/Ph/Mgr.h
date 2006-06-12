@@ -451,7 +451,7 @@ public:
     /// Get the provider-specific SQL format for a bind field.
     /// pos is 0-based.
     virtual FdoStringP FormatBindField( int pos ) = 0;    
-    
+
     virtual bool SupportsAnsiQuotes();
 
     virtual bool IsRdbUnicode() = 0;
@@ -484,6 +484,15 @@ public:
     virtual FdoStringP GetDcColumnName( FdoStringP columnName );
 
     virtual FdoStringP GetDcRdbmsObjectName( FdoStringP columnName );
+
+    // Given a database object name, returns the actual name it would
+    // have in the RDBMS.
+    // returns the given name unaltered by default
+    virtual FdoStringP GetRealDbObjectName( FdoStringP objectName );
+
+    // Given a database object name, return the name as it appears in 
+    // MetaSchema tables. 
+    virtual FdoStringP DbObject2MetaSchemaName( FdoStringP objectName );
 
     /// Censor a database object name. Only alphanumeric characters 
     /// ( or '_' or '$' ) are allowed in a table or column name.

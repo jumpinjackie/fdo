@@ -228,6 +228,9 @@ public:
     /// Get list of columns as references into a string collection
     virtual FdoStringsP GetRefColsSql();
 
+    // Generate key column SQL clauses for the given columns.
+    virtual FdoStringsP GetKeyColsSql( FdoSmPhColumnCollection* columns );
+
     /// Gather all errors for this element and child elements into a chain of exceptions.
     /// Adds each error as an exception, to the given exception chain and returns
     /// the chain.
@@ -256,6 +259,9 @@ protected:
     );
 
 	virtual ~FdoSmPhDbObject(void);
+
+    // Utility function for generating SQL clauses for referencing given columns.
+    FdoStringsP _getRefColsSql( FdoSmPhColumnCollection* columns );
 
     virtual void SetLtMode( FdoLtLockModeType mode );
 

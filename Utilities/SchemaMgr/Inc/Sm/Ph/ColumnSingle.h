@@ -39,17 +39,9 @@ public:
         return FdoSmPhColType_Single;
     }
 
-    /// Default bind size
-    virtual int GetBindSize()
+    // Size in bytes
+    virtual int GetBinarySize()
     {
-        return sizeof(float);
-    }
-
-    /// Default define size
-    virtual int GetDefineSize()
-    {
-    /// pick a large size to be safe.
-    /// derived types must override when larger size required,
         return sizeof(float);
     }
 

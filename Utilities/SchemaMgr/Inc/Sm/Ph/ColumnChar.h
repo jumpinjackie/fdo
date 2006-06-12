@@ -49,17 +49,20 @@ public:
     /// Number of characters plus 1 for null terminator.
     virtual int GetBindSize()
     {
-        return GetLength() + 1;
+        return GetBinarySize() + 1;
     }
 
     /// Default define size
     virtual int GetDefineSize()
     {
-    /// pick a large size to be safe.
-    /// derived types must override when larger size required,
-        return GetLength() + 1;
+        return GetBinarySize() + 1;
     }
 
+    // Size in number of characters.
+    virtual int GetBinarySize()
+    {
+        return GetLength();
+    }
 
     virtual FdoStringP GetBestFdoType()
     {

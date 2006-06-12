@@ -475,7 +475,7 @@ void FdoSmPhTable::CommitColumns( bool isBeforeParent )
 
     FdoSmPhColumnsP columns = GetColumns();
 
-    for ( i = 0; i < columns->GetCount(); i++ ) {
+    for ( i = (columns->GetCount() - 1); i >= 0; i-- ) {
         FdoSmPhColumnP column = columns->GetItem(i);
 
         FdoSchemaElementState colState = column->GetElementState();
@@ -603,32 +603,12 @@ FdoStringP FdoSmPhTable::GetAddPkeySql()
 {
     FdoInt32            i;
     FdoSmPhColumnsP     pkeyColumns = GetPkeyColumns();
-    FdoStringsP         pkColNames = FdoStringCollection::Create();
     FdoStringP          pkeySql;
-	bool				autoincrColAdded = false;
     bool                ansiQuotes = GetManager()->SupportsAnsiQuotes();
 
     if ( pkeyColumns->GetCount() > 0 ) {
-	    for ( i = 0; i < pkeyColumns->GetCount(); i++ )
-		{
-			FdoSmPhColumnP	pkeyColumn = pkeyColumns->GetItem(i);
-	        pkColNames->Add( pkeyColumn->GetDbName() );
-			if ( !autoincrColAdded && pkeyColumn->GetAutoincrement() )
-				autoincrColAdded = true;
-		}
-
-		// Add the autoincremented column as a primary key
-		if ( !autoincrColAdded )
-		{
-			FdoSmPhColumnsP columns = GetColumns();
-			for ( i = 0; i < columns->GetCount(); i++ )
-			{
-				FdoSmPhColumnP	column = columns->GetItem(i);
-				if ( column->GetAutoincrement() )
-					pkColNames->Add( column->GetDbName() );
-			}		
-		}
-
+        FdoStringsP pkColNames = GetKeyColsSql( pkeyColumns );
+        
         pkeySql = FdoStringP::Format( 
             L"constraint %ls%ls%ls primary key ( %ls )",
             ansiQuotes ? L"\"" : L"",
@@ -653,13 +633,9 @@ FdoStringP FdoSmPhTable::GetAddUkeySql()
 		for ( int i = 0; i < count; i++ )	{
 
 			FdoSmPhColumnsP     ukeyColumns = ukeyColumnsColl->GetItem(i);
-			FdoStringsP			ukColNames = FdoStringCollection::Create();
 
 			if ( ukeyColumns->GetCount() > 0 ) {
-				for ( int j = 0; j < ukeyColumns->GetCount(); j++ )	{
-					FdoSmPhColumnP	ukeyColumn = ukeyColumns->GetItem(j);
-					ukColNames->Add( ukeyColumn->GetName() );
-				}
+    			FdoStringsP ukColNames = GetKeyColsSql( ukeyColumns );
 
 				ukeySql = FdoStringP::Format( 
 					L"UNIQUE (%ls)",

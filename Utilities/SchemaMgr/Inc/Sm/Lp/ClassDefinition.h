@@ -484,6 +484,9 @@ protected:
     /// Add unique constraints to the class table if it doesn't already have one.
 	void CreateUkeys();
 
+    // Instantiate a new unique key.
+    virtual void NewUkey( FdoSmPhTableP table, FdoSmLpDataPropertiesP pProps );
+
     /// Add constraints to the class table.
 	void CreateCkeys();
 

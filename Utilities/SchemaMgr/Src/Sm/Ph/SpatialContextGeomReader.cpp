@@ -38,7 +38,7 @@ FdoInt64 FdoSmPhSpatialContextGeomReader::GetScId()
 
 FdoStringP FdoSmPhSpatialContextGeomReader::GetGeomTableName()
 {
-	return(GetString(L"", L"geomtablename"));
+	return(GetManager()->GetRealDbObjectName(GetString(L"", L"geomtablename")));
 }
 
 FdoStringP FdoSmPhSpatialContextGeomReader::GetGeomColumnName()
