@@ -639,6 +639,7 @@
 						Name="VCCustomBuildTool"
 						Description="Performing fake install"
 						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;"
+						AdditionalDependencies="providers.xml"
 						Outputs="$(OutDir)\providers.xml"
 					/>
 				</FileConfiguration>
@@ -649,6 +650,7 @@
 						Name="VCCustomBuildTool"
 						Description="Performing fake install"
 						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;"
+						AdditionalDependencies="providers.xml "
 						Outputs="$(OutDir)\providers.xml"
 					/>
 				</FileConfiguration>
