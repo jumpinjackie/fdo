@@ -122,6 +122,8 @@ protected:
 
     virtual bool SetSchemaMappings( FdoPhysicalClassMappingP classMapping, bool bIncludeDefaults ) const;
 
+    virtual void SetPkeyMapping( FdoRdbmsOvTable* tableMapping, FdoSmPhDbObjectP dbObject ) const;
+
     // Add generic physical overrides to write to MetaSchema
     virtual void SetPhysicalAddWriter( FdoSmPhClassWriterP writer );
 
@@ -139,6 +141,8 @@ protected:
     // Adds LtId to the primary key when this class has the LtId property.
     virtual void NewPkey( FdoSmPhTableP table );
 
+    // Adds LtId to a new unique key when this class has the LtId property.
+    virtual void NewUkey( FdoSmPhTableP table, FdoSmLpDataPropertiesP pProps );
 };
 
 typedef FdoPtr<FdoSmLpGrdClassDefinition> FdoSmLpGrdClassDefinitionP;

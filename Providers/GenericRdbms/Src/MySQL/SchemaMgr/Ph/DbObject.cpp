@@ -80,6 +80,98 @@ FdoStringP FdoSmPhMySqlDbObject::GetDbQName() const
     return ( ((const FdoSmPhDbElement*)GetParent())->GetDbName() + L"." + GetDbName() );
 }
 
+FdoStringsP FdoSmPhMySqlDbObject::GetKeyColsSql( FdoSmPhColumnCollection* columns )
+{
+    FdoInt32        i;
+    FdoStringsP     colClauses = FdoStringCollection::Create();
+    FdoInt32        colMaxLen = mColTruncMinLen;  // Start at smallest allowed truncated length
+    FdoInt32        largeColCount = 0;
+    FdoInt32        prevLargeColCount = 0;
+    FdoInt32        smallColTotal = 0;
+
+    for ( ; ; ) {
+        smallColTotal = 0;
+        largeColCount = 0;
+
+        // The following loop calculates 2 things:
+        //  - number of large columns that need to be truncated
+        //  - total size of columns not requiring truncation
+
+        for ( i = 0; i < columns->GetCount(); i++ ) {
+            FdoSmPhColumnP column = columns->GetItem(i);
+            FdoInt64 colSize = column->GetDbBinarySize();
+            
+            if ( colSize <= colMaxLen )
+                smallColTotal += (FdoInt32) colSize;
+            else
+                largeColCount++;
+        }
+
+        if ( (largeColCount == 0) || (largeColCount == prevLargeColCount) ) 
+            // No large columns or number of large columns 
+            // has not decreased, so we're ready to generate 
+            // the key column clause
+            break;
+
+        // Increase the truncation length to the maximum possible:
+        // (max_key_size - space_for_small_columns) / #large_columns
+        colMaxLen = (FdoInt32)((mKeyMaxLen - smallColTotal) / largeColCount);
+
+  /* TODO Add error message when more can be added to catalogue.
+ * for now, just let MySQL report constraints that are to big.
+        if ( colMaxLen < mColTruncMinLen ) {
+            //TODO: add an error
+            return colClauses;
+        }
+*/
+        // The truncation length must not exceed the maximum. 
+        if ( colMaxLen > mColTruncMaxLen ) {
+            colMaxLen = mColTruncMaxLen;
+            break;
+        }
+
+        prevLargeColCount = largeColCount;
+
+        // Truncation length increase can cause large column
+        // count to decrease. Loop again to recalculate 
+        // large column count. Keep going until large column
+        // count stabilizes.
+    }
+
+    // Generate key column clause for each column.
+    for ( i = 0; i < columns->GetCount(); i++ ) {
+        FdoSmPhColumnP column = columns->GetItem(i);
+
+        // Initially assume no truncation required.
+        FdoInt32 constrColLen = 0;
+
+        if ( (largeColCount > 0) && (column->GetDbBinarySize() > colMaxLen) )
+            // Truncating and column needs to be truncated
+            constrColLen = colMaxLen;
+        else if ( (column->GetType() == FdoSmPhColType_String) && (column->GetTypeName().ICompare(L"varchar") != 0) )
+            // text key columns always need length specified since 
+            // maximum length for various text types is greater
+            // than maximum key length. In this case we don't 
+            // actually truncate, just set the length explicitly.
+            constrColLen = column->GetLength();
+            
+        if ( constrColLen > 0  )
+            // Generate key column clause with length specification
+            colClauses->Add( 
+                FdoStringP::Format( 
+                    L"%ls(%d)",
+                    (FdoString*)(columns->GetItem(i)->GetDbName()),
+                    constrColLen
+                )
+            );
+        else
+            // No length specification needed.
+            colClauses->Add( (FdoString*)(columns->GetItem(i)->GetDbName()) );
+    }
+
+    return colClauses;
+}
+
 void FdoSmPhMySqlDbObject::ActivateOwnerAndExecute( FdoStringP sqlStmt )
 {
     FdoSmPhMySqlOwner*        objOwner       = static_cast<FdoSmPhMySqlOwner*>((FdoSmPhSchemaElement*) GetParent());

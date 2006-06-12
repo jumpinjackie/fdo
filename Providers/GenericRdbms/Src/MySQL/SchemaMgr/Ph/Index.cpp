@@ -51,7 +51,7 @@ bool FdoSmPhMySqlIndex::Add()
         GetIsUnique() ? L"unique " : L"",
         (FdoString*) GetDbName(),
         (FdoString*) table->GetDbQName(),
-        (FdoString*) GetRefColsSql()->ToString( L", " )
+        (FdoString*) GetKeyColsSql(GetColumns())->ToString( L", " )
     );
 
     // MySql does not allow qualified name for index to create.

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2004-2006  Autodesk, Inc.
  * 
  * This library is free software; you can redistribute it and/or
@@ -103,7 +103,13 @@ FdoPtr<FdoSmPhRdConstraintReader> FdoSmPhOdbcOwner::CreateConstraintReader( FdoS
 
 FdoStringP FdoSmPhOdbcOwner::GetBestSchemaName() const
 {
-    return ( wcslen(GetName()) > 0 ) ? GetName() : L"Default";
+    return ( wcslen(GetName()) > 0 ) ? 
+        GisStringP(GetName())
+// TODO: It is currently not possible to bulk copy
+// a schema named "Default" to the Shape Provider.
+// In the meantime, default the schema name to "Fdo".
+//        : L"Default";
+        : FdoSmPhMgr::RdSchemaPrefix;
 }
 
 bool FdoSmPhOdbcOwner::Add()

@@ -48,7 +48,7 @@ bool FdoSmPhGrdIndex::Add()
         GetIsUnique() ? L"unique " : L"",
         (FdoString*) GetDDLQName(),
         (FdoString*) table->GetDDLQName(),
-        (FdoString*) GetRefColsSql()->ToString( L", " )
+        (FdoString*) GetKeyColsSql(GetColumns())->ToString( L", " )
     );
 
     table->ExecuteDDL( sqlStmt );

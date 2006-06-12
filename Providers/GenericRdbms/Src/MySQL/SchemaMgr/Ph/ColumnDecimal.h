@@ -63,7 +63,13 @@ public:
 
     virtual int GetMaxScale() const;
 
+    // Calculates size in Datastore based on total number of digits
+    virtual FdoInt64 GetDbBinarySize();
+
 protected:
+    // Calculates size in Datastore based on given number of digits
+    FdoInt64 Digits2DbBinarySize( FdoInt32 digits );
+
     int mScale;
 };
 

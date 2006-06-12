@@ -481,8 +481,8 @@ void FdoRdbmsFilterProcessor::ProcessIdentifier( FdoIdentifier& expr, bool useOu
                             for( int j=0; j<pkCols->GetCount(); j++ )
                             {
                                 AddNewTableRelation(
-                                            pkTable, pkCols->RefItem(j)->GetName(),
-                                            fkTable, fkCols->RefItem(j)->GetName(), useOuterJoin
+                                            pkTable, pkCols->RefItem(j)->GetDbName(),
+                                            fkTable, fkCols->RefItem(j)->GetDbName(), useOuterJoin
                                             );
                             }
 							AddNewClass( currentClass );

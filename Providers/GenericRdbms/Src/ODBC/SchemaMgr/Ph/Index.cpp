@@ -51,7 +51,7 @@ bool FdoSmPhOdbcIndex::Add()
         GetIsUnique() ? L"unique " : L"",
         (FdoString*) GetName(),
         (FdoString*) table->GetDbQName(),
-        (FdoString*) GetRefColsSql()->ToString( L", " )
+        (FdoString*) GetKeyColsSql(GetColumns())->ToString( L", " )
     );
 
     // Odbc does not allow qualified name for index to create.

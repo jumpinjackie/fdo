@@ -62,6 +62,8 @@ public:
     virtual FdoPtr<FdoSmPhRdIndexReader> CreateIndexReader() const;
 
 private:
+    FdoSmPhMySqlTable() {};
+
     virtual bool Add();
     virtual bool Modify();
     virtual bool Delete();

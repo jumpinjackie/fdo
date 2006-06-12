@@ -45,6 +45,21 @@ public:
     static FdoString* StorageEngineEnumToString(MySQLOvStorageEngineType storageEngine);
     static MySQLOvStorageEngineType StorageEngineStringToEnum(FdoString* storageEngine);
 
+    // Minimum truncation length for constraint columns.
+    // A starting value that is always lower than any truncation length
+    // that will be applied
+    static const FdoInt32 mColTruncMinLen = 50;
+
+    // Maximum truncation length for a constraint column. 
+    // This was found by trial and error.
+    // The actual maximum found was 767 but cut back to 760 to be 
+    // cautious.
+    // TODO: find out why this is so much smaller than the 
+    // maximum constraint length.
+    static const FdoInt32 mColTruncMaxLen = 760;
+
+    // For MyISAM tables, unique constraint max length is 1000.
+    static const FdoInt32 mKeyMaxLen = 1000;
 
 protected:
     // Constructs an instance of a database object.
@@ -60,6 +75,13 @@ protected:
     FdoSmPhMySqlDbObject() {}
 
     virtual ~FdoSmPhMySqlDbObject(void);
+
+    // Get list of constraint columns as references into a string collection.
+    // MySQL has a maximum constraint size so this function truncates the 
+    // larger columns, if necessary, to ensure that the constraint size is
+    // within the maximum. Only the constraint key values are truncated,
+    // not the column values themselves.
+    virtual FdoStringsP GetKeyColsSql( FdoSmPhColumnCollection* columns );
 
     // MySQL does not allow "create index" or "drop view" statements to reference
     // the index by qualified name. This function handles switching the current schema

@@ -97,6 +97,14 @@ bool FdoSmLpGrdClassDefinition::SetSchemaMappings( FdoPhysicalClassMappingP clas
     return bHasMappings;
 }
 
+void FdoSmLpGrdClassDefinition::SetPkeyMapping( FdoRdbmsOvTable* tableMapping, FdoSmPhDbObjectP dbObject ) const
+{
+    FdoSmPhTableP phTable = dbObject->GetLowestRootObject().p->SmartCast<FdoSmPhTable>();
+
+    if ( phTable ) 
+        tableMapping->SetPKeyName( phTable->GetPkeyName() );
+}
+
 void FdoSmLpGrdClassDefinition::Update(
     FdoClassDefinition* pFdoClass,
     FdoSchemaElementState elementState,
@@ -191,7 +199,7 @@ void FdoSmLpGrdClassDefinition::UpdateTable( FdoStringP database, FdoStringP own
         }
 
         // Set actual table name if overridden.
-        if ( ovTableName != L"" ) {
+        if ( (ovTableName != L"") && (Get_TableMapping() != FdoSmOvTableMappingType_BaseTable) ) {
             SetDbObjectName( ovTableName );
             SetIsFixedDbObject( true );
         }
@@ -247,3 +255,19 @@ void FdoSmLpGrdClassDefinition::NewPkey( FdoSmPhTableP table )
     if ( pLtIdProp ) 
         table->AddPkeyCol( pLtIdProp->GetColumnName() );
 }
+
+void FdoSmLpGrdClassDefinition::NewUkey( FdoSmPhTableP table, FdoSmLpDataPropertiesP pProps )
+{
+    FdoSmLpClassBase::NewUkey( table, pProps );
+
+	FdoSmPhBatchColumnsP    ukeys = table->GetUkeyColumns(); 
+    
+    // When the class has an LtId property, its column must be added
+    // to the unique key.
+    const FdoSmLpDataPropertyDefinition* pLtIdProp = 
+        FdoSmLpDataPropertyDefinition::Cast( GetProperties()->RefItem(FdoSmLpGrdDataPropertyDefinition::LtIdName) );
+
+    if ( pLtIdProp ) 
+        table->AddUkeyCol( ukeys->GetCount() - 1, pLtIdProp->GetColumnName() );
+}
+

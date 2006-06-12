@@ -47,6 +47,12 @@ public:
         return RDBI_BLOB_REF;
     }
 
+    virtual FdoInt64 GetDbBinarySize()
+    {
+        // Mysql longblob size limit is 2^32 bytes
+        return 4294967296;
+    }
+
     ~FdoSmPhMySqlColumnBLOB(void) {}
 private:
 

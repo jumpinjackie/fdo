@@ -48,6 +48,12 @@ public:
     {
         return RDBI_DATE;
     }
+
+    virtual FdoInt64 GetDbBinarySize()
+    {
+        return 8;
+    }
+
 };
 
 typedef FdoPtr<FdoSmPhMySqlColumnDate> FdoSmPhMySqlColumnDateP;
