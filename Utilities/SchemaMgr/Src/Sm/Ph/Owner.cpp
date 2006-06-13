@@ -25,6 +25,9 @@
 #include <Sm/Ph/Rd/DbObjectReader.h>
 #include <Sm/Ph/Rd/CoordSysReader.h>
 #include <Sm/Ph/Rd/ConstraintReader.h>
+#include <Sm/Ph/Rd/FkeyReader.h>
+#include <Sm/Ph/Rd/IndexReader.h>
+#include <Sm/Ph/Rd/PkeyReader.h>
 #include <Sm/Ph/OptionsReader.h>
 #include <Sm/Ph/SchemaReader.h>
 
@@ -35,7 +38,8 @@ FdoSmPhOwner::FdoSmPhOwner(
     const FdoSmPhDatabase* pDatabase,
 	FdoSchemaElementState elementState
 ) : 
-    FdoSmPhDbElement(name, (FdoSmPhMgr*) NULL, pDatabase, elementState )
+    FdoSmPhDbElement(name, (FdoSmPhMgr*) NULL, pDatabase, elementState ),
+    mDbObjectsCached(false)
 {
     SetHasMetaSchema( hasMetaSchema );
     mLtMode = NoLtLock;
@@ -108,9 +112,9 @@ void FdoSmPhOwner::SetLtMode( FdoLtLockModeType LtMode )
 	mLtMode = LtMode;
 }
 
-FdoLtLockModeType FdoSmPhOwner::GetLtMode()
+FdoLtLockModeType FdoSmPhOwner::GetLtMode() const
 {
-    LoadLtLck();
+    ((FdoSmPhOwner*)this)->LoadLtLck();
 
 	return mLtMode;
 }
@@ -122,9 +126,9 @@ void FdoSmPhOwner::SetLckMode( FdoLtLockModeType LckMode )
 	mLckMode = LckMode;
 }
 
-FdoLtLockModeType FdoSmPhOwner::GetLckMode()
+FdoLtLockModeType FdoSmPhOwner::GetLckMode() const
 {
-    LoadLtLck();
+    ((FdoSmPhOwner*)this)->LoadLtLck();
 
 	return mLckMode;
 }
@@ -246,6 +250,20 @@ FdoPtr<FdoSmPhRdCoordSysReader> FdoSmPhOwner::CreateCoordSysReader( FdoStringP c
     return new FdoSmPhRdCoordSysReader();
 }
 
+FdoPtr<FdoSmPhRdFkeyReader> FdoSmPhOwner::CreateFkeyReader() const
+{
+    return (FdoSmPhRdFkeyReader*) NULL;
+}
+
+FdoPtr<FdoSmPhRdIndexReader> FdoSmPhOwner::CreateIndexReader() const
+{
+    return (FdoSmPhRdIndexReader*) NULL;
+}
+
+FdoPtr<FdoSmPhRdPkeyReader> FdoSmPhOwner::CreatePkeyReader() const
+{
+    return (FdoSmPhRdPkeyReader*) NULL;
+}
 
 FdoSmPhTableP FdoSmPhOwner::CreateTable(
     FdoStringP tableName,
@@ -296,6 +314,67 @@ FdoSmPhViewP FdoSmPhOwner::CreateView(
     GetDbObjects()->Add(view);
 
     return( view->SmartCast<FdoSmPhView>() );
+}
+
+FdoSmPhDbObjectsP FdoSmPhOwner::CacheDbObjects( bool cacheComponents )
+{
+    // skip if all objects already cached.
+    if ( !mDbObjectsCached ) {
+        mDbObjectsCached = true;
+
+        FdoSmPhRdDbObjectReaderP objReader;
+        FdoSmPhRdConstraintReaderP ukeyReader;
+        FdoSmPhRdConstraintReaderP ckeyReader;
+        FdoSmPhRdFkeyReaderP fkeyReader;
+        FdoSmPhRdIndexReaderP indexReader;
+        FdoSmPhRdPkeyReaderP pkeyReader;
+
+        // Create reader for owner's db objects
+        objReader = CreateDbObjectReader();
+
+        if ( cacheComponents ) {
+            // Caching db object components so create readers for components.
+            // This function does interleaved fetches from each reader so all readers
+            // (including dbObject reader) must return rows ordered by dbObject name.
+            //
+            // Doing a single query per owner for each component is more efficient than
+            // a query per dbObject.
+            ukeyReader = CreateConstraintReader( L"", L"U" );
+            ckeyReader = CreateConstraintReader( L"", L"C" );
+            fkeyReader = CreateFkeyReader();
+            indexReader = CreateIndexReader();
+            pkeyReader = CreatePkeyReader();
+        }
+
+        while ( objReader->ReadNext() ) {
+            // Cache the current dbObject
+            FdoSmPhDbObjectP dbObject = CacheDbObject( objReader );
+
+            if ( dbObject && cacheComponents ) {
+                // Load the components into the db object.
+                FdoSmPhTableP table = dbObject->SmartCast<FdoSmPhTable>();
+
+                if ( table ) {
+                    if ( ukeyReader ) 
+                        table->CacheUkeys( ukeyReader );
+
+                    if ( ckeyReader ) 
+                        table->CacheCkeys( ckeyReader );
+
+                    if ( fkeyReader ) 
+                        table->CacheFkeys( fkeyReader );
+
+                    if ( indexReader ) 
+                        table->CacheIndexes( indexReader );
+
+                    if ( pkeyReader ) 
+                        table->CachePkeys( pkeyReader );
+                }
+            }
+        }
+    }
+
+    return GetDbObjects();
 }
 
 FdoSmPhDbObjectP FdoSmPhOwner::CacheDbObject(

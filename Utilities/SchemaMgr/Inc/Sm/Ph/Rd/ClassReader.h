@@ -68,7 +68,8 @@ private:
     FdoBoolean mKeyedOnly;
 
     FdoSmPhOwnerP mOwner;
-    FdoSmPhRdDbObjectReaderP mObjReader;
+    FdoSmPhDbObjectsP mDbObjects;
+    FdoInt32   mCurrDbObject;
 
     FdoBoolean      m_IsGeometryFromOrdinatesWanted;
 };

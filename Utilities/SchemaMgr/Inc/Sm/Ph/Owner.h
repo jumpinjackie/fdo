@@ -83,10 +83,10 @@ public:
 
     /// Long Transaction and Locking methods set/get
 	void SetLtMode( FdoLtLockModeType LtMode );
-	FdoLtLockModeType  GetLtMode();
+	FdoLtLockModeType  GetLtMode() const;
 
 	void SetLckMode( FdoLtLockModeType LckMode );
-	FdoLtLockModeType GetLckMode();
+	FdoLtLockModeType GetLckMode() const;
 
     /// Given a lock mode, return an array of all lock types supported for this mode.
     /// The list depends on the current RDBMS.
@@ -125,12 +125,23 @@ public:
     /// Create a reader to get one or more coordinate system(s) for this owner.
     virtual FdoPtr<FdoSmPhRdCoordSysReader> CreateCoordSysReader( FdoStringP csysName = L"") const;
 
-    /// Create a reader to get all constraints for this owner.
-    /// TODO: add flag to cache objects.
+    /// Create a reader to get a constraint by name
     virtual FdoPtr<FdoSmPhRdConstraintReader> CreateConstraintReader( FdoStringP constraintName ) const = 0;
  
     /// Create a reader to get all constraints for this owner and this table.
     virtual FdoPtr<FdoSmPhRdConstraintReader> CreateConstraintReader( FdoStringP tableName, FdoStringP constraintType ) const = 0;
+
+    // Create a reader to get all foreign keys (ordered by foreign table) for this owner.
+    // Default implementation returns NULL (not supported).
+    virtual FdoPtr<FdoSmPhRdFkeyReader> CreateFkeyReader() const;
+
+    // Create a reader to get all indexes (ordered by table) for this owner
+    // Default implementation returns NULL (not supported).
+    virtual FdoPtr<FdoSmPhRdIndexReader> CreateIndexReader() const;
+
+    // Create a reader to get all primary keys (ordered by table) for this owner
+    // Default implementation returns NULL (not supported).
+    virtual FdoPtr<FdoSmPhRdPkeyReader> CreatePkeyReader() const;
 
     /// Create a new table. Table is not posted to the datastore until its Commit() function
     /// is called.
@@ -147,6 +158,14 @@ public:
         FdoStringP rootOwner,
         FdoStringP rootObjectName
     );
+
+    // read and cache all objects for this owner. This function providers the best performance
+    // when all objects for the owner need to be accessed.
+    //
+    // Parameters:
+    //  cacheComponents: if true, cache each object's components (primary key, foreign
+    //  keys, indexes).
+    FdoSmPhDbObjectsP CacheDbObjects( bool cacheComponents );
 
     /// Given a DbObject reader, add its current database object to 
     /// this owner's cache.
@@ -240,6 +259,7 @@ private:
     /// Load the long transaction and locking settings.
     void LoadLtLck();
 
+    bool mDbObjectsCached;            // true if all db objects have been cached.
 	FdoSmPhDbObjectsP mDbObjects;
 	FdoStringsP mReservedDbObjectNames;
     FdoStringP mPassword;

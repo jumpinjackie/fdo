@@ -20,6 +20,7 @@
 #include <Sm/Ph/Rd/ClassReader.h>
 #include <Sm/Ph/Table.h>
 #include <Sm/Ph/SpatialIndex.h>
+#include <Sm/Ph/Rd/QueryReader.h>
 
 bool FdoSmPhRdClassReader::IsOrdinate(FdoSmPhColumnP column)
 {
@@ -50,13 +51,16 @@ FdoSmPhRdClassReader::FdoSmPhRdClassReader(
 	FdoSmPhReader(mgr, froms),
     mKeyedOnly(keyedOnly),
     m_IsGeometryFromOrdinatesWanted(mgr->IsGeometryFromOrdinatesWanted()),
-    mSchemaName(schemaName)
+    mSchemaName(schemaName),
+    mCurrDbObject(-1)
 {
     // Get the RDBMS Schema
     mOwner = mgr->FindOwner(owner, database, false);
     if ( mOwner ) {
-        // Create a reader to read all objects from the RDBMS Schema
-        mObjReader = mOwner->CreateDbObjectReader();
+        // Cache all of the objects from the given owner.
+        // This pre-load provides better performance than 
+        // caching each object individually.
+        mDbObjects = mOwner->CacheDbObjects(true);
 
         FdoSmPhRowP row = froms->GetItem(0);
 
@@ -75,33 +79,30 @@ FdoSmPhRdClassReader::~FdoSmPhRdClassReader(void)
 bool FdoSmPhRdClassReader::ReadNext()
 {
     FdoStringP objectName;
-    FdoSmPhDbObjType objectType;
     FdoStringP classifiedObjectName;
     int eof = IsEOF() ? 1 : 0;
     bool found = false;
 
     // Keep going until we find a valid table or run out of objects
     while ( !eof && !found  ) {
+        mCurrDbObject++;
 
-        if ( (!mObjReader) || (!mObjReader->ReadNext()) ) {
+        if ( (!mDbObjects) || (mCurrDbObject >= mDbObjects->GetCount()) ) {
             eof = true;
             SetEOF(true);
         }
         else {
-            // Cache each object to prevent re-reading it as it is 
-            // processed.
-            mOwner->CacheDbObject( mObjReader );
-            objectName = mObjReader->GetString(L"", L"name");
-            objectType = mObjReader->GetType();
+            // Get the current object and determine whether table or view 
+            FdoSmPhDbObjectP pObject = mDbObjects->GetItem( mCurrDbObject );
+            objectName = pObject->GetName();
+            FdoSmPhTableP pTable = pObject->SmartCast<FdoSmPhTable>();
+            FdoSmPhViewP pView = pObject->SmartCast<FdoSmPhView>();
 
             // Only classification of tables or views is supported
-            if ( (objectType == FdoSmPhDbObjType_Table) ||
-                 (objectType == FdoSmPhDbObjType_View)
-            ) {
+            if ( pTable || pView ) {
                 // Check if class can be generated from this table or view.
-                classifiedObjectName = ClassifyObject( objectName, objectType );
+                classifiedObjectName = ClassifyObject( objectName, pTable ? FdoSmPhDbObjType_Table : FdoSmPhDbObjType_View );
                 if ( classifiedObjectName.GetLength() > 0 ) {
-                    FdoSmPhDbObjectP pObject = mOwner->GetDbObject( objectName );
                     found = true;
 
                     FdoSmPhColumnsP cols = pObject->GetColumns();

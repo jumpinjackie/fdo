@@ -79,6 +79,11 @@ FdoSmPhDbObjectP FdoSmPhDbObject::GetLowestRootObject()
     return FDO_SAFE_ADDREF(this);
 }
 
+FdoStringP FdoSmPhDbObject::GetDDLName() const
+{
+    return GetDbName();
+}
+
 FdoStringP FdoSmPhDbObject::GetDDLQName() const
 {
     return GetDbQName();

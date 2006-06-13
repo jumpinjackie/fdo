@@ -30,10 +30,13 @@
 
 class FdoSmPhMgr;
 class FdoSmPhOwner;
+class FdoSmPhReader;
 class FdoSmPhRdPkeyReader;
 class FdoSmPhRdFkeyReader;
 class FdoSmPhRdConstraintReader;
 class FdoSmPhRdIndexReader;
+class FdoSmPhTableComponentReader;
+class FdoSmPhTableIndexReader;
 
 // Table represents a table in the database.
 class FdoSmPhTable : virtual public FdoSmPhDbObject
@@ -159,6 +162,21 @@ public:
     /// Drops the table whether or not it has data.
     void ForceDelete();
 
+    // Load this table's unique constraints from the given reader
+    virtual void CacheUkeys( FdoPtr<FdoSmPhRdConstraintReader> rdr );
+
+    // Load this table's check constraints from the given reader
+    virtual void CacheCkeys( FdoPtr<FdoSmPhRdConstraintReader> rdr );
+
+    // Load this table's foreign keys from the given reader
+    virtual void CacheFkeys( FdoPtr<FdoSmPhRdFkeyReader> rdr );
+
+    // Load this table's indexes from the given reader
+    virtual void CacheIndexes( FdoPtr<FdoSmPhRdIndexReader> rdr );
+
+    // Load this table's primary key from the given reader
+    virtual void CachePkeys( FdoPtr<FdoSmPhRdPkeyReader> rdr );
+
     /// Gather all errors for this element and child elements into a chain of exceptions.
     /// Adds each error as an exception, to the given exception chain and returns
     /// the chain.
@@ -194,7 +212,7 @@ protected:
 
     /// Add an index from an index reader
     FdoSmPhIndexP CreateIndex(
-        FdoPtr<FdoSmPhRdIndexReader> rdr
+        FdoPtr<FdoSmPhTableIndexReader> rdr
     );
 
     /// Readers for Primary Key, Constraints, Foreign Keys and Indexes.
@@ -243,16 +261,36 @@ protected:
 private:
     /// Load Primary Key if not yet loaded
     void LoadPkeys();
+    void LoadPkeys( FdoPtr<FdoSmPhReader> pkeyRdr );
     /// Load Foreign Keys if not yet loaded
     void LoadFkeys();
+    void LoadFkeys( FdoPtr<FdoSmPhReader> fkeyRdr );
     /// Load Unique Keys if not yet loaded
 	void LoadUkeys();
+	void LoadUkeys( FdoPtr<FdoSmPhReader> ukeyRdr );
     /// Load Check Keys if not yet loaded
 	void LoadCkeys();
+	void LoadCkeys( FdoPtr<FdoSmPhReader> ckeyRdr );
 	
     /// Load Indexes if not yet loaded
     void LoadIndexes();
+    void LoadIndexes( FdoPtr<FdoSmPhTableIndexReader> indexRdr );
 	
+    // Create new unique constraint group reader
+    virtual FdoPtr<FdoSmPhTableComponentReader> NewTableUkeyReader( FdoPtr<FdoSmPhRdConstraintReader> rdr );
+
+    // Create new check constraint group reader
+    virtual FdoPtr<FdoSmPhTableComponentReader> NewTableCkeyReader( FdoPtr<FdoSmPhRdConstraintReader> rdr );
+
+    // Create new foreign key group reader
+    virtual FdoPtr<FdoSmPhTableComponentReader> NewTableFkeyReader( FdoPtr<FdoSmPhRdFkeyReader> rdr );
+
+    // Create new index group reader
+    virtual FdoPtr<FdoSmPhTableIndexReader> NewTableIndexReader( FdoPtr<FdoSmPhRdIndexReader> rdr );
+
+    // Create new primary key group reader
+    virtual FdoPtr<FdoSmPhTableComponentReader> NewTablePkeyReader( FdoPtr<FdoSmPhRdPkeyReader> rdr );
+
     void AddPkeyColumnError(FdoStringP columnName);
     void AddFkeyColumnError(FdoStringP columnName);
 	void AddUkeyColumnError(FdoStringP columnName);

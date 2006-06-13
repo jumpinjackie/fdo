@@ -157,11 +157,12 @@ bool FdoSmLpFeatureClass::IsGeomInMetaschema()
  	FdoSmPhMgrP         pPhysical           = GetLogicalPhysicalSchema()->GetPhysicalSchema();
     FdoSmPhDbObjectP    pClassTable;
 
-    if (pPhysical->GetOwner()->GetHasMetaSchema())
-        pClassTable = pPhysical->FindDbObject(L"f_classdefinition");
+    if (pPhysical->GetOwner()->GetHasMetaSchema()) {
+        pClassTable = pPhysical->FindDbObject(pPhysical->GetDcDbObjectName(L"f_classdefinition"));
 
-    if ( pClassTable ) 
-        bGeomInMetaschema = (pClassTable->GetColumns()->RefItem(L"geometryproperty") != NULL);
+        if ( pClassTable ) 
+            bGeomInMetaschema = (pClassTable->GetColumns()->RefItem(pPhysical->GetDcColumnName(L"geometryproperty")) != NULL);
+    }
 
     return( bGeomInMetaschema );
 }
@@ -171,16 +172,7 @@ void FdoSmLpFeatureClass::XMLSerializeSubElements(  FILE* xmlFp, int ref ) const
 	if ( RefGeometryProperty() ) 
 		fprintf( xmlFp, "<geometryProperty>%ls</geometryProperty>\n",RefGeometryProperty()->GetName() );
 }
-/*
-FdoSmPhTable* FdoSmLpFeatureClass::NewTable( 
-    FdoString* tableName, 
-    FdoString* pkeyName,
-    FdoString* tablespace
-)
-{
-	return( Get_LogicalPhysicalSchema()->Get_PhysicalSchema()->NewTable( tableName, 'p', pkeyName, tablespace ) );
-}
-*/
+
 void FdoSmLpFeatureClass::PostFinalize()
 {
 	int i;

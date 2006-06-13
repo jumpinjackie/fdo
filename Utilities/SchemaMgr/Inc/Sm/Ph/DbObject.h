@@ -82,6 +82,9 @@ public:
     /// Get the database-specific qualified name for this database object.
     virtual FdoStringP GetDbQName() const = 0;
 
+    // Get unqualified name for use in DDL statements
+    virtual FdoStringP GetDDLName() const;
+
     /// Get the name for referencing this database object in DDL statements.
     /// By default, this function returns the same thing as GetDbQName.
     virtual FdoStringP GetDDLQName() const;

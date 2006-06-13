@@ -18,6 +18,7 @@
 
 #include "stdafx.h"
 #include <Sm/Ph/Table.h>
+#include <Sm/Ph/TableComponentReader.h>
 #include <Sm/Ph/Mgr.h>
 #include <Sm/Ph/Rd/PkeyReader.h>
 #include <Sm/Ph/Rd/FkeyReader.h>
@@ -366,6 +367,56 @@ void FdoSmPhTable::ForceDelete()
     }
 }
 
+void FdoSmPhTable::CacheUkeys( FdoSmPhRdConstraintReaderP rdr )
+{
+    // Do nothing if unique constraints already loaded
+	if ( !mUkeysCollection ) {
+        mUkeysCollection = new FdoSmPhBatchColumnCollection();
+
+        LoadUkeys( NewTableUkeyReader(rdr)->SmartCast<FdoSmPhReader>() );
+    }
+}
+
+void FdoSmPhTable::CacheCkeys( FdoSmPhRdConstraintReaderP rdr )
+{
+    // Do nothing if check constraints already loaded
+	if ( !mCkeysCollection ) {
+		mCkeysCollection = new FdoSmPhCheckConstraintCollection();
+
+        LoadCkeys( NewTableCkeyReader(rdr)->SmartCast<FdoSmPhReader>() );
+    }
+}
+
+void FdoSmPhTable::CacheFkeys( FdoSmPhRdFkeyReaderP rdr )
+{
+    // Do nothing if foreign keys already loaded.
+    if ( !mFkeysUp ) {
+        mFkeysUp = new FdoSmPhFkeyCollection();
+
+        LoadFkeys( NewTableFkeyReader(rdr)->SmartCast<FdoSmPhReader>() );
+    }
+}
+
+void FdoSmPhTable::CacheIndexes( FdoSmPhRdIndexReaderP rdr )
+{
+    // Do nothing if indexes already loaded
+	if ( !mIndexes ) {
+        mIndexes = new FdoSmPhIndexCollection();
+
+        LoadIndexes( NewTableIndexReader(rdr) );
+    }
+}
+
+void FdoSmPhTable::CachePkeys( FdoSmPhRdPkeyReaderP rdr )
+{
+    // Do nothing if primary key already loaded
+	if ( !mPkeyColumns ) {
+        mPkeyColumns = new FdoSmPhColumnCollection();
+
+        LoadPkeys( NewTablePkeyReader(rdr)->SmartCast<FdoSmPhReader>() );
+    }
+}
+
 FdoSchemaExceptionP FdoSmPhTable::Errors2Exception(FdoSchemaException* pFirstException ) const
 {
     FdoInt32 i;
@@ -601,7 +652,6 @@ FdoStringP FdoSmPhTable::GetDeleteColSql()
 
 FdoStringP FdoSmPhTable::GetAddPkeySql()
 {
-    FdoInt32            i;
     FdoSmPhColumnsP     pkeyColumns = GetPkeyColumns();
     FdoStringP          pkeySql;
     bool                ansiQuotes = GetManager()->SupportsAnsiQuotes();
@@ -698,23 +748,28 @@ void FdoSmPhTable::LoadPkeys(void)
         if ( GetElementState() != FdoSchemaElementState_Added ) {
             FdoPtr<FdoSmPhRdPkeyReader> pkeyRdr = CreatePkeyReader();
 
-            // read each primary key column.
-            while (pkeyRdr->ReadNext() ) {
-    	        mPkeyName = pkeyRdr->GetString(L"", L"constraint_name");
-                FdoStringP columnName = pkeyRdr->GetString(L"",L"column_name");
-
-                FdoSmPhColumnP pkeyColumn = GetColumns()->GetItem( columnName );
-
-    	        if ( pkeyColumn == NULL ) {
-                    // Primary Key column must be in this table.
-			        if ( GetElementState() != FdoSchemaElementState_Deleted )
-				        AddPkeyColumnError( columnName );
-		        }
-		        else {
-			        mPkeyColumns->Add(pkeyColumn);
-		        }
-            }
+            LoadPkeys( pkeyRdr->SmartCast<FdoSmPhReader>() );
         }
+    }
+}
+
+void FdoSmPhTable::LoadPkeys( FdoSmPhReaderP pkeyRdr )
+{
+    // read each primary key column.
+    while (pkeyRdr->ReadNext() ) {
+        mPkeyName = pkeyRdr->GetString(L"", L"constraint_name");
+        FdoStringP columnName = pkeyRdr->GetString(L"",L"column_name");
+
+        FdoSmPhColumnP pkeyColumn = GetColumns()->GetItem( columnName );
+
+        if ( pkeyColumn == NULL ) {
+            // Primary Key column must be in this table.
+            if ( GetElementState() != FdoSchemaElementState_Deleted )
+		        AddPkeyColumnError( columnName );
+	    }
+	    else {
+	        mPkeyColumns->Add(pkeyColumn);
+	    }
     }
 }
 
@@ -734,42 +789,49 @@ void FdoSmPhTable::LoadUkeys()
 			FdoSmPhOwner* pOwner = static_cast<FdoSmPhOwner*>((FdoSmPhSchemaElement*) GetParent());
 			FdoPtr<FdoSmPhRdConstraintReader> ukeyRdr = pOwner->CreateConstraintReader(GetName(), L"U");
 
-			FdoStringP		 ckeyNameCurr;
-			FdoSmPhColumnsP  ukeysCurr;
-
-            // read each unique key.
-            while (ukeyRdr->ReadNext() ) {
-
-    	        FdoStringP ckeyName			= ukeyRdr->GetString(L"", L"constraint_name");
-                FdoStringP columnName		= ukeyRdr->GetString(L"", L"column_name");
-
-                FdoSmPhColumnP ukeyColumn = GetColumns()->GetItem( columnName );
-
-                // Unique Key column must be in this table.
-    	        if ( ukeyColumn == NULL ) {
-			        if ( GetElementState() != FdoSchemaElementState_Deleted )
-				        AddUkeyColumnError( columnName );
-		        }
-
-				// The subcollection is identified by the common ckeyName.
-				// The columns will be grouped this way.
-				if ( ckeyName != ckeyNameCurr ) {
-					if ( ukeysCurr )
-						mUkeysCollection->Add( ukeysCurr ); // save the last group
-
-					// Start a new subcollection
-					ukeysCurr = new FdoSmPhColumnCollection();
-				}		
-				ukeysCurr->Add( ukeyColumn );
-
-				ckeyNameCurr = ckeyName;		
-            }
-
-			// Add the last group
-			if ( ukeysCurr )
-				mUkeysCollection->Add( ukeysCurr );
+            LoadUkeys( ukeyRdr->SmartCast<FdoSmPhReader>() );
         }
     }
+}
+
+
+void FdoSmPhTable::LoadUkeys( FdoSmPhReaderP ukeyRdr )
+{
+    FdoStringP		 ckeyNameCurr;
+    FdoSmPhColumnsP  ukeysCurr;
+
+    // read each unique key.
+    while (ukeyRdr->ReadNext() ) {
+
+        FdoStringP ckeyName			= ukeyRdr->GetString(L"", L"constraint_name");
+        FdoStringP columnName		= ukeyRdr->GetString(L"", L"column_name");
+
+        FdoSmPhColumnP ukeyColumn = GetColumns()->GetItem( columnName );
+
+        // Unique Key column must be in this table.
+        if ( ukeyColumn == NULL ) {
+		    if ( GetElementState() != FdoSchemaElementState_Deleted )
+		        AddUkeyColumnError( columnName );
+        }
+
+		// The subcollection is identified by the common ckeyName.
+		// The columns will be grouped this way.
+		if ( ckeyName != ckeyNameCurr ) {
+			if ( ukeysCurr )
+		    	mUkeysCollection->Add( ukeysCurr ); // save the last group
+
+			// Start a new subcollection
+			ukeysCurr = new FdoSmPhColumnCollection();
+		}		
+		
+        ukeysCurr->Add( ukeyColumn );
+
+		ckeyNameCurr = ckeyName;		
+    }
+
+	// Add the last group
+	if ( ukeysCurr )
+		mUkeysCollection->Add( ukeysCurr );
 }
 
 void FdoSmPhTable::LoadCkeys()
@@ -787,30 +849,36 @@ void FdoSmPhTable::LoadCkeys()
 			FdoSmPhOwner* pOwner = static_cast<FdoSmPhOwner*>((FdoSmPhSchemaElement*) GetParent());
 			FdoPtr<FdoSmPhRdConstraintReader> ckeyRdr = pOwner->CreateConstraintReader(GetName(), L"C");
 
+
 			// MySql provider does not support CHECK() and the reader is NULL
-
-            // read each primary key column.
-            while (ckeyRdr && ckeyRdr->ReadNext() ) {
-
-    	        FdoStringP ckeyName			= ckeyRdr->GetString(L"", L"constraint_name");
-                FdoStringP columnName		= ckeyRdr->GetString(L"", L"column_name");
-				FdoStringP clause			= ckeyRdr->GetString(L"", L"check_clause");
-
-				if ( clause == L"" || clause.Contains(L"NOT NULL"))
-					continue;
-
-                FdoSmPhColumnP ckeyColumn = GetColumns()->GetItem( columnName );
-
-                // Cheked column must be in this table.
-    	        if ( ckeyColumn == NULL ) {
-			        if ( GetElementState() != FdoSchemaElementState_Deleted )
-				        AddCkeyColumnError( columnName );
-		        }
-
-				FdoSmPhCheckConstraint  *pConstr = new FdoSmPhCheckConstraint( ckeyName, columnName, clause );
-			    mCkeysCollection->Add( pConstr );
-            }
+            if ( ckeyRdr ) 
+                LoadCkeys( ckeyRdr->SmartCast<FdoSmPhReader>() );
         }
+    }
+}
+
+void FdoSmPhTable::LoadCkeys( FdoSmPhReaderP ckeyRdr )
+{
+    // read each check constraint column.
+    while (ckeyRdr && ckeyRdr->ReadNext() ) {
+
+        FdoStringP ckeyName			= ckeyRdr->GetString(L"", L"constraint_name");
+        FdoStringP columnName		= ckeyRdr->GetString(L"", L"column_name");
+    	FdoStringP clause			= ckeyRdr->GetString(L"", L"check_clause");
+
+		if ( clause == L"" || clause.Contains(L"NOT NULL"))
+			continue;
+
+        FdoSmPhColumnP ckeyColumn = GetColumns()->GetItem( columnName );
+
+        // Cheked column must be in this table.
+    	if ( ckeyColumn == NULL ) {
+		    if ( GetElementState() != FdoSchemaElementState_Deleted )
+		        AddCkeyColumnError( columnName );
+		}
+
+		FdoSmPhCheckConstraint  *pConstr = new FdoSmPhCheckConstraint( ckeyName, columnName, clause );
+		mCkeysCollection->Add( pConstr );
 	}
 }
 
@@ -823,44 +891,50 @@ void FdoSmPhTable::LoadFkeys(void)
 
         // Skip load for new tables
         if ( GetElementState() != FdoSchemaElementState_Added ) {
-            FdoStringP                  nextFkey;
-            FdoSmPhFkeyP                fkey;
             FdoPtr<FdoSmPhRdFkeyReader> fkeyRdr = CreateFkeyReader();
 
-            // Read each foreign key and column
-            while ( fkeyRdr->ReadNext() ) {
-                nextFkey = fkeyRdr->GetString(L"",L"constraint_name");
-
-                if ( !fkey || (nextFkey != fkey->GetName()) ) {
-                    // hit the next foreign key. Create an object for it
-                    fkey = NewFkey(
-                        nextFkey, 
-                        fkeyRdr->GetString(L"", "r_table_name"),
-                        fkeyRdr->GetString(L"", "r_owner_name"),
-                        FdoSchemaElementState_Unchanged
-                    );
-
-                    mFkeysUp->Add(fkey);
-                }
-
-                // Add the column to the foreign key
-                FdoStringP columnName = fkeyRdr->GetString(L"",L"column_name");
-                FdoSmPhColumnP column = GetColumns()->GetItem(columnName);
-
-                if ( column ) {
-                    fkey->AddFkeyColumn( 
-                        column,
-                        fkeyRdr->GetString(L"", "r_column_name")
-                    );
-                }
-                else {
-                    // Foreign Key column must be in this table.
-			        if ( GetElementState() != FdoSchemaElementState_Deleted )
-				        AddFkeyColumnError( columnName );
-                }
-            }
+            LoadFkeys( fkeyRdr->SmartCast<FdoSmPhReader>() );
         }
-	}
+    }
+}
+
+void FdoSmPhTable::LoadFkeys( FdoSmPhReaderP fkeyRdr )
+{
+    FdoStringP                  nextFkey;
+    FdoSmPhFkeyP                fkey;
+
+    // Read each foreign key and column
+    while ( fkeyRdr->ReadNext() ) {
+        nextFkey = fkeyRdr->GetString(L"",L"constraint_name");
+
+        if ( !fkey || (nextFkey != fkey->GetName()) ) {
+            // hit the next foreign key. Create an object for it
+            fkey = NewFkey(
+                nextFkey, 
+                fkeyRdr->GetString(L"", "r_table_name"),
+                fkeyRdr->GetString(L"", "r_owner_name"),
+                FdoSchemaElementState_Unchanged
+            );
+
+            mFkeysUp->Add(fkey);
+        }
+
+        // Add the column to the foreign key
+        FdoStringP columnName = fkeyRdr->GetString(L"",L"column_name");
+        FdoSmPhColumnP column = GetColumns()->GetItem(columnName);
+
+        if ( column ) {
+            fkey->AddFkeyColumn( 
+                column,
+                fkeyRdr->GetString(L"", "r_column_name")
+            );
+        }
+        else {
+            // Foreign Key column must be in this table.
+	        if ( GetElementState() != FdoSchemaElementState_Deleted )
+		        AddFkeyColumnError( columnName );
+        }
+    }
 }
 
 void FdoSmPhTable::LoadIndexes(void)
@@ -869,44 +943,97 @@ void FdoSmPhTable::LoadIndexes(void)
 	if ( !mIndexes ) {
         mIndexes = new FdoSmPhIndexCollection();
 
-        FdoStringP              nextIndex;
-        FdoSmPhIndexP         index;
-
         // Skip load if table is new
         if ( GetElementState() != FdoSchemaElementState_Added ) {
             FdoPtr<FdoSmPhRdIndexReader> indexRdr = CreateIndexReader();
 
-            // Read each index and column
-            while ( indexRdr->ReadNext() ) {
-                nextIndex = indexRdr->GetString(L"",L"index_name");
-
-                if ( !index || (nextIndex != index->GetName()) ) {
-                    // hit the next index. Create an object for it
-                    index = CreateIndex( indexRdr ); 
-                        
-                    if ( index ) 
-                        mIndexes->Add(index);
-                }
-
-                FdoStringP columnName = indexRdr->GetString(L"",L"column_name");
-                FdoSmPhColumnP column = GetColumns()->GetItem(columnName);
-
-                if ( column ) {
-                    // Add the column to the current index.
-                    index->AddColumn( column );
-                }
-                else {
-                    // Index column must be in this table.
-			        if ( GetElementState() != FdoSchemaElementState_Deleted )
-				        AddIndexColumnError( columnName );
-                }
-            }
+            LoadIndexes( NewTableIndexReader(indexRdr) );
         }
     }
 }
 
+void FdoSmPhTable::LoadIndexes( FdoSmPhTableIndexReaderP indexRdr )
+{
+    FdoStringP            nextIndex;
+    FdoSmPhIndexP         index;
+
+    // Read each index and column
+    while ( indexRdr->ReadNext() ) {
+        nextIndex = indexRdr->GetString(L"",L"index_name");
+
+        if ( !index || (nextIndex != index->GetName()) ) {
+            // hit the next index. Create an object for it
+            index = CreateIndex( indexRdr ); 
+                        
+            if ( index ) 
+                mIndexes->Add(index);
+        }
+
+        FdoStringP columnName = indexRdr->GetString(L"",L"column_name");
+        FdoSmPhColumnP column = GetColumns()->GetItem(columnName);
+
+        if ( column ) {
+            // Add the column to the current index.
+            index->AddColumn( column );
+        }
+        else {
+            // Index column must be in this table.
+            if ( GetElementState() != FdoSchemaElementState_Deleted )
+		        AddIndexColumnError( columnName );
+        }
+    }
+}
+
+FdoPtr<FdoSmPhTableComponentReader> FdoSmPhTable::NewTableUkeyReader( FdoSmPhRdConstraintReaderP rdr )
+{
+    return new FdoSmPhTableComponentReader(
+        GetName(),
+        L"",
+        L"table_name",
+        rdr->SmartCast<FdoSmPhReader>()
+    );
+}
+
+FdoPtr<FdoSmPhTableComponentReader> FdoSmPhTable::NewTableCkeyReader( FdoSmPhRdConstraintReaderP rdr )
+{
+    return new FdoSmPhTableComponentReader(
+        GetName(),
+        L"",
+        L"table_name",
+        rdr->SmartCast<FdoSmPhReader>()
+    );
+}
+
+FdoPtr<FdoSmPhTableComponentReader> FdoSmPhTable::NewTableFkeyReader( FdoSmPhRdFkeyReaderP rdr )
+{
+    return new FdoSmPhTableComponentReader(
+        GetName(),
+        L"",
+        L"table_name",
+        rdr->SmartCast<FdoSmPhReader>()
+    );
+}
+
+FdoPtr<FdoSmPhTableIndexReader> FdoSmPhTable::NewTableIndexReader( FdoSmPhRdIndexReaderP rdr )
+{
+    return new FdoSmPhTableIndexReader(
+        GetName(),
+        rdr
+    );
+}
+
+FdoPtr<FdoSmPhTableComponentReader> FdoSmPhTable::NewTablePkeyReader( FdoSmPhRdPkeyReaderP rdr )
+{
+    return new FdoSmPhTableComponentReader(
+        GetName(),
+        L"",
+        L"table_name",
+        rdr->SmartCast<FdoSmPhReader>()
+    );
+}
+
 FdoSmPhIndexP FdoSmPhTable::CreateIndex(
-    FdoPtr<FdoSmPhRdIndexReader> rdr
+    FdoPtr<FdoSmPhTableIndexReader> rdr
 )
 {
     FdoSmPhIndexP index;
@@ -1007,4 +1134,3 @@ void FdoSmPhTable::AddDeleteNotEmptyError(void)
 		)
 	);
 }
-

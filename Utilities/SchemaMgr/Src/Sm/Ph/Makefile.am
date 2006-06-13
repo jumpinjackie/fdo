@@ -61,6 +61,7 @@ libSmPhysical_la_SOURCES = \
   SpatialIndex.cpp \
   stdafx.cpp \
   Table.cpp \
+  TableComponentReader.cpp \
   TempObject.cpp \
   View.cpp \
   Writer.cpp

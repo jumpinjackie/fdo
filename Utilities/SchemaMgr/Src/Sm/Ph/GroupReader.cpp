@@ -69,3 +69,8 @@ bool FdoSmPhGroupReader::ReadNext()
 	return(!IsEOF());
 }
 
+FdoStringP FdoSmPhGroupReader::GetString( FdoStringP tableName, FdoStringP fieldName )
+{
+    return mReader->GetString( tableName, fieldName );
+}
+

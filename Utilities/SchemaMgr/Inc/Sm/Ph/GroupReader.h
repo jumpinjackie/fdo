@@ -55,6 +55,11 @@ public:
     /// Get the next row and make it current.
 	virtual bool ReadNext();
 
+    /// Get a string column value by name.
+    /// Value for current row is returned.
+    /// Returns L"" if value is null. 
+	virtual FdoStringP GetString( FdoStringP tableName, FdoStringP fieldName );
+
     /// This function determines the group name for the attached reader's
     /// current row. Classes derived from this class can implement this 
     /// function in any way, as long as the reader retrieves rows in 

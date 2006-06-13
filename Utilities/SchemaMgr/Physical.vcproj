@@ -379,6 +379,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\Sm\Ph\TableComponentReader.cpp"
+				>
+			</File>
+			<File
 				RelativePath="Src\Sm\Ph\TempObject.cpp"
 				>
 			</File>
@@ -1236,6 +1240,10 @@
 			</File>
 			<File
 				RelativePath="Inc\Sm\Ph\Table.h"
+				>
+			</File>
+			<File
+				RelativePath=".\inc\Sm\Ph\TableComponentReader.h"
 				>
 			</File>
 			<File
