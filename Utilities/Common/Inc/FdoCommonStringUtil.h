@@ -90,9 +90,103 @@
     size_t i = wcslen (p);\
     i++;\
     mb = (char*)alloca (i * 6);\
-    i = wcstombs (mb, p, i);\
+    i = wcstombs (mb, p, i*6);\
     if (0 > i)\
         mb = NULL;\
+    if (NULL==mb) throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));\
+}
+#endif
+
+// Conversions with CODEPAGE support
+
+#ifdef _WIN32
+// macro to convert a multibyte string into a wide character string, allocating space on the stack
+#define multibyte_to_wide_cpg(w,mb,cpg)\
+{\
+    const char* p = (mb);\
+    size_t i = strlen (p);\
+    i++;\
+    w = (wchar_t*)alloca (i * sizeof (wchar_t));\
+    i = MultiByteToWideChar (\
+        cpg,\
+        0,\
+        p,\
+        (int)i,\
+        w,\
+        (int)i);\
+    if (0 == i)\
+        w = NULL;\
+    if (NULL==w) throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));\
+}
+
+// macro to convert a wide character string into a multibyte string, allocating space on the stack
+#define wide_to_multibyte_cpg(mb,w,cpg)\
+{\
+    const wchar_t* p = (w);\
+    size_t i = wcslen (p);\
+    i++;\
+    mb = (char*)alloca (i * 6);\
+    i = WideCharToMultiByte (\
+        cpg,\
+        0,\
+        p,\
+        (int)i,\
+        mb,\
+        (int)i * 6,\
+        NULL,\
+        NULL);\
+    if (0 == i)\
+        mb = NULL;\
+    if (NULL==mb) throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));\
+}
+#else 
+
+
+#include <iconv.h>
+
+// macro to convert a multibyte string into a wide character string, allocating space on the stack
+#define multibyte_to_wide_cpg(w,mb,cpg)\
+{\
+    const char* p = (mb);\
+    size_t i = strlen (p)+1;\
+    size_t mbsize = i; \
+    size_t wsize = i * sizeof(wchar_t)*3; \
+    w = (wchar_t*)alloca (wsize);\
+    char  *wc = (char *)w; \
+    char  *p2 = (char *)p; \
+    iconv_t cd = iconv_open("WCHAR_T", cpg);  \
+    if ( cd != (iconv_t)-1 ) {\
+     	i = iconv( cd, (char **)&p2, &mbsize, (char **)&wc, &wsize); \
+        iconv_close( cd ); \
+    } \
+    if ( cd == (iconv_t)-1 || i == (size_t)-1 ) {\
+     	i = mbstowcs (w, p, wsize);\
+    	if (0 > i)\
+       	    w = NULL;\
+    }\
+    if (NULL==w) throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));\
+}
+
+// macro to convert a wide character string into a multibyte string, allocating space on the stack
+#define wide_to_multibyte_cpg(mb,w,cpg)\
+{\
+    const wchar_t* p = (w);\
+    size_t i = sizeof(wchar_t)*(wcslen (p)+1);\
+    size_t wsize = i; \
+    size_t mbsize = i * 3; \
+    mb = (char*)alloca (mbsize);\
+    char *mb2 = mb;\
+    char *p2 = (char *)p; \
+    iconv_t cd = iconv_open(cpg, "WCHAR_T");  \
+    if ( cd != (iconv_t)-1 ) {\
+     	i = iconv( cd, (char **)&p2, &wsize, (char **)&mb2, &mbsize); \
+        iconv_close( cd ); \
+    } \
+    if ( cd == (iconv_t)-1 || i == (size_t)-1 ) {\
+    	i = wcstombs (mb, w, mbsize);\
+    	if (0 > i)\
+       	     mb = NULL;\
+    }\
     if (NULL==mb) throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));\
 }
 #endif
