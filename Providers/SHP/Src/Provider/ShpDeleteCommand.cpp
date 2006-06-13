@@ -53,7 +53,7 @@ FdoInt32 ShpDeleteCommand::Execute ()
 
     try
     {
-		ShpConnection *connection = (ShpConnection *)GetConnection();
+		FdoPtr<ShpConnection> connection = (ShpConnection *)GetConnection();
 
         class_name = FdoPtr<FdoIdentifier> (GetFeatureClassName ())->GetName ();
         fileset = FdoPtr<ShpLpClassDefinition>(ShpSchemaUtilities::GetLpClassDefinition (mConnection, class_name))->GetPhysicalFileSet ();

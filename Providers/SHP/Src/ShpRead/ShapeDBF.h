@@ -13,6 +13,13 @@
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * Revision Control Modification History
+ *
+ *         $Id: //providers_reliant_sp2/Shp/src/ShpRead/ShapeDBF.h#1 $
+ *     $Author: lee $
+ *   $DateTime: 2006/06/02 11:06:52 $
+ *     $Change: 13046 $
+ *
  */
 
 #ifndef SHAPEDBF_H
@@ -25,6 +32,7 @@
 #include "ColumnInfo.h"
 #include <FdoCommonFile.h>
 #include "Constants.h"
+
 
 class RowData;
 
@@ -59,7 +67,6 @@ class ShapeDBF : public FdoCommonFile
     DBFHeader m_DBFHeader;
     ColumnInfo* m_pColumnInfo;
     int m_nRecordStart;
- //   bool mReadOnly;
     bool mHeaderDirty;
 
     // Cache Info
@@ -75,7 +82,6 @@ public:
 
     virtual ~ShapeDBF();
 
- //   bool isReadOnly ()                  { return (mReadOnly); }
     ColumnInfo* GetColumnInfo()        { return m_pColumnInfo; }
     int GetNumRecords()                 { return m_DBFHeader.nRecords; }
     int GetRecordSize()                 { return m_DBFHeader.wRecordSize; }

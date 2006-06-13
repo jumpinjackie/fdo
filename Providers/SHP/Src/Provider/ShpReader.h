@@ -165,7 +165,13 @@ public:
             {
                 type = info->GetColumnTypeAt (i);
                 if (type == column_type)
-                    mData->GetData (data, i, type);
+				{
+					WCHAR* cpg = NULL;
+					if (mFileSet->GetCpgFile())
+						cpg = (WCHAR*)(FdoString *)mFileSet->GetCpgFile()->GetCodePage();
+
+					mData->GetData (data, i, type, cpg);
+				}
                 else
                     throw FdoException::Create (NlsMsgGet(SHP_VALUE_TYPE_MISMATCH, "Value type (%1$ls) to insert, update or retrieve doesn't match the type (%2$ls) of property '%3$ls'.", type_name, ColumnTypeToString (type), propertyName));
                 break;

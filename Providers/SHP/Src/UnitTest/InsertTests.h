@@ -60,7 +60,9 @@ class InsertTests :
     CPPUNIT_TEST (insert_large_first_geometry);
     CPPUNIT_TEST (insert_no_geometry);
 	CPPUNIT_TEST (insert_2connects);
-    CPPUNIT_TEST_SUITE_END ();
+    //CPPUNIT_TEST (wide2mbPerformaceTest);
+    CPPUNIT_TEST (insert_with_locale);
+	CPPUNIT_TEST_SUITE_END ();
 
     static FdoPtr<FdoIConnection> mConnection;
 
@@ -73,6 +75,10 @@ public:
 protected:
     // Test methods:
 	void insert ();
+	void insert_with_locale ();
+	void insert_locale (char *orig_locale, char *new_locale, FdoString *expected_cpg, const wchar_t *value);
+    	void wide2mbPerformaceTest();
+	void wide2multibyte(char *mb, wchar_t *in, int cpgWin, char *cpgLinux);
     void insert_geometry_point_xy ();
     void insert_geometry_point_xyz ();
     void insert_geometry_point_xym ();

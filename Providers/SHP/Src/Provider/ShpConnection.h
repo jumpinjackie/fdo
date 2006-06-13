@@ -28,6 +28,7 @@
 #include <ShpSpatialContext.h>
 #include <ShpLpFeatureSchema.h>
 
+#include <FdoCommonThreadMutex.h>
 
 class ShpConnection : public FdoIConnection
 {
@@ -97,6 +98,15 @@ protected:
      * Flag true when configuration file is specified.
      */
     bool mConfigured;
+
+	/**
+	 * Globals to keep track of opened connections and the files to compress after
+	 * delete command. The compression is triggered on the last connection close().
+	 */
+	static	FdoCommonThreadMutex mMutex;
+	static	int mGlobalRefCount;
+
+
 private:
 
 	/// <summary>Sets the connection paths
@@ -104,6 +114,15 @@ private:
 	/// <param name="value">None</param> 
 	/// <returns>Returns nothing</returns> 
 	void InitConnectionPaths();
+
+	/// <summary>Compresses all the file sets</summary>
+	/// <returns>Returns nothing</returns> 
+	void CompressFileSets ();
+
+	/// <summary>Compresses a file set (eliminates the deleted rows)</summary>
+	/// <param name="baseName">Fileset full path</param> 
+	/// <returns>Returns nothing</returns> 
+	void CompressFileSet (const wchar_t* baseName);
 
 public:
     ShpConnection (void);

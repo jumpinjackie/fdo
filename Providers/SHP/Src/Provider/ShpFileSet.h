@@ -22,11 +22,14 @@
 #pragma once
 #endif // _WIN32
 
+#include <FdoCommonThreadMutex.h>
+
 #include <ShapeFile.h>
 #include <ShapeDBF.h>
 #include <ShapeIndex.h>
 #include <ShpSpatialIndex.h>
 #include <ShapePRJ.h>
+#include <ShapeCPG.h>
 
 class ShpConnection;
 
@@ -39,12 +42,22 @@ class ShpFileSet
     ShapeIndex* mShx;
     ShapePRJ* mPrj;
     ShpSpatialIndex* mSSI;
+	ShapeCPG* mCpg;
     bool mFilesExist;
 
     FdoStringP mBaseName;
+	bool	 mHasDeletedRecords;
+
+	FdoStringP			mTmpDir;
+    ShapeFile*			mShpC;
+    ShapeDBF*			mDbfC;
+    ShapeIndex*			mShxC;
+    ShpSpatialIndex*	mSSIC;
+
+	static	FdoCommonThreadMutex mMutex;
 
 public:
-    ShpFileSet (FdoString* shp_file, FdoString* tmp_dir = NULL);
+    ShpFileSet (FdoString* shp_file, FdoString* tmp_dir = NULL, bool load_ssi = true);
     virtual ~ShpFileSet (void);
 
     // utility methods
@@ -53,17 +66,27 @@ public:
     ShapeFile* GetShapeFile ();
     ShapeDBF* GetDbfFile ();
     ShapePRJ* GetPrjFile ();
+	ShapeCPG* GetCpgFile ();
     ShapeIndex* GetShapeIndexFile ();
     ShpSpatialIndex* GetSpatialIndex ();
     int ShpFileSet::GetNumRecords ();
 
     void GetObjectAt (RowData** row, eShapeTypes& type, Shape** shape, int nRecordNumber);
-    void SetObjectAt (RowData* row, Shape* shape, bool batch = false);
+    void SetObjectAt (RowData* row, Shape* shape, bool batch = false, bool useCopyFiles = false);
     void DeleteObjectAt (int nRecordNumber);
-    void Flush ();
+    void Flush (bool useCopyFiles = false);
     void PutData (ShpConnection* connection, FdoString* class_name, FdoPropertyValueCollection* values, RowData* row, Shape* shape, bool batch = false);
 	void ReopenFileset(FdoCommonFile::OpenFlags flags );
 	void SetFilesDeleted();
+
+	void SetShapeFileC (ShapeFile *shp);
+	void SetDbfFileC (ShapeDBF *dbf);
+	void SetShapeIndexFileC (ShapeIndex *shx);
+	void SetSpatialIndexC (ShpSpatialIndex *ssi);
+    ShapeFile* GetShapeFileC ();
+    ShapeDBF* GetDbfFileC ();
+    ShapeIndex* GetShapeIndexFileC ();
+    ShpSpatialIndex* GetSpatialIndexC ();
 
 private:
     /// <summary>Fill the RTree from the shape file contents.</summary>
@@ -76,13 +99,13 @@ private:
     /// <param name="length">Input the original length of the shape.</param> 
     /// <param name="new_length">Input the new length of the shape.</param> 
     /// <returns>Returns nothing.</returns> 
-    void MakeSpace (int nRecordNumber, ULONG offset, int length, int new_length);
+    void MakeSpace (int nRecordNumber, ULONG offset, int length, int new_length, bool useCopyFiles);
 
     /// <summary>Adjust the extents of the files.</summary>
     /// <param name="shape">Input the shape to be inserted or deleted.</param> 
     /// <param name="remove">If true, the shape will be removed from the extents.</param> 
     /// <returns>Returns true if the extents of the file set have changed.</returns> 
-    bool AdjustExtents (Shape* shape, bool remove);
+    bool AdjustExtents (Shape* shape, bool remove, bool useCopyFiles);
 
 };
 
@@ -111,9 +134,54 @@ inline ShapePRJ* ShpFileSet::GetPrjFile ()
     return (mPrj);
 }
 
+inline ShapeCPG* ShpFileSet::GetCpgFile ()
+{
+    return (mCpg);
+}
+
 inline ShpSpatialIndex* ShpFileSet::GetSpatialIndex ()
 {
     return (mSSI);
+}
+
+inline void ShpFileSet::SetShapeFileC (ShapeFile *shp)
+{
+    mShpC = shp;
+}
+
+inline void ShpFileSet::SetDbfFileC (ShapeDBF *dbf)
+{
+    mDbfC = dbf;
+}
+
+inline void ShpFileSet::SetShapeIndexFileC (ShapeIndex *shx)
+{
+    mShxC = shx;
+}
+
+inline void ShpFileSet::SetSpatialIndexC (ShpSpatialIndex *ssi)
+{
+    mSSIC = ssi;
+}
+
+inline ShapeFile* ShpFileSet::GetShapeFileC ()
+{
+    return (mShpC);
+}
+
+inline ShapeDBF* ShpFileSet::GetDbfFileC ()
+{
+    return (mDbfC);
+}
+
+inline ShapeIndex* ShpFileSet::GetShapeIndexFileC ()
+{
+    return (mShxC);
+}
+
+inline ShpSpatialIndex* ShpFileSet::GetSpatialIndexC ()
+{
+    return (mSSIC);
 }
 
 #endif // SHPFILESET_H

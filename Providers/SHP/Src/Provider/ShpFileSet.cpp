@@ -20,8 +20,15 @@
 #include "stdafx.h"
 
 #include <FdoCommonStringUtil.h>
+#include <FdoCommonFile.h>
 
 #include "ShpFileSet.h"
+
+#define SHP_DO_COMPRESSION	true
+#define SHP_SAVE_EXT		L"_save"
+
+FdoCommonThreadMutex ShpFileSet::mMutex;
+extern std::vector<std::wstring> ShpConnGlobalFilesToCompress;
 
 static bool match (const wchar_t* name, size_t length, const wchar_t* base, size_t base_length, const wchar_t* pattern, size_t pattern_length)
 {
@@ -37,13 +44,18 @@ static bool match (const wchar_t* name, size_t length, const wchar_t* base, size
     return (ret);
 }
 
-ShpFileSet::ShpFileSet (FdoString* base_name, FdoString* tmp_dir) :
+ShpFileSet::ShpFileSet (FdoString* base_name, FdoString* tmp_dir, bool load_ssi) :
+    mTmpDir (tmp_dir ),
     mShp (NULL),
     mDbf (NULL),
     mShx (NULL),
     mPrj (NULL),
-    mSSI (NULL)
-
+    mSSI (NULL),
+	mCpg (NULL),
+    mShpC (NULL),
+    mDbfC (NULL),
+    mShxC (NULL),
+    mSSIC (NULL)
 {
     int status;
     size_t length;
@@ -58,9 +70,11 @@ ShpFileSet::ShpFileSet (FdoString* base_name, FdoString* tmp_dir) :
     wchar_t* shx_file;
     wchar_t* idx_file;
     wchar_t* prj_file;
+	wchar_t* cpg_file;
 
 	mFilesExist = true;
- 
+	mHasDeletedRecords = false;
+
     try
     {
         // get the base name and the directory
@@ -96,6 +110,8 @@ ShpFileSet::ShpFileSet (FdoString* base_name, FdoString* tmp_dir) :
         shx_file = NULL;
         idx_file = NULL;
         prj_file = NULL;
+		cpg_file = NULL;
+
 	    for (int i = 0; i < count; i++)
 	    {
             const wchar_t* name;
@@ -133,6 +149,12 @@ ShpFileSet::ShpFileSet (FdoString* base_name, FdoString* tmp_dir) :
                 prj_file = (wchar_t*)alloca (sizeof (wchar_t) * (wcslen (dir) + wcslen (name) + 1));
                 wcscpy (prj_file, dir);
                 wcscat (prj_file, name);
+            }
+            else if (match (name, length, mBaseName, base_length, CPG_EXTENSION, ELEMENTS(CPG_EXTENSION) - 1))
+            {
+                cpg_file = (wchar_t*)alloca (sizeof (wchar_t) * (wcslen (dir) + wcslen (name) + 1));
+                wcscpy (cpg_file, dir);
+                wcscat (cpg_file, name);
             }
         }
 
@@ -287,7 +309,7 @@ ShpFileSet::ShpFileSet (FdoString* base_name, FdoString* tmp_dir) :
             mSSI = new ShpSpatialIndex (idx_file, tmp_dir, GetShapeIndexFile ()->GetFileShapeType (), GetShapeIndexFile ()->HasMData ());
         }
 
-        if (!GetSpatialIndex ()->IsNew ())
+        if (!GetSpatialIndex ()->IsNew () && load_ssi)
         {   // check that the number of features matches
             SSITestInfo info;
             if ((SHP_OK != GetSpatialIndex ()->TestSSI (NULL, &info)) ||
@@ -306,14 +328,19 @@ ShpFileSet::ShpFileSet (FdoString* base_name, FdoString* tmp_dir) :
                 }
             }         
         }
-        else
+        else if (load_ssi) 
+		{
             // populate the Spatial Index RTree if necessary
             PopulateRTree ();
+		}
 
         if (NULL != prj_file)
             mPrj = new ShapePRJ (prj_file, status);
         // else
         //     it's not an error if it doesn't exist
+
+        if (NULL != cpg_file)
+            mCpg = new ShapeCPG (cpg_file, status);
 
 	}
     catch (FdoException* ge)
@@ -328,6 +355,8 @@ ShpFileSet::ShpFileSet (FdoString* base_name, FdoString* tmp_dir) :
             delete mSSI;
         if (NULL != mPrj)
             delete mPrj;
+        if (NULL != mCpg)
+            delete mCpg;
         throw ge;
     }
 }
@@ -335,13 +364,39 @@ ShpFileSet::ShpFileSet (FdoString* base_name, FdoString* tmp_dir) :
 ShpFileSet::~ShpFileSet (void)
 {
 	if ( mFilesExist )
+	{
 		ReopenFileset( FdoCommonFile::IDF_OPEN_READ );
+	}
+
+	// Remember to compress this file set (on final connection Close())
+	if ( SHP_DO_COMPRESSION && mHasDeletedRecords &&
+		 !mDbf->IsTemporaryFile() && !mShx->IsTemporaryFile() && 
+		 !mShp->IsTemporaryFile() && !mSSI->IsTemporaryFile())
+	{
+		FdoStringP	fullName = FdoStringP(mDbf->FileName()).Left(DBF_EXTENSION);
+		bool		found = false;
+
+
+		// Add this file set to the list in case not already there.
+		mMutex.Enter();
+
+		for (size_t i = 0; i < ShpConnGlobalFilesToCompress.size() && !found; i++ )
+		{
+			found = ( wcscmp((FdoString *)fullName, ShpConnGlobalFilesToCompress[i].c_str() ) == 0 );
+		}
+
+		if ( !found )	
+			ShpConnGlobalFilesToCompress.push_back((FdoString *)fullName);
+		
+		mMutex.Leave();
+	}
 
     delete mShp;
     delete mDbf;
     delete mShx;
     delete mPrj;
     delete mSSI;
+	delete mCpg;
 }
 
 FdoString* ShpFileSet::CreateBaseName (FdoString* name)
@@ -425,7 +480,7 @@ void ShpFileSet::GetObjectAt (RowData** row, eShapeTypes& type, Shape** shape, i
     }
 }
 
-bool ShpFileSet::AdjustExtents (Shape* shape, bool remove)
+bool ShpFileSet::AdjustExtents (Shape* shape, bool remove, bool useCopyFiles)
 {
     ShapeFile* shp;
     ShapeIndex* shx;
@@ -443,14 +498,14 @@ bool ShpFileSet::AdjustExtents (Shape* shape, bool remove)
 
     ret = true; // assume we have to change the headers
 
-    shp = GetShapeFile ();
-    shx = GetShapeIndexFile ();
-    ssi = GetSpatialIndex ();
+	shp = useCopyFiles? GetShapeFileC () : GetShapeFile ();
+	shx = useCopyFiles? GetShapeIndexFileC () : GetShapeIndexFile ();
+	ssi = useCopyFiles? GetSpatialIndexC () : GetSpatialIndex ();
 
     shape->GetBoundingBoxEx (box);
     ssi->GetSSIExtent (before);
     record = shape->GetRecordNum () - 1;
-    if (record < GetShapeIndexFile ()->GetNumObjects ())
+    if (record < shx->GetNumObjects ())
     {   // update or delete,
         // so delete the old bounding box from the spatial index
         shx->GetObjectAt (record, offset, length);
@@ -518,7 +573,7 @@ bool ShpFileSet::AdjustExtents (Shape* shape, bool remove)
 
 // make the space 'length' long at 'offset' be 'new_length' long
 // it's assumed that the contents at 'offset' of length/new_length is/will-be garbage
-void ShpFileSet::MakeSpace (int nRecordNumber, ULONG offset, int length, int new_length)
+void ShpFileSet::MakeSpace (int nRecordNumber, ULONG offset, int length, int new_length, bool useCopyFiles)
 {
     ShapeFile* shp;
     ShapeIndex* shx;
@@ -528,8 +583,9 @@ void ShpFileSet::MakeSpace (int nRecordNumber, ULONG offset, int length, int new
     long read;
     char* buffer;
 
-    shp = GetShapeFile ();
-    shx = GetShapeIndexFile ();
+	shp = useCopyFiles? GetShapeFileC () : GetShapeFile ();
+	shx = useCopyFiles? GetShapeIndexFileC () : GetShapeIndexFile ();
+
     if ((length != new_length) && ((shx->GetNumObjects () - 1) > nRecordNumber))
     {
         if (new_length > length)
@@ -583,12 +639,11 @@ void ShpFileSet::MakeSpace (int nRecordNumber, ULONG offset, int length, int new
     // else, nothing to do
 }
 
-void ShpFileSet::SetObjectAt (RowData* row, Shape* shape, bool batch)
+void ShpFileSet::SetObjectAt (RowData* row, Shape* shape, bool batch, bool useCopyFiles)
 {
     ShapeFile* shp;
     ShapeDBF* dbf;
     ShapeIndex* shx;
-    ShpSpatialIndex* ssi;
     int record;
     eShapeTypes shape_type;
     eShapeTypes file_type;
@@ -596,10 +651,10 @@ void ShpFileSet::SetObjectAt (RowData* row, Shape* shape, bool batch)
     ULONG before;
     ULONG after;
 
-    shp = GetShapeFile ();
-    dbf = GetDbfFile ();
-    shx = GetShapeIndexFile ();
-    ssi = GetSpatialIndex ();
+	shp = useCopyFiles? GetShapeFileC () : GetShapeFile ();
+	dbf = useCopyFiles? GetDbfFileC () : GetDbfFile ();
+	shx = useCopyFiles? GetShapeIndexFileC () : GetShapeIndexFile ();
+
     record = shape->GetRecordNum () - 1;
 
     // handle conversion from multipointX to pointX:
@@ -667,11 +722,11 @@ void ShpFileSet::SetObjectAt (RowData* row, Shape* shape, bool batch)
         int length;
         int new_length;
 
-        AdjustExtents (shape, false);
+        AdjustExtents (shape, false, useCopyFiles);
         shx->GetObjectAt (record, offset, length);
         new_length = shape->GetContentLength ();
         new_length *= WORD_SIZE_IN_BYTES;
-        MakeSpace (record, offset, length + sizeof(SHPRecordHeader), new_length + sizeof(SHPRecordHeader));
+        MakeSpace (record, offset, length + sizeof(SHPRecordHeader), new_length + sizeof(SHPRecordHeader), useCopyFiles);
         shp->SetFilePointer64 ((FdoInt64)offset);
         shp->SetObjectAt (shape, batch);
         // update shx file to match
@@ -696,14 +751,14 @@ void ShpFileSet::SetObjectAt (RowData* row, Shape* shape, bool batch)
         shp->SetFilePointer64 ((FdoInt64)0, FdoCommonFile::FILE_POS_END);
         before = shp->GetFileLength ();
         // do adjustment before writing the shape so SetHasMData() reports what would be true
-        AdjustExtents (shape, false);
+        AdjustExtents (shape, false, useCopyFiles);
         shp->SetObjectAt (shape, batch);
         after = shp->GetFileLength ();
         shx->SetObjectAt (record, before * WORD_SIZE_IN_BYTES, ((after - before) * WORD_SIZE_IN_BYTES) - sizeof(SHPRecordHeader), batch);
     }
 
     if (!batch)
-        Flush ();
+        Flush (useCopyFiles);
 }
 
 void ShpFileSet::DeleteObjectAt (int nRecordNumber)
@@ -720,12 +775,14 @@ void ShpFileSet::DeleteObjectAt (int nRecordNumber)
     // this marks it as deleted for all the other files
     GetDbfFile ()->DeleteRowAt (nRecordNumber);
 
+	mHasDeletedRecords = true;
+
     // update the spatial index
     GetShapeIndexFile ()->GetObjectAt (nRecordNumber, offset, length);
     shape = GetShapeFile ()->GetObjectAt (offset, type);
     try
     {
-        AdjustExtents (shape, true);
+        AdjustExtents (shape, true, false);
     }
     catch (...)
     {
@@ -735,15 +792,16 @@ void ShpFileSet::DeleteObjectAt (int nRecordNumber)
     delete shape;
 }
 
-void ShpFileSet::Flush ()
+void ShpFileSet::Flush (bool useCopyFiles)
 {
     ShapeFile* shp;
     ShapeDBF* dbf;
     ShapeIndex* shx;
 
-    shp = GetShapeFile ();
-    dbf = GetDbfFile ();
-    shx = GetShapeIndexFile ();
+	shp = useCopyFiles? GetShapeFileC () : GetShapeFile ();
+	dbf = useCopyFiles? GetDbfFileC () : GetDbfFile ();
+	shx = useCopyFiles? GetShapeIndexFileC () : GetShapeIndexFile ();
+
     if (shp->IsHeaderDirty ())
         shp->PutFileHeaderDetails ();
     if (shx->IsHeaderDirty ())
@@ -832,7 +890,12 @@ void ShpFileSet::PutData (ShpConnection* connection, FdoString* class_name, FdoP
                                     if ((string == NULL) || string->IsNull())
                                         row->SetData (j, true,  (wchar_t*)NULL);
                                     else
-                                        row->SetData (j, false, (wchar_t*)string->GetString ());
+									{
+										FdoStringP  shpCpg;
+										if (this->GetCpgFile())
+											shpCpg = this->GetCpgFile()->GetCodePage();
+                                        row->SetData (j, false, (wchar_t*)string->GetString (), (wchar_t*)(FdoString *)shpCpg);
+									}
                                     break;
 
                                 case kColumnDecimalType:
@@ -973,3 +1036,4 @@ void ShpFileSet::SetFilesDeleted()
 { 
 	mFilesExist = false; 
 }
+

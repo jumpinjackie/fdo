@@ -15,6 +15,13 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 * 
+ * Revision Control Modification History
+ *
+ *         $Id: //providers_reliant_sp2/Shp/src/ShpSpatialIndex/ShpSpatialIndex.cpp#2 $
+ *     $Author: ds $
+ *   $DateTime: 2006/06/09 17:03:23 $
+ *     $Change: 13170 $
+ *
  */
 
 #include "stdafx.h"

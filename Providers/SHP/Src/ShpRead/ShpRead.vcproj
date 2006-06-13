@@ -255,6 +255,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ShapeCPG.cpp"
+				>
+			</File>
+			<File
 				RelativePath="ShapeDBF.cpp"
 				>
 			</File>
@@ -393,6 +397,10 @@
 			</File>
 			<File
 				RelativePath="Shape.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ShapeCPG.h"
 				>
 			</File>
 			<File

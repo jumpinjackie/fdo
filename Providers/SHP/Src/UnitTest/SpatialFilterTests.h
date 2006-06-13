@@ -32,10 +32,11 @@ class SpatialFilterTests :
     CPPUNIT_TEST (EnvelopeIntersects);
     CPPUNIT_TEST (Within);
     CPPUNIT_TEST (Inside);
+    CPPUNIT_TEST (Intersects);
     CPPUNIT_TEST (PerformanceTests_Roads);
     CPPUNIT_TEST (PerformanceTests_Lakes);
     CPPUNIT_TEST (Crosses);
-    CPPUNIT_TEST (Intersects);
+    CPPUNIT_TEST (Touches);
     CPPUNIT_TEST (Bogus);
     CPPUNIT_TEST_SUITE_END ();
 
@@ -52,10 +53,11 @@ protected:
 	void EnvelopeIntersects ();
     void Within ();
     void Inside ();
+	void Intersects ();
     void PerformanceTests_Roads();
     void PerformanceTests_Lakes();
     void Crosses ();
-    void Intersects ();
+    void Touches ();
     void Bogus ();
 
 private:

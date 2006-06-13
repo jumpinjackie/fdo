@@ -58,6 +58,15 @@ protected:
     void* mBuffer; // file i/o buffer
     bool mReading;
 
+#ifdef _WIN32
+	// Convert the .CPG file codepage to Windows codepage
+	ULONG	ConvertCodePageWin(WCHAR *codepageESRI);
+#else
+	// Convert the .CPG file codepage to system codepage
+	const char* ConvertCodePageLinux(WCHAR *codepageESRI);
+	FdoStringP	mLinuxCpg;
+#endif
+
 public:
     RowData (ColumnInfo* pColumnInfo, void* buffer);
     void* operator new (size_t nSize, ColumnInfo* pColumnInfo, void* buffer);
@@ -80,7 +89,7 @@ public:
     /// <param name="index">Input the column index of the data to set.</param> 
     /// <param name="value">Input the value for the column.</param> 
     /// <returns>Returns nothing.</returns> 
-    void SetData (int index, bool bIsNull, WCHAR* value);
+    void SetData (int index, bool bIsNull, WCHAR* value, WCHAR* codepage = NULL);
 
     /// <summary>Sets the string data.</summary>
     /// <param name="index">Input the column index of the data to set.</param> 
@@ -105,7 +114,7 @@ public:
     /// <param name="index">Input the column index of the data to get.</param> 
     /// <param name="type">The column type for the column.</param> 
     /// <returns>Returns nothing.</returns> 
-    void GetData (ColumnData* data, int index, eDBFColumnType type);
+    void GetData (ColumnData* data, int index, eDBFColumnType type, WCHAR* codepage = NULL);
 };
 
 #endif // ROWDATA_H

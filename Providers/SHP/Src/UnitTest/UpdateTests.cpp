@@ -628,7 +628,7 @@ void UpdateTests::update_int32 ()
         FdoPtr<FdoValueExpression> expression = (FdoValueExpression*)ShpTests::ParseByDataType (L"24", FdoDataType_Decimal);
         FdoPtr<FdoPropertyValue> value = FdoPropertyValue::Create (L"Id", expression);
         values->Add (value);
-        expression = (FdoValueExpression*)FdoExpression::Parse (L"55");
+        expression = (FdoValueExpression*)FdoExpression::Parse (L"-2147483647");
         value = FdoPropertyValue::Create (L"Age", expression);
         values->Add (value);
         // add NULL geometry value:
@@ -649,6 +649,23 @@ void UpdateTests::update_int32 ()
         if (-1 == featid)
             CPPUNIT_FAIL ("too few features inserted");
 
+		// Read back the values
+        FdoPtr<FdoISelect> select1 = (FdoISelect*)mConnection->CreateCommand (FdoCommandType_Select);
+        select1->SetFeatureClassName (L"TheSchema:Test");
+        reader = select1->Execute ();
+        while (reader->ReadNext ())
+        {
+            CPPUNIT_ASSERT_MESSAGE ("incorrect featid value", featid == reader->GetInt32 (L"FeatId"));
+            CPPUNIT_ASSERT_MESSAGE ("incorrect id value", !reader->IsNull (L"Id"));
+            CPPUNIT_ASSERT_MESSAGE ("incorrect age value", !reader->IsNull (L"Age"));
+            CPPUNIT_ASSERT_MESSAGE ("incorrect MIN INT value", reader->GetInt32 (L"Age") == -2147483647);
+            CPPUNIT_ASSERT_MESSAGE ("incorrect area value", reader->IsNull(L"Area"));
+            CPPUNIT_ASSERT_MESSAGE ("incorrect vacant value", reader->IsNull(L"Vacant"));
+            CPPUNIT_ASSERT_MESSAGE ("incorrect birthday year value", reader->IsNull (L"Birthday"));
+            CPPUNIT_ASSERT_MESSAGE ("incorrect geometry value", reader->IsNull (L"Geometry"));
+        }
+        reader->Close ();
+
         // Update some values:
         /////////////////////////////////////////////////////////
 
@@ -660,7 +677,7 @@ void UpdateTests::update_int32 ()
 	    values = update->GetPropertyValues ();
 	    value = FdoPropertyValue::Create ();
         value->SetName (L"Age");
-		value->SetValue (L"99");
+		value->SetValue (L"2147483646");
         values->Add (value);
 	    value = FdoPropertyValue::Create ();
         value->SetName (L"Id");
@@ -681,7 +698,6 @@ void UpdateTests::update_int32 ()
             CPPUNIT_ASSERT_MESSAGE ("incorrect featid value", featid == reader->GetInt32 (L"FeatId"));
             CPPUNIT_ASSERT_MESSAGE ("incorrect id value", reader->IsNull (L"Id"));
             CPPUNIT_ASSERT_MESSAGE ("incorrect age value", !reader->IsNull (L"Age"));
-            CPPUNIT_ASSERT_MESSAGE ("incorrect age value", reader->GetInt32 (L"Age") == 99);
             CPPUNIT_ASSERT_MESSAGE ("incorrect area value", reader->IsNull(L"Area"));
             CPPUNIT_ASSERT_MESSAGE ("incorrect vacant value", reader->IsNull(L"Vacant"));
             CPPUNIT_ASSERT_MESSAGE ("incorrect birthday year value", reader->IsNull (L"Birthday"));
@@ -693,7 +709,7 @@ void UpdateTests::update_int32 ()
         // Select back some values with int32 filter
         /////////////////////////////////////////////////////////
 
-        select->SetFilter(L"Age = 99");
+        select->SetFilter(L"Age = 2147483646");
         reader = select->Execute ();
         CPPUNIT_ASSERT_MESSAGE("Int32 Filter failed", reader->ReadNext() );
         reader->Close ();

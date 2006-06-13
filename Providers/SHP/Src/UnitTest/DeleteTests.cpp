@@ -232,7 +232,15 @@ void DeleteTests::del_one ()
     try
     {
         create_schema (FdoGeometricType_Point, false, false);
-        FdoPtr<FdoIInsert> insert = (FdoIInsert*)mConnection->CreateCommand (FdoCommandType_Insert);
+
+		// Do insert/delete on 1st connection
+		FdoIConnection *mConnection1 = ShpTests::GetConnection ();
+		ShpTests::sLocation = LOCATION;
+		mConnection1->SetConnectionString (L"DefaultFileLocation=" LOCATION);
+		CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == mConnection1->Open ());
+
+		// Do select on 2nd connection
+        FdoIInsert *insert = (FdoIInsert*)mConnection1->CreateCommand (FdoCommandType_Insert);
         insert->SetFeatureClassName (L"Test");
         FdoPtr<FdoPropertyValueCollection> values = insert->GetPropertyValues ();
 
@@ -246,10 +254,11 @@ void DeleteTests::del_one ()
         expression = (FdoValueExpression*)FdoExpression::Parse (L"'1147 Trafford Drive'");
         value = FdoPropertyValue::Create (L"Street", expression);
         values->Add (value);
-        FdoPtr<FdoGeometryValue> geometry = (FdoGeometryValue*)FdoExpression::Parse (L"GEOMFROMTEXT ('POINT XY ( 999000 -999000 )')");
-        value = FdoPropertyValue::Create (L"Geometry", geometry);
+        FdoPtr<FdoGeometryValue> geometry1 = (FdoGeometryValue*)FdoExpression::Parse (L"GEOMFROMTEXT ('POINT XY ( 999000 -999000 )')");
+        value = FdoPropertyValue::Create (L"Geometry", geometry1);
         values->Add (value);
         FdoPtr<FdoIFeatureReader> reader = insert->Execute ();
+
         while (reader->ReadNext ())
         {
             if (index > 2)
@@ -265,8 +274,8 @@ void DeleteTests::del_one ()
         expression = (FdoValueExpression*)FdoExpression::Parse (L"'2611 Misener Crescent'");
         value = FdoPropertyValue::Create (L"Street", expression);
         values->Add (value);
-        geometry = (FdoGeometryValue*)FdoExpression::Parse (L"GEOMFROMTEXT ('POINT XY ( 324.65 7687.0 )')");
-        value = FdoPropertyValue::Create (L"Geometry", geometry);
+        FdoPtr<FdoGeometryValue> geometry2 = (FdoGeometryValue*)FdoExpression::Parse (L"GEOMFROMTEXT ('POINT XY ( 324.65 7687.0 )')");
+        value = FdoPropertyValue::Create (L"Geometry", geometry2);
         values->Add (value);
         reader = insert->Execute ();
         while (reader->ReadNext ())
@@ -284,8 +293,8 @@ void DeleteTests::del_one ()
         expression = (FdoValueExpression*)FdoExpression::Parse (L"'99 Rockcliffe Place'");
         value = FdoPropertyValue::Create (L"Street", expression);
         values->Add (value);
-        geometry = (FdoGeometryValue*)FdoExpression::Parse (L"GEOMFROMTEXT ('POINT XY ( 2828.26 78127.83 )')");
-        value = FdoPropertyValue::Create (L"Geometry", geometry);
+        FdoPtr<FdoGeometryValue> geometry3 = (FdoGeometryValue*)FdoExpression::Parse (L"GEOMFROMTEXT ('POINT XY ( 2828.26 78127.83 )')");
+        value = FdoPropertyValue::Create (L"Geometry", geometry3);
         values->Add (value);
         reader = insert->Execute ();
         while (reader->ReadNext ())
@@ -299,24 +308,78 @@ void DeleteTests::del_one ()
         if (2 > index)
             CPPUNIT_FAIL ("too few features inserted");
 
-        // delete feature # 2
-        FdoPtr<FdoIDelete> del = (FdoIDelete*)mConnection->CreateCommand (FdoCommandType_Delete);
+		int refsi = insert->Release();
+		CPPUNIT_ASSERT_MESSAGE ("Leaking insert cmd", refsi == 0);
+
+
+		///////////// Delete
+        FdoIDelete* del = (FdoIDelete*)mConnection1->CreateCommand (FdoCommandType_Delete);
         del->SetFeatureClassName (L"Test");
         wchar_t buffer[1024];
         swprintf (buffer, ELEMENTS(buffer), L"FeatId = %d", featids[1]);
         del->SetFilter (FdoPtr<FdoFilter>(FdoFilter::Parse (buffer)));
         FdoInt32 n = del->Execute ();
 
+		// Cleanup conn1
+		del->Release();
+		mConnection1->Close();
+		int refs1 = mConnection1->Release();
+
+		////////////////////
+        FdoPtr<FdoFgfGeometryFactory> agf = FdoFgfGeometryFactory::GetInstance();
+
+		// Do select on 2nd connection
+		FdoIConnection *mConnection2 = ShpTests::GetConnection ();
+		ShpTests::sLocation = LOCATION;
+		mConnection2->SetConnectionString (L"DefaultFileLocation=" LOCATION);
+		CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == mConnection2->Open ());
+
         // check by doing a select
-        FdoPtr<FdoISelect> select = (FdoISelect*)mConnection->CreateCommand (FdoCommandType_Select);
+		FdoISelect *select = (FdoISelect*)mConnection2->CreateCommand (FdoCommandType_Select);
         select->SetFeatureClassName (L"Test");
-        reader = select->Execute ();
-        CPPUNIT_ASSERT_MESSAGE ("not enough features", reader->ReadNext ());
-        CPPUNIT_ASSERT_MESSAGE ("wrong feat id", featids[0] == reader->GetInt32 (L"FeatId"));
-        CPPUNIT_ASSERT_MESSAGE ("not enough features", reader->ReadNext ());
-        CPPUNIT_ASSERT_MESSAGE ("wrong feat id", featids[2] == reader->GetInt32 (L"FeatId"));
-        CPPUNIT_ASSERT_MESSAGE ("still features left", !reader->ReadNext ());
-        reader->Close ();
+
+ 		FdoIFeatureReader *reader2 = select->Execute ();
+
+        // Check feature #1:
+        CPPUNIT_ASSERT_MESSAGE ("not enough features", reader2->ReadNext ());
+        CPPUNIT_ASSERT_MESSAGE ("wrong feat id", featids[0] == reader2->GetInt32 (L"FeatId"));
+        CPPUNIT_ASSERT_MESSAGE ("wrong id", 24 == reader2->GetDouble(L"Id"));
+        FdoStringP streetVal = reader2->GetString(L"Street");
+        CPPUNIT_ASSERT_MESSAGE ("wrong street", streetVal == L"1147 Trafford Drive");
+        FdoPtr<FdoByteArray> geomRead1 = reader2->GetGeometry(L"Geometry");
+        FdoPtr<FdoByteArray> geomWritten1 = geometry1->GetGeometry();
+        FdoPtr<FdoIGeometry> geomRead1B = agf->CreateGeometryFromFgf(geomRead1);
+        FdoPtr<FdoIGeometry> geomWritten1B = agf->CreateGeometryFromFgf(geomWritten1);
+        CPPUNIT_ASSERT_MESSAGE ("wrong geometry", ShpTests::GeometriesEquivalent(geomRead1B, geomWritten1B));
+
+        // Check feature #3:
+        CPPUNIT_ASSERT_MESSAGE ("not enough features", reader2->ReadNext ());
+        CPPUNIT_ASSERT_MESSAGE ("wrong feat id", featids[2] == reader2->GetInt32 (L"FeatId"));
+        CPPUNIT_ASSERT_MESSAGE ("wrong id", 46 == reader2->GetDouble(L"Id"));
+        streetVal = reader2->GetString(L"Street");
+        CPPUNIT_ASSERT_MESSAGE ("wrong street", streetVal == L"99 Rockcliffe Place");
+        FdoPtr<FdoByteArray> geomRead3 = reader2->GetGeometry(L"Geometry");
+        FdoPtr<FdoByteArray> geomWritten3 = geometry3->GetGeometry();
+        FdoPtr<FdoIGeometry> geomRead3B = agf->CreateGeometryFromFgf(geomRead3);
+        FdoPtr<FdoIGeometry> geomWritten3B = agf->CreateGeometryFromFgf(geomWritten3);
+        CPPUNIT_ASSERT_MESSAGE ("wrong geometry", ShpTests::GeometriesEquivalent(geomRead3B, geomWritten3B));
+
+        // Make sure nothing is left:
+        CPPUNIT_ASSERT_MESSAGE ("still features left", !reader2->ReadNext ());
+
+		// Cleanup
+        reader2->Close ();
+		reader2->Release();
+		select->Release();
+		mConnection2->Close();
+		int refs2 = mConnection2->Release();
+
+		CPPUNIT_ASSERT_MESSAGE ("Leaking connections2", refs2 == 0);
+
+		// NOTE: to test the file Compression after delete: 
+		// 1) run only this test. 
+		// 2) comment out CleanUpClass() etc. in TearDown().
+		// 3) check the /testing/Test.shp with ESRI viewers.
     }
     catch (FdoException* ge) 
     {
@@ -410,6 +473,7 @@ void DeleteTests::del_without_dbf ()
         reader = selectCmd->Execute();
         featIDs[1000];
         featIDCount = 0;
+
         while (reader->ReadNext())
         {
             FdoInt32 id = reader->GetInt32(L"FeatId");

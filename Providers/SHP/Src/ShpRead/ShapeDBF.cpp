@@ -15,6 +15,13 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 * 
+ * Revision Control Modification History
+ *
+ *         $Id: //providers_reliant_sp2/Shp/src/ShpRead/ShapeDBF.cpp#1 $
+ *     $Author: lee $
+ *   $DateTime: 2006/06/02 11:06:52 $
+ *     $Change: 13046 $
+ *
  */
 
 #include "stdafx.h"
@@ -450,15 +457,18 @@ void ShapeDBF::SetRowAt (RowData* row, int nRecord, bool batch)
         if (!SetFilePointer64 ((FdoInt64)(m_nRecordStart + (nRecord * m_DBFHeader.wRecordSize))))
             throw FdoCommonFile::LastErrorToException (L"ShapeDBF::SetRowAt(SetFilePointer64)");
 
-        // add an end of file marker if we are writing a new record
         length = m_DBFHeader.wRecordSize;
-        if (nRecord >= m_DBFHeader.nRecords)
-        {
-            ((char*)(row->mBuffer))[length] = END_OF_FILE;
-            length++;
-        }
-        if (!WriteFile (row->mBuffer, length))
+		if (!WriteFile (row->mBuffer, length))
             throw FdoCommonFile::LastErrorToException (L"ShapeDBF::SetRowAt(WriteBuffer)");
+
+        // add an end of file marker if we are writing a new record
+		if (nRecord >= m_DBFHeader.nRecords)
+        {
+            char eof = END_OF_FILE;
+			if (!WriteFile (&eof, 1))
+				throw FdoCommonFile::LastErrorToException (L"ShapeDBF::SetRowAt(WriteBuffer)");
+		}
+
         if (nRecord >= m_DBFHeader.nRecords)
         {
             m_DBFHeader.nRecords++;

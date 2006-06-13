@@ -68,7 +68,7 @@ FdoInt32 ShpUpdateCommand::Execute ()
         FdoPtr<ShpLpClassDefinition> lpClass = ShpSchemaUtilities::GetLpClassDefinition (mConnection, class_name);
         FdoPtr<FdoClassDefinition> logicalClass = lpClass->GetLogicalClass();
         fileset = lpClass->GetPhysicalFileSet ();
-		ShpConnection *connection = (ShpConnection *)GetConnection();
+		FdoPtr<ShpConnection> connection = (ShpConnection *)GetConnection();
 		lastFileset = connection->GetLastEditedFileSet();
 
 		// Attempt to open the fileset in write mode. It fails in case other process is doing update.
@@ -103,7 +103,7 @@ FdoInt32 ShpUpdateCommand::Execute ()
 
             FdoCommonMiscUtil::HandleReadOnlyAndDefaultValues(logicalClass, values, false);
 
-            fileset->PutData (FdoPtr<ShpConnection>((ShpConnection*)GetConnection()), FdoPtr<FdoIdentifier> (GetFeatureClassName ())->GetName(), 
+            fileset->PutData (connection, FdoPtr<FdoIdentifier> (GetFeatureClassName ())->GetName(), 
                 values, row, shape);
             ret++;
         }

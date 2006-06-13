@@ -62,8 +62,8 @@ FdoSpatialOperations* ShpFilterCapabilities::GetSpatialOperations (FdoInt32& len
         FdoSpatialOperations_Inside,
         FdoSpatialOperations_EnvelopeIntersects,
         FdoSpatialOperations_Intersects,
-        FdoSpatialOperations_Contains,
-        FdoSpatialOperations_Disjoint
+        //FdoSpatialOperations_Contains, /* Scoped out */
+        //FdoSpatialOperations_Disjoint  /* Scoped out */
     };
 
     length = sizeof (operations) / sizeof (FdoSpatialOperations);

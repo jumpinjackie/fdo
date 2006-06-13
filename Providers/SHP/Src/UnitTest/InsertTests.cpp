@@ -22,13 +22,16 @@
 
 #include <FdoSpatial.h>
 #include <FdoCommonFile.h>
+#include <ShapeCPG.h> 
 
 #ifdef _WIN32
 #define LOCATION L"..\\..\\TestData\\Testing"
 #define SCHEMA_NAME L"\\schema.xml"
+#define CPG_NAME L"\\Test.cpg"
 #else
 #define LOCATION L"../../TestData/Testing"
 #define SCHEMA_NAME L"/schema.xml"
+#define CPG_NAME L"/Test.cpg"
 #endif
 
 CPPUNIT_TEST_SUITE_REGISTRATION (InsertTests);
@@ -250,10 +253,257 @@ void InsertTests::create_schema (FdoGeometricType type, bool elevation, bool mea
 	SaveSchema(mConnection);
 }
 
-void InsertTests::insert ()
+
+void InsertTests::insert_with_locale ()
+{
+	char  locale[50];
+	strcpy(locale, setlocale(LC_ALL, ""));
+	printf("locale= %s\n", locale);
+
+#ifdef _WIN32
+	insert_locale(locale, ".28591", L"88591", L"sgshlweeppa");
+	insert_locale(locale, "English", L"1252", L"sgshlweeppa");
+	insert_locale(locale, "French", L"1252",  L"\x00E9l\x00E9ments");
+	insert_locale(locale, "Japanese", L"932", L"\x30F3\x30C6\x30F3\x30C4\x304C\x3042\x308B\x30C7\x30A3\x30EC\x30AF\x30C8\x30EA");
+
+#else
+	insert_locale(locale, "en_US.iso88591", L"88591", L"sgshlweeppa");
+	insert_locale(locale, "en_US.utf8", L"UTF-8", L"sgshlweeppa");
+	insert_locale(locale, "fr_FR.iso88591", L"88591",  L"\x00E9l\x00E9ments");
+	insert_locale(locale, "ja_JP.eucjp", L"EUC", L"\x30F3\x30C6\x30F3\x30C4\x304C\x3042\x308B\x30C7\x30A3\x30EC\x30AF\x30C8\x30EA");
+#endif
+}
+
+
+void InsertTests::insert_locale (char *orig_locale, char *new_locale, FdoString *expected_cpg, const wchar_t *a_value )
+{
+    printf("..locale: %s \n", new_locale);
+    try
+    {
+		setlocale(LC_ALL, new_locale);
+
+		// Creates fileset plus .CPG
+		create_schema (FdoGeometricType_Point, true, true);
+
+		int status;
+
+		// This throws exception if not found.
+		ShapeCPG  *cpg = new ShapeCPG( LOCATION CPG_NAME, status );
+
+		// Restore the locale.  
+		setlocale(LC_ALL, orig_locale);
+
+		FdoString *esriCodepage = (FdoString *)cpg->GetCodePage();
+        CPPUNIT_ASSERT_MESSAGE ("incorrect value for ESRI codepage", wcscmp( esriCodepage, expected_cpg)==0);
+		delete cpg;
+
+        FdoPtr<FdoIInsert> insert = (FdoIInsert*)mConnection->CreateCommand (FdoCommandType_Insert);
+        insert->SetFeatureClassName (L"TheSchema:Test");
+        FdoPtr<FdoPropertyValueCollection> values = insert->GetPropertyValues ();
+        FdoPtr<FdoValueExpression> expression = (FdoValueExpression*)ShpTests::ParseByDataType(L"24", FdoDataType_Decimal);
+        FdoPtr<FdoPropertyValue> value = FdoPropertyValue::Create (L"Id", expression);
+        values->Add (value);
+
+		FdoStringP  a_value2 = FdoStringP::Format(L"'%ls'", a_value);
+        expression = (FdoValueExpression*)FdoExpression::Parse ((FdoString *)a_value2);
+        value = FdoPropertyValue::Create (L"Street", expression);
+        values->Add (value);
+        // add NULL geometry value:
+        FdoPtr<FdoGeometryValue> geometry = FdoGeometryValue::Create ();
+        geometry->SetNullValue ();
+        value = FdoPropertyValue::Create (L"Geometry", geometry);
+        values->Add (value);
+        FdoPtr<FdoIFeatureReader> reader = insert->Execute ();
+        FdoInt32 featid;
+        featid = -1;
+        while (reader->ReadNext ())
+        {
+            if (-1 != featid)
+                CPPUNIT_FAIL ("too many features inserted");
+            featid = reader->GetInt32 (L"FeatId");
+        }
+        reader->Close ();
+        if (-1 == featid)
+            CPPUNIT_FAIL ("too few features inserted");
+
+        CPPUNIT_ASSERT_MESSAGE("featid should be 1-based", featid==1);
+
+
+        // check by doing a select
+        FdoPtr<FdoISelect> select = (FdoISelect*)mConnection->CreateCommand (FdoCommandType_Select);
+        select->SetFeatureClassName (L"TheSchema:Test");
+
+        reader = select->Execute ();
+
+        while (reader->ReadNext ())
+        {
+
+            CPPUNIT_ASSERT_MESSAGE ("incorrect featid nullness", !reader->IsNull (L"FeatId"));
+            CPPUNIT_ASSERT_MESSAGE ("incorrect featid value", featid == reader->GetInt32 (L"FeatId"));
+            CPPUNIT_ASSERT_MESSAGE ("incorrect id nullness", !reader->IsNull (L"Id"));
+            CPPUNIT_ASSERT_MESSAGE ("incorrect id value", 24 == reader->GetDouble (L"Id"));
+            CPPUNIT_ASSERT_MESSAGE ("incorrect street nullness", !reader->IsNull (L"Street"));
+            CPPUNIT_ASSERT_MESSAGE ("incorrect street value", 0 == wcscmp (a_value, reader->GetString (L"Street")));
+            CPPUNIT_ASSERT_MESSAGE ("incorrect area value", reader->IsNull (L"Area"));
+            CPPUNIT_ASSERT_MESSAGE ("incorrect vacant value", reader->IsNull (L"Vacant"));
+            CPPUNIT_ASSERT_MESSAGE ("incorrect birthday value", reader->IsNull (L"Birthday"));
+            CPPUNIT_ASSERT_MESSAGE ("incorrect geometry value", reader->IsNull (L"Geometry"));
+        }
+        reader->Close ();
+
+        // close and reopen the connection
+        mConnection->Close ();
+        CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == mConnection->Open ());
+
+        // check by doing a select
+        select = (FdoISelect*)mConnection->CreateCommand (FdoCommandType_Select);
+        select->SetFeatureClassName (L"Test");
+        reader = select->Execute ();
+        while (reader->ReadNext ())
+        {
+            CPPUNIT_ASSERT_MESSAGE ("incorrect featid value", featid == reader->GetInt32 (L"FeatId"));
+            CPPUNIT_ASSERT_MESSAGE ("incorrect id value", 24 == reader->GetDouble (L"Id"));
+            CPPUNIT_ASSERT_MESSAGE ("incorrect street value", 0 == wcscmp (a_value, reader->GetString (L"Street")));
+            CPPUNIT_ASSERT_MESSAGE ("incorrect area value", reader->IsNull (L"Area"));
+            CPPUNIT_ASSERT_MESSAGE ("incorrect vacant value", reader->IsNull (L"Vacant"));
+            CPPUNIT_ASSERT_MESSAGE ("incorrect birthday value", reader->IsNull (L"Birthday"));
+            CPPUNIT_ASSERT_MESSAGE ("incorrect geometry value", reader->IsNull (L"Geometry"));
+        }
+        reader->Close ();
+    }
+    catch (FdoException* ge) 
+    {
+        fail (ge);
+    }
+}
+
+void InsertTests::wide2multibyte(char *mb, wchar_t *in, int cpgWin, char *cpgLinux)
+{		
+	// This is a macro!
+#ifdef _WIN32
+	wide_to_multibyte_cpg(mb,in,cpgWin);
+#else
+	wide_to_multibyte_cpg(mb,in,cpgLinux);
+#endif
+}
+
+
+void InsertTests::wide2mbPerformaceTest()
 {
     try
     {
+	int N=100000;
+	wchar_t in[] = L"\x30F3\x30C6\x30F3\x30C4\x304C\x3042\x308B\x30C7\x30A3\x30EC\x30AF\x30C8\x30EA";
+
+	char	out[200];
+	size_t  outsize = 200;
+
+	/////////////// Test setlocale() //////////////////////////
+
+	clock_t start = clock();
+	for (int i=0; i < N; i++)
+	{
+		char save[50];
+
+		char *locale =setlocale(LC_CTYPE, "");
+		strcpy(save, locale);
+#ifdef _WIN32	
+		setlocale(LC_CTYPE, ".51932");
+#else
+ 		setlocale(LC_CTYPE, "ja_JP.eucjp");
+#endif                                                                                                                          
+		wcstombs(out, in, outsize);
+
+		setlocale(LC_CTYPE, save);
+	}
+
+	clock_t end = clock();
+	double  passed =  (double)(end-start)/CLOCKS_PER_SEC;
+	printf("passed wcstombs: %lf (%lf per sec)\n", passed, passed/N);
+
+	/////////////// Wide_to_multibyte_cpg() //////////////////////////
+	start = clock();
+	for (int i=0; i < N; i++)
+	{
+		char *mb=NULL;
+#ifdef _WIN32
+		wide2multibyte(mb,in, 932, NULL);
+#else
+		wide2multibyte(mb,in, -1, "EUC-JP");
+#endif
+	}
+
+	end = clock();
+	passed =  (double)(end-start)/CLOCKS_PER_SEC;
+	printf("passed w2m_cpg: %lf (%lf per sec)\n", passed, passed/N);
+	
+	/////////////// Test native conversion with codepage
+	start = clock();
+#ifdef _WIN32
+	// Test WideCharToMultiByte() 
+	const wchar_t* p = (in);
+	size_t s = wcslen (p);
+	s++;
+	char *mb = (char*)malloc (s * 6);
+
+	for (int i=0; i < N; i++)
+	{
+		int k = WideCharToMultiByte (
+			932, // Japanese
+			0,
+			p,
+			(int)s,
+			mb,
+			(int)s * 6,
+			NULL,
+			NULL);
+	}
+	delete[] mb;
+	
+	end = clock();
+	passed =  (double)(end-start)/CLOCKS_PER_SEC;
+	printf("passed WideCharToMultiByte(): %lf (%lf per sec)\n", passed, passed/N);
+
+#else
+	/// Test iconv() 
+	for (int i=0; i < N; i++)
+	{
+		iconv_t cd = iconv_open( "EUC-JP", "WCHAR_T"); 
+	
+		if (cd == (iconv_t)-1)
+			CPPUNIT_FAIL ("iconv_open() failed");
+	
+		size_t  insize = (wcslen(in) + 1)* sizeof(wchar_t);
+		size_t  insize2 = insize;
+		char  *w = (char *)in;
+		char  *mb = (char *)out;
+		size_t outsize2 = outsize;
+		
+		size_t s = iconv(cd, (char**)&w, &insize2, (char**)&mb,
+		&outsize2 ); 
+		
+		iconv_close(cd);
+
+		if (s == (size_t)-1)
+			CPPUNIT_FAIL ("iconv() failed");			
+	}
+
+	end = clock();
+	passed =  (double)(end-start)/CLOCKS_PER_SEC;
+	printf("passed iconv: %lf (%lf per sec)\n", passed, passed/N);
+
+#endif
+   }
+   catch (FdoException* ge) 
+   {
+       	fail (ge);
+   }
+}
+
+void InsertTests::insert ()
+{
+   try
+   {
         create_schema (FdoGeometricType_Point, true, true);
 
         FdoPtr<FdoIInsert> insert = (FdoIInsert*)mConnection->CreateCommand (FdoCommandType_Insert);

@@ -28,6 +28,9 @@
 #include <../ShpRead/ColumnInfo.h>
 #include <../Overrides/FdoShpXmlGlobals.h>
 #include <time.h>
+#ifndef _WIN32
+#include <locale.h>
+#endif
 
 ShpLpClassDefinition::ShpLpClassDefinition(void)
 {
@@ -209,6 +212,7 @@ void ShpLpClassDefinition::ConvertLogicalToPhysical(
     size_t length;
     wchar_t* dbfFilename;
     wchar_t* shpFilename;
+	wchar_t* cpgFilename;
 
     VALIDATE_ARGUMENT(configLogicalClass);
 
@@ -310,6 +314,12 @@ void ShpLpClassDefinition::ConvertLogicalToPhysical(
         wcscpy (dbfFilename, directory);
         wcscat (dbfFilename, physicalFilename);
         wcscat (dbfFilename, DBF_EXTENSION);
+
+		// Build cpgFilename:
+        cpgFilename = (wchar_t*)alloca (sizeof(wchar_t) * (length + wcslen (CPG_EXTENSION) + 1));
+        wcscpy (cpgFilename, directory);
+        wcscat (cpgFilename, physicalFilename);
+        wcscat (cpgFilename, CPG_EXTENSION);
     }
     else
     {
@@ -384,10 +394,17 @@ void ShpLpClassDefinition::ConvertLogicalToPhysical(
         }
 
         // create the files:
-        if (m_physicalColumns != NULL)
+        if (m_physicalColumns != NULL) 
+		{
             ShapeDBF _dbf (dbfFilename, m_physicalColumns);
+
+			if (configClassMapping == NULL )
+				ShapeCPG _cpg (cpgFilename, setlocale(LC_ALL, NULL ));
+		}
+
         if (geometry != NULL)
             ShapeFile _shp (shpFilename, shape_type, geometry->GetHasMeasure ());
+	
 
         // Create the physical FileSet:
         FdoString* base = ShpFileSet::CreateBaseName (shpFilename);
@@ -431,6 +448,7 @@ void ShpLpClassDefinition::Delete(ShpConnection* connection)
     wchar_t* shx_name;
     wchar_t* idx_name;
     wchar_t* prj_name;
+	wchar_t* cpg_name;
 
 	bool rc;
     fileset = GetPhysicalFileSet ();
@@ -474,6 +492,16 @@ void ShpLpClassDefinition::Delete(ShpConnection* connection)
         prj->CloseFile ();
         FdoCommonFile::Delete (prj_name);
     }
+
+	// Close and delete the CPG file:
+    ShapeCPG* cpg = fileset->GetCpgFile ();
+	if ( cpg != NULL )
+	{
+		cpg_name = (wchar_t*)alloca (sizeof (wchar_t) * (1 + wcslen (cpg->FileName ())));
+		wcscpy (cpg_name, cpg->FileName ());
+		cpg->CloseFile ();
+		rc = FdoCommonFile::Delete (cpg_name);
+	}
 
 	// Mark de files as deleted in aid of its destructor
 	fileset->SetFilesDeleted();

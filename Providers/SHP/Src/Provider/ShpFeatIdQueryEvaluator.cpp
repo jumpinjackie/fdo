@@ -38,6 +38,9 @@
 #define max(a,b)             ((a) > (b) ? (a) : (b))
 #endif
 
+#define	SHP_DEBUG_PARSE_TREE  false
+#define SHP_DEBUG_MAX_LIST_SIZE	50
+
 ShpFeatIdQueryEvaluator::ShpFeatIdQueryEvaluator()
 {    
 }
@@ -74,6 +77,9 @@ ShpFeatIdQueryEvaluator::ShpFeatIdQueryEvaluator(FdoIReader* reader, FdoClassDef
 
     m_LogicalIdentityPropertyName = idProp->GetName();
     m_MergedFeatidList = NULL;
+	m_MergedFeatidListLeaf = NULL;
+	
+	m_level = 0;
 }
 
 ShpFeatIdQueryEvaluator::~ShpFeatIdQueryEvaluator()
@@ -133,8 +139,23 @@ void ShpFeatIdQueryEvaluator::ProcessBinaryLogicalOperator(FdoBinaryLogicalOpera
 
     // Initialize an entry in the list of results
     m_LogicalOpsList.push_back( filter.GetOperation() );
+	m_LeftRightOpsList.push_back( 0 );
+
+	if (SHP_DEBUG_PARSE_TREE)
+		printf("L:level=%d  op=%d  | %ls \n", m_level, (int)filter.GetOperation(), left->ToString());
+
+	m_level++;
 
     left->Process (this);
+
+	if (SHP_DEBUG_PARSE_TREE)
+		printf("R:level=%d  op=%d  | %ls \n", m_level, (int)filter.GetOperation(), right->ToString());
+
+	m_level++;
+
+	m_LogicalOpsList.push_back( filter.GetOperation() );
+	m_LeftRightOpsList.push_back( 1 );
+
     right->Process(this);
 }
 
@@ -144,6 +165,13 @@ void ShpFeatIdQueryEvaluator::ProcessUnaryLogicalOperator (FdoUnaryLogicalOperat
 
     // Initialize an entry in the list of results
     m_LogicalOpsList.push_back( ShpUnaryLogicalOperation_Not );
+	m_LeftRightOpsList.push_back( 0 );
+
+	if (SHP_DEBUG_PARSE_TREE)
+		printf("L:level=%d  op=%d  | %ls \n", m_level, (int)filter.GetOperation(), right->ToString());
+
+	m_level++;
+
     right->Process(this);
 }
 
@@ -158,7 +186,9 @@ void ShpFeatIdQueryEvaluator::ProcessComparisonCondition(FdoComparisonCondition&
 
     // Initialize an entry in the list of results
     interval_res*    results = new interval_res;
+
     results->op = filter.GetOperation(); 
+	results->depth = m_level - 1;
     recno_list*  retFeatNum = &results->queryResults;
 
     FdoInt32    featid = ProcessInt32Expression( right );
@@ -176,6 +206,8 @@ void ShpFeatIdQueryEvaluator::ProcessInCondition(FdoInCondition& filter)
     // Initialize an entry in the list of results
     interval_res*    results = new interval_res;
     results->op = ShpComparisonOperation_In; 
+	results->depth = m_level - 1;
+
     recno_list*  retFeatNum = &results->queryResults;
 
     for ( int i = 0; i < vals->GetCount(); i++ )
@@ -234,9 +266,10 @@ void ShpFeatIdQueryEvaluator::ProcessSpatialCondition(FdoSpatialCondition& filte
         if ( spatialOp != FdoSpatialOperations_EnvelopeIntersects &&
             spatialOp != FdoSpatialOperations_Within &&
             spatialOp != FdoSpatialOperations_Inside &&
-            spatialOp != FdoSpatialOperations_Intersects &&
-            spatialOp != FdoSpatialOperations_Contains && 
-            spatialOp != FdoSpatialOperations_Disjoint ) 
+            spatialOp != FdoSpatialOperations_Intersects 
+            //spatialOp != FdoSpatialOperations_Contains && /* Scoped out */
+            //spatialOp != FdoSpatialOperations_Disjoint	/* Scoped out */
+			) 
             throw FdoException::Create (NlsMsgGet(SHP_SI_OPERATOR_NOT_SUPPORTED, "The spatial operation %1$ls is not supported.", (FdoString*)(FdoCommonMiscUtil::FdoSpatialOperationsToString (spatialOp))));
 
         // Build spatial index.
@@ -246,6 +279,8 @@ void ShpFeatIdQueryEvaluator::ProcessSpatialCondition(FdoSpatialCondition& filte
         interval_res*    results = new interval_res;
 
         results->op = ShpComparisonOperation_In;
+		results->depth = m_level - 1;
+
         recno_list*  retFeatNum = &results->queryResults;
 
         results->searchArea.xMin = searchArea.xMin;
@@ -293,6 +328,8 @@ void ShpFeatIdQueryEvaluator::ProcessSpatialCondition(FdoSpatialCondition& filte
             interval_res*    results = new interval_res;
 
             results->op = ShpComparisonOperation_In;
+			results->depth = m_level - 1;
+
             recno_list*  secFilterList = &results->queryResults;
 
             FdoPtr<ShpLpClassDefinition> shpLpClassDef = ShpSchemaUtilities::GetLpClassDefinition(m_Connection, m_Class->GetName());
@@ -499,107 +536,170 @@ bool  ShpFeatIdQueryEvaluator::MergeFeatidLists( size_t maxAllowedSize, int maxR
     if ( aproxListSize > maxAllowedSize )
         return false;
 
-    //Results available in lists;
-    retno_lists::iterator       iter_comp_op = m_FeatidLists.end();
-    logical_op_list::iterator   iter_logical_op  = m_LogicalOpsList.end();
-    int                         curr_logical_op = ShpLogicalOperation_None;
+	if (SHP_DEBUG_PARSE_TREE)
+		PrintFlattenParseTree();
 
-    // Evaluate each filter
-    for (; iter_comp_op != m_FeatidLists.begin(); )
+	long	last_leaf_index = (long)m_FeatidLists.size() - 1;
+	bool	isSimpleExpr = (m_LeftRightOpsList.size() == 0);
+	bool	first_leaf = true;
+
+	// Find the beginnig of the leaf. Start from the deepest one.
+	for ( ; last_leaf_index >= 0; last_leaf_index-- ) 
+	{
+		interval_res*		curr_filter = m_FeatidLists[ last_leaf_index ];
+		int                 curr_comp_op = curr_filter->op;
+		recno_list*         featid_list = &curr_filter->queryResults;
+		int					depth = curr_filter->depth;
+		
+		if ( isSimpleExpr || m_LeftRightOpsList[depth] == 0 ) // Left
+		{	
+			if (SHP_DEBUG_PARSE_TREE)
+				printf("--Process expression depth %d\n", depth );
+
+			// Process the current leaf expression
+			for ( size_t i = last_leaf_index; i < m_FeatidLists.size(); i++ )
+			{
+				interval_res*		curr_filter2 = m_FeatidLists[i];
+				int					depth2 = curr_filter2->depth;
+
+				// Done when hitting a Left leaf already processed
+				if ( i != last_leaf_index && ( !isSimpleExpr && m_LeftRightOpsList[depth2] == 0 ) )
+					break;
+
+				if (SHP_DEBUG_PARSE_TREE) {
+					if ( !isSimpleExpr )
+						printf("\tProcess node depth %d: logicalOp=%d  (%c)\n", depth2, m_LogicalOpsList[depth2],
+														m_LeftRightOpsList[depth2] == 0 ? 'L' : 'R');
+				}
+
+				int	 curr_logical_op = ( (i == last_leaf_index) || isSimpleExpr ) ?
+											ShpLogicalOperation_None : m_LogicalOpsList[depth2];
+
+				ProcessLeafExpession( curr_filter2, curr_logical_op, maxRecords );
+			}
+
+			// Use current binary logical operation to merge the current leaf result to the global list
+			if ( first_leaf )
+			{
+				m_MergedFeatidList = new recno_list;
+				m_MergedFeatidList = FeatidListsUnion( m_MergedFeatidList, m_MergedFeatidListLeaf );		
+			}
+			else
+			{
+				// Extract the Logical operation between 2 leafs
+				int		depth3 = ( last_leaf_index == 0 )?  0 : depth-1;
+
+				switch ( m_LogicalOpsList[depth3])
+				{
+				case FdoBinaryLogicalOperations_And:
+					m_MergedFeatidList = FeatidListsIntersection( m_MergedFeatidList, m_MergedFeatidListLeaf );
+					break;
+				case FdoBinaryLogicalOperations_Or:
+					m_MergedFeatidList = FeatidListsUnion( m_MergedFeatidList, m_MergedFeatidListLeaf );
+					break;
+				default:
+					throw FdoException::Create (L"Invalid logical operation type");
+				}
+			}
+			
+			first_leaf = false;
+		}
+	}
+
+	if (SHP_DEBUG_PARSE_TREE) 
+	{
+		recno_list*  featid_list = m_MergedFeatidList;
+		printf("RESULT:[");
+
+		if ( featid_list != NULL ) 
+		{
+			for ( ULONG i = 0; i < m_MergedFeatidList->size() && i < SHP_DEBUG_MAX_LIST_SIZE; i++)
+			{
+				printf("%ld,", (*featid_list)[i] + 1); // FDO featids are 1 based
+			}
+			printf("%s", (m_MergedFeatidList->size() >= SHP_DEBUG_MAX_LIST_SIZE) ? "...]\n" : "]\n");
+		} else {
+			printf("NULL]\n");
+		}
+	}
+
+	return true;
+}
+		
+void ShpFeatIdQueryEvaluator::ProcessLeafExpession( interval_res* curr_filter, int curr_logical_op, int maxRecords )
+{
+    int                 curr_comp_op = curr_filter->op;
+    recno_list*         featid_list = &curr_filter->queryResults;
+
+
+    if ( featid_list->size() != 0 )
     {
-        iter_comp_op--;
+        FdoInt32            featId = (*featid_list->begin());
 
-        interval_res*       curr_filter = *iter_comp_op; // rename
-        int                 curr_comp_op = curr_filter->op;
-        recno_list*         featid_list = &curr_filter->queryResults;
+        recno_list*         tmp_list = new recno_list;
 
-        // Unary logical operator NOT? Process and advance.
-        if ( curr_logical_op == ShpUnaryLogicalOperation_Not )
+        switch ( curr_comp_op )
         {
-            m_MergedFeatidList = FeatidListNegate( m_MergedFeatidList, maxRecords );
-            if ( iter_logical_op != m_LogicalOpsList.begin() )
-                curr_logical_op = (*--iter_logical_op);
+        case FdoComparisonOperations_EqualTo : 
+            tmp_list->push_back( featId );
+            break;
+        case FdoComparisonOperations_NotEqualTo : 
+            for ( FdoInt32 i = 0; i < maxRecords; i++ )
+            {
+                if ( i != featId )
+                    tmp_list->push_back( i );
+            }
+            break;
+        case FdoComparisonOperations_GreaterThan : 
+            for ( FdoInt32 i = featId + 1; i < maxRecords; i++ )
+                tmp_list->push_back( i );
+            break;
+        case FdoComparisonOperations_GreaterThanOrEqualTo : 
+            for ( FdoInt32 i = featId; i < maxRecords; i++ )
+                tmp_list->push_back( i );
+            break;
+        case FdoComparisonOperations_LessThan : 
+            for ( FdoInt32 i = 0; i < featId; i++ )
+                tmp_list->push_back( i );
+            break;
+        case FdoComparisonOperations_LessThanOrEqualTo : 
+            for ( FdoInt32 i = 0; i <= featId; i++ )
+                tmp_list->push_back( i );
+            break;
+        case ShpComparisonOperation_In: // In or Spatial query candidates
+            for ( recno_list::iterator iter = featid_list->begin(); iter != featid_list->end(); iter++)
+                tmp_list->push_back( *iter );
+            break;
+        case FdoComparisonOperations_Like :
+        default:
+            throw FdoException::Create (L"Invalid comparison operation type");
         }
 
-        if ( featid_list->size() != 0 )
+        // Use current binary logical operation to merge the current list
+        switch ( curr_logical_op )
         {
-            FdoInt32            featId = (*featid_list->begin());
-
-            recno_list*         tmp_list = new recno_list;
-
-            switch ( curr_comp_op )
-            {
-            case FdoComparisonOperations_EqualTo : 
-                tmp_list->push_back( featId );
-                break;
-            case FdoComparisonOperations_NotEqualTo : 
-                for ( FdoInt32 i = 0; i < maxRecords; i++ )
-                {
-                    if ( i != featId )
-                        tmp_list->push_back( i );
-                }
-                break;
-            case FdoComparisonOperations_GreaterThan : 
-                for ( FdoInt32 i = featId + 1; i < maxRecords; i++ )
-                    tmp_list->push_back( i );
-                break;
-            case FdoComparisonOperations_GreaterThanOrEqualTo : 
-                for ( FdoInt32 i = featId; i < maxRecords; i++ )
-                    tmp_list->push_back( i );
-                break;
-            case FdoComparisonOperations_LessThan : 
-                for ( FdoInt32 i = 0; i < featId; i++ )
-                    tmp_list->push_back( i );
-                break;
-            case FdoComparisonOperations_LessThanOrEqualTo : 
-                for ( FdoInt32 i = 0; i <= featId; i++ )
-                    tmp_list->push_back( i );
-                break;
-            case ShpComparisonOperation_In: // In or Spatial query candidates
-                for ( recno_list::iterator iter = featid_list->begin(); iter != featid_list->end(); iter++)
-                    tmp_list->push_back( *iter );
-                break;
-            case FdoComparisonOperations_Like :
-            default:
-                throw FdoException::Create (L"Invalid comparison operation type");
-            }
-
-            // Use current binary logical operation to merge the current list
-            switch ( curr_logical_op )
-            {
-            case FdoBinaryLogicalOperations_And:
-                m_MergedFeatidList = FeatidListsIntersection( m_MergedFeatidList, tmp_list );
-                break;
-            case FdoBinaryLogicalOperations_Or:
-                m_MergedFeatidList = FeatidListsUnion( m_MergedFeatidList, tmp_list );
-                break;
-            case ShpLogicalOperation_None:
-                m_MergedFeatidList = tmp_list;  // No merging if first time.     
-                break;
-            default:
-                throw FdoException::Create (L"Invalid logical operation type");
-            }
+        case FdoBinaryLogicalOperations_And:
+            m_MergedFeatidListLeaf = FeatidListsIntersection( m_MergedFeatidListLeaf, tmp_list );
+            break;
+        case FdoBinaryLogicalOperations_Or:
+            m_MergedFeatidListLeaf = FeatidListsUnion( m_MergedFeatidListLeaf, tmp_list );
+            break;
+        case ShpLogicalOperation_None:
+            m_MergedFeatidListLeaf = tmp_list;  // No merging if first time.     
+            break;
+        default:
+            throw FdoException::Create (L"Invalid logical operation type");
         }
+		
+		if ( (m_LogicalOpsList.size() != 0 ) && m_LogicalOpsList[curr_filter->depth] == ShpUnaryLogicalOperation_Not )
+			m_MergedFeatidListLeaf = FeatidListNegate( m_MergedFeatidListLeaf, maxRecords );
 
-
-        // Advance in the list of logical operations
-        if ( iter_logical_op != m_LogicalOpsList.begin() )
-            curr_logical_op = (*--iter_logical_op);
     }
-
-    if ( curr_logical_op == ShpUnaryLogicalOperation_Not )
-        m_MergedFeatidList = FeatidListNegate( m_MergedFeatidList, maxRecords );
-
-    return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 size_t ShpFeatIdQueryEvaluator::EvaluateMergedListSize( int maxRecords )
 {
-    ////Results available in lists;
-    //retno_lists*        intervals = mFilterExecutor->GetFeatidLists();
-    //logical_op_list*    logical_ops = mFilterExecutor->GetFeatidFilterOpsList();
-
     retno_lists::iterator       iter_comp_op = m_FeatidLists.end();
     logical_op_list::iterator   iter_logical_op  = m_LogicalOpsList.end();
     int                         curr_logical_op = ShpLogicalOperation_None;
@@ -685,3 +785,25 @@ size_t ShpFeatIdQueryEvaluator::EvaluateMergedListSize( int maxRecords )
     return aproxListSize;
 }
 
+
+void ShpFeatIdQueryEvaluator::PrintFlattenParseTree()
+{
+    for (retno_lists::iterator iter_comp_op = m_FeatidLists.begin(); iter_comp_op != m_FeatidLists.end(); iter_comp_op++ )
+    {
+        interval_res*		curr_filter = *iter_comp_op; 
+        int                 curr_comp_op = curr_filter->op;
+        recno_list*         featid_list = &curr_filter->queryResults;
+		int					depth = curr_filter->depth;
+
+		if ( m_LogicalOpsList.size() > 0 )
+			printf("binaryOp=%d  logicalOp=%d  depth=%d (%c)\n", curr_comp_op, m_LogicalOpsList[depth],depth, 
+															m_LeftRightOpsList[depth] == 0 ? 'L' : 'R');
+
+		// Print values
+		for ( ULONG i = 0; i < featid_list->size() && i < SHP_DEBUG_MAX_LIST_SIZE; i++)
+		{
+			printf("%ld,", (long) ((*featid_list)[i] + 1)); // Featids are 1 based
+		}
+		printf("%s", (featid_list->size() >= SHP_DEBUG_MAX_LIST_SIZE) ? "...\n" : "\n");
+	}
+}

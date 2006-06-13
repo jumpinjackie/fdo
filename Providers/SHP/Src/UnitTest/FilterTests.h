@@ -13,6 +13,13 @@
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * Revision Control Modification History
+ *
+ *         $Id: //providers_reliant_sp2/Shp/src/UnitTest/FilterTests.h#1 $
+ *     $Author: lee $
+ *   $DateTime: 2006/06/02 11:06:52 $
+ *     $Change: 13046 $
+ *
  */
 
 #ifndef FILTERTESTS_H
@@ -33,6 +40,7 @@ class FilterTests :
     CPPUNIT_TEST (greater);
     CPPUNIT_TEST (not_equal);
     CPPUNIT_TEST (in);
+	CPPUNIT_TEST (combined);
     CPPUNIT_TEST (is_null);
     CPPUNIT_TEST (arithmetic_expression);
     CPPUNIT_TEST (logical_expression);
@@ -42,7 +50,7 @@ class FilterTests :
     CPPUNIT_TEST (computed_geometry);
 	CPPUNIT_TEST (non_existent_featid);
     CPPUNIT_TEST (featid_optimizer_tests );
-    CPPUNIT_TEST (featid_performance_tests);
+ //   CPPUNIT_TEST (featid_performance_tests);
     CPPUNIT_TEST_SUITE_END ();
 
     static FdoPtr<FdoIConnection> mConnection;
@@ -59,6 +67,7 @@ protected:
     void greater ();
     void not_equal ();
     void in ();
+	void combined ();
     void is_null ();
     void arithmetic_expression ();
     void logical_expression ();
@@ -71,7 +80,7 @@ protected:
     void featid_performance_tests();
 
 private:
-    int FilterTests::featid_roads_query (FdoString* query, int numRuns);
+    int FilterTests::featid_roads_query (FdoString* query, int numRuns, int numExpected = -1, long *featidsExpected = NULL);
 };
 
 #endif // FILTERTESTS_H

@@ -41,6 +41,7 @@ const wchar_t DBF_EXTENSION[5] = L".dbf";
 const wchar_t SHX_EXTENSION[5] = L".shx";
 const wchar_t IDX_EXTENSION[5] = L".idx";
 const wchar_t PRJ_EXTENSION[5] = L".prj";
+const wchar_t CPG_EXTENSION[5] = L".cpg";
 
 const wchar_t DEFAULT_SCHEMA_XML[11] = L"schema.xml";
 const wchar_t DEFAULT_SCHEMA_NAME[14] = L"Default";

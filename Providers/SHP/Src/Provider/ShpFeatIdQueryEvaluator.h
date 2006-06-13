@@ -89,6 +89,8 @@ private:
     recno_list*             FeatidListsIntersection( recno_list* left, recno_list* right );
     recno_list*             FeatidListNegate( recno_list* list, int maxRecords);
     size_t                  EvaluateMergedListSize( int maxRecords );
+	void					ProcessLeafExpession( interval_res* curr_filter, int curr_logical_op, int maxRecords );
+	void					PrintFlattenParseTree();
 
     FdoGeometricPropertyDefinition* FindGeomProp(FdoClassDefinition* classDef);
 
@@ -100,7 +102,10 @@ private:
     ShpSpatialIndex*        m_RTree;  
     retno_lists             m_FeatidLists;
     logical_op_list         m_LogicalOpsList;
+	left_right_op_list		m_LeftRightOpsList;
     recno_list*             m_MergedFeatidList;
+	recno_list*             m_MergedFeatidListLeaf;
+	int						m_level;
 };
 #endif
 

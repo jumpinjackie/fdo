@@ -123,9 +123,10 @@ void ShpQueryOptimizer::ProcessSpatialCondition(FdoSpatialCondition& filter)
         if ( spatialOp != FdoSpatialOperations_EnvelopeIntersects &&
             spatialOp != FdoSpatialOperations_Within &&
             spatialOp != FdoSpatialOperations_Inside &&
-            spatialOp != FdoSpatialOperations_Intersects &&
-            spatialOp != FdoSpatialOperations_Contains && 
-            spatialOp != FdoSpatialOperations_Disjoint ) 
+            spatialOp != FdoSpatialOperations_Intersects
+            //spatialOp != FdoSpatialOperations_Contains && /* Scoped out */
+            //spatialOp != FdoSpatialOperations_Disjoint	/* Scoped out */
+			) 
             throw FdoException::Create (NlsMsgGet(SHP_SI_OPERATOR_NOT_SUPPORTED, "The spatial operation %1$ls is not supported.", (FdoString*)(FdoCommonMiscUtil::FdoSpatialOperationsToString (spatialOp))));
 
         int     nStatus;

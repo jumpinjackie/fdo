@@ -375,11 +375,13 @@ void FileAccessTests::delete_shp ()
     CPPUNIT_ASSERT_MESSAGE("dbf file not deleted", FdoCommonFile::Delete (ROOT_DATA_PATH L"Ontario\\Test.dbf"));
     CPPUNIT_ASSERT_MESSAGE("shx file not deleted", FdoCommonFile::Delete (ROOT_DATA_PATH L"Ontario\\Test.shx"));
     CPPUNIT_ASSERT_MESSAGE("idx file not deleted", FdoCommonFile::Delete (ROOT_DATA_PATH L"Ontario\\Test.idx"));
+	CPPUNIT_ASSERT_MESSAGE("cpg file not deleted", FdoCommonFile::Delete (ROOT_DATA_PATH L"ontario\\Test.cpg"));
 #else
     CPPUNIT_ASSERT_MESSAGE("shp file not deleted", FdoCommonFile::Delete (ROOT_DATA_PATH L"Ontario/Test.shp"));
     CPPUNIT_ASSERT_MESSAGE("dbf file not deleted", FdoCommonFile::Delete (ROOT_DATA_PATH L"Ontario/Test.dbf"));
     CPPUNIT_ASSERT_MESSAGE("shx file not deleted", FdoCommonFile::Delete (ROOT_DATA_PATH L"Ontario/Test.shx"));
     CPPUNIT_ASSERT_MESSAGE("idx file not deleted", FdoCommonFile::Delete (ROOT_DATA_PATH L"Ontario/Test.idx"));
+	CPPUNIT_ASSERT_MESSAGE("cpg file not deleted", FdoCommonFile::Delete (ROOT_DATA_PATH L"ontario/Test.cpg"));
 #endif
 }
 

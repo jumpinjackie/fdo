@@ -37,6 +37,7 @@ typedef std::vector<FdoInt32> recno_list;
 
 typedef struct  {
     int             op;             //FdoComparisonOperations + ShpComparisonOperation_In
+	int				depth;			// Index in the flatten parse tree
     FdoIGeometry*   geom;
     BoundingBox     searchArea;
     recno_list      queryResults;
@@ -54,7 +55,7 @@ enum eShapeQueryOptimizerOp
 
 typedef std::vector<int>  logical_op_list;   // FdoBinaryLogicalOperations + ShpLogicalOperation_None
 
-
+typedef std::vector<int>  left_right_op_list; // 0 (left) or 1 (right)
 
 class ShpFilterExecutor :
     public FdoCommonFilterExecutor

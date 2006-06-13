@@ -272,6 +272,15 @@ void SpatialFilterTests::Inside()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void SpatialFilterTests::Intersects()
+{
+    FdoSpatialOperations spOp = FdoSpatialOperations_Intersects;
+
+    int count1 = runSpatialQuery( CLASS_NAME_ROADS, FdoSpatialOperations_Intersects, SHP_POINTS1, ELEMENTS(SHP_POINTS1));
+    CPPUNIT_ASSERT_MESSAGE ("Wrong number of selected features", count1 == 3);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int SpatialFilterTests::runSpatialQueryWithPolygonFromFile( FdoString* class_name1, FdoSpatialOperations spOp, FdoString* class_name2 )
 {
     if ( spOp == FdoSpatialOperations_EnvelopeIntersects )
@@ -288,6 +297,11 @@ int SpatialFilterTests::runSpatialQueryWithPolygonFromFile( FdoString* class_nam
     {
         if (VERBOSE)
             printf( "  .Inside\n");
+    }
+    else if ( spOp == FdoSpatialOperations_Intersects )
+    {
+        if (VERBOSE)
+            printf( "  .Intersects\n");
     }
     else
     {
@@ -361,7 +375,7 @@ void SpatialFilterTests::Crosses()
 }
 
 // unsupported spatial operation
-void SpatialFilterTests::Intersects()
+void SpatialFilterTests::Touches()
 {
     try
     {
@@ -377,7 +391,7 @@ void SpatialFilterTests::Intersects()
 		}			
 		wprintf (L"\nNumber of features returned: %ld", count);
 		reader->Close ();
-        CPPUNIT_FAIL ("no exception for FdoSpatialOperations_Crosses");
+        CPPUNIT_FAIL ("no exception for FdoSpatialOperations_Touches");
     }
     catch (FdoException* ge)
     {
