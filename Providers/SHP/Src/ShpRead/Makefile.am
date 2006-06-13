@@ -28,6 +28,7 @@ libSHPRead_la_SOURCES = \
   PolyShape.cpp \
   RowData.cpp \
   Shape.cpp \
+  ShapeCPG.cpp \
   ShapeDBF.cpp \
   ShapePRJ.cpp \
   ShapeFileBase.cpp \
