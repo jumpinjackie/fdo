@@ -1,0 +1,104 @@
+/*
+ * Copyright (C) 2004-2006  Autodesk, Inc.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of version 2.1 of the GNU Lesser
+ * General Public License as published by the Free Software Foundation.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Revision Control Modification History
+ *
+ *  $HeadURL: http://svn.hobu.net/frank/GdalFile/src/Provider/FdoRfpStreamReaderRGB24.h $
+ *   $Author: fwarmerdam $
+ *     $Date: 2006-01-25 14:22:51 -0500 (Wed, 25 Jan 2006) $
+ * $Revision: 23 $
+ *
+ */
+#ifndef FDORFPSTREAMREADERRGB24_H
+#define FDORFPSTREAMREADERRGB24_H
+
+#ifdef _WIN32
+#pragma once
+#endif //_WIN32
+
+class FdoRfpBandRaster;
+
+class FdoRfpStreamReaderRGB24 : public FdoBLOBStreamReader
+{
+    friend class FdoRfpBandRaster;
+//
+// date members
+//
+private:
+    FdoPtr<FdoBLOBStreamReader>	m_baseRGB32Reader;
+    FdoByte						m_cached[2];
+    FdoInt32					m_cachedCount;
+
+//
+// Constructor(s), desctrucotr, factory function(s)
+//
+protected:
+    FdoRfpStreamReaderRGB24(FdoIStreamReader* streamReader);
+    virtual ~FdoRfpStreamReaderRGB24();
+    void Dispose() { delete this; }
+
+//
+// Exposed functions
+//
+public:
+
+    /// <summary>Get the size of a stream.</summary>
+    /// <returns>Returns the size of the data source in number of items </returns> 
+    virtual FdoInt64   GetLength();   
+
+    /// <summary> Skips a number of items </summary>
+    /// <param name="offset">Number of items to skip. Must be a positive number </param> 
+    /// <returns>Returns nothing </returns> 
+    virtual void       Skip(const FdoInt32 offset);  
+      
+    /// <summary> Get the current index in the stream </summary>
+    /// <returns>Returns the current index in the stream in number of items </returns> 
+    virtual FdoInt64   GetIndex();  
+
+    /// <summary> Reset the current index in the stream. Allows re-reading </summary>
+    /// <returns>Returns nothing </returns> 
+    virtual void       Reset();      
+     
+    /// <summary> Reads in the next block of items. Use ReadNext( buffer) to read in 
+    /// the entire stream. </summary>
+    /// <param name="buffer"> Buffer holding data read in </param> 
+    /// <param name="offset"> Index in the buffer indicating the beginning of the output buffer. 
+    /// The caller is responsable for allocating a buffer of a proper size. </param> 
+    /// <param name="count">  Number of items to be read in. If -1 read the entire stream.
+    /// Throws "invalid parameter"  exception if not a positive value or -1.</param> 
+    /// <returns> Returns the number of items actually read in. When 0 (zero) then the 
+    /// end-of-stream was reached. </returns> 
+
+    virtual FdoInt32   ReadNext( FdoByte* buffer, 
+                                 const FdoInt32 offset,
+                                 const FdoInt32 count = -1);
+
+    /// </summary> Reads in the next block of items. Use ReadNext( buffer) to read in 
+    /// the entire stream. The caller is responsible to create/dispose the FdoArray. </summary>
+    /// <param name="buffer"> FdoArray object holding data read in. Cannot be NULL </param> 
+    /// <param name="offset"> Index in the array indicating the beginning of the output buffer. 
+    /// If the end of the buffer, then read in appending mode (store at the end). 
+    /// Otherwise, overwrite the buffer. Throws "invalid parameter" exception if not in this range.</param> 
+    /// <param name="count">  Number of items to be read in. If -1 read the entire stream.
+    ///  Throws "invalid parameter"  exception if not a positive value or -1.</param> 
+    /// <returns> Returns number of items read.</returns> 
+    virtual FdoInt32    ReadNext(  FdoArray<FdoByte> * &buffer, 
+                                   const FdoInt32 offset,
+                                   const FdoInt32 count = -1 ); 
+	
+};
+
+#endif
