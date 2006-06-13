@@ -137,7 +137,9 @@ FdoSmPhReaderP FdoSmPhRdMySqlConstraintReader::MakeReader(
 
     FdoStringP ownerName = owner->GetName();
  
-    FdoStringP sqlString = L"select tc.constraint_name as constraint_name,\n"
+    FdoStringP sqlString = FdoStringP::Format( 
+      L"select tc.constraint_name as constraint_name,\n"
+      L" tc.table_name as table_name,\n"
       L" kcu.column_name as column_name\n"
       L" from INFORMATION_SCHEMA.table_constraints tc, INFORMATION_SCHEMA.key_column_usage kcu\n"
       L" where (tc.constraint_schema = kcu.constraint_schema\n"
@@ -145,9 +147,11 @@ FdoSmPhReaderP FdoSmPhRdMySqlConstraintReader::MakeReader(
       L"     and tc.table_schema = kcu.table_schema\n"
       L"     and tc.table_name = kcu.table_name\n"
       L"     and tc.table_schema = ?\n"
-      L"     and tc.table_name = ?\n"
+      L"     %ls\n"
       L"     and tc.constraint_type = 'UNIQUE')\n"
-      L" order by constraint_name";
+      L" order by table_name, constraint_name",
+      (tableName != L"") ? L"and tc.table_name = ?" : L""
+    );
 
     // Create a field object for each field in the select list.
     FdoSmPhRowsP rows = new FdoSmPhRowCollection();
@@ -161,6 +165,12 @@ FdoSmPhReaderP FdoSmPhRdMySqlConstraintReader::MakeReader(
         row, 
         L"constraint_name",
         row->CreateColumnDbObject(L"constraint_name",false)
+    );
+
+    field = new FdoSmPhField(
+        row, 
+        L"table_name",
+        row->CreateColumnDbObject(L"table_name",false)
     );
 
     field = new FdoSmPhField(
@@ -180,13 +190,15 @@ FdoSmPhReaderP FdoSmPhRdMySqlConstraintReader::MakeReader(
 
     field->SetFieldValue(ownerName);
 
-    field = new FdoSmPhField(
-        binds,
-        L"table_name",
-        binds->CreateColumnDbObject(L"table_name",false)
-    );
+    if ( tableName != L"" ) {
+        field = new FdoSmPhField(
+            binds,
+            L"table_name",
+            binds->CreateColumnDbObject(L"table_name",false)
+        );
 
-    field->SetFieldValue(tableName);
+        field->SetFieldValue(tableName);
+    }
 
 //TODO: cache this query to make full use of the binds.
     FdoSmPhRdGrdQueryReader* reader =
