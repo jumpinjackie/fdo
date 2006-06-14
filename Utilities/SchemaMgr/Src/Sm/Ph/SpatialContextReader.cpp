@@ -79,7 +79,7 @@ FdoSmPhReaderP FdoSmPhSpatialContextReader::MakeReader( FdoSmPhMgrP mgr )
         }
         else {
             // F_SPATIALCONTEXT does not exist; read from native physical schema.
-            pSubReader = MakeRdReader( rows, mgr );
+            pSubReader = MakeRdReader( mgr );
         }
     // }
 
@@ -91,8 +91,9 @@ FdoSmPhReaderP FdoSmPhSpatialContextReader::MakeMtReader( FdoSmPhRowsP rows, Fdo
     return new FdoSmPhMtSpatialContextReader( rows, mgr );
 }
 
-FdoSmPhReaderP FdoSmPhSpatialContextReader::MakeRdReader( FdoSmPhRowsP rows, FdoSmPhMgrP mgr )
+FdoSmPhReaderP FdoSmPhSpatialContextReader::MakeRdReader( FdoSmPhMgrP mgr )
 {
-    return new FdoSmPhRdSpatialContextReader( rows, mgr );
+	// Caller should check for NULL.
+    return (FdoSmPhReader*) NULL; //mgr->CreateRdSpatialContextReader();
 }
 

@@ -20,19 +20,89 @@
 #include <Sm/Ph/Rd/SpatialContextReader.h>
 #include <Sm/Ph/Table.h>
 
-FdoSmPhRdSpatialContextReader::FdoSmPhRdSpatialContextReader(
-    FdoSmPhRowsP froms, 
-    FdoSmPhMgrP mgr
+FdoSmPhRdSpatialContextReader::FdoSmPhRdSpatialContextReader()
+{
+}
 
-) :
-	FdoSmPhReader(mgr, froms)
+FdoSmPhRdSpatialContextReader::FdoSmPhRdSpatialContextReader(FdoSmPhMgrP mgr) :
+	FdoSmPhReader(mgr, (FdoSmPhRowCollection*) NULL )  
 {
     // If this class is overridden, one can use "mgr" to access any
     // spatial metaschema information in the datastore.
 }
 
+
 FdoSmPhRdSpatialContextReader::~FdoSmPhRdSpatialContextReader(void)
 {
+}
+
+FdoString* FdoSmPhRdSpatialContextReader::GetName()
+{
+	return L"Default";
+}
+
+FdoString* FdoSmPhRdSpatialContextReader::GetDescription()
+{
+	return L"Default Database Spatial Context";
+}
+
+FdoStringP FdoSmPhRdSpatialContextReader::GetGeomTableName()
+{
+	return L"";
+}
+
+FdoStringP FdoSmPhRdSpatialContextReader::GetGeomColumnName()
+{
+	return L"";
+}
+
+FdoInt32 FdoSmPhRdSpatialContextReader::GetDimensionality()
+{
+	return -1;
+}
+
+FdoString* FdoSmPhRdSpatialContextReader::GetCoordinateSystem()
+{
+	return L"";
+}
+
+FdoString* FdoSmPhRdSpatialContextReader::GetCoordinateSystemWkt()
+{
+	return L"";
+}
+
+FdoInt64 FdoSmPhRdSpatialContextReader::GetSrid()
+{
+	return 0;
+}
+
+FdoSpatialContextExtentType FdoSmPhRdSpatialContextReader::GetExtentType()
+{
+	return FdoSpatialContextExtentType_Static;
+}
+
+FdoByteArray* FdoSmPhRdSpatialContextReader::GetExtent()
+{
+	FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+    FdoPtr<FdoIEnvelope>          env = gf->CreateEnvelopeXY( -2000000, -2000000, 2000000, 2000000 );
+    FdoPtr<FdoIGeometry> geom = gf->CreateGeometry(env); 
+
+    return  (gf->GetFgf(geom));
+}
+
+const double FdoSmPhRdSpatialContextReader::GetXYTolerance()
+{
+	return 0.001;
+}
+
+const double FdoSmPhRdSpatialContextReader::GetZTolerance()
+{
+	return 0.001;
+}
+
+const bool FdoSmPhRdSpatialContextReader::IsActive()
+{
+	return false;
 }
 
 bool FdoSmPhRdSpatialContextReader::ReadNext()
@@ -41,14 +111,9 @@ bool FdoSmPhRdSpatialContextReader::ReadNext()
     // Arrange for a single row (already initialized to the defaults)
     // to be read.
 
-    if ( IsBOF() )
-    {
-        SetBOF(false);
-    }
-    else
-    {
-        SetEOF(true);
-    }
+	// Note the subreader is null and initially eof=true; 
+
+	SetEOF(!IsEOF());
 
     return(!IsEOF());
 }

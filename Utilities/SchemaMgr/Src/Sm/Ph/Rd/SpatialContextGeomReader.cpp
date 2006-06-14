@@ -20,12 +20,11 @@
 #include <Sm/Ph/Rd/SpatialContextGeomReader.h>
 #include <Sm/Ph/Table.h>
 
-FdoSmPhRdSpatialContextGeomReader::FdoSmPhRdSpatialContextGeomReader(
-    FdoSmPhRowsP froms, 
-    FdoSmPhMgrP mgr
+FdoSmPhRdSpatialContextGeomReader::FdoSmPhRdSpatialContextGeomReader() 
+{
+}
 
-) :
-	FdoSmPhReader(mgr, froms)
+FdoSmPhRdSpatialContextGeomReader::FdoSmPhRdSpatialContextGeomReader( FdoSmPhMgrP mgr ) 
 {
     // If this class is overridden, one can use "mgr" to access any
     // spatial metaschema information in the datastore.
@@ -33,6 +32,55 @@ FdoSmPhRdSpatialContextGeomReader::FdoSmPhRdSpatialContextGeomReader(
 
 FdoSmPhRdSpatialContextGeomReader::~FdoSmPhRdSpatialContextGeomReader(void)
 {
+}
+
+FdoStringP FdoSmPhRdSpatialContextGeomReader::GetGeomTableName()
+{
+	return L"";
+}
+
+FdoStringP FdoSmPhRdSpatialContextGeomReader::GetGeomColumnName()
+{
+	return L"";
+}
+
+FdoInt32 FdoSmPhRdSpatialContextGeomReader::GetDimensionality()
+{
+	return -1;
+}
+
+FdoString* FdoSmPhRdSpatialContextGeomReader::GetCoordinateSystem()
+{
+	return L"";
+}
+
+FdoString* FdoSmPhRdSpatialContextGeomReader::GetCoordinateSystemWkt()
+{
+	return L"";
+}
+
+FdoInt64 FdoSmPhRdSpatialContextGeomReader::GetSrid()
+{
+	return 0;
+}
+
+FdoByteArray* FdoSmPhRdSpatialContextGeomReader::GetExtent()
+{
+	FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+    FdoPtr<FdoIEnvelope>          env = gf->CreateEnvelopeXY( -2000000, -2000000, 2000000, 2000000 );
+    FdoPtr<FdoIGeometry> geom = gf->CreateGeometry(env); 
+
+    return  (gf->GetFgf(geom));
+}
+
+const double FdoSmPhRdSpatialContextGeomReader::GetXYTolerance()
+{
+	return 0.001;
+}
+
+const double FdoSmPhRdSpatialContextGeomReader::GetZTolerance()
+{
+	return 0.001;
 }
 
 bool FdoSmPhRdSpatialContextGeomReader::ReadNext()

@@ -79,7 +79,7 @@ FdoSmPhReaderP FdoSmPhSpatialContextGeomReader::MakeReader( FdoSmPhMgrP mgr )
         }
         else {
             // F_SPATIALCONTEXTGEOM does not exist; read from native physical schema.
-            pSubReader = MakeRdReader( rows, mgr );
+            pSubReader = MakeRdReader( mgr );
         }
     // }
 
@@ -91,8 +91,8 @@ FdoSmPhReaderP FdoSmPhSpatialContextGeomReader::MakeMtReader( FdoSmPhRowsP rows,
     return new FdoSmPhMtSpatialContextGeomReader( rows, mgr );
 }
 
-FdoSmPhReaderP FdoSmPhSpatialContextGeomReader::MakeRdReader( FdoSmPhRowsP rows, FdoSmPhMgrP mgr )
+FdoSmPhReaderP FdoSmPhSpatialContextGeomReader::MakeRdReader( FdoSmPhMgrP mgr )
 {
-    return new FdoSmPhRdSpatialContextGeomReader( rows, mgr );
+    return (FdoSmPhReader*) NULL; //new FdoSmPhRdSpatialContextGeomReader( mgr );
 }
 

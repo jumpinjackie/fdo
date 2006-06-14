@@ -151,6 +151,7 @@ class FdoSmPhDependencyWriter;
 class FdoSmPhAssociationWriter;
 class FdoSmPhSADWriter;
 class FdoSmPhSpatialContextWriter;
+class FdoSmPhRdSpatialContextReader;
 class FdoSmPhSpatialContextGroupWriter;
 class FdoSmPhSpatialContextGeomWriter;
 /* TODO
@@ -187,6 +188,9 @@ public:
 
     /// Get reader to retrieve all spatial context associations to geometric properties for the connection.
 	virtual FdoPtr<FdoSmPhSpatialContextGeomReader> CreateSpatialContextGeomReader();
+
+	/// Get reader to retrieve all spatial contexts for the connection (no metaschema).
+	virtual FdoPtr<FdoSmPhRdSpatialContextReader> CreateRdSpatialContextReader();
 
     /// Convert spatial context name to number in RDBMS catalogue.
     /// >= 0 if found, -1 if not found.

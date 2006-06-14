@@ -328,6 +328,11 @@ FdoString* FdoSmLpSpatialContext::Get_CoordinateSystemWkt()
     return mCoordSysWkt;
 }
 
+void FdoSmLpSpatialContext::SetId(FdoInt64 id)
+{
+	mId = id;
+}
+
 void FdoSmLpSpatialContext::SetCoordinateSystemName( FdoString* name )
 {
     mCoordSysName = name;

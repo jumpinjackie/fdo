@@ -33,18 +33,67 @@ class FdoSmPhRdSpatialContextGeomReader : public FdoSmPhReader
 public:
     /// Create and execute the reader
 	FdoSmPhRdSpatialContextGeomReader(
-        FdoSmPhRowsP froms,         // rows and fields to retrieve.
         FdoSmPhMgrP mgr             // Physical Schema Manager
     );
 
     /// Deactivates the query.
 	~FdoSmPhRdSpatialContextGeomReader(void);
 
+    /// Geometry table name
+	virtual FdoStringP GetGeomTableName();
+
+    /// Geometry column name
+	virtual FdoStringP GetGeomColumnName();
+
+    /// Ordinate dimensionality of geometries.
+    virtual FdoInt32 GetDimensionality();
+
+    /// Gets the name of the coordinate system of the spatial context currently
+    /// being read. If the result is a null or empty string, the coordinate system is
+    /// unknown to the spatial context.
+    virtual FdoString* GetCoordinateSystem();
+
+    /// Gets the coordinate system in OpenGIS SRS WKT format of the spatial context currently
+    /// being read. If the result is an empty string, the coordinate system WKT description is
+    /// not available.
+    virtual FdoString* GetCoordinateSystemWkt();
+
+    /// Spatial Reference ID (if not zero, must agree with CrsName).
+	virtual FdoInt64 GetSrid();
+
+    /// Gets the extent of the spatial context currently being read as a byte
+    /// array in AGF format.
+    virtual FdoByteArray* GetExtent();
+
+    /// Gets the tolerance value for XY ordinates of the spatial context
+    /// currently being read. 
+    virtual const double GetXYTolerance();
+
+     /// Gets the tolerance value for Z ordinates of the spatial context
+    /// currently being read. 
+    virtual const double GetZTolerance();
+
     /// Get the next row and make it current.
 	virtual bool ReadNext();
 
 
 protected:
+	FdoSmPhRdSpatialContextGeomReader();
+
+	virtual void Dispose() { delete this; }
+
+	FdoStringP	mGeomTableName;
+	FdoStringP	mGeomColumnName;
+    FdoInt32	mDimensionality;
+
+	FdoStringP	mCSname;
+	FdoStringP	mWKT;
+	FdoInt64	mSrid;
+	double		mTolXY;
+	double		mTolZ;
+
+	FdoPtr<FdoByteArray> mExtents;
+
 private:
 };
 

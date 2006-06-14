@@ -345,6 +345,7 @@ private:
     void AddAssociatedSCChangeError();
     void AddDimensionalityError();
     void AddSCNotFoundError();
+	void AddNoSCFoundError();
     void AddSCTableNotFoundError();
 
     FdoInt32 mGeometryTypes;

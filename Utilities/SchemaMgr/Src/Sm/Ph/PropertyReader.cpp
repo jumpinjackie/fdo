@@ -21,6 +21,7 @@
 #include <Sm/Ph/PropertyWriter.h>
 #include <Sm/Ph/SpatialContextReader.h>
 #include <Sm/Ph/SpatialContextGeomReader.h>
+#include <Sm/Ph/Rd/SpatialContextGeomReader.h>
 #include <Sm/Ph/Mt/PropertyReader.h>
 
 FdoSmPhPropertyReader::FdoSmPhPropertyReader(FdoStringP schemaName, FdoSmPhMgrP mgr) : 
@@ -174,6 +175,7 @@ FdoStringP	FdoSmPhPropertyReader::GetSpatialContextAssociation()
     // spatial context associations.  With the cached value,
     // we sometimes don't get non-default values.
     mScName = L"";
+
     /////////////////
     FdoStringP scName = mScName;
 
@@ -183,18 +185,25 @@ FdoStringP	FdoSmPhPropertyReader::GetSpatialContextAssociation()
 
         if (scId >= 0)
         {
-            FdoSmPhSpatialContextReaderP scReader = this->GetManager()->CreateSpatialContextReader();
-            while (scName.GetLength() <= 0 && scReader->ReadNext())
-            {
-                if (scReader->GetId() == scId)
-                {
-                    scName = scReader->GetName();
-                }
-            }
+			if ( this->GetManager()->GetOwner()->GetHasMetaSchema() )
+			{
+				FdoSmPhSpatialContextReaderP scReader = this->GetManager()->CreateSpatialContextReader();
+				while (scName.GetLength() <= 0 && scReader->ReadNext())
+				{
+					if (scReader->GetId() == scId)
+					{
+						scName = scReader->GetName();
+					}
+				}
+				if (scName.GetLength() <= 0)
+					scName = L"Default";
+			}
+			else
+			{
+				// Foreign schema. This info is read in by SpatialContextReader and cached.
+				// The association is made in FdoSmLpGeometricPropertyDefinition::FixSpatialContextAssociation()
+			}
         }
-
-        if (scName.GetLength() <= 0)
-            scName = L"Default";
 
         mScName = scName;
     }
@@ -210,21 +219,31 @@ FdoInt64	FdoSmPhPropertyReader::GetSpatialContextAssociationId()
     // spatial context associations.  With the cached value,
     // we sometimes don't get non-default values.
     mScId = -1;
+
     /////////////////
 
     FdoInt64 scId = mScId;
 
     if (scId < 0)
     {
-        FdoSmPhSpatialContextGeomReaderP scGeomReader = this->GetManager()->CreateSpatialContextGeomReader();
-        while (scId < 0 && scGeomReader->ReadNext())
-        {
-            if (scGeomReader->GetGeomTableName() == GetTableName() &&
-                scGeomReader->GetGeomColumnName() == GetColumnName())
-            {
-                scId = scGeomReader->GetScId();
-            }
-        }
+		if ( this->GetManager()->GetOwner()->GetHasMetaSchema() )
+		{
+			FdoSmPhSpatialContextGeomReaderP scGeomReader = this->GetManager()->CreateSpatialContextGeomReader();
+			while (scId < 0 && scGeomReader->ReadNext())
+			{
+				if (scGeomReader->GetGeomTableName() == GetTableName() &&
+					scGeomReader->GetGeomColumnName() == GetColumnName())
+				{
+					scId = scGeomReader->GetScId();
+				}
+			}
+		}
+		else
+		{
+			// Foreign schema. This info is read in by SpatialContextReader and cached.
+			// The association is made in FdoSmLpGeometricPropertyDefinition::FixSpatialContextAssociation()
+		}
+
         mScId = scId;
     }
     return scId;

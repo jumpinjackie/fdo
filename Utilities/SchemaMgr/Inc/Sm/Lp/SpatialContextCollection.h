@@ -21,6 +21,7 @@
 #endif
 
 #include <Sm/Lp/SpatialContext.h>
+#include <Sm/Lp/SpatialContextGeom.h>
 #include <Sm/NamedCollection.h>
 
 // Represents a collection of Spatial Contexts in Logical/Physical form.
@@ -63,6 +64,8 @@ public:
 
     void Load();
 
+	FdoSmLpSpatialContextGeomsP  GetSpatialContextGeoms();
+
 protected:
     /// The following two functions create a generic FdoSmLpSpatialContext)
     /// by default. Providers can override to create provider-specific
@@ -88,8 +91,13 @@ protected:
         FdoSmPhMgrP physicalSchema);
 
 private:
+	FdoInt32 FindExistingSC( FdoSmLpSpatialContextP sc );
+
+private:
     bool        mAreLoaded;
 	FdoSmPhMgrP mPhysicalSchema;
+
+	FdoSmLpSpatialContextGeomsP mSpatialContextGeoms;
 };
 
 typedef FdoPtr<FdoSmLpSpatialContextCollection> FdoSmLpSpatialContextsP;

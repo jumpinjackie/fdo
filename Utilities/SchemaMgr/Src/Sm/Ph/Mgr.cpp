@@ -35,11 +35,13 @@
 #include <Sm/Ph/AssociationWriter.h>
 #include <Sm/Ph/SADWriter.h>
 #include <Sm/Ph/SpatialContextWriter.h>
+#include <Sm/Ph/SpatialContextReader.h>
 #include <Sm/Ph/SpatialContextGroupWriter.h>
 #include <Sm/Ph/SpatialContextGeomWriter.h>
 #include <Sm/Ph/Rd/SchemaReader.h>
 #include <Sm/Ph/Rd/ClassReader.h>
 #include <Sm/Ph/Rd/PropertyReader.h>
+#include <Sm/Ph/Rd/SpatialContextReader.h>
 
 /*
 #include <Sm/Ph/IndexWriter.h>
@@ -118,6 +120,11 @@ FdoInt64    FdoSmPhMgr::FindScIdFromName(FdoString * scName)
 FdoPtr<FdoSmPhSpatialContextGeomReader> FdoSmPhMgr::CreateSpatialContextGeomReader()
 {
 	return( new FdoSmPhSpatialContextGeomReader(FDO_SAFE_ADDREF(this)) );
+}
+
+FdoPtr<FdoSmPhRdSpatialContextReader> FdoSmPhMgr::CreateRdSpatialContextReader()
+{
+    return new FdoSmPhRdSpatialContextReader(FDO_SAFE_ADDREF(this) );
 }
 
 FdoPtr<FdoSmPhRdSchemaReader> FdoSmPhMgr::CreateRdSchemaReader( FdoSmPhRowsP rows, FdoSmPhOwnerP owner, bool dsInfo )

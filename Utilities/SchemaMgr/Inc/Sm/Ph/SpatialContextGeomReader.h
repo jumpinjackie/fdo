@@ -67,7 +67,7 @@ protected:
     FdoSmPhReaderP MakeMtReader( FdoSmPhRowsP rows, FdoSmPhMgrP mgr );
 
     /// Create inner reader for Physical Schema (When MetaSchema not present).
-    FdoSmPhReaderP MakeRdReader( FdoSmPhRowsP rows, FdoSmPhMgrP mgr );
+    FdoSmPhReaderP MakeRdReader( FdoSmPhMgrP mgr );
 
 private:
 

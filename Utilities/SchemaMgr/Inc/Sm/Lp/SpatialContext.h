@@ -35,6 +35,8 @@
 // the non-public Spatial Context Groups.
 class FdoSmLpSpatialContext : public FdoSmLpSchemaElement
 {
+	friend class FdoSmLpSpatialContextCollection;
+
 public:
     ~FdoSmLpSpatialContext(void);
 
@@ -112,6 +114,9 @@ protected:
 
     /// Get WKT without tripping Finalize
     FdoString* Get_CoordinateSystemWkt();
+
+    /// Set the ID.
+    void SetId( FdoInt64 id );
 
     /// Set the name.
     void SetCoordinateSystemName( FdoString* name );

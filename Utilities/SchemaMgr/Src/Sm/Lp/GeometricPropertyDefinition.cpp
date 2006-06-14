@@ -121,32 +121,72 @@ FdoSmLpGeometricPropertyDefinition::FdoSmLpGeometricPropertyDefinition(
 
 void FdoSmLpGeometricPropertyDefinition::FixSpatialContextAssociation()
 {
-    if (mAssociatedSCName.GetLength() <= 0)
-    {
-        FdoSmLpSchemasP schemas = GetLogicalPhysicalSchema()->GetSchemas();
-        FdoSmLpSpatialContextsP scs = schemas->GetSpatialContexts();
+    FdoSmLpSchemasP schemas = GetLogicalPhysicalSchema()->GetSchemas();
+    FdoSmLpSpatialContextsP scs = schemas->GetSpatialContexts();
+	bool	hasMeta = GetLogicalPhysicalSchema()->GetPhysicalSchema()->GetOwner()->GetHasMetaSchema();
+	bool	fromConfigDoc = ( GetLogicalPhysicalSchema()->GetPhysicalSchema()->GetConfigDoc() != NULL );
+	bool	found = false;
 
+    if ( !hasMeta && !fromConfigDoc && mAssociatedSCName.GetLength() <= 0 && mAssociatedScId < 0 )
+	{
+		// Look up in the collection of SC geometries associations loaded along the Spatial contexts
+		FdoSmLpSpatialContextGeomsP scgeoms = scs->GetSpatialContextGeoms();
+		if ( scgeoms.p != NULL )
+		{
+			FdoStringP tableName = GetContainingDbObjectName();
+			FdoStringP columnName = GetColumnName();
+
+			for (int i = 0; i < scgeoms->GetCount() && !found; i++ )
+			{
+				FdoSmLpSpatialContextGeomP scgeom = scgeoms->GetItem(i);
+				
+				// Match by name. Also in the case of providers with no metadata.
+				found = ( ( scgeom->GetGeomTableName() == tableName ) && ( scgeom->GetGeomColumnName() == columnName ) ) ||
+						( ( scgeom->GetGeomTableName() == L"" ) &&  ( scgeom->GetGeomColumnName() == L"" ) );
+
+				if ( found ) 
+				{
+					mAssociatedScId  = scgeom->GetScId();
+					FdoSmLpSpatialContextP sc = scs->GetItem((FdoInt32)mAssociatedScId);
+					mAssociatedSCName = sc->GetName();
+				}
+			}
+		}
+	}
+	else if (mAssociatedSCName == L"")
+    {
         if (scs->GetCount() >= 1)
         {
-            // We do not have access to the active spatial context here, so let's
-            // at least pick the default one -- it'll always be the first one,
-            // because the spatial contexts are read in order of numeric ID.
+			// We do not have access to the active spatial context here, so let's
+			// at least pick the default one -- it'll always be the first one,
+			// because the spatial contexts are read in order of numeric ID.
 			// This is true unless the "Default" spatial context was removed/replaced.
-            FdoSmLpSpatialContextP sc = scs->GetItem(0);
+
+            FdoSmLpSpatialContextP sc = scs->GetItem(0); 
             mAssociatedSCName = sc->GetName();
             mAssociatedScId = sc->GetId();
+			found = true;
         }
     }
-    else if (mAssociatedScId < 0)
+    else if (mAssociatedScId < 0 )
     {
-        FdoSmLpSchemasP schemas = GetLogicalPhysicalSchema()->GetSchemas();
-        FdoSmLpSpatialContextsP scs = schemas->GetSpatialContexts();
-
         FdoSmLpSpatialContextP sc = scs->FindItem(mAssociatedSCName);
         if (sc != NULL)
+		{
             mAssociatedScId = sc->GetId();
+			found = true;
+		}
     }
+	else
+	{
+		found = true; // No op, SC assoc. already fixed.
+	}
+
+	// Apparently there are cases when this method is called before the Spatial Contexts are loaded.
+	//if (!found)
+	//	AddSCNotFoundError();
 }
+
 FdoPropertyType FdoSmLpGeometricPropertyDefinition::GetPropertyType() const
 {
 	return FdoPropertyType_GeometricProperty;
@@ -608,17 +648,25 @@ FdoSmPhScInfoP FdoSmLpGeometricPropertyDefinition::CreateSpatialContextInfo()
 {
     FdoSmLpSchemasP schemas = GetLogicalPhysicalSchema()->GetSchemas();
     FdoSmLpSpatialContextsP scs = schemas->GetSpatialContexts();
+    FdoSmPhScInfoP scInfo;
 
     FdoSmLpSpatialContextP sc = scs->FindItem(mAssociatedSCName);
-    if (sc == NULL)
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
 
-    FdoSmPhScInfoP scInfo = FdoSmPhScInfo::Create();
-    scInfo->mSrid = sc->GetSrid();
-    scInfo->mCoordSysName = sc->GetCoordinateSystem();
-    scInfo->mExtent = sc->GetExtent();
-    scInfo->mXYTolerance = sc->GetXYTolerance();
-    scInfo->mZTolerance = sc->GetZTolerance();
+    if ( sc == NULL )
+	{
+		// When metadata exists, then "Default" spatial context should exist
+		if ( GetLogicalPhysicalSchema()->GetPhysicalSchema()->GetOwner()->GetHasMetaSchema() )
+			throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+	}
+	else
+	{
+		scInfo = FdoSmPhScInfo::Create();
+		scInfo->mSrid = sc->GetSrid();
+		scInfo->mCoordSysName = sc->GetCoordinateSystem();
+		scInfo->mExtent = sc->GetExtent();
+		scInfo->mXYTolerance = sc->GetXYTolerance();
+		scInfo->mZTolerance = sc->GetZTolerance();
+	}
 
     return scInfo;
 }
@@ -1075,6 +1123,19 @@ void FdoSmLpGeometricPropertyDefinition::AddAssociatedSCChangeError()
             FdoSmError::NLSGetMessage(
 			    FDO_NLSID(FDOSM_369),
                 GetName() 
+            )
+        )
+    );
+}
+
+void FdoSmLpGeometricPropertyDefinition::AddNoSCFoundError()
+{
+	GetErrors()->Add( FdoSmErrorType_SpatialMismatch, 
+        FdoSchemaException::Create(
+            FdoSmError::NLSGetMessage(
+			    FDO_NLSID(FDOSM_371),
+                GetName(),
+                RefDefiningClass()->GetName()
             )
         )
     );

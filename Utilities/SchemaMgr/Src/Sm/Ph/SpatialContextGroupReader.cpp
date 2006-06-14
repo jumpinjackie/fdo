@@ -138,5 +138,6 @@ FdoSmPhReaderP FdoSmPhSpatialContextGroupReader::MakeMtReader( FdoSmPhRowsP rows
 
 FdoSmPhReaderP FdoSmPhSpatialContextGroupReader::MakeRdReader( FdoSmPhRowsP rows, FdoSmPhMgrP mgr )
 {
-    return new FdoSmPhRdSpatialContextGroupReader( rows, mgr );
+	// The caller should check for NULL 
+    return (FdoSmPhReader *) NULL; //new FdoSmPhRdSpatialContextGroupReader( rows, mgr );
 }
