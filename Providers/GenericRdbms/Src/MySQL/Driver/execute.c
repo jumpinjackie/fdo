@@ -42,7 +42,7 @@ static void print_st_error (MYSQL_STMT *stmt, const char *msg)
 // a "select max (length(<geom_column>)) from ..." and allocate the redefines accordingly.
 // The same apply for blobs.
 
-#define GEOMETRY_MAXIMUM_SIZE 64 * 1024
+#define GEOMETRY_MAXIMUM_SIZE  1 * 1024 * 1024 /* 1MB */
 
 /// <summary>Run through the defines and change geometries to MYSQL_TYPE_BLOB.</summary>
 /// <remark>The actual MYSQL_TYPE_XXX type used doesn't appear to matter.</remark>
