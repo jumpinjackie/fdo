@@ -166,7 +166,7 @@ HRESULT APIENTRY DllUnregisterServer (void)
 }
 #else
 
-const char *RDBMS_LIB_NAME = "libFdoMySQL.so";
+const char *RDBMS_LIB_NAME = "libFdoMySQL";
 #include <link.h>
 #include <wchar.h>
 #include "Fdo/FdoRdbmsMySqlConnection.h"
@@ -193,7 +193,7 @@ wchar_t *getComDir ()
             strcpy (home_dir, current->l_name);
             last = strrchr (home_dir, '/');
             last++; // move past the slash
-            if (strcmp(last, RDBMS_LIB_NAME) == 0)
+            if (strncmp(last, RDBMS_LIB_NAME, strlen(RDBMS_LIB_NAME)) == 0)
             {
                 *last = '\0'; // null terminate it there
                 sprintf(com_dir, "%scom/", home_dir);
