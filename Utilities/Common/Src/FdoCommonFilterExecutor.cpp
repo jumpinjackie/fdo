@@ -1056,8 +1056,8 @@ void FdoCommonFilterExecutor::ProcessFunction (FdoFunction& expr)
         m_retvals.pop_back ();
 
         int type = argLeft->GetDataType ();
-        if ((FdoDataType_Double != type) && (FdoDataType_Single != type))
-            throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_88_INVALID_FUNCTION_ARG_TYPE), 1, name, argLeft->GetDataType(), FdoDataType_String));
+        if ((FdoDataType_Double != type) && (FdoDataType_Single != type) && (FdoDataType_Decimal != type))
+            throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_88_INVALID_FUNCTION_ARG_TYPE), 1, name, FdoCommonMiscUtil::FdoDataTypeToString(argLeft->GetDataType()), FdoDataType_String));
 
         if (argLeft->IsNull())
             m_retvals.push_back (ObtainDoubleValue (true, 0));
@@ -1065,7 +1065,7 @@ void FdoCommonFilterExecutor::ProcessFunction (FdoFunction& expr)
         {
             double d;
 
-            if (FdoDataType_Double == type)
+            if (FdoDataType_Double == type || FdoDataType_Decimal == type)
                 d = ((FdoDoubleValue*)argLeft)->GetDouble ();
             else
                 d = ((FdoSingleValue*)argLeft)->GetSingle ();
@@ -1089,8 +1089,8 @@ void FdoCommonFilterExecutor::ProcessFunction (FdoFunction& expr)
         m_retvals.pop_back ();
 
         int type = argLeft->GetDataType ();
-        if ((FdoDataType_Double != type) && (FdoDataType_Single != type))
-            throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_88_INVALID_FUNCTION_ARG_TYPE), 1, name, argLeft->GetDataType(), FdoDataType_String));
+        if ((FdoDataType_Double != type) && (FdoDataType_Single != type) && (FdoDataType_Decimal != type))
+            throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_88_INVALID_FUNCTION_ARG_TYPE), 1, name, FdoCommonMiscUtil::FdoDataTypeToString(argLeft->GetDataType()), FdoDataType_String));
 
         if (argLeft->IsNull())
             m_retvals.push_back (ObtainDoubleValue (true, 0));
@@ -1098,7 +1098,7 @@ void FdoCommonFilterExecutor::ProcessFunction (FdoFunction& expr)
         {
             double d;
 
-            if (FdoDataType_Double == type)
+            if (FdoDataType_Double == type || FdoDataType_Decimal == type)
                 d = ((FdoDoubleValue*)argLeft)->GetDouble ();
             else
                 d = ((FdoSingleValue*)argLeft)->GetSingle ();
@@ -1122,7 +1122,7 @@ void FdoCommonFilterExecutor::ProcessFunction (FdoFunction& expr)
         m_retvals.pop_back ();
 
         if (FdoDataType_String != argLeft->GetDataType ())
-            throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_88_INVALID_FUNCTION_ARG_TYPE), 1, name, argLeft->GetDataType(), FdoDataType_String));
+            throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_88_INVALID_FUNCTION_ARG_TYPE), 1, name, FdoCommonMiscUtil::FdoDataTypeToString(argLeft->GetDataType()), FdoDataType_String));
 
         if (argLeft->IsNull())
             m_retvals.push_back (ObtainStringValue (true, NULL));
