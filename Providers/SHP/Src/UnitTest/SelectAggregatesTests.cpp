@@ -547,6 +547,77 @@ void SelectAggregatesTests::count ()
     }
 }
 
+void SelectAggregatesTests::ceil_floor ()
+{
+    try
+    {
+        //////////////////////////////////////////////////////////////////////
+        // Create a SHP file:
+        //////////////////////////////////////////////////////////////////////
+
+        FdoString *className  = L"MyClass";
+        FdoString *schemaName = L"MySchema";
+
+        create_schema(schemaName, className, FdoGeometricType_Curve, false, false, true);
+
+
+        //////////////////////////////////////////////////////////////////////
+        // Try numerical function ceil():
+        //////////////////////////////////////////////////////////////////////
+
+        FdoPtr<FdoISelect> select = (FdoISelect*)mConnection->CreateCommand (FdoCommandType_Select);
+
+        select->SetFeatureClassName (className);
+        FdoPtr<FdoIdentifierCollection> selectedIds = select->GetPropertyNames();
+        selectedIds->Clear();
+
+        FdoPtr<FdoComputedIdentifier> cid = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Ceil(LotSize)) AS TestCeil");
+		selectedIds->Add(cid);
+
+		FdoPtr<FdoIReader> datareader = select->Execute ();
+
+		// [2702.7, 10000]
+        long count = 0;
+        while (datareader->ReadNext ())
+        {
+            double result = datareader->GetDouble(L"TestCeil");
+            CPPUNIT_ASSERT_MESSAGE("Ceil wrong", result >= 2703 && result <= 10000);
+            count++;
+        }
+        CPPUNIT_ASSERT_MESSAGE("Wrong count(*) rowcount", count==4);
+        datareader->Close();
+        datareader = NULL;
+
+        //////////////////////////////////////////////////////////////////////
+        // Try numerical function floor():
+        //////////////////////////////////////////////////////////////////////
+        selectedIds = select->GetPropertyNames();
+        selectedIds->Clear();
+
+        cid = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Floor(LotSize)) AS TestFloor");
+		selectedIds->Add(cid);
+
+		datareader = select->Execute ();
+
+		// [2702.7, 10000]
+        count = 0;
+        while (datareader->ReadNext ())
+        {
+            double result = datareader->GetDouble(L"TestFloor");
+            CPPUNIT_ASSERT_MESSAGE("Floor wrong",  result >= 2702 && result <= 10000);
+            count++;
+        }
+        CPPUNIT_ASSERT_MESSAGE("Wrong count(*) rowcount", count==4);
+        datareader->Close();
+        datareader = NULL;
+
+    }
+    catch (FdoException* e)
+    {
+        fail(e);
+    }
+}
+
 void SelectAggregatesTests::select_orderby_decimal ()
 {
     try
