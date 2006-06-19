@@ -1343,6 +1343,7 @@ void ShapeFile::ReadRawDataBlock(ULONG ulStartOffset )
         SHPRecordHeader header = *((SHPRecordHeader *)p);
 
         pRecordInfo->nOffset = nOffset;
+		pRecordInfo->bOffsetValid = true;
 
         // These are stored in BigEndian so they must be swapped
         pRecordInfo->nRecordNumber = SWAPLONG(header.nRecordNumber);
@@ -1354,9 +1355,11 @@ void ShapeFile::ReadRawDataBlock(ULONG ulStartOffset )
         // Make sure the next record's header is available.
         if ( (nOffset - firstRecInfo->nOffset + sizeof(SHPRecordHeader)) > (ULONG)bytesRead )
         {
-            // Did we read this current record entirely (header + content)?  If not, set its offset to -1:
+            // Did we read this current record entirely (header + content)?  If not, invalidate the offset:
             if ( (nOffset - firstRecInfo->nOffset) > (ULONG)bytesRead )
-                pRecordInfo->nOffset = -1L;
+			{
+                pRecordInfo->bOffsetValid = false;
+			}
 
             // We are done reading (we dont have enough bytes to read the next record's header), exit loop:
             break;
@@ -1423,7 +1426,7 @@ BYTE* ShapeFile::GetRowShapeFromCache(ULONG nOffset, int& nRecordNumber)
 
     for ( int i = 0; i < SHP_FILE_READ_CACHE_SIZE && pShapeRecord == NULL; i++ )
     {
-        if (m_ReadRecordsBuffer[i].nOffset == -1L)
+        if (!m_ReadRecordsBuffer[i].bOffsetValid)
             break;
 
         if ( m_ReadRecordsBuffer[i].nOffset == nOffset )
@@ -1447,7 +1450,7 @@ void ShapeFile::ClearRowShapeCache()
     // Mark the slots as unused.
     for ( int i = 0; i < SHP_FILE_READ_CACHE_SIZE; i++)
     {
-        m_ReadRecordsBuffer[i].nOffset = -1L;
+        m_ReadRecordsBuffer[i].bOffsetValid = false;
     }   
 }
 

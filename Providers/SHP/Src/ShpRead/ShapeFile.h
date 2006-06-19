@@ -40,6 +40,7 @@ class ShapeFile : public ShapeFileBase
 
 typedef struct {
     ULONG   nOffset; 
+	bool	bOffsetValid;
     int     nRecordNumber;
     int     nContentLength;
 } SHPRecordInfo;
