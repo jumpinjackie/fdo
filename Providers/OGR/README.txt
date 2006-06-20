@@ -90,6 +90,7 @@ So far the OGR provider has been tested with:
     * MapInfo files (.TAB)
     * Oracle Spatial
     * ESRI personal geodatabase (.mdb)
+    * PostGIS (on PostgreSQL 8.1.4)
 
 Linux platforms tested:
     * Gentoo x64, gcc 3.4
@@ -97,4 +98,4 @@ Linux platforms tested:
 
 ==========================================================
 
-June 12, 2006 Traian Stanev
+June 20, 2006 Traian Stanev
