@@ -1,6 +1,6 @@
 @echo off
 
-SET TYPEACTIONFDO=buildinstall
+SET TYPEACTIONFDO=build
 SET MSACTIONFDO=Build
 SET TYPEBUILDFDO=release
 SET FDOORGPATHFDO=%cd%
@@ -93,7 +93,7 @@ if "%TYPEACTIONFDO%"=="clean" SET MSACTIONFDO=Clean
 if "%TYPEACTIONFDO%"=="install" goto install_files
 
 echo %MSACTIONFDO% %TYPEBUILDFDO% Fdo dlls
-msbuild FDO.sln /t:%MSACTIONFDO% /p:Configuration=%TYPEBUILDFDO% /p:Platform="Win32" /nologo
+msbuild FDO.sln /t:%MSACTIONFDO% /p:Configuration=%TYPEBUILDFDO% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
 if "%TYPEACTIONFDO%"=="build" goto generate_docs
@@ -189,7 +189,7 @@ echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
-echo Action:         -a[ction]=buildinstall(default), build, install, clean
+echo Action:         -a[ction]=build(default), buildinstall, install, clean
 echo BuildDocs:      -d[ocs]=skip(default), build
 echo **************************************************************************
 exit /B 0

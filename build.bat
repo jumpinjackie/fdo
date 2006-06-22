@@ -1,8 +1,6 @@
 @echo off
 
-rem this file should be copied on root
-
-SET TYPEACTION=buildinstall
+SET TYPEACTION=build
 SET TYPEBUILD=release
 SET FDOORGPATH=%cd%
 
@@ -15,7 +13,6 @@ SET ARCENABLE=yes
 SET ODBCENABLE=yes
 SET MYSQLENABLE=yes
 SET FDOENABLE=yes
-SET THPENABLE=yes
 SET DOCENABLE=skip
 SET FDOERROR=0
 
@@ -55,7 +52,6 @@ if "%DEFMODIFY%"=="yes" goto stp1_get_with
 	SET ODBCENABLE=no
 	SET MYSQLENABLE=no
 	SET FDOENABLE=no
-	SET THPENABLE=no
 :stp1_get_with
 if not "%2"=="shp" goto stp2_get_with
 	SET SHPENABLE=yes
@@ -89,11 +85,7 @@ if not "%2"=="fdo" goto stp9_get_with
 	SET FDOENABLE=yes
 	goto next_param
 :stp9_get_with
-if not "%2"=="thirdparty" goto stp10_get_with
-	SET THPENABLE=yes
-	goto next_param
-:stp10_get_with
-if not "%2"=="providers" goto stp11_get_with
+if not "%2"=="providers" goto stp10_get_with
 	SET SHPENABLE=yes
 	SET SDFENABLE=yes
 	SET WFSENABLE=yes
@@ -102,7 +94,7 @@ if not "%2"=="providers" goto stp11_get_with
 	SET ODBCENABLE=yes
 	SET MYSQLENABLE=yes
 	goto next_param
-:stp11_get_with
+:stp10_get_with
 if not "%2"=="all" goto custom_error
 	SET SHPENABLE=yes
 	SET SDFENABLE=yes
@@ -112,7 +104,6 @@ if not "%2"=="all" goto custom_error
 	SET ODBCENABLE=yes
 	SET MYSQLENABLE=yes
 	SET FDOENABLE=yes
-	SET THPENABLE=yes
 goto next_param
 
 :get_docs
@@ -148,6 +139,10 @@ shift
 goto study_params
 
 :start_build
+if ("%FDO%")==("") SET FDO=%cd%\Fdo
+if ("%FDOTHIRDPARTY%")==("") SET FDOTHIRDPARTY=%cd%\Thirdparty
+if ("%FDOUTILITIES%")==("") SET FDOUTILITIES=%cd%\Utilities
+
 if "%TYPEACTION%"=="build" goto start_exbuild
 if "%TYPEACTION%"=="clean" goto start_exbuild
 if not exist "%FDOORGPATH%" mkdir "%FDOORGPATH%"
@@ -194,19 +189,9 @@ if not exist Providers\GenericRdbms\Src\MySQL\build.bat goto study_rebuild
 
 :study_rebuild
 SET PROVCALLCMDEX=%PROVCALLCMDEX%%PROVCALLCMD%
-if "%FDOENABLE%"=="no" goto rebuild_thp
+if "%FDOENABLE%"=="no" goto rebuild_fdo
 SET PROVCALLCMD=%PROVCALLCMD% -w=fdo
 
-rem # Begin thirdparty part #
-:rebuild_thp
-if "%THPENABLE%"=="no" goto rebuild_fdo
-pushd %FDOTHIRDPARTY%
-call build.bat -o="%FDOORGPATH%" -c=%TYPEBUILD% -a=%TYPEACTION% %PROVCALLCMD%
-popd
-if "%FDOERROR%"=="1" goto error
-rem # End thirdparty part #
-
-rem # Begin FDO part #
 :rebuild_fdo
 if "%FDOENABLE%"=="no" goto rebuild_prov
 pushd Fdo
@@ -244,9 +229,9 @@ echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
-echo Action:         -a[ction]=buildinstall(default), build, install, clean
+echo Action:         -a[ction]=build(default), buildinstall, install, clean
 SET MROVBYPROVP=
-SET MPROVECAPABP=WithModule:     -w[ith]=all(default), thirdparty, fdo
+SET MPROVECAPABP=WithModule:     -w[ith]=all(default), fdo
 :shp_check
 if not exist Providers\SHP\build.bat goto sdf_check
 	SET MROVBYPROVP=%MROVBYPROVP%, shp

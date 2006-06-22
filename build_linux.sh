@@ -7,7 +7,6 @@ BUILDDOCS=skip
 
 DEFMODIFY=no
 FDOCOREENABLE=yes
-THRPENABLE=no
 FDOENABLE=no
 UTILENABLE=no
 SHPENABLE=yes
@@ -42,7 +41,7 @@ do
         TYPEACTION=clean
     else
         echo "$arg Invalid parameter $1"
-	exit 1
+    exit 1
     fi
     shift
     ;;
@@ -53,7 +52,7 @@ do
         TYPECONFIGURE=noconfigure
     else
         echo "$arg Invalid parameter $1"
-	exit 1
+    exit 1
     fi
     shift
     ;;
@@ -64,7 +63,7 @@ do
         BUILDDOCS=build
     else
         echo "$arg Invalid parameter $1"
-	exit 1
+    exit 1
     fi
     shift
     ;;
@@ -75,67 +74,64 @@ do
         TYPEBUILD=release
     else
         echo "$arg Invalid parameter $1"
-	exit 1
+    exit 1
     fi
     shift
     ;;
   --w | --with)
-     if test "$DEFMODIFY" == no; then
-	DEFMODIFY=yes
-	FDOCOREENABLE=no
-	THRPENABLE=no
-	FDOENABLE=no
-	SHPENABLE=no
-	SDFENABLE=no
-	WFSENABLE=no
-	WMSENABLE=no
-	ARCENABLE=no
-	RDBMSENABLE=no
-	UTILENABLE=no
-     fi
-     if test -z "$1"; then
-        echo "$arg Invalid parameter $1"
-	exit 1
-     elif test "$1" == all; then
-	FDOCOREENABLE=yes
-	SHPENABLE=yes
-	SDFENABLE=yes
-	WFSENABLE=yes
-	WMSENABLE=yes
-	ARCENABLE=yes
-	RDBMSENABLE=yes
-     elif test "$1" == fdocore; then
-	FDOCOREENABLE=yes
-     elif test "$1" == providers; then
-	SHPENABLE=yes
-	SDFENABLE=yes
-	WFSENABLE=yes
-	WMSENABLE=yes
-	ARCENABLE=yes
-	RDBMSENABLE=yes
-     elif test "$1" == thirdparty; then
-        THRPENABLE=yes
-     elif test "$1" == utilities; then
-        UTILENABLE=yes
-     elif test "$1" == fdo; then
-        FDOENABLE=yes
-     elif test "$1" == shp; then
+    if test "$DEFMODIFY" == no; then
+       DEFMODIFY=yes
+       FDOCOREENABLE=no
+       FDOENABLE=no
+       SHPENABLE=no
+       SDFENABLE=no
+       WFSENABLE=no
+       WMSENABLE=no
+       ARCENABLE=no
+       RDBMSENABLE=no
+       UTILENABLE=no
+    fi
+    if test -z "$1"; then
+       echo "$arg Invalid parameter $1"
+    exit 1
+    elif test "$1" == all; then
+        FDOCOREENABLE=yes
         SHPENABLE=yes
-     elif test "$1" == sdf; then
         SDFENABLE=yes
-     elif test "$1" == wfs; then
         WFSENABLE=yes
-     elif test "$1" == wms; then
         WMSENABLE=yes
-     elif test "$1" == arcsde; then
         ARCENABLE=yes
-     elif test "$1" == rdbms; then
         RDBMSENABLE=yes
-     else
+	elif test "$1" == fdocore; then
+		FDOCOREENABLE=yes
+    elif test "$1" == fdo; then
+        FDOENABLE=yes
+    elif test "$1" == utilities; then
+        UTILENABLE=yes
+    elif test "$1" == providers; then
+        SHPENABLE=yes
+        SDFENABLE=yes
+        WFSENABLE=yes
+        WMSENABLE=yes
+        ARCENABLE=yes
+        RDBMSENABLE=yes
+    elif test "$1" == shp; then
+        SHPENABLE=yes
+    elif test "$1" == sdf; then
+        SDFENABLE=yes
+    elif test "$1" == wfs; then
+        WFSENABLE=yes
+    elif test "$1" == wms; then
+        WMSENABLE=yes
+    elif test "$1" == arcsde; then
+        ARCENABLE=yes
+    elif test "$1" == rdbms; then
+        RDBMSENABLE=yes
+    else
         echo "$arg Invalid parameter $1"
-	exit 1
-     fi
-     shift
+        exit 1
+    fi
+    shift
     ;;
   -*)
     echo "The command option is not recognized: $arg"
@@ -165,7 +161,7 @@ if test "$SHOWHELP" == yes; then
    echo "BuildDocs:       --d[ocs] skip(default), build"
    echo "ConfigMakefiles: --m[akefile] configure(default), noconfigure"
 
-   HELPSTRINGWITH="WithModule:      --w[ith] all(default), fdocore, fdo, thirdparty, utilities, providers"
+   HELPSTRINGWITH="WithModule:      --w[ith] all(default), fdocore, fdo, utilities, providers"
    if test -e "Providers/SHP/build_linux.sh"; then
    HELPSTRINGWITH="$HELPSTRINGWITH, shp"
    fi
@@ -215,9 +211,6 @@ CMDEX="--c $TYPEBUILD --a $TYPEACTION --d $BUILDDOCS --m $TYPECONFIGURE"
 #build all of fdocore
 if test "$FDOCOREENABLE" == yes; then
    if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
-      pushd "Thirdparty" >& /dev/null
-      ./Thirdparty.sh
-      popd >& /dev/null
       make
    fi
    if test "$TYPEACTION" == clean ; then
@@ -229,31 +222,6 @@ if test "$FDOCOREENABLE" == yes; then
    if test "$TYPEACTION" == uninstall ; then
       make uninstall
    fi
-fi
-
-#build Thirdparty
-if test "$THRPENABLE" == yes; then
-   if test ! -e "Thirdparty/Thirdparty.sh"; then
-      echo "Thirdparty/Thirdparty.sh is missing!"
-      exit 1;
-   fi
-
-   pushd "Thirdparty" >& /dev/null
-   
-   if test "$TYPEACTION" == clean ; then
-      make clean
-   fi
-   if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
-      ./Thirdparty.sh
-   fi
-   if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
-      make install
-   fi
-   if test "$TYPEACTION" == uninstall ; then
-      make uninstall
-   fi
-
-   popd >& /dev/null
 fi
 
 #build Fdo

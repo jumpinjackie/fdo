@@ -1,5 +1,5 @@
 @echo off
-SET TYPEACTIONPRO=buildinstall
+SET TYPEACTIONPRO=build
 SET TYPEBUILDPRO=release
 SET FDOORGPATHPRO=%cd%
 
@@ -215,7 +215,7 @@ echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
-echo Action:         -a[ction]=buildinstall(default), build, install, clean
+echo Action:         -a[ction]=build(default), buildinstall, install, clean
 SET PROVBYPROVP=
 SET PROVECAPABP=WithModule:     -w[ith]=providers(default)
 :shp_check

@@ -1,6 +1,6 @@
 @echo off
 
-SET TYPEACTIONTHR=buildinstall
+SET TYPEACTIONTHR=build
 SET MSACTIONTHR=Build
 SET TYPEBUILDTHR=release
 SET FDOBASPATHTHR=%cd%
@@ -13,13 +13,9 @@ SET TYPEBUILDTHREX=
 
 SET DEFMODIFYTHR=no
 SET FDOENABLETHR=yes
-SET SHPENABLETHR=yes
 SET SDFENABLETHR=yes
 SET WFSENABLETHR=yes
 SET WMSENABLETHR=yes
-SET ARCENABLETHR=yes
-SET MYSQLENABLETHR=yes
-SET ODBCENABLETHR=yes
 SET FDOERROR=0
 
 :study_params
@@ -46,65 +42,37 @@ goto custom_error
 if (%2)==() goto custom_error
 if "%DEFMODIFYTHR%"=="yes" goto stp0_get_with
 	SET DEFMODIFYTHR=yes
-	SET SHPENABLETHR=no
 	SET SDFENABLETHR=no
 	SET WFSENABLETHR=no
 	SET WMSENABLETHR=no
-	SET ARCENABLETHR=no
-	SET MYSQLENABLETHR=no
-	SET ODBCENABLETHR=no
 	SET FDOENABLETHR=no
 :stp0_get_with
 if not "%2"=="providers" goto stp1_get_with
-	SET SHPENABLETHR=yes
 	SET SDFENABLETHR=yes
 	SET WFSENABLETHR=yes
 	SET WMSENABLETHR=yes
-	SET ARCENABLETHR=yes
-	SET MYSQLENABLETHR=yes
-	SET ODBCENABLETHR=yes
 	goto next_param
 :stp1_get_with
-if not "%2"=="shp" goto stp2_get_with
-	SET SHPENABLETHR=yes
-	goto next_param
-:stp2_get_with
-if not "%2"=="sdf" goto stp3_get_with
+if not "%2"=="sdf" goto stp2_get_with
 	SET SDFENABLETHR=yes
 	goto next_param
-:stp3_get_with
-if not "%2"=="wfs" goto stp4_get_with
+:stp2_get_with
+if not "%2"=="wfs" goto stp3_get_with
 	SET WFSENABLETHR=yes
 	goto next_param
-:stp4_get_with
-if not "%2"=="wms" goto stp5_get_with
+:stp3_get_with
+if not "%2"=="wms" goto stp4_get_with
 	SET WMSENABLETHR=yes	
 	goto next_param
-:stp5_get_with
-if not "%2"=="arcsde" goto stp6_get_with
-	SET ARCENABLETHR=yes	
-	goto next_param
-:stp6_get_with
-if not "%2"=="mysql" goto stp7_get_with
-	SET MYSQLENABLETHR=yes	
-	goto next_param
-:stp7_get_with
-if not "%2"=="odbc" goto stp8_get_with
-	SET ODBCENABLETHR=yes	
-	goto next_param
-:stp8_get_with
-if not "%2"=="fdo" goto stp9_get_with
+:stp4_get_with
+if not "%2"=="fdo" goto stp5_get_with
 	SET FDOENABLETHR=yes
 	goto next_param
-:stp9_get_with
+:stp5_get_with
 if not "%2"=="all" goto custom_error
-	SET SHPENABLETHR=yes
 	SET SDFENABLETHR=yes
 	SET WFSENABLETHR=yes
 	SET WMSENABLETHR=yes
-	SET ARCENABLETHR=yes
-	SET MYSQLENABLETHR=yes
-	SET ODBCENABLETHR=yes
 	SET FDOENABLETHR=yes
 goto next_param
 
@@ -138,18 +106,10 @@ shift
 goto study_params
 
 :start_build
-SET FDOACTENVSTUDY="FDOTHIRDPARTY"
-if ("%FDOTHIRDPARTY%")==("") goto env_error
-if not exist "%FDOTHIRDPARTY%" goto env_path_error
-SET FDOACTENVSTUDY="XALANROOT"
-if ("%XALANROOT%")==("") goto env_error
-if not exist "%XALANROOT%" goto env_path_error
-SET FDOACTENVSTUDY="XERCESCROOT"
-if ("%XERCESCROOT%")==("") goto env_error
-if not exist "%XERCESCROOT%" goto env_path_error
-SET FDOACTENVSTUDY="NLSDIR"
-if ("%NLSDIR%")==("") goto env_error
-if not exist "%NLSDIR%" goto env_path_error
+if ("%FDOTHIRDPARTY%")==("") SET FDOTHIRDPARTY=%cd%
+if ("%XALANROOT%")==("") SET XALANROOT=%cd%\apache\xml-xalan\c
+if ("%XERCESCROOT%")==("") SET XERCESCROOT=%cd%\apache\xml-xerces\c
+if ("%NLSDIR%")==("") SET NLSDIR=%cd%\apache\xml-xalan\c\Src\xalanc\NLS
 
 if "%TYPEACTIONTHR%"=="build" goto start_exbuild
 if "%TYPEACTIONTHR%"=="clean" goto start_exbuild
@@ -159,141 +119,97 @@ if not exist "%FDOINCPATHTHR%" mkdir "%FDOINCPATHTHR%"
 if not exist "%FDOLIBPATHTHR%" mkdir "%FDOLIBPATHTHR%"
 
 :start_exbuild
-time /t
-
 if "%TYPEACTIONTHR%"=="clean" SET MSACTIONTHR=Clean
-rem # Clean operation is not supported by thirdparty #
-if "%TYPEACTIONTHR%"=="clean" goto end
 
-rem # Begin FDO part #
+rem # Build FDO API Thirdparty Files
 :rebuild_fdo
 if "%FDOENABLETHR%"=="no" goto rebuild_sdf
 if "%TYPEACTIONTHR%"=="install" goto install_fdo_files
 
-echo Build %TYPEBUILDTHR% Thirdparty FDO dlls
-msbuild Thirdparty_fdo.sln /t:Build /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo
+echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty FDO Dlls
+msbuild Thirdparty_fdo.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
-
-
 if not exist util\UpdateVersion\bin mkdir util\UpdateVersion\bin
 copy /y util\UpdateVersion\build\UpdateVersion.exe util\UpdateVersion\bin
-
 if "%TYPEACTIONTHR%"=="build" goto rebuild_sdf
+if "%TYPEACTIONTHR%"=="clean" goto rebuild_sdf
 
+rem # Install FDO API Thirdparty Files
 :install_fdo_files
 echo copy %TYPEBUILDTHR% Thirdparty FDO dlls
 copy /y "apache\xml-xalan\c\Build\Win32\vc8\%TYPEBUILDTHR%\Xalan-C_1_7_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
 copy /y "apache\xml-xalan\c\Build\Win32\vc8\%TYPEBUILDTHR%\XalanMessages_1_7_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
 copy /y "apache\xml-xerces\c\Build\Win32\vc8\%TYPEBUILDTHR%\xerces-c_2_5_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
-rem # End FDO part #
 
-rem # Begin SDF part #
+rem # Build SDF Provider Thirdparty Files
 :rebuild_sdf
 if "%SDFENABLETHR%"=="no" goto rebuild_wfs
-if "%TYPEACTIONTHR%"=="install" goto install_sdf_files
+if "%TYPEACTIONTHR%"=="install" goto rebuild_wfs
 
-echo Build %TYPEBUILDTHR% Thirdparty SDF dlls
-msbuild Thirdparty_sdf.sln /t:Build /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo
+echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty SDF dlls
+msbuild Thirdparty_sdf.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
 
-
-:install_sdf_files
-echo copy %TYPEBUILDTHR% Thirdparty SDF dlls
-rem No files to copy
-rem # End SDF part #
-
-rem # Begin WFS part #
+rem # Build WFS Provider Thirdparty Files
 :rebuild_wfs
 if "%WFSENABLETHR%"=="no" goto rebuild_wms
 if "%TYPEACTIONTHR%"=="install" goto install_wfs_files
 
-echo Build %TYPEBUILDTHR% Thirdparty WFS dlls
-msbuild Thirdparty_wfs.sln /t:Build /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo
+echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty WFS dlls
+msbuild openssl\openssl.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
-msbuild boost_1_32_0\boost_1_32_0.vcproj /t:Build /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo
+msbuild libcurl\lib\curllib.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
-
+msbuild boost_1_32_0\boost_1_32_0.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
+SET FDOERROR=%errorlevel%
+if "%FDOERROR%"=="1" goto error
 if "%TYPEACTIONTHR%"=="build" goto rebuild_wms
+if "%TYPEACTIONTHR%"=="clean" goto rebuild_wms
 
+rem # Install WFS Provider Thirdparty Files
 :install_wfs_files
 echo copy %TYPEBUILDTHR% Thirdparty WFS dlls
 copy /y "boost_1_32_0\bin\boost\libs\thread\build\boost_thread.dll\vc-8_0\%TYPEBUILDTHR%\threading-multi\boost_thread-vc80-mt%TYPEBUILDTHRPATH%-1_32.dll" "%FDOBINPATHTHR%"
 rem # End WFS part #
 
-rem # Begin WMS part #
+rem # Build WMS Provider Thirdparty Files
 :rebuild_wms
-if "%WMSENABLETHR%"=="no" goto rebuild_shp
+if "%WMSENABLETHR%"=="no" goto end
 if "%TYPEACTIONTHR%"=="install" goto install_wms_files
 
-echo Build %TYPEBUILDTHR% Thirdparty WMS dlls
-msbuild Thirdparty_wms.sln /t:Build /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo
+echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty WMS dlls
+msbuild openssl\openssl.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
-msbuild boost_1_32_0\boost_1_32_0.vcproj /t:Build /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo
+msbuild libcurl\lib\curllib.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
+msbuild GDAL1.3\src\Gdal1.3.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
+SET FDOERROR=%errorlevel%
+if "%FDOERROR%"=="1" goto error
+msbuild boost_1_32_0\boost_1_32_0.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
+SET FDOERROR=%errorlevel%
+if "%FDOERROR%"=="1" goto error
+if "%TYPEACTIONTHR%"=="build" goto end
+if "%TYPEACTIONTHR%"=="clean" goto end
 
-if "%TYPEACTIONTHR%"=="build" goto rebuild_shp
-
+rem # Install WMS Provider Thirdparty Files
 :install_wms_files
 echo copy %TYPEBUILDTHR% Thirdparty WMS dlls
 copy /y "GDAL1.3\windows\bin\VC8\%TYPEBUILDTHR%\gdal13.dll" "%FDOBINPATHTHR%"
 copy /y "boost_1_32_0\bin\boost\libs\thread\build\boost_thread.dll\vc-8_0\%TYPEBUILDTHR%\threading-multi\boost_thread-vc80-mt%TYPEBUILDTHRPATH%-1_32.dll" "%FDOBINPATHTHR%"
 rem # End WMS part #
 
-rem # Begin SHP part #
-:rebuild_shp
-if "%SHPENABLETHR%"=="no" goto rebuild_arc
-if "%TYPEACTIONTHR%"=="install" goto rebuild_arc
-echo No dependencies to build for SHP.
-rem # End SHP part #
-
-rem # Begin ArcSDE part #
-:rebuild_arc
-if "%ARCENABLETHR%"=="no" goto rebuild_mysql
-if "%TYPEACTIONTHR%"=="install" goto rebuild_mysql
-echo No dependencies to build for ArcSDE.
-rem # End ArcSDE part #
-
-rem # Begin MySQL part #
-:rebuild_mysql
-if "%MYSQLENABLETHR%"=="no" goto rebuild_odbc
-if "%TYPEACTIONTHR%"=="install" goto rebuild_odbc
-echo No dependencies to build for MySQL.
-rem # End MySQL part #
-
-rem # Begin ODBC part #
-:rebuild_odbc
-if "%ODBCENABLETHR%"=="no" goto end
-if "%TYPEACTIONTHR%"=="install" goto end
-echo No dependencies to build for ODBC.
-rem # End ODBC part #
-
-
 :end
 echo End Thirdparty %MSACTIONTHR%
-time /t
 exit /B 0
-
-:env_error
-echo Environment variable undefined: %FDOACTENVSTUDY%
-SET FDOERROR=1
-time /t
-exit /B 1
-
-:env_path_error
-echo Invalid path contained in FDO environment variable: %FDOACTENVSTUDY%
-SET FDOERROR=1
-time /t
-exit /B 1
 
 :error
 echo There was a build error executing action: %MSACTIONTHR%
-time /t
 exit /B 1
 
 :custom_error
@@ -306,34 +222,7 @@ echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
-echo Action:         -a[ction]=buildinstall(default), build, install, clean
-SET TROVBYPROVP=
-SET TPROVECAPABP=WithModule:     -w[ith]=all(default), fdo
-:shp_check
-if not exist ..\providers\Shp\build.bat goto sdf_check
-	SET TROVBYPROVP=%TROVBYPROVP%, shp
-:sdf_check
-if not exist ..\providers\SDFPlus\build.bat goto wfs_check
-	SET TROVBYPROVP=%TROVBYPROVP%, sdf
-:wfs_check
-if not exist ..\providers\WFS\build.bat goto wms_check
-	SET TROVBYPROVP=%TROVBYPROVP%, wfs
-:wms_check
-if not exist ..\providers\WMS\build.bat goto arc_check
-	SET TROVBYPROVP=%TROVBYPROVP%, wms
-:arc_check
-if not exist ..\providers\ArcSDE\build.bat goto mysql_check
-	SET TROVBYPROVP=%TROVBYPROVP%, arcsde
-:mysql_check
-if not exist ..\providers\GenericRdbms\Src\MySQL\build.bat goto odbc_check
-	SET TROVBYPROVP=%TROVBYPROVP%, mysql
-:odbc_check
-if not exist ..\providers\GenericRdbms\Src\ODBC\build.bat goto providers_show
-	SET TROVBYPROVP=%TROVBYPROVP%, odbc
-:providers_show
-if ("%TROVBYPROVP%")==("") goto show_capabilities
-	SET TPROVECAPABP=%TPROVECAPABP%, providers%TROVBYPROVP%
-:show_capabilities
-echo %TPROVECAPABP%
+echo Action:         -a[ction]=build(default), buildinstall, install, clean
+echo WithModule:     -w[ith]=all(default), fdo, providers, sdf, wfs, wms
 echo **************************************************************************
 exit /B 0
