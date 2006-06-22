@@ -1,6 +1,6 @@
 @echo off
 
-SET TYPEACTIONWFS=buildinstall
+SET TYPEACTIONWFS=build
 SET MSACTIONWFS=Build
 SET TYPEBUILDWFS=release
 SET FDOORGPATHWFS=%cd%
@@ -94,7 +94,7 @@ echo %MSACTIONWFS% %TYPEBUILDWFS% WFS provider dlls
 pushd Src
 SET FDOACTIVEBUILD=%cd%\WFSOS
 cscript //job:prepare ../../../preparebuilds.wsf
-msbuild WFSOS_temp.sln /t:%MSACTIONWFS% /p:Configuration=%TYPEBUILDWFS% /p:Platform="Win32" /nologo
+msbuild WFSOS_temp.sln /t:%MSACTIONWFS% /p:Configuration=%TYPEBUILDWFS% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if exist WFSOS_temp.sln del /Q /F WFSOS_temp.sln
 popd
@@ -165,7 +165,7 @@ echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
-echo Action:         -a[ction]=buildinstall(default), build, install, clean
+echo Action:         -a[ction]=build(default), buildinstall, install, clean
 echo BuildDocs:      -d[ocs]=skip(default), build
 echo **************************************************************************
 exit /B 0
