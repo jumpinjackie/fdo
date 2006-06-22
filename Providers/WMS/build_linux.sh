@@ -11,11 +11,11 @@ do
   arg="$1"
   shift
   case $arg in
-  --h | --help)
+  -h | --h | --help)
     SHOWHELP=yes
     break
     ;;
-  --a | --action)
+  -a | --a | --action)
     if test "$1" == buildinstall; then
         TYPEACTION=buildinstall
     elif test "$1" == build; then
@@ -32,7 +32,7 @@ do
     fi
     shift
     ;;
-  --m | --makefile)
+  -m | --m | --makefile)
     if test "$1" == configure; then
         TYPECONFIGURE=configure
     elif test "$1" == noconfigure; then
@@ -43,7 +43,7 @@ do
     fi
     shift
     ;;
-  --d | --docs)
+  -d | --d | --docs)
     if test "$1" == skip; then
         BUILDDOCS=no
     elif test "$1" == build; then
@@ -54,7 +54,7 @@ do
     fi
     shift
     ;;   
-  --c | --config)
+  -c | --c | --config)
     if test "$1" == debug; then
         TYPEBUILD=debug
     elif test "$1" == release; then
