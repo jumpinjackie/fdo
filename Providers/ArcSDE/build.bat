@@ -1,6 +1,6 @@
 @echo off
 
-SET TYPEACTIONARCSDE=buildinstall
+SET TYPEACTIONARCSDE=build
 SET MSACTIONARCSDE=Build
 SET TYPEBUILDARCSDE=release
 SET FDOINSPATHARCSDE=\Fdo
@@ -95,7 +95,7 @@ echo %MSACTIONARCSDE% %TYPEBUILDARCSDE% ArcSDE provider dlls
 pushd Src
 SET FDOACTIVEBUILD=%cd%\ArcSDEOS
 cscript //job:prepare ../../../preparebuilds.wsf
-msbuild ArcSDEOS_temp.sln /t:%MSACTIONARCSDE% /p:Configuration=%TYPEBUILDARCSDE% /p:Platform="Win32" /nologo
+msbuild ArcSDEOS_temp.sln /t:%MSACTIONARCSDE% /p:Configuration=%TYPEBUILDARCSDE% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if exist ArcSDEOS_temp.sln del /Q /F ArcSDEOS_temp.sln
 popd
@@ -165,7 +165,7 @@ echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
-echo Action:         -a[ction]=buildinstall(default), build, install, clean
+echo Action:         -a[ction]=build(default), buildinstall, install, clean
 echo BuildDocs:      -d[ocs]=skip(default), build
 echo **************************************************************************
 exit /B 0
