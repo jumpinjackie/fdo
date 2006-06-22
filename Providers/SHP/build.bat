@@ -1,6 +1,6 @@
 @echo off
 
-SET TYPEACTIONSHP=buildinstall
+SET TYPEACTIONSHP=build
 SET MSACTIONSHP=Build
 SET TYPEBUILDSHP=release
 SET FDOORGPATHSHP=%cd%
@@ -94,7 +94,7 @@ echo %MSACTIONSHP% %TYPEBUILDSHP% SHP provider dlls
 pushd Src
 SET FDOACTIVEBUILD=%cd%\SHP
 cscript //job:prepare ../../../preparebuilds.wsf
-msbuild SHP_temp.sln /t:%MSACTIONSHP% /p:Configuration=%TYPEBUILDSHP% /p:Platform="Win32" /nologo
+msbuild SHP_temp.sln /t:%MSACTIONSHP% /p:Configuration=%TYPEBUILDSHP% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if exist SHP_temp.sln del /Q /F SHP_temp.sln
 popd
@@ -167,7 +167,7 @@ echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
-echo Action:         -a[ction]=buildinstall(default), build, install, clean
+echo Action:         -a[ction]=build(default), buildinstall, install, clean
 echo BuildDocs:      -d[ocs]=skip(default), build
 echo **************************************************************************
 exit /B 0
