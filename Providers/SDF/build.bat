@@ -1,6 +1,6 @@
 @echo off
 
-SET TYPEACTIONSDF=buildinstall
+SET TYPEACTIONSDF=build
 SET MSACTIONSDF=Build
 SET TYPEBUILDSDF=release
 SET FDOORGPATHSDF=%cd%
@@ -94,7 +94,7 @@ echo %MSACTIONSDF% %TYPEBUILDSDF% SDF provider dlls
 pushd Src
 SET FDOACTIVEBUILD=%cd%\SDFOS
 cscript //job:prepare ../../../preparebuilds.wsf
-msbuild SDFOS_temp.sln /t:%MSACTIONSDF% /p:Configuration=%TYPEBUILDSDF% /p:Platform="Win32" /nologo
+msbuild SDFOS_temp.sln /t:%MSACTIONSDF% /p:Configuration=%TYPEBUILDSDF% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if exist SDFOS_temp.sln del /Q /F SDFOS_temp.sln
 popd
@@ -164,7 +164,7 @@ echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
-echo Action:         -a[ction]=buildinstall(default), build, install, clean
+echo Action:         -a[ction]=build(default), buildinstall, install, clean
 echo BuildDocs:      -d[ocs]=skip(default), build
 echo **************************************************************************
 exit /B 0
