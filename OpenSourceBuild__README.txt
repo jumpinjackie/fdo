@@ -20,17 +20,19 @@ I. Windows Notes:
 
   In preparation for building the Windows Open Source FDO Binaries
 
-  1. REQUIRED: Ensure that the Windows Environment Variables are set as follows:
+  1. Ensure that the Windows Environment Variables are set as follows:
 
-        FDO = <FDO OpenSource Location>\Fdo (e.g. D:\OpenSource\Fdo)
-        FDOUTILITIES = <FDO OpenSource Location>\Utilities (e.g. D:\OpenSource\Providers\Utilities)
-        FDOTHIRDPARTY = <FDO OpenSource Location>\ThirdParty folder (e.g. D:\OpenSource\Thridparty)
-        XALANROOT=%FDOTHIRDPARTY%\apache\xml-xalan\c
-        XERCESCROOT=%FDOTHIRDPARTY%\apache\xml-xerces\c
-        NLSDIR=%XALANROOT%\Src\xalanc\NLS
+        SET FDO=<FDO OpenSource>\Fdo
+        SET FDOUTILITIES=<FDO OpenSource>\Utilities
+        SET FDOTHIRDPARTY=<FDO OpenSource>\ThirdParty
+        SET XALANROOT=%FDOTHIRDPARTY%\apache\xml-xalan\c
+        SET XERCESCROOT=%FDOTHIRDPARTY%\apache\xml-xerces\c
+        SET NLSDIR=%XALANROOT%\Src\xalanc\NLS
 
-  2. REQUIRED: Ensure that the MSVC Variables are set through the VisualStudio .Net 
-     User Interface (Tools>Options>Properties and Solutions>VC++ Directories):
+  2. Ensure that the MSVC Variables are set through the VisualStudio .Net 
+     User Interface (Tools>Options>Projects and Solutions>VC++ Directories):
+
+      For Platform Win32:
 
       Add to MSVC Include Paths
 
@@ -46,33 +48,20 @@ I. Windows Notes:
           $(XERCESCROOT)\Build\Win32\VC8\Release
           $(XERCESCROOT)\Build\Win32\VC8\Debug
 
-  3. REQUIRED: Ensure that the tools that the FDO build process use are in the build 
-     environment's PATH.
+  3. In order to build all FDO Windows components, ensure that the Microsoft
+     MsBuild tool that is used by the the FDO build process is included in the Windows system PATH.
 
-        MsBuild    -- e.g. C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727
-        devenv     -- e.g. C:\Program Files\Microsoft Visual Studio 8\Common7\IDE
-        Doxygen    -- e.g. C:\Program Files\doxygen\bin
-        Dot        -- e.g. C:\Program Files\ATT\Graphviz\bin
-        Sed/Bison  -- e.g. C:\Program Files\GnuWin32
-
-        e.g.
-        
         set PATH=%PATH%;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727
-        set PATH=%PATH%;C:\Program Files\Microsoft Visual Studio 8\Common7\IDE
-        set PATH=%PATH%;C:\Program Files\doxygen\bin
-        set PATH=%PATH%;C:\Program Files\ATT\Graphviz\bin
-        set PATH=%PATH%;C:\Program Files\GnuWin32\bin
-
-  4. REQUIRED: In order to build the ArcSDE Provider, you will need to have the
+ 
+  4. In order to build the ArcSDE Provider, you will need to have the
      ArcSDE 9.1 Client SDK installed and the following environment variable set that 
      points to the installation location:
 
         set SDEHOME=<ArcSDE developer components path> 
 
-     Note that ArcSDE is licensed software and must be obtained from an
-     ESRI vendor.
+     Note that ArcSDE is licensed software and must be obtained from an ESRI vendor.
 
-  5. REQUIRED: In order to build the MySQL Provider, you will need to download 
+  5. In order to build the MySQL Provider, you will need to download 
      and install the MySQL client (Windows (x86) version 5.0), including
      the developer components.
 
@@ -93,7 +82,9 @@ I. Windows Notes:
      files are fairly static therefore they are not automatically regenerated 
      as a part of the standard FDO build process. If changes are made 
      to the .y files they will need to be recompiled into their respective .cpp and 
-     ,h files. In order to rebuild these files download and install the GNU 
+     ,h files. 
+
+     In order to rebuild these files download and install the GNU 
      Win32 Bison (version 1.875) and Sed (version 4.1.4) self-extracting utilities.
 
         "Bison"
@@ -123,12 +114,14 @@ I. Windows Notes:
         http://prdownloads.sourceforge.net/gnuwin32/sed-4.1.4.exe?download
 
    
-     FDO has been tested using Bison 1.875 and Sed 4.1.4
-     The Bison and Sed executable files MUST be included in the Windows PATH in order 
-     to be used by the FDO build process. 
+     FDO has been tested using Bison 1.875 and Sed 4.1.4 and will not work with 
+     other versions of these binaries. The Bison and Sed executable files MUST be 
+     included in the Windows PATH in order to be used by the FDO build process. 
 
-     The FDO build script that will need to be executed to rebuild the generated parsing 
-     scripts is the build_parse.bat script
+        e.g. set PATH=%PATH%;C:\Program Files\GnuWin32\bin
+
+     The optional FDO build script that will need to be executed to rebuild the 
+     generated parsing scripts is build_parse.bat.
 
   
   7. OPTIONAL: The FDO build process allows it's documentation to be regenerated. 
@@ -154,6 +147,16 @@ I. Windows Notes:
 
      http://msdn.microsoft.com/library/default.asp?url=/library/en-us/htmlhelp/html/hwMicrosoftHTMLHelpDownloads.asp
 
+     Ensure that the tools are in the build environment's PATH.
+
+        Doxygen    -- e.g. C:\Program Files\doxygen\bin
+        Dot        -- e.g. C:\Program Files\ATT\Graphviz\bin
+
+        e.g.
+        
+        set PATH=%PATH%;C:\Program Files\doxygen\bin
+        set PATH=%PATH%;C:\Program Files\ATT\Graphviz\bin
+ 
 II. Windows Build Instructions:
 
   1. Extract the FDO OpenSource files using either gunzip/tar or Winzip.
@@ -177,7 +180,7 @@ II. Windows Build Instructions:
         etc...
 
   2. Use the build_thirdparty.bat file to build the FDO Thirdparty binaries. The following 
-     is a general guideline on how to use the Windows build script.
+     is a general guideline on how to use the build_thirdparty.bat build script.
   
            **************************************************************************
            build_thirdparty.bat [-h] [-o=OutFolder] [-c=BuildType] [-a=Action] [-w=WithModule]
@@ -210,7 +213,7 @@ II. Windows Build Instructions:
 
 
   3. Use the build.bat file to build the FDO binaries. The following 
-     is a general guideline on how to use the build.bat Windows build script
+     is a general guideline on how to use the build.bat build script.
   
            **************************************************************************
            build.bat [-h] [-o=OutFolder] [-c=BuildType] [-a=Action] [-w=WithModule] [-d=BuildDocs]
@@ -265,76 +268,44 @@ I. Linux Notes:
 
   In preparation for building the Linux Open Source FDO Binaries
 
-  1. REQUIRED: Before building FDO and thirdparty libraries, the following 
-     directories must be set as writeable by the user, otherwise the user 
-     will have to switch to root.
+  1. Before building FDO and thirdparty libraries, the /usr/local
+     directory must be set as writeable by the user, otherwise the user 
+     will have to log in and build FDO as the ROOT user. This requirement
+     is due to the fact that the FDO Libraries will be built and installed 
+     in /usr/local/fdo-3.2.0/lib
 
-      /usr/local
-  
-  2.  FDO Libraries will be installed under /usr/local/fdo-3.2.0/lib
+  2. Ensure that the following FDO Environment Variables are set as follows:
 
-  3. Ensure that the FDO Environment Variables are set as follows:
-
-      FDO = <FDO OpenSource Location>/Fdo (e.g. /home/OpenSource/Fdo)
-
-      FDOUTILITIES = <FDO OpenSource Location>/Providers/Utilities (e.g. /home/OpenSource/Providers/Utilities)
-
-      FDOTHIRDPARTY = <FDO OpenSource Location>/ThirdParty (e.g. /home/OpenSource/Thridparty)
-
+       FDO = <FDO OpenSource>/Fdo
+       FDOUTILITIES = <FDO OpenSource>/Providers/Utilities
+       FDOTHIRDPARTY = <FDO OpenSource>/ThirdParty
  
-  4.  To run the unit test, you must set LD_LIBRARY_PATH as follows:
+  3. In order to build the ArcSDE Provider, you will need to have the
+     ArcSDE 9.1 Client SDK installed and the following environment variable set that 
+     points to the installation location:
 
-       $ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/fdo-3.2.0/lib:$FDOTHIRDPARTY/linux/cppunit/lib
+       SDEHOME=<ArcSDE developer components path> 
+
+     Note that ArcSDE is licensed software and must be obtained from an ESRI vendor.
+
+  4. In order to build the MySQL Provider, you will need to download 
+     and extract the MySQL client 
  
-  5.  providers.xml will be installed to /usr/local/fdo-3.2.0/lib.
- 
-  6.  Several known problems exist if auto-mounted drives are used as locations for the
-      FDO Linux builds. It is recommended that users not use auto-mounted drives 
-      when building FDO.
-
-      An Example of the auto-mounted build issue:
-
-      If the 'make' process is performed by a non-root user, directories and files 
-      will created according to the users permissions. 
-
-      When the user logs in as root and runs 'make install' a problem similar to 
-      the following may occur:
-
-          mv: cannot move `libSHPProvider.so.3.2.0' to 
-         `libSHPProvider.so.3.2.0': Permission denied.
-          libtool: install: error: relink `libSHPProvider.la' 
-          with the above command
-
-      mv fails because root has no privilege to mv files on auto-mounted directories 
-      created during the make process by another user.
-
-  7.  In order to build the ArcSDE Provider, you will need to have the
-      ArcSDE 9.1 Client SDK installed at one of the following location:
-
-        $SDEHOME/
-
-      Note that ArcSDE is licensed software and must be obtained from an
-      ESRI vendor.
-
-   8. In order to build the MySQL Provider, you will need to download 
-      and extract the Linux (non RPM package - Linux (x86)  Standard verion 5.0)
-      files using either gunzip/tar.
- 
-        Home Page: 
-        http://dev.mysql.com/
+       Home Page: 
+       http://dev.mysql.com/
         
-        Download Location: 
-        http://dev.mysql.com/get/Downloads/MySQL-5.0/mysql-standard-5.0.21-linux-i686-glibc23.tar.gz/from/http://mysql.mirrors.pair.com/
+       Download Location: 
+       http://dev.mysql.com/get/Downloads/MySQL-5.0/mysql-standard-5.0.21-linux-i686-glibc23.tar.gz/from/http://mysql.mirrors.pair.com/
  
-      Following the installation, set the following FDO environment variable:
+     Following the installation, set the following FDO environment variable:
   
-        FDOMYSQL=<MySQL developer components path>
+       FDOMYSQL=<MySQL developer components path>
  
-      e.g. /home/mysql-5.0
+  5. In order to build the ODBC Provider, you will need to either 
 
-   10. In order to build the ODBC Provider, you will need to either 
-
-       a) download and install unixODBC-CORE and unixODBC-devel
+     
+     a) download and install the Linux ODBC driver Manager, specifically 
+        the unixODBC-CORE and unixODBC-devel packages relased by www.unixodbc.org
  
            Home Page: 
            http://www.unixodbc.org/
@@ -347,21 +318,30 @@ I. Linux Notes:
            unixODBC-devel - unixODBC-devel-2.2.11-1.i386.rpm
 
            Such an installation will install the unixODBC driver manager libraries 
-           and header files  in
+           and header files in
 
            usr/lib and usr/include
 
            The FDO ODBC provider build will automatically locate thee files in this liocation.
 
-       b) install an unixODBC driver such as the EasySofy Oracle ODBC driver. This installation 
-          will include the driver libraries as well as the unixODBC manager libraries. 
-          If such an installation occurs the manager libraries and headers will not be 
-          installed under /usr/lib or usr/include but will be installed in a custom location
-          as specified by the driver RPM package. If this is the case, you will need to set 
-          the following FDO environment variable to point to the location of the unixODBC 
-          components
+     b) install an unixODBC driver such as the EasySofy Oracle ODBC driver. This installation 
+        will include the driver libraries as well as the unixODBC manager libraries. 
+        If such an installation occurs the manager libraries and headers will not be 
+        installed under /usr/lib or usr/include but will be installed in a custom location
+        as specified by the driver RPM package. If this is the case, you will need to set 
+        the following FDO environment variable to point to the location of the unixODBC 
+        components:
 
            FDOODBC=<unixODBC developer components path>
+
+  6. NOTE: To run the unit test, you must set LD_LIBRARY_PATH as follows:
+
+       export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/fdo-3.2.0/lib:$FDOTHIRDPARTY/linux/cppunit/lib
+ 
+  7. NOTE: Several known problems exist if auto-mounted drives are used as locations 
+     for the FDO Linux builds. It is recommended that users not use auto-mounted drives 
+     when building FDO.
+
 
 II. Linux Build Instructions:
 
