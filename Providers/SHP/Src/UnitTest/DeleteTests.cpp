@@ -60,6 +60,11 @@ void DeleteTests::tearDown ()
     CleanUpClass(mConnection, NULL, L"Test");
 
     mConnection->Close ();
+
+	// On Linux it makes a difference to release here instead of destructor
+	// (apparently the global list of files to compress gets trashed too early).
+	FDO_SAFE_RELEASE(mConnection.p);
+
     if (FdoCommonFile::FileExists (LOCATION SCHEMA_NAME))
         FdoCommonFile::Delete (LOCATION SCHEMA_NAME);
     if (FdoCommonFile::FileExists (LOCATION))
@@ -257,7 +262,7 @@ void DeleteTests::del_one ()
         FdoPtr<FdoGeometryValue> geometry1 = (FdoGeometryValue*)FdoExpression::Parse (L"GEOMFROMTEXT ('POINT XY ( 999000 -999000 )')");
         value = FdoPropertyValue::Create (L"Geometry", geometry1);
         values->Add (value);
-        FdoPtr<FdoIFeatureReader> reader = insert->Execute ();
+        FdoIFeatureReader *reader = insert->Execute ();
 
         while (reader->ReadNext ())
         {
@@ -266,6 +271,7 @@ void DeleteTests::del_one ()
             featids[index++] = reader->GetInt32 (L"FeatId");
         }
         reader->Close ();
+		reader->Release();
 
         // feat #2
         expression = (FdoValueExpression*)ShpTests::ParseByDataType (L"9191", FdoDataType_Decimal);
@@ -285,6 +291,7 @@ void DeleteTests::del_one ()
             featids[index++] = reader->GetInt32 (L"FeatId");
         }
         reader->Close ();
+		reader->Release();
 
         // feat #3
         expression = (FdoValueExpression*)ShpTests::ParseByDataType (L"46", FdoDataType_Decimal);
@@ -304,6 +311,7 @@ void DeleteTests::del_one ()
             featids[index++] = reader->GetInt32 (L"FeatId");
         }
         reader->Close ();
+		reader->Release();
 
         if (2 > index)
             CPPUNIT_FAIL ("too few features inserted");
@@ -324,6 +332,16 @@ void DeleteTests::del_one ()
 		del->Release();
 		mConnection1->Close();
 		int refs1 = mConnection1->Release();
+		CPPUNIT_ASSERT_MESSAGE ("Leaking connections1", refs1 == 0);
+
+		// Close/open the static connection in order to force compression NOW
+		mConnection->Close();
+		FDO_SAFE_RELEASE(mConnection.p); 
+
+	    mConnection = ShpTests::GetConnection ();
+		ShpTests::sLocation = LOCATION;
+		mConnection->SetConnectionString (L"DefaultFileLocation=" LOCATION);
+		CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == mConnection->Open ());
 
 		////////////////////
         FdoPtr<FdoFgfGeometryFactory> agf = FdoFgfGeometryFactory::GetInstance();
@@ -352,9 +370,9 @@ void DeleteTests::del_one ()
         FdoPtr<FdoIGeometry> geomWritten1B = agf->CreateGeometryFromFgf(geomWritten1);
         CPPUNIT_ASSERT_MESSAGE ("wrong geometry", ShpTests::GeometriesEquivalent(geomRead1B, geomWritten1B));
 
-        // Check feature #3:
+        // Check feature #3  (it is #2 due to compressing and renumbering)
         CPPUNIT_ASSERT_MESSAGE ("not enough features", reader2->ReadNext ());
-        CPPUNIT_ASSERT_MESSAGE ("wrong feat id", featids[2] == reader2->GetInt32 (L"FeatId"));
+        CPPUNIT_ASSERT_MESSAGE ("wrong feat id", featids[1] == reader2->GetInt32 (L"FeatId"));
         CPPUNIT_ASSERT_MESSAGE ("wrong id", 46 == reader2->GetDouble(L"Id"));
         streetVal = reader2->GetString(L"Street");
         CPPUNIT_ASSERT_MESSAGE ("wrong street", streetVal == L"99 Rockcliffe Place");
