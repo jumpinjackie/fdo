@@ -1,6 +1,6 @@
 @echo off
 
-SET TYPEACTIONMYSQL=buildinstall
+SET TYPEACTIONMYSQL=build
 SET MSACTIONMYSQL=Build
 SET TYPEBUILDMYSQL=release
 SET FDOINSPATHMYSQL=\Fdo
@@ -95,7 +95,7 @@ if "%TYPEACTIONMYSQL%"=="install" goto install_files_MySQL
 echo %MSACTIONMYSQL% %TYPEBUILDMYSQL% MySQL provider dlls
 SET FDOACTIVEBUILD=%cd%\MySQL
 cscript //job:prepare ../../../../preparebuilds.wsf
-msbuild MySQL_temp.sln /t:%MSACTIONMYSQL% /p:Configuration=%TYPEBUILDMYSQL% /p:Platform="Win32" /nologo
+msbuild MySQL_temp.sln /t:%MSACTIONMYSQL% /p:Configuration=%TYPEBUILDMYSQL% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if exist MySQL_temp.sln del /Q /F MySQL_temp.sln
 if "%FDOERROR%"=="1" goto error
@@ -184,7 +184,7 @@ echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
-echo Action:         -a[ction]=buildinstall(default), build, install, clean
+echo Action:         -a[ction]=build(default), buildinstall, install, clean
 echo BuildDocs:      -d[ocs]=skip(default), build
 echo **************************************************************************
 exit /B 0

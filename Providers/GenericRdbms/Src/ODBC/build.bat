@@ -1,6 +1,6 @@
 @echo off
 
-SET TYPEACTIONODBC=buildinstall
+SET TYPEACTIONODBC=build
 SET MSACTIONODBC=Build
 SET TYPEBUILDODBC=release
 SET FDOINSPATHODBC=\Fdo
@@ -91,7 +91,7 @@ if "%TYPEACTIONODBC%"=="install" goto install_files_ODBC
 echo %MSACTIONODBC% %TYPEBUILDODBC% ODBC provider dlls
 SET FDOACTIVEBUILD=%cd%\ODBC
 cscript //job:prepare ../../../../preparebuilds.wsf
-msbuild ODBC_temp.sln /t:%MSACTIONODBC% /p:Configuration=%TYPEBUILDODBC% /p:Platform="Win32" /nologo
+msbuild ODBC_temp.sln /t:%MSACTIONODBC% /p:Configuration=%TYPEBUILDODBC% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if exist ODBC_temp.sln del /Q /F ODBC_temp.sln
 if "%FDOERROR%"=="1" goto error
@@ -178,7 +178,7 @@ echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
-echo Action:         -a[ction]=buildinstall(default), build, install, clean
+echo Action:         -a[ction]=build(default), buildinstall, install, clean
 echo BuildDocs:      -d[ocs]=skip(default), build
 echo **************************************************************************
 exit /B 0
