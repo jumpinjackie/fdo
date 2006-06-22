@@ -32,18 +32,16 @@ I. Windows Notes:
   2. Ensure that the MSVC Variables are set through the VisualStudio .Net 
      User Interface (Tools>Options>Projects and Solutions>VC++ Directories):
 
-      For Platform Win32:
-
-      Add to MSVC Include Paths
+      For Platform Win32, add to Include files
 
           $(XERCESCROOT)\src
 
-      Add to MSVC Library Paths
+      For Platform Win32, Add to Library files
 
           $(XERCESCROOT)\Build\Win32\VC8\Release
           $(XERCESCROOT)\Build\Win32\VC8\Debug
 
-      Add to MSVC Executable Paths
+      For Platform Win32, Add to Executable files
 
           $(XERCESCROOT)\Build\Win32\VC8\Release
           $(XERCESCROOT)\Build\Win32\VC8\Debug
@@ -62,16 +60,11 @@ I. Windows Notes:
      Note that ArcSDE is licensed software and must be obtained from an ESRI vendor.
 
   5. In order to build the MySQL Provider, you will need to download 
-     and install the MySQL client (Windows (x86) version 5.0), including
-     the developer components.
+     and install the MySQL 5.0 Windows client and developer components from:
 
-        Home Page: 
-        http://dev.mysql.com/
+        http://dev.mysql.com/downloads/mysql/5.0.html
 
-        Download Location: 
-        http://dev.mysql.com/get/Downloads/MySQL-5.0/mysql-standard-5.0.21-linux-i686-glibc23.tar.gz/from/http://mysql.mirrors.pair.com/
-
-     Following the installation, set the following FDO environment variable:
+     Following the installation, set the following FDO Windows environment variable:
 
         set FDOMYSQL=<MySQL developer components path> 
 
@@ -288,21 +281,24 @@ I. Linux Notes:
 
      Note that ArcSDE is licensed software and must be obtained from an ESRI vendor.
 
-  4. In order to build the MySQL Provider, you will need to download 
-     and extract the MySQL client 
+  4. In order to build the MySQL Provider, you will need to download and extract 
+     the MySQL client and MySQL 5.0 devloper components from MySQL. These components are 
+     located at:
  
-       Home Page: 
-       http://dev.mysql.com/
+       http://dev.mysql.com/downloads/mysql/5.0.html
         
-       Download Location: 
-       http://dev.mysql.com/get/Downloads/MySQL-5.0/mysql-standard-5.0.21-linux-i686-glibc23.tar.gz/from/http://mysql.mirrors.pair.com/
- 
-     Following the installation, set the following FDO environment variable:
+     For example, for Red Hat Enterprise Linux 3 RPM (x86)
+       
+       Client:                      MySQL-client-standard-5.0.22-0.rhel3.i386.rpm
+       Headers and Libraries:       MySQL-devel-standard-5.0.22-0.rhel3.i386.rpm
+
+     NOTE: Choosing the RPM install of the MySQL components is strongly recommended. 
+     However, if a non-RPM installation of MySQL is chosen, following the installation, 
+     set the following FDO environment variable:
   
        FDOMYSQL=<MySQL developer components path>
  
   5. In order to build the ODBC Provider, you will need to either 
-
      
      a) download and install the Linux ODBC driver Manager, specifically 
         the unixODBC-CORE and unixODBC-devel packages relased by www.unixodbc.org
