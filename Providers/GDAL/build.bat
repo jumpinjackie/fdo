@@ -1,6 +1,6 @@
 @echo off
 
-SET TYPEACTIONRFP=buildinstall
+SET TYPEACTIONRFP=build
 SET MSACTIONRFP=Build
 SET TYPEBUILDRFP=release
 SET FDOORGPATHRFP=%cd%
@@ -94,7 +94,7 @@ echo %MSACTIONRFP% %TYPEBUILDRFP% GdalFile provider dlls
 pushd Src
 SET FDOACTIVEBUILD=%cd%\RFP
 cscript //job:prepare ../../../preparebuilds.wsf
-msbuild RFP_temp.sln /t:%MSACTIONRFP% /p:Configuration=%TYPEBUILDRFP% /p:Platform="Win32" /nologo
+msbuild RFP_temp.sln /t:%MSACTIONRFP% /p:Configuration=%TYPEBUILDRFP% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if exist RFP_temp.sln del /Q /F RFP_temp.sln
 popd
@@ -155,7 +155,7 @@ echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
-echo Action:         -a[ction]=buildinstall(default), build, install, clean
+echo Action:         -a[ction]=build(default), buildinstall, install, clean
 echo BuildDocs:      -d[ocs]=skip(default), build
 echo **************************************************************************
 exit /B 0
