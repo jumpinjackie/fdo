@@ -5,36 +5,31 @@ This ReadMe contains important information required to build FDO open source.
 Ensure you read through this document before building.
 
 Contents:
-Windows instructions
+Windows Instructions
    - Windows Notes
-   - Windows build steps
-Linux RedHat 3.0 instructions
+   - Windows Build Instructions
+Linux Instructions
    - Linux Notes
-   - Linux build steps
-
+   - Linux Build Instructions
 
 -----------------------------
-
 Windows Instructions
 -----------------------------
 
-I. Windows Notes:
+I. Windows Notes: 
 
-  1. Ensure that the Windows Environment Variables are set as follows:
+  In preparation for building the Windows Open Source FDO Binaries
 
-   FDO = <FDO OpenSource Location>\Fdo (e.g. D:\OpenSource\Fdo)
+  1. REQUIRED: Ensure that the Windows Environment Variables are set as follows:
 
-   FDOUTILITIES = <FDO OpenSource Location>\Utilities (e.g. D:\OpenSource\Providers\Utilities)
+        FDO = <FDO OpenSource Location>\Fdo (e.g. D:\OpenSource\Fdo)
+        FDOUTILITIES = <FDO OpenSource Location>\Utilities (e.g. D:\OpenSource\Providers\Utilities)
+        FDOTHIRDPARTY = <FDO OpenSource Location>\ThirdParty folder (e.g. D:\OpenSource\Thridparty)
+        XALANROOT=%FDOTHIRDPARTY%\apache\xml-xalan\c
+        XERCESCROOT=%FDOTHIRDPARTY%\apache\xml-xerces\c
+        NLSDIR=%XALANROOT%\Src\xalanc\NLS
 
-   FDOTHIRDPARTY = <FDO OpenSource Location>\ThirdParty folder (e.g. D:\OpenSource\Thridparty)
-
-   XALANROOT=%FDOTHIRDPARTY%\apache\xml-xalan\c
-
-   XERCESCROOT=%FDOTHIRDPARTY%\apache\xml-xerces\c
-
-   NLSDIR=%XALANROOT%\Src\xalanc\NLS
-
-  2. Ensure that the MSVC Variables are set through the VisualStudio .Net 
+  2. REQUIRED: Ensure that the MSVC Variables are set through the VisualStudio .Net 
      User Interface (Tools>Options>Properties and Solutions>VC++ Directories):
 
       Add to MSVC Include Paths
@@ -44,17 +39,62 @@ I. Windows Notes:
       Add to MSVC Library Paths
 
           $(XERCESCROOT)\Build\Win32\VC8\Release
-
           $(XERCESCROOT)\Build\Win32\VC8\Debug
 
       Add to MSVC Executable Paths
 
           $(XERCESCROOT)\Build\Win32\VC8\Release
-
           $(XERCESCROOT)\Build\Win32\VC8\Debug
 
-   3. Download and install the GNU Win32 Bison (version 1.875) 
-      and Sed (version 4.1.4) self-extracting utilities
+  3. REQUIRED: Ensure that the tools that the FDO build process use are in the build 
+     environment's PATH.
+
+        MsBuild    -- e.g. C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727
+        devenv     -- e.g. C:\Program Files\Microsoft Visual Studio 8\Common7\IDE
+        Doxygen    -- e.g. C:\Program Files\doxygen\bin
+        Dot        -- e.g. C:\Program Files\ATT\Graphviz\bin
+        Sed/Bison  -- e.g. C:\Program Files\GnuWin32
+
+        e.g.
+        
+        set PATH=%PATH%;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727
+        set PATH=%PATH%;C:\Program Files\Microsoft Visual Studio 8\Common7\IDE
+        set PATH=%PATH%;C:\Program Files\doxygen\bin
+        set PATH=%PATH%;C:\Program Files\ATT\Graphviz\bin
+        set PATH=%PATH%;C:\Program Files\GnuWin32\bin
+
+  4. REQUIRED: In order to build the ArcSDE Provider, you will need to have the
+     ArcSDE 9.1 Client SDK installed and the following environment variable set that 
+     points to the installation location:
+
+        set SDEHOME=<ArcSDE developer components path> 
+
+     Note that ArcSDE is licensed software and must be obtained from an
+     ESRI vendor.
+
+  5. REQUIRED: In order to build the MySQL Provider, you will need to download 
+     and install the MySQL client (Windows (x86) version 5.0), including
+     the developer components.
+
+        Home Page: 
+        http://dev.mysql.com/
+
+        Download Location: 
+        http://dev.mysql.com/get/Downloads/MySQL-5.0/mysql-standard-5.0.21-linux-i686-glibc23.tar.gz/from/http://mysql.mirrors.pair.com/
+
+     Following the installation, set the following FDO environment variable:
+
+        set FDOMYSQL=<MySQL developer components path> 
+
+     e.g. set FDOMYSQL=c:\Program Files\MySQL\MySQL Server 5.0
+
+  6. OPTIONAL: The FDO build includes several generated .cpp files that were 
+     generated from source .y files by the Bision and Sed utilities. These 
+     files are fairly static therefore they are not automatically regenerated 
+     as a part of the standard FDO build process. If changes are made 
+     to the .y files they will need to be recompiled into their respective .cpp and 
+     ,h files. In order to rebuild these files download and install the GNU 
+     Win32 Bison (version 1.875) and Sed (version 4.1.4) self-extracting utilities.
 
         "Bison"
 
@@ -83,169 +123,40 @@ I. Windows Notes:
         http://prdownloads.sourceforge.net/gnuwin32/sed-4.1.4.exe?download
 
    
-      FDO has been tested using Bison 1.875 and Sed 4.1.4
-      The Bison and Sed files MUST be installed in the same location 
-      e.g.  C:\Program Files\GnuWin32
+     FDO has been tested using Bison 1.875 and Sed 4.1.4
+     The Bison and Sed executable files MUST be included in the Windows PATH in order 
+     to be used by the FDO build process. 
 
-   4. OPTIONAL: The FDO build process allows it's documentation to be regenerated. 
-      If this is required, install the OpenSource Doxygen documentation generation
-      software.  Doxygen is a documentation system for C++, C, Java, Objective-C, 
-      Python, IDL (Corba and Microsoft flavors) and to some extent PHP, C#, and D.
+     The FDO build script that will need to be executed to rebuild the generated parsing 
+     scripts is the build_parse.bat script
+
   
-      To install Doxygen, refer to: http://www.stack.nl/~dimitri/doxygen/
+  7. OPTIONAL: The FDO build process allows it's documentation to be regenerated. 
+     If this is required, install the OpenSource Doxygen documentation generation
+     software.  Doxygen is a documentation system for C++, C, Java, Objective-C, 
+     Python, IDL (Corba and Microsoft flavors) and to some extent PHP, C#, and D.
+  
+     To install Doxygen, refer to: http://www.stack.nl/~dimitri/doxygen/
      
-      The FDO Doxygen documentation generation process will also use the "dot" tool  
-      from graphviz 1.5 to generate more advanced diagrams and graphs. Graphviz is an 
-      "open-sourced", cross-platform graph drawing toolkit from AT&T and Lucent 
-      Bell Labs.
+     The FDO Doxygen documentation generation process will also use the "dot" tool  
+     from graphviz 1.5 to generate more advanced diagrams and graphs. Graphviz is an 
+     "open-sourced", cross-platform graph drawing toolkit from AT&T and Lucent 
+     Bell Labs.
      
-      To install graphviz, refer to: http://www.research.att.com/sw/tools/graphviz/ 
+     To install graphviz, refer to: http://www.research.att.com/sw/tools/graphviz/ 
 
-      The FDO Doxygen documentation generation process also uses the Microsoft 
-      HTML Help Workshop. Microsoft HTML Help is the standard help system for the 
-      Windows platform. Authors can use HTML Help to create online help for a 
-      software application or to create content for a multimedia title or Web site.
+     The FDO Doxygen documentation generation process also uses the Microsoft 
+     HTML Help Workshop. Microsoft HTML Help is the standard help system for the 
+     Windows platform. Authors can use HTML Help to create online help for a 
+     software application or to create content for a multimedia title or Web site.
 
-      To install the Microsoft HTML Help Workshop, refer to: 
+     To install the Microsoft HTML Help Workshop, refer to: 
 
-      http://msdn.microsoft.com/library/default.asp?url=/library/en-us/htmlhelp/html/hwMicrosoftHTMLHelpDownloads.asp
+     http://msdn.microsoft.com/library/default.asp?url=/library/en-us/htmlhelp/html/hwMicrosoftHTMLHelpDownloads.asp
 
+II. Windows Build Instructions:
 
-   5. Ensure that the tools that the FDO build process use are in the build 
-      environment's PATH.
-
-        MsBuild    -- e.g. C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727
-        devenv     -- e.g. C:\Program Files\Microsoft Visual Studio 8\Common7\IDE
-        Doxygen    -- e.g. C:\Program Files\doxygen\bin
-        Dot        -- e.g. C:\Program Files\ATT\Graphviz\bin
-        Sed/Bison  -- e.g. C:\Program Files\GnuWin32
-
-        e.g.
-        
-        set PATH=%PATH%;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727
-        set PATH=%PATH%;C:\Program Files\Microsoft Visual Studio 8\Common7\IDE
-        set PATH=%PATH%;C:\Program Files\doxygen\bin
-        set PATH=%PATH%;C:\Program Files\ATT\Graphviz\bin
-        set PATH=%PATH%;C:\Program Files\GnuWin32\bin
-
-
-   6. The FDO OpenSource Distribution files contains a providers.xml file.
-      The providers.xml file is used by FDO to identify where FDO provider
-      binaries are installed. 
-
-      The providers.xml file included in the FDO OpenSource distribution 
-      has been generated for a Linux install environment and contains 
-      references to Linux .so files. 
-
-      In order for the providers.xml file to be used on a Windows environment
-      the names and path locations of the provider libraries must be changed
-      to be windows specific. This will be done as a part of the Windows build 
-      process. 
-
-      This can also be done manually according to the following template:
-
-      <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-      <FeatureProviderRegistry>
-        <FeatureProvider>
-          <Name>OSGeo.SDF.3.2</Name>
-          <DisplayName>OSGeo FDO Provider for SDF</DisplayName>
-          <Description>Read/write access to Autodesk's spatial database format, 
-          a file-based personal geodatabase that supports multiple features/attributes, 
-          spatial indexing, and file-locking.</Description>
-          <IsManaged>False</IsManaged>
-          <Version>3.2.0.0</Version>
-          <FeatureDataObjectsVersion>3.2.0.0</FeatureDataObjectsVersion>
-          <LibraryPath>.\SDFProvider.dll</LibraryPath>
-        </FeatureProvider>
-        <FeatureProvider>
-          <Name>OSGeo.SHP.3.2</Name>
-          <DisplayName>OSGeo FDO Provider for SHP</DisplayName>
-          <Description>Read/write access to spatial and attribute data in an ESRI SHP file.</Description>
-          <IsManaged>False</IsManaged>
-          <Version>3.2.0.0</Version>
-          <FeatureDataObjectsVersion>3.2.0.0</FeatureDataObjectsVersion>
-          <LibraryPath>.\SHPProvider.dll</LibraryPath>
-        </FeatureProvider>
-        <FeatureProvider>
-          <Name>OSGeo.ArcSDE.3.2</Name>
-          <DisplayName>OSGeo FDO Provider for ArcSDE</DisplayName>
-          <Description>Read/write access to an ESRI ArcSDE-based data store, using Oracle and SQL Server.</Description>
-          <IsManaged>False</IsManaged>
-          <Version>3.2.0.0</Version>
-          <FeatureDataObjectsVersion>3.2.0.0</FeatureDataObjectsVersion>
-          <LibraryPath>.\ArcSDEProvider.dll</LibraryPath>
-        </FeatureProvider>
-        <FeatureProvider>
-          <Name>OSGeo.WFS.3.2</Name>
-          <DisplayName>OSGeo FDO Provider for WFS</DisplayName>
-          <Description>Read access to OGC WFS-based data store.</Description>
-          <IsManaged>False</IsManaged>
-          <Version>3.2.0.0</Version>
-          <FeatureDataObjectsVersion>3.2.0.0</FeatureDataObjectsVersion>
-          <LibraryPath>.\WFSProvider.dll</LibraryPath>
-        </FeatureProvider>
-        <FeatureProvider>
-          <Name>OSGeo.WMS.3.2</Name>
-          <DisplayName>OSGeo FDO Provider for WMS</DisplayName>
-          <Description>Read access to OGC WMS-based data store.</Description>
-          <IsManaged>False</IsManaged>
-          <Version>3.2.0.0</Version>
-          <FeatureDataObjectsVersion>3.2.0.0</FeatureDataObjectsVersion>
-          <LibraryPath>.\WMSProvider.dll</LibraryPath>
-        </FeatureProvider>
-        <FeatureProvider>
-          <Name>OSGeo.ODBC.3.2</Name> 
-          <DisplayName>OSGeo FDO Provider for ODBC</DisplayName> 
-          <Description>Autodesk FDO Provider for ODBC</Description> 
-          <IsManaged>False</IsManaged> 
-          <Version>3.2.0.0</Version> 
-          <FeatureDataObjectsVersion>3.2.0.0</FeatureDataObjectsVersion>
-          <LibraryPath>.\ODBCProvider.dll</LibraryPath>
-        </FeatureProvider>
-        <FeatureProvider>
-          <Name>OSGeo.MySQL.3.2</Name> 
-          <DisplayName>OSGeo FDO Provider for MySQL</DisplayName> 
-          <Description>FDO Provider for MySql</Description>
-          <IsManaged>False</IsManaged>
-          <Version>3.2.0.0</Version>
-          <FeatureDataObjectsVersion>3.2.0.0</FeatureDataObjectsVersion>
-          <LibraryPath>.\MySQLProvider.dll</LibraryPath>
-        </FeatureProvider>
-      </FeatureProviderRegistry>
-
-     On Windows the providers.xml file will need to be located where FDO.dll is located. 
-
-
-   8. In order to build the ArcSDE Provider, you will need to have the
-      ArcSDE 9.1 Client SDK installed and the following environment variable set that 
-      points to the installation location:
-
-        set SDEHOME==<ArcSDE developer components path> 
-
-      Note that ArcSDE is licensed software and must be obtained from an
-      ESRI vendor.
-
-
-   9. In order to build the MySQL Provider, you will need to download 
-   and install the MySQL client (Windows (x86) version 5.0), including
-   the developer components.
-
-        Home Page: 
-        http://dev.mysql.com/
-
-        Download Location: 
-	http://dev.mysql.com/get/Downloads/MySQL-5.0/mysql-standard-5.0.21-linux-i686-glibc23.tar.gz/from/http://mysql.mirrors.pair.com/
-
-   Following the installation, set the following FDO environment variable:
-
-        set FDOMYSQL=<MySQL developer components path> 
-
-   e.g. \Program Files\MySQL\MySQL Server 5.0
-
-
-II. Windows steps for open source build: 
-
-  1.  Extract the FDO OpenSource files using either gunzip/tar or Winzip.
+  1. Extract the FDO OpenSource files using either gunzip/tar or Winzip.
 
        Use gunzip and tar utilities as follows:
 
@@ -255,7 +166,7 @@ II. Windows steps for open source build:
             gunzip fdosdf-3.2.0.tar.gz
             tar -xvf fdosdf-3.2.0.tar
 
-	    etc...
+        etc...
 
        - or -
 
@@ -263,46 +174,77 @@ II. Windows steps for open source build:
 
             WINZIP32.EXE fdo-3.2.0.tar.gz
             WINZIP32.EXE fdosdf-3.2.0.tar.gz
-	    etc...
+        etc...
 
-  2.   Use the build.bat file to build the FDO OpenSource binaries. The following 
-       is a general guideline on how to use build.bat
+  2. Use the build_thirdparty.bat file to build the FDO Thirdparty binaries. The following 
+     is a general guideline on how to use the Windows build script.
   
-       **************************************************************************
-       build.bat [-h] [-o=OutFolder] [-c=BuildType] [-a=Action] [-w=WithModule] [-d=BuildDocs]
-       *
-       Help:        -h[elp]
-       OutFolder:   -o[utpath]=destination folder for binaries
-       BuildType:   -c[onfig]=release(default), debug
-       Action:      -a[ction]=buildinstall(default), buildonly, installonly
-       WithModule:  -w[ith]=all(default), thirdparty, fdo, providers, shp, sdf, wfs, wms, arcsde, odbc, mysql
-       BuildDocs:   -d[ocs]=skip(default), build
-       **************************************************************************
+           **************************************************************************
+           build_thirdparty.bat [-h] [-o=OutFolder] [-c=BuildType] [-a=Action] [-w=WithModule]
+
+           Help:           -h[elp]
+           OutFolder:      -o[utpath]=destination folder for binaries
+           BuildType:      -c[onfig]=release(default), debug
+           Action:         -a[ction]=build(default), buildinstall, install, clean
+           WithModule:     -w[ith]=all(default), fdo, providers, sdf, wfs, wms
+           **************************************************************************            
 
             e.g.
 
             **** Display help for build.bat
-            build -h
-            **** ReBuild all components excluding documentation
-            build -a=buildonly
-            **** ReBuild all components excluding documentation 
-            **** and install output files to C:\Fdo
-            build -o=C:\Fdo
-            **** ReBuild all components and documentation
-            **** and installoutput and documentation files to C:\Fdo
-            build -o=C:\Fdo -d=build
-            **** ReBuild FDO library
-            build -a=buildonly -w=fdo
-            **** ReBuild all FDO Providers
-            build -a=buildonly -w=providers
-            **** ReBuild FDO Shape Provider
-            build -a=buildonly -w=shp
-            **** ReBuild FDO SDF Provider
-            build -a=buildonly -w=sdf
-            **** Build only documentation and install files to C:\Fdo
-            build -o=C:\Fdo -d=build -a=installonly
+            build_thirdparty -h
+            **** Build all Thirdparty components
+            build_thirdparty
+            **** Build all Thirdparty components and install output files to C:\Fdo
+            build -o=C:\Fdo -a=buildinstall
+            **** Build all Thirdparty components and install files to C:\Fdo
+            build_thirdparty -o=C:\Fdo -a=buildinstall -d=build
+            **** Build Thirdparty components for FDO libraries
+            build_thirdparty -w=fdo
+            **** Build Thirdparty components for all FDO Providers
+            build_thirdparty -w=providers
+            **** Build Thirdparty components for for SDF Provider
+            build_thirdparty -w=sdf
+            **** Build Thirdparty components for for WMS Provider
+            build_thirdparty -w=wms
 
- 3.   In order to run the SHP and SDF Provider Unit Tests
+
+  3. Use the build.bat file to build the FDO binaries. The following 
+     is a general guideline on how to use the build.bat Windows build script
+  
+           **************************************************************************
+           build.bat [-h] [-o=OutFolder] [-c=BuildType] [-a=Action] [-w=WithModule] [-d=BuildDocs]
+
+           Help:           -h[elp]
+           OutFolder:      -o[utpath]=destination folder for binaries '
+           BuildType:      -c[onfig]=release(default), debug
+           Action:         -a[ction]=build(default), buildinstall, install, clean
+           WithModule:     -w[ith]=all(default), fdo, providers, shp, sdf, wfs, wms, arcsde, odbc, mysql
+           BuildDocs:      -d[ocs]=skip(default), build
+           **************************************************************************
+            
+            e.g.
+
+            **** Display help for build.bat
+            build -h
+            **** Build all components excluding documentation
+            build
+            **** Build all components and install output files to C:\Fdo
+            build -o=C:\Fdo -a=buildinstall
+            **** Build all components and documentation and install files to C:\Fdo
+            build -o=C:\Fdo -a=buildinstall -d=build
+            **** Build only FDO libraries
+            build -w=fdo
+            **** Build all FDO Providers
+            build -w=providers
+            **** Build FDO Shape Provider
+            build -w=shp
+            **** Build FDO SDF Provider
+            build -w=sdf
+            **** Build documentation and install files to C:\Fdo
+            build -o=C:\Fdo -d=build -a=install
+
+   4. In order to run the SHP and SDF Provider Unit Tests
 
         SDF:
 
@@ -316,11 +258,12 @@ II. Windows steps for open source build:
 
 
 -----------------------------
-
-Linux Redhat 3.0 Instructions
+Linux Instructions
 -----------------------------
  
 I. Linux Notes:
+
+  In preparation for building the Linux Open Source FDO Binaries
 
   1. REQUIRED: Before building FDO and thirdparty libraries, the following 
      directories must be set as writeable by the user, otherwise the user 
@@ -381,7 +324,7 @@ I. Linux Notes:
         http://dev.mysql.com/
         
         Download Location: 
- 	http://dev.mysql.com/get/Downloads/MySQL-5.0/mysql-standard-5.0.21-linux-i686-glibc23.tar.gz/from/http://mysql.mirrors.pair.com/
+        http://dev.mysql.com/get/Downloads/MySQL-5.0/mysql-standard-5.0.21-linux-i686-glibc23.tar.gz/from/http://mysql.mirrors.pair.com/
  
       Following the installation, set the following FDO environment variable:
   
@@ -420,7 +363,7 @@ I. Linux Notes:
 
            FDOODBC=<unixODBC developer components path>
 
-II. Linux steps for open source build:
+II. Linux Build Instructions:
 
    1.  Extract the FDO OpenSource files using gunzip/tar.
 
@@ -432,7 +375,7 @@ II. Linux steps for open source build:
             gunzip fdosdf-3.2.0.tar.gz
             tar -xvf fdosdf-3.2.0.tar
 
-	    etc...
+        etc...
 
   2.   cd <FDO OpenSource Location>
 
@@ -440,7 +383,7 @@ II. Linux steps for open source build:
        The following is a general guideline on how to use build_linux.sh
 
        echo "**************************************************************************"
-       echo "build_linux.sh [--h] [-c BuildType] [-a Action] [--w WithModule] "
+       echo "build_linux.sh [--h] [-c BuildType] [--a Action] [--w WithModule] "
        echo "*"
        echo "Help:       --h[elp]"
        echo "BuildType:  --c[onfig] release(default), debug"
