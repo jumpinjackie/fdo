@@ -1,6 +1,6 @@
 @echo off
 
-SET TYPEACTIONWMS=buildinstall
+SET TYPEACTIONWMS=build
 SET MSACTIONWMS=Build
 SET TYPEBUILDWMS=release
 SET TYPEBUILDWMSPATH=rel
@@ -96,7 +96,7 @@ echo %MSACTIONWMS% %TYPEBUILDWMS% WMS provider dlls
 pushd Src
 SET FDOACTIVEBUILD=%cd%\WMSOS
 cscript //job:prepare ../../../preparebuilds.wsf
-msbuild WMSOS_temp.sln /t:%MSACTIONWMS% /p:Configuration=%TYPEBUILDWMS% /p:Platform="Win32" /nologo
+msbuild WMSOS_temp.sln /t:%MSACTIONWMS% /p:Configuration=%TYPEBUILDWMS% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if exist WMSOS_temp.sln del /Q /F WMSOS_temp.sln
 popd
@@ -170,7 +170,7 @@ echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
-echo Action:         -a[ction]=buildinstall(default), build, install, clean
+echo Action:         -a[ction]=build(default), buildinstall, install, clean
 echo BuildDocs:      -d[ocs]=skip(default), build
 echo **************************************************************************
 exit /B 0
