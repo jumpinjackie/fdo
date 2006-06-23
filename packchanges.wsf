@@ -90,14 +90,17 @@
                             modLine = Right(lineFile, Len(lineFile) - 7)
                             oinfFile.WriteLine("Modified : " & activeRelPath & modLine)
                             olstFile.WriteLine(activeRelPath & modLine)
+                            Call WshShell.Run("7z a -tzip " & ChangeName & ".zip " & activeRelPath & modLine, 0, true)
                         ElseIf not Instr(modLine, "A") = 0 Then
                             modLine = Right(lineFile, Len(lineFile) - 7)
                             oinfFile.WriteLine("Added : " & activeRelPath & modLine)
                             olstFile.WriteLine(activeRelPath & modLine)
+                            Call WshShell.Run("7z a -tzip " & ChangeName & ".zip " & activeRelPath & modLine, 0, true)
                         ElseIf not Instr(modLine, "D") = 0 Then
                             modLine = Right(lineFile, Len(lineFile) - 7)
                             oinfFile.WriteLine("Deleted : " & activeRelPath & modLine)
                             olstFile.WriteLine(activeRelPath & modLine)
+                            Call WshShell.Run("7z a -tzip " & ChangeName & ".zip " & activeRelPath & modLine, 0, true)
                         End If
                 End Select
                Loop While EndFile = False
@@ -108,20 +111,25 @@
                Set oFile = Nothing
                Set oinfFile = Nothing
                Set olstFile = Nothing
-               Call WshShell.Run("7z a -tzip " & ChangeName & ".zip @" & mdFileList, 0, true)
+               Call WshShell.Run("7z a -tzip " & ChangeName & ".zip " & infoFileName, 0, true)
+               'Call WshShell.Run("7z a -tzip " & ChangeName & ".zip " & mdFileList, 0, true)
 		    End If
-		    If fsc.FileExist(chgFileName) Then
-		        Call fsc.RemoveReadOnly(chgFileName)
-		        Call fsc.DeleteFile(chgFileName)
-		    End If
-		    If fsc.FileExist(infoFileName) Then
-		        Call fsc.RemoveReadOnly(infoFileName)
-		        Call fsc.DeleteFile(infoFileName)
-		    End If
-		    If fsc.FileExist(mdFileList) Then
-		        Call fsc.RemoveReadOnly(mdFileList)
-		        Call fsc.DeleteFile(mdFileList)
-		    End If
+		    if fsc.FileExist(ChangeName & ".zip ") Then
+		        If fsc.FileExist(chgFileName) Then
+		            Call fsc.RemoveReadOnly(chgFileName)
+		            Call fsc.DeleteFile(chgFileName)
+		        End If
+		        If fsc.FileExist(infoFileName) Then
+		            Call fsc.RemoveReadOnly(infoFileName)
+		            Call fsc.DeleteFile(infoFileName)
+		        End If
+		        If fsc.FileExist(mdFileList) Then
+		            Call fsc.RemoveReadOnly(mdFileList)
+		            Call fsc.DeleteFile(mdFileList)
+		        End If
+		    Else
+		        WScript.Echo ("Error creating the archive: "& ChangeName & ".zip")
+	        End If
             Set WshShell = nothing
             Set fsc = nothing
             Set fs = Nothing
