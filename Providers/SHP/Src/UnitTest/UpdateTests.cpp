@@ -57,6 +57,8 @@ void UpdateTests::tearDown ()
     CleanUpClass(mConnection, NULL, L"Test");
 
     mConnection->Close ();
+	FDO_SAFE_RELEASE(mConnection.p);
+
     if (FdoCommonFile::FileExists (LOCATION))
         FdoCommonFile::RmDir (LOCATION);
 }

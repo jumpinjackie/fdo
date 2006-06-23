@@ -52,6 +52,7 @@ void BigPerformanceTests::setUp ()
 void BigPerformanceTests::tearDown ()
 {
     mConnection->Close ();
+	FDO_SAFE_RELEASE(mConnection.p);
 }
 
 void BigPerformanceTests::select ()
@@ -89,7 +90,7 @@ void BigPerformanceTests::select ()
             }
         }
         finish = clock ();
-        if (VERBOSE)
+        //if (VERBOSE)
             printf ("%2.3f seconds\n", (double)(finish - start) / CLOCKS_PER_SEC);
     }
     catch (FdoException* ge)

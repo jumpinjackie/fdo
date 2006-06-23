@@ -47,6 +47,7 @@ void FilterTests::setUp ()
 void FilterTests::tearDown ()
 {
     mConnection->Close ();
+	FDO_SAFE_RELEASE(mConnection.p);
 }
 
 void FilterTests::equal ()

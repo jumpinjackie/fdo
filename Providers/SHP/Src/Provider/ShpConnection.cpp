@@ -1089,6 +1089,7 @@ void ShpConnection::CompressFileSets()
 		{
 			CompressFileSet( ShpConnGlobalFilesToCompress[i].c_str() );
 		}
+		ShpConnGlobalFilesToCompress.clear();
 	}
 }
 

@@ -71,6 +71,8 @@ void InsertTests::tearDown ()
 	CleanUpClass(mConnection, NULL, L"TestFdoClass");
 
     mConnection->Close ();
+	FDO_SAFE_RELEASE(mConnection.p);
+
     if (FdoCommonFile::FileExists (LOCATION SCHEMA_NAME))
         FdoCommonFile::Delete (LOCATION SCHEMA_NAME);
     if (FdoCommonFile::FileExists (LOCATION))

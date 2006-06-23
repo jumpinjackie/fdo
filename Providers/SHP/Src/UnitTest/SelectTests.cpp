@@ -50,6 +50,7 @@ void SelectTests::setUp ()
 void SelectTests::tearDown ()
 {
     mConnection->Close ();
+	FDO_SAFE_RELEASE(mConnection.p);
 }
 
 void SelectTests::select ()

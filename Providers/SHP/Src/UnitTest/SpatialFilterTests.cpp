@@ -90,6 +90,7 @@ void SpatialFilterTests::setUp ()
 void SpatialFilterTests::tearDown ()
 {
     mConnection->Close ();
+	FDO_SAFE_RELEASE(mConnection.p);
 }
 
 void SpatialFilterTests::SelectAll ()

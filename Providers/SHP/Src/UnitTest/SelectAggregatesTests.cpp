@@ -57,6 +57,8 @@ void SelectAggregatesTests::tearDown ()
     CleanUpClass (mConnection, NULL, L"MyClass");
 
     mConnection->Close ();
+	FDO_SAFE_RELEASE(mConnection.p);
+	
     if (FdoCommonFile::FileExists (LOCATION L"schema.xml"))
         FdoCommonFile::Delete (LOCATION L"schema.xml");
     if (FdoCommonFile::FileExists (LOCATION))

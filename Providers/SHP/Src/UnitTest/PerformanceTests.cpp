@@ -52,6 +52,7 @@ void PerformanceTests::setUp ()
 void PerformanceTests::tearDown ()
 {
     mConnection->Close ();
+	FDO_SAFE_RELEASE(mConnection.p);
 }
 
 void PerformanceTests::select ()

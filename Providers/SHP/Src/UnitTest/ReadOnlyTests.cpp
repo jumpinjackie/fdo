@@ -49,6 +49,7 @@ void ReadOnlyTests::setUp ()
 void ReadOnlyTests::tearDown ()
 {
     mConnection->Close ();
+	FDO_SAFE_RELEASE(mConnection.p);
 }
 
 void ReadOnlyTests::create_schema (FdoGeometricType type, bool elevation, bool measure)

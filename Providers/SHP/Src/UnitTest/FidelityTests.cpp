@@ -69,6 +69,8 @@ void FidelityTests::tearDown ()
         CleanUpClass(mConnection, NULL, L"coundist01_n83");
 
         mConnection->Close ();
+		FDO_SAFE_RELEASE(mConnection.p);
+
     if (FdoCommonFile::FileExists (LOCATION SCHEMA_NAME))
         FdoCommonFile::Delete (LOCATION SCHEMA_NAME);
         if (FdoCommonFile::FileExists (LOCATION))

@@ -69,6 +69,7 @@ void ConnectTests::setUp ()
 
 void ConnectTests::tearDown ()
 {
+	FDO_SAFE_RELEASE(mConnection.p);
 }
 
 void ConnectTests::connect ()
