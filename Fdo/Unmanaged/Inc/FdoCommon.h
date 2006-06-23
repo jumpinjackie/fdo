@@ -23,7 +23,7 @@
 #endif
 
 #include <Common/Std.h>
-#include <Common/Types.h>
+#include <Common/FdoTypes.h>
 #include <Common/IDisposable.h>
 #include <Common/Disposable.h>
 #include <Common/Exception.h>

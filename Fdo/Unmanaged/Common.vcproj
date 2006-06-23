@@ -541,7 +541,7 @@
 				>
 			</File>
 			<File
-				RelativePath="Inc\Common\Types.h"
+				RelativePath="Inc\Common\FdoTypes.h"
 				>
 			</File>
 			<File

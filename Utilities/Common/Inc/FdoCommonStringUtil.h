@@ -23,7 +23,7 @@
 #pragma once
 #endif
 
-#include <Common/Types.h>
+#include <Common/FdoTypes.h>
 
 #ifdef _WIN32
 

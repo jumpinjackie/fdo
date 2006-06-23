@@ -24,7 +24,7 @@
 #endif
 #include <wchar.h>
 #include <stdlib.h>
-#include <Common/Types.h>
+#include <Common/FdoTypes.h>
 
 // FDOCommon
 #ifdef _WIN32

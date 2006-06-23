@@ -21,7 +21,7 @@
 #define _CRT_SECURE_NO_DEPRECATE
 
 #include <vcclr.h>
-#include <Common\Types.h>
+#include <Common\FdoTypes.h>
 #include <Common\GeometryType.h>
 
 #include "CommonNamespace.h"
