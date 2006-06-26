@@ -184,6 +184,7 @@ function CreateCustomProject(strProjectName, strProjectPath)
             else
             {
                 fso = new ActiveXObject('Scripting.FileSystemObject');
+                fso.CreateFolder(strSolutionPath);
                 fso.CreateFolder(strSolutionPath + strProjectName);
                 fso.CreateFolder(strSolutionPath + strProjectName + '\\Src');
                 fso.CreateFolder(strSolutionPath + strProjectName + '\\Src\\Provider');
