@@ -25,10 +25,14 @@ if not exist "%SDEHOME%" echo Optional FDO environment variable SDEHOME is not s
 if not exist "%FDOMYSQL%" SET FDOMYSQL=C:\Program Files\MySQL\MySQL Server 5.0
 if not exist "%FDOMYSQL%" echo Optional FDO environment variable FDOMYSQL is not set
 
-SET ACTIVEPATHCHECK="C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727"
 SET ACTIVENAMECHECK="Microsoft .Net Framework"
+SET ACTIVEPATHCHECK="C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727"
 if not exist %ACTIVEPATHCHECK% goto error
 set PATH=%PATH%;%ACTIVEPATHCHECK%
+
+SET ACTIVENAMECHECK="Microsoft Visual Studio 8 IDE"
+SET ACTIVEPATHCHECK="C:\Program Files\Microsoft Visual Studio 8\Common7\IDE"
+if exist %ACTIVEPATHCHECK% set PATH=%PATH%;%ACTIVEPATHCHECK%
 
 SET ACTIVENAMECHECK="Graphviz"
 SET ACTIVEPATHCHECK="C:\Program Files\ATT\Graphviz\bin"
