@@ -29,29 +29,12 @@ I. Windows Notes:
         SET XERCESCROOT=%FDOTHIRDPARTY%\apache\xml-xerces\c
         SET NLSDIR=%XALANROOT%\Src\xalanc\NLS
 
-  2. Ensure that the MSVC Variables are set through the VisualStudio .Net 
-     User Interface (Tools>Options>Projects and Solutions>VC++ Directories):
-
-      For Platform Win32, add to Include files
-
-          $(XERCESCROOT)\src
-
-      For Platform Win32, Add to Library files
-
-          $(XERCESCROOT)\Build\Win32\VC8\Release
-          $(XERCESCROOT)\Build\Win32\VC8\Debug
-
-      For Platform Win32, Add to Executable files
-
-          $(XERCESCROOT)\Build\Win32\VC8\Release
-          $(XERCESCROOT)\Build\Win32\VC8\Debug
-
-  3. In order to build all FDO Windows components, ensure that the Microsoft
+  2. In order to build all FDO Windows components, ensure that the Microsoft
      MsBuild tool that is used by the the FDO build process is included in the Windows system PATH.
 
         set PATH=%PATH%;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727
  
-  4. In order to build the ArcSDE Provider, you will need to have the
+  3. In order to build the ArcSDE Provider, you will need to have the
      ArcSDE 9.1 Client SDK installed and the following environment variable set that 
      points to the installation location:
 
@@ -59,7 +42,7 @@ I. Windows Notes:
 
      Note that ArcSDE is licensed software and must be obtained from an ESRI vendor.
 
-  5. In order to build the MySQL Provider, you will need to download 
+  4. In order to build the MySQL Provider, you will need to download 
      and install the MySQL 5.0 Windows client and developer components from:
 
         http://dev.mysql.com/downloads/mysql/5.0.html
@@ -70,12 +53,12 @@ I. Windows Notes:
 
      e.g. set FDOMYSQL=c:\Program Files\MySQL\MySQL Server 5.0
 
-  6. OPTIONAL: The FDO build includes several generated .cpp files that were 
+  5. OPTIONAL: The FDO build includes several generated .cpp files that were 
      generated from source .y files by the Bision and Sed utilities. These 
      files are fairly static therefore they are not automatically regenerated 
      as a part of the standard FDO build process. If changes are made 
      to the .y files they will need to be recompiled into their respective .cpp and 
-     ,h files. 
+     .h files. 
 
      In order to rebuild these files download and install the GNU 
      Win32 Bison (version 1.875) and Sed (version 4.1.4) self-extracting utilities.
@@ -114,10 +97,11 @@ I. Windows Notes:
         e.g. set PATH=%PATH%;C:\Program Files\GnuWin32\bin
 
      The optional FDO build script that will need to be executed to rebuild the 
-     generated parsing scripts is build_parse.bat.
+     generated cpp source files is:
 
-  
-  7. OPTIONAL: The FDO build process allows it's documentation to be regenerated. 
+        build_parse.bat
+ 
+  6. OPTIONAL: The FDO build process allows it's documentation to be regenerated. 
      If this is required, install the OpenSource Doxygen documentation generation
      software.  Doxygen is a documentation system for C++, C, Java, Objective-C, 
      Python, IDL (Corba and Microsoft flavors) and to some extent PHP, C#, and D.
