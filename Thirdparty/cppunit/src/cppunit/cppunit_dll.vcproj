@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="cppunit_dll"
 	ProjectGUID="{F7702D5A-50BA-4BB4-97FB-46EBD0B61518}"
+	RootNamespace="cppunit_dll"
 	>
 	<Platforms>
 		<Platform
@@ -144,7 +145,6 @@
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;CPPUNIT_BUILD_DLL;_CRT_SECURE_NO_DEPRECATE"
-				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="true"
@@ -895,11 +895,11 @@
 			>
 		</File>
 		<File
-			RelativePath="..\..\include\cppunit\Makefile.am"
+			RelativePath="Makefile.am"
 			>
 		</File>
 		<File
-			RelativePath="Makefile.am"
+			RelativePath="..\..\include\cppunit\Makefile.am"
 			>
 		</File>
 		<File
