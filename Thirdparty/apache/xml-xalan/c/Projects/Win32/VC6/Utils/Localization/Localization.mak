@@ -60,6 +60,8 @@ PKGNAME=$(LIBNAME)_$(VER)S
 PKGNAME=$(LIBNAME)_$(VER)
 !ENDIF
 
+PATH=$(PATH);$(XERCESCROOT)\Build\Win32\VC8\Release;$(XERCESCROOT)\Build\Win32\VC8\Debug
+
 #====================== INMEM part =================================================================
 
 !IF "$(TYPE)" == "inmem"

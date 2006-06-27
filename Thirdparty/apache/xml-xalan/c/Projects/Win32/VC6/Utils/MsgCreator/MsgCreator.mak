@@ -59,13 +59,13 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MD /W4 /GX /O2 /I ".\\" /I $(XALANINCLUDE) /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fp"$(INTDIR)\MsgCreator.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MD /W4 /EHsc /O2 /I ".\\" /I $(XALANINCLUDE) /I $(XERCESCROOT)\src /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fp"$(INTDIR)\MsgCreator.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\MsgCreator.bsc" 
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib xerces-c_2.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\MsgCreator.pdb" /machine:I386 /out:"..\..\..\..\..\Build\Win32\VC8\$(RELEASE)\MsgCreator.exe" 
+LINK32_FLAGS=kernel32.lib user32.lib $(XERCESCROOT)\Build\Win32\VC8\Release\xerces-c_2.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\MsgCreator.pdb" /machine:I386 /out:"..\..\..\..\..\Build\Win32\VC8\$(RELEASE)\MsgCreator.exe" 
 LINK32_OBJS= \
 	"$(INTDIR)\ICUResHandler.obj" \
 	"$(INTDIR)\InMemHandler.obj" \
@@ -113,7 +113,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MDd /W4 /Gm /GX /ZI /Od /I ".\\" /I $(XALANINCLUDE) /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\MsgCreator.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+CPP_PROJ=/nologo /MDd /W4 /Gm /EHsc /ZI /Od /I ".\\" /I $(XALANINCLUDE) /I $(XERCESCROOT)\src /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\MsgCreator.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /RTC1 /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\MsgCreator.bsc" 
 BSC32_SBRS= \
@@ -130,14 +130,14 @@ BSC32_SBRS= \
 <<
 
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib xerces-c_2D.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\MsgCreator.pdb" /debug /machine:I386 /out:"..\..\..\..\..\Build\Win32\VC8\Debug\MsgCreator.exe"
+LINK32_FLAGS=kernel32.lib user32.lib $(XERCESCROOT)\Build\Win32\VC8\Debug\xerces-c_2D.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\MsgCreator.pdb" /debug /machine:I386 /out:"..\..\..\..\..\Build\Win32\VC8\Debug\MsgCreator.exe"
 LINK32_OBJS= \
 	"$(INTDIR)\ICUResHandler.obj" \
 	"$(INTDIR)\InMemHandler.obj" \
 	"$(INTDIR)\MsgCreator.obj" \
 	"$(INTDIR)\NLSHandler.obj" \
 	"$(INTDIR)\SAX2Handler.obj" \
-	"$(INTDIR)\MsgFileOutputStream.obj"
+	"$(INTDIR)\MsgFileOutputStream.obj" 
 
 "..\..\..\..\..\Build\Win32\VC8\Debug\MsgCreator.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -178,7 +178,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MDd /W4 /Gm /GX /ZI /Od /I ".\\" /I $(XALANINCLUDE) /D "WIN32" /D "WIN64" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\MsgCreator.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+CPP_PROJ=/nologo /MDd /W4 /Gm /EHsc /ZI /Od /I ".\\" /I $(XALANINCLUDE) /I $(XERCESCROOT)\src /D "WIN32" /D "WIN64" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\MsgCreator.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /RTC1 /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\MsgCreator.bsc" 
 BSC32_SBRS= \
@@ -195,7 +195,7 @@ BSC32_SBRS= \
 <<
 
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib xerces-c_2D.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\MsgCreator.pdb" /debug /machine:IX86 /out:"..\..\..\..\..\Build\Win64\VC8\Debug\MsgCreator.exe" /pdbtype:sept /machine:IA64
+LINK32_FLAGS=kernel32.lib user32.lib $(XERCESCROOT)\Build\Win32\VC8\Debug\xerces-c_2D.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\MsgCreator.pdb" /debug /machine:IX86 /out:"..\..\..\..\..\Build\Win64\VC8\Debug\MsgCreator.exe" /pdbtype:sept /machine:IA64
 LINK32_OBJS= \
 	"$(INTDIR)\ICUResHandler.obj" \
 	"$(INTDIR)\InMemHandler.obj" \
@@ -228,20 +228,20 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MD /W4 /GX /O2 /I ".\\" /I $(XALANINCLUDE) /D "WIN64" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fp"$(INTDIR)\MsgCreator.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MD /W4 /EHsc /O2 /I ".\\" /I $(XALANINCLUDE) /I $(XERCESCROOT)\src /D "WIN64" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fp"$(INTDIR)\MsgCreator.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\MsgCreator.bsc" 
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib xerces-c_2.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\MsgCreator.pdb" /machine:IX86 /out:"..\..\..\..\..\Build\Win64\VC8\Release\MsgCreator.exe" /machine:IA64
+LINK32_FLAGS=kernel32.lib user32.lib $(XERCESCROOT)\Build\Win32\VC8\Release\xerces-c_2.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\MsgCreator.pdb" /machine:IX86 /out:"..\..\..\..\..\Build\Win64\VC8\Release\MsgCreator.exe" /machine:IA64
 LINK32_OBJS= \
 	"$(INTDIR)\ICUResHandler.obj" \
 	"$(INTDIR)\InMemHandler.obj" \
 	"$(INTDIR)\MsgCreator.obj" \
 	"$(INTDIR)\NLSHandler.obj" \
 	"$(INTDIR)\SAX2Handler.obj" \
-	"$(INTDIR)\MsgFileOutputStream.obj"
+	"$(INTDIR)\MsgFileOutputStream.obj" 
 
 "..\..\..\..\..\Build\Win64\VC8\Release\MsgCreator.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
