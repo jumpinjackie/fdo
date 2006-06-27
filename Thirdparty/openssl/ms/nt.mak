@@ -16,7 +16,7 @@ INSTALLTOP=\usr\local\ssl
 # Set your compiler options
 PLATFORM=VC-WIN32
 CC=cl
-CFLAG= /MDd /W3 /Zi /Yd /Od /nologo -DOPENSSL_SYSNAME_WIN32 -D_DEBUG -DL_ENDIAN -DWIN32_LEAN_AND_MEAN -DDEBUG -DDSO_WIN32 /Fdout32 -DOPENSSL_NO_KRB5    
+CFLAG= /MD /W3 /Ox /O2 /Ob2 /Gs0 /GF /Gy /nologo -DOPENSSL_SYSNAME_WIN32 -DWIN32_LEAN_AND_MEAN -DL_ENDIAN -DDSO_WIN32 -D_CRT_SECURE_NO_DEPRECATE /Fdout32 -DOPENSSL_NO_KRB5    
 APP_CFLAG=
 LIB_CFLAG=
 SHLIB_CFLAG=
@@ -30,7 +30,7 @@ EX_LIBS=wsock32.lib user32.lib gdi32.lib
 SRC_D=.
 
 LINK=link
-LFLAGS=/nologo /subsystem:console /machine:I386 /opt:ref /debug
+LFLAGS=/nologo /subsystem:console /machine:I386 /opt:ref
 
 BN_ASM_OBJ=
 BN_ASM_SRC=
@@ -54,9 +54,9 @@ RMD160_ASM_OBJ=
 RMD160_ASM_SRC=
 
 # The output directory for everything intersting
-OUT_D=out32.dbg
+OUT_D=out32
 # The output directory for all the temporary muck
-TMP_D=tmp32.dbg
+TMP_D=tmp32
 # The output directory for the header files
 INC_D=inc32
 INCO_D=inc32\openssl
@@ -66,8 +66,8 @@ RM=del
 RANLIB=
 MKDIR=-mkdir
 MKLIB=lib
-MLFLAGS= /debug
-ASM=ml /Cp /coff /c /Cx /Zi
+MLFLAGS=
+ASM=ml /Cp /coff /c /Cx
 
 ######################################################
 # You should not need to touch anything below this point

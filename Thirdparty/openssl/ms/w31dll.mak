@@ -16,7 +16,7 @@ INSTALLTOP=\usr\local\ssl
 # Set your compiler options
 PLATFORM=VC-W31-32
 CC=cl
-CFLAG=/ALw /Gx- /Gt256 /Gf /Od /Zi /Zd /W3 /WX -DL_ENDIAN /nologo -DOPENSSL_SYSNAME_WIN16 -DOPENSSL_NO_KRB5    
+CFLAG=/ALw /Gx- /Gt256 /Gf /G2 /f- /Ocgnotb2 /W3 /WX -DL_ENDIAN /nologo -DOPENSSL_SYSNAME_WIN16 -DOPENSSL_NO_KRB5    
 APP_CFLAG=/Gw /FPi87
 LIB_CFLAG=/Gw -D_WINDLL -D_DLL
 SHLIB_CFLAG=
@@ -30,7 +30,7 @@ EX_LIBS=oldnames llibcewq libw winsock
 SRC_D=.
 
 LINK=link
-LFLAGS=/CO /FARCALL /NOLOGO /NOD /SEG:1024 /ONERROR:NOEXE /NOE /PACKC:60000 /PACKD:60000 /STACK:20000 /ALIGN:256
+LFLAGS= /FARCALL /NOLOGO /NOD /SEG:1024 /ONERROR:NOEXE /NOE /PACKC:60000 /PACKD:60000 /STACK:20000 /ALIGN:256
 
 BN_ASM_OBJ=crypto\bn\asm\x86w32.obj
 BN_ASM_SRC=crypto\bn\asm\x86w32.asm
@@ -54,9 +54,9 @@ RMD160_ASM_OBJ=
 RMD160_ASM_SRC=
 
 # The output directory for everything intersting
-OUT_D=out16dll.dbg
+OUT_D=out16dll
 # The output directory for all the temporary muck
-TMP_D=tmp16dll.dbg
+TMP_D=tmp16dll
 # The output directory for the header files
 INC_D=inc16
 INCO_D=inc16\openssl
@@ -66,7 +66,7 @@ RM=del
 RANLIB=
 MKDIR=-mkdir
 MKLIB=lib /PAGESIZE:1024
-MLFLAGS=/CO /FARCALL /NOLOGO /NOD /SEG:1024 /ONERROR:NOEXE /NOE /PACKC:60000 /PACKD:60000
+MLFLAGS= /FARCALL /NOLOGO /NOD /SEG:1024 /ONERROR:NOEXE /NOE /PACKC:60000 /PACKD:60000
 ASM=ml /Cp /c /Cx
 
 ######################################################

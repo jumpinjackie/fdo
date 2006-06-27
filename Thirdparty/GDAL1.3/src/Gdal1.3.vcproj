@@ -26,8 +26,8 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="nmake /f &quot;makefile.vc&quot; /NOLOGO LIBDIR=..\windows\lib\VC8\debug INCDIR=..\windows\include BINDIR=..\windows\bin\VC8\debug&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO LIBDIR=..\windows\lib\VC8\debug INCDIR=..\windows\include BINDIR=..\windows\bin\VC8\debug devinstall"
-				ReBuildCommandLine="nmake /f &quot;makefile.vc&quot; /NOLOGO LIBDIR=..\windows\lib\VC8\debug INCDIR=..\windows\include BINDIR=..\windows\bin\VC8\debug&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO LIBDIR=..\windows\lib\VC8\debug INCDIR=..\windows\include BINDIR=..\windows\bin\VC8\debug devinstall"
+				BuildCommandLine="mkdir ..\windows\bin\VC8\debug&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO LIBDIR=..\windows\lib\VC8\debug INCDIR=..\windows\include BINDIR=..\windows\bin\VC8\debug&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO LIBDIR=..\windows\lib\VC8\debug INCDIR=..\windows\include BINDIR=..\windows\bin\VC8\debug devinstall"
+				ReBuildCommandLine="mkdir ..\windows\bin\VC8\debug&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO LIBDIR=..\windows\lib\VC8\debug INCDIR=..\windows\include BINDIR=..\windows\bin\VC8\debug&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO LIBDIR=..\windows\lib\VC8\debug INCDIR=..\windows\include BINDIR=..\windows\bin\VC8\debug devinstall"
 				CleanCommandLine="nmake /f &quot;makefile.vc&quot; /NOLOGO LIBDIR=..\windows\lib\VC8\debug INCDIR=..\windows\include BINDIR=..\windows\bin\VC8\debug clean"
 				Output="Gdal1.3"
 				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE"
@@ -49,8 +49,8 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="nmake /f &quot;makefile.vc&quot; /NOLOGO LIBDIR=..\windows\lib\VC8\release INCDIR=..\windows\include BINDIR=..\windows\bin\VC8\release&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO LIBDIR=..\windows\lib\VC8\release INCDIR=..\windows\include BINDIR=..\windows\bin\VC8\release devinstall"
-				ReBuildCommandLine="nmake /f &quot;makefile.vc&quot; /NOLOGO LIBDIR=..\windows\lib\VC8\release INCDIR=..\windows\include BINDIR=..\windows\bin\VC8\release&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO LIBDIR=..\windows\lib\VC8\release INCDIR=..\windows\include BINDIR=..\windows\bin\VC8\release devinstall"
+				BuildCommandLine="mkdir ..\windows\lib\VC8\release&#x0D;&#x0A;mkdir ..\windows\bin\VC8\release&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO LIBDIR=..\windows\lib\VC8\release INCDIR=..\windows\include BINDIR=..\windows\bin\VC8\release&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO LIBDIR=..\windows\lib\VC8\release INCDIR=..\windows\include BINDIR=..\windows\bin\VC8\release devinstall"
+				ReBuildCommandLine="mkdir ..\windows\lib\VC8\release&#x0D;&#x0A;mkdir ..\windows\bin\VC8\release&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO LIBDIR=..\windows\lib\VC8\release INCDIR=..\windows\include BINDIR=..\windows\bin\VC8\release&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO LIBDIR=..\windows\lib\VC8\release INCDIR=..\windows\include BINDIR=..\windows\bin\VC8\release devinstall"
 				CleanCommandLine="nmake /f &quot;makefile.vc&quot; /NOLOGO LIBDIR=..\windows\lib\VC8\release INCDIR=..\windows\include BINDIR=..\windows\bin\VC8\release clean"
 				Output="Gdal1.3"
 				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE"

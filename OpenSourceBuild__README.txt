@@ -29,12 +29,17 @@ I. Windows Notes:
         SET XERCESCROOT=%FDOTHIRDPARTY%\apache\xml-xerces\c
         SET NLSDIR=%XALANROOT%\Src\xalanc\NLS
 
-  2. In order to build all FDO Windows components, ensure that the Microsoft
+  2. In order to build The FDO Thirdparty OpenSSL components, be sure to install ActiveState Perl, 
+     available from:
+     
+        http://www.activestate.com/ActivePerl
+
+  3. In order to build all FDO Windows components, ensure that the Microsoft
      MsBuild tool that is used by the the FDO build process is included in the Windows system PATH.
 
         set PATH=%PATH%;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727
  
-  3. In order to build the ArcSDE Provider, you will need to have the
+  4. In order to build the ArcSDE Provider, you will need to have the
      ArcSDE 9.1 Client SDK installed and the following environment variable set that 
      points to the installation location:
 
@@ -42,7 +47,7 @@ I. Windows Notes:
 
      Note that ArcSDE is licensed software and must be obtained from an ESRI vendor.
 
-  4. In order to build the MySQL Provider, you will need to download 
+  5. In order to build the MySQL Provider, you will need to download 
      and install the MySQL 5.0 Windows client and developer components from:
 
         http://dev.mysql.com/downloads/mysql/5.0.html
@@ -53,7 +58,7 @@ I. Windows Notes:
 
      e.g. set FDOMYSQL=c:\Program Files\MySQL\MySQL Server 5.0
 
-  5. OPTIONAL: The FDO build includes several generated .cpp files that were 
+  6. OPTIONAL: The FDO build includes several generated .cpp files that were 
      generated from source .y files by the Bision and Sed utilities. These 
      files are fairly static therefore they are not automatically regenerated 
      as a part of the standard FDO build process. If changes are made 
@@ -101,7 +106,7 @@ I. Windows Notes:
 
         build_parse.bat
  
-  6. OPTIONAL: The FDO build process allows it's documentation to be regenerated. 
+  7. OPTIONAL: The FDO build process allows it's documentation to be regenerated. 
      If this is required, install the OpenSource Doxygen documentation generation
      software.  Doxygen is a documentation system for C++, C, Java, Objective-C, 
      Python, IDL (Corba and Microsoft flavors) and to some extent PHP, C#, and D.
@@ -276,7 +281,7 @@ I. Linux Notes:
        Client:                      MySQL-client-standard-5.0.22-0.rhel3.i386.rpm
        Headers and Libraries:       MySQL-devel-standard-5.0.22-0.rhel3.i386.rpm
 
-     NOTE: Choosing the RPM install of the MySQL components is strongly recommended. 
+     NOTE: Choosing the RPM install of the MySQL components is *strongly* recommended. 
      However, if a non-RPM installation of MySQL is chosen, following the installation, 
      set the following FDO environment variable:
   
