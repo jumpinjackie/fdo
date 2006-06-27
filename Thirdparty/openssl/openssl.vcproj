@@ -26,8 +26,8 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="perl Configure VC-WIN32&#x0D;&#x0A;call ms\do_masm debug&#x0D;&#x0A;nmake -f &quot;ms\nt.mak&quot; /NOLOGO OUT_D=lib\Debug"
-				ReBuildCommandLine="perl Configure VC-WIN32&#x0D;&#x0A;call ms\do_masm debug&#x0D;&#x0A;nmake -f &quot;ms\nt.mak&quot; /NOLOGO OUT_D=lib\Debug"
+				BuildCommandLine="mkdir lib\Debug&#x0D;&#x0A;perl Configure VC-WIN32&#x0D;&#x0A;call ms\do_ms debug&#x0D;&#x0A;nmake -f &quot;ms\nt.mak&quot; /NOLOGO OUT_D=lib\Debug"
+				ReBuildCommandLine="mkdir lib\Debug&#x0D;&#x0A;perl Configure VC-WIN32&#x0D;&#x0A;call ms\do_ms debug&#x0D;&#x0A;nmake -f &quot;ms\nt.mak&quot; /NOLOGO OUT_D=lib\Debug"
 				CleanCommandLine=""
 				Output="openssl"
 				PreprocessorDefinitions=""
@@ -49,10 +49,10 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="perl Configure VC-WIN32&#x0D;&#x0A;call ms\do_masm&#x0D;&#x0A;nmake -f &quot;ms\nt.mak&quot; /NOLOGO OUT_D=lib\Release"
-				ReBuildCommandLine="perl Configure VC-WIN32&#x0D;&#x0A;call ms\do_masm&#x0D;&#x0A;nmake -f &quot;ms\nt.mak&quot; /NOLOGO OUT_D=lib\Release"
+				BuildCommandLine="mkdir lib\Release&#x0D;&#x0A;perl Configure VC-WIN32&#x0D;&#x0A;call ms\do_ms&#x0D;&#x0A;nmake -f &quot;ms\nt.mak&quot; /NOLOGO OUT_D=lib\Release"
+				ReBuildCommandLine="mkdir lib\Release&#x0D;&#x0A;perl Configure VC-WIN32&#x0D;&#x0A;call ms\do_ms&#x0D;&#x0A;nmake -f &quot;ms\nt.mak&quot; /NOLOGO OUT_D=lib\Release"
 				CleanCommandLine=""
-				Output="boost_1_32_0"
+				Output="openssl"
 				PreprocessorDefinitions=""
 				IncludeSearchPath=""
 				ForcedIncludes=""

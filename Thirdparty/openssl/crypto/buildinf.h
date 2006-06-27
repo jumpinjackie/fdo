@@ -9,11 +9,17 @@
   /* auto-generated/updated by util/mk1mf.pl for crypto/cversion.c */
   #define CFLAGS "cl /ALw /Gx- /Gt256 /Gf /Od /Zi /Zd /W3 /WX -DL_ENDIAN /nologo -DOPENSSL_SYSNAME_WIN16 -DOPENSSL_NO_KRB5    "
   #define PLATFORM "VC-W31-32"
-  #define DATE "Tue Jun 27 18:38:55 2006"
+  #define DATE "Tue Jun 27 21:58:33 2006"
 #endif
 #ifdef MK1MF_PLATFORM_VC_WIN32
   /* auto-generated/updated by util/mk1mf.pl for crypto/cversion.c */
-  #define CFLAGS "cl  /MDd /W3 /Zi /Yd /Od /nologo -DOPENSSL_SYSNAME_WIN32 -D_DEBUG -DL_ENDIAN -DWIN32_LEAN_AND_MEAN -DDEBUG -DDSO_WIN32 -DBN_ASM -DMD5_ASM -DSHA1_ASM -DRMD160_ASM /Fdout32dll -DOPENSSL_NO_KRB5    "
+  #define CFLAGS "cl  /MDd /W3 /Zi /Yd /Od /nologo -DOPENSSL_SYSNAME_WIN32 -D_DEBUG -DL_ENDIAN -DWIN32_LEAN_AND_MEAN -DDEBUG -DDSO_WIN32 /Fdout32dll -DOPENSSL_NO_KRB5    "
   #define PLATFORM "VC-WIN32"
-  #define DATE "Tue Jun 27 18:38:55 2006"
+  #define DATE "Tue Jun 27 21:58:33 2006"
+#endif
+#ifdef MK1MF_PLATFORM_VC_CE
+  /* auto-generated/updated by util/mk1mf.pl for crypto/cversion.c */
+  #define CFLAGS "$(CC)  /MDd /W3 /WX /Zi /Yd /Od /nologo -DWIN32 -D_DEBUG -DL_ENDIAN -DWIN32_LEAN_AND_MEAN -DDEBUG -DDSO_WIN32 /Fdout32dll_$(TARGETCPU) -DOPENSSL_NO_KRB5    "
+  #define PLATFORM "VC-CE"
+  #define DATE "Tue Jun 27 21:58:33 2006"
 #endif
