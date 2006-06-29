@@ -93,11 +93,11 @@ if "%TYPEACTIONARCSDE%"=="install" goto install_files_ArcSDE
 
 echo %MSACTIONARCSDE% %TYPEBUILDARCSDE% ArcSDE provider dlls
 pushd Src
-SET FDOACTIVEBUILD=%cd%\ArcSDEOS
+SET FDOACTIVEBUILD=%cd%\ArcSDE
 cscript //job:prepare ../../../preparebuilds.wsf
-msbuild ArcSDEOS_temp.sln /t:%MSACTIONARCSDE% /p:Configuration=%TYPEBUILDARCSDE% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
+msbuild ArcSDE_temp.sln /t:%MSACTIONARCSDE% /p:Configuration=%TYPEBUILDARCSDE% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
-if exist ArcSDEOS_temp.sln del /Q /F ArcSDEOS_temp.sln
+if exist ArcSDE_temp.sln del /Q /F ArcSDE_temp.sln
 popd
 if "%FDOERROR%"=="1" goto error
 if "%TYPEACTIONARCSDE%"=="clean" goto end
