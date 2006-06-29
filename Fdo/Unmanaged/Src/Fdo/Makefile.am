@@ -180,33 +180,3 @@ Schema/FeatureSchemaCollection.cpp : Schema/SchemaFromExternal.h
 Schema/SchemaFromExternal.h : Schema/SchemaFromExternal.xslt
 	@../FileToHdr/FileToHdr Schema/SchemaFromExternal.xslt Schema/SchemaFromExternal.h schemaFromExternal
 
-Parse/yyExpression.cpp : Parse/yyExpression.y
-	@yacc -dv Parse/yyExpression.y
-	@sed -f Parse/script_linux < y.tab.c >Parse/yyExpression.cpp
-	@rm y.tab.c
-	@sed -e '/^# *line/s/\\/\\\\/g' -e '/^# *line/b' -e 's/yy/fdo_expression_yy/g' -e 's/YY/FDO_EXPRESSION_YY/g' -e '/extern /D' < y.tab.h >Parse/yyExpression.h
-	@rm y.tab.h
-	@rm y.output
-
-	@yacc -dv Parse/yyFilter.y
-	@sed -f Parse/script2_linux < y.tab.c >Parse/yyFilter.cpp
-	@rm y.tab.c
-	@sed -e '/^# *line/s/\\/\\\\/g' -e '/^# *line/b' -e 's/yy/fdo_filter_yy/g' -e 's/YY/FDO_FILTER_YY/g' -e '/extern /D' < y.tab.h >Parse/yyFilter.h
-	@rm  y.tab.h
-	@rm  y.output
-
-
-Parse/yyFilter.cpp : Parse/yyFilter.y
-	@yacc -dv Parse/yyFilter.y
-	@sed -f Parse/script2_linux < y.tab.c >Parse/yyFilter.cpp
-	@rm y.tab.c
-	@sed -e '/^# *line/s/\\/\\\\/g' -e '/^# *line/b' -e 's/yy/fdo_filter_yy/g' -e 's/YY/FDO_FILTER_YY/g' -e '/extern /D' < y.tab.h >Parse/yyFilter.h
-	@rm  y.tab.h
-	@rm  y.output
-
-	@yacc -dv Parse/yyExpression.y
-	@sed -f Parse/script_linux < y.tab.c >Parse/yyExpression.cpp
-	@rm y.tab.c
-	@sed -e '/^# *line/s/\\/\\\\/g' -e '/^# *line/b' -e 's/yy/fdo_expression_yy/g' -e 's/YY/FDO_EXPRESSION_YY/g' -e '/extern /D' < y.tab.h >Parse/yyExpression.h
-	@rm y.tab.h
-	@rm y.output
