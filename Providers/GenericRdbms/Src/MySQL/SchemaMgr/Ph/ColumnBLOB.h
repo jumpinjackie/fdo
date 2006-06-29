@@ -50,7 +50,7 @@ public:
     virtual FdoInt64 GetDbBinarySize()
     {
         // Mysql longblob size limit is 2^32 bytes
-        return 4294967296;
+        return 4294967296LL;
     }
 
     ~FdoSmPhMySqlColumnBLOB(void) {}
