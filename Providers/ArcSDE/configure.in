@@ -142,7 +142,8 @@ AC_CONFIG_FILES(Makefile)
 AC_CONFIG_FILES([Src/Makefile \
                  Inc/Makefile \
                  Src/Message/Makefile \
-                 Src/Provider/Makefile])
+                 Src/Provider/Makefile \
+                 Src/UnitTest/Makefile])
 
 AC_CONFIG_FILES([Docs/Makefile \
                  Docs/doc_src/Makefile \
