@@ -157,8 +157,8 @@ rule init (
     }
     else
     {        
-        flags msvc.compile CFLAGS $(condition)/<optimization>speed : /Ogity /O2 /Gs ;
-        flags msvc.compile CFLAGS $(condition)/<optimization>space : /Ogisy /O1 /Gs ;        
+        flags msvc.compile CFLAGS $(condition)/<optimization>speed : /Oity /O2 /Gs ;
+        flags msvc.compile CFLAGS $(condition)/<optimization>space : /Oisy /O1 /Gs ;        
     }        
 }
 
