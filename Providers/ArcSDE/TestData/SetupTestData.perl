@@ -360,7 +360,7 @@ foreach $RDBMS ("ORACLE", "SQLSERVER")
   if (-e $ARCSDEUNITTESTDIR . "\\UnitTest.exe")
   {
     if ($INSTALLACTION ne "U") {
-      my $command = $ARCSDEUNITTESTDIR . "\\UnitTest.exe initschema=true server=" . $SDESERVER . " port_multi=" . $PORT_MULTIDB . " port_single=" . $PORT_SINGLEDB . " sdepwd=" . $SDEPASSWORD . " username=" . $DATASETNAME . " rdbms=" . $RDBMS . " supportsusermanagedstringids=" . $SUPPORTSUSERMANAGEDSTRINGIDS;
+      my $command = $ARCSDEUNITTESTDIR . "\\UnitTest.exe initschema=true server=" . $SDESERVER . " port_multi=" . $PORT_MULTIDB . " port_single=" . $PORT_SINGLEDB . " sdepwd=" . $SDEPASSWORD . " dataset=" . $DATASETNAME . " rdbms=" . $RDBMS . " supportsusermanagedstringids=" . $SUPPORTSUSERMANAGEDSTRINGIDS;
       print "\nExecuting: " . $command;
       system $command;
     } else {
@@ -454,9 +454,9 @@ if ($INSTALLACTION eq "U") {
 
 print "\n";
 if ($INSTALLACTION ne "U") {
-  print "\nDONE!  You should now be able to run the ArcSDE Provider unit tests as username=" . $DATASETNAME;
+  print "\nDONE!  You should now be able to run the ArcSDE Provider unit tests as dataset=" . $DATASETNAME;
 }else {
-  print "\nDONE!  The users and data associated to username=" . $DATASETNAME . " have been removed.";
+  print "\nDONE!  The users and data associated to dataset=" . $DATASETNAME . " have been removed.";
 }
 print "\n";
 
