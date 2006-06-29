@@ -16,7 +16,7 @@ Linux Instructions
 Windows Instructions
 -----------------------------
 
-I. Windows Notes:
+I. Windows Notes: 
 
   In preparation for building the Windows Open Source FDO Binaries
 
@@ -29,19 +29,20 @@ I. Windows Notes:
         SET XERCESCROOT=%FDOTHIRDPARTY%\apache\xml-xerces\c
         SET NLSDIR=%XALANROOT%\Src\xalanc\NLS
 
-  2. In order to build The FDO Thirdparty OpenSSL components, be sure to install ActiveState Perl, 
-     available from:
-
+  2. In order to build The FDO Thirdparty OpenSSL components, be sure to 
+     install ActiveState Perl, available from:
+     
         http://www.activestate.com/ActivePerl
 
   3. In order to build all FDO Windows components, ensure that the Microsoft
-     MsBuild tool that is used by the the FDO build process is included in the Windows system PATH.
+     MsBuild tool that is used by the the FDO build process is included in 
+     the Windows system PATH.
 
         set PATH=%PATH%;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727
-
+ 
   4. In order to build the ArcSDE Provider, you will need to have the
-     ArcSDE 9.1 Client SDK installed and the following environment variable set that 
-     points to the installation location:
+     ArcSDE 9.1 Client SDK installed and the following environment variable 
+     set that points to the installation location:
 
         set SDEHOME=<ArcSDE developer components path> 
 
@@ -62,8 +63,8 @@ I. Windows Notes:
      generated from source .y files by the Bision and Sed utilities. These 
      files are fairly static therefore they are not automatically regenerated 
      as a part of the standard FDO build process. If changes are made 
-     to the .y files they will need to be recompiled into their respective .cpp and 
-     .h files. 
+     to the .y files they will need to be recompiled into their respective 
+     .cpp and .h files. 
 
      In order to rebuild these files download and install the GNU 
      Win32 Bison (version 1.875) and Sed (version 4.1.4) self-extracting utilities.
@@ -107,27 +108,27 @@ I. Windows Notes:
         build_parse.bat
  
   7. OPTIONAL: The FDO build process allows it's documentation to be regenerated. 
-      If this is required, install the OpenSource Doxygen documentation generation
-      software.  Doxygen is a documentation system for C++, C, Java, Objective-C, 
-      Python, IDL (Corba and Microsoft flavors) and to some extent PHP, C#, and D.
+     If this is required, install the OpenSource Doxygen documentation generation
+     software.  Doxygen is a documentation system for C++, C, Java, Objective-C, 
+     Python, IDL (Corba and Microsoft flavors) and to some extent PHP, C#, and D.
   
-      To install Doxygen, refer to: http://www.stack.nl/~dimitri/doxygen/
+     To install Doxygen, refer to: http://www.stack.nl/~dimitri/doxygen/
      
-      The FDO Doxygen documentation generation process will also use the "dot" tool  
-      from graphviz 1.5 to generate more advanced diagrams and graphs. Graphviz is an 
-      "open-sourced", cross-platform graph drawing toolkit from AT&T and Lucent 
-      Bell Labs.
+     The FDO Doxygen documentation generation process will also use the "dot" tool  
+     from graphviz 1.5 to generate more advanced diagrams and graphs. Graphviz is an 
+     "open-sourced", cross-platform graph drawing toolkit from AT&T and Lucent 
+     Bell Labs.
      
-      To install graphviz, refer to: http://www.research.att.com/sw/tools/graphviz/ 
+     To install graphviz, refer to: http://www.research.att.com/sw/tools/graphviz/ 
 
-      The FDO Doxygen documentation generation process also uses the Microsoft 
-      HTML Help Workshop. Microsoft HTML Help is the standard help system for the 
-      Windows platform. Authors can use HTML Help to create online help for a 
-      software application or to create content for a multimedia title or Web site.
+     The FDO Doxygen documentation generation process also uses the Microsoft 
+     HTML Help Workshop. Microsoft HTML Help is the standard help system for the 
+     Windows platform. Authors can use HTML Help to create online help for a 
+     software application or to create content for a multimedia title or Web site.
 
-      To install the Microsoft HTML Help Workshop, refer to: 
+     To install the Microsoft HTML Help Workshop, refer to: 
 
-      http://msdn.microsoft.com/library/default.asp?url=/library/en-us/htmlhelp/html/hwMicrosoftHTMLHelpDownloads.asp
+     http://msdn.microsoft.com/library/default.asp?url=/library/en-us/htmlhelp/html/hwMicrosoftHTMLHelpDownloads.asp
 
      Ensure that the tools are in the build environment's PATH.
 
@@ -138,38 +139,55 @@ I. Windows Notes:
         
         set PATH=%PATH%;C:\Program Files\doxygen\bin
         set PATH=%PATH%;C:\Program Files\ATT\Graphviz\bin
-
+ 
 II. Windows Build Instructions:
 
-  1.  Extract the FDO OpenSource files using either gunzip/tar or Winzip.
+  1. Extract the FDO OpenSource files using either gunzip/tar or Winzip.
 
        Use gunzip and tar utilities as follows:
 
-            gunzip fdo-3.2.0.tar.gz
-            tar -xvf fdo-3.2.0.tar
+           gunzip fdo-3.2.0_G007.tar.gz
+           tar -xvf fdo-3.2.0_G007.tar
 
-            gunzip fdosdf-3.2.0.tar.gz
-            tar -xvf fdosdf-3.2.0.tar
+           gunzip fdoshp-3.2.0_G007.tar.gz
+           tar -xvf fdoshp-3.2.0_G007.tar
 
-	    etc...
+           gunzip fdosdf-3.2.0_G007.tar.gz
+           tar -xvf fdosdf-3.2.0_G007.tar
+
+           gunzip fdowms-3.2.0_G007.tar.gz
+           tar -xvf fdowms-3.2.0_G007.tar
+
+           gunzip fdowfs-3.2.0_G007.tar.gz
+           tar -xvf fdowfs-3.2.0_G007.tar
+
+           gunzip fdoarcsde-3.2.0_G007.tar.gz
+           tar -xvf fdoarcsde-3.2.0_G007.tar
+
+           gunzip fdordbms-3.2.0_G007.tar.gz
+           tar -xvf fdordbms-3.2.0_G007.tar
 
        - or -
 
        Use Windows Winzip utility as follows:
 
-            WINZIP32.EXE fdo-3.2.0.tar.gz
-            WINZIP32.EXE fdosdf-3.2.0.tar.gz
-	    etc...
+           WINZIP32.EXE fdo-3.2.0_G007.tar.gz
+           WINZIP32.EXE fdoshp-3.2.0_G007.tar.gz
+           WINZIP32.EXE fdosdf-3.2.0_G007.tar.gz
+           WINZIP32.EXE fdowms-3.2.0_G007.tar.gz
+           WINZIP32.EXE fdowfs-3.2.0_G007.tar.gz
+           WINZIP32.EXE fdoarcsde-3.2.0_G007.tar.gz
+           WINZIP32.EXE fdordbms-3.2.0_G007.tar.gz
 
   2. Use the build_thirdparty.bat file to build the FDO Thirdparty binaries. The following 
      is a general guideline on how to use the build_thirdparty.bat build script.
   
-       **************************************************************************
+           **************************************************************************
            build_thirdparty.bat [-h] [-o=OutFolder] [-c=BuildType] [-a=Action] [-w=WithModule]
 
-       Help:        -h[elp]
-       OutFolder:   -o[utpath]=destination folder for binaries
-       BuildType:   -c[onfig]=release(default), debug
+           Help:           -h[elp]
+           OutFolder:      -o[utpath]=destination folder for binaries
+           BuildType:      -c[onfig]=release(default), debug
            Action:         -a[ction]=build(default), buildinstall, install, clean
            WithModule:     -w[ith]=all(default), fdo, providers, sdf, wfs, wms
            **************************************************************************            
@@ -205,9 +223,9 @@ II. Windows Build Instructions:
            BuildType:      -c[onfig]=release(default), debug
            Action:         -a[ction]=build(default), buildinstall, install, clean
            WithModule:     -w[ith]=all(default), fdo, providers, shp, sdf, wfs, wms, arcsde, odbc, mysql
-       BuildDocs:   -d[ocs]=skip(default), build
-       **************************************************************************
-
+           BuildDocs:      -d[ocs]=skip(default), build
+           **************************************************************************
+            
             e.g.
 
             **** Display help for build.bat
@@ -265,13 +283,13 @@ I. Linux Notes:
      will have to log in and build FDO as the ROOT user. This requirement
      is due to the fact that the FDO Libraries will be built and installed 
      in /usr/local/fdo-3.2.0/lib
-  
+
   2. Ensure that the following FDO Environment Variables are set as follows:
 
        FDO = <FDO OpenSource>/Fdo
        FDOUTILITIES = <FDO OpenSource>/Providers/Utilities
        FDOTHIRDPARTY = <FDO OpenSource>/ThirdParty
-
+ 
   3. In order to build the ArcSDE Provider, you will need to have the
      ArcSDE 9.1 Client SDK installed and the following environment variable set that 
      points to the installation location:
@@ -281,27 +299,27 @@ I. Linux Notes:
      Note that ArcSDE is licensed software and must be obtained from an ESRI vendor.
 
   4. In order to build the MySQL Provider, you will need to download and extract 
-     the MySQL client and MySQL 5.0 devloper components from MySQL. These components are 
-     located at:
+     the MySQL client and MySQL 5.0 devloper components from MySQL. These 
+     components are located at:
  
        http://dev.mysql.com/downloads/mysql/5.0.html
-
+        
      For example, for Red Hat Enterprise Linux 3 RPM (x86)
- 
+       
        Client:                      MySQL-client-standard-5.0.22-0.rhel3.i386.rpm
        Headers and Libraries:       MySQL-devel-standard-5.0.22-0.rhel3.i386.rpm
- 
-     NOTE: Choosing the RPM install of the MySQL components is *strongly* recommended. 
-     However, if a non-RPM installation of MySQL is chosen, following the installation, 
-     set the following FDO environment variable:
 
-        FDOMYSQL=<MySQL developer components path>
+     NOTE: Choosing the RPM install of the MySQL components is *strongly* 
+     recommended. However, if a non-RPM installation of MySQL is chosen, 
+     following the installation, set the following FDO environment variable:
+  
+       FDOMYSQL=<MySQL developer components path>
  
   5. In order to build the ODBC Provider, you will need to either 
-
+     
      a) download and install the Linux ODBC driver Manager, specifically 
         the unixODBC-CORE and unixODBC-devel packages relased by www.unixodbc.org
-
+ 
            Home Page: 
            http://www.unixodbc.org/
 
@@ -313,18 +331,18 @@ I. Linux Notes:
            unixODBC-devel - unixODBC-devel-2.2.11-1.i386.rpm
 
            Such an installation will install the unixODBC driver manager libraries 
-           and header files  in
+           and header files in
 
            usr/lib and usr/include
 
            The FDO ODBC provider build will automatically locate thee files in this liocation.
 
-       b) install an unixODBC driver such as the EasySofy Oracle ODBC driver. This installation 
-          will include the driver libraries as well as the unixODBC manager libraries. 
-          If such an installation occurs the manager libraries and headers will not be 
-          installed under /usr/lib or usr/include but will be installed in a custom location
-          as specified by the driver RPM package. If this is the case, you will need to set 
-          the following FDO environment variable to point to the location of the unixODBC 
+     b) install an unixODBC driver such as the EasySofy Oracle ODBC driver. This installation 
+        will include the driver libraries as well as the unixODBC manager libraries. 
+        If such an installation occurs the manager libraries and headers will not be 
+        installed under /usr/lib or usr/include but will be installed in a custom location
+        as specified by the driver RPM package. If this is the case, you will need to set 
+        the following FDO environment variable to point to the location of the unixODBC 
         components:
 
            FDOODBC=<unixODBC developer components path>
@@ -338,34 +356,79 @@ I. Linux Notes:
      for the FDO Linux builds. It is recommended that users not use auto-mounted drives 
      when building FDO.
 
+  8. NOTE: The FDO expression scripts (.y) are not automatially recompiled as a part of the 
+     FDO build process. In order to recompile the .y files into their .cpp and .h
+     counterparts, execute the build_parse.sh script.
+
 
 II. Linux Build Instructions:
 
-   1.  Extract the FDO OpenSource files using gunzip/tar.
+   1. Extract the FDO OpenSource files using gunzip/tar.
 
        Use gunzip and tar utilities as follows:
 
-            gunzip fdo-3.2.0.tar.gz
-            tar -xvf fdo-3.2.0.tar
+           gunzip fdo-3.2.0_G007.tar.gz
+           tar -xvf fdo-3.2.0_G007.tar
 
-            gunzip fdosdf-3.2.0.tar.gz
-            tar -xvf fdosdf-3.2.0.tar
+           gunzip fdoshp-3.2.0_G007.tar.gz
+           tar -xvf fdoshp-3.2.0_G007.tar
 
-	    etc...
+           gunzip fdosdf-3.2.0_G007.tar.gz
+           tar -xvf fdosdf-3.2.0_G007.tar
 
-  2.   cd <FDO OpenSource Location>
+           gunzip fdowms-3.2.0_G007.tar.gz
+           tar -xvf fdowms-3.2.0_G007.tar
 
-  3.   Use the build_linux.sh script to build and install the FDO OpenSource libraries. 
-       The following is a general guideline on how to use build_linux.sh
+           gunzip fdowfs-3.2.0_G007.tar.gz
+           tar -xvf fdowfs-3.2.0_G007.tar
 
-       echo "**************************************************************************"
-       echo "build_linux.sh [--h] [-c BuildType] [--a Action] [--w WithModule] "
-       echo "*"
-       echo "Help:       --h[elp]"
-       echo "BuildType:  --c[onfig] release(default), debug"
-       echo "Action:     --a[ction] buildinstall(default), buildonly, installonly, configure"
-       echo "WithModule: --w[ith] fdocore(default), fdo, thirdparty, providers, shp, sdf, wfs, wms, arcsde, rdbms"
-       echo "**************************************************************************"
+           gunzip fdoarcsde-3.2.0_G007.tar.gz
+           tar -xvf fdoarcsde-3.2.0_G007.tar
+
+           gunzip fdordbms-3.2.0_G007.tar.gz
+           tar -xvf fdordbms-3.2.0_G007.tar
+
+
+  2. cd <FDO OpenSource Location>
+
+  3. Use the build_thirdparty.sh script to build the FDO Thirdparty binaries. The following 
+     is a general guideline on how to use the build_thirdparty.bat build script.
+  
+           **************************************************************************
+           build_thirdparty.sh [--h] [--a Action] [--m ConfigMakefiles]
+
+           Help:            --h[elp]
+           Action:          --a[ction] buildinstall(default), build, install, uninstall, clean
+           ConfigMakefiles: --m[akefile] configure(default), noconfigure
+           **************************************************************************
+
+           e.g.
+
+            **** Display help for build_thirdparty.sh 
+            build_thirdparty --h
+            **** Build and install all Thirdparty components
+            build_thirdparty
+            **** Build Thirdparty components for FDO libraries
+            build_thirdparty -w=fdo
+            **** Build Thirdparty components for all FDO Providers
+            build_thirdparty -w=providers
+            **** Build Thirdparty components for for SDF Provider
+            build_thirdparty -w=sdf
+            **** Build Thirdparty components for for WMS Provider
+            build_thirdparty -w=wms
+
+  4. Use the build_linux.sh script to build and install the FDO OpenSource libraries. 
+     The following is a general guideline on how to use build_linux.sh
+
+            **************************************************************************
+           build_linux.sh [--h] [-c BuildType] [--a Action] [--w WithModule] [--m ConfigMakefiles]
+       
+           Help:            --h[elp]
+           BuildType:       --c[onfig] release(default), debug
+           Action:          --a[ction] buildinstall(default), buildonly, installonly, configure
+           WithModule:      --w[ith] fdocore(default), fdo, thirdparty, providers, shp, sdf, wfs, wms, arcsde, rdbms
+           ConfigMakefiles: --m[akefile] configure(default), noconfigure
+           **************************************************************************
 
            e.g.
 
@@ -390,27 +453,46 @@ II. Linux Build Instructions:
             **** ReBuild FDO SDF Provider
             build_linux.sh --a buildonly --w sdf
 
+     NOTE: build_linux.sh is a simple helper script that assists developers to build the FDO 
+           components. These scripts supplement stand support of configure and make. We have 
+           many components in the FDO architecture and building them all was getting somewhat 
+           tedious using straight calls to configure and make. We also found that some 
+           developers were not interested in building all components or were only interested 
+           in building a subset of the components. 
 
- 4.   In order to run the SHP, SDF, and ArcSDE Provider Unit Tests:
+           The implementation of the above build_linux.sh script in essence calls
+ 
+               aclocal
+               libtoolize --force
+               automake --add-missing --copy
+               autoconf
+               ./configure
+               make
+               make install
+
+           for the fdocore components as well as the set of FDO providers that are 
+           currently supported on the OSGeo site. 
+
+  5. In order to run the SHP, SDF and ArcSDE Provider Unit Tests:
 
         SDF:
 
-            cd <FDO OpenSource Location>/Providers/SDF/Src/UnitTest
+            cd <FDO OpenSource>/Providers/SDF/Src/UnitTest
             ./UnitTest
  
         SHP:
 
-            cd <FDO OpenSource Location>/Providers/SHP/Src/UnitTest
+            cd <FDO OpenSource>/Providers/SHP/Src/UnitTest
             ./UnitTest
-
+ 
         ArcSDE:
 
-            Please refer to <FDO OpenSource Location>\Providers\ArcSDE\UnitTest_README.txt
-            for details on how to create test users and test data, and which command-line arguments
-            to pass to the ArcSDE Provider UnitTest executable in order to point to your
-            test server and data.
+            Please refer to <FDO OpenSource>\Providers\ArcSDE\UnitTest_README.txt
+            for details on how to create test users and test data, and which 
+            command-line arguments to pass to the ArcSDE Provider UnitTest 
+            executable in order to point to your test server and data.
 
-            cd <FDO OpenSource Location>\Providers\ArcSDE\Src\UnitTest
+            cd <FDO OpenSource>\Providers\ArcSDE\Src\UnitTest
             ..\..\bin\win32\Debug\UnitTest <mandatory command-line arguments>
  
 <end>
