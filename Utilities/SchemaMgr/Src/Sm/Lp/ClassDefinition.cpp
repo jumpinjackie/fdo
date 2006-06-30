@@ -2988,9 +2988,15 @@ FdoSmLpClassDefinition::FdoSmLpClassDefinition(FdoSmPhClassReaderP classReader, 
         FdoSmLpSchemaP schema = GetLogicalPhysicalSchema();
         FdoSmPhColumnsP columns = obj->GetColumns();
         FdoSmPhColumnP columnX = columns->FindItem(L"X");
+        if (columnX == NULL)
+            columnX = columns->FindItem(L"x");
         if (columnX != NULL) {
             FdoSmPhColumnP columnY = columns->FindItem(L"Y");
+            if (columnY == NULL)
+                columnY = columns->FindItem(L"y");
             FdoSmPhColumnP columnZ = columns->FindItem(L"Z");
+            if (columnZ == NULL)
+                columnZ = columns->FindItem(L"z");
             if (columnY != NULL) {
                 FdoGeometricPropertyP gpd = FdoGeometricPropertyDefinition::Create(L"Geometry", L"");
                 gpd->SetHasMeasure(false);
