@@ -30,6 +30,7 @@
 #pragma once
 #endif // _WIN32
 
+#include "FdoRfpConnection.h"
 
 template <class FDO_COMMAND> class FdoRfpCommand : public FDO_COMMAND
 {
