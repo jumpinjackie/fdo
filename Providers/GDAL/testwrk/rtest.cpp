@@ -55,8 +55,7 @@ int main( int argc, char ** argv )
 /* -------------------------------------------------------------------- */
 /*      Setup connection                                                */
 /* -------------------------------------------------------------------- */
-    //FdoPtr<IConnectionManager> manager;
-    IConnectionManager* manager = 0;
+    FdoPtr<IConnectionManager> manager;
     manager = FdoFeatureAccessManager::GetConnectionManager();
     if (0 == manager)
     {
@@ -64,8 +63,7 @@ int main( int argc, char ** argv )
         return 0;
     }
 
-    //FdoPtr<FdoIConnection> conn;
-    FdoIConnection* conn = 0;
+    FdoPtr<FdoIConnection> conn;
     conn = manager->CreateConnection (L"Autodesk.Gdal.3.0");
     if (0 == conn)
     {
