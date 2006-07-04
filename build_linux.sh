@@ -150,6 +150,19 @@ do
 done
 ### end of study parameters ###
 
+### Setup build environment ###
+if test "$FDO" == "" ; then
+    export FDO="$PWD"
+fi
+if test "$FDOTHIRDPARTY" == "" ; then
+    export FDOTHIRDPARTY="$PWD/Thirdparty"
+fi
+if test "$FDOUTILITIES" == "" ; then
+    export FDOUTILITIES="$PWD/Utilities"
+fi
+### End Setup build environment ###
+
+### Show Help Info ###
 if test "$SHOWHELP" == yes; then
 
    echo "************************************************************************************************************"
