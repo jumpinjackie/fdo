@@ -2,6 +2,10 @@ AUTOMAKE_OPTIONS = foreign
 
 INSTALL_DIR  = $(prefix)
 
+SUBDIRS = doc_src
+
+DIST_SUBDIRS = doc_src
+
 #install Docs
 install :
 	@if [ ! -d $(INSTALL_DIR)/Docs ]; then mkdir -p $(INSTALL_DIR)/Docs; fi
