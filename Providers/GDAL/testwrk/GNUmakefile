@@ -1,21 +1,33 @@
 #
-# Makefile - building fdogdal tests
+# GNUmakefile - building fdogdal tests
 #
 # Mateusz Loskot <mateusz@loskot.net>
 #
-CXX = g++
-CXXFLAGS = -g
-#-Wall -pedantic
-
-GDALPREFIX = ${HOME}/usr
-
-FDOGDAL = ${FDOCORE}/Providers/GDAL
+###### CONFIGURATION ######
+#
+# - fdocore top level sources directory
+FDOCORE = ${HOME}/dev/fdo/fdocore/_svn/fdocore
+#
+# - fdogdal top level sources directory
+FDOGDAL = ${HOME}/dev/fdo/fdogdal/_svn/fdogdal
+#
+# - fdocore installation prefix (default: /usr/local/fdo-3.2.0)
+FDOCOREPREFIX = /usr/local/fdo-3.2.0
+#
+# - fdogdal installation prefix
 FDOGDALPREFIX = ${HOME}/usr
+#
+# - GDAL installation prefix
+GDALPREFIX = ${HOME}/usr
+#
+###### END OF CONFIGURATION ######
+
+CXX = g++
+CXXFLAGS = -g # -Wall -pedantic
 
 FDO = ${FDOCORE}/Fdo
 FDOUTILITIES = ${FDOCORE}/Utilities
 FDOTHIRDPARTY = ${FDOCORE}/ThirdParty
-FDOCOREPREFIX = /usr/local/fdo-3.2.0
 
 INCLUDES = \
 	-I${FDOGDAL}/Inc \
