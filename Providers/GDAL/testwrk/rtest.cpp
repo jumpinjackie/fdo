@@ -35,14 +35,14 @@
 #include <FdoCommonStringUtil.h>
 #include <FdoCommonMiscUtil.h>
 #include <FdoCommonFile.h>
-#include <fdo/Raster/RasterDataModel.h>
+#include <Fdo/Raster/RasterDataModel.h>
 
 #include <gdal.h>
 #include <ogr_api.h>
 #include <cpl_conv.h>
 #include <cpl_string.h>
 
-static void TranslateTo( GisPtr<FdoIRaster> raster, 
+static void TranslateTo( FdoPtr<FdoIRaster> raster, 
                          const char *pszOutFilename );
 
 /************************************************************************/
@@ -50,15 +50,29 @@ static void TranslateTo( GisPtr<FdoIRaster> raster,
 /************************************************************************/
 
 int main( int argc, char ** argv )
-
 {
+
 /* -------------------------------------------------------------------- */
 /*      Setup connection                                                */
 /* -------------------------------------------------------------------- */
-    GisPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager ();
-    GisPtr<FdoIConnection> conn;
+    //FdoPtr<IConnectionManager> manager;
+    IConnectionManager* manager = 0;
+    manager = FdoFeatureAccessManager::GetConnectionManager();
+    if (0 == manager)
+    {
+        printf("Connection manager is NULL\n");
+        return 0;
+    }
 
+    //FdoPtr<FdoIConnection> conn;
+    FdoIConnection* conn = 0;
     conn = manager->CreateConnection (L"Autodesk.Gdal.3.0");
+    if (0 == conn)
+    {
+        printf("Connection is NULL\n");
+        return 0;
+    }
+
 
     printf( "conn = %p\n", (void *) conn );
 
@@ -70,14 +84,14 @@ int main( int argc, char ** argv )
     {
         try
         {
-            GisStringP configFile(L"RfpConfigExample.xml");
-            GisStringP configMode(L"rb");
-            GisIoFileStreamP configStream = 
-                GisIoFileStream::Create( configFile, configMode );
+            FdoStringP configFile(L"RfpConfigExample.xml");
+            FdoStringP configMode(L"rb");
+            FdoIoFileStreamP configStream = 
+                FdoIoFileStream::Create( configFile, configMode );
         
             conn->SetConfiguration( configStream );
         }
-        catch (GisException* ge) 
+        catch (FdoException* ge) 
         {
             printf( "Trapped exception: %ls\n", ge->GetExceptionMessage() );
         }
@@ -90,7 +104,7 @@ int main( int argc, char ** argv )
     {
         if( argc == 2 )
         {
-            GisStringP defaultLocation;
+            FdoStringP defaultLocation;
 
             defaultLocation = L"DefaultRasterFileLocation=";
             defaultLocation += argv[1];
@@ -106,7 +120,7 @@ int main( int argc, char ** argv )
             exit( 1 );
         }
     }
-    catch (GisException* ge) 
+    catch (FdoException* ge) 
     {
         printf( "Trapped exception: %ls\n", ge->GetExceptionMessage() );
     }
@@ -116,10 +130,10 @@ int main( int argc, char ** argv )
 /* -------------------------------------------------------------------- */
     try
     {
-        GisPtr<FdoIDescribeSchema> describe = 
+        FdoPtr<FdoIDescribeSchema> describe = 
             (FdoIDescribeSchema*)conn->CreateCommand(
                 FdoCommandType_DescribeSchema);
-        GisPtr<FdoFeatureSchemaCollection> schemas = describe->Execute ();
+        FdoPtr<FdoFeatureSchemaCollection> schemas = describe->Execute ();
 
         FdoFeatureSchema* schema = schemas->GetItem (0);
 
@@ -142,7 +156,7 @@ int main( int argc, char ** argv )
             if ((cls->GetDescription () != NULL) && (0 != wcscmp (cls->GetDescription (), L"")))
                 printf ("        Description: %ls\n", cls->GetDescription ());
 
-            GisPtr<FdoClassCapabilities> classCapabilities = cls->GetCapabilities();
+            FdoPtr<FdoClassCapabilities> classCapabilities = cls->GetCapabilities();
             printf ("        Class Capabilities:\n");
             if (classCapabilities == NULL)
                 printf ("            (Not available).\n");
@@ -217,7 +231,7 @@ int main( int argc, char ** argv )
                 else if (definition->GetPropertyType () == FdoPropertyType_RasterProperty)
                 {
                     FdoRasterPropertyDefinition *r_definition = (FdoRasterPropertyDefinition*) definition;
-                    GisStringP srs;
+                    FdoStringP srs;
                     FdoRasterDataModel *data_model;
 
                     printf ("        Raster: %ls\n", definition->GetName ());
@@ -279,7 +293,7 @@ int main( int argc, char ** argv )
         classes->Release ();
         schema->Release ();
     }
-    catch (GisException* ge) 
+    catch (FdoException* ge) 
     {
         printf( "Trapped exception: %ls\n", ge->GetExceptionMessage() );
     }
@@ -289,15 +303,15 @@ int main( int argc, char ** argv )
 /* -------------------------------------------------------------------- */
     try
     {
-        GisPtr<FdoISelect> select = (FdoISelect*)conn->CreateCommand (FdoCommandType_Select);
+        FdoPtr<FdoISelect> select = (FdoISelect*)conn->CreateCommand (FdoCommandType_Select);
 //        select->SetFeatureClassName (L"Photo");
         select->SetFeatureClassName (L"default");
-        GisPtr<FdoIFeatureReader> reader = select->Execute ();
+        FdoPtr<FdoIFeatureReader> reader = select->Execute ();
         int iCounter = 0;
     
         while (reader->ReadNext ())
         {
-            GisPtr<FdoIRaster>  raster;
+            FdoPtr<FdoIRaster>  raster;
 
             printf( "Feature:\n" );
 
@@ -309,7 +323,7 @@ int main( int argc, char ** argv )
 
             if( raster != NULL || !raster->IsNull() )
             {
-                GisPtr<FdoRasterDataModel> data_model;
+                FdoPtr<FdoRasterDataModel> data_model;
 
                 printf( "  Raster:\n" );
                 printf( "    bands = %d, current = %d\n", 
@@ -339,46 +353,46 @@ int main( int argc, char ** argv )
                 {
                     if( nullVal->GetDataType() == FdoDataType_Byte )
                     {
-                        GisPtr<FdoByteValue> val = static_cast<FdoByteValue*>(nullVal);
+                        FdoPtr<FdoByteValue> val = static_cast<FdoByteValue*>(nullVal);
                         printf( "    NULL (Byte) = %d\n", val->GetByte() );
                     }
                     else if( nullVal->GetDataType() == FdoDataType_Int16 )
                     {
-                        GisPtr<FdoInt16Value> val = static_cast<FdoInt16Value*>(nullVal);
+                        FdoPtr<FdoInt16Value> val = static_cast<FdoInt16Value*>(nullVal);
                         printf( "    NULL (Int16) = %d\n", val->GetInt16() );
                     }
                     else if( nullVal->GetDataType() == FdoDataType_Int32 )
                     {
-                        GisPtr<FdoInt32Value> val = static_cast<FdoInt32Value*>(nullVal);
+                        FdoPtr<FdoInt32Value> val = static_cast<FdoInt32Value*>(nullVal);
                         printf( "    NULL (Int32) = %d\n", val->GetInt32() );
                     }
                     else if( nullVal->GetDataType() == FdoDataType_Single )
                     {
-                        GisPtr<FdoSingleValue> val = static_cast<FdoSingleValue*>(nullVal);
+                        FdoPtr<FdoSingleValue> val = static_cast<FdoSingleValue*>(nullVal);
                         printf( "    NULL (float) = %g\n", val->GetSingle() );
                     }
                     else if( nullVal->GetDataType() == FdoDataType_Double )
                     {
-                        GisPtr<FdoDoubleValue> val = static_cast<FdoDoubleValue*>(nullVal);
+                        FdoPtr<FdoDoubleValue> val = static_cast<FdoDoubleValue*>(nullVal);
                         printf( "    NULL (double) = %g\n", val->GetDouble() );
                     }
                 }
 
                 // Report boundary.
-                GisPtr<GisAgfGeometryFactory> geomFactory = 
-                    GisAgfGeometryFactory::GetInstance();
-                GisPtr<GisByteArray> ba = raster->GetBounds();
-                GisPtr<GisIGeometry> geometry = geomFactory->CreateGeometryFromAgf(ba);
-                GisStringP wkt = geometry->GetText();
+                FdoPtr<FdoFgfGeometryFactory> geomFactory = 
+                    FdoFgfGeometryFactory::GetInstance();
+                FdoPtr<FdoByteArray> ba = raster->GetBounds();
+                FdoPtr<FdoIGeometry> geometry = geomFactory->CreateGeometryFromFgf(ba);
+                FdoStringP wkt = geometry->GetText();
 
                 printf( "    Bounds = %s\n", (const char *) wkt );
 
                 try 
                 {
-                    GisPtr<FdoIRasterPropertyDictionary> propDict = raster->GetAuxiliaryProperties();
-                    GisPtr<FdoDataValue> pal = propDict->GetProperty(L"Palette");
+                    FdoPtr<FdoIRasterPropertyDictionary> propDict = raster->GetAuxiliaryProperties();
+                    FdoPtr<FdoDataValue> pal = propDict->GetProperty(L"Palette");
                     FdoLOBValue* palLOB = static_cast<FdoLOBValue*>(pal.p);
-                    GisByteArray *palArray = palLOB->GetData();
+                    FdoByteArray *palArray = palLOB->GetData();
                     int iColor;
 
                     for( iColor = 0; iColor < palArray->GetCount(); iColor++ )
@@ -402,7 +416,7 @@ int main( int argc, char ** argv )
             }
         }
     }
-    catch (GisException* ge) 
+    catch (FdoException* ge) 
     {
         printf( "Trapped exception: %ls\n", ge->GetExceptionMessage() );
     }
@@ -412,16 +426,16 @@ int main( int argc, char ** argv )
 }
 
 /************************************************************************/
-/*                        GisStringToReadable()                         */
+/*                        FdoStringToReadable()                         */
 /*                                                                      */
 /*      This function is to support debugging.                          */
 /************************************************************************/
 
-const char *GisStringToReadable( GisString *pInput )
+const char *FdoStringToReadable( FdoString *pInput )
 
 {
-    static GisStringP oStringPerm;
-    GisStringP oStringTemp( pInput );
+    static FdoStringP oStringPerm;
+    FdoStringP oStringTemp( pInput );
 
     oStringPerm = oStringTemp;
 
@@ -434,11 +448,11 @@ const char *GisStringToReadable( GisString *pInput )
 /*      Translate an IRaster to a GeoTIFF file.                         */
 /************************************************************************/
 
-static void TranslateTo( GisPtr<FdoIRaster> raster, 
+static void TranslateTo( FdoPtr<FdoIRaster> raster, 
                          const char *pszOutFilename )
 
 {
-    GisPtr<FdoRasterDataModel> data_model = raster->GetDataModel();
+    FdoPtr<FdoRasterDataModel> data_model = raster->GetDataModel();
     GDALDriverH hOutDriver = GDALGetDriverByName( "GTiff" );
     GDALDataType eOutType;
 
@@ -457,13 +471,13 @@ static void TranslateTo( GisPtr<FdoIRaster> raster,
 /*      Set alternate bounds.                                           */
 /* -------------------------------------------------------------------- */
 #ifdef notdef
-    GisStringP wkt = L"POLYGON ((440720 3720600, 471440 3720600, 471440 3741320, 440720 3741320, 440720 3720600))";
+    FdoStringP wkt = L"POLYGON ((440720 3720600, 471440 3720600, 471440 3741320, 440720 3741320, 440720 3720600))";
 
-    GisPtr<GisAgfGeometryFactory> geomFactory = 
-        GisAgfGeometryFactory::GetInstance();
-    GisPtr<GisIGeometry> geometry = 
+    FdoPtr<FdoAgfGeometryFactory> geomFactory = 
+        FdoAgfGeometryFactory::GetInstance();
+    FdoPtr<FdoIGeometry> geometry = 
         geomFactory->CreateGeometry(wkt);
-    GisPtr<GisByteArray> ba = geomFactory->GetAgf( geometry );
+    FdoPtr<FdoByteArray> ba = geomFactory->GetAgf( geometry );
 
     raster->SetBounds( ba );
 
@@ -544,17 +558,17 @@ static void TranslateTo( GisPtr<FdoIRaster> raster,
 /* -------------------------------------------------------------------- */
 /*      Create the data stream to read from.                            */
 /* -------------------------------------------------------------------- */
-    GisPtr<GisIStreamReaderTmpl<GisByte> > stream
-     = dynamic_cast<GisIStreamReaderTmpl<GisByte>*>(raster->GetStreamReader());
+    FdoPtr<FdoIStreamReaderTmpl<FdoByte> > stream
+     = dynamic_cast<FdoIStreamReaderTmpl<FdoByte>*>(raster->GetStreamReader());
 
 /* -------------------------------------------------------------------- */
 /*      Create buffer for one scanline of data.                         */
 /* -------------------------------------------------------------------- */
-    GisByte *pabyLineData;
+    FdoByte *pabyLineData;
     int nComponentSize = (GDALGetDataTypeSize(eOutType) / 8);
     int   nLineData = nBandCount * raster->GetImageXSize() * nComponentSize; 
 
-    pabyLineData = (GisByte *) CPLMalloc(nLineData);
+    pabyLineData = (FdoByte *) CPLMalloc(nLineData);
 
 /* -------------------------------------------------------------------- */
 /*      Process all scanlines.                                          */
