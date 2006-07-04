@@ -61,7 +61,7 @@ popd
 echo end>> FilesChanges.log
 
 echo Please wait... Creating zip file!
-cscript //job:pack packchanges.wsf
+cscript //Nologo //job:pack packchanges.wsf
 echo End action
 exit /B 0
 

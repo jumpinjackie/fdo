@@ -14,6 +14,7 @@
             Dim modLine
             Dim ChangeName
             Dim ZipName
+            Dim rez
             
             chgFileName = "FilesChanges.log"
             infoFileName = "Read_Me_FilesChanges.txt"
@@ -35,6 +36,10 @@
 		        Call fsc.RemoveReadOnly(ZipName)
 		        Call fsc.DeleteFile(ZipName)
 		    End If    
+	        If fsc.FileExist("log.txt") Then
+	            Call fsc.RemoveReadOnly("log.txt")
+	            Call fsc.DeleteFile("log.txt")
+	        End If
 			Set fs = WScript.CreateObject("Scripting.FileSystemObject")
 			If fs.FileExists(chgFileName) Then
                Set oinfFile = fs.CreateTextFile(infoFileName, true)
@@ -90,17 +95,17 @@
                             modLine = Right(lineFile, Len(lineFile) - 7)
                             oinfFile.WriteLine("Modified : " & activeRelPath & modLine)
                             olstFile.WriteLine(activeRelPath & modLine)
-                            Call WshShell.Run("7z a -tzip " & ChangeName & ".zip " & activeRelPath & modLine, 0, true)
+                            rez = WshShell.Run("cmd /C 7z a -tzip " & ChangeName & ".zip " & activeRelPath & modLine & " >> log.txt", 0, true)
                         ElseIf not Instr(modLine, "A") = 0 Then
                             modLine = Right(lineFile, Len(lineFile) - 7)
                             oinfFile.WriteLine("Added : " & activeRelPath & modLine)
                             olstFile.WriteLine(activeRelPath & modLine)
-                            Call WshShell.Run("7z a -tzip " & ChangeName & ".zip " & activeRelPath & modLine, 0, true)
+                            rez = WshShell.Run("cmd /C 7z a -tzip " & ChangeName & ".zip " & activeRelPath & modLine & " >> log.txt", 0, true)
                         ElseIf not Instr(modLine, "D") = 0 Then
                             modLine = Right(lineFile, Len(lineFile) - 7)
                             oinfFile.WriteLine("Deleted : " & activeRelPath & modLine)
                             olstFile.WriteLine(activeRelPath & modLine)
-                            Call WshShell.Run("7z a -tzip " & ChangeName & ".zip " & activeRelPath & modLine, 0, true)
+                            rez = WshShell.Run("cmd /C 7z a -tzip " & ChangeName & ".zip " & activeRelPath & modLine & " >> log.txt", 0, true)
                         End If
                 End Select
                Loop While EndFile = False
@@ -111,8 +116,8 @@
                Set oFile = Nothing
                Set oinfFile = Nothing
                Set olstFile = Nothing
-               Call WshShell.Run("7z a -tzip " & ChangeName & ".zip " & infoFileName, 0, true)
-               'Call WshShell.Run("7z a -tzip " & ChangeName & ".zip " & mdFileList, 0, true)
+               rez = WshShell.Run("cmd /C 7z a -tzip " & ChangeName & ".zip " & infoFileName & " >> log.txt", 0, true)
+               'Call WshShell.Run("cmd /C 7z a -tzip " & ChangeName & ".zip " & mdFileList, 0, true)
 		    End If
 		    if fsc.FileExist(ChangeName & ".zip ") Then
 		        If fsc.FileExist(chgFileName) Then
@@ -126,6 +131,10 @@
 		        If fsc.FileExist(mdFileList) Then
 		            Call fsc.RemoveReadOnly(mdFileList)
 		            Call fsc.DeleteFile(mdFileList)
+		        End If
+		        If fsc.FileExist("log.txt") Then
+		            Call fsc.RemoveReadOnly("log.txt")
+		            Call fsc.DeleteFile("log.txt")
 		        End If
 		    Else
 		        WScript.Echo ("Error creating the archive: "& ChangeName & ".zip")
