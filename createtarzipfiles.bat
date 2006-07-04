@@ -195,12 +195,12 @@ echo Please use the format:
 :help_show
 echo **************************************************************************
 echo NOTE: To use the createtarzip script, download and install the 7z  
-           command-line and Windows shell utility for manipulating ZIP 
-           archives. 7-Zip is free software distributed under the GNU LGPL. 
-           7z can be obtained from http://www.7-zip.org/
-echo
+echo       command-line and Windows shell utility for manipulating ZIP 
+echo       archives. 7-Zip is free software distributed under the GNU LGPL. 
+echo       7z can be obtained from http://www.7-zip.org/
+echo *
 echo createtarzipfiles.bat [-h] [-i=InFolder] [-o=OutFolder] [-w=WithModule] [-b=BuildNumber]
-echo
+echo *
 echo Help:           -h[elp]
 echo InFolder:       -i[npath]=input source svn checkout folder
 echo OutFolder:      -o[utpath]=destination folder for exported svn files

@@ -70,18 +70,19 @@ echo The command is not recognized.
 echo Please use the format:
 :help_show
 echo *****************************************************************************
+echo NOTE: To use the packchanges script, download and install the 7z  
+echo       command-line and Windows shell utility for manipulating ZIP 
+echo       archives. 7-Zip is free software distributed under the GNU LGPL. 
+echo       7z can be obtained from http://www.7-zip.org/
+echo *
 echo packchanges.bat [-h] [ZipFileName]
 echo *
 echo Help:          -h[elp]
-echo ZipFileName:   ZipFileName name e.g. ZipFDO10
+echo ZipFileName:   ZipFileName name. e.g Change74
 echo *
-echo In order to use this script, you will need to download and install the 7-Zip
-echo Download Location:             http://www.7-zip.org
-echo Following the installation, ensure that in the environment's PATH you have:
-echo      7-Zip  -- e.g.          c:\Program Files\7-Zip
-echo      e.g.:                   set PATH=%PATH%;"c:\Program Files\7-Zip"
-echo The output file will be ZipFDO10.zip
-echo This zip will contain all modified/added files from your SubVersion folder
-echo Also it will contain a readme file with all modified/added/deleted files.
+echo The output file will be named [ZipFileName].zip in accordance with the 
+echo input argument ZipFileName. This zip will contain all modified/added 
+echo files from your Subversion folder. The zip file will also contain a readme 
+echo file with all modified/added/deleted files.
 echo *****************************************************************************
 exit /B 0   
