@@ -107,14 +107,10 @@ if test $enable_debug = yes; then
  AC_MSG_NOTICE([Using debug configuration])
  CXXFLAGS="-g -MMD -MT "
  AC_SUBST(CXXFLAGS, ["-g -MMD -MT "])
- CXXFLAGS_SDF="-g "
- AC_SUBST(CXXFLAGS_SDF, ["-g "])
 else
  AC_MSG_NOTICE([Using optimized configuration])
  CXXFLAGS="-MMD -MT "
  AC_SUBST(CXXFLAGS, ["-MMD -MT "])
- CXXFLAGS_SDF=""
- AC_SUBST(CXXFLAGS_SDF, [""])
 fi
 
 ##output Makefiles##
@@ -146,7 +142,10 @@ AC_CONFIG_FILES([Fdo/Install/Makefile \
                  Fdo/Install/XsdInstallPaths/Makefile])
 
 #fdo: Docs
-AC_CONFIG_FILES(Fdo/Docs/Makefile)
+AC_CONFIG_FILES([Fdo/Docs/Makefile \
+                 Fdo/Docs/doc_src/Makefile \
+                 Fdo/Docs/doc_src/group_and_page_definitions/Makefile \
+                 Fdo/Docs/doc_src/headers_and_footers/Makefile])
 
 #fdo: UnitTest
 AC_CONFIG_FILES(Fdo/UnitTest/Makefile)
