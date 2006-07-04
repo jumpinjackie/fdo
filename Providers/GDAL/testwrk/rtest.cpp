@@ -55,22 +55,25 @@ int main( int argc, char ** argv )
 /* -------------------------------------------------------------------- */
 /*      Setup connection                                                */
 /* -------------------------------------------------------------------- */
+
+    // Get instance of the connection manager
     FdoPtr<IConnectionManager> manager;
     manager = FdoFeatureAccessManager::GetConnectionManager();
     if (0 == manager)
     {
-        printf("Connection manager is NULL\n");
+        printf("GetConnectionManager returned nullptr.\n");
         return 0;
     }
 
+    // Call the manager’s CreateConnection() method using the provider
+    // internal name as an argument to obtain a connection object.
     FdoPtr<FdoIConnection> conn;
     conn = manager->CreateConnection (L"Autodesk.Gdal.3.0");
     if (0 == conn)
     {
-        printf("Connection is NULL\n");
+        printf("CreateConnection returned nullptr.\n");
         return 0;
     }
-
 
     printf( "conn = %p\n", (void *) conn );
 
@@ -80,6 +83,8 @@ int main( int argc, char ** argv )
 /* -------------------------------------------------------------------- */
     if( argc < 2 )
     {
+        printf("Setting up connection config file: RfpConfigExample.xml\n");
+
         try
         {
             FdoStringP configFile(L"RfpConfigExample.xml");
