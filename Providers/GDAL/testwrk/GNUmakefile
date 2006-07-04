@@ -40,9 +40,6 @@ LIBS = \
 	-lxalan-c \
 	-lxalanMsg
 
-# Command to make an object file:
-COMPILE = $(CXX) $(CXXFLAGS) -c
-
 all : rtest
 
 rtest: rtest.cpp
