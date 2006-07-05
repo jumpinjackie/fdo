@@ -67,7 +67,7 @@
     </xs:complexType>
   </xs:schema>
   <!-- Schema Overrides for Photos Feature Schema -->
-  <SchemaMapping name="photos" provider="Autodesk.Gdal.3.0" xmlns="http://www.autodesk.com/isd/fdo/RasterFileProvider">
+  <SchemaMapping name="photos" provider="OSGeo.Gdal.3.0" xmlns="http://www.autodesk.com/isd/fdo/RasterFileProvider">
     <!-- Schema Overrides for Photo Feature Class -->
     <complexType name="PhotoType">
       <RasterDefinition name="photos">

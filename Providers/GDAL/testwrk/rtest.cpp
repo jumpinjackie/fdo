@@ -1,26 +1,18 @@
 /*
- * (C) Copyright 2004 by Autodesk, Inc. All Rights Reserved.
- *
- * By using this code, you are agreeing to the terms and conditions of
- * the License Agreement included in the documentation for this code.
- *
- * AUTODESK MAKES NO WARRANTIES, EXPRESS OR IMPLIED, AS TO THE
- * CORRECTNESS OF THIS CODE OR ANY DERIVATIVE WORKS WHICH INCORPORATE
- * IT. AUTODESK PROVIDES THE CODE ON AN "AS-IS" BASIS AND EXPLICITLY
- * DISCLAIMS ANY LIABILITY, INCLUDING CONSEQUENTIAL AND INCIDENTAL
- * DAMAGES FOR ERRORS, OMISSIONS, AND OTHER PROBLEMS IN THE CODE.
- *
- * Use, duplication, or disclosure by the U.S. Government is subject
- * to restrictions set forth in FAR 52.227-19 (Commercial Computer
- * Software Restricted Rights) and DFAR 252.227-7013(c)(1)(ii)
- * (Rights in Technical Data and Computer Software), as applicable.
- *
- * Revision Control Modification History
- *
- *         $Id: //providers_rubicon/Shp/src/UnitTest/ConnectTests.cpp#6 $
- *     $Author: derrick $
- *   $DateTime: 2005/08/25 16:57:09 $
- *     $Change: 8196 $
+ * Copyright (C) 2004-2006  Autodesk, Inc.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of version 2.1 of the GNU Lesser
+ * General Public License as published by the Free Software Foundation.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
 
@@ -68,7 +60,7 @@ int main( int argc, char ** argv )
     // Call the manager’s CreateConnection() method using the provider
     // internal name as an argument to obtain a connection object.
     FdoPtr<FdoIConnection> conn;
-    conn = manager->CreateConnection (L"Autodesk.Gdal.3.0");
+    conn = manager->CreateConnection (L"OSGeo.Gdal.3.2");
     if (0 == conn)
     {
         printf("CreateConnection returned nullptr.\n");
@@ -131,6 +123,10 @@ int main( int argc, char ** argv )
 /* -------------------------------------------------------------------- */
 /*      Describe layer.                                                 */
 /* -------------------------------------------------------------------- */
+    FdoStringP  FeatureClassName;
+    FdoStringP  FeatureIdName;
+    FdoStringP  RasterName;
+
     try
     {
         FdoPtr<FdoIDescribeSchema> describe = 
@@ -156,6 +152,9 @@ int main( int argc, char ** argv )
                 printf ("    Feature Class: %ls\n", cls->GetName ());
             else
                 printf ("    Class: %ls\n", cls->GetName ());
+
+            FeatureClassName = cls->GetName();
+
             if ((cls->GetDescription () != NULL) && (0 != wcscmp (cls->GetDescription (), L"")))
                 printf ("        Description: %ls\n", cls->GetDescription ());
 
@@ -169,13 +168,14 @@ int main( int argc, char ** argv )
                 printf ("            Supports long transactions: %s\n", classCapabilities->SupportsLongTransactions() ? "yes" : "no");
             }
 
-
             // Output identity properties:
             FdoDataPropertyDefinitionCollection* identity = cls->GetIdentityProperties ();
             for (int k = 0; k < identity->GetCount (); k++)
             {
                 FdoDataPropertyDefinition* definition = identity->GetItem (k);
                 printf ("        Id: %ls\n", definition->GetName ());
+                FeatureIdName = definition->GetName();
+
                 if ((definition->GetDescription () != NULL) && (0 != wcscmp (definition->GetDescription (), L"")))
                     printf ("            Description: %ls\n", definition->GetDescription ());
                 printf ("            Type: %d Length: %d Precision: %d %ls\n",
@@ -238,6 +238,7 @@ int main( int argc, char ** argv )
                     FdoRasterDataModel *data_model;
 
                     printf ("        Raster: %ls\n", definition->GetName ());
+                    RasterName = definition->GetName();
 
                     srs = r_definition->GetSpatialContextAssociation();
                     if( srs != NULL )
@@ -307,8 +308,7 @@ int main( int argc, char ** argv )
     try
     {
         FdoPtr<FdoISelect> select = (FdoISelect*)conn->CreateCommand (FdoCommandType_Select);
-//        select->SetFeatureClassName (L"Photo");
-        select->SetFeatureClassName (L"default");
+        select->SetFeatureClassName (FeatureClassName);
         FdoPtr<FdoIFeatureReader> reader = select->Execute ();
         int iCounter = 0;
     
@@ -318,11 +318,9 @@ int main( int argc, char ** argv )
 
             printf( "Feature:\n" );
 
-//            printf( "  Id = %ls\n", reader->GetString( L"Id" ) );
-            printf( "  Id = %ls\n", reader->GetString( L"FeatId" ) );
+            printf( "  Id = %ls\n", reader->GetString( FeatureIdName ) );
 
-//            raster = reader->GetRaster( L"Image" );
-            raster = reader->GetRaster( L"Raster" );
+            raster = reader->GetRaster( RasterName );
 
             if( raster != NULL || !raster->IsNull() )
             {
