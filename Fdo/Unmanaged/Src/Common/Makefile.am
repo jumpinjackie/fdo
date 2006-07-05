@@ -2,6 +2,13 @@ AUTOMAKE_OPTIONS = foreign
 
 noinst_LTLIBRARIES = libFDOCommon.la
 
+EXTRA_DIST = \
+  Common.rc \
+  resource.h \
+  Gml212/feature.xsd \
+  Gml212/geometry.xsd \
+  Gml212/xlinks.xsd
+
 libFDOCommon_la_SOURCES = \
   ArrayHelper.cpp \
   DictionaryElement.cpp \
@@ -35,6 +42,16 @@ libFDOCommon_la_SOURCES = \
   Xsl/TransformerXalan.cpp \
   Gml212/Schema.cpp \
   Gml212/Gml212.cpp
+
+noinst_HEADERS = $(libFDOCommon_la_SOURCES) \
+  ConvertUTF.h \
+  StringUtility.h \
+  utf8_.h \
+  Gml212/feature.h \
+  Gml212/geometry.h \
+  Gml212/xlinks.h \
+  Xml/ReaderXrcs.h \
+  Xml/WriterXrcs.h
 
 INCLUDES = \
   -I../../Inc \
