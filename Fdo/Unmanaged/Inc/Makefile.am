@@ -288,7 +288,7 @@ EXTRA_DIST = \
     Fdo/Xml/ElementMappingCollection.h \
     Fdo/Xml/FeatureContext.h \
     Fdo/Xml/FeatureFlags.h \
-    Fdo/Xml/FeatureHandler.h \Fdo/Unmanaged/Inc/Makefile.am
+    Fdo/Xml/FeatureHandler.h \
     Fdo/Xml/FeaturePropertyReader.h \
     Fdo/Xml/FeaturePropertyWriter.h \
     Fdo/Xml/FeatureReader.h \
@@ -302,7 +302,7 @@ EXTRA_DIST = \
     Fdo/Xml/SpatialContextSerializer.h \
     Fdo/Xml/SpatialContextWriter.h \
     Fdo/Xml/FeatureWriter.h \
-    Geometry/Fgf/Factory.h \Fdo/Unmanaged/Inc/Makefile.am
+    Geometry/Fgf/Factory.h \
     Geometry/DirectPositionImpl.h \
     Geometry/EnvelopeImpl.h \
     Geometry/GeometryFactoryAbstract.h \
