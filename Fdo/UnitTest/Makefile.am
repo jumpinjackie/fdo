@@ -83,7 +83,7 @@ UnitTest_SOURCES = \
 
 noinst_HEADERS = $(UnitTest_SOURCES) \
     SchemaTest.h \
-    CapabilitiesTest.h
+    CapabilitiesTest.h \
     ClientServicesTest.h \
     CommandTest.h \
     CommonTest.h \
