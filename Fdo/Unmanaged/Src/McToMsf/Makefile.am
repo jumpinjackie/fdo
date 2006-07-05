@@ -4,5 +4,7 @@ noinst_PROGRAMS = McToMsf
 
 McToMsf_SOURCES = McToMsf.cpp
 
+noinst_HEADERS = $(McToMsf_SOURCES) stdafx.h
+
 CXXFLAGS = @CXXFLAGS@ -DFULLPROTO -D__USE_GNU -DLINUX
 
