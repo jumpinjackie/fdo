@@ -2,6 +2,30 @@ AUTOMAKE_OPTIONS = foreign
 
 noinst_LTLIBRARIES = libFDOSrc.la
 
+EXTRA_DIST = \
+  Fdo.rc \
+  resource.h \
+  Parse/Lex.h \
+  Parse/Parse.h \
+  Parse/script \
+  Parse/script2 \
+  Parse/script2_linux \
+  Parse/script_linux \
+  Parse/yyExpression.y \
+  Parse/yyFilter.y \
+  Parse/script_h \
+  Parse/script2_h \
+  Parse/yyExpression.cpp \
+  Parse/yyExpression.h \
+  Parse/yyExpressionWin.cpp \
+  Parse/yyExpressionWin.h \
+  Parse/yyFilter.cpp \
+  Parse/yyFilter.h \
+  Parse/yyFilterWin.h \
+  Parse/yyFilterWin.cpp \
+  Schema/SchemaFromExternal.xslt \
+  Schema/SchemaFromInternal.xslt
+
 libFDOSrc_la_SOURCES = \
   Fdo.cpp \
   IDisposableCollection.cpp \
@@ -157,7 +181,44 @@ libFDOSrc_la_SOURCES = \
   Xml/LpPropertyDefinition.cpp \
   Xml/LpSchema.cpp \
   Xml/SchemaManager.cpp \
-  Xml/FeatureWriter.cpp 
+  Xml/FeatureWriter.cpp
+
+noinst_HEADERS = $(libFDOSrc_la_SOURCES) \
+  ClientServices/ProviderDef.h \
+  ClientServices/RegistryUtility.h \
+  ClientServices/prefix.h \
+  Schema/DataTypeMapper.h \
+  Schema/XmlContext.h \
+  Schema/XmlError.h \
+  Schema/SchemaFromExternal.h \
+  Schema/SchemaFromInternal.h \
+  Xml/AssociationProperty.h \
+  Xml/BLOBProperty.h \
+  Xml/Box.h \
+  Xml/CoordinateGroup.h \
+  Xml/DataProperty.h \
+  Xml/FeaturePropertyReaderImpl.h \
+  Xml/FeatureReaderImpl.h \
+  Xml/GeometricProperty.h \
+  Xml/Geometry.h \
+  Xml/GeometryHandler.h \
+  Xml/GeometrySerializer.h \
+  Xml/LinearRing.h \
+  Xml/LineString.h \
+  Xml/LpClassDefinition.h \
+  Xml/LpCollection.h \
+  Xml/LpGmlElementDefinition.h \
+  Xml/LpPropertyDefinition.h \
+  Xml/LpSchema.h \
+  Xml/LpSchemaElement.h \
+  Xml/MultiGeometry.h \
+  Xml/MultiLineString.h \
+  Xml/MultiPoint.h \
+  Xml/MultiPolygon.h \
+  Xml/Point.h \
+  Xml/Polygon.h \
+  Xml/SchemaManager.h \
+  Xml/SCReadHandler.h
 
 INCLUDES = \
   -I../../Inc \
