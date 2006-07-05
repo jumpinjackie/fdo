@@ -2,6 +2,16 @@ AUTOMAKE_OPTIONS = foreign
 
 noinst_LTLIBRARIES = libFDOGeometry.la
 
+EXTRA_DIST = \
+  Geometry.rc \
+  resource.h \
+  Parse/script \
+  Parse/script_linux \
+  Parse/yyFgftWin.cpp \
+  Parse/yyFgftWin.h \
+  Parse/yyFgft.y \
+  Parse/script_h
+
 libFDOGeometry_la_SOURCES = \
   Parse/yyFgft.cpp \
   Fgf/CircularArcSegment.cpp \
@@ -29,6 +39,33 @@ libFDOGeometry_la_SOURCES = \
   GeometryUtility.cpp \
   Parse/LexFgft.cpp \
   Parse/ParseFgft.cpp
+
+noinst_HEADERS = $(libFDOGeometry_la_SOURCES) \
+  GeometryImpl.h \
+  GeometryUtility.h \
+  Fgf/GeometryFactory2.h \
+  Fgf/GeometryImpl.h \
+  Fgf/CircularArcSegment.h \
+  Fgf/CurvePolygon.h \
+  Fgf/CurveString.h \
+  Fgf/LinearRing.h \
+  Fgf/LineString.h \
+  Fgf/LineStringSegment.h \
+  Fgf/MultiCurvePolygon.h \
+  Fgf/MultiCurveString.h \
+  Fgf/MultiGeometry.h \
+  Fgf/MultiLineString.h \
+  Fgf/MultiPoint.h \
+  Fgf/MultiPolygon.h \
+  Fgf/Point.h \
+  Fgf/Polygon.h \
+  Fgf/Ring.h \
+  Fgf/Util.h \
+  Fgf/GeometryThreadData.h \
+  Fgf/Pool.h \
+  Parse/LexFgft.h \
+  Parse/ParseFgft.h \
+  Parse/yyFgft.h
 
 INCLUDES = \
   -I../../Inc \
