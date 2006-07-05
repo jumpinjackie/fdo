@@ -1,5 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 
+EXTRA_DIST = FDOMessage.mc resource.h MessageStatic.rc
+
 CATDIR = ../../nls/linux/en_US
 
 CATALOGS = FDOMessage.mc
