@@ -2,9 +2,9 @@ AUTOMAKE_OPTIONS = foreign
 
 INSTALL_DIR  = $(prefix)
 
-SUBDIRS = doc_src
+SUBDIRS = doc_src XmlSchema
 
-DIST_SUBDIRS = doc_src
+DIST_SUBDIRS = doc_src XmlSchema
 
 #install Docs
 install :
