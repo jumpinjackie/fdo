@@ -2,10 +2,20 @@ AUTOMAKE_OPTIONS = foreign
 
 SUBDIRS =
 
-DIST_SUBDIRS = apache linux cppunit util \
-               Sqlite3.1.5 \
-               boost_1_32_0 libcurl openssl \
-               GDAL1.3
+DIST_SUBDIRS = 
+
+EXTRA_DIST = \
+  build.bat \
+  Thirdparty_fdo.sln \
+  Thirdparty_sdf.sln \
+  Thirdparty_wms.sln \
+  Thirdparty_wfs.sln \
+  Thirdparty.sln \
+  Thirdparty_fdo.sh \
+  Thirdparty_sdf.sh \
+  Thirdparty_wms.sh \
+  Thirdparty_wfs.sh \
+  Thirdparty.sh
 
 thdlibdir = $(prefix)/lib
 thdlib_DATA = \
