@@ -472,6 +472,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\ExtendedSelectTest.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ExtendedSelectTest.h"
+			>
+		</File>
+		<File
 			RelativePath=".\FdoMultiThreadTest.cpp"
 			>
 		</File>
