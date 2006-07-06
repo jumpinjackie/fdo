@@ -309,47 +309,21 @@ foreach $RDBMS ("ORACLE", "SQLSERVER")
     system "echo y | sdetable -o delete -t PARCELS -u " . $username_australia . " -p test " . $DB_INST;
   }
 
-  # On ORACLE only:  (shp2sde converts OBJECTID to NUMBER(11) isntead of NUMBER(10), causing the former gets interpreted as a DOUBLE instead of an INT32)
-
-  print "\n" . $ACTION . " table ROADS for " . $RDBMS . " ... \n";
-
-  if ($RDBMS eq "ORACLE")
-  {
-    if ($INSTALLACTION ne "U") {
-#      system "sdetable -o create -t ROADS  -d \"OBJECTID integer(10), STE_CODE double(28,9), STE_ABBR string(40), STE_NAME string(40), D_AREA double(28,9), "
-#           . "SHAPE_LENG double(28,9), SHAPE_AREA double(28,9), FID integer(38)\" -u " . $username_australia . " -p test " . $DB_INST;
-#      system "sdelayer -o add -l ROADS,GEOMETRY -e npsla+ -g 50 -x 96,-44,30000000 -u " . $username_australia . " -p test " . $DB_INST;
-      system "shp2sde -o create -l ROADS,GEOMETRY -f " . $SHP_ROOT . "\\Australia\\Roads.shp -e sl -a all -C OBJECTID,USER,0 -u " . $username_australia . " -p test " . $DB_INST;
-      system "echo y | sdetable -o alter_reg -t ROADS -c OBJECTID -C SDE -u " . $username_australia . " -p test " . $DB_INST;
-    } else {
-      system "echo y | sdetable -o delete -t ROADS -u " . $username_australia . " -p test " . $DB_INST;
-    }
-  }
-
-  # On SQL SERVER only:
-
-  if ($RDBMS eq "SQLSERVER")
-  {
-    if ($INSTALLACTION ne "U") {
-      system "shp2sde -o create -l ROADS,GEOMETRY -f " . $SHP_ROOT . "\\Australia\\Roads.shp -e npsla+ -g 10 -a all -C OBJECTID,USER,0 -u " . $username_australia . " -p test " . $DB_INST;
-      system "echo y | sdetable -o alter_reg -t ROADS -c OBJECTID -C SDE -V MULTI -u " . $username_australia . " -p test " . $DB_INST;
-    } else {
-      system "echo y | sdetable -o delete -t ROADS -u " . $username_australia . " -p test " . $DB_INST;
-    }
-  }
-
   # On both Oracle and SQL Server:
 
-  print "\n" . $ACTION . " tables COUNTY and DEFECT64335202 for " . $RDBMS . " ... \n";
+  print "\n" . $ACTION . " tables ROADS, COUNTY and DEFECT64335202 for " . $RDBMS . " ... \n";
+
   if ($INSTALLACTION ne "U") {
+    system "shp2sde -o create -l ROADS,GEOMETRY -f " . $SHP_ROOT . "\\Australia\\Roads.shp -e sl -a all -C OBJECTID,USER,0 -u " . $username_australia . " -p test " . $DB_INST;
+    system "echo y | sdetable -o alter_reg -t ROADS -c OBJECTID -C SDE -V MULTI -u " . $username_australia . " -p test " . $DB_INST;
     system "shp2sde -o create -l COUNTY,SHAPE -f " . $SHP_ROOT . "\\Australia\\COUNTY.shp -e npsla+3M -g 10000 -u " . $username_australia  . " -p test " . $DB_INST;
     system "shp2sde -o create -l DEFECT64335202,SHAPE -f " . $SHP_ROOT . "\\Australia\\DEFECT64335202.shp -e npsla+ -g 10 -a all -C OBJECTID,USER,0 -u " . $username_australia . " -p test " . $DB_INST;
     system "echo y | sdetable -o alter_reg -t DEFECT64335202 -c OBJECTID -C SDE -u " . $username_australia  . " -p test " . $DB_INST;
   } else {
-    system "echo y | sdetable -o delete -t COUNTY -u " . $username_australia  . " -p test " . $DB_INST;
+    system "echo y | sdetable -o delete -t ROADS -u " . $username_australia . " -p test " . $DB_INST;
+    system "echo y | sdetable -o delete -t COUNTY -u " . $username_australia  . " -p test "  $DB_INST;
     system "echo y | sdetable -o delete -t DEFECT64335202 -u " . $username_australia . " -p test " . $DB_INST;
   }
-
 
 
   # Run unit tests to initialize remaining test tables
