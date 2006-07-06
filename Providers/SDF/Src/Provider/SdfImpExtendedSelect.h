@@ -17,8 +17,8 @@
 #define _SdfImpExtendedSelect_H_
 
 #include "SdfSelect.h"
-#include "SDF\SdfCompareHandler.h"
-#include "SDF\IScrollableFeatureReader.h"
+#include "SDF/SdfCompareHandler.h"
+#include "SDF/IScrollableFeatureReader.h"
 
 class PropertyIndex;
 
