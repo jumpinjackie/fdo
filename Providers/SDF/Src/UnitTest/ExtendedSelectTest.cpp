@@ -4,7 +4,9 @@
 #include <stdio.h>
 #include "SDF/IExtendedSelect.h"
 #include "SDF/SdfCommandType.h"
-
+#ifndef _WIN32
+#include <unistd.h>
+#endif
 #define WORLD  L"../../TestData/World_Countries.sdf"
 #define SDF_FILE  L"../../TestData/PARCEL_linuxtest.SDX"
 #define DEST_FILE  L"../../TestData/CACHE.SDF"
