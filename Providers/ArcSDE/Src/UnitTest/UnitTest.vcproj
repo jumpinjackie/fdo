@@ -559,6 +559,7 @@
 						Name="VCCustomBuildTool"
 						Description="Copying ESRI files"
 						CommandLine="if &quot;$(SDEHOME)&quot;==&quot;&quot; set SDEHOME2=$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\&#x0D;&#x0A;if Not &quot;$(SDEHOME)&quot;==&quot;&quot; set SDEHOME2=$(SDEHOME)&#x0D;&#x0A;copy %SDEHOME2%\bin\pe91.dll $(OutDir)&#x0D;&#x0A;copy %SDEHOME2%\bin\sde91.dll $(OutDir)&#x0D;&#x0A;copy %SDEHOME2%\bin\sg91.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyArcSDE.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="$(SDEHOME)\bin\pe91.dll;$(SDEHOME)\bin\sde91.dl;$(SDEHOME)\bin\sg91.dll"
 						Outputs="$(OutDir)\CopyArcSDE.ilk"
 					/>
 				</FileConfiguration>
@@ -569,6 +570,7 @@
 						Name="VCCustomBuildTool"
 						Description="Copying ESRI files"
 						CommandLine="if &quot;$(SDEHOME)&quot;==&quot;&quot; set SDEHOME2=$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\&#x0D;&#x0A;if Not &quot;$(SDEHOME)&quot;==&quot;&quot; set SDEHOME2=$(SDEHOME)&#x0D;&#x0A;copy %SDEHOME2%\bin\pe91.dll $(OutDir)&#x0D;&#x0A;copy %SDEHOME2%\bin\sde91.dll $(OutDir)&#x0D;&#x0A;copy %SDEHOME2%\bin\sg91.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyArcSDE.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="$(SDEHOME)\bin\pe91.dll"
 						Outputs="$(OutDir)\CopyArcSDE.ilk"
 					/>
 				</FileConfiguration>
@@ -635,6 +637,7 @@
 						Name="VCCustomBuildTool"
 						Description="Performing fake install"
 						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;"
+						AdditionalDependencies="providers.xml"
 						Outputs="$(OutDir)\providers.xml"
 					/>
 				</FileConfiguration>
@@ -645,6 +648,7 @@
 						Name="VCCustomBuildTool"
 						Description="Performing fake install"
 						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;"
+						AdditionalDependencies="providers.xml"
 						Outputs="$(OutDir)\providers.xml"
 					/>
 				</FileConfiguration>
