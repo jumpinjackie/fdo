@@ -2,6 +2,11 @@ AUTOMAKE_OPTIONS = foreign
 
 noinst_LTLIBRARIES = libSQLiteInterface.la
 
+EXTRA_DIST = \
+  stdafx.cpp \
+  SQLiteInterface.vcproj \
+  ReadMe.txt
+
 libSQLiteInterface_la_SOURCES = \
   SQLiteBTree.cpp \
   SQLiteCursor.cpp \
@@ -13,6 +18,21 @@ libSQLiteInterface_la_SOURCES = \
   SQLiteTable.cpp \
   SQLiteTransaction.cpp \
   stdafx.cpp
+
+noinst_HEADERS = $(libSQLiteInterface_la_SOURCES) \
+  SQLiteBTree.h \
+  SQLiteData.h \
+  SQLiteQueryResult.h \
+  SQLiteTransaction.h \
+  SQLiteCursor.h\
+  SQLiteFileDataBase.h \
+  SQLiteSqlUpdateCache.h \
+  SQLiteUpdateCache.h \
+  SQLiteDataBase.h \
+  SQLiteMemoryDataBase.h \
+  SQLiteTable.h \
+  stdafx.h
+
 
 INCLUDES = \
   -I$(FDOTHIRDPARTY)/Sqlite3.1.5/Src \

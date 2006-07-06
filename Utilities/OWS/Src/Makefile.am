@@ -20,6 +20,12 @@ libFdoOwsSrc_la_SOURCES = \
   FdoOwsGeographicBoundingBoxCollection.cpp \
   FdoOwsOgcGeometrySerializer.cpp 
 
+noinst_HEADERS = $(libFdoOwsSrc_la_SOURCES) \
+  FdoOwsExceptionReport.h \
+  FdoOwsHttpHandler.h \
+  FdoOwsOgcGeometrySerializer.h \
+  FdoOwsUrlResolver.h
+
 INCLUDES = \
   -I../ \
   -I../Inc \

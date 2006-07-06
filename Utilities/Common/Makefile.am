@@ -2,6 +2,20 @@ AUTOMAKE_OPTIONS = foreign
 
 noinst_LTLIBRARIES = libProvidersCommon.la
 
+EXTRA_DIST = \
+  FdoCommon.sln \
+  FdoCommon.vcproj \
+  Docs/doc_src/FDOCommon_Provider_API.dox \
+  Docs/doc_src/FDOCommon_Provider_API.doxdb \
+  Docs/doc_src/overview_topics/FDOCommon_global_class_hierarchy.dtx \
+  Docs/doc_src/overview_topics/index.dtx \
+  Src/Parse/script3 \
+  Src/Parse/script3_h \
+  Src/Parse/script3_linux \
+  Src/Parse/yyConstraint.y \
+  Src/Parse/yyConstraintWin.cpp \
+  Inc/Parse/yyConstraintWin.h
+
 libProvidersCommon_la_SOURCES = \
   Src/FdoCommonNlsUtil.cpp \
   Src/FdoCommonOSUtil.cpp \
@@ -24,6 +38,33 @@ libProvidersCommon_la_SOURCES = \
   Src/Parse/Lex.cpp \
   Src/Parse/Parse.cpp \
   Src/Parse/yyConstraint.cpp
+
+noinst_HEADERS = $(libProvidersCommon_la_SOURCES) \
+  Inc/FdoCommonBinaryReader.h \
+  Inc/FdoCommonBinaryWriter.h \
+  Inc/FdoCommonCommand.h \
+  Inc/FdoCommonConnPropDictionary.h \
+  Inc/FdoCommonConnStringParser.h \
+  Inc/FdoCommonDataReader.h \
+  Inc/FdoCommonFeatureCommand.h \
+  Inc/FdoCommonFile.h \
+  Inc/FdoCommonFilterExecutor.h \
+  Inc/FdoCommonMiscUtil.h \
+  Inc/FdoCommonNlsUtil.h \
+  Inc/FdoCommonOSUtil.h \
+  Inc/FdoCommonPropertyIndex.h \
+  Inc/FdoCommonQueryAggregator.h \
+  Inc/FdoCommonReader.h \
+  Inc/FdoCommonSchemaUtil.h \
+  Inc/FdoCommonSelectAggregatesCommand.h \
+  Inc/FdoCommonStringUtil.h \
+  Inc/FdoCommonThreadMutex.h \
+  Inc/FdoCommonThreadUtil.h \
+  Inc/stdafx.h \
+  Inc/Parse/Lex.h \
+  Inc/Parse/Parse.h \
+  Inc/Parse/Types.h \
+  Inc/Parse/yyConstraint.h
 
 INCLUDES = \
   -I$(FDO)/Unmanaged/Inc \

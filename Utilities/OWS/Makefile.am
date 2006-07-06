@@ -2,6 +2,37 @@ AUTOMAKE_OPTIONS = foreign
 
 SUBDIRS = Src
 
+DIST_SUBDIRS = Src
+
+EXTRA_DIST = \
+  FdoOws.cpp \
+  FdoOws.rc \
+  OWS.vcproj \
+  resource.h \
+  stdafx.h \
+  stdafx.cpp \
+  Docs/doc_src/OWS_Provider_API.dox \
+  Docs/doc_src/OWS_Provider_API.doxdb \
+  Docs/doc_src/overview_topics/index.dtx \
+  Docs/doc_src/overview_topics/OWS_global_class_hierarchy.dtx \
+  Inc/OWS/FdoOwsCapabilities.h \
+  Inc/OWS/FdoOwsMIMEType.h \
+  Inc/OWS/FdoOwsDelegate.h \
+  Inc/OWS/FdoOwsOgcFilterSerializer.h \
+  Inc/OWS/FdoOwsGeographicBoundingBoxCollection.h \
+  Inc/OWS/FdoOwsRequest.h \
+  Inc/OWS/FdoOwsGeographicBoundingBox.h \
+  Inc/OWS/FdoOwsRequestMetadata.h \
+  Inc/OWS/FdoOwsGetCapabilities.h \
+  Inc/OWS/FdoOwsResponse.h \
+  Inc/OWS/FdoOwsGlobals.h \
+  Inc/OWS/FdoOwsServiceIdentification.h \
+  Inc/OWS/FdoOWS.h \
+  Inc/OWS/FdoOwsServiceMetadata.h \
+  Inc/OWS/FdoOwsIEncodable.h \
+  Inc/OWS/FdoOwsXmlSaxContext.h \
+  Inc/OWS/FdoOwsIHttpHandler.h
+
 ##building libFdoOws.so
 lib_LTLIBRARIES = libFdoOws.la
 
