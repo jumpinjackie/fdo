@@ -173,13 +173,13 @@ EXTRA_DIST = \
     Src/OSGeo/FDO/Commands/Locking/mgLockType.h \
     Src/OSGeo/FDO/Commands/LongTransaction/mgIActivateLongTransaction.h \
     Src/OSGeo/FDO/Commands/LongTransaction/mgIActivateLongTransactionCheckpoint.h \
-    Src/OSGeo/FDO/Commands/LongTransaction/mgIActivateLongTransactionCheckpointImp.cpp \
-    Src/OSGeo/FDO/Commands/LongTransaction/mgIActivateLongTransactionCheckpointImp.h \
+    Src/OSGeo/FDO/Commands/LongTransaction/mgIActivateLTCheckpointImp.cpp \
+    Src/OSGeo/FDO/Commands/LongTransaction/mgIActivateLTCheckpointImp.h \
     Src/OSGeo/FDO/Commands/LongTransaction/mgIActivateLongTransactionImp.cpp \
     Src/OSGeo/FDO/Commands/LongTransaction/mgIActivateLongTransactionImp.h \
     Src/OSGeo/FDO/Commands/LongTransaction/mgIChangeLongTransactionPrivileges.h \
-    Src/OSGeo/FDO/Commands/LongTransaction/mgIChangeLongTransactionPrivilegesImp.cpp \
-    Src/OSGeo/FDO/Commands/LongTransaction/mgIChangeLongTransactionPrivilegesImp.h \
+    Src/OSGeo/FDO/Commands/LongTransaction/mgIChangeLTPrivilegesImp.cpp \
+    Src/OSGeo/FDO/Commands/LongTransaction/mgIChangeLTPrivilegesImp.h \
     Src/OSGeo/FDO/Commands/LongTransaction/mgIChangeLongTransactionSet.h \
     Src/OSGeo/FDO/Commands/LongTransaction/mgIChangeLongTransactionSetImp.cpp \
     Src/OSGeo/FDO/Commands/LongTransaction/mgIChangeLongTransactionSetImp.h \
@@ -188,8 +188,8 @@ EXTRA_DIST = \
     Src/OSGeo/FDO/Commands/LongTransaction/mgICommitLongTransactionImp.h \
     Src/OSGeo/FDO/Commands/LongTransaction/mgICreateLongTransaction.h \
     Src/OSGeo/FDO/Commands/LongTransaction/mgICreateLongTransactionCheckpoint.h \
-    Src/OSGeo/FDO/Commands/LongTransaction/mgICreateLongTransactionCheckpointImp.cpp \
-    Src/OSGeo/FDO/Commands/LongTransaction/mgICreateLongTransactionCheckpointImp.h \
+    Src/OSGeo/FDO/Commands/LongTransaction/mgICreateLTCheckpointImp.cpp \
+    Src/OSGeo/FDO/Commands/LongTransaction/mgICreateLTCheckpointImp.h \
     Src/OSGeo/FDO/Commands/LongTransaction/mgICreateLongTransactionImp.cpp \
     Src/OSGeo/FDO/Commands/LongTransaction/mgICreateLongTransactionImp.h \
     Src/OSGeo/FDO/Commands/LongTransaction/mgIDeactivateLongTransaction.h \
@@ -211,14 +211,14 @@ EXTRA_DIST = \
     Src/OSGeo/FDO/Commands/LongTransaction/mgIGetLongTransactionsInSetImp.cpp \
     Src/OSGeo/FDO/Commands/LongTransaction/mgIGetLongTransactionsInSetImp.h \
     Src/OSGeo/FDO/Commands/LongTransaction/mgILongTransactionCheckpointReader.h \
-    Src/OSGeo/FDO/Commands/LongTransaction/mgILongTransactionCheckpointReaderImp.cpp \
-    Src/OSGeo/FDO/Commands/LongTransaction/mgILongTransactionCheckpointReaderImp.h \
+    Src/OSGeo/FDO/Commands/LongTransaction/mgILTCheckpointReaderImp.cpp \
+    Src/OSGeo/FDO/Commands/LongTransaction/mgILTCheckpointReaderImp.h \
     Src/OSGeo/FDO/Commands/LongTransaction/mgILTConflictDirectiveEnumerator.h \
-    Src/OSGeo/FDO/Commands/LongTransaction/mgILongTransactionConflictDirectiveEnumeratorImp.cpp \
-    Src/OSGeo/FDO/Commands/LongTransaction/mgILongTransactionConflictDirectiveEnumeratorImp.h \
+    Src/OSGeo/FDO/Commands/LongTransaction/mgILTConflictDirectiveEnumeratorImp.cpp \
+    Src/OSGeo/FDO/Commands/LongTransaction/mgILTConflictDirectiveEnumeratorImp.h \
     Src/OSGeo/FDO/Commands/LongTransaction/mgILongTransactionPrivilegeReader.h \
-    Src/OSGeo/FDO/Commands/LongTransaction/mgILongTransactionPrivilegeReaderImp.cpp \
-    Src/OSGeo/FDO/Commands/LongTransaction/mgILongTransactionPrivilegeReaderImp.h \
+    Src/OSGeo/FDO/Commands/LongTransaction/mgILTPrivilegeReaderImp.cpp \
+    Src/OSGeo/FDO/Commands/LongTransaction/mgILTPrivilegeReaderImp.h \
     Src/OSGeo/FDO/Commands/LongTransaction/mgILongTransactionReader.h \
     Src/OSGeo/FDO/Commands/LongTransaction/mgILongTransactionReaderImp.cpp \
     Src/OSGeo/FDO/Commands/LongTransaction/mgILongTransactionReaderImp.h \
@@ -227,8 +227,8 @@ EXTRA_DIST = \
     Src/OSGeo/FDO/Commands/LongTransaction/mgILongTransactionSetReaderImp.h \
     Src/OSGeo/FDO/Commands/LongTransaction/mgIRollbackLongTransaction.h \
     Src/OSGeo/FDO/Commands/LongTransaction/mgIRollbackLongTransactionCheckpoint.h \
-    Src/OSGeo/FDO/Commands/LongTransaction/mgIRollbackLongTransactionCheckpointImp.cpp \
-    Src/OSGeo/FDO/Commands/LongTransaction/mgIRollbackLongTransactionCheckpointImp.h \
+    Src/OSGeo/FDO/Commands/LongTransaction/mgIRollbackLTCheckpointImp.cpp \
+    Src/OSGeo/FDO/Commands/LongTransaction/mgIRollbackLTCheckpointImp.h \
     Src/OSGeo/FDO/Commands/LongTransaction/mgIRollbackLongTransactionImp.cpp \
     Src/OSGeo/FDO/Commands/LongTransaction/mgIRollbackLongTransactionImp.h \
     Src/OSGeo/FDO/Commands/LongTransaction/mgLongTransactionConflictResolution.h \
@@ -347,8 +347,8 @@ EXTRA_DIST = \
     Src/OSGeo/FDO/Connections/Capabilities/mgITopologyCapabilities.h \
     Src/OSGeo/FDO/Connections/Capabilities/mgITopologyCapabilitiesImp.cpp \
     Src/OSGeo/FDO/Connections/Capabilities/mgITopologyCapabilitiesImp.h \
-    Src/OSGeo/FDO/Connections/Capabilities/mgReadOnlyArgumentDefinitionCollection.cpp \
-    Src/OSGeo/FDO/Connections/Capabilities/mgReadOnlyArgumentDefinitionCollection.h \
+    Src/OSGeo/FDO/Connections/Capabilities/mgReadOnlyArgDefColl.cpp \
+    Src/OSGeo/FDO/Connections/Capabilities/mgReadOnlyArgDefColl.h \
     Src/OSGeo/FDO/Connections/Capabilities/mgThreadCapability.h \
     Src/OSGeo/FDO/Connections/mgConnectionState.h \
     Src/OSGeo/FDO/Connections/mgIConnection.h \

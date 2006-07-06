@@ -114,7 +114,7 @@ EXTRA_DIST = \
     Fdo/Commands/LongTransaction/IGetLongTransactions.h \
     Fdo/Commands/LongTransaction/IGetLongTransactionsInSet.h \
     Fdo/Commands/LongTransaction/ILongTransactionCheckpointReader.h \
-    Fdo/Commands/LongTransaction/ILongTransactionConflictDirectiveEnumerator.h \
+    Fdo/Commands/LongTransaction/ILTConflictDirectiveEnumerator.h \
     Fdo/Commands/LongTransaction/ILongTransactionPrivilegeReader.h \
     Fdo/Commands/LongTransaction/ILongTransactionReader.h \
     Fdo/Commands/LongTransaction/ILongTransactionSetReader.h \
