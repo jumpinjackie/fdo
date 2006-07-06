@@ -66,7 +66,11 @@ if not "%2"=="fdo" goto stp6_get_with
 	SET FDOCOREENABLE=yes
 	goto next_param
 :stp6_get_with
-if not "%2"=="providers" goto stp7_get_with
+if not "%2"=="rdbms" goto stp7_get_with
+	SET RDBMSENABLE=yes
+	goto next_param
+:stp7_get_with
+if not "%2"=="providers" goto stp8_get_with
     SET FDOCOREENABLE=no
     SET SHPENABLE=yes
     SET SDFENABLE=yes
@@ -75,7 +79,7 @@ if not "%2"=="providers" goto stp7_get_with
     SET ARCSDEENABLE=yes
     SET RDBMSENABLE=yes
 	goto next_param
-:stp7_get_with
+:stp8_get_with
 if not "%2"=="all" goto custom_error
     SET FDOCOREENABLE=yes
     SET SHPENABLE=yes
@@ -103,82 +107,80 @@ shift
 shift
 goto study_params
 
-if "%FDOERROR%"=="1"
-
 :start_zip
 :start_zip_fdo
 if "%FDOCOREENABLE%"=="no" goto start_zip_shp
    mkdir "%FDOTARZIPFOLDER%"
    svn export "%FDOSVNROOT%" "%FDOTARZIPFOLDER%" --non-recursive --force
-   svn export "%FDOSVNROOT%"\Providers "%FDOTARZIPFOLDER%"\Providers --non-recursive --force
-   svn export "%FDOSVNROOT%"\Fdo "%FDOTARZIPFOLDER%"\Fdo --force
-   svn export "%FDOSVNROOT%"\Utilities "%FDOTARZIPFOLDER%"\Utilities --force
-   svn export "%FDOSVNROOT%"\Thirdparty "%FDOTARZIPFOLDER%"\Thirdparty --force
+   svn export "%FDOSVNROOT%\Providers" "%FDOTARZIPFOLDER%\Providers" --non-recursive --force
+   svn export "%FDOSVNROOT%\Fdo" "%FDOTARZIPFOLDER%\Fdo" --force
+   svn export "%FDOSVNROOT%\Utilities" "%FDOTARZIPFOLDER%\Utilities" --force
+   svn export "%FDOSVNROOT%\Thirdparty" "%FDOTARZIPFOLDER%\Thirdparty" --force
    pushd "%FDOTARZIPFOLDER%"
-   del /q /f /s .svn
+   if exist .svn del /q /f /s .svn
    popd
-   del /q /f fdo-3.2.0_"%FDOBUILDNUMBER%".zip
-   7z a -airy -bd -tzip fdo-3.2.0_"%FDOBUILDNUMBER%".zip "%FDOTARZIPFOLDER%"
+   if exist "fdo-3.2.0_%FDOBUILDNUMBER%.zip" del /q /f "fdo-3.2.0_%FDOBUILDNUMBER%.zip"
+   7z a -airy -bd -tzip "fdo-3.2.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
    deltree /Y "%FDOTARZIPFOLDER%"
 :start_zip_shp
 if "%SHPENABLE%"=="no" goto start_zip_sdf
-   mkdir "%FDOTARZIPFOLDER%"\Providers\SHP
-   svn export "%FDOSVNROOT%"\Providers\SHP "%FDOTARZIPFOLDER%"\Providers\SHP --force
+   mkdir "%FDOTARZIPFOLDER%\Providers\SHP"
+   svn export "%FDOSVNROOT%\Providers\SHP" "%FDOTARZIPFOLDER%\Providers\SHP" --force
    pushd "%FDOTARZIPFOLDER%"
-   del /q /f /s .svn
+   if exist .svn del /q /f /s .svn
    popd
-   del /q /f fdoshp-3.2.0_"%FDOBUILDNUMBER%"
-   7z a -airy -bd -tzip fdoshp-3.2.0_"%FDOBUILDNUMBER%".zip "%FDOTARZIPFOLDER%"
+   if exist "fdoshp-3.2.0_%FDOBUILDNUMBER%.zip" del /q /f "fdoshp-3.2.0_%FDOBUILDNUMBER%.zip"
+   7z a -airy -bd -tzip "fdoshp-3.2.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
    deltree /Y "%FDOTARZIPFOLDER%"
 :start_zip_sdf
 if "%SDFENABLE%"=="no" goto start_zip_wfs
-   mkdir "%FDOTARZIPFOLDER%"\Providers\SDF
-   svn export "%FDOSVNROOT%"\Providers\SDF "%FDOTARZIPFOLDER%"\Providers\SDF --force
+   mkdir "%FDOTARZIPFOLDER%\Providers\SDF"
+   svn export "%FDOSVNROOT%\Providers\SDF" "%FDOTARZIPFOLDER%\Providers\SDF" --force
    pushd "%FDOTARZIPFOLDER%"
-   del /q /f /s .svn
+   if exist .svn del /q /f /s .svn
    popd
-   del /q /f fdosdf-3.2.0_"%FDOBUILDNUMBER%".zip
-   7z a -airy -bd -tzip fdosdf-3.2.0_"%FDOBUILDNUMBER%".zip "%FDOTARZIPFOLDER%"
+   if exist "fdosdf-3.2.0_%FDOBUILDNUMBER%.zip" del /q /f "fdosdf-3.2.0_%FDOBUILDNUMBER%.zip"
+   7z a -airy -bd -tzip "fdosdf-3.2.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
    deltree /Y "%FDOTARZIPFOLDER%"
 :start_zip_wfs
 if "%WFSENABLE%"=="no" goto start_zip_wms
-   mkdir "%FDOTARZIPFOLDER%"\Providers\WFS
-   svn export "%FDOSVNROOT%"\Providers\WFS "%FDOTARZIPFOLDER%"\Providers\WFS --force
+   mkdir "%FDOTARZIPFOLDER%\Providers\WFS"
+   svn export "%FDOSVNROOT%\Providers\WFS" "%FDOTARZIPFOLDER%\Providers\WFS" --force
    pushd "%FDOTARZIPFOLDER%"
-   del /q /f /s .svn
+   if exist .svn del /q /f /s .svn
    popd
-   del /q /f fdowfs-3.2.0_"%FDOBUILDNUMBER%".zip
-   7z a -airy -bd -tzip fdowfs-3.2.0_"%FDOBUILDNUMBER%".zip "%FDOTARZIPFOLDER%"
+   if exist "fdowfs-3.2.0_%FDOBUILDNUMBER%.zip" del /q /f "fdowfs-3.2.0_%FDOBUILDNUMBER%.zip"
+   7z a -airy -bd -tzip "fdowfs-3.2.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
    deltree /Y "%FDOTARZIPFOLDER%"
 :start_zip_wms
 if "%WMSENABLE%"=="no" goto start_zip_arcsde
-   mkdir "%FDOTARZIPFOLDER%"\Providers\WMS
-   svn export "%FDOSVNROOT%"\Providers\WMS "%FDOTARZIPFOLDER%"\Providers\WMS --force
+   mkdir "%FDOTARZIPFOLDER%\Providers\WMS"
+   svn export "%FDOSVNROOT%\Providers\WMS" "%FDOTARZIPFOLDER%\Providers\WMS" --force
    pushd "%FDOTARZIPFOLDER%"
-   del /q /f /s .svn
+   if exist .svn del /q /f /s .svn
    popd
-   del /q /f fdowms-3.2.0_"%FDOBUILDNUMBER%".zip
-   7z a -airy -bd -tzip fdowms-3.2.0_"%FDOBUILDNUMBER%".zip "%FDOTARZIPFOLDER%"
+   if exist "fdowms-3.2.0_%FDOBUILDNUMBER%.zip" del /q /f "fdowms-3.2.0_%FDOBUILDNUMBER%.zip"
+   7z a -airy -bd -tzip "fdowms-3.2.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
    deltree /Y "%FDOTARZIPFOLDER%"
 :start_zip_arcsde
 if "%ARCSDEENABLE%"=="no" goto start_zip_rdbms
-   mkdir "%FDOTARZIPFOLDER%"\Providers\ArcSDE
-   svn export "%FDOSVNROOT%"\Providers\ArcSDE "%FDOTARZIPFOLDER%"\Providers\ArcSDE --force
+   mkdir "%FDOTARZIPFOLDER%\Providers\ArcSDE"
+   svn export "%FDOSVNROOT%\Providers\ArcSDE" "%FDOTARZIPFOLDER%\Providers\ArcSDE" --force
    pushd "%FDOTARZIPFOLDER%"
-   del /q /f /s .svn
+   if exist .svn del /q /f /s .svn
    popd
-   del /q /f fdoarcsde-3.2.0_"%FDOBUILDNUMBER%".zip
-   7z a -airy -bd -tzip fdoarcsde-3.2.0_"%FDOBUILDNUMBER%".zip "%FDOTARZIPFOLDER%"
+   if exist "fdoarcsde-3.2.0_%FDOBUILDNUMBER%.zip" del /q /f "fdoarcsde-3.2.0_%FDOBUILDNUMBER%.zip"
+   7z a -airy -bd -tzip "fdoarcsde-3.2.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
    deltree /Y "%FDOTARZIPFOLDER%"
 :start_zip_rdbms
 if "%RDBMSENABLE%"=="no" goto end
-   mkdir "%FDOTARZIPFOLDER%"\Providers\GenericRdbms
-   svn export "%FDOSVNROOT%"\Providers\GenericRdbms "%FDOTARZIPFOLDER%"\Providers\ArcSDE --force
+   mkdir "%FDOTARZIPFOLDER%\Providers\GenericRdbms"
+   svn export "%FDOSVNROOT%\Providers\GenericRdbms" "%FDOTARZIPFOLDER%\Providers\GenericRdbms" --force
    pushd "%FDOTARZIPFOLDER%"
-   del /q /f /s .svn
+   if exist .svn del /q /f /s .svn
    popd
-   del /q /f fdordbms-3.2.0_"%FDOBUILDNUMBER%".zip
-   7z a -airy -bd -tzip fdordbms-3.2.0_"%FDOBUILDNUMBER%".zip "%FDOTARZIPFOLDER%"
+   if exist "fdordbms-3.2.0_%FDOBUILDNUMBER%.zip" del /q /f "fdordbms-3.2.0_%FDOBUILDNUMBER%.zip"
+   7z a -airy -bd -tzip "fdordbms-3.2.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
    deltree /Y "%FDOTARZIPFOLDER%"
 
 :end
