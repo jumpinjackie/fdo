@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "FDO\Commands\LongTransaction\mgILongTransactionConflictDirectiveEnumerator.h"
+#include "FDO\Commands\LongTransaction\mgILTConflictDirectiveEnumerator.h"
 #include "FDO\Commands\LongTransaction\mgLongTransactionConflictResolution.h"
 
 class FdoILongTransactionConflictDirectiveEnumerator;

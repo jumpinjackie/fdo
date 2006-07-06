@@ -19,8 +19,7 @@
 
 #include "stdafx.h"
 #include <Fdo\Commands\LongTransaction\IChangeLongTransactionPrivileges.h>
-
-#include "FDO\Commands\LongTransaction\mgIChangeLongTransactionPrivilegesImp.h"
+#include "FDO\Commands\LongTransaction\mgIChangeLTPrivilegesImp.h"
 
 FdoIChangeLongTransactionPrivileges* NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IChangeLongTransactionPrivilegesImp::GetImpObj()
 {

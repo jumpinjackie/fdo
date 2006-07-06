@@ -19,8 +19,7 @@
 
 #include "stdafx.h"
 #include <Fdo\Commands\LongTransaction\IActivateLongTransactionCheckpoint.h>
-
-#include "FDO\Commands\LongTransaction\mgIActivateLongTransactionCheckpointImp.h"
+#include "FDO\Commands\LongTransaction\mgIActivateLTCheckpointImp.h"
  
 FdoIActivateLongTransactionCheckpoint* NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IActivateLongTransactionCheckpointImp::GetImpObj()
 {

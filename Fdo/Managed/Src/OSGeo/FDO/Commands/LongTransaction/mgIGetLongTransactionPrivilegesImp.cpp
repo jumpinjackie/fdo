@@ -21,9 +21,9 @@
 #include <Fdo\Commands\LongTransaction\IGetLongTransactionPrivileges.h>
 #include <Fdo\Commands\CommandType.h>
 
-#include "FDO\Commands\LongTransaction\mgIGetLongTransactionPrivilegesImp.h"
 #include "FDO\mgObjectFactory.h"
-#include "FDO\Commands\LongTransaction\mgILongTransactionPrivilegeReaderImp.h"
+#include "FDO\Commands\LongTransaction\mgIGetLongTransactionPrivilegesImp.h"
+#include "FDO\Commands\LongTransaction\mgILTPrivilegeReaderImp.h"
 
 FdoIGetLongTransactionPrivileges* NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IGetLongTransactionPrivilegesImp::GetImpObj()
 {

@@ -19,8 +19,7 @@
 
 #include "stdafx.h"
 #include <Fdo\Commands\LongTransaction\ILongTransactionPrivilegeReader.h>
-
-#include "FDO\Commands\LongTransaction\mgILongTransactionPrivilegeReaderImp.h"
+#include "FDO\Commands\LongTransaction\mgILTPrivilegeReaderImp.h"
 
 FdoILongTransactionPrivilegeReader* NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionPrivilegeReaderImp::GetImpObj()
 {

@@ -22,9 +22,9 @@
 #include <Fdo\Commands\LongTransaction\ICommitLongTransaction.h>
 #include <Fdo\Commands\CommandType.h>
 
-#include "FDO\Commands\LongTransaction\mgICommitLongTransactionImp.h"
 #include "FDO\mgObjectFactory.h"
-#include "FDO\Commands\LongTransaction\mgILongTransactionConflictDirectiveEnumerator.h"
+#include "FDO\Commands\LongTransaction\mgICommitLongTransactionImp.h"
+#include "FDO\Commands\LongTransaction\mgILTConflictDirectiveEnumerator.h"
 
 FdoICommitLongTransaction* NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ICommitLongTransactionImp::GetImpObj()
 {

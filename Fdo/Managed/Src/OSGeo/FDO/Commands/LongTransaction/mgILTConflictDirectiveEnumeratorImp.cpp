@@ -18,13 +18,13 @@
 */
 
 #include "stdafx.h"
+#include <Fdo\Commands\CommandType.h>
 #include <Fdo\Commands\PropertyValueCollection.h>
 #include <Fdo\Commands\LongTransaction\ILongTransactionConflictDirectiveEnumerator.h>
-#include <Fdo\Commands\CommandType.h>
 
-#include "FDO\Commands\LongTransaction\mgILongTransactionConflictDirectiveEnumeratorImp.h"
 #include "FDO\mgObjectFactory.h"
 #include "FDO\Commands\mgPropertyValueCollection.h"
+#include "FDO\Commands\LongTransaction\mgILTConflictDirectiveEnumeratorImp.h"
 
 FdoILongTransactionConflictDirectiveEnumerator* NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionConflictDirectiveEnumeratorImp::GetImpObj()
 {

@@ -19,8 +19,7 @@
 
 #include "stdafx.h"
 #include <Fdo\Commands\LongTransaction\IRollbackLongTransactionCheckpoint.h>
-
-#include "FDO\Commands\LongTransaction\mgIRollbackLongTransactionCheckpointImp.h"
+#include "FDO\Commands\LongTransaction\mgIRollbackLTCheckpointImp.h"
 
 FdoIRollbackLongTransactionCheckpoint* NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IRollbackLongTransactionCheckpointImp::GetImpObj()
 {

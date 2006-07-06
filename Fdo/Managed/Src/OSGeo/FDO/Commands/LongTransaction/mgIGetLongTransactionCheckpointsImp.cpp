@@ -21,9 +21,9 @@
 #include <Fdo\Commands\LongTransaction\IGetLongTransactionCheckpoints.h>
 #include <Fdo\Commands\CommandType.h>
 
-#include "FDO\Commands\LongTransaction\mgIGetLongTransactionCheckpointsImp.h"
 #include "FDO\mgObjectFactory.h"
-#include "FDO\Commands\LongTransaction\mgILongTransactionCheckpointReaderImp.h"
+#include "FDO\Commands\LongTransaction\mgIGetLongTransactionCheckpointsImp.h"
+#include "FDO\Commands\LongTransaction\mgILTCheckpointReaderImp.h"
 
 FdoIGetLongTransactionCheckpoints* NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IGetLongTransactionCheckpointsImp::GetImpObj()
 {

@@ -22,8 +22,8 @@
 #include <Fdo\Connections\Capabilities\ArgumentDefinition.h>
 #include <Fdo\Commands\CommandType.h>
 
-#include "FDO\Connections\Capabilities\mgReadOnlyArgumentDefinitionCollection.h"
 #include "FDO\mgObjectFactory.h"
+#include "FDO\Connections\Capabilities\mgReadOnlyArgDefColl.h"
 #include "FDO\Connections\Capabilities\mgArgumentDefinition.h"
 
 NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection::ReadOnlyArgumentDefinitionCollection() : Disposable(System::IntPtr::Zero, false)

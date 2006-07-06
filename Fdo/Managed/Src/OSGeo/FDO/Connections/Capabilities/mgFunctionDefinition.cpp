@@ -25,7 +25,7 @@
 
 #include "FDO\Connections\Capabilities\mgFunctionDefinition.h"
 #include "FDO\Connections\Capabilities\mgArgumentDefinitionCollection.h"
-#include "FDO\Connections\Capabilities\mgReadOnlyArgumentDefinitionCollection.h"
+#include "FDO\Connections\Capabilities\mgReadOnlyArgDefColl.h"
 #include "FDO\mgObjectFactory.h"
 
 NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinition::FunctionDefinition(IntPtr unmanaged, Boolean autoDelete) : Disposable(unmanaged, autoDelete)
