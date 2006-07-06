@@ -19,8 +19,8 @@
 
 #include "FdoStd.h"
 #include "Fdo.h"
-#include "SDF\IScrollableFeatureReader.h"
-#include "SDF\SdfCompareHandler.h"
+#include "SDF/IScrollableFeatureReader.h"
+#include "SDF/SdfCompareHandler.h"
 
 class SdfIExtendedSelect : public FdoISelect
 {		
