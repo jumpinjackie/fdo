@@ -373,7 +373,7 @@ SdfIScrollableFeatureReader* SdfImpExtendedSelect::ExecuteScrollable()
 		FdoPtr<FdoIdentifier>id = m_orderingProperties->GetItem( i );
 		propStubs[i] = pi->GetPropInfo(id->GetName());
 		ctx.options[i] = GetOrderingOption( id->GetName() );
-		ctx.names[i] = new FdoString[wcslen(id->GetName())+1];
+		ctx.names[i] = new wchar_t[wcslen(id->GetName())+1];
 		wcscpy((wchar_t*)ctx.names[i],id->GetName());
 	}
 	
