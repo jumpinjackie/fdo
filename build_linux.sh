@@ -152,7 +152,7 @@ done
 
 ### Setup build environment ###
 if test "$FDO" == "" ; then
-    export FDO="$PWD"
+    export FDO="$PWD/Fdo"
 fi
 if test "$FDOTHIRDPARTY" == "" ; then
     export FDOTHIRDPARTY="$PWD/Thirdparty"
