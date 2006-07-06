@@ -20,7 +20,7 @@
 #include "stdafx.h"
 #include <Fdo\Commands\CommandType.h>
 #include <Fdo\Commands\PropertyValueCollection.h>
-#include <Fdo\Commands\LongTransaction\ILongTransactionConflictDirectiveEnumerator.h>
+#include <Fdo\Commands\LongTransaction\ILTConflictDirectiveEnumerator.h>
 
 #include "FDO\mgObjectFactory.h"
 #include "FDO\Commands\mgPropertyValueCollection.h"

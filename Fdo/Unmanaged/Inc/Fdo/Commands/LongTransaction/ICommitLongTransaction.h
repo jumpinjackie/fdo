@@ -25,7 +25,7 @@
 
 #include <FdoStd.h>
 #include <Fdo/Connections/IConnection.h>
-#include <Fdo/Commands/LongTransaction/ILongTransactionConflictDirectiveEnumerator.h>
+#include <Fdo/Commands/LongTransaction/ILTConflictDirectiveEnumerator.h>
 #include <Fdo/Commands/IFeatureCommand.h>
 #include <Fdo/Commands/Locking/ILockConflictReader.h>
 

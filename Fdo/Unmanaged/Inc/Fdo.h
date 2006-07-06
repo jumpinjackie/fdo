@@ -85,7 +85,7 @@
 #include <Fdo/Commands/LongTransaction/IGetLongTransactions.h>
 #include <Fdo/Commands/LongTransaction/IGetLongTransactionsInSet.h>
 #include <Fdo/Commands/LongTransaction/ILongTransactionCheckpointReader.h>
-#include <Fdo/Commands/LongTransaction/ILongTransactionConflictDirectiveEnumerator.h>
+#include <Fdo/Commands/LongTransaction/ILTConflictDirectiveEnumerator.h>
 #include <Fdo/Commands/LongTransaction/ILongTransactionPrivilegeReader.h>
 #include <Fdo/Commands/LongTransaction/ILongTransactionReader.h>
 #include <Fdo/Commands/LongTransaction/ILongTransactionSetReader.h>

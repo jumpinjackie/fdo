@@ -213,7 +213,7 @@ EXTRA_DIST = \
     Src/OSGeo/FDO/Commands/LongTransaction/mgILongTransactionCheckpointReader.h \
     Src/OSGeo/FDO/Commands/LongTransaction/mgILongTransactionCheckpointReaderImp.cpp \
     Src/OSGeo/FDO/Commands/LongTransaction/mgILongTransactionCheckpointReaderImp.h \
-    Src/OSGeo/FDO/Commands/LongTransaction/mgILongTransactionConflictDirectiveEnumerator.h \
+    Src/OSGeo/FDO/Commands/LongTransaction/mgILTConflictDirectiveEnumerator.h \
     Src/OSGeo/FDO/Commands/LongTransaction/mgILongTransactionConflictDirectiveEnumeratorImp.cpp \
     Src/OSGeo/FDO/Commands/LongTransaction/mgILongTransactionConflictDirectiveEnumeratorImp.h \
     Src/OSGeo/FDO/Commands/LongTransaction/mgILongTransactionPrivilegeReader.h \

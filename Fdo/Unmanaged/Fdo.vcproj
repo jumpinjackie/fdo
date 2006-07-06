@@ -1950,7 +1950,7 @@
 						>
 					</File>
 					<File
-						RelativePath="Inc\Fdo\Commands\LongTransaction\ILongTransactionConflictDirectiveEnumerator.h"
+						RelativePath="Inc\Fdo\Commands\LongTransaction\ILTConflictDirectiveEnumerator.h"
 						>
 					</File>
 					<File
