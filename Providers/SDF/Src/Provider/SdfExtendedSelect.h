@@ -17,7 +17,7 @@
 #define _SdfExtendedSelect_H_
 
 #include "SdfImpExtendedSelect.h"
-#include "SDF\IExtendedSelect.h"
+#include "SDF/IExtendedSelect.h"
 
 class SdfExtendedSelect : public SdfIExtendedSelect
 {
