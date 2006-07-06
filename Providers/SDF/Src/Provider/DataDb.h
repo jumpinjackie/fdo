@@ -14,20 +14,26 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "BinaryWriter.h"
-
+#include "SDF/SdfCompareHandler.h"
+#include "BinaryReader.h"
 
 class PropertyIndex;
 
 
-class DataDb
+class DataDb: public SQLiteBTreeCompareHandler
 {
 public:
 
-    DataDb(SQLiteDataBase* env, const char* filename, const char* dbname, bool bReadOnly);
+    DataDb(SQLiteDataBase* env, const char* filename, const char* dbname, bool bReadOnly, 
+		FdoClassDefinition* fc, PropertyIndex* pi, SdfCompareHandler* CmpHandler);
     virtual ~DataDb();
     
     REC_NO InsertFeature(FdoClassDefinition* fc, PropertyIndex* pi, FdoPropertyValueCollection* pvc);
+
+	REC_NO InsertFeatureExclusive(FdoClassDefinition* fc, PropertyIndex* pi, FdoIFeatureReader* reader, FdoPropertyValueCollection* defaultPvc);
+
     void DeleteFeature(REC_NO recno);
+
     void UpdateFeature(REC_NO recno, SQLiteData* data);
     
     inline int GetFeature(SQLiteData* key, SQLiteData* data)
@@ -38,6 +44,16 @@ public:
 	int GetFirstFeature( SQLiteData* key, SQLiteData* data );
     
 	int GetNextFeature( SQLiteData* key, SQLiteData* data );
+
+	int GetLastFeature( SQLiteData* key, SQLiteData* data );
+
+	int GetPreviousFeature( SQLiteData* key, SQLiteData* data );
+
+	int FindFeatureAt(SQLiteData* key, SQLiteData* data, FdoPropertyValueCollection* pvc);
+
+	int GetFeatureAt(SQLiteData* key, SQLiteData* data, FdoPropertyValueCollection* pvc);
+
+	int GetFeatureAt( SQLiteData* key, SQLiteData* data );
 
     int Cursor(SQLiteCursor** cursor, bool write);
 
@@ -57,6 +73,14 @@ public:
 
 	void SyncIdPool() { m_db->sync_id_pool(); }
 
+	virtual int compare(int,const void*,int,const void*);
+
+	void SetOrderingOptions( std::map<std::wstring, int> *opts );
+
+private: 
+
+	int compare(int size1, const void* data1, FdoPropertyValueCollection* pvc);
+
 private:
 
     SQLiteTable* m_db;
@@ -66,6 +90,21 @@ private:
 	REC_NO m_lastRec;
 
     BinaryWriter m_wrtData;
+
+	FdoClassDefinition* m_Fc;
+	
+	PropertyIndex* m_Pi;
+
+	SdfCompareHandler* m_CompareHandler;
+
+	int *m_orderingOptions;
+
+	FdoPtr<FdoDataPropertyDefinitionCollection> m_Ids;
+
+	BinaryReader  m_Reader1;
+	BinaryReader  m_Reader2;
+	int*		  m_Offsets1;
+	int*		  m_Offsets2;
 };
 
 

@@ -1,3 +1,5 @@
+#ifndef _SdfSelect_H_
+#define _SdfSelect_H_
 // 
 //  Copyright (C) 2004-2006  Autodesk, Inc.
 //  
@@ -57,7 +59,7 @@ class SdfSelect : public SdfFeatureCommand<FdoISelect>
         SDF_API virtual void SetLockStrategy(FdoLockStrategy value);
 
         // Executes the select command and returns a reference to an IFeatureReader.
-        SDF_API virtual FdoIFeatureReader* Execute();
+        virtual FdoIFeatureReader* Execute();
 
         // Executes the select command and returns a reference to an IFeatureReader.
         SDF_API virtual FdoIFeatureReader* ExecuteWithLock();
@@ -97,5 +99,5 @@ class SdfSelect : public SdfFeatureCommand<FdoISelect>
         FdoIdentifierCollection* m_properties;
 
 };
-
+#endif
 

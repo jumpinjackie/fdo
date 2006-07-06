@@ -37,8 +37,9 @@ class BinaryReader
 public:
 
     BinaryReader(unsigned char* data, int len);
+	BinaryReader();
     virtual ~BinaryReader();
-    
+    void Init();
     void Reset(unsigned char* data, int len);
     void SetPosition(int offset);
     int GetPosition();
@@ -56,6 +57,7 @@ public:
     char ReadChar();
     const wchar_t* ReadString(); 
     const wchar_t* ReadRawString(unsigned mbstrlen);
+	const wchar_t* ReadRawStringNoCache(unsigned mbstrlen);
     FdoDateTime ReadDateTime();
     FdoDataValue* ReadDataValue();
     //add more as needed...

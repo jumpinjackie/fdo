@@ -38,6 +38,7 @@ public:
     static void UpdateKey(FdoClassDefinition* fc, FdoPropertyValueCollection* pvc, FdoIFeatureReader* reader, BinaryWriter& wrtkey);
 
     static void MakeDataRecord(FdoClassDefinition* fc, PropertyIndex* pi, FdoPropertyValueCollection* pvc, BinaryWriter& wrtdata);
+	static void MakeDataRecord(FdoClassDefinition* fc, PropertyIndex* pi, FdoIFeatureReader* reader, FdoPropertyValueCollection* defaultPvc, BinaryWriter& wrtdata);
     static void UpdateDataRecord(FdoClassDefinition* fc, PropertyIndex* pi, FdoPropertyValueCollection* pvc, FdoIFeatureReader* reader, BinaryWriter& wrtdata);
 
     static FdoDataPropertyDefinitionCollection* FindIDProps(FdoClassDefinition* fc);

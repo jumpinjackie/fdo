@@ -26,13 +26,24 @@ const int ADD_TO_OFFSET = 1;
 
 BinaryReader::BinaryReader(unsigned char* data, int len)
 {
+	Init();
     m_data = data;
     m_len = len;
+}
+
+BinaryReader::BinaryReader()
+{
+    Init();
+}
+
+void BinaryReader::Init()
+{
+	m_data = NULL;
+    m_len = 0;
     m_pos = 0;
     m_wcsCacheLen = 0;
     m_wcsCacheCurrent = 0;
     m_wcsCache = NULL;
-
 }
 
 BinaryReader::~BinaryReader()
@@ -393,3 +404,39 @@ FdoDataValue* BinaryReader::ReadDataValue()
     return FDO_SAFE_ADDREF(retDataValue.p);
 }
 
+const wchar_t* BinaryReader::ReadRawStringNoCache(unsigned mbstrlen)
+{    
+
+    //make sure wchar_t cache size is big enough
+    if (m_wcsCacheLen < mbstrlen + 1)
+    {
+		if( m_wcsCache != NULL )
+			delete[] m_wcsCache;
+		m_wcsCache = NULL;
+        //pick size -- minimum size is STRING_BUFFER_SIZE
+        m_wcsCacheLen = max(STRING_CACHE_SIZE, mbstrlen + 1);
+        m_wcsCache = new wchar_t[m_wcsCacheLen];
+    }
+
+    //handle empty string
+    if (mbstrlen <= 1)
+    {
+        //skip past null character
+        m_pos += mbstrlen;
+
+        return L"";
+    }
+        
+    //Note: we pass in m_len as number of characters to read, but we know
+    //the string must be null terminated, so the function will terminate before that
+    int count = ut_utf8_to_unicode((char*)(m_data + m_pos), mbstrlen, m_wcsCache, mbstrlen);
+
+    _ASSERT(count > 0 && (unsigned int)count < mbstrlen);
+
+    //increment position count to position after string
+    //note that "count" is the number of unicode characters
+    //read, not the number of bytes we need to increment.
+    m_pos += mbstrlen; 
+
+    return m_wcsCache;
+}

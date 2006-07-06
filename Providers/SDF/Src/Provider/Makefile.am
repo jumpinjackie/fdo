@@ -15,6 +15,7 @@ libSDFProviderSrc_la_SOURCES = \
   utf8_.cpp \
   SdfApplySchema.cpp \
   SdfCommandCapabilities.cpp \
+  SdfCompareHandler.cpp \
   SdfConnection.cpp \
   SdfConnectionCapabilities.cpp \
   SdfConnectionInfo.cpp \
@@ -26,15 +27,18 @@ libSDFProviderSrc_la_SOURCES = \
   SdfDeletingFeatureReader.cpp \
   SdfDescribeSchema.cpp \
   SdfExpressionCapabilities.cpp \
+  SdfImpExtendedSelect.cpp \
   SdfFilterCapabilities.cpp \
   SdfGeometryCapabilities.cpp \
   SdfGetSpatialContexts.cpp \
   SdfInsert.cpp \
   SdfRasterCapabilities.cpp \
   SdfSchemaCapabilities.cpp \
+  SdfScrollableFeatureReader.cpp \
   SdfSelect.cpp \
   SdfSelectAggregates.cpp \
   SdfSimpleFeatureReader.cpp \
+  SdfIndexedScrollableFeatureReader.cpp \
   SdfSpatialContextReader.cpp \
   SdfTopologyCapabilities.cpp \
   SdfUpdate.cpp \
@@ -80,19 +84,24 @@ noinst_HEADERS = $(libSDFProviderSrc_la_SOURCES) \
    SdfDescribeSchema.h \
    SdfDistinctDataReader.h \
    SdfExpressionCapabilities.h \
+   SdfExtendedSelect.h \
+   SdfImpExtendedSelect.h \
    SdfFeatureCommand.h \
    SdfFilterCapabilities.h \
    SdfGeometryCapabilities.h \
    SdfGetSpatialContexts.h \
+   SdfImpScrollableFeatureReader.h \
    SdfInsert.h \
    SdfPropertyDictionary.h \
    SDFProvider.h \
    SdfQueryOptimizer.h \
    SdfRasterCapabilities.h \
    SdfSchemaCapabilities.h \
+   SdfScrollableFeatureReader.h \
    SdfSelect.h \
    SdfSelectAggregates.h \
    SdfSimpleFeatureReader.h \
+   SdfIndexedScrollableFeatureReader.h \
    SdfSpatialContextReader.h \
    SdfSpatialExtentsAggregateReader.h \
    SdfTopologyCapabilities.h \

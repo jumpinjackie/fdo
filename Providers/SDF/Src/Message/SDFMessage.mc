@@ -363,3 +363,18 @@ SymbolicName=SDF_PROVIDER_DESCRIPTION
 Language=English
 Read/write access to Autodesk's spatial database format, a file-based personal geodatabase that supports multiple features/attributes, spatial indexing, and file-locking.
 .
+MessageId=75
+SymbolicName=SDFPROVIDER_75_CLASS_NOTFOUND
+Language=English
+Class '%1$ls' is not found.
+.
+MessageId=76
+SymbolicName=SDFPROVIDER_76_EXISTING_CLASS_DIFFERENT
+Language=English
+The definition of the existing SDF file class '%1$ls' is not the same as the new class.
+.
+MessageId=77
+SymbolicName=SDFPROVIDER_77_ORDERING_PROPERTY
+Language=English
+The ordering property '%1$ls' is not in the select list or it's not a data property.
+.

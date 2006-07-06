@@ -1,3 +1,5 @@
+#ifndef _SdfSimpleFeatureReader_H_
+#define _SdfSimpleFeatureReader_H_
 // 
 //  Copyright (C) 2004-2006  Autodesk, Inc.
 //  
@@ -23,7 +25,7 @@ class FilterExecutor;
 class DataDb;
 struct PropertyStub;
 
-class SdfSimpleFeatureReader : public FdoIFeatureReader
+class SdfSimpleFeatureReader :public FdoIFeatureReader
 {
     //-------------------------------------------------------
     // Constructor / destructor
@@ -171,6 +173,12 @@ public:
 	// Internal function used to quickly get the data type of a given property.
 	virtual FdoDataType GetDataType( FdoString* propertyName ); 
 
+	// Internal getter for the binary data
+	virtual SQLiteData* GetRawData();
+
+	// Internal getter for the binary key
+	virtual SQLiteData* GetRawKey();
+
 protected:
 
     FdoClassDefinition* m_classDefPruned; 
@@ -192,6 +200,10 @@ protected:
     REC_NO m_currentFeatureRecno;
 
     unsigned int m_currentFCID;
+
+	BinaryReader* m_dataReader;
+
+	std::map<std::wstring, wchar_t*> m_stringPropsCache;   
     
 private:
     int PositionReader(int recordIndex);
@@ -209,9 +221,9 @@ private:
     FdoClassDefinition* CloneAndPruneClass(FdoClassDefinition *fdoClassDef, FdoIdentifierCollection *idCollection, FdoPropertyDefinitionCollection* computedProps);
 
     recno_list::iterator m_currentFeatureRecnoIter;
-    BinaryReader* m_dataReader;
+    
     recno_list* m_features;
-
-    std::map<std::wstring, wchar_t*> m_stringPropsCache;    
 };
+
+#endif
 

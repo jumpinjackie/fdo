@@ -883,9 +883,11 @@ bool SdfSimpleFeatureReader::ReadNext()
 				
 				if( ret == SQLiteDB_OK )
 				{
-					_ASSERT( m_currentKey->get_size() == 4 ); // This is the record number which is a int32
-					m_currentFeatureRecno = *(REC_NO*)(m_currentKey->get_data());
-					m_currentKey->set_data(&m_currentFeatureRecno); // This is required since m_currentKey was pointing to a memory location that may get re-used/freed
+					if( m_currentKey->get_size() == 4 )
+						m_currentFeatureRecno = *(REC_NO*)(m_currentKey->get_data());
+					else
+						m_currentFeatureRecno++;
+					m_currentKey->set_data(m_currentKey->get_data()); // This is required since m_currentKey was pointing
 				}
             }
 
@@ -931,9 +933,11 @@ bool SdfSimpleFeatureReader::ReadNext()
             if (ret == SQLiteDB_NOTFOUND)
                 return false;
 
-			_ASSERT( m_currentKey->get_size() == 4 ); // This is the record number which is a int32
-			m_currentFeatureRecno = *(REC_NO*)(m_currentKey->get_data());
-			m_currentKey->set_data(&m_currentFeatureRecno); // This is required since m_currentKey was pointing to a memory location that may get re-used/freed
+			if( m_currentKey->get_size() == 4 )
+				m_currentFeatureRecno = *(REC_NO*)(m_currentKey->get_data());
+			else
+				m_currentFeatureRecno++;
+			m_currentKey->set_data(m_currentKey->get_data()); // This is required since m_currentKey was pointing to a memory location that may get re-used/freed
             
             if (ret != 0)
                 throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_10_ERROR_ACCESSING_SDFDB)));
@@ -1141,5 +1145,15 @@ void SdfSimpleFeatureReader::RefreshData()
 	m_dbData->SetTag((void*)this);
 }
 
+// Internal getter for the binary data
+SQLiteData* SdfSimpleFeatureReader::GetRawData()
+{
+	return m_currentData;
+}
 
+	// Internal getter for the binary key
+SQLiteData* SdfSimpleFeatureReader::GetRawKey()
+{
+	return m_currentKey;
+}
 

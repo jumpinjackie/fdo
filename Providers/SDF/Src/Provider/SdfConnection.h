@@ -39,6 +39,7 @@ namespace __gnu_cxx
 
 
 #include "RTree.h"
+#include "SDF/SdfCompareHandler.h"
 
 //forward declare
 class SdfConnectionInfo;
@@ -188,6 +189,10 @@ public:
 	// with the existing ids.
 	void ReSyncData();
 
+	FdoConnectionState Open( SdfCompareHandler* cmpHandler );
+
+	DataDb* CreateNewDataDb( FdoClassDefinition* clas );
+
 private:
 
     void CloseDatabases();
@@ -213,6 +218,8 @@ private:
     SdfConnectionInfo* m_connInfo;
 
     SchemaDb* m_dbSchema;
+	
+	FdoPtr<SdfCompareHandler> m_CompareHandler;
 
 	bool m_bCreate;
     /*

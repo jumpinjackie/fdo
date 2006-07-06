@@ -54,6 +54,8 @@
 #include "SdfDeleteDataStore.h"
 
 #include "SDF/SdfCommandType.h"
+#include "SdfExtendedSelect.h"
+#include "SdfImpExtendedSelect.h"
 #include "SdfCreateSDFFile.h"
 
 #include "SchemaDb.h"
@@ -236,19 +238,25 @@ void SdfConnection::SetConfiguration(FdoIoStream* stream)
 {
     throw FdoConnectionException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_9_CONFIGURATION_NOT_SUPPORTED)));
 }
-
 FdoConnectionState SdfConnection::Open()
+{
+	return Open(NULL);
+}
+
+FdoConnectionState SdfConnection::Open( SdfCompareHandler* cmpHandler )
 {
     //look at the needed property value in the ConnectionInfo first
     UpdateConnectionString();
 
-    if (m_mbsEnvPath == NULL || m_mbsFullPath == NULL)
+	m_CompareHandler = FDO_SAFE_ADDREF( cmpHandler );
+    
+	if (m_mbsEnvPath == NULL || m_mbsFullPath == NULL)
         throw FdoConnectionException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_7_ERROR_CONNECTING_TO_FILE)));
 
     //if we are not in create SDF mode, check if the file client 
     //is trying to connect to exists and can be opened in the 
     //requested mode (read or read/write).
-    if (m_bCreate == false)
+	if (m_bCreate == false && strcmp(m_mbsFullPath,":memory:") != 0 )
     {
 #ifdef _WIN32
         FILE* f = _wfopen((const wchar_t*)FdoStringP(m_mbsFullPath), m_bReadOnly ? L"rb" : L"rb+");
@@ -414,6 +422,9 @@ FdoICommand* SdfConnection::CreateCommand(FdoInt32 commandType)
 
     case SdfCommandType_CreateSDFFile:
         return new SdfCreateSDFFile(this);
+
+	case SdfCommandType_ExtendedSelect:
+		return new SdfExtendedSelect( new SdfImpExtendedSelect( this ) );
     default:
         throw FdoConnectionException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_3_COMMAND_NOT_SUPPORTED)));
     }
@@ -449,7 +460,8 @@ void SdfConnection::UpdateConnectionString()
 	size_t len = MAX_PATH+wcslen(userPath);
 	char* fullPath = new char[len* 4 + 1];
 	wchar_t* wFullPath = new wchar_t[len];
-    if ( _wfullpath(wFullPath, userPath, len) == NULL ||
+	wcscpy(wFullPath,userPath);
+    if ( (wcscmp(L":memory:",userPath)!=0 && _wfullpath(wFullPath, userPath, len) == NULL) ||
 		WideCharToMultiByte ( CP_UTF8, 0, wFullPath, len, fullPath, len*4 + 1, NULL, NULL) == 0 )
     {
         delete [] wFullPath;
@@ -688,7 +700,7 @@ void SdfConnection::InitDatabases()
         if (baseClass != clas)
             m_hDataDbs[clas.p] = m_hDataDbs[baseClass];
         else
-            m_hDataDbs[clas.p] = new DataDb(m_env, m_mbsFullPath, mbsname, m_bReadOnly);
+            m_hDataDbs[clas.p] = new DataDb(m_env, m_mbsFullPath, mbsname, m_bReadOnly, clas, pi, m_CompareHandler );
 
 
         //now initialize a KeyDb for the class
@@ -703,7 +715,7 @@ void SdfConnection::InitDatabases()
         else
         {
             /* use integer key only if there is one identify property with int32 */
-            bool bUseIntKey = false;
+            bool bNoIntKey = true;
             try
             {
                 FdoPtr<FdoDataPropertyDefinitionCollection> properties = DataIO::FindIDProps(clas);
@@ -711,7 +723,7 @@ void SdfConnection::InitDatabases()
                 {
                     FdoPtr<FdoDataPropertyDefinition> property = properties->GetItem(0);
                     if (property->GetDataType() == FdoDataType_Int32)
-                        bUseIntKey = true;
+                        bNoIntKey = false;
                 }
             }
             catch (FdoException *exp)
@@ -719,7 +731,7 @@ void SdfConnection::InitDatabases()
                 // ignore exception
                 exp->Release();
             }
-            m_hKeyDbs[clas.p] = new KeyDb(m_env, m_mbsFullPath, mbsname, m_bReadOnly, bUseIntKey);
+            m_hKeyDbs[clas.p] = new KeyDb(m_env, m_mbsFullPath, mbsname, m_bReadOnly, bNoIntKey);
         }
 
 
@@ -924,11 +936,6 @@ void SdfConnection::FlushAll( FdoClassDefinition *clas, bool forUpdate )
 	SdfRTree* rt = GetRTree(clas);
     KeyDb* keys = GetKeyDb(clas);
 
-	if( ! ( keys->NeedsAFlush(true) ||
-	 dataDb->NeedsAFlush(true) ||
-	(rt && rt->NeedsAFlush(true) ) ) )
-		return;
-
 	GetDataBase()->begin_transaction();
 	keys->Flush();
 	dataDb->Flush();
@@ -1014,3 +1021,27 @@ bool SdfConnection::VersionIsAtMost(unsigned char actualMajorVersion, unsigned c
         || ((actualMajorVersion == requiredMajorVersion) && (actualMinorVersion <= requiredMinorVersion));
 }
 
+
+DataDb* SdfConnection::CreateNewDataDb( FdoClassDefinition* clas )
+{
+	PropertyIndex* pi = (PropertyIndex*)m_hPropertyIndices[clas];
+
+    //we need a name for the database, unique for the class...
+    //We use separate database for each base class, so the name
+    //will be based on the base class
+    FdoClassDefinition* baseClass = pi->GetBaseClass();
+    FdoString* classname = baseClass->GetName();
+    size_t namelen = wcstombs(NULL, classname, 0);
+
+    //generate a string of the form "DATA:<class name>"
+    char* mbsname = new char[namelen + 1 + 6];
+    mbsname[0] = 0;
+    sdf_mbscat(mbsname, "DATA:"); //NOXLATE
+    wcstombs(mbsname+5,classname,namelen+1);
+
+	DataDb *db = new DataDb(m_env, m_mbsFullPath, mbsname, true, clas, pi, NULL );
+
+	delete[] mbsname;
+
+	return db;
+}

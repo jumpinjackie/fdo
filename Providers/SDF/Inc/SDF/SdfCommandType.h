@@ -33,6 +33,7 @@ enum SdfCommandType{
 
     /// Represents the CreateSDFFile command.
     SdfCommandType_CreateSDFFile =  FdoCommandType_FirstProviderCommand + SDF_FIRST_PROVIDER_COMMAND,
+	SdfCommandType_ExtendedSelect
 };
 
 

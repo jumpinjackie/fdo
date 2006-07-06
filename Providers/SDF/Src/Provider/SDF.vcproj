@@ -478,6 +478,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SdfCompareHandler.cpp"
+				>
+			</File>
+			<File
 				RelativePath="SdfConnection.cpp"
 				>
 			</File>
@@ -590,6 +594,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SdfExtendedSelect.h"
+				>
+			</File>
+			<File
 				RelativePath="SdfFeatureCommand.h"
 				>
 			</File>
@@ -615,6 +623,26 @@
 			</File>
 			<File
 				RelativePath=".\SdfGetSpatialContexts.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SdfImpExtendedSelect.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SdfImpExtendedSelect.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SdfImpScrollableFeatureReader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SdfIndexedScrollableFeatureReader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SdfIndexedScrollableFeatureReader.h"
 				>
 			</File>
 			<File
@@ -647,6 +675,14 @@
 			</File>
 			<File
 				RelativePath=".\SdfSchemaCapabilities.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SdfScrollableFeatureReader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SdfScrollableFeatureReader.h"
 				>
 			</File>
 			<File
@@ -753,7 +789,19 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\Inc\SDF\IExtendedSelect.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\Inc\SDF\IScrollableFeatureReader.h"
+					>
+				</File>
+				<File
 					RelativePath="inc\Fdo\SdfCommandType.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\Inc\SDF\SdfCompareHandler.h"
 					>
 				</File>
 			</Filter>
