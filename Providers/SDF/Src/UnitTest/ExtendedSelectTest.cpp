@@ -10,6 +10,7 @@
 #define WORLD  L"../../TestData/World_Countries.sdf"
 #define SDF_FILE  L"../../TestData/PARCEL_linuxtest.SDX"
 #define DEST_FILE  L"../../TestData/CACHE.SDF"
+#define DEST_FILE_mb  "../../TestData/CACHE.SDF"
 
 
 CPPUNIT_TEST_SUITE_REGISTRATION( ExtendedSelectTest );
@@ -70,7 +71,7 @@ void ExtendedSelectTest::MainTest(bool fileSort, bool extendProps)
 #ifdef _WIN32
 	_wremove(DEST_FILE);
 #else
-	unlink( DEST_FILE );
+	unlink( DEST_FILE_mb );
 #endif
 
 		clock_t start;
@@ -206,7 +207,7 @@ void ExtendedSelectTest::WorldTest(FdoIConnection* connection)
 #ifdef _WIN32
 	_wremove(DEST_FILE);
 #else
-	unlink( DEST_FILE );
+	unlink( DEST_FILE_mb );
 #endif
 		clock_t start;
 		clock_t finish;
