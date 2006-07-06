@@ -2,7 +2,7 @@
 #include <ctime>
 #include "ExtendedSelectTest.h"
 #include <stdio.h>
-#include "SDF\IExtendedSelect.h"
+#include "SDF/IExtendedSelect.h"
 #include "SDF/SdfCommandType.h"
 
 #define WORLD  L"../../TestData/World_Countries.sdf"
