@@ -63,7 +63,7 @@ UnitTest_SOURCES = \
     app.cpp \
     CapabilitiesTest.cpp \
     ClientServicesTest.cpp \
-    CommandTe  st.cpp \
+    CommandTest.cpp \
     CommonTest.cpp \
     ExpressionParseTest.cpp \
     ExpressionTest.cpp \
