@@ -21,6 +21,7 @@
 
 #include "SQLiteUpdateCache.h"
 #include "SQLiteFileDataBase.h"
+#include "SQLiteBTree.h"
 
 class SQLiteTransaction;
 class SQLiteData;
@@ -41,8 +42,10 @@ private:
     bool                mUseCompression;
     bool                mUseIntKey; // Set to true for table with integer keys(rowid); this optimized by SQLITE
     SQLiteRecNumbDef          mMykey;
+	SQLiteBTreeCompareHandler *mCmpHandler;
 public:
-    SQLiteSqlUpdateCache(SQLiteDataBase *db, unsigned int, int rootPage, unsigned int nextKey, bool useCompression, bool useIntKey );
+    SQLiteSqlUpdateCache(SQLiteDataBase *db, unsigned int, int rootPage, unsigned int nextKey, 
+				bool useCompression, bool useIntKey, SQLiteBTreeCompareHandler *hdl );
     virtual ~SQLiteSqlUpdateCache(void);
 
     /*

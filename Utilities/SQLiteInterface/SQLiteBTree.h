@@ -22,6 +22,12 @@
 class SQLiteCursor;
 struct Btree;
 
+class SQLiteBTreeCompareHandler
+{
+public:
+	virtual int compare(int,const void*,int,const void*) = 0;
+};
+
 class SQLiteBTree
 {
 private:
@@ -62,7 +68,13 @@ public:
     */
     int clear_table( int tableId );
 
-    /*
+	/*
+    ** Create a new cursor with a custom compare handler.  Return the ID for the cursor.
+    */
+	int cursor( int iTable,  SQLiteCursor **pCur_out, int wrFlag, SQLiteBTreeCompareHandler *handler );
+
+private:
+	/*
     ** Create a new cursor.  Return the ID for the cursor.
     */
     int cursor( int iTable, SQLiteCursor **pCur_out, int wrFlag );

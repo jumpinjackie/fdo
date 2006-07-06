@@ -19,6 +19,14 @@
 #include "SQLiteBTree.h"
 #include "SQLiteCursor.h"
 
+static int local_compare(void *handler,int size1,const void* data1,int size2,const void* data2)
+{
+	if( handler == NULL )
+		return 0;
+
+	return ((SQLiteBTreeCompareHandler*)handler)->compare(size1, data1, size2, data2 );
+}
+
 SQLiteBTree::SQLiteBTree(void): m_pBt( NULL )
 {
     m_bOwner = true;
@@ -116,3 +124,18 @@ int SQLiteBTree::cursor( int iTable,  SQLiteCursor **pCur_out, int wrFlag )
   return SQLITE_OK;
 }
 
+int SQLiteBTree::cursor( int iTable,  SQLiteCursor **pCur_out, int wrFlag, SQLiteBTreeCompareHandler *handler )
+{
+  BtCursor *pCur;
+  int rc;
+  if( handler == NULL )
+	  return cursor(iTable, pCur_out, wrFlag );
+
+  rc = sqlite3BtreeCursor(m_pBt, iTable, wrFlag, local_compare, (void*)handler, &pCur);
+  if( rc != SQLITE_OK ){
+    return rc;
+  }
+  *pCur_out = new SQLiteCursor(pCur);
+
+  return SQLITE_OK;
+}

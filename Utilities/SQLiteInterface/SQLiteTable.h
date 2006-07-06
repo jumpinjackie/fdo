@@ -21,6 +21,7 @@
 
 #include "SQLiteDataBase.h"
 #include "SQLiteData.h"
+#include "SQLiteBTree.h"
 
 class SQLiteUpdateCache;
 class SQLiteCursor;
@@ -46,20 +47,27 @@ private:
     unsigned int           mMaxCacheSize;
     bool                mIsReadOnly;
 	bool                mUseIntKey;
-    bool                mUseCompression;
     SQLiteData          mDd;
     SQLiteRecNumbDef          mMykey;
+	SQLiteBTreeCompareHandler *mCmpHandler;
 
 public:
     SQLiteTable( SQLiteDataBase* db );
     ~SQLiteTable(void);
 
+	void SetCompareHandler( SQLiteBTreeCompareHandler *hdl ) { mCmpHandler = hdl; }
+
     int open(SQLiteTransaction *txnid,
-        const char *, const char *subname, unsigned int, int, bool bUseIntKey = true);
+        const char *, const char *subname, unsigned int, int, bool bNoIntKey = false);
 
     int close(unsigned int flags);
 
     int put(SQLiteTransaction *, SQLiteData *, SQLiteData *, unsigned int);
+
+	//this method differs from put by keeping the cursor and transaction open for better
+	//performance. It does not use the memory cache either as it assumes exclusive access
+	//to the file.
+	int put_exclusive(SQLiteTransaction *, SQLiteData *, SQLiteData *, unsigned int);
 
     int get(SQLiteTransaction *txnid, SQLiteData *key, SQLiteData *data, unsigned int flags, bool flush=true);
 

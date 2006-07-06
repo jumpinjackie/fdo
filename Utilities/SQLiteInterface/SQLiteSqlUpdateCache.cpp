@@ -23,7 +23,9 @@
 #include "SQLiteData.h"
 #include "SQLiteCursor.h"
 
-SQLiteSqlUpdateCache::SQLiteSqlUpdateCache(SQLiteDataBase *db, unsigned int size, int rootPage, unsigned int nextKey, bool useCompression, bool useIntKey ) 
+SQLiteSqlUpdateCache::SQLiteSqlUpdateCache(SQLiteDataBase *db, unsigned int size, int rootPage, 
+										   unsigned int nextKey, bool useCompression, bool useIntKey,
+										   SQLiteBTreeCompareHandler *hdl ) 
 { 
     mCur = NULL;
     m_pTargetDb = db;
@@ -31,6 +33,7 @@ SQLiteSqlUpdateCache::SQLiteSqlUpdateCache(SQLiteDataBase *db, unsigned int size
     mRootPage = rootPage;
     mUseCompression = useCompression;
     mUseIntKey = useIntKey;
+	mCmpHandler = hdl;
     m_pDb = new SQLiteMemoryDataBase( );
 
     if( m_pDb->begin_transaction() != SQLITE_OK )
@@ -40,7 +43,7 @@ SQLiteSqlUpdateCache::SQLiteSqlUpdateCache(SQLiteDataBase *db, unsigned int size
     if( m_pDb->BTree()->create_table( flags, &mTabId ) )
         return;
 
-    if( m_pDb->BTree()->cursor( mTabId, &mCur, 1 ) )
+    if( m_pDb->BTree()->cursor( mTabId, &mCur, 1, mCmpHandler ) )
         return;
 }
 
@@ -120,7 +123,7 @@ int SQLiteSqlUpdateCache::flush( )
     SQLiteCursor *pmCur = NULL;
 
     m_pTargetDb->close_all_read_cursors();
-    if( m_pTargetDb->BTree()->cursor( mRootPage, &pmCur, 1 ) )
+    if( m_pTargetDb->BTree()->cursor( mRootPage, &pmCur, 1, mCmpHandler ) )
         return SQLITE_ERROR;
 
 	if( ! m_pTargetDb->transaction_started() )
@@ -142,10 +145,9 @@ int SQLiteSqlUpdateCache::flush( )
     {
         mCur->close(); // Close the write cursor
         delete mCur;
-		mCur = NULL;
     }
 
-    if( m_pDb->BTree()->cursor( mTabId, &mCur, 0 ) != SQLITE_OK ) // Open a read-only cursor
+    if( m_pDb->BTree()->cursor( mTabId, &mCur, 0, mCmpHandler ) != SQLITE_OK ) // Open a read-only cursor
         return SQLITE_ERROR;
 
     if( mCur->first( ) != SQLITE_OK ) // Empty?
@@ -164,7 +166,7 @@ int SQLiteSqlUpdateCache::flush( )
 		if( m_pDb->begin_transaction() != SQLITE_OK )
 			return SQLITE_ERROR;
 
-		if( m_pDb->BTree()->cursor( mTabId, &mCur, 1 ) )
+		if( m_pDb->BTree()->cursor( mTabId, &mCur, 1, mCmpHandler ) )
 			return SQLITE_ERROR;
 
         return SQLITE_OK;
@@ -201,9 +203,8 @@ int SQLiteSqlUpdateCache::flush( )
     mCur->close(); // Close the read-only cursor
     delete mCur;
     delete m_pDb;
-	mCur = NULL;
-    
-	m_pDb = new SQLiteMemoryDataBase( );
+
+   m_pDb = new SQLiteMemoryDataBase( );
     
     if( m_pDb->begin_transaction() != SQLITE_OK )
         return SQLITE_ERROR;
@@ -212,7 +213,7 @@ int SQLiteSqlUpdateCache::flush( )
     if( m_pDb->BTree()->create_table( flags, &mTabId ) )
         return SQLITE_ERROR;
 
-    if( m_pDb->BTree()->cursor( mTabId, &mCur, 1 ) )
+    if( m_pDb->BTree()->cursor( mTabId, &mCur, 1, mCmpHandler ) )
         return SQLITE_ERROR;
 
     return SQLITE_OK;

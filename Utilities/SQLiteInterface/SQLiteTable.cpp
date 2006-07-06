@@ -35,8 +35,8 @@ SQLiteTable::SQLiteTable(SQLiteDataBase*  db)
     m_nextKey = 1;
     mTabCache = NULL;
     pmCur = NULL;
-    mUseCompression = false;
 	mUseIntKey = false;
+	mCmpHandler = NULL;
 }
 
 SQLiteTable::~SQLiteTable() 
@@ -158,16 +158,16 @@ void SQLiteTable::make_valid_name( char *name )
 }
 
 int SQLiteTable::open( SQLiteTransaction *txnid,
-    const char *dbFilePath, const char *subname, unsigned int open_flag, int, bool bUseIntKey)
+    const char *dbFilePath, const char *subname, unsigned int open_flag, int, bool bNoIntKey)
 { 
     char   *newTabName = new char[strlen(subname)+1];
-    bool   useIntKey = true;
+    bool   useNoIntKey = true;
 	static char* formatStr = "select rootpage from sqlite_master where type='table' and name='%s'";
 	                         
     SQLiteCursor *mCur = NULL;
     char *szSQL = NULL;
 
-    useIntKey = bUseIntKey;
+    useNoIntKey = bNoIntKey;
 
     strcpy(newTabName,subname);
 
@@ -221,24 +221,22 @@ int SQLiteTable::open( SQLiteTransaction *txnid,
     if( (open_flag & SQLiteDB_CREATE)  && mRootDataPage == -1 )
     {
         m_pDb->close_all_read_cursors();
-        if( strncmp(newTabName,"KEY_", 4 ) == 0 )
+        if( useNoIntKey )
         {
             int tabId;
             if( m_pDb->begin_transaction( ) != SQLITE_OK )
                 return SQLITE_ERROR;  
-            int flags = (useIntKey)?BTREE_INTKEY:0;
-            if( m_pDb->BTree()->create_table( flags, &tabId ) == SQLITE_OK )
+            if( m_pDb->BTree()->create_table( 0, &tabId ) == SQLITE_OK )
             {
 	            sprintf(szSQL,"insert into fdo_master(name, rootpage) values ('%s',%d)",newTabName,tabId );
                 if( m_pDb->ExecuteNonQuery( szSQL ) != SQLITE_OK )
                 {
-                    //printf("Error: %s \n", m_pDb->ErrorMessage()  );
+                    m_pDb->commit();
                     return SQLITE_ERROR;
                 }
                 mRootDataPage = tabId;
             }
             m_pDb->commit();   
-            
         }
         else
         {
@@ -271,7 +269,7 @@ int SQLiteTable::open( SQLiteTransaction *txnid,
     
     // Find the next available key
     mCur = NULL;
-    if( m_pDb->BTree()->cursor( mRootDataPage, &mCur, 0 )  == SQLITE_OK ) // Open a read-only cursor
+    if( m_pDb->BTree()->cursor( mRootDataPage, &mCur, 0, mCmpHandler )  == SQLITE_OK ) // Open a read-only cursor
     {
         bool  empty;
         if( mCur->last( empty ) == SQLITE_OK && ! empty )
@@ -287,23 +285,11 @@ int SQLiteTable::open( SQLiteTransaction *txnid,
         mCur->close();
         delete mCur;
     }
-    if( strncmp(newTabName,"DATA_", 5 ) == 0 ) // Need a better test or get the hint from the provider code
-    {
-        mUseCompression = false;
-    }
-    else if( strncmp(newTabName,"RTREE", 5 ) == 0 )
-    {
-        mMaxCacheSize = 2500;
-        mUseCompression = false;
-    }
-    else 
-    {
-        mUseCompression = false;
-    }
+    if( strncmp(newTabName,"RTREE", 5 ) == 0 )
+        mMaxCacheSize = SQLiteDB_MAXCACHESIZE*5;
  
-    mTabCache = new SQLiteSqlUpdateCache( m_pDb, (unsigned int) -1, mRootDataPage, m_nextKey, mUseCompression, useIntKey );
-
-	mUseIntKey = useIntKey;
+	mUseIntKey = ! useNoIntKey;
+	
     mIsOpen = true;
     m_pDb->add_table( this );
     mTableName = new char[strlen(newTabName)+1];
@@ -343,12 +329,15 @@ int SQLiteTable::Recreate()
 		
 		if( mTabCache )
 			delete mTabCache;
+		mTabCache = NULL;
 		m_nextKey = 1;
-		mTabCache = new SQLiteSqlUpdateCache( m_pDb, (unsigned int) -1, mRootDataPage, m_nextKey, mUseCompression, mUseIntKey );
 		
+		mTabCache = new SQLiteSqlUpdateCache( m_pDb, (unsigned int) -1, mRootDataPage, m_nextKey, false, mUseIntKey, NULL  );
 	}
 	
     m_pDb->commit();   
+
+	return SQLITE_OK;
 }
 
 int SQLiteTable::close(unsigned int flags) 
@@ -393,6 +382,9 @@ int SQLiteTable::put(SQLiteTransaction *txid, SQLiteData *key, SQLiteData *data,
 
     _ASSERT( mRootDataPage != -1 );
 
+	if( mTabCache == NULL )
+		mTabCache = new SQLiteSqlUpdateCache( m_pDb, (unsigned int) -1, mRootDataPage, m_nextKey, false, true, mCmpHandler );
+
     if( mCacheSize >= mMaxCacheSize && mTabCache )
     {
         mTabCache->flush();
@@ -434,13 +426,16 @@ int SQLiteTable::put(SQLiteTransaction *txid, SQLiteData *key, SQLiteData *data,
     if( m_pDb->begin_transaction( ) != SQLITE_OK )
         return SQLITE_ERROR;  
 
-    m_pDb->close_all_read_cursors(); // all read cursors need to be closed before a write cursor is aquired.
+	m_pDb->close_all_read_cursors(); // all read cursors need to be closed before a write cursor is aquired.
 
     if( pmCur )
+	{
         delete pmCur;
+		pmCur = NULL;
+	}
 
-    if( m_pDb->BTree()->cursor( mRootDataPage, &pmCur, 1 ) )
-        return SQLITE_ERROR;
+	if( m_pDb->BTree()->cursor( mRootDataPage, &pmCur, 1, mCmpHandler ) )
+		return SQLITE_ERROR;
 
     if (key->get_size() == 0)
     {
@@ -450,14 +445,43 @@ int SQLiteTable::put(SQLiteTransaction *txid, SQLiteData *key, SQLiteData *data,
         key->set_data(&mMykey );
     }
 
-    rc = pmCur->insert( key->get_size(), (unsigned char*)key->get_data(), data->get_size(), (unsigned char*)data->get_data(), this->mUseCompression);
+    rc = pmCur->insert( key->get_size(), (unsigned char*)key->get_data(), data->get_size(), (unsigned char*)data->get_data(), false);
+
 
 	m_pDb->commit(); 
-
-    close_cursor(); // Don't leave a write cursor open
+		
+	close_cursor(); // Don't leave a write cursor open
 
     return rc; 
     
+}
+
+int SQLiteTable::put_exclusive(SQLiteTransaction *txid, SQLiteData *key, SQLiteData *data, unsigned int flags) 
+{ 
+    int rc = 1;
+
+    if( ! mIsOpen )
+        return SQLITE_ERROR;
+
+    _ASSERT( mRootDataPage != -1 );
+    
+    // start a transaction if one is not already started       
+    if( m_pDb->begin_transaction( ) != SQLITE_OK )
+        return SQLITE_ERROR;  
+
+	if( pmCur == NULL )
+		if( m_pDb->BTree()->cursor( mRootDataPage, &pmCur, 1, mCmpHandler ) )
+			return SQLITE_ERROR;
+
+    if (key->get_size() == 0)
+    {
+        // new record
+        mMykey = m_nextKey++;
+        key->set_size( sizeof(SQLiteRecNumbDef) );
+        key->set_data(&mMykey );
+    }
+
+    return pmCur->insert( key->get_size(), (unsigned char*)key->get_data(), data->get_size(), (unsigned char*)data->get_data(), false);
 }
 
 void SQLiteTable::close_cursor()
@@ -484,7 +508,7 @@ int SQLiteTable::get(SQLiteTransaction *txnid, SQLiteData *key, SQLiteData *data
         return 0;
  
     if( pmCur == NULL )
-        if( m_pDb->BTree()->cursor(  mRootDataPage, &pmCur, 0 ) )
+        if( m_pDb->BTree()->cursor(  mRootDataPage, &pmCur, 0, mCmpHandler ) )
             return SQLITE_ERROR;
     bool found;
     rc = pmCur->move_to( key->get_size(), (unsigned char*)key->get_data(), found );
@@ -495,7 +519,7 @@ int SQLiteTable::get(SQLiteTransaction *txnid, SQLiteData *key, SQLiteData *data
     char* buf = NULL;
     int size=0;
 
-    if( rc == 0 && pmCur->get_data( &size, &buf, mUseCompression ) )
+    if( rc == 0 && pmCur->get_data( &size, &buf, false ) )
         rc = 1;
 
 
@@ -528,7 +552,7 @@ int SQLiteTable::del(SQLiteTransaction *txnid, SQLiteData *key, unsigned int fla
         mTabCache->del( key );
     }
 
-    if( m_pDb->BTree()->cursor(  mRootDataPage, &pCur, 1 ) )
+    if( m_pDb->BTree()->cursor(  mRootDataPage, &pCur, 1, mCmpHandler ) )
         return SQLITE_ERROR;
 
     rc = pCur->move_to( key->get_size(), (unsigned char*)key->get_data(), found );
@@ -551,7 +575,7 @@ int SQLiteTable::del(SQLiteTransaction *txnid, SQLiteData *key, unsigned int fla
 int SQLiteTable::cursor(SQLiteTransaction *txnid, SQLiteCursor **cursorp, bool write )  
 { 
 	if( pmCur == NULL )
-        if( m_pDb->BTree()->cursor(  mRootDataPage, &pmCur, 0 ) )
+        if( m_pDb->BTree()->cursor(  mRootDataPage, &pmCur, 0, mCmpHandler ) )
 			return SQLITE_ERROR;
     *cursorp = pmCur;
     return SQLITE_OK; 
@@ -586,7 +610,7 @@ void SQLiteTable::sync_id_pool()
 	if( m_pDb == NULL )
 		return;
 
-	if( m_pDb->BTree()->cursor( mRootDataPage, &pCur, 0 )  == SQLITE_OK ) // Open a read-only cursor
+	if( m_pDb->BTree()->cursor( mRootDataPage, &pCur, 0, mCmpHandler )  == SQLITE_OK ) // Open a read-only cursor
     {
         bool  empty;
         if( pCur->last( empty ) == SQLITE_OK && ! empty )
