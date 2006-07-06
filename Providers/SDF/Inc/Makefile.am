@@ -2,8 +2,11 @@ AUTOMAKE_OPTIONS = foreign
 
 EXTRA_DIST = \
    SDF/ICreateSDFFile.h \
-   SDF/SdfCommandType.h
-
+   SDF/SdfCommandType.h \
+   SDF/SdfCompareHandler.h \
+   SDF/IExtendedSelect.h \
+   SDF/IScrollableFeatureReader.h
+ 
 INSTALL_DIR  = $(includedir)
 
 #install header files
