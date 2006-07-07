@@ -174,6 +174,7 @@ FdoRdbmsFeatureReader::FdoRdbmsFeatureReader( FdoIConnection *connection, GdbiQu
     mCurrentClassName[GDBI_SCHEMA_ELEMENT_NAME_SIZE-1] = '\0';
     mCurrentRevisionNumberValid = false;
     mColCount = -1;
+    mUnskippedColCount = -1;
     mColList = NULL;
 
     const FdoSmLpDataPropertyDefinition* featIdProp = classDef->RefFeatIdProperty();
@@ -284,10 +285,11 @@ const char* FdoRdbmsFeatureReader::GetDbAliasName( const wchar_t *propName )
 // This is an internal method to support the DataReader
 FdoInt32 FdoRdbmsFeatureReader::GetPropertyCount()
 {
-    if( mColCount != -1 )
-        return mColCount;
+    if( mUnskippedColCount != -1 )
+        return mUnskippedColCount;
 
     // Not initialized yet
+    mUnskippedColCount = 0;
     mColCount = mQueryResult->GetColumnCount( );
     mColList = new GdbiColumnDesc[mColCount];
     int  colIdx = 0;
@@ -295,7 +297,9 @@ FdoInt32 FdoRdbmsFeatureReader::GetPropertyCount()
     {
         if( mQueryResult->GetColumnDesc( k+1, mColList[colIdx] ) )
 //            if( mColList[colIdx].special_column_type != DBI_RESERVED_CLASSID )
-                colIdx++;
+            colIdx++;
+        if ( ! SkipColumnForProperty( k ) )
+            mUnskippedColCount++;
 
         // NOTE: I are assuming that column name matches computed identifier name (in case-insensitive manner):
         // TODO: this may fail if the alias contains a special character like a space
@@ -313,7 +317,7 @@ FdoInt32 FdoRdbmsFeatureReader::GetPropertyCount()
     }
 
     mColCount = colIdx;
-    return mColCount;
+    return mUnskippedColCount;
 }
 
 // This is an internal method to support the DataReader
@@ -323,7 +327,15 @@ FdoString* FdoRdbmsFeatureReader::GetPropertyName(FdoInt32 index)
     if( index >= GetPropertyCount() )
        throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_52, "Index out of range"));
 
-    char* colName = mColList[index].c_alias;
+    int  colIdx = 0;
+    for ( int k=0; k<mUnskippedColCount && k<index; k++ )
+    {
+        colIdx++;   // Keep up with loop's iteration.
+        while ( colIdx<mColCount && SkipColumnForProperty( colIdx ) )
+            colIdx++;   // Skip over any skippable columns that are positioned before the one we want.
+    }
+
+    char* colName = mColList[colIdx].c_alias;
     if( colName != NULL && colName[0] != '\0' )
     {
         FdoPtr<FdoIdentifier> id;
@@ -332,16 +344,16 @@ FdoString* FdoRdbmsFeatureReader::GetPropertyName(FdoInt32 index)
             id = mProperties->GetItem(i);
             if( dynamic_cast<FdoComputedIdentifier *>( id.p ) != NULL )
             {
-                if( FdoCommonOSUtil::stricmp(GetDbAliasName(id->GetName()),  mColList[index].c_alias) == 0 )
+                if( FdoCommonOSUtil::stricmp(GetDbAliasName(id->GetName()),  mColList[colIdx].c_alias) == 0 )
                     return id->GetName();
             }
         }
     }
     else
     {
-        if( FdoCommonOSUtil::stricmp(mColList[index].column, "RevisionNumber") == 0 )
+        if( FdoCommonOSUtil::stricmp(mColList[colIdx].column, "RevisionNumber") == 0 )
             return revNumberProp;
-        return mConnection->GetSchemaUtil()->ColName2Property(mClassDefinition->GetName(), mConnection->GetUtility()->Utf8ToUnicode(mColList[index].column) );
+        return mConnection->GetSchemaUtil()->ColName2Property(mClassDefinition->GetQName(), mConnection->GetUtility()->Utf8ToUnicode(mColList[colIdx].column) );
     }
 
     return NULL;
@@ -389,29 +401,54 @@ FdoDataType FdoRdbmsFeatureReader::GetDataType(FdoString* propertyName)
 
 FdoPropertyType FdoRdbmsFeatureReader::GetPropertyType(FdoString* propertyName)
 {
-    FdoPropertyType proptype;
-    const char *colName = PROPERTY2COLNAME( propertyName, &proptype );
-
-    if( mColCount == -1 )
-        (void)GetPropertyCount(); // Initializes the column description
-
-    if( colName != NULL )
-        return proptype;
-
-    // It must be a computed identifier
-    colName = GetDbAliasName(propertyName);
-    for ( int k=0; k<mColCount; k++ )
+    FdoPropertyType propType;
+    bool foundPropType = false;
+    FdoStringP className = mClassDefinition->GetQName();
+    FdoRdbmsSchemaUtil * schemaUtil = mConnection->GetSchemaUtil();
+    const FdoSmLpClassDefinition * classDefinition = schemaUtil->GetClass(className);
+    if (NULL != classDefinition)
     {
-        if( FdoCommonOSUtil::stricmp(colName, mColList[k].c_alias) == 0 )
+        const FdoSmLpPropertyDefinitionCollection * propDefs = classDefinition->RefProperties();
+        if (NULL != propDefs)
         {
-            if( mColList[k].datatype == RDBI_GEOMETRY )
-                return FdoPropertyType_GeometricProperty;
-            else
-                return FdoPropertyType_DataProperty;
+            const FdoSmLpPropertyDefinition * propDef = propDefs->RefItem(propertyName);
+            if (NULL != propDef)
+            {
+                propType = propDef->GetPropertyType();
+                foundPropType = true;
+            }
         }
     }
-    ThrowPropertyNotFoundExp( propertyName );
-    return (FdoPropertyType)0; // not reached but supresses the compiler warning
+
+    if (!foundPropType)
+    {
+        if( mColCount == -1 )
+            (void)GetPropertyCount(); // Initializes the column description
+
+        // It must be a computed identifier
+        const char * colName = GetDbAliasName(propertyName);
+        for ( int k=0; k<mColCount; k++ )
+        {
+            if( NULL != colName && FdoCommonOSUtil::stricmp(colName, mColList[k].c_alias) == 0 )
+            {
+                if( mColList[k].datatype == RDBI_GEOMETRY )
+                {
+                    propType = FdoPropertyType_GeometricProperty;
+                    foundPropType = true;
+                }
+                else
+                {
+                    propType = FdoPropertyType_DataProperty;
+                    foundPropType = true;
+                }
+            }
+        }
+    }
+
+    if (!foundPropType)
+        ThrowPropertyNotFoundExp( propertyName );
+
+    return propType;
 }
 
 void  FdoRdbmsFeatureReader::FetchProperties ()
@@ -668,7 +705,7 @@ FdoClassDefinition *FdoRdbmsFeatureReader::FilterClassDefinition(
             if( dynamic_cast<FdoComputedIdentifier *>( id.p ) != NULL )
             {
 
-                for ( int k=0; k<GetPropertyCount(); k++ )
+                for ( int k=0; k<mColCount; k++ )
                 {
                     if( FdoCommonOSUtil::stricmp(mColList[k].c_alias, mConnection->GetSchemaUtil()->MakeDBValidName( id->GetText() ) ) == 0 )
                     {
@@ -1620,6 +1657,48 @@ bool FdoRdbmsFeatureReader::ReadNextWithLocalFilter()
     }
 
     return mPropertiesFetched;
+}
+
+bool FdoRdbmsFeatureReader::SkipColumnForProperty(FdoInt32 index)
+{
+    bool skipColumn = false;
+
+    // When perusing a column list and finding properties from it, we want to
+    // skip columns that interfere with the 1-1 mapping (Y and Z ordinates,
+    // SI columns).
+    char* colName = mColList[index].column;
+    FdoRdbmsSchemaUtil * schemaUtil = mConnection->GetSchemaUtil();
+    FdoStringP className = mClassDefinition->GetQName();
+    const FdoSmLpClassDefinition *classDefinition = schemaUtil->GetClass(className);
+    const FdoSmLpPropertyDefinitionCollection *propertyDefinitions = classDefinition->RefProperties();
+    FdoInt32 propertyCount = propertyDefinitions->GetCount();
+
+    for ( FdoInt32 i=0 ;  i < propertyCount;  i++ )
+    {
+        const FdoSmLpPropertyDefinition *propertyDefinition = propertyDefinitions->RefItem(i);
+
+        if (propertyDefinition->GetPropertyType() == FdoPropertyType_GeometricProperty )
+        {
+            const FdoSmLpGeometricPropertyDefinition* geomProp =
+            static_cast<const FdoSmLpGeometricPropertyDefinition*>(propertyDefinition);
+            const char * columnNameY = schemaUtil->MakeDBValidName(geomProp->GetColumnNameY());
+            const char * columnNameZ = schemaUtil->MakeDBValidName(geomProp->GetColumnNameZ());
+            const char * columnNameSi1 = schemaUtil->MakeDBValidName(geomProp->GetColumnNameSi1());
+            const char * columnNameSi2 = schemaUtil->MakeDBValidName(geomProp->GetColumnNameSi2());
+            if ( ( NULL != columnNameY && '\0' != columnNameY[0] &&
+                   0 == FdoCommonOSUtil::stricmp(colName, columnNameY) ) ||
+                 ( NULL != columnNameZ && '\0' != columnNameZ[0] &&
+                   0 == FdoCommonOSUtil::stricmp(colName, columnNameZ) ) ||
+                 ( NULL != columnNameSi1 && '\0' != columnNameSi1[0] &&
+                   0 == FdoCommonOSUtil::stricmp(colName, columnNameSi1) ) ||
+                 ( NULL != columnNameSi2 && '\0' != columnNameSi2[0] &&
+                   0 == FdoCommonOSUtil::stricmp(colName, columnNameSi2) ) )
+            {
+                skipColumn = true;
+            }
+        }
+    }
+    return skipColumn;
 }
 
 bool FdoRdbmsFeatureReader::ReadNext( )

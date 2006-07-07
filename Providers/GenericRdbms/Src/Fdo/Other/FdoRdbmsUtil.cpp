@@ -61,7 +61,7 @@ const char* FdoRdbmsUtil::UnicodeToUtf8( const wchar_t* value )
 		return NULL;
 
     char    *tmpString = FdoRdbmsUtil::newCharP();
-    if( ! ut_utf8_from_unicode( value, tmpString,  GDBI_MAXIMUM_TEXT_SIZE ) )
+    if( -1 == ut_utf8_from_unicode( value, tmpString,  GDBI_MAXIMUM_TEXT_SIZE ) )
         throw FdoRdbmsException::Create(NlsMsgGet(FDORDBMS_47, "UTF8 conversion failed"));
     tmpString[GDBI_MAXIMUM_TEXT_SIZE-1] = '\0';
 
@@ -76,7 +76,7 @@ const wchar_t* FdoRdbmsUtil::Utf8ToUnicode( const char* value )
 		return NULL;
 
     wchar_t *tmpString = FdoRdbmsUtil::newWcharP();
-    if( ! ut_utf8_to_unicode( value, tmpString,  GDBI_MAXIMUM_TEXT_SIZE ) )
+    if( -1 == ut_utf8_to_unicode( value, tmpString,  GDBI_MAXIMUM_TEXT_SIZE ) )
         throw FdoRdbmsException::Create(NlsMsgGet(FDORDBMS_47, "UTF8 conversion failed"));
     tmpString[GDBI_MAXIMUM_TEXT_SIZE-1] = L'\0';
 

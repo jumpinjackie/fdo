@@ -205,6 +205,10 @@ public:
 
       virtual bool       ReadNextWithLocalFilter();
 
+      // Returns true if column should be skipped during column-to-property mapping.
+      // This is an internal method to support the DataReader.
+      virtual bool       SkipColumnForProperty(FdoInt32 index);
+
       int                mQid;
       GdbiQueryResult   *mQueryResult;
       int                mNextQidToFree;
@@ -235,8 +239,9 @@ public:
 
       FdoByteArray *    mGeometryCache; // Last fetched geometry (in aid of FdoByte * GetGeometry())
 
-      // The next 2 member variable are mostly needed to support the DataReader
+      // The next 3 member variable are mostly needed to support the DataReader
       int               mColCount;
+      int               mUnskippedColCount;
       GdbiColumnDesc    *mColList;
 
       FdoStringP        mFeatIdColName;
