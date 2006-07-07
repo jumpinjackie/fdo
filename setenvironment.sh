@@ -1,35 +1,40 @@
 #!/bin/bash
 
-if test ! -e "$PWD/Fdo"; then
-   echo "Invalid FDO path. The setenvironment script sets the default value to: $PWD/Fdo. Please modify the setenvironment.sh script with a valid path."
+export FDO=$PWD/Fdo
+
+if test ! -e "$FDO"; then
+   echo "Invalid FDO path. The setenvironment script sets the default value to: $FDO. Please modify the setenvironment.sh script with a valid path."
 fi
 
-if test ! -e "$PWD/Utilities"; then
-   echo "Invalid FDO Utilities path provided. The setenvironment script sets the default value to: $PWD/Utilities. Please modify the setenvironment.sh script with a valid path."
+export FDOUTILITIES=$PWD/Utilities
+
+if test ! -e "$FDOUTILITIES"; then
+   echo "Invalid FDO Utilities path provided. The setenvironment script sets the default value to: $FDOUTILITIES. Please modify the setenvironment.sh script with a valid path."
 fi
 
-if test ! -e "$PWD/Thirdparty"; then
-   echo "Invalid FDO Thirdparty path provided. The setenvironment script sets the default value to: $PWD/Thirdparty. Please modify the setenvironment.sh script with a valid path."
+export FDOTHIRDPARTY=$PWD/Thirdparty
+
+if test ! -e "$FDOTHIRDPARTY"; then
+   echo "Invalid FDO Thirdparty path provided. The setenvironment script sets the default value to: $FDOTHIRDPARTY. Please modify the setenvironment.sh script with a valid path."
 fi
 
-if test ! -e "$FDOTHIRDPARTY/ESRI/ArcSDEClient91/Linux"; then
+export SDEHOME=$FDOTHIRDPARTY/ESRI/ArcSDEClient91/Linux
+
+if test ! -e "$SDEHOME"; then
    echo "Invalid OPTIONAL path for ArcSDE SDK files. The setenvironment script sets the default value to: $FDOTHIRDPARTY/ESRI/ArcSDEClient91/Linux. OPTIONALLY modify the setenvironment.sh script with a valid path."
 fi
 
-if test ! -e "$FDOTHIRDPARTY/mysql/rhlinux"; then
+export FDOMYSQL=$FDOTHIRDPARTY/mysql/rhlinux
+
+if test ! -e "$FDOMYSQL"; then
    echo "Invalid OPTIONAL path for MySQL SDK files. The setenvironment script sets the default value to: $FDOTHIRDPARTY/mysql/rhlinux. OPTIONALLY modify the setenvironment.sh script with a valid path."
 fi
 
-if test ! -e "/usr"; then
-   echo "Invalid OPTIONAL path for ODBC SDK files. The setenvironment script sets the default value to: /usr. OPTIONALLY modify the setenvironment.sh script with a valid path."
-fi
-
-export FDO=$PWD/Fdo
-export FDOTHIRDPARTY=$PWD/Thirdparty
-export FDOUTILITIES=$PWD/Utilities
-export SDEHOME=$FDOTHIRDPARTY/ESRI/ArcSDEClient91/Linux
-export FDOMYSQL=$FDOTHIRDPARTY/mysql/rhlinux
 export FDOODBC=/usr
+
+if test ! -e "$FDOODBC"; then
+   echo "Invalid OPTIONAL path for ODBC SDK files. The setenvironment script sets the default value to: $FDOODBC. OPTIONALLY modify the setenvironment.sh script with a valid path."
+fi
 
 mkdir -p "/usr/local/fdo-3.2.0/lib"
 

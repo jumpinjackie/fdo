@@ -297,74 +297,56 @@ fi
 
 #build SHP Provider
 if test "$SHPENABLE" == yes; then
-   if test ! -e "Providers/SHP/build_linux.sh"; then
-      echo "Providers/SHP/build_linux.sh is missing!"
-      exit 1;
+   if test -e "Providers/SHP/build_linux.sh"; then
+       pushd Providers/SHP >& /dev/null
+       ./build_linux.sh $CMDEX
+       popd >& /dev/null
    fi
-
-   pushd Providers/SHP >& /dev/null
-   ./build_linux.sh $CMDEX
-   popd >& /dev/null
 fi
 
 #build SDF Provider
 if test "$SDFENABLE" == yes; then
-   if test ! -e "Providers/SDF/build_linux.sh"; then
-      echo "Providers/SDF/build_linux.sh is missing!"
-      exit 1;
+   if test -e "Providers/SDF/build_linux.sh"; then
+       pushd Providers/SDF >& /dev/null
+       ./build_linux.sh $CMDEX
+       popd >& /dev/null
    fi
-
-   pushd Providers/SDF >& /dev/null
-   ./build_linux.sh $CMDEX
-   popd >& /dev/null
 fi
 
 #build WFS Provider
 if test "$WFSENABLE" == yes; then
-   if test ! -e "Providers/WFS/build_linux.sh"; then
-      echo "Providers/WFS/build_linux.sh is missing!"
-      exit 1;
+   if test -e "Providers/WFS/build_linux.sh"; then
+       pushd Providers/WFS >& /dev/null
+       ./build_linux.sh $CMDEX
+       popd >& /dev/null
    fi
-
-   pushd Providers/WFS >& /dev/null
-   ./build_linux.sh $CMDEX
-   popd >& /dev/null
 fi
 
 #build WMS Provider
 if test "$WMSENABLE" == yes; then
-   if test ! -e "Providers/WMS/build_linux.sh"; then
-      echo "Providers/WMS/build_linux.sh is missing!"
-      exit 1;
+   if test -e "Providers/WMS/build_linux.sh"; then
+       pushd Providers/WMS >& /dev/null
+       ./build_linux.sh $CMDEX
+       popd >& /dev/null
    fi
-
-   pushd Providers/WMS >& /dev/null
-   ./build_linux.sh $CMDEX
-   popd >& /dev/null
 fi
 
 #build ArcSDE Provider
 if test "$ARCENABLE" == yes; then
-   if test ! -e "Providers/ArcSDE/build_linux.sh"; then
-      echo "Providers/ArcSDE/build_linux.sh is missing!"
-      exit 1;
+   if test -e "Providers/ArcSDE/build_linux.sh"; then
+       pushd Providers/ArcSDE >& /dev/null
+       ./build_linux.sh $CMDEX
+       popd >& /dev/null
    fi
-
-   pushd Providers/ArcSDE >& /dev/null
-   ./build_linux.sh $CMDEX
-   popd >& /dev/null
 fi
 
 #build GenericRdbms Providers
 if test "$RDBMSENABLE" == yes; then
-   if test ! -e "Providers/GenericRdbms/build_linux.sh"; then
-      echo "Providers/GenericRdbms/build_linux.sh is missing!"
-      exit 1;
+   if test -e "Providers/GenericRdbms/build_linux.sh"; then
+       pushd Providers/GenericRdbms >& /dev/null
+       ./build_linux.sh $CMDEX
+       popd >& /dev/null
    fi
-
-   pushd Providers/GenericRdbms >& /dev/null
-   ./build_linux.sh $CMDEX
-   popd >& /dev/null
 fi
 
 exit 0
