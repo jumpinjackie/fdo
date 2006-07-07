@@ -27,6 +27,8 @@
 #include <OWS/FdoOwsCapabilities.h>
 #include <OWS/FdoOwsRequestMetadata.h>
 #include "FdoWfsOgcFilterCapabilities.h"
+#include "FdoWfsFeatureTypeList.h"
+#include "FdoWfsFeatureType.h"
 
 // external access to connection for client services
 extern "C" FDOWFS_API FdoIConnection* CreateConnection ()
@@ -417,6 +419,8 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
                 //    ids->Add(fakeId);
                 //}
 
+                // Set description for class
+                _setClassDescription (classDef);
 
             } // end of for each class
         }// end of for each schema
@@ -424,5 +428,25 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
 	return FDO_SAFE_ADDREF(mSchemas.p);
 }
 
-
+void FdoWfsConnection::_setClassDescription (FdoClassDefinition* clsdef)
+{
+    FdoString* clsName = clsdef->GetName ();
+    FdoPtr<FdoWfsServiceMetadata> serviceMetadata = GetServiceMetadata ();
+    FdoPtr<FdoWfsFeatureTypeList> featTypeList = serviceMetadata->GetFeatureTypeList ();
+    FdoPtr<FdoWfsFeatureTypeCollection> featTypes = featTypeList->GetFeatureTypes ();
+    FdoPtr<FdoWfsFeatureType> featType = featTypes->FindItem (clsName);
+    if (featType != NULL)
+    {
+        FdoStringP abstraction = featType->GetAbstract ();
+        if (abstraction.GetLength () != 0)
+        {
+            clsdef->SetDescription (abstraction);
+        }
+        else
+        {
+            FdoStringP title = featType->GetTitle ();
+            clsdef->SetDescription (title);
+        }
+    }
+}
 

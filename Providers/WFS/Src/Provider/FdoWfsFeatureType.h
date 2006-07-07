@@ -52,6 +52,7 @@ public:
 
     FdoString* GetName() { return m_name; }
     FdoString* GetTitle() { return m_title; }
+    FdoString* GetAbstract() { return m_abstract; }
     FdoString* GetSRS() { return m_srs; }
     FdoInt32 GetOperations() { return m_operations; }
 

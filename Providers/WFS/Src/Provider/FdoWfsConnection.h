@@ -172,6 +172,10 @@ public:
 	FdoWfsDelegate* GetWfsDelegate ();
 	FdoWfsServiceMetadata* GetServiceMetadata();
 	FdoFeatureSchemaCollection* GetSchemas();
+
+private:
+    // helper function to set the class description
+    void _setClassDescription (FdoClassDefinition* clsdef);
 };
 
 #endif // FDOWFSCONNECTION_H
