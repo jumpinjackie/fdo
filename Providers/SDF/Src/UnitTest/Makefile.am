@@ -38,14 +38,13 @@ INCLUDES = \
 
 UnitTest_LDADD = \
   $(FDO)/Unmanaged/Src/libFDO.la \
-  -lcppunit \
+  $(FDOTHIRDPARTY)/linux/cppunit/lib/libcppunit.a \
   -ldl \
   -lxalan-c \
   -lxalanMsg \
   -lxerces-c
 
 UnitTest_LDFLAGS = \
-  -L$(FDOTHIRDPARTY)/linux/cppunit/lib \
   -L$(FDOTHIRDPARTY)/apache/xml-xalan/c/lib \
   -L$(FDOTHIRDPARTY)/apache/xml-xerces/c/lib
 
