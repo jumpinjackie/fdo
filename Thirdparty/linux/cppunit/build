@@ -11,8 +11,4 @@ cd ..
 
 if [ ! -d ./lib ]; then mkdir -p ./lib; fi
 cp ./cppunit-1.9.0/src/cppunit/.libs/libcppunit.a ./lib
-cp ./cppunit-1.9.0/src/cppunit/.libs/libcppunit.so* ./lib
-cd ./lib
-ln -s libcppunit.so libcppunit-1.9.so.0
-cd ..
 
