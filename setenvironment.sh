@@ -38,5 +38,5 @@ fi
 
 mkdir -p "/usr/local/fdo-3.2.0/lib"
 
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/fdo-3.2.0/lib:$FDOTHIRDPARTY/apache/xml-xalan/c/lib:$FDOTHIRDPARTY/apache/xml-xerces/c/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/fdo-3.2.0/lib
 
