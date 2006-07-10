@@ -750,7 +750,7 @@ void ArcSDEFilterToSql::ProcessGeometricCondition (FdoIdentifier* fdoPropertyNam
     SE_coordref_free (coordRef);
 
     // Add one or more spatial filters that represent this spatial operation:
-    AddSpatialFilters(m_Connection->GetConnection(), fdoSpatialOperation, column, (0.0 == bBufferDistance) ? shape : shapeWithBuffer, mSpatialFilters);
+    AddSpatialFilters(m_Connection->GetConnection(), fdoSpatialOperation, column, ((0.0 == bBufferDistance) || (shapeType == SG_NIL_SHAPE)) ? shape : shapeWithBuffer, mSpatialFilters);
 }
 
 SHORT ArcSDEFilterToSql::GetSpatialFilters(SE_FILTER *&pSpatialFilters)

@@ -44,6 +44,7 @@ class SelectTests :
     CPPUNIT_TEST (spatial_filter_within_inside_coveredby);
     CPPUNIT_TEST (spatial_query_outside_coordsys_extents);
     CPPUNIT_TEST (multiple_databases);
+    CPPUNIT_TEST (spatial_filter_buffer_outside_extents);
     CPPUNIT_TEST_SUITE_END ();
 
     static FdoPtr<FdoIConnection> mConnection;
@@ -77,6 +78,7 @@ protected:
     void spatial_filter_within_inside_coveredby();
     void spatial_query_outside_coordsys_extents();
     void multiple_databases();
+    void spatial_filter_buffer_outside_extents();
 };
 
 #endif // CPP_UNIT_SelectTests_H

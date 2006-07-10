@@ -23,15 +23,6 @@ CPPUNIT_TEST_SUITE_REGISTRATION (SelectTests);
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION (SelectTests, "SelectTests");
 
 
-// NOTE: to generate the data required for the 'AIRPORT'-related features, you must
-//    export all feature classes in <arcgis root folder>\ArcTutor\Map\airport.mdb to an enterprise
-//    geodatabase that matches the ArcSDETestConfig::ConnStringAustralia() above.  The feature classes should be exported
-//    with coordinat system with the following extents ("X/Y domain") so that all data can be fit:
-//	       minx=2,100,000  maxx=2,600,000
-//	       miny=  500,000  maxy=1,000,000
-//    Any coordinate system can be used to store the data, as airport.mdb doesn't specify a coordinate system.
-
-
 FdoPtr<FdoIConnection> SelectTests::mConnection;
 
 SelectTests::SelectTests (void) :
@@ -1428,6 +1419,46 @@ void SelectTests::multiple_databases()
             retVal2 = reader->GetString(L"MYSTRING");
             CPPUNIT_ASSERT_MESSAGE("Wrong string value fetched", 0==wcscmp(retVal2, UPDATEVAL2));
         }
+    }
+    catch (FdoException* ge) 
+    {
+        fail (ge);
+    }
+}
+
+
+/* Test spatial filter with buffer. */
+void SelectTests::spatial_filter_buffer_outside_extents ()
+{
+    if (CreateSchemaOnly()) return;
+
+    try
+    {
+        FdoPtr<FdoISelect> select = (FdoISelect*)mConnection->CreateCommand (FdoCommandType_Select);
+        wchar_t filter[1000];
+        double dMinX = 120000000.00;
+        double dMinY = 12000000.00;
+        double dMaxX = 130000000.00;
+        double dMaxY = 13000000.00;
+
+        // do a spatial filtered select WITH dBufferSize1:
+
+        FdoCommonOSUtil::swprintf(filter, ELEMENTS(filter), L"SHAPE WITHINDISTANCE GEOMFROMTEXT ('POLYGON XY ((%lf %lf, %lf %lf, %lf %lf, %lf %lf, %lf %lf))') %lf",
+            dMinX,dMaxY,
+            dMaxX,dMaxY,
+            dMaxX,dMinY,
+            dMinX,dMinY,
+            dMinX,dMaxY,
+            1000.0);
+
+        select->SetFeatureClassName (ArcSDETestConfig::QClassNameSoils());
+        select->SetFilter (FdoPtr<FdoFilter>(FdoFilter::Parse (filter)));
+        FdoPtr<FdoIFeatureReader> reader = select->Execute ();
+        long lCountBuffered = 0L;
+        while (reader->ReadNext ())
+            lCountBuffered++;
+        reader->Close();
+        CPPUNIT_ASSERT_MESSAGE("Expected 0 features for buffered spatial query beyond the spatial extents", lCountBuffered==0);
     }
     catch (FdoException* ge) 
     {
