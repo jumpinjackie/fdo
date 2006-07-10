@@ -349,7 +349,7 @@ I. Linux Notes:
 
   6. NOTE: To run the unit test, you must set LD_LIBRARY_PATH as follows:
 
-       export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/fdo-3.2.0/lib:$FDOTHIRDPARTY/linux/cppunit/lib
+       export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/fdo-3.2.0/lib
        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$SDEHOME/lib:$FDOTHIRDPARTY/ESRI/ArcSDEClient91/Linux/lib
  
   7. NOTE: Several known problems exist if auto-mounted drives are used as locations 
