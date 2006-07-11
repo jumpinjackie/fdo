@@ -2,8 +2,9 @@
 //
 
 #include "stdafx.h"
-#include "HostApp.h"
 
+#ifdef __AFXWIN_H__
+#include "HostApp.h"
 #include "HostAppDoc.h"
 #include "HostAppView.h"
 
@@ -100,6 +101,8 @@ CHostAppDoc* CHostAppView::GetDocument() // non-debug version is inline
     return (CHostAppDoc*)m_pDocument;
 }
 #endif //_DEBUG
+
+#endif //__AFXWIN_H__
 
 /////////////////////////////////////////////////////////////////////////////
 // CHostAppView message handlers

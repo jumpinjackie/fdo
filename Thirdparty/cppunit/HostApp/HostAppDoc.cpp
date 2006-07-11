@@ -2,8 +2,9 @@
 //
 
 #include "stdafx.h"
-#include "HostApp.h"
 
+#ifdef __AFXWIN_H__
+#include "HostApp.h"
 #include "HostAppDoc.h"
 
 #ifdef _DEBUG
@@ -75,6 +76,8 @@ void CHostAppDoc::Dump(CDumpContext& dc) const
     CDocument::Dump(dc);
 }
 #endif //_DEBUG
+
+#endif //__AFXWIN_H__
 
 /////////////////////////////////////////////////////////////////////////////
 // CHostAppDoc commands

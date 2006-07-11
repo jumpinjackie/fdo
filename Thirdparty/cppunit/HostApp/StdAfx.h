@@ -10,13 +10,23 @@
 #pragma once
 #endif // _MSC_VER >= 1000
 
-#define VC_EXTRALEAN        // Exclude rarely-used stuff from Windows headers
+#ifdef __CPPUNIT_MFC_APP
 
+#define _AFXDLL
 #include <afxwin.h>         // MFC core and standard components
 #include <afxext.h>         // MFC extensions
 #ifndef _AFX_NO_AFXCMN_SUPPORT
 #include <afxcmn.h>         // MFC support for Windows Common Controls
 #endif // _AFX_NO_AFXCMN_SUPPORT
+
+#else
+
+#define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
+#include <stdio.h>
+#include <tchar.h>
+#include <Windows.h>
+
+#endif // __CPPUNITMFCAPP
 
 #pragma warning( disable : 4786 )
 

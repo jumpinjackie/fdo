@@ -2,8 +2,9 @@
 //
 
 #include "stdafx.h"
-#include "HostApp.h"
 
+#ifdef __AFXWIN_H__
+#include "HostApp.h"
 #include "MainFrm.h"
 
 #ifdef _DEBUG
@@ -102,6 +103,8 @@ void CMainFrame::Dump(CDumpContext& dc) const
 }
 
 #endif //_DEBUG
+
+#endif //__AFXWIN_H__
 
 /////////////////////////////////////////////////////////////////////////////
 // CMainFrame message handlers

@@ -2,8 +2,10 @@
 //
 
 #include "stdafx.h"
-#include "HostApp.h"
 
+#ifdef __AFXWIN_H__
+
+#include "HostApp.h"
 #include "MainFrm.h"
 #include "HostAppDoc.h"
 #include "HostAppView.h"
@@ -167,6 +169,8 @@ void CHostAppApp::OnAppAbout()
     CAboutDlg aboutDlg;
     aboutDlg.DoModal();
 }
+
+#endif //__AFXWIN_H__
 
 /////////////////////////////////////////////////////////////////////////////
 // CHostAppApp commands
