@@ -19,6 +19,7 @@
 
 #include "Pch.h"
 #include "FilterTests.h"
+#include "UnitTestUtil.h"
 
 CPPUNIT_TEST_SUITE_REGISTRATION (FilterTests);
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION (FilterTests, "FilterTests");
@@ -677,7 +678,7 @@ void FilterTests::featid_performance_tests ()
         FdoString*  query;
 
 #ifdef _WIN32       
-        CTime time1(CTime::GetCurrentTime());
+        double time1 = UnitTestUtil::GetTime_S();
 #endif
 
         // This is the max featId, should return 1 row.
@@ -686,11 +687,11 @@ void FilterTests::featid_performance_tests ()
         CPPUNIT_ASSERT_MESSAGE ("P. not 2 feature selected", NUM_RUNS == count);
 
 #ifdef _WIN32
-        CTime time2(CTime::GetCurrentTime());
-        CTimeSpan elapsed = time2 - time1;
+        double time2 = UnitTestUtil::GetTime_S();
+        double elapsed = time2 - time1;
 
         if (VERBOSE)
-            printf("  >> elapsed: %s\n",elapsed.Format("%H:%M:%S" ) );
+			printf("Elapsed: %lf sec\n",elapsed);
 #endif
     }
     catch (FdoException *e)

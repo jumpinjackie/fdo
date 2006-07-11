@@ -41,7 +41,7 @@ NullShape::~NullShape ()
 
 FdoByteArray* NullShape::GetGeometry ()
 {
-    ATLTRACE(L"NullShape::GetGeometry()\n");
+    _FDORPT0(0, "NullShape::GetGeometry()\n");
 
     return (NULL);
 }
@@ -54,13 +54,13 @@ void NullShape::DebugPrintDetails ()
 #ifdef _DEBUG
     try
     {
-        ATLTRACE(L"\n>>>>>>>>>> NullShape Details START <<<<<<<<<<\n");
-        ATLTRACE(L"\nNO DETAILS");
-        ATLTRACE(L"\n>>>>>>>>>> NullShape Details END <<<<<<<<<<\n\n");
+        _FDORPT0(0, "\n>>>>>>>>>> NullShape Details START <<<<<<<<<<\n");
+        _FDORPT0(0, "\nNO DETAILS");
+        _FDORPT0(0, "\n>>>>>>>>>> NullShape Details END <<<<<<<<<<\n\n");
     }
     catch (...)
     {
-        ATLTRACE(L">>>>>>>>>> DebugPrintDetails() - EXCEPTION <<<<<<<<<<\n");
+        _FDORPT0(0, ">>>>>>>>>> DebugPrintDetails() - EXCEPTION <<<<<<<<<<\n");
     }
 #endif
 // ****************************************************************************

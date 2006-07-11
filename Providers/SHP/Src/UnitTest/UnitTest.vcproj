@@ -21,7 +21,7 @@
 			IntermediateDirectory=".\Debug"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			UseOfMFC="2"
+			UseOfMFC="0"
 			CharacterSet="2"
 			>
 			<Tool
@@ -68,7 +68,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="mfc80d.lib SHPRead.lib SHPSpatialIndex.lib testrunnerd.lib cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib ProvidersCommon.lib SHPOverrides.lib"
+				AdditionalDependencies="SHPRead.lib SHPSpatialIndex.lib testrunnerd.lib cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib ProvidersCommon.lib SHPOverrides.lib"
 				OutputFile="$(OutDir)/UnitTest.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(FDOTHIRDPARTY)\cppunit\lib;$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOUTILITIES)\Common\Lib\Win32\Debug;..\..\Lib\Win32\Debug"
@@ -109,7 +109,7 @@
 			IntermediateDirectory=".\Release"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			UseOfMFC="2"
+			UseOfMFC="0"
 			CharacterSet="2"
 			>
 			<Tool

@@ -244,7 +244,7 @@ void ShpSpatialIndex::Reopen(OpenFlags openFlags)
 {
     ErrorCode status;
 
-    ATLTRACE(L"Reopening a file without recreating the object\n");
+    _FDORPT0(0, "Reopening a file without recreating the object\n");
 
 	if (openFlags & IDF_OPEN_READ)
 	{

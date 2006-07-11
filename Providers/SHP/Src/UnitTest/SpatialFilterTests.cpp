@@ -19,6 +19,7 @@
 
 #include "Pch.h"
 #include "SpatialFilterTests.h"
+#include "UnitTestUtil.h"
 
 #include <ShpSpatialIndex.h>
 #include <ShapeFile.h>
@@ -175,7 +176,7 @@ int SpatialFilterTests::runSpatialQuery( FdoString* class_name, FdoSpatialOperat
         select->SetFilter(filter);
 
 #ifdef _WIN32       
-        CTime time1(CTime::GetCurrentTime());
+        double time1 = UnitTestUtil::GetTime_S();
 #endif
 
         FdoPtr<FdoIFeatureReader> reader = select->Execute();
@@ -194,10 +195,10 @@ int SpatialFilterTests::runSpatialQuery( FdoString* class_name, FdoSpatialOperat
             printf("Count = %d\n", count);
 
 #ifdef _WIN32       
-        CTime time2(CTime::GetCurrentTime());
-        CTimeSpan elapsed = time2 - time1;
+        double time2 = UnitTestUtil::GetTime_S();
+        double elapsed = time2 - time1;
         if (VERBOSE)
-            printf("  >> elapsed: %s\n",elapsed.Format("%H:%M:%S" ) );
+			printf("Elapsed: %lf sec\n",elapsed);
 #endif
     }
     catch( FdoException* ex)

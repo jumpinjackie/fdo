@@ -70,7 +70,7 @@ ShapeCPG::ShapeCPG (const WCHAR* name, char *locale)
 {
     ErrorCode status;
 
-    ATLTRACE(L"Creating new ShapeCPG object\n");
+    _FDORPT0(0, "Creating new ShapeCPG object\n");
 
     try
     {

@@ -29,10 +29,24 @@
 #ifndef _UNICODE
 #define _UNICODE
 #endif
-// turn off tracing
-#define ATLTRACE            __noop
-#define ATLTRACE2           __noop
-#include <atlbase.h>
+
+// NOTE: Uncomment the following #define statement to enable tracing....
+// #define FDORPT_TRACING
+// 
+
+#ifdef FDORPT_TRACING
+#define _FDORPT0(rptno, msg) _RPT0(rptno, msg)
+#define _FDORPT1(rptno, msg, arg1) _RPT1(rptno, msg, arg1)
+#define _FDORPT2(rptno, msg, arg1, arg2) _RPT2(rptno, msg, arg1, arg2)
+#define _FDORPT3(rptno, msg, arg1, arg2, arg3) _RPT3(rptno, msg, arg1, arg2, arg3)
+#define _FDORPT4(rptno, msg, arg1, arg2, arg3, arg4) _RPT4(rptno, msg, arg1, arg2, arg3, arg4)
+#else //FDORPT_TRACING
+#define _FDORPT0(rptno, msg) __noop
+#define _FDORPT1(rptno, msg, arg1) __noop
+#define _FDORPT2(rptno, msg, arg1, arg2) __noop
+#define _FDORPT3(rptno, msg, arg1, arg2, arg3) __noop
+#define _FDORPT4(rptno, msg, arg1, arg2, arg3, arg4) __noop
+#endif // FDORPT_TRACING
 
 #else // _WIN32
 
@@ -64,9 +78,11 @@ typedef ULONG_PTR DWORD_PTR;
 #define HIBYTE(w)           ((BYTE)((DWORD_PTR)(w) >> 8))
 
 #define _ASSERT(expr) ((void)0)
-inline void ATLTRACE(const wchar_t* pszFormat, ...)
-{}
-#define ATLASSERT(expr) _ASSERT(expr)
+#define _FDORPT0(rptno, msg) ((void)0)
+#define _FDORPT1(rptno, msg, arg1) ((void)0)
+#define _FDORPT2(rptno, msg, arg1, arg2) ((void)0)
+#define _FDORPT3(rptno, msg, arg1, arg2, arg3) ((void)0)
+#define _FDORPT4(rptno, msg, arg1, arg2, arg3, arg4) ((void)0)
 #define _tcsicmp(s1,s2) wcscasecmp(s1,s2)
 
 #endif // _WIN32

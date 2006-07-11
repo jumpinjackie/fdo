@@ -93,7 +93,7 @@ ShapeDBF::ShapeDBF (const WCHAR* name) :
     eDBFColumnType eType;
     unsigned long offset;
 
-    ATLTRACE(L"Creating ShapeDBF object\n");
+    _FDORPT0(0, "Creating ShapeDBF object\n");
 
     // Clear the DBF Header info
     memset(&m_DBFHeader,0,sizeof(DBFHeader));
@@ -150,9 +150,7 @@ ShapeDBF::ShapeDBF (const WCHAR* name) :
             coloff += pTableFieldDescriptorArray[i].cFieldLength;
             m_pColumnInfo->SetColumnScale(i,pTableFieldDescriptorArray[i].cFieldDecimalCount);
 
-            #ifdef _DEBUG
-            ATLTRACE(L"Column: %d  Name:'%s'  Type:%d  Length:%d\n",i,wszColumnName,eType,pTableFieldDescriptorArray[i].cFieldLength);
-            #endif
+            _FDORPT4(0, "Column: %d  Name:'%s'  Type:%d  Length:%d\n",i,wszColumnName,eType,pTableFieldDescriptorArray[i].cFieldLength);
         }
 
         // Save current file pointer location
@@ -182,7 +180,7 @@ ShapeDBF::ShapeDBF (const WCHAR* name, ColumnInfo* info) :
     char byte[2];
     ErrorCode status;
 
-    ATLTRACE(L"Creating new ShapeDBF object\n");
+    _FDORPT0(0, "Creating new ShapeDBF object\n");
 
     // Clear the DBF Header info
     memset (&m_DBFHeader, 0, sizeof(DBFHeader));
@@ -225,7 +223,7 @@ void ShapeDBF::Reopen(OpenFlags openFlags)
 {
     ErrorCode status;
 
-    ATLTRACE(L"Reopening a DBF file without recreating the object\n");
+    _FDORPT0(0, "Reopening a DBF file without recreating the object\n");
 
 	if (!OpenFile( FileName(), openFlags, status))
         throw FdoCommonFile::ErrorCodeToException (status, FileName(), openFlags);
@@ -273,7 +271,7 @@ bool ShapeDBF::WriteColumnDef (ColumnInfo* info, int column)
  *****************************************************************************/
 ShapeDBF::~ShapeDBF()
 {
-    ATLTRACE(L"Deleting ShapeDBF object\n");
+    _FDORPT0(0, "Deleting ShapeDBF object\n");
 
     if (&NoColumns != m_pColumnInfo)
     {
@@ -302,7 +300,7 @@ ShapeDBF::~ShapeDBF()
  *****************************************************************************/
 void ShapeDBF::GetFileHeaderDetails(int& nColumns)
 {
-    ATLTRACE(L"GetFileHeaderDetails()\n");
+    _FDORPT0(0, "GetFileHeaderDetails()\n");
 
     // Read the header block into a DBF header structure
     if (!ReadFile(&m_DBFHeader,sizeof(DBFHeader)))
@@ -345,7 +343,7 @@ void ShapeDBF::PutFileHeaderDetails ()
  *****************************************************************************/
 void ShapeDBF::CheckDBFFormat ()
 {
-    ATLTRACE(L"CheckDBFFormat()\n");
+    _FDORPT0(0, "CheckDBFFormat()\n");
 
     // Check the DBF format against the supported versions
     if ((m_DBFHeader.cDBFFormat != cDBASE_III_PLUS_NO_MEMO) && (m_DBFHeader.cDBFFormat != cDBASE_III_PLUS_MEMO))
@@ -389,7 +387,7 @@ RowData* ShapeDBF::GetRowAt(int nRecord)
     int nStatus = SHP_OK;
     RowData* pRowData = NULL;
 
-    ATLTRACE(L"GetRowAt(%d)\n",nRecord);
+    _FDORPT1(0, "GetRowAt(%d)\n",nRecord);
 
 	// Quick return if the requested row doesn't exist.
     if ( (nRecord < 0) || (nRecord >= m_DBFHeader.nRecords) )
@@ -449,7 +447,7 @@ void ShapeDBF::SetRowAt (RowData* row, int nRecord, bool batch)
 {
     int length;
 
-    ATLTRACE(L"SetRowAt(%d)\n",nRecord);
+    _FDORPT1(0, "SetRowAt(%d)\n",nRecord);
 
     if ((nRecord >= 0) && (nRecord < m_DBFHeader.nRecords + 1)) // can add one more to the end
     {

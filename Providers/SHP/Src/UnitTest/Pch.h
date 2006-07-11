@@ -16,23 +16,36 @@
  */
 
 #ifdef _WIN32
-#define VC_EXTRALEAN        // Exclude rarely-used stuff from Windows headers
-#include <afxwin.h>         // MFC core and standard components
+#define WIN32_LEAN_AND_MEAN  // Exclude rarely-used stuff from Windows headers
 // Undefine GetMessage
 #ifdef GetMessage
 #undef GetMessage
 #endif
 #endif
 
-#define _CRTDBG_MAP_ALLOC
-
-#ifdef _WIN32
-#include <crtdbg.h>
-#include <Windows.h>
-#else
+#include <malloc.h>
+#include <math.h>
+#include <time.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
+
+#include <Fdo.h>
+#include <FdoCommonOSUtil.h>
+#include <FdoCommonStringUtil.h>
+#include <FdoCommonMiscUtil.h>
+#include <cppunit/TestCase.h>
+#include <cppunit/extensions/HelperMacros.h>
+
+#define _CRTDBG_MAP_ALLOC
+
+#ifdef _WIN32
+
+#include <crtdbg.h>
+#include <Windows.h>
+
+#else
+
 #include <alloca.h>
 
 #define FALSE   0
@@ -65,22 +78,8 @@ typedef LPWSTR PTSTR, LPTSTR;
 typedef time_t FILETIME;
 
 #define _ASSERT(expr) ((void)0)
-inline void ATLTRACE(const wchar_t* pszFormat, ...)
-{}
-#define ATLASSERT(expr) _ASSERT(expr)
 #define _tcsicmp(s1,s2) wcscasecmp(s1,s2)
+
 #endif // _WIN32
 
-
-#include <malloc.h>
-#include <stdlib.h>
-#include <math.h>
-#include <time.h>
-
-#include <Fdo.h>
-#include <FdoCommonOSUtil.h>
-#include <FdoCommonStringUtil.h>
-#include <FdoCommonMiscUtil.h>
-#include <cppunit/TestCase.h>
-#include <cppunit/extensions/HelperMacros.h>
 

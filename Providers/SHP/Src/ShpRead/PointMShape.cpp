@@ -51,7 +51,7 @@ PointMShape::~PointMShape ()
 
 FdoByteArray* PointMShape::GetGeometry ()
 {
-    ATLTRACE(L"PointMShape::GetGeometry()\n");
+    _FDORPT0(0, "PointMShape::GetGeometry()\n");
 
     FdoPtr<FdoFgfGeometryFactory> factory;
     FdoPtr<FdoIGeometry> geometry;
@@ -89,24 +89,24 @@ void PointMShape::DebugPrintDetails ()
 {
     try
     {
-        ATLTRACE(L"\n>>>>>>>>>> PointMShape Details START <<<<<<<<<<\n");
+        _FDORPT0(0, "\n>>>>>>>>>> PointMShape Details START <<<<<<<<<<\n");
         superclass::DebugPrintDetails ();
 
         // Add the extra M Data details
         double min = GetMData ()->GetRangeMin ();
         double max = GetMData ()->GetRangeMax ();
 
-        ATLTRACE(L"\nMData Min: %lf  MData Max: %lf\n",min,max);
+        _FDORPT2(0, "\nMData Min: %lf  MData Max: %lf\n",min,max);
 
         double* pMArray = GetMData ()->GetArray ();
         for (int i = 0; i < GetNumPoints (); i++)
-            ATLTRACE(L"\nMArray[%d] = %lf\n", i, pMArray[i]);
+            _FDORPT2(0, "\nMArray[%d] = %lf\n", i, pMArray[i]);
 
-        ATLTRACE(L"\n>>>>>>>>>> PointMShape Details END <<<<<<<<<<\n\n");
+        _FDORPT0(0, "\n>>>>>>>>>> PointMShape Details END <<<<<<<<<<\n\n");
     }
     catch (...)
     {
-        ATLTRACE(L">>>>>>>>>> DebugPrintDetails() - EXCEPTION <<<<<<<<<<\n");
+        _FDORPT0(0, ">>>>>>>>>> DebugPrintDetails() - EXCEPTION <<<<<<<<<<\n");
     }
 }
 

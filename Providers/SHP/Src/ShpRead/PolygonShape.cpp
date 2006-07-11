@@ -73,7 +73,7 @@ PolygonShape::~PolygonShape ()
 
 FdoByteArray* PolygonShape::GetGeometry ()
 {
-    ATLTRACE(L"PolygonShape::GetGeometry()\n");
+    _FDORPT0(0, "PolygonShape::GetGeometry()\n");
 
     FdoPtr<FdoFgfGeometryFactory> factory;
     FdoPtr<FdoLinearRingCollection> rings;
@@ -99,7 +99,7 @@ FdoByteArray* PolygonShape::GetGeometry ()
             {
                 if (count == 2)
                 {   // this happens often enough in the Sheboygan data to make an effort here
-#pragma message ("TODO: Revisit bad shape policy and revise shape classes as appropriate.")
+#pragma message ("TODO: Revisit shape policy and revise shape classes as appropriate.")
                     double* doubles;
 
                     doubles = (double*)&GetPoints ()[GetParts ()[i]];
@@ -174,8 +174,8 @@ void PolygonShape::DebugPrintDetails ()
 #ifdef _DEBUG
     try
     {
-        ATLTRACE(L"\n>>>>>>>>>> PolygonShape Details START <<<<<<<<<<\n");
-        ATLTRACE(L"Total Polygons: %d  Vertices: %d\n", GetNumParts (), GetNumPoints ());
+        _FDORPT0(0, "\n>>>>>>>>>> PolygonShape Details START <<<<<<<<<<\n");
+        _FDORPT2(0, "Total Polygons: %d  Vertices: %d\n", GetNumParts (), GetNumPoints ());
 
         int nPreviousPoint = 0;
         for (int nParts = 0; nParts < GetNumParts (); nParts++)
@@ -200,22 +200,22 @@ void PolygonShape::DebugPrintDetails ()
             }
 
 
-            ATLTRACE(L"\nPolygon: %d  Total Vertices: %d\n\n",nParts+1,nNumPoints);
+            _FDORPT2(0, "\nPolygon: %d  Total Vertices: %d\n\n",nParts+1,nNumPoints);
 
             nPreviousPoint = GetParts ()[nParts+1];
             int nStartPoint = GetParts ()[nParts];
 
             for (int nIndex=0;nIndex<nNumPoints;nIndex++)
             {
-                ATLTRACE(L"V: %ld  x = %lf  y = %lf\n",nIndex+1,(GetPoints ()[nStartPoint + nIndex]).x,(GetPoints ()[nStartPoint + nIndex]).y);
+                _FDORPT3(0, "V: %ld  x = %lf  y = %lf\n",nIndex+1,(GetPoints ()[nStartPoint + nIndex]).x,(GetPoints ()[nStartPoint + nIndex]).y);
             }
         }
 
-        ATLTRACE(L"\n>>>>>>>>>> PolygonShape Details END <<<<<<<<<<\n\n");
+        _FDORPT0(0, "\n>>>>>>>>>> PolygonShape Details END <<<<<<<<<<\n\n");
     }
     catch (...)
     {
-        ATLTRACE(L">>>>>>>>>> DebugPrintDetails() - EXCEPTION <<<<<<<<<<\n");
+        _FDORPT0(0, ">>>>>>>>>> DebugPrintDetails() - EXCEPTION <<<<<<<<<<\n");
     }
 #endif
 // ****************************************************************************

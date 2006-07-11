@@ -39,7 +39,7 @@ using namespace std;
  *****************************************************************************/
 ShapeIndex::ShapeIndex(const WCHAR* wszFilename)
 {
-    ATLTRACE(L"Creating ShapeIndex object\n");
+    _FDORPT0(0, "Creating ShapeIndex object\n");
 
     ClearRowIndexCache();
 
@@ -54,7 +54,7 @@ ShapeIndex::ShapeIndex (const WCHAR* wszFilename, ShapeFile* shp, FdoString *tem
     int record;
     SHPIndexRecordHeader header;
 
-    ATLTRACE(L"Creating new ShapeIndex object\n");
+    _FDORPT0(0, "Creating new ShapeIndex object\n");
 
     ClearRowIndexCache();
 
@@ -121,7 +121,7 @@ ShapeIndex::ShapeIndex (const WCHAR* wszFilename, ShapeFile* shp, FdoString *tem
  *****************************************************************************/
 ShapeIndex::~ShapeIndex()
 {
-    ATLTRACE(L"Deleting ShapeIndex object\n");
+    _FDORPT0(0, "Deleting ShapeIndex object\n");
 }
 
 /*****************************************************************************
@@ -140,7 +140,7 @@ ShapeIndex::~ShapeIndex()
  *****************************************************************************/
 void ShapeIndex::ReadRecordHeader (ULONG ulIndexOffset, ULONG& nOffset, int& nContentLength)
 {
-    ATLTRACE(L"ReadRecordHeader()\n");
+    _FDORPT0(0, "ReadRecordHeader()\n");
     SHPIndexRecordHeader shpIndexRecordHeader;
 
     if (!SetFilePointer64((FdoInt64)ulIndexOffset))
@@ -154,7 +154,7 @@ void ShapeIndex::ReadRecordHeader (ULONG ulIndexOffset, ULONG& nOffset, int& nCo
 
 void ShapeIndex::WriteRecordHeader (ULONG ulIndexOffset, ULONG nOffset, int nContentLength)
 {
-    ATLTRACE(L"WriteRecordHeader()\n");
+    _FDORPT0(0, "WriteRecordHeader()\n");
     SHPIndexRecordHeader header;
 
     // Avoid the cache getting stale
@@ -185,7 +185,7 @@ void ShapeIndex::WriteRecordHeader (ULONG ulIndexOffset, ULONG nOffset, int nCon
  *****************************************************************************/
 void ShapeIndex::GetObjectAt (int nObjectNum, ULONG& nOffset, int& nContentLength)
 {
-    ATLTRACE(L">>>>>>>>>> GetObjectAt() <<<<<<<<<<\n");
+    _FDORPT0(0, ">>>>>>>>>> GetObjectAt() <<<<<<<<<<\n");
     long nRowsLengthRead;
     int nNumNewRows;
 

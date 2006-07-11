@@ -46,7 +46,7 @@ using namespace std;
  *****************************************************************************/
 ShapeFile::ShapeFile(const WCHAR* wszFilename)
 {
-    ATLTRACE(L"Creating ShapeFile object\n");
+    _FDORPT0(0, "Creating ShapeFile object\n");
     OpenRead (wszFilename);
 
     m_szRowBuffer = NULL;
@@ -59,7 +59,7 @@ ShapeFile::ShapeFile(const WCHAR* wszFilename)
 
 ShapeFile::ShapeFile(const WCHAR* wszFilename, eShapeTypes shape_type, bool has_m)
 {
-    ATLTRACE(L"Creating new ShapeFile object\n");
+    _FDORPT0(0, "Creating new ShapeFile object\n");
     OpenWrite (wszFilename, shape_type, has_m);
 
     m_szRowBuffer = NULL;
@@ -83,7 +83,7 @@ ShapeFile::ShapeFile(const WCHAR* wszFilename, eShapeTypes shape_type, bool has_
  *****************************************************************************/
 ShapeFile::~ShapeFile()
 {
-    ATLTRACE(L"Deleting ShapeFile object\n");
+    _FDORPT0(0, "Deleting ShapeFile object\n");
 
     if ( m_szRowBuffer )
     {
@@ -117,7 +117,7 @@ ShapeFile::~ShapeFile()
  *****************************************************************************/
 int ShapeFile::ReadRecordHeader (ULONG ulOffset, ULONG& ulNextObjectOffset, int& nRecordNumber)
 {
-    ATLTRACE(L"ReadRecordHeader()\n");
+    _FDORPT0(0, "ReadRecordHeader()\n");
     SHPRecordHeader shpRecordHeader;
     long read;
     int ret;
@@ -170,7 +170,7 @@ int ShapeFile::ReadRecordHeader (ULONG ulOffset, ULONG& ulNextObjectOffset, int&
  *****************************************************************************/
 Shape* ShapeFile::GetObjectAt (ULONG nOffset, eShapeTypes& nShapeType)
 {
-    ATLTRACE(L">>>>>>>>>> GetObjectAt() Offset:%d <<<<<<<<<<\n",nOffset);
+    _FDORPT1(0, ">>>>>>>>>> GetObjectAt() Offset:%d <<<<<<<<<<\n",nOffset);
 
     // Read the Record Header and details
     int nRecordNumber;
@@ -245,7 +245,7 @@ Shape* ShapeFile::GetObjectAt (ULONG nOffset, eShapeTypes& nShapeType)
 
 void ShapeFile::WriteRecordHeader (int number, int length)
 {
-    ATLTRACE(L"WriteRecordHeader()\n");
+    _FDORPT0(0, "WriteRecordHeader()\n");
     SHPRecordHeader header;
 
     header.nRecordNumber = SWAPLONG(number);
@@ -258,7 +258,7 @@ void ShapeFile::WriteRecordHeader (int number, int length)
 
 void ShapeFile::PutShape (Shape* shape)
 {
-    ATLTRACE(L"PutShape()\n");
+    _FDORPT0(0, "PutShape()\n");
     if (!WriteFile (shape->GetContent (), shape->GetContentLength () * WORD_SIZE_IN_BYTES))
         throw FdoCommonFile::LastErrorToException (L"ShapeFile::PutShape");
 }
@@ -1287,7 +1287,7 @@ void ShapeFile::SetObjectAt (Shape* shape, bool batch)
 
 void ShapeFile::ReadRawDataBlock(ULONG ulStartOffset )
 {
-    ATLTRACE(L"ReadRawDataBlock()\n");
+    _FDORPT0(0, "ReadRawDataBlock()\n");
     ULONG   nOffset = ulStartOffset;
     int     numRecs = 0;
     long    bytesRead;
@@ -1384,7 +1384,7 @@ void ShapeFile::ReadRawDataBlock(ULONG ulStartOffset )
  *****************************************************************************/
 void ShapeFile::ReadRecordInfo(SHPRecordInfo *pRecordInfo )
 {
-    ATLTRACE(L"ReadRecordInfo()\n");
+    _FDORPT0(0, "ReadRecordInfo()\n");
     int     nStatus = SHP_OK;
     long    bytesRead;
 

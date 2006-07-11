@@ -54,7 +54,7 @@ PointShape::~PointShape ()
 
 FdoByteArray* PointShape::GetGeometry ()
 {
-    ATLTRACE(L"PointShape::GetGeometry()\n");
+    _FDORPT0(0, "PointShape::GetGeometry()\n");
 
     FdoPtr<FdoFgfGeometryFactory> factory;
     FdoPtr<FdoIGeometry> geometry;
@@ -90,18 +90,18 @@ void PointShape::DebugPrintDetails ()
 #ifdef _DEBUG
     try
     {
-        ATLTRACE(L"\n>>>>>>>>>> PointShape Details START <<<<<<<<<<\n");
-        ATLTRACE(L"Total Vertices: %d\n\n", GetNumPoints ());
+        _FDORPT0(0, "\n>>>>>>>>>> PointShape Details START <<<<<<<<<<\n");
+        _FDORPT1(0, "Total Vertices: %d\n\n", GetNumPoints ());
 
         for (int i = 0; i < GetNumPoints (); i++)
         {
-            ATLTRACE(L"V: %ld  x = %lf  y = %lf\n", i,(GetPoints ()[i]).x, (GetPoints ()[i]).y);
+            _FDORPT3(0, "V: %ld  x = %lf  y = %lf\n", i,(GetPoints ()[i]).x, (GetPoints ()[i]).y);
         }
-        ATLTRACE(L"\n>>>>>>>>>> PointShape Details END <<<<<<<<<<\n\n");
+        _FDORPT0(0, "\n>>>>>>>>>> PointShape Details END <<<<<<<<<<\n\n");
     }
     catch (...)
     {
-        ATLTRACE(L">>>>>>>>>> DebugPrintDetails() - EXCEPTION <<<<<<<<<<\n");
+        _FDORPT0(0, ">>>>>>>>>> DebugPrintDetails() - EXCEPTION <<<<<<<<<<\n");
     }
 #endif
 // ****************************************************************************

@@ -33,7 +33,15 @@
 #define _UNICODE
 #endif
 
-#include <atlbase.h>
+// NOTE: Uncomment the following #define statement to enable tracing....
+// #define FDORPT_TRACING
+// 
+
+#ifdef FDORPT_TRACING
+#define _FDORPT0(rptno, msg) _RPT0(rptno, msg)
+#else 
+#define _FDORPT0(rptno, msg) __noop
+#endif 
 
 #else
 
@@ -68,9 +76,7 @@ typedef LPWSTR PTSTR, LPTSTR;
 typedef time_t FILETIME;
 
 #define _ASSERT(expr) ((void)0)
-inline void ATLTRACE(const wchar_t* pszFormat, ...)
-{}
-#define ATLASSERT(expr) _ASSERT(expr)
+#define _RPT0(rptno, msg) ((void)0)
 #define _tcsicmp(s1,s2) wcscasecmp(s1,s2)
 
 #endif

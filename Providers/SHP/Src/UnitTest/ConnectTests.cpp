@@ -368,7 +368,7 @@ void ConnectTests::connect_wrong_params ()
         FdoConnectionState state = mConnection->Open ();
         CPPUNIT_ASSERT_MESSAGE ("open connection should fail", false);
     }
-    catch (FdoException* ge)
+    catch (FdoException*)
 	{
 	}
     catch (...)
@@ -392,7 +392,7 @@ void ConnectTests::connect_wrong_params2 ()
         FdoConnectionState state = mConnection->Open ();
         CPPUNIT_ASSERT_MESSAGE ("open connection should fail", false);
     }
-    catch (FdoException* ge)
+    catch (FdoException*)
 	{
 	}
     catch (...)
@@ -440,7 +440,7 @@ void ConnectTests::connect_params2 ()
         FdoConnectionState state = mConnection->Open ();
         CPPUNIT_ASSERT_MESSAGE ("open connection should fail", false);
     }
-    catch (FdoException* ge)
+    catch (FdoException*)
 	{
 	}
     catch (...)

@@ -62,7 +62,7 @@ PolylineMShape::~PolylineMShape ()
 
 FdoByteArray* PolylineMShape::GetGeometry ()
 {
-    ATLTRACE(L"PolylineMShape::GetGeometry()\n");
+    _FDORPT0(0, "PolylineMShape::GetGeometry()\n");
 
     FdoPtr<FdoFgfGeometryFactory> factory;
     FdoPtr<FdoLineStringCollection> lines;
@@ -143,26 +143,26 @@ void PolylineMShape::DebugPrintDetails ()
 {
     try
     {
-        ATLTRACE(L"\n>>>>>>>>>> PolylineMShape Details START <<<<<<<<<<\n");
+        _FDORPT0(0, "\n>>>>>>>>>> PolylineMShape Details START <<<<<<<<<<\n");
         superclass::DebugPrintDetails ();
 
         // Add the extra M Data details
         double min = GetMData ()->GetRangeMin ();
         double max = GetMData ()->GetRangeMax ();
 
-        ATLTRACE(L"\nMData Min: %lf  MData Max: %lf\n",min,max);
+        _FDORPT2(0, "\nMData Min: %lf  MData Max: %lf\n",min,max);
 
         double* pMArray = GetMData ()->GetArray ();
         for (int i = 0; i < GetNumPoints (); i++)
         {
-            ATLTRACE(L"\nMArray[%d] = %lf\n", i, pMArray[i]);
+            _FDORPT2(0, "\nMArray[%d] = %lf\n", i, pMArray[i]);
         }
 
-        ATLTRACE(L"\n>>>>>>>>>> PolylineMShape Details END <<<<<<<<<<\n\n");
+        _FDORPT0(0, "\n>>>>>>>>>> PolylineMShape Details END <<<<<<<<<<\n\n");
     }
     catch (...)
     {
-        ATLTRACE(L">>>>>>>>>> DebugPrintDetails() - EXCEPTION <<<<<<<<<<\n");
+        _FDORPT0(0, ">>>>>>>>>> DebugPrintDetails() - EXCEPTION <<<<<<<<<<\n");
     }
 }
 

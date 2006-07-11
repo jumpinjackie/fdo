@@ -95,7 +95,7 @@ MultiPatchShape::~MultiPatchShape ()
 
 FdoByteArray* MultiPatchShape::GetGeometry ()
 {
-    ATLTRACE(L"MultiPatchShape::GetGeometry()\n");
+    _FDORPT0(0, "MultiPatchShape::GetGeometry()\n");
 
     FdoPtr<FdoFgfGeometryFactory> factory;
     int dimensionality;
@@ -358,8 +358,8 @@ void MultiPatchShape::DebugPrintDetails ()
 #ifdef _DEBUG
     try
     {
-        ATLTRACE(L"\n>>>>>>>>>> MultiPatchShape Details START <<<<<<<<<<\n");
-        ATLTRACE(L"Total Patches: %d  Vertices: %d\n", GetNumParts (), GetNumPoints ());
+        _FDORPT0(0, "\n>>>>>>>>>> MultiPatchShape Details START <<<<<<<<<<\n");
+        _FDORPT2(0, "Total Patches: %d  Vertices: %d\n", GetNumParts (), GetNumPoints ());
 
         int nPreviousPoint = 0;
         for (int nParts = 0; nParts < GetNumParts (); nParts++)
@@ -384,22 +384,22 @@ void MultiPatchShape::DebugPrintDetails ()
             }
 
 
-            ATLTRACE(L"\nPatch: %d  Total Vertices: %d  Patch Type: %d\n\n", GetNumParts () + 1, GetNumPoints (), GetPartTypes ()[nParts]);
+            _FDORPT3(0, "\nPatch: %d  Total Vertices: %d  Patch Type: %d\n\n", GetNumParts () + 1, GetNumPoints (), GetPartTypes ()[nParts]);
 
             nPreviousPoint = GetParts ()[nParts+1];
             int nStartPoint = GetParts ()[nParts];
 
             for (int nIndex = 0; nIndex < nNumPoints; nIndex++)
             {
-                ATLTRACE(L"V: %ld  x = %lf  y = %lf\n", nIndex + 1, (GetPoints ()[nStartPoint + nIndex]).x,(GetPoints ()[nStartPoint + nIndex]).y);
+                _FDORPT3(0, "V: %ld  x = %lf  y = %lf\n", nIndex + 1, (GetPoints ()[nStartPoint + nIndex]).x,(GetPoints ()[nStartPoint + nIndex]).y);
             }
         }
 
-        ATLTRACE(L"\n>>>>>>>>>> MultiPatchShape Details END <<<<<<<<<<\n\n");
+        _FDORPT0(0, "\n>>>>>>>>>> MultiPatchShape Details END <<<<<<<<<<\n\n");
     }
     catch (...)
     {
-        ATLTRACE(L">>>>>>>>>> DebugPrintDetails() - EXCEPTION <<<<<<<<<<\n");
+        _FDORPT0(0, ">>>>>>>>>> DebugPrintDetails() - EXCEPTION <<<<<<<<<<\n");
     }
 #endif
 // ****************************************************************************

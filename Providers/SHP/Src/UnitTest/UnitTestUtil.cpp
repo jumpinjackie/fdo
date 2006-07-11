@@ -89,4 +89,30 @@ the_exit:
 	return( retcode );
 }
 
+// Get time on system clock (in seconds) -- used for computing elapsed time.
+double UnitTestUtil::GetTime_S(void)
+{
+#ifdef _WIN32   
 
+   double our_time;
+ 
+   our_time = GetTickCount() / 1000.0;
+   return our_time;
+ 
+#else
+
+	struct timeval			this_time;
+	static struct timezone	time_zone = { 0, 0 };
+	double					sec, micro, time;
+
+
+	if (gettimeofday(&this_time, &time_zone) == -1)
+		return (double) 0.0;
+
+	micro = (double) ((double) this_time.tv_usec / (double) 1000000.0);
+	sec = (double) this_time.tv_sec;
+	time = micro + sec;
+	return time;
+	
+#endif 
+}

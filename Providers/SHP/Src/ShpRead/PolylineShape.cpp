@@ -71,7 +71,7 @@ PolylineShape::~PolylineShape ()
 
 FdoByteArray* PolylineShape::GetGeometry ()
 {
-    ATLTRACE(L"PolylineShape::GetGeometry()\n");
+    _FDORPT0(0, "PolylineShape::GetGeometry()\n");
 
     FdoPtr<FdoFgfGeometryFactory> factory;
     FdoPtr<FdoLineStringCollection> lines;
@@ -123,8 +123,8 @@ void PolylineShape::DebugPrintDetails ()
 #ifdef _DEBUG
     try
     {
-        ATLTRACE(L"\n>>>>>>>>>> PolylineShape Details START <<<<<<<<<<\n");
-        ATLTRACE(L"Total Polylines: %d  Vertices: %d\n", GetNumParts (), GetNumPoints ());
+        _FDORPT0(0, "\n>>>>>>>>>> PolylineShape Details START <<<<<<<<<<\n");
+        _FDORPT2(0, "Total Polylines: %d  Vertices: %d\n", GetNumParts (), GetNumPoints ());
 
         int nPreviousPoint = 0;
         for (int nParts = 0; nParts < GetNumParts (); nParts++)
@@ -149,22 +149,22 @@ void PolylineShape::DebugPrintDetails ()
             }
 
 
-            ATLTRACE(L"\nPolyline: %d  Total Vertices: %d\n\n",nParts+1,nNumPoints);
+            _FDORPT2(0, "\nPolyline: %d  Total Vertices: %d\n\n",nParts+1,nNumPoints);
 
             nPreviousPoint = GetParts ()[nParts+1];
             int nStartPoint = GetParts ()[nParts];
 
             for (int nIndex = 0; nIndex < nNumPoints; nIndex++)
             {
-                ATLTRACE(L"V: %ld  x = %lf  y = %lf\n", nIndex + 1, (GetPoints ()[nStartPoint + nIndex]).x, (GetPoints ()[nStartPoint + nIndex]).y);
+                _FDORPT3(0, "V: %ld  x = %lf  y = %lf\n", nIndex + 1, (GetPoints ()[nStartPoint + nIndex]).x, (GetPoints ()[nStartPoint + nIndex]).y);
             }
         }
 
-        ATLTRACE(L"\n>>>>>>>>>> PolylineShape Details END <<<<<<<<<<\n\n");
+        _FDORPT0(0, "\n>>>>>>>>>> PolylineShape Details END <<<<<<<<<<\n\n");
     }
     catch (...)
     {
-        ATLTRACE(L">>>>>>>>>> DebugPrintDetails() - EXCEPTION <<<<<<<<<<\n");
+        _FDORPT0(0, ">>>>>>>>>> DebugPrintDetails() - EXCEPTION <<<<<<<<<<\n");
     }
 #endif
 // ****************************************************************************

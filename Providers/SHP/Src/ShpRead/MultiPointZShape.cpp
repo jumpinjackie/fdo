@@ -62,7 +62,7 @@ MultiPointZShape::~MultiPointZShape ()
 
 FdoByteArray* MultiPointZShape::GetGeometry ()
 {
-    ATLTRACE(L"MultiPointZShape::GetGeometry()\n");
+    _FDORPT0(0, "MultiPointZShape::GetGeometry()\n");
 
     FdoPtr<FdoFgfGeometryFactory> factory;
     int dimensionality;
@@ -165,29 +165,29 @@ void MultiPointZShape::DebugPrintDetails ()
 {
     try
     {
-        ATLTRACE(L"\n>>>>>>>>>> MultiPointZShape Details START <<<<<<<<<<\n");
+        _FDORPT0(0, "\n>>>>>>>>>> MultiPointZShape Details START <<<<<<<<<<\n");
         superclass::DebugPrintDetails ();
 
         // Add the extra Z Data details
         double min = GetZData ()->GetRangeMin ();
         double max = GetZData ()->GetRangeMax ();
 
-        ATLTRACE(L"\nZData Min: %lf  ZData Max: %lf\n",min,max);
+        _FDORPT2(0, "\nZData Min: %lf  ZData Max: %lf\n",min,max);
 
         double* pZArray = GetZData ()->GetArray ();
         if (pZArray)
         {
             for (int i = 0; i < GetNumPoints (); i++)
             {
-                ATLTRACE(L"\nZArray[%d] = %lf\n", i, pZArray[i]);
+                _FDORPT2(0, "\nZArray[%d] = %lf\n", i, pZArray[i]);
             }
         }
 
-        ATLTRACE(L"\n>>>>>>>>>> MultiPointZShape Details END <<<<<<<<<<\n\n");
+        _FDORPT0(0, "\n>>>>>>>>>> MultiPointZShape Details END <<<<<<<<<<\n\n");
     }
     catch (...)
     {
-        ATLTRACE(L">>>>>>>>>> DebugPrintDetails() - EXCEPTION <<<<<<<<<<\n");
+        _FDORPT0(0, ">>>>>>>>>> DebugPrintDetails() - EXCEPTION <<<<<<<<<<\n");
     }
 }
 

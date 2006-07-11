@@ -68,7 +68,7 @@ void ShapeFileBase::OpenWrite (const wchar_t* name, eShapeTypes shape_type, bool
 {
     ErrorCode code;
 
-    ATLTRACE(L"Creating new ShapeFile object\n");
+    _FDORPT0(0, "Creating new ShapeFile object\n");
 
     // Initialize
     m_nFileCode = nSHP_FILE_CODE;
@@ -101,7 +101,7 @@ void ShapeFileBase::Reopen(OpenFlags openFlags)
 {
 	ErrorCode code;
 
-    ATLTRACE(L"Reopening a SHP file without recreating the object\n");
+    _FDORPT0(0, "Reopening a SHP file without recreating the object\n");
 
 	if (openFlags & IDF_OPEN_READ)
 	{
@@ -134,7 +134,7 @@ void ShapeFileBase::GetFileHeaderDetails ()
 {
     SHPHeader shpHeader;
 
-    ATLTRACE(L"GetFileHeaderDetails()\n");
+    _FDORPT0(0, "GetFileHeaderDetails()\n");
 
     // Read the File Header details
     if (!ReadFile (&shpHeader, SHPHeaderSize))
@@ -215,7 +215,7 @@ void ShapeFileBase::PutFileHeaderDetails ()
 {
     SHPHeader header;
 
-    ATLTRACE(L"PutFileHeaderDetails()\n");
+    _FDORPT0(0, "PutFileHeaderDetails()\n");
 
     memset(&header, 0, sizeof(SHPHeader));
     header.nFileCode = SWAPLONG(m_nFileCode);
@@ -255,7 +255,7 @@ void ShapeFileBase::PutFileHeaderDetails ()
  *****************************************************************************/
 void ShapeFileBase::CheckBoundingBox(double dMinValue, double dMaxValue, eMinMaxTypes eMinMaxType)
 {
-    ATLTRACE(L"CheckBoundingBox()\n");
+    _FDORPT0(0, "CheckBoundingBox()\n");
 
     // NOTE: it is perfectly acceptable for a file to have a NULL bounding box *and* contain rows of data
     //       this can happen if (A) the file is a DBF file with no corresponding SHP file, or if (B) a SHP file
