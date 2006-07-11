@@ -842,14 +842,6 @@
 							>
 						</File>
 						<File
-							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIActivateLTCheckpointImp.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIActivateLTCheckpointImp.h"
-							>
-						</File>
-						<File
 							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIActivateLongTransactionImp.cpp"
 							>
 						</File>
@@ -858,15 +850,15 @@
 							>
 						</File>
 						<File
+							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIActivateLTCheckpointImp.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIActivateLTCheckpointImp.h"
+							>
+						</File>
+						<File
 							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIChangeLongTransactionPrivileges.h"
-							>
-						</File>
-						<File
-							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIChangeLTPrivilegesImp.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIChangeLTPrivilegesImp.h"
 							>
 						</File>
 						<File
@@ -879,6 +871,14 @@
 						</File>
 						<File
 							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIChangeLongTransactionSetImp.h"
+							>
+						</File>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIChangeLTPrivilegesImp.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIChangeLTPrivilegesImp.h"
 							>
 						</File>
 						<File
@@ -902,19 +902,19 @@
 							>
 						</File>
 						<File
-							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgICreateLTCheckpointImp.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgICreateLTCheckpointImp.h"
-							>
-						</File>
-						<File
 							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgICreateLongTransactionImp.cpp"
 							>
 						</File>
 						<File
 							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgICreateLongTransactionImp.h"
+							>
+						</File>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgICreateLTCheckpointImp.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgICreateLTCheckpointImp.h"
 							>
 						</File>
 						<File
@@ -994,35 +994,7 @@
 							>
 						</File>
 						<File
-							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgILTCheckpointReaderImp.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgILTCheckpointReaderImp.h"
-							>
-						</File>
-						<File
-							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgILTConflictDirectiveEnumerator.h"
-							>
-						</File>
-						<File
-							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgILTConflictDirectiveEnumeratorImp.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgILTConflictDirectiveEnumeratorImp.h"
-							>
-						</File>
-						<File
 							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgILongTransactionPrivilegeReader.h"
-							>
-						</File>
-						<File
-							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgILTPrivilegeReaderImp.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgILTPrivilegeReaderImp.h"
 							>
 						</File>
 						<File
@@ -1050,6 +1022,34 @@
 							>
 						</File>
 						<File
+							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgILTCheckpointReaderImp.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgILTCheckpointReaderImp.h"
+							>
+						</File>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgILTConflictDirectiveEnumerator.h"
+							>
+						</File>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgILTConflictDirectiveEnumeratorImp.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgILTConflictDirectiveEnumeratorImp.h"
+							>
+						</File>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgILTPrivilegeReaderImp.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgILTPrivilegeReaderImp.h"
+							>
+						</File>
+						<File
 							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIRollbackLongTransaction.h"
 							>
 						</File>
@@ -1058,19 +1058,19 @@
 							>
 						</File>
 						<File
-							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIRollbackLTCheckpointImp.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIRollbackLTCheckpointImp.h"
-							>
-						</File>
-						<File
 							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIRollbackLongTransactionImp.cpp"
 							>
 						</File>
 						<File
 							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIRollbackLongTransactionImp.h"
+							>
+						</File>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIRollbackLTCheckpointImp.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIRollbackLTCheckpointImp.h"
 							>
 						</File>
 						<File

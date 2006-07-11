@@ -387,7 +387,7 @@
 			Filter="h;hpp;hxx;hm;inl;inc"
 			>
 			<File
-				RelativePath="Inc\Spatial.h"
+				RelativePath=".\Inc\FdoSpatial.h"
 				>
 			</File>
 			<File

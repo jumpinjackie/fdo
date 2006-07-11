@@ -21,7 +21,7 @@
 			IntermediateDirectory=".\Debug"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			UseOfMFC="2"
+			UseOfMFC="0"
 			CharacterSet="0"
 			>
 			<Tool
@@ -47,8 +47,6 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				TreatWChar_tAsBuiltInType="true"
-				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="Pch.h"
 				PrecompiledHeaderFile="$(IntDir)/Pch.pch"
@@ -68,11 +66,9 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="testrunnerd.lib cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib"
-				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(FDOTHIRDPARTY)\cppunit\lib;..\Unmanaged\Lib\Win32\Debug"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/unit_test.pdb"
 				SubSystem="1"
 				TargetMachine="1"
 			/>
@@ -108,8 +104,9 @@
 			IntermediateDirectory=".\Release"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			UseOfMFC="2"
+			UseOfMFC="0"
 			CharacterSet="0"
+			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -128,22 +125,15 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
-				InlineFunctionExpansion="1"
-				OmitFramePointers="true"
 				AdditionalIncludeDirectories="$(FDOTHIRDPARTY)\cppunit\include;..\Unmanaged\Inc;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE"
-				StringPooling="true"
 				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="true"
-				TreatWChar_tAsBuiltInType="true"
-				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="Pch.h"
 				PrecompiledHeaderFile="$(IntDir)/Pch.pch"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="0"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -157,13 +147,14 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="testrunner.lib cppunit.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib"
-				OutputFile="$(OutDir)/unit_test.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(FDOTHIRDPARTY)\cppunit\lib;..\Unmanaged\Lib\Win32\Release"
-				GenerateDebugInformation="false"
+				IgnoreDefaultLibraryNames=""
+				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				EntryPointSymbol=""
 				TargetMachine="1"
 			/>
 			<Tool
@@ -189,7 +180,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy schema_merge1a.xml $(OutDir)&#x0D;&#x0A;copy *_master.txt $(OutDir)&#x0D;&#x0A;copy schema_all_v2.xml $(OutDir)&#x0D;&#x0A;&#x0D;&#x0A;copy sc_v2.xml $(OutDir)&#x0D;&#x0A;copy schema_ext1.xml $(OutDir)&#x0D;&#x0A;copy schema_ext1b.xml $(OutDir)&#x0D;&#x0A;copy schema_merge1b.xml $(OutDir)&#x0D;&#x0A;copy schema_unsupported.xsd $(OutDir)&#x0D;&#x0A;copy sc_error.xml $(OutDir)&#x0D;&#x0A;copy g_coords.txt $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\testrunner.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\cppunit_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\Xalan-C_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\XalanMessages_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Release\xerces-c_2_5_0.dll $(OutDir)&#x0D;&#x0A;"
+				CommandLine="copy gml_*.xml $(OutDir)&#x0D;&#x0A;copy schema_merge1a.xml $(OutDir)&#x0D;&#x0A;copy *_master.txt $(OutDir)&#x0D;&#x0A;&#x0D;&#x0A;copy schema_all_v2.xml $(OutDir)&#x0D;&#x0A;&#x0D;&#x0A;copy sc_v2.xml $(OutDir)&#x0D;&#x0A;copy schema_ext1.xml $(OutDir)&#x0D;&#x0A;copy schema_ext1b.xml $(OutDir)&#x0D;&#x0A;copy schema_merge1b.xml $(OutDir)&#x0D;&#x0A;copy schema_unsupported.xsd $(OutDir)&#x0D;&#x0A;copy sc_error.xml $(OutDir)&#x0D;&#x0A;copy g_coords.txt $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\testrunner.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\cppunit_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\Xalan-C_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\XalanMessages_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Release\xerces-c_2_5_0.dll $(OutDir)&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>

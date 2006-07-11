@@ -249,11 +249,11 @@
 				>
 			</File>
 			<File
-				RelativePath="Src\Geometry\Fgf\GeometryImpl.h"
+				RelativePath="Src\Geometry\GeometryImpl.h"
 				>
 			</File>
 			<File
-				RelativePath="Src\Geometry\GeometryImpl.h"
+				RelativePath="Src\Geometry\Fgf\GeometryImpl.h"
 				>
 			</File>
 			<File
@@ -402,10 +402,6 @@
 			Filter="h;hpp;hxx;hm;inl;inc"
 			>
 			<File
-				RelativePath="Inc\Geometry\Dimensionality.h"
-				>
-			</File>
-			<File
 				RelativePath="Inc\Geometry\DirectPositionImpl.h"
 				>
 			</File>
@@ -414,7 +410,7 @@
 				>
 			</File>
 			<File
-				RelativePath="Inc\Geometry\Fgf\GeometryFactory.h"
+				RelativePath=".\Inc\FdoGeometry.h"
 				>
 			</File>
 			<File
@@ -435,10 +431,6 @@
 			</File>
 			<File
 				RelativePath="Inc\Geometry\GeometryStream\GeometryStreamWriter.h"
-				>
-			</File>
-			<File
-				RelativePath="Inc\Geometry\GeometryType.h"
 				>
 			</File>
 			<File
