@@ -20,7 +20,24 @@ I. Windows Notes:
 
   In preparation for building the Windows Open Source FDO Binaries
 
-  1. Ensure that the Windows Environment Variables are set as follows:
+  1. The FDO open source build process supports the usage of either the the Visual 
+     Studio Express, Standard or Professional editions. The Express edition can 
+     be download and installed for free from the following sites.
+
+     Download the Visual Studio C# Express Edition from: 
+         
+        http://msdn.microsoft.com/vstudio/express/visualcsharp/download/
+     
+     Download the Visual Studio C++ Express Edition from: 
+ 
+        http://msdn.microsoft.com/vstudio/express/visualc/download/
+
+  2. In order to build The FDO Thirdparty OpenSSL components, be sure to 
+     install ActiveState Perl, available from:
+     
+        http://www.activestate.com/ActivePerl
+
+  3. Ensure that the Windows Environment Variables are set as follows:
 
         SET FDO=<FDO OpenSource>\Fdo
         SET FDOUTILITIES=<FDO OpenSource>\Utilities
@@ -29,18 +46,13 @@ I. Windows Notes:
         SET XERCESCROOT=%FDOTHIRDPARTY%\apache\xml-xerces\c
         SET NLSDIR=%XALANROOT%\Src\xalanc\NLS
 
-  2. In order to build The FDO Thirdparty OpenSSL components, be sure to 
-     install ActiveState Perl, available from:
-     
-        http://www.activestate.com/ActivePerl
-
-  3. In order to build all FDO Windows components, ensure that the Microsoft
+  4. In order to build all FDO Windows components, ensure that the Microsoft
      MsBuild tool that is used by the the FDO build process is included in 
      the Windows system PATH.
 
         set PATH=%PATH%;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727
  
-  4. In order to build the ArcSDE Provider, you will need to have the
+  5. In order to build the ArcSDE Provider, you will need to have the
      ArcSDE 9.1 Client SDK installed and the following environment variable 
      set that points to the installation location:
 
@@ -48,7 +60,7 @@ I. Windows Notes:
 
      Note that ArcSDE is licensed software and must be obtained from an ESRI vendor.
 
-  5. In order to build the MySQL Provider, you will need to download 
+  6. In order to build the MySQL Provider, you will need to download 
      and install the MySQL 5.0 Windows client and developer components from:
 
         http://dev.mysql.com/downloads/mysql/5.0.html
@@ -59,7 +71,7 @@ I. Windows Notes:
 
      e.g. set FDOMYSQL=c:\Program Files\MySQL\MySQL Server 5.0
 
-  6. OPTIONAL: The FDO build includes several generated .cpp files that were 
+  7. OPTIONAL: The FDO build includes several generated .cpp files that were 
      generated from source .y files by the Bision and Sed utilities. These 
      files are fairly static therefore they are not automatically regenerated 
      as a part of the standard FDO build process. If changes are made 
@@ -107,7 +119,7 @@ I. Windows Notes:
 
         build_parse.bat
  
-  7. OPTIONAL: The FDO build process allows it's documentation to be regenerated. 
+  8. OPTIONAL: The FDO build process allows it's documentation to be regenerated. 
      If this is required, install the OpenSource Doxygen documentation generation
      software.  Doxygen is a documentation system for C++, C, Java, Objective-C, 
      Python, IDL (Corba and Microsoft flavors) and to some extent PHP, C#, and D.
@@ -119,7 +131,7 @@ I. Windows Notes:
      "open-sourced", cross-platform graph drawing toolkit from AT&T and Lucent 
      Bell Labs.
      
-     To install graphviz, refer to: http://www.research.att.com/sw/tools/graphviz/ 
+     To install graphviz, refer to: http://www.graphviz.org/ 
 
      The FDO Doxygen documentation generation process also uses the Microsoft 
      HTML Help Workshop. Microsoft HTML Help is the standard help system for the 
@@ -139,6 +151,12 @@ I. Windows Notes:
         
         set PATH=%PATH%;C:\Program Files\doxygen\bin
         set PATH=%PATH%;C:\Program Files\ATT\Graphviz\bin
+
+  9. NOTE: Use the <FDO OpenSource>\setenvironment.bat script to assist in setting and
+     maintaing the correct environment settings for the FDO build process. 
+     This script can be modifed and used to set the correct environment variables 
+     and PATH settings.
+
  
 II. Windows Build Instructions:
 
@@ -247,7 +265,12 @@ II. Windows Build Instructions:
             **** Build documentation and install files to C:\Fdo
             build -o=C:\Fdo -d=build -a=install
 
- 4.   In order to run the SHP, SDF, and ArcSDE Provider Unit Tests
+ 4.   In order to run the FDO API, SHP, SDF, and ArcSDE Provider Unit Tests
+
+        FDO:
+
+            cd <FDO OpenSource Location>\Fdo\Unmanaged\bin\win32\Debug
+            UnitTest
 
         SDF:
 
@@ -261,7 +284,7 @@ II. Windows Build Instructions:
 
         ArcSDE:
 
-            Please refer to <FDO OpenSource Location>\Providers\ArcSDE\UnitTest_README.txt
+            NOTE: Please refer to <FDO OpenSource Location>\Providers\ArcSDE\UnitTest_README.txt
             for details on how to create test users and test data, and which command-line arguments
             to pass to the ArcSDE Provider UnitTest executable in order to point to your
             test server and data.
@@ -360,6 +383,10 @@ I. Linux Notes:
      FDO build process. In order to recompile the .y files into their .cpp and .h
      counterparts, execute the build_parse.sh script.
 
+  9. NOTE: Use the <FDO OpenSource>\setenvironment.sh script to assist in setting and
+     maintaing the correct environment settings for the FDO build process. 
+     This script can be modifed and used to set the correct environment variables 
+     and PATH settings.
 
 II. Linux Build Instructions:
 
