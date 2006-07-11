@@ -22,11 +22,24 @@
 
 #ifdef _WIN32
 #pragma once
+#define WIN32_LEAN_AND_MEAN  // Exclude rarely-used stuff from Windows headers
+#endif
 
-#define WIN32_LEAN_AND_MEAN        // Exclude rarely-used stuff from Windows headers
-// Windows Header Files:
-#include <windows.h>
-#endif // _WIN32
+#include <tchar.h>
+#include <malloc.h>
+#include <math.h>
+#include <time.h>
+#include <limits>       // For quiet_NaN()
+#include <float.h>      // For _isnan()
+#include <stdlib.h>
 
 #include <FdoSde.h>
+#include <FdoCommon.h>
+
+#define _CRTDBG_MAP_ALLOC
+
+#ifdef _WIN32
+#include <windows.h>
+#include <crtdbg.h>  // for _crtSetDbgFlag() and _CrtCheckMemory() and _ASSERTE
+#endif
 

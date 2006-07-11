@@ -17,27 +17,30 @@
  */
 
 #ifdef _WIN32
-#define VC_EXTRALEAN        // Exclude rarely-used stuff from Windows headers
-#include <afxwin.h>         // MFC core and standard components
-// Undefine GetMessage
+#pragma once
+#define WIN32_LEAN_AND_MEAN // Exclude rarely-used stuff from Windows headers
 #ifdef GetMessage
 #undef GetMessage
 #endif
 #endif
 
+#include <tchar.h>
+#include <malloc.h>
+#include <math.h>
+#include <time.h>
+#include <limits>       // For quiet_NaN()
+#include <float.h>      // For _isnan()
+#include <stdlib.h>
+
+#include <FdoSde.h>
+#include <FdoCommon.h>
+#include <cppunit/TestCase.h>
+#include <cppunit/extensions/HelperMacros.h>
+
 #define _CRTDBG_MAP_ALLOC
 
 #ifdef _WIN32
-#include <crtdbg.h>
-#include <Windows.h>
-#endif // _WIN32
+#include <windows.h>
+#include <crtdbg.h>  // for _crtSetDbgFlag() and _CrtCheckMemory() and _ASSERTE
+#endif
 
-#include <malloc.h>
-#include <stdlib.h>
-#include <math.h>
-#include <time.h>
-
-#include <FdoSde.h>
-#include <Common/Ptr.h>
-#include <cppunit/TestCase.h>
-#include <cppunit/extensions/HelperMacros.h>

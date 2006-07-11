@@ -22,18 +22,6 @@
 #pragma once
 #endif // _WIN32
 
-
-
-
-// common C++ headers:
-#include "malloc.h"
-#include <limits>       // For quiet_NaN()
-#include <float.h>      // For _isnan()
-#ifdef _WIN32
-#include <crtdbg.h>  // for _crtSetDbgFlag() and _CrtCheckMemory() and _ASSERTE
-#endif
-
-
 // define MIMIC_OTHER_PROVIDER to match arbitrary behaviour with 'the other' provider
 #define MIMIC_OTHER_PROVIDER
 
