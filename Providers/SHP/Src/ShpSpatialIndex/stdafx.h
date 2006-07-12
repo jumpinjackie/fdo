@@ -76,7 +76,7 @@ typedef LPWSTR PTSTR, LPTSTR;
 typedef time_t FILETIME;
 
 #define _ASSERT(expr) ((void)0)
-#define _RPT0(rptno, msg) ((void)0)
+#define _FDORPT0(rptno, msg) ((void)0)
 #define _tcsicmp(s1,s2) wcscasecmp(s1,s2)
 
 #endif
