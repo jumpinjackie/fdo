@@ -887,7 +887,7 @@ bool SdfSimpleFeatureReader::ReadNext()
 						m_currentFeatureRecno = *(REC_NO*)(m_currentKey->get_data());
 					else
 						m_currentFeatureRecno++;
-					m_currentKey->set_data(m_currentKey->get_data()); // This is required since m_currentKey was pointing
+                    m_currentKey->set_data(&m_currentFeatureRecno); // This is required since m_currentKey was pointing to a memory location that may get re-used/freed
 				}
             }
 
@@ -937,7 +937,7 @@ bool SdfSimpleFeatureReader::ReadNext()
 				m_currentFeatureRecno = *(REC_NO*)(m_currentKey->get_data());
 			else
 				m_currentFeatureRecno++;
-			m_currentKey->set_data(m_currentKey->get_data()); // This is required since m_currentKey was pointing to a memory location that may get re-used/freed
+			m_currentKey->set_data(&m_currentFeatureRecno); // This is required since m_currentKey was pointing to a memory location that may get re-used/freed
             
             if (ret != 0)
                 throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_10_ERROR_ACCESSING_SDFDB)));
