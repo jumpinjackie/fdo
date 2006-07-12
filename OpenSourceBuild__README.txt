@@ -20,20 +20,42 @@ I. Windows Notes:
 
   In preparation for building the Windows Open Source FDO Binaries
 
-  1. The FDO open source build process supports the usage of either the the Visual 
-     Studio Express, Standard or Professional editions. The Express edition can 
-     be download and installed for free from the following sites.
+  1. The FDO open source build process supports the usage of either the Visual 
+     Studio Express, Standard or Professional editions. 
 
-     Download the Visual Studio C# Express Edition from: 
+     The Visual Studio Express software can be download and installed for 
+     free from the following sites.
+
+     Visual Studio C# Express Edition:
          
         http://msdn.microsoft.com/vstudio/express/visualcsharp/download/
      
-     Download the Visual Studio C++ Express Edition from: 
+     Visual Studio C++ Express Edition: 
  
         http://msdn.microsoft.com/vstudio/express/visualc/download/
 
-  2. In order to build The FDO Thirdparty OpenSSL components, be sure to 
-     install ActiveState Perl, available from:
+     In order to build the FDO Components using Visual Studio Express, you are also
+     required to download and install the Windows® Server 2003 R2 Platform SDK.
+
+     Download the Windows® Server 2003 R2 Platform SDK from: 
+
+        http://www.microsoft.com/downloads/details.aspx?FamilyId=0BAF2B35-C656-4969-ACE8-E4C0C0716ADB&displaylang=en
+
+     NOTE: The Windows® Server 2003 R2 Platform SDK is composed of many components. 
+     The only components required for building FDO are:
+
+        - Microsoft Windows Core SDK
+        - Microsoft Data Access Services (MDAC) SDK
+        - Microsoft Web Workshop (IE) SDK
+        
+     You can limit you installation to these components only. 
+
+     The easiest procedure to use the PSDK with VC2005 Express is:
+
+        a) Create a directory "PlatformSDK" under "%ProgramFiles%\Microsoft Visual Studio 8\VC"
+        b) Copy the "bin", "include" and "lib" directory from the PSDK-installation into this directory. 
+
+  2. Install ActiveState Perl, available from:
      
         http://www.activestate.com/ActivePerl
 
