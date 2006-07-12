@@ -2,12 +2,13 @@ GDAL_ROOT = .
 
 !INCLUDE nmake.opt
 
+# Section commented out
 ##############################################################################
 # We need to add vb6 support if STDCALL is defined. 
-!IFDEF STDCALL
-VB6_OBJ = vb6\vb6_support.obj
-VB6_TARGET = vb6_dir
-!ENDIF
+# !IFDEF STDCALL
+# VB6_OBJ = vb6\vb6_support.obj
+# VB6_TARGET = vb6_dir
+# !ENDIF
 
 ##############################################################################
 # The following determines whether we are linking all the OGR formats 
@@ -36,12 +37,20 @@ OGR_OBJ = ogr\ogr.lib
 OGR_INCLUDE =	$(OGR_BASE_INCLUDE)
 !ENDIF
 
+# Section commented out and replaced with section below...
+#!IFDEF STDCALL
+#BASE_INCLUDE =	/INCLUDE:_GDALSimpleImageWarp@36 \
+#		/INCLUDE:_GDALReprojectImage@48 \
+#		/INCLUDE:_GDALComputeMedianCutPCT@32 \
+#		/INCLUDE:_GDALDitherRGB2PCT@28 \
+#		/INCLUDE:_vbSafeArrayToPtr@16 \
+#		/INCLUDE:_OCTNewCoordinateTransformation@8
+
 !IFDEF STDCALL
 BASE_INCLUDE =	/INCLUDE:_GDALSimpleImageWarp@36 \
 		/INCLUDE:_GDALReprojectImage@48 \
 		/INCLUDE:_GDALComputeMedianCutPCT@32 \
 		/INCLUDE:_GDALDitherRGB2PCT@28 \
-		/INCLUDE:_vbSafeArrayToPtr@16 \
 		/INCLUDE:_OCTNewCoordinateTransformation@8
 !ELSE
 BASE_INCLUDE =	/INCLUDE:_GDALSimpleImageWarp \
