@@ -765,6 +765,22 @@
 			<File
 				RelativePath=".\schema_unsupported.xsd"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCXMLDataGeneratorTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCXMLDataGeneratorTool"
+					/>
+				</FileConfiguration>
 				<File
 					RelativePath=".\schema_unsupported.xsx"
 					>

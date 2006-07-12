@@ -185,7 +185,7 @@ public:
 
     virtual FdoLOBValue* GetLOB(FdoString* propertyName) {
         const char* bin = "An infestation of locusts that decimated crops, the worst drought in 15 years, and Niger's government keeping grain prices too high for too long have now caused a region in the brink of a crisis.";
-        FdoPtr<FdoByteArray> ba = FdoByteArray::Create((const unsigned char*)bin, strlen(bin));
+        FdoPtr<FdoByteArray> ba = FdoByteArray::Create((const unsigned char*)bin, (FdoInt32)strlen(bin));
         return FdoBLOBValue::Create(ba);
     }
 
