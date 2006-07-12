@@ -44,7 +44,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="Inc;Src/Fdo;Src/Common;&quot;$(FDOTHIRDPARTY)/apache/xml-xerces/c/src&quot;;Src/Nls"
-				PreprocessorDefinitions="_DEBUG;_USRDLL;EXP_FDO;XML_DEBUG;_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="_DEBUG;_USRDLL;EXP_FDO;XML_DEBUG;_CRT_SECURE_NO_DEPRECATE;_CRT_NON_CONFORMING_SWPRINTFS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -142,7 +142,7 @@
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
 				AdditionalIncludeDirectories="Inc;Src/Fdo;Src/Common;&quot;$(FDOTHIRDPARTY)/apache/xml-xerces/c/src&quot;;Src/Nls"
-				PreprocessorDefinitions="NDEBUG;_USRDLL;EXP_FDO;_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="NDEBUG;_USRDLL;EXP_FDO;_CRT_SECURE_NO_DEPRECATE;_CRT_NON_CONFORMING_SWPRINTFS"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -1072,15 +1072,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Inc\FdoStd.h"
+				>
+			</File>
+			<File
 				RelativePath="Inc\Fdo\IDisposableCollection.h"
 				>
 			</File>
 			<File
 				RelativePath="Inc\Fdo\ReadOnlyCollection.h"
-				>
-			</File>
-			<File
-				RelativePath="Inc\Std.h"
 				>
 			</File>
 			<Filter
@@ -1950,10 +1950,6 @@
 						>
 					</File>
 					<File
-						RelativePath="Inc\Fdo\Commands\LongTransaction\ILTConflictDirectiveEnumerator.h"
-						>
-					</File>
-					<File
 						RelativePath="Inc\Fdo\Commands\LongTransaction\ILongTransactionPrivilegeReader.h"
 						>
 					</File>
@@ -1963,6 +1959,10 @@
 					</File>
 					<File
 						RelativePath="Inc\Fdo\Commands\LongTransaction\ILongTransactionSetReader.h"
+						>
+					</File>
+					<File
+						RelativePath="Inc\Fdo\Commands\LongTransaction\ILTConflictDirectiveEnumerator.h"
 						>
 					</File>
 					<File

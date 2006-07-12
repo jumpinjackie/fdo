@@ -30,7 +30,6 @@ FdoTopology::FdoTopology(
 
 FdoTopology::~FdoTopology()
 {
-    throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_3_NOTIMPLEMENTED)));
 }
 
 FdoString * FdoTopology::GetNodeClassName()

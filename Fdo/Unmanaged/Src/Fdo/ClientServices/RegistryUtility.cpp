@@ -263,9 +263,9 @@ void FdoRegistryUtility::GetLibraryLocation(const wchar_t* providerName, std::ws
                                     FdoPtr<FdoProviderNameTokens> registryTokens = FdoProviderNameTokens::Create(nameValue);
                                     FdoVectorP registryVersionTokens = registryTokens->GetVersionTokens();
 
-                                    FdoSize len1 = inputTokens->GetNameTokens()->GetCount();
-                                    FdoSize len2 = registryTokens->GetNameTokens()->GetCount();
-                                    FdoSize destLen = len1 > len2 ? len1 : len2;
+                                    FdoInt32 len1 = inputTokens->GetNameTokens()->GetCount();
+                                    FdoInt32 len2 = registryTokens->GetNameTokens()->GetCount();
+                                    FdoInt32 destLen = len1 > len2 ? len1 : len2;
 
                                     if ( destLen > 2 ) 
                                         destLen = 2;
@@ -285,9 +285,9 @@ void FdoRegistryUtility::GetLibraryLocation(const wchar_t* providerName, std::ws
 
                                     if (bEqual)
                                     {
-                                        FdoSize len1 = inputVersionTokens->GetCount();
-                                        FdoSize len2 = registryVersionTokens->GetCount();
-                                        FdoSize destLen = len1;
+                                        FdoInt32 len1 = inputVersionTokens->GetCount();
+                                        FdoInt32 len2 = registryVersionTokens->GetCount();
+                                        FdoInt32 destLen = len1;
                                         for ( int k = 0; k < destLen; k++ )
                                         {
                                             double val1 = (k < len1) ? inputVersionTokens->GetValue(k) : -1;
@@ -779,7 +779,7 @@ wchar_t *FdoRegistryUtility::GetFileName()
         first = false;
 #ifndef _WIN32
         {
-		char _fileName[512];
+		    char _fileName[512];
             struct stat my_stat;
             const char *me;
             char *home;
@@ -806,10 +806,6 @@ wchar_t *FdoRegistryUtility::GetFileName()
 			mbstowcs(fileName, _fileName, 512);        }
 #else
         {
-            DWORD attributes;
-            wchar_t buffer[MAX_PATH];
-
-            // try where we are
             swprintf (fileName, L"%ls%ls", getHomeDir (), L"providers.xml");
         }
 #endif

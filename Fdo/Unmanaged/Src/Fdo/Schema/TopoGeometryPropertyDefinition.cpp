@@ -31,7 +31,6 @@ FdoTopoGeometryPropertyDefinition::FdoTopoGeometryPropertyDefinition(
 
 FdoTopoGeometryPropertyDefinition::~FdoTopoGeometryPropertyDefinition()
 {
-    throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_3_NOTIMPLEMENTED)));
 }
 
 FdoString * FdoTopoGeometryPropertyDefinition::GetTopologyName()

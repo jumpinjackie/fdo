@@ -81,7 +81,7 @@ public:
     /// \return
     /// Returns the filter that defines the left operand
     /// 
-	NAMESPACE_OSGEO_FDO_FILTER::Filter* get_LeftOperand();
+	__property NAMESPACE_OSGEO_FDO_FILTER::Filter* get_LeftOperand();
 
     /// \brief
     /// Sets the filter that defines the left operand.

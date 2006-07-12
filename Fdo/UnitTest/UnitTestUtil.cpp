@@ -80,12 +80,15 @@ void UnitTestUtil::PrintException( FdoException* e, FdoIoStream* stream, FdoBool
 	while ( currE ) {
         
         FdoString* pMessage = NULL;
+
+#ifdef _DEBUG
         if ( stripLineNo ) // The following removes the function and line number info from error messages.
 		{
 			pMessage = wcschr( currE->GetExceptionMessage(), ')' );
 			if (NULL != pMessage)
 				pMessage += 2;
 		}
+#endif
 		if (NULL == pMessage)
             pMessage = currE->GetExceptionMessage();
 
