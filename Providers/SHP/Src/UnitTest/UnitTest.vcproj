@@ -68,7 +68,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SHPRead.lib SHPSpatialIndex.lib testrunnerd.lib cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib ProvidersCommon.lib SHPOverrides.lib"
+				AdditionalDependencies="SHPRead.lib SHPSpatialIndex.lib cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib ProvidersCommon.lib SHPOverrides.lib"
 				OutputFile="$(OutDir)/UnitTest.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(FDOTHIRDPARTY)\cppunit\lib;$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOUTILITIES)\Common\Lib\Win32\Debug;..\..\Lib\Win32\Debug"
@@ -158,7 +158,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SHPRead.lib SHPSpatialIndex.lib testrunner.lib cppunit.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib ProvidersCommon.lib SHPOverrides.lib"
+				AdditionalDependencies="SHPRead.lib SHPSpatialIndex.lib cppunit.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib ProvidersCommon.lib SHPOverrides.lib"
 				OutputFile="$(OutDir)/UnitTest.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(FDOTHIRDPARTY)\cppunit\lib;$(FDO)\Unmanaged\Lib\Win32\Release;$(FDOUTILITIES)\Common\Lib\Win32\Release;..\..\Lib\Win32\Release"
