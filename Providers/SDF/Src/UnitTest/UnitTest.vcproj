@@ -65,7 +65,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="cppunitd.lib testrunnerd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib"
+				AdditionalDependencies="cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib"
 				OutputFile="$(OutDir)/UnitTest.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(FDOTHIRDPARTY)\CppUnit\lib\;$(FDO)\Unmanaged\Lib\Win32\Debug"
@@ -147,7 +147,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="cppunit.lib testrunner.lib FDO.lib FDOCommon.lib FDOGeometry.lib"
+				AdditionalDependencies="cppunit.lib FDO.lib FDOCommon.lib FDOGeometry.lib"
 				OutputFile="$(OutDir)/UnitTest.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(FDOTHIRDPARTY)\CppUnit\lib\;$(FDO)\Unmanaged\Lib\Win32\Release"
