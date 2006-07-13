@@ -19705,8 +19705,8 @@ if test $custom_fdo = "DEFAULT"; then
   	{ echo "$as_me:$LINENO: Building with default location of FDO API files at $FDO" >&5
 echo "$as_me: Building with default location of FDO API files at $FDO" >&6;}
   else
- 	{ { echo "$as_me:$LINENO: error: The default FDO API path $FDO is not a valid directory. Please use the custom option" >&5
-echo "$as_me: error: The default FDO API path $FDO is not a valid directory. Please use the custom option" >&2;}
+ 	{ { echo "$as_me:$LINENO: error: The default FDO API path $FDO is not a vsvn checkout https://fdocore.osgeo.org/svn/fdocore/trunkalid directory. Please use the custom option" >&5
+echo "$as_me: error: The default FDO API path $FDO is not a vsvn checkout https://fdocore.osgeo.org/svn/fdocore/trunkalid directory. Please use the custom option" >&2;}
    { (exit 1); exit 1; }; }
   fi
 else
@@ -19816,8 +19816,6 @@ fi
           ac_config_files="$ac_config_files Fdo/Makefile"
 
           ac_config_files="$ac_config_files Utilities/Makefile"
-
-          ac_config_files="$ac_config_files Providers/Makefile"
 
           ac_config_files="$ac_config_files Thirdparty/Makefile"
 
@@ -20451,7 +20449,6 @@ do
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
   "Fdo/Makefile" ) CONFIG_FILES="$CONFIG_FILES Fdo/Makefile" ;;
   "Utilities/Makefile" ) CONFIG_FILES="$CONFIG_FILES Utilities/Makefile" ;;
-  "Providers/Makefile" ) CONFIG_FILES="$CONFIG_FILES Providers/Makefile" ;;
   "Thirdparty/Makefile" ) CONFIG_FILES="$CONFIG_FILES Thirdparty/Makefile" ;;
   "Fdo/Unmanaged/Makefile" ) CONFIG_FILES="$CONFIG_FILES Fdo/Unmanaged/Makefile" ;;
   "Fdo/Unmanaged/Src/Makefile" ) CONFIG_FILES="$CONFIG_FILES Fdo/Unmanaged/Src/Makefile" ;;

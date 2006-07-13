@@ -1,8 +1,8 @@
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = Fdo Utilities Providers
+SUBDIRS = Fdo Utilities
 
-DIST_SUBDIRS = Fdo Utilities Providers Thirdparty
+DIST_SUBDIRS = Fdo Utilities Thirdparty
 
 EXTRA_DIST = \
     build.bat \

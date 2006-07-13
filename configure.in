@@ -37,7 +37,7 @@ if test $custom_fdo = "DEFAULT"; then
   if test -d $FDO; then
   	AC_MSG_NOTICE([Building with default location of FDO API files at $FDO])
   else
- 	AC_MSG_ERROR([The default FDO API path $FDO is not a valid directory. Please use the custom option])
+ 	AC_MSG_ERROR([The default FDO API path $FDO is not a vsvn checkout https://fdocore.osgeo.org/svn/fdocore/trunkalid directory. Please use the custom option])
   fi
 else 
   if test -d $custom_fdo; then
@@ -117,7 +117,6 @@ fi
 AC_CONFIG_FILES(Makefile)
 AC_CONFIG_FILES(Fdo/Makefile)
 AC_CONFIG_FILES(Utilities/Makefile)
-AC_CONFIG_FILES(Providers/Makefile)
 AC_CONFIG_FILES(Thirdparty/Makefile)
 
 #############################################
