@@ -86,7 +86,6 @@ if not exist "%FDOLIBPATHWFS%" mkdir "%FDOLIBPATHWFS%"
 if not exist "%FDODOCPATHWFS%" mkdir "%FDODOCPATHWFS%"
 
 :start_exbuild
-time /t
 if "%TYPEACTIONWFS%"=="clean" SET MSACTIONWFS=Clean
 if "%TYPEACTIONWFS%"=="install" goto install_files_wfs
 
@@ -128,31 +127,26 @@ if exist ..\Docs\HTML\Providers\WFS xcopy/CQEYI ..\Docs\HTML\Providers\WFS\* "%F
 if exist "..\Docs\WFS_Provider_API.chm" copy /y "..\Docs\WFS_Provider_API.chm" "%FDODOCPATHWFS%"
 
 :end
-time /t
 echo End WFS %MSACTIONWFS%
 exit /B 0
 
 :env_error
 echo Environment variable undefined: %FDOACTENVSTUDY%
 SET FDOERROR=1
-time /t
 exit /B 1
 
 :env_path_error
 echo Invalid path contained in FDO environment variable: %FDOACTENVSTUDY%
 SET FDOERROR=1
-time /t
 exit /B 1
 
 :env_path_error_ex
 echo Unable to find location of %FDOACTENVSTUDY% in the Windows System PATH
 SET FDOERROR=1
-time /t
 exit /B 1
 
 :error
 echo There was a build error executing action: %MSACTIONWFS%
-time /t
 exit /B 1
 
 :custom_error
