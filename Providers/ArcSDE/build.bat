@@ -87,7 +87,6 @@ if not exist "%FDOLIBPATHARCSDE%" mkdir "%FDOLIBPATHARCSDE%"
 if not exist "%FDODOCPATHARCSDE%" mkdir "%FDODOCPATHARCSDE%"
 
 :start_exbuild
-time /t
 if "%TYPEACTIONARCSDE%"=="clean" SET MSACTIONARCSDE=Clean
 if "%TYPEACTIONARCSDE%"=="install" goto install_files_ArcSDE
 
@@ -128,31 +127,26 @@ if exist ..\Docs\HTML\Providers\ArcSDE xcopy/CQEYI ..\Docs\HTML\Providers\ArcSDE
 if exist "..\Docs\ArcSDE_Provider_API.chm" copy /y "..\Docs\ArcSDE_Provider_API.chm" "%FDODOCPATHARCSDE%"
 
 :end
-time /t
 echo End ArcSDE %MSACTIONARCSDE%
 exit /B 0
 
 :env_error
 echo Environment variable undefined: %FDOACTENVSTUDY%
 SET FDOERROR=1
-time /t
 exit /B 1
 
 :env_path_error
 echo Invalid path contained in FDO environment variable: %FDOACTENVSTUDY%
 SET FDOERROR=1
-time /t
 exit /B 1
 
 :env_path_error_ex
 echo Unable to find location of %FDOACTENVSTUDY% in the Windows System PATH
 SET FDOERROR=1
-time /t
 exit /B 1
 
 :error
 echo There was a build error executing action: %MSACTIONARCSDE%
-time /t
 exit /B 1
 
 :custom_error
