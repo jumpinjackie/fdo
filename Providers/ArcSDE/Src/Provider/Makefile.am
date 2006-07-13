@@ -31,6 +31,7 @@ libArcSDEProviderSrc_la_SOURCES = \
   ArcSDESchemaManager.cpp \
   ArcSDESchemaMapping.cpp \
   ArcSDESpatialContextReader.cpp \
+  ArcSDESpatialContextSQLReader.cpp \
   ArcSDESpatialContextUtility.cpp \
   ArcSDEUpdateCommand.cpp \
   ArcSDEUtils.cpp \
@@ -117,6 +118,7 @@ noinst_HEADERS = $(libArcSDEProviderSrc_la_SOURCES) \
    ArcSDESelectAggregatesCommand.h \
    ArcSDESelectCommand.h \
    ArcSDESpatialContextReader.h \
+   ArcSDESpatialContextSQLReader.h \
    ArcSDESpatialContextUtility.h \
    ArcSDESQLCommand.h \
    ArcSDESQLDataReader.h \

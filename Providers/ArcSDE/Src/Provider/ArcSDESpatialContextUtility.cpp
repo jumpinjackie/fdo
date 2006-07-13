@@ -101,3 +101,47 @@ FdoStringP ArcSDESpatialContextUtility::GetSpatialContextName(SE_SPATIALREFINFO 
     return spatialContextName;
 }
 
+FdoStringP ArcSDESpatialContextUtility::GetSpatialContextName(FdoString* wAuthName, LONG lSRID)
+{
+    FdoStringP spatialContextName;
+    LONG lResult = -1;
+
+    // Try to get name from AUTH_NAME field:
+    if (0==wcsncmp(wAuthName, SPATIALCONTEXT_AUTHNAME_PREFIX, wcslen(SPATIALCONTEXT_AUTHNAME_PREFIX)))
+    {
+        spatialContextName = (const wchar_t*)(wAuthName + wcslen(SPATIALCONTEXT_AUTHNAME_PREFIX));
+
+        // NOTE: for some unknown scary reason, we get unexpected garbage at the end of the AuthName,
+        //    even though the authname appears valid in the RDBMS, so we need to trim it:
+        spatialContextName = spatialContextName.Left(SPATIALCONTEXT_AUTHNAME_SUFFIX);
+    }
+    else  // use SRID as name
+    {
+        wchar_t wBuffer[50];
+        spatialContextName = FdoCommonOSUtil::ltow(lSRID, wBuffer, 50);
+    }
+
+    return spatialContextName;
+}
+
+
+FdoByteArray* ArcSDESpatialContextUtility::EnvelopeToFgf(SE_ENVELOPE envelope)
+{
+    // Convert SE_ENVELOP to ordinate array:
+    const long ordinateCount = 5*2;  // 5 points * 2 ordinates per point
+    double ordinates[ordinateCount];  
+    ordinates[0] = envelope.minx;    ordinates[1] = envelope.miny;
+    ordinates[2] = envelope.minx;    ordinates[3] = envelope.maxy;
+    ordinates[4] = envelope.maxx;    ordinates[5] = envelope.maxy;
+    ordinates[6] = envelope.maxx;    ordinates[7] = envelope.miny;
+    ordinates[8] = envelope.minx;    ordinates[9] = envelope.miny;
+
+    // Convert ordinate array to Fgf polygon:
+    FdoPtr<FdoFgfGeometryFactory> fgfFactory = FdoFgfGeometryFactory::GetInstance();
+    FdoPtr<FdoILinearRing> exteriorRing = fgfFactory->CreateLinearRing(FdoDimensionality_XY, ordinateCount, ordinates);
+    FdoPtr<FdoIPolygon> polygon = fgfFactory->CreatePolygon(exteriorRing, NULL);
+
+    // Convert Fgf polygon to byte array:
+    return fgfFactory->GetFgf(polygon);
+}
+

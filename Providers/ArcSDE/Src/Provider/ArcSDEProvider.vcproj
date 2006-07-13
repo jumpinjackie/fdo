@@ -569,6 +569,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ArcSDESpatialContextSQLReader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ArcSDESpatialContextSQLReader.h"
+				>
+			</File>
+			<File
 				RelativePath="ArcSDESpatialContextUtility.cpp"
 				>
 			</File>

@@ -30,6 +30,12 @@ public:
 
     // Get the spatial context name from an ArcSDE SE_SPATIALREFINFO:
     static FdoStringP GetSpatialContextName(SE_SPATIALREFINFO spatialRefInfo);
+
+    // Get the spatial context name from an ArcSDE authname and SRID:
+    static FdoStringP GetSpatialContextName(FdoString* authName, LONG srid);
+
+    // Convert SE_ENVELOPE to FGF byte array:
+    static FdoByteArray* EnvelopeToFgf(SE_ENVELOPE envelope);
 };
 
 

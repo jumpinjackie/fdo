@@ -209,21 +209,7 @@ FdoByteArray* ArcSDESpatialContextReader::GetExtent()
     handle_sde_err<FdoException>(lResult, __FILE__, __LINE__, ARCSDE_UNEXPECTED_ERROR, "Unexpected error encountered in ArcSDE Provider.");
 
     // Convert SE_ENVELOP to ordinate array:
-    const long ordinateCount = 5*2;  // 5 points * 2 ordinates per point
-    double ordinates[ordinateCount];  
-    ordinates[0] = envelope.minx;    ordinates[1] = envelope.miny;
-    ordinates[2] = envelope.minx;    ordinates[3] = envelope.maxy;
-    ordinates[4] = envelope.maxx;    ordinates[5] = envelope.maxy;
-    ordinates[6] = envelope.maxx;    ordinates[7] = envelope.miny;
-    ordinates[8] = envelope.minx;    ordinates[9] = envelope.miny;
-
-    // Convert ordinate array to FGF polygon:
-    FdoPtr<FdoFgfGeometryFactory> fgfFactory = FdoFgfGeometryFactory::GetInstance();
-    FdoPtr<FdoILinearRing> exteriorRing = fgfFactory->CreateLinearRing(FdoDimensionality_XY, ordinateCount, ordinates);
-    FdoPtr<FdoIPolygon> polygon = fgfFactory->CreatePolygon(exteriorRing, NULL);
-
-    // Convert FGF polygon to byte array:
-    FdoByteArray* byteArray = fgfFactory->GetFgf(polygon);
+    FdoByteArray* byteArray = ArcSDESpatialContextUtility::EnvelopeToFgf(envelope);
 
     // Cleanup:
     SE_coordref_free(coordref);

@@ -150,6 +150,22 @@ void SpatialContextTests::test_create_delete()
             double minx,miny,maxx,maxy;
             get_extent(scReader, minx, miny, maxx, maxy);
 
+            /* // Uncomment this for additional debug info:
+            printf("\nCOORDSYS:");
+            printf("\n  name=%ls", name);
+            printf("\n  desc=%ls", desc);
+            printf("\n  coordsys=%ls", coordSysName);
+            printf("\n  corodsyswkt=%ls", coordSysWkt);
+            printf("\n  extenttype=%ls", contextType==FdoSpatialContextExtentType_Static ? L"Static" : L"Dynamic");
+            printf("\n  xTolerance=%f", zTolerance);
+            printf("\n  zyTolerance=%f", zyTolerance);
+            printf("\n  minx=%f", minx);
+            printf("\n  miny=%f", miny);
+            printf("\n  maxx=%f", maxx);
+            printf("\n  maxy=%f", maxy);
+            printf("\n");
+            */
+
             // validate this spatial context, if its the one we created earlier:
             if (0==wcscmp(name, spatial_context_name2))
             {
@@ -164,10 +180,14 @@ void SpatialContextTests::test_create_delete()
 
                 CPPUNIT_ASSERT_MESSAGE("Spatial Context type mismatch", contextType==spatial_context_extent_type2);
                 CPPUNIT_ASSERT_MESSAGE("Spatial Context tolerance mismatch", zTolerance==spatial_context_ztolerance2);
-                CPPUNIT_ASSERT_MESSAGE("Extent minx wrong", ArcSDETests::fuzzyEqual(minx, spatial_context_minx2));
-                CPPUNIT_ASSERT_MESSAGE("Extent maxx wrong", ArcSDETests::fuzzyEqual(maxx, spatial_context_maxx2));
-                CPPUNIT_ASSERT_MESSAGE("Extent miny wrong", ArcSDETests::fuzzyEqual(miny, spatial_context_miny2));
-                CPPUNIT_ASSERT_MESSAGE("Extent maxy wrong", ArcSDETests::fuzzyEqual(maxy, spatial_context_maxy2));
+                if (!ArcSDETests::fuzzyEqual(minx, spatial_context_minx2))
+                   CPPUNIT_ASSERT_MESSAGE("Extent minx wrong", ArcSDETests::fuzzyEqual(minx, spatial_context_minx2));
+                if (!ArcSDETests::fuzzyEqual(maxx, spatial_context_maxx2))
+                   CPPUNIT_ASSERT_MESSAGE("Extent maxx wrong", ArcSDETests::fuzzyEqual(maxx, spatial_context_maxx2));
+                if (!ArcSDETests::fuzzyEqual(miny, spatial_context_miny2))
+                   CPPUNIT_ASSERT_MESSAGE("Extent miny wrong", ArcSDETests::fuzzyEqual(miny, spatial_context_miny2));
+                if (!ArcSDETests::fuzzyEqual(maxy, spatial_context_maxy2))
+                   CPPUNIT_ASSERT_MESSAGE("Extent maxy wrong", ArcSDETests::fuzzyEqual(maxy, spatial_context_maxy2));
             }
         }
 
@@ -302,11 +322,14 @@ void SpatialContextTests::test_active()
         //CPPUNIT_ASSERT_MESSAGE("Wrong description returned", 0==wcscmp(scReader->GetDescription(), spatial_context_desc2b));
         double minx,miny,maxx,maxy;
         get_extent(scReader, minx, miny, maxx, maxy);
-        CPPUNIT_ASSERT_MESSAGE("Wrong extent returned", ArcSDETests::fuzzyEqual(minx, spatial_context_minx2b));
-        CPPUNIT_ASSERT_MESSAGE("Wrong extent returned", ArcSDETests::fuzzyEqual(miny, spatial_context_miny2b));
-        CPPUNIT_ASSERT_MESSAGE("Wrong extent returned", ArcSDETests::fuzzyEqual(maxx, spatial_context_maxx2b));
-        CPPUNIT_ASSERT_MESSAGE("Wrong extent returned", ArcSDETests::fuzzyEqual(maxy, spatial_context_maxy2b));
-
+        if (!ArcSDETests::fuzzyEqual(minx, spatial_context_minx2b))
+           CPPUNIT_ASSERT_MESSAGE("Wrong extent returned", ArcSDETests::fuzzyEqual(minx, spatial_context_minx2b));
+        if (!ArcSDETests::fuzzyEqual(miny, spatial_context_miny2b))
+           CPPUNIT_ASSERT_MESSAGE("Wrong extent returned", ArcSDETests::fuzzyEqual(miny, spatial_context_miny2b));
+        if (!ArcSDETests::fuzzyEqual(maxx, spatial_context_maxx2b))
+           CPPUNIT_ASSERT_MESSAGE("Wrong extent returned", ArcSDETests::fuzzyEqual(maxx, spatial_context_maxx2b));
+        if (!ArcSDETests::fuzzyEqual(maxy, spatial_context_maxy2b))
+           CPPUNIT_ASSERT_MESSAGE("Wrong extent returned", ArcSDETests::fuzzyEqual(maxy, spatial_context_maxy2b));
 
 
         //////////////////////////////////////////////////////////////////////
