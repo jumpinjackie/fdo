@@ -86,7 +86,6 @@ if not exist "%FDOLIBPATHSHP%" mkdir "%FDOLIBPATHSHP%"
 if not exist "%FDODOCPATHSHP%" mkdir "%FDODOCPATHSHP%"
 
 :start_exbuild
-time /t
 if "%TYPEACTIONSHP%"=="clean" SET MSACTIONSHP=Clean
 if "%TYPEACTIONSHP%"=="install" goto install_files_shp
 
@@ -130,31 +129,26 @@ if exist ..\Docs\HTML\Providers\SHP xcopy/CQEYI ..\Docs\HTML\Providers\SHP\* "%F
 if exist "..\Docs\SHP_Provider_API.chm" copy /y "..\Docs\SHP_Provider_API.chm" "%FDODOCPATHSHP%"
 
 :end
-time /t
 echo End SHP %MSACTIONSHP%
 exit /B 0
 
 :env_error
 echo Environment variable undefined: %FDOACTENVSTUDY%
 SET FDOERROR=1
-time /t
 exit /B 1
 
 :env_path_error
 echo Invalid path contained in FDO environment variable: %FDOACTENVSTUDY%
 SET FDOERROR=1
-time /t
 exit /B 1
 
 :env_path_error_ex
 echo Unable to find location of %FDOACTENVSTUDY% in the Windows System PATH
 SET FDOERROR=1
-time /t
 exit /B 1
 
 :error
 echo There was a build error executing action: %MSACTIONSHP%
-time /t
 exit /B 1
 
 :custom_error
