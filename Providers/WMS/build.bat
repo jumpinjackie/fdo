@@ -88,7 +88,6 @@ if not exist "%FDOLIBPATHWMS%" mkdir "%FDOLIBPATHWMS%"
 if not exist "%FDODOCPATHWMS%" mkdir "%FDODOCPATHWMS%"
 
 :start_exbuild
-time /t
 if "%TYPEACTIONWMS%"=="clean" SET MSACTIONWMS=Clean
 if "%TYPEACTIONWMS%"=="install" goto install_files_wms
 
@@ -133,31 +132,26 @@ if exist ..\Docs\HTML\Providers\WMS xcopy/CQEYI ..\Docs\HTML\Providers\WMS\* "%F
 if exist "..\Docs\WMS_Provider_API.chm" copy /y "..\Docs\WMS_Provider_API.chm" "%FDODOCPATHWMS%"
 
 :end
-time /t
 echo End WMS %MSACTIONWMS%
 exit /B 0
 
 :env_error
 echo Environment variable undefined: %FDOACTENVSTUDY%
 SET FDOERROR=1
-time /t
 exit /B 1
 
 :env_path_error
 echo Invalid path contained in FDO environment variable: %FDOACTENVSTUDY%
 SET FDOERROR=1
-time /t
 exit /B 1
 
 :env_path_error_ex
 echo Unable to find location of %FDOACTENVSTUDY% in the Windows System PATH
 SET FDOERROR=1
-time /t
 exit /B 1
 
 :error
 echo There was a build error executing action: %MSACTIONWMS%
-time /t
 exit /B 1
 
 :custom_error
