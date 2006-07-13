@@ -1,8 +1,0 @@
-AUTOMAKE_OPTIONS = foreign
-
-SUBDIRS = 
-
-DIST_SUBDIRS = 
-
-EXTRA_DIST = build.bat
-
