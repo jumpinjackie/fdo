@@ -73,8 +73,6 @@ if not exist "%FDO%" goto env_path_error
 SET FDOACTENVSTUDY="FDOTHIRDPARTY"
 if ("%FDOTHIRDPARTY%")==("") goto env_error
 if not exist "%FDOTHIRDPARTY%" goto env_path_error
-cscript //job:envcheck ../preparebuilds.wsf
-if exist %FDO%\Err.log goto env_path_error_ex
 
 if "%TYPEACTIONFDO%"=="build" goto start_exbuild
 if "%TYPEACTIONFDO%"=="clean" goto start_exbuild
@@ -113,7 +111,7 @@ cscript //job:install ../preparebuilds.wsf
 
 echo copy FDO header files
 xcopy /S /C /Q /R /Y Unmanaged\Inc\*.h "%FDOINCPATHFDO%\"
-del /F /Q "%FDOINCPATHFDO%\Spatial.h"
+del /F /Q "%FDOINCPATHFDO%\FdoSpatial.h"
 rmdir /S /Q "%FDOINCPATHFDO%\Spatial"
 
 
