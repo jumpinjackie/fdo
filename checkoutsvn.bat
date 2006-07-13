@@ -166,8 +166,6 @@ svn checkout https://fdocore.osgeo.org/svn/fdocore/trunk/Fdo "%FDO_SVN_ROOT%\Fdo
 if errorlevel 1 goto error
 svn checkout https://fdocore.osgeo.org/svn/fdocore/trunk/www "%FDO_SVN_ROOT%\www" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
-svn checkout https://fdocore.osgeo.org/svn/fdocore/trunk/Providers "%FDO_SVN_ROOT%\Providers" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
-if errorlevel 1 goto error
 svn checkout https://fdocore.osgeo.org/svn/fdocore/trunk/Thirdparty "%FDO_SVN_ROOT%\Thirdparty" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
 svn checkout https://fdocore.osgeo.org/svn/fdocore/trunk/Utilities "%FDO_SVN_ROOT%\Utilities" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
