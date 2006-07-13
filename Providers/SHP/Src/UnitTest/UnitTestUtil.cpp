@@ -22,6 +22,8 @@
 #ifdef _WIN32
 #include <io.h>
 #include <stddef.h>
+#else
+#include <sys/time.h>
 #endif
 
 #define SHP_MESSAGE_DEFINE
