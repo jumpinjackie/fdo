@@ -196,13 +196,11 @@ if "%FDOERROR%"=="1" goto error
 rem # End ODBC part #
 
 :end
-echo End Providers action
-time /t
+echo End Providers Build
 exit /B 0
 
 :error
 echo There was an error.
-time /t
 exit /B 1
 
 :custom_error
