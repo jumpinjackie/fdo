@@ -148,66 +148,70 @@ if "%TYPEACTION%"=="clean" goto start_exbuild
 if not exist "%FDOORGPATH%" mkdir "%FDOORGPATH%"
 
 :start_exbuild
-SET PROVCALLCMD=
 SET PROVCALLCMDEX=-o="%FDOORGPATH%" -c=%TYPEBUILD% -a=%TYPEACTION% -d=%DOCENABLE%
-SET PROVCALLENB=no
-:rebuild_shp
-if "%SHPENABLE%"=="no" goto rebuild_sdf
-if not exist Providers\SHP\build.bat goto rebuild_sdf
-	SET PROVCALLCMD=%PROVCALLCMD% -w=shp
-	SET PROVCALLENB=yes
-:rebuild_sdf
-if "%SDFENABLE%"=="no" goto rebuild_wfs
-if not exist Providers\SDF\build.bat goto rebuild_wfs
-	SET PROVCALLCMD=%PROVCALLCMD% -w=sdf
-	SET PROVCALLENB=yes
-:rebuild_wfs
-if "%WFSENABLE%"=="no" goto rebuild_wms
-if not exist Providers\WFS\build.bat goto rebuild_wms
-	SET PROVCALLCMD=%PROVCALLCMD% -w=wfs
-	SET PROVCALLENB=yes
-:rebuild_wms
-if "%WMSENABLE%"=="no" goto rebuild_arc
-if not exist Providers\WMS\build.bat goto rebuild_arc
-	SET PROVCALLCMD=%PROVCALLCMD% -w=wms
-	SET PROVCALLENB=yes
-:rebuild_arc
-if "%ARCENABLE%"=="no" goto rebuild_odbc
-if not exist Providers\ArcSDE\build.bat goto rebuild_odbc
-	SET PROVCALLCMD=%PROVCALLCMD% -w=arcsde
-	SET PROVCALLENB=yes
-:rebuild_odbc
-if "%ODBCENABLE%"=="no" goto rebuild_mysql
-if not exist Providers\GenericRdbms\Src\ODBC\build.bat goto rebuild_mysql
-	SET PROVCALLCMD=%PROVCALLCMD% -w=odbc
-	SET PROVCALLENB=yes
-:rebuild_mysql
-if "%MYSQLENABLE%"=="no" goto study_rebuild
-if not exist Providers\GenericRdbms\Src\MySQL\build.bat goto study_rebuild
-	SET PROVCALLCMD=%PROVCALLCMD% -w=mysql
-	SET PROVCALLENB=yes
-
-:study_rebuild
-SET PROVCALLCMDEX=%PROVCALLCMDEX%%PROVCALLCMD%
-if "%FDOENABLE%"=="no" goto rebuild_fdo
-SET PROVCALLCMD=%PROVCALLCMD% -w=fdo
 
 :rebuild_fdo
-if "%FDOENABLE%"=="no" goto rebuild_prov
+if "%FDOENABLE%"=="no" goto rebuild_shp
 pushd Fdo
-call build.bat -o="%FDOORGPATH%" -c=%TYPEBUILD% -a=%TYPEACTION% -d=%DOCENABLE%
-popd
-if "%FDOERROR%"=="1" goto error
-rem # End FDO part #
-
-:rebuild_prov
-if "%PROVCALLENB%"=="no" goto end
-rem # Begin providers part #
-pushd Providers
 call build.bat %PROVCALLCMDEX%
 popd
 if "%FDOERROR%"=="1" goto error
-rem # End providers part #
+
+:rebuild_shp
+if "%SHPENABLE%"=="no" goto rebuild_sdf
+if not exist Providers\SHP\build.bat goto rebuild_sdf
+pushd Providers\SHP
+call build.bat %PROVCALLCMDEX%
+popd
+if "%FDOERROR%"=="1" goto error
+
+:rebuild_sdf
+if "%SDFENABLE%"=="no" goto rebuild_wfs
+if not exist Providers\SDF\build.bat goto rebuild_wfs
+pushd Providers\SDF
+call build.bat %PROVCALLCMDEX%
+popd
+if "%FDOERROR%"=="1" goto error
+
+:rebuild_wfs
+if "%WFSENABLE%"=="no" goto rebuild_wms
+if not exist Providers\WFS\build.bat goto rebuild_wms
+pushd Providers\WFS
+call build.bat %PROVCALLCMDEX%
+popd
+if "%FDOERROR%"=="1" goto error
+
+:rebuild_wms
+if "%WMSENABLE%"=="no" goto rebuild_arc
+if not exist Providers\WMS\build.bat goto rebuild_arc
+pushd Providers\WMS
+call build.bat %PROVCALLCMDEX%
+popd
+if "%FDOERROR%"=="1" goto error
+
+:rebuild_arc
+if "%ARCENABLE%"=="no" goto rebuild_odbc
+if not exist Providers\ArcSDE\build.bat goto rebuild_odbc
+pushd Providers\ArcSDE
+call build.bat %PROVCALLCMDEX%
+popd
+if "%FDOERROR%"=="1" goto error
+
+:rebuild_odbc
+if "%ODBCENABLE%"=="no" goto rebuild_mysql
+if not exist Providers\GenericRdbms\Src\ODBC\build.bat goto rebuild_mysql
+pushd Providers\GenericRdbms\Src\ODBC
+call build.bat %PROVCALLCMDEX%
+popd
+if "%FDOERROR%"=="1" goto error
+
+:rebuild_mysql
+if "%MYSQLENABLE%"=="no" goto end
+if not exist Providers\GenericRdbms\Src\MySQL\build.bat goto study_rebuild
+pushd Providers\GenericRdbms\Src\MySQL
+call build.bat %PROVCALLCMDEX%
+popd
+if "%FDOERROR%"=="1" goto error
 
 :end
 echo End Build
