@@ -86,7 +86,6 @@ if not exist "%FDOLIBPATHSDF%" mkdir "%FDOLIBPATHSDF%"
 if not exist "%FDODOCPATHSDF%" mkdir "%FDODOCPATHSDF%"
 
 :start_exbuild
-time /t
 if "%TYPEACTIONSDF%"=="clean" SET MSACTIONSDF=Clean
 if "%TYPEACTIONSDF%"=="install" goto install_files_sdf
 
@@ -127,31 +126,26 @@ if exist ..\Docs\HTML\Providers\SDF xcopy/CQEYI ..\Docs\HTML\Providers\SDF\* "%F
 if exist "..\Docs\SDF_Provider_API.chm" copy /y "..\Docs\SDF_Provider_API.chm" "%FDODOCPATHSDF%"
 
 :end
-time /t
 echo End SDF %MSACTIONSDF%
 exit /B 0
 
 :env_error
 echo Environment variable undefined: %FDOACTENVSTUDY%
 SET FDOERROR=1
-time /t
 exit /B 1
 
 :env_path_error
 echo Invalid path contained in FDO environment variable: %FDOACTENVSTUDY%
 SET FDOERROR=1
-time /t
 exit /B 1
 
 :env_path_error_ex
 echo Unable to find location of %FDOACTENVSTUDY% in the Windows System PATH
 SET FDOERROR=1
-time /t
 exit /B 1
 
 :error
 echo There was a build error executing action: %MSACTIONSDF%
-time /t
 exit /B 1
 
 :custom_error
