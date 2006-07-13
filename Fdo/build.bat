@@ -73,9 +73,6 @@ if not exist "%FDO%" goto env_path_error
 SET FDOACTENVSTUDY="FDOTHIRDPARTY"
 if ("%FDOTHIRDPARTY%")==("") goto env_error
 if not exist "%FDOTHIRDPARTY%" goto env_path_error
-SET FDOACTENVSTUDY="Sed & Bison"
-if exist %FDO%\Err.log del /F /Q %FDO%\Err.log
-SET FDOACTIVEPATHCHECK=GnuWin32\bin
 cscript //job:envcheck ../preparebuilds.wsf
 if exist %FDO%\Err.log goto env_path_error_ex
 
@@ -88,7 +85,6 @@ if not exist "%FDOLIBPATHFDO%" mkdir "%FDOLIBPATHFDO%"
 if not exist "%FDODOCPATHFDO%" mkdir "%FDODOCPATHFDO%"
 
 :start_exbuild
-time /t
 if "%TYPEACTIONFDO%"=="clean" SET MSACTIONFDO=Clean
 if "%TYPEACTIONFDO%"=="install" goto install_files
 
@@ -153,30 +149,25 @@ popd
 
 :end
 echo End FDO %MSACTIONFDO%
-time /t
 exit /B 0
 
 :env_error
 echo Environment variable undefined: %FDOACTENVSTUDY%
 SET FDOERROR=1
-time /t
 exit /B 1
 
 :env_path_error
 echo Invalid path contained in FDO environment variable: %FDOACTENVSTUDY%
 SET FDOERROR=1
-time /t
 exit /B 1
 
 :env_path_error_ex
 echo Unable to find location of %FDOACTENVSTUDY% in the Windows System PATH
 SET FDOERROR=1
-time /t
 exit /B 1
 
 :error
 echo There was a build error executing action: %MSACTIONFDO%
-time /t
 exit /B 1
 
 :custom_error
