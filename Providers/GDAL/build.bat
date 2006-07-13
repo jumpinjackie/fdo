@@ -86,7 +86,6 @@ if not exist "%FDOLIBPATHRFP%" mkdir "%FDOLIBPATHRFP%"
 if not exist "%FDODOCPATHRFP%" mkdir "%FDODOCPATHRFP%"
 
 :start_exbuild
-time /t
 if "%TYPEACTIONRFP%"=="clean" SET MSACTIONRFP=Clean
 if "%TYPEACTIONRFP%"=="install" goto install_files_rfp
 
@@ -118,31 +117,26 @@ echo No documentation to Generate for GdalFile Provider
 echo No documentation to Intsall for GdalFile Provider
 
 :end
-time /t
 echo End RFP %MSACTIONRFP%
 exit /B 0
 
 :env_error
 echo Environment variable undefined: %FDOACTENVSTUDY%
 SET FDOERROR=1
-time /t
 exit /B 1
 
 :env_path_error
 echo Invalid path contained in FDO environment variable: %FDOACTENVSTUDY%
 SET FDOERROR=1
-time /t
 exit /B 1
 
 :env_path_error_ex
 echo Unable to find location of %FDOACTENVSTUDY% in the Windows System PATH
 SET FDOERROR=1
-time /t
 exit /B 1
 
 :error
 echo There was a build error executing action: %MSACTIONRFP%
-time /t
 exit /B 1
 
 :custom_error
