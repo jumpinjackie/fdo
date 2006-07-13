@@ -211,12 +211,10 @@ rem # End providers part #
 
 :end
 echo End Build
-time /t
 exit /B 0
 
 :error
 echo There was a build error.
-time /t
 exit /B 1
 
 :custom_error
