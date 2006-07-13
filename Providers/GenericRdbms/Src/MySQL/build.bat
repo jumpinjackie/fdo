@@ -88,7 +88,6 @@ if not exist "%FDODOCPATHMYSQL%" mkdir "%FDODOCPATHMYSQL%"
 if not exist "%FDOBINPATHMYSQL%\com" mkdir "%FDOBINPATHMYSQL%\com"
 
 :start_exbuild
-time /t
 if "%TYPEACTIONMYSQL%"=="clean" SET MSACTIONMYSQL=Clean
 if "%TYPEACTIONMYSQL%"=="install" goto install_files_MySQL
 
@@ -147,31 +146,26 @@ if exist "..\Docs\MYSQL_Provider_API.chm" copy /y "..\Docs\MYSQL_Provider_API.ch
 popd
 
 :end
-time /t
 echo End MySQL %MSACTIONMYSQL%
 exit /B 0
 
 :env_error
 echo Environment variable undefined: %FDOACTENVSTUDY%
 SET FDOERROR=1
-time /t
 exit /B 1
 
 :env_path_error
 echo Invalid path contained in FDO environment variable: %FDOACTENVSTUDY%
 SET FDOERROR=1
-time /t
 exit /B 1
 
 :env_path_error_ex
 echo Unable to find location of %FDOACTENVSTUDY% in the Windows System PATH
 SET FDOERROR=1
-time /t
 exit /B 1
 
 :error
 echo There was a build error executing action: %MSACTIONMYSQL%
-time /t
 exit /B 1
 
 :custom_error

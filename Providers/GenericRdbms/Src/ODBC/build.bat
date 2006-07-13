@@ -84,7 +84,6 @@ if not exist "%FDOLIBPATHODBC%" mkdir "%FDOLIBPATHODBC%"
 if not exist "%FDODOCPATHODBC%" mkdir "%FDODOCPATHODBC%"
 
 :start_exbuild
-time /t
 if "%TYPEACTIONODBC%"=="clean" SET MSACTIONODBC=Clean
 if "%TYPEACTIONODBC%"=="install" goto install_files_ODBC
 
@@ -141,31 +140,26 @@ if exist "..\Docs\ODBC_Provider_API.chm" copy /y "..\Docs\ODBC_Provider_API.chm"
 popd
 
 :end
-time /t
 echo End ODBC %MSACTIONODBC%
 exit /B 0
 
 :env_error
 echo Environment variable undefined: %FDOACTENVSTUDY%
 SET FDOERROR=1
-time /t
 exit /B 1
 
 :env_path_error
 echo Invalid path contained in FDO environment variable: %FDOACTENVSTUDY%
 SET FDOERROR=1
-time /t
 exit /B 1
 
 :env_path_error_ex
 echo Unable to find location of %FDOACTENVSTUDY% in the Windows System PATH
 SET FDOERROR=1
-time /t
 exit /B 1
 
 :error
 echo There was a build error executing action: %MSACTIONODBC%
-time /t
 exit /B 1
 
 :custom_error
