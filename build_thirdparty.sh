@@ -61,7 +61,7 @@ done
 if test "$SHOWHELP" == yes; then
 
    echo "************************************************************************************************************"
-   echo "build_thirdparty.sh [--h] [--a Action]"
+   echo "build_thirdparty.sh [--h] [--a Action] [--m ConfigMakefiles]"
    echo "*"
    echo "Help:            --h[elp]"
    echo "Action:          --a[ction] buildinstall(default), build, install, uninstall, clean"
@@ -77,12 +77,7 @@ if test "$TYPECONFIGURE" == configure ; then
   libtoolize --force
   automake --add-missing --copy
   autoconf
-
-  if test "$TYPEBUILD" == release; then
-     ./configure
-  else
-     ./configure --enable-debug=yes
-  fi
+  ./configure
 fi
 
 if test ! -e "Thirdparty/Thirdparty.sh"; then
