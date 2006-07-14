@@ -188,7 +188,7 @@ bool SdfScrollableFeatureReader::ReadAtIndex( unsigned int recordindex )
 	// Need to make a table scan
 	int ret = m_dbData->GetFirstFeature( m_currentKey, m_currentData );
 	if( ret != SQLiteDB_OK )
-		return count;
+		return false;
 
 	do{
 		count++;
