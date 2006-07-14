@@ -85,12 +85,12 @@ FdoInt32 FdoWmsStreamReaderGdalByRow::ReadNext( FdoByte* buffer,
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_2_BADPARAMETER, "Bad parameter to method."));
 
 	FdoInt32 countRead = 0;
-	FdoInt32 remains = GetLength() - GetIndex();
+	FdoInt64 remains = GetLength() - GetIndex();
 	if (remains > 0)
 	{
 		countRead = count;
 		if (count == -1 || count > remains)
-			countRead = remains;
+			countRead = (FdoInt32)remains;
 
 		memcpy(buffer+offset, m_buffer+m_index, countRead);
 		m_index += countRead;

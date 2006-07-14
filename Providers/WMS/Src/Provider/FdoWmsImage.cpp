@@ -329,13 +329,13 @@ void FdoWmsImage::_getBuffer()
 	_destroyBuffer();
 
 	FdoInt64 length = GetLength();
-	m_buffer = new FdoByte[length];
+	m_buffer = new FdoByte[(size_t)length];
 
 	int i, j;
 	FdoInt32 bandSize = GetBandSize();
 	if (bandSize >= 3) // if it's R,G,B,A data model, merge them into one single RGBA stream
 	{
-		FdoByte* buffer_band = new FdoByte[length/bandSize];
+		FdoByte* buffer_band = new FdoByte[(size_t)(length/bandSize)];
 		for (i=0; i < bandSize; i++)
 		{		
 			m_bands[i]->RasterIO(GF_Read, 0, 0, m_bands[i]->GetXSize(), m_bands[i]->GetYSize(), buffer_band, m_imageXSize, m_imageYSize, m_bands[i]->GetRasterDataType(), 0 , 0);
