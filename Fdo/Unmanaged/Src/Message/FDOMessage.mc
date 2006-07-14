@@ -951,7 +951,7 @@ Setting length of stream to %1$d bytes failed.
 MessageId=9026
 SymbolicName=FDO_26_BUFFEROVERWRITEERROR
 Language=English
-Cannot write %1$lld bytes to buffer with %1$lld bytes remaining.
+Cannot write %1$lld bytes to buffer with %2$lld bytes remaining.
 .
 MessageId=9027
 SymbolicName=FDO_27_BUFFERLENGTHERROR
