@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+	<link href="styles/projectcontent.css" rel="stylesheet" type="text/css">
+	<title>FDO Open Source - Glossary</title>
+</head>
+<body>
+<h1>FDO Open Source - Glossary</h1>
+<dl>
+	<dt>Feature Schema</dt>
+	<dd>
+	A set of classes and their corresponding properties and relationships.
+	Each Feature Schema typically contains the classes for a specific domain,
+	for example, Electrical Schema, Gas Schema, etc..
+	The Feature Schema defines its classes in an FDO provider-independent form.
+	</dd>
+	<dt>GML</dt
+	<dd>OGC’s Geography Markup Language. An XML format for geographic data.</dd>
+	<dt>Schema</dt>
+	<dd>
+	In RDBMS terms, a Schema is a collection of tables, indexes, views, etc.
+	in a database. Feature and RDBMS schemas do not correspond 1:1.
+	A Feature Schema may be stored in different RDBMS schemas
+	and an RDBMS schema might be composed of multiple logical schemas.
+	</dd>
+	<dt>OGC</dt>
+	<dd>Open Gis Consortium</dd>
+	<dt>Schema Mapping</dt>
+	<dd>
+	A set of hints that determine how Feature Schemas are stored
+	in an FDO data store.
+	The contents of Schema Mappings vary depending on the FDO Provider type. 
+	</dd>
+	<dt>Tolerance</dt>
+	<dd>
+	Used to determine when two points are close enough to be considered to be
+	equivalent in certain spatial tests. In FDOL, the tolerance value is used
+	as a radius around a position rather than as a distance along an axis.
+	In the majority of cases, the distance between the points is compared
+	to the tolerance using the 'less than' predicate. If the X and Y tolerances
+	are both 0.05, the point B (1.0, 1.0) is considered to be equivalent to
+	point A (0.96, 0.96) and point C (1.04, 1.04), but is not considered to be
+	equivalent to point D (0.96, 0.94) or point E (1.04, 1.06). The
+	relationship is not transitive. That is, point A is not equivalent to
+	point C. Repeated applications of the <strong>isEquivalentTo</strong>
+	predicate to the same data always yields the same result.
+	</dd>
+</dl>
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+	<link href="styles/projectcontent.css" rel="stylesheet" type="text/css">
+	<title>FDO Open Source - Getting Started</title>
+</head>
+<body>
+<h1>FDO Open Source - Getting Started</h1>
+<h2>Get the Source and Build the Binaries</h2>
+<p>This is described in the build <a href="documentation.html">documentation</a>.</p>
+<p>The FDO installation path on Linux is fixed. It is /usr/local/fdo-&lt;version&gt;.</p>
+<p>The FDO installation path on Windows is configurable using a command-line argument to the build script.</p>
+<h2>Setup the Application Development Environment</h2>
+	<p>
+	Check out the settings in the solution (.sln) and project (.vcproj) files
+	found in the FDO source folders on Windows and in the
+	makefile.am and configure.in files found in the FDO source directories
+	on Linux.
+	<h3>Windows</h3>
+	<p>The assumption is that you are using Visual Studio 2005.</p>
+	<p>
+	Use the installation path to set up the environment so that headers
+	and libraries can be located at compile time,
+	and shared objects can be located at runtime.
+	</p>
+	<p>
+	Use the build path to set up the environment so that the debugger can locate
+	program database files (symbol tables) and source files at runtime. 
+	<p>
+		You can make the various files visible by either setting solution or
+		project properties or by setting Visual Studio tool options or by
+		setting an environment variable (PATH).		
+		</p>
+		<p>
+			The first step for the properties method is to select the solution
+			or project in the Solution Explorer, right-click to its pop-up menu
+			and select Properties. The result is that the properties dialog is
+			displayed. If the project properties dialog is displayed,
+			the second step is to expand 'Configuration Properties' in the
+			properties dialog contents pane.
+		</p>
+		<p>
+			The first step for the tool options method is to select 'Options...'
+			from the Tools menu in the main menubar.
+			The result is that the options dialog is displayed.
+		</p>
+		<h4>Headers</h4>
+		<p>
+		In the project properties dialog contents pane expand 'Configuration Properties'
+		and then 'C/C++'. Select 'General' and edit 'Additional Include
+		Directories'.
+		</p>
+		<p>
+		In the options dialog contents pane expand 'Projects and Solutions' and
+		then 'VC++ Directories'. Select 'Include files' from the spinbox labeled
+		'Show directories for:'. Follow the procedure for adding a directory.
+		</p>
+		<h4>Libraries</h4>
+		<p>
+		In the project properties dialog contents pane expand 'Configuration Properties'
+		and then 'Linker'. Select 'General' and edit 'Additional Library
+		Directories'.
+		</p>
+		<p>
+		In the options dialog contents pane expand 'Projects and Solutions' and
+		then 'VC++ Directories'. Select 'Library files' from the spinbox labeled
+		'Show directories for:'. Follow the procedure for adding a directory.
+		</p>
+		<h4>Dynamically Linked Libraries</h4>
+		<p>
+		In the options dialog contents pane expand 'Projects and Solutions' and
+		then 'VC++ Directories'. Select 'Executables' from the spinbox labeled
+		'Show directories for:'. Follow the procedure for adding a directory.
+		</p>
+		<p>
+		Use XP to set the PATH environment variable.
+		</p>
+		<h4>Source Files</h4>
+		<p>
+		In the solution properties dialog contents pane expand
+		'Common Properties'.
+		Select 'Debug Source Files'. Follow the procedure for adding a directory.
+		</p>
+		<p>
+		In the options dialog contents pane expand 'Projects and Solutions' and
+		then 'VC++ Directories'. Select 'Source files' from the spinbox labeled
+		'Show directories for:'. Follow the procedure for adding a directory.
+		</p>
+		<h4>Symbol Table Files (Program Database Files)</h4>
+		<p>
+		In the options dialog contents pane expand 'Debugging' and
+		then 'Symbols'. Follow the procedure for adding a directory.
+		</p>
+	<h3>Linux</h3>
+	<p>Set LD_LIBRARY_PATH.</p>
+<h2>Access the API Reference Documentation</h2>
+<p>
+	The API reference documentation has been created by using doxygen to
+	process comments in the header files. When doxygen generates the html
+	files, it distributes them across a generated file structure to allow
+	for quicker access. This prevents direct linking to the class html files.
+</p>
+<p>
+	When you are asked to read FDO class reference documentation, load the
+	<a href="docs/FDO_API/index.html">FDO C++ API Reference Home Page</a>,
+	click the Classes tab in the right-hand pane and click on the class name.
+</p>
+<h2>Write the Code to Connect to a Provider</h2>
+<p>Do the following:</p>
+<ol>
+	<li></li>
+	<li>Get the list of installed providers</li>
+	<li>Create a connection manager</li>
+	<li>Create a connection</li>
+	<li>Get the connection state</li>
+	<li>Get the connection properties</li>
+	<li>Get values for the connection properties</li>
+	<li>Set the connection properties</li>
+	<li>Open a connection<li>
+	<li>Open a pending connection</li>
+</ol>
+<h3>Create a Provider Registry</h3>
+	<p>
+	The provider registry tells you what providers are installed.
+	</p>
+	<p>
+	Read about the GetProviderRegistry method in the
+	<strong>FdoFeatureAccessManager</strong> class reference.
+	</p>
+<h3>Get the List of Installed Providers</h3>
+	<p>
+	Read about the GetProviders method in the 
+	<strong>FdoProviderRegistry</strong> class reference.
+	This method returns the contents of the providers.xml file found in the
+	&lt;install&gt;/bin folder on Windows and
+	in the /usr/local/fdo-&lt;version&gt;/lib directory on Linux.
+	</p>
+	<p>
+	When you create the connection, you will use one of the strings returned
+	by this method as an argument.
+	</p>
+<h3>Create a Connection Manager</h3>
+	<p>
+	The connection manager creates connections.
+	</p>
+	<p>
+	Read about the GetConnectionManager method in the
+	<strong>FdoFeatureAccessManager</strong> class reference.
+	</p>
+<h3>Create a Connection</h3>
+	<p>
+	Read about the CreateConnection method in the
+	<strong>FdoConnectionManager</strong> class reference.
+	</p>
+<h3>Get the Connection State</h3>
+	<p>
+	At this point the state of the connection is closed.
+	</p>
+	<p>
+	Read about the GetConnectionState method in the
+	<strong>FdoIConnection</strong> class reference.
+	</p>
+<h3>Get the Connection Properties</h3>
+	<p>
+	First you get the connection information. Read about the
+	GetConnectionInfo method in the <strong>FdoIConnection</strong>
+  	class reference.
+	</p>
+	<p>
+	Then you get the connection properties. Read about the
+	GetConnectionProperties method in the <strong>FdoIConnectionInfo</strong>
+  	class reference.
+	This method returns a connection property dictionary.
+	</p>
+	<p>
+	Read about the methods used to access the information in the connection
+	properties dictionary in the <strong>FdoIPropertyDictionary</strong>
+	class reference.
+	Using these methods you can find out the names of the properties,
+	whether they are optional or mandatory, whether they have default values,
+	their type, whether they are enumerable and, if enumerable, what the set
+	of enumerated values is.	
+	</p>
+<h3>Get Values for the Connection Properties</h3>
+	<p>
+	The types of properties used in connections include:
+	</p>
+	<ul>
+		<li>user names</li>
+ 		<li>passwords</li>
+		<li>file path names</li>
+		<li>URLs</li>
+		<li>symbolic host names</li>
+		<li>service identifiers</li>
+		<li>data store names</li>
+	</ul>
+	<p>
+	Each provider has its own unique set of connection properties.
+	The connection properties for the various providers
+	are described in
+	<a href="docs/FET_TheEssentialFDO.pdf">The Essential FDO (PDF)</a>.
+	</p>
+<h3>Set the Connection Properties</h3>
+	<p>
+	Read about the methods used to access the information in the connection
+	properties dictionary in the <strong>FdoIPropertyDictionary</strong>
+  	class reference.
+	</p>
+<h3>Open a Connection</h3>
+	<p>
+	Read about the Open method in the <strong>FdoIConnection</strong> class
+	reference.
+	</p>
+<h3>Open a Pending Connection</h3>
+	<p>
+	Each of the RDBMS-based providers has a connection property, which is there
+	to contain the name of a data store. The data store property is initially
+	not required in order to make a connection. If the property is not set,
+	then the resulting connection, if successful, is in a pending state.
+	</p>
+	<p>
+	As a result of the initial connection operation, the data store property is
+	populated with the names of the data stores in the RDBMS, and its optionality
+	attribute is changed to a value of required.
+	</p>
+	<p>
+	Use the EnumeratePropertyValues method on the
+	<strong>FdoIPropertyDictionary</strong> object
+	to read the set of data store names and set the data store property
+	in the dictionary object to one of those names.
+	Then call the Open method on the <strong>FdoIConnection</strong> object
+	again. This will result in a fully open connection.
+	</p>
+	<p>
+	You can connect to an ArcSDE provider using a pending connection, you will
+	find that there is only ever one name in the set of data store names 
+	returned as a result of the initial connection.
+	</p>
+<h2>Next Steps</h2>
+<h3>ArcSDE Provider</h3>
+<p>
+You use this provider to connect to an ArcSDE server, which is, in turn,
+connected to an Oracle or SQL Server data source.
+</p>
+<p>The next step is to determine the number and composition of feature schema
+in the data store so that you can execute data maintenance (insert, update,
+and delete) and query (select) commands.</p>
+<h3>MySQL Provider</h3>
+<p>The next steps are to create a data store and a user, and after that,
+create a feature schema and execute data maintenance and query commands.
+</p>
+<h3>SDF, SHP and ODBC Providers</h3>
+<p>The next steps are to create a feature schema and execute data
+maintenance and query commands.
+<h3>WFS and WMS Providers</h3>
+<p>The next steps are to determine the composition of the feature schema and
+execute query commands.</p>
+</body>
+</html>
