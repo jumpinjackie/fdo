@@ -195,7 +195,8 @@ private:
     enum ArcSDETestRdbmsType
     {
         ArcSDETestRdbmsType_Oracle,
-        ArcSDETestRdbmsType_SqlServer
+        ArcSDETestRdbmsType_SqlServer,
+        ArcSDETestRdbmsType_Unknown
     };
 
 public:
@@ -208,6 +209,7 @@ public:
             return ArcSDETestRdbmsType_SqlServer;
         else
             ArcSDETests::PrintAndThrow(L"Missing or incorrect rdbms=<oracle|sqlserver> command-line argument");
+        return ArcSDETestRdbmsType_Unknown; // Fix Compiler Warning
     }
 
     static bool SupportsLocking(void)
@@ -253,6 +255,7 @@ public:
             return val;
         else
             ArcSDETests::PrintAndThrow(L"Missing server=<server address> command-line argument");
+        return FdoStringP(""); // Fix Compiler Warning
     }
 
     static FdoStringP Instance(void)
