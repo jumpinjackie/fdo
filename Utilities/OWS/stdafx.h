@@ -19,44 +19,16 @@
 //
 
 #ifdef _WIN32
-
     #define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
-    #include <windows.h>
-    #include <float.h>
-    #include <crtdbg.h>
-
-#endif
-
-
-#ifdef _DEBUG
-    #ifdef _WIN32
-        #include <crtdbg.h>
-        #define ASSERT  _ASSERT
-    #else
-        // linux doesn't seem to have a standard assert mechanism?
-        #define _ASSERT(x)
-        #define ASSERT(x)
-    #endif
-#else
-    // no assertions in release mode
-    #define _ASSERT(x)
-    #define ASSERT(x)
-#endif
-
-
-
-//defines that helps us use hash_map (and similar STL classes) in the same way 
-//under Linux and Windows.
-#ifdef WIN32
     #include <hash_map>
-    #include <functional>
 #else
+    //defines that helps us use hash_map (and similar STL classes) in the same way 
+    //under Linux and Windows.
     #include <ext/hash_map>
     #include <ext/functional>
     namespace stdext = ::__gnu_cxx;
     using namespace std;
 #endif
-
 
 #include <OWS/FdoOWS.h>
 #include <FdoStd.h>

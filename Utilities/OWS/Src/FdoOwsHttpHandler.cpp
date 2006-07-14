@@ -446,7 +446,7 @@ void FdoOwsHttpHandler::Skip( FdoInt64 offset )
     boost::mutex::scoped_lock lock(m_mutex);
     if (offset < 0 && -offset > m_currentRead)
 		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER), "Bad parameter to method."));
-    m_currentRead += offset;
+    m_currentRead += (size_t)offset;
 }
 
 void FdoOwsHttpHandler::Reset()

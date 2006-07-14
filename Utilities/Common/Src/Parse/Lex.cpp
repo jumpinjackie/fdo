@@ -1193,7 +1193,7 @@ bool FdoLex::get_hexstring(FdoCommonParse *pParse)
 	char buffer[256];
 	FdoInt32			val;                   // value of hex number 
 	FdoInt32			len  = 0;
-	FdoInt32			rlen = 0;
+//	FdoInt32			rlen = 0;
 
 //	memset(buffer, 0, 256);
 	for (FdoInt32 i=0; i<256; i++)

@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".\inc;$(FDO)\Unmanaged\inc;$(FDOUTILITIES)\Common\inc;$(FDOTHIRDPARTY)\boost_1_32_0;$(FDOTHIRDPARTY)\libcurl\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOOWS_EXPORTS;CURL_STATICLIB"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOOWS_EXPORTS;CURL_STATICLIB;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
