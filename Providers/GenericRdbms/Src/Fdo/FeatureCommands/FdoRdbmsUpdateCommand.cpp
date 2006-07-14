@@ -369,7 +369,7 @@ FdoInt32 FdoRdbmsUpdateCommand::Execute ()
                 mPropertyValues->Remove( propVal );
         }
     }
-    catch (FdoCommandException *ex)
+    catch (FdoCommandException *)
     {
         UPDATE_CLEANUP;
         throw;

@@ -698,7 +698,7 @@ col_list_freeSqlServerGeometries_S(
     )
 {
     long                     i, j;
-    int                      status = TRUE;
+    bool                     status = true;
     int                      rdbi_status = RDBI_GENERIC_ERROR;
 
     debug_on1( "odbcdr_geom:col_list_freeSqlServerGeometries_S", "%ld columns",
@@ -749,7 +749,7 @@ col_list_free_S(
     )
 {
     long                     i;
-    int                      status = TRUE;
+    bool                     status = true;
     int                      rdbi_status = RDBI_GENERIC_ERROR;
 
     debug_on1( "odbcdr_geom:col_list_free_S", "%ld columns",

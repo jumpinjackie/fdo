@@ -233,7 +233,7 @@ const FdoLockType FdoRdbmsLockedObjectsReader::GetLockType ()
 	if (lockInfoQueryHandler)
 	{
 		if (FdoCommonOSUtil::wcsicmp(lockInfoQueryHandler->GetLockType(), L"X") == 0) 
-         return FdoLockType_AllLongTransactionExclusive;
+            return FdoLockType_AllLongTransactionExclusive;
 
 		if (FdoCommonOSUtil::wcsicmp(lockInfoQueryHandler->GetLockType(), L"E") == 0)
 			 return FdoLockType_Exclusive;
@@ -244,8 +244,8 @@ const FdoLockType FdoRdbmsLockedObjectsReader::GetLockType ()
 		if (FdoCommonOSUtil::wcsicmp(lockInfoQueryHandler->GetLockType(), L"S") == 0)
             return FdoLockType_Shared;   
 	}
-	else
-		return FdoLockType_Unsupported;
+
+    return FdoLockType_Unsupported;
 
 }  //  GetLockType ()
 

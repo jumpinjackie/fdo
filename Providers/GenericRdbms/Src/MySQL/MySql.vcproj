@@ -71,7 +71,7 @@
 				OutputFile="$(OutDir)/MySQLProvider.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\Lib\Win32\Debug;$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOMYSQL)\lib\Debug;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Debug"
-				IgnoreDefaultLibraryNames="libcd.lib"
+				IgnoreDefaultLibraryNames="LIBCMTD"
 				DelayLoadDLLs="LIBMYSQL.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/MySql.pdb"

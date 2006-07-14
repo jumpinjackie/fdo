@@ -260,11 +260,9 @@ int	do_connect(
 {
 
 	char        sql_buf[50];
-	SQLHSTMT    hStmt;
 	SQLHSTMT    hStmt5;
 	SQLRETURN   rc;
 	int	        rdbi_status = RDBI_GENERIC_ERROR;
-    char        szInConn[100];
     char        szOutConn[1024];
     const char *paramDelimiter;
     SQLSMALLINT cbOutConn;
