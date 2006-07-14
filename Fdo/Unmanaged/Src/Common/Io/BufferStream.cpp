@@ -73,9 +73,8 @@ void FdoIoBufferStream::Write( FdoByte* buffer, FdoSize count )
         throw FdoException::Create(
             FdoException::NLSGetMessage(
                 FDO_NLSID(FDO_26_BUFFEROVERWRITEERROR),
-                "Cannot write %d bytes to buffer with %d bytes remaining",
-                count,
-                mSize - mPos
+                (FdoInt64)count,
+                (FdoInt64)mSize - mPos
             )
         );
 
@@ -98,9 +97,8 @@ void FdoIoBufferStream::Write( FdoIoStream* stream, FdoSize count )
         throw FdoException::Create(
             FdoException::NLSGetMessage(
                 FDO_NLSID(FDO_26_BUFFEROVERWRITEERROR),
-                "Cannot write %d bytes to buffer with %d bytes remaining",
-                lCount,
-                mSize - mPos
+                (FdoInt64)lCount,
+                (FdoInt64)mSize - mPos
             )
         );
 
