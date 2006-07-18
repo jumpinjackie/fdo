@@ -45,9 +45,9 @@ if "%2"=="install" goto next_param
 if "%2"=="build" goto next_param
 if "%2"=="buildinstall" goto next_param
 if "%2"=="clean" goto next_param
-goto custom_error
+goto custom_error 
 
-:get_conf
+:get_conf 
 SET TYPEBUILDWMS=%2
 if "%2"=="release" goto next_param
 if "%2"=="debug" SET TYPEBUILDWMSPATH=dbg
@@ -92,9 +92,9 @@ if "%TYPEACTIONWMS%"=="clean" SET MSACTIONWMS=Clean
 if "%TYPEACTIONWMS%"=="install" goto install_files_wms
 
 echo %MSACTIONWMS% %TYPEBUILDWMS% WMS provider dlls
+SET FDOACTIVEBUILD=%cd%\Src\WMSOS
+cscript //Nologo //job:prepare preparebuilds.wsf
 pushd Src
-SET FDOACTIVEBUILD=%cd%\WMSOS
-cscript //job:prepare ../../../preparebuilds.wsf
 msbuild WMSOS_temp.sln /t:%MSACTIONWMS% /p:Configuration=%TYPEBUILDWMS% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if exist WMSOS_temp.sln del /Q /F WMSOS_temp.sln

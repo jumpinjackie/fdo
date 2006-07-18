@@ -75,6 +75,7 @@
 			Dim SrchVal
 			Dim pathFDO
 			Dim nStrPos
+			Dim errFile
 			
 			Set fsc = New FileSystemClass
 			Set WshShell = CreateObject("WScript.Shell")
@@ -82,11 +83,113 @@
 			SrchVal = WshShell.ExpandEnvironmentStrings("%FDOACTIVEPATHCHECK%")
 			pathFDO = WshShell.ExpandEnvironmentStrings("%FDO%")
 			Set WshShell = nothing
+			errFile = pathFDO & "\Err.log"
+		    If fsc.FileExist(errFile) Then
+		        Call fsc.RemoveReadOnly(errFile)
+		        Call fsc.DeleteFile(errFile)
+		    End If
 			nStrPos = InStr(InstallPath, SrchVal)
 		    If nStrPos = 0 Then
-		        Call fsc.WriteStringToFile(pathFDO & "\Err.log", "Unable to find " & SrchVal & " in %PATH%")
+		        Call fsc.WriteStringToFile(errFile, "Unable to find " & SrchVal & " in %PATH%")
             End If
             Set fsc = Nothing
+        </script>
+    </job>
+    <job id="register">
+		<script language="VBScript" src="methods.vbs"></script>
+        <script language="VBScript">
+
+			On Error Resume Next
+			Dim destProject
+			Dim destProvider
+			Dim vszFileName
+			Dim scriptPath
+			Dim continue
+			
+			WScript.Echo ("********************************************************")
+			WScript.Echo ("* Visual C++.Net FDO Provider Template Wizard Register *")
+			WScript.Echo ("********************************************************")
+			
+			destProject = VC_NET_PATH & "\VC\VCProjects"
+		    Set fsc = New FileSystemClass
+		    continue = true
+    	    Set WshShell = CreateObject("WScript.Shell")
+			If not fsc.FolderExist(destProject) Then
+                destProject = fsc.RemoveSeparator (WshShell.ExpandEnvironmentStrings("%VS80COMNTOOLS%")) & "\..\..\VC\VCProjects"
+                If not fsc.FolderExist(destProject) Then
+                    WScript.Echo ("Unable to find Microsoft Visual Studio 8\VCProjects folder!")
+                    WScript.Echo ("To fix the problem please choose from options: ")
+                    WScript.Echo ("1) Update VC_NET_PATH in methods.vbs")
+                    WScript.Echo ("2) Set %VS80COMNTOOLS% with the right VC8 tools path!")
+                    continue = false
+    			End If
+			End If
+		    scriptPath = fsc.RemoveSeparator (WshShell.ExpandEnvironmentStrings("%FDOPROVIDERTEMPLATE%")) & "\"
+            Set WshShell = nothing
+            If continue Then
+               destProvider = destProject & "\FDO Provider\"
+			   If not fsc.FolderExist(destProvider) Then
+			       Call fsc.CreateFolder(destProvider)
+    			End If
+			    vszFileName = destProvider & "FDOProviderTemplate.vsz"
+			    Call fsc.CopyFile(scriptPath & "Setup Files\Project\FDOProviderTemplate.vsdir", destProvider & "FDOProviderTemplate.vsdir")
+			    Call fsc.CopyFile(scriptPath & "Setup Files\Project\FDOProviderTemplate.ico", destProvider & "FDOProviderTemplate.ico")
+			    Call fsc.CopyFile(scriptPath & "Setup Files\Project\FDOProviderTemplate.vsz", vszFileName)
+			    Call fsc.RemoveReadOnly(destProvider & "FDOProviderTemplate.vsdir")
+			    Call fsc.RemoveReadOnly(destProvider & "FDOProviderTemplate.ico")
+			    Call fsc.RemoveReadOnly(vszFileName)
+			    
+			    Call fsc.ReplaceStringInFile(vszFileName, "$$WIZARD_VERSION$$", "8.0")
+			    Call fsc.ReplaceStringInFile(vszFileName, "$$ABSOLUTE_PATH$$", scriptPath & "Setup Files\Wizard")
+			    WScript.Echo ("FDO Provider Template Wizard successfully registered")
+			Else
+                WScript.Echo ("Unable to register FDO Provider Template Wizard")
+            End If
+		    Set fsc = Nothing
+    	    WScript.Echo ("")
+        </script>
+    </job>
+    <job id="unregister">
+		<script language="VBScript" src="methods.vbs"></script>
+        <script language="VBScript">
+			On Error Resume Next
+			Dim baseProject
+			Dim pathProject
+			Dim continue
+			
+			WScript.Echo ("**********************************************************")
+			WScript.Echo ("* Visual C++.Net FDO Provider Template Wizard Unregister *")
+			WScript.Echo ("**********************************************************")
+			
+			pathProject = VC_NET_PATH & "\VC\VCProjects"
+		    Set fsc = New FileSystemClass
+		    continue = true
+			If not fsc.FolderExist(pathProject) Then
+			    Set WshShell = CreateObject("WScript.Shell")
+                pathProject = fsc.RemoveSeparator (WshShell.ExpandEnvironmentStrings("%VS80COMNTOOLS%")) & "\..\..\VC\VCProjects"			
+                Set WshShell = nothing
+                If not fsc.FolderExist(pathProject) Then
+                    WScript.Echo ("Unable to find Microsoft Visual Studio 8\VCProjects folder!")
+                    WScript.Echo ("To fix the problem please choose from options: ")
+                    WScript.Echo ("1) Update VC_NET_PATH in methods.vbs")
+                    WScript.Echo ("2) Set %VS80COMNTOOLS% with the right VC8 tools path!")
+                    continue = false
+    			End If
+			End If
+            If continue Then
+                baseProject = pathProject & "\FDO Provider"
+                If fsc.FolderExist(baseProject) Then
+                    Call fsc.DeleteFile(baseProject & "\FDOProviderTemplate.ico")
+                    Call fsc.DeleteFile(baseProject & "\FDOProviderTemplate.vsdir")
+                    Call fsc.DeleteFile(baseProject & "\FDOProviderTemplate.vsz")
+                    Call fsc.DeleteFolder(baseProject)
+				    WScript.Echo ("FDO Provider Template Wizard successfully unregister")
+			    Else
+				    WScript.Echo ("FDO Provider Template Wizard is not register")
+                End If
+			End If
+		    Set fsc = Nothing
+    	    WScript.Echo ("")
         </script>
     </job>
 </package>
