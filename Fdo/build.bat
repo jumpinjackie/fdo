@@ -38,18 +38,18 @@ if "%2"=="build" goto next_param
 if "%2"=="skip" goto next_param
 goto custom_error
 
+:get_conf
+SET TYPEBUILDFDO=%2
+if "%2"=="release" goto next_param
+if "%2"=="debug" goto next_param
+goto custom_error
+
 :get_action
 SET TYPEACTIONFDO=%2
 if "%2"=="install" goto next_param
 if "%2"=="build" goto next_param
 if "%2"=="buildinstall" goto next_param
 if "%2"=="clean" goto next_param
-goto custom_error
-
-:get_conf
-SET TYPEBUILDFDO=%2
-if "%2"=="release" goto next_param
-if "%2"=="debug" goto next_param
 goto custom_error
 
 :get_path
