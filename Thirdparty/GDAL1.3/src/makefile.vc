@@ -211,4 +211,5 @@ devinstall: install
 
 devinstallonly: $(GDAL_DLL) 
 	copy gdal_i.lib $(LIBDIR)
+	copy gdal.lib $(LIBDIR)
 	xcopy /y /r /d /f $(GDAL_DLL) $(BINDIR)
