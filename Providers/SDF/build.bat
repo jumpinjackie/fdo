@@ -44,9 +44,9 @@ if "%2"=="install" goto next_param
 if "%2"=="build" goto next_param
 if "%2"=="buildinstall" goto next_param
 if "%2"=="clean" goto next_param
-goto custom_error
+goto custom_error 
 
-:get_conf
+:get_conf 
 SET TYPEBUILDSDF=%2
 if "%2"=="release" goto next_param
 if "%2"=="debug" goto next_param
@@ -90,9 +90,9 @@ if "%TYPEACTIONSDF%"=="clean" SET MSACTIONSDF=Clean
 if "%TYPEACTIONSDF%"=="install" goto install_files_sdf
 
 echo %MSACTIONSDF% %TYPEBUILDSDF% SDF provider dlls
+SET FDOACTIVEBUILD=%cd%\Src\SDFOS
+cscript //Nologo //job:prepare preparebuilds.wsf
 pushd Src
-SET FDOACTIVEBUILD=%cd%\SDFOS
-cscript //job:prepare ../../../preparebuilds.wsf
 msbuild SDFOS_temp.sln /t:%MSACTIONSDF% /p:Configuration=%TYPEBUILDSDF% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if exist SDFOS_temp.sln del /Q /F SDFOS_temp.sln

@@ -1,3 +1,5 @@
+Const VC_NET_PATH="C:\Program Files\Microsoft Visual Studio 8"
+
 Class FileSystemClass
     Private fs
     Private m_HaveError
@@ -24,6 +26,11 @@ Class FileSystemClass
         Call fs.CopyFile(src, dest, True)
         CheckErr()
     End Sub
+	
+	Public Sub CreateFolder(ByVal fld)
+		Call fs.CreateFolder(fld)
+		CheckErr()
+	End Sub
     
     Function FolderExist (ByVal folderFullPath)
         If (fs.FolderExists(folderFullPath)) Then
@@ -34,11 +41,17 @@ Class FileSystemClass
     End Function
 	
     Public Sub DeleteFile(ByVal src)
-        Call fs.DeleteFile(fld, True)
+        Call fs.DeleteFile(src, True)
 		
         CheckErr()
     End Sub
-	
+
+	Public Sub DeleteFolder(ByVal fld)
+		Call fs.DeleteFolder(fld, True)
+		
+		CheckErr()
+	End Sub
+
     Public Sub WriteStringToFile(ByVal sFileName, ByVal sString)
        Dim oFile
 	   
@@ -77,6 +90,13 @@ Class FileSystemClass
         End If
     End Function
 	
+    Function RemoveSeparator (ByVal strPath)
+        Select Case right(strPath, 1)
+            Case "\", "/"
+                strPath = Left(strPath, Len(strPath) - 1)
+        End Select
+        RemoveSeparator = strPath
+    End Function
     Function RemoveReadOnly (ByVal fileFullPath)
         Set objFile = fs.GetFile(fileFullPath)
         If objFile.Attributes AND 1 Then
@@ -128,6 +148,38 @@ Class FileSystemClass
             End If
         End If
         Set fsc = Nothing
+    End Function
+    
+    Function BasePath(ByVal sPathAndFile)
+        Dim sPath
+        Dim nSepPos
+        Dim nSepPos2
+        Dim fUsingDriveSep
+
+        nSepPos = InStrRev(sPathAndFile, "\")
+        nSepPos2 = InStrRev(sPathAndFile, "/")
+        If nSepPos2 > nSepPos Then
+            nSepPos = nSepPos2
+        End If
+        
+        nSepPos2 = InStrRev(sPathAndFile, ":")
+        If nSepPos2 > nSepPos Then
+            nSepPos = nSepPos2
+            fUsingDriveSep = True
+        End If
+
+        If nSepPos = 0 Then
+            Call Err.Raise (5000, "BasePath", "Invalide path format")
+            sPath = ""
+        Else
+            If fUsingDriveSep Then
+                sPath = Left(sPathAndFile, nSepPos)
+            Else
+                sPath = Left(sPathAndFile, nSepPos - 1)
+            End If
+        End If
+       
+       BasePath = sPath
     End Function
 
 End Class
