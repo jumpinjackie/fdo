@@ -294,6 +294,11 @@ II. Windows Build Instructions:
             cd <FDO OpenSource Location>\Fdo\Unmanaged\bin\win32\Debug
             UnitTest
 
+        WMS:
+
+            cd <FDO OpenSource Location>\Providers\WMS\bin\win32\debug
+            UnitTest
+
         SDF:
 
             cd <FDO OpenSource Location>\Providers\SDF\Src\UnitTest
@@ -469,7 +474,7 @@ II. Linux Build Instructions:
   4. Use the build_linux.sh script to build and install the FDO OpenSource libraries. 
      The following is a general guideline on how to use build_linux.sh
 
-            **************************************************************************
+           **************************************************************************
            build_linux.sh [--h] [-c BuildType] [--a Action] [--w WithModule] [--m ConfigMakefiles]
        
            Help:            --h[elp]
