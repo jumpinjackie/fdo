@@ -39,6 +39,13 @@ if "%2"=="build" goto next_param
 if "%2"=="skip" goto next_param
 goto custom_error
 
+:get_conf 
+SET TYPEBUILDWMS=%2
+if "%2"=="release" goto next_param
+if "%2"=="debug" SET TYPEBUILDWMSPATH=dbg
+if "%2"=="debug" goto next_param
+goto custom_error
+
 :get_action
 SET TYPEACTIONWMS=%2
 if "%2"=="install" goto next_param
@@ -46,13 +53,6 @@ if "%2"=="build" goto next_param
 if "%2"=="buildinstall" goto next_param
 if "%2"=="clean" goto next_param
 goto custom_error 
-
-:get_conf 
-SET TYPEBUILDWMS=%2
-if "%2"=="release" goto next_param
-if "%2"=="debug" SET TYPEBUILDWMSPATH=dbg
-if "%2"=="debug" goto next_param
-goto custom_error
 
 :get_path
 if (%2)==() goto custom_error
