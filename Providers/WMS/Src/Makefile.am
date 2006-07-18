@@ -1,8 +1,8 @@
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = Message Overrides Provider
+SUBDIRS = Message Overrides Provider UnitTest
 
-DIST_SUBDIRS = Message Overrides Provider
+DIST_SUBDIRS = Message Overrides Provider UnitTest
 
 EXTRA_DIST = WMSOS.sln
 

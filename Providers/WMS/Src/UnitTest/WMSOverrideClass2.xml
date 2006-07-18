@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?><fdo:DataStore xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gml="http://www.opengis.net/gml" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:fds="http://fdo.osgeo.org/schemas/fds">
+  <gml:DerivedCRS gml:id="EPSG:4326">
+    <gml:metaDataProperty>
+      <gml:GenericMetaData>
+        <fdo:XYTolerance>0.001000</fdo:XYTolerance>
+        <fdo:ZTolerance>0.001000</fdo:ZTolerance>
+      </gml:GenericMetaData>
+    </gml:metaDataProperty>
+    <gml:srsName>EPSG:4326</gml:srsName>
+    <gml:validArea>
+      <gml:boundingBox>
+        <gml:pos>-180.000000 -90.000000</gml:pos>
+        <gml:pos>180.000000 90.000000</gml:pos>
+      </gml:boundingBox>
+    </gml:validArea>
+    <gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:4326"/>
+    <gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
+    <gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType>
+    <gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
+  </gml:DerivedCRS>
+  <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://fdo.osgeo.org/schemas/feature/WMSLayers" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:gml="http://www.opengis.net/gml" xmlns:WMSLayers="http://fdo.osgeo.org/schemas/feature/WMSLayers" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:element name="us_landsat_wgs84_1" type="WMSLayers:us_landsat_wgs84_1Type" abstract="false" substitutionGroup="gml:_Feature">
+      <xs:key name="us_landsat_wgs84_1Key">
+        <xs:selector xpath=".//us_landsat_wgs84_1"/>
+        <xs:field xpath="Id"/>
+      </xs:key>
+    </xs:element>
+    <xs:complexType name="us_landsat_wgs84_1Type" abstract="false" fdo:hasGeometry="false">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractFeatureType">
+          <xs:sequence>
+            <xs:element name="Id">
+              <xs:annotation>
+                <xs:documentation/>
+              </xs:annotation>
+              <xs:simpleType>
+                <xs:restriction base="xs:string">
+                  <xs:maxLength value="256"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
+            <xs:element name="Image" type="fdo:RasterPropertyType" fdo:defaultImageXSize="1024" fdo:defaultImageYSize="1024"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:schema>
+  <SchemaMapping provider="OSGeo.WMS.3.2" name="WMSLayers" xmlns="http://fdowms.osgeo.org/schemas">
+    <complexType name="us_landsat_wgs84_1Type">
+      <RasterDefinition name="Image">
+        <Format>PNG</Format>
+        <Transparent>false</Transparent>
+        <BackgroundColor></BackgroundColor>
+        <Time></Time>
+        <Elevation></Elevation>
+        <SpatialContext>EPSG:4326</SpatialContext>
+        <Layer name="us_landsat_wgs84"/>
+      </RasterDefinition>
+    </complexType>
+  </SchemaMapping>
+</fdo:DataStore>
