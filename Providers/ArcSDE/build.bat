@@ -43,9 +43,9 @@ if "%2"=="install" goto next_param
 if "%2"=="build" goto next_param
 if "%2"=="buildinstall" goto next_param
 if "%2"=="clean" goto next_param
-goto custom_error
+goto custom_error 
 
-:get_conf
+:get_conf 
 SET TYPEBUILDARCSDE=%2
 if "%2"=="release" goto next_param
 if "%2"=="debug" goto next_param
@@ -91,9 +91,9 @@ if "%TYPEACTIONARCSDE%"=="clean" SET MSACTIONARCSDE=Clean
 if "%TYPEACTIONARCSDE%"=="install" goto install_files_ArcSDE
 
 echo %MSACTIONARCSDE% %TYPEBUILDARCSDE% ArcSDE provider dlls
+SET FDOACTIVEBUILD=%cd%\Src\ArcSDE
+cscript //Nologo //job:prepare preparebuilds.wsf
 pushd Src
-SET FDOACTIVEBUILD=%cd%\ArcSDE
-cscript //job:prepare ../../../preparebuilds.wsf
 msbuild ArcSDE_temp.sln /t:%MSACTIONARCSDE% /p:Configuration=%TYPEBUILDARCSDE% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if exist ArcSDE_temp.sln del /Q /F ArcSDE_temp.sln
