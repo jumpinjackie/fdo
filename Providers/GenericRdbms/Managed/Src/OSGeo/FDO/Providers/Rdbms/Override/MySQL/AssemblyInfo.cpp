@@ -23,15 +23,17 @@ using namespace System::Runtime::InteropServices;
 using namespace System::Security::Permissions;
 
 //
-// General Information about an assembly is controlled through the following // set of attributes. Change these attribute values to modify the information // associated with an assembly.
+// General Information about an assembly is controlled through the following 
+// set of attributes. Change these attribute values to modify the information 
+// associated with an assembly.
 //
 
-[assembly:AssemblyTitleAttribute("MgFdoMySQLOverrides")];
-[assembly:AssemblyDescriptionAttribute("FDO .Net MgFdoMySQLOverrides Assembly")]; 
+[assembly:AssemblyTitleAttribute("FDO MySQL Overrides API Assembly")];
+[assembly:AssemblyDescriptionAttribute("FDO MySQL Overrides .Net API Component")]; 
 [assembly:AssemblyConfigurationAttribute("")];
-[assembly:AssemblyCompanyAttribute("Autodesk, Inc.")]; 
-[assembly:AssemblyProductAttribute("MgFdoMySQLOverrides")];
-[assembly:AssemblyCopyrightAttribute("Copyright (c) Autodesk, Inc. 2005")]; 
+[assembly:AssemblyCompanyAttribute("Open Source Geospatial Foundation")]; 
+[assembly:AssemblyProductAttribute("Feature Data Objects")];
+[assembly:AssemblyCopyrightAttribute("Copyright (C) 2006")]; 
 [assembly:AssemblyTrademarkAttribute("")];
 [assembly:AssemblyCultureAttribute("")];
 

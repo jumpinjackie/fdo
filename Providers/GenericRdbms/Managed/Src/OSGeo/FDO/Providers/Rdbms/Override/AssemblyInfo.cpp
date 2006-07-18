@@ -26,12 +26,12 @@ using namespace System::Security::Permissions;
 // General Information about an assembly is controlled through the following // set of attributes. Change these attribute values to modify the information // associated with an assembly.
 //
 
-[assembly:AssemblyTitleAttribute("MgFdoRdbmsOverrides")];
-[assembly:AssemblyDescriptionAttribute("FDO .Net MgFdoRdbmsOverrides Assembly")]; 
+[assembly:AssemblyTitleAttribute("FDO RDBMS Overrides API Assembly")];
+[assembly:AssemblyDescriptionAttribute("FDO RDBMS Overrides .Net API Component")]; 
 [assembly:AssemblyConfigurationAttribute("")];
-[assembly:AssemblyCompanyAttribute("Autodesk, Inc.")]; 
-[assembly:AssemblyProductAttribute("MgFdoRdbmsOverrides")];
-[assembly:AssemblyCopyrightAttribute("Copyright (c) Autodesk, Inc. 2005")]; 
+[assembly:AssemblyCompanyAttribute("Open Source Geospatial Foundation")]; 
+[assembly:AssemblyProductAttribute("Feature Data Objects")];
+[assembly:AssemblyCopyrightAttribute("Copyright (C) 2006")]; 
 [assembly:AssemblyTrademarkAttribute("")];
 [assembly:AssemblyCultureAttribute("")];
 
