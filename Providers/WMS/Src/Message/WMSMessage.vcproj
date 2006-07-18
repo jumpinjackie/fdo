@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8.00"
 	Name="Message"
-	ProjectGUID="{A1E0D583-0684-4228-BFE8-E532B66824C2}"
+	ProjectGUID="{2EFD2FAF-BAC9-4772-B5B5-BC3AEC378386}"
 	RootNamespace="Message"
 	>
 	<Platforms>
@@ -195,4 +195,6 @@
 			>
 		</File>
 	</Files>
+	<Globals>
+	</Globals>
 </VisualStudioProject>

@@ -98,7 +98,9 @@ void OverridesTest::TestSetConfiguration2 ()
 
 	while (featReader->ReadNext ())
 	{
+#ifdef _DEBUG
 		wprintf (L"Id: %ls\n", featReader->GetString (L"Id"));
+#endif
 		FdoPtr<FdoIRaster> raster = featReader->GetRaster (L"Image");
 		FdoInt32 xSize = raster->GetImageXSize ();
 		FdoInt32 ySize = raster->GetImageYSize ();		
@@ -426,7 +428,9 @@ void OverridesTest::TestSetConfiguration3()
         {
             FdoPtr<FdoFeatureSchema> schema = schemas->GetItem (i);
             FdoStringP schemaName = schema->GetName();
+#ifdef _DEBUG
             wprintf (L"    Schema: %ls\n", (FdoString *) schemaName);
+#endif
 
             FdoPtr<FdoClassCollection> classes = schema->GetClasses ();
             FdoInt32 cntClasses = classes->GetCount();
@@ -435,7 +439,9 @@ void OverridesTest::TestSetConfiguration3()
             {
                 FdoPtr<FdoClassDefinition> clsDef = classes->GetItem(j);
                 FdoStringP className = clsDef->GetName();
+#ifdef _DEBUG
                 wprintf (L"    Class: %ls\n", (FdoString *) className);
+#endif
 
                 FdoPtr<FdoPropertyDefinitionCollection> props = clsDef->GetProperties ();
                 FdoInt32 cntProps = props->GetCount();
@@ -444,7 +450,9 @@ void OverridesTest::TestSetConfiguration3()
                 {
                     FdoPtr<FdoPropertyDefinition> prop = props->GetItem (i);
                     FdoStringP propName = prop->GetName ();
+#ifdef _DEBUG
                     wprintf (L"        Property: %ls\n", (FdoString *) propName);
+#endif
                 }
 
                 FdoPtr<FdoISelect> cmdSelect = 
@@ -454,7 +462,9 @@ void OverridesTest::TestSetConfiguration3()
 
                 while (featReader->ReadNext ())
                 {
+#ifdef _DEBUG
                     wprintf (L"            Id: %ls\n", featReader->GetString (L"Id"));
+#endif
                     FdoPtr<FdoIRaster> raster = featReader->GetRaster (L"Image");
                     FdoInt32 xSize = raster->GetImageXSize ();
                     FdoInt32 ySize = raster->GetImageYSize ();		
@@ -571,7 +581,9 @@ void OverridesTest::TestNoDefaultDataModel()
         CPPUNIT_ASSERT (cntSchemas == 1);
 
         FdoPtr<FdoFeatureSchema> schema = schemas->GetItem (0);
+#ifdef _DEBUG
         wprintf (L"Schema: %ls\n", schema->GetName ());
+#endif
 
         FdoPtr<FdoClassCollection> classes = schema->GetClasses ();
         FdoInt32 cntClasses = classes->GetCount ();
@@ -586,11 +598,13 @@ void OverridesTest::TestNoDefaultDataModel()
 
             FdoFeatureClass* base = static_cast<FdoFeatureClass *> (featClsDef->GetBaseClass ());		
 
+#ifdef _DEBUG
             wprintf (L"  Class: %ls\n", (FdoString*)clsName);
             if (base != NULL)
                 wprintf (L"  Base:  %ls\n", base->GetName ());
             else
 	            wprintf (L"  Base:  (null)\n");
+#endif
 
             FdoPtr<FdoPropertyDefinitionCollection> props = clsDef->GetProperties ();
             FdoInt32 cntProps = props->GetCount ();
@@ -599,7 +613,9 @@ void OverridesTest::TestNoDefaultDataModel()
 	            FdoPtr<FdoPropertyDefinition> prop = props->GetItem (k);
 	            FdoStringP propName = prop->GetName ();
 	            FdoPropertyType propType = prop->GetPropertyType ();
+#ifdef _DEBUG
 	            wprintf (L"    Property: %ls\t", (FdoString*)propName);
+#endif
             }		
         }
 
@@ -613,7 +629,9 @@ void OverridesTest::TestNoDefaultDataModel()
             FdoPtr<FdoPhysicalSchemaMapping> mapping = physicalMappings->GetItem (i);
             FdoString* mappingName = mapping->GetName ();
             FdoString* providerName = mapping->GetProvider ();
+#ifdef _DEBUG
             wprintf (L"\nProvider: %ls\nSchemaMapping: %ls\n", providerName, mappingName);
+#endif
         }
     }
 	catch (FdoException* e) 
@@ -642,7 +660,7 @@ void OverridesTest::TestQualifiedName()
             FdoStringP schemaQName = wmsSchemaMapping->GetQualifiedName ();
             CPPUNIT_ASSERT (wcscmp (L"Itasca_Demo", (FdoString*)schemaQName) == 0 );
 #ifdef _DEBUG
-            printf ("Schema: %s\n", (const char*)schemaQName);
+            wprintf (L"Schema: %ls\n", (FdoString*)schemaQName);
 #endif
             FdoPtr<FdoPhysicalElementMapping> parent = wmsSchemaMapping->GetParent ();
             if (parent)
@@ -658,13 +676,13 @@ void OverridesTest::TestQualifiedName()
                 FdoStringP classQName = wmsClassMapping->GetQualifiedName ();
                 CPPUNIT_ASSERT (wcscmp (L"Itasca_Demo:global_mosaic", (FdoString*)classQName) == 0);
 #ifdef _DEBUG
-                printf ("Class: %s\n", (const char*)classQName);
+                wprintf (L"Class: %ls\n", (FdoString*)classQName);
 #endif
                 FdoPtr<FdoWmsOvRasterDefinition> rasterDef = wmsClassMapping->GetRasterDefinition ();
                 FdoStringP rasterDefQName = rasterDef->GetQualifiedName ();
                 CPPUNIT_ASSERT (wcscmp (L"Itasca_Demo:global_mosaic.Image", (FdoString*)rasterDefQName) == 0);
 #ifdef _DEBUG
-                printf ("Property: %s\n", (const char*)rasterDefQName);
+                wprintf (L"Property: %ls\n", (FdoString*)rasterDefQName);
 #endif
             }
         }

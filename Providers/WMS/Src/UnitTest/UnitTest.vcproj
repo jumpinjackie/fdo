@@ -640,8 +640,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying FDO files"
-						CommandLine="copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDO.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDO.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDOUTILITIES)\OWS\Bin\Win32\Debug\OWS.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
-						AdditionalDependencies=""
+						CommandLine="copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDO.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDO.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDOUTILITIES)\OWS\Bin\Win32\Debug\OWS.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDOUTILITIES)\OWS\Bin\Win32\Debug\OWS.pdb $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="$(FDO)\Unmanaged\Bin\Win32\Debug\FDO.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll;$(FDOUTILITIES)\OWS\Bin\Win32\Debug\OWS.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDO.pdb;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.pdb;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.pdb;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.pdbl;$(FDOUTILITIES)\OWS\Bin\Win32\Debug\OWS.pdb"
 						Outputs="$(OutDir)\CopyFdo.ilk"
 					/>
 				</FileConfiguration>
@@ -651,8 +651,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying FDO files"
-						CommandLine="copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDO.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDOUTILITIES)\OWS\Bin\Win32\Release\OWS.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
-						AdditionalDependencies="$(FDO)\Unmanaged\Bin\Win32\Release\FDO.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.dll"
+						CommandLine="copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDO.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDOUTILITIES)\OWS\Bin\Win32\Release\OWS.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDO.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDOUTILITIES)\OWS\Bin\Win32\Release\OWS.pdb $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="$(FDO)\Unmanaged\Bin\Win32\Release\FDO.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDO.pdb;$(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.pdb;$(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.pdb;$(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.pdb;$(FDOUTILITIES)\OWS\Bin\Win32\Release\OWS.dll;$(FDOUTILITIES)\OWS\Bin\Win32\Release\OWS.pdb"
 						Outputs="$(OutDir)\CopyFdo.ilk"
 					/>
 				</FileConfiguration>
@@ -662,8 +662,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying FDO files"
-						CommandLine="copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDO.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDO.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDOUTILITIES)\OWS\Bin\Win32\Debug\OWS.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
-						AdditionalDependencies=""
+						CommandLine="copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDO.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDO.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDOUTILITIES)\OWS\Bin\Win32\Debug\OWS.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDOUTILITIES)\OWS\Bin\Win32\Debug\OWS.pdb $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="$(FDO)\Unmanaged\Bin\Win32\Debug\FDO.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll;$(FDOUTILITIES)\OWS\Bin\Win32\Debug\OWS.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDO.pdb;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.pdb;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.pdb;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.pdbl;$(FDOUTILITIES)\OWS\Bin\Win32\Debug\OWS.pdb"
 						Outputs="$(OutDir)\CopyFdo.ilk"
 					/>
 				</FileConfiguration>
@@ -673,8 +673,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying FDO files"
-						CommandLine="copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDO.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDOUTILITIES)\OWS\Bin\Win32\Release\OWS.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
-						AdditionalDependencies="$(FDO)\Unmanaged\Bin\Win32\Release\FDO.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.dll"
+						CommandLine="copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDO.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDOUTILITIES)\OWS\Bin\Win32\Release\OWS.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDO.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDOUTILITIES)\OWS\Bin\Win32\Release\OWS.pdb $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="$(FDO)\Unmanaged\Bin\Win32\Release\FDO.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDO.pdb;$(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.pdb;$(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.pdb;$(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.pdb;$(FDOUTILITIES)\OWS\Bin\Win32\Release\OWS.dll;$(FDOUTILITIES)\OWS\Bin\Win32\Release\OWS.pdb"
 						Outputs="$(OutDir)\CopyFdo.ilk"
 					/>
 				</FileConfiguration>
@@ -689,7 +689,7 @@
 						Name="VCCustomBuildTool"
 						Description="Copying thirdparty dlls"
 						CommandLine="copy $(FDOTHIRDPARTY)\cppunit\lib\testrunnerd.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\cppunitd_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\Xalan-C_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\XalanMessages_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Debug\xerces-c_2_5_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\boost_1_32_0\bin\boost\libs\thread\build\boost_thread.dll\vc-8_0\debug\threading-multi\boost_thread-vc80-mt-gd-1_32.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\GDAL1.3\windows\bin\VC8\debug\gdal13.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
-						AdditionalDependencies=""
+						AdditionalDependencies="$(FDOTHIRDPARTY)\cppunit\lib\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\lib\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\Xalan-C_1_7_0D.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\XalanMessages_1_7_0D.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Debug\xerces-c_2_5_0D.dll;$(FDOTHIRDPARTY)\boost_1_32_0\bin\boost\libs\thread\build\boost_thread.dll\vc-8_0\debug\threading-multi\boost_thread-vc80-mt-gd-1_32.dll;$(FDOTHIRDPARTY)\GDAL1.3\windows\bin\VC8\debug\gdal13.dll"
 						Outputs="$(OutDir)\CopyThirdparty.ilk"
 					/>
 				</FileConfiguration>
@@ -700,7 +700,7 @@
 						Name="VCCustomBuildTool"
 						Description="Copying thirdparty dlls"
 						CommandLine="copy $(FDOTHIRDPARTY)\cppunit\lib\testrunner.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\cppunit_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\Xalan-C_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\XalanMessages_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Release\xerces-c_2_5_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\boost_1_32_0\bin\boost\libs\thread\build\boost_thread.dll\vc-8_0\release\threading-multi\boost_thread-vc80-mt-1_32.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\GDAL1.3\windows\bin\VC8\release\gdal13.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
-						AdditionalDependencies=""
+						AdditionalDependencies="$(FDOTHIRDPARTY)\cppunit\lib\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\lib\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\Xalan-C_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\XalanMessages_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Release\xerces-c_2_5_0.dll;$(FDOTHIRDPARTY)\boost_1_32_0\bin\boost\libs\thread\build\boost_thread.dll\vc-8_0\releas\threading-multi\boost_thread-vc80-mt-1_32.dll;$(FDOTHIRDPARTY)\GDAL1.3\windows\bin\VC8\release\gdal13.dll"
 						Outputs="$(OutDir)\CopyThirdparty.ilk"
 					/>
 				</FileConfiguration>
@@ -711,7 +711,7 @@
 						Name="VCCustomBuildTool"
 						Description="Copying thirdparty dlls"
 						CommandLine="copy $(FDOTHIRDPARTY)\cppunit\lib\testrunnerd.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\cppunitd_dll.dll  $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\Xalan-C_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\XalanMessages_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Debug\xerces-c_2_5_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\boost_1_32_0\bin\boost\libs\thread\build\boost_thread.dll\vc-8_0\debug\threading-multi\boost_thread-vc80-mt-gd-1_32.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\GDAL1.3\windows\bin\VC8\debug\gdal13.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
-						AdditionalDependencies=""
+						AdditionalDependencies="$(FDOTHIRDPARTY)\cppunit\lib\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\lib\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\Xalan-C_1_7_0D.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\XalanMessages_1_7_0D.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Debug\xerces-c_2_5_0D.dll;$(FDOTHIRDPARTY)\boost_1_32_0\bin\boost\libs\thread\build\boost_thread.dll\vc-8_0\debug\threading-multi\boost_thread-vc80-mt-gd-1_32.dll;$(FDOTHIRDPARTY)\GDAL1.3\windows\bin\VC8\debug\gdal13.dll"
 						Outputs="$(OutDir)\CopyThirdparty.ilk"
 					/>
 				</FileConfiguration>
@@ -722,7 +722,7 @@
 						Name="VCCustomBuildTool"
 						Description="Copying thirdparty dlls"
 						CommandLine="copy $(FDOTHIRDPARTY)\cppunit\lib\testrunner.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\cppunit_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\Xalan-C_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\XalanMessages_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Release\xerces-c_2_5_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\boost_1_32_0\bin\boost\libs\thread\build\boost_thread.dll\vc-8_0\release\threading-multi\boost_thread-vc80-mt-1_32.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\GDAL1.3\windows\bin\VC8\release\gdal13.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
-						AdditionalDependencies=""
+						AdditionalDependencies="$(FDOTHIRDPARTY)\cppunit\lib\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\lib\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\Xalan-C_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\XalanMessages_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Release\xerces-c_2_5_0.dll;$(FDOTHIRDPARTY)\boost_1_32_0\bin\boost\libs\thread\build\boost_thread.dll\vc-8_0\releas\threading-multi\boost_thread-vc80-mt-1_32.dll;$(FDOTHIRDPARTY)\GDAL1.3\windows\bin\VC8\release\gdal13.dll"
 						Outputs="$(OutDir)\CopyThirdparty.ilk"
 					/>
 				</FileConfiguration>
@@ -737,6 +737,7 @@
 						Name="VCCustomBuildTool"
 						Description="Performing fake install"
 						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy WmsOverridesConfig.xml $(OutDir)&#x0D;&#x0A;copy WmsSchemaConfig.xml $(OutDir)&#x0D;&#x0A;copy WmsSchemaConfig_Jake_MapServer.xml $(OutDir)&#x0D;&#x0A;copy NASA_WMS_Config.xml $(OutDir)&#x0D;&#x0A;copy WMSOverrideClass2.xml $(OutDir)&#x0D;&#x0A;copy CubeServer_WMS_Config.xml $(OutDir)&#x0D;&#x0A;copy MultiLayers_Config.xml $(OutDir)&#x0D;&#x0A;"
+						AdditionalDependencies="providers.xml;WmsOverridesConfig.xml;WmsSchemaConfig.xml;WmsSchemaConfig_Jake_MapServer.xml;NASA_WMS_Config.xml;WMSOverrideClass2.xml;CubeServer_WMS_Config.xml;MultiLayers_Config.xml"
 						Outputs="$(OutDir)\providers.xml"
 					/>
 				</FileConfiguration>
@@ -747,6 +748,7 @@
 						Name="VCCustomBuildTool"
 						Description="Performing fake install"
 						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy WmsOverridesConfig.xml $(OutDir)&#x0D;&#x0A;copy WmsSchemaConfig.xml $(OutDir)&#x0D;&#x0A;copy WmsSchemaConfig_Jake_MapServer.xml $(OutDir)&#x0D;&#x0A;copy NASA_WMS_Config.xml $(OutDir)&#x0D;&#x0A;copy WMSOverrideClass2.xml $(OutDir)&#x0D;&#x0A;copy CubeServer_WMS_Config.xml $(OutDir)&#x0D;&#x0A;copy MultiLayers_Config.xml $(OutDir)&#x0D;&#x0A;"
+						AdditionalDependencies="providers.xml;WmsOverridesConfig.xml;WmsSchemaConfig.xml;WmsSchemaConfig_Jake_MapServer.xml;NASA_WMS_Config.xml;WMSOverrideClass2.xml;CubeServer_WMS_Config.xml;MultiLayers_Config.xml"
 						Outputs="$(OutDir)\providers.xml"
 					/>
 				</FileConfiguration>
@@ -757,6 +759,7 @@
 						Name="VCCustomBuildTool"
 						Description="Performing fake install"
 						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy WmsOverridesConfig.xml $(OutDir)&#x0D;&#x0A;copy WmsSchemaConfig.xml $(OutDir)&#x0D;&#x0A;copy WmsSchemaConfig_Jake_MapServer.xml $(OutDir)&#x0D;&#x0A;copy NASA_WMS_Config.xml $(OutDir)&#x0D;&#x0A;copy WMSOverrideClass2.xml $(OutDir)&#x0D;&#x0A;copy CubeServer_WMS_Config.xml $(OutDir)&#x0D;&#x0A;copy MultiLayers_Config.xml $(OutDir)&#x0D;&#x0A;"
+						AdditionalDependencies="providers.xml;WmsOverridesConfig.xml;WmsSchemaConfig.xml;WmsSchemaConfig_Jake_MapServer.xml;NASA_WMS_Config.xml;WMSOverrideClass2.xml;CubeServer_WMS_Config.xml;MultiLayers_Config.xml"
 						Outputs="$(OutDir)\providers.xml"
 					/>
 				</FileConfiguration>
@@ -767,6 +770,7 @@
 						Name="VCCustomBuildTool"
 						Description="Performing fake install"
 						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy WmsOverridesConfig.xml $(OutDir)&#x0D;&#x0A;copy WmsSchemaConfig.xml $(OutDir)&#x0D;&#x0A;copy WmsSchemaConfig_Jake_MapServer.xml $(OutDir)&#x0D;&#x0A;copy NASA_WMS_Config.xml $(OutDir)&#x0D;&#x0A;copy WMSOverrideClass2.xml $(OutDir)&#x0D;&#x0A;copy CubeServer_WMS_Config.xml $(OutDir)&#x0D;&#x0A;copy MultiLayers_Config.xml $(OutDir)&#x0D;&#x0A;"
+						AdditionalDependencies="providers.xml;WmsOverridesConfig.xml;WmsSchemaConfig.xml;WmsSchemaConfig_Jake_MapServer.xml;NASA_WMS_Config.xml;WMSOverrideClass2.xml;CubeServer_WMS_Config.xml;MultiLayers_Config.xml"
 						Outputs="$(OutDir)\providers.xml"
 					/>
 				</FileConfiguration>
@@ -1046,22 +1050,182 @@
 			<File
 				RelativePath=".\NASA_WMS_Config.xml"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugInternal|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="ReleaseInternal|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\providers.xml"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugInternal|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="ReleaseInternal|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\WmsOverridesConfig.xml"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugInternal|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="ReleaseInternal|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\WmsSchemaConfig.xml"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugInternal|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="ReleaseInternal|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\WmsSchemaConfig_Jake_MapServer.xml"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugInternal|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="ReleaseInternal|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 	</Files>

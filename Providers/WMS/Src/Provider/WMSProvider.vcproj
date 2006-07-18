@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8.00"
 	Name="Provider"
-	ProjectGUID="{B76B69B6-791B-4DAB-8C3C-29D69A4EC5E1}"
+	ProjectGUID="{82B43E3B-E076-4495-81DD-0EC1A6DE0CE0}"
 	RootNamespace="FdoWmsProvider"
 	>
 	<Platforms>
@@ -548,11 +548,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FdoWmsRequestMetadata.cpp"
+				RelativePath=".\FdoWmsLayerCollection.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FdoWmsLayerCollection.h"
+				RelativePath=".\FdoWmsRequestMetadata.cpp"
 				>
 			</File>
 			<File

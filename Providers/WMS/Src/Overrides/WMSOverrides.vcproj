@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8.00"
 	Name="Overrides"
-	ProjectGUID="{CE66B7E6-6196-4621-A143-04D23DC6335F}"
+	ProjectGUID="{C7FE8A9B-4CD0-475F-A675-4C230F7A3783}"
 	RootNamespace="FdoWmsOverrides"
 	Keyword="Win32Proj"
 	>
@@ -323,4 +323,6 @@
 			</File>
 		</Filter>
 	</Files>
+	<Globals>
+	</Globals>
 </VisualStudioProject>

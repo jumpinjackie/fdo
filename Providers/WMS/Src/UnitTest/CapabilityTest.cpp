@@ -188,12 +188,16 @@ void CapabilityTest::TestCapabilities ()
         for (int i=0; i<functions->GetCount(); i++ )
         {
             FdoPtr<FdoFunctionDefinition> func = functions->GetItem(i);
-            printf("Func: %ls: %ls\n", func->GetName(), func->GetDescription() );
+#ifdef _DEBUG
+            wprintf(L"Func: %ls: %ls\n", func->GetName(), func->GetDescription() );
+#endif
             FdoPtr<FdoReadOnlyArgumentDefinitionCollection> args = func->GetArguments();
             for (int j=0; j<args->GetCount(); j++)
             {
                 FdoPtr<FdoArgumentDefinition>arg = args->GetItem( j );
-                printf("\tArg%d= %ls: %ls\n", j, arg->GetName(), arg->GetDescription());
+#ifdef _DEBUG
+                wprintf(L"\tArg%d= %ls: %ls\n", j, arg->GetName(), arg->GetDescription());
+#endif
             }
         }
 
