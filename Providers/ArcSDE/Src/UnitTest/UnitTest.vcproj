@@ -585,8 +585,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying FDO files"
-						CommandLine="copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDO.dll $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
-						AdditionalDependencies="&quot;%FDO%&quot;\Unmanaged\Bin\Win32\Debug\FDO.dll;&quot;%FDO%&quot;\Unmanaged\Bin\Win32\Debug\FDOCommon.dll;&quot;%FDO%&quot;\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll;&quot;%FDO%&quot;\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll"
+						CommandLine="copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDO.dll $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDO.pdb $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDOCommon.pdb $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDOGeometry.pdb $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDOSpatial.pdb $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDO.dll;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDOCommon.dll;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDO.pdb;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDOCommon.pdb;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDOGeometry.pdb;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDOSpatial.pdb"
 						Outputs="$(OutDir)\CopyFdo.ilk"
 					/>
 				</FileConfiguration>
@@ -596,8 +596,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying FDO files"
-						CommandLine="copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDO.dll $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
-						AdditionalDependencies="$(FDO)\Unmanaged\Bin\Win32\Release\FDO.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.dll"
+						CommandLine="copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDO.dll $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDO.pdb $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOCommon.pdb $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOGeometry.pdb $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOSpatial.pdb $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDO.dll;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOCommon.dll;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOGeometry.dll;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOSpatial.dll;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDO.pdb;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOCommon.pdb;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOGeometry.pdb;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOSpatial.pdb"
 						Outputs="$(OutDir)\CopyFdo.ilk"
 					/>
 				</FileConfiguration>
