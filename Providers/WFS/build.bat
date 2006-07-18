@@ -44,9 +44,9 @@ if "%2"=="install" goto next_param
 if "%2"=="build" goto next_param
 if "%2"=="buildinstall" goto next_param
 if "%2"=="clean" goto next_param
-goto custom_error
+goto custom_error 
 
-:get_conf
+:get_conf 
 SET TYPEBUILDWFS=%2
 if "%2"=="release" goto next_param
 if "%2"=="debug" goto next_param
@@ -90,9 +90,9 @@ if "%TYPEACTIONWFS%"=="clean" SET MSACTIONWFS=Clean
 if "%TYPEACTIONWFS%"=="install" goto install_files_wfs
 
 echo %MSACTIONWFS% %TYPEBUILDWFS% WFS provider dlls
+SET FDOACTIVEBUILD=%cd%\Src\WFSOS
+cscript //Nologo //job:prepare preparebuilds.wsf
 pushd Src
-SET FDOACTIVEBUILD=%cd%\WFSOS
-cscript //job:prepare ../../../preparebuilds.wsf
 msbuild WFSOS_temp.sln /t:%MSACTIONWFS% /p:Configuration=%TYPEBUILDWFS% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if exist WFSOS_temp.sln del /Q /F WFSOS_temp.sln
