@@ -44,7 +44,8 @@ libGRFPProviderSrc_la_SOURCES = \
 	FdoRfpGeoRaster.cpp \
 	FdoRfpRaster.cpp \
 	FdoRfpGeoreference.cpp \
-	FdoRfpKeyColor.cpp
+	FdoRfpKeyColor.cpp \
+	stdafx.cpp
 
 noinst_HEADERS = $(libGRFPProviderSrc_la_SOURCES) \
 	FDORFP.h \

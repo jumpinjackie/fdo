@@ -29,5 +29,9 @@
 
 #include "FDORFP.h"
 
-// TODO: reference any additional headers you need in STDAFX.H
-// and not in this file
+// the default message catalog filename
+#ifndef _WIN32
+char *fdorfp_cat = "GRFPMessage.cat";
+#else
+char *fdorfp_cat = "GRFPMessage.dll";
+#endif
