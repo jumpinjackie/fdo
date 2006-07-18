@@ -43,9 +43,9 @@ if "%2"=="install" goto next_param
 if "%2"=="build" goto next_param
 if "%2"=="buildinstall" goto next_param
 if "%2"=="clean" goto next_param
-goto custom_error
+goto custom_error 
 
-:get_conf
+:get_conf 
 SET TYPEBUILDMYSQL=%2
 if "%2"=="release" goto next_param
 if "%2"=="debug" goto next_param
@@ -93,7 +93,7 @@ if "%TYPEACTIONMYSQL%"=="install" goto install_files_MySQL
 
 echo %MSACTIONMYSQL% %TYPEBUILDMYSQL% MySQL provider dlls
 SET FDOACTIVEBUILD=%cd%\MySQL
-cscript //job:prepare ../../../../preparebuilds.wsf
+cscript //Nologo //job:prepare ../../preparebuilds.wsf
 msbuild MySQL_temp.sln /t:%MSACTIONMYSQL% /p:Configuration=%TYPEBUILDMYSQL% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if exist MySQL_temp.sln del /Q /F MySQL_temp.sln
