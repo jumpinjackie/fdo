@@ -44,9 +44,9 @@ if "%2"=="install" goto next_param
 if "%2"=="build" goto next_param
 if "%2"=="buildinstall" goto next_param
 if "%2"=="clean" goto next_param
-goto custom_error
+goto custom_error 
 
-:get_conf
+:get_conf 
 SET TYPEBUILDSHP=%2
 if "%2"=="release" goto next_param
 if "%2"=="debug" goto next_param
@@ -90,9 +90,9 @@ if "%TYPEACTIONSHP%"=="clean" SET MSACTIONSHP=Clean
 if "%TYPEACTIONSHP%"=="install" goto install_files_shp
 
 echo %MSACTIONSHP% %TYPEBUILDSHP% SHP provider dlls
+SET FDOACTIVEBUILD=%cd%\Src\SHP
+cscript //Nologo //job:prepare preparebuilds.wsf
 pushd Src
-SET FDOACTIVEBUILD=%cd%\SHP
-cscript //job:prepare ../../../preparebuilds.wsf
 msbuild SHP_temp.sln /t:%MSACTIONSHP% /p:Configuration=%TYPEBUILDSHP% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if exist SHP_temp.sln del /Q /F SHP_temp.sln
