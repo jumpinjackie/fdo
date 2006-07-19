@@ -161,7 +161,6 @@ fi
 if test "$FDOCOREENABLECHK" == yes; then
    mkdir -p "$FDOTARZIPFOLDER"
    svn export "$FDOSVNROOT" "$FDOTARZIPFOLDER" --non-recursive --force
-   svn export "$FDOSVNROOT"/Providers "$FDOTARZIPFOLDER"/Providers --non-recursive --force
    svn export "$FDOSVNROOT"/Fdo "$FDOTARZIPFOLDER"/Fdo --force
    svn export "$FDOSVNROOT"/Utilities "$FDOTARZIPFOLDER"/Utilities --force
    svn export "$FDOSVNROOT"/Thirdparty "$FDOTARZIPFOLDER"/Thirdparty --force

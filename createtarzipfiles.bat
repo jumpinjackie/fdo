@@ -112,7 +112,6 @@ goto study_params
 if "%FDOCOREENABLE%"=="no" goto start_zip_shp
    mkdir "%FDOTARZIPFOLDER%"
    svn export "%FDOSVNROOT%" "%FDOTARZIPFOLDER%" --non-recursive --force
-   svn export "%FDOSVNROOT%\Providers" "%FDOTARZIPFOLDER%\Providers" --non-recursive --force
    svn export "%FDOSVNROOT%\Fdo" "%FDOTARZIPFOLDER%\Fdo" --force
    svn export "%FDOSVNROOT%\Utilities" "%FDOTARZIPFOLDER%\Utilities" --force
    svn export "%FDOSVNROOT%\Thirdparty" "%FDOTARZIPFOLDER%\Thirdparty" --force

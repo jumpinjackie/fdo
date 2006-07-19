@@ -59,8 +59,6 @@
                         activeRelPath = "Thirdparty/"
                     Case "$(Fdo)"
                         activeRelPath = "Fdo/"
-                    Case "$(Providers)"
-                        activeRelPath = "Providers/"
                     Case "$(Utilities)"
                         activeRelPath = "Utilities/"
                     Case "$(www)"

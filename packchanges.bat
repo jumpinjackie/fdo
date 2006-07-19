@@ -22,10 +22,6 @@ pushd Fdo
 echo $(Fdo)>> ..\FilesChanges.log
 svn status -q >> ..\FilesChanges.log
 popd
-pushd Providers
-echo $(Providers)>> ..\FilesChanges.log
-svn status -q >> ..\FilesChanges.log
-popd
 pushd Utilities
 echo $(Utilities)>> ..\FilesChanges.log
 svn status -q >> ..\FilesChanges.log
