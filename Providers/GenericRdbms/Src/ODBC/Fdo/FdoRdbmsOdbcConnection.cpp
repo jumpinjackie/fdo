@@ -411,7 +411,7 @@ static FdoStringP GetRegistryValue(HKEY hkey, const char * name)
 #define SUBKEYNAME_PREFIX           "Software\\ODBC\\ODBC.INI\\"
 #define KEYNAME_DRIVER              "Driver"
 #define KEYNAME_USERID_ORACLENATIVE "UserID"
-#define DRIVER_NAME_ORACLENATIVE    L"SQORA32.DLL"
+#define DRIVER_NAME_ORACLENATIVE    L"SQORA32"
 
 FdoStringP FdoRdbmsOdbcConnection::GetSchemaNameFromDsn()
 {
