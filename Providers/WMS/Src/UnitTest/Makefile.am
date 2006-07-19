@@ -12,6 +12,7 @@ EXTRA_DIST = \
   WmsSchemaConfig.xml \
   WmsOverridesConfig.xml \
   WmsSchemaConfig_Jake_MapServer.xml \
+  stdafx.h \
   Pch.cpp
 
 UnitTest_SOURCES = \
@@ -28,27 +29,16 @@ UnitTest_SOURCES = \
   WmsTestSpatialContexts.cpp
 
 noinst_HEADERS = $(UnitTest_SOURCES) \
-  BigPerformanceTests.h \
-  FileAccessTests.h \
-  Pch.h \
-  SelectTests.h \
-  XmlFormatter.h \
-  ComparisonTests.h \
-  FilterTests.h \
-  PerformanceTests.h \
-  ShpTests.h \
+  CapabilityTest.h \
   ConnectTests.h \
-  IndexTests.h \
-  ReadOnlyTests.h \
-  SpatialFilterTests.h \
-  DeleteTests.h \
-  InsertTests.h \
-  SchemaTests.h \
-  UnitTestUtil.h \
-  FidelityTests.h \
   OverridesTest.h \
-  SelectAggregatesTests.h \
-  UpdateTests.h
+  Pch.h \
+  UnitTestUtil.h \
+  WmsTestDescribeSchema.h \
+  WmsTests.h \
+  WmsTestSelect.h \
+  WmsTestSpatialContexts.h \
+  XmlFormatter.h
 
 INCLUDES = \
   -I./ \
