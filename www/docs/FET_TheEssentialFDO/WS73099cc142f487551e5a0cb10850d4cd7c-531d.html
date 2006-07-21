@@ -1,0 +1,907 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <title>Command Capabilities</title><link rel="stylesheet" type="text/css" href="style/cpm.css"><link rel="stylesheet" type="text/css" href="style/isd.css"><script type="text/javascript" src="scripts/ac_common.js"></script><script type="text/javascript" src="scripts/ac.strings.js"></script><script type="text/javascript" src="scripts/acmap.js"></script><script type="text/javascript" src="scripts/ac.acad_ak.js"></script><script language="javascript">
+            function hideInfo() {
+                info = document.getElementById('infoline');
+                info.style.visibility='hidden';
+            }
+            function showInfo(title) {
+                info = document.getElementById('infoline');
+                info.innerText = title;
+                info.style.visibility='visible';
+            }
+        </script></head><body><!--
+							Name = Topic;
+							Class =  CPM-Topic ISD-Topic ;
+							Url = WS73099cc142f487551e5a0cb10850d4cd7c-531d.html--><div class="head"><div class="head-block"><div class="nav-group"><span class="toc-idx-links"><a href="index_contents.html">Contents</a> | <a href="index_index.html">Index</a></span><!--browse buttons--><div class="browse"><nobr><div id="prevTitle" style="display:none">Capabilities API</div><a href="WS73099cc142f487551e5a0cb10850d4cd7c-531e.html" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerText);" onmouseout="hideInfo();"><img src="images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">Capabilities API</div><a href="WS73099cc142f487551e5a0cb10850d4cd7c-531e.html" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerText);" onmouseout="hideInfo();"><img src="images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">User Management API</div><a href="WS73099cc142f487551e5a0cb10850d4cd7c-5319.html" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerText);" onmouseout="hideInfo();"><img src="images/nav-next-xp.gif" border="0"></a></nobr></div><!--end browse buttons--></div><div class="button-info" style="width:100%"><span id="infoline" style="width:100%">&nbsp;</span></div><div class="book-title-link"><a href="index.html">The Essential FDO</a></div><div class="head-text"><span>Command Capabilities</span></div></div></div><div style="line-height: 0pt">&nbsp;</div><div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS73099cc142f487551e5a0cb10850d4cd7c-531d"></a></span>
+         
+         <!--Body-->
+            <p>The list of command
+class names is shown in the first table. For descriptions of what
+the commands do, see the API reference documentation. The command
+attributes are shown in the second table. For descriptions of what
+the attributes mean, see entry for the <span class="code">FdoICommandCapabilities</span> class
+in the API reference documentation. “Y” means the command or attribute
+is supported in that particular provider.</p>
+            <span style="display:none"><a name="WS1a9193826455f5ffa23ce210c4a30acaf-4a8"></a></span><table cellpadding="0" cellspacing="0" class="ruled-wide"><colgroup><col style="width:2.375in"><col style="width:0.490in"><col style="width:0.510in"><col style="width:0.437in"><col style="width:0.365in"><col style="width:0.344in"><col style="width:0.344in"><col style="width:0.375in">
+                  <tr class="RuledWideHeading">
+                     <th class="table-heading">Command Class Name</th>
+                     <th class="table-heading">ArcSDE</th>
+                     <th class="table-heading">MySQL</th>
+                     <th class="table-heading">ODBC</th>
+                     <th class="table-heading">SDF</th>
+                     <th class="table-heading">SHP</th>
+                     <th class="table-heading">WFS</th>
+                     <th class="table-heading">WMS</th>
+                  </tr>
+               
+                  <tr class="RuledWideOddRow">
+                     <td class="table-body">
+                        <span class="code">FdoISelect</span> 
+                     </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                  </tr>
+                  <tr class="RuledWideEvenRow">
+                     <td class="table-body">
+                        <span class="code">FdoISelectAggregates</span> 
+                     </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">Y</td>
+                  </tr>
+                  <tr class="RuledWideOddRow">
+                     <td class="table-body">
+                        <span class="code">FdoIInsert</span> 
+                     </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                  </tr>
+                  <tr class="RuledWideEvenRow">
+                     <td class="table-body">
+                        <span class="code">FdoIDelete</span> 
+                     </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                  </tr>
+                  <tr class="RuledWideOddRow">
+                     <td class="table-body">
+                        <span class="code">FdoIUpdate</span> 
+                     </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                  </tr>
+                  <tr class="RuledWideEvenRow">
+                     <td class="table-body">
+                        <span class="code">FdoIDescribeSchema</span> 
+                     </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                  </tr>
+                  <tr class="RuledWideOddRow">
+                     <td class="table-body">
+                        <span class="code">FdoIDescribeSchemaMapping</span> 
+                     </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">Y</td>
+                  </tr>
+                  <tr class="RuledWideEvenRow">
+                     <td class="table-body">
+                        <span class="code">FdoIApplySchema</span> 
+                     </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                  </tr>
+                  <tr class="RuledWideOddRow">
+                     <td class="table-body">
+                        <span class="code">FdoIDestroySchema</span> 
+                     </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                  </tr>
+                  <tr class="RuledWideEvenRow">
+                     <td class="table-body">
+                        <span class="code">FdoIActivateSpatialContext</span> 
+                     </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">Y</td>
+                  </tr>
+                  <tr class="RuledWideOddRow">
+                     <td class="table-body">
+                        <span class="code">FdoICreateSpatialContext</span> 
+                     </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                  </tr>
+                  <tr class="RuledWideEvenRow">
+                     <td class="table-body">
+                        <span class="code">FdoIDestroySpatialContext</span> 
+                     </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                  </tr>
+                  <tr class="RuledWideOddRow">
+                     <td class="table-body">
+                        <span class="code">FdoIGetSpatialContexts</span> 
+                     </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                  </tr>
+                  <tr class="RuledWideEvenRow">
+                     <td class="table-body">
+                        <span class="code">FdoICreateDataStore</span> 
+                     </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                  </tr>
+                  <tr class="RuledWideOddRow">
+                     <td class="table-body">
+                        <span class="code">FdoIDestroyDataStore</span> 
+                     </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                  </tr>
+                  <tr class="RuledWideEvenRow">
+                     <td class="table-body">
+                        <span class="code">FdoIListDataStores</span> 
+                     </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                  </tr>
+                  <tr class="RuledWideOddRow">
+                     <td class="table-body">
+                        <span class="code">FdoICreateSDFFile</span> 
+                     </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                  </tr>
+                  <tr class="RuledWideEvenRow">
+                     <td class="table-body">
+                        <span class="code">FdoISQLCommand</span> 
+                     </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                  </tr>
+                  <tr class="RuledWideOddRow">
+                     <td class="table-body">
+                        <span class="code">FdoIAcquireLock</span> 
+                     </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                  </tr>
+                  <tr class="RuledWideEvenRow">
+                     <td class="table-body">
+                        <span class="code">FdoIGetLockInfo</span> 
+                     </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                  </tr>
+                  <tr class="RuledWideOddRow">
+                     <td class="table-body">
+                        <span class="code">FdoIGetLockedObjects</span> 
+                     </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                  </tr>
+                  <tr class="RuledWideEvenRow">
+                     <td class="table-body">
+                        <span class="code">FdoIGetLockOwners</span> 
+                     </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                  </tr>
+                  <tr class="RuledWideOddRow">
+                     <td class="table-body">
+                        <span class="code">FdoIReleaseLock</span> 
+                     </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                  </tr>
+                  <tr class="RuledWideEvenRow">
+                     <td class="table-body">
+                        <span class="code">FdoIActivateLongTransaction</span> 
+                     </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                  </tr>
+                  <tr class="RuledWideOddRow">
+                     <td class="table-body">
+                        <span class="code">FdoICommitLongTransaction</span> 
+                     </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                  </tr>
+                  <tr class="RuledWideEvenRow">
+                     <td class="table-body">
+                        <span class="code">FdoICreateLongTransaction</span> 
+                     </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                  </tr>
+                  <tr class="RuledWideOddRow">
+                     <td class="table-body">
+                        <span class="code">FdoIDeactivateLongTransaction</span> 
+                     </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                  </tr>
+                  <tr class="RuledWideEvenRow">
+                     <td class="table-body">
+                        <span class="code">FdoIFreezeLongTransaction</span> 
+                     </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                  </tr>
+                  <tr class="RuledWideOddRow">
+                     <td class="table-body">
+                        <span class="code">FdoIGetLongTransactions</span> 
+                     </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                  </tr>
+                  <tr class="RuledWideEvenRow">
+                     <td class="table-body">
+                        <span class="code">FdoIRollbackLongTransaction</span> 
+                     </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                  </tr>
+                  <tr class="RuledWideOddRow">
+                     <td class="table-body">
+                        <span class="code">FdoICreateSpatialIndex</span> 
+                     </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                  </tr>
+                  <tr class="RuledWideEvenRow">
+                     <td class="table-body">
+                        <span class="code">FdoIDestroySpatialIndex</span> 
+                     </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                  </tr>
+                  <tr class="RuledWideOddRow">
+                     <td class="table-body">
+                        <span class="code">FdoIGetSpatialIndexes</span>
+                     </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                  </tr>
+               </colgroup></table>
+            <div class="note-note"><span class="label">Note</span>
+               The capability to create and destroy a data store
+is associated with the capability to create and destroy a feature
+schema. To create a data store you specify values for data store
+properties. For more information about these properties are discussed
+in <span class="char_link"><a href="WS73099cc142f487551e5a0cb10850d4cd7c-5313.html"><!--Reference = WS73099cc142f487551e5a0cb10850d4cd7c-5313; Target topic = WS73099cc142f487551e5a0cb10850d4cd7c-5313.html-->Data Store Management API</a></span>.</div>
+            <span style="display:none"><a name="WS1a9193826455f5ffa23ce210c4a30acaf-4a6"></a></span><table cellpadding="0" cellspacing="0" class="ruled-wide"><colgroup><col style="width:2.375in"><col style="width:0.490in"><col style="width:0.510in"><col style="width:0.437in"><col style="width:0.365in"><col style="width:0.344in"><col style="width:0.344in"><col style="width:0.375in">
+                  <tr class="RuledWideHeading">
+                     <th class="table-heading">Attribute</th>
+                     <th class="table-heading">ArcSDE</th>
+                     <th class="table-heading">MySQL</th>
+                     <th class="table-heading">ODBC</th>
+                     <th class="table-heading">SDF</th>
+                     <th class="table-heading">SHP</th>
+                     <th class="table-heading">WFS</th>
+                     <th class="table-heading">WMS</th>
+                  </tr>
+               
+                  <tr class="RuledWideOddRow">
+                     <td class="table-body">
+                        <span class="code">FdoIDeactivateLongTransaction</span> 
+                     </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                  </tr>
+                  <tr class="RuledWideEvenRow">
+                     <td class="table-body">
+                        <span class="code">FdoIFreezeLongTransaction</span> 
+                     </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                  </tr>
+                  <tr class="RuledWideOddRow">
+                     <td class="table-body">
+                        <span class="code">FdoIGetLongTransactions</span> 
+                     </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                  </tr>
+                  <tr class="RuledWideEvenRow">
+                     <td class="table-body">
+                        <span class="code">FdoIRollbackLongTransaction</span> 
+                     </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                  </tr>
+                  <tr class="RuledWideOddRow">
+                     <td class="table-body">
+                        <span class="code">FdoICreateSpatialIndex</span> 
+                     </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                  </tr>
+                  <tr class="RuledWideEvenRow">
+                     <td class="table-body">
+                        <span class="code">FdoIDestroySpatialIndex</span> 
+                     </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                  </tr>
+                  <tr class="RuledWideOddRow">
+                     <td class="table-body">
+                        <span class="code">FdoIGetSpatialIndexes</span>
+                     </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">Y</td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                     <td class="table-body">
+            &nbsp;
+        </td>
+                  </tr>
+               </colgroup></table>
+            <div class="note-note"><span class="label">Note</span>
+               <!--OList--><span style="display:none"><a name="WS1a9193826455f5ff9110c71085341391d-2f2a"></a></span>
+                  <ol start="1"><li>
+                     The capability to create and destroy a data store
+is associated with the capability to create and destroy a feature
+schema. To create a data store you specify values for data store
+properties. For more information about these properties are discussed
+in <span class="char_link"><a href="WS73099cc142f487551e5a0cb10850d4cd7c-5313.html"><!--Reference = WS73099cc142f487551e5a0cb10850d4cd7c-5313; Target topic = WS73099cc142f487551e5a0cb10850d4cd7c-5313.html-->Data Store Management API</a></span>.</li></ol>
+               
+            </div>
+         
+      <!----><!--See also--><div class="footer-block"><a href="javascript:doComments('html/ac.cmtdialog.htm');"><span class="comments-link">Please send us your comment about this page</span></a></div><br></body></html>

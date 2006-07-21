@@ -1,0 +1,79 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <title>Configuration</title><link rel="stylesheet" type="text/css" href="style/cpm.css"><link rel="stylesheet" type="text/css" href="style/isd.css"><script type="text/javascript" src="scripts/ac_common.js"></script><script type="text/javascript" src="scripts/ac.strings.js"></script><script type="text/javascript" src="scripts/acmap.js"></script><script type="text/javascript" src="scripts/ac.acad_ak.js"></script><script language="javascript">
+            function hideInfo() {
+                info = document.getElementById('infoline');
+                info.style.visibility='hidden';
+            }
+            function showInfo(title) {
+                info = document.getElementById('infoline');
+                info.innerText = title;
+                info.style.visibility='visible';
+            }
+        </script></head><body><!--
+							Name = Topic;
+							Class =  CPM-Topic ISD-Topic ;
+							Url = WS73099cc142f4875518cef0a10b4f5d51a8-7d29.html--><div class="head"><div class="head-block"><div class="nav-group"><span class="toc-idx-links"><a href="index_contents.html">Contents</a> | <a href="index_index.html">Index</a></span><!--browse buttons--><div class="browse"><nobr><div id="prevTitle" style="display:none">Installation</div><a href="WS73099cc142f4875518cef0a10b4f5d51a8-7d2a.html" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerText);" onmouseout="hideInfo();"><img src="images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">Installing and Configuring the MySQL Client on Windows</div><a href="WS73099cc142f4875518cef0a10b4f5d51a8-7d2b.html" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerText);" onmouseout="hideInfo();"><img src="images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">Installing and Configuring the MySQL on Linux</div><a href="WS73099cc142f4875518cef0a10b4f5d51a8-7df0.html" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerText);" onmouseout="hideInfo();"><img src="images/nav-next-xp.gif" border="0"></a></nobr></div><!--end browse buttons--></div><div class="button-info" style="width:100%"><span id="infoline" style="width:100%">&nbsp;</span></div><div class="book-title-link"><a href="index.html">The Essential FDO</a></div><div class="head-text"><span>Configuration</span></div></div></div><div style="line-height: 0pt">&nbsp;</div><div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS73099cc142f4875518cef0a10b4f5d51a8-7d29"></a></span>
+            
+            <!--Body-->
+               <p>The configuration
+wizard presents you with the following configuration defaults.</p>
+               <!--OList--><span style="display:none"><a name="WS73099cc142f4875518cef0a10b4f5d51a8-7d28"></a></span>
+                  <ol start="1"><li>Detailed
+Configuration</li><li>Multifunctional
+Database</li><li>default
+InnoDB Tablespace Setting</li><li>Decision
+Support (DSS)/OLAPA</li><li>Enable
+TCP/IP Networking (using Port Number 3306)</li><li>Enable
+Strict Mode</li><li>Standard
+Character Set</li><li>Install
+As Windows Service (Service Name = MySQL with the service started
+automatically)</li><li>Modify
+Security Settings (you must provide a root password (twice) and
+if you deinstalled an existing MySQL database, you must provide
+a current password)</li></ol>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+               
+               <p>You may optionally
+request that the <span class="filePath">bin</span> directory be
+added the the Windows PATH environment variable. Do so. The wizard
+will add that directory to the end of %PATH%. The <span class="filePath">bin</span> folder contains
+the <span class="filePath">libmysql.dll</span> used
+by the MySQL provider.</p>
+               <div class="note-note"><span class="label">Note</span>If you have PHP installed
+on your machine, make sure that <span class="filePath">C:\Program Files\MySQL\MySQL
+Server 5.0\bin</span> precedes the PHP path in the PATH environment
+variable. The PHP installation contains a copy of the <span class="filePath">libmysql.dll</span> and
+it is important for the operation of the MySQL provider that the
+correct DLL is used.</div>
+               <p>The configuration
+wizard creates a configuration file (<span class="filePath">C:\Program Files\MySQL\MySQL
+Server 5.0\my.ini</span>). It starts the MySQL service (mysqld) using
+options specified in <span class="filePath">my.ini</span>. </p>
+               <p>You can use the Fdo
+User Manager API to create a user account with the usage privilege
+if you are using the enterprise version of FDO. Otherwise you can use
+the 2 SQL commands, <span class="code">create user &lt;user&gt; identified
+by ‘&lt;password&gt;’</span> and <span class="code">grant select, insert, update,
+delete, create, create view, drop, index, alter on *.* to ‘&lt;user&gt;’@’%’
+identified by ‘&lt;password&gt;’</span>. In either case you must
+be connected as a user, for example, root, with the grant privilege.
+The value &lt;user&gt; can be ‘&lt;username&gt;’@’localhost’ if
+the connection local, or it must be ‘&lt;username&gt;’@’,hostname.’
+if the connection is remote. The value of &lt;hostname&gt; is &lt;host
+label&gt;.&lt;domain name&gt;, for example, <em class="mild">someComputer.someCompany.com</em>.</p>
+               <div class="note-note"><span class="label">Note</span>If you enabled remote
+root access when you installed MySQL, you can create user accounts
+by way of a remote connection. Otherwise, you will have to connect
+locally in order to create a user account. </div>
+               <p>You can use the Fdo
+Data Store Management API to create a data store.</p>
+            
+         <!----><!--See also--><div class="footer-block"><a href="javascript:doComments('html/ac.cmtdialog.htm');"><span class="comments-link">Please send us your comment about this page</span></a></div><br></body></html>

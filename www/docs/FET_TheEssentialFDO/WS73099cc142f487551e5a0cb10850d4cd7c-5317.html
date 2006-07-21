@@ -1,0 +1,249 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <title>SQL Commands</title><link rel="stylesheet" type="text/css" href="style/cpm.css"><link rel="stylesheet" type="text/css" href="style/isd.css"><script type="text/javascript" src="scripts/ac_common.js"></script><script type="text/javascript" src="scripts/ac.strings.js"></script><script type="text/javascript" src="scripts/acmap.js"></script><script type="text/javascript" src="scripts/ac.acad_ak.js"></script><script language="javascript">
+            function hideInfo() {
+                info = document.getElementById('infoline');
+                info.style.visibility='hidden';
+            }
+            function showInfo(title) {
+                info = document.getElementById('infoline');
+                info.innerText = title;
+                info.style.visibility='visible';
+            }
+        </script></head><body><!--
+							Name = Topic;
+							Class =  CPM-Topic ISD-Topic ;
+							Url = WS73099cc142f487551e5a0cb10850d4cd7c-5317.html--><div class="head"><div class="head-block"><div class="nav-group"><span class="toc-idx-links"><a href="index_contents.html">Contents</a> | <a href="index_index.html">Index</a></span><!--browse buttons--><div class="browse"><nobr><div id="prevTitle" style="display:none">User Management API</div><a href="WS73099cc142f487551e5a0cb10850d4cd7c-5319.html" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerText);" onmouseout="hideInfo();"><img src="images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">User Management API</div><a href="WS73099cc142f487551e5a0cb10850d4cd7c-5319.html" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerText);" onmouseout="hideInfo();"><img src="images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">Data Store Management API</div><a href="WS73099cc142f487551e5a0cb10850d4cd7c-5313.html" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerText);" onmouseout="hideInfo();"><img src="images/nav-next-xp.gif" border="0"></a></nobr></div><!--end browse buttons--></div><div class="button-info" style="width:100%"><span id="infoline" style="width:100%">&nbsp;</span></div><div class="book-title-link"><a href="index.html">The Essential FDO</a></div><div class="head-text"><span>SQL Commands</span></div></div></div><div style="line-height: 0pt">&nbsp;</div><div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS73099cc142f487551e5a0cb10850d4cd7c-5317"></a></span>
+            
+            <!--Body-->
+               <p>The following table
+maps a set of. The Operation column contains the name of methods
+in class <span class="code">FdoUserManager</span>. </p>
+               <p>
+                  
+                  
+                  
+                  
+                  
+                  If
+the method returns a boolean, the table cell contains the boolean
+value returned by the provider. If the method performs an oiperation
+and the provider supports the operation, the table cell contains
+the SQL statements executed by the provider.</p>
+               <span style="display:none"><a name="WS1a9193826455f5ff9110c71085341391d-342c"></a></span><table cellpadding="0" cellspacing="0" class="ruled-wide"><colgroup><col style="width:1.677in"><col style="width:3.125in"><col style="width:0.449in">
+                     <tr class="RuledWideHeading">
+                        <th class="table-heading">Operation</th>
+                        <th class="table-heading">
+                           MySQL</th>
+                        <th class="table-heading">Notes</th>
+                     </tr>
+                  
+                     <tr class="RuledWideOddRow">
+                        <td class="table-body">
+                           <span class="code">AddUser(name, password)</span> 
+                        </td>
+                        <td class="table-body">
+                           <span class="code">create user ‘</span>
+                           <em class="mild">name‘ </em>
+                           <span class="code"> identified by </span>
+                           <em class="mild">password</em>
+                        </td>
+                        <td class="table-body">1</td>
+                     </tr>
+                     <tr class="RuledWideEvenRow">
+                        <td class="table-body">
+                           <span class="code">AssignRoleOrPrivilege(user, roleOrPriv)</span> 
+                        </td>
+                        <td class="table-body">
+                           <span class="code">grant </span>
+                           <em class="mild">roleOrPriv</em>
+                           <span class="code">on *.* to </span>
+                           <em class="mild">user</em>
+                        </td>
+                        <td class="table-body">2</td>
+                     </tr>
+                     <tr class="RuledWideOddRow">
+                        <td class="table-body">
+                           <span class="code">DropUser(name)</span> 
+                        </td>
+                        <td class="table-body">
+                           <span class="code">drop user </span>
+                           <em class="mild">name</em>
+                           <span class="code"></span> 
+                        </td>
+                        <td class="table-body">
+            &nbsp;
+        </td>
+                     </tr>
+                     <tr class="RuledWideEvenRow">
+                        <td class="table-body">
+                           <span class="code">GetDatastores()</span> 
+                        </td>
+                        <td class="table-body">
+                           <span class="code">FdoIListDatastores</span> 
+                        </td>
+                        <td class="table-body">3</td>
+                     </tr>
+                     <tr class="RuledWideOddRow">
+                        <td class="table-body">
+                           
+                           <span class="code">GetDbUsers()</span> 
+                        </td>
+                        <td class="table-body">
+                           <span class="code">select user as name from mysql.user</span> 
+                        </td>
+                        <td class="table-body">4</td>
+                     </tr>
+                     <tr class="RuledWideEvenRow">
+                        <td class="table-body">
+                           <span class="code">GetDbUsers(inDatastore)</span>
+                        </td>
+                        <td class="table-body">
+                           <span class="code">select distinct grantee as name
+from information_schema.schema_privilges where table_schema = </span>
+                           <em class="mild">inDatastore</em>
+                        </td>
+                        <td class="table-body">5</td>
+                     </tr>
+                     <tr class="RuledWideOddRow">
+                        <td class="table-body">
+                           
+                           <span class="code">GetRolesOrPrivileges()</span> 
+                        </td>
+                        <td class="table-body">
+                           <span class="code">select distinct privilege_type
+from information_schema.user_privileges where grantee like “’root’%”
+order by privilege_type</span>
+                        </td>
+                        <td class="table-body">6</td>
+                     </tr>
+                     <tr class="RuledWideEvenRow">
+                        <td class="table-body">
+                           
+                           <span class="code">GrantAccessToDatastore(user,
+datastore)</span> 
+                        </td>
+                        <td class="table-body">
+                           <span class="code">grant all on </span>
+                           <em class="mild">datastore</em>
+                           <span class="code">.* to </span>
+                           <em class="mild">user</em>
+                        </td>
+                        <td class="table-body">7</td>
+                     </tr>
+                     <tr class="RuledWideOddRow">
+                        <td class="table-body">
+                           
+                           <span class="code">GrantAccessToDatastore(user,
+datastore, priv)</span> 
+                        </td>
+                        <td class="table-body">
+                           <span class="code">grant </span>
+                           <em class="mild">priv</em>
+                           <span class="code"> on </span>
+                           <em class="mild">datastore</em>
+                           <span class="code">.* to </span>
+                           <em class="mild">user</em>
+                        </td>
+                        <td class="table-body">8</td>
+                     </tr>
+                     <tr class="RuledWideEvenRow">
+                        <td class="table-body">
+                           
+                           <span class="code">RevokeAccessToDatastore( user,
+datastore, priv)</span> 
+                        </td>
+                        <td class="table-body">
+                           <span class="code">revoke </span>
+                           <em class="mild">priv</em>
+                           <span class="code"> on </span>
+                           <em class="mild">datastore</em>
+                           <span class="code">.* from </span>
+                           <em class="mild">user</em>
+                        </td>
+                        <td class="table-body">9</td>
+                     </tr>
+                     <tr class="RuledWideOddRow">
+                        <td class="table-body">
+                           
+                           <span class="code">RevokeRoleOrPrivilege(user, roleOrPriv)</span> 
+                        </td>
+                        <td class="table-body">
+                           <span class="code">revoke </span>
+                           <em class="mild">roleOrPriv</em>
+                           <span class="code"> on *.* from </span>
+                           <em class="mild">user</em>.</td>
+                        <td class="table-body">10</td>
+                     </tr>
+                  </colgroup></table>
+               <div class="note-note"><span class="label">Note</span>
+                  <!--OList--><span style="display:none"><a name="WS1a9193826455f5ff9110c71085341391d-2f29"></a></span>
+                     <ol start="1"><li>
+                        
+                        
+                        A
+new MySQL user is created with no privileges. Assume that you have
+created a new user called newuser on the MySQL instance on your
+machine. Log in by executing <span class="code">C:\ &gt;mysql -u newuser -p</span>.
+Then execute <span class="code">mysql&gt; show grants for current_user;</span>.
+The result string is <span class="code">"GRANT USAGE ON *.* TO 'newuser'@'%'
+IDENTIFIED BY PASSWORD '*94BDCEBE19083CE2A1F959FD02F964C7AF4CFC29'".</span> This
+means that newuser has no privileges and can only log in locally.
+Call <span class="code">FdoUserManager::GrantAccessToDatastore()</span> with
+user name and data store arguments to give the user default privileges.</li><li>
+                        To
+confirm the results of this method call, call <span class="code">GetDBUsers()</span>.</li><li>
+                        You
+can get the same information from the connection properties dictionary
+for the DataStore property. The MySQL SQL command <span class="code">mysql&gt; show databases;</span> lists
+the database (data store) names.</li><li>
+                        
+                        If you are connected to MySQL and you created
+the user with AddUser, USAGE is shown as the privilege.</li><li>
+                        All
+users in a particular data store are listed along with the privileges
+that they have in the data store. If connected to MySQL and you
+used the two-argument version of <span class="code">GrantAccessToDatastore</span>,
+the privileges are listed in the note for that method.</li><li>The
+list of supported privileges for MySQL consists of <span class="code">ALTER</span>, <span class="code">ALTER ROUTINE</span>, <span class="code">CREATE</span>, <span class="code">CREATE ROUTINE</span>, <span class="code">CREATE TEMPORARY TABLES</span>, <span class="code">CREATE USER</span>, <span class="code">CREATE VIEW</span>, <span class="code">DELETE</span>, <span class="code">DROP</span>, <span class="code">EXECUTE</span>, <span class="code">FILE</span>, <span class="code">INDEX</span>, <span class="code">INSERT</span>, <span class="code">LOCK TABLES</span>, <span class="code">PROCESS</span>, <span class="code">REFERENCES</span>, <span class="code">RELOAD</span>, <span class="code">REPLICATION CLIENT</span>, <span class="code">REPLICATION SLAVE</span>, <span class="code">SELECT</span>, <span class="code">SHOW DATABASES</span>, <span class="code">SHOW VIEW</span>, <span class="code">SHUTDOWN</span>, <span class="code">SUPER</span>, and <span class="code">UPDATE</span>.</li><li>
+                        This
+overloaded method takes two arguments: a user name and a data store
+name. It grants a set of default privileges to the user when connected to
+that data store. For MySQL the privileges are alter, alter routine,
+create, create routine, create temporary tables, crew view, delete,
+drop, execute, index, insert, lock tables, references, select, show
+view, and update. Call <span class="code">GetDBUsers(&lt;datastore&gt;)</span> to
+verify the result.</li><li>
+                        
+                        
+                        This
+overloaded method takes three arguments: a user name, a data store name,
+and a privilege name. It grants the specified privilege to that
+user for the named data store. The MySQL provider does not allow
+you to grant any privilege other than those assigned by a call to <span class="code">GrantAccessToDatastore(&lt;user&gt;,
+&lt;datastore&gt;)</span>. The SQL Server provider does allow you
+to grant any of the supported privileges with the exception of the <span class="code">public</span>privilege. Call <span class="code">GetDBUsers(&lt;datastore&gt;)</span> to
+verify the result.</li><li>
+                        This method takes three arguments: a user name,
+a data store name, and a privilege name. It revokes the specified
+privilege from that user for the named data store. If the role is
+set to ‘*’, the provider revokes all privileges in the data store
+from the user. In this case the SQL Server provider also drops the
+database user from the data store; the user’s login status is not changed.</li><li>
+                        
+                        
+                        This method takes two arguments: a user name and
+a role or privilege name. It revokes the specified role or privilege.</li></ol>
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                  
+               </div>
+            
+         <!----><!--See also--><div class="footer-block"><a href="javascript:doComments('html/ac.cmtdialog.htm');"><span class="comments-link">Please send us your comment about this page</span></a></div><br></body></html>
