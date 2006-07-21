@@ -1,0 +1,85 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <title>Update the Source</title><link rel="stylesheet" type="text/css" href="style/cpm.css"><link rel="stylesheet" type="text/css" href="style/isd.css"><script type="text/javascript" src="scripts/ac.strings.js"></script><script type="text/javascript" src="scripts/ac_common.js"></script><script type="text/javascript" src="scripts/acmap.js"></script><script type="text/javascript" src="scripts/ac.acad_ak.js"></script><script language="javascript">
+            function hideInfo() {
+                info = document.getElementById('infoline');
+                info.style.visibility='hidden';
+            }
+            function showInfo(title) {
+                info = document.getElementById('infoline');
+                info.innerText = title;
+                info.style.visibility='visible';
+            }
+        </script></head><body><!--
+							Name = Topic;
+							Class =  CPM-Topic ISD-Topic ;
+							Url = WS1a9193826455f5ff36b67310b29445ec2-7f46.html--><div class="head"><div class="head-block"><div class="nav-group"><span class="toc-idx-links"><a href="index_contents.html">Contents</a> | <a href="index_index.html">Index</a></span><!--browse buttons--><div class="browse"><nobr><div id="prevTitle" style="display:none">Review the Copyright and Licensing Information</div><a href="WS73099cc142f4875518cef0a10b4f5d51a8-7b49.html" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerText);" onmouseout="hideInfo();"><img src="images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">Building Feature Data Objects on Windows</div><a href="WS73099cc142f487551e5a0cb10850d4cd7c-596c.html" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerText);" onmouseout="hideInfo();"><img src="images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">System Requirements</div><a href="WS1a9193826455f5ff13ee121107bdda7722-6898.html" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerText);" onmouseout="hideInfo();"><img src="images/nav-next-xp.gif" border="0"></a></nobr></div><!--end browse buttons--></div><div class="button-info" style="width:100%"><span id="infoline" style="width:100%">&nbsp;</span></div><div class="book-title-link"><a href="index.html">Building FDO Open Source</a></div><div class="head-text"><span>Update the Source</span></div></div></div><div style="line-height: 0pt">&nbsp;</div><div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS1a9193826455f5ff36b67310b29445ec2-7f46"></a></span>
+         
+         <!--Body-->
+            <p>You can update the
+source by running the <span class="filePath">checkoutsvn.bat</span>script. </p>
+            <p>In a cmd.exe window
+where the current directory is the build folder, enter <span class="code">checkoutsvn -h</span>. The help
+text displayed is as follows:</p>
+            <!--UList--><span style="display:none"><a name="WS73099cc142f4875518cef0a10b4f5d51a8-7b48"></a></span>
+               <ul><li>checkoutsvn.bat [-h] [-o=OutFolder] [-w=WithModule] [-u=UserId]
+[-p=UserPassword]</li><li>Help:           -h[elp]</li><li>OutFolder:      -o[utpath]=destination folder for files</li><li>WithModule:     -w[ith]=all(default), fdo, fdocore, thirdparty, providers,
+utilities, shp, sdf, wfs, wms, arcsde, rdbms</li><li>User:           -u[ser]=user id</li><li>Password:       -p[assword]=user password</li></ul>
+               
+               
+               
+               
+               
+            
+            <p>You can update all
+of the source by by running the <span class="filePath">checkoutsvn.bat</span>script
+in the build folder. The syntax is <span class="code">checkoutsvn.bat -o=C:\OpenSource
+-u=yourusername -p=yourpassword</span>. </p>
+            <p>You can update the
+source for specified components by using the with option. The syntax
+is <span class="code">checkoutsvn.bat -o=C:\OpenSource
+-u=yourusername -p=yourpassword -w=desiredComponent</span>. </p>
+            <p>The possible arguments
+for the with option are:</p>
+            <!--UList--><span style="display:none"><a name="WS73099cc142f48755f1b4fd10b3ae696ba-7f48"></a></span>
+               <ul><li>
+                  <span class="code">all</span> - checkout all source
+from the fdocore, fdoshp, fdosdf, fdowms, fdowfs, fdoarcsde and
+fdordbms subversions</li><li>
+                  <span class="code">providers</span> - checkout all
+source from the fdoshp, fdosdf, fdowms, fdowfs, fdoarcsde and fdordbms
+subversions</li><li>
+                  <span class="code">fdocore</span> - checkout all
+source from the fdocore.osgeo.org subversion</li><li>
+                  <span class="code">thirdparty</span> - checkout
+all source from the Thirdparty folder in the fdocore.osgeo.org subversion</li><li>
+                  <span class="code">fdo</span> - checkout all source
+from the Fdo folder in the fdocore.osgeo.org subversion</li><li>
+                  <span class="code">utilities</span> - checkout all
+source from the Utilities folder in the fdocore.osgeo.org subversion</li><li>
+                  <span class="code">arcsde</span> - checkout all
+source from the fdoarcsde.osgeo.org subversion</li><li>
+                  <span class="code">rdbms</span> - checkout all source
+from the fdordbms.osgeo.org subversion</li><li>
+                  <span class="code">sdf</span> - checkout all source
+from the fdosdf.osgeo.org subversion</li><li>
+                  <span class="code">shp</span> - checkout all source
+from the fdoshp.osgeo.org subversion</li><li>
+                  <span class="code">wfs</span> - checkout all source
+from the fdowfs.osgeo.org subversion</li><li>
+                  <span class="code">wms</span> - checkout all source
+from the fdowms.osgeo.org subversion</li></ul>
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+            
+         
+      <!----><!--See also--><div class="footer-block"><a href="javascript:doComments('html/ac.cmtdialog.htm');"><span class="comments-link">Please send us your comment about this page</span></a></div><br></body></html>

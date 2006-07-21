@@ -1,0 +1,70 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <title>Providers</title><link rel="stylesheet" type="text/css" href="style/cpm.css"><link rel="stylesheet" type="text/css" href="style/isd.css"><script type="text/javascript" src="scripts/ac.strings.js"></script><script type="text/javascript" src="scripts/ac_common.js"></script><script type="text/javascript" src="scripts/acmap.js"></script><script type="text/javascript" src="scripts/ac.acad_ak.js"></script><script language="javascript">
+            function hideInfo() {
+                info = document.getElementById('infoline');
+                info.style.visibility='hidden';
+            }
+            function showInfo(title) {
+                info = document.getElementById('infoline');
+                info.innerText = title;
+                info.style.visibility='visible';
+            }
+        </script></head><body><!--
+							Name = Topic;
+							Class =  CPM-Topic ISD-Topic ;
+							Url = WS73099cc142f4875518cd91d10b0018785b-7ff9.html--><div class="head"><div class="head-block"><div class="nav-group"><span class="toc-idx-links"><a href="index_contents.html">Contents</a> | <a href="index_index.html">Index</a></span><!--browse buttons--><div class="browse"><nobr><div id="prevTitle" style="display:none">FDO</div><a href="WS73099cc142f4875518cd91d10b0018785b-7ffb.html" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerText);" onmouseout="hideInfo();"><img src="images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">Visual Studio Solution and Project Files</div><a href="WS73099cc142f48755b0eae110a8ea4f1d98ac.html" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerText);" onmouseout="hideInfo();"><img src="images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">Build Outputs</div><a href="WS73099cc142f4875518cd91d10b0018785b-7ff8.html" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerText);" onmouseout="hideInfo();"><img src="images/nav-next-xp.gif" border="0"></a></nobr></div><!--end browse buttons--></div><div class="button-info" style="width:100%"><span id="infoline" style="width:100%">&nbsp;</span></div><div class="book-title-link"><a href="index.html">Building FDO Open Source</a></div><div class="head-text"><span>Providers</span></div></div></div><div style="line-height: 0pt">&nbsp;</div><div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS73099cc142f4875518cd91d10b0018785b-7ff9"></a></span>
+                  
+                  <!--Body-->
+                     <p>The table maps the
+provider solution (.sln) file to project (.vcproj) files. The ‘...’
+in the path names represents <span class="filePath">C:\OpenSource\Providers</span>
+                     </p>
+                     <span style="display:none"><a name="WS73099cc142f48755b0eae110a8ea4f1d98ad"></a></span><table cellpadding="0" cellspacing="0" class="ruled"><colgroup><col style="width:0.838in"><col style="width:3.557in">
+                           <tr class="RuledHeading">
+                              <th class="table-heading">Solution Files</th>
+                              <th class="table-heading">Project Files</th>
+                           </tr>
+                        
+                           <tr class="RuledOddRow">
+                              <td class="table-body">All</td>
+                              <td class="table-body">%FDOUTILITIES%\Common\FdoCommon.vcproj</td>
+                           </tr>
+                           <tr class="RuledEvenRow">
+                              <td class="table-body">ArcSDEOS.sln</td>
+                              <td class="table-body">...\ArcSDE\Src\Message\ArcSDEMessage.vcproj ...\ArcSDE\Src\Provider\ArcSDEProvider.vcproj</td>
+                           </tr>
+                           <tr class="RuledOddRow">
+                              <td class="table-body">MySql.sln</td>
+                              <td class="table-body">...\GenericRdbms\Managed\Project\MgMySqlOverrides.vcproj ...\GenericRdbms\Src\MySQL\MySql.vcproj ...\GenericRdbms\Src\MySQL\Driver\MySqlDriver.vcproj ...\GenericRdbms\Src\MySQL\SchemaMgr\MySqlOverrides.vcproj ...\GenericRdbms\Src\MySQL\SchemaMgr\MySqlSchemaMgr.vcproj</td>
+                           </tr>
+                           <tr class="RuledEvenRow">
+                              <td class="table-body">Odbc.sln</td>
+                              <td class="table-body">...\GenericRdbms\Managed\Project\MgOdbcOverrides.vcproj ...\GenericRdbms\Src\ODBC\Odbc.vcproj ...\GenericRdbms\Src\ODBC\SchemaMgr\OdbcOverrides.vcproj ...\GenericRdbms\Src\ODBC\SchemaMgr\OdbcSchemaMgr.vcproj ...\GenericRdbms\Src\ODBCDriver\odbcdr.vcproj</td>
+                           </tr>
+                           <tr class="RuledOddRow">
+                              <td class="table-body">MySql.sln and Odbc.sln</td>
+                              <td class="table-body">%FDOUTILITIES%\SchemaMgr\LogicalPhysical.vcproj %FDOUTILITIES%\SchemaMgr\Physical.vcproj %FDOUTILITIES%\SchemaMgr\SchemaMgr.vcproj %FDOUTILITIES%\SchemaMgr\SmMessage.vcproj %FDOUTILITIES%\SchemaMgr\Overrides.vcproj ...\GenericRdbms\Managed\Project\MgRdbms.vcproj ...\GenericRdbms\Managed\Project\MgRdbmsOverrides.vcproj ...\GenericRdbms\Nls\fdordbms.vcproj ...\GenericRdbms\Src\Fdo\Fdo.vcproj
+ ...\GenericRdbms\Src\Gdbi\Gdbi.vcproj ...\GenericRdbms\Src\Geometry\Fgf\geometry_fgf.vcproj ...\GenericRdbms\Src\LongTransactionManager\LongTransactionManager.vcproj
+...\GenericRdbms\Src\Rdbi\Rdbi.vcproj ...\GenericRdbms\Src\SchemaMgr\GrdSchemaMgr.vcproj ...\GenericRdbms\Src\SchemaMgr\RdbmsOverrides.vcproj ...\GenericRdbms\Src\Util\util.vcproj</td>
+                           </tr>
+                           <tr class="RuledEvenRow">
+                              <td class="table-body">SDFOS.sln</td>
+                              <td class="table-body">%FDOUTILITIES%\SQLiteInterface\SQLiteInterface.vcproj ...\SDF\Src\Message\SDFMessage.vcproj ...\SDF\Src\Provider\SDF.vcproj
+...\SDF\Src\Utils\FDOUtils.vcproj ...\SDF\Src\UnitTest\UnitTest.vcproj</td>
+                           </tr>
+                           <tr class="RuledOddRow">
+                              <td class="table-body">SHP.sln</td>
+                              <td class="table-body">...\SHP\Managed\project\MgShapeOverrides.vcproj ...\SHP\Src\Message\ShpMessage.vcproj ...\SHP\Src\Overrides\ShpOverrides.vcproj ...\SHP\Src\Provider\ShpProvider.vcproj ...\SHP\Src\ShpRead\ShpRead.vcproj ...\SHP\Src\ShpSpatialIndex\ShpSpatialIndex.vcproj ...\SHP\Src\UnitTest\UnitTest.vcproj</td>
+                           </tr>
+                           <tr class="RuledEvenRow">
+                              <td class="table-body">WFSOS.sln</td>
+                              <td class="table-body">%FDOUTILITIES%\OWS\OWS.vcproj ...\WFS\Src\Message\WFSMessage.vcproj ...\WFS\Src\Provider\WFSProvider.vcproj ...\WFS\Src\UnitTest\UnitTest.vcproj</td>
+                           </tr>
+                           <tr class="RuledOddRow">
+                              <td class="table-body">WMSOS.sln</td>
+                              <td class="table-body">%FDOUTILITIES%\OWS\OWS.vcproj ...\WMS\Managed\Project\MgWmsOverrides.vcproj ...\WMS\Src\Message\WMSMessage.vcproj ...\WMS\Src\Overrides\WMSOverrides.vcproj ...\WMS\Src\Provider\WMSProvider.vcproj</td>
+                           </tr>
+                        </colgroup></table>
+                  
+               <!----><!--See also--><div class="footer-block"><a href="javascript:doComments('html/ac.cmtdialog.htm');"><span class="comments-link">Please send us your comment about this page</span></a></div><br></body></html>

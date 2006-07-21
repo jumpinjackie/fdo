@@ -1,0 +1,130 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <title>FDO</title><link rel="stylesheet" type="text/css" href="style/cpm.css"><link rel="stylesheet" type="text/css" href="style/isd.css"><script type="text/javascript" src="scripts/ac.strings.js"></script><script type="text/javascript" src="scripts/ac_common.js"></script><script type="text/javascript" src="scripts/acmap.js"></script><script type="text/javascript" src="scripts/ac.acad_ak.js"></script><script language="javascript">
+            function hideInfo() {
+                info = document.getElementById('infoline');
+                info.style.visibility='hidden';
+            }
+            function showInfo(title) {
+                info = document.getElementById('infoline');
+                info.innerText = title;
+                info.style.visibility='visible';
+            }
+        </script></head><body><!--
+							Name = Topic;
+							Class =  CPM-Topic ISD-Topic ;
+							Url = WS73099cc142f4875518cd91d10b0018785b-7ff5.html--><div class="head"><div class="head-block"><div class="nav-group"><span class="toc-idx-links"><a href="index_contents.html">Contents</a> | <a href="index_index.html">Index</a></span><!--browse buttons--><div class="browse"><nobr><div id="prevTitle" style="display:none">Thirdparty</div><a href="WS73099cc142f4875518cd91d10b0018785b-7ff7.html" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerText);" onmouseout="hideInfo();"><img src="images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">Build Outputs</div><a href="WS73099cc142f4875518cd91d10b0018785b-7ff8.html" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerText);" onmouseout="hideInfo();"><img src="images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">Providers</div><a href="WS73099cc142f4875518cd91d10b0018785b-7ff3.html" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerText);" onmouseout="hideInfo();"><img src="images/nav-next-xp.gif" border="0"></a></nobr></div><!--end browse buttons--></div><div class="button-info" style="width:100%"><span id="infoline" style="width:100%">&nbsp;</span></div><div class="book-title-link"><a href="index.html">Building FDO Open Source</a></div><div class="head-text"><span>FDO</span></div></div></div><div style="line-height: 0pt">&nbsp;</div><div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS73099cc142f4875518cd91d10b0018785b-7ff5"></a></span>
+               
+               <!--Body-->
+                  <p>The following table
+maps Visual Studio project files for the FDO components to output
+files. The ‘...’ in the path names represents <span class="filePath">C:\OpenSource\Fdo</span>.</p>
+                  <span style="display:none"><a name="WS73099cc142f48755115502110b4d39b4bf-7ffa"></a></span><table cellpadding="0" cellspacing="0" class="ruled-wide"><colgroup><col style="width:1.146in"><col style="width:2.760in"><col style="width:1.365in">
+                        <tr class="RuledWideHeading">
+                           <th class="table-heading">Project File</th>
+                           <th class="table-heading">Output Folder</th>
+                           <th class="table-heading">Output Files</th>
+                        </tr>
+                     
+                        <tr class="RuledWideOddRow">
+                           <td class="table-body">MgCommon.vcproj</td>
+                           <td class="table-body">...\Managed\bin\release,
+...\Managed\bin\debug</td>
+                           <td class="table-body">OSGeo.FDO.Common.dll</td>
+                        </tr>
+                        <tr class="RuledWideEvenRow">
+                           <td class="table-body">MgFDO.vcproj</td>
+                           <td class="table-body">...\Managed\bin\release,
+...\Managed\bin\debug</td>
+                           <td class="table-body">OSGeo.FDO.dll</td>
+                        </tr>
+                        <tr class="RuledWideOddRow">
+                           <td class="table-body">MgGeometry.vcproj</td>
+                           <td class="table-body">....\Managed\bin\release,
+...\Managed\bin\debug</td>
+                           <td class="table-body">OSGeo.FDO.Geometry.dll</td>
+                        </tr>
+                        <tr class="RuledWideEvenRow">
+                           <td class="table-body">MgSpatial.vcproj</td>
+                           <td class="table-body">....\Managed\bin\release,
+...\Managed\bin\debug</td>
+                           <td class="table-body">OSGeo.FDO.Spatial.dll</td>
+                        </tr>
+                        <tr class="RuledWideOddRow">
+                           <td class="table-body">UnitTest.vcproj</td>
+                           <td class="table-body">...\Unmanaged\Bin\Win32\Release</td>
+                           <td class="table-body">unit_test.exe</td>
+                        </tr>
+                        <tr class="RuledWideEvenRow">
+                           <td class="table-body">UnitTest.vcproj</td>
+                           <td class="table-body">...\Unmanaged\Bin\Win32\debug</td>
+                           <td class="table-body">UnitTest.exe</td>
+                        </tr>
+                        <tr class="RuledWideOddRow">
+                           <td class="table-body">Common.vcproj</td>
+                           <td class="table-body">...\Unmanaged\Bin\Win32\Release ...\Unmanaged\bin\Win32\debug</td>
+                           <td class="table-body">FDOCommon.dll</td>
+                        </tr>
+                        <tr class="RuledWideEvenRow">
+                           <td class="table-body">Common.vcproj</td>
+                           <td class="table-body">...\Unmanaged\lib\Win32\Release ...\Unmanaged\Lib\Win32\debug</td>
+                           <td class="table-body">FDOCommon.lib</td>
+                        </tr>
+                        <tr class="RuledWideOddRow">
+                           <td class="table-body">Fdo.vcproj</td>
+                           <td class="table-body">...\Unmanaged\Bin\Win32\Release ...\Unmanaged\bin\Win32\debug</td>
+                           <td class="table-body">FDO.dll</td>
+                        </tr>
+                        <tr class="RuledWideEvenRow">
+                           <td class="table-body">Fdo.vcproj</td>
+                           <td class="table-body">...\Unmanaged\lib\Win32\Release ...\Unmanaged\Lib\Win32\debug</td>
+                           <td class="table-body">FDO.lib</td>
+                        </tr>
+                        <tr class="RuledWideOddRow">
+                           <td class="table-body">FileToHdr.vcproj</td>
+                           <td class="table-body">...\Unmanaged\Bin\Win32\Release, ...\Unmanaged\Bin\Win32\debug</td>
+                           <td class="table-body">FileToHdr.exe</td>
+                        </tr>
+                        <tr class="RuledWideEvenRow">
+                           <td class="table-body">Geometry.vcproj</td>
+                           <td class="table-body">...\Unmanaged\Bin\Win32\Release ...\Unmanaged\bin\Win32\debug</td>
+                           <td class="table-body">FDOGeometry.dll</td>
+                        </tr>
+                        <tr class="RuledWideOddRow">
+                           <td class="table-body">Geometry.vcproj</td>
+                           <td class="table-body">...\Unmanaged\lib\Win32\Release ...\Unmanaged\Lib\Win32\debug</td>
+                           <td class="table-body">FDOGeometry.lib</td>
+                        </tr>
+                        <tr class="RuledWideEvenRow">
+                           <td class="table-body">McToMsf.vcproj</td>
+                           <td class="table-body">...\Unmanaged\Bin\Win32\Release, ...\Unmanaged\Bin\Win32\debug</td>
+                           <td class="table-body">McToMsf.exe</td>
+                        </tr>
+                        <tr class="RuledWideOddRow">
+                           <td class="table-body">Message.vcproj</td>
+                           <td class="table-body">...\Unmanaged\Bin\Win32\Release ...\Unmanaged\bin\Win32\debug</td>
+                           <td class="table-body">FDOMessage.dll</td>
+                        </tr>
+                        <tr class="RuledWideEvenRow">
+                           <td class="table-body">Message.vcproj</td>
+                           <td class="table-body">...\Unmanaged\lib\Win32\Release ...\Unmanaged\Lib\Win32\debug</td>
+                           <td class="table-body">FDOMessage.lib</td>
+                        </tr>
+                        <tr class="RuledWideOddRow">
+                           <td class="table-body">Nls.vcproj</td>
+                           <td class="table-body">...\Unmanaged\Lib\Win32\Release, ...\Unmanaged\Lib\Win32\debug</td>
+                           <td class="table-body">FDONLS.lib</td>
+                        </tr>
+                        <tr class="RuledWideEvenRow">
+                           <td class="table-body">Spatial.vcproj</td>
+                           <td class="table-body">...\Unmanaged\Bin\Win32\Release ...\Unmanaged\bin\Win32\debug</td>
+                           <td class="table-body">FDOSpatial.dll</td>
+                        </tr>
+                        <tr class="RuledWideOddRow">
+                           <td class="table-body">Spatial.vcproj</td>
+                           <td class="table-body">...\Unmanaged\lib\Win32\Release ...\Unmanaged\Lib\Win32\debug</td>
+                           <td class="table-body">FDOSpatial.lib</td>
+                        </tr>
+                     </colgroup></table>
+               
+            <!----><!--See also--><div class="footer-block"><a href="javascript:doComments('html/ac.cmtdialog.htm');"><span class="comments-link">Please send us your comment about this page</span></a></div><br></body></html>

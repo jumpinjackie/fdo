@@ -1,0 +1,74 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <title>Subversion Repositories</title><link rel="stylesheet" type="text/css" href="style/cpm.css"><link rel="stylesheet" type="text/css" href="style/isd.css"><script type="text/javascript" src="scripts/ac.strings.js"></script><script type="text/javascript" src="scripts/ac_common.js"></script><script type="text/javascript" src="scripts/acmap.js"></script><script type="text/javascript" src="scripts/ac.acad_ak.js"></script><script language="javascript">
+            function hideInfo() {
+                info = document.getElementById('infoline');
+                info.style.visibility='hidden';
+            }
+            function showInfo(title) {
+                info = document.getElementById('infoline');
+                info.innerText = title;
+                info.style.visibility='visible';
+            }
+        </script></head><body><!--
+							Name = Topic;
+							Class =  CPM-Topic ISD-Topic ;
+							Url = WS1a9193826455f5ff36b67310b29445ec2-7fba.html--><div class="head"><div class="head-block"><div class="nav-group"><span class="toc-idx-links"><a href="index_contents.html">Contents</a> | <a href="index_index.html">Index</a></span><!--browse buttons--><div class="browse"><nobr><div id="prevTitle" style="display:none">Gzipped Tarfile</div><a href="WS1a9193826455f5ff36b67310b29445ec2-7fbb.html" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerText);" onmouseout="hideInfo();"><img src="images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">Get the Source</div><a href="WS1a9193826455f5ff36b67310b29445ec2-7fbc.html" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerText);" onmouseout="hideInfo();"><img src="images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">Review the Copyright and Licensing Information</div><a href="WS73099cc142f4875518cef0a10b4f5d51a8-7b49.html" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerText);" onmouseout="hideInfo();"><img src="images/nav-next-xp.gif" border="0"></a></nobr></div><!--end browse buttons--></div><div class="button-info" style="width:100%"><span id="infoline" style="width:100%">&nbsp;</span></div><div class="book-title-link"><a href="index.html">Building FDO Open Source</a></div><div class="head-text"><span>Subversion Repositories</span></div></div></div><div style="line-height: 0pt">&nbsp;</div><div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS1a9193826455f5ff36b67310b29445ec2-7fba"></a></span>
+            
+            <!--Body-->
+               <p>The FDO code is stored
+in Subversion repositories on the Open Source Geospatial Foundation
+website. Use a Subversion client to obtain the FDO source from these
+repositories. To browse the list of available clients, click the <span class="uis-unspecified">Developer
+tools</span> link at the bottom of the <a class="webLink" href="https://www.osgeo.org">https://www.osgeo.org</a> page.
+Pick a client and follow the instructions there to obtain and install
+the client. The instructions in this document are based on the use
+of the SVN command-line client.</p>
+               <p>The SVN client enables
+you to download files from a Subversion repository into a build
+directory. There is one repository for the utilities, fdo core and
+thirdparty components and one repository for each of the providers with
+the exeception of the MySQL and ODBC providers, which share a repository.
+A URL identifies the repository and a local path identifies the
+directory which receives the downloaded files. In this document
+the build directory is called <span class="uis-unspecified">/home/OpenSource</span>.</p>
+               <p>To get the source
+from the repositories execute the following commands in a terminal
+window.</p>
+               <div class="note-note"><span class="label">Note</span>You will be prompted
+for a password.</div>
+               <!--OList--><span style="display:none"><a name="WS1a9193826455f5ff36b67310b29445ec2-7f98"></a></span>
+                  <ol start="1"><li>
+                     <span class="code">svn checkout https://fdocore.osgeo.org/svn/fdocore/trunk
+/home/OpenSource --username yourusername</span>
+                  </li><li>
+                     <span class="code">svn checkout https://fdoarcsde.osgeo.org/svn/fdoarcsde/trunk/Providers/ArcSDE
+/home/OpenSource/Providers/ArcSDE --username yourusername</span>
+                  </li><li>
+                     <span class="code">svn checkout https://fdordbms.osgeo.org/svn/fdordbms/trunk/Providers/GenericRdbms
+/home/OpenSource/Providers/GenericRdbms --username yourusername</span>
+                  </li><li>
+                     <span class="code">svn checkout https://fdosdf.osgeo.org/svn/fdosdf/trunk/Providers/SDF
+/home/OpenSource/Providers/SDF --username yourusername</span>
+                  </li><li>
+                     <span class="code">svn checkout https://fdoshp.osgeo.org/svn/fdoshp/trunk/Providers/SHP
+/home/OpenSource/Providers/SHP --username yourusername</span>
+                  </li><li>
+                     <span class="code">svn checkout https://fdowfs.osgeo.org/svn/fdowfs/trunk/Providers/WFS
+/home/OpenSource/Providers/WFS --username yourusername</span>
+                  </li><li>
+                     <span class="code">svn checkout https://fdowms.osgeo.org/svn/fdowms/trunk/Providers/WMS
+/home/OpenSource/Providers/WMS --username yourusername</span>
+                  </li></ol>
+                  
+                  
+                  
+                  
+                  
+                  
+               
+               <div class="note-note"><span class="label">Note</span>The fdocore components
+includes a script called checkoutsvn.sh, which can be used to get
+updates for the all of the components from the Subversion repositories.</div>
+            
+         <!----><!--See also--><div class="footer-block"><a href="javascript:doComments('html/ac.cmtdialog.htm');"><span class="comments-link">Please send us your comment about this page</span></a></div><br></body></html>
