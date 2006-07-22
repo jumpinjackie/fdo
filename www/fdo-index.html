@@ -44,16 +44,6 @@
 			GIS (Geographic Information System) data.
 			</p>
 			<p>
-			FDO Geometry is based on the
-			<a href="http://portal.opengeospatial.org/files/?artifact_id=829">OpenGIS Simple Features Implementation Specification for SQL</a>
-			(version 1.1, document 99-049),
-			but is extended to include z and measure dimensions and circular arcs.
-			The FDO XML format for schema is based on the
-			<a href="http://portal.opengeospatial.org/files/?artifact_id=1034">Open GIS Consortium Geography Markup Language</a> (version 2.1.1, document 02-009).
-			The schema model is object-based using classes and properties and is
-			independent of any physical storage format.
-			</p>
-			<p>
 			FDO provides a model for extending
 			its interface to additional data source technologies.
 			The generic API is extensible, and it is possible to add
@@ -99,6 +89,23 @@
 				non-feature geometry properties, and optionally other types of properties.
 				</li>
 			</ul>
+
+			<p>
+			A geometry is represented using geometric constructs either defined as lists of one or more XY or XYZ 
+                  points or defined parametrically, for example, as a circular arc. While geometry typically is two- or three-dimensional, 
+                  it may also contain the measurement dimension (M) to provide the basis for dynamic segments. FDO Geometry is based 
+                  on the <a href="http://portal.opengeospatial.org/files/?artifact_id=829">OpenGIS Simple Features Implementation Specification for SQL</a>
+                  (version 1.1, document 99-049), but is extended to include z and measure dimensions and circular arcs.
+			</p>
+			<p>
+			A schema is a logical description of the data types used to model real-world objects. A schema is not the actual 
+                  data instances (that is, not a particular road or land parcel), rather it is metadata. A schema is a model of the types 
+                  of data that would be found in a data store. FDO feature schemas can be written to an XML file. The FDO XML 
+                  format for schema is based on the <a href="http://portal.opengeospatial.org/files/?artifact_id=1034">Open GIS Consortium Geography Markup Language </a>
+                  (version 2.1.1, document 02-009).  The schema model is object-based using classes and properties 
+                  and is independent of any physical storage format.
+			</p>
+
         </div>
 
         <div class="h2">
