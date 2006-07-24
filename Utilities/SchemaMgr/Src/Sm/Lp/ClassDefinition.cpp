@@ -2326,7 +2326,13 @@ bool FdoSmLpClassBase::ColumnNameUsed( FdoSmPhDbObjectP dbObject, const FdoSmLpP
 			}
 
 			// It's alright to use this column name if the base property is this property.
-			if ( pMatchedProp && pProp && (wcscmp(pMatchedProp->GetName(), pProp->GetName()) == 0) )
+            if ( pMatchedProp && pProp && 
+                    ((wcscmp(pMatchedProp->GetName(), pProp->GetName()) == 0) ||
+                     (pMatchedProp->GetIsFeatId() && pProp->GetIsFeatId())       // Derived FeatId property doesn't
+                                                                                 // always have same name so match
+                                                                                 // on IsFeatId flag.
+                )
+            )
 				pMatchedProp = NULL;
 		}
 
