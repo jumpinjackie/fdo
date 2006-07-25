@@ -115,9 +115,9 @@ xcopy /S /C /Q /R /Y Inc\SHP\*.h "%FDOINCPATHSHP%\SHP\"
 :generate_docs
 if "%DOCENABLESHP%"=="skip" goto install_docs
 echo Creating SHP provider html and chm documentation
-if exist "..\Docs\HTML\Providers\SHP" rmdir /S /Q "..\Docs\HTML\Providers\SHP"
-if not exist "..\Docs\HTML\Providers\SHP" mkdir "..\Docs\HTML\Providers\SHP"
-if exist ..\Docs\SHP_Provider_API.chm attrib -r ..\Docs\SHP_Provider_API.chm
+if exist "Docs\HTML\SHP" rmdir /S /Q "Docs\HTML\SHP"
+if not exist "Docs\HTML\SHP" mkdir "Docs\HTML\SHP"
+if exist Docs\SHP_Provider_API.chm attrib -r Docs\SHP_Provider_API.chm
 pushd Docs\doc_src
 doxygen Doxyfile_SHP
 popd
@@ -125,8 +125,8 @@ popd
 :install_docs
 if "%TYPEACTIONSHP%"=="build" goto end
 if exist "%FDODOCPATHSHP%\HTML\Providers\SHP" rmdir /S /Q "%FDODOCPATHSHP%\HTML\Providers\SHP"
-if exist ..\Docs\HTML\Providers\SHP xcopy/CQEYI ..\Docs\HTML\Providers\SHP\* "%FDODOCPATHSHP%\HTML\Providers\SHP"
-if exist "..\Docs\SHP_Provider_API.chm" copy /y "..\Docs\SHP_Provider_API.chm" "%FDODOCPATHSHP%"
+if exist Docs\HTML\SHP xcopy/CQEYI Docs\HTML\SHP\* "%FDODOCPATHSHP%\HTML\Providers\SHP"
+if exist "Docs\SHP_Provider_API.chm" copy /y "Docs\SHP_Provider_API.chm" "%FDODOCPATHSHP%"
 
 :end
 echo End SHP %MSACTIONSHP%
