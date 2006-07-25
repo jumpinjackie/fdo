@@ -129,11 +129,11 @@ if exist "%FDOINCPATHODBC%\Rdbms\FdoOracle.h" del /Q /F "%FDOINCPATHODBC%\Rdbms\
 if "%DOCENABLEMYSQL%"=="skip" goto install_docs
 pushd ..\..\
 echo Creating MySQL provider html and chm documentation
-if exist "..\Docs\HTML\Providers\MYSQL" rmdir /S /Q "..\Docs\HTML\Providers\MYSQL"
-if not exist "..\Docs\HTML\Providers\MYSQL" mkdir "..\Docs\HTML\Providers\MYSQL"
-if exist ..\Docs\MYSQL_Provider_API.chm attrib -r ..\Docs\MYSQL_Provider_API.chm
+if exist "Docs\HTML\MYSQL" rmdir /S /Q "Docs\HTML\MYSQL"
+if not exist "Docs\HTML\MySQL" mkdir "Docs\HTML\MySQL"
+if exist Docs\MySQL_Provider_API.chm attrib -r Docs\MySQL_Provider_API.chm
 pushd Docs\doc_src
-doxygen Doxyfile_MYSQL
+doxygen Doxyfile_MySQL
 popd
 popd
 
@@ -141,8 +141,8 @@ popd
 if "%TYPEACTIONMYSQL%"=="build" goto end
 pushd ..\..\
 if exist "%FDODOCPATHMYSQL%\HTML\Providers\MYSQL" rmdir /S /Q "%FDODOCPATHMYSQL%\HTML\Providers\MYSQL"
-if exist ..\Docs\HTML\Providers\MYSQL xcopy/CQEYI ..\Docs\HTML\Providers\MYSQL\* "%FDODOCPATHMYSQL%\HTML\Providers\MYSQL"
-if exist "..\Docs\MYSQL_Provider_API.chm" copy /y "..\Docs\MYSQL_Provider_API.chm" "%FDODOCPATHMYSQL%"
+if exist Docs\HTML\MySQL xcopy/CQEYI Docs\HTML\MySQL\* "%FDODOCPATHMYSQL%\HTML\Providers\MySQL"
+if exist "Docs\MySQL_Provider_API.chm" copy /y "Docs\MySQL_Provider_API.chm" "%FDODOCPATHMYSQL%"
 popd
 
 :end

@@ -123,9 +123,9 @@ if exist "%FDOINCPATHODBC%\Rdbms\FdoOracle.h" del /Q /F "%FDOINCPATHODBC%\Rdbms\
 if "%DOCENABLEODBC%"=="skip" goto install_docs
 pushd ..\..\
 echo Creating ODBC provider html and chm documentation
-if exist "..\Docs\HTML\Providers\ODBC" rmdir /S /Q "..\Docs\HTML\Providers\ODBC"
-if not exist "..\Docs\HTML\Providers\ODBC" mkdir "..\Docs\HTML\Providers\ODBC"
-if exist ..\Docs\ODBC_Provider_API.chm attrib -r ..\Docs\ODBC_Provider_API.chm
+if exist "Docs\HTML\ODBC" rmdir /S /Q "Docs\HTML\ODBC"
+if not exist "Docs\HTML\ODBC" mkdir "Docs\HTML\ODBC"
+if exist Docs\ODBC_Provider_API.chm attrib -r Docs\ODBC_Provider_API.chm
 pushd Docs\doc_src
 doxygen Doxyfile_ODBC
 popd
@@ -135,8 +135,8 @@ popd
 if "%TYPEACTIONODBC%"=="build" goto end
 pushd ..\..\
 if exist "%FDODOCPATHODBC%\HTML\Providers\ODBC" rmdir /S /Q "%FDODOCPATHODBC%\HTML\Providers\ODBC"
-if exist ..\Docs\HTML\Providers\ODBC xcopy/CQEYI ..\Docs\HTML\Providers\ODBC\* "%FDODOCPATHODBC%\HTML\Providers\ODBC"
-if exist "..\Docs\ODBC_Provider_API.chm" copy /y "..\Docs\ODBC_Provider_API.chm" "%FDODOCPATHODBC%"
+if exist Docs\HTML\ODBC xcopy/CQEYI Docs\HTML\ODBC\* "%FDODOCPATHODBC%\HTML\Providers\ODBC"
+if exist "Docs\ODBC_Provider_API.chm" copy /y "Docs\ODBC_Provider_API.chm" "%FDODOCPATHODBC%"
 popd
 
 :end
