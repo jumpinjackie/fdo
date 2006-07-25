@@ -299,8 +299,8 @@ foreach $RDBMS ("ORACLE", "SQLSERVER")
   if ($INSTALLACTION ne "U") {
     system "shp2sde -o create -l TREES,SHAPE -f " . $SHP_ROOT . "\\Metadcov\\Trees.shp -e p -a all -C OBJECTID,USER,0 -u " . $username_metadcov . " -p test " . $DB_INST;
     system "echo y | sdetable -o alter_reg -t TREES -V MULTI -c OBJECTID -C SDE -u " . $username_metadcov . " -p test " . $DB_INST;
-    system "shp2sde -o create -l SOILS,SHAPE -f " . $SHP_ROOT . "\\Australia\\Soils.shp -e a -a all -C FID,USER,0 -V MULTI -u " . $username_australia . " -p test " . $DB_INST;
-    system "echo y | sdetable -o alter_reg -t SOILS -c FID -C SDE -u " . $username_australia . " -p test " . $DB_INST;
+    system "shp2sde -o create -l SOILS,SHAPE -f " . $SHP_ROOT . "\\Australia\\Soils.shp -e a -a all -C FID,USER,0 -u " . $username_australia . " -p test " . $DB_INST;
+    system "echo y | sdetable -o alter_reg -t SOILS -V MULTI -c FID -C SDE -u " . $username_australia . " -p test " . $DB_INST;
     system "shp2sde -o create -l PARCELS,SHAPE -f " . $SHP_ROOT . "\\Australia\\PARCELS.shp -e a -a all -C FID,USER,0 -u " . $username_australia . " -p test " . $DB_INST;
     system "echo y | sdetable -o alter_reg -t PARCELS -c FID -C SDE -u " . $username_australia . " -p test " . $DB_INST;
   } else {
