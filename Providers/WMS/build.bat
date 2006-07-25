@@ -118,9 +118,9 @@ xcopy /S /C /Q /R /Y Inc\WMS\*.h "%FDOINCPATHWMS%\WMS\"
 :generate_docs
 if "%DOCENABLEWMS%"=="skip" goto install_docs
 echo Creating WMS provider html and chm documentation
-if exist "..\Docs\HTML\Providers\WMS" rmdir /S /Q "..\Docs\HTML\Providers\WMS"
-if not exist "..\Docs\HTML\Providers\WMS" mkdir "..\Docs\HTML\Providers\WMS"
-if exist ..\Docs\WMS_Provider_API.chm attrib -r ..\Docs\WMS_Provider_API.chm
+if exist "Docs\HTML\WMS" rmdir /S /Q "Docs\HTML\WMS"
+if not exist "Docs\HTML\WMS" mkdir "Docs\HTML\WMS"
+if exist Docs\WMS_Provider_API.chm attrib -r Docs\WMS_Provider_API.chm
 pushd Docs\doc_src
 doxygen Doxyfile_WMS
 popd
@@ -128,8 +128,8 @@ popd
 :install_docs
 if "%TYPEACTIONWMS%"=="build" goto end
 if exist "%FDODOCPATHWMS%\HTML\Providers\WMS" rmdir /S /Q "%FDODOCPATHWMS%\HTML\Providers\WMS"
-if exist ..\Docs\HTML\Providers\WMS xcopy/CQEYI ..\Docs\HTML\Providers\WMS\* "%FDODOCPATHWMS%\HTML\Providers\WMS"
-if exist "..\Docs\WMS_Provider_API.chm" copy /y "..\Docs\WMS_Provider_API.chm" "%FDODOCPATHWMS%"
+if exist Docs\HTML\WMS xcopy/CQEYI Docs\HTML\WMS\* "%FDODOCPATHWMS%\HTML\Providers\WMS"
+if exist "Docs\WMS_Provider_API.chm" copy /y "Docs\WMS_Provider_API.chm" "%FDODOCPATHWMS%"
 
 :end
 echo End WMS %MSACTIONWMS%
