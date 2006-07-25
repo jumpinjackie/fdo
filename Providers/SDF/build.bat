@@ -112,9 +112,9 @@ xcopy /S /C /Q /R /Y Inc\SDF\*.h "%FDOINCPATHSDF%\SDF\"
 :generate_docs
 if "%DOCENABLESDF%"=="skip" goto install_docs
 echo Creating SDF provider html and chm documentation
-if exist "..\Docs\HTML\Providers\SDF" rmdir /S /Q "..\Docs\HTML\Providers\SDF"
-if not exist "..\Docs\HTML\Providers\SDF" mkdir "..\Docs\HTML\Providers\SDF"
-if exist ..\Docs\SDF_Provider_API.chm attrib -r ..\Docs\SDF_Provider_API.chm
+if exist "Docs\HTML\SDF" rmdir /S /Q "Docs\HTML\SDF"
+if not exist "Docs\HTML\SDF" mkdir "Docs\HTML\SDF"
+if exist Docs\SDF_Provider_API.chm attrib -r Docs\SDF_Provider_API.chm
 pushd Docs\doc_src
 doxygen Doxyfile_SDF
 popd
@@ -122,8 +122,8 @@ popd
 :install_docs
 if "%TYPEACTIONSDF%"=="build" goto end
 if exist "%FDODOCPATHSDF%\HTML\Providers\SDF" rmdir /S /Q "%FDODOCPATHSDF%\HTML\Providers\SDF"
-if exist ..\Docs\HTML\Providers\SDF xcopy/CQEYI ..\Docs\HTML\Providers\SDF\* "%FDODOCPATHSDF%\HTML\Providers\SDF"
-if exist "..\Docs\SDF_Provider_API.chm" copy /y "..\Docs\SDF_Provider_API.chm" "%FDODOCPATHSDF%"
+if exist Docs\HTML\SDF xcopy/CQEYI Docs\HTML\SDF\* "%FDODOCPATHSDF%\HTML\Providers\SDF"
+if exist "Docs\SDF_Provider_API.chm" copy /y "Docs\SDF_Provider_API.chm" "%FDODOCPATHSDF%"
 
 :end
 echo End SDF %MSACTIONSDF%
