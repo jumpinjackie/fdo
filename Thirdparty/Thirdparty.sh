@@ -44,7 +44,7 @@ pushd . >& /dev/null
 cd libcurl
 echo Building libcurl
 chmod a+x ./configure
-./configure
+./configure --without-libidn
 make
 mkdir -p lib/linux
 rm -f ./lib/linux/*.*
