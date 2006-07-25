@@ -113,9 +113,9 @@ rem none
 :generate_docs
 if "%DOCENABLEWFS%"=="skip" goto install_docs
 echo Creating WFS provider html and chm documentation
-if exist "..\Docs\HTML\Providers\WFS" rmdir /S /Q "..\Docs\HTML\Providers\WFS"
-if not exist "..\Docs\HTML\Providers\WFS" mkdir "..\Docs\HTML\Providers\WFS"
-if exist ..\Docs\WFS_Provider_API.chm attrib -r ..\Docs\WFS_Provider_API.chm
+if exist "Docs\HTML\WFS" rmdir /S /Q "Docs\HTML\WFS"
+if not exist "Docs\HTML\WFS" mkdir "Docs\HTML\WFS"
+if exist Docs\WFS_Provider_API.chm attrib -r Docs\WFS_Provider_API.chm
 pushd Docs\doc_src
 doxygen Doxyfile_WFS
 popd
@@ -123,8 +123,8 @@ popd
 :install_docs
 if "%TYPEACTIONWFS%"=="build" goto end
 if exist "%FDODOCPATHWFS%\HTML\Providers\WFS" rmdir /S /Q "%FDODOCPATHWFS%\HTML\Providers\WFS"
-if exist ..\Docs\HTML\Providers\WFS xcopy/CQEYI ..\Docs\HTML\Providers\WFS\* "%FDODOCPATHWFS%\HTML\Providers\WFS"
-if exist "..\Docs\WFS_Provider_API.chm" copy /y "..\Docs\WFS_Provider_API.chm" "%FDODOCPATHWFS%"
+if exist Docs\HTML\WFS xcopy/CQEYI Docs\HTML\WFS\* "%FDODOCPATHWFS%\HTML\Providers\WFS"
+if exist "Docs\WFS_Provider_API.chm" copy /y "Docs\WFS_Provider_API.chm" "%FDODOCPATHWFS%"
 
 :end
 echo End WFS %MSACTIONWFS%
