@@ -113,9 +113,9 @@ rem none
 :generate_docs
 if "%DOCENABLEARCSDE%"=="skip" goto install_docs
 echo Creating ArcSDE provider html and chm documentation
-if exist "..\Docs\HTML\Providers\ArcSDE" rmdir /S /Q "..\Docs\HTML\Providers\ArcSDE"
-if not exist "..\Docs\HTML\Providers\ArcSDE" mkdir "..\Docs\HTML\Providers\ArcSDE"
-if exist ..\Docs\ArcSDE_Provider_API.chm attrib -r ..\Docs\ArcSDE_Provider_API.chm
+if exist "Docs\HTML\ArcSDE" rmdir /S /Q "Docs\HTML\ArcSDE"
+if not exist "Docs\HTML\ArcSDE" mkdir "Docs\HTML\ArcSDE"
+if exist Docs\ArcSDE_Provider_API.chm attrib -r Docs\ArcSDE_Provider_API.chm
 pushd Docs\doc_src
 doxygen Doxyfile_ArcSDE
 popd
@@ -123,8 +123,8 @@ popd
 :install_docs
 if "%TYPEACTIONARCSDE%"=="build" goto end
 if exist "%FDODOCPATHARCSDE%\HTML\Providers\ArcSDE" rmdir /S /Q "%FDODOCPATHARCSDE%\HTML\Providers\ArcSDE"
-if exist ..\Docs\HTML\Providers\ArcSDE xcopy/CQEYI ..\Docs\HTML\Providers\ArcSDE\* "%FDODOCPATHARCSDE%\HTML\Providers\ArcSDE"
-if exist "..\Docs\ArcSDE_Provider_API.chm" copy /y "..\Docs\ArcSDE_Provider_API.chm" "%FDODOCPATHARCSDE%"
+if exist Docs\HTML\ArcSDE xcopy/CQEYI Docs\HTML\ArcSDE\* "%FDODOCPATHARCSDE%\HTML\Providers\ArcSDE"
+if exist "Docs\ArcSDE_Provider_API.chm" copy /y "Docs\ArcSDE_Provider_API.chm" "%FDODOCPATHARCSDE%"
 
 :end
 echo End ArcSDE %MSACTIONARCSDE%
