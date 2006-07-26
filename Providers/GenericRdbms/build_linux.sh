@@ -61,7 +61,7 @@ do
         TYPEBUILD=release
     else
         echo "$arg Invalid parameter $1"
-	exit 1   echo Creating RDBMS Providers HTML documentation
+	exit 1
 
     fi
     shift
