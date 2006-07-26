@@ -23,6 +23,7 @@
 #endif
 
 #include <Sm/Ph/Rd/ConstraintReader.h>
+#include <Sm/Ph/Rd/TableJoin.h>
 
 // MySql constraint reader implementation
 
@@ -46,6 +47,12 @@ public:
         FdoStringP constraintType
     );
 
+    FdoSmPhRdMySqlConstraintReader(
+        FdoSmPhOwnerP owner,
+		FdoSmPhRdTableJoinP join,
+        FdoStringP constraintType
+    );
+
     // Deactivates the constraint reader.
     ~FdoSmPhRdMySqlConstraintReader(void);
 
@@ -59,6 +66,7 @@ private:
     FdoSmPhReaderP MakeReader(
         FdoSmPhOwnerP owner,
 		FdoStringP	tableName,
+		FdoSmPhRdTableJoinP join,
         FdoStringP constraintType
     );
 

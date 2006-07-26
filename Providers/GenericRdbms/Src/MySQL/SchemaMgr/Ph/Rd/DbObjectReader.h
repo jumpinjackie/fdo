@@ -18,6 +18,7 @@
  *
  */
 #include <Sm/Ph/Rd/DbObjectReader.h>
+#include <Sm/Ph/Rd/TableJoin.h>
 
 // MySql database object reader implementation
 
@@ -35,6 +36,11 @@ public:
         FdoStringP objectName = L""
     );
 
+    FdoSmPhRdMySqlDbObjectReader(
+        FdoSmPhOwnerP owner,
+        FdoSmPhRdTableJoinP join
+    );
+
     // Deactivates the database object reader.
     ~FdoSmPhRdMySqlDbObjectReader(void);
 
@@ -43,7 +49,8 @@ public:
 protected:
     FdoSmPhReaderP MakeQueryReader(
         FdoSmPhOwnerP owner,
-        FdoStringP objectName = L""
+        FdoStringP objectName = L"",
+        FdoSmPhRdTableJoinP join = (FdoSmPhRdTableJoin*) NULL
     );
 
     FdoSmPhRowP MakeBinds( FdoSmPhMgrP mgr, FdoStringP ownerName, FdoStringP objectName );

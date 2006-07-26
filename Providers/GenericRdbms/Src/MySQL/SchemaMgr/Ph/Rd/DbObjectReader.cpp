@@ -20,6 +20,7 @@
 #include "DbObjectReader.h"
 #include "../../../../SchemaMgr/Ph/Rd/QueryReader.h"
 #include "../Mgr.h"
+#include "../Owner.h"
 
 FdoSmPhRdMySqlDbObjectReader::FdoSmPhRdMySqlDbObjectReader(
     FdoSmPhOwnerP owner,
@@ -28,6 +29,15 @@ FdoSmPhRdMySqlDbObjectReader::FdoSmPhRdMySqlDbObjectReader(
     FdoSmPhRdDbObjectReader((FdoSmPhReader*)NULL, owner, objectName)
 {
     SetSubReader(MakeQueryReader(owner,objectName));
+}
+
+FdoSmPhRdMySqlDbObjectReader::FdoSmPhRdMySqlDbObjectReader(
+    FdoSmPhOwnerP owner,
+    FdoSmPhRdTableJoinP join
+) :
+    FdoSmPhRdDbObjectReader((FdoSmPhReader*) NULL, owner, L"")
+{
+    SetSubReader(MakeQueryReader(owner,L"",join));
 }
 
 FdoSmPhRdMySqlDbObjectReader::~FdoSmPhRdMySqlDbObjectReader(void)
@@ -53,7 +63,8 @@ FdoSmPhDbObjType FdoSmPhRdMySqlDbObjectReader::GetType()
 
 FdoSmPhReaderP FdoSmPhRdMySqlDbObjectReader::MakeQueryReader(
     FdoSmPhOwnerP owner,
-    FdoStringP objectName
+    FdoStringP objectName,
+    FdoSmPhRdTableJoinP join
 )
 {
     bool                 dblink_set = true;
@@ -61,6 +72,10 @@ FdoSmPhReaderP FdoSmPhRdMySqlDbObjectReader::MakeQueryReader(
     FdoStringP           sqlString;
     FdoStringP           ownerName = owner->GetName();
     FdoStringP           dblinkName = owner->GetParent()->GetName();
+
+    // Use temporary table when not selecting all tables for this owner. When repeated selects
+    // done against information_schema.tables, it is more efficient to build and use a temporary table.
+    FdoStringP           tablesTableName = ((FdoSmPhMySqlOwner*)(FdoSmPhOwner*)owner)->GetTablesTable( join || (objectName != L"") );
     FdoSmPhMgrP          mgr = owner->GetManager();
     FdoSmPhMySqlMgr*       pMgr = (FdoSmPhMySqlMgr*)(FdoSmPhMgr*)mgr;
 
@@ -80,6 +95,24 @@ FdoSmPhReaderP FdoSmPhRdMySqlDbObjectReader::MakeQueryReader(
 */
     if ( !reader ) {
         // Generate sql statement if not already done
+
+        // If joining to another table, generated from sub-clause for table.
+        FdoStringP joinFrom;
+        if ( (join != NULL) && (objectName == L"") ) 
+            joinFrom = FdoStringP::Format( L"  , %ls\n", (FdoString*) join->GetFrom() );
+
+        FdoStringP qualification;
+
+        if ( objectName != L"" ) {
+            // Selecting single object, qualify by this object.
+            qualification = L"  and ist.table_name collate utf8_bin = ?\n";
+        } 
+        else {
+            if ( join != NULL )
+                // Otherwise, if joining to another table, generated join clause.
+                qualification = FdoStringP::Format( L"  and (%ls)\n", (FdoString*) join->GetWhere(L"ist.table_name") );
+        }
+
         //mysql> describe INFORMATION_SCHEMA.tables;
         //+-----------------+--------------+------+-----+---------+-------+
         //| Field           | Type         | Null | Key | Default | Extra |
@@ -116,18 +149,21 @@ FdoSmPhReaderP FdoSmPhRdMySqlDbObjectReader::MakeQueryReader(
         //TODO: find a way to read data/index directory; found no mention of how to do this in MySQL manual.
 		//TODO: read autoincrement_column_name from the column reader instead of this table reader
         sqlString = FdoStringP::Format(
-            L"select ist.table_name as name, lower(ist.table_type) as type,\n"
+            L"select %ls ist.table_name as name, lower(ist.table_type) as type,\n"
             L"  ' ' as autoincrement_column_name, \n"
             L"  ist.auto_increment as autoincrement_column_seed, \n"
             L"  ist.engine as storage_engine, \n"
             L"  ' ' as data_directory, \n"
             L"  ' ' as index_directory \n"
-            L"  from INFORMATION_SCHEMA.tables ist \n"
+            L"  from %ls ist%ls \n"
             L"  where ist.table_schema collate utf8_bin = ?\n"
             L"  %ls\n"
             L"  and ist.table_type in ('BASE TABLE', 'VIEW')\n"
             L"  order by ist.table_name collate utf8_bin asc",
-              object_set ? L"and ist.table_name collate utf8_bin = ?" : L""
+            join ? L"distinct" : L"",
+            (FdoString*) tablesTableName,
+            (FdoString*) joinFrom,
+            (FdoString*) qualification
         );
 
         FdoSmPhRowsP rows = MakeRows( mgr );

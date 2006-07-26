@@ -40,6 +40,11 @@ public:
         FdoSmPhDbObjectP    dbObject
     );
 
+    FdoSmPhRdMySqlPkeyReader(
+        FdoSmPhMgrP mgr,
+        FdoSmPhOwnerP    owner
+    );
+
     // Deactivates the query.
     ~FdoSmPhRdMySqlPkeyReader(void);
 
@@ -52,6 +57,7 @@ private:
 
     FdoSmPhReaderP MakeReader(
         FdoSmPhMgrP mgr,
+        const FdoSmPhOwner* owner,
         FdoSmPhDbObjectP    dbObject
     );
 

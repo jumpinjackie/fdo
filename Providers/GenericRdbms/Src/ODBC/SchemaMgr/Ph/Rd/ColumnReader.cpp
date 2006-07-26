@@ -36,6 +36,8 @@ FdoSmPhRdOdbcColumnReader::FdoSmPhRdOdbcColumnReader(
     FdoStringP objectName = dbObject->GetName();
     FdoStringP ownerName = dbObject->GetOwner();
 
+    SetString( FdoStringP::mEmptyString, L"table_name", objectName );
+
     INVOKE_RDBI_FUNC(
         rdbi_col_act(
             rdbi_context,

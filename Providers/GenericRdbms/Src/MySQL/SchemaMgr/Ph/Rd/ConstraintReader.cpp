@@ -18,6 +18,7 @@
 
 #include "stdafx.h"
 #include "ConstraintReader.h"
+#include "../Owner.h"
 #include "../../../../SchemaMgr/Ph/Rd/QueryReader.h"
 
 FdoSmPhRdMySqlConstraintReader::FdoSmPhRdMySqlConstraintReader(
@@ -35,9 +36,20 @@ FdoSmPhRdMySqlConstraintReader::FdoSmPhRdMySqlConstraintReader(
 	FdoStringP tableName,
     FdoStringP constraintType
 ) :
-    FdoSmPhRdConstraintReader(MakeReader(owner,tableName,constraintType)),
+    FdoSmPhRdConstraintReader(MakeReader(owner,tableName,(FdoSmPhRdTableJoin*) NULL,constraintType)),
     mConstraintName(constraintType),
 	mTableName(tableName),
+    mOwner(owner)
+{
+}
+
+FdoSmPhRdMySqlConstraintReader::FdoSmPhRdMySqlConstraintReader(
+    FdoSmPhOwnerP owner,
+    FdoSmPhRdTableJoinP join,
+    FdoStringP constraintType
+) :
+    FdoSmPhRdConstraintReader(MakeReader(owner,L"",join,constraintType)),
+    mConstraintName(constraintType.Upper()),
     mOwner(owner)
 {
 }
@@ -128,29 +140,53 @@ FdoSmPhReaderP FdoSmPhRdMySqlConstraintReader::MakeReader(
 FdoSmPhReaderP FdoSmPhRdMySqlConstraintReader::MakeReader(
     FdoSmPhOwnerP owner,
 	FdoStringP	tableName,
+    FdoSmPhRdTableJoinP join,
     FdoStringP constraintType
 )
 {
+    FdoSmPhMySqlOwnerP mqlOwner = owner->SmartCast<FdoSmPhMySqlOwner>();
+
 	// MySql doesn't support CHECK()...
 	if ( constraintType == L"C" )
 		return (FdoSmPhReader*)NULL;
 
     FdoStringP ownerName = owner->GetName();
  
-    FdoStringP sqlString = FdoStringP::Format( 
-      L"select tc.constraint_name as constraint_name,\n"
+    // If joining to another table, generated from sub-clause for table.
+    FdoStringP joinFrom;
+    if ( (join != NULL) && (tableName == L"") ) 
+        joinFrom = FdoStringP::Format( L"  , %ls\n", (FdoString*) join->GetFrom() );
+
+    FdoStringP qualification;
+
+    if ( tableName != L"" ) {
+        // Selecting single object, qualify by this object.
+        qualification = L"  and tc.table_name collate utf8_bin = ?\n";
+    } 
+    else {
+        if ( join != NULL )
+            // Otherwise, if joining to another table, generated join clause.
+            qualification = FdoStringP::Format( L"  and (%ls)\n", (FdoString*) join->GetWhere(L"tc.table_name") );
+    }
+
+    FdoStringP sqlString = FdoStringP::Format(
+      L"select %ls tc.constraint_name as constraint_name,\n"
       L" tc.table_name as table_name,\n"
       L" kcu.column_name as column_name\n"
-      L" from INFORMATION_SCHEMA.table_constraints tc, INFORMATION_SCHEMA.key_column_usage kcu\n"
-      L" where (tc.constraint_schema = kcu.constraint_schema\n"
-      L"     and tc.constraint_name = kcu.constraint_name\n"
-      L"     and tc.table_schema = kcu.table_schema\n"
-      L"     and tc.table_name = kcu.table_name\n"
-      L"     and tc.table_schema = ?\n"
+      L" from %ls tc, %ls kcu%ls\n"
+      L" where (tc.constraint_schema collate utf8_bin = kcu.constraint_schema\n"
+      L"     and tc.constraint_name collate utf8_bin = kcu.constraint_name\n"
+      L"     and tc.table_schema collate utf8_bin = kcu.table_schema\n"
+      L"     and tc.table_name collate utf8_bin = kcu.table_name\n"
+      L"     and tc.table_schema collate utf8_bin = ?\n"
       L"     %ls\n"
       L"     and tc.constraint_type = 'UNIQUE')\n"
-      L" order by table_name, constraint_name",
-      (tableName != L"") ? L"and tc.table_name = ?" : L""
+      L" order by tc.table_name collate utf8_bin , tc.constraint_name collate utf8_bin",
+      join ? L"distinct" : L"",
+      (FdoString*) mqlOwner->GetTableConstraintsTable(),
+      (FdoString*) mqlOwner->GetKeyColumnUsageTable(),
+      (FdoString*) joinFrom,
+      (FdoString*) qualification
     );
 
     // Create a field object for each field in the select list.

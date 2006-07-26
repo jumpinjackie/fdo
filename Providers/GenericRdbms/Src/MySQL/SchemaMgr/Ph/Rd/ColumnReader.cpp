@@ -20,13 +20,22 @@
 #include "ColumnReader.h"
 #include "../ColTypeMapper.h"
 #include "../Mgr.h"
+#include "../Owner.h"
 #include "../../../../SchemaMgr/Ph/Rd/QueryReader.h"
 
 FdoSmPhRdMySqlColumnReader::FdoSmPhRdMySqlColumnReader(
     FdoSmPhMgrP mgr,
     FdoSmPhDbObjectP    dbObject
 ) :
-    FdoSmPhRdColumnReader(MakeQueryReader(mgr, dbObject), dbObject)
+    FdoSmPhRdColumnReader(MakeQueryReader(mgr, (const FdoSmPhOwner*)(dbObject->GetParent()), dbObject), dbObject)
+{
+}
+
+FdoSmPhRdMySqlColumnReader::FdoSmPhRdMySqlColumnReader(
+    FdoSmPhOwnerP owner,
+    FdoSmPhRdTableJoinP join
+) :
+    FdoSmPhRdColumnReader(MakeQueryReader(owner->GetManager(), (FdoSmPhOwner*)owner, (FdoSmPhDbObject*)NULL, join), (FdoSmPhDbObject*)NULL)
 {
 }
 
@@ -52,27 +61,49 @@ bool FdoSmPhRdMySqlColumnReader::ReadNext()
     return gotRow;
 }
 
-
-FdoSmPhReaderP FdoSmPhRdMySqlColumnReader::MakeQueryReader (FdoSmPhMgrP mgr, FdoSmPhDbObjectP dbObject)
+FdoSmPhReaderP FdoSmPhRdMySqlColumnReader::MakeQueryReader (
+    FdoSmPhMgrP mgr, 
+    const FdoSmPhOwner* owner,
+    FdoSmPhDbObjectP dbObject,
+    FdoSmPhRdTableJoinP join
+)
 {
-    FdoStringP table_name;
-    FdoStringP table_owner;
-    FdoStringP database;
     FdoStringP sql;
     FdoSmPhRowsP rows;
     FdoSmPhRowP row;
     FdoSmPhRdGrdQueryReader* pReader;
     FdoSmPhRowP binds;
 
-    table_name = dbObject->GetName ();
-    table_owner = dbObject->GetOwner ();
-    database = dbObject->GetDatabase (); // ??
+    FdoStringP objectName = dbObject ? dbObject->GetName() : L"";
+    FdoStringP ownerName = owner->GetName();
+
+    // Use temporary table when not selecting all columns for this owner. When repeated selects
+    // done against information_schema.columns, it is more efficient to build and use a temporary table.
+    FdoStringP           columnsTableName = ((FdoSmPhMySqlOwner*)(FdoSmPhOwner*)owner)->GetColumnsTable( join || (objectName != L"") );
 
     FdoSmPhReaderP reader;
     // todo: cache the reader
     if (!reader)
     {
         // Generate sql statement if not already done
+
+        // If joining to another table, generated from sub-clause for table.
+        FdoStringP joinFrom;
+        if ( (join != NULL) && (objectName == L"") ) 
+            joinFrom = FdoStringP::Format( L"  , %ls\n", (FdoString*) join->GetFrom() );
+
+        FdoStringP qualification;
+
+        if ( objectName != L"" ) {
+            // Selecting single object, qualify by this object.
+            qualification = L"  and table_name collate utf8_bin = ?\n";
+        } 
+        else {
+            if ( join != NULL )
+                // Otherwise, if joining to another table, generated join clause.
+                qualification = FdoStringP::Format( L"  and (%ls)\n", (FdoString*) join->GetWhere(L"table_name") );
+        }
+
         //mysql> desc INFORMATION_SCHEMA.columns;
         //+--------------------------+--------------+------+-----+---------+-------+
         //| Field                    | Type         | Null | Key | Default | Extra |
@@ -115,7 +146,8 @@ FdoSmPhReaderP FdoSmPhRdMySqlColumnReader::MakeQueryReader (FdoSmPhMgrP mgr, Fdo
         // The following query overrides the collations to utf8_bin, which
         // is case-sensitive. 
 
-        sql = L"select column_name as name, 1 as type,\n"
+        sql = FdoStringP::Format (
+              L"select %ls table_name, column_name as name, 1 as type,\n"
               L" CASE lower(data_type) \n"
               L"             WHEN 'tinytext' THEN 255 \n"
               L"             WHEN 'text' THEN 65535 \n"
@@ -132,10 +164,15 @@ FdoSmPhReaderP FdoSmPhRdMySqlColumnReader::MakeQueryReader (FdoSmPhMgrP mgr, Fdo
               L" lower(data_type) as type_string,\n"
               L" instr(column_type,'unsigned') as isunsigned,\n"
 			  L" if(extra='auto_increment',1,0) as is_autoincremented\n"
-              L" from INFORMATION_SCHEMA.columns\n"
+              L" from %ls%ls\n"
               L" where table_schema collate utf8_bin = ? \n"
-              L" and table_name collate utf8_bin = ? \n"
-              L" order by ordinal_position asc";
+              L" %ls"
+              L" order by table_name collate utf8_bin, ordinal_position asc",
+              join ? L"distinct" : L"",
+              (FdoString*) columnsTableName,
+              (FdoString*) joinFrom,
+              (FdoString*) qualification
+        );
 
         rows = MakeRows (mgr);
         row = rows->GetItem (0);
@@ -154,7 +191,7 @@ FdoSmPhReaderP FdoSmPhRdMySqlColumnReader::MakeQueryReader (FdoSmPhMgrP mgr, Fdo
             row->CreateColumnInt64(L"isunsigned",false)
         );
 
-        reader = new FdoSmPhRdGrdQueryReader (row, sql, mgr, MakeBinds (mgr, table_owner, table_name));
+        reader = new FdoSmPhRdGrdQueryReader (row, sql, mgr, MakeBinds (mgr, ownerName, objectName));
 
     }
     else {
@@ -162,8 +199,9 @@ FdoSmPhReaderP FdoSmPhRdMySqlColumnReader::MakeQueryReader (FdoSmPhMgrP mgr, Fdo
         pReader = (FdoSmPhRdGrdQueryReader*)(FdoSmPhReader*) reader;
         binds = pReader->GetBinds ();
 
-        binds->GetFields ()->GetItem (L"table_schema")->SetFieldValue (table_owner);
-        binds->GetFields ()->GetItem (L"table_name")->SetFieldValue (table_name);
+        binds->GetFields ()->GetItem (L"table_schema")->SetFieldValue (ownerName);
+        if ( objectName != L"" )
+            binds->GetFields ()->GetItem (L"table_name")->SetFieldValue (objectName);
 
         pReader->Execute();
     }
@@ -185,12 +223,14 @@ FdoSmPhRowP FdoSmPhRdMySqlColumnReader::MakeBinds (FdoSmPhMgrP mgr, FdoStringP t
     // Schema and table entries in INFORMATION_SCHEMA are always lower case
     field->SetFieldValue(table_owner);
 
-    field = new FdoSmPhField(
-        row,
-        L"table_name",
-        rowObj->CreateColumnDbObject(L"table_name",false)
-    );
-    field->SetFieldValue(table_name);
+    if ( table_name != L"" ) {
+        field = new FdoSmPhField(
+            row,
+            L"table_name",
+            rowObj->CreateColumnDbObject(L"table_name",false)
+        );
+        field->SetFieldValue(table_name);
+    }
 
     return( row );
 }

@@ -39,6 +39,11 @@ public:
         FdoSmPhDbObjectP    dbObject
     );
 
+    FdoSmPhRdMySqlIndexReader(
+        FdoSmPhMgrP mgr,
+        FdoSmPhOwnerP    owner
+    );
+
     // Deactivates the index reader
     ~FdoSmPhRdMySqlIndexReader(void);
 
@@ -46,6 +51,7 @@ private:
 
     FdoSmPhReaderP MakeReader(
         FdoSmPhMgrP mgr,
+        const FdoSmPhOwner* owner,
         FdoSmPhDbObjectP    dbObject
     );
 

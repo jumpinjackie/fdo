@@ -24,12 +24,18 @@
 
 #include <Sm/Ph/Rd/ColumnReader.h>
 #include <Inc/Rdbi/context.h>
+#include <Sm/Ph/Rd/TableJoin.h>
 
 // MySql column reader implementation
 class FdoSmPhRdMySqlColumnReader : public FdoSmPhRdColumnReader
 {
 public:
     FdoSmPhRdMySqlColumnReader (FdoSmPhMgrP mgr, FdoSmPhDbObjectP dbObject);
+
+    FdoSmPhRdMySqlColumnReader(
+        FdoSmPhOwnerP owner,
+        FdoSmPhRdTableJoinP join
+    );
 
     // Deactivates the query.
     ~FdoSmPhRdMySqlColumnReader(void);
@@ -43,7 +49,12 @@ public:
 
 private:
     // Create the column reader
-    FdoSmPhReaderP MakeQueryReader (FdoSmPhMgrP mgr, FdoSmPhDbObjectP dbObject);
+    FdoSmPhReaderP MakeQueryReader (
+        FdoSmPhMgrP mgr, 
+        const FdoSmPhOwner* owner,
+        FdoSmPhDbObjectP dbObject,
+        FdoSmPhRdTableJoinP join = (FdoSmPhRdTableJoin*) NULL
+    );
 
     FdoSmPhRowP MakeBinds (FdoSmPhMgrP mgr, FdoStringP table_owner, FdoStringP table_name);
 

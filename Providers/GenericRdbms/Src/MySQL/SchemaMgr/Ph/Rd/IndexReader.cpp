@@ -27,7 +27,16 @@ FdoSmPhRdMySqlIndexReader::FdoSmPhRdMySqlIndexReader(
     FdoSmPhRdIndexReader((FdoSmPhReader*)NULL),
     mDbObject(dbObject)
 {
-    SetSubReader(MakeReader(mgr, dbObject));
+    SetSubReader(MakeReader(mgr, (const FdoSmPhOwner*)(dbObject->GetParent()), dbObject));
+}
+
+FdoSmPhRdMySqlIndexReader::FdoSmPhRdMySqlIndexReader(
+    FdoSmPhMgrP mgr,
+    FdoSmPhOwnerP    owner
+) :
+    FdoSmPhRdIndexReader((FdoSmPhReader*) NULL)
+{
+    SetSubReader(MakeReader(mgr, (FdoSmPhOwner*)owner, (FdoSmPhDbObject*)NULL));
 }
 
 FdoSmPhRdMySqlIndexReader::~FdoSmPhRdMySqlIndexReader(void)
@@ -36,14 +45,12 @@ FdoSmPhRdMySqlIndexReader::~FdoSmPhRdMySqlIndexReader(void)
 
 FdoSmPhReaderP FdoSmPhRdMySqlIndexReader::MakeReader(
     FdoSmPhMgrP mgr,
+    const FdoSmPhOwner* owner,
     FdoSmPhDbObjectP    dbObject
 )
 {
-    FdoStringP objectName = dbObject->GetName();
-    FdoStringP owner = dbObject->GetOwner();
-    FdoStringP database = dbObject->GetDatabase();
-
-    bool dbSet = database.GetLength() > 0;
+    FdoStringP objectName = dbObject ? dbObject->GetName() : L"";
+    FdoStringP ownerName = owner->GetName();
 
     //mysql> desc INFORMATION_SCHEMA.statistics;
     //+---------------+--------------+------+-----+---------+-------+
@@ -74,13 +81,15 @@ FdoSmPhReaderP FdoSmPhRdMySqlIndexReader::MakeReader(
     // The following query overrides the collations to utf8_bin, which
     // is case-sensitive. 
 
-    FdoStringP sql =
+    FdoStringP sql = FdoStringP::Format(
         L"select index_name, table_name, column_name, if(non_unique>0,'NONUNIQUE','UNIQUE') as uniqueness, index_type\n"
         L"  from INFORMATION_SCHEMA.statistics\n"
         L"  where\n"
-        L"    table_schema collate utf8_bin = ? and\n"
-        L"    table_name collate utf8_bin = ?\n"
-        L"  order by index_name collate utf8_bin, seq_in_index";
+        L"    table_schema collate utf8_bin = ?\n"
+        L"    %ls\n"
+        L"  order by table_name collate utf8_bin, index_name collate utf8_bin, seq_in_index",
+        dbObject ? L"and table_name collate utf8_bin = ?" : L""
+    );
 
     // Create a field object for each field in the select list
     FdoSmPhRowsP rows = MakeRows(mgr);
@@ -94,15 +103,17 @@ FdoSmPhReaderP FdoSmPhRdMySqlIndexReader::MakeReader(
         binds->CreateColumnDbObject(L"table_schema",false)
     );
 
-    field->SetFieldValue(owner);
+    field->SetFieldValue(ownerName);
 
-    field = new FdoSmPhField(
-        binds,
-        L"table_name",
-        binds->CreateColumnDbObject(L"table_name",false)
-    );
+    if ( dbObject ) {
+        field = new FdoSmPhField(
+            binds,
+            L"table_name",
+            binds->CreateColumnDbObject(L"table_name",false)
+        );
 
-    field->SetFieldValue(objectName);
+        field->SetFieldValue(objectName);
+    }
 
 //TODO: cache this query to make full use of the binds.
     FdoSmPhRdGrdQueryReader* reader =

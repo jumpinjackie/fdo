@@ -39,6 +39,11 @@ public:
         FdoSmPhDbObjectP    dbObject
     );
 
+    FdoSmPhRdMySqlFkeyReader(
+        FdoSmPhMgrP mgr,
+        FdoSmPhOwnerP    owner
+    );
+
     // Deactivates the foreign key reader.
     ~FdoSmPhRdMySqlFkeyReader(void);
 
@@ -46,6 +51,7 @@ private:
 
     FdoSmPhReaderP MakeReader(
         FdoSmPhMgrP mgr,
+        const FdoSmPhOwner* owner,
         FdoSmPhDbObjectP    dbObject
     );
 
