@@ -61,9 +61,9 @@ I. Windows Notes:
 
   3. Ensure that the Windows Environment Variables are set as follows:
 
-        SET FDO=<FDO OpenSource>\Fdo
-        SET FDOUTILITIES=<FDO OpenSource>\Utilities
-        SET FDOTHIRDPARTY=<FDO OpenSource>\ThirdParty
+        SET FDO=[FDO OpenSource]\Fdo
+        SET FDOUTILITIES=[FDO OpenSource]\Utilities
+        SET FDOTHIRDPARTY=[FDO OpenSource]\ThirdParty
         SET XALANROOT=%FDOTHIRDPARTY%\apache\xml-xalan\c
         SET XERCESCROOT=%FDOTHIRDPARTY%\apache\xml-xerces\c
         SET NLSDIR=%XALANROOT%\Src\xalanc\NLS
@@ -78,7 +78,7 @@ I. Windows Notes:
      ArcSDE 9.1 Client SDK installed and the following environment variable 
      set that points to the installation location:
 
-        set SDEHOME=<ArcSDE developer components path> 
+        set SDEHOME=[ArcSDE developer components path] 
 
      Note that ArcSDE is licensed software and must be obtained from an ESRI vendor.
 
@@ -89,7 +89,7 @@ I. Windows Notes:
 
      Following the installation, set the following FDO Windows environment variable:
 
-        set FDOMYSQL=<MySQL developer components path> 
+        set FDOMYSQL=[MySQL developer components path] 
 
      e.g. set FDOMYSQL=c:\Program Files\MySQL\MySQL Server 5.0
 
@@ -174,7 +174,7 @@ I. Windows Notes:
         set PATH=%PATH%;C:\Program Files\doxygen\bin
         set PATH=%PATH%;C:\Program Files\ATT\Graphviz\bin
 
-  9. NOTE: Use the <FDO OpenSource>\setenvironment.bat script to assist in setting and
+  9. NOTE: Use the [FDO OpenSource]\setenvironment.bat script to assist in setting and
      maintaing the correct environment settings for the FDO build process. 
      This script can be modifed and used to set the correct environment variables 
      and PATH settings.
@@ -223,7 +223,11 @@ II. Windows Build Instructions:
      is a general guideline on how to use the build_thirdparty.bat build script.
   
            **************************************************************************
-           build_thirdparty.bat [-h] [-o=OutFolder] [-c=BuildType] [-a=Action] [-w=WithModule]
+           build_thirdparty.bat [-h] 
+                                [-o=OutFolder] 
+                                [-c=BuildType] 
+                                [-a=Action] 
+                                [-w=WithModule]
 
            Help:           -h[elp]
            OutFolder:      -o[utpath]=destination folder for binaries
@@ -256,13 +260,30 @@ II. Windows Build Instructions:
      is a general guideline on how to use the build.bat build script.
   
            **************************************************************************
-           build.bat [-h] [-o=OutFolder] [-c=BuildType] [-a=Action] [-w=WithModule] [-d=BuildDocs]
+           build.bat [-h] 
+                     [-o=OutFolder] 
+                     [-c=BuildType] 
+                     [-a=Action] 
+                     [-w=WithModule] 
+                     [-d=BuildDocs]
 
            Help:           -h[elp]
-           OutFolder:      -o[utpath]=destination folder for binaries '
+           OutFolder:      -o[utpath]=destination folder for binaries
            BuildType:      -c[onfig]=release(default), debug
-           Action:         -a[ction]=build(default), buildinstall, install, clean
-           WithModule:     -w[ith]=all(default), fdo, providers, shp, sdf, wfs, wms, arcsde, odbc, mysql
+           Action:         -a[ction]=build(default), 
+                                     buildinstall, 
+                                     install, 
+                                     clean
+           WithModule:     -w[ith]=all(default), 
+                                   fdo, 
+                                   providers, 
+                                   shp, 
+                                   sdf, 
+                                   wfs, 
+                                   wms, 
+                                   arcsde, 
+                                   odbc, 
+                                   mysql
            BuildDocs:      -d[ocs]=skip(default), build
            **************************************************************************
             
@@ -291,33 +312,33 @@ II. Windows Build Instructions:
 
         FDO:
 
-            cd <FDO OpenSource Location>\Fdo\Unmanaged\bin\win32\Debug
+            cd [FDO OpenSource]\Fdo\Unmanaged\bin\win32\Debug
             UnitTest
 
         WMS:
 
-            cd <FDO OpenSource Location>\Providers\WMS\bin\win32\debug
+            cd [FDO OpenSource]\Providers\WMS\bin\win32\debug
             UnitTest
 
         SDF:
 
-            cd <FDO OpenSource Location>\Providers\SDF\Src\UnitTest
+            cd [FDO OpenSource]\Providers\SDF\Src\UnitTest
             ..\..\bin\win32\Debug\UnitTest
  
         SHP:
 
-            cd <FDO OpenSource Location>\Providers\SHP\Src\UnitTest
+            cd [FDO OpenSource]\Providers\SHP\Src\UnitTest
             ..\..\bin\win32\Debug\UnitTest
 
         ArcSDE:
 
-            NOTE: Please refer to <FDO OpenSource Location>\Providers\ArcSDE\UnitTest_README.txt
+            NOTE: Please refer to [FDO OpenSource]\Providers\ArcSDE\UnitTest_README.txt
             for details on how to create test users and test data, and which command-line arguments
             to pass to the ArcSDE Provider UnitTest executable in order to point to your
             test server and data.
 
-            cd <FDO OpenSource Location>\Providers\ArcSDE\Src\UnitTest
-            ..\..\bin\win32\Debug\UnitTest <mandatory command-line arguments>
+            cd [FDO OpenSource]\Providers\ArcSDE\Src\UnitTest
+            ..\..\bin\win32\Debug\UnitTest [mandatory command-line arguments]
 
 
 -----------------------------
@@ -336,15 +357,15 @@ I. Linux Notes:
 
   2. Ensure that the following FDO Environment Variables are set as follows:
 
-       FDO = <FDO OpenSource>/Fdo
-       FDOUTILITIES = <FDO OpenSource>/Providers/Utilities
-       FDOTHIRDPARTY = <FDO OpenSource>/ThirdParty
+       FDO = [FDO OpenSource]/Fdo
+       FDOUTILITIES = [FDO OpenSource]/Providers/Utilities
+       FDOTHIRDPARTY = [FDO OpenSource]/ThirdParty
  
   3. In order to build the ArcSDE Provider, you will need to have the
      ArcSDE 9.1 Client SDK installed and the following environment variable set that 
      points to the installation location:
 
-       SDEHOME=<ArcSDE developer components path> 
+       SDEHOME=[ArcSDE developer components path] 
 
      Note that ArcSDE is licensed software and must be obtained from an ESRI vendor.
 
@@ -363,7 +384,7 @@ I. Linux Notes:
      recommended. However, if a non-RPM installation of MySQL is chosen, 
      following the installation, set the following FDO environment variable:
   
-       FDOMYSQL=<MySQL developer components path>
+       FDOMYSQL=[MySQL developer components path]
  
   5. In order to build the ODBC Provider, you will need to either 
      
@@ -395,22 +416,37 @@ I. Linux Notes:
         the following FDO environment variable to point to the location of the unixODBC 
         components:
 
-           FDOODBC=<unixODBC developer components path>
+           FDOODBC=[unixODBC developer components path]
 
-  6. NOTE: To run the unit test, you must set LD_LIBRARY_PATH as follows:
+  6. OPTIONAL: The FDO build process allows it's documentation to be regenerated. 
+     If this is required, install the OpenSource Doxygen documentation generation
+     software.  Doxygen is a documentation system for C++, C, Java, Objective-C, 
+     Python, IDL (Corba and Microsoft flavors) and to some extent PHP, C#, and D. 
+     Doxygen is often automataically installed on Fedora Core and RedHat systems.
+  
+     To install Doxygen, refer to: http://www.stack.nl/~dimitri/doxygen/
+     
+     The FDO Doxygen documentation generation process will also use the "dot" tool  
+     from graphviz 1.5 to generate more advanced diagrams and graphs. Graphviz is an 
+     "open-sourced", cross-platform graph drawing toolkit from AT&T and Lucent 
+     Bell Labs.
+     
+     To install graphviz, refer to: http://www.graphviz.org/ 
+
+  7. NOTE: To run the unit test, you must set LD_LIBRARY_PATH as follows:
 
        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/fdo-3.2.0/lib
        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$SDEHOME/lib:$FDOTHIRDPARTY/ESRI/ArcSDEClient91/Linux/lib
  
-  7. NOTE: Several known problems exist if auto-mounted drives are used as locations 
+  8. NOTE: Several known problems exist if auto-mounted drives are used as locations 
      for the FDO Linux builds. It is recommended that users not use auto-mounted drives 
      when building FDO.
 
-  8. NOTE: The FDO expression scripts (.y) are not automatially recompiled as a part of the 
+  9. NOTE: The FDO expression scripts (.y) are not automatially recompiled as a part of the 
      FDO build process. In order to recompile the .y files into their .cpp and .h
      counterparts, execute the build_parse.sh script.
 
-  9. NOTE: Use the <FDO OpenSource>\setenvironment.sh script to assist in setting and
+ 10. NOTE: Use the [FDO OpenSource]\setenvironment.sh script to assist in setting and
      maintaing the correct environment settings for the FDO build process. 
      This script can be modifed and used to set the correct environment variables 
      and PATH settings.
@@ -443,18 +479,22 @@ II. Linux Build Instructions:
            tar -xvf fdordbms-3.2.0_G007.tar
 
 
-  2. cd <FDO OpenSource Location>
+  2. cd [FDO OpenSource]
 
   3. Use the build_thirdparty.sh script to build the FDO Thirdparty binaries. The following 
      is a general guideline on how to use the build_thirdparty.bat build script.
   
-           **************************************************************************
+           **************************************************************
            build_thirdparty.sh [--h] [--a Action] [--m ConfigMakefiles]
 
            Help:            --h[elp]
-           Action:          --a[ction] buildinstall(default), build, install, uninstall, clean
+           Action:          --a[ction] buildinstall(default), 
+                                       build, 
+                                       install, 
+                                       uninstall, 
+                                       clean
            ConfigMakefiles: --m[akefile] configure(default), noconfigure
-           **************************************************************************
+           **************************************************************
 
            e.g.
 
@@ -471,18 +511,37 @@ II. Linux Build Instructions:
             **** Build Thirdparty components for for WMS Provider
             build_thirdparty -w=wms
 
-  4. Use the build_linux.sh script to build and install the FDO OpenSource libraries. 
-     The following is a general guideline on how to use build_linux.sh
+  4. Use the build_linux.sh script to build and install the FDO OpenSource 
+     libraries. The following is a general guideline on how to use build_linux.sh
 
-           **************************************************************************
-           build_linux.sh [--h] [-c BuildType] [--a Action] [--w WithModule] [--m ConfigMakefiles]
-       
+           **************************************************************
+           build_linux.sh [--h] 
+                          [--c BuildType] 
+                          [--a Action] 
+                          [--w WithModule] 
+                          [--d BuildDocs] 
+                          [--m ConfigMakefiles]
+
            Help:            --h[elp]
            BuildType:       --c[onfig] release(default), debug
-           Action:          --a[ction] buildinstall(default), buildonly, installonly, configure
-           WithModule:      --w[ith] fdocore(default), fdo, thirdparty, providers, shp, sdf, wfs, wms, arcsde, rdbms
+           Action:          --a[ction] buildinstall(default), 
+                                       build, 
+                                       install, 
+                                       uninstall, 
+                                       clean
+           BuildDocs:       --d[ocs] skip(default), build
            ConfigMakefiles: --m[akefile] configure(default), noconfigure
-           **************************************************************************
+           WithModule:      --w[ith] fdocore(default), 
+                                     fdo, 
+                                     thirdparty, 
+                                     providers, 
+                                     shp, 
+                                     sdf, 
+                                     wfs, 
+                                     wms, 
+                                     arcsde, 
+                                     rdbms
+           **************************************************************
 
            e.g.
 
@@ -531,22 +590,22 @@ II. Linux Build Instructions:
 
         SDF:
 
-            cd <FDO OpenSource>/Providers/SDF/Src/UnitTest
+            cd [FDO OpenSource]/Providers/SDF/Src/UnitTest
             ./UnitTest
  
         SHP:
 
-            cd <FDO OpenSource>/Providers/SHP/Src/UnitTest
+            cd [FDO OpenSource]/Providers/SHP/Src/UnitTest
             ./UnitTest
  
         ArcSDE:
 
-            Please refer to <FDO OpenSource>\Providers\ArcSDE\UnitTest_README.txt
+            Please refer to [FDO OpenSource]\Providers\ArcSDE\UnitTest_README.txt
             for details on how to create test users and test data, and which 
             command-line arguments to pass to the ArcSDE Provider UnitTest 
             executable in order to point to your test server and data.
 
-            cd <FDO OpenSource>\Providers\ArcSDE\Src\UnitTest
-            ..\..\bin\win32\Debug\UnitTest <mandatory command-line arguments>
+            cd [FDO OpenSource]\Providers\ArcSDE\Src\UnitTest
+            ..\..\bin\win32\Debug\UnitTest [mandatory command-line arguments]
  
-<end>
+[end]
