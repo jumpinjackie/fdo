@@ -9,15 +9,24 @@
   <UL>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="define_pages.h"><param name="Local" value="define__pages_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="ICreateSDFFile.h"><param name="Local" value="_i_create_s_d_f_file_8h.html"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="IExtendedSelect.h"><param name="Local" value="_i_extended_select_8h.html"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="IScrollableFeatureReader.h"><param name="Local" value="_i_scrollable_feature_reader_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="SdfCommandType.h"><param name="Local" value="_sdf_command_type_8h.html"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="SdfCompareHandler.h"><param name="Local" value="_sdf_compare_handler_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   </UL>
 <LI><OBJECT type="text/sitemap"><param name="Name" value="Class List"><param name="ImageNumber" value="1"></OBJECT>
   <UL>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoICreateSDFFile"><param name="Local" value="class_fdo_i_create_s_d_f_file.html"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="SdfCompareHandler"><param name="Local" value="class_sdf_compare_handler.html"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="SdfIExtendedSelect"><param name="Local" value="class_sdf_i_extended_select.html"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="SdfIScrollableFeatureReader"><param name="Local" value="class_sdf_i_scrollable_feature_reader.html"><param name="ImageNumber" value="11"></OBJECT>
   </UL>
 <LI><OBJECT type="text/sitemap"><param name="Name" value="Class Hierarchy"><param name="ImageNumber" value="1"></OBJECT>
   <UL>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoICreateSDFFile"><param name="Local" value="class_fdo_i_create_s_d_f_file.html"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="SdfCompareHandler"><param name="Local" value="class_sdf_compare_handler.html"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="SdfIExtendedSelect"><param name="Local" value="class_sdf_i_extended_select.html"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="SdfIScrollableFeatureReader"><param name="Local" value="class_sdf_i_scrollable_feature_reader.html"><param name="ImageNumber" value="11"></OBJECT>
   </UL>
 <LI><OBJECT type="text/sitemap"><param name="Name" value="Class Members"><param name="Local" value="functions.html"><param name="ImageNumber" value="11"></OBJECT>
 <LI><OBJECT type="text/sitemap"><param name="Name" value="File Members"><param name="Local" value="globals.html"><param name="ImageNumber" value="11"></OBJECT>
