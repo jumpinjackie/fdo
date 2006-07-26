@@ -52,7 +52,7 @@
 <a name="l00023"></a>00023 <span class="preprocessor"></span><span class="preprocessor">#pragma once</span>
 <a name="l00024"></a>00024 <span class="preprocessor"></span><span class="preprocessor">#endif</span>
 <a name="l00025"></a>00025 <span class="preprocessor"></span>
-<a name="l00026"></a>00026 <span class="preprocessor">#include &lt;<a class="code" href="../../d7/daa/_std_8h.html">Std.h</a>&gt;</span>
+<a name="l00026"></a>00026 <span class="preprocessor">#include &lt;<a class="code" href="../../d6/d27/_fdo_std_8h.html">FdoStd.h</a>&gt;</span>
 <a name="l00027"></a>00027 
 <a name="l00028"></a>00028 <span class="keyword">class </span><a class="code" href="../../d4/dff/class_fdo_i_expression_processor.html">FdoIExpressionProcessor</a>;
 <a name="l00029"></a>00029 <span class="keyword">class </span><a class="code" href="../../d9/df4/class_fdo_identifier_collection.html">FdoIdentifierCollection</a>;
@@ -82,7 +82,7 @@
 <a name="l00053"></a>00053 <span class="comment">    /// \return</span>
 <a name="l00054"></a>00054 <span class="comment">    /// Returns parse tree root node</span>
 <a name="l00055"></a>00055 <span class="comment">    /// </span>
-<a name="l00056"></a>00056 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">static</span> <a class="code" href="../../d3/d57/class_fdo_expression.html">FdoExpression</a>* <a class="code" href="../../d3/d57/class_fdo_expression_64fd4f960d937c9d7116188d0a6c493f.html#64fd4f960d937c9d7116188d0a6c493f">Parse</a>(<a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* expressionText);
+<a name="l00056"></a>00056 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">static</span> <a class="code" href="../../d3/d57/class_fdo_expression.html">FdoExpression</a>* <a class="code" href="../../d3/d57/class_fdo_expression_64fd4f960d937c9d7116188d0a6c493f.html#64fd4f960d937c9d7116188d0a6c493f">Parse</a>(<a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* expressionText);
 <a name="l00057"></a>00057 <span class="comment"></span>
 <a name="l00058"></a>00058 <span class="comment">    /// \brief</span>
 <a name="l00059"></a>00059 <span class="comment">    /// Abstract operation that takes an FdoIExpressionProcessor as an argument.</span>
@@ -96,7 +96,7 @@
 <a name="l00067"></a>00067 <span class="comment">    /// \return</span>
 <a name="l00068"></a>00068 <span class="comment">    /// Returns nothing</span>
 <a name="l00069"></a>00069 <span class="comment">    /// </span>
-<a name="l00070"></a>00070 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d3/d57/class_fdo_expression_cc3f289e0e59d4285bbe06ed1edea144.html#cc3f289e0e59d4285bbe06ed1edea144">Process</a>(<a class="code" href="../../d4/dff/class_fdo_i_expression_processor.html">FdoIExpressionProcessor</a>* p) = 0;
+<a name="l00070"></a>00070 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d3/d57/class_fdo_expression_cc3f289e0e59d4285bbe06ed1edea144.html#cc3f289e0e59d4285bbe06ed1edea144">Process</a>(<a class="code" href="../../d4/dff/class_fdo_i_expression_processor.html">FdoIExpressionProcessor</a>* p) = 0;
 <a name="l00071"></a>00071 <span class="comment"></span>
 <a name="l00072"></a>00072 <span class="comment">    /// \brief</span>
 <a name="l00073"></a>00073 <span class="comment">    /// Abstract operation that returns the well defined text representation of</span>
@@ -105,7 +105,7 @@
 <a name="l00076"></a>00076 <span class="comment">    /// \return</span>
 <a name="l00077"></a>00077 <span class="comment">    /// Returns the well defined text string</span>
 <a name="l00078"></a>00078 <span class="comment">    /// </span>
-<a name="l00079"></a>00079 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* <a class="code" href="../../d3/d57/class_fdo_expression_7f38ec2c3c695daa8018bd712821a229.html#7f38ec2c3c695daa8018bd712821a229">ToString</a>() = 0;
+<a name="l00079"></a>00079 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* <a class="code" href="../../d3/d57/class_fdo_expression_7f38ec2c3c695daa8018bd712821a229.html#7f38ec2c3c695daa8018bd712821a229">ToString</a>() = 0;
 <a name="l00080"></a>00080 <span class="comment"></span>
 <a name="l00081"></a>00081 <span class="comment">    /// \brief</span>
 <a name="l00082"></a>00082 <span class="comment">    /// This is an internal method. It returns the well defined text representation of the expression. </span>
@@ -116,7 +116,7 @@
 <a name="l00087"></a>00087 <span class="comment">    /// \return</span>
 <a name="l00088"></a>00088 <span class="comment">    /// Returns the well defined text string</span>
 <a name="l00089"></a>00089 <span class="comment">    /// </span>
-<a name="l00090"></a>00090 <span class="comment"></span>    <span class="keyword">virtual</span> <a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* <a class="code" href="../../d3/d57/class_fdo_expression_e90fbc5d060aab18eae8cee2684e6d7e.html#e90fbc5d060aab18eae8cee2684e6d7e">ToStringInternal</a>( <a class="code" href="../../d9/df4/class_fdo_identifier_collection.html">FdoIdentifierCollection</a> *pIdCol );
+<a name="l00090"></a>00090 <span class="comment"></span>    <span class="keyword">virtual</span> <a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* <a class="code" href="../../d3/d57/class_fdo_expression_e90fbc5d060aab18eae8cee2684e6d7e.html#e90fbc5d060aab18eae8cee2684e6d7e">ToStringInternal</a>( <a class="code" href="../../d9/df4/class_fdo_identifier_collection.html">FdoIdentifierCollection</a> *pIdCol );
 <a name="l00091"></a>00091 
 <a name="l00092"></a>00092 <span class="keyword">protected</span>:
 <a name="l00093"></a><a class="code" href="../../d3/d57/class_fdo_expression_b69736dbdc47365960e1a2fb1e3efaf5.html#b69736dbdc47365960e1a2fb1e3efaf5">00093</a>     <span class="keywordtype">wchar_t</span>*    <a class="code" href="../../d3/d57/class_fdo_expression_b69736dbdc47365960e1a2fb1e3efaf5.html#b69736dbdc47365960e1a2fb1e3efaf5">m_toString</a>;

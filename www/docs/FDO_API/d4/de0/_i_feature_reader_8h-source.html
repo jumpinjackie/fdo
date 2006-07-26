@@ -52,7 +52,7 @@
 <a name="l00023"></a>00023 <span class="preprocessor"></span><span class="preprocessor">#pragma once</span>
 <a name="l00024"></a>00024 <span class="preprocessor"></span><span class="preprocessor">#endif</span>
 <a name="l00025"></a>00025 <span class="preprocessor"></span>
-<a name="l00026"></a>00026 <span class="preprocessor">#include &lt;<a class="code" href="../../d7/daa/_std_8h.html">Std.h</a>&gt;</span>
+<a name="l00026"></a>00026 <span class="preprocessor">#include &lt;<a class="code" href="../../d6/d27/_fdo_std_8h.html">FdoStd.h</a>&gt;</span>
 <a name="l00027"></a>00027 <span class="preprocessor">#include &lt;<a class="code" href="../../de/d62/_class_definition_8h.html">Fdo/Schema/ClassDefinition.h</a>&gt;</span>
 <a name="l00028"></a>00028 <span class="preprocessor">#include &lt;<a class="code" href="../../d9/df2/_i_raster_8h.html">Fdo/Raster/IRaster.h</a>&gt;</span>
 <a name="l00029"></a>00029 <span class="preprocessor">#include &lt;<a class="code" href="../../de/ddc/_l_o_b_value_8h.html">Fdo/Expression/LOBValue.h</a>&gt;</span>
@@ -76,7 +76,7 @@
 <a name="l00047"></a>00047 <span class="comment">    /// \return</span>
 <a name="l00048"></a>00048 <span class="comment">    /// Returns the class definition object.</span>
 <a name="l00049"></a>00049 <span class="comment">    /// </span>
-<a name="l00050"></a>00050 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d5/d9a/class_fdo_class_definition.html">FdoClassDefinition</a>* <a class="code" href="../../df/d60/class_fdo_i_feature_reader_66308ed4c31aac4d9620cb23680ea8d1.html#66308ed4c31aac4d9620cb23680ea8d1">GetClassDefinition</a>() = 0;
+<a name="l00050"></a>00050 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d5/d9a/class_fdo_class_definition.html">FdoClassDefinition</a>* <a class="code" href="../../df/d60/class_fdo_i_feature_reader_66308ed4c31aac4d9620cb23680ea8d1.html#66308ed4c31aac4d9620cb23680ea8d1">GetClassDefinition</a>() = 0;
 <a name="l00051"></a>00051 <span class="comment"></span>
 <a name="l00052"></a>00052 <span class="comment">    /// \brief</span>
 <a name="l00053"></a>00053 <span class="comment">    /// Gets a value indicating the depth of nesting for the current reader.</span>
@@ -86,7 +86,7 @@
 <a name="l00057"></a>00057 <span class="comment">    /// \return</span>
 <a name="l00058"></a>00058 <span class="comment">    /// Returns the depth</span>
 <a name="l00059"></a>00059 <span class="comment">    /// </span>
-<a name="l00060"></a>00060 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> FdoInt32 <a class="code" href="../../df/d60/class_fdo_i_feature_reader_9b4d18f919d7be1a19a686053c3f0805.html#9b4d18f919d7be1a19a686053c3f0805">GetDepth</a>() = 0;
+<a name="l00060"></a>00060 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> FdoInt32 <a class="code" href="../../df/d60/class_fdo_i_feature_reader_9b4d18f919d7be1a19a686053c3f0805.html#9b4d18f919d7be1a19a686053c3f0805">GetDepth</a>() = 0;
 <a name="l00061"></a>00061 <span class="comment"></span>
 <a name="l00062"></a>00062 <span class="comment">    /// \brief</span>
 <a name="l00063"></a>00063 <span class="comment">    /// Gets the geometry value of the specified property as a byte array in </span>
@@ -106,7 +106,7 @@
 <a name="l00077"></a>00077 <span class="comment">    /// \return</span>
 <a name="l00078"></a>00078 <span class="comment">    /// Returns a pointer to the byte array in FGF format.</span>
 <a name="l00079"></a>00079 <span class="comment">    /// </span>
-<a name="l00080"></a>00080 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keyword">const</span> <a class="code" href="../../d0/db6/_types_8h_5d3763a847e3e7232225944ba5655c97.html#5d3763a847e3e7232225944ba5655c97">FdoByte</a> * <a class="code" href="../../df/d60/class_fdo_i_feature_reader_5d8cb94e157d4a63e50ae6ed429eaf04.html#5d8cb94e157d4a63e50ae6ed429eaf04">GetGeometry</a>(<a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* propertyName, FdoInt32 * count) = 0;
+<a name="l00080"></a>00080 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keyword">const</span> <a class="code" href="../../d3/d37/_fdo_types_8h_5d3763a847e3e7232225944ba5655c97.html#5d3763a847e3e7232225944ba5655c97">FdoByte</a> * <a class="code" href="../../df/d60/class_fdo_i_feature_reader_5d8cb94e157d4a63e50ae6ed429eaf04.html#5d8cb94e157d4a63e50ae6ed429eaf04">GetGeometry</a>(<a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* propertyName, FdoInt32 * count) = 0;
 <a name="l00081"></a>00081 <span class="comment"></span>
 <a name="l00082"></a>00082 <span class="comment">    /// \brief</span>
 <a name="l00083"></a>00083 <span class="comment">    /// Gets the geometry value of the specified property as a byte array in </span>
@@ -119,7 +119,7 @@
 <a name="l00090"></a>00090 <span class="comment">    /// \return</span>
 <a name="l00091"></a>00091 <span class="comment">    /// Returns the byte array in FGF format.</span>
 <a name="l00092"></a>00092 <span class="comment">    /// </span>
-<a name="l00093"></a>00093 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d9/d14/class_fdo_array.html">FdoByteArray</a>* <a class="code" href="../../df/d60/class_fdo_i_feature_reader_5d8cb94e157d4a63e50ae6ed429eaf04.html#5d8cb94e157d4a63e50ae6ed429eaf04">GetGeometry</a>(<a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* propertyName) = 0;
+<a name="l00093"></a>00093 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d9/d14/class_fdo_array.html">FdoByteArray</a>* <a class="code" href="../../df/d60/class_fdo_i_feature_reader_5d8cb94e157d4a63e50ae6ed429eaf04.html#5d8cb94e157d4a63e50ae6ed429eaf04">GetGeometry</a>(<a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* propertyName) = 0;
 <a name="l00094"></a>00094 <span class="comment"></span>
 <a name="l00095"></a>00095 <span class="comment">    /// \brief</span>
 <a name="l00096"></a>00096 <span class="comment">    /// Gets a reference to an FdoIFeatureReader to read the data contained in</span>
@@ -132,7 +132,7 @@
 <a name="l00103"></a>00103 <span class="comment">    /// \return</span>
 <a name="l00104"></a>00104 <span class="comment">    /// Returns the nested feature reader</span>
 <a name="l00105"></a>00105 <span class="comment">    /// </span>
-<a name="l00106"></a>00106 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../df/d60/class_fdo_i_feature_reader.html">FdoIFeatureReader</a>* <a class="code" href="../../df/d60/class_fdo_i_feature_reader_1ab21ce9d0414f52c1e5b51aac373459.html#1ab21ce9d0414f52c1e5b51aac373459">GetFeatureObject</a>(<a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* propertyName) = 0;
+<a name="l00106"></a>00106 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../df/d60/class_fdo_i_feature_reader.html">FdoIFeatureReader</a>* <a class="code" href="../../df/d60/class_fdo_i_feature_reader_1ab21ce9d0414f52c1e5b51aac373459.html#1ab21ce9d0414f52c1e5b51aac373459">GetFeatureObject</a>(<a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* propertyName) = 0;
 <a name="l00107"></a>00107 };
 <a name="l00108"></a>00108 <span class="preprocessor">#endif</span>
 <a name="l00109"></a>00109 <span class="preprocessor"></span>

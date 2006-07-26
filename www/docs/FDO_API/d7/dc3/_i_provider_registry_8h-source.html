@@ -54,7 +54,7 @@
 <a name="l00025"></a>00025 <span class="preprocessor"></span><span class="preprocessor">#endif</span>
 <a name="l00026"></a>00026 <span class="preprocessor"></span>
 <a name="l00027"></a>00027 <span class="comment">// Include definitions</span>
-<a name="l00028"></a>00028 <span class="preprocessor">#include &lt;<a class="code" href="../../d7/daa/_std_8h.html">Std.h</a>&gt;</span>
+<a name="l00028"></a>00028 <span class="preprocessor">#include &lt;<a class="code" href="../../d6/d27/_fdo_std_8h.html">FdoStd.h</a>&gt;</span>
 <a name="l00029"></a>00029 <span class="preprocessor">#include &lt;<a class="code" href="../../d7/d54/_client_services_8h.html">Fdo/ClientServices/ClientServices.h</a>&gt;</span>
 <a name="l00030"></a>00030 <span class="preprocessor">#include &lt;<a class="code" href="../../d2/d84/_provider_collection_8h.html">Fdo/ClientServices/ProviderCollection.h</a>&gt;</span>
 <a name="l00031"></a>00031 <span class="comment"></span>
@@ -73,7 +73,7 @@
 <a name="l00044"></a>00044 <span class="comment">    /// \return</span>
 <a name="l00045"></a>00045 <span class="comment">    /// Returns an an instance of FdoProviderCollection. Throws an instance of FdoClientServicesException * if an error occurs.</span>
 <a name="l00046"></a>00046 <span class="comment">    /// </span>
-<a name="l00047"></a>00047 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keyword">const</span> <a class="code" href="../../d7/d60/class_fdo_provider_collection.html">FdoProviderCollection</a>* <a class="code" href="../../df/dce/class_i_provider_registry_77e704cd09f4bf25f040e6cfe9c8ba69.html#77e704cd09f4bf25f040e6cfe9c8ba69">GetProviders</a>() <span class="keyword">const </span>= 0;
+<a name="l00047"></a>00047 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keyword">const</span> <a class="code" href="../../d7/d60/class_fdo_provider_collection.html">FdoProviderCollection</a>* <a class="code" href="../../df/dce/class_i_provider_registry_77e704cd09f4bf25f040e6cfe9c8ba69.html#77e704cd09f4bf25f040e6cfe9c8ba69">GetProviders</a>() <span class="keyword">const </span>= 0;
 <a name="l00048"></a>00048     <span class="comment"></span>
 <a name="l00049"></a>00049 <span class="comment">    /// \brief</span>
 <a name="l00050"></a>00050 <span class="comment">    /// Registers a provider given the necessary information to register the provider. </span>
@@ -100,7 +100,7 @@
 <a name="l00071"></a>00071 <span class="comment">    /// \return</span>
 <a name="l00072"></a>00072 <span class="comment">    /// Returns nothing. Throws an instance of FdoClientServicesException * if an error occurs.</span>
 <a name="l00073"></a>00073 <span class="comment">    /// </span>
-<a name="l00074"></a>00074 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../df/dce/class_i_provider_registry_148a56bed2305c39f1702ce5369c9c85.html#148a56bed2305c39f1702ce5369c9c85">RegisterProvider</a>(<span class="keyword">const</span> <span class="keywordtype">wchar_t</span> * name, 
+<a name="l00074"></a>00074 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../df/dce/class_i_provider_registry_148a56bed2305c39f1702ce5369c9c85.html#148a56bed2305c39f1702ce5369c9c85">RegisterProvider</a>(<span class="keyword">const</span> <span class="keywordtype">wchar_t</span> * name, 
 <a name="l00075"></a>00075                                             <span class="keyword">const</span> <span class="keywordtype">wchar_t</span> * displayName, 
 <a name="l00076"></a>00076                                             <span class="keyword">const</span> <span class="keywordtype">wchar_t</span> * description, 
 <a name="l00077"></a>00077                                             <span class="keyword">const</span> <span class="keywordtype">wchar_t</span> * version, 
@@ -118,7 +118,7 @@
 <a name="l00089"></a>00089 <span class="comment">    /// \return</span>
 <a name="l00090"></a>00090 <span class="comment">    /// Returns nothing. Throws an instance of FdoClientServicesException * if an error occurs.</span>
 <a name="l00091"></a>00091 <span class="comment">    /// </span>
-<a name="l00092"></a>00092 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../df/dce/class_i_provider_registry_872a54da4d1cd4bf22805d2058a3a11b.html#872a54da4d1cd4bf22805d2058a3a11b">UnregisterProvider</a>(<span class="keyword">const</span> <span class="keywordtype">wchar_t</span> * name) = 0;
+<a name="l00092"></a>00092 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../df/dce/class_i_provider_registry_872a54da4d1cd4bf22805d2058a3a11b.html#872a54da4d1cd4bf22805d2058a3a11b">UnregisterProvider</a>(<span class="keyword">const</span> <span class="keywordtype">wchar_t</span> * name) = 0;
 <a name="l00093"></a>00093 };
 <a name="l00094"></a>00094 <span class="preprocessor">#endif</span>
 <a name="l00095"></a>00095 <span class="preprocessor"></span>

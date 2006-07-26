@@ -48,7 +48,7 @@
 <a name="l00019"></a>00019 <span class="comment">// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA</span>
 <a name="l00020"></a>00020 <span class="comment">//</span>
 <a name="l00021"></a>00021 
-<a name="l00022"></a>00022 <span class="preprocessor">#include &lt;<a class="code" href="../../db/d1f/_common_8h.html">Common.h</a>&gt;</span>
+<a name="l00022"></a>00022 <span class="preprocessor">#include &lt;<a class="code" href="../../dc/d75/_fdo_common_8h.html">FdoCommon.h</a>&gt;</span>
 <a name="l00023"></a>00023 <span class="preprocessor">#include &lt;<a class="code" href="../../d3/d37/_i_stream_reader_tmpl_8h.html">Common/IStreamReaderTmpl.h</a>&gt;</span>
 <a name="l00024"></a>00024 <span class="comment"></span>
 <a name="l00025"></a>00025 <span class="comment">/// \brief</span>
@@ -64,7 +64,7 @@
 <a name="l00035"></a>00035 <span class="comment">    /// \return</span>
 <a name="l00036"></a>00036 <span class="comment">    /// Returns the size of the data source in number of items </span>
 <a name="l00037"></a>00037 <span class="comment">    /// </span>
-<a name="l00038"></a><a class="code" href="../../da/d45/class_fdo_io_object_stream_reader_1c8a0cc0fd6d52ddd367a73e0b04e3ff.html#1c8a0cc0fd6d52ddd367a73e0b04e3ff">00038</a> <span class="comment"></span>    <a class="code" href="../../d0/d5f/_common_2_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> <span class="keyword">virtual</span> FdoInt64   <a class="code" href="../../da/d45/class_fdo_io_object_stream_reader_1c8a0cc0fd6d52ddd367a73e0b04e3ff.html#1c8a0cc0fd6d52ddd367a73e0b04e3ff">GetLength</a>()
+<a name="l00038"></a><a class="code" href="../../da/d45/class_fdo_io_object_stream_reader_1c8a0cc0fd6d52ddd367a73e0b04e3ff.html#1c8a0cc0fd6d52ddd367a73e0b04e3ff">00038</a> <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> <span class="keyword">virtual</span> FdoInt64   <a class="code" href="../../da/d45/class_fdo_io_object_stream_reader_1c8a0cc0fd6d52ddd367a73e0b04e3ff.html#1c8a0cc0fd6d52ddd367a73e0b04e3ff">GetLength</a>()
 <a name="l00039"></a>00039     {
 <a name="l00040"></a>00040         FdoInt64 byteCount = mStream-&gt;GetLength();
 <a name="l00041"></a>00041 <span class="comment"></span>
@@ -80,7 +80,7 @@
 <a name="l00051"></a>00051 <span class="comment">    /// \param offset </span>
 <a name="l00052"></a>00052 <span class="comment">    /// Input number of items to skip</span>
 <a name="l00053"></a>00053 <span class="comment">    /// </span>
-<a name="l00054"></a><a class="code" href="../../da/d45/class_fdo_io_object_stream_reader_0866aa4374b9cecc2c8786167bdc617e.html#0866aa4374b9cecc2c8786167bdc617e">00054</a> <span class="comment"></span>    <a class="code" href="../../d0/d5f/_common_2_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span>       <a class="code" href="../../da/d45/class_fdo_io_object_stream_reader_0866aa4374b9cecc2c8786167bdc617e.html#0866aa4374b9cecc2c8786167bdc617e">Skip</a>(<span class="keyword">const</span> FdoInt32 offset)
+<a name="l00054"></a><a class="code" href="../../da/d45/class_fdo_io_object_stream_reader_0866aa4374b9cecc2c8786167bdc617e.html#0866aa4374b9cecc2c8786167bdc617e">00054</a> <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span>       <a class="code" href="../../da/d45/class_fdo_io_object_stream_reader_0866aa4374b9cecc2c8786167bdc617e.html#0866aa4374b9cecc2c8786167bdc617e">Skip</a>(<span class="keyword">const</span> FdoInt32 offset)
 <a name="l00055"></a>00055     {
 <a name="l00056"></a>00056         mStream-&gt;Skip( offset * <span class="keyword">sizeof</span>(T) );
 <a name="l00057"></a>00057     }
@@ -92,14 +92,14 @@
 <a name="l00063"></a>00063 <span class="comment">    /// \return</span>
 <a name="l00064"></a>00064 <span class="comment">    /// Returns the current index in the stream</span>
 <a name="l00065"></a>00065 <span class="comment">    /// </span>
-<a name="l00066"></a><a class="code" href="../../da/d45/class_fdo_io_object_stream_reader_3ac6379e45a178cec8a3f1911cac3866.html#3ac6379e45a178cec8a3f1911cac3866">00066</a> <span class="comment"></span>    <a class="code" href="../../d0/d5f/_common_2_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> <span class="keyword">virtual</span> FdoInt64   <a class="code" href="../../da/d45/class_fdo_io_object_stream_reader_3ac6379e45a178cec8a3f1911cac3866.html#3ac6379e45a178cec8a3f1911cac3866">GetIndex</a>()
+<a name="l00066"></a><a class="code" href="../../da/d45/class_fdo_io_object_stream_reader_3ac6379e45a178cec8a3f1911cac3866.html#3ac6379e45a178cec8a3f1911cac3866">00066</a> <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> <span class="keyword">virtual</span> FdoInt64   <a class="code" href="../../da/d45/class_fdo_io_object_stream_reader_3ac6379e45a178cec8a3f1911cac3866.html#3ac6379e45a178cec8a3f1911cac3866">GetIndex</a>()
 <a name="l00067"></a>00067     {
 <a name="l00068"></a>00068         FdoInt64 byteIndex = mStream-&gt;GetIndex();
 <a name="l00069"></a>00069 
 <a name="l00070"></a>00070         <span class="keywordflow">if</span> ( (byteIndex % <span class="keyword">sizeof</span>(T)) != 0 )
 <a name="l00071"></a>00071             <span class="keywordflow">throw</span> <a class="code" href="../../db/dee/class_fdo_exception_c53d28ded380490e958e2b6fbc25477e.html#c53d28ded380490e958e2b6fbc25477e">FdoException::Create</a>(
 <a name="l00072"></a>00072                 <a class="code" href="../../db/dee/class_fdo_exception_0f9d229e51975e1ea886949e6ea83188.html#0f9d229e51975e1ea886949e6ea83188">FdoException::NLSGetMessage</a>(
-<a name="l00073"></a>00073                     <a class="code" href="../../df/d98/_exception_8h_277e2b8d4ea4e4c6ff7a7c1a37cafdd2.html#277e2b8d4ea4e4c6ff7a7c1a37cafdd2">FDO_NLSID</a>(<a class="code" href="../../db/db6/_message_8h_01ddc8eb13d5f0be3f6778a6fcc56b29.html#01ddc8eb13d5f0be3f6778a6fcc56b29">FDO_36_STREAMINDEXALIGN</a>),
+<a name="l00073"></a>00073                     <a class="code" href="../../df/d98/_exception_8h_277e2b8d4ea4e4c6ff7a7c1a37cafdd2.html#277e2b8d4ea4e4c6ff7a7c1a37cafdd2">FDO_NLSID</a>(<a class="code" href="../../d9/d44/_fdo_message_8h_01ddc8eb13d5f0be3f6778a6fcc56b29.html#01ddc8eb13d5f0be3f6778a6fcc56b29">FDO_36_STREAMINDEXALIGN</a>),
 <a name="l00074"></a>00074                     <span class="stringliteral">"%1$s: Current byte position %2$d does not align with size of item being read ($3$d)"</span>,
 <a name="l00075"></a>00075                     <span class="stringliteral">"FdoIoObjectStreamReader::GetIndex"</span>,
 <a name="l00076"></a>00076                     byteIndex,
@@ -114,7 +114,7 @@
 <a name="l00085"></a>00085 <span class="comment">    /// \brief</span>
 <a name="l00086"></a>00086 <span class="comment">    /// Reset the current index to the stream start. Allows re-reading.</span>
 <a name="l00087"></a>00087 <span class="comment">    /// </span>
-<a name="l00088"></a><a class="code" href="../../da/d45/class_fdo_io_object_stream_reader_8a00ae750f2e1416366964d3301f379f.html#8a00ae750f2e1416366964d3301f379f">00088</a> <span class="comment"></span>    <a class="code" href="../../d0/d5f/_common_2_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span>       <a class="code" href="../../da/d45/class_fdo_io_object_stream_reader_8a00ae750f2e1416366964d3301f379f.html#8a00ae750f2e1416366964d3301f379f">Reset</a>()
+<a name="l00088"></a><a class="code" href="../../da/d45/class_fdo_io_object_stream_reader_8a00ae750f2e1416366964d3301f379f.html#8a00ae750f2e1416366964d3301f379f">00088</a> <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span>       <a class="code" href="../../da/d45/class_fdo_io_object_stream_reader_8a00ae750f2e1416366964d3301f379f.html#8a00ae750f2e1416366964d3301f379f">Reset</a>()
 <a name="l00089"></a>00089     {
 <a name="l00090"></a>00090         mStream-&gt;Reset();
 <a name="l00091"></a>00091     }
@@ -138,7 +138,7 @@
 <a name="l00109"></a>00109 <span class="comment">    /// Returns the number of items actually read in. When 0 (zero) then the </span>
 <a name="l00110"></a>00110 <span class="comment">    /// end-of-stream was reached.</span>
 <a name="l00111"></a>00111 <span class="comment">    /// </span>
-<a name="l00112"></a><a class="code" href="../../da/d45/class_fdo_io_object_stream_reader_b14b755e64fcb0746d51cecdfe8fec6b.html#b14b755e64fcb0746d51cecdfe8fec6b">00112</a> <span class="comment"></span>    <a class="code" href="../../d0/d5f/_common_2_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> <span class="keyword">virtual</span> FdoInt32   <a class="code" href="../../da/d45/class_fdo_io_object_stream_reader_b14b755e64fcb0746d51cecdfe8fec6b.html#b14b755e64fcb0746d51cecdfe8fec6b">ReadNext</a>( T* buffer, 
+<a name="l00112"></a><a class="code" href="../../da/d45/class_fdo_io_object_stream_reader_b14b755e64fcb0746d51cecdfe8fec6b.html#b14b755e64fcb0746d51cecdfe8fec6b">00112</a> <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> <span class="keyword">virtual</span> FdoInt32   <a class="code" href="../../da/d45/class_fdo_io_object_stream_reader_b14b755e64fcb0746d51cecdfe8fec6b.html#b14b755e64fcb0746d51cecdfe8fec6b">ReadNext</a>( T* buffer, 
 <a name="l00113"></a>00113                                       <span class="keyword">const</span> FdoInt32 offset = 0,
 <a name="l00114"></a>00114                                       <span class="keyword">const</span> FdoInt32 count = -1)
 <a name="l00115"></a>00115     {
@@ -149,7 +149,7 @@
 <a name="l00120"></a>00120         <span class="keywordflow">if</span> ( offset &lt; 0 ) 
 <a name="l00121"></a>00121             <span class="keywordflow">throw</span> <a class="code" href="../../db/dee/class_fdo_exception_c53d28ded380490e958e2b6fbc25477e.html#c53d28ded380490e958e2b6fbc25477e">FdoException::Create</a>(
 <a name="l00122"></a>00122                 <a class="code" href="../../db/dee/class_fdo_exception_0f9d229e51975e1ea886949e6ea83188.html#0f9d229e51975e1ea886949e6ea83188">FdoException::NLSGetMessage</a>(
-<a name="l00123"></a>00123                     <a class="code" href="../../df/d98/_exception_8h_277e2b8d4ea4e4c6ff7a7c1a37cafdd2.html#277e2b8d4ea4e4c6ff7a7c1a37cafdd2">FDO_NLSID</a>(<a class="code" href="../../db/db6/_message_8h_8b79671244237821b6ef70e575d56223.html#8b79671244237821b6ef70e575d56223">FDO_5_INDEXOUTOFBOUNDS</a>)
+<a name="l00123"></a>00123                     <a class="code" href="../../df/d98/_exception_8h_277e2b8d4ea4e4c6ff7a7c1a37cafdd2.html#277e2b8d4ea4e4c6ff7a7c1a37cafdd2">FDO_NLSID</a>(<a class="code" href="../../d9/d44/_fdo_message_8h_8b79671244237821b6ef70e575d56223.html#8b79671244237821b6ef70e575d56223">FDO_5_INDEXOUTOFBOUNDS</a>)
 <a name="l00124"></a>00124                 )
 <a name="l00125"></a>00125             );
 <a name="l00126"></a>00126 
@@ -226,7 +226,7 @@
 <a name="l00197"></a>00197 <span class="comment">    /// Returns the number of items actually read in. When 0 (zero) then the </span>
 <a name="l00198"></a>00198 <span class="comment">    /// end-of-stream was reached.</span>
 <a name="l00199"></a>00199 <span class="comment">    /// </span>
-<a name="l00200"></a><a class="code" href="../../da/d45/class_fdo_io_object_stream_reader_b0fa2e31de0812ad7b45f7946f6dffb2.html#b0fa2e31de0812ad7b45f7946f6dffb2">00200</a> <span class="comment"></span>    <a class="code" href="../../d0/d5f/_common_2_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> <span class="keyword">virtual</span> FdoInt32       ReadNext(  <a class="code" href="../../d9/d14/class_fdo_array.html">FdoArray&lt;T&gt;</a> * &amp;buffer, 
+<a name="l00200"></a><a class="code" href="../../da/d45/class_fdo_io_object_stream_reader_b0fa2e31de0812ad7b45f7946f6dffb2.html#b0fa2e31de0812ad7b45f7946f6dffb2">00200</a> <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> <span class="keyword">virtual</span> FdoInt32       ReadNext(  <a class="code" href="../../d9/d14/class_fdo_array.html">FdoArray&lt;T&gt;</a> * &amp;buffer, 
 <a name="l00201"></a>00201                                         <span class="keyword">const</span> FdoInt32 offset = 0,
 <a name="l00202"></a>00202                                         <span class="keyword">const</span> FdoInt32 count = -1 )
 <a name="l00203"></a>00203     {
@@ -239,7 +239,7 @@
 <a name="l00210"></a>00210         <span class="keywordflow">if</span> ( offset &lt; 0 ) 
 <a name="l00211"></a>00211             <span class="keywordflow">throw</span> <a class="code" href="../../db/dee/class_fdo_exception_c53d28ded380490e958e2b6fbc25477e.html#c53d28ded380490e958e2b6fbc25477e">FdoException::Create</a>(
 <a name="l00212"></a>00212                 <a class="code" href="../../db/dee/class_fdo_exception_0f9d229e51975e1ea886949e6ea83188.html#0f9d229e51975e1ea886949e6ea83188">FdoException::NLSGetMessage</a>(
-<a name="l00213"></a>00213                     <a class="code" href="../../df/d98/_exception_8h_277e2b8d4ea4e4c6ff7a7c1a37cafdd2.html#277e2b8d4ea4e4c6ff7a7c1a37cafdd2">FDO_NLSID</a>(<a class="code" href="../../db/db6/_message_8h_8b79671244237821b6ef70e575d56223.html#8b79671244237821b6ef70e575d56223">FDO_5_INDEXOUTOFBOUNDS</a>)
+<a name="l00213"></a>00213                     <a class="code" href="../../df/d98/_exception_8h_277e2b8d4ea4e4c6ff7a7c1a37cafdd2.html#277e2b8d4ea4e4c6ff7a7c1a37cafdd2">FDO_NLSID</a>(<a class="code" href="../../d9/d44/_fdo_message_8h_8b79671244237821b6ef70e575d56223.html#8b79671244237821b6ef70e575d56223">FDO_5_INDEXOUTOFBOUNDS</a>)
 <a name="l00214"></a>00214                 )
 <a name="l00215"></a>00215             );
 <a name="l00216"></a>00216 
@@ -257,7 +257,7 @@
 <a name="l00228"></a>00228             <span class="keywordflow">if</span> ( remaining &gt; LONG_MAX ) 
 <a name="l00229"></a>00229                 <span class="keywordflow">throw</span> <a class="code" href="../../db/dee/class_fdo_exception_c53d28ded380490e958e2b6fbc25477e.html#c53d28ded380490e958e2b6fbc25477e">FdoException::Create</a>(
 <a name="l00230"></a>00230                     <a class="code" href="../../db/dee/class_fdo_exception_0f9d229e51975e1ea886949e6ea83188.html#0f9d229e51975e1ea886949e6ea83188">FdoException::NLSGetMessage</a>(
-<a name="l00231"></a>00231                         <a class="code" href="../../df/d98/_exception_8h_277e2b8d4ea4e4c6ff7a7c1a37cafdd2.html#277e2b8d4ea4e4c6ff7a7c1a37cafdd2">FDO_NLSID</a>(<a class="code" href="../../db/db6/_message_8h_a0ddc16e2a69c78c400b9e3969538c68.html#a0ddc16e2a69c78c400b9e3969538c68">FDO_46_REMAININGSTREAMSIZE</a>),
+<a name="l00231"></a>00231                         <a class="code" href="../../df/d98/_exception_8h_277e2b8d4ea4e4c6ff7a7c1a37cafdd2.html#277e2b8d4ea4e4c6ff7a7c1a37cafdd2">FDO_NLSID</a>(<a class="code" href="../../d9/d44/_fdo_message_8h_a0ddc16e2a69c78c400b9e3969538c68.html#a0ddc16e2a69c78c400b9e3969538c68">FDO_46_REMAININGSTREAMSIZE</a>),
 <a name="l00232"></a>00232                         <span class="stringliteral">"%1$s: Cannot read remainder of stream, there are more than %$2d items remaining."</span>,
 <a name="l00233"></a>00233                         <span class="stringliteral">"FdoIoObjectStreamReader::ReadNext(FdoArray&lt;T&gt;,FdoInt32,FdoInt32)"</span>,
 <a name="l00234"></a>00234                         LONG_MAX

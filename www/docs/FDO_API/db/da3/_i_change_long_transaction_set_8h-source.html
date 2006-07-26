@@ -52,7 +52,7 @@
 <a name="l00023"></a>00023 <span class="preprocessor"></span><span class="preprocessor">#pragma once</span>
 <a name="l00024"></a>00024 <span class="preprocessor"></span><span class="preprocessor">#endif</span>
 <a name="l00025"></a>00025 <span class="preprocessor"></span>
-<a name="l00026"></a>00026 <span class="preprocessor">#include &lt;<a class="code" href="../../d7/daa/_std_8h.html">Std.h</a>&gt;</span>
+<a name="l00026"></a>00026 <span class="preprocessor">#include &lt;<a class="code" href="../../d6/d27/_fdo_std_8h.html">FdoStd.h</a>&gt;</span>
 <a name="l00027"></a>00027 <span class="preprocessor">#include &lt;<a class="code" href="../../de/d25/_i_connection_8h.html">Fdo/Connections/IConnection.h</a>&gt;</span>
 <a name="l00028"></a>00028 <span class="preprocessor">#include &lt;<a class="code" href="../../dd/d87/_long_transaction_set_operations_8h.html">Fdo/Commands/LongTransaction/LongTransactionSetOperations.h</a>&gt;</span>
 <a name="l00029"></a>00029 <span class="preprocessor">#include &lt;<a class="code" href="../../dc/d76/_i_command_8h.html">Fdo/Commands/ICommand.h</a>&gt;</span>
@@ -78,7 +78,7 @@
 <a name="l00049"></a>00049 <span class="comment">    /// </span>
 <a name="l00050"></a>00050 <span class="comment">    /// \note</span>
 <a name="l00051"></a>00051 <span class="comment">    /// This function is not required for the Clear operation.</span>
-<a name="l00052"></a>00052 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* <a class="code" href="../../d6/d4e/class_fdo_i_change_long_transaction_set_3d85e0b0a34793cd7168c7b2604ba7be.html#3d85e0b0a34793cd7168c7b2604ba7be">GetLongTransactionName</a>() = 0;
+<a name="l00052"></a>00052 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* <a class="code" href="../../d6/d4e/class_fdo_i_change_long_transaction_set_3d85e0b0a34793cd7168c7b2604ba7be.html#3d85e0b0a34793cd7168c7b2604ba7be">GetLongTransactionName</a>() = 0;
 <a name="l00053"></a>00053 <span class="comment"></span>
 <a name="l00054"></a>00054 <span class="comment">    /// \brief</span>
 <a name="l00055"></a>00055 <span class="comment">    /// Sets the name of the long transaction to add or remove from the</span>
@@ -92,7 +92,7 @@
 <a name="l00063"></a>00063 <span class="comment">    /// </span>
 <a name="l00064"></a>00064 <span class="comment">    /// \note</span>
 <a name="l00065"></a>00065 <span class="comment">    /// This function is not required for the Clear operation.</span>
-<a name="l00066"></a>00066 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d6/d4e/class_fdo_i_change_long_transaction_set_168aa706cfb8e1cc9bc51534fae754d1.html#168aa706cfb8e1cc9bc51534fae754d1">SetLongTransactionName</a>(<a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* value) = 0;
+<a name="l00066"></a>00066 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d6/d4e/class_fdo_i_change_long_transaction_set_168aa706cfb8e1cc9bc51534fae754d1.html#168aa706cfb8e1cc9bc51534fae754d1">SetLongTransactionName</a>(<a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* value) = 0;
 <a name="l00067"></a>00067 <span class="comment"></span>
 <a name="l00068"></a>00068 <span class="comment">    /// \brief</span>
 <a name="l00069"></a>00069 <span class="comment">    /// Gets the operation to perform, add, remove, or clear.</span>
@@ -100,7 +100,7 @@
 <a name="l00071"></a>00071 <span class="comment">    /// \return</span>
 <a name="l00072"></a>00072 <span class="comment">    /// Returns the operation to perform</span>
 <a name="l00073"></a>00073 <span class="comment">    /// </span>
-<a name="l00074"></a>00074 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../dd/d87/_long_transaction_set_operations_8h_964785c7b74cec078521835f1772f8f9.html#964785c7b74cec078521835f1772f8f9">FdoLongTransactionSetOperations</a> <a class="code" href="../../d6/d4e/class_fdo_i_change_long_transaction_set_51b6868faff7a7236d0f7aaa976a30fd.html#51b6868faff7a7236d0f7aaa976a30fd">GetOperation</a>() = 0;
+<a name="l00074"></a>00074 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../dd/d87/_long_transaction_set_operations_8h_964785c7b74cec078521835f1772f8f9.html#964785c7b74cec078521835f1772f8f9">FdoLongTransactionSetOperations</a> <a class="code" href="../../d6/d4e/class_fdo_i_change_long_transaction_set_51b6868faff7a7236d0f7aaa976a30fd.html#51b6868faff7a7236d0f7aaa976a30fd">GetOperation</a>() = 0;
 <a name="l00075"></a>00075 <span class="comment"></span>
 <a name="l00076"></a>00076 <span class="comment">    /// \brief</span>
 <a name="l00077"></a>00077 <span class="comment">    /// Sets the operation to perform, add, remove, or clear.</span>
@@ -111,7 +111,7 @@
 <a name="l00082"></a>00082 <span class="comment">    /// \return</span>
 <a name="l00083"></a>00083 <span class="comment">    /// Returns nothing</span>
 <a name="l00084"></a>00084 <span class="comment">    /// </span>
-<a name="l00085"></a>00085 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d6/d4e/class_fdo_i_change_long_transaction_set_d8b19bb4794bd9827cdb495f02776e26.html#d8b19bb4794bd9827cdb495f02776e26">SetOperation</a>(<a class="code" href="../../dd/d87/_long_transaction_set_operations_8h_964785c7b74cec078521835f1772f8f9.html#964785c7b74cec078521835f1772f8f9">FdoLongTransactionSetOperations</a> value) = 0;
+<a name="l00085"></a>00085 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d6/d4e/class_fdo_i_change_long_transaction_set_d8b19bb4794bd9827cdb495f02776e26.html#d8b19bb4794bd9827cdb495f02776e26">SetOperation</a>(<a class="code" href="../../dd/d87/_long_transaction_set_operations_8h_964785c7b74cec078521835f1772f8f9.html#964785c7b74cec078521835f1772f8f9">FdoLongTransactionSetOperations</a> value) = 0;
 <a name="l00086"></a>00086 <span class="comment"></span>
 <a name="l00087"></a>00087 <span class="comment">    /// \brief</span>
 <a name="l00088"></a>00088 <span class="comment">    /// Executes the ChangeLongTransactionSet command.</span>
@@ -119,7 +119,7 @@
 <a name="l00090"></a>00090 <span class="comment">    /// \return</span>
 <a name="l00091"></a>00091 <span class="comment">    /// Returns nothing</span>
 <a name="l00092"></a>00092 <span class="comment">    /// </span>
-<a name="l00093"></a>00093 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d6/d4e/class_fdo_i_change_long_transaction_set_7b58f8bb972f3a890a924033b22d2990.html#7b58f8bb972f3a890a924033b22d2990">Execute</a>() = 0;
+<a name="l00093"></a>00093 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d6/d4e/class_fdo_i_change_long_transaction_set_7b58f8bb972f3a890a924033b22d2990.html#7b58f8bb972f3a890a924033b22d2990">Execute</a>() = 0;
 <a name="l00094"></a>00094 };
 <a name="l00095"></a>00095 <span class="preprocessor">#endif</span>
 <a name="l00096"></a>00096 <span class="preprocessor"></span>

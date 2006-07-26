@@ -52,7 +52,7 @@
 <a name="l00023"></a>00023 <span class="preprocessor"></span><span class="preprocessor">#pragma once</span>
 <a name="l00024"></a>00024 <span class="preprocessor"></span><span class="preprocessor">#endif</span>
 <a name="l00025"></a>00025 <span class="preprocessor"></span>
-<a name="l00026"></a>00026 <span class="preprocessor">#include &lt;<a class="code" href="../../db/d1f/_common_8h.html">Common.h</a>&gt;</span>
+<a name="l00026"></a>00026 <span class="preprocessor">#include &lt;<a class="code" href="../../dc/d75/_fdo_common_8h.html">FdoCommon.h</a>&gt;</span>
 <a name="l00027"></a>00027 <span class="preprocessor">#include &lt;<a class="code" href="../../d8/da1/_collection_8h.html">Common/Collection.h</a>&gt;</span>
 <a name="l00028"></a>00028 <span class="preprocessor">#include &lt;map&gt;</span>
 <a name="l00029"></a>00029 
@@ -104,7 +104,7 @@
 <a name="l00075"></a>00075         <span class="keywordflow">if</span> ( !item ) 
 <a name="l00076"></a>00076             <span class="keywordflow">throw</span> EXC::Create(
 <a name="l00077"></a>00077                 <a class="code" href="../../db/dee/class_fdo_exception_0f9d229e51975e1ea886949e6ea83188.html#0f9d229e51975e1ea886949e6ea83188">FdoException::NLSGetMessage</a>(
-<a name="l00078"></a>00078                     <a class="code" href="../../df/d98/_exception_8h_277e2b8d4ea4e4c6ff7a7c1a37cafdd2.html#277e2b8d4ea4e4c6ff7a7c1a37cafdd2">FDO_NLSID</a>(<a class="code" href="../../db/db6/_message_8h_972ebd37f229f1db02b2fbcda0d15a82.html#972ebd37f229f1db02b2fbcda0d15a82">FDO_38_ITEMNOTFOUND</a>),
+<a name="l00078"></a>00078                     <a class="code" href="../../df/d98/_exception_8h_277e2b8d4ea4e4c6ff7a7c1a37cafdd2.html#277e2b8d4ea4e4c6ff7a7c1a37cafdd2">FDO_NLSID</a>(<a class="code" href="../../d9/d44/_fdo_message_8h_972ebd37f229f1db02b2fbcda0d15a82.html#972ebd37f229f1db02b2fbcda0d15a82">FDO_38_ITEMNOTFOUND</a>),
 <a name="l00079"></a>00079                     name
 <a name="l00080"></a>00080                 )
 <a name="l00081"></a>00081             );
@@ -316,13 +316,13 @@
 <a name="l00287"></a>00287         }
 <a name="l00288"></a>00288         <span class="keywordflow">else</span> <span class="comment">// Otherwise, linear search</span>
 <a name="l00289"></a>00289         {
-<a name="l00290"></a>00290             <a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a> * valueName = ((OBJ*)value)-&gt;GetName();
+<a name="l00290"></a>00290             <a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a> * valueName = ((OBJ*)value)-&gt;GetName();
 <a name="l00291"></a>00291             FdoInt32 count = <a class="code" href="../../d6/daa/class_fdo_collection_f65c4e10c7bee7095492bc77d351a55f.html#f65c4e10c7bee7095492bc77d351a55f">FdoCollection&lt;OBJ, EXC&gt;::GetCount</a>();
 <a name="l00292"></a>00292             <span class="keywordtype">bool</span> ret = <span class="keyword">false</span>;
 <a name="l00293"></a>00293             <span class="keywordflow">for</span> (FdoInt32 i = 0; !ret &amp;&amp; i &lt; count; i++)
 <a name="l00294"></a>00294             {
 <a name="l00295"></a>00295                 <a class="code" href="../../d3/dd2/class_fdo_ptr.html">FdoPtr&lt;OBJ&gt;</a> item = GetItem(i);
-<a name="l00296"></a>00296                 <a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a> * itemName = item-&gt;GetName();
+<a name="l00296"></a>00296                 <a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a> * itemName = item-&gt;GetName();
 <a name="l00297"></a>00297                 ret = (Compare(itemName, valueName)==0);
 <a name="l00298"></a>00298             }
 <a name="l00299"></a>00299             <span class="keywordflow">return</span> ret;
@@ -338,7 +338,7 @@
 <a name="l00309"></a>00309 <span class="comment">    /// \return</span>
 <a name="l00310"></a>00310 <span class="comment">    /// Returns true if the collection contains the specified item, false otherwise</span>
 <a name="l00311"></a>00311 <span class="comment">    /// </span>
-<a name="l00312"></a><a class="code" href="../../d0/d5e/class_fdo_named_collection_738e21c6b0580be29dfee4377c3d7b36.html#738e21c6b0580be29dfee4377c3d7b36">00312</a> <span class="comment"></span>    <span class="keyword">virtual</span> <span class="keywordtype">bool</span> Contains(<a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* name)<span class="keyword"> const</span>
+<a name="l00312"></a><a class="code" href="../../d0/d5e/class_fdo_named_collection_738e21c6b0580be29dfee4377c3d7b36.html#738e21c6b0580be29dfee4377c3d7b36">00312</a> <span class="comment"></span>    <span class="keyword">virtual</span> <span class="keywordtype">bool</span> Contains(<a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* name)<span class="keyword"> const</span>
 <a name="l00313"></a>00313 <span class="keyword">    </span>{
 <a name="l00314"></a>00314         OBJ* item = FindItem(name);
 <a name="l00315"></a>00315         <span class="keywordtype">bool</span> found = (item != NULL);
@@ -371,16 +371,16 @@
 <a name="l00342"></a>00342 <span class="comment">    /// \return</span>
 <a name="l00343"></a>00343 <span class="comment">    /// Returns the index of the specified item in the collection or -1 if the item does not exist</span>
 <a name="l00344"></a>00344 <span class="comment">    /// </span>
-<a name="l00345"></a><a class="code" href="../../d0/d5e/class_fdo_named_collection_a696d5590b6e74646cf49de062ebd076.html#a696d5590b6e74646cf49de062ebd076">00345</a> <span class="comment"></span>    <span class="keyword">virtual</span> FdoInt32 IndexOf(<a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* name)<span class="keyword"> const</span>
+<a name="l00345"></a><a class="code" href="../../d0/d5e/class_fdo_named_collection_a696d5590b6e74646cf49de062ebd076.html#a696d5590b6e74646cf49de062ebd076">00345</a> <span class="comment"></span>    <span class="keyword">virtual</span> FdoInt32 IndexOf(<a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* name)<span class="keyword"> const</span>
 <a name="l00346"></a>00346 <span class="keyword">    </span>{
 <a name="l00347"></a>00347         <span class="keywordflow">if</span> (name == NULL)
-<a name="l00348"></a>00348             <span class="keywordflow">throw</span> EXC::Create(<a class="code" href="../../db/dee/class_fdo_exception_0f9d229e51975e1ea886949e6ea83188.html#0f9d229e51975e1ea886949e6ea83188">FdoException::NLSGetMessage</a>(<a class="code" href="../../df/d98/_exception_8h_277e2b8d4ea4e4c6ff7a7c1a37cafdd2.html#277e2b8d4ea4e4c6ff7a7c1a37cafdd2">FDO_NLSID</a>(<a class="code" href="../../db/db6/_message_8h_ca63741f7a9374a55201935b2a8ba035.html#ca63741f7a9374a55201935b2a8ba035">FDO_2_BADPARAMETER</a>)));
+<a name="l00348"></a>00348             <span class="keywordflow">throw</span> EXC::Create(<a class="code" href="../../db/dee/class_fdo_exception_0f9d229e51975e1ea886949e6ea83188.html#0f9d229e51975e1ea886949e6ea83188">FdoException::NLSGetMessage</a>(<a class="code" href="../../df/d98/_exception_8h_277e2b8d4ea4e4c6ff7a7c1a37cafdd2.html#277e2b8d4ea4e4c6ff7a7c1a37cafdd2">FDO_NLSID</a>(<a class="code" href="../../d9/d44/_fdo_message_8h_ca63741f7a9374a55201935b2a8ba035.html#ca63741f7a9374a55201935b2a8ba035">FDO_2_BADPARAMETER</a>)));
 <a name="l00349"></a>00349 
 <a name="l00350"></a>00350         FdoInt32    size = FdoCollection &lt;OBJ, EXC&gt;::GetCount();
 <a name="l00351"></a>00351         <span class="keywordflow">for</span> (FdoInt32 i = 0; i &lt; size; i++)
 <a name="l00352"></a>00352         {
 <a name="l00353"></a>00353             <a class="code" href="../../d3/dd2/class_fdo_ptr.html">FdoPtr&lt;OBJ&gt;</a> pitem = <a class="code" href="../../d0/d5e/class_fdo_named_collection.html">FdoNamedCollection&lt;OBJ, EXC&gt;::GetItem</a>(i);
-<a name="l00354"></a>00354             <span class="keywordflow">if</span> (pitem != NULL &amp;&amp; pitem-&gt;GetName() != (<a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>*) NULL &amp;&amp; Compare(name, pitem-&gt;GetName()) == 0) {
+<a name="l00354"></a>00354             <span class="keywordflow">if</span> (pitem != NULL &amp;&amp; pitem-&gt;GetName() != (<a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>*) NULL &amp;&amp; Compare(name, pitem-&gt;GetName()) == 0) {
 <a name="l00355"></a>00355                 <span class="keywordflow">return</span> i;
 <a name="l00356"></a>00356             }
 <a name="l00357"></a>00357         }
@@ -402,7 +402,7 @@
 <a name="l00373"></a>00373     }
 <a name="l00374"></a>00374 <span class="comment"></span>
 <a name="l00375"></a>00375 <span class="comment">/// \cond DOXYGEN-IGNORE</span>
-<a name="l00376"></a>00376 <span class="comment"></span>    <span class="keywordtype">int</span> Compare( <a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* str1, <a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* str2 )<span class="keyword"> const</span>
+<a name="l00376"></a>00376 <span class="comment"></span>    <span class="keywordtype">int</span> Compare( <a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* str1, <a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* str2 )<span class="keyword"> const</span>
 <a name="l00377"></a>00377 <span class="keyword">    </span>{
 <a name="l00378"></a>00378         <span class="keywordflow">if</span> ( mbCaseSensitive )
 <a name="l00379"></a>00379             <span class="keywordflow">return</span> ( wcscmp(str1, str2) );
@@ -427,8 +427,8 @@
 <a name="l00398"></a>00398         <span class="keywordflow">if</span> ( (foundItem1 !=NULL) &amp;&amp; (foundItem1.<a class="code" href="../../d3/dd2/class_fdo_ptr_716198fc5da86379a2b18b96f8afcc4c.html#716198fc5da86379a2b18b96f8afcc4c">p</a> != foundItem2.p ) ) { 
 <a name="l00399"></a>00399             <span class="keywordflow">throw</span> EXC::Create(
 <a name="l00400"></a>00400                 <a class="code" href="../../db/dee/class_fdo_exception_0f9d229e51975e1ea886949e6ea83188.html#0f9d229e51975e1ea886949e6ea83188">FdoException::NLSGetMessage</a>(
-<a name="l00401"></a>00401                     <a class="code" href="../../df/d98/_exception_8h_277e2b8d4ea4e4c6ff7a7c1a37cafdd2.html#277e2b8d4ea4e4c6ff7a7c1a37cafdd2">FDO_NLSID</a>(<a class="code" href="../../db/db6/_message_8h_90ec5f26b5f585d65b5f8fc8b63036fc.html#90ec5f26b5f585d65b5f8fc8b63036fc">FDO_45_ITEMINCOLLECTION</a>),
-<a name="l00402"></a>00402                     (<a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>*) item-&gt;GetName()
+<a name="l00401"></a>00401                     <a class="code" href="../../df/d98/_exception_8h_277e2b8d4ea4e4c6ff7a7c1a37cafdd2.html#277e2b8d4ea4e4c6ff7a7c1a37cafdd2">FDO_NLSID</a>(<a class="code" href="../../d9/d44/_fdo_message_8h_90ec5f26b5f585d65b5f8fc8b63036fc.html#90ec5f26b5f585d65b5f8fc8b63036fc">FDO_45_ITEMINCOLLECTION</a>),
+<a name="l00402"></a>00402                     (<a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>*) item-&gt;GetName()
 <a name="l00403"></a>00403                 )
 <a name="l00404"></a>00404             );
 <a name="l00405"></a>00405         }

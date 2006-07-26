@@ -52,7 +52,7 @@
 <a name="l00023"></a>00023 <span class="preprocessor"></span><span class="preprocessor">#pragma once</span>
 <a name="l00024"></a>00024 <span class="preprocessor"></span><span class="preprocessor">#endif</span>
 <a name="l00025"></a>00025 <span class="preprocessor"></span> 
-<a name="l00026"></a>00026 <span class="preprocessor">#include &lt;<a class="code" href="../../d7/daa/_std_8h.html">Std.h</a>&gt;</span>
+<a name="l00026"></a>00026 <span class="preprocessor">#include &lt;<a class="code" href="../../d6/d27/_fdo_std_8h.html">FdoStd.h</a>&gt;</span>
 <a name="l00027"></a>00027 <span class="preprocessor">#include &lt;<a class="code" href="../../d4/df6/_i_feature_command_8h.html">Fdo/Commands/IFeatureCommand.h</a>&gt;</span>
 <a name="l00028"></a>00028 <span class="preprocessor">#include &lt;<a class="code" href="../../d1/d33/_lock_type_8h.html">Fdo/Commands/Locking/LockType.h</a>&gt;</span>
 <a name="l00029"></a>00029 <span class="preprocessor">#include &lt;<a class="code" href="../../d8/dfd/_lock_strategy_8h.html">Fdo/Commands/Locking/LockStrategy.h</a>&gt;</span>
@@ -86,7 +86,7 @@
 <a name="l00057"></a>00057 <span class="comment">    /// \return</span>
 <a name="l00058"></a>00058 <span class="comment">    /// Returns the lock type.</span>
 <a name="l00059"></a>00059 <span class="comment">    /// </span>
-<a name="l00060"></a>00060 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d1/d33/_lock_type_8h_1b851ca74985a361f366adaa6a430a36.html#1b851ca74985a361f366adaa6a430a36">FdoLockType</a> <a class="code" href="../../d3/d41/class_fdo_i_select_6b9447540a8fc6de0594fef56e7c88a2.html#6b9447540a8fc6de0594fef56e7c88a2">GetLockType</a>() = 0;
+<a name="l00060"></a>00060 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d1/d33/_lock_type_8h_1b851ca74985a361f366adaa6a430a36.html#1b851ca74985a361f366adaa6a430a36">FdoLockType</a> <a class="code" href="../../d3/d41/class_fdo_i_select_6b9447540a8fc6de0594fef56e7c88a2.html#6b9447540a8fc6de0594fef56e7c88a2">GetLockType</a>() = 0;
 <a name="l00061"></a>00061 <span class="comment"></span>
 <a name="l00062"></a>00062 <span class="comment">    /// \brief</span>
 <a name="l00063"></a>00063 <span class="comment">    /// Sets the FdoLockType value (see "Locking Commands").</span>
@@ -97,7 +97,7 @@
 <a name="l00068"></a>00068 <span class="comment">    /// \return</span>
 <a name="l00069"></a>00069 <span class="comment">    /// Returns nothing</span>
 <a name="l00070"></a>00070 <span class="comment">    /// </span>
-<a name="l00071"></a>00071 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d3/d41/class_fdo_i_select_cadeb4f92e704bfd3df880b616c3a8b4.html#cadeb4f92e704bfd3df880b616c3a8b4">SetLockType</a>(<a class="code" href="../../d1/d33/_lock_type_8h_1b851ca74985a361f366adaa6a430a36.html#1b851ca74985a361f366adaa6a430a36">FdoLockType</a> value) = 0;
+<a name="l00071"></a>00071 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d3/d41/class_fdo_i_select_cadeb4f92e704bfd3df880b616c3a8b4.html#cadeb4f92e704bfd3df880b616c3a8b4">SetLockType</a>(<a class="code" href="../../d1/d33/_lock_type_8h_1b851ca74985a361f366adaa6a430a36.html#1b851ca74985a361f366adaa6a430a36">FdoLockType</a> value) = 0;
 <a name="l00072"></a>00072 <span class="comment"></span>
 <a name="l00073"></a>00073 <span class="comment">    /// \brief</span>
 <a name="l00074"></a>00074 <span class="comment">    /// Gets the FdoLockStrategy value (see "Locking Commands").</span>
@@ -105,7 +105,7 @@
 <a name="l00076"></a>00076 <span class="comment">    /// \return</span>
 <a name="l00077"></a>00077 <span class="comment">    /// Returns the lock strategy.</span>
 <a name="l00078"></a>00078 <span class="comment">    /// </span>
-<a name="l00079"></a>00079 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d8/dfd/_lock_strategy_8h_9319ec32935e5d4dd1ab158bbfca11f7.html#9319ec32935e5d4dd1ab158bbfca11f7">FdoLockStrategy</a> <a class="code" href="../../d3/d41/class_fdo_i_select_7e21ba152585e473c3f303d921132e3d.html#7e21ba152585e473c3f303d921132e3d">GetLockStrategy</a>() = 0;
+<a name="l00079"></a>00079 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d8/dfd/_lock_strategy_8h_9319ec32935e5d4dd1ab158bbfca11f7.html#9319ec32935e5d4dd1ab158bbfca11f7">FdoLockStrategy</a> <a class="code" href="../../d3/d41/class_fdo_i_select_7e21ba152585e473c3f303d921132e3d.html#7e21ba152585e473c3f303d921132e3d">GetLockStrategy</a>() = 0;
 <a name="l00080"></a>00080 <span class="comment"></span>
 <a name="l00081"></a>00081 <span class="comment">    /// \brief</span>
 <a name="l00082"></a>00082 <span class="comment">    /// Sets the FdoLockStrategy value (see "Locking Commands").</span>
@@ -116,7 +116,7 @@
 <a name="l00087"></a>00087 <span class="comment">    /// \return</span>
 <a name="l00088"></a>00088 <span class="comment">    /// Returns nothing</span>
 <a name="l00089"></a>00089 <span class="comment">    /// </span>
-<a name="l00090"></a>00090 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d3/d41/class_fdo_i_select_8683e99988d1e6e82b85084909d764c1.html#8683e99988d1e6e82b85084909d764c1">SetLockStrategy</a>(<a class="code" href="../../d8/dfd/_lock_strategy_8h_9319ec32935e5d4dd1ab158bbfca11f7.html#9319ec32935e5d4dd1ab158bbfca11f7">FdoLockStrategy</a> value) = 0;
+<a name="l00090"></a>00090 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d3/d41/class_fdo_i_select_8683e99988d1e6e82b85084909d764c1.html#8683e99988d1e6e82b85084909d764c1">SetLockStrategy</a>(<a class="code" href="../../d8/dfd/_lock_strategy_8h_9319ec32935e5d4dd1ab158bbfca11f7.html#9319ec32935e5d4dd1ab158bbfca11f7">FdoLockStrategy</a> value) = 0;
 <a name="l00091"></a>00091 <span class="comment"></span>
 <a name="l00092"></a>00092 <span class="comment">    /// \brief</span>
 <a name="l00093"></a>00093 <span class="comment">    /// Executes the select command and returns a reference to an FdoIFeatureReader.</span>
@@ -124,7 +124,7 @@
 <a name="l00095"></a>00095 <span class="comment">    /// \return</span>
 <a name="l00096"></a>00096 <span class="comment">    /// Returns the feature reader.</span>
 <a name="l00097"></a>00097 <span class="comment">    /// </span>
-<a name="l00098"></a>00098 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../df/d60/class_fdo_i_feature_reader.html">FdoIFeatureReader</a>* <a class="code" href="../../d3/d41/class_fdo_i_select_78fc289adfd2da5be07e596cfe28c0c5.html#78fc289adfd2da5be07e596cfe28c0c5">Execute</a>() = 0;
+<a name="l00098"></a>00098 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../df/d60/class_fdo_i_feature_reader.html">FdoIFeatureReader</a>* <a class="code" href="../../d3/d41/class_fdo_i_select_78fc289adfd2da5be07e596cfe28c0c5.html#78fc289adfd2da5be07e596cfe28c0c5">Execute</a>() = 0;
 <a name="l00099"></a>00099 <span class="comment"></span>
 <a name="l00100"></a>00100 <span class="comment">    /// \brief</span>
 <a name="l00101"></a>00101 <span class="comment">    /// Executes the select command and returns a reference to an</span>
@@ -133,7 +133,7 @@
 <a name="l00104"></a>00104 <span class="comment">    /// \return</span>
 <a name="l00105"></a>00105 <span class="comment">    /// Returns the feature reader.</span>
 <a name="l00106"></a>00106 <span class="comment">    /// </span>
-<a name="l00107"></a>00107 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../df/d60/class_fdo_i_feature_reader.html">FdoIFeatureReader</a>* <a class="code" href="../../d3/d41/class_fdo_i_select_c9a8e11850a583b50359580bf95d9eff.html#c9a8e11850a583b50359580bf95d9eff">ExecuteWithLock</a>() = 0;
+<a name="l00107"></a>00107 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../df/d60/class_fdo_i_feature_reader.html">FdoIFeatureReader</a>* <a class="code" href="../../d3/d41/class_fdo_i_select_c9a8e11850a583b50359580bf95d9eff.html#c9a8e11850a583b50359580bf95d9eff">ExecuteWithLock</a>() = 0;
 <a name="l00108"></a>00108 <span class="comment"></span>
 <a name="l00109"></a>00109 <span class="comment">    /// \brief</span>
 <a name="l00110"></a>00110 <span class="comment">    ///  When executing the operation ExecuteWithLock lock </span>
@@ -145,7 +145,7 @@
 <a name="l00116"></a>00116 <span class="comment">    /// \return</span>
 <a name="l00117"></a>00117 <span class="comment">    /// Returns a lock conflict reader.</span>
 <a name="l00118"></a>00118 <span class="comment">    /// </span>
-<a name="l00119"></a>00119 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../db/d3a/class_fdo_i_lock_conflict_reader.html">FdoILockConflictReader</a>* <a class="code" href="../../d3/d41/class_fdo_i_select_afd638bc71c3b62d14cb1fc189abc347.html#afd638bc71c3b62d14cb1fc189abc347">GetLockConflicts</a>() = 0;
+<a name="l00119"></a>00119 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../db/d3a/class_fdo_i_lock_conflict_reader.html">FdoILockConflictReader</a>* <a class="code" href="../../d3/d41/class_fdo_i_select_afd638bc71c3b62d14cb1fc189abc347.html#afd638bc71c3b62d14cb1fc189abc347">GetLockConflicts</a>() = 0;
 <a name="l00120"></a>00120 };
 <a name="l00121"></a>00121 <span class="preprocessor">#endif</span>
 <a name="l00122"></a>00122 <span class="preprocessor"></span>

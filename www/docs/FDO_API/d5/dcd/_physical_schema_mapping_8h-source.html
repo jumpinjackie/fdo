@@ -52,7 +52,7 @@
 <a name="l00023"></a>00023 <span class="preprocessor"></span><span class="preprocessor">#pragma once</span>
 <a name="l00024"></a>00024 <span class="preprocessor"></span><span class="preprocessor">#endif</span>
 <a name="l00025"></a>00025 <span class="preprocessor"></span>
-<a name="l00026"></a>00026 <span class="preprocessor">#include &lt;<a class="code" href="../../d7/daa/_std_8h.html">Std.h</a>&gt;</span>
+<a name="l00026"></a>00026 <span class="preprocessor">#include &lt;<a class="code" href="../../d6/d27/_fdo_std_8h.html">FdoStd.h</a>&gt;</span>
 <a name="l00027"></a>00027 <span class="preprocessor">#include &lt;<a class="code" href="../../dc/d9e/_serializable_8h.html">Fdo/Xml/Serializable.h</a>&gt;</span>
 <a name="l00028"></a>00028 <span class="preprocessor">#include &lt;<a class="code" href="../../d7/d6e/_physical_element_mapping_8h.html">Fdo/Commands/Schema/PhysicalElementMapping.h</a>&gt;</span>
 <a name="l00029"></a>00029 <span class="comment"></span>
@@ -79,7 +79,7 @@
 <a name="l00050"></a>00050 <span class="comment">    /// applies. The provider name must conform to the format:</span>
 <a name="l00051"></a>00051 <span class="comment">    /// "[Company].[Provider].[Version]".</span>
 <a name="l00052"></a>00052 <span class="comment">    /// </span>
-<a name="l00053"></a>00053 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* <a class="code" href="../../d7/d94/class_fdo_physical_schema_mapping_3ac070d24203b68818c829937e790c21.html#3ac070d24203b68818c829937e790c21">GetProvider</a>() = 0;
+<a name="l00053"></a>00053 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* <a class="code" href="../../d7/d94/class_fdo_physical_schema_mapping_3ac070d24203b68818c829937e790c21.html#3ac070d24203b68818c829937e790c21">GetProvider</a>() = 0;
 <a name="l00054"></a>00054 
 <a name="l00055"></a>00055 <span class="keyword">protected</span>:<span class="comment"></span>
 <a name="l00056"></a>00056 <span class="comment">    /// \brief</span>
@@ -96,7 +96,7 @@
 <a name="l00067"></a>00067 <span class="comment">    /// \return</span>
 <a name="l00068"></a>00068 <span class="comment">    /// Returns nothing</span>
 <a name="l00069"></a>00069 <span class="comment">    /// </span>
-<a name="l00070"></a>00070 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d7/d94/class_fdo_physical_schema_mapping_5ddbb858c2cd9470a67be9e4e3d71673.html#5ddbb858c2cd9470a67be9e4e3d71673">InitFromXml</a>(<a class="code" href="../../d2/da9/class_fdo_xml_sax_context.html">FdoXmlSaxContext</a>* pContext, <a class="code" href="../../da/ddb/class_fdo_xml_attribute_collection.html">FdoXmlAttributeCollection</a>* attrs);
+<a name="l00070"></a>00070 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d7/d94/class_fdo_physical_schema_mapping_5ddbb858c2cd9470a67be9e4e3d71673.html#5ddbb858c2cd9470a67be9e4e3d71673">InitFromXml</a>(<a class="code" href="../../d2/da9/class_fdo_xml_sax_context.html">FdoXmlSaxContext</a>* pContext, <a class="code" href="../../da/ddb/class_fdo_xml_attribute_collection.html">FdoXmlAttributeCollection</a>* attrs);
 <a name="l00071"></a>00071 <span class="comment"></span>
 <a name="l00072"></a>00072 <span class="comment">    /// \brief</span>
 <a name="l00073"></a>00073 <span class="comment">    /// Writes this Schema Override set to XML. Called when</span>
@@ -112,7 +112,7 @@
 <a name="l00083"></a>00083 <span class="comment">    /// \return</span>
 <a name="l00084"></a>00084 <span class="comment">    /// Returns nothing</span>
 <a name="l00085"></a>00085 <span class="comment">    /// </span>
-<a name="l00086"></a>00086 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d7/d94/class_fdo_physical_schema_mapping_c8025fd3808b4ae3dc17b3c0b79b9dc5.html#c8025fd3808b4ae3dc17b3c0b79b9dc5">_writeXml</a>(
+<a name="l00086"></a>00086 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d7/d94/class_fdo_physical_schema_mapping_c8025fd3808b4ae3dc17b3c0b79b9dc5.html#c8025fd3808b4ae3dc17b3c0b79b9dc5">_writeXml</a>(
 <a name="l00087"></a>00087         <a class="code" href="../../d8/d53/class_fdo_xml_writer.html">FdoXmlWriter</a>* xmlWriter, 
 <a name="l00088"></a>00088         <span class="keyword">const</span> <a class="code" href="../../d9/d9b/class_fdo_xml_flags.html">FdoXmlFlags</a>* flags
 <a name="l00089"></a>00089     );

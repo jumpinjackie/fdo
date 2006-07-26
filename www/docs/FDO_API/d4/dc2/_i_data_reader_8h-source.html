@@ -50,7 +50,7 @@
 <a name="l00021"></a>00021 <span class="preprocessor"></span><span class="preprocessor">#pragma once</span>
 <a name="l00022"></a>00022 <span class="preprocessor"></span><span class="preprocessor">#endif</span>
 <a name="l00023"></a>00023 <span class="preprocessor"></span>
-<a name="l00024"></a>00024 <span class="preprocessor">#include &lt;<a class="code" href="../../d7/daa/_std_8h.html">Std.h</a>&gt;</span>
+<a name="l00024"></a>00024 <span class="preprocessor">#include &lt;<a class="code" href="../../d6/d27/_fdo_std_8h.html">FdoStd.h</a>&gt;</span>
 <a name="l00025"></a>00025 <span class="preprocessor">#include &lt;<a class="code" href="../../d2/d11/_i_reader_8h.html">Fdo/Commands/Feature/IReader.h</a>&gt;</span>
 <a name="l00026"></a>00026 <span class="comment"></span>
 <a name="l00027"></a>00027 <span class="comment">/// \brief</span>
@@ -68,7 +68,7 @@
 <a name="l00039"></a>00039 <span class="comment">    /// \return</span>
 <a name="l00040"></a>00040 <span class="comment">    /// Returns the number of propertys.</span>
 <a name="l00041"></a>00041 <span class="comment">    /// </span>
-<a name="l00042"></a>00042 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> FdoInt32 <a class="code" href="../../da/d52/class_fdo_i_data_reader_9fb4009d49eae4619bc8650edebfd171.html#9fb4009d49eae4619bc8650edebfd171">GetPropertyCount</a>() = 0;
+<a name="l00042"></a>00042 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> FdoInt32 <a class="code" href="../../da/d52/class_fdo_i_data_reader_9fb4009d49eae4619bc8650edebfd171.html#9fb4009d49eae4619bc8650edebfd171">GetPropertyCount</a>() = 0;
 <a name="l00043"></a>00043 <span class="comment"></span>
 <a name="l00044"></a>00044 <span class="comment">    /// \brief</span>
 <a name="l00045"></a>00045 <span class="comment">    /// Gets the name of the property at the given ordinal position.</span>
@@ -79,7 +79,7 @@
 <a name="l00050"></a>00050 <span class="comment">    /// \return</span>
 <a name="l00051"></a>00051 <span class="comment">    /// Returns the property name</span>
 <a name="l00052"></a>00052 <span class="comment">    /// </span>
-<a name="l00053"></a>00053 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* <a class="code" href="../../da/d52/class_fdo_i_data_reader_0958230c64b7ee5808ab5349e5aabb5c.html#0958230c64b7ee5808ab5349e5aabb5c">GetPropertyName</a>(FdoInt32 index) = 0;
+<a name="l00053"></a>00053 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* <a class="code" href="../../da/d52/class_fdo_i_data_reader_0958230c64b7ee5808ab5349e5aabb5c.html#0958230c64b7ee5808ab5349e5aabb5c">GetPropertyName</a>(FdoInt32 index) = 0;
 <a name="l00054"></a>00054 <span class="comment"></span>
 <a name="l00055"></a>00055 <span class="comment">    /// \brief</span>
 <a name="l00056"></a>00056 <span class="comment">    /// Gets the data type of the property with the specified name.</span>
@@ -90,7 +90,7 @@
 <a name="l00061"></a>00061 <span class="comment">    /// \return</span>
 <a name="l00062"></a>00062 <span class="comment">    /// Returns the type of the property.</span>
 <a name="l00063"></a>00063 <span class="comment">    /// </span>
-<a name="l00064"></a>00064 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../db/da7/_data_type_8h_1ed519d01756703d029b2ae5dd28bde0.html#1ed519d01756703d029b2ae5dd28bde0">FdoDataType</a> <a class="code" href="../../da/d52/class_fdo_i_data_reader_7043c5c3530c312954527f6660f84a38.html#7043c5c3530c312954527f6660f84a38">GetDataType</a>(<a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* propertyName) = 0;
+<a name="l00064"></a>00064 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../db/da7/_data_type_8h_1ed519d01756703d029b2ae5dd28bde0.html#1ed519d01756703d029b2ae5dd28bde0">FdoDataType</a> <a class="code" href="../../da/d52/class_fdo_i_data_reader_7043c5c3530c312954527f6660f84a38.html#7043c5c3530c312954527f6660f84a38">GetDataType</a>(<a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* propertyName) = 0;
 <a name="l00065"></a>00065 <span class="comment"></span>
 <a name="l00066"></a>00066 <span class="comment">    /// \brief</span>
 <a name="l00067"></a>00067 <span class="comment">    /// Gets the FDO property type of a given property. This is used</span>
@@ -103,7 +103,7 @@
 <a name="l00074"></a>00074 <span class="comment">    /// \return</span>
 <a name="l00075"></a>00075 <span class="comment">    /// Returns the FDO property type.</span>
 <a name="l00076"></a>00076 <span class="comment">    /// </span>
-<a name="l00077"></a>00077 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../da/dc2/_property_type_8h_e0bac2fa55da9b6c77963f90615bc8a3.html#e0bac2fa55da9b6c77963f90615bc8a3">FdoPropertyType</a> <a class="code" href="../../da/d52/class_fdo_i_data_reader_37f32a8b982454725b518a3470797c0f.html#37f32a8b982454725b518a3470797c0f">GetPropertyType</a>(<a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* propertyName) = 0;
+<a name="l00077"></a>00077 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../da/dc2/_property_type_8h_e0bac2fa55da9b6c77963f90615bc8a3.html#e0bac2fa55da9b6c77963f90615bc8a3">FdoPropertyType</a> <a class="code" href="../../da/d52/class_fdo_i_data_reader_37f32a8b982454725b518a3470797c0f.html#37f32a8b982454725b518a3470797c0f">GetPropertyType</a>(<a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* propertyName) = 0;
 <a name="l00078"></a>00078 };
 <a name="l00079"></a>00079 <span class="preprocessor">#endif</span>
 <a name="l00080"></a>00080 <span class="preprocessor"></span>

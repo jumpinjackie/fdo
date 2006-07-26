@@ -52,7 +52,7 @@
 <a name="l00023"></a>00023 <span class="preprocessor"></span><span class="preprocessor">#pragma once</span>
 <a name="l00024"></a>00024 <span class="preprocessor"></span><span class="preprocessor">#endif</span>
 <a name="l00025"></a>00025 <span class="preprocessor"></span>
-<a name="l00026"></a>00026 <span class="preprocessor">#include &lt;<a class="code" href="../../d7/daa/_std_8h.html">Std.h</a>&gt;</span>
+<a name="l00026"></a>00026 <span class="preprocessor">#include &lt;<a class="code" href="../../d6/d27/_fdo_std_8h.html">FdoStd.h</a>&gt;</span>
 <a name="l00027"></a>00027 <span class="preprocessor">#include &lt;<a class="code" href="../../d3/d4e/_data_value_8h.html">Fdo/Expression/DataValue.h</a>&gt;</span>
 <a name="l00028"></a>00028 <span class="preprocessor">#include &lt;<a class="code" href="../../db/da7/_data_type_8h.html">Fdo/Schema/DataType.h</a>&gt;</span>
 <a name="l00029"></a>00029 <span class="comment"></span>
@@ -70,7 +70,7 @@
 <a name="l00041"></a>00041 <span class="comment">    /// \return</span>
 <a name="l00042"></a>00042 <span class="comment">    /// Returns an FdoDataType</span>
 <a name="l00043"></a>00043 <span class="comment">    /// </span>
-<a name="l00044"></a>00044 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../db/da7/_data_type_8h_1ed519d01756703d029b2ae5dd28bde0.html#1ed519d01756703d029b2ae5dd28bde0">FdoDataType</a> <a class="code" href="../../d9/dc8/class_fdo_l_o_b_value_e4396ffab5c0e0e64954afcbb1ddcfa2.html#e4396ffab5c0e0e64954afcbb1ddcfa2">GetDataType</a>() = 0;
+<a name="l00044"></a>00044 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../db/da7/_data_type_8h_1ed519d01756703d029b2ae5dd28bde0.html#1ed519d01756703d029b2ae5dd28bde0">FdoDataType</a> <a class="code" href="../../d9/dc8/class_fdo_l_o_b_value_e4396ffab5c0e0e64954afcbb1ddcfa2.html#e4396ffab5c0e0e64954afcbb1ddcfa2">GetDataType</a>() = 0;
 <a name="l00045"></a>00045 <span class="comment"></span>
 <a name="l00046"></a>00046 <span class="comment">    /// \brief</span>
 <a name="l00047"></a>00047 <span class="comment">    /// Gets the LOB value.</span>
@@ -78,7 +78,7 @@
 <a name="l00049"></a>00049 <span class="comment">    /// \return</span>
 <a name="l00050"></a>00050 <span class="comment">    /// Returns a byte array</span>
 <a name="l00051"></a>00051 <span class="comment">    /// </span>
-<a name="l00052"></a>00052 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d9/d14/class_fdo_array.html">FdoByteArray</a>* <a class="code" href="../../d9/dc8/class_fdo_l_o_b_value_20a83c153db1596e711e10edb5ff1017.html#20a83c153db1596e711e10edb5ff1017">GetData</a>() = 0;
+<a name="l00052"></a>00052 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d9/d14/class_fdo_array.html">FdoByteArray</a>* <a class="code" href="../../d9/dc8/class_fdo_l_o_b_value_20a83c153db1596e711e10edb5ff1017.html#20a83c153db1596e711e10edb5ff1017">GetData</a>() = 0;
 <a name="l00053"></a>00053 <span class="comment"></span>
 <a name="l00054"></a>00054 <span class="comment">    /// \brief</span>
 <a name="l00055"></a>00055 <span class="comment">    /// Sets the LOB value.</span>
@@ -89,7 +89,7 @@
 <a name="l00060"></a>00060 <span class="comment">    /// \return</span>
 <a name="l00061"></a>00061 <span class="comment">    /// Returns nothing</span>
 <a name="l00062"></a>00062 <span class="comment">    /// </span>
-<a name="l00063"></a>00063 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d9/dc8/class_fdo_l_o_b_value_9d39862b175f85bdbd3d9edcf560fb10.html#9d39862b175f85bdbd3d9edcf560fb10">SetData</a>(<a class="code" href="../../d9/d14/class_fdo_array.html">FdoByteArray</a>* value) = 0;
+<a name="l00063"></a>00063 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d9/dc8/class_fdo_l_o_b_value_9d39862b175f85bdbd3d9edcf560fb10.html#9d39862b175f85bdbd3d9edcf560fb10">SetData</a>(<a class="code" href="../../d9/d14/class_fdo_array.html">FdoByteArray</a>* value) = 0;
 <a name="l00064"></a>00064 <span class="comment"></span>
 <a name="l00065"></a>00065 <span class="comment">    /// \brief</span>
 <a name="l00066"></a>00066 <span class="comment">    /// Sets the FdoLOBValue to a null value.</span>
@@ -97,7 +97,7 @@
 <a name="l00068"></a>00068 <span class="comment">    /// \return</span>
 <a name="l00069"></a>00069 <span class="comment">    /// Returns nothing</span>
 <a name="l00070"></a>00070 <span class="comment">    /// </span>
-<a name="l00071"></a>00071 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d9/dc8/class_fdo_l_o_b_value_d04cf78f397cca24af7b249d8457528d.html#d04cf78f397cca24af7b249d8457528d">SetNull</a>() = 0;
+<a name="l00071"></a>00071 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d9/dc8/class_fdo_l_o_b_value_d04cf78f397cca24af7b249d8457528d.html#d04cf78f397cca24af7b249d8457528d">SetNull</a>() = 0;
 <a name="l00072"></a>00072 <span class="comment"></span>
 <a name="l00073"></a>00073 <span class="comment">    /// \brief</span>
 <a name="l00074"></a>00074 <span class="comment">    /// Overrides FdoExpression.Process to pass the FdoLOBValue to the appropriate</span>
@@ -109,7 +109,7 @@
 <a name="l00080"></a>00080 <span class="comment">    /// \return</span>
 <a name="l00081"></a>00081 <span class="comment">    /// Returns nothing</span>
 <a name="l00082"></a>00082 <span class="comment">    /// </span>
-<a name="l00083"></a>00083 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d9/dc8/class_fdo_l_o_b_value_051d0ab6887517a0dc6b661ee5552c34.html#051d0ab6887517a0dc6b661ee5552c34">Process</a>(<a class="code" href="../../d4/dff/class_fdo_i_expression_processor.html">FdoIExpressionProcessor</a>* p) = 0;
+<a name="l00083"></a>00083 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d9/dc8/class_fdo_l_o_b_value_051d0ab6887517a0dc6b661ee5552c34.html#051d0ab6887517a0dc6b661ee5552c34">Process</a>(<a class="code" href="../../d4/dff/class_fdo_i_expression_processor.html">FdoIExpressionProcessor</a>* p) = 0;
 <a name="l00084"></a>00084 <span class="comment"></span>
 <a name="l00085"></a>00085 <span class="comment">    /// \brief</span>
 <a name="l00086"></a>00086 <span class="comment">    /// Returns the well defined text representation of this expression.</span>
@@ -117,7 +117,7 @@
 <a name="l00088"></a>00088 <span class="comment">    /// \return</span>
 <a name="l00089"></a>00089 <span class="comment">    /// Returns a text string</span>
 <a name="l00090"></a>00090 <span class="comment">    /// </span>
-<a name="l00091"></a>00091 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* <a class="code" href="../../d9/dc8/class_fdo_l_o_b_value_1d9e2fe30e3e0fa9464d49496ac83a16.html#1d9e2fe30e3e0fa9464d49496ac83a16">ToString</a>() = 0;
+<a name="l00091"></a>00091 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* <a class="code" href="../../d9/dc8/class_fdo_l_o_b_value_1d9e2fe30e3e0fa9464d49496ac83a16.html#1d9e2fe30e3e0fa9464d49496ac83a16">ToString</a>() = 0;
 <a name="l00092"></a>00092 <span class="comment"></span>
 <a name="l00093"></a>00093 <span class="comment">    /// \brief</span>
 <a name="l00094"></a>00094 <span class="comment">    /// A cast operator to get the BLOB value.</span>
@@ -125,7 +125,7 @@
 <a name="l00096"></a>00096 <span class="comment">    /// \return</span>
 <a name="l00097"></a>00097 <span class="comment">    /// Returns a byte array</span>
 <a name="l00098"></a>00098 <span class="comment">    /// </span>
-<a name="l00099"></a><a class="code" href="../../d9/dc8/class_fdo_l_o_b_value_ec43746d278ee7959046d483a4fc3b2a.html#ec43746d278ee7959046d483a4fc3b2a">00099</a> <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <a class="code" href="../../d9/dc8/class_fdo_l_o_b_value_ec43746d278ee7959046d483a4fc3b2a.html#ec43746d278ee7959046d483a4fc3b2a">operator FdoByteArray*</a>()
+<a name="l00099"></a><a class="code" href="../../d9/dc8/class_fdo_l_o_b_value_ec43746d278ee7959046d483a4fc3b2a.html#ec43746d278ee7959046d483a4fc3b2a">00099</a> <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <a class="code" href="../../d9/dc8/class_fdo_l_o_b_value_ec43746d278ee7959046d483a4fc3b2a.html#ec43746d278ee7959046d483a4fc3b2a">operator FdoByteArray*</a>()
 <a name="l00100"></a>00100     {
 <a name="l00101"></a>00101         <span class="keywordflow">return</span> <a class="code" href="../../d9/dc8/class_fdo_l_o_b_value_cfee7a7fc98b0191063e9a6993a469fa.html#cfee7a7fc98b0191063e9a6993a469fa">m_data</a>;
 <a name="l00102"></a>00102     }

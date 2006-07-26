@@ -52,7 +52,7 @@
 <a name="l00023"></a>00023 <span class="preprocessor"></span><span class="preprocessor">#pragma once</span>
 <a name="l00024"></a>00024 <span class="preprocessor"></span><span class="preprocessor">#endif</span>
 <a name="l00025"></a>00025 <span class="preprocessor"></span>
-<a name="l00026"></a>00026 <span class="preprocessor">#include &lt;<a class="code" href="../../d7/daa/_std_8h.html">Std.h</a>&gt;</span>
+<a name="l00026"></a>00026 <span class="preprocessor">#include &lt;<a class="code" href="../../d6/d27/_fdo_std_8h.html">FdoStd.h</a>&gt;</span>
 <a name="l00027"></a>00027 <span class="preprocessor">#include &lt;<a class="code" href="../../dc/d76/_i_command_8h.html">Fdo/Commands/ICommand.h</a>&gt;</span>
 <a name="l00028"></a>00028 <span class="preprocessor">#include &lt;<a class="code" href="../../d6/dae/_feature_schema_collection_8h.html">Fdo/Schema/FeatureSchemaCollection.h</a>&gt;</span>
 <a name="l00029"></a>00029 <span class="preprocessor">#include &lt;<a class="code" href="../../de/d25/_i_connection_8h.html">Fdo/Connections/IConnection.h</a>&gt;</span>
@@ -75,7 +75,7 @@
 <a name="l00046"></a>00046 <span class="comment">    /// \return</span>
 <a name="l00047"></a>00047 <span class="comment">    /// Returns the schema name</span>
 <a name="l00048"></a>00048 <span class="comment">    /// </span>
-<a name="l00049"></a>00049 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* <a class="code" href="../../d6/ddd/class_fdo_i_describe_schema_1fc53d478f2e5bdf2fd8eec9cb157ae0.html#1fc53d478f2e5bdf2fd8eec9cb157ae0">GetSchemaName</a>() = 0;
+<a name="l00049"></a>00049 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* <a class="code" href="../../d6/ddd/class_fdo_i_describe_schema_1fc53d478f2e5bdf2fd8eec9cb157ae0.html#1fc53d478f2e5bdf2fd8eec9cb157ae0">GetSchemaName</a>() = 0;
 <a name="l00050"></a>00050 <span class="comment"></span>
 <a name="l00051"></a>00051 <span class="comment">    /// \brief</span>
 <a name="l00052"></a>00052 <span class="comment">    /// Sets the name of the schema to describe. This function is optional; if not</span>
@@ -87,7 +87,7 @@
 <a name="l00058"></a>00058 <span class="comment">    /// \return</span>
 <a name="l00059"></a>00059 <span class="comment">    /// Returns nothing</span>
 <a name="l00060"></a>00060 <span class="comment">    /// </span>
-<a name="l00061"></a>00061 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d6/ddd/class_fdo_i_describe_schema_ebaa7b314a40502540cac33b17b46336.html#ebaa7b314a40502540cac33b17b46336">SetSchemaName</a>(<a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* value) = 0;
+<a name="l00061"></a>00061 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d6/ddd/class_fdo_i_describe_schema_ebaa7b314a40502540cac33b17b46336.html#ebaa7b314a40502540cac33b17b46336">SetSchemaName</a>(<a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* value) = 0;
 <a name="l00062"></a>00062 <span class="comment"></span>
 <a name="l00063"></a>00063 <span class="comment">    /// \brief</span>
 <a name="l00064"></a>00064 <span class="comment">    /// Executes the DescribeSchema command and returns a </span>
@@ -104,7 +104,7 @@
 <a name="l00075"></a>00075 <span class="comment">    /// calling FdoFeatureSchema::AcceptChanges() for each feature schema</span>
 <a name="l00076"></a>00076 <span class="comment">    /// in the returned collection.</span>
 <a name="l00077"></a>00077 <span class="comment">    /// </span>
-<a name="l00078"></a>00078 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d1/dba/class_fdo_feature_schema_collection.html">FdoFeatureSchemaCollection</a>* <a class="code" href="../../d6/ddd/class_fdo_i_describe_schema_565a67f7a8ee305ef650dfb26ac46c0e.html#565a67f7a8ee305ef650dfb26ac46c0e">Execute</a>() = 0;
+<a name="l00078"></a>00078 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d1/dba/class_fdo_feature_schema_collection.html">FdoFeatureSchemaCollection</a>* <a class="code" href="../../d6/ddd/class_fdo_i_describe_schema_565a67f7a8ee305ef650dfb26ac46c0e.html#565a67f7a8ee305ef650dfb26ac46c0e">Execute</a>() = 0;
 <a name="l00079"></a>00079 };
 <a name="l00080"></a>00080 <span class="preprocessor">#endif</span>
 <a name="l00081"></a>00081 <span class="preprocessor"></span>

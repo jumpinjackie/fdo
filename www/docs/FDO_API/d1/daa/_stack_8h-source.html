@@ -68,7 +68,7 @@
 <a name="l00039"></a>00039 <span class="comment">    /// \return</span>
 <a name="l00040"></a>00040 <span class="comment">    /// Returns true if the stack is empty</span>
 <a name="l00041"></a>00041 <span class="comment">    /// </span>
-<a name="l00042"></a><a class="code" href="../../d2/dad/class_fdo_stack_e931629dd7e537960801b18b0159f793.html#e931629dd7e537960801b18b0159f793">00042</a> <span class="comment"></span>    <span class="keyword">virtual</span> <a class="code" href="../../d0/db6/_types_8h_467f74207096bcd703476c3c8e6f9d2d.html#467f74207096bcd703476c3c8e6f9d2d">FdoBoolean</a> <a class="code" href="../../d2/dad/class_fdo_stack_e931629dd7e537960801b18b0159f793.html#e931629dd7e537960801b18b0159f793">IsEmpty</a>()<span class="keyword"> const</span>
+<a name="l00042"></a><a class="code" href="../../d2/dad/class_fdo_stack_e931629dd7e537960801b18b0159f793.html#e931629dd7e537960801b18b0159f793">00042</a> <span class="comment"></span>    <span class="keyword">virtual</span> <a class="code" href="../../d3/d37/_fdo_types_8h_467f74207096bcd703476c3c8e6f9d2d.html#467f74207096bcd703476c3c8e6f9d2d">FdoBoolean</a> <a class="code" href="../../d2/dad/class_fdo_stack_e931629dd7e537960801b18b0159f793.html#e931629dd7e537960801b18b0159f793">IsEmpty</a>()<span class="keyword"> const</span>
 <a name="l00043"></a>00043 <span class="keyword">    </span>{
 <a name="l00044"></a>00044         <span class="keywordflow">return</span> (FdoCollection &lt;OBJ, EXC&gt;::GetCount() == 0);
 <a name="l00045"></a>00045     }
@@ -127,7 +127,7 @@
 <a name="l00098"></a>00098         <span class="keywordflow">if</span> ( <a class="code" href="../../d2/dad/class_fdo_stack_e931629dd7e537960801b18b0159f793.html#e931629dd7e537960801b18b0159f793">IsEmpty</a>() )
 <a name="l00099"></a>00099             <span class="keywordflow">throw</span> EXC::Create(
 <a name="l00100"></a>00100                 <a class="code" href="../../db/dee/class_fdo_exception_0f9d229e51975e1ea886949e6ea83188.html#0f9d229e51975e1ea886949e6ea83188">FdoException::NLSGetMessage</a>(
-<a name="l00101"></a>00101                     <a class="code" href="../../df/d98/_exception_8h_277e2b8d4ea4e4c6ff7a7c1a37cafdd2.html#277e2b8d4ea4e4c6ff7a7c1a37cafdd2">FDO_NLSID</a>(<a class="code" href="../../db/db6/_message_8h_4133d989591aaac5d7028122fd517acd.html#4133d989591aaac5d7028122fd517acd">FDO_39_STACKPOP</a>),
+<a name="l00101"></a>00101                     <a class="code" href="../../df/d98/_exception_8h_277e2b8d4ea4e4c6ff7a7c1a37cafdd2.html#277e2b8d4ea4e4c6ff7a7c1a37cafdd2">FDO_NLSID</a>(<a class="code" href="../../d9/d44/_fdo_message_8h_4133d989591aaac5d7028122fd517acd.html#4133d989591aaac5d7028122fd517acd">FDO_39_STACKPOP</a>),
 <a name="l00102"></a>00102                     <span class="stringliteral">"Stack is empty, cannot pop."</span>
 <a name="l00103"></a>00103                 )
 <a name="l00104"></a>00104             );
@@ -145,7 +145,7 @@
 <a name="l00116"></a>00116 <span class="comment">    /// \return</span>
 <a name="l00117"></a>00117 <span class="comment">    /// Returns the new reference count (value for debugging use only).</span>
 <a name="l00118"></a>00118 <span class="comment">    /// </span>
-<a name="l00119"></a><a class="code" href="../../d2/dad/class_fdo_stack_6e51acbbffd777979950f38d7725655c.html#6e51acbbffd777979950f38d7725655c">00119</a> <span class="comment"></span>    <a class="code" href="../../d0/d5f/_common_2_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> FdoInt32 <a class="code" href="../../d2/dad/class_fdo_stack_6e51acbbffd777979950f38d7725655c.html#6e51acbbffd777979950f38d7725655c">AddRef</a>() { <span class="keywordflow">return</span> <a class="code" href="../../d7/da5/class_fdo_i_disposable_06edc9548b8e1380c00b816478d93a50.html#06edc9548b8e1380c00b816478d93a50">FdoCollection&lt;OBJ,EXC&gt;::AddRef</a>(); }
+<a name="l00119"></a><a class="code" href="../../d2/dad/class_fdo_stack_6e51acbbffd777979950f38d7725655c.html#6e51acbbffd777979950f38d7725655c">00119</a> <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> FdoInt32 <a class="code" href="../../d2/dad/class_fdo_stack_6e51acbbffd777979950f38d7725655c.html#6e51acbbffd777979950f38d7725655c">AddRef</a>() { <span class="keywordflow">return</span> <a class="code" href="../../d7/da5/class_fdo_i_disposable_06edc9548b8e1380c00b816478d93a50.html#06edc9548b8e1380c00b816478d93a50">FdoCollection&lt;OBJ,EXC&gt;::AddRef</a>(); }
 <a name="l00120"></a>00120 <span class="comment"></span>
 <a name="l00121"></a>00121 <span class="comment">    /// \brief</span>
 <a name="l00122"></a>00122 <span class="comment">    /// Decrease the reference count.</span>
@@ -153,7 +153,7 @@
 <a name="l00124"></a>00124 <span class="comment">    /// \return</span>
 <a name="l00125"></a>00125 <span class="comment">    /// Returns the new reference count (value for debugging use only).</span>
 <a name="l00126"></a>00126 <span class="comment">    /// </span>
-<a name="l00127"></a><a class="code" href="../../d2/dad/class_fdo_stack_695bc3133814dbc90998a4df7f2727ac.html#695bc3133814dbc90998a4df7f2727ac">00127</a> <span class="comment"></span>    <a class="code" href="../../d0/d5f/_common_2_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> FdoInt32 <a class="code" href="../../d2/dad/class_fdo_stack_695bc3133814dbc90998a4df7f2727ac.html#695bc3133814dbc90998a4df7f2727ac">Release</a>() { <span class="keywordflow">return</span> <a class="code" href="../../d7/da5/class_fdo_i_disposable_a07e96e47eb2893d2d8c0ff35ce59da1.html#a07e96e47eb2893d2d8c0ff35ce59da1">FdoCollection&lt;OBJ,EXC&gt;::Release</a>(); }
+<a name="l00127"></a><a class="code" href="../../d2/dad/class_fdo_stack_695bc3133814dbc90998a4df7f2727ac.html#695bc3133814dbc90998a4df7f2727ac">00127</a> <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> FdoInt32 <a class="code" href="../../d2/dad/class_fdo_stack_695bc3133814dbc90998a4df7f2727ac.html#695bc3133814dbc90998a4df7f2727ac">Release</a>() { <span class="keywordflow">return</span> <a class="code" href="../../d7/da5/class_fdo_i_disposable_a07e96e47eb2893d2d8c0ff35ce59da1.html#a07e96e47eb2893d2d8c0ff35ce59da1">FdoCollection&lt;OBJ,EXC&gt;::Release</a>(); }
 <a name="l00128"></a>00128 
 <a name="l00129"></a>00129 <span class="keyword">protected</span>:<span class="comment"></span>
 <a name="l00130"></a>00130 <span class="comment">    /// \brief</span>
@@ -171,7 +171,7 @@
 <a name="l00142"></a>00142 <span class="comment">    /// or level is out of range (less than 0 or greater or equal to </span>
 <a name="l00143"></a>00143 <span class="comment">    /// the number of elements in the stack</span>
 <a name="l00144"></a>00144 <span class="comment">    /// </span>
-<a name="l00145"></a><a class="code" href="../../d2/dad/class_fdo_stack_52d7cec6b09fd51fd88738bcc60edfd7.html#52d7cec6b09fd51fd88738bcc60edfd7">00145</a> <span class="comment"></span>    <a class="code" href="../../d0/d5f/_common_2_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a>   <span class="keyword">virtual</span> OBJ* <a class="code" href="../../d2/dad/class_fdo_stack_77b4f5bf5f2d6a0f971b4b16f5f3aab9.html#77b4f5bf5f2d6a0f971b4b16f5f3aab9">Peek</a>(<span class="keywordtype">int</span> level)<span class="keyword"> const</span>
+<a name="l00145"></a><a class="code" href="../../d2/dad/class_fdo_stack_52d7cec6b09fd51fd88738bcc60edfd7.html#52d7cec6b09fd51fd88738bcc60edfd7">00145</a> <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a>   <span class="keyword">virtual</span> OBJ* <a class="code" href="../../d2/dad/class_fdo_stack_77b4f5bf5f2d6a0f971b4b16f5f3aab9.html#77b4f5bf5f2d6a0f971b4b16f5f3aab9">Peek</a>(<span class="keywordtype">int</span> level)<span class="keyword"> const</span>
 <a name="l00146"></a>00146 <span class="keyword">    </span>{
 <a name="l00147"></a>00147         <span class="keywordflow">if</span> ( level &lt; 0 || (level &gt;= FdoCollection &lt;OBJ, EXC&gt;::GetCount()) ) 
 <a name="l00148"></a>00148             <span class="keywordflow">return</span> NULL;

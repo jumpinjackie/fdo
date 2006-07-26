@@ -56,7 +56,7 @@
 <a name="l00027"></a>00027 <span class="preprocessor"></span>
 <a name="l00028"></a>00028 <span class="comment">// Include definitions</span>
 <a name="l00029"></a>00029 <span class="preprocessor">#include &lt;vector&gt;</span>
-<a name="l00030"></a>00030 <span class="preprocessor">#include &lt;<a class="code" href="../../d7/daa/_std_8h.html">Std.h</a>&gt;</span>
+<a name="l00030"></a>00030 <span class="preprocessor">#include &lt;<a class="code" href="../../d6/d27/_fdo_std_8h.html">FdoStd.h</a>&gt;</span>
 <a name="l00031"></a>00031 <span class="preprocessor">#include &lt;<a class="code" href="../../d7/d54/_client_services_8h.html">Fdo/ClientServices/ClientServices.h</a>&gt;</span>
 <a name="l00032"></a>00032 <span class="preprocessor">#include &lt;<a class="code" href="../../d6/d78/_provider_8h.html">Fdo/ClientServices/Provider.h</a>&gt;</span>
 <a name="l00033"></a>00033 <span class="comment"></span>
@@ -99,7 +99,7 @@
 <a name="l00070"></a>00070 <span class="comment">    /// Returns an int containing the number of items.</span>
 <a name="l00071"></a>00071 <span class="comment">    /// Throws an instance of FdoClientServicesException * if an error occurs.</span>
 <a name="l00072"></a>00072 <span class="comment">    /// </span>
-<a name="l00073"></a>00073 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code" href="../../d7/d60/class_fdo_provider_collection_043b14ee1f749ab10c2b206f9c3691e6.html#043b14ee1f749ab10c2b206f9c3691e6">GetCount</a>() <span class="keyword">const</span>;
+<a name="l00073"></a>00073 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code" href="../../d7/d60/class_fdo_provider_collection_043b14ee1f749ab10c2b206f9c3691e6.html#043b14ee1f749ab10c2b206f9c3691e6">GetCount</a>() <span class="keyword">const</span>;
 <a name="l00074"></a>00074 <span class="comment"></span>
 <a name="l00075"></a>00075 <span class="comment">    /// \brief</span>
 <a name="l00076"></a>00076 <span class="comment">    /// Gets the Provider item in the collection at the specified index. </span>
@@ -111,7 +111,7 @@
 <a name="l00082"></a>00082 <span class="comment">    /// Returns an instance of an FdoProvider.</span>
 <a name="l00083"></a>00083 <span class="comment">    /// Throws an instance of FdoClientServicesException * if the index is out of range or an error occurs.</span>
 <a name="l00084"></a>00084 <span class="comment">    /// </span>
-<a name="l00085"></a>00085 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d4/d43/class_fdo_provider.html">FdoProvider</a> * <span class="keyword">const</span> <a class="code" href="../../d7/d60/class_fdo_provider_collection_bd15b784b965e1c74ba94ffebdfd7b84.html#bd15b784b965e1c74ba94ffebdfd7b84">GetItem</a>(<span class="keywordtype">int</span> index) <span class="keyword">const</span>;
+<a name="l00085"></a>00085 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d4/d43/class_fdo_provider.html">FdoProvider</a> * <span class="keyword">const</span> <a class="code" href="../../d7/d60/class_fdo_provider_collection_bd15b784b965e1c74ba94ffebdfd7b84.html#bd15b784b965e1c74ba94ffebdfd7b84">GetItem</a>(<span class="keywordtype">int</span> index) <span class="keyword">const</span>;
 <a name="l00086"></a>00086     <span class="comment"></span>
 <a name="l00087"></a>00087 <span class="comment">    /// \brief</span>
 <a name="l00088"></a>00088 <span class="comment">    /// Determines if the collection contains the specified item</span>
@@ -124,7 +124,7 @@
 <a name="l00095"></a>00095 <span class="comment">    /// Returns true if the collection contains the specified item, otherwise false.</span>
 <a name="l00096"></a>00096 <span class="comment">    /// Throws an instance of FdoClientServicesException * if an error occurs.</span>
 <a name="l00097"></a>00097 <span class="comment">    /// </span>
-<a name="l00098"></a>00098 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="../../d7/d60/class_fdo_provider_collection_26e9d8682ac41a612451e095af4ec724.html#26e9d8682ac41a612451e095af4ec724">Contains</a>(<span class="keyword">const</span> <span class="keywordtype">wchar_t</span>* name) <span class="keyword">const</span>;
+<a name="l00098"></a>00098 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="../../d7/d60/class_fdo_provider_collection_26e9d8682ac41a612451e095af4ec724.html#26e9d8682ac41a612451e095af4ec724">Contains</a>(<span class="keyword">const</span> <span class="keywordtype">wchar_t</span>* name) <span class="keyword">const</span>;
 <a name="l00099"></a>00099     <span class="comment"></span>
 <a name="l00100"></a>00100 <span class="comment">    /// \brief</span>
 <a name="l00101"></a>00101 <span class="comment">    /// Returns the index of the specified item in the collection.</span>
@@ -137,7 +137,7 @@
 <a name="l00108"></a>00108 <span class="comment">    /// Returns the index item or -1 if the item does not exist. Index is 0 based.</span>
 <a name="l00109"></a>00109 <span class="comment">    /// Throws an instance of FdoClientServicesException * if an error occurs.</span>
 <a name="l00110"></a>00110 <span class="comment">    /// </span>
-<a name="l00111"></a>00111 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code" href="../../d7/d60/class_fdo_provider_collection_b7d7d53f142912a225ac78e4bf2ba1a8.html#b7d7d53f142912a225ac78e4bf2ba1a8">IndexOf</a>(<span class="keyword">const</span> <span class="keywordtype">wchar_t</span>* name) <span class="keyword">const</span>;
+<a name="l00111"></a>00111 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code" href="../../d7/d60/class_fdo_provider_collection_b7d7d53f142912a225ac78e4bf2ba1a8.html#b7d7d53f142912a225ac78e4bf2ba1a8">IndexOf</a>(<span class="keyword">const</span> <span class="keywordtype">wchar_t</span>* name) <span class="keyword">const</span>;
 <a name="l00112"></a>00112 
 <a name="l00113"></a>00113 <span class="keyword">private</span>:<span class="comment"></span>
 <a name="l00114"></a>00114 <span class="comment">    /// The list of providers defined in the registry</span>

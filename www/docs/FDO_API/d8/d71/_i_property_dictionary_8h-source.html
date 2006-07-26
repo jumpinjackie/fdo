@@ -52,7 +52,7 @@
 <a name="l00023"></a>00023 <span class="preprocessor"></span><span class="preprocessor">#pragma once</span>
 <a name="l00024"></a>00024 <span class="preprocessor"></span><span class="preprocessor">#endif</span>
 <a name="l00025"></a>00025 <span class="preprocessor"></span>
-<a name="l00026"></a>00026 <span class="preprocessor">#include &lt;<a class="code" href="../../d7/daa/_std_8h.html">Std.h</a>&gt;</span>
+<a name="l00026"></a>00026 <span class="preprocessor">#include &lt;<a class="code" href="../../d6/d27/_fdo_std_8h.html">FdoStd.h</a>&gt;</span>
 <a name="l00027"></a>00027 <span class="comment"></span>
 <a name="l00028"></a>00028 <span class="comment">/// \brief</span>
 <a name="l00029"></a>00029 <span class="comment">/// The FdoIPropertyDictionary exposes a dictionary style interface</span>
@@ -79,7 +79,7 @@
 <a name="l00050"></a>00050 <span class="comment">    /// \return</span>
 <a name="l00051"></a>00051 <span class="comment">    /// Returns the list of parameter names</span>
 <a name="l00052"></a>00052 <span class="comment">    /// </span>
-<a name="l00053"></a>00053 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>** <a class="code" href="../../da/d50/class_fdo_i_property_dictionary_775abeb53173c7848ccdcd22cb3f96d5.html#775abeb53173c7848ccdcd22cb3f96d5">GetPropertyNames</a>(FdoInt32&amp; count) = 0;
+<a name="l00053"></a>00053 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>** <a class="code" href="../../da/d50/class_fdo_i_property_dictionary_775abeb53173c7848ccdcd22cb3f96d5.html#775abeb53173c7848ccdcd22cb3f96d5">GetPropertyNames</a>(FdoInt32&amp; count) = 0;
 <a name="l00054"></a>00054 <span class="comment"></span>
 <a name="l00055"></a>00055 <span class="comment">    /// \brief</span>
 <a name="l00056"></a>00056 <span class="comment">    /// Gets the value of the specified property.</span>
@@ -90,7 +90,7 @@
 <a name="l00061"></a>00061 <span class="comment">    /// \return</span>
 <a name="l00062"></a>00062 <span class="comment">    /// Returns the property value.</span>
 <a name="l00063"></a>00063 <span class="comment">    /// </span>
-<a name="l00064"></a>00064 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* <a class="code" href="../../da/d50/class_fdo_i_property_dictionary_925c93525e4f8c0b60f0ba177ec9995b.html#925c93525e4f8c0b60f0ba177ec9995b">GetProperty</a>(<a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* name) = 0;
+<a name="l00064"></a>00064 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* <a class="code" href="../../da/d50/class_fdo_i_property_dictionary_925c93525e4f8c0b60f0ba177ec9995b.html#925c93525e4f8c0b60f0ba177ec9995b">GetProperty</a>(<a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* name) = 0;
 <a name="l00065"></a>00065 <span class="comment"></span>
 <a name="l00066"></a>00066 <span class="comment">    /// \brief</span>
 <a name="l00067"></a>00067 <span class="comment">    /// Sets the value of the specified property. An exception is thrown if the connection is currently open.</span>
@@ -103,7 +103,7 @@
 <a name="l00074"></a>00074 <span class="comment">    /// \return</span>
 <a name="l00075"></a>00075 <span class="comment">    /// Returns nothing</span>
 <a name="l00076"></a>00076 <span class="comment">    /// </span>
-<a name="l00077"></a>00077 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../da/d50/class_fdo_i_property_dictionary_d16912eefb3d8aeeea48e5dc4f7d0ce6.html#d16912eefb3d8aeeea48e5dc4f7d0ce6">SetProperty</a>(<a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* name, <a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* value) = 0;
+<a name="l00077"></a>00077 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../da/d50/class_fdo_i_property_dictionary_d16912eefb3d8aeeea48e5dc4f7d0ce6.html#d16912eefb3d8aeeea48e5dc4f7d0ce6">SetProperty</a>(<a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* name, <a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* value) = 0;
 <a name="l00078"></a>00078 <span class="comment"></span>
 <a name="l00079"></a>00079 <span class="comment">    /// \brief</span>
 <a name="l00080"></a>00080 <span class="comment">    /// Gets the default value for the specified property.</span>
@@ -114,7 +114,7 @@
 <a name="l00085"></a>00085 <span class="comment">    /// \return</span>
 <a name="l00086"></a>00086 <span class="comment">    /// Returns the property default value</span>
 <a name="l00087"></a>00087 <span class="comment">    /// </span>
-<a name="l00088"></a>00088 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* <a class="code" href="../../da/d50/class_fdo_i_property_dictionary_e1900a1c86cfbff404c496d866b363ed.html#e1900a1c86cfbff404c496d866b363ed">GetPropertyDefault</a>(<a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* name) = 0;
+<a name="l00088"></a>00088 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* <a class="code" href="../../da/d50/class_fdo_i_property_dictionary_e1900a1c86cfbff404c496d866b363ed.html#e1900a1c86cfbff404c496d866b363ed">GetPropertyDefault</a>(<a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* name) = 0;
 <a name="l00089"></a>00089 <span class="comment"></span>
 <a name="l00090"></a>00090 <span class="comment">    /// \brief</span>
 <a name="l00091"></a>00091 <span class="comment">    /// Determines if the specified property is required.</span>
@@ -125,7 +125,7 @@
 <a name="l00096"></a>00096 <span class="comment">    /// \return</span>
 <a name="l00097"></a>00097 <span class="comment">    /// Returns true if the specified property is required</span>
 <a name="l00098"></a>00098 <span class="comment">    /// </span>
-<a name="l00099"></a>00099 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="../../da/d50/class_fdo_i_property_dictionary_698f82c4c2fe7b63fa693c5cc6aaf814.html#698f82c4c2fe7b63fa693c5cc6aaf814">IsPropertyRequired</a>(<a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* name) = 0;
+<a name="l00099"></a>00099 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="../../da/d50/class_fdo_i_property_dictionary_698f82c4c2fe7b63fa693c5cc6aaf814.html#698f82c4c2fe7b63fa693c5cc6aaf814">IsPropertyRequired</a>(<a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* name) = 0;
 <a name="l00100"></a>00100  <span class="comment"></span>
 <a name="l00101"></a>00101 <span class="comment">    /// \brief</span>
 <a name="l00102"></a>00102 <span class="comment">    ///  Indicates if the property is a password or other protected field</span>
@@ -138,7 +138,7 @@
 <a name="l00109"></a>00109 <span class="comment">    /// Returns true if the property is a password or other protected field</span>
 <a name="l00110"></a>00110 <span class="comment">    /// that should be kept secure.</span>
 <a name="l00111"></a>00111 <span class="comment">    /// </span>
-<a name="l00112"></a>00112 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="../../da/d50/class_fdo_i_property_dictionary_01412f8b7aea49533069ff376657a2a6.html#01412f8b7aea49533069ff376657a2a6">IsPropertyProtected</a>(<a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* name) = 0;
+<a name="l00112"></a>00112 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="../../da/d50/class_fdo_i_property_dictionary_01412f8b7aea49533069ff376657a2a6.html#01412f8b7aea49533069ff376657a2a6">IsPropertyProtected</a>(<a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* name) = 0;
 <a name="l00113"></a>00113    <span class="comment"></span>
 <a name="l00114"></a>00114 <span class="comment">    /// \brief</span>
 <a name="l00115"></a>00115 <span class="comment">    /// Determines if the possible values for the specified property can be enumerated via the EnumeratePropertyValues method.</span>
@@ -149,7 +149,7 @@
 <a name="l00120"></a>00120 <span class="comment">    /// \return</span>
 <a name="l00121"></a>00121 <span class="comment">    /// Returns true if the possible values for the specified property can be enumerated.</span>
 <a name="l00122"></a>00122 <span class="comment">    /// </span>
-<a name="l00123"></a>00123 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="../../da/d50/class_fdo_i_property_dictionary_8cf40892c1330fc465d659c1be21949b.html#8cf40892c1330fc465d659c1be21949b">IsPropertyEnumerable</a>(<a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* name) = 0;
+<a name="l00123"></a>00123 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="../../da/d50/class_fdo_i_property_dictionary_8cf40892c1330fc465d659c1be21949b.html#8cf40892c1330fc465d659c1be21949b">IsPropertyEnumerable</a>(<a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* name) = 0;
 <a name="l00124"></a>00124 <span class="comment"></span>
 <a name="l00125"></a>00125 <span class="comment">    /// \brief</span>
 <a name="l00126"></a>00126 <span class="comment">    ///  Returns an array of possible values for the specified property.</span>
@@ -162,7 +162,7 @@
 <a name="l00133"></a>00133 <span class="comment">    /// \return</span>
 <a name="l00134"></a>00134 <span class="comment">    /// Returns the list of values for this property.</span>
 <a name="l00135"></a>00135 <span class="comment">    /// </span>
-<a name="l00136"></a>00136 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>** <a class="code" href="../../da/d50/class_fdo_i_property_dictionary_81016088e9740c23245137d2a1dda2cc.html#81016088e9740c23245137d2a1dda2cc">EnumeratePropertyValues</a>(<a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* name, FdoInt32&amp; count) = 0;
+<a name="l00136"></a>00136 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>** <a class="code" href="../../da/d50/class_fdo_i_property_dictionary_81016088e9740c23245137d2a1dda2cc.html#81016088e9740c23245137d2a1dda2cc">EnumeratePropertyValues</a>(<a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* name, FdoInt32&amp; count) = 0;
 <a name="l00137"></a>00137 <span class="comment"></span>
 <a name="l00138"></a>00138 <span class="comment">    /// \brief</span>
 <a name="l00139"></a>00139 <span class="comment">    ///  Gets a localized name for the property (for NLS purposes).</span>
@@ -173,7 +173,7 @@
 <a name="l00144"></a>00144 <span class="comment">    /// \return</span>
 <a name="l00145"></a>00145 <span class="comment">    /// Returns the localized name for the property (for NLS purposes).</span>
 <a name="l00146"></a>00146 <span class="comment">    /// </span>
-<a name="l00147"></a>00147 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* <a class="code" href="../../da/d50/class_fdo_i_property_dictionary_28f6bfddeb52d6767c25bff5d1dcb379.html#28f6bfddeb52d6767c25bff5d1dcb379">GetLocalizedName</a>(<a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* name) = 0;
+<a name="l00147"></a>00147 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* <a class="code" href="../../da/d50/class_fdo_i_property_dictionary_28f6bfddeb52d6767c25bff5d1dcb379.html#28f6bfddeb52d6767c25bff5d1dcb379">GetLocalizedName</a>(<a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* name) = 0;
 <a name="l00148"></a>00148 <span class="comment"></span>
 <a name="l00149"></a>00149 <span class="comment">    /// \brief</span>
 <a name="l00150"></a>00150 <span class="comment">    /// Determines if the specified property represents a file name.</span>
@@ -184,7 +184,7 @@
 <a name="l00155"></a>00155 <span class="comment">    /// \return</span>
 <a name="l00156"></a>00156 <span class="comment">    /// Returns true if the specified property is a file name</span>
 <a name="l00157"></a>00157 <span class="comment">    /// </span>
-<a name="l00158"></a>00158 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="../../da/d50/class_fdo_i_property_dictionary_5495117ed4a863e995adaa71d8dbe615.html#5495117ed4a863e995adaa71d8dbe615">IsPropertyFileName</a>(<a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* name) = 0;
+<a name="l00158"></a>00158 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="../../da/d50/class_fdo_i_property_dictionary_5495117ed4a863e995adaa71d8dbe615.html#5495117ed4a863e995adaa71d8dbe615">IsPropertyFileName</a>(<a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* name) = 0;
 <a name="l00159"></a>00159 <span class="comment"></span>
 <a name="l00160"></a>00160 <span class="comment">    /// \brief</span>
 <a name="l00161"></a>00161 <span class="comment">    /// Determines if the specified property represents a path name.</span>
@@ -195,7 +195,7 @@
 <a name="l00166"></a>00166 <span class="comment">    /// \return</span>
 <a name="l00167"></a>00167 <span class="comment">    /// Returns true if the specified property is a path name</span>
 <a name="l00168"></a>00168 <span class="comment">    /// </span>
-<a name="l00169"></a>00169 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="../../da/d50/class_fdo_i_property_dictionary_56b73bdc058e68442ee65e39c06b74a0.html#56b73bdc058e68442ee65e39c06b74a0">IsPropertyFilePath</a>(<a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* name) = 0;
+<a name="l00169"></a>00169 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="../../da/d50/class_fdo_i_property_dictionary_56b73bdc058e68442ee65e39c06b74a0.html#56b73bdc058e68442ee65e39c06b74a0">IsPropertyFilePath</a>(<a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* name) = 0;
 <a name="l00170"></a>00170 <span class="comment"></span>
 <a name="l00171"></a>00171 <span class="comment">    /// \brief</span>
 <a name="l00172"></a>00172 <span class="comment">    /// Determines if the specified property represents a datastore name.</span>
@@ -206,7 +206,7 @@
 <a name="l00177"></a>00177 <span class="comment">    /// \return</span>
 <a name="l00178"></a>00178 <span class="comment">    /// Returns true if the specified property is a datastore name</span>
 <a name="l00179"></a>00179 <span class="comment">    /// </span>
-<a name="l00180"></a>00180 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="../../da/d50/class_fdo_i_property_dictionary_5ba8ed5bbaffd1c97d5f4123afb70c51.html#5ba8ed5bbaffd1c97d5f4123afb70c51">IsPropertyDatastoreName</a>(<a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* name) = 0;
+<a name="l00180"></a>00180 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="../../da/d50/class_fdo_i_property_dictionary_5ba8ed5bbaffd1c97d5f4123afb70c51.html#5ba8ed5bbaffd1c97d5f4123afb70c51">IsPropertyDatastoreName</a>(<a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* name) = 0;
 <a name="l00181"></a>00181 
 <a name="l00182"></a>00182 };
 <a name="l00183"></a>00183 <span class="preprocessor">#endif</span>

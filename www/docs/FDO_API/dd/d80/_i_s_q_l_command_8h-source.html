@@ -51,7 +51,7 @@
 <a name="l00022"></a>00022 <span class="preprocessor"></span><span class="preprocessor">#pragma once</span>
 <a name="l00023"></a>00023 <span class="preprocessor"></span><span class="preprocessor">#endif</span>
 <a name="l00024"></a>00024 <span class="preprocessor"></span>
-<a name="l00025"></a>00025 <span class="preprocessor">#include &lt;<a class="code" href="../../d7/daa/_std_8h.html">Std.h</a>&gt;</span>
+<a name="l00025"></a>00025 <span class="preprocessor">#include &lt;<a class="code" href="../../d6/d27/_fdo_std_8h.html">FdoStd.h</a>&gt;</span>
 <a name="l00026"></a>00026 <span class="preprocessor">#include &lt;<a class="code" href="../../dc/d76/_i_command_8h.html">Fdo/Commands/ICommand.h</a>&gt;</span>
 <a name="l00027"></a>00027 <span class="preprocessor">#include &lt;<a class="code" href="../../de/d25/_i_connection_8h.html">Fdo/Connections/IConnection.h</a>&gt;</span>
 <a name="l00028"></a>00028 <span class="preprocessor">#include &lt;<a class="code" href="../../dc/dbc/_i_s_q_l_data_reader_8h.html">Fdo/Commands/Sql/ISQLDataReader.h</a>&gt;</span>
@@ -72,7 +72,7 @@
 <a name="l00043"></a>00043 <span class="comment">    /// \return</span>
 <a name="l00044"></a>00044 <span class="comment">    /// Returns the SQL statement.</span>
 <a name="l00045"></a>00045 <span class="comment">    /// </span>
-<a name="l00046"></a>00046 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* <a class="code" href="../../d9/d7f/class_fdo_i_s_q_l_command_aadc322d7e032fa7dd3db68ccf6ec434.html#aadc322d7e032fa7dd3db68ccf6ec434">GetSQLStatement</a>() = 0;
+<a name="l00046"></a>00046 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* <a class="code" href="../../d9/d7f/class_fdo_i_s_q_l_command_aadc322d7e032fa7dd3db68ccf6ec434.html#aadc322d7e032fa7dd3db68ccf6ec434">GetSQLStatement</a>() = 0;
 <a name="l00047"></a>00047 <span class="comment"></span>
 <a name="l00048"></a>00048 <span class="comment">    /// \brief</span>
 <a name="l00049"></a>00049 <span class="comment">    /// Sets the SQL statement to be executed as a string.</span>
@@ -83,7 +83,7 @@
 <a name="l00054"></a>00054 <span class="comment">    /// \return</span>
 <a name="l00055"></a>00055 <span class="comment">    /// Returns nothing</span>
 <a name="l00056"></a>00056 <span class="comment">    /// </span>
-<a name="l00057"></a>00057 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d9/d7f/class_fdo_i_s_q_l_command_6c14d5e865d55f0391347ef134ec684d.html#6c14d5e865d55f0391347ef134ec684d">SetSQLStatement</a>(<a class="code" href="../../d0/db6/_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* value) = 0;
+<a name="l00057"></a>00057 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d9/d7f/class_fdo_i_s_q_l_command_6c14d5e865d55f0391347ef134ec684d.html#6c14d5e865d55f0391347ef134ec684d">SetSQLStatement</a>(<a class="code" href="../../d3/d37/_fdo_types_8h_d5a3d36c3e5fd69a638c2164a236e10f.html#d5a3d36c3e5fd69a638c2164a236e10f">FdoString</a>* value) = 0;
 <a name="l00058"></a>00058 <span class="comment"></span>
 <a name="l00059"></a>00059 <span class="comment">    /// \brief</span>
 <a name="l00060"></a>00060 <span class="comment">    /// Executes the SQL statement against the connection object and returns</span>
@@ -92,7 +92,7 @@
 <a name="l00063"></a>00063 <span class="comment">    /// \return</span>
 <a name="l00064"></a>00064 <span class="comment">    /// Returns the number of rows affected.</span>
 <a name="l00065"></a>00065 <span class="comment">    /// </span>
-<a name="l00066"></a>00066 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> FdoInt32 <a class="code" href="../../d9/d7f/class_fdo_i_s_q_l_command_07387c6c6d4d4a65938f263b36ef611a.html#07387c6c6d4d4a65938f263b36ef611a">ExecuteNonQuery</a>() = 0;
+<a name="l00066"></a>00066 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> FdoInt32 <a class="code" href="../../d9/d7f/class_fdo_i_s_q_l_command_07387c6c6d4d4a65938f263b36ef611a.html#07387c6c6d4d4a65938f263b36ef611a">ExecuteNonQuery</a>() = 0;
 <a name="l00067"></a>00067 <span class="comment"></span>
 <a name="l00068"></a>00068 <span class="comment">    /// \brief</span>
 <a name="l00069"></a>00069 <span class="comment">    /// Executes the SQL statement against the connection object and returns</span>
@@ -101,7 +101,7 @@
 <a name="l00072"></a>00072 <span class="comment">    /// \return</span>
 <a name="l00073"></a>00073 <span class="comment">    /// Returns the data reader.</span>
 <a name="l00074"></a>00074 <span class="comment">    /// </span>
-<a name="l00075"></a>00075 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../da/d4a/class_fdo_i_s_q_l_data_reader.html">FdoISQLDataReader</a>* <a class="code" href="../../d9/d7f/class_fdo_i_s_q_l_command_31e8a98b3d8a7e9455dfd10f20d69894.html#31e8a98b3d8a7e9455dfd10f20d69894">ExecuteReader</a>() = 0;
+<a name="l00075"></a>00075 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">virtual</span> <a class="code" href="../../da/d4a/class_fdo_i_s_q_l_data_reader.html">FdoISQLDataReader</a>* <a class="code" href="../../d9/d7f/class_fdo_i_s_q_l_command_31e8a98b3d8a7e9455dfd10f20d69894.html#31e8a98b3d8a7e9455dfd10f20d69894">ExecuteReader</a>() = 0;
 <a name="l00076"></a>00076 };
 <a name="l00077"></a>00077 <span class="preprocessor">#endif</span>
 <a name="l00078"></a>00078 <span class="preprocessor"></span>

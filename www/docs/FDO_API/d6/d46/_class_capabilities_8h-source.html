@@ -51,7 +51,7 @@
 <a name="l00022"></a>00022 <span class="preprocessor"></span><span class="preprocessor">#pragma once</span>
 <a name="l00023"></a>00023 <span class="preprocessor"></span><span class="preprocessor">#endif</span>
 <a name="l00024"></a>00024 <span class="preprocessor"></span>
-<a name="l00025"></a>00025 <span class="preprocessor">#include &lt;<a class="code" href="../../d7/daa/_std_8h.html">Std.h</a>&gt;</span>
+<a name="l00025"></a>00025 <span class="preprocessor">#include &lt;<a class="code" href="../../d6/d27/_fdo_std_8h.html">FdoStd.h</a>&gt;</span>
 <a name="l00026"></a>00026 <span class="preprocessor">#include &lt;<a class="code" href="../../d6/de7/_schema_element_8h.html">Fdo/Schema/SchemaElement.h</a>&gt;</span>
 <a name="l00027"></a>00027 <span class="preprocessor">#include &lt;<a class="code" href="../../d1/d33/_lock_type_8h.html">Fdo/Commands/Locking/LockType.h</a>&gt;</span>
 <a name="l00028"></a>00028 
@@ -81,7 +81,7 @@
 <a name="l00052"></a>00052 <span class="comment">    /// \return</span>
 <a name="l00053"></a>00053 <span class="comment">    /// Returns true if objects of this class can be locked</span>
 <a name="l00054"></a>00054 <span class="comment">    /// </span>
-<a name="l00055"></a>00055 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <a class="code" href="../../d0/db6/_types_8h_467f74207096bcd703476c3c8e6f9d2d.html#467f74207096bcd703476c3c8e6f9d2d">FdoBoolean</a> <a class="code" href="../../d0/d0b/class_fdo_class_capabilities_9c1cfe0e5c0d91f7f546506549aae0e7.html#9c1cfe0e5c0d91f7f546506549aae0e7">SupportsLocking</a>();
+<a name="l00055"></a>00055 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <a class="code" href="../../d3/d37/_fdo_types_8h_467f74207096bcd703476c3c8e6f9d2d.html#467f74207096bcd703476c3c8e6f9d2d">FdoBoolean</a> <a class="code" href="../../d0/d0b/class_fdo_class_capabilities_9c1cfe0e5c0d91f7f546506549aae0e7.html#9c1cfe0e5c0d91f7f546506549aae0e7">SupportsLocking</a>();
 <a name="l00056"></a>00056 <span class="comment"></span>
 <a name="l00057"></a>00057 <span class="comment">    /// \brief</span>
 <a name="l00058"></a>00058 <span class="comment">    /// Gets an array of the FdoLockType values supported by the feature provider.</span>
@@ -92,7 +92,7 @@
 <a name="l00063"></a>00063 <span class="comment">    /// \return</span>
 <a name="l00064"></a>00064 <span class="comment">    /// Returns the list of lock types</span>
 <a name="l00065"></a>00065 <span class="comment">    /// </span>
-<a name="l00066"></a>00066 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <a class="code" href="../../d1/d33/_lock_type_8h_1b851ca74985a361f366adaa6a430a36.html#1b851ca74985a361f366adaa6a430a36">FdoLockType</a>* <a class="code" href="../../d0/d0b/class_fdo_class_capabilities_2523f86e87f02c14a667f130d9ad4de3.html#2523f86e87f02c14a667f130d9ad4de3">GetLockTypes</a>(FdoInt32&amp; size);
+<a name="l00066"></a>00066 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <a class="code" href="../../d1/d33/_lock_type_8h_1b851ca74985a361f366adaa6a430a36.html#1b851ca74985a361f366adaa6a430a36">FdoLockType</a>* <a class="code" href="../../d0/d0b/class_fdo_class_capabilities_2523f86e87f02c14a667f130d9ad4de3.html#2523f86e87f02c14a667f130d9ad4de3">GetLockTypes</a>(FdoInt32&amp; size);
 <a name="l00067"></a>00067 <span class="comment"></span>
 <a name="l00068"></a>00068 <span class="comment">    /// \brief</span>
 <a name="l00069"></a>00069 <span class="comment">    /// Gets the long transaction support capability.</span>
@@ -101,7 +101,7 @@
 <a name="l00072"></a>00072 <span class="comment">    /// Returns true if long transactions can be created on objects</span>
 <a name="l00073"></a>00073 <span class="comment">    /// of this class</span>
 <a name="l00074"></a>00074 <span class="comment">    /// </span>
-<a name="l00075"></a>00075 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <a class="code" href="../../d0/db6/_types_8h_467f74207096bcd703476c3c8e6f9d2d.html#467f74207096bcd703476c3c8e6f9d2d">FdoBoolean</a> <a class="code" href="../../d0/d0b/class_fdo_class_capabilities_189c3515c1aa72b03669bed1d9452af5.html#189c3515c1aa72b03669bed1d9452af5">SupportsLongTransactions</a>();
+<a name="l00075"></a>00075 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <a class="code" href="../../d3/d37/_fdo_types_8h_467f74207096bcd703476c3c8e6f9d2d.html#467f74207096bcd703476c3c8e6f9d2d">FdoBoolean</a> <a class="code" href="../../d0/d0b/class_fdo_class_capabilities_189c3515c1aa72b03669bed1d9452af5.html#189c3515c1aa72b03669bed1d9452af5">SupportsLongTransactions</a>();
 <a name="l00076"></a>00076 <span class="comment"></span>
 <a name="l00077"></a>00077 <span class="comment">    /// \brief</span>
 <a name="l00078"></a>00078 <span class="comment">    /// Gets the parent of this Class Capabilites object.</span>
@@ -109,7 +109,7 @@
 <a name="l00080"></a>00080 <span class="comment">    /// \return</span>
 <a name="l00081"></a>00081 <span class="comment">    /// Returns FdoClassDefinition</span>
 <a name="l00082"></a>00082 <span class="comment">    /// </span>
-<a name="l00083"></a>00083 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <a class="code" href="../../d5/d9a/class_fdo_class_definition.html">FdoClassDefinition</a>* <a class="code" href="../../d0/d0b/class_fdo_class_capabilities_cf7b4a1734dd7e2ed4a5dd0b41747a45.html#cf7b4a1734dd7e2ed4a5dd0b41747a45">GetParent</a>();
+<a name="l00083"></a>00083 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <a class="code" href="../../d5/d9a/class_fdo_class_definition.html">FdoClassDefinition</a>* <a class="code" href="../../d0/d0b/class_fdo_class_capabilities_cf7b4a1734dd7e2ed4a5dd0b41747a45.html#cf7b4a1734dd7e2ed4a5dd0b41747a45">GetParent</a>();
 <a name="l00084"></a>00084 <span class="comment"></span>
 <a name="l00085"></a>00085 <span class="comment">    /// \brief</span>
 <a name="l00086"></a>00086 <span class="comment">    /// Constructs an FdoClassCapabilities instance. This function</span>
@@ -122,7 +122,7 @@
 <a name="l00093"></a>00093 <span class="comment">    /// \return</span>
 <a name="l00094"></a>00094 <span class="comment">    /// Returns FdoClassCapabilities</span>
 <a name="l00095"></a>00095 <span class="comment">    /// </span>
-<a name="l00096"></a>00096 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">static</span> <a class="code" href="../../d0/d0b/class_fdo_class_capabilities.html">FdoClassCapabilities</a>* <a class="code" href="../../d0/d0b/class_fdo_class_capabilities_b3ac6514bce3b13e0ac11249e69f5ece.html#b3ac6514bce3b13e0ac11249e69f5ece">Create</a>(<a class="code" href="../../d5/d9a/class_fdo_class_definition.html">FdoClassDefinition</a>&amp; parent);
+<a name="l00096"></a>00096 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keyword">static</span> <a class="code" href="../../d0/d0b/class_fdo_class_capabilities.html">FdoClassCapabilities</a>* <a class="code" href="../../d0/d0b/class_fdo_class_capabilities_b3ac6514bce3b13e0ac11249e69f5ece.html#b3ac6514bce3b13e0ac11249e69f5ece">Create</a>(<a class="code" href="../../d5/d9a/class_fdo_class_definition.html">FdoClassDefinition</a>&amp; parent);
 <a name="l00097"></a>00097 <span class="comment"></span>
 <a name="l00098"></a>00098 <span class="comment">    /// \brief</span>
 <a name="l00099"></a>00099 <span class="comment">    /// Sets the locking support capability.</span>
@@ -130,7 +130,7 @@
 <a name="l00101"></a>00101 <span class="comment">    /// \param value </span>
 <a name="l00102"></a>00102 <span class="comment">    /// Input The locking support capability</span>
 <a name="l00103"></a>00103 <span class="comment">    /// </span>
-<a name="l00104"></a>00104 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keywordtype">void</span> <a class="code" href="../../d0/d0b/class_fdo_class_capabilities_b4d59a648d35e9c9eb1d5f1e9c3b307c.html#b4d59a648d35e9c9eb1d5f1e9c3b307c">SetSupportsLocking</a>( <a class="code" href="../../d0/db6/_types_8h_467f74207096bcd703476c3c8e6f9d2d.html#467f74207096bcd703476c3c8e6f9d2d">FdoBoolean</a> value);
+<a name="l00104"></a>00104 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keywordtype">void</span> <a class="code" href="../../d0/d0b/class_fdo_class_capabilities_b4d59a648d35e9c9eb1d5f1e9c3b307c.html#b4d59a648d35e9c9eb1d5f1e9c3b307c">SetSupportsLocking</a>( <a class="code" href="../../d3/d37/_fdo_types_8h_467f74207096bcd703476c3c8e6f9d2d.html#467f74207096bcd703476c3c8e6f9d2d">FdoBoolean</a> value);
 <a name="l00105"></a>00105 <span class="comment"></span>
 <a name="l00106"></a>00106 <span class="comment">    /// \brief</span>
 <a name="l00107"></a>00107 <span class="comment">    /// Sets the locking types support capability. This function should only </span>
@@ -141,7 +141,7 @@
 <a name="l00112"></a>00112 <span class="comment">    /// \param size </span>
 <a name="l00113"></a>00113 <span class="comment">    /// The number of lock types</span>
 <a name="l00114"></a>00114 <span class="comment">    /// </span>
-<a name="l00115"></a>00115 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keywordtype">void</span> <a class="code" href="../../d0/d0b/class_fdo_class_capabilities_89c541c62798552f61034e2d0a168695.html#89c541c62798552f61034e2d0a168695">SetLockTypes</a>(<span class="keyword">const</span> <a class="code" href="../../d1/d33/_lock_type_8h_1b851ca74985a361f366adaa6a430a36.html#1b851ca74985a361f366adaa6a430a36">FdoLockType</a>* types, FdoInt32 size);
+<a name="l00115"></a>00115 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keywordtype">void</span> <a class="code" href="../../d0/d0b/class_fdo_class_capabilities_89c541c62798552f61034e2d0a168695.html#89c541c62798552f61034e2d0a168695">SetLockTypes</a>(<span class="keyword">const</span> <a class="code" href="../../d1/d33/_lock_type_8h_1b851ca74985a361f366adaa6a430a36.html#1b851ca74985a361f366adaa6a430a36">FdoLockType</a>* types, FdoInt32 size);
 <a name="l00116"></a>00116 <span class="comment"></span>
 <a name="l00117"></a>00117 <span class="comment">    /// \brief</span>
 <a name="l00118"></a>00118 <span class="comment">    /// Sets the long transaction support capability.</span>
@@ -149,11 +149,11 @@
 <a name="l00120"></a>00120 <span class="comment">    /// \param value </span>
 <a name="l00121"></a>00121 <span class="comment">    /// Input The long transaction capability</span>
 <a name="l00122"></a>00122 <span class="comment">    /// </span>
-<a name="l00123"></a>00123 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keywordtype">void</span> <a class="code" href="../../d0/d0b/class_fdo_class_capabilities_bfb784d367e12318d156539475feeda6.html#bfb784d367e12318d156539475feeda6">SetSupportsLongTransactions</a>( <a class="code" href="../../d0/db6/_types_8h_467f74207096bcd703476c3c8e6f9d2d.html#467f74207096bcd703476c3c8e6f9d2d">FdoBoolean</a> value );
+<a name="l00123"></a>00123 <span class="comment"></span>    <a class="code" href="../../d6/d27/_fdo_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">FDO_API</a> <span class="keywordtype">void</span> <a class="code" href="../../d0/d0b/class_fdo_class_capabilities_bfb784d367e12318d156539475feeda6.html#bfb784d367e12318d156539475feeda6">SetSupportsLongTransactions</a>( <a class="code" href="../../d3/d37/_fdo_types_8h_467f74207096bcd703476c3c8e6f9d2d.html#467f74207096bcd703476c3c8e6f9d2d">FdoBoolean</a> value );
 <a name="l00124"></a>00124 
 <a name="l00125"></a>00125 <span class="keyword">private</span>:
-<a name="l00126"></a>00126     <a class="code" href="../../d0/db6/_types_8h_467f74207096bcd703476c3c8e6f9d2d.html#467f74207096bcd703476c3c8e6f9d2d">FdoBoolean</a>          m_supportsLocking;
-<a name="l00127"></a>00127     <a class="code" href="../../d0/db6/_types_8h_467f74207096bcd703476c3c8e6f9d2d.html#467f74207096bcd703476c3c8e6f9d2d">FdoBoolean</a>          m_supportsLongTransactions;
+<a name="l00126"></a>00126     <a class="code" href="../../d3/d37/_fdo_types_8h_467f74207096bcd703476c3c8e6f9d2d.html#467f74207096bcd703476c3c8e6f9d2d">FdoBoolean</a>          m_supportsLocking;
+<a name="l00127"></a>00127     <a class="code" href="../../d3/d37/_fdo_types_8h_467f74207096bcd703476c3c8e6f9d2d.html#467f74207096bcd703476c3c8e6f9d2d">FdoBoolean</a>          m_supportsLongTransactions;
 <a name="l00128"></a>00128     <a class="code" href="../../d5/d9a/class_fdo_class_definition.html">FdoClassDefinition</a>* m_parent;
 <a name="l00129"></a>00129     <a class="code" href="../../d1/d33/_lock_type_8h_1b851ca74985a361f366adaa6a430a36.html#1b851ca74985a361f366adaa6a430a36">FdoLockType</a>*        m_lockTypes;
 <a name="l00130"></a>00130     FdoInt32            m_lockTypeCount;

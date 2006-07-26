@@ -48,7 +48,7 @@
 <a name="l00019"></a>00019 <span class="comment">// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA</span>
 <a name="l00020"></a>00020 <span class="comment">//</span>
 <a name="l00021"></a>00021 
-<a name="l00022"></a>00022 <span class="preprocessor">#include &lt;<a class="code" href="../../db/d1f/_common_8h.html">Common.h</a>&gt;</span>
+<a name="l00022"></a>00022 <span class="preprocessor">#include &lt;<a class="code" href="../../dc/d75/_fdo_common_8h.html">FdoCommon.h</a>&gt;</span>
 <a name="l00023"></a>00023 <span class="comment"></span>
 <a name="l00024"></a>00024 <span class="comment">/// \brief</span>
 <a name="l00025"></a>00025 <span class="comment">/// FdoIoStream defines the interface for all FDO streams. Streamed I/O support</span>
@@ -75,7 +75,7 @@
 <a name="l00046"></a>00046 <span class="comment">    /// Returns the number of bytes that were read. 0 if already at the</span>
 <a name="l00047"></a>00047 <span class="comment">    /// end of the stream.</span>
 <a name="l00048"></a>00048 <span class="comment">    /// </span>
-<a name="l00049"></a>00049 <span class="comment"></span>    <a class="code" href="../../d0/d5f/_common_2_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> <span class="keyword">virtual</span> <a class="code" href="../../d0/db6/_types_8h_21901807068d8da057ad599a75bef5d4.html#21901807068d8da057ad599a75bef5d4">FdoSize</a> <a class="code" href="../../d4/df4/class_fdo_io_stream_f673b8d2e20f5174a0d38671dd4b9f6d.html#f673b8d2e20f5174a0d38671dd4b9f6d">Read</a>( <a class="code" href="../../d0/db6/_types_8h_5d3763a847e3e7232225944ba5655c97.html#5d3763a847e3e7232225944ba5655c97">FdoByte</a>* buffer, <a class="code" href="../../d0/db6/_types_8h_21901807068d8da057ad599a75bef5d4.html#21901807068d8da057ad599a75bef5d4">FdoSize</a> count ) = 0;
+<a name="l00049"></a>00049 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> <span class="keyword">virtual</span> <a class="code" href="../../d3/d37/_fdo_types_8h_21901807068d8da057ad599a75bef5d4.html#21901807068d8da057ad599a75bef5d4">FdoSize</a> <a class="code" href="../../d4/df4/class_fdo_io_stream_f673b8d2e20f5174a0d38671dd4b9f6d.html#f673b8d2e20f5174a0d38671dd4b9f6d">Read</a>( <a class="code" href="../../d3/d37/_fdo_types_8h_5d3763a847e3e7232225944ba5655c97.html#5d3763a847e3e7232225944ba5655c97">FdoByte</a>* buffer, <a class="code" href="../../d3/d37/_fdo_types_8h_21901807068d8da057ad599a75bef5d4.html#21901807068d8da057ad599a75bef5d4">FdoSize</a> count ) = 0;
 <a name="l00050"></a>00050 <span class="comment"></span>
 <a name="l00051"></a>00051 <span class="comment">    /// \brief</span>
 <a name="l00052"></a>00052 <span class="comment">    /// writes the number of bytes indicated by count, from the given buffer, </span>
@@ -90,7 +90,7 @@
 <a name="l00061"></a>00061 <span class="comment">    /// \note</span>
 <a name="l00062"></a>00062 <span class="comment">    /// Write will overwrite some of the contents of the stream </span>
 <a name="l00063"></a>00063 <span class="comment">    /// if the current position is not at the end of the stream.</span>
-<a name="l00064"></a>00064 <span class="comment"></span>    <a class="code" href="../../d0/d5f/_common_2_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d4/df4/class_fdo_io_stream_b16b3c29aa5a80f131de091576eb78c2.html#b16b3c29aa5a80f131de091576eb78c2">Write</a>( <a class="code" href="../../d0/db6/_types_8h_5d3763a847e3e7232225944ba5655c97.html#5d3763a847e3e7232225944ba5655c97">FdoByte</a>* buffer, <a class="code" href="../../d0/db6/_types_8h_21901807068d8da057ad599a75bef5d4.html#21901807068d8da057ad599a75bef5d4">FdoSize</a> count ) = 0;
+<a name="l00064"></a>00064 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d4/df4/class_fdo_io_stream_b16b3c29aa5a80f131de091576eb78c2.html#b16b3c29aa5a80f131de091576eb78c2">Write</a>( <a class="code" href="../../d3/d37/_fdo_types_8h_5d3763a847e3e7232225944ba5655c97.html#5d3763a847e3e7232225944ba5655c97">FdoByte</a>* buffer, <a class="code" href="../../d3/d37/_fdo_types_8h_21901807068d8da057ad599a75bef5d4.html#21901807068d8da057ad599a75bef5d4">FdoSize</a> count ) = 0;
 <a name="l00065"></a>00065 <span class="comment"></span>
 <a name="l00066"></a>00066 <span class="comment">    /// \brief</span>
 <a name="l00067"></a>00067 <span class="comment">    /// reads the number of bytes from the given stream, and writes them </span>
@@ -102,7 +102,7 @@
 <a name="l00073"></a>00073 <span class="comment">    /// Input the maximum number of bytes to read and write. </span>
 <a name="l00074"></a>00074 <span class="comment">    /// When 0, all remaining bytes are read from the given stream.</span>
 <a name="l00075"></a>00075 <span class="comment">    /// </span>
-<a name="l00076"></a>00076 <span class="comment"></span>    <a class="code" href="../../d0/d5f/_common_2_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d4/df4/class_fdo_io_stream_b16b3c29aa5a80f131de091576eb78c2.html#b16b3c29aa5a80f131de091576eb78c2">Write</a>( <a class="code" href="../../d4/df4/class_fdo_io_stream.html">FdoIoStream</a>* stream, <a class="code" href="../../d0/db6/_types_8h_21901807068d8da057ad599a75bef5d4.html#21901807068d8da057ad599a75bef5d4">FdoSize</a> count = 0 ) = 0;
+<a name="l00076"></a>00076 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d4/df4/class_fdo_io_stream_b16b3c29aa5a80f131de091576eb78c2.html#b16b3c29aa5a80f131de091576eb78c2">Write</a>( <a class="code" href="../../d4/df4/class_fdo_io_stream.html">FdoIoStream</a>* stream, <a class="code" href="../../d3/d37/_fdo_types_8h_21901807068d8da057ad599a75bef5d4.html#21901807068d8da057ad599a75bef5d4">FdoSize</a> count = 0 ) = 0;
 <a name="l00077"></a>00077 <span class="comment"></span>
 <a name="l00078"></a>00078 <span class="comment">    /// \brief</span>
 <a name="l00079"></a>00079 <span class="comment">    /// truncates the stream to the indicated length.</span>
@@ -112,7 +112,7 @@
 <a name="l00083"></a>00083 <span class="comment">    /// longer than the current stream length then the stream's length</span>
 <a name="l00084"></a>00084 <span class="comment">    /// is not changed.</span>
 <a name="l00085"></a>00085 <span class="comment">    /// </span>
-<a name="l00086"></a>00086 <span class="comment"></span>    <a class="code" href="../../d0/d5f/_common_2_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d4/df4/class_fdo_io_stream_e85b30f3fbe53d6080a6b364b10a2eb0.html#e85b30f3fbe53d6080a6b364b10a2eb0">SetLength</a>( FdoInt64 ) = 0;
+<a name="l00086"></a>00086 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d4/df4/class_fdo_io_stream_e85b30f3fbe53d6080a6b364b10a2eb0.html#e85b30f3fbe53d6080a6b364b10a2eb0">SetLength</a>( FdoInt64 ) = 0;
 <a name="l00087"></a>00087 <span class="comment"></span>
 <a name="l00088"></a>00088 <span class="comment">    /// \brief</span>
 <a name="l00089"></a>00089 <span class="comment">    /// gets the current length of the stream.</span>
@@ -121,7 +121,7 @@
 <a name="l00092"></a>00092 <span class="comment">    /// Returns the length in bytes. Returns -1 if the length is unknown</span>
 <a name="l00093"></a>00093 <span class="comment">    /// or undefined.</span>
 <a name="l00094"></a>00094 <span class="comment">    /// </span>
-<a name="l00095"></a>00095 <span class="comment"></span>    <a class="code" href="../../d0/d5f/_common_2_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> <span class="keyword">virtual</span> FdoInt64 <a class="code" href="../../d4/df4/class_fdo_io_stream_5a965c11cf67a8608720516664de56de.html#5a965c11cf67a8608720516664de56de">GetLength</a>() = 0;
+<a name="l00095"></a>00095 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> <span class="keyword">virtual</span> FdoInt64 <a class="code" href="../../d4/df4/class_fdo_io_stream_5a965c11cf67a8608720516664de56de.html#5a965c11cf67a8608720516664de56de">GetLength</a>() = 0;
 <a name="l00096"></a>00096 <span class="comment"></span>
 <a name="l00097"></a>00097 <span class="comment">    /// \brief</span>
 <a name="l00098"></a>00098 <span class="comment">    /// gets the current position for the stream.</span>
@@ -131,7 +131,7 @@
 <a name="l00102"></a>00102 <span class="comment">    /// the position is at the start of the stream. When GetIndex() ==</span>
 <a name="l00103"></a>00103 <span class="comment">    /// GetLength() the position is at the end of the stream.</span>
 <a name="l00104"></a>00104 <span class="comment">    /// </span>
-<a name="l00105"></a>00105 <span class="comment"></span>    <a class="code" href="../../d0/d5f/_common_2_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> <span class="keyword">virtual</span> FdoInt64 <a class="code" href="../../d4/df4/class_fdo_io_stream_86df1ce92d60454b6c5904623a496a10.html#86df1ce92d60454b6c5904623a496a10">GetIndex</a>() = 0;
+<a name="l00105"></a>00105 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> <span class="keyword">virtual</span> FdoInt64 <a class="code" href="../../d4/df4/class_fdo_io_stream_86df1ce92d60454b6c5904623a496a10.html#86df1ce92d60454b6c5904623a496a10">GetIndex</a>() = 0;
 <a name="l00106"></a>00106 <span class="comment"></span>
 <a name="l00107"></a>00107 <span class="comment">    /// \brief</span>
 <a name="l00108"></a>00108 <span class="comment">    /// skips over part of the stream.</span>
@@ -144,12 +144,12 @@
 <a name="l00115"></a>00115 <span class="comment">    /// given offset would put it past the end. Similarily, the position is </span>
 <a name="l00116"></a>00116 <span class="comment">    /// set to the start if the offset would put it before the start.</span>
 <a name="l00117"></a>00117 <span class="comment">    /// </span>
-<a name="l00118"></a>00118 <span class="comment"></span>    <a class="code" href="../../d0/d5f/_common_2_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d4/df4/class_fdo_io_stream_09aa476716494ff3e435bb5435d24c89.html#09aa476716494ff3e435bb5435d24c89">Skip</a>( FdoInt64 offset ) = 0;
+<a name="l00118"></a>00118 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d4/df4/class_fdo_io_stream_09aa476716494ff3e435bb5435d24c89.html#09aa476716494ff3e435bb5435d24c89">Skip</a>( FdoInt64 offset ) = 0;
 <a name="l00119"></a>00119 <span class="comment"></span>
 <a name="l00120"></a>00120 <span class="comment">    /// \brief</span>
 <a name="l00121"></a>00121 <span class="comment">    /// sets the position to the start of the stream.</span>
 <a name="l00122"></a>00122 <span class="comment">    /// </span>
-<a name="l00123"></a>00123 <span class="comment"></span>    <a class="code" href="../../d0/d5f/_common_2_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d4/df4/class_fdo_io_stream_3b6fd694d041e6b1f83a7a5e7dbe4513.html#3b6fd694d041e6b1f83a7a5e7dbe4513">Reset</a>() = 0;
+<a name="l00123"></a>00123 <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d4/df4/class_fdo_io_stream_3b6fd694d041e6b1f83a7a5e7dbe4513.html#3b6fd694d041e6b1f83a7a5e7dbe4513">Reset</a>() = 0;
 <a name="l00124"></a>00124 <span class="comment"></span>
 <a name="l00125"></a>00125 <span class="comment">    /// \brief</span>
 <a name="l00126"></a>00126 <span class="comment">    /// gets the reading capability.</span>
@@ -157,7 +157,7 @@
 <a name="l00128"></a>00128 <span class="comment">    /// \return</span>
 <a name="l00129"></a>00129 <span class="comment">    /// Returns true if the stream can be read.</span>
 <a name="l00130"></a>00130 <span class="comment">    /// </span>
-<a name="l00131"></a><a class="code" href="../../d4/df4/class_fdo_io_stream_a7cfdea3f29ce75bf34dd32fe7de83a7.html#a7cfdea3f29ce75bf34dd32fe7de83a7">00131</a> <span class="comment"></span>    <a class="code" href="../../d0/d5f/_common_2_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> <span class="keyword">virtual</span> <a class="code" href="../../d0/db6/_types_8h_467f74207096bcd703476c3c8e6f9d2d.html#467f74207096bcd703476c3c8e6f9d2d">FdoBoolean</a> <a class="code" href="../../d4/df4/class_fdo_io_stream_a7cfdea3f29ce75bf34dd32fe7de83a7.html#a7cfdea3f29ce75bf34dd32fe7de83a7">CanRead</a>()
+<a name="l00131"></a><a class="code" href="../../d4/df4/class_fdo_io_stream_a7cfdea3f29ce75bf34dd32fe7de83a7.html#a7cfdea3f29ce75bf34dd32fe7de83a7">00131</a> <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> <span class="keyword">virtual</span> <a class="code" href="../../d3/d37/_fdo_types_8h_467f74207096bcd703476c3c8e6f9d2d.html#467f74207096bcd703476c3c8e6f9d2d">FdoBoolean</a> <a class="code" href="../../d4/df4/class_fdo_io_stream_a7cfdea3f29ce75bf34dd32fe7de83a7.html#a7cfdea3f29ce75bf34dd32fe7de83a7">CanRead</a>()
 <a name="l00132"></a>00132     {
 <a name="l00133"></a>00133         <span class="keywordflow">return</span> <span class="keyword">true</span>;
 <a name="l00134"></a>00134     }
@@ -168,7 +168,7 @@
 <a name="l00139"></a>00139 <span class="comment">    /// \return</span>
 <a name="l00140"></a>00140 <span class="comment">    /// Returns true if the stream can be written to.</span>
 <a name="l00141"></a>00141 <span class="comment">    /// </span>
-<a name="l00142"></a><a class="code" href="../../d4/df4/class_fdo_io_stream_4956a003742e6b9bd9c9441fdd4a3b46.html#4956a003742e6b9bd9c9441fdd4a3b46">00142</a> <span class="comment"></span>    <a class="code" href="../../d0/d5f/_common_2_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> <span class="keyword">virtual</span> <a class="code" href="../../d0/db6/_types_8h_467f74207096bcd703476c3c8e6f9d2d.html#467f74207096bcd703476c3c8e6f9d2d">FdoBoolean</a> <a class="code" href="../../d4/df4/class_fdo_io_stream_4956a003742e6b9bd9c9441fdd4a3b46.html#4956a003742e6b9bd9c9441fdd4a3b46">CanWrite</a>()
+<a name="l00142"></a><a class="code" href="../../d4/df4/class_fdo_io_stream_4956a003742e6b9bd9c9441fdd4a3b46.html#4956a003742e6b9bd9c9441fdd4a3b46">00142</a> <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> <span class="keyword">virtual</span> <a class="code" href="../../d3/d37/_fdo_types_8h_467f74207096bcd703476c3c8e6f9d2d.html#467f74207096bcd703476c3c8e6f9d2d">FdoBoolean</a> <a class="code" href="../../d4/df4/class_fdo_io_stream_4956a003742e6b9bd9c9441fdd4a3b46.html#4956a003742e6b9bd9c9441fdd4a3b46">CanWrite</a>()
 <a name="l00143"></a>00143     {
 <a name="l00144"></a>00144         <span class="keywordflow">return</span> <span class="keyword">true</span>;
 <a name="l00145"></a>00145     }
@@ -183,7 +183,7 @@
 <a name="l00154"></a>00154 <span class="comment">    /// not. When a stream does not have context, the SetLength(), Skip() and </span>
 <a name="l00155"></a>00155 <span class="comment">    /// Reset() functions are not supported.</span>
 <a name="l00156"></a>00156 <span class="comment">    /// </span>
-<a name="l00157"></a><a class="code" href="../../d4/df4/class_fdo_io_stream_fef47954b008969ef0d3e083bdea11ff.html#fef47954b008969ef0d3e083bdea11ff">00157</a> <span class="comment"></span>    <a class="code" href="../../d0/d5f/_common_2_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> <span class="keyword">virtual</span> <a class="code" href="../../d0/db6/_types_8h_467f74207096bcd703476c3c8e6f9d2d.html#467f74207096bcd703476c3c8e6f9d2d">FdoBoolean</a> <a class="code" href="../../d4/df4/class_fdo_io_stream_fef47954b008969ef0d3e083bdea11ff.html#fef47954b008969ef0d3e083bdea11ff">HasContext</a>()
+<a name="l00157"></a><a class="code" href="../../d4/df4/class_fdo_io_stream_fef47954b008969ef0d3e083bdea11ff.html#fef47954b008969ef0d3e083bdea11ff">00157</a> <span class="comment"></span>    <a class="code" href="../../d7/daa/_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">FDO_API_COMMON</a> <span class="keyword">virtual</span> <a class="code" href="../../d3/d37/_fdo_types_8h_467f74207096bcd703476c3c8e6f9d2d.html#467f74207096bcd703476c3c8e6f9d2d">FdoBoolean</a> <a class="code" href="../../d4/df4/class_fdo_io_stream_fef47954b008969ef0d3e083bdea11ff.html#fef47954b008969ef0d3e083bdea11ff">HasContext</a>()
 <a name="l00158"></a>00158     {
 <a name="l00159"></a>00159         <span class="keywordflow">return</span> <span class="keyword">true</span>;
 <a name="l00160"></a>00160     }

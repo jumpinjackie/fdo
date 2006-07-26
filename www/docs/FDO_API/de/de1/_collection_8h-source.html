@@ -101,7 +101,7 @@
 <a name="l00072"></a><a class="code" href="../../d6/daa/class_fdo_collection_b19a98ddf088fdeb3a6335e17960e5b7.html#b19a98ddf088fdeb3a6335e17960e5b7">00072</a> <span class="comment"></span>    <span class="keyword">virtual</span> OBJ* GetItem(FdoInt32 index)<span class="keyword"> const</span>
 <a name="l00073"></a>00073 <span class="keyword">    </span>{
 <a name="l00074"></a>00074         <span class="keywordflow">if</span> (index &gt;= m_size || index &lt; 0)
-<a name="l00075"></a>00075             <span class="keywordflow">throw</span> EXC::Create(<a class="code" href="../../db/dee/class_fdo_exception_0f9d229e51975e1ea886949e6ea83188.html#0f9d229e51975e1ea886949e6ea83188">FdoException::NLSGetMessage</a>(<a class="code" href="../../df/d98/_exception_8h_277e2b8d4ea4e4c6ff7a7c1a37cafdd2.html#277e2b8d4ea4e4c6ff7a7c1a37cafdd2">FDO_NLSID</a>(<a class="code" href="../../db/db6/_message_8h_8b79671244237821b6ef70e575d56223.html#8b79671244237821b6ef70e575d56223">FDO_5_INDEXOUTOFBOUNDS</a>)));
+<a name="l00075"></a>00075             <span class="keywordflow">throw</span> EXC::Create(<a class="code" href="../../db/dee/class_fdo_exception_0f9d229e51975e1ea886949e6ea83188.html#0f9d229e51975e1ea886949e6ea83188">FdoException::NLSGetMessage</a>(<a class="code" href="../../df/d98/_exception_8h_277e2b8d4ea4e4c6ff7a7c1a37cafdd2.html#277e2b8d4ea4e4c6ff7a7c1a37cafdd2">FDO_NLSID</a>(<a class="code" href="../../d9/d44/_fdo_message_8h_8b79671244237821b6ef70e575d56223.html#8b79671244237821b6ef70e575d56223">FDO_5_INDEXOUTOFBOUNDS</a>)));
 <a name="l00076"></a>00076         <span class="keywordflow">return</span> <a class="code" href="../../dc/de6/_i_disposable_8h_815049a5ebf6bfe5f04c0365d4258eff.html#815049a5ebf6bfe5f04c0365d4258eff">FDO_SAFE_ADDREF</a>(m_list[index]);
 <a name="l00077"></a>00077     }
 <a name="l00078"></a>00078 <span class="comment"></span>
@@ -124,7 +124,7 @@
 <a name="l00095"></a>00095             m_list[index] = <a class="code" href="../../dc/de6/_i_disposable_8h_815049a5ebf6bfe5f04c0365d4258eff.html#815049a5ebf6bfe5f04c0365d4258eff">FDO_SAFE_ADDREF</a>(value);
 <a name="l00096"></a>00096         }
 <a name="l00097"></a>00097         <span class="keywordflow">else</span>
-<a name="l00098"></a>00098             <span class="keywordflow">throw</span> EXC::Create(<a class="code" href="../../db/dee/class_fdo_exception_0f9d229e51975e1ea886949e6ea83188.html#0f9d229e51975e1ea886949e6ea83188">FdoException::NLSGetMessage</a>(<a class="code" href="../../df/d98/_exception_8h_277e2b8d4ea4e4c6ff7a7c1a37cafdd2.html#277e2b8d4ea4e4c6ff7a7c1a37cafdd2">FDO_NLSID</a>(<a class="code" href="../../db/db6/_message_8h_8b79671244237821b6ef70e575d56223.html#8b79671244237821b6ef70e575d56223">FDO_5_INDEXOUTOFBOUNDS</a>)));
+<a name="l00098"></a>00098             <span class="keywordflow">throw</span> EXC::Create(<a class="code" href="../../db/dee/class_fdo_exception_0f9d229e51975e1ea886949e6ea83188.html#0f9d229e51975e1ea886949e6ea83188">FdoException::NLSGetMessage</a>(<a class="code" href="../../df/d98/_exception_8h_277e2b8d4ea4e4c6ff7a7c1a37cafdd2.html#277e2b8d4ea4e4c6ff7a7c1a37cafdd2">FDO_NLSID</a>(<a class="code" href="../../d9/d44/_fdo_message_8h_8b79671244237821b6ef70e575d56223.html#8b79671244237821b6ef70e575d56223">FDO_5_INDEXOUTOFBOUNDS</a>)));
 <a name="l00099"></a>00099     }
 <a name="l00100"></a>00100 <span class="comment"></span>
 <a name="l00101"></a>00101 <span class="comment">    /// \brief</span>
@@ -172,7 +172,7 @@
 <a name="l00143"></a>00143             m_size++;
 <a name="l00144"></a>00144         }
 <a name="l00145"></a>00145         <span class="keywordflow">else</span>
-<a name="l00146"></a>00146             <span class="keywordflow">throw</span> EXC::Create(<a class="code" href="../../db/dee/class_fdo_exception_0f9d229e51975e1ea886949e6ea83188.html#0f9d229e51975e1ea886949e6ea83188">FdoException::NLSGetMessage</a>(<a class="code" href="../../df/d98/_exception_8h_277e2b8d4ea4e4c6ff7a7c1a37cafdd2.html#277e2b8d4ea4e4c6ff7a7c1a37cafdd2">FDO_NLSID</a>(<a class="code" href="../../db/db6/_message_8h_8b79671244237821b6ef70e575d56223.html#8b79671244237821b6ef70e575d56223">FDO_5_INDEXOUTOFBOUNDS</a>)));
+<a name="l00146"></a>00146             <span class="keywordflow">throw</span> EXC::Create(<a class="code" href="../../db/dee/class_fdo_exception_0f9d229e51975e1ea886949e6ea83188.html#0f9d229e51975e1ea886949e6ea83188">FdoException::NLSGetMessage</a>(<a class="code" href="../../df/d98/_exception_8h_277e2b8d4ea4e4c6ff7a7c1a37cafdd2.html#277e2b8d4ea4e4c6ff7a7c1a37cafdd2">FDO_NLSID</a>(<a class="code" href="../../d9/d44/_fdo_message_8h_8b79671244237821b6ef70e575d56223.html#8b79671244237821b6ef70e575d56223">FDO_5_INDEXOUTOFBOUNDS</a>)));
 <a name="l00147"></a>00147     }
 <a name="l00148"></a>00148 <span class="comment"></span>
 <a name="l00149"></a>00149 <span class="comment">    /// \brief</span>
@@ -214,7 +214,7 @@
 <a name="l00185"></a>00185         <a class="code" href="../../dc/de6/_i_disposable_8h_c8dcc5cf2761a2ed23e790e21bc1d4b4.html#c8dcc5cf2761a2ed23e790e21bc1d4b4">FDO_SAFE_RELEASE</a>(m_list[i]);
 <a name="l00186"></a>00186 
 <a name="l00187"></a>00187         <span class="keywordflow">if</span> (i == m_size)
-<a name="l00188"></a>00188             <span class="keywordflow">throw</span> EXC::Create(<a class="code" href="../../db/dee/class_fdo_exception_0f9d229e51975e1ea886949e6ea83188.html#0f9d229e51975e1ea886949e6ea83188">FdoException::NLSGetMessage</a>(<a class="code" href="../../df/d98/_exception_8h_277e2b8d4ea4e4c6ff7a7c1a37cafdd2.html#277e2b8d4ea4e4c6ff7a7c1a37cafdd2">FDO_NLSID</a>(<a class="code" href="../../db/db6/_message_8h_66e3f319121dc920a44a4a277e4046df.html#66e3f319121dc920a44a4a277e4046df">FDO_6_OBJECTNOTFOUND</a>)));
+<a name="l00188"></a>00188             <span class="keywordflow">throw</span> EXC::Create(<a class="code" href="../../db/dee/class_fdo_exception_0f9d229e51975e1ea886949e6ea83188.html#0f9d229e51975e1ea886949e6ea83188">FdoException::NLSGetMessage</a>(<a class="code" href="../../df/d98/_exception_8h_277e2b8d4ea4e4c6ff7a7c1a37cafdd2.html#277e2b8d4ea4e4c6ff7a7c1a37cafdd2">FDO_NLSID</a>(<a class="code" href="../../d9/d44/_fdo_message_8h_66e3f319121dc920a44a4a277e4046df.html#66e3f319121dc920a44a4a277e4046df">FDO_6_OBJECTNOTFOUND</a>)));
 <a name="l00189"></a>00189         
 <a name="l00190"></a>00190         <span class="keywordflow">while</span> (i &lt; m_size - 1) 
 <a name="l00191"></a>00191         {
@@ -248,7 +248,7 @@
 <a name="l00219"></a>00219             m_list[--m_size] = NULL;
 <a name="l00220"></a>00220         }
 <a name="l00221"></a>00221         <span class="keywordflow">else</span>
-<a name="l00222"></a>00222             <span class="keywordflow">throw</span> EXC::Create(<a class="code" href="../../db/dee/class_fdo_exception_0f9d229e51975e1ea886949e6ea83188.html#0f9d229e51975e1ea886949e6ea83188">FdoException::NLSGetMessage</a>(<a class="code" href="../../df/d98/_exception_8h_277e2b8d4ea4e4c6ff7a7c1a37cafdd2.html#277e2b8d4ea4e4c6ff7a7c1a37cafdd2">FDO_NLSID</a>(<a class="code" href="../../db/db6/_message_8h_8b79671244237821b6ef70e575d56223.html#8b79671244237821b6ef70e575d56223">FDO_5_INDEXOUTOFBOUNDS</a>)));
+<a name="l00222"></a>00222             <span class="keywordflow">throw</span> EXC::Create(<a class="code" href="../../db/dee/class_fdo_exception_0f9d229e51975e1ea886949e6ea83188.html#0f9d229e51975e1ea886949e6ea83188">FdoException::NLSGetMessage</a>(<a class="code" href="../../df/d98/_exception_8h_277e2b8d4ea4e4c6ff7a7c1a37cafdd2.html#277e2b8d4ea4e4c6ff7a7c1a37cafdd2">FDO_NLSID</a>(<a class="code" href="../../d9/d44/_fdo_message_8h_8b79671244237821b6ef70e575d56223.html#8b79671244237821b6ef70e575d56223">FDO_5_INDEXOUTOFBOUNDS</a>)));
 <a name="l00223"></a>00223     }
 <a name="l00224"></a>00224 <span class="comment"></span>
 <a name="l00225"></a>00225 <span class="comment">    /// \brief</span>

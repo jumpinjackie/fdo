@@ -41,7 +41,6 @@
   <LI><OBJECT type="text/sitemap"><param name="Name" value="Collection.h"><param name="Local" value="d8/da1/_collection_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="CommandException.h"><param name="Local" value="dd/d66/_command_exception_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="CommandType.h"><param name="Local" value="db/dd5/_command_type_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="Common.h"><param name="Local" value="db/d1f/_common_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="ComparisonCondition.h"><param name="Local" value="df/d23/_comparison_condition_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="ComparisonOperations.h"><param name="Local" value="da/d98/_comparison_operations_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="ComputedIdentifier.h"><param name="Local" value="d8/da7/_computed_identifier_8h.html"><param name="ImageNumber" value="11"></OBJECT>
@@ -81,6 +80,12 @@
   <LI><OBJECT type="text/sitemap"><param name="Name" value="ExpressionType.h"><param name="Local" value="dc/d15/_expression_type_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="Factory.h"><param name="Local" value="d7/de6/_factory_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="Fdo.h"><param name="Local" value="d8/d82/_fdo_8h.html"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoCommon.h"><param name="Local" value="dc/d75/_fdo_common_8h.html"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoGeometry.h"><param name="Local" value="d8/d28/_fdo_geometry_8h.html"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoMessage.h"><param name="Local" value="d9/d44/_fdo_message_8h.html"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSpatial.h"><param name="Local" value="dc/d45/_fdo_spatial_8h.html"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoStd.h"><param name="Local" value="d6/d27/_fdo_std_8h.html"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoTypes.h"><param name="Local" value="d3/d37/_fdo_types_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="FeatureAccessManager.h"><param name="Local" value="db/d0a/_feature_access_manager_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="FeatureClass.h"><param name="Local" value="dc/de0/_feature_class_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="FeatureClassCollection.h"><param name="Local" value="d1/df8/_feature_class_collection_8h.html"><param name="ImageNumber" value="11"></OBJECT>
@@ -104,7 +109,6 @@
   <LI><OBJECT type="text/sitemap"><param name="Name" value="GeometricCondition.h"><param name="Local" value="d4/d3c/_geometric_condition_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="GeometricPropertyDefinition.h"><param name="Local" value="dc/df8/_geometric_property_definition_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="GeometricType.h"><param name="Local" value="d1/d1e/_geometric_type_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="Geometry.h"><param name="Local" value="d1/d4e/_geometry_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="GeometryFactoryAbstract.h"><param name="Local" value="d8/d51/_geometry_factory_abstract_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="GeometryStd.h"><param name="Local" value="d7/dfb/_geometry_std_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="GeometryStreamFactory.h"><param name="Local" value="db/d87/_geometry_stream_factory_8h.html"><param name="ImageNumber" value="11"></OBJECT>
@@ -185,10 +189,10 @@
   <LI><OBJECT type="text/sitemap"><param name="Name" value="ILockedObjectReader.h"><param name="Local" value="d1/d9a/_i_locked_object_reader_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="ILockOwnersReader.h"><param name="Local" value="d4/da5/_i_lock_owners_reader_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="ILongTransactionCheckpointReader.h"><param name="Local" value="df/dfd/_i_long_transaction_checkpoint_reader_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="ILongTransactionConflictDirectiveEnumerator.h"><param name="Local" value="d6/d78/_i_long_transaction_conflict_directive_enumerator_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="ILongTransactionPrivilegeReader.h"><param name="Local" value="d4/dbc/_i_long_transaction_privilege_reader_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="ILongTransactionReader.h"><param name="Local" value="d9/d7f/_i_long_transaction_reader_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="ILongTransactionSetReader.h"><param name="Local" value="dc/d9a/_i_long_transaction_set_reader_8h.html"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="ILTConflictDirectiveEnumerator.h"><param name="Local" value="df/dbc/_i_l_t_conflict_directive_enumerator_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="IMeasureUnitReader.h"><param name="Local" value="d7/d1b/_i_measure_unit_reader_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="IMultiCurvePolygon.h"><param name="Local" value="d7/dd3/_i_multi_curve_polygon_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="IMultiCurveString.h"><param name="Local" value="d2/de6/_i_multi_curve_string_8h.html"><param name="ImageNumber" value="11"></OBJECT>
@@ -237,7 +241,6 @@
   <LI><OBJECT type="text/sitemap"><param name="Name" value="LongTransactionPrivileges.h"><param name="Local" value="d9/d33/_long_transaction_privileges_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="LongTransactionSetOperations.h"><param name="Local" value="dd/d87/_long_transaction_set_operations_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="MemoryStream.h"><param name="Local" value="db/de0/_memory_stream_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="Message.h"><param name="Local" value="db/db6/_message_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="NameCollectionHandler.h"><param name="Local" value="db/d5d/_name_collection_handler_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="NamedCollection.h"><param name="Local" value="df/d4a/_named_collection_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="NetworkClass.h"><param name="Local" value="da/d16/_network_class_8h.html"><param name="ImageNumber" value="11"></OBJECT>
@@ -300,7 +303,6 @@
   <LI><OBJECT type="text/sitemap"><param name="Name" value="Serializable.h"><param name="Local" value="dc/d9e/_serializable_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="SingleValue.h"><param name="Local" value="de/da7/_single_value_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="SkipElementHandler.h"><param name="Local" value="da/d7d/_skip_element_handler_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="Spatial.h"><param name="Local" value="d5/d42/_spatial_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="SpatialCondition.h"><param name="Local" value="da/daf/_spatial_condition_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="SpatialContextExtentType.h"><param name="Local" value="dc/d5e/_spatial_context_extent_type_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="SpatialContextFlags.h"><param name="Local" value="dd/d6e/_spatial_context_flags_8h.html"><param name="ImageNumber" value="11"></OBJECT>
@@ -310,7 +312,6 @@
   <LI><OBJECT type="text/sitemap"><param name="Name" value="SpatialContextWriter.h"><param name="Local" value="d1/dc8/_spatial_context_writer_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="SpatialOperations.h"><param name="Local" value="d1/d1f/_spatial_operations_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="Stack.h"><param name="Local" value="d0/d96/_stack_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="Common/Std.h"><param name="Local" value="d0/d5f/_common_2_std_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="Std.h"><param name="Local" value="d7/daa/_std_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="Stream.h"><param name="Local" value="d3/d99/_stream_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="StringCollection.h"><param name="Local" value="df/d00/_string_collection_8h.html"><param name="ImageNumber" value="11"></OBJECT>
@@ -324,7 +325,6 @@
   <LI><OBJECT type="text/sitemap"><param name="Name" value="Topology.h"><param name="Local" value="dd/d33/_topology_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="Transformer.h"><param name="Local" value="db/d6a/_transformer_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="TransformerXalan.h"><param name="Local" value="d1/d1f/_transformer_xalan_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="Types.h"><param name="Local" value="d0/db6/_types_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="UnaryExpression.h"><param name="Local" value="d6/ddc/_unary_expression_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="UnaryLogicalOperations.h"><param name="Local" value="d6/db1/_unary_logical_operations_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="UnaryLogicalOperator.h"><param name="Local" value="d5/de2/_unary_logical_operator_8h.html"><param name="ImageNumber" value="11"></OBJECT>

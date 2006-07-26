@@ -48,7 +48,7 @@
 <a name="l00019"></a>00019 <span class="comment">// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA</span>
 <a name="l00020"></a>00020 <span class="comment">//</span>
 <a name="l00021"></a>00021 
-<a name="l00022"></a>00022 <span class="preprocessor">#include &lt;<a class="code" href="../../db/d1f/_common_8h.html">Common.h</a>&gt;</span>
+<a name="l00022"></a>00022 <span class="preprocessor">#include &lt;<a class="code" href="../../dc/d75/_fdo_common_8h.html">FdoCommon.h</a>&gt;</span>
 <a name="l00023"></a>00023 <span class="comment"></span>
 <a name="l00024"></a>00024 <span class="comment">/// \cond DOXYGEN-IGNORE</span>
 <a name="l00025"></a>00025 <span class="comment"></span><span class="comment">// This class is not yet exposed to the API.</span>
@@ -58,14 +58,14 @@
 <a name="l00029"></a>00029 {
 <a name="l00030"></a>00030 <span class="keyword">public</span>:<span class="comment"></span>
 <a name="l00031"></a>00031 <span class="comment">    /// Creates a stream around the given buffer. </span>
-<a name="l00032"></a>00032 <span class="comment"></span>    <span class="keyword">static</span> FdoIoBufferStream* Create( <a class="code" href="../../d0/db6/_types_8h_5d3763a847e3e7232225944ba5655c97.html#5d3763a847e3e7232225944ba5655c97">FdoByte</a>* buffer, <a class="code" href="../../d0/db6/_types_8h_21901807068d8da057ad599a75bef5d4.html#21901807068d8da057ad599a75bef5d4">FdoSize</a> size );<span class="comment"></span>
+<a name="l00032"></a>00032 <span class="comment"></span>    <span class="keyword">static</span> FdoIoBufferStream* Create( <a class="code" href="../../d3/d37/_fdo_types_8h_5d3763a847e3e7232225944ba5655c97.html#5d3763a847e3e7232225944ba5655c97">FdoByte</a>* buffer, <a class="code" href="../../d3/d37/_fdo_types_8h_21901807068d8da057ad599a75bef5d4.html#21901807068d8da057ad599a75bef5d4">FdoSize</a> size );<span class="comment"></span>
 <a name="l00033"></a>00033 <span class="comment">    /// Creates a new buffer of the given size and wraps a stream around it. </span>
-<a name="l00034"></a>00034 <span class="comment"></span>    <span class="keyword">static</span> FdoIoBufferStream* Create( <a class="code" href="../../d0/db6/_types_8h_21901807068d8da057ad599a75bef5d4.html#21901807068d8da057ad599a75bef5d4">FdoSize</a> size );
+<a name="l00034"></a>00034 <span class="comment"></span>    <span class="keyword">static</span> FdoIoBufferStream* Create( <a class="code" href="../../d3/d37/_fdo_types_8h_21901807068d8da057ad599a75bef5d4.html#21901807068d8da057ad599a75bef5d4">FdoSize</a> size );
 <a name="l00035"></a>00035 <span class="comment"></span>
 <a name="l00036"></a>00036 <span class="comment">    /// FdoIoStream implementations</span>
-<a name="l00037"></a>00037 <span class="comment"></span>    <span class="keyword">virtual</span> <a class="code" href="../../d0/db6/_types_8h_21901807068d8da057ad599a75bef5d4.html#21901807068d8da057ad599a75bef5d4">FdoSize</a> <a class="code" href="../../d4/df4/class_fdo_io_stream_f673b8d2e20f5174a0d38671dd4b9f6d.html#f673b8d2e20f5174a0d38671dd4b9f6d">Read</a>( <a class="code" href="../../d0/db6/_types_8h_5d3763a847e3e7232225944ba5655c97.html#5d3763a847e3e7232225944ba5655c97">FdoByte</a>* buffer, <a class="code" href="../../d0/db6/_types_8h_21901807068d8da057ad599a75bef5d4.html#21901807068d8da057ad599a75bef5d4">FdoSize</a> count );
-<a name="l00038"></a>00038     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d4/df4/class_fdo_io_stream_b16b3c29aa5a80f131de091576eb78c2.html#b16b3c29aa5a80f131de091576eb78c2">Write</a>( <a class="code" href="../../d0/db6/_types_8h_5d3763a847e3e7232225944ba5655c97.html#5d3763a847e3e7232225944ba5655c97">FdoByte</a>* buffer, <a class="code" href="../../d0/db6/_types_8h_21901807068d8da057ad599a75bef5d4.html#21901807068d8da057ad599a75bef5d4">FdoSize</a> count );
-<a name="l00039"></a>00039     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d4/df4/class_fdo_io_stream_b16b3c29aa5a80f131de091576eb78c2.html#b16b3c29aa5a80f131de091576eb78c2">Write</a>( <a class="code" href="../../d4/df4/class_fdo_io_stream.html">FdoIoStream</a>* stream, <a class="code" href="../../d0/db6/_types_8h_21901807068d8da057ad599a75bef5d4.html#21901807068d8da057ad599a75bef5d4">FdoSize</a> count = 0 );
+<a name="l00037"></a>00037 <span class="comment"></span>    <span class="keyword">virtual</span> <a class="code" href="../../d3/d37/_fdo_types_8h_21901807068d8da057ad599a75bef5d4.html#21901807068d8da057ad599a75bef5d4">FdoSize</a> <a class="code" href="../../d4/df4/class_fdo_io_stream_f673b8d2e20f5174a0d38671dd4b9f6d.html#f673b8d2e20f5174a0d38671dd4b9f6d">Read</a>( <a class="code" href="../../d3/d37/_fdo_types_8h_5d3763a847e3e7232225944ba5655c97.html#5d3763a847e3e7232225944ba5655c97">FdoByte</a>* buffer, <a class="code" href="../../d3/d37/_fdo_types_8h_21901807068d8da057ad599a75bef5d4.html#21901807068d8da057ad599a75bef5d4">FdoSize</a> count );
+<a name="l00038"></a>00038     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d4/df4/class_fdo_io_stream_b16b3c29aa5a80f131de091576eb78c2.html#b16b3c29aa5a80f131de091576eb78c2">Write</a>( <a class="code" href="../../d3/d37/_fdo_types_8h_5d3763a847e3e7232225944ba5655c97.html#5d3763a847e3e7232225944ba5655c97">FdoByte</a>* buffer, <a class="code" href="../../d3/d37/_fdo_types_8h_21901807068d8da057ad599a75bef5d4.html#21901807068d8da057ad599a75bef5d4">FdoSize</a> count );
+<a name="l00039"></a>00039     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d4/df4/class_fdo_io_stream_b16b3c29aa5a80f131de091576eb78c2.html#b16b3c29aa5a80f131de091576eb78c2">Write</a>( <a class="code" href="../../d4/df4/class_fdo_io_stream.html">FdoIoStream</a>* stream, <a class="code" href="../../d3/d37/_fdo_types_8h_21901807068d8da057ad599a75bef5d4.html#21901807068d8da057ad599a75bef5d4">FdoSize</a> count = 0 );
 <a name="l00040"></a>00040     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d4/df4/class_fdo_io_stream_e85b30f3fbe53d6080a6b364b10a2eb0.html#e85b30f3fbe53d6080a6b364b10a2eb0">SetLength</a>( FdoInt64 length );
 <a name="l00041"></a>00041 
 <a name="l00042"></a>00042     <span class="keyword">virtual</span> FdoInt64 <a class="code" href="../../d4/df4/class_fdo_io_stream_5a965c11cf67a8608720516664de56de.html#5a965c11cf67a8608720516664de56de">GetLength</a>() {
@@ -81,22 +81,22 @@
 <a name="l00052"></a>00052     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="../../d4/df4/class_fdo_io_stream_3b6fd694d041e6b1f83a7a5e7dbe4513.html#3b6fd694d041e6b1f83a7a5e7dbe4513">Reset</a>();
 <a name="l00053"></a>00053 
 <a name="l00054"></a>00054 <span class="keyword">protected</span>:
-<a name="l00055"></a>00055     FdoIoBufferStream( <a class="code" href="../../d0/db6/_types_8h_5d3763a847e3e7232225944ba5655c97.html#5d3763a847e3e7232225944ba5655c97">FdoByte</a>* buffer, <a class="code" href="../../d0/db6/_types_8h_21901807068d8da057ad599a75bef5d4.html#21901807068d8da057ad599a75bef5d4">FdoSize</a> size );
-<a name="l00056"></a>00056     FdoIoBufferStream( <a class="code" href="../../d0/db6/_types_8h_21901807068d8da057ad599a75bef5d4.html#21901807068d8da057ad599a75bef5d4">FdoSize</a> size = 4096 );
+<a name="l00055"></a>00055     FdoIoBufferStream( <a class="code" href="../../d3/d37/_fdo_types_8h_5d3763a847e3e7232225944ba5655c97.html#5d3763a847e3e7232225944ba5655c97">FdoByte</a>* buffer, <a class="code" href="../../d3/d37/_fdo_types_8h_21901807068d8da057ad599a75bef5d4.html#21901807068d8da057ad599a75bef5d4">FdoSize</a> size );
+<a name="l00056"></a>00056     FdoIoBufferStream( <a class="code" href="../../d3/d37/_fdo_types_8h_21901807068d8da057ad599a75bef5d4.html#21901807068d8da057ad599a75bef5d4">FdoSize</a> size = 4096 );
 <a name="l00057"></a>00057     <span class="keyword">virtual</span> ~FdoIoBufferStream(<span class="keywordtype">void</span>);
 <a name="l00058"></a>00058 
 <a name="l00059"></a>00059 <span class="keyword">private</span>:<span class="comment"></span>
 <a name="l00060"></a>00060 <span class="comment">    /// the buffer.</span>
-<a name="l00061"></a>00061 <span class="comment"></span>    <a class="code" href="../../d0/db6/_types_8h_5d3763a847e3e7232225944ba5655c97.html#5d3763a847e3e7232225944ba5655c97">FdoByte</a>* mpBuffer;<span class="comment"></span>
+<a name="l00061"></a>00061 <span class="comment"></span>    <a class="code" href="../../d3/d37/_fdo_types_8h_5d3763a847e3e7232225944ba5655c97.html#5d3763a847e3e7232225944ba5655c97">FdoByte</a>* mpBuffer;<span class="comment"></span>
 <a name="l00062"></a>00062 <span class="comment">    /// true if the buffer was allocated by this stream.</span>
 <a name="l00063"></a>00063 <span class="comment">    /// false if the stream is attached to an existing buffer.</span>
-<a name="l00064"></a>00064 <span class="comment"></span>    <a class="code" href="../../d0/db6/_types_8h_467f74207096bcd703476c3c8e6f9d2d.html#467f74207096bcd703476c3c8e6f9d2d">FdoBoolean</a> mbMyBuffer;<span class="comment"></span>
+<a name="l00064"></a>00064 <span class="comment"></span>    <a class="code" href="../../d3/d37/_fdo_types_8h_467f74207096bcd703476c3c8e6f9d2d.html#467f74207096bcd703476c3c8e6f9d2d">FdoBoolean</a> mbMyBuffer;<span class="comment"></span>
 <a name="l00065"></a>00065 <span class="comment">    /// Total size of the buffer</span>
-<a name="l00066"></a>00066 <span class="comment"></span>    <a class="code" href="../../d0/db6/_types_8h_21901807068d8da057ad599a75bef5d4.html#21901807068d8da057ad599a75bef5d4">FdoSize</a> mSize;<span class="comment"></span>
+<a name="l00066"></a>00066 <span class="comment"></span>    <a class="code" href="../../d3/d37/_fdo_types_8h_21901807068d8da057ad599a75bef5d4.html#21901807068d8da057ad599a75bef5d4">FdoSize</a> mSize;<span class="comment"></span>
 <a name="l00067"></a>00067 <span class="comment">    /// Total length of the stream</span>
-<a name="l00068"></a>00068 <span class="comment"></span>    <a class="code" href="../../d0/db6/_types_8h_21901807068d8da057ad599a75bef5d4.html#21901807068d8da057ad599a75bef5d4">FdoSize</a> mLength;<span class="comment"></span>
+<a name="l00068"></a>00068 <span class="comment"></span>    <a class="code" href="../../d3/d37/_fdo_types_8h_21901807068d8da057ad599a75bef5d4.html#21901807068d8da057ad599a75bef5d4">FdoSize</a> mLength;<span class="comment"></span>
 <a name="l00069"></a>00069 <span class="comment">    /// Current stream position.</span>
-<a name="l00070"></a>00070 <span class="comment"></span>    <a class="code" href="../../d0/db6/_types_8h_21901807068d8da057ad599a75bef5d4.html#21901807068d8da057ad599a75bef5d4">FdoSize</a> mPos;
+<a name="l00070"></a>00070 <span class="comment"></span>    <a class="code" href="../../d3/d37/_fdo_types_8h_21901807068d8da057ad599a75bef5d4.html#21901807068d8da057ad599a75bef5d4">FdoSize</a> mPos;
 <a name="l00071"></a>00071 
 <a name="l00072"></a>00072 };
 <a name="l00073"></a>00073 

@@ -27,8 +27,8 @@
     <li><a href="../../files.html"><span>File&nbsp;List</span></a></li>
     <li><a href="../../globals.html"><span>File&nbsp;Members</span></a></li>
   </ul></div>
-<h1>Std.h</h1><a href="../../d7/daa/_std_8h.html">Go to the documentation of this file.</a><div class="fragment"><pre class="fragment"><a name="l00001"></a>00001 <span class="preprocessor">#ifndef _FDOSTD_H_</span>
-<a name="l00002"></a>00002 <span class="preprocessor"></span><span class="preprocessor">#define _FDOSTD_H_</span>
+<h1>Std.h</h1><a href="../../d7/daa/_std_8h.html">Go to the documentation of this file.</a><div class="fragment"><pre class="fragment"><a name="l00001"></a>00001 <span class="preprocessor">#ifndef _FDO_COMMONSTD_H_</span>
+<a name="l00002"></a>00002 <span class="preprocessor"></span><span class="preprocessor">#define _FDO_COMMONSTD_H_</span>
 <a name="l00003"></a>00003 <span class="preprocessor"></span><span class="comment">// </span>
 <a name="l00004"></a>00004 
 <a name="l00005"></a>00005 <span class="comment">//</span>
@@ -51,30 +51,34 @@
 <a name="l00022"></a>00022 <span class="preprocessor">#ifdef _WIN32</span>
 <a name="l00023"></a>00023 <span class="preprocessor"></span><span class="preprocessor">#pragma once</span>
 <a name="l00024"></a>00024 <span class="preprocessor"></span><span class="preprocessor">#endif</span>
-<a name="l00025"></a>00025 <span class="preprocessor"></span><span class="preprocessor">#include &lt;<a class="code" href="../../db/d1f/_common_8h.html">Common.h</a>&gt;</span>
-<a name="l00026"></a>00026 
-<a name="l00027"></a>00027 <span class="preprocessor">#ifdef _WIN32</span>
-<a name="l00028"></a>00028 <span class="preprocessor"></span>
-<a name="l00029"></a>00029 <span class="preprocessor">#ifdef EXP_FDO</span>
-<a name="l00030"></a>00030 <span class="preprocessor"></span><span class="preprocessor">#   define FDO_API __declspec(dllexport)</span>
-<a name="l00031"></a>00031 <span class="preprocessor"></span><span class="preprocessor">#else</span>
-<a name="l00032"></a>00032 <span class="preprocessor"></span><span class="preprocessor">#    define FDO_API __declspec(dllimport)</span>
-<a name="l00033"></a>00033 <span class="preprocessor"></span><span class="preprocessor">#endif</span>
-<a name="l00034"></a>00034 <span class="preprocessor"></span>
-<a name="l00035"></a>00035 <span class="preprocessor">#define FDO_DEPRECATED __declspec(deprecated)</span>
-<a name="l00036"></a>00036 <span class="preprocessor"></span>
-<a name="l00037"></a>00037 <span class="preprocessor">#else  // not _WIN32</span>
-<a name="l00038"></a>00038 <span class="preprocessor"></span>
-<a name="l00039"></a><a class="code" href="../../d7/daa/_std_8h_159e6d8cdf66ea5e6786ccd47550101f.html#159e6d8cdf66ea5e6786ccd47550101f">00039</a> <span class="preprocessor">#define FDO_API</span>
-<a name="l00040"></a><a class="code" href="../../d7/daa/_std_8h_582e4e8065fb21030682e861a5d59a1f.html#582e4e8065fb21030682e861a5d59a1f">00040</a> <span class="preprocessor"></span><span class="preprocessor">#define FDO_DEPRECATED</span>
-<a name="l00041"></a>00041 <span class="preprocessor"></span>
-<a name="l00042"></a>00042 <span class="preprocessor">#endif</span>
-<a name="l00043"></a>00043 <span class="preprocessor"></span>
-<a name="l00044"></a>00044 <span class="preprocessor">#include &lt;<a class="code" href="../../d8/da1/_collection_8h.html">Common/Collection.h</a>&gt;</span>
-<a name="l00045"></a>00045 <span class="preprocessor">#include &lt;<a class="code" href="../../df/d98/_exception_8h.html">Common/Exception.h</a>&gt;</span>
-<a name="l00046"></a>00046 <span class="preprocessor">#endif</span>
-<a name="l00047"></a>00047 <span class="preprocessor"></span>
-<a name="l00048"></a>00048 
+<a name="l00025"></a>00025 <span class="preprocessor"></span><span class="preprocessor">#include &lt;wchar.h&gt;</span>
+<a name="l00026"></a>00026 <span class="preprocessor">#include &lt;stdlib.h&gt;</span>
+<a name="l00027"></a>00027 <span class="preprocessor">#include &lt;<a class="code" href="../../d3/d37/_fdo_types_8h.html">Common/FdoTypes.h</a>&gt;</span>
+<a name="l00028"></a>00028 
+<a name="l00029"></a>00029 <span class="comment">// FDOCommon</span>
+<a name="l00030"></a>00030 <span class="preprocessor">#ifdef _WIN32</span>
+<a name="l00031"></a>00031 <span class="preprocessor"></span><span class="preprocessor">#ifdef EXP_FDO_COMMON</span>
+<a name="l00032"></a>00032 <span class="preprocessor"></span><span class="preprocessor">#    define FDO_API_COMMON __declspec(dllexport)</span>
+<a name="l00033"></a>00033 <span class="preprocessor"></span><span class="preprocessor">#else</span>
+<a name="l00034"></a>00034 <span class="preprocessor"></span><span class="preprocessor">#    define FDO_API_COMMON __declspec(dllimport)</span>
+<a name="l00035"></a>00035 <span class="preprocessor"></span><span class="preprocessor">#endif</span>
+<a name="l00036"></a>00036 <span class="preprocessor"></span><span class="preprocessor">#else</span>
+<a name="l00037"></a><a class="code" href="../../d7/daa/_std_8h_aa092aaaeadccf793bf4f89d882caa89.html#aa092aaaeadccf793bf4f89d882caa89">00037</a> <span class="preprocessor"></span><span class="preprocessor">#define FDO_API_COMMON</span>
+<a name="l00038"></a>00038 <span class="preprocessor"></span><span class="preprocessor">#endif</span>
+<a name="l00039"></a>00039 <span class="preprocessor"></span>
+<a name="l00040"></a>00040 <span class="comment">// FdoGeometry</span>
+<a name="l00041"></a>00041 <span class="preprocessor">#ifdef _WIN32</span>
+<a name="l00042"></a>00042 <span class="preprocessor"></span><span class="preprocessor">#ifdef EXP_FDO_GEOM</span>
+<a name="l00043"></a>00043 <span class="preprocessor"></span><span class="preprocessor">#    define FDO_GEOM_API __declspec(dllexport)</span>
+<a name="l00044"></a>00044 <span class="preprocessor"></span><span class="preprocessor">#else</span>
+<a name="l00045"></a>00045 <span class="preprocessor"></span><span class="preprocessor">#    define FDO_GEOM_API __declspec(dllimport)</span>
+<a name="l00046"></a>00046 <span class="preprocessor"></span><span class="preprocessor">#endif</span>
+<a name="l00047"></a>00047 <span class="preprocessor"></span><span class="preprocessor">#else</span>
+<a name="l00048"></a><a class="code" href="../../d7/daa/_std_8h_0725cd808022cdfd206d6f8bd0ecef8d.html#0725cd808022cdfd206d6f8bd0ecef8d">00048</a> <span class="preprocessor"></span><span class="preprocessor">#define FDO_GEOM_API</span>
+<a name="l00049"></a>00049 <span class="preprocessor"></span><span class="preprocessor">#endif</span>
+<a name="l00050"></a>00050 <span class="preprocessor"></span><span class="preprocessor">#endif</span>
+<a name="l00051"></a>00051 <span class="preprocessor"></span>
+<a name="l00052"></a>00052 
 </pre></div><!-- footer.html -->
 		<hr>
 		<table width="100%"  border="0">
