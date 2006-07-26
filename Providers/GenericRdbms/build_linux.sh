@@ -61,7 +61,8 @@ do
         TYPEBUILD=release
     else
         echo "$arg Invalid parameter $1"
-	exit 1
+	exit 1   echo Creating RDBMS Providers HTML documentation
+
     fi
     shift
     ;;
@@ -126,16 +127,17 @@ if test "$TYPEACTION" == uninstall ; then
 fi
 
 if test "$BUILDDOCS" == yes ; then
-   echo Creating Rdbms providers html documentation
-   rm -rf ../Docs/HTML/Providers/MySQL
-   rm -rf ../Docs/HTML/Providers/ODBC
-   mkdir -p ../Docs/HTML/Providers/MySQL
-   mkdir -p ../Docs/HTML/Providers/ODBC
+   rm -rf Docs/HTML/MySQL
+   rm -rf Docs/HTML/ODBC
+   mkdir -p Docs/HTML/MySQL
+   mkdir -p Docs/HTML/ODBC
 
+   echo Creating MySQL Provider HTML documentation
    pushd Docs/doc_src >& /dev/null
    doxygen Doxyfile_MySQL >& /dev/null
    popd >& /dev/null
    
+   echo Creating ODBC Provider HTML documentation
    pushd Docs/doc_src >& /dev/null
    doxygen Doxyfile_ODBC >& /dev/null
    popd >& /dev/null
@@ -145,11 +147,11 @@ if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
    rm -rf "/usr/local/fdo-3.2.0/docs/HTML/Providers/MySQL"
    rm -rf "/usr/local/fdo-3.2.0/docs/HTML/Providers/ODBC"
    mkdir -p "/usr/local/fdo-3.2.0/docs/HTML/Providers"
-   if test -e "../Docs/HTML/Providers/MySQL"; then
-      cp --force --recursive "../Docs/HTML/Providers/MySQL" "/usr/local/fdo-3.2.0/docs/HTML/Providers"
+   if test -e "Docs/HTML/MySQL"; then
+      cp --force --recursive "Docs/HTML/MySQL" "/usr/local/fdo-3.2.0/docs/HTML/Providers"
    fi
-   if test -e "../Docs/HTML/Providers/ODBC"; then
-      cp --force --recursive "../Docs/HTML/Providers/ODBC" "/usr/local/fdo-3.2.0/docs/HTML/Providers"
+   if test -e "Docs/HTML/ODBC"; then
+      cp --force --recursive "Docs/HTML/ODBC" "/usr/local/fdo-3.2.0/docs/HTML/Providers"
    fi
 fi
 
