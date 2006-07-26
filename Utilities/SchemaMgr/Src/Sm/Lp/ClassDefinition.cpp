@@ -1381,6 +1381,9 @@ void FdoSmLpClassBase::SetDbObjectName( FdoStringP objectName )
         if ( objectName.GetLength() > 0 ) {
             // Table not foreign but name is specified by overrides.
             mDbObjectName =  objectName;
+
+            // Add to fetch candidates list, so these tables are fetched efficiently.
+            pPhysical->GetOwner()->AddCandDbObject( objectName );
         }
         else {
             // No overrides so generate a table name for the new class. The table name is the class name
@@ -1635,7 +1638,7 @@ void FdoSmLpClassBase::FinalizeIdProps()
 
 		// Add each id property to the class table's primary key.
 
-		if ( mPhDbObject ) {
+		if ( mPhDbObject && (GetElementState() == FdoSchemaElementState_Added) ) {
 			CreatePkey();
 		}
     }
@@ -3010,7 +3013,7 @@ FdoSmLpClassDefinition::FdoSmLpClassDefinition(FdoSmPhClassReaderP classReader, 
 				gpd->SetSpatialContextAssociation(L"Default");
                 FdoSmLpPropertyP newProp = schema->CreateGeometricProperty(
                     gpd, columnX->GetName(), columnY->GetName(), columnZ == NULL ? L"" : columnZ->GetName(), true, this );
-			        GetProperties()->Add( newProp );
+                GetProperties()->Add( newProp );
             }
         }
     }

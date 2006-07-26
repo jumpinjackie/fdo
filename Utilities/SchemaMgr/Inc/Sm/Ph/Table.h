@@ -258,10 +258,16 @@ protected:
     virtual bool ModifyColumn( FdoSmPhColumnP column ) = 0;
     virtual bool DeleteColumn( FdoSmPhColumnP column ) = 0;
 
+    void LoadPkeys( FdoPtr<FdoSmPhReader> pkeyRdr );
+
+    virtual void AddPkeyColumnError(FdoStringP columnName);
+    virtual void AddIndexColumnError(FdoStringP columnName);
+
+    FdoSmPhColumnsP mPkeyColumns;
+
 private:
     /// Load Primary Key if not yet loaded
     void LoadPkeys();
-    void LoadPkeys( FdoPtr<FdoSmPhReader> pkeyRdr );
     /// Load Foreign Keys if not yet loaded
     void LoadFkeys();
     void LoadFkeys( FdoPtr<FdoSmPhReader> fkeyRdr );
@@ -291,14 +297,10 @@ private:
     // Create new primary key group reader
     virtual FdoPtr<FdoSmPhTableComponentReader> NewTablePkeyReader( FdoPtr<FdoSmPhRdPkeyReader> rdr );
 
-    void AddPkeyColumnError(FdoStringP columnName);
     void AddFkeyColumnError(FdoStringP columnName);
 	void AddUkeyColumnError(FdoStringP columnName);
     void AddCkeyColumnError(FdoStringP columnName);
-    void AddIndexColumnError(FdoStringP columnName);
     void AddDeleteNotEmptyError(void);
-
-    FdoSmPhColumnsP mPkeyColumns;
 
 	FdoSmPhBatchColumnsP		mUkeysCollection;
 	FdoSmPhCheckConstraintsP	mCkeysCollection;

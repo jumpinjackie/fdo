@@ -38,6 +38,9 @@ public:
 
     /// Post modifications to the current connection
     virtual void Commit( bool fromParent = false, bool isBeforeParent = false );
+    // Event that notifies this object that a commit has taken place.
+    // Does nothing by default.
+    virtual void OnAfterCommit();
 
     /// Get the state at the start of the current commit operation.
     /// returns FdoSchemaElementState_Unchange if not currently in a commit

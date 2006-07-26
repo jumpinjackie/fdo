@@ -5,6 +5,7 @@ noinst_LTLIBRARIES = libSmPhMt.la
 libSmPhMt_la_SOURCES = \
   AssociationReader.cpp \
   ClassReader.cpp \
+  ClassTableJoin.cpp \
   PropertyReader.cpp \
   SchemaReader.cpp \
   SpatialContextGeomReader.cpp \

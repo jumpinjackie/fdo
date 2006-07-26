@@ -211,6 +211,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\Sm\Ph\ColumnList.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Src\Sm\Ph\ColumnList.cpp"
 				>
 			</File>
@@ -268,6 +272,10 @@
 			</File>
 			<File
 				RelativePath=".\Src\Sm\Ph\LockTypes.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\Sm\Ph\MergeReader.cpp"
 				>
 			</File>
 			<File
@@ -379,7 +387,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\Sm\Ph\TableComponentReader.cpp"
+				RelativePath=".\Src\Sm\Ph\TableComponentReader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\Sm\Ph\TableMergeReader.cpp"
 				>
 			</File>
 			<File
@@ -450,6 +462,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\Sm\Ph\Rd\DbObjectBinds.cpp"
+					>
+				</File>
+				<File
 					RelativePath="Src\Sm\Ph\Rd\DbObjectReader.cpp"
 					>
 				</File>
@@ -476,6 +492,10 @@
 							ObjectFile="$(IntDir)/$(InputName)1.obj"
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\src\Sm\Ph\Rd\Join.cpp"
+					>
 				</File>
 				<File
 					RelativePath="Src\Sm\Ph\Rd\OwnerReader.cpp"
@@ -611,6 +631,10 @@
 						/>
 					</FileConfiguration>
 				</File>
+				<File
+					RelativePath=".\src\Sm\Ph\Rd\TableJoin.cpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Config"
@@ -718,6 +742,10 @@
 							ObjectFile="$(IntDir)/$(InputName)3.obj"
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\src\Sm\Ph\Mt\ClassTableJoin.cpp"
+					>
 				</File>
 				<File
 					RelativePath="Src\Sm\Ph\Mt\PropertyReader.cpp"
@@ -1015,6 +1043,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\inc\Sm\Ph\ColumnList.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Inc\Sm\Ph\ColumnList.h"
 				>
 			</File>
@@ -1135,6 +1167,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\inc\Sm\Ph\MergeReader.h"
+				>
+			</File>
+			<File
 				RelativePath="Inc\Sm\Ph\Mgr.h"
 				>
 			</File>
@@ -1247,6 +1283,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\inc\Sm\Ph\TableMergeReader.h"
+				>
+			</File>
+			<File
 				RelativePath="Inc\Sm\Ph\TempObject.h"
 				>
 			</File>
@@ -1282,6 +1322,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\inc\Sm\Ph\Rd\DbObjectBinds.h"
+					>
+				</File>
+				<File
 					RelativePath="Inc\Sm\Ph\Rd\DbObjectReader.h"
 					>
 				</File>
@@ -1291,6 +1335,10 @@
 				</File>
 				<File
 					RelativePath="Inc\Sm\Ph\Rd\IndexReader.h"
+					>
+				</File>
+				<File
+					RelativePath=".\inc\Sm\Ph\Rd\Join.h"
 					>
 				</File>
 				<File
@@ -1325,6 +1373,10 @@
 					RelativePath=".\Inc\Sm\Ph\Rd\SpatialContextReader.h"
 					>
 				</File>
+				<File
+					RelativePath=".\inc\Sm\Ph\Rd\TableJoin.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Config"
@@ -1351,6 +1403,10 @@
 				</File>
 				<File
 					RelativePath="Inc\Sm\Ph\Mt\ClassReader.h"
+					>
+				</File>
+				<File
+					RelativePath=".\inc\Sm\Ph\Mt\ClassTableJoin.h"
 					>
 				</File>
 				<File

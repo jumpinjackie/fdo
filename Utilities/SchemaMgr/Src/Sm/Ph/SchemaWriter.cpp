@@ -153,7 +153,7 @@ void FdoSmPhSchemaWriter::SetIndexStorage(FdoStringP sValue)
         throw FdoSchemaException::Create(
             FdoSmError::NLSGetMessage(
 			    FDO_NLSID(FDOSM_364),
-			    L"F_SCHEMAOPTIONS"
+			    L"f_schemaoptions"
             )
 		);
 }
@@ -167,7 +167,7 @@ void FdoSmPhSchemaWriter::SetTextStorage(FdoStringP sValue)
         throw FdoSchemaException::Create(
             FdoSmError::NLSGetMessage(
 			    FDO_NLSID(FDOSM_364),
-			    L"F_SCHEMAOPTIONS"
+			    L"f_schemaoptions"
             )
 		);
 }
@@ -181,7 +181,7 @@ void FdoSmPhSchemaWriter::SetTextInRow(FdoStringP sValue)
         throw FdoSchemaException::Create(
             FdoSmError::NLSGetMessage(
 			    FDO_NLSID(FDOSM_364),
-			    L"F_SCHEMAOPTIONS"
+			    L"f_schemaoptions"
             )
 		);
 }
@@ -195,7 +195,7 @@ void FdoSmPhSchemaWriter::SetTableStorageEngine(FdoStringP sValue)
         throw FdoSchemaException::Create(
             FdoSmError::NLSGetMessage(
 			    FDO_NLSID(FDOSM_364),
-			    L"F_SCHEMAOPTIONS"
+			    L"f_schemaoptions"
             )
 		);
 }

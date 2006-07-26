@@ -67,7 +67,6 @@ static const FdoStringP LOCK_CORE_DESCRIPTION   = L"description";
 static const FdoStringP LOCK_CORE_LOCKID        = L"lockid";
 static const FdoStringP LOCK_CORE_USERNAME      = L"username";
 
-//   -> Table F_LOCKID_IN_TABLE:
 static const FdoStringP LOCK_USED_DATASTORENAME = L"datastorename";
 static const FdoStringP LOCK_USED_LOCKID        = L"lockid";
 static const FdoStringP LOCK_USED_TABLENAME     = L"tablename";
@@ -546,6 +545,9 @@ public:
 
     /// Clear all physical element caches.
     virtual void Clear();
+
+    // Passes AfterCommit event on to databases.
+    virtual void OnAfterCommit();
 
     /// Different schema element types that can have Schema Attribute 
     /// Dictionaries. These define the different values found in the 

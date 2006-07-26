@@ -15,7 +15,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
  */
-
+ 
 #include "stdafx.h"
 #include <Sm/Ph/TableComponentReader.h>
 #include <Sm/Ph/Mgr.h>
@@ -57,4 +57,27 @@ FdoSmPhTableIndexReader::~FdoSmPhTableIndexReader(void)
 FdoSmPhIndexType FdoSmPhTableIndexReader::GetIndexType()
 {
     return mIndexReader->GetIndexType();
+}
+
+FdoSmPhTableColumnReader::FdoSmPhTableColumnReader(
+    FdoStringP groupName, 
+    FdoPtr<FdoSmPhRdColumnReader> reader
+) :
+    FdoSmPhTableComponentReader( groupName, L"", L"table_name", reader->SmartCast<FdoSmPhReader>() ),
+    mColumnReader(reader)
+{
+}
+
+FdoSmPhTableColumnReader::~FdoSmPhTableColumnReader(void)
+{
+}
+
+FdoSmPhColType FdoSmPhTableColumnReader::GetType()
+{
+    return mColumnReader->GetType();
+}
+
+FdoPtr<FdoSmPhRdColumnReader> FdoSmPhTableColumnReader::GetColumnReader()
+{
+    return mColumnReader;
 }

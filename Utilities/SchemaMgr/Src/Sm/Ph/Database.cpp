@@ -114,6 +114,16 @@ void FdoSmPhDatabase::DiscardOwner( FdoSmPhOwner* owner )
         mOwners->Remove( owner );
 }
 
+void FdoSmPhDatabase::OnAfterCommit()
+{
+    FdoInt32 idx;
+
+    if ( mOwners ) {
+        for ( idx = 0; idx < mOwners->GetCount(); idx++ )
+            mOwners->GetItem(idx)->OnAfterCommit();
+    }
+}
+
 FdoSchemaExceptionP FdoSmPhDatabase::Errors2Exception(FdoSchemaException* pFirstException ) const
 {
 	// Tack on errors for this element

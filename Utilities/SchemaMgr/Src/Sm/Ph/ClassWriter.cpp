@@ -27,7 +27,7 @@ FdoSmPhClassWriter::FdoSmPhClassWriter(FdoSmPhMgrP mgr) :
 	FdoSmPhWriter( MakeWriter(mgr) )
 {
 	// Determine which table/field names to use, depending on if F_SCHEMAOPTIONS exists:
-	mbSchemaOptionsTableDefined = (mgr->FindDbObject(mgr->GetDcDbObjectName(L"F_SCHEMAOPTIONS")) != NULL);
+	mbSchemaOptionsTableDefined = (mgr->FindDbObject(mgr->GetDcDbObjectName(L"f_schemaoptions")) != NULL);
 	if (mbSchemaOptionsTableDefined)
 		mpClassSOWriter = new FdoSmPhClassSOWriter(mgr);
 }

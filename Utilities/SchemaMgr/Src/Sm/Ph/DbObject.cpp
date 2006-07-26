@@ -24,6 +24,7 @@
 #include <Sm/Ph/Rd/QueryReader.h>
 #include <Sm/Ph/Rd/ColumnReader.h>
 #include <Sm/Ph/DependencyReader.h>
+#include <Sm/Ph/TableComponentReader.h>
 
 
 FdoSmPhDbObject::FdoSmPhDbObject(
@@ -468,6 +469,22 @@ void FdoSmPhDbObject::RemoveNewColumn(FdoStringP columnName)
 }
 
 */
+
+void FdoSmPhDbObject::CacheColumns( FdoSmPhRdColumnReaderP rdr )
+{
+    // Do nothing if check constraints already loaded
+	if ( !mColumns ) {
+		mColumns = new FdoSmPhColumnCollection();
+
+        FdoSmPhTableColumnReaderP groupReader = new FdoSmPhTableColumnReader(
+            GetName(),
+            rdr
+        );
+
+        LoadColumns( groupReader );
+    }
+}
+
 FdoSchemaExceptionP FdoSmPhDbObject::Errors2Exception(FdoSchemaException* pFirstException ) const
 {
 	// Need to finalize table to discover all errors.
@@ -607,12 +624,22 @@ void FdoSmPhDbObject::LoadColumns()
 
             // Read each column from the database and add it to this database object.
             if ( colRdr ) {
-                while ( colRdr->ReadNext() ) {
-  		            FdoSmPhColumnP newColumn = NewColumn( colRdr );
-                    mColumns->Add( newColumn );
-                }
+                FdoSmPhTableColumnReaderP groupReader = new FdoSmPhTableColumnReader(
+                    GetName(),
+                    colRdr
+                );
+
+                LoadColumns( groupReader );
             }
         }
+    }
+}
+
+void FdoSmPhDbObject::LoadColumns( FdoPtr<FdoSmPhTableColumnReader> colRdr )
+{
+    while ( colRdr->ReadNext() ) {
+        FdoSmPhColumnP newColumn = NewColumn( colRdr->GetColumnReader() );
+        mColumns->Add( newColumn );
     }
 }
 

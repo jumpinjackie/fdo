@@ -22,6 +22,9 @@
 #pragma once
 #endif
 
+#include <Sm/Ph/Mt/ClassTableJoin.h>
+#include <Sm/Ph/Rd/DbObjectReader.h>
+#include <Sm/Ph/Rd/ConstraintReader.h>
 #include <Sm/Ph/Rd/QueryReader.h>
 
 // Retrieves all classes for a given Feature schema. 
@@ -46,6 +49,13 @@ public:
 protected:
     //Unused constructor needed only to build on Linux
     FdoSmPhMtClassReader() {}
+
+    // Bulk pre-fetches physical objects for the given feature schema.
+    // Helps DescribeSchema performance.
+    void CachePhysical( 
+        FdoStringP schemaName,      // get objects for this feature schema
+        FdoSmPhMgrP mgr             // Physical Schema Manager
+    );
 
 private:
     /// Helper for creating inner query reader

@@ -15,14 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- * 
- * Revision Control Modification History
  *
- *         $Id: //providers_reliant/SchemaMgr/inc/Sm/Ph/TableComponentReader.h#1 $
- *     $Author: br $
- *   $DateTime: 2006/05/09 17:53:47 $
- *     $Change: 12802 $
- * 
  */
 
 #ifdef _WIN32
@@ -31,6 +24,7 @@
 
 #include <Sm/Ph/GroupReader.h>
 #include <Sm/Ph/Rd/IndexReader.h>
+#include <Sm/Ph/Rd/ColumnReader.h>
 
 class FdoSmPhTableComponentReader : public FdoSmPhGroupReader
 {
@@ -107,6 +101,43 @@ private:
 };
 
 typedef FdoPtr<FdoSmPhTableIndexReader> FdoSmPhTableIndexReaderP;
+
+class FdoSmPhTableColumnReader : public FdoSmPhTableComponentReader
+{
+public:
+    /// Attaches to a query reader. 
+    /// Call ReadNext() to read each row.
+	//
+    /// Parameters:
+    /// 	groupName: the name of the group of rows to retrieve.
+    /// 		only rows whose ordering columns equal this value 
+    /// 		will be retrieved. Must be a concatenation of the 
+    /// 		of the ordering column values for the rows to retrieve.
+    /// 	pReader: the reader to attach to. The reader must return
+    /// 		rows in ascending order by group name. Note that if this
+    /// 		reader is currently positioned after the group to retrieve
+    /// 		then this reader returns no rows.
+	FdoSmPhTableColumnReader(
+        FdoStringP groupFieldName, 
+        FdoPtr<FdoSmPhRdColumnReader> reader
+    );
+
+	virtual ~FdoSmPhTableColumnReader(void);
+
+    /// Get the type of the current column
+    virtual FdoSmPhColType GetType();
+
+    FdoPtr<FdoSmPhRdColumnReader> GetColumnReader();
+
+protected:
+    /// Unused constructor needed only to build on Linux
+    FdoSmPhTableColumnReader() {}
+
+private:
+	FdoPtr<FdoSmPhRdColumnReader> mColumnReader;
+};
+
+typedef FdoPtr<FdoSmPhTableColumnReader> FdoSmPhTableColumnReaderP;
 
 #endif
 

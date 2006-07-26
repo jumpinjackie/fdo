@@ -91,6 +91,9 @@ public:
     /// 	pFirstException: a chain of exceptions.
 	virtual FdoSchemaExceptionP Errors2Exception( FdoSchemaException* pFirstException = NULL ) const;
 
+    // Passes AfterCommit event on to owners.
+    virtual void OnAfterCommit();
+
     /// Serialize the table to an XML file.
     /// Mainly for unit testing.
 	virtual void XMLSerialize( FILE* xmlFp, int ref ) const;

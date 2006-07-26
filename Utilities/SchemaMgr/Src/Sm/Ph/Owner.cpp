@@ -22,12 +22,14 @@
 #include <Sm/Error.h>
 #include <Sm/Ph/Mgr.h>
 #include <Sm/Ph/Rd/QueryReader.h>
+#include <Sm/Ph/Rd/ColumnReader.h>
 #include <Sm/Ph/Rd/DbObjectReader.h>
 #include <Sm/Ph/Rd/CoordSysReader.h>
 #include <Sm/Ph/Rd/ConstraintReader.h>
 #include <Sm/Ph/Rd/FkeyReader.h>
 #include <Sm/Ph/Rd/IndexReader.h>
 #include <Sm/Ph/Rd/PkeyReader.h>
+#include <Sm/Ph/Rd/TableJoin.h>
 #include <Sm/Ph/OptionsReader.h>
 #include <Sm/Ph/SchemaReader.h>
 
@@ -54,7 +56,27 @@ FdoSmPhOwner::FdoSmPhOwner(
     // is retrieved.
     mSchemaInfoLoaded = false;
 	SetIsSystem(false);
+
+    mNotFoundObjects = FdoDictionary::Create();
+
     mReservedDbObjectNames = FdoStringCollection::Create();
+
+    // Add commonly accessed MetaSchema tables to fetch candidates list. This
+    // causes them to be fetched in one reader.
+    mCandDbObjects = FdoDictionary::Create();
+    AddCandDbObject( GetManager()->GetDcDbObjectName(L"f_associationdefinition") );
+    AddCandDbObject( GetManager()->GetDcDbObjectName(L"f_attributedefinition") );
+    AddCandDbObject( GetManager()->GetDcDbObjectName(L"f_attributedependencies") );
+    AddCandDbObject( GetManager()->GetDcDbObjectName(L"f_classdefinition") );
+    AddCandDbObject( GetManager()->GetDcDbObjectName(L"f_dbopen") );
+    AddCandDbObject( GetManager()->GetDcDbObjectName(L"f_sad") );
+    AddCandDbObject( GetManager()->GetDcDbObjectName(L"f_lockname") );
+    AddCandDbObject( GetManager()->GetDcDbObjectName(L"f_options") );
+    AddCandDbObject( GetManager()->GetDcDbObjectName(L"f_schemainfo") );
+    AddCandDbObject( GetManager()->GetDcDbObjectName(L"f_schemaoptions") );
+    AddCandDbObject( GetManager()->GetDcDbObjectName(L"f_spatialcontext") );
+    AddCandDbObject( GetManager()->GetDcDbObjectName(L"f_spatialcontextgeom") );
+    AddCandDbObject( GetManager()->GetDcDbObjectName(L"f_spatialcontextgroup") );
 }
 
 FdoSmPhOwner::~FdoSmPhOwner(void)
@@ -166,14 +188,33 @@ FdoSmPhDbObjectP FdoSmPhOwner::FindDbObject(FdoStringP dbObject)
     // Check cache for database object
     FdoSmPhDbObjectP pDbObject = GetDbObjects()->FindItem(dbObject);
 
-    if ( !pDbObject ) {
-        // Not in cache so read it in.
-        FdoSmPhRdDbObjectReaderP reader = CreateDbObjectReader(dbObject);
-
-        if ( reader->ReadNext() )
-            pDbObject = CacheDbObject( reader );
+    if ( (!pDbObject) && (dbObject != L"")) {
+        // Not in cache. If it is in the fetch candidate list then fetch
+        // it along with some other candidates. Some other candidates
+        // are selected to help performance since these will likely be
+        // asked for later.
+        pDbObject = CacheCandDbObjects( dbObject );
     }
 
+    if ( !pDbObject ) {
+        // Not a candidate either. Check if previously fetched but not found.
+        if ( mNotFoundObjects->IndexOf( dbObject ) >= 0 ) 
+            return pDbObject;
+
+        // Not in cache so read it in.
+        FdoSmPhRdDbObjectReaderP reader = CreateDbObjectReader(dbObject);
+   
+        if ( reader->ReadNext() )
+            pDbObject = CacheDbObject( reader );
+
+        if ( (!pDbObject) && (dbObject != L"")) {
+            // Not in RDBMS so add to not found list (avoids multiple RDBMS fetches when this
+            // object is asked for repeatedly).
+            FdoDictionaryElementP elem = FdoDictionaryElement::Create( dbObject, L"" );
+            mNotFoundObjects->Add( elem );
+        }
+    }
+   
     return(pDbObject);
 }
 
@@ -245,6 +286,26 @@ FdoStringP FdoSmPhOwner::UniqueDbObjectName( FdoStringP objectName )
 	return(outName);
 }
 
+FdoPtr<FdoSmPhRdDbObjectReader> FdoSmPhOwner::CreateDbObjectReader( FdoStringsP objectNames ) const
+{
+    return (FdoSmPhRdDbObjectReader*) NULL;
+}
+ 
+FdoPtr<FdoSmPhRdDbObjectReader> FdoSmPhOwner::CreateDbObjectReader( FdoSmPhRdTableJoinP join ) const
+{
+    return (FdoSmPhRdDbObjectReader*) NULL;
+}
+
+FdoPtr<FdoSmPhRdConstraintReader> FdoSmPhOwner::CreateConstraintReader( FdoStringsP ownerNames, FdoStringP constraintType ) const
+{
+    return (FdoSmPhRdConstraintReader*) NULL;
+}
+
+FdoPtr<FdoSmPhRdConstraintReader> FdoSmPhOwner::CreateConstraintReader( FdoSmPhRdTableJoinP join, FdoStringP constraintType ) const
+{
+    return (FdoSmPhRdConstraintReader*) NULL;
+}
+
 FdoPtr<FdoSmPhRdCoordSysReader> FdoSmPhOwner::CreateCoordSysReader( FdoStringP csysName) const
 {
     return new FdoSmPhRdCoordSysReader();
@@ -263,6 +324,21 @@ FdoPtr<FdoSmPhRdIndexReader> FdoSmPhOwner::CreateIndexReader() const
 FdoPtr<FdoSmPhRdPkeyReader> FdoSmPhOwner::CreatePkeyReader() const
 {
     return (FdoSmPhRdPkeyReader*) NULL;
+}
+
+FdoPtr<FdoSmPhRdColumnReader> FdoSmPhOwner::CreateColumnReader() const
+{
+    return (FdoSmPhRdColumnReader*) NULL;
+}
+
+FdoPtr<FdoSmPhRdColumnReader> FdoSmPhOwner::CreateColumnReader( FdoStringsP objectNames ) const
+{
+    return (FdoSmPhRdColumnReader*) NULL;
+}
+
+FdoPtr<FdoSmPhRdColumnReader> FdoSmPhOwner::CreateColumnReader( FdoSmPhRdTableJoinP join ) const
+{
+    return (FdoSmPhRdColumnReader*) NULL;
 }
 
 FdoSmPhTableP FdoSmPhOwner::CreateTable(
@@ -322,7 +398,11 @@ FdoSmPhDbObjectsP FdoSmPhOwner::CacheDbObjects( bool cacheComponents )
     if ( !mDbObjectsCached ) {
         mDbObjectsCached = true;
 
+        // No need for fetch candidates since this function caches all object for this owner.
+        mCandDbObjects->Clear();
+
         FdoSmPhRdDbObjectReaderP objReader;
+        FdoSmPhRdColumnReaderP columnReader;
         FdoSmPhRdConstraintReaderP ukeyReader;
         FdoSmPhRdConstraintReaderP ckeyReader;
         FdoSmPhRdFkeyReaderP fkeyReader;
@@ -339,6 +419,7 @@ FdoSmPhDbObjectsP FdoSmPhOwner::CacheDbObjects( bool cacheComponents )
             //
             // Doing a single query per owner for each component is more efficient than
             // a query per dbObject.
+            columnReader = CreateColumnReader();
             ukeyReader = CreateConstraintReader( L"", L"U" );
             ckeyReader = CreateConstraintReader( L"", L"C" );
             fkeyReader = CreateFkeyReader();
@@ -351,6 +432,10 @@ FdoSmPhDbObjectsP FdoSmPhOwner::CacheDbObjects( bool cacheComponents )
             FdoSmPhDbObjectP dbObject = CacheDbObject( objReader );
 
             if ( dbObject && cacheComponents ) {
+
+                if ( columnReader ) 
+                    dbObject->CacheColumns( columnReader );
+
                 // Load the components into the db object.
                 FdoSmPhTableP table = dbObject->SmartCast<FdoSmPhTable>();
 
@@ -387,9 +472,13 @@ FdoSmPhDbObjectP FdoSmPhOwner::CacheDbObject(
     if ( !pDbObject ) {
         pDbObject = NewDbObject( objName, FdoSchemaElementState_Unchanged, reader);
 
-        if ( pDbObject ) 
+        if ( pDbObject ) {
             // Database object found, add it the the cache.
             GetDbObjects()->Add( pDbObject );
+
+            // Now that it's cached, it no longer needs to be a fetch candidate
+            RemoveCandDbObject( pDbObject->GetName() );
+        }
     }
 
 
@@ -425,6 +514,30 @@ void FdoSmPhOwner::DiscardDbObject( FdoSmPhDbObject* dbObject )
         mDbObjects->Remove( dbObject );
 }
 
+void FdoSmPhOwner::AddCandDbObject( FdoStringP objectName )
+{
+    // No need for fetch candidates when all objects for owner are cached. 
+    // Bulk fetching candidates is pointless when fetch size is 1.
+    if ( (!mDbObjectsCached) && (GetCandFetchSize() > 1) ) {
+        if ( !(GetDbObjects()->FindItem(objectName)) ) {
+            FdoDictionaryElementP elem = mCandDbObjects->FindItem( objectName );
+            
+            if ( !elem ) {
+                elem = FdoDictionaryElement::Create( objectName, L"" );
+                mCandDbObjects->Add( elem );
+            }
+        }
+    }
+}
+
+void FdoSmPhOwner::RemoveCandDbObject( FdoStringP objectName )
+{
+    FdoInt32 ix = mCandDbObjects->IndexOf(objectName);
+    if ( ix >= 0 ) 
+        mCandDbObjects->RemoveAt( ix );
+
+}
+
 FdoSchemaExceptionP FdoSmPhOwner::Errors2Exception(FdoSchemaException* pFirstException ) const
 {
 	// Tack on errors for this element
@@ -444,6 +557,12 @@ void FdoSmPhOwner::Discard()
     ((FdoSmPhDatabase*) GetParent())->DiscardOwner( this );
 }
 
+void FdoSmPhOwner::OnAfterCommit()
+{
+    // An object previously not found might get created on commit.
+    // Therefore, clear the not found list since it is now stale. 
+    mNotFoundObjects->Clear();
+}
 
 void FdoSmPhOwner::XMLSerialize( FILE* xmlFp, int ref ) const
 {
@@ -577,6 +696,116 @@ bool FdoSmPhOwner::IsDbObjectNameReserved( FdoStringP objectName )
 	}
 
 	return(bReserved);
+}
+
+FdoSmPhDbObjectP FdoSmPhOwner::CacheCandDbObjects( FdoStringP objectName )
+{
+    FdoSmPhDbObjectP retDbObject;
+    FdoDictionaryP candDbObjects = FdoDictionary::Create();
+    FdoInt32 fetchSize = GetCandFetchSize();
+    FdoInt32 ix = mCandDbObjects->IndexOf( objectName );
+
+    // No candidate fetching if object not a candidate or fetch size too small.
+    if ( (ix < 0) || (fetchSize < 2) ) 
+        return retDbObject;
+
+    // Fetch some of the other candidates. Get the ones in the neighbourhood of the given object.
+    FdoInt32 start = ix - (fetchSize/2);
+    if ( start < 0 ) 
+        start = 0;
+
+    // Build the candidates list.
+    FdoStringsP cands = FdoStringCollection::Create();
+    FdoInt32 end;
+
+    for ( end = start; (end < mCandDbObjects->GetCount()) && (cands->GetCount() < fetchSize); end++ ) {
+        FdoDictionaryElementP elem = mCandDbObjects->GetItem(end);
+        cands->Add( elem->GetName() );
+    }
+
+    // Pad out list with empty object names. 
+    // Candidate fetches are done by binding candidate names into selects. Selects can be re-used
+    // if number of bind variables stays consistent
+    while ( cands->GetCount() < fetchSize ) 
+        cands->Add( L"" );
+
+    // Remove candidates from candidate list.
+    // Put in temporary list to track which ones were not found.
+    for  ( ix = (end - 1); ix >= start; ix-- ) {
+        FdoDictionaryElementP elem = mCandDbObjects->GetItem( ix );
+        candDbObjects->Add( elem );
+        mCandDbObjects->RemoveAt(ix);
+    }
+
+    // Read the candidates.
+    FdoSmPhRdDbObjectReaderP objReader;
+    FdoSmPhRdConstraintReaderP ukeyReader;
+    FdoSmPhRdConstraintReaderP ckeyReader;
+    FdoSmPhRdColumnReaderP columnReader;
+
+    // Create reader for candidate db objects.
+    objReader = CreateDbObjectReader( cands );
+    if ( !objReader ) 
+        return retDbObject;
+
+    // Caching db object components so create readers for components.
+    // This function does interleaved fetches from each reader so all readers
+    // (including dbObject reader) must return rows ordered by dbObject name.
+    //
+    // For datastores with MetaSchema, only columns and constraints need to be bulk fetched.
+    // Primary and Foreign keys, and indexes are never fetched.
+    //
+    // Doing a single query per owner for each component is more efficient than
+    // a query per dbObject.
+    // The join is used to limit results to those needed for this schema.
+    ukeyReader = CreateConstraintReader( cands, L"U" );
+    ckeyReader = CreateConstraintReader( cands, L"C" );
+
+    columnReader = CreateColumnReader( cands );
+
+    while ( objReader && objReader->ReadNext() ) {
+        // Cache the current dbObject
+        FdoSmPhDbObjectP dbObject = CacheDbObject( objReader );
+        FdoDictionaryElementP elem = candDbObjects->FindItem( dbObject->GetName() );
+       if ( elem )
+            // Mark it has having been read (fetched).
+            elem->SetValue(L"f");
+
+        if ( dbObject ) {
+            if ( objectName == dbObject->GetName() ) 
+                // Keep track of the object asked for so it can be returned.
+                retDbObject = dbObject;
+
+            // Load the components into the db object.
+            FdoSmPhTableP table = dbObject->SmartCast<FdoSmPhTable>();
+
+            if ( columnReader ) 
+                dbObject->CacheColumns( columnReader );
+
+            if ( table ) {
+                if ( ukeyReader ) 
+                    table->CacheUkeys( ukeyReader );
+
+                if ( ckeyReader ) 
+                    table->CacheCkeys( ckeyReader );
+            }
+        }
+    }
+
+    // Add any candidates not fetched to the not found list.
+    for  ( ix = 0; ix < candDbObjects->GetCount(); ix++ ) {
+        FdoDictionaryElementP elem = candDbObjects->GetItem( ix );
+        if ( wcslen(elem->GetValue()) == 0 )
+            mNotFoundObjects->Add( elem );
+    }
+
+   return retDbObject;
+}
+
+FdoInt32 FdoSmPhOwner::GetCandFetchSize()
+{
+    // 50 bound objects seems to give optimal performance for Oracle. 
+    return 50;
 }
 
 void FdoSmPhOwner::LoadLtLck()

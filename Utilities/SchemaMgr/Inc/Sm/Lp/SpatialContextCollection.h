@@ -51,6 +51,13 @@ public:
         bool bIgnoreStates
 	);
 
+    // Given a Spatial Context ID, return the spatial context.
+    // Returns NULL if spatial context not found.
+    FdoSmLpSpatialContextP FindItemById( FdoInt64 scid );
+
+    // Overridden to update spatial context id to name map.
+    virtual FdoInt32 Add( FdoSmLpSpatialContext* value);
+
     /// Post outstanding modifications to the datastore.
 	virtual void Commit();
 
@@ -93,11 +100,17 @@ protected:
 private:
 	FdoInt32 FindExistingSC( FdoSmLpSpatialContextP sc );
 
-private:
+    // Functions for maintaining the lookup by id map.
+    void AddToIdMap( FdoSmLpSpatialContext* sc );
+    void RemoveFromIdMap( FdoSmLpSpatialContext* sc );
+
     bool        mAreLoaded;
 	FdoSmPhMgrP mPhysicalSchema;
 
 	FdoSmLpSpatialContextGeomsP mSpatialContextGeoms;
+
+    // MAP for fast lookup of spatial contexts by id.
+    FdoDictionaryP mIdMap;
 };
 
 typedef FdoPtr<FdoSmLpSpatialContextCollection> FdoSmLpSpatialContextsP;

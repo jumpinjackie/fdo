@@ -8,9 +8,11 @@ libSmPhRd_la_SOURCES = \
   ColumnReader.cpp \
   ConstraintReader.cpp \
   CoordSysReader.cpp \
+  DbObjectBinds.cpp \
   DbObjectReader.cpp \
   FkeyReader.cpp \
   IndexReader.cpp \
+  Join.cpp \
   OwnerReader.cpp \
   PkeyReader.cpp \
   PropertyReader.cpp \
@@ -18,7 +20,8 @@ libSmPhRd_la_SOURCES = \
   SchemaReader.cpp \
   SpatialContextGeomReader.cpp \
   SpatialContextGroupReader.cpp \
-  SpatialContextReader.cpp
+  SpatialContextReader.cpp \
+  TableJoin.cpp
 
 
 INCLUDES = \

@@ -932,16 +932,18 @@ void FdoSmLpObjectPropertyDefinition::FinalizeTable( const FdoSmLpClassDefinitio
                             if ( !pTargetTable ) {
                                 targetTable = pPhysical->GetDcDbObjectName(targetTable);
                                 pTargetTable = pPhysical->FindDbObject( targetTable );
-                                if ( !pTargetTable ) {
+                                if ( !pTargetTable && (GetElementState() == FdoSchemaElementState_Added) ) {
     				                pTargetTable = NewTable( pOwner, targetTable );
                                     mbDbObjectCreator = true;
                                 }
                             }
                         }
                         else {
-                            // Foreign table so create view around it.
-                            pTargetTable = NewView( pOwner, targetTable, targetDatabase, targetOwner, mRootDbObjectName );
-                            mbDbObjectCreator = true;
+                            if ( GetElementState() == FdoSchemaElementState_Added ) {
+                                // Foreign table so create view around it.
+                                pTargetTable = NewView( pOwner, targetTable, targetDatabase, targetOwner, mRootDbObjectName );
+                                mbDbObjectCreator = true;
+                            }
                         }
                     }
                     else {

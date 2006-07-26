@@ -25,8 +25,6 @@
 #include <Sm/Ph/SpatialContextGeomWriter.h>
 #include <Sm/Lp/SpatialContextCollection.h>
 
-//FdoString* FdoSmLpGeometricPropertyDefinition::mGeometryColType = L"Geometry";
-
 #define FDOSMLP_SI_COLUMN_LENGTH    255
 #define FDOSMLP_SI_COLUMN_1_NAME    L"_SI_1"
 #define FDOSMLP_SI_COLUMN_2_NAME    L"_SI_2"
@@ -42,10 +40,8 @@ FdoSmLpGeometricPropertyDefinition::FdoSmLpGeometricPropertyDefinition(
     mGeometryTypes(propReader->GetDataType().ToLong()),
 	mbHasElevation(propReader->GetHasElevation()),
 	mbHasMeasure(propReader->GetHasMeasure()),
-    mAssociatedScId(propReader->GetSpatialContextAssociationId()),
-    mAssociatedSCName(propReader->GetSpatialContextAssociation())
+    mAssociatedScId(-1)
 {
-    FixSpatialContextAssociation();
 }
 
 FdoSmLpGeometricPropertyDefinition::FdoSmLpGeometricPropertyDefinition(
@@ -63,7 +59,6 @@ FdoSmLpGeometricPropertyDefinition::FdoSmLpGeometricPropertyDefinition(
     mAssociatedScId(-1),
     mAssociatedSCName(pFdoProp->GetSpatialContextAssociation())
 {
-    FixSpatialContextAssociation();
 }
 
 FdoSmLpGeometricPropertyDefinition::FdoSmLpGeometricPropertyDefinition(
@@ -87,7 +82,6 @@ FdoSmLpGeometricPropertyDefinition::FdoSmLpGeometricPropertyDefinition(
     mColumnNameY(columnNameY),
     mColumnNameZ(columnNameZ)
 {
-    FixSpatialContextAssociation();
 }
 
 FdoSmLpGeometricPropertyDefinition::FdoSmLpGeometricPropertyDefinition(
@@ -115,19 +109,16 @@ FdoSmLpGeometricPropertyDefinition::FdoSmLpGeometricPropertyDefinition(
     mAssociatedScId(-1),
     mAssociatedSCName( pBaseProperty->GetSpatialContextAssociation() )
 {
-//    Update( pPropOverrides );
-    FixSpatialContextAssociation();
 }
 
 void FdoSmLpGeometricPropertyDefinition::FixSpatialContextAssociation()
 {
     FdoSmLpSchemasP schemas = GetLogicalPhysicalSchema()->GetSchemas();
     FdoSmLpSpatialContextsP scs = schemas->GetSpatialContexts();
-	bool	hasMeta = GetLogicalPhysicalSchema()->GetPhysicalSchema()->GetOwner()->GetHasMetaSchema();
 	bool	fromConfigDoc = ( GetLogicalPhysicalSchema()->GetPhysicalSchema()->GetConfigDoc() != NULL );
 	bool	found = false;
 
-    if ( !hasMeta && !fromConfigDoc && mAssociatedSCName.GetLength() <= 0 && mAssociatedScId < 0 )
+    if ( (GetElementState() != FdoSchemaElementState_Added) && !fromConfigDoc && mAssociatedSCName.GetLength() <= 0 && mAssociatedScId < 0 )
 	{
 		// Look up in the collection of SC geometries associations loaded along the Spatial contexts
 		FdoSmLpSpatialContextGeomsP scgeoms = scs->GetSpatialContextGeoms();
@@ -135,20 +126,24 @@ void FdoSmLpGeometricPropertyDefinition::FixSpatialContextAssociation()
 		{
 			FdoStringP tableName = GetContainingDbObjectName();
 			FdoStringP columnName = GetColumnName();
+            bool scgeomFound = false;
 
-			for (int i = 0; i < scgeoms->GetCount() && !found; i++ )
+			for (int i = 0; i < scgeoms->GetCount() && !scgeomFound; i++ )
 			{
 				FdoSmLpSpatialContextGeomP scgeom = scgeoms->GetItem(i);
 				
 				// Match by name. Also in the case of providers with no metadata.
-				found = ( ( scgeom->GetGeomTableName() == tableName ) && ( scgeom->GetGeomColumnName() == columnName ) ) ||
+				scgeomFound = ( ( scgeom->GetGeomTableName() == tableName ) && ( scgeom->GetGeomColumnName() == columnName ) ) ||
 						( ( scgeom->GetGeomTableName() == L"" ) &&  ( scgeom->GetGeomColumnName() == L"" ) );
 
-				if ( found ) 
+				if ( scgeomFound ) 
 				{
 					mAssociatedScId  = scgeom->GetScId();
-					FdoSmLpSpatialContextP sc = scs->GetItem((FdoInt32)mAssociatedScId);
-					mAssociatedSCName = sc->GetName();
+					FdoSmLpSpatialContextP sc = scs->FindItemById((FdoInt32)mAssociatedScId);
+                    if ( sc ) {
+    					mAssociatedSCName = sc->GetName();
+                        found = true;
+                    }
 				}
 			}
 		}
@@ -182,9 +177,12 @@ void FdoSmLpGeometricPropertyDefinition::FixSpatialContextAssociation()
 		found = true; // No op, SC assoc. already fixed.
 	}
 
-	// Apparently there are cases when this method is called before the Spatial Contexts are loaded.
-	//if (!found)
-	//	AddSCNotFoundError();
+    if ( (!found) && (!GetIsSystem()) ) {
+        // Error if non-system property has no spatial context.
+        // There's currently only one system geometric property (bounds),
+        // which is not tied to a particular spatial context.
+        AddSCNotFoundError();
+    }
 }
 
 FdoPropertyType FdoSmLpGeometricPropertyDefinition::GetPropertyType() const
@@ -209,7 +207,9 @@ bool FdoSmLpGeometricPropertyDefinition::GetHasMeasure() const
 
 FdoString * FdoSmLpGeometricPropertyDefinition::GetSpatialContextAssociation() const
 {
-	return mAssociatedSCName;
+    ((FdoSmLpGeometricPropertyDefinition*) this)->Finalize();
+
+    return mAssociatedSCName;
 }
 
 void FdoSmLpGeometricPropertyDefinition::SetInherited( const FdoSmLpPropertyDefinition* pBaseProp )
@@ -263,7 +263,6 @@ void FdoSmLpGeometricPropertyDefinition::Update(
             mbHasElevation = pFdoGeomProp->GetHasElevation();
 	        mbHasMeasure = pFdoGeomProp->GetHasMeasure();
             mAssociatedSCName = pFdoGeomProp->GetSpatialContextAssociation();
-            FixSpatialContextAssociation();
         }
 
         if ( (GetElementState() == FdoSchemaElementState_Added) || 
@@ -274,7 +273,6 @@ void FdoSmLpGeometricPropertyDefinition::Update(
             if ( mAssociatedSCName.ICompare(L"") == 0 )
             {
                 mAssociatedSCName = L"Default";
-                FixSpatialContextAssociation();
             }
  /* TODO:             
             // If the spatial context was not set then pick up the active one
@@ -351,8 +349,10 @@ void FdoSmLpGeometricPropertyDefinition::Commit( bool fromParent )
 
     case FdoSchemaElementState_Deleted:  
 
-        // Remove the association with spatial context
-        if (mAssociatedScId >= 0) {
+        // Remove the association with spatial context.
+        // Do not remove if base table mapping used since, in this case, the association is shared
+        // with the base property.
+        if ((mAssociatedScId >= 0) && (pClass->GetTableMapping() != FdoSmOvTableMappingType_BaseTable)) {
             FdoSmPhSpatialContextGeomWriterP scGeomWriter = pPhysical->GetSpatialContextGeomWriter();
             scGeomWriter->Delete( GetContainingDbObjectName(), GetColumnName() );
         }
@@ -476,6 +476,8 @@ void FdoSmLpGeometricPropertyDefinition::Finalize()
 	if ( GetState() != FdoSmObjectState_Final ) {
         FdoSmLpSimplePropertyDefinition::Finalize();
 
+        FixSpatialContextAssociation();
+
         FdoSmOvGeometricColumnType columnType = GetGeometricColumnType();
         bool hasZColumn = false;
         if (FdoSmOvGeometricColumnType_Double == columnType &&
@@ -549,7 +551,7 @@ void FdoSmLpGeometricPropertyDefinition::Finalize()
                 AddSiColumns();
         }
         else if ( GetElementState() == FdoSchemaElementState_Modified ) {
-	        if ( pPhDbObject ) {
+            if ( pPhDbObject ) {
                 if (FdoSmOvGeometricColumnType_Double == columnType) {
     		        SetColumnX( pPhDbObject->GetColumns()->FindItem(GetColumnNameX()) );
     		        SetColumnY( pPhDbObject->GetColumns()->FindItem(GetColumnNameY()) );
@@ -1135,7 +1137,7 @@ void FdoSmLpGeometricPropertyDefinition::AddNoSCFoundError()
             FdoSmError::NLSGetMessage(
 			    FDO_NLSID(FDOSM_371),
                 GetName(),
-                RefDefiningClass()->GetName()
+                GetParent()->GetName()
             )
         )
     );
@@ -1148,7 +1150,7 @@ void FdoSmLpGeometricPropertyDefinition::AddSCNotFoundError()
             FdoSmError::NLSGetMessage(
 			    FDO_NLSID(FDOSM_372),
                 GetName(),
-                RefDefiningClass()->GetName()
+                GetParent()->GetName()
             )
         )
     );
@@ -1161,7 +1163,7 @@ void FdoSmLpGeometricPropertyDefinition::AddSCTableNotFoundError()
             FdoSmError::NLSGetMessage(
 			    FDO_NLSID(FDOSM_374),
                 GetName(),
-                RefDefiningClass()->GetName()
+                GetParent()->GetName()
             )
         )
     );

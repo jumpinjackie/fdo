@@ -195,22 +195,6 @@ bool FdoSmPhClassPropertyReader::GetHasElevation()
 	return(mPropReader->GetHasElevation());
 }
 
-FdoStringP FdoSmPhClassPropertyReader::GetSpatialContextAssociation()
-{
-	// Make sure there is a current row.
-	CheckGet();
-
-	return(mPropReader->GetSpatialContextAssociation());
-}
-
-FdoInt64 FdoSmPhClassPropertyReader::GetSpatialContextAssociationId()
-{
-	// Make sure there is a current row.
-	CheckGet();
-
-	return(mPropReader->GetSpatialContextAssociationId());
-}
-
 bool FdoSmPhClassPropertyReader::GetHasMeasure()
 {
 	// Make sure there is a current row.

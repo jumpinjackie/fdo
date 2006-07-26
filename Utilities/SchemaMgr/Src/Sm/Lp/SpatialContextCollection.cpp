@@ -22,18 +22,46 @@
 #include <Sm/Ph/Rd/SpatialContextReader.h>
 #include <Sm/Ph/SpatialContextGroupReader.h>
 #include <Sm/Ph/SpatialContextGeomReader.h>
+#include <FdoCommonStringUtil.h>
 
 
 FdoSmLpSpatialContextCollection::FdoSmLpSpatialContextCollection(FdoSmPhMgrP physicalSchema) :
 	mPhysicalSchema(physicalSchema),
     mAreLoaded(false)
 {
+    mIdMap = FdoDictionary::Create();
 }
 
 FdoSmLpSpatialContextCollection::~FdoSmLpSpatialContextCollection(void)
 {
 }
 
+FdoSmLpSpatialContextP FdoSmLpSpatialContextCollection::FindItemById( FdoInt64 scid )
+{
+    FdoSmLpSpatialContextP sc;
+
+    // Use ID Map to convert id to name and then look up sc by name
+
+    FdoDictionaryElementP elem = mIdMap->FindItem( FdoCommonStringUtil::Int64ToString(scid) );
+
+    if ( elem ) {
+        FdoStringP scName = elem->GetValue();
+
+        sc = FindItem(scName);
+    }
+
+    return sc;
+}
+
+FdoInt32 FdoSmLpSpatialContextCollection::Add( FdoSmLpSpatialContext* value)
+{
+    FdoInt32 ret = FdoSmNamedCollection<FdoSmLpSpatialContext>::Add(value);
+
+    // Keep id map synchronized
+    AddToIdMap(value);
+
+    return ret;
+}
 
 FdoSmLpSpatialContextP FdoSmLpSpatialContextCollection::CreateSpatialContext(
         FdoString* name,
@@ -65,7 +93,21 @@ void FdoSmLpSpatialContextCollection::Commit()
 	for ( int i = 0; i < GetCount(); i++ )
     {
         FdoSmLpSpatialContextP sc = GetItem(i);
+
+        FdoSchemaElementState elemState = sc->GetElementState();
+        FdoInt64 oldScid = sc->GetId();
         sc->Commit( true );
+
+        if ( elemState == FdoSchemaElementState_Deleted ) {
+            // Remove deleted SC's from id map
+            RemoveFromIdMap( sc );
+        }
+        else
+        {
+            if ( oldScid == -1 ) 
+                // Commit can assigns an id to new sc so add it to the id map
+                AddToIdMap( sc );
+        }
 	}
 }
 
@@ -159,24 +201,22 @@ void FdoSmLpSpatialContextCollection::Load()
 				    );
 	        }
 
-			// TODO: Caching doesn't work: apparenly when updating later in Logical Physical from SC=L””
-			// to L”Default”, we get an error saying that the property is already finalized. 
-			// See also FdoSmLpGeometricPropertyDefinition::FixSpatialContextAssociation()
+			// Load the Spatial Context Geometry associations into the cache.
 
-			//FdoSmPhSpatialContextGeomReaderP scGeomReader = mPhysicalSchema->CreateSpatialContextGeomReader();
-			//while (scGeomReader->ReadNext())
-			//{
-			//	// Create Spatial context geometry object and associate it with this scId
-			//	FdoSmLpSpatialContextGeomP  scgeom = new FdoSmLpSpatialContextGeom(
-			//													scGeomReader->GetScId(),
-			//													scGeomReader->GetGeomTableName(),
-			//													scGeomReader->GetGeomColumnName(),
-			//													scGeomReader->GetDimensionality() );
-			//  if (NULL == scgeom.p)
-			//		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
+			FdoSmPhSpatialContextGeomReaderP scGeomReader = mPhysicalSchema->CreateSpatialContextGeomReader();
+			while (scGeomReader->ReadNext())
+			{
+				// Create Spatial context geometry object and associate it with this scId
+				FdoSmLpSpatialContextGeomP  scgeom = new FdoSmLpSpatialContextGeom(
+																scGeomReader->GetScId(),
+																scGeomReader->GetGeomTableName(),
+																scGeomReader->GetGeomColumnName(),
+																scGeomReader->GetDimensionality() );
+			  if (NULL == scgeom.p)
+					throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
 
-			//	mSpatialContextGeoms->Add( scgeom );												
-			//}
+				mSpatialContextGeoms->Add( scgeom );												
+			}
         }
 		else
 		{
@@ -309,4 +349,25 @@ FdoInt32 FdoSmLpSpatialContextCollection::FindExistingSC( FdoSmLpSpatialContextP
 		}
 	}
 	return (index);
+}
+
+void FdoSmLpSpatialContextCollection::AddToIdMap( FdoSmLpSpatialContext* sc )
+{
+    if ( sc->GetId() > -1 ) {
+        FdoStringP idKey = FdoCommonStringUtil::Int64ToString( sc->GetId() );
+        FdoStringP idVal = sc->GetName();
+
+        FdoDictionaryElementP elem = FdoDictionaryElement::Create( idKey, idVal );
+
+        mIdMap->Add( elem );
+    }
+}
+
+void FdoSmLpSpatialContextCollection::RemoveFromIdMap( FdoSmLpSpatialContext* sc )
+{
+    FdoStringP idKey = FdoCommonStringUtil::Int64ToString( sc->GetId() );
+    FdoInt32 ix = mIdMap->IndexOf( idKey );
+
+    if ( ix > -1 ) 
+        mIdMap->RemoveAt( ix );
 }

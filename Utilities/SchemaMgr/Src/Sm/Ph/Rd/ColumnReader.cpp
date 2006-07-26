@@ -55,6 +55,12 @@ FdoSmPhRowsP FdoSmPhRdColumnReader::MakeRows( FdoSmPhMgrP mgr )
     // Each field adds itself to the row.
     FdoSmPhFieldP field = new FdoSmPhField(
         row, 
+        L"table_name",
+        row->CreateColumnDbObject(L"table_name",false)
+    );
+
+    field = new FdoSmPhField(
+        row, 
         L"name",
         row->CreateColumnDbObject(L"name",false)
     );

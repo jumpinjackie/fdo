@@ -129,7 +129,17 @@ void FdoSmPhDbElement::Commit( bool fromParent, bool isBeforeParent )
     // element is committed.
     CommitChildren( false );
 
+    // Notify Physical Schema Manager that physical schema has changed.
+    // Skip when commit invoked from parent since parent will do the notification
+    // when all committing complete.
+    if ( !fromParent )
+        GetManager()->OnAfterCommit();
+
     mCommitState = FdoSchemaElementState_Unchanged;
+}
+   
+void FdoSmPhDbElement::OnAfterCommit()
+{
 }
 
 bool FdoSmPhDbElement::CheckCommitDependencies( bool fromParent, bool isBeforeParent )

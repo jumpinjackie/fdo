@@ -33,6 +33,8 @@ class FdoSmPhDatabase;
 class FdoSmPhRdDbObjectReader;
 class FdoSmPhRdCoordSysReader;
 class FdoSmPhRdConstraintReader;
+class FdoSmPhRdColumnReader;
+class FdoSmPhRdTableJoin;
 
 // This class represents an Owner (Physical Schema). The exact meaning
 // of Owner depends on the Provider. For example, in the Oracle Provider
@@ -119,8 +121,13 @@ public:
     virtual void SetCurrent() {}
 
     /// Create a reader to get all database objects for this owner.
-    /// TODO: add flag to cache objects.
     virtual FdoPtr<FdoSmPhRdDbObjectReader> CreateDbObjectReader( FdoStringP dbObject = L"") const = 0;
+
+    /// Create a reader to get database objects this owner and object name list.
+    virtual FdoPtr<FdoSmPhRdDbObjectReader> CreateDbObjectReader( FdoStringsP objectNames ) const;
+
+    /// Create a reader to get all database objects for this join.
+    virtual FdoPtr<FdoSmPhRdDbObjectReader> CreateDbObjectReader( FdoPtr<FdoSmPhRdTableJoin> join ) const;
 
     /// Create a reader to get one or more coordinate system(s) for this owner.
     virtual FdoPtr<FdoSmPhRdCoordSysReader> CreateCoordSysReader( FdoStringP csysName = L"") const;
@@ -142,6 +149,21 @@ public:
     // Create a reader to get all primary keys (ordered by table) for this owner
     // Default implementation returns NULL (not supported).
     virtual FdoPtr<FdoSmPhRdPkeyReader> CreatePkeyReader() const;
+
+    /// Create a reader to get all constraints for this owner and object name list.
+    virtual FdoPtr<FdoSmPhRdConstraintReader> CreateConstraintReader( FdoStringsP objectNames, FdoStringP constraintType ) const;
+
+    /// Create a reader to get all constraints for this owner and this join.
+    virtual FdoPtr<FdoSmPhRdConstraintReader> CreateConstraintReader( FdoPtr<FdoSmPhRdTableJoin> join, FdoStringP constraintType ) const;
+
+    // Create a reader to get all columns for this owner
+    virtual FdoPtr<FdoSmPhRdColumnReader> CreateColumnReader() const;
+
+    // Create a reader to get all columns for this owner and list of objects.
+    virtual FdoPtr<FdoSmPhRdColumnReader> CreateColumnReader( FdoStringsP objectNames ) const;
+
+    // Create a reader to get all columns for this owner and join
+    virtual FdoPtr<FdoSmPhRdColumnReader> CreateColumnReader( FdoPtr<FdoSmPhRdTableJoin> join ) const;
 
     /// Create a new table. Table is not posted to the datastore until its Commit() function
     /// is called.
@@ -176,6 +198,12 @@ public:
     /// Remove a database object from the cache.
     void DiscardDbObject( FdoSmPhDbObject* dbObject );
 
+    // Add a table or view name to fetch candidates list
+    void AddCandDbObject( FdoStringP objectName );
+
+    // Remove a table or view name from fetch candidates list
+    void RemoveCandDbObject( FdoStringP objectName );
+
     /// Gather all errors for this element and child elements into a chain of exceptions.
     /// Adds each error as an exception, to the given exception chain and returns
     /// the chain.
@@ -186,6 +214,10 @@ public:
 
     /// Remove this owner from its database.
     virtual void Discard();
+
+    // Event that notifies this object that a commit has taken place.
+    // Clears the not found object list.
+    virtual void OnAfterCommit();
 
     /// Serialize the table to an XML file.
     /// Mainly for unit testing.
@@ -252,6 +284,14 @@ protected:
     /// 	- the object is referenced by the metaschema tables in the current datastore.
 	bool IsDbObjectNameReserved( FdoStringP objectName );
 
+    // Fetches and caches the given object plus some of the objects in the fetch candidates list.
+    // This improves performance by fetching multiple objects at once.
+    // Note that the fetch is only performed if the given object is also on the candidates list.
+    FdoSmPhDbObjectP CacheCandDbObjects( FdoStringP objectName );
+
+    // Returns the number of object candidates to fetch in one operation (See CacheCandDbObjects). 
+    virtual FdoInt32 GetCandFetchSize();
+
 private:
     /// Load Schema Information
     void LoadSchemaInfo();
@@ -259,9 +299,12 @@ private:
     /// Load the long transaction and locking settings.
     void LoadLtLck();
 
-    bool mDbObjectsCached;            // true if all db objects have been cached.
-	FdoSmPhDbObjectsP mDbObjects;
+    bool mDbObjectsCached;              // true if all db objects have been cached.
+	FdoSmPhDbObjectsP mDbObjects;       // collection of cached objects
+    FdoDictionaryP mNotFoundObjects;    // collection of object which were queried from the RDBMS but not
+                                        // found. Use to prevent repeated attempts to fetch these objects.
 	FdoStringsP mReservedDbObjectNames;
+    FdoDictionaryP mCandDbObjects;      // List of candidate objects for fetching from RDBMS. 
     FdoStringP mPassword;
     bool mHasMetaSchema;
     /// FDOSYS database flag

@@ -760,7 +760,7 @@ void FdoSmPhTable::LoadPkeys( FdoSmPhReaderP pkeyRdr )
         mPkeyName = pkeyRdr->GetString(L"", L"constraint_name");
         FdoStringP columnName = pkeyRdr->GetString(L"",L"column_name");
 
-        FdoSmPhColumnP pkeyColumn = GetColumns()->GetItem( columnName );
+        FdoSmPhColumnP pkeyColumn = GetColumns()->FindItem( columnName );
 
         if ( pkeyColumn == NULL ) {
             // Primary Key column must be in this table.
@@ -806,7 +806,7 @@ void FdoSmPhTable::LoadUkeys( FdoSmPhReaderP ukeyRdr )
         FdoStringP ckeyName			= ukeyRdr->GetString(L"", L"constraint_name");
         FdoStringP columnName		= ukeyRdr->GetString(L"", L"column_name");
 
-        FdoSmPhColumnP ukeyColumn = GetColumns()->GetItem( columnName );
+        FdoSmPhColumnP ukeyColumn = GetColumns()->FindItem( columnName );
 
         // Unique Key column must be in this table.
         if ( ukeyColumn == NULL ) {
@@ -869,7 +869,7 @@ void FdoSmPhTable::LoadCkeys( FdoSmPhReaderP ckeyRdr )
 		if ( clause == L"" || clause.Contains(L"NOT NULL"))
 			continue;
 
-        FdoSmPhColumnP ckeyColumn = GetColumns()->GetItem( columnName );
+        FdoSmPhColumnP ckeyColumn = GetColumns()->FindItem( columnName );
 
         // Cheked column must be in this table.
     	if ( ckeyColumn == NULL ) {
@@ -921,7 +921,7 @@ void FdoSmPhTable::LoadFkeys( FdoSmPhReaderP fkeyRdr )
 
         // Add the column to the foreign key
         FdoStringP columnName = fkeyRdr->GetString(L"",L"column_name");
-        FdoSmPhColumnP column = GetColumns()->GetItem(columnName);
+        FdoSmPhColumnP column = GetColumns()->FindItem(columnName);
 
         if ( column ) {
             fkey->AddFkeyColumn( 
@@ -970,7 +970,7 @@ void FdoSmPhTable::LoadIndexes( FdoSmPhTableIndexReaderP indexRdr )
         }
 
         FdoStringP columnName = indexRdr->GetString(L"",L"column_name");
-        FdoSmPhColumnP column = GetColumns()->GetItem(columnName);
+        FdoSmPhColumnP column = GetColumns()->FindItem(columnName);
 
         if ( column ) {
             // Add the column to the current index.

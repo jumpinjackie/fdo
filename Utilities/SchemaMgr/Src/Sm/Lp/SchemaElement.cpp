@@ -287,19 +287,23 @@ void FdoSmLpSchemaElement::ValidateStringLength(
 {
    try {
         FdoSmPhMgrP physicalSchema = GetLogicalPhysicalSchema()->GetPhysicalSchema();
-        FdoSmPhDbObjectP dbObject = physicalSchema->FindDbObject( pTable );
+        FdoSmPhOwnerP owner = physicalSchema->GetOwner();
 
-        if ( dbObject ) {
-            FdoSmPhColumnP column = dbObject->GetColumns()->FindItem( pColumn );
+        if ( owner && owner->GetHasMetaSchema() ) {
+            FdoSmPhDbObjectP dbObject = physicalSchema->FindDbObject( pTable );
 
-            if ( column ) {
+            if ( dbObject ) {
+                FdoSmPhColumnP column = dbObject->GetColumns()->FindItem( pColumn );
 
-                physicalSchema->ValidateStringLength( 
-                    pString, 
-                    column->GetLength(),
-   		            pElementName,
-   		            pItemName
-	            );
+                if ( column ) {
+
+                    physicalSchema->ValidateStringLength( 
+                        pString, 
+                        column->GetLength(),
+   		                pElementName,
+   		                pItemName
+	                );
+                }
             }
         }
     }

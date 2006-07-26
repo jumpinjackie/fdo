@@ -673,6 +673,16 @@ void FdoSmPhMgr::Clear()
         mDatabases->Clear();
 }
 
+void FdoSmPhMgr::OnAfterCommit()
+{
+    FdoInt32 idx;
+
+    if ( mDatabases ) {
+        for ( idx = 0; idx < mDatabases->GetCount(); idx++ )
+            mDatabases->GetItem(idx)->OnAfterCommit();
+    }
+}
+ 
 void FdoSmPhMgr::XMLSerialize( FdoString* sFileName ) const
 {
 	FILE* xmlFp = fopen( (const char*) FdoStringP(sFileName), "w" );

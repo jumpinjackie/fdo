@@ -34,6 +34,7 @@ libSmPhysical_la_SOURCES = \
   GroupReader.cpp \
   Index.cpp \
   LockTypes.cpp \
+  MergeReader.cpp \
   Mgr.cpp \
   OptionsReader.cpp \
   OptionsWriter.cpp \
@@ -62,6 +63,7 @@ libSmPhysical_la_SOURCES = \
   stdafx.cpp \
   Table.cpp \
   TableComponentReader.cpp \
+  TableMergeReader.cpp \
   TempObject.cpp \
   View.cpp \
   Writer.cpp

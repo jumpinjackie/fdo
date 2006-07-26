@@ -35,6 +35,9 @@
 #include <Sm/Ph/ColumnInt64.h>
 #include <Sm/Ph/ColumnUnknown.h>
 
+class FdoSmPhReader;
+class FdoSmPhTableColumnReader;
+
 // some constants
 
 enum FdoLtLockModeType	{
@@ -234,6 +237,9 @@ public:
     // Generate key column SQL clauses for the given columns.
     virtual FdoStringsP GetKeyColsSql( FdoSmPhColumnCollection* columns );
 
+    // Load this object's columns from the given reader
+    virtual void CacheColumns( FdoPtr<FdoSmPhRdColumnReader> rdr );
+
     /// Gather all errors for this element and child elements into a chain of exceptions.
     /// Adds each error as an exception, to the given exception chain and returns
     /// the chain.
@@ -272,6 +278,7 @@ protected:
 
     /// Loads column list for existing database object
     void LoadColumns();
+    void LoadColumns( FdoPtr<FdoSmPhTableColumnReader> colRdr );
     
     /// Create a column from a column reader and add it to this database object
     virtual FdoSmPhColumnP NewColumn(
