@@ -77,8 +77,8 @@
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgIAcquireLockImp.h"><param name="Local" value="dd/ddb/mg_i_acquire_lock_imp_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgIActivateLongTransaction.h"><param name="Local" value="d6/df4/mg_i_activate_long_transaction_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgIActivateLongTransactionCheckpoint.h"><param name="Local" value="d5/db0/mg_i_activate_long_transaction_checkpoint_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="mgIActivateLongTransactionCheckpointImp.h"><param name="Local" value="d6/d10/mg_i_activate_long_transaction_checkpoint_imp_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgIActivateLongTransactionImp.h"><param name="Local" value="d3/d06/mg_i_activate_long_transaction_imp_8h.html"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="mgIActivateLTCheckpointImp.h"><param name="Local" value="d9/ded/mg_i_activate_l_t_checkpoint_imp_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgIActivateSpatialContext.h"><param name="Local" value="d9/d73/mg_i_activate_spatial_context_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgIActivateSpatialContextImp.h"><param name="Local" value="da/dce/mg_i_activate_spatial_context_imp_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgIApplySchema.h"><param name="Local" value="d7/db3/mg_i_apply_schema_8h.html"><param name="ImageNumber" value="11"></OBJECT>
@@ -88,9 +88,9 @@
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgIBaseSelect.h"><param name="Local" value="de/d2b/mg_i_base_select_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgIBaseSelectImp.h"><param name="Local" value="d1/dd1/mg_i_base_select_imp_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgIChangeLongTransactionPrivileges.h"><param name="Local" value="d8/d08/mg_i_change_long_transaction_privileges_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="mgIChangeLongTransactionPrivilegesImp.h"><param name="Local" value="d0/dbf/mg_i_change_long_transaction_privileges_imp_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgIChangeLongTransactionSet.h"><param name="Local" value="d6/dd3/mg_i_change_long_transaction_set_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgIChangeLongTransactionSetImp.h"><param name="Local" value="db/d52/mg_i_change_long_transaction_set_imp_8h.html"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="mgIChangeLTPrivilegesImp.h"><param name="Local" value="df/d81/mg_i_change_l_t_privileges_imp_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgICircularArcSegment.h"><param name="Local" value="d5/dc9/mg_i_circular_arc_segment_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgICircularArcSegmentImp.h"><param name="Local" value="d5/de1/mg_i_circular_arc_segment_imp_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgICommand.h"><param name="Local" value="d4/daf/mg_i_command_8h.html"><param name="ImageNumber" value="11"></OBJECT>
@@ -113,8 +113,8 @@
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgICreateDataStoreImp.h"><param name="Local" value="d1/d53/mg_i_create_data_store_imp_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgICreateLongTransaction.h"><param name="Local" value="d5/d59/mg_i_create_long_transaction_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgICreateLongTransactionCheckpoint.h"><param name="Local" value="d4/ddf/mg_i_create_long_transaction_checkpoint_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="mgICreateLongTransactionCheckpointImp.h"><param name="Local" value="da/d30/mg_i_create_long_transaction_checkpoint_imp_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgICreateLongTransactionImp.h"><param name="Local" value="db/d75/mg_i_create_long_transaction_imp_8h.html"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="mgICreateLTCheckpointImp.h"><param name="Local" value="dc/d09/mg_i_create_l_t_checkpoint_imp_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgICreateMeasureUnit.h"><param name="Local" value="d6/d50/mg_i_create_measure_unit_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgICreateMeasureUnitImp.h"><param name="Local" value="db/d11/mg_i_create_measure_unit_imp_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgICreateSpatialContext.h"><param name="Local" value="d7/d5f/mg_i_create_spatial_context_8h.html"><param name="ImageNumber" value="11"></OBJECT>
@@ -211,15 +211,15 @@
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgILockOwnersReader.h"><param name="Local" value="d1/de4/mg_i_lock_owners_reader_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgILockOwnersReaderImp.h"><param name="Local" value="d7/d9d/mg_i_lock_owners_reader_imp_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgILongTransactionCheckpointReader.h"><param name="Local" value="dd/d38/mg_i_long_transaction_checkpoint_reader_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="mgILongTransactionCheckpointReaderImp.h"><param name="Local" value="d2/d99/mg_i_long_transaction_checkpoint_reader_imp_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="mgILongTransactionConflictDirectiveEnumerator.h"><param name="Local" value="d3/db4/mg_i_long_transaction_conflict_directive_enumerator_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="mgILongTransactionConflictDirectiveEnumeratorImp.h"><param name="Local" value="d3/d3e/mg_i_long_transaction_conflict_directive_enumerator_imp_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgILongTransactionPrivilegeReader.h"><param name="Local" value="d0/d61/mg_i_long_transaction_privilege_reader_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="mgILongTransactionPrivilegeReaderImp.h"><param name="Local" value="d5/dbf/mg_i_long_transaction_privilege_reader_imp_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgILongTransactionReader.h"><param name="Local" value="d2/d3f/mg_i_long_transaction_reader_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgILongTransactionReaderImp.h"><param name="Local" value="df/d8e/mg_i_long_transaction_reader_imp_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgILongTransactionSetReader.h"><param name="Local" value="d0/d28/mg_i_long_transaction_set_reader_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgILongTransactionSetReaderImp.h"><param name="Local" value="d6/deb/mg_i_long_transaction_set_reader_imp_8h.html"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="mgILTCheckpointReaderImp.h"><param name="Local" value="d0/df5/mg_i_l_t_checkpoint_reader_imp_8h.html"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="mgILTConflictDirectiveEnumerator.h"><param name="Local" value="d8/d24/mg_i_l_t_conflict_directive_enumerator_8h.html"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="mgILTConflictDirectiveEnumeratorImp.h"><param name="Local" value="da/d67/mg_i_l_t_conflict_directive_enumerator_imp_8h.html"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="mgILTPrivilegeReaderImp.h"><param name="Local" value="df/d10/mg_i_l_t_privilege_reader_imp_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgIMeasureUnitReader.h"><param name="Local" value="d4/d8d/mg_i_measure_unit_reader_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgIMeasureUnitReaderImp.h"><param name="Local" value="d9/d07/mg_i_measure_unit_reader_imp_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgIMultiCurvePolygon.h"><param name="Local" value="d2/d7d/mg_i_multi_curve_polygon_8h.html"><param name="ImageNumber" value="11"></OBJECT>
@@ -269,8 +269,8 @@
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgIRingImp.h"><param name="Local" value="de/d22/mg_i_ring_imp_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgIRollbackLongTransaction.h"><param name="Local" value="de/da7/mg_i_rollback_long_transaction_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgIRollbackLongTransactionCheckpoint.h"><param name="Local" value="d1/db0/mg_i_rollback_long_transaction_checkpoint_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="mgIRollbackLongTransactionCheckpointImp.h"><param name="Local" value="dc/dde/mg_i_rollback_long_transaction_checkpoint_imp_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgIRollbackLongTransactionImp.h"><param name="Local" value="de/daf/mg_i_rollback_long_transaction_imp_8h.html"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="mgIRollbackLTCheckpointImp.h"><param name="Local" value="d4/d61/mg_i_rollback_l_t_checkpoint_imp_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgISchemaCapabilities.h"><param name="Local" value="d2/deb/mg_i_schema_capabilities_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgISchemaCapabilitiesImp.h"><param name="Local" value="d3/d64/mg_i_schema_capabilities_imp_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgISelect.h"><param name="Local" value="da/d62/mg_i_select_8h.html"><param name="ImageNumber" value="11"></OBJECT>
@@ -345,7 +345,7 @@
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgRasterDataOrganization.h"><param name="Local" value="d9/df5/mg_raster_data_organization_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgRasterDataType.h"><param name="Local" value="d7/dc2/mg_raster_data_type_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgRasterPropertyDefinition.h"><param name="Local" value="df/db7/mg_raster_property_definition_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="mgReadOnlyArgumentDefinitionCollection.h"><param name="Local" value="de/dbe/mg_read_only_argument_definition_collection_8h.html"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="mgReadOnlyArgDefColl.h"><param name="Local" value="d6/df2/mg_read_only_arg_def_coll_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgReadOnlyDataPropertyDefinitionCollection.h"><param name="Local" value="d6/d9d/mg_read_only_data_property_definition_collection_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgReadOnlyPropertyDefinitionCollection.h"><param name="Local" value="d7/dc2/mg_read_only_property_definition_collection_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="mgSchema.h"><param name="Local" value="d4/d88/mg_schema_8h.html"><param name="ImageNumber" value="11"></OBJECT>

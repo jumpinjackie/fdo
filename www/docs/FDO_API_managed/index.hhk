@@ -182,7 +182,7 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/db4/class_binary_logical_operator.html"><param name="Name" value="BinaryLogicalOperator"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/db4/class_binary_logical_operator.html#64f510284c3d4fcab8d7cce883ceee33"><param name="Name" value="BinaryLogicalOperator"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/db4/class_binary_logical_operator.html#c8bbc55e31e056a98a0ec3946e1490ac"><param name="Name" value="get_LeftOperand"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/db4/class_binary_logical_operator.html#eebe82d998e25092ba60f63b2a5265bd"><param name="Name" value="get_LeftOperand"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/db4/class_binary_logical_operator.html#30e89f6933b38d468898a6db3d17b81f"><param name="Name" value="get_Operation"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/db4/class_binary_logical_operator.html#289cf0b8367556e9134f186e71e34009"><param name="Name" value="get_RightOperand"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/db4/class_binary_logical_operator.html#7a5b26bc6bf80ba8e9616039a871a2d8"><param name="Name" value="Process"></OBJECT>
@@ -2105,7 +2105,7 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="dd/d56/class_i_ring_imp_7e3a4b355643171dc5d5ac000d469f97.html#7e3a4b355643171dc5d5ac000d469f97"><param name="Name" value="IRingImp"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/d94/class_linear_ring_collection_2ee2832c56fedaa44ceb0dd552aff9c2.html#2ee2832c56fedaa44ceb0dd552aff9c2"><param name="Name" value="LinearRingCollection"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/dca/class_line_string_collection_f1e1450ff9878b2298d2a8e46abaa5f3.html#f1e1450ff9878b2298d2a8e46abaa5f3"><param name="Name" value="LineStringCollection"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="d3/db4/mg_i_long_transaction_conflict_directive_enumerator_8h_8380e4129085584db1db2fdefe64e60a.html#8380e4129085584db1db2fdefe64e60a"><param name="Name" value="mgILongTransactionConflictDirectiveEnumerator.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/d24/mg_i_l_t_conflict_directive_enumerator_8h_8380e4129085584db1db2fdefe64e60a.html#8380e4129085584db1db2fdefe64e60a"><param name="Name" value="mgILTConflictDirectiveEnumerator.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="db/df3/class_parameter_value_collection_7b2bcee52ca7fa6fc6dfa8048fcbc9b2.html#7b2bcee52ca7fa6fc6dfa8048fcbc9b2"><param name="Name" value="ParameterValueCollection"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="dd/daa/class_physical_schema_mapping_collection_326a3756b02d63519aec6f4e8319b4a3.html#326a3756b02d63519aec6f4e8319b4a3"><param name="Name" value="PhysicalSchemaMappingCollection"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="d5/d08/class_point_collection_57e3feefefbfbcb27ce72025f679625b.html#57e3feefefbfbcb27ce72025f679625b"><param name="Name" value="PointCollection"></OBJECT>
@@ -2363,7 +2363,7 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/de6/class_i_long_transaction_conflict_directive_enumerator_imp_308a374a7be4179d23d8450863f89f18.html#308a374a7be4179d23d8450863f89f18"><param name="Name" value="get_Identity"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/de6/class_i_long_transaction_conflict_directive_enumerator_imp_308a374a7be4179d23d8450863f89f18.html#308a374a7be4179d23d8450863f89f18"><param name="Name" value="ILongTransactionConflictDirectiveEnumeratorImp"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="d3/db4/mg_i_long_transaction_conflict_directive_enumerator_8h_6bf2d9808c63d2321c23acb059bff58b.html#6bf2d9808c63d2321c23acb059bff58b"><param name="Name" value="mgILongTransactionConflictDirectiveEnumerator.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/d24/mg_i_l_t_conflict_directive_enumerator_8h_6bf2d9808c63d2321c23acb059bff58b.html#6bf2d9808c63d2321c23acb059bff58b"><param name="Name" value="mgILTConflictDirectiveEnumerator.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="d5/d84/class_association_property_definition_151d73f72af83d67f8fab5dc7740fd6a.html#151d73f72af83d67f8fab5dc7740fd6a"><param name="Name" value="get_IdentityProperties"></OBJECT>
   <UL>
@@ -2492,7 +2492,7 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="de/de6/class_binary_expression_8b71a00a9b7415e7e15b457aebfbfb12.html#8b71a00a9b7415e7e15b457aebfbfb12"><param name="Name" value="BinaryExpression"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/d9b/class_comparison_condition_a8000de52922de3f89c3cf7f013b77db.html#a8000de52922de3f89c3cf7f013b77db"><param name="Name" value="ComparisonCondition"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/db4/class_binary_logical_operator_c8bbc55e31e056a98a0ec3946e1490ac.html#c8bbc55e31e056a98a0ec3946e1490ac"><param name="Name" value="get_LeftOperand"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/db4/class_binary_logical_operator_eebe82d998e25092ba60f63b2a5265bd.html#eebe82d998e25092ba60f63b2a5265bd"><param name="Name" value="get_LeftOperand"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="da/d34/class_data_property_definition_66d093ba9f021c338fab47763b0a8863.html#66d093ba9f021c338fab47763b0a8863"><param name="Name" value="get_Length"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="da/d34/class_data_property_definition_66d093ba9f021c338fab47763b0a8863.html#66d093ba9f021c338fab47763b0a8863"><param name="Name" value="DataPropertyDefinition"></OBJECT>
@@ -2838,7 +2838,7 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/de6/class_i_long_transaction_conflict_directive_enumerator_imp_6b1ff31551072ac56d9ea189a61a7672.html#6b1ff31551072ac56d9ea189a61a7672"><param name="Name" value="get_Resolution"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/de6/class_i_long_transaction_conflict_directive_enumerator_imp_6b1ff31551072ac56d9ea189a61a7672.html#6b1ff31551072ac56d9ea189a61a7672"><param name="Name" value="ILongTransactionConflictDirectiveEnumeratorImp"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="d3/db4/mg_i_long_transaction_conflict_directive_enumerator_8h_b2455de7dce2b17bde75ce4ae1648d49.html#b2455de7dce2b17bde75ce4ae1648d49"><param name="Name" value="mgILongTransactionConflictDirectiveEnumerator.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/d24/mg_i_l_t_conflict_directive_enumerator_8h_b2455de7dce2b17bde75ce4ae1648d49.html#b2455de7dce2b17bde75ce4ae1648d49"><param name="Name" value="mgILTConflictDirectiveEnumerator.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="d0/dd1/class_xml_char_data_handler_7c986e5a60c284ac5030abb6cf96bede.html#7c986e5a60c284ac5030abb6cf96bede"><param name="Name" value="get_RetString"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="d4/da6/class_function_definition_031a3d99f1d4af01ffd2588ac5ab06e9.html#031a3d99f1d4af01ffd2588ac5ab06e9"><param name="Name" value="get_ReturnPropertyType"></OBJECT>
@@ -4523,7 +4523,7 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="d2/d15/_f_d_o_2mg_object_factory_8h_b859bcb13e5ef39faad12574fecfa157.html#b859bcb13e5ef39faad12574fecfa157"><param name="Name" value="FDO/mgObjectFactory.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="dd/d38/mg_i_commit_long_transaction_8h_708422c5ac4fd14ad564aba8c06f6745.html#708422c5ac4fd14ad564aba8c06f6745"><param name="Name" value="mgICommitLongTransaction.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="d3/d7f/mg_i_commit_long_transaction_imp_8h_708422c5ac4fd14ad564aba8c06f6745.html#708422c5ac4fd14ad564aba8c06f6745"><param name="Name" value="mgICommitLongTransactionImp.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="d3/db4/mg_i_long_transaction_conflict_directive_enumerator_8h_e90cfa40afc72810c058f95e2485b2be.html#e90cfa40afc72810c058f95e2485b2be"><param name="Name" value="mgILongTransactionConflictDirectiveEnumerator.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/d24/mg_i_l_t_conflict_directive_enumerator_8h_e90cfa40afc72810c058f95e2485b2be.html#e90cfa40afc72810c058f95e2485b2be"><param name="Name" value="mgILTConflictDirectiveEnumerator.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/de6/class_i_long_transaction_conflict_directive_enumerator_imp.html"><param name="Name" value="ILongTransactionConflictDirectiveEnumeratorImp"></OBJECT>
   <UL>
@@ -6197,16 +6197,6 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="dd/d38/mg_i_long_transaction_checkpoint_reader_8h.html#0d2bebdb5b8e0ba78b234bd3228ded24"><param name="Name" value="IsActive"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="dd/d38/mg_i_long_transaction_checkpoint_reader_8h.html#8464c2b8e40260b2c0c2a8f94cb11929"><param name="Name" value="ReadNext"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="d3/db4/mg_i_long_transaction_conflict_directive_enumerator_8h.html"><param name="Name" value="mgILongTransactionConflictDirectiveEnumerator.h"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="d3/db4/mg_i_long_transaction_conflict_directive_enumerator_8h.html#8380e4129085584db1db2fdefe64e60a"><param name="Name" value="get_Count"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="d3/db4/mg_i_long_transaction_conflict_directive_enumerator_8h.html#6bf2d9808c63d2321c23acb059bff58b"><param name="Name" value="get_Identity"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="d3/db4/mg_i_long_transaction_conflict_directive_enumerator_8h.html#b2455de7dce2b17bde75ce4ae1648d49"><param name="Name" value="get_Resolution"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="d3/db4/mg_i_long_transaction_conflict_directive_enumerator_8h.html#e90cfa40afc72810c058f95e2485b2be"><param name="Name" value="ILongTransactionConflictDirectiveEnumerator"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="d3/db4/mg_i_long_transaction_conflict_directive_enumerator_8h.html#8464c2b8e40260b2c0c2a8f94cb11929"><param name="Name" value="ReadNext"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="d3/db4/mg_i_long_transaction_conflict_directive_enumerator_8h.html#ba3a7e2c9d566edac9c6a7a76834f4af"><param name="Name" value="Reset"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="d3/db4/mg_i_long_transaction_conflict_directive_enumerator_8h.html#e021131ec154a7b7def118400910e11d"><param name="Name" value="set_Resolution"></OBJECT>
-  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="d0/d61/mg_i_long_transaction_privilege_reader_8h.html"><param name="Name" value="mgILongTransactionPrivilegeReader.h"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="d0/d61/mg_i_long_transaction_privilege_reader_8h.html#f74c6f78b78715a059ce81a61d415aa5"><param name="Name" value="Close"></OBJECT>
@@ -6234,6 +6224,16 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="d0/d28/mg_i_long_transaction_set_reader_8h.html#d488fe5d9c36f0c737e41d107ba28cda"><param name="Name" value="GetOwner"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="d0/d28/mg_i_long_transaction_set_reader_8h.html#ad350eb3d1c1480c84f14a49e9ab0a0d"><param name="Name" value="ILongTransactionSetReader"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="d0/d28/mg_i_long_transaction_set_reader_8h.html#8464c2b8e40260b2c0c2a8f94cb11929"><param name="Name" value="ReadNext"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/d24/mg_i_l_t_conflict_directive_enumerator_8h.html"><param name="Name" value="mgILTConflictDirectiveEnumerator.h"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/d24/mg_i_l_t_conflict_directive_enumerator_8h.html#8380e4129085584db1db2fdefe64e60a"><param name="Name" value="get_Count"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/d24/mg_i_l_t_conflict_directive_enumerator_8h.html#6bf2d9808c63d2321c23acb059bff58b"><param name="Name" value="get_Identity"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/d24/mg_i_l_t_conflict_directive_enumerator_8h.html#b2455de7dce2b17bde75ce4ae1648d49"><param name="Name" value="get_Resolution"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/d24/mg_i_l_t_conflict_directive_enumerator_8h.html#e90cfa40afc72810c058f95e2485b2be"><param name="Name" value="ILongTransactionConflictDirectiveEnumerator"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/d24/mg_i_l_t_conflict_directive_enumerator_8h.html#8464c2b8e40260b2c0c2a8f94cb11929"><param name="Name" value="ReadNext"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/d24/mg_i_l_t_conflict_directive_enumerator_8h.html#ba3a7e2c9d566edac9c6a7a76834f4af"><param name="Name" value="Reset"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/d24/mg_i_l_t_conflict_directive_enumerator_8h.html#e021131ec154a7b7def118400910e11d"><param name="Name" value="set_Resolution"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="d4/d8d/mg_i_measure_unit_reader_8h.html"><param name="Name" value="mgIMeasureUnitReader.h"></OBJECT>
   <UL>
@@ -7447,10 +7447,10 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="da/d60/mg_i_locked_object_reader_8h_8464c2b8e40260b2c0c2a8f94cb11929.html#8464c2b8e40260b2c0c2a8f94cb11929"><param name="Name" value="mgILockedObjectReader.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="d1/de4/mg_i_lock_owners_reader_8h_8464c2b8e40260b2c0c2a8f94cb11929.html#8464c2b8e40260b2c0c2a8f94cb11929"><param name="Name" value="mgILockOwnersReader.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="dd/d38/mg_i_long_transaction_checkpoint_reader_8h_8464c2b8e40260b2c0c2a8f94cb11929.html#8464c2b8e40260b2c0c2a8f94cb11929"><param name="Name" value="mgILongTransactionCheckpointReader.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="d3/db4/mg_i_long_transaction_conflict_directive_enumerator_8h_8464c2b8e40260b2c0c2a8f94cb11929.html#8464c2b8e40260b2c0c2a8f94cb11929"><param name="Name" value="mgILongTransactionConflictDirectiveEnumerator.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="d0/d61/mg_i_long_transaction_privilege_reader_8h_8464c2b8e40260b2c0c2a8f94cb11929.html#8464c2b8e40260b2c0c2a8f94cb11929"><param name="Name" value="mgILongTransactionPrivilegeReader.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="d2/d3f/mg_i_long_transaction_reader_8h_8464c2b8e40260b2c0c2a8f94cb11929.html#8464c2b8e40260b2c0c2a8f94cb11929"><param name="Name" value="mgILongTransactionReader.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="d0/d28/mg_i_long_transaction_set_reader_8h_8464c2b8e40260b2c0c2a8f94cb11929.html#8464c2b8e40260b2c0c2a8f94cb11929"><param name="Name" value="mgILongTransactionSetReader.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/d24/mg_i_l_t_conflict_directive_enumerator_8h_8464c2b8e40260b2c0c2a8f94cb11929.html#8464c2b8e40260b2c0c2a8f94cb11929"><param name="Name" value="mgILTConflictDirectiveEnumerator.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="d4/d8d/mg_i_measure_unit_reader_8h_8464c2b8e40260b2c0c2a8f94cb11929.html#8464c2b8e40260b2c0c2a8f94cb11929"><param name="Name" value="mgIMeasureUnitReader.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="d4/dda/mg_i_reader_8h_8464c2b8e40260b2c0c2a8f94cb11929.html#8464c2b8e40260b2c0c2a8f94cb11929"><param name="Name" value="mgIReader.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="da/dc6/mg_i_spatial_context_reader_8h_8464c2b8e40260b2c0c2a8f94cb11929.html#8464c2b8e40260b2c0c2a8f94cb11929"><param name="Name" value="mgISpatialContextReader.h"></OBJECT>
@@ -7582,7 +7582,7 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="df/d94/class_io_byte_stream_reader_0c65ffce805e84ea3004fd2aaa92dd21.html#0c65ffce805e84ea3004fd2aaa92dd21"><param name="Name" value="IoByteStreamReader"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/ded/class_io_char_stream_reader_9e0091463164375ba10a253f8efc7920.html#9e0091463164375ba10a253f8efc7920"><param name="Name" value="IoCharStreamReader"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="dc/d20/class_io_stream_31cbcbf93a24036f2bcb93355b7bc19e.html#31cbcbf93a24036f2bcb93355b7bc19e"><param name="Name" value="IoStream"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="d3/db4/mg_i_long_transaction_conflict_directive_enumerator_8h_ba3a7e2c9d566edac9c6a7a76834f4af.html#ba3a7e2c9d566edac9c6a7a76834f4af"><param name="Name" value="mgILongTransactionConflictDirectiveEnumerator.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/d24/mg_i_l_t_conflict_directive_enumerator_8h_ba3a7e2c9d566edac9c6a7a76834f4af.html#ba3a7e2c9d566edac9c6a7a76834f4af"><param name="Name" value="mgILTConflictDirectiveEnumerator.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="d1/d93/class_virtual_fdo_io_stream_36349358384ad0b2f2ee623f1f166b71.html#36349358384ad0b2f2ee623f1f166b71"><param name="Name" value="VirtualFdoIoStream"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="d0/d91/class_ring_collection.html"><param name="Name" value="RingCollection"></OBJECT>
@@ -8118,7 +8118,7 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/de6/class_i_long_transaction_conflict_directive_enumerator_imp_4afdd86b48232250c1e1e853c60ba074.html#4afdd86b48232250c1e1e853c60ba074"><param name="Name" value="set_Resolution"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/de6/class_i_long_transaction_conflict_directive_enumerator_imp_4afdd86b48232250c1e1e853c60ba074.html#4afdd86b48232250c1e1e853c60ba074"><param name="Name" value="ILongTransactionConflictDirectiveEnumeratorImp"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="d3/db4/mg_i_long_transaction_conflict_directive_enumerator_8h_e021131ec154a7b7def118400910e11d.html#e021131ec154a7b7def118400910e11d"><param name="Name" value="mgILongTransactionConflictDirectiveEnumerator.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/d24/mg_i_l_t_conflict_directive_enumerator_8h_e021131ec154a7b7def118400910e11d.html#e021131ec154a7b7def118400910e11d"><param name="Name" value="mgILTConflictDirectiveEnumerator.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="d5/d84/class_association_property_definition_0fa2e11acf7aeba13b39d429f7b5f6bf.html#0fa2e11acf7aeba13b39d429f7b5f6bf"><param name="Name" value="set_ReverseMultiplicity"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="d5/d84/class_association_property_definition_adbfed21b5b040ac7c32485f275b711a.html#adbfed21b5b040ac7c32485f275b711a"><param name="Name" value="set_ReverseName"></OBJECT>
