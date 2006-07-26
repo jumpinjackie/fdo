@@ -127,8 +127,8 @@ fi
 
 if test "$BUILDDOCS" == yes ; then
    echo Creating WMS provider html documentation
-   rm -rf ../Docs/HTML/Providers/WMS
-   mkdir -p ../Docs/HTML/Providers/WMS
+   rm -rf Docs/HTML/WMS
+   mkdir -p Docs/HTML/WMS
 
    pushd Docs/doc_src >& /dev/null
    doxygen Doxyfile_WMS >& /dev/null
@@ -138,8 +138,8 @@ fi
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
    rm -rf "/usr/local/fdo-3.2.0/docs/HTML/Providers/WMS"
    mkdir -p "/usr/local/fdo-3.2.0/docs/HTML/Providers"
-   if test -e "../Docs/HTML/Providers/WMS"; then
-      cp --force --recursive "../Docs/HTML/Providers/WMS" "/usr/local/fdo-3.2.0/docs/HTML/Providers"
+   if test -e "Docs/HTML/WMS"; then
+      cp --force --recursive "Docs/HTML/WMS" "/usr/local/fdo-3.2.0/docs/HTML/Providers"
    fi
 fi
 
