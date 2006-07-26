@@ -22,9 +22,9 @@
 #ifdef GetMessage
 #undef GetMessage
 #endif
+#include <tchar.h>
 #endif
 
-#include <tchar.h>
 #include <malloc.h>
 #include <math.h>
 #include <time.h>
