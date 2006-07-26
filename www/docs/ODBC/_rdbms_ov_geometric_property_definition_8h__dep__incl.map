@@ -1,7 +1,5 @@
 base referer
-rect $_odbc_ov_geometric_property_definition_8h.html 332,7 585,33
-rect $_rdbms_ov_class_definition_8h.html 368,57 549,84
-rect $_sql_server_ov_geometric_property_definition_8h.html 319,108 599,135
-rect $_odbc_ov_class_definition_8h.html 660,7 833,33
-rect $_rdbms_ov_class_collection_8h.html 655,57 839,84
-rect $_sql_server_ov_class_definition_8h.html 647,108 847,135
+rect $_odbc_ov_geometric_property_definition_8h.html 319,7 572,34
+rect $_rdbms_ov_class_definition_8h.html 355,58 536,84
+rect $_odbc_ov_class_definition_8h.html 627,7 800,34
+rect $_rdbms_ov_class_collection_8h.html 621,58 805,84

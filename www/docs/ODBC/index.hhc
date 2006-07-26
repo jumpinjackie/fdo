@@ -37,26 +37,6 @@
   <LI><OBJECT type="text/sitemap"><param name="Name" value="RdbmsOvPropertyMappingSingle.h"><param name="Local" value="_rdbms_ov_property_mapping_single_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="RdbmsOvSchemaAutoGeneration.h"><param name="Local" value="_rdbms_ov_schema_auto_generation_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="RdbmsOvTable.h"><param name="Local" value="_rdbms_ov_table_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="SqlServerOv.h"><param name="Local" value="_sql_server_ov_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="SqlServerOvAssociationPropertyDefinition.h"><param name="Local" value="_sql_server_ov_association_property_definition_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="SqlServerOvClassCollection.h"><param name="Local" value="_sql_server_ov_class_collection_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="SqlServerOvClassDefinition.h"><param name="Local" value="_sql_server_ov_class_definition_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="SqlServerOvColumn.h"><param name="Local" value="_sql_server_ov_column_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="SqlServerOvDataPropertyDefinition.h"><param name="Local" value="_sql_server_ov_data_property_definition_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="SqlServerOvDataPropertyDefinitionCollection.h"><param name="Local" value="_sql_server_ov_data_property_definition_collection_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="SqlServerOvGeometricColumn.h"><param name="Local" value="_sql_server_ov_geometric_column_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="SqlServerOvGeometricPropertyDefinition.h"><param name="Local" value="_sql_server_ov_geometric_property_definition_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="SqlServerOvObjectPropertyDefinition.h"><param name="Local" value="_sql_server_ov_object_property_definition_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="SqlServerOvPhysicalSchemaMapping.h"><param name="Local" value="_sql_server_ov_physical_schema_mapping_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="SqlServerOvPropertyDefinition.h"><param name="Local" value="_sql_server_ov_property_definition_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="SqlServerOvPropertyDefinitionCollection.h"><param name="Local" value="_sql_server_ov_property_definition_collection_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="SqlServerOvPropertyMappingClass.h"><param name="Local" value="_sql_server_ov_property_mapping_class_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="SqlServerOvPropertyMappingConcrete.h"><param name="Local" value="_sql_server_ov_property_mapping_concrete_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="SqlServerOvPropertyMappingDefinition.h"><param name="Local" value="_sql_server_ov_property_mapping_definition_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="SqlServerOvPropertyMappingRelation.h"><param name="Local" value="_sql_server_ov_property_mapping_relation_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="SqlServerOvPropertyMappingSingle.h"><param name="Local" value="_sql_server_ov_property_mapping_single_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="SqlServerOvTable.h"><param name="Local" value="_sql_server_ov_table_8h.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="SqlServerOvTextInRowOption.h"><param name="Local" value="_sql_server_ov_text_in_row_option_8h.html"><param name="ImageNumber" value="11"></OBJECT>
   </UL>
 <LI><OBJECT type="text/sitemap"><param name="Name" value="Class List"><param name="ImageNumber" value="1"></OBJECT>
   <UL>
@@ -89,23 +69,6 @@
   <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoRdbmsOvReadOnlyPropertyDefinitionCollection"><param name="Local" value="class_fdo_rdbms_ov_read_only_property_definition_collection.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoRdbmsOvSchemaAutoGeneration"><param name="Local" value="class_fdo_rdbms_ov_schema_auto_generation.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoRdbmsOvTable"><param name="Local" value="class_fdo_rdbms_ov_table.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvAssociationPropertyDefinition"><param name="Local" value="class_fdo_sql_server_ov_association_property_definition.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvClassCollection"><param name="Local" value="class_fdo_sql_server_ov_class_collection.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvClassDefinition"><param name="Local" value="class_fdo_sql_server_ov_class_definition.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvColumn"><param name="Local" value="class_fdo_sql_server_ov_column.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvDataPropertyDefinition"><param name="Local" value="class_fdo_sql_server_ov_data_property_definition.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvDataPropertyDefinitionCollection"><param name="Local" value="class_fdo_sql_server_ov_data_property_definition_collection.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvGeometricColumn"><param name="Local" value="class_fdo_sql_server_ov_geometric_column.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvGeometricPropertyDefinition"><param name="Local" value="class_fdo_sql_server_ov_geometric_property_definition.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvObjectPropertyDefinition"><param name="Local" value="class_fdo_sql_server_ov_object_property_definition.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvPhysicalSchemaMapping"><param name="Local" value="class_fdo_sql_server_ov_physical_schema_mapping.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvPropertyDefinition"><param name="Local" value="class_fdo_sql_server_ov_property_definition.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvPropertyDefinitionCollection"><param name="Local" value="class_fdo_sql_server_ov_property_definition_collection.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvPropertyMappingConcrete"><param name="Local" value="class_fdo_sql_server_ov_property_mapping_concrete.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvPropertyMappingDefinition"><param name="Local" value="class_fdo_sql_server_ov_property_mapping_definition.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvPropertyMappingRelation"><param name="Local" value="class_fdo_sql_server_ov_property_mapping_relation.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvPropertyMappingSingle"><param name="Local" value="class_fdo_sql_server_ov_property_mapping_single.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvTable"><param name="Local" value="class_fdo_sql_server_ov_table.html"><param name="ImageNumber" value="11"></OBJECT>
   </UL>
 <LI><OBJECT type="text/sitemap"><param name="Name" value="Class Hierarchy"><param name="ImageNumber" value="1"></OBJECT>
   <UL>
@@ -115,21 +78,15 @@
   <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoRdbmsOvClassDefinition"><param name="ImageNumber" value="1"></OBJECT>
     <UL>
     <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoOdbcOvClassDefinition"><param name="Local" value="class_fdo_odbc_ov_class_definition.html"><param name="ImageNumber" value="11"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvClassDefinition"><param name="Local" value="class_fdo_sql_server_ov_class_definition.html"><param name="ImageNumber" value="11"></OBJECT>
     </UL>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoRdbmsOvColumn"><param name="ImageNumber" value="1"></OBJECT>
     <UL>
     <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoOdbcOvColumn"><param name="Local" value="class_fdo_odbc_ov_column.html"><param name="ImageNumber" value="11"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvColumn"><param name="Local" value="class_fdo_sql_server_ov_column.html"><param name="ImageNumber" value="11"></OBJECT>
     </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoRdbmsOvGeometricColumn"><param name="ImageNumber" value="1"></OBJECT>
-    <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvGeometricColumn"><param name="Local" value="class_fdo_sql_server_ov_geometric_column.html"><param name="ImageNumber" value="11"></OBJECT>
-    </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoRdbmsOvGeometricColumn"><param name="Local" value="class_fdo_rdbms_ov_geometric_column.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoRdbmsOvPhysicalSchemaMapping"><param name="ImageNumber" value="1"></OBJECT>
     <UL>
     <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoOdbcOvPhysicalSchemaMapping"><param name="Local" value="class_fdo_odbc_ov_physical_schema_mapping.html"><param name="ImageNumber" value="11"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvPhysicalSchemaMapping"><param name="Local" value="class_fdo_sql_server_ov_physical_schema_mapping.html"><param name="ImageNumber" value="11"></OBJECT>
     </UL>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoRdbmsOvPropertyDefinition"><param name="ImageNumber" value="1"></OBJECT>
     <UL>
@@ -138,31 +95,16 @@
       <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoOdbcOvDataPropertyDefinition"><param name="Local" value="class_fdo_odbc_ov_data_property_definition.html"><param name="ImageNumber" value="11"></OBJECT>
       <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoOdbcOvGeometricPropertyDefinition"><param name="Local" value="class_fdo_odbc_ov_geometric_property_definition.html"><param name="ImageNumber" value="11"></OBJECT>
       </UL>
-    <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoRdbmsOvAssociationPropertyDefinition"><param name="ImageNumber" value="1"></OBJECT>
-      <UL>
-      <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvAssociationPropertyDefinition"><param name="Local" value="class_fdo_sql_server_ov_association_property_definition.html"><param name="ImageNumber" value="11"></OBJECT>
-      </UL>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoRdbmsOvAssociationPropertyDefinition"><param name="Local" value="class_fdo_rdbms_ov_association_property_definition.html"><param name="ImageNumber" value="11"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoRdbmsOvDataPropertyDefinition"><param name="ImageNumber" value="1"></OBJECT>
       <UL>
       <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoOdbcOvDataPropertyDefinition"><param name="Local" value="class_fdo_odbc_ov_data_property_definition.html"><param name="ImageNumber" value="11"></OBJECT>
-      <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvDataPropertyDefinition"><param name="Local" value="class_fdo_sql_server_ov_data_property_definition.html"><param name="ImageNumber" value="11"></OBJECT>
       </UL>
     <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoRdbmsOvGeometricPropertyDefinition"><param name="ImageNumber" value="1"></OBJECT>
       <UL>
       <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoOdbcOvGeometricPropertyDefinition"><param name="Local" value="class_fdo_odbc_ov_geometric_property_definition.html"><param name="ImageNumber" value="11"></OBJECT>
-      <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvGeometricPropertyDefinition"><param name="Local" value="class_fdo_sql_server_ov_geometric_property_definition.html"><param name="ImageNumber" value="11"></OBJECT>
       </UL>
-    <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoRdbmsOvObjectPropertyDefinition"><param name="ImageNumber" value="1"></OBJECT>
-      <UL>
-      <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvObjectPropertyDefinition"><param name="Local" value="class_fdo_sql_server_ov_object_property_definition.html"><param name="ImageNumber" value="11"></OBJECT>
-      </UL>
-    <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvPropertyDefinition"><param name="ImageNumber" value="1"></OBJECT>
-      <UL>
-      <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvAssociationPropertyDefinition"><param name="Local" value="class_fdo_sql_server_ov_association_property_definition.html"><param name="ImageNumber" value="11"></OBJECT>
-      <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvDataPropertyDefinition"><param name="Local" value="class_fdo_sql_server_ov_data_property_definition.html"><param name="ImageNumber" value="11"></OBJECT>
-      <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvGeometricPropertyDefinition"><param name="Local" value="class_fdo_sql_server_ov_geometric_property_definition.html"><param name="ImageNumber" value="11"></OBJECT>
-      <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvObjectPropertyDefinition"><param name="Local" value="class_fdo_sql_server_ov_object_property_definition.html"><param name="ImageNumber" value="11"></OBJECT>
-      </UL>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoRdbmsOvObjectPropertyDefinition"><param name="Local" value="class_fdo_rdbms_ov_object_property_definition.html"><param name="ImageNumber" value="11"></OBJECT>
     </UL>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoRdbmsOvPropertyDefinitionCollection"><param name="Local" value="class_fdo_rdbms_ov_property_definition_collection.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoRdbmsOvPropertyMappingDefinition"><param name="ImageNumber" value="1"></OBJECT>
@@ -170,24 +112,9 @@
     <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoRdbmsOvPropertyMappingRelation"><param name="ImageNumber" value="1"></OBJECT>
       <UL>
       <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoRdbmsOvPropertyMappingClass"><param name="Local" value="class_fdo_rdbms_ov_property_mapping_class.html"><param name="ImageNumber" value="11"></OBJECT>
-      <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoRdbmsOvPropertyMappingConcrete"><param name="ImageNumber" value="1"></OBJECT>
-        <UL>
-        <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvPropertyMappingConcrete"><param name="Local" value="class_fdo_sql_server_ov_property_mapping_concrete.html"><param name="ImageNumber" value="11"></OBJECT>
-        </UL>
-      <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvPropertyMappingRelation"><param name="ImageNumber" value="1"></OBJECT>
-        <UL>
-        <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvPropertyMappingConcrete"><param name="Local" value="class_fdo_sql_server_ov_property_mapping_concrete.html"><param name="ImageNumber" value="11"></OBJECT>
-        </UL>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoRdbmsOvPropertyMappingConcrete"><param name="Local" value="class_fdo_rdbms_ov_property_mapping_concrete.html"><param name="ImageNumber" value="11"></OBJECT>
       </UL>
-    <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoRdbmsOvPropertyMappingSingle"><param name="ImageNumber" value="1"></OBJECT>
-      <UL>
-      <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvPropertyMappingSingle"><param name="Local" value="class_fdo_sql_server_ov_property_mapping_single.html"><param name="ImageNumber" value="11"></OBJECT>
-      </UL>
-    <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvPropertyMappingDefinition"><param name="ImageNumber" value="1"></OBJECT>
-      <UL>
-      <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvPropertyMappingRelation"><param name="Local" value="class_fdo_sql_server_ov_property_mapping_relation.html"><param name="ImageNumber" value="11"></OBJECT>
-      <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvPropertyMappingSingle"><param name="Local" value="class_fdo_sql_server_ov_property_mapping_single.html"><param name="ImageNumber" value="11"></OBJECT>
-      </UL>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoRdbmsOvPropertyMappingSingle"><param name="Local" value="class_fdo_rdbms_ov_property_mapping_single.html"><param name="ImageNumber" value="11"></OBJECT>
     </UL>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoRdbmsOvReadOnlyClassCollection"><param name="Local" value="class_fdo_rdbms_ov_read_only_class_collection.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoRdbmsOvReadOnlyPropertyDefinitionCollection"><param name="Local" value="class_fdo_rdbms_ov_read_only_property_definition_collection.html"><param name="ImageNumber" value="11"></OBJECT>
@@ -195,18 +122,9 @@
   <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoRdbmsOvTable"><param name="ImageNumber" value="1"></OBJECT>
     <UL>
     <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoOdbcOvTable"><param name="Local" value="class_fdo_odbc_ov_table.html"><param name="ImageNumber" value="11"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvTable"><param name="Local" value="class_fdo_sql_server_ov_table.html"><param name="ImageNumber" value="11"></OBJECT>
     </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvClassCollection"><param name="Local" value="class_fdo_sql_server_ov_class_collection.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvDataPropertyDefinitionCollection"><param name="Local" value="class_fdo_sql_server_ov_data_property_definition_collection.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOvPropertyDefinitionCollection"><param name="Local" value="class_fdo_sql_server_ov_property_definition_collection.html"><param name="ImageNumber" value="11"></OBJECT>
   </UL>
 <LI><OBJECT type="text/sitemap"><param name="Name" value="Class Members"><param name="Local" value="functions.html"><param name="ImageNumber" value="11"></OBJECT>
-<LI><OBJECT type="text/sitemap"><param name="Name" value="Namespace List"><param name="ImageNumber" value="1"></OBJECT>
-  <UL>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="FdoSqlServerOverrides"><param name="Local" value="namespace_fdo_sql_server_overrides.html"><param name="ImageNumber" value="11"></OBJECT>
-  </UL>
 <LI><OBJECT type="text/sitemap"><param name="Name" value="File Members"><param name="Local" value="globals.html"><param name="ImageNumber" value="11"></OBJECT>
-<LI><OBJECT type="text/sitemap"><param name="Name" value="Namespace Members"><param name="Local" value="namespacemembers.html"><param name="ImageNumber" value="11"></OBJECT>
 <LI><OBJECT type="text/sitemap"><param name="Name" value="Graphical Class Hierarchy"><param name="Local" value="inherits.html"><param name="ImageNumber" value="11"></OBJECT>
 </UL>

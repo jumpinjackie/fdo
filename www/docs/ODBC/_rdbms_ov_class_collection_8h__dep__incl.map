@@ -1,6 +1,4 @@
 base referer
-rect $_odbc_ov_class_collection_8h.html 276,7 452,33
-rect $_rdbms_ov_physical_schema_mapping_8h.html 243,57 486,84
-rect $_sql_server_ov_class_collection_8h.html 263,108 466,135
-rect $_odbc_ov_physical_schema_mapping_8h.html 550,32 782,59
-rect $_sql_server_ov_physical_schema_mapping_8h.html 535,95 796,121
+rect $_odbc_ov_class_collection_8h.html 276,7 452,34
+rect $_rdbms_ov_physical_schema_mapping_8h.html 243,58 485,84
+rect $_odbc_ov_physical_schema_mapping_8h.html 536,32 768,59

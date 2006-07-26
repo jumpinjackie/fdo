@@ -1,10 +1,6 @@
 base referer
-rect $class_fdo_rdbms_ov_property_mapping_definition.html 7,108 271,135
-rect $class_fdo_rdbms_ov_property_mapping_relation.html 332,57 588,84
-rect $class_fdo_rdbms_ov_property_mapping_single.html 339,159 582,185
-rect $class_fdo_sql_server_ov_property_mapping_definition.html 320,108 600,135
-rect $class_fdo_rdbms_ov_property_mapping_class.html 667,7 907,33
-rect $class_fdo_rdbms_ov_property_mapping_concrete.html 656,57 918,84
-rect $class_fdo_sql_server_ov_property_mapping_relation.html 651,108 923,135
-rect $class_fdo_sql_server_ov_property_mapping_concrete.html 974,83 1251,109
-rect $class_fdo_sql_server_ov_property_mapping_single.html 656,159 918,185
+rect $class_fdo_rdbms_ov_property_mapping_definition.html 7,57 271,84
+rect $class_fdo_rdbms_ov_property_mapping_relation.html 319,32 575,59
+rect $class_fdo_rdbms_ov_property_mapping_single.html 326,83 568,109
+rect $class_fdo_rdbms_ov_property_mapping_class.html 634,7 874,33
+rect $class_fdo_rdbms_ov_property_mapping_concrete.html 623,57 884,84

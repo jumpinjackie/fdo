@@ -1,8 +1,5 @@
 base referer
-rect $_odbc_ov_data_property_definition_8h.html 299,7 517,33
-rect $_rdbms_ov_class_definition_8h.html 317,57 499,84
-rect $_sql_server_ov_data_property_definition_8h.html 285,108 531,135
-rect $_odbc_ov_class_definition_8h.html 647,7 820,33
-rect $_rdbms_ov_class_collection_8h.html 641,57 825,84
-rect $_sql_server_ov_class_definition_8h.html 633,108 833,135
-rect $_sql_server_ov_data_property_definition_collection_8h.html 581,159 885,185
+rect $_odbc_ov_data_property_definition_8h.html 284,7 503,34
+rect $_rdbms_ov_class_definition_8h.html 303,58 484,84
+rect $_odbc_ov_class_definition_8h.html 557,7 731,34
+rect $_rdbms_ov_class_collection_8h.html 552,58 736,84
