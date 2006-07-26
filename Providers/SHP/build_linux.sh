@@ -127,8 +127,8 @@ fi
 
 if test "$BUILDDOCS" == yes ; then
    echo Creating SHP provider html documentation
-   rm -rf ../Docs/HTML/Providers/SHP
-   mkdir -p ../Docs/HTML/Providers/SHP
+   rm -rf Docs/HTML/SHP
+   mkdir -p Docs/HTML/SHP
 
    pushd Docs/doc_src >& /dev/null
    doxygen Doxyfile_SHP >& /dev/null
@@ -138,8 +138,8 @@ fi
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
    rm -rf "/usr/local/fdo-3.2.0/docs/HTML/Providers/SHP"
    mkdir -p "/usr/local/fdo-3.2.0/docs/HTML/Providers"
-   if test -e "../Docs/HTML/Providers/SHP"; then
-      cp --force --recursive "../Docs/HTML/Providers/SHP" "/usr/local/fdo-3.2.0/docs/HTML/Providers"
+   if test -e "Docs/HTML/SHP"; then
+      cp --force --recursive "Docs/HTML/SHP" "/usr/local/fdo-3.2.0/docs/HTML/Providers"
    fi
 fi
 
