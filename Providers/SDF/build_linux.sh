@@ -127,8 +127,8 @@ fi
 
 if test "$BUILDDOCS" == yes ; then
    echo Creating SDF provider html documentation
-   rm -rf ../Docs/HTML/Providers/SDF
-   mkdir -p ../Docs/HTML/Providers/SDF
+   rm -rf Docs/HTML/SDF
+   mkdir -p Docs/HTML/SDF
 
    pushd Docs/doc_src >& /dev/null
    doxygen Doxyfile_SDF >& /dev/null
@@ -138,8 +138,8 @@ fi
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
    rm -rf "/usr/local/fdo-3.2.0/docs/HTML/Providers/SDF"
    mkdir -p "/usr/local/fdo-3.2.0/docs/HTML/Providers"
-   if test -e "../Docs/HTML/Providers/SDF"; then
-      cp --force --recursive "../Docs/HTML/Providers/SDF" "/usr/local/fdo-3.2.0/docs/HTML/Providers"
+   if test -e "Docs/HTML/SDF"; then
+      cp --force --recursive "Docs/HTML/SDF" "/usr/local/fdo-3.2.0/docs/HTML/Providers"
    fi
 fi
 
