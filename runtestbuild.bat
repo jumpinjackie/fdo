@@ -158,14 +158,14 @@ goto study_params
 	echo *starting wms tests
 	if exist WMS_unit_test_log.txt del /Q /F WMS_unit_test_log.txt
 	pushd Providers\WMS\Bin\Win32\Debug
-	UnitTest.exe -NoWAIT >..\..\..\..\WMS_unit_test_log.txt
+	UnitTest.exe -NoWAIT >..\..\..\..\..\WMS_unit_test_log.txt
 	if errorlevel 1 echo Wms unit test returned an error, please check Wms_unit_test_log.txt for more information
 	popd
 :arcsde_test
 	echo *starting arcsde tests
 	if exist ArcSDE_unit_test_log.txt del /Q /F ArcSDE_unit_test_log.txt
 	pushd Providers\ArcSDE\Bin\Win32\Debug
-	UnitTest.exe server=adfdo.dnsalias.com port_multi=5151/tcp port_single=5151/tcp sdepwd=system dataset=FC4 rdbms=ORACLE -NoWAIT >..\..\..\ArcSDE_unit_test_log.txt
+	UnitTest.exe server=adfdo.dnsalias.com port_multi=5151/tcp port_single=5151/tcp sdepwd=system dataset=FC4 rdbms=ORACLE -NoWAIT >..\..\..\..\..\ArcSDE_unit_test_log.txt
 	if errorlevel 1 echo ArcSDE unit test returned an error, please check ArcSDE_unit_test_log.txt for more information
 	popd
 
