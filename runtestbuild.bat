@@ -1,7 +1,7 @@
 @echo off
 
 SET FDOTARZIPFOLDERRTB=OpenSource_FDO
-SET FDOTARGETFOLDER=C:\OpenSource
+SET FDOTARGETFOLDER=OpenSource
 SET FDOBUILDNUMBERRTB=GXXX
 SET FDOSOURCEZIP=%cd%
 SET FDOERRORMESSAGE=
@@ -51,6 +51,9 @@ goto study_params
 	if ("%SDEHOME%")==("") goto custom_error_ex
 	if not exist "%SDEHOME%" goto custom_error_ex
 	if not exist "%FDOTARGETFOLDER%" mkdir "%FDOTARGETFOLDER%"
+	pushd "%FDOTARGETFOLDER%"
+	SET FDOTARGETFOLDER=%cd%
+	popd
 	if exist "%FDOTARGETFOLDER%\%FDOTARZIPFOLDERRTB%" rmdir /S /Q "%FDOTARGETFOLDER%\%FDOTARZIPFOLDERRTB%"
 
 	if not ("%FDOBUILDNUMBERRTB%") == ("GXXX") goto start_copy
