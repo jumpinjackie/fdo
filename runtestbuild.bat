@@ -144,7 +144,7 @@ goto study_params
 	echo *starting shp tests
 	if exist Shp_unit_test_log.txt del /Q /F Shp_unit_test_log.txt
 	pushd Providers\SHP\src\UnitTest
-	..\..\bin\win32\debug\UnitTest.exe -NoWAIT >..\..\..\..\Shp_unit_test_log.txt
+	..\..\Bin\win32\debug\UnitTest.exe -NoWAIT >..\..\..\..\Shp_unit_test_log.txt
 	if errorlevel 1 echo Shp unit test returned an error, please check Shp_unit_test_log.txt for more information
 	popd
 :sdf_test
@@ -164,8 +164,8 @@ goto study_params
 :arcsde_test
 	echo *starting arcsde tests
 	if exist ArcSDE_unit_test_log.txt del /Q /F ArcSDE_unit_test_log.txt
-	pushd Providers\ArcSDE\UnitTest
-	..\..\bin\Win32\Debug\UnitTest.exe server=adfdo.dnsalias.com port_multi=5151/tcp port_single=5151/tcp sdepwd=system dataset=FC4 rdbms=ORACLE -NoWAIT >..\..\..\ArcSDE_unit_test_log.txt
+	pushd Providers\ArcSDE\Bin\Win32\Debug
+	UnitTest.exe server=adfdo.dnsalias.com port_multi=5151/tcp port_single=5151/tcp sdepwd=system dataset=FC4 rdbms=ORACLE -NoWAIT >..\..\..\ArcSDE_unit_test_log.txt
 	if errorlevel 1 echo ArcSDE unit test returned an error, please check ArcSDE_unit_test_log.txt for more information
 	popd
 
