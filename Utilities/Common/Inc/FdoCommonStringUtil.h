@@ -144,7 +144,57 @@
 
 #include <iconv.h>
 
-// macro to convert a multibyte string into a wide character string, allocating space on the stack
+#define conv_wide_to_utf8(utf8,w)\
+{\
+    bool convFailed = true;\
+    if (NULL != w)\
+    {\
+        size_t szStr = wcslen (w)+1;\
+        utf8 = (char*)alloca (szStr * 6);\
+        iconv_t rOpen = iconv_open("UTF-8", "WCHAR_T");\
+        if ((iconv_t)-1 != rOpen)\
+        {\
+           size_t iSize_Out = szStr * 6;\
+           size_t iSize_In = sizeof (wchar_t)*szStr;\
+           char* p_utf8 = utf8;\
+           const wchar_t* p_w = w;\
+           size_t rConv = iconv(rOpen, (char**)&p_w, &iSize_In, &p_utf8,&iSize_Out);\
+           if ((size_t)-1 != rConv &&  iSize_Out != (szStr * 6))\
+               convFailed = false;\
+           iconv_close(rOpen);\
+        }\
+    }\
+    if (convFailed)\
+        utf8 = NULL;\
+    if (NULL==utf8) throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));\
+}
+
+#define conv_utf8_to_wide(w,utf8)\
+{\
+    bool convFailed = true;\
+    if (NULL != utf8)\
+    {\
+        size_t szStr = strlen (utf8)+1;\
+        w = (wchar_t*)alloca (szStr * sizeof(wchar_t));\
+        iconv_t rOpen = iconv_open("WCHAR_T", "UTF-8");\
+        if ((iconv_t)-1 != rOpen)\
+        {\
+           size_t iSize_Out = szStr * sizeof(wchar_t);\
+           size_t iSize_In = szStr;\
+           const char* p_utf8 = utf8;\
+           wchar_t*p_w = w;\
+           size_t rConv = iconv(rOpen, (char**)&p_utf8, &iSize_In, (char**)&p_w, &iSize_Out);\
+           if ((size_t)-1 != rConv &&  iSize_Out != (szStr * sizeof(wchar_t)))\
+               convFailed = false;\
+           iconv_close(rOpen);\
+        }\
+    }\
+    if (convFailed)\
+        w = NULL;\
+    if (NULL==w) throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));\
+}
+
+//macro to convert a multibyte string into a wide character string, allocating space on the stack
 #define multibyte_to_wide_cpg(w,mb,cpg)\
 {\
     const char* p = (mb);\

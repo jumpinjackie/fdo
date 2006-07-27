@@ -183,7 +183,7 @@ bool FdoCommonFile::OpenFile (const wchar_t* filePath, OpenFlags openFlags, Erro
     else if ((openFlags & IDF_OPEN_EXISTING) && m_newFile)
         return false;
 
-    wide_to_multibyte (file,filePath);
+    conv_wide_to_utf8 (file, filePath);
     m_handle = open (file, flags, mode);
 
     if (INVALID_MONIKER == m_handle)
@@ -647,7 +647,7 @@ bool FdoCommonFile::FileExists (const wchar_t* filePath)
     char* file;
     int f;
 
-    wide_to_multibyte (file, filePath);
+    conv_wide_to_utf8 (file, filePath);
     size_t length = strlen (file);
     if (FILE_PATH_DELIMITER2 == file[length - 1])
         file[length - 1] = FILE_PATH_DELIMITER;
@@ -687,7 +687,7 @@ bool FdoCommonFile::IsDirectory (const wchar_t* name)
     struct stat statInfo;
     char *mbName;
 
-    wide_to_multibyte(mbName, _name);
+    conv_wide_to_utf8 (mbName, _name);
     return (0==stat(mbName, &statInfo)) ? (statInfo.st_mode & S_IFDIR) > 0 : false;
 #endif // _WIN32
 }
@@ -713,7 +713,7 @@ bool FdoCommonFile::Delete (const wchar_t* fileName, bool force)
 
 #else // _WIN32
     char* file;
-    wide_to_multibyte (file, fileName);
+    conv_wide_to_utf8 (file, fileName);
     ret = 0 == unlink (file);
 
 #endif // _WIN32
@@ -743,8 +743,8 @@ bool FdoCommonFile::Move (const wchar_t* oldFileName, const wchar_t* newFileName
 #else // _WIN32
     char* oldpath;
     char* newpath;
-    wide_to_multibyte (oldpath, oldFileName);
-    wide_to_multibyte (newpath, newFileName);
+    conv_wide_to_utf8 (oldpath, oldFileName);
+    conv_wide_to_utf8 (newpath, newFileName);
     int rename_result = rename (oldpath, newpath);
 
     // If we failed to do a simple rename operation (for whatever reasons),
@@ -833,13 +833,21 @@ bool FdoCommonFile::GetTempFile (wchar_t** name, const wchar_t* path)
     // even though the man pages say explicitly don't use this function...
     mbPath = NULL;
     if (NULL != path)
-        wide_to_multibyte (mbPath, path);
+        conv_wide_to_utf8 (mbPath, path);
     generated = tempnam (mbPath, "idf");
     if (NULL == generated)
         ret = false;
     else
     {
-        multibyte_to_wide (tempName, generated);
+        try
+        {
+           conv_utf8_to_wide (tempName, generated);
+        }
+        catch (FdoException* exception)
+        {
+          free (generated);
+          throw exception;
+        }
         free (generated);
         ret = true;
     }
@@ -893,7 +901,7 @@ void append_file (std::vector<std::wstring>& files, char* name)
 {
     wchar_t* _name;
 
-    multibyte_to_wide (_name, name);
+    conv_utf8_to_wide (_name, name);
     files.push_back (_name);
 }
 void FdoCommonFile::GetAllFiles (const wchar_t* path, std::vector<std::wstring>& files)
@@ -906,7 +914,7 @@ void FdoCommonFile::GetAllFiles (const wchar_t* path, std::vector<std::wstring>&
     // Symbian wopendir
     // Samba wsys_opendir
     // mingw,Watcom _wopendir
-    wide_to_multibyte (_path, path);
+    conv_wide_to_utf8 (_path, path);
     if (NULL != (dirp = opendir(_path)))
     {
         while (NULL != (dptr = readdir (dirp)))
@@ -923,7 +931,7 @@ bool FdoCommonFile::MkDir (const wchar_t* path)
 #else
     char* _path;
 
-    wide_to_multibyte (_path, path);
+    conv_wide_to_utf8 (_path, path);
     return (0 == mkdir (_path, S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP | S_IWGRP | S_IXGRP));
 #endif
 }
@@ -935,7 +943,7 @@ bool FdoCommonFile::RmDir (const wchar_t* path)
 #else
     char* _path;
 
-    wide_to_multibyte (_path, path);
+    conv_wide_to_utf8 (_path, path);
     return (0 == rmdir (_path));
 #endif
 }
@@ -995,7 +1003,7 @@ const wchar_t* FdoCommonFile::GetAbsolutePath(const wchar_t *pFilename)
     struct stat statInfo;
     char *mbName;
 	char destfolder[3*FdoCommonFile::PATH_SIZE+1];
-    wide_to_multibyte(mbName, pFilename);
+    conv_wide_to_utf8 (mbName, pFilename);
     if(0 != stat (mbName, &statInfo))
 		return pFilename;
 	if(statInfo.st_mode & S_IFDIR)
@@ -1003,7 +1011,7 @@ const wchar_t* FdoCommonFile::GetAbsolutePath(const wchar_t *pFilename)
 		if (get_fulpath_folder(mbName, destfolder) != NULL)
 		{
 			wchar_t* _name;
-			multibyte_to_wide (_name, destfolder);
+			conv_utf8_to_wide (_name, destfolder);
 			wcscpy (absFilename, _name);
 			size_t length = wcslen (absFilename);
 			if (absFilename[length] != FILE_PATH_DELIMITER)
@@ -1025,11 +1033,11 @@ const wchar_t* FdoCommonFile::GetAbsolutePath(const wchar_t *pFilename)
 
 		if(filePathtmp != pFilename)
 		{
-			wide_to_multibyte (mbName, absFilename);
+			conv_wide_to_utf8 (mbName, absFilename);
 			if (get_fulpath_folder(mbName, destfolder) != NULL)
 			{
 				wchar_t* _name;
-				multibyte_to_wide (_name, destfolder);
+				conv_utf8_to_wide (_name, destfolder);
 				wcscpy(absFilename, _name);
 				size_t length = wcslen (absFilename);
 
