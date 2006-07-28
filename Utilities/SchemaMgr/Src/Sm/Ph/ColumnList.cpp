@@ -42,6 +42,8 @@ FdoSmPhColumnList* FdoSmPhColumnList::Create( FdoSmPhMgrP mgr, const FdoStringP&
 FdoSmPhColumnList::FdoSmPhColumnList( FdoSmPhMgrP mgr) :
     FdoStringCollection()
 {
+    // mMgr is a backpointer so do not addref here.
+    // Otherwise, a circular reference is introduced.
     mMgr = mgr;
 }
 
@@ -88,7 +90,8 @@ FdoSmPhColumnList::~FdoSmPhColumnList()
 
 FdoSmPhMgrP FdoSmPhColumnList::GetManager()
 {
-    return mMgr;
+    // ADDREF required here since mMgr does not hold a reference.
+    return FDO_SAFE_ADDREF(mMgr);
 }
 
 FdoStringP FdoSmPhColumnList::GetDbString( FdoInt32 idx )

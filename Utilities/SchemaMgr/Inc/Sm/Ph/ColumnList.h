@@ -106,7 +106,8 @@ protected:
     }
 
 private:
-    FdoSmPhMgrP mMgr;
+    // Back pointer, so no refcount held. Otherwise circular reference introduced.
+    FdoSmPhMgr* mMgr;
 };
 
 typedef FdoPtr<FdoSmPhColumnList> FdoSmPhColumnListP;
