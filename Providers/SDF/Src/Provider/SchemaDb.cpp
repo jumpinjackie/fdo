@@ -67,9 +67,10 @@ SchemaDb::SchemaDb(SQLiteDataBase* env, const char* filename, bool bReadOnly) :
         if (
                (m_majorVersion != SDFPROVIDER_VERSION_MAJOR_3 || m_minorVersion != SDFPROVIDER_VERSION_MINOR_3_0)
             && (m_majorVersion != SDFPROVIDER_VERSION_MAJOR_3 || m_minorVersion != SDFPROVIDER_VERSION_MINOR_3_1)
+            && (m_majorVersion != SDFPROVIDER_VERSION_MAJOR_3 || m_minorVersion != SDFPROVIDER_VERSION_MINOR_3_2)
             )
             throw FdoConnectionException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_5_INCORRECT_SDF_VERSION),
-                m_majorVersion, m_minorVersion, SDFPROVIDER_VERSION_MAJOR_CURRENT, SDFPROVIDER_VERSION_MINOR_CURRENT));
+                m_majorVersion, m_minorVersion, SDFPROVIDER_VERSION_MAJOR_CURRENT, SDFPROVIDER_VERSION_MINOR_CURRENT_NLS));
     }
     else
     {
@@ -203,6 +204,12 @@ FdoFeatureSchema* SchemaDb::ReadSchema(FdoString *schemaName)
     return schema.Detach();
 }
 
+
+void SchemaDb::GetSchemaVersion(unsigned char& major, unsigned char& minor)
+{
+    major = m_majorVersion;
+    minor = m_minorVersion;
+}
 
 FdoFeatureSchema* SchemaDb::GetSchema()
 {
@@ -574,6 +581,36 @@ void SchemaDb::WriteClassDefinition(REC_NO& recno, FdoClassDefinition* clas, Fdo
         FdoPtr<FdoClassDefinition> baseToWrite = classes->FindItem (base->GetName());
         if (baseToWrite != NULL)
             WriteClassDefinition(recno, baseToWrite, classes);
+    }
+
+    // The following checks if any character in the class name is non-ASCII7.
+    // The 3.0 and 3.1 file formats cannot properly deal with these characters so
+    // the file version needs to be bumped up to 3.2 in this case.
+
+    if ( m_majorVersion ==  SDFPROVIDER_VERSION_MAJOR_3 && 
+         (m_minorVersion == SDFPROVIDER_VERSION_MINOR_3_0 || m_minorVersion == SDFPROVIDER_VERSION_MINOR_3_1)
+    ) {
+        FdoString* className = clas->GetName();
+        int idx;
+        int nameLen = wcslen(className);
+
+        for ( idx = 0; idx < nameLen; idx++ ) 
+        {
+            if ( (className[idx] & 0x7f) != className[idx] ) 
+            {
+                // A non-ASCII7 character was found so bump up the file version to 3.2.
+                // This causes the class table name to be the UTF8 version of the class name.
+                // In 3.1 files, the table name is the MBCS version of the class name, 
+                // which leads to problems since MBCS is locale-dependent.
+                // For maximum forward-compatibility, the version is not bumped up if 
+                // all class names only have ASCII-7 characters. This allows such a file
+                // to be read by the SDF 3.1 Provider, even if created by the SDF 3.2 
+                // provider. 
+                m_minorVersion = SDFPROVIDER_VERSION_MINOR_3_2;
+                WriteMetadata(m_majorVersion, m_minorVersion);
+                break;
+            }
+        }
     }
 
     //increment record number -- the argument holds the record number of the last class that was

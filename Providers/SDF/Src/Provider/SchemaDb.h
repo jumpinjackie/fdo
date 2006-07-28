@@ -30,6 +30,9 @@ public:
     SchemaDb(SQLiteDataBase* env, const char* filename, bool bReadOnly);
     virtual ~SchemaDb();
 
+    // Retrieves the version of the current SDF file. 
+    void GetSchemaVersion(unsigned char& major, unsigned char& minor);
+
     //FDO feature schema support
     void SetSchema(FdoFeatureSchema* schema);
 

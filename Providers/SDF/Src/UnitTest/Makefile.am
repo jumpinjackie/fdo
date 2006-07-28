@@ -16,6 +16,7 @@ UnitTest_SOURCES = \
   AssociationUpdateTest.cpp \
   AssociationDeleteTest.cpp \
   ExtendedSelectTest.cpp \
+  NlsTest.cpp \
   SelectTest.cpp
 
 noinst_HEADERS = $(UnitTest_SOURCES) \
@@ -28,6 +29,7 @@ noinst_HEADERS = $(UnitTest_SOURCES) \
   FdoMultiThreadTest.h \
   FgfStreamWriter.h \
   MasterTest.h \
+  NlsTest.h \
   SelectTest.h \
   tester-linux.h
 
