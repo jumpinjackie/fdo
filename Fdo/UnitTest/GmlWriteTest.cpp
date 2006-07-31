@@ -244,6 +244,16 @@ void GmlWriteTest::testSimpleFeature() {
         UnitTestUtil::CheckOutput( "gml_write_master.txt", "gml_write.xml" );
 #endif
  
+	featureReader = new MyFeatureReader();
+    xmlWriter = FdoXmlWriter::Create(L"gml_write2.xml", false);
+    featureWriter = FdoXmlFeatureWriter::Create(xmlWriter, flags);
+
+    FdoXmlFeatureSerializer::XmlSerialize(featureReader, featureWriter, flags);
+
+#ifdef _WIN32
+        // Compare output against expected results.
+        UnitTestUtil::CheckOutput( "gml_write_master.txt", "gml_write2.xml" );
+#endif
 }
 
 

@@ -167,7 +167,6 @@ public:
 protected:
     FdoXmlFeatureWriter();
     FdoXmlFeatureWriter(FdoXmlFeaturePropertyWriter* writer, FdoXmlFeatureFlags* flags);
-    FdoXmlFeatureWriter(FdoXmlWriter* writer, FdoXmlFeatureFlags* flags);
     virtual ~FdoXmlFeatureWriter();
     virtual void Dispose();
     void _writeFeature(FdoString* elementTag, 

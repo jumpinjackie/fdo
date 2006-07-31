@@ -206,10 +206,7 @@ FdoXmlFeatureWriter::FdoXmlFeatureWriter(FdoXmlFeaturePropertyWriter* writer, Fd
 
 
 }
-FdoXmlFeatureWriter::FdoXmlFeatureWriter(FdoXmlWriter* writer, FdoXmlFeatureFlags* flags){
-    FdoPtr<FdoXmlFeaturePropertyWriter> propertyWriter = FdoXmlFeaturePropertyWriter::Create(writer, flags);
-    FdoXmlFeatureWriter(propertyWriter, flags);
-}
+
 FdoXmlFeatureWriter::~FdoXmlFeatureWriter() {
 }
 
@@ -226,7 +223,8 @@ FdoXmlFeatureWriter * FdoXmlFeatureWriter::Create(
 FdoXmlFeatureWriter* FdoXmlFeatureWriter::Create( 
 	 FdoXmlWriter*                   writer,
      FdoXmlFeatureFlags*             flags ) {
-    return new FdoXmlFeatureWriter(writer, flags);
+    FdoPtr<FdoXmlFeaturePropertyWriter> propertyWriter = FdoXmlFeaturePropertyWriter::Create(writer, flags);
+    return new FdoXmlFeatureWriter(propertyWriter, flags);
 }
 
 FdoXmlFeaturePropertyWriter* FdoXmlFeatureWriter::GetFeaturePropertyWriter() {
@@ -360,7 +358,14 @@ void FdoXmlFeatureWriter::_writeFeature(FdoString* elementTag,
     for (i = 0; i < count; i++) {
         FdoPtr<FdoXmlFeatureWriter> objectWriter = objectPropertyWriters->GetItem(i);
         static_cast<FdoXmlFeatureSubWriter*>(objectWriter.p)->SetCaching(false);
-        objectWriter->WriteFeature(objectPropertyNames->GetString(i));
+        try {
+            objectWriter->WriteFeature(objectPropertyNames->GetString(i));
+            static_cast<FdoXmlFeatureSubWriter*>(objectWriter.p)->SetCaching(true);
+        }
+        catch (...) {
+            static_cast<FdoXmlFeatureSubWriter*>(objectWriter.p)->SetCaching(true);
+            throw;
+        }
     }
 
     // For association properties
@@ -368,20 +373,27 @@ void FdoXmlFeatureWriter::_writeFeature(FdoString* elementTag,
     for (i = 0; i < count; i++) {
         FdoPtr<FdoXmlFeatureWriter> associationWriter = associationPropertyWriters->GetItem(i);
         static_cast<FdoXmlFeatureSubWriter*>(associationWriter.p)->SetCaching(false);
-        FdoSize numOfCachedFeatures = static_cast<FdoXmlFeatureSubWriter*>(associationWriter.p)->GetNumOfCachedFeatures();
-        if (numOfCachedFeatures > 0) {
-            FdoPtr<FdoXmlWriter> _writer = mPropertyWriter->GetXmlWriter();
-            _writer->WriteStartElement(associationPropertyNames->GetString(i));
-            // if there are more than one features to be written
-            // we have to wrap all the features within "wfs:FeatureCollection"
-            if (numOfCachedFeatures > 1) {
-                _writer->WriteStartElement(L"wfs:FeatureCollection");
+        try {
+            FdoSize numOfCachedFeatures = static_cast<FdoXmlFeatureSubWriter*>(associationWriter.p)->GetNumOfCachedFeatures();
+            if (numOfCachedFeatures > 0) {
+                FdoPtr<FdoXmlWriter> _writer = mPropertyWriter->GetXmlWriter();
+                _writer->WriteStartElement(associationPropertyNames->GetString(i));
+                // if there are more than one features to be written
+                // we have to wrap all the features within "wfs:FeatureCollection"
+                if (numOfCachedFeatures > 1) {
+                    _writer->WriteStartElement(L"wfs:FeatureCollection");
+                }
+                associationWriter->WriteFeature();
+                if (numOfCachedFeatures > 1) {
+                    _writer->WriteEndElement(); // end of wfs:FeatureCollection
+                }
+                _writer->WriteEndElement(); // end of the association property
             }
-            associationWriter->WriteFeature();
-            if (numOfCachedFeatures > 1) {
-                _writer->WriteEndElement(); // end of wfs:FeatureCollection
-            }
-            _writer->WriteEndElement(); // end of the association property
+            static_cast<FdoXmlFeatureSubWriter*>(associationWriter.p)->SetCaching(true);
+        }
+        catch (...) {
+            static_cast<FdoXmlFeatureSubWriter*>(associationWriter.p)->SetCaching(true);
+            throw;
         }
     }
 

@@ -22,105 +22,121 @@
 #include <assert.h>
 
 void _writeFeature(FdoString* featureName, FdoIFeatureReader* reader, FdoXmlFeatureWriter* writer,
-                   FdoXmlFeatureFlags* flags) {
-    FdoPtr<FdoClassDefinition> classDef = reader->GetClassDefinition();
-    FdoPtr<FdoPropertyDefinitionCollection> props = classDef->GetProperties();
-    FdoPtr<FdoClassDefinition> oldClassDef = writer->GetClassDefinition();
-    writer->SetClassDefinition(classDef);
+                   FdoXmlFeatureFlags* flags);
 
-    FdoInt32 count = props->GetCount();
-    for (int i = 0; i < count; i++) {
-        FdoPtr<FdoPropertyDefinition> prop = props->GetItem(i);
-        FdoPropertyType type = prop->GetPropertyType();
-        FdoString* propName = prop->GetName();
-        if (reader->IsNull(propName))
-            continue;
-        switch (type) {
-            case FdoPropertyType_DataProperty:
-                {
-                    FdoPtr<FdoDataPropertyDefinition> dataProp = static_cast<FdoDataPropertyDefinition*>(FDO_SAFE_ADDREF(prop.p));
-                    FdoDataType dataType = dataProp->GetDataType();
-                    FdoPtr<FdoValueExpression> propValue;
-                    switch (dataType) {
-                        case FdoDataType_Boolean:
-                            propValue = FdoBooleanValue::Create(reader->GetBoolean(propName));
-                            break;
-                        case FdoDataType_Byte:
-                            propValue = FdoByteValue::Create(reader->GetByte(propName));
-                            break;
-                        case FdoDataType_DateTime:
-                            propValue = FdoDateTimeValue::Create(reader->GetDateTime(propName));
-                            break;
-                        case FdoDataType_Decimal:
-                            propValue = FdoDecimalValue::Create(reader->GetDouble(propName));
-                            break;
-                        case FdoDataType_Double:
-                            propValue = FdoDoubleValue::Create(reader->GetDouble(propName));
-                            break;
-                        case FdoDataType_Int16:
-                            propValue = FdoInt16Value::Create(reader->GetInt16(propName));
-                            break;
-                        case FdoDataType_Int32:
-                            propValue = FdoInt32Value::Create(reader->GetInt32(propName));
-                            break;
-                        case FdoDataType_Int64:
-                            propValue = FdoInt64Value::Create(reader->GetInt64(propName));
-                            break;
-                        case FdoDataType_Single:
-                            propValue = FdoSingleValue::Create(reader->GetSingle(propName));
-                            break;
-                        case FdoDataType_String:
-                            propValue = FdoStringValue::Create(reader->GetString(propName));
-                            break;
-                        case FdoDataType_BLOB:
-                        case FdoDataType_CLOB:
-                            propValue = reader->GetLOB(propName);
-                            break;
-                        default:
-                            assert(false);
-                            break;
-                    }
-                    if (propValue != NULL) {
-                        FdoPtr<FdoPropertyValue> nameValue = FdoPropertyValue::Create(propName, propValue);
-                        writer->SetProperty(nameValue);
-                    }
+void _writeProperty(FdoPropertyP prop, FdoIFeatureReader* reader, FdoXmlFeatureWriter* writer,
+                   FdoXmlFeatureFlags* flags) {
+    FdoPropertyType type = prop->GetPropertyType();
+    FdoString* propName = prop->GetName();
+    if (reader->IsNull(propName))
+        return;
+    switch (type) {
+        case FdoPropertyType_DataProperty:
+            {
+                FdoPtr<FdoDataPropertyDefinition> dataProp = static_cast<FdoDataPropertyDefinition*>(FDO_SAFE_ADDREF(prop.p));
+                FdoDataType dataType = dataProp->GetDataType();
+                FdoPtr<FdoValueExpression> propValue;
+                switch (dataType) {
+                    case FdoDataType_Boolean:
+                        propValue = FdoBooleanValue::Create(reader->GetBoolean(propName));
+                        break;
+                    case FdoDataType_Byte:
+                        propValue = FdoByteValue::Create(reader->GetByte(propName));
+                        break;
+                    case FdoDataType_DateTime:
+                        propValue = FdoDateTimeValue::Create(reader->GetDateTime(propName));
+                        break;
+                    case FdoDataType_Decimal:
+                        propValue = FdoDecimalValue::Create(reader->GetDouble(propName));
+                        break;
+                    case FdoDataType_Double:
+                        propValue = FdoDoubleValue::Create(reader->GetDouble(propName));
+                        break;
+                    case FdoDataType_Int16:
+                        propValue = FdoInt16Value::Create(reader->GetInt16(propName));
+                        break;
+                    case FdoDataType_Int32:
+                        propValue = FdoInt32Value::Create(reader->GetInt32(propName));
+                        break;
+                    case FdoDataType_Int64:
+                        propValue = FdoInt64Value::Create(reader->GetInt64(propName));
+                        break;
+                    case FdoDataType_Single:
+                        propValue = FdoSingleValue::Create(reader->GetSingle(propName));
+                        break;
+                    case FdoDataType_String:
+                        propValue = FdoStringValue::Create(reader->GetString(propName));
+                        break;
+                    case FdoDataType_BLOB:
+                    case FdoDataType_CLOB:
+                        propValue = reader->GetLOB(propName);
+                        break;
+                    default:
+                        assert(false);
+                        break;
                 }
-                break;
-            case FdoPropertyType_GeometricProperty:
-                {
-                    FdoPtr<FdoByteArray> geoValue = reader->GetGeometry(propName);
-                    FdoPtr<FdoValueExpression> propValue = FdoGeometryValue::Create(geoValue);
+                if (propValue != NULL) {
                     FdoPtr<FdoPropertyValue> nameValue = FdoPropertyValue::Create(propName, propValue);
                     writer->SetProperty(nameValue);
                 }
-                break;
-            case FdoPropertyType_ObjectProperty:
-                {
-                    FdoPtr<FdoIFeatureReader> subReader = reader->GetFeatureObject(propName);
-                    FdoPtr<FdoXmlFeatureWriter> subWriter = writer->GetObjectWriter(propName);
-                    while (subReader->ReadNext()) {
-                        _writeFeature(propName, subReader, subWriter, flags);
-                    }
+            }
+            break;
+        case FdoPropertyType_GeometricProperty:
+            {
+                FdoPtr<FdoByteArray> geoValue = reader->GetGeometry(propName);
+                FdoPtr<FdoValueExpression> propValue = FdoGeometryValue::Create(geoValue);
+                FdoPtr<FdoPropertyValue> nameValue = FdoPropertyValue::Create(propName, propValue);
+                writer->SetProperty(nameValue);
+            }
+            break;
+        case FdoPropertyType_ObjectProperty:
+            {
+                FdoPtr<FdoIFeatureReader> subReader = reader->GetFeatureObject(propName);
+                FdoPtr<FdoXmlFeatureWriter> subWriter = writer->GetObjectWriter(propName);
+                while (subReader->ReadNext()) {
+                    _writeFeature(propName, subReader, subWriter, flags);
                 }
-                break;
-            case FdoPropertyType_AssociationProperty:
-                {
-                    FdoPtr<FdoIFeatureReader> subReader = reader->GetFeatureObject(propName);
-                    FdoPtr<FdoXmlFeatureWriter> subWriter = writer->GetAssociationWriter(propName);
-                    while (subReader->ReadNext()) {
-                        _writeFeature(propName, subReader, subWriter, flags);
-                    }
+            }
+            break;
+        case FdoPropertyType_AssociationProperty:
+            {
+                FdoPtr<FdoIFeatureReader> subReader = reader->GetFeatureObject(propName);
+                FdoPtr<FdoXmlFeatureWriter> subWriter = writer->GetAssociationWriter(propName);
+                while (subReader->ReadNext()) {
+                    _writeFeature(propName, subReader, subWriter, flags);
                 }
-                break;
-            case FdoPropertyType_RasterProperty:
-                {
-                    // TODO: Implement it later
-                }
-                break;
-            default:
-                assert(false);
-                break;
-        }
+            }
+            break;
+        case FdoPropertyType_RasterProperty:
+            {
+                // TODO: Implement it later
+            }
+            break;
+        default:
+            assert(false);
+            break;
+    }
+}
+
+void _writeFeature(FdoString* featureName, FdoIFeatureReader* reader, FdoXmlFeatureWriter* writer,
+                   FdoXmlFeatureFlags* flags) {
+    FdoPtr<FdoClassDefinition> classDef = reader->GetClassDefinition();
+    FdoPtr<FdoClassDefinition> oldClassDef = writer->GetClassDefinition();
+    writer->SetClassDefinition(classDef);
+
+    FdoPtr<FdoReadOnlyPropertyDefinitionCollection> baseProps = classDef->GetBaseProperties();
+    FdoInt32 count = baseProps->GetCount();
+    for (int i = 0; i < count; i++) {
+        FdoPtr<FdoPropertyDefinition> prop = baseProps->GetItem(i);
+        if ( !prop->GetIsSystem() ) 
+            _writeProperty(prop, reader, writer, flags);
+    }
+
+    FdoPtr<FdoPropertyDefinitionCollection> props = classDef->GetProperties();
+    count = props->GetCount();
+    for (int i = 0; i < count; i++) {
+        FdoPtr<FdoPropertyDefinition> prop = props->GetItem(i);
+        _writeProperty(prop, reader, writer, flags);
     }
 
     // Write the current feature to the underlying writer
@@ -129,8 +145,6 @@ void _writeFeature(FdoString* featureName, FdoIFeatureReader* reader, FdoXmlFeat
 
     // restore the old class definition
     writer->SetClassDefinition(oldClassDef);
-
-
 }
 
 void FdoXmlFeatureSerializer::XmlSerialize( 
