@@ -125,9 +125,9 @@ FdoFeatureSchemaP NlsTest::InitSchema ( FdoIConnection* connection )
     FdoClassesP(pTestSchema->GetClasses())->Add( pfeatureclass );
     pfeatureclass = InitFeatureClass( GetClass2Name() );
     FdoClassesP(pTestSchema->GetClasses())->Add( pfeatureclass );
-    pfeatureclass = InitFeatureClass( FdoStringP::Format(L"%lc%lc%lc%lc%lc", 0x80, 0xe1, 0xe2, 0xa3) );
+    pfeatureclass = InitFeatureClass( FdoStringP::Format(L"%lc%lc%lc%lc%lc", 0x80, 0xe1, 0xe2, 0xa3, 0xa4) );
     FdoClassesP(pTestSchema->GetClasses())->Add( pfeatureclass );
-    pfeatureclass = InitFeatureClass( FdoStringP::Format(L"%lc%lc%lc%lc%lcA", 0xff, 0x3901, 0x3903, 0x4000) );
+    pfeatureclass = InitFeatureClass( FdoStringP::Format(L"%lc%lc%lc%lc%lcA", 0xff, 0x3901, 0x3903, 0x4000, 0x5000) );
     FdoClassesP(pTestSchema->GetClasses())->Add( pfeatureclass );
     pfeatureclass = InitFeatureClass( FdoStringP::Format(L"Schema1%lc", 0x3503) );
     FdoClassesP(pTestSchema->GetClasses())->Add( pfeatureclass );
