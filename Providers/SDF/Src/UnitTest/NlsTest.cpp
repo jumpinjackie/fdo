@@ -125,11 +125,11 @@ FdoFeatureSchemaP NlsTest::InitSchema ( FdoIConnection* connection )
     FdoClassesP(pTestSchema->GetClasses())->Add( pfeatureclass );
     pfeatureclass = InitFeatureClass( GetClass2Name() );
     FdoClassesP(pTestSchema->GetClasses())->Add( pfeatureclass );
-    pfeatureclass = InitFeatureClass( FdoStringP::Format(L"%c%c%c%c%c", 0x80, 0xe1, 0xe2, 0xa3) );
+    pfeatureclass = InitFeatureClass( FdoStringP::Format(L"%lc%lc%lc%lc%lc", 0x80, 0xe1, 0xe2, 0xa3) );
     FdoClassesP(pTestSchema->GetClasses())->Add( pfeatureclass );
-    pfeatureclass = InitFeatureClass( FdoStringP::Format(L"%c%c%c%c%cA", 0xff, 0x3901, 0x3903, 0x4000) );
+    pfeatureclass = InitFeatureClass( FdoStringP::Format(L"%lc%lc%lc%lc%lcA", 0xff, 0x3901, 0x3903, 0x4000) );
     FdoClassesP(pTestSchema->GetClasses())->Add( pfeatureclass );
-    pfeatureclass = InitFeatureClass( FdoStringP::Format(L"Schema1%c", 0x3503) );
+    pfeatureclass = InitFeatureClass( FdoStringP::Format(L"Schema1%lc", 0x3503) );
     FdoClassesP(pTestSchema->GetClasses())->Add( pfeatureclass );
 
     return pTestSchema;
@@ -330,12 +330,12 @@ FdoIConnection* NlsTest::openConnection( bool re_create )
 
 FdoStringP NlsTest::GetClass1Name()
 {
-    return FdoStringP::Format(L"Test%c%c", 0x30b2, 0x311b);
+    return FdoStringP::Format(L"Test%lc%lc", 0x30b2, 0x311b);
 }
 
 FdoStringP NlsTest::GetClass2Name()
 {
-    return FdoStringP::Format(L"%c%c%c%c", 0x30b2, 0x311b, 0x06a3, 0x1246);
+    return FdoStringP::Format(L"%lc%lc%lc%lc", 0x30b2, 0x311b, 0x06a3, 0x1246);
 }
 
 
