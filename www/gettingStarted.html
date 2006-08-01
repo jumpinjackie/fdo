@@ -11,12 +11,13 @@
 <p>This is described in the build <a href="documentation.html">documentation</a>.</p>
 <p>The FDO installation path on Linux is fixed. It is /usr/local/fdo-&lt;version&gt;.</p>
 <p>The FDO installation path on Windows is configurable using a command-line argument to the build script.</p>
-<h2>Setup the Application Development Environment</h2>
+<h2>Setup the C++ Application Development Environment</h2>
 	<p>
 	Check out the settings in the solution (.sln) and project (.vcproj) files
 	found in the FDO source folders on Windows and in the
 	makefile.am and configure.in files found in the FDO source directories
 	on Linux.
+	</p>
 	<h3>Windows</h3>
 	<p>The assumption is that you are using Visual Studio Express, Standard or Professional 2005.</p>
 	<p>
@@ -52,7 +53,7 @@
 		Directories'.
 		</p>
 		<p>
-		In the options dialog contents pane expand 'Projects and Solutions' and
+		Alternatively, in the options dialog contents pane expand 'Projects and Solutions' and
 		then 'VC++ Directories'. Select 'Include files' from the spinbox labeled
 		'Show directories for:'. Follow the procedure for adding a directory.
 		</p>
@@ -63,7 +64,7 @@
 		Directories'.
 		</p>
 		<p>
-		In the options dialog contents pane expand 'Projects and Solutions' and
+		Alternatively, in the options dialog contents pane expand 'Projects and Solutions' and
 		then 'VC++ Directories'. Select 'Library files' from the spinbox labeled
 		'Show directories for:'. Follow the procedure for adding a directory.
 		</p>
@@ -74,7 +75,8 @@
 		'Show directories for:'. Follow the procedure for adding a directory.
 		</p>
 		<p>
-		Use XP to set the PATH environment variable.
+		Or use XP to set the PATH environment variable to reference the location
+		of the DLLs.
 		</p>
 		<h4>Source Files</h4>
 		<p>
@@ -94,6 +96,8 @@
 		</p>
 	<h3>Linux</h3>
 	<p>Set LD_LIBRARY_PATH.</p>
+<h2>Setup the C++ Application Development Environment</h2>
+	<p>To be done.</p>
 <h2>Access the API Reference Documentation</h2>
 <p>
 	The API reference documentation has been created by using doxygen to
@@ -102,8 +106,13 @@
 	for quicker access. This prevents direct linking to the class html files.
 </p>
 <p>
-	When you are asked to read FDO class reference documentation, load the
-	<a href="https://fdo.osgeo.org/nonav/docs/FDO_API/index.html">FDO C++ API Reference Home Page</a>,
+	When you are asked to read FDO C++ class reference documentation, load the
+	<a href="https://fdo.osgeo.org/nonav/docs/FDO_API/index.html">FDO C++ API Reference</a>,
+	click the Classes tab in the right-hand pane and click on the class name.
+</p>
+<p>
+	When you are asked to read FDO C# class reference documentation, load the
+	<a href="https://fdo.osgeo.org/nonav/docs/FDO_API_managed/index.html">FDO .NET API Reference</a>,
 	click the Classes tab in the right-hand pane and click on the class name.
 </p>
 <h2>Write the Code to Connect to a Provider</h2>
@@ -125,12 +134,12 @@
 	</p>
 	<p>
 	Read about the GetProviderRegistry method in the
-	<strong>FdoFeatureAccessManager</strong> class reference.
+	<strong>FdoFeatureAccessManager</strong> C++ class reference or the <strong>FeatureAccessManager</strong> C# class reference.
 	</p>
 <h3>Get the List of Installed Providers</h3>
 	<p>
 	Read about the GetProviders method in the 
-	<strong>FdoProviderRegistry</strong> class reference.
+	<strong>FdoProviderRegistry</strong> C++ class reference or the <strong>ProviderRegistry</strong> C# class reference.
 	This method returns the contents of the providers.xml file found in the
 	&lt;install&gt;/bin folder on Windows and
 	in the /usr/local/fdo-&lt;version&gt;/lib directory on Linux.
@@ -145,12 +154,12 @@
 	</p>
 	<p>
 	Read about the GetConnectionManager method in the
-	<strong>FdoFeatureAccessManager</strong> class reference.
+	<strong>FdoFeatureAccessManager</strong> C++ class reference or the <strong>FeatureAccessManager</strong> C# class reference.
 	</p>
 <h3>Create a Connection</h3>
 	<p>
 	Read about the CreateConnection method in the
-	<strong>FdoConnectionManager</strong> class reference.
+	<strong>FdoConnectionManager</strong> C++ class reference or the <strong>IConnectionManagerImp</strong> C# class reference.
 	</p>
 <h3>Get the Connection State</h3>
 	<p>
@@ -158,24 +167,24 @@
 	</p>
 	<p>
 	Read about the GetConnectionState method in the
-	<strong>FdoIConnection</strong> class reference.
+	<strong>FdoIConnection</strong> C++ class reference or the <strong>IConnectionImp</strong> C# class reference.
 	</p>
 <h3>Get the Connection Properties</h3>
 	<p>
 	First you get the connection information. Read about the
 	GetConnectionInfo method in the <strong>FdoIConnection</strong>
-  	class reference.
+	C++ class reference or the <strong>IConnectionImp</strong> C# class reference.
 	</p>
 	<p>
 	Then you get the connection properties. Read about the
 	GetConnectionProperties method in the <strong>FdoIConnectionInfo</strong>
-  	class reference.
+	C++ class reference or the <strong>IConnectionInfoImp</strong> C# class reference.
 	This method returns a connection property dictionary.
 	</p>
 	<p>
 	Read about the methods used to access the information in the connection
-	properties dictionary in the <strong>FdoIPropertyDictionary</strong>
-	class reference.
+	properties dictionary in the <strong>FdoIConnectionPropertyDictionary</strong>
+	C++ class reference or the <strong>IConnectionPropertyDictionary</strong> C# class reference.
 	Using these methods you can find out the names of the properties,
 	whether they are optional or mandatory, whether they have default values,
 	their type, whether they are enumerable and, if enumerable, what the set
@@ -203,13 +212,13 @@
 <h3>Set the Connection Properties</h3>
 	<p>
 	Read about the methods used to access the information in the connection
-	properties dictionary in the <strong>FdoIPropertyDictionary</strong>
-  	class reference.
+	properties dictionary in the <strong>FdoIConnectionPropertyDictionary</strong>
+	C++ class reference or the <strong>IConnectionPropertyDictionary</strong> C# class reference.
 	</p>
 <h3>Open a Connection</h3>
 	<p>
-	Read about the Open method in the <strong>FdoIConnection</strong> class
-	reference.
+	Read about the Open method in the <strong>FdoIConnection</strong> C++ class
+	reference or the <strong>IConnectionImp</strong> C# class reference.
 	</p>
 <h3>Open a Pending Connection</h3>
 	<p>
@@ -225,11 +234,11 @@
 	</p>
 	<p>
 	Use the EnumeratePropertyValues method on the
-	<strong>FdoIPropertyDictionary</strong> object
+	<strong>FdoIConnectionPropertyDictionary</strong> (C++) object or the <strong>IConnectionPropertyDictionary</strong> (C#) object 
 	to read the set of data store names and set the data store property
 	in the dictionary object to one of those names.
-	Then call the Open method on the <strong>FdoIConnection</strong> object
-	again. This will result in a fully open connection.
+	Then call the Open method on the <strong>FdoIConnection</strong> (C++) object
+	or the <strong>IConnectionImp</strong> (C#) object again. This will result in a fully open connection.
 	</p>
 	<p>
 	You can connect to an ArcSDE provider using a pending connection, you will
