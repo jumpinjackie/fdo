@@ -546,21 +546,21 @@ II. Linux Build Instructions:
             **** Configure, Build and Install all components
             build_linux.sh
             **** Configure and Build all components
-            build_linux.sh --a buildonly
+            build_linux.sh --a build
             **** Build all components without running configure
-            build_linux.sh --a buildonly --a noconfigure
+            build_linux.sh --a build --m noconfigure
             **** Configure and Install all components
-            build_linux.sh --a installonly
+            build_linux.sh --a install
             **** Configure and Build only the FDO library
-            build_linux.sh --a buildonly -w fdo
+            build_linux.sh --a build -w fdo
             **** Configure and Build all FDO Providers
-            build_linux.sh --a buildonly --w providers
+            build_linux.sh --a build --w providers
             **** Configure and Build only the SHP Provider
-            build_linux.sh --a buildonly --w shp
+            build_linux.sh --a build --w shp
             **** Configure and Build only the SDF Provider
-            build_linux.sh --a buildonly --w sdf
+            build_linux.sh --a build --w sdf
             **** Configure and Build both the WMS and WFS Providers
-            build_linux.sh --a buildonly --w wms --w wfs
+            build_linux.sh --a build --w wms --w wfs
 
      NOTE: build_linux.sh is a simple helper script that assists developers to build the FDO 
            components. These scripts supplement standard support of configure and make. We have 
