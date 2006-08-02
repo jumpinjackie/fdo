@@ -588,6 +588,17 @@ II. Linux Build Instructions:
 
   5. In order to run the SHP, SDF and ArcSDE Provider Unit Tests:
 
+        
+        FDO:
+
+            cd [FDO OpenSource]/Fdo/UnitTest
+            ./UnitTest
+
+        WMS:
+
+            cd [FDO OpenSource]/Providers/WMS/Src/UnitTest
+            ./UnitTest
+
         SDF:
 
             cd [FDO OpenSource]/Providers/SDF/Src/UnitTest
@@ -600,12 +611,17 @@ II. Linux Build Instructions:
  
         ArcSDE:
 
-            Please refer to [FDO OpenSource]\Providers\ArcSDE\UnitTest_README.txt
+            Please refer to [FDO OpenSource]/Providers/ArcSDE/UnitTest_README.txt
             for details on how to create test users and test data, and which 
             command-line arguments to pass to the ArcSDE Provider UnitTest 
             executable in order to point to your test server and data.
 
-            cd [FDO OpenSource]\Providers\ArcSDE\Src\UnitTest
-            ..\..\bin\win32\Debug\UnitTest [mandatory command-line arguments]
- 
+            cd [FDO OpenSource]/Providers/ArcSDE/Src/UnitTest
+            ./UnitTest [mandatory command-line arguments] 
+	    
+            e.g. 
+
+            ./UnitTest server=somesite.com port_multi=5151/tcp port_single=5151/tcp sdepwd=test dataset=FC4 rdbms=ORACLE
+           
+
 [end]
