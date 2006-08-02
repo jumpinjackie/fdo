@@ -383,7 +383,7 @@ int SQLiteTable::put(SQLiteTransaction *txid, SQLiteData *key, SQLiteData *data,
     _ASSERT( mRootDataPage != -1 );
 
 	if( mTabCache == NULL )
-		mTabCache = new SQLiteSqlUpdateCache( m_pDb, (unsigned int) -1, mRootDataPage, m_nextKey, false, true, mCmpHandler );
+		mTabCache = new SQLiteSqlUpdateCache( m_pDb, (unsigned int) -1, mRootDataPage, m_nextKey, false, mUseIntKey, mCmpHandler );
 
     if( mCacheSize >= mMaxCacheSize && mTabCache )
     {
