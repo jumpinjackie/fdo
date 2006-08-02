@@ -243,17 +243,15 @@ II. Windows Build Instructions:
             **** Build all Thirdparty components
             build_thirdparty
             **** Build all Thirdparty components and install output files to C:\Fdo
-            build -o=C:\Fdo -a=buildinstall
-            **** Build all Thirdparty components and install files to C:\Fdo
-            build_thirdparty -o=C:\Fdo -a=buildinstall -d=build
-            **** Build Thirdparty components for FDO libraries
+            build_thirdparty -a=buildinstall -o=C:\Fdo 
+            **** Build Thirdparty components required to build the FDO API libraries
             build_thirdparty -w=fdo
             **** Build Thirdparty components for all FDO Providers
             build_thirdparty -w=providers
-            **** Build Thirdparty components for for SDF Provider
+            **** Build Thirdparty components for for the SDF Provider
             build_thirdparty -w=sdf
-            **** Build Thirdparty components for for WMS Provider
-            build_thirdparty -w=wms
+            **** Build Thirdparty components for for the WMS and WFS Providers
+            build_thirdparty -w=wms -w=wfs
 
 
   3. Use the build.bat file to build the FDO binaries. The following 
@@ -294,19 +292,21 @@ II. Windows Build Instructions:
             **** Build all components excluding documentation
             build
             **** Build all components and install output files to C:\Fdo
-            build -o=C:\Fdo -a=buildinstall
+            build -a=buildinstall -o=C:\Fdo
             **** Build all components and documentation and install files to C:\Fdo
-            build -o=C:\Fdo -a=buildinstall -d=build
+            build -a=buildinstall -o=C:\Fdo -d=build
             **** Build only FDO libraries
             build -w=fdo
             **** Build all FDO Providers
             build -w=providers
-            **** Build FDO Shape Provider
+            **** Build the FDO Shape Provider
             build -w=shp
-            **** Build FDO SDF Provider
+            **** Build the FDO SDF Provider
             build -w=sdf
-            **** Build documentation and install files to C:\Fdo
-            build -o=C:\Fdo -d=build -a=install
+            **** Build the FDO WMS and WFS Providers
+            build -w=wms -w=wfs
+            **** Build documentation and install all files to C:\Fdo
+            build -a=install -o=C:\Fdo -d=build 
 
  4.   In order to run the FDO API, SHP, SDF, and ArcSDE Provider Unit Tests
 
@@ -500,16 +500,12 @@ II. Linux Build Instructions:
 
             **** Display help for build_thirdparty.sh 
             build_thirdparty --h
-            **** Build and install all Thirdparty components
+            **** Configure, Build and Install all Thirdparty components
             build_thirdparty
-            **** Build Thirdparty components for FDO libraries
-            build_thirdparty -w=fdo
-            **** Build Thirdparty components for all FDO Providers
-            build_thirdparty -w=providers
-            **** Build Thirdparty components for for SDF Provider
-            build_thirdparty -w=sdf
-            **** Build Thirdparty components for for WMS Provider
-            build_thirdparty -w=wms
+            **** Uninstall all Thirdparty components
+            build_thirdparty --a uninstall
+            **** Clean up all Thirdparty components
+            build_thirdparty --a clean
 
   4. Use the build_linux.sh script to build and install the FDO OpenSource 
      libraries. The following is a general guideline on how to use build_linux.sh
@@ -547,33 +543,33 @@ II. Linux Build Instructions:
 
             **** Display help for build.bat
             build_linux.sh --h
-            **** ReBuild and Install all components without running configure
+            **** Configure, Build and Install all components
             build_linux.sh
-            **** Configure and ReBuild all components
-            build_linux.sh --a buildonly --a configure
-            **** Configure, ReBuild and Install all components
-            build_linux.sh --a buildinstall --a configure
-            **** ReBuild all components
+            **** Configure and Build all components
             build_linux.sh --a buildonly
-            **** Install all components
+            **** Build all components without running configure
+            build_linux.sh --a buildonly --a noconfigure
+            **** Configure and Install all components
             build_linux.sh --a installonly
-            **** ReBuild FDO library
+            **** Configure and Build only the FDO library
             build_linux.sh --a buildonly -w fdo
-            **** ReBuild all FDO Providers
+            **** Configure and Build all FDO Providers
             build_linux.sh --a buildonly --w providers
-            **** ReBuild FDO Shape Provider
+            **** Configure and Build only the SHP Provider
             build_linux.sh --a buildonly --w shp
-            **** ReBuild FDO SDF Provider
+            **** Configure and Build only the SDF Provider
             build_linux.sh --a buildonly --w sdf
+            **** Configure and Build both the WMS and WFS Providers
+            build_linux.sh --a buildonly --w wms --w wfs
 
      NOTE: build_linux.sh is a simple helper script that assists developers to build the FDO 
-           components. These scripts supplement stand support of configure and make. We have 
+           components. These scripts supplement standard support of configure and make. We have 
            many components in the FDO architecture and building them all was getting somewhat 
            tedious using straight calls to configure and make. We also found that some 
            developers were not interested in building all components or were only interested 
            in building a subset of the components. 
 
-           The implementation of the above build_linux.sh script in essence calls
+           The implementation of the above build_linux.sh script in essence calls ...
  
                aclocal
                libtoolize --force
@@ -583,7 +579,7 @@ II. Linux Build Instructions:
                make
                make install
 
-           for the fdocore components as well as the set of FDO providers that are 
+           ... for the fdocore components as well as the set of FDO providers that are 
            currently supported on the OSGeo site. 
 
   5. In order to run the SHP, SDF and ArcSDE Provider Unit Tests:
