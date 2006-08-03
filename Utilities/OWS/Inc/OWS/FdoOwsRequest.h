@@ -38,8 +38,8 @@ protected:
 
 public:
     FDOOWS_API void SetVersion(FdoString* version);
-	FDOOWS_API FdoString* GetVersion();
-    FDOOWS_API virtual FdoStringP FdoOwsRequest::EncodeKVP();
+    FDOOWS_API FdoString* GetVersion();
+    FDOOWS_API virtual FdoStringP EncodeKVP();
     FDOOWS_API void SetRequest (FdoString* request);
     FDOOWS_API FdoString* GetRequest ();
 };
