@@ -41,14 +41,6 @@
 #include "RfpTestSpatialContext.h"
 #include <iostream>
 
-
-// the default message catalog filename
-#ifndef _WIN32
-char *fdorfp_cat = "RfpMessage.cat";
-#else
-char *fdorfp_cat = "RFPMessage.dll";
-#endif
-
 // The following macros are used as switches to determine
 // which Test Cases will be excuted.
 

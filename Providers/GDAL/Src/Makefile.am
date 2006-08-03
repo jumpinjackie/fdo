@@ -31,7 +31,7 @@ nodist_EXTRA_libGRFPProvider_la_SOURCES = dummy.cpp
 
 libGRFPProvider_la_LIBADD =  \
   Provider/libGRFPProviderSrc.la \
-  Overrides/libGRFPOverridesSrc.la \
+  libGRFPOverrides.la \
   $(FDOUTILITIES)/Common/libProvidersCommon.la \
   $(FDO)/Unmanaged/Src/libFDO.la
 
