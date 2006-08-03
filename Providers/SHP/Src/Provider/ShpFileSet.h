@@ -69,7 +69,7 @@ public:
 	ShapeCPG* GetCpgFile ();
     ShapeIndex* GetShapeIndexFile ();
     ShpSpatialIndex* GetSpatialIndex ();
-    int ShpFileSet::GetNumRecords ();
+    int GetNumRecords ();
 
     void GetObjectAt (RowData** row, eShapeTypes& type, Shape** shape, int nRecordNumber);
     void SetObjectAt (RowData* row, Shape* shape, bool batch = false, bool useCopyFiles = false);
