@@ -34,102 +34,43 @@
 
   <table>
     <tr>
-      <td align="left" valign="top" width="70%">
+      <td align="left" valign="top">
         <div class="h2">
 		  <h2>Feature Data Objects Open Source - Project Home</h2>
-		  <p>
-			The Feature Data Objects API
-			provides a generic, command-based interface to a number of back-end data source
-			technologies for storing, retrieving, updating, and analyzing
-			GIS (Geographic Information System) data.
-			</p>
-			<p>
-			FDO provides a model for extending
-			its interface to additional data source technologies.
-			The generic API is extensible, and it is possible to add
-			custom commands to a particular provider. A provider
-			is a specific implementation of the FDO API that provides access
-			to data stored in a particular data source technology. For example,
-			the OSGeo FDO Provider for MySQL provides access to GIS data stored in
-			a MySQL database, and the OSGeo FDO Provider for SHP provides access to
-			GIS data stored in a SHP file.
-			The extent to which a provider implements the FDO API is limited
-			by the native capabilities of the underlying data source technology.
-			</p>
-			<p>
-			A client application creates a connection to a provider and then uses
-			the connection object to create command objects for FDO actions
-			such as Select.
-			The client uses the command object to set the command parameters
-			with the option of leaving some parameters with default values.
-			Where appropriate such as in the case of Select, execution of the
-			command returns a reader object containing the results of the command.
-			</p>
-			<p>
-			A client application can use the FDO Capabilities API to determine
-			what services a particular provider offers.
-			For example, the OSGeo FDO Provider for SDF supports the insertion of
-			data, and the OSGeo FDO Provider for WMS does not.
-			</p>
-			<p>
-			The storage of FDO feature data can be modeled as a containment hierarchy.
-			</p>
-			<ul>
-				<li>
-				A data source may contain one or more data stores.
-				</li>
-				<li>
-				A data store may contain one or more feature schemas and one or more spatial contexts.
-				</li>
-				<li>
-				A feature schema may contain one or more features classes.
-				</li>
-				<li>
-				A feature class contains a feature geometry, optionally one or more
-				non-feature geometry properties, and optionally other types of properties.
-				</li>
-			</ul>
-
-			<p>
-			A geometry is represented using geometric constructs either defined as lists of one or more XY or XYZ 
-                  points or defined parametrically, for example, as a circular arc. While geometry typically is two- or three-dimensional, 
-                  it may also contain the measurement dimension (M) to provide the basis for dynamic segments. FDO Geometry is based 
-                  on the <a href="http://portal.opengeospatial.org/files/?artifact_id=829">OpenGIS Simple Features Implementation Specification for SQL</a>
-                  (version 1.1, document 99-049), but is extended to include z and measure dimensions and circular arcs.
-			</p>
-			<p>
-			A schema is a logical description of the data types used to model real-world objects. A schema is not the actual 
-                  data instances (that is, not a particular road or land parcel), rather it is metadata. A schema is a model of the types 
-                  of data that would be found in a data store. FDO feature schemas can be written to an XML file. The FDO XML 
-                  format for schema is based on the <a href="http://portal.opengeospatial.org/files/?artifact_id=1034">Open GIS Consortium Geography Markup Language </a>
-                  (version 2.1.1, document 02-009).  The schema model is object-based using classes and properties 
-                  and is independent of any physical storage format.
-			</p>
-
+			<p>Feature Data Objects (FDO) is an API for manipulating, defining, and analyzing geospatial information regardless of where it is stored. FDO uses a provider-based model for supporting a variety of geospatial data sources, where each provider typically supports a particular data format or data store.</p>
+			  <table width="100%" border="0" cellpadding="0" cellspacing="5">
+				<tr>
+				  <td colspan="10" bgcolor="#333333"><div align="center">
+					<p><em><font color="#FFFFFF">Client<br>
+					  Application</font></em></p>
+				  </div></td>
+				</tr>
+				<tr>
+				  <td colspan="10" bgcolor="#CCCCCC"><div align="center"><p>FDO API<br>[<a href="https://fdocore.osgeo.org/">fdocore</a>]</p>
+				  </div></td>
+				</tr>
+				<tr>
+				  <td bgcolor="#999999"><div align="center"><p>SDF<br>Provider<br>[<a href="https://fdosdf.osgeo.org/">fdosdf</a>]</p></div></td>
+				  <td bgcolor="#CCCCCC"><div align="center"><p>SHP<br>Provider<br>[<a href="https://fdoshp.osgeo.org/">fdoshp</a>]</p></div></td>
+				  <td bgcolor="#999999"><div align="center"><p>ArcSDE<br>Provider<br>[<a href="https://fdoarcsde.osgeo.org/">fdoarcsde</a>]</p></div></td>
+				  <td bgcolor="#CCCCCC"><div align="center"><p>MySQL<br>Provider<br>[<a href="https://fdordbms.osgeo.org/">fdordbms</a>]</p></div></td>
+				  <td bgcolor="#999999"><div align="center"><p>ODBC<br>Provider<br>[<a href="https://fdordbms.osgeo.org/">fdordbms</a>]</p></div></td>
+				  <td bgcolor="#CCCCCC"><div align="center"><p>OGR<br>Provider<br>[<a href="https://fdoogr.osgeo.org/">fdoogr</a>]</p></div></td>
+				  <td bgcolor="#999999"><div align="center"><p>GDAL<br>Provider<br>[<a href="https://fdogdal.osgeo.org/">fdogdal</a>]</p></div></td>
+				  <td bgcolor="#CCCCCC"><div align="center"><p>WMS<br>Provider<br>[<a href="https://fdowms.osgeo.org/">fdowms</a>]</p></div></td>
+				  <td bgcolor="#999999"><div align="center"><p>WFS<br>Provider<br>[<a href="https://fdowfs.osgeo.org/">fdowfs</a>]</p></div></td>
+				  <td bgcolor="#333333"><div align="center"><p><font color="#FFFFFF"><em>Custom</em><br>Provider</font></p></div></td>
+				</tr>
+			  </table>
+			  <p>Feature Data Objects is free, open source software licensed under the <a href="lgpl.html">LGPL</a>. For a more detailed explanation of FDO, see the <a href="overview.html">Overview</a> page. </p>
         </div>
-
-        <div class="h2">
-		   <h2>Developer Spotlight</h2>
-			<p>TBD</p>	 
-        </div>
-
-        <div class="h2">
-			<h2>This Week in FDO</h2>
+	  <div class="h2">
+			<h2>Announcements</h2>
 			<p>TBD</p>
-        </div>
-      </td>
+	  </div>
 
-      <td valign="top" halign="left" width="55%">
+      <td valign="top" halign="left">
         <table>
-          <tr>
-            <td>
-              <div class="h2">
-					<h2>Announcements</h2>
-					<p>TBD</p>
-              </div>
-            </td>
-          </tr>
-
           <tr>
             <td align="left" valign="top">
               <div class="h2">
@@ -158,7 +99,6 @@
             <td align="left" valign="top">
               <div class="h2">
 					<h2>Releases</h2>
-					<h3>FDO Open Source Beta</h3>
                 <a href="downloads.html">Downloads</a><br>
 					 <a href="documentation.html">Documentation</a><br>
               </div>
