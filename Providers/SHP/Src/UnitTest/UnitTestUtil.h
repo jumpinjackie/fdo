@@ -39,7 +39,7 @@ public:
 	static FdoInt32 CompareFiles( const char* file1Name, const char* file2Name );
 
 	// Get the current time in seconds.
-	static double UnitTestUtil::GetTime_S( void );
+	static double GetTime_S( void );
 };
 
 #endif // CPP_FDOSHP_UNIT_TESTUTIL_H

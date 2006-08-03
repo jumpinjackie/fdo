@@ -80,7 +80,7 @@ protected:
     void featid_performance_tests();
 
 private:
-    int FilterTests::featid_roads_query (FdoString* query, int numRuns, int numExpected = -1, long *featidsExpected = NULL);
+    int featid_roads_query (FdoString* query, int numRuns, int numExpected = -1, long *featidsExpected = NULL);
 };
 
 #endif // FILTERTESTS_H
