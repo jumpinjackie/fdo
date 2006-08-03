@@ -112,9 +112,9 @@ echo Copy GdalFile SDK Header Files
 xcopy /S /C /Q /R /Y Inc\GdalFile\*.h "%FDOINCPATHRFP%\GdalFile\"
 
 :generate_docs
-echo No documentation to Generate for GdalFile Provider
+echo No documentation to generate for GDAL Provider
 :install_docs
-echo No documentation to Intsall for GdalFile Provider
+echo No documentation to install for GDAL Provider
 
 :end
 echo End RFP %MSACTIONRFP%
