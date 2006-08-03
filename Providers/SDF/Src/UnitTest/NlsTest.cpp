@@ -186,7 +186,7 @@ void NlsTest::AddFeature( FdoIInsert* insertCommand, FdoInt32 idx )
     propertyValue = AddNewProperty( propertyValues, L"FeatId");
     propertyValue->SetValue(dataValue);
 
-    dataValue = FdoDataValue::Create(FdoStringP::Format(L"Name%d",idx));
+    dataValue = FdoDataValue::Create((FdoString*)FdoStringP::Format(L"Name%d",idx));
     propertyValue = AddNewProperty( propertyValues, L"Name");
     propertyValue->SetValue(dataValue);
 
