@@ -66,7 +66,7 @@ private:
     //RTree maintenance logic
     /*static*/ int AddBranch(Branch& branch, Node& node, Node& newNode);
     /*static*/ void SplitNode(Node& n, Branch& b, Node& newNode);
-    /*static*/ Bounds SdfRTree::NodeCover(Node& n);
+    /*static*/ Bounds NodeCover(Node& n);
     /*static*/ int PickBranch(Bounds& b, Node& n);
     /*static*/ void GetBranches(Node& n, Branch& b);
     /*static*/ void MethodZero(PartitionVars& p, int minfill);
