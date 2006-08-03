@@ -42,7 +42,7 @@ class FdoSmLpSchema : public FdoSmLpSchemaElement
 {
 public:
 
-	virtual ~FdoSmLpSchema(void);
+    virtual ~FdoSmLpSchema(void);
 
     /// Returns a ClassCollection that contains all of the classes defined in
     /// the LogicalPhysical schema.
@@ -50,23 +50,23 @@ public:
 
     /// Get the Physical Schema object for accessing the Database
     /// schema.
-	const FdoSmPhMgr* RefPhysicalSchema() const;
+    const FdoSmPhMgr* RefPhysicalSchema() const;
 
     /// Get a read-only Physical Schema manager for accessing and updating
     /// the Database schema.
-	FdoSmPhMgrP GetPhysicalSchema();
+    FdoSmPhMgrP GetPhysicalSchema();
 
     /// Get the collection that contains this schema.
     const FdoSmLpSchemaCollection* RefSchemas() const;
     FdoSmLpSchemaCollection* GetSchemas();
 
     /// Get the Schema Attribute Dictionary.
-	virtual const FdoSmLpSAD* RefSAD() const;
+    virtual const FdoSmLpSAD* RefSAD() const;
 
     /// Get the Schema Mappings for this feature schema
-	//
-    /// Parameters:
-    /// 	bIncludeDefaults - 
+    ///
+    /// Parameters:    
+    ///      bIncludeDefaults - 
     ///          true: include all schema mappings.
     ///          false: include only non-default mappings.
     /// Returns:
@@ -94,16 +94,16 @@ public:
     }
 
     /// Find a class.
-	//
+    ///
     /// Parameters:
     /// 	className: the class to find. When this is a qualified name
     /// 		( [<schemaname]:[classname] ) then this schema passes it
     /// 		on to the indicated schema. 
-	const FdoSmLpClassDefinition* FindClass( FdoStringP className ) const;
+    const FdoSmLpClassDefinition* FindClass( FdoStringP className ) const;
 
     /// Given a table, retrieves the list of classes for which this table
     /// is the class table.
-	//
+    ///
     /// Parameters:
     ///      class: add the found classes to this collection.
     /// 	tableName: the table to check
@@ -120,14 +120,14 @@ public:
     ) const;    
 
     /// Copy updates from corresponding FDO feature schema. 
-    //
+    ///
     /// Parameters
     ///      pFeatSchema: the FDO feature schema.
     ///      elementState: the modification state for this feature schema
     ///      pOverrides: Fdo to physical mapping overrides.
     ///      bIgnoreStates: true if the element state on the FDO feature schema is 
     ///          to be ignored.
-	virtual void Update(
+    virtual void Update(
         FdoFeatureSchema* pFeatSchema, 
         FdoSchemaElementState elementState,
         FdoPhysicalSchemaMapping* pOverrides,
@@ -135,31 +135,31 @@ public:
     ); 
 
     /// Synchronize the class table and columns with the classes in this schema
-    //
+    ///
     /// Parameters:
     //
     ///      bRollbackOnly - 
     ///          true - synchronize only classes that have had changes rolled back since
     ///              the previous synchronization.
     ///          false - synchronize all classes.
-	virtual void SynchPhysical(bool bRollbackOnly = true);
+    virtual void SynchPhysical(bool bRollbackOnly = true);
 
     /// Set the modification state of this element
-	virtual void SetElementState(FdoSchemaElementState elementState);
+    virtual void SetElementState(FdoSchemaElementState elementState);
 
     /// Post outstanding modifications to the current database.
-	virtual void Commit( bool fromParent = false );
+    virtual void Commit( bool fromParent = false );
 
     /// Constructs an instance of a Class Definition from a class reader.
-	//
+    ///
     /// Parameters:
     /// 	classReader: reader to get Class attributes from.
     /// 	parent: the parent element ( usually an FdoSmLpSchema ).
-	FdoSmLpClassDefinitionP CreateClassDefinition( FdoSmPhClassReaderP classReader );
+    FdoSmLpClassDefinitionP CreateClassDefinition( FdoSmPhClassReaderP classReader );
 
     /// Constructs an instance of a Class Definition from an FDO
     /// class definition
-	//
+    ///
     /// Parameters:
     /// 	pFdoClass: the FDO class
     /// 	pClassOverrides: schema overrides for the class
@@ -175,10 +175,10 @@ public:
     /// Gather all errors for this element and child elements into a chain of exceptions.
     /// Adds each error as an exception, to the given exception chain and returns
     /// the chain.
-	//
+    ///
     /// parameters:
     /// 	pFirstException: a chain of exceptions.
-	virtual FdoSchemaExceptionP Errors2Exception( FdoSchemaException* pFirstException = NULL ) const;
+    virtual FdoSchemaExceptionP Errors2Exception( FdoSchemaException* pFirstException = NULL ) const;
 
     /// Functions for creating various types of properties from a property reader.
     /// Each provider must supply implementations.
@@ -221,16 +221,16 @@ public:
 
     /// Serialize this schema to an XML file.
     /// Mainly for unit testing.
-	virtual void XMLSerialize( FILE* xmlFp, int ref ) const;
+    virtual void XMLSerialize( FILE* xmlFp, int ref ) const;
 
     /// Name of the special schema containing the corresponding MetaClass 
     /// (and base properties) for each class type.
-	static FdoString* FdoSmLpSchema::mMetaClassSchemaName;
+    static FdoString* mMetaClassSchemaName;
 
 protected:
     /// Loads an instance of a LogicalPhysicalSchema from the FDO
     /// database.
-	//
+    ///
     /// Parameters:
     /// 	rdr: get the schema attributes from this schema reader.
     /// 	physicalSchema: Physical Schema Manager. Used to retrieve the schema's 
@@ -242,7 +242,7 @@ protected:
     );
 
     /// Creates an instance of a LogicalPhysicalSchema from an FDO Feature Schema.
-	//
+    ///
     /// Parameters:
     /// 	FeatSchema: the FDO schema.
     ///      pOverrides: Fdo to physical mapping overrides.
@@ -251,19 +251,19 @@ protected:
     /// 	physicalSchema: Physical Schema Manager. Used to retrieve the schema's 
     ///          classes.
     FdoSmLpSchema(
-		FdoFeatureSchema* pFeatSchema,
+        FdoFeatureSchema* pFeatSchema,
         bool bIgnoreStates,
-		FdoSmPhMgrP physicalSchema, 
-		FdoSmLpSchemaCollection* schemas
-	);
+        FdoSmPhMgrP physicalSchema, 
+        FdoSmLpSchemaCollection* schemas
+    );
 	
     /// Gets a writer for adding this feature schema to the MetaSchema
     virtual FdoSmPhSchemaWriterP GetPhysicalAddWriter();
 
     /// Functions for creating various types of classes from a class reader.
     /// Each provider must supply implementations.
-	virtual FdoSmLpClassDefinitionP CreateFeatureClass( FdoSmPhClassReaderP classReader ) = 0;
-	virtual FdoSmLpClassDefinitionP CreateClass( FdoSmPhClassReaderP classReader ) = 0;
+    virtual FdoSmLpClassDefinitionP CreateFeatureClass( FdoSmPhClassReaderP classReader ) = 0;
+    virtual FdoSmLpClassDefinitionP CreateClass( FdoSmPhClassReaderP classReader ) = 0;
 
     virtual FdoSmLpClassDefinitionP CreateFeatureClass(
         FdoFeatureClass* pFdoClass, 
@@ -293,35 +293,35 @@ protected:
     }
 
 protected:
-	FdoSmLpSchema();
+    FdoSmLpSchema();
     /// Loads the classes and SAD for this schema
 
 private:
-	void LoadSchema();
+    void LoadSchema();
     /// Loads the classes for this schema
-	void LoadClasses();
+    void LoadClasses();
 
     /// Destroys classes, relations and SAD.
     /// Just the in-memory objects, they are not removed
     /// from the current database.
-	void DeleteSchema();
+    void DeleteSchema();
 
     /// Various error logging functions.
-	void AddClassExistsError( FdoClassDefinition* pFdoClass );
-	void AddClassNotExistsError( FdoString* className );
+    void AddClassExistsError( FdoClassDefinition* pFdoClass );
+    void AddClassNotExistsError( FdoString* className );
 
-    FdoSmLpClassesP             mClasses;
+    FdoSmLpClassesP                mClasses;
 
     /// non-refcounted backpointer to schema collection.
 
     FdoStringP                      mDatabase;
     FdoStringP                      mOwner;
-	FdoSmLpSchemaCollection*        mpSchemas;
-	FdoSmPhMgrP                     mPhysicalSchema;
+    FdoSmLpSchemaCollection*        mpSchemas;
+    FdoSmPhMgrP                     mPhysicalSchema;
 
-    FdoSmOvTableMappingType      mTableMapping;
+    FdoSmOvTableMappingType         mTableMapping;
 
-	bool					        mbSchemaLoaded;
+    bool                            mbSchemaLoaded;
 
 };
 

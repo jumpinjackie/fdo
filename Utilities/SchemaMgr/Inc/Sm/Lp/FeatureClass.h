@@ -38,22 +38,22 @@ public:
     /// Returns the geometric property that defines the geometry for 
     /// objects of this class.
     /// Returns NULL when this class is not a spatial feature class.
-	const FdoSmLpGeometricPropertyDefinition* RefGeometryProperty() const;
-	FdoSmLpGeometricPropertyP GetGeometryProperty();
+    const FdoSmLpGeometricPropertyDefinition* RefGeometryProperty() const;
+    FdoSmLpGeometricPropertyP GetGeometryProperty();
 
     /// Feature classes can have geometry.
-	virtual bool SupportsGeometry() const { return(true);} 
+    virtual bool SupportsGeometry() const { return(true);} 
 
     /// Convenience function for casting a ClassDefinition to a Feature Class.
     /// Returns NULL if the ClassDefinition is not a Feature Class.
-	static const FdoSmLpFeatureClass* Cast( const FdoSmLpClassDefinition* src )
-	{
-		return( (src  && (src->GetClassType() == FdoClassType_FeatureClass)) ? 
+    static const FdoSmLpFeatureClass* Cast( const FdoSmLpClassDefinition* src )
+    {
+	return( (src  && (src->GetClassType() == FdoClassType_FeatureClass)) ? 
 					(const FdoSmLpFeatureClass*) src : NULL
-		);
- 	}
+        );
+     }
 
-	//Copy updates from corresponding FDO class. 
+    //Copy updates from corresponding FDO class. 
     //
     /// Parameters:
     ///      pFdoClass: the FDO class.
@@ -61,7 +61,7 @@ public:
     ///      pClassOverrides: Fdo to physical mapping overrides.
     ///      bIgnoreStates: true if the element state on the FDO class is 
     ///          to be ignored.
-	virtual void Update(
+    virtual void Update(
         FdoClassDefinition* pFdoClass,
         FdoSchemaElementState elementState,
         FdoPhysicalClassMapping* pClassOverrides,
@@ -69,22 +69,22 @@ public:
     ); 
 
     /// Post outstanding modifications to the current database.
-	virtual void Commit( bool fromParent = false );
+    virtual void Commit( bool fromParent = false );
 
     /// Allows sub-classes to insert class-specific sub-elements into the
     /// XML file. 
     /// Mainly for unit testing.
-	virtual void XMLSerializeSubElements(  FILE* xmlFp, int ref ) const;
+    virtual void XMLSerializeSubElements(  FILE* xmlFp, int ref ) const;
 
 protected:
     //Unused constructor needed only to build on Linux
     FdoSmLpFeatureClass() {}
 
     /// Constructs a LogicalPhysical feature class from a class reader
-	FdoSmLpFeatureClass(FdoSmPhClassReaderP classReader, FdoSmLpSchemaElement* parent);
+    FdoSmLpFeatureClass(FdoSmPhClassReaderP classReader, FdoSmLpSchemaElement* parent);
 
     /// Constructs a LogicalPhysical feature class from an FDO feature class.
-	FdoSmLpFeatureClass(
+    FdoSmLpFeatureClass(
         FdoFeatureClass* pFeatClass, 
         bool bIgnoreStates,
         FdoSmLpSchemaElement* parent
@@ -97,6 +97,7 @@ protected:
     /// Get a class writer for modifying feature class definitions.
     /// Returns a class writer with fields already set.
     virtual FdoSmPhClassWriterP GetPhysicalModifyWriter();
+
 /*
     /// Create a new class table of the given name.
  	virtual FdoSmPhTable* NewTable( 
@@ -104,13 +105,15 @@ protected:
         const wchar_t* pkeyName,
         const wchar_t* tablespace
     );
- */
+*/
+
     /// Finalize this class. Find the Geometry property if
     /// any.
-	virtual void PostFinalize();
+    virtual void PostFinalize();
+
 /*
     /// Set the Geometry property schema mappings.
-	//
+    ///
     /// Parameters:
     /// 	classMapping: add the schema mappings to this class mapping.
     /// 	bIncludeDefaults - 
@@ -126,20 +129,21 @@ private:
 
     bool IsGeomInMetaschema();
 
-	void AddMultiGeomPropError( 
-		const FdoSmLpGeometricPropertyDefinition* pProp1,
-		const FdoSmLpGeometricPropertyDefinition* pProp2
-	);
-	void FdoSmLpFeatureClass::AddGeomPropNotFoundError( const wchar_t* propName );
-	void FdoSmLpFeatureClass::AddSecondaryGeomError( const wchar_t* propName );
-	void AddGeomOverrideError( const wchar_t* baseClassName );
-	void AddGeomRemoveError( const wchar_t* basePropName );
-	void AddGeomDeletedError();
-	void AddNoIdError();
+    void AddMultiGeomPropError( 
+        const FdoSmLpGeometricPropertyDefinition* pProp1,
+        const FdoSmLpGeometricPropertyDefinition* pProp2
+    );
 
-	FdoSmLpGeometricPropertyP mGeometryProperty;
+    void AddGeomPropNotFoundError( const wchar_t* propName );
+    void AddSecondaryGeomError( const wchar_t* propName );
+    void AddGeomOverrideError( const wchar_t* baseClassName );
+    void AddGeomRemoveError( const wchar_t* basePropName );
+    void AddGeomDeletedError();
+    void AddNoIdError();
 
-	FdoStringP mGeometryPropertyName;
+    FdoSmLpGeometricPropertyP mGeometryProperty;
+
+    FdoStringP mGeometryPropertyName;
 };
 
 typedef FdoPtr<FdoSmLpFeatureClass> FdoSmLpFeatureClassP;
