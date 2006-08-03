@@ -87,13 +87,13 @@ protected:
     FdoSmLpGrdGeometricPropertyDefinition() {}
     FdoSmLpGrdGeometricPropertyDefinition(FdoSmPhClassPropertyReaderP propReader, FdoSmLpClassDefinition* parent);
 
-    FdoSmLpGrdGeometricPropertyDefinition::FdoSmLpGrdGeometricPropertyDefinition(
+    FdoSmLpGrdGeometricPropertyDefinition(
         FdoGeometricPropertyDefinition* pFdoProp, 
         bool bIgnoreStates,
         FdoSmLpClassDefinition* parent
     );
 
-    FdoSmLpGrdGeometricPropertyDefinition::FdoSmLpGrdGeometricPropertyDefinition(
+    FdoSmLpGrdGeometricPropertyDefinition(
         FdoSmLpGeometricPropertyP pBaseProperty,
         FdoSmLpClassDefinition* pTargetClass,
         FdoStringP logicalName,

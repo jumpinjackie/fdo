@@ -598,19 +598,19 @@ public:
 
     const wchar_t *GetTable(const wchar_t *className);
 
-    const FdoSmLpSchema* DbiConnection::GetSchema(const wchar_t *className);
+    const FdoSmLpSchema* GetSchema(const wchar_t *className);
 
     int GetNextIndex(void);
 
-    private:
-        void LoadClassMapping();
+private:
+    void LoadClassMapping();
 
-            GdbiConnection      *mGdbiConnection;
+    GdbiConnection* mGdbiConnection;
 
-    public:
-           GdbiCommands*      GetGdbiCommands() { return mGdbiConnection->GetCommands();}
+public:
+    GdbiCommands* GetGdbiCommands() { return mGdbiConnection->GetCommands();}
 
-    GdbiConnection*      GetGdbiConnection() { return mGdbiConnection;}
+    GdbiConnection* GetGdbiConnection() { return mGdbiConnection;}
 
     // Temporary functions until we get rid of the old schema manager.
     void SetSchemaManager( FdoSchemaManagerP schemaManager );

@@ -83,7 +83,7 @@ public:
 
 	void SetSkipCheck( bool val ) { mSkipCheck = val; }
 
-    wchar_t* FdoRdbmsSchemaUtil::makePropName( const wchar_t* scope, const wchar_t* name );
+    wchar_t* makePropName( const wchar_t* scope, const wchar_t* name );
     const wchar_t *Property2ColName(const wchar_t *className, const wchar_t *attribute);
 
     const wchar_t *ColName2Property(const wchar_t *className, const wchar_t *column);
