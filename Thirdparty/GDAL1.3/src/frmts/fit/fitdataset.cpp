@@ -174,8 +174,8 @@ class FITRasterBand : public GDALPamRasterBand
 
 public:
 
-    FITRasterBand::FITRasterBand( FITDataset *, int );
-	~FITRasterBand();
+    FITRasterBand( FITDataset *, int );
+   ~FITRasterBand();
     
     // should override RasterIO eventually.
     
