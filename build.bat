@@ -12,6 +12,7 @@ SET WMSENABLE=yes
 SET ARCENABLE=yes
 SET ODBCENABLE=yes
 SET MYSQLENABLE=yes
+SET GDALENABLE=yes
 SET FDOENABLE=yes
 SET DOCENABLE=skip
 SET FDOERROR=0
@@ -52,6 +53,7 @@ if "%DEFMODIFY%"=="yes" goto stp1_get_with
 	SET ODBCENABLE=no
 	SET MYSQLENABLE=no
 	SET FDOENABLE=no
+	SET GDALENABLE=no
 :stp1_get_with
 if not "%2"=="shp" goto stp2_get_with
 	SET SHPENABLE=yes
@@ -81,11 +83,15 @@ if not "%2"=="mysql" goto stp8_get_with
 	SET MYSQLENABLE=yes
 	goto next_param
 :stp8_get_with
-if not "%2"=="fdo" goto stp9_get_with
-	SET FDOENABLE=yes
+if not "%2"=="gdal" goto stp9_get_with
+	SET GDALENABLE=yes
 	goto next_param
 :stp9_get_with
-if not "%2"=="providers" goto stp10_get_with
+if not "%2"=="fdo" goto stp10_get_with
+	SET FDOENABLE=yes
+	goto next_param
+:stp10_get_with
+if not "%2"=="providers" goto stp11_get_with
 	SET SHPENABLE=yes
 	SET SDFENABLE=yes
 	SET WFSENABLE=yes
@@ -93,8 +99,9 @@ if not "%2"=="providers" goto stp10_get_with
 	SET ARCENABLE=yes
 	SET ODBCENABLE=yes
 	SET MYSQLENABLE=yes
+	SET GDALENABLE=yes
 	goto next_param
-:stp10_get_with
+:stp11_get_with
 if not "%2"=="all" goto custom_error
 	SET SHPENABLE=yes
 	SET SDFENABLE=yes
@@ -104,6 +111,7 @@ if not "%2"=="all" goto custom_error
 	SET ODBCENABLE=yes
 	SET MYSQLENABLE=yes
 	SET FDOENABLE=yes
+	SET GDALENABLE=yes
 goto next_param
 
 :get_docs
@@ -206,9 +214,17 @@ popd
 if "%FDOERROR%"=="1" goto error
 
 :rebuild_mysql
-if "%MYSQLENABLE%"=="no" goto end
-if not exist Providers\GenericRdbms\Src\MySQL\build.bat goto study_rebuild
+if "%MYSQLENABLE%"=="no" goto rebuild_gdal
+if not exist Providers\GenericRdbms\Src\MySQL\build.bat goto rebuild_gdal
 pushd Providers\GenericRdbms\Src\MySQL
+call build.bat %PROVCALLCMDEX%
+popd
+if "%FDOERROR%"=="1" goto error
+
+:rebuild_gdal
+if "%GDALENABLE%"=="no" goto end
+if not exist Providers\GDAL\build.bat goto end
+pushd Providers\GDAL
 call build.bat %PROVCALLCMDEX%
 popd
 if "%FDOERROR%"=="1" goto error
@@ -253,8 +269,11 @@ if not exist Providers\ArcSDE\build.bat goto odbc_check
 if not exist Providers\GenericRdbms\Src\ODBC\build.bat goto mysql_check
 	SET MROVBYPROVP=%MROVBYPROVP%, odbc
 :mysql_check
-if not exist Providers\GenericRdbms\Src\MySQL\build.bat goto providers_show
+if not exist Providers\GenericRdbms\Src\MySQL\build.bat goto gdal_check
 	SET MROVBYPROVP=%MROVBYPROVP%, mysql
+:gdal_check
+if not exist Providers\GDAL\build.bat goto providers_show
+	SET MROVBYPROVP=%MROVBYPROVP%, gdal
 :providers_show
 if ("%MROVBYPROVP%")==("") goto show_capabilities
 	SET MPROVECAPABP=%MPROVECAPABP%, providers%MROVBYPROVP%

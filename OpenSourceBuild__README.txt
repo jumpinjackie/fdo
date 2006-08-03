@@ -207,6 +207,9 @@ II. Windows Build Instructions:
            gunzip fdordbms-3.2.0_G007.tar.gz
            tar -xvf fdordbms-3.2.0_G007.tar
 
+           gunzip fdogdal-3.2.0_G007.tar.gz
+           tar -xvf fdogdal-3.2.0_G007.tar
+
        - or -
 
        Use Windows Winzip utility as follows:
@@ -218,6 +221,7 @@ II. Windows Build Instructions:
            WINZIP32.EXE fdowfs-3.2.0_G007.tar.gz
            WINZIP32.EXE fdoarcsde-3.2.0_G007.tar.gz
            WINZIP32.EXE fdordbms-3.2.0_G007.tar.gz
+           WINZIP32.EXE fdogdal-3.2.0_G007.tar.gz
 
   2. Use the build_thirdparty.bat file to build the FDO Thirdparty binaries. The following 
      is a general guideline on how to use the build_thirdparty.bat build script.
@@ -281,7 +285,8 @@ II. Windows Build Instructions:
                                    wms, 
                                    arcsde, 
                                    odbc, 
-                                   mysql
+                                   mysql,
+                                   gdal
            BuildDocs:      -d[ocs]=skip(default), build
            **************************************************************************
             
@@ -478,6 +483,8 @@ II. Linux Build Instructions:
            gunzip fdordbms-3.2.0_G007.tar.gz
            tar -xvf fdordbms-3.2.0_G007.tar
 
+           gunzip fdogdal-3.2.0_G007.tar.gz
+           tar -xvf fdogdal-3.2.0_G007.tar
 
   2. cd [FDO OpenSource]
 
@@ -536,7 +543,8 @@ II. Linux Build Instructions:
                                      wfs, 
                                      wms, 
                                      arcsde, 
-                                     rdbms
+                                     rdbms,
+                                     gdal
            **************************************************************
 
            e.g.

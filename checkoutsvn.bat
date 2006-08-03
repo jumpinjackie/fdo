@@ -11,6 +11,7 @@ SET WFSENABLECHK=yes
 SET WMSENABLECHK=yes
 SET ARCENABLECHK=yes
 SET RDBMSENABLECHK=yes
+SET GDALENABLECHK=yes
 
 if (%FDO_SVN_ROOT%)==() SET FDO_SVN_ROOT=%cd%
 
@@ -57,6 +58,7 @@ if "%DEFMODIFYCHK%"=="yes" goto stp0_get_with
 	SET ARCENABLECHK=no
 	SET RDBMSENABLECHK=no
 	SET UTILENABLECHK=no
+	SET GDALENABLECHK=no
 :stp0_get_with
 if not "%2"=="providers" goto stp1_get_with
 	SET SHPENABLECHK=yes
@@ -65,6 +67,7 @@ if not "%2"=="providers" goto stp1_get_with
 	SET WMSENABLECHK=yes
 	SET ARCENABLECHK=yes
 	SET RDBMSENABLECHK=yes
+	SET GDALENABLECHK=yes
 	goto next_param
 :stp1_get_with
 if not "%2"=="all" goto stp2_get_with
@@ -78,6 +81,7 @@ if not "%2"=="all" goto stp2_get_with
 	SET WMSENABLECHK=yes
 	SET ARCENABLECHK=yes
 	SET RDBMSENABLECHK=yes
+	SET GDALENABLECHK=yes
 	goto next_param
 :stp2_get_with
 if not "%2"=="fdocore" goto stp3_get_with
@@ -119,9 +123,13 @@ if not "%2"=="arcsde" goto stp11_get_with
 	SET ARCENABLECHK=yes	
 	goto next_param
 :stp11_get_with
-if not "%2"=="rdbms" goto custom_error
+if not "%2"=="rdbms" goto stp12_get_with
 	SET RDBMSENABLECHK=yes
-goto next_param
+    goto next_param
+:stp12_get_with
+if not "%2"=="gdal" goto custom_error
+	SET GDALENABLECHK=yes
+    goto next_param
 
 :get_path
 if (%2)==() goto custom_error
@@ -199,8 +207,13 @@ svn checkout https://fdoarcsde.osgeo.org/svn/fdoarcsde/trunk/Providers/ArcSDE "%
 if errorlevel 1 goto error
 
 :checkout_generic
-if "%RDBMSENABLECHK%"=="no" goto end
+if "%RDBMSENABLECHK%"=="no" goto checkout_gdal
 svn checkout https://fdordbms.osgeo.org/svn/fdordbms/trunk/Providers/GenericRdbms "%FDO_SVN_ROOT%\Providers\GenericRdbms" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
+if errorlevel 1 goto error
+
+:checkout_gdal
+if "%GDALENABLECHK%"=="no" goto end
+svn checkout https://fdogdal.osgeo.org/svn/fdogdal/trunk/Providers/GDAL "%FDO_SVN_ROOT%\Providers\GDAL" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
 
 :end
@@ -214,13 +227,29 @@ exit /B 1
 echo The command is not recognized.
 echo Please use the format:
 :help_show
-echo **************************************************************************
-echo checkoutsvn.bat [-h] [-o=OutFolder] [-w=WithModule] [-u=UserId] [-p=UserPassword]
+echo **************************************************************
+echo checkoutsvn.bat [-h] 
+echo                 [-o=OutFolder] 
+echo                 [-w=WithModule] 
+echo                 -u=UserId 
+echo                 -p=UserPassword
 echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for files
-echo WithModule:     -w[ith]=all(default), fdo, fdocore, thirdparty, providers, utilities, shp, sdf, wfs, wms, arcsde, rdbms
+echo WithModule:     -w[ith]=all(default), 
+echo                         fdo, 
+echo                         fdocore, 
+echo                         thirdparty, 
+echo                         providers, 
+echo                         utilities, 
+echo                         shp, 
+echo                         sdf, 
+echo                         wfs, 
+echo                         wms, 
+echo                         arcsde, 
+echo                         rdbms, 
+echo                         gdal
 echo User:           -u[ser]=user id
 echo Password:       -p[assword]=user password
-echo **************************************************************************
+echo **************************************************************
 exit /B 0

@@ -8,6 +8,7 @@ SET WFSENABLE=yes
 SET WMSENABLE=yes
 SET ARCSDEENABLE=yes
 SET RDBMSENABLE=yes
+SET GDALENABLE=yes
 SET SHOWHELP=no
 SET FDOTARZIPFOLDER=OpenSource_FDO
 SET FDOBUILDNUMBER=GXXX
@@ -45,6 +46,7 @@ if "%DEFMODIFY%"=="yes" goto stp1_get_with
     SET WMSENABLE=no
     SET ARCSDEENABLE=no
     SET RDBMSENABLE=no
+    SET GDALENABLE=no
 :stp1_get_with
 if not "%2"=="sdf" goto stp2_get_with
 	SET SDFENABLE=yes
@@ -70,7 +72,11 @@ if not "%2"=="rdbms" goto stp7_get_with
 	SET RDBMSENABLE=yes
 	goto next_param
 :stp7_get_with
-if not "%2"=="providers" goto stp8_get_with
+if not "%2"=="gdal" goto stp8_get_with
+	SET GDALENABLE=yes
+	goto next_param
+:stp8_get_with
+if not "%2"=="providers" goto stp9_get_with
     SET FDOCOREENABLE=no
     SET SHPENABLE=yes
     SET SDFENABLE=yes
@@ -78,8 +84,9 @@ if not "%2"=="providers" goto stp8_get_with
     SET WMSENABLE=yes
     SET ARCSDEENABLE=yes
     SET RDBMSENABLE=yes
+    SET GDALENABLE=yes
 	goto next_param
-:stp8_get_with
+:stp9_get_with
 if not "%2"=="all" goto custom_error
     SET FDOCOREENABLE=yes
     SET SHPENABLE=yes
@@ -88,7 +95,8 @@ if not "%2"=="all" goto custom_error
     SET WMSENABLE=yes
     SET ARCSDEENABLE=yes
     SET RDBMSENABLE=yes
-goto next_param
+    SET GDALENABLE=yes
+    goto next_param
 
 :get_build
 SET FDOBUILDNUMBER=%2
@@ -172,7 +180,7 @@ if "%ARCSDEENABLE%"=="no" goto start_zip_rdbms
    7z a -airy -bd -tzip "fdoarcsde-3.2.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
    deltree /Y "%FDOTARZIPFOLDER%"
 :start_zip_rdbms
-if "%RDBMSENABLE%"=="no" goto end
+if "%RDBMSENABLE%"=="no" goto start_zip_gdal
    mkdir "%FDOTARZIPFOLDER%\Providers\GenericRdbms"
    svn export "%FDOSVNROOT%\Providers\GenericRdbms" "%FDOTARZIPFOLDER%\Providers\GenericRdbms" --force
    pushd "%FDOTARZIPFOLDER%"
@@ -180,6 +188,16 @@ if "%RDBMSENABLE%"=="no" goto end
    popd
    if exist "fdordbms-3.2.0_%FDOBUILDNUMBER%.zip" del /q /f "fdordbms-3.2.0_%FDOBUILDNUMBER%.zip"
    7z a -airy -bd -tzip "fdordbms-3.2.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
+   deltree /Y "%FDOTARZIPFOLDER%"
+:start_zip_gdal
+if "%GDALENABLE%"=="no" goto end
+   mkdir "%FDOTARZIPFOLDER%\Providers\GDAL"
+   svn export "%FDOSVNROOT%\Providers\GDAL" "%FDOTARZIPFOLDER%\Providers\GDAL" --force
+   pushd "%FDOTARZIPFOLDER%"
+   if exist .svn del /q /f /s .svn
+   popd
+   if exist "fdogdal-3.2.0_%FDOBUILDNUMBER%.zip" del /q /f "fdogdal-3.2.0_%FDOBUILDNUMBER%.zip"
+   7z a -airy -bd -tzip "fdogdal-3.2.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
    deltree /Y "%FDOTARZIPFOLDER%"
 
 :end
@@ -205,7 +223,7 @@ echo *
 echo Help:           -h[elp]
 echo InFolder:       -i[npath]=input source svn checkout folder
 echo OutFolder:      -o[utpath]=destination folder for exported svn files
-echo WithModule:     -w[ith]=all(default), fdo, providers, shp, sdf, wfs, wms, arcsde, rdbms
+echo WithModule:     -w[ith]=all(default), fdo, providers, shp, sdf, wfs, wms, arcsde, rdbms, gdal
 echo BuildNumber:    -b[uild]=User-Defined build number appended to the end of the tar.gz files
 echo **************************************************************************
 

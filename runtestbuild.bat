@@ -72,6 +72,7 @@ goto study_params
    copy /Y "%FDOSOURCEZIP%\fdowms-3.2.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
    copy /Y "%FDOSOURCEZIP%\fdoarcsde-3.2.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
    copy /Y "%FDOSOURCEZIP%\fdordbms-3.2.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
+   copy /Y "%FDOSOURCEZIP%\fdogdal-3.2.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
 :start_unzip
    echo *start unzip files
    pushd "%FDOTARGETFOLDER%"
@@ -82,6 +83,7 @@ goto study_params
    7z x -ry "fdowms-3.2.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
    7z x -ry "fdoarcsde-3.2.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
    7z x -ry "fdordbms-3.2.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
+   7z x -ry "fdogdal-3.2.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
    
    7z x -ry "fdo-3.2.0_%FDOBUILDNUMBERRTB%.tar" >>nul
    7z x -ry "fdoshp-3.2.0_%FDOBUILDNUMBERRTB%.tar" >>nul
@@ -90,6 +92,7 @@ goto study_params
    7z x -ry "fdowms-3.2.0_%FDOBUILDNUMBERRTB%.tar" >>nul
    7z x -ry "fdoarcsde-3.2.0_%FDOBUILDNUMBERRTB%.tar" >>nul
    7z x -ry "fdordbms-3.2.0_%FDOBUILDNUMBERRTB%.tar" >>nul
+   7z x -ry "fdogdal-3.2.0_%FDOBUILDNUMBERRTB%.tar" >>nul
    
    del /Q /F "*.tar"
    echo unzip files done...
@@ -170,6 +173,13 @@ goto study_params
 	pushd Providers\ArcSDE\Bin\Win32\Debug
 	UnitTest.exe server=adfdo.dnsalias.com port_multi=5151/tcp port_single=5151/tcp sdepwd=system dataset=FC4 rdbms=ORACLE -NoWAIT >..\..\..\..\..\ArcSDE_unit_test_log.txt
 	if errorlevel 1 echo ArcSDE unit test returned an error, please check ArcSDE_unit_test_log.txt for more information
+	popd
+:gdal_test
+	echo *starting gdal tests
+	if exist GDAL_unit_test_log.txt del /Q /F GDAL_unit_test_log.txt
+	pushd Providers\GDAL\Bin\Win32\Debug
+	UnitTest.exe -NoWAIT >..\..\..\..\..\GDAL_unit_test_log.txt
+	if errorlevel 1 echo GDAL unit test returned an error, please check GDAL_unit_test_log.txt for more information
 	popd
 
 	popd
