@@ -46,7 +46,7 @@ public:
 
     // Prevent the use of the Assignment Operation by definning it and not implemeting it.
     // DO NOT IMPLEMENT
-    FdoWmsDataReader::FdoWmsDataReader (const FdoWmsDataReader &right) { }
+    FdoWmsDataReader (const FdoWmsDataReader &right) { }
 
     /// <summary>Gets the number of propertys in the result set.</summary>
     /// <returns>Returns the number of propertys.</returns> 
