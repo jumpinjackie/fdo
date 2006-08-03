@@ -27,7 +27,7 @@
 class ArcSDELongTransactionUtility
 {
 protected:
-    static wchar_t* ArcSDELongTransactionUtility::trim (wchar_t *str);
+    static wchar_t* trim (wchar_t *str);
 
 public:
 
