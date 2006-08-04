@@ -56,17 +56,17 @@ public:
 	void _setUp () {}
 	void _tearDown () {}
 	void testServer1 ();
+	void testNestedClip ();
+    void testGetBounds ();
+	void testHttpBasicAuthentification ();
 	void testServer2 ();
 	void testResample ();
 	void testClip ();
-	void testNestedClip ();
 	void testDefaultHeight ();
-	void testHttpBasicAuthentification ();
 	void testNASAServer ();
 	void testNASAServer2 ();
 	void testIntegraphWorld ();
     void testCubeServer ();
-    void testGetBounds ();
     void testMultiLayers ();
 	void testTerraService ();
     void testDefect786029 ();

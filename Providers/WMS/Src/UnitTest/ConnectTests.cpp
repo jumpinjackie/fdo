@@ -117,7 +117,7 @@ void ConnectTests::TestConnection6 ()
     {
         FdoPtr<FdoIConnection> connection = WmsTests::GetConnection ();
 
-        connection->SetConnectionString(L"FeatureServer=http://www.geographynetwork.ca/wmsconnector/com.esri.wsit.WMSServlet/Geobase_NRN_NewfoundlandAndLabrador_I_Detail");
+        connection->SetConnectionString(L"FeatureServer=http://www.geographynetwork.ca/wmsconnector/com.esri.wms.Esrimap/Geobase_NRN_NewfoundlandAndLabrador_I_Detail");
         FdoConnectionState state = connection->Open ();
         connection->Close ();
     }

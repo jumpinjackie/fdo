@@ -30,7 +30,6 @@ WmsTestSelect::~WmsTestSelect ()
 {
 }
 
-#ifdef _FDO_RUN_INTERNAL_TEST
 void WmsTestSelect::testServer1 ()
 {
 //TODO: remove this when ? the bug ? on Linux is fixed
@@ -317,8 +316,6 @@ void WmsTestSelect::testGetBounds ()
     wprintf (L"Extent: (%f,%f %f,%f)\n", enve->GetMinX(), enve->GetMinY(), enve->GetMaxX(), enve->GetMaxY());                
 #endif
 }
-
-#endif //_FDO_RUN_INTERNAL_TEST
 
 // http://www.bsc-eoc.org/cgi-bin/bsc_ows.asp
 void WmsTestSelect::testServer2 ()
@@ -901,7 +898,7 @@ void WmsTestSelect::testDefect786029()
         FdoConnectionState state = connection->Open ();
 
         FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*> (connection->CreateCommand (FdoCommandType_Select));
-        cmdSelect->SetFeatureClassName (L"Orthos95"); // or "Roads"
+        cmdSelect->SetFeatureClassName (L"Roads"); // or "Ortho"
         FdoPtr<FdoIFeatureReader> featReader = cmdSelect->Execute ();
         CPPUNIT_ASSERT (featReader->ReadNext ());	    
         FdoPtr<FdoIRaster> raster = featReader->GetRaster (L"Raster");

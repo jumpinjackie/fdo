@@ -32,7 +32,6 @@ WmsTestSpatialContext::~WmsTestSpatialContext ()
 {
 }
 
-#ifdef _FDO_RUN_INTERNAL_TEST
 void WmsTestSpatialContext::testServer1 ()
 {
 	try 
@@ -44,7 +43,6 @@ void WmsTestSpatialContext::testServer1 ()
         CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
     }
 }
-#endif
 
 void WmsTestSpatialContext::testServer2 ()
 {

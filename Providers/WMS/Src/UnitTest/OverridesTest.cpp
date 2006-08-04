@@ -55,7 +55,6 @@ OverridesTest::~OverridesTest(void)
 {
 }
 
-#ifdef _FDO_RUN_INTERNAL_TEST
 void OverridesTest::TestSetConfiguration2 ()
 {
 	FdoPtr<FdoIConnection> connection = WmsTests::GetConnection();
@@ -121,7 +120,6 @@ void OverridesTest::TestSetConfiguration2 ()
 
 	connection->Close();
 }
-#endif
 
 void OverridesTest::TestCreateSchemaOverrides()
 {

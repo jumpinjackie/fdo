@@ -31,7 +31,6 @@ WmsTestDescribeSchema::~WmsTestDescribeSchema(void)
 {
 }
 
-#ifdef _FDO_RUN_INTERNAL_TEST
 void WmsTestDescribeSchema::testServer1 ()
 {
     try 
@@ -55,7 +54,6 @@ void WmsTestDescribeSchema::testInheritance1 ()
         CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
     }
 }
-#endif
 
 void WmsTestDescribeSchema::testServer2 ()
 {

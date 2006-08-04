@@ -29,10 +29,10 @@ class WmsTestDescribeSchema : public WmsTests
 {
 	CPPUNIT_TEST_SUITE (WmsTestDescribeSchema);
 #ifdef _FDO_RUN_INTERNAL_TEST
-    CPPUNIT_TEST (testServer1);
+	CPPUNIT_TEST (testServer1);
 	CPPUNIT_TEST (testInheritance1);
 #endif
-    CPPUNIT_TEST (testServer2);
+	CPPUNIT_TEST (testServer2);
 	CPPUNIT_TEST (testServer3);
 	CPPUNIT_TEST (testSchemaMapping);
 	CPPUNIT_TEST_SUITE_END ();
@@ -43,19 +43,19 @@ public:
 
 	void _setUp () {}
 	void _tearDown () {}
+	void testInheritance1 ();
 	void testServer1 ();
 	void testServer2 ();
 	void testServer3 ();
-	void testInheritance1 ();
 	void testSchemaMapping ();
 
 private:
 	// Helper to return the string presentation of the property type
 	static FdoString* PropertyTypeToString (FdoPropertyType propType);
 	// Helper to test and print out schema
-    void TestServer (FdoString* featureServer);
+	void TestServer (FdoString* featureServer);
 	// Helper to test interitance
-    void TestInheritance (FdoString* featureServer);
+	void TestInheritance (FdoString* featureServer);
 };
 
 
