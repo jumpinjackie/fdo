@@ -32,6 +32,7 @@ WFSENABLECHK=yes
 WMSENABLECHK=yes
 ARCENABLECHK=yes
 RDBMSENABLECHK=yes
+GDALENABLECHK=yes
 SHOWHELP=no
 FDOTARZIPFOLDER=/OpenSource_FDO
 FDOBUILDNUMBER=GXXX
@@ -45,11 +46,11 @@ do
   arg="$1"
   shift
   case $arg in
-  --h | --help)
+  -h | --h | --help)
     SHOWHELP=yes
     break
     ;;
-  --b | --build)
+  -b | --b | --build)
      if test -z	 "$1"; then
         echo "build number cannot be empty"
 	exit 1
@@ -58,7 +59,7 @@ do
      fi
      shift
     ;;
-  --o | --outpath)
+  -o | --o | --outpath)
      if test -z	 "$1"; then
         echo "Destination folder can not be empty"
 	exit 1
@@ -67,7 +68,7 @@ do
      fi
      shift
     ;;
-  --i | --inpath)
+  -i | --i | --inpath)
      if test -z	 "$1"; then
         echo "Destination folder can not be empty"
 	exit 1
@@ -76,7 +77,7 @@ do
      fi
      shift
     ;;
-  --w | --with)
+  -w | --w | --with)
      if test "$DEFMODIFYCHK" == no; then
 	DEFMODIFYCHK=yes
 	FDOCOREENABLECHK=no
@@ -86,6 +87,7 @@ do
 	WMSENABLECHK=no
 	ARCENABLECHK=no
 	RDBMSENABLECHK=no
+	GDALENABLECHK=no
      fi
      if test -z "$1"; then
         echo "Invalid parameter"
@@ -97,6 +99,7 @@ do
 	WMSENABLECHK=yes
 	ARCENABLECHK=yes
 	RDBMSENABLECHK=yes
+	GDALENABLECHK=yes
      elif test "$1" == all; then
 	FDOCOREENABLECHK=yes
 	SHPENABLECHK=yes
@@ -105,6 +108,7 @@ do
 	WMSENABLECHK=yes
 	ARCENABLECHK=yes
 	RDBMSENABLECHK=yes
+	GDALENABLECHK=yes
      elif test "$1" == fdo; then
 	FDOCOREENABLECHK=yes
 	THRPENABLECHK=no
@@ -122,6 +126,8 @@ do
         ARCENABLECHK=yes
      elif test "$1" == rdbms; then
         RDBMSENABLECHK=yes
+     elif test "$1" == gdal; then
+        GDALENABLECHK=yes
      else
         echo "Invalid parameter"
 	exit 1
@@ -147,13 +153,27 @@ done
 
 if test "$SHOWHELP" == yes; then
    echo "**************************************************************************"
-   echo "createtarzipfiles.sh [--h] [--i InFolder] [--o OutFolder] [--w WithModule] [--b BuildNumber]"
+   echo "createtarzipfiles.sh [--h]"
+   echo "                     [--i InFolder]"
+   echo "                     [--o OutFolder]" 
+   echo "                     [--w WithModule]" 
+   echo "                     [--b BuildNumber]"
    echo " "
    echo "Help:           --h[elp]"
    echo "InFolder:       --i[npath]=input source svn checkout folder"
    echo "OutFolder:      --o[utpath]=destination folder for exported svn files"
-   echo "WithModule:     --w[ith]=all(default), fdo, providers, shp, sdf, wfs, wms, arcsde, rdbms"
-   echo "BuildNumber:    --b[uild]=User-Defined build number appended to the end of the tar.gz files"
+   echo "WithModule:     --w[ith]=all(default)"
+   echo "                         fdo"
+   echo "                         providers"
+   echo "                         shp"
+   echo "                         sdf"
+   echo "                         wfs"
+   echo "                         wms"
+   echo "                         arcsde"
+   echo "                         rdbms"
+   echo "                         gdal"
+   echo "BuildNumber:    --b[uild]=User-Defined build number appended"
+   echo "                          to the end of the tar.gz files"
    echo "**************************************************************************"
    exit 0
 fi
@@ -229,6 +249,16 @@ if test "$RDBMSENABLECHK" == yes; then
    tar -cf fdordbms-3.2.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
    rm -f fdordbms-3.2.0_"$FDOBUILDNUMBER".tar.gz
    gzip -9 fdordbms-3.2.0_"$FDOBUILDNUMBER".tar
+   rm -rf "$FDOTARZIPFOLDER"
+fi
+if test "$GDALENABLECHK" == yes; then
+   mkdir -p "$FDOTARZIPFOLDER"/Providers/GDAL
+   svn export "$FDOSVNROOT"/Providers/GDAL "$FDOTARZIPFOLDER"/Providers/GDAL --force
+   find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
+   rm -f fdogdal-3.2.0_"$FDOBUILDNUMBER".tar
+   tar -cf fdogdal-3.2.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
+   rm -f fdogdal-3.2.0_"$FDOBUILDNUMBER".tar.gz
+   gzip -9 fdogdal-3.2.0_"$FDOBUILDNUMBER".tar
    rm -rf "$FDOTARZIPFOLDER"
 fi
 

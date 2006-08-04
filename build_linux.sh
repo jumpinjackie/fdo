@@ -15,6 +15,7 @@ WFSENABLE=yes
 WMSENABLE=yes
 ARCENABLE=yes
 RDBMSENABLE=yes
+GDALENABLE=yes
 SHOWHELP=no
 
 
@@ -90,10 +91,11 @@ do
        ARCENABLE=no
        RDBMSENABLE=no
        UTILENABLE=no
+       GDALENABLE=no
     fi
     if test -z "$1"; then
        echo "$arg Invalid parameter $1"
-    exit 1
+       exit 1
     elif test "$1" == all; then
         FDOCOREENABLE=yes
         SHPENABLE=yes
@@ -102,8 +104,9 @@ do
         WMSENABLE=yes
         ARCENABLE=yes
         RDBMSENABLE=yes
-	elif test "$1" == fdocore; then
-		FDOCOREENABLE=yes
+        GDALENABLE=yes
+    elif test "$1" == fdocore; then
+	FDOCOREENABLE=yes
     elif test "$1" == fdo; then
         FDOENABLE=yes
     elif test "$1" == utilities; then
@@ -115,6 +118,7 @@ do
         WMSENABLE=yes
         ARCENABLE=yes
         RDBMSENABLE=yes
+        GDALENABLE=yes
     elif test "$1" == shp; then
         SHPENABLE=yes
     elif test "$1" == sdf; then
@@ -127,6 +131,8 @@ do
         ARCENABLE=yes
     elif test "$1" == rdbms; then
         RDBMSENABLE=yes
+    elif test "$1" == gdal; then
+        GDALENABLE=yes
     else
         echo "$arg Invalid parameter $1"
         exit 1
@@ -165,8 +171,13 @@ fi
 ### Show Help Info ###
 if test "$SHOWHELP" == yes; then
 
-   echo "************************************************************************************************************"
-   echo "build_linux.sh [--h] [--c BuildType] [--a Action] [--w WithModule] [--d BuildDocs] [--m ConfigMakefiles]"
+   echo "******************************************************************************************"
+   echo "build_linux.sh [--h]"
+   echo "               [--c BuildType]" 
+   echo "               [--a Action]"
+   echo "               [--w WithModule]" 
+   echo "               [--d BuildDocs]"
+   echo "               [--m ConfigMakefiles]"
    echo "*"
    echo "Help:            --h[elp]"
    echo "BuildType:       --c[onfig] release(default), debug"
@@ -195,7 +206,7 @@ if test "$SHOWHELP" == yes; then
    fi
    
    echo "$HELPSTRINGWITH"
-   echo "************************************************************************************************************"
+   echo "******************************************************************************************"
 
    exit 0
 fi
@@ -344,6 +355,15 @@ fi
 if test "$RDBMSENABLE" == yes; then
    if test -e "Providers/GenericRdbms/build_linux.sh"; then
        pushd Providers/GenericRdbms >& /dev/null
+       ./build_linux.sh $CMDEX
+       popd >& /dev/null
+   fi
+fi
+
+#build GDAL Provider
+if test "$GDALENABLE" == yes; then
+   if test -e "Providers/GDAL/build_linux.sh"; then
+       pushd Providers/GDAL >& /dev/null
        ./build_linux.sh $CMDEX
        popd >& /dev/null
    fi

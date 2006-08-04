@@ -35,6 +35,7 @@ WFSENABLECHK=yes
 WMSENABLECHK=yes
 ARCENABLECHK=yes
 RDBMSENABLECHK=yes
+GDALENABLECHK=yes
 SHOWHELP=no
 FDO_SVN_USERNAME=
 FDO_SVN_PASSWORD=
@@ -48,11 +49,11 @@ do
   arg="$1"
   shift
   case $arg in
-  --h | --help)
+  -h | --h | --help)
     SHOWHELP=yes
     break
     ;;
-  --o | --outpath)
+  -o | --o | --outpath)
      if test -z	 "$1"; then
         echo "Destination folder can not be empty"
 	exit 1
@@ -61,7 +62,7 @@ do
      fi
      shift
     ;;
-  --u | --user)
+  -u | --u | --user)
      if test -z	 "$1"; then
         echo "User id can not be empty"
 	exit 1
@@ -70,7 +71,7 @@ do
      fi
      shift
     ;;
-  --p | --password)
+  -p | --p | --password)
      if test -z	 "$1"; then
         echo "Password can not be empty"
 	exit 1
@@ -79,7 +80,7 @@ do
      fi
      shift
     ;;
-  --w | --with)
+  -w | --w | --with)
      if test "$DEFMODIFYCHK" == no; then
 	DEFMODIFYCHK=yes
 	FDOCOREENABLECHK=no
@@ -92,6 +93,7 @@ do
 	ARCENABLECHK=no
 	RDBMSENABLECHK=no
 	UTILENABLECHK=no
+	GDALENABLECHK=no
      fi
      if test -z "$1"; then
         echo "Invalid parameter"
@@ -103,6 +105,7 @@ do
 	WMSENABLECHK=yes
 	ARCENABLECHK=yes
 	RDBMSENABLECHK=yes
+	GDALENABLECHK=yes
      elif test "$1" == all; then
 	FDOCOREENABLECHK=yes
 	THRPENABLECHK=no
@@ -114,6 +117,7 @@ do
 	WMSENABLECHK=yes
 	ARCENABLECHK=yes
 	RDBMSENABLECHK=yes
+	GDALENABLECHK=yes
      elif test "$1" == fdocore; then
 	FDOCOREENABLECHK=yes
 	THRPENABLECHK=no
@@ -137,6 +141,8 @@ do
         ARCENABLECHK=yes
      elif test "$1" == rdbms; then
         RDBMSENABLECHK=yes
+     elif test "$1" == gdal; then
+        GDALENABLECHK=yes
      else
         echo "Invalid parameter"
 	exit 1
@@ -161,15 +167,30 @@ done
 
 
 if test "$SHOWHELP" == yes; then
-   echo "**************************************************************************"
-   echo "checkoutsvn.sh [--h] [--o OutFolder] [--w WithModule] [--u UserId] [--p UserPassword]"
+   echo "**********************************************************"
+   echo "checkoutsvn.sh [--h]"
+   echo "               [--o OutFolder]"
+   echo "               [--w WithModule]"
+   echo "                --u UserId"
+   echo "                --p UserPassword"
    echo " "
    echo "Help:           --h[elp]"
    echo "OutFolder:      --o[utpath]=destination folder for files"
-   echo "WithModule:     --w[ith]=all(default), fdo, thirdparty, providers, utilities, shp, sdf, wfs, wms, arcsde, rdbms"
+   echo "WithModule:     --w[ith]=all(default)"
+   echo "			  fdo"
+   echo "			  thirdparty"
+   echo "			  providers"
+   echo "			  utilities"
+   echo "			  shp"
+   echo "			  sdf"
+   echo "			  wfs"
+   echo "			  wms"
+   echo "			  arcsde"
+   echo "			  rdbms"
+   echo "			  gdal"
    echo "User:           --u[ser]=user id"
    echo "Password:       --p[assword]=user password"
-   echo "**************************************************************************"
+   echo "**********************************************************"
    exit 0
 fi
 
@@ -216,6 +237,10 @@ fi
 if test "$RDBMSENABLECHK" == yes; then
    echo "Checking out https://fdordbms.osgeo.org/svn/fdordbms/trunk/Providers/GenericRdbms"
    svn checkout https://fdordbms.osgeo.org/svn/fdordbms/trunk/Providers/GenericRdbms "$FDO_SVN_ROOT/Providers/GenericRdbms" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
+fi
+if test "$GDALENABLECHK" == yes; then
+   echo "Checking out https://fdogdal.osgeo.org/svn/fdogdal/trunk/Providers/GDAL"
+   svn checkout https://fdogdal.osgeo.org/svn/fdogdal/trunk/Providers/GDAL "$FDO_SVN_ROOT/Providers/GDAL" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
 fi
 echo "End checkout"
 

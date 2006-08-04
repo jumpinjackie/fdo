@@ -52,11 +52,11 @@ do
   arg="$1"
   shift
   case $arg in
-  --h | --help)
+  -h | --h | --help)
     SHOWHELP=yes
     break
     ;;
-  --b | --build)
+  -b | --b | --build)
      if test -z	 "$1"; then
         echo "Build number cannot be empty"
 	exit 1
@@ -65,7 +65,7 @@ do
      fi
      shift
     ;;
-  --o | --outpath)
+  -o | --o | --outpath)
      if test -z	 "$1"; then
         echo "Destination build folder can not be empty"
 	exit 1
@@ -74,7 +74,7 @@ do
      fi
      shift
     ;;
-  --i | --inpath)
+  -i | --i | --inpath)
      if test -z	 "$1"; then
         echo "Destination folder can not be empty"
 	exit 1
@@ -156,6 +156,7 @@ fi
    cp --force "$FDOSOURCETARGZ/fdowms-3.2.0_$FDOBUILDNUMBERRTB.tar.gz" "$FDOTARGETFOLDER"
    cp --force "$FDOSOURCETARGZ/fdoarcsde-3.2.0_$FDOBUILDNUMBERRTB.tar.gz" "$FDOTARGETFOLDER"
    cp --force "$FDOSOURCETARGZ/fdordbms-3.2.0_$FDOBUILDNUMBERRTB.tar.gz" "$FDOTARGETFOLDER"
+   cp --force "$FDOSOURCETARGZ/fdogdal-3.2.0_$FDOBUILDNUMBERRTB.tar.gz" "$FDOTARGETFOLDER"
    echo "copy zip files done..."
 
    echo "*start unzip files"
@@ -167,6 +168,8 @@ fi
    gzip -dN "fdowms-3.2.0_$FDOBUILDNUMBERRTB.tar.gz"
    gzip -dN "fdoarcsde-3.2.0_$FDOBUILDNUMBERRTB.tar.gz"
    gzip -dN "fdordbms-3.2.0_$FDOBUILDNUMBERRTB.tar.gz"
+   gzip -dN "fdogdal-3.2.0_$FDOBUILDNUMBERRTB.tar.gz"
+
    tar -xf "fdo-3.2.0_$FDOBUILDNUMBERRTB.tar"
    tar -xf "fdoshp-3.2.0_$FDOBUILDNUMBERRTB.tar"
    tar -xf "fdosdf-3.2.0_$FDOBUILDNUMBERRTB.tar"
@@ -174,6 +177,7 @@ fi
    tar -xf "fdowms-3.2.0_$FDOBUILDNUMBERRTB.tar"
    tar -xf "fdoarcsde-3.2.0_$FDOBUILDNUMBERRTB.tar"
    tar -xf "fdordbms-3.2.0_$FDOBUILDNUMBERRTB.tar"
+   tar -xf "fdogdal-3.2.0_$FDOBUILDNUMBERRTB.tar"
    popd >& /dev/null
    echo "unzip files done..."
    
@@ -220,6 +224,11 @@ fi
    check_for_errors $? "ArcSDE unit test returned an error, please check ArcSDE_unit_test_log.txt for more information" "0"
    popd >& /dev/null
    
+   pushd Providers/GDAL/Src/UnitTest >& /dev/null
+   ./UnitTest >& ../../../../GDAL_unit_test_log.txt
+   check_for_errors $? "GDAL unit test returned an error, please check GDAL_unit_test_log.txt for more information" "0"
+   popd >& /dev/null
+
    popd >& /dev/null
    echo "End unit tests..."
 exit 0
