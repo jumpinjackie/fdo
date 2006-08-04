@@ -39,6 +39,10 @@
             duplicate = NULL; \
         }
 
+// If there are spatial index columns for a geometric property, there are exactly
+// this number to bind (some may have empty values).
+#define FIXED_NUM_SI_COLUMNS    (2)
+
 FdoRdbmsPvcUpdateHandler::FdoRdbmsPvcUpdateHandler( ):mFdoConnection(NULL)
 {
 }
@@ -98,7 +102,7 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
     int  bindIndexRet = 0;
     count = propValCollection->GetCount();
 	if( spatialManager != NULL )
-		count += 2; // Geometry property may require up to 2 extra columns
+		count += FIXED_NUM_SI_COLUMNS; // Geometry property may require up to 2 extra columns
 	
     values = new FdoRdbmsPvcBindDef[count];
     for (i=0; i<count; i++)
@@ -706,35 +710,41 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
 								if (NULL != columnSi1 && NULL != columnSi2 && spatialManager != NULL )
 								{
 									spatialManager->InsertGeometryInLine(geomPropDef, geomValue, geomSiKeys);
-								}
 
-								for (int n=0; geomSiKeys != NULL && n < geomSiKeys->GetCount(); n++ )
-								{
-									index = bindIndex-1;
-									i++;
-									const wchar_t *wcharValue = geomSiKeys->GetString(n);
-									if( mConnection->GetGdbiCommands()->SupportsUnicode() )
-									{
-										values[index].len = columnSi1->GetLength()+1;
-										values[index].value.strvalue = new wchar_t[values[index].len];
-										values[index].type = FdoDataType_String;
-										values[index].valueNeedsFree = true;
-										wcsncpy((wchar_t*)values[index].value.strvalue, wcharValue, values[index].len);
-										((wchar_t*)values[index].value.strvalue)[values[index].len-1] = '\0';
-										statement->Bind(bindIndex++, values[index].len, (const wchar_t*)values[index].value.strvalue, &values[index].null_ind );
-									}
-									else
-									{
-										values[index].type = FdoDataType_String;
-										values[index].len = columnSi1->GetLength()+1;
-										values[index].value.strvalue = new char[values[index].len];
-										values[index].valueNeedsFree = true;
-										const char* charVal = mConnection->GetUtility()->UnicodeToUtf8( wcharValue );
-										strncpy((char*)values[index].value.strvalue, charVal, values[index].len);
-										((char*)values[index].value.strvalue)[values[index].len-1] = '\0';
-										statement->Bind(bindIndex++, values[index].len, (const char*)values[index].value.strvalue, &values[index].null_ind );
-									}
-									mConnection->GetGdbiCommands()->set_nnull( &values[index].null_ind, 0, 0 );
+								    for (int n=0; n < FIXED_NUM_SI_COLUMNS; n++ )
+								    {
+									    index = bindIndex-1;
+									    i++;
+									    const wchar_t *wcharValue = L"";
+                                        if (geomSiKeys != NULL && n < geomSiKeys->GetCount())
+                                            wcharValue = geomSiKeys->GetString(n);
+
+                                        if( mConnection->GetGdbiCommands()->SupportsUnicode() )
+									    {
+										    values[index].len = columnSi1->GetLength()+1;
+										    values[index].value.strvalue = new wchar_t[values[index].len];
+										    values[index].type = FdoDataType_String;
+										    values[index].valueNeedsFree = true;
+										    wcsncpy((wchar_t*)values[index].value.strvalue, wcharValue, values[index].len);
+										    ((wchar_t*)values[index].value.strvalue)[values[index].len-1] = '\0';
+										    statement->Bind(bindIndex++, values[index].len, (const wchar_t*)values[index].value.strvalue, &values[index].null_ind );
+									    }
+									    else
+									    {
+										    values[index].type = FdoDataType_String;
+										    values[index].len = columnSi1->GetLength()+1;
+										    values[index].value.strvalue = new char[values[index].len];
+										    values[index].valueNeedsFree = true;
+										    const char* charVal = mConnection->GetUtility()->UnicodeToUtf8( wcharValue );
+										    strncpy((char*)values[index].value.strvalue, charVal, values[index].len);
+										    ((char*)values[index].value.strvalue)[values[index].len-1] = '\0';
+										    statement->Bind(bindIndex++, values[index].len, (const char*)values[index].value.strvalue, &values[index].null_ind );
+									    }
+                                        if (wcharValue[0] == L'\0')
+								            mConnection->GetGdbiCommands()->set_null( &values[index].null_ind, 0, 0 );
+                                        else
+    									    mConnection->GetGdbiCommands()->set_nnull( &values[index].null_ind, 0, 0 );
+								    }
 								}
 							}
                             break;

@@ -253,31 +253,33 @@ FdoInt32 FdoRdbmsUpdateCommand::Execute ()
 
         while( query->ReadNext() )
         {
-            if ( isFeatClass && featIdProp )
-            {
-                //
-                // Update the FeatId property value.
-                featId = (int)query->GetInt64(prmColName, NULL, NULL );
-                FdoDataValue  *featNum = FdoDataValue::Create(mConnection->GetUtility()->Utf8ToUnicode(ut_itoa( featId, buffer) ) );
-                FdoPropertyValue *propVal = NULL;
-                propVal = mPropertyValues->FindItem( prmPrtName );
-                if (propVal == NULL)
-                {
-                    propVal = FdoPropertyValue::Create(  );
-                    propVal->SetName( prmPrtName );
-                    mPropertyValues->Add( propVal );
-                    addedIndentProperties = true;
-                }
-                propVal->SetValue( featNum );
-                propVal->Release();
-                featNum->Release();
-            }
-
             for( int i =0; properties!= NULL && i<properties->GetCount(); i++ )
             {
-                // following needs to change to handle numeric columns.
-                if ( !properties->RefItem(i)->GetIsFeatId() )
+                if ( properties->RefItem(i)->GetIsFeatId() )
                 {
+                    if ( isFeatClass && featIdProp )
+                    {
+                        //
+                        // Update the FeatId property value.
+                        featId = (int)query->GetInt64(prmColName, NULL, NULL );
+                        FdoDataValue  *featNum = FdoDataValue::Create(mConnection->GetUtility()->Utf8ToUnicode(ut_itoa( featId, buffer) ) );
+                        FdoPropertyValue *propVal = NULL;
+                        propVal = mPropertyValues->FindItem( prmPrtName );
+                        if (propVal == NULL)
+                        {
+                            propVal = FdoPropertyValue::Create(  );
+                            propVal->SetName( prmPrtName );
+                            mPropertyValues->Add( propVal );
+                            addedIndentProperties = true;
+                        }
+                        propVal->SetValue( featNum );
+                        propVal->Release();
+                        featNum->Release();
+                    }
+                }
+                else
+                {
+                    // following needs to change to handle numeric columns.
                     FdoPropertyValue *propVal = NULL;
                     const wchar_t* name = properties->RefItem(i)->GetName();
                     propVal = mPropertyValues->FindItem( name );
