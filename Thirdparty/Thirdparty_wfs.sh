@@ -1,4 +1,4 @@
-#!/bin/csh
+#!/bin/sh
 
 ##########################################
 ## build third party libraries for WFS: ##
