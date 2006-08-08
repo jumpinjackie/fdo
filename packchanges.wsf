@@ -93,17 +93,23 @@
                             modLine = Right(lineFile, Len(lineFile) - 7)
                             oinfFile.WriteLine("Modified : " & activeRelPath & modLine)
                             olstFile.WriteLine(activeRelPath & modLine)
-                            rez = WshShell.Run("cmd /C 7z a -tzip " & ChangeName & ".zip " & activeRelPath & modLine & " >> log.txt", 0, true)
+                            if fsc.FileExist(activeRelPath & modLine) Then
+                                rez = WshShell.Run("cmd /C 7z a -tzip " & ChangeName & ".zip " & activeRelPath & modLine & " >> log.txt", 0, true)
+                            End If
                         ElseIf not Instr(modLine, "A") = 0 Then
                             modLine = Right(lineFile, Len(lineFile) - 7)
                             oinfFile.WriteLine("Added : " & activeRelPath & modLine)
                             olstFile.WriteLine(activeRelPath & modLine)
-                            rez = WshShell.Run("cmd /C 7z a -tzip " & ChangeName & ".zip " & activeRelPath & modLine & " >> log.txt", 0, true)
+                            if fsc.FileExist(activeRelPath & modLine) Then
+                                rez = WshShell.Run("cmd /C 7z a -tzip " & ChangeName & ".zip " & activeRelPath & modLine & " >> log.txt", 0, true)
+                            End If
                         ElseIf not Instr(modLine, "D") = 0 Then
                             modLine = Right(lineFile, Len(lineFile) - 7)
                             oinfFile.WriteLine("Deleted : " & activeRelPath & modLine)
                             olstFile.WriteLine(activeRelPath & modLine)
-                            rez = WshShell.Run("cmd /C 7z a -tzip " & ChangeName & ".zip " & activeRelPath & modLine & " >> log.txt", 0, true)
+                            if fsc.FileExist(activeRelPath & modLine) Then
+                                rez = WshShell.Run("cmd /C 7z a -tzip " & ChangeName & ".zip " & activeRelPath & modLine & " >> log.txt", 0, true)
+                            End If
                         End If
                 End Select
                Loop While EndFile = False
