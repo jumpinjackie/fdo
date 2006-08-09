@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh
 # Common stub for a few missing GNU programs while installing.
 # Copyright (C) 1996, 1997, 1999, 2000, 2002 Free Software Foundation, Inc.
 # Originally by Fran,cois Pinard <pinard@iro.umontreal.ca>, 1996.
