@@ -33,8 +33,10 @@ libGRFPProvider_la_LIBADD =  \
   Provider/libGRFPProviderSrc.la \
   libGRFPOverrides.la \
   $(FDOUTILITIES)/Common/libProvidersCommon.la \
-  $(FDO)/Unmanaged/Src/libFDO.la
+  $(FDO)/Unmanaged/Src/libFDO.la \
+  -lgdal
 
 libGRFPProvider_la_LDFLAGS = \
   -shared \
-  -release $(VERSION)
+  -release $(VERSION) \
+  -L$(FDOTHIRDPARTY)/GDAL1.3/linux/lib/optimized
