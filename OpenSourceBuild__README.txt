@@ -631,6 +631,10 @@ II. Linux Build Instructions:
             e.g. 
 
             ./UnitTest server=somesite.com port_multi=5151/tcp port_single=5151/tcp sdepwd=test dataset=FC4 rdbms=ORACLE
-           
 
+        GDAL:
+
+            cd [FDO OpenSource]/Providers/GDAL/Src/UnitTest
+            ./UnitTest
+          
 [end]
