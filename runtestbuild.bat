@@ -177,8 +177,8 @@ goto study_params
 :gdal_test
 	echo *starting gdal tests
 	if exist GDAL_unit_test_log.txt del /Q /F GDAL_unit_test_log.txt
-	pushd Providers\GDAL\Bin\Win32\Debug
-	UnitTest.exe -NoWAIT >..\..\..\..\..\GDAL_unit_test_log.txt
+	pushd Providers\ArcSDE\Src\UnitTest
+	..\..\Bin\Win32\Debug\UnitTest.exe -NoWAIT >..\..\..\..\GDAL_unit_test_log.txt
 	if errorlevel 1 echo GDAL unit test returned an error, please check GDAL_unit_test_log.txt for more information
 	popd
 

@@ -345,6 +345,11 @@ II. Windows Build Instructions:
             cd [FDO OpenSource]\Providers\ArcSDE\Src\UnitTest
             ..\..\bin\win32\Debug\UnitTest [mandatory command-line arguments]
 
+	GDAL:
+
+            cd [FDO OpenSource]\Providers\GDAL\Src\UnitTest
+            ..\..\Bin\Win32\Debug\UnitTest
+
 
 -----------------------------
 Linux Instructions
