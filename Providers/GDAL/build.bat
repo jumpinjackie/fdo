@@ -101,7 +101,7 @@ if "%FDOERROR%"=="1" goto error
 if "%TYPEACTIONRFP%"=="clean" goto end
 if "%TYPEACTIONRFP%"=="build" goto generate_docs
 
-:install_files_shp
+:install_files_rfp
 echo Copy %TYPEBUILDRFP% GdalFile Provider Output Files
 copy /y "Bin\Win32\%TYPEBUILDRFP%\GRFPMessage.dll" "%FDOBINPATHRFP%"
 copy /y "Bin\Win32\%TYPEBUILDRFP%\GRFPOverrides.dll" "%FDOBINPATHRFP%"
