@@ -34,6 +34,7 @@ extern wchar_t module[];
 #ifdef _WIN32
 
 #include <malloc.h>
+#define ENV_VAR L"PATH"
 
 // macro to convert a multibyte string into a wide character string, allocating space on the stack
 #define multibyte_to_wide(w,mb)\
@@ -147,43 +148,35 @@ static int addPath (std::wstring exe)
     int ret;
 
 #ifdef _WIN32
-    const std::wstring DIR_SEP_CHAR = L"\\";
-    const std::wstring ENV_VAR = L"PATH";
-    const std::wstring PATH_SEP_CHAR = L";";
-    std::wstring dir;
+	//An environment variable has a maximum size limit of 32,767 characters, including the null-terminating character
+    wchar_t env[0x7FFF];
+    const wchar_t* DIR_SEP_CHAR = L"\\";
+    const wchar_t* PATH_SEP_CHAR = L";";
     std::wstring::size_type pos;
-    wchar_t* env;
     std::wstring path;
-    std::wstring::size_type last;
     std::wstring new_path;
+	ret = 0;
 
-    ret = 0;
-
-    dir = exe;
-    pos = dir.find_last_of (DIR_SEP_CHAR);
+	pos = exe.find_last_of (DIR_SEP_CHAR);
     if (std::wstring::npos != pos)
     {
         pos++; // move past the slash
-        dir = dir.substr (0, pos);
-        env = _wgetenv (ENV_VAR.data ());
-        if (NULL != env)
+        exe = exe.substr (0, pos);
+        if (GetEnvironmentVariableW(ENV_VAR, env, 0x7FFF) != 0)
         {
             path = env;
-            last = 0;
-            while (!ret && std::wstring::npos != (pos = path.find (dir, last)))
+			std::wstring::size_type last = 0;
+            while (!ret && std::wstring::npos != (pos = path.find (exe, last)))
             {   // check it's just the directory and nothing else
-                last = pos + dir.length ();
-                if ((path.length () <= last) || (path.at (last) == PATH_SEP_CHAR.at (0)))
+                last = pos + exe.length ();
+                if ((path.length () <= last) || (path.at (last) == PATH_SEP_CHAR[0]))
                     ret = 1;
             }
-        }
-        if (!ret)
-        {   // need to add the path
-            new_path = ENV_VAR + L"=" + dir + PATH_SEP_CHAR;
-            if (NULL != env)
-                new_path += path;
-            if (!_wputenv (new_path.data ())) // returns 0 if successful, or -1 in the case of an error
-                ret = 1;
+			if (!ret)
+			{   // need to add the path
+				path = exe + PATH_SEP_CHAR + path;
+				ret = (SetEnvironmentVariableW(ENV_VAR, path.c_str()) != 0) ? 1 : 0;
+			}
         }
     }
 #else
