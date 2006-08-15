@@ -241,6 +241,8 @@ private:
     bool MatchesHere (const wchar_t* pattern, const wchar_t* src);
     bool MatchPercent (const wchar_t* pattern, const wchar_t* src);
     bool MatchBracket (const wchar_t* pattern, const wchar_t* src);
+
+	void ProcessFunctionCeilFloor( FdoString *name, FdoDataValue* argLeft );
 };
 
 #endif // _FDOCOMMONFILTEREXECUTOR_H_

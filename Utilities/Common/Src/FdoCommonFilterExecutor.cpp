@@ -1042,7 +1042,7 @@ void FdoCommonFilterExecutor::ProcessFunction (FdoFunction& expr)
         RelinquishDataValue (argLeft);
         RelinquishDataValue (argRight);
     }
-    else if (wcscmp (name, FDO_FUNCTION_CEIL) == 0)
+    else if (wcscmp (name, FDO_FUNCTION_CEIL) == 0 || wcscmp (name, FDO_FUNCTION_FLOOR) == 0)
     {
         FdoPtr<FdoExpressionCollection> args = expr.GetArguments ();
 
@@ -1055,56 +1055,7 @@ void FdoCommonFilterExecutor::ProcessFunction (FdoFunction& expr)
         FdoDataValue* argLeft = (FdoDataValue*)m_retvals.back ();
         m_retvals.pop_back ();
 
-        int type = argLeft->GetDataType ();
-        if ((FdoDataType_Double != type) && (FdoDataType_Single != type) && (FdoDataType_Decimal != type))
-            throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_88_INVALID_FUNCTION_ARG_TYPE), 1, name, FdoCommonMiscUtil::FdoDataTypeToString(argLeft->GetDataType()), FdoDataType_String));
-
-        if (argLeft->IsNull())
-            m_retvals.push_back (ObtainDoubleValue (true, 0));
-        else
-        {
-            double d;
-
-            if (FdoDataType_Double == type || FdoDataType_Decimal == type)
-                d = ((FdoDoubleValue*)argLeft)->GetDouble ();
-            else
-                d = ((FdoSingleValue*)argLeft)->GetSingle ();
-            d = ceil (d);
-            m_retvals.push_back (ObtainDoubleValue (false, d));
-        }
-
-        RelinquishDataValue (argLeft);
-    }
-    else if (wcscmp (name, FDO_FUNCTION_FLOOR) == 0)
-    {
-        FdoPtr<FdoExpressionCollection> args = expr.GetArguments ();
-
-        if (args->GetCount () != 1)
-            throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_75_INVALID_NUM_ARGUMENTS), expr.GetName(), 1, args->GetCount()));
-
-        FdoPtr<FdoExpression> left = args->GetItem (0);
-        left->Process (this);
-
-        FdoDataValue* argLeft = (FdoDataValue*)m_retvals.back ();
-        m_retvals.pop_back ();
-
-        int type = argLeft->GetDataType ();
-        if ((FdoDataType_Double != type) && (FdoDataType_Single != type) && (FdoDataType_Decimal != type))
-            throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_88_INVALID_FUNCTION_ARG_TYPE), 1, name, FdoCommonMiscUtil::FdoDataTypeToString(argLeft->GetDataType()), FdoDataType_String));
-
-        if (argLeft->IsNull())
-            m_retvals.push_back (ObtainDoubleValue (true, 0));
-        else
-        {
-            double d;
-
-            if (FdoDataType_Double == type || FdoDataType_Decimal == type)
-                d = ((FdoDoubleValue*)argLeft)->GetDouble ();
-            else
-                d = ((FdoSingleValue*)argLeft)->GetSingle ();
-            d = floor (d);
-            m_retvals.push_back (ObtainDoubleValue (false, d));
-        }
+		ProcessFunctionCeilFloor( name, argLeft );
 
         RelinquishDataValue (argLeft);
     }
@@ -1122,7 +1073,7 @@ void FdoCommonFilterExecutor::ProcessFunction (FdoFunction& expr)
         m_retvals.pop_back ();
 
         if (FdoDataType_String != argLeft->GetDataType ())
-            throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_88_INVALID_FUNCTION_ARG_TYPE), 1, name, FdoCommonMiscUtil::FdoDataTypeToString(argLeft->GetDataType()), FdoDataType_String));
+            throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_88_INVALID_FUNCTION_ARG_TYPE), 1, name, FdoCommonMiscUtil::FdoDataTypeToString(argLeft->GetDataType()), FdoCommonMiscUtil::FdoDataTypeToString(FdoDataType_String)));
 
         if (argLeft->IsNull())
             m_retvals.push_back (ObtainStringValue (true, NULL));
@@ -1153,7 +1104,7 @@ void FdoCommonFilterExecutor::ProcessFunction (FdoFunction& expr)
         m_retvals.pop_back ();
 
         if (FdoDataType_String != argLeft->GetDataType ())
-            throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_88_INVALID_FUNCTION_ARG_TYPE), 1, name, argLeft->GetDataType(), FdoDataType_String));
+            throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_88_INVALID_FUNCTION_ARG_TYPE), 1, name, FdoCommonMiscUtil::FdoDataTypeToString(argLeft->GetDataType()), FdoCommonMiscUtil::FdoDataTypeToString(FdoDataType_String)));
 
         if (argLeft->IsNull())
             m_retvals.push_back (ObtainStringValue (true, NULL));
@@ -1174,6 +1125,47 @@ void FdoCommonFilterExecutor::ProcessFunction (FdoFunction& expr)
     {
         throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_89_UNSUPPORTED_FUNCTION), name));
     }
+}
+
+void FdoCommonFilterExecutor::ProcessFunctionCeilFloor( FdoString *name, FdoDataValue* argLeft )
+{
+    FdoDataType		type = argLeft->GetDataType ();
+
+    if ((FdoDataType_Double != type) && (FdoDataType_Single != type) && (FdoDataType_Decimal != type) &&
+	    (FdoDataType_Int32 != type) && (FdoDataType_Int16 != type) )
+	{
+		FdoStringP	allowedTypes =	FdoStringP(FdoCommonMiscUtil::FdoDataTypeToString(FdoDataType_Double))  + L" / " +
+									FdoStringP(FdoCommonMiscUtil::FdoDataTypeToString(FdoDataType_Single))  + L" / " +
+									FdoStringP(FdoCommonMiscUtil::FdoDataTypeToString(FdoDataType_Decimal)) + L" / " +
+									FdoStringP(FdoCommonMiscUtil::FdoDataTypeToString(FdoDataType_Int32))   + L" / " +
+									FdoStringP(FdoCommonMiscUtil::FdoDataTypeToString(FdoDataType_Int16));
+
+		throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_88_INVALID_FUNCTION_ARG_TYPE), 1, name, 
+																FdoCommonMiscUtil::FdoDataTypeToString(type), 
+	  														    (FdoString *)allowedTypes));
+	}
+	else
+	{
+		if (argLeft->IsNull())
+            m_retvals.push_back (ObtainDoubleValue (true, 0));
+        else
+        {
+            double d = 0.0;
+
+            if (FdoDataType_Double == type || FdoDataType_Decimal == type)
+                d = ((FdoDoubleValue*)argLeft)->GetDouble ();
+            else if ( FdoDataType_Single == type ) 
+                d = ((FdoSingleValue*)argLeft)->GetSingle ();
+			else if ( FdoDataType_Int32 == type ) 
+				d = ((FdoInt32Value*)argLeft)->GetInt32();
+			else if ( FdoDataType_Int16 == type ) 
+				d = ((FdoInt16Value*)argLeft)->GetInt16();
+
+			d = ( wcscmp (name, FDO_FUNCTION_CEIL) == 0) ? ceil (d) : floor (d);
+
+            m_retvals.push_back (ObtainDoubleValue (false, d));
+        }
+	}
 }
 
 void FdoCommonFilterExecutor::ProcessIdentifier (FdoIdentifier& expr)
