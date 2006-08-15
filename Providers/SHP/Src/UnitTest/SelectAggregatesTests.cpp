@@ -613,6 +613,157 @@ void SelectAggregatesTests::ceil_floor ()
         datareader->Close();
         datareader = NULL;
 
+        //////////////////////////////////////////////////////////////////////
+        // Try numerical function floor() with Int32:
+        //////////////////////////////////////////////////////////////////////
+        selectedIds->Clear();
+
+        cid = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Floor(FeatId)) AS TestFloor");
+		selectedIds->Add(cid);
+
+		datareader = select->Execute ();
+
+        count = 0;
+        while (datareader->ReadNext ())
+        {
+            double result = datareader->GetDouble(L"TestFloor");
+            CPPUNIT_ASSERT_MESSAGE("Floor(FeatId) wrong",  result >= 1 && result <= 4);
+            count++;
+        }
+        CPPUNIT_ASSERT_MESSAGE("Wrong count(*) rowcount", count==4);
+        datareader->Close();
+        datareader = NULL;
+
+        //////////////////////////////////////////////////////////////////////
+        // Try some wrong datatypes:
+        //////////////////////////////////////////////////////////////////////
+
+		bool error = false;
+		try
+		{
+			selectedIds->Clear();
+
+			FdoPtr<FdoComputedIdentifier> cid = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Ceil(Street)) AS TestCeil");
+			selectedIds->Add(cid);
+
+			datareader = select->Execute ();
+			while (datareader->ReadNext ())
+			{
+				double result = datareader->GetDouble(L"TestCeil");
+			}
+		}
+		catch (FdoException* e)
+		{
+			//printf("Expected: %ls\n", e->GetExceptionMessage());
+			e->Release();
+			error = true;
+		}
+		datareader->Close();
+		datareader = NULL;
+
+		CPPUNIT_ASSERT_MESSAGE("Ceil succeeded with wrong datatype", error == true );
+    }
+    catch (FdoException* e)
+    {
+        fail(e);
+    }
+}
+
+void SelectAggregatesTests::upper_lower ()
+{
+    try
+    {
+        //////////////////////////////////////////////////////////////////////
+        // Create a SHP file:
+        //////////////////////////////////////////////////////////////////////
+
+        FdoString *className  = L"MyClass";
+        FdoString *schemaName = L"MySchema";
+
+        create_schema(schemaName, className, FdoGeometricType_Curve, false, false, true);
+
+        //////////////////////////////////////////////////////////////////////
+        // Try numerical function upper():
+        //////////////////////////////////////////////////////////////////////
+
+        FdoPtr<FdoISelect> select = (FdoISelect*)mConnection->CreateCommand (FdoCommandType_Select);
+        select->SetFeatureClassName (className);
+        FdoPtr<FdoIdentifierCollection> selectedIds = select->GetPropertyNames();
+        selectedIds->Clear();
+
+        FdoPtr<FdoComputedIdentifier> cid = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Upper(Street)) AS TestUpper");
+		selectedIds->Add(cid);
+
+		FdoPtr<FdoIReader>  datareader = select->Execute ();
+
+        long count = 0;
+        while (datareader->ReadNext ())
+        {
+            FdoString *street = datareader->GetString(L"TestUpper");
+            CPPUNIT_ASSERT_MESSAGE("Upper wrong",          
+				(0==wcscmp(street, L"SLATER")) || (0==wcscmp(street, L"ALBERT")) || (0==wcscmp(street, L"QUEEN")) );
+
+            count++;
+        }
+        CPPUNIT_ASSERT_MESSAGE("Wrong count(*) rowcount", count==4);
+        datareader->Close();
+        datareader = NULL;
+
+
+        //////////////////////////////////////////////////////////////////////
+        // Try numerical function lower():
+        //////////////////////////////////////////////////////////////////////
+        selectedIds = select->GetPropertyNames();
+        selectedIds->Clear();
+
+        cid = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Lower(Street)) AS TestLower");
+
+		selectedIds->Add(cid);
+
+		datareader = select->Execute ();
+
+        count = 0;
+        while (datareader->ReadNext ())
+        {
+            FdoString *street = datareader->GetString(L"TestLower");
+            CPPUNIT_ASSERT_MESSAGE("Lower wrong",          
+				(0==wcscmp(street, L"slater")) || (0==wcscmp(street, L"albert")) || (0==wcscmp(street, L"queen")) );
+
+            count++;
+        }
+        CPPUNIT_ASSERT_MESSAGE("Wrong count(*) rowcount", count==4);
+        datareader->Close();
+        datareader = NULL;
+
+        //////////////////////////////////////////////////////////////////////
+        // Try some wrong datatypes:
+        //////////////////////////////////////////////////////////////////////
+
+		bool error = false;
+		try
+		{
+			selectedIds->Clear();
+
+			FdoPtr<FdoComputedIdentifier> cid = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Upper(LotSize)) AS TestUpper");
+
+			selectedIds->Add(cid);
+
+			datareader = select->Execute ();
+			while (datareader->ReadNext ())
+			{
+				double result = datareader->GetDouble(L"TestUpper");
+			}
+		}
+		catch (FdoException* e)
+		{
+			//printf("Expected: %ls\n", e->GetExceptionMessage());
+			e->Release();
+			error = true;
+		}
+		datareader->Close();
+		datareader = NULL;
+
+		CPPUNIT_ASSERT_MESSAGE("Upper succeeded with wrong datatype", error == true );
     }
     catch (FdoException* e)
     {

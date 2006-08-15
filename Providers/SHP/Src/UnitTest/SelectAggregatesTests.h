@@ -34,6 +34,7 @@ class SelectAggregatesTests :
     CPPUNIT_TEST (select_orderby);
     CPPUNIT_TEST (count);
 	CPPUNIT_TEST (ceil_floor);
+	CPPUNIT_TEST (upper_lower);
     CPPUNIT_TEST (select_orderby_decimal);
     CPPUNIT_TEST (select_orderby_scrambled_property_ids);
     CPPUNIT_TEST (select_orderby_empty_select_list);
@@ -55,6 +56,7 @@ protected:
     void select_orderby();
     void count ();
 	void ceil_floor ();
+	void upper_lower();
     void select_orderby_decimal ();
     void select_orderby_scrambled_property_ids();
     void select_orderby_empty_select_list();
