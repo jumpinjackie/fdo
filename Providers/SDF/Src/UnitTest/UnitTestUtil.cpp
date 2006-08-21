@@ -1,6 +1,9 @@
 #include "UnitTestUtil.h"
 #include "SDF/SdfCommandType.h"
 #include "SDF/ICreateSDFFile.h"
+#ifndef _WIN32
+#include <unistd.h>
+#endif
 
  //
  // Copyright (C) 2004-2006  Autodesk, Inc.
