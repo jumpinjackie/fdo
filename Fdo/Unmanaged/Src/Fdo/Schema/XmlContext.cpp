@@ -17,7 +17,7 @@
 //  
 #include <FdoStd.h>
 #include "XmlContext.h"
-#include <fdo/Schema/Class.h>
+#include <Fdo/Schema/Class.h>
 
 FdoSchemaXmlContext::FdoSchemaXmlContext( FdoFeatureSchemaCollection* schemaCollection )
     : FdoXmlContext( FdoXmlFlagsP(schemaCollection->GetDeserializationFlags()), FdoXmlReaderP(schemaCollection->GetXmlReader()) )

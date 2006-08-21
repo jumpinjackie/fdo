@@ -16,13 +16,13 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <Fdo/Xml/Context.h>
-#include <fdo/Schema/FeatureSchemaCollection.h>
-#include <fdo/Schema/FeatureClass.h>
-#include <fdo/Schema/NetworkLinkFeatureClass.h>
-#include <fdo/Schema/NetworkClass.h>
-#include <fdo/Schema/NetworkNodeFeatureClass.h>
-#include <fdo/Schema/UniqueConstraint.h>
-#include <fdo/Schema/ObjectPropertyDefinition.h>
+#include <Fdo/Schema/FeatureSchemaCollection.h>
+#include <Fdo/Schema/FeatureClass.h>
+#include <Fdo/Schema/NetworkLinkFeatureClass.h>
+#include <Fdo/Schema/NetworkClass.h>
+#include <Fdo/Schema/NetworkNodeFeatureClass.h>
+#include <Fdo/Schema/UniqueConstraint.h>
+#include <Fdo/Schema/ObjectPropertyDefinition.h>
 #include <Fdo/Xml/SchemaMapping.h>
 #include <Fdo/Schema/MergeContext.h>
 

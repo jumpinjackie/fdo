@@ -1434,7 +1434,7 @@ void FdoSchemaMergeContext::ResolveGeomProps()
         FdoPtr<StringsRef> ref = mGeomPropRefs->GetItem(i);
         FdoFeatureClassP refClass = (FdoFeatureClass*)(MapElement(FdoSchemaElementP(ref->GetReferencer())));
         FdoStringsP geomProps = ref->GetStrings();
-        FdoStringP geomPropName = (geomProps->GetCount() > 0) ? geomProps->GetString(0) : FdoStringP();
+        FdoStringP geomPropName = (geomProps->GetCount() > 0) ? geomProps->GetString(0) : L"";
 
         if ( geomPropName != L"" ) {
             FdoGeometricPropertyP geomProp = (FdoGeometricPropertyDefinition*) FindProperty( refClass, geomPropName );

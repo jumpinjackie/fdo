@@ -20,15 +20,15 @@
 //
 
 #include <FdoStd.h>
-#include <fdo/Schema/FeatureSchemaCollection.h>
-#include <fdo/Schema/FeatureClass.h>
-#include <fdo/Schema/NetworkLinkFeatureClass.h>
-#include <fdo/Schema/NetworkClass.h>
-#include <fdo/Schema/NetworkNodeFeatureClass.h>
-#include <fdo/Schema/RasterPropertyDefinition.h>
-#include <fdo/Schema/UniqueConstraint.h>
-#include <fdo/Schema/ObjectPropertyDefinition.h>
-#include <fdo/Xml/Flags.h>
+#include <Fdo/Schema/FeatureSchemaCollection.h>
+#include <Fdo/Schema/FeatureClass.h>
+#include <Fdo/Schema/NetworkLinkFeatureClass.h>
+#include <Fdo/Schema/NetworkClass.h>
+#include <Fdo/Schema/NetworkNodeFeatureClass.h>
+#include <Fdo/Schema/RasterPropertyDefinition.h>
+#include <Fdo/Schema/UniqueConstraint.h>
+#include <Fdo/Schema/ObjectPropertyDefinition.h>
+#include <Fdo/Xml/Flags.h>
 
 /// \cond DOXYGEN-IGNORE
 /// \brief
