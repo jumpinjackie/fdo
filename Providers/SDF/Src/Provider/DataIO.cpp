@@ -733,7 +733,12 @@ FdoDataPropertyDefinitionCollection* DataIO::FindIDProps(FdoClassDefinition* fc)
         idpdc = base->GetIdentityProperties();
 
     if (idpdc->GetCount() == 0)
-        throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_15_NO_IDENTITY_PROPS)));
+        throw FdoException::Create(
+            NlsMsgGetMain(
+                FDO_NLSID(SDFPROVIDER_15_NO_IDENTITY_PROPS),
+                (FdoString*) fc->GetQualifiedName()
+            )
+        );
 
     return (FDO_SAFE_ADDREF (idpdc.p));
 }

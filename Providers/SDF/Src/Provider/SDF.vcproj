@@ -446,6 +446,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SdfSchemaMergeContext.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SdfSchemaMergeContext.h"
+				>
+			</File>
+			<File
 				RelativePath=".\utf8_.cpp"
 				>
 			</File>

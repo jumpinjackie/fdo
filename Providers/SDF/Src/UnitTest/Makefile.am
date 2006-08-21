@@ -10,6 +10,7 @@ UnitTest_SOURCES = \
   UnitTest.cpp \
   glibpatch.cpp \
   MasterTest.cpp \
+  ApplySchemaTest.cpp \
   AssociationSchemaTest.cpp \
   AssociationInsertTest.cpp \
   AssociationSelectTest.cpp \
@@ -17,9 +18,11 @@ UnitTest_SOURCES = \
   AssociationDeleteTest.cpp \
   ExtendedSelectTest.cpp \
   NlsTest.cpp \
-  SelectTest.cpp
+  SelectTest.cpp \
+  UnitTestUtil.cpp
 
 noinst_HEADERS = $(UnitTest_SOURCES) \
+  ApplySchemaTest.h \
   AssociationDeleteTest.h \
   AssociationInsertTest.h \
   AssociationSchemaTest.h \
@@ -31,6 +34,7 @@ noinst_HEADERS = $(UnitTest_SOURCES) \
   MasterTest.h \
   NlsTest.h \
   SelectTest.h \
+  UnitTestUtil.h \
   tester-linux.h
 
 INCLUDES = \

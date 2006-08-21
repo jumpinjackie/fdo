@@ -34,6 +34,7 @@ libSDFProviderSrc_la_SOURCES = \
   SdfInsert.cpp \
   SdfRasterCapabilities.cpp \
   SdfSchemaCapabilities.cpp \
+  SdfSchemaMergeContext.cpp \
   SdfScrollableFeatureReader.cpp \
   SdfSelect.cpp \
   SdfSelectAggregates.cpp \
@@ -97,6 +98,7 @@ noinst_HEADERS = $(libSDFProviderSrc_la_SOURCES) \
    SdfQueryOptimizer.h \
    SdfRasterCapabilities.h \
    SdfSchemaCapabilities.h \
+   SdfSchemaMergeContext.h \
    SdfScrollableFeatureReader.h \
    SdfSelect.h \
    SdfSelectAggregates.h \

@@ -1,0 +1,2 @@
+ Unsupport Schema modification; Cannot add property 'Acad:Conductor.Conduit' 
+ Unsupported Schema modification; Cannot modify GeometryProperty for feature class 'Acad:Conductor' 

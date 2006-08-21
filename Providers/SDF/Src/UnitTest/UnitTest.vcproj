@@ -361,7 +361,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying FDO files"
-						CommandLine="copy $(FDO)\unmanaged\Bin\Win32\Debug\FDO.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win32\Debug\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win32\Debug\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win32\Debug\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win32\Debug\FDO.pdb $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win32\Debug\FDOCommon.pdb $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win32\Debug\FDOGeometry.pdb $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win32\Debug\FDOSpatial.pdb $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
+						CommandLine="copy $(FDO)\unmanaged\Bin\Win32\Debug\FDO.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win32\Debug\FDOMessage.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win32\Debug\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win32\Debug\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win32\Debug\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win32\Debug\FDO.pdb $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win32\Debug\FDOCommon.pdb $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win32\Debug\FDOGeometry.pdb $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win32\Debug\FDOSpatial.pdb $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
 						AdditionalDependencies="$(FDO)\unmanaged\Bin\Win32\Debug\FDO.dll;$(FDO)\unmanaged\Bin\Win32\Debug\FDOCommon.dll;$(FDO)\unmanaged\Bin\Win32\Debug\FDOGeometry.dll;$(FDO)\unmanaged\Bin\Win32\Debug\FDOSpatial.dll;$(FDO)\unmanaged\Bin\Win32\Debug\FDO.pdb;$(FDO)\unmanaged\Bin\Win32\Debug\FDOCommon.pdb;$(FDO)\unmanaged\Bin\Win32\Debug\FDOGeometry.pdb;$(FDO)\unmanaged\Bin\Win32\Debug\FDOSpatial.pdb"
 						Outputs="$(OutDir)\CopyFdo.ilk"
 					/>
@@ -431,6 +431,14 @@
 				</FileConfiguration>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\ApplySchemaTest.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ApplySchemaTest.h"
+			>
+		</File>
 		<File
 			RelativePath=".\AssociationDeleteTest.cpp"
 			>
@@ -513,6 +521,14 @@
 		</File>
 		<File
 			RelativePath=".\resource.h"
+			>
+		</File>
+		<File
+			RelativePath=".\UnitTestUtil.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\UnitTestUtil.h"
 			>
 		</File>
 	</Files>

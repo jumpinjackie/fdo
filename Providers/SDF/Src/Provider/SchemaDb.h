@@ -21,6 +21,7 @@
 
 #include "BinaryReader.h"
 #include "BinaryWriter.h"
+#include "SdfSchemaMergeContext.h"
 
 
 class SchemaDb 
@@ -34,7 +35,7 @@ public:
     void GetSchemaVersion(unsigned char& major, unsigned char& minor);
 
     //FDO feature schema support
-    void SetSchema(FdoFeatureSchema* schema);
+    void SetSchema(SdfISchemaMergeContextFactory* mergeFactory, FdoFeatureSchema* schema, bool ignoreStates);
 
     //returns pointer to cached schema object -- for internal use
     FdoFeatureSchema* GetSchema();    
@@ -54,7 +55,9 @@ public:
 	void CloseCursor();
 
 private:
-    
+    // Update the old schemas based on the new Schema and ignoreStates setting.
+    FdoFeatureSchemaP MergeSchema(SdfISchemaMergeContextFactory* mergeFactory, FdoFeatureSchemaP oldSchema, FdoFeatureSchemaP newSchema, bool ignoreStates);
+
     void ReadFeatureClass(REC_NO classRecno, FdoFeatureSchema* schema);
     void ReadGeometricPropertyDefinition(BinaryReader& rdr, FdoPropertyDefinitionCollection* pdc);
     void ReadDataPropertyDefinition(BinaryReader& rdr, FdoPropertyDefinitionCollection* pdc);
@@ -64,6 +67,7 @@ private:
       
 	void PostReadSchema( FdoFeatureSchema* schema );
 
+    void WriteSchema(FdoFeatureSchema* schema);
     void WriteClassDefinition(REC_NO& recno, FdoClassDefinition* clas, FdoClassCollection* classes);
     void WriteDataPropertyDefinition(BinaryWriter& wrt, FdoDataPropertyDefinition* dpd);
     void WriteGeometricPropertyDefinition(BinaryWriter& wrt, FdoGeometricPropertyDefinition* dpd);
@@ -74,6 +78,7 @@ private:
 
 private:
     SQLiteTable* m_db;
+    SQLiteDataBase* m_env;
 	bool  m_bHasAssociations;
     FdoFeatureSchema* m_schema;
     unsigned char m_majorVersion;

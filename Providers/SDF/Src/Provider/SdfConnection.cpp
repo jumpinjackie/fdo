@@ -625,9 +625,9 @@ FdoFeatureSchema* SdfConnection::GetSchema()
     return m_dbSchema->GetSchema();
 }
 
-void SdfConnection::SetSchema(FdoFeatureSchema* schema)
+void SdfConnection::SetSchema(FdoFeatureSchema* schema, bool ignoreStates)
 {
-    m_dbSchema->SetSchema(schema);
+    m_dbSchema->SetSchema( this, schema, ignoreStates);
 
     //need to regen the R-Tree objects since
     //the schema changed
@@ -1048,6 +1048,15 @@ DataDb* SdfConnection::CreateNewDataDb( FdoClassDefinition* clas )
 	delete[] fullphysname;
 
 	return db;
+}
+
+SdfSchemaMergeContext* SdfConnection::CreateMergeContext( 
+    FdoFeatureSchemaCollection* oldSchemas, 
+    FdoFeatureSchema* newSchema, 
+    bool ignoreStates  
+)
+{
+    return SdfSchemaMergeContext::Create( this, oldSchemas, newSchema, ignoreStates );
 }
 
 void SdfConnection::NameFromWcs(char* charName, size_t charCount, const wchar_t* wcsName, size_t wcsCount)

@@ -18,6 +18,7 @@
 #include "stdafx.h"
 #include "SchemaDb.h"
 #include "SdfConnection.h"
+#include <FdoCommonSchemaUtil.h>
 
 #define   SDF_CLASSHEADER_CLASSTYPE			0x000000ff
 #define   SDF_CLASSHEADER_ISABSTRACT		0x00000100
@@ -26,6 +27,8 @@ char* DB_SCHEMA_NAME = "SCHEMA"; //NOXLATE
 const REC_NO DB_METADATA_RECNO = 1;
 const REC_NO DB_COORDSYS_RECNO = 2;
 const REC_NO DB_SCHEMA_ROOT_RECNO = 3;
+
+static const FdoInt32 APPLY_SCHEMA_ERROR_LIMIT = 100;
 
 //----------------------------------------------------------------------------------
 // SchemaDb database organization
@@ -51,7 +54,8 @@ SchemaDb::SchemaDb(SQLiteDataBase* env, const char* filename, bool bReadOnly) :
     m_bHasAssociations(false),
     m_majorVersion(0),
     m_minorVersion(0),
-	m_scName( NULL )
+	m_scName( NULL ),
+    m_env( env )
 {
     m_db = new SQLiteTable(env);
 
@@ -218,76 +222,109 @@ FdoFeatureSchema* SchemaDb::GetSchema()
 
 
 
-void SchemaDb::SetSchema(FdoFeatureSchema* schema)
+void SchemaDb::SetSchema(SdfISchemaMergeContextFactory* mergeFactory, FdoFeatureSchema* schema, bool ignoreStates)
 {
-    //TODO: right now, only set the schema if it is empty...
-    //later we will support updating of a current schema
-    _ASSERT(m_schema == NULL);
     _ASSERT(schema != NULL);
 
-    //TODO: once we support updating of schemas, we 
-    //need to delete the old schema database here
-    //and create a new empty one
-    //For right now however, we can just write the 
-    //new schema to the schema database we know is empty
+    bool transactionStarted = false;
 
-    //now write schema to database
-    BinaryWriter wrt(256);
-    wrt.WriteString(schema->GetName());
-    wrt.WriteString(schema->GetDescription());
+    // Work on copy of current schema in case we hit an error and mess them up.
+    FdoFeatureSchemaP oldSchema = m_schema ? FdoCommonSchemaUtil::DeepCopyFdoFeatureSchema( m_schema ) : (FdoFeatureSchema*) NULL;
 
-    FdoPtr<FdoClassCollection> classes = schema->GetClasses();
+    // Merge applied schema into current schemas
+    FdoFeatureSchemaP mergedSchema = MergeSchema( mergeFactory, oldSchema, FDO_SAFE_ADDREF(schema), ignoreStates );
 
-    //how many classes
-    int numClasses = classes->GetCount();
-    wrt.WriteInt32(numClasses);
+    // Update the schema table with resulting schemas.
 
-    //write the record # of each class -- we store class records
-    //right after the schema record so we know their record # in advance
-    for (int i=0; i<numClasses; i++)
-        wrt.WriteInt32(i + DB_SCHEMA_ROOT_RECNO + 1);
-    
-    //save schema record in record #3
-    REC_NO rootRecno = DB_SCHEMA_ROOT_RECNO;
-    SQLiteData keySchema(&rootRecno, sizeof(REC_NO));
-    
-    SQLiteData data(wrt.GetData(), wrt.GetDataLen());
-    
-    if (m_db->put(0, &keySchema, &data, 0) != 0)
-        throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_20_SCHEMA_STORAGE_ERROR)));
+    // Start transaction so we can roll back on error.
+    if ( !m_env->transaction_started() ) {
+        if ( m_env->begin_transaction() != 0 ) 
+            throw FdoSchemaException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_78_START_TRANSACTION)));
 
-    
-    //build a temporary list of classes we are going to write
-    //we need this so that we keep track of which base classes
-    //have already been written when recursively saving 
-    //child classes
-    FdoPtr<FdoClassCollection> tempClasses = FdoClassCollection::Create(NULL);
-
-    for (int i=0; i<numClasses; i++)
-    {
-        FdoPtr<FdoClassDefinition> def = classes->GetItem(i);
-        tempClasses->Add(def);
+        transactionStarted = true;
     }
 
+    try {
+        // Write the merged schemas to the database
+        WriteSchema( mergedSchema );
+    }
+    catch ( ... ) {
+        // Rollback on error
+        if ( transactionStarted ) 
+            m_env->rollback();
 
-    //this will be set and then reused by the recursive WriteClassDefinition function
-    //it is used to keep track of which record number to use next when recursively
-    //writing out feature class definitions
-    REC_NO currentRecno = rootRecno; /* = 3 */
-
-    while (tempClasses->GetCount() > 0)
-    {
-        FdoPtr<FdoClassDefinition> clas0 = tempClasses->GetItem(0);
-        WriteClassDefinition(currentRecno, clas0, tempClasses);
+        throw;
     }
 
+    if ( transactionStarted ) {
+        // Successful, so commit schema changes.
+        if ( m_env->commit() != 0 ) 
+            throw FdoSchemaException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_79_COMMIT_TRANSACTION)));
 
-    //set the schema member variable indirectly
-    //by deserializing it from the database. This makes
-    //sure the things like read only properties are handled correctly
-    m_schema = ReadSchema();
+        // Clear element states for applied schema as per FDO IApplySchema spec.
+        schema->AcceptChanges();
+    }
 }
 
+FdoFeatureSchemaP SchemaDb::MergeSchema(
+    SdfISchemaMergeContextFactory* mergeFactory,    
+    FdoFeatureSchemaP oldSchema, 
+    FdoFeatureSchemaP newSchema, 
+    bool ignoreStates
+)
+{
+    if ( oldSchema == NULL ) 
+        // Datastore has no schema so simply set schema to the applied schema.
+        return newSchema;
+
+
+    // Create a context to merge applied schema into existing schema. 
+
+    FdoFeatureSchemasP oldSchemas = FdoFeatureSchemaCollection::Create((FdoSchemaElement*) NULL);
+    oldSchemas->Add(oldSchema);
+
+    FdoFeatureSchemasP dummySchemas = FdoFeatureSchemaCollection::Create((FdoSchemaElement*) NULL);
+
+    SdfSchemaMergeContextP context = mergeFactory->CreateMergeContext( oldSchemas, newSchema, ignoreStates );
+
+    try {
+        // Perform the merge.
+        context->CommitSchemas();
+    }
+    catch ( FdoException* ex ) {
+        // The SDF provider does not currently throw chained exceptions so combine all exception
+        // messages into a single exception.
+
+        FdoStringsP msgs = FdoStringCollection::Create();
+
+        FdoInt32 idx;
+        FdoPtr<FdoException> currEx = FDO_SAFE_ADDREF(ex);
+        for ( idx = 0; idx < APPLY_SCHEMA_ERROR_LIMIT, currEx; idx++ ) {
+            msgs->Add( currEx->GetExceptionMessage() );
+            currEx = currEx->GetCause();
+        }
+
+        if ( currEx ) {
+            // Add message indicating that not all errors shown
+            msgs->Add( 
+                FdoPtr<FdoSchemaException>(
+                    FdoSchemaException::Create(
+                        NlsMsgGetMain(
+                            FDO_NLSID(SDFPROVIDER_80_TOO_MANY_ERRORS),  
+                            APPLY_SCHEMA_ERROR_LIMIT
+                        )
+                    )
+                )->GetExceptionMessage()
+            );
+        }
+
+        FDO_SAFE_RELEASE(ex);
+        FdoSchemaException* schEx = FdoSchemaException::Create( msgs->ToString(L"\n") );
+        throw schEx;
+    }
+
+    return oldSchema;
+}
 
 void SchemaDb::ReadFeatureClass(REC_NO classRecno, FdoFeatureSchema* schema)
 {
@@ -568,6 +605,64 @@ void SchemaDb::ReadObjectPropertyDefinition(BinaryReader& rdr, FdoPropertyDefini
     throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_22_OBJECT_PROPERTY)));
 }
 
+void SchemaDb::WriteSchema(FdoFeatureSchema* schema)
+{
+    //now write schema to database
+    BinaryWriter wrt(256);
+    wrt.WriteString(schema->GetName());
+    wrt.WriteString(schema->GetDescription());
+
+    FdoPtr<FdoClassCollection> classes = schema->GetClasses();
+
+    //how many classes
+    int numClasses = classes->GetCount();
+    wrt.WriteInt32(numClasses);
+
+    //write the record # of each class -- we store class records
+    //right after the schema record so we know their record # in advance
+    for (int i=0; i<numClasses; i++)
+        wrt.WriteInt32(i + DB_SCHEMA_ROOT_RECNO + 1);
+    
+    //save schema record in record #3
+    REC_NO rootRecno = DB_SCHEMA_ROOT_RECNO;
+    SQLiteData keySchema(&rootRecno, sizeof(REC_NO));
+    
+    SQLiteData data(wrt.GetData(), wrt.GetDataLen());
+    
+    if (m_db->put(0, &keySchema, &data, 0) != 0)
+        throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_20_SCHEMA_STORAGE_ERROR)));
+
+    
+    //build a temporary list of classes we are going to write
+    //we need this so that we keep track of which base classes
+    //have already been written when recursively saving 
+    //child classes
+    FdoPtr<FdoClassCollection> tempClasses = FdoClassCollection::Create(NULL);
+
+    for (int i=0; i<numClasses; i++)
+    {
+        FdoPtr<FdoClassDefinition> def = classes->GetItem(i);
+        tempClasses->Add(def);
+    }
+
+
+    //this will be set and then reused by the recursive WriteClassDefinition function
+    //it is used to keep track of which record number to use next when recursively
+    //writing out feature class definitions
+    REC_NO currentRecno = rootRecno; /* = 3 */
+
+    while (tempClasses->GetCount() > 0)
+    {
+        FdoPtr<FdoClassDefinition> clas0 = tempClasses->GetItem(0);
+        WriteClassDefinition(currentRecno, clas0, tempClasses);
+    }
+
+
+    //set the schema member variable indirectly
+    //by deserializing it from the database. This makes
+    //sure the things like read only properties are handled correctly
+    m_schema = ReadSchema();
+}
 
 
 void SchemaDb::WriteClassDefinition(REC_NO& recno, FdoClassDefinition* clas, FdoClassCollection* classes)
@@ -591,8 +686,8 @@ void SchemaDb::WriteClassDefinition(REC_NO& recno, FdoClassDefinition* clas, Fdo
          (m_minorVersion == SDFPROVIDER_VERSION_MINOR_3_0 || m_minorVersion == SDFPROVIDER_VERSION_MINOR_3_1)
     ) {
         FdoString* className = clas->GetName();
-        int idx;
-        int nameLen = wcslen(className);
+        size_t idx;
+        size_t nameLen = wcslen(className);
 
         for ( idx = 0; idx < nameLen; idx++ ) 
         {

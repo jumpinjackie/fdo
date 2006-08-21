@@ -71,7 +71,7 @@ Unknown data type.
 MessageId=15
 SymbolicName=SDFPROVIDER_15_NO_IDENTITY_PROPS
 Language=English
-Class has no identity properties. 
+Class '%1$ls' has no identity properties. 
 .
 MessageId=16
 SymbolicName=SDFPROVIDER_16_ERROR_INSERTING_KEY
@@ -377,4 +377,19 @@ MessageId=77
 SymbolicName=SDFPROVIDER_77_ORDERING_PROPERTY
 Language=English
 The ordering property '%1$ls' is not in the select list or it's not a data property.
+.
+MessageId=78
+SymbolicName=SDFPROVIDER_78_START_TRANSACTION
+Language=English
+Failed to start an SQLite transaction
+.
+MessageId=79
+SymbolicName=SDFPROVIDER_79_COMMIT_TRANSACTION
+Language=English
+Failed to commit an SQLite transaction
+.
+MessageId=80
+SymbolicName=SDFPROVIDER_80_TOO_MANY_ERRORS
+Language=English
+Too many errors; Only 1st %1$d listed
 .

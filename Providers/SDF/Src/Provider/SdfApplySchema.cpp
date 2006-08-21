@@ -75,14 +75,10 @@ void SdfApplySchema::Execute()
     if (m_connection->GetConnectionState() != FdoConnectionState_Open)
         throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_26_CONNECTION_CLOSED)));
 
-    //note: no smart pointer needed for SdfConnection::GetSchema().
-    if (m_connection->GetSchema() != NULL)
-        throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_52_SDF_HAS_SCHEMA), "Cannot apply schema. The SDF already has a schema."));
-
     if (m_schema == NULL)
         throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_27_NULL_REFERENCE)));
 
     //tell the connection to update its schema database
-    m_connection->SetSchema(m_schema);
+    m_connection->SetSchema(m_schema, m_bIgnoreStates);
 }
 

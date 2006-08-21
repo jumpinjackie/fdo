@@ -40,6 +40,7 @@ namespace __gnu_cxx
 
 #include "RTree.h"
 #include "SDF/SdfCompareHandler.h"
+#include "SdfSchemaMergeContext.h"
 
 //forward declare
 class SdfConnectionInfo;
@@ -48,7 +49,7 @@ class SchemaDb;
 class DataDb;
 class KeyDb;
 
-class SdfConnection : public FdoIConnection
+class SdfConnection : public FdoIConnection, public SdfISchemaMergeContextFactory
 {
 
     //-------------------------------------------------------
@@ -172,7 +173,7 @@ public:
     KeyDb* GetKeyDb(FdoClassDefinition* clas);
     SchemaDb* GetSchemaDb();
     FdoFeatureSchema* GetSchema();
-    void SetSchema(FdoFeatureSchema* schema);
+    void SetSchema(FdoFeatureSchema* schema, bool ignoreStates);
     SdfRTree* GetRTree(FdoClassDefinition* clas);
     PropertyIndex* GetPropertyIndex(FdoClassDefinition* clas);
 
@@ -192,6 +193,14 @@ public:
 	FdoConnectionState Open( SdfCompareHandler* cmpHandler );
 
 	DataDb* CreateNewDataDb( FdoClassDefinition* clas );
+
+    // Creates a context for merging a schema, passed to the ApplySchema command,
+    // into the current schemas.
+    virtual SdfSchemaMergeContext* CreateMergeContext( 
+        FdoFeatureSchemaCollection* oldSchemas,         // current schema
+        FdoFeatureSchema* newSchema,                    // applied schema
+        bool ignoreStates                               // See FdoIApplySchema
+    );
 
 private:
 
