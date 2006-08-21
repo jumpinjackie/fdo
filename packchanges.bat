@@ -38,6 +38,10 @@ pushd Providers\GenericRdbms
 echo $(GenericRdbms)>> ..\..\FilesChanges.log
 svn status -q >> ..\..\FilesChanges.log
 popd
+pushd Providers\GDAL
+echo $(GDAL)>> ..\..\FilesChanges.log
+svn status -q >> ..\..\FilesChanges.log
+popd
 pushd Providers\SDF
 echo $(SDF)>> ..\..\FilesChanges.log
 svn status -q >> ..\..\FilesChanges.log

@@ -71,6 +71,10 @@
                         oinfFile.WriteLine("*")
                         oinfFile.WriteLine("******Rdbms******")
                         activeRelPath = "Providers/GenericRdbms/"
+                    Case "$(GDAL)"
+                        oinfFile.WriteLine("*")
+                        oinfFile.WriteLine("******GDAL******")
+                        activeRelPath = "Providers/GDAL/"
                     Case "$(SDF)"
                         oinfFile.WriteLine("*")
                         oinfFile.WriteLine("******SDF******")
@@ -94,21 +98,21 @@
                             oinfFile.WriteLine("Modified : " & activeRelPath & modLine)
                             olstFile.WriteLine(activeRelPath & modLine)
                             if fsc.FileExist(activeRelPath & modLine) Then
-                                rez = WshShell.Run("cmd /C 7z a -tzip " & ChangeName & ".zip " & activeRelPath & modLine & " >> log.txt", 0, true)
+                                rez = WshShell.Run("cmd /C 7z a -tzip " & ChangeName & ".zip " & Chr(34) & activeRelPath & modLine & Chr(34) & " >> log.txt", 0, true)
                             End If
                         ElseIf not Instr(modLine, "A") = 0 Then
                             modLine = Right(lineFile, Len(lineFile) - 7)
                             oinfFile.WriteLine("Added : " & activeRelPath & modLine)
                             olstFile.WriteLine(activeRelPath & modLine)
                             if fsc.FileExist(activeRelPath & modLine) Then
-                                rez = WshShell.Run("cmd /C 7z a -tzip " & ChangeName & ".zip " & activeRelPath & modLine & " >> log.txt", 0, true)
+                                rez = WshShell.Run("cmd /C 7z a -tzip " & ChangeName & ".zip " & Chr(34) & activeRelPath & modLine & Chr(34) & " >> log.txt", 0, true)
                             End If
                         ElseIf not Instr(modLine, "D") = 0 Then
                             modLine = Right(lineFile, Len(lineFile) - 7)
                             oinfFile.WriteLine("Deleted : " & activeRelPath & modLine)
                             olstFile.WriteLine(activeRelPath & modLine)
                             if fsc.FileExist(activeRelPath & modLine) Then
-                                rez = WshShell.Run("cmd /C 7z a -tzip " & ChangeName & ".zip " & activeRelPath & modLine & " >> log.txt", 0, true)
+                                rez = WshShell.Run("cmd /C 7z a -tzip " & ChangeName & ".zip " & Chr(34) & activeRelPath & modLine & Chr(34) & " >> log.txt", 0, true)
                             End If
                         End If
                 End Select
