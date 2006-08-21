@@ -159,6 +159,17 @@ public:
     /// Specifies the data type the raster data is to be returned in.
     /// 
     FDO_API virtual void SetDataType (FdoRasterDataType dataType);
+
+    /// \brief
+    /// Compares this raster data model with another one.
+    /// 
+    /// \param value 
+    /// The Raster Data Model to compare with
+    /// 
+    /// \return
+    /// Returns true if this Raster Data Model is the same as pModel
+    /// (all members have the same values).
+    FDO_API virtual bool Equals (FdoRasterDataModel* pModel);
 };
 
 #endif // _RASTERDATAMODEL_H_

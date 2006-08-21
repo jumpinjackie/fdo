@@ -19,6 +19,8 @@
 
 
 #include <Fdo/Schema/PropertyValueConstraintList.h>
+#include "XmlContext.h"
+#include "StringUtility.h"
 
 // Constructs a default instance of a FdoPropertyValueConstraintList.
 FdoPropertyValueConstraintList::FdoPropertyValueConstraintList():m_constraintList( NULL )
@@ -58,4 +60,81 @@ FdoDataValueCollection* FdoPropertyValueConstraintList::GetConstraintList()
 	return m_constraintList;
 }
 
+void FdoPropertyValueConstraintList::Set( FdoPropertyValueConstraint* pConstraint, FdoString* parentName, FdoSchemaMergeContext* pContext )
+{
+    FdoPropertyValueConstraint::Set(pConstraint, parentName, pContext);
 
+    // Base function adds error on constraint type mismatch so silently skip if 
+    // types do not match.
+    if ( pConstraint->GetConstraintType() == FdoPropertyValueConstraintType_List ) {
+        FdoPropertyValueConstraintList* pListConstraint = (FdoPropertyValueConstraintList*) pConstraint;
+        m_constraintList->Clear();
+        FdoPtr<FdoDataValueCollection> valueList = pListConstraint->GetConstraintList();
+
+        // Copy constraint values to this element.
+
+        FdoInt32 idx;
+        for ( idx = 0; idx < valueList->GetCount(); idx++ ) {
+            // For the purposes of XML reading and SDF Provider ApplySchema, reusing the value
+            // is fine, but is not ok in the general case. 
+            // TODO: Change the following to make a copy of the data value.
+            m_constraintList->Add( FdoPtr<FdoDataValue>(valueList->GetItem(idx)) );
+        }
+    }
+}
+
+bool FdoPropertyValueConstraintList::Equals( FdoPropertyValueConstraint* pConstraint )
+{
+    bool equals = false;
+    FdoInt32 idx;
+
+    // Not equal if other constraint is not a list.
+    if ( pConstraint->GetConstraintType() == FdoPropertyValueConstraintType_List ) {
+        FdoPropertyValueConstraintList* pListConstraint = (FdoPropertyValueConstraintList*) pConstraint;
+        FdoPtr<FdoDataValueCollection> valueList = pListConstraint->GetConstraintList();
+
+        // Equal if value lists have same unique values. Build dictionaries from lists to 
+        // weed out duplicate values.
+
+        FdoDictionaryP myValues = ValuesToDictionary( m_constraintList );
+        FdoDictionaryP theirValues = ValuesToDictionary( valueList );
+
+        // Not equal if number of unique values differ
+        if ( myValues->GetCount() == theirValues->GetCount() ) {
+
+            // Constraint lists are not order-dependent so for each value in this constraint,
+            // need to check if it is in the other constraint. The lists are equal if all
+            // values in one list are in the other.
+
+            equals = true;
+            for ( idx = 0; idx < myValues->GetCount(); idx++ ) {
+                FdoDictionaryElementP myValue = myValues->GetItem(idx);
+                if ( !theirValues->Contains(myValue->GetName()) ) {
+                    equals = false;
+                    break;
+                }
+            }
+        }
+    }
+
+    return equals;
+}
+
+
+FdoDictionaryP FdoPropertyValueConstraintList::ValuesToDictionary( FdoDataValueCollection* values ) 
+{
+    FdoDictionaryP valueDictionary = FdoDictionary::Create();
+    FdoInt32 idx;
+
+    for ( idx = 0; idx < values->GetCount(); idx++ ) {
+        FdoString* value = FdoPtr<FdoDataValue>(values->GetItem(idx))->ToString();
+
+        // Skip duplicate values.
+        if ( !valueDictionary->Contains(value) )
+            valueDictionary->Add( FdoDictionaryElementP(FdoDictionaryElement::Create(value,L"")) );
+
+        FdoStringUtility::ClearString( (wchar_t*&) value );
+    }
+
+    return valueDictionary;
+}

@@ -232,6 +232,7 @@
 #include <Fdo/Schema/FeatureSchemaCollection.h>
 #include <Fdo/Schema/GeometricPropertyDefinition.h>
 #include <Fdo/Schema/GeometricType.h>
+#include <Fdo/Schema/MergeContext.h>
 #include <Fdo/Schema/ObjectPropertyDefinition.h>
 #include <Fdo/Schema/ObjectType.h>
 #include <Fdo/Schema/OrderType.h>

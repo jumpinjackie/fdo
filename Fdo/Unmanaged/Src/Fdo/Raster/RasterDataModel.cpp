@@ -131,6 +131,22 @@ void FdoRasterDataModel::SetDataType (FdoRasterDataType dataType)
     m_DataType = dataType;
 }
 
+bool FdoRasterDataModel::Equals (FdoRasterDataModel* pModel)
+{
+    // If one model is NULL then equal only if both are NULL.
+    // this would not usually be NULL but check just in case. 
+    if ( !this || !pModel ) 
+        return (this == NULL) == (pModel == NULL);
+
+    return 
+        (GetDataModelType() == pModel->GetDataModelType()) &&
+        (GetBitsPerPixel() == pModel->GetBitsPerPixel()) &&
+        (GetOrganization() == pModel->GetOrganization()) &&
+        (GetTileSizeX() == pModel->GetTileSizeX()) &&
+        (GetTileSizeY() == pModel->GetTileSizeY()) &&
+        (GetDataType() == pModel->GetDataType());
+}
+
 //
 // FdoIDisposable interface
 //

@@ -160,11 +160,53 @@ public:
     /// 
     FDO_API void SetMaxInclusive(bool value);
 
+/// \cond DOXYGEN-IGNORE
+    // Public non-API functions for XML and Schema Merge support
+
+    /// Update this range constraint from the given value constraint.
+    virtual void Set( FdoPropertyValueConstraint* pProperty, FdoString* parentName, FdoSchemaMergeContext* pContext );
+
+    // \brief
+    // Compares this range constraint with another one.
+    // 
+    // \param value 
+    // The Property Value constraint to compare with
+    // 
+    // \return
+    // Returns true if this range constraint is the same as pConstraint
+    // (same constraint type and all members have the same values).
+    virtual bool Equals( FdoPropertyValueConstraint* pConstraint );
+
+
 private:
-	FdoDataValue*	m_minValue;
+    // \brief
+    // Compares two data values
+    // 
+    // \param myValue 
+    // The first property value
+    // 
+    // \param theirValue 
+    // The second property value
+    //
+    // \return
+    // Returns true if the values are equal or both null.
+    bool ValueEquals( FdoPtr<FdoDataValue> myValue, FdoPtr<FdoDataValue> theirValue );
+
+    // \brief
+    // Converts data value to string, handling memory cleanup and null values.
+    //
+    // \param value 
+    // The data value
+    //
+    // \return
+    // Returns the data value as a string. L"" if the value is null.
+    FdoStringP FdoPropertyValueConstraintRange::ValueToString( FdoPtr<FdoDataValue> value );
+    
+    FdoDataValue*	m_minValue;
 	FdoDataValue*	m_maxValue;
 	bool			m_isMinInclusive;
 	bool			m_isMaxInclusive;
+/// \endcond
 };
 
 #endif

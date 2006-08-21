@@ -434,6 +434,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Src\Fdo\Schema\MergeContext.cpp"
+					>
+				</File>
+				<File
 					RelativePath="Src\Fdo\Schema\NetworkClass.cpp"
 					>
 				</File>
@@ -1156,6 +1160,10 @@
 				</File>
 				<File
 					RelativePath="Inc\Fdo\Schema\GeometricType.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Inc\Fdo\Schema\MergeContext.h"
 					>
 				</File>
 				<File

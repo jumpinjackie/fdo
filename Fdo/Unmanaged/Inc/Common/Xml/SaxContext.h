@@ -29,7 +29,7 @@ class FdoXmlReader;
 /// is in progress. This class provides very rudimentary functionality such as
 /// error reporting and access to the FdoXmlReader doing the parse. Applications
 /// can pass extra information by sub-classing from this class.
-class FdoXmlSaxContext : public FdoDisposable
+class FdoXmlSaxContext : public FdoContext
 {
 public:
     /// \brief
@@ -51,25 +51,6 @@ public:
     /// 
     FDO_API_COMMON FdoXmlReader* GetReader();
 
-    /// \brief
-    /// Adds an error to the error list.
-    /// 
-    /// \param ex 
-    /// Input the error to add. 
-    /// \warning 
-	/// If this error has a 
-    /// cause, it will be overridden when thrown (see ThrowErrors()).
-    /// 
-    FDO_API_COMMON void AddError( FdoException* ex );
-
-    /// \brief
-    /// Throws all errors in the error list.
-    /// The errors are thrown as a chain. The first error is one thrown. The
-    /// second error is set to be the cause of the first error, the third
-    /// the cause of the second and so on.
-    /// 
-    FDO_API_COMMON void ThrowErrors();
-
 protected:
     /// Default constructor to keep g++ from complaining.
     FDO_API_COMMON FdoXmlSaxContext();
@@ -77,24 +58,6 @@ protected:
     FDO_API_COMMON virtual ~FdoXmlSaxContext();
 
 private:
-    /// Error Collection definition
-    class Errors : public FdoCollection<FdoException,FdoException>
-    {
-    protected:
-        virtual void Dispose();
-
-        Errors() {}
-
-    public:
-        static Errors* Create()
-        {
-            return new  Errors();
-        }
-    };
-
-    /// Error collection
-    FdoPtr<Errors> mErrors;
-
     /// Current XML Reader.
     FdoXmlReader*  mpReader;
 };

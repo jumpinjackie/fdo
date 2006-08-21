@@ -105,10 +105,15 @@ public:
     FDO_API void SetGeometryProperty(FdoGeometricPropertyDefinition* value);
 
 /// \cond DOXYGEN-IGNORE
-    /// Public non-API functions for XML support
+    // Public non-API functions for XML and Schema Merge support
 
-    /// Update this feature class from the given feature class.
-    virtual void Set( FdoClassDefinition* pClass, FdoSchemaXmlContext* pContext );
+    // Update this feature class from the given feature class.
+    virtual void Set( FdoClassDefinition* pClass, FdoSchemaMergeContext* pContext );
+
+    // Checks referenced elements. 
+    // Adds errors to the given merge context if the GeometryProperty
+    // is marked for delete.
+    virtual void CheckReferences( FdoSchemaMergeContext* pContext );
 
     /// Initialize the feature class from its XML attributes
     virtual void InitFromXml(const FdoString* classTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs);

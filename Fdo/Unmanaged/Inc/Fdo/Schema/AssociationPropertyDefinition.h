@@ -268,10 +268,15 @@ public:
     FDO_API  void SetReverseMultiplicity(FdoString* value);
 
 /// \cond DOXYGEN-IGNORE
-    /// Public non-API functions for XML support
+    // Public non-API functions for XML and Schema Merge support
 
-    /// Update this property from the given property.
-    virtual void Set( FdoPropertyDefinition* pProperty, FdoSchemaXmlContext* pContext );
+    // Update this property from the given property.
+    virtual void Set( FdoPropertyDefinition* pProperty, FdoSchemaMergeContext* pContext );
+
+    // Checks referenced elements. 
+    // Adds errors to the given merge context if the associated class or any 
+    // association identity properties are marked for delete.
+    virtual void CheckReferences( FdoSchemaMergeContext* pContext );
 
     /// Initialize this property from its XML attributes
     virtual void InitFromXml(const FdoString* propertyTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs);
@@ -299,6 +304,8 @@ public:
     virtual void SetParent(FdoSchemaElement* value);
 
 private:
+    void CheckIdentityReferences( FdoSchemaMergeContext* pContext, FdoDataPropertyDefinitionCollection* idProps, long messageId );
+    
     wchar_t*                                m_reverseName;
     FdoClassDefinition*                     m_associatedClass;
     FdoDeleteRule                           m_deleteRule;

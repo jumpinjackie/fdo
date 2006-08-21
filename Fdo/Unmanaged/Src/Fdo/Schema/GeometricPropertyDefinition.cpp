@@ -184,17 +184,114 @@ void FdoGeometricPropertyDefinition::_AcceptChanges()
     FdoPropertyDefinition::_AcceptChanges();
 }
 
-void FdoGeometricPropertyDefinition::Set( FdoPropertyDefinition* pProperty, FdoSchemaXmlContext* pContext )
+void FdoGeometricPropertyDefinition::Set( FdoPropertyDefinition* pProperty, FdoSchemaMergeContext* pContext )
 {
     FdoPropertyDefinition::Set(pProperty, pContext);
 
-    FdoGeometricPropertyDefinition* pGeomProperty = (FdoGeometricPropertyDefinition*) pProperty;
+    // Base function catches property type mismatch so silently quit on type mismatch
+    if ( GetPropertyType() == pProperty->GetPropertyType() ) {
+        if ( pContext->GetIgnoreStates() || (GetElementState() == FdoSchemaElementState_Added) || (pProperty->GetElementState() == FdoSchemaElementState_Modified) ) {
+            FdoGeometricPropertyDefinition* pGeomProperty = (FdoGeometricPropertyDefinition*) pProperty;
 
-    SetGeometryTypes( pGeomProperty->GetGeometryTypes() );
-    SetHasElevation( pGeomProperty->GetHasElevation() );
-    SetHasMeasure( pGeomProperty->GetHasMeasure() );
-	SetSpatialContextAssociation( pGeomProperty->GetSpatialContextAssociation());
-    SetReadOnly( pGeomProperty->GetReadOnly() );
+            // Set each member from the given geometric property. The same pattern is followed 
+            // for each:
+            //
+            // If new and old values differ
+            //    If modification allowed (always allowed if this is a new property).
+            //      Perform the modification
+            //    else
+            //      log an error
+            //    end if
+            //  end if
+
+            // Geometry Types
+            if ( GetGeometryTypes() != pGeomProperty->GetGeometryTypes() ) {
+                if ( (GetElementState() == FdoSchemaElementState_Added) || (pContext->CanModGeomTypes(pGeomProperty)) ) 
+                    SetGeometryTypes( pGeomProperty->GetGeometryTypes() );
+                else
+                    pContext->AddError( 
+                        FdoSchemaExceptionP(
+                            FdoSchemaException::Create(
+                                FdoException::NLSGetMessage(
+                                    FDO_NLSID(SCHEMA_99_MODGEOMTYPES),
+                                    (FdoString*) GetQualifiedName()
+                                )
+                            )
+                        )
+                    );
+            }
+
+            //Elevation
+            if ( GetHasElevation() != pGeomProperty->GetHasElevation() ) {
+                if ( (GetElementState() == FdoSchemaElementState_Added) || (pContext->CanModGeomElevation(pGeomProperty)) ) 
+                    SetHasElevation( pGeomProperty->GetHasElevation() );
+                else
+                    pContext->AddError( 
+                        FdoSchemaExceptionP(
+                            FdoSchemaException::Create(
+                                FdoException::NLSGetMessage(
+                                    FDO_NLSID(SCHEMA_100_MODGEOMELEVATION),
+                                    (FdoString*) GetQualifiedName()
+                                )
+                            )
+                        )
+                    );
+            }
+
+            // Measure Dimension
+            if ( GetHasMeasure() != pGeomProperty->GetHasMeasure() ) {
+                if ( (GetElementState() == FdoSchemaElementState_Added) || (pContext->CanModGeomMeasure(pGeomProperty)) ) 
+                    SetHasMeasure( pGeomProperty->GetHasMeasure() );
+                else
+                    pContext->AddError( 
+                        FdoSchemaExceptionP(
+                            FdoSchemaException::Create(
+                                FdoException::NLSGetMessage(
+                                    FDO_NLSID(SCHEMA_101_MODGEOMMEASURE),
+                                    (FdoString*) GetQualifiedName()
+                                )
+                            )
+                        )
+                    );
+            }
+
+            // Spatial Context
+            if ( FdoStringP(GetSpatialContextAssociation()) != FdoStringP(pGeomProperty->GetSpatialContextAssociation()) ) {
+                if ( (GetElementState() == FdoSchemaElementState_Added) || (pContext->CanModGeomSC(pGeomProperty)) ) 
+                    SetSpatialContextAssociation( pGeomProperty->GetSpatialContextAssociation() );
+                else
+                    pContext->AddError( 
+                        FdoSchemaExceptionP(
+                            FdoSchemaException::Create(
+                                FdoException::NLSGetMessage(
+                                    FDO_NLSID(SCHEMA_102_MODPROPSC),
+                                    (FdoString*) GetQualifiedName(),
+                                    (FdoString*) FdoStringP(GetSpatialContextAssociation()),
+                                    (FdoString*) FdoStringP(pGeomProperty->GetSpatialContextAssociation())
+                                )
+                            )
+                        )
+                    );
+            }
+
+            // ReadOnly setting
+            if ( GetReadOnly() != GetReadOnly() ) {
+                if ( (GetElementState() == FdoSchemaElementState_Added) || (pContext->CanModGeomReadOnly(pGeomProperty)) ) 
+                    SetReadOnly( pGeomProperty->GetReadOnly() );
+                else
+                    pContext->AddError( 
+                        FdoSchemaExceptionP(
+                            FdoSchemaException::Create(
+                                FdoException::NLSGetMessage(
+                                    FDO_NLSID(pGeomProperty->GetReadOnly() ? SCHEMA_95_MODPROPRDONLY : SCHEMA_96_MODPROPWRITABLE),
+                                    (FdoString*) GetQualifiedName()
+                                )
+                            )
+                        )
+                    );
+            }
+        }
+    }
 }
 
 void FdoGeometricPropertyDefinition::InitFromXml(const FdoString* propertyTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs)

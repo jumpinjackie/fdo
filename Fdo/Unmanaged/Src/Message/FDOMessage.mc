@@ -138,7 +138,7 @@ Cannot change property type of property '%1$ls'.
 MessageId=1026
 SymbolicName=SCHEMA_26_BASECLASSREF
 Language=English
-Error reading Feature Schemas from XML; base class '%1$ls:%2$ls' for class '%3$ls' not found. 
+Error resolving Feature Schema references; base class '%1$ls:%2$ls' for class '%3$ls' not found. 
 .
 MessageId=1027
 SymbolicName=SCHEMA_27_OBJPROPCLASSREF
@@ -168,7 +168,7 @@ Error reading Feature Schemas from XML; identity property '%1$ls' for object pro
 MessageId=1032
 SymbolicName=SCHEMA_32_GEOMPROPREF
 Language=English
-Error reading Feature Schemas from XML; geometry property '%1$ls' for feature class '%2$ls' not found.
+Error resolving Feature Schemas references; geometry property '%1$ls' for feature class '%2$ls' not found.
 .
 MessageId=1033
 SymbolicName=SCHEMA_33_BADDATAPROPSTRING
@@ -335,7 +335,391 @@ SymbolicName=SCHEMA_65_UNICONSPROPREF
 Language=English
 Error reading Feature Schemas from XML; unique constraint property '%1$ls' for feature class '%2$ls' not found.
 .
-
+MessageId=1066
+SymbolicName=SCHEMA_66_SCHEMARENAME
+Language=English
+Unsupported Schema modification; cannot rename feature schema '%1$ls' to '%2$ls'.
+.
+MessageId=1067
+SymbolicName=SCHEMA_67_CLASSEXISTS
+Language=English
+Cannot add class '%1$ls'; it already exists
+.
+MessageId=1068
+SymbolicName=SCHEMA_68_BADCLASSTYPE
+Language=English
+Cannot create class '%1$ls', unknown class type: %2$d
+.
+MessageId=1069
+SymbolicName=SCHEMA_69_CLASSNOTEXISTS
+Language=English
+Cannot modify class '%1$ls'; it does not exist
+.
+MessageId=1070
+SymbolicName=SCHEMA_70_MODDESCRIPTION
+Language=English
+Unsupported Schema modification; cannot modify description for element '%1$ls'.
+.
+MessageId=1071
+SymbolicName=SCHEMA_71_MODCLASSCONCRETE
+Language=English
+Unsupported Schema modification; Cannot make abstract class '%1$ls' concrete
+.
+MessageId=1072
+SymbolicName=SCHEMA_72_MODCLASSABSTRACT
+Language=English
+Unsupported Schema modification; Cannot make class '%1$ls' abstract
+.
+MessageId=1073
+SymbolicName=SCHEMA_73_MODBASECLASS
+Language=English
+Unsupported Schema modification; Cannot change base class for '%1$ls' from '%2$ls' to '%3$ls'
+.
+MessageId=1074
+SymbolicName=SCHEMA_74_MODCLASSIDENTITY
+Language=English
+Unsupported Schema modification; Cannot change identity properties for class '%1$ls' from (%2$ls) to (%3$ls)
+.
+MessageId=1075
+SymbolicName=SCHEMA_75_PROPEXISTS
+Language=English
+Cannot add property '%1$ls'; it already exists
+.
+MessageId=1076
+SymbolicName=SCHEMA_76_BADPROPTYPE
+Language=English
+Cannot create property '%1$ls', unknown property type: %2$d
+.
+MessageId=1077
+SymbolicName=SCHEMA_77_PROPNOTEXISTS
+Language=English
+Cannot modify property '%1$ls'; it does not exist
+.
+MessageId=1078
+SymbolicName=SCHEMA_78_MODFEATGEOM
+Language=English
+Unsupported Schema modification; Cannot modify GeometryProperty for feature class '%1$ls'
+.
+MessageId=1079
+SymbolicName=SCHEMA_79_MODNETLAYER
+Language=English
+Unsupported Schema modification; Cannot modify layer class for network class '%1$ls'
+.
+MessageId=1080
+SymbolicName=SCHEMA_80_MODNETCOST
+Language=English
+Unsupported Schema modification; Cannot modify cost property for network feature class '%1$ls'
+.
+MessageId=1081
+SymbolicName=SCHEMA_81_MODFEATNET
+Language=English
+Unsupported Schema modification; Cannot modify network class for network feature class '%1$ls'
+.
+MessageId=1082
+SymbolicName=SCHEMA_82_MODNETFEATREF
+Language=English
+Unsupported Schema modification; Cannot modify referenced feature class for network feature class '%1$ls'
+.
+MessageId=1083
+SymbolicName=SCHEMA_83_MODPARENTNETFEAT
+Language=English
+Unsupported Schema modification; Cannot modify parent network feature class for network feature class '%1$ls'
+.
+MessageId=1084
+SymbolicName=SCHEMA_84_MODSTARTNODE
+Language=English
+Unsupported Schema modification; Cannot modify start node for network link feature class '%1$ls'
+.
+MessageId=1085
+SymbolicName=SCHEMA_85_MODENDNODE
+Language=English
+Unsupported Schema modification; Cannot modify end node for network link feature class '%1$ls'
+.
+MessageId=1086
+SymbolicName=SCHEMA_86_MODNODELAYER
+Language=English
+Unsupported Schema modification; Cannot modify layer for network node feature class '%1$ls'
+.
+MessageId=1087
+SymbolicName=SCHEMA_87_MODDATATYPE
+Language=English
+Unsupported Schema modification; Cannot change data type for property '%1$ls' from '%2$ls' to '%3$ls'
+.
+MessageId=1088
+SymbolicName=SCHEMA_88_MODDEFAULTVALUE
+Language=English
+Unsupported Schema modification; Cannot change default value for data property '%1$ls' from '%2$ls' to '%3$ls'
+.
+MessageId=1089
+SymbolicName=SCHEMA_89_MODDATALENGTH
+Language=English
+Unsupported Schema modification; Cannot change length for data property '%1$ls' from '%2$d' to '%3$d'
+.
+MessageId=1090
+SymbolicName=SCHEMA_90_MODPROPNULLABLE
+Language=English
+Unsupported Schema modification; Cannot change property '%1$ls' to be nullable
+.
+MessageId=1091
+SymbolicName=SCHEMA_91_MODPROPNNULLABLE
+Language=English
+Unsupported Schema modification; Cannot change property '%1$ls' to be not nullable
+.
+MessageId=1092
+SymbolicName=SCHEMA_92_MODDATAPRECISION
+Language=English
+Unsupported Schema modification; Cannot change precision for data property '%1$ls' from '%2$d' to '%3$d'
+.
+MessageId=1093
+SymbolicName=SCHEMA_93_MODDATASCALE
+Language=English
+Unsupported Schema modification; Cannot change scale for data property '%1$ls' from '%2$d' to '%3$d'
+.
+MessageId=1094
+SymbolicName=SCHEMA_94_MODDATAAUTOGEN
+Language=English
+Unsupported Schema modification; Cannot change autogeneration setting for data property '%1$ls'
+.
+MessageId=1095
+SymbolicName=SCHEMA_95_MODPROPRDONLY
+Language=English
+Unsupported Schema modification; Cannot change property '%1$ls' to be read-only
+.
+MessageId=1096
+SymbolicName=SCHEMA_96_MODPROPWRITABLE
+Language=English
+Unsupported Schema modification; Cannot change property '%1$ls' to be writable
+.
+MessageId=1097
+SymbolicName=SCHEMA_97_BADCONSTRAINTTYPE
+Language=English
+Cannot modify constraint for data property '%1$ls'; unknown constraint type: %2$d
+.
+MessageId=1098
+SymbolicName=SCHEMA_98_MODDATACONSTRAINT
+Language=English
+Unsupported Schema modification; Cannot change constraint for data property '%1$ls'
+.
+MessageId=1099
+SymbolicName=SCHEMA_99_MODGEOMTYPES
+Language=English
+Unsupported Schema modification; Cannot change geometry types for geometric property '%1$ls'
+.
+MessageId=1100
+SymbolicName=SCHEMA_100_MODGEOMELEVATION
+Language=English
+Unsupported Schema modification; Cannot add/remove elevation dimension to/from geometric property '%1$ls'
+.
+MessageId=1101
+SymbolicName=SCHEMA_101_MODGEOMMEASURE
+Language=English
+Unsupported Schema modification; Cannot add/remove measure dimension to/from geometric property '%1$ls'
+.
+MessageId=1102
+SymbolicName=SCHEMA_102_MODPROPSC
+Language=English
+Unsupported Schema modification; Cannot change spatial context for property '%1$ls' from '%2$ls' to '%3$ls'
+.
+MessageId=1103
+SymbolicName=SCHEMA_103_MODASSOCCLASS
+Language=English
+Unsupported Schema modification; Cannot change associated class for association property '%1$ls' from '%2$ls' to '%3$ls'
+.
+MessageId=1104
+SymbolicName=SCHEMA_104_MODASSOCREVNAME
+Language=English
+Unsupported Schema modification; Cannot change reverse name for association property '%1$ls' from '%2$ls' to '%3$ls'
+.
+MessageId=1105
+SymbolicName=SCHEMA_105_MODASSOCDELRULE
+Language=English
+Unsupported Schema modification; Cannot change delete rule for association property '%1$ls'
+.
+MessageId=1106
+SymbolicName=SCHEMA_106_MODASSOCCASCLOCK
+Language=English
+Unsupported Schema modification; Cannot change cascade lock setting for association property '%1$ls'
+.
+MessageId=1107
+SymbolicName=SCHEMA_107_MODASSOCMULT
+Language=English
+Unsupported Schema modification; Cannot change multiplicity for association property '%1$ls' from '%2$ls' to '%3$ls'
+.
+MessageId=1108
+SymbolicName=SCHEMA_108_MODASSOCREVMULT
+Language=English
+Unsupported Schema modification; Cannot change reverse multiplicity for association property '%1$ls' from '%2$ls' to '%3$ls'
+.
+MessageId=1109
+SymbolicName=SCHEMA_109_MODASSOCID
+Language=English
+Unsupported Schema modification; Cannot change identity properties for association property '%1$ls' from (%2$ls) to (%3$ls)
+.
+MessageId=1110
+SymbolicName=SCHEMA_110_MODREVASSOCID
+Language=English
+Unsupported Schema modification; Cannot change reverse identity properties for association property '%1$ls' from (%2$ls) to (%3$ls)
+.
+MessageId=1111
+SymbolicName=SCHEMA_111_MODOBJCLASS
+Language=English
+Unsupported Schema modification; Cannot change class for object property '%1$ls' from '%2$ls' to '%3$ls'
+.
+MessageId=1112
+SymbolicName=SCHEMA_112_MODOBJID
+Language=English
+Unsupported Schema modification; Cannot change identity property for object property '%1$ls' from '%2$ls' to '%3$ls'
+.
+MessageId=1113
+SymbolicName=SCHEMA_113_MODOBJTYPE
+Language=English
+Unsupported Schema modification; Cannot change object type for object property '%1$ls'
+.
+MessageId=1114
+SymbolicName=SCHEMA_114_MODOBJORDERTYPE
+Language=English
+Unsupported Schema modification; Cannot change order type for object property '%1$ls'
+.
+MessageId=1115
+SymbolicName=SCHEMA_115_MODRASTERMODEL
+Language=English
+Unsupported Schema modification; Cannot change default data model for raster property '%1$ls'
+.
+MessageId=1116
+SymbolicName=SCHEMA_116_MODRASTERX
+Language=English
+Unsupported Schema modification; Cannot change default image X size for raster property '%1$ls' from '%2$d' to '%3$d'
+.
+MessageId=1117
+SymbolicName=SCHEMA_117_MODRASTERY
+Language=English
+Unsupported Schema modification; Cannot change default image Y size for raster property '%1$ls' from '%2$d' to '%3$d'
+.
+MessageId=1118
+SymbolicName=SCHEMA_118_SCHEMAEXISTS
+Language=English
+Cannot add feature schema '%1$ls'; it already exists
+.
+MessageId=1119
+SymbolicName=SCHEMA_119_SCHEMANOTEXISTS
+Language=English
+Cannot modify feature schema '%1$ls'; it does not exist
+.
+MessageId=1120
+SymbolicName=SCHEMA_120_ADDSCHEMA
+Language=English
+Cannot add feature schema '%1$ls'; multiple schemas not supported
+.
+MessageId=1121
+SymbolicName=SCHEMA_121_DELSCHEMA
+Language=English
+Unsupport Schema modification; Cannot delete feature schema '%1$ls'
+.
+MessageId=1122
+SymbolicName=SCHEMA_122_ADDCLASS
+Language=English
+Unsupport Schema modification; Cannot add class definition '%1$ls'
+.
+MessageId=1123
+SymbolicName=SCHEMA_123_DELCLASS
+Language=English
+Unsupport Schema modification; Cannot delete class definition '%1$ls'
+.
+MessageId=1124
+SymbolicName=SCHEMA_124_ADDPROP
+Language=English
+Unsupport Schema modification; Cannot add property '%1$ls'
+.
+MessageId=1125
+SymbolicName=SCHEMA_125_DELPROP
+Language=English
+Unsupport Schema modification; Cannot delete property '%1$ls'
+.
+MessageId=1126
+SymbolicName=SCHEMA_126_DELBASECLASS
+Language=English
+Cannot delete class '%1$ls' it is the base class for '%2$ls'
+.
+MessageId=1127
+SymbolicName=SCHEMA_127_DELOBJCLASS
+Language=English
+Cannot delete class '%1$ls' it is the class for object property '%2$ls'
+.
+MessageId=1128
+SymbolicName=SCHEMA_128_DELCLASSID
+Language=English
+Cannot delete property '%1$ls' it is an identity property for class '%2$ls'
+.
+MessageId=1129
+SymbolicName=SCHEMA_129_DELOBJID
+Language=English
+Cannot delete property '%1$ls' it is an identity property for object property '%2$ls'
+.
+MessageId=1130
+SymbolicName=SCHEMA_130_DELASSOCCLASS
+Language=English
+Cannot delete class '%1$ls' it is the associated class for association property '%2$ls'
+.
+MessageId=1131
+SymbolicName=SCHEMA_131_DELASSOCID
+Language=English
+Cannot delete property '%1$ls' it is an identity property for association property '%2$ls'
+.
+MessageId=1132
+SymbolicName=SCHEMA_132_DELASSOCREVID
+Language=English
+Cannot delete property '%1$ls' it is a reverse identity property for association property '%2$ls'
+.
+MessageId=1133
+SymbolicName=SCHEMA_133_DELLAYERCLASS
+Language=English
+Cannot delete class '%1$ls' it is the network layer class for network class '%2$ls'
+.
+MessageId=1134
+SymbolicName=SCHEMA_134_DELNETCOST
+Language=English
+Cannot delete property '%1$ls' it is the cost property for network feature class '%2$ls'
+.
+MessageId=1135
+SymbolicName=SCHEMA_135_DELFEATNET
+Language=English
+Cannot delete property '%1$ls' it is the network class property for network feature class '%2$ls'
+.
+MessageId=1136
+SymbolicName=SCHEMA_136_DELREFFEAT
+Language=English
+Cannot delete property '%1$ls' it is the referenced feature property for network feature class '%2$ls'
+.
+MessageId=1137
+SymbolicName=SCHEMA_137_DELNETPARENT
+Language=English
+Cannot delete property '%1$ls' it is the parent network feature property for network feature class '%2$ls'
+.
+MessageId=1138
+SymbolicName=SCHEMA_138_DELSTARTNODE
+Language=English
+Cannot delete property '%1$ls' it is the start node property for network link feature class '%2$ls'
+.
+MessageId=1139
+SymbolicName=SCHEMA_139_DELENDNODE
+Language=English
+Cannot delete property '%1$ls' it is the end node property for network link feature class '%2$ls'
+.
+MessageId=1140
+SymbolicName=SCHEMA_140_DELNODELAYER
+Language=English
+Cannot delete property '%1$ls' it is the layer property for network node feature class '%2$ls'
+.
+MessageId=1141
+SymbolicName=SCHEMA_141_BASETYPECONFLICT
+Language=English
+Cannot set base class for '%1$ls' to '%2$ls'; they have different class types
+.
+MessageId=1142
+SymbolicName=SCHEMA_142_DELFEATGEOM
+Language=English
+Cannot delete property '%1$ls' it is the geometry property for feature class '%2$ls'
+.
 MessageId=2001
 SymbolicName=EXPRESSION_1_BLOBVALUENULL
 Language=English

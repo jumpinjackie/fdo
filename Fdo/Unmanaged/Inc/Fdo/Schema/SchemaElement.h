@@ -28,6 +28,7 @@
 
 class FdoFeatureSchema;
 class FdoPropertyDefinition;
+class FdoSchemaMergeContext;
 class FdoSchemaXmlContext;
 class FdoSchemaXmlError;
 
@@ -172,10 +173,15 @@ public:
     FDO_API void Delete();
 
 /// \cond DOXYGEN-IGNORE
-    /// Public non-API functions for XML support
+    // Public non-API functions for XML and Schema Modification support
 
-    /// Update a schema element from the given element.
-    virtual void Set( FdoSchemaElement* pElement, FdoSchemaXmlContext* pContext );
+    // Update a schema element from the given element.
+    virtual void Set( FdoSchemaElement* pElement, FdoSchemaMergeContext* pContext );
+
+    // Checks referenced elements and adds errors if any are deleted. 
+    // Does nothing.
+    // Sub-classes must override this function if specific references need to be checked.
+    virtual void CheckReferences( FdoSchemaMergeContext* pContext );
 
     /// Initialize this property from its XML attributes
     virtual void InitFromXml(FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs);

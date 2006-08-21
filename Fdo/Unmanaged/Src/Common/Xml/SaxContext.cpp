@@ -21,7 +21,6 @@ FdoXmlSaxContext::FdoXmlSaxContext( FdoXmlReader* reader )
 {
     FDO_SAFE_ADDREF(reader);
     mpReader = reader;
-    mErrors = Errors::Create();
 }
 
 FdoXmlSaxContext::~FdoXmlSaxContext(void)
@@ -40,36 +39,4 @@ FdoXmlReader* FdoXmlSaxContext::GetReader()
 
     return mpReader;
 }
-
-void FdoXmlSaxContext::AddError( FdoException* ex )
-{
-    mErrors->Add( ex );
-}
-
-void FdoXmlSaxContext::ThrowErrors()
-{
-    FdoPtr<FdoException> ex;
-    FdoPtr<FdoException> nextEx;
-    FdoInt32 i;
-
-    // Chain the exceptions together
-    for ( i = (mErrors->GetCount() - 1); i >= 0; i-- ) {
-        ex = mErrors->GetItem(i);
-        ex->SetCause(nextEx);
-        nextEx = ex;
-    }
-
-    // Throw the first exception.
-    if ( ex != NULL ) {
-        FdoException* pEx = ex;
-        FDO_SAFE_ADDREF(pEx);
-        throw pEx;
-    }
-}
-
-void FdoXmlSaxContext::Errors::Dispose()
-{
-    delete this;
-}
-
 

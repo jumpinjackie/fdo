@@ -88,6 +88,7 @@ libFDOSrc_la_SOURCES = \
   Schema/SchemaElement.cpp \
   Schema/SchemaException.cpp \
   Schema/RasterPropertyDefinition.cpp \
+  Schema/MergeContext.cpp \
   Schema/XmlContext.cpp \
   Schema/XmlError.cpp \
   Schema/NetworkClass.cpp \

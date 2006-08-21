@@ -80,10 +80,10 @@ public:
     FDO_API virtual FdoClassType GetClassType();
 
 /// \cond DOXYGEN-IGNORE
-    /// Public non-API functions for XML support
+    /// Public non-API functions for XML and Schema Merge support
 
     /// Update this property from the given property.
-    virtual void Set( FdoClassDefinition* pClass, FdoSchemaXmlContext* pContext );
+    virtual void Set( FdoClassDefinition* pClass, FdoSchemaMergeContext* pContext );
 
     /// Initialize this property from its XML attributes
     virtual void InitFromXml(const FdoString* classTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs);

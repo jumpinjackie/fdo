@@ -143,10 +143,70 @@ void FdoFeatureClass::_EndChangeProcessing()
         m_geometry->_EndChangeProcessing();
 }
 
-void FdoFeatureClass::Set( FdoClassDefinition* pClass, FdoSchemaXmlContext* pContext  )
+void FdoFeatureClass::Set( FdoClassDefinition* pClass, FdoSchemaMergeContext* pContext  )
 {
     FdoClassDefinition::Set( pClass, pContext );
-    SetGeometryProperty( ((FdoFeatureClass*)pClass)->GetGeometryProperty() );
+
+    // Base function catches class type mismatch so silently quit on type mismatch
+    if ( GetClassType() == pClass->GetClassType() ) {
+        if ( pContext->GetIgnoreStates() || (GetElementState() == FdoSchemaElementState_Added) || (pClass->GetElementState() == FdoSchemaElementState_Modified) ) {
+            FdoGeometricPropertyP newGeomProp = ((FdoFeatureClass*)pClass)->GetGeometryProperty();
+            FdoStringP oldGeomName = m_geometry ? m_geometry->GetName() : L"";
+            FdoStringP newGeomName = newGeomProp ? newGeomProp->GetName() : L"";
+            if ( oldGeomName != newGeomName ) {
+                // GeometryProperty has changed.
+
+                if ( (GetElementState() == FdoSchemaElementState_Added) || pContext->CanModFeatGeometry((FdoFeatureClass*)pClass) ) {
+                    // Modification allowed, add a reference to be resolved later.
+                    pContext->AddGeomPropRef( 
+                        this, 
+                        newGeomProp ? newGeomProp->GetName() : L""
+                    );
+                }
+                else {
+                    // Modification not allowed.
+                    pContext->AddError( 
+                        FdoSchemaExceptionP(
+                            FdoSchemaException::Create(
+                                FdoException::NLSGetMessage(
+                                    FDO_NLSID(SCHEMA_78_MODFEATGEOM),
+                                    (FdoString*) GetQualifiedName()
+                                )
+                            )
+                        )
+                    );
+                }
+            }
+        }
+    }
+}
+
+void FdoFeatureClass::CheckReferences( FdoSchemaMergeContext* pContext )
+{
+    // No need to check references if this element is going away.
+    if ( GetElementState() != FdoSchemaElementState_Deleted ) {
+        FdoInt32 idx = -1;
+        FdoPropertiesP props = GetProperties();
+
+        FdoClassDefinition::CheckReferences(pContext);
+
+        FdoGeometricPropertyP geomProp = GetGeometryProperty();
+
+        if ( geomProp && (geomProp->GetElementState() == FdoSchemaElementState_Deleted) ) {
+            // Geometry Property is marked for deletion.
+            pContext->AddError( 
+                FdoSchemaExceptionP(
+                    FdoSchemaException::Create(
+                        FdoException::NLSGetMessage(
+                            FDO_NLSID(SCHEMA_142_DELFEATGEOM),
+                            (FdoString*)geomProp->GetQualifiedName(),
+                            (FdoString*)GetQualifiedName()
+                        )
+                    )
+                )
+            );
+        }
+    }
 }
 
 void FdoFeatureClass::InitFromXml(const FdoString* classTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs)
@@ -174,7 +234,7 @@ void FdoFeatureClass::InitFromXml(const FdoString* classTypeName, FdoSchemaXmlCo
 
     // If new class has geometry, add a reference to be resolved later.
     if ( attr != NULL ) {
-        pContext->AddGeomPropRef( this, pContext->DecodeName(attr->GetValue()) );
+        pContext->GetMergeContext()->AddGeomPropRef( this, pContext->DecodeName(attr->GetValue()) );
     }
     else {
         // When class does not explicitly reference a geometry property, add a reference
@@ -186,7 +246,7 @@ void FdoFeatureClass::InitFromXml(const FdoString* classTypeName, FdoSchemaXmlCo
         // class does not have one.
         FdoXmlAttributeP attr = attrs->FindItem( L"hasGeometry" );
         if ( !attr || (FdoStringP(attr->GetValue()) != L"false") ) 
-            pContext->AddGeomPropRef( this, L"" );
+            pContext->GetMergeContext()->AddGeomPropRef( this, L"" );
     }
 
     // Initialize the Class Definition parts.

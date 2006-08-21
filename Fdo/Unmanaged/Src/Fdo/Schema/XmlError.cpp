@@ -51,7 +51,7 @@ FdoSchemaXmlError* FdoSchemaXmlError::Create( FdoXmlAttributeCollection* attrs )
 
 void FdoSchemaXmlError::Apply( FdoSchemaXmlContext* pContext )
 {
-    FdoFeatureSchemasP schemas = pContext->GetSchemas();
+    FdoFeatureSchemasP schemas = pContext->GetMergeContext()->GetSchemas();
     FdoXmlFlagsP flags = schemas->GetDeserializationFlags();
     FdoXmlFlags::ErrorLevel errorLevel = flags->GetErrorLevel();
     FdoInt32 i;

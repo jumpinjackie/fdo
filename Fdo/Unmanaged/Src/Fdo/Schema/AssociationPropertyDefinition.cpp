@@ -508,29 +508,320 @@ void FdoAssociationPropertyDefinition::_EndChangeProcessing()
 }
 
 
-void FdoAssociationPropertyDefinition::Set( FdoPropertyDefinition* pProperty, FdoSchemaXmlContext* pContext )
+void FdoAssociationPropertyDefinition::Set( FdoPropertyDefinition* pProperty, FdoSchemaMergeContext* pContext )
 {
     FdoPropertyDefinition::Set(pProperty, pContext);
 
-    FdoAssociationPropertyDefinition* pAssociationProperty = (FdoAssociationPropertyDefinition*) pProperty;
+    // Base function catches property type mismatch so silently quit on type mismatch
+    if ( GetPropertyType() == pProperty->GetPropertyType() ) {
+        if ( pContext->GetIgnoreStates() || (GetElementState() == FdoSchemaElementState_Added) || (pProperty->GetElementState() == FdoSchemaElementState_Modified) ) {
+            FdoAssociationPropertyDefinition* pAssociationProperty = (FdoAssociationPropertyDefinition*) pProperty;
 
-    SetAssociatedClass(FdoClassDefinitionP(pAssociationProperty->GetAssociatedClass()));
-    SetReverseName(pAssociationProperty->GetReverseName());
-    SetDeleteRule(pAssociationProperty->GetDeleteRule());
-    SetLockCascade(pAssociationProperty->GetLockCascade());
-    SetIsReadOnly(pAssociationProperty->GetIsReadOnly());
-    SetMultiplicity(pAssociationProperty->GetMultiplicity());
-    SetReverseMultiplicity(pAssociationProperty->GetReverseMultiplicity());
-    m_identityProperties->Clear();
-    m_identityReverseProperties->Clear();
-    int i;
-    FdoDataPropertiesP properties = pAssociationProperty->GetIdentityProperties();
-    for (i=0; i<properties->GetCount(); i++)
-        m_identityProperties->Add(properties->GetItem(i));
+            // Set each member from the given association property. The same pattern is followed 
+            // for each:
+            //
+            // If new and old values differ
+            //    If modification allowed (always allowed if this is a new property).
+            //      If value is an object
+            //        Add a reference to be resolved later (when we're sure that referenced
+            //          object exists).
+            //      else
+            //        Perform the modification
+            //      end if
+            //    else
+            //      log an error
+            //    end if
+            //  end if
 
-    properties = pAssociationProperty->GetReverseIdentityProperties();
-    for (i=0; i<properties->GetCount(); i++)
-        m_identityReverseProperties->Add(properties->GetItem(i));
+            // Set associated class.
+
+            FdoClassDefinitionP newAssocClass = pAssociationProperty->GetAssociatedClass();
+            FdoSchemaElementP newAssocParent = newAssocClass ? newAssocClass->GetParent() : (FdoSchemaElement*) NULL;
+            if ( newAssocClass && !newAssocParent ) {
+                // New associated class is an orphan,
+                pContext->AddError( 
+                    FdoSchemaExceptionP(
+                        FdoSchemaException::Create(
+                            FdoException::NLSGetMessage(
+                                FDO_NLSID(SCHEMA_51_CLASSNOSCHEMA),
+                                (FdoString*) GetQualifiedName(),
+                                newAssocClass->GetName()
+                            )
+                        )
+                    )
+                );
+            }
+            else {
+                FdoStringP oldAssocClassName = m_associatedClass ? m_associatedClass->GetQualifiedName() : FdoStringP();
+                FdoStringP newAssocClassName = newAssocClass ? newAssocClass->GetQualifiedName() : FdoStringP();
+                
+                if ( oldAssocClassName != newAssocClassName ) { 
+                    if ( (GetElementState() == FdoSchemaElementState_Added) || (pContext->CanModAssocClass(pAssociationProperty)) ) {
+                        pContext->AddAssocPropRef( 
+                            this, 
+                            newAssocParent ? newAssocParent->GetName() : L"",
+                            newAssocClass ? newAssocClass->GetName() : L""
+                        );
+                    }
+                    else {
+                        pContext->AddError( 
+                            FdoSchemaExceptionP(
+                                FdoSchemaException::Create(
+                                    FdoException::NLSGetMessage(
+                                        FDO_NLSID(SCHEMA_103_MODASSOCCLASS),
+                                        (FdoString*) GetQualifiedName(),
+                                        (FdoString*) oldAssocClassName,
+                                        (FdoString*) newAssocClassName
+                                    )
+                                )
+                            )
+                        );
+                    }
+                }
+            }
+
+            // Set reverse name
+
+            if ( FdoStringP(GetReverseName()) != FdoStringP(pAssociationProperty->GetReverseName()) ) {
+                if ( (GetElementState() == FdoSchemaElementState_Added) || (pContext->CanModAssocReverseName(pAssociationProperty)) ) 
+                    SetReverseName( pAssociationProperty->GetReverseName() );
+                else
+                    pContext->AddError( 
+                        FdoSchemaExceptionP(
+                            FdoSchemaException::Create(
+                                FdoException::NLSGetMessage(
+                                    FDO_NLSID(SCHEMA_104_MODASSOCREVNAME),
+                                    (FdoString*) GetQualifiedName(),
+                                    (FdoString*) FdoStringP(GetReverseName()),
+                                    (FdoString*) FdoStringP(pAssociationProperty->GetReverseName())
+                                )
+                            )
+                        )
+                    );
+            }
+
+            // Set delete rule
+
+            if ( GetDeleteRule() != pAssociationProperty->GetDeleteRule() ) {
+                if ( (GetElementState() == FdoSchemaElementState_Added) || (pContext->CanModAssocDeleteRule(pAssociationProperty)) ) 
+                    SetDeleteRule( pAssociationProperty->GetDeleteRule() );
+                else
+                    pContext->AddError( 
+                        FdoSchemaExceptionP(
+                            FdoSchemaException::Create(
+                                FdoException::NLSGetMessage(
+                                    FDO_NLSID(SCHEMA_105_MODASSOCDELRULE),
+                                    (FdoString*) GetQualifiedName()
+                                )
+                            )
+                        )
+                    );
+            }
+
+            // Lock Cascade setting
+
+            if ( GetLockCascade() != pAssociationProperty->GetLockCascade() ) {
+                if ( (GetElementState() == FdoSchemaElementState_Added) || (pContext->CanModAssocLockCascade(pAssociationProperty)) ) 
+                    SetLockCascade( pAssociationProperty->GetLockCascade() );
+                else
+                    pContext->AddError( 
+                        FdoSchemaExceptionP(
+                            FdoSchemaException::Create(
+                                FdoException::NLSGetMessage(
+                                    FDO_NLSID(SCHEMA_106_MODASSOCCASCLOCK),
+                                    (FdoString*) GetQualifiedName()
+                                )
+                            )
+                        )
+                    );
+            }
+
+            // Read Only setting
+
+            if ( GetIsReadOnly() != pAssociationProperty->GetIsReadOnly() ) {
+                if ( (GetElementState() == FdoSchemaElementState_Added) || (pContext->CanModAssocReadOnly(pAssociationProperty)) ) 
+                    SetIsReadOnly( pAssociationProperty->GetIsReadOnly() );
+                else
+                    pContext->AddError( 
+                        FdoSchemaExceptionP(
+                            FdoSchemaException::Create(
+                                FdoException::NLSGetMessage(
+                                    FDO_NLSID(pAssociationProperty->GetIsReadOnly() ? SCHEMA_95_MODPROPRDONLY : SCHEMA_96_MODPROPWRITABLE),
+                                    (FdoString*) GetQualifiedName()
+                                )
+                            )
+                        )
+                    );
+            }
+
+            // Multiplicity
+
+            if ( FdoStringP(GetMultiplicity()) != FdoStringP(pAssociationProperty->GetMultiplicity()) ) {
+                if ( (GetElementState() == FdoSchemaElementState_Added) || (pContext->CanModAssocMultiplicity(pAssociationProperty)) ) 
+                    SetMultiplicity( pAssociationProperty->GetMultiplicity() );
+                else
+                    pContext->AddError( 
+                        FdoSchemaExceptionP(
+                            FdoSchemaException::Create(
+                                FdoException::NLSGetMessage(
+                                    FDO_NLSID(SCHEMA_107_MODASSOCMULT),
+                                    (FdoString*) GetQualifiedName(),
+                                    (FdoString*) FdoStringP(GetMultiplicity()),
+                                    (FdoString*) FdoStringP(pAssociationProperty->GetMultiplicity())
+                                )
+                            )
+                        )
+                    );
+            }
+
+            // Reverse Multiplicity
+
+            if ( FdoStringP(GetReverseMultiplicity()) != FdoStringP(pAssociationProperty->GetReverseMultiplicity()) ) {
+                if ( (GetElementState() == FdoSchemaElementState_Added) || (pContext->CanModAssocReverseMultiplicity(pAssociationProperty)) ) 
+                    SetReverseMultiplicity( pAssociationProperty->GetReverseMultiplicity() );
+                else
+                    pContext->AddError( 
+                        FdoSchemaExceptionP(
+                            FdoSchemaException::Create(
+                                FdoException::NLSGetMessage(
+                                    FDO_NLSID(SCHEMA_108_MODASSOCREVMULT),
+                                    (FdoString*) GetQualifiedName(),
+                                    (FdoString*) FdoStringP(GetReverseMultiplicity()),
+                                    (FdoString*) FdoStringP(pAssociationProperty->GetReverseMultiplicity())
+                                )
+                            )
+                        )
+                    );
+            }
+
+            // Association Identity Properties
+
+            FdoInt32 idx = -1;
+            FdoDataPropertiesP idProps = pAssociationProperty->GetIdentityProperties();
+            
+            FdoStringsP oldIdPropNames = FdoStringCollection::Create();
+            for ( idx = 0; idx < m_identityProperties->GetCount(); idx++ ) 
+                oldIdPropNames->Add( FdoPtr<FdoDataPropertyDefinition>(m_identityProperties->GetItem(idx))->GetName() );
+
+            FdoStringsP newIdPropNames = FdoStringCollection::Create();
+            for ( idx = 0; idx < idProps->GetCount(); idx++ ) 
+                newIdPropNames->Add( FdoPtr<FdoDataPropertyDefinition>(idProps->GetItem(idx))->GetName() );
+
+            if ( oldIdPropNames->ToString() != newIdPropNames->ToString() ) {
+                if ( (GetElementState() == FdoSchemaElementState_Added) || (pContext->CanModAssocIdentity(pAssociationProperty)) ) {
+                    pContext->AddAssocIdPropRef( 
+                        this, 
+                        newIdPropNames
+                    );
+                }
+                else {
+                    pContext->AddError( 
+                        FdoSchemaExceptionP(
+                            FdoSchemaException::Create(
+                                FdoException::NLSGetMessage(
+                                    FDO_NLSID(SCHEMA_109_MODASSOCID),
+                                    (FdoString*) GetQualifiedName(),
+                                    (FdoString*) oldIdPropNames->ToString(),
+                                    (FdoString*) newIdPropNames->ToString()
+                                )
+                            )
+                        )
+                    );
+                }
+            }
+
+            // Reverse Identity Properties
+
+            FdoDataPropertiesP revIdProps = pAssociationProperty->GetReverseIdentityProperties();
+            
+            FdoStringsP oldRevIdPropNames = FdoStringCollection::Create();
+            for ( idx = 0; idx < m_identityReverseProperties->GetCount(); idx++ ) 
+                oldRevIdPropNames->Add( FdoPtr<FdoDataPropertyDefinition>(m_identityReverseProperties->GetItem(idx))->GetName() );
+
+            FdoStringsP newRevIdPropNames = FdoStringCollection::Create();
+            for ( idx = 0; idx < idProps->GetCount(); idx++ ) 
+                newRevIdPropNames->Add( FdoPtr<FdoDataPropertyDefinition>(revIdProps->GetItem(idx))->GetName() );
+
+            if ( oldRevIdPropNames->ToString() != newRevIdPropNames->ToString() ) {
+                if ( (GetElementState() == FdoSchemaElementState_Added) || (pContext->CanModAssocReverseIdentity(pAssociationProperty)) ) {
+                    pContext->AddAssocIdReversePropRef( 
+                        this, 
+                        newRevIdPropNames
+                    );
+                }
+                else {
+                    pContext->AddError( 
+                        FdoSchemaExceptionP(
+                            FdoSchemaException::Create(
+                                FdoException::NLSGetMessage(
+                                    FDO_NLSID(SCHEMA_110_MODREVASSOCID),
+                                    (FdoString*) GetQualifiedName(),
+                                    (FdoString*) oldRevIdPropNames->ToString(),
+                                    (FdoString*) newRevIdPropNames->ToString()
+                                )
+                            )
+                        )
+                    );
+                }
+            }
+        }
+    }
+}
+
+void FdoAssociationPropertyDefinition::CheckReferences( FdoSchemaMergeContext* pContext )
+{
+    // No need to check references if this element is going away.
+    if ( GetElementState() != FdoSchemaElementState_Deleted ) {
+        FdoSchemaElement::CheckReferences(pContext);
+
+        // Check if associated class marked for delete
+
+        FdoClassDefinitionP assocClass = GetAssociatedClass();
+
+        if ( assocClass && (assocClass->GetElementState() == FdoSchemaElementState_Deleted) )
+            pContext->AddError( 
+                FdoSchemaExceptionP(
+                    FdoSchemaException::Create(
+                        FdoException::NLSGetMessage(
+                            FDO_NLSID(SCHEMA_130_DELASSOCCLASS),
+                            (FdoString*) assocClass->GetQualifiedName(),
+                            (FdoString*) GetQualifiedName()
+                        )
+                    )
+                )
+            );
+
+        // Check association identity properties
+        FdoDataPropertiesP idProps = GetIdentityProperties();
+        CheckIdentityReferences( pContext, idProps, SCHEMA_131_DELASSOCID );
+
+        // Check reverse identity properties
+        idProps = GetReverseIdentityProperties();
+        CheckIdentityReferences( pContext, idProps, SCHEMA_132_DELASSOCREVID );
+    }
+}
+
+void FdoAssociationPropertyDefinition::CheckIdentityReferences( FdoSchemaMergeContext* pContext, FdoDataPropertyDefinitionCollection* idProps, long messageId )
+{
+    int idx;
+
+    for ( idx = 0; idx < idProps->GetCount(); idx++ ) {
+        FdoDataPropertyP idProp = idProps->GetItem( idx );
+
+        if ( idProp->GetElementState() == FdoSchemaElementState_Deleted ) {
+            pContext->AddError( 
+                FdoSchemaExceptionP(
+                    FdoSchemaException::Create(
+                        FdoException::NLSGetMessage(
+                            FDO_NLSID(messageId),
+                            (FdoString*) idProp->GetQualifiedName(),
+                            (FdoString*)GetQualifiedName()
+                        )
+                    )
+                )
+            );
+        }
+    }
 }
 
 void FdoAssociationPropertyDefinition::InitFromXml(const FdoString* propertyTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs)
@@ -595,7 +886,7 @@ void FdoAssociationPropertyDefinition::InitFromXml(const FdoString* propertyType
     if ( (apSchema != NULL) && (apClass != NULL) )
         // Associated property class might not have been read yet.
         // Just add a reference to be resolved later
-        pContext->AddAssocPropRef( this, pContext->DecodeName(apSchema->GetValue()), pContext->DecodeName(apClass->GetValue()) );
+        pContext->GetMergeContext()->AddAssocPropRef( this, pContext->DecodeName(apSchema->GetValue()), pContext->DecodeName(apClass->GetValue()) );
 }
 
 FdoXmlSaxHandler* FdoAssociationPropertyDefinition::XmlStartElement(
@@ -638,6 +929,7 @@ FdoXmlSaxHandler* FdoAssociationPropertyDefinition::XmlStartElement(
         if ( wcscmp(name, L"DataProperty") == 0 ) {
             // Sub-element contains is an identity reverse property name.
             // Set up a SAX handler to read the content.
+            FDO_SAFE_RELEASE(m_dataPropertyHandler);
             m_dataPropertyHandler = FdoDataPropertyDefinition::Create();
             m_dataPropertyHandler->InitFromXml( name, fdoContext, atts);
             pRet = m_dataPropertyHandler;
@@ -662,7 +954,7 @@ FdoBoolean FdoAssociationPropertyDefinition::XmlEndElement(
     if ( wcscmp(name, L"IdentityProperties") == 0 ) {
         //End the id property list. Add a reference that is 
         //resolved when the read from XML is complete.
-        fdoContext->AddAssocIdPropRef( this, m_idPropNames );
+        fdoContext->GetMergeContext()->AddAssocIdPropRef( this, m_idPropNames );
     }
 
     if ( wcscmp(name, L"IdentityProperty") == 0 ) {
@@ -675,7 +967,7 @@ FdoBoolean FdoAssociationPropertyDefinition::XmlEndElement(
     if ( wcscmp(name, L"IdentityReverseProperties") == 0 ) {
         //End the id property list. Add a reference that is 
         //resolved when the read from XML is complete.
-        fdoContext->AddAssocIdReversePropRef( this, m_idRvrsPropNames );
+        fdoContext->GetMergeContext()->AddAssocIdReversePropRef( this, m_idRvrsPropNames );
     }
 
     if ( wcscmp(name, L"DataProperty") == 0 ) {

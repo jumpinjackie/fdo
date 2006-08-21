@@ -266,19 +266,151 @@ FDO_API void FdoRasterPropertyDefinition::SetDefaultImageYSize (FdoInt32 size)
     SetElementState (FdoSchemaElementState_Modified);
 }
 
-void FdoRasterPropertyDefinition::Set( FdoPropertyDefinition* pProperty, FdoSchemaXmlContext* pContext )
+void FdoRasterPropertyDefinition::Set( FdoPropertyDefinition* pProperty, FdoSchemaMergeContext* pContext )
 {
     FdoPropertyDefinition::Set(pProperty, pContext);
 
-    FdoRasterPropertyDefinition* pRasterProperty = (FdoRasterPropertyDefinition*) pProperty;
+    // Base function catches property type mismatch so silently quit on type mismatch
+    if ( GetPropertyType() == pProperty->GetPropertyType() ) {
+        if ( pContext->GetIgnoreStates() || (GetElementState() == FdoSchemaElementState_Added) || (pProperty->GetElementState() == FdoSchemaElementState_Modified) ) {
+            FdoRasterPropertyDefinition* pRasterProperty = (FdoRasterPropertyDefinition*) pProperty;
 
-    SetReadOnly(pRasterProperty->GetReadOnly());
-    SetNullable(pRasterProperty->GetNullable());
-    SetDefaultDataModel(pRasterProperty->GetDefaultDataModel());
-    SetDefaultImageXSize(pRasterProperty->GetDefaultImageXSize());
-    SetDefaultImageYSize(pRasterProperty->GetDefaultImageYSize());
-    SetSpatialContextAssociation(pRasterProperty->GetSpatialContextAssociation());
+            // Set each member from the given raster property. The same pattern is followed 
+            // for each:
+            //
+            // If new and old values differ
+            //    If modification allowed (always allowed if this is a new property).
+            //      Perform the modification
+            //    else
+            //      log an error
+            //    end if
+            //  end if
 
+            // ReadOnly setting
+
+            if ( GetReadOnly() != pRasterProperty->GetReadOnly() ) {
+                if ( (GetElementState() == FdoSchemaElementState_Added) || (pContext->CanModRasterReadOnly(pRasterProperty)) ) 
+                    SetReadOnly( pRasterProperty->GetReadOnly() );
+                else
+                    pContext->AddError( 
+                        FdoSchemaExceptionP(
+                            FdoSchemaException::Create(
+                                FdoException::NLSGetMessage(
+                                    FDO_NLSID(pRasterProperty->GetReadOnly() ? SCHEMA_95_MODPROPRDONLY : SCHEMA_96_MODPROPWRITABLE),
+                                    (FdoString*) GetQualifiedName()
+                                )
+                            )
+                        )
+                    );
+            }
+
+            // Nullability
+
+            if ( GetNullable() != pRasterProperty->GetNullable() ) {
+                if ( (GetElementState() == FdoSchemaElementState_Added) || (pContext->CanModRasterNullable(pRasterProperty)) ) 
+                    SetNullable( pRasterProperty->GetNullable() );
+                else
+                    pContext->AddError( 
+                        FdoSchemaExceptionP(
+                            FdoSchemaException::Create(
+                                FdoException::NLSGetMessage(
+                                    FDO_NLSID(pRasterProperty->GetNullable() ? SCHEMA_90_MODPROPNULLABLE : SCHEMA_91_MODPROPNNULLABLE),
+                                    (FdoString*) GetQualifiedName()
+                                )
+                            )
+                        )
+                    );
+            }
+
+            // Data Model
+
+            FdoPtr<FdoRasterDataModel> dataModel = pRasterProperty->GetDefaultDataModel();
+            if ( m_model || dataModel ) {
+                if ( ((m_model == NULL) != (dataModel == NULL)) || (!m_model->Equals(dataModel)) ) {
+                    if ( (GetElementState() == FdoSchemaElementState_Added) || (pContext->CanModRasterModel(pRasterProperty)) ) {
+/* 
+For the purposes of XML reading and SDF Provider ApplySchema, reusing the datamodel
+is fine, but is not ok in the general case. 
+TODO copy the datamodel
+                        FdoPtr<FdoRasterDataModel> dataModelCopy = dataModel ? dataModel->CreateCopy() : (FdoDataModel*) NULL;
+                        SetDefaultDataModel( dataModelCopy );
+*/
+                        SetDefaultDataModel( dataModel );
+                    }
+                    else {
+                        pContext->AddError( 
+                            FdoSchemaExceptionP(
+                                FdoSchemaException::Create(
+                                    FdoException::NLSGetMessage(
+                                        FDO_NLSID(SCHEMA_115_MODRASTERMODEL),
+                                        (FdoString*) GetQualifiedName()
+                                    )
+                                )
+                            )
+                        );
+                    }
+                }
+            }
+
+            // Image Size
+
+            if ( GetDefaultImageXSize() != pRasterProperty->GetDefaultImageXSize() ) {
+                if ( (GetElementState() == FdoSchemaElementState_Added) || (pContext->CanModRasterXSize(pRasterProperty)) ) 
+                    SetDefaultImageXSize( pRasterProperty->GetDefaultImageXSize() );
+                else
+                    pContext->AddError( 
+                        FdoSchemaExceptionP(
+                            FdoSchemaException::Create(
+                                FdoException::NLSGetMessage(
+                                    FDO_NLSID(SCHEMA_116_MODRASTERX),
+                                    (FdoString*) GetQualifiedName(),
+                                    GetDefaultImageXSize(),
+                                    pRasterProperty->GetDefaultImageXSize()
+                                )
+                            )
+                        )
+                    );
+            }
+
+            if ( GetDefaultImageYSize() != pRasterProperty->GetDefaultImageYSize() ) {
+                if ( (GetElementState() == FdoSchemaElementState_Added) || (pContext->CanModRasterYSize(pRasterProperty)) ) 
+                    SetDefaultImageYSize( pRasterProperty->GetDefaultImageYSize() );
+                else
+                    pContext->AddError( 
+                        FdoSchemaExceptionP(
+                            FdoSchemaException::Create(
+                                FdoException::NLSGetMessage(
+                                    FDO_NLSID(SCHEMA_117_MODRASTERY),
+                                    (FdoString*) GetQualifiedName(),
+                                    GetDefaultImageYSize(),
+                                    pRasterProperty->GetDefaultImageYSize()
+                                )
+                            )
+                        )
+                    );
+            }
+
+            // Spatial Context
+
+            if ( FdoStringP(GetSpatialContextAssociation()) != FdoStringP(pRasterProperty->GetSpatialContextAssociation()) ) {
+                if ( (GetElementState() == FdoSchemaElementState_Added) || (pContext->CanModRasterSC(pRasterProperty)) ) 
+                    SetSpatialContextAssociation( pRasterProperty->GetSpatialContextAssociation() );
+                else
+                    pContext->AddError( 
+                        FdoSchemaExceptionP(
+                            FdoSchemaException::Create(
+                                FdoException::NLSGetMessage(
+                                    FDO_NLSID(SCHEMA_102_MODPROPSC),
+                                    (FdoString*) GetQualifiedName(),
+                                    (FdoString*) FdoStringP(GetSpatialContextAssociation()),
+                                    (FdoString*) FdoStringP(pRasterProperty->GetSpatialContextAssociation())
+                                )
+                            )
+                        )
+                    );
+            }
+        }
+    }
 }
 
 void FdoRasterPropertyDefinition::InitFromXml(const FdoString* propertyTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs)

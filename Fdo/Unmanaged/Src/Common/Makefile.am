@@ -11,6 +11,7 @@ EXTRA_DIST = \
 
 libFDOCommon_la_SOURCES = \
   ArrayHelper.cpp \
+  Context.cpp \
   DictionaryElement.cpp \
   Exception.cpp  \
   Semaphore.cpp  \

@@ -133,10 +133,101 @@ void FdoNetworkClass::_EndChangeProcessing()
     FdoClassDefinition::_EndChangeProcessing();
 }
 
-void FdoNetworkClass::Set( FdoClassDefinition* pClass, FdoSchemaXmlContext* pContext )
+void FdoNetworkClass::Set( FdoClassDefinition* pClass, FdoSchemaMergeContext* pContext )
 {
     FdoClassDefinition::Set( pClass, pContext );
-    SetLayerClass( ((FdoNetworkClass*) pClass)->GetLayerClass());
+
+    // Base function catches class type mismatch so silently quit on type mismatch
+    if ( GetClassType() == pClass->GetClassType() ) {
+        if ( pContext->GetIgnoreStates() || (GetElementState() == FdoSchemaElementState_Added) || (pClass->GetElementState() == FdoSchemaElementState_Modified) ) {
+            FdoNetworkLayerClassP newLayerClass = ((FdoNetworkClass*) pClass)->GetLayerClass();
+
+            // Update this class from the given class. The same pattern is followed 
+            // for each member:
+            //
+            // If new and old values differ
+            //    If modification allowed (always allowed if this is a new property).
+            //      If value is an object
+            //        Add a reference to be resolved later (when we're sure that referenced
+            //          object exists).
+            //      else
+            //        Perform the modification
+            //      end if
+            //    else
+            //      log an error
+            //    end if
+            //  end if
+
+            // Network Layer Class
+
+            FdoSchemaElementP newLayerParent = newLayerClass ? newLayerClass->GetParent() : (FdoSchemaElement*) NULL;
+            if ( newLayerClass && !newLayerParent ) {
+                // Error: network layer class is orphan.
+                pContext->AddError( 
+                    FdoSchemaExceptionP(
+                        FdoSchemaException::Create(
+                            FdoException::NLSGetMessage(
+                                FDO_NLSID(SCHEMA_51_CLASSNOSCHEMA),
+                                (FdoString*) GetQualifiedName(),
+                                newLayerClass->GetName()
+                            )
+                        )
+                    )
+                );
+            }
+            else {
+                FdoStringP oldLayerClassName = m_layerClass ? m_layerClass->GetQualifiedName() : FdoStringP();
+                FdoStringP newLayerClassName = newLayerClass ? newLayerClass->GetQualifiedName() : FdoStringP();
+                if ( oldLayerClassName != newLayerClassName ) { 
+                    if ( (GetElementState() == FdoSchemaElementState_Added) || (pContext->CanModNetLayer((FdoNetworkClass*)pClass)) ) {
+                        pContext->AddNetworkClassRef( 
+                            this, 
+                            newLayerParent ? newLayerParent->GetName() : L"",
+                            newLayerClass ? newLayerClass->GetName() : L""
+                        );
+                    }
+                    else {
+                        pContext->AddError( 
+                            FdoSchemaExceptionP(
+                                FdoSchemaException::Create(
+                                    FdoException::NLSGetMessage(
+                                        FDO_NLSID(SCHEMA_79_MODNETLAYER),
+                                        (FdoString*) GetQualifiedName()
+                                    )
+                                )
+                            )
+                        );
+                    }
+                }
+            }
+        }
+    }
+}
+
+void FdoNetworkClass::CheckReferences( FdoSchemaMergeContext* pContext )
+{
+    // No need to check references if this element is going away.
+    if ( GetElementState() != FdoSchemaElementState_Deleted ) {
+        FdoSchemaElement::CheckReferences(pContext);
+
+        // Check if network layer class marked for delete.        
+
+        FdoNetworkLayerClassP layerClass = GetLayerClass();
+
+        if ( layerClass && (layerClass->GetElementState() == FdoSchemaElementState_Deleted) ) {
+            pContext->AddError( 
+                FdoSchemaExceptionP(
+                    FdoSchemaException::Create(
+                        FdoException::NLSGetMessage(
+                            FDO_NLSID(SCHEMA_133_DELLAYERCLASS),
+                            (FdoString*) layerClass->GetQualifiedName(),
+                            (FdoString*) GetQualifiedName()
+                        )
+                    )
+                )
+            );
+        }
+    }
 }
 
 void FdoNetworkClass::InitFromXml(const FdoString* classTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs)
@@ -163,7 +254,7 @@ void FdoNetworkClass::InitFromXml(const FdoString* classTypeName, FdoSchemaXmlCo
     FdoXmlAttributeP schema = attrs->FindItem( L"classSchema" );
     FdoXmlAttributeP cls = attrs->FindItem( L"class" );
     if (schema != NULL && cls != NULL)
-        pContext->AddNetworkClassRef( this, pContext->DecodeName(schema->GetValue()), pContext->DecodeName(cls->GetValue()) );
+        pContext->GetMergeContext()->AddNetworkClassRef( this, pContext->DecodeName(schema->GetValue()), pContext->DecodeName(cls->GetValue()) );
 
     FdoClassDefinition::InitFromXml(pContext, attrs );
 

@@ -159,22 +159,57 @@ void FdoSchemaElement::Delete()
 
 }
 
-void FdoSchemaElement::Set( FdoSchemaElement* pElement, FdoSchemaXmlContext* pContext )
+void FdoSchemaElement::Set( FdoSchemaElement* pElement, FdoSchemaMergeContext* pContext )
 {
     FdoSADP     newAttributes = pElement->GetAttributes();
     FdoInt32    attCount = 0;
     FdoString** pNewAttNames = newAttributes->GetAttributeNames(attCount);
     FdoInt32    idx = 0;
 
-    SetDescription( pElement->GetDescription() );
+    if ( pContext->GetIgnoreStates() || (GetElementState() == FdoSchemaElementState_Added) || (pElement->GetElementState() == FdoSchemaElementState_Modified) ) {
+        
+        // Handle setting name from given element
 
-    FDO_SAFE_RELEASE(m_attributes);
+        if ( (FdoStringP(GetName()) == L"") && (GetElementState() == FdoSchemaElementState_Added) ) 
+            SetName( pElement->GetName() );
 
-    for ( idx = 0; idx < attCount; idx++ ) {
-        FdoSADP myAttributes = GetAttributes();
+        pContext->AddElementMap( this );
 
-        myAttributes->Add( pNewAttNames[idx], newAttributes->GetAttributeValue(pNewAttNames[idx]) );
+        // Handle setting description if different
+
+        if ( FdoStringP(GetDescription()) != FdoStringP(pElement->GetDescription()) ) {
+            if ( (GetElementState() == FdoSchemaElementState_Added) || pContext->CanModElementDescription( pElement ) ) {
+                SetDescription( pElement->GetDescription() );
+            }
+            else {
+                // Description change not supported
+                pContext->AddError( 
+                    FdoSchemaExceptionP(
+                        FdoSchemaException::Create(
+                            FdoException::NLSGetMessage(
+                                FDO_NLSID(SCHEMA_70_MODDESCRIPTION),
+                                (FdoString*) GetQualifiedName()
+                            )
+                        )
+                    )
+                );
+            }
+        }
+
+        // Modify Schema Attribute Dictionary.
+
+        FDO_SAFE_RELEASE(m_attributes);
+
+        for ( idx = 0; idx < attCount; idx++ ) {
+            FdoSADP myAttributes = GetAttributes();
+
+            myAttributes->Add( pNewAttNames[idx], newAttributes->GetAttributeValue(pNewAttNames[idx]) );
+        }
     }
+}
+
+void FdoSchemaElement::CheckReferences( FdoSchemaMergeContext* )
+{
 }
 
 void FdoSchemaElement::InitFromXml(FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs)

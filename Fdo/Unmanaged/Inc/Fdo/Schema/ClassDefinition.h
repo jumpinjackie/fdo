@@ -227,10 +227,16 @@ public:
     FDO_API FdoUniqueConstraintCollection* GetUniqueConstraints();
 
 /// \cond DOXYGEN-IGNORE
-    /// Public non-API functions for XML support
+    // Public non-API functions for XML and Schema Merge support
 
-    /// Update a class definition from the given definition.
-    virtual void Set( FdoClassDefinition* pClass, FdoSchemaXmlContext* pContext );
+    // Update a class definition from the given definition.
+    virtual void Set( FdoClassDefinition* pClass, FdoSchemaMergeContext* pContext );
+
+    // Checks referenced elements. 
+    // Adds errors to the given merge context if the base class or any identity properties
+    // are marked for delete.
+    // Also checks references for each class property.
+    virtual void CheckReferences( FdoSchemaMergeContext* pContext );
 
     /// Initialize the class from its XML attributes
     virtual void InitFromXml(const FdoString* classTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs);

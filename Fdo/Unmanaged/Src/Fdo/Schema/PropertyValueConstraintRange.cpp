@@ -18,6 +18,8 @@
 //
 
 #include <Fdo/Schema/PropertyValueConstraintRange.h>
+#include "XmlContext.h"
+#include "StringUtility.h"
 
 
 // Constructs a default instance of a FdoPropertyValueConstraintRange.
@@ -140,4 +142,79 @@ void FdoPropertyValueConstraintRange::SetMaxInclusive(bool value)
 {
 	m_isMaxInclusive = value;
 }
+
+void FdoPropertyValueConstraintRange::Set( FdoPropertyValueConstraint* pConstraint, FdoString* parentName, FdoSchemaMergeContext* pContext )
+{
+    FdoPropertyValueConstraint::Set(pConstraint, parentName, pContext);
+
+    // Base function adds error on constraint type mismatch so silently skip if 
+    // types do not match.
+    if ( pConstraint->GetConstraintType() == FdoPropertyValueConstraintType_Range ) {
+        FdoPropertyValueConstraintRange* pRangeConstraint = (FdoPropertyValueConstraintRange*) pConstraint;
+
+        // For the purposes of XML reading and SDF Provider ApplySchema, reusing the min value
+        // is fine, but is not ok in the general case. 
+        // TODO: make copy of min value
+        SetMinValue( pRangeConstraint->GetMinValue() );
+        SetMinInclusive( pRangeConstraint->GetMinInclusive() );
+
+        // TODO: make copy of max value
+        SetMaxValue( pRangeConstraint->GetMaxValue() );
+        SetMaxInclusive( pRangeConstraint->GetMaxInclusive() );
+    }
+}
+
+bool FdoPropertyValueConstraintRange::Equals( FdoPropertyValueConstraint* pConstraint )
+{
+    // Not equal if other constraint is not a range.
+    if ( pConstraint->GetConstraintType() != FdoPropertyValueConstraintType_Range )
+        return false;
+
+    FdoPropertyValueConstraintRange* pRangeConstraint = (FdoPropertyValueConstraintRange*) pConstraint;
+
+    // First, do easy part: compare min and max inclusive settings
+
+    if ( GetMinInclusive() != pRangeConstraint->GetMinInclusive() )
+        return false;
+
+    if ( GetMaxInclusive() != pRangeConstraint->GetMaxInclusive() )
+        return false;
+
+    FdoPtr<FdoDataValue> myMinValue = GetMinValue();
+    FdoPtr<FdoDataValue> theirMinValue = pRangeConstraint->GetMinValue();
+
+    if ( !ValueEquals(myMinValue, theirMinValue) ) 
+        return false;
+
+    FdoPtr<FdoDataValue> myMaxValue = GetMaxValue();
+    FdoPtr<FdoDataValue> theirMaxValue = pRangeConstraint->GetMaxValue();
+
+    if ( !ValueEquals(myMaxValue, theirMaxValue) ) 
+        return false;
+
+    return true;
+}
+
+bool FdoPropertyValueConstraintRange::ValueEquals( FdoPtr<FdoDataValue> myValue, FdoPtr<FdoDataValue> theirValue )
+{
+
+    FdoStringP myValueString = ValueToString( myValue );
+    FdoStringP theirValueString = ValueToString( theirValue );
+
+    return ( myValueString == theirValueString );
+}
+
+FdoStringP FdoPropertyValueConstraintRange::ValueToString( FdoPtr<FdoDataValue> value )
+{
+    FdoStringP stringContainer;
+
+    if ( value ) {
+        FdoString* stringValue = value->ToString();
+        stringContainer = stringValue;
+        FdoStringUtility::ClearString( (wchar_t*&) stringValue );
+    }
+
+    return stringContainer;
+}
+
 

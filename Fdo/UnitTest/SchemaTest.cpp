@@ -645,15 +645,30 @@ void SchemaTest::testFeatureSchema()
     pgeomprop2->Release();
 
     ///////////////////////////////////////////////////////////////////////////
+    // Try to create set base to class definition of different type.
+    //
+    try
+    {
+        pclass->SetBaseClass(pfeatureclass);
+        FDO_CPPUNIT_ASSERT(FALSE);  // should never reach this, an exception should be thrown because pclass would become its own grandparent
+    }
+    catch (FdoSchemaException* e)
+    {
+        e->Release();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
     // Try to create circular base-class references (infinite loop)
     //
     pFSchema->AcceptChanges();
 
+    FdoFeatureClassP    pfeatureclass2 = FdoFeatureClass::Create(L"FeatureClass2", L"FeatureClass2 Desc");
+
     // NOTE: This is semi-circular because pfeatureclass contains pobjprop, and pobjprop refers to pclass
-    pclass->SetBaseClass(pfeatureclass);
+    pfeatureclass2->SetBaseClass(pfeatureclass);
     try
     {
-        pfeatureclass->SetBaseClass(pclass);
+        pfeatureclass->SetBaseClass(pfeatureclass2);
         FDO_CPPUNIT_ASSERT(FALSE);  // should never reach this, an exception should be thrown because pclass would become its own grandparent
     }
     catch (FdoSchemaException* e)
@@ -664,7 +679,7 @@ void SchemaTest::testFeatureSchema()
 
     // TODO: If we leave the semi-circular reference, some memory doesn't get released
     //       when we release the pFSchema.  Do we need a way to break this reference count deadlock?
-    pclass->SetBaseClass(NULL);
+    pfeatureclass2->SetBaseClass(NULL);
     pFSchema->AcceptChanges();
 
     ///////////////////////////////////////////////////////////////////////////

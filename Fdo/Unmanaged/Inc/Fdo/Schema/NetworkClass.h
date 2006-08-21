@@ -106,10 +106,15 @@ public:
     FDO_API void SetLayerClass(FdoNetworkLayerClass* value);
 
 /// \cond DOXYGEN-IGNORE
-    /// Public non-API functions for XML support
+    /// Public non-API functions for XML and Schema Merge support
 
     /// Update this property from the given property.
-    virtual void Set( FdoClassDefinition* pClass, FdoSchemaXmlContext* pContext );
+    virtual void Set( FdoClassDefinition* pClass, FdoSchemaMergeContext* pContext );
+
+    // Checks referenced elements. 
+    // Adds errors to the given merge context if the network layer class
+    // is marked for delete.
+    virtual void CheckReferences( FdoSchemaMergeContext* pContext );
 
     /// Initialize this property from its XML attributes
     virtual void InitFromXml(const FdoString* propertyTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs);

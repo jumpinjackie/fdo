@@ -206,6 +206,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Src\Common\Context.cpp"
+				>
+			</File>
+			<File
 				RelativePath="Src\Common\ConvertUTF.cpp"
 				>
 			</File>
@@ -465,7 +469,7 @@
 				>
 			</File>
 			<File
-				RelativePath="Inc\FdoCommon.h"
+				RelativePath=".\Inc\Common\Context.h"
 				>
 			</File>
 			<File
@@ -486,6 +490,14 @@
 			</File>
 			<File
 				RelativePath="Inc\Common\Exception.h"
+				>
+			</File>
+			<File
+				RelativePath="Inc\FdoCommon.h"
+				>
+			</File>
+			<File
+				RelativePath="Inc\Common\FdoTypes.h"
 				>
 			</File>
 			<File
@@ -538,10 +550,6 @@
 			</File>
 			<File
 				RelativePath="Inc\Common\StringP.h"
-				>
-			</File>
-			<File
-				RelativePath="Inc\Common\FdoTypes.h"
 				>
 			</File>
 			<File

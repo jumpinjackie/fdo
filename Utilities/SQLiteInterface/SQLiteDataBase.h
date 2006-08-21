@@ -101,6 +101,11 @@ public:
     int commit( );
 
     /*
+    ** Roll back the transaction if one already active.
+    */
+    int rollback( );
+
+    /*
     ** Returns the BTree object of the open DB
     */
     SQLiteBTree* BTree();

@@ -117,18 +117,18 @@ void FdoNetworkLinkFeatureClass::SetEndNodeProperty(FdoAssociationPropertyDefini
         FdoPtr<FdoClassDefinition>assocClass = value->GetAssociatedClass();
         if( ! assocClass || assocClass->GetClassType() != FdoClassType_NetworkNodeClass )
             throw FdoSchemaException::Create(FdoException::NLSGetMessage(FDO_NLSID(SCHEMA_37_REQUIREDNODEFEATURE)));
-    }
     
-    //
-    // Make sure the associated node network calss is the same as the link network class
-    FdoPtr<FdoAssociationPropertyDefinition> netwrkAssoc = GetNetworkProperty();
-    FdoPtr<FdoAssociationPropertyDefinition> nodeNetwrkAssoc = (FdoPtr<FdoNetworkNodeFeatureClass>((FdoNetworkNodeFeatureClass*)value->GetAssociatedClass()))->GetNetworkProperty();
-    if( netwrkAssoc && nodeNetwrkAssoc )
-    {
-        FdoPtr<FdoClassDefinition>networkAssocClass = netwrkAssoc->GetAssociatedClass();
-        FdoPtr<FdoClassDefinition>networkNodeAssocClass = nodeNetwrkAssoc->GetAssociatedClass();
-        if( networkAssocClass && networkNodeAssocClass && wcscmp( networkAssocClass->GetName(), networkNodeAssocClass->GetName() )  )
-            throw FdoSchemaException::Create(FdoException::NLSGetMessage(FDO_NLSID(SCHEMA_44_LINKSTARTORENDNODENETWORKERROR)));
+        //
+        // Make sure the associated node network calss is the same as the link network class
+        FdoPtr<FdoAssociationPropertyDefinition> netwrkAssoc = GetNetworkProperty();
+        FdoPtr<FdoAssociationPropertyDefinition> nodeNetwrkAssoc = (FdoPtr<FdoNetworkNodeFeatureClass>((FdoNetworkNodeFeatureClass*)value->GetAssociatedClass()))->GetNetworkProperty();
+        if( netwrkAssoc && nodeNetwrkAssoc )
+        {
+            FdoPtr<FdoClassDefinition>networkAssocClass = netwrkAssoc->GetAssociatedClass();
+            FdoPtr<FdoClassDefinition>networkNodeAssocClass = nodeNetwrkAssoc->GetAssociatedClass();
+            if( networkAssocClass && networkNodeAssocClass && wcscmp( networkAssocClass->GetName(), networkNodeAssocClass->GetName() )  )
+                throw FdoSchemaException::Create(FdoException::NLSGetMessage(FDO_NLSID(SCHEMA_44_LINKSTARTORENDNODENETWORKERROR)));
+        }
     }
 
     _StartChanges();
@@ -208,14 +208,127 @@ void FdoNetworkLinkFeatureClass::_EndChangeProcessing()
 }
     
 
-void FdoNetworkLinkFeatureClass::Set( FdoClassDefinition* pClass, FdoSchemaXmlContext* pContext )
+void FdoNetworkLinkFeatureClass::Set( FdoClassDefinition* pClass, FdoSchemaMergeContext* pContext )
 {
     FdoNetworkFeatureClass::Set( pClass, pContext );
 
-    FdoNetworkLinkFeatureClass *pNetworkLinkFeatureClass = (FdoNetworkLinkFeatureClass*) pClass;
+    // Base function catches class type mismatch so silently quit on type mismatch
+    if ( GetClassType() == pClass->GetClassType() ) {
+        if ( pContext->GetIgnoreStates() || (GetElementState() == FdoSchemaElementState_Added) || (pClass->GetElementState() == FdoSchemaElementState_Modified) ) {
+            FdoNetworkLinkFeatureClass *pNetworkLinkFeatureClass = (FdoNetworkLinkFeatureClass*) pClass;
 
-    SetStartNodeProperty(FdoAssociationPropertyP(pNetworkLinkFeatureClass->GetStartNodeProperty()));
-    SetEndNodeProperty(FdoAssociationPropertyP(pNetworkLinkFeatureClass->GetEndNodeProperty()));
+            // Update this class from the given class. The same pattern is followed 
+            // for each member:
+            //
+            // If new and old values differ
+            //    If modification allowed (always allowed if this is a new property).
+            //      If value is an object
+            //        Add a reference to be resolved later (when we're sure that referenced
+            //          object exists).
+            //      else
+            //        Perform the modification
+            //      end if
+            //    else
+            //      log an error
+            //    end if
+            //  end if
+
+            // Start Node
+
+            FdoAssociationPropertyP newStartProp = pNetworkLinkFeatureClass->GetStartNodeProperty();
+            FdoStringP oldStartPropName = m_startNodeFeature ? m_startNodeFeature->GetName() : L"";
+            FdoStringP newStartPropName = newStartProp ? newStartProp->GetName() : L"";
+
+            if ( oldStartPropName != newStartPropName ) {
+                if ( (GetElementState() == FdoSchemaElementState_Added) || (pContext->CanModLinkStartNode(pNetworkLinkFeatureClass)) ) 
+                    pContext->AddNetworkLinkStartAssocPropRef( 
+                        this, 
+                        newStartProp ? pNetworkLinkFeatureClass->GetQualifiedName() + L"." + newStartProp->GetName() : L""
+                    );
+                else
+                    pContext->AddError( 
+                        FdoSchemaExceptionP(
+                            FdoSchemaException::Create(
+                                FdoException::NLSGetMessage(
+                                    FDO_NLSID(SCHEMA_84_MODSTARTNODE),
+                                    (FdoString*) GetQualifiedName()
+                                )
+                            )
+                        )
+                    );
+            }
+
+            // End Node
+
+            FdoAssociationPropertyP newEndProp = pNetworkLinkFeatureClass->GetEndNodeProperty();
+            FdoStringP oldEndPropName = m_endNodeFeature ? m_endNodeFeature->GetName() : L"";
+            FdoStringP newEndPropName = newEndProp ? newEndProp->GetName() : L"";
+
+            if ( oldEndPropName != newEndPropName ) {
+                if ( (GetElementState() == FdoSchemaElementState_Added) || (pContext->CanModLinkEndNode(pNetworkLinkFeatureClass)) ) 
+                    pContext->AddNetworkLinkEndAssocPropRef( 
+                        this, 
+                        newEndProp ? pNetworkLinkFeatureClass->GetQualifiedName() + L"." + newEndProp->GetName() : L""
+                    );
+                else
+                    pContext->AddError( 
+                        FdoSchemaExceptionP(
+                            FdoSchemaException::Create(
+                                FdoException::NLSGetMessage(
+                                    FDO_NLSID(SCHEMA_85_MODENDNODE),
+                                    (FdoString*) GetQualifiedName()
+                                )
+                            )
+                        )
+                    );
+            }
+        }
+    }
+}
+
+void FdoNetworkLinkFeatureClass::CheckReferences( FdoSchemaMergeContext* pContext )
+{
+    // No need to check references if this element is going away.
+    if ( GetElementState() != FdoSchemaElementState_Deleted ) {
+        FdoSchemaElement::CheckReferences(pContext);
+
+        // Check if start node property marked for delete.        
+
+        FdoAssociationPropertyP nodeProp = GetStartNodeProperty();
+
+        if ( nodeProp && (nodeProp->GetElementState() == FdoSchemaElementState_Deleted) ) {
+            pContext->AddError( 
+                FdoSchemaExceptionP(
+                    FdoSchemaException::Create(
+                        FdoException::NLSGetMessage(
+                            FDO_NLSID(SCHEMA_138_DELSTARTNODE),
+                            (FdoString*) nodeProp->GetQualifiedName(),
+                            (FdoString*) GetQualifiedName()
+                        )
+                    )
+                )
+            );
+        }
+
+        // Check if end node property marked for delete.   
+
+        nodeProp = GetEndNodeProperty();
+
+        if ( nodeProp && (nodeProp->GetElementState() == FdoSchemaElementState_Deleted) ) {
+            pContext->AddError( 
+                FdoSchemaExceptionP(
+                    FdoSchemaException::Create(
+                        FdoException::NLSGetMessage(
+                            FDO_NLSID(SCHEMA_139_DELENDNODE),
+                            (FdoString*) nodeProp->GetQualifiedName(),
+                            (FdoString*) GetQualifiedName()
+                        )
+                    )
+                )
+            );
+        }
+
+    }
 }
 
 void FdoNetworkLinkFeatureClass::InitFromXml(const FdoString* classTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs)
@@ -301,12 +414,12 @@ FdoBoolean FdoNetworkLinkFeatureClass::XmlEndElement(
     FdoNetworkFeatureClass::XmlEndElement(context, uri, name, qname);
 
     if (m_bStartNode == true && wcscmp(name, L"AssociationProperty") == 0 ) {
-        fdoContext->AddNetworkLinkStartAssocPropRef( this, this->GetQualifiedName() + L"." + m_startNodeFeatureHandler->GetName());
+        fdoContext->GetMergeContext()->AddNetworkLinkStartAssocPropRef( this, this->GetQualifiedName() + L"." + m_startNodeFeatureHandler->GetName());
         FDO_SAFE_RELEASE(m_startNodeFeatureHandler);
     }
 
     if (m_bEndNode == true && wcscmp(name, L"AssociationProperty") == 0 ) {
-        fdoContext->AddNetworkLinkEndAssocPropRef( this, this->GetQualifiedName() + L"." + m_endNodeFeatureHandler->GetName());
+        fdoContext->GetMergeContext()->AddNetworkLinkEndAssocPropRef( this, this->GetQualifiedName() + L"." + m_endNodeFeatureHandler->GetName());
         FDO_SAFE_RELEASE(m_endNodeFeatureHandler);
     }
 

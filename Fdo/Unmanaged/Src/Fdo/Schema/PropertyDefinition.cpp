@@ -59,7 +59,7 @@ void FdoPropertyDefinition::SetIsSystem( bool value )
     m_system = value;
 }
 
-void FdoPropertyDefinition::Set( FdoPropertyDefinition* pProperty, FdoSchemaXmlContext* pContext )
+void FdoPropertyDefinition::Set( FdoPropertyDefinition* pProperty, FdoSchemaMergeContext* pContext )
 {
     if ( GetPropertyType() != pProperty->GetPropertyType() ) {
         pContext->AddError( 
@@ -93,8 +93,8 @@ void FdoPropertyDefinition::InitFromXml(FdoSchemaXmlContext* pContext, FdoXmlAtt
     // If property already exists, make sure type change is not attempted.
 
     if (FdoSchemaElementP (GetParent())) {
-        FdoClassDefinitionP pOldClass = fdoContext->FindClass( 
-            FdoFeatureSchemasP( fdoContext->GetSchemas() ),
+        FdoClassDefinitionP pOldClass = fdoContext->GetMergeContext()->FindClass( 
+            FdoFeatureSchemasP( fdoContext->GetMergeContext()->GetSchemas() ),
             FdoFeatureSchemaP(GetFeatureSchema())->GetName(),
             FdoSchemaElementP(GetParent())->GetName()
         );

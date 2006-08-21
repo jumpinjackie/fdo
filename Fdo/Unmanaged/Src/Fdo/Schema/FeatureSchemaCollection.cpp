@@ -187,3 +187,14 @@ FdoPhysicalSchemaMappingCollection* FdoFeatureSchemaCollection::GetXmlSchemaMapp
     return FDO_SAFE_ADDREF( (FdoPhysicalSchemaMappingCollection*) m_XmlSchemaMappings );
 }
 
+/* TODO: This function needs a unit test before it can be made part of the FDO API.
+FDO_API void Merge( FdoFeatureSchema* schema, bool ignoreStates = false );
+void FdoFeatureSchemaCollection::Merge( FdoFeatureSchema* schema, bool ignoreStates )
+{
+    FdoSchemaMergeContextP context = FdoSchemaMergeContext::Create( this );
+
+    context->SetIgnoreStates( ignoreStates );
+    context->SetUpdSchema( FDO_SAFE_ADDREF(schema) );
+    context->CommitSchemas();
+}
+*/

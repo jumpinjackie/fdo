@@ -135,11 +135,16 @@ public:
     FDO_API virtual FdoXmlReader* GetFromInternalStylesheet();
 
 /// \cond DOXYGEN-IGNORE
-    /// Public non-API functions for XML serialization
+    /// Public non-API functions for XML serialization and Schema Merge
 
     /// Merge the given schema into this schema. An additive merge
     /// is performed. 
-    void Set( FdoFeatureSchema* pSchema, FdoSchemaXmlContext* pContext );
+    void Set( FdoFeatureSchema* pSchema, FdoSchemaMergeContext* pContext );
+
+    // Checks referenced elements. 
+    // Adds errors to the given context if any class references elements
+    // marked for delete.
+    virtual void CheckReferences( FdoSchemaMergeContext* pContext );
 
     /// Allows FeatureSchemaCollection to get the stylesheet.
     static FdoXmlReader* _getFromInternalStylesheet();

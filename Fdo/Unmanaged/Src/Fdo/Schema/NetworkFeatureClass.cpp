@@ -269,16 +269,212 @@ void FdoNetworkFeatureClass::_EndChangeProcessing()
     FdoFeatureClass::_EndChangeProcessing();
 }
 
-void FdoNetworkFeatureClass::Set( FdoClassDefinition* pClass, FdoSchemaXmlContext* pContext )
+void FdoNetworkFeatureClass::Set( FdoClassDefinition* pClass, FdoSchemaMergeContext* pContext )
 {
     FdoFeatureClass::Set( pClass, pContext );
 
-    FdoNetworkFeatureClass *pNetworkFeatureClass = (FdoNetworkFeatureClass*) pClass;
+    // Base function catches class type mismatch so silently quit on type mismatch
+    if ( GetClassType() == pClass->GetClassType() ) {
+        if ( pContext->GetIgnoreStates() || (GetElementState() == FdoSchemaElementState_Added) || (pClass->GetElementState() == FdoSchemaElementState_Modified) ) {
+            FdoNetworkFeatureClass *pNetworkFeatureClass = (FdoNetworkFeatureClass*) pClass;
 
-    SetCostProperty(FdoDataPropertyP(pNetworkFeatureClass->GetCostProperty()));
-    SetNetworkProperty(FdoAssociationPropertyP(pNetworkFeatureClass->GetNetworkProperty()));
-    SetReferencedFeatureProperty(FdoAssociationPropertyP(pNetworkFeatureClass->GetReferencedFeatureProperty()));
-    SetParentNetworkFeatureProperty(FdoAssociationPropertyP(pNetworkFeatureClass->GetParentNetworkFeatureProperty()));
+            // Update this class from the given class. The same pattern is followed 
+            // for each member:
+            //
+            // If new and old values differ
+            //    If modification allowed (always allowed if this is a new property).
+            //      If value is an object
+            //        Add a reference to be resolved later (when we're sure that referenced
+            //          object exists).
+            //      else
+            //        Perform the modification
+            //      end if
+            //    else
+            //      log an error
+            //    end if
+            //  end if
+
+            // Cost Property
+
+            FdoDataPropertyP newCostProp = pNetworkFeatureClass->GetCostProperty();
+            FdoStringP oldCostPropName = m_costProperty ? m_costProperty->GetName() : L"";
+            FdoStringP newCostPropName = newCostProp ? newCostProp->GetName() : L"";
+
+            if ( oldCostPropName != newCostPropName ) {
+                if ( (GetElementState() == FdoSchemaElementState_Added) || (pContext->CanModNetCost(pNetworkFeatureClass)) ) 
+                    pContext->AddNetworkFeatureCostPropRef( 
+                        this, 
+                        newCostProp ? newCostProp->GetName() : L""
+                    );
+                else
+                    pContext->AddError( 
+                        FdoSchemaExceptionP(
+                            FdoSchemaException::Create(
+                                FdoException::NLSGetMessage(
+                                    FDO_NLSID(SCHEMA_80_MODNETCOST),
+                                    (FdoString*) GetQualifiedName()
+                                )
+                            )
+                        )
+                    );
+            }
+
+            // Network 
+
+            FdoAssociationPropertyP newNetProp = pNetworkFeatureClass->GetNetworkProperty();
+            FdoStringP oldNetPropName = m_network ? m_network->GetName() : L"";
+            FdoStringP newNetPropName = newNetProp ? newNetProp->GetName() : L"";
+
+            if ( oldNetPropName != newNetPropName ) {
+                if ( (GetElementState() == FdoSchemaElementState_Added) || (pContext->CanModNetProp(pNetworkFeatureClass)) ) 
+                    pContext->AddNetworkFeatureNetworkPropRef( 
+                        this, 
+                        newNetProp ? pNetworkFeatureClass->GetQualifiedName() + L"." + newNetProp->GetName() : L""
+                    );
+                else
+                    pContext->AddError( 
+                        FdoSchemaExceptionP(
+                            FdoSchemaException::Create(
+                                FdoException::NLSGetMessage(
+                                    FDO_NLSID(SCHEMA_81_MODFEATNET),
+                                    (FdoString*) GetQualifiedName()
+                                )
+                            )
+                        )
+                    );
+            }
+
+            // Referenced Feature
+
+            FdoAssociationPropertyP newFeatProp = pNetworkFeatureClass->GetReferencedFeatureProperty();
+            FdoStringP oldFeatPropName = m_referencedFeature ? m_referencedFeature->GetName() : L"";
+            FdoStringP newFeatPropName = newFeatProp ? newFeatProp->GetName() : L"";
+
+            if ( oldFeatPropName != newFeatPropName ) {
+                if ( (GetElementState() == FdoSchemaElementState_Added) || (pContext->CanModNetFeat(pNetworkFeatureClass)) ) 
+                    pContext->AddNetworkFeatureRefFeatPropRef( 
+                        this, 
+                        newFeatProp ? pNetworkFeatureClass->GetQualifiedName() + L"." + newFeatProp->GetName() : L""
+                    );
+                else
+                    pContext->AddError( 
+                        FdoSchemaExceptionP(
+                            FdoSchemaException::Create(
+                                FdoException::NLSGetMessage(
+                                    FDO_NLSID(SCHEMA_82_MODNETFEATREF),
+                                    (FdoString*) GetQualifiedName()
+                                )
+                            )
+                        )
+                    );
+            }
+
+            // Parent Network Feature
+
+            FdoAssociationPropertyP newParentProp = pNetworkFeatureClass->GetParentNetworkFeatureProperty();
+            FdoStringP oldParentPropName = m_parentNetworkFeature ? m_parentNetworkFeature->GetName() : L"";
+            FdoStringP newParentPropName = newParentProp ? newParentProp->GetName() : L"";
+
+            if ( oldParentPropName != newParentPropName ) {
+                if ( (GetElementState() == FdoSchemaElementState_Added) || (pContext->CanModNetParent(pNetworkFeatureClass)) ) 
+                    pContext->AddNetworkFeatureParentNetworkFeatPropRef( 
+                        this, 
+                        newParentProp ? pNetworkFeatureClass->GetQualifiedName() + L"." + newParentProp->GetName() : L""
+                    );
+                else
+                    pContext->AddError( 
+                        FdoSchemaExceptionP(
+                            FdoSchemaException::Create(
+                                FdoException::NLSGetMessage(
+                                    FDO_NLSID(SCHEMA_83_MODPARENTNETFEAT),
+                                    (FdoString*) GetQualifiedName()
+                                )
+                            )
+                        )
+                    );
+            }
+        }
+    }
+}
+
+void FdoNetworkFeatureClass::CheckReferences( FdoSchemaMergeContext* pContext )
+{
+    // No need to check references if this element is going away.
+    if ( GetElementState() != FdoSchemaElementState_Deleted ) {
+        FdoSchemaElement::CheckReferences(pContext);
+
+        // Check if cost property marked for delete.        
+
+        FdoDataPropertyP costProp = GetCostProperty();
+
+        if ( costProp && (costProp->GetElementState() == FdoSchemaElementState_Deleted) ) {
+            pContext->AddError( 
+                FdoSchemaExceptionP(
+                    FdoSchemaException::Create(
+                        FdoException::NLSGetMessage(
+                            FDO_NLSID(SCHEMA_134_DELNETCOST),
+                            (FdoString*) costProp->GetQualifiedName(),
+                            (FdoString*) GetQualifiedName()
+                        )
+                    )
+                )
+            );
+        }
+
+        // Check if network property marked for delete.        
+
+        FdoAssociationPropertyP netProp = GetNetworkProperty();
+
+        if ( netProp && (netProp->GetElementState() == FdoSchemaElementState_Deleted) ) {
+            pContext->AddError( 
+                FdoSchemaExceptionP(
+                    FdoSchemaException::Create(
+                        FdoException::NLSGetMessage(
+                            FDO_NLSID(SCHEMA_135_DELFEATNET),
+                            (FdoString*) netProp->GetQualifiedName(),
+                            (FdoString*) GetQualifiedName()
+                        )
+                    )
+                )
+            );
+        }
+
+        // Check if referenced feature property marked for delete.        
+
+        FdoAssociationPropertyP featProp = GetReferencedFeatureProperty();
+
+        if ( featProp && (featProp->GetElementState() == FdoSchemaElementState_Deleted) ) {
+            pContext->AddError( 
+                FdoSchemaExceptionP(
+                    FdoSchemaException::Create(
+                        FdoException::NLSGetMessage(
+                            FDO_NLSID(SCHEMA_136_DELREFFEAT),
+                            (FdoString*) featProp->GetQualifiedName(),
+                            (FdoString*) GetQualifiedName()
+                        )
+                    )
+                )
+            );
+        }
+
+        // Check if parent network feature property marked for delete.        
+
+        FdoAssociationPropertyP parentProp = GetParentNetworkFeatureProperty();
+
+        if ( parentProp && (parentProp->GetElementState() == FdoSchemaElementState_Deleted) ) {
+            pContext->AddError( 
+                FdoSchemaExceptionP(
+                    FdoSchemaException::Create(
+                        FdoException::NLSGetMessage(
+                            FDO_NLSID(SCHEMA_137_DELNETPARENT),
+                            (FdoString*) parentProp->GetQualifiedName(),
+                            (FdoString*) GetQualifiedName()
+                        )
+                    )
+                )
+            );
+        }
+    }
 }
 
 void FdoNetworkFeatureClass::InitFromXml(FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs)
@@ -291,7 +487,7 @@ void FdoNetworkFeatureClass::InitFromXml(FdoSchemaXmlContext* pContext, FdoXmlAt
     FdoXmlAttributeP attr = attrs->FindItem( L"costProperty" );
 
     if (attr)
-        pContext->AddNetworkFeatureCostPropRef( this, pContext->DecodeName(attr->GetValue()));
+        pContext->GetMergeContext()->AddNetworkFeatureCostPropRef( this, pContext->DecodeName(attr->GetValue()));
 
     FdoFeatureClass::InitFromXml(L"ClassDefinition", pContext, attrs );
 
@@ -363,17 +559,17 @@ FdoBoolean FdoNetworkFeatureClass::XmlEndElement(
     FdoFeatureClass::XmlEndElement(context, uri, name, qname);
 
     if (m_bNetwork == true && wcscmp(name, L"AssociationProperty") == 0 ) {
-        fdoContext->AddNetworkFeatureNetworkPropRef( this, this->GetQualifiedName() + L"." + m_networkHandler->GetName());
+        fdoContext->GetMergeContext()->AddNetworkFeatureNetworkPropRef( this, this->GetQualifiedName() + L"." + m_networkHandler->GetName());
         FDO_SAFE_RELEASE(m_networkHandler);
     }
 
     if (m_bReferenceFeature == true && wcscmp(name, L"AssociationProperty") == 0 ) {
-        fdoContext->AddNetworkFeatureRefFeatPropRef( this, this->GetQualifiedName() + L"." + m_referencedFeatureHandler->GetName());
+        fdoContext->GetMergeContext()->AddNetworkFeatureRefFeatPropRef( this, this->GetQualifiedName() + L"." + m_referencedFeatureHandler->GetName());
         FDO_SAFE_RELEASE(m_referencedFeatureHandler);
     }
 
     if (m_bParentNetwork == true && wcscmp(name, L"AssociationProperty") == 0 ) {
-        fdoContext->AddNetworkFeatureParentNetworkFeatPropRef( this, this->GetQualifiedName() + L"." + m_parentNetworkFeatureHandler->GetName());
+        fdoContext->GetMergeContext()->AddNetworkFeatureParentNetworkFeatPropRef( this, this->GetQualifiedName() + L"." + m_parentNetworkFeatureHandler->GetName());
         FDO_SAFE_RELEASE(m_parentNetworkFeatureHandler);
     }
 

@@ -129,10 +129,15 @@ public:
     FDO_API void SetParentNetworkFeatureProperty(FdoAssociationPropertyDefinition* value);
 
 /// \cond DOXYGEN-IGNORE
-    /// Public non-API functions for XML support
+    // Public non-API functions for XML and Schema Merge support
 
-    /// Update this property from the given property.
-    virtual void Set( FdoClassDefinition* pProperty, FdoSchemaXmlContext* pContext );
+    // Update this property from the given property.
+    virtual void Set( FdoClassDefinition* pProperty, FdoSchemaMergeContext* pContext );
+
+    // Checks referenced elements. 
+    // Adds errors to the given merge context if any of the  cost, referenced feature, network 
+    // or parent network properties are marked for delete.
+    virtual void CheckReferences( FdoSchemaMergeContext* pContext );
 
     /// Initialize this property from its XML attributes
     virtual void InitFromXml(FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs);

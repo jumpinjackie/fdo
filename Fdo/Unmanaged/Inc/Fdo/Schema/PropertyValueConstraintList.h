@@ -81,10 +81,29 @@ public:
     /// 
     FDO_API virtual FdoPropertyValueConstraintType GetConstraintType();
 
+/// \cond DOXYGEN-IGNORE
+    // Public non-API functions for XML and Schema Merge support
+
+    /// Update this list constraint from the given value constraint.
+    virtual void Set( FdoPropertyValueConstraint* pProperty, FdoString* parentName, FdoSchemaMergeContext* pContext );
+
+    // \brief
+    // Compares this list constraint with another one.
+    // 
+    // \param value 
+    // The Property Value constraint to compare with
+    // 
+    // \return
+    // Returns true if this list constraint is the same as pConstraint
+    // (same constraint type and all members have the same values).
+    virtual bool Equals( FdoPropertyValueConstraint* pConstraint );
 
 private:
-	FdoDataValueCollection*	m_constraintList;
-
+    // Builds dictionary from given data values, filtering out duplicates.
+    FdoDictionaryP ValuesToDictionary( FdoDataValueCollection* values );
+	
+    FdoDataValueCollection*	m_constraintList;
+/// \endcond
 };
 #endif
 

@@ -93,6 +93,15 @@ void FdoClassDefinition::SetBaseClass(FdoClassDefinition* value)
 
     if (value)
     {
+        // Base class must have same class type.
+        if ( GetClassType() != value->GetClassType() ) 
+             throw FdoSchemaException::Create(
+                FdoException::NLSGetMessage(FDO_NLSID(SCHEMA_141_BASETYPECONFLICT),
+                (FdoString*) GetQualifiedName(),
+                (FdoString*) value->GetQualifiedName()
+             )
+        );
+
         // A class with identity properties cannot have a base class.
         if ( m_identityProperties->GetCount() > 0 ) 
              throw FdoSchemaException::Create(FdoException::NLSGetMessage(FDO_NLSID(SCHEMA_14_SUBCLASSWITHIDENTITYPROPERTIES)));
@@ -388,12 +397,8 @@ void FdoClassDefinition::_EndChangeProcessing()
     m_identityProperties->_EndChangeProcessing();
 }
 
-void FdoClassDefinition::Set( FdoClassDefinition* pClass, FdoSchemaXmlContext* pContext )
+void FdoClassDefinition::Set( FdoClassDefinition* pClass, FdoSchemaMergeContext* pContext )
 {
-    // Class Definitions and XML representations of classes are 
-    // assumed to be complete. Therefore, this class is completely
-    // replaced rather than additively merged with the source class.
-
     // Class type change not supported.
     if ( GetClassType() != pClass->GetClassType() ) {
         pContext->AddError( 
@@ -410,65 +415,344 @@ void FdoClassDefinition::Set( FdoClassDefinition* pClass, FdoSchemaXmlContext* p
         return;
     }
 
-    // Empty out this class.
-    FDO_SAFE_RELEASE(m_baseClass);
-    FDO_SAFE_RELEASE(m_baseProperties);
-    m_identityProperties->Clear();
+    FdoInt32 idx = -1;
+    FdoPropertiesP props = pClass->GetProperties();
 
     FdoSchemaElement::Set(pClass, pContext);
 
-    // Update this class from the given class.
-    SetIsAbstract( pClass->GetIsAbstract() );
-    SetBaseClass( pClass->GetBaseClass() );
+    if ( pContext->GetIgnoreStates() || (GetElementState() == FdoSchemaElementState_Added) || (pClass->GetElementState() == FdoSchemaElementState_Modified) ) {
+        // Update this class from the given class. The same pattern is followed 
+        // for each member:
+        //
+        // If new and old values differ
+        //    If modification allowed (always allowed if this is a new property).
+        //      If value is an object
+        //        Add a reference to be resolved later (when we're sure that referenced
+        //          object exists).
+        //      else
+        //        Perform the modification
+        //      end if
+        //    else
+        //      log an error
+        //    end if
+        //  end if
 
-    FdoInt32 idx = -1;
-    FdoPropertiesP props = pClass->GetProperties();
-    FdoDataPropertiesP idProps = pClass->GetIdentityProperties();
-    
-    // Need to update all properties for this class and its base before
-    // setting the identityProperties. For now, just put the id prop names
-    // in a collection.
-    FdoStringsP idPropNames = FdoStringCollection::Create();
+        // IsAbstract setting
 
-    for ( idx = 0; idx < idProps->GetCount(); idx++ ) 
-        idPropNames->Add( FdoPtr<FdoDataPropertyDefinition>(idProps->GetItem(idx))->GetName() );
+        if ( GetIsAbstract() != pClass->GetIsAbstract() ) {
+            if ( (GetElementState() == FdoSchemaElementState_Added) || (pContext->CanModClassAbstract(pClass)) ) 
+                SetIsAbstract( pClass->GetIsAbstract() );
+            else
+                pContext->AddError( 
+                    FdoSchemaExceptionP(
+                        FdoSchemaException::Create(
+                            FdoException::NLSGetMessage(
+                                FDO_NLSID(pClass->GetIsAbstract() ? SCHEMA_72_MODCLASSABSTRACT : SCHEMA_71_MODCLASSCONCRETE),
+                                (FdoString*) GetQualifiedName()
+                            )
+                        )
+                    )
+                );
+        }
 
-    // Not an additive merge so delete any properties not in given class.
-    for ( idx = (m_properties->GetCount() - 1); idx >= 0; idx-- ) {
-        FdoPropertyP oldProp = m_properties->GetItem(idx);
+        // Base Class
 
-        FdoPropertyP newProp = props->FindItem( oldProp->GetName() );
-    
-        if ( newProp == NULL ) 
-            m_properties->RemoveAt(idx);
+        FdoClassDefinitionP newBaseClass = pClass->GetBaseClass();
+        FdoSchemaElementP newBaseParent = newBaseClass ? newBaseClass->GetParent() : (FdoSchemaElement*) NULL;
+        if ( newBaseClass && !newBaseParent ) {
+            // Error: new base class is an orphan.
+            pContext->AddError( 
+                FdoSchemaExceptionP(
+                    FdoSchemaException::Create(
+                        FdoException::NLSGetMessage(
+                            FDO_NLSID(SCHEMA_51_CLASSNOSCHEMA),
+                            (FdoString*) GetQualifiedName(),
+                            newBaseClass->GetName()
+                        )
+                    )
+                )
+            );
+        }
+        else {
+            FdoStringP oldBaseClassName = m_baseClass ? m_baseClass->GetQualifiedName() : FdoStringP();
+            FdoStringP newBaseClassName = newBaseClass ? newBaseClass->GetQualifiedName() : FdoStringP();
+            if ( oldBaseClassName != newBaseClassName ) { 
+                if ( (GetElementState() == FdoSchemaElementState_Added) || (pContext->CanModBaseClass(pClass)) ) {
+                    pContext->AddBaseClassRef( 
+                        this, 
+                        newBaseParent ? newBaseParent->GetName() : L"",
+                        newBaseClass ? newBaseClass->GetName() : L""
+                    );
+                }
+                else {
+                    pContext->AddError( 
+                        FdoSchemaExceptionP(
+                            FdoSchemaException::Create(
+                                FdoException::NLSGetMessage(
+                                    FDO_NLSID(SCHEMA_73_MODBASECLASS),
+                                    (FdoString*) GetQualifiedName(),
+                                    (FdoString*) oldBaseClassName,
+                                    (FdoString*) newBaseClassName
+                                )
+                            )
+                        )
+                    );
+                }
+            }
+        }
+
+        // Identity Properties
+
+        FdoDataPropertiesP idProps = pClass->GetIdentityProperties();
+            
+        // Need to update all properties for this class and its base before
+        // setting the identityProperties. For now, just put the id prop names
+        // in a collection.
+        FdoStringsP oldIdPropNames = FdoStringCollection::Create();
+        for ( idx = 0; idx < m_identityProperties->GetCount(); idx++ ) 
+            oldIdPropNames->Add( FdoPtr<FdoDataPropertyDefinition>(m_identityProperties->GetItem(idx))->GetName() );
+
+        FdoStringsP newIdPropNames = FdoStringCollection::Create();
+        for ( idx = 0; idx < idProps->GetCount(); idx++ ) 
+                newIdPropNames->Add( FdoPtr<FdoDataPropertyDefinition>(idProps->GetItem(idx))->GetName() );
+
+        if ( oldIdPropNames->ToString() != newIdPropNames->ToString() ) {
+            if ( (GetElementState() == FdoSchemaElementState_Added) || (pContext->CanModIdProps(pClass)) ) {
+                pContext->AddIdPropRef( 
+                    this, 
+                    newIdPropNames
+                );
+            }
+            else {
+                pContext->AddError( 
+                    FdoSchemaExceptionP(
+                        FdoSchemaException::Create(
+                            FdoException::NLSGetMessage(
+                                FDO_NLSID(SCHEMA_74_MODCLASSIDENTITY),
+                                (FdoString*) GetQualifiedName(),
+                                (FdoString*) oldIdPropNames->ToString(),
+                                (FdoString*) newIdPropNames->ToString()
+                            )
+                        )
+                    )
+                );
+            }
+        }
+
+        //TODO: handle unique constraints
+
+        if ( pContext->GetReplaceClass() ) {
+            // If we're completely replacing classes (this is done when reading from XML)
+            // then don't additively merge properties. Remove any properties not in the 
+            // given class.
+            for ( idx = (m_properties->GetCount() - 1); idx >= 0; idx-- ) {
+                FdoPropertyP oldProp = m_properties->GetItem(idx);
+
+                FdoPropertyP newProp = props->FindItem( oldProp->GetName() );
+            
+                if ( newProp == NULL ) 
+                    m_properties->RemoveAt(idx);
+            }
+        }
+
     }
 
     // Merge each property from the given class into this class.
-    for ( idx = (props->GetCount() - 1); idx >= 0; idx-- ) {
+    for ( idx = 0; idx < props->GetCount(); idx++ ) {
         FdoPropertyP newProp = props->GetItem(idx);
-        props->RemoveAt(idx);
-
         FdoPropertyP oldProp = m_properties->FindItem( newProp->GetName() );
 
-        if ( oldProp ) {
-            // Property already in schema, do a merge
-            oldProp->Set(newProp, pContext);
+        FdoSchemaElementState propState;
+
+        // Determine new state of each property.
+        if ( GetElementState() == FdoSchemaElementState_Deleted ) {
+            // Always delete properties if this class is being deleted.
+            propState = FdoSchemaElementState_Deleted;
         }
         else {
-            // Not in schema, just add it.
-            m_properties->Add(newProp);
+            // The following sets the right state when ignoring element states.
+            // Its a modification if this class already has the property, and an add 
+            // otherwise.
+            propState = oldProp ? FdoSchemaElementState_Modified : FdoSchemaElementState_Added;
+
+            if ( !pContext->GetIgnoreStates() ) 
+                // Not ignoring element states so get state from the property to update from.
+                propState = newProp->GetElementState();
+        }
+
+        // Handle each type of modification
+        switch  ( propState ) {
+        case FdoSchemaElementState_Added:
+            if ( oldProp ) {
+                // Can't add property that already exists.
+                pContext->AddError( 
+                    FdoSchemaExceptionP(
+                        FdoSchemaException::Create(
+                            FdoException::NLSGetMessage(
+                                FDO_NLSID(SCHEMA_75_PROPEXISTS),
+                                (FdoString*) oldProp->GetQualifiedName()
+                            )
+                        )
+                    )
+                );
+            }
+            else {
+                if ( (GetElementState() == FdoSchemaElementState_Added) || pContext->CanAddProperty(newProp) ) {
+                    // Adding property allowed. Create a copy property to add to this class.
+                    FdoPropertyType propType = newProp->GetPropertyType();
+                    if ( propType == FdoPropertyType_DataProperty )
+                        oldProp = (FdoPropertyDefinition*) FdoDataPropertyDefinition::Create();
+                    else if ( propType == FdoPropertyType_ObjectProperty )
+                        oldProp = (FdoPropertyDefinition*) FdoObjectPropertyDefinition::Create();
+                    else if ( propType == FdoPropertyType_GeometricProperty )
+                        oldProp = (FdoPropertyDefinition*) FdoGeometricPropertyDefinition::Create();
+                    else if ( propType == FdoPropertyType_AssociationProperty )
+                        oldProp = (FdoPropertyDefinition*) FdoAssociationPropertyDefinition::Create();
+                    else if ( propType == FdoPropertyType_RasterProperty )
+                        oldProp = (FdoPropertyDefinition*) FdoRasterPropertyDefinition::Create();
+                    else
+                        pContext->AddError( 
+                            FdoSchemaExceptionP(
+                                FdoSchemaException::Create(
+                                    FdoException::NLSGetMessage(
+                                        FDO_NLSID(SCHEMA_76_BADPROPTYPE),
+                                        (FdoString*) newProp->GetQualifiedName(),
+                                        propType
+                                    )
+                                )
+                            )
+                        );
+
+                    if ( oldProp ) {
+                        // Add copy property to this class. Name must be set first 
+                        // since property collection is a named collection.
+                        oldProp->SetName( newProp->GetName() );
+                        m_properties->Add(oldProp);
+
+                        // Set the copy property from the property to update from.
+                        oldProp->Set(newProp, pContext);
+                    }
+                }
+                else {
+                    // Adding properties not supported
+                    pContext->AddError( 
+                        FdoSchemaExceptionP(
+                            FdoSchemaException::Create(
+                                FdoException::NLSGetMessage(
+                                    FDO_NLSID(SCHEMA_124_ADDPROP),
+                                    (FdoString*) newProp->GetQualifiedName()
+                                )
+                            )
+                        )
+                    );
+                }
+            }
+            break;
+
+        case FdoSchemaElementState_Deleted:
+            if ( pContext->CanDeleteProperty(oldProp) ) {
+                // Mark property for deletion.
+                // Silently ignore if property does not exist.
+                if ( oldProp ) 
+                    oldProp->Delete();
+            }
+            else {
+                // Property delete not supported.
+                pContext->AddError( 
+                    FdoSchemaExceptionP(
+                        FdoSchemaException::Create(
+                            FdoException::NLSGetMessage(
+                            FDO_NLSID(SCHEMA_125_DELPROP),
+                                (FdoString*) oldProp->GetQualifiedName()
+                            )
+                        )
+                    )
+                );
+            }
+            break;
+
+        case FdoSchemaElementState_Modified:
+            if ( oldProp ) {
+                // Update property from property to update from.
+                oldProp->Set(newProp, pContext);
+            }
+            else {
+                // Can't modify non-existent property.
+                pContext->AddError( 
+                    FdoSchemaExceptionP(
+                        FdoSchemaException::Create(
+                            FdoException::NLSGetMessage(
+                                FDO_NLSID(SCHEMA_77_PROPNOTEXISTS),
+                                (FdoString*) newProp->GetQualifiedName()
+                            )
+                        )
+                    )
+                );
+            }
+            break;
         }
     }
+}
 
-    // Only class without base class can have identity properties.
-    if ( GetBaseClass() == NULL ) {
-        // Set the identity properties
-        for ( idx = 0; idx < idPropNames->GetCount(); idx++ ) {
-            FdoDataPropertyP idProp = (FdoDataPropertyDefinition*) m_properties->GetItem( idPropNames->GetItem(idx)->GetString() );
-            m_identityProperties->Add( idProp );
+void FdoClassDefinition::CheckReferences( FdoSchemaMergeContext* pContext )
+{
+    // No need to check references if this element is going away.
+    if ( GetElementState() != FdoSchemaElementState_Deleted ) {
+        FdoInt32 idx = -1;
+        FdoPropertiesP props = GetProperties();
+
+        FdoSchemaElement::CheckReferences(pContext);
+
+        // Check if base class marked for delete.        
+
+        FdoClassDefinitionP baseClass = GetBaseClass();
+
+        if ( baseClass ) {
+            if ( baseClass->GetElementState() == FdoSchemaElementState_Deleted ) {
+                pContext->AddError( 
+                    FdoSchemaExceptionP(
+                        FdoSchemaException::Create(
+                            FdoException::NLSGetMessage(
+                                FDO_NLSID(SCHEMA_126_DELBASECLASS),
+                                (FdoString*) baseClass->GetQualifiedName(),
+                                (FdoString*)GetQualifiedName()
+                            )
+                        )
+                    )
+                );
+            }
+        }
+        else {
+            // Check if any identity property marked for delete.  
+            // If class has base class then it has no identity properties
+            // of its own.
+
+            FdoDataPropertiesP idProps = GetIdentityProperties();
+
+            for ( idx = 0; idx < idProps->GetCount(); idx++ ) {
+                FdoDataPropertyP idProp = idProps->GetItem( idx );
+
+                if ( idProp->GetElementState() == FdoSchemaElementState_Deleted ) {
+                    pContext->AddError( 
+                        FdoSchemaExceptionP(
+                            FdoSchemaException::Create(
+                                FdoException::NLSGetMessage(
+                                    FDO_NLSID(SCHEMA_128_DELCLASSID),
+                                    (FdoString*) idProp->GetQualifiedName(),
+                                    (FdoString*)GetQualifiedName()
+                                )
+                            )
+                        )
+                    );
+                }
+            }
+        }
+
+        for ( idx = 0; idx < props->GetCount(); idx++ ) {
+            FdoPropertyP prop = props->GetItem(idx);
+            prop->CheckReferences( pContext );
         }
     }
-
 }
 
 void FdoClassDefinition::InitFromXml(const FdoString* classTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs)
@@ -482,8 +766,8 @@ void FdoClassDefinition::InitFromXml(FdoSchemaXmlContext* pContext, FdoXmlAttrib
 
     // Class type change not allowed.
 
-    FdoClassDefinitionP pOldClass = fdoContext->FindClass( 
-        FdoFeatureSchemasP( fdoContext->GetSchemas() ),
+    FdoClassDefinitionP pOldClass = fdoContext->GetMergeContext()->FindClass( 
+        FdoFeatureSchemasP( fdoContext->GetMergeContext()->GetSchemas() ),
         FdoFeatureSchemaP(GetFeatureSchema())->GetName(),
         GetName()
     );
@@ -534,7 +818,7 @@ void FdoClassDefinition::InitFromXml(FdoSchemaXmlContext* pContext, FdoXmlAttrib
     // FDO does not handle inheritance by restriction so ignore base class
     // for restriction.
     if ( (restricted == NULL) && (baseSchema != NULL) && (baseClass != NULL) )
-        pContext->AddBaseClassRef( this, pContext->DecodeName(baseSchema->GetValue()), pContext->DecodeName(baseClass->GetValue()) );
+        pContext->GetMergeContext()->AddBaseClassRef( this, pContext->DecodeName(baseSchema->GetValue()), pContext->DecodeName(baseClass->GetValue()) );
 }
 
 FdoXmlSaxHandler* FdoClassDefinition::XmlStartElement(
@@ -710,7 +994,7 @@ FdoBoolean FdoClassDefinition::XmlEndElement(
         //End the id property list. Add a reference that is 
         //resolved when the read from XML is complete.
         if ( m_idPropNames->GetCount() > 0 ) 
-            fdoContext->AddIdPropRef( this, m_idPropNames );
+            fdoContext->GetMergeContext()->AddIdPropRef( this, m_idPropNames );
     }
 
     if ( wcscmp(name, L"IdentityProperty") == 0 ) {
@@ -723,7 +1007,7 @@ FdoBoolean FdoClassDefinition::XmlEndElement(
         FdoUniqueConstraintP pUniCons = FdoUniqueConstraint::Create();
         m_uniqueConstraints->Add(pUniCons);
 
-        fdoContext->AddUniqueConstraintRef(this, pUniCons, m_consPropNames);
+        fdoContext->GetMergeContext()->AddUniqueConstraintRef(this, pUniCons, m_consPropNames);
     }
     
     if ( wcscmp(name, L"ConstraintProperty") == 0 ) {

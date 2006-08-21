@@ -106,7 +106,7 @@ void FdoNetworkLayerClass::_EndChangeProcessing()
     FdoClassDefinition::_EndChangeProcessing();
 }
 
-void FdoNetworkLayerClass::Set( FdoClassDefinition* pClass, FdoSchemaXmlContext* pContext )
+void FdoNetworkLayerClass::Set( FdoClassDefinition* pClass, FdoSchemaMergeContext* pContext )
 {
     FdoClassDefinition::Set( pClass, pContext );
 }

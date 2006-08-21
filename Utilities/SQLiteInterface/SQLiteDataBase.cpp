@@ -143,6 +143,16 @@ int SQLiteDataBase::commit( )
   return sqlite3BtreeCommit(mpDB->aDb[0].pBt);
 }
 
+int SQLiteDataBase::rollback( ) 
+{ 
+  if( ! mSartedTransaction ) // We don't have a transaction started
+      return SQLITE_OK;
+
+  mSartedTransaction = false;
+
+  return sqlite3BtreeRollback(mpDB->aDb[0].pBt);
+}
+
 const char*  SQLiteDataBase::ErrorMessage()
 {
     return sqlite3_errmsg( mpDB );

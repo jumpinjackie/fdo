@@ -24,6 +24,9 @@
 
 #include <FdoStd.h>
 #include <Fdo/Schema/PropertyValueConstraintType.h>
+#include <Fdo/Schema/SchemaException.h>
+
+class FdoSchemaMergeContext;
 
 /// \brief
 /// FdoPropertyValueConstraint is an abstract class that derives from FdoIDisposable.
@@ -40,6 +43,26 @@ public:
     /// Returns the constraint type
     /// 
     FDO_API virtual FdoPropertyValueConstraintType GetConstraintType() = 0;
+
+/// \cond DOXYGEN-IGNORE
+    // Public non-API functions for XML and Schema Merge support
+
+    // Update this value constraint from the given value constraint.
+    virtual void Set( FdoPropertyValueConstraint* /*pConstraint*/, FdoString* /*parentName*/, FdoSchemaMergeContext* /*pContext*/ )
+    {
+    }
+
+    // \brief
+    // Compares this value constraint with another one.
+    // 
+    // \param value 
+    // The Property Value constraint to compare with
+    // 
+    // \return
+    // Returns true if this Property Value Constraint is the same as pConstraint
+    // (all members have the same values).
+    virtual bool Equals( FdoPropertyValueConstraint* pConstraint ) = 0;
+/// \endcond
 };
 
 #endif

@@ -146,13 +146,83 @@ void FdoNetworkNodeFeatureClass::_EndChangeProcessing()
 }
 
 
-void FdoNetworkNodeFeatureClass::Set( FdoClassDefinition* pClass, FdoSchemaXmlContext* pContext )
+void FdoNetworkNodeFeatureClass::Set( FdoClassDefinition* pClass, FdoSchemaMergeContext* pContext )
 {
     FdoNetworkFeatureClass::Set( pClass, pContext );
 
-    FdoNetworkNodeFeatureClass *pNetworkNodeFeatureClass = (FdoNetworkNodeFeatureClass*) pClass;
+    // Base function catches class type mismatch so silently quit on type mismatch
+    if ( GetClassType() == pClass->GetClassType() ) {
+        if ( pContext->GetIgnoreStates() || (GetElementState() == FdoSchemaElementState_Added) || (pClass->GetElementState() == FdoSchemaElementState_Modified) ) {
+            FdoNetworkNodeFeatureClass *pNetworkNodeFeatureClass = (FdoNetworkNodeFeatureClass*) pClass;
 
-    SetLayerProperty(FdoAssociationPropertyP(pNetworkNodeFeatureClass->GetLayerProperty()));
+            // Update this class from the given class. The same pattern is followed 
+            // for each member:
+            //
+            // If new and old values differ
+            //    If modification allowed (always allowed if this is a new property).
+            //      If value is an object
+            //        Add a reference to be resolved later (when we're sure that referenced
+            //          object exists).
+            //      else
+            //        Perform the modification
+            //      end if
+            //    else
+            //      log an error
+            //    end if
+            //  end if
+
+            // Layer
+
+            FdoAssociationPropertyP newLayerProp = pNetworkNodeFeatureClass->GetLayerProperty();
+            FdoStringP oldLayerPropName = m_layer ? m_layer->GetName() : L"";
+            FdoStringP newLayerPropName = newLayerProp ? newLayerProp->GetName() : L"";
+
+            if ( oldLayerPropName != newLayerPropName ) {
+                if ( (GetElementState() == FdoSchemaElementState_Added) || (pContext->CanModNodeLayer(pNetworkNodeFeatureClass)) ) 
+                    pContext->AddNetworkNodeAssocPropRef( 
+                        this, 
+                        newLayerProp ? pNetworkNodeFeatureClass->GetQualifiedName() + L"." + newLayerProp->GetName() : L""
+                    );
+                else
+                    pContext->AddError( 
+                        FdoSchemaExceptionP(
+                            FdoSchemaException::Create(
+                                FdoException::NLSGetMessage(
+                                    FDO_NLSID(SCHEMA_86_MODNODELAYER),
+                                    (FdoString*) GetQualifiedName()
+                                )
+                            )
+                        )
+                    );
+            }
+        }
+    }
+}
+
+void FdoNetworkNodeFeatureClass::CheckReferences( FdoSchemaMergeContext* pContext )
+{
+    // No need to check references if this element is going away.
+    if ( GetElementState() != FdoSchemaElementState_Deleted ) {
+        FdoSchemaElement::CheckReferences(pContext);
+
+        // Check if layer property marked for delete.        
+
+        FdoAssociationPropertyP layerProp = GetLayerProperty();
+
+        if ( layerProp && (layerProp->GetElementState() == FdoSchemaElementState_Deleted) ) {
+            pContext->AddError( 
+                FdoSchemaExceptionP(
+                    FdoSchemaException::Create(
+                        FdoException::NLSGetMessage(
+                            FDO_NLSID(SCHEMA_140_DELNODELAYER),
+                            (FdoString*) layerProp->GetQualifiedName(),
+                            (FdoString*) GetQualifiedName()
+                        )
+                    )
+                )
+            );
+        }
+    }
 }
 
 void FdoNetworkNodeFeatureClass::InitFromXml(const FdoString* classTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs)
@@ -219,7 +289,7 @@ FdoBoolean FdoNetworkNodeFeatureClass::XmlEndElement(
 
     if (m_bStartLayer == true && wcscmp(name, L"AssociationProperty") == 0 )
     {
-        fdoContext->AddNetworkNodeAssocPropRef( this, this->GetQualifiedName() + L"." + m_layerHandler->GetName());
+        fdoContext->GetMergeContext()->AddNetworkNodeAssocPropRef( this, this->GetQualifiedName() + L"." + m_layerHandler->GetName());
         FDO_SAFE_RELEASE(m_layerHandler);
         m_bStartLayer = false;
     }

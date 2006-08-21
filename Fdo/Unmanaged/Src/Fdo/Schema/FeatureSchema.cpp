@@ -84,9 +84,29 @@ void FdoFeatureSchema::RejectChanges()
     _EndChangeProcessing();
 }
 
-void FdoFeatureSchema::Set( FdoFeatureSchema* pSchema, FdoSchemaXmlContext* pContext )
+void FdoFeatureSchema::Set( FdoFeatureSchema* pSchema, FdoSchemaMergeContext* pContext )
 {
     FdoInt32 newIdx = -1;
+    bool hasErrors = false;
+
+    if ( GetElementState() != FdoSchemaElementState_Added ) {
+        if ( pContext->GetIgnoreStates() || (GetElementState() == FdoSchemaElementState_Added) || (pSchema->GetElementState() == FdoSchemaElementState_Modified) ) {
+            if ( (!pContext->CanModSchemaName(pSchema)) && (FdoStringP(GetName()) != pSchema->GetName()) ) {
+                // Error: Schema name change attempted but rename not supported
+                pContext->AddError( 
+                    FdoSchemaExceptionP(
+                        FdoSchemaException::Create(
+                            FdoException::NLSGetMessage(
+                                FDO_NLSID(SCHEMA_66_SCHEMARENAME),
+                                (FdoString*) GetQualifiedName(),
+                                (FdoString*) pSchema->GetName()
+                            )
+                        )
+                    )
+                );
+            }
+        }
+    }
 
     FdoSchemaElement::Set(pSchema, pContext);
 
@@ -95,21 +115,158 @@ void FdoFeatureSchema::Set( FdoFeatureSchema* pSchema, FdoSchemaXmlContext* pCon
     FdoClassesP newClasses = pSchema->GetClasses();
 
     // For each new class
-    for ( newIdx = (newClasses->GetCount() - 1); newIdx >= 0; newIdx-- ) {
+    for ( newIdx = 0; newIdx < newClasses->GetCount(); newIdx++ ) {
 
         FdoClassDefinitionP newClass = newClasses->GetItem(newIdx);
-        // Remove it from the new schema.
-        newClasses->RemoveAt(newIdx);
-
         FdoClassDefinitionP oldClass = m_classes->FindItem( newClass->GetName() );
 
-        if ( oldClass ) {
-            // Class already in schema, do a merge
-            oldClass->Set(newClass, pContext);
+        // Determine new state of each class definition.
+        FdoSchemaElementState classState;
+        if ( GetElementState() == FdoSchemaElementState_Deleted ) {
+            // Always delete classes if this schema is being deleted.
+            classState = FdoSchemaElementState_Deleted;
         }
         else {
-            // Not in schema, just add it.
-            m_classes->Add(newClass);
+            // The following sets the right state when ignoring element states.
+            // Its a modification if this schema already has the class, and an add 
+            // otherwise.
+            classState = oldClass ? FdoSchemaElementState_Modified : FdoSchemaElementState_Added;
+
+            if ( !(pContext->GetIgnoreStates()) ) 
+                // Not ignoring element states so get state from the class to update from.
+                classState = newClass->GetElementState();
+        }
+
+        // Handle each type of modification
+        switch  ( classState ) {
+        case FdoSchemaElementState_Added:
+            if ( oldClass ) {
+                // Can't add class that already exists.
+                pContext->AddError( 
+                    FdoSchemaExceptionP(
+                        FdoSchemaException::Create(
+                            FdoException::NLSGetMessage(
+                                FDO_NLSID(SCHEMA_67_CLASSEXISTS),
+                                (FdoString*) newClass->GetQualifiedName()
+                            )
+                        )
+                    )
+                );
+            }
+            else {
+                    // Adding class allowed. Create a copy class to add to this schema.
+                if ( (GetElementState() == FdoSchemaElementState_Added) || pContext->CanAddClass(newClass) ) {
+                    FdoClassType classType = newClass->GetClassType();
+                    if ( classType == FdoClassType_FeatureClass )
+                        oldClass = (FdoClassDefinition*) FdoFeatureClass::Create();
+                    else if ( classType == FdoClassType_Class )
+                        oldClass = (FdoClassDefinition*) FdoClass::Create();
+                    else if ( classType == FdoClassType_NetworkLayerClass )
+                        oldClass = (FdoClassDefinition*) FdoNetworkLayerClass::Create();
+                    else if ( classType == FdoClassType_NetworkClass )
+                        oldClass = (FdoClassDefinition*) FdoNetworkClass::Create();
+                    else if ( classType == FdoClassType_NetworkNodeClass )
+                        oldClass = (FdoClassDefinition*) FdoNetworkNodeFeatureClass::Create();
+                    else if ( classType == FdoClassType_NetworkLinkClass )
+                        oldClass = (FdoClassDefinition*) FdoNetworkLinkFeatureClass::Create();
+                    else
+                        pContext->AddError( 
+                            FdoSchemaExceptionP(
+                                FdoSchemaException::Create(
+                                    FdoException::NLSGetMessage(
+                                        FDO_NLSID(SCHEMA_68_BADCLASSTYPE),
+                                        (FdoString*) newClass->GetQualifiedName(),
+                                        classType
+                                    )
+                                )
+                            )
+                        );
+
+                    if ( oldClass ) {
+                        // Add copy class to this class. Name must be set first 
+                        // since class collection is a named collection.
+                        oldClass->SetName( newClass->GetName() );
+                        m_classes->Add(oldClass);
+
+                        // Set the copy class from the class to update from.
+                        oldClass->Set(newClass, pContext);
+                    }
+                }
+                else {
+                    // Adding classes not supported
+                    pContext->AddError( 
+                        FdoSchemaExceptionP(
+                            FdoSchemaException::Create(
+                                FdoException::NLSGetMessage(
+                                    FDO_NLSID(SCHEMA_122_ADDCLASS),
+                                    (FdoString*) newClass->GetQualifiedName()
+                                )
+                            )
+                        )
+                    );
+                }
+            }
+
+            break;
+
+        case FdoSchemaElementState_Deleted:
+            if ( pContext->CanDeleteClass(oldClass) ) {
+                // Mark class for deletion.
+                // Silently ignore if class does not exist.
+                if ( oldClass ) 
+                    oldClass->Delete();
+            }
+            else {
+                // Class delete not supported.
+                pContext->AddError( 
+                    FdoSchemaExceptionP(
+                        FdoSchemaException::Create(
+                            FdoException::NLSGetMessage(
+                            FDO_NLSID(SCHEMA_123_DELCLASS),
+                                (FdoString*) oldClass->GetQualifiedName()
+                            )
+                        )
+                    )
+                );
+            }
+            break;
+
+        case FdoSchemaElementState_Modified:
+            if ( oldClass ) {
+                // Update class from class to update from.
+                oldClass->Set(newClass, pContext);
+            }
+            else {
+                // Can't modify non-existent class.
+                pContext->AddError( 
+                    FdoSchemaExceptionP(
+                        FdoSchemaException::Create(
+                            FdoException::NLSGetMessage(
+                                FDO_NLSID(SCHEMA_69_CLASSNOTEXISTS),
+                                (FdoString*) newClass->GetQualifiedName()
+                            )
+                        )
+                    )
+                );
+            }
+            break;
+        }
+    }
+}
+
+void FdoFeatureSchema::CheckReferences( FdoSchemaMergeContext* pContext )
+{
+    FdoInt32 idx = -1;
+
+    if ( GetElementState() != FdoSchemaElementState_Deleted ) {
+        FdoSchemaElement::CheckReferences( pContext );
+
+        FdoClassesP classes = GetClasses();
+
+        // Check references for each class.
+        for ( idx = 0; idx < classes->GetCount(); idx++ ) {
+            FdoClassDefinitionP classDef = classes->GetItem(idx);
+            classDef->CheckReferences( pContext );
         }
     }
 }

@@ -34,6 +34,7 @@
 #include <Common/Dimensionality.h>
 #include <Common/GeometryType.h>
 #include <Common/StringCollection.h>
+#include <Common/Context.h>
 #include <Common/DictionaryElement.h>
 #include <Common/Dictionary.h>
 #include <Common/ReadOnlyNamedCollection.h>

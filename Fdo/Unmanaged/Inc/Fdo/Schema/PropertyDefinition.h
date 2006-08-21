@@ -81,10 +81,10 @@ public:
     FDO_API virtual void SetIsSystem( bool value );
 
 /// \cond DOXYGEN-IGNORE
-    /// Public non-API functions for XML support
+    /// Public non-API functions for XML and Schema Merge support
 
     /// Update this property from the given property.
-    virtual void Set( FdoPropertyDefinition* pProperty, FdoSchemaXmlContext* pContext );
+    virtual void Set( FdoPropertyDefinition* pProperty, FdoSchemaMergeContext* pContext );
 
     /// Initialize this property from its XML attributes
     virtual void InitFromXml(const FdoString* propertyTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs);
