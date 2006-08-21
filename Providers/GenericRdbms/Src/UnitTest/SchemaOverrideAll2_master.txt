@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<fdo:DataStore xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gml="http://www.opengis.net/gml" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:fds="http://fdo.osgeo.org/schemas/fds">
+<SchemaMapping xmlns:rdb="http://fdordbms.osgeo.org/schemas" xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" database="ISD" tableMapping="Base" provider="Autodesk.Oracle.3.2" name="Acad-x20-">
+<complexType name="AcDbEntityType" TableMapping="Concrete">
+<Table name="Entity"/>
+<element name="Colour-x20-Name">
+<PropertyMappingSingle prefix="xdata-x20-"/>
+</element>
+<element name="Layer">
+<Column name="AC_LAYER"/>
+</element>
+<element name="XData-x25-">
+<PropertyMappingConcrete>
+<Table name="ENTITY%XDATA"/>
+<element name="seq">
+<Column name="xdata_seq"/>
+</element>
+<element name="value">
+<Column name="xdata_value"/>
+</element>
+</PropertyMappingConcrete>
+</element>
+</complexType>
+<complexType name="AcDb-x25-PolylineType">
+<Table tablespace="Polyline"/>
+<element name="Length">
+<Column name="AC_LENGTH" sequenceName="random_length"/>
+</element>
+<element name="Vertexes">
+<PropertyMappingConcrete/>
+</element>
+</complexType>
+</SchemaMapping>
+<SchemaMapping xmlns:rdb="http://fdordbms.osgeo.org/schemas" xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" owner="Region1" provider="Autodesk.Oracle.3.2" name="Electric">
+<complexType name="TransformerType">
+<element name="Geometry">
+<GeometricColumn name="TransGeom"/>
+</element>
+<element name="Phase">
+<Column sequenceName="next_phase"/>
+</element>
+<element name="InstallDate">
+<Column/>
+</element>
+<element name="Picture">
+<Column/>
+</element>
+<element name="Casing">
+<PropertyMappingSingle/>
+</element>
+</complexType>
+<complexType name="ConductorType">
+<Table database="node2" owner="engineer1" tablespace="eng1" pkeyName="COND_PKEY"/>
+</complexType>
+</SchemaMapping>
+</fdo:DataStore>

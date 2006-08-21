@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fdo:DataStore xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gml="http://www.opengis.net/gml" xmlns:fdo="http://fdo.osgeo.org/schemas">
+	<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" database="ISD" tableMapping="Base" provider="Autodesk.Oracle.3.2" name="Acad ">
+		<complexType name="AcDbEntity" tableMapping="Concrete">
+			<Table name="Entity"/>
+			<element name="Colour-x20-Name">
+				<PropertyMappingSingle prefix="xdata-x20-"/>
+			</element>
+			<element name="Layer">
+				<Column name="AC_LAYER"/>
+			</element>
+			<element name="XData%">
+				<PropertyMappingConcrete>
+					<Table name="ENTITY%XDATA"/>
+					<element name="seq">
+						<Column name="xdata_seq"/>
+					</element>
+					<element name="value">
+						<Column name="xdata_value"/>
+					</element>
+				</PropertyMappingConcrete>
+			</element>
+		</complexType>
+		<complexType name="AcDb%PolylineType">
+			<Table tablespace="Polyline"/>
+			<element name="Length">
+				<Column name="AC_LENGTH" sequenceName="random_length"/>
+			</element>
+			<element name="Vertexes">
+				<PropertyMappingConcrete>
+				</PropertyMappingConcrete>
+			</element>
+		</complexType>
+	</SchemaMapping>
+	<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/SDPProvider" provider="Autodesk.SDP.3.0" name="Hydrographic">
+		<complexType name="Soundings" tableMapping="Concrete">
+			<Table name="HYD_SOUND"/>
+		</complexType>
+	</SchemaMapping>
+	<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" owner="Region1" provider="Autodesk.Oracle.3.2" name="Electric">
+		<complexType name="TransformerType">
+			<element name="Geometry">
+				<GeometricColumn name="TransGeom"/>
+			</element>
+			<element name="Phase">
+				<Column sequenceName="next_phase" />
+			</element>
+			<element name="InstallDate">
+				<Column/>
+			</element>
+			<element name="Picture">
+				<Column/>
+			</element>
+			<element name="Casing">
+				<PropertyMappingSingle includeId="true"/>
+			</element>
+		</complexType>
+		<complexType name="Conductor">
+			<Table owner="engineer1" database="node2" tablespace="eng1" pkeyName="COND_PKEY"/>
+		</complexType>
+	</SchemaMapping>
+</fdo:DataStore>

@@ -1,0 +1,15 @@
+ Schema Acad has errors; cannot apply it 
+ Cannot delete class 'Acad:AcDbEntity'; it has a sub-class 'Land:Cogo Point' 
+ Cannot delete class 'Acad:Entity' it provides the type for object property 'Electric'l:Transformer.graphic' 
+ Base Property Electric'l:ElectricDevice.graphic (for property Electric'l:Transformer.graphic) has errors (1st error is ' Cannot delete class 'Acad:Entity' it provides the type for object property 'Electric'l:ElectricDevice.graphic' ') 
+ Cannot delete class 'Acad:Entity' it provides the type for object property 'Electric'l:ElectricDevice.graphic' 
+ Cannot delete class 'Acad:Entity' it provides the type for object property 'Electric'l:Conductor.graphic' 
+ Base Property Electric'l:ElectricDevice.graphic (for property Electric'l:Conductor.graphic) has errors (1st error is ' Cannot delete class 'Acad:Entity' it provides the type for object property 'Electric'l:ElectricDevice.graphic' ') 
+ Column {USER_DS}_APPLY_SCHEMA.ENTITY.FEATID has conditional rows or rows with non-null values, cannot delete its property 
+ Column {USER_DS}_APPLY_SCHEMA.ENTITY.LAYER has conditional rows or rows with non-null values, cannot delete its property 
+ Cannot delete table "{USER_DS}_APPLY_SCHEMA"."ENTITY" because it has rows 
+ Column {USER_DS}_APPLY_SCHEMA.ACDBENTITY.FEATID has conditional rows or rows with non-null values, cannot delete its property 
+ Column {USER_DS}_APPLY_SCHEMA.ACDBENTITY.LAYER has conditional rows or rows with non-null values, cannot delete its property 
+ Column {USER_DS}_APPLY_SCHEMA.ACDBENTITY.REVISIONNUMBER has conditional rows or rows with non-null values, cannot delete its property 
+ Column {USER_DS}_APPLY_SCHEMA.ACDBENTITY.CLASSID has conditional rows or rows with non-null values, cannot delete its property 
+ Cannot delete table "{USER_DS}_APPLY_SCHEMA"."ACDBENTITY" because it has rows 

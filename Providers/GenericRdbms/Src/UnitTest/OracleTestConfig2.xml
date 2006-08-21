@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Sample configuration file for SDP DataStore that contains Hydrographic soundings -->
+<fdo:DataStore 
+ xmlns:fds="http://fdo.osgeo.org/schemas/fds"
+ xmlns:fdo="http://fdo.osgeo.org/schemas"
+ xmlns:gml="http://www.opengis.net/gml"
+ xmlns:xs="http://www.w3.org/2001/XMLSchema"
+ xmlns:xlink="http://www.w3.org/1999/xlink"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://fdo.osgeo.org/schemas/fds
+ FdoDocumentSample.xsd"
+>
+	<!-- spatial context for "Acdb" features -->
+	<gml:DerivedCRS gml:id="AcdbSc">
+		<!-- remarks contain spatial context description -->
+		<gml:remarks>Spatial context for Acdb features </gml:remarks>
+		<!-- srsName contains spatial context name -->
+		<gml:srsName>AcdbSc</gml:srsName>
+		<!-- ValidArea defines the spatial context extents. -->
+		<gml:validArea>
+			<!-- GML allows polygon areas but only rectangular areas valid for FDO 
+			     Spatial Context extents -->
+			<gml:boundingBox>
+				<gml:pos>200000 1000000</gml:pos>
+				<gml:pos>300000 1100000</gml:pos>
+			</gml:boundingBox>
+		</gml:validArea>
+		<!-- BaseCRS defines the coordinate system name, which is "utm_zone1" in this case. 
+		     The CRS is assumed to be a well-known CRS and this file does not define it -->
+		<gml:baseCRS xlink:href="http://www.mysurvey.com/coord_ref_systems#utm_zone1"/>
+		<!-- DefinedByConversion defines the coordinate conversion from the base CRS to this CRS.
+		     This would always be an identity transformation since Spatial Contexts don't define any
+		-->
+		<gml:definedByConversion xlink:href="http://www.mysurvey.com/coord_conversions#identity"/>
+		<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType>
+		<!-- UsesCS defines the Coordinate System for this Coordinate Reference system. For FDO, this 
+		  would be the same as the Coordinate System for the BaseCRS. 
+		-->
+		<gml:usesCS xlink:href="http://www.mysurvey.com/coord_systems#default"/>
+	</gml:DerivedCRS>
+
+	<!-- Acdb Feature Schema -->
+	<xs:schema 
+	 xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	 targetNamespace="http://fdo.osgeo.org/schemas/feature/Acdb" 
+	 xmlns:fdo="http://fdo.osgeo.org/schemas" 
+	 xmlns:Acdb="http://fdo.osgeo.org/schemas/feature/Acdb" 
+	 elementFormDefault="qualified" 
+	 attributeFormDefault="qualified"
+	>
+		<!-- Only one class (Polyline). The following element specifies the identityProperties -->
+		<xs:element name="Polyline" type="Acdb:PolylineType" abstract="false"
+		 substitutionGroup="gml:_Feature"
+		>
+			<xs:key name="PolylineKey"> 
+  				<xs:selector xpath=".//Polyline"/>
+				<xs:field xpath="Id"/>
+			</xs:key>
+ 		</xs:element>
+		<!-- Polyline class definition -->
+		<xs:complexType name="PolylineType" abstract="false" >
+			<xs:complexContent>
+				<!-- following extension defines Polyline as a Feature Class -->
+				<xs:extension base="gml:AbstractFeatureType">
+					<xs:sequence>
+						<xs:element name="Id" type="fdo:int64" />
+						<xs:element name="PolylineDate" type="xs:dateTime" />
+						<xs:element name="Geometry" type="gml:AbstractGeometryType" fdo:hasElevation="false" fdo:geometricTypes="Point" associatedSCName="AcdbSc" />
+		        	</xs:sequence>
+      			</xs:extension>
+   			</xs:complexContent>
+		</xs:complexType>
+	</xs:schema>
+
+	<!-- Schema Overrides for Acdb Feature Schema -->
+	<SchemaMapping name="Acdb" provider="OSGeo.ODBC.3.0"
+	 xmlns="http://fdoodbc.osgeo.org/schemas"
+	>
+		<!-- Schema Overrides for Polyline Feature Class -->
+		<complexType name="PolylineType">
+			<!-- Polylines kept in ACDB3DPOLYLINE_LT table and geometry columns are overridden -->
+			<Table name="ACDB3DPOLYLINE_LT"/>
+			<element name="Id">
+				<!-- Identifier kept in Id column -->
+				<Column name="CLASSID"/>
+			</element>
+			<element name="PolylineDate">
+				<!-- Date kept in DATETIME column -->
+				<Column name="DATETIME"/>
+			</element>
+                  <!-- Geometry ordinate columns are overridden -->
+			<element name="Geometry" xColumnName="DOUBLE" yColumnName="SINGLE" />
+		</complexType>
+	</SchemaMapping>
+</fdo:DataStore>

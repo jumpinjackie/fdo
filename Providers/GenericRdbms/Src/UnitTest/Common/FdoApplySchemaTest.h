@@ -1,0 +1,201 @@
+ //
+ // Copyright (C) 2004-2006  Autodesk, Inc.
+ // 
+ // This library is free software; you can redistribute it and/or
+ // modify it under the terms of version 2.1 of the GNU Lesser
+ // General Public License as published by the Free Software Foundation.
+ // 
+ // This library is distributed in the hope that it will be useful,
+ // but WITHOUT ANY WARRANTY; without even the implied warranty of
+ // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ // Lesser General Public License for more details.
+ // 
+ // You should have received a copy of the GNU Lesser General Public
+ // License along with this library; if not, write to the Free Software
+ // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+#ifndef CPP_UNIT_FDOAPPLYSCHEMATEST_H
+#define CPP_UNIT_FDOAPPLYSCHEMATEST_H
+
+#include <Sm/SchemaManager.h>
+#include <Rdbms/Override/RdbmsOvPhysicalSchemaMapping.h>
+
+/* 
+ * A test case for ApplySchemaCommand.
+ *
+ * Loads some schemas into a database.
+ */
+
+class FdoApplySchemaTest : public CppUnit::TestCase
+{
+  CPPUNIT_TEST_SUITE( FdoApplySchemaTest );
+  CPPUNIT_TEST( TestSchema );
+  CPPUNIT_TEST( TestOverrides );
+  CPPUNIT_TEST( TestOverrideDefaults );
+  CPPUNIT_TEST( TestOverrideErrors );
+  CPPUNIT_TEST( TestLT );
+/*
+  CPPUNIT_TEST( TestLTReserved );
+*/
+  CPPUNIT_TEST( TestConfigDoc );
+  CPPUNIT_TEST_SUITE_END();
+
+public:
+    FdoApplySchemaTest(void);
+    virtual ~FdoApplySchemaTest(void);
+    void setUp ();
+
+protected:
+    virtual void  set_provider() {};   
+	static FdoPropertyValue* AddNewProperty( FdoPropertyValueCollection* propertyValues, const wchar_t *name );
+
+    void TestSchema ();
+    void TestOverrides ();
+    void TestOverrideDefaults ();
+    void TestOverrideErrors ();
+    void TestLT();
+/*
+    void TestLTReserved();
+*/
+    void TestConfigDoc();
+
+    void DeleteAcadSchema( FdoIConnection* connection );
+	void DeleteLandSchema( FdoIConnection* connection );
+	void CreateSystemSchema( FdoIConnection* connection );
+	void CreateAcadSchema( FdoIConnection* connection );
+	void CreateElectricSchema( FdoIConnection* connection );
+	void CreateLandSchema( FdoIConnection* connection );
+    void CreateLandSchema( FdoFeatureSchemaCollection* pSchemas );
+    void CreateLTSchema( FdoIConnection* connection );
+	void CreateErrorSchema( FdoIConnection* connection );
+
+	void CreateLongStringSchema( FdoIConnection* connection );
+	void CreateOverrideSchema( FdoIConnection* connection, FdoRdbmsOvPhysicalSchemaMapping* pOverrides = NULL, bool nnull = false );
+    void CreateForeignBasedSchema( FdoIConnection* connection, FdoFeatureSchema* pBaseSchema, FdoRdbmsOvPhysicalSchemaMapping* pOverrides = NULL );
+/*
+    void CreateForeignErrorSchema( FdoIConnection* connection );
+*/
+	void ModOverrideSchema1( FdoIConnection* connection, FdoRdbmsOvPhysicalSchemaMapping* pOverrides = NULL );
+	void ModOverrideSchema2( FdoIConnection* connection, FdoRdbmsOvPhysicalSchemaMapping* pOverrides = NULL );
+	void ModOverrideSchemaForeign( FdoFeatureSchema* pSchema, FdoRdbmsOvPhysicalSchemaMapping* pOverrides = NULL );
+	void ModOverrideSchemaForeign2( FdoIConnection* connection, FdoRdbmsOvPhysicalSchemaMapping* pOverrides = NULL );
+	void ModElectricSchema( FdoIConnection* connection );
+    void ModElectricSchema( FdoFeatureSchemaCollection* pSchemas );
+	void ModLandSchema( FdoIConnection* connection );
+	void ModLTSchema( FdoIConnection* connection );
+	void RedefineGeometry( FdoIConnection* connection );
+	void DelPropertyError( FdoIConnection* connection );
+	void ModDelSchemas( FdoIConnection* connection );
+    void ModDelElectricSchema( FdoFeatureSchemaCollection* pSchemas );
+    void ModDelAcadSchema( FdoFeatureSchemaCollection* pSchemas );
+	void ReAddElements( FdoIConnection* connection );
+
+	void ModErrors( FdoIConnection* connection );
+	void ModErrors2( FdoIConnection* connection );
+
+	void ModMetaClassSchema( FdoIConnection* connection );
+/*
+	void GetJoinTree( FdoRdbmsSchemaManager* sm );
+*/
+    virtual void GetClassCapabilities( FdoIConnection* connection );
+    void CheckBaseProperties( FdoIConnection* connection );
+
+    void CopySchemas( 
+        FdoFeatureSchemaCollection* pSchemas,
+        FdoFeatureSchemaCollection* pSchemas2
+    );
+
+    void CreateOverrideValueProperty( 
+        FdoClassDefinition* pClass,
+        FdoStringP suffix,
+        FdoInt32 position,
+        FdoInt32 depth
+    );
+
+    void CreateOverrideCollectionProperty( 
+        FdoClassDefinition* pClass,
+        FdoStringP suffix,
+        FdoInt32 position,
+        FdoInt32 depth
+    );
+
+    FdoRdbmsOvPhysicalSchemaMapping* CreateOverrides( FdoIConnection* connection, int passNum );
+   	virtual FdoRdbmsOvPhysicalSchemaMapping* CreateOverrideDefaults( FdoIConnection* connection, int passNum );
+    FdoRdbmsOvPhysicalSchemaMapping* CreateErrorOverrides( FdoIConnection* connection );
+   	FdoRdbmsOvPhysicalSchemaMapping* CreateForeignBasedOverrides( FdoIConnection* connection );
+
+    void CreateOverrideValueProperty( 
+        FdoRdbmsOvPhysicalSchemaMapping* pOverrides,
+        FdoRdbmsOvClassDefinition* pClass,
+        FdoStringP suffix,
+        FdoInt32 position,
+        FdoInt32 depth
+    );
+
+    void CreateOverrideCollectionProperty( 
+        FdoRdbmsOvPhysicalSchemaMapping* pOverrides,
+        FdoRdbmsOvClassDefinition* pClass,
+        FdoStringP suffix,
+        FdoInt32 position,
+        FdoInt32 depth
+    );
+
+    // Helper methods for overrides tests; need to be overriden for each provider:
+    virtual void CreateRdbmsSpecificElements(FdoIConnection* connection, FdoString* wDatastore) { };
+    virtual FdoRdbmsOvClassDefinition* CreateOvClassDefinition(FdoString *name = NULL) { return NULL; };
+    virtual void ClassesOvAdd(FdoRdbmsOvPhysicalSchemaMapping* pSchema, FdoRdbmsOvClassDefinition* pClass) {};
+    virtual FdoRdbmsOvTable* CreateOvTable(FdoString* name) { return NULL; };
+    virtual FdoRdbmsOvColumn* CreateOvColumn(FdoString* name) { return NULL; };
+    virtual FdoRdbmsOvGeometricColumn* CreateOvGeometricColumn(FdoString* name) { return NULL; };
+    virtual FdoRdbmsOvDataPropertyDefinition* CreateOvDataPropertyDefinition(FdoString *name) { return NULL; };
+    virtual FdoRdbmsOvGeometricPropertyDefinition* CreateOvGeometricPropertyDefinition(FdoString *name) { return NULL; };
+    virtual void PropertiesOvAdd(FdoRdbmsOvClassDefinition* pClass, FdoRdbmsOvPropertyDefinition *pProp) {};
+    virtual void ClassOvSetTable(FdoRdbmsOvClassDefinition* pClass, FdoRdbmsOvTable* pTable) {};
+    virtual void TableOvSetTablespace(FdoRdbmsOvTable* pTable, FdoString *tablespace) {};
+    virtual void DataPropOvSetColumn(FdoRdbmsOvDataPropertyDefinition* pDataProp, FdoRdbmsOvColumn* pDataColumn) {};
+    virtual void GeometricPropOvSetColumn(FdoRdbmsOvGeometricPropertyDefinition* pGeomProp, FdoRdbmsOvGeometricColumn* pGeometricColumn) {};
+    virtual void ColumnOvSetSequence(FdoRdbmsOvColumn* pColumn, FdoString *sequence) {};
+    virtual FdoRdbmsOvObjectPropertyDefinition* CreateOvObjectPropertyDefinition(FdoString *name) { return NULL; };
+    virtual FdoRdbmsOvPropertyMappingSingle* CreateOvPropertyMappingSingle() { return NULL; };
+    virtual FdoRdbmsOvPropertyMappingConcrete* CreateOvPropertyMappingConcrete() { return NULL; };
+    virtual void ObjectPropertyOvSetMappingDefinition(FdoRdbmsOvObjectPropertyDefinition* pObProp, FdoRdbmsOvPropertyMappingDefinition* mapping) {};
+    virtual void PropertyMappingOvSetInternalClass(FdoRdbmsOvPropertyMappingRelation* pMapping, FdoRdbmsOvClassDefinition* pClass) {};
+    virtual void ShemaOvSetOwner(FdoRdbmsOvPhysicalSchemaMapping *mapping, FdoString* owner) {};
+
+    virtual void VldClassCapabilities( int ltMode, int lckMode, FdoClassDefinition* pClass );
+
+    virtual int GetLtLockMethod()
+    {
+        return 0;
+    }
+
+    virtual FdoStringP SchemaTestErrFile( int fileNum, bool isMaster );
+
+    void WriteXmlOverrides(
+        FdoIConnection* connection,
+        bool includeDefaults,
+        FdoString* schemaName,
+        FdoString* fileName,
+        FdoString* ownerSuffix = NULL
+    );
+
+    void StartLongTransaction( FdoIConnection* connection, FdoStringP transName );
+    void EndLongTransaction( FdoIConnection* connection );
+    void RollbackLongTransaction( FdoIConnection* connection, FdoStringP transName );
+    FdoStringP GetActiveLongTransaction( FdoIConnection* connection );
+
+    void InsertObject( FdoIConnection* connection, bool conditional, FdoStringP schemaName, FdoString* className, ... );
+    void DeleteObjects( FdoIConnection* connection, FdoStringP schemaName, FdoStringP className );
+
+    void _logicalPhysicalBend( FdoString* inFile, FdoString* outFile, FdoStringP providerName );
+    void _logicalPhysicalFormat( FdoString* inFile, FdoString* outFile );
+    virtual FdoStringP LogicalPhysicalBend( FdoString* inFile );
+    virtual FdoStringP LogicalPhysicalFormat( FdoString* inFile );
+
+    bool mIsOWM;
+    bool mCanAddNotNullCol;
+    FdoStringP mDatastore;
+	bool mIsLowerDatastoreName;
+};
+
+#endif // CPP_UNIT_FDOAPPLYSCHEMATEST_H
