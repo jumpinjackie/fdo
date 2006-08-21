@@ -472,47 +472,33 @@ namespace Fdo_Test
 
                     string[] orgText = 
                     {
-                        "An infestation of locusts that decimated crops, the worst drought in 15 years, ",
-                        "and Niger's government keeping grain prices too high for too long have now caused ",
-                        "a region in the brink of a crisis.",
-                        "It was a crisis-in-the-making that should have been averted, says Mark Malloch Brown, ",
-                        "chief of staff to the U.N. secretary-general. \"What is happening was largely foreseeable ",
-                        "as early as November,\" he says."
+                        "An infestation of locusts that decimated crops, the worst drought in 15 years, and Niger's government keeping grain prices too high for too long have now caused a region in the brink of a crisis.",
+                        "It was a crisis-in-the-making that should have been averted, says Mark Malloch Brown, chief of staff to the U.N. secretary-general. \"What is happening was largely foreseeable as early as November,\" he says."
                     };
 
                     XmlReader fileReader = new XmlReader("TestFiles\\gml_blob.xml");
                     Debug.Assert(fileReader != null);
-        
                     FeatureSchemaCollection schemas = new FeatureSchemaCollection(null);
-                    XmlFlags flags = new XmlFlags("fdo.osgeo.org/schemas/feature", XmlFlags.ErrorLevel.ErrorLevel_VeryLow);
+                    XmlFlags flags = new XmlFlags("fdo_customer", XmlFlags.ErrorLevel.ErrorLevel_VeryLow);
                     schemas.ReadXml("TestFiles\\gml_blob_schema.xml", flags);
                     PhysicalSchemaMappingCollection schemaMappings = schemas.XmlSchemaMappings;
-                    XmlFeatureFlags featureFlags = new XmlFeatureFlags("fdo.osgeo.org/schemas/feature", XmlFlags.ErrorLevel.ErrorLevel_VeryLow);
-                    featureFlags.SchemaMappings = schemaMappings;        
-        		
+                    XmlFeatureFlags featureFlags = new XmlFeatureFlags("fdo_customer", XmlFlags.ErrorLevel.ErrorLevel_VeryLow);
+                    featureFlags.SchemaMappings = schemaMappings;
                     XmlFeatureReader featureReader = new XmlFeatureReader(fileReader, featureFlags);
-                    Debug.Assert(featureReader != null);        
-        
+                    Debug.Assert(featureReader != null);
+                    featureReader.FeatureSchemas = schemas;
                     int count = 0;
-                    while(featureReader.ReadNext())
+                    while (featureReader.ReadNext())
                     {
-                        // !!! BUG !!! TEST is FAILING and has been temporarily commented out.....
-
-                        //String name = featureReader.GetString("NAME");
-                        //Debug.Assert(name != null);
-                        //BLOBValue binData = (BLOBValue)(featureReader.GetLOB("binData"));
-                        //byte[] binData1 = binData.Data;
-                        //Debug.Assert(object.Equals(binData1, orgText));
-                        //char* src = (new System.Text.ASCIIEncoding()) (char*)binData1.GetData(); //how to convert char[] to byte[] or vice verse
-                        //Debug.Assert(strncmp(src, orgText[count], strlen(orgText[count])) == 0);
-                
-                        count ++;
-        
-                    }        
+                        String name = featureReader.GetString("NAME");
+                        Debug.Assert(name != null);
+                        BLOBValue binData = (BLOBValue)(featureReader.GetLOB("binData"));
+                        byte[] binData1 = binData.Data;
+                        string s = (new System.Text.ASCIIEncoding()).GetString(binData1);
+                        Debug.Assert(s == orgText[count]);
+                        count++;
+                    }
                     Debug.Assert(count == 2);
-
-                    //Console.WriteLine("finish mgGmlTest.testBLOBBase64");
-                    
                 }
         
                 public void testBLOBHex()

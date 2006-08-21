@@ -426,7 +426,8 @@ FdoBoolean FdoXmlFeatureReaderImpl::FeatureEndLobProperty(FdoXmlFeatureContext*)
 {
     m_blobBuffer->Reset();
     FdoPtr<FdoByteArray> data = FdoByteArray::Create((FdoInt32)m_blobBuffer->GetLength());
-    m_blobBuffer->Read(data->GetData(), (FdoInt32)m_blobBuffer->GetLength());
+	FdoSize szRead = m_blobBuffer->Read(data->GetData(), (FdoInt32)m_blobBuffer->GetLength());
+	FdoByteArray::SetSize(data.p, (FdoInt32)szRead);
     FdoPtr<FdoBLOBValue> blobValue = FdoBLOBValue::Create(data);
     FdoPtr<FdoXmlBLOBProperty> blobProp = FdoXmlBLOBProperty::Create(m_blobPropertyName, blobValue);
     m_blobProperties->Add(blobProp);
