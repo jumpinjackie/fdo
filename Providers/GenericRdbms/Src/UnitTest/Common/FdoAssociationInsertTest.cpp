@@ -59,7 +59,7 @@ void FdoAssociationInsertTest::masterTestNoObj( FdoAssociationInsertType type, c
         else
         {
             
-            if( type == NoIdentity )
+            if( type == Insert_NoIdentity )
                 mSchemaUtil->TestCreate_NoIdent();
             else
                 mSchemaUtil->TestCreate_WithIdent();
@@ -109,7 +109,7 @@ void FdoAssociationInsertTest::masterTestNoObj( FdoAssociationInsertType type, c
             propertyValue = AddNewProperty( propertyValues, L"Id");
             propertyValue->SetValue(dataValue);
         }
-        if( type == NoIdentity )
+        if( type == Insert_NoIdentity )
         {
             // Initialize the association property
             dataValue = FdoDataValue::Create( id );
@@ -127,10 +127,10 @@ void FdoAssociationInsertTest::masterTestNoObj( FdoAssociationInsertType type, c
 	        propertyValue->SetValue(dataValue);
         }
         
-        if( type == WithIdentityParent || 
-            type == WithIdentityBothSet || 
-            type == NoIdentity ||
-            type == WithIdentityError )
+        if( type == Insert_WithIdentityParent || 
+            type == Insert_WithIdentityBothSet || 
+            type == Insert_NoIdentity ||
+            type == Insert_WithIdentityError )
         {
             dataValue = FdoDataValue::Create( name1 );
 	        propertyValue = AddNewProperty( propertyValues, L"First Name");
@@ -140,12 +140,12 @@ void FdoAssociationInsertTest::masterTestNoObj( FdoAssociationInsertType type, c
 	        propertyValue = AddNewProperty( propertyValues, L"Last Name");
 	        propertyValue->SetValue(dataValue);
         }
-        if( type == WithIdentityAssociated || 
-            type == WithIdentityBothSet ||
-            type == WithIdentityError )
+        if( type == Insert_WithIdentityAssociated || 
+            type == Insert_WithIdentityBothSet ||
+            type == Insert_WithIdentityError )
         {
             // Add the name one property
-            if( type == WithIdentityError )
+            if( type == Insert_WithIdentityError )
                 dataValue = FdoDataValue::Create( L"BOGUS" );
             else
                 dataValue = FdoDataValue::Create( name1 );
@@ -163,7 +163,7 @@ void FdoAssociationInsertTest::masterTestNoObj( FdoAssociationInsertType type, c
     }
     catch(FdoException *exp )
     {
-        if( type != WithIdentityError )
+        if( type != Insert_WithIdentityError )
         {
             printf("Insert Master Test(NO OBJ) Error: %ls\n", exp->GetExceptionMessage() );
 		    UnitTestUtil::PrintException(exp, UnitTestUtil::GetOutputFileName( L"TestSchema.txt" ) );
@@ -177,7 +177,7 @@ void FdoAssociationInsertTest::masterTestNoObj( FdoAssociationInsertType type, c
             return;
         }
 	}
-    if( type == WithIdentityError )
+    if( type == Insert_WithIdentityError )
     {
         printf("Insert Master Test(NO OBJ) SHOULD Fail");
         CPPUNIT_FAIL ( "Insert Master Test(NO OBJ) SHOULD Fail" );
@@ -186,22 +186,22 @@ void FdoAssociationInsertTest::masterTestNoObj( FdoAssociationInsertType type, c
 
 void FdoAssociationInsertTest::insert_NoIdent(  )
 {
-    masterTestNoObj( NoIdentity, L"Firstname", L"Lastname", 10 );
+    masterTestNoObj( Insert_NoIdentity, L"Firstname", L"Lastname", 10 );
 }
 
 void FdoAssociationInsertTest::insert_NoIdentAssocFeatClass () 
 { 
-    masterTestNoObj( NoIdentity, L"Firstname", L"Lastname", 10, true );
+    masterTestNoObj( Insert_NoIdentity, L"Firstname", L"Lastname", 10, true );
 }
 
 void FdoAssociationInsertTest::insert_WithIdent()
 {
-    masterTestNoObj( WithIdentityBothSet, L"Firstname", L"Lastname", 10 );
+    masterTestNoObj( Insert_WithIdentityBothSet, L"Firstname", L"Lastname", 10 );
 }
 
 void FdoAssociationInsertTest::insert_WithIdentNoFeatClass()
 {
-    masterTestNoObj( WithIdentityBothSet, L"Firstname", L"Lastname", 10, false, false );
+    masterTestNoObj( Insert_WithIdentityBothSet, L"Firstname", L"Lastname", 10, false, false );
 }
 
 // this test depend on insert_WithIdent which creates the valid schema:
@@ -265,17 +265,17 @@ void FdoAssociationInsertTest::insert_ManyWithIdent()
 
 void FdoAssociationInsertTest::insert_WithIdentParent() 
 { 
-    masterTestNoObj( WithIdentityParent, L"Firstname", L"Lastname", 10 ); 
+    masterTestNoObj( Insert_WithIdentityParent, L"Firstname", L"Lastname", 10 ); 
 }
 
 void FdoAssociationInsertTest::insert_WithIdentAssociated() 
 { 
-    masterTestNoObj( WithIdentityAssociated, L"Firstname", L"Lastname", 10 ); 
+    masterTestNoObj( Insert_WithIdentityAssociated, L"Firstname", L"Lastname", 10 ); 
 }
 
 void FdoAssociationInsertTest::insert_WithIdentError() 
 { 
-    masterTestNoObj( WithIdentityError, L"Firstname", L"Lastname", 10 );
+    masterTestNoObj( Insert_WithIdentityError, L"Firstname", L"Lastname", 10 );
 }
 
 
@@ -337,13 +337,13 @@ void FdoAssociationInsertTest::masterTestWithObj(FdoAssociationInsertType type, 
         dataValue = FdoDataValue::Create( 10 );
 	    propertyValue = AddNewProperty( propertyValues, L"Object.Id");
 	    propertyValue->SetValue(dataValue);
-        if( type == NoIdentity )
+        if( type == Insert_NoIdentity )
         {
             dataValue = FdoDataValue::Create( 11 );
 	        propertyValue = AddNewProperty( propertyValues, L"Object.Association Prop1.Id");
 	        propertyValue->SetValue(dataValue);
         }
-        else if( type == NoIdentityObjNested )
+        else if( type == Insert_NoIdentityObjNested )
         {
             dataValue = FdoDataValue::Create( name1 );
 	        propertyValue = AddNewProperty( propertyValues, L"Object.LeafObject.First Name");
@@ -378,7 +378,7 @@ void FdoAssociationInsertTest::insert_NoIdentObj()
     
    mSchemaUtil->TestCreate_NoIdentObj();
 
-   masterTestWithObj( NoIdentity, L"Firstname", L"Lastname", 10 );
+   masterTestWithObj( Insert_NoIdentity, L"Firstname", L"Lastname", 10 );
 }
 
 
@@ -387,12 +387,12 @@ void FdoAssociationInsertTest::insert_WithIdentObj()
 {
     mSchemaUtil->TestCreate_WithIdentObj();
 
-    masterTestWithObj( WithIdentityBothSet, L"Firstname", L"Lastname", 10 );
+    masterTestWithObj( Insert_WithIdentityBothSet, L"Firstname", L"Lastname", 10 );
 }
 
 void FdoAssociationInsertTest::insert_NoIdentObjNested()
 {
 
     mSchemaUtil->TestCreate_NoIdentObjNested();
-    masterTestWithObj( NoIdentityObjNested, L"Firstname", L"Lastname", 10 );
+    masterTestWithObj( Insert_NoIdentityObjNested, L"Firstname", L"Lastname", 10 );
 }

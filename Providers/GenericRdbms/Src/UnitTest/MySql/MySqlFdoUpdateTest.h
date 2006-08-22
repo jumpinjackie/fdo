@@ -16,8 +16,8 @@
  *
  */
 
-#ifndef MYSQL_CAPABILITIESTEST_H
-#define MYSQL_CAPABILITIESTEST_H
+#ifndef MYSQL_FDOUPDATETEST_H
+#define MYSQL_FDOUPDATETEST_H
 
 #include "FdoUpdateTest.h"
 
@@ -33,4 +33,4 @@ public:
 	virtual void ConditionalUpdate () { }
 };
 
-#endif // MYSQL_CAPABILITIESTEST_H
+#endif // MYSQL_FDOUPDATETEST_H

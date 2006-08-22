@@ -200,6 +200,9 @@ AC_CONFIG_FILES([com/Makefile \
                  Src/SchemaMgr/Ph/Makefile \
                  Src/SchemaMgr/Ph/Cfg/Makefile \
                  Src/SchemaMgr/Ph/Rd/Makefile \
+                 Src/UnitTest/Common/Makefile \
+                 Src/UnitTest/MySql/Makefile \
+                 Src/UnitTest/Makefile \
                  Src/Util/Makefile])
 
 #ODBCDriver
@@ -212,7 +215,8 @@ AC_CONFIG_FILES([Src/ODBC/Makefile \
 		     Src/ODBC/SchemaMgr/Lp/Makefile \
 		     Src/ODBC/SchemaMgr/Ov/Makefile \
 		     Src/ODBC/SchemaMgr/Ph/Makefile \
-		     Src/ODBC/SchemaMgr/Ph/Rd/Makefile])
+		     Src/ODBC/SchemaMgr/Ph/Rd/Makefile \
+		     Src/UnitTest/Odbc/Makefile])
 
 AC_CONFIG_FILES([    Docs/doc_src/Makefile \
 		     Docs/doc_src/group_and_page_definitions/Makefile \

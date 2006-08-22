@@ -1,7 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = Fdo Gdbi LongTransactionManager LockManager MySQL Rdbi SchemaMgr Util Geometry ODBCDriver ODBC
-DIST_SUBDIRS = Fdo Gdbi LongTransactionManager LockManager MySQL Rdbi SchemaMgr Util Geometry ODBCDriver ODBC
+SUBDIRS = Fdo Gdbi LongTransactionManager LockManager MySQL Rdbi SchemaMgr Util Geometry ODBCDriver ODBC UnitTest
+DIST_SUBDIRS = Fdo Gdbi LongTransactionManager LockManager MySQL Rdbi SchemaMgr Util Geometry ODBCDriver ODBC UnitTest
 
 EXTRA_DIST = 
 

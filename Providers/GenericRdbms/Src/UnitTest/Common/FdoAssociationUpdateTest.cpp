@@ -40,7 +40,7 @@ void FdoAssociationUpdateTest::masterTestNoObj( AssociationUpdateType type, cons
         else
         {
             
-            if( type == NoIdentity )
+            if( type == Update_NoIdentity )
                 mSchemaUtil->TestCreate_NoIdent();
             else
                mSchemaUtil->TestCreate_WithIdent();
@@ -55,7 +55,7 @@ void FdoAssociationUpdateTest::masterTestNoObj( AssociationUpdateType type, cons
 
         
         FdoPtr<FdoIDelete>deleteCommand = (FdoIDelete *) connection->CreateCommand(FdoCommandType_Delete);
-        if( type == WithIdentityParent )
+        if( type == Update_WithIdentityParent )
             deleteCommand->SetFeatureClassName(L"TestSubFeatureClass");
         else
             deleteCommand->SetFeatureClassName(L"TestFeatureClass");
@@ -93,17 +93,17 @@ void FdoAssociationUpdateTest::masterTestNoObj( AssociationUpdateType type, cons
         }
 
         // Add an instance of the TestFeatureClass
-        if( type == WithIdentityParent )
+        if( type == Update_WithIdentityParent )
             insertCommand->SetFeatureClassName(L"TestSubFeatureClass");
         else
             insertCommand->SetFeatureClassName(L"TestFeatureClass");
 	    propertyValues = insertCommand->GetPropertyValues();
         
      
-        if( type == WithIdentityParent || 
-            type == WithIdentityBothSet || 
-            type == NoIdentity ||
-            type == WithIdentityError )
+        if( type == Update_WithIdentityParent || 
+            type == Update_WithIdentityBothSet || 
+            type == Update_NoIdentity ||
+            type == Update_WithIdentityError )
         {
             dataValue = FdoDataValue::Create( name1 );
 	        propertyValue = FdoAssociationUpdateTest::AddNewProperty( propertyValues, L"First Name");
@@ -143,13 +143,13 @@ void FdoAssociationUpdateTest::masterTestNoObj( AssociationUpdateType type, cons
         }
         // Create and initialize the update command
         FdoPtr<FdoIUpdate>updateCommand = (FdoIUpdate *) connection->CreateCommand(FdoCommandType_Update);
-        if( type == WithIdentityParent )
+        if( type == Update_WithIdentityParent )
             updateCommand->SetFeatureClassName(L"TestSubFeatureClass");
         else
             updateCommand->SetFeatureClassName(L"TestFeatureClass");
         updateCommand->SetFilter(pFilter);
 	    propertyValues = updateCommand->GetPropertyValues();
-        if( type == NoIdentity )
+        if( type == Update_NoIdentity )
         {
             // Initialize the association property
             dataValue = FdoDataValue::Create( id );
@@ -159,13 +159,13 @@ void FdoAssociationUpdateTest::masterTestNoObj( AssociationUpdateType type, cons
 	            propertyValue = FdoAssociationUpdateTest::AddNewProperty( propertyValues, L"Association Prop1.Id");
 	        propertyValue->SetValue(dataValue);
         }
-        if( type == WithIdentityParent || 
-            type == WithIdentityAssociated || 
-            type == WithIdentityBothSet ||
-            type == WithIdentityError )
+        if( type == Update_WithIdentityParent || 
+            type == Update_WithIdentityAssociated || 
+            type == Update_WithIdentityBothSet ||
+            type == Update_WithIdentityError )
         {
             // Add the name one property
-            if( type == WithIdentityError )
+            if( type == Update_WithIdentityError )
                 dataValue = FdoDataValue::Create( L"BOGUS" );
             else
                 dataValue = FdoDataValue::Create( L"Olfa" );
@@ -175,8 +175,8 @@ void FdoAssociationUpdateTest::masterTestNoObj( AssociationUpdateType type, cons
             dataValue = FdoDataValue::Create( name2 );
 	        propertyValue = FdoAssociationUpdateTest::AddNewProperty( propertyValues, L"Association Prop1.Name Two");
 	        propertyValue->SetValue(dataValue);
-            if( type == WithIdentityBothSet ||
-                type == WithIdentityError )
+            if( type == Update_WithIdentityBothSet ||
+                type == Update_WithIdentityError )
             {
                 dataValue = FdoDataValue::Create( L"Olfa" );
 	            propertyValue = FdoAssociationUpdateTest::AddNewProperty( propertyValues, L"First Name");
@@ -192,7 +192,7 @@ void FdoAssociationUpdateTest::masterTestNoObj( AssociationUpdateType type, cons
     }
     catch(FdoException *exp )
     {
-        if( type != WithIdentityError )
+        if( type != Update_WithIdentityError )
         {
             printf("Update Master Test(NO OBJ) Error: %ls\n", exp->GetExceptionMessage() );
 		    UnitTestUtil::PrintException(exp, UnitTestUtil::GetOutputFileName( L"TestSchema.txt" ) );
@@ -206,7 +206,7 @@ void FdoAssociationUpdateTest::masterTestNoObj( AssociationUpdateType type, cons
             return;
         }
 	}
-    if( type == WithIdentityError )
+    if( type == Update_WithIdentityError )
     {
         printf("Update Master Test(NO OBJ) SHOULD Fail");
         CPPUNIT_FAIL ( "Update Master Test(NO OBJ) SHOULD Fail" );
@@ -215,32 +215,32 @@ void FdoAssociationUpdateTest::masterTestNoObj( AssociationUpdateType type, cons
 
 void FdoAssociationUpdateTest::update_NoIdent(  )
 {
-    masterTestNoObj( NoIdentity, L"Firstname", L"Lastname", 10 );
+    masterTestNoObj( Update_NoIdentity, L"Firstname", L"Lastname", 10 );
 }
 
 void FdoAssociationUpdateTest::update_NoIdentAssocFeatClass () 
 { 
-    masterTestNoObj( NoIdentity, L"Firstname", L"Lastname", 10, true );
+    masterTestNoObj( Update_NoIdentity, L"Firstname", L"Lastname", 10, true );
 }
 
 void FdoAssociationUpdateTest::update_WithIdent()
 {
-    masterTestNoObj( WithIdentityBothSet, L"Firstname", L"Lastname", 10 );
+    masterTestNoObj( Update_WithIdentityBothSet, L"Firstname", L"Lastname", 10 );
 }
 
 void FdoAssociationUpdateTest::update_WithIdentNoFeatClass()
 {
-    masterTestNoObj( WithIdentityBothSet, L"Firstname", L"Lastname", 10, false, true );
+    masterTestNoObj( Update_WithIdentityBothSet, L"Firstname", L"Lastname", 10, false, true );
 }
 
 void FdoAssociationUpdateTest::update_WithIdentParent() 
 { 
-    masterTestNoObj( WithIdentityParent, L"Firstname", L"Lastname", 10 ); 
+    masterTestNoObj( Update_WithIdentityParent, L"Firstname", L"Lastname", 10 ); 
 }
 
 void FdoAssociationUpdateTest::update_WithIdentError() 
 { 
-    masterTestNoObj( WithIdentityError, L"Firstname", L"Lastname", 10 );
+    masterTestNoObj( Update_WithIdentityError, L"Firstname", L"Lastname", 10 );
 }
 
 
@@ -337,13 +337,13 @@ void FdoAssociationUpdateTest::masterTestWithObj(AssociationUpdateType type, con
         dataValue = FdoDataValue::Create( 10 );
 	    propertyValue = FdoAssociationUpdateTest::AddNewProperty( propertyValues, L"Object.Id");
 	    propertyValue->SetValue(dataValue);
-        if( type == NoIdentity )
+        if( type == Update_NoIdentity )
         {
             dataValue = FdoDataValue::Create( 11 );
 	        propertyValue = FdoAssociationUpdateTest::AddNewProperty( propertyValues, L"Object.Association Prop1.Id");
 	        propertyValue->SetValue(dataValue);
         }
-        else if( type == NoIdentityObjNested )
+        else if( type == Update_NoIdentityObjNested )
         {
             dataValue = FdoDataValue::Create( name1 );
 	        propertyValue = FdoAssociationUpdateTest::AddNewProperty( propertyValues, L"Object.LeafObject.First Name");
@@ -379,7 +379,7 @@ void FdoAssociationUpdateTest::update_NoIdentObj()
     
    mSchemaUtil->TestCreate_NoIdentObj();
 
-   masterTestWithObj( NoIdentity, L"Firstname", L"Lastname", 10 );
+   masterTestWithObj( Update_NoIdentity, L"Firstname", L"Lastname", 10 );
 }
 
 
@@ -388,14 +388,14 @@ void FdoAssociationUpdateTest::update_WithIdentObj()
 {
     mSchemaUtil->TestCreate_WithIdentObj();
 
-    masterTestWithObj( WithIdentityBothSet, L"Firstname", L"Lastname", 10 );
+    masterTestWithObj( Update_WithIdentityBothSet, L"Firstname", L"Lastname", 10 );
 }
 
 void FdoAssociationUpdateTest::update_NoIdentObjNested()
 {
 
     mSchemaUtil->TestCreate_NoIdentObjNested();
-    masterTestWithObj( NoIdentityObjNested, L"Firstname", L"Lastname", 10 );
+    masterTestWithObj( Update_NoIdentityObjNested, L"Firstname", L"Lastname", 10 );
 }
 
 FdoPropertyValue* FdoAssociationUpdateTest::AddNewProperty( FdoPropertyValueCollection* propertyValues, const wchar_t *name )

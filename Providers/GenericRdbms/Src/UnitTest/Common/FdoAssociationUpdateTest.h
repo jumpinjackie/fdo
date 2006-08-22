@@ -26,12 +26,12 @@
  */
 
 enum AssociationUpdateType {
-    NoIdentity,
-    WithIdentityBothSet,
-    WithIdentityParent,
-    WithIdentityAssociated,
-    WithIdentityError,
-    NoIdentityObjNested
+    Update_NoIdentity,
+    Update_WithIdentityBothSet,
+    Update_WithIdentityParent,
+    Update_WithIdentityAssociated,
+    Update_WithIdentityError,
+    Update_NoIdentityObjNested
 };
 
 class FdoAssociationUpdateTest : public CppUnit::TestCase

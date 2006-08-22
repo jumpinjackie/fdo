@@ -25,12 +25,12 @@
  */
 
 enum FdoAssociationInsertType {
-    NoIdentity,
-    WithIdentityBothSet,
-    WithIdentityParent,
-    WithIdentityAssociated,
-    WithIdentityError,
-    NoIdentityObjNested
+    Insert_NoIdentity,
+    Insert_WithIdentityBothSet,
+    Insert_WithIdentityParent,
+    Insert_WithIdentityAssociated,
+    Insert_WithIdentityError,
+    Insert_NoIdentityObjNested
 };
 
 class FdoAssociationInsertTest : public CppUnit::TestCase

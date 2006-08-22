@@ -8416,14 +8416,14 @@ fi
           
           ac_config_files="$ac_config_files Docs/Makefile Docs/doc_src/Makefile Docs/doc_src/headers_and_footers/Makefile Docs/doc_src/headers_and_footers/MySQL/Makefile Docs/doc_src/headers_and_footers/ODBC/Makefile Docs/doc_src/group_and_page_definitions/Makefile Docs/doc_src/group_and_page_definitions/MySQL/Makefile Docs/doc_src/group_and_page_definitions/ODBC/Makefile"
 #MySQL
-          ac_config_files="$ac_config_files com/Makefile Inc/Makefile Nls/Makefile Src/Makefile Src/Fdo/Makefile Src/Fdo/Capability/Makefile Src/Fdo/Connection/Makefile Src/Fdo/Custom/Makefile Src/Fdo/DataStore/Makefile Src/Fdo/FeatureCommands/Makefile Src/Fdo/Filter/Makefile Src/Fdo/Lock/Makefile Src/Fdo/Lt/Makefile Src/Fdo/Other/Makefile Src/Fdo/Pvc/Makefile Src/Fdo/Schema/Makefile Src/Fdo/SpatialContext/Makefile Src/Gdbi/Makefile Src/Geometry/Makefile Src/Geometry/Fgf/Makefile Src/LongTransactionManager/Makefile Src/LockManager/Makefile Src/MySQL/Makefile Src/MySQL/Driver/Makefile Src/MySQL/Fdo/Makefile Src/MySQL/SchemaMgr/Makefile Src/MySQL/SchemaMgr/Lp/Makefile Src/MySQL/SchemaMgr/Ov/Makefile Src/MySQL/SchemaMgr/Ph/Makefile Src/MySQL/SchemaMgr/Ph/Rd/Makefile Src/Rdbi/Makefile Src/SchemaMgr/Makefile Src/SchemaMgr/Lp/Makefile Src/SchemaMgr/Ov/Makefile Src/SchemaMgr/Ph/Makefile Src/SchemaMgr/Ph/Cfg/Makefile Src/SchemaMgr/Ph/Rd/Makefile Src/Util/Makefile"
+          ac_config_files="$ac_config_files com/Makefile Inc/Makefile Nls/Makefile Src/Makefile Src/Fdo/Makefile Src/Fdo/Capability/Makefile Src/Fdo/Connection/Makefile Src/Fdo/Custom/Makefile Src/Fdo/DataStore/Makefile Src/Fdo/FeatureCommands/Makefile Src/Fdo/Filter/Makefile Src/Fdo/Lock/Makefile Src/Fdo/Lt/Makefile Src/Fdo/Other/Makefile Src/Fdo/Pvc/Makefile Src/Fdo/Schema/Makefile Src/Fdo/SpatialContext/Makefile Src/Gdbi/Makefile Src/Geometry/Makefile Src/Geometry/Fgf/Makefile Src/LongTransactionManager/Makefile Src/LockManager/Makefile Src/MySQL/Makefile Src/MySQL/Driver/Makefile Src/MySQL/Fdo/Makefile Src/MySQL/SchemaMgr/Makefile Src/MySQL/SchemaMgr/Lp/Makefile Src/MySQL/SchemaMgr/Ov/Makefile Src/MySQL/SchemaMgr/Ph/Makefile Src/MySQL/SchemaMgr/Ph/Rd/Makefile Src/Rdbi/Makefile Src/SchemaMgr/Makefile Src/SchemaMgr/Lp/Makefile Src/SchemaMgr/Ov/Makefile Src/SchemaMgr/Ph/Makefile Src/SchemaMgr/Ph/Cfg/Makefile Src/SchemaMgr/Ph/Rd/Makefile Src/Util/Makefile Src/UnitTest/Common/Makefile Src/UnitTest/MySql/Makefile Src/UnitTest/Makefile"
           
 #ODBCDriver
           ac_config_files="$ac_config_files Src/ODBCDriver/Makefile"
 
 
 #ODBC
-          ac_config_files="$ac_config_files Src/ODBC/Makefile Src/ODBC/Fdo/Makefile Src/ODBC/SchemaMgr/Makefile Src/ODBC/SchemaMgr/Lp/Makefile Src/ODBC/SchemaMgr/Ov/Makefile Src/ODBC/SchemaMgr/Ph/Makefile Src/ODBC/SchemaMgr/Ph/Rd/Makefile"
+          ac_config_files="$ac_config_files Src/ODBC/Makefile Src/ODBC/Fdo/Makefile Src/ODBC/SchemaMgr/Makefile Src/ODBC/SchemaMgr/Lp/Makefile Src/ODBC/SchemaMgr/Ov/Makefile Src/ODBC/SchemaMgr/Ph/Makefile Src/ODBC/SchemaMgr/Ph/Rd/Makefile Src/UnitTest/Odbc/Makefile"
 
 
 
@@ -9049,6 +9049,10 @@ do
   "Src/ODBC/SchemaMgr/Ov/Makefile" ) CONFIG_FILES="$CONFIG_FILES Src/ODBC/SchemaMgr/Ov/Makefile" ;;
   "Src/ODBC/SchemaMgr/Ph/Makefile" ) CONFIG_FILES="$CONFIG_FILES Src/ODBC/SchemaMgr/Ph/Makefile" ;;
   "Src/ODBC/SchemaMgr/Ph/Rd/Makefile" ) CONFIG_FILES="$CONFIG_FILES Src/ODBC/SchemaMgr/Ph/Rd/Makefile" ;;
+  "Src/UnitTest/Common/Makefile" ) CONFIG_FILES="$CONFIG_FILES Src/UnitTest/Common/Makefile" ;;
+  "Src/UnitTest/MySql/Makefile" ) CONFIG_FILES="$CONFIG_FILES Src/UnitTest/MySql/Makefile" ;;
+  "Src/UnitTest/Odbc/Makefile" ) CONFIG_FILES="$CONFIG_FILES Src/UnitTest/Odbc/Makefile" ;;
+  "Src/UnitTest/Makefile" ) CONFIG_FILES="$CONFIG_FILES Src/UnitTest/Makefile" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
