@@ -454,7 +454,7 @@ wchar_t *OdbcConnectionUtil::GetConnectionString(StringConnTypeRequest pTypeReq,
 			swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"ConnectionString=\"DRIVER={%hs};UID=%hs;PWD=%hs;DBQ=%hs;XSM=Default;\"", (const char*)OracleDriverName, username, password, service);
 #else
 			// We do not support extracting a schema from a DSN on Linux, so connect straight to the needed one.
-			swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"DataSourceName=%hs;UserId=%hs;Password=%hs;", dsnname, datastore, password);
+			swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"DataSourceName=%hs;UserId=%hs;Password=%hs;", dsnname, username, password);
 #endif
 		break;
 	}
