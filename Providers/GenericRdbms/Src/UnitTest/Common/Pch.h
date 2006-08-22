@@ -45,6 +45,7 @@
 #define __STDC_LIMIT_MACROS
 #include <stdint.h>
 #include <pwd.h>
+#include <unistd.h>
 #endif // _WIN32
 
 #include <stdio.h>
