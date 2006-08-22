@@ -24,6 +24,8 @@
 #include <Inc/Rdbi/proto.h>
 #include "UnitTestUtil.h"
 
+#define UNITTEST_VERSION_NAME L"Granite"
+
 class FdoInsertTest;
 
 class StaticConnection
