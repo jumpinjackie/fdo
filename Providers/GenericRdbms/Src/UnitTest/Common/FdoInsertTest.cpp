@@ -399,14 +399,14 @@ void FdoInsertTest::insert2 ()
             FdoPtr<FdoPropertyValue> propertyValue;
 
             try {
-                UnitTestUtil::Sql2Db(L"delete from testClass_objectclass2 where TESTCLASS_LASTNAME = 'AnotherLastname'", static_cast<FdoIConnection *>(connection));
+                UnitTestUtil::Sql2Db(L"delete from testclass_objectclass2 where TESTCLASS_LASTNAME = 'AnotherLastname'", static_cast<FdoIConnection *>(connection));
             } catch (FdoException *ex){ex->Release();}
             try {
-                UnitTestUtil::Sql2Db(L"delete from testClass_objectclass where TESTCLASS_LASTNAME = 'AnotherLastname'", static_cast<FdoIConnection *>(connection));
+                UnitTestUtil::Sql2Db(L"delete from testclass_objectclass where TESTCLASS_LASTNAME = 'AnotherLastname'", static_cast<FdoIConnection *>(connection));
             } catch(FdoException *ex){ex->Release();}
 
             try {
-                UnitTestUtil::Sql2Db(L"delete from testClass where LASTNAME = 'AnotherLastname'", static_cast<FdoIConnection *>(connection));
+                UnitTestUtil::Sql2Db(L"delete from testclass where LASTNAME = 'AnotherLastname'", static_cast<FdoIConnection *>(connection));
             }catch (FdoException *ex){ex->Release();}
             dataValue = FdoDataValue::Create(L"AnotherFirstName");
             propertyValue = AddNewProperty( propertyValues, L"FirstName");
