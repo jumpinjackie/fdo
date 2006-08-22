@@ -122,10 +122,6 @@ UnitTestMySql_LDADD =  \
   -lz
 
 UnitTestMySql_LDFLAGS = \
-  -shared \
-  -release $(VERSION) \
-  -L$(FDOTHIRDPARTY)/apache/xml-xalan/c/lib \
-  -L$(FDOTHIRDPARTY)/apache/xml-xerces/c/lib \
   -L/usr/lib/mysql \
   -L$(FDOMYSQL)/lib
 
@@ -174,10 +170,6 @@ UnitTestOdbc_LDADD =  \
   -lz
 
 UnitTestOdbc_LDFLAGS = \
-  -shared \
-  -release $(VERSION) \
-  -L$(FDOTHIRDPARTY)/apache/xml-xalan/c/lib \
-  -L$(FDOTHIRDPARTY)/apache/xml-xerces/c/lib \
   -L$(FDOODBC)/lib
   
 INCLUDES = \
