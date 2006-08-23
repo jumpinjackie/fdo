@@ -69,7 +69,8 @@ public:
 					}
 					else if (*(pInString+pPoz) != L' ' && *(pInString+pPoz) != L';')
 					{
-						pPozEnd = pPozPN = pPoz;
+						pPozPN = pPoz;
+						pPozEnd = pPoz+1;
 						State = 1;
 					}
 				break;
