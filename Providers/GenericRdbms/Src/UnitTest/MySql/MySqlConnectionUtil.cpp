@@ -87,7 +87,7 @@ void MySqlConnectionUtil::LoadInitializeFile()
 		if (fileNameCfg.GetLength() == 0)
 			fileNameCfg = MYSQL_INIT_FILENAME_TEST;
 		else
-			FdoCommonOSUtil::setenv("initfiletest", NULL);
+			FdoCommonOSUtil::setenv("initfiletest", "");
 		char buffer[1001];
 		FdoCommonFile pFile;
 		FdoCommonFile::ErrorCode err = FdoCommonFile::ERROR_NONE;
