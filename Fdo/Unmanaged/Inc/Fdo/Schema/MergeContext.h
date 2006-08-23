@@ -139,7 +139,7 @@ public:
     /// \return
     /// Returns FdoFeatureSchemaCollection
     /// 
-	FdoFeatureSchemaCollection* GetSchemas() const;
+	FDO_API FdoFeatureSchemaCollection* GetSchemas() const;
 
     /// \brief
     /// Gets the second set of schemas.
@@ -192,6 +192,19 @@ public:
     /// are any errors these are thrown. 
     ///
     FDO_API void CommitSchemas();
+
+    // The following functions check whether certain schema element modifications
+    // can be carried out. Each calls the corresponding Can* function to see if the
+    // modification is supported at all. If it is then the element is examined 
+    // further to see if the modification can be done. If this context is provided
+    // a connection, the connection is also check to see if the modification is
+    // allowed (for example class delete is disallowed if the connected datastore
+    // has any objects of that class definition.
+    //
+    // Each function returns true of the modification can be performed and false if not.
+    // An error is logged if the modification cannot be performed.
+
+    FDO_API virtual bool CheckDeleteClass( FdoClassDefinition* classDef );
 
     // The following functions represent each type of schema element modification.
     // Each returns true if the modification is allowed.
@@ -273,6 +286,25 @@ public:
     FDO_API virtual bool CanModRasterXSize( FdoRasterPropertyDefinition* prop );
     FDO_API virtual bool CanModRasterYSize( FdoRasterPropertyDefinition* prop );
     FDO_API virtual bool CanModRasterSC( FdoRasterPropertyDefinition* prop );
+
+    /// \brief
+    /// Checks if a class has objects.
+    ///
+    /// \warning This function is used as a pre-check to see if a class definition can 
+    /// be deleted. However, there is a chance that the class has no objects when this
+    /// check is done, but an object is created by someone else before the class is 
+    /// deleted. Providers that need to prevent this race condition can do so by 
+    /// extending this function.
+    /// 
+    /// \param classDef
+    /// Input the class to check
+    ///
+    /// \return
+    /// Returns true if the class has objects ( the datastore for the current connection
+    /// is checked for objects).
+    /// Returns false if the class does not have objects or this context does not have
+    /// a connection.
+    FDO_API virtual bool ClassHasObjects( FdoClassDefinition* classDef );
 
     // When the schemas are merged. references between schema elements cannot be resolved
     // right away, since the referenced element might not yet have been copied to the 
@@ -732,6 +764,8 @@ private:
     FdoPtr<StringsRefs> mGeomPropRefs;
 
     FdoXmlFlags::ErrorLevel mErrorLevel;
+
+    FdoDictionaryP mClassHasObjects;
 };
 
 /// \brief

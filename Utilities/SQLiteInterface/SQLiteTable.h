@@ -87,6 +87,10 @@ public:
 
 	int Recreate();
 
+    int Drop();
+
+    const char* GetName();
+
 private:
 
 	void make_valid_name( char *name );

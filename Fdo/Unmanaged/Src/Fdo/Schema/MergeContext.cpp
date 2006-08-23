@@ -21,6 +21,8 @@
 #include <Fdo/Schema/Class.h>
 #include <Fdo/Schema/ObjectPropertyDefinition.h>
 #include <Fdo/Schema/AssociationPropertyDefinition.h>
+#include <Fdo/Commands/CommandType.h>
+#include <Fdo/Commands/Feature/ISelect.h>
 
 FdoSchemaMergeContext::FdoSchemaMergeContext( FdoFeatureSchemaCollection* schemas, bool defaultCapability ) :
     mIgnoreStates(true),
@@ -52,6 +54,8 @@ FdoSchemaMergeContext::FdoSchemaMergeContext( FdoFeatureSchemaCollection* schema
     mAssocIdPropRefs = StringsRefs::Create();
     mAssocIdReversePropRefs = StringsRefs::Create();
     mGeomPropRefs = StringsRefs::Create();
+
+    mClassHasObjects = FdoDictionary::Create();
 
 }
 
@@ -138,6 +142,7 @@ FdoIConnection* FdoSchemaMergeContext::GetConnection()
 void FdoSchemaMergeContext::SetConnection( FdoIConnection* connection )
 {
     mConnection = FDO_SAFE_ADDREF( connection );
+    mClassHasObjects->Clear();
 }
 
 void FdoSchemaMergeContext::CommitSchemas()
@@ -165,6 +170,45 @@ void FdoSchemaMergeContext::CommitSchemas()
 
     // If there are errors, throw them.
     ThrowErrors();
+}
+
+bool FdoSchemaMergeContext::CheckDeleteClass( FdoClassDefinition* classDef )
+{
+    bool canDelete = false;
+
+    if ( CanDeleteClass(classDef) ) {
+        if ( !ClassHasObjects( classDef ) ) {
+            canDelete = true;
+        }
+        else {
+            // Can't delete class that has data.
+            AddError( 
+                FdoSchemaExceptionP(
+                    FdoSchemaException::Create(
+                        FdoException::NLSGetMessage(
+                        FDO_NLSID(SCHEMA_143_DELCLASSOBJECTS),
+                            (FdoString*) classDef->GetQualifiedName()
+                        )
+                    )
+                )
+            );
+        }
+    }
+    else {
+        // Class delete not supported.
+        AddError( 
+            FdoSchemaExceptionP(
+                FdoSchemaException::Create(
+                    FdoException::NLSGetMessage(
+                    FDO_NLSID(SCHEMA_123_DELCLASS),
+                        (FdoString*) classDef->GetQualifiedName()
+                    )
+                )
+            )
+        );
+    }
+
+    return canDelete;
 }
 
 bool FdoSchemaMergeContext::CanModElementDescription( FdoSchemaElement* element )
@@ -449,6 +493,38 @@ bool FdoSchemaMergeContext::CanModRasterSC( FdoRasterPropertyDefinition* prop )
 {
     return mDefaultCapability;
 }
+
+bool FdoSchemaMergeContext::ClassHasObjects( FdoClassDefinition* classDef )
+{
+    bool hasObjects = false;
+
+    FdoPtr<FdoIConnection> connection = GetConnection();
+
+    // If no connection then class has no reachable objects
+    if ( connection ) {
+        // Check our cache to avoid doing repeated selects on the same class.
+        FdoDictionaryElementP elem = mClassHasObjects->FindItem( classDef->GetQualifiedName() );
+
+        if ( elem ) {
+            // Class is in the cache.
+            hasObjects = ( FdoStringP(elem->GetValue()) == L"y" );
+        }
+        else {
+            // Not in the cache, check the connection for objects.
+            FdoPtr<FdoISelect>selCmd = (FdoISelect*)connection->CreateCommand( FdoCommandType_Select );
+		    selCmd->SetFeatureClassName( classDef->GetQualifiedName() );
+            FdoPtr<FdoIFeatureReader> rdr = selCmd->Execute();
+            hasObjects = rdr->ReadNext();
+
+            // Add the class, and whether it has objects, to the cache
+            elem = FdoDictionaryElement::Create( classDef->GetQualifiedName(), hasObjects ? L"y" : L"n" );
+        }
+    }
+
+    return hasObjects;
+}
+
+
 
 void FdoSchemaMergeContext::AddElementMap( FdoSchemaElement* pElement )
 {

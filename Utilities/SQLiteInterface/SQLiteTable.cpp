@@ -56,7 +56,7 @@ SQLiteTable::~SQLiteTable()
 // Replace any special character with an underscore
 void SQLiteTable::make_valid_name( char *name )
 {
-	for(int i=strlen(name);i>0;i--)
+	for(size_t i=strlen(name);i>0;i--)
 	{
 		switch(name[i])
 		{
@@ -338,6 +338,50 @@ int SQLiteTable::Recreate()
     m_pDb->commit();   
 
 	return SQLITE_OK;
+}
+
+int SQLiteTable::Drop()
+{
+	char  szSQL[128];
+	if( mRootDataPage == -1 )
+		return SQLITE_ERROR;
+
+	if( m_pDb->begin_transaction( ) != SQLITE_OK )
+        return SQLITE_ERROR;  
+    
+    if ( mUseIntKey ) {
+        sprintf(szSQL,"drop table %s", mTableName );
+	    if( m_pDb->ExecuteNonQuery( szSQL ) != SQLITE_OK ) 
+	    {
+		    m_pDb->commit();
+		    return SQLITE_ERROR;
+	    }		
+    }
+    else {
+    	m_pDb->BTree()->drop_table( mRootDataPage );
+
+        sprintf(szSQL,"delete from fdo_master where rootpage = %d",mRootDataPage );
+	    if( m_pDb->ExecuteNonQuery( szSQL ) != SQLITE_OK ) 
+	    {
+		    m_pDb->commit();
+		    return SQLITE_ERROR;
+	    }
+    }
+
+	mRootDataPage = -1;
+
+    if( mTabCache )
+		delete mTabCache;
+	mTabCache = NULL;
+	
+    m_pDb->commit();   
+
+	return SQLITE_OK;
+}
+
+const char* SQLiteTable::GetName()
+{
+    return mTableName;
 }
 
 int SQLiteTable::close(unsigned int flags) 

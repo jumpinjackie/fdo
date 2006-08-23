@@ -638,77 +638,77 @@ Unsupport Schema modification; Cannot delete property '%1$ls'
 MessageId=1126
 SymbolicName=SCHEMA_126_DELBASECLASS
 Language=English
-Cannot delete class '%1$ls' it is the base class for '%2$ls'
+Cannot delete class '%1$ls'; it is the base class for '%2$ls'
 .
 MessageId=1127
 SymbolicName=SCHEMA_127_DELOBJCLASS
 Language=English
-Cannot delete class '%1$ls' it is the class for object property '%2$ls'
+Cannot delete class '%1$ls'; it is the class for object property '%2$ls'
 .
 MessageId=1128
 SymbolicName=SCHEMA_128_DELCLASSID
 Language=English
-Cannot delete property '%1$ls' it is an identity property for class '%2$ls'
+Cannot delete property '%1$ls'; it is an identity property for class '%2$ls'
 .
 MessageId=1129
 SymbolicName=SCHEMA_129_DELOBJID
 Language=English
-Cannot delete property '%1$ls' it is an identity property for object property '%2$ls'
+Cannot delete property '%1$ls'; it is an identity property for object property '%2$ls'
 .
 MessageId=1130
 SymbolicName=SCHEMA_130_DELASSOCCLASS
 Language=English
-Cannot delete class '%1$ls' it is the associated class for association property '%2$ls'
+Cannot delete class '%1$ls'; it is the associated class for association property '%2$ls'
 .
 MessageId=1131
 SymbolicName=SCHEMA_131_DELASSOCID
 Language=English
-Cannot delete property '%1$ls' it is an identity property for association property '%2$ls'
+Cannot delete property '%1$ls'; it is an identity property for association property '%2$ls'
 .
 MessageId=1132
 SymbolicName=SCHEMA_132_DELASSOCREVID
 Language=English
-Cannot delete property '%1$ls' it is a reverse identity property for association property '%2$ls'
+Cannot delete property '%1$ls'; it is a reverse identity property for association property '%2$ls'
 .
 MessageId=1133
 SymbolicName=SCHEMA_133_DELLAYERCLASS
 Language=English
-Cannot delete class '%1$ls' it is the network layer class for network class '%2$ls'
+Cannot delete class '%1$ls'; it is the network layer class for network class '%2$ls'
 .
 MessageId=1134
 SymbolicName=SCHEMA_134_DELNETCOST
 Language=English
-Cannot delete property '%1$ls' it is the cost property for network feature class '%2$ls'
+Cannot delete property '%1$ls'; it is the cost property for network feature class '%2$ls'
 .
 MessageId=1135
 SymbolicName=SCHEMA_135_DELFEATNET
 Language=English
-Cannot delete property '%1$ls' it is the network class property for network feature class '%2$ls'
+Cannot delete property '%1$ls'; it is the network class property for network feature class '%2$ls'
 .
 MessageId=1136
 SymbolicName=SCHEMA_136_DELREFFEAT
 Language=English
-Cannot delete property '%1$ls' it is the referenced feature property for network feature class '%2$ls'
+Cannot delete property '%1$ls'; it is the referenced feature property for network feature class '%2$ls'
 .
 MessageId=1137
 SymbolicName=SCHEMA_137_DELNETPARENT
 Language=English
-Cannot delete property '%1$ls' it is the parent network feature property for network feature class '%2$ls'
+Cannot delete property '%1$ls'; it is the parent network feature property for network feature class '%2$ls'
 .
 MessageId=1138
 SymbolicName=SCHEMA_138_DELSTARTNODE
 Language=English
-Cannot delete property '%1$ls' it is the start node property for network link feature class '%2$ls'
+Cannot delete property '%1$ls'; it is the start node property for network link feature class '%2$ls'
 .
 MessageId=1139
 SymbolicName=SCHEMA_139_DELENDNODE
 Language=English
-Cannot delete property '%1$ls' it is the end node property for network link feature class '%2$ls'
+Cannot delete property '%1$ls'; it is the end node property for network link feature class '%2$ls'
 .
 MessageId=1140
 SymbolicName=SCHEMA_140_DELNODELAYER
 Language=English
-Cannot delete property '%1$ls' it is the layer property for network node feature class '%2$ls'
+Cannot delete property '%1$ls'; it is the layer property for network node feature class '%2$ls'
 .
 MessageId=1141
 SymbolicName=SCHEMA_141_BASETYPECONFLICT
@@ -718,7 +718,12 @@ Cannot set base class for '%1$ls' to '%2$ls'; they have different class types
 MessageId=1142
 SymbolicName=SCHEMA_142_DELFEATGEOM
 Language=English
-Cannot delete property '%1$ls' it is the geometry property for feature class '%2$ls'
+Cannot delete property '%1$ls'; it is the geometry property for feature class '%2$ls'
+.
+MessageId=1143
+SymbolicName=SCHEMA_143_DELCLASSOBJECTS
+Language=English
+Cannot delete class definition '%1$ls'; it has objects
 .
 MessageId=2001
 SymbolicName=EXPRESSION_1_BLOBVALUENULL

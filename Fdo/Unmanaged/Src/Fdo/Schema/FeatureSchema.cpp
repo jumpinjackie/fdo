@@ -210,24 +210,10 @@ void FdoFeatureSchema::Set( FdoFeatureSchema* pSchema, FdoSchemaMergeContext* pC
             break;
 
         case FdoSchemaElementState_Deleted:
-            if ( pContext->CanDeleteClass(oldClass) ) {
+            // Silently ignore if class does not exist.
+            if ( oldClass && pContext->CheckDeleteClass(oldClass) ) {
                 // Mark class for deletion.
-                // Silently ignore if class does not exist.
-                if ( oldClass ) 
-                    oldClass->Delete();
-            }
-            else {
-                // Class delete not supported.
-                pContext->AddError( 
-                    FdoSchemaExceptionP(
-                        FdoSchemaException::Create(
-                            FdoException::NLSGetMessage(
-                            FDO_NLSID(SCHEMA_123_DELCLASS),
-                                (FdoString*) oldClass->GetQualifiedName()
-                            )
-                        )
-                    )
-                );
+                oldClass->Delete();
             }
             break;
 
