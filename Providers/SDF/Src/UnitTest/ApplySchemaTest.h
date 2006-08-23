@@ -63,11 +63,11 @@ protected:
 	void RedefineGeometry( FdoIConnection* connection );
 /*
 	void DelPropertyError( FdoIConnection* connection );
+*/
 	void ModDelSchemas( FdoIConnection* connection );
     void ModDelElectricSchema( FdoFeatureSchemaCollection* pSchemas );
     void ModDelAcadSchema( FdoFeatureSchemaCollection* pSchemas );
 	void ReAddElements( FdoIConnection* connection );
-*/
 	void ModErrors( FdoIConnection* connection );
 	void ModErrors2( FdoIConnection* connection );
 /*
@@ -78,12 +78,6 @@ protected:
         FdoFeatureSchemaCollection* pSchemas,
         FdoFeatureSchemaCollection* pSchemas2
     );
-/*
-    void InsertObject( FdoIConnection* connection, bool conditional, FdoStringP schemaName, FdoString* className, ... );
-    void DeleteObjects( FdoIConnection* connection, FdoStringP schemaName, FdoStringP className );
-
-    FdoStringP mDatastore;
-*/
 };
 
 #endif

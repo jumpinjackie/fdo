@@ -95,7 +95,7 @@ void UnitTestUtil::ExportDb(
     FdoXmlSpatialContextFlags* flags
 )
 {
-    FdoInt32 i;
+//    FdoInt32 i;
 
     stream->Reset();
     FdoXmlWriterP writer = FdoXmlWriter::Create(stream, true, FdoXmlWriter::LineFormat_Indent);
@@ -313,5 +313,46 @@ the_exit:
     fclose(fp2);
 
     return( retcode );
+}
+
+void UnitTestUtil::InsertObject( FdoIConnection* connection, FdoStringP schemaName, FdoString* className, ... )
+{
+    va_list arguments;
+    FdoString* arg;
+
+    va_start(arguments, className);
+
+    arg = va_arg(arguments,FdoString*);
+
+    FdoPtr<FdoIInsert> insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
+    FdoPtr<FdoPropertyValueCollection> propertyValues;
+    FdoPtr<FdoDataValue> dataValue;
+    FdoPtr<FdoPropertyValue> propertyValue;
+
+    insertCommand->SetFeatureClassName(schemaName + L":" + FdoStringP(className));
+    propertyValues = insertCommand->GetPropertyValues();
+
+    while ( arg != NULL ) {
+
+        propertyValue = AddNewProperty( propertyValues, arg);
+        arg = va_arg(arguments,FdoString*);
+        
+        if ( arg != NULL ) {
+            dataValue = FdoDataValue::Create(arg);
+            propertyValue->SetValue(dataValue);
+            arg = va_arg(arguments,FdoString*);
+        }
+    }
+        
+	insertCommand->Execute();
+
+    va_end(arguments);
+}
+
+void UnitTestUtil::DeleteObjects( FdoIConnection* connection, FdoStringP schemaName, FdoStringP className )
+{
+    FdoPtr<FdoIDelete> deleteCommand = (FdoIDelete *) connection->CreateCommand(FdoCommandType_Delete);
+    deleteCommand->SetFeatureClassName(schemaName + L":" + className);
+	deleteCommand->Execute();
 }
 

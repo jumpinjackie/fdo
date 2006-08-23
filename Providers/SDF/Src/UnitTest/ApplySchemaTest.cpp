@@ -117,16 +117,14 @@ void ApplySchemaTest::TestSchema ()
 /*
 		printf( "Deleting Properties with data ... \n" );
 		DelPropertyError( connection );
-
-        printf( "Writing 1st LogicalPhysical Schema ... \n" );
-
-        mgr = staticConn->CreateSchemaManager();
-        lp = mgr->RefLogicalPhysicalSchemas();
-        lp->XMLSerialize( L"apply_schema_test1.xml" );
+*/
+        printf( "Writing 1st schema ... \n" );
+        FdoIoFileStreamP outFile = FdoIoFileStream::Create( L"apply_schema_test1.xml", L"wt" );
+        UnitTestUtil::ExportDb( connection, (FdoIoFileStream*) outFile );
 
         printf( "Applying mixed updates and deletes ... \n" );
 		ModDelSchemas( connection );
-*/
+
 		succeeded = false;
 
 		printf( "Deleting Acad Schema ... \n" );
@@ -143,19 +141,16 @@ void ApplySchemaTest::TestSchema ()
 		if ( succeeded ) 
 			CPPUNIT_FAIL( "2nd Acad schema delete was supposed to fail" );
 /*
-       	FdoPtr<FdoFeatureSchemaCollection> pCopySchemas2 = pDescCmd->Execute();
-
         printf( "Deleting Land Schema ... \n" );
 		DeleteLandSchema( connection );
-
-        printf( "Writing 2nd LogicalPhysical Schema ... \n" );
-        mgr = staticConn->CreateSchemaManager();
-        lp = mgr->RefLogicalPhysicalSchemas();
-        lp->XMLSerialize( L"apply_schema_test2.xml" );
+*/
+        printf( "Writing 2nd schema ... \n" );
+        outFile = FdoIoFileStream::Create( L"apply_schema_test2.xml", L"wt" );
+        UnitTestUtil::ExportDb( connection, (FdoIoFileStream*) outFile );
 
         printf( "Re-Adding some elements ... \n" );
  		ReAddElements(connection);
-
+/*
         printf( "Re-Adding Land Schema ... \n" );
 		CreateLandSchema(connection);
 
@@ -173,12 +168,11 @@ void ApplySchemaTest::TestSchema ()
         //test against Oracle for now
         CreateLongStringSchema( connection );
 
-/*
-        printf( "Writing 3rd LogicalPhysical Schema ... \n" );
-        mgr = staticConn->CreateSchemaManager();
-        lp = mgr->RefLogicalPhysicalSchemas();
-        lp->XMLSerialize( L"apply_schema_test3.xml" );
+        printf( "Writing 3rd schema ... \n" );
+        outFile = FdoIoFileStream::Create( L"apply_schema_test3.xml", L"wt" );
+        UnitTestUtil::ExportDb( connection, (FdoIoFileStream*) outFile );
 
+/*
 		printf( "Testing Class Capabilities ... \n" );
 		GetClassCapabilities( connection );
 
@@ -188,9 +182,6 @@ void ApplySchemaTest::TestSchema ()
 
         FdoFeatureSchemasP pCopySchemas2 = pDescCmd->Execute();
 
-        FdoIoFileStreamP outFile = FdoIoFileStream::Create( L"apply_schema_test1.xml", L"wt" );
-        UnitTestUtil::ExportDb( connection, (FdoIoFileStream*) outFile );
-
         connection = NULL;
 
         CopySchemas( pCopySchemas, pCopySchemas2 );
@@ -199,6 +190,8 @@ void ApplySchemaTest::TestSchema ()
 
 
         UnitTestUtil::CheckOutput( "apply_schema_test1_master.xml", "apply_schema_test1.xml" );
+        UnitTestUtil::CheckOutput( "apply_schema_test2_master.xml", "apply_schema_test2.xml" );
+        UnitTestUtil::CheckOutput( "apply_schema_test3_master.xml", "apply_schema_test3.xml" );
         UnitTestUtil::CheckOutput( "apply_schema_test4_master.xml", "apply_schema_test4.xml" );
         UnitTestUtil::CheckOutput( "apply_schema_test5_master.xml", "apply_schema_test5.xml" );
 
@@ -313,10 +306,8 @@ void ApplySchemaTest::CreateAcadSchema( FdoIConnection* connection )
 	pCmd->Execute();
 
   	// Insert a row with null colour. Subsequent removal of colour property should succeed.
-/*
-    InsertObject( connection, false, L"Acad", L"AcDbEntity", L"Layer", L"default", NULL );
-    InsertObject( connection, false, L"Acad", L"Entity", L"FeatId", L"1", L"Layer", L"default", NULL );
-*/
+
+    UnitTestUtil::InsertObject( connection, L"Acad", L"AcDbEntity", L"Layer", L"default", NULL );
 }
 
 void ApplySchemaTest::CreateElectricSchema( FdoIConnection* connection )
@@ -480,8 +471,8 @@ void ApplySchemaTest::CreateLandSchema( FdoIConnection* connection )
 	// Test GetFeatureSchema
     CPPUNIT_ASSERT(wcscmp(FdoFeatureSchemaP(pCmd->GetFeatureSchema())->GetName(), L"Land") == 0);
 
-//    InsertObject(connection, false, L"Land", L"1-8 School", L"# Rooms", L"20", NULL );
-//    InsertObject(connection, false, L"Land", L"Driveway", L"Pav'd", L"1", NULL );
+//    InsertObject(connection, L"Land", L"1-8 School", L"# Rooms", L"20", NULL );
+//    InsertObject(connection, L"Land", L"Driveway", L"Pav'd", L"1", NULL );
 //	UnitTestUtil::Sql2Db( L"insert into parcel_person ( first_name, last_name, parcel_province, parcel_pin ) values ( 'Fraser', 'Simon', 'Ontario', '1234-5678' )", connection );
 }
 
@@ -953,6 +944,7 @@ void ApplySchemaTest::ModElectricSchema( FdoIConnection* connection )
 	FdoPtr<FdoFeatureSchema> pSchema = pSchemas->GetItem( L"Acad" );
 	pCmd->SetFeatureSchema( pSchema );
 	pCmd->Execute();
+
 }
 
 void ApplySchemaTest::ModElectricSchema( FdoFeatureSchemaCollection* pSchemas )
@@ -1272,7 +1264,7 @@ void ApplySchemaTest::DelPropertyError( FdoIConnection* connection )
 		CPPUNIT_FAIL( "Invalid modifications were supposed to fail" );
 
 }
-
+#endif
 void ApplySchemaTest::ModDelSchemas( FdoIConnection* connection )
 {
 	/* Test some more modifications plus deletions. */
@@ -1282,7 +1274,8 @@ void ApplySchemaTest::ModDelSchemas( FdoIConnection* connection )
 
 	FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
 
-	FdoPtr<FdoFeatureSchema> pSchema = pSchemas->GetItem( L"Electric'l" );
+//	FdoPtr<FdoFeatureSchema> pSchema = pSchemas->GetItem( L"Electric'l" );
+	FdoPtr<FdoFeatureSchema> pSchema = pSchemas->GetItem( L"Acad" );
     ModDelElectricSchema( pSchemas );
 
 	pCmd->SetFeatureSchema( pSchema );
@@ -1293,45 +1286,34 @@ void ApplySchemaTest::ModDelSchemas( FdoIConnection* connection )
     ModDelAcadSchema( pSchemas );
 	pCmd->SetFeatureSchema( pSchema );
 	pCmd->Execute();
+
 }
 
 void ApplySchemaTest::ModDelElectricSchema( FdoFeatureSchemaCollection* pSchemas )
 {
-	FdoPtr<FdoFeatureSchema> pSchema = pSchemas->GetItem( L"Electric'l" );
+//	FdoPtr<FdoFeatureSchema> pSchema = pSchemas->GetItem( L"Electric'l" );
+	FdoPtr<FdoFeatureSchema> pSchema = pSchemas->GetItem( L"Acad" );
 
-	// Dictionary elemetn delete
-
-	FdoSADP(pSchema->GetAttributes())->Remove( L"'Author" );
-
-	// Class delete
+	// Feature Class delete
 
 	FdoPtr<FdoFeatureClass> pClass = (FdoFeatureClass*) (FdoClassesP(pSchema->GetClasses())->GetItem(L"Pole"));
 	pClass->Delete();
-
+/*
 	// Geometric and Object Property delete. Also tests rippling to sub-classes of ElectricDevice.
 
 	pClass = (FdoFeatureClass*) (FdoClassesP(pSchema->GetClasses())->GetItem(L"ElectricDevice"));
 	FdoPtr<FdoGeometricPropertyDefinition> pGeomProp = (FdoGeometricPropertyDefinition*) FdoPropertiesP(pClass->GetProperties())->GetItem(L"Geometry");
 	pGeomProp->Delete();
     pClass->SetGeometryProperty(NULL);
-
-	FdoPtr<FdoObjectPropertyDefinition> pObjProp = (FdoObjectPropertyDefinition*) (FdoPropertiesP(pClass->GetProperties())->GetItem(L"maintenance history"));
-	pObjProp->Delete();
-
-	// Complex deletions. Delete top class plus class for nested object property while leaving
-	// class for top object property
+*/
+	// Non-Feature Class delete
 
     FdoPtr<FdoClass> pClsClass = (FdoClass*) (FdoClassesP(pSchema->GetClasses())->GetItem(L"Employee"));
 	pClsClass->Delete();
 
-	pClsClass = (FdoClass*) (FdoClassesP(pSchema->GetClasses())->GetItem(L"'Address"));
-
-    pObjProp = (FdoObjectPropertyDefinition*) (FdoPropertiesP(pClsClass->GetProperties())->GetItem(L"street"));
-	pObjProp->Delete();
-
 	pClsClass = (FdoClass*) (FdoClassesP(pSchema->GetClasses())->GetItem(L"Street"));
 	pClsClass->Delete();
-
+/*
 	pClass = (FdoFeatureClass*) (FdoClassesP(pSchema->GetClasses())->GetItem(L"Transformer"));
 
     FdoPtr<FdoDataPropertyDefinition> pProp = (FdoDataPropertyDefinition*) FdoPropertiesP(pClass->GetProperties())->GetItem( L"Volume" );
@@ -1341,11 +1323,17 @@ void ApplySchemaTest::ModDelElectricSchema( FdoFeatureSchemaCollection* pSchemas
 	pProp->SetDataType( FdoDataType_Double );
 	pProp->SetNullable(true);
 	FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+*/
 }
 
 void ApplySchemaTest::ModDelAcadSchema( FdoFeatureSchemaCollection* pSchemas )
 {
 	FdoFeatureSchemaP pSchema = pSchemas->GetItem( L"Acad" );
+
+    FdoFeatureClassP pClass = (FdoFeatureClass*) (FdoClassesP(pSchema->GetClasses())->GetItem(L"AcDbHatch"));
+    pClass->Delete();
+
+/*
 	pSchema->SetDescription( L"A'CAD Entity Schema" );
 
 	FdoFeatureClassP pClass = (FdoFeatureClass*) (FdoClassesP(pSchema->GetClasses())->GetItem(L"AcDbEntity"));
@@ -1426,22 +1414,22 @@ void ApplySchemaTest::ModDelAcadSchema( FdoFeatureSchemaCollection* pSchemas )
 
 	    FdoClassesP(pSchema->GetClasses())->Add( pCaseClass );
     }
+*/
 }
 
 void ApplySchemaTest::ReAddElements( FdoIConnection* connection )
 {
-    FdoStringP provider = UnitTestUtil::GetEnv("provider","Oracle");
-
     FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
-	pDescCmd->SetSchemaName( L"Electric'l" );
+//	pDescCmd->SetSchemaName( L"Electric'l" );
+	pDescCmd->SetSchemaName( L"Acad" );
 	FdoPtr<FdoFeatureSchemaCollection> pSchemas = pDescCmd->Execute();
 
 	FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
 
-	FdoPtr<FdoFeatureSchema> pSchema = pSchemas->GetItem( L"Electric'l" );
+//	FdoPtr<FdoFeatureSchema> pSchema = pSchemas->GetItem( L"Electric'l" );
+	FdoPtr<FdoFeatureSchema> pSchema = pSchemas->GetItem( L"Acad" );
 
-	// Re-add a feature class that was previously deleted. This tests that the Pole class delete actually
-	// did remove the Pole table.
+	// Re-add a feature class that was previously deleted. 
 
 	FdoPtr<FdoFeatureClass> pClass = FdoFeatureClass::Create( L"Pole", L"" );
 	pClass->SetIsAbstract(false);
@@ -1471,6 +1459,7 @@ void ApplySchemaTest::ReAddElements( FdoIConnection* connection )
 	pProp->SetLength( 30 );
 	pProp->SetNullable(false);
 	FdoPropertiesP(pStClass->GetProperties())->Add( pProp );
+	FdoDataPropertiesP(pStClass->GetIdentityProperties())->Add( pProp );
 
 	pProp = FdoDataPropertyDefinition::Create( L"Type", L"" );
 	pProp->SetDataType( FdoDataType_Int32 );
@@ -1478,7 +1467,7 @@ void ApplySchemaTest::ReAddElements( FdoIConnection* connection )
 	FdoPropertiesP(pStClass->GetProperties())->Add( pProp );
 
 	FdoClassesP(pSchema->GetClasses())->Add( pStClass );
-
+#if 0
 	pClass = (FdoFeatureClass*) FdoClassesP(pSchema->GetClasses())->GetItem( L"Transformer" );
 
 	// Re-add deleted geometry
@@ -1490,11 +1479,9 @@ void ApplySchemaTest::ReAddElements( FdoIConnection* connection )
 
     // Try geometry with similar name but different case (should get different column.
     // Skip sqlserver since seconds is data case-insensitive.
-    if ( provider != L"SqlServer" ) {
-	    pGeomProp = FdoGeometricPropertyDefinition::Create( L"GEOMETRY", L"location and shape" );
-	    pGeomProp->SetGeometryTypes( FdoGeometricType_Surface );
-	    FdoPropertiesP(pClass->GetProperties())->Add( pGeomProp );
-    }
+    pGeomProp = FdoGeometricPropertyDefinition::Create( L"GEOMETRY", L"location and shape" );
+    pGeomProp->SetGeometryTypes( FdoGeometricType_Surface );
+    FdoPropertiesP(pClass->GetProperties())->Add( pGeomProp );
 
 	// Re-add deleted data property. Give it different type and nullibility than before. 
 	// Note that "volume" column is still around ( the provider doesn't yet support column deletes )
@@ -1516,11 +1503,11 @@ void ApplySchemaTest::ReAddElements( FdoIConnection* connection )
 	pObjProp->SetIdentityProperty( pHistId );
 	pObjProp->SetObjectType( FdoObjectType_Collection );
 	FdoPropertiesP(pClass->GetProperties())->Add( pObjProp );
-
+#endif
 	pCmd->SetFeatureSchema( pSchema );
 	pCmd->Execute();
 }
-#endif
+
 void ApplySchemaTest::ModErrors( FdoIConnection* connection )
 {
 	/* Test some bad modifications */
@@ -1607,14 +1594,19 @@ void ApplySchemaTest::ModErrors( FdoIConnection* connection )
 	FdoPtr<FdoFeatureClass> pDevClass = (FdoFeatureClass*) FdoClassesP(pSchema->GetClasses())->GetItem( L"ElectricDevice" );
 	pDevClass->SetIsAbstract(false);
 
-	FdoPtr<FdoClass> pCustClass = (FdoClass*) FdoClassesP(pSchema->GetClasses())->GetItem( L"Customer" );
+    /* Try to delete a class with sub-classes */
 
-	pProp = (FdoDataPropertyDefinition*) FdoPropertiesP(pCustClass->GetProperties())->GetItem( L"Credit Rating" );
-    pProp->SetReadOnly( false );
+    pClass = (FdoFeatureClass*) (FdoClassesP(pSchema->GetClasses())->GetItem(L"Customer"));
+    pClass->Delete();
 
-	/* Try to delete a class that has data */
+    /* Try to delete a class that has data */
 
-//    InsertObject( connection, false, L"Electric'l", L"Conductor", L"underground", L"0", NULL );
+    // No Base Class
+    pClass = (FdoFeatureClass*) (FdoClassesP(pSchema->GetClasses())->GetItem(L"AcDbEntity"));
+    pClass->Delete();
+
+    // Has Base Class
+    UnitTestUtil::InsertObject( connection, L"Electric'l", L"Conductor", L"underground", L"0", NULL );
 	pClass = (FdoFeatureClass*) FdoClassesP(pSchema->GetClasses())->GetItem( L"Conductor" );
 	pClass->Delete();
 
@@ -1772,6 +1764,9 @@ void ApplySchemaTest::ModErrors2( FdoIConnection* connection )
     FdoClassP pCustClass = (FdoClass*) FdoClassesP(pSchema->GetClasses())->GetItem( L"Customer" );
     FdoDataPropertiesP idProps = pCustClass->GetIdentityProperties();
     idProps->RemoveAt(0);
+
+	pDataProp = (FdoDataPropertyDefinition*) FdoPropertiesP(pCustClass->GetProperties())->GetItem( L"Credit Rating" );
+    pDataProp->SetReadOnly( false );
 
     FdoClassP pBusClass = (FdoClass*) FdoClassesP(pSchema->GetClasses())->GetItem( L"Customer - Business" );
     pBusClass->SetDescription( L"Should not generate error message" );
@@ -2009,63 +2004,6 @@ void ApplySchemaTest::VldClassCapabilities( int ltMode, int lckMode, FdoClassDef
 
     for ( i = 0; i < expLockCount; i++ )
         CPPUNIT_ASSERT( lockArray[i] );
-}
-
-void ApplySchemaTest::InsertObject( FdoIConnection* connection, bool conditional, FdoStringP schemaName, FdoString* className, ... )
-{
-    va_list arguments;
-    FdoString* arg;
-
-    va_start(arguments, className);
-
-    arg = va_arg(arguments,FdoString*);
-/*
-    if ( conditional ) 
-        StartLongTransaction( connection, schemaName );
-*/
-    FdoITransaction* trans = (FdoITransaction *) connection->BeginTransaction();
-    FdoPtr<FdoIInsert> insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
-    FdoPtr<FdoPropertyValueCollection> propertyValues;
-    FdoPtr<FdoDataValue> dataValue;
-    FdoPtr<FdoPropertyValue> propertyValue;
-
-    insertCommand->SetFeatureClassName(schemaName + L":" + FdoStringP(className));
-    propertyValues = insertCommand->GetPropertyValues();
-
-    while ( arg != NULL ) {
-
-        propertyValue = AddNewProperty( propertyValues, arg);
-        arg = va_arg(arguments,FdoString*);
-        
-        if ( arg != NULL ) {
-            dataValue = FdoDataValue::Create(arg);
-            propertyValue->SetValue(dataValue);
-            arg = va_arg(arguments,FdoString*);
-        }
-    }
-        
-	insertCommand->Execute();
-
-    trans->Commit();
-    FDO_SAFE_RELEASE(trans);
-/*
-    if ( conditional ) 
-        EndLongTransaction( connection );
-*/
-    va_end(arguments);
-}
-
-void ApplySchemaTest::DeleteObjects( FdoIConnection* connection, FdoStringP schemaName, FdoStringP className )
-{
-/*
-    StartLongTransaction( connection, schemaName );
-*/
-    FdoPtr<FdoIDelete> deleteCommand = (FdoIDelete *) connection->CreateCommand(FdoCommandType_Delete);
-    deleteCommand->SetFeatureClassName(schemaName + L":" + className);
-	deleteCommand->Execute();
-/*
-    EndLongTransaction( connection );
-*/
 }
 
 #endif

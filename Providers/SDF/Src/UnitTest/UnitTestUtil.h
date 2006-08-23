@@ -70,6 +70,9 @@ public:
     //      -1 - they are different.
     static int CompareFiles( const char* file1Name, const char* file2Name );
 
+    static void InsertObject( FdoIConnection* connection, FdoStringP schemaName, FdoString* className, ... );
+
+    static void DeleteObjects( FdoIConnection* connection, FdoStringP schemaName, FdoStringP className );
 };
 
 #endif

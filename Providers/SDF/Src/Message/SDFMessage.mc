@@ -393,3 +393,13 @@ SymbolicName=SDFPROVIDER_80_TOO_MANY_ERRORS
 Language=English
 Too many errors; Only 1st %1$d listed
 .
+MessageId=81
+SymbolicName=SDFPROVIDER_81_DROP_TABLE
+Language=English
+Failed to drop %1$ls table
+.
+MessageId=82
+SymbolicName=SDFPROVIDER_82_UTF8_FROM_UNICODE
+Language=English
+Failed to convert string '%1$ls' to utf8 
+.

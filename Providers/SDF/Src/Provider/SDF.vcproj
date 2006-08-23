@@ -606,6 +606,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SdfExtHashMap.h"
+				>
+			</File>
+			<File
 				RelativePath="SdfFeatureCommand.h"
 				>
 			</File>

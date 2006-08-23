@@ -151,3 +151,15 @@ void KeyDb::CloseCursor()
 	m_db->close_cursor();
 }
 
+void KeyDb::Drop()
+{
+    if ( m_db->Drop() != 0 ) {
+        throw FdoException::Create(
+            NlsMsgGetMain(
+                FDO_NLSID(SDFPROVIDER_81_DROP_TABLE),
+                L"Key"
+            )
+        );
+    }
+}
+

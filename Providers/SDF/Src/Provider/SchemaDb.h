@@ -56,7 +56,12 @@ public:
 
 private:
     // Update the old schemas based on the new Schema and ignoreStates setting.
-    FdoFeatureSchemaP MergeSchema(SdfISchemaMergeContextFactory* mergeFactory, FdoFeatureSchemaP oldSchema, FdoFeatureSchemaP newSchema, bool ignoreStates);
+    SdfSchemaMergeContextP MergeSchema(SdfISchemaMergeContextFactory* mergeFactory, FdoFeatureSchemaP oldSchema, FdoFeatureSchemaP newSchema, bool ignoreStates);
+    
+    // Handles class data updates that must be done before schema updates
+    void PreUpdatePhysical( SdfSchemaMergeContextP mergeContext );
+    // Handles class data updates that must be done after schema updates
+    void PostUpdatePhysical( SdfSchemaMergeContextP mergeContext );
 
     void ReadFeatureClass(REC_NO classRecno, FdoFeatureSchema* schema);
     void ReadGeometricPropertyDefinition(BinaryReader& rdr, FdoPropertyDefinitionCollection* pdc);

@@ -1079,6 +1079,11 @@ void SdfConnection::NameFromWcs(char* charName, size_t charCount, const wchar_t*
         // It has been verified that SQLite allows table names with characters in 
         // the 0x80 to 0xff range.
         if ( ut_utf8_from_unicode(wcsName, wcsCount, charName, charCount) == -1 )
-            throw "exception todo";
+            throw FdoConnectionException::Create(
+                NlsMsgGetMain(
+                    FDO_NLSID(SDFPROVIDER_82_UTF8_FROM_UNICODE),
+                    wcsName
+                )
+            );
     }
 }

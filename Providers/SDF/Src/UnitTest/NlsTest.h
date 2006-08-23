@@ -62,9 +62,6 @@ private:
     // Selects and verifies features from the SDF file. 
     void SelectFeatures( FdoIConnection* connection, FdoStringP className, bool isSpatial = false );
 
-    // Open Connection, optionally re-creating the SDF file
-    FdoIConnection* openConnection( bool re_create );
-
     // General functions for non-ASCII7 class names.
     FdoStringP GetClass1Name();
     FdoStringP GetClass2Name();

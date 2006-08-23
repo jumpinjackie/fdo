@@ -77,6 +77,8 @@ public:
 
 	void SetOrderingOptions( std::map<std::wstring, int> *opts );
 
+    void Drop();
+
 private: 
 
 	int compare(int size1, const void* data1, FdoPropertyValueCollection* pvc);

@@ -46,6 +46,8 @@ public:
 
 	void DropIndex() { m_db->Recreate(); }
 
+	void Drop();
+
 private:
 
     SQLiteTable* m_db;

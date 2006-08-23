@@ -58,6 +58,7 @@ CPPUNIT_ASSERT_ASSERTION_PASS(assertion)   CPPUNIT_ASSERT_NO_THROW( assertion )
 
 #include <ctime>
 #include "MasterTest.h"
+#include "UnitTestUtil.h"
 #include <cppunit/extensions/HelperMacros.h>
 const wchar_t* DEST_PATH = L"../../TestData/PARCEL_linuxtest.SDX";
 const wchar_t* SHP_PATH = L"../../TestData/World_Countries.sdf";
@@ -126,86 +127,107 @@ void MasterTest::openConnection(FdoIConnection* conn, const wchar_t* path, bool 
 
 void MasterTest::deleteTest()
 {
-    FdoPtr<FdoIConnection> conn = CreateConnection();
+    FdoPtr<FdoIConnection> conn;
 
-    openConnection(conn, DEST_PATH);    
-   
-    FdoPtr<FdoIDelete> del = (FdoIDelete*)conn->CreateCommand(FdoCommandType_Delete); 
+    try {
+        conn = CreateConnection();
 
-    del->SetFeatureClassName(L"DaKlass");
+        openConnection(conn, DEST_PATH);    
+       
+        FdoPtr<FdoIDelete> del = (FdoIDelete*)conn->CreateCommand(FdoCommandType_Delete); 
 
-    //delete two features from the thing
-    FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"(Key = 'DI0022') or (Key = 'LN0316')");
+        del->SetFeatureClassName(L"DaKlass");
 
-    del->SetFilter(filter);
-    
-    int count = del->Execute();
+        //delete two features from the thing
+        FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"(Key = 'DI0022') or (Key = 'LN0316')");
 
-    printf ("\nDelete test, number of features deleted = %d\n", count);
-    CPPUNIT_ASSERT(count == 2);
+        del->SetFilter(filter);
+        
+        int count = del->Execute();
 
-    conn->Close();
+        printf ("\nDelete test, number of features deleted = %d\n", count);
+        CPPUNIT_ASSERT(count == 2);
+
+        conn->Close();
+    }
+    catch ( FdoException* ex ) {
+        UnitTestUtil::FailOnException( ex );
+    }
 }
 
 
 void MasterTest::updateTest()
 {
-    FdoPtr<FdoIConnection> conn = CreateConnection();
+    FdoPtr<FdoIConnection> conn;
 
-    openConnection(conn, DEST_PATH);    
+    try {
+        conn = CreateConnection();
 
-
-    FdoPtr<FdoIUpdate> update = (FdoIUpdate*)conn->CreateCommand(FdoCommandType_Update); 
-
-    update->SetFeatureClassName(L"DaKlass");
-
-    FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"(Key = 'DI0022')");// or (Key = 'LN0316')");
-
-    update->SetFilter(filter);
-
-    FdoPtr<FdoStringValue> sval = FdoStringValue::Create(L"Cool");
-    FdoPtr<FdoPropertyValue> pv = FdoPropertyValue::Create(L"Name", sval);
-
-    FdoPtr<FdoPropertyValueCollection> pvc = update->GetPropertyValues();
-
-    pvc->Add(pv);
-
-    printf("\n\n\nTesting Update");
-       
-    int count = update->Execute();
+        openConnection(conn, DEST_PATH);    
 
 
-    conn->Close();
+        FdoPtr<FdoIUpdate> update = (FdoIUpdate*)conn->CreateCommand(FdoCommandType_Update); 
+
+        update->SetFeatureClassName(L"DaKlass");
+
+        FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"(Key = 'DI0022')");// or (Key = 'LN0316')");
+
+        update->SetFilter(filter);
+
+        FdoPtr<FdoStringValue> sval = FdoStringValue::Create(L"Cool");
+        FdoPtr<FdoPropertyValue> pv = FdoPropertyValue::Create(L"Name", sval);
+
+        FdoPtr<FdoPropertyValueCollection> pvc = update->GetPropertyValues();
+
+        pvc->Add(pv);
+
+        printf("\n\n\nTesting Update");
+           
+        int count = update->Execute();
+
+
+        conn->Close();
+    }
+    catch ( FdoException* ex ) {
+        UnitTestUtil::FailOnException( ex );
+    }
 }
 
 void MasterTest::concurencyTest()
 {
-    FdoPtr<FdoIConnection> update_conn = CreateConnection();
-    openConnection(update_conn, DEST_PATH);    
+    FdoPtr<FdoIConnection> update_conn;
+    
+    try {
+        update_conn = CreateConnection();
+        openConnection(update_conn, DEST_PATH);    
 
 
-    FdoPtr<FdoIUpdate> update = (FdoIUpdate*)update_conn->CreateCommand(FdoCommandType_Update); 
+        FdoPtr<FdoIUpdate> update = (FdoIUpdate*)update_conn->CreateCommand(FdoCommandType_Update); 
 
-    update->SetFeatureClassName(L"DaKlass");
+        update->SetFeatureClassName(L"DaKlass");
 
-    FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"(Key = 'DI0022')");// or (Key = 'LN0316')");
+        FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"(Key = 'DI0022')");// or (Key = 'LN0316')");
 
-    update->SetFilter(filter);
+        update->SetFilter(filter);
 
-    FdoPtr<FdoStringValue> sval = FdoStringValue::Create(L"Cool");
-    FdoPtr<FdoPropertyValue> pv = FdoPropertyValue::Create(L"Name", sval);
+        FdoPtr<FdoStringValue> sval = FdoStringValue::Create(L"Cool");
+        FdoPtr<FdoPropertyValue> pv = FdoPropertyValue::Create(L"Name", sval);
 
-    FdoPtr<FdoPropertyValueCollection> pvc = update->GetPropertyValues();
+        FdoPtr<FdoPropertyValueCollection> pvc = update->GetPropertyValues();
 
-    pvc->Add(pv);
+        pvc->Add(pv);
 
-    printf("\n\n\nTesting Update");
-       
-    int count = update->Execute();
+        printf("\n\n\nTesting Update");
+           
+        int count = update->Execute();
 
-	printf("\n\nUpdated %d features\n", count);
+	    printf("\n\nUpdated %d features\n", count);
 
-    update_conn->Close();
+        update_conn->Close();
+    }
+    catch ( FdoException* ex ) {
+        UnitTestUtil::FailOnException( ex );
+    }
 }
 
 void MasterTest::keyFilterBeforeDelete()

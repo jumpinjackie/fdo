@@ -86,6 +86,7 @@ noinst_HEADERS = $(libSDFProviderSrc_la_SOURCES) \
    SdfDistinctDataReader.h \
    SdfExpressionCapabilities.h \
    SdfExtendedSelect.h \
+   SdfExtHashMap.h \
    SdfImpExtendedSelect.h \
    SdfFeatureCommand.h \
    SdfFilterCapabilities.h \

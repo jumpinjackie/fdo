@@ -449,6 +449,19 @@ void DataDb::SetOrderingOptions( std::map<std::wstring, int> *opts )
 	}
 }
 
+void DataDb::Drop()
+{
+
+    if ( m_db->Drop() != 0 ) {
+        throw FdoException::Create(
+            NlsMsgGetMain(
+                FDO_NLSID(SDFPROVIDER_81_DROP_TABLE),
+                L"Data"
+            )
+        );
+    }
+}
+
 int DataDb::compare(int size1,const void* data1,int size2,const void* data2)
 {
   if( m_CompareHandler == NULL )

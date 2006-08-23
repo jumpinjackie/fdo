@@ -1032,3 +1032,15 @@ void SdfRTree::Flush()
 	m_bReadOnly = true; // re-start fresh again as all the RTree is flushed
 }
 
+void SdfRTree::Drop()
+{
+    if ( m_db->Drop() != 0 ) {
+        throw FdoException::Create(
+            NlsMsgGetMain(
+                FDO_NLSID(SDFPROVIDER_81_DROP_TABLE),
+                L"RTree"
+            )
+        );
+    }
+}
+

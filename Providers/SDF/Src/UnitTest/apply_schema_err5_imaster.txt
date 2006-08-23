@@ -1,3 +1,4 @@
+ Cannot delete class definition 'Acad:AcDbEntity'; it has objects 
  Unsupported Schema modification; Cannot make abstract class 'Acad:ElectricDevice' concrete 
  Unsupported Schema modification; Cannot change autogeneration setting for data property 'Acad:ElectricDevice.FeatId' 
  Unsupported Schema modification; Cannot change geometry types for geometric property 'Acad:ElectricDevice.Geometry' 
@@ -15,8 +16,9 @@
  Unsupported Schema modification; Cannot change autogeneration setting for data property 'Acad:Transformer.SerialNum' 
  Unsupported Schema modification; Cannot change property 'Acad:Transformer.SerialNum' to be read-only 
  Cannot add property 'Acad:Transformer.LastRepairDate'; it already exists 
- Unsupport Schema modification; Cannot delete class definition 'Acad:Conductor' 
+ Cannot delete class definition 'Acad:Conductor'; it has objects 
  Cannot change property type of property 'Acad:Pole.Height'.  
  Cannot modify property 'Acad:Pole.Material'; it does not exist 
- Unsupported Schema modification; Cannot change property 'Acad:Customer.Credit Rating' to be writable 
  Cannot modify class 'Acad:NoExists'; it does not exist 
+ Cannot delete class 'Acad:Customer'; it is the base class for 'Acad:Customer - Residential' 
+ Cannot delete class 'Acad:Customer'; it is the base class for 'Acad:Customer - Business' 

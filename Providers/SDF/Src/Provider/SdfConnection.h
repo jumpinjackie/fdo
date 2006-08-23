@@ -17,27 +17,7 @@
 #ifndef SDFCONNECTION_H
 #define SDFCONNECTION_H
 
-#ifdef WIN32
-#include <hash_map>
-#else
-#include <ext/hash_map>
-namespace stdext = ::__gnu_cxx;
-using namespace std;
-
-namespace __gnu_cxx
-{
-    template<> struct hash< void* >
-    {
-        size_t operator()( void* const& x ) const
-        {
-            return hash< int >()( (int)x );
-        }
-    };
-}
-
-#endif
-
-
+#include "SdfExtHashMap.h"
 #include "RTree.h"
 #include "SDF/SdfCompareHandler.h"
 #include "SdfSchemaMergeContext.h"

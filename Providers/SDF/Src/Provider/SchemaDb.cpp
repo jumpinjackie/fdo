@@ -231,8 +231,31 @@ void SchemaDb::SetSchema(SdfISchemaMergeContextFactory* mergeFactory, FdoFeature
     // Work on copy of current schema in case we hit an error and mess them up.
     FdoFeatureSchemaP oldSchema = m_schema ? FdoCommonSchemaUtil::DeepCopyFdoFeatureSchema( m_schema ) : (FdoFeatureSchema*) NULL;
 
+    bool hasOldSchema = (oldSchema == NULL);
+
     // Merge applied schema into current schemas
-    FdoFeatureSchemaP mergedSchema = MergeSchema( mergeFactory, oldSchema, FDO_SAFE_ADDREF(schema), ignoreStates );
+    SdfSchemaMergeContextP context = MergeSchema( mergeFactory, oldSchema, FDO_SAFE_ADDREF(schema), ignoreStates );
+    
+    FdoFeatureSchemaP mergedSchema;
+    if ( context ) {
+        // Get the merged schema
+        FdoFeatureSchemasP mergedSchemas = context->GetSchemas();
+        mergedSchema = mergedSchemas->GetItem( oldSchema->GetName() );
+
+        // Handle database updates that must be done before AcceptChanges() is called on merged
+        // schemas, and before merged schemas are written to database.
+        // No updates necessary if no merge context (no existing schema).
+        PreUpdatePhysical( context );
+    }
+    else {
+        // Merge Context is NULL, meaning that there is no existing schema.
+        // Use given schemas as is.
+        mergedSchema = FDO_SAFE_ADDREF(schema);
+    }
+
+    // Remove any deleted elements so they are not written to the database.
+    // AcceptChanges removes any elements with "Deleted" state.
+    mergedSchema->AcceptChanges();
 
     // Update the schema table with resulting schemas.
 
@@ -247,6 +270,12 @@ void SchemaDb::SetSchema(SdfISchemaMergeContextFactory* mergeFactory, FdoFeature
     try {
         // Write the merged schemas to the database
         WriteSchema( mergedSchema );
+
+        if ( context ) {
+            // Handle database updates that must be done after new schemas are written to database.
+            // No updates necessary if no merge context (no existing schema).
+            PostUpdatePhysical( context );
+        }
     }
     catch ( ... ) {
         // Rollback on error
@@ -261,12 +290,17 @@ void SchemaDb::SetSchema(SdfISchemaMergeContextFactory* mergeFactory, FdoFeature
         if ( m_env->commit() != 0 ) 
             throw FdoSchemaException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_79_COMMIT_TRANSACTION)));
 
+    }
+
+    if ( context ) {
         // Clear element states for applied schema as per FDO IApplySchema spec.
+        // If no Merge Context was created then this was already since schema and 
+        // mergedSchema are the same.
         schema->AcceptChanges();
     }
 }
 
-FdoFeatureSchemaP SchemaDb::MergeSchema(
+SdfSchemaMergeContextP SchemaDb::MergeSchema(
     SdfISchemaMergeContextFactory* mergeFactory,    
     FdoFeatureSchemaP oldSchema, 
     FdoFeatureSchemaP newSchema, 
@@ -274,8 +308,8 @@ FdoFeatureSchemaP SchemaDb::MergeSchema(
 )
 {
     if ( oldSchema == NULL ) 
-        // Datastore has no schema so simply set schema to the applied schema.
-        return newSchema;
+        // Datastore has no schema so no need to merge.
+        return SdfSchemaMergeContextP();
 
 
     // Create a context to merge applied schema into existing schema. 
@@ -323,7 +357,17 @@ FdoFeatureSchemaP SchemaDb::MergeSchema(
         throw schEx;
     }
 
-    return oldSchema;
+    return context;
+}
+
+void SchemaDb::PreUpdatePhysical( SdfSchemaMergeContextP mergeContext )
+{
+    mergeContext->PreUpdatePhysical();
+}
+
+void SchemaDb::PostUpdatePhysical( SdfSchemaMergeContextP mergeContext )
+{
+    mergeContext->PostUpdatePhysical();
 }
 
 void SchemaDb::ReadFeatureClass(REC_NO classRecno, FdoFeatureSchema* schema)

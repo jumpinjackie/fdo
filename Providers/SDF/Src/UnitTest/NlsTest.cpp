@@ -14,6 +14,7 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "NlsTest.h"
+#include "UnitTestUtil.h"
 #include <ctime>
 #include <cppunit/extensions/HelperMacros.h>
 #include "SDF/SdfCommandType.h"
@@ -80,7 +81,7 @@ void NlsTest::DoTest ( bool reconnect )
 
     try
     {
-        connection = openConnection(true);
+        connection = UnitTestUtil::OpenConnection( NLS_TEST_FILE, true );
 
         FdoFeatureSchemaP pTestSchema = InitSchema( connection );
 
@@ -94,7 +95,7 @@ void NlsTest::DoTest ( bool reconnect )
  
         if ( reconnect ) {
             connection->Close();
-            connection = openConnection(false);
+            connection = UnitTestUtil::OpenConnection( NLS_TEST_FILE, false );
         }
 
         AddFeatures( connection, pfsc, GetClass1Name() );
@@ -102,7 +103,7 @@ void NlsTest::DoTest ( bool reconnect )
 
         if ( reconnect ) {
             connection->Close();
-            connection = openConnection(false);
+            connection = UnitTestUtil::OpenConnection( NLS_TEST_FILE, false );
         }
 
         SelectFeatures( connection, GetClass1Name() );
@@ -273,59 +274,6 @@ void NlsTest::SelectFeatures( FdoIConnection* connection, FdoStringP className, 
         CPPUNIT_ASSERT( rowCount == 3 );
 
     rdr->Close();
-}
-
-FdoIConnection* NlsTest::openConnection( bool re_create )
-{
-#ifdef _WIN32
-	wchar_t fullpath[1024];
-	_wfullpath(fullpath, NLS_TEST_FILE, 1024);
-#else
-	char cpath[1024];
-	char cfullpath[1024];
-	wcstombs(cpath, NLS_TEST_FILE, 1024);
-	realpath(cpath, cfullpath);
-	wchar_t fullpath[1024];
-	mbstowcs(fullpath, cfullpath, 1024);
-#endif
-
-    FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager ();
-    FdoIConnection *conn = manager->CreateConnection (L"OSGeo.SDF.3.2");
-	if( re_create )
-	{
-		size_t len = wcstombs(NULL, NLS_TEST_FILE, 0);
-		char* mbsPath = new char[len+1];
-		wcstombs(mbsPath, NLS_TEST_FILE, len+1);
-
-#ifdef _WIN32    
-		SetFileAttributes(mbsPath, FILE_ATTRIBUTE_NORMAL);
-		DeleteFile(mbsPath);
-#else
-		unlink(mbsPath);
-#endif
-
-		delete[] mbsPath;
-
-
-		FdoPtr<FdoICreateSDFFile> crsdf = (FdoICreateSDFFile*)(conn->CreateCommand(SdfCommandType_CreateSDFFile));
-
-		crsdf->SetCoordinateSystemWKT(L"[LL84]");
-		crsdf->SetFileName(fullpath);
-		crsdf->SetSpatialContextDescription(L"World Coordinate System, Degrees, what else do you need to know?");
-		crsdf->SetSpatialContextName(L"World Geodetic Coordinate System, 1984");
-		crsdf->SetXYTolerance(17.0);
-		crsdf->SetZTolerance(3.14159);
-
-		crsdf->Execute();
-
-	}
-    std::wstring connStr = std::wstring(L"File=") + std::wstring(fullpath);
-    conn->SetConnectionString(connStr.c_str());
-    FdoPtr<FdoIConnectionInfo>info = conn->GetConnectionInfo();
-    FdoPtr<FdoIConnectionPropertyDictionary> prop = info->GetConnectionProperties();
-    conn->Open();
-
-    return conn;
 }
 
 FdoStringP NlsTest::GetClass1Name()

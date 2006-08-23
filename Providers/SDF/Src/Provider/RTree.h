@@ -48,6 +48,8 @@ public:
 
 	void Flush();
 
+    void Drop();
+
 private:
 
     //database access helper functions
