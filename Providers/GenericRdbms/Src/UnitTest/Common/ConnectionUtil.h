@@ -78,6 +78,8 @@ public:
 
 public:
 	virtual ~ConnectionUtil(void);
+protected:
+	bool m_SetupDone;
 };
 
 #endif // CPP_UNIT_CONNECTIONUTIL_H

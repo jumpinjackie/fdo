@@ -240,7 +240,7 @@ void StaticConnection::info ()
 
 ConnectionUtil::ConnectionUtil(void)
 {
-
+	m_SetupDone = false;
 }
 
 ConnectionUtil::~ConnectionUtil(void)

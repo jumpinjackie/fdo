@@ -96,7 +96,6 @@ const char* OdbcStaticConnection::GetServiceName()
 OdbcConnectionUtil::OdbcConnectionUtil(void)
 {
 	m_SetupValues = new StringPropertiesDictionary();
-	LoadInitializeFile();
 
 	srand( (unsigned)time( NULL ) );
 	int TestID = (int)(((double)rand()/(double)100.3666) * 100.3666 + 1.3666);
@@ -108,6 +107,7 @@ void OdbcConnectionUtil::LoadInitializeFile()
 {
 	try
 	{
+		m_SetupDone = true;
 		FdoStringP fileNameCfg = getenv("initfiletest");
 		if (fileNameCfg.GetLength() == 0)
 			fileNameCfg = ODBC_INIT_FILENAME_TEST;
@@ -276,7 +276,7 @@ OdbcConnectionUtil::~OdbcConnectionUtil(void)
 
 void OdbcConnectionUtil::SetProvider( const char *providerName )
 {
-	if(getenv("initfiletest") != NULL)
+	if(!m_SetupDone)
 		LoadInitializeFile();
 
 	if (getenv("USE_ENV") == NULL)
@@ -660,7 +660,8 @@ void OdbcConnectionUtil::SetupOracleDSN()
         printf("%.200s\n", (char *)szErrorMsg);
         throw FdoException::Create (L"Oracle DSN setup failed");
     }
-
+	if (sqlenv != SQL_NULL_HENV)
+		SQLFreeHandle(SQL_HANDLE_ENV, sqlenv);
     if (!ret )
     {
         DWORD error;

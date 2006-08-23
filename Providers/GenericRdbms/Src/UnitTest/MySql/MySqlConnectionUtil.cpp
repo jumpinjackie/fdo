@@ -72,7 +72,6 @@ const char* MySqlStaticConnection::GetServiceName()
 MySqlConnectionUtil::MySqlConnectionUtil(void)
 {
 	m_SetupValues = new StringPropertiesDictionary();
-	LoadInitializeFile();
 	srand( (unsigned)time( NULL ) );
 	int TestID = (int)(((double)rand()/(double)100.3666) * 100.3666 + 1.3666);
 	m_IdTest = FdoStringP::Format(L"_%d_", TestID);
@@ -83,6 +82,7 @@ void MySqlConnectionUtil::LoadInitializeFile()
 {
 	try
 	{
+		m_SetupDone = true;
 		FdoStringP fileNameCfg = getenv("initfiletest");
 		if (fileNameCfg.GetLength() == 0)
 			fileNameCfg = MYSQL_INIT_FILENAME_TEST;
@@ -156,7 +156,7 @@ MySqlConnectionUtil::~MySqlConnectionUtil(void)
 
 void MySqlConnectionUtil::SetProvider( const char *providerName )
 {
-	if(getenv("initfiletest") != NULL)
+	if(!m_SetupDone)
 		LoadInitializeFile();
 	
 	if (getenv("USE_ENV") == NULL)
