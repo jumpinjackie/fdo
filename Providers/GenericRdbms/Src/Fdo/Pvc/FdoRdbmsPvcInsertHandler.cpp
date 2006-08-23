@@ -144,7 +144,7 @@ long FdoRdbmsPvcInsertHandler::Execute( const FdoSmLpClassDefinition *classDefin
 		if( mInsertAutoIncrementProperties )
 			insertQuery = GetInsertQuery( (const wchar_t*)(FdoStringP(name,true)+FdoStringP(L"WithId")), true );
 		else
-			insertQuery = GetInsertQuery(  name, true );
+			insertQuery = GetInsertQuery(  name, false );
 
 		FdoStringP valuesString(L"");
         FdoStringP colSpecString(L"");
