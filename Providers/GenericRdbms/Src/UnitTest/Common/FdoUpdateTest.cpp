@@ -2085,7 +2085,7 @@ void FdoUpdateTest::CreateExternalData( FdoPtr<FdoIConnection> connection, FdoSm
     UpdateCommand->SetFilter( filter );
     propertyValues = UpdateCommand->GetPropertyValues();
     
-    dataValue = FdoDataValue::Create(L"M\x00f6dified");
+    dataValue = FdoDataValue::Create(L"M\x00f6"L"dified");
     propertyValue = FdoUpdateTest::AddNewProperty( propertyValues, phMgr->GetDcColumnName(ValueColName()) );
     propertyValue->SetValue(dataValue);
     UpdateCommand->Execute();
@@ -2322,7 +2322,7 @@ void FdoUpdateTest::VldNoMetaRow(
             }
         }
 
-        CPPUNIT_ASSERT( wcscmp( rdr->GetString(phMgr->GetDcColumnName(ValueColName())), L"M\x00f6dified" ) == 0 );
+        CPPUNIT_ASSERT( wcscmp( rdr->GetString(phMgr->GetDcColumnName(ValueColName())), L"M\x00f6"L"dified" ) == 0 );
 
         if ( hasGeom && !propsPruned ) 
             CheckGeometry( rdr, phMgr->GetDcColumnName(L"GEOMETRY"), 5, 10, 0 );
