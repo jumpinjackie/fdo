@@ -323,7 +323,6 @@ FdoInt32 FdoRdbmsFeatureReader::GetPropertyCount()
 // This is an internal method to support the DataReader
 FdoString* FdoRdbmsFeatureReader::GetPropertyName(FdoInt32 index)
 {
-    static const wchar_t* revNumberProp = L"RevisionNumber";
     if( index >= GetPropertyCount() )
        throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_52, "Index out of range"));
 
@@ -351,8 +350,6 @@ FdoString* FdoRdbmsFeatureReader::GetPropertyName(FdoInt32 index)
     }
     else
     {
-        if( FdoCommonOSUtil::stricmp(mColList[colIdx].column, "RevisionNumber") == 0 )
-            return revNumberProp;
         return mConnection->GetSchemaUtil()->ColName2Property(mClassDefinition->GetQName(), mConnection->GetUtility()->Utf8ToUnicode(mColList[colIdx].column) );
     }
 

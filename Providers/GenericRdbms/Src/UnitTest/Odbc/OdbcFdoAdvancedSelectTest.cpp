@@ -21,11 +21,11 @@
 #include "UnitTestUtil.h"
 
 #ifdef _WIN32
-#pragma message ("Info: OdbcAccessFdoAdvancedSelectTest tests are disabled!!!")
-//CPPUNIT_TEST_SUITE_REGISTRATION( OdbcAccessFdoAdvancedSelectTest );
-//CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcAccessFdoAdvancedSelectTest, "FdoAdvancedSelectTest");
-//CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcAccessFdoAdvancedSelectTest, "OdbcAccessFdoAdvancedSelectTest");
-//CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcAccessFdoAdvancedSelectTest, "OdbcAccessTests");
+#pragma message ("Info: Some OdbcAccessFdoAdvancedSelectTest tests are not yet enabled.")
+CPPUNIT_TEST_SUITE_REGISTRATION( OdbcAccessFdoAdvancedSelectTest );
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcAccessFdoAdvancedSelectTest, "FdoAdvancedSelectTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcAccessFdoAdvancedSelectTest, "OdbcAccessFdoAdvancedSelectTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcAccessFdoAdvancedSelectTest, "OdbcAccessTests");
 
 void OdbcAccessFdoAdvancedSelectTest::set_provider()
 {
@@ -48,6 +48,34 @@ void OdbcAccessFdoAdvancedSelectTest::connect ()
             mConnection= NULL;
         }
         UnitTestUtil::fail (ex);
+    }
+}
+
+void OdbcAccessFdoAdvancedSelectTest::TestDefect785616()
+{
+    try
+    {
+        FdoPtr<FdoISelectAggregates> selectCmd = (FdoISelectAggregates*)mConnection->CreateCommand(FdoCommandType_SelectAggregates);
+
+        selectCmd->SetFeatureClassName(L"CITIES_PRIMARY");
+
+        FdoPtr<FdoIDataReader> reader = selectCmd->Execute();
+
+        int numFeatures = 0;
+        while (reader->ReadNext())
+        {
+            numFeatures++;
+            UnitTestUtil::ProcessData(reader);
+        }
+
+        printf("   %i feature(s) read\n", numFeatures);
+
+        // close the reader
+        reader->Close();
+    }
+    catch (FdoException* e)
+    {
+        UnitTestUtil::fail (e);
     }
 }
 
@@ -181,6 +209,8 @@ void OdbcAccessFdoAdvancedSelectTest::ComparisonFilterTable1Test()
 
 void OdbcAccessFdoAdvancedSelectTest::TestReaderDestructor()
 {
+#if 0
+    // Test not enabled yet.  Try after fixing defect 673849.01.
     try
     {
         for (int i=0; i<5; i++)
@@ -200,12 +230,15 @@ void OdbcAccessFdoAdvancedSelectTest::TestReaderDestructor()
     {
         UnitTestUtil::fail (e);
     }
+#endif
 }
 
 
 // A test that is hard-coded for a known table.
 void OdbcAccessFdoAdvancedSelectTest::selectDistinctTest()
 {
+#if 0
+    // Test not enabled yet.  Try after fixing defect 673849.01.
     try
     {
         FdoPtr<FdoISelectAggregates> selectAggrCmd = (FdoISelectAggregates*)mConnection->CreateCommand(FdoCommandType_SelectAggregates);
@@ -290,12 +323,15 @@ void OdbcAccessFdoAdvancedSelectTest::selectDistinctTest()
     {
         UnitTestUtil::fail (e);
     }
+#endif
 }
 
 
 // A test that is hard-coded for a known table.
 void OdbcAccessFdoAdvancedSelectTest::orderByTest()
 {
+#if 0
+    // Test not enabled yet.  Try after fixing defect 673849.01.
     try
     {
         FdoPtr<FdoISelectAggregates> selectAggrCmd = (FdoISelectAggregates*)mConnection->CreateCommand(FdoCommandType_SelectAggregates);
@@ -341,12 +377,15 @@ void OdbcAccessFdoAdvancedSelectTest::orderByTest()
     {
         UnitTestUtil::fail (e);
     }
+#endif
 }
 
 
 // A test that is hard-coded for a known table.
 void OdbcAccessFdoAdvancedSelectTest::groupByTest()
 {
+#if 0
+    // Test not enabled yet.  Try after fixing defect 673849.01.
     try
     {
         FdoPtr<FdoISelectAggregates> selectAggrCmd = (FdoISelectAggregates*)mConnection->CreateCommand(FdoCommandType_SelectAggregates);
@@ -400,6 +439,7 @@ void OdbcAccessFdoAdvancedSelectTest::groupByTest()
     {
         UnitTestUtil::fail (e);
     }
+#endif
 }
 
 
@@ -505,6 +545,8 @@ void OdbcAccessFdoAdvancedSelectTest::TestCount()
 // A test that is hard-coded for a known table.
 void OdbcAccessFdoAdvancedSelectTest::TestUpperLower()
 {
+#if 0
+    // Test not enabled yet.  Try after fixing defect 673849.01.
     try
     {
         FdoPtr<FdoISelectAggregates> selectAggrCmd = (FdoISelectAggregates*)mConnection->CreateCommand(FdoCommandType_SelectAggregates);
@@ -546,12 +588,15 @@ void OdbcAccessFdoAdvancedSelectTest::TestUpperLower()
     {
         UnitTestUtil::fail (e);
     }
+#endif
 }
 
 
 // A test that is hard-coded for a known table.
 void OdbcAccessFdoAdvancedSelectTest::TestConcat()
 {
+#if 0
+    // Test not enabled yet.  Try after fixing defect 673849.01.
     try
     {
         FdoPtr<FdoISelectAggregates> selectAggrCmd = (FdoISelectAggregates*)mConnection->CreateCommand(FdoCommandType_SelectAggregates);
@@ -593,6 +638,7 @@ void OdbcAccessFdoAdvancedSelectTest::TestConcat()
     {
         UnitTestUtil::fail (e);
     }
+#endif
 }
 
 #endif

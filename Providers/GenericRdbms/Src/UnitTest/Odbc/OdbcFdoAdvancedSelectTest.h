@@ -47,6 +47,7 @@ class OdbcAccessFdoAdvancedSelectTest : public FdoAdvancedSelectTest
     virtual void functionTest() {};
     virtual void selectDistinctTest();
     virtual void TestDefect779194() {};
+    virtual void TestDefect785616();
 
     // Extra tests for this class.
     void Table1Test();

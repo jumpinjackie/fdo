@@ -389,7 +389,7 @@ const wchar_t *FdoRdbmsSchemaUtil::ColName2Property(const wchar_t *className, co
 
     const FdoSmLpClassDefinition *classDefinition = GetClass(className);
     const FdoSmLpPropertyDefinitionCollection *propertyDefinitions = classDefinition->RefProperties();
-    for (i=0; i<propertyDefinitions->GetCount(); i++)
+    for (i=0; NULL==string && i<propertyDefinitions->GetCount(); i++)
     {
         const FdoSmLpPropertyDefinition *propertyDefinition = propertyDefinitions->RefItem(i);
 
@@ -397,16 +397,38 @@ const wchar_t *FdoRdbmsSchemaUtil::ColName2Property(const wchar_t *className, co
         if (propertyDefinition->GetPropertyType() == FdoPropertyType_DataProperty ||
             propertyDefinition->GetPropertyType() == FdoPropertyType_GeometricProperty )
         {
-            const FdoSmLpDataPropertyDefinition* dataProp =
-                static_cast<const FdoSmLpDataPropertyDefinition*>(propertyDefinition);
-            const FdoSmPhColumn *column = dataProp->RefColumn();
+            const FdoSmLpSimplePropertyDefinition* simpleProp =
+                static_cast<const FdoSmLpSimplePropertyDefinition*>(propertyDefinition);
+
+            const FdoSmPhColumn *column = simpleProp->RefColumn();
+
             if (NULL != column)
             {
                 const wchar_t *colName = column->GetName();
-			    if (FdoCommonOSUtil::wcsicmp(colName, columnName) == 0)
+                if (FdoCommonOSUtil::wcsicmp(colName, columnName) == 0)
                 {
-                    //string = mUtility->UnicodeToUtf8(propertyDefinition->GetName());
-                    //break;
+                    return propertyDefinition->GetName();
+                }
+            }
+            if (NULL==string && propertyDefinition->GetPropertyType() == FdoPropertyType_GeometricProperty)
+            {
+                // Check other columns that may be associated with a geometric property.
+                // Probably none other than the X ordinate column will ever come through here,
+                // but we'll allow any of them anyway (X, Y, Z, SI1, SI2).
+                const FdoSmLpGeometricPropertyDefinition* geometricProp =
+                    static_cast<const FdoSmLpGeometricPropertyDefinition*>(propertyDefinition);
+                FdoString *colNameX = geometricProp->GetColumnNameX();
+                FdoString *colNameY = geometricProp->GetColumnNameY();
+                FdoString *colNameZ = geometricProp->GetColumnNameZ();
+                FdoString *colNameSi1 = geometricProp->GetColumnNameSi1();
+                FdoString *colNameSi2 = geometricProp->GetColumnNameSi2();
+
+                if ( ( NULL != colNameX && FdoCommonOSUtil::wcsicmp(colNameX, columnName) == 0 ) ||
+                     ( NULL != colNameY && FdoCommonOSUtil::wcsicmp(colNameY, columnName) == 0 ) ||
+                     ( NULL != colNameZ && FdoCommonOSUtil::wcsicmp(colNameZ, columnName) == 0 ) ||
+                     ( NULL != colNameSi1 && FdoCommonOSUtil::wcsicmp(colNameSi1, columnName) == 0 ) ||
+                     ( NULL != colNameSi2 && FdoCommonOSUtil::wcsicmp(colNameSi2, columnName) == 0 ) )
+                {
                     return propertyDefinition->GetName();
                 }
             }
@@ -416,7 +438,7 @@ const wchar_t *FdoRdbmsSchemaUtil::ColName2Property(const wchar_t *className, co
             continue;
         }
     }
-    //if( i == propertyDefinitions->GetCount() )
+    //if( NULL == string )
         throw FdoSchemaException::Create(NlsMsgGet2(FDORDBMS_406, "Property '%1$ls' from class '%2$ls' has no database mapping", columnName, className));
     //return string;
 }
