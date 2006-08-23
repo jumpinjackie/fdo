@@ -112,7 +112,7 @@ void OdbcConnectionUtil::LoadInitializeFile()
 		if (fileNameCfg.GetLength() == 0)
 			fileNameCfg = ODBC_INIT_FILENAME_TEST;
 		else
-			FdoCommonOSUtil::setenv("initfiletest", NULL);
+			FdoCommonOSUtil::setenv("initfiletest", "");
 		char buffer[1001];
 		FdoCommonFile pFile;
 		FdoCommonFile::ErrorCode err = FdoCommonFile::ERROR_NONE;
@@ -619,10 +619,12 @@ void OdbcConnectionUtil::SetupOracleDSN()
     if ( SQLRETURN_OK(rc) )
     {
         SQLUSMALLINT direction = SQL_FETCH_FIRST;
+        SQLSMALLINT driverDescLength = 0;
+        SQLSMALLINT driverAttrsLength = 0;
         do
         {
-            SQLSMALLINT driverDescLength = 0;
-            SQLSMALLINT driverAttrsLength = 0;
+            driverDescLength = 0;
+            driverAttrsLength = 0;
             rc = SQLDrivers(sqlenv, direction, (SQLCHAR *) driverDesc, (SQLSMALLINT) sizeof(driverDesc), &driverDescLength,
                 (SQLCHAR *) driverAttrs, (SQLSMALLINT) sizeof(driverAttrs), &driverAttrsLength);
             if (SQLRETURN_OK(rc))
@@ -636,6 +638,17 @@ void OdbcConnectionUtil::SetupOracleDSN()
 
         if (SQL_NO_DATA == rc)
             rc = SQL_SUCCESS;
+		direction = SQL_FETCH_FIRST;
+		FdoStringP pDSNOracle = m_SetupValues->GetPropertyValue( L"DSNOracle");
+		while(SQLRETURN_OK(SQLDataSources(sqlenv, direction, (SQLCHAR *)teststr, sizeof(teststr), &driverAttrsLength, (SQLCHAR *)driverDesc, sizeof(driverDesc), &driverDescLength)))
+		{
+			direction = SQL_FETCH_NEXT;
+			if (pDSNOracle == (FdoStringP)teststr)
+			{
+				SQLFreeHandle(SQL_HANDLE_ENV, sqlenv);
+				return;
+			}
+		}
     }
     if (SQLRETURN_OK(rc) && '\0' != theOracleDriverName[0])
     {
