@@ -90,53 +90,27 @@ FdoIConnectionPropertyDictionary* FdoWfsConnectionInfo::GetConnectionProperties 
     {
         mPropertyDictionary = new FdoCommonConnPropDictionary (mConnection);
 
-        char* mbServerName = NULL;
-        wide_to_multibyte (mbServerName, FdoWfsGlobals::FeatureServer);
+        char* mbPropName = NULL;
+        wide_to_multibyte(mbPropName, FdoWfsGlobals::FeatureServer);
         FdoPtr<ConnectionProperty> featureServerProperty = new ConnectionProperty (
                         FdoWfsGlobals::FeatureServer,
-                        NlsMsgGet(WFS_CONNECTION_PROPERTY_FEATURESRVER, mbServerName),
-                        L"", 
-                        true, 
-                        false, 
-                        false,
-                        false,
-                        false,
-                        false,
-                        0, 
-                        NULL);
+                        NlsMsgGet(WFS_CONNECTION_PROPERTY_FEATURESRVER, mbPropName),
+                        L"", true, false, false, false, false, false, false,0, NULL);
         mPropertyDictionary->AddProperty(featureServerProperty);
 
-        char* mbUserName = NULL;
-        wide_to_multibyte (mbUserName, FdoWfsGlobals::Username);
+        wide_to_multibyte(mbPropName, FdoWfsGlobals::Username);
         FdoPtr<ConnectionProperty> usernameProperty = new ConnectionProperty (
                         FdoWfsGlobals::Username,
-                        NlsMsgGet(WFS_CONNECTION_PROPERTY_USERNAME, mbUserName),
-                        L"", 
-                        false, 
-                        false, 
-                        false, 
-                        false,
-                        false,
-                        false,
-                        0, 
-                        NULL);
+                        NlsMsgGet(WFS_CONNECTION_PROPERTY_USERNAME, mbPropName),
+                        L"", false, false, false, false, false, false, false, 0, NULL);
         mPropertyDictionary->AddProperty(usernameProperty);
 
-        char* mbPasword = NULL;
-        wide_to_multibyte (mbPasword, FdoWfsGlobals::Password);
+        wide_to_multibyte(mbPropName, FdoWfsGlobals::Password);
         FdoPtr<ConnectionProperty> passwordProperty = new ConnectionProperty (
                         FdoWfsGlobals::Password,
-                        NlsMsgGet(WFS_CONNECTION_PROPERTY_PASSWORD, mbPasword),
-                        L"", 
-                        false, 
-                        false, 
-                        false, 
-                        false,
-                        false,
-                        false,
-                        0, 
-                        NULL);
-        mPropertyDictionary->AddProperty    (passwordProperty);
+                        NlsMsgGet(WFS_CONNECTION_PROPERTY_PASSWORD, mbPropName),
+                        L"", false, false, false, false, false, false, false, 0, NULL);
+        mPropertyDictionary->AddProperty(passwordProperty);
     }
 
     return (FDO_SAFE_ADDREF(mPropertyDictionary.p));

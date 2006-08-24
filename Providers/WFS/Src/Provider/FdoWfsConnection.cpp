@@ -29,6 +29,7 @@
 #include "FdoWfsOgcFilterCapabilities.h"
 #include "FdoWfsFeatureTypeList.h"
 #include "FdoWfsFeatureType.h"
+#include <FdoCommonConnStringParser.h>
 
 // external access to connection for client services
 extern "C" FDOWFS_API FdoIConnection* CreateConnection ()
@@ -131,7 +132,7 @@ void FdoWfsConnection::SetConnectionString (FdoString* value)
         mConnectionString = value;
 
         // Update the connection property dictionary:
-        FdoPtr<FdoWfsConnectionInfo> info = dynamic_cast<FdoWfsConnectionInfo*>(GetConnectionInfo ());
+        FdoPtr<FdoIConnectionInfo> info = GetConnectionInfo ();
         FdoPtr<FdoCommonConnPropDictionary> dictionary = dynamic_cast<FdoCommonConnPropDictionary*>(info->GetConnectionProperties ());
         dictionary->UpdateFromConnectionString (mConnectionString);
     }
@@ -188,21 +189,26 @@ FdoConnectionState FdoWfsConnection::Open ()
     if (GetConnectionState() == FdoConnectionState_Open)
         return FdoConnectionState_Open;
 
-    // parse the connection string
-	FdoStringP connectionStr = mConnectionString;
-	while (connectionStr.GetLength() > 0)
-	{
-		FdoStringP onePair = connectionStr.Left(L";");
-		connectionStr = connectionStr.Right(L";");
-		FdoStringP key = onePair.Left(L"=");
-		FdoStringP value = onePair.Right(L"=");
-        if (key == FdoWfsGlobals::FeatureServer)
-			mFeatureServer = value;
-        else if (key == FdoWfsGlobals::Username)
-            mUserName = value;
-        else if (key == FdoWfsGlobals::Password)
-            mPassword = value;
-	}
+    FdoPtr<FdoIConnectionInfo> info = GetConnectionInfo ();
+    FdoPtr<FdoCommonConnPropDictionary> dictionary = dynamic_cast<FdoCommonConnPropDictionary*>(info->GetConnectionProperties ());
+
+    FdoStringP mFeatureServer = dictionary->GetProperty (FdoWfsGlobals::FeatureServer);
+    FdoStringP mUserName = dictionary->GetProperty (FdoWfsGlobals::Username);
+    FdoStringP mPassword = dictionary->GetProperty (FdoWfsGlobals::Password);
+    
+    if (0 == mFeatureServer.GetLength()) 
+    {
+        throw FdoException::Create (NlsMsgGet(WFS_CONNECTION_REQUIRED_PROPERTY_NULL, 
+            "The required property '%1$ls' cannot be set to NULL.", FdoWfsGlobals::FeatureServer));
+    }
+
+    FdoCommonConnStringParser parser (NULL, GetConnectionString ());
+    // check to see if connection string is valid and if it have unknown properties 
+    // e.g. DefaultFLocation instead of DefaultFileLocation
+    if (!parser.IsConnStringValid())
+        throw FdoException::Create (NlsMsgGet(WFS_INVALID_CONNECTION_STRING, "Invalid connection string '%1$ls'", GetConnectionString ()));
+    if (parser.HasInvalidProperties(dictionary))
+        throw FdoException::Create (NlsMsgGet(WFS_INVALID_CONNECTION_PROPERTY_NAME, "Invalid connection property name '%1$ls'", parser.GetFirstInvalidPropertyName (dictionary)));
 
     // set up the WFS delegate
     mDelegate = FdoWfsDelegate::Create(mFeatureServer, mUserName, mPassword);
@@ -268,7 +274,7 @@ FdoICommand* FdoWfsConnection::CreateCommand (FdoInt32 commandType)
 /// <returns>Returns FdoPhysicalSchemaMapping</returns> 
 FdoPhysicalSchemaMapping* FdoWfsConnection::CreateSchemaMapping()
 {
-	throw FdoException::Create (NlsMsgGet (WFS_SCHEMA_OVERRIDES_NOT_SUPPORTED, "WFS Provider does not support schema overrides."));
+    throw FdoException::Create (NlsMsgGet (WFS_SCHEMA_OVERRIDES_NOT_SUPPORTED, "WFS Provider does not support schema overrides."));
 }
 
 
@@ -283,19 +289,19 @@ void FdoWfsConnection::SetConfiguration(FdoIoStream* configStream)
 
 FdoWfsDelegate* FdoWfsConnection::GetWfsDelegate ()
 {
-	return (FDO_SAFE_ADDREF(mDelegate.p));
+    return (FDO_SAFE_ADDREF(mDelegate.p));
 }
 
 FdoWfsServiceMetadata* FdoWfsConnection::GetServiceMetadata()
 {
-	return FDO_SAFE_ADDREF(mServiceMetadata.p);
+    return FDO_SAFE_ADDREF(mServiceMetadata.p);
 }
 
 FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
 {
-	if (mSchemas == NULL) {
+    if (mSchemas == NULL) {
         // First get the raw schemas from the schema document from the server
-		mSchemas = mDelegate->DescribeFeatureType(NULL);
+        mSchemas = mDelegate->DescribeFeatureType(NULL);
 
         // And then we have to make some adjustments to the raw schemas
         // to make the schema more user friendly.
@@ -318,7 +324,7 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
                     continue;
                 }
 
-		    FdoPtr<FdoXmlSchemaMapping> mapping = static_cast<FdoXmlSchemaMapping*>(mappings->GetItem(FdoXml::mGmlProviderName, schema->GetName()));
+            FdoPtr<FdoXmlSchemaMapping> mapping = static_cast<FdoXmlSchemaMapping*>(mappings->GetItem(FdoXml::mGmlProviderName, schema->GetName()));
             FdoPtr<FdoClassCollection> classes = schema->GetClasses();
             FdoPtr<FdoXmlClassMappingCollection> classMappings = mapping->GetClassMappings();
             if (classes == NULL)
@@ -424,8 +430,8 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
 
             } // end of for each class
         }// end of for each schema
-	}
-	return FDO_SAFE_ADDREF(mSchemas.p);
+    }
+    return FDO_SAFE_ADDREF(mSchemas.p);
 }
 
 void FdoWfsConnection::_setClassDescription (FdoClassDefinition* clsdef)

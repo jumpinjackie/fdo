@@ -52,6 +52,16 @@ SymbolicName=WFS_SCHEMA_OVERRIDES_NOT_SUPPORTED
 Language=English
 WFS Provider does not support schema overrides.
 .
+MessageId=2009
+SymbolicName=WFS_INVALID_CONNECTION_STRING
+Language=English
+Invalid connection string '%1$ls'
+.
+MessageId=2010
+SymbolicName=WFS_INVALID_CONNECTION_PROPERTY_NAME
+Language=English
+Invalid connection property name '%1$ls'.
+.
 
 
 ;//************************************************************************************
