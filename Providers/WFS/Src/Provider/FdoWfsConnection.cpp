@@ -337,7 +337,9 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
                 FdoPtr<FdoClassDefinition> base = classDef->GetBaseClass();
                 bool bNoIdentity = false;
                 FdoPtr<FdoDataPropertyDefinitionCollection> ids;
-                if (base != NULL && wcscmp(base->GetName(), FdoWfsGlobals::AbstractFeature) == 0) {
+                if (base != NULL && (wcscmp(base->GetName(), FdoWfsGlobals::AbstractFeature) == 0 || 
+                    wcscmp(base->GetName(), L"AbstractFeatureCollection") == 0 ||
+                    wcscmp(base->GetName(), L"AbstractFeatureCollectionBase") == 0)) {
                     classDef->SetBaseClass(NULL);
                     ids = classDef->GetIdentityProperties();
                     if (ids->GetCount() == 0)

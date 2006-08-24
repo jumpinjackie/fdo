@@ -32,6 +32,9 @@ private:
     FdoPtr<FdoDictionary> m_mergedList;
     FdoPtr<FdoIoMemoryStream> m_mergedSchema;
     FdoPtr<FdoWfsSchemaCopyHandler> m_copier;
+    bool m_FeatureLoaded;
+    bool m_GeometryLoaded;
+    bool m_XlinksLoaded;
 
 public:
     FdoWfsSchemaMerger();

@@ -29,6 +29,12 @@
 
 FdoWfsSchemaMerger::FdoWfsSchemaMerger()
 {
+    m_FeatureLoaded = false;
+    m_GeometryLoaded = false;
+    m_XlinksLoaded = false;
+    m_mergedList = NULL;
+    m_loadedStreams = NULL;
+    m_copier = NULL;
 }
 
 FdoWfsSchemaMerger::~FdoWfsSchemaMerger()
@@ -37,6 +43,9 @@ FdoWfsSchemaMerger::~FdoWfsSchemaMerger()
 
 FdoIoStream* FdoWfsSchemaMerger::MergeSchema(FdoIoStream* schema, FdoString* schemaLocation, FdoString* uri)
 {
+    m_FeatureLoaded = false;
+    m_GeometryLoaded = false;
+    m_XlinksLoaded = false;
     m_mergedList = FdoDictionary::Create();
     m_loadedStreams = FdoWfsNamedIoStreamCollection::Create();
     m_mergedSchema = FdoIoMemoryStream::Create();
@@ -91,40 +100,57 @@ void FdoWfsSchemaMerger::_mergeSchema(FdoIoStream* schema, FdoString* schemaLoca
         FdoPtr<FdoDictionaryElement> item = m_mergedList->FindItem((FdoString*)fullLocation);
         if (item == NULL)
         {
-            refFullLocations->Add(fullLocation);
-            refUris->Add(ref->GetValue());
             // check whether it is already loaded
             FdoPtr<FdoWfsNamedIoStream> loadedStream = m_loadedStreams->FindItem((FdoString*)fullLocation);
             if (loadedStream == NULL)
             {
-				FdoPtr<FdoIoStream> stream;
-				char** xmlSchema = NULL;
-				// if it is a well known GML schema, then do not get it from outside
-				if (fullLocation.Contains(L"feature.xsd"))
-					xmlSchema = (char**)feature;
-				else if (fullLocation.Contains(L"geometry.xsd"))
-					xmlSchema = (char**)geometry;
-				else if (fullLocation.Contains(L"xlinks.xsd"))
-					xmlSchema = (char**)xlinks;
-
-				if (xmlSchema != NULL) {
-
-					stream = FdoIoMemoryStream::Create();
-					int i = 0;
-                    while (xmlSchema[i] != NULL){
-						stream->Write((FdoByte*)xmlSchema[i], strlen(xmlSchema[i]));
+                FdoPtr<FdoIoStream> stream;
+                char** xmlSchema = NULL;
+                // if it is a well known GML schema, then do not get it from outside
+                if (fullLocation.Contains(L"feature.xsd"))
+                {
+                    if (m_FeatureLoaded)
+                        continue;
+                    m_FeatureLoaded = true;
+                    xmlSchema = (char**)feature;
+                }
+                else if (fullLocation.Contains(L"geometry.xsd"))
+                {
+                    if (m_GeometryLoaded)
+                        continue;
+                    m_GeometryLoaded = true;
+                    xmlSchema = (char**)geometry;
+                }
+                else if (fullLocation.Contains(L"xlinks.xsd"))
+                {
+                    if (m_XlinksLoaded)
+                        continue;
+                    m_XlinksLoaded = true;
+                    xmlSchema = (char**)xlinks;
+                }
+                refFullLocations->Add(fullLocation);
+                refUris->Add(ref->GetValue());
+                if (xmlSchema != NULL)
+                {
+                    stream = FdoIoMemoryStream::Create();
+                    int i = 0;
+                    while (xmlSchema[i] != NULL)
+                    {
+                        stream->Write((FdoByte*)xmlSchema[i], strlen(xmlSchema[i]));
                         i++;
                     }
-					stream->Reset();
-				} else {
-					char* mbUrl;
-					wide_to_multibyte(mbUrl, (FdoString*)fullLocation);
-					FdoPtr<FdoOwsIHttpHandler> httpHandler = FdoOwsIHttpHandler::Create(mbUrl, true, "", "", "");
-					httpHandler->Perform();
-					stream = static_cast<FdoIoStream*>(FDO_SAFE_ADDREF(httpHandler.p));
-				}
-				FdoPtr<FdoWfsNamedIoStream> item = FdoWfsNamedIoStream::Create(fullLocation, stream);
-				m_loadedStreams->Add(item);
+                    stream->Reset();
+                }
+                else
+                {
+                    char* mbUrl;
+                    wide_to_multibyte(mbUrl, (FdoString*)fullLocation);
+                    FdoPtr<FdoOwsIHttpHandler> httpHandler = FdoOwsIHttpHandler::Create(mbUrl, true, "", "", "");
+                    httpHandler->Perform();
+                    stream = static_cast<FdoIoStream*>(FDO_SAFE_ADDREF(httpHandler.p));
+                }
+                FdoPtr<FdoWfsNamedIoStream> item = FdoWfsNamedIoStream::Create(fullLocation, stream);
+                m_loadedStreams->Add(item);
             }
         }
     }
