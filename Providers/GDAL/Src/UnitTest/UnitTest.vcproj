@@ -69,7 +69,7 @@
 				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib GRFPOverrides.lib cppunitd.lib"
 				OutputFile="$(OutDir)/UnitTest.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\Lib\Win32\Debug;&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib&quot;"
+				AdditionalLibraryDirectories="..\..\Lib\Win32\Debug;&quot;$(FDO)\Unmanaged\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/UnitTest.pdb"
 				SubSystem="1"
