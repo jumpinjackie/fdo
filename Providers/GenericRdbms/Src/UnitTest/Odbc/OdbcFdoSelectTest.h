@@ -157,6 +157,7 @@ class OdbcExcelFdoSelectTest : public OdbcFdoSelectTest
     CPPUNIT_TEST_SUB_SUITE (OdbcExcelFdoSelectTest, OdbcFdoSelectTest);
     CPPUNIT_TEST (AllTypesTest);
     CPPUNIT_TEST (AllTypesConfigFileTest);
+    CPPUNIT_TEST (AllTypesConfigFileTest_defect814052);
     CPPUNIT_TEST (CityTest);
     CPPUNIT_TEST (TestDateFilter);
     CPPUNIT_TEST_SUITE_END ();
@@ -164,6 +165,8 @@ class OdbcExcelFdoSelectTest : public OdbcFdoSelectTest
     void  set_provider();
     void AllTypesTest();
     void AllTypesConfigFileTest();
+    void AllTypesConfigFileTest_defect814052();
+
     // Tests select from table without primary key.
     void CityTest();
     virtual void connect ();
@@ -172,6 +175,7 @@ class OdbcExcelFdoSelectTest : public OdbcFdoSelectTest
     //FdoString * GetConnectString() {return L"ConnectionString=\"Driver={Microsoft Excel Driver (*.xls)};Dbq=Dbg/MsTest.xls;\"";}
     FdoString * GetConnectString() {return L"DataSourceName=MsTestXls;UserId=;Password=;";}
     FdoString * GetConfigFile() {return L"MsTestXlsConfig.xml";}
+    FdoString * GetConfigFile2() {return L"MsTestXlsConfigNoIdent.xml";}
     FdoString * GetSchemaName() {return L"Fdo";}
     FdoString * GetPhysicalSchemaName() {return L"";}
 

@@ -687,6 +687,53 @@ void OdbcExcelFdoSelectTest::AllTypesConfigFileTest()
     }
 }
 
+void OdbcExcelFdoSelectTest::AllTypesConfigFileTest_defect814052()
+{
+    try
+    {
+        FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
+        if (connection == NULL)
+            CPPUNIT_FAIL("FAILED - CreateConnection returned NULL\n");
+        // Use the config file that does not define an identifer property.
+        FdoIoFileStreamP fileStream = FdoIoFileStream::Create(GetConfigFile2(), L"r");
+        connection->SetConfiguration(fileStream);
+
+        connection->SetConnectionString(GetConnectString());
+        connection->Open();
+        FdoPtr<FdoISelect> selectCmd = (FdoISelect*)connection->CreateCommand(FdoCommandType_Select);
+
+        FdoStringP fcn = L"Fdo";
+        fcn += L":";
+        fcn = L"ALLTYPES";
+        selectCmd->SetFeatureClassName(fcn);
+
+        // execute the command
+        FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+
+        FdoPtr<FdoClassDefinition> classDef = reader->GetClassDefinition();
+        CPPUNIT_ASSERT_MESSAGE("Class should not have IsComputed=true", !classDef->GetIsComputed());
+        FdoFeatureSchemaP pSchema =  classDef->GetFeatureSchema(); 
+
+        // read through all the features
+        int numFeatures = 0;
+        while (reader->ReadNext())
+        {
+            numFeatures++;
+            UnitTestUtil::ProcessFeature(reader);
+        }
+
+        printf("   %i feature(s) read\n", numFeatures);
+
+        // close the reader
+        reader->Close();
+        connection->Close();
+    }
+    catch (FdoException* e)
+    {
+        UnitTestUtil::fail (e);
+    }
+}
+
 void OdbcExcelFdoSelectTest::CityTest()
 {
     if( mConnection != NULL )
