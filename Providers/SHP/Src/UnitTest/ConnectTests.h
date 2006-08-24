@@ -41,6 +41,10 @@ class ConnectTests :
     CPPUNIT_TEST (connect_params1);
     CPPUNIT_TEST (connect_params2);
     CPPUNIT_TEST (connect_params3);
+    CPPUNIT_TEST (connect_params4);
+    CPPUNIT_TEST (connect_params5);
+    CPPUNIT_TEST (connect_params6);
+    CPPUNIT_TEST (connect_params7);
     CPPUNIT_TEST_SUITE_END ();
 
     static FdoPtr<FdoIConnection> mConnection;
@@ -48,23 +52,27 @@ class ConnectTests :
 public:
     ConnectTests (void);
     virtual ~ConnectTests (void);
-	void setUp ();
-	void tearDown ();
+    void setUp ();
+    void tearDown ();
 
 protected:
-	void connect ();
-	void connect2 ();
-	void connect3 ();
-	void connect4 ();
+    void connect ();
+    void connect2 ();
+    void connect3 ();
+    void connect4 ();
     void dual_connect ();
     void connect_no_slash ();
     void connect_back_slash ();
     void connect_double_slash ();
-	void connect_wrong_params ();
-	void connect_wrong_params2 ();
-	void connect_params1 ();
-	void connect_params2 ();
-	void connect_params3 ();
+    void connect_wrong_params ();
+    void connect_wrong_params2 ();
+    void connect_params1 ();
+    void connect_params2 ();
+    void connect_params3 ();
+    void connect_params4 ();
+    void connect_params5 ();
+    void connect_params6 ();
+    void connect_params7 ();
 };
 
 #endif // CONNECTTESTS_H

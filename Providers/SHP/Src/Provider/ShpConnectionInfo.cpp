@@ -93,16 +93,16 @@ FdoIConnectionPropertyDictionary* ShpConnectionInfo::GetConnectionProperties ()
         mPropertyDictionary = new FdoCommonConnPropDictionary (mConnection);
 
         // Define all the connection properties:
-        char* mbPropName;
-        wide_to_multibyte (mbPropName, CONNECTIONPROPERTY_DEFAULT_FILE_LOCATION);
+        char* mbPropName = NULL;
+        wide_to_multibyte(mbPropName, CONNECTIONPROPERTY_DEFAULT_FILE_LOCATION);
         FdoPtr<ConnectionProperty> property = new ConnectionProperty (CONNECTIONPROPERTY_DEFAULT_FILE_LOCATION,
                 NlsMsgGet(SHP_CONNECTION_PROPERTY_DEFAULT_FILE_LOCATION, mbPropName),
-                L"", false, false, false, true, true, false, 0, NULL);
+                L"", false, false, false, true, true, false, false, 0, NULL);
         mPropertyDictionary->AddProperty(property);
-        wide_to_multibyte (mbPropName, CONNECTIONPROPERTY_TEMPORARY_FILE_LOCATION);
+        wide_to_multibyte(mbPropName, CONNECTIONPROPERTY_TEMPORARY_FILE_LOCATION);
         property = new ConnectionProperty (CONNECTIONPROPERTY_TEMPORARY_FILE_LOCATION,
                 NlsMsgGet(SHP_CONNECTION_PROPERTY_TEMPORARY_FILE_LOCATION, mbPropName),
-                L"", false, false, false, false, true, false, 0, NULL);
+                L"", false, false, false, false, true, false, false, 0, NULL);
         mPropertyDictionary->AddProperty(property);
     }
     return (FDO_SAFE_ADDREF(mPropertyDictionary.p));

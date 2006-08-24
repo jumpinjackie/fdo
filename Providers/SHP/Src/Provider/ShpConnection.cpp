@@ -102,27 +102,27 @@ ShpConnection::ShpConnection (void) :
     mConnectionState(FdoConnectionState_Closed),
     mSpatialContextColl (new ShpSpatialContextCollection ()),
     mConfigured (false),
-	mLastEditedFileSet(NULL)
+    mLastEditedFileSet(NULL)
 {
-	// Create the default SC
-	ShpSpatialContextP defltSpatialContext = new ShpSpatialContext();
-	mSpatialContextColl->Add( defltSpatialContext );
+    // Create the default SC
+    ShpSpatialContextP defltSpatialContext = new ShpSpatialContext();
+    mSpatialContextColl->Add( defltSpatialContext );
 
-	mMutex.Enter();
-	mGlobalRefCount++;
-	mMutex.Leave();
+    mMutex.Enter();
+    mGlobalRefCount++;
+    mMutex.Leave();
 }
 
 ShpConnection::~ShpConnection (void)
 {
     Close ();
 
-	// Do files compression (get rid of the deleted rows)
-	CompressFileSets();
+    // Do files compression (get rid of the deleted rows)
+    CompressFileSets();
 
-	mMutex.Enter();
-	mGlobalRefCount--;
-	mMutex.Leave();
+    mMutex.Enter();
+    mGlobalRefCount--;
+    mMutex.Leave();
 }
 
 // <summary>Dispose this object.</summary>
@@ -202,14 +202,15 @@ FdoString* ShpConnection::GetConnectionString ()
 /// <returns>Returns nothing</returns> 
 void ShpConnection::SetConnectionString (FdoString* value)
 {
-    if ((GetConnectionState() == FdoConnectionState_Closed) || (GetConnectionState() == FdoConnectionState_Pending))
+    FdoConnectionState state = GetConnectionState();
+    if (state == FdoConnectionState_Closed || state == FdoConnectionState_Pending)
     {
         // Update the connection string:
         mConnectionString = value;
 
         // Update the connection property dictionary:
-        FdoPtr<ShpConnectionInfo> connInfo = static_cast<ShpConnectionInfo*>(this->GetConnectionInfo());
-        FdoPtr<FdoCommonConnPropDictionary> connDict = static_cast<FdoCommonConnPropDictionary*>(connInfo->GetConnectionProperties());
+        FdoPtr<FdoIConnectionInfo> connInfo = GetConnectionInfo();
+        FdoPtr<FdoCommonConnPropDictionary> connDict = dynamic_cast<FdoCommonConnPropDictionary*>(connInfo->GetConnectionProperties());
         connDict->UpdateFromConnectionString(mConnectionString);
     }
     else
@@ -262,29 +263,29 @@ void ShpConnection::InitConnectionPaths()
     ///////////////////////////////////////////////////////////////////////////
 
     FdoPtr<FdoIConnectionInfo> info = GetConnectionInfo ();
-    FdoPtr<FdoIConnectionPropertyDictionary> dictionary = info->GetConnectionProperties ();
+    FdoPtr<FdoCommonConnPropDictionary> dictionary = dynamic_cast<FdoCommonConnPropDictionary*>(info->GetConnectionProperties ());
     FdoStringP location = dictionary->GetProperty (CONNECTIONPROPERTY_DEFAULT_FILE_LOCATION);
 
 #ifdef _WIN32
-	location = location.Replace(L"/", L"\\");
-	FdoString* plocation = (FdoString*)location;
-	if (plocation != NULL)
-	{
-		bool isRemote = (location.GetLength () > 2 && plocation[0] == L'\\' && plocation[1] == L'\\');
-		location = location.Replace (L"\\\\", L"\\");
-		if (isRemote == true)
-			location = (FdoStringP)L"\\" + location;
-	}
+    location = location.Replace(L"/", L"\\");
+    FdoString* plocation = (FdoString*)location;
+    if (plocation != NULL)
+    {
+        bool isRemote = (location.GetLength () > 2 && plocation[0] == L'\\' && plocation[1] == L'\\');
+        location = location.Replace (L"\\\\", L"\\");
+        if (isRemote == true)
+            location = (FdoStringP)L"\\" + location;
+    }
 #else
-	location = location.Replace(L"\\", L"/");
-	location = location.Replace(L"//", L"/");
+    location = location.Replace(L"\\", L"/");
+    location = location.Replace(L"//", L"/");
 #endif
 
     // make a copy to play around with
     wchar_t* dir = (wchar_t*)alloca (sizeof (wchar_t) *(wcslen (location) + 2)); // 2 because we may need to add delimiter
     wcscpy (dir, location);
     FdoCommonStringUtil::StringTrim (dir);
-	location = dir;
+    location = dir;
     size_t length = wcslen (dir);
 
     // store the file and/or directory provided:
@@ -292,32 +293,32 @@ void ShpConnection::InitConnectionPaths()
     {
         if (length > wcslen (SHP_EXTENSION))
         {
-			// is this a file or a folder?
+            // is this a file or a folder?
             if (0 == FdoCommonStringUtil::StringCompareNoCase (SHP_EXTENSION, &dir[length - wcslen (SHP_EXTENSION)]))
             {   // presumably it's a file
                 mFile = dir;
                 mDirectory = L"";
-				wchar_t* delim = wcsrchr(dir, FILE_PATH_DELIMITER);
-				if (delim == NULL)
-				{
-					// Set to current directory if none specified:
-					dir = (wchar_t*)alloca(sizeof(wchar_t)*3);
-					dir[0] = L'.';
-					dir[1] = FILE_PATH_DELIMITER;
-					dir[2] = L'\0';
-				}
-				else
-				{
-					*(++delim) = L'\0';
-				}
+                wchar_t* delim = wcsrchr(dir, FILE_PATH_DELIMITER);
+                if (delim == NULL)
+                {
+                    // Set to current directory if none specified:
+                    dir = (wchar_t*)alloca(sizeof(wchar_t)*3);
+                    dir[0] = L'.';
+                    dir[1] = FILE_PATH_DELIMITER;
+                    dir[2] = L'\0';
+                }
+                else
+                {
+                    *(++delim) = L'\0';
+                }
 
-				mDirectory = dir;
+                mDirectory = dir;
             }
-			else
-			{
+            else
+            {
                 mDirectory = dir;
                 mFile = L"";
-			}
+            }
         }
     }
     else if (FdoCommonFile::IsDirectory(dir))
@@ -353,7 +354,7 @@ void ShpConnection::InitConnectionPaths()
             dir[0] = L'.';
             dir[1] = FILE_PATH_DELIMITER;
             dir[2] = L'\0';
-			length = 2;
+            length = 2;
         }
 
         // add the delimiter if not already present
@@ -366,10 +367,10 @@ void ShpConnection::InitConnectionPaths()
         // Store the directory:
         mDirectory = dir;
     }
-	if (NULL != GetDirectory () && !FdoCommonFile::FileExists (GetDirectory()))
+    if (NULL != GetDirectory () && !FdoCommonFile::FileExists (GetDirectory()))
         throw FdoException::Create (NlsMsgGet(SHP_CONNECTION_LOCATION_NOT_EXIST, "The directory '%1$ls' does not exist.", GetDirectory()));
-	if (NULL != GetFile () && !FdoCommonFile::FileExists (GetFile ()))
-		throw FdoException::Create (NlsMsgGet(SHP_CONNECTION_LOCATION_NOT_EXIST, "The File '%1$ls' does not exist.", GetFile()));
+    if (NULL != GetFile () && !FdoCommonFile::FileExists (GetFile ()))
+        throw FdoException::Create (NlsMsgGet(SHP_CONNECTION_LOCATION_NOT_EXIST, "The File '%1$ls' does not exist.", GetFile()));
 
     // Get the temporary directory
     ///////////////////////////////////////////////////////////////////////////
@@ -406,39 +407,13 @@ void ShpConnection::InitConnectionPaths()
     }
     else
         mTemporary = L"";
-	int countvalidprop = 0;
-	countvalidprop += (location == L"")?0:1;
-	countvalidprop += (NULL == GetTemporary ())?0:1;
-	int countValid = 0;
-	FdoString *pConnectStr = GetConnectionString ();
-	if (NULL != pConnectStr)
-	{
-		int idx = 0;
-		bool startProp = false;
-		bool chrFound = false;
-		while (L'\0' != pConnectStr[idx])
-		{
-			if (startProp && pConnectStr[idx] == CONNECTIONPROPERTY_DELIMITER[0])
-			{
-				if (chrFound)
-					countValid++;
-				startProp = false;
-				chrFound = false;
-			}
-			else if (pConnectStr[idx] == CONNECTIONPROPERTY_SEPARATOR[0])
-			{
-				startProp = true;
-				chrFound = false;
-			}
-			else if (startProp && !chrFound && pConnectStr[idx] != L' ' && pConnectStr[idx] != CONNECTIONPROPERTY_DELIMITER[0] && pConnectStr[idx] != L'\"')
-				chrFound = true;
-			idx++;
-		}
-		if (startProp && chrFound)
-			countValid++;
-	}
-	if (countvalidprop != countValid)
-		throw FdoException::Create (NlsMsgGet(SHP_INVALID_CONNECTION_STRING, "Invalid connection string '%1$ls'", GetConnectionString ()));
+    FdoCommonConnStringParser parser (NULL, GetConnectionString ());
+    // check to see if connection string is valid and if it have unknown properties 
+    // e.g. DefaultFLocation instead of DefaultFileLocation
+    if (!parser.IsConnStringValid())
+        throw FdoException::Create (NlsMsgGet(SHP_INVALID_CONNECTION_STRING, "Invalid connection string '%1$ls'", GetConnectionString ()));
+    if (parser.HasInvalidProperties(dictionary))
+        throw FdoException::Create (NlsMsgGet(SHP_INVALID_CONNECTION_PROPERTY_NAME, "Invalid connection property name '%1$ls'", parser.GetFirstInvalidPropertyName (dictionary)));
 }
 
 /// <summary>Opens a feature connection with the settings specified by the
@@ -450,8 +425,8 @@ FdoConnectionState ShpConnection::Open ()
     if (GetConnectionState() == FdoConnectionState_Open)
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_103_CONNECTION_ALREADY_OPEN)));
 
-	InitConnectionPaths();
-	
+    InitConnectionPaths();
+    
     // if the schema.xml file exists, set it as the configuration
     if (!IsConfigured () && (NULL == GetFile ()))
     {
@@ -483,17 +458,17 @@ void ShpConnection::Close ()
 
     // Clear the config file cache:
     mConfigLogicalSchemas = NULL;
-	mConfigSchemaMappings = NULL;
+    mConfigSchemaMappings = NULL;
     mConfigured = false;
 
     mFile = L"";
     mDirectory = L"";
-	mLastEditedFileSet = NULL;
+    mLastEditedFileSet = NULL;
 
-	// Reset the Spatial Contexts collection. Create the default SC.
-	mSpatialContextColl = new ShpSpatialContextCollection();
-	ShpSpatialContextP defltSpatialContext = new ShpSpatialContext();
-	mSpatialContextColl->Add( defltSpatialContext );
+    // Reset the Spatial Contexts collection. Create the default SC.
+    mSpatialContextColl = new ShpSpatialContextCollection();
+    ShpSpatialContextP defltSpatialContext = new ShpSpatialContext();
+    mSpatialContextColl->Add( defltSpatialContext );
 
     // Connection is now closed:
     mConnectionState = FdoConnectionState_Closed;
@@ -562,7 +537,7 @@ FdoICommand* ShpConnection::CreateCommand (FdoInt32 commandType)
 /// <returns>Returns FdoPhysicalSchemaMapping</returns> 
 FdoPhysicalSchemaMapping* ShpConnection::CreateSchemaMapping()
 {
-	FdoShpOvPhysicalSchemaMappingP newPhysicalSchemaMapping = FdoShpOvPhysicalSchemaMapping::Create();
+    FdoShpOvPhysicalSchemaMappingP newPhysicalSchemaMapping = FdoShpOvPhysicalSchemaMapping::Create();
     return FDO_SAFE_ADDREF(newPhysicalSchemaMapping.p);
 }
 
@@ -592,15 +567,15 @@ void ShpConnection::SetConfiguration(FdoIoStream* configStream)
     ShpSpatialContextP defltSpatialContext = mSpatialContextColl->GetItem(0);
 
     if (scReader->ReadNext()) {
-		defltSpatialContext->SetName(scReader->GetName());
-		defltSpatialContext->SetDescription(scReader->GetDescription());
+        defltSpatialContext->SetName(scReader->GetName());
+        defltSpatialContext->SetDescription(scReader->GetDescription());
         defltSpatialContext->SetCoordSysName(scReader->GetCoordinateSystem());
         defltSpatialContext->SetCoordinateSystemWkt(scReader->GetCoordinateSystemWkt());
-		defltSpatialContext->SetExtent(FdoPtr<FdoByteArray> (scReader->GetExtent()));
-		defltSpatialContext->SetExtentType(scReader->GetExtentType());
-		defltSpatialContext->SetXYTolerance(scReader->GetXYTolerance());
-		defltSpatialContext->SetZTolerance(scReader->GetZTolerance());
-	}
+        defltSpatialContext->SetExtent(FdoPtr<FdoByteArray> (scReader->GetExtent()));
+        defltSpatialContext->SetExtentType(scReader->GetExtentType());
+        defltSpatialContext->SetXYTolerance(scReader->GetXYTolerance());
+        defltSpatialContext->SetZTolerance(scReader->GetZTolerance());
+    }
     
     if (scReader->ReadNext()) {
         throw FdoException::Create(
@@ -614,50 +589,50 @@ void ShpConnection::SetConfiguration(FdoIoStream* configStream)
     // Read logical FDO schemas from XML stream:
     //////////////////////////////////////////////////////////////////////////
 
-	configStream->Reset();
+    configStream->Reset();
 
-	reader = FdoXmlReader::Create(configStream);
+    reader = FdoXmlReader::Create(configStream);
 
     FDO_SAFE_RELEASE(mConfigLogicalSchemas.p);
-	mConfigLogicalSchemas = FdoFeatureSchemaCollection::Create(NULL);
+    mConfigLogicalSchemas = FdoFeatureSchemaCollection::Create(NULL);
 
     try 
     {
-		mConfigLogicalSchemas->ReadXml(reader);
-	} 
+        mConfigLogicalSchemas->ReadXml(reader);
+    } 
     catch (FdoException* e) 
     {
-		FdoSchemaExceptionP schemaException = 
+        FdoSchemaExceptionP schemaException = 
             FdoSchemaException::Create(
                 NlsMsgGet(SHP_SCHEMA_FAIL_READ_FEATURE_SCHEMAS, "Failed to de-serialize the feature schemas from the configuration."),
                 e);
         e->Release();
         throw schemaException;
-	}
+    }
 
 
     // Read FDO schema mappings from XML stream:
     //////////////////////////////////////////////////////////////////////////
 
-	configStream->Reset();
+    configStream->Reset();
 
-	reader = FdoXmlReader::Create(configStream);
+    reader = FdoXmlReader::Create(configStream);
 
     FdoSchemaMappingsP localSchemaMappings = FdoPhysicalSchemaMappingCollection::Create();
-	
+    
     try 
     {
-		localSchemaMappings->ReadXml(reader);
-	} 
+        localSchemaMappings->ReadXml(reader);
+    } 
     catch (FdoException* e) 
     {
-		FdoSchemaExceptionP schemaException = 
+        FdoSchemaExceptionP schemaException = 
             FdoSchemaException::Create(
                 NlsMsgGet(SHP_SCHEMA_FAIL_READ_SCHEMA_MAPPINGS, "Failed to de-serialize the schema mappings from the configuration."),
                 e);
         e->Release();
         throw schemaException;
-	}
+    }
 
     // Create an internal schema mappings collection to hold the SHP specific mappings
     ////////////////////////////////////////////////////////////////////////////////////
@@ -665,43 +640,43 @@ void ShpConnection::SetConfiguration(FdoIoStream* configStream)
     FDO_SAFE_RELEASE(mConfigSchemaMappings.p);
     mConfigSchemaMappings = FdoPhysicalSchemaMappingCollection::Create();
 
-	// Iterate the deserialized mappings and add only the SHP mappings to the internal collection
-	/////////////////////////////////////////////////////////////////////////////////////////////////
+    // Iterate the deserialized mappings and add only the SHP mappings to the internal collection
+    /////////////////////////////////////////////////////////////////////////////////////////////////
     for (FdoInt32 i=0; i<localSchemaMappings->GetCount(); i++) {
         FdoPhysicalSchemaMappingP schemaMapping = localSchemaMappings->GetItem(i);
         
-		FdoStringsP sProviderIds = FdoStringCollection::Create(schemaMapping->GetProvider(), L".");
-		if (sProviderIds->GetCount() < 3) {
-			throw FdoException::Create(
-				NlsMsgGet(SHP_INVALID_PHYSICAL_SCHEMA_PROVIDER_NAME, "Invalid Schema Mapping Provider Name"));
-		}
+        FdoStringsP sProviderIds = FdoStringCollection::Create(schemaMapping->GetProvider(), L".");
+        if (sProviderIds->GetCount() < 3) {
+            throw FdoException::Create(
+                NlsMsgGet(SHP_INVALID_PHYSICAL_SCHEMA_PROVIDER_NAME, "Invalid Schema Mapping Provider Name"));
+        }
 
-		FdoStringP sAuthor = FdoStringElementP(sProviderIds->GetItem(0))->GetString();
-		FdoStringP sName = FdoStringElementP(sProviderIds->GetItem(1))->GetString();
-		FdoStringP sVersion = FdoStringElementP(sProviderIds->GetItem(2))->GetString();
-		FdoInt32 iVersion = FdoCommonOSUtil::wtoi(sVersion);
+        FdoStringP sAuthor = FdoStringElementP(sProviderIds->GetItem(0))->GetString();
+        FdoStringP sName = FdoStringElementP(sProviderIds->GetItem(1))->GetString();
+        FdoStringP sVersion = FdoStringElementP(sProviderIds->GetItem(2))->GetString();
+        FdoInt32 iVersion = FdoCommonOSUtil::wtoi(sVersion);
  
-		if (sAuthor == SHP_PROVIDER_AUTHOR && sName == SHP_PROVIDER_SHORTNAME && iVersion >= 3) {
-			FdoShpOvPhysicalSchemaMapping* shpSchemaMapping = static_cast<FdoShpOvPhysicalSchemaMapping*>(schemaMapping.p);
+        if (sAuthor == SHP_PROVIDER_AUTHOR && sName == SHP_PROVIDER_SHORTNAME && iVersion >= 3) {
+            FdoShpOvPhysicalSchemaMapping* shpSchemaMapping = static_cast<FdoShpOvPhysicalSchemaMapping*>(schemaMapping.p);
 
             // Find corresponding shapefile name for the schema mapping:
             FdoPtr<FdoShpOvClassCollection> classMappings = shpSchemaMapping->GetClasses();
             for (FdoInt32 j=0; j<classMappings->GetCount(); j++)
             {
                 FdoPtr<FdoShpOvClassDefinition> classMapping = classMappings->GetItem (j);
-				FdoString* pNameShape = classMapping->GetShapeFile ();
-				if (pNameShape == NULL || wcslen (pNameShape) < 5 || FdoCommonFile::IsAbsolutePath (pNameShape))
-					continue;
-				FdoStringP pNameFile;
-				if (GetDirectory() == NULL)
-					InitConnectionPaths ();
-				if (GetDirectory() != NULL && !classMapping->IsPathUpdated ())
-				{
-					pNameFile = GetDirectory();
-					pNameFile += pNameShape;
-					classMapping->SetShapeFile (pNameFile);
-					classMapping->SetPathUpdated ();
-				}
+                FdoString* pNameShape = classMapping->GetShapeFile ();
+                if (pNameShape == NULL || wcslen (pNameShape) < 5 || FdoCommonFile::IsAbsolutePath (pNameShape))
+                    continue;
+                FdoStringP pNameFile;
+                if (GetDirectory() == NULL)
+                    InitConnectionPaths ();
+                if (GetDirectory() != NULL && !classMapping->IsPathUpdated ())
+                {
+                    pNameFile = GetDirectory();
+                    pNameFile += pNameShape;
+                    classMapping->SetShapeFile (pNameFile);
+                    classMapping->SetPathUpdated ();
+                }
             }
             mConfigSchemaMappings->Add(shpSchemaMapping);
         }
@@ -712,16 +687,16 @@ void ShpConnection::SetConfiguration(FdoIoStream* configStream)
 
 ShpSpatialContextCollection* ShpConnection::GetSpatialContexts ( bool bDynamic )
 {
-	// If not required to recompute the extents, quick exit
-	if ( !bDynamic )
-		return FDO_SAFE_ADDREF( mSpatialContextColl.p );
+    // If not required to recompute the extents, quick exit
+    if ( !bDynamic )
+        return FDO_SAFE_ADDREF( mSpatialContextColl.p );
 
     // Make sure the Coordinate System definition (from PRJ files) is read in.
     FdoPtr<ShpPhysicalSchema> physicalSchema = GetPhysicalSchema();
 
-	// Check the default Spatial Context - it is special.
-	ShpSpatialContextP  dfltSpatialContext = mSpatialContextColl->GetItem(0);
-	FdoStringP			dfltSpatialContextName = dfltSpatialContext->GetName();
+    // Check the default Spatial Context - it is special.
+    ShpSpatialContextP  dfltSpatialContext = mSpatialContextColl->GetItem(0);
+    FdoStringP            dfltSpatialContextName = dfltSpatialContext->GetName();
 
     FdoPtr<FdoFgfGeometryFactory> factory = FdoFgfGeometryFactory::GetInstance ();
 
@@ -742,27 +717,27 @@ ShpSpatialContextCollection* ShpConnection::GetSpatialContexts ( bool bDynamic )
         FdoPtr<FdoIEnvelope>  box = geom->GetEnvelope();       
 
         dfltScFromConfig = ( box->GetMinX() != SPATIALCONTEXT_DEFAULT_MINX ||
-							 box->GetMinY() != SPATIALCONTEXT_DEFAULT_MINY ||
-							 box->GetMaxX() != SPATIALCONTEXT_DEFAULT_MAXX ||
-							 box->GetMaxY() != SPATIALCONTEXT_DEFAULT_MAXY );
+                             box->GetMinY() != SPATIALCONTEXT_DEFAULT_MINY ||
+                             box->GetMaxX() != SPATIALCONTEXT_DEFAULT_MAXX ||
+                             box->GetMaxY() != SPATIALCONTEXT_DEFAULT_MAXY );
     }
     
-	double  min_x = numeric_limits<double>::max ();
+    double  min_x = numeric_limits<double>::max ();
     double  min_y = numeric_limits<double>::max ();
     double  max_x = -numeric_limits<double>::max ();
     double  max_y = -numeric_limits<double>::max ();
 
-	FdoPtr<ShpSpatialContext>	spatialContext;
+    FdoPtr<ShpSpatialContext>    spatialContext;
 
-	// Mark the extents as 'dirty' for all Spatial Contexts
-	for ( int i = 0; i < mSpatialContextColl->GetCount(); i++ )
-	{
-		spatialContext = mSpatialContextColl->GetItem(i);
-		spatialContext->SetIsExtentUpdated(false);
-	}
+    // Mark the extents as 'dirty' for all Spatial Contexts
+    for ( int i = 0; i < mSpatialContextColl->GetCount(); i++ )
+    {
+        spatialContext = mSpatialContextColl->GetItem(i);
+        spatialContext->SetIsExtentUpdated(false);
+    }
 
     // Recompute the extents with the actual extends of all Shape files in the dataset,
-	// grouped by the common Coordinate System name.
+    // grouped by the common Coordinate System name.
     FdoPtr<ShpLpFeatureSchemaCollection> schemas = GetLpSchemas();
     int count = schemas->GetCount();
 
@@ -772,8 +747,8 @@ ShpSpatialContextCollection* ShpConnection::GetSpatialContexts ( bool bDynamic )
         FdoPtr<ShpLpClassDefinitionCollection> classes = lpSchema->GetLpClasses ();
         int class_count = classes->GetCount ();
 
-		bool                        changed = false;
-		FdoSpatialContextExtentType type;
+        bool                        changed = false;
+        FdoSpatialContextExtentType type;
 
         for (int j = 0; j < class_count; j++)
         {
@@ -781,59 +756,59 @@ ShpSpatialContextCollection* ShpConnection::GetSpatialContexts ( bool bDynamic )
 
             ShpFileSet* fileset = lpClass->GetPhysicalFileSet ();
             
-			// Get the spatial context from the PRJ file. If there is no PRJ file,
-			// then it's the default one.
-			ShapePRJ*	prj = fileset->GetPrjFile();
-			FdoStringP	scname;
+            // Get the spatial context from the PRJ file. If there is no PRJ file,
+            // then it's the default one.
+            ShapePRJ*    prj = fileset->GetPrjFile();
+            FdoStringP    scname;
 
-			if ( prj )
-				scname = prj->GetCoordSysName();
-			else
-				scname = dfltSpatialContextName;
+            if ( prj )
+                scname = prj->GetCoordSysName();
+            else
+                scname = dfltSpatialContextName;
 
-			// Don't update it if from configuration file.
-			if ( ( wcscmp( scname, dfltSpatialContextName) == 0 ) && dfltScFromConfig )
-				continue;
+            // Don't update it if from configuration file.
+            if ( ( wcscmp( scname, dfltSpatialContextName) == 0 ) && dfltScFromConfig )
+                continue;
 
-			// Get the actual extents of the geometries from the SHP file
+            // Get the actual extents of the geometries from the SHP file
             double f1 = fileset->GetShapeFile()->GetBoundingBoxMinX();
             double f2 = fileset->GetShapeFile()->GetBoundingBoxMinY();
             double f3 = fileset->GetShapeFile()->GetBoundingBoxMaxX();
             double f4 = fileset->GetShapeFile()->GetBoundingBoxMaxY();
 
-			// Skip if no data
+            // Skip if no data
             if ( f1 == fNO_DATA || f2 == fNO_DATA || f3 == fNO_DATA || f4 == fNO_DATA )
                 continue;
 
-			// Find the corresponding Spatial Context in the collection
-			spatialContext = mSpatialContextColl->GetItem( scname );
-			bool	extUpd = spatialContext->GetIsExtentUpdated();
+            // Find the corresponding Spatial Context in the collection
+            spatialContext = mSpatialContextColl->GetItem( scname );
+            bool    extUpd = spatialContext->GetIsExtentUpdated();
 
-			FdoPtr<FdoByteArray>  fgf_box = spatialContext->GetExtent();         
-			FdoPtr<FdoIGeometry>  geom_box = factory->CreateGeometryFromFgf( fgf_box );
-			FdoPtr<FdoIEnvelope>  box = geom_box->GetEnvelope();       
+            FdoPtr<FdoByteArray>  fgf_box = spatialContext->GetExtent();         
+            FdoPtr<FdoIGeometry>  geom_box = factory->CreateGeometryFromFgf( fgf_box );
+            FdoPtr<FdoIEnvelope>  box = geom_box->GetEnvelope();       
 
-			// 1st time do initialization, update otherwise
-			double min_x = min( f1, extUpd? box->GetMinX() : f1 );
-			double min_y = min( f2, extUpd? box->GetMinY() : f2 );
-			double max_x = max( f3, extUpd? box->GetMaxX() : f3 );
-			double max_y = max( f4, extUpd? box->GetMaxY() : f4 );
+            // 1st time do initialization, update otherwise
+            double min_x = min( f1, extUpd? box->GetMinX() : f1 );
+            double min_y = min( f2, extUpd? box->GetMinY() : f2 );
+            double max_x = max( f3, extUpd? box->GetMaxX() : f3 );
+            double max_y = max( f4, extUpd? box->GetMaxY() : f4 );
 
-			if ( !extUpd )
-				spatialContext->SetIsExtentUpdated( true );
+            if ( !extUpd )
+                spatialContext->SetIsExtentUpdated( true );
 
             type = FdoSpatialContextExtentType_Dynamic;
 
-			// Update the SC extents
-			FdoPtr<FdoIEnvelope> envelope = factory->CreateEnvelopeXY ( min_x, min_y, max_x, max_y );
-			FdoPtr<FdoIGeometry> geometry = factory->CreateGeometry (envelope);
-			FdoPtr<FdoByteArray> fgf = factory->GetFgf (geometry);
-			spatialContext->SetExtent( fgf );
-			spatialContext->SetExtentType( type );
+            // Update the SC extents
+            FdoPtr<FdoIEnvelope> envelope = factory->CreateEnvelopeXY ( min_x, min_y, max_x, max_y );
+            FdoPtr<FdoIGeometry> geometry = factory->CreateGeometry (envelope);
+            FdoPtr<FdoByteArray> fgf = factory->GetFgf (geometry);
+            spatialContext->SetExtent( fgf );
+            spatialContext->SetExtentType( type );
         }     
-	}
+    }
 
-	return FDO_SAFE_ADDREF( mSpatialContextColl.p );
+    return FDO_SAFE_ADDREF( mSpatialContextColl.p );
 }
 
 
@@ -854,59 +829,59 @@ FdoString* ShpConnection::GetTemporary ()
 
 void ShpConnection::AddPhysicalShapefileNames(FdoStringsP& physicalShapefileNames)
 {
-	if (NULL != mConfigSchemaMappings)
-	{
-		FdoInt32 count = mConfigSchemaMappings->GetCount();
+    if (NULL != mConfigSchemaMappings)
+    {
+        FdoInt32 count = mConfigSchemaMappings->GetCount();
 
-		for (FdoInt32 i=0; i<count; i++)
-		{
-			FdoPhysicalSchemaMappingP fdoMapping = mConfigSchemaMappings->GetItem(i);
-			VALIDATE_POINTER(fdoMapping);
+        for (FdoInt32 i=0; i<count; i++)
+        {
+            FdoPhysicalSchemaMappingP fdoMapping = mConfigSchemaMappings->GetItem(i);
+            VALIDATE_POINTER(fdoMapping);
 
-			if (0==FdoCommonOSUtil::wcsicmp(fdoMapping->GetProvider(), SHP_PROVIDER_NAME))
-			{
-				FdoShpOvPhysicalSchemaMapping * shpMapping = static_cast<FdoShpOvPhysicalSchemaMapping *>(fdoMapping.p);
+            if (0==FdoCommonOSUtil::wcsicmp(fdoMapping->GetProvider(), SHP_PROVIDER_NAME))
+            {
+                FdoShpOvPhysicalSchemaMapping * shpMapping = static_cast<FdoShpOvPhysicalSchemaMapping *>(fdoMapping.p);
 
-				// Find corresponding shapefile name:
-				FdoPtr<FdoShpOvClassCollection> classMappings = shpMapping->GetClasses();
-				for (FdoInt32 j=0; j<classMappings->GetCount(); j++)
-				{
-					FdoStringP pNameFile;
-					FdoPtr<FdoShpOvClassDefinition> classMapping = classMappings->GetItem (j);
-					FdoString * pActualName = classMapping->GetShapeFile ();
-					if (pActualName == NULL || wcslen (pActualName) == 0)
-					{
-						// Create a shape name for the classes from schema.xml which doesn't have shape file.
-						pNameFile = GetDirectory ();
-						pNameFile += classMapping->GetName ();
-						pNameFile += L".shp";
-					}
-					else
-					{
-						if(!FdoCommonFile::IsAbsolutePath (pActualName))
-						{
-							if (!classMapping->IsPathUpdated () || GetDirectory() == NULL)
-							{
-								pNameFile = GetDirectory();
-								pNameFile += classMapping->GetShapeFile ();
-							}
-							else
-								pNameFile = classMapping->GetShapeFile ();
+                // Find corresponding shapefile name:
+                FdoPtr<FdoShpOvClassCollection> classMappings = shpMapping->GetClasses();
+                for (FdoInt32 j=0; j<classMappings->GetCount(); j++)
+                {
+                    FdoStringP pNameFile;
+                    FdoPtr<FdoShpOvClassDefinition> classMapping = classMappings->GetItem (j);
+                    FdoString * pActualName = classMapping->GetShapeFile ();
+                    if (pActualName == NULL || wcslen (pActualName) == 0)
+                    {
+                        // Create a shape name for the classes from schema.xml which doesn't have shape file.
+                        pNameFile = GetDirectory ();
+                        pNameFile += classMapping->GetName ();
+                        pNameFile += L".shp";
+                    }
+                    else
+                    {
+                        if(!FdoCommonFile::IsAbsolutePath (pActualName))
+                        {
+                            if (!classMapping->IsPathUpdated () || GetDirectory() == NULL)
+                            {
+                                pNameFile = GetDirectory();
+                                pNameFile += classMapping->GetShapeFile ();
+                            }
+                            else
+                                pNameFile = classMapping->GetShapeFile ();
 
-							classMapping->SetPathUpdated ();
-						}
-						else
-							pNameFile = pActualName;
-					}
+                            classMapping->SetPathUpdated ();
+                        }
+                        else
+                            pNameFile = pActualName;
+                    }
 
-					FdoString* base = ShpFileSet::CreateBaseName (pNameFile);
-					if (-1 == physicalShapefileNames->IndexOf (base))
-						physicalShapefileNames->Add (base);
-					delete[] base;
-				}
-			}
-		}
-	}
+                    FdoString* base = ShpFileSet::CreateBaseName (pNameFile);
+                    if (-1 == physicalShapefileNames->IndexOf (base))
+                        physicalShapefileNames->Add (base);
+                    delete[] base;
+                }
+            }
+        }
+    }
 }
 
 ShpPhysicalSchema* ShpConnection::GetPhysicalSchema(void)
@@ -919,7 +894,7 @@ ShpPhysicalSchema* ShpConnection::GetPhysicalSchema(void)
         FdoStringsP         physicalShapefileNames = FdoStringCollection::Create();
         if (IsConfigured ())  // Get the shapefiles from the overrides
         {
-			AddPhysicalShapefileNames(physicalShapefileNames);
+            AddPhysicalShapefileNames(physicalShapefileNames);
         }
         else  // Get the shapefiles from the specified directory or file
         {
@@ -931,48 +906,48 @@ ShpPhysicalSchema* ShpConnection::GetPhysicalSchema(void)
             }
             else if (GetDirectory() != NULL)
             {
-				bool bSchemaExist = false;
-				// if the schema.xml file exists, set it as the configuration
-				if (!IsConfigured () && (NULL == GetFile ()))
-				{
-					wchar_t* config = (wchar_t*)alloca (sizeof (wchar_t) *(wcslen (GetDirectory ()) + wcslen (DEFAULT_SCHEMA_XML) + 1));
-					wcscpy (config, GetDirectory ());
-					wcscat (config, DEFAULT_SCHEMA_XML);
-					bSchemaExist = FdoCommonFile::FileExists (config);
-				}
+                bool bSchemaExist = false;
+                // if the schema.xml file exists, set it as the configuration
+                if (!IsConfigured () && (NULL == GetFile ()))
+                {
+                    wchar_t* config = (wchar_t*)alloca (sizeof (wchar_t) *(wcslen (GetDirectory ()) + wcslen (DEFAULT_SCHEMA_XML) + 1));
+                    wcscpy (config, GetDirectory ());
+                    wcscat (config, DEFAULT_SCHEMA_XML);
+                    bSchemaExist = FdoCommonFile::FileExists (config);
+                }
 
-				if (bSchemaExist)
-				{
-					AddPhysicalShapefileNames(physicalShapefileNames);
-				}
-				else
-				{
-    				std::vector<std::wstring> files;
-					FdoCommonFile::GetAllFiles (GetDirectory (), files);
-					int count = (int)files.size ();
-					size_t ext1_len = ELEMENTS(SHP_EXTENSION) - 1;
-					size_t ext2_len = ELEMENTS(DBF_EXTENSION) - 1;
-					for (int i = 0; i < count; i++)
-					{
-						const wchar_t* name;
-						size_t length;
-						std::wstring path;
-						FdoString* base;
-	                    
-						name = files[i].c_str ();
-						length = wcslen (name);
-						if (((ext1_len < length) && (0 == FdoCommonOSUtil::wcsicmp (&(name[length - ext1_len]), SHP_EXTENSION)))
-							|| ((ext2_len < length) && (0 == FdoCommonOSUtil::wcsicmp (&(name[length - ext2_len]), DBF_EXTENSION))))
-						{
-							path = GetDirectory ();
-							path += name;
-							base = ShpFileSet::CreateBaseName (path.c_str ());
-							if (-1 == physicalShapefileNames->IndexOf (base))
-								physicalShapefileNames->Add (base);
-							delete[] base;
-						}
-					}
-				}
+                if (bSchemaExist)
+                {
+                    AddPhysicalShapefileNames(physicalShapefileNames);
+                }
+                else
+                {
+                    std::vector<std::wstring> files;
+                    FdoCommonFile::GetAllFiles (GetDirectory (), files);
+                    int count = (int)files.size ();
+                    size_t ext1_len = ELEMENTS(SHP_EXTENSION) - 1;
+                    size_t ext2_len = ELEMENTS(DBF_EXTENSION) - 1;
+                    for (int i = 0; i < count; i++)
+                    {
+                        const wchar_t* name;
+                        size_t length;
+                        std::wstring path;
+                        FdoString* base;
+                        
+                        name = files[i].c_str ();
+                        length = wcslen (name);
+                        if (((ext1_len < length) && (0 == FdoCommonOSUtil::wcsicmp (&(name[length - ext1_len]), SHP_EXTENSION)))
+                            || ((ext2_len < length) && (0 == FdoCommonOSUtil::wcsicmp (&(name[length - ext2_len]), DBF_EXTENSION))))
+                        {
+                            path = GetDirectory ();
+                            path += name;
+                            base = ShpFileSet::CreateBaseName (path.c_str ());
+                            if (-1 == physicalShapefileNames->IndexOf (base))
+                                physicalShapefileNames->Add (base);
+                            delete[] base;
+                        }
+                    }
+                }
             }
         }
 
@@ -996,29 +971,29 @@ ShpPhysicalSchema* ShpConnection::GetPhysicalSchema(void)
 
                 if ( NULL != prj )
                 {
-					FdoStringP	wkt = prj->GetWKT();				
-					bool		found = false;
+                    FdoStringP    wkt = prj->GetWKT();                
+                    bool        found = false;
 
-					// Check if an identical one as WKT exists
-					for ( int i = 0; i < mSpatialContextColl->GetCount() && !found; i++ )
-					{
-						FdoPtr<ShpSpatialContext> sp = mSpatialContextColl->GetItem(i);
+                    // Check if an identical one as WKT exists
+                    for ( int i = 0; i < mSpatialContextColl->GetCount() && !found; i++ )
+                    {
+                        FdoPtr<ShpSpatialContext> sp = mSpatialContextColl->GetItem(i);
 
-						found = ( wkt == sp->GetCoordinateSystemWkt() );
-					}
+                        found = ( wkt == sp->GetCoordinateSystemWkt() );
+                    }
 
-					// Append the new Coordinate System
-					if ( !found )
-					{
-						FdoPtr<ShpSpatialContext> new_sp = new ShpSpatialContext();
+                    // Append the new Coordinate System
+                    if ( !found )
+                    {
+                        FdoPtr<ShpSpatialContext> new_sp = new ShpSpatialContext();
                       
-						FdoStringP	cs_name = prj->GetCoordSysName();
-						new_sp->SetName( cs_name );
+                        FdoStringP    cs_name = prj->GetCoordSysName();
+                        new_sp->SetName( cs_name );
                         new_sp->SetCoordSysName( cs_name );
-						new_sp->SetCoordinateSystemWkt( wkt );
+                        new_sp->SetCoordinateSystemWkt( wkt );
 
-						mSpatialContextColl->Add( new_sp );
-                    }					
+                        mSpatialContextColl->Add( new_sp );
+                    }                    
                 }
             }
         }
@@ -1035,10 +1010,10 @@ ShpLpFeatureSchemaCollection* ShpConnection::GetLpSchemas(void)
     {
         FdoPtr<ShpPhysicalSchema> pPhysicalSchema = GetPhysicalSchema ();
         mLpSchemas = new ShpLpFeatureSchemaCollection(
-			this,
-			pPhysicalSchema,
+            this,
+            pPhysicalSchema,
             mConfigLogicalSchemas,
-			mConfigSchemaMappings);
+            mConfigSchemaMappings);
 
         // Associate all geometric properties to the current spatial context:
         // TODO: this may need to be done elsewhere, when the configuration file handling is in place:
@@ -1077,124 +1052,124 @@ bool ShpConnection::IsConfigured ()
     return (mConfigured);
 }
 
-#define CPY_SUFFIX	L"_cpy"
+#define CPY_SUFFIX    L"_cpy"
 #define EXECUTE_NO_EX(f)  try { f; } catch (FdoException *ex) { ex->Release(); }
 
 void ShpConnection::CompressFileSets()
 {
-	// Do files compression (get rid of the deleted rows)
-	if ( mGlobalRefCount == 1 )
-	{
-		for (size_t i = 0; i < ShpConnGlobalFilesToCompress.size(); i++ )
-		{
-			CompressFileSet( ShpConnGlobalFilesToCompress[i].c_str() );
-		}
-		ShpConnGlobalFilesToCompress.clear();
-	}
+    // Do files compression (get rid of the deleted rows)
+    if ( mGlobalRefCount == 1 )
+    {
+        for (size_t i = 0; i < ShpConnGlobalFilesToCompress.size(); i++ )
+        {
+            CompressFileSet( ShpConnGlobalFilesToCompress[i].c_str() );
+        }
+        ShpConnGlobalFilesToCompress.clear();
+    }
 }
 
-void ShpConnection::CompressFileSet (const wchar_t*	baseName)
+void ShpConnection::CompressFileSet (const wchar_t*    baseName)
 {
-    eShapeTypes		type;
-	bool			compressed = false;
+    eShapeTypes        type;
+    bool            compressed = false;
 
-	// Check the file set still exists
-	FdoStringP		test_name = FdoStringP::Format(L"%ls%ls", baseName, DBF_EXTENSION);
+    // Check the file set still exists
+    FdoStringP        test_name = FdoStringP::Format(L"%ls%ls", baseName, DBF_EXTENSION);
 
-	if ( !FdoCommonFile::FileExists( (FdoString*) test_name) )
-		return;
+    if ( !FdoCommonFile::FileExists( (FdoString*) test_name) )
+        return;
 
-	// Use the current directory. At this point we know it is writable.
-	FdoString*		tmpDir = NULL;	
+    // Use the current directory. At this point we know it is writable.
+    FdoString*        tmpDir = NULL;    
 
-	// Create a file set object.
-	ShpFileSet*  fileset = new ShpFileSet(baseName, tmpDir, false );
-	
-	// Save the file names
-	FdoStringP	dbf_name = FdoStringP(fileset->GetDbfFile()->FileName());
-	FdoStringP	shp_name = FdoStringP(fileset->GetShapeFile()->FileName());
-	FdoStringP	shx_name = FdoStringP(fileset->GetShapeIndexFile()->FileName());
-	FdoStringP	ssi_name = FdoStringP(fileset->GetSpatialIndex()->FileName());
+    // Create a file set object.
+    ShpFileSet*  fileset = new ShpFileSet(baseName, tmpDir, false );
+    
+    // Save the file names
+    FdoStringP    dbf_name = FdoStringP(fileset->GetDbfFile()->FileName());
+    FdoStringP    shp_name = FdoStringP(fileset->GetShapeFile()->FileName());
+    FdoStringP    shx_name = FdoStringP(fileset->GetShapeIndexFile()->FileName());
+    FdoStringP    ssi_name = FdoStringP(fileset->GetSpatialIndex()->FileName());
 
-	// Compressed file names
-	FdoStringP	dbfC_name = FdoStringP::Format(L"%ls%ls", (FdoString *)dbf_name, CPY_SUFFIX);
-	FdoStringP	shpC_name = FdoStringP::Format(L"%ls%ls", (FdoString *)shp_name, CPY_SUFFIX);
-	FdoStringP	shxC_name = FdoStringP::Format(L"%ls%ls", (FdoString *)shx_name, CPY_SUFFIX);
-	FdoStringP	ssiC_name = FdoStringP::Format(L"%ls%ls", (FdoString *)ssi_name, CPY_SUFFIX);
+    // Compressed file names
+    FdoStringP    dbfC_name = FdoStringP::Format(L"%ls%ls", (FdoString *)dbf_name, CPY_SUFFIX);
+    FdoStringP    shpC_name = FdoStringP::Format(L"%ls%ls", (FdoString *)shp_name, CPY_SUFFIX);
+    FdoStringP    shxC_name = FdoStringP::Format(L"%ls%ls", (FdoString *)shx_name, CPY_SUFFIX);
+    FdoStringP    ssiC_name = FdoStringP::Format(L"%ls%ls", (FdoString *)ssi_name, CPY_SUFFIX);
 
-	// Create compressed DBF file
-	ShapeDBF *dbfC = new ShapeDBF ((FdoString *)dbfC_name, fileset->GetDbfFile()->GetColumnInfo());
-	delete dbfC;
+    // Create compressed DBF file
+    ShapeDBF *dbfC = new ShapeDBF ((FdoString *)dbfC_name, fileset->GetDbfFile()->GetColumnInfo());
+    delete dbfC;
 
-	dbfC = new ShapeDBF ((FdoString *)dbfC_name);
-	dbfC->Reopen( FdoCommonFile::IDF_OPEN_UPDATE);
-	dbfC->PutFileHeaderDetails ();
-	fileset->SetDbfFileC( dbfC );
+    dbfC = new ShapeDBF ((FdoString *)dbfC_name);
+    dbfC->Reopen( FdoCommonFile::IDF_OPEN_UPDATE);
+    dbfC->PutFileHeaderDetails ();
+    fileset->SetDbfFileC( dbfC );
 
-	// Create compressed SHP file
+    // Create compressed SHP file
     ShapeFile *shpC = new ShapeFile ((FdoString *)shpC_name, fileset->GetShapeFile()->GetFileShapeType(), false);
-	shpC->Reopen( FdoCommonFile::IDF_OPEN_UPDATE);
-	fileset->SetShapeFileC( shpC );
+    shpC->Reopen( FdoCommonFile::IDF_OPEN_UPDATE);
+    fileset->SetShapeFileC( shpC );
 
-	// Create compressed SHX file
+    // Create compressed SHX file
     ShapeIndex *shxC = new ShapeIndex ((FdoString *)shxC_name, shpC, tmpDir);
-	shxC->Reopen( FdoCommonFile::IDF_OPEN_UPDATE);
-	fileset->SetShapeIndexFileC( shxC );
+    shxC->Reopen( FdoCommonFile::IDF_OPEN_UPDATE);
+    fileset->SetShapeIndexFileC( shxC );
 
-	// Create compressed IDX file (spatial index)
+    // Create compressed IDX file (spatial index)
     ShpSpatialIndex *ssiC = new ShpSpatialIndex ((FdoString *)ssiC_name, tmpDir, shpC->GetFileShapeType (), shxC->HasMData ());
-	fileset->SetSpatialIndexC( ssiC );
+    fileset->SetSpatialIndexC( ssiC );
 
-	ShapeDBF *dbf = fileset->GetDbfFile();
-	for ( int i = 0, j = 0; i < dbf->GetNumRecords(); i++)
-	{
-		RowData *data = NULL;
-		Shape	*shape = NULL;
+    ShapeDBF *dbf = fileset->GetDbfFile();
+    for ( int i = 0, j = 0; i < dbf->GetNumRecords(); i++)
+    {
+        RowData *data = NULL;
+        Shape    *shape = NULL;
 
-		fileset->GetObjectAt( &data, type, &shape, i);
-		if ( data && !data->IsDeleted())
-		{
-			// Change the record number and save it (batch mode)
-			shape->SetRecordNum(j+1);
+        fileset->GetObjectAt( &data, type, &shape, i);
+        if ( data && !data->IsDeleted())
+        {
+            // Change the record number and save it (batch mode)
+            shape->SetRecordNum(j+1);
 
-			fileset->SetObjectAt(data, shape, true, true );
+            fileset->SetObjectAt(data, shape, true, true );
 
-			j++;
-		}
-		delete data;
-		delete shape;
-	}
-	
-	// Flush the compressed file set
-	fileset->Flush (true);
+            j++;
+        }
+        delete data;
+        delete shape;
+    }
+    
+    // Flush the compressed file set
+    fileset->Flush (true);
 
-	// Cleanup
-	delete fileset;
+    // Cleanup
+    delete fileset;
     delete shpC;
     delete dbfC;
     delete shxC;
     delete ssiC;
 
-	// Copy over the compressed files
-	bool dbf_renamed = FdoCommonFile::Move((FdoString *)dbfC_name, (FdoString *)dbf_name);
-	bool shp_renamed = FdoCommonFile::Move((FdoString *)shpC_name, (FdoString *)shp_name);
-	bool shx_renamed = FdoCommonFile::Move((FdoString *)shxC_name, (FdoString *)shx_name);
+    // Copy over the compressed files
+    bool dbf_renamed = FdoCommonFile::Move((FdoString *)dbfC_name, (FdoString *)dbf_name);
+    bool shp_renamed = FdoCommonFile::Move((FdoString *)shpC_name, (FdoString *)shp_name);
+    bool shx_renamed = FdoCommonFile::Move((FdoString *)shxC_name, (FdoString *)shx_name);
 
-	// Check results.
-	if ( dbf_renamed && shp_renamed && shx_renamed )
-	{
-		bool ssi_renamed = FdoCommonFile::Move((FdoString *)ssiC_name, (FdoString *)ssi_name);
+    // Check results.
+    if ( dbf_renamed && shp_renamed && shx_renamed )
+    {
+        bool ssi_renamed = FdoCommonFile::Move((FdoString *)ssiC_name, (FdoString *)ssi_name);
 
-		// Remove .sbx file in case it exists (it is stale now, ESRI tools is using it)
-		FdoStringP  sbx_name = FdoStringP::Format(L"%ls%ls", baseName, L".sbx");
-		EXECUTE_NO_EX( FdoCommonFile::Delete((FdoString *)sbx_name, true));
-	}
-	else
-	{
-		// Something went wrong (like sharing violation); remove the files.
-		EXECUTE_NO_EX( FdoCommonFile::Delete((FdoString *)dbfC_name, true));
-		EXECUTE_NO_EX( FdoCommonFile::Delete((FdoString *)shpC_name, true));
-		EXECUTE_NO_EX( FdoCommonFile::Delete((FdoString *)shxC_name, true));
-		EXECUTE_NO_EX( FdoCommonFile::Delete((FdoString *)ssiC_name, true));
-	}
+        // Remove .sbx file in case it exists (it is stale now, ESRI tools is using it)
+        FdoStringP  sbx_name = FdoStringP::Format(L"%ls%ls", baseName, L".sbx");
+        EXECUTE_NO_EX( FdoCommonFile::Delete((FdoString *)sbx_name, true));
+    }
+    else
+    {
+        // Something went wrong (like sharing violation); remove the files.
+        EXECUTE_NO_EX( FdoCommonFile::Delete((FdoString *)dbfC_name, true));
+        EXECUTE_NO_EX( FdoCommonFile::Delete((FdoString *)shpC_name, true));
+        EXECUTE_NO_EX( FdoCommonFile::Delete((FdoString *)shxC_name, true));
+        EXECUTE_NO_EX( FdoCommonFile::Delete((FdoString *)ssiC_name, true));
+    }
 }

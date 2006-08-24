@@ -156,6 +156,11 @@ SymbolicName=SHP_INVALID_CONNECTION_STRING
 Language=English
 Invalid connection string '%1$ls'
 .
+MessageId=2021
+SymbolicName=SHP_INVALID_CONNECTION_PROPERTY_NAME
+Language=English
+Invalid connection property name '%1$ls'
+.
 
 
 ;//************************************************************************************

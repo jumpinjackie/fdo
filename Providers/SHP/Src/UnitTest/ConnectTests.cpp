@@ -34,19 +34,19 @@
 #endif
 
 wchar_t* GConnectStr[] = {NULL, L"", L"DefaultFileLocation= ..\\..\\TestData\\Ontario\\;",
-						L"DefaultFileLocation=..\\..\\TestData\\Ontario\\ ; ",
-						L"DefaultFileLocation=..\\..\\TestData\\Ontario\\ ;TemporaryFileLocation=",
-						L"DefaultFileLocation=..\\..\\TestData\\Ontario\\;TemporaryFileLocation=;",
-						L"DefaultFileLocation = ..\\..\\TestData\\Ontario\\;TemporaryFileLocation=",
-						L"DefaultFileLocation = ..\\..\\TestData\\Ontario\\;TemporaryFileLocation = ;",
-						L"TemporaryFileLocation = ;DefaultFileLocation = ..\\..\\TestData\\Ontario\\",
-						L"DefaultFileLocation=",
-						L"DefaultFileLocation=;;",
-						L"DefaultFileLocation=..\\..\\TestData\\Ontario\\;TemporaryFileLocation = ",
-						L"DefaultFileLocation= ;TemporaryFileLocation = ;",
-						L"DefaultFileLocation = ;;;;;TemporaryFileLocation   =   ;;;;;;;;;",
-						L"DefaultFileLocation = ..\\..\\TestData\\Ontario\\ ;;;;;TemporaryFileLocation   =   ;;;;;;;;;"
-						};
+                        L"DefaultFileLocation=..\\..\\TestData\\Ontario\\ ; ",
+                        L"DefaultFileLocation=..\\..\\TestData\\Ontario\\ ;TemporaryFileLocation=",
+                        L"DefaultFileLocation=..\\..\\TestData\\Ontario\\;TemporaryFileLocation=;",
+                        L"DefaultFileLocation = ..\\..\\TestData\\Ontario\\;TemporaryFileLocation=",
+                        L"DefaultFileLocation = ..\\..\\TestData\\Ontario\\;TemporaryFileLocation = ;",
+                        L"TemporaryFileLocation = ;DefaultFileLocation = ..\\..\\TestData\\Ontario\\",
+                        L"DefaultFileLocation=",
+                        L"DefaultFileLocation=;;",
+                        L"DefaultFileLocation=..\\..\\TestData\\Ontario\\;TemporaryFileLocation = ",
+                        L"DefaultFileLocation= ;TemporaryFileLocation = ;",
+                        L"DefaultFileLocation = ;;;;;TemporaryFileLocation   =   ;;;;;;;;;",
+                        L"DefaultFileLocation = ..\\..\\TestData\\Ontario\\ ;;;;;TemporaryFileLocation   =   ;;;;;;;;;"
+                        };
 
 CPPUNIT_TEST_SUITE_REGISTRATION (ConnectTests);
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION (ConnectTests, "ConnectTests");
@@ -69,7 +69,7 @@ void ConnectTests::setUp ()
 
 void ConnectTests::tearDown ()
 {
-	FDO_SAFE_RELEASE(mConnection.p);
+    FDO_SAFE_RELEASE(mConnection.p);
 }
 
 void ConnectTests::connect ()
@@ -163,17 +163,17 @@ void ConnectTests::connect4 ()
     try
     {
         mConnection = ShpTests::GetConnection ();
-		for (int idx = 0; idx < 15; idx++)
-		{
-			wchar_t* pConnectStr = GConnectStr[idx];
-			CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
-			mConnection->SetConnectionString (pConnectStr);
-			CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
-			FdoConnectionState state = mConnection->Open ();
-			CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == state);
-			CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == mConnection->GetConnectionState ());
-			mConnection->Close ();
-		}
+        for (int idx = 0; idx < 15; idx++)
+        {
+            wchar_t* pConnectStr = GConnectStr[idx];
+            CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
+            mConnection->SetConnectionString (pConnectStr);
+            CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
+            FdoConnectionState state = mConnection->Open ();
+            CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == state);
+            CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == mConnection->GetConnectionState ());
+            mConnection->Close ();
+        }
     }
     catch (FdoException* ge)
     {
@@ -346,7 +346,7 @@ void ConnectTests::connect_double_slash ()
         FdoPtr<FdoFeatureSchema> schema = schemas->GetItem (0);
         CPPUNIT_ASSERT_MESSAGE ("Expecting 'Default' schema", 0 == wcscmp (schema->GetName (), L"Default"));
         FdoPtr<FdoClassCollection> classes = schema->GetClasses ();
-        CPPUNIT_ASSERT_MESSAGE ("Expecting 4 classes", 4 == classes->GetCount ());
+        CPPUNIT_ASSERT_MESSAGE ("Expecting 6 classes", 6 == classes->GetCount ());
 
         mConnection->Close ();
         CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
@@ -369,13 +369,13 @@ void ConnectTests::connect_wrong_params ()
         CPPUNIT_ASSERT_MESSAGE ("open connection should fail", false);
     }
     catch (FdoException*)
-	{
-	}
+    {
+    }
     catch (...)
     {
         CPPUNIT_FAIL ("non-FdoException");
     }
-	CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
+    CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
     mConnection->Close ();
     CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
 }
@@ -387,19 +387,19 @@ void ConnectTests::connect_wrong_params2 ()
     CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
     try
     {
-		mConnection->SetConnectionString (L"DefaultFileLocation=" LOCATION L";TemporaryFLocation=C:\\tmp\\");
+        mConnection->SetConnectionString (L"DefaultFileLocation=" LOCATION L";TemporaryFLocation=C:\\tmp\\");
         CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
         FdoConnectionState state = mConnection->Open ();
         CPPUNIT_ASSERT_MESSAGE ("open connection should fail", false);
     }
     catch (FdoException*)
-	{
-	}
+    {
+    }
     catch (...)
     {
         CPPUNIT_FAIL ("non-FdoException");
     }
-	CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
+    CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
     mConnection->Close ();
     CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
 }
@@ -409,22 +409,22 @@ void ConnectTests::connect_params1 ()
     CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
     try
     {
-		mConnection->SetConnectionString (L"DefaultFileLocation=" LOCATION L";TemporaryFileLocation=");
+        mConnection->SetConnectionString (L"DefaultFileLocation=" LOCATION L";TemporaryFileLocation=");
         CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
         FdoConnectionState state = mConnection->Open ();
-		CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Open == mConnection->GetConnectionState ());
-		mConnection->Close ();
-		CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
+        CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Open == mConnection->GetConnectionState ());
+        mConnection->Close ();
+        CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
     }
     catch (FdoException* ge)
-	{
-		fail (ge);
-	}
+    {
+        fail (ge);
+    }
     catch (...)
     {
         CPPUNIT_FAIL ("non-FdoException");
     }
-	CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
+    CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
     mConnection->Close ();
     CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
 }
@@ -435,19 +435,19 @@ void ConnectTests::connect_params2 ()
     CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
     try
     {
-		mConnection->SetConnectionString (L"DefaultFileLocation=C:\\Shp_NoFolder//" L";TemporaryFileLocation=");
+        mConnection->SetConnectionString (L"DefaultFileLocation=C:\\Shp_NoFolder//" L";TemporaryFileLocation=");
         CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
         FdoConnectionState state = mConnection->Open ();
         CPPUNIT_ASSERT_MESSAGE ("open connection should fail", false);
     }
     catch (FdoException*)
-	{
-	}
+    {
+    }
     catch (...)
     {
         CPPUNIT_FAIL ("non-FdoException");
     }
-	CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
+    CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
     mConnection->Close ();
     CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
 }
@@ -458,22 +458,125 @@ void ConnectTests::connect_params3 ()
     CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
     try
     {
-		mConnection->SetConnectionString (L"DefaultFileLocation=" LOCATION L"..//Ontario\\" L";TemporaryFileLocation=");
+        mConnection->SetConnectionString (L"DefaultFileLocation=" LOCATION L"..//Ontario\\" L";TemporaryFileLocation=");
         CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
         FdoConnectionState state = mConnection->Open ();
-		CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Open == mConnection->GetConnectionState ());
-		mConnection->Close ();
-		CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
+        CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Open == mConnection->GetConnectionState ());
+        mConnection->Close ();
+        CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
     }
     catch (FdoException* ge)
-	{
-		fail (ge);
-	}
+    {
+        fail (ge);
+    }
     catch (...)
     {
         CPPUNIT_FAIL ("non-FdoException");
     }
-	CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
+    CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
+    mConnection->Close ();
+    CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
+}
+
+void ConnectTests::connect_params4 ()
+{
+    mConnection = ShpTests::GetConnection ();
+    CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
+    try
+    {
+        mConnection->SetConnectionString (L"DefaultFileLocation=\"" LOCATION L"..//Ontario\\~`!@#$%^&()_-+=}{[];',.shp\"" L";TemporaryFileLocation=");
+        CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
+        FdoConnectionState state = mConnection->Open ();
+        CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Open == mConnection->GetConnectionState ());
+        mConnection->Close ();
+        CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
+    }
+    catch (FdoException* ge)
+    {
+        fail (ge);
+    }
+    catch (...)
+    {
+        CPPUNIT_FAIL ("non-FdoException");
+    }
+    CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
+    mConnection->Close ();
+    CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
+}
+
+void ConnectTests::connect_params5 ()
+{
+    mConnection = ShpTests::GetConnection ();
+    CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
+    try
+    {
+        mConnection->SetConnectionString (L"DefaultFileLocation=" LOCATION L"..//Ontario\\~`!@#$%^&()_-+=}{[];',.shp" L";TemporaryFileLocation=");
+        CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
+        FdoConnectionState state = mConnection->Open ();
+        CPPUNIT_ASSERT_MESSAGE ("open connection should fail", false);
+    }
+    catch (FdoException*)
+    {
+    }
+    catch (...)
+    {
+        CPPUNIT_FAIL ("non-FdoException");
+    }
+    CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
+    mConnection->Close ();
+    CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
+}
+
+void ConnectTests::connect_params6 ()
+{
+    mConnection = ShpTests::GetConnection ();
+    CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
+    try
+    {
+        mConnection->SetConnectionString (L"DefaultFileLocation=" LOCATION L"..//Ontario\\~`!@#$%^&()_-+}{[]',.shp" L";TemporaryFileLocation=");
+        CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
+        FdoConnectionState state = mConnection->Open ();
+        CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Open == mConnection->GetConnectionState ());
+        mConnection->Close ();
+        CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
+    }
+    catch (FdoException* ge)
+    {
+        fail (ge);
+    }
+    catch (...)
+    {
+        CPPUNIT_FAIL ("non-FdoException");
+    }
+    CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
+    mConnection->Close ();
+    CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
+}
+
+void ConnectTests::connect_params7 ()
+{
+    mConnection = ShpTests::GetConnection ();
+    try
+    {
+        FdoPtr<FdoIConnectionInfo> cinfo = mConnection->GetConnectionInfo();
+        FdoPtr<FdoIConnectionPropertyDictionary> didc = cinfo->GetConnectionProperties();
+        didc->SetProperty(L"DefaultFileLocation", LOCATION L"..//Ontario\\~`!@#$%^&()_-+=}{[];',.shp");
+        didc->SetProperty(L"TemporaryFileLocation",L"");
+        
+        FdoConnectionState state = mConnection->Open ();
+        CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Open == mConnection->GetConnectionState ());
+        mConnection->Close ();
+        CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
+    }
+    catch (FdoException* ge)
+    {
+        fail (ge);
+    }
+    catch (...)
+    {
+        CPPUNIT_FAIL ("non-FdoException");
+    }
+    CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
     mConnection->Close ();
     CPPUNIT_ASSERT_MESSAGE ("connection state not closed", FdoConnectionState_Closed == mConnection->GetConnectionState ());
 }
