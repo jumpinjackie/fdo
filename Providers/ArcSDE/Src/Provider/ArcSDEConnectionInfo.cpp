@@ -87,7 +87,39 @@ FdoIConnectionPropertyDictionary* ArcSDEConnectionInfo::GetConnectionProperties 
 {
     validate ();
     if (mPropertyDictionary == NULL)
-        mPropertyDictionary = new ArcSDEConnectionPropertyDictionary (mConnection);
+    {
+        mPropertyDictionary = new FdoCommonConnPropDictionary (mConnection);
+
+        char* mbPropName = NULL;
+        wide_to_multibyte(mbPropName, CONNECTIONPROPERTY_SERVER);
+        FdoPtr<ConnectionProperty> newProp = new ConnectionProperty (CONNECTIONPROPERTY_SERVER,
+            NlsMsgGet(ARCSDE_CONNECTION_PROPERTY_SERVER, mbPropName),
+            L"", true, false, false, false, false, false, false, 0, NULL);
+        mPropertyDictionary->AddProperty (newProp);
+
+        wide_to_multibyte(mbPropName, CONNECTIONPROPERTY_INSTANCE);
+        newProp = new ConnectionProperty (CONNECTIONPROPERTY_INSTANCE,
+            NlsMsgGet(ARCSDE_CONNECTION_PROPERTY_INSTANCE, mbPropName),
+            L"", true, false, false, false, false, false, false, 0, NULL);
+        mPropertyDictionary->AddProperty (newProp);
+
+        wide_to_multibyte(mbPropName, CONNECTIONPROPERTY_USERNAME);
+        newProp = new ConnectionProperty (CONNECTIONPROPERTY_USERNAME,
+            NlsMsgGet(ARCSDE_CONNECTION_PROPERTY_USERNAME, mbPropName),
+            L"", true, false, false, false, false, false, false, 0, NULL);
+        mPropertyDictionary->AddProperty (newProp);
+
+        wide_to_multibyte(mbPropName, CONNECTIONPROPERTY_PASSWORD);
+        newProp = new ConnectionProperty (CONNECTIONPROPERTY_PASSWORD,
+            NlsMsgGet(ARCSDE_CONNECTION_PROPERTY_PASSWORD, mbPropName),
+            L"", true, true, false, false, false, false, false, 0, NULL);
+        mPropertyDictionary->AddProperty (newProp);
+
+        wide_to_multibyte(mbPropName, CONNECTIONPROPERTY_DATASTORE);
+        newProp = new ConnectionProperty (CONNECTIONPROPERTY_DATASTORE,
+            NlsMsgGet(ARCSDE_CONNECTION_PROPERTY_DATASTORE, mbPropName),
+            L"", false, false, true, false, false, true, false, 0, NULL);
+        mPropertyDictionary->AddProperty (newProp);
+    }
     return (FDO_SAFE_ADDREF(mPropertyDictionary.p));
 }
-

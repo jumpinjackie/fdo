@@ -275,8 +275,16 @@ SymbolicName=ARCSDE_RUNTIME_NOT_FOUND_PROC
 Language=English
 The ArcSDE runtime was not found (procedure %1$ls in module %2$ls).
 .
-
-
+MessageId=2023
+SymbolicName=ARCSDE_INVALID_CONNECTION_STRING
+Language=English
+Invalid connection string '%1$ls'
+.
+MessageId=2024
+SymbolicName=ARCSDE_INVALID_CONNECTION_PROPERTY_NAME
+Language=English
+Invalid connection property name '%1$ls'
+.
 
 ;//************************************************************************************
 ;//************************************************************************************

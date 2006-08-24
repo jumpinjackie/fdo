@@ -78,7 +78,6 @@ class ArcSDEConnection;
 #include <ArcSDEApplySchemaCommand.h>
 #include <ArcSDESQLCommand.h>
 #include <ArcSDEConnectionInfo.h>
-#include <ArcSDEConnectionPropertyDictionary.h>
 #include <ArcSDEConnectionCapabilities.h>
 #include <ArcSDESchemaCapabilities.h>
 #include <ArcSDECommandCapabilities.h>

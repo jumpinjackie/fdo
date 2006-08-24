@@ -47,7 +47,6 @@ libArcSDEProviderSrc_la_SOURCES = \
   ArcSDEConnectionCapabilities.cpp \
   ArcSDEConnection.cpp \
   ArcSDEConnectionInfo.cpp \
-  ArcSDEConnectionPropertyDictionary.cpp \
   ArcSDEDataReader.cpp \
   ArcSDEDescribeSchemaCommand.cpp \
   ArcSDEExpressionCapabilities.cpp \
@@ -64,7 +63,6 @@ libArcSDEProviderSrc_la_SOURCES = \
   ArcSDETransaction.cpp \
   ArcSDEDataStoreReader.cpp \
   ArcSDEListDataStores.cpp \
-  ConnectionStringParser.cpp \
   stdafx.cpp
 
 noinst_HEADERS = $(libArcSDEProviderSrc_la_SOURCES) \
@@ -79,7 +77,6 @@ noinst_HEADERS = $(libArcSDEProviderSrc_la_SOURCES) \
    ArcSDEConnection.h \
    ArcSDEConnectionCapabilities.h \
    ArcSDEConnectionInfo.h \
-   ArcSDEConnectionPropertyDictionary.h \
    ArcSDECreateLongTransactionCommand.h \
    ArcSDECreateSpatialContext.h \
    ArcSDEDataReader.h \
@@ -125,7 +122,6 @@ noinst_HEADERS = $(libArcSDEProviderSrc_la_SOURCES) \
    ArcSDETransaction.h \
    ArcSDEUpdateCommand.h \
    ArcSDEUtils.h \
-   ConnectionStringParser.h \
    FdoSde.h \
    resource.h \
    stdafx.h

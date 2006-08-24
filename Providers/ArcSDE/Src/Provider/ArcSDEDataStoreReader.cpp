@@ -78,7 +78,7 @@ FdoIDataStorePropertyDictionary* ArcSDEDataStoreReader::GetDataStoreProperties()
     FdoPtr<ConnectionProperty> prop = new ConnectionProperty(CONNECTIONPROPERTY_DATASTORE,
         NlsMsgGet(ARCSDE_CONNECTION_PROPERTY_DATASTORE, mbPropName),
         mConnProps->EnumeratePropertyValues(CONNECTIONPROPERTY_DATASTORE, dataStoreCount)[mDataStoreIndex],
-        true, false, false, false, false, true, 0, NULL);
+        true, false, false, false, false, true, false, 0, NULL);
     dict->AddProperty(prop);
 
     return FDO_SAFE_ADDREF(dict.p);

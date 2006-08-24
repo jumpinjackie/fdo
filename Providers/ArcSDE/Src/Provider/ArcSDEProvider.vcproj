@@ -360,22 +360,6 @@
 				RelativePath="ArcSDEConnectionInfo.h"
 				>
 			</File>
-			<File
-				RelativePath="ArcSDEConnectionPropertyDictionary.cpp"
-				>
-			</File>
-			<File
-				RelativePath="ArcSDEConnectionPropertyDictionary.h"
-				>
-			</File>
-			<File
-				RelativePath="ConnectionStringParser.cpp"
-				>
-			</File>
-			<File
-				RelativePath="ConnectionStringParser.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="CommandsFeature"

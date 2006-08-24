@@ -37,7 +37,7 @@ private:
     /**
      * The dictionary of connection parameters.
      */
-    FdoPtr<ArcSDEConnectionPropertyDictionary> mPropertyDictionary;
+    FdoPtr<FdoCommonConnPropDictionary> mPropertyDictionary;
 
 public:
     ArcSDEConnectionInfo ()  { ArcSDEConnectionInfo(NULL); }  // 0-argument constructor to please FdoPtr::operator->

@@ -23,7 +23,7 @@
 #include <string.h>
 
 #include <sdeerno.h>
-#include "ConnectionStringParser.h"
+#include <FdoCommonConnStringParser.h>
 #include "ArcSDEProvider.h"
 #include "ArcSDEUtils.h"
 
@@ -163,9 +163,9 @@ void ArcSDEConnection::SetConnectionString (FdoString* value)
         mConnectionString = value;
 
         // Update the connection property dictionary:
-        FdoPtr<ArcSDEConnectionInfo> connInfo = dynamic_cast<ArcSDEConnectionInfo*>(this->GetConnectionInfo());
-        FdoPtr<ArcSDEConnectionPropertyDictionary> connDict = dynamic_cast<ArcSDEConnectionPropertyDictionary*>(connInfo->GetConnectionProperties());
-        connDict->UpdateConnectionString(mConnectionString);
+        FdoPtr<FdoIConnectionInfo> connInfo = GetConnectionInfo();
+        FdoPtr<FdoCommonConnPropDictionary> connDict = dynamic_cast<FdoCommonConnPropDictionary*>(connInfo->GetConnectionProperties());
+        connDict->UpdateFromConnectionString(mConnectionString);
     }
     else
         throw FdoException::Create (NlsMsgGet(ARCSDE_CONNECTION_ALREADY_OPEN, "The connection is already open."));
@@ -220,11 +220,6 @@ void ArcSDEConnection::SetConnectionTimeout (FdoInt32 value)
 FdoConnectionState ArcSDEConnection::Open ()
 {
     const wchar_t* connection_string;
-    const CHAR* server;
-    const CHAR* instance;
-    const CHAR* datastore;
-    const CHAR* username;
-    const CHAR* password;
     SE_ERROR error;
     SE_CONNECTION connection;
     LONG result;
@@ -243,34 +238,40 @@ FdoConnectionState ArcSDEConnection::Open ()
     if ((NULL == connection_string) || (0 == wcslen (connection_string)))
         throw FdoException::Create (NlsMsgGet(ARCSDE_CONNECTION_STRING_NOT_SET, "Connection string is empty or was not set."));
 
+    FdoPtr<FdoIConnectionInfo> info = GetConnectionInfo ();
+    FdoPtr<FdoCommonConnPropDictionary> dictionary = dynamic_cast<FdoCommonConnPropDictionary*>(info->GetConnectionProperties ());
 
-    // Parse connection string:
-    FdoPtr<ArcSDEConnectionInfo> pConnInfo = (ArcSDEConnectionInfo*)GetConnectionInfo();
-    FdoPtr<ArcSDEConnectionPropertyDictionary> pConnDictionary = (ArcSDEConnectionPropertyDictionary*)pConnInfo->GetConnectionProperties();
-    ConnectionStringParser parser (pConnDictionary, connection_string);
-    server = parser.GetPropertyValue (CONNECTIONPROPERTY_SERVER);
-    instance = parser.GetPropertyValue (CONNECTIONPROPERTY_INSTANCE);
-    datastore = parser.GetPropertyValue (CONNECTIONPROPERTY_DATASTORE);
-    username = parser.GetPropertyValue (CONNECTIONPROPERTY_USERNAME);
-    password = parser.GetPropertyValue (CONNECTIONPROPERTY_PASSWORD);
+    FdoCommonConnStringParser parser (NULL, connection_string);
+    // check to see if connection string is valid and if it have unknown properties 
+    // e.g. DefaultFLocation instead of DefaultFileLocation
+    if (!parser.IsConnStringValid())
+        throw FdoException::Create (NlsMsgGet1(ARCSDE_INVALID_CONNECTION_STRING, "Invalid connection string '%1$ls'", connection_string));
+    if (parser.HasInvalidProperties(dictionary))
+        throw FdoException::Create (NlsMsgGet1(ARCSDE_INVALID_CONNECTION_PROPERTY_NAME, "Invalid connection property name '%1$ls'", parser.GetFirstInvalidPropertyName(dictionary)));
 
+    const char* server = parser.GetPropertyValue (CONNECTIONPROPERTY_SERVER);
+    const char* instance = parser.GetPropertyValue (CONNECTIONPROPERTY_INSTANCE);
+    const char* datastore = parser.GetPropertyValue (CONNECTIONPROPERTY_DATASTORE);
+    const char* username = parser.GetPropertyValue (CONNECTIONPROPERTY_USERNAME);
+    const char* password = parser.GetPropertyValue (CONNECTIONPROPERTY_PASSWORD);
+    
     // Validate that all required connection properties are set:
     FdoInt32 propCount = 0;
-    FdoString **propNames = pConnDictionary->GetPropertyNames(propCount);
+    FdoString **propNames = dictionary->GetPropertyNames(propCount);
     for (FdoInt32 i=0; i<propCount; i++)
-        if (pConnDictionary->IsPropertyRequired(propNames[i]) && (NULL==parser.GetPropertyValue(propNames[i])))
+        if (dictionary->IsPropertyRequired(propNames[i]) && (NULL==parser.GetPropertyValue(propNames[i])))
         {
             if (0 != wcscmp (propNames[i], CONNECTIONPROPERTY_SERVER)) // server is optional at ArcSDE level
                 throw FdoException::Create(NlsMsgGet1(ARCSDE_CONNECTION_MISSING_REQUIRED_PROPERTY, "The connection property '%1$ls' is required but wasn't set.", propNames[i]));
         }
 
     // Handle special datastore case (ArcSDEDefaultDataStore --> NULL database):
-    FdoString *datastoreW = parser.GetPropertyValueW(CONNECTIONPROPERTY_DATASTORE);
-    if ((datastoreW != NULL) && (0==wcscmp(datastoreW, ArcSDEDefaultDataStore)))
-        datastore = NULL;
+    FdoStringP datastoreW = parser.GetPropertyValueW(CONNECTIONPROPERTY_DATASTORE);
+	if ((datastoreW.GetLength() != 0) && (0 == wcscmp(datastoreW, ArcSDEDefaultDataStore)))
+        datastore = "";
 
     // Cache datastore & username:
-    if (datastore == NULL)
+	if (datastore == NULL || strlen(datastore) == 0)
         m_mbDatabaseName[0] = '\0';
     else
         strcpy(m_mbDatabaseName, datastore);
@@ -297,7 +298,7 @@ FdoConnectionState ArcSDEConnection::Open ()
 
     // Cache connection:
     mConnection = connection;
-    mPartialConnection = ((NULL==datastoreW) || (wcslen(datastoreW)==0));
+    mPartialConnection = (datastoreW.GetLength() == 0);
     if (GetConnectionState() == FdoConnectionState_Open)
     {
         SetActiveVersion (SDE_DEFAULT);
@@ -308,7 +309,7 @@ FdoConnectionState ArcSDEConnection::Open ()
     LONG lNumDatabases = 0L;
     char** strDatabaseNames = NULL;
     result = SE_database_list(mConnection, &lNumDatabases, &strDatabaseNames);
-    FdoPtr<Property> datastoreProperty = pConnDictionary->FindProperty(CONNECTIONPROPERTY_DATASTORE);
+    FdoPtr<ConnectionProperty> datastoreProperty = dictionary->FindProperty(CONNECTIONPROPERTY_DATASTORE);
     if (0L==lNumDatabases)
     {
         // Create an enum list with a single "Default Datastore" entry:
@@ -328,7 +329,6 @@ FdoConnectionState ArcSDEConnection::Open ()
             enumArray[i] = new wchar_t[wcslen(wDatabaseName)+1];
             wcscpy(enumArray[i], wDatabaseName);
         }
-
         datastoreProperty->UpdateEnumerableProperties((int)lNumDatabases, (const wchar_t**)enumArray);
     }
 
@@ -366,9 +366,9 @@ void ArcSDEConnection::Close ()
     SetTransaction (NULL);
 
     // Clear the Datastore connection property's enumerated list of datastores:
-    FdoPtr<ArcSDEConnectionInfo> pConnInfo = (ArcSDEConnectionInfo*)GetConnectionInfo();
-    FdoPtr<ArcSDEConnectionPropertyDictionary> pConnDictionary = (ArcSDEConnectionPropertyDictionary*)pConnInfo->GetConnectionProperties();
-    FdoPtr<Property> datastoreProperty = pConnDictionary->FindProperty(CONNECTIONPROPERTY_DATASTORE);
+	FdoPtr<FdoIConnectionInfo> info = GetConnectionInfo ();
+	FdoPtr<FdoCommonConnPropDictionary> dictionary = dynamic_cast<FdoCommonConnPropDictionary*>(info->GetConnectionProperties ());
+	FdoPtr<ConnectionProperty> datastoreProperty = dictionary->FindProperty(CONNECTIONPROPERTY_DATASTORE);
     datastoreProperty->UpdateEnumerableProperties(0, NULL);
     datastoreProperty->SetIsPropertyRequired (false);
 }
