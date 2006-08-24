@@ -1901,41 +1901,40 @@ void FdoSmLpClassBase::FinalizePhDbObject()
                 if ( mDbObjectName == L"" ) 
                     SetDbObjectName( L"" /* cause generation of unique name*/ );
 
-                // No table is created if there are no id properties. Classes without id
-    	        // are only used as object property types.
-	            if ( mbHasFdoIdentity ) {
-                    // Skip table name creation only if already exists and was 
-                    // specified through an override. 
-                    FdoSmPhDbObjectP dbObject;
-                    if (pPhysical->GetOwner()->GetHasMetaSchema())
-                        dbObject = pPhysical->FindDbObject( mDbObjectName, L"", L"", false );
-                    else
-                        dbObject = pPhysical->FindDbObject( mDbObjectName, mOwner, L"", false );
+                // Skip table name creation only if already exists and was 
+                // specified through an override. 
+                FdoSmPhDbObjectP dbObject;
+                if (pPhysical->GetOwner()->GetHasMetaSchema())
+                    dbObject = pPhysical->FindDbObject( mDbObjectName, L"", L"", false );
+                else
+                    dbObject = pPhysical->FindDbObject( mDbObjectName, mOwner, L"", false );
 
-                    if ( dbObject )
-                        mDbObjectName = dbObject->GetName();
-                    else
-                        mDbObjectName = pPhysical->GetDcDbObjectName( mDbObjectName );
-    
-                    if ( mbIsFixedDbObject &&  dbObject ) {
-                        // When db Object is fixed, always latch onto db object,
-                        // don't create a new one.
-                        mPhDbObject = dbObject;
-                    }
-                    else {
+                if ( dbObject )
+                    mDbObjectName = dbObject->GetName();
+                else
+                    mDbObjectName = pPhysical->GetDcDbObjectName( mDbObjectName );
 
-                        if ( mRootDbObjectName.GetLength() > 0 ) 
-                            // foreign table, so create a view around it.
-                            mPhDbObject = NewView( mDbObjectName, mDatabase, mOwner, mRootDbObjectName );
-                        else
-                            // non-foreign so just create the table.
-                            mPhDbObject = NewTable( mDbObjectName, mNewPkeyName );
-                       
-                        // Indicate that Schema Manager created the class table or 
-                        // view on foreign table.
-                        mbIsDbObjectCreator = true;
-                    }
-		        }
+                if ( mbIsFixedDbObject &&  dbObject ) {
+                    // When db Object is fixed, always latch onto db object,
+                    // don't create a new one.
+                    mPhDbObject = dbObject;
+                }
+                else if ( mbHasFdoIdentity ) {
+
+                    // No table is created if there are no id properties. Classes without id
+	                // are only used as object property types.
+
+                    if ( mRootDbObjectName.GetLength() > 0 ) 
+                        // foreign table, so create a view around it.
+                        mPhDbObject = NewView( mDbObjectName, mDatabase, mOwner, mRootDbObjectName );
+                    else
+                        // non-foreign so just create the table.
+                        mPhDbObject = NewTable( mDbObjectName, mNewPkeyName );
+                   
+                    // Indicate that Schema Manager created the class table or 
+                    // view on foreign table.
+                    mbIsDbObjectCreator = true;
+                }
             }
         }
         else {
