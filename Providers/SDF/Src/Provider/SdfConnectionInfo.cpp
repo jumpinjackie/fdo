@@ -17,7 +17,7 @@
 //  
 #include "stdafx.h"
 #include "SdfConnectionInfo.h"
-
+#include <FdoCommonStringUtil.h>
 //-------------------------------------------------------
 // Constructor / destructor
 //-------------------------------------------------------
@@ -27,8 +27,6 @@
 SdfConnectionInfo::SdfConnectionInfo(SdfConnection* connection)
 {
     m_connection = connection;
-    m_PropertyDictionary = NULL;
-
     // NOTE: don't addref the connection because we don't own
     //       it (rather, it owns us)
 }
@@ -37,7 +35,6 @@ SdfConnectionInfo::SdfConnectionInfo(SdfConnection* connection)
 // default destructor
 SdfConnectionInfo::~SdfConnectionInfo()
 {
-    FDO_SAFE_RELEASE(m_PropertyDictionary);
 }
 
 
@@ -97,11 +94,30 @@ FdoString* SdfConnectionInfo::GetFeatureDataObjectsVersion()
 // connection.
 FdoIConnectionPropertyDictionary* SdfConnectionInfo::GetConnectionProperties()
 {
-    if (m_PropertyDictionary == NULL)
-        m_PropertyDictionary = new SdfConnectionPropertyDictionary(m_connection);
+    if (mPropertyDictionary == NULL)
+    {
+        wchar_t** pReadOnlyVals = new wchar_t*[2];
+        pReadOnlyVals[0] = new wchar_t[6];
+        pReadOnlyVals[1] = new wchar_t[5];
+        wcscpy(pReadOnlyVals[0], RDONLY_FALSE);
+        wcscpy(pReadOnlyVals[1], RDONLY_TRUE);
+        mPropertyDictionary = new FdoCommonConnPropDictionary ((FdoIConnection*)m_connection);
 
-    // addref the dictionary because we own it
-    FDO_SAFE_ADDREF(m_PropertyDictionary);
-    return (FdoIConnectionPropertyDictionary *)m_PropertyDictionary;
+        // Define all the connection properties:
+        char* mbPropName = NULL;
+        wide_to_multibyte(mbPropName, PROP_NAME_FILE);
+        FdoPtr<ConnectionProperty> newProp = new ConnectionProperty (PROP_NAME_FILE,
+                NlsMsgGetMain(SDFPROVIDER_48_PROP_NAME_FILE, mbPropName),
+                EMPTY_VALUE, true, false, false, true, false, false, false, 0, NULL);
+        mPropertyDictionary->AddProperty(newProp);
+
+        wide_to_multibyte(mbPropName, PROP_NAME_RDONLY);
+        newProp = new ConnectionProperty (PROP_NAME_RDONLY,
+                NlsMsgGetMain(SDFPROVIDER_49_PROP_NAME_READONLY, mbPropName),
+                RDONLY_TRUE, false, false, true, false, false, false, false, 2, (const wchar_t**)pReadOnlyVals);
+        newProp->SetValue(RDONLY_TRUE);
+        mPropertyDictionary->AddProperty(newProp);
+    }
+    return (FDO_SAFE_ADDREF(mPropertyDictionary.p));
 }
 

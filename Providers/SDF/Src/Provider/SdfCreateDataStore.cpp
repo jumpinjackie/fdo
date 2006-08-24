@@ -20,12 +20,18 @@
 #include "SdfCreateDatastore.h"
 #include "SdfConnection.h"
 #include "SdfCreateSpatialContext.h"
-
+#include <FdoCommonStringUtil.h>
 
 SdfCreateDataStore::SdfCreateDataStore(SdfConnection* connection)
 : SdfCommand<FdoICreateDataStore>(connection)
 {
-	m_dataStorePropertyDictionary = new SdfDataStorePropertyDictionary(connection);
+    m_dataStorePropertyDictionary = new FdoCommonDataStorePropDictionary (connection);
+    char* mbPropName = NULL;
+    wide_to_multibyte(mbPropName, PROP_NAME_FILE);
+    FdoPtr<ConnectionProperty> newProp = new ConnectionProperty (PROP_NAME_FILE,
+            NlsMsgGetMain(SDFPROVIDER_48_PROP_NAME_FILE, mbPropName),
+            EMPTY_VALUE, true, false, false, true, false, false, false, 0, NULL);
+    m_dataStorePropertyDictionary->AddProperty(newProp);
 }
 
 void SdfCreateDataStore::Execute()
@@ -37,12 +43,13 @@ void SdfCreateDataStore::Execute()
     if (m_connection->GetConnectionState() != FdoConnectionState_Closed)
         throw FdoConnectionException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_30_CONNECTION_OPEN)));
 
-	FdoStringP	filename = m_dataStorePropertyDictionary->GetProperty(PROP_NAME_FILE);
+    FdoStringP    filename = m_dataStorePropertyDictionary->GetProperty(PROP_NAME_FILE);
 
     //check if the specified filename exists
-    size_t len = wcstombs(NULL, (FdoString*)filename, 0);
+    FdoStringP    filenameEx = filename.Replace(L"\"", L"");
+    size_t len = wcstombs(NULL, (FdoString*)filenameEx, 0);
     char* mbsName = new char[len + 1];
-    wcstombs(mbsName, (FdoString*)filename, len+1);
+    wcstombs(mbsName, (FdoString*)filenameEx, len+1);
     
     FILE* f = fopen(mbsName, "r");
 
@@ -64,7 +71,7 @@ void SdfCreateDataStore::Execute()
     //when opening the connection.
     std::wstring connStr = L"File=" + std::wstring(filename) + L";ReadOnly=FALSE";
 
-	m_connection->SetCreateSDF();
+    m_connection->SetCreateSDF();
     m_connection->SetConnectionString(connStr.c_str());
 
     if (m_connection->Open() == FdoConnectionState_Open)
@@ -73,7 +80,7 @@ void SdfCreateDataStore::Execute()
         //It does exactly what we need to set the coord sys. Use default values
         SdfCreateSpatialContext* create = new SdfCreateSpatialContext(m_connection);
 
-		create->Execute();
+        create->Execute();
 
         create->Release();
         m_connection->Close();

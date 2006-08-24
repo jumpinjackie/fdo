@@ -28,6 +28,7 @@
 #include "SdfConnection.h"
 
 #include <FdoCommonSelectAggregatesCommand.h>
+#include <FdoCommonConnStringParser.h>
 
 #include "utf8_.h"
 
@@ -68,6 +69,7 @@
 
 SdfConnection::SdfConnection()
 : m_mbsFullPath(NULL),
+  mConnectionString ((wchar_t*)NULL),
   m_env(NULL),
   m_mbsEnvPath(NULL),
   m_connState(FdoConnectionState_Closed),
@@ -76,7 +78,7 @@ SdfConnection::SdfConnection()
   m_bNoEnvPath(false),
   m_dbSchema(NULL)
 {
-	m_bCreate = false;
+    m_bCreate = false;
 }
 
 SdfConnection::~SdfConnection()
@@ -147,66 +149,23 @@ FdoIGeometryCapabilities* SdfConnection::GetGeometryCapabilities()
 
 FdoString* SdfConnection::GetConnectionString()
 {
-    FdoPtr<FdoIConnectionInfo> info = GetConnectionInfo();
-    FdoPtr<FdoIConnectionPropertyDictionary> dict = info->GetConnectionProperties();
-
-    return ((SdfConnectionPropertyDictionary*)dict.p)->GenerateConnectionString();
+    return mConnectionString;
 }
 
 void SdfConnection::SetConnectionString(FdoString* value)
 {
-    //using the API makes sure a connection info will get created
-    //if we don't have one
-    FdoPtr<FdoIConnectionInfo> info = GetConnectionInfo();
-    FdoPtr<FdoIConnectionPropertyDictionary> dict = info->GetConnectionProperties();
-    
-    //clean out the old connection properties if the user
-    //is setting the connection string manually
-    ((SdfConnectionPropertyDictionary*)(dict.p))->Clear();
-
-    //parse the connection properties from the connection string
-    size_t len = wcslen(value);
-    wchar_t* valcpy = new wchar_t[len + 1];
-    wcscpy(valcpy, value);
-
-    wchar_t* ptr = NULL; //for Linux wcstok
-
-#ifdef _WIN32
-    wchar_t* token = wcstok(valcpy, L";"); //NOXLATE
-#else
-    wchar_t* token = wcstok(valcpy, L";", &ptr); //NOXLATE
-#endif
-
-    //tokenize input string into separate connection properties
-    while (token) //NOXLATE
+    if ((GetConnectionState() == FdoConnectionState_Closed) || (GetConnectionState() == FdoConnectionState_Pending))
     {
-        //token is in the form "<prop_name>=<prop_value>"
-        //look for the = sign
-        wchar_t* eq = wcschr(token, L'='); //NOXLATE
+        // Update the connection string:
+        mConnectionString = value;
 
-        if (eq)
-        {
-            *eq = L'\0';
-
-            //pass empty string instead of null. This means the null prop value
-            //exception is delayed up to until the user attempts to open the 
-            //connection. This gives the opportunity to fix the connection
-            //string before opening the connection.
-            if (*(eq+1) == L'\0')
-                dict->SetProperty(token, L"");
-            else
-                dict->SetProperty(token, eq+1);
-        }
-
-#ifdef _WIN32
-        token = wcstok(NULL, L";"); //NOXLATE
-#else
-        token = wcstok(NULL, L";", &ptr); //NOXLATE
-#endif
+        // Update the connection property dictionary:
+        FdoPtr<FdoIConnectionInfo> connInfo = GetConnectionInfo();
+        FdoPtr<FdoCommonConnPropDictionary> connDict = dynamic_cast<FdoCommonConnPropDictionary*>(connInfo->GetConnectionProperties());
+        connDict->UpdateFromConnectionString(mConnectionString);
     }
-
-
-    delete [] valcpy;
+    else
+        throw FdoConnectionException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_30_CONNECTION_OPEN)));
 }
 
 FdoIConnectionInfo* SdfConnection::GetConnectionInfo()
@@ -240,7 +199,7 @@ void SdfConnection::SetConfiguration(FdoIoStream* stream)
 }
 FdoConnectionState SdfConnection::Open()
 {
-	return Open(NULL);
+    return Open(NULL);
 }
 
 FdoConnectionState SdfConnection::Open( SdfCompareHandler* cmpHandler )
@@ -248,20 +207,20 @@ FdoConnectionState SdfConnection::Open( SdfCompareHandler* cmpHandler )
     //look at the needed property value in the ConnectionInfo first
     UpdateConnectionString();
 
-	m_CompareHandler = FDO_SAFE_ADDREF( cmpHandler );
+    m_CompareHandler = FDO_SAFE_ADDREF( cmpHandler );
     
-	if (m_mbsEnvPath == NULL || m_mbsFullPath == NULL)
+    if (m_mbsEnvPath == NULL || m_mbsFullPath == NULL)
         throw FdoConnectionException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_7_ERROR_CONNECTING_TO_FILE)));
 
     //if we are not in create SDF mode, check if the file client 
     //is trying to connect to exists and can be opened in the 
     //requested mode (read or read/write).
-	if (m_bCreate == false && strcmp(m_mbsFullPath,":memory:") != 0 )
+    if (m_bCreate == false && strcmp(m_mbsFullPath,":memory:") != 0 )
     {
 #ifdef _WIN32
         FILE* f = _wfopen((const wchar_t*)FdoStringP(m_mbsFullPath), m_bReadOnly ? L"rb" : L"rb+");
 #else
-		FILE* f = fopen(m_mbsFullPath, m_bReadOnly ? "rb" : "rb+");
+        FILE* f = fopen(m_mbsFullPath, m_bReadOnly ? "rb" : "rb+");
 #endif
         if (!f)
             throw FdoConnectionException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_50_NONEXISTING_FILE), "SDF connect failed. File does not exist or cannot be opened in specified access mode."));
@@ -353,7 +312,7 @@ void SdfConnection::Close()
 
 void SdfConnection::CloseDatabases()
 {
-	m_bCreate = false;
+    m_bCreate = false;
     DestroyDatabases();
 
     if (m_dbSchema)
@@ -415,16 +374,16 @@ FdoICommand* SdfConnection::CreateCommand(FdoInt32 commandType)
         return new SdfCreateSpatialContext(this);
     case FdoCommandType_GetSpatialContexts:
         return new SdfGetSpatialContexts(this);
-	case FdoCommandType_CreateDataStore:
-	    return new SdfCreateDataStore(this);
-	case FdoCommandType_DestroyDataStore:
-		return new SdfDeleteDataStore(this);
+    case FdoCommandType_CreateDataStore:
+        return new SdfCreateDataStore(this);
+    case FdoCommandType_DestroyDataStore:
+        return new SdfDeleteDataStore(this);
 
     case SdfCommandType_CreateSDFFile:
         return new SdfCreateSDFFile(this);
 
-	case SdfCommandType_ExtendedSelect:
-		return new SdfExtendedSelect( new SdfImpExtendedSelect( this ) );
+    case SdfCommandType_ExtendedSelect:
+        return new SdfExtendedSelect( new SdfImpExtendedSelect( this ) );
     default:
         throw FdoConnectionException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_3_COMMAND_NOT_SUPPORTED)));
     }
@@ -446,35 +405,35 @@ void SdfConnection::UpdateConnectionString()
     //using the API makes sure a connection info will get created
     //if we don't have one
     FdoPtr<FdoIConnectionInfo> info = GetConnectionInfo();
-    FdoPtr<FdoIConnectionPropertyDictionary> dict = info->GetConnectionProperties();
+    FdoPtr<FdoCommonConnPropDictionary> dict = dynamic_cast<FdoCommonConnPropDictionary*>(info->GetConnectionProperties ());
 
     const wchar_t* userPath = dict->GetProperty(PROP_NAME_FILE);
 
     _ASSERT(userPath);
 
 #ifdef _WIN32
-	// We convert the file name to a UTF8 string and then, at the low level SQLite os functions, we
-	// convert it back to a wide char an pass it to the wide char version of windows files handling functions.
-	// This way we ensure that a localized file name can be created using the various combination of
-	// OS regional settings.
-	size_t len = MAX_PATH+wcslen(userPath);
-	char* fullPath = new char[len* 4 + 1];
-	wchar_t* wFullPath = new wchar_t[len];
-	wcscpy(wFullPath,userPath);
+    // We convert the file name to a UTF8 string and then, at the low level SQLite os functions, we
+    // convert it back to a wide char an pass it to the wide char version of windows files handling functions.
+    // This way we ensure that a localized file name can be created using the various combination of
+    // OS regional settings.
+    size_t len = MAX_PATH+wcslen(userPath);
+    char* fullPath = new char[len* 4 + 1];
+    wchar_t* wFullPath = new wchar_t[len];
+    wcscpy(wFullPath,userPath);
     if ( (wcscmp(L":memory:",userPath)!=0 && _wfullpath(wFullPath, userPath, len) == NULL) ||
-		WideCharToMultiByte ( CP_UTF8, 0, wFullPath, len, fullPath, len*4 + 1, NULL, NULL) == 0 )
+        WideCharToMultiByte ( CP_UTF8, 0, wFullPath, (int)len, fullPath, (int)(len*4 + 1), NULL, NULL) == 0 )
     {
         delete [] wFullPath;
-		throw FdoConnectionException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_7_ERROR_CONNECTING_TO_FILE)));
+        throw FdoConnectionException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_7_ERROR_CONNECTING_TO_FILE)));
     }
     delete [] wFullPath;
 #else
-	   //convert path to multibyte
+       //convert path to multibyte
     size_t len = wcslen(userPath) * 4 + 1;
     char* mbsUserPath = new char[len];
 
-	if( wcstombs(mbsUserPath, userPath, len) == -1 )
-		throw FdoConnectionException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_7_ERROR_CONNECTING_TO_FILE)));
+    if( wcstombs(mbsUserPath, userPath, len) == -1 )
+        throw FdoConnectionException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_7_ERROR_CONNECTING_TO_FILE)));
 
     char* fullPath = new char[PATH_MAX];
     char *tmp = (char *) alloca(strlen(mbsUserPath)+1);
@@ -488,12 +447,12 @@ void SdfConnection::UpdateConnectionString()
         tmpChar = *last;
         *last = '\0';
     }
-	else
-	{
-    	getcwd(fullPath, PATH_MAX);
-		strcat(fullPath, "/");
-		strcat(fullPath, mbsUserPath);
-	}
+    else
+    {
+        getcwd(fullPath, PATH_MAX);
+        strcat(fullPath, "/");
+        strcat(fullPath, mbsUserPath);
+    }
     if (last != NULL && realpath(tmp, fullPath) == NULL)
     {
         delete [] mbsUserPath;
@@ -503,7 +462,7 @@ void SdfConnection::UpdateConnectionString()
     else
         delete [] mbsUserPath;
 
-	if (last != NULL)
+    if (last != NULL)
     {
         strcat(fullPath, "/");
         *last = tmpChar;
@@ -574,6 +533,14 @@ void SdfConnection::UpdateConnectionString()
         m_bReadOnly = true;
     else
         m_bReadOnly = false;
+
+    FdoCommonConnStringParser parser (NULL, GetConnectionString ());
+    // check to see if connection string is valid and if it have unknown properties 
+    // e.g. DefaultFLocation instead of DefaultFileLocation
+    if (!parser.IsConnStringValid())
+        throw FdoConnectionException::Create(NlsMsgGetMain(SDFPROVIDER_83_INVALID_CONNECTION_STRING, "Invalid connection string '%1$ls'", GetConnectionString()));
+    if (parser.HasInvalidProperties(dict))
+        throw FdoConnectionException::Create(NlsMsgGetMain(SDFPROVIDER_84_INVALID_CONNECTION_PROPERTY_NAME, "Invalid connection property name '%1$ls'", parser.GetFirstInvalidPropertyName(dict)));
 }
 
 
@@ -595,7 +562,7 @@ bool SdfConnection::GetReadOnly()
 
 DataDb* SdfConnection::GetDataDb(FdoClassDefinition* clas)
 {
-	PropertyIndex *pi = GetPropertyIndex(clas);
+    PropertyIndex *pi = GetPropertyIndex(clas);
     if (pi == NULL)
         return NULL;
     FdoClassDefinition* base = pi->GetBaseClass();
@@ -605,7 +572,7 @@ DataDb* SdfConnection::GetDataDb(FdoClassDefinition* clas)
 
 KeyDb* SdfConnection::GetKeyDb(FdoClassDefinition* clas)
 {
-	PropertyIndex *pi = GetPropertyIndex(clas);
+    PropertyIndex *pi = GetPropertyIndex(clas);
     if (pi == NULL)
         return NULL;
     FdoClassDefinition* base = pi->GetBaseClass();
@@ -638,7 +605,7 @@ void SdfConnection::SetSchema(FdoFeatureSchema* schema, bool ignoreStates)
 
 SdfRTree* SdfConnection::GetRTree(FdoClassDefinition* clas)
 {
-	PropertyIndex *pi = GetPropertyIndex(clas);
+    PropertyIndex *pi = GetPropertyIndex(clas);
     if (pi == NULL)
         return NULL;
     FdoFeatureClass* basefc = pi->GetBaseFeatureClass();
@@ -875,83 +842,83 @@ void SdfConnection::ReSyncData()
 
 void SdfConnection::RegenIndex( FdoClassDefinition *clas, KeyDb* keys, DataDb  *dataDb )
 {
-	int ret = SQLiteDB_ERROR;
-	PropertyIndex* propIndex = GetPropertyIndex(clas);
+    int ret = SQLiteDB_ERROR;
+    PropertyIndex* propIndex = GetPropertyIndex(clas);
 
-	// Drop the index
-	keys->DropIndex();
+    // Drop the index
+    keys->DropIndex();
 
-	SQLiteData* currentKey = new SQLiteData();
+    SQLiteData* currentKey = new SQLiteData();
     SQLiteData* currentData = new SQLiteData();
-	
-	if( dataDb->GetFirstFeature( currentKey, currentData ) != SQLiteDB_OK )
-	{
-		if( currentKey )
-			delete currentKey;
-		if( currentData )
-			delete currentData;
+    
+    if( dataDb->GetFirstFeature( currentKey, currentData ) != SQLiteDB_OK )
+    {
+        if( currentKey )
+            delete currentKey;
+        if( currentData )
+            delete currentData;
 
-		return;
-	}
+        return;
+    }
 
-	
-	BinaryReader *dataReader = new BinaryReader(NULL, 0);
+    
+    BinaryReader *dataReader = new BinaryReader(NULL, 0);
 
 
-	do
-	{
-		_ASSERT( currentKey->get_size() == 4 ); // This is the record number which is a UInt32
-		REC_NO recno = *(REC_NO*)(currentKey->get_data());
+    do
+    {
+        _ASSERT( currentKey->get_size() == 4 ); // This is the record number which is a UInt32
+        REC_NO recno = *(REC_NO*)(currentKey->get_data());
 
-		//construct feature key
-		BinaryWriter wrtkey(64);
-		SQLiteData key(NULL, 0);
-		dataReader->Reset((unsigned char*)currentData->get_data(), currentData->get_size());
-		if ( propIndex->HasAutoGen() )
-			DataIO::MakeKey( clas, propIndex, dataReader, wrtkey, recno );
-		else
-			DataIO::MakeKey( clas, propIndex, dataReader, wrtkey );
+        //construct feature key
+        BinaryWriter wrtkey(64);
+        SQLiteData key(NULL, 0);
+        dataReader->Reset((unsigned char*)currentData->get_data(), currentData->get_size());
+        if ( propIndex->HasAutoGen() )
+            DataIO::MakeKey( clas, propIndex, dataReader, wrtkey, recno );
+        else
+            DataIO::MakeKey( clas, propIndex, dataReader, wrtkey );
 
         key.set_data(wrtkey.GetData());
         key.set_size(wrtkey.GetDataLen());
 
-		keys->InsertKey(&key, recno);
+        keys->InsertKey(&key, recno);
 
-	} while ( dataDb->GetNextFeature( currentKey, currentData ) == SQLiteDB_OK );
+    } while ( dataDb->GetNextFeature( currentKey, currentData ) == SQLiteDB_OK );
 
-	if( currentKey )
-		delete currentKey;
-	if( currentData )
-		delete currentData;
+    if( currentKey )
+        delete currentKey;
+    if( currentData )
+        delete currentData;
 
-	if( dataReader)
-		delete dataReader;
+    if( dataReader)
+        delete dataReader;
 }
 
 //
 // Flush all data held in the memory cache to the file.
 void SdfConnection::FlushAll( FdoClassDefinition *clas, bool forUpdate )
 {
-	DataDb  *dataDb = GetDataDb(clas);
-	SdfRTree* rt = GetRTree(clas);
+    DataDb  *dataDb = GetDataDb(clas);
+    SdfRTree* rt = GetRTree(clas);
     KeyDb* keys = GetKeyDb(clas);
 
-	GetDataBase()->begin_transaction();
-	keys->Flush();
-	dataDb->Flush();
-	if( rt ) 
-		rt->Flush();
-	// We only re-gen the index if we are updating the database.
-	// If this is called from a select, then we will not update
-	// the database since the user is only reading this database.
-	if( forUpdate && keys->IndexNeedsRegen() )
-	{
-		
-		RegenIndex( clas, keys, dataDb );
-		keys->Flush();
-		keys->Regened();
-	}
-	GetDataBase()->commit();
+    GetDataBase()->begin_transaction();
+    keys->Flush();
+    dataDb->Flush();
+    if( rt ) 
+        rt->Flush();
+    // We only re-gen the index if we are updating the database.
+    // If this is called from a select, then we will not update
+    // the database since the user is only reading this database.
+    if( forUpdate && keys->IndexNeedsRegen() )
+    {
+        
+        RegenIndex( clas, keys, dataDb );
+        keys->Flush();
+        keys->Regened();
+    }
+    GetDataBase()->commit();
 }
 
 //returns overall data extents in the SDF native
@@ -1024,7 +991,7 @@ bool SdfConnection::VersionIsAtMost(unsigned char actualMajorVersion, unsigned c
 
 DataDb* SdfConnection::CreateNewDataDb( FdoClassDefinition* clas )
 {
-	PropertyIndex* pi = (PropertyIndex*)m_hPropertyIndices[clas];
+    PropertyIndex* pi = (PropertyIndex*)m_hPropertyIndices[clas];
 
     //we need a name for the database, unique for the class...
     //We use separate database for each base class, so the name
@@ -1042,12 +1009,12 @@ DataDb* SdfConnection::CreateNewDataDb( FdoClassDefinition* clas )
     strcpy(fullphysname+5, physname);
 
 
-	DataDb *db = new DataDb(m_env, m_mbsFullPath, fullphysname, true, clas, pi, NULL );
+    DataDb *db = new DataDb(m_env, m_mbsFullPath, fullphysname, true, clas, pi, NULL );
 
-	delete[] physname;
-	delete[] fullphysname;
+    delete[] physname;
+    delete[] fullphysname;
 
-	return db;
+    return db;
 }
 
 SdfSchemaMergeContext* SdfConnection::CreateMergeContext( 
@@ -1078,7 +1045,7 @@ void SdfConnection::NameFromWcs(char* charName, size_t charCount, const wchar_t*
         // ends up being used as a SQLite table name.
         // It has been verified that SQLite allows table names with characters in 
         // the 0x80 to 0xff range.
-        if ( ut_utf8_from_unicode(wcsName, wcsCount, charName, charCount) == -1 )
+        if ( ut_utf8_from_unicode(wcsName, wcsCount, charName, (int)charCount) == -1 )
             throw FdoConnectionException::Create(
                 NlsMsgGetMain(
                     FDO_NLSID(SDFPROVIDER_82_UTF8_FROM_UNICODE),

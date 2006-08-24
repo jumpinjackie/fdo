@@ -20,6 +20,7 @@
 #include "SdfDeleteDataStore.h"
 #include "SdfConnection.h"
 #include <stdio.h>
+#include <FdoCommonStringUtil.h>
 
 #ifndef _WIN32
 #include <unistd.h>
@@ -28,19 +29,26 @@
 SdfDeleteDataStore::SdfDeleteDataStore(SdfConnection* connection)
 : SdfCommand<FdoIDestroyDataStore>(connection)
 {
-	m_dataStorePropertyDictionary = new SdfDataStorePropertyDictionary(connection);
+    m_dataStorePropertyDictionary = new FdoCommonDataStorePropDictionary (connection);
+    char* mbPropName = NULL;
+    wide_to_multibyte(mbPropName, PROP_NAME_FILE);
+    FdoPtr<ConnectionProperty> newProp = new ConnectionProperty (PROP_NAME_FILE,
+            NlsMsgGetMain(SDFPROVIDER_48_PROP_NAME_FILE, mbPropName),
+            EMPTY_VALUE, true, false, false, true, false, false, false, 0, NULL);
+    m_dataStorePropertyDictionary->AddProperty(newProp);
 }
 
 void SdfDeleteDataStore::Execute()
 {  
-	FdoStringP	filename = m_dataStorePropertyDictionary->GetProperty(PROP_NAME_FILE);
+    FdoStringP    filename = m_dataStorePropertyDictionary->GetProperty(PROP_NAME_FILE);
 
+    filename = filename.Replace(L"\"", L"");
     //check if the specified filename exists
     size_t len = wcstombs(NULL, (FdoString*)filename, 0);
     char* mbsName = new char[len + 1];
     wcstombs(mbsName, (FdoString*)filename, len+1);
     
-	// Check if the file exists
+    // Check if the file exists
     FILE* f = fopen( mbsName, "r" );
 
     if (!f)
@@ -48,16 +56,16 @@ void SdfDeleteDataStore::Execute()
 
     fclose(f);
 
-	int rc;
+    int rc;
 #ifdef _WIN32
     rc = ( 0 != DeleteFile( mbsName ) );
 #else
-	rc = ( 0 == unlink( mbsName ) );
+    rc = ( 0 == unlink( mbsName ) );
 #endif
 
     delete [] mbsName;
 
-	if ( ! rc )
+    if ( ! rc )
        throw FdoConnectionException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_70_DELETE_FAILED), "Failed to delete file '%1$ls'", (const wchar_t *)filename));
 
 }

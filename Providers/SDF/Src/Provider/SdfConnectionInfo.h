@@ -17,20 +17,23 @@
 #ifndef SDFCONNECTIONINFO_H
 #define SDFCONNECTIONINFO_H
 
-#include "SdfConnectionPropertyDictionary.h"
-
-
 class SdfConnectionInfo : public FdoIConnectionInfo
 {
-	friend class SdfConnection;
+    friend class SdfConnection;
 
     //-------------------------------------------------------
     // Variables
     //-------------------------------------------------------
 
     private:
+    /**
+     * The connection that spawned us.
+     */
         SdfConnection* m_connection;
-        SdfConnectionPropertyDictionary* m_PropertyDictionary;
+    /**
+     * The dictionary of connection parameters.
+     */
+    FdoPtr<FdoCommonConnPropDictionary> mPropertyDictionary;
 
     //-------------------------------------------------------
     // Constructor / destructor

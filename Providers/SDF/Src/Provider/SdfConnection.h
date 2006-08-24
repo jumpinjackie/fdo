@@ -143,9 +143,9 @@ public:
 
     // Updates the connection string without doing validation or notification.
     void UpdateConnectionString();
-	void SetCreateSDF(bool bCreate = true){m_bCreate = bCreate;};
-	bool GetCreateSDF(){return m_bCreate;};
-	void FlushAll( FdoClassDefinition *clas, bool forUpdate=false );
+    void SetCreateSDF(bool bCreate = true){m_bCreate = bCreate;};
+    bool GetCreateSDF(){return m_bCreate;};
+    void FlushAll( FdoClassDefinition *clas, bool forUpdate=false );
     char* GetFilename();
     char* GetPath();
     bool GetReadOnly();
@@ -159,20 +159,20 @@ public:
 
     FdoByteArray* GetDataExtents();
 
-	SQLiteDataBase* GetDataBase() { return m_env; }
+    SQLiteDataBase* GetDataBase() { return m_env; }
 
     // Get the major/minor verion of the SDF file we are currently connected to:
     static bool VersionIsAtLeast(unsigned char actualMajorVersion, unsigned char actualMinorVersion, unsigned char requiredMajorVersion, unsigned char requiredMinorVersion);
     static bool VersionIsAtMost(unsigned char actualMajorVersion, unsigned char actualMinorVersion, unsigned char requiredMajorVersion, unsigned char requiredMinorVersion);
 
-	// Used to re-sync with the data on disk. This is needed if 2 or more connections are writting to the same file
-	// Before a new connection writes to the file it needs to re-synch with the id pool. Otherwise the ids may overlap
-	// with the existing ids.
-	void ReSyncData();
+    // Used to re-sync with the data on disk. This is needed if 2 or more connections are writting to the same file
+    // Before a new connection writes to the file it needs to re-synch with the id pool. Otherwise the ids may overlap
+    // with the existing ids.
+    void ReSyncData();
 
-	FdoConnectionState Open( SdfCompareHandler* cmpHandler );
+    FdoConnectionState Open( SdfCompareHandler* cmpHandler );
 
-	DataDb* CreateNewDataDb( FdoClassDefinition* clas );
+    DataDb* CreateNewDataDb( FdoClassDefinition* clas );
 
     // Creates a context for merging a schema, passed to the ApplySchema command,
     // into the current schemas.
@@ -189,7 +189,7 @@ private:
     void InitDatabases();
     void DestroyDatabases();
 
-	void RegenIndex( FdoClassDefinition *clas, KeyDb* keys, DataDb  *dataDb );
+    void RegenIndex( FdoClassDefinition *clas, KeyDb* keys, DataDb  *dataDb );
 
     // Converts a name from wide char to char. The char format depends on the SDF file version:
     //      pre-3.2 - multibyte (for backward compatibility)
@@ -215,10 +215,10 @@ private:
     SdfConnectionInfo* m_connInfo;
 
     SchemaDb* m_dbSchema;
-	
-	FdoPtr<SdfCompareHandler> m_CompareHandler;
+    
+    FdoPtr<SdfCompareHandler> m_CompareHandler;
 
-	bool m_bCreate;
+    bool m_bCreate;
     /*
     stdext::hash_map<FdoClassDefinition*, SdfRTree*> m_hRTrees;    
     stdext::hash_map<FdoClassDefinition*, PropertyIndex*> m_hPropertyIndices;
@@ -233,6 +233,11 @@ private:
     stdext::hash_map<void*, void*> m_hPropertyIndices;
     stdext::hash_map<void*, void*> m_hDataDbs;
     stdext::hash_map<void*, void*> m_hKeyDbs;
+protected:
+    /**
+     * The connection string containing details about how to connect to Shp.
+     */
+    FdoStringP mConnectionString;
 };
 
 

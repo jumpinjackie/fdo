@@ -22,4 +22,10 @@
 #define SDF_PROVIDER_VERSION				L"3.2.0.0"
 #define SDF_FDO_VERSION						L"3.2.0.0"
 
+#define	PROP_NAME_FILE		L"File"	  
+#define	PROP_NAME_RDONLY	L"ReadOnly"  
+#define	EMPTY_VALUE			L""
+#define	RDONLY_FALSE		L"FALSE"
+#define	RDONLY_TRUE			L"TRUE"
+
 #endif //STDPLUS_PROVIDER_H

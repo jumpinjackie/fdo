@@ -514,14 +514,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\SdfConnectionPropertyDictionary.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SdfConnectionPropertyDictionary.h"
-				>
-			</File>
-			<File
 				RelativePath=".\SdfCreateDataStore.cpp"
 				>
 			</File>
@@ -543,14 +535,6 @@
 			</File>
 			<File
 				RelativePath=".\SdfCreateSpatialContext.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SdfDataStorePropertyDictionary.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SdfDataStorePropertyDictionary.h"
 				>
 			</File>
 			<File
@@ -663,14 +647,6 @@
 			</File>
 			<File
 				RelativePath=".\SdfInsert.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SdfPropertyDictionary.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SdfPropertyDictionary.h"
 				>
 			</File>
 			<File

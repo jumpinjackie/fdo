@@ -23,7 +23,6 @@
 #endif
 
 #include "Fdo/Commands/DataStore/IDestroyDataStore.h"
-#include "SdfDataStorePropertyDictionary.h"
 #include "SdfConnection.h"
 #include "SdfCommand.h"
 
@@ -32,29 +31,32 @@
 /// through a dictionary of name value pairs that is provider dependant. </summary>
 class SdfDeleteDataStore: public SdfCommand<FdoIDestroyDataStore>
 {
-	friend class SdfConnection;
+    friend class SdfConnection;
 
 protected:
 
-	SdfDeleteDataStore(SdfConnection* connection);
+    SdfDeleteDataStore(SdfConnection* connection);
 
 public:
 
-	///<summary>Gets the FdoIDataStorePropertyDictionary interface that	
-	///can be used to dynamically query	and	set	the	properties required	
-	///to destroy a datastore.</summary>
-	///	<returns>Returns the property dictionary</returns>
-	virtual	FdoIDataStorePropertyDictionary* GetDataStoreProperties() 
-	{ 
-		return (FdoIDataStorePropertyDictionary *)(m_dataStorePropertyDictionary);
-	}
+    ///<summary>Gets the FdoIDataStorePropertyDictionary interface that    
+    ///can be used to dynamically query    and    set    the    properties required    
+    ///to destroy a datastore.</summary>
+    ///    <returns>Returns the property dictionary</returns>
+    virtual    FdoIDataStorePropertyDictionary* GetDataStoreProperties() 
+    { 
+        return (FdoIDataStorePropertyDictionary *)(FDO_SAFE_ADDREF(m_dataStorePropertyDictionary.p));
+    }
 
-	/// <summary>Executes the FdoIDeleteDataStore command.</summary>
-	/// <returns>Returns nothing</returns> 
-	virtual void Execute(); 
+    /// <summary>Executes the FdoIDeleteDataStore command.</summary>
+    /// <returns>Returns nothing</returns> 
+    virtual void Execute(); 
 
 protected:
-	SdfDataStorePropertyDictionary *m_dataStorePropertyDictionary;;
+    /**
+     * The dictionary of connection parameters.
+     */
+    FdoPtr<FdoCommonDataStorePropDictionary> m_dataStorePropertyDictionary;
 };
 
 #endif

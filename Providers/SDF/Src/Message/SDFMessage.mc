@@ -403,3 +403,13 @@ SymbolicName=SDFPROVIDER_82_UTF8_FROM_UNICODE
 Language=English
 Failed to convert string '%1$ls' to utf8 
 .
+MessageId=83
+SymbolicName=SDFPROVIDER_83_INVALID_CONNECTION_STRING
+Language=English
+Invalid connection string '%1$ls'
+.
+MessageId=84
+SymbolicName=SDFPROVIDER_84_INVALID_CONNECTION_PROPERTY_NAME
+Language=English
+Invalid connection property name '%1$ls'
+.

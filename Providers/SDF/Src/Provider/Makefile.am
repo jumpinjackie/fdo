@@ -19,7 +19,6 @@ libSDFProviderSrc_la_SOURCES = \
   SdfConnection.cpp \
   SdfConnectionCapabilities.cpp \
   SdfConnectionInfo.cpp \
-  SdfConnectionPropertyDictionary.cpp \
   SdfCreateSDFFile.cpp \
   SdfCreateSpatialContext.cpp \
   SdfDataValidator.cpp \
@@ -48,9 +47,7 @@ libSDFProviderSrc_la_SOURCES = \
   SdfDistinctDataReader.cpp \
   SdfQueryOptimizer.cpp \
   SdfCreateDataStore.cpp \
-  SdfDataStorePropertyDictionary.cpp \
   SdfDeleteDataStore.cpp \
-  SdfPropertyDictionary.cpp \
   SdfSpatialExtentsAggregateReader.cpp \
   SDF.cpp
 
@@ -72,12 +69,10 @@ noinst_HEADERS = $(libSDFProviderSrc_la_SOURCES) \
    SdfConnection.h \
    SdfConnectionCapabilities.h \
    SdfConnectionInfo.h \
-   SdfConnectionPropertyDictionary.h \
    SdfCreateDatastore.h \
    SdfCreateSDFFile.h \
    SdfCreateSpatialContext.h \
    SdfDataReader.h \
-   SdfDataStorePropertyDictionary.h \
    SdfDataValidator.h \
    SdfDelete.h \
    SdfDeleteDataStore.h \
@@ -94,7 +89,6 @@ noinst_HEADERS = $(libSDFProviderSrc_la_SOURCES) \
    SdfGetSpatialContexts.h \
    SdfImpScrollableFeatureReader.h \
    SdfInsert.h \
-   SdfPropertyDictionary.h \
    SDFProvider.h \
    SdfQueryOptimizer.h \
    SdfRasterCapabilities.h \

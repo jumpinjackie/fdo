@@ -23,36 +23,38 @@
 #endif
 
 #include "Fdo/Commands/DataStore/ICreateDataStore.h"
-#include "SdfDataStorePropertyDictionary.h"
 #include "SdfConnection.h"
 #include "SdfCommand.h"
 
 /// <summary>This command creates a new datastore.</summary>
 class SdfCreateDataStore: public SdfCommand<FdoICreateDataStore>
 {
-	friend class SdfConnection;
+    friend class SdfConnection;
 
 protected:
 
-	SdfCreateDataStore(SdfConnection* connection);
+    SdfCreateDataStore(SdfConnection* connection);
 
 public:
 
-	///<summary>Gets the FdoIDataStorePropertyDictionary interface that	
-	///can be used to dynamically query	and	set	the	properties required	
-	///to create a new datastore.</summary>
-	///	<returns>Returns the property dictionary</returns>
-	virtual	FdoIDataStorePropertyDictionary* GetDataStoreProperties() 
-	{ 
-		return (FdoIDataStorePropertyDictionary *)(m_dataStorePropertyDictionary);
-	}
+    ///<summary>Gets the FdoIDataStorePropertyDictionary interface that    
+    ///can be used to dynamically query    and    set    the    properties required    
+    ///to create a new datastore.</summary>
+    ///    <returns>Returns the property dictionary</returns>
+    virtual    FdoIDataStorePropertyDictionary* GetDataStoreProperties() 
+    { 
+        return (FdoIDataStorePropertyDictionary *)(FDO_SAFE_ADDREF(m_dataStorePropertyDictionary.p));
+    }
 
-	///	<summary>Executes the FdoICreateDataStore command.</summary>
-	///	<returns>Returns nothing</returns> 
-	virtual	void Execute(); 
+    ///    <summary>Executes the FdoICreateDataStore command.</summary>
+    ///    <returns>Returns nothing</returns> 
+    virtual    void Execute(); 
 
 protected:
-	SdfDataStorePropertyDictionary *m_dataStorePropertyDictionary;
+    /**
+     * The dictionary of connection parameters.
+     */
+    FdoPtr<FdoCommonDataStorePropDictionary> m_dataStorePropertyDictionary;
 };
 
 #endif
