@@ -513,3 +513,13 @@ SymbolicName=GRFP_108_CLASS_SPATIAL_CONTEXT_NOT_DEFINED
 Language=English
 Spatial Context '%1$ls' defined for Class '%2$ls' was not found.
 .
+MessageId=109
+SymbolicName=GRFP_109_INVALID_CONNECTION_STRING
+Language=English
+Invalid connection string '%1$ls'
+.
+MessageId=110
+SymbolicName=GRFP_110_INVALID_CONNECTION_PROPERTY_NAME
+Language=English
+Invalid connection property name '%1$ls'
+.

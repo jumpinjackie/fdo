@@ -37,9 +37,6 @@
 #include <GRFPMessage.h>
 #include <FdoRfpDefines.h>
 #include <FdoRfpUtil.h>
-
-
-
-
+#include <FdoCommonConnPropDictionary.h>
 
 #endif //GRFP_H

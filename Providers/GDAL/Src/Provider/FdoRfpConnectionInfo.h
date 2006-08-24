@@ -33,18 +33,23 @@ class FdoRfpConnectionPropertyDictionary;
 class FdoRfpConnection;
 
 class FdoRfpConnectionInfo :
-	public FdoIConnectionInfo
+    public FdoIConnectionInfo
 {
-	friend class FdoRfpConnection;
+    friend class FdoRfpConnection;
 private:
-	FdoRfpConnection* m_connection;
-	//FdoPtr<FdoRfpConnectionPropertyDictionary> m_propertyDict;
+    FdoRfpConnection* m_connection;
+    /**
+     * The dictionary of connection parameters.
+     */
+    FdoPtr<FdoCommonConnPropDictionary> mPropertyDictionary;
 
 public:
-	FdoRfpConnectionInfo(FdoRfpConnection* connection);
+    FdoRfpConnectionInfo(FdoRfpConnection* connection);
 protected:
-	virtual ~FdoRfpConnectionInfo(void);
+    virtual ~FdoRfpConnectionInfo(void);
     virtual void Dispose ();
+    virtual void validate ();
+
 public:
     /// <summary>Gets the name of the feature provider.</summary>
     /// <returns>Returns the provider name</returns>

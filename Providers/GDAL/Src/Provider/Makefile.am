@@ -10,7 +10,6 @@ libGRFPProviderSrc_la_SOURCES = \
 	FdoRfpConnection.cpp \
 	FdoRfpConnectionCapabilities.cpp \
 	FdoRfpConnectionInfo.cpp \
-	FdoRfpConnectionPropertyDictionary.cpp \
 	FdoRfpDataReader.cpp \
 	FdoRfpDatasetCache.cpp \
 	FdoRfpDescribeSchemaCommand.cpp \
@@ -66,7 +65,6 @@ noinst_HEADERS = $(libGRFPProviderSrc_la_SOURCES) \
 	FdoRfpQueryExecutor.h \
 	FdoRfpConnectionInfo.h \
 	FdoRfpQueryResult.h \
-	FdoRfpConnectionPropertyDictionary.h \
 	FdoRfpRaster.h \
 	FdoRfpDataReader.h \
 	FdoRfpRasterCapabilities.h \

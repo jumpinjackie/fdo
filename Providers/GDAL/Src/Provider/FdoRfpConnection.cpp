@@ -45,6 +45,7 @@
 #include "FdoRfpGlobals.h"
 #include <GdalFile/Override/FdoGrfpOverrides.h>
 #include <gdal.h>
+#include <FdoCommonConnStringParser.h>
 
 // external access to connection for client services
 extern "C" FDOGRFP_API FdoIConnection* CreateConnection ()
@@ -66,7 +67,7 @@ FdoRfpConnection::FdoRfpConnection(void) : m_state(FdoConnectionState_Closed)
 
 FdoRfpConnection::~FdoRfpConnection(void)
 {
-	Close();
+    Close();
 }
 
 /// <summary>Gets an FdoIConnectionCapabilities interface describing the capabilities
@@ -74,53 +75,53 @@ FdoRfpConnection::~FdoRfpConnection(void)
 /// <returns>Returns the connection capabilities</returns> 
 FdoIConnectionCapabilities* FdoRfpConnection::GetConnectionCapabilities()
 {
-	return new FdoRfpConnectionCapabilities();
+    return new FdoRfpConnectionCapabilities();
 }
 
 /// <summary>Gets an FdoISchemaCapabilities interface describing the provider's support for the feature schema.</summary>
 /// <returns>Returns schema capabilities</returns> 
 FdoISchemaCapabilities* FdoRfpConnection::GetSchemaCapabilities()
 {
-	return new FdoRfpSchemaCapabilities();
+    return new FdoRfpSchemaCapabilities();
 }
 
 /// <summary>Gets an FdoICommandCapabilities interface describing the commands a provider supports.</summary>
 /// <returns>Returns the command capabilities</returns> 
 FdoICommandCapabilities* FdoRfpConnection::GetCommandCapabilities()
 {
-	return new FdoRfpCommandCapabilities();
+    return new FdoRfpCommandCapabilities();
 }
 
 /// <summary>Gets an FdoIFilterCapabilities interface describing the provider's support for filters.</summary>
 /// <returns>Returns the filter capabilities</returns> 
 FdoIFilterCapabilities* FdoRfpConnection::GetFilterCapabilities()
 {
-	return new FdoRfpFilterCapabilities();
+    return new FdoRfpFilterCapabilities();
 }
 
 /// <summary>Gets an FdoIExpressionCapabilities interface describing the provider's support for expressions.</summary>
 /// <returns>Returns the expression capabilities</returns> 
 FdoIExpressionCapabilities* FdoRfpConnection::GetExpressionCapabilities()
 {
-	return new FdoRfpExpressionCapabilities();
+    return new FdoRfpExpressionCapabilities();
 }
 
 /// <summary>Gets an FdoIRasterCapabilities interface describing the provider's support for raster images.</summary>
 /// <returns>Returns the raster capabilities</returns> 
 FdoIRasterCapabilities* FdoRfpConnection::GetRasterCapabilities()
 {
-	return new FdoRfpRasterCapabilities();
+    return new FdoRfpRasterCapabilities();
 }
 
 class FdoRfpTopologyCapabilities : public FdoITopologyCapabilities
 {
 public:
-	virtual bool SupportsTopology () { return (false); }
-	virtual bool SupportsTopologicalHierarchy () { return (false); }
-	virtual bool BreaksCurveCrossingsAutomatically () { return (false); }
-	virtual bool ActivatesTopologyByArea (){ return (false); }
-	virtual bool ConstrainsFeatureMovements (){ return (false); }
-	virtual void Dispose () { delete this; }
+    virtual bool SupportsTopology () { return (false); }
+    virtual bool SupportsTopologicalHierarchy () { return (false); }
+    virtual bool BreaksCurveCrossingsAutomatically () { return (false); }
+    virtual bool ActivatesTopologyByArea (){ return (false); }
+    virtual bool ConstrainsFeatureMovements (){ return (false); }
+    virtual void Dispose () { delete this; }
 };
 
 /// <summary>Gets an FdoITopologyCapabilities interface describing the provider's support for topology.</summary>
@@ -136,7 +137,7 @@ FdoITopologyCapabilities* FdoRfpConnection::GetTopologyCapabilities ()
 /// <returns>Returns the connection string</returns> 
 FdoString* FdoRfpConnection::GetConnectionString()
 {
-	return m_connectionString;
+    return m_connectionString;
 }
 
 /// <summary>Sets the connection string used to open a DataStore. SetConnectionString can only be set while the
@@ -147,14 +148,18 @@ void FdoRfpConnection::SetConnectionString(FdoString* value)
 {
     if (value == NULL)
         value = L"";
-	_validateClose();
-	m_connectionString = value;
+    _validateClose();
+    m_connectionString = value;
+    // Update the connection property dictionary:
+    FdoPtr<FdoIConnectionInfo> connInfo = GetConnectionInfo();
+    FdoPtr<FdoCommonConnPropDictionary> connDict = dynamic_cast<FdoCommonConnPropDictionary*>(connInfo->GetConnectionProperties());
+    connDict->UpdateFromConnectionString(m_connectionString);
 }
 
 void FdoRfpConnection::_validateOpen()
 {
     if (m_state != FdoConnectionState_Open) {
-		throw FdoException::Create(
+        throw FdoException::Create(
             NlsMsgGet(
                 GRFP_15_CONNECTION_NOT_ESTABLISHED, 
                 "The FDO connection has not been 'Opened'. The attempted operation is not permitted."
@@ -166,7 +171,7 @@ void FdoRfpConnection::_validateOpen()
 void FdoRfpConnection::_validateClose()
 {
     if (m_state != FdoConnectionState_Closed) {
-		throw FdoException::Create(
+        throw FdoException::Create(
             NlsMsgGet(
                 GRFP_69_CONNECTION_ESTABLISHED, 
                 "The FDO connection has not been 'Closed'. The attempted operation is not permitted."
@@ -179,14 +184,17 @@ void FdoRfpConnection::_validateClose()
 /// <returns>Returns the connection info</returns> 
 FdoIConnectionInfo* FdoRfpConnection::GetConnectionInfo()
 {
-	return new FdoRfpConnectionInfo(this);
+    if (mConnectionInfo == NULL)
+        mConnectionInfo = new FdoRfpConnectionInfo (this);
+
+    return FDO_SAFE_ADDREF(mConnectionInfo.p);
 }
 
 /// <summary>Gets the current state of the connection.</summary>
 /// <returns>Returns the current state of the connection</returns> 
 FdoConnectionState FdoRfpConnection::GetConnectionState()
 {
-	return m_state;
+    return m_state;
 }
 
 /// <summary>Gets the number of milliseconds to wait while trying to establish a
@@ -196,7 +204,7 @@ FdoConnectionState FdoRfpConnection::GetConnectionState()
 FdoInt32 FdoRfpConnection::GetConnectionTimeout()
 {
     throw FdoException::Create(NlsMsgGet(GRFP_39_CONNECTION_TIMEOUT_NOT_SUPPORTED, "Connection timeout is not supported."));
-	return 0;
+    return 0;
 }
 
 /// <summary>Sets the number of milliseconds to wait while trying to establish a
@@ -210,81 +218,65 @@ void FdoRfpConnection::SetConnectionTimeout(FdoInt32 value)
     throw FdoException::Create(NlsMsgGet(GRFP_39_CONNECTION_TIMEOUT_NOT_SUPPORTED, "Connection timeout is not supported."));
 }
 
-// The connection string contains multiple parameters, so we must parse them out
-// from the connection string
-void FdoRfpConnection::_parseConnectionString()
-{
-	FdoStringP connectionStr = m_connectionString;
-	while (connectionStr.GetLength() > 0)
-	{
-		FdoStringP onePair = connectionStr.Left(L";");
-		connectionStr = connectionStr.Right(L";");
-		FdoStringP key = onePair.Left(L"=");
-		FdoStringP value = onePair.Right(L"=");
-		if (key == FdoGrfpGlobals::DefaultRasterFileLocation)
-			m_defaultRasterLocation = value;
-	}
-}
-
 // Build up the default spatial contexts if they are unavailable in the configuration
 void FdoRfpConnection::_buildUpDefaultSpatialContext()
 {
-	FdoRfpSpatialContextP defaultSC = new FdoRfpSpatialContext();
-	defaultSC->SetName(FdoGrfpGlobals::DefaultSpatialContextName);
-	defaultSC->SetDescription(NlsMsgGet(GRFP_67_DEFAULT_SPATIAL_CONTEXT_DESC, "System generated default FDO Spatial Context"));
-	defaultSC->SetCoordinateSystem(FdoGrfpGlobals::DefaultSpatialContextCoordName);
-	defaultSC->SetExtent(FdoRfpUtil::CreateGeometryAgfFromRect(FdoRfpRect(
-		FdoGrfpGlobals::DefaultSpatialContextExtentMinX, 
-		FdoGrfpGlobals::DefaultSpatialContextExtentMinY, 
-		FdoGrfpGlobals::DefaultSpatialContextExtentMaxX,
-		FdoGrfpGlobals::DefaultSpatialContextExtentMaxY)));
-	defaultSC->SetExtentType(FdoSpatialContextExtentType_Static);
-	defaultSC->SetXYTolerance(FdoGrfpGlobals::DefaultSpatialContextXYTolerance);
-	defaultSC->SetZTolerance(FdoGrfpGlobals::DefaultSpatialContextZTolerance);
-	defaultSC->SetCoordinateSystemWkt(FdoGrfpGlobals::DefaultSpatialContextWKTName);
-	m_spatialContexts->Add(defaultSC);
+    FdoRfpSpatialContextP defaultSC = new FdoRfpSpatialContext();
+    defaultSC->SetName(FdoGrfpGlobals::DefaultSpatialContextName);
+    defaultSC->SetDescription(NlsMsgGet(GRFP_67_DEFAULT_SPATIAL_CONTEXT_DESC, "System generated default FDO Spatial Context"));
+    defaultSC->SetCoordinateSystem(FdoGrfpGlobals::DefaultSpatialContextCoordName);
+    defaultSC->SetExtent(FdoRfpUtil::CreateGeometryAgfFromRect(FdoRfpRect(
+        FdoGrfpGlobals::DefaultSpatialContextExtentMinX, 
+        FdoGrfpGlobals::DefaultSpatialContextExtentMinY, 
+        FdoGrfpGlobals::DefaultSpatialContextExtentMaxX,
+        FdoGrfpGlobals::DefaultSpatialContextExtentMaxY)));
+    defaultSC->SetExtentType(FdoSpatialContextExtentType_Static);
+    defaultSC->SetXYTolerance(FdoGrfpGlobals::DefaultSpatialContextXYTolerance);
+    defaultSC->SetZTolerance(FdoGrfpGlobals::DefaultSpatialContextZTolerance);
+    defaultSC->SetCoordinateSystemWkt(FdoGrfpGlobals::DefaultSpatialContextWKTName);
+    m_spatialContexts->Add(defaultSC);
 }
 
 // Build up the default feature schema if there is no configuation or the configuation contains
 // no feature schema.
 void FdoRfpConnection::_buildUpDefaultFeatureSchema()
 {
-	FdoIoMemoryStreamP stream = FdoIoMemoryStream::Create(); 
-	for (int i = 0; defaultSchema[i] != NULL; i++)
-		stream->Write( (FdoByte*) defaultSchema[i], strlen(defaultSchema[i]));
-	stream->Reset();
-	FdoXmlReaderP reader = FdoXmlReader::Create(stream);
-	m_featureSchemas->ReadXml(reader);	
+    FdoIoMemoryStreamP stream = FdoIoMemoryStream::Create(); 
+    for (int i = 0; defaultSchema[i] != NULL; i++)
+        stream->Write( (FdoByte*) defaultSchema[i], strlen(defaultSchema[i]));
+    stream->Reset();
+    FdoXmlReaderP reader = FdoXmlReader::Create(stream);
+    m_featureSchemas->ReadXml(reader);    
 }
 
 // Build up the default schema overrides according to the default feature schema
 void FdoRfpConnection::_buildUpDefaultOverrides()
 {
-	FdoStringP overrides = FdoStringP::Format(defaultOverrides, FdoGrfpGlobals::GRFPProviderName, (FdoString*)m_defaultRasterLocation);
-	FdoIoMemoryStreamP stream = FdoIoMemoryStream::Create(); 
-	stream->Write((FdoByte*)(const char*)overrides, overrides.GetLength());
-	stream->Reset();
-	FdoXmlReaderP reader = FdoXmlReader::Create(stream);
-	m_schemaMappings->ReadXml(reader);
+    FdoStringP overrides = FdoStringP::Format(defaultOverrides, FdoGrfpGlobals::GRFPProviderName, (FdoString*)m_defaultRasterLocation);
+    FdoIoMemoryStreamP stream = FdoIoMemoryStream::Create(); 
+    stream->Write((FdoByte*)(const char*)overrides, overrides.GetLength());
+    stream->Reset();
+    FdoXmlReaderP reader = FdoXmlReader::Create(stream);
+    m_schemaMappings->ReadXml(reader);
 }
 
 
 // According to the feature schema and schema overrides, build up the schema data
 void FdoRfpConnection::_buildUpSchemaDatas()
 {
-	m_schemaDatas = FdoRfpSchemaDataCollection::Create();
-	FdoInt32 count = m_featureSchemas->GetCount();
-	for (FdoInt32 i = 0; i < count; i++)
-	{
-		FdoFeatureSchemaP fs = m_featureSchemas->GetItem(i);
-		//Try to find the corresponding schema mapping
-		FdoPhysicalSchemaMappingP mapping = m_schemaMappings->GetItem(FdoGrfpGlobals::GRFPProviderName, fs->GetName());
-		FdoGrfpPhysicalSchemaMappingP mapping1;
-		if (mapping != NULL)
-			mapping1 = SP_STATIC_CAST(FdoGrfpPhysicalSchemaMapping, mapping);
-		FdoRfpSchemaDataP schemaData = FdoRfpSchemaData::Create(m_spatialContexts, fs, mapping1);
-		m_schemaDatas->Add(schemaData);
-	}
+    m_schemaDatas = FdoRfpSchemaDataCollection::Create();
+    FdoInt32 count = m_featureSchemas->GetCount();
+    for (FdoInt32 i = 0; i < count; i++)
+    {
+        FdoFeatureSchemaP fs = m_featureSchemas->GetItem(i);
+        //Try to find the corresponding schema mapping
+        FdoPhysicalSchemaMappingP mapping = m_schemaMappings->GetItem(FdoGrfpGlobals::GRFPProviderName, fs->GetName());
+        FdoGrfpPhysicalSchemaMappingP mapping1;
+        if (mapping != NULL)
+            mapping1 = SP_STATIC_CAST(FdoGrfpPhysicalSchemaMapping, mapping);
+        FdoRfpSchemaDataP schemaData = FdoRfpSchemaData::Create(m_spatialContexts, fs, mapping1);
+        m_schemaDatas->Add(schemaData);
+    }
 }
 
 // The classes contained in FDORFP feature schema can have and only have two properties.
@@ -292,41 +284,41 @@ void FdoRfpConnection::_buildUpSchemaDatas()
 // is built up, we must check its validation.
 void FdoRfpConnection::_validateFeatureSchema()
 {
-	FdoInt32 count = m_featureSchemas->GetCount();
-	for (FdoInt32 i = 0; i < count; i++)
-	{
-		FdoFeatureSchemaP schema = m_featureSchemas->GetItem(i);
-		FdoClassesP classes = schema->GetClasses();
-		FdoInt32 countClass = classes->GetCount();
-		for (FdoInt32 j = 0; j < countClass; j++)
-		{
-			FdoClassDefinitionP classDef = classes->GetItem(j);
-			FdoPtr<FdoPropertyDefinitionCollection> props = classDef->GetProperties();
-			//The feature class can and only can have two properties, one is the ID of
-			//the raster and the other is the raster itselft.
-			try
-			{
-				if (props->GetCount() != 2)
-					throw 0;
-				int flag = 0;
-				for (FdoInt32 k = 0; k < 2; k++)
-				{
-					FdoPtr<FdoPropertyDefinition> prop = props->GetItem(k);
-					if (prop->GetPropertyType() == FdoPropertyType_DataProperty &&
-						static_cast<FdoDataPropertyDefinition*>(prop.p)->GetDataType() == FdoDataType_String)
-						flag |= 0x1;
-					else if (prop->GetPropertyType() == FdoPropertyType_RasterProperty)
-						flag |= 0x2;
-				}
-				if (flag != 0x3)
-					throw 0;
-			}
-			catch (int)
-			{
-				throw FdoException::Create(NlsMsgGet1(GRFP_46_CLASS_INVALID, "Feature class '%1$ls' is invalid.", (FdoString*)(classDef->GetQualifiedName())));
-			}
-		}
-	}
+    FdoInt32 count = m_featureSchemas->GetCount();
+    for (FdoInt32 i = 0; i < count; i++)
+    {
+        FdoFeatureSchemaP schema = m_featureSchemas->GetItem(i);
+        FdoClassesP classes = schema->GetClasses();
+        FdoInt32 countClass = classes->GetCount();
+        for (FdoInt32 j = 0; j < countClass; j++)
+        {
+            FdoClassDefinitionP classDef = classes->GetItem(j);
+            FdoPtr<FdoPropertyDefinitionCollection> props = classDef->GetProperties();
+            //The feature class can and only can have two properties, one is the ID of
+            //the raster and the other is the raster itselft.
+            try
+            {
+                if (props->GetCount() != 2)
+                    throw 0;
+                int flag = 0;
+                for (FdoInt32 k = 0; k < 2; k++)
+                {
+                    FdoPtr<FdoPropertyDefinition> prop = props->GetItem(k);
+                    if (prop->GetPropertyType() == FdoPropertyType_DataProperty &&
+                        static_cast<FdoDataPropertyDefinition*>(prop.p)->GetDataType() == FdoDataType_String)
+                        flag |= 0x1;
+                    else if (prop->GetPropertyType() == FdoPropertyType_RasterProperty)
+                        flag |= 0x2;
+                }
+                if (flag != 0x3)
+                    throw 0;
+            }
+            catch (int)
+            {
+                throw FdoException::Create(NlsMsgGet1(GRFP_46_CLASS_INVALID, "Feature class '%1$ls' is invalid.", (FdoString*)(classDef->GetQualifiedName())));
+            }
+        }
+    }
 }
 
 /// <summary>Opens a feature connection with the settings specified by the
@@ -335,49 +327,60 @@ void FdoRfpConnection::_validateFeatureSchema()
 /// <returns>Returns nothing</returns> 
 FdoConnectionState FdoRfpConnection::Open()
 {
-	//Ensure the connection is not alteady open
-	_validateClose();
+    //Ensure the connection is not alteady open
+    _validateClose();
 
-	_parseConnectionString();
+    FdoPtr<FdoIConnectionInfo> info = GetConnectionInfo ();
+    FdoPtr<FdoCommonConnPropDictionary> dictionary = dynamic_cast<FdoCommonConnPropDictionary*>(info->GetConnectionProperties ());
 
-	// build up spatial contexts
-	if (m_spatialContexts == NULL)
-		m_spatialContexts = new FdoRfpSpatialContextCollection();
-	if (m_spatialContexts->GetCount() == 0)
-		_buildUpDefaultSpatialContext();
-	//Set the first spatial context as the active one
-	m_activeSpatialContext = FdoRfpSpatialContextP(m_spatialContexts->GetItem(0))->GetName();
+    m_defaultRasterLocation = dictionary->GetProperty (FdoGrfpGlobals::DefaultRasterFileLocation);
+    
+    FdoCommonConnStringParser parser (NULL, GetConnectionString ());
+    // check to see if connection string is valid and if it have unknown properties 
+    // e.g. DefaultFLocation instead of DefaultFileLocation
+    if (!parser.IsConnStringValid())
+        throw FdoException::Create (NlsMsgGet1(GRFP_109_INVALID_CONNECTION_STRING, "Invalid connection string '%1$ls'", GetConnectionString ()));
+    if (parser.HasInvalidProperties(dictionary))
+        throw FdoException::Create (NlsMsgGet1(GRFP_110_INVALID_CONNECTION_PROPERTY_NAME, "Invalid connection property name '%1$ls'", parser.GetFirstInvalidPropertyName(dictionary)));
 
-	//Build up feature schema collection
-	if (m_featureSchemas == NULL)
-		m_featureSchemas = FdoFeatureSchemaCollection::Create(NULL);
-	if (m_featureSchemas->GetCount() == 0)
-		_buildUpDefaultFeatureSchema();
+    // build up spatial contexts
+    if (m_spatialContexts == NULL)
+        m_spatialContexts = new FdoRfpSpatialContextCollection();
+    if (m_spatialContexts->GetCount() == 0)
+        _buildUpDefaultSpatialContext();
+    //Set the first spatial context as the active one
+    m_activeSpatialContext = FdoRfpSpatialContextP(m_spatialContexts->GetItem(0))->GetName();
 
-	//Validate each class in all feature schemas
-	_validateFeatureSchema();
+    //Build up feature schema collection
+    if (m_featureSchemas == NULL)
+        m_featureSchemas = FdoFeatureSchemaCollection::Create(NULL);
+    if (m_featureSchemas->GetCount() == 0)
+        _buildUpDefaultFeatureSchema();
 
-	//Build up schema mapping collection
-	if (m_schemaMappings == NULL )
-		m_schemaMappings = FdoPhysicalSchemaMappingCollection::Create();
+    //Validate each class in all feature schemas
+    _validateFeatureSchema();
 
-	// if DefaultRasterLocation is set, the default logical schema and overrides
-	// must be established.
-	if (m_defaultRasterLocation.GetLength() != 0)
-	{
-		// check if the default schema is already there
-		FdoPtr<FdoFeatureSchema> defaultSchema = m_featureSchemas->FindItem(FdoGrfpGlobals::DefaultSchemaName);
-		if (defaultSchema == NULL)
-			_buildUpDefaultFeatureSchema();
-		// and then build up the default overrides
-		_buildUpDefaultOverrides();
-	}
+    //Build up schema mapping collection
+    if (m_schemaMappings == NULL )
+        m_schemaMappings = FdoPhysicalSchemaMappingCollection::Create();
 
-	//Build up the data for each feature class
-	_buildUpSchemaDatas();
+    // if DefaultRasterLocation is set, the default logical schema and overrides
+    // must be established.
+    if (m_defaultRasterLocation.GetLength() != 0)
+    {
+        // check if the default schema is already there
+        FdoPtr<FdoFeatureSchema> defaultSchema = m_featureSchemas->FindItem(FdoGrfpGlobals::DefaultSchemaName);
+        if (defaultSchema == NULL)
+            _buildUpDefaultFeatureSchema();
+        // and then build up the default overrides
+        _buildUpDefaultOverrides();
+    }
+
+    //Build up the data for each feature class
+    _buildUpSchemaDatas();
 
     //All done, no exceptions
-	m_state = FdoConnectionState_Open;
+    m_state = FdoConnectionState_Open;
 
     return m_state;
 }
@@ -386,17 +389,17 @@ FdoConnectionState FdoRfpConnection::Open()
 /// <returns>Returns nothing</returns> 
 void FdoRfpConnection::Close()
 {
-	if (m_state == FdoConnectionState_Closed)
-		return;
-	m_schemaDatas = NULL;
-	m_schemaMappings = NULL;
-	m_featureSchemas = NULL;
-	m_spatialContexts = NULL;
-	m_activeSpatialContext = L"";
-	m_defaultRasterLocation = L"";
-	m_connectionString = L"";
-	
-	m_state = FdoConnectionState_Closed;
+    if (m_state == FdoConnectionState_Closed)
+        return;
+    m_schemaDatas = NULL;
+    m_schemaMappings = NULL;
+    m_featureSchemas = NULL;
+    m_spatialContexts = NULL;
+    m_activeSpatialContext = L"";
+    m_defaultRasterLocation = L"";
+    m_connectionString = L"";
+    
+    m_state = FdoConnectionState_Closed;
 }
 
 /// <summary>Begins a transaction and returns an object that realizes
@@ -413,8 +416,8 @@ FdoITransaction* FdoRfpConnection::BeginTransaction()
 /// <returns>Returns the command</returns> 
 FdoICommand* FdoRfpConnection::CreateCommand(FdoInt32 commandType)
 {
-	//Ensure the connection is established
-	_validateOpen();
+    //Ensure the connection is established
+    _validateOpen();
 
     FdoICommand* ret;
 
@@ -423,22 +426,22 @@ FdoICommand* FdoRfpConnection::CreateCommand(FdoInt32 commandType)
         case FdoCommandType_Select:
             ret = new FdoRfpSelectCommand (this);
             break;
-		case FdoCommandType_SelectAggregates:
-			ret = new FdoRfpSelectAggregate(this);
-			break;
-		case FdoCommandType_DescribeSchema:
-			ret = new FdoRfpDescribeSchemaCommand(this);
-			break;
-		case FdoCommandType_GetSpatialContexts:
-			ret = new FdoRfpGetSpatialContexts(this);
-			break;
-		case FdoCommandType_DescribeSchemaMapping:
-			ret = new FdoRfpDescribeSchemaMapping(this);
-			break;
-		default:
-			throw FdoException::Create(NlsMsgGet(GRFP_45_COMMAND_NOT_SUPPORTED, "Command not supported."));
-	}
-	return ret;
+        case FdoCommandType_SelectAggregates:
+            ret = new FdoRfpSelectAggregate(this);
+            break;
+        case FdoCommandType_DescribeSchema:
+            ret = new FdoRfpDescribeSchemaCommand(this);
+            break;
+        case FdoCommandType_GetSpatialContexts:
+            ret = new FdoRfpGetSpatialContexts(this);
+            break;
+        case FdoCommandType_DescribeSchemaMapping:
+            ret = new FdoRfpDescribeSchemaMapping(this);
+            break;
+        default:
+            throw FdoException::Create(NlsMsgGet(GRFP_45_COMMAND_NOT_SUPPORTED, "Command not supported."));
+    }
+    return ret;
 }
 
 /// <summary>Factory function that creates an empty Schema Override set specific
@@ -446,7 +449,7 @@ FdoICommand* FdoRfpConnection::CreateCommand(FdoInt32 commandType)
 /// <returns>Returns FdoPhysicalSchemaMapping</returns> 
 FdoPhysicalSchemaMapping* FdoRfpConnection::CreateSchemaMapping()
 {
-	return FdoGrfpPhysicalSchemaMapping::Create();
+    return FdoGrfpPhysicalSchemaMapping::Create();
 }
 
 /// <summary>Sets the XML configuration information that will be used to 
@@ -457,335 +460,157 @@ FdoPhysicalSchemaMapping* FdoRfpConnection::CreateSchemaMapping()
 /// <returns>Returns nothing.</returns> 
 void FdoRfpConnection::SetConfiguration (FdoIoStream* configStream)
 {
-	_validateClose();
+    _validateClose();
 
-	if (configStream == NULL)
-		return;
-	FdoXmlReaderP reader;		
-	// build up the spatial context
-	configStream->Reset();
-	reader = FdoXmlReader::Create(configStream);
-	m_spatialContexts = new FdoRfpSpatialContextCollection();
-	try {
-		m_spatialContexts->ReadXml(reader);
-	} catch (FdoException* e) {
-		// failed parsing configuation, create a new nested exception
-		// taking the exception as the cause
-		throw FdoException::Create(NlsMsgGet(GRFP_76_FAIL_READ_SPATIAL_CONTEXTS, "Failed to de-serialize the spatial contexts from the configuration."), e);
-	}
+    if (configStream == NULL)
+        return;
+    FdoXmlReaderP reader;        
+    // build up the spatial context
+    configStream->Reset();
+    reader = FdoXmlReader::Create(configStream);
+    m_spatialContexts = new FdoRfpSpatialContextCollection();
+    try {
+        m_spatialContexts->ReadXml(reader);
+    } catch (FdoException* e) {
+        // failed parsing configuation, create a new nested exception
+        // taking the exception as the cause
+        throw FdoException::Create(NlsMsgGet(GRFP_76_FAIL_READ_SPATIAL_CONTEXTS, "Failed to de-serialize the spatial contexts from the configuration."), e);
+    }
 
-	// build up feature schema collection
-	configStream->Reset();
-	reader = FdoXmlReader::Create(configStream);
-	m_featureSchemas = FdoFeatureSchemaCollection::Create(NULL);
-	try {
-		m_featureSchemas->ReadXml(reader);
-	} catch (FdoException* e) {
-		// see comments above...
-		throw FdoException::Create(NlsMsgGet(GRFP_77_FAIL_READ_FEATURE_SCHEMAS, "Failed to de-serialize the feature schemas from the configuration."), e);
-	}
-	
-	// build up schema mapping collection
-	configStream->Reset();
-	reader = FdoXmlReader::Create(configStream);
-	m_schemaMappings = FdoPhysicalSchemaMappingCollection::Create();
-	try {
-		m_schemaMappings->ReadXml(reader);
-	} catch (FdoException* e) {
-		// see comments above...
-		throw FdoException::Create(NlsMsgGet(GRFP_78_FAIL_READ_SCHEMA_MAPPINGS, "Failed to de-serialize the schema mappings from the configuration."), e);
-	}
+    // build up feature schema collection
+    configStream->Reset();
+    reader = FdoXmlReader::Create(configStream);
+    m_featureSchemas = FdoFeatureSchemaCollection::Create(NULL);
+    try {
+        m_featureSchemas->ReadXml(reader);
+    } catch (FdoException* e) {
+        // see comments above...
+        throw FdoException::Create(NlsMsgGet(GRFP_77_FAIL_READ_FEATURE_SCHEMAS, "Failed to de-serialize the feature schemas from the configuration."), e);
+    }
+    
+    // build up schema mapping collection
+    configStream->Reset();
+    reader = FdoXmlReader::Create(configStream);
+    m_schemaMappings = FdoPhysicalSchemaMappingCollection::Create();
+    try {
+        m_schemaMappings->ReadXml(reader);
+    } catch (FdoException* e) {
+        // see comments above...
+        throw FdoException::Create(NlsMsgGet(GRFP_78_FAIL_READ_SCHEMA_MAPPINGS, "Failed to de-serialize the schema mappings from the configuration."), e);
+    }
 
 }
 
 //Get the class definition by its qualified name
 void FdoRfpConnection::GetClassDef(const FdoPtr<FdoIdentifier>& identifier, FdoPtr<FdoClassDefinition>& classDef)
 {
-	//Ensure the connection is established
-	_validateOpen();
-	//First find the class
-	FdoPtr<FdoIDisposableCollection> classes = m_featureSchemas->FindClass(identifier->GetText());
-	if (classes->GetCount() == 1)
-	{
-		classDef = static_cast<FdoClassDefinition*>(classes->GetItem(0));
-	}
+    //Ensure the connection is established
+    _validateOpen();
+    //First find the class
+    FdoPtr<FdoIDisposableCollection> classes = m_featureSchemas->FindClass(identifier->GetText());
+    if (classes->GetCount() == 1)
+    {
+        classDef = static_cast<FdoClassDefinition*>(classes->GetItem(0));
+    }
 }
 
 //Get a reference to the feature schema collection
 FdoPtr<FdoFeatureSchemaCollection> FdoRfpConnection::GetFeatureSchemas()
 {
-	//Ensure the connection is established
-	_validateOpen();
+    //Ensure the connection is established
+    _validateOpen();
 
-	return m_featureSchemas;
+    return m_featureSchemas;
 }
 
 // Get a referrence to the schema mappings
 FdoPtr<FdoPhysicalSchemaMappingCollection> FdoRfpConnection::GetSchemaMappings()
 {
-	//Ensure the connection is established
-	_validateOpen();
+    //Ensure the connection is established
+    _validateOpen();
 
-	return m_schemaMappings;
+    return m_schemaMappings;
 }
 
 
 //Get class data of "FeatureName.ClassName"
 FdoPtr<FdoRfpClassData> FdoRfpConnection::GetClassData(const FdoPtr<FdoClassDefinition>& classDef)
 {
-	//Ensure the connection is established
-	_validateOpen();
+    //Ensure the connection is established
+    _validateOpen();
 
-	FdoRfpSchemaDataP schemaData = m_schemaDatas->GetItem(FdoPtr<FdoSchemaElement>(classDef->GetParent())->GetName());
-	FdoRfpClassDatasP classDatas = schemaData->GetClassDatas();
-	FdoRfpClassDataP classData = classDatas->GetItem(classDef->GetName());
-	return classData;
+    FdoRfpSchemaDataP schemaData = m_schemaDatas->GetItem(FdoPtr<FdoSchemaElement>(classDef->GetParent())->GetName());
+    FdoRfpClassDatasP classDatas = schemaData->GetClassDatas();
+    FdoRfpClassDataP classData = classDatas->GetItem(classDef->GetName());
+    return classData;
 }
 
 //Get all spatial contexts
 FdoPtr<FdoRfpSpatialContextCollection> FdoRfpConnection::GetSpatialContexts()
 {
-	//Ensure the connection is established
-	_validateOpen();
-	return m_spatialContexts; 
+    //Ensure the connection is established
+    _validateOpen();
+    return m_spatialContexts; 
 }
 
 //Get active spatial context
 FdoPtr<FdoRfpSpatialContext> FdoRfpConnection::GetActiveSpatialContext()
 {
-	//Ensure the connection is established
-	_validateOpen();
-	return m_spatialContexts->GetItem(m_activeSpatialContext);
+    //Ensure the connection is established
+    _validateOpen();
+    return m_spatialContexts->GetItem(m_activeSpatialContext);
 }
 
 //Activate spatial context
 void FdoRfpConnection::ActivateSpatialContext(FdoString* contextName)
 {
-	_validateOpen();
-	FdoPtr<FdoRfpSpatialContext> spatialContext = m_spatialContexts->FindItem(contextName);
-	if (spatialContext == NULL)
-		throw FdoCommandException::Create(NlsMsgGet1(GRFP_60_SPATIAL_CONTEXT_NOT_EXIST, "Specified spatial context '%1$ls' does not exist.", contextName));
-	m_activeSpatialContext = contextName;
+    _validateOpen();
+    FdoPtr<FdoRfpSpatialContext> spatialContext = m_spatialContexts->FindItem(contextName);
+    if (spatialContext == NULL)
+        throw FdoCommandException::Create(NlsMsgGet1(GRFP_60_SPATIAL_CONTEXT_NOT_EXIST, "Specified spatial context '%1$ls' does not exist.", contextName));
+    m_activeSpatialContext = contextName;
 }
 
 // Create a spatial context
 void FdoRfpConnection::CreateSpatialContext(const FdoPtr<FdoRfpSpatialContext>& spatialContext, bool bUpdateExist)
 {
-	_validateOpen();
-	FdoInt32 index = m_spatialContexts->IndexOf(spatialContext->GetName());
-	if (index != -1 && !bUpdateExist)
-		throw FdoCommandException::Create(NlsMsgGet1(GRFP_61_SPATIAL_CONTEXT_EXIST, "Specified spatial context '%1$ls' already exists.", spatialContext->GetName()));
-	if (index != -1)
-		m_spatialContexts->SetItem(index, spatialContext);
-	else
-		m_spatialContexts->Add(spatialContext);
+    _validateOpen();
+    FdoInt32 index = m_spatialContexts->IndexOf(spatialContext->GetName());
+    if (index != -1 && !bUpdateExist)
+        throw FdoCommandException::Create(NlsMsgGet1(GRFP_61_SPATIAL_CONTEXT_EXIST, "Specified spatial context '%1$ls' already exists.", spatialContext->GetName()));
+    if (index != -1)
+        m_spatialContexts->SetItem(index, spatialContext);
+    else
+        m_spatialContexts->Add(spatialContext);
 }
 
 // Destroy a spatial context
 void FdoRfpConnection::DestroySpatialContext(FdoString* contextName)
 {
-	_validateOpen();
-	FdoInt32 index = m_spatialContexts->IndexOf(contextName);
-	if (index == -1)
-		throw FdoCommandException::Create(NlsMsgGet1(GRFP_60_SPATIAL_CONTEXT_NOT_EXIST, "Specified spatial context '%1$ls' does not exist.", contextName));
-	m_spatialContexts->RemoveAt(index);
-	//Change the active spatial context if it is removed
-	if (m_activeSpatialContext == contextName)
-	{
-		if (m_spatialContexts->GetCount() > 0)
-			m_activeSpatialContext = FdoRfpSpatialContextP(m_spatialContexts->GetItem(0))->GetName();
-		else
-			m_activeSpatialContext = L"";
-	}
-
-}
-
-/// <summary> Gets the names of all the properties that can appear in a connection string
-/// for this feature provider as an array of Strings. The order of the property
-/// names in the resulting array dictate the order in which they need to be 
-/// specified. This is especially important for the success of the 
-/// EnumeratePropertyValues method because properties that occur earlier in the array
-/// may be required for successful enumeration of properties that appear later.</summary>
-/// <param name="count">Output the number of parameters</param> 
-/// <returns>Returns the list of parameter names</returns> 
-FdoString** FdoRfpConnection::GetPropertyNames(FdoInt32& count)
-{
-	static FdoString* names[] = {
-		FdoGrfpGlobals::DefaultRasterFileLocation,
-	};
-	count = sizeof(names) / sizeof(FdoString*);
-	return names;
-}
-
-/// <summary>Gets the value of the specified property.</summary>
-/// <param name="name">Input the property name.</param> 
-/// <returns>Returns the property value.</returns> 
-FdoString* FdoRfpConnection::GetProperty(FdoString* name)
-{
-	FdoString* rv;
-	if (STRCASEEQ(name, FdoGrfpGlobals::DefaultRasterFileLocation))
-		rv = m_defaultRasterLocation;
-	else
-		throw FdoCommandException::Create(NlsMsgGet1(GRFP_68_PROPERTY_NOT_DEFINED, "Property '%1$ls' not defined.", name));
-
-	return rv;
-}
-
-/// <summary>Sets the value of the specified property. An exception is thrown if the connection is currently open.</summary>
-/// <param name="name">Input the property name</param> 
-/// <param name="value">Input the property value</param> 
-/// <returns>Returns nothing</returns> 
-void FdoRfpConnection::SetProperty(FdoString* name, FdoString* value)
-{
-	_validateClose();
-	if (STRCASEEQ(name, FdoGrfpGlobals::DefaultRasterFileLocation))
-		m_defaultRasterLocation = value;
-	else
-		throw FdoCommandException::Create(NlsMsgGet1(GRFP_68_PROPERTY_NOT_DEFINED, "Property '%1$ls' not defined.", name));
-
-}
-
-/// <summary>Gets the default value for the specified property.</summary>
-/// <param name="name">Input the property name</param> 
-/// <returns>Returns the property default value</returns> 
-FdoString* FdoRfpConnection::GetPropertyDefault(FdoString* name)
-{
-	FdoString* rv;
-	if (STRCASEEQ(name, FdoGrfpGlobals::DefaultRasterFileLocation))
-		rv = L"";
-	else
-		throw FdoCommandException::Create(NlsMsgGet1(GRFP_68_PROPERTY_NOT_DEFINED, "Property '%1$ls' not defined.", name));
-
-	return rv;
-
-}
-
-/// <summary>Determines if the specified property is required.</summary>
-/// <param name="name">Input the property name</param> 
-/// <returns>Returns true if the specified property is required</returns> 
-bool FdoRfpConnection::IsPropertyRequired(FdoString* name)
-{
-	bool rv = false;
-	if (STRCASEEQ(name, FdoGrfpGlobals::DefaultRasterFileLocation))
-		rv = false;
-	else
-		throw FdoCommandException::Create(NlsMsgGet1(GRFP_68_PROPERTY_NOT_DEFINED, "Property '%1$ls' not defined.", name));
-
-	return rv;
-}
-
-/// <summary> Indicates if the property is a password or other protected field
-/// that should be kept secure.</summary>
-/// <param name="name">Input the property name.</param> 
-/// <returns>Returns true if the property is a password or other protected field
-/// that should be kept secure.</returns> 
-bool FdoRfpConnection::IsPropertyProtected(FdoString* name)
-{
-	bool rv = false;
-	if (STRCASEEQ(name, FdoGrfpGlobals::DefaultRasterFileLocation))
-		rv = false;
-	else
-		throw FdoCommandException::Create(NlsMsgGet1(GRFP_68_PROPERTY_NOT_DEFINED, "Property '%1$ls' not defined.", name));
-
-	return rv;
-
-}
-
-/// <summary>Determines if the possible values for the specified property can be enumerated via the EnumeratePropertyValues method.</summary>
-/// <param name="name">Input the property name</param> 
-/// <returns>Returns true if the possible values for the specified property can be enumerated.</returns> 
-bool FdoRfpConnection::IsPropertyEnumerable(FdoString* name)
-{
-	bool rv = false;
-	if (STRCASEEQ(name, FdoGrfpGlobals::DefaultRasterFileLocation))
-		rv = false;
-	else
-		throw FdoCommandException::Create(NlsMsgGet1(GRFP_68_PROPERTY_NOT_DEFINED, "Property '%1$ls' not defined.", name));
-
-	return rv;
-}
-
-/// <summary>Determines if the specified property represents a file name.</summary>
-/// <param name="name">Input the property name</param> 
-/// <returns>Returns true if the specified property is a file name</returns> 
-bool FdoRfpConnection::IsPropertyFileName(FdoString* name)
-{
-	bool rv = false;
-	if (STRCASEEQ(name, FdoGrfpGlobals::DefaultRasterFileLocation))
-		rv = false;
-	else
-		throw FdoCommandException::Create(NlsMsgGet1(GRFP_68_PROPERTY_NOT_DEFINED, "Property '%1$ls' not defined.", name));
-
-	return rv;
-}
-
-/// <summary>Determines if the specified property represents a path name.</summary>
-/// <param name="name">Input the property name</param> 
-/// <returns>Returns true if the specified property is a path name</returns> 
-bool FdoRfpConnection::IsPropertyFilePath(FdoString* name)
-{
-	bool rv = false;
-	if (STRCASEEQ(name, FdoGrfpGlobals::DefaultRasterFileLocation))
-		rv = false;
-	else
-		throw FdoCommandException::Create(NlsMsgGet1(GRFP_68_PROPERTY_NOT_DEFINED, "Property '%1$ls' not defined.", name));
-
-	return rv;
-}
-
-/// <summary>Determines if the specified property represents a datastore name.</summary>
-/// <param name="name">Input the property name</param> 
-/// <returns>Returns true if the specified property is a datastore name</returns> 
-bool FdoRfpConnection::IsPropertyDatastoreName(FdoString* name)
-{
-	bool rv = false;
-	if (STRCASEEQ(name, FdoGrfpGlobals::DefaultRasterFileLocation))
-		rv = false;
-	else
-		throw FdoCommandException::Create(NlsMsgGet1(GRFP_68_PROPERTY_NOT_DEFINED, "Property '%1$ls' not defined.", name));
-
-	return rv;
-}
-
-/// <summary> Returns an array of possible values for the specified property.</summary>
-/// <param name="name">Input the property name.</param> 
-/// <param name="count">Output the number of values.</param> 
-/// <returns>Returns the list of values for this property.</returns> 
-FdoString** FdoRfpConnection::EnumeratePropertyValues(FdoString* name, FdoInt32& count)
-{
-	FdoString** rv = NULL;
-	if (STRCASEEQ(name, FdoGrfpGlobals::DefaultRasterFileLocation))
-		count = 0;
-	else
-		throw FdoCommandException::Create(NlsMsgGet1(GRFP_68_PROPERTY_NOT_DEFINED, "Property '%1$ls' not defined.", name));
-
-	return rv;
-
-}
-
-/// <summary> Gets a localized name for the property (for NLS purposes).</summary>
-/// <param name="name">Input the property name.</param> 
-/// <returns>Returns the localized name for the property (for NLS purposes).</returns> 
-FdoString* FdoRfpConnection::GetLocalizedName(FdoString* name)
-{
-	FdoString* rv = NULL;
-	if (STRCASEEQ(name, FdoGrfpGlobals::DefaultRasterFileLocation))
-		rv = NlsMsgGet(GRFP_70_DEFAULT_RASTER_FILE_LOCATION, "DefaultRasterFileLocation");
-	else
-		throw FdoCommandException::Create(NlsMsgGet1(GRFP_68_PROPERTY_NOT_DEFINED, "Property '%1$ls' not defined.", name));
-
-	return rv;
+    _validateOpen();
+    FdoInt32 index = m_spatialContexts->IndexOf(contextName);
+    if (index == -1)
+        throw FdoCommandException::Create(NlsMsgGet1(GRFP_60_SPATIAL_CONTEXT_NOT_EXIST, "Specified spatial context '%1$ls' does not exist.", contextName));
+    m_spatialContexts->RemoveAt(index);
+    //Change the active spatial context if it is removed
+    if (m_activeSpatialContext == contextName)
+    {
+        if (m_spatialContexts->GetCount() > 0)
+            m_activeSpatialContext = FdoRfpSpatialContextP(m_spatialContexts->GetItem(0))->GetName();
+        else
+            m_activeSpatialContext = L"";
+    }
 
 }
 
 class FdoRfpGeometryCapabilities : public FdoIGeometryCapabilities
 {
 public:
-	virtual ~FdoRfpGeometryCapabilities() {}
-	virtual FdoGeometryType* GetGeometryTypes( FdoInt32& length){length = 0; return NULL;}
-	virtual FdoGeometryComponentType* GetGeometryComponentTypes( FdoInt32& length )	{length = 0; return NULL;}
-	virtual FdoInt32 GetDimensionalities() { return 0; }
-	virtual void Dispose () { delete this; }
+    virtual ~FdoRfpGeometryCapabilities() {}
+    virtual FdoGeometryType* GetGeometryTypes( FdoInt32& length){length = 0; return NULL;}
+    virtual FdoGeometryComponentType* GetGeometryComponentTypes( FdoInt32& length )    {length = 0; return NULL;}
+    virtual FdoInt32 GetDimensionalities() { return 0; }
+    virtual void Dispose () { delete this; }
 };
 
 /// Gets an FdoIGeometryCapabilities interface describing the provider's support for geometry

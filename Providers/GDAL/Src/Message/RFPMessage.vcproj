@@ -196,6 +196,28 @@
 		<File
 			RelativePath=".\GRFPMessage.mc"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Performing Custom Build Step:  Creating GRFPMessage.h and RFPMessage.rc from GRFPMessage.mc"
+					CommandLine="del RFPMessage.rc&#x0D;&#x0A;mc -U -h Inc\ -r .\ ./GRFPMessage.mc&#x0D;&#x0A;copy .\RFPMessageStatic.rc_ .\RFPMessage.rc&#x0D;&#x0A;copy Inc\GRFPMessage.h ..\..\Inc\GRFPMessage.h"
+					AdditionalDependencies="Inc\GRFPMessage.h;.\RFPMessage.rc"
+					Outputs="Inc\GRFPMessage.h;.\RFPMessage.rc"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Performing Custom Build Step:  Creating GRFPMessage.h and RFPMessage.rc from GRFPMessage.mc"
+					CommandLine="del RFPMessage.rc&#x0D;&#x0A;mc -U -h Inc\ -r .\ ./GRFPMessage.mc&#x0D;&#x0A;copy .\RFPMessageStatic.rc_ .\RFPMessage.rc&#x0D;&#x0A;copy Inc\GRFPMessage.h ..\..\Inc\GRFPMessage.h"
+					AdditionalDependencies="Inc\GRFPMessage.h;.\RFPMessage.rc"
+					Outputs="Inc\GRFPMessage.h;.\RFPMessage.rc"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\resource.h"

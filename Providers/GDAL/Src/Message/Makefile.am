@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
-EXTRA_DIST = resource.h GRFPMessage.mc RFPMessage.vcproj RFPMessageStatic.rc_ MSG00001.bin
+EXTRA_DIST = resource.h GRFPMessage.mc RFPMessage.vcproj RFPMessageStatic.rc_
 
 CATDIR = ../../Nls/Linux/en_US
 

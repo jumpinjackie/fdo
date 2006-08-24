@@ -46,40 +46,45 @@ class FdoRfpSchemaDataCollection;
 // Implementation of FdoIConnection
 //
 class FdoRfpConnection :
-	public FdoIConnection
+    public FdoIConnection
 {
 //
 // Data members
 //
 private:
-	//Spatial contexts and active spatial context name
-	FdoPtr<FdoRfpSpatialContextCollection>	m_spatialContexts;
-	FdoStringP							m_activeSpatialContext;
+    //Spatial contexts and active spatial context name
+    FdoPtr<FdoRfpSpatialContextCollection>    m_spatialContexts;
+    FdoStringP                            m_activeSpatialContext;
 
-	//Logical feature schema
-	FdoFeatureSchemasP					m_featureSchemas;
+    //Logical feature schema
+    FdoFeatureSchemasP                    m_featureSchemas;
 
-	//Physical feature schema (Schema overrides)
-	FdoSchemaMappingsP					m_schemaMappings;
+    //Physical feature schema (Schema overrides)
+    FdoSchemaMappingsP                    m_schemaMappings;
 
-	//Schema data
-	FdoPtr<FdoRfpSchemaDataCollection>		m_schemaDatas;
+    //Schema data
+    FdoPtr<FdoRfpSchemaDataCollection>        m_schemaDatas;
 
-	//The connection string and the parameters contained in it.
-	FdoStringP							m_connectionString;
-	FdoStringP							m_defaultRasterLocation;
+    //The connection string and the parameters contained in it.
+    FdoStringP                            m_connectionString;
+    FdoStringP                            m_defaultRasterLocation;
 
-	// The connection state
-	FdoConnectionState					m_state;
+    // The connection state
+    FdoConnectionState                    m_state;
+    
+    /**
+     * Connection information object.
+     */
+    FdoPtr<FdoIConnectionInfo> mConnectionInfo;
 
 //
 // Constructor(s), desctrucotr, factory function(s)
 //
 protected:
-	virtual ~FdoRfpConnection(void);
-	void Dispose() { delete this; }
+    virtual ~FdoRfpConnection(void);
+    void Dispose() { delete this; }
 public:
-	FdoRfpConnection(void);
+    FdoRfpConnection(void);
 
 // 
 // Exposed functions
@@ -183,141 +188,68 @@ public:
     /// the contents of the XML configuration. </param> 
     /// <returns>Returns nothing.</returns> 
     virtual void SetConfiguration (FdoIoStream* configStream);
-	
+    
 //
 // Non-exposed public methods
 //
 // Used by some commands
 public:
-	//Get the class definition by its qualified name
-	void GetClassDef(const FdoPtr<FdoIdentifier>& identifier, FdoPtr<FdoClassDefinition>& classDef);
+    //Get the class definition by its qualified name
+    void GetClassDef(const FdoPtr<FdoIdentifier>& identifier, FdoPtr<FdoClassDefinition>& classDef);
 
-	//Get a reference to the feature schema collection
-	FdoPtr<FdoFeatureSchemaCollection> GetFeatureSchemas();
+    //Get a reference to the feature schema collection
+    FdoPtr<FdoFeatureSchemaCollection> GetFeatureSchemas();
 
-	// Get a referrence to the schema mappings
-	FdoPtr<FdoPhysicalSchemaMappingCollection> GetSchemaMappings();
+    // Get a referrence to the schema mappings
+    FdoPtr<FdoPhysicalSchemaMappingCollection> GetSchemaMappings();
 
-	//Get class data of "FeatureName.ClassName"
-	FdoPtr<FdoRfpClassData> GetClassData(const FdoPtr<FdoClassDefinition>&);
+    //Get class data of "FeatureName.ClassName"
+    FdoPtr<FdoRfpClassData> GetClassData(const FdoPtr<FdoClassDefinition>&);
 
-	//Get all spatial contexts
-	FdoPtr<FdoRfpSpatialContextCollection> GetSpatialContexts();
+    //Get all spatial contexts
+    FdoPtr<FdoRfpSpatialContextCollection> GetSpatialContexts();
 
-	//Get active spatial context
-	FdoPtr<FdoRfpSpatialContext> GetActiveSpatialContext();
+    //Get active spatial context
+    FdoPtr<FdoRfpSpatialContext> GetActiveSpatialContext();
 
-	//Activate spatial context
-	void ActivateSpatialContext(FdoString* contextName);
+    //Activate spatial context
+    void ActivateSpatialContext(FdoString* contextName);
 
-	// Create a spatial context
-	void CreateSpatialContext(const FdoPtr<FdoRfpSpatialContext>&, bool bUpdateExist);
+    // Create a spatial context
+    void CreateSpatialContext(const FdoPtr<FdoRfpSpatialContext>&, bool bUpdateExist);
 
-	// Destroy a spatial context
-	void DestroySpatialContext(FdoString* contextName);
-
-	/// <summary> Gets the names of all the properties that can appear in a connection string
-	/// for this feature provider as an array of Strings. The order of the property
-	/// names in the resulting array dictate the order in which they need to be 
-	/// specified. This is especially important for the success of the 
-	/// EnumeratePropertyValues method because properties that occur earlier in the array
-	/// may be required for successful enumeration of properties that appear later.</summary>
-	/// <param name="count">Output the number of parameters</param> 
-	/// <returns>Returns the list of parameter names</returns> 
-	FdoString** GetPropertyNames(FdoInt32& count);
-
-	/// <summary>Gets the value of the specified property.</summary>
-	/// <param name="name">Input the property name.</param> 
-	/// <returns>Returns the property value.</returns> 
-	FdoString* GetProperty(FdoString* name);
-
-	/// <summary>Sets the value of the specified property. An exception is thrown if the connection is currently open.</summary>
-	/// <param name="name">Input the property name</param> 
-	/// <param name="value">Input the property value</param> 
-	/// <returns>Returns nothing</returns> 
-	void SetProperty(FdoString* name, FdoString* value);
-
-	/// <summary>Gets the default value for the specified property.</summary>
-	/// <param name="name">Input the property name</param> 
-	/// <returns>Returns the property default value</returns> 
-	FdoString* GetPropertyDefault(FdoString* name);
-
-	/// <summary>Determines if the specified property is required.</summary>
-	/// <param name="name">Input the property name</param> 
-	/// <returns>Returns true if the specified property is required</returns> 
-	bool IsPropertyRequired(FdoString* name);
-
-	/// <summary> Indicates if the property is a password or other protected field
-	/// that should be kept secure.</summary>
-	/// <param name="name">Input the property name.</param> 
-	/// <returns>Returns true if the property is a password or other protected field
-	/// that should be kept secure.</returns> 
-	bool IsPropertyProtected(FdoString* name);
-
-	/// <summary>Determines if the possible values for the specified property can be enumerated via the EnumeratePropertyValues method.</summary>
-	/// <param name="name">Input the property name</param> 
-	/// <returns>Returns true if the possible values for the specified property can be enumerated.</returns> 
-	bool IsPropertyEnumerable(FdoString* name);
-
-	/// <summary>Determines if the specified property represents a file name.</summary>
-    /// <param name="name">Input the property name</param> 
-    /// <returns>Returns true if the specified property is a file name</returns> 
-	bool IsPropertyFileName(FdoString* name);
-
-	/// <summary>Determines if the specified property represents a path name.</summary>
-    /// <param name="name">Input the property name</param> 
-    /// <returns>Returns true if the specified property is a path name</returns> 
-    bool IsPropertyFilePath(FdoString* name);
-
-	/// <summary>Determines if the specified property represents a datastore name.</summary>
-    /// <param name="name">Input the property name</param> 
-    /// <returns>Returns true if the specified property is a datastore name</returns> 
-	bool IsPropertyDatastoreName(FdoString* name);
-
-    /// <summary> Returns an array of possible values for the specified property.</summary>
-	/// <param name="name">Input the property name.</param> 
-	/// <param name="count">Output the number of values.</param> 
-	/// <returns>Returns the list of values for this property.</returns> 
-	FdoString** EnumeratePropertyValues(FdoString* name, FdoInt32& count);
-
-	/// <summary> Gets a localized name for the property (for NLS purposes).</summary>
-	/// <param name="name">Input the property name.</param> 
-	/// <returns>Returns the localized name for the property (for NLS purposes).</returns> 
-	FdoString* GetLocalizedName(FdoString* name);
+    // Destroy a spatial context
+    void DestroySpatialContext(FdoString* contextName);
 
 //
 // Internally used helper functions
 //
 private:
-	// Valiate that the connection is established. If not, throw out an exception.
-	// It must be called at the beginning of some operations.
-	void _validateOpen();
+    // Valiate that the connection is established. If not, throw out an exception.
+    // It must be called at the beginning of some operations.
+    void _validateOpen();
 
-	// Valiate that the connection is not established. If not, throw out an exception.
-	// It must be called at the beginning of some operations.
-	void _validateClose();
+    // Valiate that the connection is not established. If not, throw out an exception.
+    // It must be called at the beginning of some operations.
+    void _validateClose();
 
-	// The connection string contains multiple parameters, so we must parse them out
-	// from the connection string
-	void _parseConnectionString();
+    // Build up the default spatial contexts if they are unavailable in the configuration
+    void _buildUpDefaultSpatialContext();
 
-	// Build up the default spatial contexts if they are unavailable in the configuration
-	void _buildUpDefaultSpatialContext();
+    // Build up the default feature schema if there is no configuation or the configuation contains
+    // no feature schema.
+    void _buildUpDefaultFeatureSchema();
 
-	// Build up the default feature schema if there is no configuation or the configuation contains
-	// no feature schema.
-	void _buildUpDefaultFeatureSchema();
+    // Build up the default schema overrides according to the default feature schema
+    void _buildUpDefaultOverrides();
 
-	// Build up the default schema overrides according to the default feature schema
-	void _buildUpDefaultOverrides();
+    // According to the feature schema and schema overrides, build up the schema data
+    void _buildUpSchemaDatas();
 
-	// According to the feature schema and schema overrides, build up the schema data
-	void _buildUpSchemaDatas();
-
-	// The classes contained in FDORFP feature schema can have and only have two properties.
-	// One is the ID of the raster and the other is the raster itself. So after the schema
-	// is built up, we must check its validation.
-	void _validateFeatureSchema();
+    // The classes contained in FDORFP feature schema can have and only have two properties.
+    // One is the ID of the raster and the other is the raster itself. So after the schema
+    // is built up, we must check its validation.
+    void _validateFeatureSchema();
 
 };
 

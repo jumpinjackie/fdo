@@ -249,10 +249,6 @@
 				>
 			</File>
 			<File
-				RelativePath="FdoRfpConnectionPropertyDictionary.cpp"
-				>
-			</File>
-			<File
 				RelativePath="FdoRfpDataReader.cpp"
 				>
 			</File>
@@ -447,10 +443,6 @@
 			</File>
 			<File
 				RelativePath="FdoRfpConnectionInfo.h"
-				>
-			</File>
-			<File
-				RelativePath="FdoRfpConnectionPropertyDictionary.h"
 				>
 			</File>
 			<File
