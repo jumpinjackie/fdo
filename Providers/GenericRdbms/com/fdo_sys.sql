@@ -984,10 +984,6 @@ begin
 end f_create_spatial_index_qtree;
 
 
-grant execute on f_create_spatial_index_rtree to f_user_role; 
-grant execute on f_create_spatial_index_qtree to f_user_role;
-grant execute on f_update_spatial_metadata to f_user_role;
-
 #endif
 
 /* End */
