@@ -39,6 +39,7 @@ protected:
 	bool mIsPropertyFileName;
     bool mIsPropertyFilePath;
 	bool mIsPropertyDatastoreName;
+	bool mIsPropertyQuoted;
 
     int mCountEnumerableProperties;
     const wchar_t** mEnumerableProperties;
@@ -58,6 +59,7 @@ public:
 		mIsPropertyFileName(false),
 		mIsPropertyFilePath(false),
 		mIsPropertyDatastoreName(false),
+		mIsPropertyQuoted(false),
         mCountEnumerableProperties (0),
         mEnumerableProperties (NULL),
         mIsPropertySet (false)
@@ -74,6 +76,7 @@ public:
                         bool isFilename, 
                         bool isFilePath, 
                         bool isDatastoreName, 
+                        bool isQuoted,
                         int enumCount, 
                         const wchar_t** enumerables) :
         mName (name),
@@ -86,6 +89,7 @@ public:
         mIsPropertyFileName (isFilename),
         mIsPropertyFilePath (isFilePath),
         mIsPropertyDatastoreName (isDatastoreName),
+        mIsPropertyQuoted (isQuoted),
         mCountEnumerableProperties (0),
         mEnumerableProperties (NULL),
         mIsPropertySet (false)
@@ -154,22 +158,32 @@ public:
         return (mIsPropertyEnumerable);
     }
 
-	bool GetIsPropertyFileName()
-	{
-		return (mIsPropertyFileName);
-	}
+    bool GetIsPropertyFileName()
+    {
+        return (mIsPropertyFileName);
+    }
 
     bool GetIsPropertyFilePath()
-	{
+    {
 		return (mIsPropertyFilePath);
-	}
+    }
 
-	bool GetIsPropertyDatastoreName()
-	{
-		return (mIsPropertyDatastoreName);
-	}
+    bool GetIsPropertyDatastoreName()
+    {
+        return (mIsPropertyDatastoreName);
+    }
 
-    int GetCountEnumerableProperties ()
+    bool GetIsPropertyQuoted ()
+    {
+        return (mIsPropertyQuoted);
+    }
+
+    void SetIsPropertyQuoted (bool isQuoted)
+    {
+        mIsPropertyQuoted = isQuoted;
+    }
+
+	int GetCountEnumerableProperties ()
     {
         return (mCountEnumerableProperties);
     }
@@ -199,6 +213,7 @@ protected:
         mCountEnumerableProperties = 0;
     }
 
+public:
     /// The caller allocates newValues but this object takes ownership of it and will deallocate it.
     void UpdateEnumerableProperties(int newCount, const wchar_t** newValues)
     {
@@ -393,7 +408,18 @@ public:
     /// 
 	bool IsPropertyDatastoreName(FdoString* name);
 
-protected:
+	/// \brief
+    /// Determines if the specified property is quoted.
+    /// 
+    /// \param name 
+    /// Input the property name
+    /// 
+    /// \return
+    /// Returns true if the specified property is quoted
+    /// 
+    bool IsPropertyQuoted(FdoString* name);
+
+public:
     ConnectionProperty* FindProperty (const wchar_t* name);
     bool CheckEnumerable (const wchar_t* value, ConnectionProperty* property);
 
@@ -600,6 +626,17 @@ bool FdoCommonPropDictionary<T>::IsPropertyDatastoreName(FdoString* name)
     return (property->GetIsPropertyDatastoreName ());
 }
 
+/// <summary>Determines if the specified property represents a datastore name.</summary>
+/// <param name="name">Input the property name</param> 
+/// <returns>Returns true if the specified property is a datastore name</returns> 
+template <class T> 
+bool FdoCommonPropDictionary<T>::IsPropertyQuoted(FdoString* name)
+{
+	// no need to validate. this method can be called before connect is active
+    FdoPtr<ConnectionProperty> property = FindProperty (name);
+    return (property->GetIsPropertyQuoted ());
+}
+
 /// <summary> Returns an array of possible values for the specified property.</summary>
 /// <param name="name">Input the property name.</param> 
 /// <param name="count">Output the number of values.</param> 
@@ -628,7 +665,7 @@ FdoString* FdoCommonPropDictionary<T>::GetLocalizedName (FdoString* name)
 template <class T> 
 ConnectionProperty* FdoCommonPropDictionary<T>::FindProperty (const wchar_t* name)
 {
-    validate ();
+	// no need to validate. this method can be called before connect is active
     int count = mProperties->GetCount ();
     for (int i = 0; i < count; i++)
     {

@@ -80,21 +80,21 @@ void FdoCommonConnPropDictionary::SetProperty (FdoString* name, FdoString* value
     FdoCommonPropDictionary<FdoIConnectionPropertyDictionary>::SetProperty(name, value);
 
     // compute the new connection string length
-    FdoPtr<ConnectionProperty> property;
+    FdoPtr<ConnectionProperty> pProperty;
     size_t length = 0;
     int count = mProperties->GetCount ();
     for (int i = 0; i < count; i++)
     {
-        property = mProperties->GetItem(i);
+        pProperty = mProperties->GetItem(i);
 
         // skip over properties that aren't set:
         // NOTE: if a required property isn't set, FdoIConnection::Open() should throw appropriate exception
-        if (!property->GetIsPropertySet ())
+        if (!pProperty->GetIsPropertySet ())
             continue;
 
         // verify we have a valid token
-        const wchar_t* pname  = property->GetName ();
-        const wchar_t* pvalue = property->GetValue ();
+        const wchar_t* pname  = pProperty->GetName ();
+        const wchar_t* pvalue = pProperty->GetValue ();
         if (pname == NULL || pvalue == NULL)
             continue;
         size_t nameLen  = wcslen (pname);
@@ -112,21 +112,21 @@ void FdoCommonConnPropDictionary::SetProperty (FdoString* name, FdoString* value
 
     // generate the new connection string
     wchar_t* connection_string;
-    connection_string = new wchar_t[length + 1];
+    connection_string = new wchar_t[length + 2 + 1];
     connection_string[0] = L'\0';
     length = 0;
     for (int i = 0; i < count; i++)
     {
-        property = mProperties->GetItem(i);
+        pProperty = mProperties->GetItem(i);
 
         // skip over properties that aren't set:
         // NOTE: if a required property isn't set, FdoIConnection::Open() should throw appropriate exception
-        if (!property->GetIsPropertySet ())
+        if (!pProperty->GetIsPropertySet ())
             continue;
 
         // verify we have a valid token
-        const wchar_t* tname  = property->GetName ();
-        const wchar_t* tvalue = property->GetValue ();
+        const wchar_t* tname  = pProperty->GetName ();
+        const wchar_t* tvalue = pProperty->GetValue ();
         if (tname == NULL || tvalue == NULL)
             continue;
         size_t nameLen  = wcslen (tname);
@@ -138,7 +138,14 @@ void FdoCommonConnPropDictionary::SetProperty (FdoString* name, FdoString* value
             wcscat (connection_string, CONNECTIONPROPERTY_DELIMITER);   // ;
         wcscat (connection_string, tname);                              // name
         wcscat (connection_string, CONNECTIONPROPERTY_SEPARATOR);       // =
-        wcscat (connection_string, tvalue);                             // value
+		if (tvalue != NULL && (pProperty->GetIsPropertyQuoted() || wcsrchr(tvalue, L';') != NULL))
+		{
+			wcscat (connection_string, L"\"");                              // "
+			wcscat (connection_string, tvalue);                             // value
+			wcscat (connection_string, L"\"");                              // "
+		}
+		else
+			wcscat (connection_string, tvalue);                             // value
         length++;
     }
 

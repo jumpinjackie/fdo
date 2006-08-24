@@ -28,27 +28,28 @@ typedef StringMap::const_iterator               StringMapIter;
 const wchar_t CONNECTIONPROPERTY_DELIMITER[] = L";";
 const wchar_t CONNECTIONPROPERTY_SEPARATOR[] = L"=";
 
+class FdoCommonConnPropDictionary;
 
 class FdoCommonConnStringParser
 {
 private:
-    wchar_t* mString;
-
     StringMap m_valueMap;
-
+    bool m_connStringValid;
 
 public:
-    FdoCommonConnStringParser (FdoIConnectionPropertyDictionary* propDictionary, const wchar_t* connection_string);
-    virtual ~FdoCommonConnStringParser (void);
+    FdoCommonConnStringParser (FdoCommonConnPropDictionary* propDictionary, const wchar_t* connection_string);
+    virtual ~FdoCommonConnStringParser (void){};
 
     const char* GetPropertyValue(FdoString* propertyName);
     const wchar_t* GetPropertyValueW(FdoString* propertyName);
     bool IsPropertyValueSet(FdoString* propertyName);
+    bool IsConnStringValid(){return m_connStringValid;};
+    bool HasInvalidProperties(FdoCommonConnPropDictionary* propDictionary);
+    const wchar_t* GetFirstInvalidPropertyName(FdoCommonConnPropDictionary* propDictionary);
 
 protected:
-    bool match (wchar_t* token, const wchar_t* keyword);
+    void SetPropertyValue (FdoCommonConnPropDictionary* propDictionary, const wchar_t* keyword, const wchar_t* value, bool isQuoted = false);
 };
 
 #endif // FDOCOMMONCONNSTRINGPARSER_H
-
 
