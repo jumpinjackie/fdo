@@ -162,6 +162,16 @@ SymbolicName=FDOWMS_CONNECTION_UNABLE_CONNECT_WMS_SERVER
 Language=English
 Unable to connect to WMS server '%1$ls'.
 .
+MessageId=2010
+SymbolicName=FDOWMS_INVALID_CONNECTION_STRING
+Language=English
+Invalid connection string '%1$ls'
+.
+MessageId=2011
+SymbolicName=FDOWMS_INVALID_CONNECTION_PROPERTY_NAME
+Language=English
+Invalid connection property name '%1$ls'
+.
 
 ;//************************************************************************************
 ;//************************************************************************************

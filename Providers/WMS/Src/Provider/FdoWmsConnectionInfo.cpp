@@ -92,71 +92,33 @@ FdoIConnectionPropertyDictionary* FdoWmsConnectionInfo::GetConnectionProperties 
         mPropertyDictionary = new FdoCommonConnPropDictionary (mConnection);
 
         // Define Server connection properties:
-        char* mbServerName = NULL;
-        wide_to_multibyte (mbServerName, FdoWmsGlobals::ConnectionPropertyFeatureServer);
+        char* mbPropName = NULL;
+        wide_to_multibyte(mbPropName, FdoWmsGlobals::ConnectionPropertyFeatureServer);
         FdoPtr<ConnectionProperty> property = new ConnectionProperty (
                         FdoWmsGlobals::ConnectionPropertyFeatureServer,
-                        NlsMsgGet(FDOWMS_CONNECTION_PROPERTY_FEATURESERVER, mbServerName),
-                        L"", 
-                        true, 
-                        false, 
-                        false, 
-                        false, 
-                        false, 
-                        false, 
-                        0, 
-                        NULL);
+                        NlsMsgGet(FDOWMS_CONNECTION_PROPERTY_FEATURESERVER, mbPropName),
+                        L"", true, false, false, false, false, false, false, 0, NULL);
         mPropertyDictionary->AddProperty(property);
 
-        // Define Username connection propertiy:
-        char* mbUserName = NULL;
-        wide_to_multibyte (mbUserName, FdoWmsGlobals::ConnectionPropertyUsername);
+        wide_to_multibyte(mbPropName, FdoWmsGlobals::ConnectionPropertyUsername);
         property = new ConnectionProperty (
                         FdoWmsGlobals::ConnectionPropertyUsername,
-                        NlsMsgGet(FDOWMS_CONNECTION_PROPERTY_USERNAME, mbUserName),
-                        L"", 
-                        false, 
-                        false, 
-                        false, 
-                        false, 
-                        false, 
-                        false, 
-                        0, 
-                        NULL);
+                        NlsMsgGet(FDOWMS_CONNECTION_PROPERTY_USERNAME, mbPropName),
+                        L"", false, false, false, false, false, false, false, 0, NULL);
         mPropertyDictionary->AddProperty(property);
 
-        // Define password connection property:
-        char* mbPassword = NULL;
-        wide_to_multibyte (mbPassword, FdoWmsGlobals::ConnectionPropertyPassword);
+        wide_to_multibyte(mbPropName, FdoWmsGlobals::ConnectionPropertyPassword);
         property = new ConnectionProperty (
                         FdoWmsGlobals::ConnectionPropertyPassword,
-                        NlsMsgGet(FDOWMS_CONNECTION_PROPERTY_PASSWORD, mbPassword),
-                        L"", 
-                        false, 
-                        false, 
-                        false, 
-                        false, 
-                        false, 
-                        false, 
-                        0, 
-                        NULL);
+                        NlsMsgGet(FDOWMS_CONNECTION_PROPERTY_PASSWORD, mbPropName),
+                        L"", false, false, false, false, false, false, false, 0, NULL);
         mPropertyDictionary->AddProperty(property);
 
-		// Define DefaultImageHeight connection property
-		char* mbDefaultImageHeight = NULL;
-		wide_to_multibyte (mbDefaultImageHeight, FdoWmsGlobals::ConnectionPropertyDefaultImageHeight);
+		wide_to_multibyte(mbPropName, FdoWmsGlobals::ConnectionPropertyDefaultImageHeight);
 		property = new ConnectionProperty (
-						FdoWmsGlobals::ConnectionPropertyDefaultImageHeight,
-						NlsMsgGet(FDOWMS_CONNECTION_PROPERTY_DEFAULTIMAGEHEIGHT, mbDefaultImageHeight),
-						L"",
-						false,
-						false,
-						false,
-						false,
-						false,
-						false,
-						0,
-						NULL);
+                        FdoWmsGlobals::ConnectionPropertyDefaultImageHeight,
+                        NlsMsgGet(FDOWMS_CONNECTION_PROPERTY_DEFAULTIMAGEHEIGHT, mbPropName),
+                        L"", false, false, false, false, false, false, false, 0, NULL);
 		mPropertyDictionary->AddProperty (property);
     }
 

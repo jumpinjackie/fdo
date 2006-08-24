@@ -43,6 +43,7 @@
 
 #include <Fdo/Schema/FeatureClass.h>
 #include <WMS/Override/FdoWmsOvPhysicalSchemaMapping.h>
+#include <FdoCommonConnStringParser.h>
 
 /// Class GDALRegister is used to register and unregister GDAL library.
 /// The constructor calls GDALAllRegister() to register all the drivers to
@@ -168,8 +169,8 @@ void FdoWmsConnection::SetConnectionString (FdoString* value)
         mConnectionString = value;
 
         // Update the connection property dictionary:
-        FdoPtr<FdoWmsConnectionInfo> connInfo = static_cast<FdoWmsConnectionInfo*>(this->GetConnectionInfo());
-        FdoPtr<FdoCommonConnPropDictionary> connDict = static_cast<FdoCommonConnPropDictionary*>(connInfo->GetConnectionProperties());
+        FdoPtr<FdoIConnectionInfo> connInfo = GetConnectionInfo();
+        FdoPtr<FdoCommonConnPropDictionary> connDict = dynamic_cast<FdoCommonConnPropDictionary*>(connInfo->GetConnectionProperties());
         connDict->UpdateFromConnectionString(mConnectionString);
     }
     else 
@@ -222,19 +223,30 @@ void FdoWmsConnection::SetConnectionTimeout (FdoInt32 value)
 /// <returns>Returns nothing</returns> 
 FdoConnectionState FdoWmsConnection::Open ()
 {
+    if (GetConnectionState() == FdoConnectionState_Open)
+        return FdoConnectionState_Open;
+    
     FdoPtr<FdoIConnectionInfo> info = GetConnectionInfo ();
-    FdoPtr<FdoIConnectionPropertyDictionary> dictionary = info->GetConnectionProperties ();
+    FdoPtr<FdoCommonConnPropDictionary> dictionary = dynamic_cast<FdoCommonConnPropDictionary*>(info->GetConnectionProperties ());
 
     FdoStringP location = dictionary->GetProperty (FdoWmsGlobals::ConnectionPropertyFeatureServer);
     if (0 == location.GetLength() && !mConfigured) 
-	{
+    {
         throw FdoException::Create (NlsMsgGet(FDOWMS_CONNECTION_REQUIRED_PROPERTY_NULL, 
-			"The required connection property '%1$ls' cannot be set to NULL.", 
-			FdoWmsGlobals::ConnectionPropertyFeatureServer));
+            "The required connection property '%1$ls' cannot be set to NULL.", 
+            FdoWmsGlobals::ConnectionPropertyFeatureServer));
     }
 
     FdoStringP user = dictionary->GetProperty (FdoWmsGlobals::ConnectionPropertyUsername);
     FdoStringP password = dictionary->GetProperty (FdoWmsGlobals::ConnectionPropertyPassword);
+
+    FdoCommonConnStringParser parser (NULL, GetConnectionString ());
+    // check to see if connection string is valid and if it have unknown properties 
+    // e.g. DefaultFLocation instead of DefaultFileLocation
+    if (!parser.IsConnStringValid())
+        throw FdoException::Create (NlsMsgGet(FDOWMS_INVALID_CONNECTION_STRING, "Invalid connection string '%1$ls'", GetConnectionString ()));
+    if(parser.HasInvalidProperties(dictionary.p))
+        throw FdoException::Create (NlsMsgGet(FDOWMS_INVALID_CONNECTION_PROPERTY_NAME, "Invalid connection property name '%1$ls'", parser.GetFirstInvalidPropertyName(dictionary.p) ));
 
     mLayerMappings = FdoDictionary::Create();
 

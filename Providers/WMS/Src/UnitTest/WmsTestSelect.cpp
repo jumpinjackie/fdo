@@ -294,27 +294,34 @@ void WmsTestSelect::testHttpBasicAuthentification ()
 void WmsTestSelect::testGetBounds ()
 {
     FdoPtr<FdoIConnection> conn = this->GetConnection ();
-    conn->SetConnectionString (L"FeatureServer=http://cadc-isd-jake.ads.autodesk.com/cgi-bin/mapserv.exe?map=wms/wms.map&");
-    CPPUNIT_ASSERT (FdoConnectionState_Open == conn->Open ());
+	try
+	{
+		conn->SetConnectionString (L"FeatureServer=http://cadc-isd-jake.ads.autodesk.com/cgi-bin/mapserv.exe?map=wms/wms.map&");
+		CPPUNIT_ASSERT (FdoConnectionState_Open == conn->Open ());
 
-    FdoPtr<FdoISelect> cmd = static_cast<FdoISelect *> (conn->CreateCommand (FdoCommandType_Select));
-    cmd->SetFeatureClassName (L"ITASCA");	    
-    FdoPtr<FdoIFeatureReader> featReader = cmd->Execute ();
+		FdoPtr<FdoISelect> cmd = static_cast<FdoISelect *> (conn->CreateCommand (FdoCommandType_Select));
+		cmd->SetFeatureClassName (L"ITASCA");	    
+		FdoPtr<FdoIFeatureReader> featReader = cmd->Execute ();
 
-    CPPUNIT_ASSERT (featReader->ReadNext ());
-    FdoPtr<FdoIRaster> raster = featReader->GetRaster (L"Raster");
-    FdoPtr<FdoByteArray> gba = raster->GetBounds ();
-    FdoPtr<FdoFgfGeometryFactory> factory = FdoFgfGeometryFactory::GetInstance ();
-    FdoPtr<FdoIGeometry> geom = factory->CreateGeometryFromFgf (gba.p);
-    FdoPtr<FdoIEnvelope> enve = geom->GetEnvelope ();
+		CPPUNIT_ASSERT (featReader->ReadNext ());
+		FdoPtr<FdoIRaster> raster = featReader->GetRaster (L"Raster");
+		FdoPtr<FdoByteArray> gba = raster->GetBounds ();
+		FdoPtr<FdoFgfGeometryFactory> factory = FdoFgfGeometryFactory::GetInstance ();
+		FdoPtr<FdoIGeometry> geom = factory->CreateGeometryFromFgf (gba.p);
+		FdoPtr<FdoIEnvelope> enve = geom->GetEnvelope ();
 
-    CPPUNIT_ASSERT (enve->GetMinX() == 388108.00);
-    CPPUNIT_ASSERT (enve->GetMinY() == 5203120.00);
-    CPPUNIT_ASSERT (enve->GetMaxX() == 500896.00);
-    CPPUNIT_ASSERT (enve->GetMaxY() == 5310240.00);
+		CPPUNIT_ASSERT (enve->GetMinX() == 388108.00);
+		CPPUNIT_ASSERT (enve->GetMinY() == 5203120.00);
+		CPPUNIT_ASSERT (enve->GetMaxX() == 500896.00);
+		CPPUNIT_ASSERT (enve->GetMaxY() == 5310240.00);
 #ifdef _DEBUG
-    wprintf (L"Extent: (%f,%f %f,%f)\n", enve->GetMinX(), enve->GetMinY(), enve->GetMaxX(), enve->GetMaxY());                
+		wprintf (L"Extent: (%f,%f %f,%f)\n", enve->GetMinX(), enve->GetMinY(), enve->GetMaxX(), enve->GetMaxY());                
 #endif
+	}
+	catch (FdoException* e) 
+    {
+        fail (e);
+	}
 }
 
 // http://www.bsc-eoc.org/cgi-bin/bsc_ows.asp

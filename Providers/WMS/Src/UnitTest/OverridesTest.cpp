@@ -61,64 +61,71 @@ void OverridesTest::TestSetConfiguration2 ()
 	if (connection == NULL) {
 		CPPUNIT_FAIL("FAILED - CreateConnection returned NULL\n");
 	}
+	try
+	{
+		connection->SetConnectionString(L"FeatureServer=http://cadc-isd-jake.ads.autodesk.com/cgi-bin/mapserv.exe?map=wms/wms.map&");
+		FdoIoFileStreamP fileStream = FdoIoFileStream::Create(L"WmsSchemaConfig_Jake_MapServer.xml", L"r");
 
-	connection->SetConnectionString(L"FeatureServer=http://cadc-isd-jake.ads.autodesk.com/cgi-bin/mapserv.exe?map=wms/wms.map&");
-	FdoIoFileStreamP fileStream = FdoIoFileStream::Create(L"WmsSchemaConfig_Jake_MapServer.xml", L"r");
+		connection->SetConfiguration(fileStream);
+		connection->Open();
 
-	connection->SetConfiguration(fileStream);
-	connection->Open();
-	FdoPtr<FdoIDescribeSchema> cmd = static_cast<FdoIDescribeSchema *> (connection->CreateCommand (FdoCommandType_DescribeSchema));
-	FdoPtr<FdoFeatureSchemaCollection> schemas = cmd->Execute ();
-	CPPUNIT_ASSERT (schemas->GetCount () == 1);
-	FdoPtr<FdoFeatureSchema> schema = schemas->GetItem (0);
-	CPPUNIT_ASSERT (wcscmp (schema->GetName (), L"Itasca_Demo") == 0);
+		FdoPtr<FdoIDescribeSchema> cmd = static_cast<FdoIDescribeSchema *> (connection->CreateCommand (FdoCommandType_DescribeSchema));
+		FdoPtr<FdoFeatureSchemaCollection> schemas = cmd->Execute ();
+		CPPUNIT_ASSERT (schemas->GetCount () == 1);
+		FdoPtr<FdoFeatureSchema> schema = schemas->GetItem (0);
+		CPPUNIT_ASSERT (wcscmp (schema->GetName (), L"Itasca_Demo") == 0);
 
-	FdoPtr<FdoClassCollection> classes = schema->GetClasses ();
-	CPPUNIT_ASSERT (classes->GetCount () == 1);
-	FdoPtr<FdoClassDefinition> clsDef = classes->GetItem (0);
-	CPPUNIT_ASSERT (wcscmp (clsDef->GetName (), L"Cities") == 0);
-	FdoPtr<FdoPropertyDefinitionCollection> props = clsDef->GetProperties ();
+		FdoPtr<FdoClassCollection> classes = schema->GetClasses ();
+		CPPUNIT_ASSERT (classes->GetCount () == 1);
+		FdoPtr<FdoClassDefinition> clsDef = classes->GetItem (0);
+		CPPUNIT_ASSERT (wcscmp (clsDef->GetName (), L"Cities") == 0);
+		FdoPtr<FdoPropertyDefinitionCollection> props = clsDef->GetProperties ();
 
-	FdoInt32 cntProps = props->GetCount ();
-	CPPUNIT_ASSERT (cntProps == 2);
+		FdoInt32 cntProps = props->GetCount ();
+		CPPUNIT_ASSERT (cntProps == 2);
 
 #ifdef _DEBUG
-	wprintf (L"Class: %ls\n", clsDef->GetName ());
-	for (FdoInt32 i=0; i<cntProps; i++)
-	{
-		FdoPtr<FdoPropertyDefinition> prop = props->GetItem (i);
-		wprintf (L"Property: %ls\n", prop->GetName ());
-	}
-#endif
-
-	FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect *> (connection->CreateCommand (FdoCommandType_Select));
-	cmdSelect->SetFeatureClassName (clsDef->GetName ());
-	FdoPtr<FdoIFeatureReader> featReader = cmdSelect->Execute ();
-
-	while (featReader->ReadNext ())
-	{
-#ifdef _DEBUG
-		wprintf (L"Id: %ls\n", featReader->GetString (L"Id"));
-#endif
-		FdoPtr<FdoIRaster> raster = featReader->GetRaster (L"Image");
-		FdoInt32 xSize = raster->GetImageXSize ();
-		FdoInt32 ySize = raster->GetImageYSize ();		
-		FdoPtr<FdoIStreamReader> streamReader = raster->GetStreamReader ();
-		CPPUNIT_ASSERT (streamReader != NULL);
-		FdoIStreamReaderTmpl<FdoByte> * byteStreamReader = static_cast<FdoIStreamReaderTmpl<FdoByte>*> (streamReader.p);
-
-		FdoByte buff[4096];
-		FdoInt64 cntTotal = 0;
-		FdoInt32 cntRead = 0;
-		do
+		wprintf (L"Class: %ls\n", clsDef->GetName ());
+		for (FdoInt32 i=0; i<cntProps; i++)
 		{
-			cntRead = byteStreamReader->ReadNext (buff, 0 , 4096);
-			cntTotal += cntRead;
+			FdoPtr<FdoPropertyDefinition> prop = props->GetItem (i);
+			wprintf (L"Property: %ls\n", prop->GetName ());
 		}
-		while (cntRead);
-	}
+#endif
 
-	connection->Close();
+		FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect *> (connection->CreateCommand (FdoCommandType_Select));
+		cmdSelect->SetFeatureClassName (clsDef->GetName ());
+		FdoPtr<FdoIFeatureReader> featReader = cmdSelect->Execute ();
+
+		while (featReader->ReadNext ())
+		{
+#ifdef _DEBUG
+			wprintf (L"Id: %ls\n", featReader->GetString (L"Id"));
+#endif
+			FdoPtr<FdoIRaster> raster = featReader->GetRaster (L"Image");
+			FdoInt32 xSize = raster->GetImageXSize ();
+			FdoInt32 ySize = raster->GetImageYSize ();		
+			FdoPtr<FdoIStreamReader> streamReader = raster->GetStreamReader ();
+			CPPUNIT_ASSERT (streamReader != NULL);
+			FdoIStreamReaderTmpl<FdoByte> * byteStreamReader = static_cast<FdoIStreamReaderTmpl<FdoByte>*> (streamReader.p);
+
+			FdoByte buff[4096];
+			FdoInt64 cntTotal = 0;
+			FdoInt32 cntRead = 0;
+			do
+			{
+				cntRead = byteStreamReader->ReadNext (buff, 0 , 4096);
+				cntTotal += cntRead;
+			}
+			while (cntRead);
+		}
+
+		connection->Close();
+	}
+	catch (FdoException* e) 
+    {
+        fail (e);
+	}
 }
 
 void OverridesTest::TestCreateSchemaOverrides()
