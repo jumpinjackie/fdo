@@ -253,6 +253,7 @@ EXTRA_DIST = \
     Fdo/Schema/FeatureSchemaCollection.h \
     Fdo/Schema/GeometricPropertyDefinition.h \
     Fdo/Schema/GeometricType.h \
+    Fdo/Schema/MergeContext.h \
     Fdo/Schema/NetworkClass.h \
     Fdo/Schema/NetworkFeatureClass.h \
     Fdo/Schema/NetworkLayerClass.h \
