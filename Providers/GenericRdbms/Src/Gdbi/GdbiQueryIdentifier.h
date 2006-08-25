@@ -26,7 +26,7 @@
 
 class GdbiCommands;
 
-class GdbiQueryIdentifier : public GisIDisposable
+class GdbiQueryIdentifier : public FdoIDisposable
 {
 private:
 	int mQueryId;

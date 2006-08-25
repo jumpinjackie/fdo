@@ -14,6 +14,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
+ *
  */
 #include "stdafx.h"
 #include "GdbiCommands.h"
@@ -606,6 +607,14 @@ int GdbiCommands::get_array_size()
 int GdbiCommands::lob_create_ref( int  sqlid, void **lob_ref )
 {
 	int rc = ::rdbi_lob_create_ref(m_pRdbiContext, sqlid, lob_ref);
+	if (rc == RDBI_SUCCESS)
+		return rc;
+
+	return RDBI_GENERIC_ERROR;
+}
+int GdbiCommands::lob_destroy_ref( int sqlid, void *lob_ref )
+{
+	int rc = ::rdbi_lob_destroy_ref(m_pRdbiContext, sqlid, lob_ref);
 	if (rc == RDBI_SUCCESS)
 		return rc;
 

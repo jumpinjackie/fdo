@@ -24,6 +24,7 @@
 #include <Inc/ut.h>
 #endif
 #include "FdoCommonOSUtil.h"
+#include "GdbiQueryIdentifier.h"
 
 // Arbitrary size which should be more than enough for the 
 // the ASCII or UNICODE representation of any numeric value.
@@ -55,15 +56,33 @@ static const wchar_t* StripTable( const wchar_t *ColName )
 
 GdbiQueryResult::GdbiQueryResult(GdbiCommands* command, int qid, bool ownsQid ):
 m_pGdbiCommands( command ),
-mQueryId( qid ),
 mUnicodeBuffer( NULL ),
 mUnicodeBufferSize( 0 ),
 mAsciiValBuffer( NULL),
 mAsciiValBufferSize(0),
 mArrayPos( 0 ),
 mArrayCCount( 0 ),
-mArrayTCount( 0 ),
-mOwnsQueryId( ownsQid )
+mArrayTCount( 0 )
+{
+	m_QueryId = new GdbiQueryIdentifier(command, qid);
+	define_exec();
+}
+GdbiQueryResult::GdbiQueryResult(GdbiCommands* command, GdbiQueryIdentifier *queryObj):
+m_pGdbiCommands( command ),
+mUnicodeBuffer( NULL ),
+mUnicodeBufferSize( 0 ),
+mAsciiValBuffer( NULL),
+mAsciiValBufferSize(0),
+mArrayPos( 0 ),
+mArrayCCount( 0 ),
+mArrayTCount( 0 )
+{
+	m_QueryId = FDO_SAFE_ADDREF(queryObj);
+	define_exec();
+}
+
+
+void GdbiQueryResult::define_exec()
 {
     GdbiColumnInfoType*      colInfo = new GdbiColumnInfoType;
     char        buffer[16];
@@ -71,8 +90,9 @@ mOwnsQueryId( ownsQid )
     wchar_t colName[GDBI_COLUMN_SIZE];
     mColMap = new std::map<std::wstring,GdbiColumnInfoType*>();
     int  idx = 1;
+	bool status = false;
 
-    while( m_pGdbiCommands->desc_slct( mQueryId, idx++, name_length, colName, &colInfo->type, &colInfo->size, &colInfo->null_allowed) == RDBI_SUCCESS )
+    while( m_pGdbiCommands->desc_slct( m_QueryId->GetQueryId(), idx++, name_length, colName, &colInfo->type, &colInfo->size, &colInfo->null_allowed) == RDBI_SUCCESS )
     {
 
         FdoStringP  upperName = FdoStringP(colName).Upper();
@@ -83,8 +103,7 @@ mOwnsQueryId( ownsQid )
         colInfo->original_type = colInfo->type;
         colInfo->index = idx-1;
 
-		if (!m_pGdbiCommands->alcnullind(m_pGdbiCommands->get_array_size(), &(colInfo->isNull)))
-			break;
+		m_pGdbiCommands->alcnullind(m_pGdbiCommands->get_array_size(), &(colInfo->isNull));
 
 		if (colInfo->size == 0)
 		{
@@ -99,8 +118,7 @@ mOwnsQueryId( ownsQid )
 			{
 				for (int i = 0; i < m_pGdbiCommands->get_array_size(); i++)
 				{
-					if (m_pGdbiCommands->lob_create_ref( mQueryId, (void **)&(colInfo->value)) != RDBI_SUCCESS)
-						break;
+					m_pGdbiCommands->lob_create_ref( m_QueryId->GetQueryId(), (void **)&(colInfo->value));
 				}
 			}
 			else 
@@ -131,8 +149,7 @@ mOwnsQueryId( ownsQid )
 				}
 			}
 
-			if( m_pGdbiCommands->define( mQueryId, FdoCommonOSUtil::itoa(colInfo->index, buffer), colInfo->type, colInfo->size, (colInfo->type == RDBI_BLOB_REF) ? (char *)&(colInfo->value) : (char*)colInfo->value, colInfo->isNull ) != RDBI_SUCCESS )
-					break;
+			m_pGdbiCommands->define( m_QueryId->GetQueryId(), FdoCommonOSUtil::itoa(colInfo->index, buffer), colInfo->type, colInfo->size, (colInfo->type == RDBI_BLOB_REF) ? (char *)&(colInfo->value) : (char*)colInfo->value, colInfo->isNull );
 		
 		}
         
@@ -140,20 +157,14 @@ mOwnsQueryId( ownsQid )
     }
     delete colInfo;
 
-    if( m_pGdbiCommands->execute( mQueryId, 0, 0 ) == RDBI_SUCCESS ) // Should be done outside the constructor
-        return;
+    m_pGdbiCommands->execute( m_QueryId->GetQueryId(), 0, 0 );
 }
 
 GdbiQueryResult::~GdbiQueryResult(void)
 {
-    if( mQueryId != -1 )
+    if( m_QueryId )
     {
-        m_pGdbiCommands->end_select( mQueryId );
-    }
-
-	if( mOwnsQueryId && mQueryId != -1 )
-    {
-        m_pGdbiCommands->free_cursor( mQueryId );
+        m_pGdbiCommands->end_select( m_QueryId->GetQueryId());
     }
 
     if( mColMap )
@@ -161,7 +172,12 @@ GdbiQueryResult::~GdbiQueryResult(void)
         for (std::map <std::wstring,GdbiColumnInfoType*>::iterator i = mColMap->begin(); i != mColMap->end(); ++i )
         {
             GdbiColumnInfoType *colInfo = i->second;
-			if( colInfo->value && colInfo->type == RDBI_GEOMETRY )
+			if( colInfo->value && colInfo->type == RDBI_BLOB_REF )
+			{
+				if (m_QueryId)
+					m_pGdbiCommands->lob_destroy_ref(m_QueryId->GetQueryId(), colInfo->value);
+			}
+			else if( colInfo->value && colInfo->type == RDBI_GEOMETRY )
 			{
 				delete[] (char *) colInfo->value;
 			}
@@ -177,6 +193,8 @@ GdbiQueryResult::~GdbiQueryResult(void)
         }
         delete mColMap;
     }
+	FDO_SAFE_RELEASE(m_QueryId);
+
     if( mUnicodeBuffer != NULL )
         delete[] mUnicodeBuffer;
 
@@ -194,7 +212,7 @@ int GdbiQueryResult::ReadNext()
 
 	if (mArrayPos == mArrayCCount)
 	{
-		rc = m_pGdbiCommands->fetch( mQueryId, m_pGdbiCommands->get_array_size(), &rows );
+		rc = m_pGdbiCommands->fetch( m_QueryId->GetQueryId(), m_pGdbiCommands->get_array_size(), &rows );
 		if (rc != RDBI_GENERIC_ERROR)
 		{
 			// adjust counters
@@ -209,15 +227,12 @@ int GdbiQueryResult::ReadNext()
 
 void GdbiQueryResult::Close()
 {
-   if( mQueryId != -1 )
-		m_pGdbiCommands->end_select( mQueryId );
+	if( m_QueryId )
+	{
+		m_pGdbiCommands->end_select( m_QueryId->GetQueryId() );
+		FDO_SAFE_RELEASE(m_QueryId);
+	}
 
-    if( mOwnsQueryId && mQueryId != -1 )
-    {
-        m_pGdbiCommands->free_cursor( mQueryId );
-    }
-
-    mQueryId = -1;
 	mArrayPos = 0;
 	mArrayCCount = 0;
 	mArrayTCount = 0;
@@ -225,9 +240,9 @@ void GdbiQueryResult::Close()
 
 void GdbiQueryResult::End()
 {
-	if (mQueryId != -1)
+	if (m_QueryId)
 	{
-		m_pGdbiCommands->end_select( mQueryId );
+		m_pGdbiCommands->end_select( m_QueryId->GetQueryId() );
 	}
 }
 

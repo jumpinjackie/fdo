@@ -25,6 +25,8 @@
 #include <string>
 
 class GdbiCommands;
+class GdbiQueryIdentifier;
+
 #include "GdbiTypes.h"
 
 #define GDBI_COLUMN_SIZE   255
@@ -46,7 +48,6 @@ class GdbiQueryResult
 
 private:
     GdbiCommands*     m_pGdbiCommands;
-    int               mQueryId;
 	int				  mArrayTCount; // total number of fetched rows
 	int				  mArrayCCount; // number of fetched rows in a sngle fetch;
 	int				  mArrayPos; // position within array of fetched rows
@@ -55,11 +56,14 @@ private:
     int               mUnicodeBufferSize;
     char              *mAsciiValBuffer;
     int               mAsciiValBufferSize;
-	bool			  mOwnsQueryId;
+	GdbiQueryIdentifier	*m_QueryId;
 
 private:
     GdbiQueryResult( GdbiCommands* command, int qid, bool ownsQid = true  );
+	GdbiQueryResult( GdbiCommands* command, GdbiQueryIdentifier	*QueryId );
+
 	void do_copy(char *ascii_I, char *ascii_O, int len, int *ccode);
+	void define_exec();
 
    int GetAsciiValue(
         const wchar_t *ColName,

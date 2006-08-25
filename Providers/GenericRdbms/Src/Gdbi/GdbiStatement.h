@@ -16,6 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
+ *
  */
 #ifdef _WIN32
 #pragma once
@@ -23,13 +24,15 @@
 
 #include "GdbiQueryResult.h"
 #include "Inc/Geometry/IGeometry.h"
+#include "GdbiQueryIdentifier.h"
+
 class GdbiStatement
 {
     friend class GdbiConnection;
 private:
     GdbiCommands*     m_pGdbiCommands;
-    int               mQueryId;
     mutable char      buffer[16];  // Used to convert integer indexes to a string indexes
+	GdbiQueryIdentifier	*m_QueryId;
 
 
     GdbiStatement(GdbiCommands* command, int qid);
