@@ -63,15 +63,18 @@ int     sqlid)
 
     debug_on1("rdbi_end_select", "\tContext: %d", sqlid);
 
-
     cursor = context->rdbi_cursor_ptrs[sqlid];
-    if ( cursor && context->rdbi_cnct->autocommit_on && cursor->tran_begun) {
-        char    tran_id[60];
-        sprintf(tran_id, "auto-exec-%s %d", cursor->verb, cursor->trace_line);
-        rdbi_tran_end(context, tran_id);
-        cursor->tran_begun = FALSE;
-    }
+	if ( cursor )	{
+		if ( context->dispatch.close_cursor != NULL )
+			cursor->status = (*(context->dispatch.close_cursor))(context->drvr, cursor->vendor_data);
 
+		if ( context->rdbi_cnct->autocommit_on && cursor->tran_begun) {
+			char    tran_id[60];
+			sprintf(tran_id, "auto-exec-%s %d", cursor->verb, cursor->trace_line);
+			rdbi_tran_end(context, tran_id);
+			cursor->tran_begun = FALSE;
+		}
+	}
 
     debug_return(NULL, RDBI_SUCCESS);
 }

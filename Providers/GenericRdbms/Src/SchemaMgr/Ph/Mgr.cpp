@@ -27,6 +27,7 @@
 #include "SpatialContextGroupWriter.h"
 
 #define MAX_STACK 200
+#define MAX_STATIC_CURSORS 80
 
 FdoSmPhGrdMgr::StringMap FdoSmPhGrdMgr::mReservedDbObjectNames;
 
@@ -677,4 +678,33 @@ bool FdoSmPhGrdMgr::StringMap::IsReserved( FdoStringP checkString)
         find( checkString.Lower() );
 
     return ( iter != end() );
+}
+
+void FdoSmPhGrdMgr::SetStaticReader( FdoStringP name, FdoPtr<FdoSmPhReader> reader )
+{
+	if (!mStaticReaders)	
+		mStaticReaders = new FdoSmPhStaticReaderCollection();
+	else	{
+		if ( mStaticReaders->GetCount() < MAX_STATIC_CURSORS )	{
+			FdoSmPhStaticReaderP staticReader = new FdoSmPhStaticReader( name, reader );
+			mStaticReaders->Add( staticReader );
+		}
+	}
+}
+
+FdoPtr<FdoSmPhReader> FdoSmPhGrdMgr::GetStaticReader ( FdoStringP readerName )
+{
+	if ( !mStaticReaders )
+		return NULL;
+	FdoSmPhStaticReaderP staticReader = mStaticReaders->FindItem( (const wchar_t*)readerName );
+	if (staticReader)
+		return staticReader->GetReader();
+	else
+		return NULL;
+}
+
+void FdoSmPhGrdMgr::RemoveStaticReaders()
+{
+	if ( mStaticReaders )	
+		mStaticReaders->Clear();
 }

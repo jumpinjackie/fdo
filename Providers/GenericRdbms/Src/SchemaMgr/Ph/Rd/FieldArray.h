@@ -66,6 +66,9 @@ public:
     // Returns false if value is null.
     virtual bool GetBoolean();
 
+	// Update results
+	virtual void UpdateResults( GdbiQueryResult* results );
+
 protected:
     // unused constructor needed only to build on Linux
     FdoSmPhRdGrdFieldArray() {}

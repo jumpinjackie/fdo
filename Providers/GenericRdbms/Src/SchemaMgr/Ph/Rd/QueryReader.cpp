@@ -188,7 +188,18 @@ void FdoSmPhRdGrdQueryReader::Execute()
                 delete mResults;
 
             mResults = mQuery->ExecuteQuery();
-        }
+
+			FdoSmPhRdGrdRowArrayP rowArray;
+			FdoSmPhRdGrdFieldArrayP fieldArray;
+			int i, j;
+			for ( i = 0; i < mFetches->GetCount(); i++ ) {
+				rowArray = mFetches->GetItem(i);
+				for ( j = 0; j < rowArray->GetFields()->GetCount(); j++ )	{
+					fieldArray = rowArray->GetFields()->GetItem(j);
+					fieldArray->UpdateResults(mResults);
+				}
+			}
+		}
     }
 }
 
@@ -224,5 +235,11 @@ FdoSmPhRdGrdFieldArrayP FdoSmPhRdGrdQueryReader::GetFieldArray( FdoStringP table
     		);
 
     return fieldArray;
+}
+
+void FdoSmPhRdGrdQueryReader::EndSelect()
+{
+	if ( mResults )
+		mResults->End();
 }
 

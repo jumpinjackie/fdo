@@ -7,6 +7,7 @@ noinst_LTLIBRARIES = libFdoODBCDriver.la
 libFdoODBCDriver_la_SOURCES = \
 autocommit_.c \
 bind.c \
+close_cursor.c \
 col_.c \
 commit.c \
 connect.c \

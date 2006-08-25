@@ -54,6 +54,7 @@ typedef struct _driver_capability_ {
 
 typedef struct rdbi_methods_def {
     int  (*connect)(void*,char*,char*,char*,char**,int*);
+	int  (*close_cursor)(void*,char*);
     int  (*disconnect)(void*,char**);
     int  (*est_cursor)(void*,char**);
     int  (*est_cursor_obj)(void*,char**);

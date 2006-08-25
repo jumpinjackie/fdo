@@ -123,3 +123,8 @@ bool FdoSmPhRdGrdFieldArray::GetBoolean()
     return (GetInteger() != 0);
 }
 
+void FdoSmPhRdGrdFieldArray::UpdateResults(GdbiQueryResult *results)
+{
+	mResults = results;
+}
+

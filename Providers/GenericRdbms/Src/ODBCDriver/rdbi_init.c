@@ -75,6 +75,7 @@ odbcdr_rdbi_init(
 	    options_init(context);
 
 	    methods->connect	= (int (*)(void*, char*, char*, char*, char**, int*))odbcdr_connect;
+		methods->close_cursor = (int (*)(void*,char*))odbcdr_close_cursor;
 	    methods->disconnect = (int (*)(void*, char**))odbcdr_disconnect;
 	    methods->est_cursor = (int (*)(void*, char**))odbcdr_est_cursor;
 	    methods->est_cursor_obj = (int (*)(void*, char**))odbcdr_est_cursor;

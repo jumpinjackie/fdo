@@ -89,6 +89,9 @@ public:
     // TODO: re-execute does not work yet.
     void Execute();
 
+	// End select before end-of-fetch
+	void EndSelect();
+
 protected:
     // unused constructor needed only to build on Linux
     FdoSmPhRdGrdQueryReader() {}

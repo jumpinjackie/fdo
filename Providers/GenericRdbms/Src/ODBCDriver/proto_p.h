@@ -26,6 +26,7 @@
 int odbcdr_rdbi_init (odbcdr_context_def **context, rdbi_methods methods);
 
 int odbcdr_bind( odbcdr_context_def *context, char *cursor, char *name, int datatype, int size, char *address, SQLLEN *null_ind );
+int odbcdr_close_cursor( odbcdr_context_def *context, char *cursor );
 int odbcdr_col_act( odbcdr_context_def *context, char *owner, char *object_name, char *dbaselink );
 int odbcdr_col_get( odbcdr_context_def *context, char *column_name, char *type, int *length, int *scale, int *nullable, int *is_autoincrement, int *position, int *eof );
 int odbcdr_col_deac( odbcdr_context_def *context );

@@ -42,6 +42,40 @@
 #include "../../Gdbi/GdbiConnection.h"
 #include "../../Gdbi/GdbiCommands.h"
 
+class FdoSmPhStaticReader : public FdoSmPhSchemaElement
+{
+public:
+	FdoSmPhStaticReader( FdoStringP readerName, FdoSmPhReaderP reader ):
+		FdoSmPhSchemaElement( readerName, L"", (FdoSmPhMgr*)NULL, NULL)
+	{
+		mReader = FDO_SAFE_ADDREF( reader.p );
+	}
+	FdoSmPhReaderP GetReader()
+	{
+		return mReader;
+	}
+
+protected:
+	FdoSmPhStaticReader();
+	~FdoSmPhStaticReader(void){}
+
+private:
+	FdoSmPhReaderP mReader;
+};
+
+typedef FdoPtr<FdoSmPhStaticReader> FdoSmPhStaticReaderP;
+
+class FdoSmPhStaticReaderCollection : public FdoSmNamedCollection<FdoSmPhStaticReader>
+{
+	public:
+	FdoSmPhStaticReaderCollection(void) :
+		FdoSmNamedCollection<FdoSmPhStaticReader>()
+	{}
+	~FdoSmPhStaticReaderCollection(void) {}
+};
+
+typedef FdoPtr<FdoSmPhStaticReaderCollection> FdoSmPhStaticReadersP;
+
 // This is the base class for RDBMS type provider Physical Schema Managers
 class FdoSmPhGrdMgr : public FdoSmPhMgr
 {
@@ -146,6 +180,10 @@ public:
 
     virtual bool IsRdbUnicode();
 
+	void SetStaticReader( FdoStringP readerName, FdoPtr<FdoSmPhReader> reader );
+	FdoPtr<FdoSmPhReader> GetStaticReader( FdoStringP readerName );
+	void RemoveStaticReaders();
+
 protected:
     // unused constructor needed only to build on Linux
     FdoSmPhGrdMgr() {}
@@ -203,6 +241,7 @@ private:
 
     // General reserved word list (words reserved by most RDBMS's).
     static StringMap mReservedDbObjectNames;
+	FdoSmPhStaticReadersP mStaticReaders;
 };
 
 typedef FdoPtr<FdoSmPhGrdMgr> FdoSmPhGrdMgrP;

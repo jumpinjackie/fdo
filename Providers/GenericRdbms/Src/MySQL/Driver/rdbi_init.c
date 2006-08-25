@@ -63,6 +63,7 @@ int mysql_rdbi_init (void **contextp, rdbi_methods methods)
         }
         else
         {
+			methods->close_cursor = NULL;
             methods->connect    = (int (*)(void*, char*, char*, char*, char**, int*))mysql_connect;
             methods->disconnect = (int (*)(void*, char**))mysql_disconnect;
             methods->est_cursor = (int (*)(void*, char**))mysql_est_cursor;
