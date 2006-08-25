@@ -153,6 +153,8 @@ class FdoSmPhSpatialContextWriter;
 class FdoSmPhRdSpatialContextReader;
 class FdoSmPhSpatialContextGroupWriter;
 class FdoSmPhSpatialContextGeomWriter;
+class FdoSmPhReader;
+
 /* TODO
 class FdoSmPhIndexWriter;
 class FdoSmPhIndexPropertyWriter;
@@ -569,6 +571,10 @@ public:
     /// Output the schemas to an XML file.
     /// Mainly for unit testing.
 	void XMLSerialize( FdoString* sFileName ) const;
+
+	/// Static cursor reader
+	virtual void SetStaticReader( FdoStringP readerName, FdoPtr<FdoSmPhReader> reader ) = 0;
+	virtual FdoPtr<FdoSmPhReader> GetStaticReader( FdoStringP readerName ) = 0;
 
 protected:
     void SetDefaultOwnerName( FdoStringP name)

@@ -51,6 +51,9 @@ public:
     /// Returns true if query is after last row.
 	bool IsEOF();
 
+	/// End select before end-of-fetch
+	virtual void EndSelect();
+
 protected:
     /// Unused constructor needed only to build on Linux
     FdoSmPhReader() {}

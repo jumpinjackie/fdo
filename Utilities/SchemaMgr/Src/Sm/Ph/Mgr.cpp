@@ -42,6 +42,7 @@
 #include <Sm/Ph/Rd/ClassReader.h>
 #include <Sm/Ph/Rd/PropertyReader.h>
 #include <Sm/Ph/Rd/SpatialContextReader.h>
+#include <Sm/Ph/Reader.h>
 
 /*
 #include <Sm/Ph/IndexWriter.h>

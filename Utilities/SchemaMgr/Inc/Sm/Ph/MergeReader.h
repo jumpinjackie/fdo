@@ -48,6 +48,9 @@ public:
     // Get the next row and make it current.
 	virtual bool ReadNext();
 
+	// End of select
+	virtual void EndSelect();
+
     // Get a string column value by name.
     // Value for current row is returned.
     // Returns L"" if value is null. 

@@ -103,3 +103,9 @@ FdoSmPhReaderP FdoSmPhMergeReader::GetCurrentReader()
     return mReader1;
 }
 
+void FdoSmPhMergeReader::EndSelect()
+{
+	mReader1->EndSelect();
+	mReader2->EndSelect();
+}
+

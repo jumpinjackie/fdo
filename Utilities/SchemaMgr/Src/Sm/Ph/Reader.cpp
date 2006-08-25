@@ -94,3 +94,9 @@ void FdoSmPhReader::CheckGet()
 		);
 }
 
+void FdoSmPhReader::EndSelect()
+{
+	if ( mSubReader )
+		mSubReader->EndSelect();
+}
+
