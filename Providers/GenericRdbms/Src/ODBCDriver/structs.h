@@ -63,6 +63,7 @@ typedef ut_da_def   odbcdr_geomNI_list_def; /* List of odbcdr_geomNI_def *'s*/
 typedef struct odbcdr_geom_col_def {        /* A bind/define column             */
     int                     position;       /* Column # (1-based)               */
     pIGeometry_def          *address;       /* Caller's bind/define address     */
+	pIGeometry_def			l_address;		/* Local address to store the last fetched geometry */
     odbcdr_geom_list_def    geom_list;      /* List of ocidr_geom_def *'s       */
     odbcdr_geomNI_list_def  geomNI_list;    /* List of ocidr_geomNullInd_def *'s */
 } odbcdr_geom_col_def;

@@ -205,7 +205,7 @@ int  IGeometry_CreateGeometryFromWkb( pByteArray_def ba, pIGeometry_def *geomOut
 }
 
 ///////////////////////////////////////////////////////////////////////
-int  IGeometry_CreateGeometryFromFgf( pByteArray_def ba, pIGeometry_def *geomOut )
+int  IGeometry_CreateGeometryFromFgf( pByteArray_def ba, pIGeometry_def *geomOut, pIGeometry_def *geomOutCopy )
 {
     FdoFgfGeometryFactory*  gf = 0;
   
@@ -221,6 +221,11 @@ int  IGeometry_CreateGeometryFromFgf( pByteArray_def ba, pIGeometry_def *geomOut
                 gf = FdoFgfGeometryFactory::GetInstance();
                 *geomOut = (pIGeometry_def) gf->CreateGeometryFromFgf( (FdoByteArray *)ba ); 
             }
+			if ( geomOutCopy )
+			{
+				*geomOutCopy = *geomOut;
+				IGeometry_AddRef( *geomOutCopy );
+			}
         }
         catch (FdoException *ex) 
         {

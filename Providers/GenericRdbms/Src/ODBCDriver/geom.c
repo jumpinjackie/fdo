@@ -147,7 +147,8 @@ static int geom_convertFromSqlServer_S( odbcdr_context_def	*context, odbcdr_curs
                                      odbcdr_geom_def *sqlserverGeom_I,
                                      odbcdr_geomNI_def *sqlserverGeomNI_I,
                                      int wantedDim,
-                                     pIGeometry_def *visionGeom_O );
+                                     pIGeometry_def *visionGeom_O,
+									 pIGeometry_def *l_visionGeom_O );
 static int geom_convertToSqlServer_S( odbcdr_context_def *context, 
                                    odbcdr_cursor_def *cursor,
                                    int  position,
@@ -577,14 +578,15 @@ geom_convert_S(
 												SQL_LOCK_NO_CHANGE),
 											 SQL_HANDLE_STMT,cursor->hStmt,
 									         "SQLSetPos", "set position");
-
+					/* Remember the last geometry fetched in order to be released when the cursor is freed*/
                     ODBCDR_RDBI_ERR( geom_convertFromSqlServer_S( context, 
                                                               cursor,
                                                               column->position,
                                                               sqlserverGeom[j],
                                                               sqlserverGeomNI[j],
                                                               wantedDim,
-                                                              &visionGeom[j]));
+                                                              &visionGeom[j],
+															  (j == numRows_I - 1) ? &column->l_address: NULL ));
                 }
             }
 
@@ -646,6 +648,7 @@ col_list_create_S(
 static odbcdr_geom_col_def   initialisedColumn_S = {
     0,                                              /* position         */
     NULL,                                           /* address          */
+	NULL,
     { sizeof(odbcdr_geom_def *), NULL, 0L, 0L },     /* geom_list        */
     { sizeof(odbcdr_geomNI_def *), NULL, 0L, 0L }    /* geomNI_list      */
 };
@@ -767,9 +770,6 @@ col_list_free_S(
         debug1( "Freeing pointers for %ld geometries.",
                 column->geom_list.size );
         
-#pragma message ("ToDo: Investigate why it leads to a crash in case the geometry is released.")
-        //if ( release_geom )
-        //    IGeometry_Release( *column->address );
         column->address = NULL;
 
         status &= ut_da_free( &(column->geom_list) );
@@ -882,7 +882,8 @@ geom_convertFromSqlServer_S(
     odbcdr_geom_def         *sqlserverGeom_I,
     odbcdr_geomNI_def       *sqlserverGeomNI_I,
     int                     wantedDim,
-    pIGeometry_def          *visionGeom_O
+    pIGeometry_def          *visionGeom_O,
+	pIGeometry_def		    *l_visionGeom_0
     )
 {
     odbcdr_connData_def	    *connData = NULL;
@@ -941,7 +942,7 @@ geom_convertFromSqlServer_S(
         goto the_exit;
 
     // Create the geometry
-    if ( !IGeometry_CreateGeometryFromFgf( fgf, visionGeom_O ) )
+    if ( !IGeometry_CreateGeometryFromFgf( fgf, visionGeom_O, l_visionGeom_0 ) )
     {
 		rdbi_status = RDBI_GEOMETRY_CONVERION_ERROR;
         goto the_exit;

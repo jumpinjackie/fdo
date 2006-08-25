@@ -52,7 +52,7 @@ void			IByteArray_Release( pByteArray_def );
 int             IGeometry_GetWkb( pIGeometry_def, pByteArray_def * );
 int             IGeometry_CreateGeometryFromWkb( pByteArray_def, pIGeometry_def * );
 int             IGeometry_GetFgf( pIGeometry_def, pByteArray_def * );
-int             IGeometry_CreateGeometryFromFgf( pByteArray_def, pIGeometry_def * );
+int             IGeometry_CreateGeometryFromFgf( pByteArray_def, pIGeometry_def *, pIGeometry_def* );
 
             int             IGeometry_CheckNullArg( void *arg, int );
             int             IGeometry_CheckNullArg2( void **arg, int );
