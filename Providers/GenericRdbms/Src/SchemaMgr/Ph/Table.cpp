@@ -124,3 +124,32 @@ bool FdoSmPhGrdTable::DeleteColumn( FdoSmPhColumnP column )
     return true;
 }
 
+void FdoSmPhGrdTable::DropConstraint( FdoStringP constraintName )
+{
+	FdoStringP sqlStmt = FdoStringP::Format( L"%ls %ls", 
+								(FdoString *)GetDropConstraintSql(), 
+								(FdoString *)constraintName);
+
+	// Ignore the error
+	try	{
+		ExecuteDDL( sqlStmt );
+	} catch (FdoException *ex) {
+		ex->Release();
+	}
+}
+
+bool FdoSmPhGrdTable::AddConstraint( FdoStringP constraint)
+{
+	bool	status = true;
+
+	FdoStringP sqlStmt = GetAddConstraintSql(constraint);
+
+	try	{
+		ExecuteDDL( sqlStmt );
+	} catch (FdoException *ex) {
+		ex->Release();
+		status = false;
+	}
+	return status;
+}
+

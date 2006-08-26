@@ -254,7 +254,7 @@ void MySqlSchemaMgrTests::testWideConstraint ()
         // (1000 - total size of other columns).
         CPPUNIT_ASSERT( pkeyClause == L"constraint \"pk_table1\" primary key ( \"ID\", \"BLOB_COLUMN\"(630), \"STRING_COLUMN\", \"SINGLE_COLUMN\", \"DOUBLE_COLUMN\", \"DECIMAL_COLUMN\", \"BOOL_COLUMN\", \"BYTE_COLUMN\", \"INT16_COLUMN\", \"INT32_COLUMN\", \"INT64_COLUMN\", \"DATE_COLUMN\", \"BINARY_COLUMN\", \"VARBINARY_COLUMN\", \"DATE2_COLUMN\", \"TIMESTAMP_COLUMN\" )" );
 
-        FdoStringP ukeyClause = table->GetAddUkeySql();
+        FdoStringP ukeyClause = table->GetAddUkeysSql();
 
         // Verify that all unique key columns got truncate to expected amounts.
         CPPUNIT_ASSERT( ukeyClause == L"UNIQUE (\"STRING100000\"(760), \"STRING100_1\"), UNIQUE (\"STRING2000\"(350), \"STRING700_1\"(350), \"STRING300_1\"(300)), UNIQUE (\"STRING100000\"(266), \"STRING2000\"(266), \"STRING700_1\"(266), \"STRING100_3\", \"STRING100_4\"), UNIQUE (\"STRING2000\"(64), \"STRING300_1\"(64), \"STRING300_2\"(64), \"STRING300_3\"(64), \"STRING300_4\"(64), \"STRING300_5\"(64), \"STRING300_6\"(64), \"STRING300_7\"(64), \"STRING300_8\"(64), \"STRING300_9\"(64), \"STRING300_10\"(64), \"STRING100_1\"(64), \"STRING100_2\"(64), \"STRING100_3\"(64), \"STRING100_4\"(64), \"STRING40_1\"), UNIQUE (\"STRING100_3\", \"STRING100_4\"), UNIQUE (\"STRING40_3\", \"STRING40_4\")" );

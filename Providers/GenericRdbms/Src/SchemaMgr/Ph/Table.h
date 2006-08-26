@@ -85,6 +85,9 @@ protected:
     virtual bool AddColumn( FdoSmPhColumnP column );
     virtual bool ModifyColumn( FdoSmPhColumnP column );
     virtual bool DeleteColumn( FdoSmPhColumnP column );
+
+	virtual void DropConstraint( FdoStringP constraintName );
+	virtual bool AddConstraint( FdoStringP constraint );
 };
 
 typedef FdoPtr<FdoSmPhGrdTable> FdoSmPhGrdTableP;

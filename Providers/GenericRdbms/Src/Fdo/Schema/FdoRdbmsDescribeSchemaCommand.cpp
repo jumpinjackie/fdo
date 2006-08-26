@@ -659,7 +659,8 @@ void FdoRdbmsDescribeSchemaCommand::ConvertConstraints(const FdoSmLpClassDefinit
 			if ( pFdoProp && ( wcscmp(pLpProp->GetName(), pFdoProp->GetName()) == 0 ) )
 				pFdoUniqueProps->Add( pFdoProp );
 		}
-		pFdoUKeys->Add(pFdoUniqueC);
+		if ( pFdoUniqueProps->GetCount() != 0 )
+			pFdoUKeys->Add(pFdoUniqueC);
 	}
 
 	///////////////////////////////////////////////////////////////////////////

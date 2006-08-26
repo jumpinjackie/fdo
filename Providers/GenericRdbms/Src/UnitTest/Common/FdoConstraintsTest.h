@@ -22,6 +22,9 @@ class FdoConstraintsTest : public CppUnit::TestCase
 	CPPUNIT_TEST_SUITE( FdoConstraintsTest );
 	CPPUNIT_TEST( TestCreateConstraints );
 	CPPUNIT_TEST( TestDescribeConstraints );
+	CPPUNIT_TEST( TestUpdateUniqueConstraints );
+	CPPUNIT_TEST( TestUpdateCheckConstraints );
+
 	//CPPUNIT_TEST( TestParser );
 
 	CPPUNIT_TEST_SUITE_END();
@@ -29,10 +32,14 @@ class FdoConstraintsTest : public CppUnit::TestCase
 public:
     void TestCreateConstraints(void);
 	void TestDescribeConstraints(void);
+	void TestUpdateUniqueConstraints(void);
+	void TestUpdateCheckConstraints(void);
 	void TestParser(void);
 
     void CreateConstraintsSchema(FdoIConnection * connection);
-	void DescribeConstraintsSchema(FdoIConnection * connection);
+	void DescribeConstraintsSchema(FdoIConnection * connection, FdoString *className, int numUkeys, int numCkeys);
+	void UpdateCheckConstraints(FdoIConnection * connection);
+	void UpdateUniqueConstraints(FdoIConnection * connection);
 	void TestParser(FdoString* clause);
 
 	FdoConstraintsTest(void);
@@ -41,8 +48,9 @@ public:
 
 protected:
     virtual void  set_provider() {};   
+
 	void TestConstraints();
-	static FdoPropertyValue* AddNewProperty( FdoPropertyValueCollection* propertyValues, const wchar_t *name );
+
 };
 
-#endif // CPP_UNIT_FDOCONSTRAINTSTEST_H
+#endif	//CPP_UNIT_FDOCONSTRAINTSTEST_H
