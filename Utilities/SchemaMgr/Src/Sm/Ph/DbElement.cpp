@@ -135,6 +135,14 @@ void FdoSmPhDbElement::Commit( bool fromParent, bool isBeforeParent )
     if ( !fromParent )
         GetManager()->OnAfterCommit();
 
+    // Check for errors that happened while committing.
+	if ( !fromParent ) 
+	{
+		FdoSchemaExceptionP exception = Errors2Exception();
+		if ( exception ) 
+			throw FDO_SAFE_ADDREF( (FdoSchemaException*) exception );
+	}
+
     mCommitState = FdoSchemaElementState_Unchanged;
 }
    

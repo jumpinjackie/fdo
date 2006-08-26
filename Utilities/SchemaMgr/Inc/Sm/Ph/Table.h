@@ -103,14 +103,26 @@ public:
     /// Get SQL clause for dropping a column
     virtual FdoStringP GetDeleteColSql();
 
+	/// Get SQL clause for dropping a constraint
+	virtual FdoStringP GetDropConstraintSql();
+
+	/// Get SQL clause for adding a constraint
+	virtual FdoStringP GetAddConstraintSql(FdoStringP constraint);
+
     /// Get SQL for creating primary key on new table
     FdoStringP GetAddPkeySql();
 
     /// Get SQL for creating UNIQUE constraints on new table
-    FdoStringP GetAddUkeySql();
+    FdoStringP GetAddUkeysSql();
+
+	/// Get SQL for creating a UNIQUE constraint on an existing table
+	FdoStringP GetAddUkeySql(int uCollNum);
 
     /// Get SQL for creating CHECK constraints on new table
-    FdoStringP GetAddCkeySql();
+    FdoStringP GetAddCkeysSql();
+
+	/// Get SQL for creating a CHECK constraint on an existing table
+	FdoStringP GetAddCkeySql(int uCollNum);
 
     /// Set the long transaction mode.
     /// Can only be changed on new tables.
@@ -127,11 +139,17 @@ public:
     /// Add a column to the primary key.
 	void AddPkeyCol(FdoStringP columnName );
 
-    /// Add a column to a collection of unque keys 
+    /// Add a column to a collection of unique keys 
 	void AddUkeyCol(int uCollNum, FdoStringP columnName );
+
+	/// Add all unique keys
+	void AddUkeys();
 
     /// Add a clause to the constraints list.
 	void AddCkeyCol(FdoSmPhCheckConstraintP clause );
+
+	/// Add all check constraints
+	void AddCkeys();
 
     /// Add an index to this table
     FdoSmPhIndexP CreateIndex(
@@ -145,6 +163,9 @@ public:
         FdoStringP pkeyTableName,
         FdoStringP pkeyTableOwner = L""
     );
+
+	/// Return the list of constraints marked for drop
+	FdoStringsP	GetDeletedConstraints();
 
     /// Removes the given index from the cache without
     /// deleting it from the datastore.
@@ -250,6 +271,12 @@ protected:
     /// Commit modifications to columns
     virtual void CommitColumns( bool isBeforeParent );
 
+	/// Commit new added Unique constraints
+	virtual void CommitUConstraints( bool isBeforeParent );
+
+	/// Commit new added Check constraints
+	virtual void CommitCConstraints( bool isBeforeParent );
+
     /// Autogenerate a unique primary key name for this table.
 	virtual FdoStringP GenPkeyName();
 
@@ -257,6 +284,12 @@ protected:
     virtual bool AddColumn( FdoSmPhColumnP column ) = 0;
     virtual bool ModifyColumn( FdoSmPhColumnP column ) = 0;
     virtual bool DeleteColumn( FdoSmPhColumnP column ) = 0;
+
+	/// Drop a constaint given its name in RDBMS.
+	virtual void DropConstraint( FdoStringP constraintName ) = 0;
+
+	/// Add a constrait given the fully qualified string.
+	virtual bool AddConstraint( FdoStringP constraint ) = 0;
 
     void LoadPkeys( FdoPtr<FdoSmPhReader> pkeyRdr );
 
@@ -299,11 +332,14 @@ private:
 
     void AddFkeyColumnError(FdoStringP columnName);
 	void AddUkeyColumnError(FdoStringP columnName);
+	void AddUkeyError(FdoStringP columnNames);
     void AddCkeyColumnError(FdoStringP columnName);
+	void AddCkeyError(FdoStringP columnNames);
     void AddDeleteNotEmptyError(void);
 
 	FdoSmPhBatchColumnsP		mUkeysCollection;
 	FdoSmPhCheckConstraintsP	mCkeysCollection;
+	FdoStringsP					mDeletedConstraints;
 
     FdoSmPhFkeysP mFkeysUp;
 

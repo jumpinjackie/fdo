@@ -31,7 +31,25 @@ public:
 	FdoSmPhColumnCollection(void) :
 		FdoSmNamedCollection<FdoSmPhColumn>(NULL)
 	{}
+
+	FdoSmPhColumnCollection(FdoStringP collName) :
+		FdoSmNamedCollection<FdoSmPhColumn>(NULL)
+	{
+		mCollName = collName; 
+		mState = FdoSchemaElementState_Unchanged;
+	}
+
 	~FdoSmPhColumnCollection(void) {}
+
+	void		SetName( FdoStringP collName ) { mCollName = collName; }
+	FdoStringP	GetName() { return mCollName; }
+
+	void		SetElementState(FdoSchemaElementState state) { mState = state; }
+	FdoSchemaElementState GetElementState() { return mState; }
+	
+private:
+	FdoStringP				mCollName;
+	FdoSchemaElementState	mState;
 };
 
 typedef FdoPtr<FdoSmPhColumnCollection> FdoSmPhColumnsP;

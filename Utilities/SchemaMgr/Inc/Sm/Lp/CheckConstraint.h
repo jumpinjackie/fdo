@@ -29,11 +29,12 @@ public:
 
 	FdoSmLpCheckConstraint() {}
 
-	FdoSmLpCheckConstraint( FdoStringP propName, FdoStringP columnName, FdoStringP checkClause) 
+	FdoSmLpCheckConstraint( FdoStringP propName, FdoStringP columnName, FdoStringP constraintName, FdoStringP checkClause) 
 	{
 		mCheckClause = checkClause;	
 		mPropertyName = propName;
 		mColumnName = columnName;
+		mConstraintName = constraintName;
 	}
 
 	~FdoSmLpCheckConstraint() {}
@@ -41,7 +42,7 @@ public:
 	FdoStringP	GetClause()			{ return mCheckClause; }
 	FdoStringP	GetPropertyName()	{ return mPropertyName; }
 	FdoStringP	GetColumnName()		{ return mColumnName; }
-
+	FdoStringP	GetConstraintName()	{ return mConstraintName; }
 
 protected:
 	virtual void Dispose() { 	
@@ -49,9 +50,10 @@ protected:
 	}
 
 private:
-	FdoStringP	mCheckClause;
+	FdoStringP	mCheckClause;		// Check clause from datastore
 	FdoStringP	mPropertyName;
 	FdoStringP	mColumnName;
+	FdoStringP  mConstraintName;
 };
 
 typedef FdoPtr<FdoSmLpCheckConstraint> FdoSmLpCheckConstraintP;

@@ -34,6 +34,7 @@ public:
 		mName = name;
 		mColumnName = columnName;
 		mCheckClause = checkClause;	
+		mState = FdoSchemaElementState_Unchanged;
 	}
 
 	~FdoSmPhCheckConstraint() {}
@@ -42,6 +43,9 @@ public:
 	FdoStringP	GetClause()			{ return mCheckClause; }
 	FdoStringP	GetColumnName()		{ return mColumnName; }
 
+	void		SetElementState(FdoSchemaElementState state) { mState = state; }
+	FdoSchemaElementState GetElementState() { return mState; }
+
 protected:
 	virtual void Dispose() { delete this; };
 
@@ -49,6 +53,8 @@ private:
 	FdoStringP	mName;
 	FdoStringP	mCheckClause;
 	FdoStringP	mColumnName;
+	FdoSchemaElementState	mState;
+
 };
 
 typedef FdoPtr<FdoSmPhCheckConstraint> FdoSmPhCheckConstraintP;

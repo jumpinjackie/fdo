@@ -1058,3 +1058,13 @@ SymbolicName=FDOSM_415
 Language=English
 Datastore '%1$ls%2$ls%3$ls' does not exist, case may be incorrect or is inaccessible from current connection.
 .
+MessageId=2640
+SymbolicName=FDOSM_416
+Language=English
+Failed to add unique constraint on column(s) %1$ls in table %2$ls
+.
+MessageId=2641
+SymbolicName=FDOSM_417
+Language=English
+Failed to add check constraint '%1$ls' in table %2$ls
+.

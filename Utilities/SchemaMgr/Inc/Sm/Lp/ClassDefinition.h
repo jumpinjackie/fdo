@@ -482,15 +482,15 @@ protected:
 	void CreatePkey();
 
     /// Add unique constraints to the class table if it doesn't already have one.
-	void CreateUkeys();
+	void CreateUkeys( bool bMerge = false );
 
     // Instantiate a new unique key.
     virtual void NewUkey( FdoSmPhTableP table, FdoSmLpDataPropertiesP pProps );
 
     /// Add constraints to the class table.
-	void CreateCkeys();
+	void CreateCkeys( bool bMerge = false );
 
-    /// Returns a CHECK clause
+	/// Returns a CHECK clause
 	FdoStringP GetCkeyClause( FdoStringP columnName, FdoDataPropertyP fdoProp );
 
     /// Callback to allow providers to customize a new primary key that was added to the 
@@ -697,6 +697,14 @@ private:
         const wchar_t* columnName
     );
     void AddForeignNoFeatIdError( const FdoSmLpPropertyDefinition* pFeatId );
+
+	void DropUkeys();
+	void CreateUkeysFromFdo();
+	bool MatchUkey( FdoClassDefinitionP pClass, FdoSmPhColumnsP pPhColls );
+
+	void DropCkeys();
+	void CreateCkeysFromFdo();
+	bool MatchCkey( FdoClassDefinitionP pClass, FdoSmPhCheckConstraintP pCkey );
 
     /// Various members. See corresponding getter functions.
 

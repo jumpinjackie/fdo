@@ -1134,7 +1134,7 @@ void FdoSmLpClassBase::CreatePkey()
 	}
 }
 
-void FdoSmLpClassBase::CreateUkeys()
+void FdoSmLpClassBase::CreateUkeys( bool merge )
 {
     FdoSmPhTableP			phTable = mPhDbObject.p->SmartCast<FdoSmPhTable>();
    	FdoSmLpPropertiesP		pLpProps = GetProperties();
@@ -1142,7 +1142,7 @@ void FdoSmLpClassBase::CreateUkeys()
    	int						count = -1;
    
    	if ( phTable ) {
-         	ukeysPhColumnsColl = phTable->GetUkeyColumns(); // Reads constrains from db
+        ukeysPhColumnsColl = phTable->GetUkeyColumns(); // Reads constrains from db
    
    		FdoSmLpUniqueConstraintsP   pLpUniqueConstraints = GetUniqueConstraints();
    
@@ -1172,14 +1172,16 @@ void FdoSmLpClassBase::CreateUkeys()
             // Skip the constraint if any of its columns do not correspond
             // to a property.
             if ( allFound && (pProps->GetCount() > 0) ) 
+			{
                 pLpUniqueConstraints->Add(pUniqueC);
+			}
    		}
    
    		count = ukeysPhColumnsColl->GetCount();
    	}
    
    	// Skip if no table or table already has unique keys.
-    if ( phTable && count == 0 ) {
+    if ( phTable && ( count == 0 || merge ) ) {
    
    		for ( int i = 0; i < mUniqueConstraints->GetCount(); i++ ) {
    
@@ -1236,24 +1238,54 @@ void FdoSmLpClassBase::CreateUkeys()
 
 void FdoSmLpClassBase::NewUkey( FdoSmPhTableP table, FdoSmLpDataPropertiesP pProps )
 {
-    FdoSmPhBatchColumnsP    ukeys = table->GetUkeyColumns(); 
+    FdoSmPhBatchColumnsP    ukeysPhColumnsColl = table->GetUkeyColumns(); 
     
     // Create a new unique key and add it to the collection of collections. 
-    FdoSmPhColumnsP				ukeyColumns = new FdoSmPhColumnCollection();
+    FdoSmPhColumnsP			ukeyColumns = new FdoSmPhColumnCollection();
    
-    ukeys->Add( ukeyColumns );
-   
-    for ( int i = 0; i < pProps->GetCount(); i++ ) {
+	// Test if this PH constraint already exists. First build a PH unique constraint.
+
+	for ( int i = 0; i < pProps->GetCount(); i++ ) {
 		FdoSmLpDataPropertyP pProp = pProps->GetItem(i)->SmartCast<FdoSmLpDataPropertyDefinition>(true);
    
 		if ( pProp ) {
 			FdoSmPhColumnP pColumn = pProp->GetColumn();
-   
-			if ( pColumn ) {
-				table->AddUkeyCol( ukeys->GetCount() - 1, pColumn->GetName());
-   			}
+			if ( pColumn )
+				ukeyColumns->Add(pColumn);
    		}
    	}
+
+	bool found = false;
+	for ( int i = 0; i < ukeysPhColumnsColl->GetCount() && !found; i++ ) {
+		FdoSmPhColumnsP		ukeyColumnsDb = ((FdoSmPhBatchColumnCollection *)ukeysPhColumnsColl)->GetItem(i);	
+
+		// Skip if size different
+		if ( ukeyColumnsDb->GetCount() != ukeyColumns->GetCount() )
+			continue;
+
+		// Match each component of the unique key
+		bool matchedAll = true;
+		for ( int j = 0; j < ukeyColumns->GetCount() && matchedAll; j++ ){
+			FdoSmPhColumnP			pPhCol = ukeyColumns->GetItem(j);	
+
+			// Unfortunatelly the order may be different so don't match by position.
+			bool matched = false;
+			for ( int k = 0; k < ukeyColumnsDb->GetCount() && !matched; k++ ) {
+				FdoSmPhColumnP		pPhColDb = ukeyColumnsDb->GetItem(k);
+				matched = ( wcscmp(pPhCol->GetName(), pPhColDb->GetName() ) == 0 );
+			}
+			if ( !matched )
+				matchedAll = false; 
+		}
+		if ( matchedAll )
+			found = true;
+	}
+
+	// Add to the list if new
+	if ( !found ) {
+		ukeyColumns->SetElementState(FdoSchemaElementState_Added);
+		ukeysPhColumnsColl->Add( ukeyColumns );
+	}   
 }
    
 FdoStringP FdoSmLpClassBase::GetCkeyClause( FdoStringP columnName, FdoDataPropertyP fdoProp )
@@ -1268,40 +1300,62 @@ FdoStringP FdoSmLpClassBase::GetCkeyClause( FdoStringP columnName, FdoDataProper
 	return clause;
 }
 
-void FdoSmLpClassBase::CreateCkeys()
+void FdoSmLpClassBase::CreateCkeys( bool bMerge )
 {
     FdoSmPhTableP				phTable = mPhDbObject.p->SmartCast<FdoSmPhTable>();
 	FdoSmLpCheckConstraintsP	pLpCheckConstraints = GetCheckConstraints();
+	FdoSmPhCheckConstraintsP	phCkeys;
 	int							count = -1;
 
 	if ( phTable ) {
 
-      	FdoSmPhCheckConstraintsP  phCkeys = phTable->GetCkeyColl(); // Reads from db
+      	phCkeys = phTable->GetCkeyColl(); // Reads from db
+
        	FdoSmLpPropertiesP		  pLpProps = GetProperties();
 
 		// Just copy from PH table. Maybe each data property should hold its constraint?
 		for ( int i = 0; i < phCkeys->GetCount(); i++ ) {
 			FdoSmPhCheckConstraintP		phCkey = phCkeys->GetItem(i);
 	
+			// Ignore the constraints marked for deletion
+			if ( phCkey->GetElementState() == FdoSchemaElementState_Deleted )
+				continue;
+
 			// Match the data property by column name and add the property to the collection
 			const FdoSmLpSimplePropertyDefinition* pMatchedProp = 		 
 					FdoSmLpSimplePropertyDefinition::ColName2Property( mProperties, phCkey->GetColumnName() );
 
+			// Check if already exists
 			if ( pMatchedProp ) { 
-				FdoSmLpCheckConstraintP  lpCkey = new FdoSmLpCheckConstraint( pMatchedProp->GetName(), phCkey->GetColumnName(), phCkey->GetClause());
-				pLpCheckConstraints->Add( lpCkey );
+				bool found = false;
+				for ( int j = 0; j < pLpCheckConstraints->GetCount() && !found; j++ ) {
+					FdoSmLpCheckConstraintP  lpCkey = pLpCheckConstraints->GetItem(j);
+					found = ( wcscmp(phCkey->GetColumnName(), lpCkey->GetColumnName()) == 0 );
+				}
+				if ( !found ) {
+					FdoSmLpCheckConstraintP  lpCkey = new FdoSmLpCheckConstraint( pMatchedProp->GetName(), phCkey->GetColumnName(), phCkey->GetName(), phCkey->GetClause());
+					pLpCheckConstraints->Add( lpCkey );
+				}
 			}
 		}
 		count = phCkeys->GetCount();
 	}
 
-    // Skip if no table or table already has the check constraints loaded.
-	if ( phTable && count == 0 ) {
+    // Skip if no table. Merge new LP constraints into PH.
+	if ( phTable && ( count == 0 || bMerge ) ) {
 		for ( int i = 0; i < pLpCheckConstraints->GetCount(); i++ ) {
 			FdoSmLpCheckConstraintP		lpCkey = pLpCheckConstraints->GetItem(i);
-
-			FdoSmPhCheckConstraintP  phCkey = new FdoSmPhCheckConstraint( L"", lpCkey->GetColumnName(), lpCkey->GetClause());
-			phTable->AddCkeyCol( phCkey );
+			
+			bool	found = false;
+			for ( int j = 0; j < phCkeys->GetCount() && !found; j++ ) {
+				FdoSmPhCheckConstraintP		phCkey = phCkeys->GetItem(j);
+				found = ( wcscmp(phCkey->GetColumnName(), lpCkey->GetColumnName()) == 0 );
+			}
+			if ( !found ) {
+				FdoSmPhCheckConstraintP  phCkey = new FdoSmPhCheckConstraint( L"", lpCkey->GetColumnName(), lpCkey->GetClause());
+				phCkey->SetElementState(FdoSchemaElementState_Added);
+				phTable->AddCkeyCol( phCkey );
+			}
 		}
 	}
 }
@@ -1739,105 +1793,288 @@ void FdoSmLpClassBase::FinalizeIdProps()
 	}
 }
 
+void FdoSmLpClassBase::CreateUkeysFromFdo()
+{
+	FdoClassDefinitionP pBaseClass = mFdoClass->GetBaseClass();
+	FdoClassDefinitionP pRootClass = FDO_SAFE_ADDREF(mFdoClass.p);
+
+	FdoPtr<FdoUniqueConstraintCollection> pFdoUniqueConstraints = pRootClass->GetUniqueConstraints();
+	FdoSmLpUniqueConstraintsP   pLpUniqueConstraints = GetUniqueConstraints();
+
+	// Add the class constraints to LP
+	for ( int i = 0; i < pFdoUniqueConstraints->GetCount(); i++ ) {
+
+		FdoPtr<FdoUniqueConstraint>	pFdoUniqueCsObj = pFdoUniqueConstraints->GetItem(i);
+		FdoDataPropertiesP			pFdoUniqueCs = pFdoUniqueCsObj->GetProperties();
+
+		// Each collection of data properties needs to be checked and added.				
+		FdoSmLpUniqueConstraint		*pLpUniqueC = new FdoSmLpUniqueConstraint();
+
+		for ( int j = 0; j < pFdoUniqueCs->GetCount(); j++ ) {
+			FdoDataPropertyP	 pFdoDataProp = pFdoUniqueCs->GetItem(j);
+			FdoSmLpDataPropertyP pLpDataProp = mProperties->FindItem( pFdoDataProp->GetName() )->SmartCast<FdoSmLpDataPropertyDefinition>(true);
+			pLpUniqueC->GetProperties()->Add( pLpDataProp );
+		}	
+
+		if ( pFdoUniqueCs->GetCount() != 0 )
+			pLpUniqueConstraints->Add( pLpUniqueC );
+		pLpUniqueC->Release();
+	}
+
+	// Add base class collection of unique constraints
+	if ( mBaseClass ) {
+		FdoSmLpUniqueConstraintsP   pLpUniqueConstraintsB = mBaseClass->GetUniqueConstraints();
+		for ( int j = 0; j < pLpUniqueConstraintsB->GetCount(); j++ ) {
+			FdoSmLpUniqueConstraintP		pLpUniqueC = pLpUniqueConstraintsB->GetItem(j);
+			pLpUniqueConstraints->Add( pLpUniqueC );
+		}	
+	}
+}
+
+bool FdoSmLpClassBase::MatchUkey( FdoClassDefinitionP pClass, FdoSmPhColumnsP pPhColls )
+{
+	FdoUniqueConstraintCollectionP pFdoUniqueConstraints = pClass->GetUniqueConstraints();
+
+	// Find a match between FDO and PH. Some FDO constraints may be deleted.
+	bool found = false;
+	for ( int i = 0; i < pFdoUniqueConstraints->GetCount() && !found; i++ ) {
+
+		FdoPtr<FdoUniqueConstraint>		pFdoUniqueC = pFdoUniqueConstraints->GetItem(i);
+		FdoDataPropertiesP				pFdoDataProps = pFdoUniqueC->GetProperties();
+
+		// No match if size is different.
+		if ( pPhColls->GetCount() != pFdoDataProps->GetCount())
+			continue;
+
+		// Match each component of the unique key
+		bool matchedAll = true;
+		for ( int j = 0; j < pPhColls->GetCount() && matchedAll; j++ ){
+			FdoSmPhColumnP			pPhCol = pPhColls->GetItem(j);	
+
+			// Unfortunatelly the order may be different so don't match by position.
+			bool matched = false;
+			for ( int k = 0; k < pFdoDataProps->GetCount() && !matched; k++ ) {
+				FdoDataPropertyP		pFdoDataProp = pFdoDataProps->GetItem(k);
+				FdoSmLpDataPropertyP	pLpDataProp = mProperties->FindItem( pFdoDataProp->GetName() )->SmartCast<FdoSmLpDataPropertyDefinition>(true);
+
+				matched = ( wcscmp(pPhCol->GetName(), pLpDataProp->GetColumnName() ) == 0 );
+			}
+			if ( !matched )
+				matchedAll = false; 
+		}
+		if ( matchedAll )
+			found = true;
+	}
+
+	// For MySql an unique key has been added for autogenerated identity property. Ignore it, otherwise it will be dropped.
+	if ( !found && pPhColls->GetCount() == 1 ) {
+		FdoSmPhColumnP			pPhCol = pPhColls->GetItem(0);	
+		found = pPhCol->GetAutoincrement();
+	}
+
+	return found;
+}	
+
+void FdoSmLpClassBase::DropUkeys()
+{
+	// Check the contraints still match Physical vs. FDO
+
+	FdoClassDefinitionP pRootClass = FDO_SAFE_ADDREF(mFdoClass.p);
+    FdoSmPhTableP		phTable = mPhDbObject.p->SmartCast<FdoSmPhTable>();
+
+	if ( phTable ) {
+
+   		const FdoSmPhBatchColumnCollection*	ukeysPhColumnsColl = phTable->RefUkeyColumns(); 
+
+		for ( int i = 0; i < ukeysPhColumnsColl->GetCount(); i++ ) {
+			FdoSmPhColumnsP		pPhColls = ((FdoSmPhBatchColumnCollection *)ukeysPhColumnsColl)->GetItem(i);	
+
+			bool	found = MatchUkey( pRootClass, pPhColls );
+
+			// Try also the base classes. Walk up the hierarchy.
+			FdoClassDefinitionP		pCurrClass = pRootClass;
+			FdoClassDefinitionP		pBaseClass;
+
+			while ( !found && ( (pBaseClass = pCurrClass->GetBaseClass()) != NULL ) ) {
+				found = MatchUkey( pBaseClass, pPhColls );
+				pCurrClass = pBaseClass;
+			}
+
+			// Still not found, add it to the list of constraints to be deleted.
+			if ( !found ) {
+				FdoStringsP		pDeletedConstraints = phTable->GetDeletedConstraints();
+				pDeletedConstraints->Add( pPhColls->GetName() );
+			}
+		}
+	}
+}
+
+
+bool FdoSmLpClassBase::MatchCkey( FdoClassDefinitionP pClass, FdoSmPhCheckConstraintP pCkeyPh )
+{
+	FdoPropertiesP	pFdoProps = pClass->GetProperties();
+	bool			found = false;
+
+	// Check LP ckey definition against FDO.
+	for ( int i = 0; i < pFdoProps->GetCount(); i++ ) {
+
+		FdoPropertyP		pFdoProp = pFdoProps->GetItem(i);
+
+		// Skip properties other than data properties.
+		if ( pFdoProp->GetPropertyType() != FdoPropertyType_DataProperty )
+			continue;
+
+		FdoDataPropertyDefinition*	pFdoDataProp = (FdoDataPropertyDefinition *)(pFdoProp.p);
+		FdoSmLpDataPropertyP	pLpDataProp = mProperties->FindItem( pFdoDataProp->GetName() )->SmartCast<FdoSmLpDataPropertyDefinition>(true);
+
+		// Match by column name.
+		if ( wcscmp( pCkeyPh->GetColumnName(), pLpDataProp->GetColumnName() ) != 0 )
+			continue;
+
+		FdoPtr<FdoPropertyValueConstraint>	pValConstr = pFdoDataProp->GetValueConstraint();
+
+		// Check the status of the property. If anything changed then the constraint will be dropped.
+		if ( pValConstr ) {
+					
+			found = ( pFdoDataProp->GetElementState() == FdoSchemaElementState_Added ||
+				      pFdoDataProp->GetElementState() == FdoSchemaElementState_Unchanged  );
+		}
+
+		// If FDO property doesn't have a constraint then it has been removed. The constraint
+		// will be dropped.
+
+		break;
+	}
+
+	return found;
+}	
+
+void FdoSmLpClassBase::DropCkeys()
+{
+	// Check the contraints still match LP vs. FDO
+
+	FdoClassDefinitionP		pRootClass = FDO_SAFE_ADDREF(mFdoClass.p);
+    FdoSmPhTableP			phTable = mPhDbObject.p->SmartCast<FdoSmPhTable>();
+
+	if ( phTable ) {
+   		const FdoSmPhCheckConstraintCollection*	ckeysPhColl = phTable->RefCkeyColl(); 
+
+		for ( int i = 0; i < ckeysPhColl->GetCount(); i++ ) {
+			FdoSmPhCheckConstraintP		ckeyPh = ((FdoSmPhCheckConstraintCollection *)ckeysPhColl)->GetItem(i);	
+
+			bool	found = MatchCkey( pRootClass, ckeyPh);
+
+			// Try also the base classes. Walk up the hierarchy.
+			FdoClassDefinitionP		pCurrClass = pRootClass;
+			FdoClassDefinitionP		pBaseClass;
+
+			while ( !found && ( (pBaseClass = pCurrClass->GetBaseClass()) != NULL ) ) {
+				found = MatchCkey( pBaseClass, ckeyPh );
+				pCurrClass = pBaseClass;
+			}
+
+			// Still not found, add it to the list of constraints to be deleted.
+			if ( !found ) {
+				FdoStringsP		pDeletedConstraints = phTable->GetDeletedConstraints();
+				pDeletedConstraints->Add( ckeyPh->GetName() );
+				ckeyPh->SetElementState( FdoSchemaElementState_Deleted );
+			}
+		}
+	}
+}
+
+void FdoSmLpClassBase::CreateCkeysFromFdo()
+{
+	FdoClassDefinitionP			pBaseClass = mFdoClass->GetBaseClass();
+	FdoClassDefinitionP			pRootClass = FDO_SAFE_ADDREF(mFdoClass.p);
+	FdoPropertiesP				pFdoProps = pRootClass->GetProperties();
+	FdoSmLpCheckConstraintsP	pCkeys = GetCheckConstraints();
+
+	// Each data property needs to be checked and added.
+	for ( int i = 0; i < pFdoProps->GetCount(); i++ ) {
+
+		FdoPropertyP	pFdoProp = pFdoProps->GetItem(i);
+
+		// Skip properties other than data properties.
+		if ( pFdoProp->GetPropertyType() != FdoPropertyType_DataProperty )
+			continue;
+
+		// Subsequent calls need a FdoDataPropertyP
+		FdoDataPropertyP		pFdoDataProp = (FdoDataPropertyDefinition*)pFdoProps->GetItem(i);
+		FdoSmLpDataPropertyP	pLpDataProp = mProperties->FindItem( pFdoDataProp->GetName() )->SmartCast<FdoSmLpDataPropertyDefinition>(true);				
+
+		if ( pLpDataProp ) {
+			FdoPtr<FdoPropertyValueConstraint>	pValConstr = pFdoDataProp->GetValueConstraint();
+
+			// Generate a clause. Ignore the empty ones.
+			if ( pValConstr ) {
+			
+				FdoStringP clause = GetCkeyClause( pLpDataProp->GetColumnName(), pFdoDataProp );
+				if ( clause != L"" ) {
+					FdoSmLpCheckConstraintP	lpCkey = new FdoSmLpCheckConstraint( L"", pLpDataProp->GetColumnName(), L"", clause );
+					pCkeys->Add( lpCkey );
+				}
+			}
+		}
+	}
+
+	// Add base class collection of check constraints
+	if ( mBaseClass ) {
+		FdoSmLpCheckConstraintsP   pLpCheckConstraintsB = mBaseClass->GetCheckConstraints();
+		for ( int j = 0; j < pLpCheckConstraintsB->GetCount(); j++ ) {
+			FdoSmLpCheckConstraintP		pLpCkey = pLpCheckConstraintsB->GetItem(j);
+			pCkeys->Add( pLpCkey );
+		}	
+	}
+}
+
 void FdoSmLpClassBase::FinalizeUkeys()
 {
+	bool bMerge = false;
+
 	// Handle the unique constraints properties. 
     if ( mFdoClass && ((GetElementState() == FdoSchemaElementState_Added) || GetIsFromFdo()) ) 
 	{
-		FdoClassDefinitionP pBaseClass = mFdoClass->GetBaseClass();
-		FdoClassDefinitionP pRootClass = FDO_SAFE_ADDREF(mFdoClass.p);
-
-		FdoPtr<FdoUniqueConstraintCollection> pFdoUniqueConstraints = pRootClass->GetUniqueConstraints();
-		FdoSmLpUniqueConstraintsP   pLpUniqueConstraints = GetUniqueConstraints();
-
-		for ( int i = 0; i < pFdoUniqueConstraints->GetCount(); i++ ) {
-
-			FdoPtr<FdoUniqueConstraint>	pFdoUniqueCsObj = pFdoUniqueConstraints->GetItem(i);
-			FdoDataPropertiesP			pFdoUniqueCs = pFdoUniqueCsObj->GetProperties();
-
-			// Each collection of data properties needs to be checked and added.				
-			FdoSmLpUniqueConstraint		*pLpUniqueC = new FdoSmLpUniqueConstraint();
-
-			for ( int j = 0; j < pFdoUniqueCs->GetCount(); j++ ) {
-				FdoDataPropertyP	 pFdoDataProp = pFdoUniqueCs->GetItem(j);
-				FdoSmLpDataPropertyP pLpDataProp = mProperties->FindItem( pFdoDataProp->GetName() )->SmartCast<FdoSmLpDataPropertyDefinition>(true);
-				pLpUniqueC->GetProperties()->Add( pLpDataProp );
-			}	
-
-			pLpUniqueConstraints->Add( pLpUniqueC );
-			pLpUniqueC->Release();
-		}
-
-		// Add base class collection of unique constraints
-		if ( mBaseClass ) {
-			FdoSmLpUniqueConstraintsP   pLpUniqueConstraintsB = mBaseClass->GetUniqueConstraints();
-			for ( int j = 0; j < pLpUniqueConstraintsB->GetCount(); j++ ) {
-				FdoSmLpUniqueConstraintP		pLpUniqueC = pLpUniqueConstraintsB->GetItem(j);
-				pLpUniqueConstraints->Add( pLpUniqueC );
-			}	
-		}
+		CreateUkeysFromFdo();
 	}
-    else if ( mFdoClass &&  (GetElementState() == FdoSchemaElementState_Modified) ) {
-#pragma message ("Todo - FdoSmLpClassBase::Update() unique constraints modified")					
-			// Modifying a class with no base class. 
+    else if ( mFdoClass ) 
+	{
+		// Save the unique keys to delete.
+		DropUkeys();
+			
+		// Rebuild the Lp constraints. 
+		CreateUkeysFromFdo();
+
+		bMerge = true;
 	}
 
 	if ( mPhDbObject ) {
-		CreateUkeys();
+		CreateUkeys( bMerge);
 	}	
 }
 
 void FdoSmLpClassBase::FinalizeCkeys()
 {
+	bool bMerge = false;
+
 	// Handle the properties with check constraints. 
     if ( mFdoClass && ((GetElementState() == FdoSchemaElementState_Added) || GetIsFromFdo()) ) 
 	{
-		FdoClassDefinitionP			pBaseClass = mFdoClass->GetBaseClass();
-		FdoClassDefinitionP			pRootClass = FDO_SAFE_ADDREF(mFdoClass.p);
-		FdoPropertiesP				pFdoProps = pRootClass->GetProperties();
-		FdoSmLpCheckConstraintsP	pCkeys = GetCheckConstraints();
-
-		// Each data property needs to be checked and added.
-		for ( int i = 0; i < pFdoProps->GetCount(); i++ ) {
-
-			FdoDataPropertyP	pFdoDataProp = (FdoDataPropertyDefinition *)pFdoProps->GetItem(i);
-
-			// Skip properties other than data properties.
-			if ( pFdoDataProp == NULL )
-				continue;
-
-			FdoSmLpDataPropertyP pLpDataProp = mProperties->FindItem( pFdoDataProp->GetName() )->SmartCast<FdoSmLpDataPropertyDefinition>(true);				
-			
-			if ( pLpDataProp ) {
-				FdoPtr<FdoPropertyValueConstraint>	pValConstr = pFdoDataProp->GetValueConstraint();
-
-				// Generate a clause. Ignore the empty ones.
-				if ( pValConstr ) {
-				
-					FdoStringP clause = GetCkeyClause( pLpDataProp->GetColumnName(), pFdoDataProp );
-					if ( clause != L"" ) {
-						FdoSmLpCheckConstraintP	lpCkey = new FdoSmLpCheckConstraint( L"", pLpDataProp->GetColumnName(), clause );
-						pCkeys->Add( lpCkey );
-					}
-				}
-			}
-		}
-
-		// Add base class collection of check constraints
-		if ( mBaseClass ) {
-			FdoSmLpCheckConstraintsP   pLpCheckConstraintsB = mBaseClass->GetCheckConstraints();
-			for ( int j = 0; j < pLpCheckConstraintsB->GetCount(); j++ ) {
-				FdoSmLpCheckConstraintP		pLpCkey = pLpCheckConstraintsB->GetItem(j);
-				pCkeys->Add( pLpCkey );
-			}	
-		}
+		CreateCkeysFromFdo();
 	}
-    else if ( mFdoClass && (GetElementState() == FdoSchemaElementState_Modified)) {
-#pragma message ("Todo - FdoSmLpClassBase::Update() check constraints modified")					
+    else if ( mFdoClass ) 
+	{
+		// Save the check constraints to delete.
+		DropCkeys();
+			
+		// Rebuild the Lp constraints. 
+		CreateCkeysFromFdo(); 
+
+		bMerge = true;
 	}
 
 	if ( mPhDbObject ) {
-		CreateCkeys();
+		CreateCkeys( bMerge );
 	}
 }
 

@@ -38,6 +38,8 @@ FdoSmPhTable::FdoSmPhTable(
     if ( !GetExists() )
         // Use given primary key name for new tables.
         mPkeyName = pkeyName;
+
+	mDeletedConstraints = FdoStringCollection::Create();
 }
 
 FdoSmPhTable::~FdoSmPhTable(void)
@@ -513,10 +515,107 @@ void FdoSmPhTable::CommitChildren( bool isBeforeParent )
         }
     }
 
+    // Constraints to drop must be dropped before table is modified.
+    // Process in reverse order because constraints are removed from 
+	// this cache as they are deleted.
+	for (i = (mDeletedConstraints->GetCount() - 1); i >= 0; i--) {
+		// Mark as deleted.
+		bool	found = false;
+		for ( int j = 0; j < mUkeysCollection->GetCount() && !found; j++ ) {
+			FdoSmPhColumnsP		ukeyColumns = mUkeysCollection->GetItem(j);	
+			if ( ukeyColumns->GetName() == mDeletedConstraints->GetString(i) ) {
+				ukeyColumns->SetElementState(FdoSchemaElementState_Deleted);
+				found = true;
+			}
+		}
+		// Try check contraints
+		if (!found) {
+			for ( int j = 0; j < mCkeysCollection->GetCount() && !found; j++ ) {
+				FdoSmPhCheckConstraintP		pCheck = mCkeysCollection->GetItem(j);	
+				if ( pCheck->GetName() == mDeletedConstraints->GetString(i) ) {
+					pCheck->SetElementState(FdoSchemaElementState_Deleted);
+					found = true;
+				}
+			}
+		}
+
+		// Effectively drop the constraint
+		DropConstraint(mDeletedConstraints->GetString(i));
+		mDeletedConstraints->RemoveAt(i);
+	}
+
     // Columns to drop must be committed after indexes to drop
     if ( isBeforeParent )
         CommitColumns( isBeforeParent );
 
+	// Add new unique constraints
+    if ( !isBeforeParent )
+		CommitUConstraints( isBeforeParent );
+
+	// Add new check constraints
+    if ( !isBeforeParent )
+		CommitCConstraints( isBeforeParent );
+}
+
+void FdoSmPhTable::CommitUConstraints(bool isBeforeParent)
+{
+	// The table is created along with the constraints. Skip adding constraints explicitly.
+    // New constraints must be added after mods to existing table are committed.
+    // Deleted constraints are processed before table is committed.
+	if ( (GetCommitState() != FdoSchemaElementState_Added) && mUkeysCollection ) {
+
+		for ( int i = 0; i < mUkeysCollection->GetCount(); i++ ) {
+			FdoSmPhColumnsP		ukeyColumns = mUkeysCollection->GetItem(i);	
+
+			if ( ukeyColumns->GetElementState() == FdoSchemaElementState_Added ) {
+				FdoStringsP ukColNames = GetKeyColsSql( ukeyColumns );
+
+				FdoStringP ukeySql = FdoStringP::Format( 
+							L"UNIQUE (%ls)",
+							(FdoString*) ukColNames->ToString()
+				);
+
+				if ( !AddConstraint( ukeySql ) ) {
+					AddUkeyError(ukColNames->ToString());
+
+					// This will trigger error reporting
+					if (GetElementState() == FdoSchemaElementState_Unchanged )
+						SetElementState(FdoSchemaElementState_Modified);
+				} 
+				ukeyColumns->SetElementState(FdoSchemaElementState_Unchanged);
+			}
+		}
+	}
+}
+
+void FdoSmPhTable::CommitCConstraints(bool isBeforeParent)
+{
+    // New constraints must be added after mods to existing table are committed.
+    // Deleted constraints are processed before table is committed.
+ 
+	if ( (GetCommitState() != FdoSchemaElementState_Added) && mCkeysCollection ) {
+
+		for ( int i = 0; i < mCkeysCollection->GetCount(); i++ ) {
+			FdoSmPhCheckConstraintP		pCheck = mCkeysCollection->GetItem(i);	
+
+			if ( pCheck->GetElementState() == FdoSchemaElementState_Added ) {
+
+				FdoStringP ckeySql = FdoStringP::Format( 
+							L"CHECK (%ls)",
+							(FdoString *)pCheck->GetClause()
+				);
+
+				if ( !AddConstraint( ckeySql ) ) {
+					AddCkeyError(pCheck->GetClause());
+
+					// This will trigger error reporting
+					if (GetElementState() == FdoSchemaElementState_Unchanged )
+						SetElementState(FdoSchemaElementState_Modified);
+				} 
+				pCheck->SetElementState(FdoSchemaElementState_Unchanged);
+			}
+		}
+	}
 }
 
 void FdoSmPhTable::CommitColumns( bool isBeforeParent )
@@ -587,8 +686,8 @@ void FdoSmPhTable::XMLSerialize( FILE* xmlFp, int ref ) const
 FdoStringP FdoSmPhTable::GetAddSql()
 {
     FdoStringP pkeySql = GetAddPkeySql();
-	FdoStringP ukeysSql = GetAddUkeySql();
-	FdoStringP ckeysSql = GetAddCkeySql();
+	FdoStringP ukeysSql = GetAddUkeysSql();
+	FdoStringP ckeysSql = GetAddCkeysSql();
 
     FdoStringP sqlStmt = FdoStringP::Format(
         L"%ls ( %ls%ls %ls%ls %ls%ls %ls )",
@@ -650,6 +749,23 @@ FdoStringP FdoSmPhTable::GetDeleteColSql()
     );
 }
 
+FdoStringP FdoSmPhTable::GetDropConstraintSql()
+{
+    return FdoStringP::Format( 
+        L"alter table %ls drop constraint ", 
+        (FdoString*) GetDDLQName() 
+    );
+}
+
+FdoStringP FdoSmPhTable::GetAddConstraintSql(FdoStringP constraint)
+{
+    return FdoStringP::Format( 
+        L"alter table %ls add %ls ", 
+        (FdoString*) GetDDLQName(),
+		(FdoString*) constraint
+    );
+}
+
 FdoStringP FdoSmPhTable::GetAddPkeySql()
 {
     FdoSmPhColumnsP     pkeyColumns = GetPkeyColumns();
@@ -671,61 +787,87 @@ FdoStringP FdoSmPhTable::GetAddPkeySql()
     return pkeySql;
 }
 
-FdoStringP FdoSmPhTable::GetAddUkeySql()
+FdoStringP FdoSmPhTable::GetAddUkeysSql()
 {
     FdoSmPhBatchColumnsP     ukeyColumnsColl = GetUkeyColumns();
 	int						 count = ukeyColumnsColl->GetCount();
     FdoStringP				 ukeySql;
 	FdoStringP				 ukeyCollSql;
 
-    if ( count > 0 ) {
+	for ( int i = 0; i < count; i++ )	{
 
-		for ( int i = 0; i < count; i++ )	{
+		FdoSmPhColumnsP     ukeyColumns = ukeyColumnsColl->GetItem(i);
 
-			FdoSmPhColumnsP     ukeyColumns = ukeyColumnsColl->GetItem(i);
+		if ( ukeyColumns->GetCount() > 0 ) {
+			FdoStringsP ukColNames = GetKeyColsSql( ukeyColumns );
 
-			if ( ukeyColumns->GetCount() > 0 ) {
-    			FdoStringsP ukColNames = GetKeyColsSql( ukeyColumns );
+			ukeySql = FdoStringP::Format( 
+				L"UNIQUE (%ls)",
+				(FdoString*) ukColNames->ToString()
+			);
 
-				ukeySql = FdoStringP::Format( 
-					L"UNIQUE (%ls)",
-					(FdoString*) ukColNames->ToString()
-				);
-
-				ukeyCollSql += ukeySql;	
-				if ( i != count - 1 )
-					ukeyCollSql += L", ";
-			}	
-		}
-    }
+			ukeyCollSql += ukeySql;	
+			if ( i != count - 1 )
+				ukeyCollSql += L", ";
+		}	
+	}
 
     return ukeyCollSql;
 }
 
-FdoStringP FdoSmPhTable::GetAddCkeySql()
+FdoStringP FdoSmPhTable::GetAddUkeySql(int uCollNum)
+{
+    FdoSmPhBatchColumnsP    ukeyColumnsColl = GetUkeyColumns();
+ 	FdoSmPhOwner*			pOwner = static_cast<FdoSmPhOwner*>((FdoSmPhSchemaElement*) GetParent());
+	FdoSmPhColumnsP			ukeyColumns = ukeyColumnsColl->GetItem(uCollNum);
+
+	FdoStringsP ukColNames = GetKeyColsSql( ukeyColumns );
+
+    return FdoStringP::Format( 
+        L"alter table %ls add UNIQUE (%ls)", 
+        (FdoString*) GetDDLQName(),
+		(FdoString*) ukColNames->ToString()
+    );
+}
+
+FdoStringsP	FdoSmPhTable::GetDeletedConstraints()
+{
+	return mDeletedConstraints;
+}
+
+FdoStringP FdoSmPhTable::GetAddCkeysSql()
 {
     FdoSmPhCheckConstraintsP	ckeyColl = GetCkeyColl();
 	int							count = ckeyColl->GetCount();
 	FdoStringP					ckeyCollSql;
  
-    if ( count > 0 ) {
+	for ( int i = 0; i < count; i++ )	{
 
-		for ( int i = 0; i < count; i++ )	{
+		FdoSmPhCheckConstraintP	elem = ckeyColl->GetItem(i);
 
-			FdoSmPhCheckConstraintP	elem = ckeyColl->GetItem(i);
+		FdoStringP ckeySql = FdoStringP::Format( 
+			L"CHECK (%ls)",
+			(FdoString*) elem->GetClause()
+		);
 
-			FdoStringP ckeySql = FdoStringP::Format( 
-				L"CHECK (%ls)",
-				(FdoString*) elem->GetClause()
-			);
-
-			ckeyCollSql += ckeySql;	
-			if ( i != count - 1 )
-				ckeyCollSql += L", ";		
-		}
-    }
+		ckeyCollSql += ckeySql;	
+		if ( i != count - 1 )
+			ckeyCollSql += L", ";		
+	}
 
     return ckeyCollSql;
+}
+
+FdoStringP FdoSmPhTable::GetAddCkeySql(int uCollNum)
+{
+    FdoSmPhCheckConstraintsP	ckeyColl = GetCkeyColl();
+	FdoSmPhCheckConstraintP		elem = ckeyColl->GetItem(uCollNum);
+	
+    return FdoStringP::Format( 
+		L"alter table %ls add CHECK (%ls)", 
+		(FdoString*) GetDDLQName(),
+		(FdoString*) elem->GetClause()
+	);
 }
 
 FdoStringP FdoSmPhTable::GenPkeyName()
@@ -797,13 +939,13 @@ void FdoSmPhTable::LoadUkeys()
 
 void FdoSmPhTable::LoadUkeys( FdoSmPhReaderP ukeyRdr )
 {
-    FdoStringP		 ckeyNameCurr;
+    FdoStringP		 ukeyNameCurr;
     FdoSmPhColumnsP  ukeysCurr;
 
     // read each unique key.
     while (ukeyRdr->ReadNext() ) {
 
-        FdoStringP ckeyName			= ukeyRdr->GetString(L"", L"constraint_name");
+        FdoStringP ukeyName			= ukeyRdr->GetString(L"", L"constraint_name");
         FdoStringP columnName		= ukeyRdr->GetString(L"", L"column_name");
 
         FdoSmPhColumnP ukeyColumn = GetColumns()->FindItem( columnName );
@@ -814,19 +956,19 @@ void FdoSmPhTable::LoadUkeys( FdoSmPhReaderP ukeyRdr )
 		        AddUkeyColumnError( columnName );
         }
 
-		// The subcollection is identified by the common ckeyName.
+		// The subcollection is identified by the common ukeyName.
 		// The columns will be grouped this way.
-		if ( ckeyName != ckeyNameCurr ) {
+		if ( ukeyName != ukeyNameCurr ) {
 			if ( ukeysCurr )
 		    	mUkeysCollection->Add( ukeysCurr ); // save the last group
 
 			// Start a new subcollection
-			ukeysCurr = new FdoSmPhColumnCollection();
+			ukeysCurr = new FdoSmPhColumnCollection( ukeyName );
 		}		
 		
         ukeysCurr->Add( ukeyColumn );
 
-		ckeyNameCurr = ckeyName;		
+		ukeyNameCurr = ukeyName;		
     }
 
 	// Add the last group
@@ -1132,5 +1274,31 @@ void FdoSmPhTable::AddDeleteNotEmptyError(void)
 				(FdoString*) GetDbQName()	
 			)
 		)
+	);
+}
+
+void FdoSmPhTable::AddUkeyError(FdoStringP columnNames)
+{
+	GetErrors()->Add( FdoSmErrorType_Other, 
+        FdoSchemaException::Create(
+            FdoSmError::NLSGetMessage(
+                FDO_NLSID(FDOSM_416), 
+				(FdoString*) columnNames, 
+				(FdoString*) GetQName()
+            )
+        )
+	);
+}
+
+void FdoSmPhTable::AddCkeyError(FdoStringP checkClause)
+{
+	GetErrors()->Add( FdoSmErrorType_Other, 
+        FdoSchemaException::Create(
+            FdoSmError::NLSGetMessage(
+                FDO_NLSID(FDOSM_417), 
+				(FdoString*) checkClause, 
+				(FdoString*) GetQName()
+            )
+        )
 	);
 }
