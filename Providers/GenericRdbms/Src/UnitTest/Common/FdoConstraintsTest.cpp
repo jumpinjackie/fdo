@@ -858,7 +858,7 @@ void FdoConstraintsTest::UpdateCheckConstraints( FdoIConnection* connection )
 
 			// New value to insert into PROPERTY_1, outside range
 			// This should succeed since the constraint on PROPERTY_1 was removed
-			long value = 2000;
+			FdoInt32 value = 2000;
 			FdoStringP	insertSql = FdoStringP::Format(L"%ls (0, 0, %ld, 20, 'open', 6666, 8888 )", (FdoString *) insertSql1, value );
 			UnitTestUtil::Sql2Db( insertSql, connection );
 
