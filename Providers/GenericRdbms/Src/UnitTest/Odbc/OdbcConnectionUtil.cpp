@@ -30,18 +30,27 @@
 #endif
 
 #define ODBC_INIT_FILENAME_TEST				"OdbcInit.txt"
-
-#define ODBCMYSQL_SERVICENAME_DEFAULT		L"localhost"
-#define ODBCMYSQL_USERNAME_DEFAULT			L"root"
-#define ODBCMYSQL_PASSWORD_DEFAULT			L"fdotest"
+//	IMPORTANT NOTE!!!
+//	The unit test will try to load OdbcInit.txt file to get the initialization values.
+//	If the file is missing next values will be taken as default.
+//	You can update your file (OdbcInit.txt) with right values or if you don’t have that file (or you don't want to create it) you can fill in the default values.
+//	As a priority the values from OdbcInit.txt will be used if this file exist
+//	You should create/modify your own file initialization (OdbcInit.txt) in this way you are not forced to recompile the project after you changed some values.
+#define ODBCMYSQL_SERVICENAME_DEFAULT		L"" // e.g. mysqlserver
+#define ODBCMYSQL_USERNAME_DEFAULT			L"" // e.g. root
+#define ODBCMYSQL_PASSWORD_DEFAULT			L"" // e.g. xxxx
 #define ODBCMYSQL_DSN_DEFAULT				UNITTEST_VERSION_NAME L"MySqlFdoTest"
 
-#define ODBCSQLSERVER_SERVICENAME_DEFAULT	L"seconds"
-#define ODBCSQLSERVER_PASSWORD_DEFAULT		L"test"
+#define ODBCSQLSERVER_SERVICENAME_DEFAULT	L"" // e.g. sqlserver
+// if usernameSqlServer is missing from initialization file
+// the logon user will be used!!!
+#define ODBCSQLSERVER_PASSWORD_DEFAULT		L"" // e.g. xxxx
 #define ODBCSQLSERVER_DSN_DEFAULT			UNITTEST_VERSION_NAME L"SqlServerFdoTest"
 
-#define ODBCORACLE_SERVICENAME_DEFAULT		L"otwoxy_r10105a"
-#define ODBCORACLE_PASSWORD_DEFAULT			L"test"
+#define ODBCORACLE_SERVICENAME_DEFAULT		L"" // e.g. oraserver
+// if usernameOracle is missing from initialization file
+// the logon user will be used!!!
+#define ODBCORACLE_PASSWORD_DEFAULT			L"" // e.g. xxxx
 #define ODBCORACLE_DSN_DEFAULT				UNITTEST_VERSION_NAME L"OracleFdoTest"
 
 #define ODBCACCESS_DSN_DEFAULT				L"MSTest"
@@ -101,6 +110,10 @@ OdbcConnectionUtil::OdbcConnectionUtil(void)
 	int TestID = (int)(((double)rand()/(double)100.3666) * 100.3666 + 1.3666);
 	m_IdTest = FdoStringP::Format(L"_%d_", TestID);
 	printf ("Test ID: %d\n", TestID);
+#ifdef _WIN32
+	m_SetupTextDSNdone = m_SetupAccessDSNdone = m_SetupExcelDSNdone = false;
+    m_SetupSqlServerDSNdone = m_SetupMySqlDSNdone = m_SetupOracleDSNdone = false;
+#endif
 }
 
 void OdbcConnectionUtil::LoadInitializeFile()
@@ -118,11 +131,11 @@ void OdbcConnectionUtil::LoadInitializeFile()
 		FdoCommonFile::ErrorCode err = FdoCommonFile::ERROR_NONE;
 		if (!pFile.OpenFile(fileNameCfg, FdoCommonFile::IDF_OPEN_READ, err) )
 		{
-			printf( "WARNING: OdbcConnectionUtil->GetConfigFile failed to open file '%s'\n", (const char*)fileNameCfg );
+			printf( "WARNING: OdbcConnectionUtil->LoadInitializeFile failed to open file '%s'\n", (const char*)fileNameCfg );
 			fileNameCfg = ODBC_INIT_FILENAME_TEST;
 			if (!pFile.OpenFile(fileNameCfg, FdoCommonFile::IDF_OPEN_READ, err) )
 			{
-				printf( "WARNING: OdbcConnectionUtil->GetConfigFile failed to open file '%s'\n", (const char*)fileNameCfg );
+				printf( "WARNING: OdbcConnectionUtil->LoadInitializeFile failed to open file '%s'\n", (const char*)fileNameCfg );
 				printf( "Default values will be used\n" );
 			}
 		}
@@ -200,14 +213,6 @@ void OdbcConnectionUtil::LoadInitializeFile()
 
 		if (!m_SetupValues->PropertyExist( L"clean" ))
 			m_SetupValues->SetProperty( L"clean", L"yes");
-#ifdef _WIN32
-		SetupTextDSN();
-		SetupAccessDSN();
-		SetupExcelDSN();
-		SetupSqlServerDSN();
-		SetupMySqlDSN();
-		SetupOracleDSN();
-#endif
 	}
 	catch(...){}
 }
@@ -264,14 +269,20 @@ OdbcConnectionUtil::~OdbcConnectionUtil(void)
 	pTypeName += m_IdTest;
 	CleanFiles(files, pTypeName);
 
-	// activate only if you don't run the unit tests in different instances in the same time!!!
-	// otherwise first unit test which finish will erase all DSNs
-	//TeardownAccessDSN();
-	//TeardownExcelDSN();
-	//TeardownTextDSN();
-	//TeardownSqlServerDSN();
-	//TeardownMySqlDSN();
-	//TeardownOracleDSN();
+#ifdef _WIN32
+    if (m_SetupMySqlDSNdone)
+        TeardownMySqlDSN();
+    if (m_SetupSqlServerDSNdone)
+        TeardownSqlServerDSN();
+    if (m_SetupOracleDSNdone)
+        TeardownOracleDSN();
+    if (m_SetupAccessDSNdone)
+        TeardownAccessDSN();
+    if (m_SetupExcelDSNdone)
+        TeardownExcelDSN();
+    if (m_SetupTextDSNdone)
+        TeardownTextDSN();
+#endif
 }
 
 void OdbcConnectionUtil::SetProvider( const char *providerName )
@@ -291,6 +302,10 @@ void OdbcConnectionUtil::SetProvider( const char *providerName )
 	if (strcmp(providerName, "OdbcMySql") == 0 )
     {
 		m_ProviderActive = L"OdbcMySql";
+#ifdef _WIN32
+        if (!m_SetupMySqlDSNdone)
+            SetupMySqlDSN();
+#endif
 		pValue = m_SetupValues->GetPropertyValue( L"serviceMySql" );
         FdoCommonOSUtil::setenv( "service", pValue);
 
@@ -306,7 +321,10 @@ void OdbcConnectionUtil::SetProvider( const char *providerName )
     else if (strcmp(providerName, "OdbcSqlServer") == 0 )
     {
 		m_ProviderActive = L"OdbcSqlServer";
-		
+#ifdef _WIN32
+        if (!m_SetupSqlServerDSNdone)
+		    SetupSqlServerDSN();
+#endif
 		pValue = m_SetupValues->GetPropertyValue( L"serviceSqlServer" );
         FdoCommonOSUtil::setenv( "service", pValue);
 
@@ -322,7 +340,10 @@ void OdbcConnectionUtil::SetProvider( const char *providerName )
     else if (strcmp(providerName, "OdbcOracle") == 0 )
     {
 		m_ProviderActive = L"OdbcOracle";
-
+#ifdef _WIN32
+		if (!m_SetupOracleDSNdone)
+		    SetupOracleDSN();
+#endif
 		pValue = m_SetupValues->GetPropertyValue( L"serviceOracle" );
         FdoCommonOSUtil::setenv( "service", pValue);
 
@@ -338,21 +359,30 @@ void OdbcConnectionUtil::SetProvider( const char *providerName )
     else if (strcmp(providerName, "OdbcAccess") == 0 )
     {
 		m_ProviderActive = L"OdbcAccess";
-
+#ifdef _WIN32
+		if (!m_SetupAccessDSNdone)
+		    SetupAccessDSN();
+#endif
 		pValue = m_SetupValues->GetPropertyValue( L"DSNAccess" );
         FdoCommonOSUtil::setenv( "dsnname", pValue);
 	}
     else if (strcmp(providerName, "OdbcExcel") == 0 )
     {
 		m_ProviderActive = L"OdbcExcel";
-
+#ifdef _WIN32
+        if (!m_SetupExcelDSNdone)
+		    SetupExcelDSN();
+#endif
 		pValue = m_SetupValues->GetPropertyValue( L"DSNExcel" );
         FdoCommonOSUtil::setenv( "dsnname", pValue);
 	}
     else if (strcmp(providerName, "OdbcText") == 0 )
     {
 		m_ProviderActive = L"OdbcText";
-
+#ifdef _WIN32
+        if (!m_SetupTextDSNdone)
+            SetupTextDSN();
+#endif
 		pValue = m_SetupValues->GetPropertyValue( L"DSNText" );
         FdoCommonOSUtil::setenv( "dsnname", pValue);
 	}
@@ -485,6 +515,7 @@ void OdbcConnectionUtil::SetupTextDSN()
     char teststr[1024];
     DWORD nchars;
     char* last;
+    m_SetupTextDSNdone = true;
     nchars = GetModuleFileName (NULL, module, MAX_PATH);
     if (0 != nchars)
     {   
@@ -514,6 +545,7 @@ void OdbcConnectionUtil::SetupAccessDSN()
     char teststr[1024];
     DWORD nchars;
     char* last;
+    m_SetupAccessDSNdone = true;
     nchars = GetModuleFileName (NULL, module, MAX_PATH);
     if (0 != nchars)
     {   
@@ -543,6 +575,7 @@ void OdbcConnectionUtil::SetupExcelDSN()
     char teststr[1024];
     DWORD nchars;
     char* last;
+    m_SetupExcelDSNdone = true;
     nchars = GetModuleFileName (NULL, module, MAX_PATH);
     if (0 != nchars)
     {   
@@ -571,6 +604,7 @@ void OdbcConnectionUtil::SetupSqlServerDSN()
     char teststr[1024];
     sprintf (teststr, "DSN=%s%cDescription=Test SqlServer DSN for FDO ODBC provider%cSERVER=%s%cDATABASE=%s%c%c", (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"DSNSqlServer" ), 
 		'\0', '\0', (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"serviceSqlServer" ), '\0', UnitTestUtil::GetEnviron("datastore", ""), '\0', '\0', '\0');
+    m_SetupSqlServerDSNdone = true;
     if (!SQLConfigDataSource (NULL, ODBC_ADD_DSN, "SQL Server", teststr))
     {
         DWORD error;
@@ -586,6 +620,7 @@ void OdbcConnectionUtil::SetupMySqlDSN()
     char teststr[1024];
     sprintf (teststr, "DSN=%s%cDescription=Test MySql DSN for FDO ODBC provider%cSERVER=%s%cDATABASE=%s%cOPTION=3%c%c", (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"DSNMySql" ), 
 		'\0','\0', (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"serviceMySql" ), '\0', UnitTestUtil::GetEnviron("datastore", ""), '\0', '\0', '\0');
+    m_SetupMySqlDSNdone = true;
     if (!SQLConfigDataSource (NULL, ODBC_ADD_DSN, "MySQL ODBC 3.51 Driver", teststr))
     {
         DWORD error;
@@ -610,6 +645,7 @@ void OdbcConnectionUtil::SetupOracleDSN()
 	char teststr[1024];
 	BOOL ret = false;
 	SQLRETURN rc = SQL_ERROR;
+    m_SetupOracleDSNdone = true;
 
     SQLHENV sqlenv = SQL_NULL_HENV;
     rc = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HENV, &sqlenv);

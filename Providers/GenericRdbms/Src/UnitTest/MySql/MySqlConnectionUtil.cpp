@@ -27,9 +27,15 @@
 extern initializer mysql_rdbi_init;
 
 #define MYSQL_INIT_FILENAME_TEST	"MySqlInit.txt"
-#define MYSQL_SERVICE_DEFAULT		L"localhost"
-#define MYSQL_USERNAME_DEFAULT		L"root"
-#define MYSQL_PASSWORD_DEFAULT		L"fdotest"
+//	IMPORTANT NOTE!!!
+//	The unit test will try to load MySqlInit.txt file to get the initialization values.
+//	If the file is missing next values will be taken as default.
+//	You can update your file (MySqlInit.txt) with right values or if you don’t have that file (or you don't want to create it) you can fill in the default values.
+//	As a priority the values from OdbcInit.txt will be used if this file exist
+//	You should create/modify your own file initialization (MySqlInit.txt) in this way you are not forced to recompile the project after you changed some values.
+#define MYSQL_SERVICE_DEFAULT		L"" // e.g. mysqlserver
+#define MYSQL_USERNAME_DEFAULT		L"" // e.g. root
+#define MYSQL_PASSWORD_DEFAULT		L"" // e.g. xxxx
 
 int MySqlStaticConnection::do_rdbi_init (rdbi_context_def** rdbi_context)
 {

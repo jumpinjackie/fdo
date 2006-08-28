@@ -1,1 +1,1 @@
-provider=MySql;service=localhost;username=root;password=fdotest;clean=true;
+provider=MySql;service=mysqlserver;username=root;password=xxxx;clean=true;

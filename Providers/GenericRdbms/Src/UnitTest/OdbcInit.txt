@@ -1,7 +1,4 @@
 provider=Odbc;clean=true;
-serviceOracle=otwoxy_r10105a;usernameOracle=romy;passwordOracle=test;DSNOracle=OracleFdoTest;
-serviceMySql=localhost;usernameMySql=root;passwordMySql=fdotest;DSNMySql=MySqlFdoTest;
-serviceSqlServer=seconds;passwordSqlServer=test;DSNSqlServer=SqlServerFdoTest;
-DSNAccess=MSTest;
-DSNExcel=MSTestXls;
-DSNText=Country_Text;
+serviceOracle=oraserver;usernameOracle=xxxx;passwordOracle=xxxx;
+serviceMySql=mysqlserver;usernameMySql=root;passwordMySql=xxxx;
+serviceSqlServer=sqlserver;usernameSqlServer=xxxx;passwordSqlServer=xxxx;

@@ -59,6 +59,13 @@ public:
 protected:
 	void CleanFiles(std::vector<std::wstring>& files, FdoStringP& pTypeName);
 #ifdef _WIN32
+	bool m_SetupTextDSNdone;
+	bool m_SetupAccessDSNdone;
+	bool m_SetupExcelDSNdone;
+	bool m_SetupSqlServerDSNdone;
+	bool m_SetupMySqlDSNdone;
+	bool m_SetupOracleDSNdone;
+
 	void SetupTextDSN();
 	void SetupAccessDSN();
 	void SetupExcelDSN();
