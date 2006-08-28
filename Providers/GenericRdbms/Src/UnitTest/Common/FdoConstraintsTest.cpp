@@ -22,7 +22,7 @@
 #define			DB_NAME_CONSTRAINTS_SUFFIX "_constraints"
 
 #define			SCHEMA_NAME			L"constraints"
-#define			CLASS_NAME			L"CDataClass"
+#define			CLASS_NAME			L"cdataclass"	// lower case to compensate for MySQl on Linux
 #define			CLASS_NAME_BASE		L"CDataBaseClass"
 #define			PROPERTY_1			L"IntRange"
 #define			PROPERTY_2			L"IntList"

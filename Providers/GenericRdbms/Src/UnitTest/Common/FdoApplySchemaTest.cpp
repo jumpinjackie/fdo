@@ -1255,6 +1255,8 @@ void FdoApplySchemaTest::TestConfigDoc ()
     	
 		FdoPtr<FdoISchemaCapabilities>	schemaCap = connection->GetSchemaCapabilities();
         bool supportsRange = schemaCap->SupportsExclusiveValueRangeConstraints();
+		bool isMySql = !supportsRange;
+
 
         staticConn = UnitTestUtil::NewStaticConnection();
         staticConn->connect();
@@ -1450,16 +1452,20 @@ void FdoApplySchemaTest::TestConfigDoc ()
 
         FdoSmPhColumnsP	ukeyColumns = new FdoSmPhColumnCollection();
 	    table->GetUkeyColumns()->Add( ukeyColumns );
-        table->AddUkeyCol( 0, ph->GetDcColumnName(L"authority") );
-        table->AddUkeyCol( 0, ph->GetDcColumnName(L"zoningtype") );
+		int numUkeys = table->GetUkeyColumns()->GetCount();
+        table->AddUkeyCol( numUkeys - 1, ph->GetDcColumnName(L"authority") );
+        table->AddUkeyCol( numUkeys - 1, ph->GetDcColumnName(L"zoningtype") );
+		ukeyColumns->SetElementState(FdoSchemaElementState_Added);
         grdOwner->ActivateAndExecute( L"alter table zoning add constraint z1 unique ( authority, zoningtype )" );
 
         table = owner->GetDbObject( ph->GetDcDbObjectName(L"transformer") )->SmartCast<FdoSmPhTable>();
 
         ukeyColumns = new FdoSmPhColumnCollection();
 	    table->GetUkeyColumns()->Add( ukeyColumns );
-        table->AddUkeyCol( 0, ph->GetDcColumnName(L"phase") );
-        table->AddUkeyCol( 0, ph->GetDcColumnName(L"partnum") );
+		numUkeys = table->GetUkeyColumns()->GetCount();
+        table->AddUkeyCol( numUkeys - 1, ph->GetDcColumnName(L"phase") );
+        table->AddUkeyCol( numUkeys - 1, ph->GetDcColumnName(L"partnum") );
+		ukeyColumns->SetElementState(FdoSchemaElementState_Added);
         grdOwner->ActivateAndExecute( L"alter table transformer add constraint z2 unique ( phase, partnum )" );
 
         if ( supportsRange ) {
@@ -1472,7 +1478,9 @@ void FdoApplySchemaTest::TestConfigDoc ()
 
         ukeyColumns = new FdoSmPhColumnCollection();
 	    table->GetUkeyColumns()->Add( ukeyColumns );
-        table->AddUkeyCol( 0, ph->GetDcColumnName(L"height") );
+		numUkeys = table->GetUkeyColumns()->GetCount();
+        table->AddUkeyCol( numUkeys - 1, ph->GetDcColumnName(L"height") );
+		ukeyColumns->SetElementState(FdoSchemaElementState_Added);
         grdOwner->ActivateAndExecute( L"alter table pole add constraint z3 unique ( height )" );
 
         if ( supportsRange ) {
@@ -1521,7 +1529,8 @@ void FdoApplySchemaTest::TestConfigDoc ()
         FdoPtr<FdoUniqueConstraint> ucons;
         FdoDataPropertiesP dataProps;
 
-        CPPUNIT_ASSERT( constraints->GetCount() == 3 );
+		// MySql is adding an unique constraint on auto-incremented columns
+		CPPUNIT_ASSERT( constraints->GetCount() == (isMySql? 4 : 3) );
 
         bool constraintFound = false;
 
@@ -1540,7 +1549,8 @@ void FdoApplySchemaTest::TestConfigDoc ()
         classDef = classes->GetItem( L"Transformer" );
         constraints = classDef->GetUniqueConstraints();
 
-        CPPUNIT_ASSERT( constraints->GetCount() == 1 );
+		// MySql is adding an unique constraint on auto-incremented columns
+		CPPUNIT_ASSERT( constraints->GetCount() == (isMySql? 2 : 1) );
 
         constraintFound = false;
 
@@ -1564,7 +1574,8 @@ void FdoApplySchemaTest::TestConfigDoc ()
         classDef = classes->GetItem( L"Pole" );
         constraints = classDef->GetUniqueConstraints();
 
-        CPPUNIT_ASSERT( constraints->GetCount() == 1 );
+		// MySql is adding an unique constraint on auto-incremented columns
+		CPPUNIT_ASSERT( constraints->GetCount() == (isMySql? 2 : 1) );
 
         constraintFound = false;
 
