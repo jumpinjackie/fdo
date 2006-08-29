@@ -994,7 +994,7 @@ ShpPhysicalSchema* ShpConnection::GetPhysicalSchema(void)
                             idxGenName++;
                         }
                         new_sp->SetName( newName );
-                        new_sp->SetCoordSysName( newName );
+                        new_sp->SetCoordSysName( cs_name );
                         new_sp->SetCoordinateSystemWkt( wkt );
 
                         mSpatialContextColl->Add( new_sp );
