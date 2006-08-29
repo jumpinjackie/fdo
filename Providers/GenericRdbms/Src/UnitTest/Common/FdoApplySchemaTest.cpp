@@ -1255,8 +1255,6 @@ void FdoApplySchemaTest::TestConfigDoc ()
     	
 		FdoPtr<FdoISchemaCapabilities>	schemaCap = connection->GetSchemaCapabilities();
         bool supportsRange = schemaCap->SupportsExclusiveValueRangeConstraints();
-		bool isMySql = !supportsRange;
-
 
         staticConn = UnitTestUtil::NewStaticConnection();
         staticConn->connect();
@@ -1529,8 +1527,8 @@ void FdoApplySchemaTest::TestConfigDoc ()
         FdoPtr<FdoUniqueConstraint> ucons;
         FdoDataPropertiesP dataProps;
 
-		// MySql is adding an unique constraint on auto-incremented columns
-		CPPUNIT_ASSERT( constraints->GetCount() == (isMySql? 4 : 3) );
+		// SchemaMgr is adding an unique constraint on auto-incremented columns
+		CPPUNIT_ASSERT( constraints->GetCount() == 4);
 
         bool constraintFound = false;
 
@@ -1549,8 +1547,8 @@ void FdoApplySchemaTest::TestConfigDoc ()
         classDef = classes->GetItem( L"Transformer" );
         constraints = classDef->GetUniqueConstraints();
 
-		// MySql is adding an unique constraint on auto-incremented columns
-		CPPUNIT_ASSERT( constraints->GetCount() == (isMySql? 2 : 1) );
+		// SchemaMgr is adding an unique constraint on auto-incremented columns
+		CPPUNIT_ASSERT( constraints->GetCount() == 2);
 
         constraintFound = false;
 
@@ -1574,8 +1572,8 @@ void FdoApplySchemaTest::TestConfigDoc ()
         classDef = classes->GetItem( L"Pole" );
         constraints = classDef->GetUniqueConstraints();
 
-		// MySql is adding an unique constraint on auto-incremented columns
-		CPPUNIT_ASSERT( constraints->GetCount() == (isMySql? 2 : 1) );
+		// SchemaMgr is adding an unique constraint on auto-incremented columns
+		CPPUNIT_ASSERT( constraints->GetCount() == 2);
 
         constraintFound = false;
 
