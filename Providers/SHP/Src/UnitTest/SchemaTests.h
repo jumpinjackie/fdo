@@ -51,6 +51,7 @@ class SchemaTests :
 #endif
     CPPUNIT_TEST (modify_class);
     CPPUNIT_TEST (ignore_states);
+    CPPUNIT_TEST (describe_Fix784301);
     CPPUNIT_TEST_SUITE_END ();
 
     static FdoPtr<FdoIConnection> mConnection;
@@ -108,7 +109,7 @@ protected:
     void ignore_states();
 
 	void apply_schema();
-
+    void describe_Fix784301 ();
     // Helper methods
     ///////////////////////////////////////////////////////////////////////////
 

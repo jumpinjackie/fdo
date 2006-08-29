@@ -973,12 +973,12 @@ ShpPhysicalSchema* ShpConnection::GetPhysicalSchema(void)
                 {
                     FdoStringP    wkt = prj->GetWKT();                
                     bool        found = false;
+                    FdoStringP    cs_name = prj->GetCoordSysName();
 
                     // Check if an identical one as WKT exists
-                    for ( int i = 0; i < mSpatialContextColl->GetCount() && !found; i++ )
+                    for ( FdoInt32 j = 0; j < mSpatialContextColl->GetCount() && !found; j++ )
                     {
-                        FdoPtr<ShpSpatialContext> sp = mSpatialContextColl->GetItem(i);
-
+                        FdoPtr<ShpSpatialContext> sp = mSpatialContextColl->GetItem(j);
                         found = ( wkt == sp->GetCoordinateSystemWkt() );
                     }
 
@@ -986,10 +986,15 @@ ShpPhysicalSchema* ShpConnection::GetPhysicalSchema(void)
                     if ( !found )
                     {
                         FdoPtr<ShpSpatialContext> new_sp = new ShpSpatialContext();
-                      
-                        FdoStringP    cs_name = prj->GetCoordSysName();
-                        new_sp->SetName( cs_name );
-                        new_sp->SetCoordSysName( cs_name );
+                        FdoInt32 idxGenName = 1;
+                        FdoStringP newName = cs_name;
+                        while (mSpatialContextColl->FindItem(newName))
+                        {
+                            newName = FdoStringP::Format(L"%ls_%d", (FdoString*)cs_name, idxGenName);
+                            idxGenName++;
+                        }
+                        new_sp->SetName( newName );
+                        new_sp->SetCoordSysName( newName );
                         new_sp->SetCoordinateSystemWkt( wkt );
 
                         mSpatialContextColl->Add( new_sp );
@@ -1002,7 +1007,6 @@ ShpPhysicalSchema* ShpConnection::GetPhysicalSchema(void)
     // Return the singleton physical schema:
     return FDO_SAFE_ADDREF(mPhysicalSchema.p);
 }
-
 
 ShpLpFeatureSchemaCollection* ShpConnection::GetLpSchemas(void)
 {

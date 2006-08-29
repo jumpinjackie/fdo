@@ -30,12 +30,14 @@
 #define LOCATION3 L"..\\..\\TestData\\Ontario\\"
 #define LOCATION4 L"..\\..\\TestData\\Florida\\"
 #define LOCATION5 L"..\\..\\TestData\\Sheboygan"
+#define LOCATION6 L"..\\..\\TestData\\Fix784301"
 #else
 #define LOCATION L"../../TestData/Testing/"
 #define LOCATION2 L"../../TestData/t\x5348\x524dsting/"
 #define LOCATION3 L"../../TestData/Ontario/"
 #define LOCATION4 L"../../TestData/Florida/"
 #define LOCATION5 L"../../TestData/Sheboygan/"
+#define LOCATION6 L"..\\..\\TestData\\Fix784301"
 #endif
 
 
@@ -1078,7 +1080,7 @@ void SchemaTests::destroy_schema ()
         
 		try 
 		{
-			destroy->SetSchemaName (DEFAULT_SCHEMA_NAME);
+			destroy->SetSchemaName (L"Default");
 			destroy->Execute ();
 			CPPUNIT_ASSERT_MESSAGE ("Destroy schema should not succeed", false);
 		}
@@ -1854,6 +1856,28 @@ void SchemaTests::apply_schema()
 		apply->SetFeatureSchema(schema1);
 		apply->Execute();
 	}
+    catch (FdoException* ge) 
+    {
+        fail (ge);
+    }
+}
+
+/* Test basic describe operation. */
+void SchemaTests::describe_Fix784301 ()
+{
+    try
+    {
+        // switch to yet another default file location (with a different .prj file)
+        mConnection->Close ();
+        mConnection->SetConnectionString (L"DefaultFileLocation=" LOCATION6);
+        ShpTests::sLocation = LOCATION6;
+        CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == mConnection->Open ());
+        FdoPtr<FdoIDescribeSchema> describe = (FdoIDescribeSchema*)mConnection->CreateCommand (FdoCommandType_DescribeSchema);
+        FdoPtr<FdoFeatureSchemaCollection> schemas = describe->Execute ();
+        CPPUNIT_ASSERT_MESSAGE ("Expecting 1 schema", 1 == schemas->GetCount ());
+        FdoPtr<FdoFeatureSchema> schema = schemas->GetItem (0);
+        FdoPtr<FdoClassCollection> classes = schema->GetClasses ();
+    }
     catch (FdoException* ge) 
     {
         fail (ge);
