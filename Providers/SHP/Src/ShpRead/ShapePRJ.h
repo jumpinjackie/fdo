@@ -37,9 +37,11 @@ public:
     FdoStringP GetWKT();
 	FdoStringP GetCoordSysName();
     void       SetWKT( FdoString* wkt );
+    void       SetTempCoordSysName( FdoString* pValue ){ mTempSCName = pValue; }
 
 private:
     FdoStringP  mWKT;
+    FdoStringP  mTempSCName;
 };
 
 #endif // SHAPEPRJ_H

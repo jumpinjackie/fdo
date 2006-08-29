@@ -988,11 +988,15 @@ ShpPhysicalSchema* ShpConnection::GetPhysicalSchema(void)
                         FdoPtr<ShpSpatialContext> new_sp = new ShpSpatialContext();
                         FdoInt32 idxGenName = 1;
                         FdoStringP newName = cs_name;
+                        // search for SC name duplicates
                         while (mSpatialContextColl->FindItem(newName))
                         {
                             newName = FdoStringP::Format(L"%ls_%d", (FdoString*)cs_name, idxGenName);
                             idxGenName++;
                         }
+                        // set the new SC name only in case duplicate found
+                        if (idxGenName != 1)
+                            prj->SetTempCoordSysName( newName );
                         new_sp->SetName( newName );
                         new_sp->SetCoordSysName( cs_name );
                         new_sp->SetCoordinateSystemWkt( wkt );

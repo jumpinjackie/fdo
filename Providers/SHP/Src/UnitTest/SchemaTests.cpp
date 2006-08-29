@@ -1875,8 +1875,35 @@ void SchemaTests::describe_Fix784301 ()
         FdoPtr<FdoIDescribeSchema> describe = (FdoIDescribeSchema*)mConnection->CreateCommand (FdoCommandType_DescribeSchema);
         FdoPtr<FdoFeatureSchemaCollection> schemas = describe->Execute ();
         CPPUNIT_ASSERT_MESSAGE ("Expecting 1 schema", 1 == schemas->GetCount ());
+        FdoPtr<FdoIGetSpatialContexts> spatialContexts = (FdoIGetSpatialContexts*)mConnection->CreateCommand (FdoCommandType_GetSpatialContexts);
+        FdoPtr<FdoISpatialContextReader> pScReader = spatialContexts->Execute();
+        int cnt = 0;
+        while (pScReader->ReadNext())
+        {
+            FdoStringP pName = pScReader->GetName();
+            cnt++;
+        }
+        CPPUNIT_ASSERT_MESSAGE ("Expecting 3 Spatial Context", 3 == cnt);
         FdoPtr<FdoFeatureSchema> schema = schemas->GetItem (0);
         FdoPtr<FdoClassCollection> classes = schema->GetClasses ();
+        CPPUNIT_ASSERT_MESSAGE ("Expecting 2 Classes", 2 == classes->GetCount());
+        FdoStringP lastSpatialContextAssociation = "";
+        for (FdoInt32 i = 0; i < classes->GetCount(); i++)
+        {
+            FdoPtr<FdoClassDefinition> pClass = classes->GetItem(i);
+            FdoPtr<FdoPropertyDefinitionCollection> pPropDefCol = pClass->GetProperties();
+            FdoPtr<FdoPropertyDefinition> pPropdef = pPropDefCol->FindItem(L"Geometry");
+            FdoGeometricPropertyDefinition* pGeoProp = (FdoGeometricPropertyDefinition*)(pPropdef.p);
+            FdoStringP pSpatialContextAssociation = pGeoProp->GetSpatialContextAssociation();
+            if (lastSpatialContextAssociation != L"")
+            {
+                CPPUNIT_ASSERT_MESSAGE ("Expecting different spatial contexts", lastSpatialContextAssociation != pSpatialContextAssociation);
+            }
+            else
+            {
+                lastSpatialContextAssociation = pSpatialContextAssociation;
+            }
+        }
     }
     catch (FdoException* ge) 
     {

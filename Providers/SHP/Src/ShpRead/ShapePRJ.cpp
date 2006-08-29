@@ -32,7 +32,7 @@ ShapePRJ::~ShapePRJ (void)
 ShapePRJ::ShapePRJ (const wchar_t* name, int& status)
 {
     mWKT = FdoStringP(L"");
-
+    mTempSCName = L"";
     ErrorCode code;
 
     if (OpenFile (name, IDF_OPEN_READ, code))
@@ -75,6 +75,8 @@ FdoStringP ShapePRJ::GetCoordSysName()
 	FdoStringP	right;
 	FdoStringP	csName;
 
+    if (mTempSCName != L"")
+        return mTempSCName;
 	// Parse the WKT. Ignore spaces.
 	if ( mWKT.Contains( L"PROJCS" ) )
 		right = mWKT.Right( L"PROJCS" );
