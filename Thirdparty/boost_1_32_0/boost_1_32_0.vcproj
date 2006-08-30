@@ -26,9 +26,9 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="bjam -sTOOLS=vc-8_0 &quot;-sBUILD=debug&quot; &quot;--without-serialization&quot; &quot;--without-date_time&quot; &quot;--without-signals&quot; &quot;--without-filesystem&quot; &quot;--without-program_options&quot; &quot;--without-regex&quot; &quot;--without-test&quot;"
-				ReBuildCommandLine="bjam -sTOOLS=vc-8_0 &quot;-sBUILD=debug&quot; &quot;--without-serialization&quot; &quot;--without-date_time&quot; &quot;--without-signals&quot; &quot;--without-filesystem&quot; &quot;--without-program_options&quot; &quot;--without-regex&quot; &quot;--without-test&quot;"
-				CleanCommandLine="bjam -sTOOLS=vc-8_0 &quot;-sBUILD=debug&quot; &quot;--without-serialization&quot; &quot;--without-date_time&quot; &quot;--without-signals&quot; &quot;--without-filesystem&quot; &quot;--without-program_options&quot; &quot;--without-regex&quot; &quot;--without-test&quot; clean"
+				BuildCommandLine="bjam -sTOOLS=vc-8_0 &quot;-sBUILD=debug&quot; &quot;--without-serialization&quot;"
+				ReBuildCommandLine="bjam -sTOOLS=vc-8_0 &quot;-sBUILD=debug&quot; &quot;--without-serialization&quot; clean&#x0D;&#x0A;bjam -sTOOLS=vc-8_0 &quot;-sBUILD=debug&quot; &quot;--without-serialization&quot;"
+				CleanCommandLine="bjam -sTOOLS=vc-8_0 &quot;-sBUILD=debug&quot; &quot;--without-serialization&quot; clean"
 				Output="boost_1_32_0"
 				PreprocessorDefinitions=""
 				IncludeSearchPath=""
@@ -49,9 +49,9 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="bjam -sTOOLS=vc-8_0 &quot;-sBUILD=release&quot; &quot;--without-serialization&quot; &quot;--without-date_time&quot; &quot;--without-signals&quot; &quot;--without-filesystem&quot; &quot;--without-program_options&quot; &quot;--without-regex&quot; &quot;--without-test&quot;"
-				ReBuildCommandLine="bjam -sTOOLS=vc-8_0 &quot;-sBUILD=release&quot; &quot;--without-serialization&quot; &quot;--without-date_time&quot; &quot;--without-signals&quot; &quot;--without-filesystem&quot; &quot;--without-program_options&quot; &quot;--without-regex&quot; &quot;--without-test&quot;"
-				CleanCommandLine="bjam -sTOOLS=vc-8_0 &quot;-sBUILD=release&quot; &quot;--without-serialization&quot; &quot;--without-date_time&quot; &quot;--without-signals&quot; &quot;--without-filesystem&quot; &quot;--without-program_options&quot; &quot;--without-regex&quot; &quot;--without-test&quot; clean"
+				BuildCommandLine="bjam -sTOOLS=vc-8_0 &quot;-sBUILD=release&quot; &quot;--without-serialization&quot;"
+				ReBuildCommandLine="bjam -sTOOLS=vc-8_0 &quot;-sBUILD=release&quot; &quot;--without-serialization&quot; clean&#x0D;&#x0A;bjam -sTOOLS=vc-8_0 &quot;-sBUILD=release&quot; &quot;--without-serialization&quot;"
+				CleanCommandLine="bjam -sTOOLS=vc-8_0 &quot;-sBUILD=release&quot; &quot;--without-serialization&quot; clean"
 				Output="boost_1_32_0"
 				PreprocessorDefinitions=""
 				IncludeSearchPath=""
