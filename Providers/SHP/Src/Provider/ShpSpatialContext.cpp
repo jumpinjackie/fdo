@@ -40,6 +40,7 @@ ShpSpatialContext::ShpSpatialContext () :
     FdoPtr<FdoIGeometry> geometry = factory->CreateGeometry (envelope);
     mExtent = factory->GetFgf (geometry);
 	mIsExtentUpdated = true;
+	mIsFromConfigFile = false;
 }
 
 ShpSpatialContext::~ShpSpatialContext ()
@@ -131,8 +132,18 @@ bool ShpSpatialContext::GetIsExtentUpdated()
 {
 	return mIsExtentUpdated;
 }
+
 void ShpSpatialContext::SetIsExtentUpdated( bool value )
 {
 	mIsExtentUpdated = value;
 }
 
+void ShpSpatialContext::SetIsFromConfigFile( bool value )
+{
+	mIsFromConfigFile = value;
+}
+
+bool ShpSpatialContext::GetIsFromConfigFile()
+{
+	return mIsFromConfigFile;
+}

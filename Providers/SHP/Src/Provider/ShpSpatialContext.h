@@ -35,6 +35,7 @@ private:
     FdoSpatialContextExtentType mExtentType;
     FdoPtr<FdoByteArray> mExtent;
 	bool				 mIsExtentUpdated;
+	bool				 mIsFromConfigFile;
     double mXYTolerance;
     double mZTolerance;
 
@@ -63,6 +64,9 @@ public:
     virtual FdoBoolean CanSetName() { return true; }
 	virtual bool	   GetIsExtentUpdated();
 	void			   SetIsExtentUpdated( bool value );	   
+
+	void			   SetIsFromConfigFile( bool value );
+	bool			   GetIsFromConfigFile();
 };
 
 typedef FdoPtr<ShpSpatialContext> ShpSpatialContextP;

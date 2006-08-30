@@ -142,7 +142,7 @@ void SelectTests::get_spatial_contexts()
         // Test #1. No PRJ file
         get_spatial_context( mConnection, L"", 1 );
 
-        // Test #2. PRJ file present
+        // Test #2. PRJ file present, just one class
         FdoPtr<FdoIConnection>  connection = ShpTests::GetConnection ();
 #ifdef _WIN32
         connection->SetConnectionString (L"DefaultFileLocation=..\\..\\TestData\\Florida");
@@ -151,7 +151,11 @@ void SelectTests::get_spatial_contexts()
 #endif
         CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == connection->Open ());
 
-        get_spatial_context( connection, L"NAD_1983_HARN_UTM_Zone_17N", 2);
+		// Expect just one spatial context, no default (see spr 792011.02)
+        get_spatial_context( connection, L"NAD_1983_HARN_UTM_Zone_17N", 1);
+
+		// Do it again, the default SC must have been removed.
+		get_spatial_context( connection, L"NAD_1983_HARN_UTM_Zone_17N", 1);
 
         connection->Close();
 
@@ -164,7 +168,11 @@ void SelectTests::get_spatial_contexts()
 #endif
         CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == connection->Open ());
 
-        get_spatial_context( connection, L"WGS84 Lat/Long's, Degrees, -180 ==> +180", 2 );
+		// Expect just one spatial context, no default (see spr 792011.02)
+        get_spatial_context( connection, L"WGS84 Lat/Long's, Degrees, -180 ==> +180", 1 );
+
+		// Do it again, the default SC must have been removed.
+		get_spatial_context( connection, L"WGS84 Lat/Long's, Degrees, -180 ==> +180", 1 );
 
         connection->Close();
 

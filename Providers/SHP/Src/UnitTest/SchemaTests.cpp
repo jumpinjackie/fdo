@@ -1867,7 +1867,8 @@ void SchemaTests::describe_Fix784301 ()
 {
     try
     {
-        // switch to yet another default file location (with a different .prj file)
+        // switch to yet another default file location.
+		// 2 classes, 2 .prj files the coordinate system name is the same but diffrent WKTs.
         mConnection->Close ();
         mConnection->SetConnectionString (L"DefaultFileLocation=" LOCATION6);
         ShpTests::sLocation = LOCATION6;
@@ -1883,7 +1884,8 @@ void SchemaTests::describe_Fix784301 ()
             FdoStringP pName = pScReader->GetName();
             cnt++;
         }
-        CPPUNIT_ASSERT_MESSAGE ("Expecting 3 Spatial Context", 3 == cnt);
+		// The default spatial context was removed since it was not used (see #792011.02). Thefore expect 2 SCs.
+        CPPUNIT_ASSERT_MESSAGE ("Expecting 2 Spatial Context", 2 == cnt);
         FdoPtr<FdoFeatureSchema> schema = schemas->GetItem (0);
         FdoPtr<FdoClassCollection> classes = schema->GetClasses ();
         CPPUNIT_ASSERT_MESSAGE ("Expecting 2 Classes", 2 == classes->GetCount());

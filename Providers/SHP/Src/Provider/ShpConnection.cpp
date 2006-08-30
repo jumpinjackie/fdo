@@ -575,6 +575,7 @@ void ShpConnection::SetConfiguration(FdoIoStream* configStream)
         defltSpatialContext->SetExtentType(scReader->GetExtentType());
         defltSpatialContext->SetXYTolerance(scReader->GetXYTolerance());
         defltSpatialContext->SetZTolerance(scReader->GetZTolerance());
+		defltSpatialContext->SetIsFromConfigFile(true);
     }
     
     if (scReader->ReadNext()) {
@@ -696,7 +697,8 @@ ShpSpatialContextCollection* ShpConnection::GetSpatialContexts ( bool bDynamic )
 
     // Check the default Spatial Context - it is special.
     ShpSpatialContextP  dfltSpatialContext = mSpatialContextColl->GetItem(0);
-    FdoStringP            dfltSpatialContextName = dfltSpatialContext->GetName();
+    FdoStringP          dfltSpatialContextName = dfltSpatialContext->GetName();
+	bool				dfltSpatialContextUsed = false;
 
     FdoPtr<FdoFgfGeometryFactory> factory = FdoFgfGeometryFactory::GetInstance ();
 
@@ -704,35 +706,12 @@ ShpSpatialContextCollection* ShpConnection::GetSpatialContexts ( bool bDynamic )
     // agreed the spec. should be changed. For the time being, change the
     // type on the fly, allowing for retrieving the actual extents of geometries.
     // In the presence of a configuration file, disallow this.
-    bool    dfltScFromConfig = false;
-
-    if ( wcscmp( dfltSpatialContext->GetName(), SPATIALCONTEXT_DEFAULT_NAME) != 0 ) 
-    {
-        dfltScFromConfig = true;  
-    }
-    else if ( dfltSpatialContext->GetExtentType() == FdoSpatialContextExtentType_Static )
-    {
-        FdoPtr<FdoByteArray>  fgf = dfltSpatialContext->GetExtent();         
-        FdoPtr<FdoIGeometry>  geom = factory->CreateGeometryFromFgf( fgf );
-        FdoPtr<FdoIEnvelope>  box = geom->GetEnvelope();       
-
-        dfltScFromConfig = ( box->GetMinX() != SPATIALCONTEXT_DEFAULT_MINX ||
-                             box->GetMinY() != SPATIALCONTEXT_DEFAULT_MINY ||
-                             box->GetMaxX() != SPATIALCONTEXT_DEFAULT_MAXX ||
-                             box->GetMaxY() != SPATIALCONTEXT_DEFAULT_MAXY );
-    }
+    bool    dfltScFromConfig = dfltSpatialContext->GetIsFromConfigFile();
     
-    double  min_x = numeric_limits<double>::max ();
-    double  min_y = numeric_limits<double>::max ();
-    double  max_x = -numeric_limits<double>::max ();
-    double  max_y = -numeric_limits<double>::max ();
-
-    FdoPtr<ShpSpatialContext>    spatialContext;
-
     // Mark the extents as 'dirty' for all Spatial Contexts
     for ( int i = 0; i < mSpatialContextColl->GetCount(); i++ )
     {
-        spatialContext = mSpatialContextColl->GetItem(i);
+        FdoPtr<ShpSpatialContext>	spatialContext = mSpatialContextColl->GetItem(i);
         spatialContext->SetIsExtentUpdated(false);
     }
 
@@ -764,7 +743,10 @@ ShpSpatialContextCollection* ShpConnection::GetSpatialContexts ( bool bDynamic )
             if ( prj )
                 scname = prj->GetCoordSysName();
             else
+			{
                 scname = dfltSpatialContextName;
+				dfltSpatialContextUsed = true;
+			}
 
             // Don't update it if from configuration file.
             if ( ( wcscmp( scname, dfltSpatialContextName) == 0 ) && dfltScFromConfig )
@@ -781,7 +763,7 @@ ShpSpatialContextCollection* ShpConnection::GetSpatialContexts ( bool bDynamic )
                 continue;
 
             // Find the corresponding Spatial Context in the collection
-            spatialContext = mSpatialContextColl->GetItem( scname );
+            FdoPtr<ShpSpatialContext>	spatialContext = mSpatialContextColl->GetItem( scname );
             bool    extUpd = spatialContext->GetIsExtentUpdated();
 
             FdoPtr<FdoByteArray>  fgf_box = spatialContext->GetExtent();         
@@ -807,6 +789,16 @@ ShpSpatialContextCollection* ShpConnection::GetSpatialContexts ( bool bDynamic )
             spatialContext->SetExtentType( type );
         }     
     }
+
+	// Take the opportunity and remove the hard coded default spatial context in case: 
+	// it is not used, it is not the only one and not from configuration file. 
+	if ( ( wcscmp( dfltSpatialContext->GetName(), SPATIALCONTEXT_DEFAULT_NAME) == 0 ) && 
+		  !dfltSpatialContextUsed && 
+		  ( mSpatialContextColl->GetCount() > 1 ) && 
+		  !dfltScFromConfig )
+	{
+		mSpatialContextColl->RemoveAt(0);
+	}
 
     return FDO_SAFE_ADDREF( mSpatialContextColl.p );
 }
