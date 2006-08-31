@@ -120,16 +120,24 @@ void ShpLpFeatureSchema::ConvertPhysicalToLogical(
     // Create the logical schema:
     //////////////////////////////////////////////////////////////////////
 
+    FdoStringP pDefaultSchName = NlsMsgGet(SHP_DEFAULT_SCHEMA_NAME, "Default");
+    if(((FdoString*)pDefaultSchName)[pDefaultSchName.GetLength()-1] == L' ')
+        pDefaultSchName = pDefaultSchName.Mid(0, pDefaultSchName.GetLength()-1);
+
     FdoString * logicalSchemaName = (NULL != configSchemaMapping) ? 
         configSchemaMapping->GetName() : 
         (NULL != configLogicalSchema) ?
             configLogicalSchema->GetName () :
-                NlsMsgGet(SHP_DEFAULT_SCHEMA_NAME, "Default");
+                pDefaultSchName;
+
+    FdoStringP pDefaultSchDesc = NlsMsgGet(SHP_DEFAULT_SCHEMA_DESCRIPTION, "Default schema.");
+    if(((FdoString*)pDefaultSchDesc)[pDefaultSchDesc.GetLength()-1] == L' ')
+        pDefaultSchDesc = pDefaultSchDesc.Mid(0, pDefaultSchDesc.GetLength()-1);
 
     FdoString * logicalSchemaDescription =
         (NULL != configLogicalSchema) ?
             configLogicalSchema->GetDescription () :
-                NlsMsgGet(SHP_DEFAULT_SCHEMA_DESCRIPTION, "Default schema.");
+                pDefaultSchDesc;
 
     m_logicalSchema = FdoFeatureSchema::Create(logicalSchemaName, logicalSchemaDescription);
 
