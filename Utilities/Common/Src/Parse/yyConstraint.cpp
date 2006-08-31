@@ -13,7 +13,7 @@ fdo_constraint_yyrcsid[] = "$FreeBSD: src/usr.bin/yacc/skeleton.c,v 1.28 2000/01
 #define FDO_CONSTRAINT_YYRECOVERING() (pParse->fdo_constraint_yyerrflag!=0)
 class FdoCommonParse;static int fdo_constraint_yygrowstack(FdoCommonParse *pParse);
 #define FDO_CONSTRAINT_YYPREFIX "fdo_constraint_yy"
-#line 37 "Src/Parse/yyConstraint.y"
+#line 36 "Utilities/Common/Src/Parse/yyConstraint.y"
 
 #include <FdoStd.h>
 #include <Fdo/Expression/StringValue.h>
@@ -29,7 +29,7 @@ class FdoCommonParse;static int fdo_constraint_yygrowstack(FdoCommonParse *pPars
 
 #pragma warning(disable:4102)	/* unreferenced labels in fdo_constraint_yyConstraint.cpp*/
 
-#line 54 "Src/Parse/yyConstraint.y"
+#line 53 "Utilities/Common/Src/Parse/yyConstraint.y"
 #if 0
 {
 	FdoIDisposable*	m_node;		/* constraint parse tree node*/
@@ -100,71 +100,73 @@ const short fdo_constraint_yylhs[] = {                                        -1
     4,    4,    4,    4,   10,   11,   12,   12,   12,   12,
     5,    5,    8,    8,    7,    7,    6,    6,    9,    9,
     2,    2,    2,    1,    1,    1,    1,    1,    1,    1,
-    1,   15,   15,   14,   16,   13,   17,    3,    3,    3,
+    1,    1,   15,   15,   14,   16,   13,   17,    3,    3,
+    3,
 };
 const short fdo_constraint_yylen[] = {                                         2,
     1,    1,    3,    1,    1,    1,    1,    1,    1,    1,
     3,    3,    3,    3,    5,    5,    0,    1,    3,    3,
     3,    5,    3,    5,    3,    5,    3,    5,    3,    5,
-    0,    1,    3,    1,    1,    1,    1,    1,    1,    1,
-    1,    1,    1,    1,    1,    1,    1,    1,    3,    3,
+    0,    1,    3,    3,    1,    1,    1,    1,    1,    1,
+    1,    1,    1,    1,    1,    1,    1,    1,    1,    3,
+    3,
 };
 const short fdo_constraint_yydefred[] = {                                      0,
-    2,   48,    0,    0,    0,    0,    1,    0,    0,   18,
+    2,   49,    0,    0,    0,    0,    1,    0,    0,   18,
     8,   10,    4,    5,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,   50,    3,   19,    0,   49,
-    0,   41,   42,   43,   44,   45,   46,   47,   39,   40,
-   25,   36,   38,   34,   37,   35,   21,   27,   23,   29,
-    0,    0,    0,   11,   12,   13,   14,    0,    0,    0,
-    0,    0,    0,    0,    0,   32,    0,    0,    0,    0,
-    0,   26,   22,   28,   24,   30,   16,    0,   15,    0,
-    0,   33,    0,    0,
+    0,    0,    0,    0,    0,   51,    3,   19,    0,   50,
+    0,   42,   43,   44,   45,   46,   47,   48,   40,   41,
+    0,   25,   37,   39,   35,   38,   36,   21,   27,   23,
+   29,    0,    0,    0,   11,   12,   13,   14,    0,    0,
+    0,    0,    0,    0,    0,    0,   32,    0,    0,    0,
+    0,    0,    0,   26,   22,   28,   24,   30,   16,    0,
+   34,   15,    0,    0,   33,    0,    0,
 };
 const short fdo_constraint_yydgoto[] = {                                       5,
-   51,   77,   63,    7,    8,    9,   10,   11,   12,   13,
-   14,   15,   52,   53,   54,   55,   56,
+   52,   78,   64,    7,    8,    9,   10,   11,   12,   13,
+   14,   15,   53,   54,   55,   56,   57,
 };
-const short fdo_constraint_yysindex[] = {                                    -36,
-    0,    0,  -33,  -32,    0, -248,    0, -259, -245,    0,
-    0,    0,    0,    0, -244,  -41,  -13,  -29,  -32,  -54,
-    5, -222, -222, -222, -222, -222, -222,  -31,  -31,  -30,
- -222, -222, -222, -222, -222,    0,    0,    0,   13,    0,
- -222,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
- -223,  -32, -229,    0,    0,    0,    0,  -30, -247, -244,
-   15,   32,   39,   44,   45,    0,   -1, -222,  -38,  -35,
-  -29,    0,    0,    0,    0,    0,    0, -222,    0, -222,
- -222,    0,   44,   45,
+const short fdo_constraint_yysindex[] = {                                    -27,
+    0,    0,  -19,  -18,    0, -249,    0, -259, -253,    0,
+    0,    0,    0,    0, -250,  -41,   18,  -34,  -18,  -52,
+   15,  -36,  -36,  -36,  -36,  -36,  -36,  -15,  -15,  -13,
+  -36,  -36,  -36,  -36,  -36,    0,    0,    0,   19,    0,
+  -36,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+  -36,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0, -210,  -18, -291,    0,    0,    0,    0,  -13, -234,
+ -250,   22,   25,   27,   28,   30,    0,  -21,   33,  -36,
+  -38,  -35,  -34,    0,    0,    0,    0,    0,    0,  -36,
+    0,    0,  -36,  -36,    0,   28,   30,
 };
 const short fdo_constraint_yyrindex[] = {                                      2,
-    0,    0,  -28,    0,    0,    0,    0,   29,   33,    0,
-    0,    0,    0,    0,   87,    0,    0,    0,    0,    0,
+    0,    0,  -33,    0,    0,    0,    0,   12,   24,    0,
+    0,    0,    0,    0,   70,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    1,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    3,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    4,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,  -28,    0,   34,
- -177, -174, -173,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,  -33,    0,
+   26, -190, -185, -184,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,
 };
 const short fdo_constraint_yygindex[] = {                                      0,
-   -9,    0,   27,   89,    0,    0,    0,   49,   55,    0,
-    0,    8,    0,    0,    0,    0,    0,
+    5,    0,   14,   78,    0,    0,    0,    6,   29,    0,
+    0,   13,    0,    0,    0,    0,    0,
 };
-#define FDO_CONSTRAINT_YYTABLESIZE 269
+#define FDO_CONSTRAINT_YYTABLESIZE 270
 const short fdo_constraint_yytable[] = {                                      36,
-   17,   17,   36,    3,   28,   36,    3,   19,   62,   68,
-   18,   38,   17,   57,   58,   59,   60,   61,   29,   21,
-   30,   71,   72,   73,   74,   75,    6,   37,    7,   16,
-   20,   76,    9,   20,   42,   43,   44,   70,   40,   87,
-   78,   17,   88,   31,   41,   39,   31,   22,   22,   23,
-   24,   25,   26,   36,    4,   82,   69,    4,    4,    4,
-    4,   27,   45,   46,   47,   48,   49,   50,   89,    7,
-   25,   26,   83,    9,   20,   81,   64,   66,   92,   84,
-   93,   94,   65,   67,   85,   86,    6,   25,   79,   21,
-   27,   17,    0,    0,   80,    0,    0,    0,    0,    0,
+   17,   17,   36,   51,   28,   36,   38,   17,   25,   26,
+   29,    7,    3,    6,   30,   18,   16,   20,   21,   89,
+    3,   19,   90,    9,   63,   20,   69,   58,   59,   60,
+   61,   62,   39,   65,   67,   72,   73,   74,   75,   76,
+   40,   17,   71,   70,   31,   77,   22,   31,   23,   24,
+   25,   26,    7,   80,   41,   79,   66,   68,   37,   36,
+   27,   22,   84,    4,    9,   85,   20,   86,   87,    6,
+   88,    4,    4,   91,   25,    4,   81,    4,   21,   27,
+   17,   83,   82,    0,   92,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,   95,    0,    0,   96,   97,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
@@ -176,24 +178,24 @@ const short fdo_constraint_yytable[] = {                                      36
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    1,
-    0,    0,    0,    0,    0,    0,   21,    0,    0,    0,
-    0,    0,    0,    0,    0,   30,   17,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    2,    0,    0,    2,
-    2,    2,    2,    0,   31,    0,   32,   33,   34,   35,
-   31,   90,   91,    0,    0,   17,   17,    0,   27,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+   42,   43,   44,    0,    0,    0,   21,    0,    1,    0,
+   30,   17,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,   45,   46,
+   47,   48,   49,   50,   31,    2,   32,   33,   34,   35,
+   31,   93,   94,    2,    2,   17,   17,    2,   27,    2,
 };
 const short fdo_constraint_yycheck[] = {                                      41,
-    0,    0,   41,   40,  264,   41,   40,   40,   40,   40,
-    3,   41,   41,   23,   24,   25,   26,   27,  264,  268,
-  265,   31,   32,   33,   34,   35,    0,   41,    0,    3,
-    4,   41,    0,    0,  257,  258,  259,   30,   93,   41,
-  264,   41,   44,   41,   40,   19,   44,  296,  296,  298,
-  299,  300,  301,   41,   91,   41,   30,   91,   91,   91,
-   91,  310,  285,  286,  287,  288,  289,  290,   78,   41,
-  300,  301,   41,   41,   41,   68,   28,   29,   88,   41,
-   90,   91,   28,   29,   41,   41,    0,  265,   62,  264,
-  264,    3,   -1,   -1,   68,   -1,   -1,   -1,   -1,   -1,
+    0,    0,   41,   40,  264,   41,   41,   41,  300,  301,
+  264,    0,   40,    0,  265,    3,    3,    4,  268,   41,
+   40,   40,   44,    0,   40,    0,   40,   23,   24,   25,
+   26,   27,   19,   28,   29,   31,   32,   33,   34,   35,
+   93,   41,   30,   30,   41,   41,  296,   44,  298,  299,
+  300,  301,   41,  264,   40,   51,   28,   29,   41,   41,
+  310,  296,   41,   91,   41,   41,   41,   41,   41,    0,
+   41,   91,   91,   41,  265,   91,   63,   91,  264,  264,
+    3,   69,   69,   -1,   80,   -1,   -1,   -1,   -1,   -1,
+   -1,   -1,   -1,   -1,   90,   -1,   -1,   93,   94,   -1,
    -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
    -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
    -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
@@ -205,12 +207,12 @@ const short fdo_constraint_yycheck[] = {                                      41
    -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
    -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
    -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,  256,
-   -1,   -1,   -1,   -1,   -1,   -1,  268,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,  265,  265,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,  283,   -1,   -1,  283,
-  283,  283,  283,   -1,  296,   -1,  298,  299,  300,  301,
-  296,  300,  301,   -1,   -1,  265,  265,   -1,  310,
+   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
+  257,  258,  259,   -1,   -1,   -1,  268,   -1,  256,   -1,
+  265,  265,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
+   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,  285,  286,
+  287,  288,  289,  290,  296,  283,  298,  299,  300,  301,
+  296,  300,  301,  283,  283,  265,  265,  283,  310,  283,
 };
 #define FDO_CONSTRAINT_YYFINAL 5
 #ifndef FDO_CONSTRAINT_YYDEBUG
@@ -276,6 +278,7 @@ const char * const fdo_constraint_yyrule[] = {
 "DataValueCollection :",
 "DataValueCollection : DataValue",
 "DataValueCollection : DataValueCollection ',' DataValue",
+"DataValue : '(' DataValue ')'",
 "DataValue : boolean",
 "DataValue : datetime",
 "DataValue : double",
@@ -310,7 +313,7 @@ const char * const fdo_constraint_yyrule[] = {
 #endif
 #endif
 #define FDO_CONSTRAINT_YYINITSTACKSIZE 200
-#line 409 "Src/Parse/yyConstraint.y"
+#line 410 "Utilities/Common/Src/Parse/yyConstraint.y"
 ///////////////////////////////////////////////////////////////////////
 
 #include <stdio.h>
@@ -368,7 +371,7 @@ static void  print_current_token()
 	printf( "***  current token is %d (%s)  ***\n", pParse->fdo_constraint_yychar, token_name );
 #endif
 }
-#line 384 "yyConstraint.cpp"
+#line 387 "yyConstraint.cpp"
 /* allocate initial stack or double stack size, up to FDO_CONSTRAINT_YYMAXDEPTH */
 static int fdo_constraint_yygrowstack(FdoCommonParse *pParse)
 {
@@ -564,29 +567,29 @@ fdo_constraint_yyreduce:
     switch (fdo_constraint_yyn)
     {
 case 1:
-#line 117 "Src/Parse/yyConstraint.y"
+#line 116 "Utilities/Common/Src/Parse/yyConstraint.y"
 {pParse->SetRoot(Node_Copy(L"Constraint", pParse->fdo_constraint_yyvsp[0].m_node));	FDO_CONSTRAINT_YYACCEPT;}
 break;
 case 2:
-#line 118 "Src/Parse/yyConstraint.y"
+#line 117 "Utilities/Common/Src/Parse/yyConstraint.y"
 {Node_Trace(L"ERROR!");	pParse->SetRoot((FdoIDisposable*)NULL);	FDO_CONSTRAINT_YYABORT;}
 break;
 case 3:
-#line 123 "Src/Parse/yyConstraint.y"
+#line 122 "Utilities/Common/Src/Parse/yyConstraint.y"
 {
 						pParse->fdo_constraint_yyval.m_node = pParse->fdo_constraint_yyvsp[-1].m_node;
 					}
 break;
 case 4:
-#line 126 "Src/Parse/yyConstraint.y"
+#line 125 "Utilities/Common/Src/Parse/yyConstraint.y"
 {pParse->fdo_constraint_yyval.m_node = pParse->fdo_constraint_yyvsp[0].m_node;}
 break;
 case 5:
-#line 127 "Src/Parse/yyConstraint.y"
+#line 126 "Utilities/Common/Src/Parse/yyConstraint.y"
 {pParse->fdo_constraint_yyval.m_node = pParse->fdo_constraint_yyvsp[0].m_node;}
 break;
 case 6:
-#line 129 "Src/Parse/yyConstraint.y"
+#line 128 "Utilities/Common/Src/Parse/yyConstraint.y"
 {
 						FdoPropertyValueConstraintList* list = FdoPropertyValueConstraintList::Create();
 						FdoDataValueCollection* dvCol = list->GetConstraintList();
@@ -604,7 +607,7 @@ case 6:
 					}
 break;
 case 7:
-#line 145 "Src/Parse/yyConstraint.y"
+#line 144 "Utilities/Common/Src/Parse/yyConstraint.y"
 {
 						FdoPropertyValueConstraintRange* range = FdoPropertyValueConstraintRange::Create();
 						range->SetMinValue((FdoDataValue*)pParse->fdo_constraint_yyvsp[0].m_node);
@@ -614,7 +617,7 @@ case 7:
 					}
 break;
 case 8:
-#line 153 "Src/Parse/yyConstraint.y"
+#line 152 "Utilities/Common/Src/Parse/yyConstraint.y"
 {
 						FdoPropertyValueConstraintRange* range = FdoPropertyValueConstraintRange::Create();
 						range->SetMaxValue((FdoDataValue*)pParse->fdo_constraint_yyvsp[0].m_node);
@@ -624,7 +627,7 @@ case 8:
 					}
 break;
 case 9:
-#line 161 "Src/Parse/yyConstraint.y"
+#line 160 "Utilities/Common/Src/Parse/yyConstraint.y"
 {
 						FdoPropertyValueConstraintRange* range = FdoPropertyValueConstraintRange::Create();
 						range->SetMinValue((FdoDataValue*)pParse->fdo_constraint_yyvsp[0].m_node);
@@ -634,7 +637,7 @@ case 9:
 					}
 break;
 case 10:
-#line 169 "Src/Parse/yyConstraint.y"
+#line 168 "Utilities/Common/Src/Parse/yyConstraint.y"
 {
 						FdoPropertyValueConstraintRange* range = FdoPropertyValueConstraintRange::Create();
 						range->SetMaxValue((FdoDataValue*)pParse->fdo_constraint_yyvsp[0].m_node);
@@ -644,7 +647,7 @@ case 10:
 					}
 break;
 case 11:
-#line 177 "Src/Parse/yyConstraint.y"
+#line 176 "Utilities/Common/Src/Parse/yyConstraint.y"
 {
 						FdoPropertyValueConstraintRange* range = FdoPropertyValueConstraintRange::Create((FdoDataValue*)pParse->fdo_constraint_yyvsp[-2].m_node, (FdoDataValue*)pParse->fdo_constraint_yyvsp[0].m_node);
 						range->SetMinInclusive(false);
@@ -655,7 +658,7 @@ case 11:
 					}
 break;
 case 12:
-#line 186 "Src/Parse/yyConstraint.y"
+#line 185 "Utilities/Common/Src/Parse/yyConstraint.y"
 {
 						FdoPropertyValueConstraintRange* range = FdoPropertyValueConstraintRange::Create((FdoDataValue*)pParse->fdo_constraint_yyvsp[-2].m_node, (FdoDataValue*)pParse->fdo_constraint_yyvsp[0].m_node);
 						range->SetMinInclusive(false);
@@ -666,7 +669,7 @@ case 12:
 					}
 break;
 case 13:
-#line 195 "Src/Parse/yyConstraint.y"
+#line 194 "Utilities/Common/Src/Parse/yyConstraint.y"
 {
 						FdoPropertyValueConstraintRange* range = FdoPropertyValueConstraintRange::Create((FdoDataValue*)pParse->fdo_constraint_yyvsp[-2].m_node, (FdoDataValue*)pParse->fdo_constraint_yyvsp[0].m_node);
 						range->SetMinInclusive(true);
@@ -677,7 +680,7 @@ case 13:
 					}
 break;
 case 14:
-#line 204 "Src/Parse/yyConstraint.y"
+#line 203 "Utilities/Common/Src/Parse/yyConstraint.y"
 {
 						FdoPropertyValueConstraintRange* range = FdoPropertyValueConstraintRange::Create((FdoDataValue*)pParse->fdo_constraint_yyvsp[-2].m_node, (FdoDataValue*)pParse->fdo_constraint_yyvsp[0].m_node);
 						range->SetMinInclusive(true);
@@ -688,7 +691,7 @@ case 14:
 					}
 break;
 case 15:
-#line 217 "Src/Parse/yyConstraint.y"
+#line 216 "Utilities/Common/Src/Parse/yyConstraint.y"
 {
 						FdoPropertyValueConstraintRange* range = FdoPropertyValueConstraintRange::Create((FdoDataValue*)pParse->fdo_constraint_yyvsp[-2].m_node, (FdoDataValue*)pParse->fdo_constraint_yyvsp[0].m_node);
 						range->SetMinInclusive(true);
@@ -699,7 +702,7 @@ case 15:
 					}
 break;
 case 16:
-#line 229 "Src/Parse/yyConstraint.y"
+#line 228 "Utilities/Common/Src/Parse/yyConstraint.y"
 {
 						FdoPropertyValueConstraintList* list = FdoPropertyValueConstraintList::Create();
 						FdoDataValueCollection* dvCol = list->GetConstraintList();
@@ -717,13 +720,13 @@ case 16:
 					}
 break;
 case 17:
-#line 247 "Src/Parse/yyConstraint.y"
+#line 246 "Utilities/Common/Src/Parse/yyConstraint.y"
 {
 						pParse->fdo_constraint_yyval.m_node=pParse->AddNodeToDelete(FdoDataValueCollection::Create());
 					}
 break;
 case 18:
-#line 251 "Src/Parse/yyConstraint.y"
+#line 250 "Utilities/Common/Src/Parse/yyConstraint.y"
 {
 						pParse->fdo_constraint_yyval.m_node=pParse->AddNodeToDelete(FdoDataValueCollection::Create()); 
 						((FdoDataValueCollection*)pParse->fdo_constraint_yyval.m_node)->Add((FdoDataValue*)pParse->fdo_constraint_yyvsp[0].m_node); 
@@ -732,13 +735,13 @@ case 18:
 					}
 break;
 case 19:
-#line 258 "Src/Parse/yyConstraint.y"
+#line 257 "Utilities/Common/Src/Parse/yyConstraint.y"
 {
 						pParse->fdo_constraint_yyval.m_node = pParse->fdo_constraint_yyvsp[-1].m_node;
 					}
 break;
 case 20:
-#line 262 "Src/Parse/yyConstraint.y"
+#line 261 "Utilities/Common/Src/Parse/yyConstraint.y"
 {
 						pParse->fdo_constraint_yyval.m_node=pParse->AddNodeToDelete(FdoDataValueCollection::Create()); 
 						
@@ -765,73 +768,73 @@ case 20:
 					}
 break;
 case 21:
-#line 290 "Src/Parse/yyConstraint.y"
+#line 289 "Utilities/Common/Src/Parse/yyConstraint.y"
 {
 						pParse->fdo_constraint_yyval.m_node = pParse->fdo_constraint_yyvsp[0].m_node;
 					}
 break;
 case 22:
-#line 294 "Src/Parse/yyConstraint.y"
+#line 293 "Utilities/Common/Src/Parse/yyConstraint.y"
 {
 						pParse->fdo_constraint_yyval.m_node = pParse->fdo_constraint_yyvsp[-1].m_node;
 					}
 break;
 case 23:
-#line 301 "Src/Parse/yyConstraint.y"
+#line 300 "Utilities/Common/Src/Parse/yyConstraint.y"
 {
 						pParse->fdo_constraint_yyval.m_node = pParse->fdo_constraint_yyvsp[0].m_node;
 					}
 break;
 case 24:
-#line 305 "Src/Parse/yyConstraint.y"
+#line 304 "Utilities/Common/Src/Parse/yyConstraint.y"
 {
 						pParse->fdo_constraint_yyval.m_node = pParse->fdo_constraint_yyvsp[-1].m_node;
 					}
 break;
 case 25:
-#line 312 "Src/Parse/yyConstraint.y"
+#line 311 "Utilities/Common/Src/Parse/yyConstraint.y"
 {
 						pParse->fdo_constraint_yyval.m_node = pParse->fdo_constraint_yyvsp[0].m_node;
 					}
 break;
 case 26:
-#line 316 "Src/Parse/yyConstraint.y"
+#line 315 "Utilities/Common/Src/Parse/yyConstraint.y"
 {
 						pParse->fdo_constraint_yyval.m_node = pParse->fdo_constraint_yyvsp[-1].m_node;
 					}
 break;
 case 27:
-#line 323 "Src/Parse/yyConstraint.y"
+#line 322 "Utilities/Common/Src/Parse/yyConstraint.y"
 {
 						pParse->fdo_constraint_yyval.m_node = pParse->fdo_constraint_yyvsp[0].m_node;
 					}
 break;
 case 28:
-#line 327 "Src/Parse/yyConstraint.y"
+#line 326 "Utilities/Common/Src/Parse/yyConstraint.y"
 {
 						pParse->fdo_constraint_yyval.m_node = pParse->fdo_constraint_yyvsp[-1].m_node;
 					}
 break;
 case 29:
-#line 334 "Src/Parse/yyConstraint.y"
+#line 333 "Utilities/Common/Src/Parse/yyConstraint.y"
 {
 						pParse->fdo_constraint_yyval.m_node = pParse->fdo_constraint_yyvsp[0].m_node;
 					}
 break;
 case 30:
-#line 338 "Src/Parse/yyConstraint.y"
+#line 337 "Utilities/Common/Src/Parse/yyConstraint.y"
 {
 						pParse->fdo_constraint_yyval.m_node = pParse->fdo_constraint_yyvsp[-1].m_node;
 					}
 break;
 case 31:
-#line 344 "Src/Parse/yyConstraint.y"
+#line 343 "Utilities/Common/Src/Parse/yyConstraint.y"
 {
 						pParse->fdo_constraint_yyval.m_node=pParse->AddNodeToDelete(FdoDataValueCollection::Create());
 					}
 break;
 case 32:
-#line 348 "Src/Parse/yyConstraint.y"
+#line 347 "Utilities/Common/Src/Parse/yyConstraint.y"
 {
 						pParse->fdo_constraint_yyval.m_node=pParse->AddNodeToDelete(FdoDataValueCollection::Create()); 
 						((FdoDataValueCollection*)pParse->fdo_constraint_yyval.m_node)->Add((FdoDataValue*)pParse->fdo_constraint_yyvsp[0].m_node); 
@@ -840,7 +843,7 @@ case 32:
 					}
 break;
 case 33:
-#line 355 "Src/Parse/yyConstraint.y"
+#line 354 "Utilities/Common/Src/Parse/yyConstraint.y"
 {
 						((FdoDataValueCollection*)pParse->fdo_constraint_yyval.m_node)->Add((FdoDataValue*)pParse->fdo_constraint_yyvsp[0].m_node); 
 						Node_Trace(L"DataValue Arg N,");
@@ -848,74 +851,78 @@ case 33:
 					}
 break;
 case 34:
-#line 364 "Src/Parse/yyConstraint.y"
-{pParse->fdo_constraint_yyval.m_node=Node_Copy(L"boolean", pParse->fdo_constraint_yyvsp[0].m_node);}
+#line 363 "Utilities/Common/Src/Parse/yyConstraint.y"
+{pParse->fdo_constraint_yyval.m_node = pParse->fdo_constraint_yyvsp[-1].m_node;}
 break;
 case 35:
-#line 366 "Src/Parse/yyConstraint.y"
-{pParse->fdo_constraint_yyval.m_node=Node_Copy(L"datetime", pParse->fdo_constraint_yyvsp[0].m_node);}
+#line 365 "Utilities/Common/Src/Parse/yyConstraint.y"
+{pParse->fdo_constraint_yyval.m_node=Node_Copy(L"boolean", pParse->fdo_constraint_yyvsp[0].m_node);}
 break;
 case 36:
-#line 369 "Src/Parse/yyConstraint.y"
-{pParse->fdo_constraint_yyval.m_node=Node_Copy(L"double", pParse->fdo_constraint_yyvsp[0].m_node);}
+#line 367 "Utilities/Common/Src/Parse/yyConstraint.y"
+{pParse->fdo_constraint_yyval.m_node=Node_Copy(L"datetime", pParse->fdo_constraint_yyvsp[0].m_node);}
 break;
 case 37:
-#line 371 "Src/Parse/yyConstraint.y"
-{pParse->fdo_constraint_yyval.m_node=Node_Copy(L"integer", pParse->fdo_constraint_yyvsp[0].m_node);}
+#line 370 "Utilities/Common/Src/Parse/yyConstraint.y"
+{pParse->fdo_constraint_yyval.m_node=Node_Copy(L"double", pParse->fdo_constraint_yyvsp[0].m_node);}
 break;
 case 38:
-#line 373 "Src/Parse/yyConstraint.y"
-{pParse->fdo_constraint_yyval.m_node=Node_Copy(L"string", pParse->fdo_constraint_yyvsp[0].m_node);}
+#line 372 "Utilities/Common/Src/Parse/yyConstraint.y"
+{pParse->fdo_constraint_yyval.m_node=Node_Copy(L"integer", pParse->fdo_constraint_yyvsp[0].m_node);}
 break;
 case 39:
-#line 375 "Src/Parse/yyConstraint.y"
-{pParse->fdo_constraint_yyval.m_node=Node_Copy(L"TODO:BLOB", NULL);}
+#line 374 "Utilities/Common/Src/Parse/yyConstraint.y"
+{pParse->fdo_constraint_yyval.m_node=Node_Copy(L"string", pParse->fdo_constraint_yyvsp[0].m_node);}
 break;
 case 40:
-#line 377 "Src/Parse/yyConstraint.y"
-{pParse->fdo_constraint_yyval.m_node=Node_Copy(L"TODO:CLOB", NULL);}
+#line 376 "Utilities/Common/Src/Parse/yyConstraint.y"
+{pParse->fdo_constraint_yyval.m_node=Node_Copy(L"TODO:BLOB", NULL);}
 break;
 case 41:
-#line 379 "Src/Parse/yyConstraint.y"
-{pParse->fdo_constraint_yyval.m_node=Node_Add(L"NULL", FdoDataValue::Create(FdoDataType_Boolean));}
+#line 378 "Utilities/Common/Src/Parse/yyConstraint.y"
+{pParse->fdo_constraint_yyval.m_node=Node_Copy(L"TODO:CLOB", NULL);}
 break;
 case 42:
-#line 383 "Src/Parse/yyConstraint.y"
-{pParse->fdo_constraint_yyval.m_node=Node_Add(L"TRUE", FdoBooleanValue::Create(true));}
+#line 380 "Utilities/Common/Src/Parse/yyConstraint.y"
+{pParse->fdo_constraint_yyval.m_node=Node_Add(L"NULL", FdoDataValue::Create(FdoDataType_Boolean));}
 break;
 case 43:
-#line 384 "Src/Parse/yyConstraint.y"
-{pParse->fdo_constraint_yyval.m_node=Node_Add(L"FALSE", FdoBooleanValue::Create(false));}
+#line 384 "Utilities/Common/Src/Parse/yyConstraint.y"
+{pParse->fdo_constraint_yyval.m_node=Node_Add(L"TRUE", FdoBooleanValue::Create(true));}
 break;
 case 44:
-#line 387 "Src/Parse/yyConstraint.y"
-{pParse->fdo_constraint_yyval.m_node=Node_Add(L"STRING", FdoDataValue::Create(pParse->fdo_constraint_yyvsp[0].m_string));}
+#line 385 "Utilities/Common/Src/Parse/yyConstraint.y"
+{pParse->fdo_constraint_yyval.m_node=Node_Add(L"FALSE", FdoBooleanValue::Create(false));}
 break;
 case 45:
-#line 390 "Src/Parse/yyConstraint.y"
-{pParse->fdo_constraint_yyval.m_node=Node_Add(L"INTEGER", FdoInt32Value::Create(pParse->fdo_constraint_yyvsp[0].m_integer));}
+#line 388 "Utilities/Common/Src/Parse/yyConstraint.y"
+{pParse->fdo_constraint_yyval.m_node=Node_Add(L"STRING", FdoDataValue::Create(pParse->fdo_constraint_yyvsp[0].m_string));}
 break;
 case 46:
-#line 393 "Src/Parse/yyConstraint.y"
-{pParse->fdo_constraint_yyval.m_node=Node_Add(L"DOUBLE", FdoDoubleValue::Create(pParse->fdo_constraint_yyvsp[0].m_double));}
+#line 391 "Utilities/Common/Src/Parse/yyConstraint.y"
+{pParse->fdo_constraint_yyval.m_node=Node_Add(L"INTEGER", FdoInt32Value::Create(pParse->fdo_constraint_yyvsp[0].m_integer));}
 break;
 case 47:
-#line 396 "Src/Parse/yyConstraint.y"
-{pParse->fdo_constraint_yyval.m_node=Node_Add(L"DateTime", FdoDataValue::Create(pParse->fdo_constraint_yyvsp[0].m_datetime));}
+#line 394 "Utilities/Common/Src/Parse/yyConstraint.y"
+{pParse->fdo_constraint_yyval.m_node=Node_Add(L"DOUBLE", FdoDoubleValue::Create(pParse->fdo_constraint_yyvsp[0].m_double));}
 break;
 case 48:
-#line 401 "Src/Parse/yyConstraint.y"
-{pParse->fdo_constraint_yyval.m_node = Node_Add(L"IDENTIFIER", FdoIdentifier::Create(pParse->fdo_constraint_yyvsp[0].m_string));}
+#line 397 "Utilities/Common/Src/Parse/yyConstraint.y"
+{pParse->fdo_constraint_yyval.m_node=Node_Add(L"DateTime", FdoDataValue::Create(pParse->fdo_constraint_yyvsp[0].m_datetime));}
 break;
 case 49:
-#line 403 "Src/Parse/yyConstraint.y"
-{pParse->fdo_constraint_yyval.m_node = pParse->fdo_constraint_yyvsp[-1].m_node;}
+#line 402 "Utilities/Common/Src/Parse/yyConstraint.y"
+{pParse->fdo_constraint_yyval.m_node = Node_Add(L"IDENTIFIER", FdoIdentifier::Create(pParse->fdo_constraint_yyvsp[0].m_string));}
 break;
 case 50:
-#line 405 "Src/Parse/yyConstraint.y"
+#line 404 "Utilities/Common/Src/Parse/yyConstraint.y"
 {pParse->fdo_constraint_yyval.m_node = pParse->fdo_constraint_yyvsp[-1].m_node;}
 break;
-#line 931 "yyConstraint.cpp"
+case 51:
+#line 406 "Utilities/Common/Src/Parse/yyConstraint.y"
+{pParse->fdo_constraint_yyval.m_node = pParse->fdo_constraint_yyvsp[-1].m_node;}
+break;
+#line 938 "yyConstraint.cpp"
     }
     pParse->fdo_constraint_yyssp -= fdo_constraint_yym;
     fdo_constraint_yystate = *pParse->fdo_constraint_yyssp;
