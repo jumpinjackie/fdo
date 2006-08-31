@@ -359,7 +359,9 @@ DataValueCollection :
 	;
 
 DataValue :
-	  boolean			// e.g. TRUE or FALSE
+	'(' DataValue ')'
+						{$$ = $2;}
+	|  boolean			// e.g. TRUE or FALSE
  						{$$=Node_Copy(L"boolean", $1);}
 //	| byte
 	| datetime			{$$=Node_Copy(L"datetime", $1);}
@@ -376,7 +378,7 @@ DataValue :
 						{$$=Node_Copy(L"TODO:CLOB", NULL);}
 	| FdoToken_NULL		// e.g. null
 						{$$=Node_Add(L"NULL", FdoDataValue::Create(FdoDataType_Boolean));}
-	;
+ 	;
 
 boolean :
 	FdoToken_TRUE		{$$=Node_Add(L"TRUE", FdoBooleanValue::Create(true));}
