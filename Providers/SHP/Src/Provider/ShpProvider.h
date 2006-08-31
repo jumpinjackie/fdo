@@ -44,8 +44,6 @@ const wchar_t PRJ_EXTENSION[5] = L".prj";
 const wchar_t CPG_EXTENSION[5] = L".cpg";
 
 const wchar_t DEFAULT_SCHEMA_XML[11] = L"schema.xml";
-const wchar_t DEFAULT_SCHEMA_NAME[14] = L"Default";
-const wchar_t DEFAULT_SCHEMA_DESCRIPTION[16] = L"Default schema.";
 
 const wchar_t FEATID_PROPERTY[7] = L"FeatId";
 const wchar_t GEOMETRY_PROPERTY[9] = L"Geometry";

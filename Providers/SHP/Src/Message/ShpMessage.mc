@@ -367,6 +367,16 @@ SymbolicName=SHP_CANT_DELETE_NON_EMPTY_SCHEMA
 Language=English
 Can't delete schema '%1$ls' because class '%2$ls' contains data.
 .
+MessageId=4039
+SymbolicName=SHP_DEFAULT_SCHEMA_NAME
+Language=English
+Default
+.
+MessageId=4040
+SymbolicName=SHP_DEFAULT_SCHEMA_DESCRIPTION
+Language=English
+Default schema.
+.
 
 ;//************************************************************************************
 ;//************************************************************************************

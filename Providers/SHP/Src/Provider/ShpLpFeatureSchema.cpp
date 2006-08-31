@@ -124,12 +124,12 @@ void ShpLpFeatureSchema::ConvertPhysicalToLogical(
         configSchemaMapping->GetName() : 
         (NULL != configLogicalSchema) ?
             configLogicalSchema->GetName () :
-                DEFAULT_SCHEMA_NAME;
+                NlsMsgGet(SHP_DEFAULT_SCHEMA_NAME, "Default");
 
     FdoString * logicalSchemaDescription =
         (NULL != configLogicalSchema) ?
             configLogicalSchema->GetDescription () :
-                DEFAULT_SCHEMA_DESCRIPTION;
+                NlsMsgGet(SHP_DEFAULT_SCHEMA_DESCRIPTION, "Default schema.");
 
     m_logicalSchema = FdoFeatureSchema::Create(logicalSchemaName, logicalSchemaDescription);
 
