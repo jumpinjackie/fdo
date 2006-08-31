@@ -511,35 +511,46 @@ void FdoConstraintsTest::CreateConstraintsSchema( FdoIConnection* connection )
 
 void FdoConstraintsTest::TestParser()
 {
-	TestParser(L"([INTLIST] = 30 or ([INTLIST] = 20 or [INTLIST] = 10))");
-	TestParser(L"([INTRANGE] >= 10 and [INTRANGE] < 20))");
-	TestParser(L"([STRINGLIST] = 'close' or [STRINGLIST] = 'open')");
+	bool	success = true;
 
-	TestParser(L"(INTLIST = 30 or (INTLIST = 20 or INTLIST = 10))");
-	TestParser(L"(INTRANGE >= 10 and INTRANGE < 20))");
-	TestParser(L"(STRINGLIST = 'close' or STRINGLIST = 'open')");
+	success &= TestParser(L"([INTLIST] = (30) or [INTLIST] = (20) or [INTLIST] = (10))");
 
-	TestParser(L"INTLIST = 30 or INTLIST = 20 or INTLIST = 10)");
-	TestParser(L"INTRANGE >= 10 and INTRANGE < 20");
-	TestParser(L"STRINGLIST = 'close' or STRINGLIST = 'open'");
+	success &= TestParser(L"([INTLIST] = 30 or ([INTLIST] = 20 or [INTLIST] = 10))");
+	success &= TestParser(L"([INTRANGE] >= 10 and [INTRANGE] < 20))");
+	success &= TestParser(L"([STRINGLIST] = 'close' or [STRINGLIST] = 'open')");
 
+	success &= TestParser(L"(INTLIST = 30 or (INTLIST = 20 or INTLIST = 10))");
+	success &= TestParser(L"(INTRANGE >= 10 and INTRANGE < 20))");
+	success &= TestParser(L"(STRINGLIST = 'close' or STRINGLIST = 'open')");
+
+	success &= TestParser(L"INTLIST = 30 or INTLIST = 20 or INTLIST = 10)");
+	success &= TestParser(L"INTRANGE >= 10 and INTRANGE < 20");
+	success &= TestParser(L"STRINGLIST = 'close' or STRINGLIST = 'open'");
+
+	CPPUNIT_ASSERT_MESSAGE("Constraints parser failed", success == true );
 }
 
-void FdoConstraintsTest::TestParser(FdoString* clause)
+bool FdoConstraintsTest::TestParser(FdoString* clause)
 {
-	printf("'%ls'\n", clause );
+	bool			ret = false;
+	FdoCommonParse* parser = NULL;
+
+	DBG(printf("'%ls'\n", clause ));
 	try
 	{
-		FdoCommonParse* parser = new FdoCommonParse();
+		parser = new FdoCommonParse();
 
 		parser->ParseConstraint( clause );
 
 		delete parser;
+		ret = true;
 
 	} catch (FdoException *ex) {
-		printf("Parse failed: %ls\n", (FdoString* )ex->GetExceptionMessage());
+		delete parser;
+		DBG(printf("Parse failed: %ls\n", (FdoString* )ex->GetExceptionMessage()));
+		ex->Release();
 	}
-	printf("\n");
+	return ret;
 }
 
 
