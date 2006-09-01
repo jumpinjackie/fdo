@@ -206,6 +206,8 @@ public:
 
     FDO_API virtual bool CheckDeleteClass( FdoClassDefinition* classDef );
 
+    FDO_API virtual bool CheckAddProperty( FdoPropertyDefinition* prop );
+
     // The following functions represent each type of schema element modification.
     // Each returns true if the modification is allowed.
     //

@@ -597,7 +597,7 @@ void FdoClassDefinition::Set( FdoClassDefinition* pClass, FdoSchemaMergeContext*
                 );
             }
             else {
-                if ( (GetElementState() == FdoSchemaElementState_Added) || pContext->CanAddProperty(newProp) ) {
+                if ( (GetElementState() == FdoSchemaElementState_Added) || pContext->CheckAddProperty(newProp) ) {
                     // Adding property allowed. Create a copy property to add to this class.
                     FdoPropertyType propType = newProp->GetPropertyType();
                     if ( propType == FdoPropertyType_DataProperty )
@@ -632,19 +632,6 @@ void FdoClassDefinition::Set( FdoClassDefinition* pClass, FdoSchemaMergeContext*
                         // Set the copy property from the property to update from.
                         oldProp->Set(newProp, pContext);
                     }
-                }
-                else {
-                    // Adding properties not supported
-                    pContext->AddError( 
-                        FdoSchemaExceptionP(
-                            FdoSchemaException::Create(
-                                FdoException::NLSGetMessage(
-                                    FDO_NLSID(SCHEMA_124_ADDPROP),
-                                    (FdoString*) newProp->GetQualifiedName()
-                                )
-                            )
-                        )
-                    );
                 }
             }
             break;

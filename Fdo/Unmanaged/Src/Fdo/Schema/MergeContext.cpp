@@ -211,6 +211,51 @@ bool FdoSchemaMergeContext::CheckDeleteClass( FdoClassDefinition* classDef )
     return canDelete;
 }
 
+bool FdoSchemaMergeContext::CheckAddProperty( FdoPropertyDefinition* prop )
+{
+    bool canAdd = false;
+
+    if ( CanAddProperty(prop) ) {
+        canAdd = true;
+
+        if ( prop->GetPropertyType() == FdoPropertyType_DataProperty ) {
+            FdoDataPropertyDefinition* dataProp = (FdoDataPropertyDefinition*) prop;
+            FdoClassDefinition* classDef = (FdoClassDefinition*)(prop->GetParent());
+            
+            if ( (!dataProp->GetNullable()) && ClassHasObjects(classDef) ) {
+                // Can't add not-null property if class has objects.
+                AddError( 
+                    FdoSchemaExceptionP(
+                        FdoSchemaException::Create(
+                            FdoException::NLSGetMessage(
+                            FDO_NLSID(SCHEMA_144_ADDPROPOBJECTS),
+                                (FdoString*) prop->GetQualifiedName()
+                            )
+                        )
+                    )
+                );
+
+                canAdd = false;
+            }
+        }
+    }
+    else {
+        // Adding properties not supported
+        AddError( 
+            FdoSchemaExceptionP(
+                FdoSchemaException::Create(
+                    FdoException::NLSGetMessage(
+                        FDO_NLSID(SCHEMA_124_ADDPROP),
+                        (FdoString*) prop->GetQualifiedName()
+                    )
+                )
+            )
+        );
+    }
+
+    return canAdd;
+}
+
 bool FdoSchemaMergeContext::CanModElementDescription( FdoSchemaElement* element )
 {
     return mDefaultCapability;
