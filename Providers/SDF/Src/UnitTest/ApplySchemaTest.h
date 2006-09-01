@@ -34,8 +34,8 @@
 class ApplySchemaTest : public CppUnit::TestCase
 {
   CPPUNIT_TEST_SUITE( ApplySchemaTest );
-// Test temporarily removed until schema modification issues can be resolved.
-//  CPPUNIT_TEST( TestSchema );
+  CPPUNIT_TEST( TestSchema );
+  CPPUNIT_TEST( TestDelete );
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -46,6 +46,7 @@ public:
 protected:
 
     void TestSchema ();
+    void TestDelete ();
 
 	void CreateAcadSchema( FdoIConnection* connection );
 	void CreateElectricSchema( FdoIConnection* connection );
@@ -53,6 +54,7 @@ protected:
     void CreateLandSchema( FdoFeatureSchemaCollection* pSchemas );
 	void CreateLongStringSchema( FdoIConnection* connection );
 	void CreateErrorSchema( FdoIConnection* connection );
+	void CreateDlteSchema( FdoIConnection* connection );
 
 	void DeleteAcadSchema( FdoIConnection* connection );
 
@@ -68,7 +70,9 @@ protected:
 	void ModDelSchemas( FdoIConnection* connection );
     void ModDelElectricSchema( FdoFeatureSchemaCollection* pSchemas );
     void ModDelAcadSchema( FdoFeatureSchemaCollection* pSchemas );
-	void ReAddElements( FdoIConnection* connection );
+	void ModDlteSchema( FdoIConnection* connection );
+
+    void ReAddElements( FdoIConnection* connection );
 	void ModErrors( FdoIConnection* connection );
 	void ModErrors2( FdoIConnection* connection );
 /*
@@ -79,6 +83,13 @@ protected:
         FdoFeatureSchemaCollection* pSchemas,
         FdoFeatureSchemaCollection* pSchemas2
     );
+
+	void CreateDlteData( FdoIConnection* connection );
+	void VldDlteSchema( FdoIConnection* connection );
+
+    void CreateClassGroup( FdoFeatureSchema* pSchema, FdoInt32 idx );
+    void DeleteDlteClass( FdoIConnection* connection, FdoFeatureSchema* pSchema, FdoInt32 idx );
+
 };
 
 #endif

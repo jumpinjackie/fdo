@@ -396,7 +396,7 @@ Too many errors; Only 1st %1$d listed
 MessageId=81
 SymbolicName=SDFPROVIDER_81_DROP_TABLE
 Language=English
-Failed to drop %1$ls table
+Failed to drop %1$ls table '%2$ls'
 .
 MessageId=82
 SymbolicName=SDFPROVIDER_82_UTF8_FROM_UNICODE
@@ -412,4 +412,29 @@ MessageId=84
 SymbolicName=SDFPROVIDER_84_INVALID_CONNECTION_PROPERTY_NAME
 Language=English
 Invalid connection property name '%1$ls'
+.
+MessageId=85
+SymbolicName=SDFPROVIDER_85_NLS_PRE32
+Language=English
+Cannot modify schema; SDF file version is older than 3.2 and it contains classes with non-ASCII7 names. File is possibly corrupt
+.
+MessageId=86
+SymbolicName=SDFPROVIDER_86_WRITE_TABLE
+Language=English
+An error occurred writing to table '%1$ls'
+.
+MessageId=87
+SymbolicName=SDFPROVIDER_87_OPEN_CURSOR
+Language=English
+An error occurred opening cursor for table '%1$ls'
+.
+MessageId=88
+SymbolicName=SDFPROVIDER_88_ACCESS_CURSOR
+Language=English
+An error occurred opening cursor for table '%1$ls'
+.
+MessageId=89
+SymbolicName=SDFPROVIDER_89_OPEN_TABLE
+Language=English
+Failed to open table '%1$ls'
 .

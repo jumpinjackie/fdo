@@ -18,6 +18,7 @@
 #define SDF_SCHEMA_MERGECONTEXT_H
 
 #include "SdfExtHashMap.h"
+#include "TableReformatter.h"
 
 class SdfConnection;
 
@@ -37,15 +38,26 @@ public:
 
     virtual bool CanAddClass( FdoClassDefinition* classDef );
     virtual bool CanDeleteClass( FdoClassDefinition* classDef );
+    virtual bool CanAddProperty( FdoPropertyDefinition* prop );
 
     // Performs the schema merge
     //
     void Merge();
 
     // Handles class data updates that must be done before schema updates
-    void PreUpdatePhysical();
-    // Handles class data updates that must be done after schema updates
+    // PreAcceptChanges must be called before element states on merged
+    // schemas are cleared. It gathers lists of tables that need updating 
+    // or dropping.
+    void PreAcceptChanges();
+    // PreAcceptChanges must be called after element states on merged schemas
+    // are cleared (classes marked for delete are removed). It peforms reformatting
+    // on tables identified by PreUpdatePhysical1.
+    void PostAcceptChanges();
+    // Handles class data updates that must be done after schema updates. Deletes 
+    // tables for classes that were deleted.
     void PostUpdatePhysical();
+    // Rolls back changes made by PostAcceptChanges
+    void RollbackPhysical();
 
 protected:
     SdfSchemaMergeContext() {}
@@ -58,11 +70,15 @@ protected:
     virtual ~SdfSchemaMergeContext();
 
 private:
+    void ReformatTables( bool rollback = false );
+
     SdfConnection* mSdfConnection;
 
     stdext::hash_map<void*, void*> m_hDelRTrees;    
     stdext::hash_map<void*, void*> m_hDelDataDbs;
     stdext::hash_map<void*, void*> m_hDelKeyDbs;
+
+    TableReformattersP mTableReformatters;
 };
 
 /// \brief

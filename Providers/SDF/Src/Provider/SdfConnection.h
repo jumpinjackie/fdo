@@ -173,6 +173,7 @@ public:
     FdoConnectionState Open( SdfCompareHandler* cmpHandler );
 
     DataDb* CreateNewDataDb( FdoClassDefinition* clas );
+    DataDb* CreateNewDataDb( FdoClassDefinition* clas, FdoString* dbName, PropertyIndex* pi );
 
     // Creates a context for merging a schema, passed to the ApplySchema command,
     // into the current schemas.
@@ -190,14 +191,6 @@ private:
     void DestroyDatabases();
 
     void RegenIndex( FdoClassDefinition *clas, KeyDb* keys, DataDb  *dataDb );
-
-    // Converts a name from wide char to char. The char format depends on the SDF file version:
-    //      pre-3.2 - multibyte (for backward compatibility)
-    //      3.2 and after - UTF8.
-    //
-    // In 3.2, the switch to UTF8 was made because it is locale-independent. Conversions to 
-    // multibyte fail when the current locale does not include all the characters to convert.
-    void NameFromWcs( char* charName, size_t charCount, const wchar_t* wcsName, size_t wcsCount );
 
     SQLiteDataBase* m_env;
     

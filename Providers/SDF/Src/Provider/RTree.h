@@ -17,6 +17,7 @@
 #define RTREE_H
 
 #include "RTreeInfrastructure.h"
+#include "PhysName.h"
 
 //search callback function prototype
 typedef bool (*SearchHitCallback)(REC_NO featureKey, bool contained, void* arg);
@@ -32,7 +33,7 @@ class SdfRTree
 {
 public:
 
-    SdfRTree(SQLiteDataBase* env, const char* filename, const char* database, bool bReadOnly); 
+    SdfRTree(SQLiteDataBase* env, const char* filename, FdoString* database, bool bIsUTF8, bool bReadOnly); 
 
     ~SdfRTree();
 
@@ -80,6 +81,9 @@ private:
     /*static*/ void ReInsert(Node& n, ListNode** ee);
 
     void DisconnectBranch(Node& n, int i);
+
+    // name of rtree table.
+    PhysName m_dbname;
 
     // root node and database pointers
     SQLiteTable* m_db;

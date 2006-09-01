@@ -40,9 +40,10 @@ static FdoDataPropertyDefinitionCollection* FindIDs(FdoClassDefinition* fc)
     return (FDO_SAFE_ADDREF (idpdc.p));
 }
 
-DataDb::DataDb(SQLiteDataBase* env, const char* filename, const char* dbname, bool bReadOnly, 
+DataDb::DataDb(SQLiteDataBase* env, const char* filename, FdoString* dbname, bool bIsUTF8, bool bReadOnly, 
 			   FdoClassDefinition* fc, PropertyIndex* pi, SdfCompareHandler* cmpHandler)
-: m_wrtData(256),m_lastRec( 0 ),m_Fc(fc), m_Pi(pi)
+: m_wrtData(256),m_lastRec( 0 ),m_Fc(fc), m_Pi(pi), m_dbname( L"DATA:", dbname, bIsUTF8 ) 
+
 {
     m_db = new SQLiteTable(env);
 
@@ -62,7 +63,7 @@ DataDb::DataDb(SQLiteDataBase* env, const char* filename, const char* dbname, bo
 		m_Ids = FindIDs( fc );
 
     //try to open a database that already exists
-    if (res = m_db->open(0, filename, dbname, readOnlyFlag, 0,(cmpHandler!= NULL) ) != 0)
+    if (res = m_db->open(0, filename, (const char*) m_dbname, readOnlyFlag, 0,(cmpHandler!= NULL) ) != 0)
     {
         //must close even if open failed
         m_db->close(0);
@@ -75,7 +76,7 @@ DataDb::DataDb(SQLiteDataBase* env, const char* filename, const char* dbname, bo
             throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_4_CONNECTION_IS_READONLY)));
 
         //if that fails, create one
-        if (res = m_db->open(0, filename, dbname, SQLiteDB_CREATE, 0, (cmpHandler!= NULL) ) != 0)
+        if (res = m_db->open(0, filename, (const char*) m_dbname, SQLiteDB_CREATE, 0, (cmpHandler!= NULL) ) != 0)
         {
             //printf("%s\n", env->strerror(res));
             throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_10_ERROR_ACCESSING_SDFDB)));
@@ -456,10 +457,16 @@ void DataDb::Drop()
         throw FdoException::Create(
             NlsMsgGetMain(
                 FDO_NLSID(SDFPROVIDER_81_DROP_TABLE),
-                L"Data"
+                L"Data",
+                (FdoString*) m_dbname
             )
         );
     }
+}
+
+FdoString* DataDb::GetDbName()
+{
+    return (FdoString*) m_dbname;
 }
 
 int DataDb::compare(int size1,const void* data1,int size2,const void* data2)

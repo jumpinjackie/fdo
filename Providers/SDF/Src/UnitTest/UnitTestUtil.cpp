@@ -315,7 +315,7 @@ the_exit:
     return( retcode );
 }
 
-void UnitTestUtil::InsertObject( FdoIConnection* connection, FdoStringP schemaName, FdoString* className, ... )
+FdoPtr<FdoIInsert>  UnitTestUtil::InsertObject( FdoIConnection* connection, FdoPtr<FdoIInsert> insertCmd, FdoStringP schemaName, FdoString* className, ... )
 {
     va_list arguments;
     FdoString* arg;
@@ -324,7 +324,11 @@ void UnitTestUtil::InsertObject( FdoIConnection* connection, FdoStringP schemaNa
 
     arg = va_arg(arguments,FdoString*);
 
-    FdoPtr<FdoIInsert> insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
+    FdoPtr<FdoIInsert> insertCommand = insertCmd;
+    
+    if ( !insertCommand )
+        insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
+
     FdoPtr<FdoPropertyValueCollection> propertyValues;
     FdoPtr<FdoDataValue> dataValue;
     FdoPtr<FdoPropertyValue> propertyValue;
@@ -347,6 +351,8 @@ void UnitTestUtil::InsertObject( FdoIConnection* connection, FdoStringP schemaNa
 	insertCommand->Execute();
 
     va_end(arguments);
+
+    return insertCommand;
 }
 
 void UnitTestUtil::DeleteObjects( FdoIConnection* connection, FdoStringP schemaName, FdoStringP className )

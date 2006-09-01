@@ -30,7 +30,8 @@ int LEAFCARD = MAXCARD;
 #define MINFILL(n) ((n).level > 0 ? MinNodeFill : MinLeafFill)
 
 
-SdfRTree::SdfRTree(SQLiteDataBase* env, const char* filename, const char* database, bool bReadOnly)
+SdfRTree::SdfRTree(SQLiteDataBase* env, const char* filename, FdoString* database, bool bIsUTF8, bool bReadOnly) :
+    m_dbname( L"RTREE:", database, bIsUTF8 ) 
 {
     SQLiteTable* db = new SQLiteTable(env);
 
@@ -40,7 +41,7 @@ SdfRTree::SdfRTree(SQLiteDataBase* env, const char* filename, const char* databa
     int readOnlyFlag = bReadOnly ? SQLiteDB_RDONLY : 0;
 
     //open or create database in the given file with record # access type
-    if (res = db->open(0, filename, database, readOnlyFlag, 0) != 0)
+    if (res = db->open(0, filename, (const char*) m_dbname, readOnlyFlag, 0) != 0)
     {
         //must close even if open failed
         db->close(0);
@@ -51,7 +52,7 @@ SdfRTree::SdfRTree(SQLiteDataBase* env, const char* filename, const char* databa
 
         db = new SQLiteTable(env);
 
-        if (res = db->open(0, filename, database, SQLiteDB_CREATE, 0) != 0)
+        if (res = db->open(0, filename, (const char*) m_dbname, SQLiteDB_CREATE, 0) != 0)
             throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_10_ERROR_ACCESSING_SDFDB)));
         else
         {
@@ -1038,9 +1039,9 @@ void SdfRTree::Drop()
         throw FdoException::Create(
             NlsMsgGetMain(
                 FDO_NLSID(SDFPROVIDER_81_DROP_TABLE),
-                L"RTree"
+                L"RTree",
+                (FdoString*) m_dbname
             )
         );
     }
 }
-

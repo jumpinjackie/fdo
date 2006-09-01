@@ -654,29 +654,18 @@ void SdfConnection::InitDatabases()
         //will be based on the base class
         FdoClassDefinition* baseClass = pi->GetBaseClass();
         FdoString* classname = baseClass->GetName();
-        size_t namelen = wcslen(classname);
-
-        //generate a string of the form "DATA:<class name>"
-        char* physname = new char[(namelen*6) + 1 ];
-        char* fullphysname = new char[(namelen*6) + 1 + 6 ];
-
-        NameFromWcs(physname, namelen * 6, classname, namelen );
-        strcpy(fullphysname, "DATA:"); 
-        strcpy(fullphysname+5, physname);
+        bool isUTF8 = m_dbSchema->IsPhysNameUTF8();
 
         //Open or create the Data DB and insert into hash map
         //child classes share the same DB as the parent class
         if (baseClass != clas)
             m_hDataDbs[clas.p] = m_hDataDbs[baseClass];
         else
-            m_hDataDbs[clas.p] = new DataDb(m_env, m_mbsFullPath, fullphysname, m_bReadOnly, clas, pi, m_CompareHandler );
+            m_hDataDbs[clas.p] = new DataDb(m_env, m_mbsFullPath, classname, isUTF8, m_bReadOnly, clas, pi, m_CompareHandler );
 
 
         //now initialize a KeyDb for the class
         //generate a string of the form "KEY:<class name>"
-        strcpy(fullphysname, "KEY:"); 
-        strcpy(fullphysname+4, physname);
-
         if (baseClass != clas)
             m_hKeyDbs[clas.p] = m_hKeyDbs[baseClass];
         else
@@ -698,7 +687,7 @@ void SdfConnection::InitDatabases()
                 // ignore exception
                 exp->Release();
             }
-            m_hKeyDbs[clas.p] = new KeyDb(m_env, m_mbsFullPath, fullphysname, m_bReadOnly, bNoIntKey);
+            m_hKeyDbs[clas.p] = new KeyDb(m_env, m_mbsFullPath, classname, isUTF8, m_bReadOnly, bNoIntKey);
         }
 
 
@@ -708,8 +697,6 @@ void SdfConnection::InitDatabases()
         if (!pi->GetBaseFeatureClass())
         {
             m_hRTrees[clas.p] = 0;
-            delete [] physname;
-            delete [] fullphysname;
             continue;
         }
         else
@@ -720,19 +707,12 @@ void SdfConnection::InitDatabases()
             //it is formed as follows:
             // RTREE:<name of class>
 
-            strcpy(fullphysname, "RTREE:"); 
-            strcpy(fullphysname+6, physname);
-
             //Open or create the RTree DB and insert into hash map
             if (baseFeatureClass != clas)
                 m_hRTrees[clas.p] = m_hRTrees[baseClass];
             else
-                m_hRTrees[clas.p] = new SdfRTree(m_env, m_mbsFullPath, fullphysname, m_bReadOnly);
+                m_hRTrees[clas.p] = new SdfRTree(m_env, m_mbsFullPath, classname, isUTF8, m_bReadOnly);
         }
-
-        delete [] physname;
-        delete [] fullphysname;
-
     }
 }
 
@@ -999,20 +979,16 @@ DataDb* SdfConnection::CreateNewDataDb( FdoClassDefinition* clas )
     FdoClassDefinition* baseClass = pi->GetBaseClass();
     FdoString* classname = baseClass->GetName();
 
-    size_t namelen = wcslen(classname);
-    char* physname = new char[(namelen*6) + 1 ];
-    char* fullphysname = new char[(namelen*6) + 1 + 6 ];
+	DataDb *db = CreateNewDataDb( clas, classname, pi );
 
-    //generate a string of the form "DATA:<class name>"
-    NameFromWcs(physname, namelen * 6, classname, namelen );
-    strcpy(fullphysname, "DATA:"); 
-    strcpy(fullphysname+5, physname);
+	return db;
+}
 
+DataDb* SdfConnection::CreateNewDataDb( FdoClassDefinition* clas, FdoString* dbName, PropertyIndex* pi )
+{
+    bool isUTF8 = m_dbSchema->IsPhysNameUTF8();
 
-    DataDb *db = new DataDb(m_env, m_mbsFullPath, fullphysname, true, clas, pi, NULL );
-
-    delete[] physname;
-    delete[] fullphysname;
+	DataDb *db = new DataDb(m_env, m_mbsFullPath, dbName, isUTF8, true, clas, pi, NULL );
 
     return db;
 }
@@ -1026,31 +1002,3 @@ SdfSchemaMergeContext* SdfConnection::CreateMergeContext(
     return SdfSchemaMergeContext::Create( this, oldSchemas, newSchema, ignoreStates );
 }
 
-void SdfConnection::NameFromWcs(char* charName, size_t charCount, const wchar_t* wcsName, size_t wcsCount)
-{
-    unsigned char major, minor;
-
-    GetSchemaDb()->GetSchemaVersion( major, minor );
-
-    if ( (major == SDFPROVIDER_VERSION_MAJOR_3) &&
-         (minor == SDFPROVIDER_VERSION_MINOR_3_0 || minor == SDFPROVIDER_VERSION_MINOR_3_1 )
-    ) {
-        // For pre 3.2 files, need to convert name to multibyte
-        wcstombs(charName, wcsName, charCount );
-    }
-    else 
-    {
-        // For 3.2 files, convert to safer UTF8 format, which is locale-independent.
-        // A UTF8 character can have values between 0x80 and 0xff. The converted name
-        // ends up being used as a SQLite table name.
-        // It has been verified that SQLite allows table names with characters in 
-        // the 0x80 to 0xff range.
-        if ( ut_utf8_from_unicode(wcsName, wcsCount, charName, (int)charCount) == -1 )
-            throw FdoConnectionException::Create(
-                NlsMsgGetMain(
-                    FDO_NLSID(SDFPROVIDER_82_UTF8_FROM_UNICODE),
-                    wcsName
-                )
-            );
-    }
-}

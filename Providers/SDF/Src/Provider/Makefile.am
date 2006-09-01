@@ -11,7 +11,9 @@ libSDFProviderSrc_la_SOURCES = \
   DataDb.cpp \
   DataIO.cpp \
   KeyDb.cpp \
+  PhysName.cpp \
   SchemaDb.cpp \
+ TableReformatter.cpp \
   utf8_.cpp \
   SdfApplySchema.cpp \
   SdfCommandCapabilities.cpp \
@@ -57,10 +59,12 @@ noinst_HEADERS = $(libSDFProviderSrc_la_SOURCES) \
    DataDb.h \
    DataIO.h \
    KeyDb.h \
+   PhysName.h \
    resource.h \
    RTree.h \
    RTreeInfrastructure.h \
    SchemaDb.h \
+   TableReformatter.h \
    SDF.h \
    SdfApplySchema.h \
    SdfCollection.h \

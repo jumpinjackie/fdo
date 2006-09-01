@@ -54,14 +54,30 @@ public:
 
 	void CloseCursor();
 
+    // returns true if table names are class names in UTF8 format.
+    // returns false if table names in multibyte format
+    bool IsPhysNameUTF8();
+
+    // Returns true if table name for the given class name needs to be in UTF8 format
+    // (if the class name contains a non-ASCII7 character).
+    bool NeedsUTF8( FdoString* name );
+
+    // Check if file version needs to be upgraded to 3.2. Does the upgrade if needed.
+    void UTF8Upgrade( FdoFeatureSchema* oldSchema, FdoFeatureSchema* newSchema );
+
+
 private:
     // Update the old schemas based on the new Schema and ignoreStates setting.
     SdfSchemaMergeContextP MergeSchema(SdfISchemaMergeContextFactory* mergeFactory, FdoFeatureSchemaP oldSchema, FdoFeatureSchemaP newSchema, bool ignoreStates);
     
     // Handles class data updates that must be done before schema updates
-    void PreUpdatePhysical( SdfSchemaMergeContextP mergeContext );
+    void PreAcceptChanges( SdfSchemaMergeContextP mergeContext );
+    void PostAcceptChanges( SdfSchemaMergeContextP mergeContext );
     // Handles class data updates that must be done after schema updates
     void PostUpdatePhysical( SdfSchemaMergeContextP mergeContext );
+
+    // Rolls back changes made by PreUpdatePhysical2
+    void RollbackPhysical( SdfSchemaMergeContextP mergeContext );
 
     void ReadFeatureClass(REC_NO classRecno, FdoFeatureSchema* schema);
     void ReadGeometricPropertyDefinition(BinaryReader& rdr, FdoPropertyDefinitionCollection* pdc);
@@ -79,7 +95,6 @@ private:
     void WriteObjectPropertyDefinition(BinaryWriter& wrt, FdoObjectPropertyDefinition* dpd);
 	void WriteAssociationPropertyDefinition(BinaryWriter& wrt, FdoAssociationPropertyDefinition* apd);
     void WriteDataValue(BinaryWriter& wrt, FdoDataValue* dataValue);
-
 
 private:
     SQLiteTable* m_db;

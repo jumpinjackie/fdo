@@ -13,7 +13,11 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+#ifndef SDF_KEYDB_H
+#define SDF_KEYDB_H
+
 #include "BinaryWriter.h"
+#include "PhysName.h"
 
 class PropertyIndex;
 
@@ -21,7 +25,7 @@ class KeyDb
 {
 public:
 
-    KeyDb(SQLiteDataBase* env, const char* filename, const char* dbname, bool bReadOnly, bool useIntKey);
+    KeyDb(SQLiteDataBase* env, const char* filename, FdoString* dbname, bool bIsUTF8, bool bReadOnly, bool useIntKey);
     virtual ~KeyDb();
     
     void InsertKey(SQLiteData* key, REC_NO recno);
@@ -50,10 +54,13 @@ public:
 
 private:
 
+    PhysName m_dbname;
+
     SQLiteTable* m_db;
 
 	bool		 m_IndexNeedsRegen;
 
 };
 
+#endif
 

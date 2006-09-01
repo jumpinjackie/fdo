@@ -438,6 +438,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\PhysName.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PhysName.h"
+				>
+			</File>
+			<File
 				RelativePath=".\SchemaDb.cpp"
 				>
 			</File>
@@ -451,6 +459,14 @@
 			</File>
 			<File
 				RelativePath=".\SdfSchemaMergeContext.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TableReformatter.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\TableReformatter.h"
 				>
 			</File>
 			<File

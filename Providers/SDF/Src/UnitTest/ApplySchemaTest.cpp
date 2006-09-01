@@ -36,11 +36,15 @@ CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( ApplySchemaTest, "ApplySchemaTest");
 #ifdef _WIN32
 static const wchar_t* APPLY_SCHEMA_TEST_FILE = L"..\\..\\TestData\\ApplySchemaTest.SDX";
 static const wchar_t* APPLY_SCHEMA_COPY_FILE = L"..\\..\\TestData\\ApplySchemaCopy.SDX";
+static const wchar_t* APPLY_SCHEMA_DEL_FILE = L"..\\..\\TestData\\ApplySchemaDelete.SDX";
 #else
 #include <unistd.h>
 static const wchar_t* APPLY_SCHEMA_TEST_FILE = L"../../TestData/ApplySchemaTest.SDX";
 static const wchar_t* APPLY_SCHEMA_COPY_FILE = L"../../TestData/ApplySchemaCopy.SDX";
+static const wchar_t* APPLY_SCHEMA_DEL_FILE = L"../../TestData/ApplySchemaDelete.SDX";
 #endif
+
+static const FdoInt32 DLTE_CLASS_COUNT = 20;
 
 
 ApplySchemaTest::ApplySchemaTest(void)
@@ -227,6 +231,44 @@ void ApplySchemaTest::TestSchema ()
 	printf( "Done\n" );
 }
 
+void ApplySchemaTest::TestDelete ()
+{
+	FdoPtr<FdoIConnection> connection;
+
+    try {
+		// delete, re-create and open the datastore
+		printf( "Initializing Connection ... \n" );
+		connection = UnitTestUtil::OpenConnection( APPLY_SCHEMA_DEL_FILE, true );
+
+        printf( "Creating Schema ... \n" );
+		CreateDlteSchema( connection );
+
+        printf( "Adding Features ... \n" );
+        CreateDlteData( connection );
+
+        printf( "Deleting Classes ... \n" );
+        ModDlteSchema( connection );
+
+        printf( "Verifying Results ... \n" );
+        VldDlteSchema( connection );
+
+    }
+	catch ( FdoException* e ) 
+	{
+		UnitTestUtil::FailOnException( e );
+	}
+	catch ( CppUnit::Exception e ) 
+	{
+		throw;
+	}
+   	catch (...)
+   	{
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+		
+	printf( "Done\n" );
+}
+
 void ApplySchemaTest::CreateAcadSchema( FdoIConnection* connection )
 {
 	FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
@@ -307,7 +349,7 @@ void ApplySchemaTest::CreateAcadSchema( FdoIConnection* connection )
 
   	// Insert a row with null colour. Subsequent removal of colour property should succeed.
 
-    UnitTestUtil::InsertObject( connection, L"Acad", L"AcDbEntity", L"Layer", L"default", NULL );
+    UnitTestUtil::InsertObject( connection, (FdoIInsert*) NULL, L"Acad", L"AcDbEntity", L"Layer", L"default", NULL );
 }
 
 void ApplySchemaTest::CreateElectricSchema( FdoIConnection* connection )
@@ -471,8 +513,8 @@ void ApplySchemaTest::CreateLandSchema( FdoIConnection* connection )
 	// Test GetFeatureSchema
     CPPUNIT_ASSERT(wcscmp(FdoFeatureSchemaP(pCmd->GetFeatureSchema())->GetName(), L"Land") == 0);
 
-//    InsertObject(connection, L"Land", L"1-8 School", L"# Rooms", L"20", NULL );
-//    InsertObject(connection, L"Land", L"Driveway", L"Pav'd", L"1", NULL );
+//    InsertObject(connection, (FdoIInsert*) NULL, L"Land", L"1-8 School", L"# Rooms", L"20", NULL );
+//    InsertObject(connection, (FdoIInsert*) NULL, L"Land", L"Driveway", L"Pav'd", L"1", NULL );
 //	UnitTestUtil::Sql2Db( L"insert into parcel_person ( first_name, last_name, parcel_province, parcel_pin ) values ( 'Fraser', 'Simon', 'Ontario', '1234-5678' )", connection );
 }
 
@@ -913,6 +955,21 @@ void ApplySchemaTest::CreateErrorSchema( FdoIConnection* connection )
 
 	CPPUNIT_ASSERT( !succeeded );
 
+}
+
+void ApplySchemaTest::CreateDlteSchema( FdoIConnection* connection )
+{
+	FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
+
+	FdoPtr<FdoFeatureSchema> pSchema = FdoFeatureSchema::Create( L"Dlte", L"Delete test schema" );
+
+    FdoInt32 idx;
+
+    for ( idx = 0; idx < DLTE_CLASS_COUNT; idx++ )
+        CreateClassGroup( pSchema, idx );
+
+	pCmd->SetFeatureSchema( pSchema );
+	pCmd->Execute();
 }
 
 void ApplySchemaTest::DeleteAcadSchema( FdoIConnection* connection )
@@ -1606,7 +1663,7 @@ void ApplySchemaTest::ModErrors( FdoIConnection* connection )
     pClass->Delete();
 
     // Has Base Class
-    UnitTestUtil::InsertObject( connection, L"Electric'l", L"Conductor", L"underground", L"0", NULL );
+    UnitTestUtil::InsertObject( connection, (FdoIInsert*) NULL, L"Electric'l", L"Conductor", L"underground", L"0", NULL );
 	pClass = (FdoFeatureClass*) FdoClassesP(pSchema->GetClasses())->GetItem( L"Conductor" );
 	pClass->Delete();
 
@@ -1788,6 +1845,29 @@ void ApplySchemaTest::ModErrors2( FdoIConnection* connection )
 	if ( succeeded ) 
 		CPPUNIT_FAIL( "Invalid modifications were supposed to fail" );
 }
+
+void ApplySchemaTest::ModDlteSchema( FdoIConnection* connection )
+{
+	/* Test some more modifications plus deletions. */
+
+	FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
+	FdoFeatureSchemasP pSchemas = pDescCmd->Execute();
+	FdoFeatureSchemaP pSchema = pSchemas->GetItem( L"Dlte" );
+
+	FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
+
+
+    DeleteDlteClass( connection, pSchema, 4 );
+    DeleteDlteClass( connection, pSchema, 5 );
+    DeleteDlteClass( connection, pSchema, 11 );
+    DeleteDlteClass( connection, pSchema, 15 );
+    DeleteDlteClass( connection, pSchema, 17 );
+
+	pCmd->SetFeatureSchema( pSchema );
+	pCmd->Execute();
+}
+
+
 #if 0
 void ApplySchemaTest::GetClassCapabilities( FdoIConnection* connection )
 {
@@ -2007,3 +2087,80 @@ void ApplySchemaTest::VldClassCapabilities( int ltMode, int lckMode, FdoClassDef
 }
 
 #endif
+
+void ApplySchemaTest::CreateDlteData( FdoIConnection* connection )
+{
+    FdoInt32 idx1, idx2;
+    FdoPtr<FdoIInsert> insertCmd;
+
+    for ( idx1 = 0; idx1 < DLTE_CLASS_COUNT; idx1++ ) {
+        for ( idx2 = 0; idx2 < (idx1 * 5); idx2++ ) {
+            FdoStringP className = FdoStringP::Format( L"FeatClass%d", idx1 );
+            FdoStringP stringAVal = FdoStringP::Format( L"StringPropA%d_%d", idx1, idx2 );
+
+            insertCmd = UnitTestUtil::InsertObject( connection, insertCmd, L"Dlte", className, L"StringPropA", (FdoString*) stringAVal, NULL );
+        }
+    }
+}
+
+void ApplySchemaTest::VldDlteSchema( FdoIConnection* connection )
+{
+    FdoInt32 idx;
+
+    for ( idx = 0; idx < DLTE_CLASS_COUNT; idx++ ) {
+        if ( (idx != 4) && (idx != 5) && (idx != 11) && (idx != 15) && (idx != 17) ) {
+            FdoStringP className = FdoStringP::Format( L"Acad:FeatClass%d", idx );
+
+            FdoPtr<FdoISelect> select = (FdoISelect*)connection->CreateCommand(FdoCommandType_Select); 
+            select->SetFeatureClassName(className);
+            FdoPtr<FdoIFeatureReader> rdr = select->Execute();
+            FdoInt32 rowCount = 0;
+            while( rdr->ReadNext() ) 
+                rowCount++;
+
+            CPPUNIT_ASSERT( rowCount == (idx * 5) );
+        }
+    }
+}
+
+void ApplySchemaTest::CreateClassGroup( FdoFeatureSchema* pSchema, FdoInt32 idx )
+{
+    FdoClassesP classes = pSchema->GetClasses();
+    FdoStringP className = FdoStringP::Format( L"FeatClass%d", idx );
+
+	FdoPtr<FdoFeatureClass> pFeatClass = FdoFeatureClass::Create( className, L"" );
+	pFeatClass->SetIsAbstract(false);
+
+	FdoDataPropertyP pProp = FdoDataPropertyDefinition::Create( L"FeatId", L"id" );
+	pProp->SetDataType( FdoDataType_Int32 );
+	pProp->SetNullable(false);
+    pProp->SetIsAutoGenerated(true);
+	FdoPropertiesP(pFeatClass->GetProperties())->Add( pProp );
+	FdoDataPropertiesP(pFeatClass->GetIdentityProperties())->Add( pProp );
+
+	FdoPtr<FdoGeometricPropertyDefinition> pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"location and shape" );
+	pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve );
+	pGeomProp->SetHasElevation(true);
+    FdoPropertiesP(pFeatClass->GetProperties())->Add( pGeomProp );
+	pFeatClass->SetGeometryProperty( pGeomProp );
+
+    pProp = FdoDataPropertyDefinition::Create( L"StringPropA", L"" );
+	pProp->SetDataType( FdoDataType_String );
+	pProp->SetLength(50);
+	pProp->SetNullable(true);
+	FdoPropertiesP(pFeatClass->GetProperties())->Add( pProp );
+
+	classes->Add( pFeatClass );
+}
+
+void ApplySchemaTest::DeleteDlteClass( FdoIConnection* connection, FdoFeatureSchema* pSchema, FdoInt32 idx )
+{
+    FdoClassesP classes = pSchema->GetClasses();
+    FdoStringP className = FdoStringP::Format( L"FeatClass%d", idx );
+
+    UnitTestUtil::DeleteObjects( connection, L"Dlte", className );
+
+	FdoPtr<FdoClassDefinition> pFeatClass = classes->GetItem( className );
+	pFeatClass->Delete();
+}
+

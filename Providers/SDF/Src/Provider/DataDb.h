@@ -13,9 +13,13 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+#ifndef SDF_DATADB_H
+#define SDF_DATADB_H
+
 #include "BinaryWriter.h"
 #include "SDF/SdfCompareHandler.h"
 #include "BinaryReader.h"
+#include "PhysName.h"
 
 class PropertyIndex;
 
@@ -24,7 +28,7 @@ class DataDb: public SQLiteBTreeCompareHandler
 {
 public:
 
-    DataDb(SQLiteDataBase* env, const char* filename, const char* dbname, bool bReadOnly, 
+    DataDb(SQLiteDataBase* env, const char* filename, FdoString* dbname, bool bIsUTF8, bool bReadOnly, 
 		FdoClassDefinition* fc, PropertyIndex* pi, SdfCompareHandler* CmpHandler);
     virtual ~DataDb();
     
@@ -79,11 +83,15 @@ public:
 
     void Drop();
 
+    FdoString* GetDbName();
+
 private: 
 
 	int compare(int size1, const void* data1, FdoPropertyValueCollection* pvc);
 
 private:
+
+    PhysName m_dbname;
 
     SQLiteTable* m_db;
 
@@ -109,5 +117,5 @@ private:
 	int*		  m_Offsets2;
 };
 
-
+#endif
 

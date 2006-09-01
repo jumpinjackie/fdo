@@ -21,7 +21,8 @@
 #include "PropertyIndex.h"
 
 
-KeyDb::KeyDb(SQLiteDataBase* env, const char* filename, const char* dbname, bool bReadOnly, bool bUseIntKey)
+KeyDb::KeyDb(SQLiteDataBase* env, const char* filename, FdoString* dbname, bool bIsUTF8, bool bReadOnly, bool bUseIntKey) :
+    m_dbname( L"KEY:", dbname, bIsUTF8 ) 
 {
     int res;
 
@@ -32,7 +33,7 @@ KeyDb::KeyDb(SQLiteDataBase* env, const char* filename, const char* dbname, bool
     int readOnlyFlag = bReadOnly ? SQLiteDB_RDONLY : 0;
 
     //try to open a database that already exists
-    if (res = m_db->open(0, filename, dbname, readOnlyFlag, 0, bUseIntKey) != 0)
+    if (res = m_db->open(0, filename, (const char*) m_dbname, readOnlyFlag, 0, bUseIntKey) != 0)
     {
         //must close even if open failed
         m_db->close(0);
@@ -44,7 +45,7 @@ KeyDb::KeyDb(SQLiteDataBase* env, const char* filename, const char* dbname, bool
         m_db = new SQLiteTable(env);
 
         //if that fails, create one
-        if (res = m_db->open(0, filename, dbname, SQLiteDB_CREATE, 0, bUseIntKey) != 0)
+        if (res = m_db->open(0, filename, (const char*) m_dbname, SQLiteDB_CREATE, 0, bUseIntKey) != 0)
         {
             //printf("%s\n", env->strerror(res));
             throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_10_ERROR_ACCESSING_SDFDB)));
@@ -157,9 +158,9 @@ void KeyDb::Drop()
         throw FdoException::Create(
             NlsMsgGetMain(
                 FDO_NLSID(SDFPROVIDER_81_DROP_TABLE),
-                L"Key"
+                L"Key",
+                (FdoString*) m_dbname
             )
         );
     }
 }
-

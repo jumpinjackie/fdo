@@ -34,6 +34,7 @@ SdfSchemaMergeContext::SdfSchemaMergeContext(
     SetUpdSchema( newSchema );
     SetIgnoreStates( ignoreStates );
 
+    mTableReformatters = new TableReformatterCollection();
 }
 
 SdfSchemaMergeContext::~SdfSchemaMergeContext(void)
@@ -60,17 +61,25 @@ bool SdfSchemaMergeContext::CanDeleteClass( FdoClassDefinition* classDef )
     return true;
 }
 
+bool SdfSchemaMergeContext::CanAddProperty( FdoPropertyDefinition* prop )
+{
+    return false;
+}
+
 void SdfSchemaMergeContext::Merge()
 {
     CommitSchemas();
 }
 
-void SdfSchemaMergeContext::PreUpdatePhysical()
+void SdfSchemaMergeContext::PreAcceptChanges()
 {
     FdoInt32 idx;
+    SchemaDb* schemaDb = mSdfConnection->GetSchemaDb();
 
 // Gather up lists of the Data, Key and Rtree tables that need to be deleted.
 // These are deleted by PostUpdatePhysical. 
+//
+// Also gather up lists of data tables whose blobs need updating due to class id changes.
 
     FdoFeatureSchemasP schemas = GetSchemas();
 
@@ -86,6 +95,8 @@ void SdfSchemaMergeContext::PreUpdatePhysical()
         FdoFeatureSchemaP schema = schemas->GetItem(connSchema->GetName());
         FdoClassesP classes = schema->GetClasses();
 
+        bool modClassIds = false;
+
         // For each new class.
         for ( idx = 0; idx < classes->GetCount(); idx++ ) {
             FdoClassDefinitionP classDef = classes->GetItem(idx);
@@ -95,26 +106,85 @@ void SdfSchemaMergeContext::PreUpdatePhysical()
 
             // No current class, nothing to do.
             if ( connClassDef ) {
+                DataDb* dataDb = mSdfConnection->GetDataDb( connClassDef );
+                SdfRTree* rtree = mSdfConnection->GetRTree( connClassDef );
+                KeyDb* keyDb = mSdfConnection->GetKeyDb( connClassDef );
+
                 FdoClassDefinitionP baseClass = connClassDef->GetBaseClass();
 
                 // If class is marked for delete then set up its tables for delete.
                 // Base and Sub classes share tables so delete tables only if this
                 // class has no base class.
-                if ( (!baseClass) && (classDef->GetElementState() == FdoSchemaElementState_Deleted) ) {
-                    DataDb* dataDb = mSdfConnection->GetDataDb( connClassDef );
-                    if ( dataDb )
-                        m_hDelDataDbs[dataDb] = dataDb;
+                if ( classDef->GetElementState() == FdoSchemaElementState_Deleted ) {
+                    if ( !baseClass ) {
+                        if ( dataDb )
+                            m_hDelDataDbs[dataDb] = dataDb;
 
-                    SdfRTree* rtree = mSdfConnection->GetRTree( connClassDef );
-                    if ( rtree ) 
-                        m_hDelRTrees[rtree] = rtree;
+                        if ( rtree ) 
+                            m_hDelRTrees[rtree] = rtree;
 
-                    KeyDb* keyDb = mSdfConnection->GetKeyDb( connClassDef );
-                    if ( keyDb ) 
-                        m_hDelKeyDbs[keyDb] = keyDb;
+                        if ( keyDb ) 
+                            m_hDelKeyDbs[keyDb] = keyDb;
+                    }
+
+                    // ClassId is class position, so deleting a class effectively
+                    // decrements the class ids of subsequent classes. Tables for all 
+                    // subsequent classes need their rows updated to the new class ids.
+                    modClassIds = true;
+                }
+                else {
+                    if ( modClassIds ) {
+
+                        // Class Id update required.
+                        // Make sure everything is flushed before doing anything
+                        mSdfConnection->FlushAll( connClassDef, true );
+
+                        // Check if table already listed for reformatting it may be 
+                        // referenced by multiple classes since base and sub-classes
+                        // share the same table.
+                        TableReformatter* reformatter = mTableReformatters->FindItem( dataDb->GetDbName() );
+
+                        if ( !reformatter )  {
+                            // Not on reformatting list, so add it.
+                            reformatter = new TableReformatter(
+                                dataDb->GetDbName(),
+                                mSdfConnection,
+                                dataDb,
+                                keyDb,
+                                rtree,
+                                schema
+                            );
+
+                            mTableReformatters->Add( reformatter );
+                        }
+
+                        // Tell reformatter to update class id references.
+                        reformatter->SetModClassid(true);
+                    }
                 }
             }
         }
+    }
+
+}
+
+void SdfSchemaMergeContext::PostAcceptChanges()
+{
+    try {
+        // reformat all tables requiring blob updates
+        ReformatTables();
+    }
+    catch ( ... ) {
+        try {
+            // Something went wrong. Undo the reformatting
+            // that was done sofar. Schema modifications
+            // will not go ahead so tables need to 
+            // be consistent with old schemas.
+            ReformatTables(true);
+        }
+        catch ( ... ) {
+        }
+        throw;
     }
 }
 
@@ -140,3 +210,29 @@ void SdfSchemaMergeContext::PostUpdatePhysical()
     }
 }
 
+void SdfSchemaMergeContext::RollbackPhysical()
+{
+    // roll back table blob updates
+    ReformatTables(true);
+}
+
+void SdfSchemaMergeContext::ReformatTables( bool rollback )
+{
+    FdoInt32 idx;
+
+    for ( idx = 0; idx < mTableReformatters->GetCount(); idx++ ) {
+        try { 
+            TableReformatterP reformatter = mTableReformatters->GetItem(idx);
+            if ( !rollback ) 
+                // Reformat each table
+                reformatter->Reformat( );
+            else
+                // Rollback the reformatting
+                reformatter->Rollback( );
+        }
+        catch ( ... ) {
+            if ( !rollback ) 
+                throw;
+        }
+    }
+}
