@@ -103,11 +103,10 @@ void FdoCommonConnPropDictionary::SetProperty (FdoString* name, FdoString* value
             continue;
 
         // account for the token length
-        if (length > 0)
-            length += 1;        // ;
         length += nameLen;      // name
         length += 1;            // =
         length += valueLen;     // value
+        length += 1;        // ;
     }
 
     // generate the new connection string
@@ -133,9 +132,6 @@ void FdoCommonConnPropDictionary::SetProperty (FdoString* name, FdoString* value
         if (nameLen == 0)   // but zero-length values are ok
             continue;
 
-        // add the token
-        if (0 != length)
-            wcscat (connection_string, CONNECTIONPROPERTY_DELIMITER);   // ;
         wcscat (connection_string, tname);                              // name
         wcscat (connection_string, CONNECTIONPROPERTY_SEPARATOR);       // =
 		if (tvalue != NULL && (pProperty->GetIsPropertyQuoted() || wcsrchr(tvalue, L';') != NULL))
@@ -146,6 +142,7 @@ void FdoCommonConnPropDictionary::SetProperty (FdoString* name, FdoString* value
 		}
 		else
 			wcscat (connection_string, tvalue);                             // value
+        wcscat (connection_string, CONNECTIONPROPERTY_DELIMITER);   // ;
         length++;
     }
 

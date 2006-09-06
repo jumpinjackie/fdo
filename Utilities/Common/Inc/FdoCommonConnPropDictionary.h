@@ -25,6 +25,7 @@
 //TODO: rename this h file and most of these classes to not contain the keyword
 // "Connection" since they are now usable for several kinds of
 // FdoIPropertyDictionary subclasses.
+#include <FdoCommonOSUtil.h>
 
 class ConnectionProperty : public FdoIDisposable
 {
@@ -40,6 +41,7 @@ protected:
     bool mIsPropertyFilePath;
 	bool mIsPropertyDatastoreName;
 	bool mIsPropertyQuoted;
+    bool mIsSensitiveCase;
 
     int mCountEnumerableProperties;
     const wchar_t** mEnumerableProperties;
@@ -62,7 +64,8 @@ public:
 		mIsPropertyQuoted(false),
         mCountEnumerableProperties (0),
         mEnumerableProperties (NULL),
-        mIsPropertySet (false)
+        mIsPropertySet (false),
+        mIsSensitiveCase (false)
     {
     }
 
@@ -92,7 +95,40 @@ public:
         mIsPropertyQuoted (isQuoted),
         mCountEnumerableProperties (0),
         mEnumerableProperties (NULL),
-        mIsPropertySet (false)
+        mIsPropertySet (false),
+        mIsSensitiveCase (false)
+    {
+        UpdateEnumerableProperties (enumCount, enumerables);
+    }
+
+    ConnectionProperty (const wchar_t* name, 
+                        const wchar_t* localized_name, 
+                        const wchar_t* value, 
+                        bool isRequired, 
+                        bool isProtected, 
+                        bool isEnumerable, 
+                        bool isFilename, 
+                        bool isFilePath, 
+                        bool isDatastoreName, 
+                        bool isQuoted,
+                        bool isSensitiveCase,
+                        int enumCount, 
+                        const wchar_t** enumerables) :
+        mName (name),
+        mLocalizedName (localized_name),
+        mDefaultValue (value),
+        mValue ((wchar_t*)value),
+        mIsPropertyRequired (isRequired),
+        mIsPropertyProtected (isProtected),
+        mIsPropertyEnumerable (isEnumerable),
+        mIsPropertyFileName (isFilename),
+        mIsPropertyFilePath (isFilePath),
+        mIsPropertyDatastoreName (isDatastoreName),
+        mIsPropertyQuoted (isQuoted),
+        mCountEnumerableProperties (0),
+        mEnumerableProperties (NULL),
+        mIsPropertySet (false),
+        mIsSensitiveCase (isSensitiveCase)
     {
         UpdateEnumerableProperties (enumCount, enumerables);
     }
@@ -132,6 +168,8 @@ public:
     void SetValue (const wchar_t* value)
     {
         mValue = value;
+        if (mIsPropertyQuoted)
+            mValue = mValue.Replace (L"\"", L"");
 		if (mValue == L"")
 			mIsPropertySet = false;
 		else
@@ -198,6 +236,11 @@ public:
         return (mIsPropertySet);
     }
 
+    bool GetIsPropertySensitiveCase ()
+    {
+        return (mIsSensitiveCase);
+    }
+    
 protected:
     void DeleteEnumerableProperties(void)
     {
@@ -419,6 +462,17 @@ public:
     /// 
     bool IsPropertyQuoted(FdoString* name);
 
+	/// \brief
+    /// Determines if the specified property value is sensitive case.
+    /// 
+    /// \param name 
+    /// Input the property name
+    /// 
+    /// \return
+    /// Returns true if the specified property value is sensitive case
+    /// 
+    bool IsPropertyValueSensitiveCase(FdoString* name);
+
 public:
     ConnectionProperty* FindProperty (const wchar_t* name);
     bool CheckEnumerable (const wchar_t* value, ConnectionProperty* property);
@@ -523,6 +577,8 @@ FdoString* FdoCommonPropDictionary<T>::GetProperty (FdoString* name)
 {
     validate ();
     FdoPtr<ConnectionProperty> property = FindProperty (name);
+    if (property == NULL)
+        throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_66_CONNECTION_PROPERTY_NOT_FOUND), name));
     return (property->GetValue ());
 }
 
@@ -537,6 +593,8 @@ void FdoCommonPropDictionary<T>::SetProperty (FdoString* name, FdoString* value)
 
     // validate input
     FdoPtr<ConnectionProperty> property = FindProperty (name);
+    if (property == NULL)
+        throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_66_CONNECTION_PROPERTY_NOT_FOUND), name));
     if (property->GetIsPropertyRequired () && (NULL == value))
         throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_64_CONNECTION_REQUIRED_PROPERTY_NULL)));
 
@@ -555,6 +613,8 @@ FdoString* FdoCommonPropDictionary<T>::GetPropertyDefault (FdoString* name)
 {
     validate ();
     FdoPtr<ConnectionProperty> property = FindProperty (name);
+    if (property == NULL)
+        throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_66_CONNECTION_PROPERTY_NOT_FOUND), name));
     return (property->GetDefaultValue ());
 }
 
@@ -566,6 +626,8 @@ bool FdoCommonPropDictionary<T>::IsPropertyRequired (FdoString* name)
 {
     validate ();
     FdoPtr<ConnectionProperty> property = FindProperty (name);
+    if (property == NULL)
+        throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_66_CONNECTION_PROPERTY_NOT_FOUND), name));
     return (property->GetIsPropertyRequired ());
 }
 
@@ -579,6 +641,8 @@ bool FdoCommonPropDictionary<T>::IsPropertyProtected (FdoString* name)
 {
     validate ();
     FdoPtr<ConnectionProperty> property = FindProperty (name);
+    if (property == NULL)
+        throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_66_CONNECTION_PROPERTY_NOT_FOUND), name));
     return (property->GetIsPropertyProtected ());
 }
 
@@ -590,6 +654,8 @@ bool FdoCommonPropDictionary<T>::IsPropertyEnumerable (FdoString* name)
 {
     validate ();
     FdoPtr<ConnectionProperty> property = FindProperty (name);
+    if (property == NULL)
+        throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_66_CONNECTION_PROPERTY_NOT_FOUND), name));
     return (property->GetIsPropertyEnumerable ());
 }
 
@@ -601,6 +667,8 @@ bool FdoCommonPropDictionary<T>::IsPropertyFileName(FdoString* name)
 {
     validate ();
     FdoPtr<ConnectionProperty> property = FindProperty (name);
+    if (property == NULL)
+        throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_66_CONNECTION_PROPERTY_NOT_FOUND), name));
     return (property->GetIsPropertyFileName ());
 }
 
@@ -612,6 +680,8 @@ bool FdoCommonPropDictionary<T>::IsPropertyFilePath(FdoString* name)
 {
     validate ();
     FdoPtr<ConnectionProperty> property = FindProperty (name);
+    if (property == NULL)
+        throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_66_CONNECTION_PROPERTY_NOT_FOUND), name));
     return (property->GetIsPropertyFilePath ());
 }
 
@@ -623,6 +693,8 @@ bool FdoCommonPropDictionary<T>::IsPropertyDatastoreName(FdoString* name)
 {
     validate ();
     FdoPtr<ConnectionProperty> property = FindProperty (name);
+    if (property == NULL)
+        throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_66_CONNECTION_PROPERTY_NOT_FOUND), name));
     return (property->GetIsPropertyDatastoreName ());
 }
 
@@ -634,6 +706,8 @@ bool FdoCommonPropDictionary<T>::IsPropertyQuoted(FdoString* name)
 {
 	// no need to validate. this method can be called before connect is active
     FdoPtr<ConnectionProperty> property = FindProperty (name);
+    if (property == NULL)
+        throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_66_CONNECTION_PROPERTY_NOT_FOUND), name));
     return (property->GetIsPropertyQuoted ());
 }
 
@@ -646,6 +720,8 @@ FdoString** FdoCommonPropDictionary<T>::EnumeratePropertyValues (FdoString* name
 {
     validate ();
     FdoPtr<ConnectionProperty> property = FindProperty (name);
+    if (property == NULL)
+        throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_66_CONNECTION_PROPERTY_NOT_FOUND), name));
     count = property->GetCountEnumerableProperties ();
     return (property->GetEnumerableProperties ());
 }
@@ -658,6 +734,8 @@ FdoString* FdoCommonPropDictionary<T>::GetLocalizedName (FdoString* name)
 {
     validate ();
     FdoPtr<ConnectionProperty> property = FindProperty (name);
+    if (property == NULL)
+        throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_66_CONNECTION_PROPERTY_NOT_FOUND), name));
     return (property->GetLocalizedNamed ());
 }
 
@@ -670,11 +748,23 @@ ConnectionProperty* FdoCommonPropDictionary<T>::FindProperty (const wchar_t* nam
     for (int i = 0; i < count; i++)
     {
         FdoPtr<ConnectionProperty> property = mProperties->GetItem (i);
-        if (0 == wcscmp (property->GetName (), name))
+        if (0 == _wcsnicmp (property->GetName (), name, wcslen(property->GetName ())))
             return (property.Detach ());
     }
+    return NULL;
+}
 
-    throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_66_CONNECTION_PROPERTY_NOT_FOUND), name));
+/// <summary>Determines if the specified property represents sensitive case value.</summary>
+/// <param name="name">Input the property name</param> 
+/// <returns>Returns true if the specified property is represents sensitive case value</returns> 
+template <class T> 
+bool FdoCommonPropDictionary<T>::IsPropertyValueSensitiveCase(FdoString* name)
+{
+	// no need to validate. this method can be called before connect is active
+    FdoPtr<ConnectionProperty> property = FindProperty (name);
+    if (property == NULL)
+        throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_66_CONNECTION_PROPERTY_NOT_FOUND), name));
+    return (property->GetIsPropertySensitiveCase ());
 }
 
 // Returns whether the specified value is in the set of enumerable values.
@@ -686,16 +776,30 @@ bool FdoCommonPropDictionary<T>::CheckEnumerable (const wchar_t* value, Connecti
     bool ret;
 
     ret = false;
+    if (!property->GetIsPropertyRequired() && (value == NULL || wcslen(value) == 0))
+        return true;
 
     count = property->GetCountEnumerableProperties ();
     choices = property->GetEnumerableProperties ();
     if (NULL == choices)
         ret = true;
     else
+    {
+        bool cmpSens = property->GetIsPropertySensitiveCase ();
         for (int i = 0; i < count && !ret; i++)
-            if (0 == wcscmp (value, choices[i]))
-                ret = true;
-
+        {
+            if ( cmpSens )
+            {
+                if (0 == FdoCommonOSUtil::wcsnicmp (value, choices[i], wcslen (choices[i])))
+                    ret = true;
+            }
+            else
+            {
+                if (0 == wcscmp (value, choices[i]))
+                    ret = true;
+            }
+        }
+    }
     return (ret);
 }
 

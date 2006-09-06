@@ -21,9 +21,9 @@
 #pragma once
 #endif // _WIN32
 
-typedef std::pair<std::wstring,std::string>     StringMapElem;
-typedef std::map <std::wstring, StringMapElem > StringMap;
-typedef StringMap::const_iterator               StringMapIter;
+typedef std::pair<std::wstring,std::string>         ParsStringMapElem;
+typedef std::map <std::wstring, ParsStringMapElem > ParsStringMap;
+typedef ParsStringMap::const_iterator               ParsStringMapIter;
 
 const wchar_t CONNECTIONPROPERTY_DELIMITER[] = L";";
 const wchar_t CONNECTIONPROPERTY_SEPARATOR[] = L"=";
@@ -33,7 +33,7 @@ class FdoCommonConnPropDictionary;
 class FdoCommonConnStringParser
 {
 private:
-    StringMap m_valueMap;
+    ParsStringMap m_valueMap;
     bool m_connStringValid;
 
 public:

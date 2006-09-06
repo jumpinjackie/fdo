@@ -49,7 +49,8 @@ void FdoCommonConnStringParser::SetPropertyValue (FdoCommonConnPropDictionary* p
     {
         char* mbValue;
         wide_to_multibyte(mbValue, value);
-        m_valueMap[keyword] = StringMapElem(value, mbValue);
+        FdoStringP pkeyword = ((FdoStringP)keyword).Lower();
+        m_valueMap[(const wchar_t*)pkeyword] = ParsStringMapElem(value, mbValue);
         if (isQuoted && NULL != propDictionary)
         {
             FdoPtr<ConnectionProperty> pProp = propDictionary->FindProperty (keyword);
@@ -85,20 +86,20 @@ const wchar_t* FdoCommonConnStringParser::GetFirstInvalidPropertyName(FdoCommonC
         return NULL;
     propNames = propDictionary->GetPropertyNames(propCount);
 
-    for (StringMapIter it = m_valueMap.begin(); it != m_valueMap.end(); it++)
+    for (ParsStringMapIter it = m_valueMap.begin(); it != m_valueMap.end(); it++)
     {
-        FdoStringP pName = it->second.first.c_str();
+        FdoStringP pName = it->first.c_str();
         bool foundProp = false;
         for (FdoInt32 i = 0; i < propCount; i++)
         {
-            if (pName == propNames[i])
+            if (0 == FdoCommonOSUtil::wcsnicmp (propNames[i], pName, pName.GetLength()))
             {
                 foundProp = true;
                 break;
             }
         }
         if (!foundProp)
-            return it->second.first.c_str();
+            return it->first.c_str();
     }
     return NULL;
 }
@@ -137,8 +138,16 @@ FdoCommonConnStringParser::FdoCommonConnStringParser (FdoCommonConnPropDictionar
                         pPoz++;
                         State = 3;
                     }
+                    else if (*(connection_string+pPoz+1) == L' ')
+                    {
+                        pPoz++;
+                        State = 4;
+                    }
                     else
+                    {
+                        pPozEnd = pPoz+1;
                         State = 2;
+                    }
                     pPozPV = pPoz+1;
                 }
                 else if(*(connection_string+pPoz) == L';' || *(connection_string+pPoz) == L'\0')
@@ -153,23 +162,37 @@ FdoCommonConnStringParser::FdoCommonConnStringParser (FdoCommonConnPropDictionar
                     isError = true;
                 else if(*(connection_string+pPoz) == L';' || *(connection_string+pPoz) == L'\0')
                 {
-                    SetPropertyValue(propDictionary, LastKey.c_str(), std::wstring(connection_string+pPozPV, pPoz-pPozPV).c_str());
+                    SetPropertyValue(propDictionary, LastKey.c_str(), std::wstring(connection_string+pPozPV, pPozEnd-pPozPV).c_str());
                     State = 0;
                 }
+                else if(*(connection_string+pPoz) != L' ')
+                    pPozEnd = pPoz+1;
             break;
             case 3:  //get property value in case value is surrounded by "
                 if(*(connection_string+pPoz) == L'\"')
                 {
-                    if(*(connection_string+pPoz+1) == L';' || *(connection_string+pPoz+1) == L'\0')
-                    {
-                        SetPropertyValue(propDictionary, LastKey.c_str(), std::wstring(connection_string+pPozPV, pPoz-pPozPV).c_str(), true);
-                        State = 0;
-                    }
-                    else
-                        isError = true;
+                    SetPropertyValue(propDictionary, LastKey.c_str(), std::wstring(connection_string+pPozPV, pPoz-pPozPV).c_str(), true);
+                    State = 0;
                 }
-                else if(*(connection_string+pPoz) == L'\0')
+                else if(*(connection_string+pPoz+1) == L'\0')
                     isError = true;
+            break;
+            case 4:  //handle space before "
+                if (*(connection_string+pPoz) == L'\"')
+                {
+                    pPoz++;
+                    State = 3;
+                }
+                else if(*(connection_string+pPoz) == L';')
+                {
+                    State = 0;
+                }
+                else if(*(connection_string+pPoz) != L' ')
+                {
+                    pPozEnd = pPoz;
+                    State = 2;
+                }
+                pPozPV = pPoz;
             break;
         }
         pPoz++;
@@ -179,19 +202,22 @@ FdoCommonConnStringParser::FdoCommonConnStringParser (FdoCommonConnPropDictionar
 
 const char* FdoCommonConnStringParser::GetPropertyValue(FdoString* propertyName)
 {
-    StringMapIter it = m_valueMap.find(propertyName);
+    FdoStringP pPropertyName = ((FdoStringP)propertyName).Lower();
+    ParsStringMapIter it = m_valueMap.find((FdoString*)pPropertyName);
     return (it == m_valueMap.end()) ? NULL : it->second.second.c_str();
 }
 
 const wchar_t* FdoCommonConnStringParser::GetPropertyValueW(FdoString* propertyName)
 {
-    StringMapIter it = m_valueMap.find(propertyName);
+    FdoStringP pPropertyName = ((FdoStringP)propertyName).Lower();
+    ParsStringMapIter it = m_valueMap.find((FdoString*)pPropertyName);
     return (it == m_valueMap.end()) ? NULL : it->second.first.c_str();
 }
 
 bool FdoCommonConnStringParser::IsPropertyValueSet(FdoString* propertyName)
 {
-    StringMapIter iter = m_valueMap.find(propertyName);
-    return (iter != m_valueMap.end());
+    FdoStringP pPropertyName = ((FdoStringP)propertyName).Lower();
+    ParsStringMapIter it = m_valueMap.find((FdoString*)pPropertyName);
+    return (it != m_valueMap.end());
 }
 
