@@ -40,7 +40,6 @@ FdoRfpDatasetCache::FdoRfpDatasetCache(void)
 
 FdoRfpDatasetCache::~FdoRfpDatasetCache(void)
 {
-    fprintf( stderr, "Cleanup Cache\n" );
     CloseAll();
     CPLFree( pahDatasetList );
 }
