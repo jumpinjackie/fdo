@@ -30,25 +30,28 @@ SdfSpatialExtentsAggregateReader::SdfSpatialExtentsAggregateReader(SdfConnection
     Bounds bounds = rtree->GetBounds();
 
     if (Bounds::IsUndefined(bounds))
-        m_LineStringExtents = NULL;
+        m_Extents = NULL;
     else
     {
-        // Build an extents geometry out of the spatial extents;
-        // We ignore M dimensionality since FdoIEnvelope only exposes XYZ envelopes
-        FdoPtr<FdoGeometricPropertyDefinition> geomProp = originalClass->GetGeometryProperty();
-        FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-        double ordinates[2*3]; // enough room for 2 coordinates of XYZ dimensionality
-        FdoDimensionality geomDim = (FdoDimensionality)(FdoDimensionality_XY | (geomProp->GetHasElevation() ? FdoDimensionality_Z : (FdoDimensionality)0));
-        int i=0;
-        ordinates[i++] = bounds.minx;
-        ordinates[i++] = bounds.miny;
-        if (geomProp->GetHasElevation())
-            ordinates[i++] = 0.0;  // no way to read bounds.minz at the moment
-        ordinates[i++] = bounds.maxx;
-        ordinates[i++] = bounds.maxy;
-        if (geomProp->GetHasElevation())
-            ordinates[i++] = 0.0;  // no way to read bounds.maxz at the moment
-        m_LineStringExtents = gf->CreateLineString(geomDim, i, ordinates);
+        // Copy the extent values to an array of doubles
+        double ordinates[10];
+	    ordinates[0] = bounds.minx; // WestBoundLongitude
+	    ordinates[1] = bounds.miny; // SouthBoundLatitude
+	    ordinates[2] = bounds.maxx; // EastBoundLongitude
+	    ordinates[3] = bounds.miny; // SouthBoundLatitude
+	    ordinates[4] = bounds.maxx; // EastBoundLongitude
+	    ordinates[5] = bounds.maxy; // NorthBoundLatitude
+	    ordinates[6] = bounds.minx; // WestBoundLongitude
+	    ordinates[7] = bounds.maxy; // NorthBoundLatitude
+	    ordinates[8] = bounds.minx; // WestBoundLongitude
+	    ordinates[9] = bounds.miny; // SouthBoundLatitude
+
+        // Create a linear ring using the bounding box ordinates 
+	    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+	    FdoPtr<FdoILinearRing> linearRing = gf->CreateLinearRing(FdoDimensionality_XY, 10, ordinates);
+
+        // Create a polygon geometry representing the extents from the linear ring
+	    m_Extents = gf->CreatePolygon(linearRing, NULL);
     }
 }
 
@@ -109,10 +112,10 @@ FdoDataType SdfSpatialExtentsAggregateReader::GetItemDataType(FdoInt32 i)
 void SdfSpatialExtentsAggregateReader::GetGeometryForCache(FdoIdentifier *itemName, FdoByteArray **byteArray, bool *bIsNull)
 {
     FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-    FdoByteArray* geomFGF = !m_LineStringExtents ? NULL : gf->GetFgf(m_LineStringExtents);
+    FdoByteArray* geomFGF = !m_Extents ? NULL : gf->GetFgf(m_Extents);
 
     if (bIsNull)
-        *bIsNull = !m_LineStringExtents;
+        *bIsNull = !m_Extents;
     if (byteArray)
         *byteArray = geomFGF;
 }

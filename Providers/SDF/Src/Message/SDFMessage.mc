@@ -438,3 +438,23 @@ SymbolicName=SDFPROVIDER_89_OPEN_TABLE
 Language=English
 Failed to open table '%1$ls'
 .
+MessageId=90
+SymbolicName=SDFPROVIDER_90_NO_QUERY_PROPERTIES_SELECTED
+Language=English
+No properties were selected for retrieval from Feature class '%1$ls'
+.
+MessageId=91
+SymbolicName=SDFPROVIDER_91_SELECTAGGREGATES_FILTER_NOT_SUPPORTED
+Language=English
+The SelectAggregates(SpatialExtents) command does not support the use of a conditional filter
+.
+MessageId=92
+SymbolicName=SDFPROVIDER_92_SPATIALEXTENTS_TOO_MANY_ARGUMENTS
+Language=English
+Too many arguments passed to the SelectAggregates function
+.
+MessageId=93
+SymbolicName=SDFPROVIDER_93_SELECTAGGREGATES_INVALID_ARGUMENT_TYPE
+Language=English
+The SelectAggregates(SpatialExtents) command contains an argument '%1$ls' that is not the name of the Geometry property on class '%2$ls'
+.

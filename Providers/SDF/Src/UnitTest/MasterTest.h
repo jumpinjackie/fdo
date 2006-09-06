@@ -94,6 +94,7 @@ class MasterTest : public CppUnit::TestFixture
     CPPUNIT_TEST(coordSysTest);
     CPPUNIT_TEST(selectDistinctTests);
     CPPUNIT_TEST(selectAggregatesTest);
+	CPPUNIT_TEST(selectSpatialExtentsTest);
 	CPPUNIT_TEST(concurencyTest);
 
 
@@ -130,6 +131,8 @@ public:
     void selectDistinctTests();
     void selectAggregatesTest();
 	void concurencyTest();
+    void selectSpatialExtentsTest();
+
 };
 
 #endif

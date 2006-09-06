@@ -57,6 +57,7 @@ CPPUNIT_ASSERT_ASSERTION_PASS(assertion)   CPPUNIT_ASSERT_NO_THROW( assertion )
 */
 
 #include <ctime>
+#include <math.h>
 #include "MasterTest.h"
 #include "UnitTestUtil.h"
 #include <cppunit/extensions/HelperMacros.h>
@@ -749,5 +750,181 @@ void MasterTest::selectAggregatesTest()
     
     conn->Close();    
 
+}
+
+void MasterTest::selectSpatialExtentsTest()
+{
+    printf("Testing Select SpatialExtents:\n");
+
+    try 
+	{
+        FdoPtr<FdoISelectAggregates> selAggr;
+        FdoPtr<FdoIDataReader> rdr;
+        FdoPtr<FdoIdentifierCollection> ids;
+        FdoPtr<FdoExpression> expr;
+        FdoPtr<FdoComputedIdentifier> cid;
+        int count = 0;
+
+        FdoPtr<FdoIConnection> conn = CreateConnection();
+        openConnection(conn, SHP_PATH2, true);
+		CPPUNIT_ASSERT(conn->Open() == FdoConnectionState_Open);
+
+        FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+		
+        FdoPtr<FdoISelectAggregates> advsel = (FdoISelectAggregates*)(conn->CreateCommand(FdoCommandType_SelectAggregates));
+        advsel->SetFeatureClassName(L"province");
+	    ids = advsel->GetPropertyNames();
+	    expr = FdoExpression::Parse(L"SpatialExtents(SHPGEOM)");
+	    cid = FdoComputedIdentifier::Create(L"MBR", expr);
+	    ids->Add(cid);
+	    rdr = advsel->Execute();
+
+	    count = 0;
+	    FdoPtr<FdoIEnvelope> envelopeAllWithoutFilter;
+	    while (rdr->ReadNext())
+	    {
+		    if ( rdr->IsNull(L"MBR") )
+			    CPPUNIT_FAIL("NULL MBR geometry returned for SpatialExtents()");
+            
+		    FdoPtr<FdoByteArray> geomBytes = rdr->GetGeometry(L"MBR");
+		    FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(geomBytes);
+
+            FdoGeometryType geomType = geom->GetDerivedType();
+            if (geomType != FdoGeometryType_Polygon)
+			    CPPUNIT_FAIL("Expected Polygon geometry for SpatialExtents() result");
+
+		    envelopeAllWithoutFilter = geom->GetEnvelope();
+
+		    if (envelopeAllWithoutFilter->GetIsEmpty())
+			    CPPUNIT_FAIL("Expected non-empty envelope for SpatialExtents() result");
+
+		    count++;
+	    }
+	    CPPUNIT_ASSERT_MESSAGE("Expected exactly one row of aggregate data", count==1);
+
+	    rdr->Close();
+
+	    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinX)", fabs(envelopeAllWithoutFilter->GetMinX() - (-141.003)) < 0.001);
+	    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinY)", fabs(envelopeAllWithoutFilter->GetMinY() - (41.913)) < 0.001);
+	    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxX)", fabs(envelopeAllWithoutFilter->GetMaxX() - (-52.620)) < 0.001);
+	    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxY)", fabs(envelopeAllWithoutFilter->GetMaxY() - (83.108)) < 0.001);
+
+        bool failed = false;
+        try
+        {
+            advsel = (FdoISelectAggregates*)(conn->CreateCommand(FdoCommandType_SelectAggregates));
+            advsel->SetFeatureClassName(L"province");
+	        rdr = advsel->Execute();
+        }
+        catch ( FdoException *ex )
+        {
+            ex->Release();
+            failed = true;
+        }
+
+        if (!failed) {
+            CPPUNIT_FAIL("FAILED - SelectAggregates allowed execution with no property names specified\n");
+        }
+
+        failed = false;
+        try
+        {
+            advsel = (FdoISelectAggregates*)(conn->CreateCommand(FdoCommandType_SelectAggregates));
+            advsel->SetFeatureClassName(L"foo");
+	        ids = advsel->GetPropertyNames();
+	        expr = FdoExpression::Parse(L"SpatialExtents(SHPGEOM)");
+	        cid = FdoComputedIdentifier::Create(L"MBR", expr);
+	        ids->Add(cid);
+	        rdr = advsel->Execute();
+        }
+        catch ( FdoException *ex )
+        {
+            ex->Release();
+            failed = true;
+        }
+
+        if (!failed) {
+            CPPUNIT_FAIL("FAILED - SelectAggregates allowed accessing an invalid class\n");
+        }
+
+        failed = false;
+        try
+        {
+            advsel = (FdoISelectAggregates*)(conn->CreateCommand(FdoCommandType_SelectAggregates));
+            advsel->SetFeatureClassName(L"province");
+	        ids = advsel->GetPropertyNames();
+	        expr = FdoExpression::Parse(L"SpatialExtents(foo)");
+	        cid = FdoComputedIdentifier::Create(L"MBR", expr);
+	        ids->Add(cid);
+	        rdr = advsel->Execute();
+        }
+        catch ( FdoException *ex )
+        {
+            ex->Release();
+            failed = true;
+        }
+
+        if (!failed) {
+            CPPUNIT_FAIL("FAILED - SelectAggregates allowed accessing an invalid property\n");
+        }
+
+        failed = false;
+        try
+        {
+            advsel = (FdoISelectAggregates*)(conn->CreateCommand(FdoCommandType_SelectAggregates));
+            advsel->SetFeatureClassName(L"province");
+	        ids = advsel->GetPropertyNames();
+	        expr = FdoExpression::Parse(L"foo(SHPGEOM)");
+	        cid = FdoComputedIdentifier::Create(L"MBR", expr);
+	        ids->Add(cid);
+	        rdr = advsel->Execute();
+        }
+        catch ( FdoException *ex )
+        {
+            ex->Release();
+            failed = true;
+        }
+
+        if (!failed) {
+            CPPUNIT_FAIL("FAILED - SelectAggregates allowed accessing an invalid function\n");
+        }
+
+        failed = false;
+        try
+        {
+            advsel = (FdoISelectAggregates*)(conn->CreateCommand(FdoCommandType_SelectAggregates));
+            advsel->SetFeatureClassName(L"province");
+
+	        ids = advsel->GetPropertyNames();
+	        expr = FdoExpression::Parse(L"SpatialExtents(SHPGEOM)");
+	        cid = FdoComputedIdentifier::Create(L"MBR", expr);
+	        ids->Add(cid);
+
+            double coords[] = {7.2, 43.6, 7.2, 43.6, 7.2, 43.7, 7.2, 43.7, 7.2, 43.6}; 
+            FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+            FdoPtr<FdoILinearRing> outer = gf->CreateLinearRing(0, 10, coords);
+            FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(outer, NULL);
+            FdoPtr<FdoByteArray> polyfgf = gf->GetFgf(poly);
+            FdoPtr<FdoGeometryValue> gv = FdoGeometryValue::Create(polyfgf);
+            FdoPtr<FdoSpatialCondition> filter = FdoSpatialCondition::Create(L"Data", FdoSpatialOperations_EnvelopeIntersects, gv);
+            advsel->SetFilter(filter);
+
+	        rdr = advsel->Execute();
+        }
+        catch ( FdoException *ex )
+        {
+            ex->Release();
+            failed = true;
+        }
+
+        if (!failed) {
+            CPPUNIT_FAIL("FAILED - SelectAggregates allowed specifiecation of a spatial filter\n");
+        }
+    }
+	catch( FdoException *ex )
+    {
+        CPPUNIT_FAIL((const char*)(FdoStringP(ex->GetExceptionMessage())));
+        ex->Release();
+    }
 }
 
