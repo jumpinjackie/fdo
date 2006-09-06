@@ -114,7 +114,7 @@ FdoIConnectionPropertyDictionary* SdfConnectionInfo::GetConnectionProperties()
         wide_to_multibyte(mbPropName, PROP_NAME_RDONLY);
         newProp = new ConnectionProperty (PROP_NAME_RDONLY,
                 NlsMsgGetMain(SDFPROVIDER_49_PROP_NAME_READONLY, mbPropName),
-                RDONLY_TRUE, false, false, true, false, false, false, false, 2, (const wchar_t**)pReadOnlyVals);
+                RDONLY_TRUE, false, false, true, false, false, false, false, true, 2, (const wchar_t**)pReadOnlyVals);
         newProp->SetValue(RDONLY_TRUE);
         mPropertyDictionary->AddProperty(newProp);
     }

@@ -541,3 +541,85 @@ void ExtendedSelectTest::UpdateTest()
         return;
     }
 }
+
+void ExtendedSelectTest::Test_Fix823645()
+{
+    try
+    {
+        FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager ();
+
+        FdoPtr<FdoIConnection> connection = manager->CreateConnection (L"OSGeo.SDF.3.2");
+        FdoPtr<FdoIConnectionInfo> pInfo = connection->GetConnectionInfo();
+        FdoPtr<FdoIConnectionPropertyDictionary> pProps = pInfo->GetConnectionProperties();
+        pProps->SetProperty(L"File", std::wstring(WORLD_N3).c_str());
+        pProps->SetProperty(L"ReadOnly", L"false");
+
+        FdoPtr<FdoIDestroyDataStore> pDestroyCmd;
+        try
+        {
+            // Destroy the data base if exist
+            pDestroyCmd = (FdoIDestroyDataStore*) connection->CreateCommand(FdoCommandType_DestroyDataStore);
+            FdoPtr<FdoIDataStorePropertyDictionary> dict = pDestroyCmd->GetDataStoreProperties();
+            int    count;
+            FdoString **names = dict->GetPropertyNames(count);
+            dict->SetProperty( names[0], L"\"" WORLD_N3 L"\"");
+            pDestroyCmd->Execute();
+        }
+        catch (FdoException *e )
+        {
+            e->Release();
+        }
+        catch(...){}
+
+        FdoPtr<FdoICreateDataStore>    pCreateCmd = (FdoICreateDataStore*) connection->CreateCommand(FdoCommandType_CreateDataStore);
+            
+        FdoPtr<FdoIDataStorePropertyDictionary> dictionary = pCreateCmd->GetDataStoreProperties();
+        int    count;
+        FdoString **names = dictionary->GetPropertyNames(count);
+        dictionary->SetProperty( names[0], L"\"" WORLD_N3 L"\"" );
+        pCreateCmd->Execute();    
+
+        connection->Open();
+
+        FdoPtr<FdoIApplySchema> applyschema = (FdoIApplySchema*)connection->CreateCommand(FdoCommandType_ApplySchema);
+        FdoPtr<FdoFeatureSchema> pTestSchema = FdoFeatureSchema::Create(L"SDF Test",L"SDF temporary Test Schema");
+        
+        FdoClassDefinition*    pfeatureclass;
+        FdoPtr<FdoDataPropertyDefinition> pProp;
+        pfeatureclass = FdoClass::Create(L"TestFeatureClass", L"FeatureClass Desc");
+        pProp = FdoDataPropertyDefinition::Create( L"Id", L"Id Prop" );
+        pProp->SetDataType( FdoDataType_Int32 );
+        pProp->SetNullable(false);
+        FdoPtr<FdoPropertyDefinitionCollection>(pfeatureclass->GetProperties())->Add( pProp );
+        FdoPtr<FdoDataPropertyDefinitionCollection>(pfeatureclass->GetIdentityProperties())->Add( pProp );
+
+        // Add first name and last name properties
+        pProp = FdoDataPropertyDefinition::Create( L"First Name", L"First Name" );
+        pProp->SetDataType( FdoDataType_String );
+        pProp->SetLength(32);
+        pProp->SetNullable(false);
+        FdoPtr<FdoPropertyDefinitionCollection>(pfeatureclass->GetProperties())->Add( pProp );
+        pProp = FdoDataPropertyDefinition::Create( L"Last Name", L"Last Name" );
+        pProp->SetDataType( FdoDataType_String );
+        pProp->SetLength(32);
+        pProp->SetNullable(false);
+        FdoPtr<FdoPropertyDefinitionCollection>(pfeatureclass->GetProperties())->Add( pProp );
+        FdoClassesP(pTestSchema->GetClasses())->Add( pfeatureclass );
+
+        FdoPtr<FdoIApplySchema>pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
+        pCmd->SetFeatureSchema( pTestSchema );
+        pCmd->Execute();
+
+        connection->Close();
+    }
+    catch (FdoException *ex )
+    {
+        printf("Create SDF with special characters name Error: %ls\n", ex->GetExceptionMessage() );
+        ex->Release();
+        throw "Create SDF with special characters name exception";
+    }
+    catch (...)
+    {
+        CPPUNIT_FAIL ("non-FdoException");
+    }
+}

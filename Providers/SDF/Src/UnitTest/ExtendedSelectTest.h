@@ -25,6 +25,7 @@ class ExtendedSelectTest : public CppUnit::TestCase
   CPPUNIT_TEST( WorldTest_SDF_name3 );
   CPPUNIT_TEST( WorldTest_SDF_name4 );
   CPPUNIT_TEST( CreateSDF_SPchars );
+  CPPUNIT_TEST( Test_Fix823645 );
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -44,6 +45,7 @@ protected:
 	void WorldTest_SDF_name3();
 	void WorldTest_SDF_name4();
 	void CreateSDF_SPchars();
+    void Test_Fix823645();
 	void UpdateTest();
 	void OpenConnection(FdoIConnection* conn, const wchar_t* path, bool placeDQ = false);
 };
