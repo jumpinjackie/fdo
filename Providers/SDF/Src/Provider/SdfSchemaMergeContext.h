@@ -17,7 +17,6 @@
 #ifndef SDF_SCHEMA_MERGECONTEXT_H
 #define SDF_SCHEMA_MERGECONTEXT_H
 
-#include "SdfExtHashMap.h"
 #include "TableReformatter.h"
 
 class SdfConnection;

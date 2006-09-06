@@ -17,7 +17,9 @@
 #ifndef SDFCONNECTION_H
 #define SDFCONNECTION_H
 
-#include "SdfExtHashMap.h"
+//#include "SdfExtHashMap.h"
+
+
 #include "RTree.h"
 #include "SDF/SdfCompareHandler.h"
 #include "SdfSchemaMergeContext.h"

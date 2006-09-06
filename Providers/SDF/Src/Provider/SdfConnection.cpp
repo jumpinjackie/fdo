@@ -25,6 +25,7 @@
 #include <unistd.h>
 #endif
 
+#include "SdfExtHashMap.h"
 #include "SdfConnection.h"
 
 #include <FdoCommonSelectAggregatesCommand.h>

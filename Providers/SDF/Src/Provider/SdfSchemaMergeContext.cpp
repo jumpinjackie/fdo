@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //  
 #include "stdafx.h"
+#include "SdfExtHashMap.h"
 #include "SdfSchemaMergeContext.h"
 #include "SdfConnection.h"
 #include "DataDb.h"

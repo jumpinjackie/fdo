@@ -16,6 +16,10 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //  
 #include "stdafx.h"
+
+#include "SdfExtHashMap.h"
+
+
 #include "SchemaDb.h"
 #include "SdfConnection.h"
 #include <FdoCommonSchemaUtil.h>

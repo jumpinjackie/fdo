@@ -64,6 +64,9 @@ public:
     static const FdoInt32 stateFinal = 1;
 
 protected:
+    /// 0-argument constructor to please FdoPtr::operator->() :
+    TableReformatter () { }
+
     // Given a class id for the srcClasses set, return the correspond id of the class
     // in the destClasses set.
     unsigned short TableReformatter::CvtClassId( 
