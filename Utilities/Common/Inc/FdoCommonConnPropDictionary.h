@@ -748,7 +748,7 @@ ConnectionProperty* FdoCommonPropDictionary<T>::FindProperty (const wchar_t* nam
     for (int i = 0; i < count; i++)
     {
         FdoPtr<ConnectionProperty> property = mProperties->GetItem (i);
-        if (0 == _wcsnicmp (property->GetName (), name, wcslen(property->GetName ())))
+        if (0 == FdoCommonOSUtil::wcsnicmp (property->GetName (), name, wcslen(property->GetName ())))
             return (property.Detach ());
     }
     return NULL;
