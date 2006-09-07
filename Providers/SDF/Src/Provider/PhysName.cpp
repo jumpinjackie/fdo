@@ -76,6 +76,7 @@ PhysName::operator FdoString*( )
         if ( mSName ) {
             size_t len = strlen(mSName);
             mWName = new wchar_t[len + 1];
+			mWName[0] = '\0';
             mbstowcs( mWName, mSName, len );
         }
     }
@@ -92,6 +93,7 @@ PhysName::operator const char*( )
         if ( mWName ) {
             size_t len = wcslen(mWName) * 6;
             mSName = new char[len + 1];
+			mSName[0] = '\0';
             wcstombs( mSName, mWName, len );
         }
     }

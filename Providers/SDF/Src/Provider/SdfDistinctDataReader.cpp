@@ -124,7 +124,7 @@ void SdfDistinctDataReader::RunQuery()
     //to weed out duplicates
     SQLiteTable* db = new SQLiteTable(NULL);
     
-    if (db->open(0, NULL, NULL, SQLiteDB_CREATE, 0) != 0)
+    if (db->open(0, NULL, NULL, NULL, SQLiteDB_CREATE, 0) != 0)
     {
         throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_10_ERROR_ACCESSING_SDFDB)));
     }

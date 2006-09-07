@@ -21,8 +21,8 @@
 #include "PropertyIndex.h"
 
 
-KeyDb::KeyDb(SQLiteDataBase* env, const char* filename, FdoString* dbname, bool bIsUTF8, bool bReadOnly, bool bUseIntKey) :
-    m_dbname( L"KEY:", dbname, bIsUTF8 ) 
+KeyDb::KeyDb(SQLiteDataBase* env, const char* filename, FdoString* dbname, bool bReadOnly, bool bUseIntKey) :
+    m_dbname( L"KEY:", dbname, true ) 
 {
     int res;
 
@@ -33,7 +33,8 @@ KeyDb::KeyDb(SQLiteDataBase* env, const char* filename, FdoString* dbname, bool 
     int readOnlyFlag = bReadOnly ? SQLiteDB_RDONLY : 0;
 
     //try to open a database that already exists
-    if (res = m_db->open(0, filename, (const char*) m_dbname, readOnlyFlag, 0, bUseIntKey) != 0)
+	// Note that the nested PhysName call is necessary to reproduce the behavior of the previous versions of the SDF provider.
+    if (res = m_db->open(0, filename, (const char*)PhysName("KEY:", (const char*)PhysName(L"", dbname,false),false), (const char*) m_dbname, readOnlyFlag, 0, bUseIntKey) != 0)
     {
         //must close even if open failed
         m_db->close(0);
@@ -45,7 +46,7 @@ KeyDb::KeyDb(SQLiteDataBase* env, const char* filename, FdoString* dbname, bool 
         m_db = new SQLiteTable(env);
 
         //if that fails, create one
-        if (res = m_db->open(0, filename, (const char*) m_dbname, SQLiteDB_CREATE, 0, bUseIntKey) != 0)
+        if (res = m_db->open(0, filename, (const char*)PhysName("KEY:", (const char*)PhysName(L"", dbname,false),false), (const char*) m_dbname, SQLiteDB_CREATE, 0, bUseIntKey) != 0)
         {
             //printf("%s\n", env->strerror(res));
             throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_10_ERROR_ACCESSING_SDFDB)));

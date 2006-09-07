@@ -68,7 +68,7 @@ SchemaDb::SchemaDb(SQLiteDataBase* env, const char* filename, bool bReadOnly) :
     int readOnlyFlag = bReadOnly ? SQLiteDB_RDONLY : 0;
 
     //try to open a database that already exists
-    if (res = m_db->open(0, filename, DB_SCHEMA_NAME, readOnlyFlag, 0) == 0)
+    if (res = m_db->open(0, filename, DB_SCHEMA_NAME, DB_SCHEMA_NAME, readOnlyFlag, 0) == 0)
     {
         // Verify that this SDF File is one of the supported versions:
         ReadMetadata(m_majorVersion, m_minorVersion);
@@ -92,7 +92,7 @@ SchemaDb::SchemaDb(SQLiteDataBase* env, const char* filename, bool bReadOnly) :
         m_db = new SQLiteTable(env);
 
         // Since we failed to open an existing SDF file, create a new one instead:
-        if (res = m_db->open(0, filename, DB_SCHEMA_NAME, SQLiteDB_CREATE, 0) != 0)
+        if (res = m_db->open(0, filename, DB_SCHEMA_NAME, DB_SCHEMA_NAME, SQLiteDB_CREATE, 0) != 0)
             throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_10_ERROR_ACCESSING_SDFDB)));
 
         //we are creating the SDF file, so we have to write an 
@@ -249,9 +249,6 @@ void SchemaDb::SetSchema(SdfISchemaMergeContextFactory* mergeFactory, FdoFeature
         // Use given schemas as is.
         mergedSchema = FDO_SAFE_ADDREF(schema);
     }
-
-    // Check if any new classes have non-ASCII7 names and upgrade to 3.2 if any do.
-    UTF8Upgrade( m_schema, mergedSchema );
 
     // Handle database updates that must be done before AcceptChanges() is called on merged
     // schemas, and before merged schemas are written to database.
@@ -1003,14 +1000,6 @@ void SchemaDb::CloseCursor()
 	m_db->close_cursor();
 }
 
-bool SchemaDb::IsPhysNameUTF8()
-{
-    return !(
-       (m_majorVersion == SDFPROVIDER_VERSION_MAJOR_3) &&
-       (m_minorVersion == SDFPROVIDER_VERSION_MINOR_3_0 || m_minorVersion == SDFPROVIDER_VERSION_MINOR_3_1 )
-     );
-}
-
 void SchemaDb::WriteAssociationPropertyDefinition(BinaryWriter& wrt, FdoAssociationPropertyDefinition* apd)
 {
 	FdoPtr<FdoClassDefinition> cls = apd->GetAssociatedClass();
@@ -1188,86 +1177,5 @@ void SchemaDb::PostReadSchema( FdoFeatureSchema* schema )
 			}
 		}
 	}
-}
-
-bool SchemaDb::NeedsUTF8( FdoString* name )
-{
-    if ( !name ) 
-        return false;
-
-    size_t idx;
-    size_t nameLen = wcslen(name);
-    bool needsUTF8 = false;
-
-    for ( idx = 0; idx < nameLen; idx++ ) 
-    {
-        if ( (name[idx] & 0x7f) != name[idx] ) 
-        {
-            // A non-ASCII7 character was found so table name for class needs to be in 
-            // UTF8 format. 
-            // In 3.1 files, the table name is the MBCS version of the class name, 
-            // which leads to problems since MBCS is locale-dependent.
-            needsUTF8 = true;
-
-            break;
-        }
-    }
-
-    return needsUTF8;
-}
-
-void SchemaDb::UTF8Upgrade( FdoFeatureSchema* oldSchema, FdoFeatureSchema* newSchema )
-{
-    // This function checks if any of the new classes have non-ASCII7 characters. If so,
-    // the table names are generated as UTF8 versions of the class names. This is indicated
-    // by bumping up the file version to 3.2. Files with version 3.1 generate table names
-    // by converting class names to multibyte. However, this is problematic since the 
-    // multibyte representation changes when the current locale is different.
-
-    // Nothing to do if file already version 3.2
-    if ( (!IsPhysNameUTF8()) ) 
-    {
-        FdoInt32 idx;
-        FdoClassesP classes;
-
-        // If there is a current schema, check current classes for non-ASCII7 names. 
-        if ( oldSchema ) 
-        {
-            classes = oldSchema->GetClasses();
-
-            for ( idx = 0; idx < classes->GetCount(); idx++ )
-            {
-                FdoClassDefinitionP classDef = classes->GetItem(idx);
-
-                if ( NeedsUTF8(classDef->GetName()) )
-                    // We have a 3.1 file with class with non-ASCII7 name. These files are potentially
-                    // corrupt since the class tables can potentially contain junk characters due to 
-                    // a bug in 3.1's wcs to mbcs conversion. Also, the file cannot be read properly
-                    // if current locale differs from the one when the file was created. 
-                    // Trying to repair the file is a bit complicated so just throw exception for now.
-                    throw FdoSchemaException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_85_NLS_PRE32)));
-            }
-        }
-
-        // Check the new schema.
-        if ( newSchema ) 
-        {
-            classes = newSchema->GetClasses();
-
-            for ( idx = 0; idx < classes->GetCount(); idx++ )
-            {
-                FdoClassDefinitionP classDef = classes->GetItem(idx);
-
-                if ( NeedsUTF8(classDef->GetName()) ) 
-                {
-                    // Found a class with non-ASCII7 character, bump up file version to 3.2
-                    m_minorVersion = SDFPROVIDER_VERSION_MINOR_3_2;
-                    WriteMetadata(m_majorVersion, m_minorVersion);
-
-                    break;
-                }
-            }
-        }
-    }
 }
 

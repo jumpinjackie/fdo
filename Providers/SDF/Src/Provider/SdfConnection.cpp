@@ -655,14 +655,13 @@ void SdfConnection::InitDatabases()
         //will be based on the base class
         FdoClassDefinition* baseClass = pi->GetBaseClass();
         FdoString* classname = baseClass->GetName();
-        bool isUTF8 = m_dbSchema->IsPhysNameUTF8();
 
         //Open or create the Data DB and insert into hash map
         //child classes share the same DB as the parent class
         if (baseClass != clas)
             m_hDataDbs[clas.p] = m_hDataDbs[baseClass];
         else
-            m_hDataDbs[clas.p] = new DataDb(m_env, m_mbsFullPath, classname, isUTF8, m_bReadOnly, clas, pi, m_CompareHandler );
+            m_hDataDbs[clas.p] = new DataDb(m_env, m_mbsFullPath, classname, m_bReadOnly, clas, pi, m_CompareHandler );
 
 
         //now initialize a KeyDb for the class
@@ -688,7 +687,7 @@ void SdfConnection::InitDatabases()
                 // ignore exception
                 exp->Release();
             }
-            m_hKeyDbs[clas.p] = new KeyDb(m_env, m_mbsFullPath, classname, isUTF8, m_bReadOnly, bNoIntKey);
+            m_hKeyDbs[clas.p] = new KeyDb(m_env, m_mbsFullPath, classname, m_bReadOnly, bNoIntKey);
         }
 
 
@@ -712,7 +711,7 @@ void SdfConnection::InitDatabases()
             if (baseFeatureClass != clas)
                 m_hRTrees[clas.p] = m_hRTrees[baseClass];
             else
-                m_hRTrees[clas.p] = new SdfRTree(m_env, m_mbsFullPath, classname, isUTF8, m_bReadOnly);
+                m_hRTrees[clas.p] = new SdfRTree(m_env, m_mbsFullPath, classname, m_bReadOnly);
         }
     }
 }
@@ -987,9 +986,7 @@ DataDb* SdfConnection::CreateNewDataDb( FdoClassDefinition* clas )
 
 DataDb* SdfConnection::CreateNewDataDb( FdoClassDefinition* clas, FdoString* dbName, PropertyIndex* pi )
 {
-    bool isUTF8 = m_dbSchema->IsPhysNameUTF8();
-
-	DataDb *db = new DataDb(m_env, m_mbsFullPath, dbName, isUTF8, true, clas, pi, NULL );
+	DataDb *db = new DataDb(m_env, m_mbsFullPath, dbName, true, clas, pi, NULL );
 
     return db;
 }

@@ -54,18 +54,6 @@ public:
 
 	void CloseCursor();
 
-    // returns true if table names are class names in UTF8 format.
-    // returns false if table names in multibyte format
-    bool IsPhysNameUTF8();
-
-    // Returns true if table name for the given class name needs to be in UTF8 format
-    // (if the class name contains a non-ASCII7 character).
-    bool NeedsUTF8( FdoString* name );
-
-    // Check if file version needs to be upgraded to 3.2. Does the upgrade if needed.
-    void UTF8Upgrade( FdoFeatureSchema* oldSchema, FdoFeatureSchema* newSchema );
-
-
 private:
     // Update the old schemas based on the new Schema and ignoreStates setting.
     SdfSchemaMergeContextP MergeSchema(SdfISchemaMergeContextFactory* mergeFactory, FdoFeatureSchemaP oldSchema, FdoFeatureSchemaP newSchema, bool ignoreStates);

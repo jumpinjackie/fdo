@@ -25,7 +25,7 @@ class KeyDb
 {
 public:
 
-    KeyDb(SQLiteDataBase* env, const char* filename, FdoString* dbname, bool bIsUTF8, bool bReadOnly, bool useIntKey);
+    KeyDb(SQLiteDataBase* env, const char* filename, FdoString* dbname, bool bReadOnly, bool useIntKey);
     virtual ~KeyDb();
     
     void InsertKey(SQLiteData* key, REC_NO recno);

@@ -30,8 +30,8 @@ int LEAFCARD = MAXCARD;
 #define MINFILL(n) ((n).level > 0 ? MinNodeFill : MinLeafFill)
 
 
-SdfRTree::SdfRTree(SQLiteDataBase* env, const char* filename, FdoString* database, bool bIsUTF8, bool bReadOnly) :
-    m_dbname( L"RTREE:", database, bIsUTF8 ) 
+SdfRTree::SdfRTree(SQLiteDataBase* env, const char* filename, FdoString* database, bool bReadOnly) :
+    m_dbname( L"RTREE:", database, true ) 
 {
     SQLiteTable* db = new SQLiteTable(env);
 
@@ -41,7 +41,8 @@ SdfRTree::SdfRTree(SQLiteDataBase* env, const char* filename, FdoString* databas
     int readOnlyFlag = bReadOnly ? SQLiteDB_RDONLY : 0;
 
     //open or create database in the given file with record # access type
-    if (res = db->open(0, filename, (const char*) m_dbname, readOnlyFlag, 0) != 0)
+	// Note that the nested PhysName call is necessary to reproduce the behavior of the previous versions of the SDF provider.
+    if (res = db->open(0, filename, (const char*)PhysName("RTREE:", (const char*)PhysName(L"", database, false), false), (const char*) m_dbname,  readOnlyFlag, 0) != 0)
     {
         //must close even if open failed
         db->close(0);
@@ -52,7 +53,7 @@ SdfRTree::SdfRTree(SQLiteDataBase* env, const char* filename, FdoString* databas
 
         db = new SQLiteTable(env);
 
-        if (res = db->open(0, filename, (const char*) m_dbname, SQLiteDB_CREATE, 0) != 0)
+        if (res = db->open(0, filename, (const char*)PhysName("RTREE:", (const char*)PhysName(L"", database, false), false), (const char*) m_dbname, SQLiteDB_CREATE, 0) != 0)
             throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_10_ERROR_ACCESSING_SDFDB)));
         else
         {

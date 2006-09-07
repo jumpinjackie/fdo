@@ -316,7 +316,7 @@ SQLiteTable* TableReformatter::OpenBackupTable( bool bCreate )
 
     SQLiteTable* backupTbl = new SQLiteTable(mConnection->GetDataBase());
 
-    if ( backupTbl->open( 0, mConnection->GetFilename(), (const char*) backupName, bCreate ? SQLiteDB_CREATE : 0, false ) != 0 ) 
+    if ( backupTbl->open( 0, mConnection->GetFilename(), (const char*) backupName, (const char*) backupName, bCreate ? SQLiteDB_CREATE : 0, false ) != 0 ) 
     {
         backupTbl->close(0);
         delete backupTbl;
@@ -339,7 +339,7 @@ void TableReformatter::DropBackupTable()
 
     SQLiteTable* backupTbl = new SQLiteTable(mConnection->GetDataBase());
 
-    if ( backupTbl->open( 0, mConnection->GetFilename(), (const char*) backupName, 0, false ) != 0 ) 
+    if ( backupTbl->open( 0, mConnection->GetFilename(), (const char*) backupName, (const char*) backupName, 0, false ) != 0 ) 
     {
         backupTbl->close(0);
         backupTbl->Drop();

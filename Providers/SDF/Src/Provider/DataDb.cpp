@@ -40,9 +40,9 @@ static FdoDataPropertyDefinitionCollection* FindIDs(FdoClassDefinition* fc)
     return (FDO_SAFE_ADDREF (idpdc.p));
 }
 
-DataDb::DataDb(SQLiteDataBase* env, const char* filename, FdoString* dbname, bool bIsUTF8, bool bReadOnly, 
+DataDb::DataDb(SQLiteDataBase* env, const char* filename, FdoString* dbname, bool bReadOnly, 
 			   FdoClassDefinition* fc, PropertyIndex* pi, SdfCompareHandler* cmpHandler)
-: m_wrtData(256),m_lastRec( 0 ),m_Fc(fc), m_Pi(pi), m_dbname( L"DATA:", dbname, bIsUTF8 ) 
+: m_wrtData(256),m_lastRec( 0 ),m_Fc(fc), m_Pi(pi), m_dbname( L"DATA:", dbname, true ) 
 
 {
     m_db = new SQLiteTable(env);
@@ -63,7 +63,8 @@ DataDb::DataDb(SQLiteDataBase* env, const char* filename, FdoString* dbname, boo
 		m_Ids = FindIDs( fc );
 
     //try to open a database that already exists
-    if (res = m_db->open(0, filename, (const char*) m_dbname, readOnlyFlag, 0,(cmpHandler!= NULL) ) != 0)
+	// Note that the nested PhysName call is necessary to reproduce the behavior of the previous versions of the SDF provider.
+    if (res = m_db->open(0, filename, (const char*)PhysName("DATA:", (const char*)PhysName(L"",dbname,false),false), (const char*) m_dbname, readOnlyFlag, 0,(cmpHandler!= NULL) ) != 0)
     {
         //must close even if open failed
         m_db->close(0);
@@ -76,7 +77,7 @@ DataDb::DataDb(SQLiteDataBase* env, const char* filename, FdoString* dbname, boo
             throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_4_CONNECTION_IS_READONLY)));
 
         //if that fails, create one
-        if (res = m_db->open(0, filename, (const char*) m_dbname, SQLiteDB_CREATE, 0, (cmpHandler!= NULL) ) != 0)
+        if (res = m_db->open(0, filename, (const char*)PhysName("DATA:", (const char*)PhysName(L"",dbname,false),false), (const char*) m_dbname, SQLiteDB_CREATE, 0, (cmpHandler!= NULL) ) != 0)
         {
             //printf("%s\n", env->strerror(res));
             throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_10_ERROR_ACCESSING_SDFDB)));

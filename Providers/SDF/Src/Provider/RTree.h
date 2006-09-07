@@ -33,7 +33,7 @@ class SdfRTree
 {
 public:
 
-    SdfRTree(SQLiteDataBase* env, const char* filename, FdoString* database, bool bIsUTF8, bool bReadOnly); 
+    SdfRTree(SQLiteDataBase* env, const char* filename, FdoString* database, bool bReadOnly); 
 
     ~SdfRTree();
 

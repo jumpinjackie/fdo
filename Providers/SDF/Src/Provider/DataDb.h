@@ -28,7 +28,7 @@ class DataDb: public SQLiteBTreeCompareHandler
 {
 public:
 
-    DataDb(SQLiteDataBase* env, const char* filename, FdoString* dbname, bool bIsUTF8, bool bReadOnly, 
+    DataDb(SQLiteDataBase* env, const char* filename, FdoString* dbname, bool bReadOnly, 
 		FdoClassDefinition* fc, PropertyIndex* pi, SdfCompareHandler* CmpHandler);
     virtual ~DataDb();
     
