@@ -157,37 +157,18 @@ void SQLiteTable::make_valid_name( char *name )
 	}
 }
 
-int SQLiteTable::open( SQLiteTransaction *txnid,
-    const char *dbFilePath, const char *subname, unsigned int open_flag, int, bool bNoIntKey)
-{ 
-    char   *newTabName = new char[strlen(subname)+1];
-    bool   useNoIntKey = true;
-	static char* formatStr = "select rootpage from sqlite_master where type='table' and name='%s'";
-	                         
-    SQLiteCursor *mCur = NULL;
-    char *szSQL = NULL;
-
-    useNoIntKey = bNoIntKey;
-
-    strcpy(newTabName,subname);
-
-    mIsReadOnly = (open_flag == SQLiteDB_RDONLY);
-
-    if( m_pDb->commit( ) != SQLITE_OK )
-        goto the_exit;
-    
-    m_pDb->remove_table( this );
-
-	make_valid_name( newTabName );
-    
-    if( ! m_pDb->IsOpen() )
-        m_pDb->openDB(dbFilePath);
-
-    szSQL = (char*)alloca(strlen(formatStr)+strlen(newTabName)+10);
+void SQLiteTable::find_root_page( const char   *tabName )
+{
+	static char* selectStr = "select rootpage from sqlite_master where type='table' and name='%s'";
+	char *szSQL = NULL;
+	szSQL = (char*)alloca(strlen(selectStr)+strlen(tabName)+10);
 	if( szSQL == NULL )
-		goto the_exit;
+	{
+		mRootDataPage = -1;
+		return;
+	}
 
-	sprintf(szSQL,formatStr,newTabName );
+	sprintf(szSQL,selectStr,tabName );
     
     SQLiteQueryResult* queryRes;
     if( m_pDb->ExecuteQuery( szSQL, &queryRes) == SQLITE_OK )
@@ -204,7 +185,7 @@ int SQLiteTable::open( SQLiteTransaction *txnid,
     }
     if( mRootDataPage == -1 )
     {
-        sprintf(szSQL,"select rootpage from fdo_master where name='%s'",newTabName );
+        sprintf(szSQL,"select rootpage from fdo_master where name='%s'",tabName );
         if( m_pDb->ExecuteQuery( szSQL, &queryRes) == SQLITE_OK )
         {
             if( queryRes->NextRow() )
@@ -218,8 +199,59 @@ int SQLiteTable::open( SQLiteTransaction *txnid,
             delete queryRes;
         }
     }
+}
+
+int SQLiteTable::open( SQLiteTransaction *txnid,
+    const char *dbFilePath, const char *mbcsName, const char *utf8Name, unsigned int open_flag, int, bool bNoIntKey)
+{ 
+    char   *mbcsNewTabName = NULL;
+	char   *utf8NewTabName = new char[strlen(utf8Name)+1];
+    bool   useNoIntKey = true;
+	
+	bool useMbcsName = (strcmp(mbcsName,utf8Name) != 0 );
+	                         
+    SQLiteCursor *mCur = NULL;
+    char *szSQL = NULL;
+
+    useNoIntKey = bNoIntKey;
+	int sizeForAlloc = strlen( utf8Name );
+	if( useMbcsName )
+	{
+		mbcsNewTabName = new char[strlen(mbcsName)+1];
+		strcpy(mbcsNewTabName,mbcsName);
+		make_valid_name( mbcsNewTabName );
+		int size = strlen( mbcsNewTabName );
+		if( size > sizeForAlloc )
+			sizeForAlloc = size;
+	}
+
+	strcpy(utf8NewTabName,utf8Name);
+	make_valid_name( utf8NewTabName );
+    
+	mIsReadOnly = (open_flag == SQLiteDB_RDONLY);
+
+    if( m_pDb->commit( ) != SQLITE_OK )
+        goto the_exit;
+    
+    m_pDb->remove_table( this );
+    
+    if( ! m_pDb->IsOpen() )
+        m_pDb->openDB(dbFilePath);
+
+	find_root_page( utf8NewTabName );
+	if( mRootDataPage == -1 && useMbcsName )
+		find_root_page( mbcsNewTabName ); // Older versions used mbcs encoded table names.
+ 
     if( (open_flag & SQLiteDB_CREATE)  && mRootDataPage == -1 )
     {
+		static char* selectStr = "select rootpage from sqlite_master where type='table' and name='%s'";
+		static char* insertStr = "insert into fdo_master(name, rootpage) values ('%s',%d)";
+		static char* createFrm = "create table '%s'(data blob);";
+
+		szSQL = (char*)alloca(strlen(selectStr)+sizeForAlloc+10);
+		if( szSQL == NULL )
+			goto the_exit;
+
         m_pDb->close_all_read_cursors();
         if( useNoIntKey )
         {
@@ -228,28 +260,32 @@ int SQLiteTable::open( SQLiteTransaction *txnid,
                 return SQLITE_ERROR;  
             if( m_pDb->BTree()->create_table( 0, &tabId ) == SQLITE_OK )
             {
-	            sprintf(szSQL,"insert into fdo_master(name, rootpage) values ('%s',%d)",newTabName,tabId );
+	            sprintf(szSQL,insertStr,utf8NewTabName,tabId );
                 if( m_pDb->ExecuteNonQuery( szSQL ) != SQLITE_OK )
                 {
                     m_pDb->commit();
                     return SQLITE_ERROR;
                 }
+
+				if( useMbcsName )
+				{
+					// Insert the mbcs version of the table name. This is needed by previous versions of the provider that
+					// did not use the UTF8 table names( i.e Support forward compatibility )
+					sprintf(szSQL,insertStr,mbcsNewTabName,tabId );
+					m_pDb->ExecuteNonQuery( szSQL ); // Do not fail as this is not required by new providers.
+				}
+
                 mRootDataPage = tabId;
             }
             m_pDb->commit();   
         }
         else
         {
-			static char* createFrm = "create table %s(data blob);";
-			char   *stmt = (char*) alloca(strlen(createFrm)+strlen(newTabName)+1);
-			if( stmt == NULL )
-				goto the_exit;
-            sprintf(stmt,createFrm,newTabName);
-       
-            m_pDb->ExecuteNonQuery( stmt );
-            SQLiteQueryResult* queryRes;
-        	sprintf(szSQL,"select rootpage from sqlite_master where type='table' and name='%s'",newTabName );
+            sprintf(szSQL,createFrm,utf8NewTabName);
+            m_pDb->ExecuteNonQuery( szSQL );
 
+            SQLiteQueryResult* queryRes;
+        	sprintf(szSQL,selectStr,utf8NewTabName );
             if( m_pDb->ExecuteQuery( szSQL, &queryRes) == SQLITE_OK )
             {
                 if( queryRes->NextRow() )
@@ -262,6 +298,13 @@ int SQLiteTable::open( SQLiteTransaction *txnid,
                 queryRes->Close();
                 delete queryRes;
             }
+			if( mRootDataPage != -1 && useMbcsName )
+			{
+				// Insert the mbcs version of the table name. This is needed by previous versions of the provider that
+				// did not use the UTF8 table names( i.e Support forward compatibility )
+				sprintf(szSQL,insertStr,mbcsNewTabName,mRootDataPage );
+                (void)m_pDb->ExecuteNonQuery( szSQL ); // Do not fail as this is not required by new providers.
+			}
         }
     }
     if( mRootDataPage == -1 )
@@ -285,20 +328,23 @@ int SQLiteTable::open( SQLiteTransaction *txnid,
         mCur->close();
         delete mCur;
     }
-    if( strncmp(newTabName,"RTREE", 5 ) == 0 )
+    if( strncmp(utf8NewTabName,"RTREE", 5 ) == 0 )
         mMaxCacheSize = SQLiteDB_MAXCACHESIZE*5;
  
 	mUseIntKey = ! useNoIntKey;
 	
     mIsOpen = true;
     m_pDb->add_table( this );
-    mTableName = new char[strlen(newTabName)+1];
-    strcpy(mTableName,newTabName);
+    mTableName = new char[strlen(utf8NewTabName)+1];
+    strcpy(mTableName,utf8NewTabName);
 
 the_exit:
-    if( newTabName )
-        delete[] newTabName; 
+    if( utf8NewTabName )
+        delete[] utf8NewTabName; 
     
+	if( mbcsNewTabName )
+        delete[] mbcsNewTabName; 
+
     return ((mRootDataPage == -1)?1:0);
 }
 
@@ -357,17 +403,17 @@ int SQLiteTable::Drop()
 		    return SQLITE_ERROR;
 	    }		
     }
-    else {
+    else 
     	m_pDb->BTree()->drop_table( mRootDataPage );
-
-        sprintf(szSQL,"delete from fdo_master where rootpage = %d",mRootDataPage );
-	    if( m_pDb->ExecuteNonQuery( szSQL ) != SQLITE_OK ) 
-	    {
-		    m_pDb->commit();
-		    return SQLITE_ERROR;
-	    }
+	
+	// Cleanup any entry for this table from the fdo master table
+    sprintf(szSQL,"delete from fdo_master where rootpage = %d",mRootDataPage );
+    if( m_pDb->ExecuteNonQuery( szSQL ) != SQLITE_OK ) 
+    {
+	    m_pDb->commit();
+	    return SQLITE_ERROR;
     }
-
+    
 	mRootDataPage = -1;
 
     if( mTabCache )

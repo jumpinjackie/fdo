@@ -58,7 +58,7 @@ public:
 	void SetCompareHandler( SQLiteBTreeCompareHandler *hdl ) { mCmpHandler = hdl; }
 
     int open(SQLiteTransaction *txnid,
-        const char *, const char *subname, unsigned int, int, bool bNoIntKey = false);
+        const char *, const char *mbcsName, const char *utf8Name, unsigned int, int, bool bNoIntKey = false);
 
     int close(unsigned int flags);
 
@@ -92,6 +92,8 @@ public:
     const char* GetName();
 
 private:
+
+	void find_root_page( const char   *tabName );
 
 	void make_valid_name( char *name );
 };
