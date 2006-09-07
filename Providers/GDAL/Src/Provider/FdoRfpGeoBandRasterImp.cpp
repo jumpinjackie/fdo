@@ -95,9 +95,9 @@ FdoRfpRect FdoRfpGeoBandRasterRot::GetBounds()
 
 void FdoRfpGeoBandRasterRot::PixelToWorld(double x, double y, double *x_out, double *y_out)
 {
-    y = m_height - y;
+    //y = m_height - y;
 
-    *x_out = m_insertionX + x * m_resX * cos(m_rotationY) - y * (-1 * m_resY) * sin(m_rotationX);
-    *y_out = m_insertionY + x * m_resX * sin(m_rotationY) + y * (-1 * m_resY) * cos(m_rotationX);
+    *x_out = m_insertionX + x * m_resX * cos(m_rotationY) - y * (m_resY) * sin(m_rotationX);
+    *y_out = m_insertionY + x * m_resX * sin(m_rotationY) + y * (m_resY) * cos(m_rotationX);
 }
 

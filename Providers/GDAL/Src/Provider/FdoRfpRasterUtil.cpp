@@ -176,7 +176,7 @@ bool FdoRfpRasterUtil::GetGeoReferenceInfo(GDALDatasetH hDS, FdoPtr<FdoRfpGeoref
 
     // TODO Set rotation properly!
     geoRef->SetXInsertion( adfGeoTransform[0] );
-    geoRef->SetYInsertion( adfGeoTransform[3] );
+    geoRef->SetYInsertion( adfGeoTransform[3]+adfGeoTransform[5]*GDALGetRasterYSize(hDS) );
     geoRef->SetXResolution( adfGeoTransform[1] );
     geoRef->SetYResolution( fabs(adfGeoTransform[5]) );
     geoRef->SetXRotation( 0.0 );
