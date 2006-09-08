@@ -36,61 +36,67 @@ FdoRfpRasterCapabilities::~FdoRfpRasterCapabilities()
 
 bool FdoRfpRasterCapabilities::SupportsRaster()
 {
-	return true;
+    return true;
 }
 
 bool FdoRfpRasterCapabilities::SupportsStitching()
 {
-	return true;
+    return false; // for now.
 }
 
 bool FdoRfpRasterCapabilities::SupportsSubsampling()
 {
-	return true;
+    return true;
 }
   
 bool FdoRfpRasterCapabilities::SupportsDataModel(FdoRasterDataModel* model)
 {
-	if (model == NULL)
-		return false;
+    if (model == NULL)
+        return false;
 
-	// We are using ATIL as our underlying image library, so we just support
-	// those data models supported by ATIL
-	
-	// ATIL can only support data interleave organization by pixel
-	if (model->GetOrganization() != FdoRasterDataOrganization_Pixel)
-		return false;
-	FdoInt32 bpp = model->GetBitsPerPixel();
+    // GDAL supports all raster organizations.
 
-	switch (model->GetDataModelType())
-	{
-	case FdoRasterDataModelType_Bitonal:
-		if (bpp == 1)
-			return true;
-		break;
-	case FdoRasterDataModelType_Gray:
-		if (bpp == 8)
-			return true;
-		break;
-	case FdoRasterDataModelType_RGB:
-		if (bpp == 24)
-			return true;
-		break;
-	case FdoRasterDataModelType_RGBA:
-		if (bpp == 32)
-			return true;
-		break;
-	case FdoRasterDataModelType_Palette:
-		if (bpp == 8)
-			return true;
-		break;
-	case FdoRasterDataModelType_Data:
-		if (bpp == 32)
-			return true;
-		break;
-	};
+    // GDAL Supports selected combinations of modeltype and bits per pixel.
+    FdoInt32 bpp = model->GetBitsPerPixel();
+    int bands;
+
+    switch (model->GetDataModelType())
+    {
+      case FdoRasterDataModelType_Bitonal:
+        return false;  
+
+        
+      case FdoRasterDataModelType_Palette:
+        return false; // for now this mode is not supported.
+
+      case FdoRasterDataModelType_Gray:
+      case FdoRasterDataModelType_Data:
+        bands = 1;
+        break;
+
+      case FdoRasterDataModelType_RGB:
+        bands = 3;
+        break;
+
+      case FdoRasterDataModelType_RGBA:
+        bands = 4;
+        break;
+    };
 	
-	return false;
+    if( model->GetDataType() == FdoRasterDataType_Float )
+        return model->GetBitsPerPixel() == 32 * bands 
+            || model->GetBitsPerPixel() == 64 * bands;
+    else if( model->GetDataType() == FdoRasterDataType_Integer )
+        return model->GetBitsPerPixel() == 16 * bands 
+            || model->GetBitsPerPixel() == 32 * bands;
+    else if( model->GetDataType() == FdoRasterDataType_UnsignedInteger )
+        return model->GetBitsPerPixel() == 8 * bands
+            || model->GetBitsPerPixel() == 16 * bands 
+            || model->GetBitsPerPixel() == 32 * bands;
+    else
+        return false;
+
+    return false;
 }
 
 void FdoRfpRasterCapabilities::Dispose()
