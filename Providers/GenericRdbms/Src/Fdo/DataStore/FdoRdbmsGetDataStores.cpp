@@ -23,7 +23,6 @@
 
 // FdoRdbmsGetDataStores
 #include "FdoRdbmsGetDataStores.h"
-#include "FdoRdbmsDataStorePropertyDictionary.h"
 #include "FdoRdbmsConnection.h"
 
 // Constructor
@@ -50,7 +49,7 @@ FdoRdbmsGetDataStores::~FdoRdbmsGetDataStores()
 
 FdoString* FdoRdbmsGetDataStores::GetDataStorePropertyName()
 {
-    return DbiConnection::SCHEMA;
+    return L"DataStore";
 }
 
 bool FdoRdbmsGetDataStores::GetIncludeNonFdoEnabledDatastores()

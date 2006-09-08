@@ -23,7 +23,6 @@
 #endif
 #include <FdoStd.h>
 #include "Fdo/Commands/DataStore/IDataStoreReader.h"
-#include "FdoRdbmsDataStorePropertyDictionary.h"
 
 #include <Sm/Ph/SchemaReader.h>
 #include <Sm/Ph/Rd/OwnerReader.h>
@@ -91,7 +90,7 @@ private:
 	FdoStringP				mDatastoreDescription;
 	FdoStringP				mLtMode;
 	FdoStringP				mLockMode;	
-	FdoRdbmsDataStorePropertyDictionaryP mDatastoreProperty;
+	FdoPtr<FdoIDataStorePropertyDictionary> mDatastoreProperty;
 };
 
 #endif

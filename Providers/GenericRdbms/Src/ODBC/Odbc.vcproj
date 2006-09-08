@@ -219,10 +219,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Fdo\FdoRdbmsOdbcConnectionPropertyDictionary.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Fdo\FdoRdbmsOdbcExpressionCapabilities.cpp"
 				>
 			</File>
@@ -293,15 +289,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Fdo\FdoRdbmsOdbcConnectionPropertyDictionary.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Fdo\FdoRdbmsOdbcCreateDataStore.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Fdo\FdoRdbmsOdbcDataStorePropertyDictionary.h"
 				>
 			</File>
 			<File

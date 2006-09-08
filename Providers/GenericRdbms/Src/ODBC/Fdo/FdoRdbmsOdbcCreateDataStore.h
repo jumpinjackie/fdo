@@ -23,7 +23,6 @@
 
 #include "../../Fdo/DataStore/FdoRdbmsCreateDatastore.h"
 #include "../../Fdo/FeatureCommands/FdoRdbmsCommand.h"
-#include "FdoRdbmsOdbcDataStorePropertyDictionary.h"
 
 /// <summary>This command creates a new Odbc datastore.</summary>
 class FdoRdbmsOdbcCreateDataStore: public FdoRdbmsCreateDataStore
@@ -37,7 +36,33 @@ protected:
     FdoRdbmsOdbcCreateDataStore (FdoRdbmsOdbcConnection* connection)
     {
         mConnection = connection;
-		mDataStorePropertyDictionary = new FdoRdbmsOdbcDataStorePropertyDictionary(NULL, FDO_RDBMS_DATASTORE_FOR_CREATE);
+		mDataStorePropertyDictionary = new FdoCommonDataStorePropDictionary(mConnection);
+        
+        FdoPtr<ConnectionProperty> newProp;
+        newProp = new ConnectionProperty (FDO_RDBMS_CONNECTION_DATASTORE, NlsMsgGet(FDORDBMS_117, "DataStore"), L"", true, false, false, false, false, true, false, 0, NULL);
+        mDataStorePropertyDictionary->AddProperty(newProp);
+
+        newProp = new ConnectionProperty (FDO_RDBMS_CONNECTION_PASSWORD, NlsMsgGet(FDORDBMS_119, "Password"), L"", true, true, false, false, false, false, false, 0, NULL);
+        mDataStorePropertyDictionary->AddProperty(newProp);
+
+        newProp = new ConnectionProperty (FDO_RDBMS_DATASTORE_DESCRIPTION, NlsMsgGet(FDORDBMS_448, "Description"), L"", false, false, false, false, false, false, false, 0, NULL);
+        mDataStorePropertyDictionary->AddProperty(newProp);
+		
+    	wchar_t **LtModeValues = new wchar_t*[2];
+        LtModeValues[0] = new wchar_t[4];
+        LtModeValues[1] = new wchar_t[5];
+        wcscpy(LtModeValues[0], L"FDO");
+        wcscpy(LtModeValues[1], L"NONE");
+        newProp = new ConnectionProperty (FDO_RDBMS_DATASTORE_LTMODE, NlsMsgGet(FDORDBMS_449, "LtMode"), L"FDO", false, false, true, false, false, false, false, 2, (const wchar_t**)LtModeValues);
+        mDataStorePropertyDictionary->AddProperty(newProp);
+		
+    	wchar_t **LockModeValues = new wchar_t*[2];
+        LockModeValues[0] = new wchar_t[4];
+        LockModeValues[1] = new wchar_t[5];
+        wcscpy(LockModeValues[0], L"FDO");
+        wcscpy(LockModeValues[1], L"NONE");
+        newProp = new ConnectionProperty (FDO_RDBMS_DATASTORE_LOCKMODE, NlsMsgGet(FDORDBMS_450, "LockMode"), L"FDO", false, false, true, false, false, false, false, 2, (const wchar_t**)LockModeValues);
+        mDataStorePropertyDictionary->AddProperty(newProp);
     }
 
 public:
@@ -46,18 +71,16 @@ public:
 	///	<returns>Returns nothing</returns> 
 	virtual	void Execute() 
 	{
-		FdoRdbmsDataStorePropertyDictionary *p = (FdoRdbmsDataStorePropertyDictionary *)mDataStorePropertyDictionary;
- 
 		if ( !mConnection )
             throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_13, "Connection not established"));
 
 		mConnection->CreateDb( 	
-						 p->GetProperty(FDO_RDBMS_CONNECTION_DATASTORE),
-						 p->GetProperty(FDO_RDBMS_DATASTORE_DESCRIPTION),      
-						 p->GetProperty(FDO_RDBMS_CONNECTION_PASSWORD),
+						 mDataStorePropertyDictionary->GetProperty(FDO_RDBMS_CONNECTION_DATASTORE),
+						 mDataStorePropertyDictionary->GetProperty(FDO_RDBMS_DATASTORE_DESCRIPTION),      
+						 mDataStorePropertyDictionary->GetProperty(FDO_RDBMS_CONNECTION_PASSWORD),
 						 L"",	// service 
-						 p->GetProperty(FDO_RDBMS_DATASTORE_LTMODE),
-						 p->GetProperty(FDO_RDBMS_DATASTORE_LOCKMODE)
+						 mDataStorePropertyDictionary->GetProperty(FDO_RDBMS_DATASTORE_LTMODE),
+						 mDataStorePropertyDictionary->GetProperty(FDO_RDBMS_DATASTORE_LOCKMODE)
 						 );
 	} 
 };

@@ -26,12 +26,4 @@
 #define RDBMS_ODBC_PROVIDER_VERSION       L"3.2.0.0"
 #define RDBMS_ODBC_FDO_VERSION    L"3.2.0.0"
 
-// Provider Connection Parameters
-
-const FdoStringP g_OdbcConnectionParmeter_DataSourceName    = L"DataSourceName";
-const FdoStringP g_OdbcConnectionParmeter_Password          = L"Password";
-const FdoStringP g_OdbcConnectionParmeter_UserId            = L"UserId";
-const FdoStringP g_OdbcConnectionParmeter_ConnectionString  = L"ConnectionString";
-const FdoStringP g_OdbcConnectionParmeter_GenerateGeometry  = L"GenerateDefaultGeometryProperty";
-
 #endif

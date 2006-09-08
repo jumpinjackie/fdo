@@ -53,8 +53,8 @@
 #define ODBCORACLE_PASSWORD_DEFAULT			L"" // e.g. xxxx
 #define ODBCORACLE_DSN_DEFAULT				UNITTEST_VERSION_NAME L"OracleFdoTest"
 
-#define ODBCACCESS_DSN_DEFAULT				L"MSTest"
-#define ODBCEXCEL_DSN_DEFAULT				L"MSTestXls"
+#define ODBCACCESS_DSN_DEFAULT				L"MsTest"
+#define ODBCEXCEL_DSN_DEFAULT				L"MsTestXls"
 #define ODBCTEXT_DSN_DEFAULT				L"Country_Text"
 
 #ifdef _WIN32
@@ -729,7 +729,7 @@ void OdbcConnectionUtil::TeardownAccessDSN()
     char pString[SQL_MAX_MESSAGE_LENGTH];
     DWORD error;
     WORD count;
-	sprintf( pString, "DSN=%s\0\0", (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"DSNAccess" ));
+	sprintf( pString, "DSN=%s%c%c", (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"DSNAccess" ), '\0', '\0');
     if (!SQLConfigDataSource (NULL, ODBC_REMOVE_DSN, "Microsoft Access Driver (*.mdb)", pString))
     {
         SQLInstallerError (1, &error, pString, sizeof (pString), &count);
@@ -743,7 +743,7 @@ void OdbcConnectionUtil::TeardownExcelDSN()
     char pString[SQL_MAX_MESSAGE_LENGTH];
     DWORD error;
     WORD count;
-	sprintf( pString, "DSN=%s\0\0", (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"DSNExcel" ));
+	sprintf( pString, "DSN=%s%c%c", (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"DSNExcel" ), '\0', '\0');
     if (!SQLConfigDataSource (NULL, ODBC_REMOVE_DSN, "Microsoft Excel Driver (*.xls)", pString))
     {
         SQLInstallerError (1, &error, pString, sizeof (pString), &count);
@@ -757,7 +757,7 @@ void OdbcConnectionUtil::TeardownTextDSN()
     char pString[SQL_MAX_MESSAGE_LENGTH];
     DWORD error;
     WORD count;
-	sprintf( pString, "DSN=%s\0\0", (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"DSNText" ));
+	sprintf( pString, "DSN=%s%c%c", (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"DSNText" ), '\0', '\0');
     if (!SQLConfigDataSource (NULL, ODBC_REMOVE_DSN, "Microsoft Text Driver (*.txt; *.csv)", pString))
     {
         SQLInstallerError (1, &error, pString, sizeof (pString), &count);
@@ -771,7 +771,7 @@ void OdbcConnectionUtil::TeardownSqlServerDSN()
     char pString[SQL_MAX_MESSAGE_LENGTH];
     DWORD error;
     WORD count;
-	sprintf( pString, "DSN=%s\0\0", (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"DSNSqlServer" ));
+	sprintf( pString, "DSN=%s%c%c", (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"DSNSqlServer" ), '\0', '\0');
     if (!SQLConfigDataSource (NULL, ODBC_REMOVE_DSN, "SQL Server", pString))
     {
         SQLInstallerError (1, &error, pString, sizeof (pString), &count);
@@ -785,7 +785,7 @@ void OdbcConnectionUtil::TeardownMySqlDSN()
     char pString[SQL_MAX_MESSAGE_LENGTH];
     DWORD error;
     WORD count;
-	sprintf( pString, "DSN=%s\0\0", (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"DSNMySql" ));
+	sprintf( pString, "DSN=%s%c%c", (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"DSNMySql" ), '\0', '\0');
     if (!SQLConfigDataSource (NULL, ODBC_REMOVE_DSN, "MySQL ODBC 3.51 Driver", pString))
     {
         SQLInstallerError (1, &error, pString, sizeof (pString), &count);
@@ -799,7 +799,7 @@ void OdbcConnectionUtil::TeardownOracleDSN()
     char pString[SQL_MAX_MESSAGE_LENGTH];
     DWORD error;
     WORD count;
-	sprintf( pString, "DSN=%s\0\0", (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"DSNOracle" ));
+	sprintf( pString, "DSN=%s%c%c", (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"DSNOracle" ), '\0', '\0');
     if (!SQLConfigDataSource (NULL, ODBC_REMOVE_DSN, theOracleDriverName, pString))
     {
         SQLInstallerError (1, &error, pString, sizeof (pString), &count);

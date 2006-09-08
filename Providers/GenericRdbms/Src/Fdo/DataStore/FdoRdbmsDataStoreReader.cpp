@@ -21,7 +21,7 @@
 #include "stdafx.h"
 #include "FdoRdbmsDataStoreReader.h"
 #include "FdoRdbmsConnection.h"
-
+#include "FdoRdbmsConnectionPropertyDictionary.h"
 
 FdoRdbmsDataStoreReader::FdoRdbmsDataStoreReader( FdoRdbmsConnection *connection, FdoSmPhRdOwnerReaderP phReader, bool includeNonFdoDb ):
 	mConnection( FDO_SAFE_ADDREF(connection) ),
@@ -56,27 +56,26 @@ bool FdoRdbmsDataStoreReader::GetIsFdoEnabled()
 FdoIDataStorePropertyDictionary* FdoRdbmsDataStoreReader::GetDataStoreProperties()
 {
 	// Create a provider specific datastore dictionary property.
-	mDatastoreProperty = (FdoRdbmsDataStorePropertyDictionary *)mConnection->CreateDataStoreProperties( FDO_RDBMS_DATASTORE_FOR_READ );
+    if (mDatastoreProperty == NULL)
+    {
+	    mDatastoreProperty = mConnection->CreateDataStoreProperties( FDO_RDBMS_DATASTORE_FOR_READ );
 
-	int count;
-	FdoString **names = mDatastoreProperty->GetPropertyNames(count);
+	    int count;
+	    FdoString **names = mDatastoreProperty->GetPropertyNames(count);
 
-	for (int i = 0; i < count; i++ )
-	{
-		FdoStringP name =  names[i];
-
-		if ( wcscmp( name, FDO_RDBMS_CONNECTION_DATASTORE ) == 0 )
-			mDatastoreProperty->SetProperty( name, mDatastoreName );
-		else if ( wcscmp( name, FDO_RDBMS_DATASTORE_DESCRIPTION ) == 0 )
-			mDatastoreProperty->SetProperty( name, mDatastoreDescription );
-		else if ( wcscmp( name, FDO_RDBMS_DATASTORE_LTMODE ) == 0 )
-			mDatastoreProperty->SetProperty( name, mLtMode );
-		else if ( wcscmp( name, FDO_RDBMS_DATASTORE_LOCKMODE ) == 0 )
-			mDatastoreProperty->SetProperty( name, mLockMode );
-		else 
-			;
-	}
-	return (FdoIDataStorePropertyDictionary *)FDO_SAFE_ADDREF(mDatastoreProperty.p);
+	    for (int i = 0; i < count; i++ )
+	    {
+		    if ( wcscmp( names[i], FDO_RDBMS_CONNECTION_DATASTORE ) == 0 )
+			    mDatastoreProperty->SetProperty( names[i], mDatastoreName );
+		    else if ( wcscmp( names[i], FDO_RDBMS_DATASTORE_DESCRIPTION ) == 0 )
+			    mDatastoreProperty->SetProperty( names[i], mDatastoreDescription );
+		    else if ( wcscmp( names[i], FDO_RDBMS_DATASTORE_LTMODE ) == 0 )
+			    mDatastoreProperty->SetProperty( names[i], mLtMode );
+		    else if ( wcscmp( names[i], FDO_RDBMS_DATASTORE_LOCKMODE ) == 0 )
+			    mDatastoreProperty->SetProperty( names[i], mLockMode );
+	    }
+    }
+	return FDO_SAFE_ADDREF(mDatastoreProperty.p);
 }
 
 bool FdoRdbmsDataStoreReader::ReadNext()

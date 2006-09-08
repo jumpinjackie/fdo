@@ -881,7 +881,7 @@ void OdbcAccessFdoConnectTest::InfoTest()
         // ------------------------------------------------
 
         // set custom values
-        FdoStringP strDSN                   = L"MSTest";
+        FdoStringP strDSN                   = L"MsTest";
         FdoStringP strUID                   = L"GregB";
         FdoStringP strPWD                   = L"test";
         FdoStringP strConnectionString      = L"Driver={Microsoft Access Driver (*.mdb)};DBQ=MSTest.mdb";
@@ -923,7 +923,7 @@ void OdbcAccessFdoConnectTest::InfoTest()
         // test updating of connection info properties
         // ------------------------------------------------
 
-        connection->SetConnectionString(L"DataSourceName=MSTest;UserId=Tester;Password=Test2;ConnectionString=\"Driver={Microsoft Access Driver (*.mdb)};DBQ=MSTest.mdb\"");
+        connection->SetConnectionString(L"DataSourceName=MsTest;UserId=Tester;Password=Test2;ConnectionString=\"Driver={Microsoft Access Driver (*.mdb)};DBQ=MSTest.mdb\"");
 
         strDSN = connProps->GetProperty(L"DataSourceName");
         strUID = connProps->GetProperty(L"UserId");
@@ -934,7 +934,7 @@ void OdbcAccessFdoConnectTest::InfoTest()
         // These next two tests are coded out until Defect 742563 is fixed.  The generic RDBMS code -- it never
         // updates connection property dictionary as a result of a connection string assignment.
 
-        if (wcscmp(strDSN, L"MSTest") != 0 ||
+        if (wcscmp(strDSN, L"MsTest") != 0 ||
             wcscmp(strUID, L"Tester") != 0 ||
             wcscmp(strPWD, L"Test2")  != 0 ||
             wcscmp(strConnectionString, L"Driver={Microsoft Access Driver (*.mdb)};DBQ=MSTest.mdb")  != 0)
@@ -951,7 +951,7 @@ void OdbcAccessFdoConnectTest::InfoTest()
         if (connection2 == NULL)
             CPPUNIT_FAIL("FAILED - CreateConnection returned NULL\n");
 
-        connection2->SetConnectionString(L"DataSourceName=MSTest;UserId=Tester2;Password=Test3;ConnectionString=\"Driver={Microsoft Access Driver (*.mdb)};DBQ=MSTest.mdb\"");
+        connection2->SetConnectionString(L"DataSourceName=MsTest;UserId=Tester2;Password=Test3;ConnectionString=\"Driver={Microsoft Access Driver (*.mdb)};DBQ=MSTest.mdb\"");
         FdoPtr<FdoIConnectionInfo> connInfo2 = connection2->GetConnectionInfo();
         FdoPtr<FdoIConnectionPropertyDictionary> connProps2 = connInfo2->GetConnectionProperties();
 
@@ -960,7 +960,7 @@ void OdbcAccessFdoConnectTest::InfoTest()
         strPWD = connProps2->GetProperty(L"Password");
         strConnectionString = connProps->GetProperty(L"ConnectionString");
 
-        if (wcscmp(strDSN, L"MSTest") != 0 ||
+        if (wcscmp(strDSN, L"MsTest") != 0 ||
             wcscmp(strUID, L"Tester2") != 0 ||
             wcscmp(strPWD, L"Test3")  != 0 ||
             wcscmp(strConnectionString, L"Driver={Microsoft Access Driver (*.mdb)};DBQ=MSTest.mdb")  != 0)

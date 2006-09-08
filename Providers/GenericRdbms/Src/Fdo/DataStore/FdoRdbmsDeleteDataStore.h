@@ -27,9 +27,9 @@
 #endif
 
 #include "Fdo/Commands/DataStore/IDestroyDataStore.h"
-#include "FdoRdbmsDataStorePropertyDictionary.h"
 #include "FdoRdbmsConnection.h"
 #include "FdoRdbmsCommand.h"
+#include <FdoCommonConnPropDictionary.h>
 
 /// <summary>The FdoIDestroyDataStore interface defines the destroy datastore command
 /// that can be used to remove and existing datastore. The input is provided
@@ -46,7 +46,7 @@ public:
 	///	<returns>Returns the property dictionary</returns>
 	virtual	FdoIDataStorePropertyDictionary* GetDataStoreProperties() 
 	{ 
-		return (FdoIDataStorePropertyDictionary *)(mDataStorePropertyDictionary);
+        return (FdoIDataStorePropertyDictionary *)(FDO_SAFE_ADDREF(mDataStorePropertyDictionary.p));
 	}
 
 	/// <summary>Executes the FdoIDeleteDataStore command.</summary>
@@ -54,7 +54,7 @@ public:
 	virtual void Execute() = 0; 
 
 protected:
-	FdoRdbmsDataStorePropertyDictionary *mDataStorePropertyDictionary;
+	FdoPtr<FdoCommonDataStorePropDictionary> mDataStorePropertyDictionary;
     FdoRdbmsConnection* mConnection;
 };
 

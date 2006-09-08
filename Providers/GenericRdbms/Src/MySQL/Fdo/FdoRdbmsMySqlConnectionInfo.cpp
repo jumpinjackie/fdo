@@ -18,7 +18,6 @@
 
 #include "stdafx.h"
 #include "FdoRdbmsMySqlConnectionInfo.h"
-#include "FdoRdbmsMySqlConnectionPropertyDictionary.h"
 #include "FdoRdbmsMySqlProviderInfo.h"
 
 FdoRdbmsMySqlConnectionInfo::FdoRdbmsMySqlConnectionInfo(FdoRdbmsConnection *connection) :
@@ -30,9 +29,12 @@ mConnection(connection)
 
 FdoRdbmsMySqlConnectionInfo::~FdoRdbmsMySqlConnectionInfo()
 {
-    FDO_SAFE_RELEASE(mPropertyDictionary);
 }
 
+void FdoRdbmsMySqlConnectionInfo::Dispose()
+{
+    delete this;
+}
 
 const wchar_t* FdoRdbmsMySqlConnectionInfo::GetProviderName()
 {
@@ -63,14 +65,19 @@ const wchar_t* FdoRdbmsMySqlConnectionInfo::GetFeatureDataObjectsVersion()
 FdoIConnectionPropertyDictionary* FdoRdbmsMySqlConnectionInfo::GetConnectionProperties()
 {
     if (mPropertyDictionary == NULL)
-        mPropertyDictionary = (FdoIConnectionPropertyDictionary *)new FdoRdbmsMySqlConnectionPropertyDictionary(mConnection);
-    FDO_SAFE_ADDREF(mPropertyDictionary);
+    {
+        mPropertyDictionary = new FdoRdbmsConnectionPropertyDictionary((FdoIConnection*)mConnection);
+        
+        FdoPtr<ConnectionProperty> pProp;
+        pProp = new ConnectionProperty (FDO_RDBMS_CONNECTION_USERNAME, NlsMsgGet(FDORDBMS_118, "Username"), L"", true, false, false, false, false, false, false, 0, NULL); 
+        mPropertyDictionary->AddProperty(pProp);
+        pProp = new ConnectionProperty (FDO_RDBMS_CONNECTION_PASSWORD, NlsMsgGet(FDORDBMS_119, "Password"), L"", true, true, false, false, false, false, false, 0, NULL); 
+        mPropertyDictionary->AddProperty(pProp);
+        pProp = new ConnectionProperty (FDO_RDBMS_CONNECTION_SERVICE, NlsMsgGet(FDORDBMS_120, "Service"), L"", true, false, false, false, false, false, false, 0, NULL); 
+        mPropertyDictionary->AddProperty(pProp);
+        pProp = new ConnectionProperty (FDO_RDBMS_CONNECTION_DATASTORE, NlsMsgGet(FDORDBMS_117, "DataStore"), L"", false, false, true, false, false, true, false, 0, NULL); 
+        mPropertyDictionary->AddProperty(pProp);
+    }
+    FDO_SAFE_ADDREF(mPropertyDictionary.p);
     return mPropertyDictionary;
 }
-
-void FdoRdbmsMySqlConnectionInfo::Dispose()
-{
-    delete this;
-}
-
-

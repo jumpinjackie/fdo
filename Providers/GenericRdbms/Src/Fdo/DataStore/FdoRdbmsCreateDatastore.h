@@ -26,7 +26,7 @@
 #endif
 
 #include "Fdo/Commands/DataStore/ICreateDataStore.h"
-#include "FdoRdbmsDataStorePropertyDictionary.h"
+#include "FdoCommonConnPropDictionary.h"
 #include "FdoRdbmsConnection.h"
 #include "FdoRdbmsCommand.h"
 
@@ -44,7 +44,7 @@ public:
 	///	<returns>Returns the property dictionary</returns>
 	virtual	FdoIDataStorePropertyDictionary* GetDataStoreProperties() 
 	{ 
-		return (FdoIDataStorePropertyDictionary *)(mDataStorePropertyDictionary);
+        return (FdoIDataStorePropertyDictionary *)(FDO_SAFE_ADDREF(mDataStorePropertyDictionary.p));
 	}
 
 	///	<summary>Executes the FdoICreateDataStore command.</summary>
@@ -52,7 +52,7 @@ public:
 	virtual	void Execute() = 0; 
 
 protected:
-	FdoRdbmsDataStorePropertyDictionary *mDataStorePropertyDictionary;
+	FdoPtr<FdoCommonDataStorePropDictionary> mDataStorePropertyDictionary;
     FdoRdbmsConnection *mConnection;
 
 };

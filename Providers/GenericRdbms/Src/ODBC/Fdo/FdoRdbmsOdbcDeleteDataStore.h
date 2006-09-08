@@ -23,7 +23,6 @@
 
 #include "../../Fdo/DataStore/FdoRdbmsDeleteDataStore.h"
 #include "../../Fdo/FeatureCommands/FdoRdbmsCommand.h"
-#include "FdoRdbmsOdbcDataStorePropertyDictionary.h"
 
 /// <summary>This command creates a new Odbc datastore.</summary>
 class FdoRdbmsOdbcDeleteDataStore: public FdoRdbmsDeleteDataStore
@@ -37,7 +36,14 @@ protected:
     FdoRdbmsOdbcDeleteDataStore (FdoRdbmsOdbcConnection* connection)
     {
         mConnection = connection;
-		mDataStorePropertyDictionary = new FdoRdbmsOdbcDataStorePropertyDictionary(NULL, FDO_RDBMS_DATASTORE_FOR_DELETE);    
+		mDataStorePropertyDictionary = new FdoCommonDataStorePropDictionary(mConnection);
+        
+        FdoPtr<ConnectionProperty> newProp;
+        newProp = new ConnectionProperty (FDO_RDBMS_CONNECTION_DATASTORE, NlsMsgGet(FDORDBMS_117, "DataStore"), L"", true, false, false, false, false, true, false, 0, NULL);
+        mDataStorePropertyDictionary->AddProperty(newProp);
+
+        newProp = new ConnectionProperty (FDO_RDBMS_CONNECTION_PASSWORD, NlsMsgGet(FDORDBMS_119, "Password"), L"", true, true, false, false, false, false, false, 0, NULL);
+        mDataStorePropertyDictionary->AddProperty(newProp);
 	}
 
 public:
@@ -46,14 +52,12 @@ public:
 	///	<returns>Returns nothing</returns> 
 	virtual	void Execute() 
 	{
-		FdoRdbmsDataStorePropertyDictionary *p = (FdoRdbmsDataStorePropertyDictionary *)mDataStorePropertyDictionary;
- 
 		if ( !mConnection )
             throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_13, "Connection not established"));
 
 		mConnection->DeleteDb( 	
-						 p->GetProperty(FDO_RDBMS_CONNECTION_DATASTORE),
-						 p->GetProperty(FDO_RDBMS_CONNECTION_PASSWORD),
+						 mDataStorePropertyDictionary->GetProperty(FDO_RDBMS_CONNECTION_DATASTORE),
+						 mDataStorePropertyDictionary->GetProperty(FDO_RDBMS_CONNECTION_PASSWORD),
 						 L""	// service 
 						 );
 	} 

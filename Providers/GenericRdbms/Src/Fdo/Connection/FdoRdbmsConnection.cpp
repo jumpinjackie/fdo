@@ -71,6 +71,7 @@
 #include "Rdbms/FdoRdbmsCommandType.h"
 
 #include "../SchemaMgr/Ph/Mgr.h"
+#include <FdoCommonConnStringParser.h>
 
 #ifdef _WIN32
 #include <FdoCommonOSUtil.h>
@@ -80,8 +81,7 @@
 
 
 FdoRdbmsConnection::FdoRdbmsConnection() :
-    mConnectionString (NULL),
-    mConnectionStringValid(false),
+    mConnectionString (L""),
     mConnectionTimeout (15),
     mState (FdoConnectionState_Closed),
     mDbiConnection( NULL ),
@@ -105,10 +105,6 @@ FdoRdbmsConnection::~FdoRdbmsConnection ()
 	// for cleanup some db resources.
 	FDO_SAFE_RELEASE(mLongTransactionManager);
 
-    if (NULL != mConnectionString)
-        delete [] mConnectionString;
-
-
     if( NULL != mDbiConnection ) {
         if ( mState != FdoConnectionState_Closed )
             // Bypass FdoRdbmsConnection::Close function to avoid 
@@ -126,22 +122,6 @@ FdoRdbmsConnection::~FdoRdbmsConnection ()
     FDO_SAFE_RELEASE(mFilterCapabilities);
     FDO_SAFE_RELEASE(mExpressionCapabilities);
     FDO_SAFE_RELEASE(mGeometryCapabilities);
-}
-
-void FdoRdbmsConnection::set_ConnectionString (const wchar_t* connection)
-{
-    size_t length;
-
-    if (NULL != mConnectionString)
-        delete[] mConnectionString;
-    length = wcslen (connection);
-    mConnectionString = new wchar_t[length + 1];
-    wcscpy (mConnectionString, connection);
-}
-
-const wchar_t* FdoRdbmsConnection::get_ConnectionString ()
-{
-    return (mConnectionString);
 }
 
 void FdoRdbmsConnection::set_ConnectionTimeout (int timeout)
@@ -193,7 +173,7 @@ void FdoRdbmsConnection::Close ()
 
         FdoPtr<FdoIConnectionInfo> connInfo = GetConnectionInfo();
         FdoPtr<FdoRdbmsConnectionPropertyDictionary> connDict = (FdoRdbmsConnectionPropertyDictionary*)connInfo->GetConnectionProperties();
-        FdoPtr<FdoRdbmsProperty> prop = connDict->FindPropertyObject(FDO_RDBMS_CONNECTION_DATASTORE);
+        FdoPtr<ConnectionProperty> prop = connDict->FindProperty(FDO_RDBMS_CONNECTION_DATASTORE);
         if( prop )
             prop->SetIsPropertyRequired( false );
     }
@@ -267,17 +247,71 @@ FdoConnectionState FdoRdbmsConnection::Open (
     bool skipPending
     )
 {
-    char *user = NULL;
+    FdoPtr<FdoIConnectionInfo> info = GetConnectionInfo();
+    FdoPtr<FdoCommonConnPropDictionary> dict = dynamic_cast<FdoCommonConnPropDictionary*>(info->GetConnectionProperties ());
 
-    if (mConnectionString == NULL)
+    if (!mConnectionString.GetLength())
         throw FdoConnectionException::Create(NlsMsgGet(FDORDBMS_5, "Connection string is not set"));
 
-    if (mConnectionStringValid == false)
-        throw FdoConnectionException::Create(NlsMsgGet(FDORDBMS_121, "Not all the required properties are set"));
+    FdoCommonConnStringParser parser (NULL, GetConnectionString ());
+    // check the validity of the connection string, i.e. it doesn’t contain unknown properties 
+    // e.g. DefaultFLocation instead of DefaultFileLocation
+    if (!parser.IsConnStringValid())
+        throw FdoConnectionException::Create(NlsMsgGet1(FDORDBMS_483, "Invalid connection string '%1$ls'", GetConnectionString()));
+    if (parser.HasInvalidProperties(dict))
+        throw FdoConnectionException::Create(NlsMsgGet1(FDORDBMS_484, "Invalid connection property name '%1$ls'", parser.GetFirstInvalidPropertyName(dict)));
 
-    mDbiConnection->SetConnectionString( mConnectionString );
+    if( mState == FdoConnectionState_Pending )
+    {
+        FdoRdbmsConnectionPropertyDictionary* connDict = (FdoRdbmsConnectionPropertyDictionary*)(dict.p);
+        FdoPtr<ConnectionProperty> prop = connDict->FindProperty(FDO_RDBMS_CONNECTION_DATASTORE);
+        if( prop && prop->GetIsPropertyRequired())
+        {
+            FdoString* pDataStore = prop->GetValue();
+            if (NULL == pDataStore || wcslen(pDataStore) == 0)
+                throw FdoConnectionException::Create(NlsMsgGet1(FDORDBMS_121, "Not all the required properties are set: '%1$ls'", FDO_RDBMS_CONNECTION_DATASTORE));
+        }
+    }
+    
     if( mDbiConnection != NULL )
     {
+        FdoString *datasource = L"", *user = L"", *password = L"", *schema = L"", *connectionString = L"", *defaultGeometryWanted = L"";
+        FdoPtr<ConnectionProperty> prop = dict->FindProperty(FDO_RDBMS_CONNECTION_SERVICE);
+        if (prop != NULL)
+            datasource = prop->GetValue();
+        else
+        {
+            prop = dict->FindProperty(FDO_RDBMS_CONNECTION_DSN);
+            if (prop != NULL)
+                datasource = prop->GetValue();
+        }
+        prop = dict->FindProperty(FDO_RDBMS_CONNECTION_USERNAME);
+        if (prop != NULL)
+            user = prop->GetValue();
+        else
+        {
+            prop = dict->FindProperty(FDO_RDBMS_CONNECTION_USERID);
+            if (prop != NULL)
+                user = prop->GetValue();
+        }
+        prop = dict->FindProperty(FDO_RDBMS_CONNECTION_PASSWORD);
+        if (prop != NULL)
+            password = prop->GetValue();
+
+        prop = dict->FindProperty(FDO_RDBMS_CONNECTION_DATASTORE);
+        if (prop != NULL)
+            schema = prop->GetValue();
+
+        prop = dict->FindProperty(FDO_RDBMS_CONNECTION_CONNSTRING);
+        if (prop != NULL)
+            connectionString = prop->GetValue();
+
+        prop = dict->FindProperty(FDO_RDBMS_CONNECTION_GENDEFGEOMETRYPROP);
+        if (prop != NULL)
+            defaultGeometryWanted = prop->GetValue();
+        
+        mDbiConnection->SetConnectData( datasource, user, password, schema, connectionString, defaultGeometryWanted);
+
         // This is done in a separate method since we need to use __try/__except to catch the delay-loader's
         // Structured Exceptions, which is incompatible with having destructible objects on the stack:
         DbiOpen(skipPending);
@@ -311,9 +345,8 @@ FdoConnectionState FdoRdbmsConnection::Open (
     }
     else if( mState == FdoConnectionState_Pending )
     {
-        FdoPtr<FdoIConnectionInfo> connInfo = GetConnectionInfo();
-        FdoPtr<FdoRdbmsConnectionPropertyDictionary> connDict = (FdoRdbmsConnectionPropertyDictionary*)connInfo->GetConnectionProperties();
-        FdoPtr<FdoRdbmsProperty> prop = connDict->FindPropertyObject(FDO_RDBMS_CONNECTION_DATASTORE);
+        FdoRdbmsConnectionPropertyDictionary* connDict = (FdoRdbmsConnectionPropertyDictionary*)(dict.p);
+        FdoPtr<ConnectionProperty> prop = connDict->FindProperty(FDO_RDBMS_CONNECTION_DATASTORE);
         if( prop )
             prop->SetIsPropertyRequired( true );
     }
@@ -431,13 +464,23 @@ void FdoRdbmsConnection::SetUserSessionId (int value)
 
 const wchar_t* FdoRdbmsConnection::GetConnectionString ()
 {
-    return (wchar_t*) get_ConnectionString();
+    return mConnectionString;
 }
 
 void FdoRdbmsConnection::SetConnectionString (const wchar_t* value)
 {
-    mConnectionStringValid = true;
-    set_ConnectionString( (const wchar_t*) value );
+    if ((GetConnectionState() == FdoConnectionState_Closed) || (GetConnectionState() == FdoConnectionState_Pending))
+    {
+        // Update the connection property dictionary:
+        FdoPtr<FdoIConnectionInfo> connInfo = GetConnectionInfo();
+        FdoPtr<FdoCommonConnPropDictionary> connDict = dynamic_cast<FdoCommonConnPropDictionary*>(connInfo->GetConnectionProperties());
+        
+        // Update the connection string:
+        mConnectionString = value;
+        connDict->UpdateFromConnectionString(mConnectionString);
+    }
+    else
+        throw FdoConnectionException::Create(NlsMsgGet(FDORDBMS_13, "Connection not established"));
 }
 
 int FdoRdbmsConnection::GetConnectionTimeout ()

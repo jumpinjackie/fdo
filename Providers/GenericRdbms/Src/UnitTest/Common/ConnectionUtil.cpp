@@ -259,9 +259,9 @@ wchar_t *ConnectionUtil::GetConnectionString(StringConnTypeRequest pTypeReq, con
 	connectString[0] = L'\0';
 
     if (Connection_WithDatastore == pTypeReq)
-		swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"service=%hs;username=%hs;password=%hs;datastore=%hs;Timeout=7", service, username, password, datastore);
+		swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"service=%hs;username=%hs;password=%hs;datastore=%hs", service, username, password, datastore);
 	else
-		swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"service=%hs;username=%hs;password=%hs;Timeout=7", service, username, password);
+		swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"service=%hs;username=%hs;password=%hs;", service, username, password);
 	return connectString;
 }
 

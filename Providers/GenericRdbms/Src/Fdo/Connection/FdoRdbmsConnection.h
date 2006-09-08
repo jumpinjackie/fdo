@@ -31,13 +31,9 @@ class FdoRdbmsFilterProcessor;
 
 class FdoRdbmsConnection: public FdoIConnection
 {
-    friend class FdoRdbmsConnectionPropertyDictionary;
-	friend class FdoRdbmsDataStorePropertyDictionary;
-
 private:
 
-    wchar_t                         *mConnectionString; // connection string for the database
-    bool                            mConnectionStringValid;
+    FdoStringP                      mConnectionString; // connection string for the database
     int                             mConnectionTimeout; // connection attempt timeout in seconds
     FdoConnectionState              mState;
     DbiConnection                   *mDbiConnection; // Internal DBI connection
@@ -108,14 +104,6 @@ public:
     FdoInt64 GetUserSessionId ();
 
     /// <summary>
-    /// Gets or sets the string used to open a database.
-    /// A string containing connection settings.
-    /// The ConnectionString property can be set only while the connection is closed.
-    /// </summary>
-    void set_ConnectionString (const wchar_t* connection);
-    const wchar_t* get_ConnectionString ();
-
-    /// <summary>
     /// Gets the time to wait while trying to establish a connection before terminating the attempt and generating an error.
     /// The time (in seconds) to wait for a connection to open. The default value is 15 seconds.
     /// A value of 0 indicates no limit to the wait time, rather than no wait time, and should be avoided in a ConnectionString because it would cause the connection
@@ -123,12 +111,6 @@ public:
     /// </summary>
     void set_ConnectionTimeout (int timeout);
     int get_ConnectionTimeout ();
-
-
-    void SetConnectionStringValid(bool valid)
-    {
-        mConnectionStringValid = valid;
-    }
 
     //  Gets the string used to open a data store.
     FDORDBMS_API virtual const wchar_t* GetConnectionString ();

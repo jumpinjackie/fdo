@@ -681,7 +681,7 @@ Service
 MessageId=2326
 SymbolicName=FDORDBMS_121
 Language=English
-Not all the required properties are set
+Not all the required properties are set: '%1$ls'
 .
 MessageId=2327
 SymbolicName=FDORDBMS_122
@@ -1668,4 +1668,13 @@ SymbolicName=FDORDBMS_482
 Language=English
 The runtime was not found (procedure %1$ls in module %2$ls).
 .
-
+MessageId=2707
+SymbolicName=FDORDBMS_483
+Language=English
+Invalid connection string '%1$ls'
+.
+MessageId=2709
+SymbolicName=FDORDBMS_484
+Language=English
+Invalid connection property name '%1$ls'
+.

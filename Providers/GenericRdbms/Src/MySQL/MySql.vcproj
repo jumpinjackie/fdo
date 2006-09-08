@@ -289,10 +289,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Fdo\FdoRdbmsMySqlDataStorePropertyDictionary.h"
-				>
-			</File>
-			<File
 				RelativePath="Fdo\FdoRdbmsMySqlDeleteDataStore.h"
 				>
 			</File>

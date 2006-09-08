@@ -36,8 +36,7 @@ typedef  FdoArray<FdoString *> FdoRdbmsDataStoreNames;
 class FdoRdbmsGetDataStores: public FdoRdbmsCommand<FdoIListDataStores> 
 {
     friend class FdoRdbmsConnection;
-    friend class FdoRdbmsDataStorePropertyDictionary;
-
+    
 protected:
     DbiConnection* mConnection;
 

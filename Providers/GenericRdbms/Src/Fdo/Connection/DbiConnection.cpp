@@ -75,20 +75,6 @@ static void ThrowNotSupportedError()
         return 1; \
 }
 
-
-const wchar_t DbiConnection::DELIMITER[] = L";\"";
-const wchar_t DbiConnection::DELIMITER2[] = L"\"";
-const wchar_t DbiConnection::SEPARATOR = L'=';
-const wchar_t DbiConnection::DATASOURCE[] = L"Service";
-const wchar_t DbiConnection::DATASOURCE2[] = L"DataSourceName";
-const wchar_t DbiConnection::USERID[] = L"Username";
-const wchar_t DbiConnection::USERID2[] = L"UserId";
-const wchar_t DbiConnection::PASSWORD[] = L"Password";
-const wchar_t DbiConnection::SCHEMA[] = L"DataStore";
-const wchar_t DbiConnection::CONNECTIONSTRING[] = L"ConnectionString";
-const wchar_t DbiConnection::GENERATEDEFAULTGEOMETRYPROPERTY[] = L"GenerateDefaultGeometryProperty";
-
-
 DbiConnection::DbiConnection( ):
     mOpen(FdoConnectionState_Closed),
     mDbiContextId(-1),
@@ -98,8 +84,6 @@ DbiConnection::DbiConnection( ):
     mContext(NULL),
     mParsedConnection(NULL)
 {
-    mConnectionString = NULL;
-
     // Set the flag that indicates whether or not the RDBMS user has a Workspace
     // Manager environment.
     // TODO: Execute a query to set the value. At this point Workspace Manager
@@ -117,9 +101,6 @@ DbiConnection::~DbiConnection(void)
     if ( mOpen != FdoConnectionState_Closed )
         Close();
 
-    if( mConnectionString != NULL )
-        delete [] mConnectionString;
-
     if( mParsedConnection != NULL )
         delete  mParsedConnection;
 
@@ -132,29 +113,12 @@ DbiConnection::~DbiConnection(void)
     rdbi_term (&mContext);
 }
 
-void DbiConnection::SetConnectionString( const wchar_t* connString )
-{
-    if( mConnectionString != NULL )
-        delete [] mConnectionString;
-
-    if( mParsedConnection != NULL ) {
-        delete mParsedConnection;
-        mParsedConnection = NULL;
-    }
-
-    mConnectionString = new wchar_t[wcslen( connString  ) + 1];
-    if( mConnectionString != NULL )
-        wcscpy( mConnectionString, connString );
-}
-
 FdoConnectionState DbiConnection::Open (
     bool skipPending
     )
 {
     if ( mOpen != FdoConnectionState_Open )
     {
-        parseConnectString ();
-
         if ( mOpen == FdoConnectionState_Closed )
         {
             int rdbi_status = RDBI_GENERIC_ERROR;
@@ -289,316 +253,47 @@ bool DbiConnection::SetTransactionLock( const char *sqlStatement )
 
 FdoStringP DbiConnection::GetUser()
 {
-    parseConnectString ();
-
-    return mParsedConnection->mUser;
+    return (NULL == mParsedConnection) ? L"" : mParsedConnection->mUser;
 }
 
 FdoStringP DbiConnection::GetPassword()
 {
-    parseConnectString ();
-
-    return mParsedConnection->mPassword;
+    return (NULL == mParsedConnection) ? L"" : mParsedConnection->mPassword;
 }
 
 FdoStringP DbiConnection::GetSchema()
 {
-    parseConnectString ();
-
-    return mParsedConnection->mSchema;
+    return (NULL == mParsedConnection) ? L"" : mParsedConnection->mSchema;
 }
 
 
 FdoStringP DbiConnection::GetDataSource()
 {
-    parseConnectString ();
-
-    return mParsedConnection->mDataSource;
+    return (NULL == mParsedConnection) ? L"" : mParsedConnection->mDataSource;
 }
 
-
-void DbiConnection::parseConnectString ()
+void DbiConnection::SetConnectData (FdoString *datasource, FdoString *user, FdoString *password, FdoString *schema, FdoString *connectionString, FdoString *defaultGeometryWanted)
 {
     if ( !mParsedConnection ) 
-        mParsedConnection = parseConnectString( mConnectionString);
-}
-
-
-DbiConnection::ParseInfo* DbiConnection::parseConnectString ( const wchar_t *connStr )
-{
-    wchar_t     *connection_string;
-    wchar_t     *rover;
-    wchar_t     *token;
-    wchar_t     *start;
-    int         size;
-    wchar_t     *user = NULL;
-    wchar_t     *password = NULL;
-    wchar_t     *schema = NULL;
-    wchar_t     *remainder;
-    wchar_t     *datasource = NULL;
-    wchar_t     *connectionStringProperty = NULL;
-    wchar_t     *defaultGeometryWanted = NULL;
-    wchar_t     *temp;
-    ParseInfo   *ret;
-
-    size = (int)((1 + wcslen (connStr)) * sizeof (wchar_t));
-    connection_string = (wchar_t*)alloca(size*sizeof(wchar_t));
-    memset (connection_string, 0, size);
-    wcscpy (connection_string, connStr);
-    rover = connection_string;
-    user = NULL;
-    password = NULL;
-    schema = NULL;
-    remainder = NULL;
-#ifdef _WIN32
-    while (NULL != (token = wcstok (rover, DELIMITER)))
-#else
-    wchar_t *state;
-    while (NULL != (token = wcstok (rover, DELIMITER, &state)))
-#endif
+        mParsedConnection = new ParseInfo( datasource, user, password, schema, connectionString, defaultGeometryWanted );
+    else
     {
-        while (iswspace(*token))
-            token++;
-#ifdef _WIN32
-        if (0 == _wcsnicmp (token, USERID, wcslen (USERID)))
-#else
-        if (0 == wcsncasecmp (token, USERID, wcslen (USERID)))
-#endif
-        {
-            token += wcslen (USERID);
-            if (NULL != (start = wcschr (token, SEPARATOR)))
-            {
-                start += 1;
-                while (iswspace(*start))
-                    start++;
-                size = (int)wcslen (start);
-                if (0 != size)
-                {
-                    user = (wchar_t*) alloca((size + 1)*sizeof(wchar_t));
-                    memset (user, 0, size + 1);
-                    wcscpy( user, start );
-                }
-            }
-        }
-#ifdef _WIN32
-        else if (0 == _wcsnicmp (token, USERID2, wcslen (USERID2)))
-#else
-        else if (0 == wcsncasecmp (token, USERID2, wcslen (USERID2)))
-#endif
-        {
-            token += wcslen (USERID2);
-            if (NULL != (start = wcschr (token, SEPARATOR)))
-            {
-                start += 1;
-                while (iswspace(*start))
-                    start++;
-                size = (int)wcslen (start);
-                if (0 != size)
-                {
-                    user = (wchar_t*) alloca((size + 1)*sizeof(wchar_t));
-                    memset (user, 0, size + 1);
-                    wcscpy( user, start );
-                }
-            }
-        }
-#ifdef _WIN32
-        else if (0 == _wcsnicmp (token, PASSWORD, wcslen (PASSWORD)))
-#else
-        else if (0 == wcsncasecmp (token, PASSWORD, wcslen (PASSWORD)))
-#endif
-        {
-            token += wcslen (PASSWORD);
-            if (NULL != (start = wcschr (token, SEPARATOR)))
-            {
-                start += 1;
-                while (iswspace(*start))
-                    start++;
-                size = (int)wcslen (start);
-                if (0 != size)
-                {
-                    password = (wchar_t*) alloca((size + 1)*sizeof(wchar_t));
-                    memset (password, 0, size + 1);
-                    wcscpy( password, start );
-                }
-            }
-        }
-#ifdef _WIN32
-        else if (0 == _wcsnicmp (token, SCHEMA, wcslen (SCHEMA)))
-#else
-        else if (0 == wcsncasecmp (token, SCHEMA, wcslen (SCHEMA)))
-#endif
-        {
-            token += wcslen (SCHEMA);
-            if (NULL != (start = wcschr (token, SEPARATOR)))
-            {
-                start += 1;
-                while (iswspace(*start))
-                    start++;
-                size = (int)wcslen (start);
-                if (0 != size)
-                {
-                    schema = (wchar_t*) alloca((size + 1)*sizeof(wchar_t));
-                    memset (schema, 0, size + 1);
-                    wcscpy( schema, start );
-                }
-            }
-        }
-#ifdef _WIN32
-        else if (0 == _wcsnicmp (token, DATASOURCE, wcslen (DATASOURCE)))
-#else
-        else if (0 == wcsncasecmp (token, DATASOURCE, wcslen (DATASOURCE)))
-#endif
-        {
-            token += wcslen (DATASOURCE);
-            if (NULL != (start = wcschr (token, SEPARATOR)))
-            {
-                start += 1;
-                while (iswspace(*start))
-                    start++;
-                size = (int)wcslen (start);
-                if (0 != size)
-                {
-                    datasource = (wchar_t*) alloca((size + 1)*sizeof(wchar_t));
-                    memset (datasource, 0, size + 1);
-                    wcscpy( datasource, start );
-                }
-            }
-        }
-#ifdef _WIN32
-        else if (0 == _wcsnicmp (token, DATASOURCE2, wcslen (DATASOURCE2)))
-#else
-        else if (0 == wcsncasecmp (token, DATASOURCE2, wcslen (DATASOURCE2)))
-#endif
-        {
-            token += wcslen (DATASOURCE2);
-            if (NULL != (start = wcschr (token, SEPARATOR)))
-            {
-                start += 1;
-                while (iswspace(*start))
-                    start++;
-                size = (int)wcslen (start);
-                if (0 != size)
-                {
-                    datasource = (wchar_t*) alloca((size + 1)*sizeof(wchar_t));
-                    memset (datasource, 0, size + 1);
-                    wcscpy( datasource, start );
-                }
-            }
-        }
-#ifdef _WIN32
-        else if (0 == _wcsnicmp (token, GENERATEDEFAULTGEOMETRYPROPERTY, wcslen (GENERATEDEFAULTGEOMETRYPROPERTY)))
-#else
-        else if (0 == wcsncasecmp (token, GENERATEDEFAULTGEOMETRYPROPERTY, wcslen (GENERATEDEFAULTGEOMETRYPROPERTY)))
-#endif
-        {
-            token += wcslen (GENERATEDEFAULTGEOMETRYPROPERTY);
-            if (NULL != (start = wcschr (token, SEPARATOR)))
-            {
-                start += 1;
-                while (iswspace(*start))
-                    start++;
-                size = (int)wcslen (start);
-                if (0 != size)
-                {
-                    defaultGeometryWanted = (wchar_t*) alloca((size + 1)*sizeof(wchar_t));
-                    memset (defaultGeometryWanted, 0, size + 1);
-                    wcscpy( defaultGeometryWanted, start );
-                }
-            }
-        }
-#ifdef _WIN32
-        else if (0 == _wcsnicmp (token, CONNECTIONSTRING, wcslen (CONNECTIONSTRING)))
-#else
-        else if (0 == wcsncasecmp (token, CONNECTIONSTRING, wcslen (CONNECTIONSTRING)))
-#endif
-        {
-            // The string tokenizer does not deal well with alternate ways of encoding
-            // our parameter values.  While the other types are immediately tokenized with
-            // their values (e.g. UserName=Fred) and only require searching for the 
-            // separator, ConnectionString uses double-quotes as delimiters, because it
-            // can encode complex and multiple values inside it -- and they can have the 
-            // same delimiter as our own parameters.
-            //
-            // We'll only use the tokenizer where it is safe to do so.  Any cases which 
-            // do not require the tokenizer represent an unset ConnectionString, and are skipped.
-            // The cases to consider are:
-            //
-            //      ConnectionString=       Completely empty value at end of string.
-            //      ConnectionString=;      Completely empty value anywhere in string.
-            //      ConnectionString=""     Quoted empty value at end of string.
-            //      ConnectionString="";    Quoted empty value anywhere in string.
-            //      ConnectionString="parm1=value1;parm2=value2;...";   Value to be tokenized.
-            //      ConnectionString="parm1=value1;parm2=value2;..."    Value to be tokenized (end of string).
-            //
-            // The empty cases involve delimiter characters, which will be skipped by the next iteration of 
-            // the main loop as it looks for the next parameter/value pair.  End-of-string cases are also
-            // handled by the tokenizer in the next iteration.  We'll only use it to look for a closing
-            // quote here.
-
-            // First, peek ahead using the original string.
-            size = (int) wcslen(token);
-            FdoInt64 offset = (token+size) - connection_string;
-            wchar_t nextChar1 = L'\0';
-            wchar_t nextChar2 = L'\0';
-            nextChar1 = connStr[offset];
-            if (nextChar1 != L'\0')
-                nextChar2 = connStr[offset+1];
-
-            if (nextChar1 == DELIMITER2[0] && nextChar2 != DELIMITER2[0] && nextChar2 != L'\0')
-            {
-                // There is a non-empty value to parse with the tokenizer.
-#ifdef _WIN32
-                if (NULL != (token = wcstok (NULL, DELIMITER2)))
-#else
-                if (NULL != (token = wcstok (NULL, DELIMITER2, &state)))
-#endif
-                {
-                    size = (int)wcslen (token);
-                    if ( 0 != size ) 
-                    {
-                        connectionStringProperty = (wchar_t*) alloca((size + 1)*sizeof(wchar_t));
-                        memset (connectionStringProperty, 0, size + 1);
-                        wcscpy( connectionStringProperty, token );
-                    }
-                }
-            }
-        }
-        else
-        {
-            size = (int)wcslen (token);
-            if (0 != size)
-            {
-                if (NULL != remainder)
-                    size += (int)wcslen (remainder) + 1;
-                temp = (wchar_t*) alloca((size + 1)*sizeof(wchar_t));
-                memset (temp, 0, size + 1);
-                if (NULL != remainder)
-                {
-                    wcscpy (temp, remainder);
-                    wcscat (temp, L";");
-                    remainder = temp;
-                    temp = remainder + wcslen (remainder);
-                }
-                else
-                    remainder = temp;
-                wcscpy( token, temp );
-            }
-        }
-        rover = NULL;
+        mParsedConnection->mDataSource = datasource;
+        mParsedConnection->mUser = user;
+        mParsedConnection->mPassword = password;
+        mParsedConnection->mSchema = schema;
+        mParsedConnection->mConnectionStringProperty = connectionString;
+        mParsedConnection->mIsGeometryFromOrdinatesWanted = defaultGeometryWanted;
     }
-
-    ret = new ParseInfo (datasource, user, password, schema, connectionStringProperty, defaultGeometryWanted, remainder);
-    return (ret);
 }
 
-DbiConnection::ParseInfo::ParseInfo (wchar_t *datasource, wchar_t *user, wchar_t *password, wchar_t *schema, wchar_t *connectionString, wchar_t * defaultGeometryWanted, wchar_t *remainder) :
+DbiConnection::ParseInfo::ParseInfo (FdoString *datasource, FdoString *user, FdoString *password, FdoString *schema, FdoString *connectionString, FdoString * defaultGeometryWanted) :
     mDataSource (datasource),
     mUser (user),
     mPassword (password),
     mSchema (schema),
     mConnectionStringProperty(connectionString),
-    mIsGeometryFromOrdinatesWanted(defaultGeometryWanted),
-    mRemainder (remainder)
+    mIsGeometryFromOrdinatesWanted(defaultGeometryWanted)
 {
 }
 

@@ -169,9 +169,7 @@
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						GeneratePreprocessedFile="0"
 						UsePrecompiledHeader="1"
-						ShowIncludes="false"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -325,14 +323,6 @@
 				<File
 					RelativePath="Schema\FdoRdbmsDescribeSchemaCommand.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ShowIncludes="false"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="Schema\FdoRdbmsDescribeSchemaMappingCommand.cpp"
@@ -361,14 +351,6 @@
 				<File
 					RelativePath="FeatureCommands\FdoRdbmsFeatureReader.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ShowIncludes="false"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="FeatureCommands\FdoRdbmsFeatureSubsetReader.cpp"
@@ -465,18 +447,6 @@
 				<File
 					RelativePath=".\Connection\FdoRdbmsConnectionPropertyDictionary.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ShowIncludes="false"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\Connection\FdoRdbmsPropertyDictionary.cpp"
-					>
 				</File>
 			</Filter>
 			<Filter
@@ -495,44 +465,8 @@
 				Name="DataStore"
 				>
 				<File
-					RelativePath=".\DataStore\FdoRdbmsDataStorePropertyDictionary.cpp"
-					>
-				</File>
-				<File
 					RelativePath=".\DataStore\FdoRdbmsDataStoreReader.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ShowIncludes="false"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\DataStore\FdoRdbmsGetDataStores.cpp"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="DataStore"
-				>
-				<File
-					RelativePath=".\DataStore\FdoRdbmsDataStorePropertyDictionary.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\DataStore\FdoRdbmsDataStoreReader.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ShowIncludes="false"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath=".\DataStore\FdoRdbmsGetDataStores.cpp"
@@ -859,10 +793,6 @@
 					RelativePath="Connection\FdoRdbmsConnectionPropertyDictionary.h"
 					>
 				</File>
-				<File
-					RelativePath=".\Connection\FdoRdbmsPropertyDictionary.h"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="Filter"
@@ -885,10 +815,6 @@
 				>
 				<File
 					RelativePath=".\DataStore\FdoRdbmsCreateDatastore.h"
-					>
-				</File>
-				<File
-					RelativePath=".\DataStore\FdoRdbmsDataStorePropertyDictionary.h"
 					>
 				</File>
 				<File

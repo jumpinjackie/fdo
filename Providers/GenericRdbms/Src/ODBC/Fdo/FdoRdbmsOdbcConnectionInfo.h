@@ -22,6 +22,7 @@
  */
 
 #include "Fdo.h"
+#include "FdoRdbmsConnectionPropertyDictionary.h"
 
 class FdoRdbmsOdbcConnectionInfo :  public FdoIConnectionInfo
 {
@@ -41,7 +42,7 @@ public:
     virtual FdoIConnectionPropertyDictionary* GetConnectionProperties();
 
 public:
-    FdoIConnectionPropertyDictionary *mPropertyDictionary;
+    FdoPtr<FdoCommonConnPropDictionary> mPropertyDictionary;
     FdoRdbmsConnection *mConnection;
 
 protected:

@@ -50,20 +50,6 @@ class   FdoRdbmsLockConflicts;
 
 class DbiConnection
 {
-public:
-
-    static const wchar_t DELIMITER[];
-    static const wchar_t DELIMITER2[];
-    static const wchar_t SEPARATOR;
-    static const wchar_t DATASOURCE[];
-    static const wchar_t DATASOURCE2[];
-    static const wchar_t USERID[];
-    static const wchar_t USERID2[];
-    static const wchar_t PASSWORD[];
-    static const wchar_t SCHEMA[];
-    static const wchar_t CONNECTIONSTRING[];
-    static const wchar_t GENERATEDEFAULTGEOMETRYPROPERTY[];
-
 private:
 
     class ParseInfo
@@ -75,15 +61,12 @@ private:
             FdoStringP mSchema;
             FdoStringP mConnectionStringProperty;    // A connection property actually named "ConnectionString"
             FdoStringP mIsGeometryFromOrdinatesWanted;   // Unspecified if empty.  Can be "true" or "false".
-            FdoStringP mRemainder;
 
-            ParseInfo (wchar_t *datasource, wchar_t *user, wchar_t *password, wchar_t *schema, wchar_t *connectionString, wchar_t *defaultGeometryWanted, wchar_t *remainder);
+            ParseInfo (FdoString *datasource, FdoString *user, FdoString *password, FdoString *schema, FdoString *connectionString, FdoString *defaultGeometryWanted);
             virtual ~ParseInfo ();
     };
 
     int     mDbiContextId; // Dbi database id
-
-    wchar_t *mConnectionString; // connection string for the database
 
     ParseInfo* mParsedConnection;
 
@@ -103,12 +86,6 @@ private:
 
     int mIndex;
 
-    /// <summary>
-    /// Extract dbuser and password from the connection string, leaving the remainder.
-    /// </summary>
-    void parseConnectString ();
-    ParseInfo* parseConnectString ( const wchar_t *connStr );
-
 public:
     FDORDBMS_TEST DbiConnection( );
     FDORDBMS_TEST ~DbiConnection(void);
@@ -116,8 +93,7 @@ public:
     FDORDBMS_TEST FdoConnectionState Open (bool skipPending);
 
     void SetConnectionState (FdoConnectionState state);
-
-    FDORDBMS_TEST void SetConnectionString( const wchar_t* connString );
+    void SetConnectData (FdoString *datasource, FdoString *user, FdoString *password, FdoString *schema, FdoString *connectionString, FdoString *defaultGeometryWanted);
 
     void InitRdbi( initializer* driver )
     {

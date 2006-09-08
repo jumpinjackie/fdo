@@ -24,7 +24,6 @@
 
 #include "../../Fdo/DataStore/FdoRdbmsDeleteDataStore.h"
 #include "../../Fdo/FeatureCommands/FdoRdbmsCommand.h"
-#include "FdoRdbmsMySqlDataStorePropertyDictionary.h"
 
 /// <summary>This command deletes a MySql datastore.</summary>
 
@@ -39,7 +38,7 @@ protected:
     FdoRdbmsMySqlDeleteDataStore (FdoRdbmsMySqlConnection* connection)
     {
         mConnection = connection;
-		mDataStorePropertyDictionary = new FdoRdbmsMySqlDataStorePropertyDictionary(NULL, FDO_RDBMS_DATASTORE_FOR_DELETE);
+        mDataStorePropertyDictionary = (FdoCommonDataStorePropDictionary*)mConnection->CreateDataStoreProperties (FDO_RDBMS_DATASTORE_FOR_DELETE);
     }
 
 public:
@@ -50,20 +49,18 @@ public:
 	///	<returns>Returns the property dictionary</returns>
 	virtual	FdoIDataStorePropertyDictionary* GetDataStoreProperties() 
 	{ 
-		return (FdoIDataStorePropertyDictionary *)(mDataStorePropertyDictionary);
+		return (FdoIDataStorePropertyDictionary *)(FDO_SAFE_ADDREF(mDataStorePropertyDictionary.p));
 	}
 
 	///	<summary>Executes the FdoIDestroyDataStore command.</summary>
 	///	<returns>Returns nothing</returns> 
 	virtual	void Execute() 
 	{
-		FdoRdbmsDataStorePropertyDictionary *p = (FdoRdbmsDataStorePropertyDictionary *)mDataStorePropertyDictionary;
- 
 		if ( !mConnection )
             throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_13, "Connection not established"));
 
 		mConnection->DeleteDb( 	
-						 p->GetProperty(FDO_RDBMS_CONNECTION_DATASTORE),
+						 mDataStorePropertyDictionary->GetProperty(FDO_RDBMS_CONNECTION_DATASTORE),
 						 L"",	//password not required
 						 L""	// service 
 						 );

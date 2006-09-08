@@ -22,7 +22,6 @@
 #endif
 
 #include "../../Fdo/DataStore/FdoRdbmsCreateDatastore.h"
-#include "FdoRdbmsMySqlDataStorePropertyDictionary.h"
 
 
 /// <summary>This command creates a new MySql datastore.</summary>
@@ -37,7 +36,14 @@ protected:
     FdoRdbmsMySqlCreateDataStore (FdoRdbmsMySqlConnection* connection)
     {
         mConnection = connection;
-		mDataStorePropertyDictionary = new FdoRdbmsMySqlDataStorePropertyDictionary(NULL, FDO_RDBMS_DATASTORE_FOR_CREATE);
+		mDataStorePropertyDictionary = new FdoCommonDataStorePropDictionary(mConnection);
+        
+        FdoPtr<ConnectionProperty> newProp;
+        newProp = new ConnectionProperty (FDO_RDBMS_CONNECTION_DATASTORE, NlsMsgGet(FDORDBMS_117, "DataStore"), L"", true, false, false, false, false, true, false, 0, NULL);
+        mDataStorePropertyDictionary->AddProperty(newProp);
+
+        newProp = new ConnectionProperty (FDO_RDBMS_DATASTORE_DESCRIPTION, NlsMsgGet(FDORDBMS_448, "Description"), L"", false, false, false, false, false, false, false, 0, NULL);
+        mDataStorePropertyDictionary->AddProperty(newProp);
     }
 
 public:
@@ -46,14 +52,12 @@ public:
 	///	<returns>Returns nothing</returns> 
 	virtual	void Execute() 
 	{
-		FdoRdbmsDataStorePropertyDictionary *p = (FdoRdbmsDataStorePropertyDictionary *)mDataStorePropertyDictionary;
- 
 		if ( !mConnection )
             throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_13, "Connection not established"));
 
 		mConnection->CreateDb( 	
-						 p->GetProperty(FDO_RDBMS_CONNECTION_DATASTORE),
-						 p->GetProperty(FDO_RDBMS_DATASTORE_DESCRIPTION),      
+						 mDataStorePropertyDictionary->GetProperty(FDO_RDBMS_CONNECTION_DATASTORE),
+						 mDataStorePropertyDictionary->GetProperty(FDO_RDBMS_DATASTORE_DESCRIPTION),      
 						 L"",   // password not required
 						 L"",	// service 
 						 L"NONE",
