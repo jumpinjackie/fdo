@@ -21,7 +21,6 @@
 #pragma once
 #endif // _WIN32
 
-
 //TODO: rename this h file and most of these classes to not contain the keyword
 // "Connection" since they are now usable for several kinds of
 // FdoIPropertyDictionary subclasses.
@@ -65,7 +64,7 @@ public:
         mCountEnumerableProperties (0),
         mEnumerableProperties (NULL),
         mIsPropertySet (false),
-        mIsSensitiveCase (false)
+        mIsSensitiveCase (true)
     {
     }
 
@@ -96,7 +95,7 @@ public:
         mCountEnumerableProperties (0),
         mEnumerableProperties (NULL),
         mIsPropertySet (false),
-        mIsSensitiveCase (false)
+        mIsSensitiveCase (true)
     {
         UpdateEnumerableProperties (enumCount, enumerables);
     }
@@ -788,7 +787,7 @@ bool FdoCommonPropDictionary<T>::CheckEnumerable (const wchar_t* value, Connecti
         bool cmpSens = property->GetIsPropertySensitiveCase ();
         for (int i = 0; i < count && !ret; i++)
         {
-            if ( cmpSens )
+            if ( !cmpSens )
             {
                 if (0 == FdoCommonOSUtil::wcsnicmp (value, choices[i], wcslen (choices[i])))
                     ret = true;
