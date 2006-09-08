@@ -154,7 +154,7 @@ void BasicConnectionTests::set_properties ()
         dictionary->SetProperty (L"Username", L"poindexter");
         dictionary->SetProperty (L"Password", L"secret");
         connection_string = mConnection->GetConnectionString ();
-        CPPUNIT_ASSERT_MESSAGE ("connection string wrong", 0 == wcscmp (L"Server=dauntless;Instance=gis;Username=poindexter;Password=secret;Datastore=myDatastore", connection_string));
+        CPPUNIT_ASSERT_MESSAGE ("connection string wrong", 0 == wcscmp (L"Server=dauntless;Instance=gis;Username=poindexter;Password=secret;Datastore=myDatastore;", connection_string));
         dictionary->Release ();
         info->Release ();
     }
