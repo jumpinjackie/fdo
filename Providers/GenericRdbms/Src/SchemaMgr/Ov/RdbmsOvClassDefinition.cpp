@@ -109,7 +109,7 @@ void FdoRdbmsOvClassDefinition::_writeXml(FdoXmlWriter* xmlWriter, const FdoXmlF
     FdoPhysicalClassMapping::_writeXml( xmlWriter, flags );
 
     if ( mMappingType != FdoSmOvTableMappingType_Default ) {
-        xmlWriter->WriteAttribute( L"TableMapping", FdoSmOvTableMappingTypeMapper::Type2String(mMappingType) );
+        xmlWriter->WriteAttribute( L"tableMapping", FdoSmOvTableMappingTypeMapper::Type2String(mMappingType) );
     }
 
     _writeXmlAttributes(xmlWriter, flags);
