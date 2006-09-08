@@ -344,7 +344,8 @@ void FdoCommonQueryAggregator::ProcessFunction(FdoFunction& expr)
                     FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
                     FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(FdoPtr<FdoByteArray>(geomValue->GetGeometry()));
                     FdoPtr<FdoIEnvelope> envelope = geom->GetEnvelope();
-                    double ordinates[3*2]; // have room for 2 points of XYZ (NOTE: FdoIEnvelope doesn't currently support min/max M)
+
+                    double ordinates[15];
                     int i=0;
 
                     if (aggrStats.isNull)
@@ -357,20 +358,51 @@ void FdoCommonQueryAggregator::ProcessFunction(FdoFunction& expr)
                         }
 
                         ordinates[i] = envelope->GetMaxX();  i++;
+                        ordinates[i] = envelope->GetMinY();  i++;
+                        if (geom->GetDimensionality() & FdoDimensionality_Z)
+                        {
+                            ordinates[i] = envelope->GetMaxZ();  i++;
+                        }
+
+                        ordinates[i] = envelope->GetMaxX();  i++;
                         ordinates[i] = envelope->GetMaxY();  i++;
                         if (geom->GetDimensionality() & FdoDimensionality_Z)
                         {
                             ordinates[i] = envelope->GetMaxZ();  i++;
                         }
+
+                        ordinates[i] = envelope->GetMinX();  i++;
+                        ordinates[i] = envelope->GetMaxY();  i++;
+                        if (geom->GetDimensionality() & FdoDimensionality_Z)
+                        {
+                            ordinates[i] = envelope->GetMinZ();  i++;
+                        }
+
+                        ordinates[i] = envelope->GetMinX();  i++;
+                        ordinates[i] = envelope->GetMinY();  i++;
+                        if (geom->GetDimensionality() & FdoDimensionality_Z)
+                        {
+                            ordinates[i] = envelope->GetMinZ();  i++;
+                        }
                     }
                     else
                     {
-                        const double* aggrOrdinates = ((FdoILineString*)aggrStats.geomVal.p)->GetOrdinates();
+            	        FdoIPolygon* aggrExtents = static_cast<FdoIPolygon*>(aggrStats.geomVal.p);
+                        FdoPtr<FdoILinearRing> linearRing = aggrExtents->GetExteriorRing();
+                        const double* aggrOrdinates = linearRing->GetOrdinates();
+
                         ordinates[i] = FdoCommonMin(envelope->GetMinX(), aggrOrdinates[i]);  i++;
                         ordinates[i] = FdoCommonMin(envelope->GetMinY(), aggrOrdinates[i]);  i++;
                         if (geom->GetDimensionality() & FdoDimensionality_Z)
                         {
                             ordinates[i] = FdoCommonMin(envelope->GetMinZ(), aggrOrdinates[i]);  i++;
+                        }
+
+                        ordinates[i] = FdoCommonMin(envelope->GetMaxX(), aggrOrdinates[i]);  i++;
+                        ordinates[i] = FdoCommonMin(envelope->GetMinY(), aggrOrdinates[i]);  i++;
+                        if (geom->GetDimensionality() & FdoDimensionality_Z)
+                        {
+                            ordinates[i] = FdoCommonMax(envelope->GetMaxZ(), aggrOrdinates[i]);  i++;
                         }
 
                         ordinates[i] = FdoCommonMax(envelope->GetMaxX(), aggrOrdinates[i]);  i++;
@@ -379,11 +411,27 @@ void FdoCommonQueryAggregator::ProcessFunction(FdoFunction& expr)
                         {
                             ordinates[i] = FdoCommonMax(envelope->GetMaxZ(), aggrOrdinates[i]);  i++;
                         }
+
+                        ordinates[i] = FdoCommonMax(envelope->GetMinX(), aggrOrdinates[i]);  i++;
+                        ordinates[i] = FdoCommonMax(envelope->GetMaxY(), aggrOrdinates[i]);  i++;
+                        if (geom->GetDimensionality() & FdoDimensionality_Z)
+                        {
+                            ordinates[i] = FdoCommonMin(envelope->GetMinZ(), aggrOrdinates[i]);  i++;
+                        }
+
+                        ordinates[i] = FdoCommonMin(envelope->GetMinX(), aggrOrdinates[i]);  i++;
+                        ordinates[i] = FdoCommonMin(envelope->GetMinY(), aggrOrdinates[i]);  i++;
+                        if (geom->GetDimensionality() & FdoDimensionality_Z)
+                        {
+                            ordinates[i] = FdoCommonMin(envelope->GetMinZ(), aggrOrdinates[i]);  i++;
+                        }
                     }
 
-                    FdoPtr<FdoILineString> ls = gf->CreateLineString(geom->GetDimensionality() & ~FdoDimensionality_M, i, ordinates);
+                    FdoPtr<FdoILinearRing> linearRing = gf->CreateLinearRing(geom->GetDimensionality() & ~FdoDimensionality_M, i, ordinates);
+            	    FdoPtr<FdoIPolygon> extents = gf->CreatePolygon(linearRing, NULL);
+
                     aggrStats.isNull = false;
-                    aggrStats.geomVal = FDO_SAFE_ADDREF(ls.p);
+                    aggrStats.geomVal = FDO_SAFE_ADDREF(extents.p);
                 }
             }
             else
