@@ -983,6 +983,11 @@ void SelectAggregatesTests::selectAggregatesSpatialExtentsTest()
     {
         FdoPtr<FdoByteArray> geomBytes = rdr->GetGeometry(L"MBR");
         FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(geomBytes);
+
+        FdoGeometryType geomType = geom->GetDerivedType();
+        if (geomType != FdoGeometryType_Polygon)
+		    CPPUNIT_FAIL("Expected Polygon geometry for SpatialExtents() result");
+
         envelopeAllWithoutFilter = geom->GetEnvelope();
         if (envelopeAllWithoutFilter->GetIsEmpty())
             CPPUNIT_FAIL("Expected non-empty envelope for SpatialExtents() result");
@@ -1005,6 +1010,11 @@ void SelectAggregatesTests::selectAggregatesSpatialExtentsTest()
     {
         FdoPtr<FdoByteArray> geomBytes = rdr->GetGeometry(L"MBR");
         FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(geomBytes);
+
+        FdoGeometryType geomType = geom->GetDerivedType();
+        if (geomType != FdoGeometryType_Polygon)
+		    CPPUNIT_FAIL("Expected Polygon geometry for SpatialExtents() result");
+
         envelopeAllWithFilter = geom->GetEnvelope();
         if (envelopeAllWithFilter->GetIsEmpty())
             CPPUNIT_FAIL("Expected non-empty envelope for SpatialExtents() result");
@@ -1056,6 +1066,11 @@ void SelectAggregatesTests::selectAggregatesSpatialExtentsTest()
     {
         FdoPtr<FdoByteArray> geomBytes = rdr->GetGeometry(L"MBR");
         FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(geomBytes);
+
+        FdoGeometryType geomType = geom->GetDerivedType();
+        if (geomType != FdoGeometryType_Polygon)
+		    CPPUNIT_FAIL("Expected Polygon geometry for SpatialExtents() result");
+
         envelopeAllWithoutFilterMultipleIds = geom->GetEnvelope();
         if (envelopeAllWithoutFilterMultipleIds->GetIsEmpty())
             CPPUNIT_FAIL("Expected non-empty envelope for SpatialExtents() result");

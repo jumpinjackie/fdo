@@ -30,30 +30,54 @@ ShpSpatialExtentsAggregateReader::ShpSpatialExtentsAggregateReader(ShpConnection
     ShpFileSet* fileset = lpClass->GetPhysicalFileSet ();
     ShapeFile* shpFile = fileset->GetShapeFile();
 
-
     if ((shpFile->GetBoundingBoxMinX()==fNO_DATA)
         || (shpFile->GetBoundingBoxMinY()==fNO_DATA)
         || (shpFile->GetBoundingBoxMaxX()==fNO_DATA)
         || (shpFile->GetBoundingBoxMaxY()==fNO_DATA))
-        m_LineStringExtents = NULL;
+        m_Extents = NULL;
     else
     {
         // Build an extents geometry out of the spatial extents;
         // We ignore M dimensionality since FdoIEnvelope only exposes XYZ envelopes
-        FdoPtr<FdoGeometricPropertyDefinition> geomProp = originalClass->GetGeometryProperty();
         FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-        double ordinates[2*3]; // enough room for 2 coordinates of XYZ dimensionality
-        FdoDimensionality geomDim = (FdoDimensionality)(FdoDimensionality_XY | (geomProp->GetHasElevation() ? FdoDimensionality_Z : (FdoDimensionality)0));
-        int i=0;
-        ordinates[i++] = shpFile->GetBoundingBoxMinX();
-        ordinates[i++] = shpFile->GetBoundingBoxMinY();
-        if (geomProp->GetHasElevation())
-            ordinates[i++] = shpFile->GetBoundingBoxMinZ();
-        ordinates[i++] = shpFile->GetBoundingBoxMaxX();
-        ordinates[i++] = shpFile->GetBoundingBoxMaxY();
-        if (geomProp->GetHasElevation())
-            ordinates[i++] = shpFile->GetBoundingBoxMaxZ();
-        m_LineStringExtents = gf->CreateLineString(geomDim, i, ordinates);
+        FdoPtr<FdoGeometricPropertyDefinition> geomProp = originalClass->GetGeometryProperty();
+        FdoBoolean hasElevation = geomProp->GetHasElevation();
+        FdoDimensionality geomDim = (FdoDimensionality)
+            (hasElevation ? FdoDimensionality_XY | FdoDimensionality_Z : FdoDimensionality_XY);
+
+        // Copy the extent values to an array of doubles
+        FdoInt32 i=0;
+        FdoDouble ordinates[15];
+	    ordinates[i++] = shpFile->GetBoundingBoxMinX(); 
+	    ordinates[i++] = shpFile->GetBoundingBoxMinY(); 
+        if (hasElevation)
+	        ordinates[i++] = shpFile->GetBoundingBoxMinZ(); 
+
+	    ordinates[i++] = shpFile->GetBoundingBoxMaxX(); 
+	    ordinates[i++] = shpFile->GetBoundingBoxMinY(); 
+        if (hasElevation)
+	        ordinates[i++] = shpFile->GetBoundingBoxMaxZ(); 
+
+	    ordinates[i++] = shpFile->GetBoundingBoxMaxX(); 
+	    ordinates[i++] = shpFile->GetBoundingBoxMaxY(); 
+        if (hasElevation)
+	        ordinates[i++] = shpFile->GetBoundingBoxMaxZ(); 
+
+	    ordinates[i++] = shpFile->GetBoundingBoxMinX(); 
+	    ordinates[i++] = shpFile->GetBoundingBoxMaxY(); 
+        if (hasElevation)
+	        ordinates[i++] = shpFile->GetBoundingBoxMinZ(); 
+
+	    ordinates[i++] = shpFile->GetBoundingBoxMinX(); 
+	    ordinates[i++] = shpFile->GetBoundingBoxMinY(); 
+        if (hasElevation)
+	        ordinates[i++] = shpFile->GetBoundingBoxMinZ(); 
+
+        // Create a linear ring using the bounding box ordinates 
+	    FdoPtr<FdoILinearRing> linearRing = gf->CreateLinearRing(geomDim, i, ordinates);
+
+        // Create a polygon geometry representing the extents from the linear ring
+	    m_Extents = gf->CreatePolygon(linearRing, NULL);
     }
 }
 
@@ -114,10 +138,10 @@ FdoDataType ShpSpatialExtentsAggregateReader::GetItemDataType(FdoInt32 i)
 void ShpSpatialExtentsAggregateReader::GetGeometryForCache(FdoIdentifier *itemName, FdoByteArray **byteArray, bool *bIsNull)
 {
     FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-    FdoByteArray* geomFGF = !m_LineStringExtents ? NULL : gf->GetFgf(m_LineStringExtents);
+    FdoByteArray* geomFGF = !m_Extents ? NULL : gf->GetFgf(m_Extents);
 
     if (bIsNull)
-        *bIsNull = !m_LineStringExtents;
+        *bIsNull = !m_Extents;
     if (byteArray)
         *byteArray = geomFGF;
 }

@@ -46,7 +46,7 @@ public:
 
 private:
 
-    FdoPtr<FdoILineString> m_LineStringExtents;  // the geometry that store the spatial extents
+    FdoPtr<FdoIPolygon> m_Extents;  // the geometry that store the spatial extents
     FdoInt32 m_ReaderIndex;  // the current row we are on (-1 == before first row, 0 == first row, etc)
     FdoStringP m_AliasName;
 };
