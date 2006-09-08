@@ -25,36 +25,36 @@
 
 class RfpTestRasterConversion : public RfpTestCase
 {
-	//FDO_CPPUNIT_DEFINE(testScaling);			
-	FDO_CPPUNIT_DEFINE(testRgbToBitonal);			
-	FDO_CPPUNIT_DEFINE(testRgbToGray);			
-	//FDO_CPPUNIT_DEFINE(testScalingAndToGray);			
-	FDO_CPPUNIT_DEFINE(testRgbToPalette);			
+    FDO_CPPUNIT_DEFINE(testScaling);			
+    FDO_CPPUNIT_DEFINE(testRgbToBitonal);			
+    FDO_CPPUNIT_DEFINE(testRgbToGray);			
+    FDO_CPPUNIT_DEFINE(testScalingAndToGray);			
+    FDO_CPPUNIT_DEFINE(testRgbToPalette);			
 
-	CPPUNIT_TEST_SUITE(RfpTestRasterConversion);	
-	//CPPUNIT_TEST(testScaling);
-	CPPUNIT_TEST(testRgbToBitonal);
-	CPPUNIT_TEST(testRgbToGray);
-	//CPPUNIT_TEST(testScalingAndToGray);
-	CPPUNIT_TEST(testRgbToPalette);
-	CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST_SUITE(RfpTestRasterConversion);	
+    CPPUNIT_TEST(testScaling);
+    CPPUNIT_TEST(testRgbToBitonal);
+    CPPUNIT_TEST(testRgbToGray);
+    CPPUNIT_TEST(testScalingAndToGray);
+    CPPUNIT_TEST(testRgbToPalette);
+    CPPUNIT_TEST_SUITE_END();
 
 public:
-	RfpTestRasterConversion(void);
-	~RfpTestRasterConversion(void);
+    RfpTestRasterConversion(void);
+    ~RfpTestRasterConversion(void);
 
-	virtual void _setUp();
-	virtual void _tearDown();
+    virtual void _setUp();
+    virtual void _tearDown();
 
-	void testScaling();
-	void testRgbToBitonal();
-	void testRgbToGray();
-	void testScalingAndToGray();
-	void testRgbToPalette();
+    void testScaling();
+    void testRgbToBitonal();
+    void testRgbToGray();
+    void testScalingAndToGray();
+    void testRgbToPalette();
 
 private:
-	FdoPtr<FdoIConnection> m_connection;
-	FdoPtr<FdoIRaster> m_raster;
+    FdoPtr<FdoIConnection> m_connection;
+    FdoPtr<FdoIRaster> m_raster;
 
 };
 

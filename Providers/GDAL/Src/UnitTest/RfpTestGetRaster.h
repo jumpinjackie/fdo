@@ -37,7 +37,7 @@ class RfpTestGetRaster : public RfpTestCase
 	CPPUNIT_TEST(testGetRasterRGB24);
 	CPPUNIT_TEST(testGetRasterTileByTile);
 	CPPUNIT_TEST(testGetRasterAllInOnce);
-	CPPUNIT_TEST(testGetRotatedRaster);
+//	CPPUNIT_TEST(testGetRotatedRaster);
 	CPPUNIT_TEST_SUITE_END();
 
 public:

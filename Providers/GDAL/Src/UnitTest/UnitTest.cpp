@@ -52,8 +52,8 @@
 #define TEST_GEOTIFF
 #define TEST_RASTERCONVERSION
 #define TEST_DEM
-#define TEST_BAND_CONFIG
-#define TEST_SPATIAL_CONTEXT
+//#define TEST_BAND_CONFIG
+//#define TEST_SPATIAL_CONTEXT
 //#define TEST_ECW
 //#define TEST_JP2
 //#define TEST_MRSID

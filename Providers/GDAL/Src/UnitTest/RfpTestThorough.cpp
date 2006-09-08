@@ -318,213 +318,301 @@ void RfpTestThorough::testCloseConnection()
 // test connection capabilities.
 void RfpTestThorough::testCapabilities()
 {
-	FdoPtr<FdoIConnection> connection = CreateConnection();
-	FdoPtr<FdoIoStream> stream = FdoIoFileStream::Create(L"thoroughTest.xml", L"r");
-	connection->SetConfiguration(stream);
-	connection->Open();
+    FdoPtr<FdoIConnection> connection = CreateConnection();
+    FdoPtr<FdoIoStream> stream = FdoIoFileStream::Create(L"thoroughTest.xml", L"r");
+    connection->SetConfiguration(stream);
+    connection->Open();
 
-	// Command capabilities.
-	{
-		FdoPtr<FdoICommandCapabilities> capabilities = connection->GetCommandCapabilities();
-		// RFP do NOT support command parameters.
-		FDO_CPPUNIT_ASSERT (capabilities->SupportsParameters() == false );
-		// RFP do NOT support command timeout.
-		FDO_CPPUNIT_ASSERT (capabilities->SupportsTimeout() == false );
+    // Command capabilities.
+    {
+        FdoPtr<FdoICommandCapabilities> capabilities = connection->GetCommandCapabilities();
+        // RFP do NOT support command parameters.
+        FDO_CPPUNIT_ASSERT (capabilities->SupportsParameters() == false );
+        // RFP do NOT support command timeout.
+        FDO_CPPUNIT_ASSERT (capabilities->SupportsTimeout() == false );
 
-		// verify the commands.		
-		static const int commands[] = 
-		{
-			FdoCommandType_Select,
-			FdoCommandType_SelectAggregates,
+        // verify the commands.		
+        static const int commands[] = 
+            {
+                FdoCommandType_Select,
+                FdoCommandType_SelectAggregates,
 	        FdoCommandType_DescribeSchema,
-			FdoCommandType_DescribeSchemaMapping,
-		    FdoCommandType_GetSpatialContexts
+                FdoCommandType_DescribeSchemaMapping,
+                FdoCommandType_GetSpatialContexts
 	    };		
 		
-		FdoInt32 nCnt;
-		FdoInt32* cmds = capabilities->GetCommands(nCnt);
-		FDO_CPPUNIT_ASSERT(nCnt == sizeof(commands)/sizeof(commands[0]));
+        FdoInt32 nCnt;
+        FdoInt32* cmds = capabilities->GetCommands(nCnt);
+        FDO_CPPUNIT_ASSERT(nCnt == sizeof(commands)/sizeof(commands[0]));
 
-		FDO_CPPUNIT_ASSERT (ArrayEqual(cmds, commands, nCnt));
-	}
+        FDO_CPPUNIT_ASSERT (ArrayEqual(cmds, commands, nCnt));
+    }
 	
-	// connection capabilities.
-	{
-		FdoInt32 length;
-		FdoSpatialContextExtentType* types;
+    // connection capabilities.
+    {
+        FdoInt32 length;
+        FdoSpatialContextExtentType* types;
 
-		FdoPtr<FdoIConnectionCapabilities> capabilities = connection->GetConnectionCapabilities();
-		types = capabilities->GetSpatialContextTypes(length);
+        FdoPtr<FdoIConnectionCapabilities> capabilities = connection->GetConnectionCapabilities();
+        types = capabilities->GetSpatialContextTypes(length);
 		
-		FDO_CPPUNIT_ASSERT (length == 1);
-		FDO_CPPUNIT_ASSERT (types[0] == FdoSpatialContextExtentType_Static);
-		FDO_CPPUNIT_ASSERT (capabilities->GetThreadCapability() == FdoThreadCapability_SingleThreaded);
-		FDO_CPPUNIT_ASSERT (capabilities->SupportsConfiguration() == true );
-		FDO_CPPUNIT_ASSERT (capabilities->SupportsLocking() == false );
-		FDO_CPPUNIT_ASSERT (capabilities->SupportsLongTransactions() == false );
-		FDO_CPPUNIT_ASSERT (capabilities->SupportsSQL() == false );
-		FDO_CPPUNIT_ASSERT (capabilities->SupportsTimeout() == false );
-		FDO_CPPUNIT_ASSERT (capabilities->SupportsTransactions() == false);		
-	}
+        FDO_CPPUNIT_ASSERT (length == 1);
+        FDO_CPPUNIT_ASSERT (types[0] == FdoSpatialContextExtentType_Static);
+        FDO_CPPUNIT_ASSERT (capabilities->GetThreadCapability() == FdoThreadCapability_SingleThreaded);
+        FDO_CPPUNIT_ASSERT (capabilities->SupportsConfiguration() == true );
+        FDO_CPPUNIT_ASSERT (capabilities->SupportsLocking() == false );
+        FDO_CPPUNIT_ASSERT (capabilities->SupportsLongTransactions() == false );
+        FDO_CPPUNIT_ASSERT (capabilities->SupportsSQL() == false );
+        FDO_CPPUNIT_ASSERT (capabilities->SupportsTimeout() == false );
+        FDO_CPPUNIT_ASSERT (capabilities->SupportsTransactions() == false);		
+    }
 
-	// expression capabilities.
-	{
-		FdoInt32 length;
-		FdoPtr<FdoIExpressionCapabilities> capabilities = connection->GetExpressionCapabilities();
-		FdoExpressionType* types = capabilities->GetExpressionTypes(length);
-		FDO_CPPUNIT_ASSERT (length == 1);
-		FDO_CPPUNIT_ASSERT (types[0] == FdoExpressionType_Function);
+    // expression capabilities.
+    {
+        FdoInt32 length;
+        FdoPtr<FdoIExpressionCapabilities> capabilities = connection->GetExpressionCapabilities();
+        FdoExpressionType* types = capabilities->GetExpressionTypes(length);
+        FDO_CPPUNIT_ASSERT (length == 1);
+        FDO_CPPUNIT_ASSERT (types[0] == FdoExpressionType_Function);
 
-		FdoPtr<FdoFunctionDefinitionCollection> functions = capabilities->GetFunctions();
-		FDO_CPPUNIT_ASSERT(functions != NULL);
-		FDO_CPPUNIT_ASSERT(functions->GetCount() == 3);
-		FdoPtr<FdoFunctionDefinition> mosaicFunction = functions->GetItem(0);
-		FDO_CPPUNIT_ASSERT(STRCASEEQ(mosaicFunction->GetName(), L"MOSAIC"));
-		FDO_CPPUNIT_ASSERT(mosaicFunction->GetReturnType() == FdoDataType_BLOB);
+        FdoPtr<FdoFunctionDefinitionCollection> functions = capabilities->GetFunctions();
+        FDO_CPPUNIT_ASSERT(functions != NULL);
+        FDO_CPPUNIT_ASSERT(functions->GetCount() == 3);
+        FdoPtr<FdoFunctionDefinition> mosaicFunction = functions->GetItem(0);
+        FDO_CPPUNIT_ASSERT(STRCASEEQ(mosaicFunction->GetName(), L"MOSAIC"));
+        FDO_CPPUNIT_ASSERT(mosaicFunction->GetReturnType() == FdoDataType_BLOB);
 
-		FdoPtr<FdoFunctionDefinition> clipFunction = functions->GetItem(1);
-		FDO_CPPUNIT_ASSERT(STRCASEEQ(clipFunction->GetName(), L"CLIP"));
-		FDO_CPPUNIT_ASSERT(clipFunction->GetReturnType() == FdoDataType_BLOB);
+        FdoPtr<FdoFunctionDefinition> clipFunction = functions->GetItem(1);
+        FDO_CPPUNIT_ASSERT(STRCASEEQ(clipFunction->GetName(), L"CLIP"));
+        FDO_CPPUNIT_ASSERT(clipFunction->GetReturnType() == FdoDataType_BLOB);
         
-		FdoPtr<FdoReadOnlyArgumentDefinitionCollection> args = mosaicFunction->GetArguments();
-		FDO_CPPUNIT_ASSERT(args->GetCount() == 1);
-		FdoPtr<FdoArgumentDefinition> rasterArg = args->GetItem(0);
-		FDO_CPPUNIT_ASSERT(STRCASEEQ(rasterArg->GetName(), L"raster"));
-		FDO_CPPUNIT_ASSERT(rasterArg->GetDataType() == FdoDataType_BLOB);
+        FdoPtr<FdoReadOnlyArgumentDefinitionCollection> args = mosaicFunction->GetArguments();
+        FDO_CPPUNIT_ASSERT(args->GetCount() == 1);
+        FdoPtr<FdoArgumentDefinition> rasterArg = args->GetItem(0);
+        FDO_CPPUNIT_ASSERT(STRCASEEQ(rasterArg->GetName(), L"raster"));
+        FDO_CPPUNIT_ASSERT(rasterArg->GetDataType() == FdoDataType_BLOB);
 
-		FdoPtr<FdoFunctionDefinition> resampleFunction = functions->GetItem(2);
-		FDO_CPPUNIT_ASSERT(STRCASEEQ(resampleFunction->GetName(), L"RESAMPLE"));
-		FDO_CPPUNIT_ASSERT(resampleFunction->GetReturnType() == FdoDataType_BLOB);
+        FdoPtr<FdoFunctionDefinition> resampleFunction = functions->GetItem(2);
+        FDO_CPPUNIT_ASSERT(STRCASEEQ(resampleFunction->GetName(), L"RESAMPLE"));
+        FDO_CPPUNIT_ASSERT(resampleFunction->GetReturnType() == FdoDataType_BLOB);
 
-		args = resampleFunction->GetArguments();
-		FDO_CPPUNIT_ASSERT(args->GetCount() == 7);
-		rasterArg = args->GetItem(0);
-		FDO_CPPUNIT_ASSERT(STRCASEEQ(rasterArg->GetName(), L"raster"));
-		FDO_CPPUNIT_ASSERT(rasterArg->GetDataType() == FdoDataType_BLOB);
-	}
+        args = resampleFunction->GetArguments();
+        FDO_CPPUNIT_ASSERT(args->GetCount() == 7);
+        rasterArg = args->GetItem(0);
+        FDO_CPPUNIT_ASSERT(STRCASEEQ(rasterArg->GetName(), L"raster"));
+        FDO_CPPUNIT_ASSERT(rasterArg->GetDataType() == FdoDataType_BLOB);
+    }
 
-	// filter capabilities.
-	{
-		FdoInt32 nTypes;
-		FdoPtr<FdoIFilterCapabilities> capabilities = connection->GetFilterCapabilities();
+    // filter capabilities.
+    {
+        FdoInt32 nTypes;
+        FdoPtr<FdoIFilterCapabilities> capabilities = connection->GetFilterCapabilities();
 		
-		{
-			FdoConditionType * types;			
-			types = capabilities->GetConditionTypes(nTypes);
-			FDO_CPPUNIT_ASSERT (nTypes == 2);
-			FDO_CPPUNIT_ASSERT (types[0] == FdoConditionType_In);
-			FDO_CPPUNIT_ASSERT (types[1] == FdoConditionType_Spatial);
-		}
+        {
+            FdoConditionType * types;			
+            types = capabilities->GetConditionTypes(nTypes);
+            FDO_CPPUNIT_ASSERT (nTypes == 2);
+            FDO_CPPUNIT_ASSERT (types[0] == FdoConditionType_In);
+            FDO_CPPUNIT_ASSERT (types[1] == FdoConditionType_Spatial);
+        }
 
-		{
-			FdoSpatialOperations* operations = capabilities->GetSpatialOperations(nTypes);
-			FDO_CPPUNIT_ASSERT (nTypes == 4);
-			int flag = 0;
-			for (int i=0; i<4; i++)
-			{
-				if (operations[i] == FdoSpatialOperations_Intersects)
-					flag += 0x1;
-				else if (operations[i] == FdoSpatialOperations_Within)
-					flag += 0x2;
-				else if (operations[i] == FdoSpatialOperations_Inside)
-					flag += 0x4;
-				else if (operations[i] == FdoSpatialOperations_EnvelopeIntersects)
-					flag += 0x8;
+        {
+            FdoSpatialOperations* operations = capabilities->GetSpatialOperations(nTypes);
+            FDO_CPPUNIT_ASSERT (nTypes == 4);
+            int flag = 0;
+            for (int i=0; i<4; i++)
+            {
+                if (operations[i] == FdoSpatialOperations_Intersects)
+                    flag += 0x1;
+                else if (operations[i] == FdoSpatialOperations_Within)
+                    flag += 0x2;
+                else if (operations[i] == FdoSpatialOperations_Inside)
+                    flag += 0x4;
+                else if (operations[i] == FdoSpatialOperations_EnvelopeIntersects)
+                    flag += 0x8;
 
-			}
-			FDO_CPPUNIT_ASSERT (flag == 0xf);
-		}
+            }
+            FDO_CPPUNIT_ASSERT (flag == 0xf);
+        }
 		
-		{
-			FDO_CPPUNIT_ASSERT (capabilities->GetDistanceOperations(nTypes) == NULL);
-			FDO_CPPUNIT_ASSERT (nTypes == 0);
-		}
+        {
+            FDO_CPPUNIT_ASSERT (capabilities->GetDistanceOperations(nTypes) == NULL);
+            FDO_CPPUNIT_ASSERT (nTypes == 0);
+        }
 	
 
-		FDO_CPPUNIT_ASSERT (capabilities->SupportsGeodesicDistance() == false );
-		FDO_CPPUNIT_ASSERT (capabilities->SupportsNonLiteralGeometricOperations() == false);		
-	}
+        FDO_CPPUNIT_ASSERT (capabilities->SupportsGeodesicDistance() == false );
+        FDO_CPPUNIT_ASSERT (capabilities->SupportsNonLiteralGeometricOperations() == false);		
+    }
 
-	// raster capabilites.
-	{
-		FdoPtr<FdoIRasterCapabilities> capabilities = connection->GetRasterCapabilities();
-		FDO_CPPUNIT_ASSERT (capabilities->SupportsRaster() == true);
-		FDO_CPPUNIT_ASSERT (capabilities->SupportsStitching() == true);
-		FDO_CPPUNIT_ASSERT (capabilities->SupportsSubsampling() == true);
+    // raster capabilites.
+    {
+        FdoPtr<FdoIRasterCapabilities> capabilities = connection->GetRasterCapabilities();
+        FDO_CPPUNIT_ASSERT (capabilities->SupportsRaster() == true);
+        FDO_CPPUNIT_ASSERT (capabilities->SupportsStitching() == false);
+        FDO_CPPUNIT_ASSERT (capabilities->SupportsSubsampling() == true);
 		
-		// Tests for "SupportsDataModel".		
-		FdoPtr<FdoRasterDataModel> dm = FdoRasterDataModel::Create();
-		{
-			dm->SetOrganization(FdoRasterDataOrganization_Row);
-			FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == false);
-		}
-		{
-			dm->SetOrganization(FdoRasterDataOrganization_Image);
-			FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == false);
-		}
-		{
-			dm->SetOrganization(FdoRasterDataOrganization_Pixel);
-			// default Data Model type: bitional, bpp = 1.			
-			FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == true);
-			{
-				// bitional
-				dm->SetDataModelType(FdoRasterDataModelType_Bitonal);
-				dm->SetBitsPerPixel(1);
-				FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == true);
-				dm->SetBitsPerPixel(8);
-				FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == false);
-			}
-			{
-				// gray
-				dm->SetDataModelType(FdoRasterDataModelType_Gray);
-				dm->SetBitsPerPixel(8);
-				FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == true);
-				dm->SetBitsPerPixel(24);
-				FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == false);
-			}
-			{
-				// palette	
-				dm->SetDataModelType(FdoRasterDataModelType_Palette);
-				dm->SetBitsPerPixel(8);
-				FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == true);
-				dm->SetBitsPerPixel(24);
-				FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == false);
-			}
-			{
-				// rgb
-				dm->SetDataModelType(FdoRasterDataModelType_RGB);
-				dm->SetBitsPerPixel(24);
-				FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == true);
-				dm->SetBitsPerPixel(32);
-				FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == false);
-			}
-			{
-				// rgba
-				dm->SetDataModelType(FdoRasterDataModelType_RGBA);
-				dm->SetBitsPerPixel(32);
-				FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == true);
-				dm->SetBitsPerPixel(24);
-				FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == false);
-			}
-		}
-	}
+        // Tests for "SupportsDataModel".		
+        FdoPtr<FdoRasterDataModel> dm = FdoRasterDataModel::Create();
+        dm->SetBitsPerPixel(8);
+        dm->SetDataModelType( FdoRasterDataModelType_Gray );
+        dm->SetDataType(FdoRasterDataType_UnsignedInteger);
 
-	// schema capabilities.
-	{
-		FdoPtr<FdoISchemaCapabilities> capabilities = connection->GetSchemaCapabilities();
-		FDO_CPPUNIT_ASSERT (capabilities->SupportsSchemaOverrides() == true);
-		FDO_CPPUNIT_ASSERT (capabilities->SupportsObjectProperties() == false);
-		FDO_CPPUNIT_ASSERT (capabilities->SupportsNetworkModel() == false);
-		FDO_CPPUNIT_ASSERT (capabilities->SupportsMultipleSchemas() == true);		
-		FDO_CPPUNIT_ASSERT (capabilities->SupportsInheritance() == true);
-		FDO_CPPUNIT_ASSERT (capabilities->SupportsAssociationProperties() == false);
+        {
+            dm->SetOrganization(FdoRasterDataOrganization_Row);
+            FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == true);
+        }
+        {
+            dm->SetOrganization(FdoRasterDataOrganization_Image);
+            FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == true);
+        }
+
+        {
+            dm->SetOrganization(FdoRasterDataOrganization_Pixel);
+
+            FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == true);
+            {
+                // bitional
+                dm->SetDataModelType(FdoRasterDataModelType_Bitonal);
+                dm->SetBitsPerPixel(1);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == false);
+            }
+            {
+                // gray
+                dm->SetDataModelType(FdoRasterDataModelType_Gray);
+                dm->SetBitsPerPixel(8);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == true);
+                dm->SetBitsPerPixel(24);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == false);
+            }
+            {
+                // palette	
+                dm->SetDataModelType(FdoRasterDataModelType_Palette);
+                dm->SetBitsPerPixel(8);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == false);
+                dm->SetBitsPerPixel(24);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == false);
+            }
+            {
+                // rgb
+                dm->SetDataModelType(FdoRasterDataModelType_RGB);
+                dm->SetBitsPerPixel(24);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == true);
+                dm->SetBitsPerPixel(32);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == false);
+            }
+            {
+                // rgba
+                dm->SetDataModelType(FdoRasterDataModelType_RGBA);
+                dm->SetBitsPerPixel(32);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == true);
+                dm->SetBitsPerPixel(24);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == false);
+            }
+            {
+                // signed integer.
+                dm->SetDataModelType(FdoRasterDataModelType_Gray);
+                dm->SetBitsPerPixel(16);
+                dm->SetDataType(FdoRasterDataType_Integer);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == true);
+                dm->SetBitsPerPixel(32);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == true);
+                dm->SetBitsPerPixel(8);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == false);
+            }
+            {
+                // unsigned integer.
+                dm->SetDataModelType(FdoRasterDataModelType_Gray);
+                dm->SetBitsPerPixel(16);
+                dm->SetDataType(FdoRasterDataType_UnsignedInteger);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == true);
+                dm->SetBitsPerPixel(32);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == true);
+                dm->SetBitsPerPixel(8);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == true);
+                dm->SetBitsPerPixel(64);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == false);
+            }
+            {
+                // float
+                dm->SetDataModelType(FdoRasterDataModelType_Gray);
+                dm->SetBitsPerPixel(32);
+                dm->SetDataType(FdoRasterDataType_Float);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == true);
+                dm->SetBitsPerPixel(64);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == true);
+                dm->SetBitsPerPixel(128);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == false);
+            }
+            {
+                // we also support RGB for these various data types.
+                dm->SetDataModelType(FdoRasterDataModelType_RGB);
+                dm->SetBitsPerPixel(96);
+                dm->SetDataType(FdoRasterDataType_Float);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == true);
+                dm->SetBitsPerPixel(192);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == true);
+                dm->SetBitsPerPixel(128);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == false);
+                dm->SetDataType(FdoRasterDataType_Integer);
+                dm->SetBitsPerPixel(48);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == true);
+                dm->SetBitsPerPixel(96);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == true);
+                dm->SetBitsPerPixel(24);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == false);
+                dm->SetDataType(FdoRasterDataType_UnsignedInteger);
+                dm->SetBitsPerPixel(48);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == true);
+                dm->SetBitsPerPixel(96);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == true);
+                dm->SetBitsPerPixel(192);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == false);
+            }
+            {
+                // we also support RGBA for these various data types.
+                dm->SetDataModelType(FdoRasterDataModelType_RGBA);
+                dm->SetBitsPerPixel(128);
+                dm->SetDataType(FdoRasterDataType_Float);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == true);
+                dm->SetBitsPerPixel(256);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == true);
+                dm->SetBitsPerPixel(64);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == false);
+                dm->SetDataType(FdoRasterDataType_Integer);
+                dm->SetBitsPerPixel(64);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == true);
+                dm->SetBitsPerPixel(128);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == true);
+                dm->SetBitsPerPixel(32);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == false);
+                dm->SetDataType(FdoRasterDataType_UnsignedInteger);
+                dm->SetBitsPerPixel(64);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == true);
+                dm->SetBitsPerPixel(128);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == true);
+                dm->SetBitsPerPixel(256);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == false);
+            }
+        }
+    }
+
+    // schema capabilities.
+    {
+        FdoPtr<FdoISchemaCapabilities> capabilities = connection->GetSchemaCapabilities();
+        FDO_CPPUNIT_ASSERT (capabilities->SupportsSchemaOverrides() == true);
+        FDO_CPPUNIT_ASSERT (capabilities->SupportsObjectProperties() == false);
+        FDO_CPPUNIT_ASSERT (capabilities->SupportsNetworkModel() == false);
+        FDO_CPPUNIT_ASSERT (capabilities->SupportsMultipleSchemas() == true);		
+        FDO_CPPUNIT_ASSERT (capabilities->SupportsInheritance() == true);
+        FDO_CPPUNIT_ASSERT (capabilities->SupportsAssociationProperties() == false);
 		
-		FdoInt32 nclsTypes, ndataTypes;
-		FdoClassType* clstypes = capabilities->GetClassTypes(nclsTypes);
-		FdoDataType* datatypes = capabilities->GetDataTypes(ndataTypes);
-		FDO_CPPUNIT_ASSERT ((nclsTypes == 1) && (clstypes[0] == FdoClassType_FeatureClass));		
-		FDO_CPPUNIT_ASSERT (ndataTypes == 2);
-	}
+        FdoInt32 nclsTypes, ndataTypes;
+        FdoClassType* clstypes = capabilities->GetClassTypes(nclsTypes);
+        FdoDataType* datatypes = capabilities->GetDataTypes(ndataTypes);
+        FDO_CPPUNIT_ASSERT ((nclsTypes == 1) && (clstypes[0] == FdoClassType_FeatureClass));		
+        FDO_CPPUNIT_ASSERT (ndataTypes == 2);
+    }
 }
 
 void RfpTestThorough::testBeginTransaction()
