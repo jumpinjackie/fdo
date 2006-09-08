@@ -536,7 +536,7 @@ void SdfConnection::UpdateConnectionString()
         m_bReadOnly = false;
 
     FdoCommonConnStringParser parser (NULL, GetConnectionString ());
-    // check to see if connection string is valid and if it have unknown properties 
+    // check the validity of the connection string, i.e. it doesn’t contain unknown properties
     // e.g. DefaultFLocation instead of DefaultFileLocation
     if (!parser.IsConnStringValid())
         throw FdoConnectionException::Create(NlsMsgGetMain(SDFPROVIDER_83_INVALID_CONNECTION_STRING, "Invalid connection string '%1$ls'", GetConnectionString()));
