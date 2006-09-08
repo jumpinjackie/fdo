@@ -18,7 +18,13 @@ Implemented
  o Selecting an area (clipping) using SetBounds().
  o Selects Grey, paletted, RGB and RGBA image configurations. 
  o Reading in pixel interleaved row-by-row order. 
+ o Converting data types (Int16 -> Byte). 
+ o Converting color models (RGBA -> RGB). 
+ o Reading in tiled format (other than one big tile
+   or "strip" tiles). 
+ o Reading line or band (image) interleaved.
  o Linux builds. 
+ o Windows builds. 
  
 
 Not Implemented
@@ -27,17 +33,12 @@ Not Implemented
  o Rotated datasets.
  o Multiple datasets (mosaiced). 
  o 1bit (bitonal). 
+ o Palette support.
  o Proper SRS handling. 
- o Converting data types (Int16 -> Byte). 
- o Converting color models (RGBA -> RGB). 
- o Reading in tiled format (other than one big tile
-   or "strip" tiles). 
- o Reading line or band (image) interleaved.
  o Generic metadata. 
- o Selecting bands. 
+ o Selecting bands other than the default. 
  o Single threaded GDAL access. 
- o Windows builds. 
- o Unit tests. 
+ o Unit tests (well partially implemented). 
 
 
 Key Classes
@@ -53,6 +54,7 @@ FdoRfpRasterUtil: Code to fetch imageinfo and georef when building up
                   the raster list resultset.
 
 FdoRfpStreamReaderByTile: The actual stream reader used to read
-                          from GDAL.
+                          from GDAL.  Does all re-interleaving, data type
+                          conversion and so forth.
 
 
