@@ -32,7 +32,6 @@
 #include "FdoRfpGeoRaster.h"
 #include "FdoRfpStreamReaderByTile.h"
 #include "FdoRfpRasterPropertyDictionary.h"
-#include "FdoRfpStreamReaderRGB24.h"
 #include "FdoRfpImage.h"
 #include "FdoRfpEnvelope.h"
 #include "FdoRfpRasterUtil.h"
@@ -222,10 +221,23 @@ FdoRasterDataModel* FdoRfpBandRaster::GetDataModel ()
     // set organization to pixel
     dataModel->SetOrganization( FdoRasterDataOrganization_Pixel );
 
-    // no tile by default
-    dataModel->SetTileSizeX( GetImageXSize() );
-    dataModel->SetTileSizeY( GetImageYSize() );
-    
+    // Typical "web" use produces modest screen sized images.  For these
+    // we might as well treat them as one big tile, as this reduces to one
+    // big efficient read in GDAL.  A single RasterIO() call.  For big requested
+    // images we treat one row as a tile so we never use too much memory.
+
+    // TODO: We really should be using the tilesize provided by the application.
+    if( GetImageXSize() * (double) GetImageYSize() > 4000000 )
+    {
+        dataModel->SetTileSizeX(GetImageXSize());
+        dataModel->SetTileSizeY(1);
+    }
+    else
+    {
+        dataModel->SetTileSizeX( GetImageXSize() );
+        dataModel->SetTileSizeY( GetImageYSize() );
+    }
+
     m_dataModel = dataModel;
 
     return FDO_SAFE_ADDREF(m_dataModel.p);
@@ -433,6 +445,14 @@ int FdoRfpBandRaster::_getConversionOptions()
     if (m_dataModel != NULL)
     {
         FdoPtr<FdoRasterDataModel> dataModel = GetDataModel();
+
+        // TODO: This logic does not really work because 
+        // GetDataModel() will return m_dataModel if it is set. 
+        // Perhaps we could reset the internal pointer so GetDataModel()
+        // would return a clean copy of the data model.  But we would 
+        // need to put the possibly modified data model back in place
+        // when done. 
+
         // Whether retiling is needed
         if (m_dataModel->GetTileSizeX() != dataModel->GetTileSizeX() ||
             m_dataModel->GetTileSizeY() != dataModel->GetTileSizeY())
@@ -587,34 +607,10 @@ FdoIStreamReader* FdoRfpBandRaster::GetStreamReader()
 
     _computePixelWindow( image, winXOff, winYOff, winXSize, winYSize );
 
-    // Typical "web" use produces modest screen sized images.  For these
-    // we might as well treat them as one big tile, as this reduces to one
-    // big efficient read in GDAL.  A single RasterIO() call.  For big requested
-    // images we treat one row as a tile so we never use too much memory.
-
-    // TODO: We really should be using the tilesize provided by the application.
-    if( GetImageXSize() * (double) GetImageYSize() > 4000000 )
-    {
-        tileXSize = GetImageXSize();
-        tileYSize = 1;
-    }
-    else
-    {
-        tileXSize = GetImageXSize();
-        tileYSize = GetImageYSize();
-    }
-
     streamReader = new FdoRfpStreamReaderGdalByTile(image, 
-                                                    targetDataModel->GetTileSizeX(),
-                                                    targetDataModel->GetTileSizeY(),
+                                                    targetDataModel,
                                                     winXOff, winYOff, winXSize, winYSize, 
                                                     GetImageXSize(), GetImageYSize());
-
-#ifdef notdef
-    if (targetDataModel->GetDataModelType() == FdoRasterDataModelType_RGB 
-        && targetDataModel->GetBitsPerPixel() == 24 )
-        streamReader = new FdoRfpStreamReaderRGB24(streamReader);
-#endif
 
     return FDO_SAFE_ADDREF(streamReader.p);
 }

@@ -26,34 +26,127 @@
 #include "FDORFP.h"
 #include "FdoRfpStreamReaderByTile.h"
 #include "FdoRfpImage.h"
+#include "FdoCommonStringUtil.h"
 #include <cpl_conv.h>
 
 
 FdoRfpStreamReaderGdalByTile::FdoRfpStreamReaderGdalByTile(
     const FdoPtr<FdoRfpImage>& image,                                 
-    int blockXSize, int blockYSize,
+    FdoRasterDataModel *model_in,
     int winXOff, int winYOff, int winXSize, int winYSize,
     int viewXSize, int viewYSize )
         : m_image(image), m_row(0), m_col(0), m_offset(0), 
-          m_blockXSize(blockXSize), m_blockYSize(blockYSize),
-          m_winXOff(winXOff), m_winYOff(winYOff), m_winXSize(winXSize), m_winYSize(winYSize),
+          m_winXOff(winXOff), m_winYOff(winYOff), 
+          m_winXSize(winXSize), m_winYSize(winYSize),
           m_viewXSize(viewXSize), m_viewYSize(viewYSize)
 {
 
-    // Eventually do we need to override this? 
-    m_gdalDataType = m_image->m_gdalDataType;
+    // Make a local copy of the data model.  
+    m_dataModel = FdoRasterDataModel::Create();
+    *m_dataModel = *model_in;
+
+    m_blockXSize = m_dataModel->GetTileSizeX();
+    m_blockYSize = m_dataModel->GetTileSizeY();
+
+    // Work out the components based on the datamodeltype.
+
+    switch( m_dataModel->GetDataModelType() )
+    {
+      case FdoRasterDataModelType_Unknown:
+      case FdoRasterDataModelType_Data:
+      case FdoRasterDataModelType_Gray:
+      case FdoRasterDataModelType_Palette:
+        m_components = 1;
+        m_bandList[0] = m_image->m_bandList[0];
+        break;
+
+      case FdoRasterDataModelType_RGB:
+        m_components = 3;
+        if( m_image->m_components == 1 )
+            m_bandList[0] = m_bandList[1] = m_bandList[2] 
+                = m_image->m_bandList[0];
+        else
+        {
+            m_bandList[0] = m_image->m_bandList[0];
+            m_bandList[1] = m_image->m_bandList[1];
+            m_bandList[2] = m_image->m_bandList[2];
+        }
+        break;
+
+      case FdoRasterDataModelType_RGBA:
+        m_components = 4;
+        if( m_image->m_components == 1 )
+        {
+            m_bandList[0] = m_bandList[1] = m_bandList[2] 
+                = m_image->m_bandList[0];
+            m_bandList[3] = 0;
+        }
+        else if( m_image->m_components == 3 )
+        {
+            m_bandList[0] = m_image->m_bandList[0];
+            m_bandList[1] = m_image->m_bandList[1];
+            m_bandList[2] = m_image->m_bandList[2];
+            m_bandList[3] = 0;
+        }
+        else 
+        {
+            m_bandList[0] = m_image->m_bandList[0];
+            m_bandList[1] = m_image->m_bandList[1];
+            m_bandList[2] = m_image->m_bandList[2];
+            m_bandList[3] = m_image->m_bandList[3];
+        }
+        break;
+    }
+
+    // Work out the band map to use. 
+    m_bytesPerSample = m_dataModel->GetBitsPerPixel() / (8 * m_components);
+    
+    // Work out the data type to return expressed in GDAL terms.
+    m_gdalDataType = GDT_Unknown;
+
+    if( m_dataModel->GetDataType() == FdoRasterDataType_Float )
+    { 
+        if( m_bytesPerSample == 4 )
+            m_gdalDataType = GDT_Float32;
+        else if( m_bytesPerSample == 8 )
+            m_gdalDataType == GDT_Float64;
+    }
+    else if( m_dataModel->GetDataType() == FdoRasterDataType_Integer )
+    {
+        if( m_bytesPerSample == 2 )
+            m_gdalDataType = GDT_Int16;
+        else if( m_bytesPerSample == 4 )
+            m_gdalDataType == GDT_Int32;
+    }
+    else if( m_dataModel->GetDataType() == FdoRasterDataType_UnsignedInteger )
+    {
+        if( m_bytesPerSample == 1 )
+            m_gdalDataType = GDT_Byte;
+        else if( m_bytesPerSample == 2 )
+            m_gdalDataType = GDT_UInt16;
+        else if( m_bytesPerSample == 4 )
+            m_gdalDataType == GDT_UInt32;
+    }
+
+    // If we have unknown then we are in trouble!  But for now we will 
+    // just treat as if it is byte.
+
+    if( m_gdalDataType == GDT_Unknown )
+        m_gdalDataType = GDT_Byte;
 
     // calculate out the number of tile row and col
     m_numTileCols = (viewXSize - 1) / m_blockXSize + 1;
     m_numTileRows = (viewYSize - 1) / m_blockYSize + 1;
 
     // figure out the # of bytes in one tile
-    m_numTileBytes = m_blockXSize * m_blockYSize * m_image->m_bytesPerPixel;
+    m_numTileBytes = m_blockXSize * m_blockYSize 
+        * m_components * m_bytesPerSample;
 
     // calculate out the length of the stream
     m_length = (FdoInt64)m_numTileRows * m_numTileCols * m_numTileBytes;
 
-    // Allocate tile buffer.
+    // Allocate tile buffer - TODO: We should really use VSIMalloc() and
+    // throw some sort of an exception if it fails.
     m_tileData = (GByte *) CPLMalloc(m_numTileBytes);
 
     // check out the tile at (0, 0)
@@ -234,7 +327,15 @@ void FdoRfpStreamReaderGdalByTile::_getTile()
 {
     CPLErr eErr;
 
-    //TODO: This does not address partial tiles at right and bottom!
+    // Preinit the output buffer to 255.  This is mostly important
+    // when we have tiles falling over the right or bottom edge.
+    // But this setting also ensures that "added" alpha values are
+    // 255.  
+
+    // TODO: Eventually we will probably want to fill missing alpha
+    // values with 255 and other missing data with 0. 
+    
+    memset( m_tileData, 255, m_numTileBytes );
 
     // Compute the ratio of a view pixel to a file pixel.
     double ratioX, ratioY;
@@ -256,23 +357,76 @@ void FdoRfpStreamReaderGdalByTile::_getTile()
     fileWinYOff = (int) floor( fileWinULY + 0.5 );
     fileWinXSize = (int) floor( fileWinLRX + 0.5 ) - fileWinXOff;
     fileWinYSize = (int) floor( fileWinLRY + 0.5 ) - fileWinYOff;
+
+    // If this would go off the right or bottom of the image, we may 
+    // need to trip the read window.
+    int fileXSize = GDALGetRasterXSize( m_image->m_ds );
+    int fileYSize = GDALGetRasterYSize( m_image->m_ds );
+    int wrkBlockXSize = m_blockXSize;
+    int wrkBlockYSize = m_blockYSize;
+
+    if( fileWinXOff + fileWinXSize > fileXSize )
+    {
+        double xRatio = (fileXSize - fileWinXOff) 
+            / (double) fileWinXSize;
+
+        fileWinXSize = fileXSize - fileWinXOff;
+        wrkBlockXSize = (int) (wrkBlockXSize * xRatio + 0.5);
+    }
     
-    // Read into pixel interleaved buffer.
+    if( fileWinYOff + fileWinYSize > fileYSize )
+    {
+        double yRatio = (fileYSize - fileWinYOff) 
+            / (double) fileWinYSize;
+
+        fileWinYSize = fileYSize - fileWinYOff;
+        wrkBlockYSize = (int) (wrkBlockYSize * yRatio + 0.5);
+    }
+
+    // Figure out the interleaving values to use based on the data
+    // model and the selected interleaving.
+    
+    int pixelStep, lineStep, bandStep;
+    
+    switch( m_dataModel->GetOrganization() )
+    {
+      case FdoRasterDataOrganization_Pixel:
+        pixelStep = m_bytesPerSample * m_components;
+        lineStep = pixelStep * m_blockXSize;
+        bandStep = m_bytesPerSample;
+        break;
+
+      case FdoRasterDataOrganization_Row:
+        pixelStep = m_bytesPerSample;
+        lineStep = m_bytesPerSample * m_blockXSize * m_components;
+        bandStep = m_bytesPerSample * m_blockXSize;
+        break;
+
+      case FdoRasterDataOrganization_Image:
+        pixelStep = m_bytesPerSample;
+        lineStep = m_bytesPerSample * m_blockXSize;
+        bandStep = lineStep * m_blockYSize;
+        break;
+    }
+
+    // If we have a dummy band # for Alpha, then that means we should
+    // effectively not read it. 
+    int wrkComponents = m_components;
+    if( m_components == 4 && m_bandList[3] == 0 )
+        wrkComponents = 3;
+
+    // Read into interleaved buffer.
     eErr = GDALDatasetRasterIO( m_image->m_ds, GF_Read, 
                                 fileWinXOff, fileWinYOff, fileWinXSize, fileWinYSize,
-                                m_tileData, m_blockXSize, m_blockYSize, m_gdalDataType, 
-                                m_image->m_components, m_image->m_bandList, 
-                                m_image->m_bytesPerPixel, 
-                                m_image->m_bytesPerPixel * m_blockXSize,
-                                m_image->m_bytesPerPixel / m_image->m_components );
+                                m_tileData, wrkBlockXSize, wrkBlockYSize, 
+                                m_gdalDataType, 
+                                wrkComponents, m_bandList, 
+                                pixelStep, lineStep, bandStep );
 
     if( eErr != CE_None )
     {
-        // Throw exception on failiure!
+        wchar_t *msg = NULL;
+        multibyte_to_wide( msg, CPLGetLastErrorMsg() );
+        throw FdoException::Create( msg );
     }
-}
-
-inline FdoInt32 FdoRfpStreamReaderGdalByTile::_bytesPerRow(int width)
-{
-    return m_image->m_bytesPerPixel * m_image->m_blockXSize;
 }

@@ -49,6 +49,8 @@ private:
     // would incur exceptions.
     FdoPtr<FdoRfpImage>	    	m_image;
 
+    FdoPtr<FdoRasterDataModel>  m_dataModel;
+
     int                     	m_winXOff;
     int                     	m_winYOff;
     int                     	m_winXSize;
@@ -72,6 +74,11 @@ private:
     // number of bytes in one tile
     int				m_numTileBytes;
 
+    int                         m_components;
+    int                         m_bandList[4];
+    
+    int                         m_bytesPerSample;
+
     // length of the stream
     FdoInt64			m_length;
 	
@@ -85,7 +92,7 @@ private:
 //protected:
 public:
     FdoRfpStreamReaderGdalByTile(const FdoPtr<FdoRfpImage>& image,
-                                 int blockXSize, int blockYSize,
+                                 FdoRasterDataModel *model,
                                  int winXOff, int winYOff, int winXSize, int winYSize,
                                  int viewXSize, int viewYSize );
                                  
@@ -151,10 +158,6 @@ private:
     FdoInt32 _numBitsTile(int row, int col);
     // get current tile
     void _getTile();
-
-    // bytes per row
-    FdoInt32 _bytesPerRow(int width);
-
 };
 
 
