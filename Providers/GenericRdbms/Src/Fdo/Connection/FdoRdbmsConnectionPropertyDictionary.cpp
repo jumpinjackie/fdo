@@ -32,7 +32,7 @@ const wchar_t **FdoRdbmsConnectionPropertyDictionary::EnumeratePropertyValues(co
     wchar_t** pRet = NULL;
     count = 0;
 
-    if (_wcsnicmp(name, FDO_RDBMS_CONNECTION_DATASTORE, wcslen(FDO_RDBMS_CONNECTION_DATASTORE)) == 0)
+    if (FdoCommonOSUtil::wcsnicmp(name, FDO_RDBMS_CONNECTION_DATASTORE, wcslen(FDO_RDBMS_CONNECTION_DATASTORE)) == 0)
     {
         if ( (mConnection == NULL) || (mConnection->GetConnectionState() == FdoConnectionState_Closed) )
             throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_13, "Connection not established"));
