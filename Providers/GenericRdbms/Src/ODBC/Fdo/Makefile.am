@@ -7,7 +7,6 @@ FdoRdbmsOdbcCommandCapabilities.cpp \
 FdoRdbmsOdbcConnectionCapabilities.cpp \
 FdoRdbmsOdbcConnection.cpp \
 FdoRdbmsOdbcConnectionInfo.cpp \
-FdoRdbmsOdbcConnectionPropertyDictionary.cpp \
 FdoRdbmsOdbcExpressionCapabilities.cpp \
 FdoRdbmsOdbcFilterCapabilities.cpp \
 FdoRdbmsOdbcFilterProcessor.cpp \
@@ -20,9 +19,7 @@ noinst_HEADERS = $(libFdoRdbmsODBC_Fdo_la_SOURCES) \
   FdoRdbmsOdbcConnection.h \
   FdoRdbmsOdbcConnectionCapabilities.h \
   FdoRdbmsOdbcConnectionInfo.h \
-  FdoRdbmsOdbcConnectionPropertyDictionary.h \
   FdoRdbmsOdbcCreateDataStore.h \
-  FdoRdbmsOdbcDataStorePropertyDictionary.h \
   FdoRdbmsOdbcDeleteDataStore.h \
   FdoRdbmsOdbcExpressionCapabilities.h \
   FdoRdbmsOdbcFilterCapabilities.h \

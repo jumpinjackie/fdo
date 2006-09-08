@@ -5,15 +5,13 @@ noinst_LTLIBRARIES = libFdoRdbms_Connection.la
 libFdoRdbms_Connection_la_SOURCES = \
   DbiConnection.cpp \
   FdoRdbmsConnectionPropertyDictionary.cpp \
-  FdoRdbmsConnection.cpp \
-  FdoRdbmsPropertyDictionary.cpp
+  FdoRdbmsConnection.cpp
 
 noinst_HEADERS = $(libFdoRdbms_Connection_la_SOURCES) \
   DbiConnection.h \
   FdoRdbmsConnection.h \
   FdoRdbmsConnectionInfo.h \
-  FdoRdbmsConnectionPropertyDictionary.h \
-  FdoRdbmsPropertyDictionary.h
+  FdoRdbmsConnectionPropertyDictionary.h
 
 INCLUDES = \
   -I../ \

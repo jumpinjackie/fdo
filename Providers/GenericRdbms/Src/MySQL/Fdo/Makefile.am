@@ -16,9 +16,7 @@ noinst_HEADERS = $(libFdoRdbmsMySQL_Fdo_la_SOURCES) \
   FdoRdbmsMySqlConnection.h \
   FdoRdbmsMySqlConnectionCapabilities.h \
   FdoRdbmsMySqlConnectionInfo.h \
-  FdoRdbmsMySqlConnectionPropertyDictionary.h \
   FdoRdbmsMySqlCreateDataStore.h \
-  FdoRdbmsMySqlDataStorePropertyDictionary.h \
   FdoRdbmsMySqlDeleteDataStore.h \
   FdoRdbmsMySqlFilterCapabilities.h \
   FdoRdbmsMySqlFilterProcessor.h \

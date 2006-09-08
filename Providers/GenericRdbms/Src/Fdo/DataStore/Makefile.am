@@ -3,13 +3,11 @@ AUTOMAKE_OPTIONS = foreign
 noinst_LTLIBRARIES = libFdoRdbms_DataStore.la
 
 libFdoRdbms_DataStore_la_SOURCES = \
-  FdoRdbmsDataStorePropertyDictionary.cpp  \
   FdoRdbmsGetDataStores.cpp \
   FdoRdbmsDataStoreReader.cpp
 
 noinst_HEADERS = $(libFdoRdbms_DataStore_la_SOURCES) \
   FdoRdbmsCreateDatastore.h \
-  FdoRdbmsDataStorePropertyDictionary.h \
   FdoRdbmsDataStoreReader.h \
   FdoRdbmsDeleteDataStore.h \
   FdoRdbmsGetDataStores.h
