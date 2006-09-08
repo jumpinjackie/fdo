@@ -242,7 +242,7 @@ FdoConnectionState ArcSDEConnection::Open ()
     FdoPtr<FdoCommonConnPropDictionary> dictionary = dynamic_cast<FdoCommonConnPropDictionary*>(info->GetConnectionProperties ());
 
     FdoCommonConnStringParser parser (NULL, connection_string);
-    // check to see if connection string is valid and if it have unknown properties 
+    // check the validity of the connection string, i.e. it doesn’t contain unknown properties
     // e.g. DefaultFLocation instead of DefaultFileLocation
     if (!parser.IsConnStringValid())
         throw FdoException::Create (NlsMsgGet1(ARCSDE_INVALID_CONNECTION_STRING, "Invalid connection string '%1$ls'", connection_string));
