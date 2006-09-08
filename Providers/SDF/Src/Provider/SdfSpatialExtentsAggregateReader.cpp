@@ -33,22 +33,44 @@ SdfSpatialExtentsAggregateReader::SdfSpatialExtentsAggregateReader(SdfConnection
         m_Extents = NULL;
     else
     {
+        // Get the Geometry property from the class used to construct the query
+        FdoPtr<FdoGeometricPropertyDefinition> geomProp = originalClass->GetGeometryProperty();
+        
+        // Get the dimensionality of the geometry
+        FdoDimensionality geomDim = 
+            (FdoDimensionality)(geomProp->GetHasElevation() ? FdoDimensionality_XY | FdoDimensionality_Z : FdoDimensionality_XY);
+
         // Copy the extent values to an array of doubles
-        double ordinates[10];
-	    ordinates[0] = bounds.minx; // WestBoundLongitude
-	    ordinates[1] = bounds.miny; // SouthBoundLatitude
-	    ordinates[2] = bounds.maxx; // EastBoundLongitude
-	    ordinates[3] = bounds.miny; // SouthBoundLatitude
-	    ordinates[4] = bounds.maxx; // EastBoundLongitude
-	    ordinates[5] = bounds.maxy; // NorthBoundLatitude
-	    ordinates[6] = bounds.minx; // WestBoundLongitude
-	    ordinates[7] = bounds.maxy; // NorthBoundLatitude
-	    ordinates[8] = bounds.minx; // WestBoundLongitude
-	    ordinates[9] = bounds.miny; // SouthBoundLatitude
+        FdoInt32 i=0;
+        double ordinates[15];
+	    ordinates[i++] = bounds.minx; // WestBoundLongitude
+	    ordinates[i++] = bounds.miny; // SouthBoundLatitude
+        if (geomProp->GetHasElevation())
+            ordinates[i++] = 0.0;  // no way to read elevation at the moment
+
+	    ordinates[i++] = bounds.maxx; // EastBoundLongitude
+	    ordinates[i++] = bounds.miny; // SouthBoundLatitude
+        if (geomProp->GetHasElevation())
+            ordinates[i++] = 0.0;  // no way to read elevation at the moment
+
+	    ordinates[i++] = bounds.maxx; // EastBoundLongitude
+	    ordinates[i++] = bounds.maxy; // NorthBoundLatitude
+        if (geomProp->GetHasElevation())
+            ordinates[i++] = 0.0;  // no way to read elevation at the moment
+
+	    ordinates[i++] = bounds.minx; // WestBoundLongitude
+	    ordinates[i++] = bounds.maxy; // NorthBoundLatitude
+        if (geomProp->GetHasElevation())
+            ordinates[i++] = 0.0;  // no way to read elevation at the moment
+
+	    ordinates[i++] = bounds.minx; // WestBoundLongitude
+	    ordinates[i++] = bounds.miny; // SouthBoundLatitude
+        if (geomProp->GetHasElevation())
+            ordinates[i++] = 0.0;  // no way to read elevation at the moment
 
         // Create a linear ring using the bounding box ordinates 
 	    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-	    FdoPtr<FdoILinearRing> linearRing = gf->CreateLinearRing(FdoDimensionality_XY, 10, ordinates);
+	    FdoPtr<FdoILinearRing> linearRing = gf->CreateLinearRing(geomDim, i, ordinates);
 
         // Create a polygon geometry representing the extents from the linear ring
 	    m_Extents = gf->CreatePolygon(linearRing, NULL);

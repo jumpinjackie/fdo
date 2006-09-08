@@ -771,6 +771,7 @@ void MasterTest::selectSpatialExtentsTest()
 
         FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
 		
+        // test optimized SelectAggregates(SpatialExtents) -- NO FILTER
         FdoPtr<FdoISelectAggregates> advsel = (FdoISelectAggregates*)(conn->CreateCommand(FdoCommandType_SelectAggregates));
         advsel->SetFeatureClassName(L"province");
 	    ids = advsel->GetPropertyNames();
@@ -809,24 +810,47 @@ void MasterTest::selectSpatialExtentsTest()
 	    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxX)", fabs(envelopeAllWithoutFilter->GetMaxX() - (-52.620)) < 0.001);
 	    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxY)", fabs(envelopeAllWithoutFilter->GetMaxY() - (83.108)) < 0.001);
 
+        // test non-optimized SelectAggregates(SpatialExtents) -- WITH FILTER
+        advsel = (FdoISelectAggregates*)(conn->CreateCommand(FdoCommandType_SelectAggregates));
+        advsel->SetFeatureClassName(L"province");
+	    ids = advsel->GetPropertyNames();
+	    expr = FdoExpression::Parse(L"SpatialExtents(SHPGEOM)");
+	    cid = FdoComputedIdentifier::Create(L"MBR", expr);
+	    ids->Add(cid);
+        advsel->SetFilter(L"AREA > 0");
+	    rdr = advsel->Execute();
+
+	    count = 0;
+	    while (rdr->ReadNext())
+	    {
+		    if ( rdr->IsNull(L"MBR") )
+			    CPPUNIT_FAIL("NULL MBR geometry returned for SpatialExtents()");
+            
+		    FdoPtr<FdoByteArray> geomBytes = rdr->GetGeometry(L"MBR");
+		    FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(geomBytes);
+
+            FdoGeometryType geomType = geom->GetDerivedType();
+            if (geomType != FdoGeometryType_Polygon)
+			    CPPUNIT_FAIL("Expected Polygon geometry for SpatialExtents() result");
+
+		    envelopeAllWithoutFilter = geom->GetEnvelope();
+
+		    if (envelopeAllWithoutFilter->GetIsEmpty())
+			    CPPUNIT_FAIL("Expected non-empty envelope for SpatialExtents() result");
+
+		    count++;
+	    }
+	    CPPUNIT_ASSERT_MESSAGE("Expected exactly one row of aggregate data", count==1);
+
+	    rdr->Close();
+
+	    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinX)", fabs(envelopeAllWithoutFilter->GetMinX() - (-141.003)) < 0.001);
+	    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinY)", fabs(envelopeAllWithoutFilter->GetMinY() - (41.913)) < 0.001);
+	    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxX)", fabs(envelopeAllWithoutFilter->GetMaxX() - (-52.620)) < 0.001);
+	    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxY)", fabs(envelopeAllWithoutFilter->GetMaxY() - (83.108)) < 0.001);
+
+        // test expected error conditions
         bool failed = false;
-        try
-        {
-            advsel = (FdoISelectAggregates*)(conn->CreateCommand(FdoCommandType_SelectAggregates));
-            advsel->SetFeatureClassName(L"province");
-	        rdr = advsel->Execute();
-        }
-        catch ( FdoException *ex )
-        {
-            ex->Release();
-            failed = true;
-        }
-
-        if (!failed) {
-            CPPUNIT_FAIL("FAILED - SelectAggregates allowed execution with no property names specified\n");
-        }
-
-        failed = false;
         try
         {
             advsel = (FdoISelectAggregates*)(conn->CreateCommand(FdoCommandType_SelectAggregates));

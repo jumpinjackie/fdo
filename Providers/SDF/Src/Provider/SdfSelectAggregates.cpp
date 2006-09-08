@@ -31,8 +31,8 @@ SdfSelectAggregates::~SdfSelectAggregates()
 
 FdoIDataReader* SdfSelectAggregates::Execute()
 {
-    // verify connection
     FdoPtr<SdfConnection> conn = (SdfConnection*)GetConnection();
+    // verify connection
     if (conn == NULL)
         throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_39_NO_CONNECTION)));
 
@@ -41,73 +41,50 @@ FdoIDataReader* SdfSelectAggregates::Execute()
     if (conn->GetConnectionState() != FdoConnectionState_Open)
         throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_26_CONNECTION_CLOSED)));
 
-    // verify the feature class name is specified
     FdoStringP className = mClassName->GetName();
+    // verify the feature class name is specified
     if (className.GetLength() == 0)
         throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_41_NULL_FEATURE_CLASS)));
 
-    // get feature class
-    FdoPtr<FdoClassDefinition> classDef = FdoPtr<FdoClassCollection>(conn->GetSchema()->GetClasses())->GetItem(className);
+    //get feature class
+    FdoPtr<FdoClassDefinition> classDef = FdoPtr<FdoClassCollection>(
+        conn->GetSchema()->GetClasses())->GetItem(className);
     FdoFeatureClass* featureClassDef = dynamic_cast<FdoFeatureClass*>(classDef.p);
 
-    // ensure we have at least 1 property to select
-    if (mPropertiesToSelect->GetCount()<=0) {
-        throw FdoCommandException::Create(
-            NlsMsgGetMain(
-                FDO_NLSID(SDFPROVIDER_90_NO_QUERY_PROPERTIES_SELECTED), (FdoString*)className));
-    }
-
-    // determine if we are attempting to execute the SelectAggregates(SpatialFilter) command
-    FdoPtr<FdoIdentifier> identifier = mPropertiesToSelect->GetItem(0);
-    FdoComputedIdentifier* computedIdentifier = dynamic_cast<FdoComputedIdentifier*>(identifier.p);
-    if (computedIdentifier) 
+    // Verify if this is a special case we can optimize (no filter, no grouping fitler,
+    // and one aggregate function SpatialExtents() on the main geometry property of the class)
+    bool bCanOptimizeSpatialExtents = false;
+    FdoComputedIdentifier* computedIdentifier = NULL;
+    if (!mFilter && !m_GroupingFilter && (mPropertiesToSelect->GetCount()==1))
     {
-        // retrieve the computed identifier expression and get the function
-        FdoPtr<FdoExpression> expr = computedIdentifier->GetExpression();
-        FdoFunction* function = dynamic_cast<FdoFunction*>(expr.p);
-        if (function) 
+        FdoPtr<FdoIdentifier> identifier = mPropertiesToSelect->GetItem(0);
+        computedIdentifier = dynamic_cast<FdoComputedIdentifier*>(identifier.p);
+        if (computedIdentifier) 
         {
-            // if we have a SpatialExtents function, keep processing
-            if (wcscmp(function->GetName(), FDO_FUNCTION_SPATIALEXTENTS) == 0) 
+            FdoPtr<FdoExpression> expr = computedIdentifier->GetExpression();
+            FdoFunction* func = dynamic_cast<FdoFunction*>(expr.p);
+            if (func && 0==wcscmp(func->GetName(), FDO_FUNCTION_SPATIALEXTENTS))
             {
-                // a filter cannot be specified with the spatial extents function
-                if (mFilter || m_GroupingFilter) {
-                    throw FdoCommandException::Create(
-                        NlsMsgGetMain(
-                            FDO_NLSID(SDFPROVIDER_91_SELECTAGGREGATES_FILTER_NOT_SUPPORTED)));
-                }
-
-                // the spatial extents function cannot take more than 1 argument
-                FdoPtr<FdoExpressionCollection> args = function->GetArguments();
-                if (args->GetCount() != 1) {
-                    throw FdoCommandException::Create(
-                        NlsMsgGetMain(
-                            FDO_NLSID(SDFPROVIDER_92_SPATIALEXTENTS_TOO_MANY_ARGUMENTS)));
-                }
-
-                // the argument to the spatial extents function must be an identifier
+                FdoPtr<FdoExpressionCollection> args = func->GetArguments();
                 FdoPtr<FdoExpression> arg = args->GetItem(0);
                 FdoIdentifier* argId = dynamic_cast<FdoIdentifier*>(arg.p);
-                if (!argId) {
-                    throw FdoCommandException::Create(
-                        NlsMsgGetMain(
-                            FDO_NLSID(SDFPROVIDER_93_SELECTAGGREGATES_INVALID_ARGUMENT_TYPE), argId->GetName(), (FdoString*)className));
+                if (featureClassDef)
+                {
+                    FdoPtr<FdoGeometricPropertyDefinition> geomProp = featureClassDef->GetGeometryProperty();
+                    if (geomProp && argId && 0==wcscmp(argId->GetName(), geomProp->GetName()))
+                        bCanOptimizeSpatialExtents = true;
                 }
-
-                // the argument to the spatial extents function must be the name of the geometry property
-                FdoPtr<FdoGeometricPropertyDefinition> geomProp = featureClassDef->GetGeometryProperty();
-                if (wcscmp(argId->GetName(), geomProp->GetName()) != 0) {
-                    throw FdoCommandException::Create(
-                        NlsMsgGetMain(
-                            FDO_NLSID(SDFPROVIDER_93_SELECTAGGREGATES_INVALID_ARGUMENT_TYPE), argId->GetName(), (FdoString*)className));
-                }
-
-                // create and return an instance of teh spatial extents reader
-                return new SdfSpatialExtentsAggregateReader(conn, featureClassDef, computedIdentifier->GetName());
             }
         }
     }
 
-    // Execute the common aggretaes command to get non SpatialExtents support
-    return FdoCommonSelectAggregatesCommand::Execute();
+    // Now perform the actual select aggregates and return the data reader:
+    if (bCanOptimizeSpatialExtents)
+    {
+        return new SdfSpatialExtentsAggregateReader(conn, featureClassDef, computedIdentifier->GetName());
+    }
+    else
+    {
+        return FdoCommonSelectAggregatesCommand::Execute();
+    }
 }
