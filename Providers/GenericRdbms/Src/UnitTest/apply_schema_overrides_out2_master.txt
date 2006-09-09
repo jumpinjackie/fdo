@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <fdo:DataStore xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gml="http://www.opengis.net/gml" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:fds="http://fdo.osgeo.org/schemas/fds">
 <SchemaMapping xmlns:rdb="http://fdordbms.osgeo.org/schemas" xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" provider="Autodesk.Oracle.3.2" name="OverridesA">
-<complexType name="OvClassAType" TableMapping="Concrete">
+<complexType name="OvClassAType" tableMapping="Concrete">
 <Table pkeyName="PK_OVCLASSA" name="OVCLASSA"/>
 <element name="DataA">
 <Column name="DATAA"/>
@@ -13,25 +13,25 @@
 <GeometricColumn name="OV_GEOMCOL_A"/>
 </element>
 </complexType>
-<complexType name="OvClassBType" TableMapping="Concrete">
+<complexType name="OvClassBType" tableMapping="Concrete">
 <Table pkeyName="PK_OVCLASSB" name="OVCLASSB"/>
 <element name="DataB">
 <Column name="OV_COL_B" sequenceName="OV_SEQ_1"/>
 </element>
 </complexType>
-<complexType name="OvClassCType" TableMapping="Concrete">
+<complexType name="OvClassCType" tableMapping="Concrete">
 <Table tablespace="USERS" pkeyName="PK_OV_TABLE_C" name="OV_TABLE_C"/>
 <element name="DataC">
 <Column name="DATAC"/>
 </element>
 </complexType>
-<complexType name="OvClassC1Type" TableMapping="Concrete">
+<complexType name="OvClassC1Type" tableMapping="Concrete">
 <Table pkeyName="PK_OV_TABLE_C1" name="OV_TABLE_C1"/>
 <element name="DataC1">
 <Column name="DATAC1"/>
 </element>
 </complexType>
-<complexType name="OvClassC11Type" TableMapping="Base">
+<complexType name="OvClassC11Type" tableMapping="Base">
 <Table pkeyName="PK_OV_TABLE_C1" name="OV_TABLE_C1"/>
 <element name="DataC11">
 <Column name="DATAC11"/>
@@ -40,31 +40,31 @@
 <PropertyMappingSingle prefix="TestVeryLongPrefix012345"/>
 </element>
 </complexType>
-<complexType name="OvClassDType" TableMapping="Base">
+<complexType name="OvClassDType" tableMapping="Base">
 <Table pkeyName="PK_OV_TABLE_C" name="OV_TABLE_C"/>
 <element name="DataD">
 <Column name="OV_COL_D" sequenceName="OV_SEQ_1"/>
 </element>
 </complexType>
-<complexType name="OvClassEType" TableMapping="Base">
+<complexType name="OvClassEType" tableMapping="Base">
 <Table pkeyName="PK_OV_TABLE_C" name="OV_TABLE_C"/>
 <element name="DataE">
 <Column name="DATAE"/>
 </element>
 </complexType>
-<complexType name="OvClassE1Type" TableMapping="Base">
+<complexType name="OvClassE1Type" tableMapping="Base">
 <Table pkeyName="PK_OV_TABLE_C" name="OV_TABLE_C"/>
 <element name="DataE1">
 <Column name="OV_COL_E1"/>
 </element>
 </complexType>
-<complexType name="OvClassE11Type" TableMapping="Concrete">
+<complexType name="OvClassE11Type" tableMapping="Concrete">
 <Table pkeyName="PK_OVCLASSE11" name="OVCLASSE11"/>
 <element name="DataE11">
 <Column name="OV_COL_E11"/>
 </element>
 </complexType>
-<complexType name="OvClassFType" TableMapping="Base">
+<complexType name="OvClassFType" tableMapping="Base">
 <Table pkeyName="PK_OV_TABLE_C" name="OV_TABLE_C"/>
 <element name="DataF">
 <Column name="OV_COL_F"/>
@@ -73,13 +73,13 @@
 <GeometricColumn name="OV_GEOMCOL_F"/>
 </element>
 </complexType>
-<complexType name="OvClassGType" TableMapping="Concrete">
+<complexType name="OvClassGType" tableMapping="Concrete">
 <Table pkeyName="PK_OVCLASSG" name="OVCLASSG"/>
 <element name="DataG">
 <Column name="DATAG"/>
 </element>
 </complexType>
-<complexType name="OvClassHType" TableMapping="Concrete">
+<complexType name="OvClassHType" tableMapping="Concrete">
 <Table pkeyName="PK_OVCLASSH" name="OVCLASSH"/>
 <element name="DataH">
 <Column name="OV_COL_H" sequenceName="OV_SEQ_2"/>
@@ -134,13 +134,13 @@
 </PropertyMappingConcrete>
 </element>
 </complexType>
-<complexType name="OvClassJType" TableMapping="Concrete">
+<complexType name="OvClassJType" tableMapping="Concrete">
 <Table tablespace="SYSTEM" pkeyName="PK_OV_TABLE_J" name="OV_TABLE_J"/>
 <element name="DataJ">
 <Column name="OV_COL_J"/>
 </element>
 </complexType>
-<complexType name="OvClassKType" TableMapping="Concrete">
+<complexType name="OvClassKType" tableMapping="Concrete">
 <Table pkeyName="PK_OVCLASSK" name="OVCLASSK"/>
 <element name="FID">
 <Column name="FEATID"/>
@@ -149,7 +149,7 @@
 <GeometricColumn name="GEOMK"/>
 </element>
 </complexType>
-<complexType name="OvOpClassHAType" TableMapping="Concrete">
+<complexType name="OvOpClassHAType" tableMapping="Concrete">
 <Table name="ops_table_ha"/>
 <element name="ObjectA">
 <PropertyMappingSingle prefix="prefixA"/>
@@ -161,7 +161,7 @@
 <Column name="OPB"/>
 </element>
 </complexType>
-<complexType name="OvOpClassHAAType" TableMapping="Concrete">
+<complexType name="OvOpClassHAAType" tableMapping="Concrete">
 <Table name="ops_table_haa"/>
 <element name="ObjectA">
 <PropertyMappingSingle prefix="prefixA"/>
@@ -173,7 +173,7 @@
 <Column name="OPB"/>
 </element>
 </complexType>
-<complexType name="OvOpClassHAAAType" TableMapping="Concrete">
+<complexType name="OvOpClassHAAAType" tableMapping="Concrete">
 <Table name="ops_table_haaa"/>
 <element name="OpA">
 <Column name="OPA"/>
@@ -182,7 +182,7 @@
 <Column name="OPB"/>
 </element>
 </complexType>
-<complexType name="OvOpClassHBType" TableMapping="Concrete">
+<complexType name="OvOpClassHBType" tableMapping="Concrete">
 <Table name="ops_table_hb"/>
 <element name="ObjectA">
 <PropertyMappingConcrete>
@@ -205,7 +205,7 @@
 <Column name="OPB"/>
 </element>
 </complexType>
-<complexType name="OvOpClassHBAType" TableMapping="Concrete">
+<complexType name="OvOpClassHBAType" tableMapping="Concrete">
 <Table pkeyName="PK_OPC_TABLE_HBA" name="OPC_TABLE_HBA"/>
 <element name="OpA">
 <Column name="OPA"/>
@@ -217,7 +217,7 @@
 <Column name="OPID1"/>
 </element>
 </complexType>
-<complexType name="OvOpClassHCType" TableMapping="Concrete">
+<complexType name="OvOpClassHCType" tableMapping="Concrete">
 <Table pkeyName="PK_OPC_TABLE_HC" name="OPC_TABLE_HC"/>
 <element name="ObjectA">
 <PropertyMappingSingle prefix="prefixA"/>
@@ -232,7 +232,7 @@
 <Column name="OPID1"/>
 </element>
 </complexType>
-<complexType name="OvOpClassHCAType" TableMapping="Concrete">
+<complexType name="OvOpClassHCAType" tableMapping="Concrete">
 <Table name="ops_table_hca"/>
 <element name="OpA">
 <Column name="OPA"/>
@@ -241,7 +241,7 @@
 <Column name="OPB"/>
 </element>
 </complexType>
-<complexType name="OvOpClassHDType" TableMapping="Concrete">
+<complexType name="OvOpClassHDType" tableMapping="Concrete">
 <Table name="opc_table_hd"/>
 <element name="ObjectA">
 <PropertyMappingConcrete>
@@ -270,7 +270,7 @@
 <Column name="OPID1"/>
 </element>
 </complexType>
-<complexType name="OvOpClassHDAType" TableMapping="Concrete">
+<complexType name="OvOpClassHDAType" tableMapping="Concrete">
 <Table pkeyName="PK_OPC_TABLE_HDA" name="OPC_TABLE_HDA"/>
 <element name="ObjectA">
 <PropertyMappingSingle prefix="prefixA"/>
@@ -285,7 +285,7 @@
 <Column name="OPID1"/>
 </element>
 </complexType>
-<complexType name="OvOpClassHDAAType" TableMapping="Concrete">
+<complexType name="OvOpClassHDAAType" tableMapping="Concrete">
 <Table name="ops_table_hdaa"/>
 <element name="OpA">
 <Column name="OPA"/>
@@ -294,7 +294,7 @@
 <Column name="OPB"/>
 </element>
 </complexType>
-<complexType name="OvOpClassIEType" TableMapping="Concrete">
+<complexType name="OvOpClassIEType" tableMapping="Concrete">
 <Table name="ops_table_ie"/>
 <element name="OpA">
 <Column name="OPA"/>
@@ -303,7 +303,7 @@
 <Column name="OPB"/>
 </element>
 </complexType>
-<complexType name="OvOpClassIFType" TableMapping="Concrete">
+<complexType name="OvOpClassIFType" tableMapping="Concrete">
 <Table name="opc_table_if"/>
 <element name="OpA">
 <Column name="OPA"/>

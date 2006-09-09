@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <fdo:DataStore xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gml="http://www.opengis.net/gml" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:fds="http://fdo.osgeo.org/schemas/fds">
 <SchemaMapping xmlns:rdb="http://fdordbms.osgeo.org/schemas" xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" tablespace="SYSTEM" tableMapping="Base" provider="Autodesk.Oracle.3.2" name="OverridesA">
-<complexType name="OvClassAType" TableMapping="Base">
+<complexType name="OvClassAType" tableMapping="Base">
 <element name="GeomA">
 <GeometricColumn name="OV_GEOMCOL_A"/>
 </element>
 </complexType>
-<complexType name="OvClassBType" TableMapping="Concrete">
+<complexType name="OvClassBType" tableMapping="Concrete">
 <element name="DataB">
 <Column name="OV_COL_B" sequenceName="OV_SEQ_1"/>
 </element>
 </complexType>
-<complexType name="OvClassCType" TableMapping="Concrete">
+<complexType name="OvClassCType" tableMapping="Concrete">
 <Table tablespace="USERS" pkeyName="PK_OV_TABLE_C" name="OV_TABLE_C"/>
 </complexType>
-<complexType name="OvClassDType" TableMapping="Base">
+<complexType name="OvClassDType" tableMapping="Base">
 <element name="DataD">
 <Column name="OV_COL_D" sequenceName="OV_SEQ_1"/>
 </element>
 </complexType>
-<complexType name="OvClassEType" TableMapping="Base"/>
-<complexType name="OvClassFType" TableMapping="Base">
+<complexType name="OvClassEType" tableMapping="Base"/>
+<complexType name="OvClassFType" tableMapping="Base">
 <element name="DataF">
 <Column name="OV_COL_F"/>
 </element>
@@ -28,7 +28,7 @@
 <GeometricColumn name="OV_GEOMCOL_F"/>
 </element>
 </complexType>
-<complexType name="OvClassHType" TableMapping="Concrete">
+<complexType name="OvClassHType" tableMapping="Concrete">
 <element name="DataH">
 <Column name="OV_COL_H" sequenceName="OV_SEQ_2"/>
 </element>
@@ -75,7 +75,7 @@
 </PropertyMappingConcrete>
 </element>
 </complexType>
-<complexType name="OvClassIType" TableMapping="Base">
+<complexType name="OvClassIType" tableMapping="Base">
 <element name="GeomI">
 <GeometricColumn name="GEOMI"/>
 </element>

@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <fdo:DataStore xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gml="http://www.opengis.net/gml" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:fds="http://fdo.osgeo.org/schemas/fds">
 <SchemaMapping xmlns:rdb="http://fdordbms.osgeo.org/schemas" xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" provider="Autodesk.Oracle.3.2" name="Electric-x27-l">
-<complexType name="-x27-AddressType" TableMapping="Concrete">
+<complexType name="-x27-AddressType" tableMapping="Concrete">
 <Table name="A_ADDRESS"/>
 <element name="Number">
 <Column name="NUMBER1"/>
 </element>
 </complexType>
-<complexType name="ConductorType" TableMapping="Concrete">
+<complexType name="ConductorType" tableMapping="Concrete">
 <Table pkeyName="PK_CONDUCTOR" name="CONDUCTOR"/>
 <element name="underground">
 <Column name="UNDERGROUND"/>
 </element>
 </complexType>
-<complexType name="CustomerType" TableMapping="Concrete">
+<complexType name="CustomerType" tableMapping="Concrete">
 <Table pkeyName="PK_CUSTOMER" name="CUSTOMER"/>
 <element name="Credit-x20-Rating">
 <Column name="CREDIT_RATING"/>
@@ -25,13 +25,13 @@
 <Column name="LAST_NAME"/>
 </element>
 </complexType>
-<complexType name="Customer-x20---x20-BusinessType" TableMapping="Concrete">
+<complexType name="Customer-x20---x20-BusinessType" tableMapping="Concrete">
 <Table pkeyName="PK_CUSTOMER___BUSINESS" name="CUSTOMER___BUSINESS"/>
 </complexType>
-<complexType name="Customer-x20---x20-ResidentialType" TableMapping="Concrete">
+<complexType name="Customer-x20---x20-ResidentialType" tableMapping="Concrete">
 <Table pkeyName="PK_CUSTOMER___RESIDENTIAL" name="CUSTOMER___RESIDENTIAL"/>
 </complexType>
-<complexType name="ElectricDeviceType" TableMapping="Concrete">
+<complexType name="ElectricDeviceType" tableMapping="Concrete">
 <Table pkeyName="PK_ELECTRICDEVICE" name="ELECTRICDEVICE"/>
 <element name="FeatId">
 <Column name="FEATID"/>
@@ -114,7 +114,7 @@
 </PropertyMappingConcrete>
 </element>
 </complexType>
-<complexType name="Maint-x20-HistoryType" TableMapping="Concrete">
+<complexType name="Maint-x20-HistoryType" tableMapping="Concrete">
 <Table name="MAINT_HISTORY"/>
 <element name="Date">
 <Column name="DATE1"/>
@@ -140,7 +140,7 @@
 </PropertyMappingConcrete>
 </element>
 </complexType>
-<complexType name="Maint-x20-History-x20-ItemType" TableMapping="Concrete">
+<complexType name="Maint-x20-History-x20-ItemType" tableMapping="Concrete">
 <Table name="MAINT_HISTORY_ITEM"/>
 <element name="Part-x20--x23-">
 <Column name="PART__"/>
@@ -149,7 +149,7 @@
 <Column name="WORK_DESCRIPTION"/>
 </element>
 </complexType>
-<complexType name="PoleType" TableMapping="Concrete">
+<complexType name="PoleType" tableMapping="Concrete">
 <Table pkeyName="PK_POLE" name="POLE"/>
 <element name="FeatId">
 <Column name="FEATID"/>
@@ -158,7 +158,7 @@
 <Column name="HEIGHT"/>
 </element>
 </complexType>
-<complexType name="StreetType" TableMapping="Concrete">
+<complexType name="StreetType" tableMapping="Concrete">
 <Table name="STREET"/>
 <element name="Name">
 <Column name="NAME"/>
@@ -167,7 +167,7 @@
 <Column name="TYPE"/>
 </element>
 </complexType>
-<complexType name="TransformerType" TableMapping="Concrete">
+<complexType name="TransformerType" tableMapping="Concrete">
 <Table pkeyName="PK_TRANSFORMER" name="TRANSFORMER"/>
 <element name="GEOMETRY">
 <GeometricColumn name="GEOMETRY"/>
@@ -191,7 +191,7 @@
 <Column name="VOLTAGE"/>
 </element>
 </complexType>
-<complexType name="Work-x20-ItemType" TableMapping="Concrete">
+<complexType name="Work-x20-ItemType" tableMapping="Concrete">
 <Table name="WORK_ITEM"/>
 <element name="It-x27-m-x20--x23-">
 <Column name="IT_M__"/>
