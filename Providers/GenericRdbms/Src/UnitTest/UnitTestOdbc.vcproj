@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8.00"
 	Name="UnitTestOdbc"
-	ProjectGUID="{D413E013-4597-4220-B8CE-9A4A3E5E1E60}"
+	ProjectGUID="{15F6A280-879F-4F7A-BDD9-7D1235D7066A}"
 	RootNamespace="UnitTestOdbc"
 	>
 	<Platforms>
@@ -65,7 +65,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib ODBCCP32.Lib FDONLS.lib Rdbi.lib ODBCDriver.lib cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib rsi.lib gdbi.lib geometry_fgf.lib ProvidersCommon.lib grdschemamgr.lib rdbmsoverrides.lib schemamgr_lpnew.lib schemamgr_phnew.lib schemamgrnew.lib FDOSpatial.lib SchemaMgr_OVNew.lib OdbcSchemaMgr.lib ODBCOverrides.lib util.lib FdoGeneric.lib "
+				AdditionalDependencies="odbc32.lib ODBCCP32.Lib FDONLS.lib Rdbi.lib ODBCDriver.lib cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib gdbi.lib geometry_fgf.lib ProvidersCommon.lib grdschemamgr.lib rdbmsoverrides.lib schemamgr_lpnew.lib schemamgr_phnew.lib schemamgrnew.lib FDOSpatial.lib SchemaMgr_OVNew.lib OdbcSchemaMgr.lib ODBCOverrides.lib util.lib FdoGeneric.lib Advapi32.lib User32.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\Lib\Win32\Debug;&quot;$(FDO)\Unmanaged\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Debug&quot;"
 				IgnoreDefaultLibraryNames="libcmtd.lib"
@@ -145,7 +145,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib ODBCCP32.Lib FDONLS.lib Rdbi.lib ODBCDriver.lib cppunit.lib FDO.lib FDOCommon.lib FDOGeometry.lib rsi.lib gdbi.lib geometry_fgf.lib ProvidersCommon.lib grdschemamgr.lib rdbmsoverrides.lib schemamgr_lpnew.lib schemamgr_phnew.lib schemamgrnew.lib FDOSpatial.lib SchemaMgr_OVNew.lib OdbcSchemaMgr.lib ODBCOverrides.lib util.lib FdoGeneric.lib"
+				AdditionalDependencies="odbc32.lib ODBCCP32.Lib FDONLS.lib Rdbi.lib ODBCDriver.lib cppunit.lib FDO.lib FDOCommon.lib FDOGeometry.lib gdbi.lib geometry_fgf.lib ProvidersCommon.lib grdschemamgr.lib rdbmsoverrides.lib schemamgr_lpnew.lib schemamgr_phnew.lib schemamgrnew.lib FDOSpatial.lib SchemaMgr_OVNew.lib OdbcSchemaMgr.lib ODBCOverrides.lib util.lib FdoGeneric.lib Advapi32.lib User32.lib"
 				AdditionalLibraryDirectories="..\..\Lib\Win32\Release;&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Release&quot;"
 				IgnoreDefaultLibraryNames="libc.lib"
 			/>
