@@ -470,47 +470,47 @@ public:
 
     static FdoStringP ConnStringSdeNodatastore(void)
     {
-        return FdoStringP::Format(L"Server=%ls;Instance=%ls;Username=%ls;Password=%ls", (FdoString*)Server(), (FdoString*)Instance(), (FdoString*)SdeUsername(), (FdoString*)SdePassword());
+        return FdoStringP::Format(L"Server=%ls;Instance=%ls;Username=%ls;Password=%ls;", (FdoString*)Server(), (FdoString*)Instance(), (FdoString*)SdeUsername(), (FdoString*)SdePassword());
     }
 
     static FdoStringP ConnStringSdeWithDatastore(void)
     {
-        return FdoStringP::Format(L"Server=%ls;Instance=%ls;Username=%ls;Password=%ls;Datastore=%ls",  (FdoString*)Server(), (FdoString*)Instance(), (FdoString*)SdeUsername(), (FdoString*)SdePassword(), (FdoString*)Datastore());
+        return FdoStringP::Format(L"Server=%ls;Instance=%ls;Username=%ls;Password=%ls;Datastore=%ls;",  (FdoString*)Server(), (FdoString*)Instance(), (FdoString*)SdeUsername(), (FdoString*)SdePassword(), (FdoString*)Datastore());
     }
 
     static FdoStringP ConnStringAustralia(void)
     {
-        return FdoStringP::Format(L"Server=%ls;Instance=%ls;Datastore=%ls;Username=%ls;Password=test", (FdoString*)Server(), (FdoString*)Instance(), (FdoString*)Datastore(), (FdoString*)UserNameAustralia());
+        return FdoStringP::Format(L"Server=%ls;Instance=%ls;Datastore=%ls;Username=%ls;Password=test;", (FdoString*)Server(), (FdoString*)Instance(), (FdoString*)Datastore(), (FdoString*)UserNameAustralia());
     }
 
     static FdoStringP ConnStringWheaton(void)
     {
-        return FdoStringP::Format(L"Server=%ls;Instance=%ls;Datastore=%ls;Username=%ls;Password=test", (FdoString*)Server(), (FdoString*)Instance(), (FdoString*)Datastore(), (FdoString*)UserNameWheaton());
+        return FdoStringP::Format(L"Server=%ls;Instance=%ls;Datastore=%ls;Username=%ls;Password=test;", (FdoString*)Server(), (FdoString*)Instance(), (FdoString*)Datastore(), (FdoString*)UserNameWheaton());
     }
 
     static FdoStringP ConnStringOzzie(void)
     {
-        return FdoStringP::Format(L"Server=%ls;Instance=%ls;Datastore=%ls;Username=%ls;Password=test", (FdoString*)Server(), (FdoString*)Instance(), (FdoString*)Datastore(), (FdoString*)UserNameOzzie());
+        return FdoStringP::Format(L"Server=%ls;Instance=%ls;Datastore=%ls;Username=%ls;Password=test;", (FdoString*)Server(), (FdoString*)Instance(), (FdoString*)Datastore(), (FdoString*)UserNameOzzie());
     }
 
     static FdoStringP ConnStringMetadcov(void)
     {
-        return FdoStringP::Format(L"Server=%ls;Instance=%ls;Datastore=%ls;Username=%ls;Password=test", (FdoString*)Server(), (FdoString*)Instance(), (FdoString*)Datastore(), (FdoString*)UserNameMetadcov());
+        return FdoStringP::Format(L"Server=%ls;Instance=%ls;Datastore=%ls;Username=%ls;Password=test;", (FdoString*)Server(), (FdoString*)Instance(), (FdoString*)Datastore(), (FdoString*)UserNameMetadcov());
     }
 
     static FdoStringP ConnStringFdoTest1(void)
     {
-        return FdoStringP::Format(L"Server=%ls;Instance=%ls;Datastore=%ls;Username=%ls;Password=test", (FdoString*)Server(), (FdoString*)Instance(), (FdoString*)Datastore(), (FdoString*)UserNameFdoTest1());
+        return FdoStringP::Format(L"Server=%ls;Instance=%ls;Datastore=%ls;Username=%ls;Password=test;", (FdoString*)Server(), (FdoString*)Instance(), (FdoString*)Datastore(), (FdoString*)UserNameFdoTest1());
     }
 
     static FdoStringP ConnStringMetadcovSingleDb(void)
     {
-        return FdoStringP::Format(L"Server=%ls;Instance=%ls;Datastore=%ls;Username=%ls;Password=test", (FdoString*)Server(), (FdoString*)InstanceSingleDb(), (FdoString*)DatastoreSingleDb(), (FdoString*)UserNameMetadcov());
+        return FdoStringP::Format(L"Server=%ls;Instance=%ls;Datastore=%ls;Username=%ls;Password=test;", (FdoString*)Server(), (FdoString*)InstanceSingleDb(), (FdoString*)DatastoreSingleDb(), (FdoString*)UserNameMetadcov());
     }
 
     static FdoStringP ConnStringAustraliaMultiDb(void)
     {
-        return FdoStringP::Format(L"Server=%ls;Instance=%ls;Datastore=%ls;Username=%ls;Password=test", (FdoString*)Server(), (FdoString*)Instance(), (FdoString*)DatastoreMultiDb(), (FdoString*)UserNameAustralia());
+        return FdoStringP::Format(L"Server=%ls;Instance=%ls;Datastore=%ls;Username=%ls;Password=test;", (FdoString*)Server(), (FdoString*)Instance(), (FdoString*)DatastoreMultiDb(), (FdoString*)UserNameAustralia());
     }
 
     // Fdo Class and schema names (server/database-agnostic):
