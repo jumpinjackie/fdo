@@ -23,7 +23,6 @@
 #include "FdoCommonStringUtil.h"
 
 FdoRdbmsOdbcConnectionInfo::FdoRdbmsOdbcConnectionInfo(FdoRdbmsConnection *connection) :
-mPropertyDictionary(NULL),
 mConnection(connection)
 {
 

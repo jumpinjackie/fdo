@@ -695,12 +695,12 @@ void FdoSmPhGrdMgr::SetStaticReader( FdoStringP name, FdoPtr<FdoSmPhReader> read
 FdoPtr<FdoSmPhReader> FdoSmPhGrdMgr::GetStaticReader ( FdoStringP readerName )
 {
 	if ( !mStaticReaders )
-		return NULL;
+		return (FdoSmPhReader *) NULL;
 	FdoSmPhStaticReaderP staticReader = mStaticReaders->FindItem( (const wchar_t*)readerName );
 	if (staticReader)
 		return staticReader->GetReader();
 	else
-		return NULL;
+		return (FdoSmPhReader *) NULL;
 }
 
 void FdoSmPhGrdMgr::RemoveStaticReaders()

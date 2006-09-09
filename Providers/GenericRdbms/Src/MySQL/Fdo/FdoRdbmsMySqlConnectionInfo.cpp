@@ -21,7 +21,6 @@
 #include "FdoRdbmsMySqlProviderInfo.h"
 
 FdoRdbmsMySqlConnectionInfo::FdoRdbmsMySqlConnectionInfo(FdoRdbmsConnection *connection) :
-mPropertyDictionary(NULL),
 mConnection(connection)
 {
 
