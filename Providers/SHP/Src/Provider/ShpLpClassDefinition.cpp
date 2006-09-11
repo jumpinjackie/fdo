@@ -478,10 +478,21 @@ void ShpLpClassDefinition::Delete(ShpConnection* connection)
 
     // Close and delete the IDX file:
     ShpSpatialIndex* idx = fileset->GetSpatialIndex ();
-    idx_name = (wchar_t*)alloca (sizeof (wchar_t) * (1 + wcslen (idx->FileName ())));
-    wcscpy (idx_name, idx->FileName ());
-    idx->CloseFile ();
-    rc = FdoCommonFile::Delete (idx_name);
+	if ( idx != NULL )
+	{
+		idx_name = (wchar_t*)alloca (sizeof (wchar_t) * (1 + wcslen (idx->FileName ())));
+		wcscpy (idx_name, idx->FileName ());
+		idx->CloseFile ();
+		rc = FdoCommonFile::Delete (idx_name);
+	}
+	else
+	{
+		// The IDX file may exists but not loaded
+		FdoStringP	idx_name = FdoStringP(shx_name);
+		idx_name = idx_name.Replace(SHX_EXTENSION, IDX_EXTENSION);
+		if ( FdoCommonFile::FileExists ( idx_name ) )
+			FdoCommonFile::Delete (idx_name, true);
+	}
 
     // Close and delete the PRJ file:
     ShapePRJ* prj = fileset->GetPrjFile();

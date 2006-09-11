@@ -28,7 +28,7 @@ class SpatialFilterTests :
     public ShpTests
 {
     CPPUNIT_TEST_SUITE (SpatialFilterTests);
-    CPPUNIT_TEST (SelectAll);
+	CPPUNIT_TEST (SelectAll);
     CPPUNIT_TEST (EnvelopeIntersects);
     CPPUNIT_TEST (Within);
     CPPUNIT_TEST (Inside);
@@ -38,6 +38,10 @@ class SpatialFilterTests :
     CPPUNIT_TEST (Crosses);
     CPPUNIT_TEST (Touches);
     CPPUNIT_TEST (Bogus);
+
+	// Performace test against a 3.5GB shape file. Keep it commented out.
+	//CPPUNIT_TEST (SelectAll_USA_3G );
+
     CPPUNIT_TEST_SUITE_END ();
 
     static FdoPtr<FdoIConnection> mConnection;
@@ -59,6 +63,8 @@ protected:
     void Crosses ();
     void Touches ();
     void Bogus ();
+
+	void SelectAll_USA_3G ();
 
 private:
     void    runPerformanceTests( FdoString* class_name, int total_feats, int within_feats, int inside_feats );

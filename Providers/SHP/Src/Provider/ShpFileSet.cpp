@@ -44,7 +44,7 @@ static bool match (const wchar_t* name, size_t length, const wchar_t* base, size
     return (ret);
 }
 
-ShpFileSet::ShpFileSet (FdoString* base_name, FdoString* tmp_dir, bool load_ssi) :
+ShpFileSet::ShpFileSet (FdoString* base_name, FdoString* tmp_dir) :
     mTmpDir (tmp_dir ),
     mShp (NULL),
     mDbf (NULL),
@@ -55,7 +55,8 @@ ShpFileSet::ShpFileSet (FdoString* base_name, FdoString* tmp_dir, bool load_ssi)
     mShpC (NULL),
     mDbfC (NULL),
     mShxC (NULL),
-    mSSIC (NULL)
+    mSSIC (NULL),
+	mIsSSITempFile(false)
 {
     int status;
     size_t length;
@@ -285,11 +286,11 @@ ShpFileSet::ShpFileSet (FdoString* base_name, FdoString* tmp_dir, bool load_ssi)
                     throw FdoException::Create (NlsMsgGet(SHP_TEMPORARY_FILE_PROBLEM, "A temporary file could not be created in directory '%1$ls'.", tmp_dir));
                 delete[] temp;
 
-                // create an index file
+                // create a spatial index name but defer file creation
                 if (FdoCommonFile::GetTempFile (&temp, tmp_dir))
                 {
-                    mSSI = new ShpSpatialIndex (temp, tmp_dir, GetShapeIndexFile ()->GetFileShapeType (), GetShapeIndexFile ()->HasMData ());
-                    mSSI->SetTemporaryFile (true);
+					mSSIFileName = temp;
+					mIsSSITempFile = true;
                 }
                 else
                     throw FdoException::Create (NlsMsgGet(SHP_TEMPORARY_FILE_PROBLEM, "A temporary file could not be created in directory '%1$ls'.", tmp_dir));
@@ -300,39 +301,15 @@ ShpFileSet::ShpFileSet (FdoString* base_name, FdoString* tmp_dir, bool load_ssi)
         }
         else
         {
+            // create a spatial index name but defer file creation
             if (NULL == idx_file)
             {
                 idx_file = (wchar_t*)alloca (sizeof (wchar_t) * (wcslen (base_name) + wcslen (IDX_EXTENSION) + 1));
                 wcscpy (idx_file, base_name);
                 wcscat (idx_file, IDX_EXTENSION);
             }
-            mSSI = new ShpSpatialIndex (idx_file, tmp_dir, GetShapeIndexFile ()->GetFileShapeType (), GetShapeIndexFile ()->HasMData ());
+			mSSIFileName = idx_file;
         }
-
-        if (!GetSpatialIndex ()->IsNew () && load_ssi)
-        {   // check that the number of features matches
-            SSITestInfo info;
-            if ((SHP_OK != GetSpatialIndex ()->TestSSI (NULL, &info)) ||
-                (info.nSHPObjects != GetShapeIndexFile ()->GetNumObjects ()))
-            {   // close the existing one and try again
-                idx_file = (wchar_t*)alloca (sizeof (wchar_t) * (1 + wcslen (GetSpatialIndex ()->FileName ())));
-                wcscpy (idx_file, GetSpatialIndex ()->FileName ());
-                GetSpatialIndex ()->CloseFile ();
-                if (!FdoCommonFile::Delete (idx_file))
-                    throw FdoException::Create (NlsMsgGet(SHP_CONNECTION_FILE_MISMATCH, "The file '%1$ls' is corrupt or does not have the same number of objects as the file '%2$ls'.", idx_file, shp_file));
-                else
-                {
-                    delete mSSI;
-                    mSSI = new ShpSpatialIndex (idx_file, tmp_dir, GetShapeIndexFile ()->GetFileShapeType (), GetShapeIndexFile ()->HasMData ());
-                    PopulateRTree ();
-                }
-            }         
-        }
-        else if (load_ssi) 
-		{
-            // populate the Spatial Index RTree if necessary
-            PopulateRTree ();
-		}
 
         if (NULL != prj_file)
             mPrj = new ShapePRJ (prj_file, status);
@@ -371,7 +348,7 @@ ShpFileSet::~ShpFileSet (void)
 	// Remember to compress this file set (on final connection Close())
 	if ( SHP_DO_COMPRESSION && mHasDeletedRecords &&
 		 !mDbf->IsTemporaryFile() && !mShx->IsTemporaryFile() && 
-		 !mShp->IsTemporaryFile() && !mSSI->IsTemporaryFile())
+		 !mShp->IsTemporaryFile() && (mSSI && !mSSI->IsTemporaryFile()))
 	{
 		FdoStringP	fullName = FdoStringP(mDbf->FileName()).Left(DBF_EXTENSION);
 		bool		found = false;
@@ -444,6 +421,41 @@ int ShpFileSet::GetNumRecords ()
     return (GetDbfFile ()->GetNumRecords ());
 }
 
+ShpSpatialIndex* ShpFileSet::GetSpatialIndex ( bool populateRtree )
+{
+	// Create the Spatial index object 
+	if ( mSSI == NULL && populateRtree )
+	{
+        mSSI = new ShpSpatialIndex (mSSIFileName, mTmpDir, GetShapeIndexFile ()->GetFileShapeType (), GetShapeIndexFile ()->HasMData ());
+        mSSI->SetTemporaryFile (mIsSSITempFile);
+
+		if (!mSSI->IsNew())
+		{
+			if ( (int)mSSI->GetNObjects() > GetShapeIndexFile ()->GetNumObjects() )
+			{   
+				// close the existing one and try again
+				wchar_t *idx_file = (wchar_t*)alloca (sizeof (wchar_t) * (1 + wcslen (GetSpatialIndex ()->FileName ())));
+				wcscpy (idx_file, GetSpatialIndex ()->FileName ());
+				mSSI->CloseFile ();
+				if (!FdoCommonFile::Delete (idx_file))
+					throw FdoException::Create (NlsMsgGet(SHP_CONNECTION_FILE_MISMATCH, "The file '%1$ls' is corrupt or does not have the same number of objects as the file '%2$ls'.", 
+												idx_file, (FdoString *)GetShapeIndexFile ()->FileName()));
+				else
+				{
+					delete mSSI;
+					mSSI = new ShpSpatialIndex (idx_file, mTmpDir, GetShapeIndexFile ()->GetFileShapeType (), GetShapeIndexFile ()->HasMData ());
+					PopulateRTree ();
+				}
+			}
+		}
+		else 
+		{
+			PopulateRTree();
+		}
+	}
+	return (mSSI);
+}
+
 void ShpFileSet::PopulateRTree ()
 {
     ULONG	    offset;
@@ -500,7 +512,7 @@ bool ShpFileSet::AdjustExtents (Shape* shape, bool remove, bool useCopyFiles)
 
 	shp = useCopyFiles? GetShapeFileC () : GetShapeFile ();
 	shx = useCopyFiles? GetShapeIndexFileC () : GetShapeIndexFile ();
-	ssi = useCopyFiles? GetSpatialIndexC () : GetSpatialIndex ();
+	ssi = useCopyFiles? GetSpatialIndexC () : GetSpatialIndex (true);
 
     shape->GetBoundingBoxEx (box);
     ssi->GetSSIExtent (before);
@@ -1006,7 +1018,7 @@ void ShpFileSet::ReopenFileset( FdoCommonFile::OpenFlags flags )
 		if (this->GetShapeIndexFile ()->IsReadOnly ()) 
 			this->GetShapeIndexFile()->Reopen( flags );
 		
-		if (this->GetSpatialIndex ()->IsReadOnly ()) 
+		if (this->GetSpatialIndex (true)->IsReadOnly ()) 
 			this->GetSpatialIndex()->Reopen( flags );
 	}
 	else if ( mFilesExist && flags & FdoCommonFile::IDF_OPEN_READ )
@@ -1020,7 +1032,7 @@ void ShpFileSet::ReopenFileset( FdoCommonFile::OpenFlags flags )
 		if (!this->GetShapeIndexFile ()->IsReadOnly ()) 
 			this->GetShapeIndexFile()->Reopen( flags );
 		
-		if (!this->GetSpatialIndex ()->IsReadOnly ())
+		if (this->GetSpatialIndex() && !this->GetSpatialIndex ()->IsReadOnly ())
 		{
 			if ( !this->GetSpatialIndex ()->IsTemporaryFile() ) 
 			{
@@ -1036,4 +1048,3 @@ void ShpFileSet::SetFilesDeleted()
 { 
 	mFilesExist = false; 
 }
-

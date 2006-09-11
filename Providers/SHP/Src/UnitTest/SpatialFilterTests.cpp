@@ -25,21 +25,29 @@
 #include <ShapeFile.h>
 #include <ShapeIndex.h>
 
+
 CPPUNIT_TEST_SUITE_REGISTRATION (SpatialFilterTests);
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION (SpatialFilterTests, "SpatialFilterTests");
 
 #ifdef _WIN32
     #define DEFAULT_LOCATION    L"DefaultFileLocation=..\\..\\TestData\\Ontario"
     #define DEFAULT_PATH        L"..\\..\\TestData\\Ontario"
+
+    #define DEFAULT_LOCATION_USA_3G		L"DefaultFileLocation=..\\..\\..\\..\\..\\bugs\\USA_3G"
+    #define DEFAULT_PATH_USA_3G			L"..\\..\\..\\..\\..\\bugs\\USA_3G"
 #else
     #define DEFAULT_LOCATION    L"DefaultFileLocation=../../TestData/Ontario"
     #define DEFAULT_PATH        L"../../TestData/Ontario"
+
+    #define DEFAULT_LOCATION_USA_3G		L"DefaultFileLocation=../../../../../bugs/USA_3G"
+    #define DEFAULT_PATH_USA_3G			L"../../../../../bugs/USA_3G"
 #endif
 
 #define CLASS_NAME_ROADS    L"roads"
 #define CLASS_NAME_ONTARIO  L"ontario"
 #define CLASS_NAME_LAKES    L"lakes"
 
+#define CLASS_NAME_USA_3G   L"USA_S0_line"
 
 #define MAX_FEATURES_ROADS              1088
 #define MAX_FEATURES_WITHIN_ROADS       1084
@@ -138,8 +146,93 @@ void SpatialFilterTests::SelectAll ()
                                     ext->GetMaxX(), ext->GetMaxY());
         }
     }
+
+	// Make sure this test is run first. Check the fact the spatial index was not populated
+	// (the IDX file is not new)
+ //   FdoPtr<ShpLpClassDefinition> lpClass = ShpSchemaUtilities::GetLpClassDefinition (mConnection, CLASS_NAME_ROADS));
+ //   ShpFileSet* fileset = lpClass->GetPhysicalFileSet ();
+ //   ShpSpatialIndex* ssi = fileset->GetSpatialIndex(false);
+	//CPPUNIT_ASSERT_MESSAGE ("Spatial Index should not have been loaded", ssi->GetNObjects() == 0);
+
 }
 
+void SpatialFilterTests::SelectAll_USA_3G ()
+{
+    FdoString*  class_name = CLASS_NAME_USA_3G;
+
+    // Get the file name
+    FdoStringP  file_name;
+
+#ifdef _WIN32
+	file_name = FdoStringP::Format(L"%ls%ls%ls%ls", DEFAULT_PATH_USA_3G, L"\\", class_name, L".shx" );
+#else
+	file_name = FdoStringP::Format(L"%ls%ls%ls%ls", DEFAULT_PATH_USA_3G, L"/", class_name, L".shx" );  
+#endif
+
+	try
+	{
+		ShapeIndex shpi (file_name);
+
+		long     numObjs = shpi.GetNumObjects ();
+
+		if (VERBOSE)
+			printf("--- FILE: '%ls'  numObjects %ld\n", (const wchar_t*) file_name, numObjs);
+
+		FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance ();
+
+#ifdef _WIN32       
+		double time1 = UnitTestUtil::GetTime_S();
+#endif
+
+		FdoPtr<FdoIConnection> connection = ShpTests::GetConnection ();
+		connection->SetConnectionString (DEFAULT_LOCATION_USA_3G);
+
+		CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == connection->Open ());
+
+		FdoPtr<FdoISelect> select = (FdoISelect*)connection->CreateCommand (FdoCommandType_Select);
+		select->SetFeatureClassName( class_name );
+		FdoPtr<FdoIFeatureReader> reader = select->Execute ();
+
+#ifdef _WIN32       
+		double time2 = UnitTestUtil::GetTime_S();
+		double elapsed = time2 - time1;
+		printf("Elapsed select->Execute(): %lf sec\n",elapsed);
+#endif
+
+#ifdef _WIN32       
+		time1 = UnitTestUtil::GetTime_S();
+#endif
+
+		int count = 0;
+		while (reader->ReadNext ())
+		{
+			count++;
+			reader->GetInt32 (L"FeatId");
+			FdoPtr<FdoByteArray> geom_fgf = reader->GetGeometry (L"Geometry");
+
+			FdoPtr<FdoIGeometry>   geom = gf->CreateGeometryFromFgf( geom_fgf );
+			FdoPtr<FdoIEnvelope>   ext = geom->GetEnvelope();
+
+			if (VERBOSE)
+			{
+				printf("--FeatId %ld\n", count-1 );
+				printf("  %s   extents (%lf, %lf)(%lf, %lf)\n", "xxx", 
+										ext->GetMinX(), ext->GetMinY(), 
+										ext->GetMaxX(), ext->GetMaxY());
+			}
+		}
+#ifdef _WIN32       
+		time2 = UnitTestUtil::GetTime_S();
+		elapsed = time2 - time1;
+		printf("Elapsed select->ReadNext(): %lf sec\n",elapsed);
+#endif
+		connection->Close ();
+	}
+    catch( FdoException* ex)
+    {
+        fail (ex);
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 int SpatialFilterTests::runSpatialQuery(FdoString* class_name, FdoSpatialOperations spOp, double *polyOrdsXY, int numOrds)

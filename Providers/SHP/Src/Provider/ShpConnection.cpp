@@ -1083,13 +1083,13 @@ void ShpConnection::CompressFileSet (const wchar_t*    baseName)
     FdoString*        tmpDir = NULL;    
 
     // Create a file set object.
-    ShpFileSet*  fileset = new ShpFileSet(baseName, tmpDir, false );
+    ShpFileSet*  fileset = new ShpFileSet(baseName, tmpDir);
     
     // Save the file names
     FdoStringP    dbf_name = FdoStringP(fileset->GetDbfFile()->FileName());
     FdoStringP    shp_name = FdoStringP(fileset->GetShapeFile()->FileName());
     FdoStringP    shx_name = FdoStringP(fileset->GetShapeIndexFile()->FileName());
-    FdoStringP    ssi_name = FdoStringP(fileset->GetSpatialIndex()->FileName());
+    FdoStringP    ssi_name = FdoStringP(fileset->GetSpatialIndex(true)->FileName());
 
     // Compressed file names
     FdoStringP    dbfC_name = FdoStringP::Format(L"%ls%ls", (FdoString *)dbf_name, CPY_SUFFIX);

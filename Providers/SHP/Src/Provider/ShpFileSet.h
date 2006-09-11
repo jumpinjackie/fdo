@@ -54,10 +54,13 @@ class ShpFileSet
     ShapeIndex*			mShxC;
     ShpSpatialIndex*	mSSIC;
 
+	FdoStringP			mSSIFileName;
+	bool				mIsSSITempFile;
+
 	static	FdoCommonThreadMutex mMutex;
 
 public:
-    ShpFileSet (FdoString* shp_file, FdoString* tmp_dir = NULL, bool load_ssi = true);
+    ShpFileSet (FdoString* shp_file, FdoString* tmp_dir = NULL);
     virtual ~ShpFileSet (void);
 
     // utility methods
@@ -68,7 +71,7 @@ public:
     ShapePRJ* GetPrjFile ();
 	ShapeCPG* GetCpgFile ();
     ShapeIndex* GetShapeIndexFile ();
-    ShpSpatialIndex* GetSpatialIndex ();
+    ShpSpatialIndex* GetSpatialIndex ( bool populateRtree = false );
     int GetNumRecords ();
 
     void GetObjectAt (RowData** row, eShapeTypes& type, Shape** shape, int nRecordNumber);
@@ -137,11 +140,6 @@ inline ShapePRJ* ShpFileSet::GetPrjFile ()
 inline ShapeCPG* ShpFileSet::GetCpgFile ()
 {
     return (mCpg);
-}
-
-inline ShpSpatialIndex* ShpFileSet::GetSpatialIndex ()
-{
-    return (mSSI);
 }
 
 inline void ShpFileSet::SetShapeFileC (ShapeFile *shp)

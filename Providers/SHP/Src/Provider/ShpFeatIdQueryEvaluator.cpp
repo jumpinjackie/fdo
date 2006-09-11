@@ -55,7 +55,7 @@ ShpFeatIdQueryEvaluator* ShpFeatIdQueryEvaluator::Create(FdoIReader* reader, Fdo
     FdoPtr<FdoDataPropertyDefinition> idProp = idProps->GetItem(0);
 
     FdoPtr<ShpLpClassDefinition> lpClass = ShpSchemaUtilities::GetLpClassDefinition(connection, classDef->GetName());
-    ShpSpatialIndex* ssi = lpClass->GetPhysicalFileSet()->GetSpatialIndex();
+    ShpSpatialIndex* ssi = lpClass->GetPhysicalFileSet()->GetSpatialIndex(true);
 
     return new ShpFeatIdQueryEvaluator(reader, classDef, selected, ssi); 
 }
