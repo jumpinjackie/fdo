@@ -79,6 +79,52 @@ void WmsTestDescribeSchema::testServer3 ()
     }
 }
 
+void WmsTestDescribeSchema::testServer4 ()
+{
+    try 
+    {
+        FdoPtr<FdoIConnection> conn = this->GetConnection ();
+        FdoStringP connString = FdoStringP(L"FeatureServer=http://fbinter.stadt-berlin.de/fb/wms/oma_ogc_capabilitiesrequest.jsp");
+        conn->SetConnectionString (connString);
+        CPPUNIT_ASSERT (FdoConnectionState_Open == conn->Open ());
+
+        FdoPtr<FdoIDescribeSchema> cmdDS = static_cast<FdoIDescribeSchema *> (conn->CreateCommand (FdoCommandType_DescribeSchema));
+        FdoPtr<FdoFeatureSchemaCollection> schemas = cmdDS->Execute ();
+        FdoInt32 cntSchemas = schemas->GetCount ();
+        CPPUNIT_ASSERT (cntSchemas == 1);
+
+        FdoPtr<FdoFeatureSchema> schema = schemas->GetItem (0);
+
+        FdoPtr<FdoClassCollection> classes = schema->GetClasses ();
+        FdoInt32 cntClasses = classes->GetCount ();
+
+        for (FdoInt32 j=0; j<cntClasses; j++)
+        {
+            FdoPtr<FdoClassDefinition> clsDef = classes->GetItem (j);
+            FdoStringP clsName = clsDef->GetName ();
+            FdoFeatureClass* featClsDef = static_cast<FdoFeatureClass *> (clsDef.p);
+            CPPUNIT_ASSERT (featClsDef != NULL);
+            CPPUNIT_ASSERT (featClsDef->GetGeometryProperty() == NULL);
+            FdoBoolean bAbstract = featClsDef->GetIsAbstract();
+
+            FdoPtr<FdoPropertyDefinitionCollection> props = clsDef->GetProperties ();
+            FdoInt32 cntProps = props->GetCount ();
+            for (FdoInt32 k=0; k<cntProps; k++)
+            {
+                FdoPtr<FdoPropertyDefinition> prop = props->GetItem (k);
+                FdoStringP propName = prop->GetName ();
+                FdoPropertyType propType = prop->GetPropertyType ();
+            }		
+        }
+
+		CPPUNIT_ASSERT (cntClasses == 24);
+    }
+    catch (FdoException* e)
+    {
+        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
+    }
+}
+
 void WmsTestDescribeSchema::TestServer (FdoString* featureServer)
 {
     FdoPtr<FdoIConnection> conn = this->GetConnection ();

@@ -43,6 +43,7 @@ namespace FdoWmsXmlGlobals
     static FdoString *WmsCapabilitiesLayerKeyword           = L"Keyword";
     static FdoString *WmsCapabilitiesLayerMinScale          = L"MinScaleDenominator";
     static FdoString *WmsCapabilitiesLayerMaxScale          = L"MaxScaleDenominator";
+    static FdoString *WmsCapabilitiesLayerAttribution       = L"Attribution";
 
     static FdoString *WmsCapabilitiesSRS                    = L"SRS";
     static FdoString *WmsCapabilitiesCRS                    = L"CRS";

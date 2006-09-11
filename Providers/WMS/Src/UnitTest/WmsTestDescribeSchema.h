@@ -34,6 +34,7 @@ class WmsTestDescribeSchema : public WmsTests
 #endif
 	CPPUNIT_TEST (testServer2);
 	CPPUNIT_TEST (testServer3);
+	CPPUNIT_TEST (testServer4);
 	CPPUNIT_TEST (testSchemaMapping);
 	CPPUNIT_TEST_SUITE_END ();
 
@@ -47,6 +48,7 @@ public:
 	void testServer1 ();
 	void testServer2 ();
 	void testServer3 ();
+	void testServer4 ();
 	void testSchemaMapping ();
 
 private:

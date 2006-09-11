@@ -107,6 +107,7 @@ private:
     FdoBoolean mQueryable;
     FdoBoolean mOpaque;
     FdoBoolean mNoSubsets;
+    FdoBoolean mbSkipProcessingElement;
     FdoStringP mTitle;
     FdoStringP mAbstract;
     FdoStringsP mKeywordList;

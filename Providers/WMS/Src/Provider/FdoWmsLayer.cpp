@@ -30,7 +30,8 @@ FdoWmsLayer::FdoWmsLayer(void) :
     mNoSubsets(false),
     mFixedWidth(-1),
     mFixedHeight(-1),
-	mParent(NULL)
+	mParent(NULL),
+    mbSkipProcessingElement(false)
 {
     mKeywordList = FdoStringCollection::Create();
     mCoordinateReferenceSystems = FdoStringCollection::Create();
@@ -122,6 +123,12 @@ FdoXmlSaxHandler* FdoWmsLayer::XmlStartElement(FdoXmlSaxContext* context, FdoStr
 
         pRet = BaseType::XmlStartElement(context, uri, name, qname, atts);
 		if (pRet == NULL) {
+			if (FdoCommonOSUtil::wcsicmp(name, FdoWmsXmlGlobals::WmsCapabilitiesLayerAttribution) == 0)
+            {
+	            mbSkipProcessingElement = true;
+                return pRet;
+            }
+
 			if (FdoCommonOSUtil::wcsicmp(name, FdoWmsXmlGlobals::WmsCapabilitiesLayerName) == 0 ||
 			    FdoCommonOSUtil::wcsicmp(name, FdoWmsXmlGlobals::WmsCapabilitiesLayerTitle) == 0 ||
 			    FdoCommonOSUtil::wcsicmp(name, FdoWmsXmlGlobals::WmsCapabilitiesLayerAbstract) == 0 ||
@@ -198,31 +205,38 @@ FdoBoolean FdoWmsLayer::XmlEndElement(FdoXmlSaxContext* context, FdoString* uri,
         VALIDATE_ARGUMENT(name);
         VALIDATE_ARGUMENT(context);
 
-        if (FdoCommonOSUtil::wcsicmp(name, FdoWmsXmlGlobals::WmsCapabilitiesLayerName) == 0) {
-            SetName(mXmlContentHandler->GetString());
-        }
-        else if (FdoCommonOSUtil::wcsicmp(name, FdoWmsXmlGlobals::WmsCapabilitiesLayerTitle) == 0) {
-            SetTitle(mXmlContentHandler->GetString());
-        }
-        else if (FdoCommonOSUtil::wcsicmp(name, FdoWmsXmlGlobals::WmsCapabilitiesLayerAbstract) == 0) {
-            SetAbstract(mXmlContentHandler->GetString());
-        }
-        else if (FdoCommonOSUtil::wcsicmp(name, FdoWmsXmlGlobals::WmsCapabilitiesLayerKeyword) == 0) {
-            FdoStringsP keywords = GetKeyordList();
-            keywords->Add(mXmlContentHandler->GetString());
-        }
-        else if (FdoCommonOSUtil::wcsicmp(name, FdoWmsXmlGlobals::WmsCapabilitiesLayerMinScale) == 0) {
-            SetMinScaleDemoninator(FdoCommonOSUtil::wtof(mXmlContentHandler->GetString()));
-        }
-        else if (FdoCommonOSUtil::wcsicmp(name, FdoWmsXmlGlobals::WmsCapabilitiesLayerMaxScale) == 0) {
-            SetMaxScaleDemoninator(FdoCommonOSUtil::wtof(mXmlContentHandler->GetString()));
-        }
-        else if (FdoCommonOSUtil::wcsicmp(name, FdoWmsXmlGlobals::WmsCapabilitiesSRS) == 0 ||
-                 FdoCommonOSUtil::wcsicmp(name, FdoWmsXmlGlobals::WmsCapabilitiesCRS) == 0) 
+        if (!mbSkipProcessingElement)
         {
-            FdoStringsP layerCoordSystems = GetCoordinateReferenceSystems();
-            FdoStringsP coordSystems = FdoStringCollection::Create(mXmlContentHandler->GetString(), FdoWmsXmlGlobals::WmsCapabilitiesSRSDelimiter);
-            layerCoordSystems += coordSystems;
+            if (FdoCommonOSUtil::wcsicmp(name, FdoWmsXmlGlobals::WmsCapabilitiesLayerName) == 0) {
+                SetName(mXmlContentHandler->GetString());
+            }
+            else if (FdoCommonOSUtil::wcsicmp(name, FdoWmsXmlGlobals::WmsCapabilitiesLayerTitle) == 0) {
+                SetTitle(mXmlContentHandler->GetString());
+            }
+            else if (FdoCommonOSUtil::wcsicmp(name, FdoWmsXmlGlobals::WmsCapabilitiesLayerAbstract) == 0) {
+                SetAbstract(mXmlContentHandler->GetString());
+            }
+            else if (FdoCommonOSUtil::wcsicmp(name, FdoWmsXmlGlobals::WmsCapabilitiesLayerKeyword) == 0) {
+                FdoStringsP keywords = GetKeyordList();
+                keywords->Add(mXmlContentHandler->GetString());
+            }
+            else if (FdoCommonOSUtil::wcsicmp(name, FdoWmsXmlGlobals::WmsCapabilitiesLayerMinScale) == 0) {
+                SetMinScaleDemoninator(FdoCommonOSUtil::wtof(mXmlContentHandler->GetString()));
+            }
+            else if (FdoCommonOSUtil::wcsicmp(name, FdoWmsXmlGlobals::WmsCapabilitiesLayerMaxScale) == 0) {
+                SetMaxScaleDemoninator(FdoCommonOSUtil::wtof(mXmlContentHandler->GetString()));
+            }
+            else if (FdoCommonOSUtil::wcsicmp(name, FdoWmsXmlGlobals::WmsCapabilitiesSRS) == 0 ||
+                     FdoCommonOSUtil::wcsicmp(name, FdoWmsXmlGlobals::WmsCapabilitiesCRS) == 0) 
+            {
+                FdoStringsP layerCoordSystems = GetCoordinateReferenceSystems();
+                FdoStringsP coordSystems = FdoStringCollection::Create(mXmlContentHandler->GetString(), FdoWmsXmlGlobals::WmsCapabilitiesSRSDelimiter);
+                layerCoordSystems += coordSystems;
+            }
+        }
+
+        if (FdoCommonOSUtil::wcsicmp(name, FdoWmsXmlGlobals::WmsCapabilitiesLayerAttribution) == 0) {
+            mbSkipProcessingElement = false;
         }
 
         FDO_SAFE_RELEASE(mXmlContentHandler.p);
