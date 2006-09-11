@@ -204,7 +204,9 @@ protected:
 	BinaryReader* m_dataReader;
 
 	std::map<std::wstring, wchar_t*> m_stringPropsCache;   
-    
+  
+    FdoClassDefinitionP m_lastClassDefinition;
+
 private:
     int PositionReader(int recordIndex);
 
@@ -223,6 +225,7 @@ private:
     recno_list::iterator m_currentFeatureRecnoIter;
     
     recno_list* m_features;
+
 };
 
 #endif

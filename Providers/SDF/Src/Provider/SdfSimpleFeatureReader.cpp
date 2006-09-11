@@ -197,10 +197,18 @@ FdoClassDefinition* SdfSimpleFeatureReader::GetClassDefinition()
     //class if we need all properties or the user didn't care.
     if (m_classDefPruned)
     {
-        return FdoCommonSchemaUtil::DeepCopyFdoClassDefinition(m_classDefPruned);
+        if (m_lastClassDefinition == NULL)
+            m_lastClassDefinition = FdoCommonSchemaUtil::DeepCopyFdoClassDefinition(m_classDefPruned);
+
+        return FDO_SAFE_ADDREF(m_lastClassDefinition.p);
     }
     else
-        return FdoCommonSchemaUtil::DeepCopyFdoClassDefinition(m_class);
+    {
+        if (m_lastClassDefinition == NULL)
+            m_lastClassDefinition = FdoCommonSchemaUtil::DeepCopyFdoClassDefinition(m_class);
+
+        return FDO_SAFE_ADDREF(m_lastClassDefinition.p);
+    }
 }
 
 // Gets a value indicating the depth of nesting for the current reader.
@@ -1046,6 +1054,7 @@ bool SdfSimpleFeatureReader::TestFeatureClassHierarchy()
 		//its class may be a child of the class that the
 		//select command used to create the FeatureReader
 		FDO_SAFE_RELEASE(m_class);
+        m_lastClassDefinition = NULL;
 		m_class = FDO_SAFE_ADDREF(clas.p);
 	}
 	
