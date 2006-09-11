@@ -1248,9 +1248,14 @@ void FdoCommonFilterExecutor::ProcessIdentifier (FdoString* name)
     {
         //if user tried to use a computed identifier in an expression
         //we need some special handling
-        FdoPtr<FdoComputedIdentifier> cid = dynamic_cast<FdoComputedIdentifier*>(m_compIdents->GetItem (name));
+        FdoPtr<FdoComputedIdentifier> cid;
+        if (m_compIdents) {
+            cid = dynamic_cast<FdoComputedIdentifier*>(m_compIdents->GetItem (name));
+        }
+        
         if (cid==NULL)
             throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_81_IDENTIFIER_NOT_FOUND), name));
+        
         cid->Process (this);
     }
 }
