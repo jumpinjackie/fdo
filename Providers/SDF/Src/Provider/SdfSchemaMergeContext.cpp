@@ -64,7 +64,17 @@ bool SdfSchemaMergeContext::CanDeleteClass( FdoClassDefinition* classDef )
 
 bool SdfSchemaMergeContext::CanAddProperty( FdoPropertyDefinition* prop )
 {
-    return false;
+    return true;
+}
+
+bool SdfSchemaMergeContext::CanDeleteProperty( FdoPropertyDefinition* prop )
+{
+    return true;
+}
+
+bool SdfSchemaMergeContext::CanModElementDescription( FdoSchemaElement* element )
+{
+    return true;
 }
 
 void SdfSchemaMergeContext::Merge()
@@ -143,7 +153,7 @@ void SdfSchemaMergeContext::PreAcceptChanges()
                         // Check if table already listed for reformatting it may be 
                         // referenced by multiple classes since base and sub-classes
                         // share the same table.
-                        TableReformatter* reformatter = mTableReformatters->FindItem( dataDb->GetDbName() );
+                        TableReformatterP reformatter = mTableReformatters->FindItem( dataDb->GetDbName() );
 
                         if ( !reformatter )  {
                             // Not on reformatting list, so add it.
@@ -162,7 +172,45 @@ void SdfSchemaMergeContext::PreAcceptChanges()
                         // Tell reformatter to update class id references.
                         reformatter->SetModClassid(true);
                     }
-                }
+               
+					// Check if new properties were added
+					FdoInt32 i;
+					FdoPtr<FdoPropertyDefinitionCollection> properties = classDef->GetProperties();
+					for(i=0; i<properties->GetCount(); i++ )
+					{
+						FdoPtr<FdoPropertyDefinition> prop = properties->GetItem( i );
+						if( prop->GetElementState() == FdoSchemaElementState_Deleted ) 
+							prop = properties->GetItem( i );
+						if( prop->GetElementState() == FdoSchemaElementState_Added ) 
+						{
+
+							// Class Id update required.
+							// Make sure everything is flushed before doing anything
+							mSdfConnection->FlushAll( connClassDef, true );
+
+							// Check if table already listed for reformatting it may be 
+							// referenced by multiple classes since base and sub-classes
+							// share the same table.
+							TableReformatterP reformatter = mTableReformatters->FindItem( dataDb->GetDbName() );
+
+							if ( !reformatter )  {
+								// Not on reformatting list, so add it.
+								reformatter = new TableReformatter(
+									dataDb->GetDbName(),
+									mSdfConnection,
+									dataDb,
+									keyDb,
+									rtree,
+									schema
+								);
+
+								mTableReformatters->Add( reformatter );
+							}
+
+							reformatter->SetAddedProperties( true );
+						}
+					}
+				}
             }
         }
     }

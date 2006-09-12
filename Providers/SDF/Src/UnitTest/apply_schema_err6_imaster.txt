@@ -1,7 +1,5 @@
- Unsupport Schema modification; Cannot add property 'Acad:Transformer.Altitude' 
- Unsupport Schema modification; Cannot delete property 'Acad:Conductor.underground' 
- Unsupport Schema modification; Cannot add property 'Acad:Conductor.Conductivity' 
+ Cannot delete a property 'Acad:Conductor.underground'; its class has objects 
+ Cannot add not-nullable property 'Acad:Conductor.Conductivity'; its class has objects 
  Unsupported Schema modification; Cannot change identity properties for class 'Acad:Customer' from (First Name, Last Name) to (Last Name) 
  Unsupported Schema modification; Cannot change property 'Acad:Customer.Credit Rating' to be writable 
- Unsupported Schema modification; cannot modify description for element 'Acad:Customer - Business'. 
  Cannot change class type of class 'Acad:'Address'.  

@@ -283,10 +283,10 @@ void DataIO::WriteProperty(FdoPropertyDefinition* pd, PropertyIndex* propIndex, 
     
     if (pd->GetPropertyType() == FdoPropertyType_DataProperty)
         dpd = (FdoDataPropertyDefinition*)pd;
-	else
-		return;
 
     PropertyStub* ps = propIndex->GetPropInfo(pd->GetName());
+	if( ps == NULL ) // source reader does not have this property
+		return;
 
 	reader->SetPosition(sizeof(FCID_STORAGE) + ps->m_recordIndex * sizeof(int));
 
@@ -302,7 +302,15 @@ void DataIO::WriteProperty(FdoPropertyDefinition* pd, PropertyIndex* propIndex, 
 
     int len = endoffset - offset;
 
-    if (dpd && len > 0 )
+	if( dpd == NULL && len != 0 )
+	{
+		// We have a geometry property
+        unsigned char* ptr = reader->GetDataAtCurrentPosition();
+		if (ptr)
+			wrt.WriteBytes(ptr, len);
+	}
+
+    else if ( len > 0 )
     {
         switch (dpd->GetDataType())
         {
@@ -816,5 +824,53 @@ void DataIO::MakeDataRecord(FdoClassDefinition* fc, PropertyIndex* pi, FdoIFeatu
 			else
 				DataIO::WriteProperty(pd, reader, wrtdata);
         }
+    }
+}
+
+void DataIO::MakeDataRecord(PropertyIndex* srcpi, BinaryReader& reader , FdoClassDefinition* destfc, BinaryWriter& wrtdata)
+{
+    FdoPtr<FdoReadOnlyPropertyDefinitionCollection> bpdc = destfc->GetBaseProperties();
+    FdoPtr<FdoPropertyDefinitionCollection> pdc = destfc->GetProperties();
+
+    //find number of properties we will store into the data record
+    //we will use this number to save an offset into the data records for each property
+    //at the beginning of the data record
+    int numProps = bpdc->GetCount() + pdc->GetCount();
+
+    //write feature class ID
+    wrtdata.WriteUInt16((FCID_STORAGE)srcpi->GetFCID());
+
+    //now generate the data value -- write all property values, except for the ones
+    //we already wrote to the key -- we have to check if each one is in the ID prop
+    //collection
+
+    //reserve space for offsets into property values in data record
+    for (int i=0; i<numProps; i++)
+        wrtdata.WriteInt32(0);
+
+    int index = 0;
+
+    //base properties first
+    for (int i=0; i<bpdc->GetCount(); i++)
+    {
+		FdoPtr<FdoPropertyDefinition> pd = (FdoPropertyDefinition*)bpdc->GetItem(i);
+
+        //save offset of property data to the reserved position at the
+        //beginning of the record
+        ((int*)(wrtdata.GetData() + sizeof(FCID_STORAGE)))[index++] = wrtdata.GetPosition();
+
+        DataIO::WriteProperty(pd, srcpi, &reader, wrtdata);
+    }
+
+    //class properties
+    for (int i=0; i<pdc->GetCount(); i++)
+    {
+        FdoPtr<FdoPropertyDefinition> pd = (FdoPropertyDefinition*)pdc->GetItem(i);
+
+        //save offset of property data to the reserved position at the
+        //beginning of the record
+        ((int*)(wrtdata.GetData() + sizeof(FCID_STORAGE)))[index++] = wrtdata.GetPosition();
+
+        DataIO::WriteProperty(pd, srcpi, &reader, wrtdata);
     }
 }

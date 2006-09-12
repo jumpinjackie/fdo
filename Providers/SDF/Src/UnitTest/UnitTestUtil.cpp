@@ -348,7 +348,7 @@ FdoPtr<FdoIInsert>  UnitTestUtil::InsertObject( FdoIConnection* connection, FdoP
         }
     }
         
-	insertCommand->Execute();
+	FdoPtr<FdoIFeatureReader> rdr = insertCommand->Execute();
 
     va_end(arguments);
 

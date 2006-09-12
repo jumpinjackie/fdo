@@ -18,6 +18,7 @@
 #include "stdafx.h"
 #include "TableReformatter.h"
 #include "SdfConnection.h"
+#include "DataIO.h"
 
 TableReformatter::TableReformatter( 
         FdoString* name, 
@@ -33,7 +34,8 @@ TableReformatter::TableReformatter(
     mOrigKeys(origKeys),
     mOrigRTree(origRTree),
     mNewSchema(newSchema),
-    mModClassIds(false)
+    mModClassIds(false),
+	mNewProperties(false)
 {
 }
 
@@ -54,7 +56,7 @@ void TableReformatter::Reformat()
         return;
 
     // If there is something to do ...
-    if ( GetModClassId() ) {
+    if ( GetModClassId() || GetAddedProperties() ) {
 
         // Create a backup table. As rows are updated, their original values
         // are written to the backup table. Rollbacks are performed by restoring
@@ -87,9 +89,12 @@ void TableReformatter::Reformat()
             int ret = mOrigData->GetFirstFeature( &key, & data );
             cursorOpened = true;
             REC_NO recNo = 0;
-
+			FdoClassDefinitionP srcClass;
+			FdoClassDefinitionP destClass;
+			int previousClsId = -1;
             for ( ; ; ) {
-            
+				bool dataBlobModified = false;
+
                 if (ret == SQLiteDB_NOTFOUND)
                     break;
 
@@ -113,15 +118,40 @@ void TableReformatter::Reformat()
 
                 BinaryReader rdr( (unsigned char*)(data.get_data()), data.get_size() );
                 unsigned short oldClassId = rdr.ReadUInt16();
-                unsigned short newClassId;
+				if( previousClsId != oldClassId )
+				{
+					srcClass = oldClasses->GetItem( oldClassId );
+					destClass = newClasses->GetItem( srcClass->GetName() );
+					previousClsId = oldClassId;
+				}
+
+				BinaryWriter *destwrt = NULL;
+				if( GetAddedProperties() )
+				{					
+					BinaryReader srcrdr( (unsigned char*)(data.get_data()), data.get_size() );
+					destwrt = new BinaryWriter(data.get_size()+4);
+					PropertyIndex *srcpi = mConnection->GetPropertyIndex( srcClass );
+					DataIO::MakeDataRecord(srcpi, srcrdr , destClass, *destwrt );
+					data.set_size( destwrt->GetDataLen() );
+					data.set_data( destwrt->GetData() );
+					dataBlobModified = true;
+				}
 
                 if ( GetModClassId() ) {
-                    newClassId = CvtClassId( oldClassId, oldClasses, newClasses );
-                    *((unsigned short*)(data.get_data())) = newClassId;
+					unsigned short newClassId = newClasses->IndexOf( destClass );
+					if( newClassId != oldClassId )
+					{
+						*((unsigned short*)(data.get_data())) = newClassId;
+						dataBlobModified = true;
+					}
                 }
 
-                // Update the data table row
-                mOrigData->UpdateFeature( recNo, &data );
+				// Update the data table row
+				if( dataBlobModified )
+					mOrigData->UpdateFeature( recNo, &data );
+				
+				if( destwrt != NULL )
+					delete destwrt;
 
 			    key.set_data(&recNo); // This is required since m_currentKey was pointing to a memory location that may get re-used/freed
                 ret = mOrigData->GetNextFeature( &key, &data );
@@ -130,6 +160,13 @@ void TableReformatter::Reformat()
         catch ( ... ) {
             if ( cursorOpened )
                 mOrigData->CloseCursor();
+               
+            if ( backupTable )
+            {
+                backupTable->close(0);
+                delete backupTable;
+                backupTable = NULL;
+            }
             // Rollback on error
             if ( transactionStarted ) 
                 env->rollback();
@@ -139,7 +176,7 @@ void TableReformatter::Reformat()
 
         mOrigData->Flush();
         mOrigData->CloseCursor();
-
+     
         // Transaction handling currently a no-op
         if ( transactionStarted ) {
             // Successful, so commit schema changes.
@@ -147,8 +184,14 @@ void TableReformatter::Reformat()
                 throw FdoSchemaException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_79_COMMIT_TRANSACTION)));
 
         }
+        if ( backupTable )
+        {
+            backupTable->close(0);
+            delete backupTable;
+            backupTable = NULL;
+        }
     }
-
+    
     mState = stateFinal;
 }
 
@@ -236,6 +279,13 @@ void TableReformatter::Rollback()
         catch ( ... ) {
             if ( cursorOpened )
                 backupTable->close_cursor();
+
+            if ( backupTable )
+            {
+                backupTable->close(0);
+                delete backupTable;
+                backupTable = NULL;
+            }
             // Rollback on error
             if ( transactionStarted ) 
                 env->rollback();
@@ -246,7 +296,12 @@ void TableReformatter::Rollback()
         mOrigData->Flush();
         mOrigData->CloseCursor();
         backupTable->close_cursor();
-
+        if ( backupTable )
+        {
+            backupTable->close(0);
+            delete backupTable;
+            backupTable = NULL;
+        }
         if ( transactionStarted ) {
             // Successful, so commit schema changes.
             if ( env->commit() != 0 ) 
@@ -268,43 +323,14 @@ void TableReformatter::SetModClassid( bool modClassId )
     mModClassIds = modClassId;
 }
 
-unsigned short TableReformatter::CvtClassId( 
-    unsigned short srcClassId, 
-    FdoClassCollection* srcClasses, 
-    FdoClassCollection* destClasses 
-)
+bool TableReformatter::GetAddedProperties()
 {
-    FdoClassDefinitionP srcClass = srcClasses->GetItem( srcClassId );
-    FdoClassDefinitionP destClass = destClasses->GetItem( srcClass->GetName() );
-
-    return destClasses->IndexOf( destClass );
+    return mNewProperties;
 }
 
-PropertyIndex* TableReformatter::GetPropertyIndex( FdoClassDefinition* classDef )
+void TableReformatter::SetAddedProperties( bool addedProps )
 {
-#if 0
-    PropertyIndex* pi = m_newPropertyIndexes[classDef];
-
-    if ( !pi ) {
-        FdoClassesP classes = mNewSchema->GetClasses();
-        GisInt32 classIx = -1;
-        GisInt32 idx;
-
-        for ( idx = 0; idx < classes->GetCount(); idx++ ) {
-            FdoClassDefinitionP currClass = classes->GetItem(idx);
-
-            if ( curClass->GetElementState() != FdoSchemaElementState_Deleted ) {
-                classIx++;
-            
-            if ( wcscmp(classDef->GetName(), currClass->GetName()) == 0 ) 
-                break;
-        }
-
-        pi = new PropertyIndex( classdef, (unsigned) classIx );
-        m_newPropertyIndexes[classDef] = pi;
-    }
-#endif
-    return NULL /*pi*/;
+    mNewProperties = addedProps;
 }
 
 SQLiteTable* TableReformatter::OpenBackupTable( bool bCreate ) 

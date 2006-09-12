@@ -2,7 +2,7 @@
 <fdo:DataStore xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gml="http://www.opengis.net/gml" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:fds="http://fdo.osgeo.org/schemas/fds">
    <xs:schema targetNamespace="http://fdo.osgeo.org/schemas/feature/Acad" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:Acad="http://fdo.osgeo.org/schemas/feature/Acad">
       <xs:annotation>
-         <xs:documentation>AutoCAD schema</xs:documentation>
+         <xs:documentation>New AutoCad schema description</xs:documentation>
       </xs:annotation>
       <xs:element name="AcDbEntity" type="Acad:AcDbEntityType" abstract="false" substitutionGroup="gml:_Feature">
          <xs:key name="AcDbEntityKey">
@@ -204,7 +204,7 @@
       </xs:element>
       <xs:complexType name="ConductorType" abstract="false" fdo:hasGeometry="false">
          <xs:annotation>
-            <xs:documentation/>
+            <xs:documentation>New conductor description</xs:documentation>
          </xs:annotation>
          <xs:complexContent>
             <xs:extension base="Acad:ElectricDeviceType">
@@ -212,6 +212,14 @@
                   <xs:element name="underground">
                      <xs:simpleType>
                         <xs:restriction base="xs:boolean"/>
+                     </xs:simpleType>
+                     <xs:annotation>
+                        <xs:documentation>underground modified description</xs:documentation>
+                     </xs:annotation>
+                  </xs:element>
+                  <xs:element name="Conductivity" minOccurs="0">
+                     <xs:simpleType>
+                        <xs:restriction base="xs:double"/>
                      </xs:simpleType>
                      <xs:annotation>
                         <xs:documentation/>

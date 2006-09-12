@@ -166,6 +166,15 @@ void ApplySchemaTest::TestSchema ()
 		ModErrors( connection );
 		ModErrors2( connection );
 
+		printf( "Testing adding properties ... \n" );
+		ModAddProperty( connection );
+
+		printf( "Testing removing properties ... \n" );
+		ModDelProperty( connection );
+
+		printf( "Testing modifying the description ... \n" );
+		ModDescription( connection );
+
 		printf( "Testing long element names ... \n" );
 
         //TODO: element names are too long for other providers so just
@@ -211,6 +220,7 @@ void ApplySchemaTest::TestSchema ()
         UnitTestUtil::CheckOutput( "apply_schema_err5_imaster.txt", "apply_schema_err5.txt" );
         UnitTestUtil::CheckOutput( "apply_schema_err6_imaster.txt", "apply_schema_err6.txt" );
         UnitTestUtil::CheckOutput( "apply_schema_err7_master.txt", "apply_schema_err7.txt" );
+		UnitTestUtil::CheckOutput( "apply_schema_err8_master.txt", "apply_schema_err8.txt" );
         UnitTestUtil::CheckOutput( "apply_schema_err10_master.txt", "apply_schema_err10.txt" );
 #endif
 
@@ -315,10 +325,10 @@ void ApplySchemaTest::CreateAcadSchema( FdoIConnection* connection )
 	pProp->SetScale(5);
 	pProp->SetNullable(false);
 	FdoPropertiesP(pPlineClass->GetProperties())->Add( pProp );
-/* TODO: support add property 
+///* TODO: support add property 
 	pCmd->SetFeatureSchema( pSchema );
 	pCmd->Execute();
-*/
+//*/
 	pProp = FdoDataPropertyDefinition::Create( L"Closed", L"is first and last points the same" );
 	pProp->SetDataType( FdoDataType_Boolean );
 	pProp->SetNullable(true);
@@ -1792,9 +1802,7 @@ void ApplySchemaTest::ModErrors2( FdoIConnection* connection )
 
   	FdoPtr<FdoFeatureClass> pTransClass = (FdoFeatureClass*) FdoClassesP(pSchema->GetClasses())->GetItem( L"Transformer" );
 
-	/* Try to add a not null property to class without objects.
-     * Should only fail for SqlServer
-     */
+	/* Try to add a not null property to class without objects.*/
 
 	pDataProp = FdoDataPropertyDefinition::Create( L"Altitude", L"" );
 	pDataProp->SetDataType( FdoDataType_Double );
@@ -2087,6 +2095,106 @@ void ApplySchemaTest::VldClassCapabilities( int ltMode, int lckMode, FdoClassDef
 }
 
 #endif
+
+void ApplySchemaTest::ModAddProperty( FdoIConnection* connection )
+{
+	FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
+	FdoPtr<FdoFeatureSchemaCollection> pSchemas = pDescCmd->Execute();
+
+	FdoPtr<FdoFeatureSchema> pSchema = pSchemas->GetItem( L"Acad" );
+
+	FdoPtr<FdoClassDefinition> pClass = FdoClassesP(pSchema->GetClasses())->GetItem( L"Conductor" );
+
+	/* Try to add a not null property to class with objects */
+	FdoPtr<FdoDataPropertyDefinition> pDataProp = FdoDataPropertyDefinition::Create( L"Conductivity", L"" );
+	pDataProp->SetDataType( FdoDataType_Double );
+	pDataProp->SetNullable( true );
+	FdoPropertiesP(pClass->GetProperties())->Add(pDataProp);
+
+  	FdoPtr<FdoFeatureClass> pTransClass = (FdoFeatureClass*) FdoClassesP(pSchema->GetClasses())->GetItem( L"Transformer" );
+
+	/* Try to add a not null property to class without objects.*/
+	pDataProp = FdoDataPropertyDefinition::Create( L"Altitude", L"" );
+	pDataProp->SetDataType( FdoDataType_Double );
+	pDataProp->SetNullable( false );
+	FdoPropertiesP(pTransClass->GetProperties())->Add(pDataProp);
+
+	FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
+	pCmd->SetFeatureSchema( pSchema );
+
+	pCmd->Execute();
+
+	// Check results
+	FdoPtr<FdoISelect> select = (FdoISelect*)connection->CreateCommand(FdoCommandType_Select); 
+	select->SetFeatureClassName(L"Acad:Conductor");
+    FdoPtr<FdoIFeatureReader> rdr = select->Execute();
+    FdoInt32 rowCount = 0;
+    while( rdr->ReadNext() )
+	{
+        rowCount++;
+		CPPUNIT_ASSERT( rdr->IsNull(L"Conductivity") );
+	}
+
+    CPPUNIT_ASSERT( rowCount == 1 );
+}
+
+void ApplySchemaTest::ModDescription( FdoIConnection* connection )
+{
+	FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
+	FdoPtr<FdoFeatureSchemaCollection> pSchemas = pDescCmd->Execute();
+
+	FdoPtr<FdoFeatureSchema> pSchema = pSchemas->GetItem( L"Acad" );
+
+	// Test modify description of the schema
+	pSchema->SetDescription(L"New AutoCad schema description"); 
+
+	FdoPtr<FdoClassDefinition> pClass = FdoClassesP(pSchema->GetClasses())->GetItem( L"Conductor" );
+	// Test modify description of a class
+	pClass->SetDescription(L"New conductor description");
+
+	// Modify the description of a property.
+	FdoPtr<FdoDataPropertyDefinition> pProp = (FdoDataPropertyDefinition*) FdoPropertiesP( pClass->GetProperties() )->GetItem( L"underground" );
+	pProp->SetDescription( L"underground modified description" );
+
+	FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
+	pCmd->SetFeatureSchema( pSchema );
+	pCmd->Execute();
+}
+
+void ApplySchemaTest::ModDelProperty( FdoIConnection* connection )
+{
+	FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
+	FdoPtr<FdoFeatureSchemaCollection> pSchemas = pDescCmd->Execute();
+
+	FdoPtr<FdoFeatureSchema> pSchema = pSchemas->GetItem( L"Acad" );
+
+  	FdoPtr<FdoFeatureClass> pTransClass = (FdoFeatureClass*) FdoClassesP(pSchema->GetClasses())->GetItem( L"Transformer" );
+
+	FdoPropertyP pprop = FdoPropertiesP(pTransClass->GetProperties())->GetItem(L"Altitude");
+	pprop->Delete();
+
+	FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
+	pCmd->SetFeatureSchema( pSchema );
+	pCmd->Execute();
+
+	// Try to delete a property from a class that has objects
+	FdoPtr<FdoClassDefinition> pClass = FdoClassesP(pSchema->GetClasses())->GetItem( L"Conductor" );
+	pprop = FdoPropertiesP(pClass->GetProperties())->GetItem(L"Conductivity");
+	pprop->Delete();
+	pCmd->SetFeatureSchema( pSchema );
+	bool failed = false;
+	try
+	{
+		pCmd->Execute();
+	}
+	catch(FdoException *exp )
+	{
+		failed = true;
+		UnitTestUtil::PrintException(exp, "apply_schema_err8.txt", true);
+		FDO_SAFE_RELEASE(exp);
+	}
+	CPPUNIT_ASSERT("Should not be able to remove a property from a class that has data",failed);
+}
 
 void ApplySchemaTest::CreateDlteData( FdoIConnection* connection )
 {

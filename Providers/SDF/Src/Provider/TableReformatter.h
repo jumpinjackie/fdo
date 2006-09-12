@@ -53,6 +53,10 @@ public:
     bool GetModClassId();
     void SetModClassid( bool modClassId );
 
+	// When new nullable properties are added, the data blob need to be updated to insert the new null values
+    bool GetAddedProperties();
+    void SetAddedProperties( bool addedProps );
+
     FdoString* GetName();
 
     bool CanSetName() 
@@ -67,21 +71,11 @@ protected:
     /// 0-argument constructor to please FdoPtr::operator->() :
     TableReformatter () { }
 
-    // Given a class id for the srcClasses set, return the correspond id of the class
-    // in the destClasses set.
-    unsigned short TableReformatter::CvtClassId( 
-        unsigned short srcClassId, 
-        FdoClassCollection* srcClasses, 
-        FdoClassCollection* destClasses 
-    );
-
     virtual void Dispose()
     {
         delete this;
     }
 private: 
-    // Returns the class property index according to the new schemas
-    PropertyIndex* GetPropertyIndex( FdoClassDefinition* classDef );
 
     SQLiteTable* OpenBackupTable( bool bCreate );
     void DropBackupTable();
@@ -109,6 +103,7 @@ private:
     bool mConvertData;
     bool mConvertKeys;
     bool mConvertRTree;
+	bool mNewProperties;
 
     FdoInt32 mState;
 

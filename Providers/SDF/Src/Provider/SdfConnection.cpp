@@ -595,6 +595,10 @@ FdoFeatureSchema* SdfConnection::GetSchema()
 
 void SdfConnection::SetSchema(FdoFeatureSchema* schema, bool ignoreStates)
 {
+    // We need to keep the old schema around untill destroy is done. Some data structure
+    // used by destroy require the old schema.
+    FdoPtr<FdoFeatureSchema> oldschema = FDO_SAFE_ADDREF(m_dbSchema->GetSchema());
+
     m_dbSchema->SetSchema( this, schema, ignoreStates);
 
     //need to regen the R-Tree objects since
@@ -884,14 +888,16 @@ void SdfConnection::FlushAll( FdoClassDefinition *clas, bool forUpdate )
     KeyDb* keys = GetKeyDb(clas);
 
     GetDataBase()->begin_transaction();
-    keys->Flush();
-    dataDb->Flush();
+    if( keys )
+        keys->Flush();
+    if( dataDb )
+        dataDb->Flush();
     if( rt ) 
         rt->Flush();
     // We only re-gen the index if we are updating the database.
     // If this is called from a select, then we will not update
     // the database since the user is only reading this database.
-    if( forUpdate && keys->IndexNeedsRegen() )
+    if( keys && forUpdate && keys->IndexNeedsRegen() )
     {
         
         RegenIndex( clas, keys, dataDb );

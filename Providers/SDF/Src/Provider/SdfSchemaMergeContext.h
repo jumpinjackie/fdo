@@ -38,6 +38,8 @@ public:
     virtual bool CanAddClass( FdoClassDefinition* classDef );
     virtual bool CanDeleteClass( FdoClassDefinition* classDef );
     virtual bool CanAddProperty( FdoPropertyDefinition* prop );
+	virtual bool CanDeleteProperty( FdoPropertyDefinition* prop );
+	virtual bool CanModElementDescription( FdoSchemaElement* element );
 
     // Performs the schema merge
     //

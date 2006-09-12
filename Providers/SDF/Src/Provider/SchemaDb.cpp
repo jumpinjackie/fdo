@@ -723,6 +723,7 @@ void SchemaDb::WriteSchema(FdoFeatureSchema* schema)
     //set the schema member variable indirectly
     //by deserializing it from the database. This makes
     //sure the things like read only properties are handled correctly
+    FDO_SAFE_RELEASE(m_schema);
     m_schema = ReadSchema();
 }
 

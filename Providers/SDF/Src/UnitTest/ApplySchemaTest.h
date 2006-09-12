@@ -71,7 +71,9 @@ protected:
     void ModDelElectricSchema( FdoFeatureSchemaCollection* pSchemas );
     void ModDelAcadSchema( FdoFeatureSchemaCollection* pSchemas );
 	void ModDlteSchema( FdoIConnection* connection );
-
+	void ModAddProperty( FdoIConnection* connection );
+	void ModDelProperty( FdoIConnection* connection );
+	void ModDescription( FdoIConnection* connection );
     void ReAddElements( FdoIConnection* connection );
 	void ModErrors( FdoIConnection* connection );
 	void ModErrors2( FdoIConnection* connection );
