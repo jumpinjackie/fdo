@@ -67,14 +67,11 @@ FdoOwsResponse* FdoOwsDelegate::Invoke(FdoOwsRequest* request)
         requestString = request->EncodeXml();
 
     // create http handler, which is also a IO stream
-    char* mbUrl;
-    wide_to_multibyte(mbUrl, url);
-    char* mbRequestString;
-    wide_to_multibyte(mbRequestString, (FdoString*)requestString);
-    char* mbUserName;
-    wide_to_multibyte(mbUserName, (FdoString*)m_userName);
-    char* mbPasswd;
-    wide_to_multibyte(mbPasswd, (FdoString*)m_passwd);
+    //Addresses may be input as UTF-8, wide characters depending of local of the sender!
+    const char* mbUrl = url;
+    const char* mbRequestString = requestString;
+    const char* mbUserName = m_userName;
+    const char* mbPasswd = m_passwd;
 
     FdoPtr<FdoOwsHttpHandler> httpHandler = FdoOwsHttpHandler::Create(mbUrl, bGet, mbRequestString, mbUserName, mbPasswd);
         
