@@ -199,7 +199,10 @@ void OdbcConnectionUtil::LoadInitializeFile()
 		if (!m_SetupValues->PropertyExist( L"DSNOracle" ))
 			m_SetupValues->SetProperty( L"DSNOracle", ODBCORACLE_DSN_DEFAULT);
 
-		// Access
+		if (!m_SetupValues->PropertyExist( L"enableOracleSetup" ))
+			m_SetupValues->SetProperty( L"enableOracleSetup", L"true");
+		
+        // Access
 		if (!m_SetupValues->PropertyExist( L"DSNAccess" ))
 			m_SetupValues->SetProperty( L"DSNAccess", ODBCACCESS_DSN_DEFAULT);
 
@@ -212,7 +215,7 @@ void OdbcConnectionUtil::LoadInitializeFile()
 			m_SetupValues->SetProperty( L"DSNText", ODBCTEXT_DSN_DEFAULT);
 
 		if (!m_SetupValues->PropertyExist( L"clean" ))
-			m_SetupValues->SetProperty( L"clean", L"yes");
+			m_SetupValues->SetProperty( L"clean", L"true");
 	}
 	catch(...){}
 }
@@ -243,7 +246,7 @@ OdbcConnectionUtil::~OdbcConnectionUtil(void)
 	if (m_SetupValues->PropertyExist( L"clean" ))
 	{
 		FdoStringP pValue = m_SetupValues->GetPropertyValue( L"clean" );
-		if (pValue == L"no")
+		if (pValue == L"false")
 			return;
 	}
 	std::vector<std::wstring> files;
@@ -671,7 +674,13 @@ void OdbcConnectionUtil::SetupOracleDSN()
             direction = SQL_FETCH_NEXT;
         }
         while ( SQLRETURN_OK(rc) && SQL_NO_DATA != rc && '\0' == theOracleDriverName[0] );
-
+	    
+        if (m_SetupValues->PropertyExist( L"enableOracleSetup" ))
+	    {
+		    FdoStringP pValue = m_SetupValues->GetPropertyValue( L"enableOracleSetup" );
+		    if (pValue != L"true")
+			    return;
+	    }
         if (SQL_NO_DATA == rc)
             rc = SQL_SUCCESS;
 		direction = SQL_FETCH_FIRST;
@@ -796,6 +805,12 @@ void OdbcConnectionUtil::TeardownMySqlDSN()
 
 void OdbcConnectionUtil::TeardownOracleDSN()
 {
+	if (m_SetupValues->PropertyExist( L"enableOracleSetup" ))
+	{
+		FdoStringP pValue = m_SetupValues->GetPropertyValue( L"enableOracleSetup" );
+		if (pValue != L"true")
+			return;
+	}
     char pString[SQL_MAX_MESSAGE_LENGTH];
     DWORD error;
     WORD count;

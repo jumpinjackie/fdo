@@ -128,7 +128,7 @@ void MySqlConnectionUtil::LoadInitializeFile()
 			m_SetupValues->SetProperty( L"password", MYSQL_PASSWORD_DEFAULT);
 		
 		if (!m_SetupValues->PropertyExist( L"clean" ))
-			m_SetupValues->SetProperty( L"clean", L"yes");
+			m_SetupValues->SetProperty( L"clean", L"true");
 	}
 	catch(...){}
 }
@@ -138,7 +138,7 @@ MySqlConnectionUtil::~MySqlConnectionUtil(void)
 	if (m_SetupValues->PropertyExist( L"clean" ))
 	{
 		FdoStringP pValue = m_SetupValues->GetPropertyValue( L"clean" );
-		if (pValue == L"no")
+		if (pValue == L"false")
 			return;
 	}
 	FdoStringP pTypeName = L"MySql";
