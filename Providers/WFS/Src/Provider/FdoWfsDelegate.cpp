@@ -68,6 +68,7 @@ FdoFeatureSchemaCollection* FdoWfsDelegate::DescribeFeatureType(FdoStringCollect
     stream = merger.MergeSchema(stream, GetUrl(), L"");
     FdoPtr<FdoFeatureSchemaCollection> schemas = FdoFeatureSchemaCollection::Create(NULL);
     FdoPtr<FdoXmlFlags> flags = FdoXmlFlags::Create(FdoWfsGlobals::fdo_customer, FdoXmlFlags::ErrorLevel_VeryLow);
+    flags->SetSchemaNameAsPrefix(true);
     schemas->ReadXml(stream, flags);
 
     return FDO_SAFE_ADDREF(schemas.p);

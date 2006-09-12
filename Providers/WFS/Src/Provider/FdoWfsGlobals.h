@@ -96,8 +96,8 @@ namespace FdoWfsGlobals
     static FdoString* And                               = L"&";
 
     static FdoString* AbstractFeature                   = L"AbstractFeature";
-    static FdoString* GMLSchemaName                     = L"www-dot-opengis-dot-net/gml";
-    static FdoString* XLinkSchemaName                   = L"www-dot-w3-dot-org/1999/xlink";
+    static FdoString* GMLSchemaName                     = L"gml";
+    static FdoString* XLinkSchemaName                   = L"xlink";
 
 	static FdoString* Dot								= L"-dot-";
 
