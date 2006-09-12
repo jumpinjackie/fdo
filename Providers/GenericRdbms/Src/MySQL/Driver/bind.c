@@ -64,7 +64,7 @@ int mysql_bind (
                         index--; /* make it zero based */
                         type = rdbi_to_mysql_type (datatype, size);
                         if (0 > type)
-                            ret = RDBI_GENERIC_ERROR; /* need an error for unknown name */
+                            ret = RDBI_INVLD_DESCR_OBJTYPE; 
                         else
                         {
                             if (index >= curs->bind_count)

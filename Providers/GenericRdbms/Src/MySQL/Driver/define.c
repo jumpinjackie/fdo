@@ -115,8 +115,9 @@ static int field_size (enum enum_field_types type, int length)
         case MYSQL_TYPE_NULL:
             ret = 0;
             break;
-
         case MYSQL_TYPE_YEAR:
+            ret = sizeof (int);
+            break;
         case MYSQL_TYPE_NEWDATE:
         case MYSQL_TYPE_ENUM:
         case MYSQL_TYPE_SET:
@@ -244,7 +245,7 @@ int mysql_define (
                         if ((MYSQL_BIND*)NULL == curs->defines)
                             curs->defines = make_defines (prepare_meta_result);
                         if ((MYSQL_BIND*)NULL == curs->defines)
-                            ret = RDBI_GENERIC_ERROR; /* need an error for illegal type */
+                            ret = RDBI_INVLD_DESCR_OBJTYPE;
                         else
                         {
                             curs->define_count = mysql_num_fields (prepare_meta_result);
@@ -258,7 +259,7 @@ int mysql_define (
                                 index--; /* make it zero based */
                                 type = rdbi_to_mysql_type (datatype, size);
                                 if (0 > type)
-                                    ret = RDBI_GENERIC_ERROR; /* need an error for unknown name */
+                                    ret = RDBI_INVLD_DESCR_OBJTYPE;
                                 else
                                 {
                                     curs->defines[index].buffer_type = (enum enum_field_types)type;

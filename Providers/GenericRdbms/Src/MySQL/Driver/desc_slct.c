@@ -77,7 +77,7 @@ int mysql_desc_slct (
                             fields = mysql_fetch_fields (prepare_meta_result);
                             type = mysql_to_rdbi_type (fields[position].type, fields[position].length, fields[position].decimals);
                             if (-1 == type)
-                                ret = RDBI_GENERIC_ERROR;
+                                ret = RDBI_INVLD_DESCR_OBJTYPE;
                             else
                             {
                                 strncpy (name, fields[position].name, name_size);

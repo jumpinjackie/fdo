@@ -152,9 +152,11 @@ int mysql_to_rdbi_type (enum enum_field_types type, int size, int precision)
         case MYSQL_TYPE_NULL:
             ret = RDBI_CHAR; /* this should be fixed */
             break;
+		case MYSQL_TYPE_YEAR:
+			ret = RDBI_INT;
+			break;
         case MYSQL_TYPE_MEDIUM_BLOB:
         case MYSQL_TYPE_LONG_BLOB:
-        case MYSQL_TYPE_YEAR:
         case MYSQL_TYPE_NEWDATE:
         case MYSQL_TYPE_ENUM:
         case MYSQL_TYPE_SET:
