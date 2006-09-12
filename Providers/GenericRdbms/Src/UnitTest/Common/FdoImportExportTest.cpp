@@ -742,13 +742,13 @@ void FdoImportExportTest::AddFeature( FdoIInsert* insertCommand, FdoInt32 idx )
     double       coordsBuffer[3];
     int          segCount = 1;
 
+	// Use 2D points to accomodate MySql
     coordsBuffer[0] = 5 * idx;
     coordsBuffer[1] = 10 * idx;
-    coordsBuffer[2] = 0;
 
     propertyValue = AddNewProperty( propertyValues, L"Geometry");
     FdoFgfGeometryFactory * gf = FdoFgfGeometryFactory::GetInstance();
-    FdoILineString* line1 = gf->CreateLineString(FdoDimensionality_XY|FdoDimensionality_Z, segCount*3, coordsBuffer);
+    FdoILineString* line1 = gf->CreateLineString(FdoDimensionality_XY, segCount*2, coordsBuffer);
     FdoByteArray *byteArray = gf->GetFgf(line1);
     FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray);
     propertyValue->SetValue(geometryValue);

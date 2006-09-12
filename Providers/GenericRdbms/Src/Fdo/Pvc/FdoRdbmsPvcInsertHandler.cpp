@@ -748,18 +748,13 @@ void FdoRdbmsPvcInsertHandler::SetBindValues(const FdoSmLpClassDefinition *class
 
                     FdoFgfGeometryFactory * gf = FdoFgfGeometryFactory::GetInstance();
                     FdoByteArray        *ba = geomValue->GetGeometry();
-                    FdoPtr<FdoIGeometry>    tempGeomValue;
                     FdoIGeometry	*newGeomValue = NULL;
                     if ( ba )
                     {
                         mConnection->GetSchemaUtil()->SetActiveSpatialContext( classDefinition, name );
 
-                        tempGeomValue = gf->CreateGeometryFromFgf( ba );
-//TODO: This hack is here for demo'ing against MAP 2006, which always sends 3D geometries
-//However, MySql provider does not support 3D, so line strings are silently converted
-//to 2D. 
-                        newGeomValue = mFdoConnection->Kludge3dGeomTo2D( tempGeomValue );
-// END OF HACK.
+                        newGeomValue = gf->CreateGeometryFromFgf( ba );
+
                         mConnection->GetSchemaUtil()->CheckGeomPropOrdDimensionality( classDefinition, name, newGeomValue );
                         mConnection->GetSchemaUtil()->CheckGeomPropShapeDimensionality( classDefinition, name, newGeomValue );
                         mConnection->GetSchemaUtil()->CheckGeomPropValidity( classDefinition, name, newGeomValue );

@@ -173,7 +173,7 @@ void FdoUpdateTest::MainFdoUpdateTest (FdoIConnection* Conn)
                         if( supportsZ )
                             line1 = gf->CreateLineString(FdoDimensionality_XY|FdoDimensionality_Z, segCount*3, coordsBuffer);
                         else
-                            line1 = gf->CreateLineString(FdoDimensionality_XY, segCount, coordsBuffer);
+                            line1 = gf->CreateLineString(FdoDimensionality_XY, segCount*2, coordsBuffer);
                         FdoPtr<FdoByteArray> byteArray = gf->GetFgf(line1);
 
                         FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray);
@@ -631,7 +631,15 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
 
         propertyValue = FdoUpdateTest::AddNewProperty( propertyValues, L"Geometry");
         FdoFgfGeometryFactory * gf = FdoFgfGeometryFactory::GetInstance();
-        FdoILineString* line1 = gf->CreateLineString(FdoDimensionality_XY|FdoDimensionality_Z, segCount*3, coordsBuffer);
+
+        bool supportsZ = (FdoPtr<FdoIGeometryCapabilities>(connection->GetGeometryCapabilities())->GetDimensionalities() & FdoDimensionality_Z);
+		FdoILineString* line1;
+
+		if ( supportsZ )
+			line1 = gf->CreateLineString(FdoDimensionality_XY|FdoDimensionality_Z, segCount*3, coordsBuffer);
+		else
+			line1 = gf->CreateLineString(FdoDimensionality_XY, segCount*2, coordsBuffer);
+
         FdoByteArray *byteArray = gf->GetFgf(line1);
         FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray);
         propertyValue->SetValue(geometryValue);
@@ -778,7 +786,12 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
         coordsBuffer[2] = 5;
 
         propertyValue = FdoUpdateTest::AddNewProperty( propertyValues, L"Geometry");
-        line1 = gf->CreateLineString(FdoDimensionality_XY|FdoDimensionality_Z, segCount*3, coordsBuffer);
+
+		if ( supportsZ )
+			line1 = gf->CreateLineString(FdoDimensionality_XY|FdoDimensionality_Z, segCount*3, coordsBuffer);
+		else
+			line1 = gf->CreateLineString(FdoDimensionality_XY, segCount*2, coordsBuffer);
+
         byteArray = gf->GetFgf(line1);
         geometryValue = FdoGeometryValue::Create(byteArray);
         propertyValue->SetValue(geometryValue);
@@ -879,7 +892,7 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
                 CPPUNIT_ASSERT( rdr->GetInt32(L"# employees") == 250 );
                 CPPUNIT_ASSERT( wcscmp( rdr2->GetString(L"First N\x00e4me"), L"E.B." ) == 0 );
                 CPPUNIT_ASSERT( wcscmp( rdr2->GetString(L"Last Name"), L"Eddy" ) == 0 );
-                CheckGeometry( rdr, L"Geometry", 5, 10, 5 );
+				CheckGeometry( rdr, L"Geometry", 5, 10, 5 );
             }
         }
 
@@ -1006,7 +1019,15 @@ void FdoUpdateTest::UpdateSingleIdFeatureClass()
 
         propertyValue = FdoUpdateTest::AddNewProperty( propertyValues, L"Geometry");
         FdoFgfGeometryFactory * gf = FdoFgfGeometryFactory::GetInstance();
-        FdoILineString* line1 = gf->CreateLineString(FdoDimensionality_XY|FdoDimensionality_Z, segCount*3, coordsBuffer);
+        bool supportsZ = (FdoPtr<FdoIGeometryCapabilities>(connection->GetGeometryCapabilities())->GetDimensionalities() & FdoDimensionality_Z);
+
+        FdoILineString* line1 = NULL;
+		
+		if ( supportsZ )
+			line1 = gf->CreateLineString(FdoDimensionality_XY|FdoDimensionality_Z, segCount*3, coordsBuffer);
+		else
+			line1 = gf->CreateLineString(FdoDimensionality_XY, segCount*2, coordsBuffer);
+
         FdoByteArray *byteArray = gf->GetFgf(line1);
         FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray);
         propertyValue->SetValue(geometryValue);
@@ -1153,7 +1174,12 @@ void FdoUpdateTest::UpdateSingleIdFeatureClass()
         coordsBuffer[2] = 5;
 
         propertyValue = FdoUpdateTest::AddNewProperty( propertyValues, L"Geometry");
-        line1 = gf->CreateLineString(FdoDimensionality_XY|FdoDimensionality_Z, segCount*3, coordsBuffer);
+	
+		if ( supportsZ )
+			line1 = gf->CreateLineString(FdoDimensionality_XY|FdoDimensionality_Z, segCount*3, coordsBuffer);
+		else
+			line1 = gf->CreateLineString(FdoDimensionality_XY, segCount*2, coordsBuffer);
+
         byteArray = gf->GetFgf(line1);
         geometryValue = FdoGeometryValue::Create(byteArray);
         propertyValue->SetValue(geometryValue);
@@ -1651,6 +1677,7 @@ try
         {
             double       coordsBuffer[400];
             int          segCount = 99;
+			bool		 supportsZ = (FdoPtr<FdoIGeometryCapabilities>(connection->GetGeometryCapabilities())->GetDimensionalities() & FdoDimensionality_Z);
 
 			// Insert new features. Each feature should insert a sentinel row.
             FdoPtr<FdoPropertyValue> propertyValue;
@@ -1661,15 +1688,27 @@ try
 
             FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
 
-            coordsBuffer[0] = 1.1;
-            coordsBuffer[1] = 2.2;
-            coordsBuffer[2] = 0.0;
-            coordsBuffer[3] = 1.1;
-            coordsBuffer[4] = 3.3;
-            coordsBuffer[5] = 0.0;
+			FdoPtr<FdoILineString> line1;
+			if ( supportsZ ) 
+			{
+				coordsBuffer[0] = 1.1;
+				coordsBuffer[1] = 2.2;
+				coordsBuffer[2] = 0.0;
+				coordsBuffer[3] = 1.1;
+				coordsBuffer[4] = 3.3;
+				coordsBuffer[5] = 0.0;
+				line1 = gf->CreateLineString(FdoDimensionality_XY|FdoDimensionality_Z, 2*3, coordsBuffer);
+			}
+			else
+			{
+				coordsBuffer[0] = 1.1;
+				coordsBuffer[1] = 2.2;
+				coordsBuffer[2] = 1.1;
+				coordsBuffer[3] = 3.3;
+				line1 = gf->CreateLineString(FdoDimensionality_XY, 2*2, coordsBuffer);
+			}
 
             propertyValue = FdoUpdateTest::AddNewProperty( propertyValues, L"Geometry");
-            FdoPtr<FdoILineString> line1 = gf->CreateLineString(FdoDimensionality_XY|FdoDimensionality_Z, 2*3, coordsBuffer);
             FdoPtr<FdoByteArray> byteArray = gf->GetFgf(line1);
 
             FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray);
@@ -2027,12 +2066,13 @@ void FdoUpdateTest::CreateExternalData( FdoPtr<FdoIConnection> connection, FdoSm
     FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
 
     if ( hasGeom ) {
+
+		// Use 2D to accomodate MySql
         coordsBuffer[0] = 5;
         coordsBuffer[1] = 10;
-        coordsBuffer[2] = 0;
 
         propertyValue = FdoUpdateTest::AddNewProperty( propertyValues, phMgr->GetDcColumnName(L"GEOMETRY") );
-        FdoPtr<FdoILineString> line1 = gf->CreateLineString(FdoDimensionality_XY|FdoDimensionality_Z, segCount*3, coordsBuffer);
+        FdoPtr<FdoILineString> line1 = gf->CreateLineString(FdoDimensionality_XY, segCount*2, coordsBuffer);
         FdoPtr<FdoByteArray> byteArray = gf->GetFgf(line1);
         FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray); 
         propertyValue->SetValue(geometryValue);
@@ -2106,7 +2146,7 @@ void FdoUpdateTest::CreateExternalData( FdoPtr<FdoIConnection> connection, FdoSm
 
         coordsBuffer[1] = 5;
         propertyValue = FdoUpdateTest::AddNewProperty( propertyValues, phMgr->GetDcColumnName(L"GEOMETRY") );
-        FdoPtr<FdoILineString> line1 = gf->CreateLineString(FdoDimensionality_XY|FdoDimensionality_Z, segCount*3, coordsBuffer);
+        FdoPtr<FdoILineString> line1 = gf->CreateLineString(FdoDimensionality_XY, segCount*2, coordsBuffer);
         FdoPtr<FdoByteArray> byteArray = gf->GetFgf(line1);
         FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray);
 

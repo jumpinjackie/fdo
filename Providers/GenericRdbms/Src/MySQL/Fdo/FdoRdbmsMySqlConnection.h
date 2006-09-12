@@ -80,9 +80,6 @@ public:
     // It return a statically allocated storage that can be overwritten by subsequent call to this or other methods.
     virtual const char* FdoToDbiTime( FdoDateTime  time );
 
-    //Temporary Hack for demo'ing the MySql provider with MAP. Currently MAP sends all geometries
-    //as 3D, but the MySql provider can only handle 2D. This function converts 3d geometries to 2d.
-    virtual FdoIGeometry* Kludge3dGeomTo2D( FdoIGeometry* p3dGeom );
 	virtual FdoConnectionState Open ();
 	virtual void Close();
 

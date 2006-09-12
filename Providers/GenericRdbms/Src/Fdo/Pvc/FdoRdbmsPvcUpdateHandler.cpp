@@ -675,25 +675,17 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
 							}
                             // implicit else
                             FdoIGeometry        *geom = NULL;
-                            FdoPtr<FdoIGeometry> tempGeomValue;
                             if ( ba )
                             {
                                 mConnection->GetSchemaUtil()->SetActiveSpatialContext( classDefinition, name );
-                                tempGeomValue = gf->CreateGeometryFromFgf( ba );
-//TODO: This hack is here for demo'ing against MAP 2006, which always sends 3D geometries
-//However, MySql provider does not support 3D, so line strings are silently converted
-//to 2D. 
-                                geom = mFdoConnection->Kludge3dGeomTo2D( tempGeomValue );
-// END OF HACK.
+                                geom = gf->CreateGeometryFromFgf( ba );
 
                                 // Validate the input geometry
                                 mConnection->GetSchemaUtil()->CheckGeomPropOrdDimensionality( classDefinition, name, geom );
                                 mConnection->GetSchemaUtil()->CheckGeomPropShapeDimensionality( classDefinition, name, geom );
                                 mConnection->GetSchemaUtil()->CheckGeomPropValidity( classDefinition, name, geom );
 
-                                mConnection->GetGdbiCommands()->set_nnull(&values[index].null_ind, 0,0);
-
-								
+                                mConnection->GetGdbiCommands()->set_nnull(&values[index].null_ind, 0,0);								
                             }
                             FdoIGeometry *old_geom = (FdoIGeometry*) values[index].value.strvalue;
                             FDO_SAFE_RELEASE( old_geom );

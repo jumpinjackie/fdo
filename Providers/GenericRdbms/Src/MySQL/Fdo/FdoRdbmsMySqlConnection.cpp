@@ -237,41 +237,6 @@ const char* FdoRdbmsMySqlConnection::FdoToDbiTime( FdoDateTime  when )
     return (ret);
 }
 
-FdoIGeometry* FdoRdbmsMySqlConnection::Kludge3dGeomTo2D( FdoIGeometry* p3dGeom )
-{
-    FdoIGeometry* p2dGeom = NULL;
-    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-    double x,y,z,m;
-    FdoInt32 dimensionality;
-
-    if ( p3dGeom->GetDerivedType() == FdoGeometryType_LineString ) {
-        FdoILineString* tempLineString = (FdoILineString*) (FdoIGeometry*) p3dGeom;
-        double* coordBuffer = (double*) alloca( sizeof(double) * tempLineString->GetCount() * 2 );
-        int bufIx = 0;
-        for ( int ix = 0; ix < tempLineString->GetCount(); ix++ ) {
-            tempLineString->GetItemByMembers( ix, &x, &y, &z, &m, &dimensionality );
-            coordBuffer[bufIx++] = x;
-            coordBuffer[bufIx++] = y;
-        }
-
-        p2dGeom = (FdoIGeometry*) gf->CreateLineString(FdoDimensionality_XY, bufIx, coordBuffer);
-    }
-    else if ( p3dGeom->GetDerivedType() == FdoGeometryType_Point ) {
-        FdoIPoint* tempPoint = (FdoIPoint*) (FdoIGeometry*) p3dGeom;
-        tempPoint->GetPositionByMembers( &x, &y, &z, &m, &dimensionality );
-        double* coordBuffer = (double*) alloca( sizeof(double) * 2 );
-        int bufIx = 0;
-        coordBuffer[bufIx++] = x;
-        coordBuffer[bufIx++] = y;
-        p2dGeom = (FdoIGeometry*) gf->CreatePoint(FdoDimensionality_XY, coordBuffer);
-    }
-    //TODO: add more geometry types as needed by demo
-    else {
-        p2dGeom = FDO_SAFE_ADDREF(p3dGeom);
-    }
-
-    return p2dGeom;
-}
 FdoConnectionState FdoRdbmsMySqlConnection::Open()
 {
  	if( GetConnectionState() != FdoConnectionState_Open )

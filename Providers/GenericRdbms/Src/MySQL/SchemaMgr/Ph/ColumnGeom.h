@@ -32,7 +32,7 @@ public:
         FdoSmPhDbObject* parentObject,
         FdoSmPhScInfoP AssociatedSCInfo,
         bool bNullable = true,
-        bool bHasElevation = true,
+        bool bHasElevation = false,
         bool bHasMeasure = false,
         FdoStringP rootColumnName = L"",
         FdoSmPhRdColumnReader* reader = NULL
@@ -53,8 +53,7 @@ protected:
 
     virtual void PostFinalize()
     {
-        // TODO change to SetHasElevation(false) when MAP handles 2D data.
-        SetHasElevation(true);
+        SetHasElevation(false);
         SetHasMeasure(false);
     }
 };

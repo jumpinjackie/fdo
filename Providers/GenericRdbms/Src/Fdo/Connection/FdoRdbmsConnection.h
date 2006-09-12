@@ -210,15 +210,6 @@ public:
     // By default ? is returned. If the database engine uses different syntax, then this method need to be ovewritten.
     virtual const char* GetBindString( int n ) { return "?"; }
 
-    //Temporary Hack for demo'ing the MySql provider with MAP. Currently MAP sends all geometries
-    //as 3D, but the MySql provider can only handle 2D. This function does nothing by default
-    //but can be overridden to convert 3d geometries to 2d.
-    virtual FdoIGeometry* Kludge3dGeomTo2D( FdoIGeometry* p3dGeom )
-    {
-        // Keep as 3d by default
-        return FDO_SAFE_ADDREF(p3dGeom);
-    }
-
     // Creates a Long Transaction Manager and its corresponding Long Transaction
     // Manager Service.
     virtual FdoRdbmsLongTransactionManager *CreateLongTransactionManager() = 0;

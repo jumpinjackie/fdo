@@ -485,7 +485,7 @@ void FdoSelectTest::distance_query()
             coords[4] = 554980.139631;
             coords[5] = 0.0;
             FdoFgfGeometryFactory * gf = FdoFgfGeometryFactory::GetInstance();
-            FdoILineString* line1 = gf->CreateLineString(FdoDimensionality_XY|FdoDimensionality_Z, 6, coords);
+            FdoILineString* line1 = gf->CreateLineString(FdoDimensionality_XY|FdoDimensionality_Z, 2*3, coords);
             FdoByteArray *byteArray = gf->GetFgf(line1);
             gf->Release();
             line1->Release();
