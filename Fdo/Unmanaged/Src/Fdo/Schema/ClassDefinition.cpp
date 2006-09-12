@@ -637,25 +637,11 @@ void FdoClassDefinition::Set( FdoClassDefinition* pClass, FdoSchemaMergeContext*
             break;
 
         case FdoSchemaElementState_Deleted:
-            if ( pContext->CanDeleteProperty(oldProp) ) {
+            if ( oldProp && pContext->CheckDeleteProperty(oldProp) ) {
                 // Mark property for deletion.
                 // Silently ignore if property does not exist.
-                if ( oldProp ) 
-                    oldProp->Delete();
-            }
-            else {
-                // Property delete not supported.
-                pContext->AddError( 
-                    FdoSchemaExceptionP(
-                        FdoSchemaException::Create(
-                            FdoException::NLSGetMessage(
-                            FDO_NLSID(SCHEMA_125_DELPROP),
-                                (FdoString*) oldProp->GetQualifiedName()
-                            )
-                        )
-                    )
-                );
-            }
+                oldProp->Delete();
+			}
             break;
 
         case FdoSchemaElementState_Modified:

@@ -256,6 +256,47 @@ bool FdoSchemaMergeContext::CheckAddProperty( FdoPropertyDefinition* prop )
     return canAdd;
 }
 
+bool FdoSchemaMergeContext::CheckDeleteProperty( FdoPropertyDefinition* prop )
+{
+    bool canDelete = false;
+
+    if ( CanDeleteProperty(prop) ) {
+        canDelete = true;
+
+        FdoClassDefinition* classDef = (FdoClassDefinition*)(prop->GetParent());        
+        if ( ClassHasObjects(classDef) ) {
+            // Can't delete a property if class has objects.
+            AddError( 
+                FdoSchemaExceptionP(
+                    FdoSchemaException::Create(
+                        FdoException::NLSGetMessage(
+                        FDO_NLSID(SCHEMA_145_DELPROPOBJECTS),
+                            (FdoString*) prop->GetQualifiedName()
+                        )
+                    )
+                )
+            );
+
+            canDelete = false;
+        }
+    }
+    else {
+        // Property delete not supported.
+        AddError( 
+            FdoSchemaExceptionP(
+                FdoSchemaException::Create(
+                    FdoException::NLSGetMessage(
+                    FDO_NLSID(SCHEMA_125_DELPROP),
+                        (FdoString*) prop->GetQualifiedName()
+                    )
+                )
+            )
+        );
+    }
+
+    return canDelete;
+}
+
 bool FdoSchemaMergeContext::CanModElementDescription( FdoSchemaElement* element )
 {
     return mDefaultCapability;

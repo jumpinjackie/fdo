@@ -730,6 +730,11 @@ SymbolicName=SCHEMA_144_ADDPROPOBJECTS
 Language=English
 Cannot add not-nullable property '%1$ls'; its class has objects
 .
+MessageId=1145
+SymbolicName=SCHEMA_145_DELPROPOBJECTS
+Language=English
+Cannot delete a property '%1$ls'; its class has objects
+.
 MessageId=2001
 SymbolicName=EXPRESSION_1_BLOBVALUENULL
 Language=English
