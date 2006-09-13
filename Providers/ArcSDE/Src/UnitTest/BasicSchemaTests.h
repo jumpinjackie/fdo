@@ -36,6 +36,8 @@ class BasicSchemaTests : public ArcSDETests
     CPPUNIT_TEST (apply_different_user);
     CPPUNIT_TEST (describe_many);
     CPPUNIT_TEST (create_unique_constraint);
+    CPPUNIT_TEST (describe_read_only);
+    CPPUNIT_TEST (apply_specific_geometry_types);
     CPPUNIT_TEST_SUITE_END ();
 
     static FdoPtr<FdoIConnection> mConnection;
@@ -56,6 +58,8 @@ protected:
     void apply_different_user ();
     void describe_many ();
     void create_unique_constraint ();
+    void describe_read_only();
+    void apply_specific_geometry_types();
 };
 
 #endif // CPP_UNIT_BasicSchemaTests_H

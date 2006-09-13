@@ -41,6 +41,9 @@ public:
     /// <summary>Returns a collection of FdoFunctionDefinition objects the feature provider supports within expressions.</summary>
     /// <returns>Returns the collection of function definitions</returns> 
     virtual FdoFunctionDefinitionCollection* GetFunctions ();
+
+private:
+    FdoPtr<FdoFunctionDefinitionCollection> m_supportedFunctions;
 };
 
 #endif // ARCSDEEXPRESSIONCAPABILITIES_H

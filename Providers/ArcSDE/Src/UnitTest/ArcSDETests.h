@@ -455,6 +455,11 @@ public:
         return FdoStringP::Format(L"FDO_%ls_FDOTEST1", (FdoString*)DatasetName());
     }
 
+    static FdoStringP UserNameReadOnly(void)
+    {
+        return FdoStringP::Format(L"FDO_%ls_READONLY", (FdoString*)DatasetName());
+    }
+
 
     // Fdo Connection strings (server/database-agnostic):
     ///////////////////////////////////////////////////////////////////////////
@@ -511,6 +516,11 @@ public:
     static FdoStringP ConnStringAustraliaMultiDb(void)
     {
         return FdoStringP::Format(L"Server=%ls;Instance=%ls;Datastore=%ls;Username=%ls;Password=test;", (FdoString*)Server(), (FdoString*)Instance(), (FdoString*)DatastoreMultiDb(), (FdoString*)UserNameAustralia());
+    }
+
+    static FdoStringP ConnStringReadOnly(void)
+    {
+        return FdoStringP::Format(L"Server=%ls;Instance=%ls;Datastore=%ls;Username=%ls;Password=test;", (FdoString*)Server(), (FdoString*)Instance(), (FdoString*)DatastoreMultiDb(), (FdoString*)UserNameReadOnly());
     }
 
     // Fdo Class and schema names (server/database-agnostic):

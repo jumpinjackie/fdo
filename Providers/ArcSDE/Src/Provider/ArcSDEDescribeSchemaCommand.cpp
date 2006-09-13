@@ -174,6 +174,11 @@ void ArcSDEDescribeSchemaCommand::addClass (ArcSDEConnection* connection, FdoFea
         classCapabilities->SetLockTypes(NULL, 0);
     bool bSupportsVersioning = 0 != SE_reginfo_is_multiversion (registration);
     classCapabilities->SetSupportsLongTransactions(bSupportsVersioning);
+
+    LONG permissions = 0;
+    result = SE_reginfo_get_access(registration, &permissions);
+    handle_sde_err<FdoSchemaException>(connection->GetConnection (), result, __FILE__, __LINE__, ARCSDE_UNEXPECTED_ERROR, "Unexpected error encountered in ArcSDE Provider.");
+    classCapabilities->SetSupportsWrite((permissions & SE_UPDATE_PRIVILEGE) || (permissions & SE_INSERT_PRIVILEGE) || (permissions & SE_DELETE_PRIVILEGE));
     newFdoClass->SetCapabilities(classCapabilities);
 
 
@@ -266,19 +271,22 @@ void ArcSDEDescribeSchemaCommand::addClass (ArcSDEConnection* connection, FdoFea
                         result = SE_layerinfo_get_shape_types (info, &shapes);
                         if (SE_SUCCESS == result)
                         {
-                            int mask;
+                            FdoGeometryType geomTypes[20];
+                            FdoInt32 geomTypeCount = 0;
 
-                            mask = 0;
                             if (0 != (shapes & SE_POINT_TYPE_MASK))
-                                mask |= FdoGeometricType_Point;
-                            if (0 != (shapes & SE_LINE_TYPE_MASK))
-                                mask |= FdoGeometricType_Curve; // todo: not exactly
-                            if (0 != (shapes & SE_SIMPLE_LINE_TYPE_MASK))
-                                mask |= FdoGeometricType_Curve;
+                                geomTypes[geomTypeCount++] = FdoGeometryType_Point;
+                            if (0 != (shapes & SE_POINT_TYPE_MASK) && 0 != (shapes & SE_MULTIPART_TYPE_MASK))
+                                geomTypes[geomTypeCount++] = FdoGeometryType_MultiPoint;
+                            if (0 != (shapes & SE_LINE_TYPE_MASK) || 0 != (shapes & SE_SIMPLE_LINE_TYPE_MASK))
+                                geomTypes[geomTypeCount++] = FdoGeometryType_LineString;
+                            if ((0 != (shapes & SE_LINE_TYPE_MASK) || 0 != (shapes & SE_SIMPLE_LINE_TYPE_MASK)) && 0 != (shapes & SE_MULTIPART_TYPE_MASK))
+                                geomTypes[geomTypeCount++] = FdoGeometryType_MultiLineString;
                             if (0 != (shapes & SE_AREA_TYPE_MASK))
-                                mask |= FdoGeometricType_Surface;
-                            // Note: We don't handle SE_MULTIPART_TYPE_MASK here, since it has no counterpart in FdoGeometricType
-                            geometry_definition->SetGeometryTypes (mask);
+                                geomTypes[geomTypeCount++] = FdoGeometryType_Polygon;
+                            if (0 != (shapes & SE_AREA_TYPE_MASK) && 0 != (shapes & SE_MULTIPART_TYPE_MASK))
+                                geomTypes[geomTypeCount++] = FdoGeometryType_MultiPolygon;
+                            geometry_definition->SetSpecificGeometryTypes (geomTypes, geomTypeCount);
                         }
 
                         // Set measure and elevation:

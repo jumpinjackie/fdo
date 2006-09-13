@@ -262,24 +262,32 @@ void ArcSDEApplySchemaCommand::getDataType (FdoPropertyDefinition* property, SE_
 
 LONG ArcSDEApplySchemaCommand::getGeometryMask (FdoGeometricPropertyDefinition* geometry)
 {
-    FdoInt32 types;
-    LONG ret;
+    FdoInt32 geomTypeCount;
+    FdoGeometryType* geomTypes = NULL;
+    LONG ret = 0L;
 
-    ret = 0L;
-    
-    types = geometry->GetGeometryTypes ();
-    ret |= SE_NIL_TYPE_MASK;  // NOTE: always allow NULL values, since there is no way in FDO to specify the nullability of a geometry column
-    if (0 != (types & FdoGeometricType_Point))
+    geomTypes = geometry->GetSpecificGeometryTypes (geomTypeCount);
+
+    ret |= SE_NIL_TYPE_MASK;  // always allow NULL values
+
+    if (FdoCommonMiscUtil::ContainsGeomType(geomTypes, geomTypeCount, FdoGeometryType_Point))
+        ret |= (SE_POINT_TYPE_MASK);
+    if (FdoCommonMiscUtil::ContainsGeomType(geomTypes, geomTypeCount, FdoGeometryType_MultiPoint))
         ret |= (SE_POINT_TYPE_MASK | SE_MULTIPART_TYPE_MASK);
-    if (0 != (types & FdoGeometricType_Curve))
+    if (FdoCommonMiscUtil::ContainsGeomType(geomTypes, geomTypeCount, FdoGeometryType_LineString)
+     || FdoCommonMiscUtil::ContainsGeomType(geomTypes, geomTypeCount, FdoGeometryType_CurveString))
+        ret |= (SE_LINE_TYPE_MASK | SE_SIMPLE_LINE_TYPE_MASK);
+    if (FdoCommonMiscUtil::ContainsGeomType(geomTypes, geomTypeCount, FdoGeometryType_MultiLineString)
+     || FdoCommonMiscUtil::ContainsGeomType(geomTypes, geomTypeCount, FdoGeometryType_MultiCurveString))
         ret |= (SE_LINE_TYPE_MASK | SE_SIMPLE_LINE_TYPE_MASK | SE_MULTIPART_TYPE_MASK);
-    if (0 != (types & FdoGeometricType_Surface))
+    if (FdoCommonMiscUtil::ContainsGeomType(geomTypes, geomTypeCount, FdoGeometryType_Polygon)
+     || FdoCommonMiscUtil::ContainsGeomType(geomTypes, geomTypeCount, FdoGeometryType_CurvePolygon))
+        ret |= (SE_AREA_TYPE_MASK);
+    if (FdoCommonMiscUtil::ContainsGeomType(geomTypes, geomTypeCount, FdoGeometryType_MultiPolygon)
+     || FdoCommonMiscUtil::ContainsGeomType(geomTypes, geomTypeCount, FdoGeometryType_MultiCurvePolygon))
         ret |= (SE_AREA_TYPE_MASK | SE_MULTIPART_TYPE_MASK);
-    if (0 != (types & FdoGeometricType_Solid))
-    {
-        // fake it, because MAP tries to set every bit
-        // throw FdoException::Create (L"solids are not supported");
-    }
+    if (FdoCommonMiscUtil::ContainsGeomType(geomTypes, geomTypeCount, FdoGeometryType_MultiGeometry))
+        ret |= (SE_POINT_TYPE_MASK | SE_LINE_TYPE_MASK | SE_SIMPLE_LINE_TYPE_MASK | SE_AREA_TYPE_MASK | SE_MULTIPART_TYPE_MASK);
 
     return (ret);
 }

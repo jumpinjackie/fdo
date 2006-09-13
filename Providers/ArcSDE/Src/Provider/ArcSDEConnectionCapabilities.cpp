@@ -119,3 +119,13 @@ bool ArcSDEConnectionCapabilities::SupportsCSysWKTFromCSysName()
 {
     return true;
 }
+
+bool ArcSDEConnectionCapabilities::SupportsWrite()
+{
+    return true;
+}
+
+bool ArcSDEConnectionCapabilities::SupportsMultiUserWrite()
+{
+    return true;
+}

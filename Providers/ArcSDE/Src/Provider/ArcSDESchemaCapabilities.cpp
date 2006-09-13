@@ -209,3 +209,70 @@ bool ArcSDESchemaCapabilities::SupportsCompositeId()
     return false;
 }
 
+FdoInt32 ArcSDESchemaCapabilities::GetNameSizeLimit (FdoSchemaElementNameType nameType)
+{
+    switch (nameType)
+    {
+        case FdoSchemaElementNameType_Datastore:   return 123;  // sql server's limit, which is higher than oracle's limit of 30
+        case FdoSchemaElementNameType_Schema:      return SE_MAX_DATABASE_LEN + SE_MAX_OWNER_LEN + 1;
+        case FdoSchemaElementNameType_Class:       return SE_MAX_TABLE_LEN;
+        case FdoSchemaElementNameType_Property:    return SE_MAX_COLUMN_LEN;
+        case FdoSchemaElementNameType_Description: return SE_MAX_DESCRIPTION_LEN;
+    }
+    return -1;
+}
+
+FdoString* ArcSDESchemaCapabilities::GetReservedCharactersForName()
+{
+    return L".:";
+}
+
+FdoInt64 ArcSDESchemaCapabilities::GetMaximumDataValueLength (FdoDataType dataType)
+{
+    switch (dataType)
+    {
+        case FdoDataType_String:   return (FdoInt64)2^32; // ArcSDE's limit itself
+        case FdoDataType_BLOB:     return (FdoInt64)2^32; // Oracle's limit, which is higher than SQL Server's limit
+        case FdoDataType_CLOB:     return (FdoInt64)2^32; // Oracle's limit, which is higher than SQL Server's limit
+        case FdoDataType_Decimal:  return (FdoInt64)(GetMaximumDecimalScale() + GetMaximumDecimalPrecision());
+        case FdoDataType_Boolean:  return (FdoInt64)sizeof(FdoBoolean);
+        case FdoDataType_Byte:     return (FdoInt64)sizeof(FdoByte);
+        case FdoDataType_DateTime: return (FdoInt64)sizeof(FdoDateTime);
+        case FdoDataType_Double:   return (FdoInt64)sizeof(FdoDouble);
+        case FdoDataType_Int16:    return (FdoInt64)sizeof(FdoInt16);
+        case FdoDataType_Int32:    return (FdoInt64)sizeof(FdoInt32);
+        case FdoDataType_Int64:    return (FdoInt64)sizeof(FdoInt64);
+        case FdoDataType_Single:   return (FdoInt64)sizeof(FdoFloat);
+    }
+    return (FdoInt64)-1;
+}
+
+FdoInt32 ArcSDESchemaCapabilities::GetMaximumDecimalPrecision()
+{
+    return 38; // oracle's limit, since it's higher than sql server's limit
+}
+
+FdoInt32 ArcSDESchemaCapabilities::GetMaximumDecimalScale()
+{
+    return 127; // oracle's limit, since it's higher than sql server's limit
+}
+
+FdoDataType* ArcSDESchemaCapabilities::GetSupportedIdentityPropertyTypes(FdoInt32& length)
+{
+    length = 0;
+    FdoDataType supportedIdentityTypes[10];
+    supportedIdentityTypes[length++] = FdoDataType_DateTime;
+    supportedIdentityTypes[length++] = FdoDataType_Double;
+    supportedIdentityTypes[length++] = FdoDataType_Int16;
+    supportedIdentityTypes[length++] = FdoDataType_Int32;
+    supportedIdentityTypes[length++] = FdoDataType_Single;
+    supportedIdentityTypes[length++] = FdoDataType_String;
+    supportedIdentityTypes[length++] = FdoDataType_BLOB;
+
+    return supportedIdentityTypes;
+}
+
+bool ArcSDESchemaCapabilities::SupportsDefaultValue()
+{
+    return false;  // this could be true if we supported ApplySchema
+}

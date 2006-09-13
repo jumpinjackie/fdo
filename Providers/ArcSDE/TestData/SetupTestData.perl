@@ -134,6 +134,12 @@ if ($INSTALLACTION ne "U") {
       print TEMPSQL "\ncreate user " . $username . " identified by test;";
       print TEMPSQL "\ngrant connect, resource, select any table, insert any table, update any table, delete any table to ". $username . ";";
     }
+
+    # Create a read-only user:
+    $username = "FDO_" . $DATASETNAME . "_READONLY";
+    print TEMPSQL "\ncreate user " . $username . " identified by test;";
+    print TEMPSQL "\ngrant connect, resource, select any table to ". $username . ";";
+
     close (TEMPSQL);
   
     # Run the script:
@@ -149,11 +155,12 @@ if ($INSTALLACTION ne "U") {
     if (-e "temp.sql") { unlink("temp.sql"); }
   
     open (TEMPSQL, ">temp.sql");
-    foreach $username (@usernames)
+    my $readonlyusername = "FDO_" . $DATASETNAME . "_READONLY";
+    foreach $username (@usernames, $readonlyusername)
     {
       print TEMPSQL "\nEXEC sp_addlogin '" . $username . "', 'test';";
     }
-    foreach $username (@usernames, 'sde')
+    foreach $username (@usernames, 'sde', $readonlyusername)
     {
       foreach $db ('master', 'sde', 'testsingledb', 'testmultidb')
       {
@@ -164,11 +171,14 @@ if ($INSTALLACTION ne "U") {
         print TEMPSQL "\nuse " . $db . ";";
         print TEMPSQL "\nEXEC sp_grantdbaccess '" . $username . "';";
         # Give users db_owner rights on databases;  this allows user to see eachother's tables as well as perform select/insert/update/delete on eachother's tables:
-        print TEMPSQL "\nEXEC sp_addrolemember 'db_owner', '" . $username . "';";
+        if ($username eq $readonlyusername)
+          print TEMPSQL "\nEXEC sp_addrolemember 'db_datareader', '" . $username . "';";
+        else
+          print TEMPSQL "\nEXEC sp_addrolemember 'db_owner', '" . $username . "';";
         print TEMPSQL "\nGRANT CREATE TABLE, CREATE PROCEDURE, CREATE VIEW, CREATE FUNCTION TO " . $username . ";";
       }
     }
-  
+ 
     close (TEMPSQL);
   
     # NOTE: you may need to add all login users to all databases that will contain ArcSDE data

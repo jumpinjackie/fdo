@@ -53,29 +53,78 @@ FdoExpressionType* ArcSDEExpressionCapabilities::GetExpressionTypes (FdoInt32& l
 /// <returns>Returns the collection of function definitions</returns> 
 FdoFunctionDefinitionCollection* ArcSDEExpressionCapabilities::GetFunctions()
 {
-    FdoPtr<FdoFunctionDefinitionCollection> ret = FdoFunctionDefinitionCollection::Create ();
+    if (NULL == m_supportedFunctions)
+    {
+        m_supportedFunctions = FdoFunctionDefinitionCollection::Create ();
+        FdoPtr<FdoFunctionDefinition> function;
 
-    // Add well-known functions we support to the list:
-    FdoPtr<FdoFunctionDefinitionCollection> wellKnownFunctions = GetWellKnownFunctions();
-    FdoPtr<FdoFunctionDefinition> wellKnownFunction;
-    wellKnownFunction = wellKnownFunctions->GetItem(FDO_FUNCTION_COUNT);
-    ret->Add(wellKnownFunction);
-    wellKnownFunction = wellKnownFunctions->GetItem(FDO_FUNCTION_MIN);
-    ret->Add(wellKnownFunction);
-    wellKnownFunction = wellKnownFunctions->GetItem(FDO_FUNCTION_AVG);
-    ret->Add(wellKnownFunction);
-    wellKnownFunction = wellKnownFunctions->GetItem(FDO_FUNCTION_MAX);
-    ret->Add(wellKnownFunction);
-    wellKnownFunction = wellKnownFunctions->GetItem(FDO_FUNCTION_SUM);
-    ret->Add(wellKnownFunction);
+        // Add well-known functions we support to the list:
+        // None for now
 
-    // Add NOT-well-known functions we support to the list:
-    FdoPtr<FdoArgumentDefinitionCollection> args = FdoArgumentDefinitionCollection::Create();
-    FdoPtr<FdoArgumentDefinition> dblArg = FdoArgumentDefinition::Create(ARCSDE_FUNCTION_DOUBLE_ARGUMENT_NAME, NlsMsgGet(ARCSDE_FUNCTION_DOUBLE_ARGUMENT_DESC, "An argument that accepts any expression that evaluates to a double value."), FdoDataType_Double);
-    args->Add(dblArg);
-    wellKnownFunction = FdoFunctionDefinition::Create(ARCSDE_FUNCTION_STDDEV, NlsMsgGet(ARCSDE_FUNCTION_STDDEV_DESC, "Returns the standard deviation of an expression."), FdoDataType_Double, args);
-    ret->Add(wellKnownFunction);
+        // Add NOT-well-known functions we support to the list:
 
-    return (FDO_SAFE_ADDREF (ret.p));
+        FdoString* desc = FdoException::NLSGetMessage(FUNCTION_SUM, "Returns the sum of values of an expression");
+        function = FdoCommonMiscUtil::CreateFunctionDefinition(FDO_FUNCTION_SUM, desc, true, 4,
+            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Double, 
+            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Single, 
+            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Int16, 
+            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Int32);
+        m_supportedFunctions->Add(function);
+
+        desc = FdoException::NLSGetMessage(FUNCTION_COUNT, "Returns the number of objects in the query");
+        function = FdoCommonMiscUtil::CreateFunctionDefinition(FDO_FUNCTION_COUNT, desc, true, 16,
+            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_Boolean, 
+            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_Double, 
+            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_Single, 
+            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_Decimal, 
+            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_Byte, 
+            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_DateTime, 
+            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_Int16, 
+            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_Int32, 
+            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_Int64,
+            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_String, 
+            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_BLOB, 
+            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_CLOB,
+            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_ObjectProperty, FdoDataType_Int32,
+            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_GeometricProperty, FdoDataType_Int32,
+            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_AssociationProperty, FdoDataType_Int32,
+            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_RasterProperty, FdoDataType_Int32
+            );
+        m_supportedFunctions->Add(function);
+
+        desc = FdoException::NLSGetMessage(FUNCTION_MIN, "Returns the minimum value of an expression");
+        function = FdoCommonMiscUtil::CreateFunctionDefinition(FDO_FUNCTION_MIN, desc, true, 4,
+            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Double, 
+            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Single, 
+            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Int16, 
+            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Int32);
+        m_supportedFunctions->Add(function);
+
+        desc = FdoException::NLSGetMessage(FUNCTION_AVG, "Returns the average value of an expression");
+        function = FdoCommonMiscUtil::CreateFunctionDefinition(FDO_FUNCTION_AVG, desc, true, 4,
+            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Double, 
+            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Single, 
+            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Int16, 
+            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Int32);
+        m_supportedFunctions->Add(function);
+
+        desc = FdoException::NLSGetMessage(FUNCTION_MAX, "Returns the maximum value of an expression");
+        function = FdoCommonMiscUtil::CreateFunctionDefinition(FDO_FUNCTION_MAX, desc, true, 4,
+            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Double, 
+            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Single, 
+            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Int16, 
+            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Int32);
+        m_supportedFunctions->Add(function);
+
+        desc = NlsMsgGet(ARCSDE_FUNCTION_STDDEV_DESC, "Returns the standard deviation of an expression.");
+        function = FdoCommonMiscUtil::CreateFunctionDefinition(ARCSDE_FUNCTION_STDDEV, desc, true, 4,
+            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Double, 
+            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Single, 
+            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Int16, 
+            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Int32);
+        m_supportedFunctions->Add(function);
+    }
+
+    return (FDO_SAFE_ADDREF (m_supportedFunctions.p));
 }
 
