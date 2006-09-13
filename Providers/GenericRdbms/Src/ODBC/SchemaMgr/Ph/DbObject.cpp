@@ -59,6 +59,12 @@ FdoStringP FdoSmPhOdbcDbObject::GetDbQName() const
     return dbQName;
 }
 
+bool FdoSmPhOdbcDbObject::GetSupportsWrite() const
+{
+    // TODO - Get value from connection object.  
+    return true;
+}
+
 void FdoSmPhOdbcDbObject::ActivateOwnerAndExecute( FdoStringP sqlStmt )
 {
     FdoSmPhOdbcOwner*        objOwner       = static_cast<FdoSmPhOdbcOwner*>((FdoSmPhSchemaElement*) GetParent());

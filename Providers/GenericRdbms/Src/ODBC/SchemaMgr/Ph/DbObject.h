@@ -28,6 +28,9 @@ public:
     // Get the database-specific qualified name for this database object.
     virtual FdoStringP GetDbQName() const;
 
+    // Get the indicator on whether or not the class supports write.
+    virtual bool GetSupportsWrite() const;
+
 
 protected:
     // Constructs an instance of a database object.

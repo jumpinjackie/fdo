@@ -64,6 +64,14 @@ public:
     // when creating a new spatial context.
     virtual bool SupportsCSysWKTFromCSysName();
 
+    // Determines if write is supported by the provider or by the datastore depending on whether this request is at
+    // the provider or datastore level.
+    virtual bool SupportsWrite();
+
+    // Determines if the provider or datastore can support more than one user writing to a single datastore at
+    // one time.
+    virtual bool SupportsMultiUserWrite();
+
 protected:
     ~FdoRdbmsOdbcConnectionCapabilities(void);
     virtual void Dispose();

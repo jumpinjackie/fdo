@@ -36,9 +36,7 @@ public:
     // Returns true if the feature provider supports feature locking.
     virtual bool SupportsLocking();
 
-    /// <summary>Gets an array of the FdoLockType values supported by the feature provider.</summary>
-    /// <param name="size">Output the number of lock types</param>
-    /// <returns>Returns the list of lock types</returns>
+    // Gets an array of the FdoLockType values supported by the feature provider.
     virtual FdoLockType* GetLockTypes(FdoInt32& size);
 
     // Returns true if the feature provider supports connection timeout.
@@ -62,6 +60,14 @@ public:
     // Returns true if the provider supports specifying the coordinate system by name or ID without specifying the WKT
     // when creating a new spatial context.
     virtual bool SupportsCSysWKTFromCSysName();
+
+    // Determines if write is supported by the provider or by the datastore depending on whether this request is at
+    // the provider or datastore level.
+    virtual bool SupportsWrite();
+
+    // Determines if the provider or datastore can support more than one user writing to a single datastore at
+    // one time.
+    virtual bool SupportsMultiUserWrite();
 
 protected:
     ~FdoRdbmsConnectionCapabilities(void);

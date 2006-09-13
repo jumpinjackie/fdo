@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8.00"
 	Name="UnitTestOdbc"
-	ProjectGUID="{15F6A280-879F-4F7A-BDD9-7D1235D7066A}"
+	ProjectGUID="{D413E013-4597-4220-B8CE-9A4A3E5E1E60}"
 	RootNamespace="UnitTestOdbc"
 	>
 	<Platforms>

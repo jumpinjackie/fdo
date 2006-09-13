@@ -49,6 +49,16 @@ bool FdoRdbmsMySqlConnectionCapabilities::SupportsCSysWKTFromCSysName()
     return false;
 }
 
+bool FdoRdbmsMySqlConnectionCapabilities::SupportsWrite()
+{
+    return true;
+}
+
+bool FdoRdbmsMySqlConnectionCapabilities::SupportsMultiUserWrite()
+{
+    return true;
+}
+
 
 void FdoRdbmsMySqlConnectionCapabilities::Dispose()
 {

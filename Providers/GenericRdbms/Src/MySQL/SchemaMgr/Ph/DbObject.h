@@ -45,6 +45,9 @@ public:
     static FdoString* StorageEngineEnumToString(MySQLOvStorageEngineType storageEngine);
     static MySQLOvStorageEngineType StorageEngineStringToEnum(FdoString* storageEngine);
 
+    // Get the indicator on whether or not the class supports write.
+    virtual bool GetSupportsWrite() const;
+
     // Minimum truncation length for constraint columns.
     // A starting value that is always lower than any truncation length
     // that will be applied

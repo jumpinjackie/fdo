@@ -428,6 +428,7 @@ FdoClassDefinition* FdoRdbmsDescribeSchemaCommand::ConvertClassDefinition(const 
             FdoClassCapabilitiesP capabilities = FdoClassCapabilities::Create( (*pFdoClassDef) );
             capabilities->SetSupportsLocking( pLpCap->SupportsLocking() );
             capabilities->SetSupportsLongTransactions( pLpCap->SupportsLongTransactions() );
+            capabilities->SetSupportsWrite(true);
 
             FdoInt32 lockTypeCount;
             const FdoLockType* lockTypes = pLpCap->GetLockTypes( lockTypeCount );

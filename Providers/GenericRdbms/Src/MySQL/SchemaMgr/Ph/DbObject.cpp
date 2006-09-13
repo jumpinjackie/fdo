@@ -80,6 +80,13 @@ FdoStringP FdoSmPhMySqlDbObject::GetDbQName() const
     return ( ((const FdoSmPhDbElement*)GetParent())->GetDbName() + L"." + GetDbName() );
 }
 
+bool FdoSmPhMySqlDbObject::GetSupportsWrite() const
+{
+    // It has been decided to return "true" as the default value because it has been deemed
+    // to expensive to determine whether or not the class is writable. 
+    return true;
+}
+
 FdoStringsP FdoSmPhMySqlDbObject::GetKeyColsSql( FdoSmPhColumnCollection* columns )
 {
     FdoInt32        i;

@@ -89,3 +89,13 @@ bool FdoRdbmsOdbcConnectionCapabilities::SupportsCSysWKTFromCSysName()
 {
     return false;
 }
+
+bool FdoRdbmsOdbcConnectionCapabilities::SupportsWrite()
+{
+    return true;
+}
+
+bool FdoRdbmsOdbcConnectionCapabilities::SupportsMultiUserWrite()
+{
+    return true;
+}
