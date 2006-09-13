@@ -103,6 +103,11 @@ FdoStringP FdoSmPhPropertyReader::GetDataType()
 	return(GetString(L"", L"attributetype"));
 }
 
+FdoStringP FdoSmPhPropertyReader::GetGeometryType()
+{
+	return(GetString(L"", L"geometrytype"));
+}
+
 int FdoSmPhPropertyReader::GetIdPosition()
 {
 	return((int) GetDouble(L"", L"idposition"));

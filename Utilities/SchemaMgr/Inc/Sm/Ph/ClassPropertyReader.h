@@ -75,6 +75,7 @@ public:
 	FdoStringP GetDescription();
 	FdoStringP GetFeatureClassName();
 	FdoStringP GetDataType();
+	FdoStringP GetGeometryType();
 	int GetIdPosition();
 	bool GetIsNullable();
 	bool GetIsReadOnly();

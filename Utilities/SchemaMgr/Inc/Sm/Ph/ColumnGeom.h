@@ -23,6 +23,7 @@
 #endif
 
 #include <Sm/Ph/Column.h>
+#include <FdoCommonGeometryUtil.h>
 
 class FdoSmPhSpatialIndex;
 
@@ -112,6 +113,14 @@ public:
     {
     /// Set to all types (except solid which is rare in GIS applications)
         long geomTypes = FdoGeometricType_Point | FdoGeometricType_Curve | FdoGeometricType_Surface;
+
+        return FdoStringP::Format(L"%d", geomTypes);
+    }
+
+    virtual FdoStringP GetBestFdoGeometryType()
+    {
+    /// Set to all types (except solid which is rare in GIS applications)
+        long geomTypes = FdoCommonGeometryUtil::GetAllGeometryTypesCode();
 
         return FdoStringP::Format(L"%d", geomTypes);
     }

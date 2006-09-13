@@ -106,6 +106,13 @@ FdoStringP FdoSmPhClassPropertyReader::GetDataType()
 
 	return(mPropReader->GetDataType());
 }
+FdoStringP FdoSmPhClassPropertyReader::GetGeometryType()
+{
+	// Make sure there is a current row.
+	CheckGet();
+
+	return(mPropReader->GetGeometryType());
+}
 
 int FdoSmPhClassPropertyReader::GetIdPosition()
 {

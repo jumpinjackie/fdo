@@ -18,6 +18,7 @@
 
 #include "stdafx.h"
 #include <Sm/Ph/Cfg/PropertyReader.h>
+#include <FdoCommonGeometryUtil.h>
 
 FdoSmPhCfgPropertyReader::FdoSmPhCfgPropertyReader(
     FdoStringP schemaName, 
@@ -95,6 +96,7 @@ void FdoSmPhCfgPropertyReader::SetGeomTypes()
     // Default geometric property settings. Provider must override if settings can 
     // be determined from datastore.
     SetString( L"", L"attributetype", FdoStringP::Format(L"%d", FdoGeometricType_Point | FdoGeometricType_Curve | FdoGeometricType_Surface) );
+    SetString( L"", L"geometrytype", FdoStringP::Format(L"%d", FdoCommonGeometryUtil::GetAllGeometryTypesCode()));
     SetString( L"", L"hasmeasure", L"0" );
     SetString( L"", L"haselevation", L"0" );
 }

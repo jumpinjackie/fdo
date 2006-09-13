@@ -3169,6 +3169,7 @@ FdoSmLpClassBase::Capabilities::Capabilities(
                 mLockTypes = new FdoLockType[mLockTypeCount];
                 memcpy( mLockTypes, lockTypes, mLockTypeCount*sizeof(FdoLockType) );
             }
+            mSupportsWrite = pPhDbObject->GetSupportsWrite();
         }
     }
 }
@@ -3177,6 +3178,11 @@ FdoSmLpClassBase::Capabilities::~Capabilities()
 {
     if (mLockTypes)
         delete [] mLockTypes;
+}
+
+bool FdoSmLpClassBase::Capabilities::SupportsWrite() const
+{
+    return mSupportsWrite;
 }
 
 bool FdoSmLpClassBase::Capabilities::SupportsLocking() const

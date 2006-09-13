@@ -70,6 +70,9 @@ public:
     /// Data type ( string equivalent of FDO type )
 	FdoStringP GetDataType();
 
+    /// Gets the current geometry type.
+    FdoStringP GetGeometryType();
+
     /// If the property is an identity property, this function returns its position
     /// within the class's identity property collection.
     /// Otherwise, it returns 0.
@@ -155,6 +158,9 @@ public:
 
     /// Data type ( string equivalent of FDO type )
 	void SetDataType( FdoStringP sValue );
+
+    /// Sets the current geometry type.
+    void SetGeometryType( FdoStringP sValue );
 
 	void SetIdPosition( int iValue );
 

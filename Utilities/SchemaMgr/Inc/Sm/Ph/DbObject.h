@@ -105,6 +105,9 @@ public:
     /// Returns true this database object has data.
 	virtual bool GetHasData();
 
+    /// Get the indicator on whether or not the class supports write.
+    virtual bool GetSupportsWrite() const;
+
     /// Get the current long transaction mode
     virtual FdoLtLockModeType GetLtMode() const;
 

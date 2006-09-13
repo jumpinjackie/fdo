@@ -67,10 +67,13 @@ public:
         bool SupportsLocking() const;
     /// True if table rows can be versioned.
         bool SupportsLongTransactions() const;
+    /// True if class/table supports write.
+        bool SupportsWrite() const;
 
         const FdoLockType* GetLockTypes(FdoInt32& size) const;
 
     private:
+        bool                    mSupportsWrite;
         bool                    mSupportsLocking;
         bool                    mSupportsLongTransactions;
         FdoLockType*            mLockTypes;

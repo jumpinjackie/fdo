@@ -143,10 +143,12 @@ bool FdoSmPhRdPropertyReader::ReadNext()
                         if ( geomColumn ) {
                             SetString( L"", L"hasmeasure", geomColumn->GetHasMeasure() ? L"1" : L"0" );
                             SetString( L"", L"haselevation", geomColumn->GetHasElevation() ? L"1" : L"0" );
+                            SetString( L"", L"geometrytype", geomColumn->GetBestFdoGeometryType());
                         }
                         else {
                             SetString( L"", L"hasmeasure", L"0" );
                             SetString( L"", L"haselevation", L"0" );
+                            SetString( L"", L"geometrytype", L"0" );
                         }
                         rowFound = true;
                     }

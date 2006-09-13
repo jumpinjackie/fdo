@@ -43,6 +43,9 @@ public:
     /// Gets the allowable Geometry Types for this property.
     FdoInt32 GetGeometryTypes() const;
 
+    /// Gets binary-or-combined value of the specific geometry types
+    FdoInt32 GetSpecificGeometryTypes() const;
+
     /// Gets a Boolean value that indicates if the geometry of this property
     /// include elevation values.
     bool GetHasElevation() const;
@@ -338,8 +341,10 @@ private:
     FdoStringP  GetActiveSpatialContextName();
 */
     void FixSpatialContextAssociation();
-    bool        CheckSupportedGeometricTypes( FdoGeometricPropertyDefinition* pFdoGeomProp );
+    bool CheckSupportedGeometricTypes( FdoGeometricPropertyDefinition* pFdoGeomProp );
+    bool CheckSupportedGeometryTypes( FdoGeometricPropertyDefinition* pFdoGeomProp );
 
+	void AddGeometricTypeChangeError( FdoInt32 newTypes, bool bEmptyGeom );
 	void AddGeometryTypeChangeError( FdoInt32 newTypes, bool bEmptyGeom );
     void AddHasElevationChangeError();
     void AddAssociatedSCChangeError();
@@ -348,6 +353,7 @@ private:
 	void AddNoSCFoundError();
     void AddSCTableNotFoundError();
 
+    FdoInt32 mGeometricTypes;
     FdoInt32 mGeometryTypes;
 
 	bool mbHasElevation;

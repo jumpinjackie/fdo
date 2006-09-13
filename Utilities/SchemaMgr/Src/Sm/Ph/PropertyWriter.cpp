@@ -69,6 +69,11 @@ FdoStringP FdoSmPhPropertyWriter::GetDataType()
 	return(GetString(L"", L"attributetype"));
 }
 
+FdoStringP FdoSmPhPropertyWriter::GetGeometryType()
+{
+	return(GetString(L"", L"geometrytype"));
+}
+
 int FdoSmPhPropertyWriter::GetIdPosition()
 {
 	return((int) GetInteger(L"", L"idposition"));
@@ -196,6 +201,11 @@ void FdoSmPhPropertyWriter::SetClassId( FdoInt64 lValue )
 void FdoSmPhPropertyWriter::SetDataType( FdoStringP sValue )
 {
 	SetString(L"", L"attributetype", sValue);
+}
+
+void FdoSmPhPropertyWriter::SetGeometryType( FdoStringP sValue )
+{
+	SetString(L"", L"geometrytype", sValue);
 }
 
 void FdoSmPhPropertyWriter::SetIdPosition( int iValue )
@@ -400,6 +410,12 @@ FdoSmPhRowP FdoSmPhPropertyWriter::MakeRow( FdoSmPhMgrP mgr )
         row, 
         L"sequencename",
         row->CreateColumnDbObject(L"sequencename",true)
+    );
+
+    field = new FdoSmPhField(
+        row, 
+        L"geometrytype", 
+        row->CreateColumnChar(L"geometrytype",true,255)
     );
 
     return( row );

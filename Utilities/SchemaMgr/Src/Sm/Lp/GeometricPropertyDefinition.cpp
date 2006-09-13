@@ -24,6 +24,7 @@
 #include <Sm/Ph/PropertyWriter.h>
 #include <Sm/Ph/SpatialContextGeomWriter.h>
 #include <Sm/Lp/SpatialContextCollection.h>
+#include <FdoCommonGeometryUtil.h>
 
 #define FDOSMLP_SI_COLUMN_LENGTH    255
 #define FDOSMLP_SI_COLUMN_1_NAME    L"_SI_1"
@@ -37,7 +38,8 @@ FdoSmLpGeometricPropertyDefinition::FdoSmLpGeometricPropertyDefinition(
     mWantSiColumns(false),
     mGeometricColumnType(FdoSmOvGeometricColumnType_Default),
     mGeometricContentType(FdoSmOvGeometricContentType_Default),
-    mGeometryTypes(propReader->GetDataType().ToLong()),
+    mGeometricTypes(propReader->GetDataType().ToLong()),
+    mGeometryTypes(propReader->GetGeometryType().ToLong()),
 	mbHasElevation(propReader->GetHasElevation()),
 	mbHasMeasure(propReader->GetHasMeasure()),
     mAssociatedScId(-1)
@@ -55,7 +57,6 @@ FdoSmLpGeometricPropertyDefinition::FdoSmLpGeometricPropertyDefinition(
     mWantSiColumns(false),
     mGeometricColumnType(FdoSmOvGeometricColumnType_Default),
     mGeometricContentType(FdoSmOvGeometricContentType_Default),
-	mGeometryTypes(pFdoProp->GetGeometryTypes()),
     mAssociatedScId(-1),
     mAssociatedSCName(pFdoProp->GetSpatialContextAssociation())
 {
@@ -75,7 +76,8 @@ FdoSmLpGeometricPropertyDefinition::FdoSmLpGeometricPropertyDefinition(
     mWantSiColumns(false),
     mGeometricColumnType(FdoSmOvGeometricColumnType_Default),
     mGeometricContentType(FdoSmOvGeometricContentType_Default),
-	mGeometryTypes(FdoGeometricType_Point),
+	mGeometricTypes(FdoGeometricType_Point),
+	mGeometryTypes(FdoCommonGeometryUtil::MapGeometryTypeToHexCode(FdoGeometryType_Point)),
     mAssociatedScId(-1),
     mAssociatedSCName(pFdoProp->GetSpatialContextAssociation()),
     mColumnNameX(columnNameX),
@@ -103,7 +105,8 @@ FdoSmLpGeometricPropertyDefinition::FdoSmLpGeometricPropertyDefinition(
     mWantSiColumns(false),
     mGeometricColumnType(FdoSmOvGeometricColumnType_Default),
     mGeometricContentType(FdoSmOvGeometricContentType_Default),
-	mGeometryTypes( pBaseProperty->GetGeometryTypes() ),
+	mGeometricTypes( pBaseProperty->GetGeometryTypes() ),
+	mGeometryTypes( pBaseProperty->GetSpecificGeometryTypes() ),
 	mbHasElevation( pBaseProperty->GetHasElevation() ),
 	mbHasMeasure( pBaseProperty->GetHasMeasure() ),
     mAssociatedScId(-1),
@@ -192,6 +195,11 @@ FdoPropertyType FdoSmLpGeometricPropertyDefinition::GetPropertyType() const
 
 FdoInt32 FdoSmLpGeometricPropertyDefinition::GetGeometryTypes() const
 {
+    return mGeometricTypes;
+}
+
+FdoInt32 FdoSmLpGeometricPropertyDefinition::GetSpecificGeometryTypes() const
+{
     return mGeometryTypes;
 }
 
@@ -223,7 +231,8 @@ void FdoSmLpGeometricPropertyDefinition::SetInherited( const FdoSmLpPropertyDefi
 			FdoSmLpGeometricPropertyDefinition::Cast( pBaseProp );
 
 		if ( pBaseGeomProp ) {
-			if ( mGeometryTypes != pBaseGeomProp->GetGeometryTypes() ) {
+			if (( mGeometricTypes != pBaseGeomProp->GetGeometryTypes()         ) ||
+                ( mGeometryTypes  != pBaseGeomProp->GetSpecificGeometryTypes() )    ) {
 				// Inherited property cannot redefine geometry types.
 				same = false;
 				AddRedefinedError( pBaseGeomProp );
@@ -268,6 +277,9 @@ void FdoSmLpGeometricPropertyDefinition::Update(
         if ( (GetElementState() == FdoSchemaElementState_Added) || 
              GetIsFromFdo()
         ) {
+            mGeometricTypes = pFdoGeomProp->GetGeometryTypes();
+            mGeometryTypes = pFdoGeomProp->GetSpecificGeometryTypes();
+
 #pragma message ("ToDo: Get spatial contexts from config files")
             // Patch for lack of spatial context retrieval from config files
             if ( mAssociatedSCName.ICompare(L"") == 0 )
@@ -284,10 +296,15 @@ void FdoSmLpGeometricPropertyDefinition::Update(
         }
         else if ( GetElementState() == FdoSchemaElementState_Modified ) {
             // Allow under certain circumstances, all errors reported
-			if ( mGeometryTypes != pFdoGeomProp->GetGeometryTypes() )
+			if ( mGeometricTypes != pFdoGeomProp->GetGeometryTypes() )
             {
                 if ( CheckSupportedGeometricTypes( pFdoGeomProp ) )
-                    mGeometryTypes = pFdoGeomProp->GetGeometryTypes();
+                    mGeometricTypes = pFdoGeomProp->GetGeometryTypes();
+            }
+			if ( mGeometryTypes != pFdoGeomProp->GetSpecificGeometryTypes() )
+            {
+                if ( CheckSupportedGeometryTypes( pFdoGeomProp ) )
+                    mGeometryTypes = pFdoGeomProp->GetSpecificGeometryTypes();
             }
 		}
 	}
@@ -371,6 +388,7 @@ void FdoSmLpGeometricPropertyDefinition::Commit( bool fromParent )
 			pWriter->SetName( GetNestedName() );
 			pWriter->SetColumnType( GetColumn() ? GetColumn()->GetTypeName() : L"n/a"   );
             pWriter->SetDataType( FdoStringP::Format(L"%d", GetGeometryTypes()) );
+            pWriter->SetGeometryType( FdoStringP::Format(L"%d", GetSpecificGeometryTypes()) );
 			pWriter->SetIsNullable( true );
 			pWriter->SetIsFeatId( GetIsFeatId() );
 			pWriter->SetIsSystem( GetIsSystem() );
@@ -1067,6 +1085,32 @@ bool FdoSmLpGeometricPropertyDefinition::TableHasSpatialIndexColumns()
     return hasSiColumns;
 }
 
+void FdoSmLpGeometricPropertyDefinition::AddGeometricTypeChangeError( FdoInt32 newTypes, bool bEmptyGeom ) 
+{
+    if ( bEmptyGeom )
+	    GetErrors()->Add( FdoSmErrorType_Other, 
+            FdoSchemaException::Create(
+                FdoSmError::NLSGetMessage(
+			        FDO_NLSID(FDOSM_164),
+			        (FdoString*) GetQName(), 
+			        mGeometricTypes,
+			        newTypes
+                )
+            )
+	    );
+    else
+        GetErrors()->Add( FdoSmErrorType_Other, 
+            FdoSchemaException::Create(
+                FdoSmError::NLSGetMessage(
+			        FDO_NLSID(FDOSM_391),
+			        (FdoString*) GetQName(), 
+			        mGeometricTypes,
+			        newTypes
+		        )
+            )
+	    );
+}
+
 void FdoSmLpGeometricPropertyDefinition::AddGeometryTypeChangeError( FdoInt32 newTypes, bool bEmptyGeom ) 
 {
     if ( bEmptyGeom )
@@ -1213,14 +1257,59 @@ FdoStringP FdoSmLpGeometricPropertyDefinition::GetActiveSpatialContextName()
 */
 bool FdoSmLpGeometricPropertyDefinition::CheckSupportedGeometricTypes( FdoGeometricPropertyDefinition* pFdoGeomProp )
 {
-    int     geometryTypes = pFdoGeomProp->GetGeometryTypes();
+    int     geometricTypes = pFdoGeomProp->GetGeometryTypes();
     bool    err = false;
 
     // Can update if the new settings cover the old settings. Error otherwise.
-    err =   (((mGeometryTypes & FdoGeometricType_Point)   != 0) && ((geometryTypes & FdoGeometricType_Point) == 0 )) ||
-            (((mGeometryTypes & FdoGeometricType_Curve)   != 0) && ((geometryTypes & FdoGeometricType_Curve) == 0 )) ||
-            (((mGeometryTypes & FdoGeometricType_Surface) != 0) && ((geometryTypes & FdoGeometricType_Surface) == 0 )) ||
-            (((mGeometryTypes & FdoGeometricType_Solid)   != 0) && ((geometryTypes & FdoGeometricType_Solid) == 0 ));
+    err =   (((mGeometricTypes & FdoGeometricType_Point)   != 0) && ((geometricTypes & FdoGeometricType_Point) == 0 )) ||
+            (((mGeometricTypes & FdoGeometricType_Curve)   != 0) && ((geometricTypes & FdoGeometricType_Curve) == 0 )) ||
+            (((mGeometricTypes & FdoGeometricType_Surface) != 0) && ((geometricTypes & FdoGeometricType_Surface) == 0 )) ||
+            (((mGeometricTypes & FdoGeometricType_Solid)   != 0) && ((geometricTypes & FdoGeometricType_Solid) == 0 ));
+
+    // If error, it's still OK provided the geometry column contains no data.
+    // NOTE: A less strict check would be to count the instances of no longer allowed shape types,
+    // but this was too complicated in now-obsolete schemas.
+    if ( err && GetColumn()->GetHasValues() )
+    {
+        AddGeometricTypeChangeError( pFdoGeomProp->GetGeometryTypes(), false );
+    } 
+    else
+    {
+        err = false;
+    }
+
+    return !err;
+}
+bool FdoSmLpGeometricPropertyDefinition::CheckSupportedGeometryTypes( FdoGeometricPropertyDefinition* pFdoGeomProp )
+{
+    FdoInt32 geometryTypes = pFdoGeomProp->GetSpecificGeometryTypes();
+    bool     err = false;
+
+    // Can update if the new settings cover the old settings. Error otherwise.
+    FdoInt32 pointRep             = FdoCommonGeometryUtil::MapGeometryTypeToHexCode(FdoGeometryType_Point);
+    FdoInt32 multiPointRep        = FdoCommonGeometryUtil::MapGeometryTypeToHexCode(FdoGeometryType_MultiPoint);
+    FdoInt32 lineStringRep        = FdoCommonGeometryUtil::MapGeometryTypeToHexCode(FdoGeometryType_LineString);
+    FdoInt32 multiLineStringRep   = FdoCommonGeometryUtil::MapGeometryTypeToHexCode(FdoGeometryType_MultiLineString);
+    FdoInt32 curveStringRep       = FdoCommonGeometryUtil::MapGeometryTypeToHexCode(FdoGeometryType_CurveString);
+    FdoInt32 multiCurveStringRep  = FdoCommonGeometryUtil::MapGeometryTypeToHexCode(FdoGeometryType_MultiCurveString);
+    FdoInt32 polygonRep           = FdoCommonGeometryUtil::MapGeometryTypeToHexCode(FdoGeometryType_Polygon);
+    FdoInt32 multiPolygonRep      = FdoCommonGeometryUtil::MapGeometryTypeToHexCode(FdoGeometryType_MultiPolygon);
+    FdoInt32 curvePolygonRep      = FdoCommonGeometryUtil::MapGeometryTypeToHexCode(FdoGeometryType_CurvePolygon);
+    FdoInt32 multiCurvePolygonRep = FdoCommonGeometryUtil::MapGeometryTypeToHexCode(FdoGeometryType_MultiCurvePolygon);
+    FdoInt32 multiGeometryRep     = FdoCommonGeometryUtil::MapGeometryTypeToHexCode(FdoGeometryType_MultiGeometry);
+
+
+    err = (((mGeometryTypes & pointRep             != 0) && ((geometryTypes & pointRep)             == 0 )) ||
+           ((mGeometryTypes & multiPointRep        != 0) && ((geometryTypes & multiPointRep)        == 0 )) ||
+           ((mGeometryTypes & lineStringRep        != 0) && ((geometryTypes & lineStringRep)        == 0 )) ||
+           ((mGeometryTypes & multiLineStringRep   != 0) && ((geometryTypes & multiLineStringRep)   == 0 )) ||
+           ((mGeometryTypes & curveStringRep       != 0) && ((geometryTypes & curveStringRep)       == 0 )) ||
+           ((mGeometryTypes & multiCurveStringRep  != 0) && ((geometryTypes & multiCurveStringRep)  == 0 )) ||
+           ((mGeometryTypes & polygonRep           != 0) && ((geometryTypes & polygonRep)           == 0 )) ||
+           ((mGeometryTypes & multiPolygonRep      != 0) && ((geometryTypes & multiPolygonRep)      == 0 )) ||
+           ((mGeometryTypes & curvePolygonRep      != 0) && ((geometryTypes & curvePolygonRep)      == 0 )) ||
+           ((mGeometryTypes & multiCurvePolygonRep != 0) && ((geometryTypes & multiCurvePolygonRep) == 0 )) ||
+           ((mGeometryTypes & multiGeometryRep     != 0) && ((geometryTypes & multiGeometryRep)     == 0 ))    );
 
     // If error, it's still OK provided the geometry column contains no data.
     // NOTE: A less strict check would be to count the instances of no longer allowed shape types,

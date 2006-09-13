@@ -122,6 +122,12 @@ bool FdoSmPhDbObject::GetHasData()
     return hasData;
 }
 
+bool FdoSmPhDbObject::GetSupportsWrite() const
+{
+    // Return default value if the routine is not overwritten.
+    return true;
+}
+
 FdoLtLockModeType FdoSmPhDbObject::GetLtMode() const
 {
     return mLtMode;
