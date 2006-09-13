@@ -24,6 +24,7 @@ libProvidersCommon_la_SOURCES = \
   Src/FdoCommonMiscUtil.cpp \
   Src/FdoCommonFile.cpp \
   Src/FdoCommonFilterExecutor.cpp \
+  Src/FdoCommonGeometryUtil.cpp \
   Src/FdoCommonConnPropDictionary.cpp \
   Src/FdoCommonConnStringParser.cpp \
   Src/FdoCommonBinaryReader.cpp \
@@ -49,6 +50,7 @@ noinst_HEADERS = $(libProvidersCommon_la_SOURCES) \
   Inc/FdoCommonFeatureCommand.h \
   Inc/FdoCommonFile.h \
   Inc/FdoCommonFilterExecutor.h \
+  Inc/FdoCommonGeometryUtil.h \
   Inc/FdoCommonMiscUtil.h \
   Inc/FdoCommonNlsUtil.h \
   Inc/FdoCommonOSUtil.h \

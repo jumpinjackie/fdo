@@ -194,6 +194,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Src\FdoCommonGeometryUtil.cpp"
+				>
+			</File>
+			<File
 				RelativePath="Src\FdoCommonMiscUtil.cpp"
 				>
 			</File>
@@ -356,6 +360,10 @@
 			</File>
 			<File
 				RelativePath="Inc\FdoCommonFilterExecutor.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Inc\FdoCommonGeometryUtil.h"
 				>
 			</File>
 			<File
