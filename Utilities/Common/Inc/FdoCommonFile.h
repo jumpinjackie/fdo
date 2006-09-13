@@ -584,6 +584,19 @@ public:
     /// otherwise.
     /// 
 	static bool IsAbsolutePath(const wchar_t *pFilename);
+
+    /// \brief
+    /// Changes the read-write access mode of a file.
+    /// On Windows this sets/clears the read-only flag.
+    /// On Linux this only sets/clears the file's owner write flag.
+    /// 
+    /// \param filePath 
+    /// The path and filename of the file to modify.
+    /// 
+    /// \param bReadWrite 
+    /// Set this to true for read-write access, false for read-only access.
+    /// 
+    static void Chmod(FdoString* filePath, bool bReadWrite);
 };
 
 #endif // FDO_COMMON_FILE_H

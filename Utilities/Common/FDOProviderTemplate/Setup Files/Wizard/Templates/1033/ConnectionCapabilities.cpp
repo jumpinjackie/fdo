@@ -146,3 +146,19 @@ bool [!output PREFIX]ConnectionCapabilities::SupportsCSysWKTFromCSysName()
 {
     return (false);
 }
+
+
+bool [!output PREFIX]ConnectionCapabilities::SupportsWrite()
+{
+[!if READ_WRITE]
+    return true;
+[!else]
+    return false;
+[!endif]
+}
+
+bool [!output PREFIX]ConnectionCapabilities::SupportsMultiUserWrite()
+{
+#pragma message ("ToDo: Supports multi-user write")
+    return false;
+}

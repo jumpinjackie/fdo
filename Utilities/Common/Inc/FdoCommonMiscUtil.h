@@ -127,6 +127,26 @@ public:
     ///  Throw a detailed exception stating that the given data value violates the given property's constraint. 
     /// 
     static void ThrowPropertyConstraintException(FdoDataPropertyDefinition* dataProperty, FdoDataValue* dataValue);
+
+    /// \brief
+    ///  Returns true if-and-only-if the given geomTypes array contains the given geomType value. 
+    /// 
+    static bool ContainsGeomType(FdoGeometryType* geomTypes, FdoInt32 geomTypeCount, FdoGeometryType geomType);
+
+    /// \brief
+    ///  Creates a new FdoFunctionDefinition based on the given input.
+    /// \note
+    ///  The first four arguments represent the function's name, description, aggregate flag, and number
+    ///  of signatures which must be at least 1.
+    ///  The remainder of the arguments consist of a variable list of arguments describing each signature.
+    ///  For each signature, the following arguments must be given in this order:
+    ///     FdoPropertyType  <-- the property type of the return value of this signature
+    ///     FdoDataType      <-- the data type of the return value of this signature (ignored if not a data property)
+    ///     int              <-- the number of input arguments of this signature
+    ///     [FdoPropertyType, FdoDataType, ...]  <-- a pair of property type and data type for each input argument
+    /// 
+    static FdoFunctionDefinition* CreateFunctionDefinition(
+        FdoString* functionName, FdoString* functionDesc, bool isAggregate, int numSignatures, ...);
 };
 
 

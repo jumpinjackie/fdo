@@ -187,7 +187,7 @@ protected:
     static void DeepCopyFdoPropertyType(FdoDataPropertyDefinitionCollection *properties, FdoPropertyDefinitionCollection *newProperties, FdoCommonSchemaCopyContext * schemaContext);
 
     /// Copy references to FDO named Data property identified by name in sourceProperties and contained in newProperties into the destionation collection.
-    static void CopyFdoNamedDataProperties(FdoDataPropertyDefinitionCollection *sourceProperties, FdoPropertyDefinitionCollection *newProperties, FdoDataPropertyDefinitionCollection *destProperties, FdoCommonSchemaCopyContext * schemaContext = NULL);
+    static void CopyFdoNamedDataProperties(FdoDataPropertyDefinitionCollection *sourceProperties, FdoPropertyDefinitionCollection *newProperties, FdoReadOnlyPropertyDefinitionCollection *newBaseProperties, FdoDataPropertyDefinitionCollection *destProperties, FdoCommonSchemaCopyContext * schemaContext = NULL);
 
 };
 

@@ -32,7 +32,7 @@ bool FdoCommonThreadUtil::CreateThread(FDOCOMMON_THREAD_HANDLE *handle, void* ro
     unsigned int threadId;
     unsigned int (__stdcall* routine2)(void*) = (unsigned int (__stdcall*)(void*)) routine;
     *handle = (FDOCOMMON_THREAD_HANDLE)_beginthreadex (NULL, 0, routine2, arg, 0, &threadId);
-    return (0 != *handle); //PDPD
+    return (0 != *handle);
 #else
     void* (*routine2)(void*) = (void* (*)(void*)) routine;
     int ret = pthread_create(handle, NULL, routine2, arg);

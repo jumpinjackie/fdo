@@ -81,6 +81,24 @@ public:
     /// <returns>Returns true if the provider supports specifying the coordinate system by name or ID without specifying the WKT
     /// when creating a new spatial context.</returns> 
     bool SupportsCSysWKTFromCSysName();
+
+    /// \brief
+    ///	Determines if write is supported by the provider or by the datastore depending on whether this request is at
+    /// the provider or datastore level.
+    ///
+    /// \return
+    ///	Returns true if write is supported by the provider or by the datastore depending on whether this request is at
+    /// the provider or datastore level.
+    virtual bool SupportsWrite();
+
+    /// \brief
+    /// Determines if the provider or datastore can support more than one user writing to a single datastore at
+    /// one time.
+    ///
+    /// \return
+    /// Returns true if the provider or datastore can support more than one user writing to a single datastore at
+    /// one time.
+    virtual bool SupportsMultiUserWrite();
 };
 
 #endif // [!output UPPER_PREFIX]CONNECTIONCAPABILITIES_H

@@ -206,3 +206,72 @@ bool [!output PREFIX]SchemaCapabilities::SupportsCompositeId()
 {
     return false;
 }
+
+
+FdoInt32 [!output PREFIX]SchemaCapabilities::GetNameSizeLimit (FdoSchemaElementNameType nameType)
+{
+#pragma message ("ToDo: name size limits")
+    switch (nameType)
+    {
+        case FdoSchemaElementNameType_Datastore:   return -1;  // -1 means unlimited
+        case FdoSchemaElementNameType_Schema:      return -1;  // -1 means unlimited
+        case FdoSchemaElementNameType_Class:       return -1;  // -1 means unlimited
+        case FdoSchemaElementNameType_Property:    return -1;  // -1 means unlimited
+        case FdoSchemaElementNameType_Description: return -1;  // -1 means unlimited
+    }
+    return -1;
+}
+
+FdoString* [!output PREFIX]SchemaCapabilities::GetReservedCharactersForName()
+{
+#pragma message ("ToDo: reserved characters for names")
+    return L".:";
+}
+
+FdoInt64 [!output PREFIX]SchemaCapabilities::GetMaximumDataValueLength (FdoDataType dataType)
+{
+#pragma message ("ToDo: maximum data value lenghts")
+    switch (dataType)
+    {
+        case FdoDataType_String:   return (FdoInt64)-1;  // -1 means unlimited
+        case FdoDataType_BLOB:     return (FdoInt64)-1;  // -1 means unlimited
+        case FdoDataType_CLOB:     return (FdoInt64)-1;  // -1 means unlimited
+        case FdoDataType_Decimal:  return (FdoInt64)(GetMaximumDecimalScale() + GetMaximumDecimalPrecision());
+        case FdoDataType_Boolean:  return (FdoInt64)sizeof(FdoBoolean);
+        case FdoDataType_Byte:     return (FdoInt64)sizeof(FdoByte);
+        case FdoDataType_DateTime: return (FdoInt64)sizeof(FdoDateTime);
+        case FdoDataType_Double:   return (FdoInt64)sizeof(FdoDouble);
+        case FdoDataType_Int16:    return (FdoInt64)sizeof(FdoInt16);
+        case FdoDataType_Int32:    return (FdoInt64)sizeof(FdoInt32);
+        case FdoDataType_Int64:    return (FdoInt64)sizeof(FdoInt64);
+        case FdoDataType_Single:   return (FdoInt64)sizeof(FdoFloat);
+    }
+    return (FdoInt64)-1;  // -1 means unlimited
+}
+
+FdoInt32 [!output PREFIX]SchemaCapabilities::GetMaximumDecimalPrecision()
+{
+#pragma message ("ToDo: maximum decimal precision")
+    return -1;  // -1 means unlimited
+}
+
+FdoInt32 [!output PREFIX]SchemaCapabilities::GetMaximumDecimalScale()
+{
+#pragma message ("ToDo: maximum decimal scale")
+    return -1;  // -1 means unlimited
+}
+
+FdoDataType* [!output PREFIX]SchemaCapabilities::GetSupportedIdentityPropertyTypes(FdoInt32& length)
+{
+#pragma message ("ToDo: supported identity property types")
+    length = 1;
+    FdoDataType supportedIdentityTypes[1];
+    supportedIdentityTypes[0] = FdoDataType_Int32;
+    return supportedIdentityTypes;
+}
+
+bool [!output PREFIX]SchemaCapabilities::SupportsDefaultValue()
+{
+#pragma message ("ToDo: supports default values")
+    return false;
+}

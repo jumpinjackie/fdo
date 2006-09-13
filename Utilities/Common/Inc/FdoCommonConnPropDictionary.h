@@ -598,7 +598,7 @@ void FdoCommonPropDictionary<T>::SetProperty (FdoString* name, FdoString* value)
         throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_64_CONNECTION_REQUIRED_PROPERTY_NULL)));
 
     if (!CheckEnumerable (value, property))
-        throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_65_CONNECTION_ENUM_PROPERTY_WRONG_VALUE)));
+        throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_65_CONNECTION_ENUM_PROPERTY_WRONG_VALUE), value, name));
 
     // update the property
     property->SetValue (value);

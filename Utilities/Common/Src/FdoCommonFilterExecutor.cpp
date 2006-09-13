@@ -3669,10 +3669,19 @@ void FdoCommonFilterExecutor::GetExpressionType(FdoIConnection* conn, FdoClassDe
                 e->Release();
             }
             FdoDataPropertyDefinition* baseDataPropDef = dynamic_cast<FdoDataPropertyDefinition*>(basePropDef.p);
-            if (dataPropDef != NULL)
-                retDataType = dataPropDef->GetDataType();
-            else if (baseDataPropDef != NULL)
-                retDataType = baseDataPropDef->GetDataType();
+
+            if (propDef != NULL)
+            {
+                retPropType = propDef->GetPropertyType();
+                if (dataPropDef != NULL)
+                    retDataType = dataPropDef->GetDataType();
+            }
+            else if (basePropDef != NULL)
+            {
+                retPropType = basePropDef->GetPropertyType();
+                if (baseDataPropDef != NULL)
+                    retDataType = baseDataPropDef->GetDataType();
+            }
             else
                 throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_74_PROPERTY_NAME_NOT_FOUND), noncomputedId->GetName()));
         }
@@ -3736,11 +3745,53 @@ void FdoCommonFilterExecutor::GetExpressionType(FdoIConnection* conn, FdoClassDe
     FdoFunction* function = dynamic_cast<FdoFunction*>(expr);
     if (NULL != function)
     {
+        // Discover each argument 's property type and data type:
+        FdoPtr<FdoExpressionCollection> args = function->GetArguments();
+        FdoInt32 numArgs = args->GetCount();
+        FdoPropertyType* argPropType = (FdoPropertyType*)_alloca(sizeof(FdoPropertyType) * numArgs);
+        FdoDataType*     argDataType = (FdoDataType*)    _alloca(sizeof(FdoDataType)     * numArgs);
+        for (int i=0; i<numArgs; i++)
+        {
+            FdoPtr<FdoExpression> arg = args->GetItem(i);
+            GetExpressionType(conn, originalClassDef, arg, argPropType[i], argDataType[i]);
+        }
+
+        // Match them up to the correct function signature:
         FdoPtr<FdoIExpressionCapabilities> exprCapabilities = conn->GetExpressionCapabilities();
         FdoPtr<FdoFunctionDefinitionCollection> functionDefinitions = exprCapabilities->GetFunctions();
-        FdoPtr<FdoFunctionDefinition> func = functionDefinitions->GetItem(function->GetName());
-        retPropType = func->GetReturnPropertyType();
-        retDataType = func->GetReturnType();
+        FdoPtr<FdoFunctionDefinition> funcDef = functionDefinitions->GetItem(function->GetName());
+        FdoPtr<FdoReadOnlySignatureDefinitionCollection> sigDefs = funcDef->GetSignatures();
+        bool bFound = false;
+        for (int s=0; s<sigDefs->GetCount() && !bFound; s++)
+        {
+            FdoPtr<FdoSignatureDefinition> sigDef = sigDefs->GetItem(s);
+            FdoPtr<FdoReadOnlyArgumentDefinitionCollection> sigArgs = sigDef->GetArguments();
+            if (sigArgs->GetCount() != numArgs)
+                continue;
+
+            bFound = true;
+            for (int a=0; a<numArgs && bFound; a++)
+            {
+                FdoPtr<FdoArgumentDefinition> sigArg = sigArgs->GetItem(a);
+
+                bFound = (argPropType[a] == sigArg->GetPropertyType());
+                if (bFound && (argPropType[a] == FdoPropertyType_DataProperty))
+                    bFound = (argDataType[a] == sigArg->GetDataType());
+            }
+
+            if (bFound)
+            {
+                retPropType = sigDef->GetReturnPropertyType();
+                retDataType = sigDef->GetReturnType();
+            }
+        }
+
+        // If no matching signature was found, revert to 'default' return property/data type:
+        if (!bFound)  
+        {
+            retPropType = funcDef->GetReturnPropertyType();
+            retDataType = funcDef->GetReturnType();
+        }
     }
 }
 

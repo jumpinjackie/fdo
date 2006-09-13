@@ -472,7 +472,7 @@ void FdoCommonSchemaUtil::DeepCopyFdoClassDefinitionDetails(FdoClassDefinition *
     FdoCommonSchemaUtil::DeepCopyFdoPropertyType(properties, newProperties, FdoPropertyType_DataProperty, localSchemaContext);
 
     // Copy the source identifier properties to the copy identifier property collection
-    FdoCommonSchemaUtil::CopyFdoNamedDataProperties(identityProperties, newProperties, newIdentityProperties,localSchemaContext);
+    FdoCommonSchemaUtil::CopyFdoNamedDataProperties(identityProperties, newProperties, NULL, newIdentityProperties,localSchemaContext);
 
     // Copy the rest of the class properties. NOTE: Object an Association properties depend on data properties so we have to copy
     // these after the data and identity properties have been copied.
@@ -559,6 +559,7 @@ void FdoCommonSchemaUtil::DeepCopyFdoClassCapabilitiesAndConstraints(FdoClassDef
             newCapabilities->SetSupportsLocking(false);
             newCapabilities->SetLockTypes(NULL, 0);
             newCapabilities->SetSupportsLongTransactions(false);
+            newCapabilities->SetSupportsWrite(false);
         }
         else {
             newCapabilities->SetSupportsLocking(sourceCapabilities->SupportsLocking());
@@ -566,6 +567,7 @@ void FdoCommonSchemaUtil::DeepCopyFdoClassCapabilitiesAndConstraints(FdoClassDef
             FdoLockType *lockTypes = sourceCapabilities->GetLockTypes(lockTypeCount);
             newCapabilities->SetLockTypes(lockTypes, lockTypeCount);
             newCapabilities->SetSupportsLongTransactions(sourceCapabilities->SupportsLongTransactions());
+            newCapabilities->SetSupportsWrite(sourceCapabilities->SupportsWrite());
         }
 
         copyClass->SetCapabilities(newCapabilities);
@@ -656,7 +658,7 @@ void FdoCommonSchemaUtil::DeepCopyFdoPropertyType(FdoDataPropertyDefinitionColle
     }
 }
 
-void FdoCommonSchemaUtil::CopyFdoNamedDataProperties(FdoDataPropertyDefinitionCollection *sourceProperties, FdoPropertyDefinitionCollection *newProperties, FdoDataPropertyDefinitionCollection *destProperties, FdoCommonSchemaCopyContext * schemaContext)
+void FdoCommonSchemaUtil::CopyFdoNamedDataProperties(FdoDataPropertyDefinitionCollection *sourceProperties, FdoPropertyDefinitionCollection *newProperties, FdoReadOnlyPropertyDefinitionCollection *newBaseProperties, FdoDataPropertyDefinitionCollection *destProperties, FdoCommonSchemaCopyContext * schemaContext)
 {
     if (sourceProperties == NULL || newProperties == NULL || destProperties == NULL) {
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
@@ -670,8 +672,24 @@ void FdoCommonSchemaUtil::CopyFdoNamedDataProperties(FdoDataPropertyDefinitionCo
 
         if (FdoCommonSchemaUtil::ClassPropertyShouldBeCopied(sourceProperty, schemaContext)) {
             FdoBoolean bPropertyFound = false;
+
             for (FdoInt32 x=0; x<newProperties->GetCount(); x++) {
                 FdoPtr<FdoPropertyDefinition> newProperty = newProperties->GetItem(x);
+                if (newProperty == NULL) {
+                    throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_4_UNREADY)));
+                }
+
+                if (newProperty->GetPropertyType() == FdoPropertyType_DataProperty) {
+                    if (FdoStringP(newProperty->GetName()) == FdoStringP(sourceProperty->GetName())) {
+                        destProperties->Add(static_cast<FdoDataPropertyDefinition*>(newProperty.p));
+                        bPropertyFound = true;
+                        break;
+                    }
+                }
+            }
+
+            for (FdoInt32 x=0; newBaseProperties!=NULL && x<newBaseProperties->GetCount() && !bPropertyFound; x++) {
+                FdoPtr<FdoPropertyDefinition> newProperty = newBaseProperties->GetItem(x);
                 if (newProperty == NULL) {
                     throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_4_UNREADY)));
                 }
@@ -838,7 +856,9 @@ FdoGeometricPropertyDefinition * FdoCommonSchemaUtil::DeepCopyFdoGeometricProper
 
     FdoCommonSchemaUtil::DeepCopyFdoSchemaElementDetails(newProperty, property);
 
-    newProperty->SetGeometryTypes(property->GetGeometryTypes());
+    FdoInt32 geomTypesLength;
+    FdoGeometryType *geomTypes = property->GetSpecificGeometryTypes(geomTypesLength);
+    newProperty->SetSpecificGeometryTypes(geomTypes, geomTypesLength);
     newProperty->SetReadOnly(property->GetReadOnly());
     newProperty->SetHasElevation(property->GetHasElevation());
     newProperty->SetHasMeasure(property->GetHasMeasure());
@@ -1019,7 +1039,12 @@ FdoAssociationPropertyDefinition * FdoCommonSchemaUtil::DeepCopyFdoAssociationPr
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_4_UNREADY)));
     }
 
-    FdoCommonSchemaUtil::CopyFdoNamedDataProperties(identityProps, parentClassProperties, newIdentityProps);
+    FdoPtr<FdoReadOnlyPropertyDefinitionCollection> parentClassBaseProperties = copyAssociationClass->GetBaseProperties();
+    if (parentClassBaseProperties == NULL) {
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_4_UNREADY)));
+    }
+
+    FdoCommonSchemaUtil::CopyFdoNamedDataProperties(identityProps, parentClassProperties, parentClassBaseProperties, newIdentityProps);
 
     FdoDataPropertiesP reverseIdentityProps = property->GetReverseIdentityProperties();
     FdoDataPropertiesP newReverseIdentityProps = newProperty->GetReverseIdentityProperties();
@@ -1027,16 +1052,22 @@ FdoAssociationPropertyDefinition * FdoCommonSchemaUtil::DeepCopyFdoAssociationPr
 	FdoClassDefinitionP copyParentClass = localSchemaContext->FindSchemaElement(parentClass.p);
 	if( copyParentClass == NULL )
 		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_4_UNREADY)));
+
     FdoPtr<FdoPropertyDefinitionCollection> associationClassProperties = copyParentClass->GetProperties();
     if (associationClassProperties == NULL) {
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_4_UNREADY)));
     }
 
-    FdoCommonSchemaUtil::CopyFdoNamedDataProperties(reverseIdentityProps, associationClassProperties, newReverseIdentityProps);
+    FdoPtr<FdoReadOnlyPropertyDefinitionCollection> associationClassBaseProperties = copyParentClass->GetBaseProperties();
+    if (associationClassBaseProperties == NULL) {
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_4_UNREADY)));
+    }
+
+    FdoCommonSchemaUtil::CopyFdoNamedDataProperties(reverseIdentityProps, associationClassProperties, associationClassBaseProperties, newReverseIdentityProps);
 
 	
 	//If this association property is already added by following the associated classes, then we need to undo that addition and 
-	//wait untill it's added by calling method. This situation happens when we have 2 classes that have associations to each other.
+	//wait until it's added by calling method. This situation happens when we have 2 classes that have associations to each other.
 	FdoPtr<FdoPropertyDefinition> prop = associationClassProperties->FindItem( newProperty->GetName() );
 	if( prop != NULL )
 		associationClassProperties->Remove( prop );

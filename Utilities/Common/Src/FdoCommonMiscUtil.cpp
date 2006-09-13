@@ -22,6 +22,7 @@
 #include "FdoCommonSchemaUtil.h"
 #include "FdoCommonOSUtil.h"
 #include "FdoCommonFilterExecutor.h"
+#include "FdoCommonStringUtil.h"
 
 
 FdoString* FdoCommonMiscUtil::FdoDataTypeToString (FdoDataType logicalPropertyType)
@@ -725,3 +726,143 @@ void FdoCommonMiscUtil::ThrowPropertyConstraintException(FdoDataPropertyDefiniti
         break;
     }
 }
+
+
+bool FdoCommonMiscUtil::ContainsGeomType(FdoGeometryType* geomTypes, FdoInt32 geomTypeCount, FdoGeometryType geomType)
+{
+    bool bFound = false;
+    for (int i=0; i<geomTypeCount && !bFound; i++)
+        bFound = (geomTypes[i] == geomType);
+    return bFound;
+}
+
+
+FdoFunctionDefinition* FdoCommonMiscUtil::CreateFunctionDefinition(
+    FdoString* functionName, FdoString* functionDesc, bool isAggregate, int numSignatures, ...)
+{
+    va_list  varargs;
+    va_start(varargs, numSignatures);
+
+    FdoPtr<FdoSignatureDefinitionCollection> signatures = FdoSignatureDefinitionCollection::Create();
+
+    for (int s=0; s<numSignatures; s++)
+    {
+        FdoPtr<FdoArgumentDefinitionCollection> args = FdoArgumentDefinitionCollection::Create();
+
+        FdoPropertyType returnPropertyType = va_arg(varargs, FdoPropertyType);
+        FdoDataType returnDataType = va_arg(varargs, FdoDataType);
+        int numInputArgs = va_arg(varargs, int);
+
+        for (int i=0; i<numInputArgs; i++)
+        {
+            FdoPropertyType argPropertyType = va_arg(varargs, FdoPropertyType);
+            FdoDataType argDataType = va_arg(varargs, FdoDataType);
+            FdoString *argName;
+            FdoString *argDesc;
+
+            if (argPropertyType == FdoPropertyType_GeometricProperty)
+            {
+                argName = L"geomValue";
+                argDesc = FdoException::NLSGetMessage(FUNCTION_GEOM_ARG, "Argument that represents a geometry");
+            }
+            else if (argPropertyType == FdoPropertyType_AssociationProperty)
+            {
+                argName = L"associationValue";
+                argDesc = FdoException::NLSGetMessage(FUNCTION_ASSOCIATION_ARG, "Argument that represents an association");
+            }
+            else if (argPropertyType == FdoPropertyType_ObjectProperty)
+            {
+                argName = L"objectValue";
+                argDesc = FdoException::NLSGetMessage(FUNCTION_OBJECT_ARG, "Argument that represents an object");
+            }
+            else if (argPropertyType == FdoPropertyType_RasterProperty)
+            {
+                argName = L"rasterValue";
+                argDesc = FdoException::NLSGetMessage(FUNCTION_RASTER_ARG, "Argument that represents a raster");
+            }
+            else if (argPropertyType == FdoPropertyType_DataProperty)
+            {
+                switch (argDataType)
+                {
+                case FdoDataType_Boolean:
+                    argName = L"boolValue";
+                    argDesc = FdoException::NLSGetMessage(FUNCTION_BOOL_ARG, "Argument that represents a boolean");
+                break;
+
+                case FdoDataType_Byte:
+                    argName = L"byteValue";
+                    argDesc = FdoException::NLSGetMessage(FUNCTION_BYTE_ARG, "Argument that represents a byte");
+                break;
+
+                case FdoDataType_DateTime:
+                    argName = L"datetimeValue";
+                    argDesc = FdoException::NLSGetMessage(FUNCTION_DT_ARG, "Argument that represents a date/time");
+                break;
+
+                case FdoDataType_Decimal:
+                    argName = L"decimalValue";
+                    argDesc = FdoException::NLSGetMessage(FUNCTION_DEC_ARG, "Argument that represents a decimal value");
+                break;
+
+                case FdoDataType_Double:
+                    argName = L"doubleValue";
+                    argDesc = FdoException::NLSGetMessage(FUNCTION_DBL_ARG, "Argument that represents a double");
+                break;
+
+                case FdoDataType_Int16:
+                    argName = L"int16Value";
+                    argDesc = FdoException::NLSGetMessage(FUNCTION_INT16_ARG, "Argument that represents a 16-bit integer");
+                break;
+
+                case FdoDataType_Int32:
+                    argName = L"int32Value";
+                    argDesc = FdoException::NLSGetMessage(FUNCTION_INT32_ARG, "Argument that represents a 32-bit integer");
+                break;
+
+                case FdoDataType_Int64:
+                    argName = L"int64Value";
+                    argDesc = FdoException::NLSGetMessage(FUNCTION_INT64_ARG, "Argument that represents a 64-bit integer");
+                break;
+
+                case FdoDataType_Single:
+                    argName = L"singleValue";
+                    argDesc = FdoException::NLSGetMessage(FUNCTION_SINGLE_ARG, "Argument that represents a single");
+                break;
+
+                case FdoDataType_String:
+                    argName = L"stringValue";
+                    argDesc = FdoException::NLSGetMessage(FUNCTION_STR_ARG, "Argument that represents a string");
+                break;
+
+                case FdoDataType_BLOB:
+                    argName = L"blobValue";
+                    argDesc = FdoException::NLSGetMessage(FUNCTION_BLOB_ARG, "Argument that represents a blob");
+                break;
+
+                case FdoDataType_CLOB:
+                    argName = L"clobValue";
+                    argDesc = FdoException::NLSGetMessage(FUNCTION_CLOB_ARG, "Argument that represents a clob");
+                break;
+
+                default:
+                    throw FdoException::Create(FdoException::NLSGetMessage(FDO_130_DATA_TYPE_NOT_SUPPORTED_BY_OPERATION, "The data type '%1$ls' is not supported by this operation.", FdoCommonMiscUtil::FdoDataTypeToString(argDataType)));
+                }
+            }
+            else
+                throw FdoException::Create(FdoException::NLSGetMessage(FDO_129_PROPERTY_TYPE_NOT_SUPPORTED_BY_OPERATION, "The property type '%1$ls' is not supported by this operation.", FdoCommonMiscUtil::FdoPropertyTypeToString(argPropertyType)));
+
+            FdoPtr<FdoArgumentDefinition> arg = FdoArgumentDefinition::Create(argName, argDesc, argPropertyType, argDataType);
+            args->Add(arg);
+        }
+
+        FdoPtr<FdoSignatureDefinition> signatureDef = FdoSignatureDefinition::Create(returnPropertyType, returnDataType, args);
+        signatures->Add(signatureDef);
+    }
+
+    va_end(varargs);
+
+    return FdoFunctionDefinition::Create(functionName, functionDesc, isAggregate, signatures);
+}
+
+
+

@@ -1128,3 +1128,73 @@ bool FdoCommonFile::IsAbsolutePath(const wchar_t *pFilename)
 	return (pFilename[0] == FILE_PATH_DELIMITER);
 #endif
 }
+
+void FdoCommonFile::Chmod(FdoString* filePath, bool bReadWrite)
+{
+#ifdef _WIN32
+    if (-1 == _wchmod(filePath, bReadWrite ? _S_IREAD|_S_IWRITE : _S_IREAD))
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_94_ACCESS_DENIED, "Access to file '%1$ls' was denied.", filePath));
+#else
+    char *utf8FilePath = NULL;
+    conv_wide_to_utf8(utf8FilePath , filePath);
+
+    // Get current file access mode:
+    struct stat fileStat;
+    if (-1 == stat(utf8FilePath, &fileStat))
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_94_ACCESS_DENIED, "Access to file '%1$ls' was denied.", filePath));
+
+    // Set file access mode:
+    mode_t mode = (fileStat.st_mode & 0x0000FDFF);  // strip out irrelevant bits and owner write bit
+    if (bReadWrite) mode = mode | S_IWUSR;  // set owner write bit if requested
+    if (-1 == chmod(utf8FilePath, mode)
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_94_ACCESS_DENIED, "Access to file '%1$ls' was denied.", filePath));
+
+/*  stat() docs:
+
+       S_IFMT     0170000   bitmask for the file type bitfields
+       S_IFSOCK   0140000   socket
+       S_IFLNK    0120000   symbolic link
+       S_IFREG    0100000   regular file
+       S_IFBLK    0060000   block device
+       S_IFDIR    0040000   directory
+       S_IFCHR    0020000   character device
+       S_IFIFO    0010000   fifo
+       S_ISUID    0004000   set UID bit
+       S_ISGID    0002000   set GID bit (see below)
+       S_ISVTX    0001000   sticky bit (see below)
+       S_IRWXU    00700     mask for file owner permissions
+       S_IRUSR    00400     owner has read permission
+       S_IWUSR    00200     owner has write permission
+       S_IXUSR    00100     owner has execute permission
+       S_IRWXG    00070     mask for group permissions
+       S_IRGRP    00040     group has read permission
+       S_IWGRP    00020     group has write permission
+       S_IXGRP    00010     group has execute permission
+       S_IRWXO    00007     mask for permissions for others (not in group)
+       S_IROTH    00004     others have read permission
+       S_IWOTH    00002     others have write permisson
+       S_IXOTH    00001     others have execute permission
+*/
+
+/* chmod() docs:
+       Modes are specified by orâing the following:
+
+          S_ISUID   04000 set user ID on execution
+          S_ISGID   02000 set group ID on execution
+          S_ISVTX   01000 sticky bit
+          S_IRUSR (S_IREAD)
+                    00400 read by owner
+          S_IWUSR (S_IWRITE)
+                    00200 write by owner
+          S_IXUSR (S_IEXEC)
+                    00100 execute/search by owner
+          S_IRGRP   00040 read by group
+          S_IWGRP   00020 write by group
+          S_IXGRP   00010 execute/search by group
+          S_IROTH   00004 read by others
+          S_IWOTH   00002 write by others
+          S_IXOTH   00001 execute/search by others
+*/
+
+#endif
+}
