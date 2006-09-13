@@ -659,6 +659,7 @@ void FdoWmsConnection::_addFeatureClass (FdoClassCollection* featClasses, FdoWms
         FdoClassCapabilitiesP classCapabilities = FdoClassCapabilities::Create(*featClass.p);
         classCapabilities->SetSupportsLocking(false);
         classCapabilities->SetSupportsLongTransactions(false);
+        classCapabilities->SetSupportsWrite(false);
         featClass->SetCapabilities(classCapabilities);
 
 		//
