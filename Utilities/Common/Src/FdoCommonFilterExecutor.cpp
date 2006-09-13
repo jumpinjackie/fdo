@@ -3748,8 +3748,8 @@ void FdoCommonFilterExecutor::GetExpressionType(FdoIConnection* conn, FdoClassDe
         // Discover each argument 's property type and data type:
         FdoPtr<FdoExpressionCollection> args = function->GetArguments();
         FdoInt32 numArgs = args->GetCount();
-        FdoPropertyType* argPropType = (FdoPropertyType*)_alloca(sizeof(FdoPropertyType) * numArgs);
-        FdoDataType*     argDataType = (FdoDataType*)    _alloca(sizeof(FdoDataType)     * numArgs);
+        FdoPropertyType* argPropType = (FdoPropertyType*)alloca(sizeof(FdoPropertyType) * numArgs);
+        FdoDataType*     argDataType = (FdoDataType*)    alloca(sizeof(FdoDataType)     * numArgs);
         for (int i=0; i<numArgs; i++)
         {
             FdoPtr<FdoExpression> arg = args->GetItem(i);

@@ -1146,7 +1146,7 @@ void FdoCommonFile::Chmod(FdoString* filePath, bool bReadWrite)
     // Set file access mode:
     mode_t mode = (fileStat.st_mode & 0x0000FDFF);  // strip out irrelevant bits and owner write bit
     if (bReadWrite) mode = mode | S_IWUSR;  // set owner write bit if requested
-    if (-1 == chmod(utf8FilePath, mode)
+    if (-1 == chmod(utf8FilePath, mode))
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_94_ACCESS_DENIED, "Access to file '%1$ls' was denied.", filePath));
 
 /*  stat() docs:
