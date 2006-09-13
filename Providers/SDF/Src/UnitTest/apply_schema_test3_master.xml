@@ -3,6 +3,7 @@
    <xs:schema targetNamespace="http://fdo.osgeo.org/schemas/feature/Acad" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:Acad="http://fdo.osgeo.org/schemas/feature/Acad">
       <xs:annotation>
          <xs:documentation>New AutoCad schema description</xs:documentation>
+         <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
       </xs:annotation>
       <xs:element name="AcDbEntity" type="Acad:AcDbEntityType" abstract="false" substitutionGroup="gml:_Feature">
          <xs:key name="AcDbEntityKey">
@@ -13,6 +14,7 @@
       <xs:complexType name="AcDbEntityType" abstract="false" fdo:hasGeometry="false">
          <xs:annotation>
             <xs:documentation>AutoCAD entity base class</xs:documentation>
+            <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
          </xs:annotation>
          <xs:complexContent>
             <xs:extension base="gml:AbstractFeatureType">
@@ -23,11 +25,13 @@
                      </xs:simpleType>
                      <xs:annotation>
                         <xs:documentation>id</xs:documentation>
+                        <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
                      </xs:annotation>
                   </xs:element>
                   <xs:element name="Layer" minOccurs="0">
                      <xs:annotation>
                         <xs:documentation>Acad layer</xs:documentation>
+                        <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
                      </xs:annotation>
                      <xs:simpleType>
                         <xs:restriction base="xs:string">
@@ -41,6 +45,7 @@
                      </xs:simpleType>
                      <xs:annotation>
                         <xs:documentation>Acad Colour</xs:documentation>
+                        <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
                      </xs:annotation>
                   </xs:element>
                </xs:sequence>
@@ -56,6 +61,7 @@
       <xs:complexType name="AcDb3dPolylineType" abstract="false" fdo:hasGeometry="false">
          <xs:annotation>
             <xs:documentation>AutoCAD 3d polyline</xs:documentation>
+            <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
          </xs:annotation>
          <xs:complexContent>
             <xs:extension base="Acad:AcDbEntityType">
@@ -66,6 +72,7 @@
                      </xs:simpleType>
                      <xs:annotation>
                         <xs:documentation>line width</xs:documentation>
+                        <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
                      </xs:annotation>
                   </xs:element>
                   <xs:element name="Closed" minOccurs="0">
@@ -74,6 +81,7 @@
                      </xs:simpleType>
                      <xs:annotation>
                         <xs:documentation>is first and last points the same</xs:documentation>
+                        <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
                      </xs:annotation>
                   </xs:element>
                </xs:sequence>
@@ -89,6 +97,7 @@
       <xs:complexType name="ElectricDeviceType" abstract="true" fdo:geometryName="Geometry">
          <xs:annotation>
             <xs:documentation>electic base class</xs:documentation>
+            <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
          </xs:annotation>
          <xs:complexContent>
             <xs:extension base="gml:AbstractFeatureType">
@@ -99,11 +108,13 @@
                      </xs:simpleType>
                      <xs:annotation>
                         <xs:documentation>id</xs:documentation>
+                        <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
                      </xs:annotation>
                   </xs:element>
-                  <xs:element name="Geometry" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:srsName="World Geodetic Coordinate System, 1984" fdo:geometricTypes="point curve ">
+                  <xs:element name="Geometry" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:srsName="World Geodetic Coordinate System, 1984" fdo:geometricTypes="point curve " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring ">
                      <xs:annotation>
                         <xs:documentation>location and shape</xs:documentation>
+                        <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
                      </xs:annotation>
                   </xs:element>
                </xs:sequence>
@@ -119,6 +130,7 @@
       <xs:complexType name="TransformerType" abstract="false" fdo:hasGeometry="false">
          <xs:annotation>
             <xs:documentation/>
+            <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
          </xs:annotation>
          <xs:complexContent>
             <xs:extension base="Acad:ElectricDeviceType">
@@ -126,6 +138,7 @@
                   <xs:element name="Voltage">
                      <xs:annotation>
                         <xs:documentation>voltage</xs:documentation>
+                        <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
                      </xs:annotation>
                      <xs:simpleType>
                         <xs:restriction base="xs:decimal">
@@ -137,6 +150,7 @@
                   <xs:element name="Phase">
                      <xs:annotation>
                         <xs:documentation>A, B or C</xs:documentation>
+                        <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
                      </xs:annotation>
                      <xs:simpleType>
                         <xs:restriction base="xs:string">
@@ -150,6 +164,7 @@
                      </xs:simpleType>
                      <xs:annotation>
                         <xs:documentation/>
+                        <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
                      </xs:annotation>
                   </xs:element>
                   <xs:element name="LastInspectDate" minOccurs="0">
@@ -158,6 +173,7 @@
                      </xs:simpleType>
                      <xs:annotation>
                         <xs:documentation/>
+                        <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
                      </xs:annotation>
                   </xs:element>
                   <xs:element name="LastRepairDate" minOccurs="0">
@@ -166,6 +182,7 @@
                      </xs:simpleType>
                      <xs:annotation>
                         <xs:documentation/>
+                        <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
                      </xs:annotation>
                   </xs:element>
                   <xs:element name="PartNum" minOccurs="0">
@@ -174,6 +191,7 @@
                      </xs:simpleType>
                      <xs:annotation>
                         <xs:documentation/>
+                        <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
                      </xs:annotation>
                   </xs:element>
                   <xs:element name="Volume">
@@ -182,6 +200,7 @@
                      </xs:simpleType>
                      <xs:annotation>
                         <xs:documentation/>
+                        <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
                      </xs:annotation>
                   </xs:element>
                   <xs:element name="SerialNum">
@@ -190,6 +209,7 @@
                      </xs:simpleType>
                      <xs:annotation>
                         <xs:documentation/>
+                        <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
                      </xs:annotation>
                   </xs:element>
                </xs:sequence>
@@ -205,6 +225,7 @@
       <xs:complexType name="ConductorType" abstract="false" fdo:hasGeometry="false">
          <xs:annotation>
             <xs:documentation>New conductor description</xs:documentation>
+            <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
          </xs:annotation>
          <xs:complexContent>
             <xs:extension base="Acad:ElectricDeviceType">
@@ -215,6 +236,7 @@
                      </xs:simpleType>
                      <xs:annotation>
                         <xs:documentation>underground modified description</xs:documentation>
+                        <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
                      </xs:annotation>
                   </xs:element>
                   <xs:element name="Conductivity" minOccurs="0">
@@ -223,6 +245,7 @@
                      </xs:simpleType>
                      <xs:annotation>
                         <xs:documentation/>
+                        <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
                      </xs:annotation>
                   </xs:element>
                </xs:sequence>
@@ -238,6 +261,7 @@
       <xs:complexType name="-x27-AddressType" abstract="false">
          <xs:annotation>
             <xs:documentation/>
+            <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
          </xs:annotation>
          <xs:complexContent>
             <xs:extension base="fdo:ClassType">
@@ -248,11 +272,13 @@
                      </xs:simpleType>
                      <xs:annotation>
                         <xs:documentation/>
+                        <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
                      </xs:annotation>
                   </xs:element>
                   <xs:element name="Street">
                      <xs:annotation>
                         <xs:documentation/>
+                        <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
                      </xs:annotation>
                      <xs:simpleType>
                         <xs:restriction base="xs:string">
@@ -274,6 +300,7 @@
       <xs:complexType name="CustomerType" abstract="false">
          <xs:annotation>
             <xs:documentation/>
+            <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
          </xs:annotation>
          <xs:complexContent>
             <xs:extension base="fdo:ClassType">
@@ -281,6 +308,7 @@
                   <xs:element name="First-x20-Name">
                      <xs:annotation>
                         <xs:documentation/>
+                        <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
                      </xs:annotation>
                      <xs:simpleType>
                         <xs:restriction base="xs:string">
@@ -291,6 +319,7 @@
                   <xs:element name="Last-x20-Name">
                      <xs:annotation>
                         <xs:documentation/>
+                        <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
                      </xs:annotation>
                      <xs:simpleType>
                         <xs:restriction base="xs:string">
@@ -304,6 +333,7 @@
                      </xs:simpleType>
                      <xs:annotation>
                         <xs:documentation/>
+                        <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
                      </xs:annotation>
                   </xs:element>
                </xs:sequence>
@@ -320,6 +350,7 @@
       <xs:complexType name="Customer-x20---x20-ResidentialType" abstract="false">
          <xs:annotation>
             <xs:documentation/>
+            <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
          </xs:annotation>
          <xs:complexContent>
             <xs:extension base="Acad:CustomerType"/>
@@ -335,6 +366,7 @@
       <xs:complexType name="Customer-x20---x20-BusinessType" abstract="false">
          <xs:annotation>
             <xs:documentation/>
+            <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
          </xs:annotation>
          <xs:complexContent>
             <xs:extension base="Acad:CustomerType"/>
@@ -349,6 +381,7 @@
       <xs:complexType name="PoleType" abstract="false" fdo:hasGeometry="false">
          <xs:annotation>
             <xs:documentation/>
+            <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
          </xs:annotation>
          <xs:complexContent>
             <xs:extension base="gml:AbstractFeatureType">
@@ -359,11 +392,13 @@
                      </xs:simpleType>
                      <xs:annotation>
                         <xs:documentation/>
+                        <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
                      </xs:annotation>
                   </xs:element>
                   <xs:element name="Height">
                      <xs:annotation>
                         <xs:documentation/>
+                        <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
                      </xs:annotation>
                      <xs:simpleType>
                         <xs:restriction base="xs:string">
@@ -384,6 +419,7 @@
       <xs:complexType name="StreetType" abstract="false">
          <xs:annotation>
             <xs:documentation/>
+            <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
          </xs:annotation>
          <xs:complexContent>
             <xs:extension base="fdo:ClassType">
@@ -391,6 +427,7 @@
                   <xs:element name="Name">
                      <xs:annotation>
                         <xs:documentation/>
+                        <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
                      </xs:annotation>
                      <xs:simpleType>
                         <xs:restriction base="xs:string">
@@ -404,6 +441,7 @@
                      </xs:simpleType>
                      <xs:annotation>
                         <xs:documentation/>
+                        <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
                      </xs:annotation>
                   </xs:element>
                </xs:sequence>
@@ -419,6 +457,7 @@
       <xs:complexType name="abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789Type" abstract="false" fdo:geometryName="gbcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789">
          <xs:annotation>
             <xs:documentation>abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789</xs:documentation>
+            <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
          </xs:annotation>
          <xs:complexContent>
             <xs:extension base="gml:AbstractFeatureType">
@@ -426,6 +465,7 @@
                   <xs:element name="abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789">
                      <xs:annotation>
                         <xs:documentation>abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789</xs:documentation>
+                        <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
                      </xs:annotation>
                      <xs:simpleType>
                         <xs:restriction base="xs:string">
@@ -433,9 +473,10 @@
                         </xs:restriction>
                      </xs:simpleType>
                   </xs:element>
-                  <xs:element name="gbcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="World Geodetic Coordinate System, 1984" fdo:geometricTypes="point curve ">
+                  <xs:element name="gbcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="World Geodetic Coordinate System, 1984" fdo:geometricTypes="point curve " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring ">
                      <xs:annotation>
                         <xs:documentation>abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789</xs:documentation>
+                        <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
                      </xs:annotation>
                   </xs:element>
                </xs:sequence>
@@ -451,6 +492,7 @@
       <xs:complexType name="bbcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789Type" abstract="false" fdo:hasGeometry="false">
          <xs:annotation>
             <xs:documentation>abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789</xs:documentation>
+            <xs:appinfo source="http://fdo.osgeo.org/schemas"/>
          </xs:annotation>
          <xs:complexContent>
             <xs:extension base="Acad:abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789Type"/>

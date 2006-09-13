@@ -36,6 +36,7 @@ class ApplySchemaTest : public CppUnit::TestCase
   CPPUNIT_TEST_SUITE( ApplySchemaTest );
   CPPUNIT_TEST( TestSchema );
   CPPUNIT_TEST( TestDelete );
+  CPPUNIT_TEST(TestSpecificGeometryTypes);
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -74,7 +75,7 @@ protected:
 	void ModAddProperty( FdoIConnection* connection );
 	void ModDelProperty( FdoIConnection* connection );
 	void ModDescription( FdoIConnection* connection );
-    void ReAddElements( FdoIConnection* connection );
+	void ReAddElements( FdoIConnection* connection );
 	void ModErrors( FdoIConnection* connection );
 	void ModErrors2( FdoIConnection* connection );
 /*
@@ -92,6 +93,8 @@ protected:
     void CreateClassGroup( FdoFeatureSchema* pSchema, FdoInt32 idx );
     void DeleteDlteClass( FdoIConnection* connection, FdoFeatureSchema* pSchema, FdoInt32 idx );
 
+
+    void TestSpecificGeometryTypes( void );
 };
 
 #endif

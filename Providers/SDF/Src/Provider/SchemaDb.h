@@ -38,7 +38,7 @@ public:
     void SetSchema(SdfISchemaMergeContextFactory* mergeFactory, FdoFeatureSchema* schema, bool ignoreStates);
 
     //returns pointer to cached schema object -- for internal use
-    FdoFeatureSchema* GetSchema();    
+    FdoFeatureSchema* GetSchema(FdoString *schemaName = NULL);    
 
     //returns a brand new copy of the schema -- for use when returning
     //to external caller ot resetting the local schema object
@@ -92,6 +92,6 @@ private:
     unsigned char m_majorVersion;
     unsigned char m_minorVersion;
 	wchar_t* m_scName;
-   
+    bool m_bReadOnly;
 };
 

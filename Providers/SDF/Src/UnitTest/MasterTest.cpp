@@ -67,6 +67,7 @@ const wchar_t* SHP_PATH2 = L"../../TestData/province.sdf";
 
 // Replace the text "TestExample" with your own class name
 CPPUNIT_TEST_SUITE_REGISTRATION(MasterTest);
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( MasterTest, "MasterTest");
 
 
 MasterTest::MasterTest()
@@ -952,3 +953,46 @@ void MasterTest::selectSpatialExtentsTest()
     }
 }
 
+
+void MasterTest::descReadOnly()
+{
+    printf("Testing describeschema with read-only connection:\n");
+
+    // open connection as read-only:
+    FdoPtr<FdoIConnection> conn = CreateConnection();
+    openConnection(conn, SHP_PATH, true);
+
+    // Verify that classes are read-only too:
+    FdoPtr<FdoIDescribeSchema> descSchema = dynamic_cast<FdoIDescribeSchema*>(conn->CreateCommand(FdoCommandType_DescribeSchema));
+    FdoPtr<FdoFeatureSchemaCollection> schemas = descSchema->Execute();
+    for (int s=0; s<schemas->GetCount(); s++)
+    {
+        FdoPtr<FdoFeatureSchema> schema = schemas->GetItem(s);
+        FdoPtr<FdoClassCollection> classes = schema->GetClasses();
+        for (int c=0; c<classes->GetCount(); c++)
+        {
+            FdoPtr<FdoClassDefinition> classDef = classes->GetItem(c);
+            FdoPtr<FdoClassCapabilities> classCapabilities = classDef->GetCapabilities();
+            CPPUNIT_ASSERT_MESSAGE("class should be read-only", !classCapabilities->SupportsWrite());
+        }
+    }
+
+    // open connection as read-write:
+    conn = CreateConnection();
+    openConnection(conn, SHP_PATH, false);
+
+    // Verify that classes are read-write too:
+    descSchema = dynamic_cast<FdoIDescribeSchema*>(conn->CreateCommand(FdoCommandType_DescribeSchema));
+    schemas = descSchema->Execute();
+    for (int s=0; s<schemas->GetCount(); s++)
+    {
+        FdoPtr<FdoFeatureSchema> schema = schemas->GetItem(s);
+        FdoPtr<FdoClassCollection> classes = schema->GetClasses();
+        for (int c=0; c<classes->GetCount(); c++)
+        {
+            FdoPtr<FdoClassDefinition> classDef = classes->GetItem(c);
+            FdoPtr<FdoClassCapabilities> classCapabilities = classDef->GetCapabilities();
+            CPPUNIT_ASSERT_MESSAGE("class should be read-write", classCapabilities->SupportsWrite());
+        }
+    }
+}

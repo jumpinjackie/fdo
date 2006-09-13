@@ -58,8 +58,10 @@ SchemaDb::SchemaDb(SQLiteDataBase* env, const char* filename, bool bReadOnly) :
     m_bHasAssociations(false),
     m_majorVersion(0),
     m_minorVersion(0),
-	m_scName( NULL ),
-    m_env( env )
+    m_scName( NULL ),
+    m_env( env ),
+    m_bReadOnly(bReadOnly),
+    m_schema(NULL)
 {
     m_db = new SQLiteTable(env);
 
@@ -100,14 +102,7 @@ SchemaDb::SchemaDb(SQLiteDataBase* env, const char* filename, bool bReadOnly) :
         WriteMetadata(SDFPROVIDER_VERSION_MAJOR_CURRENT, SDFPROVIDER_VERSION_MINOR_CURRENT);
     }
 
-    //retrieve root schema record -- it is stored in position 3 of the db
-    REC_NO rootRecno = DB_SCHEMA_ROOT_RECNO;
-    SQLiteData keySchema(&rootRecno, sizeof(REC_NO));
-    SQLiteData data;
-
-    //deserialize the schema from the database
-    //If there isn't any, it will be set to NULL
-    m_schema = ReadSchema();
+    // NOTE: we dont deserialize the schema yet, instead waiting until the last minute.
 }
 
 
@@ -159,7 +154,7 @@ FdoFeatureSchema* SchemaDb::ReadSchema(FdoString *schemaName)
         return NULL;
     }
 
-    FdoPtr<FdoFeatureSchema>schema = FdoFeatureSchema::Create(NULL,NULL);
+    FdoPtr<FdoFeatureSchema> schema = FdoFeatureSchema::Create(NULL,NULL);
 
     //check that we have something in there
     _ASSERT(data.get_size() > 0);
@@ -219,8 +214,15 @@ void SchemaDb::GetSchemaVersion(unsigned char& major, unsigned char& minor)
     minor = m_minorVersion;
 }
 
-FdoFeatureSchema* SchemaDb::GetSchema()
+FdoFeatureSchema* SchemaDb::GetSchema(FdoString* schemaName)
 {
+    // Lazy-loading of schema: wait until last moment to generate the schema:
+    if (m_schema==NULL)
+        m_schema = ReadSchema(schemaName);
+
+    if (schemaName && wcscmp(schemaName, m_schema->GetName()) != 0)
+        throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_58_INVALID_SCHEMANAME)));
+
     return m_schema;
 }
 
@@ -233,11 +235,11 @@ void SchemaDb::SetSchema(SdfISchemaMergeContextFactory* mergeFactory, FdoFeature
     bool transactionStarted = false;
 
     // Work on copy of current schema in case we hit an error and mess them up.
-    FdoFeatureSchemaP oldSchema = m_schema ? FdoCommonSchemaUtil::DeepCopyFdoFeatureSchema( m_schema ) : (FdoFeatureSchema*) NULL;
+    FdoFeatureSchemaP oldSchema = GetSchema() ? FdoCommonSchemaUtil::DeepCopyFdoFeatureSchema( GetSchema() ) : (FdoFeatureSchema*) NULL;
 
     // Merge applied schema into current schemas
     SdfSchemaMergeContextP context = MergeSchema( mergeFactory, oldSchema, FDO_SAFE_ADDREF(schema), ignoreStates );
-    
+
     FdoFeatureSchemaP mergedSchema;
     if ( context ) {
         // Get the merged schema
@@ -249,7 +251,7 @@ void SchemaDb::SetSchema(SdfISchemaMergeContextFactory* mergeFactory, FdoFeature
         // Use given schemas as is.
         mergedSchema = FDO_SAFE_ADDREF(schema);
     }
-
+    
     // Handle database updates that must be done before AcceptChanges() is called on merged
     // schemas, and before merged schemas are written to database.
     PreAcceptChanges( context );
@@ -257,7 +259,7 @@ void SchemaDb::SetSchema(SdfISchemaMergeContextFactory* mergeFactory, FdoFeature
     // Remove any deleted elements so they are not written to the database.
     // AcceptChanges removes any elements with "Deleted" state.
     mergedSchema->AcceptChanges();
-
+    
     // Handle database updates that must be done after AcceptChanges() is called on merged
     // schemas, and before merged schemas are written to database.
     PostAcceptChanges( context );
@@ -268,7 +270,7 @@ void SchemaDb::SetSchema(SdfISchemaMergeContextFactory* mergeFactory, FdoFeature
     if ( !m_env->transaction_started() ) {
         if ( m_env->begin_transaction() != 0 ) 
             throw FdoSchemaException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_78_START_TRANSACTION)));
-
+    
         transactionStarted = true;
     }
 
@@ -276,8 +278,8 @@ void SchemaDb::SetSchema(SdfISchemaMergeContextFactory* mergeFactory, FdoFeature
         // Write the merged schemas to the database
         WriteSchema( mergedSchema );
 
-        // Handle database updates that must be done after new schemas are written to database.
-        PostUpdatePhysical( context );
+            // Handle database updates that must be done after new schemas are written to database.
+            PostUpdatePhysical( context );
     }
     catch ( ... ) {
         // Rollback on error
@@ -310,7 +312,7 @@ SdfSchemaMergeContextP SchemaDb::MergeSchema(
     FdoFeatureSchemaP newSchema, 
     bool ignoreStates
 )
-{
+    {
     if ( oldSchema == NULL ) 
         // Datastore has no schema so no need to merge.
         return SdfSchemaMergeContextP();
@@ -340,7 +342,7 @@ SdfSchemaMergeContextP SchemaDb::MergeSchema(
         for ( idx = 0; idx < APPLY_SCHEMA_ERROR_LIMIT, currEx; idx++ ) {
             msgs->Add( currEx->GetExceptionMessage() );
             currEx = currEx->GetCause();
-        }
+}
 
         if ( currEx ) {
             // Add message indicating that not all errors shown
@@ -379,7 +381,7 @@ void SchemaDb::PostAcceptChanges( SdfSchemaMergeContextP mergeContext )
 void SchemaDb::PostUpdatePhysical( SdfSchemaMergeContextP mergeContext )
 {
     if ( mergeContext ) 
-        mergeContext->PostUpdatePhysical();
+    mergeContext->PostUpdatePhysical();
 }
 
 void SchemaDb::RollbackPhysical( SdfSchemaMergeContextP mergeContext )
@@ -419,6 +421,7 @@ void SchemaDb::ReadFeatureClass(REC_NO classRecno, FdoFeatureSchema* schema)
     FdoPtr<FdoClassCapabilities> classcaps = FdoClassCapabilities::Create(*clas.p);
     classcaps->SetSupportsLocking(false);
     classcaps->SetSupportsLongTransactions(false);
+    classcaps->SetSupportsWrite(!m_bReadOnly && !clas->GetIsAbstract());
 
     clas->SetCapabilities(classcaps);
     
@@ -720,11 +723,9 @@ void SchemaDb::WriteSchema(FdoFeatureSchema* schema)
     }
 
 
-    //set the schema member variable indirectly
-    //by deserializing it from the database. This makes
-    //sure the things like read only properties are handled correctly
+    // Perform lazy-loading of schema later on:
     FDO_SAFE_RELEASE(m_schema);
-    m_schema = ReadSchema();
+    m_schema = NULL; // flush old schema
 }
 
 

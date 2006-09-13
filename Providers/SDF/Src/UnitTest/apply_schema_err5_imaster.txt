@@ -2,6 +2,7 @@
  Unsupported Schema modification; Cannot make abstract class 'Acad:ElectricDevice' concrete 
  Unsupported Schema modification; Cannot change autogeneration setting for data property 'Acad:ElectricDevice.FeatId' 
  Unsupported Schema modification; Cannot change geometry types for geometric property 'Acad:ElectricDevice.Geometry' 
+ Unsupported Schema modification; Cannot change geometry types for geometric property 'Acad:ElectricDevice.Geometry' 
  Unsupported Schema modification; Cannot add/remove elevation dimension to/from geometric property 'Acad:ElectricDevice.Geometry' 
  Unsupported Schema modification; Cannot add/remove measure dimension to/from geometric property 'Acad:ElectricDevice.Geometry' 
  Unsupported Schema modification; Cannot make class 'Acad:Transformer' abstract 

@@ -77,11 +77,7 @@ CPPUNIT_TEST_SUITE_PROPERTY(APropertyKey, APropertyValue)
 
 class MasterTest : public CppUnit::TestFixture
 {
-    // This defines the begining of the test suite.
-    // Replace "TestExample" with your own
     CPPUNIT_TEST_SUITE(MasterTest);
-    // This macro adds your test case to the test suite.
-    // Tests that are not added will not be run
     CPPUNIT_TEST(rtreeFilter);
     CPPUNIT_TEST(spatialFilter);
     CPPUNIT_TEST(stringFilter);
@@ -96,11 +92,7 @@ class MasterTest : public CppUnit::TestFixture
     CPPUNIT_TEST(selectAggregatesTest);
 	CPPUNIT_TEST(selectSpatialExtentsTest);
 	CPPUNIT_TEST(concurencyTest);
-
-
-        
-    // Use this macro to indicate that you are done adding
-    // tests to your test suite.
+    CPPUNIT_TEST(descReadOnly);
     CPPUNIT_TEST_SUITE_END();
 
     // You may define any private variables that are used in your test
@@ -132,6 +124,7 @@ public:
     void selectAggregatesTest();
 	void concurencyTest();
     void selectSpatialExtentsTest();
+    void descReadOnly();
 
 };
 

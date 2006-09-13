@@ -430,6 +430,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ExInfoDb.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ExInfoDb.h"
+				>
+			</File>
+			<File
 				RelativePath=".\KeyDb.cpp"
 				>
 			</File>

@@ -30,6 +30,7 @@ class PropertyIndex;
 class SchemaDb;
 class DataDb;
 class KeyDb;
+class ExInfoDb;
 
 class SdfConnection : public FdoIConnection, public SdfISchemaMergeContextFactory
 {
@@ -210,6 +211,7 @@ private:
     SdfConnectionInfo* m_connInfo;
 
     SchemaDb* m_dbSchema;
+    ExInfoDb* m_dbExtendedInfo;
     
     FdoPtr<SdfCompareHandler> m_CompareHandler;
 

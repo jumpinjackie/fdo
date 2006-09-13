@@ -1,4 +1,3 @@
-// 
 //  Copyright (C) 2004-2006  Autodesk, Inc.
 //  
 //  This library is free software; you can redistribute it and/or
@@ -119,4 +118,92 @@ class SdfSchemaCapabilities : public FdoISchemaCapabilities
 
         // Returns true if the provider supports multiple identity properties per class.
         SDF_API virtual bool SupportsCompositeId();
+
+        /// \brief
+        /// Returns the maximum supported length of String, BLOB, or CLOB data
+        /// properties. For decimal, it is typically the combination of the maximum
+        /// scale and precision. For other data types that are not variable in size,
+        /// the value returned is the byte length.
+        ///
+        /// \param dataType
+        /// The data type for which the information is to retrieved.
+        ///
+        /// \return
+        /// Returns the maximum data value length for the identified data type.
+        ///
+        SDF_API virtual FdoInt64 GetMaximumDataValueLength(FdoDataType dataType);
+
+        /// \brief
+        /// Returns the maximum supported precision for a decimal data property.
+        ///
+        /// \param
+        /// None.
+        ///
+        /// \return
+        /// Returns the maximum supported precision for a decimal data property.
+        ///
+        SDF_API virtual FdoInt32 GetMaximumDecimalPrecision();
+
+        /// \brief
+        /// Returns the maximum supported scale for a decimal data property.
+        ///
+        /// \param
+        /// None.
+        ///
+        /// \return
+        /// Returns the maximum supported scale for a decimal data property.
+        ///
+        SDF_API virtual FdoInt32 GetMaximumDecimalScale();
+
+        /// \brief
+        /// Returns the maximum size of a value of the given type. It includes
+        /// limits for the data store name, shema name, class name, property name
+        /// and description.
+        ///
+        /// \param name
+        /// The schema element name type identifier for which the information is to
+        /// be retrieved. Can be any of the following options: FdoSchemaElementNameType_Datastore,
+        /// FdoSchemaElementNameType_Schema, FdoSchemaElementNameType_Class, FdoSchemaElementNameType_Property or 
+        /// FdoSchemaElementNameType_Description
+        ///
+        /// \return
+        /// Returns the size limitation for the identified schema element.
+        ///
+        SDF_API virtual FdoInt32 GetNameSizeLimit(FdoSchemaElementNameType name);
+
+        /// \brief
+        /// Returns a string that includes all the reserved characters that cannot be
+        /// used for the various schema element names for the provider.
+        ///
+        /// \param
+        /// None
+        ///
+        /// \return
+        /// Returns a string with the reserved characters for the identified schema element.
+        ///
+        SDF_API virtual FdoString* GetReservedCharactersForName();
+
+        /// \brief
+        /// Returns a list of property types that can be used for identity properties.
+        ///
+        /// \param length
+        /// Output the number of data types.
+        ///
+        /// \return
+        /// Returns a string with the reserved characters for the identified schema element.
+        ///
+        SDF_API virtual FdoDataType* GetSupportedIdentityPropertyTypes(FdoInt32& length);
+
+        /// \brief
+        /// Returns TRUE if default values can be specified for a data property
+        /// definition, FALSE otherwise.
+        ///
+        /// \param
+        /// None
+        ///
+        /// \return
+        /// Returns TRUE if default values can be specified for a data property
+        /// definition, FALSE otherwise.
+        ///
+        SDF_API virtual bool SupportsDefaultValue();
 };

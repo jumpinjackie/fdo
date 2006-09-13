@@ -48,5 +48,8 @@ class SdfExpressionCapabilities : public FdoIExpressionCapabilities
         // within expressions.  The length parameter gives the number of function
         // definitions in the array.
         SDF_API virtual FdoFunctionDefinitionCollection* GetFunctions();
+
+    private:
+        FdoPtr<FdoFunctionDefinitionCollection> m_supportedFunctions;
 };
 

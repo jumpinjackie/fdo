@@ -133,3 +133,13 @@ bool SdfConnectionCapabilities::SupportsCSysWKTFromCSysName()
 {
     return false;
 }
+
+bool SdfConnectionCapabilities::SupportsWrite()
+{
+    return true;
+}
+
+bool SdfConnectionCapabilities::SupportsMultiUserWrite()
+{
+    return false;
+}

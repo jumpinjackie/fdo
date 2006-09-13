@@ -63,6 +63,7 @@
 #include "SchemaDb.h"
 #include "DataDb.h"
 #include "KeyDb.h"
+#include "ExInfoDb.h"
 #include "DataIO.h"
 
 #include "PropertyIndex.h"
@@ -77,7 +78,8 @@ SdfConnection::SdfConnection()
   m_connInfo(NULL),
   m_bReadOnly(false),
   m_bNoEnvPath(false),
-  m_dbSchema(NULL)
+  m_dbSchema(NULL),
+  m_dbExtendedInfo(NULL)
 {
     m_bCreate = false;
 }
@@ -295,6 +297,17 @@ FdoConnectionState SdfConnection::Open( SdfCompareHandler* cmpHandler )
         throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_56_NOT_SDF), "File is not an SDF file, or is an SDF file with an unsupported version."), e);
     }
 
+    try
+    {
+        // Get all the extended info table; the table might not exist (especially for older SDF files):
+        m_dbExtendedInfo = new ExInfoDb(this, m_env, m_mbsFullPath, m_bReadOnly);
+    }
+    catch (FdoException* e)
+    {
+        // ignore error since older SDF files may not contain this table
+        e->Release();
+    }
+
     //initialize R-Trees and data databases
     InitDatabases();
 
@@ -320,6 +333,12 @@ void SdfConnection::CloseDatabases()
     {
         delete m_dbSchema;
         m_dbSchema = NULL;
+    }
+
+    if (m_dbExtendedInfo)
+    {
+        delete m_dbExtendedInfo;
+        m_dbExtendedInfo = NULL;
     }
 
     if (m_env)
@@ -600,6 +619,7 @@ void SdfConnection::SetSchema(FdoFeatureSchema* schema, bool ignoreStates)
     FdoPtr<FdoFeatureSchema> oldschema = FDO_SAFE_ADDREF(m_dbSchema->GetSchema());
 
     m_dbSchema->SetSchema( this, schema, ignoreStates);
+    m_dbExtendedInfo->WriteExtendedSchemaInfo(schema);
 
     //need to regen the R-Tree objects since
     //the schema changed
