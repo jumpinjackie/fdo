@@ -2193,7 +2193,8 @@ void ApplySchemaTest::ModDelProperty( FdoIConnection* connection )
 		UnitTestUtil::PrintException(exp, "apply_schema_err8.txt", true);
 		FDO_SAFE_RELEASE(exp);
 	}
-	CPPUNIT_ASSERT("Should not be able to remove a property from a class that has data",failed);
+	if (!failed)
+		CPPUNIT_FAIL("Should not be able to remove a property from a class that has data");
 }
 
 void ApplySchemaTest::CreateDlteData( FdoIConnection* connection )
