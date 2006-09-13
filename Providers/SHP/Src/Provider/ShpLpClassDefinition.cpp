@@ -91,6 +91,7 @@ void ShpLpClassDefinition::ConvertPhysicalToLogical(
     FdoPtr<FdoClassCapabilities> classCapabilities = FdoClassCapabilities::Create(*m_logicalClassDefinition.p);
     classCapabilities->SetSupportsLocking(false);
     classCapabilities->SetSupportsLongTransactions(false);
+    classCapabilities->SetSupportsWrite(m_physicalFileSet->IsWritable());
     m_logicalClassDefinition->SetCapabilities(classCapabilities);
     // Populate the logical class's abstract flag:
     m_logicalClassDefinition->SetIsAbstract(false);
@@ -361,8 +362,11 @@ void ShpLpClassDefinition::ConvertLogicalToPhysical(
             {
                 geometry = static_cast<FdoGeometricPropertyDefinition*>(FDO_SAFE_ADDREF (configLogicalProperty.p));
                 // get the shape type and check for only one geometry type
+                FdoInt32 geomTypeCount;
+                FdoGeometryType* geomTypes = geometry->GetSpecificGeometryTypes (geomTypeCount);
                 shape_type = ShpSchemaUtilities::FdoGeometryToShapeType (
-                    geometry->GetGeometryTypes (),
+                    geomTypes,
+                    geomTypeCount,
                     geometry->GetHasElevation (),
                     geometry->GetHasMeasure ());
             }
@@ -581,7 +585,9 @@ FdoDataPropertyDefinition* ShpLpClassDefinition::ConvertPhysicalToLogicalIdentit
 // NOTE: by design there is no override for geometry properties:
 FdoGeometricPropertyDefinition* ShpLpClassDefinition::ConvertPhysicalToLogicalGeometryProperty(ShpConnection *connection, FdoClassDefinition* configLogicalClass, ShpFileSet *physicalFileSet)
 {
-    FdoGeometricType geometry_type;
+    FdoGeometryType *geomTypesSrc;
+    FdoGeometryType geomTypesDest[30];
+    FdoInt32 geomTypeCount=0;
     bool has_z;
     bool has_m;
 
@@ -601,7 +607,9 @@ FdoGeometricPropertyDefinition* ShpLpClassDefinition::ConvertPhysicalToLogicalGe
             FdoPtr<FdoGeometricPropertyDefinition> geomProperty = configLogicalFeatureClass->GetGeometryProperty();
             logicalGeomPropertyName = geomProperty->GetName();
             logicalGeomPropertyDescription = geomProperty->GetDescription ();
-            geometry_type = (FdoGeometricType)geomProperty->GetGeometryTypes ();
+            geomTypesSrc = geomProperty->GetSpecificGeometryTypes (geomTypeCount);
+            for (int i=0; i<geomTypeCount; i++)
+                geomTypesDest[i] = geomTypesSrc[i];
             has_z = geomProperty->GetHasElevation ();
             has_m = geomProperty->GetHasMeasure ();
         }
@@ -619,7 +627,9 @@ FdoGeometricPropertyDefinition* ShpLpClassDefinition::ConvertPhysicalToLogicalGe
                         logicalGeomPropertyName = configLogicalProperty->GetName();
                         logicalGeomPropertyDescription = configLogicalProperty->GetDescription ();
                         FdoGeometricPropertyDefinition* geometry = (FdoGeometricPropertyDefinition*)configLogicalProperty.p;
-                        geometry_type = (FdoGeometricType)geometry->GetGeometryTypes ();
+                        geomTypesSrc = geometry->GetSpecificGeometryTypes (geomTypeCount);
+                        for (int i=0; i<geomTypeCount; i++)
+                            geomTypesDest[i] = geomTypesSrc[i];
                         has_z = geometry->GetHasElevation ();
                         has_m = geometry->GetHasMeasure ();
                     }
@@ -642,67 +652,83 @@ FdoGeometricPropertyDefinition* ShpLpClassDefinition::ConvertPhysicalToLogicalGe
         switch (shape_type)
         {
             case ePointShape:
-                geometry_type = FdoGeometricType_Point;
+                geomTypesDest[0] = FdoGeometryType_Point;
+                geomTypeCount=1;
                 has_z = false;
                 has_m = false;
                 break;
             case eMultiPointShape:
-                geometry_type = FdoGeometricType_Point;
+                geomTypesDest[0] = FdoGeometryType_MultiPoint;
+                geomTypeCount=1;
                 has_z = false;
                 has_m = false;
                 break;
             case ePointZShape:
-                geometry_type = FdoGeometricType_Point;
+                geomTypesDest[0] = FdoGeometryType_Point;
+                geomTypeCount=1;
                 has_z = true;
                 has_m = shp->HasMData ();
                 break;
             case eMultiPointZShape:
-                geometry_type = FdoGeometricType_Point;
+                geomTypesDest[0] = FdoGeometryType_MultiPoint;
+                geomTypeCount=1;
                 has_z = true;
                 has_m = shp->HasMData ();
                 break;
             case ePointMShape:
-                geometry_type = FdoGeometricType_Point;
+                geomTypesDest[0] = FdoGeometryType_Point;
+                geomTypeCount=1;
                 has_z = false;
                 has_m = true;
                 break;
             case eMultiPointMShape:
-                geometry_type = FdoGeometricType_Point;
+                geomTypesDest[0] = FdoGeometryType_MultiPoint;
+                geomTypeCount=1;
                 has_z = false;
                 has_m = true;
                 break;
             case ePolylineShape:
-                geometry_type = FdoGeometricType_Curve;
+                geomTypesDest[0] = FdoGeometryType_LineString;
+                geomTypesDest[1] = FdoGeometryType_MultiLineString;
+                geomTypeCount=2;
                 has_z = false;
                 has_m = false;
                 break;
             case ePolylineZShape:
-                geometry_type = FdoGeometricType_Curve;
+                geomTypesDest[0] = FdoGeometryType_LineString;
+                geomTypesDest[1] = FdoGeometryType_MultiLineString;
+                geomTypeCount=2;
                 has_z = true;
                 has_m = shp->HasMData ();
                 break;
             case ePolylineMShape:
-                geometry_type = FdoGeometricType_Curve;
+                geomTypesDest[0] = FdoGeometryType_LineString;
+                geomTypesDest[1] = FdoGeometryType_MultiLineString;
+                geomTypeCount=2;
                 has_z = false;
                 has_m = true;
                 break;
             case ePolygonShape:
-                geometry_type = FdoGeometricType_Surface;
+                geomTypesDest[0] = FdoGeometryType_Polygon;
+                geomTypeCount=1;
                 has_z = false;
                 has_m = false;
                 break;
             case ePolygonZShape:
-                geometry_type = FdoGeometricType_Surface;
+                geomTypesDest[0] = FdoGeometryType_Polygon;
+                geomTypeCount=1;
                 has_z = true;
                 has_m = shp->HasMData ();
                 break;
             case ePolygonMShape:
-                geometry_type = FdoGeometricType_Surface;
+                geomTypesDest[0] = FdoGeometryType_Polygon;
+                geomTypeCount=1;
                 has_z = false;
                 has_m = true;
                 break;
             case eMultiPatchShape:
-                geometry_type = FdoGeometricType_Surface;
+                geomTypesDest[0] = FdoGeometryType_Polygon;
+                geomTypeCount=1;
                 has_z = true;
     #pragma message ("ToDo: check for valid Z values in multi patch shape file")
                 has_m = shp->HasMData ();
@@ -716,7 +742,7 @@ FdoGeometricPropertyDefinition* ShpLpClassDefinition::ConvertPhysicalToLogicalGe
 
     // Create the logical geometry property:
     FdoPtr<FdoGeometricPropertyDefinition> pLogicalGeomProperty = FdoGeometricPropertyDefinition::Create(logicalGeomPropertyName, logicalGeomPropertyDescription);
-    pLogicalGeomProperty->SetGeometryTypes (geometry_type);
+    pLogicalGeomProperty->SetSpecificGeometryTypes (geomTypesDest, geomTypeCount);
     pLogicalGeomProperty->SetReadOnly (false);
     pLogicalGeomProperty->SetHasElevation (has_z);
     pLogicalGeomProperty->SetHasMeasure (has_m);

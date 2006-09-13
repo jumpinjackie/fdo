@@ -275,104 +275,9 @@ void SchemaTests::describe_bogus ()
 /* Test basic apply operation. */
 void SchemaTests::apply ()
 {
-    try
-    {
-        FdoString* NEW_SCHEMA_NAME = L"NewSchema";
-        FdoString* NEW_CLASS_NAME = L"Test";
+    apply_helper(false);
 
-        // Clean up leftovers from previous tests:
-        CleanUpClass(mConnection, NULL, NEW_CLASS_NAME);
-
-
-        FdoPtr<FdoIApplySchema> apply = (FdoIApplySchema*)mConnection->CreateCommand (FdoCommandType_ApplySchema);
-        FdoPtr<FdoFeatureSchema> schema = FdoFeatureSchema::Create (NEW_SCHEMA_NAME, L"");
-        FdoPtr<FdoClassCollection> classes = schema->GetClasses ();
-
-        FdoPtr<FdoDataPropertyDefinition> id = FdoDataPropertyDefinition::Create (L"Id", L"integer");
-        id->SetDataType (FdoDataType_Int32);
-
-        FdoPtr<FdoDataPropertyDefinition> street = FdoDataPropertyDefinition::Create (L"Street", L"text");
-        street->SetDataType (FdoDataType_String);
-        street->SetLength (64);
-
-        FdoPtr<FdoDataPropertyDefinition> area = FdoDataPropertyDefinition::Create (L"Area", L"double");
-        area->SetDataType (FdoDataType_Decimal);
-        area->SetPrecision (20);
-        area->SetScale (8);
-
-        FdoPtr<FdoDataPropertyDefinition> vacant = FdoDataPropertyDefinition::Create (L"Vacant", L"boolean");
-        vacant->SetDataType (FdoDataType_Boolean);
-
-        FdoPtr<FdoDataPropertyDefinition> birthday = FdoDataPropertyDefinition::Create (L"Birthday", L"date");
-        birthday->SetDataType (FdoDataType_DateTime);
-
-        // build a location geometry property
-        FdoPtr<FdoGeometricPropertyDefinition> location = FdoGeometricPropertyDefinition::Create (L"Geometry", L"geometry");
-        location->SetGeometryTypes (FdoGeometricType_Point);
-        location->SetHasElevation (true);
-        location->SetHasMeasure (true);
-
-        //// assemble the feature class
-        FdoPtr<FdoFeatureClass> feature = FdoFeatureClass::Create (NEW_CLASS_NAME, L"test class created with apply schema");
-        FdoPtr<FdoPropertyDefinitionCollection> properties = feature->GetProperties ();
-        properties->Add (id);
-        properties->Add (street);
-        properties->Add (area);
-        properties->Add (vacant);
-        properties->Add (birthday);
-        properties->Add (location);
-        feature->SetGeometryProperty (location);
-        FdoPtr<FdoDataPropertyDefinitionCollection> identities = feature->GetIdentityProperties ();
-        identities->Add (id);
-
-        // submit the new schema
-        classes->Add (feature);
-        apply->SetFeatureSchema (schema);
-        apply->Execute ();
-		SaveSchema(mConnection);
-
-        // check that the new schema shows up in the list
-        FdoPtr<FdoIDescribeSchema> describe = (FdoIDescribeSchema*)mConnection->CreateCommand (FdoCommandType_DescribeSchema);
-        FdoPtr<FdoFeatureSchemaCollection> schemas = describe->Execute ();
-
-
-        FdoPtr<FdoIDisposableCollection> collection = schemas->FindClass (NEW_CLASS_NAME);
-        CPPUNIT_ASSERT_MESSAGE ("no class found", 1 == collection->GetCount ());
-        FdoPtr<FdoFeatureClass> cls = (FdoFeatureClass *)collection->GetItem (0);
-        CPPUNIT_ASSERT_MESSAGE ("wrong name", 0 == wcscmp (NEW_CLASS_NAME, cls->GetName ()));
-        CPPUNIT_ASSERT_MESSAGE ("wrong description", 0 == wcscmp (L"test class created with apply schema", cls->GetDescription ()));
-
-        // check it's contents
-        properties = cls->GetProperties ();
-        FdoPtr<FdoDataPropertyDefinition> featid = (FdoDataPropertyDefinition*)properties->GetItem (L"Id");
-        CPPUNIT_ASSERT_MESSAGE ("id wrong type", FdoDataType_Int32 == featid->GetDataType ());
-        street = (FdoDataPropertyDefinition*)properties->GetItem (L"Street");
-        CPPUNIT_ASSERT_MESSAGE ("street wrong type", FdoDataType_String == street->GetDataType ());
-        CPPUNIT_ASSERT_MESSAGE ("street wrong size", 64 == street->GetLength ());
-        area = (FdoDataPropertyDefinition*)properties->GetItem (L"Area");
-        CPPUNIT_ASSERT_MESSAGE ("area wrong type", FdoDataType_Decimal == area->GetDataType ());
-        vacant = (FdoDataPropertyDefinition*)properties->GetItem (L"Vacant");
-        CPPUNIT_ASSERT_MESSAGE ("vacant wrong type", FdoDataType_Boolean == vacant->GetDataType ());
-        birthday = (FdoDataPropertyDefinition*)properties->GetItem (L"Birthday");
-        CPPUNIT_ASSERT_MESSAGE ("birthday wrong type", FdoDataType_DateTime == birthday->GetDataType ());
-        location = (FdoGeometricPropertyDefinition*)properties->GetItem (L"Geometry");
-        CPPUNIT_ASSERT_MESSAGE ("wrong geometry types", FdoGeometricType_Point == location->GetGeometryTypes ());
-        CPPUNIT_ASSERT_MESSAGE ("wrong elevation", location->GetHasElevation ());
-        CPPUNIT_ASSERT_MESSAGE ("wrong measure", location->GetHasMeasure ());
-
-        // OK, now delete the class
-        schema = schemas->GetItem (NEW_SCHEMA_NAME);
-        classes = schema->GetClasses ();
-        FdoPtr<FdoClassDefinition> definition = classes->GetItem (NEW_CLASS_NAME);
-        definition->Delete ();
-        apply->SetFeatureSchema (schema);
-        apply->Execute ();
-		SaveSchema(mConnection);
-    }
-    catch (FdoException* ge) 
-    {
-        fail (ge);
-    }
+    apply_helper(true);
 }
 
 /* Test nameless schema apply operation. */
@@ -1906,6 +1811,198 @@ void SchemaTests::describe_Fix784301 ()
                 lastSpatialContextAssociation = pSpatialContextAssociation;
             }
         }
+    }
+    catch (FdoException* ge) 
+    {
+        fail (ge);
+    }
+}
+
+
+void SchemaTests::read_only_files ()
+{
+    try
+    {
+        // Make a file read-only:
+        SetShpFileAccess(L"../../TestData/Ontario/roads", false);
+
+        // re-open the connection:
+        mConnection->Close ();
+        mConnection->SetConnectionString (L"DefaultFileLocation=../../TestData/Ontario");
+        mConnection->Open ();
+
+        // Verify that classes are read-only:
+        FdoPtr<FdoIDescribeSchema> descSchema = dynamic_cast<FdoIDescribeSchema*>(mConnection->CreateCommand(FdoCommandType_DescribeSchema));
+        FdoPtr<FdoFeatureSchemaCollection> schemas = descSchema->Execute();
+        for (int s=0; s<schemas->GetCount(); s++)
+        {
+            FdoPtr<FdoFeatureSchema> schema = schemas->GetItem(s);
+            FdoPtr<FdoClassCollection> classes = schema->GetClasses();
+            for (int c=0; c<classes->GetCount(); c++)
+            {
+                FdoPtr<FdoClassDefinition> classDef = classes->GetItem(c);
+                FdoPtr<FdoClassCapabilities> classCapabilities = classDef->GetCapabilities();
+                if (0==wcscmp(classDef->GetName(), L"roads"))
+                    CPPUNIT_ASSERT_MESSAGE("class should be read-only", !classCapabilities->SupportsWrite());
+            }
+        }
+
+        // Make a file read-write:
+        SetShpFileAccess(L"../../TestData/Ontario/roads", true);
+
+        // re-open the connection:
+        mConnection->Close ();
+        mConnection->SetConnectionString (L"DefaultFileLocation=../../TestData/Ontario");
+        mConnection->Open ();
+
+        // Verify that classes are read-write:
+        descSchema = dynamic_cast<FdoIDescribeSchema*>(mConnection->CreateCommand(FdoCommandType_DescribeSchema));
+        schemas = descSchema->Execute();
+        for (int s=0; s<schemas->GetCount(); s++)
+        {
+            FdoPtr<FdoFeatureSchema> schema = schemas->GetItem(s);
+            FdoPtr<FdoClassCollection> classes = schema->GetClasses();
+            for (int c=0; c<classes->GetCount(); c++)
+            {
+                FdoPtr<FdoClassDefinition> classDef = classes->GetItem(c);
+                FdoPtr<FdoClassCapabilities> classCapabilities = classDef->GetCapabilities();
+                if (0==wcscmp(classDef->GetName(), L"roads"))
+                    CPPUNIT_ASSERT_MESSAGE("class should be read-write", classCapabilities->SupportsWrite());
+            }
+        }
+    }
+    catch (FdoException* ge) 
+    {
+        fail (ge);
+    }
+}
+
+
+void SchemaTests::SetShpFileAccess(FdoString* shpPath, bool bReadWrite)
+{
+    FdoStringP file;
+
+    file = shpPath; file += L".shp";
+    FdoCommonFile::Chmod(file, bReadWrite);
+    file = shpPath; file += L".dbf";
+    FdoCommonFile::Chmod(file, bReadWrite);
+    file = shpPath; file += L".shx";
+    FdoCommonFile::Chmod(file, bReadWrite);
+}
+
+
+void SchemaTests::apply_helper(bool bUseSpecificGeometryTypes)
+{
+    try
+    {
+        FdoString* NEW_SCHEMA_NAME = L"NewSchema";
+        FdoString* NEW_CLASS_NAME = L"Test";
+
+        // Clean up leftovers from previous tests:
+        CleanUpClass(mConnection, NULL, NEW_CLASS_NAME);
+
+
+        FdoPtr<FdoIApplySchema> apply = (FdoIApplySchema*)mConnection->CreateCommand (FdoCommandType_ApplySchema);
+        FdoPtr<FdoFeatureSchema> schema = FdoFeatureSchema::Create (NEW_SCHEMA_NAME, L"");
+        FdoPtr<FdoClassCollection> classes = schema->GetClasses ();
+
+        FdoPtr<FdoDataPropertyDefinition> id = FdoDataPropertyDefinition::Create (L"Id", L"integer");
+        id->SetDataType (FdoDataType_Int32);
+
+        FdoPtr<FdoDataPropertyDefinition> street = FdoDataPropertyDefinition::Create (L"Street", L"text");
+        street->SetDataType (FdoDataType_String);
+        street->SetLength (64);
+
+        FdoPtr<FdoDataPropertyDefinition> area = FdoDataPropertyDefinition::Create (L"Area", L"double");
+        area->SetDataType (FdoDataType_Decimal);
+        area->SetPrecision (20);
+        area->SetScale (8);
+
+        FdoPtr<FdoDataPropertyDefinition> vacant = FdoDataPropertyDefinition::Create (L"Vacant", L"boolean");
+        vacant->SetDataType (FdoDataType_Boolean);
+
+        FdoPtr<FdoDataPropertyDefinition> birthday = FdoDataPropertyDefinition::Create (L"Birthday", L"date");
+        birthday->SetDataType (FdoDataType_DateTime);
+
+        // build a location geometry property
+        FdoPtr<FdoGeometricPropertyDefinition> location = FdoGeometricPropertyDefinition::Create (L"Geometry", L"geometry");
+        if (bUseSpecificGeometryTypes)
+        {
+            FdoGeometryType geomTypes[] = {FdoGeometryType_MultiPoint};
+            location->SetSpecificGeometryTypes(geomTypes, 1);
+        }
+        else
+            location->SetGeometryTypes (FdoGeometricType_Point);
+        location->SetHasElevation (true);
+        location->SetHasMeasure (true);
+
+        //// assemble the feature class
+        FdoPtr<FdoFeatureClass> feature = FdoFeatureClass::Create (NEW_CLASS_NAME, L"test class created with apply schema");
+        FdoPtr<FdoPropertyDefinitionCollection> properties = feature->GetProperties ();
+        properties->Add (id);
+        properties->Add (street);
+        properties->Add (area);
+        properties->Add (vacant);
+        properties->Add (birthday);
+        properties->Add (location);
+        feature->SetGeometryProperty (location);
+        FdoPtr<FdoDataPropertyDefinitionCollection> identities = feature->GetIdentityProperties ();
+        identities->Add (id);
+
+        // submit the new schema
+        classes->Add (feature);
+        apply->SetFeatureSchema (schema);
+        apply->Execute ();
+		SaveSchema(mConnection);
+
+        // Flush the schema cache:
+        mConnection->Close();
+        mConnection->Open();
+
+        // check that the new schema shows up in the list
+        FdoPtr<FdoIDescribeSchema> describe = (FdoIDescribeSchema*)mConnection->CreateCommand (FdoCommandType_DescribeSchema);
+        FdoPtr<FdoFeatureSchemaCollection> schemas = describe->Execute ();
+
+
+        FdoPtr<FdoIDisposableCollection> collection = schemas->FindClass (NEW_CLASS_NAME);
+        CPPUNIT_ASSERT_MESSAGE ("no class found", 1 == collection->GetCount ());
+        FdoPtr<FdoFeatureClass> cls = (FdoFeatureClass *)collection->GetItem (0);
+        CPPUNIT_ASSERT_MESSAGE ("wrong name", 0 == wcscmp (NEW_CLASS_NAME, cls->GetName ()));
+        CPPUNIT_ASSERT_MESSAGE ("wrong description", 0 == wcscmp (L"test class created with apply schema", cls->GetDescription ()));
+
+        // check it's contents
+        properties = cls->GetProperties ();
+        FdoPtr<FdoDataPropertyDefinition> featid = (FdoDataPropertyDefinition*)properties->GetItem (L"Id");
+        CPPUNIT_ASSERT_MESSAGE ("id wrong type", FdoDataType_Int32 == featid->GetDataType ());
+        street = (FdoDataPropertyDefinition*)properties->GetItem (L"Street");
+        CPPUNIT_ASSERT_MESSAGE ("street wrong type", FdoDataType_String == street->GetDataType ());
+        CPPUNIT_ASSERT_MESSAGE ("street wrong size", 64 == street->GetLength ());
+        area = (FdoDataPropertyDefinition*)properties->GetItem (L"Area");
+        CPPUNIT_ASSERT_MESSAGE ("area wrong type", FdoDataType_Decimal == area->GetDataType ());
+        vacant = (FdoDataPropertyDefinition*)properties->GetItem (L"Vacant");
+        CPPUNIT_ASSERT_MESSAGE ("vacant wrong type", FdoDataType_Boolean == vacant->GetDataType ());
+        birthday = (FdoDataPropertyDefinition*)properties->GetItem (L"Birthday");
+        CPPUNIT_ASSERT_MESSAGE ("birthday wrong type", FdoDataType_DateTime == birthday->GetDataType ());
+        location = (FdoGeometricPropertyDefinition*)properties->GetItem (L"Geometry");
+        if (bUseSpecificGeometryTypes)
+        {
+            FdoInt32 geomTypeCount = -1;
+            FdoGeometryType* geomTypes = location->GetSpecificGeometryTypes(geomTypeCount);
+            CPPUNIT_ASSERT_MESSAGE ("wrong geometry types", geomTypeCount==1 && (geomTypes[0] == FdoGeometryType_MultiPoint));
+        }
+        else
+            CPPUNIT_ASSERT_MESSAGE ("wrong geometry types", FdoGeometricType_Point == location->GetGeometryTypes ());
+        CPPUNIT_ASSERT_MESSAGE ("wrong elevation", location->GetHasElevation ());
+        CPPUNIT_ASSERT_MESSAGE ("wrong measure", location->GetHasMeasure ());
+
+        // OK, now delete the class
+        schema = schemas->GetItem (NEW_SCHEMA_NAME);
+        classes = schema->GetClasses ();
+        FdoPtr<FdoClassDefinition> definition = classes->GetItem (NEW_CLASS_NAME);
+        definition->Delete ();
+        apply->SetFeatureSchema (schema);
+        apply->Execute ();
+		SaveSchema(mConnection);
     }
     catch (FdoException* ge) 
     {

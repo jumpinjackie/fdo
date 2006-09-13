@@ -203,3 +203,64 @@ bool ShpSchemaCapabilities::SupportsCompositeId()
 {
     return false;
 }
+
+FdoInt32 ShpSchemaCapabilities::GetNameSizeLimit (FdoSchemaElementNameType nameType)
+{
+    switch (nameType)
+    {
+        case FdoSchemaElementNameType_Datastore:   return 255;  // == class name size limit
+        case FdoSchemaElementNameType_Schema:      return 7;    // == wcslen("default")
+        case FdoSchemaElementNameType_Class:       return 255;  // == max filename length on windows/linux
+        case FdoSchemaElementNameType_Property:    return 11;   // == max dbf column name size length (see DBF spec)
+        case FdoSchemaElementNameType_Description: return 0;    // DBF doesn't store column descriptions
+    }
+    return -1;
+}
+
+FdoString* ShpSchemaCapabilities::GetReservedCharactersForName()
+{
+    return L".:";  // NOTE: DBF column names are always 100% ascii, but it's difficult to list all non-ascii characters
+}
+
+FdoInt64 ShpSchemaCapabilities::GetMaximumDataValueLength (FdoDataType dataType)
+{
+    switch (dataType)
+    {
+        case FdoDataType_String:   return (FdoInt64)255;
+        case FdoDataType_BLOB:     return (FdoInt64)-1;
+        case FdoDataType_CLOB:     return (FdoInt64)-1;
+        case FdoDataType_Decimal:  return (FdoInt64)255;
+        case FdoDataType_Boolean:  return (FdoInt64)sizeof(FdoBoolean);
+        case FdoDataType_Byte:     return (FdoInt64)sizeof(FdoByte);
+        case FdoDataType_DateTime: return (FdoInt64)sizeof(FdoDateTime);
+        case FdoDataType_Double:   return (FdoInt64)sizeof(FdoDouble);
+        case FdoDataType_Int16:    return (FdoInt64)sizeof(FdoInt16);
+        case FdoDataType_Int32:    return (FdoInt64)sizeof(FdoInt32);
+        case FdoDataType_Int64:    return (FdoInt64)sizeof(FdoInt64);
+        case FdoDataType_Single:   return (FdoInt64)sizeof(FdoFloat);
+    }
+    return (FdoInt64)-1;
+}
+
+FdoInt32 ShpSchemaCapabilities::GetMaximumDecimalPrecision()
+{
+    return 255;
+}
+
+FdoInt32 ShpSchemaCapabilities::GetMaximumDecimalScale()
+{
+    return 255;
+}
+
+FdoDataType* ShpSchemaCapabilities::GetSupportedIdentityPropertyTypes(FdoInt32& length)
+{
+    length = 1;
+    FdoDataType supportedIdentityTypes[1];
+    supportedIdentityTypes[0] = FdoDataType_Int32;
+    return supportedIdentityTypes;
+}
+
+bool ShpSchemaCapabilities::SupportsDefaultValue()
+{
+    return false;
+}

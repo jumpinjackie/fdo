@@ -81,68 +81,113 @@ eDBFColumnType ShpSchemaUtilities::FdoTypeToDbfType (FdoDataType logicalProperty
 // so don't use this method for anything except ApplySchema,
 // these are handled on first write to the new file
 // What about eMultiPatchShape though?
-eShapeTypes ShpSchemaUtilities::FdoGeometryToShapeType (FdoInt32 geometry_types, bool has_elevation, bool has_measure)
+eShapeTypes ShpSchemaUtilities::FdoGeometryToShapeType (FdoGeometryType* geomTypes, FdoInt32 geomTypeCount, bool has_elevation, bool has_measure)
 {
     eShapeTypes physicalShapeType;
 
-    switch (geometry_types)
+    if  (
+            // BACKWARD-COMPABILITY-BEGIN:
+            ((geomTypeCount==2)
+            && FdoCommonMiscUtil::ContainsGeomType(geomTypes, geomTypeCount, FdoGeometryType_Point)
+            && FdoCommonMiscUtil::ContainsGeomType(geomTypes, geomTypeCount, FdoGeometryType_MultiPoint))
+            ||
+            // BACKWARD-COMPABILITY-END.
+            ((geomTypeCount==1)
+            && FdoCommonMiscUtil::ContainsGeomType(geomTypes, geomTypeCount, FdoGeometryType_MultiPoint))
+        )
     {
-        case FdoGeometricType_Point:
-            if (has_elevation)
-                physicalShapeType = eMultiPointZShape;
-            else if (has_measure)
-                physicalShapeType = eMultiPointMShape;
-            else
-                physicalShapeType = eMultiPointShape;
-            break;
-        case FdoGeometricType_Curve:
-            if (has_elevation)
-                physicalShapeType = ePolylineZShape;
-            else if (has_measure)
-                physicalShapeType = ePolylineMShape;
-            else
-                physicalShapeType = ePolylineShape;
-            break;
-        case FdoGeometricType_Surface:
-            if (has_elevation)
-                physicalShapeType = ePolygonZShape;
-            else if (has_measure)
-                physicalShapeType = ePolygonMShape;
-            else
-                physicalShapeType = ePolygonShape;
-            break;
-        case FdoGeometricType_Solid:
-        default:
-            {
-                wchar_t buffer[1024];
+        if (has_elevation)
+            physicalShapeType = eMultiPointZShape;
+        else if (has_measure)
+            physicalShapeType = eMultiPointMShape;
+        else
+            physicalShapeType = eMultiPointShape;
+    }
+    else if
+        (
+            ((geomTypeCount==1)
+            && FdoCommonMiscUtil::ContainsGeomType(geomTypes, geomTypeCount, FdoGeometryType_Point))
+        )
+    {
+        if (has_elevation)
+            physicalShapeType = ePointZShape;
+        else if (has_measure)
+            physicalShapeType = ePointMShape;
+        else
+            physicalShapeType = ePointShape;
+    }
+    else if
+        (
+            // BACKWARD-COMPABILITY-BEGIN:
+            ((geomTypeCount==4)
+            && FdoCommonMiscUtil::ContainsGeomType(geomTypes, geomTypeCount, FdoGeometryType_LineString)
+            && FdoCommonMiscUtil::ContainsGeomType(geomTypes, geomTypeCount, FdoGeometryType_MultiLineString)
+            && FdoCommonMiscUtil::ContainsGeomType(geomTypes, geomTypeCount, FdoGeometryType_CurveString)
+            && FdoCommonMiscUtil::ContainsGeomType(geomTypes, geomTypeCount, FdoGeometryType_MultiCurveString))
+            ||
+            // BACKWARD-COMPABILITY-END.
+            ((geomTypeCount==2)
+            && FdoCommonMiscUtil::ContainsGeomType(geomTypes, geomTypeCount, FdoGeometryType_LineString)
+            && FdoCommonMiscUtil::ContainsGeomType(geomTypes, geomTypeCount, FdoGeometryType_MultiLineString))
+            ||
+            ((geomTypeCount==1)
+            && FdoCommonMiscUtil::ContainsGeomType(geomTypes, geomTypeCount, FdoGeometryType_LineString))
+            ||
+            ((geomTypeCount==1)
+            && FdoCommonMiscUtil::ContainsGeomType(geomTypes, geomTypeCount, FdoGeometryType_MultiLineString))
+        )
+    {
+        if (has_elevation)
+            physicalShapeType = ePolylineZShape;
+        else if (has_measure)
+            physicalShapeType = ePolylineMShape;
+        else
+            physicalShapeType = ePolylineShape;
+    }
+    else if
+        (
+            // BACKWARD-COMPABILITY-BEGIN:
+            ((geomTypeCount==4)
+            && FdoCommonMiscUtil::ContainsGeomType(geomTypes, geomTypeCount, FdoGeometryType_Polygon)
+            && FdoCommonMiscUtil::ContainsGeomType(geomTypes, geomTypeCount, FdoGeometryType_MultiPolygon)
+            && FdoCommonMiscUtil::ContainsGeomType(geomTypes, geomTypeCount, FdoGeometryType_CurvePolygon)
+            && FdoCommonMiscUtil::ContainsGeomType(geomTypes, geomTypeCount, FdoGeometryType_MultiCurvePolygon))
+            ||
+            // BACKWARD-COMPABILITY-END.
+            ((geomTypeCount==2)
+            && FdoCommonMiscUtil::ContainsGeomType(geomTypes, geomTypeCount, FdoGeometryType_Polygon)
+            && FdoCommonMiscUtil::ContainsGeomType(geomTypes, geomTypeCount, FdoGeometryType_MultiPolygon))
+            ||
+            ((geomTypeCount==1)
+            && FdoCommonMiscUtil::ContainsGeomType(geomTypes, geomTypeCount, FdoGeometryType_Polygon))
+            ||
+            ((geomTypeCount==1)
+            && FdoCommonMiscUtil::ContainsGeomType(geomTypes, geomTypeCount, FdoGeometryType_MultiPolygon))
+        )
+    {
+        if (has_elevation)
+            physicalShapeType = ePolygonZShape;
+        else if (has_measure)
+            physicalShapeType = ePolygonMShape;
+        else
+            physicalShapeType = ePolygonShape;
+    }
+    else
+    {
+        wchar_t buffer[1024];
+        buffer[0] = '\0';
 
-                buffer[0] = '\0';
-                if (0 != (geometry_types & FdoGeometricType_Point))
-                {
-                    if ('\0' != buffer[0])
-                        wcscat (buffer, L"|");
-                    wcscat (buffer, L"FdoGeometricType_Point");
-                }
-                if (0 != (geometry_types & FdoGeometricType_Curve))
-                {
-                    if ('\0' != buffer[0])
-                        wcscat (buffer, L"|");
-                    wcscat (buffer, L"FdoGeometricType_Curve");
-                }
-                if (0 != (geometry_types & FdoGeometricType_Surface))
-                {
-                    if ('\0' != buffer[0])
-                        wcscat (buffer, L"|");
-                    wcscat (buffer, L"FdoGeometricType_Surface");
-                }
-                if (0 != (geometry_types & FdoGeometricType_Solid))
-                {
-                    if ('\0' != buffer[0])
-                        wcscat (buffer, L"|");
-                    wcscat (buffer, L"FdoGeometricType_Solid");
-                }
-                throw FdoException::Create (NlsMsgGet(SHP_UNSUPPORTED_SHAPE, "The '%1$ls' geometry type is not supported by Shp.", buffer));
+        for (int i=FdoGeometryType_None; i<=FdoGeometryType_MultiCurvePolygon; i++)
+        {
+            if (FdoCommonMiscUtil::ContainsGeomType(geomTypes, geomTypeCount, (FdoGeometryType)i))
+            {
+                if ('\0' != buffer[0])
+                    wcscat (buffer, L"|");
+                wcscat (buffer, FdoCommonMiscUtil::FdoGeometryTypeToString((FdoGeometryType)i));
             }
+        }
+
+        throw FdoException::Create (NlsMsgGet(FDO_131_UNSUPPORTED_GEOMETRY_TYPE, "The '%1$ls' geometry type (or combination of types) is not supported.", buffer));
     }
 
     return (physicalShapeType);

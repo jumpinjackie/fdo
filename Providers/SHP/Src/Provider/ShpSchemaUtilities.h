@@ -30,7 +30,7 @@ public:
     static eDBFColumnType FdoTypeToDbfType (FdoDataType type);
 
     // Misc conversion functions:
-    static eShapeTypes FdoGeometryToShapeType (FdoInt32 geometry_types, bool has_elevation, bool has_measure);
+    static eShapeTypes FdoGeometryToShapeType (FdoGeometryType* geomTypes, FdoInt32 geomTypeCount, bool has_elevation, bool has_measure);
 
     // Returns the requested logical class definition, paring it down to the given property list
     static FdoClassDefinition* GetLogicalClassDefinition (ShpConnection* connection, FdoString* logicalClassName, FdoIdentifierCollection* selectedProperties);

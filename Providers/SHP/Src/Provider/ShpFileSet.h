@@ -81,6 +81,7 @@ public:
     void PutData (ShpConnection* connection, FdoString* class_name, FdoPropertyValueCollection* values, RowData* row, Shape* shape, bool batch = false);
 	void ReopenFileset(FdoCommonFile::OpenFlags flags );
 	void SetFilesDeleted();
+    bool IsWritable();
 
 	void SetShapeFileC (ShapeFile *shp);
 	void SetDbfFileC (ShapeDBF *dbf);

@@ -1235,7 +1235,7 @@ Shape* ShapeFile::ShapeFromGeometry (FdoByteArray* bytes, int nRecordNumber)
             ret = ShapeFromMultiLine ((FdoIMultiLineString*)geometry.p, &box, nRecordNumber);
             break;
         default:
-            throw FdoException::Create (NlsMsgGet(SHP_UNSUPPORTED_SHAPE, "The '%1$ls' geometry type is not supported by Shp.", (FdoString *) FdoCommonMiscUtil::FdoGeometryTypeToString(type)));
+            throw FdoException::Create (NlsMsgGet(FDO_131_UNSUPPORTED_GEOMETRY_TYPE, "The '%1$ls' geometry type (or combination of types) is not supported.", (FdoString *) FdoCommonMiscUtil::FdoGeometryTypeToString(type)));
             break;
     }
 

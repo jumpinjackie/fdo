@@ -120,3 +120,13 @@ bool ShpConnectionCapabilities::SupportsCSysWKTFromCSysName()
 {
     return (false);
 }
+
+bool ShpConnectionCapabilities::SupportsWrite()
+{
+    return true;
+}
+
+bool ShpConnectionCapabilities::SupportsMultiUserWrite()
+{
+    return false;
+}

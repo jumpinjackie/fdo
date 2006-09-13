@@ -1048,3 +1048,28 @@ void ShpFileSet::SetFilesDeleted()
 { 
 	mFilesExist = false; 
 }
+
+bool ShpFileSet::IsWritable()
+{
+    bool bWritable = true;
+
+    // Note that FdoCommonFile::IsReadOnly() == true means the file was opened in read-only mode,
+    // it does not imply the file is not writable by the current process.
+    if (GetShapeFile()->IsReadOnly())
+    {
+	    try
+	    {
+		    ReopenFileset( FdoCommonFile::IDF_OPEN_UPDATE );
+	    }
+	    catch (FdoException* ex)
+	    {
+            ex->Release();
+		    bWritable = false;
+	    }
+
+	    // Revert to read-only state:
+	    ReopenFileset( FdoCommonFile::IDF_OPEN_READ );
+    }
+
+    return bWritable;
+}

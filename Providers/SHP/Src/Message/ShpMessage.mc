@@ -227,11 +227,6 @@ SymbolicName=SHP_SCHEMA_CREATION_FAILED
 Language=English
 Schema create failed.
 .
-MessageId=4011
-SymbolicName=SHP_UNSUPPORTED_SHAPE
-Language=English
-The '%1$ls' geometry type is not supported by Shp.
-.
 MessageId=4012
 SymbolicName=SHP_MISSING_SCHEMA_MAPPING
 Language=English

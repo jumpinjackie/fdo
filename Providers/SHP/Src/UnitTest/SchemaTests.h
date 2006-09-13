@@ -52,6 +52,7 @@ class SchemaTests :
     CPPUNIT_TEST (modify_class);
     CPPUNIT_TEST (ignore_states);
     CPPUNIT_TEST (describe_Fix784301);
+    CPPUNIT_TEST (read_only_files);
     CPPUNIT_TEST_SUITE_END ();
 
     static FdoPtr<FdoIConnection> mConnection;
@@ -110,6 +111,9 @@ protected:
 
 	void apply_schema();
     void describe_Fix784301 ();
+    void read_only_files ();
+
+
     // Helper methods
     ///////////////////////////////////////////////////////////////////////////
 
@@ -119,6 +123,12 @@ protected:
     // Helper method; iterates the given schema mappings, comparing the mappings to 
     // the logical schema (if one is given).
     void _TestSchemaMappings(FdoPhysicalSchemaMappingCollection* mappings, FdoFeatureSchemaCollection* logicalSchemas);
+
+    // sets a file-set's read-write access mode:
+    void SetShpFileAccess(FdoString* shpPath, bool bReadWrite);
+
+    // apply and describe schema, then compare results
+    void apply_helper(bool bUseSpecificGeometryTypes);
 };
 
 #endif // SCHEMATESTS_H
