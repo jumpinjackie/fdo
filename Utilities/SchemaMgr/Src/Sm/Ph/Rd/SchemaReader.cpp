@@ -41,7 +41,8 @@ bool FdoSmPhRdSchemaReader::ReadNext()
         FdoSmPhRow* pFrom = pFroms ? pFroms->GetItem(0) : NULL;
 
         if ( pFrom ) {
-            FdoSmPhField* pField = pFrom->GetFields()->GetItem(L"schemaname");
+			FdoSmPhFieldsP pFields = pFrom->GetFields();
+            FdoSmPhFieldP pField = pFields->GetItem(L"schemaname");
 
             if ( mDsInfo ) {
                 // When retrieving datastore information, just set 

@@ -119,25 +119,26 @@ bool FdoSmPhRdClassReader::ReadNext()
 
                     if ( pFrom ) {
                         // Schema name is the one passed in
-                        FdoSmPhFieldP pField = pFrom->GetFields()->GetItem(L"schemaname");
+						FdoSmPhFieldsP pFields = pFrom->GetFields();
+                        FdoSmPhFieldP pField = pFields->GetItem(L"schemaname");
                         pField->SetFieldValue( mSchemaName );
 
                         // Class name is table name
-                        pField = pFrom->GetFields()->GetItem(L"classname");
+                        pField = pFields->GetItem(L"classname");
                         pField->SetFieldValue( pObject->GetBestClassName() );
 
                         // Class type id not relevant when no MetaSchema
                         // but set it anyway
-                        pField = pFrom->GetFields()->GetItem(L"classtype");
+                        pField = pFields->GetItem(L"classtype");
                         if ( hasGeom )
                             pField->SetFieldValue( L"2" );
                         else
                             pField->SetFieldValue( L"1" );
 
-                        pField = pFrom->GetFields()->GetItem(L"tablename");
+                        pField = pFields->GetItem(L"tablename");
                         pField->SetFieldValue( objectName );
 
-                        pField = pFrom->GetFields()->GetItem(L"tableowner");
+                        pField = pFields->GetItem(L"tableowner");
                         FdoSmPhMgrP mgr = this->GetManager();
                         if ( mgr->GetOwner() == mOwner )
                             pField->SetFieldValue( L"" );
@@ -146,13 +147,13 @@ bool FdoSmPhRdClassReader::ReadNext()
 
                         // No MetaSchema so table is fixed and was not created by
                         // Schema Manager.
-                        pField = pFrom->GetFields()->GetItem(L"isfixedtable");
+                        pField = pFields->GetItem(L"isfixedtable");
                         pField->SetFieldValue( L"1" );
 
-                        pField = pFrom->GetFields()->GetItem(L"istablecreator");
+                        pField = pFields->GetItem(L"istablecreator");
                         pField->SetFieldValue( L"0" );
 
-                        pField = pFrom->GetFields()->GetItem(L"geometryproperty");
+                        pField = pFields->GetItem(L"geometryproperty");
                         if ( geomPropName.GetLength() > 0 )
                             pField->SetFieldValue( geomPropName );
                         else
@@ -164,7 +165,8 @@ bool FdoSmPhRdClassReader::ReadNext()
 
                     // Feature class if it has geometry.
                     if ( pFrom ) {
-                        FdoSmPhFieldP pField = pFrom->GetFields()->GetItem(L"classtypename");
+						FdoSmPhFieldsP pFields = pFrom->GetFields();
+                        FdoSmPhFieldP pField = pFields->GetItem(L"classtypename");
                         if ( hasGeom )
                             pField->SetFieldValue( L"Feature" );
                         else

@@ -42,12 +42,17 @@ public:
 
         if ( tableName.GetLength() > 0 ) {
             FdoSmPhRowP row = GetItem( tableName );
-            field = row ? row->GetFields()->GetItem( fieldName ) : NULL;
+			if ( row )
+			{
+				FdoSmPhFieldsP fields = row->GetFields();
+				field = fields->GetItem( fieldName );
+			}
         }
         else {
             for ( cidx = 0; cidx < GetCount(); cidx++ ) {
                 FdoSmPhRowP row = GetItem(cidx);
-                field = row->GetFields()->FindItem( fieldName );
+				FdoSmPhFieldsP fields = row->GetFields();
+                field = fields->FindItem( fieldName );
                 if ( field ) 
                     break;
             }

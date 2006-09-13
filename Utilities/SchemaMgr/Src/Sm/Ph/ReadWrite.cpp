@@ -62,11 +62,11 @@ void FdoSmPhReadWrite::Clear()
         if ( mRows ) {
             for ( cidx1 = 0; cidx1 < mRows->GetCount(); cidx1++ ) {
                 FdoSmPhRowP row = mRows->GetItem(cidx1);
-                FdoSmPhFieldsP fields = row->GetFields();
+                FdoSmPhFieldsP	pFields = row->GetFields();
 
                 // Clear each field.
-                for ( cidx2 = 0; cidx2 < fields->GetCount(); cidx2++ ) {
-                    FdoSmPhFieldP field = fields->GetItem(cidx2);
+                for ( cidx2 = 0; cidx2 < pFields->GetCount(); cidx2++ ) {
+                    FdoSmPhFieldP field = pFields->GetItem(cidx2);
                     field->Clear();
                 }
             }

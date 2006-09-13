@@ -42,7 +42,8 @@ FdoSmPhField::FdoSmPhField(
 	mNullInd(false)
 {
     // Auto-add the field to its parent row
-    pRow->GetFields()->Add(this);
+	FdoSmPhFieldsP pFields = pRow->GetFields();
+    pFields->Add(this);
 }
 
 FdoSmPhField::~FdoSmPhField(void)

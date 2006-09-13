@@ -948,7 +948,8 @@ void FdoSmPhTable::LoadUkeys( FdoSmPhReaderP ukeyRdr )
         FdoStringP ukeyName			= ukeyRdr->GetString(L"", L"constraint_name");
         FdoStringP columnName		= ukeyRdr->GetString(L"", L"column_name");
 
-        FdoSmPhColumnP ukeyColumn = GetColumns()->FindItem( columnName );
+		FdoSmPhColumnsP ukeyColumns = GetColumns();
+        FdoSmPhColumnP ukeyColumn = ukeyColumns->FindItem( columnName );
 
         // Unique Key column must be in this table.
         if ( ukeyColumn == NULL ) {
@@ -1011,7 +1012,8 @@ void FdoSmPhTable::LoadCkeys( FdoSmPhReaderP ckeyRdr )
 		if ( clause == L"" || clause.Contains(L"NOT NULL"))
 			continue;
 
-        FdoSmPhColumnP ckeyColumn = GetColumns()->FindItem( columnName );
+		FdoSmPhColumnsP ckeyColumns = GetColumns();
+        FdoSmPhColumnP ckeyColumn = ckeyColumns->FindItem( columnName );
 
         // Cheked column must be in this table.
     	if ( ckeyColumn == NULL ) {
@@ -1019,7 +1021,7 @@ void FdoSmPhTable::LoadCkeys( FdoSmPhReaderP ckeyRdr )
 		        AddCkeyColumnError( columnName );
 		}
 
-		FdoSmPhCheckConstraint  *pConstr = new FdoSmPhCheckConstraint( ckeyName, columnName, clause );
+		FdoSmPhCheckConstraintP  pConstr = new FdoSmPhCheckConstraint( ckeyName, columnName, clause );
 		mCkeysCollection->Add( pConstr );
 	}
 }

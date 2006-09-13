@@ -58,7 +58,9 @@ bool FdoSmPhRdAssociationReader::ReadNext()
             if ( mPkTableName.ICompare(pPkeyTable->GetName()) == 0 ) {
                 // LogicalPhysical schema reverses primary and foreign tables
                 // so that is why the pk is set from the fk and vice versa.
-                FdoSmPhFieldP pField = pFrom->GetFields()->GetItem(L"fktablename");
+				FdoSmPhFieldsP pFields = pFrom->GetFields();
+
+                FdoSmPhFieldP pField = pFields->GetItem(L"fktablename");
                 pField->SetFieldValue( pPkeyTable->GetName() );
 
                 // quote delimit the key columns if they can contain
@@ -67,10 +69,10 @@ bool FdoSmPhRdAssociationReader::ReadNext()
                 for ( ix = 0; ix < pFkey->GetPkeyColumns()->GetCount(); ix++ )
                     colList->Add( FdoSmPhColumnP(pFkey->GetPkeyColumns()->GetItem(ix))->GetDbName() );
 
-                pField = pFrom->GetFields()->GetItem(L"fkcolumnnames");
+                pField = pFields->GetItem(L"fkcolumnnames");
                 pField->SetFieldValue( colList->ToString(L" ") );
 
-                pField = pFrom->GetFields()->GetItem(L"pktablename");
+                pField = pFields->GetItem(L"pktablename");
                 pField->SetFieldValue( mpTable->GetName() );
 
                 // quote delimit the key columns if they can contain
@@ -79,7 +81,7 @@ bool FdoSmPhRdAssociationReader::ReadNext()
                 for ( ix = 0; ix < pFkey->GetFkeyColumns()->GetCount(); ix++ )
                     colList->Add( FdoSmPhColumnP(pFkey->GetFkeyColumns()->GetItem(ix))->GetDbName() );
 
-                pField = pFrom->GetFields()->GetItem(L"pkcolumnnames");
+                pField = pFields->GetItem(L"pkcolumnnames");
                 pField->SetFieldValue( colList->ToString(L" ") );
 
                 found = true;

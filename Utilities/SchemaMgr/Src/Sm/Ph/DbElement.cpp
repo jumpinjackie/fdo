@@ -26,7 +26,7 @@ FdoSmPhDbElement::FdoSmPhDbElement(
     const FdoSmPhSchemaElement* parent,   
     FdoSchemaElementState elementState
 ) : 
-    FdoSmPhSchemaElement(name, L"", pMgr, parent ),
+    FdoSmPhSchemaElement((FdoString *)name, L"", pMgr, parent ),
     mCommitState(FdoSchemaElementState_Unchanged)
 {
     FdoSmPhSchemaElement::SetElementState(elementState);

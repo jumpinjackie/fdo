@@ -72,13 +72,13 @@ FdoStringP FdoSmPhRdQueryReader::MakeStatement( FdoSmPhRowsP rows, FdoStringP sC
         // Add the table to the "from" list + the table name as a alias
 		tables->Add( row->GetDbObject()->GetDbQName() + L" " + row->GetName() );
 
-        FdoSmPhFieldsP fields = row->GetFields();
+        FdoSmPhFieldsP pFields = row->GetFields();
 
         // Process each table's field
-        for ( cidx = 0; cidx < fields->GetCount(); cidx++ ) {
-            FdoSmPhFieldP field = fields->GetItem(cidx);
+        for ( cidx = 0; cidx < pFields->GetCount(); cidx++ ) {
+            FdoSmPhFieldP pField = pFields->GetItem(cidx);
 
-            FdoStringP selectCol = field->GetSelect();
+            FdoStringP selectCol = pField->GetSelect();
 
             if ( selectCol.GetLength() > 0 ) {
                 // Add the field to the select list.
@@ -88,7 +88,7 @@ FdoStringP FdoSmPhRdQueryReader::MakeStatement( FdoSmPhRowsP rows, FdoStringP sC
 		        throw FdoSchemaException::Create (
                     FdoSmError::NLSGetMessage(
                         FDO_NLSID(FDOSM_308), 
-    			        (FdoString*) field->GetQName() 
+    			        (FdoString*) pField->GetQName() 
                     )
 		        );
             }

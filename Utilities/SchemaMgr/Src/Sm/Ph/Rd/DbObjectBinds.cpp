@@ -44,14 +44,16 @@ FdoSmPhRdDbObjectBinds::FdoSmPhRdDbObjectBinds(
         mBinds = new FdoSmPhRow( mgr, L"binds" );
     }
 
+	FdoSmPhFieldsP pFields = mBinds->GetFields();
+
     // figure out offset of owner name bind field.
     if ( rebind ) {
         // If rebinding, look it up in bind fields collection
-        bindOffset = mBinds->GetFields()->IndexOf( ownerAlias );
+        bindOffset = pFields->IndexOf( ownerAlias );
     }
     else {
         // Not rebinding so owner bind will be added to the end of bind collection.
-        bindOffset = mBinds->GetFields()->GetCount();
+        bindOffset = pFields->GetCount();
 
         FdoSmPhDbObjectP rowObj = mBinds->GetDbObject();
 
@@ -79,11 +81,13 @@ FdoSmPhRdDbObjectBinds::FdoSmPhRdDbObjectBinds(
     }
 
     // Set bind value for owner
-    mBinds->GetFields()->GetItem(bindOffset)->SetFieldValue( ownerName );
+	FdoSmPhFieldP	pField = pFields->GetItem(bindOffset);
+	pField->SetFieldValue( ownerName );
 
     // Set bind values for objects.
     for ( objectIx = 0; objectIx < objectNames->GetCount(); objectIx++ ) {
-        mBinds->GetFields()->GetItem(objectIx + bindOffset + 1)->SetFieldValue( objectNames->GetString(objectIx) );
+		FdoSmPhFieldP	pField = pFields->GetItem(objectIx + bindOffset + 1);
+        pField->SetFieldValue( objectNames->GetString(objectIx) );
     }
 
     // Generate SQL
