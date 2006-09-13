@@ -66,17 +66,19 @@ bool FdoSmPhCfgGrdSchemaReader::ReadNext()
             FdoSmPhRowP  row = rows ? rows->GetItem(0) : NULL;
 
             if ( row ) {
+				FdoSmPhFieldsP pFields = row->GetFields();
+
                 // Set some fields from the config document.
-                FdoSmPhFieldP field = row->GetFields()->GetItem(L"schemaname");
+                FdoSmPhFieldP field = pFields->GetItem(L"schemaname");
                 field->SetFieldValue( schemaName );
 
-                field = row->GetFields()->GetItem(L"tablemapping");
+                field = pFields->GetItem(L"tablemapping");
                 field->SetFieldValue( FdoSmOvTableMappingTypeMapper::Type2String(mapping2->GetTableMapping()) );
 
-                field = row->GetFields()->GetItem(L"tablelinkname");
+                field = pFields->GetItem(L"tablelinkname");
                 field->SetFieldValue( grdMgr->GetOverrideDatabase(mapping2) );
 
-                field = row->GetFields()->GetItem(L"tableowner");
+                field = pFields->GetItem(L"tableowner");
                 field->SetFieldValue( grdMgr->GetOverrideOwner(mapping2) );
             }
             else {

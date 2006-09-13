@@ -145,8 +145,10 @@ void FdoSmPhRdGrdQueryReader::Execute()
 
             // Bind each bind field to the query.
             if ( mBindFields ) {
-                for ( j = 0; j < mBindFields->GetFields()->GetCount(); j++ ) {
-                    FdoSmPhFieldP pField = mBindFields->GetFields()->GetItem(j);
+				FdoSmPhFieldsP	pFields = mBindFields->GetFields();
+
+                for ( j = 0; j < pFields->GetCount(); j++ ) {
+                    FdoSmPhFieldP pField = pFields->GetItem(j);
                     col++;
                     if ( GetManager()->IsRdbUnicode() ) 
                         mQuery->Bind( col, pField->GetBindSize(), (FdoString*) pField->GetBindString(), pField->GetNullInd() );
@@ -172,14 +174,16 @@ void FdoSmPhRdGrdQueryReader::Execute()
 
                 FdoSmPhRdGrdRowArrayP rowArray = new FdoSmPhRdGrdRowArray(row);
                 mFetches->Add(rowArray);
-
-                for ( j = 0; j < row->GetFields()->GetCount(); j++ ) {
+				
+				FdoSmPhFieldsP	pFields = row->GetFields();
+                for ( j = 0; j < pFields->GetCount(); j++ ) {
                     // Create a field array for each field.
                     // field array holds the field value when the next row is retreived
-                    FdoSmPhFieldP field = row->GetFields()->GetItem(j);
+                    FdoSmPhFieldP field = pFields->GetItem(j);
                     col++;
                     FdoSmPhRdGrdFieldArrayP fieldArray = new FdoSmPhRdGrdFieldArray( field, mResults, col );
-                    rowArray->GetFields()->Add(fieldArray);
+					FdoSmPhRdGrdFieldArraysP fields = rowArray->GetFields();
+                    fields->Add(fieldArray);
                 }
             }
         }
@@ -194,8 +198,9 @@ void FdoSmPhRdGrdQueryReader::Execute()
 			int i, j;
 			for ( i = 0; i < mFetches->GetCount(); i++ ) {
 				rowArray = mFetches->GetItem(i);
-				for ( j = 0; j < rowArray->GetFields()->GetCount(); j++ )	{
-					fieldArray = rowArray->GetFields()->GetItem(j);
+				FdoSmPhRdGrdFieldArraysP pFields = rowArray->GetFields();
+				for ( j = 0; j < pFields->GetCount(); j++ )	{
+					fieldArray = pFields->GetItem(j);
 					fieldArray->UpdateResults(mResults);
 				}
 			}
@@ -211,12 +216,17 @@ FdoSmPhRdGrdFieldArrayP FdoSmPhRdGrdQueryReader::GetFieldArray( FdoStringP table
 
     if ( tableName.GetLength() > 0 ) {
         rowArray = mFetches->GetItem( tableName );
-        fieldArray = rowArray ? rowArray->GetFields()->GetItem( fieldName ) : NULL;
+		if ( rowArray )
+		{
+			FdoSmPhRdGrdFieldArraysP pFields = rowArray->GetFields();
+			fieldArray = pFields->GetItem( fieldName );
+		}
     }
     else {
         for ( cidx = 0; cidx < mFetches->GetCount(); cidx++ ) {
             rowArray = mFetches->GetItem(cidx);
-            fieldArray = rowArray->GetFields()->FindItem( fieldName );
+			FdoSmPhRdGrdFieldArraysP pFields = rowArray->GetFields();
+            fieldArray = pFields->FindItem( fieldName );
             if ( fieldArray )
                 break;
         }
