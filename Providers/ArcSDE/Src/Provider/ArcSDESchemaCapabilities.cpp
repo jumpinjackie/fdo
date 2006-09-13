@@ -259,17 +259,20 @@ FdoInt32 ArcSDESchemaCapabilities::GetMaximumDecimalScale()
 
 FdoDataType* ArcSDESchemaCapabilities::GetSupportedIdentityPropertyTypes(FdoInt32& length)
 {
-    length = 0;
-    FdoDataType supportedIdentityTypes[10];
-    supportedIdentityTypes[length++] = FdoDataType_DateTime;
-    supportedIdentityTypes[length++] = FdoDataType_Double;
-    supportedIdentityTypes[length++] = FdoDataType_Int16;
-    supportedIdentityTypes[length++] = FdoDataType_Int32;
-    supportedIdentityTypes[length++] = FdoDataType_Single;
-    supportedIdentityTypes[length++] = FdoDataType_String;
-    supportedIdentityTypes[length++] = FdoDataType_BLOB;
+    static FdoDataType types[] =
+    {
+        FdoDataType_DateTime,
+        FdoDataType_Double,
+        FdoDataType_Int16,
+        FdoDataType_Int32,
+        FdoDataType_Single,
+        FdoDataType_String,
+        FdoDataType_BLOB
+    };
 
-    return supportedIdentityTypes;
+    length = sizeof (types) / sizeof (FdoDataType);
+
+    return types;
 }
 
 bool ArcSDESchemaCapabilities::SupportsDefaultValue()
