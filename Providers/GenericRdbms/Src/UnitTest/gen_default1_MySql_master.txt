@@ -276,7 +276,7 @@
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
-<xs:element name="GEOMETRYCOLLECTION_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:srsName="Default" fdo:geometricTypes="point curve surface ">
+<xs:element name="GEOMETRYCOLLECTION_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="point curve surface ">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -323,7 +323,7 @@
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
-<xs:element name="LINESTRING_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:srsName="Default" fdo:geometricTypes="point curve surface ">
+<xs:element name="LINESTRING_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="point curve surface ">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -364,22 +364,22 @@
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
-<xs:element name="MULTILINESTRING_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:srsName="Default" fdo:geometricTypes="point curve surface ">
+<xs:element name="MULTILINESTRING_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="point curve surface ">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
-<xs:element name="MULTIPOINT_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:srsName="Default" fdo:geometricTypes="point curve surface ">
+<xs:element name="MULTIPOINT_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="point curve surface ">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
-<xs:element name="MULTIPOLYGON_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:srsName="Default" fdo:geometricTypes="point curve surface ">
+<xs:element name="MULTIPOLYGON_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="point curve surface ">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
-<xs:element name="NEW_GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:srsName="Default" fdo:geometricTypes="point curve surface ">
+<xs:element name="NEW_GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="point curve surface ">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -394,12 +394,12 @@
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
-<xs:element name="POINT_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:srsName="Default" fdo:geometricTypes="point curve surface ">
+<xs:element name="POINT_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="point curve surface ">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
-<xs:element name="POLGON_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:srsName="Default" fdo:geometricTypes="point curve surface ">
+<xs:element name="POLGON_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="point curve surface ">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -569,7 +569,7 @@
 <xs:complexContent>
 <xs:extension base="gml:AbstractFeatureType">
 <xs:sequence>
-<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:srsName="Default" fdo:geometricTypes="point curve surface ">
+<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="point curve surface ">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
