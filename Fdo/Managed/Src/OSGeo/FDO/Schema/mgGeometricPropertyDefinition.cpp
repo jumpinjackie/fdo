@@ -122,3 +122,25 @@ System::String * NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::get_Sp
 
 	return result;
 }
+NAMESPACE_OSGEO_COMMON::GeometryType NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::get_SpecificGeometryTypes(System::Int32 &length)[]
+{
+	FdoGeometryType* unobj;
+	FdoInt32 unlength;
+	EXCEPTION_HANDLER(unobj = GetImpObj()->GetSpecificGeometryTypes(unlength));
+    NAMESPACE_OSGEO_COMMON::GeometryType mtype [] = new NAMESPACE_OSGEO_COMMON::GeometryType[unlength];
+	for(FdoInt32 i = 0; i < unlength; i ++)
+	{
+		mtype[i] = static_cast<NAMESPACE_OSGEO_COMMON::GeometryType>(*(unobj + i));
+	}
+	return mtype;
+}
+
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::set_SpecificGeometryTypes(NAMESPACE_OSGEO_COMMON::GeometryType types[], System::Int32 length)
+{
+	FdoGeometryType *unobj = new FdoGeometryType[length+1];
+	for(FdoInt32 i = 0; i < length; i ++)
+	{
+        unobj[i] = static_cast<FdoGeometryType>(types[i]);
+	}
+    EXCEPTION_HANDLER(GetImpObj()->SetSpecificGeometryTypes(unobj, length));
+}

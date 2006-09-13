@@ -27,14 +27,16 @@ BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 
 public __gc class ArgumentDefinitionCollection;
 public __gc class ReadOnlyArgumentDefinitionCollection;
+public __gc class SignatureDefinitionCollection;
+public __gc class ReadOnlySignatureDefinitionCollection;
 
 /// \brief
-///  The FdoFunctionDefinition class contains metadata that describes a function and its arguments.
+///  The FunctionDefinition class contains metadata that describes a function and its arguments.
 public __gc class FunctionDefinition : public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
 public:
     /// \brief
-    ///  Constructs an instance of an FdoFunctionDefinition using the specified arguments.
+    ///  Constructs an instance of a FunctionDefinition using the specified arguments.
     /// 
     /// \param name 
     /// Input the name of the function.
@@ -44,13 +46,34 @@ public:
     /// Input the function return type
     /// \param arguments 
     /// Input the argument definition list
-    /// \param length 
-    /// Input the number of arguments
     /// 
     /// \return
-    /// Returns FdoFunctionDefinition
+    /// Returns FunctionDefinition
     /// 
-	FunctionDefinition(System::String* name, System::String* description, NAMESPACE_OSGEO_FDO_SCHEMA::DataType returnType, NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ArgumentDefinitionCollection* arguments);
+	FunctionDefinition (System::String *name,
+                        System::String *description,
+                        NAMESPACE_OSGEO_FDO_SCHEMA::DataType returnType,
+                        NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ArgumentDefinitionCollection *arguments);
+
+    /// \brief
+    ///  Constructs an instance of a FunctionDefinition using the specified arguments.
+    /// 
+    /// \param name 
+    /// Input the name of the function.
+    /// \param description 
+    /// Input a brief description.
+    /// \param isAggregate 
+    /// Input the flag indicating whether or not this is an aggregate function
+    /// \param signatures 
+    /// Input the list of possible function signatures
+    /// 
+    /// \return
+    /// Returns FunctionDefinition
+    /// 
+	FunctionDefinition (System::String *name,
+                        System::String *description,
+                        System::Boolean isAggregate,
+                        NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinitionCollection *signatures);
 
     /// \brief
     ///  Gets the name of the function.
@@ -58,7 +81,7 @@ public:
     /// \return
     /// Returns the name of the function
     /// 
-	__property System::String* get_Name();
+	__property System::String *get_Name();
 
     /// \brief
     ///  Gets a brief description of the function.
@@ -66,10 +89,10 @@ public:
     /// \return
     /// Returns the description of the function
     /// 
-	__property System::String* get_Description();
+	__property System::String *get_Description();
 
     /// \brief
-    ///  Gets an array of FdoArgumentDefinition objects required for the function.
+    ///  Gets an array of ArgumentDefinition objects required for the function.
     /// 
     /// \param length 
     /// Output the number of argument definitions.
@@ -77,10 +100,10 @@ public:
     /// \return
     /// Returns the list of argument definitions
     /// 
-	__property NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection* get_Arguments();
+	__property NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection *get_Arguments();
 
     /// \brief
-    ///  Gets the FdoPropertyType of the function return value.
+    ///  Gets the PropertyType of the function return value.
     /// 
     /// \return
     /// Returns the function return property type
@@ -88,7 +111,7 @@ public:
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType get_ReturnPropertyType();
 
     /// \brief
-    ///  Gets the FdoDataType of the function return value.
+    ///  Gets the DataType of the function return value.
     /// 
     /// \return
     /// Returns the function return type
@@ -96,14 +119,24 @@ public:
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::DataType get_ReturnType();
 
     /// \brief
-    /// Indicates that this object allows its name
-    /// to change. This function is defined so that this class can 
-    /// be a NamedCollection element.
+    /// Indicates that this object allows its name to change. This function is
+    /// defined so that this class can be a NamedCollection element.
     /// 
     /// \return
     /// Returns false
     /// 
 	__property System::Boolean get_CanSetName();
+
+    /// \brief
+	/// Gets an array of SignatureDefinition objects that describe the different signatures
+    /// supported by the function.
+    ///
+    __property NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlySignatureDefinitionCollection *get_Signatures();
+
+    ///
+    /// \brief
+	/// Returns true if the function is an aggregate function and false if it is a simple function.
+    __property System::Boolean get_IsAggregate();
 
 protected:
 	System::Void Dispose(System::Boolean disposing);

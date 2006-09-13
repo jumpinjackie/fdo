@@ -104,6 +104,7 @@
 #include "FDO\Connections\Capabilities\mgISchemaCapabilitiesImp.h"
 #include "FDO\Connections\Capabilities\mgITopologyCapabilitiesImp.h"
 #include "FDO\Connections\Capabilities\mgReadOnlyArgDefColl.h"
+#include "FDO\Connections\Capabilities\mgSignatureDefinition.h"
 
 #include "FDO\mgIConnectionManagerImp.h"
 #include "FDO\ClientServices\mgConnectionManager.h"
@@ -1122,6 +1123,30 @@ NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollecti
 		return NULL;
 
     return new NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection(ptr, autoDispose);
+}
+
+NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinition* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateSignatureDefinition(System::IntPtr ptr, System::Boolean autoDispose)
+{
+	if (ptr == IntPtr::Zero)
+		return NULL;
+
+    return new NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinition(ptr, autoDispose);
+}
+
+NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinitionCollection* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateSignatureDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose)
+{
+	if (ptr == IntPtr::Zero)
+		return NULL;
+
+    return new NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinitionCollection(ptr, autoDispose);
+}
+
+NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlySignatureDefinitionCollection* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateReadOnlySignatureDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose)
+{
+	if (ptr == IntPtr::Zero)
+		return NULL;
+
+    return new NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlySignatureDefinitionCollection(ptr, autoDispose);
 }
 
 NAMESPACE_OSGEO_FDO_COMMANDS::ICommand* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateICommand(System::IntPtr ptr, System::Boolean autoDispose, NAMESPACE_OSGEO_FDO_COMMANDS::CommandType type)

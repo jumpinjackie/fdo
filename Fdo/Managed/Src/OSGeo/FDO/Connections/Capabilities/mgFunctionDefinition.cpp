@@ -25,6 +25,7 @@
 
 #include "FDO\Connections\Capabilities\mgFunctionDefinition.h"
 #include "FDO\Connections\Capabilities\mgArgumentDefinitionCollection.h"
+#include "FDO\Connections\Capabilities\mgSignatureDefinition.h"
 #include "FDO\Connections\Capabilities\mgReadOnlyArgDefColl.h"
 #include "FDO\mgObjectFactory.h"
 
@@ -53,9 +54,28 @@ Void NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinition::Dispose(B
 	}
 }
 
-NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinition::FunctionDefinition(System::String* name, System::String* description, NAMESPACE_OSGEO_FDO_SCHEMA::DataType returnType, NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ArgumentDefinitionCollection* arguments) : Disposable(IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinition::FunctionDefinition(
+                                    System::String *name,
+                                    System::String *description,
+                                    NAMESPACE_OSGEO_FDO_SCHEMA::DataType returnType,
+                                    NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ArgumentDefinitionCollection *arguments) : Disposable(IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoFunctionDefinition::Create(StringToUni(name), StringToUni(description), static_cast<FdoDataType>(returnType), arguments->GetImpObj()), true))
+	EXCEPTION_HANDLER(Attach(FdoFunctionDefinition::Create(StringToUni(name),
+                                                           StringToUni(description),
+                                                           static_cast<FdoDataType>(returnType),
+                                                           arguments->GetImpObj()), true))
+}
+
+NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinition::FunctionDefinition(
+                                    System::String *name,
+                                    System::String *description,
+                                    System::Boolean isAggregate,
+                                    NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinitionCollection *signatures) : Disposable(IntPtr::Zero, false)
+{
+	EXCEPTION_HANDLER(Attach(FdoFunctionDefinition::Create(StringToUni(name),
+                                                           StringToUni(description),
+                                                           isAggregate,
+                                                           signatures->GetImpObj()), true))
 }
 
 // For next release
@@ -64,23 +84,23 @@ NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinition::FunctionDefini
 //	EXCEPTION_HANDLER(Attach(FdoFunctionDefinition::Create(StringToUni(name), StringToUni(description), static_cast<FdoPropertyType>(returnPropertyType), static_cast<FdoDataType>(returnType), arguments->GetImpObj()), true))
 //}
 
-System::String* NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinition::get_Name()
+System::String *NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinition::get_Name()
 {
-	FdoString* unstr;
+	FdoString *unstr;
 	EXCEPTION_HANDLER(unstr = GetImpObj()->GetName())
 	return unstr;
 }
 
-System::String* NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinition::get_Description()
+System::String *NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinition::get_Description()
 {
-	FdoString* unstr;
+	FdoString *unstr;
 	EXCEPTION_HANDLER(unstr = GetImpObj()->GetDescription())
 	return unstr;
 }
 
-NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection* NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinition::get_Arguments()
+NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection *NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinition::get_Arguments()
 {
-	FdoReadOnlyArgumentDefinitionCollection * unobj;
+	FdoReadOnlyArgumentDefinitionCollection *unobj;
 	EXCEPTION_HANDLER(unobj = GetImpObj()->GetArguments())
     return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateReadOnlyArgumentDefinitionCollection(unobj, true);
 }
@@ -104,4 +124,18 @@ System::Boolean NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinition
 	System::Boolean rv;
 	EXCEPTION_HANDLER(rv = !!GetImpObj()->CanSetName())
 	return rv;
+}
+
+System::Boolean NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinition::get_IsAggregate()
+{
+	System::Boolean rv;
+	EXCEPTION_HANDLER(rv = !!GetImpObj()->IsAggregate());
+	return rv;
+}
+
+NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlySignatureDefinitionCollection *NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinition::get_Signatures()
+{
+    FdoReadOnlySignatureDefinitionCollection *col;
+    EXCEPTION_HANDLER(col = GetImpObj()->GetSignatures());
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateReadOnlySignatureDefinitionCollection(col, true);
 }

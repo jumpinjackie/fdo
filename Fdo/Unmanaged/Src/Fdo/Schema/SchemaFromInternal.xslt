@@ -1939,6 +1939,11 @@
 			<xsl:value-of select="concat(.,' ')" />
 		</xsl:for-each>
 	</xsl:attribute>
+    <xsl:attribute name="fdo:geometryTypes" >
+        <xsl:for-each select="GeometryTypes/GeometryType">
+            <xsl:value-of select="concat(.,' ')" />
+        </xsl:for-each>
+    </xsl:attribute>
 </xsl:template>
 
 <!-- Generates the name of the key referenced by an association property's

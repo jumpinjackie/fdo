@@ -27,6 +27,9 @@
 #include <Common/GeometryType.h>
 #include <Fdo/Schema/PropertyType.h>
 
+#define MAX_GEOMETRY_TYPE_SIZE    12
+#define MAX_GEOMETRIC_TYPE_SIZE    4
+
 /// \brief
 /// FdoGeometricPropertyDefinition derives from FdoPropertyDefinition and represents a
 /// geometric value. Geometric properties can take on any of the geometric types
@@ -65,7 +68,7 @@ public:
     /// \return
     /// Returns FdoGeometricPropertyDefinition
     /// 
-    FDO_API static FdoGeometricPropertyDefinition* Create();
+    FDO_API static FdoGeometricPropertyDefinition *Create();
 
     /// \brief
     /// Constructs an instance of an FdoGeometricPropertyDefinition using the
@@ -83,7 +86,7 @@ public:
     /// \return
     /// Returns FdoGeometricPropertyDefinition
     /// 
-    FDO_API static FdoGeometricPropertyDefinition* Create(FdoString* name, FdoString* description, bool system = false);
+    FDO_API static FdoGeometricPropertyDefinition *Create(FdoString *name, FdoString *description, bool system = false);
 
     /// \brief
     /// Gets the concrete property type.
@@ -205,9 +208,47 @@ public:
     /// If NULL then the geometric property is associated with all the Spatial Contexts
     /// in the datastore (supports multiple geometric representations via this property).
     /// 
-    FDO_API FdoString * GetSpatialContextAssociation();
+    FDO_API FdoString *GetSpatialContextAssociation();
+
+    /// \brief
+    /// Gets the specific geometry types that can be stored in this geometric
+    /// property. The returned value is a list of geometry types that are
+    /// supported, with length being the number of types returned.
+    /// 
+    /// \param length 
+    /// The parameter is used to return the number of geometry types being
+    /// returned by the function.
+    /// 
+    /// \return
+    /// Returns a list of geometry types that are supported.
+    /// 
+    FDO_API FdoGeometryType *GetSpecificGeometryTypes(FdoInt32 &length);
+
+    /// \brief
+    /// Sets the specific set of geometry types that can be stored in this
+    /// geometric property. The provided value is a list of geometry types
+    /// that are supported. Usually, one specific type is supported, but
+    /// there can be more than one. 
+    /// 
+    /// \param types
+    /// The specific set of geometry types that can be stored in this
+    /// geometric property.
+    ///
+    /// \param length 
+    /// Indicates the number of geometry types being stored in the provided
+    /// set of geometry types.
+    /// 
+    /// \return
+    /// Returns nothing.
+    /// 
+    FDO_API void SetSpecificGeometryTypes(FdoGeometryType *types, FdoInt32 length);
 
 /// \cond DOXYGEN-IGNORE
+    // Public non-API function for geometry type support (this is to pass along the
+    // hex-code (bitfield) value of the supported geometry types rather than the
+    // complete array.
+    FDO_API FdoInt32 GetSpecificGeometryTypes();
+
     // Public non-API functions for XML and Schema Mergesupport
 
     // Update this property from the given property.
@@ -218,44 +259,64 @@ public:
 
     /// read the geometric types from XML sub-elements.
     /// Element start
-    virtual FdoXmlSaxHandler* XmlStartElement(
-        FdoXmlSaxContext* context, 
-        FdoString* uri, 
-        FdoString* name, 
-        FdoString* qname, 
-        FdoXmlAttributeCollection* atts
-    );
+    virtual FdoXmlSaxHandler* XmlStartElement(FdoXmlSaxContext* context, 
+                                              FdoString* uri, 
+                                              FdoString* name, 
+                                              FdoString* qname, 
+                                              FdoXmlAttributeCollection* atts);
     /// Element end
-    virtual FdoBoolean XmlEndElement(
-        FdoXmlSaxContext* context, 
-        FdoString* uri, 
-        FdoString* name, 
-        FdoString* qname
-    );
+    virtual FdoBoolean XmlEndElement(FdoXmlSaxContext* context, FdoString* uri, FdoString* name, FdoString* qname);
 
     /// Serialize this property to XML.
-    virtual void _writeXml( FdoSchemaXmlContext* pContext );
+    virtual void _writeXml(FdoSchemaXmlContext* pContext);
 
     /// Returns true if none of this property's setters have been called.
     bool GetAllDefaults();
 
 private:
+    FdoInt32        m_geometryTypes;
     FdoInt32        m_geometricTypes;
     bool            m_readOnly;
     bool            m_hasElevation;
     bool            m_hasMeasure;
     FdoStringP      m_associatedSCName;
     bool            m_allDefaults;
+    FdoGeometryType m_types[MAX_GEOMETRY_TYPE_SIZE];
+    FdoInt32        m_typesSize;
+    bool            m_cacheGeometryTypes;
 
     /// Temporary holding place for geometric types while being
     /// deserialized from XML.
     FdoInt32        m_XmlGeometricTypes;
+    FdoInt32        m_XmlGeometryTypesCount;
+    FdoGeometryType m_XmlGeometryTypes[MAX_GEOMETRY_TYPE_SIZE];
+
+    /// Function to initialize the internal geometry type collection.
+    void InitGeometryTypes();
+
+    /// Function to retrieve the current geometric type.
+    FdoInt32 GetGeometricType(int pos);
+
+    /// Function to map a geometry type to a unique number that can be used
+    /// in a bit-wise operation.
+    FdoInt32 MapGeometryTypeToHexCode (FdoGeometryType gType);
+    FdoInt32 MapGeometryTypeToHexCode (int             pos);
+
+    /// Function to map a geometry type hex code to the corresponding FDO geometry type.
+    FdoGeometryType MapHexCodeToGeometryType (FdoInt32 gTypeHexCode);
+
+    /// Function to cache the geometry types currently available.
+    void CacheGeometryTypes();
+
+    /// Function to initialize all member variables.
+    void SetToZero();
 
 protected:
     /// FdoFeatureSchema::RejectChanges() support
     virtual void    _StartChanges();
     virtual void    _RejectChanges();
     virtual void    _AcceptChanges();
+    FdoInt32        m_geometryTypesCHANGED;
     FdoInt32        m_geometricTypesCHANGED;
     bool            m_readOnlyCHANGED;
     bool            m_hasElevationCHANGED;

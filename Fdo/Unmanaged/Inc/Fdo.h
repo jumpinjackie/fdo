@@ -151,6 +151,7 @@
 #include <Fdo/Connections/Capabilities/IRasterCapabilities.h>
 #include <Fdo/Connections/Capabilities/ITopologyCapabilities.h>
 #include <Fdo/Connections/Capabilities/ReadOnlyArgumentDefinitionCollection.h>
+#include <Fdo/Connections/Capabilities/SignatureDefinition.h>
 
 ////////////////////////////////////////////////////////////////
 // Expression

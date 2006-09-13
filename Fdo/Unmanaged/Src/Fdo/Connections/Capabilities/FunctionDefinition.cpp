@@ -19,45 +19,87 @@
 #include "StringUtility.h"
 
 // Constructs an instance of a FunctionDefinition using the specified arguments.
-FdoFunctionDefinition* FdoFunctionDefinition::Create(FdoString* name, FdoString* description, FdoDataType returnType, FdoArgumentDefinitionCollection* arguments)
+FdoFunctionDefinition* FdoFunctionDefinition::Create (FdoString                       *name,
+                                                      FdoString                       *description,
+                                                      FdoDataType                     returnType,
+                                                      FdoArgumentDefinitionCollection *arguments)
 {
 	return new FdoFunctionDefinition(name, description, returnType, arguments);
 }
 
 // Constructs an instance of a FunctionDefinition using the specified arguments.
-FdoFunctionDefinition* FdoFunctionDefinition::Create(FdoString* name, FdoString* description, FdoPropertyType returnPropertyType, FdoDataType returnType, FdoArgumentDefinitionCollection* arguments)
+FdoFunctionDefinition* FdoFunctionDefinition::Create (FdoString                       *name,
+                                                      FdoString                       *description,
+                                                      FdoPropertyType                 returnPropertyType,
+                                                      FdoDataType                     returnType,
+                                                      FdoArgumentDefinitionCollection *arguments)
 {
 	return new FdoFunctionDefinition(name, description, returnPropertyType, returnType, arguments);
 }
 
 // Constructs an instance of a FunctionDefinition using the specified arguments.
-FdoFunctionDefinition::FdoFunctionDefinition(FdoString* name, FdoString* description, FdoDataType returnType, FdoArgumentDefinitionCollection* arguments)
+FdoFunctionDefinition* FdoFunctionDefinition::Create (FdoString                        *name,
+                                                      FdoString                        *description,
+                                                      bool                             isAggregate,
+                                                      FdoSignatureDefinitionCollection *signatures)
 {
-	m_name = FdoStringUtility::MakeString(name);
-	m_description = FdoStringUtility::MakeString(description);
-    m_returnPropertyType = FdoPropertyType_DataProperty;
-	m_returnDataType = returnType;
-    m_arguments = FdoReadOnlyArgumentDefinitionCollection::Create(arguments);
+	return new FdoFunctionDefinition(name, description, isAggregate, signatures);
 }
 
 // Constructs an instance of a FunctionDefinition using the specified arguments.
-FdoFunctionDefinition::FdoFunctionDefinition(FdoString* name, FdoString* description, FdoPropertyType returnPropertyType, FdoDataType returnType, FdoArgumentDefinitionCollection* arguments)
+FdoFunctionDefinition::FdoFunctionDefinition (FdoString                       *name,
+                                              FdoString                       *description,
+                                              FdoDataType                     returnType,
+                                              FdoArgumentDefinitionCollection *arguments)
 {
-	m_name = FdoStringUtility::MakeString(name);
+	m_name        = FdoStringUtility::MakeString(name);
 	m_description = FdoStringUtility::MakeString(description);
-	m_returnPropertyType = returnPropertyType;
-	m_returnDataType = returnType;
-    m_arguments = FdoReadOnlyArgumentDefinitionCollection::Create(arguments);
+    m_isAggregate = false;
+    FdoSignatureDefinition *newSignatureDefinition = FdoSignatureDefinition::Create(returnType, arguments);
+    FdoSignatureDefinitionCollection *newSignatureDefinitionCollection = FdoSignatureDefinitionCollection::Create();
+    newSignatureDefinitionCollection->Add(newSignatureDefinition);
+    newSignatureDefinition->Release();
+    m_signatures = FdoReadOnlySignatureDefinitionCollection::Create(newSignatureDefinitionCollection);
+    newSignatureDefinitionCollection->Release();
+}
+
+// Constructs an instance of a FunctionDefinition using the specified arguments.
+FdoFunctionDefinition::FdoFunctionDefinition (FdoString                       *name,
+                                              FdoString                       *description,
+                                              FdoPropertyType                 returnPropertyType,
+                                              FdoDataType                     returnType,
+                                              FdoArgumentDefinitionCollection *arguments)
+{
+	m_name        = FdoStringUtility::MakeString(name);
+	m_description = FdoStringUtility::MakeString(description);
+    m_isAggregate = false;
+    FdoSignatureDefinition *newSignatureDefinition = FdoSignatureDefinition::Create(returnPropertyType, returnType, arguments);
+    FdoSignatureDefinitionCollection *newSignatureDefinitionCollection = FdoSignatureDefinitionCollection::Create();
+    newSignatureDefinitionCollection->Add(newSignatureDefinition);
+    newSignatureDefinition->Release();
+    m_signatures = FdoReadOnlySignatureDefinitionCollection::Create(newSignatureDefinitionCollection);
+    newSignatureDefinitionCollection->Release();
+}
+
+// Constructs an instance of a FunctionDefinition using the specified arguments.
+FdoFunctionDefinition::FdoFunctionDefinition (FdoString                        *name,
+                                              FdoString                        *description,
+                                              bool                             isAggregate,
+                                              FdoSignatureDefinitionCollection *signatures)
+{
+	m_name        = FdoStringUtility::MakeString(name);
+	m_description = FdoStringUtility::MakeString(description);
+    m_isAggregate = isAggregate;
+    m_signatures  = FdoReadOnlySignatureDefinitionCollection::Create(signatures);
 }
 
 // Constructs an instance of a FunctionDefinition using default values.
 FdoFunctionDefinition::FdoFunctionDefinition()
 {
-	m_name = NULL;
+	m_name        = NULL;
 	m_description = NULL;
-    m_returnPropertyType = FdoPropertyType_DataProperty;
-    m_returnDataType = FdoDataType_String;
-    m_arguments = NULL;
+    m_isAggregate = false;
+    m_signatures  = NULL;
 }
 
 
@@ -65,7 +107,7 @@ FdoFunctionDefinition::~FdoFunctionDefinition()
 {
 	FdoStringUtility::ClearString(m_name);
 	FdoStringUtility::ClearString(m_description);
-    FDO_SAFE_RELEASE(m_arguments);
+    FDO_SAFE_RELEASE(m_signatures);
 }
 
 void FdoFunctionDefinition::Dispose()
@@ -74,31 +116,50 @@ void FdoFunctionDefinition::Dispose()
 }
 
 // Gets the name of the function.
-FdoString* FdoFunctionDefinition::GetName()
+FdoString *FdoFunctionDefinition::GetName()
 {
     return m_name;
 }
 
 // Gets a brief description of the function.
-FdoString* FdoFunctionDefinition::GetDescription()
+FdoString *FdoFunctionDefinition::GetDescription()
 {
     return m_description;
 }
 
 // Gets an array of ArgumentDefinitions required for the function.
-FdoReadOnlyArgumentDefinitionCollection* FdoFunctionDefinition::GetArguments()
+FdoReadOnlyArgumentDefinitionCollection *FdoFunctionDefinition::GetArguments()
 {
-    return FDO_SAFE_ADDREF(m_arguments);
+    if (m_signatures == NULL)
+        return NULL;
+    else
+        return FDO_SAFE_ADDREF(FdoPtr<FdoSignatureDefinition>(m_signatures->GetItem(0))->GetArguments());
 }
 
 //  Gets the FdoPropertyType of the function return value.
 FdoPropertyType FdoFunctionDefinition::GetReturnPropertyType()
 {
-    return m_returnPropertyType;
+    if (m_signatures == NULL)
+        return FdoPropertyType_DataProperty;
+    else
+        return FdoPtr<FdoSignatureDefinition>(m_signatures->GetItem(0))->GetReturnPropertyType();
 }
 
 // Gets the DataType of the function return value.
 FdoDataType FdoFunctionDefinition::GetReturnType()
 {
-	return m_returnDataType;
+    if (m_signatures == NULL)
+        return FdoDataType_String;
+    else
+        return FdoPtr<FdoSignatureDefinition>(m_signatures->GetItem(0))->GetReturnType();
+}
+
+FdoReadOnlySignatureDefinitionCollection *FdoFunctionDefinition::GetSignatures()
+{
+    return FDO_SAFE_ADDREF(m_signatures);
+}
+
+bool FdoFunctionDefinition::IsAggregate()
+{
+    return m_isAggregate;
 }

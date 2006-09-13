@@ -2773,14 +2773,69 @@
             <!-- GML 2.1 Assocations to Geometries, deprecated in 3.0 -->
 	        <xsl:when test="$typeName='LineStringPropertyType' or $typeName='lineStringProperty' or $typeName='lineStringMember'">curve</xsl:when>
 	        <xsl:when test="$typeName='PolygonPropertyType' or $typeName='polygonProperty' or $typeName='polygonMember'">surface</xsl:when>
-	        <xsl:when test="$typeName='MultiLineStringPropertyType'">geometricAssociation</xsl:when>
-	        <xsl:when test="$typeName='MultiPolygonPropertyType'">geometricAssociation</xsl:when>
+	        <xsl:when test="$typeName='MultiLineStringPropertyType'">curve</xsl:when>
+	        <xsl:when test="$typeName='MultiPolygonPropertyType'">surface</xsl:when>
 
         </xsl:choose>
 	</xsl:if>
 </xsl:template>
 
-<!-- Given a qualified name, returns "<uri>:<local-name>:<namespace>" -->
+
+ <xsl:template name="get_new_geometry_types" >
+    <xsl:param name="uriName" select="$gGmlUri"/>
+    <xsl:param name="typeName" />
+
+    <xsl:if test="$uriName=$gGmlUri">
+        <xsl:choose>
+            <!-- GML 3.1.1 Geometric types and global elements -->
+            <xsl:when test="$typeName='AbstractGeometryType' or $typeName='_Geometry'">point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon</xsl:when>
+            <xsl:when test="$typeName='PointType' or $typeName='Point'">point</xsl:when>
+            <xsl:when test="$typeName='LineStringType' or $typeName='LineString'">linestring</xsl:when>
+            <xsl:when test="$typeName='PolygonType' or $typeName='Polygon'">polygon</xsl:when>
+            <xsl:when test="$typeName='LinearRingType' or $typeName='LinearRing'">polygon</xsl:when>
+            <xsl:when test="$typeName='CompositeCurveType' or $typeName='CompositeCurve'">multicurvestring</xsl:when>
+            <xsl:when test="$typeName='CompositeSurfaceType' or $typeName='CompositeSurface'">polygon</xsl:when>
+            <xsl:when test="$typeName='CurveType' or $typeName='Curve'">curvestring</xsl:when>
+            <xsl:when test="$typeName='LineStringSegmentType' or $typeName='LineStringSegment'">linestring</xsl:when>
+            <xsl:when test="$typeName='ArcType' or $typeName='Arc'">curvestring</xsl:when>
+            <xsl:when test="$typeName='CircleType' or $typeName='Circle'">curvestring</xsl:when>
+            <xsl:when test="$typeName='ArcByCenterPointType' or $typeName='ArcByCenterPoint'">curvestring</xsl:when>
+            <xsl:when test="$typeName='CircleByCenterPointType' or $typeName='CircleByCenterPoint'">curvestring</xsl:when>
+            <xsl:when test="$typeName='TriangleType' or $typeName='Triangle'">polygon</xsl:when>
+            <xsl:when test="$typeName='RectangleType' or $typeName='Rectangle'">polygon</xsl:when>
+            <xsl:when test="$typeName='RingType' or $typeName='Ring'">polygon</xsl:when>
+            <xsl:when test="$typeName='MultiPointType' or $typeName='MultiPoint'">multipoint</xsl:when>
+            <xsl:when test="$typeName='MultiCurveType' or $typeName='MultiCurve'">multicurvestring</xsl:when>
+            <xsl:when test="$typeName='MultiSurfaceType' or $typeName='MultiSurface'">multipolygon</xsl:when>
+
+            <!-- GML 2.1 Geometric types and global elements deprecated in 3.0 -->
+            <xsl:when test="$typeName='MultiLineStringType' or $typeName='MultiLineString'">multilinestring</xsl:when>
+            <xsl:when test="$typeName='MultiPolygonType' or $typeName='MultiPolygon'">multipolygon</xsl:when>
+
+            <!-- Assocations to Geometries -->
+            <xsl:when test="$typeName='GeometryPropertyType' or $typeName='GeometryMember'">point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon</xsl:when>
+            <xsl:when test="$typeName='PointPropertyType' or $typeName='pointProperty' or $typeName='pointMember'">point</xsl:when>
+            <xsl:when test="$typeName='CurvePropertyType' or $typeName='curveProperty' or $typeName='curveMember'">curvestring</xsl:when>
+            <xsl:when test="$typeName='SurfacePropertyType' or $typeName='surfaceProperty' or $typeName='surfaceMember'">polygon</xsl:when>
+            <xsl:when test="$typeName='LinearRingPropertyType'">polygon</xsl:when>
+            <xsl:when test="$typeName='GeometricComplexPropertyType'">point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon</xsl:when>
+            <xsl:when test="$typeName='RingPropertyType'">polygon</xsl:when>
+            <xsl:when test="$typeName='MultiGeometryPropertyType'">point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon</xsl:when>
+            <xsl:when test="$typeName='MultiPointPropertyType' or $typeName='multiPointProperty'">multipoint</xsl:when>
+            <xsl:when test="$typeName='MultiCurvePropertyType' or $typeName='multiCurveProperty' or $typeName='curveMember'">multicurvestring</xsl:when>
+            <xsl:when test="$typeName='MultiSurfacePropertyType' or $typeName='multiSurfaceProperty'">multipolygon</xsl:when>
+
+            <!-- GML 2.1 Assocations to Geometries, deprecated in 3.0 -->
+            <xsl:when test="$typeName='LineStringPropertyType' or $typeName='lineStringProperty' or $typeName='lineStringMember'">linestring</xsl:when>
+            <xsl:when test="$typeName='PolygonPropertyType' or $typeName='polygonProperty' or $typeName='polygonMember'">polygon</xsl:when>
+            <xsl:when test="$typeName='MultiLineStringPropertyType'">multilinestring</xsl:when>
+            <xsl:when test="$typeName='MultiPolygonPropertyType'">multipolygon</xsl:when>
+
+        </xsl:choose>
+    </xsl:if>
+</xsl:template>
+
+    <!-- Given a qualified name, returns "<uri>:<local-name>:<namespace>" -->
 <xsl:template name="get_fullname">
 	<xsl:param name="typeName" />
 	<xsl:variable name="uriName" >
@@ -2824,7 +2879,7 @@
 	<!-- Don't generate geometric property if geometry property is inherited.
 	     It has already been generated in this case.
 	-->
-	<xsl:if test="@fdo:geometryName and @fdo:geometricTypes and not(@fdo:geometryInherited='true')">
+	<xsl:if test="@fdo:geometryName and (@fdo:geometricTypes or @fdo:geometryTypes) and not(@fdo:geometryInherited='true')">
 		<xsl:element name="GeometricProperty">
 			<xsl:attribute name="name">
 				<xsl:value-of select="@fdo:geometryName" />
@@ -3005,6 +3060,26 @@
 		    </xsl:element>
 	    </xsl:when>
 	</xsl:choose>
+    <xsl:choose>
+        <xsl:when test="@fdo:geometryTypes">
+            <xsl:element name="GeometryTypes">
+                <xsl:call-template name="geometry_types">
+                    <xsl:with-param name="geometryTypes" select="@fdo:geometryTypes" />
+                </xsl:call-template>
+            </xsl:element>
+        </xsl:when>
+        <xsl:when test="$baseType">
+            <xsl:element name="GeometryTypes">
+                <xsl:call-template name="geometry_types">
+                    <xsl:with-param name="geometryTypes">
+                        <xsl:call-template name="get_new_geometry_types">
+                            <xsl:with-param name="typeName" select="$baseType"/>
+                        </xsl:call-template>
+                    </xsl:with-param>
+                </xsl:call-template>
+            </xsl:element>
+        </xsl:when>
+    </xsl:choose>
 </xsl:template>
 
 <!-- Writes the geometric types for a geometric property. Parses them from 
@@ -3038,7 +3113,35 @@
 	</xsl:if>
 </xsl:template>
 
-<!-- translates association property attributes from external to internal format.
+<xsl:template name="geometry_types">
+    <xsl:param name="geometryTypes" />
+    <xsl:choose>
+        <xsl:when test="contains($geometryTypes,' ')" >
+            <xsl:call-template name="geometry_type">
+                <xsl:with-param name="geometryType" select="substring-before($geometryTypes,' ')" />
+            </xsl:call-template>
+            <xsl:call-template name="geometry_types">
+                <xsl:with-param name="geometryTypes" select="substring-after($geometryTypes,' ')" />
+            </xsl:call-template>
+        </xsl:when>
+        <xsl:otherwise>
+            <xsl:call-template name="geometry_type">
+                <xsl:with-param name="geometryType" select="$geometryTypes" />
+            </xsl:call-template>
+        </xsl:otherwise>
+    </xsl:choose>
+</xsl:template>
+
+<xsl:template name="geometry_type">
+    <xsl:param name="geometryType" />
+    <xsl:if test="not($geometryType = '')">
+        <xsl:element name="GeometryType">
+            <xsl:value-of select="$geometryType" />
+        </xsl:element>
+    </xsl:if>
+</xsl:template>
+
+    <!-- translates association property attributes from external to internal format.
      elementElem must be an association property.
 -->
 <xsl:template name="association_attributes">

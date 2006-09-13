@@ -632,6 +632,10 @@
 						RelativePath="Src\Fdo\Connections\Capabilities\ReadOnlyArgumentDefinitionCollection.cpp"
 						>
 					</File>
+					<File
+						RelativePath=".\Src\Fdo\Connections\Capabilities\SignatureDefinition.cpp"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter
@@ -1085,6 +1089,10 @@
 			</File>
 			<File
 				RelativePath="Inc\Fdo\ReadOnlyCollection.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Inc\Fdo\ReadOnlyUnnamedCollection.h"
 				>
 			</File>
 			<Filter
@@ -1655,6 +1663,14 @@
 					</File>
 					<File
 						RelativePath="Inc\Fdo\Connections\Capabilities\ReadOnlyArgumentDefinitionCollection.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Fdo\Connections\Capabilities\SchemaElementNameType.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Fdo\Connections\Capabilities\SignatureDefinition.h"
 						>
 					</File>
 					<File

@@ -112,3 +112,12 @@ NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition* NAMESPACE_OSGEO_FDO_SCHEMA::ClassCa
 
 	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateClassDefinition(result, true);
 }
+
+System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::ClassCapabilities::get_SupportsWrite()
+{
+	FdoBoolean result;
+
+	EXCEPTION_HANDLER(result = !!GetImpObj()->SupportsWrite())
+
+	return result;
+}

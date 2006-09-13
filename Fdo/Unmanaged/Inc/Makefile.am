@@ -169,6 +169,8 @@ EXTRA_DIST = \
     Fdo/Connections/Capabilities/ISchemaCapabilities.h \
     Fdo/Connections/Capabilities/ITopologyCapabilities.h \
     Fdo/Connections/Capabilities/ReadOnlyArgumentDefinitionCollection.h \
+    Fdo/Connections/Capabilities/SchemaElementNameType.h \
+    Fdo/Connections/Capabilities/SignatureDefinition.h \
     Fdo/Connections/Capabilities/ThreadCapability.h \
     Fdo/Connections/ConnectionException.h \
     Fdo/Connections/ConnectionState.h \

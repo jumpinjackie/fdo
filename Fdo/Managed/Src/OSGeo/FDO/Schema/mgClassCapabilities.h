@@ -111,6 +111,11 @@ public:
     /// 
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition* get_Parent();
 
+    /// \brief
+    /// Returns true if the class supports write.
+    /// 
+    __property System::Boolean get_SupportsWrite();
+
 public private:
 	ClassCapabilities(System::IntPtr unmanaged, System::Boolean autoDelete);
 

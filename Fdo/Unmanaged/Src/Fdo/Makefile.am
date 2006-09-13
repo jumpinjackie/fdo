@@ -120,6 +120,7 @@ libFDOSrc_la_SOURCES = \
   Connections/Capabilities/ReadOnlyArgumentDefinitionCollection.cpp \
   Connections/Capabilities/ISchemaCapabilities.cpp \
   Connections/Capabilities/IExpressionCapabilities.cpp \
+  Connections/Capabilities/SignatureDefinition.cpp \
   Commands/BatchParameterValueCollection.cpp \
   Commands/CommandException.cpp \
   Commands/IdentifierCollection.cpp \

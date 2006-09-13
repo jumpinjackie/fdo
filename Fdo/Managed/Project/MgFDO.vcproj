@@ -1606,6 +1606,18 @@
 							>
 						</File>
 						<File
+							RelativePath="..\Src\OSGeo\FDO\Connections\Capabilities\mgSchemaElementNameType.h"
+							>
+						</File>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Connections\Capabilities\mgSignatureDefinition.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Connections\Capabilities\mgSignatureDefinition.h"
+							>
+						</File>
+						<File
 							RelativePath="..\Src\OSGeo\FDO\Connections\Capabilities\mgThreadCapability.h"
 							>
 						</File>

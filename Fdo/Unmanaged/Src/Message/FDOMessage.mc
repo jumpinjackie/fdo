@@ -1222,6 +1222,75 @@ SymbolicName=FUNCTION_GEOM_ARG
 Language=English
 Argument that represents a geometry
 .
+MessageId=8016
+SymbolicName=FUNCTION_BOOL_ARG
+Language=English
+Argument that represents a boolean
+.
+MessageId=8017
+SymbolicName=FUNCTION_BYTE_ARG
+Language=English
+Argument that represents a byte
+.
+MessageId=8018
+SymbolicName=FUNCTION_DT_ARG
+Language=English
+Argument that represents a date-time value
+.
+MessageId=8019
+SymbolicName=FUNCTION_DEC_ARG
+Language=English
+Argument that represents a decimal
+.
+MessageId=8020
+SymbolicName=FUNCTION_INT16_ARG
+Language=English
+Argument that represents a 16-bit integer
+.
+MessageId=8021
+SymbolicName=FUNCTION_INT32_ARG
+Language=English
+Argument that represents a 32-bit integer
+.
+MessageId=8022
+SymbolicName=FUNCTION_INT64_ARG
+Language=English
+Argument that represents a 64-bit integer
+.
+MessageId=8023
+SymbolicName=FUNCTION_SINGLE_ARG
+Language=English
+Argument that represents a single value
+.
+MessageId=8024
+SymbolicName=FUNCTION_BLOB_ARG
+Language=English
+Argument that represents a BLOB value
+.
+MessageId=8025
+SymbolicName=FUNCTION_CLOB_ARG
+Language=English
+Argument that represents a CLOB value
+.
+MessageId=8026
+SymbolicName=FUNCTION_ASSOCIATION_ARG
+Language=English
+Argument that represents an association
+.
+MessageId=8027
+SymbolicName=FUNCTION_OBJECT_ARG
+Language=English
+Argument that represents an object
+.
+MessageId=8028
+SymbolicName=FUNCTION_RASTER_ARG
+Language=English
+Argument that represents a raster
+.
+
+
+
+
 MessageId=9001
 SymbolicName=FDO_1_BADALLOC
 Language=English
@@ -1856,4 +1925,24 @@ MessageId=9127
 SymbolicName=FDO_127_PROPERTY_ALREADY_EXISTS
 Language=English
 The property '%1$ls' already exists.
+.
+MessageId=9128
+SymbolicName=FDO_128_GEOMETRY_MAPPING_ERROR
+Language=English
+The provided input is invalid for the current mapping process.
+.
+MessageId=9129
+SymbolicName=FDO_129_PROPERTY_TYPE_NOT_SUPPORTED_BY_OPERATION
+Language=English
+The property type '%1$ls' is not supported by this operation.
+.
+MessageId=9130
+SymbolicName=FDO_130_DATA_TYPE_NOT_SUPPORTED_BY_OPERATION
+Language=English
+The data type '%1$ls' is not supported by this operation.
+.
+MessageId=9131
+SymbolicName=FDO_131_UNSUPPORTED_GEOMETRY_TYPE
+Language=English
+The '%1$ls' geometry type (or combination of types) is not supported.
 .

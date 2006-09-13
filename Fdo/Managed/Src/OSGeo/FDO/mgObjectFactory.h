@@ -109,6 +109,9 @@ public __gc __interface IRasterCapabilities;
 public __gc __interface ISchemaCapabilities;
 public __gc __interface ITopologyCapabilities;
 public __gc class ReadOnlyArgumentDefinitionCollection;
+public __gc class SignatureDefinition;
+public __gc class SignatureDefinitionCollection;
+public __gc class ReadOnlySignatureDefinitionCollection;
 END_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS
@@ -226,6 +229,12 @@ public:
     static NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ISchemaCapabilities* CreateISchemaCapabilities(System::IntPtr ptr, System::Boolean autoDispose);
     static NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ITopologyCapabilities* CreateITopologyCapabilities(System::IntPtr ptr, System::Boolean autoDispose);
     static NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection* CreateReadOnlyArgumentDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose);
+
+    static NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinition* CreateSignatureDefinition(System::IntPtr ptr, System::Boolean autoDispose);
+    static NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinitionCollection* CreateSignatureDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose);
+    static NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlySignatureDefinitionCollection* CreateReadOnlySignatureDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose);
+
+
 
     static NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection* CreateIConnection(System::IntPtr ptr, System::Boolean autoDispose);
     static NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionInfo* CreateIConnectionInfo(System::IntPtr ptr, System::Boolean autoDispose);

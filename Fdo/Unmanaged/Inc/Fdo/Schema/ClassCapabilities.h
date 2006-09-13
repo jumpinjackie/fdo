@@ -101,7 +101,7 @@ public:
     /// \param value 
     /// Input The locking support capability
     /// 
-    FDO_API void SetSupportsLocking( FdoBoolean value);
+    FDO_API void SetSupportsLocking(FdoBoolean value);
 
     /// \brief
     /// Sets the locking types support capability. This function should only 
@@ -120,14 +120,30 @@ public:
     /// \param value 
     /// Input The long transaction capability
     /// 
-    FDO_API void SetSupportsLongTransactions( FdoBoolean value );
+    FDO_API void SetSupportsLongTransactions(FdoBoolean value);
+
+    /// \brief
+    /// Returns true if the class supports write.
+    /// 
+    FDO_API FdoBoolean SupportsWrite();
+
+    /// \brief
+    /// Sets the flag indicating whether or not write is supported. This function should only 
+    /// be called from an FDO Provider.
+    /// 
+    /// \param value 
+    /// Input The capability
+    /// 
+    FDO_API void SetSupportsWrite(FdoBoolean value);
 
 private:
     FdoBoolean          m_supportsLocking;
     FdoBoolean          m_supportsLongTransactions;
+    FdoBoolean          m_supportsWrite;
     FdoClassDefinition* m_parent;
     FdoLockType*        m_lockTypes;
     FdoInt32            m_lockTypeCount;
+
 };
 
 /// \brief

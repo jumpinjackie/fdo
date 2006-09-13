@@ -93,6 +93,39 @@ public:
 	__property System::Void set_GeometryTypes(System::Int32 value);
 
     /// \brief
+    /// Gets the specific geometry types that can be stored in this geometric
+    /// property. The returned value is a list of geometry types that are
+    /// supported, with length being the number of types returned.
+    /// 
+    /// \param length 
+    /// The parameter is used to return the number of geometry types being
+    /// returned by the function.
+    /// 
+    /// \return
+    /// Returns a list of geometry types that are supported.
+    /// 
+    __property NAMESPACE_OSGEO_COMMON::GeometryType get_SpecificGeometryTypes(System::Int32 &length)[];
+
+    /// \brief
+    /// Sets the specific set of geometry types that can be stored in this
+    /// geometric property. The provided value is a list of geometry types
+    /// that are supported. Usually, one specific type is supported, but
+    /// there can be more than one. 
+    /// 
+    /// \param types
+    /// The specific set of geometry types that can be stored in this
+    /// geometric property.
+    ///
+    /// \param length 
+    /// Indicates the number of geometry types being stored in the provided
+    /// set of geometry types.
+    /// 
+    /// \return
+    /// Returns nothing.
+    /// 
+    __property System::Void set_SpecificGeometryTypes(NAMESPACE_OSGEO_COMMON::GeometryType types[], System::Int32 length);
+
+    /// \brief
     /// Returns a Boolean value that indicates if this geometric property is
     /// read-only.
     /// 

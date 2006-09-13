@@ -18,6 +18,11 @@
 			<xs:documentation>Valid geometric types for the above geometry property</xs:documentation>
 		</xs:annotation>
 	</xs:attribute>
+	<xs:attribute name="geometryTypes" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Valid geometry types for the above geometry property</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
 	<xs:attribute name="geometricReadOnly" type="xs:boolean" default="false">
 		<xs:annotation>
 			<xs:documentation>Whether the above geometry is read-only</xs:documentation>

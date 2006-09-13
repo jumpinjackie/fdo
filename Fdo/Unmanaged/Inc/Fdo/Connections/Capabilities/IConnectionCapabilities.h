@@ -128,6 +128,25 @@ public:
     /// when creating a new spatial context.
     /// 
     FDO_API virtual bool SupportsCSysWKTFromCSysName() = 0;
+
+    /// \brief
+    ///	Determines if write is supported by the provider or by the datastore depending on whether this request is at
+    /// the provider or datastore level.
+    ///
+    /// \return
+    ///	Returns true if write is supported by the provider or by the datastore depending on whether this request is at
+    /// the provider or datastore level.
+    FDO_API virtual bool SupportsWrite() = 0;
+
+	/// \brief
+    /// Determines if the provider or datastore can support more than one user writing to a single datastore at
+    /// one time.
+    ///
+    /// \return
+    /// Returns true if the provider or datastore can support more than one user writing to a single datastore at
+    /// one time.
+    FDO_API virtual bool SupportsMultiUserWrite() = 0;
+
 };
 #endif
 

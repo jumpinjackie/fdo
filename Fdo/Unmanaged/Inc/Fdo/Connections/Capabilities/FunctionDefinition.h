@@ -27,6 +27,7 @@
 #include <Fdo/Schema/PropertyType.h>
 #include <Fdo/Connections/Capabilities/ArgumentDefinition.h>
 #include <Fdo/Connections/Capabilities/ReadOnlyArgumentDefinitionCollection.h>
+#include <Fdo/Connections/Capabilities/SignatureDefinition.h>
 
 /// \brief
 ///  The FdoFunctionDefinition class contains metadata that describes a function and its arguments.
@@ -35,10 +36,24 @@ class FdoFunctionDefinition : public FdoIDisposable
 protected:
 /// \cond DOXYGEN-IGNORE
     /// Constructs an instance of an FdoFunctionDefinition using the specified arguments.
-    FdoFunctionDefinition(FdoString* name, FdoString* description, FdoDataType returnType, FdoArgumentDefinitionCollection* arguments);
+    FdoFunctionDefinition (FdoString                       *name,
+                           FdoString                       *description,
+                           FdoDataType                     returnType,
+                           FdoArgumentDefinitionCollection *arguments);
 
     /// Constructs an instance of an FdoFunctionDefinition using the specified arguments.
-    FdoFunctionDefinition(FdoString* name, FdoString* description, FdoPropertyType returnPropertyType, FdoDataType returnType, FdoArgumentDefinitionCollection* arguments);
+    FdoFunctionDefinition (FdoString                       *name,
+                           FdoString                       *description,
+                           FdoPropertyType                 returnPropertyType,
+                           FdoDataType                     returnType,
+                           FdoArgumentDefinitionCollection *arguments);
+
+    /// Constructs an instance of an FdoFunctionDefinition using the specified arguments.
+    // FdoFunctionDefinition (FdoSignatureDefinitionCollection *signatures);
+    FdoFunctionDefinition (FdoString                        *name,
+                           FdoString                        *description,
+                           bool                             isAggregate,
+                           FdoSignatureDefinitionCollection *signatures);
 
     /// Constructs an instance of an FdoFunctionDefinition using default values.
     FdoFunctionDefinition();
@@ -60,13 +75,14 @@ public:
     /// Input the function return type
     /// \param arguments 
     /// Input the argument definition list
-    /// \param length 
-    /// Input the number of arguments
     /// 
     /// \return
     /// Returns FdoFunctionDefinition
     /// 
-    FDO_API static FdoFunctionDefinition* Create(FdoString* name, FdoString* description, FdoDataType returnType, FdoArgumentDefinitionCollection* arguments);
+    FDO_API static FdoFunctionDefinition *Create (FdoString                       *name,
+                                                  FdoString                       *description,
+                                                  FdoDataType                     returnType,
+                                                  FdoArgumentDefinitionCollection *arguments);
 
     /// \brief
     ///  Constructs an instance of an FdoFunctionDefinition using the specified arguments.
@@ -81,13 +97,35 @@ public:
     /// Input the function return data type (ignore it property type is not data)
     /// \param arguments 
     /// Input the argument definition list
-    /// \param length 
-    /// Input the number of arguments
     /// 
     /// \return
     /// Returns FdoFunctionDefinition
     /// 
-    FDO_API static FdoFunctionDefinition* Create(FdoString* name, FdoString* description, FdoPropertyType returnPropertyType, FdoDataType returnType, FdoArgumentDefinitionCollection* arguments);
+    FDO_API static FdoFunctionDefinition *Create (FdoString                       *name,
+                                                  FdoString                       *description,
+                                                  FdoPropertyType                 returnPropertyType,
+                                                  FdoDataType                     returnType,
+                                                  FdoArgumentDefinitionCollection *arguments);
+
+    /// \brief
+    ///  Constructs an instance of an FdoFunctionDefinition using the specified arguments.
+    /// 
+    /// \param name 
+    /// Input the name of the function.
+    /// \param description 
+    /// Input a brief description.
+    /// \param isAggregate 
+    /// Input a flag indicating whether or not this is an aggregate function.
+    /// \param signatures 
+    /// Input the list of possible function signatures
+    /// 
+    /// \return
+    /// Returns FdoFunctionDefinition
+    /// 
+    FDO_API static FdoFunctionDefinition *Create (FdoString                        *name,
+                                                  FdoString                        *description,
+                                                  bool                             isAggregate,
+                                                  FdoSignatureDefinitionCollection *signatures);
 
     /// \brief
     ///  Gets the name of the function.
@@ -95,14 +133,14 @@ public:
     /// \return
     /// Returns the name of the function
     /// 
-    FDO_API FdoString* GetName();
+    FDO_API FdoString *GetName();
     /// \brief
     ///  Gets a brief description of the function.
     /// 
     /// \return
     /// Returns the description of the function
     /// 
-    FDO_API FdoString* GetDescription();
+    FDO_API FdoString *GetDescription();
     /// \brief
     ///  Gets an array of FdoArgumentDefinition objects required for the function.
     /// 
@@ -112,7 +150,7 @@ public:
     /// \return
     /// Returns the list of argument definitions
     /// 
-    FDO_API FdoReadOnlyArgumentDefinitionCollection* GetArguments();
+    FDO_API FdoReadOnlyArgumentDefinitionCollection *GetArguments();
     /// \brief
     ///  Gets the FdoPropertyType of the function return value.
     /// 
@@ -140,13 +178,24 @@ public:
     {
         return false;
     }
+    ///
+    /// \brief
+	/// Gets an array of FdoSignatureDefinition objects that describe the different signatures
+    /// supported by the function.
+    ///
+    FDO_API FdoReadOnlySignatureDefinitionCollection *GetSignatures();
+    ///
+    /// \brief
+	/// Returns true if the function is an aggregate function and false if it is a simple function.
+    FDO_API bool IsAggregate();
+    ///
 
 protected:
-    wchar_t*                m_name;
-    wchar_t*                m_description;
-    FdoReadOnlyArgumentDefinitionCollection*    m_arguments;
-    FdoPropertyType         m_returnPropertyType;
-    FdoDataType             m_returnDataType;
+    bool                                     m_isAggregate;
+    wchar_t                                  *m_name;
+    wchar_t                                  *m_description;
+    FdoReadOnlySignatureDefinitionCollection *m_signatures;
+
 };
 #endif
 
