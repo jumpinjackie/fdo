@@ -1,5 +1,5 @@
 #ifndef _SIGNATUREDEFINITION_H_
-#define _ICONNECTION_H_
+#define _SIGNATUREDEFINITION_H_
 // 
 
 //
