@@ -48,7 +48,8 @@ public:
     /// <returns>Returns true if the feature provider supports persistent locking.</returns> 
     bool SupportsLocking ();
 
-    // Returns the list of lock types
+    /// <summary>Determines the provider-supported lock types.</summary>
+    /// <returns>Returns the list of supported lock types.</returns> 
     virtual FdoLockType* GetLockTypes(FdoInt32& size);
 
     /// <summary>Determines if the feature provider supports connection timeout.</summary>
@@ -82,6 +83,16 @@ public:
     /// <returns>Returns true if the provider supports specifying the coordinate system by name
     /// or ID without specifying the WKT when creating a new spatial context.</returns> 
     bool SupportsCSysWKTFromCSysName();
+
+    /// <summary>Determines if write is supported by the provider or by the datastore depending on whether this request is at
+    /// the provider or datastore level.</summary>
+    /// <returns>Returns true if the provider or data store  supports writing, false otherwise.</returns> 
+    bool SupportsWrite();
+
+    /// <summary>Determines if the provider or datastore can support more than one user writing to a single datastore at
+    /// one time.</summary>
+    /// <returns>Returns true if the provider or data store supports mult-user writing, false otherwise.</returns> 
+    bool SupportsMultiUserWrite();
 };
 
 #endif // FDOWFSCONNECTIONCAPABILITIES_H

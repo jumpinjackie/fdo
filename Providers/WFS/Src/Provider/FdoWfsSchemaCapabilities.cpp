@@ -31,6 +31,7 @@ void FdoWfsSchemaCapabilities::Dispose()
     delete this;
 }
 
+
 /// <summary>Returns an array of the FdoClassType objects the feature provider supports.</summary>
 /// <param name="length">Output the number of class types.</param> 
 /// <returns>Returns the list of class types.</returns> 
@@ -73,75 +74,50 @@ FdoDataType* FdoWfsSchemaCapabilities::GetDataTypes(FdoInt32& length)
     return (types);
 }
 
-
-/// <summary>Determines if the feature provider supports inheritance.</summary>
-/// <returns>Returns true if the feature provider supports inheritance</returns> 
-bool FdoWfsSchemaCapabilities::SupportsInheritance()
+/// <summary>Returns the maximum supported length of String, BLOB, or CLOB data
+/// properties. For decimal, it is the combination of the maximum scale
+/// and precision. For other data types that are not variable in size,
+/// the value returned is the byte length.</summary>
+/// <param name="dataType">The data type for which the information is to retrieved.</param>
+/// <returns>Returns the maximum data value length for the identified data type.</returns>
+FdoInt64 FdoWfsSchemaCapabilities::GetMaximumDataValueLength(FdoDataType dataType)
 {
-    return (true);
+    return (FdoInt64)-1;
 }
 
-
-/// <summary>Determines if the provider supports multiple schemas. Returns false if the provider supports only a single schema.</summary>
-/// <returns>Returns true if the provider supports multiple schemas.</returns> 
-bool FdoWfsSchemaCapabilities::SupportsMultipleSchemas()
+/// <summary>Returns the maximum supported precision for a decimal data property.</summary>
+/// <returns>Returns the maximum supported precision for a decimal data property.</returns>
+FdoInt32 FdoWfsSchemaCapabilities::GetMaximumDecimalPrecision()
 {
-    return (true);
+    return (FdoInt32)-1;
 }
 
-
-/// <summary>Determines if the provider supports object properties. Returns false if the provider supports only data and geometric properties.</summary>
-/// <returns>Returns true if the provider supports object properties.</returns> 
-bool FdoWfsSchemaCapabilities::SupportsObjectProperties()
+/// <summary>Returns the maximum supported scale for a decimal data property.</summary>
+/// <returns>Returns the maximum supported scale for a decimal data property.</returns>
+FdoInt32 FdoWfsSchemaCapabilities::GetMaximumDecimalScale()
 {
-    return (true);
+    return (FdoInt32)-1;
 }
 
-
-/// <summary>Determines if the provider supports relations between classes.</summary>
-/// <returns>Returns true if the provider supports relationships.</returns> 
-bool FdoWfsSchemaCapabilities::SupportsRelations()
+/// <summary>Returns the maximum size of a value of the given type. It includes
+/// limits for the data store name, shema name, class name, property name
+/// and description.</summary>
+/// <param name="name">The schema element name type identifier for which the information is to
+/// be retrieved. Can be either one of the following options: FdoSchemaElementNameType_Datastore,
+/// FdoSchemaElementNameType_Schema, FdoSchemaElementNameType_Class, FdoSchemaElementNameType_Property or 
+/// FdoSchemaElementNameType_Description.</param>
+/// <returns>Returns the size limitation for the identified schema element.</returns>
+FdoInt32 FdoWfsSchemaCapabilities::GetNameSizeLimit(FdoSchemaElementNameType name)
 {
-    return false;
+    return (FdoInt32)-1;
 }
 
-
-/// <summary>Determines if the provider supports Schema Mapping Overrides 
-/// (overrides to the default rules for mapping Feature Schemas to provider-specific
-/// physical schemas)</summary>
-/// <returns>Returns true if the provider supports Schema Overrides</returns> 
-bool FdoWfsSchemaCapabilities::SupportsSchemaOverrides()
+/// <summary>Returns a string that includes all the reserved characters that cannot be
+/// used for the various schema element names for the provider.</summary>
+/// <returns>Returns a string with the reserved characters for the identified schema element.</returns>
+FdoString* FdoWfsSchemaCapabilities::GetReservedCharactersForName()
 {
-    return false;
-}
-
-
-/// <summary>Determines if the provider supports association property.</summary>
-/// <returns>Returns true if the provider support the association property.</returns> 
-bool FdoWfsSchemaCapabilities::SupportsAssociationProperties(void)
-{
-    return true;
-}
-
-/// <summary>Determines if the provider supports the network model.</summary>
-/// <returns>Returns true if the provider supports the network model.</returns> 
-bool FdoWfsSchemaCapabilities::SupportsNetworkModel(void)
-{
-    return false;
-}
-
-/// <summary>Determines if the provider can auto-generate unique ID values for a class.</summary>
-/// <returns>Returns true if the provider supports id autogeneration.</returns> 
-bool FdoWfsSchemaCapabilities::SupportsAutoIdGeneration()
-{
-    return false;
-}
-
-/// <summary>Determines if the provider can auto-generate unique ID values that are unique for the entire datastore, rather than just for a particular class.</summary>
-/// <returns>Returns true if the provider supports id autogeneration unique across an datastore.</returns> 
-bool FdoWfsSchemaCapabilities::SupportsDataStoreScopeUniqueIdGeneration()
-{
-    return false;
+    return NULL;
 }
 
 /// <summary>Returns an array of the FdoDataType objects the feature provider supports for auto-generation.</summary>
@@ -153,55 +129,159 @@ FdoDataType* FdoWfsSchemaCapabilities::GetSupportedAutoGeneratedTypes(FdoInt32& 
     return NULL;
 }
 
-bool FdoWfsSchemaCapabilities::SupportsSchemaModification()
+/// <summary>Returns a list of property types that can be used for identity properties.</summary>
+/// <param name="length">Output the number of data types.</param>
+/// <returns>Returns a string with the reserved characters for the identified schema element.</returns>
+FdoDataType* FdoWfsSchemaCapabilities::GetSupportedIdentityPropertyTypes(FdoInt32& length)
 {
-    return false;
+	static FdoDataType supportedIdentityTypes[] = 
+    {
+		FdoDataType_Boolean,
+        FdoDataType_Byte,
+        FdoDataType_DateTime,
+        FdoDataType_Decimal,
+        FdoDataType_Double,
+        FdoDataType_Int16,
+        FdoDataType_Int32,
+        FdoDataType_Int64,
+        FdoDataType_Single,
+        FdoDataType_String,
+    };
+
+	length = sizeof(supportedIdentityTypes)/sizeof(FdoDataType);
+    return supportedIdentityTypes;
 }
 
-/// <summary>Determines if the provider supports inclusive value range constraints.</summary>
-/// <returns>Returns true if the provider supports inclusive value range constraints.</returns> 
-bool FdoWfsSchemaCapabilities::SupportsInclusiveValueRangeConstraints()
+/// <summary>Determines if the provider supports association property.</summary>
+/// <returns>Returns true if the provider support the association property.</returns> 
+bool FdoWfsSchemaCapabilities::SupportsAssociationProperties(void)
 {
-    return false;
+    return (true);
 }
 
-/// <summary>Determines if the provider supports exclusive value range constraints.</summary>
-/// <returns>Returns true if the provider supports exclusive value range constraints.</returns>
-bool FdoWfsSchemaCapabilities::SupportsExclusiveValueRangeConstraints()
+/// <summary>Determines if the provider can auto-generate unique ID values for a class.</summary>
+/// <returns>Returns true if the provider supports id autogeneration.</returns> 
+bool FdoWfsSchemaCapabilities::SupportsAutoIdGeneration()
 {
-    return false;
-}
-/// <summary>Determines if the provider supports value constraints list.</summary>
-/// <returns>Returns true if the provider supports value constraints list.</returns>
-bool FdoWfsSchemaCapabilities::SupportsValueConstraintsList()
-{
-    return false;
-}
-
-/// <summary>Determines if the provider supports nullable value constraint.</summary>
-/// <returns>Returns true if the provider supports nullable value constraint.</returns>
-bool FdoWfsSchemaCapabilities::SupportsNullValueConstraints()
-{
-    return false;
-}
-
-/// <summary>Determines if the provider supports unique value constraint.</summary>
-/// <returns>Returns true if the provider supports unique value constraint.</returns>
-bool FdoWfsSchemaCapabilities::SupportsUniqueValueConstraints()
-{
-    return false;
-}
-
-/// <summary>Determines if the provider supports composite unique value constraint.</summary>
-/// <returns>Returns true if the provider supports composite unique value constraint.</returns>
-bool FdoWfsSchemaCapabilities::SupportsCompositeUniqueValueConstraints()
-{
-    return false;
+    return (false);
 }
 
 /// <summary>Determines if the provider supports multiple identity properties per class.</summary>
 /// <returns>Returns true if the provider supports multiple identity properties per class.</returns>
 bool FdoWfsSchemaCapabilities::SupportsCompositeId()
 {
-    return true;
+    return (true);
+}
+
+/// <summary>Determines if the provider supports composite unique value constraint.</summary>
+/// <returns>Returns true if the provider supports composite unique value constraint.</returns>
+bool FdoWfsSchemaCapabilities::SupportsCompositeUniqueValueConstraints()
+{
+    return (false);
+}
+
+/// <summary>Determines if the provider can auto-generate unique ID values that are unique for the
+/// entire datastore, rather than just for a particular class.</summary>
+/// <returns>Returns true if the provider supports id autogeneration unique across an datastore.</returns> 
+bool FdoWfsSchemaCapabilities::SupportsDataStoreScopeUniqueIdGeneration()
+{
+    return (false);
+}
+
+/// <summary>Returns TRUE if default values can be specified for a data property
+/// definition, FALSE otherwise.</summary>
+/// <returns>Returns TRUE if default values can be specified for a data property definition, FALSE otherwise.</returns>
+bool FdoWfsSchemaCapabilities::SupportsDefaultValue()
+{
+    return (false);
+}
+
+/// <summary>Determines if the provider supports exclusive value range constraints.</summary>
+/// <returns>Returns true if the provider supports exclusive value range constraints.</returns>
+bool FdoWfsSchemaCapabilities::SupportsExclusiveValueRangeConstraints()
+{
+    return (false);
+}
+
+/// <summary>Determines if the provider supports inclusive value range constraints.</summary>
+/// <returns>Returns true if the provider supports inclusive value range constraints.</returns> 
+bool FdoWfsSchemaCapabilities::SupportsInclusiveValueRangeConstraints()
+{
+    return (false);
+}
+
+/// <summary>Determines if the feature provider supports inheritance.</summary>
+/// <returns>Returns true if the feature provider supports inheritance</returns> 
+bool FdoWfsSchemaCapabilities::SupportsInheritance()
+{
+    return (true);
+}
+
+/// <summary>Determines if the provider supports multiple schemas. Returns false if the provider supports
+/// only a single schema.</summary>
+/// <returns>Returns true if the provider supports multiple schemas.</returns> 
+bool FdoWfsSchemaCapabilities::SupportsMultipleSchemas()
+{
+    return (true);
+}
+
+/// <summary>Determines if the provider supports the network model.</summary>
+/// <returns>Returns true if the provider supports the network model.</returns> 
+bool FdoWfsSchemaCapabilities::SupportsNetworkModel(void)
+{
+    return (false);
+}
+
+/// <summary>Determines if the provider supports nullable value constraint.</summary>
+/// <returns>Returns true if the provider supports nullable value constraint.</returns>
+bool FdoWfsSchemaCapabilities::SupportsNullValueConstraints()
+{
+    return (false);
+}
+
+/// <summary>Determines if the provider supports object properties. Returns false if the provider supports only data and geometric properties.</summary>
+/// <returns>Returns true if the provider supports object properties.</returns> 
+bool FdoWfsSchemaCapabilities::SupportsObjectProperties()
+{
+    return (true);
+}
+
+/// <summary>Determines if the provider supports relations between classes.</summary>
+/// <returns>Returns true if the provider supports relationships.</returns> 
+bool FdoWfsSchemaCapabilities::SupportsRelations()
+{
+    return (false);
+}
+
+/// <summary>Determines if the provider support update a schema through the ApplySchema command.
+/// If False, then an application can only create a schema once for the provider. They can use the ApplySchema 
+/// command once for a given datastore. Once the schema is defined, it cannot be changed. If True, then the provider 
+/// supports the ability to modify or add to the schema after it is defined initially.</summary>
+/// <returns>Returns true if the provider supports the update of the schema.</returns> 
+bool FdoWfsSchemaCapabilities::SupportsSchemaModification()
+{
+    return (false);
+}
+
+/// <summary>Determines if the provider supports Schema Mapping Overrides 
+/// (overrides to the default rules for mapping Feature Schemas to provider-specific
+/// physical schemas)</summary>
+/// <returns>Returns true if the provider supports Schema Overrides</returns> 
+bool FdoWfsSchemaCapabilities::SupportsSchemaOverrides()
+{
+    return (false);
+}
+
+/// <summary>Determines if the provider supports unique value constraint.</summary>
+/// <returns>Returns true if the provider supports unique value constraint.</returns>
+bool FdoWfsSchemaCapabilities::SupportsUniqueValueConstraints()
+{
+    return (false);
+}
+
+/// <summary>Determines if the provider supports value constraints list.</summary>
+/// <returns>Returns true if the provider supports value constraints list.</returns>
+bool FdoWfsSchemaCapabilities::SupportsValueConstraintsList()
+{
+    return (false);
 }

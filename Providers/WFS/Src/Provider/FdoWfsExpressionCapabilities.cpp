@@ -55,31 +55,6 @@ FdoFunctionDefinitionCollection* FdoWfsExpressionCapabilities::GetFunctions()
     FdoPtr<FdoFunctionDefinitionCollection> ret = FdoFunctionDefinitionCollection::Create ();
 
     // WFS doesn't support any functions
-    //
-	// Add well-known functions we support to the list
-	//FdoPtr<FdoFunctionDefinitionCollection> wellKnownFunctions = GetWellKnownFunctions ();
-	//FdoPtr<FdoFunctionDefinition> wellKnownFunction;
-	//wellKnownFunction = wellKnownFunctions->GetItem (FDO_FUNCTION_COUNT);
-	//ret->Add (wellKnownFunction);
-	//wellKnownFunction = wellKnownFunctions->GetItem (FDO_FUNCTION_MIN);
-	//ret->Add (wellKnownFunction);
-	//wellKnownFunction = wellKnownFunctions->GetItem (FDO_FUNCTION_MAX);
-	//ret->Add (wellKnownFunction);
-	//wellKnownFunction = wellKnownFunctions->GetItem (FDO_FUNCTION_AVG);
-	//ret->Add (wellKnownFunction);
-	//wellKnownFunction = wellKnownFunctions->GetItem (FDO_FUNCTION_LOWER);
-	//ret->Add (wellKnownFunction);
-	//wellKnownFunction = wellKnownFunctions->GetItem (FDO_FUNCTION_UPPER);
-	//ret->Add (wellKnownFunction);
-	//wellKnownFunction = wellKnownFunctions->GetItem (FDO_FUNCTION_CONCAT);
-	//ret->Add (wellKnownFunction);
-	//wellKnownFunction = wellKnownFunctions->GetItem (FDO_FUNCTION_CEIL);
-	//ret->Add (wellKnownFunction);
-	//wellKnownFunction = wellKnownFunctions->GetItem (FDO_FUNCTION_FLOOR);
-	//ret->Add (wellKnownFunction);
-	//wellKnownFunction = wellKnownFunctions->GetItem (FDO_FUNCTION_SUM);
-	//ret->Add (wellKnownFunction);
-
 
     return (FDO_SAFE_ADDREF (ret.p));
 }

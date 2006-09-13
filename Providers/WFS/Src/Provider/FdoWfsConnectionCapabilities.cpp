@@ -61,6 +61,8 @@ bool FdoWfsConnectionCapabilities::SupportsLocking ()
     return (false);
 }
 
+/// <summary>Determines the provider-supported lock types.</summary>
+/// <returns>Returns the list of supported lock types.</returns> 
 FdoLockType* FdoWfsConnectionCapabilities::GetLockTypes(FdoInt32& size)
 {
     size = 0;
@@ -107,7 +109,7 @@ bool FdoWfsConnectionCapabilities::SupportsConfiguration()
 /// <returns>Returns true if the provider supports multiple spatial contexts.</returns> 
 bool FdoWfsConnectionCapabilities::SupportsMultipleSpatialContexts()
 {
-    return true;
+    return (true);
 }
 
 /// <summary>Determines if the provider supports specifying the coordinate system by name
@@ -115,6 +117,22 @@ bool FdoWfsConnectionCapabilities::SupportsMultipleSpatialContexts()
 /// <returns>Returns true if the provider supports specifying the coordinate system by name
 /// or ID without specifying the WKT when creating a new spatial context.</returns> 
 bool FdoWfsConnectionCapabilities::SupportsCSysWKTFromCSysName()
+{
+    return (false);
+}
+
+/// <summary>Determines if write is supported by the provider or by the datastore depending on whether this request is at
+/// the provider or datastore level.</summary>
+/// <returns>Returns true if the provider or data store  supports writing, false otherwise.</returns> 
+bool FdoWfsConnectionCapabilities::SupportsWrite()
+{
+    return false;
+}
+
+/// <summary>Determines if the provider or datastore can support more than one user writing to a single datastore at
+/// one time.</summary>
+/// <returns>Returns true if the provider or data store supports mult-user writing, false otherwise.</returns> 
+bool FdoWfsConnectionCapabilities::SupportsMultiUserWrite()
 {
     return false;
 }
