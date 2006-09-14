@@ -200,7 +200,7 @@ private:
     //
     // \return
     // Returns the data value as a string. L"" if the value is null.
-    FdoStringP FdoPropertyValueConstraintRange::ValueToString( FdoPtr<FdoDataValue> value );
+    FdoStringP ValueToString( FdoPtr<FdoDataValue> value );
     
     FdoDataValue*	m_minValue;
 	FdoDataValue*	m_maxValue;
