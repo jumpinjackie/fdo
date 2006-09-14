@@ -735,6 +735,11 @@ SymbolicName=SCHEMA_145_DELPROPOBJECTS
 Language=English
 Cannot delete a property '%1$ls'; its class has objects
 .
+MessageId=1146
+SymbolicName=SCHEMA_146_DELSCHEMAOBJECTS
+Language=English
+Cannot delete schema definition '%1$ls'; it has objects
+.
 MessageId=2001
 SymbolicName=EXPRESSION_1_BLOBVALUENULL
 Language=English

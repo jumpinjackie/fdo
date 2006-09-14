@@ -210,6 +210,8 @@ public:
 
 	FDO_API virtual bool CheckDeleteProperty( FdoPropertyDefinition* prop );
 
+    FDO_API virtual bool CheckDeleteSchema( FdoFeatureSchema* schema );
+
     // The following functions represent each type of schema element modification.
     // Each returns true if the modification is allowed.
     //

@@ -172,6 +172,51 @@ void FdoSchemaMergeContext::CommitSchemas()
     ThrowErrors();
 }
 
+
+bool FdoSchemaMergeContext::CheckDeleteSchema( FdoFeatureSchema* schema )
+{
+    bool canDelete = true;
+
+    if ( CanDeleteSchema(schema) ) {
+        FdoPtr<FdoClassCollection>classes = schema->GetClasses();
+        for(int i=0; i<classes->GetCount() && canDelete; i++ )
+        {
+            FdoPtr<FdoClassDefinition>classDef = classes->GetItem( i );
+            if ( ClassHasObjects( classDef ) ) 
+                canDelete = false;
+        }
+        if( !canDelete )  {
+            // Can't delete schema that has data.
+            AddError( 
+                FdoSchemaExceptionP(
+                    FdoSchemaException::Create(
+                        FdoException::NLSGetMessage(
+                        FDO_NLSID(SCHEMA_146_DELSCHEMAOBJECTS),
+                            (FdoString*) schema->GetQualifiedName()
+                        )
+                    )
+                )
+            );
+        }
+    }
+    else {
+        // Schema delete not supported
+        AddError( 
+            FdoSchemaExceptionP(
+                FdoSchemaException::Create(
+                    FdoException::NLSGetMessage(
+                        FDO_NLSID(SCHEMA_121_DELSCHEMA),
+                        (FdoString*) schema->GetQualifiedName()
+                    )
+                )
+            )
+        );
+        canDelete = false;
+    }
+
+    return canDelete;
+}
+
 bool FdoSchemaMergeContext::CheckDeleteClass( FdoClassDefinition* classDef )
 {
     bool canDelete = false;
@@ -984,23 +1029,10 @@ void FdoSchemaMergeContext::MergeSchema( FdoFeatureSchema* newSchema )
         break;
 
     case FdoSchemaElementState_Deleted:
-        if ( CanDeleteSchema(oldSchema) ) {
+        if ( CheckDeleteSchema(oldSchema) ) {
             // Delete current schema.
             if ( oldSchema ) 
                 oldSchema->Delete();
-        }
-        else {
-            // Schema delete not supported
-            AddError( 
-                FdoSchemaExceptionP(
-                    FdoSchemaException::Create(
-                        FdoException::NLSGetMessage(
-                            FDO_NLSID(SCHEMA_121_DELSCHEMA),
-                            (FdoString*) oldSchema->GetQualifiedName()
-                        )
-                    )
-                )
-            );
         }
         break;
 
