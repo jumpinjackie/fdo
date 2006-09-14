@@ -10,6 +10,7 @@ libSDFProviderSrc_la_SOURCES = \
   BinaryWriter.cpp \
   DataDb.cpp \
   DataIO.cpp \
+  ExInfoDb.cpp \
   KeyDb.cpp \
   PhysName.cpp \
   SchemaDb.cpp \
