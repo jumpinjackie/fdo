@@ -77,6 +77,11 @@ bool SdfSchemaMergeContext::CanModElementDescription( FdoSchemaElement* element 
     return true;
 }
 
+bool SdfSchemaMergeContext::CanDeleteSchema( FdoFeatureSchema* schema )
+{
+    return true;
+}
+
 void SdfSchemaMergeContext::Merge()
 {
     CommitSchemas();
@@ -282,6 +287,38 @@ void SdfSchemaMergeContext::ReformatTables( bool rollback )
         catch ( ... ) {
             if ( !rollback ) 
                 throw;
+        }
+    }
+}
+
+void SdfSchemaMergeContext::DeleteSchema( FdoFeatureSchema* schema )
+{
+    FdoClassesP classes = schema->GetClasses();
+    FdoFeatureSchema* connSchema = mSdfConnection->GetSchema();
+
+    // No tables to delete if no current schema.
+    if ( connSchema ) {
+        FdoClassesP connClasses = connSchema->GetClasses();
+
+        // For each new class.
+        for ( int idx = 0; idx < classes->GetCount(); idx++ ) 
+        {
+            FdoClassDefinitionP classDef = classes->GetItem(idx);
+
+            // Get corresponding current class. Need current class address to find tables.
+            FdoClassDefinitionP connClassDef = connClasses->FindItem(classDef->GetName());
+            if ( connClassDef ) 
+            {
+                DataDb* dataDb = mSdfConnection->GetDataDb( connClassDef );
+                SdfRTree* rtree = mSdfConnection->GetRTree( connClassDef );
+                KeyDb* keyDb = mSdfConnection->GetKeyDb( connClassDef );
+                if( dataDb )
+                    dataDb->Drop();
+                if( rtree )
+                    rtree->Drop();
+                if( keyDb )
+                    keyDb->Drop();
+            }
         }
     }
 }

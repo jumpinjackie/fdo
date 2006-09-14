@@ -99,7 +99,7 @@ SdfSimpleFeatureReader::SdfSimpleFeatureReader(SdfConnection* connection, FdoCla
     else
         m_currentFeatureRecno = 0; 
 
-
+    m_currentFCID = 0;
 }
 
 SdfSimpleFeatureReader::SdfSimpleFeatureReader( SdfSimpleFeatureReader& reader )
@@ -147,6 +147,8 @@ SdfSimpleFeatureReader::SdfSimpleFeatureReader( SdfSimpleFeatureReader& reader )
 		m_features = NULL;
 		m_currentFeatureRecno = 0;
 	}
+
+    m_currentFCID = 0;
 }
 
 // default destructor

@@ -40,6 +40,7 @@ public:
     virtual bool CanAddProperty( FdoPropertyDefinition* prop );
 	virtual bool CanDeleteProperty( FdoPropertyDefinition* prop );
 	virtual bool CanModElementDescription( FdoSchemaElement* element );
+    virtual bool CanDeleteSchema( FdoFeatureSchema* schema );
 
     // Performs the schema merge
     //
@@ -59,6 +60,8 @@ public:
     void PostUpdatePhysical();
     // Rolls back changes made by PostAcceptChanges
     void RollbackPhysical();
+
+    void DeleteSchema( FdoFeatureSchema* schema );
 
 protected:
     SdfSchemaMergeContext() {}

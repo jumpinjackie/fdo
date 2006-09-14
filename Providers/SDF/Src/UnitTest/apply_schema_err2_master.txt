@@ -1,1 +1,1 @@
- Unsupport Schema modification; Cannot delete feature schema 'Acad' 
+ Cannot delete schema definition 'Acad'; it has objects 

@@ -72,6 +72,7 @@ protected:
     void ModDelElectricSchema( FdoFeatureSchemaCollection* pSchemas );
     void ModDelAcadSchema( FdoFeatureSchemaCollection* pSchemas );
 	void ModDlteSchema( FdoIConnection* connection );
+    void ModDlteSchema2( FdoIConnection* connection );
 	void ModAddProperty( FdoIConnection* connection );
 	void ModDelProperty( FdoIConnection* connection );
 	void ModDescription( FdoIConnection* connection );
@@ -91,7 +92,7 @@ protected:
 	void VldDlteSchema( FdoIConnection* connection );
 
     void CreateClassGroup( FdoFeatureSchema* pSchema, FdoInt32 idx );
-    void DeleteDlteClass( FdoIConnection* connection, FdoFeatureSchema* pSchema, FdoInt32 idx );
+    void DeleteDlteClass( FdoIConnection* connection, FdoFeatureSchema* pSchema, FdoInt32 idx, bool delCls=true );
 
 
     void TestSpecificGeometryTypes( void );

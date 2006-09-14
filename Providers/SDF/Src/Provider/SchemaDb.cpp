@@ -236,6 +236,12 @@ void SchemaDb::SetSchema(SdfISchemaMergeContextFactory* mergeFactory, FdoFeature
 
     // Work on copy of current schema in case we hit an error and mess them up.
     FdoFeatureSchemaP oldSchema = GetSchema() ? FdoCommonSchemaUtil::DeepCopyFdoFeatureSchema( GetSchema() ) : (FdoFeatureSchema*) NULL;
+    
+    // FdoCommonSchemaUtil::DeepCopyFdoFeatureSchema messes up the order of the class properties which is a major issue for the SDF
+    // data as it's encoded based on the order of the class properties. We need to fix the order created by the Deep copy to match the
+    // original order.
+    if( oldSchema != m_schema )
+        FixPropertiesOrder( oldSchema, m_schema );
 
     // Merge applied schema into current schemas
     SdfSchemaMergeContextP context = MergeSchema( mergeFactory, oldSchema, FDO_SAFE_ADDREF(schema), ignoreStates );
@@ -245,6 +251,25 @@ void SchemaDb::SetSchema(SdfISchemaMergeContextFactory* mergeFactory, FdoFeature
         // Get the merged schema
         FdoFeatureSchemasP mergedSchemas = context->GetSchemas();
         mergedSchema = mergedSchemas->GetItem( oldSchema->GetName() );
+        if( mergedSchema->GetElementState() == FdoSchemaElementState_Deleted )
+        {
+            REC_NO rootRecno = DB_SCHEMA_ROOT_RECNO;
+            SQLiteData keySchema(&rootRecno, sizeof(REC_NO));
+            if( m_db->del( NULL, &keySchema, 0 ) == 0 )
+            {
+                context->DeleteSchema( mergedSchema );
+                
+                FDO_SAFE_RELEASE(m_schema);
+
+	            if( m_scName )
+		            delete[] m_scName;
+
+                m_scName = NULL;
+
+            }
+            schema->AcceptChanges();
+            return;
+        }
     }
     else {
         // Merge Context is NULL, meaning that there is no existing schema.
@@ -365,6 +390,8 @@ SdfSchemaMergeContextP SchemaDb::MergeSchema(
 
     return context;
 }
+
+
 
 void SchemaDb::PreAcceptChanges( SdfSchemaMergeContextP mergeContext )
 {
@@ -1181,3 +1208,34 @@ void SchemaDb::PostReadSchema( FdoFeatureSchema* schema )
 	}
 }
 
+void SchemaDb::FixPropertiesOrder( FdoFeatureSchema* schema, FdoFeatureSchema* refschema )
+{
+    FdoClassesP refclasses = refschema->GetClasses();
+    FdoClassesP classes = schema->GetClasses();
+    for ( int idx = 0; idx < refclasses->GetCount(); idx++ ) 
+    {
+        FdoClassDefinitionP refClassDef = refclasses->GetItem(idx);
+        FdoClassDefinitionP classDef = classes->GetItem(idx);
+        FdoPtr<FdoPropertyDefinitionCollection> refProperties = refClassDef->GetProperties();
+        FdoPtr<FdoPropertyDefinitionCollection> properties = classDef->GetProperties();
+		for(int i=0; i<refProperties->GetCount(); i++ )
+		{
+            FdoPtr<FdoPropertyDefinition>refProp = refProperties->GetItem( i );
+            FdoPtr<FdoPropertyDefinition>prop = properties->GetItem( refProp->GetName() );
+            properties->Remove( prop );
+            properties->Add( prop );
+        }
+
+        // Add the identity properties as they may be removed when the property is removed and then added back.
+        FdoPtr<FdoDataPropertyDefinitionCollection>refIdProperties = refClassDef->GetIdentityProperties();
+        FdoPtr<FdoDataPropertyDefinitionCollection> idProperties = classDef->GetIdentityProperties();
+        idProperties->Clear();
+		for(int i=0; i<refIdProperties->GetCount(); i++ )
+		{
+            FdoPtr<FdoDataPropertyDefinition>refProp = refIdProperties->GetItem( i );
+            FdoPtr<FdoPropertyDefinition>prop = properties->GetItem( refProp->GetName() );
+            idProperties->Add( (FdoDataPropertyDefinition*)prop.p );
+        }
+    }
+    schema->AcceptChanges();
+}

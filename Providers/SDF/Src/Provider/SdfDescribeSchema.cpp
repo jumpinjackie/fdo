@@ -94,14 +94,21 @@ FdoFeatureSchemaCollection* SdfDescribeSchema::Execute()
     // create the collection to return
     FdoPtr<FdoFeatureSchemaCollection>schemaCollection = FdoFeatureSchemaCollection::Create(NULL);
 
+    FdoFeatureSchema *oldschema = m_connection->GetSchemaDb()->GetSchema(GetSchemaName());
     // Clone the internal schema so callers don't modify the internal schema:
-    FdoPtr<FdoFeatureSchema> schema = FdoCommonSchemaUtil::DeepCopyFdoFeatureSchema(m_connection->GetSchemaDb()->GetSchema(GetSchemaName()));
-
-    if (schema != NULL)
-	{
-        schemaCollection->Add(schema);
-		schema->AcceptChanges();
-	}
+    if( oldschema != NULL )
+    {
+        FdoPtr<FdoFeatureSchema> schema = FdoCommonSchemaUtil::DeepCopyFdoFeatureSchema(oldschema);
+        if (schema != NULL)
+	    {
+            // FdoCommonSchemaUtil::DeepCopyFdoFeatureSchema messes up the order of the class properties which is a major issue for the SDF
+            // data as it's encoded based on the order of the class properties. We need to fix the order created by the Deep copy to match the
+            // original order.
+            m_connection->GetSchemaDb()->FixPropertiesOrder( schema, oldschema);
+            schemaCollection->Add(schema);
+		    schema->AcceptChanges();
+	    }
+    }
 
     return schemaCollection.Detach();
 }

@@ -131,9 +131,9 @@ void ApplySchemaTest::TestSchema ()
         printf( "Applying mixed updates and deletes ... \n" );
 		ModDelSchemas( connection );
 
-		succeeded = false;
+//		succeeded = false;
 
-		printf( "Deleting Acad Schema ... \n" );
+//		printf( "Deleting Acad Schema ... \n" );
 		try {
  			DeleteAcadSchema( connection );
 			succeeded = true;
@@ -144,8 +144,8 @@ void ApplySchemaTest::TestSchema ()
 			FDO_SAFE_RELEASE(e);
 		}
 
-		if ( succeeded ) 
-			CPPUNIT_FAIL( "2nd Acad schema delete was supposed to fail" );
+//		if ( succeeded ) 
+//			CPPUNIT_FAIL( "2nd Acad schema delete was supposed to fail" );
 /*
         printf( "Deleting Land Schema ... \n" );
 		DeleteLandSchema( connection );
@@ -258,12 +258,15 @@ void ApplySchemaTest::TestDelete ()
         printf( "Adding Features ... \n" );
         CreateDlteData( connection );
 
+        
         printf( "Deleting Classes ... \n" );
         ModDlteSchema( connection );
 
         printf( "Verifying Results ... \n" );
         VldDlteSchema( connection );
 
+        printf( "Deleting Schema ... \n" );
+        ModDlteSchema2( connection );
     }
 	catch ( FdoException* e ) 
 	{
@@ -2264,17 +2267,48 @@ void ApplySchemaTest::CreateClassGroup( FdoFeatureSchema* pSchema, FdoInt32 idx 
 	classes->Add( pFeatClass );
 }
 
-void ApplySchemaTest::DeleteDlteClass( FdoIConnection* connection, FdoFeatureSchema* pSchema, FdoInt32 idx )
+void ApplySchemaTest::DeleteDlteClass( FdoIConnection* connection, FdoFeatureSchema* pSchema, FdoInt32 idx, bool delCls )
 {
-    FdoClassesP classes = pSchema->GetClasses();
     FdoStringP className = FdoStringP::Format( L"FeatClass%d", idx );
-
     UnitTestUtil::DeleteObjects( connection, L"Dlte", className );
 
-	FdoPtr<FdoClassDefinition> pFeatClass = classes->GetItem( className );
-	pFeatClass->Delete();
+    if( delCls )
+    {
+        FdoClassesP classes = pSchema->GetClasses();
+        FdoPtr<FdoClassDefinition> pFeatClass = classes->GetItem( className );
+        pFeatClass->Delete();
+    }
+    
 }
 
+
+void ApplySchemaTest::ModDlteSchema2( FdoIConnection* connection )
+{
+    FdoPtr<FdoFeatureSchema> pSchema;
+    FdoPtr<FdoFeatureSchemaCollection> pSchemas;
+    FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
+	pSchemas = pDescCmd->Execute();
+
+	pSchema = pSchemas->GetItem( L"Dlte" );
+
+	for ( int idx = 0; idx < DLTE_CLASS_COUNT; idx++ ) {
+        if ( (idx != 4) && (idx != 5) && (idx != 11) && (idx != 15) && (idx != 17) ) {
+            DeleteDlteClass( connection, pSchema, idx, false );
+        }
+    }
+
+	FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
+    pSchema->Delete();
+
+	pCmd->SetFeatureSchema( pSchema );
+	pCmd->Execute();
+
+    // Do I still have the schema?
+    pSchemas = pDescCmd->Execute();
+    pSchema = pSchemas->FindItem( L"Dlte" );
+    if ( pSchema != NULL )
+		CPPUNIT_FAIL("The schema delete failed");
+}
 
 
 

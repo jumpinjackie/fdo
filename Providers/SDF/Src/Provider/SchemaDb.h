@@ -52,6 +52,8 @@ public:
     void ReadMetadata(unsigned char& major, unsigned char& minor);
     void WriteMetadata(unsigned char major, unsigned char minor);
 
+    void FixPropertiesOrder( FdoFeatureSchema* schema, FdoFeatureSchema* refschema  );
+
 	void CloseCursor();
 
 private:
@@ -75,6 +77,8 @@ private:
     FdoDataValue* ReadDataValue(BinaryReader& rdr);
       
 	void PostReadSchema( FdoFeatureSchema* schema );
+
+    
 
     void WriteSchema(FdoFeatureSchema* schema);
     void WriteClassDefinition(REC_NO& recno, FdoClassDefinition* clas, FdoClassCollection* classes);
