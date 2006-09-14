@@ -875,6 +875,8 @@ void FdoGeometricPropertyDefinition::SetToZero()
 
     m_allDefaults = true;
 
+    m_XmlGeometryTypesCount = 0;
+
     InitGeometryTypes();
 }
 
