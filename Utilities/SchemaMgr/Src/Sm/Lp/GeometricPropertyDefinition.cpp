@@ -1299,17 +1299,17 @@ bool FdoSmLpGeometricPropertyDefinition::CheckSupportedGeometryTypes( FdoGeometr
     FdoInt32 multiGeometryRep     = FdoCommonGeometryUtil::MapGeometryTypeToHexCode(FdoGeometryType_MultiGeometry);
 
 
-    err = (((mGeometryTypes & pointRep             != 0) && ((geometryTypes & pointRep)             == 0 )) ||
-           ((mGeometryTypes & multiPointRep        != 0) && ((geometryTypes & multiPointRep)        == 0 )) ||
-           ((mGeometryTypes & lineStringRep        != 0) && ((geometryTypes & lineStringRep)        == 0 )) ||
-           ((mGeometryTypes & multiLineStringRep   != 0) && ((geometryTypes & multiLineStringRep)   == 0 )) ||
-           ((mGeometryTypes & curveStringRep       != 0) && ((geometryTypes & curveStringRep)       == 0 )) ||
-           ((mGeometryTypes & multiCurveStringRep  != 0) && ((geometryTypes & multiCurveStringRep)  == 0 )) ||
-           ((mGeometryTypes & polygonRep           != 0) && ((geometryTypes & polygonRep)           == 0 )) ||
-           ((mGeometryTypes & multiPolygonRep      != 0) && ((geometryTypes & multiPolygonRep)      == 0 )) ||
-           ((mGeometryTypes & curvePolygonRep      != 0) && ((geometryTypes & curvePolygonRep)      == 0 )) ||
-           ((mGeometryTypes & multiCurvePolygonRep != 0) && ((geometryTypes & multiCurvePolygonRep) == 0 )) ||
-           ((mGeometryTypes & multiGeometryRep     != 0) && ((geometryTypes & multiGeometryRep)     == 0 ))    );
+    err = ((((mGeometryTypes & pointRep)             != 0) && ((geometryTypes & pointRep)             == 0 )) ||
+           (((mGeometryTypes & multiPointRep)        != 0) && ((geometryTypes & multiPointRep)        == 0 )) ||
+           (((mGeometryTypes & lineStringRep)        != 0) && ((geometryTypes & lineStringRep)        == 0 )) ||
+           (((mGeometryTypes & multiLineStringRep)   != 0) && ((geometryTypes & multiLineStringRep)   == 0 )) ||
+           (((mGeometryTypes & curveStringRep)       != 0) && ((geometryTypes & curveStringRep)       == 0 )) ||
+           (((mGeometryTypes & multiCurveStringRep)  != 0) && ((geometryTypes & multiCurveStringRep)  == 0 )) ||
+           (((mGeometryTypes & polygonRep)           != 0) && ((geometryTypes & polygonRep)           == 0 )) ||
+           (((mGeometryTypes & multiPolygonRep)      != 0) && ((geometryTypes & multiPolygonRep)      == 0 )) ||
+           (((mGeometryTypes & curvePolygonRep)      != 0) && ((geometryTypes & curvePolygonRep)      == 0 )) ||
+           (((mGeometryTypes & multiCurvePolygonRep) != 0) && ((geometryTypes & multiCurvePolygonRep) == 0 )) ||
+           (((mGeometryTypes & multiGeometryRep)     != 0) && ((geometryTypes & multiGeometryRep)     == 0 ))    );
 
     // If error, it's still OK provided the geometry column contains no data.
     // NOTE: A less strict check would be to count the instances of no longer allowed shape types,
