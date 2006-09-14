@@ -35,7 +35,8 @@ TableReformatter::TableReformatter(
     mOrigRTree(origRTree),
     mNewSchema(newSchema),
     mModClassIds(false),
-	mNewProperties(false)
+	mNewProperties(false),
+    mState(stateInitial)
 {
 }
 
