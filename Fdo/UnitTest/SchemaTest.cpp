@@ -2560,7 +2560,7 @@ FdoFeatureSchema*  SchemaTest::createElectricSchema( FdoFeatureSchema* pAcadSche
 	// Test geometry property
 
 	FdoGeometricPropertyP pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"location and shape" );
-	pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve | FdoGeometricType_Surface | FdoGeometricType_Solid);
+	pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve | FdoGeometricType_Surface);
     pGeomProp->SetHasMeasure(true);
     pGeomProp->SetReadOnly(true);
     pGeomProp->SetSpatialContextAssociation(L"SC_0");

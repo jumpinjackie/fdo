@@ -43,10 +43,10 @@ seq</xs:documentation>
 </xs:simpleType>
 </xs:element>
 <xs:element name="GrpObject" type="External:TestObj1Type" minOccurs="0"/>
-<xs:element name="GeomBas" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point "/>
-<xs:element name="gml-x2f-LineString" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="curve "/>
-<xs:element name="GeomType" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="surface "/>
-<xs:element name="ext-x2f-LineProperty" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="curve "/>
+<xs:element name="GeomBas" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point " fdo:geometryTypes="point "/>
+<xs:element name="gml-x2f-LineString" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="curve " fdo:geometryTypes="linestring "/>
+<xs:element name="GeomType" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="surface " fdo:geometryTypes="polygon "/>
+<xs:element name="ext-x2f-LineProperty" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="curve " fdo:geometryTypes="linestring "/>
 <xs:element name="FeatType" minOccurs="0" maxOccurs="1" fdo:deleteRule="Cascade">
 <xs:complexType>
 <xs:complexContent>
@@ -191,7 +191,7 @@ seq</xs:documentation>
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
-<xs:element name="gml-x2f-LineString" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="curve "/>
+<xs:element name="gml-x2f-LineString" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="curve " fdo:geometryTypes="linestring "/>
 <xs:element name="attBasType" minOccurs="0" default="3.14159">
 <xs:simpleType>
 <xs:restriction base="xs:double"/>

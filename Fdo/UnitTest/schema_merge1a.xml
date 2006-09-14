@@ -64,7 +64,7 @@ Ontario Hydro</fdo:attribute>
 				<xs:field xpath="FeatId"/>
 			</xs:key>
 		</xs:element>
-		<xs:complexType name="Electric-x20-Device" abstract="true" fdo:geometryName="Geometry" fdo:geometryReadOnly="true" fdo:hasMeasure="true" fdo:hasElevation="false" fdo:geometricTypes="point curve surface solid " fdo:srsName="SC_1">
+		<xs:complexType name="Electric-x20-Device" abstract="true" fdo:geometryName="Geometry" fdo:geometryReadOnly="true" fdo:hasMeasure="true" fdo:hasElevation="false" fdo:geometricTypes="point curve surface solid " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon " fdo:srsName="SC_1">
 			<xs:annotation>
 				<xs:documentation>
 electical base class</xs:documentation>
@@ -228,7 +228,7 @@ A, B or C</xs:documentation>
 				<xs:field xpath="FeatId"/>
 			</xs:key>
 		</xs:element>
-		<xs:complexType name="PoleTypeStructure" abstract="false" fdo:geometryName="Shape" fdo:hasMeasure="true" fdo:hasElevation="true" fdo:geometricTypes="curve" fdo:srsName="SC_0">
+		<xs:complexType name="PoleTypeStructure" abstract="false" fdo:geometryName="Shape" fdo:hasMeasure="true" fdo:hasElevation="true" fdo:geometricTypes="curve" fdo:geometryTypes="linestring multilinestring curvestring multicurvestring" fdo:srsName="SC_0">
 			<xs:annotation>
 				<xs:documentation/>
 				<xs:documentation>
@@ -257,7 +257,7 @@ point location</xs:documentation>
 								<xs:documentation/>
 							</xs:annotation>
 						</xs:element>
-						<xs:element name="Location" ref="gml:_Geometry" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point" fdo:srsName="SC_2">
+						<xs:element name="Location" ref="gml:_Geometry" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point" fdo:geometryTypes="point multipoint" fdo:srsName="SC_2">
 							<xs:annotation>
 								<xs:documentation>
 pole shape</xs:documentation>

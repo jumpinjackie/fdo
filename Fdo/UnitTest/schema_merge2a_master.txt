@@ -772,7 +772,7 @@ electical base class</xs:documentation>
 Acad entity</xs:documentation>
 </xs:annotation>
 </xs:element>
-<xs:element name="Geometry" type="gml:AbstractGeometryType" fdo:geometryReadOnly="true" fdo:hasMeasure="true" fdo:hasElevation="false" fdo:srsName="SC_1" fdo:geometricTypes="point curve surface solid ">
+<xs:element name="Geometry" type="gml:AbstractGeometryType" fdo:geometryReadOnly="true" fdo:hasMeasure="true" fdo:hasElevation="false" fdo:srsName="SC_1" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
 <xs:annotation>
 <xs:documentation>
 
@@ -990,14 +990,14 @@ type name</xs:documentation>
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
-<xs:element name="Location" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="SC_2" fdo:geometricTypes="point ">
+<xs:element name="Location" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="SC_2" fdo:geometricTypes="point " fdo:geometryTypes="point multipoint ">
 <xs:annotation>
 <xs:documentation>
 
 pole shape</xs:documentation>
 </xs:annotation>
 </xs:element>
-<xs:element name="Shape" type="gml:AbstractGeometryType" fdo:hasMeasure="true" fdo:hasElevation="true" fdo:srsName="SC_0" fdo:geometricTypes="curve ">
+<xs:element name="Shape" type="gml:AbstractGeometryType" fdo:hasMeasure="true" fdo:hasElevation="true" fdo:srsName="SC_0" fdo:geometricTypes="curve " fdo:geometryTypes="linestring multilinestring curvestring multicurvestring ">
 <xs:annotation>
 <xs:documentation>
 
