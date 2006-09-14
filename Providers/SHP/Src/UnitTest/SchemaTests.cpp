@@ -1832,7 +1832,7 @@ void SchemaTests::read_only_files ()
         mConnection->Open ();
 
         // Verify that classes are read-only:
-        FdoPtr<FdoIDescribeSchema> descSchema = dynamic_cast<FdoIDescribeSchema*>(mConnection->CreateCommand(FdoCommandType_DescribeSchema));
+        FdoPtr<FdoIDescribeSchema> descSchema = static_cast<FdoIDescribeSchema*>(mConnection->CreateCommand(FdoCommandType_DescribeSchema));
         FdoPtr<FdoFeatureSchemaCollection> schemas = descSchema->Execute();
         for (int s=0; s<schemas->GetCount(); s++)
         {
