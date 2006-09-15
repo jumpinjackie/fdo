@@ -82,7 +82,7 @@ bool FdoSmPhRdPropertyReader::ReadNext()
             // Check if EOF (out of columns and foreign keys)
             if ( !IsEOF() ) {
                 mFieldIdx++;
-                if ( mFieldIdx >= mDbObject->GetColumns()->GetCount() ) {
+                if ( mFieldIdx >= mDbObject->RefColumns()->GetCount() ) {
                     mFkeyIdx++;
                     if ( mFkeyIdx >= mFkeyCount) 
                         SetEOF(true);
@@ -90,9 +90,11 @@ bool FdoSmPhRdPropertyReader::ReadNext()
             }
 
             if ( !IsEOF() ) {
-                if ( mFieldIdx < mDbObject->GetColumns()->GetCount() ) {
+                if ( mFieldIdx < mDbObject->RefColumns()->GetCount() ) {
                     // Still reading columns, turn current column into a property
-                    FdoSmPhColumnP column = mDbObject->GetColumns()->GetItem(mFieldIdx);
+					
+					FdoSmPhColumnsP columns = mDbObject->GetColumns();
+                    FdoSmPhColumnP column = columns->GetItem(mFieldIdx);
 
                     row = rows ? rows->GetItem(0) : NULL;
 

@@ -227,14 +227,15 @@ void FdoSmLpSimplePropertyDefinition::CreateColumn( FdoSmPhDbObjectP dbObject )
             if ( (!ColumnIsForeign() || !owner->GetHasMetaSchema()) && GetIsFixedColumn() ) {
                 // By default, column override is match to column
                 // by case-sensitive name compare
-                foundColumn = dbObject->GetColumns()->FindItem(columnName);
+				FdoSmPhColumnsP columns = dbObject->GetColumns();
+                foundColumn = columns->FindItem(columnName);
                 if ( !foundColumn ) {
                     // However, if no case-sensitive match, a match to column
                     // of default case is done if such a column exists.
                     FdoStringP CiColumnName = pPhysical->GetDcColumnName(columnName);
                     if ( CiColumnName != columnName ) {
                         columnName = CiColumnName;
-                        foundColumn = dbObject->GetColumns()->FindItem(columnName);
+                        foundColumn = columns->FindItem(columnName);
                         // Matched to default case so change case of
                         // property's column name.
                         SetColumnName(columnName);

@@ -42,7 +42,8 @@ FdoSmPhIndex::~FdoSmPhIndex(void)
 
 void FdoSmPhIndex::AddColumn( FdoSmPhColumnP pColumn )
 {
-    GetColumns()->Add( pColumn );
+	FdoSmPhColumnsP	pColumns = GetColumns();
+    pColumns->Add( pColumn );
 }
 
 long FdoSmPhIndex::GetWeight()

@@ -631,8 +631,10 @@ void FdoSmLpDataPropertyDefinition::Finalize()
         }
         else {
             // Get the column only if the dataproperty's table exists.
-        	if ( GetContainingDbObject() ) 
-		        SetColumn( GetContainingDbObject()->GetColumns()->FindItem(GetColumnName()) );
+			if ( GetContainingDbObject() )  {
+				FdoSmPhColumnsP	columns = GetContainingDbObject()->GetColumns();
+		        SetColumn( columns->FindItem(GetColumnName()) );
+			}
  
             // If column not set and this is an inherited system property other than featid, set the
             // column and containing table back to that of the parent property.

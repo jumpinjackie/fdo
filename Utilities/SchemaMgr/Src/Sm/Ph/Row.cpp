@@ -250,9 +250,10 @@ FdoSmPhColumnP FdoSmPhRow::CreateColumnDbObject(
 
 FdoSmPhColumnP FdoSmPhRow::FindColumn( FdoStringP columnName )
 {
-    FdoSmPhColumnP column = mDbObject->GetColumns()->FindItem( columnName );
+	FdoSmPhColumnsP columns = mDbObject->GetColumns();
+    FdoSmPhColumnP column = columns->FindItem( columnName );
     if ( !column )
-        column = mDbObject->GetColumns()->FindItem( GetManager()->GetDcColumnName(columnName) );
+        column = columns->FindItem( GetManager()->GetDcColumnName(columnName) );
 
     return column;
 }

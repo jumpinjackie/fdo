@@ -160,8 +160,10 @@ bool FdoSmLpFeatureClass::IsGeomInMetaschema()
     if (pPhysical->GetOwner()->GetHasMetaSchema()) {
         pClassTable = pPhysical->FindDbObject(pPhysical->GetDcDbObjectName(L"f_classdefinition"));
 
-        if ( pClassTable ) 
-            bGeomInMetaschema = (pClassTable->GetColumns()->RefItem(pPhysical->GetDcColumnName(L"geometryproperty")) != NULL);
+		if ( pClassTable ) {
+			FdoSmPhColumnsP columns = pClassTable->GetColumns();
+            bGeomInMetaschema = (columns->RefItem(pPhysical->GetDcColumnName(L"geometryproperty")) != NULL);
+		}
     }
 
     return( bGeomInMetaschema );

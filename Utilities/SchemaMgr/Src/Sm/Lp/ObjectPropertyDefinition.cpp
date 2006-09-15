@@ -41,9 +41,12 @@ FdoSmLpObjectPropertyDefinition::FdoSmLpObjectPropertyDefinition(
     mTableMapping(FdoSmLpPropertyMappingType_Concrete),
 	mpDependency(NULL),
     mbFixedDbObject(propReader->GetIsFixedColumn()),
-    mbDbObjectCreator(propReader->GetIsColumnCreator()),
-    mRootDbObjectName(GetLogicalPhysicalSchema()->GetPhysicalSchema()->GetRealDbObjectName(propReader->GetRootObjectName()))
+    mbDbObjectCreator(propReader->GetIsColumnCreator())
 {
+	FdoPtr<FdoSmLpSchema> pLpSchema = GetLogicalPhysicalSchema();
+	FdoSmPhMgrP			  pPhSchema = pLpSchema->GetPhysicalSchema();
+
+	mRootDbObjectName = pPhSchema->GetRealDbObjectName(propReader->GetRootObjectName());
 }
 
 FdoSmLpObjectPropertyDefinition::FdoSmLpObjectPropertyDefinition(

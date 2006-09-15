@@ -68,10 +68,11 @@ FdoSmPhColumnP FdoSmPhField::GetColumn()
 
             if ( pDbObject ) {
                 // Try case-sensitive name match first
-                mColumn = pDbObject->GetColumns()->FindItem(GetName());
+				FdoSmPhColumnsP columns = pDbObject->GetColumns();
+                mColumn = columns->FindItem(GetName());
                 if ( !mColumn ) 
                     // No match, so try to match to column with default case name.
-                    mColumn = pDbObject->GetColumns()->FindItem( GetManager()->GetDcColumnName(GetName()) );
+                    mColumn = columns->FindItem( GetManager()->GetDcColumnName(GetName()) );
             }
         }
     }

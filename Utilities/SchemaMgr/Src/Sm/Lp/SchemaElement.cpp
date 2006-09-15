@@ -293,7 +293,8 @@ void FdoSmLpSchemaElement::ValidateStringLength(
             FdoSmPhDbObjectP dbObject = physicalSchema->FindDbObject( pTable );
 
             if ( dbObject ) {
-                FdoSmPhColumnP column = dbObject->GetColumns()->FindItem( pColumn );
+				FdoSmPhColumnsP columns = dbObject->GetColumns();
+                FdoSmPhColumnP column = columns->FindItem( pColumn );
 
                 if ( column ) {
 

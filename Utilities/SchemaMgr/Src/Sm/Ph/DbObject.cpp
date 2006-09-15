@@ -147,7 +147,8 @@ const FdoLockType* FdoSmPhDbObject::GetLockTypes(FdoInt32& size) const
 
 FdoStringsP FdoSmPhDbObject::GetRefColsSql()
 {
-    return _getRefColsSql( GetColumns() );
+	FdoSmPhColumnsP columns = GetColumns();
+    return _getRefColsSql( columns );
 }
    
 FdoStringsP FdoSmPhDbObject::GetKeyColsSql( FdoSmPhColumnCollection* columns )
@@ -174,8 +175,11 @@ FdoSmPhColumnP FdoSmPhDbObject::CreateColumnBLOB(
 {
     FdoSmPhColumnP column =  NewColumnBLOB( columnName, FdoSchemaElementState_Added, bNullable, rootColumnName );
 
-    if (bAttach )
-        GetColumns()->Add(column);
+    if (bAttach ) 
+	{
+		FdoSmPhColumnsP columns = GetColumns();
+        columns->Add(column);
+	}
 
     return column;
 }
@@ -191,7 +195,10 @@ FdoSmPhColumnP FdoSmPhDbObject::CreateColumnChar(
     FdoSmPhColumnP column = NewColumnChar( columnName, FdoSchemaElementState_Added, bNullable, length, rootColumnName );
 
     if (bAttach )
-        GetColumns()->Add(column);
+	{
+		FdoSmPhColumnsP columns = GetColumns();
+        columns->Add(column);
+	}
 
     return column;
 }
@@ -206,7 +213,10 @@ FdoSmPhColumnP FdoSmPhDbObject::CreateColumnDate(
     FdoSmPhColumnP column = NewColumnDate( columnName, FdoSchemaElementState_Added, bNullable, rootColumnName );
 
     if (bAttach )
-        GetColumns()->Add(column);
+	{
+		FdoSmPhColumnsP columns = GetColumns();
+        columns->Add(column);
+	}
 
     return column;
 }
@@ -230,7 +240,10 @@ FdoSmPhColumnP FdoSmPhDbObject::CreateColumnDecimal(
     );
 
     if (bAttach )
-        GetColumns()->Add(column);
+	{
+		FdoSmPhColumnsP columns = GetColumns();
+        columns->Add(column);
+	}
 
     return column;
 }
@@ -250,7 +263,10 @@ FdoSmPhColumnP FdoSmPhDbObject::CreateColumnSingle(
     );
 
     if (bAttach )
-        GetColumns()->Add(column);
+	{
+		FdoSmPhColumnsP columns = GetColumns();
+        columns->Add(column);
+	}
 
     return column;
 }
@@ -270,7 +286,10 @@ FdoSmPhColumnP FdoSmPhDbObject::CreateColumnDouble(
     );
 
     if (bAttach )
-        GetColumns()->Add(column);
+	{
+		FdoSmPhColumnsP columns = GetColumns();
+        columns->Add(column);
+	}
 
     return column;
 }
@@ -296,7 +315,10 @@ FdoSmPhColumnP FdoSmPhDbObject::CreateColumnGeom(
     );
 
     if (bAttach )
-        GetColumns()->Add(column);
+	{
+		FdoSmPhColumnsP columns = GetColumns();
+        columns->Add(column);
+	}
 
     return column;
 }
@@ -311,7 +333,10 @@ FdoSmPhColumnP FdoSmPhDbObject::CreateColumnBool(
     FdoSmPhColumnP column = NewColumnBool( columnName, FdoSchemaElementState_Added, bNullable, rootColumnName );
 
     if (bAttach )
-        GetColumns()->Add(column);
+	{
+		FdoSmPhColumnsP columns = GetColumns();
+        columns->Add(column);
+	}
 
     return column;
 }
@@ -326,7 +351,10 @@ FdoSmPhColumnP FdoSmPhDbObject::CreateColumnByte(
     FdoSmPhColumnP column = NewColumnByte( columnName, FdoSchemaElementState_Added, bNullable, rootColumnName );
 
     if (bAttach )
-        GetColumns()->Add(column);
+	{
+		FdoSmPhColumnsP columns = GetColumns();
+        columns->Add(column);
+	}
 
     return column;
 }
@@ -342,7 +370,10 @@ FdoSmPhColumnP FdoSmPhDbObject::CreateColumnInt16(
     FdoSmPhColumnP column = NewColumnInt16( columnName, FdoSchemaElementState_Added, bNullable, bIsAutoincremented, rootColumnName );
 
     if (bAttach )
-        GetColumns()->Add(column);
+	{
+		FdoSmPhColumnsP columns = GetColumns();
+        columns->Add(column);
+	}
 
     return column;
 }
@@ -358,7 +389,10 @@ FdoSmPhColumnP FdoSmPhDbObject::CreateColumnInt32(
     FdoSmPhColumnP column = NewColumnInt32( columnName, FdoSchemaElementState_Added, bNullable, bIsAutoincremented, rootColumnName );
 
     if (bAttach )
-        GetColumns()->Add(column);
+	{
+		FdoSmPhColumnsP columns = GetColumns();
+        columns->Add(column);
+	}
 
     return column;
 }
@@ -374,7 +408,10 @@ FdoSmPhColumnP FdoSmPhDbObject::CreateColumnInt64(
     FdoSmPhColumnP column = NewColumnInt64( columnName, FdoSchemaElementState_Added, bNullable, bIsAutoincremented, rootColumnName );
 
     if (bAttach )
-        GetColumns()->Add(column);
+	{
+		FdoSmPhColumnsP columns = GetColumns();
+        columns->Add(column);
+	}
 
     return column;
 }
@@ -400,7 +437,10 @@ FdoSmPhColumnP FdoSmPhDbObject::CreateColumnUnknown(
     );
 
     if (bAttach )
-        GetColumns()->Add(column);
+	{
+		FdoSmPhColumnsP columns = GetColumns();
+        columns->Add(column);
+	}
 
     return column;
 }
@@ -415,7 +455,10 @@ FdoSmPhColumnP FdoSmPhDbObject::CreateColumnDbObject(
     FdoSmPhColumnP column = NewColumnDbObject( columnName, FdoSchemaElementState_Added, bNullable, rootColumnName );
 
     if (bAttach )
-        GetColumns()->Add(column);
+	{
+        FdoSmPhColumnsP pColumns = GetColumns();
+		pColumns->Add(column);
+	}
 
     return column;
 }

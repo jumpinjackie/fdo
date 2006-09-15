@@ -79,7 +79,7 @@ bool FdoSmPhPropertyReader::GetIsColumnCreator()
     else {
         FdoSmPhDbObjectP dbObject = GetManager()->FindDbObject( GetTableName() );
         if ( dbObject) {
-            if ( dbObject->GetColumns()->RefItem(GetColumnName()) )
+            if ( dbObject->RefColumns()->RefItem(GetColumnName()) )
                 isColumnCreator = true;
         }
     }
