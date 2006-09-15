@@ -54,6 +54,7 @@
 #define ODBCORACLE_DSN_DEFAULT				UNITTEST_VERSION_NAME L"OracleFdoTest"
 
 #define ODBCACCESS_DSN_DEFAULT				L"MsTest"
+#define ODBCDBASE_DSN_DEFAULT				L"MsTestDbase"
 #define ODBCEXCEL_DSN_DEFAULT				L"MsTestXls"
 #define ODBCTEXT_DSN_DEFAULT				L"Country_Text"
 
@@ -113,6 +114,7 @@ OdbcConnectionUtil::OdbcConnectionUtil(void)
 #ifdef _WIN32
 	m_SetupTextDSNdone = m_SetupAccessDSNdone = m_SetupExcelDSNdone = false;
     m_SetupSqlServerDSNdone = m_SetupMySqlDSNdone = m_SetupOracleDSNdone = false;
+    m_SetupDbaseDSNdone = false;
 #endif
 }
 
@@ -206,6 +208,10 @@ void OdbcConnectionUtil::LoadInitializeFile()
 		if (!m_SetupValues->PropertyExist( L"DSNAccess" ))
 			m_SetupValues->SetProperty( L"DSNAccess", ODBCACCESS_DSN_DEFAULT);
 
+        // dBASE
+		if (!m_SetupValues->PropertyExist( L"DSNDbase" ))
+			m_SetupValues->SetProperty( L"DSNDbase", ODBCDBASE_DSN_DEFAULT);
+
 		// Excel
 		if (!m_SetupValues->PropertyExist( L"DSNExcel" ))
 			m_SetupValues->SetProperty( L"DSNExcel", ODBCEXCEL_DSN_DEFAULT);
@@ -281,6 +287,8 @@ OdbcConnectionUtil::~OdbcConnectionUtil(void)
         TeardownOracleDSN();
     if (m_SetupAccessDSNdone)
         TeardownAccessDSN();
+    if (m_SetupDbaseDSNdone)
+        TeardownDbaseDSN();
     if (m_SetupExcelDSNdone)
         TeardownExcelDSN();
     if (m_SetupTextDSNdone)
@@ -369,6 +377,16 @@ void OdbcConnectionUtil::SetProvider( const char *providerName )
 		pValue = m_SetupValues->GetPropertyValue( L"DSNAccess" );
         FdoCommonOSUtil::setenv( "dsnname", pValue);
 	}
+    else if (strcmp(providerName, "OdbcDbase") == 0 )
+    {
+		m_ProviderActive = L"OdbcDbase";
+#ifdef _WIN32
+		if (!m_SetupDbaseDSNdone)
+		    SetupDbaseDSN();
+#endif
+		pValue = m_SetupValues->GetPropertyValue( L"DSNDbase" );
+        FdoCommonOSUtil::setenv( "dsnname", pValue);
+	}
     else if (strcmp(providerName, "OdbcExcel") == 0 )
     {
 		m_ProviderActive = L"OdbcExcel";
@@ -445,7 +463,7 @@ wchar_t *OdbcConnectionUtil::GetConnectionString(StringConnTypeRequest pTypeReq,
 #ifdef _WIN32
 				FdoStringP pDatastore = datastore;
 				pDatastore = pDatastore.Upper();
-				swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"ConnectionString=\"DRIVER={%hs};UID=%hs;PWD=%hs;DBQ=%hs;XSM=Default;\"", (const char*)OracleDriverName, (const char*)pDatastore, password, service);
+				swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"ConnectionString=\"DRIVER={%hs};UID=%hs;PWD=%hs;DBQ=%hs;XSM=Default;\"", (const char*)OracleDriverName, (const char*)pDatastore /*username*/, password, service);
 #else
 				// We do not support extracting a schema from a DSN on Linux, so connect straight to the needed one.
 				swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"DataSourceName=%hs;UserId=%hs;Password=%hs;", dsnname, datastore, password);
@@ -476,6 +494,8 @@ wchar_t *OdbcConnectionUtil::GetConnectionString(StringConnTypeRequest pTypeReq,
 #endif
 			}
 			else if (m_ProviderActive == L"OdbcAccess")
+				swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"DataSourceName=%hs;UserId=;Password=;", dsnname);
+			else if (m_ProviderActive == L"OdbcDbase")
 				swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"DataSourceName=%hs;UserId=;Password=;", dsnname);
 			else if (m_ProviderActive == L"OdbcExcel")
 				swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"DataSourceName=%hs;UserId=;Password=;", dsnname);
@@ -567,6 +587,37 @@ void OdbcConnectionUtil::SetupAccessDSN()
                 SQLInstallerError (1, &error, teststr, sizeof (teststr), &count);
                 printf (teststr);
                 throw FdoException::Create (L"Access DSN setup failed");
+			}
+		}
+	}
+}
+
+void OdbcConnectionUtil::SetupDbaseDSN()
+{
+    char module[MAX_PATH];
+    char teststr[1024];
+    DWORD nchars;
+    char* last;
+    m_SetupDbaseDSNdone = true;
+    nchars = GetModuleFileName (NULL, module, MAX_PATH);
+    if (0 != nchars)
+    {   
+        // scan the string for the last occurrence of a slash
+        last = strrchr (module, '\\');
+        if (NULL != last)
+        {
+            *last = '\0'; // null terminate it there
+            FdoStringP dsnNameP = m_SetupValues->GetPropertyValue( L"DSNDbase" );
+            const char * dsnName = (const char*)dsnNameP;
+            sprintf (teststr, "DSN=%s%cDescription=Test dBASE datastore for FDO ODBC provider%cDefaultDir=%s%c%c", dsnName, 
+				'\0', '\0', module, '\0', '\0');
+            if (!SQLConfigDataSource (NULL, ODBC_ADD_DSN, "Microsoft dBase Driver (*.dbf)", teststr))
+			{
+                DWORD error;
+                WORD count;
+                SQLInstallerError (1, &error, teststr, sizeof (teststr), &count);
+                printf (teststr);
+                throw FdoException::Create (L"dBASE DSN setup failed");
 			}
 		}
 	}
@@ -747,12 +798,28 @@ void OdbcConnectionUtil::TeardownAccessDSN()
     }
 }
 
+void OdbcConnectionUtil::TeardownDbaseDSN()
+{
+    char pString[SQL_MAX_MESSAGE_LENGTH];
+    DWORD error;
+    WORD count;
+    FdoStringP dsnNameP = m_SetupValues->GetPropertyValue( L"DSNDbase" );
+    const char * dsnName = (const char*)dsnNameP;
+	sprintf( pString, "DSN=%s%c%c", dsnName, '\0', '\0');
+    if (!SQLConfigDataSource (NULL, ODBC_REMOVE_DSN, "Microsoft dBase Driver (*.dbf)", pString))
+    {
+        SQLInstallerError (1, &error, pString, sizeof (pString), &count);
+		printf ("\ndBASE DSN teardown failed:\n");
+        printf (pString);
+    }
+}
+
 void OdbcConnectionUtil::TeardownExcelDSN()
 {
     char pString[SQL_MAX_MESSAGE_LENGTH];
     DWORD error;
     WORD count;
-	sprintf( pString, "DSN=%s%c%c", (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"DSNExcel" ), '\0', '\0');
+	sprintf( pString, "DSN=%s%c%c", (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"DSNExcel" ), '\0', '\0' );
     if (!SQLConfigDataSource (NULL, ODBC_REMOVE_DSN, "Microsoft Excel Driver (*.xls)", pString))
     {
         SQLInstallerError (1, &error, pString, sizeof (pString), &count);
