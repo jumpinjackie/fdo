@@ -53,7 +53,7 @@ geographic</gml:derivedCRSType>
 <xs:complexContent>
 <xs:extension base="gml:AbstractFeatureType">
 <xs:sequence>
-<xs:element name="Geometry" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:srsName="Default" fdo:geometricTypes="point curve ">
+<xs:element name="Geometry" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:srsName="Default" fdo:geometricTypes="point curve " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring ">
 <xs:annotation>
 <xs:documentation>
 location and shape</xs:documentation>
@@ -126,7 +126,7 @@ location and shape</xs:documentation>
 <xs:complexContent>
 <xs:extension base="gml:AbstractFeatureType">
 <xs:sequence>
-<xs:element name="Geometry" type="gml:AbstractGeometryType" fdo:hasMeasure="true" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="point curve ">
+<xs:element name="Geometry" type="gml:AbstractGeometryType" fdo:hasMeasure="true" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="point curve " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring ">
 <xs:annotation>
 <xs:documentation>
 location and shape</xs:documentation>
@@ -191,8 +191,8 @@ Feature id number (uniquely identifies a feature)</xs:documentation>
 </xs:complexContent>
 </xs:complexType>
 </xs:schema>
-<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" tablespace="USERS" tableMapping="Base" provider="Autodesk.Oracle.3.2" name="Schema1"/>
-<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" tablespace="USERS" tableMapping="Base" provider="Autodesk.Oracle.3.2" name="Schema2"/>
+<SchemaMapping xmlns="http://fdomysql.osgeo.org/schemas" xmlns:rdb="http://fdordbms.osgeo.org/schemas" tableMapping="Base" provider="OSGeo.MySQL.3.2" name="Schema1"/>
+<SchemaMapping xmlns="http://fdomysql.osgeo.org/schemas" xmlns:rdb="http://fdordbms.osgeo.org/schemas" tableMapping="Base" provider="OSGeo.MySQL.3.2" name="Schema2"/>
 <gml:FeatureCollection>
 <gml:featureMember>
 <ClassB1>
