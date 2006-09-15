@@ -81,6 +81,8 @@ private:
 	int m_TableSize;
 
 	int m_CurrentIndex;
+
+    bool m_IdSingleAutogen;
 };
 
 #endif

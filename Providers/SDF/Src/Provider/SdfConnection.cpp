@@ -907,6 +907,13 @@ void SdfConnection::FlushAll( FdoClassDefinition *clas, bool forUpdate )
     SdfRTree* rt = GetRTree(clas);
     KeyDb* keys = GetKeyDb(clas);
 
+	if( ! (
+            (keys && keys->NeedsAFlush(true) )     ||
+	        (dataDb && dataDb->NeedsAFlush(true) ) ||
+	        (rt && rt->NeedsAFlush(true) ) 
+          )  )
+	    return;
+
     GetDataBase()->begin_transaction();
     if( keys )
         keys->Flush();
