@@ -279,21 +279,21 @@ FdoFunctionDefinitionCollection* FdoRdbmsExpressionCapabilities::GetFunctions()
     functions->Add(func);
 
     // Add the function SUM. The function accepts a parameter of type decimal, double, int16,
-    // int32, int64 or single and returns the same data type as the input parameter.
+    // int32, int64 or single and always returns a double.
     FdoPtr<FdoSignatureDefinition> sumSignatureDef;
     FdoPtr<FdoSignatureDefinitionCollection> sumSignatureDefCol = FdoSignatureDefinitionCollection::Create();
 
-    sumSignatureDef = FdoSignatureDefinition::Create(FdoDataType_Decimal, decimalParms);
+    sumSignatureDef = FdoSignatureDefinition::Create(FdoDataType_Double, decimalParms);
     sumSignatureDefCol->Add(sumSignatureDef);
     sumSignatureDef = FdoSignatureDefinition::Create(FdoDataType_Double, doubleParms);
     sumSignatureDefCol->Add(sumSignatureDef);
-    sumSignatureDef = FdoSignatureDefinition::Create(FdoDataType_Int16, int16Parms);
+    sumSignatureDef = FdoSignatureDefinition::Create(FdoDataType_Double, int16Parms);
     sumSignatureDefCol->Add(sumSignatureDef);
-    sumSignatureDef = FdoSignatureDefinition::Create(FdoDataType_Int32, int32Parms);
+    sumSignatureDef = FdoSignatureDefinition::Create(FdoDataType_Double, int32Parms);
     sumSignatureDefCol->Add(sumSignatureDef);
-    sumSignatureDef = FdoSignatureDefinition::Create(FdoDataType_Int64, int64Parms);
+    sumSignatureDef = FdoSignatureDefinition::Create(FdoDataType_Double, int64Parms);
     sumSignatureDefCol->Add(sumSignatureDef);
-    sumSignatureDef = FdoSignatureDefinition::Create(FdoDataType_Single, singleParms);
+    sumSignatureDef = FdoSignatureDefinition::Create(FdoDataType_Double, singleParms);
     sumSignatureDefCol->Add(sumSignatureDef);
 
     desc = FdoException::NLSGetMessage(FUNCTION_SUM, "Returns the sum of values of an expression");
