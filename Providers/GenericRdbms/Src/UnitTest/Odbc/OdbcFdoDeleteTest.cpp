@@ -18,79 +18,135 @@
 
 #include "Pch.h"
 #include "OdbcFdoDeleteTest.h"
-#include "UnitTestUtil.h"
 
 CPPUNIT_TEST_SUITE_REGISTRATION( OdbcOracleFdoDeleteTest );
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcOracleFdoDeleteTest, "FdoDeleteTest");
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcOracleFdoDeleteTest, "OdbcOracleFdoDeleteTest");
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcOracleFdoDeleteTest, "OdbcOracleTests");
 
+CPPUNIT_TEST_SUITE_REGISTRATION( OdbcMySqlFdoDeleteTest );
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcMySqlFdoDeleteTest, "FdoDeleteTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcMySqlFdoDeleteTest, "OdbcMySqlFdoDeleteTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcMySqlFdoDeleteTest, "OdbcMySqlTests");
+
 #ifdef _WIN32
+CPPUNIT_TEST_SUITE_REGISTRATION( OdbcSqlServerFdoDeleteTest );
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcSqlServerFdoDeleteTest, "FdoDeleteTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcSqlServerFdoDeleteTest, "OdbcSqlServerFdoDeleteTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcSqlServerFdoDeleteTest, "OdbcSqlServerTests");
+
 CPPUNIT_TEST_SUITE_REGISTRATION( OdbcAccessFdoDeleteTest );
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcAccessFdoDeleteTest, "FdoDeleteTest");
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcAccessFdoDeleteTest, "OdbcAccessFdoDeleteTest");
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcAccessFdoDeleteTest, "OdbcAccessTests");
 #endif
 
-void OdbcOracleFdoDeleteTest::set_provider()
+void OdbcBaseFdoDeleteTest::setUp ()
 {
-	UnitTestUtil::SetProvider( "OdbcOracle" );
+    set_provider();
+    connect();
 }
 
-void OdbcOracleFdoDeleteTest::FeatureDelete ()
+void OdbcBaseFdoDeleteTest::tearDown ()
 {
-#if 0
-    // Test not converted for Oracle yet.
+    if (mConnection != NULL)
+    {
+        mConnection->Close();
+        mConnection = NULL;
+    }
+}
 
-    FdoPtr<FdoIConnection> connection;
-
+void OdbcBaseFdoDeleteTest::connect ()
+{
     try
     {
-        connection = UnitTestUtil::GetProviderConnectionObject();
-        connection->SetConnectionString(UnitTestUtil::GetConnectionString());
-        connection->Open();
+		mConnection = UnitTestUtil::GetProviderConnectionObject();
+        if (DataBaseType_None != mSetup.GetTypeDB() )
+        {
+            // Set up databases that are not prefabricated.
+            StringConnTypeRequest connectionType = Connection_NoDatastore;
+            if (DataBaseType_Oracle == mSetup.GetTypeDB() )
+                connectionType = Connection_OraSetup;
+		    mConnection->SetConnectionString ( UnitTestUtil::GetConnectionString(connectionType, "") );
+		    mConnection->Open();
+		    mSetup.CreateDataStore(mConnection, "");
+		    mSetup.CreateAcadSchema(mConnection);
+		    mSetup.CreateNonAcadSchema(mConnection);
 
+		    mConnection->Close();
+        }
+		mConnection->SetConnectionString ( UnitTestUtil::GetConnectionString(Connection_WithDSN, "") );
+		mConnection->Open();
+    }
+    catch (FdoException *ex)
+    {
+        mConnection = NULL;
+        UnitTestUtil::fail (ex);
+    }
+
+}
+
+
+void OdbcBaseFdoDeleteTest::FeatureDelete ()
+{
+    if (mConnection != NULL) try
+    {
         // Create a filter
-        FdoPtr<FdoIdentifier> pIdent = FdoIdentifier::Create(L"NAME"); 
-        FdoPtr<FdoDataValue> pParam = FdoDataValue::Create(L"FakeName"); 
+        FdoPtr<FdoIdentifier> pIdent = FdoIdentifier::Create(mSetup.GetPropertyNameCitiesName()); 
+        FdoPtr<FdoDataValue> pParam = FdoDataValue::Create(L"Boop");
 
         FdoPtr<FdoComparisonCondition> filter = FdoComparisonCondition::Create(pIdent, FdoComparisonOperations_EqualTo, pParam); 
 
-        int count;
+        FdoPtr<FdoIDelete> deleteCommand = (FdoIDelete *) mConnection->CreateCommand(FdoCommandType_Delete);
 
-	    FdoPtr<FdoIDelete> deleteCommand = (FdoIDelete *) connection->CreateCommand(FdoCommandType_Delete);
+        deleteCommand->SetFeatureClassName(mSetup.GetClassNameCities());
+        deleteCommand->SetFilter( filter );
 
-        deleteCommand->SetFeatureClassName(L"TABLE1");
-	    deleteCommand->SetFilter( filter );
-
-        count = deleteCommand->Execute();
-
+        int count = deleteCommand->Execute();
+        CPPUNIT_ASSERT( count == 1 );
     }
-    catch ( FdoException* e ) 
+    catch (FdoException *ex)
     {
-        try {
-            if ( connection) connection->Close(); 
-        }
-        catch ( ... ) 
-        {
-        }
-        UnitTestUtil::FailOnException( e );
+        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
     }
-    catch (...)
+}
+
+void OdbcMySqlFdoDeleteTest::ConfigFileTest()
+{
+    if (mConnection != NULL) try
     {
-        if (connection)
-	        connection->Close();
-        CPPUNIT_FAIL ("delete failed");
+        // Re-open the connection with a configuration document in place.
+        mConnection->Close();
+        FdoIoFileStreamP fileStream = FdoIoFileStream::Create(GetConfigFile2(), L"r");
+        mConnection->SetConfiguration(fileStream);
+        mConnection->Open();
+
+        // Create a filter
+        FdoPtr<FdoIdentifier> pIdent = FdoIdentifier::Create(L"Id"); 
+        FdoPtr<FdoDataValue> pParam = FdoDataValue::Create(L"2");
+
+        FdoPtr<FdoComparisonCondition> filter = FdoComparisonCondition::Create(pIdent, FdoComparisonOperations_EqualTo, pParam); 
+
+        FdoPtr<FdoIDelete> deleteCommand = (FdoIDelete *) mConnection->CreateCommand(FdoCommandType_Delete);
+
+        deleteCommand->SetFeatureClassName(L"Acdb:Polyline");
+        deleteCommand->SetFilter( filter );
+
+        int count = deleteCommand->Execute();
+        CPPUNIT_ASSERT( count == 1 );
+
+        // Set the connection back to having no configuration document.
+        mConnection->Close();
+        mConnection->SetConfiguration(NULL);
+        mConnection->Open();
     }
-	connection->Close();
-#endif
+    catch (FdoException *ex)
+    {
+        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+    }
 }
 
 #ifdef _WIN32
-void OdbcAccessFdoDeleteTest::set_provider()
-{
-	UnitTestUtil::SetProvider( "OdbcAccess" );
-}
 
 void OdbcAccessFdoDeleteTest::FeatureDelete ()
 {

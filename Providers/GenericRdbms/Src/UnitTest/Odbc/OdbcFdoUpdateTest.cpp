@@ -19,17 +19,33 @@
 #include "Pch.h"
 #include "OdbcFdoUpdateTest.h"
 #include "UnitTestUtil.h"
+#include "OdbcBaseSetup.h"
 
 CPPUNIT_TEST_SUITE_REGISTRATION( OdbcOracleFdoUpdateTest );
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcOracleFdoUpdateTest, "FdoUpdateTest");
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcOracleFdoUpdateTest, "OdbcOracleFdoUpdateTest");
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcOracleFdoUpdateTest, "OdbcOracleTests");
 
+CPPUNIT_TEST_SUITE_REGISTRATION( OdbcMySqlFdoUpdateTest );
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcMySqlFdoUpdateTest, "FdoUpdateTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcMySqlFdoUpdateTest, "OdbcMySqlFdoUpdateTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcMySqlFdoUpdateTest, "OdbcMySqlTests");
+
 #ifdef _WIN32
+CPPUNIT_TEST_SUITE_REGISTRATION( OdbcSqlServerFdoUpdateTest );
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcSqlServerFdoUpdateTest, "FdoUpdateTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcSqlServerFdoUpdateTest, "OdbcSqlServerFdoUpdateTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcSqlServerFdoUpdateTest, "OdbcSqlServerTests");
+
 CPPUNIT_TEST_SUITE_REGISTRATION( OdbcAccessFdoUpdateTest );
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcAccessFdoUpdateTest, "FdoUpdateTest");
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcAccessFdoUpdateTest, "OdbcAccessFdoUpdateTest");
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcAccessFdoUpdateTest, "OdbcAccessTests");
+
+CPPUNIT_TEST_SUITE_REGISTRATION( OdbcDbaseFdoUpdateTest );
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcDbaseFdoUpdateTest, "FdoUpdateTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcDbaseFdoUpdateTest, "OdbcDbaseFdoUpdateTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcDbaseFdoUpdateTest, "OdbcDbaseTests");
 
 CPPUNIT_TEST_SUITE_REGISTRATION( OdbcExcelFdoUpdateTest );
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcExcelFdoUpdateTest, "FdoUpdateTest");
@@ -37,64 +53,117 @@ CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcExcelFdoUpdateTest, "OdbcExcelFdoUpda
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcExcelFdoUpdateTest, "OdbcExcelTests");
 #endif
 
-void OdbcOracleFdoUpdateTest::set_provider()
+void OdbcBaseFdoUpdateTest::setUp ()
 {
-	UnitTestUtil::SetProvider( "OdbcOracle" );
+    set_provider();
+    connect();
 }
 
-void OdbcOracleFdoUpdateTest::updateCities()
+void OdbcBaseFdoUpdateTest::tearDown ()
 {
-#if 0
-    // Test not converted for Oracle yet.
+    if (mConnection != NULL)
+    {
+        mConnection->Close();
+        mConnection = NULL;
+    }
+}
 
+void OdbcBaseFdoUpdateTest::connect ()
+{
     try
     {
-        FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
-		connection->SetConnectionString(UnitTestUtil::GetConnectionString(Connection_WithDSN, ""));
-        connection->Open();
-
-        try
+		mConnection = UnitTestUtil::GetProviderConnectionObject();
+        if (DataBaseType_None != mSetup.GetTypeDB() )
         {
-            UnitTestUtil::CreateCityTable(connection);
+            // Set up databases that are not prefabricated.
+            StringConnTypeRequest connectionType = Connection_NoDatastore;
+            if (DataBaseType_Oracle == mSetup.GetTypeDB() )
+                connectionType = Connection_OraSetup;
+		    mConnection->SetConnectionString ( UnitTestUtil::GetConnectionString(connectionType, "") );
+		    mConnection->Open();
+		    mSetup.CreateDataStore(mConnection, "");
+		    mSetup.CreateAcadSchema(mConnection);
+		    mSetup.CreateNonAcadSchema(mConnection);
 
-            FdoIUpdate *updateCommand =
-                (FdoIUpdate *) connection->CreateCommand(FdoCommandType_Update);
-            updateCommand->SetFeatureClassName(L"CITIES");
-            FdoPtr<FdoPropertyValueCollection> propertyValues =
-                updateCommand->GetPropertyValues();
-
-            printf("start update non-feature class\n");
-            FdoPtr<FdoDataValue> dataValue;
-            FdoPtr<FdoPropertyValue> propertyValue;
-
-            dataValue = FdoDataValue::Create(L"Carleton");
-            propertyValue = AddNewProperty( propertyValues, L"NAME");
-            propertyValue->SetValue(dataValue);
-
-            dataValue = FdoDataValue::Create(L"FakeVille");
-            propertyValue = AddNewProperty( propertyValues, L"CITY");
-            propertyValue->SetValue(dataValue);
-
-            int count = updateCommand->Execute();
-
-            updateCommand->Release();
+		    mConnection->Close();
         }
-        catch (...)
-        {
-            throw;
-        }
+		mConnection->SetConnectionString ( UnitTestUtil::GetConnectionString(Connection_WithDSN, "") );
+		mConnection->Open();
+    }
+    catch (FdoException *ex)
+    {
+        mConnection = NULL;
+        UnitTestUtil::fail (ex);
+    }
+
+}
+
+
+void OdbcBaseFdoUpdateTest::updateCities()
+{
+    if (mConnection != NULL) try
+    {
+        FdoPtr<FdoIUpdate> updateCommand =
+            (FdoIUpdate *) mConnection->CreateCommand(FdoCommandType_Update);
+        updateCommand->SetFeatureClassName(mSetup.GetClassNameCities());
+        FdoPtr<FdoPropertyValueCollection> propertyValues =
+            updateCommand->GetPropertyValues();
+
+        FdoPtr<FdoDataValue> dataValue;
+        FdoPtr<FdoPropertyValue> propertyValue;
+
+        dataValue = FdoDataValue::Create(L"Carleton");
+        propertyValue = AddNewProperty( propertyValues, mSetup.GetPropertyNameCitiesName());
+        propertyValue->SetValue(dataValue);
+
+        dataValue = FdoDataValue::Create(L"FakeVille");
+        propertyValue = AddNewProperty( propertyValues, mSetup.GetPropertyNameCitiesCity());
+        propertyValue->SetValue(dataValue);
+
+        FdoPtr<FdoFilter> filter = FdoComparisonCondition::Create(
+            FdoPtr<FdoIdentifier>(FdoIdentifier::Create(mSetup.GetPropertyNameCitiesName()) ),
+            FdoComparisonOperations_EqualTo,
+            FdoPtr<FdoDataValue>(FdoDataValue::Create(L"Boop") ) );
+
+        updateCommand->SetFilter(filter);
+
+        int count = updateCommand->Execute();
+        CPPUNIT_ASSERT( count == 1 );
+
+        // Now change it back so that other tests pass.
+        updateCommand =
+            (FdoIUpdate *) mConnection->CreateCommand(FdoCommandType_Update);
+        updateCommand->SetFeatureClassName(mSetup.GetClassNameCities());
+        propertyValues = updateCommand->GetPropertyValues();
+
+        dataValue = FdoDataValue::Create(L"Boop");
+        propertyValue = AddNewProperty( propertyValues, mSetup.GetPropertyNameCitiesName());
+        propertyValue->SetValue(dataValue);
+
+        dataValue = FdoDataValue::Create(L"San Bebop");
+        propertyValue = AddNewProperty( propertyValues, mSetup.GetPropertyNameCitiesCity());
+        propertyValue->SetValue(dataValue);
+
+        filter = FdoComparisonCondition::Create(
+            FdoPtr<FdoIdentifier>(FdoIdentifier::Create(mSetup.GetPropertyNameCitiesName()) ),
+            FdoComparisonOperations_EqualTo,
+            FdoPtr<FdoDataValue>(FdoDataValue::Create(L"Carleton") ) );
+
+        updateCommand->SetFilter(filter);
+
+        count = updateCommand->Execute();
+        CPPUNIT_ASSERT( count == 1 );
     }
     catch (FdoException *ex)
     {
         CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
     }
-#endif
 }
 
-void OdbcOracleFdoUpdateTest::updateTable1()
+void OdbcBaseFdoUpdateTest::updateTable1()
 {
 #if 0
-    // Test not converted for Oracle yet.
+    // Test not converted yet.
 
     try
     {
@@ -179,10 +248,6 @@ void OdbcOracleFdoUpdateTest::updateTable1()
 }
 
 #ifdef _WIN32
-void OdbcAccessFdoUpdateTest::set_provider()
-{
-	UnitTestUtil::SetProvider( "OdbcAccess" );
-}
 
 void OdbcAccessFdoUpdateTest::updateCities()
 {
@@ -192,37 +257,30 @@ void OdbcAccessFdoUpdateTest::updateCities()
         FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
 		connection->SetConnectionString(UnitTestUtil::GetConnectionString(Connection_WithDSN, ""));
         connection->Open();
-        try
-        {
-            FdoIUpdate *updateCommand =
-                (FdoIUpdate *) connection->CreateCommand(FdoCommandType_Update);
-            updateCommand->SetFeatureClassName(L"Cities");
-            FdoPtr<FdoPropertyValueCollection> propertyValues =
-                updateCommand->GetPropertyValues();
+        FdoIUpdate *updateCommand =
+            (FdoIUpdate *) connection->CreateCommand(FdoCommandType_Update);
+        updateCommand->SetFeatureClassName(GetClassNameCities());
+        FdoPtr<FdoPropertyValueCollection> propertyValues =
+            updateCommand->GetPropertyValues();
 
-			start = clock();
-            printf("start update non-feature class\n");
-            FdoPtr<FdoDataValue> dataValue;
-            FdoPtr<FdoPropertyValue> propertyValue;
+		start = clock();
+        printf("start update non-feature class\n");
+        FdoPtr<FdoDataValue> dataValue;
+        FdoPtr<FdoPropertyValue> propertyValue;
 
-            dataValue = FdoDataValue::Create(L"Carleton");
-            propertyValue = AddNewProperty( propertyValues, L"Name");
-            propertyValue->SetValue(dataValue);
+        dataValue = FdoDataValue::Create(L"Carleton");
+        propertyValue = AddNewProperty( propertyValues, GetPropertyNameCitiesName());
+        propertyValue->SetValue(dataValue);
 
-            dataValue = FdoDataValue::Create(L"FakeVille");
-            propertyValue = AddNewProperty( propertyValues, L"City");
-            propertyValue->SetValue(dataValue);
+        dataValue = FdoDataValue::Create(L"FakeVille");
+        propertyValue = AddNewProperty( propertyValues, GetPropertyNameCitiesCity());
+        propertyValue->SetValue(dataValue);
 
-            int count = updateCommand->Execute();
-            updateCommand->Release();
+        int count = updateCommand->Execute();
+        updateCommand->Release();
 
-			finish = clock();
-			printf( "Elapsed: %f seconds\n", ((double)(finish - start) / CLOCKS_PER_SEC) );
-        }
-        catch (...)
-        {
-            throw;
-        }
+		finish = clock();
+		printf( "Elapsed: %f seconds\n", ((double)(finish - start) / CLOCKS_PER_SEC) );
     }
     catch (FdoException *ex)
     {
@@ -316,10 +374,6 @@ void OdbcAccessFdoUpdateTest::updateTable1()
     }
 }
 
-void OdbcExcelFdoUpdateTest::set_provider()
-{
-	UnitTestUtil::SetProvider( "OdbcExcel" );
-}
 
 void OdbcExcelFdoUpdateTest::updateTable1()
 {

@@ -1088,6 +1088,13 @@ void FdoRdbmsPvcInsertHandler::SetBindVariables(const FdoSmLpClassDefinition *cu
 
 
                 const FdoSmPhColumn *column = dataProp->RefColumn();
+                if (NULL == column)
+                {
+                    throw FdoRdbmsException::Create(NlsMsgGet1(
+                            FDORDBMS_485,
+                            "No column for property '%1$ls'.",
+                            dataProp->GetName()));
+                }
                 const wchar_t *colName = column->GetName();
 
                 if ( ! mInsertAutoIncrementProperties && column->GetAutoincrement() )

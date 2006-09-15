@@ -141,10 +141,14 @@ void FdoRdbmsConnection::SetConfiguration(FdoIoStream* configStream)
     // Note: we initially allocate to the length of the entire config document; we
     // do not use the default because of a possible defect in FdoIoMemoryStream
     // when the document is bigger than the default size.
-    FdoIoMemoryStreamP stream = FdoIoMemoryStream::Create((FdoSize)configStream->GetLength());
-    configStream->Reset();
-    stream->Write(configStream);
-    mConfigDoc = FDO_SAFE_ADDREF(stream.p);
+    mConfigDoc = NULL;
+    if (NULL != configStream)
+    {
+        FdoIoMemoryStreamP stream = FdoIoMemoryStream::Create((FdoSize)configStream->GetLength());
+        configStream->Reset();
+        stream->Write(configStream);
+        mConfigDoc = FDO_SAFE_ADDREF(stream.p);
+    }
 
     if ( mConfigDoc ) {
         // Read the feature schemas and schema overrides from the config document.

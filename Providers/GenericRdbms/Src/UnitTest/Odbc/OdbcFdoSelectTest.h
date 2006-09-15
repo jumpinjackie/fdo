@@ -20,23 +20,16 @@
 #define ODBC_FDOSELECTTEST_H
 
 #include "FdoSelectTest.h"
+#include "OdbcBaseSetup.h"
+#include "UnitTestUtil.h"
 
 class OdbcFdoSelectTest : public FdoSelectTest
 {
-    CPPUNIT_TEST_SUB_SUITE (OdbcFdoSelectTest, FdoSelectTest);
-    CPPUNIT_TEST_SUITE_END ();
-
-    // ODBC-specific tests will be added here later
-	virtual FdoString* GetClassName (){return L"TABLE1";}
-};
-
-class OdbcOracleFdoSelectTest : public OdbcFdoSelectTest
-{
-    CPPUNIT_TEST_SUB_SUITE (OdbcOracleFdoSelectTest, OdbcFdoSelectTest);
-    CPPUNIT_TEST_SUITE_END ();
-
-    void  set_provider();
+public:
+    virtual void setUp ();
+    virtual void tearDown();
     virtual void connect ();
+
     virtual void feature_query ();
 
     virtual void non_feature_query () {};
@@ -48,37 +41,39 @@ class OdbcOracleFdoSelectTest : public OdbcFdoSelectTest
     virtual void feature_subset_query2() {};
     virtual void feature_select_obj_distinct() {};
     virtual void feature_geom_query () {};
-	virtual FdoString* GetClassName (){return L"TESTCLASS_LT";}
 
-	static bool DataSupportCreated;
+    virtual FdoString * GetClassName()          { return mSetup.LikesUC() ? L"TESTCLASS" : L"testClass"; };
+
+    virtual int numPropertiesInPolylineClass() { return 16; };
+
+protected:
+    OdbcBaseSetup mSetup;
+};
+
+class OdbcOracleFdoSelectTest : public OdbcFdoSelectTest
+{
+    CPPUNIT_TEST_SUB_SUITE (OdbcOracleFdoSelectTest, OdbcFdoSelectTest);
+    CPPUNIT_TEST_SUITE_END ();
+
+    OdbcOracleFdoSelectTest(void)   { this->mSetup.SetTypeDB(DataBaseType_Oracle); }
+    virtual void set_provider()     { UnitTestUtil::SetProvider( "OdbcOracle" ); }
+    virtual int numPropertiesInPolylineClass() { return 17; }
 };
 
 class OdbcMySqlFdoSelectTest : public OdbcFdoSelectTest
 {
     CPPUNIT_TEST_SUB_SUITE (OdbcMySqlFdoSelectTest, OdbcFdoSelectTest);
+    CPPUNIT_TEST (ConfigFileTest);
     CPPUNIT_TEST_SUITE_END ();
 
-    void  set_provider();
-    virtual void connect ();
+    OdbcMySqlFdoSelectTest(void)   { this->mSetup.SetTypeDB(DataBaseType_MySQL); }
+    virtual void set_provider()     { UnitTestUtil::SetProvider( "OdbcMySql" ); }
 
-    // Some values that can vary by target datastore...
-    FdoString * GetConfigFile() {return L"MsTestConfig.xml";}
-    FdoString * GetSchemaName() {return L"Fdo";}
-    FdoString * GetPhysicalSchemaName() {return L"";}
-	virtual FdoString* GetClassName (){return L"testclass";}
+    virtual void ConfigFileTest();
+    FdoString * GetConfigFile2() {return L"MySqlTestConfig2.xml";}
 
-	virtual void feature_query ();
-    virtual void non_feature_query () {};
-    virtual void distance_query () {};
-    virtual void spatial_query () {};
-    virtual void feature_object_query() {};
-    virtual void feature_subset_query () {};
-    virtual void non_feature_subset_query () {};
-    virtual void feature_subset_query2() {};
-    virtual void feature_select_obj_distinct() {};
-    virtual void feature_geom_query () {};
-
-	static bool DataSupportCreated;
+    virtual FdoString * GetClassName()          { return L"testclass"; }
+    virtual int numPropertiesInPolylineClass() { return 15; }
 };
 
 #ifdef _WIN32
@@ -87,27 +82,10 @@ class OdbcSqlServerFdoSelectTest : public OdbcFdoSelectTest
     CPPUNIT_TEST_SUB_SUITE (OdbcSqlServerFdoSelectTest, OdbcFdoSelectTest);
     CPPUNIT_TEST_SUITE_END ();
 
-    void  set_provider();
-    virtual void connect ();
+    virtual void concurrent_select() {};    // Need to set up "testClass" class to run this.
 
-    // Some values that can vary by target datastore...
-    FdoString * GetConfigFile() {return L"MsTestConfig.xml";}
-    FdoString * GetSchemaName() {return L"Fdo";}
-    FdoString * GetPhysicalSchemaName() {return L"";}
-   	virtual FdoString* GetClassName (){return L"testClass";}
-
-	virtual void feature_query ();
-    virtual void non_feature_query () {};
-    virtual void distance_query () {};
-    virtual void spatial_query () {};
-    virtual void feature_object_query() {};
-    virtual void feature_subset_query () {};
-    virtual void non_feature_subset_query () {};
-    virtual void feature_subset_query2() {};
-    virtual void feature_select_obj_distinct() {};
-    virtual void feature_geom_query () {};
-
-	static bool DataSupportCreated;
+    OdbcSqlServerFdoSelectTest(void) { this->mSetup.SetTypeDB(DataBaseType_SqlServer); }
+    virtual void set_provider()      { UnitTestUtil::SetProvider( "OdbcSqlServer" ); }
 };
 
 class OdbcAccessFdoSelectTest : public OdbcFdoSelectTest
@@ -121,14 +99,14 @@ class OdbcAccessFdoSelectTest : public OdbcFdoSelectTest
     CPPUNIT_TEST (TestDefect779194);
     CPPUNIT_TEST_SUITE_END ();
 
-    void  set_provider();
-    void Table1Test();
+    virtual void set_provider()      { UnitTestUtil::SetProvider( "OdbcAccess" ); }
+
+public:
+    virtual void Table1Test();
     void Table2Test();
     void ComparisonFilterTable1Test();  // Contains a spatial query
     void RestrictedPropertiesTable1Test();
     void TestDefect779194();
-
-    virtual void connect ();
 
     // Some values that can vary by target datastore...
     FdoString * GetConnectString() {return L"DataSourceName=MsTest;UserId=;Password=;";}
@@ -140,16 +118,23 @@ class OdbcAccessFdoSelectTest : public OdbcFdoSelectTest
     FdoString * GetPhysicalSchemaName() {return L"";}
 
     virtual void feature_query () {};
-    virtual void non_feature_query () {};
-    virtual void distance_query () {};
-    virtual void spatial_query () {};
-    virtual void feature_object_query() {};
-    virtual void feature_subset_query () {};
-    virtual void non_feature_subset_query () {};
-    virtual void feature_subset_query2() {};
-    virtual void feature_select_obj_distinct() {};
-    virtual void feature_geom_query () {};
-    virtual void geometry_feature_query () {};
+    virtual void concurrent_select () {};
+};
+
+class OdbcDbaseFdoSelectTest : public OdbcAccessFdoSelectTest
+{
+    CPPUNIT_TEST_SUB_SUITE (OdbcDbaseFdoSelectTest, OdbcFdoSelectTest);
+    CPPUNIT_TEST (Table1Test);
+    //CPPUNIT_TEST (Table2Test);
+    //CPPUNIT_TEST (ComparisonFilterTable1Test);
+    //CPPUNIT_TEST (RestrictedPropertiesTable1Test);
+    //CPPUNIT_TEST (TestDateFilter);
+    //CPPUNIT_TEST (TestDefect779194);
+    CPPUNIT_TEST_SUITE_END ();
+
+    virtual void Table1Test() { OdbcAccessFdoSelectTest::Table1Test(); }
+
+    virtual void set_provider()      { UnitTestUtil::SetProvider( "OdbcDbase" ); }
 };
 
 class OdbcExcelFdoSelectTest : public OdbcFdoSelectTest
@@ -162,14 +147,13 @@ class OdbcExcelFdoSelectTest : public OdbcFdoSelectTest
     CPPUNIT_TEST (TestDateFilter);
     CPPUNIT_TEST_SUITE_END ();
 
-    void  set_provider();
+    virtual void set_provider()      { UnitTestUtil::SetProvider( "OdbcExcel" ); }
     void AllTypesTest();
     void AllTypesConfigFileTest();
     void AllTypesConfigFileTest_defect814052();
 
     // Tests select from table without primary key.
     void CityTest();
-    virtual void connect ();
 
     // Some values that can vary by target datastore...
     //FdoString * GetConnectString() {return L"ConnectionString=\"Driver={Microsoft Excel Driver (*.xls)};Dbq=Dbg/MsTest.xls;\"";}
@@ -180,16 +164,7 @@ class OdbcExcelFdoSelectTest : public OdbcFdoSelectTest
     FdoString * GetPhysicalSchemaName() {return L"";}
 
     virtual void feature_query () {};
-    virtual void non_feature_query () {};
-    virtual void distance_query () {};
-    virtual void spatial_query () {};
-    virtual void feature_object_query() {};
-    virtual void feature_subset_query () {};
-    virtual void non_feature_subset_query () {};
-    virtual void feature_subset_query2() {};
-    virtual void feature_select_obj_distinct() {};
-    virtual void feature_geom_query () {};
-    virtual void geometry_feature_query () {};
+    virtual void concurrent_select () {};
 };
 #endif
 

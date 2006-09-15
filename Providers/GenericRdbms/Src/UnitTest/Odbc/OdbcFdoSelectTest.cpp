@@ -42,146 +42,65 @@ CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcAccessFdoSelectTest, "FdoSelectTest")
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcAccessFdoSelectTest, "OdbcAccessFdoSelectTest");
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcAccessFdoSelectTest, "OdbcAccessTests");
 
+CPPUNIT_TEST_SUITE_REGISTRATION( OdbcDbaseFdoSelectTest );
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcDbaseFdoSelectTest, "FdoSelectTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcDbaseFdoSelectTest, "OdbcDbaseFdoSelectTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcDbaseFdoSelectTest, "OdbcDbaseTests");
+
 CPPUNIT_TEST_SUITE_REGISTRATION( OdbcExcelFdoSelectTest );
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcExcelFdoSelectTest, "FdoSelectTest");
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcExcelFdoSelectTest, "OdbcExcelFdoSelectTest");
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcExcelFdoSelectTest, "OdbcExcelTests");
 
-bool OdbcSqlServerFdoSelectTest::DataSupportCreated = false;
 #endif
 
-bool OdbcMySqlFdoSelectTest::DataSupportCreated = false;
-bool OdbcOracleFdoSelectTest::DataSupportCreated = false;
 
-void OdbcOracleFdoSelectTest::set_provider()
+void OdbcFdoSelectTest::setUp ()
 {
-	UnitTestUtil::SetProvider( "OdbcOracle" );
+    mConnection = NULL;
+    set_provider();
+    connect();
 }
 
-void OdbcOracleFdoSelectTest::connect ()
+void OdbcFdoSelectTest::tearDown ()
+{
+    if (mConnection != NULL)
+    {
+        mConnection->Close();
+        mConnection = NULL;
+    }
+}
+
+void OdbcFdoSelectTest::connect ()
 {
     try
     {
-		if (!OdbcOracleFdoSelectTest::DataSupportCreated)
-		{
-			OdbcOracleFdoSelectTest::DataSupportCreated = true;
-			OdbcBaseSetup pOdbcSetup(DataBaseType_Oracle);
-			FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_OraSetup, "");
-			FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
-			connection->SetConnectionString ( userConnectString);
-			connection->Open();
-			pOdbcSetup.CreateDataStore(connection.p, "");
-			connection->Close();
-		}
-
-        mConnection = UnitTestUtil::GetProviderConnectionObject();
-		mConnection->SetConnectionString(UnitTestUtil::GetConnectionString(Connection_WithDSN, ""));
-        mConnection->Open();
-    }
-    catch (FdoException *ex)
-    {
-        if (mConnection)
-        {
-            mConnection->Release();
-            mConnection= NULL;
-        }
-        UnitTestUtil::fail (ex);
-    }
-}
-
-void OdbcOracleFdoSelectTest::feature_query ()
-{
-	clock_t start, finish;
-    FdoIFeatureReader *myReader = NULL;
-    FdoISelect *selCmd = NULL;
-
-	start = clock();
-    if( mConnection != NULL )
-    {
-        try
-        {
-            selCmd = (FdoISelect*)mConnection->CreateCommand( FdoCommandType_Select );
-            FdoStringP schemaName = FdoStringP(UnitTestUtil::GetEnviron("datastore")).Upper();
-#ifdef _WIN32
-            FdoStringP className = schemaName + L":ACDB3DPOLYLINE_LT";
-#else
-            // For Linux, Easysoft's default config does not report schema names.
-            FdoStringP className = L"ACDB3DPOLYLINE_LT";
-#endif
-            selCmd->SetFeatureClassName(className);
-            //FdoFilter* filterPtr = CreateFilter();
-            //selCmd->SetFilter(filterPtr);
-
-            //filterPtr->Release();
-            myReader = selCmd->Execute();
-            if( myReader != NULL  )
-            {
-                while ( myReader->ReadNext() )
-                {
-                    UnitTestUtil::ProcessFeature(myReader);
-
-                    FdoClassDefinitionP classDef = myReader->GetClassDefinition();
-                    FdoPropertiesP props = classDef->GetProperties();
-                    FdoPtr<FdoReadOnlyPropertyDefinitionCollection> baseProps = classDef->GetBaseProperties();
-
-                    CPPUNIT_ASSERT( props->GetCount() == 19 );
-                    CPPUNIT_ASSERT( baseProps->GetCount() == 0 );
-                }
-                myReader->Release();
-            }
-            selCmd->Release();
-        }
-        catch( FdoException *ex )
-        {
-            if( myReader )
-                myReader->Release();
-
-            selCmd->Release();
-			CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
-            throw;
-        }
-    }
-	finish = clock();
-	printf( "Elapsed: %f seconds\n", ((double)(finish - start) / CLOCKS_PER_SEC) );
-}
-
-
-void OdbcMySqlFdoSelectTest::set_provider()
-{
-	UnitTestUtil::SetProvider( "OdbcMySql" );
-}
-
-void OdbcMySqlFdoSelectTest::connect ()
-{
-    try
-    {
-		if (!OdbcMySqlFdoSelectTest::DataSupportCreated)
-		{
-			OdbcMySqlFdoSelectTest::DataSupportCreated = true;
-			FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
-			connection->SetConnectionString ( UnitTestUtil::GetConnectionString(Connection_NoDatastore, "") );
-			connection->Open();
-			OdbcBaseSetup pSetup;
-			pSetup.CreateDataStore(connection.p, "");
-			pSetup.CreateAcadSchema(connection.p);
-			connection->Close();
-		}
 		mConnection = UnitTestUtil::GetProviderConnectionObject();
-		mConnection->SetConnectionString(UnitTestUtil::GetConnectionString(Connection_WithDSN, ""));
-        mConnection->Open();
+        if (DataBaseType_None != mSetup.GetTypeDB() )
+        {
+            // Set up databases that are not prefabricated.
+            StringConnTypeRequest connectionType = Connection_NoDatastore;
+            if (DataBaseType_Oracle == mSetup.GetTypeDB() )
+                connectionType = Connection_OraSetup;
+		    mConnection->SetConnectionString ( UnitTestUtil::GetConnectionString(connectionType, "") );
+		    mConnection->Open();
+		    mSetup.CreateDataStore(mConnection, "");
+		    mSetup.CreateAcadSchema(mConnection);
+		    mSetup.CreateNonAcadSchema(mConnection);
+
+		    mConnection->Close();
+        }
+		mConnection->SetConnectionString ( UnitTestUtil::GetConnectionString(Connection_WithDSN, "") );
+		mConnection->Open();
     }
     catch (FdoException *ex)
     {
-        if (mConnection)
-        {
-            mConnection->Release();
-            mConnection= NULL;
-        }
+        mConnection = NULL;
         UnitTestUtil::fail (ex);
     }
 }
 
-void OdbcMySqlFdoSelectTest::feature_query()
+void OdbcFdoSelectTest::feature_query()
 {
     if( mConnection != NULL )
     {
@@ -190,7 +109,7 @@ void OdbcMySqlFdoSelectTest::feature_query()
             FdoPtr<FdoISelect> selectCmd = (FdoISelect*)mConnection->CreateCommand(FdoCommandType_Select);
 
             // must set the feature class name
-            FdoStringP fcn = L"acdb3dpolyline";
+            FdoStringP fcn = mSetup.GetClassNameAcdb3dpolyline();
             selectCmd->SetFeatureClassName(fcn);
 
             // execute the command
@@ -202,6 +121,13 @@ void OdbcMySqlFdoSelectTest::feature_query()
             {
                 numFeatures++;
                 UnitTestUtil::ProcessFeature(reader);
+
+                FdoClassDefinitionP classDef = reader->GetClassDefinition();
+                FdoPropertiesP props = classDef->GetProperties();
+                FdoPtr<FdoReadOnlyPropertyDefinitionCollection> baseProps = classDef->GetBaseProperties();
+
+                CPPUNIT_ASSERT( props->GetCount() == numPropertiesInPolylineClass() );
+                CPPUNIT_ASSERT( baseProps->GetCount() == 0 );
             }
 
             printf("   %i feature(s) read\n", numFeatures);
@@ -213,105 +139,53 @@ void OdbcMySqlFdoSelectTest::feature_query()
         {
             UnitTestUtil::fail (e);
         }
+    }
+}
+
+void OdbcMySqlFdoSelectTest::ConfigFileTest()
+{
+    if( mConnection != NULL ) try
+    {
+        // Re-open the connection with a configuration document in place.
+        mConnection->Close();
+        FdoIoFileStreamP fileStream = FdoIoFileStream::Create(GetConfigFile2(), L"r");
+        mConnection->SetConfiguration(fileStream);
+        mConnection->Open();
+
+        // Read the features.
+        FdoPtr<FdoISelect> selectCmd = (FdoISelect*)mConnection->CreateCommand(FdoCommandType_Select);
+        selectCmd->SetFeatureClassName(L"Acdb:Polyline");
+        FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+        int numFeatures = 0;
+        while (reader->ReadNext())
+        {
+            numFeatures++;
+            UnitTestUtil::ProcessFeature(reader);
+        }
+        printf("   %i feature(s) read\n", numFeatures);
+        reader->Close();
+
+        // This is not currently written to a file for checking, but it is handy
+        // for debugging.
+        FdoPtr<FdoIDescribeSchema> describeSchemaCmd =
+            (FdoIDescribeSchema*)mConnection->CreateCommand(FdoCommandType_DescribeSchema);
+        FdoPtr<FdoFeatureSchemaCollection> schemas = describeSchemaCmd->Execute();
+        FdoIoMemoryStreamP schemaStream = FdoIoMemoryStream::Create();
+        schemas->WriteXml(schemaStream);
+
+        // Set the connection back to having no configuration document.
+        mConnection->Close();
+        mConnection->SetConfiguration(NULL);
+        mConnection->Open();
+    }
+    catch (FdoException *ex)
+    {
+		CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+        throw;
     }
 }
 
 #ifdef _WIN32
-void OdbcSqlServerFdoSelectTest::set_provider()
-{
-	UnitTestUtil::SetProvider( "OdbcSqlServer" );
-}
-
-void OdbcSqlServerFdoSelectTest::connect ()
-{
-    try
-    {
-		if (!OdbcSqlServerFdoSelectTest::DataSupportCreated)
-		{
-			OdbcSqlServerFdoSelectTest::DataSupportCreated = true;
-			FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
-			connection->SetConnectionString ( UnitTestUtil::GetConnectionString(Connection_NoDatastore, "") );
-			connection->Open();
-			OdbcBaseSetup pSetup(DataBaseType_SqlServer);
-			pSetup.CreateDataStore(connection.p, "");
-			pSetup.CreateAcadSchema(connection.p);
-			connection->Close();
-		}
-        mConnection = UnitTestUtil::GetProviderConnectionObject();
-		mConnection->SetConnectionString(UnitTestUtil::GetConnectionString(Connection_WithDSN, ""));
-        mConnection->Open();
-    }
-    catch (FdoException *ex)
-    {
-        if (mConnection)
-        {
-            mConnection->Release();
-            mConnection= NULL;
-        }
-        UnitTestUtil::fail (ex);
-    }
-
-}
-
-void OdbcSqlServerFdoSelectTest::feature_query()
-{
-    if( mConnection != NULL )
-    {
-        try
-        {
-            FdoPtr<FdoISelect> selectCmd = (FdoISelect*)mConnection->CreateCommand(FdoCommandType_Select);
-
-            // must set the feature class name
-            FdoStringP fcn = L"acdb3dpolyline";
-            selectCmd->SetFeatureClassName(fcn);
-
-            // execute the command
-            FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
-
-            // read through all the features
-            int numFeatures = 0;
-            while (reader->ReadNext())
-            {
-                numFeatures++;
-                UnitTestUtil::ProcessFeature(reader);
-            }
-
-            printf("   %i feature(s) read\n", numFeatures);
-
-            // close the reader
-            reader->Close();
-        }
-        catch (FdoException* e)
-        {
-            UnitTestUtil::fail (e);
-        }
-    }
-}
-
-void OdbcAccessFdoSelectTest::set_provider()
-{
-	UnitTestUtil::SetProvider( "OdbcAccess" );
-}
-
-void OdbcAccessFdoSelectTest::connect ()
-{
-    try
-    {
-        mConnection = UnitTestUtil::GetProviderConnectionObject();
-		mConnection->SetConnectionString(UnitTestUtil::GetConnectionString(Connection_WithDSN, ""));
-        mConnection->Open();
-    }
-    catch (FdoException *ex)
-    {
-        if (mConnection)
-        {
-            mConnection->Release();
-            mConnection= NULL;
-        }
-        UnitTestUtil::fail (ex);
-    }
-
-}
 
 void OdbcAccessFdoSelectTest::Table1Test()
 {
@@ -571,31 +445,6 @@ void OdbcAccessFdoSelectTest::TestDefect779194()
             UnitTestUtil::fail (e);
         }
     }
-}
-
-void OdbcExcelFdoSelectTest::set_provider()
-{
-	UnitTestUtil::SetProvider( "OdbcExcel" );
-}
-
-void OdbcExcelFdoSelectTest::connect ()
-{
-    try
-    {
-        mConnection = UnitTestUtil::GetProviderConnectionObject();
-		mConnection->SetConnectionString(UnitTestUtil::GetConnectionString(Connection_WithDSN, ""));
-        mConnection->Open();
-    }
-    catch (FdoException *ex)
-    {
-        if (mConnection)
-        {
-            mConnection->Release();
-            mConnection= NULL;
-        }
-        UnitTestUtil::fail (ex);
-    }
-
 }
 
 void OdbcExcelFdoSelectTest::AllTypesTest()

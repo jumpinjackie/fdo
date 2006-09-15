@@ -33,7 +33,7 @@ public:
     FdoDeleteTest(void);
     FdoDeleteTest(char*);
     virtual ~FdoDeleteTest(void);
-    void setUp ();
+    virtual void setUp ();
 
     virtual void FeatureDelete ();
     virtual void ObjectPropDelete();

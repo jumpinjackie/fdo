@@ -20,26 +20,66 @@
 #define ODBC_FDODELETETEST_H
 
 #include "FdoDeleteTest.h"
+#include "OdbcBaseSetup.h"
+#include "UnitTestUtil.h"
 
-class OdbcOracleFdoDeleteTest : public FdoDeleteTest
+class OdbcBaseFdoDeleteTest : public FdoDeleteTest
 {
+public:
+    virtual void setUp ();
+    virtual void tearDown();
+    virtual void connect ();
+
+    virtual void FeatureDelete ();
+    virtual void ObjectPropDelete() {};
+
+protected:
+    OdbcBaseSetup mSetup;
+    FdoPtr<FdoIConnection> mConnection;
+};
+
+class OdbcOracleFdoDeleteTest : public OdbcBaseFdoDeleteTest
+{
+public:
     CPPUNIT_TEST_SUB_SUITE (OdbcOracleFdoDeleteTest, FdoDeleteTest);
     CPPUNIT_TEST_SUITE_END ();
 
-    void  set_provider();
-    virtual void FeatureDelete ();
-    virtual void ObjectPropDelete() {};
+    OdbcOracleFdoDeleteTest(void)   { this->mSetup.SetTypeDB(DataBaseType_Oracle); }
+    virtual void set_provider()     { UnitTestUtil::SetProvider( "OdbcOracle" ); }
+};
+
+class OdbcMySqlFdoDeleteTest : public OdbcBaseFdoDeleteTest
+{
+public:
+    CPPUNIT_TEST_SUB_SUITE (OdbcMySqlFdoDeleteTest, FdoDeleteTest);
+    CPPUNIT_TEST (ConfigFileTest);
+    CPPUNIT_TEST_SUITE_END ();
+
+    OdbcMySqlFdoDeleteTest(void)   { this->mSetup.SetTypeDB(DataBaseType_MySQL); }
+    virtual void set_provider()     { UnitTestUtil::SetProvider( "OdbcMySql" ); }
+
+    virtual void ConfigFileTest();
+    FdoString * GetConfigFile2() {return L"MySqlTestConfig2.xml";}
 };
 
 #ifdef _WIN32
-class OdbcAccessFdoDeleteTest : public FdoDeleteTest
+class OdbcSqlServerFdoDeleteTest : public OdbcBaseFdoDeleteTest
+{
+    CPPUNIT_TEST_SUB_SUITE (OdbcSqlServerFdoDeleteTest, FdoDeleteTest);
+    CPPUNIT_TEST_SUITE_END ();
+
+    OdbcSqlServerFdoDeleteTest(void) { this->mSetup.SetTypeDB(DataBaseType_SqlServer); }
+    virtual void set_provider()      { UnitTestUtil::SetProvider( "OdbcSqlServer" ); }
+};
+
+class OdbcAccessFdoDeleteTest : public OdbcBaseFdoDeleteTest
 {
     CPPUNIT_TEST_SUB_SUITE (OdbcAccessFdoDeleteTest, FdoDeleteTest);
     CPPUNIT_TEST_SUITE_END ();
 
-    void  set_provider();
+    virtual void set_provider()     { UnitTestUtil::SetProvider( "OdbcAccess" ); }
+
     virtual void FeatureDelete ();
-    virtual void ObjectPropDelete() {};
 };
 #endif
 

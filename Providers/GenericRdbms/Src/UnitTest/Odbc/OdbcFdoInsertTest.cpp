@@ -32,6 +32,11 @@ CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcMySqlFdoInsertTest, "OdbcMySqlFdoInse
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcMySqlFdoInsertTest, "OdbcMySqlTests");
 
 #ifdef _WIN32
+CPPUNIT_TEST_SUITE_REGISTRATION( OdbcSqlServerFdoInsertTest );
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcSqlServerFdoInsertTest, "FdoInsertTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcSqlServerFdoInsertTest, "OdbcSqlServerFdoInsertTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcSqlServerFdoInsertTest, "OdbcSqlServerTests");
+
 CPPUNIT_TEST_SUITE_REGISTRATION( OdbcAccessFdoInsertTest );
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcAccessFdoInsertTest, "FdoInsertTest");
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcAccessFdoInsertTest, "OdbcAccessFdoInsertTest");
@@ -43,325 +48,253 @@ CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcExcelFdoInsertTest, "OdbcExcelFdoInse
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcExcelFdoInsertTest, "OdbcExcelTests");
 #endif
 
-void OdbcOracleFdoInsertTest::set_provider()
+void OdbcBaseFdoInsertTest::setUp ()
 {
-	UnitTestUtil::SetProvider( "OdbcOracle" );
+    set_provider();
+    connect();
 }
 
-void OdbcOracleFdoInsertTest::insertCities()
+void OdbcBaseFdoInsertTest::tearDown ()
+{
+    if (mConnection != NULL)
+    {
+        mConnection->Close();
+        mConnection = NULL;
+    }
+}
+
+void OdbcBaseFdoInsertTest::connect ()
 {
     try
     {
-		OdbcBaseSetup pOdbcSetup(DataBaseType_Oracle);
-		FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_OraSetup, "");
-		FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
-		connection->SetConnectionString ( userConnectString);
-		connection->Open();
-		pOdbcSetup.CreateDataStore(connection.p, "");
-		connection->Close();
-
-		connection->SetConnectionString ( UnitTestUtil::GetConnectionString(Connection_WithDSN, "") );
-		connection->Open();
-        try
+		mConnection = UnitTestUtil::GetProviderConnectionObject();
+        if (DataBaseType_None != mSetup.GetTypeDB() )
         {
-            UnitTestUtil::CreateCityTable(connection);
+            // Set up databases that are not prefabricated.
+            StringConnTypeRequest connectionType = Connection_NoDatastore;
+            if (DataBaseType_Oracle == mSetup.GetTypeDB() )
+                connectionType = Connection_OraSetup;
+		    mConnection->SetConnectionString ( UnitTestUtil::GetConnectionString(connectionType, "") );
+		    mConnection->Open();
+		    mSetup.CreateDataStore(mConnection, "");
+		    mSetup.CreateAcadSchema(mConnection);
+		    mSetup.CreateNonAcadSchema(mConnection);
 
-            FdoIInsert *insertCommand =
-                (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
-            insertCommand->SetFeatureClassName(L"CITIES");
-            FdoPtr<FdoPropertyValueCollection> propertyValues =
-                insertCommand->GetPropertyValues();
-
-            printf("start insert non-feature class\n");
-            FdoPtr<FdoDataValue> dataValue;
-            FdoPtr<FdoPropertyValue> propertyValue;
-
-            try {
-                UnitTestUtil::Sql2Db(L"delete from CITIES where CITY = 'FakeVille'", static_cast<FdoIConnection *>(connection));
-            }catch (FdoException *ex){ex->Release();}
-
-            dataValue = FdoDataValue::Create(50);
-			propertyValue = FdoInsertTest::AddNewProperty( propertyValues, L"CITYID");
-            propertyValue->SetValue(dataValue);
-
-            dataValue = FdoDataValue::Create(L"Carleton");
-            propertyValue = FdoInsertTest::AddNewProperty( propertyValues, L"NAME");
-            propertyValue->SetValue(dataValue);
-
-            dataValue = FdoDataValue::Create(L"FakeVille");
-            propertyValue = FdoInsertTest::AddNewProperty( propertyValues, L"CITY");
-            propertyValue->SetValue(dataValue);
-
-            FdoPtr<FdoIFeatureReader> reader = insertCommand->Execute();
-
-            insertCommand->Release();
+		    mConnection->Close();
         }
-        catch (...)
-        {
-            throw;
-        }
+		mConnection->SetConnectionString ( UnitTestUtil::GetConnectionString(Connection_WithDSN, "") );
+		mConnection->Open();
     }
     catch (FdoException *ex)
     {
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+        mConnection = NULL;
+        UnitTestUtil::fail (ex);
     }
 }
 
-void OdbcOracleFdoInsertTest::insertTable1()
-{
-#if 0
-    // Test not converted for Oracle yet.
 
-    try
-    {
-		// Create/open primary connection:
-		FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
-		connection->SetConnectionString ( UnitTestUtil::GetConnectionString(Connection_WithDSN, "") );
-		connection->Open();
-        try
-        {
-            UnitTestUtil::CreateTable1(connection);
 
-            FdoIInsert *insertCommand =
-                (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
-            insertCommand->SetFeatureClassName(L"TABLE1");
-            FdoPtr<FdoPropertyValueCollection> propertyValues =
-                insertCommand->GetPropertyValues();
-
-            FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-
-            printf("start insert feature class\n");
-            FdoPtr<FdoDataValue> dataValue;
-            FdoPtr<FdoPropertyValue> propertyValue;
-
-            try {
-                UnitTestUtil::Sql2Db(L"delete from TABLE1 where NAME = 'FakeName'", static_cast<FdoIConnection *>(connection));
-            }catch (FdoException *ex){ex->Release();}
-
-            dataValue = FdoDataValue::Create(50);
-            propertyValue = FdoInsertTest::AddNewProperty( propertyValues, L"FEATID1");
-            propertyValue->SetValue(dataValue);
-
-            dataValue = FdoDataValue::Create(L"FakeName");
-            propertyValue = FdoInsertTest::AddNewProperty( propertyValues, L"NAME");
-            propertyValue->SetValue(dataValue);
-
-            propertyValue = FdoInsertTest::AddNewProperty( propertyValues, L"Geometry" );
-            FdoPtr<FdoIDirectPosition> pos = gf->CreatePositionXY(50, 60);
-            FdoPtr<FdoIPoint> pt = gf->CreatePoint(pos);
-            FdoPtr<FdoByteArray> byteArray = gf->GetFgf(pt);
-            FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray);
-            propertyValue->SetValue(geometryValue);
-
-            FdoPtr<FdoIFeatureReader> reader = insertCommand->Execute();
-
-            insertCommand->Release();
-        }
-        catch (...)
-        {
-            throw;
-        }
-    }
-    catch (FdoException *ex)
-    {
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
-    }
-#endif
-}
-
-void OdbcMySqlFdoInsertTest::set_provider()
-{
-	UnitTestUtil::SetProvider( "OdbcMySql" );
-}
-
-void OdbcMySqlFdoInsertTest::insert()
+void OdbcBaseFdoInsertTest::insert()
 {
 	clock_t start, finish;
-	try
+    if (mConnection != NULL) try
     {
-		// Create/open primary connection:
-		FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
-		connection->SetConnectionString ( UnitTestUtil::GetConnectionString(Connection_NoDatastore, "") );
-		connection->Open();
-		OdbcBaseSetup pSetup;
-		pSetup.CreateDataStore(connection.p, "");
-		pSetup.CreateAcadSchema(connection.p);
+        FdoPtr<FdoIInsert> insertCommand =
+            (FdoIInsert *) mConnection->CreateCommand(FdoCommandType_Insert);
+        insertCommand->SetFeatureClassName(mSetup.GetClassNameAcdb3dpolyline());
+        FdoPtr<FdoPropertyValueCollection> propertyValues =
+            insertCommand->GetPropertyValues();
 
-		connection->Close();
-		connection->SetConnectionString ( UnitTestUtil::GetConnectionString(Connection_WithDSN, "") );
-		connection->Open();
-        try
+		start = clock();
+        printf("start insert non-feature class\n");
+        FdoPtr<FdoDataValue> dataValue;
+        FdoPtr<FdoPropertyValue> propertyValue;
+
+        try {
+            UnitTestUtil::Sql2Db(L"delete from acdb3dpolyline where featid = '10000'", static_cast<FdoIConnection *>(mConnection));
+        }catch (FdoException *ex){ex->Release();}
+
+        if (!isPkeyAutogeneratedAcdb3dpolyline())
         {
-            FdoIInsert *insertCommand =
-                (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
-            insertCommand->SetFeatureClassName(L"acdb3dpolyline");
-            FdoPtr<FdoPropertyValueCollection> propertyValues =
-                insertCommand->GetPropertyValues();
-
-			start = clock();
-            printf("start insert non-feature class\n");
-            FdoPtr<FdoDataValue> dataValue;
-            FdoPtr<FdoPropertyValue> propertyValue;
-
-            try {
-                UnitTestUtil::Sql2Db(L"delete from acdb3dpolyline where featid = '10000'", static_cast<FdoIConnection *>(connection));
-            }catch (FdoException *ex){ex->Release();}
-
-            //dataValue = FdoDataValue::Create(10000);
-            //propertyValue = AddNewProperty( propertyValues, L"featid");
-            //propertyValue->SetValue(dataValue);
-
-            dataValue = FdoDataValue::Create(11);
-            propertyValue = AddNewProperty( propertyValues, L"classid");
+            dataValue = FdoDataValue::Create(10000);
+            propertyValue = AddNewProperty( propertyValues, mSetup.GetPropertyNameAcdb3dpolylineFeatId());
             propertyValue->SetValue(dataValue);
-
-            dataValue = FdoDataValue::Create(0);
-            propertyValue = AddNewProperty( propertyValues, L"revisionnumber");
-            propertyValue->SetValue(dataValue);
-
-            FdoPtr<FdoIFeatureReader> reader = insertCommand->Execute();
-
-            insertCommand->Release();
-
-			finish = clock();
-			printf( "Elapsed: %f seconds\n", ((double)(finish - start) / CLOCKS_PER_SEC) );
         }
-        catch (...)
-        {
-            throw;
-        }
-		pSetup.DestroyDataStore(connection.p, "");
-		connection->Close();
+
+        dataValue = FdoDataValue::Create(11);
+        propertyValue = AddNewProperty( propertyValues, mSetup.GetPropertyNameAcdb3dpolylineClassId());
+        propertyValue->SetValue(dataValue);
+
+        dataValue = FdoDataValue::Create(0);
+        propertyValue = AddNewProperty( propertyValues, mSetup.GetPropertyNameAcdb3dpolylineRevision());
+        propertyValue->SetValue(dataValue);
+
+        FdoPtr<FdoIFeatureReader> reader = insertCommand->Execute();
+
+		finish = clock();
+		printf( "Elapsed: %f seconds\n", ((double)(finish - start) / CLOCKS_PER_SEC) );
     }
     catch (FdoException *ex)
     {
         CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
     }
 }
+
+
+void OdbcMySqlFdoInsertTest::ConfigFileTest()
+{
+    // This test is just like insert() above, but uses a configuration document.
+	clock_t start, finish;
+    if (mConnection != NULL) try
+    {
+        // Re-open the connection with a configuration document in place.
+        mConnection->Close();
+        FdoIoFileStreamP fileStream = FdoIoFileStream::Create(GetConfigFile2(), L"r");
+        mConnection->SetConfiguration(fileStream);
+        mConnection->Open();
+
+        FdoPtr<FdoIInsert> insertCommand =
+            (FdoIInsert *) mConnection->CreateCommand(FdoCommandType_Insert);
+        insertCommand->SetFeatureClassName(L"Acdb:Polyline");
+        FdoPtr<FdoPropertyValueCollection> propertyValues =
+            insertCommand->GetPropertyValues();
+
+		start = clock();
+        printf("start insert with config file\n");
+        FdoPtr<FdoDataValue> dataValue;
+        FdoPtr<FdoPropertyValue> propertyValue;
+
+        try {
+            UnitTestUtil::Sql2Db(L"delete from acdb3dpolyline where featid = '10001'", static_cast<FdoIConnection *>(mConnection));
+        }catch (FdoException *ex){ex->Release();}
+
+        if (!isPkeyAutogeneratedAcdb3dpolyline())
+        {
+            dataValue = FdoDataValue::Create(10001);
+            propertyValue = AddNewProperty( propertyValues, L"Id");
+            propertyValue->SetValue(dataValue);
+        }
+
+        dataValue = FdoDataValue::Create(11);
+        propertyValue = AddNewProperty( propertyValues, L"ClassId");
+        propertyValue->SetValue(dataValue);
+
+        dataValue = FdoDataValue::Create(0);
+        propertyValue = AddNewProperty( propertyValues, L"RevisionNumber");
+        propertyValue->SetValue(dataValue);
+
+        FdoPtr<FdoIFeatureReader> reader = insertCommand->Execute();
+
+		finish = clock();
+		printf( "Elapsed: %f seconds\n", ((double)(finish - start) / CLOCKS_PER_SEC) );
+
+        // Set the connection back to having no configuration document.
+        mConnection->Close();
+        mConnection->SetConfiguration(NULL);
+        mConnection->Open();
+    }
+    catch (FdoException *ex)
+    {
+        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+    }
+}
+
+
+void OdbcBaseFdoInsertTest::insertCities()
+{
+    if (mConnection != NULL) try
+    {
+        FdoPtr<FdoIInsert> insertCommand =
+            (FdoIInsert *) mConnection->CreateCommand(FdoCommandType_Insert);
+        insertCommand->SetFeatureClassName(GetClassNameCities());
+        FdoPtr<FdoPropertyValueCollection> propertyValues =
+            insertCommand->GetPropertyValues();
+
+        printf("start insert non-feature class\n");
+        FdoPtr<FdoDataValue> dataValue;
+        FdoPtr<FdoPropertyValue> propertyValue;
+
+        try {
+            UnitTestUtil::Sql2Db(L"delete from CITIES where CITY = 'FakeVille'", static_cast<FdoIConnection *>(mConnection));
+        }catch (FdoException *ex){ex->Release();}
+
+        if (!isPkeyAutogeneratedCities())
+        {
+            dataValue = FdoDataValue::Create(50);
+		    propertyValue = FdoInsertTest::AddNewProperty( propertyValues, GetPropertyNameCitiesCityId());
+            propertyValue->SetValue(dataValue);
+        }
+
+        dataValue = FdoDataValue::Create(L"Carleton");
+        propertyValue = FdoInsertTest::AddNewProperty( propertyValues, GetPropertyNameCitiesName());
+        propertyValue->SetValue(dataValue);
+
+        dataValue = FdoDataValue::Create(L"FakeVille");
+        propertyValue = FdoInsertTest::AddNewProperty( propertyValues, GetPropertyNameCitiesCity());
+        propertyValue->SetValue(dataValue);
+
+        FdoPtr<FdoIFeatureReader> reader = insertCommand->Execute();
+    }
+    catch (FdoException *ex)
+    {
+        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+    }
+}
+
+
+void OdbcBaseFdoInsertTest::insertTable1()
+{
+	clock_t start, finish;
+    if (mConnection != NULL) try
+    {
+        FdoPtr<FdoIInsert> insertCommand =
+            (FdoIInsert *) mConnection->CreateCommand(FdoCommandType_Insert);
+        insertCommand->SetFeatureClassName(mSetup.GetClassNameTable1());
+        FdoPtr<FdoPropertyValueCollection> propertyValues =
+            insertCommand->GetPropertyValues();
+
+        FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+
+        start = clock();
+        printf("start insert feature class\n");
+        FdoPtr<FdoDataValue> dataValue;
+        FdoPtr<FdoPropertyValue> propertyValue;
+
+        try {
+            UnitTestUtil::Sql2Db(L"delete from TABLE1 where NAME = 'FakeName'", static_cast<FdoIConnection *>(mConnection));
+        }catch (FdoException *ex){ex->Release();}
+
+        if (!isPkeyAutogeneratedTable1())
+        {
+            dataValue = FdoDataValue::Create(50);
+            propertyValue = AddNewProperty( propertyValues, mSetup.GetPropertyNameTable1FeatId());
+            propertyValue->SetValue(dataValue);
+        }
+
+        dataValue = FdoDataValue::Create(L"FakeName");
+        propertyValue = AddNewProperty( propertyValues, mSetup.GetPropertyNameCitiesName());
+        propertyValue->SetValue(dataValue);
+
+        propertyValue = AddNewProperty( propertyValues, L"Geometry" );
+        FdoPtr<FdoIDirectPosition> pos = gf->CreatePositionXY(50, 60);
+        FdoPtr<FdoIPoint> pt = gf->CreatePoint(pos);
+        FdoPtr<FdoByteArray> byteArray = gf->GetFgf(pt);
+        FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray);
+        propertyValue->SetValue(geometryValue);
+
+        FdoPtr<FdoIFeatureReader> reader = insertCommand->Execute();
+
+		finish = clock();
+		printf( "Elapsed: %f seconds\n", ((double)(finish - start) / CLOCKS_PER_SEC) );
+    }
+    catch (FdoException *ex)
+    {
+        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+    }
+}
+
 
 #ifdef _WIN32
-void OdbcAccessFdoInsertTest::set_provider()
-{
-	UnitTestUtil::SetProvider( "OdbcAccess" );
-}
-
-void OdbcAccessFdoInsertTest::insertCities()
-{
-	clock_t start, finish;
-    try
-    {
-		// Create/open primary connection:
-		FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
-		connection->SetConnectionString ( UnitTestUtil::GetConnectionString(Connection_WithDSN, "") );
-		connection->Open();
-        try
-        {
-            FdoIInsert *insertCommand =
-                (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
-            insertCommand->SetFeatureClassName(L"Cities");
-            FdoPtr<FdoPropertyValueCollection> propertyValues =
-                insertCommand->GetPropertyValues();
-
-            start = clock();
-            printf("start insert non-feature class\n");
-            FdoPtr<FdoDataValue> dataValue;
-            FdoPtr<FdoPropertyValue> propertyValue;
-
-            try {
-                UnitTestUtil::Sql2Db(L"delete from Cities where City = 'FakeVille'", static_cast<FdoIConnection *>(connection));
-            }catch (FdoException *ex){ex->Release();}
-
-            dataValue = FdoDataValue::Create(50);
-            propertyValue = AddNewProperty( propertyValues, L"CityId");
-            propertyValue->SetValue(dataValue);
-
-            dataValue = FdoDataValue::Create(L"Carleton");
-            propertyValue = AddNewProperty( propertyValues, L"Name");
-            propertyValue->SetValue(dataValue);
-
-            dataValue = FdoDataValue::Create(L"FakeVille");
-            propertyValue = AddNewProperty( propertyValues, L"City");
-            propertyValue->SetValue(dataValue);
-
-            FdoPtr<FdoIFeatureReader> reader = insertCommand->Execute();
-
-            insertCommand->Release();
-
-			finish = clock();
-			printf( "Elapsed: %f seconds\n", ((double)(finish - start) / CLOCKS_PER_SEC) );
-        }
-        catch (...)
-        {
-            throw;
-        }
-    }
-    catch (FdoException *ex)
-    {
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
-    }
-}
-
-void OdbcAccessFdoInsertTest::insertTable1()
-{
-	clock_t start, finish;
-    try
-    {
-		// Create/open primary connection:
-		FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
-		connection->SetConnectionString ( UnitTestUtil::GetConnectionString(Connection_WithDSN, "") );
-		connection->Open();
-        try
-        {
-            FdoIInsert *insertCommand =
-                (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
-            insertCommand->SetFeatureClassName(L"TABLE1");
-            FdoPtr<FdoPropertyValueCollection> propertyValues =
-                insertCommand->GetPropertyValues();
-
-            FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-
-            start = clock();
-            printf("start insert feature class\n");
-            FdoPtr<FdoDataValue> dataValue;
-            FdoPtr<FdoPropertyValue> propertyValue;
-
-            try {
-                UnitTestUtil::Sql2Db(L"delete from TABLE1 where NAME = 'FakeName'", static_cast<FdoIConnection *>(connection));
-            }catch (FdoException *ex){ex->Release();}
-
-            dataValue = FdoDataValue::Create(50);
-            propertyValue = AddNewProperty( propertyValues, L"FEATID1");
-            propertyValue->SetValue(dataValue);
-
-            dataValue = FdoDataValue::Create(L"FakeName");
-            propertyValue = AddNewProperty( propertyValues, L"NAME");
-            propertyValue->SetValue(dataValue);
-
-            propertyValue = AddNewProperty( propertyValues, L"Geometry" );
-            FdoPtr<FdoIDirectPosition> pos = gf->CreatePositionXY(50, 60);
-            FdoPtr<FdoIPoint> pt = gf->CreatePoint(pos);
-            FdoPtr<FdoByteArray> byteArray = gf->GetFgf(pt);
-            FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray);
-            propertyValue->SetValue(geometryValue);
-
-            FdoPtr<FdoIFeatureReader> reader = insertCommand->Execute();
-
-            insertCommand->Release();
-
-			finish = clock();
-			printf( "Elapsed: %f seconds\n", ((double)(finish - start) / CLOCKS_PER_SEC) );
-        }
-        catch (...)
-        {
-            throw;
-        }
-    }
-    catch (FdoException *ex)
-    {
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
-    }
-}
-
 
 void OdbcAccessFdoInsertTest::insertLidar()
 {
@@ -372,12 +305,12 @@ void OdbcAccessFdoInsertTest::insertLidar()
         if (connection == NULL)
             CPPUNIT_FAIL("FAILED - CreateConnection returned NULL\n");
 
-        connection->SetConnectionString(GetConnectString3());
+        connection->SetConnectionString(GetConnectStringLidar());
         connection->Open();
 
         try
         {
-            FdoIInsert *insertCommand =
+            FdoPtr<FdoIInsert> insertCommand =
                 (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
             insertCommand->SetFeatureClassName(L"LIDAR");
             FdoPtr<FdoPropertyValueCollection> propertyValues =
@@ -389,12 +322,6 @@ void OdbcAccessFdoInsertTest::insertLidar()
             printf("start insert feature class LIDAR\n");
             FdoPtr<FdoDataValue> dataValue;
             FdoPtr<FdoPropertyValue> propertyValue;
-
-            // Note that we do NOT set the ID column (example below), because
-            // it is auto-generated.
-            // dataValue = FdoDataValue::Create(50);
-            // propertyValue = AddNewProperty( propertyValues, L"ID");
-            // propertyValue->SetValue(dataValue);
 
             dataValue = FdoDataValue::Create(L"100");
             propertyValue = AddNewProperty( propertyValues, L"ELEVATION");
@@ -420,8 +347,6 @@ void OdbcAccessFdoInsertTest::insertLidar()
             }
             CPPUNIT_ASSERT( numInserted == 1 );
 
-            insertCommand->Release();
-
 			finish = clock();
 			printf( "Elapsed: %f seconds\n", ((double)(finish - start) / CLOCKS_PER_SEC) );
         }
@@ -436,11 +361,6 @@ void OdbcAccessFdoInsertTest::insertLidar()
     }
 }
 
-void OdbcExcelFdoInsertTest::set_provider()
-{
-	UnitTestUtil::SetProvider( "OdbcExcel" );
-}
-
 void OdbcExcelFdoInsertTest::insertTable1()
 {
 	clock_t start, finish;
@@ -452,15 +372,13 @@ void OdbcExcelFdoInsertTest::insertTable1()
         FdoIoFileStreamP fileStream = FdoIoFileStream::Create(GetConfigFile(), L"r");
         connection->SetConfiguration(fileStream);
 
-        // For Excel, we need a config file because Excel doesn't support
-        // primary keys, and Schema Manager does not report tables that
-        // lack a key (defect 706075).
+        // For Excel, we need a config file because Excel doesn't support primary keys.
         connection->SetConnectionString(GetConnectString());
         connection->Open();
 
         try
         {
-            FdoIInsert *insertCommand =
+            FdoPtr<FdoIInsert> insertCommand =
                 (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
             insertCommand->SetFeatureClassName(L"TABLE1");
             FdoPtr<FdoPropertyValueCollection> propertyValues =
@@ -493,7 +411,6 @@ void OdbcExcelFdoInsertTest::insertTable1()
             propertyValue->SetValue(geometryValue);
 
             FdoPtr<FdoIFeatureReader> reader = insertCommand->Execute();
-            insertCommand->Release();
 
 			finish = clock();
 			printf( "Elapsed: %f seconds\n", ((double)(finish - start) / CLOCKS_PER_SEC) );
@@ -520,15 +437,13 @@ void OdbcExcelFdoInsertTest::insertPoints()
         FdoIoFileStreamP fileStream = FdoIoFileStream::Create(GetConfigFile(), L"r");
         connection->SetConfiguration(fileStream);
 
-        // For Excel, we need a config file because Excel doesn't support
-        // primary keys, and Schema Manager does not report tables that
-        // lack a key (defect 706075).
+        // For Excel, we need a config file because Excel doesn't support primary keys.
         connection->SetConnectionString(GetConnectString());
         connection->Open();
 
         try
         {
-            FdoIInsert *insertCommand =
+            FdoPtr<FdoIInsert> insertCommand =
                 (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
             insertCommand->SetFeatureClassName(L"POINTS");
             FdoPtr<FdoPropertyValueCollection> propertyValues =
@@ -561,7 +476,6 @@ void OdbcExcelFdoInsertTest::insertPoints()
             propertyValue->SetValue(geometryValue);
 
             FdoPtr<FdoIFeatureReader> reader = insertCommand->Execute();
-            insertCommand->Release();
 
 			finish = clock();
 			printf( "Elapsed: %f seconds\n", ((double)(finish - start) / CLOCKS_PER_SEC) );

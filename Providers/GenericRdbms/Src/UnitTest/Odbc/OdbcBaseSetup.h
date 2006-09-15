@@ -20,6 +20,7 @@
 #define ODBC_BASESETUP_H
 
 enum DataBaseType {
+    DataBaseType_None,
     DataBaseType_MySQL,
     DataBaseType_SqlServer,
     DataBaseType_Oracle
@@ -29,28 +30,58 @@ enum DataBaseType {
 class OdbcBaseSetup
 {
 	DataBaseType m_typeDB;
+    bool         m_ReverseEngineersToUppercase;
 public:
-	// 0 - MySQL, 1 - SqlServer
-	OdbcBaseSetup(DataBaseType typeDB = DataBaseType_MySQL)
+	OdbcBaseSetup()
+        : m_typeDB(DataBaseType_None), m_ReverseEngineersToUppercase(true)
 	{
-		m_typeDB = typeDB;
 	}
-	void SetTypeDB(DataBaseType typeDB = DataBaseType_MySQL)
+	OdbcBaseSetup(DataBaseType typeDB)
+        : m_typeDB(typeDB), m_ReverseEngineersToUppercase(true)
+	{
+        if (DataBaseType_MySQL==m_typeDB || DataBaseType_SqlServer==m_typeDB)
+            m_ReverseEngineersToUppercase = false;
+	}
+	void SetTypeDB(DataBaseType typeDB)
 	{
 		m_typeDB = typeDB;
+        if (DataBaseType_MySQL==m_typeDB || DataBaseType_SqlServer==m_typeDB)
+            m_ReverseEngineersToUppercase = false;
 	}
 	DataBaseType GetTypeDB()
 	{
 		return m_typeDB;
 	}
+    bool LikesUC()
+    {
+        return m_ReverseEngineersToUppercase;
+    }
+
+    FdoString * GetClassNameCities()            { return LikesUC() ? L"CITIES" : L"cities"; }
+    FdoString * GetPropertyNameCitiesCityId()   { return LikesUC() ? L"CITYID" : L"cityid"; }
+    FdoString * GetPropertyNameCitiesName()     { return LikesUC() ? L"NAME"   : L"name"; }
+    FdoString * GetPropertyNameCitiesCity()     { return LikesUC() ? L"CITY"   : L"city"; }
+
+    FdoString * GetClassNameTable1()            { return LikesUC() ? L"TABLE1"  : L"table1"; }
+    FdoString * GetPropertyNameTable1FeatId()   { return LikesUC() ? L"FEATID1" : L"featid1"; }
+    FdoString * GetPropertyNameTable1Name()     { return LikesUC() ? L"NAME"    : L"name"; }
+
+    FdoString * GetClassNameAcdb3dpolyline()    { return LikesUC() ? L"ACDB3DPOLYLINE" : L"acdb3dpolyline"; }
+    FdoString * GetPropertyNameAcdb3dpolylineFeatId()   { return LikesUC() ? L"FEATID"        : L"featid"; }
+    FdoString * GetPropertyNameAcdb3dpolylineClassId()   { return LikesUC() ? L"CLASSID" : L"classid"; }
+    FdoString * GetPropertyNameAcdb3dpolylineRevision()  { return LikesUC() ? L"REVISIONNUMBER" : L"revisionnumber"; }
 
 	virtual void CreateDataStore(FdoIConnection* pConnection, const char *suffix);
 	virtual void DestroyDataStore(FdoIConnection* pConnection, const char *suffix);
 	virtual void CreateAcadSchema(FdoIConnection* pConnection);
+	virtual void CreateNonAcadSchema(FdoIConnection* pConnection);
 
 	static const wchar_t* mSqlServerAcadTest[];
+    static const wchar_t* mSqlServerNonAcadTest[];
 	static const wchar_t* mMySqlAcadTest[];
+	static const wchar_t* mMySqlNonAcadTest[];
 	static const wchar_t* mOracleAcadTestData[];
+	static const wchar_t* mOracleNonAcadTest[];
 
 	static bool OracleDataSupportCreated;
 };

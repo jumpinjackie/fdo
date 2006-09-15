@@ -61,6 +61,7 @@ protected:
 #ifdef _WIN32
 	bool m_SetupTextDSNdone;
 	bool m_SetupAccessDSNdone;
+	bool m_SetupDbaseDSNdone;
 	bool m_SetupExcelDSNdone;
 	bool m_SetupSqlServerDSNdone;
 	bool m_SetupMySqlDSNdone;
@@ -68,12 +69,14 @@ protected:
 
 	void SetupTextDSN();
 	void SetupAccessDSN();
+	void SetupDbaseDSN();
 	void SetupExcelDSN();
 	void SetupSqlServerDSN();
 	void SetupMySqlDSN();
 	void SetupOracleDSN();
 
 	void TeardownAccessDSN();
+	void TeardownDbaseDSN();
 	void TeardownExcelDSN();
 	void TeardownTextDSN();
 	void TeardownSqlServerDSN();
