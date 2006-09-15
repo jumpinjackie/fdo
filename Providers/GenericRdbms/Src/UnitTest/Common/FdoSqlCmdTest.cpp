@@ -267,7 +267,7 @@ void FdoSqlCmdTest::CreateActivateDestroySC()
 
             // envelope as Polygon
             FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-            FdoPtr<FdoIEnvelope> env = gf->CreateEnvelopeXY(-1000, -1000, 1000, 1000);
+            FdoPtr<FdoIEnvelope> env = gf->CreateEnvelopeXY(-10000000, -10000000, 10000000, 10000000);
             FdoPtr<FdoIGeometry> geom = gf->CreateGeometry(env); 
             FdoPtr<FdoByteArray> ext = gf->GetFgf( geom );
             cscCmd->SetExtent( ext );
@@ -275,7 +275,7 @@ void FdoSqlCmdTest::CreateActivateDestroySC()
 
     #pragma message ("ToDo: add CreateSpatialContext test that updates.")
 
-            cscCmd->SetXYTolerance(.02);
+            cscCmd->SetXYTolerance(.0000001);
             cscCmd->SetZTolerance(.001);
             
             cscCmd->Execute();
@@ -283,6 +283,24 @@ void FdoSqlCmdTest::CreateActivateDestroySC()
         catch (FdoException *ex )
         {
             printf("CreateActivateDestroySC(): Failed spatial context creation.\n");
+            throw ex;
+        }
+
+        /////////////////////////////////
+
+        try
+        {
+            FdoPtr<FdoIConnection> mConn = UnitTestUtil::GetConnection("", false);
+
+            ascCmd = (FdoRdbmsActivateSpatialContext *)mConn->CreateCommand( FdoCommandType_ActivateSpatialContext );
+
+            ascCmd->SetName(L"SC_X");
+      
+            ascCmd->Execute();
+        }
+        catch (FdoException *ex )
+        {
+            printf("CreateActivateDestroySC(): Failed spatial context activation.\n");
             throw ex;
         }
 
