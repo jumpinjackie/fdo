@@ -55,6 +55,7 @@ class OdbcOracleFdoSelectTest : public OdbcFdoSelectTest
     CPPUNIT_TEST_SUB_SUITE (OdbcOracleFdoSelectTest, OdbcFdoSelectTest);
     CPPUNIT_TEST_SUITE_END ();
 
+public:
     OdbcOracleFdoSelectTest(void)   { this->mSetup.SetTypeDB(DataBaseType_Oracle); }
     virtual void set_provider()     { UnitTestUtil::SetProvider( "OdbcOracle" ); }
     virtual int numPropertiesInPolylineClass() { return 17; }
@@ -66,6 +67,7 @@ class OdbcMySqlFdoSelectTest : public OdbcFdoSelectTest
     CPPUNIT_TEST (ConfigFileTest);
     CPPUNIT_TEST_SUITE_END ();
 
+public:
     OdbcMySqlFdoSelectTest(void)   { this->mSetup.SetTypeDB(DataBaseType_MySQL); }
     virtual void set_provider()     { UnitTestUtil::SetProvider( "OdbcMySql" ); }
 

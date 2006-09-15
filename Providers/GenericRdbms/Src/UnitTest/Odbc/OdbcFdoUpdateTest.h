@@ -56,6 +56,7 @@ class OdbcOracleFdoUpdateTest : public OdbcBaseFdoUpdateTest
     CPPUNIT_TEST( updateTable1 );
     CPPUNIT_TEST_SUITE_END ();
 
+public:
     OdbcOracleFdoUpdateTest(void)   { this->mSetup.SetTypeDB(DataBaseType_Oracle); }
     virtual void set_provider()     { UnitTestUtil::SetProvider( "OdbcOracle" ); }
 };
@@ -67,6 +68,7 @@ class OdbcMySqlFdoUpdateTest : public OdbcBaseFdoUpdateTest
     CPPUNIT_TEST( updateTable1 );
     CPPUNIT_TEST_SUITE_END ();
 
+public:
     OdbcMySqlFdoUpdateTest(void)   { this->mSetup.SetTypeDB(DataBaseType_MySQL); }
     virtual void set_provider()     { UnitTestUtil::SetProvider( "OdbcMySql" ); }
 };

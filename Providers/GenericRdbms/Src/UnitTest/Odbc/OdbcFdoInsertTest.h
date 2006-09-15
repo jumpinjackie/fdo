@@ -63,6 +63,7 @@ class OdbcOracleFdoInsertTest : public OdbcBaseFdoInsertTest
     CPPUNIT_TEST( insertTable1 );
     CPPUNIT_TEST_SUITE_END ();
 
+public:
     OdbcOracleFdoInsertTest(void)   { this->mSetup.SetTypeDB(DataBaseType_Oracle); }
     virtual void set_provider()     { UnitTestUtil::SetProvider( "OdbcOracle" ); }
 
@@ -77,6 +78,7 @@ class OdbcMySqlFdoInsertTest : public OdbcBaseFdoInsertTest
     //CPPUNIT_TEST (ConfigFileTest);
     CPPUNIT_TEST_SUITE_END ();
 
+public:
     OdbcMySqlFdoInsertTest(void)   { this->mSetup.SetTypeDB(DataBaseType_MySQL); }
     virtual void set_provider()     { UnitTestUtil::SetProvider( "OdbcMySql" ); }
 

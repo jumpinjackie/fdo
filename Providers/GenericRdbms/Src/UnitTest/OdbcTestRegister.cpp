@@ -30,11 +30,7 @@
 #include "MessageTest.h"
 
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( MessageTest, "OdbcMySqlTests");
-CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( MessageTest, "OdbcSqlServerTests");
-CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( MessageTest, "OdbcTextTests");
-CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( MessageTest, "OdbcAccessTests");
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( MessageTest, "OdbcOracleTests");
-CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( MessageTest, "OdbcExcelTests");
 
 static OdbcConnectionUtil pOdbcConnectionUtil;
 ConnectionUtil* UnitTestUtil::InfoUtilConnection = &pOdbcConnectionUtil;

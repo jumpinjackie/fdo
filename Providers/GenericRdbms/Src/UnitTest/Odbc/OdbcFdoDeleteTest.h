@@ -40,21 +40,21 @@ protected:
 
 class OdbcOracleFdoDeleteTest : public OdbcBaseFdoDeleteTest
 {
-public:
     CPPUNIT_TEST_SUB_SUITE (OdbcOracleFdoDeleteTest, FdoDeleteTest);
     CPPUNIT_TEST_SUITE_END ();
 
+public:
     OdbcOracleFdoDeleteTest(void)   { this->mSetup.SetTypeDB(DataBaseType_Oracle); }
     virtual void set_provider()     { UnitTestUtil::SetProvider( "OdbcOracle" ); }
 };
 
 class OdbcMySqlFdoDeleteTest : public OdbcBaseFdoDeleteTest
 {
-public:
     CPPUNIT_TEST_SUB_SUITE (OdbcMySqlFdoDeleteTest, FdoDeleteTest);
     CPPUNIT_TEST (ConfigFileTest);
     CPPUNIT_TEST_SUITE_END ();
 
+public:
     OdbcMySqlFdoDeleteTest(void)   { this->mSetup.SetTypeDB(DataBaseType_MySQL); }
     virtual void set_provider()     { UnitTestUtil::SetProvider( "OdbcMySql" ); }
 
