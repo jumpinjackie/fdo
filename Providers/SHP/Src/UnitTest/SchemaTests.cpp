@@ -1856,7 +1856,7 @@ void SchemaTests::read_only_files ()
         mConnection->Open ();
 
         // Verify that classes are read-write:
-        descSchema = dynamic_cast<FdoIDescribeSchema*>(mConnection->CreateCommand(FdoCommandType_DescribeSchema));
+        descSchema = static_cast<FdoIDescribeSchema*>(mConnection->CreateCommand(FdoCommandType_DescribeSchema));
         schemas = descSchema->Execute();
         for (int s=0; s<schemas->GetCount(); s++)
         {
