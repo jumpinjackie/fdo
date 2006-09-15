@@ -749,14 +749,14 @@ FdoFunctionDefinition* FdoCommonMiscUtil::CreateFunctionDefinition(
     {
         FdoPtr<FdoArgumentDefinitionCollection> args = FdoArgumentDefinitionCollection::Create();
 
-        FdoPropertyType returnPropertyType = va_arg(varargs, FdoPropertyType);
-        FdoDataType returnDataType = va_arg(varargs, FdoDataType);
+        FdoPropertyType returnPropertyType = (FdoPropertyType)va_arg(varargs, int /*FdoPropertyType*/ );
+        FdoDataType returnDataType = (FdoDataType)va_arg(varargs, int /*FdoDataType*/);
         int numInputArgs = va_arg(varargs, int);
 
         for (int i=0; i<numInputArgs; i++)
         {
-            FdoPropertyType argPropertyType = va_arg(varargs, FdoPropertyType);
-            FdoDataType argDataType = va_arg(varargs, FdoDataType);
+	    FdoPropertyType argPropertyType = (FdoPropertyType)va_arg(varargs, int /*FdoPropertyType*/);
+            FdoDataType argDataType = (FdoDataType)va_arg(varargs, int /*FdoDataType*/);
             FdoString *argName;
             FdoString *argDesc;
 
