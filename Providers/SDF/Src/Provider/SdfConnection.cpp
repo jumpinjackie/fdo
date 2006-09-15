@@ -300,7 +300,7 @@ FdoConnectionState SdfConnection::Open( SdfCompareHandler* cmpHandler )
     try
     {
         // Get all the extended info table; the table might not exist (especially for older SDF files):
-        m_dbExtendedInfo = new ExInfoDb(this, m_env, m_mbsFullPath, m_bReadOnly);
+        m_dbExtendedInfo = new ExInfoDb(m_env, m_mbsFullPath, m_bReadOnly);
     }
     catch (FdoException* e)
     {
@@ -607,16 +607,29 @@ SchemaDb* SdfConnection::GetSchemaDb()
 
 //we do not addref in here -- caller will do that. 
 //Breaks FDO convention, but is for internal use only...
-FdoFeatureSchema* SdfConnection::GetSchema()
+FdoFeatureSchema* SdfConnection::GetSchema(FdoString *schemaName, bool bNewCopyFromFile)
 {
-    return m_dbSchema->GetSchema();
+    FdoFeatureSchema* schema = NULL;
+    if (bNewCopyFromFile)
+    {
+        schema = m_dbSchema->ReadSchema();
+        m_dbExtendedInfo->ReadExtendedInfo(schema);
+    }
+    else
+        schema = m_dbSchema->GetSchema();
+
+    // Validate schema name, if one is provided:
+    if (schemaName && ((schema==NULL) || 0!=wcscmp(schema->GetName(), schemaName)))
+        throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_58_INVALID_SCHEMANAME)));
+
+    return schema; // no addref on purpose;
 }
 
 void SdfConnection::SetSchema(FdoFeatureSchema* schema, bool ignoreStates)
 {
-    // We need to keep the old schema around untill destroy is done. Some data structure
+    // We need to keep the old schema around until destroy is done. Some data structure
     // used by destroy require the old schema.
-    FdoPtr<FdoFeatureSchema> oldschema = FDO_SAFE_ADDREF(m_dbSchema->GetSchema());
+    FdoPtr<FdoFeatureSchema> oldschema = FDO_SAFE_ADDREF(GetSchema());
 
     m_dbSchema->SetSchema( this, schema, ignoreStates);
     m_dbExtendedInfo->WriteExtendedSchemaInfo(schema);
@@ -625,6 +638,10 @@ void SdfConnection::SetSchema(FdoFeatureSchema* schema, bool ignoreStates)
     //the schema changed
     DestroyDatabases();
     InitDatabases();
+
+    // Re-read all the schema, now that its been completed written (from both SCHEMA and EXINFO tables):
+    FdoFeatureSchema* internalSchema = GetSchema();
+    m_dbExtendedInfo->ReadExtendedInfo(internalSchema);
 }
 
 
@@ -660,7 +677,7 @@ void SdfConnection::InitDatabases()
     if (GetSchema() == NULL)
         return;
 
-    FdoPtr<FdoClassCollection>classes =  GetSchema()->GetClasses();
+    FdoPtr<FdoClassCollection> classes = GetSchema()->GetClasses();
 
     if (classes->GetCount() == 0)
         return;

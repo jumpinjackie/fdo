@@ -28,17 +28,16 @@ class ExInfoDb
 {
 public:
 
-    ExInfoDb(SdfConnection* conn, SQLiteDataBase* env, const char* filename, bool bReadOnly);
+    ExInfoDb(SQLiteDataBase* env, const char* filename, bool bReadOnly);
     virtual ~ExInfoDb();
 
 	void CloseCursor();
 
-    void ReadExtendedInfo(void);
+    void ReadExtendedInfo(FdoFeatureSchema* schema);
     void WriteExtendedInfo(FdoFeatureSchema* schema);
     void WriteExtendedSchemaInfo(FdoFeatureSchema* schema);
 
 private:
-    SdfConnection* m_connection;  // NOTE: weak reference (to prevent circular reference issues)
     SQLiteTable* m_db;
     SQLiteDataBase* m_env;
     bool m_bReadOnly;

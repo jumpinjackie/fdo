@@ -155,7 +155,7 @@ public:
     DataDb* GetDataDb(FdoClassDefinition* clas);
     KeyDb* GetKeyDb(FdoClassDefinition* clas);
     SchemaDb* GetSchemaDb();
-    FdoFeatureSchema* GetSchema();
+    FdoFeatureSchema* GetSchema(FdoString *schemaName = NULL, bool bNewCopyFromFile = false);
     void SetSchema(FdoFeatureSchema* schema, bool ignoreStates);
     SdfRTree* GetRTree(FdoClassDefinition* clas);
     PropertyIndex* GetPropertyIndex(FdoClassDefinition* clas);

@@ -96,6 +96,9 @@ protected:
 
 
     void TestSpecificGeometryTypes( void );
+
+    // Helper methods:
+    void AddSpecificGeometryClass(FdoFeatureSchema* pSchema, FdoString* className, FdoGeometryType* geomTypes, int geomTypeCount);
 };
 
 #endif

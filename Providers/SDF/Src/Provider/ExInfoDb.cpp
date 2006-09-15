@@ -41,10 +41,9 @@ enum ExSchemaInfoType
 // Currently, only Record 1 is used to store extended info; the remaining records are reserved for future use and must be ignored.
 //----------------------------------------------------------------------------------
 
-ExInfoDb::ExInfoDb(SdfConnection* conn, SQLiteDataBase* env, const char* filename, bool bReadOnly) :
+ExInfoDb::ExInfoDb(SQLiteDataBase* env, const char* filename, bool bReadOnly) :
     m_env( env ),
-    m_bReadOnly(bReadOnly),
-    m_connection(conn)  // weak reference (no addref) to prevent circular reference issues
+    m_bReadOnly(bReadOnly)
 {
     m_db = new SQLiteTable(env);
 
@@ -73,9 +72,6 @@ ExInfoDb::ExInfoDb(SdfConnection* conn, SQLiteDataBase* env, const char* filenam
                 throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_10_ERROR_ACCESSING_SDFDB)));
         }
     }
-
-    //deserialize the extended info from the database
-    ReadExtendedInfo();
 }
 
 
@@ -89,22 +85,19 @@ ExInfoDb::~ExInfoDb()
 }
 
 
-void ExInfoDb::ReadExtendedInfo(void)
+void ExInfoDb::ReadExtendedInfo(FdoFeatureSchema* schema)
 {
     // retrieve extended schema info record:
     REC_NO rootRecno = DB_EXSCHEMAINFO_RECNO;
     SQLiteData keyExSchemaInfo(&rootRecno, sizeof(REC_NO));
     SQLiteData data;
 
-    //this can fail if there is no extended info in the database:
-    if ((m_db==NULL) || (m_db->get(0, &keyExSchemaInfo, &data, 0) != 0) || data.get_size()==0)
+    //this can fail if there is no extended info in the database, or no schema info in the database:
+    if ((schema==NULL) || (m_db==NULL) || (m_db->get(0, &keyExSchemaInfo, &data, 0) != 0) || data.get_size()==0)
     {
         CloseCursor();
         return;
     }
-
-    // Grab existing schema object, so we can enhance it:
-    FdoFeatureSchema* schema = m_connection->GetSchema();
 
     // Check that we have something in there
     BinaryReader rdr((unsigned char*)data.get_data(), data.get_size());

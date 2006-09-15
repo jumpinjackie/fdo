@@ -89,29 +89,17 @@ FdoFeatureSchemaCollection* SdfDescribeSchema::Execute()
     if (m_connection->GetConnectionState() != FdoConnectionState_Open)
         throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_26_CONNECTION_CLOSED)));
 
-    // TODO - schema name member variable is currently ignored
-
     // create the collection to return
-    FdoPtr<FdoFeatureSchemaCollection>schemaCollection = FdoFeatureSchemaCollection::Create(NULL);
+    FdoPtr<FdoFeatureSchemaCollection> schemaCollection = FdoFeatureSchemaCollection::Create(NULL);
 
-    FdoFeatureSchema *oldschema = m_connection->GetSchemaDb()->GetSchema(GetSchemaName());
-    // Clone the internal schema so callers don't modify the internal schema:
-    if( oldschema != NULL )
+    // Re-read a fresh copy of the schema from the SDF file; this is significant
+    // if the caller has changed the spatial contexts in the file since doing ApplySchema:
+    FdoFeatureSchema *schema = m_connection->GetSchema(GetSchemaName(), true);
+    if (schema)
     {
-        FdoPtr<FdoFeatureSchema> schema = FdoCommonSchemaUtil::DeepCopyFdoFeatureSchema(oldschema);
-        if (schema != NULL)
-	    {
-            // FdoCommonSchemaUtil::DeepCopyFdoFeatureSchema messes up the order of the class properties which is a major issue for the SDF
-            // data as it's encoded based on the order of the class properties. We need to fix the order created by the Deep copy to match the
-            // original order.
-            m_connection->GetSchemaDb()->FixPropertiesOrder( schema, oldschema);
-            schemaCollection->Add(schema);
-		    schema->AcceptChanges();
-	    }
+        schemaCollection->Add(schema);
+        schema->AcceptChanges();
     }
 
     return schemaCollection.Detach();
 }
-
-
-
