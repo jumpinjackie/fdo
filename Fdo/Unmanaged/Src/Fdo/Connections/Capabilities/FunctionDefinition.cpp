@@ -132,8 +132,11 @@ FdoReadOnlyArgumentDefinitionCollection *FdoFunctionDefinition::GetArguments()
 {
     if (m_signatures == NULL)
         return NULL;
-    else
-        return FDO_SAFE_ADDREF(FdoPtr<FdoSignatureDefinition>(m_signatures->GetItem(0))->GetArguments());
+    else {
+        FdoPtr<FdoSignatureDefinition> sigDef = m_signatures->GetItem(0);
+        FdoPtr<FdoReadOnlyArgumentDefinitionCollection> args = sigDef->GetArguments();
+        return FDO_SAFE_ADDREF(args.p);
+    }
 }
 
 //  Gets the FdoPropertyType of the function return value.
