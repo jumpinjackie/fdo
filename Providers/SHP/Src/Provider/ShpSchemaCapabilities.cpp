@@ -255,7 +255,7 @@ FdoInt32 ShpSchemaCapabilities::GetMaximumDecimalScale()
 FdoDataType* ShpSchemaCapabilities::GetSupportedIdentityPropertyTypes(FdoInt32& length)
 {
     length = 1;
-    FdoDataType supportedIdentityTypes[1];
+    static FdoDataType supportedIdentityTypes[1];
     supportedIdentityTypes[0] = FdoDataType_Int32;
     return supportedIdentityTypes;
 }
