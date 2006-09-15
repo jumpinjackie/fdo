@@ -963,7 +963,7 @@ void MasterTest::descReadOnly()
     openConnection(conn, SHP_PATH, true);
 
     // Verify that classes are read-only too:
-    FdoPtr<FdoIDescribeSchema> descSchema = dynamic_cast<FdoIDescribeSchema*>(conn->CreateCommand(FdoCommandType_DescribeSchema));
+    FdoPtr<FdoIDescribeSchema> descSchema = static_cast<FdoIDescribeSchema*>(conn->CreateCommand(FdoCommandType_DescribeSchema));
     FdoPtr<FdoFeatureSchemaCollection> schemas = descSchema->Execute();
     for (int s=0; s<schemas->GetCount(); s++)
     {
@@ -982,7 +982,7 @@ void MasterTest::descReadOnly()
     openConnection(conn, SHP_PATH, false);
 
     // Verify that classes are read-write too:
-    descSchema = dynamic_cast<FdoIDescribeSchema*>(conn->CreateCommand(FdoCommandType_DescribeSchema));
+    descSchema = static_cast<FdoIDescribeSchema*>(conn->CreateCommand(FdoCommandType_DescribeSchema));
     schemas = descSchema->Execute();
     for (int s=0; s<schemas->GetCount(); s++)
     {
