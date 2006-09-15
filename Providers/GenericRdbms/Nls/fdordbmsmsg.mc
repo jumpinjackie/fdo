@@ -1678,3 +1678,8 @@ SymbolicName=FDORDBMS_484
 Language=English
 Invalid connection property name '%1$ls'
 .
+MessageId=2710
+SymbolicName=FDORDBMS_485
+Language=English
+No column for property '%1$ls'.
+.
