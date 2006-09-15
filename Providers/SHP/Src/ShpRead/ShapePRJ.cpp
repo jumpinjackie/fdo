@@ -51,7 +51,7 @@ ShapePRJ::ShapePRJ (const wchar_t* name, int& status)
                 mWKT = FdoStringP( buffer );
             }
 
-            delete buffer;
+            delete[] buffer;
         }
         else
             throw FdoCommonFile::LastErrorToException (L"ShapePRJ::ShapePRJ");
