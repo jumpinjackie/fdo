@@ -2578,7 +2578,10 @@ bool FdoSmLpClassBase::ColumnNameUsed( FdoSmPhDbObjectP dbObject, const FdoSmLpP
 		if ( !pMatchedProp ) {
 			// Final check to be sure. If the column has a table, make sure it is not 
 			// already in the table.
-			FdoSmPhColumnsP columns = dbObject->GetColumns();
+			FdoSmPhColumnsP columns;
+			if ( dbObject )
+				columns = dbObject->GetColumns();
+
 			if ( (!dbObject) || (!columns->RefItem( columnName )) )
 				// Name not in use
 				bUsed = false;
