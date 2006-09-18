@@ -74,7 +74,7 @@ public:
     virtual void ConfigFileTest();
     FdoString * GetConfigFile2() {return L"MySqlTestConfig2.xml";}
 
-    virtual FdoString * GetClassName()          { return L"testclass"; }
+    virtual FdoString * GetClassName()          { return L"testClass"; }
     virtual int numPropertiesInPolylineClass() { return 15; }
 };
 
