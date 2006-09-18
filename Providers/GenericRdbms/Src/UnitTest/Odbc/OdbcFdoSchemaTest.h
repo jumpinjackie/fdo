@@ -32,6 +32,9 @@ public:
 	virtual void DropDatastore();
     virtual void CreateFreshDb();
 
+    virtual void OverrideXmlAllTest() {};
+    virtual void OverrideXmlErrTest() {};
+
 protected:
 	OdbcBaseSetup m_OdbcSetup;
 
