@@ -160,3 +160,41 @@ bool FdoRfpSchemaCapabilities::SupportsCompositeId()
 {
     return false;
 }
+
+FdoInt64 FdoRfpSchemaCapabilities::GetMaximumDataValueLength(FdoDataType dataType)
+{
+    return (FdoInt64)-1;
+}
+
+FdoInt32 FdoRfpSchemaCapabilities::GetMaximumDecimalPrecision()
+{
+    return (FdoInt32)-1;
+}
+
+FdoInt32 FdoRfpSchemaCapabilities::GetMaximumDecimalScale()
+{
+    return (FdoInt32)-1;
+}
+
+FdoInt32 FdoRfpSchemaCapabilities::GetNameSizeLimit(FdoSchemaElementNameType name)
+{
+    return (FdoInt32)-1;
+}
+
+FdoString* FdoRfpSchemaCapabilities::GetReservedCharactersForName()
+{
+    return NULL;
+}
+
+FdoDataType* FdoRfpSchemaCapabilities::GetSupportedIdentityPropertyTypes(FdoInt32& length)
+{
+	static FdoDataType supportedIdentityTypes[] = {FdoDataType_String};
+	length = sizeof(supportedIdentityTypes)/sizeof(FdoDataType);
+    return supportedIdentityTypes;
+}
+
+bool FdoRfpSchemaCapabilities::SupportsDefaultValue()
+{
+    return false;
+}
+

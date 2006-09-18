@@ -120,6 +120,49 @@ public:
     /// <returns>Returns true if the provider supports multiple identity properties per class.
     virtual bool SupportsCompositeId();
 
+    /// <summary>Returns the maximum supported length of String, BLOB, or CLOB data
+    /// properties. For decimal, it is the combination of the maximum scale
+    /// and precision. For other data types that are not variable in size,
+    /// the value returned is the byte length.</summary>
+    /// <param name="dataType">The data type for which the information is to retrieved.</param>
+	/// <returns>Returns the maximum data value length for the identified data type.</returns>
+    virtual FdoInt64 GetMaximumDataValueLength(FdoDataType dataType);
+
+    /// <summary>Returns the maximum supported precision for a decimal data property.</summary>
+	/// <returns>Returns the maximum supported precision for a decimal data property.</returns>
+    virtual FdoInt32 GetMaximumDecimalPrecision();
+
+    /// <summary>Returns the maximum supported scale for a decimal data property.</summary>
+	/// <returns>Returns the maximum supported scale for a decimal data property.</returns>
+    virtual FdoInt32 GetMaximumDecimalScale();
+
+    /// <summary>Returns the maximum size of a value of the given type. It includes
+    /// limits for the data store name, shema name, class name, property name
+    /// and description.</summary>
+    /// <param name="name">The schema element name type identifier for which the information is to
+    /// be retrieved. Can be either one of the following options: FdoSchemaElementNameType_Datastore,
+    /// FdoSchemaElementNameType_Schema, FdoSchemaElementNameType_Class, FdoSchemaElementNameType_Property or 
+    /// FdoSchemaElementNameType_Description.</param>
+	/// <returns>Returns the size limitation for the identified schema element.</returns>
+    virtual FdoInt32 GetNameSizeLimit(FdoSchemaElementNameType name);
+
+    /// <summary>Returns a string that includes all the reserved characters that cannot be
+    /// used for the various schema element names for the provider.</summary>
+	/// <returns>Returns a string with the reserved characters for the identified schema element.</returns>
+    virtual FdoString* GetReservedCharactersForName();
+
+    /// <summary>Returns a list of property types that can be used for identity properties.</summary>
+    /// <param name="length">Output the number of data types.</param>
+	/// <returns>Returns a string with the reserved characters for the identified schema element.</returns>
+    virtual FdoDataType* GetSupportedIdentityPropertyTypes(FdoInt32& length);
+
+    /// <summary>Returns TRUE if default values can be specified for a data property
+    /// definition, FALSE otherwise.</summary>
+	/// <returns>Returns TRUE if default values can be specified for a data property definition, FALSE otherwise.</returns>
+    virtual bool SupportsDefaultValue();
+
+
+
 protected:
 	~FdoRfpSchemaCapabilities(void);
 	virtual void Dispose();

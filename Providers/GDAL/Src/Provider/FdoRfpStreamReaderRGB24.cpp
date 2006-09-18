@@ -23,4 +23,6 @@
  *
  */
 
+#include "FDORFP.h"
+
 // This class no longer exists

@@ -96,3 +96,13 @@ bool FdoRfpConnectionCapabilities::SupportsCSysWKTFromCSysName()
 {
 	return false;
 }
+
+bool FdoRfpConnectionCapabilities::SupportsWrite()
+{
+    return false;
+}
+
+bool FdoRfpConnectionCapabilities::SupportsMultiUserWrite()
+{
+    return false;
+}
