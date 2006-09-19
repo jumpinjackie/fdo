@@ -29,6 +29,7 @@
 #include <inttypes.h>
 #include <unistd.h>
 #include <termios.h>
+#include <pwd.h>
 #endif
 
 #include "FdoCommonOSUtil.h"
@@ -353,7 +354,26 @@ void FdoCommonOSUtil::setenv(const char *varname, const char *varvalue)
 }
 
 
+FdoStringP FdoCommonOSUtil::GetUserName(void)
+{
+    const int usernamesize = 256;
+    char username[256];
 
+#ifdef _WIN32
+    DWORD intsize = usernamesize;
+    ::GetUserName(username, &intsize);
+    FdoString* wusername = multibyte_to_wide(username);
+    return FdoStringP(wusername);
+#else
+    struct passwd *passwd_ptr;
+    static int real_uid;
+    real_uid = getuid();
+    passwd_ptr = getpwuid(real_uid);
+    strncpy(username, passwd_ptr->pw_name, usernamesize);
+    username[usernamesize-1] = 0;  // NOTE: not safe for utf-8 characters with trailing bytes; but 256-char utf8 usernames are highly unlikely
+    return FdoStringP(username);
+#endif
+}  
 
 
 
