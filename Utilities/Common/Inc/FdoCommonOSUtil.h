@@ -91,6 +91,9 @@ public:
 
     /// Set an environment variable:
     static void setenv(const char *varname, const char *varvalue);
+
+    /// Get the current user's name:
+    static FdoStringP GetUserName(void);
 };
 
 #endif // FdoCommonOSUtil___H
