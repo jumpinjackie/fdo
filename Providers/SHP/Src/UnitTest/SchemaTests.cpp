@@ -23,7 +23,6 @@
 #include "ShpProvider.h"
 #include "FdoCommonFile.h"
 #include "FdoCommonSchemaUtil.h"
-//#include "FdoCommonOSUtil.h"
 
 
 #ifdef _WIN32
