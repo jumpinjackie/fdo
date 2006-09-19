@@ -23,6 +23,8 @@
 #include "ShpProvider.h"
 #include "FdoCommonFile.h"
 #include "FdoCommonSchemaUtil.h"
+//#include "FdoCommonOSUtil.h"
+
 
 #ifdef _WIN32
 #define LOCATION L"..\\..\\TestData\\Testing\\"
@@ -1823,6 +1825,13 @@ void SchemaTests::read_only_files ()
 {
     try
     {
+        FdoStringP userName = FdoCommonOSUtil::GetUserName();
+        if (userName == L"root")
+	{
+	    printf("User 'root' detected; skipping read-only SHP file test (root is able to open any file in write mode)\n");
+            return;
+	}
+
         // Make a file read-only:
         SetShpFileAccess(L"../../TestData/Ontario/roads", false);
 
