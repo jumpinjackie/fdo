@@ -758,8 +758,8 @@ FdoSmPhDbObjectP FdoSmPhOwner::CacheCandDbObjects( FdoStringP objectName )
     // Doing a single query per owner for each component is more efficient than
     // a query per dbObject.
     // The join is used to limit results to those needed for this schema.
-    //ukeyReader = CreateConstraintReader( cands, L"U" );
-    //ckeyReader = CreateConstraintReader( cands, L"C" );
+    ukeyReader = CreateConstraintReader( cands, L"U" );
+    ckeyReader = CreateConstraintReader( cands, L"C" );
 
     columnReader = CreateColumnReader( cands );
 
@@ -782,13 +782,13 @@ FdoSmPhDbObjectP FdoSmPhOwner::CacheCandDbObjects( FdoStringP objectName )
             if ( columnReader ) 
                 dbObject->CacheColumns( columnReader );
 
-            //if ( table ) {
-            //    if ( ukeyReader ) 
-            //        table->CacheUkeys( ukeyReader );
+            if ( table ) {
+                if ( ukeyReader ) 
+                    table->CacheUkeys( ukeyReader );
 
-            //    if ( ckeyReader ) 
-            //        table->CacheCkeys( ckeyReader );
-            //}
+                if ( ckeyReader ) 
+                    table->CacheCkeys( ckeyReader );
+            }
         }
     }
 
