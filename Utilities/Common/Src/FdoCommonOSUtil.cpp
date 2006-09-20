@@ -354,17 +354,17 @@ void FdoCommonOSUtil::setenv(const char *varname, const char *varvalue)
 }
 
 
-FdoStringP FdoCommonOSUtil::GetUserName(void)
+FdoStringP FdoCommonOSUtil::GetCurrentUserName(void)
 {
     const int usernamesize = 256;
-    char username[256];
 
 #ifdef _WIN32
     DWORD intsize = usernamesize;
-    ::GetUserName(username, &intsize);
-    FdoString* wusername = multibyte_to_wide(username);
+    wchar_t wusername[256];
+    ::GetUserNameW(wusername, &intsize);
     return FdoStringP(wusername);
 #else
+    char username[256];
     struct passwd *passwd_ptr;
     static int real_uid;
     real_uid = getuid();

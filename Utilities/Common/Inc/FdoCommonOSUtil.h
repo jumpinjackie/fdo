@@ -93,7 +93,7 @@ public:
     static void setenv(const char *varname, const char *varvalue);
 
     /// Get the current user's name:
-    static FdoStringP GetUserName(void);
+    static FdoStringP GetCurrentUserName(void);
 };
 
 #endif // FdoCommonOSUtil___H
