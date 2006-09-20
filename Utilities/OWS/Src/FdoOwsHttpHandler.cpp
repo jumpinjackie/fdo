@@ -193,7 +193,9 @@ void FdoOwsHttpHandler::Perform()
     {
         wchar_t* wError;
         multibyte_to_wide(wError, m_errorBuffer);
-        throw FdoException::Create(wError);
+        FdoException* e = FdoException::Create(FdoException::NLSGetMessage(FDO_133_UNEXPECTEDERROR_PERFORMING, "Unexpected error encountered while accessing the server."));
+        e->SetCause (FdoException::Create(wError));
+        throw e;
     }
 }
 
@@ -383,10 +385,7 @@ FdoSize FdoOwsHttpHandler::Read( FdoByte* buffer, FdoSize toRead )
     while (m_currentRead >= m_currentSize) // no data available, we must wait if still connected
     {
 		if (m_connectionState == ConnectionState_BeforeConnect) // something bad happened
-			throw FdoException::Create(FdoException::NLSGetMessage(FDO_57_UNEXPECTEDERROR, "Unexpected error encountered."));
-			// I should throw out exception that makes more sense here, like the following one, but FdoOws doesn't support NLS
-			// So I had to use this "Unexpected error encountered". :(
-			// throw FdoException::Create(L"Network connection is broken, or the server stopped responding.");
+			throw FdoException::Create(FdoException::NLSGetMessage(FDO_132_CONNECTION_BROKEN, "Network connection is broken, or the server stopped responding."));
         if (m_connectionState == ConnectionState_Terminated)
 			return 0;
         m_condition.wait(lock);
