@@ -1824,7 +1824,7 @@ void SchemaTests::read_only_files ()
 {
     try
     {
-        FdoStringP userName = FdoCommonOSUtil::GetUserName();
+        FdoStringP userName = FdoCommonOSUtil::GetCurrentUserName();
         if (userName == L"root")
 	{
 	    printf("User 'root' detected; skipping read-only SHP file test (root is able to open any file in write mode)\n");
