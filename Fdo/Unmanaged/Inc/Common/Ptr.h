@@ -86,7 +86,7 @@ public:
 #ifdef _WIN32
     FdoPtr(FdoInt32 nNull) throw(...)
 #else
-    FdoPtr(FdoInt32 nNull) throw( FdoException)
+    FdoPtr(FdoInt32 nNull) throw( FdoException *)
 #endif
     {
         if (nNull != 0)
@@ -160,7 +160,7 @@ public:
 #ifdef _WIN32
     T& operator*() const throw(...)
 #else
-    T& operator*() const throw(FdoException)
+    T& operator*() const throw(FdoException *)
 #endif
     {
         if (p==NULL)
@@ -177,7 +177,7 @@ public:
 #ifdef _WIN32
     T** operator&() throw(...)
 #else
-    T** operator&() throw(FdoException)
+    T** operator&() throw(FdoException *)
 #endif
     {
         return &p;
@@ -186,7 +186,7 @@ public:
 #ifdef _WIN32
     _NoAddRefReleaseOnFdoPtr<T>* operator->() const throw(...)
 #else
-    _NoAddRefReleaseOnFdoPtr<T>* operator->() const throw(FdoException)
+    _NoAddRefReleaseOnFdoPtr<T>* operator->() const throw(FdoException *)
 #endif
     {
         if (p==NULL)

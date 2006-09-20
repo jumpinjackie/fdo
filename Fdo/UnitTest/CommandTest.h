@@ -23,12 +23,14 @@
 // Test cases for commands
 class CommandTest : public CppUnit::TestCase
 {
+    FDO_CPPUNIT_DEFINE(testException);
     FDO_CPPUNIT_DEFINE(testBatchParameterValueCollection);
     FDO_CPPUNIT_DEFINE(testIdentifierCollection);
     FDO_CPPUNIT_DEFINE(testParameterValueCollection);
     FDO_CPPUNIT_DEFINE(testPropertyValueCollection);
 
     CPPUNIT_TEST_SUITE(CommandTest);
+    CPPUNIT_TEST(testException);
     CPPUNIT_TEST(testBatchParameterValueCollection);
     CPPUNIT_TEST(testIdentifierCollection);
     CPPUNIT_TEST(testParameterValueCollection);
@@ -41,6 +43,7 @@ public:
     void setUp ();
 
 protected:
+    void testException();
     void testBatchParameterValueCollection();
     void testIdentifierCollection();
     void testParameterValueCollection();
