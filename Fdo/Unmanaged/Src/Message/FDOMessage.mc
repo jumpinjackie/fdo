@@ -1951,3 +1951,13 @@ SymbolicName=FDO_131_UNSUPPORTED_GEOMETRY_TYPE
 Language=English
 The '%1$ls' geometry type (or combination of types) is not supported.
 .
+MessageId=9132
+SymbolicName=FDO_132_CONNECTION_BROKEN
+Language=English
+Network connection is broken, or the server stopped responding.
+.
+MessageId=9133
+SymbolicName=FDO_133_UNEXPECTEDERROR_PERFORMING
+Language=English
+Unexpected error encountered while accessing the server.
+.
