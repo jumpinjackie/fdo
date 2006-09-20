@@ -1249,38 +1249,98 @@
 	</xsl:call-template>
 </xsl:template>
 
-<!-- Handles FDO Property based on complex type -->
-<xsl:template name="element_complex_type">
-	<xsl:param name="schemaName" />
-	<xsl:param name="minOccurs" />
-	<xsl:param name="maxOccurs" />
-	<xsl:param name="elementElem" />
-	<xsl:param name="prevTypes" select="."/>
+  <!-- Handles FDO Property based on complex type -->
+  <xsl:template name="element_complex_type">
+    <xsl:param name="schemaName" />
+    <xsl:param name="minOccurs" />
+    <xsl:param name="maxOccurs" />
+    <xsl:param name="elementElem" />
+    <xsl:param name="prevTypes" select="."/>
 
-	<!-- Currently only restrictions handled. Other cases require that an FDO class is generated for this inline complex type. -->
-	<xsl:if test="xs:complexContent/xs:restriction/@base">
-		<xsl:variable name="fullType">
-			<xsl:call-template name="get_fullname" >
-				<xsl:with-param name="typeName" select="xs:complexContent/xs:restriction/@base" />
-			</xsl:call-template>			
-		</xsl:variable>
-		<xsl:variable name="typeUri"><xsl:value-of select="substring-before($fullType,' ')"/></xsl:variable>
-		<xsl:variable name="typeName"><xsl:value-of select="substring-before(substring-after($fullType,' '),' ')"/></xsl:variable>
-		<xsl:call-template name="element_type" >
-			<xsl:with-param name="schemaName" select="$schemaName" />
-			<xsl:with-param name="minOccurs" select="$minOccurs" />
-			<xsl:with-param name="maxOccurs" select="$maxOccurs" />
-			<xsl:with-param name="elementElem" select="$elementElem" />
-			<xsl:with-param name="elemTypeUri" select="$typeUri" />
-			<xsl:with-param name="elemTypeName" select="$typeName" />
-			<xsl:with-param name="typeUri" select="$typeUri" />
-			<xsl:with-param name="typeName" select="$typeName" />
-			<xsl:with-param name="prevTypes" select="$prevTypes" />
-		</xsl:call-template>
-	</xsl:if>
-</xsl:template>
+    <!-- Currently only restrictions handled. Other cases require that an FDO class is generated for this inline complex type. -->
+    <xsl:choose>
+      <xsl:when test="xs:complexContent/xs:restriction/@base">
+        <xsl:variable name="fullType">
+          <xsl:call-template name="get_fullname" >
+            <xsl:with-param name="typeName" select="xs:complexContent/xs:restriction/@base" />
+          </xsl:call-template>
+        </xsl:variable>
+        <xsl:variable name="typeUri">
+          <xsl:value-of select="substring-before($fullType,' ')"/>
+        </xsl:variable>
+        <xsl:variable name="typeName">
+          <xsl:value-of select="substring-before(substring-after($fullType,' '),' ')"/>
+        </xsl:variable>
+        <xsl:call-template name="element_type" >
+          <xsl:with-param name="schemaName" select="$schemaName" />
+          <xsl:with-param name="minOccurs" select="$minOccurs" />
+          <xsl:with-param name="maxOccurs" select="$maxOccurs" />
+          <xsl:with-param name="elementElem" select="$elementElem" />
+          <xsl:with-param name="elemTypeUri" select="$typeUri" />
+          <xsl:with-param name="elemTypeName" select="$typeName" />
+          <xsl:with-param name="typeUri" select="$typeUri" />
+          <xsl:with-param name="typeName" select="$typeName" />
+          <xsl:with-param name="prevTypes" select="$prevTypes" />
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="xs:sequence/xs:element/@ref" >
+        <!-- This element references another element, follow the reference -->
+        <!-- convert referenced element's qualified name to URI plus local name -->
+        <xsl:variable name="fullName">
+          <xsl:call-template name="get_fullname" >
+            <xsl:with-param name="typeName" select="xs:sequence/xs:element/@ref" />
+          </xsl:call-template>
+        </xsl:variable>
+        <xsl:variable name="uriName">
+          <xsl:value-of select="substring-before($fullName,' ')"/>
+        </xsl:variable>
+        <xsl:variable name="localName">
+          <xsl:value-of select="substring-before(substring-after($fullName,' '),' ')"/>
+        </xsl:variable>
+        <xsl:variable name="elemType">
+          <xsl:call-template name="get_element_fdo_type" >
+            <xsl:with-param name="uriName" select="$uriName" />
+            <xsl:with-param name="elemName" select="$localName" />
+          </xsl:call-template>
+        </xsl:variable>
 
-<!-- Writes out the GML-FDO mappings for an element -->
+        <xsl:variable name="fdoType">
+          <xsl:call-template name="get_fdo_type" >
+            <xsl:with-param name="uriName" select="$uriName" />
+            <xsl:with-param name="typeName" select="$elemType" />
+          </xsl:call-template>
+        </xsl:variable>
+
+        <xsl:if test="$maxOccurs = '1' and ($fdoType = 'geometricProperty' or $fdoType = 'geometricAssociation')">
+          <!-- URI and local name indicate that this is a Geometric property -->
+          <xsl:call-template name="ElementMapping">
+            <xsl:with-param name="elementElem" select="$elementElem"/>
+            <xsl:with-param name="typeUri" select="$uriName"/>
+            <xsl:with-param name="typeName" select="$elemType"/>
+          </xsl:call-template>
+
+          <xsl:call-template name="GeometricProperty" >
+            <xsl:with-param name="schemaName" select="$schemaName" />
+            <xsl:with-param name="elementElem" select="$elementElem"/>
+            <xsl:with-param name="refUri" select="$uriName"/>
+            <xsl:with-param name="refType" select="$localName"/>
+            <xsl:with-param name="baseType" select="$localName"/>
+          </xsl:call-template>
+        </xsl:if>
+        <!-- Log an error when error level is high
+			     since these references are not round-trip supported 
+			-->
+        <xsl:call-template name="unsupported_attribute" >
+          <xsl:with-param name="schemaName" select="$schemaName" />
+          <xsl:with-param name="attributeName" >ref</xsl:with-param>
+          <xsl:with-param name="errorLevel" >h</xsl:with-param>
+        </xsl:call-template>
+
+      </xsl:when>
+    </xsl:choose>
+  </xsl:template>
+
+  <!-- Writes out the GML-FDO mappings for an element -->
 <xsl:template name="ElementMapping">
     <!-- the element -->
 	<xsl:param name="elementElem" />
@@ -4273,8 +4333,8 @@
 			<xsl:with-param name="errorLevel" >h</xsl:with-param>
 		</xsl:call-template>
 	</xsl:if>
-	<xsl:if test="xs:complexType and not(xs:keyref or xs:complexType/xs:complexContent/xs:restriction[@base='gml:FeaturePropertyType'] or xs:complexType/xs:complexContent/xs:restriction[@base='gml:FeatureAssociationType'])">
-		<xsl:call-template name="unsupported_element" >
+  <xsl:if test="xs:complexType and not(xs:keyref or xs:complexType/xs:complexContent/xs:restriction[@base='gml:FeaturePropertyType'] or xs:complexType/xs:complexContent/xs:restriction[@base='gml:FeatureAssociationType'] or xs:complexType/xs:sequence/xs:element[@ref='gml:_Geometry'])">
+    <xsl:call-template name="unsupported_element" >
 			<xsl:with-param name="schemaName" >
 				<xsl:value-of select="$schemaName" />
 			</xsl:with-param>

@@ -602,7 +602,8 @@ FdoXmlFeaturePropertyReaderImpl::GmlBaseType FdoXmlFeaturePropertyReaderImpl::ge
                                     wcscmp(wkBaseName, FdoGml212::mMultiLineStringProperty) == 0 ||
                                     wcscmp(wkBaseName, FdoGml212::mMultiGeometryProperty) == 0 ||
                                     wcscmp(wkBaseName, FdoGml212::mGeometryAssociation) == 0 ||
-                                    wcscmp(wkBaseName, FdoGml212::mGeometryProperty) == 0) // geometry association
+                                    wcscmp(wkBaseName, FdoGml212::mGeometryProperty) == 0 ||
+                                    wcscmp(wkBaseName, FdoGml212::mAbstractGeometry) == 0) // geometry association
                                     rv = GmlBaseType_GeometryAssociation;
                                 else if (wcscmp(wkBaseName, FdoGml212::mFeatureAssociation) == 0) // feature association
                                     rv = GmlBaseType_FeatureAssociation;
@@ -633,11 +634,3 @@ FdoXmlFeaturePropertyReaderImpl::GmlBaseType FdoXmlFeaturePropertyReaderImpl::ge
 
     return rv;
 }
-
-
-
-
-
-
-
-
