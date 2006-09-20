@@ -42,7 +42,9 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#define __STDC_LIMIT_MACROS
+#ifndef __STDC_LIMIT_MACROS
+    #define __STDC_LIMIT_MACROS
+#endif
 #include <stdint.h>
 #include <pwd.h>
 #include <unistd.h>
