@@ -34,13 +34,13 @@ class FdoSignatureDefinition : public FdoIDisposable
 public:
     /// \brief
     /// Constructs an instance of a SignatureDefinition using the specified arguments.
-    FDO_API static FdoSignatureDefinition* FdoSignatureDefinition::Create (
+    FDO_API static FdoSignatureDefinition* Create (
                                                             FdoDataType                     returnType,
                                                             FdoArgumentDefinitionCollection *arguments);
 
     /// \brief
     /// Constructs an instance of a SignatureDefinition using the specified arguments.
-    FDO_API static FdoSignatureDefinition* FdoSignatureDefinition::Create (
+    FDO_API static FdoSignatureDefinition* Create (
                                                             FdoPropertyType                 returnPropertyType,
                                                             FdoDataType                     returnType,
                                                             FdoArgumentDefinitionCollection *arguments);
