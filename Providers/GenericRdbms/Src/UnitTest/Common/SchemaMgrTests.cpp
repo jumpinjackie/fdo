@@ -314,11 +314,35 @@ void SchemaMgrTests::testGenDefault ()
 
         UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_COPY_SUFFIX );
 
+        // The generated XML file differs depending whether or not it is generated on a
+        // SQL Server 2000 or 2005 instance. The difference is with a table system property
+        // (text Filegroup) that is set in SQL Server 2000 when the test tables are created,
+        // but not in 2005. To compensate for this difference, the generated XML file will be
+        // checked against a second master file if the checking of the generated file against
+        // the first master file fails. An error will be issued only in case the second check
+        // fails. Since the content of the master files are identical with the exception of the
+        // system property mentioned above, an error caused by an implementation issue should
+        // be detected by both master files.
 
-	    UnitTestUtil::CheckOutput( 
-            FdoStringP::Format(L"gen_default1_%ls_master.txt", (FdoString*) providerName),
-            UnitTestUtil::GetOutputFileName( L"gen_default1.xml" )
-        );
+        try
+        {
+	        UnitTestUtil::CheckOutput( 
+                FdoStringP::Format(L"gen_default1_%ls_master.txt", (FdoString*) providerName),
+                UnitTestUtil::GetOutputFileName( L"gen_default1.xml" )
+            );
+        }
+        catch (CppUnit::Exception exception)
+        {
+            // Only execute the second check if the provider is SQL Server. Otherwise issue the
+            // exception.
+            if ( providerName.ICompare(L"SqlServer") == 0 )
+	            UnitTestUtil::CheckOutput( 
+                    FdoStringP::Format(L"gen_default1_%ls2005_master.txt", (FdoString*) providerName),
+                    UnitTestUtil::GetOutputFileName( L"gen_default1.xml" )
+                );
+            else
+                throw exception;
+        }
 
         printf( "Done\n" );
     }

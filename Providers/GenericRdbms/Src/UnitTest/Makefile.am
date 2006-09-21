@@ -47,6 +47,7 @@ EXTRA_DIST = \
   gen_default1_MySql_master.txt \
   gen_default1_Oracle_master.txt \
   gen_default1_SqlServer_master.txt \
+  gen_default1_SqlServer2005_master.txt \
   impexp2a_master.txt \
   impexp2b_master.txt \
   impexp_err1_master.txt \
