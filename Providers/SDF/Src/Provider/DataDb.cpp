@@ -153,6 +153,7 @@ int DataDb::Cursor(SQLiteCursor** cursor, bool write)
 void DataDb::CloseCursor()
 {
 	m_db->close_cursor();
+    m_lastRec = 0;
 }
 
 bool DataDb::CurrentDataIsValid()

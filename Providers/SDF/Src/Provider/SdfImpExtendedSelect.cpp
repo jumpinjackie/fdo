@@ -405,81 +405,84 @@ SdfIScrollableFeatureReader* SdfImpExtendedSelect::ExecuteScrollable()
 	i = 0;
 	while( found && i <maxsize )
 	{
-		REC_NO recno = *((REC_NO*)pkey->get_data());
+        if( pi->GetFCID() == *((unsigned short*)pdata->get_data())  )
+        {
+		    REC_NO recno = *((REC_NO*)pkey->get_data());
 #ifndef _WIN32
-		indexArray[i].index = i;
-		indexArray[i].ctx = &ctx;
+		    indexArray[i].index = i;
+		    indexArray[i].ctx = &ctx;
 #else
-		indexTable[i] = i;
+		    indexTable[i] = i;
 #endif
-		ctx.table[i]= recno;
+		    ctx.table[i]= recno;
 
-		ctx.propCache[i] = new DataPropertyDef[ctx.propCount];
-		rdr1.Reset((unsigned char*)pdata->get_data(), pdata->get_size());
-		for(int j=0; j<ctx.propCount; j++ )
-		{
-			PropertyStub  *ps = propStubs[j];
-			int len1 = PositionReader( ps->m_recordIndex, &rdr1, pi, pdata->get_size() );
-			if( len1 == 0 )
-			{
-				if( ps->m_isAutoGen )
-				{
-					ctx.propCache[i][j].type = ps->m_dataType;
-					if( getAll )
-						ctx.propCache[i][j].value.intVal = recno;
-					else
-						ctx.propCache[i][j].value.intVal = reader->GetInt32(ctx.names[j]);
-					continue;
-				}
-				ctx.propCache[i][j].type = (FdoDataType)-1;
-				continue;
-			}
-			ctx.propCache[i][j].type = ps->m_dataType;
-			switch( ps->m_dataType )
-			{
-			  case FdoDataType_Boolean : 
-			  case FdoDataType_Byte : 
-				  ctx.propCache[i][j].value.intVal = (int)rdr1.ReadByte();
-				  break;
+		    ctx.propCache[i] = new DataPropertyDef[ctx.propCount];
+		    rdr1.Reset((unsigned char*)pdata->get_data(), pdata->get_size());
+		    for(int j=0; j<ctx.propCount; j++ )
+		    {
+			    PropertyStub  *ps = propStubs[j];
+			    int len1 = PositionReader( ps->m_recordIndex, &rdr1, pi, pdata->get_size() );
+			    if( len1 == 0 )
+			    {
+				    if( ps->m_isAutoGen )
+				    {
+					    ctx.propCache[i][j].type = ps->m_dataType;
+					    if( getAll )
+						    ctx.propCache[i][j].value.intVal = recno;
+					    else
+						    ctx.propCache[i][j].value.intVal = reader->GetInt32(ctx.names[j]);
+					    continue;
+				    }
+				    ctx.propCache[i][j].type = (FdoDataType)-1;
+				    continue;
+			    }
+			    ctx.propCache[i][j].type = ps->m_dataType;
+			    switch( ps->m_dataType )
+			    {
+			      case FdoDataType_Boolean : 
+			      case FdoDataType_Byte : 
+				      ctx.propCache[i][j].value.intVal = (int)rdr1.ReadByte();
+				      break;
 
-			  case FdoDataType_DateTime :
-				  ctx.propCache[i][j].value.dateVal = new FdoDateTime();
-				  *ctx.propCache[i][j].value.dateVal = rdr1.ReadDateTime();
-				  break;
+			      case FdoDataType_DateTime :
+				      ctx.propCache[i][j].value.dateVal = new FdoDateTime();
+				      *ctx.propCache[i][j].value.dateVal = rdr1.ReadDateTime();
+				      break;
 
-			  case FdoDataType_Decimal :		  
-			  case FdoDataType_Double :
-				  ctx.propCache[i][j].value.dblVal = rdr1.ReadDouble();
-				  break;
+			      case FdoDataType_Decimal :		  
+			      case FdoDataType_Double :
+				      ctx.propCache[i][j].value.dblVal = rdr1.ReadDouble();
+				      break;
 
-			  case FdoDataType_Int16 : 
-				  ctx.propCache[i][j].value.intVal = rdr1.ReadInt16();
-				  break;
+			      case FdoDataType_Int16 : 
+				      ctx.propCache[i][j].value.intVal = rdr1.ReadInt16();
+				      break;
 
-			  case FdoDataType_Int32 : 
-				  ctx.propCache[i][j].value.intVal = rdr1.ReadInt32();
-				  break;
+			      case FdoDataType_Int32 : 
+				      ctx.propCache[i][j].value.intVal = rdr1.ReadInt32();
+				      break;
 
-			  case FdoDataType_Int64 : 
-				  ctx.propCache[i][j].value.int64Val = rdr1.ReadInt64();
-				  break;
+			      case FdoDataType_Int64 : 
+				      ctx.propCache[i][j].value.int64Val = rdr1.ReadInt64();
+				      break;
 
-			  case FdoDataType_Single :
-				  ctx.propCache[i][j].value.dblVal = rdr1.ReadSingle();
-				  break;
+			      case FdoDataType_Single :
+				      ctx.propCache[i][j].value.dblVal = rdr1.ReadSingle();
+				      break;
 
-			  case FdoDataType_String : 
-				  tmpStr = rdr1.ReadRawStringNoCache(len1);
-				  ctx.propCache[i][j].value.strVal = new wchar_t[wcslen(tmpStr)+1];
-				  wcscpy( ctx.propCache[i][j].value.strVal , tmpStr );
-				  break;
+			      case FdoDataType_String : 
+				      tmpStr = rdr1.ReadRawStringNoCache(len1);
+				      ctx.propCache[i][j].value.strVal = new wchar_t[wcslen(tmpStr)+1];
+				      wcscpy( ctx.propCache[i][j].value.strVal , tmpStr );
+				      break;
 
-			  default:
-				  throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_14_UNKNOWN_DATA_TYPE)));
-				  break;
-			}
-		}
-
+			      default:
+				      throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_14_UNKNOWN_DATA_TYPE)));
+				      break;
+			    }
+		    }
+            i++;
+        }
 		// get the next record
 		if( getAll )
 		{
@@ -496,7 +499,7 @@ SdfIScrollableFeatureReader* SdfImpExtendedSelect::ExecuteScrollable()
 				pdata = reader->GetRawData();
 			}
 		}
-		i++;
+		
 	}
 	maxsize = i;
 
