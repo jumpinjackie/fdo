@@ -182,9 +182,9 @@ FdoSmPhReaderP FdoSmPhRdMySqlDbObjectReader::MakeQueryReader(
         FdoSmPhRdGrdQueryReader* pReader = (FdoSmPhRdGrdQueryReader*)(FdoSmPhReader*) reader;
         FdoSmPhRowP binds = pReader->GetBinds();
 
-        binds->GetFields()->GetItem(L"table_schema")->SetFieldValue(ownerName);
+        binds->RefFields()->RefItem(L"table_schema")->SetFieldValue(ownerName);
         if ( object_set )
-            binds->GetFields()->GetItem(L"table_name")->SetFieldValue(objectName);
+            binds->RefFields()->RefItem(L"table_name")->SetFieldValue(objectName);
 
         pReader->Execute();
     }

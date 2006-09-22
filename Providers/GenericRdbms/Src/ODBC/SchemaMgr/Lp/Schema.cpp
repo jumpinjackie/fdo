@@ -40,7 +40,7 @@ FdoSmLpOdbcSchema::FdoSmLpOdbcSchema(
 ) :
     FdoSmLpGrdSchema( pFeatSchema, bIgnoreStates, physicalSchema, schemas )
 {
-    SetOwner(physicalSchema->GetOwner()->GetName());
+    SetOwner(FdoSmPhOwnerP(physicalSchema->GetOwner())->GetName());
 }
 
 FdoSmLpOdbcSchema::~FdoSmLpOdbcSchema(void)

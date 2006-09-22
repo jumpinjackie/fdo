@@ -50,12 +50,12 @@ void FdoSmPhGrdCommandWriter::Add()
     if ( !mInsertStmt ) {
         // Initialize the insert command.
 
-        if ( !(GetRow()->GetDbObject()->GetExists()) ) 
+        if ( !(FdoSmPhDbObjectP(GetRow()->GetDbObject())->GetExists()) ) 
             throw FdoSchemaException::Create (
 	            NlsMsgGet1 (
 		            FDORDBMS_364,
 		            "Table %1$ls is not in the current datastore; datastore schema needs to be upgraded.",
-		            (FdoString*) GetRow()->GetDbObject()->GetQName() 
+		            (FdoString*) FdoSmPhDbObjectP(GetRow()->GetDbObject())->GetQName() 
 	            )
             );
 

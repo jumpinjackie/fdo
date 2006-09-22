@@ -199,9 +199,9 @@ FdoSmPhReaderP FdoSmPhRdMySqlColumnReader::MakeQueryReader (
         pReader = (FdoSmPhRdGrdQueryReader*)(FdoSmPhReader*) reader;
         binds = pReader->GetBinds ();
 
-        binds->GetFields ()->GetItem (L"table_schema")->SetFieldValue (ownerName);
+        binds->RefFields ()->RefItem (L"table_schema")->SetFieldValue (ownerName);
         if ( objectName != L"" )
-            binds->GetFields ()->GetItem (L"table_name")->SetFieldValue (objectName);
+            binds->RefFields ()->RefItem (L"table_name")->SetFieldValue (objectName);
 
         pReader->Execute();
     }

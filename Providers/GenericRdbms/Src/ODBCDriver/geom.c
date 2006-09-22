@@ -136,7 +136,7 @@ static int geom_convert_S( odbcdr_context_def *context, odbcdr_cursor_def *curso
                            int numRows_I, int conversionCode, long srid, int wantedDim );
 static odbcdr_geom_col_list_def *col_list_create_S( void );
 static int col_list_addColumn_S( odbcdr_geom_col_list_def *list, int position_I, pIGeometry_def *address_I );
-static bool col_list_free_S( odbcdr_context_def	*context, odbcdr_geom_col_list_def *list, bool release_geom );
+static bool col_list_free_S( odbcdr_context_def	*context, odbcdr_geom_col_list_def *list, bool release_geoms );
 static bool col_list_freeSqlServerGeometries_S( odbcdr_context_def	*context, odbcdr_geom_col_list_def *list );
 static int col_list_setNumRows_S( odbcdr_geom_col_list_def *list, int numRows_I );
 static odbcdr_geom_col_def *col_list_getColumnByIndex_S( odbcdr_geom_col_list_def *list, long indx );
@@ -748,7 +748,7 @@ static bool
 col_list_free_S(
 	odbcdr_context_def	*context,
     odbcdr_geom_col_list_def *list,
-    bool release_geom
+    bool release_geoms
     )
 {
     long                     i;
@@ -769,7 +769,11 @@ col_list_free_S(
         /* Free the arrays themselves. */
         debug1( "Freeing pointers for %ld geometries.",
                 column->geom_list.size );
-        
+
+#pragma message ("ToDo: Fix the geometries leak")
+      //  if ( release_geoms ) {
+   			//IGeometry_Release( column->l_address );	
+      //  }
         column->address = NULL;
 
         status &= ut_da_free( &(column->geom_list) );

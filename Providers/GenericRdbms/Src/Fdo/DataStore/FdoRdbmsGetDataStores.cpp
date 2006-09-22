@@ -65,7 +65,10 @@ void FdoRdbmsGetDataStores::SetIncludeNonFdoEnabledDatastores(bool include)
 
 FdoIDataStoreReader* FdoRdbmsGetDataStores::Execute()
 {
-    FdoSmPhRdOwnerReaderP phOwnerReader = mConnection->GetSchemaManager()->GetPhysicalSchema()->GetDatabase()->CreateOwnerReader();
+	FdoSchemaManagerP		schema = mConnection->GetSchemaManager();
+	FdoSmPhMgrP				physicalMgr = schema->GetPhysicalSchema();
+	FdoSmPhDatabaseP		pDatabase = physicalMgr->GetDatabase();
+    FdoSmPhRdOwnerReaderP	phOwnerReader = pDatabase->CreateOwnerReader();
 
 	FdoIDataStoreReader* fdoReader = new FdoRdbmsDataStoreReader( mFdoConnection, 
                                                                   phOwnerReader,
@@ -78,7 +81,11 @@ FdoRdbmsDataStoreNames* FdoRdbmsGetDataStores::GetDataStoresNames()
 {
     FdoRdbmsDataStoreNames *oDSNames = FdoRdbmsDataStoreNames::Create();
 
-    FdoSmPhRdOwnerReaderP reader = mConnection->GetSchemaManager()->GetPhysicalSchema()->GetDatabase()->CreateOwnerReader();
+	FdoSchemaManagerP		schema = mConnection->GetSchemaManager();
+	FdoSmPhMgrP				physicalMgr = schema->GetPhysicalSchema();
+	FdoSmPhDatabaseP		pDatabase = physicalMgr->GetDatabase();
+    FdoSmPhRdOwnerReaderP	reader = pDatabase->CreateOwnerReader();
+
     while ( reader->ReadNext() )
     {
         if ( reader->GetHasMetaSchema() ) {

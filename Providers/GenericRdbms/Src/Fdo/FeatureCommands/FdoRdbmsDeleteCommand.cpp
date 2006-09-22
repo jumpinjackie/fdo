@@ -740,6 +740,8 @@ FdoInt32 FdoRdbmsDeleteCommand::DeleteRelatedObjects( const wchar_t* scope, cons
 		}
 		count += mConnection->GetGdbiConnection()->ExecuteNonQuery( (const wchar_t*)subDelStmt );
 	}
+	delete result;
+
 	return (count+deletedObjects);
 }
 

@@ -215,12 +215,10 @@ bool LockUtility::IsLockSupported (FdoRdbmsConnection *fdo_rdbms_connection,
     const FdoSmLpClassDefinition               *class_definition;
     bool                       is_lock_supported        = FALSE;
 
-    FdoIConnectionCapabilities *connection_capabilities = NULL;
-
     // Check if the connection supports locking. If the connection supports
     // locking check if the class does as well (if provided).
 
-    connection_capabilities = fdo_rdbms_connection->GetConnectionCapabilities();
+    FdoPtr<FdoIConnectionCapabilities>	connection_capabilities = fdo_rdbms_connection->GetConnectionCapabilities();
     if (connection_capabilities->SupportsLocking()) {
 
         if (class_name == NULL)
@@ -233,10 +231,6 @@ bool LockUtility::IsLockSupported (FdoRdbmsConnection *fdo_rdbms_connection,
 			is_lock_supported = class_definition->GetCapabilities()->SupportsLocking();
         }  
     }  //  if (connection_capabilities-> ...
-
-    // Clean up.
-
-    connection_capabilities->Release();
 
     // Return the result back to the calling routine.
 
@@ -2194,12 +2188,10 @@ FdoILockConflictReader *LockUtility::HandleLocks (
 
     try {
 
-		FdoIConnectionCapabilities *connection_capabilities = NULL;
-
 		// Check if the connection supports locking. If the connection supports
 		// locking check if the class does as well (if provided).
 		*lock_conflict_found = false;
-		connection_capabilities = fdo_rdbms_connection->GetConnectionCapabilities();
+		FdoPtr<FdoIConnectionCapabilities> connection_capabilities = fdo_rdbms_connection->GetConnectionCapabilities();
 		FdoRdbmsLockManagerP lockManager = FdoPtr<FdoRdbmsLockManager>(fdo_rdbms_connection->GetLockManager());
 		if (lockManager) 
 		{
