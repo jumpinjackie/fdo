@@ -54,7 +54,9 @@ FdoFunctionDefinitionCollection* FdoWfsExpressionCapabilities::GetFunctions()
 {
     FdoPtr<FdoFunctionDefinitionCollection> ret = FdoFunctionDefinitionCollection::Create ();
 
-    // WFS doesn't support any functions
+	FdoPtr<FdoFunctionDefinitionCollection> wellKnownFunctions = GetWellKnownFunctions ();
+	FdoPtr<FdoFunctionDefinition> wellKnownFunction = wellKnownFunctions->GetItem(FDO_FUNCTION_SPATIALEXTENTS);
+    ret->Add(wellKnownFunction);
 
     return (FDO_SAFE_ADDREF (ret.p));
 }

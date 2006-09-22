@@ -52,7 +52,8 @@ libWFSProviderSrc_la_SOURCES = \
   ./FdoWfsSpatialContextReader.cpp \
   ./FdoWfsTopologyCapabilities.cpp \
   ./FdoWfsUtils.cpp \
-  ./stdafx.cpp
+  ./stdafx.cpp \
+  ./FdoWfsSpatialExtentsAggregateReader.cpp
 
 
 noinst_HEADERS = $(libWFSProviderSrc_la_SOURCES) \
@@ -96,7 +97,8 @@ noinst_HEADERS = $(libWFSProviderSrc_la_SOURCES) \
   ./FdoWfsDescribeSchemaCommand.h \
   ./FdoWfsGlobals.h \
   ./FdoWfsSchemaCapabilities.h \
-  ./FdoWfsUtils.h
+  ./FdoWfsUtils.h \
+  ./FdoWfsSpatialExtentsAggregateReader.h
 
 libWFSProviderSrc_la_LDFLAGS =
 

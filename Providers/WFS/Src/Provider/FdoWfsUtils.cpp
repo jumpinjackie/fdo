@@ -35,3 +35,12 @@ FdoString* NlsMsgGet(int msg_num, char* default_msg, ...)
     return ret;
 }
 
+FdoString* NlsMsgGet(int msg_num, char* default_msg, char* file, int line, ...)
+{
+    va_list varargs;
+    va_start(varargs, line);
+    FdoString* ret = FdoException::NLSGetMessage (msg_num, default_msg, file, line, fdowfs_cat, varargs);
+    va_end(varargs);
+
+    return ret;
+}

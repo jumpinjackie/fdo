@@ -39,12 +39,12 @@ FdoInt32* FdoWfsCommandCapabilities::GetCommands (FdoInt32& size)
     static const FdoCommandType commands[] =
     {
         FdoCommandType_Select,
-        //FdoCommandType_SelectAggregates,  // not supported by WFS, may be implemented in phase II
-        //FdoCommandType_Insert,			// Phase II
-        //FdoCommandType_Delete,			// Phase II
-        //FdoCommandType_Update,			// Phase II
+        FdoCommandType_SelectAggregates,
         FdoCommandType_DescribeSchema,
         FdoCommandType_GetSpatialContexts
+        //FdoCommandType_Insert,			// Phase II
+        //FdoCommandType_Delete,			// Phase II
+        //FdoCommandType_Update 			// Phase II
     };
 
     size = sizeof (commands) / sizeof (FdoCommandType);

@@ -76,14 +76,17 @@ FdoFeatureSchemaCollection* FdoWfsDelegate::DescribeFeatureType(FdoStringCollect
 
 FdoIFeatureReader* FdoWfsDelegate::GetFeature(FdoFeatureSchemaCollection* schemas, 
                                               FdoPhysicalSchemaMappingCollection* schemaMappings, 
-                                               FdoString* targetNamespace,
-                                               FdoString* srsName,
-                                                FdoStringCollection* propertiesToSelect,
-                                                FdoString* from,
-                                                FdoFilter* where)
+                                              FdoString* targetNamespace,
+                                              FdoString* srsName,
+                                              FdoStringCollection* propertiesToSelect,
+                                              FdoString* from,
+                                              FdoFilter* where)
 {
-    FdoPtr<FdoWfsGetFeature> request = FdoWfsGetFeature::Create(targetNamespace, srsName, 
-                                                        propertiesToSelect, from, where);
+    FdoPtr<FdoWfsGetFeature> request = FdoWfsGetFeature::Create(targetNamespace, 
+                                                                srsName, 
+                                                                propertiesToSelect, 
+                                                                from, 
+                                                                where);
     FdoPtr<FdoOwsResponse> response = Invoke(request);
     FdoPtr<FdoIoStream> stream = response->GetStream();
 
@@ -97,3 +100,4 @@ FdoIFeatureReader* FdoWfsDelegate::GetFeature(FdoFeatureSchemaCollection* schema
 
     return FDO_SAFE_ADDREF(featureReader.p);
 }
+

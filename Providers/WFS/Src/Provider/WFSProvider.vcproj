@@ -190,10 +190,6 @@
 				>
 			</File>
 			<File
-				RelativePath="FdoWfsReader.h"
-				>
-			</File>
-			<File
 				RelativePath=".\FdoWfsUtils.cpp"
 				>
 			</File>
@@ -390,14 +386,6 @@
 			Name="CommandsFeature"
 			>
 			<File
-				RelativePath="FdoWfsDataReader.cpp"
-				>
-			</File>
-			<File
-				RelativePath="FdoWfsDataReader.h"
-				>
-			</File>
-			<File
 				RelativePath="FdoWfsFeatureReader.cpp"
 				>
 			</File>
@@ -419,6 +407,14 @@
 			</File>
 			<File
 				RelativePath="FdoWfsSelectCommand.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FdoWfsSpatialExtentsAggregateReader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FdoWfsSpatialExtentsAggregateReader.h"
 				>
 			</File>
 		</Filter>

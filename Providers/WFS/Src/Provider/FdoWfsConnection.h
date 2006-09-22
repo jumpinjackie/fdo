@@ -28,20 +28,15 @@ class FdoWfsDelegate;
 
 class FdoWfsConnection : public FdoIConnection
 {
-protected:
-    /**
-     * The connection string containing details about how to connect to WFS.
-     */
+protected: // FdoWfsConnection data member variables
+
+    // The connection string containing details about how to connect to WFS.
     FdoStringP mConnectionString;
 
-    /**
-     * The active spatial context.
-     */
+    // The active spatial context.
     FdoStringP mActiveSpatialContext;
 
-    /**
-     * Connection information object.
-     */
+    // Connection information object.
     FdoPtr<FdoIConnectionInfo> mConnectionInfo;
 
     // WFS service metadata
@@ -53,23 +48,30 @@ protected:
     // WFS delegate
     FdoPtr<FdoWfsDelegate> mDelegate;
 
+    // WFS Source server
     FdoStringP mFeatureServer;
+
+    // WFS Server username
     FdoStringP mUserName;
+    
+    // WFS Server password
     FdoStringP mPassword;
 
+protected: // FdoIDisposable interface
 
-
-public:
-    FdoWfsConnection (void);
-    virtual ~FdoWfsConnection(void);
-
-    // FdoIDisposable interface
-
-    // <summary>Dispose this object.</summary>
-    // <returns>Returns nothing</returns> 
+    /// <summary>Dispose this object.</summary>
+    /// <returns>Returns nothing</returns> 
     void Dispose ();
 
-    // FdoIConnection overrides
+public: // constructor/Desctructor
+    
+    /// <summary>Default Costructor.</summary>
+    FdoWfsConnection (void);
+
+    /// <summary>Default Destructor.</summary>
+    virtual ~FdoWfsConnection(void);
+
+public: // FdoIConnection overrides
 
     /// <summary>Gets an FdoIConnectionCapabilities interface describing the capabilities
     /// of the connection.</summary>
@@ -168,13 +170,16 @@ public:
     /// <returns>Returns nothing</returns> 
     void SetConfiguration(FdoIoStream* configStream);
 
-public:
+public: // FdoWfsConnection specific functions
+
 	FdoWfsDelegate* GetWfsDelegate ();
 	FdoWfsServiceMetadata* GetServiceMetadata();
 	FdoFeatureSchemaCollection* GetSchemas();
+    FdoBoolean IsSchemaLoadedFromServer();
 
-private:
-    // helper function to set the class description
+private: // FdoWfsConnection specific functions
+
+    /// <summary>Helper function to set the class description.</summary>
     void _setClassDescription (FdoClassDefinition* clsdef);
 };
 

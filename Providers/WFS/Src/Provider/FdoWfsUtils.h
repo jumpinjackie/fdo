@@ -23,5 +23,6 @@
 extern char* fdowfs_cat;
 
 FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
+FdoString* NlsMsgGet(int msg_num, char* default_msg, char* file, int line, ...);
 
 #endif//WFSUTILS_H

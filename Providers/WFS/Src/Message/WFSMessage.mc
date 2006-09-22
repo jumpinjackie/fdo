@@ -79,7 +79,11 @@ SymbolicName=WFS_INVALID_CONNECTION_PROPERTY_NAME
 Language=English
 Invalid connection property name '%1$ls'.
 .
-
+MessageId=2011
+SymbolicName=FDOWFS_CONNECTION_CLOSED
+Language=English
+The Connection to the WFS provider is closed.
+.
 
 ;//************************************************************************************
 ;//************************************************************************************
@@ -119,6 +123,41 @@ SymbolicName=WFS_UNSUPPORTED_DATATYPE
 Language=English
 The '%1$ls' data type is not supported by WFS.
 .
+MessageId=4003
+SymbolicName=FDOWFS_NAMED_SCHEMA_NOT_FOUND
+Language=English
+Schema '%1$ls' was not found in the DataStore.
+.
+MessageId=4004
+SymbolicName=FDOWFS_NAMED_CLASS_NOT_FOUND
+Language=English
+Class '%1$ls' was not found.
+.
+MessageId=4005
+SymbolicName=FDOWFS_CANNOT_QUERY_ABSTRACT_CLASS
+Language=English
+Cannot query abstract class '%1$ls'.
+.
+MessageId=4006
+SymbolicName=FDOWFS_NAMED_FEATURETYPE_NOT_FOUND
+Language=English
+WFS Feature '%1$ls' was not found.
+.
+MessageId=4007
+SymbolicName=FDOWFS_FEATURE_PROPERTY_NOT_FOUND
+Language=English
+Property '%1$ls' was not found on FDO class '%2$ls'.
+.
+MessageId=4008
+SymbolicName=FDOWFS_FEATURE_NO_GEOMETRY_PROPERTY
+Language=English
+Class '%1$ls' does not contain a Geometry property.
+.
+MessageId=4009
+SymbolicName=FDOWFS_FEATURE_MISSING_GEOMETRY_PROPERTY
+Language=English
+Class '%1$ls' does not contain named Geometry property '%1$2s'.
+.
 
 
 ;//************************************************************************************
@@ -155,6 +194,56 @@ MessageId=7003
 SymbolicName=WFS_COMMAND_CLASS_NOT_RECOGNIZED
 Language=English
 Feature class '%1$ls' is not recognized by WFS server.
+.
+MessageId=7004
+SymbolicName=FDOWFS_NO_QUERY_PROPERTIES_SELECTED
+Language=English
+No properties were selected for retrieval from Feature class '%1$ls'.
+.
+MessageId=7005
+SymbolicName=FDOWFS_QUERY_NON_COMPUTED_PROPERTIES
+Language=English
+Cannot query non-computed property '%1$ls' from feature class '%2$ls' using the SelectAggregates command.
+.
+MessageId=7006
+SymbolicName=FDOWFS_QUERY_NON_FUNCTION_SPATIALEXTENTS
+Language=English
+Unknown WFS SelectAggreates function '%1$ls'. The WFS SelectAggreates command only supports the SpatialExtents function.
+.
+MessageId=7007
+SymbolicName=FDOWFS_SPATIALEXTENTS_TOO_MANY_ARGUMENTS
+Language=English
+Too many arguments passed to the SelectAggregates function.
+.
+MessageId=7008
+SymbolicName=FDOWFS_SELECT_NON_GEOMETRIC_PROPERTY_ON_CLASS
+Language=English
+Cannot select a non-geometric property '%1$ls' on class '%2$ls' using the SelectAggreates SpatialExtents function.
+.
+MessageId=7009
+SymbolicName=FDOWFS_SPATIALEXTENTS_NON_FEATURE_CLASS
+Language=English
+Cannot execute the SelectAggregates(SpatialExtents) command using a non feature class '%1$ls'.
+.
+MessageId=7010
+SymbolicName=FDOWFS_AMBIGUOUS_CLASS_NAME
+Language=English
+Multiple classes found with name '%1$ls'. Please qualify your class with a schmea qualifier and run your command again.
+.
+MessageId=7011
+SymbolicName=FDOWFS_SELECTAGGREGATES_INVALID_ARGUMENT_TYPE
+Language=English
+The SelectAggregates(SpatialExtents) command contains an argument '%1$ls' that is not the name of the Geometry property on class '%2$ls'.
+.
+MessageId=7012
+SymbolicName=FDOWFS_SELECTAGGREGATES_FILTER_NOT_SUPPORTED
+Language=English
+The SelectAggregates(SpatialExtents) command does not support the use of a conditional filter.
+.
+MessageId=7013
+SymbolicName=FDOWFS_SELECTAGGREGATES_INVALID_ARGUMENT
+Language=English
+The SelectAggregates(SpatialExtents) command contains an invalid function argument.
 .
 
 ;//************************************************************************************

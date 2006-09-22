@@ -297,6 +297,11 @@ FdoWfsServiceMetadata* FdoWfsConnection::GetServiceMetadata()
     return FDO_SAFE_ADDREF(mServiceMetadata.p);
 }
 
+FdoBoolean FdoWfsConnection::IsSchemaLoadedFromServer()
+{
+    return (mSchemas == NULL) ? false : true;
+}
+
 FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
 {
     if (mSchemas == NULL) {
@@ -417,15 +422,6 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
                         }
                     }
                 } // end of for each property
-
-                /// NOTE:
-                /// THIS IS TEMPORAL ADDED so that QA can go further
-                //if (bNoIdentity && ids->GetCount() == 0) {
-                //    FdoPtr<FdoDataPropertyDefinition> fakeId = FdoDataPropertyDefinition::Create(L"FeatId",L"");
-                //    fakeId->SetDataType(FdoDataType_String);
-                //    props->Add(fakeId);
-                //    ids->Add(fakeId);
-                //}
 
                 // Set description for class
                 _setClassDescription (classDef);
