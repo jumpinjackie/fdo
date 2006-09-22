@@ -106,7 +106,7 @@ bool FdoRdbmsDataStoreReader::ReadNext()
 					mDatastoreDescription = mPhOwnerReader->GetDescription();
 
 					// Create another reader for F_OFTIONS table
-					FdoSmPhOptionsReaderP optRdr = mPhOwnerReader->GetManager()->CreateOptionsReader(mDatastoreName);
+					FdoSmPhOptionsReaderP optRdr = FdoSmPhMgrP(mPhOwnerReader->GetManager())->CreateOptionsReader(mDatastoreName);
 
 					// read each option, looking for the long transaction and locking options.
 					while ( optRdr->ReadNext() ) 
