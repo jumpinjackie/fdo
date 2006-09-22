@@ -19,17 +19,27 @@
 #ifndef FDOWMSUTILS_H
 #define FDOWMSUTILS_H
 
+class FdoWmsLayer;
+class FdoWmsLayerCollection;
+class FdoWmsBoundingBox;
+
 // the default message catalog filename
 extern char *fdofdowms_cat;  
 #define S_FDOFDOWMS_1 1 
 
 // Convenient NLS macros
 FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
+FdoString* NlsMsgGet(int msg_num, char* default_msg, char* file, int line, ...);
 
 // case insensitive string comparison
 #define STREQUAL(s1, s2)	(FdoCommonOSUtil::wcsicmp(s1, s2) == 0)
 
 // case sensitive string comparison
 #define STRCASEEQ(s1, s2)	(wcscmp(s1, s2) == 0)
+
+// Bounding Box helper functions
+void _calcLayerBoundingBox (FdoWmsLayer* layer, FdoString* srsName, FdoWmsBoundingBox* bbox);
+void _calcLayersBoundingBox (FdoWmsLayerCollection* layers, FdoString* srsName, FdoWmsBoundingBox* bbox);
+
 
 #endif // FDOWMSUTILS_H

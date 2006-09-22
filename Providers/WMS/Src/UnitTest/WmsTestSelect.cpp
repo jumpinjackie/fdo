@@ -259,7 +259,7 @@ void WmsTestSelect::testNestedClip ()
     }
 }
 
-// http://cadc-brucejia.ads.autodesk.com:8888/cgi-bin/mapserv.exe?map=wms/wms.map
+// http://CADCISDJIAB.ads.autodesk.com:8888/cgi-bin/mapserv.exe?map=wms/wms.map
 void WmsTestSelect::testHttpBasicAuthentification ()
 {
 	try
@@ -267,7 +267,7 @@ void WmsTestSelect::testHttpBasicAuthentification ()
 		FdoPtr<FdoIConnection> conn = this->GetConnection ();
 
 		// use ip address directly
-		conn->SetConnectionString (L"FeatureServer=http://cadc-brucejia.ads.autodesk.com:8888/cgi-bin/mapserv.exe?map=wms/wms.map;Username=bruce;Password=brucebruce");
+		conn->SetConnectionString (L"FeatureServer=http://CADCISDJIAB.ads.autodesk.com:8888/cgi-bin/mapserv.exe?map=wms/wms.map;Username=bruce;Password=brucebruce");
 		CPPUNIT_ASSERT (FdoConnectionState_Open == conn->Open ());
 
 		FdoPtr<FdoIDescribeSchema> cmdDescribeSchema = static_cast<FdoIDescribeSchema *> (conn->CreateCommand (FdoCommandType_DescribeSchema));
@@ -846,47 +846,7 @@ void WmsTestSelect::testTerraService ()
 {
     try
     {
-        FdoPtr<FdoIConnection> connection = WmsTests::GetConnection ();
-
-        connection->SetConnectionString(L"FeatureServer=http://www.terraservice.net/ogccapabilities.ashx");
-        FdoConnectionState state = connection->Open ();
-
-        FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*> (connection->CreateCommand (FdoCommandType_Select));
-        cmdSelect->SetFeatureClassName (L"DOQ");
-        FdoPtr<FdoIFeatureReader> featReader = cmdSelect->Execute ();
-        CPPUNIT_ASSERT (featReader->ReadNext ());	    
-        FdoPtr<FdoIRaster> raster = featReader->GetRaster (L"Raster");
-
-        // Test the bounds
-        FdoPtr<FdoByteArray> gba = raster->GetBounds ();
-        FdoPtr<FdoFgfGeometryFactory> factory = FdoFgfGeometryFactory::GetInstance ();
-        FdoPtr<FdoIGeometry> geom = factory->CreateGeometryFromFgf (gba.p);
-        FdoPtr<FdoIEnvelope> enve = geom->GetEnvelope ();
-
-#ifdef _DEBUG
-        wprintf (L"Extent: (%f,%f %f,%f)\n", enve->GetMinX(), enve->GetMinY(), enve->GetMaxX(), enve->GetMaxY());                
-#endif
-
-        FdoPtr<FdoIStreamReader> stream = raster->GetStreamReader ();
-        FdoIStreamReader* streamReader = raster->GetStreamReader ();
-        FdoPtr<FdoIStreamReaderTmpl<FdoByte> > byteStreamReader = static_cast<FdoIStreamReaderTmpl<FdoByte>*> (streamReader);
-
-        CPPUNIT_ASSERT (streamReader != NULL);
-        CPPUNIT_ASSERT (byteStreamReader != NULL);
-
-        FdoByte buff[4096];
-        FdoInt64 cntTotal = 0;
-        FdoInt32 cntRead = 0;
-        do
-        {
-            cntRead = byteStreamReader->ReadNext (buff, 0 , 4096);
-            cntTotal += cntRead;
-        }
-        while (cntRead);
-
-	    CPPUNIT_ASSERT (!featReader->ReadNext ());
-
-        connection->Close ();
+        ExecuteSelectServer(L"http://www.terraservice.net/ogccapabilities.ashx", L"DOQ");
     }
     catch (FdoException* e)
     {
@@ -899,47 +859,7 @@ void WmsTestSelect::testDefect786029()
 {
     try
     {
-        FdoPtr<FdoIConnection> connection = WmsTests::GetConnection ();
-
-        connection->SetConnectionString(L"FeatureServer=http://maps.york.ca/wmsconnector/com.esri.wms.Esrimap/WMS_RegOrtho?;DefaultImageHeight=1024");
-        FdoConnectionState state = connection->Open ();
-
-        FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*> (connection->CreateCommand (FdoCommandType_Select));
-        cmdSelect->SetFeatureClassName (L"Roads"); // or "Ortho"
-        FdoPtr<FdoIFeatureReader> featReader = cmdSelect->Execute ();
-        CPPUNIT_ASSERT (featReader->ReadNext ());	    
-        FdoPtr<FdoIRaster> raster = featReader->GetRaster (L"Raster");
-
-        // Test the bounds
-        FdoPtr<FdoByteArray> gba = raster->GetBounds ();
-        FdoPtr<FdoFgfGeometryFactory> factory = FdoFgfGeometryFactory::GetInstance ();
-        FdoPtr<FdoIGeometry> geom = factory->CreateGeometryFromFgf (gba.p);
-        FdoPtr<FdoIEnvelope> enve = geom->GetEnvelope ();
-
-#ifdef _DEBUG
-        wprintf (L"Extent: (%f,%f %f,%f)\n", enve->GetMinX(), enve->GetMinY(), enve->GetMaxX(), enve->GetMaxY());                
-#endif
-
-        FdoPtr<FdoIStreamReader> stream = raster->GetStreamReader ();
-        FdoIStreamReader* streamReader = raster->GetStreamReader ();
-        FdoPtr<FdoIStreamReaderTmpl<FdoByte> > byteStreamReader = static_cast<FdoIStreamReaderTmpl<FdoByte>*> (streamReader);
-
-        CPPUNIT_ASSERT (streamReader != NULL);
-        CPPUNIT_ASSERT (byteStreamReader != NULL);
-
-        FdoByte buff[4096];
-        FdoInt64 cntTotal = 0;
-        FdoInt32 cntRead = 0;
-        do
-        {
-            cntRead = byteStreamReader->ReadNext (buff, 0 , 4096);
-            cntTotal += cntRead;
-        }
-        while (cntRead);
-
-	    CPPUNIT_ASSERT (!featReader->ReadNext ());
-
-        connection->Close ();
+        ExecuteSelectServer(L"http://maps.york.ca/wmsconnector/com.esri.wms.Esrimap/WMS_RegOrtho?;DefaultImageHeight=1024", L"Roads"); // or "Ortho"
     }
     catch (FdoException* e)
     {
@@ -952,26 +872,360 @@ void WmsTestSelect::testEusoils()
 {
     try
     {
+        ExecuteSelectServer(L"http://eusoils.jrc.it/wmsconnector/com.esri.wms.Esrimap/OCTOP_WMS?", L"3");
+    }
+    catch (FdoException* e)
+    {
+        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
+    }
+}
+
+// http://eusoils.jrc.it:80/wmsconnector/com.esri.wms.Esrimap/PESERA?
+void WmsTestSelect::testEusoilsPesera()
+{
+    try
+    {
+        ExecuteSelectServer(L"http://eusoils.jrc.it:80/wmsconnector/com.esri.wms.Esrimap/PESERA?", L"1");
+    }
+    catch (FdoException* e)
+    {
+        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
+    }
+}
+
+// http://eusoils.jrc.it/wmsconnector/com.esri.wms.Esrimap/Meusis_alps?
+void WmsTestSelect::testEusoilsMeusis()
+{
+    try
+    {
+        ExecuteSelectServer(L"http://eusoils.jrc.it/wmsconnector/com.esri.wms.Esrimap/Meusis_alps?", L"2");
+    }
+    catch (FdoException* e)
+    {
+        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
+    }
+}
+
+
+void WmsTestSelect::ExecuteSelectServer(FdoString* server, FdoString* classname)
+{
+    FdoPtr<FdoIConnection> connection = WmsTests::GetConnection ();
+
+    FdoStringP sServer = FdoStringP::Format(L"FeatureServer=%ls", server);
+    connection->SetConnectionString((FdoString*)sServer);
+    FdoConnectionState state = connection->Open ();
+
+    FdoPtr<FdoIDescribeSchema> cmdDS = static_cast<FdoIDescribeSchema *> (connection->CreateCommand (FdoCommandType_DescribeSchema));
+    FdoPtr<FdoFeatureSchemaCollection> schemas = cmdDS->Execute ();
+    FdoInt32 cntSchemas = schemas->GetCount ();
+    CPPUNIT_ASSERT (cntSchemas > 0);
+    FdoPtr<FdoFeatureSchema> schema = schemas->GetItem (0);
+    FdoPtr<FdoClassCollection> classes = schema->GetClasses ();
+    FdoInt32 cntClasses = classes->GetCount ();
+    CPPUNIT_ASSERT (cntClasses > 0);
+
+    FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*> (connection->CreateCommand (FdoCommandType_Select));
+    cmdSelect->SetFeatureClassName (classname);
+    FdoPtr<FdoIFeatureReader> featReader = cmdSelect->Execute ();
+    CPPUNIT_ASSERT (featReader->ReadNext ());	    
+    FdoPtr<FdoIRaster> raster = featReader->GetRaster (L"Raster");
+
+    FdoPtr<FdoByteArray> gba = raster->GetBounds ();
+    FdoPtr<FdoFgfGeometryFactory> factory = FdoFgfGeometryFactory::GetInstance ();
+    FdoPtr<FdoIGeometry> geom = factory->CreateGeometryFromFgf (gba.p);
+    FdoPtr<FdoIEnvelope> enve = geom->GetEnvelope ();
+
+#ifdef _DEBUG
+    wprintf (L"Extent: (%f,%f %f,%f)\n", enve->GetMinX(), enve->GetMinY(), enve->GetMaxX(), enve->GetMaxY());                
+#endif
+
+    FdoPtr<FdoIStreamReader> stream = raster->GetStreamReader ();
+    FdoIStreamReader* streamReader = raster->GetStreamReader ();
+    FdoPtr<FdoIStreamReaderTmpl<FdoByte> > byteStreamReader = static_cast<FdoIStreamReaderTmpl<FdoByte>*> (streamReader);
+
+    CPPUNIT_ASSERT (streamReader != NULL);
+    CPPUNIT_ASSERT (byteStreamReader != NULL);
+
+    FdoByte buff[4096];
+    FdoInt64 cntTotal = 0;
+    FdoInt32 cntRead = 0;
+    do
+    {
+        cntRead = byteStreamReader->ReadNext (buff, 0 , 4096);
+        cntTotal += cntRead;
+    }
+    while (cntRead);
+
+    CPPUNIT_ASSERT (cntTotal > 0);
+    CPPUNIT_ASSERT (!featReader->ReadNext ());
+
+    connection->Close ();
+}
+
+void WmsTestSelect::testSelectSpatialExtents()
+{
+	try 
+	{
+        FdoPtr<FdoISelectAggregates> selAggr;
+        FdoPtr<FdoIDataReader> rdr;
+        FdoPtr<FdoIdentifierCollection> ids;
+        FdoPtr<FdoExpression> expr;
+        FdoPtr<FdoComputedIdentifier> cid;
+        int count = 0;
+
+		FdoPtr<FdoIConnection> conn = WmsTests::GetConnection();
+		conn->SetConnectionString(L"FeatureServer=http://wms.jpl.nasa.gov/wms.cgi?");
+		CPPUNIT_ASSERT(conn->Open() == FdoConnectionState_Open);
+
+        FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+		
+        FdoPtr<FdoISelectAggregates> advsel = (FdoISelectAggregates*)(conn->CreateCommand(FdoCommandType_SelectAggregates));
+	    advsel->SetFeatureClassName(L"us_landsat_wgs84");
+	    ids = advsel->GetPropertyNames();
+	    expr = FdoExpression::Parse(L"SpatialExtents(Raster)");
+	    cid = FdoComputedIdentifier::Create(L"MBR", expr);
+	    ids->Add(cid);
+	    rdr = advsel->Execute();
+
+	    count = 0;
+	    FdoPtr<FdoIEnvelope> envelopeAllWithoutFilter;
+	    while (rdr->ReadNext())
+	    {
+		    if ( rdr->IsNull(L"MBR") )
+			    continue;
+
+		    FdoPtr<FdoByteArray> geomBytes = rdr->GetGeometry(L"MBR");
+		    FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(geomBytes);
+		    envelopeAllWithoutFilter = geom->GetEnvelope();
+
+		    if (envelopeAllWithoutFilter->GetIsEmpty())
+			    CPPUNIT_FAIL("Expected non-empty envelope for SpatialExtents() result");
+
+		    count++;
+	    }
+	    CPPUNIT_ASSERT_MESSAGE("Expected exactly one row of aggregate data", count==1);
+
+	    rdr->Close();
+
+	    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinX)", fabs(envelopeAllWithoutFilter->GetMinX() - (-127.00)) < 0.0000001);
+	    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinY)", fabs(envelopeAllWithoutFilter->GetMinY() - (23.00)) < 0.0000001);
+	    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxX)", fabs(envelopeAllWithoutFilter->GetMaxX() - (-66.00)) < 0.0000001);
+	    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxY)", fabs(envelopeAllWithoutFilter->GetMaxY() - (50.00)) < 0.0000001);
+
+        conn->Close();
+
+        /////////////////////////
+
+	    FdoIoFileStreamP fileStream = FdoIoFileStream::Create(L"NASA_WMS_Config.xml", L"r");
+	    conn->SetConnectionString (L"FeatureServer=http://wms.jpl.nasa.gov/wms.cgi?");
+	    conn->SetConfiguration (fileStream);
+		CPPUNIT_ASSERT(conn->Open() == FdoConnectionState_Open);
+
+        advsel = (FdoISelectAggregates*)(conn->CreateCommand(FdoCommandType_SelectAggregates));
+	    advsel->SetFeatureClassName(L"global_mosaic");
+	    ids = advsel->GetPropertyNames();
+	    expr = FdoExpression::Parse(L"SpatialExtents(Image)");
+	    cid = FdoComputedIdentifier::Create(L"MBR", expr);
+	    ids->Add(cid);
+	    rdr = advsel->Execute();
+
+	    count = 0;
+	    while (rdr->ReadNext())
+	    {
+		    if ( rdr->IsNull(L"MBR") )
+			    continue;
+
+		    FdoPtr<FdoByteArray> geomBytes = rdr->GetGeometry(L"MBR");
+		    FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(geomBytes);
+		    envelopeAllWithoutFilter = geom->GetEnvelope();
+
+		    if (envelopeAllWithoutFilter->GetIsEmpty())
+			    CPPUNIT_FAIL("Expected non-empty envelope for SpatialExtents() result");
+
+		    count++;
+	    }
+	    CPPUNIT_ASSERT_MESSAGE("Expected exactly one row of aggregate data", count==1);
+
+	    rdr->Close();
+
+	    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinX)", fabs(envelopeAllWithoutFilter->GetMinX() - (-180.00)) < 0.0000001);
+	    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinY)", fabs(envelopeAllWithoutFilter->GetMinY() - (-60.00)) < 0.0000001);
+	    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxX)", fabs(envelopeAllWithoutFilter->GetMaxX() - (180.00)) < 0.0000001);
+	    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxY)", fabs(envelopeAllWithoutFilter->GetMaxY() - (84.00)) < 0.0000001);
+
+
+        //////////////////////////
+
+	    advsel->SetFeatureClassName(L"Itasca_Demo:global_mosaic");
+	    rdr = advsel->Execute();
+
+	    count = 0;
+	    while (rdr->ReadNext())
+	    {
+		    if ( rdr->IsNull(L"MBR") )
+			    continue;
+
+		    FdoPtr<FdoByteArray> geomBytes = rdr->GetGeometry(L"MBR");
+		    FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(geomBytes);
+		    envelopeAllWithoutFilter = geom->GetEnvelope();
+
+		    if (envelopeAllWithoutFilter->GetIsEmpty())
+			    CPPUNIT_FAIL("Expected non-empty envelope for SpatialExtents() result");
+
+		    count++;
+	    }
+	    CPPUNIT_ASSERT_MESSAGE("Expected exactly one row of aggregate data", count==1);
+
+	    rdr->Close();
+
+	    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinX)", fabs(envelopeAllWithoutFilter->GetMinX() - (-180.00)) < 0.0000001);
+	    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinY)", fabs(envelopeAllWithoutFilter->GetMinY() - (-60.00)) < 0.0000001);
+	    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxX)", fabs(envelopeAllWithoutFilter->GetMaxX() - (180.00)) < 0.0000001);
+	    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxY)", fabs(envelopeAllWithoutFilter->GetMaxY() - (84.00)) < 0.0000001);
+
+        //////////////////////////
+
+        bool failed = false;
+        try
+        {
+            advsel = (FdoISelectAggregates*)(conn->CreateCommand(FdoCommandType_SelectAggregates));
+            advsel->SetFeatureClassName(L"Itasca_Demo:foo");
+	        ids = advsel->GetPropertyNames();
+	        expr = FdoExpression::Parse(L"SpatialExtents(Image)");
+	        cid = FdoComputedIdentifier::Create(L"MBR", expr);
+	        ids->Add(cid);
+	        rdr = advsel->Execute();
+        }
+        catch ( FdoException *ex )
+        {
+            ex->Release();
+            failed = true;
+        }
+
+        if (!failed) {
+            CPPUNIT_FAIL("FAILED - SelectAggregates allowed accessing an invalid class\n");
+        }
+
+       //////////////////////////
+
+        failed = false;
+        try
+        {
+            advsel = (FdoISelectAggregates*)(conn->CreateCommand(FdoCommandType_SelectAggregates));
+            advsel->SetFeatureClassName(L"foo:global_mosaic");
+	        ids = advsel->GetPropertyNames();
+	        expr = FdoExpression::Parse(L"SpatialExtents(Image)");
+	        cid = FdoComputedIdentifier::Create(L"MBR", expr);
+	        ids->Add(cid);
+	        rdr = advsel->Execute();
+        }
+        catch ( FdoException *ex )
+        {
+            ex->Release();
+            failed = true;
+        }
+
+        if (!failed) {
+            CPPUNIT_FAIL("FAILED - SelectAggregates allowed accessing an invalid schema\n");
+        }
+
+        //////////////////////////
+
+        failed = false;
+        try
+        {
+            advsel = (FdoISelectAggregates*)(conn->CreateCommand(FdoCommandType_SelectAggregates));
+            advsel->SetFeatureClassName(L"Itasca_Demo:global_mosaic");
+	        ids = advsel->GetPropertyNames();
+	        expr = FdoExpression::Parse(L"SpatialExtents(foo)");
+	        cid = FdoComputedIdentifier::Create(L"MBR", expr);
+	        ids->Add(cid);
+	        rdr = advsel->Execute();
+        }
+        catch ( FdoException *ex )
+        {
+            ex->Release();
+            failed = true;
+        }
+
+        if (!failed) {
+            CPPUNIT_FAIL("FAILED - SelectAggregates allowed accessing an invalid property\n");
+        }
+
+        //////////////////////////
+
+        failed = false;
+        try
+        {
+            advsel = (FdoISelectAggregates*)(conn->CreateCommand(FdoCommandType_SelectAggregates));
+            advsel->SetFeatureClassName(L"Itasca_Demo:global_mosaic");
+	        ids = advsel->GetPropertyNames();
+	        expr = FdoExpression::Parse(L"foo(Image)");
+	        cid = FdoComputedIdentifier::Create(L"MBR", expr);
+	        ids->Add(cid);
+	        rdr = advsel->Execute();
+        }
+        catch ( FdoException *ex )
+        {
+            ex->Release();
+            failed = true;
+        }
+
+        if (!failed) {
+            CPPUNIT_FAIL("FAILED - SelectAggregates allowed accessing an invalid function\n");
+        }
+
+        //////////////////////////
+
+        failed = false;
+        try
+        {
+            advsel = (FdoISelectAggregates*)(conn->CreateCommand(FdoCommandType_SelectAggregates));
+            advsel->SetFeatureClassName(L"Itasca_Demo:global_mosaic");
+	        ids = advsel->GetPropertyNames();
+	        expr = FdoExpression::Parse(L"SpatialExtents(Image)");
+            advsel->SetFilter(L"FeatId > -1");
+	        cid = FdoComputedIdentifier::Create(L"MBR", expr);
+	        ids->Add(cid);
+	        rdr = advsel->Execute();
+        }
+        catch ( FdoException *ex )
+        {
+            ex->Release();
+            failed = true;
+        }
+
+        if (!failed) {
+            CPPUNIT_FAIL("FAILED - SelectAggregates allowed the use of a conditional filter\n");
+        }
+    }
+	catch( FdoException *ex )
+    {
+        CPPUNIT_FAIL((const char*)(FdoStringP(ex->GetExceptionMessage())));
+        ex->Release();
+    }
+}
+
+// test against http://terraservice.net/ogccapabilities.ashx. This site uses
+// different URLs for "GetCapabilities" and "GetMap" operations.
+void WmsTestSelect::testTerraServiceThumbnail ()
+{
+    try
+    {
         FdoPtr<FdoIConnection> connection = WmsTests::GetConnection ();
 
-        connection->SetConnectionString(L"FeatureServer=http://eusoils.jrc.it/wmsconnector/com.esri.wms.Esrimap/OCTOP_WMS?");
+        FdoStringP sServer = FdoStringP::Format(L"FeatureServer=http://www.terraservice.net/ogccapabilities.ashx");
+        connection->SetConnectionString((FdoString*)sServer);
         FdoConnectionState state = connection->Open ();
 
         FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*> (connection->CreateCommand (FdoCommandType_Select));
-        cmdSelect->SetFeatureClassName (L"3");
+        cmdSelect->SetFeatureClassName (L"DOQ");
         FdoPtr<FdoIFeatureReader> featReader = cmdSelect->Execute ();
         CPPUNIT_ASSERT (featReader->ReadNext ());	    
         FdoPtr<FdoIRaster> raster = featReader->GetRaster (L"Raster");
 
-        // Test the bounds
-        FdoPtr<FdoByteArray> gba = raster->GetBounds ();
-        FdoPtr<FdoFgfGeometryFactory> factory = FdoFgfGeometryFactory::GetInstance ();
-        FdoPtr<FdoIGeometry> geom = factory->CreateGeometryFromFgf (gba.p);
-        FdoPtr<FdoIEnvelope> enve = geom->GetEnvelope ();
-
-#ifdef _DEBUG
-        wprintf (L"Extent: (%f,%f %f,%f)\n", enve->GetMinX(), enve->GetMinY(), enve->GetMaxX(), enve->GetMaxY());                
-#endif
+        raster->SetImageXSize(16);
+        raster->SetImageYSize(16);
 
         FdoPtr<FdoIStreamReader> stream = raster->GetStreamReader ();
         FdoIStreamReader* streamReader = raster->GetStreamReader ();
@@ -990,7 +1244,8 @@ void WmsTestSelect::testEusoils()
         }
         while (cntRead);
 
-	    CPPUNIT_ASSERT (!featReader->ReadNext ());
+        CPPUNIT_ASSERT (cntTotal > 0);
+        CPPUNIT_ASSERT (!featReader->ReadNext ());
 
         connection->Close ();
     }

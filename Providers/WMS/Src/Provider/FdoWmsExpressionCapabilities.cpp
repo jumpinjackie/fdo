@@ -109,7 +109,7 @@ FdoFunctionDefinitionCollection* FdoWmsExpressionCapabilities::GetFunctions()
     resampleSignatureDefCol->Add(resampleSignatureDef);
     FdoPtr<FdoFunctionDefinition> resampleFunction = FdoFunctionDefinition::Create(FdoWmsGlobals::ResampleFunctionName,
                                                                                    desc,
-                                                                                   true,
+                                                                                   false,
                                                                                    resampleSignatureDefCol);
     ret->Add(resampleFunction);
 
@@ -144,6 +144,22 @@ FdoFunctionDefinitionCollection* FdoWmsExpressionCapabilities::GetFunctions()
                                                                                false,
                                                                                clipSignatureDefCol);
     ret->Add(clipFunction);
+
+    // SpatialExtents function
+    args = FdoArgumentDefinitionCollection::Create();
+    desc = NlsMsgGet(FDOWMS_SPATIAL_EXTENTS_RASTER_ARGUMENT_DESC, "An argument that identifies a raster property.");
+	rasterArg = FdoArgumentDefinition::Create(FdoWmsGlobals::ExtentsFunctionRasterArgumentName, desc, FdoDataType_BLOB);
+	args->Add(rasterArg);
+
+    desc = NlsMsgGet(FDOWMS_SPATIAL_EXTENTS_FUNCTION_DESC, "The SpatialExtents function returns the spatial extents of a raster property.");
+    FdoPtr<FdoSignatureDefinition> spatialExtSigDef = FdoSignatureDefinition::Create(FdoDataType_BLOB, args);
+    FdoPtr<FdoSignatureDefinitionCollection> spatialExtSigDefCol = FdoSignatureDefinitionCollection::Create();
+    clipSignatureDefCol->Add(spatialExtSigDef);
+    FdoPtr<FdoFunctionDefinition> spatialExtents = FdoFunctionDefinition::Create(FDO_FUNCTION_SPATIALEXTENTS,
+                                                                                 desc,
+                                                                                 true,
+                                                                                 clipSignatureDefCol);
+    ret->Add(spatialExtents);
 
     return (FDO_SAFE_ADDREF (ret.p));
 }

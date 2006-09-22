@@ -356,11 +356,27 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FdoWmsSelectAggregatesCommand.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FdoWmsSelectAggregatesCommand.h"
+				>
+			</File>
+			<File
 				RelativePath="FdoWmsSelectCommand.cpp"
 				>
 			</File>
 			<File
 				RelativePath="FdoWmsSelectCommand.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FdoWmsSpatialExtentsAggregateReader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FdoWmsSpatialExtentsAggregateReader.h"
 				>
 			</File>
 		</Filter>

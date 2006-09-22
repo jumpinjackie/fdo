@@ -22,6 +22,8 @@
 #pragma once
 #endif //_WIN32
 
+#include "FdoWmsRect.h"
+
 class FdoWmsEnvelope : public FdoIEnvelope
 {
 //

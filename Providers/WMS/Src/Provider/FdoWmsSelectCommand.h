@@ -133,10 +133,7 @@ private:
 	// create a WMS delegate to get the map
 	FdoWmsDelegate* _getWmsDelegate ();
 
-    //
-    void _calcLayerBoundingBox (FdoWmsLayer* layer, FdoString* srsName, FdoWmsBoundingBox* bbox);
-    void _calcLayersBoundingBox (FdoWmsLayerCollection* layers, FdoString* srsName, FdoWmsBoundingBox* bbox);
-
+    // Analyze the properties to check whether the RESAMPLE or CLIP function is invoked.
 	void _analysisIdentifier (FdoString* srsName, FdoWmsBoundingBox* bbox, FdoStringP& propertyName, FdoSize& height, FdoSize& width);
 
     // Some layers may contain characters ":" or "." which are not allowed in FDO class name.

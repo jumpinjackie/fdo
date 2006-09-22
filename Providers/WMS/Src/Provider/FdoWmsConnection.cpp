@@ -39,6 +39,7 @@
 #include "FdoWmsSelectCommand.h"
 #include "FdoWmsGetSpatialContextsCommand.h"
 #include "FdoWmsActivateSpatialContextCommand.h"
+#include "FdoWmsSelectAggregatesCommand.h"
 #include "FdoWmsUtils.h"
 
 #include <Fdo/Schema/FeatureClass.h>
@@ -337,6 +338,9 @@ FdoICommand* FdoWmsConnection::CreateCommand (FdoInt32 commandType)
 		case FdoCommandType_ActivateSpatialContext:
 			ret = new FdoWmsActivateSpatialContextCommand (this);
 			break;
+        case FdoCommandType_SelectAggregates:
+            ret = new FdoWmsSelectAggregatesCommand(this);
+            break;
         default:
             throw FdoCommandException::Create (NlsMsgGet(FDOWMS_CONNECTION_COMMAND_NOT_SUPPORTED, "The command %1$d is not supported.", (int)commandType));
     }
@@ -815,6 +819,30 @@ void FdoWmsConnection::_setDefaultSpatialContextAssociation (FdoClassDefinition*
 	{
 		throw FdoException::Create (NlsMsgGet (FDOWMS_12001_LAYER_NOT_EXIST, "The WMS layer '%1$ls' does not exist.", className));
 	}
+}
+
+/// <summary>Search the class and it's parents for its raster property definition.</summary>
+/// <returns>Return the raster definition for the specified class. If not found, return NULL.</returns>
+FdoRasterPropertyDefinition* FdoWmsConnection::FindRasterProperty (FdoClassDefinition* featClass)
+{
+	if (featClass == NULL) {
+		throw FdoException::Create (FdoException::NLSGetMessage(FDO_2_BADPARAMETER, "Bad parameter to method"));
+    }
+
+    FdoRasterPropertyDefinition* rasterProp = NULL;
+	FdoPtr<FdoReadOnlyPropertyDefinitionCollection> baseProps = featClass->GetBaseProperties ();
+	for (FdoInt32 i=0; i<baseProps->GetCount (); i++) {
+		FdoPtr<FdoPropertyDefinition> baseProp = baseProps->GetItem (i);
+		rasterProp = dynamic_cast<FdoRasterPropertyDefinition *> (baseProp.p);
+	}
+
+	FdoPtr<FdoPropertyDefinitionCollection> props = featClass->GetProperties ();
+	for (FdoInt32 i=0; i<props->GetCount (); i++) {
+		FdoPtr<FdoPropertyDefinition> prop = props->GetItem (i);
+		rasterProp = dynamic_cast<FdoRasterPropertyDefinition *> (prop.p);
+	}
+
+    return FDO_SAFE_ADDREF(rasterProp);
 }
 
 /// <summary>Search the layer with the specified name in all the layers and child layers.</summary>

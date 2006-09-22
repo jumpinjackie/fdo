@@ -35,7 +35,7 @@ void WmsTestDescribeSchema::testServer1 ()
 {
     try 
     {
-	    TestServer(L"http://cadc-brucejia.ads.autodesk.com/cgi-bin/mapserv.exe?map=wms/wms.map&");
+	    TestServer(L"http://CADCISDJIAB.ads.autodesk.com/cgi-bin/mapserv.exe?map=wms/wms.map&");
     }
     catch (FdoException* e)
     {
@@ -47,7 +47,7 @@ void WmsTestDescribeSchema::testInheritance1 ()
 {
     try 
     {
-	    TestInheritance(L"http://cadc-brucejia.ads.autodesk.com/cgi-bin/mapserv.exe?map=wms/wms.map&");
+	    TestInheritance(L"http://CADCISDJIAB.ads.autodesk.com/cgi-bin/mapserv.exe?map=wms/wms.map&");
     }
     catch (FdoException* e)
     {

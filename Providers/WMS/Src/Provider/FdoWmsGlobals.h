@@ -53,6 +53,8 @@ namespace FdoWmsGlobals
 	static FdoString* ResampleFunctionHeightArgumentName    = L"height";
 	static FdoString* ResampleFunctionWidthArgumentName     = L"width";
 
+	static FdoString* ExtentsFunctionRasterArgumentName	    = L"raster";
+
 	static FdoString* DefaultSchemaName                     = L"WMS_Schema";
 	static FdoString* DefaultSchemaDescription              = L"FDO WMS Schema";
 	static FdoString* PropertyFeatId                        = L"FeatId";
@@ -67,6 +69,8 @@ namespace FdoWmsGlobals
 	static FdoString *RasterMIMEFormat_TIFF				    = L"image/tiff";
 	static FdoString *RasterMIMEFormat_JPEG				    = L"image/jpeg";
 	static FdoString *RasterMIMEFormat_GIF				    = L"image/gif";
+
+	static FdoString *DefaultEPSGCode     				    = L"EPSG:4326";
 };
 
 

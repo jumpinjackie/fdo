@@ -178,6 +178,10 @@ public:
 	/// <returns>Return the layer with the specified name. If not found, return NULL.</returns>
 	FdoWmsLayer* FindLayer (FdoWmsLayerCollection* layers, FdoString* name);
 
+	/// <summary>Search the class and it's parents for its raster property definition.</summary>
+	/// <returns>Return the raster definition for the specified class. If not found, return NULL.</returns>
+	FdoRasterPropertyDefinition* FindRasterProperty (FdoClassDefinition* featClass);
+
 protected:
     /**
      * The connection string containing details about how to connect to FdoWms.

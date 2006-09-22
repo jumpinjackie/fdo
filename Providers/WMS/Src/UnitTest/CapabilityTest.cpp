@@ -76,13 +76,14 @@ void CapabilityTest::TestCapabilities ()
         FdoPtr<FdoICommandCapabilities> commandCapabilities = connection->GetCommandCapabilities();
 
         FdoInt32 *commands = commandCapabilities->GetCommands(size);
-        CPPUNIT_ASSERT(size == 4);
+        CPPUNIT_ASSERT(size == 5);
         CPPUNIT_ASSERT(commands != NULL);
         CPPUNIT_ASSERT(commands[0] == FdoCommandType_Select);
         CPPUNIT_ASSERT(commands[1] == FdoCommandType_DescribeSchema);
 		CPPUNIT_ASSERT(commands[2] == FdoCommandType_DescribeSchemaMapping);
         CPPUNIT_ASSERT(commands[3] == FdoCommandType_GetSpatialContexts);
-		
+        CPPUNIT_ASSERT(commands[4] == FdoCommandType_SelectAggregates);
+
         bool supportsParameters = commandCapabilities->SupportsParameters();
         CPPUNIT_ASSERT(supportsParameters == false);
 
@@ -178,7 +179,6 @@ void CapabilityTest::TestCapabilities ()
         // Test FdoIExpressionCapabilities
         //
         FdoPtr<FdoIExpressionCapabilities> expressionCapabilities = connection->GetExpressionCapabilities();
-
         FdoExpressionType *expressionTypes = expressionCapabilities->GetExpressionTypes(size);
         CPPUNIT_ASSERT(size == 1);
         CPPUNIT_ASSERT(expressionTypes != NULL);
@@ -201,7 +201,7 @@ void CapabilityTest::TestCapabilities ()
             }
         }
 
-		// RESAMPLE function
+        // RESAMPLE function
 		FdoPtr<FdoFunctionDefinition> resampleFunction = functions->GetItem(0);
 		CPPUNIT_ASSERT(STRCASEEQ(resampleFunction->GetName(), L"RESAMPLE"));
 		CPPUNIT_ASSERT(resampleFunction->GetReturnType() == FdoDataType_BLOB);
@@ -264,6 +264,11 @@ void CapabilityTest::TestCapabilities ()
 		rasterArg = args->GetItem(4);
 		CPPUNIT_ASSERT(STRCASEEQ(rasterArg->GetName(), L"maxY"));
 		CPPUNIT_ASSERT(rasterArg->GetDataType() == FdoDataType_Double);
+
+		// SpatialExtents function
+		FdoPtr<FdoFunctionDefinition> selectFunction = functions->GetItem(2);
+		CPPUNIT_ASSERT(STRCASEEQ(selectFunction->GetName(), L"SpatialExtents"));
+
 
         //
         // Test FdoIRasterCapabilities
@@ -339,16 +344,15 @@ void CapabilityTest::TestCapabilities ()
         FdoPtr<FdoIGeometryCapabilities> geomCapabilities = connection->GetGeometryCapabilities();
 
         FdoGeometryType* geomTypes = geomCapabilities->GetGeometryTypes(size);
-        CPPUNIT_ASSERT(size == 0);
-        CPPUNIT_ASSERT(geomTypes == NULL);
+        CPPUNIT_ASSERT(size == 1);
+        CPPUNIT_ASSERT(geomTypes[0] == FdoGeometryType_Polygon);
 
         FdoGeometryComponentType* geomCompTypes = geomCapabilities->GetGeometryComponentTypes(size);
-        CPPUNIT_ASSERT(size == 0);
-        CPPUNIT_ASSERT(geomCompTypes == NULL);
+        CPPUNIT_ASSERT(size == 1);
+        CPPUNIT_ASSERT(geomCompTypes[0] = FdoGeometryComponentType_LinearRing);
 
         FdoInt32 dimensionalities = geomCapabilities->GetDimensionalities();
         CPPUNIT_ASSERT(dimensionalities == FdoDimensionality_XY);
-
     }
     catch (FdoException *ex)
     {

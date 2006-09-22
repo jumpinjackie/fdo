@@ -58,7 +58,9 @@ libWMSProviderSrc_la_SOURCES = \
   FdoWmsStyle.cpp \
   FdoWmsDimensionCollection.cpp \
   FdoWmsRequestMetadata.cpp \
-  FdoWmsGetMap.cpp 
+  FdoWmsGetMap.cpp \
+  FdoWmsSelectAggregatesCommand.cpp \
+  FdoWmsSpatialExtentsAggregateReader.cpp 
 
 noinst_HEADERS = $(libWMSProviderSrc_la_SOURCES) \
   FdoWmsActivateSpatialContextCommand.h \
@@ -106,7 +108,9 @@ noinst_HEADERS = $(libWMSProviderSrc_la_SOURCES) \
   FdoWmsGeometryCapabilities.h \
   FdoWmsRequestMetadata.h \
   stdafx.h \
-  FdoWmsGetMap.h
+  FdoWmsGetMap.h \
+  FdoWmsSpatialExtentsAggregateReader.h \
+  FdoWmsSelectAggregatesCommand.h 
 
 libWMSProviderSrc_la_LDFLAGS =
 

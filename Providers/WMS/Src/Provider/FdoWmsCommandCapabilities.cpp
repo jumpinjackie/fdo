@@ -44,6 +44,7 @@ FdoInt32* FdoWmsCommandCapabilities::GetCommands (FdoInt32& size)
         FdoCommandType_DescribeSchema,
 		FdoCommandType_DescribeSchemaMapping,
         FdoCommandType_GetSpatialContexts,
+        FdoCommandType_SelectAggregates
     //  FdoCommandType_ActivateSpatialContext
     };
 

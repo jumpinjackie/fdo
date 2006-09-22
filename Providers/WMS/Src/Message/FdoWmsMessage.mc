@@ -127,6 +127,16 @@ SymbolicName=FDOWMS_CLIP_FUNCTION_INCORRECTLY_USED
 Language=English
 CLIP() function is incorrectly used.
 .
+MessageId=1022
+SymbolicName=FDOWMS_SPATIAL_EXTENTS_FUNCTION_DESC
+Language=English
+The SpatialExtents function returns the spatial extents of a raster property.
+.
+MessageId=1023
+SymbolicName=FDOWMS_SPATIAL_EXTENTS_RASTER_ARGUMENT_DESC
+Language=English
+An argument that identifies a raster property.
+.
 
 ;//************************************************************************************
 ;//************************************************************************************
@@ -216,6 +226,11 @@ MessageId=3004
 SymbolicName=FDOWMS_CONNECTION_PROPERTY_DEFAULTIMAGEHEIGHT
 Language=English
 DefaultImageHeight
+.
+MessageId=3005
+SymbolicName=FDOWMS_CONNECTION_CLOSED
+Language=English
+The Connection to the WMS provider is closed.
 .
 
 ;//************************************************************************************
@@ -364,6 +379,61 @@ MessageId=7004
 SymbolicName=FDOWMS_COMMAND_INVALID_PROPERTY_NAME
 Language=English
 Invalid property name '%1$ls'.
+.
+MessageId=7005
+SymbolicName=FDOWMS_NO_QUERY_PROPERTIES_SELECTED
+Language=English
+No properties were selected for retrieval from Feature class '%1$ls'.
+.
+MessageId=7006
+SymbolicName=FDOWMS_QUERY_NON_FUNCTION_SPATIALEXTENTS
+Language=English
+Unknown WFS SelectAggreates function '%1$ls'. The WFS SelectAggreates command only supports the SpatialExtents function.
+.
+MessageId=7007
+SymbolicName=FDOWMS_SPATIALEXTENTS_TOO_MANY_ARGUMENTS
+Language=English
+Too many arguments passed to the SelectAggregates function.
+.
+MessageId=7008
+SymbolicName=FDOWMS_SELECT_NON_RASTER_PROPERTY_ON_CLASS
+Language=English
+Cannot select a non-raster property '%1$ls' on class '%2$ls' using the SelectAggreates SpatialExtents function.
+.
+MessageId=7009
+SymbolicName=FDOWMS_SPATIALEXTENTS_NON_FEATURE_CLASS
+Language=English
+Cannot execute the SelectAggregates(SpatialExtents) command using a non feature class '%1$ls'.
+.
+MessageId=7010
+SymbolicName=FDOWMS_AMBIGUOUS_CLASS_NAME
+Language=English
+Multiple classes found with name '%1$ls'. Please qualify your class with a schmea qualifier and run your command again.
+.
+MessageId=7011
+SymbolicName=FDOWMS_SELECTAGGREGATES_INVALID_ARGUMENT_TYPE
+Language=English
+The SelectAggregates(SpatialExtents) command contains an argument '%1$ls' that is not the name of the Raster property on class '%2$ls'.
+.
+MessageId=7012
+SymbolicName=FDOWMS_SELECTAGGREGATES_FILTER_NOT_SUPPORTED
+Language=English
+The SelectAggregates(SpatialExtents) command does not support the use of a conditional filter.
+.
+MessageId=7013
+SymbolicName=FDOWMS_SELECTAGGREGATES_INVALID_ARGUMENT
+Language=English
+The SelectAggregates(SpatialExtents) command contains an invalid function argument.
+.
+MessageId=7014
+SymbolicName=FDOWMS_QUERY_NON_COMPUTED_PROPERTIES
+Language=English
+Cannot query non-computed property '%1$ls' from feature class '%2$ls' using the SelectAggregates command.
+.
+MessageId=7015
+SymbolicName=FDOWMS_FEATURE_NO_RASTER_PROPERTY
+Language=English
+Class '%1$ls' does not contain a Raster property.
 .
 
 ;//************************************************************************************

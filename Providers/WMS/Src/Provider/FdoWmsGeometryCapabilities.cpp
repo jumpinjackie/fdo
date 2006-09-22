@@ -38,8 +38,12 @@ void FdoWmsGeometryCapabilities::Dispose()
 /// <returns>Returns the list of geometry types</returns> 
 FdoGeometryType* FdoWmsGeometryCapabilities::GetGeometryTypes (FdoInt32& length)
 {
-    length = 0;
-    return ((FdoGeometryType*)NULL);
+    static FdoGeometryType geometryTypes [] = 
+    {
+        FdoGeometryType_Polygon
+    };
+    length = sizeof(geometryTypes) / sizeof(FdoGeometryType);
+    return geometryTypes;
 }
 
 /// <summary>Return the list of supported component types. For example, if a client wanted to know if circular arcs were supported 
@@ -48,8 +52,12 @@ FdoGeometryType* FdoWmsGeometryCapabilities::GetGeometryTypes (FdoInt32& length)
 /// <returns>Returns the list of component types</returns> 
 FdoGeometryComponentType* FdoWmsGeometryCapabilities::GetGeometryComponentTypes (FdoInt32& length)
 {
-    length = 0;
-    return ((FdoGeometryComponentType*)NULL);
+    static FdoGeometryComponentType geoComTypes [] = 
+    {
+        FdoGeometryComponentType_LinearRing
+    };
+    length = sizeof(geoComTypes) / sizeof(FdoGeometryComponentType);
+    return geoComTypes;
 }
 
 /// <summary>Returns the supported dimensionalities which are based on the bit masks defined in the FdoDimensionality enum. 
