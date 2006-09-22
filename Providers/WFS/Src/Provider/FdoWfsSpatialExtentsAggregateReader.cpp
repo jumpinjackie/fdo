@@ -37,7 +37,7 @@ FdoWfsSpatialExtentsAggregateReader::FdoWfsSpatialExtentsAggregateReader(FdoWfsC
     FdoPtr<FdoWfsFeatureType> featureType = featTypes->FindItem (layerName);
     if (featureType == NULL) {
         throw FdoCommandException::Create (
-            NlsMsgGet(FDO_NLSID(FDOWFS_NAMED_FEATURETYPE_NOT_FOUND), (FdoString*)layerName));
+            NlsMsgGet(FDO_NLSID(WFS_NAMED_FEATURETYPE_NOT_FOUND), (FdoString*)layerName));
     }
 
     // Get the total extent of the feature type

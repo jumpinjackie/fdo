@@ -19,6 +19,7 @@
 #include "stdafx.h"
 #include "FdoWfsSelectAggregatesCommand.h"
 #include "FdoWfsSpatialExtentsAggregateReader.h"
+#include <../Message/Inc/WFSMessage.h>
 
 // Default Constructor
 FdoWfsSelectAggregatesCommand::FdoWfsSelectAggregatesCommand (FdoIConnection *connection) :
@@ -54,18 +55,18 @@ FdoIDataReader* FdoWfsSelectAggregatesCommand::Execute ()
 {
     if (mConnection->GetConnectionState() != FdoConnectionState_Open) {
         throw FdoCommandException::Create(
-            NlsMsgGet(FDO_NLSID(FDOWFS_CONNECTION_CLOSED)));
+            NlsMsgGet(FDO_NLSID(WFS_CONNECTION_CLOSED)));
     }
 
     FdoStringP className = mClassName->GetName();	
     if (className.GetLength() == 0) {
         throw FdoCommandException::Create (
-            NlsMsgGet(FDO_NLSID(FDOWFS_NAMED_CLASS_NOT_FOUND), (FdoString*)className));
+            NlsMsgGet(FDO_NLSID(WFS_NAMED_CLASS_NOT_FOUND), (FdoString*)className));
     }
 
     if (mPropertiesToSelect->GetCount()!=1) {
         throw FdoCommandException::Create (
-            NlsMsgGet(FDO_NLSID(FDOWFS_NO_QUERY_PROPERTIES_SELECTED), className));
+            NlsMsgGet(FDO_NLSID(WFS_NO_QUERY_PROPERTIES_SELECTED), (FdoString*)className));
     }
 
     FdoPtr<FdoIdentifier> identifier = mPropertiesToSelect->GetItem(0);
@@ -73,39 +74,39 @@ FdoIDataReader* FdoWfsSelectAggregatesCommand::Execute ()
     FdoComputedIdentifier* computedIdentifier = dynamic_cast<FdoComputedIdentifier*>(identifier.p);
     if (!computedIdentifier) {
         throw FdoCommandException::Create (
-            NlsMsgGet(FDO_NLSID(FDOWFS_QUERY_NON_COMPUTED_PROPERTIES), identifierName, className));
+            NlsMsgGet(FDO_NLSID(WFS_QUERY_NON_COMPUTED_PROPERTIES), identifierName, (FdoString*)className));
     }
 
     FdoPtr<FdoExpression> expr = computedIdentifier->GetExpression();
     FdoFunction* function = dynamic_cast<FdoFunction*>(expr.p);
     if (!function) {
         throw FdoCommandException::Create (
-            NlsMsgGet(FDO_NLSID(FDOWFS_QUERY_NON_COMPUTED_PROPERTIES), identifierName, className));
+            NlsMsgGet(FDO_NLSID(WFS_QUERY_NON_COMPUTED_PROPERTIES), identifierName, (FdoString*)className));
     }
 
     if (wcscmp(function->GetName(), FDO_FUNCTION_SPATIALEXTENTS) != 0) {
         throw FdoCommandException::Create (
-            NlsMsgGet(FDO_NLSID(FDOWFS_QUERY_NON_FUNCTION_SPATIALEXTENTS), function->GetName()));
+            NlsMsgGet(FDO_NLSID(WFS_QUERY_NON_FUNCTION_SPATIALEXTENTS), function->GetName()));
     }
 
     FdoPtr<FdoExpressionCollection> args = function->GetArguments();
     if (args->GetCount() != 1) {
         throw FdoCommandException::Create (
-            NlsMsgGet(FDO_NLSID(FDOWFS_SPATIALEXTENTS_TOO_MANY_ARGUMENTS)));
+            NlsMsgGet(FDO_NLSID(WFS_SPATIALEXTENTS_TOO_MANY_ARGUMENTS)));
     }
 
     FdoPtr<FdoExpression> arg = args->GetItem(0);
     FdoIdentifier* argId = dynamic_cast<FdoIdentifier*>(arg.p);
     if (!argId) {
         throw FdoCommandException::Create (
-            NlsMsgGet(FDO_NLSID(FDOWFS_SELECTAGGREGATES_INVALID_ARGUMENT)));
+            NlsMsgGet(FDO_NLSID(WFS_SELECTAGGREGATES_INVALID_ARGUMENT)));
     }
 
 
     FdoPtr<FdoFilter> filter = GetFilter();
     if (filter) {
         throw FdoCommandException::Create (
-            NlsMsgGet(FDO_NLSID(FDOWFS_SELECTAGGREGATES_FILTER_NOT_SUPPORTED)));
+            NlsMsgGet(FDO_NLSID(WFS_SELECTAGGREGATES_FILTER_NOT_SUPPORTED)));
     }
 
     if (mConnection->IsSchemaLoadedFromServer()) {
@@ -117,7 +118,7 @@ FdoIDataReader* FdoWfsSelectAggregatesCommand::Execute ()
 	        FdoFeatureSchemaP schema = schemas->FindItem (schemaName);
             if (schema == NULL) {
                 throw FdoCommandException::Create (
-                    NlsMsgGet(FDO_NLSID(FDOWFS_NAMED_SCHEMA_NOT_FOUND), (FdoString*)schemaName));
+                    NlsMsgGet(FDO_NLSID(WFS_NAMED_SCHEMA_NOT_FOUND), (FdoString*)schemaName));
             }
 
 	        FdoClassesP featureClasses = schema->GetClasses();
@@ -127,7 +128,7 @@ FdoIDataReader* FdoWfsSelectAggregatesCommand::Execute ()
             FdoPtr<FdoIDisposableCollection> classes = schemas->FindClass(className);
             if (classes->GetCount() > 1) {
                 throw FdoCommandException::Create (
-                    NlsMsgGet(FDO_NLSID(FDOWFS_AMBIGUOUS_CLASS_NAME), className));
+                    NlsMsgGet(FDO_NLSID(WFS_AMBIGUOUS_CLASS_NAME), (FdoString*)className));
             }
             else if (classes->GetCount() == 1) {
                 classDef = static_cast<FdoClassDefinition*>(classes->GetItem(0));
@@ -136,33 +137,33 @@ FdoIDataReader* FdoWfsSelectAggregatesCommand::Execute ()
 
         if (classDef == NULL) {
             throw FdoCommandException::Create (
-                NlsMsgGet(FDO_NLSID(FDOWFS_NAMED_CLASS_NOT_FOUND), className));
+                NlsMsgGet(FDO_NLSID(WFS_NAMED_CLASS_NOT_FOUND), (FdoString*)className));
         }
 
         if (classDef->GetClassType() != FdoClassType_FeatureClass) {
             throw FdoCommandException::Create (
-                NlsMsgGet(FDO_NLSID(FDOWFS_SPATIALEXTENTS_NON_FEATURE_CLASS), className));
+                NlsMsgGet(FDO_NLSID(WFS_SPATIALEXTENTS_NON_FEATURE_CLASS), (FdoString*)className));
         }
 
 	    FdoFeatureClass* featureClass = static_cast<FdoFeatureClass*>(classDef.p);
         if (featureClass->GetIsAbstract()) {
             throw FdoCommandException::Create (
-                NlsMsgGet(FDO_NLSID(FDOWFS_CANNOT_QUERY_ABSTRACT_CLASS), className));
+                NlsMsgGet(FDO_NLSID(WFS_CANNOT_QUERY_ABSTRACT_CLASS), (FdoString*)className));
         }
 
         FdoPtr<FdoGeometricPropertyDefinition> geomProp = featureClass->GetGeometryProperty();
         if (!geomProp) {
             throw FdoCommandException::Create (
-                NlsMsgGet(FDO_NLSID(FDOWFS_FEATURE_NO_GEOMETRY_PROPERTY), className));
+                NlsMsgGet(FDO_NLSID(WFS_FEATURE_NO_GEOMETRY_PROPERTY), (FdoString*)className));
         }
 
         if (wcscmp(argId->GetName(), geomProp->GetName()) != 0) {
             throw FdoCommandException::Create (
-                NlsMsgGet(FDO_NLSID(FDOWFS_SELECTAGGREGATES_INVALID_ARGUMENT_TYPE), argId->GetName(), className));
+                NlsMsgGet(FDO_NLSID(WFS_SELECTAGGREGATES_INVALID_ARGUMENT_TYPE), argId->GetName(), (FdoString*)className));
         }
     }
 
-    return new FdoWfsSpatialExtentsAggregateReader(mConnection, className, computedIdentifier->GetName());
+    return new FdoWfsSpatialExtentsAggregateReader(mConnection, (FdoString*)className, computedIdentifier->GetName());
 }
 
 
