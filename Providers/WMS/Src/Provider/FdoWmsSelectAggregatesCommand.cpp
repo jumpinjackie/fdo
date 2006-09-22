@@ -85,7 +85,7 @@ FdoIDataReader* FdoWmsSelectAggregatesCommand::Execute ()
 
     if (mPropertiesToSelect->GetCount()!=1) {
         throw FdoCommandException::Create (
-            NlsMsgGet(FDO_NLSID(FDOWMS_NO_QUERY_PROPERTIES_SELECTED), className));
+            NlsMsgGet(FDO_NLSID(FDOWMS_NO_QUERY_PROPERTIES_SELECTED), (FdoString *) className));
     }
 
     FdoPtr<FdoIdentifier> identifier = mPropertiesToSelect->GetItem(0);
