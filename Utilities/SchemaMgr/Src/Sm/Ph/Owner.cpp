@@ -357,7 +357,7 @@ FdoSmPhTableP FdoSmPhOwner::CreateTable(
 
     // TODO: set pkey name.
     FdoSmPhDbObjectP table = NewTable( tableName, FdoSchemaElementState_Added, NULL );
-    FdoSmPhDbObjectsP(GetDbObjects())->Add(table);
+    GetDbObjects()->Add(table);
 
     return( table->SmartCast<FdoSmPhTable>() );
 }
@@ -387,7 +387,7 @@ FdoSmPhViewP FdoSmPhOwner::CreateView(
         NULL
     );
     
-    FdoSmPhDbObjectsP(GetDbObjects())->Add(view);
+    GetDbObjects()->Add(view);
 
     return( view->SmartCast<FdoSmPhView>() );
 }
