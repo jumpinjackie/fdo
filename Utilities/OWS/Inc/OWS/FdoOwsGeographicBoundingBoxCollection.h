@@ -26,6 +26,9 @@ class FdoOwsGeographicBoundingBoxCollection : public FdoCollection<FdoOwsGeograp
 public:
 	FDOOWS_API static FdoOwsGeographicBoundingBoxCollection* Create ();
 
+public:
+    FDOOWS_API FdoOwsGeographicBoundingBox* GetExtents () const;
+
 protected:
 	FdoOwsGeographicBoundingBoxCollection ();
 	virtual ~FdoOwsGeographicBoundingBoxCollection (void);

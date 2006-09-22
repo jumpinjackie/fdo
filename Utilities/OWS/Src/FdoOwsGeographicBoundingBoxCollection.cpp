@@ -34,3 +34,35 @@ void FdoOwsGeographicBoundingBoxCollection::Dispose ()
 {
 	delete this;
 }
+
+FdoOwsGeographicBoundingBox* FdoOwsGeographicBoundingBoxCollection::GetExtents () const
+{
+	FdoBoolean bFirstMatch = true;
+    FdoOwsGeographicBoundingBoxP bbox = FdoOwsGeographicBoundingBox::Create ();
+	for (FdoInt32 k=0; k<GetCount(); k++)
+	{
+		FdoOwsGeographicBoundingBoxP extent = GetItem (k);
+		if (bFirstMatch)
+		{
+			bbox->SetEastBoundLongitude (extent->GetEastBoundLongitude ());
+			bbox->SetNorthBoundLatitude (extent->GetNorthBoundLatitude ());
+			bbox->SetSouthBoundLatitude (extent->GetSouthBoundLatitude ());
+			bbox->SetWestBoundLongitude (extent->GetWestBoundLongitude ());
+			
+			bFirstMatch = false;
+		}
+		else
+		{
+	        if (bbox->GetWestBoundLongitude () > extent->GetWestBoundLongitude ())
+		        bbox->SetWestBoundLongitude (extent->GetWestBoundLongitude ());
+	        if (bbox->GetEastBoundLongitude () < extent->GetEastBoundLongitude ())
+		        bbox->SetEastBoundLongitude (extent->GetEastBoundLongitude ());
+	        if (bbox->GetNorthBoundLatitude () < extent->GetNorthBoundLatitude ())
+		        bbox->SetNorthBoundLatitude (extent->GetNorthBoundLatitude ());
+	        if (bbox->GetSouthBoundLatitude () > extent->GetSouthBoundLatitude ())
+		        bbox->SetSouthBoundLatitude (extent->GetSouthBoundLatitude ());
+		}
+	}
+
+    return FDO_SAFE_ADDREF(bbox.p);
+}
