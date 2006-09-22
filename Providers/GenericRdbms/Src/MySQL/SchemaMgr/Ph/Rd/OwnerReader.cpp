@@ -89,9 +89,10 @@ FdoSmPhReaderP FdoSmPhRdMySqlOwnerReader::MakeQueryReader(
         // Re-executing so update bind variables first.
         FdoSmPhRdGrdQueryReader* pReader = (FdoSmPhRdGrdQueryReader*)(FdoSmPhReader*) reader;
         FdoSmPhRowP binds = pReader->GetBinds();
+		FdoSmPhFieldsP	fields = binds->GetFields();
 
         if ( owner_set ) 
-            binds->RefFields()->RefItem(L"owner_name")->SetFieldValue(ownerName);
+            FdoSmPhFieldP(fields->GetItem(L"owner_name"))->SetFieldValue(ownerName);
 
         pReader->Execute();
     }
