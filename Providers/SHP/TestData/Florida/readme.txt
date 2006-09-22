@@ -1,1 +1,1 @@
-Scammed from http://www.sjrwmd.com/programs/plan_monitor/gis/
+The data files in this directory were obtained from the St. John’s River Water Management District -- http://www.sjrwmd.com
