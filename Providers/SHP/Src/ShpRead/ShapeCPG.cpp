@@ -57,7 +57,7 @@ ShapeCPG::ShapeCPG (const wchar_t* name, int& status)
                 buffer[size] = '\0'; // EOF
                 mCodePageESRI = FdoStringP( buffer );
             }
-            delete buffer;
+            delete [] buffer;
         }
         else
             throw FdoCommonFile::LastErrorToException (L"ShapeCPG::ShapeCPG");
