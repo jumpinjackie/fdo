@@ -98,7 +98,7 @@ void FdoSmPhSADWriter::Delete( FdoStringP sOwner, FdoStringP sName )
 
 FdoSmPhRowP FdoSmPhSADWriter::MakeRow( FdoSmPhMgrP mgr )
 {
-    bool hasMs = mgr->GetOwner()->GetHasMetaSchema();
+    bool hasMs = FdoSmPhOwnerP(mgr->GetOwner())->GetHasMetaSchema();
     FdoStringP sadDefTable = mgr->GetDcDbObjectName(L"f_sad");
 
     FdoSmPhRowP row = new FdoSmPhRow( mgr, L"f_sad", hasMs ? mgr->FindDbObject(sadDefTable) : FdoSmPhDbObjectP() );

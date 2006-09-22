@@ -162,7 +162,7 @@ void FdoSmLpSpatialContextCollection::Load()
                 this->Add( sc );
 	        }
         }
-        else if ( mPhysicalSchema->GetOwner()->GetHasMetaSchema() )
+        else if ( FdoSmPhOwnerP(mPhysicalSchema->GetOwner())->GetHasMetaSchema() )
 			// No config document; load from metaschema or reverse-engineering/defaults.
         {
             // This is where we merge physical spatial contexts and spatial context groups

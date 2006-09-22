@@ -302,7 +302,7 @@ void FdoSmPhClassWriter::Delete( FdoString* schemaName, FdoString* className, Fd
 
 FdoSmPhRowP FdoSmPhClassWriter::MakeRow( FdoSmPhMgrP mgr )
 {
-    bool hasMs = mgr->GetOwner()->GetHasMetaSchema();
+    bool hasMs = FdoSmPhOwnerP(mgr->GetOwner())->GetHasMetaSchema();
     FdoStringP classDefTable = mgr->GetDcDbObjectName(L"f_classdefinition");
 
     FdoSmPhRowP row = new FdoSmPhRow( 
@@ -334,7 +334,7 @@ FdoSmPhRowP FdoSmPhClassWriter::MakeRow( FdoSmPhMgrP mgr )
 
 FdoSmPhRowP FdoSmPhClassWriter::MakeClassTypeRow( FdoSmPhMgrP mgr )
 {
-    bool hasMs = mgr->GetOwner()->GetHasMetaSchema();
+    bool hasMs = FdoSmPhOwnerP(mgr->GetOwner())->GetHasMetaSchema();
     FdoStringP classTypeTable = mgr->GetDcDbObjectName(L"f_classType");
 
     FdoSmPhRowP row = new FdoSmPhRow( 

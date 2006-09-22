@@ -116,9 +116,13 @@ FdoSmLpGeometricPropertyDefinition::FdoSmLpGeometricPropertyDefinition(
 
 void FdoSmLpGeometricPropertyDefinition::FixSpatialContextAssociation()
 {
-    FdoSmLpSchemasP schemas = GetLogicalPhysicalSchema()->GetSchemas();
-    FdoSmLpSpatialContextsP scs = schemas->GetSpatialContexts();
-	bool	fromConfigDoc = ( GetLogicalPhysicalSchema()->GetPhysicalSchema()->GetConfigDoc() != NULL );
+	FdoSmLpSchemaP	pLpSchema = GetLogicalPhysicalSchema();
+	FdoSmLpSchemasP	pLpSchemas = pLpSchema->GetSchemas();
+	FdoSmPhMgrP		pPhysical = pLpSchema->GetPhysicalSchema();
+
+	FdoSmLpSpatialContextsP	scs = pLpSchemas->GetSpatialContexts();
+
+	bool	fromConfigDoc = ( FdoIoStreamP(pPhysical->GetConfigDoc()) != NULL );
 	bool	found = false;
 
     if ( (GetElementState() != FdoSchemaElementState_Added) && !fromConfigDoc && mAssociatedSCName.GetLength() <= 0 && mAssociatedScId < 0 )
@@ -314,7 +318,8 @@ void FdoSmLpGeometricPropertyDefinition::SynchPhysical(bool bRollbackOnly)
 {	
 	FdoSmPhMgrP pPhysical	        = GetLogicalPhysicalSchema()->GetPhysicalSchema();
     FdoSmPhDbObjectP pPhDbObject;
-    if (GetLogicalPhysicalSchema()->GetPhysicalSchema()->GetOwner()->GetHasMetaSchema())
+
+    if (FdoSmPhOwnerP(pPhysical->GetOwner())->GetHasMetaSchema())
 	    pPhDbObject = pPhysical->FindDbObject( GetContainingDbObjectName());
     else
 	    pPhDbObject = pPhysical->FindDbObject( GetContainingDbObjectName(), RefParentClass()->GetOwner() );
@@ -519,7 +524,8 @@ void FdoSmLpGeometricPropertyDefinition::Finalize()
         // Geometry column is kept in the target class table.
         // Copied columns are also kept in the target class table.
         FdoStringP dbObjectName = pContainingClass->GetDbObjectName();
-        if (GetLogicalPhysicalSchema()->GetPhysicalSchema()->GetOwner()->GetHasMetaSchema())
+
+        if (FdoSmPhOwnerP(pPhysical->GetOwner())->GetHasMetaSchema())
             pPhDbObject = pPhysical->FindDbObject(dbObjectName);
         else
             pPhDbObject = pPhysical->FindDbObject(dbObjectName, RefParentClass()->GetOwner());
@@ -569,23 +575,27 @@ void FdoSmLpGeometricPropertyDefinition::Finalize()
                 AddSiColumns();
         }
         else if ( GetElementState() == FdoSchemaElementState_Modified ) {
+
             if ( pPhDbObject ) {
+				FdoSmPhColumnsP columns = pPhDbObject->GetColumns();
+
                 if (FdoSmOvGeometricColumnType_Double == columnType) {
-    		        SetColumnX( pPhDbObject->GetColumns()->FindItem(GetColumnNameX()) );
-    		        SetColumnY( pPhDbObject->GetColumns()->FindItem(GetColumnNameY()) );
+    		        SetColumnX( columns->FindItem(GetColumnNameX()) );
+    		        SetColumnY( columns->FindItem(GetColumnNameY()) );
                     if (hasZColumn)
-    		            SetColumnZ( pPhDbObject->GetColumns()->FindItem(GetColumnNameZ()) );
+    		            SetColumnZ( columns->FindItem(GetColumnNameZ()) );
                 } else {
-    		        SetColumn( pPhDbObject->GetColumns()->FindItem(GetColumnName()) );
+    		        SetColumn( columns->FindItem(GetColumnName()) );
                 }
                 if (mWantSiColumns)
                     AddSiColumns();
 	        }
-            if ( GetColumn() ) {
 
-                GetColumn()->SetElementState( GetElementState() );
+			FdoSmPhColumnP pPhColumn = GetColumn();
+            if ( pPhColumn ) {			
+                pPhColumn->SetElementState( GetElementState() );
                 FdoSmPhScInfoP scInfo = CreateSpatialContextInfo();
-                FdoSmPhColumnP pPhColumn = GetColumn();
+                
                 FdoSmPhColumnGeomP pPhColumnGeom = pPhColumn->SmartCast<FdoSmPhColumnGeom>();
                 if (pPhColumnGeom != NULL)
                     pPhColumnGeom->SetSpatialContextInfo( scInfo );
@@ -594,13 +604,15 @@ void FdoSmLpGeometricPropertyDefinition::Finalize()
         else {
             // For existing property, find the column in the containing table.
 	        if ( pPhDbObject ) {
+				FdoSmPhColumnsP columns = pPhDbObject->GetColumns();
+
                 if (FdoSmOvGeometricColumnType_Double == columnType) {
-    		        SetColumnX( pPhDbObject->GetColumns()->FindItem(GetColumnNameX()) );
-    		        SetColumnY( pPhDbObject->GetColumns()->FindItem(GetColumnNameY()) );
+    		        SetColumnX( columns->FindItem(GetColumnNameX()) );
+    		        SetColumnY( columns->FindItem(GetColumnNameY()) );
                     if (hasZColumn)
-        		        SetColumnZ( pPhDbObject->GetColumns()->FindItem(GetColumnNameZ()) );
+        		        SetColumnZ( columns->FindItem(GetColumnNameZ()) );
                 } else {
-    		        SetColumn( pPhDbObject->GetColumns()->FindItem(GetColumnName()) );
+    		        SetColumn( columns->FindItem(GetColumnName()) );
                 }
 
                 if (mWantSiColumns && TableHasSpatialIndexColumns())
@@ -620,10 +632,12 @@ void FdoSmLpGeometricPropertyDefinition::Finalize()
                 // should never be the creator of the column for its base 
                 // property.
                 if ( dbObjectName.ICompare(baseDbObjectName) != 0 ) {
+					
+					FdoSmPhColumnP column = GetColumn();
 
                     // Set the columns for deletion.
-                    if ( GetColumn() && GetIsColumnCreator())
-		                ((FdoSmPhColumn*) GetColumn())->SetElementState( GetElementState() );
+                    if ( column && GetIsColumnCreator())
+		                column->SetElementState( GetElementState() );
                     if ( GetColumnX() && GetIsColumnCreatorX())
 		                ((FdoSmPhColumn*) GetColumnX())->SetElementState( GetElementState() );
                     if ( GetColumnY() && GetIsColumnCreatorY())
@@ -666,8 +680,11 @@ void FdoSmLpGeometricPropertyDefinition::Finalize()
 
 FdoSmPhScInfoP FdoSmLpGeometricPropertyDefinition::CreateSpatialContextInfo()
 {
-    FdoSmLpSchemasP schemas = GetLogicalPhysicalSchema()->GetSchemas();
-    FdoSmLpSpatialContextsP scs = schemas->GetSpatialContexts();
+	FdoSmLpSchemaP	pLpSchema = GetLogicalPhysicalSchema();
+	FdoSmLpSchemasP	pLpSchemas = pLpSchema->GetSchemas();
+	FdoSmPhMgrP		pPhMgr = pLpSchema->GetPhysicalSchema();
+
+    FdoSmLpSpatialContextsP scs = pLpSchemas->GetSpatialContexts();
     FdoSmPhScInfoP scInfo;
 
     FdoSmLpSpatialContextP sc = scs->FindItem(mAssociatedSCName);
@@ -675,7 +692,7 @@ FdoSmPhScInfoP FdoSmLpGeometricPropertyDefinition::CreateSpatialContextInfo()
     if ( sc == NULL )
 	{
 		// When metadata exists, then "Default" spatial context should exist
-		if ( GetLogicalPhysicalSchema()->GetPhysicalSchema()->GetOwner()->GetHasMetaSchema() )
+		if ( FdoSmPhOwnerP(pPhMgr->GetOwner())->GetHasMetaSchema() )
 			throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
 	}
 	else
@@ -750,7 +767,7 @@ void FdoSmLpGeometricPropertyDefinition::AddSiColumns()
 
 	FdoSmPhMgrP pPhysical	        = GetLogicalPhysicalSchema()->GetPhysicalSchema();
 	FdoSmPhDbObjectP pPhDbObject;
-    if (pPhysical->GetOwner()->GetHasMetaSchema())
+    if (FdoSmPhOwnerP(pPhysical->GetOwner())->GetHasMetaSchema())
     	pPhDbObject = pPhysical->FindDbObject( GetContainingDbObjectName());
     else
     	pPhDbObject = pPhysical->FindDbObject( GetContainingDbObjectName(), RefParentClass()->GetOwner() );
@@ -1059,7 +1076,7 @@ bool FdoSmLpGeometricPropertyDefinition::TableHasSpatialIndexColumns()
 
 	FdoSmPhMgrP pPhysical	        = GetLogicalPhysicalSchema()->GetPhysicalSchema();
     FdoSmPhDbObjectP pPhDbObject;
-    if (pPhysical->GetOwner()->GetHasMetaSchema())
+    if (FdoSmPhOwnerP(pPhysical->GetOwner())->GetHasMetaSchema())
     	pPhDbObject = pPhysical->FindDbObject( GetContainingDbObjectName());
     else
     	pPhDbObject = pPhysical->FindDbObject( GetContainingDbObjectName(), RefParentClass()->GetOwner() );

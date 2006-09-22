@@ -33,7 +33,7 @@ FdoSmPhLockTypes::FdoSmPhLockTypes(
 FdoSmPhLockTypes::~FdoSmPhLockTypes(void)
 {
     if ( mLockTypes ) 
-        delete mLockTypes;
+        delete [] mLockTypes;
 }
 
 FdoLtLockModeType FdoSmPhLockTypes::GetLockingMode() const

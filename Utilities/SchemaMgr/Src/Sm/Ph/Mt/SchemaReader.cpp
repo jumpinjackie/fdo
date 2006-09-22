@@ -48,7 +48,7 @@ FdoSmPhReaderP FdoSmPhMtSchemaReader::MakeReader( FdoSmPhRowsP froms, FdoSmPhOwn
     }
 
     // Create a query reader to wrap around
-    FdoSmPhRdQueryReaderP pSubReader = owner->GetManager()->CreateQueryReader( froms, whereClause );
+    FdoSmPhRdQueryReaderP pSubReader = FdoSmPhMgrP(owner->GetManager())->CreateQueryReader( froms, whereClause );
 
     return FDO_SAFE_ADDREF((FdoSmPhRdQueryReader*)pSubReader);
 }

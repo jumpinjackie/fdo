@@ -224,7 +224,7 @@ FdoSmPhDbObjectP FdoSmLpClassBase::FindPhDbObject()
 
     FdoStringP ownerName;
 
-    if (!pPhysical->GetOwner()->GetHasMetaSchema())
+    if (!FdoSmPhOwnerP(pPhysical->GetOwner())->GetHasMetaSchema())
         ownerName = mOwner;
 
     if ( mDbObjectName.GetLength() > 0 ) {
@@ -282,8 +282,11 @@ FdoStringP FdoSmLpClassBase::GetSubstRootDbObjectName() const
 FdoStringP FdoSmLpClassBase::GetDbObjectQName( bool includeDefaultOwner ) const
 {
     FdoStringP ownerName = mOwner;
-    if ( includeDefaultOwner && (ownerName == L"") )
-        ownerName = ((FdoSmLpClassBase*)this)->GetLogicalPhysicalSchema()->GetPhysicalSchema()->GetOwner()->GetName();
+	if ( includeDefaultOwner && (ownerName == L"") ) {
+			FdoSmPhMgrP	physicalMgr = ((FdoSmLpClassBase*)this)->GetLogicalPhysicalSchema()->GetPhysicalSchema();
+
+			ownerName = FdoSmPhOwnerP(physicalMgr->GetOwner())->GetName();
+	}
 
     return FdoStringP::Format( 
         L"%ls%ls%ls%ls%ls",
@@ -748,7 +751,7 @@ void FdoSmLpClassBase::SynchPhysical(bool bRollbackOnly)
 				if ( !mPhDbObject ) {
 
                     // Class has id but no table. If table exists, attach to it.
-                    if (pPhysical->GetOwner()->GetHasMetaSchema())
+                    if (FdoSmPhOwnerP(pPhysical->GetOwner())->GetHasMetaSchema())
     					mPhDbObject = pPhysical->FindDbObject(mDbObjectName);
                     else
     					mPhDbObject = pPhysical->FindDbObject(mDbObjectName, mOwner);
@@ -777,7 +780,8 @@ void FdoSmLpClassBase::SynchPhysical(bool bRollbackOnly)
             // Some object property tables might be in rollback cache even if 
             // this class table isn't.
 		    for ( i = 0; i < GetProperties()->GetCount(); i++ ) {
-			    FdoSmLpPropertyP pProp = GetProperties()->GetItem(i);
+				FdoSmLpPropertiesP pProps = GetProperties();
+			    FdoSmLpPropertyP pProp = pProps->GetItem(i);
 
 			    pProp->SynchPhysical(
 				    pProp->GetPropertyType() == FdoPropertyType_ObjectProperty ?
@@ -1423,9 +1427,9 @@ void FdoSmLpClassBase::SetDbObjectName( FdoStringP objectName )
             ValidateForeignObjectName( mRootDbObjectName );
         }
 
-        if ( pPhysical->GetOwner()->GetHasMetaSchema() ) {
+        if ( FdoSmPhOwnerP(pPhysical->GetOwner())->GetHasMetaSchema() ) {
             // Generate name for view that will be put around the foreign table.
-            mDbObjectName = pPhysical->GetOwner()->UniqueDbObjectName( mRootDbObjectName );
+            mDbObjectName =FdoSmPhOwnerP(pPhysical->GetOwner())->UniqueDbObjectName( mRootDbObjectName );
         }
         else {
             mDbObjectName = mRootDbObjectName;
@@ -1437,13 +1441,13 @@ void FdoSmLpClassBase::SetDbObjectName( FdoStringP objectName )
             mDbObjectName =  objectName;
 
             // Add to fetch candidates list, so these tables are fetched efficiently.
-            pPhysical->GetOwner()->AddCandDbObject( objectName );
+            FdoSmPhOwnerP(pPhysical->GetOwner())->AddCandDbObject( objectName );
         }
         else {
             // No overrides so generate a table name for the new class. The table name is the class name
             // adjusted to be RDBMS-friendly.
 
-           mDbObjectName = pPhysical->GetOwner()->UniqueDbObjectName( GetName() );
+           mDbObjectName = FdoSmPhOwnerP(pPhysical->GetOwner())->UniqueDbObjectName( GetName() );
         }
 
         // TODO: set classification for foreign table.
@@ -2141,7 +2145,7 @@ void FdoSmLpClassBase::FinalizePhDbObject()
                 // Skip table name creation only if already exists and was 
                 // specified through an override. 
                 FdoSmPhDbObjectP dbObject;
-                if (pPhysical->GetOwner()->GetHasMetaSchema())
+                if (FdoSmPhOwnerP(pPhysical->GetOwner())->GetHasMetaSchema())
                     dbObject = pPhysical->FindDbObject( mDbObjectName, L"", L"", false );
                 else
                     dbObject = pPhysical->FindDbObject( mDbObjectName, mOwner, L"", false );
@@ -2351,7 +2355,7 @@ FdoSmLpDbObjectP FdoSmLpClassBase::FinalizeNewDbObject(
 			// Get the primary key table and Finalize it.
             FdoSmPhMgrP      pPhysical = GetLogicalPhysicalSchema()->GetPhysicalSchema();
             FdoSmPhDbObjectP pDepDbObject;
-            if (pPhysical->GetOwner()->GetHasMetaSchema())
+            if (FdoSmPhOwnerP(pPhysical->GetOwner())->GetHasMetaSchema())
 			    pDepDbObject = pPhysical->FindDbObject( pDep->GetPkTableName() );
             else
 			    pDepDbObject = pPhysical->FindDbObject( pDep->GetPkTableName(), mOwner );
@@ -2394,7 +2398,7 @@ FdoSmLpDbObjectP FdoSmLpClassBase::FinalizeNewDbObject(
 		}
 
 		for ( int i = 0; i < sSrcCols->GetCount(); i++ ) {
-			FdoSmPhColumnP pCol = pPhDbObject->GetColumns()->FindItem( sSrcCols->GetString(i) );
+			FdoSmPhColumnP pCol = FdoSmPhColumnsP(pPhDbObject->GetColumns())->FindItem( sSrcCols->GetString(i) );
 
 			if ( pCol ) {
 				lpDbObject->AddSourceColumn( pCol );
@@ -2410,7 +2414,8 @@ FdoSmLpDbObjectP FdoSmLpClassBase::FinalizeNewDbObject(
 		// Secondly the columns from the next table for joining to the this table.
 
 		for ( int i = 0; i < sTargCols->GetCount(); i++ ) {
-			FdoSmPhColumnP pCol = pPathDbObject->GetDbObject()->GetColumns()->FindItem( sSrcCols->GetString(i) );
+			FdoSmPhDbObjectP	pObject = pPathDbObject->GetDbObject();
+			FdoSmPhColumnP		pCol = FdoSmPhColumnsP(pObject->GetColumns())->FindItem( sSrcCols->GetString(i) );
 
 			if ( pCol ) {
 				lpDbObject->AddTargetColumn( pCol );
@@ -2445,7 +2450,9 @@ FdoSmLpDbObjectP FdoSmLpClassBase::FinalizeNewDbObject(
 		        if ( pFeatIdProp && pFeatIdProp->GetColumn() && ( pFeatIdProp->RefContainingDbObject()->GetQName() == mDbObject->GetDbObject()->GetQName() ) )  {
 			        lpDbObject->SetPathDist(1);
 			        lpDbObject->SetTargetDbObject(mDbObject);
-			        lpDbObject->AddSourceColumn( lpDbObject->GetPkeyColumns()->GetItem(0) );
+					FdoSmPhColumnsP		columns = lpDbObject->GetPkeyColumns();
+			        lpDbObject->AddSourceColumn( FdoSmPhColumnP(columns->GetItem(0)) );
+
 			        lpDbObject->AddTargetColumn( GetFeatIdProperty()->GetColumn() );
                 }
             }
@@ -3232,7 +3239,7 @@ FdoSmLpClassDefinition::FdoSmLpClassDefinition(FdoSmPhClassReaderP classReader, 
     // property attributes for the two or three ordinate columns at once.  So, we manually
     // search for them here.
     FdoSmPhDbObjectP obj = this->FindPhDbObject();
-    bool geomFromOrdsWanted = obj==NULL ? false : obj->GetManager()->IsGeometryFromOrdinatesWanted();
+    bool geomFromOrdsWanted = obj==NULL ? false : FdoSmPhMgrP(obj->GetManager())->IsGeometryFromOrdinatesWanted();
     if (geomFromOrdsWanted) {
         FdoSmPhColumnsP columns = obj->GetColumns();
         FdoSmPhColumnP preExisting = columns->FindItem(DefaultGeometricPropertyName);

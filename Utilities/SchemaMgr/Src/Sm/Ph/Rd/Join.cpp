@@ -24,11 +24,7 @@ FdoSmPhRdJoin::FdoSmPhRdJoin(
     FdoSmPhColumnsP columns,
     FdoStringP whereClause
 ): 
-	FdoSmPhSchemaElement( 
-        name, 
-		L"", 
-        columns->GetItem(0)->GetManager()
-    ),
+	FdoSmPhSchemaElement( name, L"", FdoSmPhColumnP(columns->GetItem(0))->GetManager() ),
     mColumns(columns),
     mWhereClause(whereClause)
 {
@@ -42,7 +38,8 @@ FdoSmPhRdJoin::~FdoSmPhRdJoin(void)
 
 FdoStringP FdoSmPhRdJoin::GetFrom()
 {
-    const FdoSmPhDbObject* dbObject = (const FdoSmPhDbObject*)(mColumns->GetItem(0)->GetParent());
+	FdoSmPhColumnP		pColumn = mColumns->GetItem(0);
+    const FdoSmPhDbObject* dbObject = (const FdoSmPhDbObject*)(pColumn->GetParent());
     FdoStringP tableName = dbObject->GetDbQName();
 
     // table is aliases by this join's name.

@@ -49,7 +49,7 @@ FdoSmPhReaderP FdoSmPhOptionsReader::MakeReader( FdoSmPhMgrP mgr, FdoStringP own
 	FdoSmPhRowP row = FdoSmPhOptionsWriter::MakeRow(mgr, owner);
     rows->Add( row );
 
-    if ( row->GetDbObject()->GetExists() ) {
+    if ( FdoSmPhDbObjectP(row->GetDbObject())->GetExists() ) {
         // F_OPTIONS exists, read from MetaSchema
         pSubReader = mgr->CreateQueryReader( rows, L"" ).p->SmartCast<FdoSmPhReader>();
     }

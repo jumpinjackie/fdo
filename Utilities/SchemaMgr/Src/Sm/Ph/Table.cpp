@@ -129,16 +129,16 @@ FdoSmPhColumnsP FdoSmPhTable::GetBestIdentity()
         ixSize = index->GetWeight();
 
         // Weed out non-unique indexes or indexes whose columns are too big.
-        if ( index->GetIsUnique() && (index->GetColumns()->GetCount() > 0) && (ixSize < FdoSmPhIndex::mMaxWeight) ) {
+        if ( index->GetIsUnique() && (index->RefColumns()->GetCount() > 0) && (ixSize < FdoSmPhIndex::mMaxWeight) ) {
             if ( bestIndex ) {
                 // Index already chosen, see if this one is better.
                 FdoSmPhColumnsP idxCols = index->GetColumns();
-                if (idxCols->GetCount() < bestIndex->GetColumns()->GetCount() ) {
+                if (idxCols->GetCount() < bestIndex->RefColumns()->GetCount() ) {
                     // This one has few columns, take it instead.
                     bestIndex = index;
                     bestIxSize = ixSize;
                 }
-                else if ( idxCols->GetCount() == bestIndex->GetColumns()->GetCount() ) {
+                else if ( idxCols->GetCount() == bestIndex->RefColumns()->GetCount() ) {
                     // same number of columns, take this index only if it has a better
                     // compactness score.
                     if ( ixSize < bestIxSize ) {

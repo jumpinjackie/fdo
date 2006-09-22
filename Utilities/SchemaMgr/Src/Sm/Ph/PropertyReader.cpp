@@ -218,7 +218,7 @@ FdoSmPhRowsP FdoSmPhPropertyReader::MakeRows( FdoSmPhMgrP mgr )
     rows->Add( row );
 
     // Create row for F_CLASSDEFINITION
-    bool hasMs = mgr->GetOwner()->GetHasMetaSchema();
+    bool hasMs = FdoSmPhOwnerP(mgr->GetOwner())->GetHasMetaSchema();
     FdoStringP classDefTable = mgr->GetDcDbObjectName(L"f_classdefinition");
 
     FdoSmPhRowP classRow = new FdoSmPhRow( 
@@ -269,8 +269,7 @@ FdoSmPhReaderP FdoSmPhPropertyReader::MakeReader( FdoSmPhMgrP mgr, FdoStringP sc
     if ( field && field->GetColumn() )
         mbRootObjectNameDefined = true;
 
-
-    if ( propRow->GetDbObject()->GetExists() && classRow->GetDbObject()->GetExists() ) {
+    if ( FdoSmPhDbObjectP(propRow->GetDbObject())->GetExists() && FdoSmPhDbObjectP(classRow->GetDbObject())->GetExists() ) {
         // F_ATTRIBUTEDEFINITION exists, read from MetaSchema.
         subReader = MakeMtReader( rows, schemaName, mgr );
     }

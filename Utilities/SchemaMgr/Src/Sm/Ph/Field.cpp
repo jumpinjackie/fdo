@@ -64,7 +64,7 @@ FdoSmPhColumnP FdoSmPhField::GetColumn()
 
         if ( row ) {
             // Find the column
-            FdoSmPhDbObject* pDbObject = row->GetDbObject();
+            FdoSmPhDbObjectP pDbObject = row->GetDbObject();
 
             if ( pDbObject ) {
                 // Try case-sensitive name match first

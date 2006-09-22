@@ -112,7 +112,7 @@ FdoSmPhReaderP FdoSmPhAssociationReader::MakeReader( FdoSmPhMgrP mgr, long class
     FdoSmPhRowsP rows = MakeRows(mgr);
     FdoSmPhRowP row = rows->GetItem(0);
 
-    if ( row->GetDbObject()->GetExists() ) {
+    if ( FdoSmPhDbObjectP(row->GetDbObject())->GetExists() ) {
         subReader = MakeMtReader( mgr, rows, classId, fkTableName );
     }
     else {
@@ -128,7 +128,7 @@ FdoSmPhReaderP FdoSmPhAssociationReader::MakeReader( FdoSmPhMgrP mgr, FdoStringP
     FdoSmPhRowsP rows = MakeRows(mgr);
     FdoSmPhRowP row = rows->GetItem(0);
 
-    if ( row->GetDbObject()->GetExists() ) {
+    if ( FdoSmPhDbObjectP(row->GetDbObject())->GetExists() ) {
         // F_ASSOCIATIONDEFINITION exists, read from it
         subReader = MakeMtReader( mgr, rows, pkTableName, fkTableName, bAnd );
     }

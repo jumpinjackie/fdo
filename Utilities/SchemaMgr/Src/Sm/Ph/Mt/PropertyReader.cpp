@@ -31,7 +31,7 @@ FdoSmPhMtPropertyReader::~FdoSmPhMtPropertyReader(void)
 FdoSmPhReaderP FdoSmPhMtPropertyReader::MakeReader( FdoSmPhRowsP froms, FdoStringP schemaName, FdoSmPhMgrP mgr )
 {
     FdoSmPhRowP from = froms->GetItem(0);
-    FdoSmPhOwner* owner = static_cast<FdoSmPhOwner*>((FdoSmSchemaElement*)(from->GetDbObject()->GetParent()));
+    FdoSmPhOwner* owner = static_cast<FdoSmPhOwner*>((FdoSmSchemaElement*)(FdoSmPhDbObjectP(from->GetDbObject())->GetParent()));
     double schemaVersion = owner->GetSchemaVersion();
     FdoStringP classidRow;
 

@@ -357,7 +357,7 @@ FdoSmPhTableP FdoSmPhOwner::CreateTable(
 
     // TODO: set pkey name.
     FdoSmPhDbObjectP table = NewTable( tableName, FdoSchemaElementState_Added, NULL );
-    GetDbObjects()->Add(table);
+    FdoSmPhDbObjectsP(GetDbObjects())->Add(table);
 
     return( table->SmartCast<FdoSmPhTable>() );
 }
@@ -387,7 +387,7 @@ FdoSmPhViewP FdoSmPhOwner::CreateView(
         NULL
     );
     
-    GetDbObjects()->Add(view);
+    FdoSmPhDbObjectsP(GetDbObjects())->Add(view);
 
     return( view->SmartCast<FdoSmPhView>() );
 }
@@ -519,7 +519,9 @@ void FdoSmPhOwner::AddCandDbObject( FdoStringP objectName )
     // No need for fetch candidates when all objects for owner are cached. 
     // Bulk fetching candidates is pointless when fetch size is 1.
     if ( (!mDbObjectsCached) && (GetCandFetchSize() > 1) ) {
-        if ( !(GetDbObjects()->FindItem(objectName)) ) {
+	    FdoSmPhDbObjectP pDbObject = GetDbObjects()->FindItem(objectName);
+
+        if ( !pDbObject ) {
             FdoDictionaryElementP elem = mCandDbObjects->FindItem( objectName );
             
             if ( !elem ) {
@@ -683,7 +685,7 @@ bool FdoSmPhOwner::IsDbObjectNameReserved( FdoStringP objectName )
 		    // things but this query is only run when schemas are updated. 
 
             FdoSmPhRowP row = new FdoSmPhRow( GetManager(), L"findtable" );
-            FdoSmPhColumnP column = row->GetDbObject()->CreateColumnInt16( L"one", true );
+            FdoSmPhColumnP column = FdoSmPhDbObjectP(row->GetDbObject())->CreateColumnInt16( L"one", true );
             FdoSmPhFieldP field = new FdoSmPhField( row, L"one", column, L"", false );
 		    FdoSmPhRdQueryReaderP tableRef = GetManager()->CreateQueryReader( row, statement );
 

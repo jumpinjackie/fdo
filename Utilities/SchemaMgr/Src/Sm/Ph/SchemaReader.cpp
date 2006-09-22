@@ -139,14 +139,14 @@ FdoSmPhReaderP FdoSmPhSchemaReader::MakeReader( FdoSmPhOwnerP owner, bool dsInfo
     }
     else {
 
-        if ( row->GetDbObject()->GetExists() ) {
+        if ( FdoSmPhDbObjectP(row->GetDbObject())->GetExists() ) {
             // F_SCHEMAINFO exists, read from MetaSchema
             mbReadFromMetadata = true;
             pSubReader = MakeMtReader( rows, owner, dsInfo );
         }
         else {
             // F_SCHEMAINFO does not exist, read from native physical schema
-            pSubReader = owner->GetManager()->CreateRdSchemaReader( rows, owner, dsInfo );
+            pSubReader = FdoSmPhMgrP(owner->GetManager())->CreateRdSchemaReader( rows, owner, dsInfo );
         }
     }
 

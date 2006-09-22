@@ -227,7 +227,7 @@ FdoSmPhReaderP FdoSmPhClassReader::MakeReader( FdoStringP schemaName, FdoSmPhMgr
 
 	// Determine which table/field names to use, depending on if F_SCHEMAOPTIONS exists:
 	mbSchemaOptionsTableDefined =
-        (mgr->GetOwner()->GetHasMetaSchema() &&
+        (FdoSmPhOwnerP(mgr->GetOwner())->GetHasMetaSchema() &&
          mgr->FindDbObject(mgr->GetDcDbObjectName(L"f_schemaoptions")) != NULL);
 
 
@@ -239,7 +239,7 @@ FdoSmPhReaderP FdoSmPhClassReader::MakeReader( FdoStringP schemaName, FdoSmPhMgr
         pSubReader = mgr->CreateCfgClassReader( rows, schemaName ).p->SmartCast<FdoSmPhReader>();
     }
     else {
-        if ( classRow->GetDbObject()->GetExists() ) {
+        if ( FdoSmPhDbObjectP(classRow->GetDbObject())->GetExists() ) {
             mbReadFromMetadata = true;
             // F_CLASSDEFINITION exists, read from MetaSchema
             pSubReader = MakeMtReader( rows, schemaName, mgr );

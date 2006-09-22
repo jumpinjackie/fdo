@@ -64,13 +64,13 @@ FdoStringP FdoSmPhRdQueryReader::MakeStatement( FdoSmPhRowsP rows, FdoStringP sC
 
         // Skip statement generation if any of the row database objects do not exist.
         // In this case the query will return no rows.
-        if ( !row->GetDbObject()->GetExists() ) {
+        if ( !FdoSmPhDbObjectP(row->GetDbObject())->GetExists() ) {
             tables = FdoStringCollection::Create();
             break;
         }
 
         // Add the table to the "from" list + the table name as a alias
-		tables->Add( row->GetDbObject()->GetDbQName() + L" " + row->GetName() );
+		tables->Add( FdoSmPhDbObjectP(row->GetDbObject())->GetDbQName() + L" " + row->GetName() );
 
         FdoSmPhFieldsP pFields = row->GetFields();
 

@@ -680,7 +680,7 @@ void FdoSmPhMgr::OnAfterCommit()
 
     if ( mDatabases ) {
         for ( idx = 0; idx < mDatabases->GetCount(); idx++ )
-            mDatabases->GetItem(idx)->OnAfterCommit();
+            FdoSmPhDatabaseP(mDatabases->GetItem(idx))->OnAfterCommit();
     }
 }
  

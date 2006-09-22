@@ -332,7 +332,7 @@ void FdoSmPhPropertyWriter::Delete( FdoInt64 classId, FdoStringP sName )
 
 FdoSmPhRowP FdoSmPhPropertyWriter::MakeRow( FdoSmPhMgrP mgr )
 {
-    bool hasMs = mgr->GetOwner()->GetHasMetaSchema();
+    bool hasMs = FdoSmPhOwnerP(mgr->GetOwner())->GetHasMetaSchema();
     FdoStringP attDefTable = mgr->GetDcDbObjectName(L"f_attributedefinition");
 
     FdoSmPhRowP row = new FdoSmPhRow( 

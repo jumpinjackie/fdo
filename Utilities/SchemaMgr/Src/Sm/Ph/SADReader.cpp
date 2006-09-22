@@ -82,7 +82,7 @@ FdoSmPhReaderP FdoSmPhSADReader::MakeReader(
     FdoSmPhRowP sadRow = FdoSmPhSADWriter::MakeRow(mgr);
     rows->Add( sadRow );
 
-    if ( sadRow->GetDbObject()->GetExists() ) {
+    if ( FdoSmPhDbObjectP(sadRow->GetDbObject())->GetExists() ) {
         FdoStringP where;
 	    FdoStringP ownerName;
 	    FdoStringP ownerCmp(L"=");

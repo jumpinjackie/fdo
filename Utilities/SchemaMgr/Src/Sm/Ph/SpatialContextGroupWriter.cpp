@@ -200,7 +200,7 @@ void FdoSmPhSpatialContextGroupWriter::Delete( FdoInt64 scId )
 
 FdoSmPhRowP FdoSmPhSpatialContextGroupWriter::MakeRow( FdoSmPhMgrP mgr )
 {
-    bool hasMs = mgr->GetOwner()->GetHasMetaSchema();
+    bool hasMs = FdoSmPhOwnerP(mgr->GetOwner())->GetHasMetaSchema();
     FdoStringP scgDefTable = mgr->GetDcDbObjectName(L"f_spatialcontextgroup");
 
     FdoSmPhRowP row = new FdoSmPhRow( 

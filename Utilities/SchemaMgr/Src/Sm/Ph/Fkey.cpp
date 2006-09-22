@@ -134,8 +134,7 @@ void FdoSmPhFkey::LoadPkeyTable()
             // Find each primary key column.
             for ( i = 0; i < mPkeyColumnNames->GetCount(); i++ ) {
                 FdoStringP columnName = mPkeyColumnNames->GetString(i);
-
-                FdoSmPhColumnP column = mPkeyTable->GetColumns()->FindItem(columnName);
+                FdoSmPhColumnP column = FdoSmPhColumnsP(mPkeyTable->GetColumns())->FindItem(columnName);
 
                 if ( column ) {
                     mPkeyColumns->Add( column );

@@ -244,7 +244,7 @@ void FdoSmPhSchemaWriter::Delete( FdoStringP sName )
 FdoSmPhRowP FdoSmPhSchemaWriter::MakeRow( FdoSmPhOwnerP owner )
 {
     bool hasMs = owner->GetHasMetaSchema();
-    FdoStringP infoTable = owner->GetManager()->GetDcDbObjectName(L"f_schemainfo");
+    FdoStringP infoTable = FdoSmPhMgrP(owner->GetManager())->GetDcDbObjectName(L"f_schemainfo");
 
     FdoSmPhRowP row = new FdoSmPhRow( 
         owner->GetManager(), 

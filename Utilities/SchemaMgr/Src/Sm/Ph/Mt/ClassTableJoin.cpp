@@ -36,15 +36,19 @@ FdoSmPhDbObjectP FdoSmPhMtClassTableJoin::GetTable(
     FdoSmPhOwnerP owner
 )
 {
-    return owner->GetDbObject( owner->GetManager()->GetDcDbObjectName(L"f_classdefinition") );
+	FdoSmPhMgrP	mgr = owner->GetManager();
+    return owner->GetDbObject( mgr->GetDcDbObjectName(L"f_classdefinition") );
 }
 
 FdoSmPhColumnP FdoSmPhMtClassTableJoin::GetColumn(
     FdoSmPhOwnerP owner
 )
 {
-    FdoSmPhDbObjectP classDefTable = GetTable(owner);
-    return classDefTable->GetColumns()->GetItem( owner->GetManager()->GetDcColumnName(L"tablename") );
+    FdoSmPhDbObjectP	classDefTable = GetTable(owner);
+	FdoSmPhColumnsP		columns = classDefTable->GetColumns();
+	FdoSmPhMgrP			mgr = owner->GetManager();
+
+    return columns->GetItem( mgr->GetDcColumnName(L"tablename") );
 }
 
 FdoStringP FdoSmPhMtClassTableJoin::MakeWhere(
@@ -56,9 +60,11 @@ FdoStringP FdoSmPhMtClassTableJoin::MakeWhere(
 
     // Build where clause for selecting only f_classdefinition rows for the given feature schema.
     // f_classdefinition's alias is classdefinition.
+	FdoSmPhMgrP	mgr = classDefTable->GetManager();
+
     FdoStringP whereClause = FdoStringP::Format(
         L"classdefinition.schemaname = %ls",
-        (FdoString*) classDefTable->GetManager()->FormatSQLVal( schemaName, FdoSmPhColType_String )
+        (FdoString*) mgr->FormatSQLVal( schemaName, FdoSmPhColType_String )
     );
 
     return whereClause;

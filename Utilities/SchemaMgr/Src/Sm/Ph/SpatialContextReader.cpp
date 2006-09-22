@@ -72,8 +72,8 @@ FdoSmPhReaderP FdoSmPhSpatialContextReader::MakeReader( FdoSmPhMgrP mgr )
     // }
     // else
     // {
-        if ( mgr->GetOwner()->GetHasMetaSchema() &&
-             scRow->GetDbObject()->GetExists() ) {
+        if ( FdoSmPhOwnerP(mgr->GetOwner())->GetHasMetaSchema() &&
+             FdoSmPhDbObjectP(scRow->GetDbObject())->GetExists() ) {
             // F_SPATIALCONTEXT exists; read from MetaSchema
             pSubReader = MakeMtReader( rows, mgr );
         }

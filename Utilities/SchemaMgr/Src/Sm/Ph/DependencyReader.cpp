@@ -111,7 +111,7 @@ FdoSmPhReaderP FdoSmPhDependencyReader::MakeReader( FdoStringP where, FdoSmPhMgr
         rows->Add( row );
     }
 
-    if ( depRow->GetDbObject()->GetExists() ) {
+    if ( FdoSmPhDbObjectP(depRow->GetDbObject())->GetExists() ) {
         // F_ATTRIBUTEDEPENDENCY exists, read from MetaSchema
         pSubReader = mgr->CreateQueryReader( rows, where ).p->SmartCast<FdoSmPhReader>();
     }

@@ -594,7 +594,7 @@ FdoSchemaExceptionP FdoSmLpObjectPropertyDefinition::Errors2Exception(FdoSchemaE
 
 	// Don't check target class if we already have an error. It might be a circular reference
 	// error so proceeding could cause an infinite loop.
-    if ( ((FdoSmLpObjectPropertyDefinition*) this)->GetErrors()->GetCount() == 0 ) {
+    if ( FdoSmErrorsP(((FdoSmLpObjectPropertyDefinition*) this)->GetErrors())->GetCount() == 0 ) {
         if ( RefTargetClass() ) 
 		    pException = RefTargetClass()->Errors2Exception(pException);
 

@@ -36,10 +36,12 @@ FdoSmLpPropertyDefinition::FdoSmLpPropertyDefinition(FdoSmPhClassPropertyReaderP
 	mContainingDbObjectName( propReader->GetTableName() ),
     mTopProperty(NULL)
 {
-    if (GetLogicalPhysicalSchema()->GetPhysicalSchema()->GetOwner()->GetHasMetaSchema())
-        mContainingDbObject = GetLogicalPhysicalSchema()->GetPhysicalSchema()->FindDbObject(mContainingDbObjectName);
+	FdoSmPhMgrP pPhysical = GetLogicalPhysicalSchema()->GetPhysicalSchema();
+
+    if (FdoSmPhOwnerP(pPhysical->GetOwner())->GetHasMetaSchema())
+        mContainingDbObject = pPhysical->FindDbObject(mContainingDbObjectName);
     else
-        mContainingDbObject = GetLogicalPhysicalSchema()->GetPhysicalSchema()->FindDbObject(mContainingDbObjectName, mpParentClass->GetOwner());
+        mContainingDbObject = pPhysical->FindDbObject(mContainingDbObjectName, mpParentClass->GetOwner());
 
 	// Load the Schema Attribute Dictionary
 
@@ -134,7 +136,7 @@ FdoSmLpPropertyDefinition::FdoSmLpPropertyDefinition(
 
 	// Log an error if the base property has errors, since the errors most
 	// likely get propagated to this property.
-	if ( baseProperty->GetErrors()->GetCount() > 0 )
+	if ( FdoSmErrorsP(baseProperty->GetErrors())->GetCount() > 0 )
 		AddBasePropError( baseProperty );
 }
 
@@ -473,10 +475,10 @@ void FdoSmLpPropertyDefinition::Finalize()
         if ( (mContainingDbObjectName.GetLength() > 0) && (!mContainingDbObject) ) {
         	// Set the containing table to the containing class's table.
 	        FdoSmPhMgrP pPhysical = GetLogicalPhysicalSchema()->GetPhysicalSchema();
-            if (pPhysical->GetOwner()->GetHasMetaSchema())
-   	            mContainingDbObject = GetLogicalPhysicalSchema()->GetPhysicalSchema()->FindDbObject( mContainingDbObjectName);
+            if (FdoSmPhOwnerP(pPhysical->GetOwner())->GetHasMetaSchema())
+   	            mContainingDbObject = pPhysical->FindDbObject( mContainingDbObjectName);
             else
-   	            mContainingDbObject = GetLogicalPhysicalSchema()->GetPhysicalSchema()->FindDbObject( mContainingDbObjectName, mpParentClass->GetOwner() );
+   	            mContainingDbObject = pPhysical->FindDbObject( mContainingDbObjectName, mpParentClass->GetOwner() );
         }
 
         SetState( FdoSmObjectState_Final );

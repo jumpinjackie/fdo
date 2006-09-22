@@ -99,7 +99,7 @@ void FdoSmPhSOWriter::Delete( FdoStringP sOwner, FdoStringP sName )
 FdoSmPhRowP FdoSmPhSOWriter::MakeRow( FdoSmPhOwnerP owner )
 {
     bool hasMs = owner->GetHasMetaSchema();
-    FdoStringP optDefTable = owner->GetManager()->GetDcDbObjectName(L"f_schemaoptions");
+    FdoStringP optDefTable = FdoSmPhMgrP(owner->GetManager())->GetDcDbObjectName(L"f_schemaoptions");
 
     FdoSmPhRowP row = new FdoSmPhRow( 
         owner->GetManager(), 

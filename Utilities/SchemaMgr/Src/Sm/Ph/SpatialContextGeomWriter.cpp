@@ -106,7 +106,7 @@ void FdoSmPhSpatialContextGeomWriter::Delete( FdoStringP geomTableName, FdoStrin
 
 FdoSmPhRowP FdoSmPhSpatialContextGeomWriter::MakeRow( FdoSmPhMgrP mgr )
 {
-    bool hasMs = mgr->GetOwner()->GetHasMetaSchema();
+    bool hasMs = FdoSmPhOwnerP(mgr->GetOwner())->GetHasMetaSchema();
     FdoStringP scgDefTable = mgr->GetDcDbObjectName(L"f_spatialcontextgeom");
 
     FdoSmPhRowP row = new FdoSmPhRow( 
