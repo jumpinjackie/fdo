@@ -693,7 +693,7 @@ void FdoRdbmsConnection::CreateDb( FdoString *dbName, FdoString *dbDescription, 
 	if (newSchema->GetLtMode() == FdoMode ||
 		newSchema->GetLckMode() == FdoMode)	{
 		// Create FDOSYS
-		FdoSmPhOwnerP fdoOwner = physicalMgr->GetDatabase()->FindOwner(FDOSYS_OWNER);
+		FdoSmPhOwnerP fdoOwner = FdoSmPhDatabaseP(physicalMgr->GetDatabase())->FindOwner(FDOSYS_OWNER);
 		if (!fdoOwner)	{
 			CreateSysDb( FDOSYS_OWNER, L"", connectString);
 		}
