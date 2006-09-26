@@ -27,6 +27,8 @@ class MySqlFdoSchemaTest : public FdoSchemaTest
     CPPUNIT_TEST_SUITE_END ();
 
     virtual void set_provider();
+    virtual void OverrideXmlAllTest(){};
+    virtual void OverrideXmlErrTest(){};
 };
 
 #endif // MYSQL_FDOSCHEMATEST_H

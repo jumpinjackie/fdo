@@ -33,6 +33,7 @@ class MySqlSchemaMgrTests : public SchemaMgrTests
     virtual FdoIoStream* OverrideBend( FdoIoStream* stream1, FdoStringP oldOwnerPrefix, FdoStringP newOwnerPrefix );
     virtual void AddProviderColumns( FdoSmPhTableP table );
     virtual void VldGenGeom( FdoClassDefinitionP classDef );
+    virtual void testConfigError(){};
 };
 
 #endif // MYSQL_SCHEMAMGRTESTS_H

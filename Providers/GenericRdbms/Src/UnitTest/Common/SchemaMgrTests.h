@@ -47,7 +47,7 @@ protected:
     void testGenConfig1 ();
     void testGenConfigGeom ();
     void testGenKeys();
-    void testConfigError();
+    virtual void testConfigError();
 
     void constraints ();
     void delFdoBr ();
