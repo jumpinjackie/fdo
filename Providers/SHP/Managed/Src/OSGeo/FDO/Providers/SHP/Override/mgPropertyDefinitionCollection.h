@@ -57,7 +57,7 @@ public private:
 	inline FdoShpOvPropertyDefinitionCollection* GetImpObj();
 
 protected:
-	__sealed System::Void Dispose(System::Boolean disposing);
+	__sealed System::Void ReleaseUnmanagedObject();
 
 private:
 	// System::Collections::ICollection interfaces
