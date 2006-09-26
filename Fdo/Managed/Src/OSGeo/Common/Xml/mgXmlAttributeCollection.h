@@ -56,7 +56,7 @@ private:
 public private:
 	inline FdoXmlAttributeCollection* GetImpObj();
 protected:
-	virtual System::Void Dispose(System::Boolean disposing);
+	virtual System::Void ReleaseUnmanagedObject();
 
 private:
     // System::Collections::ICollection interfaces

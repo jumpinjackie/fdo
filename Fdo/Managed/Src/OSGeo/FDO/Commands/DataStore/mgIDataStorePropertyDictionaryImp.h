@@ -55,8 +55,6 @@ public:
     /// 
     System::Boolean IsPropertyFilePath(System::String* name);
 
-	System::Void Dispose();
-
 public private:
 	IDataStorePropertyDictionaryImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionPropertyDictionaryImp(unmanaged, autoDelete)
 	{

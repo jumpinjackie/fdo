@@ -222,7 +222,7 @@ public private:
 	inline FdoIConnection* GetImpObj();
 
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 };
 
 END_NAMESPACE_OSGEO_FDO_CONNECTIONS

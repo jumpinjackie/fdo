@@ -41,18 +41,11 @@ FdoIRaster* NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::GetImpObj()
 	return static_cast<FdoIRaster*>(__super::UnmanagedObject.ToPointer());
 }
 
-Void NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::Dispose(Boolean disposing)
+Void NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 System::Boolean NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::IsNull ()

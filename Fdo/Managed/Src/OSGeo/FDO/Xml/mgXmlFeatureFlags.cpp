@@ -53,18 +53,11 @@ FdoXmlFeatureFlags* NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags::GetImpObj()
     return static_cast<FdoXmlFeatureFlags*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release());
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags::set_Conflictoption(NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags::ConflictOption value)

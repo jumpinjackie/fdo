@@ -25,18 +25,11 @@
 #include "FDO\mgObjectFactory.h"
 #include "FDO\Expression\mgLiteralValue.h"
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValue::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValue::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-			Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValue::ParameterValue() : NAMESPACE_OSGEO_RUNTIME::Disposable(System::IntPtr::Zero, false)

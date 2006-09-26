@@ -115,8 +115,3 @@ System::Void NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::ICreateMeasureUnitImp::
 {
 	EXCEPTION_HANDLER(GetImpObj()->Execute())
 }
-
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::ICreateMeasureUnitImp::Dispose()
-{
-	NAMESPACE_OSGEO_RUNTIME::Disposable::Dispose();
-}

@@ -30,18 +30,11 @@ FdoITopologyCapabilities* NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ITopolog
     return static_cast<FdoITopologyCapabilities*>(__super::UnmanagedObject.ToPointer());
 }
 
-Void NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ITopologyCapabilitiesImp::Dispose(Boolean disposing)
+Void NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ITopologyCapabilitiesImp::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 System::Boolean NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ITopologyCapabilitiesImp::SupportsTopology()

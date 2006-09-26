@@ -82,18 +82,11 @@ System::Void NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::CopyTo(XmlAttri
 	}
 }
 
-System::Void NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 System::Object* NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::ICollection::get_SyncRoot()

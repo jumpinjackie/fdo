@@ -122,7 +122,7 @@ public:
 	}
 
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 
 public private:
 	inline FdoSchemaAttributeDictionary* GetImpObj();

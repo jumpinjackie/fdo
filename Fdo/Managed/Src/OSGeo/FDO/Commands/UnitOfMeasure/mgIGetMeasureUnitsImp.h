@@ -40,8 +40,6 @@ public:
     /// 
 	NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::IMeasureUnitReader* Execute();
 
-	System::Void Dispose();
-
 public:
 	IGetMeasureUnitsImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp(unmanaged, autoDelete)
 	{

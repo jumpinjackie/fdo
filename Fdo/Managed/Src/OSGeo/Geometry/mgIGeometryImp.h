@@ -39,13 +39,9 @@ public __gc class IGeometryImp
 public:
 	IGeometryImp(System::IntPtr unmanaged, System::Boolean autoDelete);
 
-	System::Void Dispose()
-	{
-		Disposable::Dispose();
-	}
-
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
+
 public:
     /// \brief
     /// Gets the envelope for the Geometry.
@@ -111,7 +107,7 @@ public private:
 	FdoGeometryCollection *GetImpObj();
 
 protected:
-	__sealed System::Void Dispose(System::Boolean disposing);
+	__sealed System::Void ReleaseUnmanagedObject();
 
 private:
 

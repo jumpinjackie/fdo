@@ -83,18 +83,11 @@ System::Void NAMESPACE_OSGEO_COMMON::DictionaryElementCollection::CopyTo(Diction
 	}
 }
 
-System::Void NAMESPACE_OSGEO_COMMON::DictionaryElementCollection::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_COMMON::DictionaryElementCollection::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 System::Object* NAMESPACE_OSGEO_COMMON::DictionaryElementCollection::ICollection::get_SyncRoot()

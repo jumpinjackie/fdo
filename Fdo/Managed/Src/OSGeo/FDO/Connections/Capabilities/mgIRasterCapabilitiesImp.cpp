@@ -33,18 +33,11 @@ FdoIRasterCapabilities* NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IRasterCap
     return static_cast<FdoIRasterCapabilities*>(__super::UnmanagedObject.ToPointer());
 }
 
-Void NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IRasterCapabilitiesImp::Dispose(Boolean disposing)
+Void NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IRasterCapabilitiesImp::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 System::Boolean NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IRasterCapabilitiesImp::SupportsRaster ()

@@ -37,9 +37,10 @@ NAMESPACE_OSGEO_GEOMETRY::IDirectPositionImp::IDirectPositionImp(System::IntPtr 
 {
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::IDirectPositionImp::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_GEOMETRY::IDirectPositionImp::ReleaseUnmanagedObject()
 {
-	EXCEPTION_HANDLER(GetImpObj()->Release());
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release());
 }
 
 System::Double NAMESPACE_OSGEO_GEOMETRY::IDirectPositionImp::get_X()
@@ -90,18 +91,11 @@ NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::DirectPositionCollection()
 {
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::ICollection::CopyTo(System::Array *array, System::Int32 index)

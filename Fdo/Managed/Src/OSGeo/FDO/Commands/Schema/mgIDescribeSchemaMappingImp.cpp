@@ -66,8 +66,3 @@ NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMappingCollection* NAMESPACE_
 
 	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePhysicalSchemaMappingCollection(result, true);
 }
-
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDescribeSchemaMappingImp::Dispose()
-{
-	NAMESPACE_OSGEO_RUNTIME::Disposable::Dispose();
-}

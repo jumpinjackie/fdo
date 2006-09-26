@@ -79,7 +79,7 @@ public:
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::DataType get_DataType();
 
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 
 public private:
 	ArgumentDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);

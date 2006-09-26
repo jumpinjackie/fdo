@@ -52,8 +52,3 @@ NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockedObjectReader* NAMESPACE_OSGEO_FDO_C
 
     return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILockedObjectReader(result, true);
 }
-
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IGetLockedObjectsImp::Dispose()
-{
-	NAMESPACE_OSGEO_RUNTIME::Disposable::Dispose();
-}

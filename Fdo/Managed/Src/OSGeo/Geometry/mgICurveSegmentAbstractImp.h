@@ -38,12 +38,9 @@ public __gc class ICurveSegmentAbstractImp
 public:
 	ICurveSegmentAbstractImp(IntPtr unmanaged, Boolean autoDelete);
 	
-	System::Void Dispose()
-	{
-		Disposable::Dispose();
-	}
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
+
 public:
     /// \brief
     /// Gets the envelope for the curve segment.
@@ -125,7 +122,7 @@ public private:
 	FdoCurveSegmentCollection *GetImpObj();
 
 protected:
-	__sealed System::Void Dispose(System::Boolean disposing);
+	__sealed System::Void ReleaseUnmanagedObject();
 
 private:
 

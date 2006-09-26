@@ -32,18 +32,11 @@ FdoISchemaCapabilities* NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ISchemaCap
     return static_cast<FdoISchemaCapabilities*>(__super::UnmanagedObject.ToPointer());
 }
 
-Void NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ISchemaCapabilitiesImp::Dispose(Boolean disposing)
+Void NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ISchemaCapabilitiesImp::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 NAMESPACE_OSGEO_FDO_SCHEMA::ClassType NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ISchemaCapabilitiesImp::get_ClassTypes() []

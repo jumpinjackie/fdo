@@ -54,18 +54,11 @@ FdoXmlReader* NAMESPACE_OSGEO_COMMON_XML::XmlReader::GetImpObj()
 	return static_cast<FdoXmlReader*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::Void NAMESPACE_OSGEO_COMMON_XML::XmlReader::Dispose(Boolean disposing)
+System::Void NAMESPACE_OSGEO_COMMON_XML::XmlReader::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 IoTextReader* NAMESPACE_OSGEO_COMMON_XML::XmlReader::get_TextReader()

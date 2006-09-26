@@ -52,8 +52,3 @@ NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionCheckpointReader* 
 
     return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILongTransactionCheckpointReader(result, true);
 }
-
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IGetLongTransactionCheckpointsImp::Dispose()
-{
-	NAMESPACE_OSGEO_RUNTIME::Disposable::Dispose();
-}

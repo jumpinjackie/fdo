@@ -34,7 +34,7 @@ public:
 	StringElement(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 
 public private:
 	inline FdoStringElement* GetImpObj();

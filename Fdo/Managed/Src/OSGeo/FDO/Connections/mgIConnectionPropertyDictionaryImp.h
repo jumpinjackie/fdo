@@ -146,7 +146,7 @@ public:
 	System::String* GetLocalizedName(System::String* name);
 
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 
 public private:
 	IConnectionPropertyDictionaryImp(System::IntPtr unmanaged, System::Boolean autoDelete);

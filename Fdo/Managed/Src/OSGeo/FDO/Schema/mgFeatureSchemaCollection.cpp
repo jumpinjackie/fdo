@@ -30,18 +30,11 @@
 #include "FDO\mgIDisposableCollection.h"
 #include "FDO\Commands\Schema\mgPhysicalSchemaMappingCollection.h"
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchemaCollection::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchemaCollection::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 FdoFeatureSchemaCollection* NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchemaCollection::GetImpObj()

@@ -52,8 +52,3 @@ NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchemaCollection* NAMESPACE_OSGEO_FDO_COMMAND
 
 	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateFeatureSchemaCollection(result, true);
 }
-
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDescribeSchemaImp::Dispose()
-{
-	NAMESPACE_OSGEO_RUNTIME::Disposable::Dispose();
-}

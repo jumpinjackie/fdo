@@ -62,16 +62,9 @@ System::Void NAMESPACE_OSGEO_COMMON_IO::IoTextWriter::WriteLine(System::String *
 	EXCEPTION_HANDLER(GetImpObj()->WriteLine(StringToUni(data)))
 }
 
-System::Void NAMESPACE_OSGEO_COMMON_IO::IoTextWriter::Dispose(Boolean disposing)
+System::Void NAMESPACE_OSGEO_COMMON_IO::IoTextWriter::ReleaseUnmanagedObject()
 {
-	if (disposing) 
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		GetImpObj()->Release();
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }

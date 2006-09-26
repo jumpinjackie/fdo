@@ -52,8 +52,3 @@ NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionReader* NAMESPACE_
 
     return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILongTransactionReader(result, true);
 }
-
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IGetLongTransactionsImp::Dispose()
-{
-	NAMESPACE_OSGEO_RUNTIME::Disposable::Dispose();
-}

@@ -27,18 +27,11 @@
 #include "FDO\Schema\mgFeatureSchema.h"
 #include "FDO\Schema\mgSchemaAttributeDictionary.h"
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 FdoSchemaElement* NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement::GetImpObj()

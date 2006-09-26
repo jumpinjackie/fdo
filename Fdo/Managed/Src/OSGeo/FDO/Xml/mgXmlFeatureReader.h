@@ -350,8 +350,6 @@ public:
     /// 
 	System::Void Close();
 
-	System::Void Dispose();
-
 public private:
 	XmlFeatureReader(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_XML::XmlFeatureHandler(unmanaged, autoDelete)
 	{

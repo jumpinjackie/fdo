@@ -72,7 +72,7 @@ public:
 	__property System::Void set_Value(String* value);
 
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 
 public private:
 	inline FdoDictionaryElement* GetImpObj();

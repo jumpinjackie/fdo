@@ -117,8 +117,6 @@ public:
     /// 
 	NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader* Execute();
 
-	System::Void Dispose();
-
 public private:
 	IInsertImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp(unmanaged, autoDelete)
 	{

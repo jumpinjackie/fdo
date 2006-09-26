@@ -312,7 +312,7 @@ public private:
 	inline FdoXmlFeatureFlags* GetImpObj();
 	
 protected:
-    virtual System::Void Dispose(System::Boolean disposing);
+    virtual System::Void ReleaseUnmanagedObject();
 };
 
 END_NAMESPACE_OSGEO_FDO_XML

@@ -52,16 +52,9 @@ NAMESPACE_OSGEO_COMMON_IO::IoStream* NAMESPACE_OSGEO_COMMON_IO::IoTextReader::ge
 	return ObjectFactory::CreateIoStream(stream, true);
 }
 
-System::Void NAMESPACE_OSGEO_COMMON_IO::IoTextReader::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_COMMON_IO::IoTextReader::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		GetImpObj()->Release();
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }

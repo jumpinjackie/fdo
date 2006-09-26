@@ -31,18 +31,11 @@ NAMESPACE_OSGEO_SPATIAL::SpatialGridTransform::SpatialGridTransform(System::IntP
 
 }
 
-Void NAMESPACE_OSGEO_SPATIAL::SpatialGridTransform::Dispose(Boolean disposing)
+Void NAMESPACE_OSGEO_SPATIAL::SpatialGridTransform::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 NAMESPACE_OSGEO_SPATIAL::SpatialGridTransform::SpatialGridTransform(NAMESPACE_OSGEO_GEOMETRY::IEnvelope* extents, System::Double tolerance)

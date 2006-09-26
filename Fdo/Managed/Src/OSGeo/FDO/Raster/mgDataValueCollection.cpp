@@ -84,18 +84,11 @@ System::Void NAMESPACE_OSGEO_FDO_RASTER::DataValueCollection::CopyTo(DataValue* 
 	}
 }
 
-System::Void NAMESPACE_OSGEO_FDO_RASTER::DataValueCollection::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_FDO_RASTER::DataValueCollection::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 System::Object* NAMESPACE_OSGEO_FDO_RASTER::DataValueCollection::ICollection::get_SyncRoot()

@@ -59,9 +59,6 @@ public:
     /// 
 	System::Void Execute();
 
-
-	System::Void Dispose();
-
 public private:
 	IDestroyMeasureUnitImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp(unmanaged, autoDelete)
 	{

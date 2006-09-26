@@ -25,18 +25,11 @@
 #include "FDO\Xml\mgXmlNameCollectionHandler.h"
 #include "FDO\mgObjectFactory.h"
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlNameCollectionHandler::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlNameCollectionHandler::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 NAMESPACE_OSGEO_FDO_XML::XmlNameCollectionHandler::XmlNameCollectionHandler() : NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler(System::IntPtr::Zero, false)

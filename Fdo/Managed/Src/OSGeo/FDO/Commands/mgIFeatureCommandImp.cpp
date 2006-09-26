@@ -68,8 +68,3 @@ System::Void NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp::SetFilter(System:
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetFilter(StringToUni(value)))
 }
-
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp::Dispose()
-{
-	NAMESPACE_OSGEO_RUNTIME::Disposable::Dispose();
-}

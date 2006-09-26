@@ -35,18 +35,11 @@ FdoExpression* NAMESPACE_OSGEO_FDO_EXPRESSION::Expression::GetImpObj()
 	return static_cast<FdoExpression*>(__super::UnmanagedObject.ToPointer());
 }
 
-Void NAMESPACE_OSGEO_FDO_EXPRESSION::Expression::Dispose(Boolean disposing)
+Void NAMESPACE_OSGEO_FDO_EXPRESSION::Expression::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* NAMESPACE_OSGEO_FDO_EXPRESSION::Expression::Parse(System::String* expressionText)

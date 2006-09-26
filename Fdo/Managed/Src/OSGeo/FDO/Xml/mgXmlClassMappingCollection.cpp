@@ -26,18 +26,11 @@
 #include "FDO\Xml\mgXmlClassMapping.h"
 #include "FDO\Commands\Schema\mgPhysicalElementMapping.h"
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlClassMappingCollection::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlClassMappingCollection::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-			Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 NAMESPACE_OSGEO_FDO_XML::XmlClassMappingCollection::XmlClassMappingCollection(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping* parent) : Disposable(System::IntPtr::Zero, false)

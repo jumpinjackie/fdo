@@ -84,18 +84,11 @@ System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::DataValueCollection::CopyTo(NAMESPA
 	}
 }
 
-System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::DataValueCollection::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::DataValueCollection::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 System::Object* NAMESPACE_OSGEO_FDO_EXPRESSION::DataValueCollection::ICollection::get_SyncRoot()

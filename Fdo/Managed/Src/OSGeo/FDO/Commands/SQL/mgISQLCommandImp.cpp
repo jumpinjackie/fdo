@@ -66,8 +66,3 @@ NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReader* NAMESPACE_OSGEO_FDO_COMMANDS_S
 
     return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateISQLDataReader(result, true);
 }
-
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLCommandImp::Dispose()
-{
-	NAMESPACE_OSGEO_RUNTIME::Disposable::Dispose();
-}

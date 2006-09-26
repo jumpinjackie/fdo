@@ -35,18 +35,11 @@ FdoSignatureDefinition* NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureD
     return static_cast<FdoSignatureDefinition*>(__super::UnmanagedObject.ToPointer());
 }
 
-Void NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinition::Dispose(Boolean disposing)
+Void NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinition::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinition::SignatureDefinition(
@@ -151,18 +144,11 @@ System::Void NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinitionCo
 	}
 }
 
-System::Void NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinitionCollection::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinitionCollection::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 System::Object* NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinitionCollection::ICollection::get_SyncRoot()
@@ -355,18 +341,11 @@ FdoReadOnlySignatureDefinitionCollection *NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABI
     return static_cast<FdoReadOnlySignatureDefinitionCollection*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::Void NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlySignatureDefinitionCollection::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlySignatureDefinitionCollection::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 System::Void NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlySignatureDefinitionCollection::ICollection::CopyTo(System::Array *array,

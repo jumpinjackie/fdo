@@ -73,18 +73,11 @@ NAMESPACE_OSGEO_GEOMETRY::CurvePolygonCollection::CurvePolygonCollection()
 {
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::CurvePolygonCollection::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_GEOMETRY::CurvePolygonCollection::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 System::Void NAMESPACE_OSGEO_GEOMETRY::CurvePolygonCollection::ICollection::CopyTo(System::Array *array, System::Int32 index)

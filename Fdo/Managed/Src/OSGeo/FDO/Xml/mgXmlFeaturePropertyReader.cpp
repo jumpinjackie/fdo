@@ -30,18 +30,11 @@
 #include "FDO\Xml\mgXmlFeatureHandler.h"
 #include "FDO\Schema\mgFeatureSchemaCollection.h"
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyReader::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyReader::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyReader::XmlFeaturePropertyReader(NAMESPACE_OSGEO_COMMON_XML::XmlReader* reader) : NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler(System::IntPtr::Zero, false)

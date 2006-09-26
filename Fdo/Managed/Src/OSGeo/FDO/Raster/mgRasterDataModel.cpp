@@ -34,18 +34,11 @@ FdoRasterDataModel* NAMESPACE_OSGEO_FDO_RASTER::RasterDataModel::GetImpObj()
 	return static_cast<FdoRasterDataModel*>(__super::UnmanagedObject.ToPointer());
 }
 
-Void NAMESPACE_OSGEO_FDO_RASTER::RasterDataModel::Dispose(Boolean disposing)
+Void NAMESPACE_OSGEO_FDO_RASTER::RasterDataModel::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 NAMESPACE_OSGEO_FDO_RASTER::RasterDataModel::RasterDataModel() : Disposable(IntPtr::Zero, false)

@@ -122,7 +122,7 @@ public private:
 	inline FdoClassCapabilities* GetImpObj();
 
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 
 private:
 	typedef FdoArray<FdoLockType> FdoLockTypeArray;

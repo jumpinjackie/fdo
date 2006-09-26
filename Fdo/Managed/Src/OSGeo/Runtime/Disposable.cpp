@@ -61,13 +61,20 @@ NAMESPACE_OSGEO_RUNTIME::Disposable::Disposable(System::IntPtr unmanagedPointer,
 
 NAMESPACE_OSGEO_RUNTIME::Disposable::~Disposable()
 {
-	Dispose(false);
+	ReleaseUnmanagedObject();
 }
 
 System::Void NAMESPACE_OSGEO_RUNTIME::Disposable::Dispose()
 {
-	Dispose(true);
-	GC::SuppressFinalize(this);
+	ReleaseUnmanagedObject();
+    GC::SuppressFinalize(this);
+}
+
+System::Void NAMESPACE_OSGEO_RUNTIME::Disposable::ReleaseUnmanagedObject()
+{
+	if (m_bAutoDelete)
+	    EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 System::Void NAMESPACE_OSGEO_RUNTIME::Disposable::Detach()
@@ -123,19 +130,6 @@ System::Int32 NAMESPACE_OSGEO_RUNTIME::Disposable::GetHashCode()
 {
 	System::GC::KeepAlive(this); //make fxcop happy
 	return m_imp.ToInt32();
-}
-
-System::Void NAMESPACE_OSGEO_RUNTIME::Disposable::Dispose(bool disposing)
-{
-	if(!Disposed)
-	{
-		// Release unmanaged resources
-	}
-
-	if (disposing)
-	{
-		// Release managed resources
-	}
 }
 
 FdoIDisposable* NAMESPACE_OSGEO_RUNTIME::Disposable::GetImpObj()

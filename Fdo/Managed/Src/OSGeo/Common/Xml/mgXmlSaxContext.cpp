@@ -38,18 +38,11 @@ FdoXmlSaxContext* NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext::GetImpObj()
 	return static_cast<FdoXmlSaxContext*>(__super::UnmanagedObject.ToPointer());
 }
 
-Void NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext::Dispose(Boolean disposing)
+Void NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	} 
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 NAMESPACE_OSGEO_COMMON_XML::XmlReader* NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext::get_Reader()

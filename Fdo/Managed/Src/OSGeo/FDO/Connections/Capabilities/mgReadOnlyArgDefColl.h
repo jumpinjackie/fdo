@@ -120,7 +120,7 @@ public:
 	__property ArgumentDefinition* get_RealTypeItem(System::String* name);
 
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 };
 
 END_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES

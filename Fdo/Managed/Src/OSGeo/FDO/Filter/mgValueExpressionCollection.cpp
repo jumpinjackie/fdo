@@ -86,18 +86,11 @@ System::Void NAMESPACE_OSGEO_FDO_FILTER::ValueExpressionCollection::CopyTo(Value
 	}
 }
 
-System::Void NAMESPACE_OSGEO_FDO_FILTER::ValueExpressionCollection::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_FDO_FILTER::ValueExpressionCollection::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 System::Object* NAMESPACE_OSGEO_FDO_FILTER::ValueExpressionCollection::ICollection::get_SyncRoot()

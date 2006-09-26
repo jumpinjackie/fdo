@@ -109,7 +109,7 @@ public private:
 	inline FdoXmlSerializable* GetImpObj();
 
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 };
 
 END_NAMESPACE_OSGEO_FDO_XML

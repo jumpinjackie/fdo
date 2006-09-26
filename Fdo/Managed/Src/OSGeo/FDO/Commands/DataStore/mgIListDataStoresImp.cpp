@@ -58,8 +58,3 @@ NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStoreReader* NAMESPACE_OSGEO_FDO_CO
 
     return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIDataStoreReader(result, true);
 }
-
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IListDataStoresImp::Dispose()
-{
-	NAMESPACE_OSGEO_RUNTIME::Disposable::Dispose();
-}

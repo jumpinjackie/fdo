@@ -198,16 +198,9 @@ System::Void NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::Expand(NAMESPACE_OSGEO_GEOM
 	EXCEPTION_HANDLER(GetImpObj()->Expand(tpenvelope));
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-        // Add EnvelopeImpl specific code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }

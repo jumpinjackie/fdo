@@ -191,7 +191,7 @@ public:
 	__property System::Void  set_Item(System::Int32 index, NAMESPACE_OSGEO_FDO_EXPRESSION::ValueExpression* value);
 
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 };
 
 END_NAMESPACE_OSGEO_FDO_EXPRESSION

@@ -45,8 +45,3 @@ System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStorePropertyDictio
 
 	return exist;
 }
-
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStorePropertyDictionaryImp::Dispose()
-{
-	NAMESPACE_OSGEO_RUNTIME::Disposable::Dispose();
-}

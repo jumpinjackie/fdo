@@ -59,7 +59,7 @@ public:
 
 
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 
 public private:
 	SignatureDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);
@@ -231,7 +231,7 @@ public:
 	__property System::Void set_Item(System::Int32 index, NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinition *value);
 
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 };
 
 // -----------------------------------------------------------------------------------------------------
@@ -332,7 +332,7 @@ public:
 	__property SignatureDefinition *get_RealTypeItem(System::String* name);
 
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 
 };
 

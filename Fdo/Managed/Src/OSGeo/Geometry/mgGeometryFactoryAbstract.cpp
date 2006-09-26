@@ -58,9 +58,10 @@ NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::GeometryFactoryAbstract(Syste
 {
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::ReleaseUnmanagedObject()
 {
-	EXCEPTION_HANDLER(GetImpObj()->Release());
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release());
 }
 
 NAMESPACE_OSGEO_GEOMETRY::IDirectPosition* NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreatePositionXY(System::Double coordinateX, System::Double coordinateY)

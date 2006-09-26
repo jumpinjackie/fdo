@@ -149,7 +149,7 @@ public:
 	NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler* DuplicateSubElementError(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* context, System::String* parentElement, System::String* subElement, System::String* subElementName);
 
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 
 public protected:
 	PhysicalElementMapping(System::IntPtr unmanaged, System::Boolean autoDelete);

@@ -71,16 +71,9 @@ FdoXmlAttribute* NAMESPACE_OSGEO_COMMON_XML::XmlAttribute::GetImpObj()
 	return static_cast<FdoXmlAttribute*>(__super::UnmanagedObject.ToPointer());
 }
 
-Void NAMESPACE_OSGEO_COMMON_XML::XmlAttribute::Dispose(Boolean disposing)
+Void NAMESPACE_OSGEO_COMMON_XML::XmlAttribute::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }

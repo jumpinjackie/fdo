@@ -289,7 +289,7 @@ public:
 	System::String* UriToQName( System::String* location, System::String* localName);
 
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 
 public private:
     XmlWriter(System::IntPtr unmanaged, System::Boolean autoDelete);

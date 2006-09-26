@@ -62,8 +62,6 @@ public:
     /// 
 	NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionCheckpointReader* Execute();
 
-	System::Void Dispose();
-
 public private:
 	IGetLongTransactionCheckpointsImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp(unmanaged, autoDelete)
 	{

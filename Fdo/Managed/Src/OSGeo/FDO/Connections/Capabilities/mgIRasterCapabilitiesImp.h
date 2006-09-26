@@ -82,7 +82,7 @@ public:
 	System::Boolean SupportsDataModel (NAMESPACE_OSGEO_FDO_RASTER::RasterDataModel* model);
 
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 
 public private:
 	IRasterCapabilitiesImp(System::IntPtr unmanaged, System::Boolean autoDelete);

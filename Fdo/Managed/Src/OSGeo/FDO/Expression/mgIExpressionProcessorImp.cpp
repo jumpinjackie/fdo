@@ -32,16 +32,9 @@ FdoIExpressionProcessor* NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessorImp
 	return static_cast<FdoIExpressionProcessor*>(__super::UnmanagedObject.ToPointer());
 }
 
-Void NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessorImp::Dispose(Boolean disposing)
+Void NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessorImp::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }

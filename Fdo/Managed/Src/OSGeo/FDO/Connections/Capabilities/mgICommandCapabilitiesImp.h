@@ -104,7 +104,7 @@ public:
 	System::Boolean SupportsSelectGrouping();
 
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 
 public private:
 	ICommandCapabilitiesImp(System::IntPtr unmanaged, System::Boolean autoDelete);

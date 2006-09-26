@@ -32,18 +32,11 @@ FdoIFilterCapabilities* NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IFilterCap
     return static_cast<FdoIFilterCapabilities*>(__super::UnmanagedObject.ToPointer());
 }
 
-Void NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IFilterCapabilitiesImp::Dispose(Boolean disposing)
+Void NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IFilterCapabilitiesImp::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 NAMESPACE_OSGEO_FDO_FILTER::ConditionType NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IFilterCapabilitiesImp::get_ConditionTypes() []

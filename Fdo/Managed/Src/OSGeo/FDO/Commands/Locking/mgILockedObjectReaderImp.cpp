@@ -25,18 +25,11 @@
 #include "FDO\mgObjectFactory.h"
 #include "FDO\Commands\mgPropertyValueCollection.h"
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockedObjectReaderImp::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockedObjectReaderImp::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-			Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 FdoILockedObjectReader* NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockedObjectReaderImp::GetImpObj()

@@ -42,9 +42,10 @@ NAMESPACE_OSGEO_GEOMETRY::ICurveSegmentAbstractImp::ICurveSegmentAbstractImp(Sys
 {
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::ICurveSegmentAbstractImp::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_GEOMETRY::ICurveSegmentAbstractImp::ReleaseUnmanagedObject()
 {
-	EXCEPTION_HANDLER(GetImpObj()->Release());
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release());
 }
 
 NAMESPACE_OSGEO_GEOMETRY::IEnvelope *NAMESPACE_OSGEO_GEOMETRY::ICurveSegmentAbstractImp::get_Envelope()
@@ -101,18 +102,11 @@ NAMESPACE_OSGEO_GEOMETRY::CurveSegmentCollection::CurveSegmentCollection()
 {
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::CurveSegmentCollection::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_GEOMETRY::CurveSegmentCollection::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-			Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 System::Void NAMESPACE_OSGEO_GEOMETRY::CurveSegmentCollection::ICollection::CopyTo(System::Array *array, System::Int32 index)

@@ -44,8 +44,3 @@ System::Void NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::ICreateDataStoreImp::Execut
 {
 	EXCEPTION_HANDLER(GetImpObj()->Execute())
 }
-
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::ICreateDataStoreImp::Dispose()
-{
-	NAMESPACE_OSGEO_RUNTIME::Disposable::Dispose();
-}

@@ -45,8 +45,3 @@ System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::IDestroySpatialContext
 {
 	EXCEPTION_HANDLER(GetImpObj()->Execute())
 }
-
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::IDestroySpatialContextImp::Dispose()
-{
-	NAMESPACE_OSGEO_RUNTIME::Disposable::Dispose();
-}

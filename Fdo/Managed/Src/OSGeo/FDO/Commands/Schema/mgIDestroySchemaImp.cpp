@@ -45,8 +45,3 @@ System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDestroySchemaImp::Execute()
 {
 	EXCEPTION_HANDLER(GetImpObj()->Execute())
 }
-
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDestroySchemaImp::Dispose()
-{
-	NAMESPACE_OSGEO_RUNTIME::Disposable::Dispose();
-}

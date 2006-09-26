@@ -95,7 +95,7 @@ public private:
 	inline FdoILongTransactionCheckpointReader* GetImpObj();
 
 protected:
-		System::Void Dispose(System::Boolean disposing);
+		System::Void ReleaseUnmanagedObject();
 
 };
 

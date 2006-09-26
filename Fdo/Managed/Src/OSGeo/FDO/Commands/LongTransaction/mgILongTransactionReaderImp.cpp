@@ -29,18 +29,11 @@ FdoILongTransactionReader* NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTr
     return static_cast<FdoILongTransactionReader*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionReaderImp::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionReaderImp::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-			Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 

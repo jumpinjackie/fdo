@@ -37,18 +37,11 @@ FdoProviderRegistry* NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderRegistry::GetIm
 	return static_cast<FdoProviderRegistry*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::Void NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderRegistry::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderRegistry::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection* NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderRegistry::GetProviders()

@@ -49,18 +49,11 @@ FdoIConnection* NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionImp::GetImpObj()
     return static_cast<FdoIConnection*>(__super::UnmanagedObject.ToPointer());
 }
 
-Void NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionImp::Dispose(Boolean disposing)
+Void NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionImp::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IConnectionCapabilities* NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionImp::get_ConnectionCapabilities()

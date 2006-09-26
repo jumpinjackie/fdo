@@ -31,18 +31,11 @@ FdoIStreamReader* NAMESPACE_OSGEO_COMMON::IStreamReaderImp::GetImpObj()
 	return static_cast<FdoIStreamReader*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::Void NAMESPACE_OSGEO_COMMON::IStreamReaderImp::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_COMMON::IStreamReaderImp::ReleaseUnmanagedObject()
 {
-	if (disposing) 
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		GetImpObj()->Release();
-		Detach();
-	} 
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 NAMESPACE_OSGEO_COMMON::StreamReaderType NAMESPACE_OSGEO_COMMON::IStreamReaderImp::get_Type()

@@ -76,8 +76,6 @@ public:
     /// 
 	NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchemaCollection* Execute();
 
-	System::Void Dispose();
-
 public private:
 	IDescribeSchemaImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp(unmanaged, autoDelete)
 	{

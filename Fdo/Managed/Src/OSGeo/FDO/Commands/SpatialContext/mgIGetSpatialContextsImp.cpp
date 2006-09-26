@@ -52,8 +52,3 @@ NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::ISpatialContextReader* NAMESPACE_OS
 
     return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateISpatialContextReader(result, true);
 }
-
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::IGetSpatialContextsImp::Dispose()
-{
-	NAMESPACE_OSGEO_RUNTIME::Disposable::Dispose();
-}

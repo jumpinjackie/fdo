@@ -64,7 +64,7 @@ private:
 	__property System::Boolean System::Collections::ICollection::get_IsSynchronized();
 
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 
 public:
 	ReadOnlyPropertyDefinitionCollection(NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection* parent);

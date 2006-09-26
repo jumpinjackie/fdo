@@ -25,18 +25,11 @@
 #include "FDO\mgObjectFactory.h"
 #include "FDO\Commands\mgParameterValueCollection.h"
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS::BatchParameterValueCollection::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS::BatchParameterValueCollection::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-			Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 FdoBatchParameterValueCollection* NAMESPACE_OSGEO_FDO_COMMANDS::BatchParameterValueCollection::GetImpObj()

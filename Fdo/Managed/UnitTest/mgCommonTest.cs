@@ -56,6 +56,8 @@ namespace Fdo_Test
 
         public void testDictionary()
         {
+            Console.WriteLine("start mgCommonTest.testDictionary");
+
             bool failed = false;
             DictionaryElementCollection dictionary = new DictionaryElementCollection();
 

@@ -38,8 +38,3 @@ NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockOwnersReader* NAMESPACE_OSGEO_FDO_COM
 
     return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILockOwnersReader(result, true);
 }
-
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IGetLockOwnersImp::Dispose()
-{
-	NAMESPACE_OSGEO_RUNTIME::Disposable::Dispose();
-}

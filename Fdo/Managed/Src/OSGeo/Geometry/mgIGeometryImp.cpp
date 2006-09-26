@@ -40,18 +40,11 @@ NAMESPACE_OSGEO_GEOMETRY::IGeometryImp::IGeometryImp(System::IntPtr unmanaged, S
 }
 
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::IGeometryImp::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_GEOMETRY::IGeometryImp::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-			Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 NAMESPACE_OSGEO_GEOMETRY::IEnvelope *NAMESPACE_OSGEO_GEOMETRY::IGeometryImp::get_Envelope()
@@ -95,18 +88,11 @@ NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::GeometryCollection()
 {
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-			Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 System::Void NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::ICollection::CopyTo(System::Array *array, System::Int32 index)

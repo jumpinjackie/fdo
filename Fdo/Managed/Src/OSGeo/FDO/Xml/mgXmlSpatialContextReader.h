@@ -161,8 +161,6 @@ public:
     /// 
 	System::Boolean ReadNext();
 
-	System::Void Dispose();
-
 public private:
 	XmlSpatialContextReader(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler(unmanaged, autoDelete)
 	{
@@ -172,7 +170,7 @@ public private:
 	inline FdoXmlSpatialContextReader* GetImpObj();
 
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 };
 
 END_NAMESPACE_OSGEO_FDO_XML

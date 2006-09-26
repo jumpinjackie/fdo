@@ -139,7 +139,7 @@ public:
     __property System::Boolean get_IsAggregate();
 
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 
 public private:
 	FunctionDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);

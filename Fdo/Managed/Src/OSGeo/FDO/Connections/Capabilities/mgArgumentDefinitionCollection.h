@@ -186,7 +186,7 @@ public:
 	__property System::Void  set_Item(System::Int32 index, ArgumentDefinition* value);
 
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 };
 
 END_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES

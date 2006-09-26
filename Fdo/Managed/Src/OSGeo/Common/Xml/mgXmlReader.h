@@ -188,7 +188,7 @@ public:
 	System::String* PrefixToUri( System::String* prefix );	
 
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 
 public private:
     XmlReader(System::IntPtr unmanaged, System::Boolean autoDelete);

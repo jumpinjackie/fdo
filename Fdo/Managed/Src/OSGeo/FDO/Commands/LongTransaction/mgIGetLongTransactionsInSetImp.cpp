@@ -38,8 +38,3 @@ NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionSetReader* NAMESPA
 
     return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILongTransactionSetReader(result, true);
 }
-
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IGetLongTransactionsInSetImp::Dispose()
-{
-	NAMESPACE_OSGEO_RUNTIME::Disposable::Dispose();
-}

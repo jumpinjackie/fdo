@@ -65,8 +65,6 @@ public:
     /// 
 	NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionReader* Execute();
 
-	System::Void Dispose();
-
 public private:
 	IGetLongTransactionsImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp(unmanaged, autoDelete)
 	{

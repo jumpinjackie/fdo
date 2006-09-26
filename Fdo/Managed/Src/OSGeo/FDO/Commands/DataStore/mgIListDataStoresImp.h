@@ -60,8 +60,6 @@ public:
     /// 
 	NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStoreReader* Execute();
 
-	System::Void Dispose();
-
 public private:
 	IListDataStoresImp(System::IntPtr unmanaged, System::Boolean autoDelete);
 

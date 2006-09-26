@@ -37,18 +37,11 @@ FdoIRasterPropertyDictionary* NAMESPACE_OSGEO_FDO_RASTER::IRasterPropertyDiction
 	return static_cast<FdoIRasterPropertyDictionary*>(__super::UnmanagedObject.ToPointer());
 }
 
-Void NAMESPACE_OSGEO_FDO_RASTER::IRasterPropertyDictionaryImp::Dispose(Boolean disposing)
+Void NAMESPACE_OSGEO_FDO_RASTER::IRasterPropertyDictionaryImp::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 NAMESPACE_OSGEO_COMMON::StringCollection* NAMESPACE_OSGEO_FDO_RASTER::IRasterPropertyDictionaryImp::get_PropertyNames ()

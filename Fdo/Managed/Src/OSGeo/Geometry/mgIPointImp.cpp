@@ -75,18 +75,11 @@ NAMESPACE_OSGEO_GEOMETRY::PointCollection::PointCollection()
 {
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::PointCollection::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_GEOMETRY::PointCollection::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-			Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 System::Void NAMESPACE_OSGEO_GEOMETRY::PointCollection::ICollection::CopyTo(System::Array *array, System::Int32 index)

@@ -16,7 +16,6 @@
 *
 */
 
-
 #pragma once
 
 #include "mgIEnvelope.h"
@@ -40,12 +39,9 @@ public __gc class IEnvelopeImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, pub
 public:
 	IEnvelopeImp(System::IntPtr unmanaged, System::Boolean autoDelete);
 
-	System::Void Dispose()
-	{
-		Disposable::Dispose();
-	}
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
+
 public:
     /// \brief
     /// Gets the minimum X coordinate value.

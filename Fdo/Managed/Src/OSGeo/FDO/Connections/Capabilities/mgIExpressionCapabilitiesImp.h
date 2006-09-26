@@ -50,7 +50,7 @@ public:
 	__property NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinitionCollection* get_Functions();
 
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 
 public private:
 	IExpressionCapabilitiesImp(System::IntPtr unmanaged, System::Boolean autoDelete);

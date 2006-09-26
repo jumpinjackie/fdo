@@ -137,7 +137,7 @@ public:
 	System::Boolean ReadNext();
 
 protected:
-	__sealed System::Void Dispose(System::Boolean disposing);
+	__sealed System::Void ReleaseUnmanagedObject();
 
 public private:
 	ISpatialContextReaderImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_RUNTIME::Disposable(unmanaged, autoDelete)

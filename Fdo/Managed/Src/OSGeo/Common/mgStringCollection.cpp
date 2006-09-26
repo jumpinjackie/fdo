@@ -112,18 +112,11 @@ System::Void NAMESPACE_OSGEO_COMMON::StringCollection::CopyTo(StringElement* arr
 	}
 }
 
-System::Void NAMESPACE_OSGEO_COMMON::StringCollection::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_COMMON::StringCollection::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-
-	}
-
-	if (!Disposed)
-	{
-		GetImpObj()->Release();
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 System::Object* NAMESPACE_OSGEO_COMMON::StringCollection::ICollection::get_SyncRoot()

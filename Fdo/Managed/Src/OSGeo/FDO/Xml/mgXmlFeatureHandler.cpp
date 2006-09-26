@@ -30,18 +30,11 @@
 #include "FDO\Schema\mgClassDefinition.h"
 #include "FDO\Xml\mgXmlFeatureContext.h"
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeatureHandler::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeatureHandler::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		delete GetImpObj();
-		Detach();
-	}
+	if (get_AutoDelete())
+        delete GetImpObj();
+	Detach();
 }
 
 FdoXmlFeatureHandler* NAMESPACE_OSGEO_FDO_XML::XmlFeatureHandler::GetImpObj()

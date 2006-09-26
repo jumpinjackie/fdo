@@ -98,11 +98,6 @@ System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader::set_FeatureSchemas(NAMES
 	EXCEPTION_HANDLER(GetImpObj()->SetFeatureSchemas(schemas->GetImpObj()))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader::Dispose()
-{
-	NAMESPACE_OSGEO_RUNTIME::Disposable::Dispose();
-}
-
 /*
 	IFeatureReader implementation
 */

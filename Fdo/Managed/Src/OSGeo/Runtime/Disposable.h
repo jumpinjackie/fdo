@@ -43,15 +43,12 @@ public:
 
 protected:
     Disposable();
-
-    //[System::Security::Permissions::SecurityPermissionAttribute(System::Security::Permissions::SecurityAction::LinkDemand , Flags = System::Security::Permissions::SecurityPermissionFlag::UnmanagedCode)]
     Disposable(System::IntPtr unmanagedPointer, System::Boolean autoDelete);
     virtual ~Disposable();
+    virtual System::Void ReleaseUnmanagedObject();
 
 public:
     System::Void Dispose();
-
-public:
     System::Void Detach();
     System::Void Attach(System::IntPtr unmanagedPointer, System::Boolean autoDelete);
     virtual System::Boolean Equals(System::Object* obj);
@@ -61,9 +58,6 @@ public:
 
 public private:
 	inline FdoIDisposable* GetImpObj();
-
-protected:
-    virtual System::Void Dispose(System::Boolean disposing);
 };
 
 END_NAMESPACE_OSGEO_RUNTIME

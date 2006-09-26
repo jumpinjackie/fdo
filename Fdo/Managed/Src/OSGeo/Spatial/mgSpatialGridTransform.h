@@ -75,7 +75,7 @@ public:
 	System::Void TransformFromGrid(System::Int64 gridX, System::Int64 gridY, System::Double* coordinateX, System::Double* coordinateY);
 
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 
 public:
 	SpatialGridTransform(System::IntPtr unmanaged, System::Boolean autoDelete);

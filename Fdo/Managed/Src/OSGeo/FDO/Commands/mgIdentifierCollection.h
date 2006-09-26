@@ -237,7 +237,7 @@ public:
 	NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier* GetItem(System::Int32 index);
 
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 };
 
 END_NAMESPACE_OSGEO_FDO_COMMANDS

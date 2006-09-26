@@ -36,7 +36,7 @@ public:
 	__property StreamReaderType get_Type();
 
 protected:
-	__sealed System::Void Dispose(System::Boolean disposing);
+	__sealed System::Void ReleaseUnmanagedObject();
 
 public private:
 	inline  FdoIStreamReader* GetImpObj();

@@ -37,12 +37,8 @@ public __gc class IRingAbstractImp :
 public:
 	IRingAbstractImp(System::IntPtr unmanaged, System::Boolean autoDelete);
 
-	System::Void Dispose()
-	{
-		Disposable::Dispose();
-	}
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 	
 public:
     /// \brief

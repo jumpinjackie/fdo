@@ -33,18 +33,11 @@ NAMESPACE_OSGEO_FDO_SCHEMA::ClassCapabilities::ClassCapabilities(System::IntPtr 
 
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::ClassCapabilities::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::ClassCapabilities::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 NAMESPACE_OSGEO_FDO_SCHEMA::ClassCapabilities::ClassCapabilities(NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition* parent) : NAMESPACE_OSGEO_RUNTIME::Disposable(System::IntPtr::Zero, false)

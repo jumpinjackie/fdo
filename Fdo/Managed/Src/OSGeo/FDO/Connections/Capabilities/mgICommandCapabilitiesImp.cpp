@@ -32,18 +32,11 @@ FdoICommandCapabilities* NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ICommandC
     return static_cast<FdoICommandCapabilities*>(__super::UnmanagedObject.ToPointer());
 }
 
-Void NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ICommandCapabilitiesImp::Dispose(Boolean disposing)
+Void NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ICommandCapabilitiesImp::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 System::Int32 NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ICommandCapabilitiesImp::get_Commands() []

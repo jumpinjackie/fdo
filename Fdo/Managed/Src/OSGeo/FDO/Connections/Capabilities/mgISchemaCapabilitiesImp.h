@@ -291,7 +291,7 @@ public:
 
 
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 
 public private:
 	ISchemaCapabilitiesImp(System::IntPtr unmanaged, System::Boolean autoDelete);

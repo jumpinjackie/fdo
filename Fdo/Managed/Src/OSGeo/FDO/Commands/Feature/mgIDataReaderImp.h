@@ -80,8 +80,6 @@ public:
     /// 
 	NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType GetPropertyType(System::String* name);
 
-	System::Void Dispose();
-
 public private:
 	IDataReaderImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp(unmanaged, autoDelete)
 	{

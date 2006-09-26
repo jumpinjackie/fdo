@@ -274,7 +274,7 @@ public:
 	System::Void Close();
 
 protected:
-	__sealed System::Void Dispose(System::Boolean disposing);
+	__sealed System::Void ReleaseUnmanagedObject();
 
 public private:
 	ISQLDataReaderImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_RUNTIME::Disposable(unmanaged, autoDelete)

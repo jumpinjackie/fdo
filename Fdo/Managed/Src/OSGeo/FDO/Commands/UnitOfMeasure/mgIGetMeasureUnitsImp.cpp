@@ -38,8 +38,3 @@ NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::IMeasureUnitReader* NAMESPACE_OSGEO_
 
 	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIMeasureUnitReader(result, true);
 }
-
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::IGetMeasureUnitsImp::Dispose()
-{
-	NAMESPACE_OSGEO_RUNTIME::Disposable::Dispose();
-}

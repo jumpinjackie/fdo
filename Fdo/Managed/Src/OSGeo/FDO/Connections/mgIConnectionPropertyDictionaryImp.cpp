@@ -32,18 +32,11 @@ FdoIConnectionPropertyDictionary* NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionPr
     return static_cast<FdoIConnectionPropertyDictionary*>(__super::UnmanagedObject.ToPointer());
 }
 
-Void NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionPropertyDictionaryImp::Dispose(Boolean disposing)
+Void NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionPropertyDictionaryImp::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 System::String* NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionPropertyDictionaryImp::get_PropertyNames() []

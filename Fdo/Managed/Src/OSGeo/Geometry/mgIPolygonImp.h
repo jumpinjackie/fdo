@@ -85,7 +85,7 @@ public private:
 	FdoPolygonCollection *GetImpObj();
 
 protected:
-	__sealed System::Void Dispose(System::Boolean disposing);
+	__sealed System::Void ReleaseUnmanagedObject();
 
 private:
 

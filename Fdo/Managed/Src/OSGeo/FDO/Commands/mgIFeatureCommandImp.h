@@ -105,8 +105,6 @@ public:
     /// 
 	System::Void SetFilter(System::String* value);
 
-	System::Void Dispose();
-
 public private:
 	IFeatureCommandImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp(unmanaged, autoDelete)
 	{

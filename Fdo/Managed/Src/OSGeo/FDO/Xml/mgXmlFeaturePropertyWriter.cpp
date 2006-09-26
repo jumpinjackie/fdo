@@ -37,18 +37,11 @@
 #include "FDO\Schema\mgClassDefinition.h"
 #include "FDO\Expression\mgLOBValue.h"
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::XmlFeaturePropertyWriter(NAMESPACE_OSGEO_COMMON_XML::XmlWriter* writer) : NAMESPACE_OSGEO_RUNTIME::Disposable(System::IntPtr::Zero, false)

@@ -37,18 +37,11 @@ FdoFilter* NAMESPACE_OSGEO_FDO_FILTER::Filter::GetImpObj()
 	return static_cast<FdoFilter*>(__super::UnmanagedObject.ToPointer());
 }
 
-Void NAMESPACE_OSGEO_FDO_FILTER::Filter::Dispose(Boolean disposing)
+Void NAMESPACE_OSGEO_FDO_FILTER::Filter::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 NAMESPACE_OSGEO_FDO_FILTER::Filter* NAMESPACE_OSGEO_FDO_FILTER::Filter::Parse(System::String* filterText)

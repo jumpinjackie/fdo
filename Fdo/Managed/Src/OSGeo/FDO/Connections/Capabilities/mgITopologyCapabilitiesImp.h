@@ -57,7 +57,7 @@ public:
 	System::Boolean ConstrainsFeatureMovements();
 
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 
 public private:
 	ITopologyCapabilitiesImp(System::IntPtr unmanaged, System::Boolean autoDelete);

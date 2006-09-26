@@ -85,16 +85,9 @@ System::Void NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary::Clear()
 	EXCEPTION_HANDLER(GetImpObj()->Clear())
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }

@@ -52,8 +52,3 @@ NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionPrivilegeReader* N
 
     return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILongTransactionPrivilegeReader(result, true);
 }
-
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IGetLongTransactionPrivilegesImp::Dispose()
-{
-	NAMESPACE_OSGEO_RUNTIME::Disposable::Dispose();
-}

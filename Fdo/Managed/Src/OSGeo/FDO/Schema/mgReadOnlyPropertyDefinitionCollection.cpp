@@ -28,18 +28,11 @@
 #include "FDO\Schema\mgSchemaElement.h"
 #include "FDO\Schema\mgPropertyDefinitionCollection.h"
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyPropertyDefinitionCollection::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyPropertyDefinitionCollection::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyPropertyDefinitionCollection::ReadOnlyPropertyDefinitionCollection(NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection* parent) : Disposable(System::IntPtr::Zero, false)

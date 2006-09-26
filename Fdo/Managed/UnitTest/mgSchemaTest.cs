@@ -563,10 +563,11 @@ namespace Fdo_Test
             pFSchema.AcceptChanges();
 
             // NOTE: This is semi-circular because pfeatureclass contains pobjprop, and pobjprop refers to pclass
-            pclass.BaseClass = pfeatureclass;
+            FeatureClass pfeatureclass2 = new FeatureClass("FeatureClass2", "FeatureClass2 Desc");
+            pfeatureclass2.BaseClass = pfeatureclass;
             try
             {
-                pfeatureclass.BaseClass = pclass;
+                pfeatureclass.BaseClass = pfeatureclass2;
                 Debug.Assert(false);  // should never reach this, an exception should be thrown because pclass would become its own grandparent
             }
             catch (OSGeo.Common.Exception)
@@ -576,8 +577,15 @@ namespace Fdo_Test
 
             // TODO: If we leave the semi-circular reference, some memory doesn't get released
             //       when we release the pFSchema.  Do we need a way to break this reference count deadlock?
-            pclass.BaseClass = null;
+            pfeatureclass2.BaseClass = null;
             pFSchema.AcceptChanges();
+
+            // Test Enumerator
+            System.Collections.IEnumerator pEnum = pfeatureclassprops.GetEnumerator();
+            while (pEnum.MoveNext())
+            {
+                PropertyDefinition primaryProp = (PropertyDefinition)(pEnum.Current);
+            }
 
             // Force smart pointers to release
             pfeatureclassprops = null;

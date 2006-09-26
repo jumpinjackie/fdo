@@ -45,8 +45,3 @@ System::Void NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IActivateLongTransact
 {
 	EXCEPTION_HANDLER(GetImpObj()->Execute())
 }
-
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IActivateLongTransactionImp::Dispose()
-{
-	NAMESPACE_OSGEO_RUNTIME::Disposable::Dispose();
-}

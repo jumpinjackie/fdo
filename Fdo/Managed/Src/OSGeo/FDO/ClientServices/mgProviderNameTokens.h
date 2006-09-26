@@ -31,7 +31,7 @@ public private:
 	inline FdoProviderNameTokens* GetImpObj();
 
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 
 public:
 	ProviderNameTokens(System::IntPtr unmanaged, System::Boolean autoDelete)

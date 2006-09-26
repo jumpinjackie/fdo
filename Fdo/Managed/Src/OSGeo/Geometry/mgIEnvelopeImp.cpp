@@ -32,18 +32,11 @@ NAMESPACE_OSGEO_GEOMETRY::IEnvelopeImp::IEnvelopeImp(System::IntPtr unmanaged, S
 {
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::IEnvelopeImp::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_GEOMETRY::IEnvelopeImp::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-			Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 System::Double NAMESPACE_OSGEO_GEOMETRY::IEnvelopeImp::get_MinX()

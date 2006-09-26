@@ -173,7 +173,7 @@ public:
 protected:
 	IoStream();
 
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 
 public private:
 	inline FdoIoStream* GetImpObj();

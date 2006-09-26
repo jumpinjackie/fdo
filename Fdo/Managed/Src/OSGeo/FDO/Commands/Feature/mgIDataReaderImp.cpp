@@ -66,8 +66,3 @@ NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::I
 
 	return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType>(result);
 }
-
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IDataReaderImp::Dispose()
-{
-	NAMESPACE_OSGEO_RUNTIME::Disposable::Dispose();
-}

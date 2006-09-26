@@ -39,12 +39,8 @@ private __gc class IDirectPositionImp
 public:
 	IDirectPositionImp(System::IntPtr unmanaged, System::Boolean autoDelete);
 
-	System::Void Dispose()
-	{
-		Disposable::Dispose();
-	}
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 public:
 
     /// \brief
@@ -108,7 +104,7 @@ public private:
 	FdoDirectPositionCollection *GetImpObj();
 
 protected:
-	__sealed System::Void Dispose(System::Boolean disposing);
+	__sealed System::Void ReleaseUnmanagedObject();
 
 private:
 

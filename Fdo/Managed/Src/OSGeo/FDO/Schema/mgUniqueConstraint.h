@@ -33,7 +33,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 public __gc class UniqueConstraint : public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 
 public private:
 	UniqueConstraint(System::IntPtr unmanaged, System::Boolean autoDelete);

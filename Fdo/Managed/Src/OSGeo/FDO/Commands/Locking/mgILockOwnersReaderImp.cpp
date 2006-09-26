@@ -22,18 +22,11 @@
 
 #include "FDO\Commands\Locking\mgILockOwnersReaderImp.h"
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockOwnersReaderImp::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockOwnersReaderImp::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-			Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 FdoILockOwnersReader* NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockOwnersReaderImp::GetImpObj()

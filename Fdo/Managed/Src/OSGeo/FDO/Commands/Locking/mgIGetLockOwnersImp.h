@@ -41,8 +41,6 @@ public:
     /// 
 	NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockOwnersReader* Execute();
 
-	System::Void Dispose();
-
 public private:
 	IGetLockOwnersImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp(unmanaged, autoDelete)
 	{

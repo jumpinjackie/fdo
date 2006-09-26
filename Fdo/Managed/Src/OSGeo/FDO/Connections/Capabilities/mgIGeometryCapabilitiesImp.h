@@ -63,7 +63,7 @@ public:
 	__property System::Int32 get_Dimensionalities();
 
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 
 public private:
 	IGeometryCapabilitiesImp(System::IntPtr unmanaged, System::Boolean autoDelete);

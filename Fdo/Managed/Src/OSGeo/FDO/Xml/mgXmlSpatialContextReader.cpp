@@ -25,18 +25,11 @@
 #include "FDO\mgObjectFactory.h"
 #include "FDO\Xml\mgXmlSpatialContextFlags.h"
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextReader::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextReader::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextReader::XmlSpatialContextReader(NAMESPACE_OSGEO_COMMON_XML::XmlReader* reader) : NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler(System::IntPtr::Zero, false)
@@ -61,11 +54,6 @@ NAMESPACE_OSGEO_COMMON_XML::XmlReader* NAMESPACE_OSGEO_FDO_XML::XmlSpatialContex
 	EXCEPTION_HANDLER(result = GetImpObj()->GetXmlReader())
 
 	return NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateXmlReader(result, true);
-}
-
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextReader::Dispose()
-{
-	NAMESPACE_OSGEO_RUNTIME::Disposable::Dispose();
 }
 
 System::String* NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextReader::GetName()

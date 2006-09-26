@@ -28,18 +28,11 @@
 
 
 
-System::Void NAMESPACE_OSGEO_FDO::IDisposableCollection::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_FDO::IDisposableCollection::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 FdoIDisposableCollection* NAMESPACE_OSGEO_FDO::IDisposableCollection::GetImpObj()

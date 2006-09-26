@@ -37,18 +37,11 @@ FdoIoStream* NAMESPACE_OSGEO_COMMON_IO::IoStream::GetImpObj()
 	return static_cast<FdoIoStream*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::Void NAMESPACE_OSGEO_COMMON_IO::IoStream::Dispose(System::Boolean disposing)
+Void NAMESPACE_OSGEO_COMMON_IO::IoStream::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{	
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 System::UInt32 NAMESPACE_OSGEO_COMMON_IO::IoStream::Read(System::Byte buffer[], System::UInt32 count)
@@ -141,6 +134,7 @@ System::Void NAMESPACE_OSGEO_COMMON_IO::IoStream::Reset()
 
 System::Void NAMESPACE_OSGEO_COMMON_IO::IoStream::Close()
 {
-	EXCEPTION_HANDLER(GetImpObj()->Release())
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
 	Detach();
 }

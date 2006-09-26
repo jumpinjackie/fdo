@@ -26,18 +26,11 @@ FdoProviderNameTokens* NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderNameTokens::G
 	return static_cast<FdoProviderNameTokens*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::Void NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderNameTokens::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderNameTokens::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderNameTokens::ProviderNameTokens(System::String* name)

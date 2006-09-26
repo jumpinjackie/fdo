@@ -148,7 +148,7 @@ public:
 	__property NAMESPACE_OSGEO_COMMON::IStreamReader* get_StreamReader();
 
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 
 public private:
 	PropertyValue(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_RUNTIME::Disposable(unmanaged, autoDelete)

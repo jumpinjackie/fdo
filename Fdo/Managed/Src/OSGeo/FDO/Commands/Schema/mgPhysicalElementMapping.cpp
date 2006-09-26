@@ -135,16 +135,9 @@ NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler* NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA:
     return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIXmlSaxHandler(handler, true);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }

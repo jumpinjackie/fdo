@@ -169,16 +169,9 @@ System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::set_Dimensionality(Sy
 	EXCEPTION_HANDLER(GetImpObj()->SetDimensionality(value));
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-        // Add DirectPositionImpl specific code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }

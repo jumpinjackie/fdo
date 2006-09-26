@@ -36,7 +36,7 @@ public private:
 	inline FdoPropertyValueConstraint* GetImpObj();
 
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 
 public:
     /// \brief

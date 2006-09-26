@@ -72,18 +72,11 @@ NAMESPACE_OSGEO_GEOMETRY::PolygonCollection::PolygonCollection()
 {
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::PolygonCollection::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_GEOMETRY::PolygonCollection::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-			Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 System::Void NAMESPACE_OSGEO_GEOMETRY::PolygonCollection::ICollection::CopyTo(System::Array *array, System::Int32 index)

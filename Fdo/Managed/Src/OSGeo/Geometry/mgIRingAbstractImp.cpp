@@ -33,9 +33,10 @@ NAMESPACE_OSGEO_GEOMETRY::IRingAbstractImp::IRingAbstractImp(System::IntPtr unma
 {
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::IRingAbstractImp::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_GEOMETRY::IRingAbstractImp::ReleaseUnmanagedObject()
 {
-	EXCEPTION_HANDLER(GetImpObj()->Release());
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release());
 }
 
 NAMESPACE_OSGEO_GEOMETRY::IEnvelope *NAMESPACE_OSGEO_GEOMETRY::IRingAbstractImp::get_Envelope()

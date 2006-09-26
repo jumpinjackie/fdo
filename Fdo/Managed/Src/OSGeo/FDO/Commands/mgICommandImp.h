@@ -124,7 +124,7 @@ public:
 	System::Void Cancel();
 
 protected:
-	System::Void Dispose(System::Boolean disposing);	
+	System::Void ReleaseUnmanagedObject();	
 
 public protected:
 	ICommandImp(System::IntPtr unmanaged, System::Boolean autoDelete);

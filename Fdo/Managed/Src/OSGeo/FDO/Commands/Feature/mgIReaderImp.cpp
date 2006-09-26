@@ -29,18 +29,11 @@
 #include "FDO\Expression\mgLOBValue.h"
 #include "FDO\Raster\mgIRasterImp.h"
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-			Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 FdoIReader* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::GetImpObj()

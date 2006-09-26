@@ -29,18 +29,11 @@
 #include "FDO\Schema\mgUniqueConstraintCollection.h"
 #include "FDO\mgObjectFactory.h"
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-			Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 FdoUniqueConstraintCollection* NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::GetImpObj()

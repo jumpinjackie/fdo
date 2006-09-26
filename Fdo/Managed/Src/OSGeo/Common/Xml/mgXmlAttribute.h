@@ -69,7 +69,7 @@ public:
 	XmlAttribute(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 protected:
-	virtual System::Void Dispose(System::Boolean disposing);
+	virtual System::Void ReleaseUnmanagedObject();
 
 public private:
 	inline FdoXmlAttribute* GetImpObj();

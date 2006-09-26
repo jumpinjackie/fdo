@@ -30,20 +30,11 @@ FdoProviderCollection* NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection::G
 	return static_cast<FdoProviderCollection*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::Void NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-        // Since the lifecycle of this unmanged object is in the charge of FdoProviderRegistry,
-        // here we don't need release this unmanaged object.
-		// EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+    // Since the lifecycle of this unmanged object is in the charge of FdoProviderRegistry,
+    // here we don't need to release this unmanaged object.
+	Detach();
 }
 
 System::Void NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection::ICollection::CopyTo(System::Array* array, System::Int32 index) 

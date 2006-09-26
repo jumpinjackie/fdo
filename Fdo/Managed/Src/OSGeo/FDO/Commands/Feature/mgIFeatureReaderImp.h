@@ -92,8 +92,6 @@ public:
     /// 
 	NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader* GetFeatureObject(System::String* propertyName);
 
-	System::Void Dispose();
-
 public private:
 	IFeatureReaderImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp(unmanaged, autoDelete)
 	{

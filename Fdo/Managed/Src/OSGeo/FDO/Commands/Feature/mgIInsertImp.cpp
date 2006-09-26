@@ -78,8 +78,3 @@ NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader* NAMESPACE_OSGEO_FDO_COMMAN
 
     return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIFeatureReader(result, true);
 }
-
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IInsertImp::Dispose()
-{
-	NAMESPACE_OSGEO_RUNTIME::Disposable::Dispose();
-}

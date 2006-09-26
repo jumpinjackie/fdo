@@ -83,7 +83,7 @@ private:
 	__property System::Void  System::Collections::IList::set_Item(System::Int32 index, Object* value);
 
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 
 public:
 	DataPropertyDefinitionCollection(NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement* parent);

@@ -45,18 +45,11 @@ FdoUniqueConstraint* NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraint::GetImpObj()
     return static_cast<FdoUniqueConstraint*>(__super::UnmanagedObject.ToPointer());
 }
 
-Void NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraint::Dispose(System::Boolean disposing)
+Void NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraint::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-		Detach();
-	}
+	if (get_AutoDelete()) 
+        EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 NAMESPACE_OSGEO_FDO_SCHEMA::DataPropertyDefinitionCollection* NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraint::get_Properties()

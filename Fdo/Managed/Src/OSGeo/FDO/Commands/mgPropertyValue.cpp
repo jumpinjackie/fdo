@@ -26,18 +26,10 @@
 #include "FDO\Expression\mgIdentifier.h"
 #include "FDO\Expression\mgValueExpression.h"
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue::Dispose(System::Boolean disposing)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue::ReleaseUnmanagedObject()
 {
-	if (disposing)
-	{
-		// Add your own code here
-	}
-
-	if (!Disposed)
-	{
-		EXCEPTION_HANDLER(GetImpObj()->Release())
-			Detach();
-	}
+	if (get_AutoDelete()) EXCEPTION_HANDLER(GetImpObj()->Release())
+	Detach();
 }
 
 NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue::PropertyValue() : NAMESPACE_OSGEO_RUNTIME::Disposable(System::IntPtr::Zero, false)
