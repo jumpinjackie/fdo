@@ -65,7 +65,7 @@ public:
 	System::Void Dispose();
 
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 };
 
 END_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS

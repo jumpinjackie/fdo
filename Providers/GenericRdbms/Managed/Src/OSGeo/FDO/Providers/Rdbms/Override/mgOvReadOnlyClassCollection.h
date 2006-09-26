@@ -68,7 +68,7 @@ private:
 	__property System::Boolean System::Collections::ICollection::get_IsSynchronized();
 
 protected:
-	System::Void Dispose(System::Boolean disposing);
+	System::Void ReleaseUnmanagedObject();
 
 public:
 	/// <summary>
