@@ -228,7 +228,7 @@ private:
     FdoPtr<FdoXmlFeatureFlags> m_flags;
 };
 
-///<summary>FdoXmlSpatialContextReaderP is a FdoPtr on FdoXmlSpatialContextReader, provided for convenience.</summary>
+///<summary>FdoXmlFeatureReaderImplP is a FdoPtr on FdoXmlFeatureReaderImpl, provided for convenience.</summary>
 typedef FdoPtr<FdoXmlFeatureReaderImpl> FdoXmlFeatureReaderImplP;
 
 #endif
