@@ -707,75 +707,72 @@ void FdoIoTest::testTextFile()
     FDO_CPPUNIT_ASSERT( ix == 14 );
 }
 
-// 
-// gcc complains that "integer constant is too large for "long" type" inside this function
-// 
 void FdoIoTest::testLargeFile()
 {
-//    try {
-//        FdoInt64 i;
-//        char buffer[11];
-//        FdoIoFileStreamP fileStream;
-//
-//#if 1
-//        // Create a file larger than 4GB. The file contains a sequence
-//        // of 10 digit numbers where the number is the offset plus
-//        // 1,000,000,000.
-//
-//        fileStream = FdoIoFileStream::Create( L"testLargeFile", L"w+" );
-//
-//        for ( i = 100000000; i < 800000000; i++ ) {
-//            sprintf( buffer, "%d0", i );
-//            fileStream->Write( (FdoByte*) buffer, 10 );
-//        }
-//#endif
-//        // Text randomly accessing the large file.
-//        fileStream = FdoIoFileStream::Create( L"testLargeFile", L"r+" );
-//
-//        FDO_CPPUNIT_ASSERT( fileStream->GetLength() == 7000000000 );
-//
-//        // Absolute skip
-//        fileStream->Skip( 5456235670 );
-//        FdoSize count = fileStream->Read( (FdoByte*) buffer, 10 );
-//        buffer[count] = '\0';
-//        FDO_CPPUNIT_ASSERT( strcmp(buffer,"6456235670") == 0 );
-//
-//        // another absolute skip
-//        fileStream->Reset();
-//        fileStream->Skip( 5256265675 );
-//        count = fileStream->Read( (FdoByte*) buffer, 10 );
-//        buffer[count] = '\0';
-//        FDO_CPPUNIT_ASSERT( strcmp(buffer,"6567062562") == 0 );
-//                
-//        // Relative skip
-//        fileStream->Skip( 40 );
-//        count = fileStream->Read( (FdoByte*) buffer, 10 );
-//        buffer[count] = '\0';
-//        FDO_CPPUNIT_ASSERT( strcmp(buffer,"6572062562") == 0 );
-//                
-//        FDO_CPPUNIT_ASSERT( fileStream->GetIndex() == 5256265735 );
-//
-//        // Skip past end of file. Should be add end of file.
-//        fileStream->Skip( 5256265675 );
-//        count = fileStream->Read( (FdoByte*) buffer, 10 );
-//        FDO_CPPUNIT_ASSERT( count == 0 );
-//
-//#ifndef _WIN32
-//        // Change the length and verify that new length can be retrieved.
-//        fileStream->SetLength( 6200020058 );
-//        FDO_CPPUNIT_ASSERT( fileStream->GetLength() == 6200020058 );
-//
-//        // try another skip after the length change.
-//        fileStream->Reset();
-//        fileStream->Skip( 6200020050 );
-//        count = fileStream->Read( (FdoByte*) buffer, 10 );
-//        buffer[count] = '\0';
-//        FDO_CPPUNIT_ASSERT( strcmp(buffer,"72000200") == 0 );
-//#endif                
-//    }
-//    catch ( FdoException* e ) {
-//		UnitTestUtil::FailOnException( e );
-//    }
+    try {
+        FdoInt64 i;
+        char buffer[11];
+        FdoIoFileStreamP fileStream;
+
+#if 1
+        // Create a file larger than 4GB. The file contains a sequence
+        // of 10 digit numbers where the number is the offset plus
+        // 1,000,000,000.
+
+        fileStream = FdoIoFileStream::Create( L"testLargeFile", L"w+" );
+
+        for ( i = 100000000; i < 800000000; i++ ) {
+            sprintf( buffer, "%d0", i );
+            fileStream->Write( (FdoByte*) buffer, 10 );
+        }
+#endif
+        // Text randomly accessing the large file.
+        fileStream = FdoIoFileStream::Create( L"testLargeFile", L"r+" );
+
+        FDO_CPPUNIT_ASSERT( fileStream->GetLength() == 7000000000 );
+
+        // Absolute skip
+        fileStream->Skip( 5456235670 );
+        FdoSize count = fileStream->Read( (FdoByte*) buffer, 10 );
+        buffer[count] = '\0';
+        FDO_CPPUNIT_ASSERT( strcmp(buffer,"6456235670") == 0 );
+
+        // another absolute skip
+        fileStream->Reset();
+        fileStream->Skip( 5256265675 );
+        count = fileStream->Read( (FdoByte*) buffer, 10 );
+        buffer[count] = '\0';
+        FDO_CPPUNIT_ASSERT( strcmp(buffer,"6567062562") == 0 );
+                
+        // Relative skip
+        fileStream->Skip( 40 );
+        count = fileStream->Read( (FdoByte*) buffer, 10 );
+        buffer[count] = '\0';
+        FDO_CPPUNIT_ASSERT( strcmp(buffer,"6572062562") == 0 );
+                
+        FDO_CPPUNIT_ASSERT( fileStream->GetIndex() == 5256265735 );
+
+        // Skip past end of file. Should be add end of file.
+        fileStream->Skip( 5256265675 );
+        count = fileStream->Read( (FdoByte*) buffer, 10 );
+        FDO_CPPUNIT_ASSERT( count == 0 );
+
+#ifndef _WIN32
+        // Change the length and verify that new length can be retrieved.
+        fileStream->SetLength( 6200020058 );
+        FDO_CPPUNIT_ASSERT( fileStream->GetLength() == 6200020058 );
+
+        // try another skip after the length change.
+        fileStream->Reset();
+        fileStream->Skip( 6200020050 );
+        count = fileStream->Read( (FdoByte*) buffer, 10 );
+        buffer[count] = '\0';
+        FDO_CPPUNIT_ASSERT( strcmp(buffer,"72000200") == 0 );
+#endif                
+    }
+    catch ( FdoException* e ) {
+		UnitTestUtil::FailOnException( e );
+    }
 }
 
 void FdoIoTest::populateStream( FdoIoStream* stream)

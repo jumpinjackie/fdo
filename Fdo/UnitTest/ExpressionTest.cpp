@@ -207,13 +207,11 @@ void ExpressionTest::testDataValue()
     FDO_CPPUNIT_ASSERT(pDVal8->IsNull());
     pStr = pDVal8->ToString();
     FDO_CPPUNIT_ASSERT(wcscmp(pStr, L"NULL") == 0);
-	//
-	// gcc 4 complains that integer constant is too large for "long" type
-	// 
-    //pDVal8->SetInt64(12345678901234L);
-    //FDO_CPPUNIT_ASSERT(!pDVal8->IsNull());
-    //FDO_CPPUNIT_ASSERT(pDVal8->GetDataType() == FdoDataType_Int64);
-    //FDO_CPPUNIT_ASSERT(pDVal8->GetInt64() == 12345678901234L);
+
+    pDVal8->SetInt64(12345678901234LL);
+    FDO_CPPUNIT_ASSERT(!pDVal8->IsNull());
+    FDO_CPPUNIT_ASSERT(pDVal8->GetDataType() == FdoDataType_Int64);
+    FDO_CPPUNIT_ASSERT(pDVal8->GetInt64() == 12345678901234LL);
     pDVal8->Release();
 
     FdoSingleValue*    pDVal9 = FdoSingleValue::Create();
