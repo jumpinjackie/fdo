@@ -1008,4 +1008,38 @@ DAMAGES.
 		     END OF TERMS AND CONDITIONS
 
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+SQLite
+
+Copyright
+
+SQLite is software that implements an embeddable SQL database engine. 
+SQLite is available for free download from http://www.sqlite.org/. The 
+principal author and maintainer of SQLite has disclaimed all copyright 
+interest in his contributions to SQLite and thus released his 
+contributions into the public domain. In order to keep the SQLite 
+software unencumbered by copyright claims, the principal author asks 
+others who may from time to time contribute changes and enhancements 
+to likewise disclaim their own individual copyright interest. 
+
+Because the SQLite software found at http://www.sqlite.org/ is in the 
+public domain, anyone is free to download the SQLite software from that 
+website, make changes to the software, use, distribute, or sell the 
+modified software, under either the original name or under some new 
+name, without any need to obtain permission, pay royalties, acknowledge 
+the original source of the software, or in any other way compensate, 
+identify, or notify the original authors. Nobody is in any way compelled
+to contribute their SQLite changes and enhancements back to the SQLite 
+website. This document concerns only changes and enhancements to SQLite 
+that are intentionally and deliberately contributed back to the SQLite 
+website. 
+
+For the purposes of this document, "SQLite software" shall mean any computer 
+source code, documentation, makefiles, test scripts, or other information 
+that is published on the SQLite website, http://www.sqlite.org/. Precompiled 
+binaries are excluded from the definition of "SQLite software" in this document
+because the process of compiling the software may introduce information from 
+outside sources which is not properly a part of SQLite. 
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
 
