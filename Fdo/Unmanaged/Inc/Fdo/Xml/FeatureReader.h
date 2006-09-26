@@ -113,7 +113,7 @@ public:
 };
 
 /// \brief
-/// FdoXmlSpatialContextReaderP is a FdoPtr on FdoXmlSpatialContextReader, provided for convenience.
+/// FdoXmlFeatureReaderP is a FdoPtr on FdoXmlFeatureReader, provided for convenience.
 typedef FdoPtr<FdoXmlFeatureReader> FdoXmlFeatureReaderP;
 
 #endif
