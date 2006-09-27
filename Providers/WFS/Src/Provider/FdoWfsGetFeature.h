@@ -35,6 +35,7 @@ private:
     bool m_encodeWithClassName;
 
 protected:
+    FdoWfsGetFeature() {};
     FdoWfsGetFeature(FdoString* targetNamespace, FdoString* srsName,
                                 FdoStringCollection* propertiesToSelect,
                                 FdoString* from,
