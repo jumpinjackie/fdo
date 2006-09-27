@@ -104,6 +104,7 @@ FdoIFeatureReader* FdoWfsSelectCommand::Execute ()
 	FdoString* targetNamespace = L"";
 	FdoPtr<FdoFeatureSchemaCollection> schemas = mConnection->GetSchemas();
 	FdoPtr<FdoPhysicalSchemaMappingCollection> mappings = schemas->GetXmlSchemaMappings();
+    FdoPtr<FdoXmlClassMapping> elementClass;
 
 	if (schemas->GetCount() > 0 && mappings != NULL) {
         FdoInt32 count = schemas->GetCount();
@@ -120,6 +121,7 @@ FdoIFeatureReader* FdoWfsSelectCommand::Execute ()
 					    FdoPtr<FdoXmlElementMapping> elementMapping = elementMappings->GetItem(i);
 					    if (wcscmp(elementMapping->GetClassName(), mClassName->GetName()) == 0) {
 						    // we found it
+                            elementClass = elementMapping->GetClassMapping();
 						    featureTypeName = elementMapping->GetName();
 						    targetNamespace = mapping->GetTargetNamespace();
 						    break;
@@ -159,28 +161,9 @@ FdoIFeatureReader* FdoWfsSelectCommand::Execute ()
 			"Feature class '%1$ls' is not recognized by WFS server.", mClassName->GetText()));
 	}
 
-	FdoPtr<FdoStringCollection> props = FdoStringCollection::Create();
-	if (mPropertiesToSelect != NULL) {
-		FdoInt32 count = mPropertiesToSelect->GetCount();
-		for (int i = 0; i < count; i++) {
-			FdoPtr<FdoIdentifier> identifier = mPropertiesToSelect->GetItem(i);
-			FdoStringP propName = identifier->GetName();
-			if (propName.Contains(FdoWfsGlobals::Dot)) {
-				FdoStringP propName1 = propName.Replace(FdoWfsGlobals::Dot, L".");
-				props->Add(propName1);
-			} else {
-				props->Add(propName);
-			}
-		}
-	}
-
-	// yeah, all the parameters that WfsDeleget::GetFeature needs are ready
-	FdoPtr<FdoWfsDelegate> delegate = mConnection->GetWfsDelegate();
-	FdoPtr<FdoIFeatureReader> ret = delegate->GetFeature(schemas, mappings, targetNamespace, srsName, props, featureTypeName, mFilter);	
 	FdoPtr<FdoFeatureSchema> schema;
 	FdoPtr<FdoClassCollection> clsdefs;
 	FdoPtr<FdoClassDefinition> clsdef;
-
 	FdoStringP schemaName = mClassName->GetSchemaName();		
 	if (schemaName != NULL)
 	{
@@ -212,7 +195,56 @@ FdoIFeatureReader* FdoWfsSelectCommand::Execute ()
 			throw FdoException::Create (NlsMsgGet (WFS_COMMAND_CLASS_NOT_RECOGNIZED, 
 				"Feature class '%1$ls' is not recognized by WFS server.", mClassName->GetText()));
 		}
-	}	
+	}
+    FdoStringP sPropAlias;
+    FdoStringP sPropName;
+    if ((mFilter != NULL || mPropertiesToSelect != NULL) && elementClass != NULL)
+    {
+        // check if we have gml geometries
+        FdoPtr<FdoXmlElementMappingCollection> elements = elementClass->GetElementMappings();
+        for (int k = 0; k < elements->GetCount(); k++)
+        {
+            FdoPtr<FdoXmlElementMapping> element = elements->GetItem(k);
+            FdoPtr<FdoStringCollection> pAliasNames = element->GetAliasNames();
+            if (pAliasNames != NULL && pAliasNames->GetCount() != 0)
+            {
+                sPropName = element->GetName();
+                sPropAlias = L"gml/";
+                sPropAlias += pAliasNames->GetString(0);
+                break;
+            }
+        }
+    }
+
+	FdoPtr<FdoStringCollection> props = FdoStringCollection::Create();
+	if (mPropertiesToSelect != NULL) {
+		FdoInt32 count = mPropertiesToSelect->GetCount();
+		for (int i = 0; i < count; i++) {
+			FdoPtr<FdoIdentifier> identifier = mPropertiesToSelect->GetItem(i);
+			FdoStringP propName = identifier->GetName();
+			if (propName.Contains(FdoWfsGlobals::Dot)) {
+				FdoStringP propName1 = propName.Replace(FdoWfsGlobals::Dot, L".");
+				props->Add(propName1);
+			} else {
+				props->Add(propName);
+			}
+		}
+	}
+    if (sPropName.GetLength() != 0)
+    {
+        int poz = props->IndexOf(sPropName);
+        if (poz != -1)
+        {
+            props->RemoveAt(poz);
+            props->Add(sPropAlias);
+        }
+        if (mFilter != NULL)
+            UpdateFilter(mFilter.p, sPropAlias, sPropName);
+    }
+
+	// yeah, all the parameters that WfsDeleget::GetFeature needs are ready
+	FdoPtr<FdoWfsDelegate> delegate = mConnection->GetWfsDelegate();
+	FdoPtr<FdoIFeatureReader> ret = delegate->GetFeature(schemas, mappings, targetNamespace, srsName, props, featureTypeName, mFilter);	
 
 	FdoWfsFeatureReader* reader = dynamic_cast<FdoWfsFeatureReader *>(ret.p);
 	if (reader)
@@ -248,4 +280,52 @@ FdoIFeatureReader* FdoWfsSelectCommand::ExecuteWithLock ()
 FdoILockConflictReader* FdoWfsSelectCommand::GetLockConflicts ()
 {
     throw FdoException::Create (NlsMsgGet (WFS_LOCKING_NOT_SUPPORTED, "Locking not supported."));
+}
+
+void FdoWfsSelectCommand::UpdateFilter(FdoFilter* pFilter, FdoString* pPropAlias, FdoString* pPropName)
+{
+    if (pFilter == NULL)
+        return;
+    FdoBinaryLogicalOperator* pBin = dynamic_cast<FdoBinaryLogicalOperator*>(pFilter);
+    if (pBin != NULL)
+    {
+        UpdateFilter(pBin->GetLeftOperand(), pPropAlias, pPropName);
+        UpdateFilter(pBin->GetRightOperand(), pPropAlias, pPropName);
+    }
+    else
+    {
+        FdoUnaryLogicalOperator* pUnary = dynamic_cast<FdoUnaryLogicalOperator*>(pFilter);
+        if (pUnary != NULL)
+            UpdateFilter(pUnary->GetOperand(), pPropAlias, pPropName);
+        else
+        {
+            FdoGeometricCondition* pGeom = dynamic_cast<FdoGeometricCondition*>(pFilter);
+            if (pGeom != NULL)
+            {
+                FdoPtr<FdoIdentifier> pProp = pGeom->GetPropertyName();
+                if(wcscmp(pProp->GetText(), pPropName) == 0)
+                    pGeom->SetPropertyName(FdoIdentifier::Create(pPropAlias));
+            }
+            else
+            {
+                FdoNullCondition* pNull = dynamic_cast<FdoNullCondition*>(pFilter);
+                if (pNull != NULL)
+                {
+                    FdoPtr<FdoIdentifier> pProp = pNull->GetPropertyName();
+                    if(wcscmp(pProp->GetText(), pPropName) == 0)
+                        pNull->SetPropertyName(FdoIdentifier::Create(pPropAlias));
+                }
+                else
+                {
+                    FdoInCondition* pIn = dynamic_cast<FdoInCondition*>(pFilter);
+                    if (pIn != NULL)
+                    {
+                        FdoPtr<FdoIdentifier> pProp = pIn->GetPropertyName();
+                        if(wcscmp(pProp->GetText(), pPropName) == 0)
+                            pIn->SetPropertyName(FdoIdentifier::Create(pPropAlias));
+                    }
+                }
+            }
+        }
+    }
 }

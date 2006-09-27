@@ -32,6 +32,7 @@ private:
     FdoPtr<FdoFilter> m_where;
     FdoStringP m_targetNamespace;
     FdoStringP m_srsName;
+    bool m_encodeWithClassName;
 
 protected:
     FdoWfsGetFeature(FdoString* targetNamespace, FdoString* srsName,
@@ -50,7 +51,7 @@ public:
     virtual FdoStringP EncodeKVP();
     virtual FdoStringP EncodeXml();
 
-   
+    virtual void EncodeWithClassName(bool bVal) {m_encodeWithClassName = bVal;};
 };
 
 typedef FdoPtr<FdoWfsGetFeature> FdoWfsGetFeatureP;

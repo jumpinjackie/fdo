@@ -37,6 +37,9 @@ protected:
     FdoWfsSelectCommand (FdoWfsConnection* connection);
     virtual ~FdoWfsSelectCommand (void);
 
+private:
+    void UpdateFilter(FdoFilter* pFilter, FdoString* pPropAlias, FdoString* pPropName);
+
 public:
     //
     // Prevent the use of the Assignment Operation by defining it and not implemeting it.

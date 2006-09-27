@@ -20,6 +20,9 @@
 #include "FdoWfsGetFeature.h"
 #include <OWS/FdoOwsOgcFilterSerializer.h>
 #include "FdoWfsGlobals.h"
+// uncomment this line to get a limited number of records
+// this line have been added for debug purposes
+//#define DEBUG_LIMIT_FEATURES
 
 FdoWfsGetFeature::FdoWfsGetFeature(FdoString* targetNamespace, FdoString* srsName, 
                                    FdoStringCollection* propertiesToSelect,
@@ -29,6 +32,7 @@ FdoWfsGetFeature::FdoWfsGetFeature(FdoString* targetNamespace, FdoString* srsNam
                                     m_propertiesToSelect(propertiesToSelect),
                                     m_from(from), m_where(where)
 {
+    m_encodeWithClassName = false;
     SetVersion(FdoWfsGlobals::WfsVersion);
     FDO_SAFE_ADDREF(propertiesToSelect);
     FDO_SAFE_ADDREF(where);
@@ -49,6 +53,12 @@ FdoStringP FdoWfsGetFeature::EncodeKVP()
 {
     // for common request, version and service
     FdoStringP ret = FdoOwsRequest::EncodeKVP();
+#ifdef DEBUG_LIMIT_FEATURES
+    ret += FdoWfsGlobals::And;
+    ret += L"maxFeatures";
+    ret += FdoWfsGlobals::Equal;
+    ret += L"50";
+#endif
     // TYPENAME, mandatory
     ret += FdoWfsGlobals::And;
     ret += FdoWfsGlobals::TYPENAME;
@@ -63,16 +73,22 @@ FdoStringP FdoWfsGetFeature::EncodeKVP()
         ret += FdoWfsGlobals::And;
         ret += FdoWfsGlobals::PROPERTYNAME;
         ret += FdoWfsGlobals::Equal;
-        //ret += m_from;
-        //ret += L"/";
-        FdoString* prop = m_propertiesToSelect->GetString(0);
+        FdoStringP prop = m_propertiesToSelect->GetString(0);
+        if (m_encodeWithClassName && !prop.Contains(L"/"))
+        {
+            ret += m_from;
+            ret += L"/";
+        }
         ret += prop;
         for (int i = 1; i < numProps; i++)
         {
             prop = m_propertiesToSelect->GetString(i);
             ret += FdoWfsGlobals::Comma;
-            //ret += m_from;
-            //ret += L"/";
+            if (m_encodeWithClassName && !prop.Contains(L"/"))
+            {
+                ret += m_from;
+                ret += L"/";
+            }
             ret += prop;
         }
     }

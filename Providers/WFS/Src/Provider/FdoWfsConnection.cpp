@@ -31,6 +31,8 @@
 #include "FdoWfsFeatureType.h"
 #include <FdoCommonConnStringParser.h>
 
+#define FEATCOLLECTION      L"FeatureCollection"
+
 // external access to connection for client services
 extern "C" FDOWFS_API FdoIConnection* CreateConnection ()
 {
@@ -334,13 +336,20 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
             FdoPtr<FdoXmlClassMappingCollection> classMappings = mapping->GetClassMappings();
             if (classes == NULL)
                 continue;
-
+            
+            bool bNameModified = false;
             for (int j  = classes->GetCount() - 1; j >= 0; j--) {
                 FdoPtr<FdoClassDefinition> classDef = classes->GetItem(j);
 
+                if(FdoCommonOSUtil::wcsicmp(classDef->GetName(), FEATCOLLECTION) == 0)
+                {
+                    bNameModified = true;
+                    classDef->SetName(FEATCOLLECTION);
+                }
                 // Prepare for implementation of #3
                 FdoPtr<FdoClassDefinition> base = classDef->GetBaseClass();
                 bool bNoIdentity = false;
+                int cntGeometricProperties = 0;
                 FdoPtr<FdoDataPropertyDefinitionCollection> ids;
                 if (base != NULL && (wcscmp(base->GetName(), FdoWfsGlobals::AbstractFeature) == 0 || 
                     wcscmp(base->GetName(), L"AbstractFeatureCollection") == 0 ||
@@ -371,7 +380,18 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
                     FdoStringP name = prop->GetName();
                     if (name.Contains(L"/xlink") ||
                         name.Contains(L"/type") ||
-                        name.Contains(L"/gml")) {
+                        name.Contains(L"/gml"))
+                    {
+                        FdoPtr<FdoXmlElementMapping> pElement;
+                        for (int m = elements->GetCount() - 1; m >= 0; m--)
+                        {
+                            pElement = elements->GetItem(m);
+                            if (wcscmp(name, pElement->GetName()) == 0) 
+                            {
+                                elements->RemoveAt(m);
+                                break;
+                            }
+                        }
                         props->RemoveAt(k);
                         continue;
                     }
@@ -385,8 +405,8 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
                     }
 
                     // Doing #4
-                    if (elements != NULL && prop->GetPropertyType() == FdoPropertyType_ObjectProperty) {
-                    
+                    if (elements != NULL)
+                    {
                         FdoPtr<FdoXmlElementMapping> element;
                         for (int m = elements->GetCount() - 1; m >= 0; m--) {
                             element = elements->GetItem(m);
@@ -396,33 +416,111 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
                         }
                         if (element == NULL)
                             continue;
-                        FdoObjectPropertyDefinition* objProp = static_cast<FdoObjectPropertyDefinition*>(prop.p);
-                        FdoPtr<FdoClassDefinition> objClassDef = objProp->GetClass();
-                        FdoPtr<FdoPropertyDefinitionCollection> objClassProps = objClassDef->GetProperties();
-                        bool allGeoProp = true;
-                        for (int m = objClassProps->GetCount() - 1; m >= 0; m--) {
-                            FdoPtr<FdoPropertyDefinition> objClassProp = objClassProps->GetItem(m);
-                            if (objClassProp->GetPropertyType() != FdoPropertyType_GeometricProperty) {
-                                allGeoProp = false;
-                                break;
+                        if (prop->GetPropertyType() == FdoPropertyType_ObjectProperty)
+                        {
+                            FdoObjectPropertyDefinition* objProp = static_cast<FdoObjectPropertyDefinition*>(prop.p);
+                            FdoPtr<FdoClassDefinition> objClassDef = objProp->GetClass();
+                            FdoPtr<FdoPropertyDefinitionCollection> objClassProps = objClassDef->GetProperties();
+                            bool allGeoProp = true;
+                            for (int m = objClassProps->GetCount() - 1; m >= 0; m--)
+                            {
+                                FdoPtr<FdoPropertyDefinition> objClassProp = objClassProps->GetItem(m);
+                                if (objClassProp->GetPropertyType() != FdoPropertyType_GeometricProperty)
+                                {
+                                    allGeoProp = false;
+                                    break;
+                                }
+                            }
+                            if (allGeoProp)
+                            {
+                                // first remove the original object property
+                                props->RemoveAt(k);
+                                // then add another new geometry property with the same name
+                                FdoPtr<FdoGeometricPropertyDefinition> newGeoProp = FdoGeometricPropertyDefinition::Create(prop->GetName(), prop->GetDescription());
+                                props->Add(newGeoProp);
+                                // and we still have to change the element mapping's class mapping
+                                FdoPtr<FdoXmlClassMapping> elementClass = FdoXmlClassMapping::Create(FdoGml212::mGeometryProperty,
+                                                                                                        FdoGml212::mGeometryProperty,
+                                                                                                        FdoGml212::mGeometryProperty);
+                                element->SetClassMapping(elementClass);
                             }
                         }
-                        if (allGeoProp) {
-                            // first remove the original object property
-                            props->RemoveAt(k);
-                            // then add another new geometry property with the same name
-                            FdoPtr<FdoGeometricPropertyDefinition> newGeoProp = FdoGeometricPropertyDefinition::Create(prop->GetName(), prop->GetDescription());
-                            props->Add(newGeoProp);
-                            // and we still have to change the element mapping's class mapping
-                            FdoPtr<FdoXmlClassMapping> elementClass = FdoXmlClassMapping::Create(FdoGml212::mGeometryProperty,
-                                                                                                    FdoGml212::mGeometryProperty,
-                                                                                                    FdoGml212::mGeometryProperty);
-                            element->SetClassMapping(elementClass);
-
+                        else if (prop->GetPropertyType() == FdoPropertyType_GeometricProperty)
+                        {
+                            FdoStringP pChoiceName = element->GetChoiceName();
+                            if (pChoiceName.GetLength() != 0)
+                                cntGeometricProperties++;
                         }
                     }
                 } // end of for each property
-
+                if (cntGeometricProperties)
+                {
+                    FdoPtr<FdoXmlClassMapping> elementClass = FdoXmlClassMapping::Create(L"GEOMETRY",
+                                                                                            FdoGml212::mGeometryProperty,
+                                                                                            FdoGml212::mGeometryProperty);
+                    FdoPtr<FdoStringCollection> pAliasNames = FdoStringCollection::Create();
+                    FdoPtr<FdoXmlElementMapping> element;
+                    FdoInt32 pNewTypeGeom = 0;
+                    for (int k = props->GetCount() - 1; k >= 0; k--)
+                    {
+                        FdoPtr<FdoPropertyDefinition> prop = props->GetItem(k);
+                        FdoStringP name = prop->GetName();
+                        if (prop->GetPropertyType() == FdoPropertyType_GeometricProperty)
+                        {
+                            for (int m = elements->GetCount() - 1; m >= 0; m--)
+                            {
+                                element = elements->GetItem(m);
+                                if (wcscmp(name, element->GetName()) == 0) 
+                                {
+                                    FdoStringP pChoiceName = element->GetChoiceName();
+                                    if (pChoiceName.GetLength() != 0)
+                                    {
+                                        pAliasNames->Add(name.Replace(L"gml/", L""));
+                                        elements->RemoveAt(m);
+                                        pNewTypeGeom |= ((FdoGeometricPropertyDefinition*)prop.p)->GetGeometryTypes();
+                                        props->RemoveAt(k);
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if (element != NULL)
+                    {
+                        element->SetName(L"GEOMETRY");
+                        element->SetClassMapping(elementClass);
+                        element->SetAliasNames(pAliasNames);
+                        elements->Add(element);
+                    }
+                    // then add another new geometry property with the same name
+                    FdoPtr<FdoGeometricPropertyDefinition> newGeoProp = FdoGeometricPropertyDefinition::Create(L"GEOMETRY", FdoGml212::mGeometryProperty);
+                    newGeoProp->SetGeometryTypes(pNewTypeGeom);
+                    props->Add(newGeoProp);
+                }
+                if (bNameModified)
+                {
+                    for (int k = classMappings->GetCount() - 1; k >= 0; k--)
+                    {
+                        FdoPtr<FdoXmlClassMapping> pClassMapping = classMappings->GetItem(k);
+                        if(FdoCommonOSUtil::wcsicmp(pClassMapping->GetName(), FEATCOLLECTION) == 0)
+                        {
+                            classMappings->RemoveAt(k);
+                            pClassMapping->SetName(FEATCOLLECTION);
+                            classMappings->Insert(k, pClassMapping);
+                        }
+                    }
+                    FdoPtr<FdoXmlElementMappingCollection> elemMappings = mapping->GetElementMappings();
+                    for (int k = elemMappings->GetCount() - 1; k >= 0; k--)
+                    {
+                        FdoPtr<FdoXmlElementMapping> pElemMapping = elemMappings->GetItem(k);
+                        if(FdoCommonOSUtil::wcsicmp(pElemMapping->GetName(), FEATCOLLECTION) == 0)
+                        {
+                            elemMappings->RemoveAt(k);
+                            pElemMapping->SetName(FEATCOLLECTION);
+                            elemMappings->Insert(k, pElemMapping);
+                        }
+                    }
+                }
                 // Set description for class
                 _setClassDescription (classDef);
 

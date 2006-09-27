@@ -87,7 +87,17 @@ FdoIFeatureReader* FdoWfsDelegate::GetFeature(FdoFeatureSchemaCollection* schema
                                                                 propertiesToSelect, 
                                                                 from, 
                                                                 where);
-    FdoPtr<FdoOwsResponse> response = Invoke(request);
+    FdoPtr<FdoOwsResponse> response;
+    try
+    {
+        response = Invoke(request);
+    }
+    catch(FdoException* exc) // some servers request to have the class name in the front of properties, so we will try to place them
+    {
+        exc->Release();
+        request->EncodeWithClassName(true);
+        response = Invoke(request); // if second time we will get an exception then is something wrong.
+    }
     FdoPtr<FdoIoStream> stream = response->GetStream();
 
     FdoPtr<FdoXmlReader> xmlReader = FdoXmlReader::Create(stream);
