@@ -871,6 +871,7 @@ FdoXmlSaxHandler* FdoClassDefinition::XmlStartElement(
                                             FdoStringP className = fdoContext->DecodeName( FdoXmlAttributeP(atts->GetItem(L"className"))->GetValue() );
                                             FdoStringP gmlUri;
                                             FdoStringP gmlLocalName;
+                                            FdoStringP choiceName;
 
                                             FdoXmlAttributeP att = atts->FindItem( L"gmlUri" );
                                             if ( att ) 
@@ -880,6 +881,10 @@ FdoXmlSaxHandler* FdoClassDefinition::XmlStartElement(
                                             if ( att ) 
                                                 gmlLocalName = att->GetValue();
 
+                                            att = atts->FindItem(L"choiceName");
+                                            if( att != NULL)
+                                                choiceName = att->GetValue();
+
                                             fdoContext->AddSubElementMapping( 
                                                 FdoSchemaElementP(GetParent())->GetName(), 
                                                 GetName(), 
@@ -887,7 +892,8 @@ FdoXmlSaxHandler* FdoClassDefinition::XmlStartElement(
                                                 classSchema, 
                                                 className,
                                                 gmlUri,
-                                                gmlLocalName
+                                                gmlLocalName,
+                                                choiceName
                                             );
                                         }
                                     }

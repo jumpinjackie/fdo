@@ -178,6 +178,11 @@ public:
 	);
 /// \endcond
 
+    virtual void SetAliasNames(FdoStringCollection* pAliasNames){m_AliasNames = FDO_SAFE_ADDREF(pAliasNames);}
+    virtual FdoStringCollection* GetAliasNames(){return FDO_SAFE_ADDREF(m_AliasNames.p);}
+    
+    virtual void SetChoiceName(FdoString* pChoiceName){m_choiceName = pChoiceName;}
+    virtual FdoString* GetChoiceName(){return m_choiceName;}
 
 protected:
 /// \cond DOXYGEN-IGNORE
@@ -198,6 +203,8 @@ private:
     FdoStringP                  mGmlUri;
     FdoStringP                  mGmlLocalName;
     FdoPtr<FdoXmlClassMapping>  mClassMapping;
+    FdoPtr<FdoStringCollection> m_AliasNames;
+    FdoStringP                  m_choiceName;
 };
 
 /// \brief

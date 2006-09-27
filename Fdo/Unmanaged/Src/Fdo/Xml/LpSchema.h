@@ -49,10 +49,10 @@ public:
     FdoXmlSchemaMapping* GetMappings();
 
     // Given a URI and local name for a GML element, return its Element Mapping definition
-    FdoXmlLpGmlElementDefinition* ElementFromGmlName( FdoString* uri, FdoString* localName );
+    FdoXmlLpGmlElementDefinition* ElementFromGmlName( FdoString* uri, FdoString* localName, bool bCaseSens = true );
 
     // Given a URI and local name for a GML type, return the LogicalPhysical class definition
-    FdoXmlLpClassDefinition* ClassFromGmlType( FdoString* uri, FdoString* localName );
+    FdoXmlLpClassDefinition* ClassFromGmlType( FdoString* uri, FdoString* localName, bool bCaseSens = true );
 
     // Given an FDO Feature class name, return the LogicalPhysical class definition.
     FdoXmlLpClassDefinition* ClassFromName( FdoString* className );

@@ -114,7 +114,8 @@ void FdoSchemaXmlContext::AddElementMapping (
     FdoString* elementSchema,
     FdoString* elementName,
     FdoString* classSchema,
-    FdoString* className
+    FdoString* className,
+    FdoString* choiceName
 )
 {
     FdoXmlSchemaMappingP mapping = GetSchemaMapping( elementSchema );
@@ -126,6 +127,7 @@ void FdoSchemaXmlContext::AddElementMapping (
         elemMapping = FdoXmlElementMapping::Create( elementName );
         elemMapping->SetClassName( className );
         elemMapping->SetSchemaName( classSchema );
+        elemMapping->SetChoiceName( choiceName );
         elemMappings->Add( elemMapping );
     }
     else {
@@ -150,7 +152,8 @@ void FdoSchemaXmlContext::AddSubElementMapping (
     FdoString* classSchema,
     FdoString* className,
     FdoString* gmlUri,
-    FdoString* gmlLocalName
+    FdoString* gmlLocalName,
+    FdoString* choiceName
 )
 {
     FdoXmlSchemaMappingP mapping = GetSchemaMapping( elementSchema );
@@ -182,6 +185,7 @@ void FdoSchemaXmlContext::AddSubElementMapping (
         elemMapping->SetSchemaName( classSchema );
         elemMapping->SetGmlUri( gmlUri );
         elemMapping->SetGmlLocalName( gmlLocalName );
+        elemMapping->SetChoiceName( choiceName );
         elemMappings->Add( elemMapping );
     }
     else {

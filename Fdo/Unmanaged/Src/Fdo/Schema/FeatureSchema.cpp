@@ -374,8 +374,11 @@ FdoXmlSaxHandler* FdoFeatureSchema::XmlStartElement(
             FdoStringP elementName = fdoContext->DecodeName( FdoXmlAttributeP(atts->GetItem(L"name"))->GetValue() );
             FdoStringP classSchema = fdoContext->DecodeName( FdoXmlAttributeP(atts->GetItem(L"classSchema"))->GetValue() );
             FdoStringP className = fdoContext->DecodeName( FdoXmlAttributeP(atts->GetItem(L"className"))->GetValue() );
-        
-            fdoContext->AddElementMapping( GetName(), elementName, classSchema, className );
+            FdoXmlAttributeP att = atts->FindItem(L"choiceName");
+            FdoStringP choiceName;
+            if( att != NULL)
+                choiceName = att->GetValue();
+            fdoContext->AddElementMapping( GetName(), elementName, classSchema, className, choiceName );
         }
 
         if ( wcscmp(name, L"ClassMapping") == 0 ) {

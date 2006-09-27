@@ -70,7 +70,8 @@ public:
         FdoString* elementSchema,
         FdoString* elementName,
         FdoString* classSchema,
-        FdoString* className
+        FdoString* className,
+        FdoString* choiceName
     );
 
     // Add GML Schema Mapping for a class sub-element
@@ -81,7 +82,8 @@ public:
         FdoString* classSchema,
         FdoString* className,
         FdoString* gmlUri,
-        FdoString* gmlLocalName
+        FdoString* gmlLocalName,
+        FdoString* choiceName
     );
 
     // Add GML Schema Mapping for a class 

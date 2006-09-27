@@ -57,36 +57,71 @@ FdoString* FdoXmlLpSchema::GetName() {
 }
 
 // Given a URI and local name for a GML element, return its Element Mapping definition
-FdoXmlLpGmlElementDefinition* FdoXmlLpSchema::ElementFromGmlName( FdoString* uri, FdoString* localName ) {
+FdoXmlLpGmlElementDefinition* FdoXmlLpSchema::ElementFromGmlName( FdoString* uri, FdoString* localName, bool bCaseSens )
+{
     FdoXmlLpGmlElementCollection* elements = _elements();
     FdoInt32 count = elements->GetCount();
     FdoPtr<FdoXmlLpGmlElementDefinition> element;
-    for (int i = 0; i < count; i++) {
+    for (int i = 0; i < count; i++)
+    {
         element = elements->GetItem(i);
         FdoPtr<FdoXmlElementMapping> elementMapping = element->GetElementMapping();
-        if (wcscmp(elementMapping->GetGmlUri(), uri) == 0 &&
-            wcscmp(elementMapping->GetGmlLocalName(), localName) == 0)
-            break;
+        if (bCaseSens)
+        {
+            if (wcscmp(elementMapping->GetGmlUri(), uri) == 0 &&
+                wcscmp(elementMapping->GetGmlLocalName(), localName) == 0)
+                break;
+        }
+        else
+        {
+#ifdef _WIN32
+            if (wcscmp(elementMapping->GetGmlUri(), uri) == 0 &&
+                _wcsicmp(elementMapping->GetGmlLocalName(), localName) == 0)
+                break;
+#else
+            if (wcscmp(elementMapping->GetGmlUri(), uri) == 0 &&
+                wcscasecmp(elementMapping->GetGmlLocalName(), localName) == 0)
+                break;
+#endif
+        }
         element = NULL;
     }
     return FDO_SAFE_ADDREF(element.p);
 }
 
 // Given a URI and local name for a GML type, return the LogicalPhysical class definition
-FdoXmlLpClassDefinition* FdoXmlLpSchema::ClassFromGmlType( FdoString* uri, FdoString* localName ) {
+FdoXmlLpClassDefinition* FdoXmlLpSchema::ClassFromGmlType( FdoString* uri, FdoString* localName, bool bCaseSens )
+{
     FdoXmlLpClassCollection* classes = _classes();
     FdoInt32 count = classes->GetCount();
     FdoPtr<FdoXmlLpClassDefinition> classDef;
-    for (int i = 0; i < count; i++) {
+    for (int i = 0; i < count; i++)
+    {
         classDef = classes->GetItem(i);
         FdoPtr<FdoXmlClassMapping> mapping = classDef->GetClassMapping();
-        if (mapping != NULL) {
+        if (mapping != NULL)
+        {
             // we can not get the uri from the class mapping
             // so we have to get it from the schema mapping
             FdoPtr<FdoXmlSchemaMapping> schemaMapping = static_cast<FdoXmlSchemaMapping*>(mapping->GetSchemaMapping());
+        if (bCaseSens)
+        {
             if (wcscmp(mapping->GetGmlName(), localName) == 0 &&
                 wcscmp(schemaMapping->GetTargetNamespace(), uri) == 0) 
                 break;
+        }
+        else
+        {
+#ifdef _WIN32
+            if (wcscmp(schemaMapping->GetTargetNamespace(), uri) == 0 &&
+                _wcsicmp(mapping->GetGmlName(), localName) == 0)
+                break;
+#else
+            if (wcscmp(schemaMapping->GetTargetNamespace(), uri) == 0 &&
+                wcscasecmp(mapping->GetGmlName(), localName) == 0)
+                break;
+#endif
+        }
         }
         classDef = NULL;
     }

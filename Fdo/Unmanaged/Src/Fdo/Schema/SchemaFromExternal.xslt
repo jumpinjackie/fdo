@@ -392,7 +392,7 @@
 	    <xsl:with-param name="elementElem" select="."/>
 	    <xsl:with-param name="typeUri" select="$typeUri"/>
 	    <xsl:with-param name="typeName" select="$typeName"/>
-	</xsl:call-template>
+  </xsl:call-template>
 
 	<xsl:call-template name="element_global_errors">
 		<xsl:with-param name="schemaName" select="$schemaName"/>
@@ -633,11 +633,49 @@
 	</xsl:for-each>
 </xsl:template>
 
-<!-- Searches for attributes and sub-elements and converts them to FDO properties -->
-<xsl:template match="xs:sequence|xs:all|xs:choice">
+  <!-- Searches for choice sub-elements and converts them to FDO properties -->
+  <xsl:template match="xs:choice">
+    <xsl:param name="schemaName" />
+    <xsl:param name="minOccurs" />
+    <xsl:param name="maxOccurs" />
+    <xsl:param name="choiceName" />
+	  <xsl:variable name="genChoiceName">
+		  <xsl:choose>
+			  <xsl:when test="not($choiceName='')">
+				  <xsl:value-of select="concat($choiceName, '_1')"/>
+			  </xsl:when>
+			  <xsl:otherwise>
+				  <xsl:value-of select="'choiceId'" />
+			  </xsl:otherwise>
+		  </xsl:choose>
+	  </xsl:variable>
+	  <xsl:variable name="nextMinOccurs">
+      <xsl:call-template name="resolve_minOccurs" >
+        <xsl:with-param name="minOccurs" select="$minOccurs"/>
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:variable name="nextMaxOccurs">
+      <xsl:call-template name="resolve_maxOccurs" >
+        <xsl:with-param name="maxOccurs" select="$maxOccurs"/>
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:call-template name="sequence_etc_errors">
+      <xsl:with-param name="schemaName" select="$schemaName"/>
+    </xsl:call-template>
+    <xsl:apply-templates select="xs:sequence|xs:choice|xs:all|xs:group|xs:element" >
+      <xsl:with-param name="schemaName" select="$schemaName" />
+      <xsl:with-param name="maxOccurs" select="$nextMaxOccurs" />
+      <xsl:with-param name="minOccurs" select="$nextMinOccurs" />
+      <xsl:with-param name="choiceName" select="$genChoiceName" />
+    </xsl:apply-templates>
+  </xsl:template>
+
+  <!-- Searches for attributes and sub-elements and converts them to FDO properties -->
+<xsl:template match="xs:sequence|xs:all">
 	<xsl:param name="schemaName" />
 	<xsl:param name="minOccurs" />
 	<xsl:param name="maxOccurs" />
+  <xsl:param name="choiceName" />
 	<xsl:variable name="nextMinOccurs">
 		<xsl:call-template name="resolve_minOccurs" >
 			<xsl:with-param name="minOccurs" select="$minOccurs"/>
@@ -655,7 +693,8 @@
 		<xsl:with-param name="schemaName" select="$schemaName" />
 		<xsl:with-param name="maxOccurs" select="$nextMaxOccurs" />
 		<xsl:with-param name="minOccurs" select="$nextMinOccurs" />
-	</xsl:apply-templates>
+    <xsl:with-param name="choiceName" select="$choiceName" />
+  </xsl:apply-templates>
 <!--	<xsl:for-each select="xs:element" >
 		<xsl:call-template name="element" >
 			<xsl:with-param name="schemaName" select="$schemaName" />
@@ -670,6 +709,7 @@
 	<xsl:param name="schemaName" />
 	<xsl:param name="minOccurs" />
 	<xsl:param name="maxOccurs" />
+  <xsl:param name="choiceName" />
 	<xsl:variable name="nextMinOccurs">
 		<xsl:call-template name="resolve_minOccurs" >
 			<xsl:with-param name="minOccurs" select="$minOccurs"/>
@@ -698,6 +738,7 @@
 			<xsl:with-param name="schemaName" select="$schemaName" />
 			<xsl:with-param name="maxOccurs" select="$nextMaxOccurs" />
 			<xsl:with-param name="minOccurs" select="$nextMinOccurs" />
+      <xsl:with-param name="choiceName" select="$choiceName" />
 		</xsl:apply-templates>
 	</xsl:for-each>
 </xsl:template>
@@ -738,6 +779,7 @@
 	<xsl:param name="schemaName" />
 	<xsl:param name="minOccurs" />
 	<xsl:param name="maxOccurs" />
+  <xsl:param name="choiceName" />
 
 	<xsl:variable name="nextMinOccurs">
 		<xsl:call-template name="resolve_minOccurs" >
@@ -756,12 +798,14 @@
 		<xsl:with-param name="schemaName" select="$schemaName"/>
 	    <xsl:with-param name="minOccurs" select="$nextMinOccurs"/>
 	    <xsl:with-param name="maxOccurs" select="$nextMaxOccurs"/>
+      <xsl:with-param name="choiceName" select="$choiceName" />
 	</xsl:call-template>
 </xsl:template>
 
 <!-- Converts an xs:attribute to a property -->
 <xsl:template name="attribute">
 	<xsl:param name="schemaName" />
+  <xsl:param name="choiceName" />
 	<xsl:variable name="minOccurs">
 	    <xsl:choose>
 	        <xsl:when test="@use='required'">1</xsl:when>
@@ -781,6 +825,7 @@
 		<xsl:with-param name="schemaName" select="$schemaName"/>
 	    <xsl:with-param name="minOccurs" select="$minOccurs"/>
 	    <xsl:with-param name="maxOccurs" select="$maxOccurs"/>
+      <xsl:with-param name="choiceName" select="$choiceName" />
 	</xsl:call-template>
 </xsl:template>
 
@@ -790,6 +835,7 @@
 	<xsl:param name="minOccurs" />
 	<xsl:param name="maxOccurs" />
 	<xsl:param name="elementElem" select="."/>
+  <xsl:param name="choiceName" />
 	<xsl:variable name="nextMinOccurs">
 		<xsl:call-template name="resolve_minOccurs" >
 			<xsl:with-param name="minOccurs" select="$minOccurs"/>
@@ -833,6 +879,7 @@
 	                    <xsl:with-param name="elementElem" select="$elementElem"/>
 	                    <xsl:with-param name="typeUri" select="$uriName"/>
 	                    <xsl:with-param name="typeName" select="$elemType"/>
+                      <xsl:with-param name="choiceName" select="$choiceName"/>
 	                </xsl:call-template>
 
     				<xsl:call-template name="GeometricProperty" >
@@ -849,6 +896,7 @@
 	                    <xsl:with-param name="elementElem" select="$elementElem"/>
 	                    <xsl:with-param name="typeUri" select="$uriName"/>
 	                    <xsl:with-param name="typeName" select="$elemType"/>
+                      <xsl:with-param name="choiceName" select="$choiceName"/>
 	                </xsl:call-template>
 
     				<xsl:call-template name="AssociationProperty" >
@@ -868,6 +916,7 @@
 	                            <xsl:with-param name="elementElem" select="$elementElem"/>
 	                            <xsl:with-param name="typeUri" select="$uriName"/>
 	                            <xsl:with-param name="typeName" select="$localName"/>
+                              <xsl:with-param name="choiceName" select="$choiceName"/>
 	                        </xsl:call-template>
 
 			                <xsl:call-template name="ObjectProperty" >
@@ -886,6 +935,7 @@
 							        <xsl:with-param name="maxOccurs" select="$nextMaxOccurs" />
 							        <xsl:with-param name="minOccurs" select="$nextMinOccurs" />
 							        <xsl:with-param name="elementElem" select="$elementElem" />
+                      <xsl:with-param name="choiceName" select="$choiceName" />
 						        </xsl:call-template>
 					        </xsl:for-each>			
 					    </xsl:otherwise>
@@ -928,16 +978,18 @@
 				<xsl:with-param name="elemTypeName" select="$typeName" />
 				<xsl:with-param name="typeUri" select="$typeUri" />
 				<xsl:with-param name="typeName" select="$typeName" />
-			</xsl:call-template>
-		</xsl:when>
-		<xsl:when test="xs:simpleType" >
-			<xsl:for-each select="xs:simpleType" >
-				<!-- Simple type in-line -->
-				<xsl:call-template name="element_simple_type" >
-					<xsl:with-param name="schemaName" select="$schemaName" />
-					<xsl:with-param name="maxOccurs" select="$nextMaxOccurs" />
-					<xsl:with-param name="minOccurs" select="$nextMinOccurs" />
-					<xsl:with-param name="elementElem" select="$elementElem" />
+        <xsl:with-param name="choiceName" select="$choiceName" />
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:when test="xs:simpleType" >
+      <xsl:for-each select="xs:simpleType" >
+        <!-- Simple type in-line -->
+        <xsl:call-template name="element_simple_type" >
+          <xsl:with-param name="schemaName" select="$schemaName" />
+          <xsl:with-param name="maxOccurs" select="$nextMaxOccurs" />
+          <xsl:with-param name="minOccurs" select="$nextMinOccurs" />
+          <xsl:with-param name="elementElem" select="$elementElem" />
+          <xsl:with-param name="choiceName" select="$choiceName" />
 				</xsl:call-template>
 			</xsl:for-each>			
 		</xsl:when>
@@ -949,6 +1001,7 @@
 					<xsl:with-param name="maxOccurs" select="$nextMaxOccurs" />
 					<xsl:with-param name="minOccurs" select="$nextMinOccurs" />
 					<xsl:with-param name="elementElem" select="$elementElem" />
+          <xsl:with-param name="choiceName" select="$choiceName" />
 				</xsl:call-template>
 			</xsl:for-each>			
 		</xsl:when>
@@ -965,6 +1018,7 @@
 	<xsl:param name="elemTypeName" />
 	<xsl:param name="typeUri" />
 	<xsl:param name="typeName" />
+  <xsl:param name="choiceName" />
 	<xsl:param name="prevTypes" select="/.."/>
 	<xsl:param name="restrUri" select="''"/>
 	<xsl:param name="restrType" select="''"/>
@@ -992,6 +1046,7 @@
                 <xsl:with-param name="elementElem" select="$elementElem"/>
                 <xsl:with-param name="typeUri" select="$elemTypeUri"/>
                 <xsl:with-param name="typeName" select="$elemTypeName"/>
+                <xsl:with-param name="choiceName" select="$choiceName"/>
             </xsl:call-template>
 
 			<xsl:call-template name="RasterProperty" >
@@ -1007,6 +1062,7 @@
                 <xsl:with-param name="elementElem" select="$elementElem"/>
                 <xsl:with-param name="typeUri" select="$elemTypeUri"/>
                 <xsl:with-param name="typeName" select="$elemTypeName"/>
+                <xsl:with-param name="choiceName" select="$choiceName"/>
             </xsl:call-template>
 
 			<xsl:call-template name="GeometricProperty" >
@@ -1027,6 +1083,7 @@
                 <xsl:with-param name="elementElem" select="$elementElem"/>
                 <xsl:with-param name="typeUri" select="$elemTypeUri"/>
                 <xsl:with-param name="typeName" select="$elemTypeName"/>
+                <xsl:with-param name="choiceName" select="$choiceName"/>
             </xsl:call-template>
 
 			<xsl:call-template name="GeometricAssociation" >
@@ -1047,6 +1104,7 @@
                 <xsl:with-param name="elementElem" select="$elementElem"/>
                 <xsl:with-param name="typeUri" select="$elemTypeUri"/>
                 <xsl:with-param name="typeName" select="$elemTypeName"/>
+                <xsl:with-param name="choiceName" select="$choiceName"/>
             </xsl:call-template>
 
 			<xsl:call-template name="AssociationProperty" >
@@ -1066,6 +1124,7 @@
                 <xsl:with-param name="elementElem" select="$elementElem"/>
                 <xsl:with-param name="typeUri" select="$typeUri"/>
                 <xsl:with-param name="typeName" select="$typeName"/>
+                <xsl:with-param name="choiceName" select="$choiceName"/>
             </xsl:call-template>
 
 			<xsl:call-template name="DataProperty" >
@@ -1082,6 +1141,7 @@
                 <xsl:with-param name="elementElem" select="$elementElem"/>
                 <xsl:with-param name="typeUri" select="$elemTypeUri"/>
                 <xsl:with-param name="typeName" select="$elemTypeName"/>
+                <xsl:with-param name="choiceName" select="$choiceName"/>
             </xsl:call-template>
 
 			<xsl:call-template name="ObjectProperty" >
@@ -1104,6 +1164,7 @@
 						<xsl:with-param name="elementElem" select="$elementElem"/>
 						<xsl:with-param name="typeUri" select="$elemTypeUri"/>
 						<xsl:with-param name="typeName" select="$elemTypeName"/>
+            <xsl:with-param name="choiceName" select="$choiceName"/>
 					</xsl:call-template>
 
 			        <xsl:call-template name="ObjectProperty" >
@@ -1140,6 +1201,7 @@
 									<xsl:with-param name="elementElem" select="$elementElem"/>
 									<xsl:with-param name="typeUri" select="$elemTypeUri"/>
 									<xsl:with-param name="typeName" select="$elemTypeName"/>
+                  <xsl:with-param name="choiceName" select="$choiceName"/>
 								</xsl:call-template>
 
 			                    <xsl:call-template name="ObjectProperty" >
@@ -1201,6 +1263,7 @@
 					                <xsl:with-param name="maxOccurs" select="$maxOccurs" />
 					                <xsl:with-param name="minOccurs" select="$minOccurs" />
 					                <xsl:with-param name="elementElem" select="$elementElem" />
+                          <xsl:with-param name="choiceName" select="$choiceName" />
 	                                <xsl:with-param name="elemTypeUri" select="$elemTypeUri"/>
 	                                <xsl:with-param name="elemTypeName" select="$elemTypeName"/>
 	                                <xsl:with-param name="typeUri" select="$baseUri"/>
@@ -1224,6 +1287,7 @@
 	<xsl:param name="minOccurs" />
 	<xsl:param name="maxOccurs" />
 	<xsl:param name="elementElem" />
+  <xsl:param name="choiceName" />
 	<xsl:param name="prevTypes" select="."/>
 
     <xsl:variable name="fullType">
@@ -1234,7 +1298,7 @@
     <xsl:variable name="typeUri"><xsl:value-of select="substring-before($fullType,' ')"/></xsl:variable>
     <xsl:variable name="typeName"><xsl:value-of select="substring-before(substring-after($fullType,' '),' ')"/></xsl:variable>
     <xsl:call-template name="element_type" >
-	    <xsl:with-param name="schemaName" select="$schemaName" />
+	  <xsl:with-param name="schemaName" select="$schemaName" />
 		<xsl:with-param name="minOccurs" select="$minOccurs" />
 		<xsl:with-param name="maxOccurs" select="$maxOccurs" />
 		<xsl:with-param name="elementElem" select="$elementElem" />
@@ -1243,6 +1307,7 @@
 		<xsl:with-param name="typeUri" select="$typeUri" />
 		<xsl:with-param name="typeName" select="$typeName" />
 		<xsl:with-param name="prevTypes" select="$prevTypes" />
+    <xsl:with-param name="choiceName" select="$choiceName" />
 	</xsl:call-template>
 	<xsl:call-template name="simpleType_errors">
 		<xsl:with-param name="schemaName" select="$schemaName"/>
@@ -1255,6 +1320,7 @@
     <xsl:param name="minOccurs" />
     <xsl:param name="maxOccurs" />
     <xsl:param name="elementElem" />
+    <xsl:param name="choiceName" />
     <xsl:param name="prevTypes" select="."/>
 
     <!-- Currently only restrictions handled. Other cases require that an FDO class is generated for this inline complex type. -->
@@ -1281,6 +1347,7 @@
           <xsl:with-param name="typeUri" select="$typeUri" />
           <xsl:with-param name="typeName" select="$typeName" />
           <xsl:with-param name="prevTypes" select="$prevTypes" />
+          <xsl:with-param name="choiceName" select="$choiceName" />
         </xsl:call-template>
       </xsl:when>
       <xsl:when test="xs:sequence/xs:element/@ref" >
@@ -1317,6 +1384,7 @@
             <xsl:with-param name="elementElem" select="$elementElem"/>
             <xsl:with-param name="typeUri" select="$uriName"/>
             <xsl:with-param name="typeName" select="$elemType"/>
+            <xsl:with-param name="choiceName" select="$choiceName"/>
           </xsl:call-template>
 
           <xsl:call-template name="GeometricProperty" >
@@ -1339,8 +1407,10 @@
 	<xsl:param name="typeUri" />
 	<!--element's type -->
 	<xsl:param name="typeName" />
-	
-    <xsl:variable name="elemName">
+  <!--is choice element -->
+  <xsl:param name="choiceName" />
+
+  <xsl:variable name="elemName">
         <xsl:choose>
             <xsl:when test="$elementElem/@name">
     			<xsl:value-of select="$elementElem/@name" />
@@ -1376,8 +1446,13 @@
             <xsl:call-template name="type_to_class">
                 <xsl:with-param name="type" select="$typeName" />		                    
             </xsl:call-template>
-        </xsl:attribute>				
-	</xsl:element>
+        </xsl:attribute>
+        <xsl:if test="not($choiceName='')">
+          <xsl:attribute name="choiceName">
+              <xsl:value-of select="$choiceName"/>
+          </xsl:attribute>
+        </xsl:if>
+  </xsl:element>
 </xsl:template>
 
 <!-- Generates an FDO Data Property -->

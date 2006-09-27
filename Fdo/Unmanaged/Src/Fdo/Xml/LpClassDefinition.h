@@ -70,6 +70,8 @@ public:
 
     virtual FdoString* GetName();
 
+    // get a mapping property name using an gml alias name if exist
+    FdoString* PropertyMappingNameFromGmlAlias(FdoString* gmlName);
 
 protected:
     FdoXmlLpClassDefinition();

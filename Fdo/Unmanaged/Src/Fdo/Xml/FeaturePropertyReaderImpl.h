@@ -92,6 +92,7 @@ private:
         GmlBaseType_Pending,
         GmlBaseType_hexBinary,
         GmlBaseType_base64Binary,
+		GmlBaseType_GmlGeometryAssociation
 	};
 
 	enum ParsingState{
@@ -107,6 +108,7 @@ private:
         ParsingState_ElementPending,
         ParsingState_hexBinary,
         ParsingState_base64Binary,
+		ParsingState_GmlGeometryAssociation
 	};
 
 
@@ -137,7 +139,7 @@ private:
 //
 private:
 	GmlBaseType getGmlBaseType(FdoString* elementName, FdoString* elementUri);
-    bool isTypeOf(FdoString* elementName, FdoString* elementUri, FdoString* type);
+    bool isTypeOf(FdoString* elementName, FdoString* elementUri, FdoString* type, bool bCaseSens = true );
     FdoXmlLpClassDefinition* getClassDef(FdoString* name, FdoString* uri);
 
 };

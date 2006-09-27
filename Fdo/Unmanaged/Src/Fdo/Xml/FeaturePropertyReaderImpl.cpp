@@ -232,6 +232,13 @@ FdoXmlSaxHandler* FdoXmlFeaturePropertyReaderImpl::XmlStartElement(
 			    break;
             }
 
+		//gml geometry association
+		case GmlBaseType_GmlGeometryAssociation:
+			m_parsingStateStack.push_back(ParsingState_GmlGeometryAssociation);
+			
+			m_geometryHandler = FdoXmlGeometryHandler::Create();
+			nextSaxHandler = m_geometryHandler;
+			break;
 		//geometry association
 		case GmlBaseType_GeometryAssociation:
 
@@ -400,28 +407,71 @@ FdoBoolean FdoXmlFeaturePropertyReaderImpl::XmlEndElement(
 
 		break;
 
-	//geometry association
-	case ParsingState_GeometryAssociation:
-
+	//gml geometry association
+	case ParsingState_GmlGeometryAssociation:
+    {
 		tempGeometry =  m_geometryHandler->GetGeometry();
 		tempByteArray = tempGeometry->GetFgf();
-
-        if (tempByteArray != NULL) {
-		    isPauseParsing = curFeatureHandler->FeatureGeometricProperty(m_featureContext, 
-			    name,
+        FdoStringP pPropName = name;
+        if (NULL != m_lpClassStack.back())
+        {
+            FdoXmlLpClassDefinition* classDef = m_lpClassStack.back();
+            FdoString* pBaseName = classDef->PropertyMappingNameFromGmlAlias(name);
+            if (pBaseName != NULL)
+                pPropName = pBaseName;
+            else
+            {
+                pPropName = L"gml/";
+                pPropName += name;
+            }
+        }
+        if (tempByteArray != NULL)
+        {
+            isPauseParsing = curFeatureHandler->FeatureGeometricProperty(m_featureContext, 
+			    pPropName,
 			    tempByteArray->GetData(), 
 			    tempByteArray->GetCount());
-        } else {
+        } else
+        {
 		    isPauseParsing = curFeatureHandler->FeatureGeometricProperty(m_featureContext, 
-			    name,
+			    pPropName,
 			    NULL, 
 			    0);
         }
 
 		FDO_SAFE_RELEASE(tempGeometry);
 		FDO_SAFE_RELEASE(tempByteArray);
-	
+    }
+		break;
 
+	//geometry association
+	case ParsingState_GeometryAssociation:
+    {
+		tempGeometry =  m_geometryHandler->GetGeometry();
+		tempByteArray = tempGeometry->GetFgf();
+        FdoStringP pPropName = name;
+        if (NULL != m_lpClassStack.back())
+        {
+            FdoXmlLpClassDefinition* classDef = m_lpClassStack.back();
+            FdoString* pBaseName = classDef->PropertyMappingNameFromGmlAlias(name);
+            if (pBaseName != NULL)
+                pPropName = pBaseName;
+        }
+        if (tempByteArray != NULL) {
+		    isPauseParsing = curFeatureHandler->FeatureGeometricProperty(m_featureContext, 
+			    pPropName,
+			    tempByteArray->GetData(), 
+			    tempByteArray->GetCount());
+        } else {
+		    isPauseParsing = curFeatureHandler->FeatureGeometricProperty(m_featureContext, 
+			    pPropName,
+			    NULL, 
+			    0);
+        }
+
+		FDO_SAFE_RELEASE(tempGeometry);
+		FDO_SAFE_RELEASE(tempByteArray);
+    }
 		break;
 
 	//Generic Complex Type
@@ -490,13 +540,13 @@ void FdoXmlFeaturePropertyReaderImpl::XmlCharacters(FdoXmlSaxContext* context, F
 ////////////////////////////////////////////////////////////////////////////////////
 
 
-bool FdoXmlFeaturePropertyReaderImpl::isTypeOf(FdoString* elementName, FdoString* elementUri, FdoString* type)
+bool FdoXmlFeaturePropertyReaderImpl::isTypeOf(FdoString* elementName, FdoString* elementUri, FdoString* type, bool bCaseSens)
 {
     bool rv = false;
     if (m_schemaManager != NULL) {
         FdoPtr<FdoXmlLpSchema> schema = m_schemaManager->UriToSchema(elementUri);
         if (schema != NULL) {
-            FdoPtr<FdoXmlLpGmlElementDefinition> element = schema->ElementFromGmlName(elementUri, elementName);
+            FdoPtr<FdoXmlLpGmlElementDefinition> element = schema->ElementFromGmlName(elementUri, elementName, bCaseSens);
             if (element != NULL) {
                 FdoPtr<FdoXmlLpClassDefinition> classDef = element->GetClassDefinition();
                 if (classDef != NULL) {
@@ -524,7 +574,7 @@ FdoXmlFeaturePropertyReaderImpl::GmlBaseType FdoXmlFeaturePropertyReaderImpl::ge
                 // then find in the schema mappings
                 if ((wcscmp(elementUri, L"http://www.opengis.net/wfs") == 0 &&
                     wcscmp(elementName, L"FeatureCollection") == 0) ||
-                    isTypeOf(elementName, elementUri, FdoGml212::mAbstractFeatureCollection))
+                    isTypeOf(elementName, elementUri, FdoGml212::mAbstractFeatureCollection, false))
                     rv = GmlBaseType_FeatureCollection;
                 break;
             }
@@ -533,7 +583,7 @@ FdoXmlFeaturePropertyReaderImpl::GmlBaseType FdoXmlFeaturePropertyReaderImpl::ge
                 // similar as above
                 if ((wcscmp(elementUri, FdoXml::mGmlUri) == 0 &&
                     wcscmp(elementName, L"featureMember") == 0) ||
-                    isTypeOf(elementName, elementUri, FdoGml212::mFeatureAssociation))
+                    isTypeOf(elementName, elementUri, FdoGml212::mFeatureAssociation, false))
                     rv = GmlBaseType_FeatureAssociation;
                 else if (wcscmp(elementUri, FdoXml::mGmlUri) == 0 &&
                     wcscmp(elementName, L"boundedBy") == 0)
@@ -579,7 +629,7 @@ FdoXmlFeaturePropertyReaderImpl::GmlBaseType FdoXmlFeaturePropertyReaderImpl::ge
                                 wcscmp(elementName, L"multiEdgeOf") == 0 ||
                                 wcscmp(elementName, L"multiCoverage") == 0 ||
                                 wcscmp(elementName, L"multiExtentOf") == 0)
-                        rv = GmlBaseType_GeometryAssociation;
+                        rv = GmlBaseType_GmlGeometryAssociation;
 
                 }
                 if (rv != GmlBaseType_Unknown)

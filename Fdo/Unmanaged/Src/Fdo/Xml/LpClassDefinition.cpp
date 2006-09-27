@@ -176,8 +176,21 @@ FdoXmlLpClassCollection* FdoXmlLpClassCollection::Create(FdoXmlLpSchemaElement* 
     return new FdoXmlLpClassCollection(parent);
 }
 
-
-
-
-
-
+FdoString* FdoXmlLpClassDefinition::PropertyMappingNameFromGmlAlias(FdoString* gmlName)
+{
+    if (m_class != NULL)
+    {
+        FdoPtr<FdoXmlElementMappingCollection> elements = m_mapping->GetElementMappings();
+        for (int k = 0; k < elements->GetCount(); k++)
+        {
+            FdoPtr<FdoXmlElementMapping> elementMapping = elements->GetItem(k);
+            FdoPtr<FdoStringCollection> pAliasNames = elementMapping->GetAliasNames();
+            if (pAliasNames != NULL && pAliasNames->GetCount() != 0)
+            {
+                if (pAliasNames->IndexOf(gmlName) != -1)
+                    return elementMapping->GetName();
+            }
+        }
+    }
+    return NULL;
+}
