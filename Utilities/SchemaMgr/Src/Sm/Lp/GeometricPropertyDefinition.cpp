@@ -1343,3 +1343,19 @@ bool FdoSmLpGeometricPropertyDefinition::CheckSupportedGeometryTypes( FdoGeometr
     return !err;
 }
 
+bool FdoSmLpGeometricPropertyDefinition::CheckGeomPropShapeType (FdoGeometryType geomType) const
+{
+    int allowedShapeTypes = GetGeometryTypes();
+
+    bool    bIsPoint   = ( geomType == FdoGeometryType_Point        || geomType == FdoGeometryType_MultiPoint);
+    bool    bIsCurve   = ( geomType == FdoGeometryType_LineString   || geomType == FdoGeometryType_MultiLineString ||
+                           geomType == FdoGeometryType_CurveString  || geomType == FdoGeometryType_MultiCurveString );
+    bool    bIsPolygon = ( geomType == FdoGeometryType_Polygon      || geomType == FdoGeometryType_MultiPolygon ||
+                           geomType == FdoGeometryType_CurvePolygon || geomType == FdoGeometryType_MultiCurvePolygon );
+    bool    bIsMulGeom = ( geomType == FdoGeometryType_MultiGeometry );
+
+    return ! (    bIsPoint   && ((allowedShapeTypes & FdoGeometricType_Point) == 0) ||
+            bIsCurve   && ((allowedShapeTypes & FdoGeometricType_Curve) == 0) ||
+            bIsPolygon && ((allowedShapeTypes & FdoGeometricType_Surface) == 0) ||
+            bIsMulGeom && ((allowedShapeTypes & FdoGeometricType_All) == 0) );
+}

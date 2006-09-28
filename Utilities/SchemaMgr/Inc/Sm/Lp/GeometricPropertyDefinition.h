@@ -270,6 +270,9 @@ public:
     /// Geometric column type name
 	static const wchar_t* mGeometryColType;
 */
+    /// This function checks if the inserted geometry is allowed to be inserted.
+    virtual bool CheckGeomPropShapeType (FdoGeometryType geomType) const;
+
 protected:
     //Unused constructor needed only to build on Linux
     FdoSmLpGeometricPropertyDefinition() {}
