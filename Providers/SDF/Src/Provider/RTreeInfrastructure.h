@@ -15,12 +15,12 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define M_PI       3.14159265358979323846
 
-#ifndef max
-#define max(a,b)            (((a) > (b)) ? (a) : (b))
+#ifndef sdf_max
+#define sdf_max(a,b)            (((a) > (b)) ? (a) : (b))
 #endif
 
-#ifndef min
-#define min(a,b)            (((a) < (b)) ? (a) : (b))
+#ifndef sdf_min
+#define sdf_min(a,b)            (((a) < (b)) ? (a) : (b))
 #endif
 
 
@@ -82,10 +82,10 @@ public:
             return r2;
 
         Bounds ret(
-            min(r1.minx, r2.minx),
-            min(r1.miny, r2.miny),
-            max(r1.maxx, r2.maxx),
-            max(r1.maxy, r2.maxy));
+            sdf_min(r1.minx, r2.minx),
+            sdf_min(r1.miny, r2.miny),
+            sdf_max(r1.maxx, r2.maxx),
+            sdf_max(r1.maxy, r2.maxy));
 
         return ret;
     }
