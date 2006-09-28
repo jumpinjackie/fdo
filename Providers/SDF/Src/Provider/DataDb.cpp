@@ -29,13 +29,13 @@ static FdoDataPropertyDefinitionCollection* FindIDs(FdoClassDefinition* fc)
     while ((base = base->GetBaseClass()) != NULL)
         idpdc = base->GetIdentityProperties();
 
-    if (idpdc->GetCount() == 0)
-        throw FdoException::Create(
-            NlsMsgGetMain(
-                FDO_NLSID(SDFPROVIDER_15_NO_IDENTITY_PROPS),
-                (FdoString*) fc->GetQualifiedName()
-            )
-        );
+    //if (idpdc->GetCount() == 0)
+    //    throw FdoException::Create(
+    //        NlsMsgGetMain(
+    //            FDO_NLSID(SDFPROVIDER_15_NO_IDENTITY_PROPS),
+    //            (FdoString*) fc->GetQualifiedName()
+    //        )
+    //    );
 
     return (FDO_SAFE_ADDREF (idpdc.p));
 }
@@ -341,17 +341,19 @@ int DataDb::GetFeatureAt(SQLiteData* key, SQLiteData* data, FdoPropertyValueColl
 	if( Cursor( &cur, FALSE ) != SQLiteDB_OK || cur == NULL )
 		return SQLiteDB_ERROR;
 
-	if( pvc->GetCount() != this->m_Ids->GetCount() )
-		return FindFeatureAt( key, data, pvc );  // Performs a table scan
+    if (NULL != m_Ids)
+    {
+	    if( pvc->GetCount() != m_Ids->GetCount() )
+		    return FindFeatureAt( key, data, pvc );  // Performs a table scan
 
-	for(int i=0; i<pvc->GetCount(); i++ )
-	{
-		const wchar_t* name1 = FdoPtr<FdoIdentifier>(FdoPtr<FdoPropertyValue>(pvc->GetItem(i))->GetName())->GetName();
-		const wchar_t* name2 = FdoPtr<FdoDataPropertyDefinition>(m_Ids->GetItem(i))->GetName();
-		if( wcscmp(name1,name2) )
-			return FindFeatureAt( key, data, pvc );  // Performs a table scan
-	}
-
+	    for(int i=0; i<pvc->GetCount(); i++ )
+	    {
+		    const wchar_t* name1 = FdoPtr<FdoIdentifier>(FdoPtr<FdoPropertyValue>(pvc->GetItem(i))->GetName())->GetName();
+		    const wchar_t* name2 = FdoPtr<FdoDataPropertyDefinition>(m_Ids->GetItem(i))->GetName();
+		    if( wcscmp(name1,name2) )
+			    return FindFeatureAt( key, data, pvc );  // Performs a table scan
+	    }
+    }
 	BinaryWriter wrtkey(64);
 	DataIO::MakeKey(m_Fc, m_Pi, pvc, wrtkey, 1);
 
@@ -439,17 +441,20 @@ void DataDb::SetOrderingOptions( std::map<std::wstring, int> *opts )
 	//m_orderingOptions = opts; 
 	if( NULL != m_orderingOptions )
 		delete[] m_orderingOptions;
-
-	m_orderingOptions = new int[m_Ids->GetCount()];
-	for( int i=0; i<m_Ids->GetCount(); i++ )
-	{
-		FdoPtr<FdoDataPropertyDefinition>id = m_Ids->GetItem(i);
-		std::map<std::wstring, int>::iterator iter = opts->find( id->GetName() );
-		if( iter != opts->end() )
-			m_orderingOptions[i] = (FdoOrderingOption)iter->second;
-		else
-			m_orderingOptions[i] = FdoOrderingOption_Ascending;
-	}
+    m_orderingOptions = NULL;
+    if (NULL != m_Ids)
+    {
+	    m_orderingOptions = new int[m_Ids->GetCount()];
+	    for( int i=0; i<m_Ids->GetCount(); i++ )
+	    {
+		    FdoPtr<FdoDataPropertyDefinition>id = m_Ids->GetItem(i);
+		    std::map<std::wstring, int>::iterator iter = opts->find( id->GetName() );
+		    if( iter != opts->end() )
+			    m_orderingOptions[i] = (FdoOrderingOption)iter->second;
+		    else
+			    m_orderingOptions[i] = FdoOrderingOption_Ascending;
+	    }
+    }
 }
 
 void DataDb::Drop()
@@ -487,6 +492,8 @@ int DataDb::compare(int size1,const void* data1,int size2,const void* data2)
   m_Reader1.Reset((unsigned char*)data1, size1);
   m_Reader2.Reset((unsigned char*)data2, size2);
   
+  if (NULL == m_Ids)
+    return -1;
   if( m_Ids->GetCount() > 1 )
   {
 	for( int i=0; i<m_Ids->GetCount(); i++ )
@@ -548,7 +555,7 @@ int DataDb::compare(int size1,const void* data1,int size2,const void* data2)
 
 int DataDb::compare(int size1, const void* data1, FdoPropertyValueCollection* pvc)
 {
-  if( m_CompareHandler == NULL )
+  if( m_CompareHandler == NULL || m_Ids == NULL)
 	return -1; // requires a m_CompareHandler
 
   int ret = 0; // Equals
