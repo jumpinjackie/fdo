@@ -86,6 +86,8 @@ public:
         FdoSmLpGrdGeometricPropertyDefinition::Update(pColumnOverrides);
     }
 
+    virtual bool CheckGeomPropShapeType (FdoGeometryType geomType) const;
+
 protected:
     // Create an inherited copy of this property.
     //

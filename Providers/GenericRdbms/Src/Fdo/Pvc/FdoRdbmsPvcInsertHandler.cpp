@@ -756,7 +756,7 @@ void FdoRdbmsPvcInsertHandler::SetBindValues(const FdoSmLpClassDefinition *class
                         newGeomValue = gf->CreateGeometryFromFgf( ba );
 
                         mConnection->GetSchemaUtil()->CheckGeomPropOrdDimensionality( classDefinition, name, newGeomValue );
-                        mConnection->GetSchemaUtil()->CheckGeomPropShapeDimensionality( classDefinition, name, newGeomValue );
+                        mConnection->GetSchemaUtil()->CheckGeomPropShapeType( classDefinition, name, newGeomValue );
                         mConnection->GetSchemaUtil()->CheckGeomPropValidity( classDefinition, name, newGeomValue );
 
                         // Compute the SI key values.

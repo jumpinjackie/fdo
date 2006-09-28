@@ -180,3 +180,26 @@ FdoSmLpPropertyP FdoSmLpMySqlGeometricPropertyDefinition::NewCopy(
             pPropOverrides
         );
 }
+
+bool FdoSmLpMySqlGeometricPropertyDefinition::CheckGeomPropShapeType (FdoGeometryType geomType) const
+{
+    bool retVal = FdoSmLpGeometricPropertyDefinition::CheckGeomPropShapeType (geomType);
+    if( retVal )
+    {
+        FdoGeometryType allowedGeomType = FdoGeometryType_MultiGeometry;
+        long allowedHexTypes = GetSpecificGeometryTypes() ;
+        // call FdoCommonGeometryUtil::MapHexCodeToGeometryType only if we have a single geometry allowed
+        // otherwise skip the test if we have more than one geometries (e.g. point and multipoint)
+        if (allowedHexTypes != FdoCommonGeometryUtil::GetAllGeometryTypesCode() && 
+            allowedHexTypes != FdoCommonGeometryUtil::GetCurveGeometryTypesCode() && 
+            allowedHexTypes != FdoCommonGeometryUtil::GetCurveSurfaceGeometryTypesCode() && 
+            allowedHexTypes != FdoCommonGeometryUtil::GetPointCurveGeometryTypesCode() && 
+            allowedHexTypes != FdoCommonGeometryUtil::GetPointGeometryTypesCode() && 
+            allowedHexTypes != FdoCommonGeometryUtil::GetPointSurfaceGeometryTypesCode() && 
+            allowedHexTypes != FdoCommonGeometryUtil::GetSurfaceGeometryTypesCode())
+                allowedGeomType = FdoCommonGeometryUtil::MapHexCodeToGeometryType(allowedHexTypes);
+        if ((allowedGeomType == FdoGeometryType_MultiGeometry) || (allowedGeomType == geomType) )
+            retVal = true;
+    }
+    return retVal;
+}

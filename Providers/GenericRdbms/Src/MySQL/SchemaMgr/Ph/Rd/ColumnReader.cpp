@@ -243,3 +243,17 @@ FdoSmPhColType FdoSmPhRdMySqlColumnReader::GetType()
 
     return mColType;
 }
+
+FdoInt32 FdoSmPhRdMySqlColumnReader::GetFdoGeometryType()
+{
+    CheckGet();
+
+    return FdoSmPhMySqlColTypeMapper::GetColFdoGeometryType(GetString(L"", L"type_string"));
+}
+
+FdoInt32 FdoSmPhRdMySqlColumnReader::GetFdoGeometricType()
+{
+    CheckGet();
+
+    return FdoSmPhMySqlColTypeMapper::GetColFdoGeometricType(GetString(L"", L"type_string"));
+}

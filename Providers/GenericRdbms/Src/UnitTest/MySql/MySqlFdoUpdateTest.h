@@ -24,6 +24,7 @@
 class MySqlFdoUpdateTest : public FdoUpdateTest
 {
     CPPUNIT_TEST_SUB_SUITE (MySqlFdoUpdateTest, FdoUpdateTest);
+    CPPUNIT_TEST( testForeignDataStore );
     CPPUNIT_TEST_SUITE_END ();
 
     void  set_provider();
@@ -31,6 +32,10 @@ class MySqlFdoUpdateTest : public FdoUpdateTest
 
 public:
 	virtual void ConditionalUpdate () { }
+    void testForeignDataStore();
+
+protected:
+	static const wchar_t* mForeignPolygonTest[];
 };
 
 #endif // MYSQL_FDOUPDATETEST_H

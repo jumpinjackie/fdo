@@ -47,6 +47,8 @@ public:
     // Get the type enum for the current column
     virtual FdoSmPhColType GetType();
 
+    virtual FdoInt32 GetFdoGeometryType();
+    virtual FdoInt32 GetFdoGeometricType();
 private:
     // Create the column reader
     FdoSmPhReaderP MakeQueryReader (

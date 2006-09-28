@@ -37,6 +37,7 @@ public:
     //      colTypeString: the corresponding string.
 
     FdoSmPhMySqlColTypeMapEntry(FdoSmPhColType colType, FdoString* colTypeString, bool isUnsigned = false);
+    FdoSmPhMySqlColTypeMapEntry(FdoSmPhColType colType, FdoString* colTypeString, FdoInt32 colFdoGeometryType, FdoInt32 colFdoGeometricType);
     ~FdoSmPhMySqlColTypeMapEntry(void);
 
     // Get the Map entry in string form
@@ -48,6 +49,8 @@ public:
     FdoSmPhColType mColType;
     FdoStringP mColTypeString;
     bool mIsUnsigned;
+    FdoInt32 mColFdoGeometryType;
+    FdoInt32 mColFdoGeometricType;
 };
 
 // Lists all FDO Property types with their corresponding
@@ -70,6 +73,9 @@ public:
     );
     // Converts facet to string
     static FdoStringP Type2String( FdoSmPhColType colType );
+
+    static FdoInt32 GetColFdoGeometryType(FdoString* colTypeString);
+    static FdoInt32 GetColFdoGeometricType(FdoString* colTypeString);
 
 private:
     // Enum-String mappings for each property type.

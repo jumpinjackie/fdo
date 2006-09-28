@@ -33,14 +33,14 @@ static FdoSmPhMySqlColTypeMapEntry timeEntry( FdoSmPhColType_Date, L"time" );
 static FdoSmPhMySqlColTypeMapEntry decimalEntry( FdoSmPhColType_Decimal, L"decimal" );
 static FdoSmPhMySqlColTypeMapEntry singleEntry( FdoSmPhColType_Single, L"single" );
 static FdoSmPhMySqlColTypeMapEntry doubleEntry( FdoSmPhColType_Double, L"double" );
-static FdoSmPhMySqlColTypeMapEntry geomEntry( FdoSmPhColType_Geom, L"geometry" );
-static FdoSmPhMySqlColTypeMapEntry pointEntry( FdoSmPhColType_Geom, L"point" );
-static FdoSmPhMySqlColTypeMapEntry lineStringEntry( FdoSmPhColType_Geom, L"linestring" );
-static FdoSmPhMySqlColTypeMapEntry polygonEntry( FdoSmPhColType_Geom, L"polygon" );
-static FdoSmPhMySqlColTypeMapEntry geomCollectionEntry( FdoSmPhColType_Geom, L"geometrycollection" );
-static FdoSmPhMySqlColTypeMapEntry multiPointEntry( FdoSmPhColType_Geom, L"multipoint" );
-static FdoSmPhMySqlColTypeMapEntry multiLineStringEntry( FdoSmPhColType_Geom, L"multilinestring" );
-static FdoSmPhMySqlColTypeMapEntry multiPolygonEntry( FdoSmPhColType_Geom, L"multipolygon" );
+static FdoSmPhMySqlColTypeMapEntry geomEntry( FdoSmPhColType_Geom, L"geometry", FdoGeometryType_MultiGeometry, FdoGeometricType_Point | FdoGeometricType_Curve | FdoGeometricType_Surface);
+static FdoSmPhMySqlColTypeMapEntry pointEntry( FdoSmPhColType_Geom, L"point", FdoGeometryType_Point, FdoGeometricType_Point);
+static FdoSmPhMySqlColTypeMapEntry lineStringEntry( FdoSmPhColType_Geom, L"linestring", FdoGeometryType_LineString, FdoGeometricType_Curve);
+static FdoSmPhMySqlColTypeMapEntry polygonEntry( FdoSmPhColType_Geom, L"polygon", FdoGeometryType_Polygon, FdoGeometricType_Surface);
+static FdoSmPhMySqlColTypeMapEntry geomCollectionEntry( FdoSmPhColType_Geom, L"geometrycollection", FdoGeometryType_MultiGeometry, FdoGeometricType_Point | FdoGeometricType_Curve | FdoGeometricType_Surface);
+static FdoSmPhMySqlColTypeMapEntry multiPointEntry( FdoSmPhColType_Geom, L"multipoint", FdoGeometryType_MultiPoint, FdoGeometricType_Point);
+static FdoSmPhMySqlColTypeMapEntry multiLineStringEntry( FdoSmPhColType_Geom, L"multilinestring", FdoGeometryType_MultiLineString, FdoGeometricType_Curve);
+static FdoSmPhMySqlColTypeMapEntry multiPolygonEntry( FdoSmPhColType_Geom, L"multipolygon", FdoGeometryType_MultiPolygon, FdoGeometricType_Surface);
 static FdoSmPhMySqlColTypeMapEntry stringEntry( FdoSmPhColType_String, L"varchar" );
 static FdoSmPhMySqlColTypeMapEntry longIntEntry( FdoSmPhColType_Int32, L"int" );
 static FdoSmPhMySqlColTypeMapEntry bigIntEntry( FdoSmPhColType_Int64, L"bigint" );
@@ -107,6 +107,17 @@ FdoSmPhMySqlColTypeMapEntry::FdoSmPhMySqlColTypeMapEntry(FdoSmPhColType colType,
     mColType = colType;
     mColTypeString = FdoStringP(colTypeString, false);
     mIsUnsigned = isUnsigned;
+    mColFdoGeometryType = 0;
+    mColFdoGeometricType = 0;
+}
+
+FdoSmPhMySqlColTypeMapEntry::FdoSmPhMySqlColTypeMapEntry(FdoSmPhColType colType, FdoString* colTypeString, FdoInt32 colFdoGeometryType, FdoInt32 colFdoGeometricType)
+{
+    mColType = colType;
+    mColTypeString = FdoStringP(colTypeString, false);
+    mIsUnsigned = false;
+    mColFdoGeometryType = colFdoGeometryType;
+    mColFdoGeometricType = colFdoGeometricType;
 }
 
 FdoSmPhMySqlColTypeMapEntry::~FdoSmPhMySqlColTypeMapEntry(void)
@@ -187,3 +198,24 @@ FdoStringP FdoSmPhMySqlColTypeMapper::Type2String( FdoSmPhColType colType )
     return L"";
 }
 
+FdoInt32 FdoSmPhMySqlColTypeMapper::GetColFdoGeometryType(FdoString* colTypeString)
+{
+    for (int  i = 0; mMap[i] != NULL; i++ )
+    {
+        FdoSmPhMySqlColTypeMapEntry* mapEntry = mMap[i];
+        if ( mapEntry->mColTypeString == colTypeString )
+            return mapEntry->mColFdoGeometryType;
+    }
+    return FdoGeometryType_MultiGeometry;
+}
+
+FdoInt32 FdoSmPhMySqlColTypeMapper::GetColFdoGeometricType(FdoString* colTypeString)
+{
+    for (int i = 0; mMap[i] != NULL; i++ )
+    {
+        FdoSmPhMySqlColTypeMapEntry* mapEntry = mMap[i];
+        if ( mapEntry->mColTypeString == colTypeString )
+            return mapEntry->mColFdoGeometricType;
+    }
+    return (FdoGeometricType_Point | FdoGeometricType_Curve | FdoGeometricType_Surface);
+}

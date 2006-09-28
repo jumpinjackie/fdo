@@ -120,8 +120,8 @@ public:
                                       const wchar_t*    geomPropName,
                                       FdoIGeometry      *pGeomValue );
 
-    // Check the geometry property shape dimensionality against a geometry value
-    void CheckGeomPropShapeDimensionality( const FdoSmLpClassDefinition *classDefinition,
+    // Check the geometry property shape type against a geometry value
+    void CheckGeomPropShapeType( const FdoSmLpClassDefinition *classDefinition,
                                       const wchar_t*    geomPropName,
                                       FdoIGeometry      *pGeomValue );
 

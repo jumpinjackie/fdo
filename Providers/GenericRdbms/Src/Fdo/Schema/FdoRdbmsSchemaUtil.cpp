@@ -642,7 +642,7 @@ void FdoRdbmsSchemaUtil::SetActiveSpatialContext( const FdoSmLpClassDefinition *
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void FdoRdbmsSchemaUtil::CheckGeomPropShapeDimensionality( const FdoSmLpClassDefinition *classDefinition,
+void FdoRdbmsSchemaUtil::CheckGeomPropShapeType( const FdoSmLpClassDefinition *classDefinition,
                                                       const wchar_t*    geomPropName,
                                                       FdoIGeometry      *pGeomValue )
 {
@@ -657,24 +657,14 @@ void FdoRdbmsSchemaUtil::CheckGeomPropShapeDimensionality( const FdoSmLpClassDef
     const FdoSmLpGeometricPropertyDefinition* geomProp =
         static_cast<const FdoSmLpGeometricPropertyDefinition*>(propertyDefinition);
 
-    int                 allowedShapeTypes = geomProp->GetGeometryTypes();
     FdoGeometryType     geomType = pGeomValue->GetDerivedType();
 
-    bool    bIsPoint   = ( geomType == FdoGeometryType_Point        || geomType == FdoGeometryType_MultiPoint);
-    bool    bIsCurve   = ( geomType == FdoGeometryType_LineString   || geomType == FdoGeometryType_MultiLineString ||
-                           geomType == FdoGeometryType_CurveString  || geomType == FdoGeometryType_MultiCurveString );
-    bool    bIsPolygon = ( geomType == FdoGeometryType_Polygon      || geomType == FdoGeometryType_MultiPolygon ||
-                           geomType == FdoGeometryType_CurvePolygon || geomType == FdoGeometryType_MultiCurvePolygon );
-    bool    bIsMulGeom = ( geomType == FdoGeometryType_MultiGeometry );
-
-    if (    bIsPoint   && ((allowedShapeTypes & FdoGeometricType_Point) == 0) ||
-            bIsCurve   && ((allowedShapeTypes & FdoGeometricType_Curve) == 0) ||
-            bIsPolygon && ((allowedShapeTypes & FdoGeometricType_Surface) == 0) ||
-            bIsMulGeom && ((allowedShapeTypes & FdoGeometricType_All) == 0) )
+    // this function can be provider specific
+    if ( !geomProp->CheckGeomPropShapeType(geomType) )
     {
         throw FdoCommandException::Create(NlsMsgGet2(
                 FDORDBMS_390,
-                "Shape dimensionality mismatch on geometric property '%1$ls' of the feature class '%2$ls'",
+                "Shape type mismatch on geometric property '%1$ls' of the feature class '%2$ls'",
                 propertyDefinition->GetName(),
                 classDefinition->GetName()));
     }

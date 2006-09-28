@@ -682,7 +682,7 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
 
                                 // Validate the input geometry
                                 mConnection->GetSchemaUtil()->CheckGeomPropOrdDimensionality( classDefinition, name, geom );
-                                mConnection->GetSchemaUtil()->CheckGeomPropShapeDimensionality( classDefinition, name, geom );
+                                mConnection->GetSchemaUtil()->CheckGeomPropShapeType( classDefinition, name, geom );
                                 mConnection->GetSchemaUtil()->CheckGeomPropValidity( classDefinition, name, geom );
 
                                 mConnection->GetGdbiCommands()->set_nnull(&values[index].null_ind, 0,0);								

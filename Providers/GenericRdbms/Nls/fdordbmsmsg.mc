@@ -1249,7 +1249,7 @@ Identity properties are not updateable
 MessageId=2614
 SymbolicName=FDORDBMS_390
 Language=English
-Shape dimensionality mismatch on geometric property '%1$ls' of the feature class '%2$ls'.
+Shape type mismatch on geometric property '%1$ls' of the feature class '%2$ls'.
 .
 MessageId=2616
 SymbolicName=FDORDBMS_392

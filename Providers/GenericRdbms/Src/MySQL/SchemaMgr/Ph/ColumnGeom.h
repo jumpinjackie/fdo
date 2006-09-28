@@ -40,7 +40,24 @@ public:
         FdoSmPhMySqlColumn (reader),
         FdoSmPhColumn    ( columnName, L"geometry", elementState, parentObject, bNullable, rootColumnName),
         FdoSmPhColumnGeom( AssociatedSCInfo, bHasElevation, bHasMeasure )
-    {}
+    {
+        m_FdoGeomType = FdoGeometricType_Point | FdoGeometricType_Curve | FdoGeometricType_Surface;
+        m_FdoGeometryType = FdoCommonGeometryUtil::GetAllGeometryTypesCode();
+        if (NULL != reader)
+        {
+            try
+            {
+                FdoSmPhRdMySqlColumnReader* pReader = dynamic_cast<FdoSmPhRdMySqlColumnReader*>(reader);
+                if (pReader != NULL)
+                {
+                    m_FdoGeomType = pReader->GetFdoGeometricType();
+                    m_FdoGeometryType = FdoCommonGeometryUtil::MapGeometryTypeToHexCode( pReader->GetFdoGeometryType() );
+                }
+            }
+            catch ( FdoException* e ){e->Release();}
+            catch ( ... ){}
+        }
+    }
 
     virtual ~FdoSmPhMySqlColumnGeom(void) {}
 
@@ -49,7 +66,19 @@ public:
         return RDBI_GEOMETRY;
     }
 
+    virtual FdoStringP GetBestFdoType()
+    {
+        return FdoStringP::Format(L"%d", m_FdoGeomType);
+    }
+
+    virtual FdoStringP GetBestFdoGeometryType()
+    {
+        return FdoStringP::Format(L"%d", m_FdoGeometryType);
+    }
+
 protected:
+    long m_FdoGeomType;
+    long m_FdoGeometryType;
 
     virtual void PostFinalize()
     {
