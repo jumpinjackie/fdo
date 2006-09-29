@@ -19,7 +19,7 @@ rem
 
 SET TYPEACTION=build
 SET TYPEBUILD=release
-SET FDOORGPATH=%cd%
+SET FDOORGPATH=
 
 SET DEFMODIFY=no
 SET SDFENABLE=yes
@@ -120,6 +120,10 @@ if ("%FDOUTILITIES%")==("") SET FDOUTILITIES=%cd%\Utilities
 
 if "%TYPEACTION%"=="build" goto start_exbuild
 if "%TYPEACTION%"=="clean" goto start_exbuild
+if not ("%FDOORGPATH%")==("") goto start_exbuildinstall
+echo Please provide destination binaries folder using '-o' option.
+exit /B 1
+start_exbuildinstall:
 if not exist "%FDOORGPATH%" mkdir "%FDOORGPATH%"
 
 :start_exbuild
