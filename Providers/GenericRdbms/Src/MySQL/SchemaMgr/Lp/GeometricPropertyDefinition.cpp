@@ -198,8 +198,7 @@ bool FdoSmLpMySqlGeometricPropertyDefinition::CheckGeomPropShapeType (FdoGeometr
             allowedHexTypes != FdoCommonGeometryUtil::GetPointSurfaceGeometryTypesCode() && 
             allowedHexTypes != FdoCommonGeometryUtil::GetSurfaceGeometryTypesCode())
                 allowedGeomType = FdoCommonGeometryUtil::MapHexCodeToGeometryType(allowedHexTypes);
-        if ((allowedGeomType == FdoGeometryType_MultiGeometry) || (allowedGeomType == geomType) )
-            retVal = true;
+            retVal = ((allowedGeomType == FdoGeometryType_MultiGeometry) || (allowedGeomType == geomType) );
     }
     return retVal;
 }
