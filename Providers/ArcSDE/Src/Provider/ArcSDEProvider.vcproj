@@ -66,7 +66,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="sde91.lib pe91.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib FDOSpatial.lib"
+				AdditionalDependencies="sde91.lib pe91.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib FDOSpatial.lib Advapi32.lib"
 				OutputFile="$(OutDir)/ArcSDEProvider.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\lib;&quot;$(SDEHOME)\lib&quot;;$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOUTILITIES)\Common\Lib\Win32\Debug"
@@ -159,7 +159,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="sde91.lib pe91.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib FDOSpatial.lib"
+				AdditionalDependencies="sde91.lib pe91.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib FDOSpatial.lib Advapi32.lib"
 				OutputFile="$(OutDir)/ArcSDEProvider.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\lib;&quot;$(SDEHOME)\lib&quot;;$(FDO)\Unmanaged\Lib\Win32\Release;$(FDOUTILITIES)\Common\Lib\Win32\Release"
