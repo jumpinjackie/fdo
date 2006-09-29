@@ -105,17 +105,24 @@ bool FdoRdbmsDataStoreReader::ReadNext()
 				{
 					mDatastoreDescription = mPhOwnerReader->GetDescription();
 
-					// Create another reader for F_OFTIONS table
-					FdoSmPhOptionsReaderP optRdr = FdoSmPhMgrP(mPhOwnerReader->GetManager())->CreateOptionsReader(mDatastoreName);
+					FdoPtr<FdoISQLCommand>	selCmd = (FdoISQLCommand*)mConnection->CreateCommand( FdoCommandType_SQLCommand );
+					
+					FdoStringP	sqlString = FdoStringP::Format(L"select name, value from %ls.F_OPTIONS", (FdoString *)mDatastoreName);
+
+					selCmd->SetSQLStatement( sqlString );
+
+					FdoPtr<FdoISQLDataReader> optRdr = selCmd->ExecuteReader();
 
 					// read each option, looking for the long transaction and locking options.
 					while ( optRdr->ReadNext() ) 
 					{
-						FdoStringP optName = optRdr->GetName();
+						FdoStringP	optName = optRdr->GetString(L"name");
+						FdoStringP  optValue;
 
 						if ( optName == L"LT_MODE" )
 						{
-							FdoLtLockModeType ltMode = (FdoLtLockModeType)(optRdr->GetValue().ToLong());
+							optValue = optRdr->GetString(L"value");
+							FdoLtLockModeType ltMode = (FdoLtLockModeType) optValue.ToLong();
 
 							if ( ltMode == FdoMode )
 								mLtMode = L"FDO";
@@ -124,7 +131,8 @@ bool FdoRdbmsDataStoreReader::ReadNext()
 						}
 						else if ( optName == L"LOCKING_MODE" ) 
 						{
-							FdoLtLockModeType lckMode = (FdoLtLockModeType)(optRdr->GetValue().ToLong());
+							optValue = optRdr->GetString(L"value");
+							FdoLtLockModeType lckMode = (FdoLtLockModeType)optValue.ToLong();
 							
 							if ( lckMode == FdoMode )
 								mLockMode = L"FDO";
