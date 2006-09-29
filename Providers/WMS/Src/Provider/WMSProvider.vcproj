@@ -63,7 +63,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib ProvidersCommon.lib OWS.lib WMSOverrides.lib gdal_i.lib FDOSpatial.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib ProvidersCommon.lib OWS.lib WMSOverrides.lib gdal_i.lib FDOSpatial.lib Advapi32.lib"
 				OutputFile="$(OutDir)\WMSProvider.dll"
 				AdditionalLibraryDirectories="$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOUTILITIES)\Common\Lib\Win32\Debug;$(FDOUTILITIES)\OWS\Lib\Win32\Debug;..\..\Lib\Win32\Debug;$(FDOTHIRDPARTY)\GDAL1.3\windows\lib\VC8\debug"
 				IgnoreDefaultLibraryNames="LIBCMTD"
@@ -146,7 +146,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDO.lib FDOCommon.lib ProvidersCommon.lib FDOGeometry.lib OWS.lib WMSOverrides.lib gdal_i.lib FDOSpatial.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib ProvidersCommon.lib FDOGeometry.lib OWS.lib WMSOverrides.lib gdal_i.lib FDOSpatial.lib Advapi32.lib"
 				OutputFile="$(OutDir)\WMSProvider.dll"
 				AdditionalLibraryDirectories="$(FDO)\Unmanaged\Lib\Win32\Release;$(FDOUTILITIES)\Common\Lib\Win32\Release;$(FDOUTILITIES)\OWS\Lib\Win32\Release;..\..\Lib\Win32\Release;$(FDOTHIRDPARTY)\GDAL1.3\windows\lib\VC8\release"
 				GenerateDebugInformation="true"

@@ -64,7 +64,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDO.lib FDOCommon.lib ProvidersCommon.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib ProvidersCommon.lib Advapi32.lib"
 				OutputFile="$(OutDir)/WMSOverrides.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOUTILITIES)\Common\Lib\Win32\Debug"
@@ -147,7 +147,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDO.lib FDOCommon.lib ProvidersCommon.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib ProvidersCommon.lib Advapi32.lib"
 				OutputFile="$(OutDir)/WMSOverrides.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(FDO)\Unmanaged\Lib\Win32\Release;$(FDOUTILITIES)\Common\Lib\Win32\Release"
