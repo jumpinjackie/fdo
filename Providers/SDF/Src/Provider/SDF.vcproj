@@ -67,7 +67,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDOUtils.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib FDOSpatial.lib SQLiteInterface.lib Sqlite3.lib"
+				AdditionalDependencies="FDOUtils.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib FDOSpatial.lib SQLiteInterface.lib Sqlite3.lib Advapi32.lib"
 				OutputFile="$(OutDir)/SDFProvider.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(FDO)\Unmanaged\Lib\Win32\Debug\;$(FDOUTILITIES)\Common\Lib\Win32\Debug;..\..\Lib\Win32\Debug;$(FDOTHIRDPARTY)\Sqlite3.1.5\Debug;$(FDOUTILITIES)\SQLiteInterface\Lib\Win32\Debug"
@@ -161,7 +161,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDOUtils.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib FDOSpatial.lib SQLiteInterface.lib Sqlite3.lib"
+				AdditionalDependencies="FDOUtils.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib FDOSpatial.lib SQLiteInterface.lib Sqlite3.lib Advapi32.lib"
 				OutputFile="$(OutDir)/SDFProvider.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(FDO)\Unmanaged\Lib\Win32\Release\;&quot;$(FDOTHIRDPARTY)\db-4.3.27.NC\build_win32\Release_static&quot;;$(FDOUTILITIES)\Common\Lib\Win32\Release;..\..\Lib\Win32\Release;$(FDOTHIRDPARTY)\Sqlite3.1.5\Release;$(FDOUTILITIES)\SQLiteInterface\Lib\Win32\Release"
