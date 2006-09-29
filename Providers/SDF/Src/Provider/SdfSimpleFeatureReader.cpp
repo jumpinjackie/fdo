@@ -562,9 +562,13 @@ bool SdfSimpleFeatureReader::IsNull(FdoString* propertyName)
     if (!ps) 
     {
         CheckIfPropExists(propertyName);
+
+        m_filterExec->ProcessIdentifier(propertyName);
+        DataValueType type = m_filterExec->GetResultType();
+        m_filterExec->Reset();
+
+        return type == Dvt_Null;
         
-        //if it does, it is not null
-        return false;
     }
 
 	if( ps->m_propertyType == FdoPropertyType_AssociationProperty )
