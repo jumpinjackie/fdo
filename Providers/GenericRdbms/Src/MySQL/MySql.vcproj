@@ -159,7 +159,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FdoGeneric.lib Rdbi.lib MySqlDriver.lib libmySQL.lib FDO.lib geometry_fgf.lib FDOGeometry.lib FDOCommon.lib FDOSpatial.lib Gdbi.lib LongTransactionManager.lib SchemaMgr_OVNew.lib"
+				AdditionalDependencies="FdoGeneric.lib Rdbi.lib MySqlDriver.lib libmySQL.lib FDO.lib geometry_fgf.lib FDOGeometry.lib FDOCommon.lib FDOSpatial.lib Gdbi.lib LongTransactionManager.lib SchemaMgr_OVNew.lib Advapi32.lib"
 				OutputFile="$(OutDir)/MySQLProvider.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\Lib\Win32\Release;$(FDO)\Unmanaged\Lib\Win32\Release;$(FDOMYSQL)\lib\opt;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Release"
