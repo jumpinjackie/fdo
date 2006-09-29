@@ -1029,10 +1029,12 @@ private:
         else
         {
             // check if we own the cached byte array
-            mGeomByteArray.p->AddRef ();
-            if (1 != mGeomByteArray.p->Release ())
-                // create a new cache
+			FdoInt32	refCount = mGeomByteArray ? mGeomByteArray->GetRefCount() : 0;
+
+            // create a new cache
+            if (1 != refCount)
                 mGeomByteArray = FdoByteArray::Create (SHP_CACHED_GEOMETRY_INITIAL_SIZE);
+
             mGeomByteArray.p = CreateCachedGeometry (mGeomByteArray.p);
         }
 
