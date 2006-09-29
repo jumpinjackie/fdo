@@ -413,17 +413,21 @@ FdoBoolean FdoXmlFeaturePropertyReaderImpl::XmlEndElement(
 		tempGeometry =  m_geometryHandler->GetGeometry();
 		tempByteArray = tempGeometry->GetFgf();
         FdoStringP pPropName = name;
+        bool found = false;
         if (NULL != m_lpClassStack.back())
         {
             FdoXmlLpClassDefinition* classDef = m_lpClassStack.back();
             FdoString* pBaseName = classDef->PropertyMappingNameFromGmlAlias(name);
             if (pBaseName != NULL)
-                pPropName = pBaseName;
-            else
             {
-                pPropName = L"gml/";
-                pPropName += name;
+                pPropName = pBaseName;
+                found = true;
             }
+        }
+        if (!found)
+        {
+            pPropName = L"gml/";
+            pPropName += name;
         }
         if (tempByteArray != NULL)
         {

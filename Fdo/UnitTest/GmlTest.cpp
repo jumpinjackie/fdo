@@ -266,10 +266,10 @@ void GmlTest::testSimpleGeometry()
 		CPPUNIT_ASSERT(name != NULL);
 
 		testGeometryProperty(featureReader, L"Bounds");
-		testGeometryProperty(featureReader, L"pointProperty");
-		testGeometryProperty(featureReader, L"lineStringProperty");
+		testGeometryProperty(featureReader, L"gml/pointProperty");
+		testGeometryProperty(featureReader, L"gml/lineStringProperty");
 
-		// testGeometryProperty(featureReader, L"linearRingProperty");
+		// testGeometryProperty(featureReader, L"gml/linearRingProperty");
 	}
 
 	CPPUNIT_ASSERT(count == 2);
@@ -301,10 +301,10 @@ void GmlTest::testSimpleGeometry()
 		CPPUNIT_ASSERT(name != NULL);
 
 		testGeometryProperty(featureReader, L"Bounds");
-		testGeometryProperty(featureReader, L"pointProperty");
-		testGeometryProperty(featureReader, L"lineStringProperty");
+		testGeometryProperty(featureReader, L"gml/pointProperty");
+		testGeometryProperty(featureReader, L"gml/lineStringProperty");
 
-		// testGeometryProperty(featureReader, L"linearRingProperty");
+		// testGeometryProperty(featureReader, L"gml/linearRingProperty");
 	}
 
 	CPPUNIT_ASSERT(count == 2);
@@ -330,7 +330,7 @@ void GmlTest::testNestedGeometry()
 		CPPUNIT_ASSERT(name != NULL);
 
 		testGeometryProperty(featureReader, L"Bounds");
-		testGeometryProperty(featureReader, L"polygonProperty");
+		testGeometryProperty(featureReader, L"gml/polygonProperty");
 	}
 
 	CPPUNIT_ASSERT(count == 2);
@@ -363,7 +363,7 @@ void GmlTest::testNestedGeometry()
 		CPPUNIT_ASSERT(name != NULL);
 
 		testGeometryProperty(featureReader, L"Bounds");
-		testGeometryProperty(featureReader, L"polygonProperty");
+		testGeometryProperty(featureReader, L"gml/polygonProperty");
 	}
 
 	CPPUNIT_ASSERT(count == 2);
@@ -388,10 +388,10 @@ void GmlTest::testMultiGeometry()
 		FdoStringP name = featureReader->GetString(L"NAME");
 		CPPUNIT_ASSERT(name != NULL);
 
-		testGeometryProperty(featureReader, L"multiPointProperty");
-		testGeometryProperty(featureReader, L"multiLineStringProperty");
-		testGeometryProperty(featureReader, L"multiPolygonProperty");
-		testGeometryProperty(featureReader, L"multiGeometryProperty");
+		testGeometryProperty(featureReader, L"gml/multiPointProperty");
+		testGeometryProperty(featureReader, L"gml/multiLineStringProperty");
+		testGeometryProperty(featureReader, L"gml/multiPolygonProperty");
+		testGeometryProperty(featureReader, L"gml/multiGeometryProperty");
 	}
 
 	CPPUNIT_ASSERT(count == 2);
@@ -422,10 +422,10 @@ void GmlTest::testMultiGeometry()
 		FdoStringP name = featureReader->GetString(L"NAME");
 		CPPUNIT_ASSERT(name != NULL);
 
-		testGeometryProperty(featureReader, L"multiPointProperty");
-		testGeometryProperty(featureReader, L"multiLineStringProperty");
-		testGeometryProperty(featureReader, L"multiPolygonProperty");
-		testGeometryProperty(featureReader, L"multiGeometryProperty");
+		testGeometryProperty(featureReader, L"gml/multiPointProperty");
+		testGeometryProperty(featureReader, L"gml/multiLineStringProperty");
+		testGeometryProperty(featureReader, L"gml/multiPolygonProperty");
+		testGeometryProperty(featureReader, L"gml/multiGeometryProperty");
 	}
 
 	CPPUNIT_ASSERT(count == 2);
