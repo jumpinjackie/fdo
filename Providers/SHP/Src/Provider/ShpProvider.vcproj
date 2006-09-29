@@ -63,7 +63,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONLS.lib ProvidersCommon.lib SHPRead.lib SHPOverrides.lib SHPSpatialIndex.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONLS.lib ProvidersCommon.lib SHPRead.lib SHPOverrides.lib SHPSpatialIndex.lib Advapi32.lib"
 				OutputFile="$(OutDir)\SHPProvider.dll"
 				AdditionalLibraryDirectories="$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOUTILITIES)\Common\Lib\Win32\Debug;..\..\Lib\Win32\Debug"
 				GenerateDebugInformation="true"
@@ -142,7 +142,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONLS.lib ProvidersCommon.lib SHPRead.lib SHPOverrides.lib SHPSpatialIndex.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONLS.lib ProvidersCommon.lib SHPRead.lib SHPOverrides.lib SHPSpatialIndex.lib Advapi32.lib"
 				OutputFile="$(OutDir)\SHPProvider.dll"
 				AdditionalLibraryDirectories="$(FDO)\Unmanaged\Lib\Win32\Release;$(FDOUTILITIES)\Common\Lib\Win32\Release;..\..\Lib\Win32\Release"
 				GenerateDebugInformation="true"
