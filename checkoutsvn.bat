@@ -30,13 +30,16 @@ SET ARCENABLECHK=yes
 SET RDBMSENABLECHK=yes
 SET GDALENABLECHK=yes
 
-if (%FDO_SVN_ROOT%)==() SET FDO_SVN_ROOT=%cd%
+if (%FDO_SVN_DESTDIR%)==() SET FDO_SVN_DESTDIR=%cd%
 
 :study_params
 if (%1)==() goto start_checkout
 
 if "%1"=="-help"    goto help_show
 if "%1"=="-h"       goto help_show
+
+if "%1"=="-s"       goto get_source
+if "%1"=="-source"  goto get_source
 
 if "%1"=="-o"       goto get_path
 if "%1"=="-outpath" goto get_path
@@ -148,12 +151,17 @@ if not "%2"=="gdal" goto custom_error
 	SET GDALENABLECHK=yes
     goto next_param
 
+:get_source
+if (%2)==() goto custom_error
+SET FDO_SVN_SOURCEDIR=%2
+goto next_param
+
 :get_path
 if (%2)==() goto custom_error
 if not exist "%~2" mkdir "%~2"
 pushd "%~2"
 if errorlevel 1 goto error
-SET FDO_SVN_ROOT=%cd%
+SET FDO_SVN_DESTDIR=%cd%
 popd
 
 :next_param
@@ -165,72 +173,73 @@ goto study_params
 
 if "%FDO_SVN_PASSWORD%"=="" goto custom_error
 if "%FDO_SVN_USERNAME%"=="" goto custom_error
+if "%FDO_SVN_SOURCEDIR%"=="" goto custom_error
 
-if not exist "%FDO_SVN_ROOT%" mkdir "%FDO_SVN_ROOT%"
+if not exist "%FDO_SVN_DESTDIR%" mkdir "%FDO_SVN_DESTDIR%"
 
 if "%FDOCOREENABLECHK%"=="yes" goto checkout_all
 
 :checkout_fdo
 if "%FDOENABLECHK%"=="no" goto checkout_thirdparty
-svn checkout https://fdocore.osgeo.org/svn/fdocore/trunk/Fdo "%FDO_SVN_ROOT%\Fdo" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
+svn checkout https://fdocore.osgeo.org/svn/fdocore/%FDO_SVN_SOURCEDIR%/Fdo "%FDO_SVN_DESTDIR%\Fdo" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
 
 :checkout_thirdparty
 if "%THRPENABLECHK%"=="no" goto checkout_utilities
-svn checkout https://fdocore.osgeo.org/svn/fdocore/trunk/Thirdparty "%FDO_SVN_ROOT%\Thirdparty" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
+svn checkout https://fdocore.osgeo.org/svn/fdocore/%FDO_SVN_SOURCEDIR%/Thirdparty "%FDO_SVN_DESTDIR%\Thirdparty" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
 
 :checkout_utilities
 if "%UTILENABLECHK%"=="no" goto checkout_shp
-svn checkout https://fdocore.osgeo.org/svn/fdocore/trunk/Utilities "%FDO_SVN_ROOT%\Utilities" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
+svn checkout https://fdocore.osgeo.org/svn/fdocore/%FDO_SVN_SOURCEDIR%/Utilities "%FDO_SVN_DESTDIR%\Utilities" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
 goto checkout_shp
 
 :checkout_all
-svn checkout https://fdocore.osgeo.org/svn/fdocore/trunk/Fdo "%FDO_SVN_ROOT%\Fdo" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
+svn checkout https://fdocore.osgeo.org/svn/fdocore/%FDO_SVN_SOURCEDIR%/Fdo "%FDO_SVN_DESTDIR%\Fdo" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
-svn checkout https://fdocore.osgeo.org/svn/fdocore/trunk/www "%FDO_SVN_ROOT%\www" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
+svn checkout https://fdocore.osgeo.org/svn/fdocore/%FDO_SVN_SOURCEDIR%/www "%FDO_SVN_DESTDIR%\www" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
-svn checkout https://fdocore.osgeo.org/svn/fdocore/trunk/Thirdparty "%FDO_SVN_ROOT%\Thirdparty" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
+svn checkout https://fdocore.osgeo.org/svn/fdocore/%FDO_SVN_SOURCEDIR%/Thirdparty "%FDO_SVN_DESTDIR%\Thirdparty" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
-svn checkout https://fdocore.osgeo.org/svn/fdocore/trunk/Utilities "%FDO_SVN_ROOT%\Utilities" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
+svn checkout https://fdocore.osgeo.org/svn/fdocore/%FDO_SVN_SOURCEDIR%/Utilities "%FDO_SVN_DESTDIR%\Utilities" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
-svn checkout https://fdocore.osgeo.org/svn/fdocore/trunk -N "%FDO_SVN_ROOT%" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
+svn checkout https://fdocore.osgeo.org/svn/fdocore/%FDO_SVN_SOURCEDIR% -N "%FDO_SVN_DESTDIR%" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
 
 :checkout_shp
 if "%SHPENABLECHK%"=="no" goto checkout_sdf
-svn checkout https://fdoshp.osgeo.org/svn/fdoshp/trunk/Providers/SHP "%FDO_SVN_ROOT%\Providers\SHP" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
+svn checkout https://fdoshp.osgeo.org/svn/fdoshp/%FDO_SVN_SOURCEDIR%/Providers/SHP "%FDO_SVN_DESTDIR%\Providers\SHP" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
 
 :checkout_sdf
 if "%SDFENABLECHK%"=="no" goto checkout_wfs
-svn checkout https://fdosdf.osgeo.org/svn/fdosdf/trunk/Providers/SDF "%FDO_SVN_ROOT%\Providers\SDF" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
+svn checkout https://fdosdf.osgeo.org/svn/fdosdf/%FDO_SVN_SOURCEDIR%/Providers/SDF "%FDO_SVN_DESTDIR%\Providers\SDF" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
 
 :checkout_wfs
 if "%WFSENABLECHK%"=="no" goto checkout_wms
-svn checkout https://fdowfs.osgeo.org/svn/fdowfs/trunk/Providers/WFS "%FDO_SVN_ROOT%\Providers\WFS" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
+svn checkout https://fdowfs.osgeo.org/svn/fdowfs/%FDO_SVN_SOURCEDIR%/Providers/WFS "%FDO_SVN_DESTDIR%\Providers\WFS" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
 
 :checkout_wms
 if "%WMSENABLECHK%"=="no" goto checkout_arcsde
-svn checkout https://fdowms.osgeo.org/svn/fdowms/trunk/Providers/WMS "%FDO_SVN_ROOT%\Providers\WMS" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
+svn checkout https://fdowms.osgeo.org/svn/fdowms/%FDO_SVN_SOURCEDIR%/Providers/WMS "%FDO_SVN_DESTDIR%\Providers\WMS" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
 
 :checkout_arcsde
 if "%ARCENABLECHK%"=="no" goto checkout_generic
-svn checkout https://fdoarcsde.osgeo.org/svn/fdoarcsde/trunk/Providers/ArcSDE "%FDO_SVN_ROOT%\Providers\ArcSDE" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
+svn checkout https://fdoarcsde.osgeo.org/svn/fdoarcsde/%FDO_SVN_SOURCEDIR%/Providers/ArcSDE "%FDO_SVN_DESTDIR%\Providers\ArcSDE" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
 
 :checkout_generic
 if "%RDBMSENABLECHK%"=="no" goto checkout_gdal
-svn checkout https://fdordbms.osgeo.org/svn/fdordbms/trunk/Providers/GenericRdbms "%FDO_SVN_ROOT%\Providers\GenericRdbms" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
+svn checkout https://fdordbms.osgeo.org/svn/fdordbms/%FDO_SVN_SOURCEDIR%/Providers/GenericRdbms "%FDO_SVN_DESTDIR%\Providers\GenericRdbms" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
 
 :checkout_gdal
 if "%GDALENABLECHK%"=="no" goto end
-svn checkout https://fdogdal.osgeo.org/svn/fdogdal/trunk/Providers/GDAL "%FDO_SVN_ROOT%\Providers\GDAL" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
+svn checkout https://fdogdal.osgeo.org/svn/fdogdal/%FDO_SVN_SOURCEDIR%/Providers/GDAL "%FDO_SVN_DESTDIR%\Providers\GDAL" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
 
 :end
@@ -248,10 +257,13 @@ echo **************************************************************
 echo checkoutsvn.bat [-h] 
 echo                 [-o=OutFolder] 
 echo                 [-w=WithModule] 
-echo                 -u=UserId 
+echo                 -s=Source
+echo                 -u=UserId
 echo                 -p=UserPassword
 echo *
 echo Help:           -h[elp]
+echo Branch:         -s[ource]=location of source file, either
+echo                           branch location, tag location or trunk
 echo OutFolder:      -o[utpath]=destination folder for files
 echo WithModule:     -w[ith]=all(default), 
 echo                         fdo, 
