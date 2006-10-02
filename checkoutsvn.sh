@@ -192,16 +192,22 @@ do
   esac
 done
 
-if test "$FDO_SVN_USERNAME" == "" SHOWHELP=yes
-if test "$FDO_SVN_PASSWORD" == "" SHOWHELP=yes
-if test "$FDO_SVN_SOURCEDIR" == "" SHOWHELP=yes
+if test "$FDO_SVN_USERNAME" == ""; then 
+    SHOWHELP=yes 
+fi
+if test "$FDO_SVN_PASSWORD" == ""; then 
+    SHOWHELP=yes 
+fi
+if test "$FDO_SVN_SOURCEDIR" == ""; then 
+    SHOWHELP=yes 
+fi
 
 if test "$SHOWHELP" == yes; then
    echo "**********************************************************"
    echo "checkoutsvn.sh [--h]"
    echo "               [--o OutFolder]"
    echo "               [--w WithModule]"
-   echo "               --s Source
+   echo "               --s Source"
    echo "               --u UserId"
    echo "               --p UserPassword"
    echo " "
@@ -268,13 +274,12 @@ if test "$ARCENABLECHK" == yes; then
    svn checkout https://fdoarcsde.osgeo.org/svn/fdoarcsde/$FDO_SVN_SOURCEDIR/Providers/ArcSDE "$FDO_SVN_DESTDIR/Providers/ArcSDE" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
 fi
 if test "$RDBMSENABLECHK" == yes; then
-   echo "Checking out https://fdordbms.osgeo.org/svn/fdordbms/$FDO_SVN_SOURCEDIR/Providers/GenericRdbms"
+   echo "Checking out https://fdordbms.osgeo.exit 0org/svn/fdordbms/$FDO_SVN_SOURCEDIR/Providers/GenericRdbms"
    svn checkout https://fdordbms.osgeo.org/svn/fdordbms/$FDO_SVN_SOURCEDIR/Providers/GenericRdbms "$FDO_SVN_DESTDIR/Providers/GenericRdbms" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
 fi
 if test "$GDALENABLECHK" == yes; then
    echo "Checking out https://fdogdal.osgeo.org/svn/fdogdal/$FDO_SVN_SOURCEDIR/Providers/GDAL"
    svn checkout https://fdogdal.osgeo.org/svn/fdogdal/$FDO_SVN_SOURCEDIR/Providers/GDAL "$FDO_SVN_DESTDIR/Providers/GDAL" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
 fi
-echo "End checkout"
-
+echo "End checkout" 
 exit 0
