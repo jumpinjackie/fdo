@@ -274,7 +274,7 @@ if test "$ARCENABLECHK" == yes; then
    svn checkout https://fdoarcsde.osgeo.org/svn/fdoarcsde/$FDO_SVN_SOURCEDIR/Providers/ArcSDE "$FDO_SVN_DESTDIR/Providers/ArcSDE" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
 fi
 if test "$RDBMSENABLECHK" == yes; then
-   echo "Checking out https://fdordbms.osgeo.exit 0org/svn/fdordbms/$FDO_SVN_SOURCEDIR/Providers/GenericRdbms"
+   echo "Checking out https://fdordbms.osgeo.org/svn/fdordbms/$FDO_SVN_SOURCEDIR/Providers/GenericRdbms"
    svn checkout https://fdordbms.osgeo.org/svn/fdordbms/$FDO_SVN_SOURCEDIR/Providers/GenericRdbms "$FDO_SVN_DESTDIR/Providers/GenericRdbms" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
 fi
 if test "$GDALENABLECHK" == yes; then
