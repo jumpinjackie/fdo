@@ -120,7 +120,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="d:\mapguide\OEM\FDO\inc;&quot;gdal\gdal-1.3.2\ogr&quot;;&quot;gdal\gdal-1.3.2\ogr\ogrsf_frmts&quot;;&quot;gdal\gdal-1.3.2\port&quot;"
+				AdditionalIncludeDirectories="..\..\Fdo\Unmanaged\Inc;&quot;gdal\gdal-1.3.2\ogr&quot;;&quot;gdal\gdal-1.3.2\ogr\ogrsf_frmts&quot;;&quot;gdal\gdal-1.3.2\port&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;OGRPROVIDER_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -139,10 +139,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="fdo.lib giscommon.lib gisgeometry.lib ogr.lib cpl.lib ogrsf_frmts.lib ogrsf_frmts_sup.lib proj.lib geos.lib oci.lib libpq.lib wsock32.lib"
+				AdditionalDependencies="fdo.lib fdocommon.lib fdogeometry.lib ogr.lib cpl.lib ogrsf_frmts.lib ogrsf_frmts_sup.lib proj.lib geos.lib libpq.lib wsock32.lib oci.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="d:\mapguide\OEM\FDO\lib\;&quot;gdal\gdal-1.3.2\ogr\&quot;;&quot;gdal\gdal-1.3.2\port&quot;;&quot;gdal\gdal-1.3.2\ogr\ogrsf_frmts&quot;;d:\oracle\product\10.2.0\client_1\oci\lib\msvc;&quot;gdal\proj-4.4.9\src&quot;;&quot;gdal\geos-2.2.0\VisualStudio\Release&quot;;&quot;gdal\postgresql-8.1.4\src\interfaces\libpq\Release&quot;"
-				DelayLoadDLLs="OCI.dll"
+				AdditionalLibraryDirectories="&quot;gdal\gdal-1.3.2\ogr\&quot;;&quot;gdal\gdal-1.3.2\port&quot;;&quot;gdal\gdal-1.3.2\ogr\ogrsf_frmts&quot;;d:\oracle\product\10.2.0\client_1\oci\lib\msvc;&quot;gdal\proj-4.4.9\src&quot;;&quot;gdal\geos-2.2.0\VisualStudio\Release&quot;;&quot;gdal\postgresql-8.1.4\src\interfaces\libpq\Release&quot;;..\..\Fdo\Unmanaged\lib\win32\release"
+				DelayLoadDLLs="oci.dll;fdo.dll;fdogeometry.dll;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
