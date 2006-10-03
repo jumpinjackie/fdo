@@ -539,6 +539,7 @@ geom_convert_S(
             odbcdr_geom_def     **sqlserverGeom;
             odbcdr_geomNI_def   **sqlserverGeomNI;
             pIGeometry_def      *visionGeom;    /* "FdoGeometry" from/to caller.    */
+			pIGeometry_def       *l_visionGeom;   
             odbcdr_geom_col_def  *column;
 
             column = col_list_getColumnByIndex_S( columnList, i );
@@ -548,6 +549,7 @@ geom_convert_S(
             sqlserverGeom = (odbcdr_geom_def **)ut_da_get( &column->geom_list, 0L );
             sqlserverGeomNI = (odbcdr_geomNI_def **)ut_da_get( &column->geomNI_list, 0L );
             visionGeom = column->address;
+			l_visionGeom = column->l_address;
 
             if ( sqlserverGeom == NULL || sqlserverGeomNI == NULL || visionGeom == NULL ) goto the_exit;
 
@@ -569,6 +571,7 @@ geom_convert_S(
                 }
                 else    /* conversionCode == CONVERSION_FROM_SQLSERVER */
                 {
+
                     IGeometry_Release(visionGeom[j]);
                     visionGeom[j] = NULL;
 
@@ -586,7 +589,7 @@ geom_convert_S(
                                                               sqlserverGeomNI[j],
                                                               wantedDim,
                                                               &visionGeom[j],
-															  (j == numRows_I - 1) ? &column->l_address: NULL ));
+															  &l_visionGeom[j] ));
                 }
             }
 
@@ -717,12 +720,6 @@ col_list_freeSqlServerGeometries_S(
         {
 			odbcdr_geom_def *geom = *((odbcdr_geom_def **)ut_da_get( &column->geom_list, j ));
 			odbcdr_geomNI_def *geomNI = *((odbcdr_geomNI_def **)ut_da_get( &column->geomNI_list, j ));
-
-			if ( geom != NULL )
-			{
-                // delete[] geom?
-            
-            }
         }
 
         /* Just zero out the pointers. */
@@ -770,11 +767,13 @@ col_list_free_S(
         debug1( "Freeing pointers for %ld geometries.",
                 column->geom_list.size );
 
-#pragma message ("ToDo: Fix the geometries leak")
-      //  if ( release_geoms ) {
-   			//IGeometry_Release( column->l_address );	
-      //  }
-        column->address = NULL;
+        if ( release_geoms ) {
+			for ( int j = 0; j < column->geom_list.size; j++ ) {
+   				IGeometry_Release( column->l_address[j] );	
+			}
+        }
+
+		ut_vm_free( _db_function, column->l_address );
 
         status &= ut_da_free( &(column->geom_list) );
         status &= ut_da_free( &(column->geomNI_list) );
@@ -820,6 +819,15 @@ col_list_setNumRows_S(
             rdbi_status = RDBI_MALLOC_FAILED;
             goto the_exit;
         }
+
+		if ( column->l_address == NULL ) {
+			column->l_address = (pIGeometry_def *) malloc (numRows_I * sizeof(pIGeometry_def));
+			if ( column->l_address == NULL ) {
+				rdbi_status = RDBI_MALLOC_FAILED;
+				goto the_exit;
+			}
+			memset( column->l_address, '\0', numRows_I * sizeof(pIGeometry_def));
+		}
     }
 
     rdbi_status = RDBI_SUCCESS;

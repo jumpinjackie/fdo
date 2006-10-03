@@ -1299,7 +1299,7 @@ bool UnitTestUtil::DatastoreExists(const char *suffix)
     FdoSchemaManagerP mgr = staticConn->CreateSchemaManager();
     FdoSmPhMgrP ph = mgr->GetPhysicalSchema();
 
-    if ( ph->FindOwner(wDatastore, L"", false) )
+    if ( FdoSmPhOwnerP(ph->FindOwner(wDatastore, L"", false)) )
         found = true;
 
     staticConn->disconnect();

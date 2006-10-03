@@ -224,7 +224,6 @@ int  IGeometry_CreateGeometryFromFgf( pByteArray_def ba, pIGeometry_def *geomOut
 			if ( geomOutCopy )
 			{
 				*geomOutCopy = *geomOut;
-				IGeometry_AddRef( *geomOutCopy );
 			}
         }
         catch (FdoException *ex) 

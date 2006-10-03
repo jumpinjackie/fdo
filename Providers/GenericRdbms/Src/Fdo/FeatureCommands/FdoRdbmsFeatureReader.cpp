@@ -1421,7 +1421,8 @@ FdoByteArray* FdoRdbmsFeatureReader::GetGeometry(const wchar_t* propertyName, bo
 
 FdoByteArray* FdoRdbmsFeatureReader::GetGeometry(const wchar_t* propertyName, bool checkIsNullOnly, GdbiQueryResult *query)
 {
-    FdoByteArray   *byteArray = NULL;
+	FdoIGeometry	*geom = NULL;
+    FdoByteArray	*byteArray = NULL;
     bool            isSupportedType = false;
     bool            unsupportedTypeExp = false;
 
@@ -1445,7 +1446,6 @@ FdoByteArray* FdoRdbmsFeatureReader::GetGeometry(const wchar_t* propertyName, bo
 
     try
     {
-        FdoIGeometry    *geom = NULL;
         FdoSmOvGeometricColumnType columnType = pGeometricPropertyNonConst->GetGeometricColumnType();
         FdoSmOvGeometricContentType contentType = pGeometricPropertyNonConst->GetGeometricContentType();
         const char *    colName = NULL;
@@ -1548,7 +1548,6 @@ FdoByteArray* FdoRdbmsFeatureReader::GetGeometry(const wchar_t* propertyName, bo
                 else
                 {
                     unsupportedTypeExp = true;
-                    FDO_SAFE_RELEASE( geom );
                     throw FdoCommandException::Create( NlsMsgGet(FDORDBMS_116, "Unsupported geometry type" ) );
                 }
             }

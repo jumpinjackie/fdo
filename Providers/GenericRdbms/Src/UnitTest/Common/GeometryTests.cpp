@@ -209,9 +209,9 @@ void GeometryTests::define ()
     FdoPtr<FdoFgfGeometryFactory> factory;
     FdoPtr<FdoIDirectPosition> position;
     //FdoPtr<FdoIGeometry> geometry;
-FdoIGeometry* geometry;
+	FdoIGeometry* geometry;
     char *p;
-    FdoPtr<FdoIGeometry> answer;
+    FdoIGeometry*	answer = NULL;
     char *q;
     int rc;
     int count;
@@ -307,7 +307,7 @@ void GeometryTests::bind ()
     int id;
     FdoPtr<FdoFgfGeometryFactory> factory;
     FdoPtr<FdoIDirectPosition> position;
-    FdoPtr<FdoIGeometry> geometry;
+    FdoIGeometry* geometry;
     char *p;
     FdoIGeometry *answer = NULL;
     char *q;

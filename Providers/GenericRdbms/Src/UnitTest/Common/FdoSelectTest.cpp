@@ -23,15 +23,17 @@
 #ifdef _DEBUG
 #define  DBG(X)   // X
 #else
-#define  DBG(X)
+#define  DBG(X) 
 #endif
 
-FdoSelectTest::FdoSelectTest(void): mConnection(NULL)
+FdoIConnection* FdoSelectTest::mConnection = NULL;
+
+FdoSelectTest::FdoSelectTest(void)
 {
     mSuffix[0] = '\0';
 }
 
-FdoSelectTest::FdoSelectTest(char *suffix): mConnection(NULL)
+FdoSelectTest::FdoSelectTest(char *suffix)
 {
     strncpy(mSuffix, suffix, 11 );
     mSuffix[11] = '\0';
