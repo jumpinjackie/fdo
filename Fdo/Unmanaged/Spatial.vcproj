@@ -354,6 +354,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Src\Spatial\SpatialGeometryConverter.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Src\Spatial\SpatialGridTransform.cpp"
 				>
 			</File>
@@ -388,6 +392,10 @@
 			>
 			<File
 				RelativePath=".\Inc\FdoSpatial.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Inc\Spatial\SpatialGeometryConverter.h"
 				>
 			</File>
 			<File

@@ -358,8 +358,8 @@ EXTRA_DIST = \
     Spatial/SpatialGeometryValidity.h \
     Spatial/SpatialGridTransform.h \
     Spatial/SpatialStd.h \
-    Spatial/SpatialUtility.h
-
+    Spatial/SpatialUtility.h \
+    Spatial/SpatialGeometryConverter.h
 
 #install header files
 install :

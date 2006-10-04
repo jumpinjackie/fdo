@@ -1,7 +1,5 @@
 #ifndef _FDOSPATIAL_H_
 #define _FDOSPATIAL_H_
-// 
-
 //
 // Copyright (C) 2004-2006  Autodesk, Inc.
 // 
@@ -26,6 +24,7 @@
 #include <Spatial/SpatialGeometryValidity.h>
 #include <Spatial/SpatialUtility.h>
 #include <Spatial/SpatialGridTransform.h>
+#include <Spatial/SpatialGeometryConverter.h>
 
 #endif
 
