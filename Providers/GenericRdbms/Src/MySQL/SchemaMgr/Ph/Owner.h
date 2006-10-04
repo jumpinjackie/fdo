@@ -80,6 +80,9 @@ public:
     void DropTablesTable();
     void DropColumnsTable();
 
+	// Get the function name that returns the datastore name from the server
+	FdoString* GetDbNameClause(bool isEqual);
+
     // Make this owner the current schema
     virtual void SetCurrent();
 

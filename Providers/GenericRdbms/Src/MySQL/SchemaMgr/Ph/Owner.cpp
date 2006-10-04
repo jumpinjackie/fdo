@@ -594,3 +594,10 @@ void FdoSmPhMySqlOwner::DropTempTable( FdoStringP tableName)
         gdbiConn->ExecuteNonQuery( (const char*) sqlStmt );
     }
 }
+FdoString* FdoSmPhMySqlOwner::GetDbNameClause(bool isEqual)
+{
+	if (isEqual)
+		return L"schemaname = database()";
+	else
+		return L"schemaname != database()";
+}

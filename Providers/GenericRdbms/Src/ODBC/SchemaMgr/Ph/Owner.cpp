@@ -218,3 +218,11 @@ void FdoSmPhOdbcOwner::SetOptions()
 
 }
 
+FdoString* FdoSmPhOdbcOwner::GetDbNameClause(bool isEqual)
+{
+	FdoStringP schemaCond = FdoStringP::Format(L"schemaname %ls '%ls'",
+												isEqual ? L"=" : L"!=",
+												GetName());
+	return (FdoString*) schemaCond;
+}
+
