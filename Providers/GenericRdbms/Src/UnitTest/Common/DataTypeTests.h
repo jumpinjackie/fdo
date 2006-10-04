@@ -70,13 +70,13 @@ public:
 	void setUp ();
 	void tearDown ();
 
-    void DataTypeTests::roundtrip_insert (
+    void roundtrip_insert (
         char *sql_type,
         int rdbi_type, int rdbi_scale, int rdbi_precision,
         void *variable, int size, double tolerance = 0.0,
         bool is_ora_int64_test = false);
 
-	   void DataTypeTests::roundtrip_update (
+	   void roundtrip_update (
         char *sql_type,
         int rdbi_type, int rdbi_scale, int rdbi_precision,
         void *variable, int size, double tolerance = 0.0,

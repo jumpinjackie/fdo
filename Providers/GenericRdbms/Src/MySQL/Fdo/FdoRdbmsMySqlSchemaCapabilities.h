@@ -42,9 +42,9 @@ public:
     {
         switch (dataType)
         {
-            case FdoDataType_String:   return (FdoInt64)(2147483648 - 1);
-            case FdoDataType_BLOB:     return (FdoInt64)(4294967296 - 1);
-            case FdoDataType_CLOB:     return (FdoInt64)(4294967296 - 1);
+            case FdoDataType_String:   return (FdoInt64)(2147483648LL - 1);
+            case FdoDataType_BLOB:     return (FdoInt64)(4294967296LL - 1);
+            case FdoDataType_CLOB:     return (FdoInt64)(4294967296LL - 1);
             case FdoDataType_Decimal:  return (FdoInt64)(GetMaximumDecimalScale() + GetMaximumDecimalPrecision());
             case FdoDataType_Boolean:  return (FdoInt64)sizeof(FdoBoolean);
             case FdoDataType_Byte:     return (FdoInt64)sizeof(FdoByte);
