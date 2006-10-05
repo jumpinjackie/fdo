@@ -80,7 +80,9 @@ const FdoSchemaElementMap * FdoCommonSchemaCopyContext::GetSchemaElementMap()
 void FdoCommonSchemaCopyContext::InsertSchemaElement(FdoSchemaElement* sourceElement, FdoSchemaElement *copyElement)
 {
     if (sourceElement == NULL || copyElement == NULL) {
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoCommonSchemaCopyContext::InsertSchemaElement",
+                                                               L"sourceElement/copyElement"));
     }
 
     if (m_schemaMap == NULL) {
@@ -135,7 +137,9 @@ FdoBoolean FdoCommonSchemaCopyContext::ReadOnlyClassCapabilitiesEnabled()
 void FdoCommonSchemaUtil::DeepCopyFdoSchemaElementDetails(FdoSchemaElement* copyElement, FdoSchemaElement* sourceElement)
 {
     if (( copyElement == NULL ) || (sourceElement == NULL)) {
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoCommonSchemaCopyContext::DeepCopyFdoSchemaElementDetails",
+                                                               L"sourceElement/copyElement"));
     }
 
     // NOTE: copying name and description is already done during Create() calls
@@ -157,7 +161,9 @@ void FdoCommonSchemaUtil::DeepCopyFdoSchemaElementDetails(FdoSchemaElement* copy
 FdoFeatureSchemaCollection * FdoCommonSchemaUtil::DeepCopyFdoFeatureSchemas(FdoFeatureSchemaCollection * schemas, FdoString * schemaName)
 {
     if ( schemas == NULL ) {
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoCommonSchemaCopyContext::DeepCopyFdoFeatureSchemas",
+                                                               L"schemas"));
     }
 
     FdoCommonSchemaCopyContextP copyContext = FdoCommonSchemaCopyContext::Create(NULL);
@@ -208,7 +214,9 @@ FdoFeatureSchemaCollection * FdoCommonSchemaUtil::DeepCopyFdoFeatureSchemas(FdoF
 FdoFeatureSchema * FdoCommonSchemaUtil::DeepCopyFdoFeatureSchema(FdoFeatureSchema * schema, FdoCommonSchemaCopyContext * schemaContext)
 {
     if (schema == NULL) {
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoCommonSchemaCopyContext::DeepCopyFdoFeatureSchema",
+                                                               L"schema"));
     }
 
     FdoCommonSchemaCopyContextP localSchemaContext = FDO_SAFE_ADDREF(schemaContext);
@@ -260,7 +268,9 @@ FdoFeatureSchema * FdoCommonSchemaUtil::DeepCopyFdoFeatureSchema(FdoFeatureSchem
 FdoClassDefinition * FdoCommonSchemaUtil::DeepCopyFdoClassDefinition(FdoClassDefinition * sourceClass, FdoCommonSchemaCopyContext * schemaContext)
 {
     if (sourceClass == NULL) {
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoCommonSchemaCopyContext::DeepCopyFdoClassDefinition",
+                                                               L"sourceClass"));
     }
 
     FdoClassDefinitionP newClass;
@@ -290,7 +300,9 @@ FdoClassDefinition * FdoCommonSchemaUtil::DeepCopyFdoClassDefinition(FdoClassDef
 FdoClass * FdoCommonSchemaUtil::DeepCopyFdoClass(FdoClass * sourceClass, FdoCommonSchemaCopyContext * schemaContext)
 {
     if (sourceClass == NULL) {
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoCommonSchemaCopyContext::DeepCopyFdoClass",
+                                                               L"sourceClass"));
     }
 
     FdoCommonSchemaCopyContextP localSchemaContext = FDO_SAFE_ADDREF(schemaContext);
@@ -328,7 +340,9 @@ FdoClass * FdoCommonSchemaUtil::DeepCopyFdoClass(FdoClass * sourceClass, FdoComm
 FdoFeatureClass * FdoCommonSchemaUtil::DeepCopyFdoFeatureClass(FdoFeatureClass * sourceClass, FdoCommonSchemaCopyContext * schemaContext)
 {
     if (sourceClass == NULL) {
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoCommonSchemaCopyContext::DeepCopyFdoFeatureClass",
+                                                               L"sourceClass"));
     }
 
     FdoCommonSchemaCopyContextP localSchemaContext = FDO_SAFE_ADDREF(schemaContext);
@@ -390,7 +404,9 @@ FdoFeatureClass * FdoCommonSchemaUtil::DeepCopyFdoFeatureClass(FdoFeatureClass *
 void FdoCommonSchemaUtil::DeepCopyFdoClassDefinitionDetails(FdoClassDefinition * sourceClass, FdoClassDefinition * copyClass, FdoCommonSchemaCopyContext * schemaContext)
 {
     if (sourceClass == NULL || copyClass == NULL) {
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoCommonSchemaCopyContext::DeepCopyFdoClassDefinitionDetails",
+                                                               L"sourceClass/copyClass"));
     }
 
     FdoCommonSchemaCopyContextP localSchemaContext = FDO_SAFE_ADDREF(schemaContext);
@@ -488,7 +504,9 @@ void FdoCommonSchemaUtil::DeepCopyFdoClassDefinitionDetails(FdoClassDefinition *
 FdoBoolean FdoCommonSchemaUtil::ClassPropertyShouldBeCopied(FdoPropertyDefinition* classProperty, FdoCommonSchemaCopyContext * schemaContext) 
 {
     if (classProperty == NULL) {
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoCommonSchemaCopyContext::ClassPropertyShouldBeCopied",
+                                                               L"classProperty"));
     }
 
     FdoBoolean bCopyProperty = true;
@@ -536,7 +554,9 @@ FdoBoolean FdoCommonSchemaUtil::ClassPropertyShouldBeCopied(FdoPropertyDefinitio
 void FdoCommonSchemaUtil::DeepCopyFdoClassCapabilitiesAndConstraints(FdoClassDefinition* sourceClass, FdoClassDefinition* copyClass, FdoCommonSchemaCopyContext * schemaContext)
 {
     if (sourceClass == NULL || copyClass == NULL) {
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoCommonSchemaCopyContext::DeepCopyFdoClassCapabilitiesAndConstraints",
+                                                               L"sourceClass/copyClass"));
     }
 
     FdoCommonSchemaCopyContextP localSchemaContext = FDO_SAFE_ADDREF(schemaContext);
@@ -605,7 +625,9 @@ void FdoCommonSchemaUtil::DeepCopyFdoClassCapabilitiesAndConstraints(FdoClassDef
 void FdoCommonSchemaUtil::DeepCopyFdoPropertyType(FdoPropertyDefinitionCollection *properties, FdoPropertyDefinitionCollection *newProperties, FdoPropertyType propertyType, FdoCommonSchemaCopyContext * schemaContext)
 {
     if (properties == NULL || newProperties == NULL) {
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoCommonSchemaCopyContext::DeepCopyFdoPropertyType",
+                                                               L"properties/newProperties"));
     }
 
     for (FdoInt32 j=0; j<properties->GetCount(); j++) {
@@ -634,7 +656,9 @@ void FdoCommonSchemaUtil::DeepCopyFdoPropertyType(FdoPropertyDefinitionCollectio
 void FdoCommonSchemaUtil::DeepCopyFdoPropertyType(FdoDataPropertyDefinitionCollection *properties, FdoPropertyDefinitionCollection *newProperties, FdoCommonSchemaCopyContext * schemaContext)
 {
     if (properties == NULL || newProperties == NULL) {
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoCommonSchemaCopyContext::DeepCopyFdoPropertyType",
+                                                               L"properties/newProperties"));
     }
 
     for (FdoInt32 j=0; j<properties->GetCount(); j++) {
@@ -661,7 +685,9 @@ void FdoCommonSchemaUtil::DeepCopyFdoPropertyType(FdoDataPropertyDefinitionColle
 void FdoCommonSchemaUtil::CopyFdoNamedDataProperties(FdoDataPropertyDefinitionCollection *sourceProperties, FdoPropertyDefinitionCollection *newProperties, FdoReadOnlyPropertyDefinitionCollection *newBaseProperties, FdoDataPropertyDefinitionCollection *destProperties, FdoCommonSchemaCopyContext * schemaContext)
 {
     if (sourceProperties == NULL || newProperties == NULL || destProperties == NULL) {
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoCommonSchemaCopyContext::CopyFdoNamedDataProperties",
+                                                               L"sourceProperties/newProperties/destProperties"));
     }
 
     for (FdoInt32 k=0; k<sourceProperties->GetCount(); k++) {
@@ -713,7 +739,9 @@ void FdoCommonSchemaUtil::CopyFdoNamedDataProperties(FdoDataPropertyDefinitionCo
 FdoPropertyDefinition * FdoCommonSchemaUtil::DeepCopyFdoPropertyDefinition(FdoPropertyDefinition * property, FdoCommonSchemaCopyContext * schemaContext)
 {
     if (property == NULL) {
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoCommonSchemaCopyContext::DeepCopyFdoPropertyDefinition",
+                                                               L"property"));
     }
 
     FdoPropertyP newProperty;
@@ -746,7 +774,9 @@ FdoPropertyDefinition * FdoCommonSchemaUtil::DeepCopyFdoPropertyDefinition(FdoPr
 FdoDataPropertyDefinition * FdoCommonSchemaUtil::DeepCopyFdoDataPropertyDefinition(FdoDataPropertyDefinition * property, FdoCommonSchemaCopyContext * schemaContext)
 {
     if (property == NULL) {
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoCommonSchemaCopyContext::DeepCopyFdoDataPropertyDefinition",
+                                                               L"property"));
     }
 
     FdoCommonSchemaCopyContextP localSchemaContext = FDO_SAFE_ADDREF(schemaContext);
@@ -833,7 +863,9 @@ FdoDataPropertyDefinition * FdoCommonSchemaUtil::DeepCopyFdoDataPropertyDefiniti
 FdoGeometricPropertyDefinition * FdoCommonSchemaUtil::DeepCopyFdoGeometricPropertyDefinition(FdoGeometricPropertyDefinition * property, FdoCommonSchemaCopyContext * schemaContext)
 {
     if (property == NULL) {
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoCommonSchemaCopyContext::DeepCopyFdoGeometricPropertyDefinition",
+                                                               L"property"));
     }
 
     FdoCommonSchemaCopyContextP localSchemaContext = FDO_SAFE_ADDREF(schemaContext);
@@ -873,7 +905,9 @@ FdoGeometricPropertyDefinition * FdoCommonSchemaUtil::DeepCopyFdoGeometricProper
 FdoRasterPropertyDefinition * FdoCommonSchemaUtil::DeepCopyFdoRasterPropertyDefinition(FdoRasterPropertyDefinition * property, FdoCommonSchemaCopyContext * schemaContext)
 {
     if (property == NULL) {
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoCommonSchemaCopyContext::DeepCopyFdoRasterPropertyDefinition",
+                                                               L"property"));
     }
 
     FdoCommonSchemaCopyContextP localSchemaContext = FDO_SAFE_ADDREF(schemaContext);
@@ -928,7 +962,9 @@ FdoRasterPropertyDefinition * FdoCommonSchemaUtil::DeepCopyFdoRasterPropertyDefi
 FdoObjectPropertyDefinition * FdoCommonSchemaUtil::DeepCopyFdoObjectPropertyDefinition(FdoObjectPropertyDefinition * property, FdoCommonSchemaCopyContext * schemaContext)
 {
     if (property == NULL) {
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoCommonSchemaCopyContext::DeepCopyFdoObjectPropertyDefinition",
+                                                               L"property"));
     }
 
     FdoCommonSchemaCopyContextP localSchemaContext = FDO_SAFE_ADDREF(schemaContext);
@@ -981,7 +1017,9 @@ FdoObjectPropertyDefinition * FdoCommonSchemaUtil::DeepCopyFdoObjectPropertyDefi
 FdoAssociationPropertyDefinition * FdoCommonSchemaUtil::DeepCopyFdoAssociationPropertyDefinition(FdoAssociationPropertyDefinition * property, FdoCommonSchemaCopyContext * schemaContext)
 {
     if (property == NULL) {
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoCommonSchemaCopyContext::DeepCopyFdoAssociationPropertyDefinition",
+                                                               L"property"));
     }
 
     FdoCommonSchemaCopyContextP localSchemaContext = FDO_SAFE_ADDREF(schemaContext);
@@ -1081,7 +1119,9 @@ FdoAssociationPropertyDefinition * FdoCommonSchemaUtil::DeepCopyFdoAssociationPr
 void FdoCommonSchemaUtil::DeepCopyFdoComputedClassProperties(FdoClassDefinition * sourceClass, FdoClassDefinition* copyClass, FdoCommonSchemaCopyContext * schemaContext)
 {
     if (copyClass == NULL || sourceClass == NULL) {
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoCommonSchemaCopyContext::DeepCopyFdoComputedClassProperties",
+                                                               L"copyClass/sourceClass"));
     }
 
     FdoCommonSchemaCopyContextP localSchemaContext = FDO_SAFE_ADDREF(schemaContext);
