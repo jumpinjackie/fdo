@@ -15,9 +15,14 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
+
+#ifndef FDORDBMSMYSQLFILTERPROCESSOR_H_
+#define FDORDBMSMYSQLFILTERPROCESSOR_H_
+
 #ifdef _WIN32
 #pragma once
 #endif
+
 #include "../../Fdo/Filter/FdoRdbmsFilterProcessor.h"
 
 class FdoRdbmsMySqlFilterProcessor: public FdoRdbmsFilterProcessor
@@ -39,3 +44,5 @@ protected:
 
     virtual bool IsAggregateFunctionName(FdoString* wFunctionName) const;
 };
+
+#endif // FDORDBMSMYSQLFILTERPROCESSOR_H_
