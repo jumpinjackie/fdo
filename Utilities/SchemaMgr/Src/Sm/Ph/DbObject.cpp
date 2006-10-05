@@ -26,7 +26,6 @@
 #include <Sm/Ph/DependencyReader.h>
 #include <Sm/Ph/TableComponentReader.h>
 
-
 FdoSmPhDbObject::FdoSmPhDbObject(
     FdoStringP name, 
     const FdoSmPhOwner* pOwner,
@@ -63,14 +62,14 @@ FdoSmPhColumnsP FdoSmPhDbObject::GetColumns()
 
 const FdoSmPhDependencyCollection* FdoSmPhDbObject::GetDependenciesDown() const
 {
-	((FdoSmPhDbObject*) this)->LoadDependencies();
+	((FdoSmPhDbObject*) this)->LoadDependencies(false);
 
 	return (FdoSmPhDependencyCollection*) mDependenciesDown;
 }
 
 const FdoSmPhDependencyCollection* FdoSmPhDbObject::GetDependenciesUp() const
 {
-	((FdoSmPhDbObject*) this)->LoadDependencies();
+	((FdoSmPhDbObject*) this)->LoadDependencies(true);
 
 	return (FdoSmPhDependencyCollection*) mDependenciesUp;
 }
@@ -534,10 +533,32 @@ void FdoSmPhDbObject::CacheColumns( FdoSmPhRdColumnReaderP rdr )
     }
 }
 
+void FdoSmPhDbObject::CacheDependenciesUp( FdoSmPhDependencyReaderP rdr )
+{
+    // Do nothing if "up" dependencies already loaded
+	if ( !mDependenciesUp ) {
+		mDependenciesUp = new FdoSmPhDependencyCollection();
+
+        // Determine the name of the row containing the table name field.
+        FdoStringP rowName;
+
+        if ( rdr->GetRows() && (rdr->GetRows()->GetCount() > 0) )
+            rowName = FdoSmPhRowP(rdr->GetRows()->GetItem(0))->GetName();
+
+        // Create a group reader to extract dependencies just for this table. 
+        FdoSmPhTableDependencyReaderP groupReader = new FdoSmPhTableDependencyReader(
+            GetName(),
+            rowName,
+            L"fktablename",
+            rdr
+        );
+
+        LoadDependenciesUp( groupReader );
+    }
+}
+
 FdoSchemaExceptionP FdoSmPhDbObject::Errors2Exception(FdoSchemaException* pFirstException ) const
 {
-	// Need to finalize table to discover all errors.
-//	((FdoSmPhDbObject*) this)->Finalize();
 
 	// Tack on errors for this element
 	FdoSchemaExceptionP pException = FdoSmPhDbElement::Errors2Exception(pFirstException);
@@ -561,80 +582,51 @@ void FdoSmPhDbObject::XMLSerialize( FILE* xmlFp, int ref ) const
 	}
 }
 
-void FdoSmPhDbObject::Finalize()
+*/
+void FdoSmPhDbObject::LoadDependencies( bool up )
 {
-	if ( GetState() == FdoRdbmsSmObjectState_Finalizing ) {
-		if ( GetElementState() != FdoSchemaElementState_Deleted ) 
-			AddReferenceLoopError();
-		return;
-	}
-
-	if ( GetState() == FdoRdbmsSmObjectState_Initial ) {
-		SetState( FdoRdbmsSmObjectState_Finalizing);
-*/
-/*TODO:
-		// Get all dependencies that this table participates in.
-
-		FdoSmPhDependencyReader rdr( GetName(), GetName(), false, (FdoSmPhMgr*) GetSchema() );
-
-		while( rdr.ReadNext() ) {
-			FdoSmPhDependency* pDep = rdr.GetDependency(this);
-
-			// If this table is the pkey table then this is a down dependency.
-#ifdef _WIN32
-			if ( wcsicmp(GetName(), rdr.GetPkTableName()) == 0 )
-#else
-			if ( wcscasecmp(GetName(), rdr.GetPkTableName()) == 0 )
-#endif
-				mDependenciesDown.Add( pDep );
-
-			// If this table is the pkey table then this is an up dependency.
-#ifdef _WIN32
-			if ( wcsicmp(GetName(), rdr.GetFkTableName())== 0 )
-#else
-			if ( wcscasecmp(GetName(), rdr.GetFkTableName())== 0 )
-#endif
-				mDependenciesUp.Add( pDep );
-
-			pDep->Release();
-		}
-
-		mDependenciesDown.Finalize();
-		mDependenciesUp.Finalize();
-*/
-/*
-		SetState( FdoRdbmsSmObjectState_Final);
-	}
-}
-*/
-
-void FdoSmPhDbObject::LoadDependencies()
-{
-	if ( !mDependenciesDown ) {
+	if ( (up && !mDependenciesUp) || ((!up) && !mDependenciesDown) ) {
         mDependenciesDown = new FdoSmPhDependencyCollection();
         mDependenciesUp   = new FdoSmPhDependencyCollection();
 
-        // Get all dependencies that this table participates in.
+        // Skip database access when not necessary: object is new or has no name.
+        // Some temporary objects created by various readers have no name.
+        if ( (GetElementState() != FdoSchemaElementState_Added) && (wcslen(GetName()) > 0) ) {
+            FdoStringP myName = GetName();
+            
+            // Get all dependencies that this table participates in.
 
-        FdoStringP myName = GetName();
+		    FdoSmPhDependencyReaderP rdr = new FdoSmPhDependencyReader( myName, myName, false, GetManager() );
 
-		FdoSmPhDependencyReaderP rdr = new FdoSmPhDependencyReader( myName, myName, false, GetManager() );
+            // Read each dependency from the database and add it to this database object.
+            if ( rdr ) {
+                while ( rdr->ReadNext() ) {
+	                FdoSmPhDependencyP pDep = rdr->GetDependency(this);
 
-		while( rdr->ReadNext() ) {
-			FdoSmPhDependencyP pDep = rdr->GetDependency(this);
+	                // If this table is the pkey table then this is a down dependency.
+	                if ( (myName == rdr->GetPkTableName()) ||
+                         (myName == GetManager()->GetDcDbObjectName(rdr->GetPkTableName()))
+                    )
+    	                mDependenciesDown->Add( pDep );
 
-			// If this table is the pkey table then this is a down dependency.
-			if ( (myName == rdr->GetPkTableName()) ||
-                 (myName == GetManager()->GetDcDbObjectName(rdr->GetPkTableName()))
-            )
-				mDependenciesDown->Add( pDep );
+	                // If this table is the fkey table then this is an up dependency.
+	                if ( (myName == rdr->GetFkTableName()) ||
+                         (myName == GetManager()->GetDcDbObjectName(rdr->GetFkTableName()))
+                    )
+	                    mDependenciesUp->Add( pDep );
+                }
+            }
+        }
+    }
+}
 
-			// If this table is the fkey table then this is an up dependency.
-			if ( (myName == rdr->GetFkTableName()) ||
-                 (myName == GetManager()->GetDcDbObjectName(rdr->GetFkTableName()))
-            )
-				mDependenciesUp->Add( pDep );
-		}
+void FdoSmPhDbObject::LoadDependenciesUp( FdoPtr<FdoSmPhTableDependencyReader> depRdr )
+{
+    FdoStringP myName = GetName();
+
+    while ( depRdr->ReadNext() ) {
+	    FdoSmPhDependencyP pDep = depRdr->GetDependencyReader()->GetDependency(this);
+        mDependenciesUp->Add( pDep );
     }
 }
 

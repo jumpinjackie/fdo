@@ -36,6 +36,14 @@ FdoSmPhDependencyReader::FdoSmPhDependencyReader(FdoStringP pkTableName, FdoStri
 {
 }
 
+FdoSmPhDependencyReader::FdoSmPhDependencyReader(FdoSmPhRdTableJoinP join, FdoSmPhMgrP mgr) : 
+    FdoSmPhReader( 
+        MakeReader( join, mgr )
+
+    )
+{
+}
+
 FdoSmPhDependencyReader::~FdoSmPhDependencyReader(void)
 {
 }
@@ -117,6 +125,39 @@ FdoSmPhReaderP FdoSmPhDependencyReader::MakeReader( FdoStringP where, FdoSmPhMgr
     }
     else {
         // F_ATTRIBUTEDEPENDENCY does not exist, nothing to read.
+        pSubReader = new FdoSmPhReader( mgr, rows);
+    }
+
+    return pSubReader;
+}
+
+FdoSmPhReaderP FdoSmPhDependencyReader::MakeReader( FdoSmPhRdTableJoinP join, FdoSmPhMgrP mgr )
+{
+    FdoSmPhReaderP pSubReader;
+
+    // Create the row collection describing dependency attributes.
+    FdoSmPhRowsP rows = new FdoSmPhRowCollection();
+
+    // Add f_attributedependency row
+    FdoSmPhRowP depRow = FdoSmPhDependencyWriter::MakeRow(mgr);
+    rows->Add( depRow );
+
+    FdoSmPhDbObjectP dbObject = join->GetDbObject();
+
+    // Add row for joined table.
+    FdoSmPhRowP row = new FdoSmPhRow( mgr, join->GetName(), dbObject );
+    rows->Add( row );
+
+    if ( FdoSmPhDbObjectP(depRow->GetDbObject())->GetExists() ) {
+        // f_attributedependency exists, read from MetaSchema.
+        // Create a where clause that joins f_attributedependency and the join table
+        FdoStringP whereClause = FdoStringP::Format( 
+            L" where (%ls) order by f_attributedependencies.fktablename asc\n", (FdoString*) join->GetWhere(L"f_attributedependencies.fktablename") );
+
+        pSubReader = mgr->CreateQueryReader( rows, whereClause ).p->SmartCast<FdoSmPhReader>();
+    }
+    else {
+        // f_attributedependency does not exist, nothing to read.
         pSubReader = new FdoSmPhReader( mgr, rows);
     }
 

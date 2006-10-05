@@ -17,6 +17,7 @@
  */
 
 #include "stdafx.h"
+#include <Sm/Ph/DependencyReader.h>
 #include <Sm/Ph/Mt/ClassReader.h>
 #include <Sm/Ph/Rd/ColumnReader.h>
 
@@ -52,48 +53,60 @@ void FdoSmPhMtClassReader::CachePhysical( FdoStringP schemaName, FdoSmPhMgrP mgr
     FdoSmPhRdConstraintReaderP ukeyReader;
     FdoSmPhRdConstraintReaderP ckeyReader;
     FdoSmPhRdColumnReaderP columnReader;
+    FdoSmPhDependencyReaderP depReader;
 
-    // Create a join object for only reading physical objects needed by this feature schema.
-    FdoSmPhRdTableJoinP join = new FdoSmPhMtClassTableJoin( owner, schemaName );
+    // The tables referenced by the MetaClass schema are loaded by FdoSmPhOwner::CacheCandDbObjects
+    // so no need to bulk load them a second time.
+    if ( schemaName != FdoSmPhMgr::mMetaClassSchemaName ) {
 
-    // Create reader for owner's db objects. Use the join to retrieve only tables for 
-    // classes in this schema.
-    objReader = owner->CreateDbObjectReader( join );
+        // Create a join object for only reading physical objects needed by this feature schema.
+        FdoSmPhRdTableJoinP join = new FdoSmPhMtClassTableJoin( owner, schemaName );
 
-    // Caching db object components so create readers for components.
-    // This function does interleaved fetches from each reader so all readers
-    // (including dbObject reader) must return rows ordered by dbObject name.
-    //
-    // For datastores with MetaSchema, only constraints need to be bulk fetched.
-    // Primary and Foreign keys, and indexes are never fetched.
-    //
-    // Doing a single query per owner for each component is more efficient than
-    // a query per dbObject.
-    // The join is used to limit results to those needed for this schema.
-    ukeyReader = owner->CreateConstraintReader( join, L"U" );
-    ckeyReader = owner->CreateConstraintReader( join, L"C" );
+        // Create reader for owner's db objects. Use the join to retrieve only tables for 
+        // classes in this schema.
+        objReader = owner->CreateDbObjectReader( join );
 
-    columnReader = owner->CreateColumnReader( join );
+        // Caching db object components so create readers for components.
+        // This function does interleaved fetches from each reader so all readers
+        // (including dbObject reader) must return rows ordered by dbObject name.
+        //
+        // For datastores with MetaSchema, only constraints need to be bulk fetched.
+        // Primary and Foreign keys, and indexes are never fetched.
+        //
+        // Doing a single query per owner for each component is more efficient than
+        // a query per dbObject.
+        // The join is used to limit results to those needed for this schema.
+        ukeyReader = owner->CreateConstraintReader( join, L"U" );
+        ckeyReader = owner->CreateConstraintReader( join, L"C" );
 
-    while ( objReader && objReader->ReadNext() ) {
-        // Cache the current dbObject
-        FdoSmPhDbObjectP dbObject = owner->CacheDbObject( objReader );
+        columnReader = owner->CreateColumnReader( join );
 
-        if ( dbObject ) {
-            // Load the components into the db object.
-            FdoSmPhTableP table = dbObject->SmartCast<FdoSmPhTable>();
+        depReader = new FdoSmPhDependencyReader( join, mgr );
 
-            if ( columnReader ) 
-                dbObject->CacheColumns( columnReader );
+        while ( objReader && objReader->ReadNext() ) {
+            // Cache the current dbObject
+            FdoSmPhDbObjectP dbObject = owner->CacheDbObject( objReader );
 
-            if ( table ) {
-                if ( ukeyReader ) 
-                    table->CacheUkeys( ukeyReader );
+            if ( dbObject ) {
+                // Load the components into the db object.
+                FdoSmPhTableP table = dbObject->SmartCast<FdoSmPhTable>();
 
-                if ( ckeyReader ) 
-                    table->CacheCkeys( ckeyReader );
+                if ( columnReader ) 
+                    dbObject->CacheColumns( columnReader );
 
+                if ( depReader ) 
+                    dbObject->CacheDependenciesUp( depReader );
+
+                if ( table ) {
+                    if ( ukeyReader ) 
+                        table->CacheUkeys( ukeyReader );
+
+                    if ( ckeyReader ) 
+                        table->CacheCkeys( ckeyReader );
+
+                }
             }
         }
     }
 }
+

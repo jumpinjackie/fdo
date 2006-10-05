@@ -21,14 +21,14 @@
 #include <Sm/Ph/Mgr.h>
 
 FdoSmPhTableComponentReader::FdoSmPhTableComponentReader(
-    FdoStringP groupName, 
-    FdoStringP groupTableName, 
-    FdoStringP groupFieldName, 
+    FdoStringP tableName, 
+    FdoStringP tableRowName, 
+    FdoStringP tableFieldName, 
     FdoSmPhReaderP reader
 ) :
-    FdoSmPhGroupReader( groupName, reader ),
-    mGroupTableName(groupTableName),
-    mGroupFieldName(groupFieldName)
+    FdoSmPhGroupReader( tableName, reader ),
+    mTableRowName(tableRowName),
+    mTableFieldName(tableFieldName)
 {
 }
 
@@ -38,14 +38,14 @@ FdoSmPhTableComponentReader::~FdoSmPhTableComponentReader(void)
 
 FdoStringP FdoSmPhTableComponentReader::GetGroupName()
 {
-    return GetString( mGroupTableName, mGroupFieldName );
+    return GetString( mTableRowName, mTableFieldName );
 }
 
 FdoSmPhTableIndexReader::FdoSmPhTableIndexReader(
-    FdoStringP groupName, 
+    FdoStringP tableName, 
     FdoPtr<FdoSmPhRdIndexReader> reader
 ) :
-    FdoSmPhTableComponentReader( groupName, L"", L"table_name", reader->SmartCast<FdoSmPhReader>() ),
+    FdoSmPhTableComponentReader( tableName, L"", L"table_name", reader->SmartCast<FdoSmPhReader>() ),
     mIndexReader(reader)
 {
 }
@@ -60,10 +60,10 @@ FdoSmPhIndexType FdoSmPhTableIndexReader::GetIndexType()
 }
 
 FdoSmPhTableColumnReader::FdoSmPhTableColumnReader(
-    FdoStringP groupName, 
+    FdoStringP tableName, 
     FdoPtr<FdoSmPhRdColumnReader> reader
 ) :
-    FdoSmPhTableComponentReader( groupName, L"", L"table_name", reader->SmartCast<FdoSmPhReader>() ),
+    FdoSmPhTableComponentReader( tableName, L"", L"table_name", reader->SmartCast<FdoSmPhReader>() ),
     mColumnReader(reader)
 {
 }
@@ -80,4 +80,24 @@ FdoSmPhColType FdoSmPhTableColumnReader::GetType()
 FdoPtr<FdoSmPhRdColumnReader> FdoSmPhTableColumnReader::GetColumnReader()
 {
     return mColumnReader;
+}
+
+FdoSmPhTableDependencyReader::FdoSmPhTableDependencyReader(
+    FdoStringP tableName, 
+    FdoStringP rowName,
+    FdoStringP fieldName,
+    FdoPtr<FdoSmPhDependencyReader> reader
+) :
+    FdoSmPhTableComponentReader( tableName, rowName, fieldName, reader->SmartCast<FdoSmPhReader>() ),
+    mDependencyReader(reader)
+{
+}
+
+FdoSmPhTableDependencyReader::~FdoSmPhTableDependencyReader(void)
+{
+}
+
+FdoPtr<FdoSmPhDependencyReader> FdoSmPhTableDependencyReader::GetDependencyReader()
+{
+    return mDependencyReader;
 }

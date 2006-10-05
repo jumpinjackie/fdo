@@ -83,6 +83,14 @@ FdoStringP FdoSmPhRdJoin::GetWhere()
     return mWhereClause;
 }
 
+FdoSmPhDbObjectP FdoSmPhRdJoin::GetDbObject()
+{
+	FdoSmPhColumnP		pColumn = mColumns->GetItem(0);
+    FdoSmPhDbObjectP dbObject = FDO_SAFE_ADDREF((FdoSmPhDbObject*)(FdoSmPhSchemaElement*)(pColumn->GetParent()));
+
+    return dbObject;
+}
+
 FdoStringP FdoSmPhRdJoin::GetJoinColumn( FdoInt32 ix ) 
 {
     FdoSmPhColumnP column = mColumns->GetItem(ix);

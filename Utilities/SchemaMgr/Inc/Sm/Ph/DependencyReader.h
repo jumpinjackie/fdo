@@ -25,6 +25,7 @@
 #include <Sm/Ph/Reader.h>
 #include <Sm/Ph/Dependency.h>
 #include <Sm/Ph/ColumnList.h>
+#include <sm/Ph/Rd/TableJoin.h>
 
 // This class retrieves all attribute dependencies for a
 // given property ( usually an object property ).
@@ -72,6 +73,14 @@ public:
     /// 		False: select dependencies for the given pkTable or fkTable.
     /// 	mgr: physical schema manager.
 	FdoSmPhDependencyReader(FdoStringP pkTableName, FdoStringP fkTableName, bool bAnd, FdoSmPhMgrP mgr);
+
+    // Create and execute a query to list the "up" dependencies for a set of FK tables.
+    // Call ReadNext() to read each dependency.
+	//
+    // Parameters:
+    // 	join: defines the table for which to get dependencies
+    // 	mgr: physical schema manager.
+    FdoSmPhDependencyReader(FdoSmPhRdTableJoinP join, FdoSmPhMgrP mgr);
 
     /// Deactivate the query
 	~FdoSmPhDependencyReader(void);
@@ -122,6 +131,7 @@ protected:
 private:
     /// Create the inner query reader for retrieving the dependencies
     FdoSmPhReaderP MakeReader( FdoStringP where, FdoSmPhMgrP mgr, bool bAddClassDef = false );
+    FdoSmPhReaderP MakeReader( FdoSmPhRdTableJoinP join, FdoSmPhMgrP mgr );
     /// Make where clause for retrieving by property classid and property table
     FdoStringP MakeClauses( FdoSmPhMgrP mgr, long classId, FdoStringP fkTableName );
     /// Make where clause for retrieving by primary and foreign table

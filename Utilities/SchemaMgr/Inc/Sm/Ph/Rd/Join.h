@@ -47,6 +47,9 @@ public:
     // returns this join's where clause but does not add the join expressions to it.
     FdoStringP GetWhere();
 
+    // returns the table or view that is being joined to.
+    FdoSmPhDbObjectP GetDbObject();
+
 protected:
     //Unused constructor needed only to build on Linux
     FdoSmPhRdJoin() {}
