@@ -25,6 +25,7 @@
 
 #include <FdoStd.h>
 #include <Fdo/Connections/IConnectionPropertyDictionary.h>
+#include <Fdo/Connections/ProviderDatastoreType.h>
 
 /// \brief
 /// The FdoIConnectionInfo interface exposes information about the feature provider
@@ -79,6 +80,29 @@ public:
     /// Returns the property dictionary
     /// 
     FDO_API virtual FdoIConnectionPropertyDictionary* GetConnectionProperties() = 0;
+
+    /// \brief
+    /// Returns the provider type. A provider can be a file-based, database-based or
+    /// web-based provider. The valid values the function may return are defined in
+    /// the enumeration FdoProviderDatastoreType. The enumeration includes the following
+    /// values: FdoProviderDatastoreType_Unknown, FdoProviderDatastoreType_File,
+    /// FdoProviderDatastoreType_DatabaseServer, FdoProviderDatastoreType_WebServer.
+    /// 
+    /// \return
+    /// Returns the provider data store type.
+    /// 
+    FDO_API virtual FdoProviderDatastoreType GetProviderDatastoreType() = 0;
+
+    /// \brief
+    /// File-based providers depend on a various files. This function returns a list
+    /// of fully qualified dependend file names. The return parameter will be NULL if
+    /// the provider is not a file-based provider.
+    /// 
+    /// \return
+    /// Returns the list of fully-qualified dependend file names if the provider is a
+    /// file-based provider, NULL otherwise.
+    /// 
+    FDO_API virtual FdoStringCollection* GetDependentFileNames() = 0;
 };
 #endif
 

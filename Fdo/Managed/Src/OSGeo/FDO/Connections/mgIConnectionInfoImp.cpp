@@ -82,3 +82,18 @@ NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionPropertyDictionary* NAMESPACE_OSGEO_
 	EXCEPTION_HANDLER(unobj = GetImpObj()->GetConnectionProperties())
     return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIConnectionPropertyDictionary(unobj, true);
 }
+
+NAMESPACE_OSGEO_FDO_CONNECTIONS::ProviderDatastoreType NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionInfoImp::get_ProviderDatastoreType()
+{
+    FdoProviderDatastoreType pdsType;
+    EXCEPTION_HANDLER(pdsType = GetImpObj()->GetProviderDatastoreType());
+    return static_cast<NAMESPACE_OSGEO_FDO_CONNECTIONS::ProviderDatastoreType>(pdsType);
+}
+
+NAMESPACE_OSGEO_COMMON::StringCollection* NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionInfoImp::get_DependentFileNames()
+{
+	FdoStringCollection* unobj;
+	EXCEPTION_HANDLER(unobj = GetImpObj()->GetDependentFileNames())
+	return NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateStringCollection(unobj, true);
+}
+

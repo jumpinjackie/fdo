@@ -196,6 +196,7 @@ EXTRA_DIST = \
     Fdo/Connections/IConnectionPropertyDictionary.h \
     Fdo/Connections/IPropertyDictionary.h \
     Fdo/Connections/ITransaction.h \
+    Fdo/Connections/ProviderDatastoreType.h \
     Fdo/Expression/BinaryExpression.h \
     Fdo/Expression/BinaryOperations.h \
     Fdo/Expression/BLOBStreamReader.h \

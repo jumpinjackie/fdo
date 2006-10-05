@@ -380,6 +380,7 @@ EXTRA_DIST = \
     Src/OSGeo/FDO/Connections/mgITransaction.h \
     Src/OSGeo/FDO/Connections/mgITransactionImp.cpp \
     Src/OSGeo/FDO/Connections/mgITransactionImp.h \
+    Src/OSGeo/FDO/Connections/mgProviderDatastoreType.h \
     Src/OSGeo/FDO/Expression/mgBinaryExpression.cpp \
     Src/OSGeo/FDO/Expression/mgBinaryExpression.h \
     Src/OSGeo/FDO/Expression/mgBinaryOperations.h \

@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include "FDO\Connections\mgProviderDatastoreType.h"
+
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS
 
 public __gc __interface IConnectionPropertyDictionary;
@@ -76,6 +78,28 @@ public:
     /// 
 	__property NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionPropertyDictionary* get_ConnectionProperties();
 
+    /// \brief
+    /// Returns the provider type. A provider can be a file-based, database-based or
+    /// web-based provider. The valid values the function may return are defined in
+    /// the enumeration FdoProviderDatastoreType. The enumeration includes the following
+    /// values: FdoProviderDatastoreType_Unknown, FdoProviderDatastoreType_File,
+    /// FdoProviderDatastoreType_DatabaseServer, FdoProviderDatastoreType_WebServer.
+    /// 
+    /// \return
+    /// Returns the provider data store type.
+    /// 
+    __property NAMESPACE_OSGEO_FDO_CONNECTIONS::ProviderDatastoreType get_ProviderDatastoreType();
+
+    /// \brief
+    /// File-based providers depend on a various files. This function returns a list
+    /// of fully qualified dependend file names. The return parameter will be NULL if
+    /// the provider is not a file-based provider.
+    /// 
+    /// \return
+    /// Returns the list of fully-qualified dependend file names if the provider is a
+    /// file-based provider, NULL otherwise.
+    /// 
+    __property NAMESPACE_OSGEO_COMMON::StringCollection* get_DependentFileNames();
 };
 
 END_NAMESPACE_OSGEO_FDO_CONNECTIONS
