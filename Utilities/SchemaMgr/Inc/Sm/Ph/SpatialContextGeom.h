@@ -1,5 +1,5 @@
-#ifndef FDOSMLPSPATIALCONTEXTGEOM_H
-#define FDOSMLPSPATIALCONTEXTGEOM_H		1
+#ifndef FDOSMPHSPATIALCONTEXTGEOM_H
+#define FDOSMPHSPATIALCONTEXTGEOM_H		1
 /*
  * Copyright (C) 2004-2006  Autodesk, Inc.
  * 
@@ -24,27 +24,30 @@
 
 #include <Sm/Collection.h>
 
-// This logical/physical class encapsulates information on spatial context geometries
-class FdoSmLpSpatialContextGeom : public FdoIDisposable
+// This physical class encapsulates information on spatial context geometries
+class FdoSmPhSpatialContextGeom : public FdoSmPhSchemaElement
 {
-	friend class FdoSmLpSpatialContextCollection;
+public:
 
     /// Constructs an instance from the given attributes.
-	FdoSmLpSpatialContextGeom(
+	FdoSmPhSpatialContextGeom(
+        FdoSmPhMgrP phMgr,
         FdoInt64	scId,
         FdoString*	tableName,
         FdoString*	columnName,
-		int			dimensionality
-    )
+		bool        hasElevation,
+        bool        hasMeasure
+    ) :
+        FdoSmPhSchemaElement( MakeName(tableName,columnName), L"", phMgr )
 	{
 		mScId = scId;
 		mTableName = tableName;
 		mColumnName = columnName;
-		mDimensionality = dimensionality;	
+		mHasElevation = hasElevation;	
+		mHasMeasure = hasMeasure;	
 	}
 
-public:
-	~FdoSmLpSpatialContextGeom(void) {}
+	~FdoSmPhSpatialContextGeom(void) {}
 
     /// Spatial Context Identifier
 	FdoInt64 GetScId() { return mScId; }
@@ -56,12 +59,20 @@ public:
 	FdoStringP GetGeomColumnName() { return mColumnName; }
 
     /// Ordinate dimensionality of geometries.
-    FdoInt32 GetDimensionality() { return mDimensionality; }
+    bool GetHasElevation() { return mHasElevation; }
 
+    bool GetHasMeasure() { return mHasMeasure; }
+
+    // Generates a unique name for this spatial context geometry.
+    // The name is unique with owners (datastores).
+    static FdoStringP MakeName( FdoString* tableName, FdoString* columnName ) 
+    {
+        return FdoStringP::Format( L"\"%ls\".\"%ls\"", tableName, columnName );
+    }
 
 protected:
     /// Unused constructor needed only to build on Linux
-    FdoSmLpSpatialContextGeom() {}
+    FdoSmPhSpatialContextGeom() {}
 
 	virtual void Dispose() { delete this; }
 
@@ -70,23 +81,24 @@ private:
     FdoInt64        mScId;
     FdoStringP		mTableName;
     FdoStringP		mColumnName;
-	int				mDimensionality;
+	bool			mHasElevation;
+	bool			mHasMeasure;
 
 };
 
-typedef FdoPtr<FdoSmLpSpatialContextGeom> FdoSmLpSpatialContextGeomP;
+typedef FdoPtr<FdoSmPhSpatialContextGeom> FdoSmPhSpatialContextGeomP;
 
 
 // Represents a collection of Spatial Contexts in Logical/Physical form.
-class FdoSmLpSpatialContextGeomCollection : public FdoSmCollection<FdoSmLpSpatialContextGeom>
+class FdoSmPhSpatialContextGeomCollection : public FdoSmNamedCollection<FdoSmPhSpatialContextGeom>
 {
 public:
     /// Create an empty collection.
-	FdoSmLpSpatialContextGeomCollection(void) {}
+	FdoSmPhSpatialContextGeomCollection(void) {}
 
 };
 
-typedef FdoPtr<FdoSmLpSpatialContextGeomCollection> FdoSmLpSpatialContextGeomsP;
+typedef FdoPtr<FdoSmPhSpatialContextGeomCollection> FdoSmPhSpatialContextGeomsP;
 
 #endif
 

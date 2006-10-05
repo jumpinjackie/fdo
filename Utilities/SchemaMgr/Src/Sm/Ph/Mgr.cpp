@@ -41,7 +41,6 @@
 #include <Sm/Ph/Rd/SchemaReader.h>
 #include <Sm/Ph/Rd/ClassReader.h>
 #include <Sm/Ph/Rd/PropertyReader.h>
-#include <Sm/Ph/Rd/SpatialContextReader.h>
 #include <Sm/Ph/Reader.h>
 
 /*
@@ -50,6 +49,8 @@
 
 #include <wctype.h>
 */
+FdoString* FdoSmPhMgr::mMetaClassSchemaName = L"F_MetaClass";
+
 const FdoStringP FdoSmPhMgr::SchemaType(L"schema", false);
 const FdoStringP FdoSmPhMgr::ClassType(L"class", false);
 const FdoStringP FdoSmPhMgr::PropertyType(L"property", false);
@@ -121,11 +122,6 @@ FdoInt64    FdoSmPhMgr::FindScIdFromName(FdoString * scName)
 FdoPtr<FdoSmPhSpatialContextGeomReader> FdoSmPhMgr::CreateSpatialContextGeomReader()
 {
 	return( new FdoSmPhSpatialContextGeomReader(FDO_SAFE_ADDREF(this)) );
-}
-
-FdoPtr<FdoSmPhRdSpatialContextReader> FdoSmPhMgr::CreateRdSpatialContextReader()
-{
-    return new FdoSmPhRdSpatialContextReader(FDO_SAFE_ADDREF(this) );
 }
 
 FdoPtr<FdoSmPhRdSchemaReader> FdoSmPhMgr::CreateRdSchemaReader( FdoSmPhRowsP rows, FdoSmPhOwnerP owner, bool dsInfo )
@@ -360,6 +356,16 @@ void FdoSmPhMgr::SetDbObjectClassification( FdoStringP dbObjectName, FdoStringP 
     else {
         elem->SetValue( className );
     }
+}
+
+bool FdoSmPhMgr::GetBulkLoadConstraints()
+{
+    return mBulkLoadConstraints;
+}
+
+void FdoSmPhMgr::SetBulkLoadConstraints( bool bulkLoad )
+{
+    mBulkLoadConstraints = bulkLoad;
 }
 
 /*
@@ -672,6 +678,8 @@ void FdoSmPhMgr::Clear()
 
     if ( mDatabases ) 
         mDatabases->Clear();
+
+    mBulkLoadConstraints = false;
 }
 
 void FdoSmPhMgr::OnAfterCommit()
@@ -702,4 +710,5 @@ void FdoSmPhMgr::XMLSerialize( FdoString* sFileName ) const
 	fclose(xmlFp);
 
 }
+
 

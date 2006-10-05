@@ -211,11 +211,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\Sm\Ph\ColumnList.cpp"
+				RelativePath=".\Src\Sm\Ph\ColumnList.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\Src\Sm\Ph\ColumnList.cpp"
+				RelativePath=".\src\Sm\Ph\ColumnList.cpp"
 				>
 			</File>
 			<File
@@ -332,6 +332,14 @@
 			</File>
 			<File
 				RelativePath="Src\Sm\Ph\SchemaWriter.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Src\Sm\Ph\SpatialContext.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Src\Sm\Ph\SpatialContextCollection.cpp"
 				>
 			</File>
 			<File
@@ -1043,11 +1051,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\inc\Sm\Ph\ColumnList.h"
+				RelativePath=".\Inc\Sm\Ph\ColumnList.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Inc\Sm\Ph\ColumnList.h"
+				RelativePath=".\inc\Sm\Ph\ColumnList.h"
 				>
 			</File>
 			<File
@@ -1240,6 +1248,18 @@
 			</File>
 			<File
 				RelativePath="Inc\Sm\Ph\SequenceCollection.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Inc\Sm\Ph\SpatialContext.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Inc\Sm\Ph\SpatialContextCollection.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Inc\Sm\Ph\SpatialContextGeom.h"
 				>
 			</File>
 			<File

@@ -21,7 +21,6 @@
 #endif
 
 #include <Sm/Lp/SpatialContext.h>
-#include <Sm/Lp/SpatialContextGeom.h>
 #include <Sm/NamedCollection.h>
 
 // Represents a collection of Spatial Contexts in Logical/Physical form.
@@ -71,7 +70,7 @@ public:
 
     void Load();
 
-	FdoSmLpSpatialContextGeomsP  GetSpatialContextGeoms();
+	FdoSmPhSpatialContextGeomsP  GetSpatialContextGeoms();
 
 protected:
     /// The following two functions create a generic FdoSmLpSpatialContext)
@@ -98,8 +97,6 @@ protected:
         FdoSmPhMgrP physicalSchema);
 
 private:
-	FdoInt32 FindExistingSC( FdoSmLpSpatialContextP sc );
-
     // Functions for maintaining the lookup by id map.
     void AddToIdMap( FdoSmLpSpatialContext* sc );
     void RemoveFromIdMap( FdoSmLpSpatialContext* sc );
@@ -107,7 +104,7 @@ private:
     bool        mAreLoaded;
 	FdoSmPhMgrP mPhysicalSchema;
 
-	FdoSmLpSpatialContextGeomsP mSpatialContextGeoms;
+	FdoSmPhSpatialContextGeomsP mSpatialContextGeoms;
 
     // MAP for fast lookup of spatial contexts by id.
     FdoDictionaryP mIdMap;

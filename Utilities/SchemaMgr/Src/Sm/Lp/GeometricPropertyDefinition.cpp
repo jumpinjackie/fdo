@@ -128,7 +128,7 @@ void FdoSmLpGeometricPropertyDefinition::FixSpatialContextAssociation()
     if ( (GetElementState() != FdoSchemaElementState_Added) && !fromConfigDoc && mAssociatedSCName.GetLength() <= 0 && mAssociatedScId < 0 )
 	{
 		// Look up in the collection of SC geometries associations loaded along the Spatial contexts
-		FdoSmLpSpatialContextGeomsP scgeoms = scs->GetSpatialContextGeoms();
+		FdoSmPhSpatialContextGeomsP scgeoms = scs->GetSpatialContextGeoms();
 		if ( scgeoms.p != NULL )
 		{
 			FdoStringP tableName = GetContainingDbObjectName();
@@ -137,7 +137,7 @@ void FdoSmLpGeometricPropertyDefinition::FixSpatialContextAssociation()
 
 			for (int i = 0; i < scgeoms->GetCount() && !scgeomFound; i++ )
 			{
-				FdoSmLpSpatialContextGeomP scgeom = scgeoms->GetItem(i);
+				FdoSmPhSpatialContextGeomP scgeom = scgeoms->GetItem(i);
 				
 				// Match by name. Also in the case of providers with no metadata.
 				scgeomFound = ( ( scgeom->GetGeomTableName() == tableName ) && ( scgeom->GetGeomColumnName() == columnName ) ) ||
@@ -330,7 +330,7 @@ void FdoSmLpGeometricPropertyDefinition::SynchPhysical(bool bRollbackOnly)
         // Proceed only if the property has a containing table. Can't synchronize column if there is no table.
         // Proceed only if the property has no column.
 		if ( !GetColumn() ) {
-			if ( wcscmp(RefDefiningClass()->RefLogicalPhysicalSchema()->GetName(), FdoSmLpSchema::mMetaClassSchemaName) != 0 ) {
+			if ( wcscmp(RefDefiningClass()->RefLogicalPhysicalSchema()->GetName(), FdoSmPhMgr::mMetaClassSchemaName) != 0 ) {
                 if ( GetErrors()->GetCount() == 0 ) {
 
                     // Proceed only if geometric property is error-free.

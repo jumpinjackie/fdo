@@ -491,10 +491,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Inc\Sm\Lp\SpatialContextGeom.h"
-				>
-			</File>
-			<File
 				RelativePath="Src\Sm\Lp\stdafx.h"
 				>
 			</File>

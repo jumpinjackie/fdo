@@ -17,7 +17,6 @@
 #include "stdafx.h"
 #include <Sm/Error.h>
 #include <Sm/Lp/SpatialContextCollection.h>
-#include <Sm/Lp/SpatialContextGeom.h>
 #include <Sm/Ph/SpatialContextReader.h>
 #include <Sm/Ph/Rd/SpatialContextReader.h>
 #include <Sm/Ph/SpatialContextGroupReader.h>
@@ -124,12 +123,16 @@ FdoSchemaExceptionP FdoSmLpSpatialContextCollection::Errors2Exception(FdoSchemaE
 
 void FdoSmLpSpatialContextCollection::Load()
 {
+    FdoInt32 idx;
+    FdoSmPhSpatialContextsP phScs;
+    FdoSmPhSpatialContextGeomsP scGeoms;
+
 	if ( (mPhysicalSchema != NULL) && !mAreLoaded ) {
         mAreLoaded = true;
 
-		// Cache the SpatialContextGeomReader info  
-		if ( mSpatialContextGeoms.p == NULL )
-			mSpatialContextGeoms = new FdoSmLpSpatialContextGeomCollection();
+        // Cache the SpatialContextGeomReader info  
+        if ( mSpatialContextGeoms.p == NULL )
+            mSpatialContextGeoms = new FdoSmPhSpatialContextGeomCollection();
 
         // Check if there is a config doc
         FdoIoStreamP configDoc = mPhysicalSchema->GetConfigDoc();
@@ -207,11 +210,13 @@ void FdoSmLpSpatialContextCollection::Load()
 			while (scGeomReader->ReadNext())
 			{
 				// Create Spatial context geometry object and associate it with this scId
-				FdoSmLpSpatialContextGeomP  scgeom = new FdoSmLpSpatialContextGeom(
+				FdoSmPhSpatialContextGeomP  scgeom = new FdoSmPhSpatialContextGeom(
+                                                                mPhysicalSchema,
 																scGeomReader->GetScId(),
 																scGeomReader->GetGeomTableName(),
 																scGeomReader->GetGeomColumnName(),
-																scGeomReader->GetDimensionality() );
+																(scGeomReader->GetDimensionality() & FdoDimensionality_Z) != 0,
+																(scGeomReader->GetDimensionality() & FdoDimensionality_M) != 0);
 			  if (NULL == scgeom.p)
 					throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
 
@@ -220,59 +225,41 @@ void FdoSmLpSpatialContextCollection::Load()
         }
 		else
 		{
-			// reverse-engineering. The PH schema object will return the appropiate reader or
-			// the default one.
-            FdoSmPhRdSpatialContextReaderP scReader = mPhysicalSchema->CreateRdSpatialContextReader();
+            // Use Physical SpatialContextGeoms.
+            mSpatialContextGeoms = NULL;
+
+			// Create a LogicalPhysical spatial context from each Physical spatial context
+
+            phScs = mPhysicalSchema->GetOwner()->GetSpatialContexts();
 			
 			FdoInt32	currSC = 0;
 
-	        while (scReader->ReadNext())
-	        {
-				FdoStringP	scName = L"Default";
-				
-				if ( currSC != 0 )
-					scName = FdoStringP::Format(L"%ls_%ld", scReader->GetName(), currSC);
+            for ( idx = 0; idx <  phScs->GetCount(); idx++ ) 
+            {
+                FdoSmPhSpatialContextP phSc = phScs->GetItem( idx );
 
-				FdoSmLpSpatialContextP sc = NewSpatialContext(
-                    scName,
-                    scReader->GetDescription(),
-                    scReader->GetCoordinateSystem(),
-                    scReader->GetCoordinateSystemWkt(),
-                    scReader->GetExtentType(),
-                    scReader->GetExtent(),
-                    scReader->GetXYTolerance(),
-                    scReader->GetZTolerance(),
+		        FdoSmLpSpatialContextP sc = NewSpatialContext(
+                    phSc->GetName(),
+                    phSc->GetDescription(),
+                    phSc->GetCoordinateSystem(),
+                    phSc->GetCoordinateSystemWkt(),
+                    phSc->GetExtentType(),
+                    phSc->GetExtent(),
+                    phSc->GetXYTolerance(),
+                    phSc->GetZTolerance(),
                     true,
                     mPhysicalSchema);
 
-				sc->SetSrid( scReader->GetSrid() );
-
-				// Avoid cs_name etc. validation in Finalize() against catalog
-				sc->SetState( FdoSmObjectState_Final );
-
                 if (NULL == sc.p)
-					throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
+    		        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
+		        
+                sc->SetSrid( phSc->GetSrid() );
 
-				int indexSC = FindExistingSC( sc );
+		        // Avoid cs_name etc. validation in Finalize() against catalog
+		        sc->SetState( FdoSmObjectState_Final );
 
-				// New Spatial context definition, add it to collection
-				if ( indexSC == -1 )
-				{
-					sc->SetId( currSC ); 
-					this->Add( sc );
-					currSC++;
-				}
-
-				// Create Spatial context geometry object and associate it with this scId
-				FdoSmLpSpatialContextGeomP  scgeom = new FdoSmLpSpatialContextGeom(
-																( indexSC != -1 )? indexSC : currSC - 1,
-																scReader->GetGeomTableName(),
-																scReader->GetGeomColumnName(),
-																-1);
-                if (NULL == scgeom.p)
-					throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
-
-				mSpatialContextGeoms->Add( scgeom );												
+                sc->SetId( phSc->GetId() ); 
+		        this->Add( sc );
 	        }	
 		}
 	}
@@ -314,41 +301,12 @@ FdoSmLpSpatialContextP FdoSmLpSpatialContextCollection::NewSpatialContext(
     return sc;
 }
 
-FdoSmLpSpatialContextGeomsP FdoSmLpSpatialContextCollection::GetSpatialContextGeoms()
+FdoSmPhSpatialContextGeomsP FdoSmLpSpatialContextCollection::GetSpatialContextGeoms()
 {
-	return FDO_SAFE_ADDREF(mSpatialContextGeoms.p);
-}
-
-FdoInt32 FdoSmLpSpatialContextCollection::FindExistingSC( FdoSmLpSpatialContextP sc )
-{
-	FdoInt32 index = -1;
-
-	for (int i = 0; i < this->GetCount() && (index == -1); i++ )
-	{
-		FdoSmLpSpatialContextP  sc1 = this->GetItem(i);
-
-		if ( ( sc1->GetSrid() == sc1->GetSrid() ) &&
-			 ( wcscmp(sc1->GetCoordinateSystem(), sc->GetCoordinateSystem()) == 0 ) &&
-			 ( wcscmp(sc1->GetCoordinateSystemWkt(), sc->GetCoordinateSystemWkt()) == 0 ) &&
-			 ( sc1->GetXYTolerance() == sc->GetXYTolerance() ) &&
-			 ( sc1->GetZTolerance() == sc->GetZTolerance() ) )
-		{
-			FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-
-			FdoPtr<FdoIGeometry>          geom = gf->CreateGeometryFromFgf( sc->GetExtent() );
-			FdoPtr<FdoIEnvelope>		  env = geom->GetEnvelope();
-			FdoPtr<FdoIGeometry>          geom1= gf->CreateGeometryFromFgf( sc1->GetExtent() );
-			FdoPtr<FdoIEnvelope>		  env1 = geom1->GetEnvelope();
-
-			bool found = ( env1->GetMinX() == env->GetMinX() &&
-						   env1->GetMaxX() == env->GetMaxX() &&
-						   env1->GetMinY() == env->GetMinY() &&
-						   env1->GetMaxY() == env->GetMaxY() );
-			if ( found )
-				index = i;
-		}
-	}
-	return (index);
+    if ( mSpatialContextGeoms ) 
+        return mSpatialContextGeoms;
+    else
+    	return mPhysicalSchema->GetOwner()->GetSpatialContextGeoms();
 }
 
 void FdoSmLpSpatialContextCollection::AddToIdMap( FdoSmLpSpatialContext* sc )
