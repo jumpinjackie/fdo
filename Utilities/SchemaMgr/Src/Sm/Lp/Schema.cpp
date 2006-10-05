@@ -27,8 +27,6 @@
 #include <Sm/Lp/ClassTypeMapper.h>
 #include <Sm/Error.h>
 
-FdoString* FdoSmLpSchema::mMetaClassSchemaName = L"F_MetaClass";
-
 FdoSmLpSchema::FdoSmLpSchema(FdoSmPhSchemaReaderP rdr,  FdoSmPhMgrP physicalSchema, FdoSmLpSchemaCollection* schemas) : 
 	FdoSmLpSchemaElement(rdr->GetName(), rdr->GetDescription() ),
 	mPhysicalSchema(physicalSchema),
@@ -409,7 +407,7 @@ void FdoSmLpSchema::LoadClasses()
 	// (Re)load the classes
 	FdoSmPhClassReaderP classReader = mPhysicalSchema->CreateClassReader(GetName());
 
-	while ( classReader->ReadNext() ) {
+    while ( classReader->ReadNext() ) {
 		FdoSmLpClassDefinitionP newClass = CreateClassDefinition( classReader );
         // When there is a config document, skip any classes already loaded, since they've
         // been loaded from the config doc.

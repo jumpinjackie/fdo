@@ -61,7 +61,7 @@ FdoSchemaMappingsP FdoSchemaManager::GetSchemaMappings(
         // Get mappings for current schema if it is the requested one. Get
         // mappings for all schemas if no schema name specified.
         // Always skip the MetaClass system schema.
-        if ( ((schemaName.GetLength() == 0) && (wcscmp(pSchema->GetName(), FdoSmLpSchema::mMetaClassSchemaName) != 0)) || 
+        if ( ((schemaName.GetLength() == 0) && (wcscmp(pSchema->GetName(), FdoSmPhMgr::mMetaClassSchemaName) != 0)) || 
              (schemaName == pSchema->GetName()) 
         ) {
             FdoPhysicalSchemaMappingP mapping = pSchema->GetSchemaMappings( bIncludeDefaults );
@@ -121,7 +121,7 @@ void FdoSchemaManager::SynchPhysical( const wchar_t* schemaName, bool bRollbackO
 			for ( i = 0; i < GetLogicalPhysicalSchemas()->GetCount(); i++ ) {
 				FdoSmLpSchemaP pSchema = mLpSchemas->GetItem(i);
 
-				if ( wcscmp( pSchema->GetName(), FdoSmLpSchema::mMetaClassSchemaName ) != 0 ) { 
+				if ( wcscmp( pSchema->GetName(), FdoSmPhMgr::mMetaClassSchemaName ) != 0 ) { 
 					if ( (wcslen(schemaName) == 0) || (wcscmp(schemaName, pSchema->GetName()) == 0) ) {
 						pSchema->SynchPhysical(bRollbackOnly);
 						bDidSomething = true;
@@ -198,7 +198,7 @@ void FdoSchemaManager::ApplySchema(
 
 	// The MetaClass schema is a special schema describing Feature schema meta-classes.
 	// Updates to this schema are not allowed.
-	if ( wcscmp( pFeatSchema->GetName(), FdoSmLpSchema::mMetaClassSchemaName ) == 0 ) 
+	if ( wcscmp( pFeatSchema->GetName(), FdoSmPhMgr::mMetaClassSchemaName ) == 0 ) 
 		throw FdoSchemaException::Create(
             FdoSmError::NLSGetMessage(
     			FDO_NLSID(FDOSM_220),
@@ -207,6 +207,8 @@ void FdoSchemaManager::ApplySchema(
 		);
 
 	try {
+        GetPhysicalSchema()->SetBulkLoadConstraints(true);
+
         if ( bIgnoreStates ) {
             // When ignoring element states, operation depends on whether
             // schema already exists.

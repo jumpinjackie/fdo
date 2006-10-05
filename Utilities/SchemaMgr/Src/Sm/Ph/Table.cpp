@@ -161,22 +161,6 @@ FdoSmPhColumnsP FdoSmPhTable::GetBestIdentity()
     return (FdoSmPhColumnCollection*) NULL;
 }
 
-/* TODO
-const FdoSmPhDependencyCollection* FdoSmPhTable::GetDependenciesDown() const
-{
-	((FdoSmPhTable*) this)->Finalize();
-
-	return &mDependenciesDown;
-}
-
-const FdoSmPhDependencyCollection* FdoSmPhTable::GetDependenciesUp() const
-{
-	((FdoSmPhTable*) this)->Finalize();
-
-	return &mDependenciesUp;
-}
-*/
-
 const FdoSmPhFkeyCollection* FdoSmPhTable::RefFkeysUp() const
 {
     return (FdoSmPhFkeyCollection*) ((FdoSmPhTable*) this)->GetFkeysUp();
