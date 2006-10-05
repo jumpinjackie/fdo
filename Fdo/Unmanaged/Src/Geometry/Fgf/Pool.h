@@ -175,7 +175,9 @@ protected:
 #endif
     {
         if (size <= 0)
-            throw EXC::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		    throw EXC::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                          L"FdoPool",
+                                                          L"size"));
 
         // Set exact size.
 

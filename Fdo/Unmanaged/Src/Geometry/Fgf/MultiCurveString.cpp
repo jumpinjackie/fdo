@@ -35,7 +35,9 @@ FdoFgfMultiCurveString::FdoFgfMultiCurveString(
 {
 	if ( (NULL == curveStrings) ||
          (0 == curveStrings->GetCount()) )
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoFgfMultiCurveString",
+                                                               L"curveStrings"));
 
     FdoByteArray * newByteArray = m_factory->GetByteArray();
 

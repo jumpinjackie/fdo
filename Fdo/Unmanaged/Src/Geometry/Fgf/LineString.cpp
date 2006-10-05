@@ -41,7 +41,9 @@ void FdoFgfLineString::Reset(FdoDirectPositionCollection* positions)
 {
 	if ( (NULL == positions) ||
 		 (positions->GetCount() < 1) )
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoFgfLineString::Reset",
+                                                               L"positions"));
 
     FdoByteArray * newByteArray = m_factory->GetByteArray();
 
@@ -206,7 +208,7 @@ FdoIDirectPosition* FdoFgfLineString::GetItem(FdoInt32 index)	const	// 0 based
 	FdoInt32 dimension =  FgfUtil::ReadInt32(&m_streamPtr, m_streamEnd);
 	FdoInt32 numPositions = FgfUtil::ReadInt32(&m_streamPtr, m_streamEnd);
 	if ( index > numPositions-1 )
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INDEXOUTOFBOUNDS)));
 
     FdoInt32 numOrdsPerPos = GeometryUtility::DimensionalityToNumOrdinates(dimension);
 
@@ -228,7 +230,7 @@ void FdoFgfLineString::GetItemByMembers(FdoInt32 index, double *x, double *y, do
         *dimensionality = FgfUtil::ReadInt32(&m_streamPtr, m_streamEnd);
         FdoInt32 numPositions = FgfUtil::ReadInt32(&m_streamPtr, m_streamEnd);
         if ( index > numPositions-1 )
-			throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+			throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INDEXOUTOFBOUNDS)));
 
         FdoInt32 numOrdsPerPos = GeometryUtility::DimensionalityToNumOrdinates(*dimensionality);
 

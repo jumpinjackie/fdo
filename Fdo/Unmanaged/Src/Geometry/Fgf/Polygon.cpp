@@ -34,7 +34,9 @@ FdoFgfPolygon::FdoFgfPolygon(
     : FdoFgfGeometryImpl<FdoIPolygon>(factory)
 {
 	if (NULL == exteriorRing)
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoFgfPolygon",
+                                                               L"exteriorRing"));
 
     FdoByteArray * newByteArray = m_factory->GetByteArray();
 
@@ -177,7 +179,7 @@ FdoILinearRing* FdoFgfPolygon::GetInteriorRing(FdoInt32 Index) const
 
 	// Bounds check
 	if (Index > numRings - 2)
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INDEXOUTOFBOUNDS)));
 
 	// NumPositions in a ring
 	FdoInt32 numPositions = 0;

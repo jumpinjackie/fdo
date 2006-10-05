@@ -88,7 +88,9 @@ int FdoMathUtility::LUDecompose( int n, double a[], int eindex[] )
     /* initialize static vars */
 
     if ( n <= 0 || a == NULL || eindex == NULL )
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoMathUtil::LUDecompose",
+                                                               L"n/a/eindex"));
 
     dim = n;
     ptr_matrix = a;
@@ -164,7 +166,9 @@ double FdoMathUtility::LinearInterpolate(double start, double end, double propor
     if (!IsNan(start) && !IsNan(end) && !IsNan(proportion))
     {
         if (proportion < 0.0 || proportion > 1.0)
-            throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+	        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                                   L"FdoMathUtility::LinearInterpolate",
+                                                                   L"proportion"));
 
         if (SnapToZero(fabs(end-start)) == 0.0)
         {

@@ -37,7 +37,9 @@ FdoIGeometry * FdoSpatialUtility::ApproximateGeometryWithLineStrings(
     FdoIGeometry * newGeometry = NULL;
 
     if ( geometry == NULL || maxSpacing < 0.0 || maxOffset < 0.0 )
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoSpatialUtility::IsClosed",
+                                                               L"geometry/maxSpacing/maxOffset"));
 
     FdoGeometryType geomType = geometry->GetDerivedType();
 
@@ -702,7 +704,9 @@ FdoSpatialGeometryValidity FdoSpatialUtility::ValidateGeometryByType(
         (geometryTypesCount > 0 && NULL == geometryTypes) ||
         (geometryComponentTypesCount > 0 && NULL == geometryComponentTypes))
     {
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoSpatialUtility::ValidateGeometryByType",
+                                                               L"geometry/geometryTypes/geometryComponentTypes"));
     }
     FdoInt32 allDimensionalities = FdoDimensionality_XY | FdoDimensionality_Z | FdoDimensionality_M;
     if ( ! IS_ALLOWED(dimensionality, allDimensionalities) )

@@ -345,7 +345,8 @@ public:
     virtual FdoInt32 IndexOf(FdoString* name) const
     {
         if (name == NULL)
-            throw EXC::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+            throw EXC::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_137_NAMED_COLLECTION_INDEX_NAME_ERROR),
+                                                          L"FdoNamedCollection::IndexOf"));
 
         FdoInt32    size = FdoCollection <OBJ, EXC>::GetCount();
         for (FdoInt32 i = 0; i < size; i++)

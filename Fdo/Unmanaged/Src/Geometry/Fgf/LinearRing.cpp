@@ -33,11 +33,13 @@ FdoFgfLinearRing::FdoFgfLinearRing(
 {
 	if ( (NULL == ordinates) ||
 		 (NULL == factory) )
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoFgfLinearRing",
+                                                               L"ordinates/factory"));
 
 	// Should be closed
 	if (!IsClosed(dimensionType, numOrdinates, ordinates))
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_OPEN_RING), L"FdoFgfLinearRing::FdoFgfLinearRing"));
 
 	m_lineString = factory->CreateLineString(dimensionType, numOrdinates, ordinates);
 
@@ -53,11 +55,13 @@ FdoFgfLinearRing::FdoFgfLinearRing(
 void FdoFgfLinearRing::Reset(FdoInt32 dimensionType, FdoInt32 numOrdinates, double* ordinates)
 {
 	if (NULL == ordinates)
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoFgfLinearRing::Reset",
+                                                               L"ordinates"));
 
 	// Should be closed
 	if (!IsClosed(dimensionType, numOrdinates, ordinates))
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_OPEN_RING), L"FdoFgfLinearRing::Reset"));
 
     FdoFgfLineString * ls = static_cast<FdoFgfLineString *>(m_lineString.p);
     ls->Reset(dimensionType, numOrdinates, ordinates);
@@ -80,7 +84,9 @@ FdoFgfLinearRing::FdoFgfLinearRing(
     FdoDirectPositionCollection* positions)
 {
     if ( NULL == positions || positions->GetCount() < 3)
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoFgfLinearRing",
+                                                               L"positions"));
 
     m_lineString = factory->CreateLineString(positions);
 
@@ -96,7 +102,9 @@ FdoFgfLinearRing::FdoFgfLinearRing(
 void FdoFgfLinearRing::Reset(FdoDirectPositionCollection* positions)
 {
     if ( NULL == positions ||  positions->GetCount() < 3)
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoFgfLinearRing::Reset",
+                                                               L"positions"));
 
     FdoFgfLineString * ls = static_cast<FdoFgfLineString *>(m_lineString.p);
     ls->Reset(positions);
@@ -201,7 +209,9 @@ bool FdoFgfLinearRing::IsClosed(FdoInt32 dimensionality, FdoInt32 numOrdinates, 
     if ( dimensionality == FdoDimensionality_XY )
     {
 	    if (numOrdinates < 4)
-	        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+	        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                                   L"FdoFgfLinearRing::IsClosed",
+                                                                   L"numOrdinates"));
 
         endIndex = numOrdinates - 2;    // (X,Y)
 
@@ -213,7 +223,9 @@ bool FdoFgfLinearRing::IsClosed(FdoInt32 dimensionality, FdoInt32 numOrdinates, 
     else if ( dimensionality == (FdoDimensionality_XY | FdoDimensionality_Z) )
     {
 	    if (numOrdinates < 6)
-	        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+	        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                                   L"FdoFgfLinearRing::IsClosed",
+                                                                   L"numOrdinates"));
         
         endIndex = numOrdinates - 3;    // (X,Y,Z)
 
@@ -227,7 +239,9 @@ bool FdoFgfLinearRing::IsClosed(FdoInt32 dimensionality, FdoInt32 numOrdinates, 
     else if ( dimensionality == ( FdoDimensionality_XY | FdoDimensionality_M ) )
     {
 	    if (numOrdinates < 6)
-	        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+	        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                                   L"FdoFgfLinearRing::IsClosed",
+                                                                   L"numOrdinates"));
         
         endIndex = numOrdinates - 3;    // (X,Y,M)
 
@@ -239,7 +253,9 @@ bool FdoFgfLinearRing::IsClosed(FdoInt32 dimensionality, FdoInt32 numOrdinates, 
     else if ( dimensionality == ( FdoDimensionality_XY | FdoDimensionality_Z | FdoDimensionality_M ) )
     {
 	    if (numOrdinates < 8)
-	        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+	        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                                   L"FdoFgfLinearRing::IsClosed",
+                                                                   L"numOrdinates"));
 
         endIndex = numOrdinates - 4;    // (X,Y,Z,M)
 

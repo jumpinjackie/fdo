@@ -36,7 +36,9 @@ FdoFgfPoint::FdoFgfPoint(
 {
 	if ( (NULL == factory) ||
 		 (NULL == ordinates) )
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoFgfPoint",
+                                                               L"ordinates/factory"));
 
     // Cannot use smart pointer for updating a FdoArray.
     FdoByteArray * newByteArray = m_factory->GetByteArray();
@@ -64,7 +66,9 @@ FdoFgfPoint::FdoFgfPoint(
 {
 	if ( (NULL == factory) ||
 		 (NULL == position) )
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoFgfPoint",
+                                                               L"position/factory"));
 
     FdoByteArray * newByteArray = m_factory->GetByteArray();
 

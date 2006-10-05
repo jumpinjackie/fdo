@@ -1258,7 +1258,10 @@ FdoIGeometry * GeometryConverter::ConvertOrdinates(
     FdoIGeometry * newGeometry = NULL;
 
     if ( geometry == NULL )
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"GeometryConverter::ConvertOrdinates",
+                                                               L"geometry"));
+
 
 	FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
 

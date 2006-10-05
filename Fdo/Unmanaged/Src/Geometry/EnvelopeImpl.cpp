@@ -163,7 +163,9 @@ FdoEnvelopeImpl::FdoEnvelopeImpl(FdoIDirectPosition * lowerLeft, FdoIDirectPosit
 {
 	if ( (NULL == lowerLeft) ||
 		 (NULL == upperRight) )
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoEnvelopeImpl",
+                                                               L"lowerLeft/upperRight"));
 
 	m_minX = lowerLeft->GetX();
 	m_minY = lowerLeft->GetY();
@@ -188,7 +190,9 @@ FdoEnvelopeImpl::FdoEnvelopeImpl(FdoInt32 dimensionType, double * ordinates)
 :   m_ordinates(NULL)
 {
 	if (NULL == ordinates)
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoEnvelopeImpl",
+                                                               L"ordinates"));
 
 	if (dimensionType == FdoDimensionality_XY)
 	{
@@ -219,7 +223,9 @@ FdoEnvelopeImpl::FdoEnvelopeImpl(FdoInt32 dimensionType, double * ordinates)
 	}
 	else
 	{
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoEnvelopeImpl",
+                                                               L"dimensionType"));
 	}
 
 	m_isEmpty = false;
@@ -473,7 +479,9 @@ void FdoEnvelopeImpl::Expand(FdoIDirectPosition* point)
 void FdoEnvelopeImpl::Expand(FdoIEnvelope* envl)
 {
 	if (NULL == envl)
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoEnvelopeImpl::Expand",
+                                                               L"envl"));
 
     FdoPtr<FdoDirectPositionImpl> pos1 = FdoDirectPositionImpl::Create(envl->GetMaxX(), envl->GetMaxY(), envl->GetMaxZ());
 	this->Expand(pos1);

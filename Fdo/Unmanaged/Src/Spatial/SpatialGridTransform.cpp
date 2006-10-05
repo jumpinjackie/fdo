@@ -76,7 +76,9 @@ FdoSpatialGridTransform::FdoSpatialGridTransform(
         m_resolution = tolerance * 2.0;
 
         if ((m_maxX < m_minX) || (m_maxY < m_minY))
-            throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		    throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                                   L"FdoSpatialGridTransform",
+                                                                   L"extents"));
 
         // compute transformation parameters
         CalculateParameters();
@@ -133,10 +135,12 @@ FdoSpatialGridTransform::CalculateParameters()
     // make sure resolution is reasonable
     if ((m_resolution / min_delta) > 0.10)
         // Resolution is too large for the extent.
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_RESOLUTION_TOO_LARGE_FOR_EXTENT),
+                                                               L"FdoSpatialGridTransform::CalculateParameters"));
     else if (m_resolution < best_res)
         // Resolution is too fine for the extent.
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_RESOLUTION_TOO_FINE_FOR_EXTENT),
+                                                               L"FdoSpatialGridTransform::CalculateParameters"));
 
     // calculate sizes in x and y
     half_delta_x = 0.5 * even (delta_x, m_resolution);

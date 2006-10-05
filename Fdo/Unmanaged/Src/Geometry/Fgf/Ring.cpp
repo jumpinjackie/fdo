@@ -33,14 +33,16 @@ FdoFgfRing::FdoFgfRing(
 	if ( (NULL == curveSegs) ||
 		 (NULL == factory) ||
          (0 == curveSegs->GetCount()) )
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoFgfRing",
+                                                               L"curveSegs/factory"));
 
 	m_curveString = factory->CreateCurveString(curveSegs);
 
 	// Check closure
 	if (!m_curveString->GetIsClosed())
 	{
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_OPEN_RING), L"FdoFgfRing::FdoFgfRing"));
 	}
 }
 

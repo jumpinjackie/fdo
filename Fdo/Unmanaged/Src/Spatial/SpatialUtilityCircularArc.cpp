@@ -345,7 +345,8 @@ void FdoSpatialUtilityCircularArc::ComputeCenterFromThreePositions()
     if ( FdoMathUtility::LUDecompose( 3, a, eindex ) == 0 )
     {
         // Zero result means that points were collinear.
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_COLLINEAR_POINTS),
+                                                               L"FdoSpatialUtilityCircularArc::ComputeCenterFromThreePositions"));
     }
 
     /* Perform row exchanges for b */
@@ -430,7 +431,9 @@ void FdoSpatialUtilityCircularArc::Linearize(
     bool isFlat = IsFlat();
 
     if (maxSpacing < 0.0 || maxOffset < 0.0)
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                                   L"FdoSpatialUtilityCircularArc::Linearize",
+                                                                   L"maxSpacing/maxOffset"));
 
     // Avoid mathematical exceptions later.
     maxSpacing = FdoMathUtility::SnapToZero(maxSpacing);
@@ -563,7 +566,9 @@ double FdoSpatialUtilityCircularArc::BestArcStep(
     if (FdoMathUtility::SnapToZero(radius) <= 0.0 ||
         FdoMathUtility::SnapToZero(maximumError) <= 0.0)
     {
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoSpatialUtilityCircularArc::BestArcStep",
+                                                               L"radius/maximumError"));
     }
 
     double           arcStep = 0.0;
