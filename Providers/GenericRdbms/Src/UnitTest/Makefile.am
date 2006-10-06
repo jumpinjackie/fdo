@@ -15,7 +15,7 @@
 ## Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ##
 
-UTOMAKE_OPTIONS = foreign
+AUTOMAKE_OPTIONS = foreign
 
 SUBDIRS = Common Odbc MySql
 DIST_SUBDIRS = Common Odbc MySql
