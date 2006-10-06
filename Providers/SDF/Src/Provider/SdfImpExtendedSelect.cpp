@@ -364,9 +364,25 @@ SdfIScrollableFeatureReader* SdfImpExtendedSelect::ExecuteScrollable()
 	PropertyIndex* pi = m_connection->GetPropertyIndex(cls);
 	ctx.compareHandler = m_compareHandler;
 	ctx.propCount = m_orderingProperties->GetCount();
-	PropertyStub **propStubs = new PropertyStub*[ctx.propCount];
-	ctx.options = new FdoOrderingOption[ctx.propCount];
-	ctx.names = new FdoString*[ctx.propCount];
+    PropertyStub **propStubs = NULL;
+    bool isSortingRequired = (ctx.propCount != 0);
+
+    if( isSortingRequired )
+    {
+        propStubs = new PropertyStub*[ctx.propCount];
+	    ctx.options = new FdoOrderingOption[ctx.propCount];
+	    ctx.names = new FdoString*[ctx.propCount];
+
+        // initialize the ordering property cache; only needed if we need to order the data
+        ctx.propCache = new DataPropertyDef*[maxsize];
+    }
+    else
+    {
+        ctx.options = NULL;
+        ctx.names = NULL;
+        ctx.propCache = NULL;
+    }
+
 	int i = 0;
 	for(i=0; i<ctx.propCount; i++ )
 	{
@@ -379,14 +395,16 @@ SdfIScrollableFeatureReader* SdfImpExtendedSelect::ExecuteScrollable()
 	
 	ctx.table = new REC_NO[maxsize];
 #ifndef _WIN32
-	SortElementDef  *indexArray = new SortElementDef[maxsize];
+	SortElementDef  *indexArray = NULL;
+    if( isSortingRequired )
+        indexArray = new SortElementDef[maxsize];
 #else
-	REC_NO *indexTable = new REC_NO[maxsize];
+	REC_NO *indexTable = NULL;
+    if( isSortingRequired )
+        indexTable = new REC_NO[maxsize];
 #endif
 	
-	// initialize the ordering property cache
-	ctx.propCache = new DataPropertyDef*[maxsize];
-	
+        
 	bool found = true;
 	SQLiteData		*pkey;
     SQLiteData		*pdata;
@@ -409,78 +427,86 @@ SdfIScrollableFeatureReader* SdfImpExtendedSelect::ExecuteScrollable()
         {
 		    REC_NO recno = *((REC_NO*)pkey->get_data());
 #ifndef _WIN32
-		    indexArray[i].index = i;
-		    indexArray[i].ctx = &ctx;
+            if( isSortingRequired )
+            {
+		        indexArray[i].index = i;
+		        indexArray[i].ctx = &ctx;
+            }
 #else
-		    indexTable[i] = i;
+            if( isSortingRequired )
+		        indexTable[i] = i;
 #endif
 		    ctx.table[i]= recno;
 
-		    ctx.propCache[i] = new DataPropertyDef[ctx.propCount];
-		    rdr1.Reset((unsigned char*)pdata->get_data(), pdata->get_size());
-		    for(int j=0; j<ctx.propCount; j++ )
-		    {
-			    PropertyStub  *ps = propStubs[j];
-			    int len1 = PositionReader( ps->m_recordIndex, &rdr1, pi, pdata->get_size() );
-			    if( len1 == 0 )
-			    {
-				    if( ps->m_isAutoGen )
-				    {
-					    ctx.propCache[i][j].type = ps->m_dataType;
-					    if( getAll )
-						    ctx.propCache[i][j].value.intVal = recno;
-					    else
-						    ctx.propCache[i][j].value.intVal = reader->GetInt32(ctx.names[j]);
-					    continue;
-				    }
-				    ctx.propCache[i][j].type = (FdoDataType)-1;
-				    continue;
-			    }
-			    ctx.propCache[i][j].type = ps->m_dataType;
-			    switch( ps->m_dataType )
-			    {
-			      case FdoDataType_Boolean : 
-			      case FdoDataType_Byte : 
-				      ctx.propCache[i][j].value.intVal = (int)rdr1.ReadByte();
-				      break;
+            // Just get the ids if no ordering is required.
+            if( isSortingRequired )
+            {
+		        ctx.propCache[i] = new DataPropertyDef[ctx.propCount];
+		        rdr1.Reset((unsigned char*)pdata->get_data(), pdata->get_size());
+		        for(int j=0; j<ctx.propCount; j++ )
+		        {
+			        PropertyStub  *ps = propStubs[j];
+			        int len1 = PositionReader( ps->m_recordIndex, &rdr1, pi, pdata->get_size() );
+			        if( len1 == 0 )
+			        {
+				        if( ps->m_isAutoGen )
+				        {
+					        ctx.propCache[i][j].type = ps->m_dataType;
+					        if( getAll )
+						        ctx.propCache[i][j].value.intVal = recno;
+					        else
+						        ctx.propCache[i][j].value.intVal = reader->GetInt32(ctx.names[j]);
+					        continue;
+				        }
+				        ctx.propCache[i][j].type = (FdoDataType)-1;
+				        continue;
+			        }
+			        ctx.propCache[i][j].type = ps->m_dataType;
+			        switch( ps->m_dataType )
+			        {
+			          case FdoDataType_Boolean : 
+			          case FdoDataType_Byte : 
+				          ctx.propCache[i][j].value.intVal = (int)rdr1.ReadByte();
+				          break;
 
-			      case FdoDataType_DateTime :
-				      ctx.propCache[i][j].value.dateVal = new FdoDateTime();
-				      *ctx.propCache[i][j].value.dateVal = rdr1.ReadDateTime();
-				      break;
+			          case FdoDataType_DateTime :
+				          ctx.propCache[i][j].value.dateVal = new FdoDateTime();
+				          *ctx.propCache[i][j].value.dateVal = rdr1.ReadDateTime();
+				          break;
 
-			      case FdoDataType_Decimal :		  
-			      case FdoDataType_Double :
-				      ctx.propCache[i][j].value.dblVal = rdr1.ReadDouble();
-				      break;
+			          case FdoDataType_Decimal :		  
+			          case FdoDataType_Double :
+				          ctx.propCache[i][j].value.dblVal = rdr1.ReadDouble();
+				          break;
 
-			      case FdoDataType_Int16 : 
-				      ctx.propCache[i][j].value.intVal = rdr1.ReadInt16();
-				      break;
+			          case FdoDataType_Int16 : 
+				          ctx.propCache[i][j].value.intVal = rdr1.ReadInt16();
+				          break;
 
-			      case FdoDataType_Int32 : 
-				      ctx.propCache[i][j].value.intVal = rdr1.ReadInt32();
-				      break;
+			          case FdoDataType_Int32 : 
+				          ctx.propCache[i][j].value.intVal = rdr1.ReadInt32();
+				          break;
 
-			      case FdoDataType_Int64 : 
-				      ctx.propCache[i][j].value.int64Val = rdr1.ReadInt64();
-				      break;
+			          case FdoDataType_Int64 : 
+				          ctx.propCache[i][j].value.int64Val = rdr1.ReadInt64();
+				          break;
 
-			      case FdoDataType_Single :
-				      ctx.propCache[i][j].value.dblVal = rdr1.ReadSingle();
-				      break;
+			          case FdoDataType_Single :
+				          ctx.propCache[i][j].value.dblVal = rdr1.ReadSingle();
+				          break;
 
-			      case FdoDataType_String : 
-				      tmpStr = rdr1.ReadRawStringNoCache(len1);
-				      ctx.propCache[i][j].value.strVal = new wchar_t[wcslen(tmpStr)+1];
-				      wcscpy( ctx.propCache[i][j].value.strVal , tmpStr );
-				      break;
+			          case FdoDataType_String : 
+				          tmpStr = rdr1.ReadRawStringNoCache(len1);
+				          ctx.propCache[i][j].value.strVal = new wchar_t[wcslen(tmpStr)+1];
+				          wcscpy( ctx.propCache[i][j].value.strVal , tmpStr );
+				          break;
 
-			      default:
-				      throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_14_UNKNOWN_DATA_TYPE)));
-				      break;
-			    }
-		    }
+			          default:
+				          throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_14_UNKNOWN_DATA_TYPE)));
+				          break;
+			        }
+		        }
+            }
             i++;
         }
 		// get the next record
@@ -504,23 +530,38 @@ SdfIScrollableFeatureReader* SdfImpExtendedSelect::ExecuteScrollable()
 	maxsize = i;
 
 	// Build the sorted list
-	REC_NO *sortedTable = new REC_NO[maxsize];
+	REC_NO *sortedTable = NULL;
+    if( ! isSortingRequired )
+        sortedTable = ctx.table;
+    else
+    {
+        sortedTable = new REC_NO[maxsize];
 #ifndef _WIN32
-	qsort( (void*)indexArray, maxsize, sizeof(SortElementDef), compare );
-	for(i=0;i<maxsize;i++) sortedTable[i] = ctx.table[indexArray[i].index];
-	delete[] indexArray;
+	    qsort( (void*)indexArray, maxsize, sizeof(SortElementDef), compare );
+	    for(i=0;i<maxsize;i++) sortedTable[i] = ctx.table[indexArray[i].index];
+	    delete[] indexArray;
 #else
-	qsort_s( indexTable, maxsize, sizeof(REC_NO), local_compare, (void*)&ctx );
-	for(i=0;i<maxsize;i++) sortedTable[i] = ctx.table[indexTable[i]];
-	delete[] indexTable;
+	    qsort_s( indexTable, maxsize, sizeof(REC_NO), local_compare, (void*)&ctx );
+	    for(i=0;i<maxsize;i++) sortedTable[i] = ctx.table[indexTable[i]];
+	    delete[] indexTable;
 #endif
+    }
 	for( i=0; i<ctx.propCount;i++)
 		delete[] ctx.names[i];
-	delete[] ctx.names;
-	delete[] ctx.table;
-	delete[] ctx.options;
-	delete[] propStubs;
-	for(i=0; i<maxsize;i++)
+
+    if( ctx.names )
+	    delete[] ctx.names;
+
+    if( ctx.table && isSortingRequired )
+	    delete[] ctx.table;
+
+    if( ctx.options )
+	    delete[] ctx.options;
+
+    if( propStubs )
+	    delete[] propStubs;
+
+	for(i=0; i<maxsize && ctx.propCount != 0;i++)
 	{
 		for(int j=0; j<ctx.propCount; j++ )
 		{
@@ -531,7 +572,8 @@ SdfIScrollableFeatureReader* SdfImpExtendedSelect::ExecuteScrollable()
 		}
 		delete[] ctx.propCache[i];
 	}
-	delete[] ctx.propCache;
+    if( ctx.propCache != NULL )
+	    delete[] ctx.propCache;
 	return new SdfImpScrollableFeatureReader<SdfIndexedScrollableFeatureReader>(new SdfIndexedScrollableFeatureReader( m_connection,cls,sortedTable, maxsize) );
 }
 
