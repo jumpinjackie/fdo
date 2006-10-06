@@ -182,48 +182,7 @@ I. Windows Notes:
  
 II. Windows Build Instructions:
 
-  1. Extract the FDO OpenSource files using either gunzip/tar or Winzip.
-
-       Use gunzip and tar utilities as follows:
-
-           gunzip fdo-3.2.0_G007.tar.gz
-           tar -xvf fdo-3.2.0_G007.tar
-
-           gunzip fdoshp-3.2.0_G007.tar.gz
-           tar -xvf fdoshp-3.2.0_G007.tar
-
-           gunzip fdosdf-3.2.0_G007.tar.gz
-           tar -xvf fdosdf-3.2.0_G007.tar
-
-           gunzip fdowms-3.2.0_G007.tar.gz
-           tar -xvf fdowms-3.2.0_G007.tar
-
-           gunzip fdowfs-3.2.0_G007.tar.gz
-           tar -xvf fdowfs-3.2.0_G007.tar
-
-           gunzip fdoarcsde-3.2.0_G007.tar.gz
-           tar -xvf fdoarcsde-3.2.0_G007.tar
-
-           gunzip fdordbms-3.2.0_G007.tar.gz
-           tar -xvf fdordbms-3.2.0_G007.tar
-
-           gunzip fdogdal-3.2.0_G007.tar.gz
-           tar -xvf fdogdal-3.2.0_G007.tar
-
-       - or -
-
-       Use Windows Winzip utility as follows:
-
-           WINZIP32.EXE fdo-3.2.0_G007.tar.gz
-           WINZIP32.EXE fdoshp-3.2.0_G007.tar.gz
-           WINZIP32.EXE fdosdf-3.2.0_G007.tar.gz
-           WINZIP32.EXE fdowms-3.2.0_G007.tar.gz
-           WINZIP32.EXE fdowfs-3.2.0_G007.tar.gz
-           WINZIP32.EXE fdoarcsde-3.2.0_G007.tar.gz
-           WINZIP32.EXE fdordbms-3.2.0_G007.tar.gz
-           WINZIP32.EXE fdogdal-3.2.0_G007.tar.gz
-
-  2. Use the build_thirdparty.bat file to build the FDO Thirdparty binaries. The following 
+  1. Use the build_thirdparty.bat file to build the FDO Thirdparty binaries. The following 
      is a general guideline on how to use the build_thirdparty.bat build script.
   
            **************************************************************************
@@ -258,7 +217,7 @@ II. Windows Build Instructions:
             build_thirdparty -w=wms -w=wfs
 
 
-  3. Use the build.bat file to build the FDO binaries. The following 
+  2. Use the build.bat file to build the FDO binaries. The following 
      is a general guideline on how to use the build.bat build script.
   
            **************************************************************************
@@ -313,7 +272,7 @@ II. Windows Build Instructions:
             **** Build documentation and install all files to C:\Fdo
             build -a=install -o=C:\Fdo -d=build 
 
- 4.   In order to run the FDO API, SHP, SDF, ArcSDE, MySql and Odbc Provider Unit Tests
+  3.   In order to run the FDO API, SHP, SDF, ArcSDE, MySql and Odbc Provider Unit Tests
 
         FDO:
 
@@ -523,37 +482,7 @@ I. Linux Notes:
 
 II. Linux Build Instructions:
 
-   1. Extract the FDO OpenSource files using gunzip/tar.
-
-       Use gunzip and tar utilities as follows:
-
-           gunzip fdo-3.2.0_G007.tar.gz
-           tar -xvf fdo-3.2.0_G007.tar
-
-           gunzip fdoshp-3.2.0_G007.tar.gz
-           tar -xvf fdoshp-3.2.0_G007.tar
-
-           gunzip fdosdf-3.2.0_G007.tar.gz
-           tar -xvf fdosdf-3.2.0_G007.tar
-
-           gunzip fdowms-3.2.0_G007.tar.gz
-           tar -xvf fdowms-3.2.0_G007.tar
-
-           gunzip fdowfs-3.2.0_G007.tar.gz
-           tar -xvf fdowfs-3.2.0_G007.tar
-
-           gunzip fdoarcsde-3.2.0_G007.tar.gz
-           tar -xvf fdoarcsde-3.2.0_G007.tar
-
-           gunzip fdordbms-3.2.0_G007.tar.gz
-           tar -xvf fdordbms-3.2.0_G007.tar
-
-           gunzip fdogdal-3.2.0_G007.tar.gz
-           tar -xvf fdogdal-3.2.0_G007.tar
-
-  2. cd [FDO OpenSource]
-
-  3. Use the build_thirdparty.sh script to build the FDO Thirdparty binaries. The following 
+  1. Use the build_thirdparty.sh script to build the FDO Thirdparty binaries. The following 
      is a general guideline on how to use the build_thirdparty.bat build script.
   
            **************************************************************
@@ -579,7 +508,7 @@ II. Linux Build Instructions:
             **** Clean up all Thirdparty components
             build_thirdparty --a clean
 
-  4. Use the build_linux.sh script to build and install the FDO OpenSource 
+  2. Use the build_linux.sh script to build and install the FDO OpenSource 
      libraries. The following is a general guideline on how to use build_linux.sh
 
            **************************************************************
@@ -655,7 +584,7 @@ II. Linux Build Instructions:
            ... for the fdocore components as well as the set of FDO providers that are 
            currently supported on the OSGeo site. 
 
-  5. In order to run the SHP, SDF and ArcSDE Provider Unit Tests:
+  3. In order to run the SHP, SDF and ArcSDE Provider Unit Tests:
 
         
         FDO:
