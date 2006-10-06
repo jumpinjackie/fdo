@@ -16,7 +16,11 @@
  *
  */
 
+#ifndef _GENERICRDBMSUNITTESTCOMMONPCH_H_
+#define _GENERICRDBMSUNITTESTCOMMONPCH_H_
+
 #ifdef _WIN32
+#pragma once
 #define VC_EXTRALEAN        // Exclude rarely-used stuff from Windows headers
 // Undefine GetMessage
 #ifdef GetMessage
@@ -66,3 +70,5 @@
 
 #include <Rdbms.h>
 #include <Rdbms/Override/RdbmsOv.h>
+
+#endif //_GENERICRDBMSUNITTESTCOMMONPCH_H_
