@@ -25,7 +25,7 @@
 #include <Sm/Ph/Reader.h>
 #include <Sm/Ph/Dependency.h>
 #include <Sm/Ph/ColumnList.h>
-#include <sm/Ph/Rd/TableJoin.h>
+#include <Sm/Ph/Rd/TableJoin.h>
 
 // This class retrieves all attribute dependencies for a
 // given property ( usually an object property ).
