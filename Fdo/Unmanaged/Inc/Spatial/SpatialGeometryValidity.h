@@ -49,7 +49,7 @@ enum FdoSpatialGeometryValidity
 
     FdoSpatialGeometryValidity_InvalidButCanBeApproximated = 3,
 
-    FdoSpatialGeometryValidity_InvalidDueToDimensionality = 4,
+    FdoSpatialGeometryValidity_InvalidDueToDimensionality = 4
 };
 
 #endif
