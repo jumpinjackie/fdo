@@ -200,6 +200,6 @@ FdoSmPhMySqlMgr::MySqlStringMap::MySqlStringMap()
     Insert( L"tinytext" ); 
     Insert( L"varbinary" ); 
     Insert( L"year" ); 
-};
+}
 
 

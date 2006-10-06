@@ -48,12 +48,12 @@ typedef struct
 typedef struct
 {
     char name[ODBCDR_MAX_BUFF_SIZE];
-} odbcdr_NameListEntry_store_def;;
+} odbcdr_NameListEntry_store_def;
 
 typedef struct
 {
     char name[ODBCDR_MAX_BUFF_SIZE];
-} odbcdr_NameListEntry_pkey_def;;
+} odbcdr_NameListEntry_pkey_def;
 
 typedef struct
 {

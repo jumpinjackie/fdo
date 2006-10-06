@@ -207,6 +207,6 @@ FdoSmPhOdbcMgr::OdbcStringMap::OdbcStringMap()
     Insert( L"timestamp" ); 
     Insert( L"tinyint" ); 
     Insert( L"varbinary" ); 
-};
+}
 
 

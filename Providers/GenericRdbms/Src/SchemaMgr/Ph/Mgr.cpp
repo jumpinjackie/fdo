@@ -665,7 +665,7 @@ FdoSmPhGrdMgr::StringMap::StringMap()
     Insert( L"whenever" ); 
     Insert( L"where" ); 
     Insert( L"with" ); 
-};
+}
 
 void FdoSmPhGrdMgr::StringMap::Insert( FdoString* resString)
 {
