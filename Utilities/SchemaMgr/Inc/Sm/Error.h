@@ -53,7 +53,7 @@ enum FdoSmErrorType
     FdoSmErrorType_SpatialMismatch,
 
     /// Other errors.
-    FdoSmErrorType_Other,
+    FdoSmErrorType_Other
 };
 
 class FdoSmError : public FdoSmSchemaElement

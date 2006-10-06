@@ -50,7 +50,7 @@ public:
     {
         FILE_POS_BEGIN   = FILE_BEGIN,
         FILE_POS_CURRENT = FILE_CURRENT,
-        FILE_POS_END     = FILE_END,
+        FILE_POS_END     = FILE_END
     };
 
 #else // _WIN32
@@ -66,7 +66,7 @@ public:
     {
         FILE_POS_BEGIN   = SEEK_SET,
         FILE_POS_CURRENT = SEEK_CUR,
-        FILE_POS_END     = SEEK_END,
+        FILE_POS_END     = SEEK_END
     };
 
 #endif // _WIN32
@@ -79,7 +79,7 @@ public:
         IDF_CREATE_NEW    = 0x04,
         IDF_CREATE_ALWAYS = 0x08,
         IDF_OPEN_ALWAYS   = 0x10,
-        IDF_OPEN_EXISTING = 0x20,
+        IDF_OPEN_EXISTING = 0x20
     };
 
     /// error codes from OpenFile
