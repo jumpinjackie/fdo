@@ -123,7 +123,7 @@ if "%TYPEACTION%"=="clean" goto start_exbuild
 if not ("%FDOORGPATH%")==("") goto start_exbuildinstall
 echo Please provide destination binaries folder using '-o' option.
 exit /B 1
-start_exbuildinstall:
+:start_exbuildinstall
 if not exist "%FDOORGPATH%" mkdir "%FDOORGPATH%"
 
 :start_exbuild
