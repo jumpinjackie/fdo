@@ -45,6 +45,17 @@
     char* mb##x = (char*)alloca(len##x); \
     wcstombs(mb##x, x, len##x);
 
+
+static void avoidwarnings()
+{
+    //those two are here just to suppress warnings from showing up
+    //for unused variables.
+    (void)FDO_ACTIVELONGTRANSACTION;
+    (void)FDO_ROOTLONGTRANSACTION;
+    avoidwarnings();
+}
+
+
 //FDO entry point
 extern "C"
 OGR_API FdoIConnection* CreateConnection()
@@ -445,6 +456,21 @@ FdoIDataReader* OgrConnection::SelectAggregates(FdoIdentifier* fcname,
     return NULL;
 }
 
+
+FdoInt32 Update(FdoIdentifier* fcname, FdoFilter* filter, FdoPropertyValueCollection* propvals)
+{
+    return 0;
+}
+
+FdoInt32 Delete(FdoIdentifier* fcname, FdoFilter* filter)
+{
+    return 0;
+}
+
+FdoIFeatureReader* Insert(FdoIdentifier* fcname, FdoPropertyValueCollection* propvals)
+{
+    return NULL;
+}
 
 FdoClassDefinition* OgrConnection::ConvertClass(OGRLayer* layer, FdoIdentifierCollection* requestedProps)
 {
@@ -1354,6 +1380,8 @@ void OgrDataReader::Close()
 //    Test
 //
 //---------------------------------------------------------------------
+
+int main(void){}
 
 ////HACK This function has a lot of refcount leaks in order
 ////to make the code more concise !!!
