@@ -307,9 +307,9 @@ public:
         static const FdoInt32 commandsReadWrite[] =
         {
             FdoCommandType_Select,
-//        FdoCommandType_Insert,
-//        FdoCommandType_Delete,
-//        FdoCommandType_Update,
+            FdoCommandType_Insert,
+            FdoCommandType_Delete,
+            FdoCommandType_Update,
             FdoCommandType_DescribeSchema,
 //        FdoCommandType_ApplySchema,
 //      FdoCommandType_DestroySchema,
@@ -577,6 +577,9 @@ public:
                                      FdoIdentifierCollection* ordering,
                                      FdoFilter* filter,
                                      FdoIdentifierCollection* grouping);
+    FdoInt32 Update(FdoIdentifier* fcname, FdoFilter* filter, FdoPropertyValueCollection* propvals);
+    FdoInt32 Delete(FdoIdentifier* fcname, FdoFilter* filter);
+    FdoIFeatureReader* Insert(FdoIdentifier* fcname, FdoPropertyValueCollection* propvals);
     OGRDataSource* GetOGRDataSource() { return m_poDS; }
     FdoClassDefinition* ConvertClass(OGRLayer* layer, FdoIdentifierCollection* requestedProps = NULL);
     void ApplyFilter(OGRLayer* lr, FdoFilter* filter);
@@ -845,6 +848,105 @@ class OgrSelectAggregates : public OgrFeatureCommand<FdoISelectAggregates>
         FdoFilter* m_grfilter;
         FdoIdentifierCollection* m_grouping;
 };
+
+
+class OgrUpdate : public OgrFeatureCommand<FdoIUpdate>
+{
+    public:
+        OGR_API OgrUpdate(OgrConnection* connection) : OgrFeatureCommand<FdoIUpdate>(connection)
+        {
+            m_properties = FdoPropertyValueCollection::Create();
+        }
+
+    protected:
+        OGR_API virtual ~OgrUpdate()
+        {
+            FDO_SAFE_RELEASE(m_properties);
+        }
+
+    //-------------------------------------------------------
+    // FdoIUpdate implementation
+    //-------------------------------------------------------
+
+    public:
+        OGR_API virtual FdoPropertyValueCollection* GetPropertyValues() { return FDO_SAFE_ADDREF(m_properties); }
+        OGR_API virtual FdoInt32 Execute()
+        {
+            return m_connection->Update(m_className, m_filter, m_properties);
+        }
+        OGR_API virtual FdoILockConflictReader* GetLockConflicts() { return NULL; }
+
+    private:
+        FdoPropertyValueCollection* m_properties;
+};
+
+class OgrDelete : public OgrFeatureCommand<FdoIDelete>
+{
+    public:
+        OgrDelete(OgrConnection* connection) : OgrFeatureCommand<FdoIDelete>(connection)
+        {}
+
+    protected:
+        virtual ~OgrDelete() {}
+
+    //-------------------------------------------------------
+    // FdoIDelete implementation
+    //-------------------------------------------------------
+
+    public:
+        OGR_API virtual FdoInt32 Execute()
+        {
+            return m_connection->Delete(m_className, m_filter);
+        }
+        OGR_API virtual FdoILockConflictReader* GetLockConflicts() { return NULL; }
+};
+
+class OgrInsert : public OgrCommand<FdoIInsert>
+{
+    public:
+        OGR_API OgrInsert(OgrConnection* connection) : OgrCommand<FdoIInsert>(connection)
+        {
+            m_className = NULL;
+            m_properties = FdoPropertyValueCollection::Create();
+        }
+
+    protected:
+        OGR_API virtual ~OgrInsert()
+        {
+            FDO_SAFE_RELEASE(m_className);
+            FDO_SAFE_RELEASE(m_properties);
+        }
+
+    //-------------------------------------------------------
+    // FdoIInsert implementation
+    //-------------------------------------------------------
+
+    public:
+        OGR_API virtual FdoIdentifier* GetFeatureClassName() { return FDO_SAFE_ADDREF(m_className); }
+        OGR_API virtual void SetFeatureClassName(FdoIdentifier* value)
+        {
+            FDO_SAFE_RELEASE(m_className);
+            m_className = FDO_SAFE_ADDREF(value);
+        }
+        OGR_API virtual void SetFeatureClassName(FdoString* value)
+        {
+            FDO_SAFE_RELEASE(m_className);
+            m_className = NULL;
+            if (value)
+                m_className = FdoIdentifier::Create(value);
+        }
+        OGR_API virtual FdoPropertyValueCollection* GetPropertyValues() { return FDO_SAFE_ADDREF(m_properties); }
+        OGR_API virtual FdoBatchParameterValueCollection* GetBatchParameterValues() { return NULL; }
+        OGR_API virtual FdoIFeatureReader* Execute()
+        {
+            return m_connection->Insert(m_className, m_properties);
+        }
+
+    private:
+        FdoIdentifier* m_className;
+        FdoPropertyValueCollection* m_properties;
+};
+
 
 
 class OgrGetSpatialContexts : public OgrCommand<FdoIGetSpatialContexts>
