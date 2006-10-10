@@ -484,7 +484,7 @@ void ShpFileSet::GetObjectAt (RowData** row, eShapeTypes& type, Shape** shape, i
 
     // read the attributes. The requested row might not exist.
     *row = GetDbfFile ()->GetRowAt (nRecordNumber);
-    if ((*row) && !(*row)->IsDeleted ())
+    if ((*row) && !(*row)->IsDeleted () && shape )
     {
         // seek to the shape offset
         GetShapeIndexFile ()->GetObjectAt (nRecordNumber, offset, length);

@@ -49,6 +49,7 @@ FdoInt32* ShpCommandCapabilities::GetCommands (FdoInt32& size)
         FdoCommandType_Delete,
         FdoCommandType_ApplySchema,
         FdoCommandType_DestroySchema,
+		(FdoCommandType) ShpCommandType_ExtendedSelect
     };
 
     size = sizeof (commands) / sizeof (FdoCommandType);

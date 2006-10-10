@@ -28,7 +28,8 @@
 
 #include <vector>
 
-typedef std::vector<FdoInt32> recno_list;
+typedef	ULONG				REC_NO;
+typedef std::vector<REC_NO> recno_list;
 
 // Extra operations used for liniaring the parse tree
 #define ShpComparisonOperation_In         -1
