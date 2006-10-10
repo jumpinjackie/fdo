@@ -23,37 +23,39 @@
 #endif
 
 #include <Sm/Ph/GroupReader.h>
+#include <Sm/Ph/DependencyReader.h>
 #include <Sm/Ph/Rd/IndexReader.h>
 #include <Sm/Ph/Rd/ColumnReader.h>
 
+// This class is used to read components (columns, indexes, constraints, keys ) for a particular
+// table. It wraps around a component reader for a set of tables, and extracts the rows for a
+// particular table. 
 class FdoSmPhTableComponentReader : public FdoSmPhGroupReader
 {
 public:
-    /// Attaches to a query reader. 
-    /// Call ReadNext() to read each row.
+    // Attaches to a query reader. 
+    // Call ReadNext() to read each row.
 	//
-    /// Parameters:
-    /// 	groupName: the name of the group of rows to retrieve.
-    /// 		only rows whose ordering columns equal this value 
-    /// 		will be retrieved. Must be a concatenation of the 
-    /// 		of the ordering column values for the rows to retrieve.
-    /// 	pReader: the reader to attach to. The reader must return
-    /// 		rows in ascending order by group name. Note that if this
-    /// 		reader is currently positioned after the group to retrieve
-    /// 		then this reader returns no rows.
+    // Parameters:
+    // 	tableName: retrieve the rows for this table.
+    //  tableRowName: row, in underlying reader, where table name field is kept.
+    //  tableFieldName: field, in underlyingreader, specifying the table name for the 
+    //      current row. (i.e. the table that owns the current table component being read).
+    // 	pReader: the underlying reader to attach to. The reader must return
+    // 		rows in ascending order by table name. Note that if this
+    // 		reader is currently positioned after the table to retrieve
+    // 		then this reader returns no rows.
 	FdoSmPhTableComponentReader(
-        FdoStringP groupName, 
-        FdoStringP groupTableName, 
-        FdoStringP groupFieldName, 
+        FdoStringP tableName, 
+        FdoStringP tableRowName, 
+        FdoStringP tableFieldName, 
         FdoSmPhReaderP reader
     );
 
 	virtual ~FdoSmPhTableComponentReader(void);
 
-    /// This function determines the group name for the attached reader's
-    /// current row. Classes derived from this class can implement this 
-    /// function in any way, as long as the reader retrieves rows in 
-    /// ascending order by group name.
+    // This function determines the table (group) name for the attached reader's
+    // current row. 
 	virtual FdoStringP GetGroupName();
 
 protected:
@@ -61,39 +63,28 @@ protected:
     FdoSmPhTableComponentReader() {}
 
 private:
-	FdoStringP mGroupTableName;
-	FdoStringP mGroupFieldName;
+	FdoStringP mTableRowName;
+	FdoStringP mTableFieldName;
 };
 
 typedef FdoPtr<FdoSmPhTableComponentReader> FdoSmPhTableComponentReaderP;
 
+// Specialized table component reader for indexes
 class FdoSmPhTableIndexReader : public FdoSmPhTableComponentReader
 {
 public:
-    /// Attaches to a query reader. 
-    /// Call ReadNext() to read each row.
-	//
-    /// Parameters:
-    /// 	groupName: the name of the group of rows to retrieve.
-    /// 		only rows whose ordering columns equal this value 
-    /// 		will be retrieved. Must be a concatenation of the 
-    /// 		of the ordering column values for the rows to retrieve.
-    /// 	pReader: the reader to attach to. The reader must return
-    /// 		rows in ascending order by group name. Note that if this
-    /// 		reader is currently positioned after the group to retrieve
-    /// 		then this reader returns no rows.
 	FdoSmPhTableIndexReader(
-        FdoStringP groupFieldName, 
+        FdoStringP tableFieldName, 
         FdoPtr<FdoSmPhRdIndexReader> reader
     );
 
 	virtual ~FdoSmPhTableIndexReader(void);
 
-    /// Returns the type of the current index (Scalar or Spatial)
+    // Returns the type of the current index (Scalar or Spatial)
     virtual FdoSmPhIndexType GetIndexType();
 
 protected:
-    /// Unused constructor needed only to build on Linux
+    // Unused constructor needed only to build on Linux
     FdoSmPhTableIndexReader() {}
 
 private:
@@ -102,21 +93,10 @@ private:
 
 typedef FdoPtr<FdoSmPhTableIndexReader> FdoSmPhTableIndexReaderP;
 
+// Specialized table component reader for columns
 class FdoSmPhTableColumnReader : public FdoSmPhTableComponentReader
 {
 public:
-    /// Attaches to a query reader. 
-    /// Call ReadNext() to read each row.
-	//
-    /// Parameters:
-    /// 	groupName: the name of the group of rows to retrieve.
-    /// 		only rows whose ordering columns equal this value 
-    /// 		will be retrieved. Must be a concatenation of the 
-    /// 		of the ordering column values for the rows to retrieve.
-    /// 	pReader: the reader to attach to. The reader must return
-    /// 		rows in ascending order by group name. Note that if this
-    /// 		reader is currently positioned after the group to retrieve
-    /// 		then this reader returns no rows.
 	FdoSmPhTableColumnReader(
         FdoStringP groupFieldName, 
         FdoPtr<FdoSmPhRdColumnReader> reader
@@ -138,6 +118,31 @@ private:
 };
 
 typedef FdoPtr<FdoSmPhTableColumnReader> FdoSmPhTableColumnReaderP;
+
+// Specialized table component reader for attribute dependencies
+class FdoSmPhTableDependencyReader : public FdoSmPhTableComponentReader
+{
+public:
+	FdoSmPhTableDependencyReader(
+        FdoStringP tableName, 
+        FdoStringP rowName,
+        FdoStringP fieldName,
+        FdoPtr<FdoSmPhDependencyReader> reader
+    );
+
+	virtual ~FdoSmPhTableDependencyReader(void);
+
+    FdoPtr<FdoSmPhDependencyReader> GetDependencyReader();
+
+protected:
+    /// Unused constructor needed only to build on Linux
+    FdoSmPhTableDependencyReader() {}
+
+private:
+	FdoPtr<FdoSmPhDependencyReader> mDependencyReader;
+};
+
+typedef FdoPtr<FdoSmPhTableDependencyReader> FdoSmPhTableDependencyReaderP;
 
 #endif
 

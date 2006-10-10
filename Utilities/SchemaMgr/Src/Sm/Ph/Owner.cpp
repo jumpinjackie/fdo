@@ -29,6 +29,7 @@
 #include <Sm/Ph/Rd/FkeyReader.h>
 #include <Sm/Ph/Rd/IndexReader.h>
 #include <Sm/Ph/Rd/PkeyReader.h>
+#include <Sm/Ph/Rd/SpatialContextReader.h>
 #include <Sm/Ph/Rd/TableJoin.h>
 #include <Sm/Ph/OptionsReader.h>
 #include <Sm/Ph/SchemaReader.h>
@@ -234,6 +235,20 @@ FdoSmPhDbObjectP FdoSmPhOwner::GetDbObject(FdoStringP dbObject)
     return(pDbObject);
 }
 
+FdoSmPhSpatialContextsP FdoSmPhOwner::GetSpatialContexts()
+{
+    LoadSpatialContexts();
+
+    return mSpatialContexts;
+}
+
+FdoSmPhSpatialContextGeomsP FdoSmPhOwner::GetSpatialContextGeoms()
+{
+    LoadSpatialContexts();
+
+    return mSpatialContextGeoms;
+}
+
 FdoStringP FdoSmPhOwner::GetBestSchemaName() const
 {
     return FdoSmPhMgr::RdSchemaPrefix + GetName();
@@ -341,6 +356,11 @@ FdoPtr<FdoSmPhRdColumnReader> FdoSmPhOwner::CreateColumnReader( FdoSmPhRdTableJo
     return (FdoSmPhRdColumnReader*) NULL;
 }
 
+FdoPtr<FdoSmPhRdSpatialContextReader> FdoSmPhOwner::CreateRdSpatialContextReader()
+{
+    return new FdoSmPhRdSpatialContextReader(FDO_SAFE_ADDREF(this) );
+}
+
 FdoSmPhTableP FdoSmPhOwner::CreateTable(
     FdoStringP tableName,
     FdoStringP pkeyName
@@ -409,7 +429,7 @@ FdoSmPhDbObjectsP FdoSmPhOwner::CacheDbObjects( bool cacheComponents )
         FdoSmPhRdIndexReaderP indexReader;
         FdoSmPhRdPkeyReaderP pkeyReader;
 
-        // Create reader for owner's db objects
+       // Create reader for owner's db objects
         objReader = CreateDbObjectReader();
 
         if ( cacheComponents ) {
@@ -750,22 +770,31 @@ FdoSmPhDbObjectP FdoSmPhOwner::CacheCandDbObjects( FdoStringP objectName )
     if ( !objReader ) 
         return retDbObject;
 
-    // Caching db object components so create readers for components.
-    // This function does interleaved fetches from each reader so all readers
-    // (including dbObject reader) must return rows ordered by dbObject name.
-    //
-    // For datastores with MetaSchema, only columns and constraints need to be bulk fetched.
-    // Primary and Foreign keys, and indexes are never fetched.
-    //
-    // Doing a single query per owner for each component is more efficient than
-    // a query per dbObject.
-    // The join is used to limit results to those needed for this schema.
-    ukeyReader = CreateConstraintReader( cands, L"U" );
-    ckeyReader = CreateConstraintReader( cands, L"C" );
-
-    columnReader = CreateColumnReader( cands );
+    bool first = true;
 
     while ( objReader && objReader->ReadNext() ) {
+        // Caching db object components so create readers for components.
+        // This function does interleaved fetches from each reader so all readers
+        // (including dbObject reader) must return rows ordered by dbObject name.
+        //
+        // For datastores with MetaSchema, only columns and constraints need to be bulk fetched.
+        // Primary and Foreign keys, and indexes are never fetched.
+        //
+        // Doing a single query per owner for each component is more efficient than
+        // a query per dbObject.
+        // The join is used to limit results to those needed for this schema.
+
+        if ( first ) {
+            if ( GetManager()->GetBulkLoadConstraints() ) {
+                ukeyReader = CreateConstraintReader( cands, L"U" );
+                ckeyReader = CreateConstraintReader( cands, L"C" );
+            }
+
+            columnReader = CreateColumnReader( cands );
+
+            first = false;
+        }
+
         // Cache the current dbObject
         FdoSmPhDbObjectP dbObject = CacheDbObject( objReader );
         FdoDictionaryElementP elem = candDbObjects->FindItem( dbObject->GetName() );
@@ -884,5 +913,69 @@ FdoSmPhLockTypesCollection* FdoSmPhOwner::GetLockTypesCollection()
         mLockTypes = new FdoSmPhLockTypesCollection();
 
     return mLockTypes;
+}
+
+void FdoSmPhOwner::LoadSpatialContexts()
+{
+    if ( !mSpatialContexts ) {
+        mSpatialContexts = new FdoSmPhSpatialContextCollection();
+        mSpatialContextGeoms = new FdoSmPhSpatialContextGeomCollection();
+
+		// reverse-engineering. The PH schema object will return the appropiate reader or
+		// the default one.
+        FdoSmPhRdSpatialContextReaderP scReader = CreateRdSpatialContextReader();
+			
+		FdoInt32	currSC = 0;
+
+        while (scReader->ReadNext())
+        {
+			FdoStringP	scName = L"Default";
+				
+			if ( currSC != 0 )
+				scName = FdoStringP::Format(L"%ls_%ld", scReader->GetName(), currSC);
+
+            // Generate physical spatial context from current SpatialContextGeom
+			FdoSmPhSpatialContextP sc = new FdoSmPhSpatialContext(
+                GetManager(),
+                scReader->GetSrid(),
+                scName,
+                scReader->GetDescription(),
+                scReader->GetCoordinateSystem(),
+                scReader->GetCoordinateSystemWkt(),
+                scReader->GetExtentType(),
+                scReader->GetExtent(),
+                scReader->GetXYTolerance(),
+                scReader->GetZTolerance()
+            );
+
+            if (NULL == sc.p)
+        		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
+
+			int indexSC = mSpatialContexts->FindExistingSC( sc );
+
+			// New Spatial context definition, add it to collection
+			if ( indexSC == -1 )
+			{
+				sc->SetId( currSC ); 
+				mSpatialContexts->Add( sc );
+				currSC++;
+			}
+
+            // Create Spatial context geometry object and associate it with this scId
+		    FdoSmPhSpatialContextGeomP  scgeom = new FdoSmPhSpatialContextGeom(
+                                                            GetManager(),
+			  											    ( indexSC != -1 )? indexSC : currSC - 1,
+															scReader->GetGeomTableName(),
+															scReader->GetGeomColumnName(),
+															scReader->GetHasElevation(),
+                                                            scReader->GetHasMeasure()
+            );
+
+            if (NULL == scgeom.p)
+				throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
+
+            mSpatialContextGeoms->Add( scgeom );												
+        }
+    }
 }
 

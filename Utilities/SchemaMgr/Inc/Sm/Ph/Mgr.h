@@ -150,7 +150,6 @@ class FdoSmPhDependencyWriter;
 class FdoSmPhAssociationWriter;
 class FdoSmPhSADWriter;
 class FdoSmPhSpatialContextWriter;
-class FdoSmPhRdSpatialContextReader;
 class FdoSmPhSpatialContextGroupWriter;
 class FdoSmPhSpatialContextGeomWriter;
 class FdoSmPhReader;
@@ -189,9 +188,6 @@ public:
 
     /// Get reader to retrieve all spatial context associations to geometric properties for the connection.
 	virtual FdoPtr<FdoSmPhSpatialContextGeomReader> CreateSpatialContextGeomReader();
-
-	/// Get reader to retrieve all spatial contexts for the connection (no metaschema).
-	virtual FdoPtr<FdoSmPhRdSpatialContextReader> CreateRdSpatialContextReader();
 
     /// Convert spatial context name to number in RDBMS catalogue.
     /// >= 0 if found, -1 if not found.
@@ -345,6 +341,13 @@ public:
         FdoStringP dbObjectName, 
         FdoStringP className        // Qualified class name
     );
+
+    // Returns true if unique and check constraints are being bulk loaded.
+    // Returns false if they are loaded on a per-table basis
+    bool GetBulkLoadConstraints();
+
+    // Sets whether to bulk load constraints.
+    void SetBulkLoadConstraints( bool bulkLoad );
 
 /* TODO
     /// Returns true if the given table name is a valid name.
@@ -551,6 +554,10 @@ public:
     // Passes AfterCommit event on to databases.
     virtual void OnAfterCommit();
 
+    /// Name of the special schema containing the corresponding MetaClass 
+    /// (and base properties) for each class type.
+    static FdoString* mMetaClassSchemaName;
+
     /// Different schema element types that can have Schema Attribute 
     /// Dictionaries. These define the different values found in the 
     /// F_SAD.ElementType database column.
@@ -643,6 +650,7 @@ protected:
 
 private:
     FdoDictionaryP mDbObjectClassification;
+    bool mBulkLoadConstraints;
 };
 
 

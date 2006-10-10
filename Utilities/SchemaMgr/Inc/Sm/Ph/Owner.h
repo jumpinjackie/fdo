@@ -26,6 +26,8 @@
 #include <Sm/Ph/LockTypesCollection.h>
 #include <Sm/Ph/Table.h>
 #include <Sm/Ph/View.h>
+#include <Sm/Ph/SpatialContextCollection.h>
+#include <Sm/Ph/SpatialContextGeom.h>
 
 static const FdoStringP FDOSYS_OWNER = L"FDOSYS";
 
@@ -35,6 +37,7 @@ class FdoSmPhRdCoordSysReader;
 class FdoSmPhRdConstraintReader;
 class FdoSmPhRdColumnReader;
 class FdoSmPhRdTableJoin;
+class FdoSmPhRdSpatialContextReader;
 
 // This class represents an Owner (Physical Schema). The exact meaning
 // of Owner depends on the Provider. For example, in the Oracle Provider
@@ -107,6 +110,14 @@ public:
     /// as a read-write smart pointer (exception thrown if not found)
     FdoSmPhDbObjectP GetDbObject(FdoStringP dbObject);
 
+    // Gets the physical spatial contexts for this owner. 
+    // it contains the spatial contexts reverse-engineered from the RDBMS.
+    FdoSmPhSpatialContextsP GetSpatialContexts();
+
+    // Gets all spatial context to geometric column relations for this owner. 
+    // it reverse-engineers the relations from the RDBMS.
+    FdoSmPhSpatialContextGeomsP GetSpatialContextGeoms();
+
     // Reverse-engineers an FDO feature schema name from this datastore.
     // Default implementation returns datastore name prepended by "Fdo".
     // "Fdo" is prepended to prevent name conflict with special schema 
@@ -137,6 +148,9 @@ public:
  
     /// Create a reader to get all constraints for this owner and this table.
     virtual FdoPtr<FdoSmPhRdConstraintReader> CreateConstraintReader( FdoStringP tableName, FdoStringP constraintType ) const = 0;
+
+	/// Get reader to retrieve all spatial contexts for the connection (no metaschema).
+	virtual FdoPtr<FdoSmPhRdSpatialContextReader> CreateRdSpatialContextReader();
 
     // Create a reader to get all foreign keys (ordered by foreign table) for this owner.
     // Default implementation returns NULL (not supported).
@@ -302,12 +316,21 @@ private:
     /// Load the long transaction and locking settings.
     void LoadLtLck();
 
+    // Caches spatial context to geometric column relationships, and physical spatial contexts.
+    void LoadSpatialContexts();
+
     bool mDbObjectsCached;              // true if all db objects have been cached.
 	FdoSmPhDbObjectsP mDbObjects;       // collection of cached objects
     FdoDictionaryP mNotFoundObjects;    // collection of object which were queried from the RDBMS but not
                                         // found. Use to prevent repeated attempts to fetch these objects.
 	FdoStringsP mReservedDbObjectNames;
     FdoDictionaryP mCandDbObjects;      // List of candidate objects for fetching from RDBMS. 
+
+    // Cache of spatial contexts
+    FdoSmPhSpatialContextsP mSpatialContexts;
+    // Cache of spatial context to geometry column relationships
+	FdoSmPhSpatialContextGeomsP mSpatialContextGeoms;
+
     FdoStringP mPassword;
     bool mHasMetaSchema;
     /// FDOSYS database flag

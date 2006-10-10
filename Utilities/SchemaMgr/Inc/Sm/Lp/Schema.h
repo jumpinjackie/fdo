@@ -223,10 +223,6 @@ public:
     /// Mainly for unit testing.
     virtual void XMLSerialize( FILE* xmlFp, int ref ) const;
 
-    /// Name of the special schema containing the corresponding MetaClass 
-    /// (and base properties) for each class type.
-    static FdoString* mMetaClassSchemaName;
-
 protected:
     /// Loads an instance of a LogicalPhysicalSchema from the FDO
     /// database.

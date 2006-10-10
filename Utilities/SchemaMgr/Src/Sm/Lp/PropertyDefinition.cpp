@@ -99,7 +99,7 @@ FdoSmLpPropertyDefinition::FdoSmLpPropertyDefinition(
     // Other system properties remain on their system tables.
     if ( baseProperty->GetIsFeatId() || 
         (!pTopProperty->RefContainingDbObject() && (wcscmp(baseProperty->GetName(), L"Bounds") != 0)) ||
-        (wcscmp(baseProperty->RefDefiningClass()->RefLogicalPhysicalSchema()->GetName(), FdoSmLpSchema::mMetaClassSchemaName) != 0) 
+        (wcscmp(baseProperty->RefDefiningClass()->RefLogicalPhysicalSchema()->GetName(), FdoSmPhMgr::mMetaClassSchemaName) != 0) 
     ) {
 		// Need to add property if either the base property or target class are new
 		if ( (pTargetClass->GetElementState() == FdoSchemaElementState_Added) ||

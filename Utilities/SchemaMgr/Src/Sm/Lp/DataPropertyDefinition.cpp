@@ -109,7 +109,7 @@ FdoSmLpDataPropertyDefinition::FdoSmLpDataPropertyDefinition(
 
 	// Identity properties are inherited so inherit id position as well.
 	// However, metaschema identity properties are not automatically inherited.
-	if ( bInherit && (wcscmp(pBaseProperty->GetLogicalPhysicalSchema()->GetName(), FdoSmLpSchema::mMetaClassSchemaName) != 0 ) )
+	if ( bInherit && (wcscmp(pBaseProperty->GetLogicalPhysicalSchema()->GetName(), FdoSmPhMgr::mMetaClassSchemaName) != 0 ) )
 		SetIdPosition( pBaseProperty->GetIdPosition() );
 
     SetContainingDbObject(pPhDbObject, pTargetClass->GetDbObjectName());
@@ -644,7 +644,7 @@ void FdoSmLpDataPropertyDefinition::Finalize()
                  (!GetIsFeatId()) &&
                  (wcscmp(GetName(),L"ClassId") != 0) &&
                  (wcscmp(GetName(),L"RevisionNumber") != 0) &&
-                 (wcscmp(RefDefiningClass()->RefLogicalPhysicalSchema()->GetName(), FdoSmLpSchema::mMetaClassSchemaName) == 0)
+                 (wcscmp(RefDefiningClass()->RefLogicalPhysicalSchema()->GetName(), FdoSmPhMgr::mMetaClassSchemaName) == 0)
             ) {
                 FdoSmLpDataPropertyP pPrevProp = 
                     GetPrevProperty().p->SmartCast<FdoSmLpDataPropertyDefinition>();

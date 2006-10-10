@@ -24,8 +24,8 @@ FdoSmPhRdSpatialContextReader::FdoSmPhRdSpatialContextReader()
 {
 }
 
-FdoSmPhRdSpatialContextReader::FdoSmPhRdSpatialContextReader(FdoSmPhMgrP mgr) :
-	FdoSmPhReader(mgr, (FdoSmPhRowCollection*) NULL )  
+FdoSmPhRdSpatialContextReader::FdoSmPhRdSpatialContextReader(FdoSmPhOwnerP owner) :
+	FdoSmPhReader(owner->GetManager(), (FdoSmPhRowCollection*) NULL )  
 {
     // If this class is overridden, one can use "mgr" to access any
     // spatial metaschema information in the datastore.
@@ -56,9 +56,14 @@ FdoStringP FdoSmPhRdSpatialContextReader::GetGeomColumnName()
 	return L"";
 }
 
-FdoInt32 FdoSmPhRdSpatialContextReader::GetDimensionality()
+bool FdoSmPhRdSpatialContextReader::GetHasElevation()
 {
-	return -1;
+	return false;
+}
+
+bool FdoSmPhRdSpatialContextReader::GetHasMeasure()
+{
+	return false;
 }
 
 FdoString* FdoSmPhRdSpatialContextReader::GetCoordinateSystem()

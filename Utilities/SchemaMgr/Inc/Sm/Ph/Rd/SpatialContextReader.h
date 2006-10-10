@@ -18,7 +18,7 @@
  */
 #include <FdoStd.h>
 #include <Sm/Ph/Reader.h>
-#include <Sm/Ph/Mgr.h>
+#include <Sm/Ph/Owner.h>
 #include <Sm/Ph/RowCollection.h>
 
 // This reader reads all of the spatial contexts for a datastore, when no MetaSchema
@@ -31,7 +31,7 @@ class FdoSmPhRdSpatialContextReader : public FdoSmPhReader
 public:
     /// Create and execute the reader
 	FdoSmPhRdSpatialContextReader(
-        FdoSmPhMgrP mgr             // Physical Schema Manager
+        FdoSmPhOwnerP Owner             // Get Spatial Contexts for this owner.
     );
 
     /// Deactivates the query.
@@ -50,7 +50,9 @@ public:
 	virtual FdoStringP GetGeomColumnName();
 
     /// Ordinate dimensionality of geometries.
-    virtual FdoInt32 GetDimensionality();
+    virtual bool GetHasElevation();
+
+    virtual bool GetHasMeasure();
 
     /// Gets the name of the coordinate system of the spatial context currently
     /// being read. If the result is a null or empty string, the coordinate system is
@@ -103,7 +105,8 @@ protected:
 
 	FdoStringP	mGeomTableName;
 	FdoStringP	mGeomColumnName;
-    FdoInt32	mDimensionality;
+    bool        mHasElevation;
+    bool        mHasMeasure;
 
 	FdoPtr<FdoByteArray> mExtents;
 

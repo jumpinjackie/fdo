@@ -37,6 +37,7 @@
 
 class FdoSmPhReader;
 class FdoSmPhTableColumnReader;
+class FdoSmPhTableDependencyReader;
 
 // some constants
 
@@ -49,6 +50,7 @@ enum FdoLtLockModeType	{
 class FdoSmPhOwner;
 class FdoSmPhRdColumnReader;
 class FdoSmPhDependencyCollection;
+class FdoSmPhDependencyReader;
 
 // This represents a database object (table, view, etc.)
 class FdoSmPhDbObject : public FdoSmPhDbElement
@@ -243,6 +245,10 @@ public:
     // Load this object's columns from the given reader
     virtual void CacheColumns( FdoPtr<FdoSmPhRdColumnReader> rdr );
 
+    // Load this object's "up" dependencies from the given reader.
+    // "Up" dependencies are the ones where this object is the FK table.
+    virtual void CacheDependenciesUp( FdoPtr<FdoSmPhDependencyReader> rdr );
+
     /// Gather all errors for this element and child elements into a chain of exceptions.
     /// Adds each error as an exception, to the given exception chain and returns
     /// the chain.
@@ -425,7 +431,8 @@ protected:
     virtual void Discard();
 
 private:
-    void LoadDependencies();
+    void LoadDependencies( bool up );
+    void LoadDependenciesUp( FdoPtr<FdoSmPhTableDependencyReader> depRdr );
 /* TODO:
     virtual void Finalize();
 
