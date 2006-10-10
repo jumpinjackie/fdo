@@ -21,29 +21,19 @@
 // data sources. 
 //=====================================================================
 
+#include "stdafx.h"
 #include "OgrProvider.h"
+#include "OgrFdoUtil.h"
 
-#include <ogrsf_frmts.h>
 
 #define PROP_NAME_DATASOURCE L"DataSource"
 #define PROP_NAME_READONLY   L"ReadOnly"
 #define RDONLY_FALSE         L"FALSE"
 #define RDONLY_TRUE          L"TRUE"
 
-#ifndef _WIN32
-#define _wcsnicmp wcsncasecmp
-#endif
 
-//TODO: usage of wcstombs/mbstowcs is incorrect in most cases
-#define A2W(x) \
-    size_t len##x = strlen(x)*4+4; \
-    wchar_t* w##x = (wchar_t*)alloca(len##x); \
-    mbstowcs(w##x, x, len##x);
-    
-#define W2A(x) \
-    size_t len##x = wcslen(x)*4+1; \
-    char* mb##x = (char*)alloca(len##x); \
-    wcstombs(mb##x, x, len##x);
+extern void tilde2dot(char* mbfc);
+extern void dot2tilde(wchar_t* wname);
 
 
 static void avoidwarnings()
@@ -218,6 +208,9 @@ FdoICommand* OgrConnection::CreateCommand(FdoInt32 commandType)
         case FdoCommandType_GetSpatialContexts :    return new OgrGetSpatialContexts(this);
         case FdoCommandType_Select :                return new OgrSelect(this);
         case FdoCommandType_SelectAggregates :      return new OgrSelectAggregates(this);
+        case FdoCommandType_Update:                 return new OgrUpdate(this);
+        case FdoCommandType_Delete:                 return new OgrDelete(this);
+        case FdoCommandType_Insert:                 return new OgrInsert(this);
         default: break;
     }
     
@@ -372,7 +365,7 @@ FdoFeatureSchemaCollection* OgrConnection::DescribeSchema()
             for (int i=0; i<count; i++)
             {
                 OGRLayer* layer = m_poDS->GetLayer(i);
-                FdoPtr<FdoClassDefinition> fc = ConvertClass(layer);
+                FdoPtr<FdoClassDefinition> fc = OgrFdoUtil::ConvertClass(layer);
                 classes->Add(fc);
             }
         }
@@ -392,16 +385,11 @@ FdoIFeatureReader* OgrConnection::Select(FdoIdentifier* fcname, FdoFilter* filte
     FdoString* fc = fcname->GetName();
     W2A(fc);
 
-    //TODO HACK remove . from feature class names -- this is a workaround for Oracle
-    for (int i=strlen(mbfc)-1; i>=0; i--)
-    {
-        if (mbfc[i] == '~')
-            mbfc[i] = '.';
-    }
+    tilde2dot(mbfc);
     
     OGRLayer* layer = m_poDS->GetLayerByName(mbfc);
 
-    ApplyFilter(layer, filter);
+    OgrFdoUtil::ApplyFilter(layer, filter);
 
     return new OgrFeatureReader(this, layer, props);
 }
@@ -457,335 +445,84 @@ FdoIDataReader* OgrConnection::SelectAggregates(FdoIdentifier* fcname,
 }
 
 
-FdoInt32 Update(FdoIdentifier* fcname, FdoFilter* filter, FdoPropertyValueCollection* propvals)
+FdoInt32 OgrConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoPropertyValueCollection* propvals)
 {
+    FdoString* fc = fcname->GetName();
+    W2A(fc);
+
+    tilde2dot(mbfc);
+    
+    OGRLayer* layer = m_poDS->GetLayerByName(mbfc);
+    
+        //check if we can delete
+    int canDo = layer->TestCapability(OLCRandomWrite);
+    
+    if (!canDo)
+        throw FdoCommandException::Create(L"Current OGR connection does not support update of existing features.");
+    
+    OgrFdoUtil::ApplyFilter(layer, filter);
+
+    OGRFeature* feature = NULL;
+    
+    while (feature = layer->GetNextFeature())
+    {
+        //update the feature properties
+        //this call is not fast, so if we need
+        //fast update for multiple features it should be optimized
+        OgrFdoUtil::ConvertFeature(propvals, feature, layer);
+        
+        layer->SetFeature(feature);
+        
+        OGRFeature::DestroyFeature(feature);
+    }
+
     return 0;
 }
 
-FdoInt32 Delete(FdoIdentifier* fcname, FdoFilter* filter)
+FdoInt32 OgrConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter)
 {
-    return 0;
+    FdoString* fc = fcname->GetName();
+    W2A(fc);
+
+    tilde2dot(mbfc);
+    
+    OGRLayer* layer = m_poDS->GetLayerByName(mbfc);
+    
+        //check if we can delete
+    int canDo = layer->TestCapability(OLCDeleteFeature);
+    
+    if (!canDo)
+        throw FdoCommandException::Create(L"Current OGR connection does not support delete.");
+
+    OgrFdoUtil::ApplyFilter(layer, filter);
+
+    std::vector<long> ids; //list of FIDs of features to delete
+    
+    OGRFeature* feature = NULL;
+    
+    while (feature = layer->GetNextFeature())
+    {
+        ids.push_back(feature->GetFID());
+        OGRFeature::DestroyFeature(feature);
+    }
+    
+    int count = 0;
+    
+    for (std::vector<long>::iterator iter = ids.begin(); iter != ids.end(); iter++)
+    {
+        if (layer->DeleteFeature(*iter) == OGRERR_NONE)
+            count++;
+    }
+
+    return count;
 }
 
-FdoIFeatureReader* Insert(FdoIdentifier* fcname, FdoPropertyValueCollection* propvals)
+FdoIFeatureReader* OgrConnection::Insert(FdoIdentifier* fcname, FdoPropertyValueCollection* propvals)
 {
     return NULL;
 }
 
-FdoClassDefinition* OgrConnection::ConvertClass(OGRLayer* layer, FdoIdentifierCollection* requestedProps)
-{
-    OGRFeatureDefn* fdefn = layer->GetLayerDefn();
-                
-    const char* name = fdefn->GetName();
-    A2W(name);
 
-    //TODO HACK remove . from feature class names - this is a workaround for Oracle.
-    for (int i=wcslen(wname)-1; i>=0; i--)
-    {
-        if (wname[i] == L'.')
-            wname[i] = L'~';
-    }
-                
-    printf ("Feature class name: %s\n", name);
-                
-    FdoPtr<FdoFeatureClass> fc = FdoFeatureClass::Create(wname, L"");
-                
-    FdoPtr<FdoPropertyDefinitionCollection> pdc = fc->GetProperties();
-                                
-                //data properties (attributes)
-    int propcount = fdefn->GetFieldCount();
-                
-    for (int j=0; j<propcount; j++)
-    {
-        OGRFieldDefn* field = fdefn->GetFieldDefn(j);
-        const char* name = field->GetNameRef();
-        A2W(name);
-                    
-        printf("Attribute : %s\n", name);
-                            
-        FdoDataType dt;
-        OGRFieldType etype = field->GetType();
-        bool add = true;
-        switch (etype)
-        {
-            case OFTInteger: dt = FdoDataType_Int32; break;
-            case OFTString: dt = FdoDataType_String; break;
-            case OFTWideString: dt = FdoDataType_String; break;
-            case OFTReal: dt = FdoDataType_Double; break;
-            case OFTDate:
-            case OFTTime:
-            case OFTDateTime: dt = FdoDataType_DateTime; break;
-            
-            default: add=false; break; //unknown property type
-        }
-                    
-        if (add)
-        {
-            //check if property is on the optional requested property list
-            FdoPtr<FdoIdentifier> found = (requestedProps) ? requestedProps->FindItem(wname) : NULL;
-
-            //if it's on the list or there was no list at all, then add the property
-            if (!requestedProps || requestedProps->GetCount() == 0 || (requestedProps && found.p))
-            {
-                FdoPtr<FdoDataPropertyDefinition> dpd = FdoDataPropertyDefinition::Create(wname, L"");
-                            
-                dpd->SetDataType(dt);
-                dpd->SetLength(field->GetWidth());
-                dpd->SetPrecision(field->GetPrecision());
-                //TODO: default value
-                pdc->Add(dpd);
-            }
-        }
-    }
-
-    //add geometry property -- this code assumes there is one
-    const char* geomname = layer->GetGeometryColumn();
-    if (*geomname == 0) geomname = "GEOMETRY";
-    A2W(geomname);
-
-    //check if property is on the optional requested property list
-    FdoPtr<FdoIdentifier> found = (requestedProps) ? requestedProps->FindItem(wgeomname) : NULL;
-
-    //if it's on the list or there was no list at all, then add the property
-    if (!requestedProps || requestedProps->GetCount() == 0 || (requestedProps && found.p))
-    {
-        printf ("Geometry column : %s\n", geomname);
-    
-        FdoPtr<FdoGeometricPropertyDefinition> gpd = FdoGeometricPropertyDefinition::Create(wgeomname, L"");
-                
-        OGRwkbGeometryType gt = fdefn->GetGeomType();
-                
-        switch (gt)
-        {
-            case wkbNone: gpd = NULL;
-            case wkbPolygon:
-                case wkbMultiPolygon: gpd->SetGeometryTypes(FdoGeometricType_Surface); break;
-            case wkbPoint:
-                case wkbMultiPoint: gpd->SetGeometryTypes(FdoGeometricType_Point); break;
-            case wkbLineString:
-                case wkbMultiLineString: gpd->SetGeometryTypes(FdoGeometricType_Curve); break;
-                default: gpd->SetGeometryTypes(7); break;
-        }
-                
-        if (gpd.p)
-        {
-            pdc->Add(gpd);
-            fc->SetGeometryProperty(gpd);
-        }
-                
-    }
-                
-    //identity property
-    const char* idname = layer->GetFIDColumn();
-    if (*idname == 0) idname = "FID";
-    A2W(idname);
-        
-    printf ("Identity column : %s\n", idname);
-    
-    //check if property is on the optional requested property list
-    found = (requestedProps) ? requestedProps->FindItem(widname) : NULL;
-
-    //if it's on the list or there was no list at all, then add the property
-    if (!requestedProps || requestedProps->GetCount() == 0 || (requestedProps && found.p))
-    {
-        //see if FID column was in the attributes we processed earlier
-        FdoPtr<FdoDataPropertyDefinition> fid = (FdoDataPropertyDefinition*)pdc->FindItem(widname);
-        
-        //if not, create one. 
-        //TODO: we may not need to do this at all
-        if (!fid.p)
-        {
-            fid = FdoDataPropertyDefinition::Create(widname, L"");
-            fid->SetDataType(FdoDataType_Int32); //TODO should we use Int64?
-            pdc->Add(fid);
-        }
-        
-        fid->SetIsAutoGenerated(true);
-        //set the ID property of the feature class
-        FdoPtr<FdoDataPropertyDefinitionCollection> idpdc = fc->GetIdentityProperties();
-        idpdc->Add(fid);
-    }  
-    
-    return FDO_SAFE_ADDREF(fc.p);
-}
-
-
-//attempts to map an FDO filter to an attribute and spatial filters
-//used to set up a feature query for Select commands
-//This function assumes MapGuide style queries -- either 
-//an attribute filter or a simple spatial filter or a binary
-//combination of the two
-void OgrConnection::ApplyFilter(OGRLayer* layer, FdoFilter* filter)
-{
-    FdoFilter* spatial = NULL;
-    FdoFilter* attr = NULL;
-    
-    //this is lame, but much shorter than implementing
-    //all of FdoIFilterProcessor and FdoIExpressionProcessor
-    if (dynamic_cast<FdoSpatialCondition*>(filter))
-        spatial = (FdoSpatialCondition*)filter;
-    else if (dynamic_cast<FdoBinaryLogicalOperator*>(filter))
-    {
-        FdoPtr<FdoFilter> left = ((FdoBinaryLogicalOperator*)filter)->GetLeftOperand();
-        FdoPtr<FdoFilter> right = ((FdoBinaryLogicalOperator*)filter)->GetRightOperand();
-        
-        if (dynamic_cast<FdoSpatialCondition*>(left.p))
-        {
-            spatial = left;
-            attr = right;
-        }
-        else if (dynamic_cast<FdoSpatialCondition*>(right.p))
-        {
-            spatial = right;
-            attr = left;
-        }
-        else
-            attr = filter;
-    }
-    else
-        attr = filter;
-    
-    //set attribute query on OGR layer
-    if (attr)
-    {
-        FdoString* attrsql = attr->ToString();
-        W2A(attrsql);
-        layer->SetAttributeFilter(mbattrsql);
-    }
-
-    //set spatial query -- assumes EnvelopeIntersects
-    if (spatial)
-    {
-        FdoSpatialCondition* sc = (FdoSpatialCondition*)spatial;
-        
-        if (sc->GetOperation() == FdoSpatialOperations_EnvelopeIntersects)
-        {
-            FdoPtr<FdoExpression> expr = sc->GetGeometry();
-            FdoGeometryValue* geomval = dynamic_cast<FdoGeometryValue*>(expr.p);
-
-            if (geomval)
-            {
-                FdoPtr<FdoByteArray> fgf = geomval->GetGeometry();
-                FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-                FdoPtr<FdoIGeometry> fgfgeom = gf->CreateGeometryFromFgf(fgf);
-                FdoPtr<FdoIEnvelope> envelope = fgfgeom->GetEnvelope();
-
-                layer->SetSpatialFilterRect(envelope->GetMinX(),
-                                            envelope->GetMinY(),
-                                            envelope->GetMaxX(),
-                                            envelope->GetMaxY());
-            }
-        }
-        else if (sc->GetOperation() == FdoSpatialOperations_Intersects)
-        {
-            //TODO: must implement this for selection to work in the AJAX viewer.
-        }
-    }
-}
-
-
-int OgrConnection::Fgf2Wkb(const unsigned char* fgf, unsigned char* wkb)
-{
-    return 0;
-}
-
-int OgrConnection::Wkb2Fgf(const unsigned char* wkb, unsigned char* fgf)
-{
-    //TODO: This routine assumes LITTLE ENDIAN (INTEL) byte order
-    
-    int fgflen = 0;
-    unsigned char * src = (unsigned char*)wkb;
-    int * dst = (int*)fgf;
-    
-    src++; //skip byte order -- FGF is always NDR
-    int* ireader = (int*)src;
-    
-    // the geometry type
-    int geom_type = (OGRwkbGeometryType)*ireader++;
-
-    // the coordinate type
-    int skip = (geom_type < 0) ? 1 : 0; //0=XY, 1=XYZ or XYM, 2 = XYZM
-    geom_type = geom_type & 0x7FFFFFFF; //now convert to FGF geom type
-
-    *dst++ = geom_type; //strip out WKB 2.5D indicator (FDO doesn't use that)
-    fgflen += 4;
-
-    bool is_multi = (geom_type == wkbMultiLineString)
-            || (geom_type == wkbMultiPolygon
-            || (geom_type == wkbMultiPoint));
-    
-    int num_geoms = 1;
-
-    //in case of multipolygon or multilinestring or multipoint,
-    //read poly or linestring count
-    if (is_multi) 
-    {
-        num_geoms = *ireader++;
-        *dst++ = num_geoms;
-        fgflen += 4;
-    }
-    
-    for (int q=0; q<num_geoms; q++)
-    {
-        if (is_multi)
-        {
-            //skip byte order
-            ireader = (int*)(((unsigned char*)ireader) + 1);
-            
-            //geom type
-            geom_type = *ireader++;
-            skip = geom_type < 0 ? 1 : 0; //is it 2.5D
-            geom_type &= 0x7FFFFFFF;
-            *dst++ = geom_type;
-            fgflen += 4;
-        }
-
-        //read cordinate type
-        int dim = skip ? FdoDimensionality_XY | FdoDimensionality_Z : FdoDimensionality_XY;
-        *dst++ = dim;
-        fgflen += 4;
-
-        // the number of contours in current polygon/linestring
-        int contour_count = 1; //for linestrings
-
-        if ((geom_type == wkbPolygon)
-             || (geom_type == wkbMultiPolygon))
-        {
-            contour_count = *ireader++;
-            *dst++ = contour_count;
-            fgflen += 4;
-        }
-
-        for (int i=0; i<contour_count; i++)
-        {
-            int point_count = 1;
-
-            //point geoms do not have a point count, since
-            //each piece is just one point each
-            if ((geom_type != wkbMultiPoint)
-                 && (geom_type != wkbPoint))
-            {
-                point_count = *ireader++;
-                *dst++ = point_count;
-                fgflen += 4;
-            }
-            
-            //*** ireader not valid from here down
-            double* dreader = (double*) ireader;
-
-            memcpy(dst, dreader, point_count * (skip + 2) * sizeof(double));
-            int numd = point_count * (skip + 2);
-            dreader += numd;
-            dst += 2 * numd;
-            fgflen += 8 * numd;
-                        
-            ireader = (int*)dreader;
-            //*** ireader valid again
-        }
-    }
-    
-    return fgflen;
-}
 
 
 //---------------------------------------------------------------------
@@ -948,7 +685,7 @@ FdoClassDefinition* OgrFeatureReader::GetClassDefinition()
     //TODO: cache the result of this
     //also this always returns all properties regardless
     //of what was given in the select command
-    return m_connection->ConvertClass(m_poLayer, m_props);
+    return OgrFdoUtil::ConvertClass(m_poLayer, m_props);
 }
 
 FdoInt32 OgrFeatureReader::GetDepth()
@@ -1073,7 +810,7 @@ const FdoByte* OgrFeatureReader::GetGeometry(FdoString* propertyName, FdoInt32* 
     
     geom->exportToWkb(wkbNDR, (unsigned char*)m_wkb);
     
-    *len = m_connection->Wkb2Fgf(m_wkb, m_fgf);
+    *len = OgrFdoUtil::Wkb2Fgf(m_wkb, m_fgf);
     return (const unsigned char*)m_fgf;
 }
 
@@ -1145,7 +882,7 @@ OgrDataReader::OgrDataReader(OgrConnection* conn, OGRLayer* layer, FdoIdentifier
     m_poFeature = NULL;
     m_bUseNameMap = false;
     
-    //if an identifier list is passes in, we are doing a computed identifier
+    //if an identifier list is passed in, we are doing a computed identifier
     //like min() or max() -- we need to create a map from computed identifier name
     //to OGR aggregate property name
     if (ids)
