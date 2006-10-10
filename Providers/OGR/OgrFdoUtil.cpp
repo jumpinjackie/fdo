@@ -43,45 +43,45 @@ void dot2tilde(wchar_t* wname)
 FdoClassDefinition* OgrFdoUtil::ConvertClass(OGRLayer* layer, FdoIdentifierCollection* requestedProps)
 {
     OGRFeatureDefn* fdefn = layer->GetLayerDefn();
-                
+
     const char* name = fdefn->GetName();
     A2W(name);
 
     dot2tilde(wname);
-                
+
     printf ("Feature class name: %s\n", name);
-                
+
     FdoPtr<FdoFeatureClass> fc = FdoFeatureClass::Create(wname, L"");
-                
+
     FdoPtr<FdoPropertyDefinitionCollection> pdc = fc->GetProperties();
-                                
-                //data properties (attributes)
+
+    //data properties (attributes)
     int propcount = fdefn->GetFieldCount();
-                
+
     for (int j=0; j<propcount; j++)
     {
         OGRFieldDefn* field = fdefn->GetFieldDefn(j);
         const char* name = field->GetNameRef();
         A2W(name);
-                    
+
         printf("Attribute : %s\n", name);
-                            
+
         FdoDataType dt;
         OGRFieldType etype = field->GetType();
         bool add = true;
         switch (etype)
         {
-            case OFTInteger: dt = FdoDataType_Int32; break;
-            case OFTString: dt = FdoDataType_String; break;
-            case OFTWideString: dt = FdoDataType_String; break;
-            case OFTReal: dt = FdoDataType_Double; break;
-            case OFTDate:
-            case OFTTime:
-            case OFTDateTime: dt = FdoDataType_DateTime; break;
-            
-            default: add=false; break; //unknown property type
+        case OFTInteger: dt = FdoDataType_Int32; break;
+        case OFTString: dt = FdoDataType_String; break;
+        case OFTWideString: dt = FdoDataType_String; break;
+        case OFTReal: dt = FdoDataType_Double; break;
+        case OFTDate:
+        case OFTTime:
+        case OFTDateTime: dt = FdoDataType_DateTime; break;
+
+        default: add=false; break; //unknown property type
         }
-                    
+
         if (add)
         {
             //check if property is on the optional requested property list
@@ -91,7 +91,7 @@ FdoClassDefinition* OgrFdoUtil::ConvertClass(OGRLayer* layer, FdoIdentifierColle
             if (!requestedProps || requestedProps->GetCount() == 0 || (requestedProps && found.p))
             {
                 FdoPtr<FdoDataPropertyDefinition> dpd = FdoDataPropertyDefinition::Create(wname, L"");
-                            
+
                 dpd->SetDataType(dt);
                 dpd->SetLength(field->GetWidth());
                 dpd->SetPrecision(field->GetPrecision());
@@ -113,38 +113,38 @@ FdoClassDefinition* OgrFdoUtil::ConvertClass(OGRLayer* layer, FdoIdentifierColle
     if (!requestedProps || requestedProps->GetCount() == 0 || (requestedProps && found.p))
     {
         printf ("Geometry column : %s\n", geomname);
-    
+
         FdoPtr<FdoGeometricPropertyDefinition> gpd = FdoGeometricPropertyDefinition::Create(wgeomname, L"");
-                
+
         OGRwkbGeometryType gt = fdefn->GetGeomType();
-                
+
         switch (gt)
         {
-            case wkbNone: gpd = NULL;
-            case wkbPolygon:
-                case wkbMultiPolygon: gpd->SetGeometryTypes(FdoGeometricType_Surface); break;
-            case wkbPoint:
-                case wkbMultiPoint: gpd->SetGeometryTypes(FdoGeometricType_Point); break;
-            case wkbLineString:
-                case wkbMultiLineString: gpd->SetGeometryTypes(FdoGeometricType_Curve); break;
-                default: gpd->SetGeometryTypes(7); break;
+        case wkbNone: gpd = NULL;
+        case wkbPolygon:
+        case wkbMultiPolygon: gpd->SetGeometryTypes(FdoGeometricType_Surface); break;
+        case wkbPoint:
+        case wkbMultiPoint: gpd->SetGeometryTypes(FdoGeometricType_Point); break;
+        case wkbLineString:
+        case wkbMultiLineString: gpd->SetGeometryTypes(FdoGeometricType_Curve); break;
+        default: gpd->SetGeometryTypes(7); break;
         }
-                
+
         if (gpd.p)
         {
             pdc->Add(gpd);
             fc->SetGeometryProperty(gpd);
         }
-                
+
     }
-                
+
     //identity property
     const char* idname = layer->GetFIDColumn();
     if (*idname == 0) idname = "FID";
     A2W(idname);
-        
+
     printf ("Identity column : %s\n", idname);
-    
+
     //check if property is on the optional requested property list
     found = (requestedProps) ? requestedProps->FindItem(widname) : NULL;
 
@@ -153,7 +153,7 @@ FdoClassDefinition* OgrFdoUtil::ConvertClass(OGRLayer* layer, FdoIdentifierColle
     {
         //see if FID column was in the attributes we processed earlier
         FdoPtr<FdoDataPropertyDefinition> fid = (FdoDataPropertyDefinition*)pdc->FindItem(widname);
-        
+
         //if not, create one. 
         //TODO: we may not need to do this at all
         if (!fid.p)
@@ -162,13 +162,13 @@ FdoClassDefinition* OgrFdoUtil::ConvertClass(OGRLayer* layer, FdoIdentifierColle
             fid->SetDataType(FdoDataType_Int32); //TODO should we use Int64?
             pdc->Add(fid);
         }
-        
+
         fid->SetIsAutoGenerated(true);
         //set the ID property of the feature class
         FdoPtr<FdoDataPropertyDefinitionCollection> idpdc = fc->GetIdentityProperties();
         idpdc->Add(fid);
     }  
-    
+
     return FDO_SAFE_ADDREF(fc.p);
 }
 
@@ -179,98 +179,110 @@ FdoClassDefinition* OgrFdoUtil::ConvertClass(OGRLayer* layer, FdoIdentifierColle
 //existing ones
 void OgrFdoUtil::ConvertFeature(FdoPropertyValueCollection* src, OGRFeature* dst, OGRLayer* layer)
 {
-        //update the feature properties
-        //this code is not fast at all
-        //since we could in theory pre-convert all the property values
-        //and then apply them to all the featues, but in the most
-        //common case we are only updating one feature so it's a wash.
+    //update the feature properties
+    //this code is not fast at all
+    //since we could in theory pre-convert all the property values
+    //and then apply them to all the featues, but in the most
+    //common case we are only updating one feature so it's a wash.
     for (int i=src->GetCount()-1; i>=0; i--)
     {
-            //convert propvals
+        //convert propvals
         FdoPtr<FdoPropertyValue> pv = src->GetItem(i);
-            
+
         FdoString* propName = FdoPtr<FdoIdentifier>(pv->GetName())->GetName();
         W2A(propName);
-            
+
         const char* geomname = layer->GetGeometryColumn();
         if (*geomname == 0) geomname = "GEOMETRY";
-        
+
         FdoPtr<FdoValueExpression> value = pv->GetValue();
-            
+
         if (strcmp(geomname, mbpropName) == 0)
         {
-                //is it the geometry property?
+            //is it the geometry property?
 
-                //TODO
+            FdoGeometryValue* gv = dynamic_cast<FdoGeometryValue*>(value.p);
+
+            if (gv)
+            {
+                FdoPtr<FdoByteArray> fgf = gv->GetGeometry();
+
+                unsigned char* wkb = new unsigned char[fgf->GetCount()]; //WKB is smaller than FGF due to lack of dimensionality flag
+                
+                int len = Fgf2Wkb(fgf->GetData(), wkb);
+
+                OGRGeometry* geom = NULL;
+                OGRGeometryFactory::createFromWkb(wkb, NULL, &geom, len);
+
+                dst->SetGeometryDirectly(geom); //the feature now owns this pointer
+            }
         }
         else
         {
             //or is it a data property?
-                        
-                
             OGRFeatureDefn* fdefn = layer->GetLayerDefn();
             OGRFieldDefn* field = fdefn->GetFieldDefn(fdefn->GetFieldIndex(mbpropName));
-                
+
             FdoDataType dt = (FdoDataType)-1;
             OGRFieldType etype = field->GetType();
-                
+
             switch (etype)
             {
-                case OFTInteger:
+            case OFTInteger:
+                {
+                    FdoInt32Value* iv = dynamic_cast<FdoInt32Value*>(value.p);
+                    if (iv) dst->SetField(mbpropName, (int)iv->GetInt32());
+                }
+                break;
+            case OFTString:
+                {
+                    FdoStringValue* sv = dynamic_cast<FdoStringValue*>(value.p);
+                    if (sv)
                     {
-                        FdoInt32Value* iv = dynamic_cast<FdoInt32Value*>(value.p);
-                        if (iv) dst->SetField(mbpropName, (int)iv->GetInt32());
+                        FdoString* str = sv->GetString();
+                        W2A(str);
+                        dst->SetField(mbpropName, (const char*)mbstr);
                     }
-                    break;
-                case OFTString:
+                }
+                break;
+            case OFTWideString: 
+                {
+                    FdoStringValue* sv = dynamic_cast<FdoStringValue*>(value.p);
+                    if (sv)
                     {
-                        FdoStringValue* sv = dynamic_cast<FdoStringValue*>(value.p);
-                        if (sv)
-                        {
-                            FdoString* str = sv->GetString();
-                            W2A(str);
-                            dst->SetField(mbpropName, (const char*)mbstr);
-                        }
+                        FdoString* str = sv->GetString();
+                        //dst->SetField(mbpropName, str); //unsupported so far
                     }
-                    break;
-                case OFTWideString: 
-                    {
-                        FdoStringValue* sv = dynamic_cast<FdoStringValue*>(value.p);
-                        if (sv)
-                        {
-                            FdoString* str = sv->GetString();
-                            //dst->SetField(mbpropName, str); //unsupported so far
-                        }
-                    }
-                    break;
-                case OFTReal:
-                    {
-                        FdoDoubleValue* iv = dynamic_cast<FdoDoubleValue*>(value.p);
-                        if (iv) dst->SetField(mbpropName, (double)iv->GetDouble());
-                    }
-                    break;
-                case OFTDate:
-                case OFTTime:
-                case OFTDateTime:
-                    {
-                        FdoDateTimeValue* dv = dynamic_cast<FdoDateTimeValue*>(value.p);
-                        FdoDateTime dt = dv->GetDateTime();
+                }
+                break;
+            case OFTReal:
+                {
+                    FdoDoubleValue* iv = dynamic_cast<FdoDoubleValue*>(value.p);
+                    if (iv) dst->SetField(mbpropName, (double)iv->GetDouble());
+                }
+                break;
+            case OFTDate:
+            case OFTTime:
+            case OFTDateTime:
+                {
+                    FdoDateTimeValue* dv = dynamic_cast<FdoDateTimeValue*>(value.p);
+                    FdoDateTime dt = dv->GetDateTime();
 
-                        if (dt.IsDate())
-                        {
-                            dst->SetField(mbpropName, dt.year, dt.month, dt.day);
-                        }
-                        else if (dt.IsDateTime())
-                        {
-                            dst->SetField(mbpropName, dt.year, dt.month, dt.day, dt.hour, dt.minute, (int)dt.seconds);
-                        }
-                        else if (dt.IsTime())
-                        {
-                            dst->SetField(mbpropName, 0, 0, 0, dt.hour, dt.minute, (int)dt.seconds);
-                        }
+                    if (dt.IsDate())
+                    {
+                        dst->SetField(mbpropName, dt.year, dt.month, dt.day);
                     }
-                    break;
-                    default: break; //unknown property type
+                    else if (dt.IsDateTime())
+                    {
+                        dst->SetField(mbpropName, dt.year, dt.month, dt.day, dt.hour, dt.minute, (int)dt.seconds);
+                    }
+                    else if (dt.IsTime())
+                    {
+                        dst->SetField(mbpropName, 0, 0, 0, dt.hour, dt.minute, (int)dt.seconds);
+                    }
+                }
+                break;
+            default: break; //unknown property type
             }
         }
     }
@@ -286,7 +298,7 @@ void OgrFdoUtil::ApplyFilter(OGRLayer* layer, FdoFilter* filter)
 {
     FdoFilter* spatial = NULL;
     FdoFilter* attr = NULL;
-    
+
     //this is lame, but much shorter than implementing
     //all of FdoIFilterProcessor and FdoIExpressionProcessor
     if (dynamic_cast<FdoSpatialCondition*>(filter))
@@ -295,7 +307,7 @@ void OgrFdoUtil::ApplyFilter(OGRLayer* layer, FdoFilter* filter)
     {
         FdoPtr<FdoFilter> left = ((FdoBinaryLogicalOperator*)filter)->GetLeftOperand();
         FdoPtr<FdoFilter> right = ((FdoBinaryLogicalOperator*)filter)->GetRightOperand();
-        
+
         if (dynamic_cast<FdoSpatialCondition*>(left.p))
         {
             spatial = left;
@@ -311,7 +323,7 @@ void OgrFdoUtil::ApplyFilter(OGRLayer* layer, FdoFilter* filter)
     }
     else
         attr = filter;
-    
+
     //set attribute query on OGR layer
     if (attr)
     {
@@ -324,7 +336,7 @@ void OgrFdoUtil::ApplyFilter(OGRLayer* layer, FdoFilter* filter)
     if (spatial)
     {
         FdoSpatialCondition* sc = (FdoSpatialCondition*)spatial;
-        
+
         if (sc->GetOperation() == FdoSpatialOperations_EnvelopeIntersects)
         {
             FdoPtr<FdoExpression> expr = sc->GetGeometry();
@@ -338,9 +350,9 @@ void OgrFdoUtil::ApplyFilter(OGRLayer* layer, FdoFilter* filter)
                 FdoPtr<FdoIEnvelope> envelope = fgfgeom->GetEnvelope();
 
                 layer->SetSpatialFilterRect(envelope->GetMinX(),
-                                            envelope->GetMinY(),
-                                            envelope->GetMaxX(),
-                                            envelope->GetMaxY());
+                    envelope->GetMinY(),
+                    envelope->GetMaxX(),
+                    envelope->GetMaxY());
             }
         }
         else if (sc->GetOperation() == FdoSpatialOperations_Intersects)
@@ -350,7 +362,208 @@ void OgrFdoUtil::ApplyFilter(OGRLayer* layer, FdoFilter* filter)
     }
 }
 
+//For reference, duplicated from ogr_geometry.h
+///**
+// * List of well known binary geometry types.  These are used within the BLOBs
+// * but are also returned from OGRGeometry::getGeometryType() to identify the
+// * type of a geometry object.
+// */
+//
+//typedef enum 
+//{
+//    wkbUnknown = 0,             /* non-standard */
+//    wkbPoint = 1,               /* rest are standard WKB type codes */
+//    wkbLineString = 2,
+//    wkbPolygon = 3,
+//    wkbMultiPoint = 4,
+//    wkbMultiLineString = 5,
+//    wkbMultiPolygon = 6,
+//    wkbGeometryCollection = 7,
+//    wkbNone = 100,              /* non-standard, for pure attribute records */
+//    wkbLinearRing = 101,        /* non-standard, just for createGeometry() */
+//    wkbPoint25D = 0x80000001,   /* 2.5D extensions as per 99-402 */
+//    wkbLineString25D = 0x80000002,
+//    wkbPolygon25D = 0x80000003,
+//    wkbMultiPoint25D = 0x80000004,
+//    wkbMultiLineString25D = 0x80000005,
+//    wkbMultiPolygon25D = 0x80000006,
+//    wkbGeometryCollection25D = 0x80000007
+//} OGRwkbGeometryType;
+//
+//#define wkb25DBit 0x80000000
+//#define wkbFlatten(x)  ((OGRwkbGeometryType) ((x) & (~wkb25DBit)))
+//
+//#define ogrZMarker 0x21125711
+//
+//const char CPL_DLL * OGRGeometryTypeToName( OGRwkbGeometryType eType );
+//
+//typedef enum 
+//{
+//    wkbXDR = 0,         /* MSB/Sun/Motoroloa: Most Significant Byte First   */
+//    wkbNDR = 1          /* LSB/Intel/Vax: Least Significant Byte First      */
+//} OGRwkbByteOrder;
 
+
+int OgrFdoUtil::Wkb2Fgf(const unsigned char* wkb, unsigned char* fgf)
+{
+    OgrBinaryReader src(wkb);
+    OgrBinaryWriter dst(fgf);
+
+    src.ReadByte(); //skip byte order -- FGF is always NDR
+
+    // the geometry type
+    int geom_type = src.ReadInt();
+
+    // the coordinate type
+    int skip = (geom_type < 0) ? 1 : 0; //0=XY, 1=XYZ or XYM, 2 = XYZM
+    geom_type = geom_type & 0x7FFFFFFF; //now convert to FGF geom type
+
+    dst.WriteInt(geom_type); //strip out WKB 2.5D indicator (FDO doesn't use that)
+
+    bool is_multi = (geom_type == FdoGeometryType_MultiLineString)
+        || (geom_type == FdoGeometryType_MultiPolygon
+        || (geom_type == FdoGeometryType_MultiPoint));
+
+    int num_geoms = 1;
+
+    //in case of multipolygon or multilinestring or multipoint,
+    //read poly or linestring count
+    if (is_multi) 
+    {
+        num_geoms = src.ReadInt();
+        dst.WriteInt(num_geoms);
+    }
+
+    for (int q=0; q<num_geoms; q++)
+    {
+        if (is_multi)
+        {
+            //skip byte order
+            src.ReadByte();
+
+            //geom type
+            geom_type = src.ReadInt();
+            skip = geom_type < 0 ? 1 : 0; //is it 2.5D
+            geom_type &= 0x7FFFFFFF;
+            dst.WriteInt(geom_type);
+        }
+
+        //read cordinate type
+        int dim = skip ? FdoDimensionality_XY | FdoDimensionality_Z : FdoDimensionality_XY;
+        dst.WriteInt(dim);
+
+        // the number of contours in current polygon/linestring
+        int contour_count = 1; //for linestrings
+
+        if ((geom_type == FdoGeometryType_Polygon)
+            || (geom_type == FdoGeometryType_MultiPolygon))
+        {
+            contour_count = src.ReadInt();
+            dst.WriteInt(contour_count);
+        }
+
+        for (int i=0; i<contour_count; i++)
+        {
+            int point_count = 1;
+
+            //point geoms do not have a point count, since
+            //each piece is just one point each
+            if ((geom_type != FdoGeometryType_MultiPoint)
+                && (geom_type != FdoGeometryType_Point))
+            {
+                point_count = src.ReadInt();
+                dst.WriteInt(point_count);
+            }
+
+            int numd = point_count * (skip + 2);
+            for (int j=0; j<numd; j++) dst.WriteDouble(src.ReadDouble());
+        }
+    }
+
+    return dst.GetLength();
+}
+
+
+int OgrFdoUtil::Fgf2Wkb(const unsigned char* fgf, unsigned char* wkb)
+{
+    OgrBinaryReader src(wkb);
+    OgrBinaryWriter dst((unsigned char*)fgf);
+
+    dst.WriteByte(1); //NDR
+
+    // the geometry type
+    int geom_type = src.ReadInt();
+
+    //we will need to do a second pass to set the 3D flag on this once we read the FDO dimensionality flag
+    dst.WriteInt(geom_type); 
+
+    //The FDO constants match WKB, so we don't really need to use the OGR wkb defines
+    bool is_multi = (geom_type == FdoGeometryType_MultiLineString)
+        || (geom_type == FdoGeometryType_MultiPolygon
+        || (geom_type == FdoGeometryType_MultiPoint));
+
+    int num_geoms = 1;
+
+    //in case of multipolygon or multilinestring or multipoint,
+    //read poly or linestring count
+    if (is_multi) 
+    {
+        num_geoms = src.ReadInt();
+        dst.WriteInt(num_geoms);
+    }
+
+    for (int q=0; q<num_geoms; q++)
+    {
+        if (is_multi)
+        {
+            //set byte order
+            dst.WriteByte(1);
+
+            //geom type
+            geom_type = src.ReadInt();
+            dst.WriteInt(geom_type);
+        }
+
+        //read cordinate type
+        int dim = src.ReadInt();
+        int skip = ((dim & FdoDimensionality_Z) != 0) ? 1 : 0;
+
+        //roll back and set the geom_type to wkb 2.5D
+        *(int*)(dst.m_begin+1) = geom_type | 0x80000000; 
+
+        // the number of contours in current polygon/linestring
+        int contour_count = 1; //for linestrings
+
+        if ((geom_type == FdoGeometryType_Polygon)
+            || (geom_type == FdoGeometryType_MultiPolygon))
+        {
+            contour_count = src.ReadInt();
+            dst.WriteInt(contour_count);
+        }
+
+        for (int i=0; i<contour_count; i++)
+        {
+            int point_count = 1;
+
+            //point geoms do not have a point count, since
+            //each piece is just one point each
+            if ((geom_type != FdoGeometryType_MultiPoint)
+                && (geom_type != FdoGeometryType_Point))
+            {
+                point_count = src.ReadInt();
+                dst.WriteInt(point_count);
+            }
+
+            int numd = point_count * (skip + 2);
+            for (int j=0; j<numd; j++) dst.WriteDouble(src.ReadDouble());
+        }
+    }
+
+    return dst.GetLength();
+}
+
+
+/*
 int OgrFdoUtil::Fgf2Wkb(const unsigned char* fgf, unsigned char* wkb)
 {
     return 0;
@@ -453,3 +666,4 @@ int OgrFdoUtil::Wkb2Fgf(const unsigned char* wkb, unsigned char* fgf)
     
     return fgflen;
 }
+*/

@@ -519,10 +519,43 @@ FdoInt32 OgrConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter)
 
 FdoIFeatureReader* OgrConnection::Insert(FdoIdentifier* fcname, FdoPropertyValueCollection* propvals)
 {
-    return NULL;
+    FdoString* fc = fcname->GetName();
+    W2A(fc);
+
+    tilde2dot(mbfc);
+    
+    OGRLayer* layer = m_poDS->GetLayerByName(mbfc);
+    
+    //check if we can insert
+    int canDo = layer->TestCapability(OLCSequentialWrite);
+    
+    if (!canDo)
+        throw FdoCommandException::Create(L"Current OGR connection does not support insert.");
+
+    //create the new feature
+    OGRFeature* feature = new OGRFeature(layer->GetLayerDefn());
+    long fid = OGRNullFID;
+    feature->SetFID(fid);
+
+    //set all the properties
+    OgrFdoUtil::ConvertFeature(propvals, feature, layer);
+
+    if (layer->CreateFeature(feature) == OGRERR_NONE)
+    {
+        //new FID should be now correctly set
+        fid = feature->GetFID();        
+    }
+
+    OGRFeature::DestroyFeature(feature);
+
+    if (fid != OGRNullFID)
+    {
+        char filter[32];
+        snprintf(filter, 32, "FID=%d", fid);
+        layer->SetAttributeFilter(filter);
+        return new OgrFeatureReader(this, layer, NULL);
+    }
 }
-
-
 
 
 //---------------------------------------------------------------------
