@@ -46,11 +46,10 @@ FdoRfpBandRaster::FdoRfpBandRaster(const FdoPtr<FdoRfpGeoBandRaster>& geoBandRas
         m_resolutionX(NULL), m_resolutionY(NULL), m_bounds(NULL)
 {
     _computeOriginalBounds();
+    _recomputeImageSize();
 
     if (clippingBounds != NULL)
-        m_clippingBounds = new FdoRfpRect(*clippingBounds);
-
-    _recomputeImageSize();
+		SetBounds( clippingBounds );
 }
 
 FdoRfpBandRaster::~FdoRfpBandRaster()
