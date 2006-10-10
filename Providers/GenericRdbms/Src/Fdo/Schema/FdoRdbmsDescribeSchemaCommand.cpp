@@ -91,6 +91,7 @@ FdoFeatureSchemaCollection* FdoRdbmsDescribeSchemaCommand::Execute()
     try
     {
         FdoSchemaManagerP      pschemaManager = mRdbmsConnection->GetSchemaManager();
+        pschemaManager->GetPhysicalSchema()->SetBulkLoadConstraints(true);
         const FdoSmLpSchemaCollection* pLpSchemaColl = pschemaManager->RefLogicalPhysicalSchemas();
         SchemaCollection            aTodo;
 
@@ -121,7 +122,7 @@ FdoFeatureSchemaCollection* FdoRdbmsDescribeSchemaCommand::Execute()
             {
                 const FdoSmLpSchema*     pLpSchema = pLpSchemaColl->RefItem(iSchema);
                 // retrieve metaclass schema only if explicitly asked for.
-                if ( wcscmp(pLpSchema->GetName(), FdoSmLpSchema::mMetaClassSchemaName) != 0 )
+                if ( wcscmp(pLpSchema->GetName(), FdoSmPhMgr::mMetaClassSchemaName) != 0 )
                     aTodo.Add((FdoSmLpSchema*)pLpSchema);    // drop const
             }
         }

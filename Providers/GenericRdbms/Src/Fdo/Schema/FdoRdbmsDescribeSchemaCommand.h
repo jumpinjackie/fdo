@@ -119,7 +119,7 @@ protected:
                 }
 
                 // skip the metaclass schema (not exposed to FDO).
-                if ( !bFound && (wcscmp(pItem->GetName(), FdoSmLpSchema::mMetaClassSchemaName) != 0) )
+                if ( !bFound && (wcscmp(pItem->GetName(), FdoSmPhMgr::mMetaClassSchemaName) != 0) )
                     Add(pItem);
             }
         }
