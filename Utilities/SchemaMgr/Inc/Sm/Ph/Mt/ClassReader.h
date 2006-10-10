@@ -40,6 +40,7 @@ public:
 	FdoSmPhMtClassReader( 
         FdoSmPhRowsP froms,         // defines the fields to read
         FdoStringP schemaName,      // get classes for this feature schema
+        FdoStringP className,
         FdoSmPhMgrP mgr             // Physical Schema Manager
     );
 
@@ -59,7 +60,7 @@ protected:
 
 private:
     /// Helper for creating inner query reader
-    FdoSmPhReaderP MakeReader( FdoSmPhRowsP froms, FdoStringP schemaName, FdoSmPhMgrP mgr );
+    FdoSmPhReaderP MakeReader( FdoSmPhRowsP froms, FdoStringP schemaName, FdoSmPhMgrP mgr, FdoString* className=NULL );
 };
 
 typedef FdoPtr<FdoSmPhMtClassReader> FdoSmPhMtClassReaderP;

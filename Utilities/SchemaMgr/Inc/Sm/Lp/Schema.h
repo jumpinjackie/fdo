@@ -223,6 +223,10 @@ public:
     /// Mainly for unit testing.
     virtual void XMLSerialize( FILE* xmlFp, int ref ) const;
 
+    FdoSmLpClassDefinition* LoadClass(FdoStringP className, FdoString* schemaName=NULL);
+    const FdoSmLpClassDefinition* RefClass(FdoStringP className) const;
+
+
 protected:
     /// Loads an instance of a LogicalPhysicalSchema from the FDO
     /// database.

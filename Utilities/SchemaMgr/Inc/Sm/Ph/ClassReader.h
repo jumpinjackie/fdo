@@ -49,6 +49,16 @@ public:
     /// 		to retrieve the classes from.
 	FdoSmPhClassReader(FdoStringP schemaName, FdoSmPhMgrP mgr);
 
+    /// Create and execute a query to get the classes.
+    /// Call ReadNext() to read each class.
+    /// Classes are ordered by class name .
+	//
+    /// Parameters:
+    /// 	schemaName: get the classes for this schema.
+    /// 	mgr: holds the connection for the database
+    /// 		to retrieve the classes from.
+	FdoSmPhClassReader(FdoStringP schemaName, FdoStringP className, FdoSmPhMgrP mgr);
+
     /// Deactivate the class reader
 	~FdoSmPhClassReader(void);
 
@@ -123,13 +133,16 @@ protected:
     FdoSmPhClassReader() {}
 
     /// Top level function for creating inner reader
-    FdoSmPhReaderP MakeReader( FdoStringP schemaName, FdoSmPhMgrP mgr );
+    FdoSmPhReaderP MakeReader( FdoStringP schemaName, FdoSmPhMgrP mgr, FdoString* className = NULL );
+
+    /// Top level function for creating inner reader
+    //FdoSmPhReaderP MakeReader( FdoStringP schemaName, FdoStringP className, FdoSmPhMgrP mgr );
 
     /// Create inner reader for MetaSchema
-    FdoSmPhReaderP MakeMtReader( FdoSmPhRowsP rows, FdoStringP schemaName, FdoSmPhMgrP mgr );
+    FdoSmPhReaderP MakeMtReader( FdoSmPhRowsP rows, FdoStringP schemaName, FdoSmPhMgrP mgr, FdoString* className = NULL );
 
     /// Create inner reader for Physical Schema (When MetaSchema not present).
-    FdoSmPhReaderP MakeRdReader( FdoSmPhRowsP rows, FdoStringP schemaName, FdoSmPhMgrP mgr );
+    FdoSmPhReaderP MakeRdReader( FdoSmPhRowsP rows, FdoStringP schemaName, FdoSmPhMgrP mgr, FdoString* className = NULL );
 
 private:
 

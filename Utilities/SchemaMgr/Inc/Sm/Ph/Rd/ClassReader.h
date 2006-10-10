@@ -35,6 +35,7 @@ public:
 	FdoSmPhRdClassReader(
         FdoSmPhRowsP froms,         // rows and fields to retrieve.
         FdoStringP schemaName,      // name of Feature Schema that will contain the classes
+        FdoStringP className,      // name of Feature class 
         FdoSmPhMgrP mgr,            // Physical Schema Manager
         FdoBoolean keyedOnly = true,// If true, skip tables without key.
         FdoStringP database = L"",  // Database where RDBMS schema resides (current connection by default)

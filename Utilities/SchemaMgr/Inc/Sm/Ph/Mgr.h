@@ -180,6 +180,10 @@ public:
     /// feature schema
 	virtual FdoPtr<FdoSmPhClassReader> CreateClassReader(FdoStringP schemaName);
 
+    /// Get reader to retrieve all classes, for the given
+    /// feature schema
+	virtual FdoPtr<FdoSmPhClassReader> CreateClassReader(FdoStringP schemaName, FdoStringP className);
+
     /// Get reader to retrieve all spatial contexts for the connection.
 	virtual FdoPtr<FdoSmPhSpatialContextReader> CreateSpatialContextReader();
 
@@ -264,6 +268,7 @@ public:
     virtual FdoPtr<FdoSmPhRdClassReader> CreateRdClassReader( 
         FdoPtr<FdoSmPhRowCollection> rows, 
         FdoStringP schemaName,
+        FdoStringP className,
         FdoBoolean keyedOnly = true,// If true, skip tables without key.
         FdoStringP database = L"",  // Database where RDBMS schema resides (current connection by default)
         FdoStringP owner = L""      // the RDBMS schema (defaults to current schema)

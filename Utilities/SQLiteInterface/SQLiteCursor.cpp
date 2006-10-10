@@ -267,6 +267,7 @@ int SQLiteCursor::get_data(
   }
   *data = m_pDatBuf;
   *size = n;
+  
   return SQLITE_OK;
 }
 

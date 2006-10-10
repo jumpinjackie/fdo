@@ -44,7 +44,7 @@ const FdoSmLpClassDefinition* FdoSmLpSchemaCollection::FindClass( FdoStringP sch
 		// Check the given schema if schema name specified
 		pSchema = RefItem(schemaName);
 		if ( pSchema ) 
-			pFoundClass = pSchema->RefClasses()->RefItem(className);
+            pFoundClass = pSchema->RefClass(className);
 	}
 	else {
 		// Otherwise, find the first class in any schema.

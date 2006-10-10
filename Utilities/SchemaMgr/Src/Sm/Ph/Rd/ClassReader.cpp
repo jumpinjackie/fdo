@@ -42,6 +42,7 @@ bool FdoSmPhRdClassReader::IsOrdinate(FdoSmPhColumnP column)
 FdoSmPhRdClassReader::FdoSmPhRdClassReader(
     FdoSmPhRowsP froms, 
     FdoStringP schemaName, 
+    FdoStringP className, 
     FdoSmPhMgrP mgr,
     FdoBoolean keyedOnly,
     FdoStringP database,
@@ -57,11 +58,19 @@ FdoSmPhRdClassReader::FdoSmPhRdClassReader(
     // Get the RDBMS Schema
     mOwner = mgr->FindOwner(owner, database, false);
     if ( mOwner ) {
-        // Cache all of the objects from the given owner.
-        // This pre-load provides better performance than 
-        // caching each object individually.
-        mDbObjects = mOwner->CacheDbObjects(true);
-
+        if( ((const wchar_t*)className)[0] != '\0' )
+        {
+            mDbObjects = new FdoSmPhDbObjectCollection(NULL);
+            FdoSmPhDbObjectP pObject = mOwner->FindDbObject( className );
+            mDbObjects->Add( pObject );
+        }
+        else
+        {
+            // Cache all of the objects from the given owner.
+            // This pre-load provides better performance than 
+            // caching each object individually.
+            mDbObjects = mOwner->CacheDbObjects(true);
+        }
         FdoSmPhRowP row = froms->GetItem(0);
 
         FdoSmPhFieldP field = new FdoSmPhField(

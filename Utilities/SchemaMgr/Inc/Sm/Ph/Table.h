@@ -291,7 +291,7 @@ protected:
 	/// Add a constrait given the fully qualified string.
 	virtual bool AddConstraint( FdoStringP constraint ) = 0;
 
-    void LoadPkeys( FdoPtr<FdoSmPhReader> pkeyRdr );
+    void LoadPkeys( FdoPtr<FdoSmPhReader> pkeyRdr, bool isSkipAdd = false );
 
     virtual void AddPkeyColumnError(FdoStringP columnName);
     virtual void AddIndexColumnError(FdoStringP columnName);
@@ -303,17 +303,17 @@ private:
     void LoadPkeys();
     /// Load Foreign Keys if not yet loaded
     void LoadFkeys();
-    void LoadFkeys( FdoPtr<FdoSmPhReader> fkeyRdr );
+    void LoadFkeys( FdoPtr<FdoSmPhReader> fkeyRdr, bool isSkipAdd );
     /// Load Unique Keys if not yet loaded
 	void LoadUkeys();
-	void LoadUkeys( FdoPtr<FdoSmPhReader> ukeyRdr );
+	void LoadUkeys( FdoPtr<FdoSmPhReader> ukeyRdr, bool isSkipAdd );
     /// Load Check Keys if not yet loaded
 	void LoadCkeys();
-	void LoadCkeys( FdoPtr<FdoSmPhReader> ckeyRdr );
+	void LoadCkeys( FdoPtr<FdoSmPhReader> ckeyRdr, bool isSkipAdd );
 	
     /// Load Indexes if not yet loaded
     void LoadIndexes();
-    void LoadIndexes( FdoPtr<FdoSmPhTableIndexReader> indexRdr );
+    void LoadIndexes( FdoPtr<FdoSmPhTableIndexReader> indexRdr, bool isSkipAdd );
 	
     // Create new unique constraint group reader
     virtual FdoPtr<FdoSmPhTableComponentReader> NewTableUkeyReader( FdoPtr<FdoSmPhRdConstraintReader> rdr );

@@ -34,6 +34,13 @@ FdoSmPhClassReader::FdoSmPhClassReader(FdoStringP schemaName, FdoSmPhMgrP physic
     mpSOReader = new FdoSmPhSOReader(FdoSmPhMgr::ClassType, physicalSchema->GetOwner());
 }
 
+FdoSmPhClassReader::FdoSmPhClassReader(FdoStringP schemaName, FdoStringP className, FdoSmPhMgrP physicalSchema) : 
+	FdoSmPhReader( MakeReader(schemaName, physicalSchema, className) ),
+	mSchemaName(schemaName)
+{
+    mpSOReader = new FdoSmPhSOReader(FdoSmPhMgr::ClassType, physicalSchema->GetOwner());
+}
+
 FdoSmPhClassReader::~FdoSmPhClassReader(void)
 {
 }
@@ -208,7 +215,7 @@ FdoSmPhClassSADReaderP FdoSmPhClassReader::GetClassSADReader()
 	return new FdoSmPhClassSADReader(mSchemaName, GetName(), mClassSADReader );
 }
 
-FdoSmPhReaderP FdoSmPhClassReader::MakeReader( FdoStringP schemaName, FdoSmPhMgrP mgr )
+FdoSmPhReaderP FdoSmPhClassReader::MakeReader( FdoStringP schemaName, FdoSmPhMgrP mgr, FdoString* className )
 {
     mbTableCreatorDefined = false;
     mbSchemaOptionsTableDefined = false;
@@ -242,25 +249,25 @@ FdoSmPhReaderP FdoSmPhClassReader::MakeReader( FdoStringP schemaName, FdoSmPhMgr
         if ( FdoSmPhDbObjectP(classRow->GetDbObject())->GetExists() ) {
             mbReadFromMetadata = true;
             // F_CLASSDEFINITION exists, read from MetaSchema
-            pSubReader = MakeMtReader( rows, schemaName, mgr );
+            pSubReader = MakeMtReader( rows, schemaName, mgr, className );
         }
         else {
             // F_CLASSDEFINITION does not exist, read from native physical schema.
-            pSubReader = MakeRdReader( rows, schemaName, mgr );
+            pSubReader = MakeRdReader( rows, schemaName, mgr, className );
         }
     }
 
     return pSubReader;
 }
 
-FdoSmPhReaderP FdoSmPhClassReader::MakeMtReader( FdoSmPhRowsP rows, FdoStringP schemaName, FdoSmPhMgrP mgr )
+FdoSmPhReaderP FdoSmPhClassReader::MakeMtReader( FdoSmPhRowsP rows, FdoStringP schemaName, FdoSmPhMgrP mgr, FdoString* className )
 {
-    return new FdoSmPhMtClassReader( rows, schemaName, mgr );
+    return new FdoSmPhMtClassReader( rows, schemaName, className, mgr );
 }
 
-FdoSmPhReaderP FdoSmPhClassReader::MakeRdReader( FdoSmPhRowsP rows, FdoStringP schemaName, FdoSmPhMgrP mgr )
+FdoSmPhReaderP FdoSmPhClassReader::MakeRdReader( FdoSmPhRowsP rows, FdoStringP schemaName, FdoSmPhMgrP mgr, FdoString* className  )
 {
-    return mgr->CreateRdClassReader( rows, schemaName )->SmartCast<FdoSmPhReader>();
+    return mgr->CreateRdClassReader( rows, schemaName, className )->SmartCast<FdoSmPhReader>();
 }
 
 

@@ -146,7 +146,8 @@ FdoSmLpClassDefinitionP FdoSmLpClassBase::GetBaseClass()
 const FdoSmLpClassDefinition* FdoSmLpClassBase::RefMetaClass() const
 {
 	// MetaClasses currently do not have a MetaClass 
-	if ( wcscmp( RefLogicalPhysicalSchema()->GetName(), FdoSmPhMgr::mMetaClassSchemaName ) == 0 )
+	if ( ! ((FdoSmLpClassBase*)this)->GetLogicalPhysicalSchema()->GetPhysicalSchema()->GetOwner()->GetHasMetaSchema() ||
+           wcscmp( RefLogicalPhysicalSchema()->GetName(), FdoSmPhMgr::mMetaClassSchemaName ) == 0 )
 		return(NULL);
 
 	// The MetaClass is the class in the MetaClass schema with the same name as the 
@@ -2355,21 +2356,21 @@ FdoSmLpDbObjectP FdoSmLpClassBase::FinalizeNewDbObject(
 
     if ( !pPathDbObject ) {
 	    // No direct join , so check each dependency to see if it leads to a join path
-	    for ( int i = 0; i < pDeps->GetCount(); i++ ) {
-		    const FdoSmPhDependency* pDep = pDeps->RefItem(i);
+	for ( int i = 0; i < pDeps->GetCount(); i++ ) {
+		const FdoSmPhDependency* pDep = pDeps->RefItem(i);
 
-		    // Consider only cardinality 1 dependencies because collections of data
-		    // properties are not supported.
-		    if ( pDep->GetCardinality() == 1 ) {
-			    FdoSmLpDbObjectP pCurrDbObject;
+		// Consider only cardinality 1 dependencies because collections of data
+		// properties are not supported.
+		if ( pDep->GetCardinality() == 1 ) {
+			FdoSmLpDbObjectP pCurrDbObject;
 
-			    // Get the primary key table and Finalize it.
-                FdoSmPhMgrP      pPhysical = GetLogicalPhysicalSchema()->GetPhysicalSchema();
-                FdoSmPhDbObjectP pDepDbObject;
-                if (FdoSmPhOwnerP(pPhysical->GetOwner())->GetHasMetaSchema())
-			        pDepDbObject = pPhysical->FindDbObject( pDep->GetPkTableName() );
-                else
-			        pDepDbObject = pPhysical->FindDbObject( pDep->GetPkTableName(), mOwner );
+			// Get the primary key table and Finalize it.
+            FdoSmPhMgrP      pPhysical = GetLogicalPhysicalSchema()->GetPhysicalSchema();
+            FdoSmPhDbObjectP pDepDbObject;
+            if (FdoSmPhOwnerP(pPhysical->GetOwner())->GetHasMetaSchema())
+			    pDepDbObject = pPhysical->FindDbObject( pDep->GetPkTableName() );
+            else
+			    pDepDbObject = pPhysical->FindDbObject( pDep->GetPkTableName(), mOwner );
 
                 // Optimization: No need to follow the primary key table if it has no 
                 // "Up" dependencies. This saves a lot of time when following dependencies
@@ -2377,19 +2378,19 @@ FdoSmLpDbObjectP FdoSmLpClassBase::FinalizeNewDbObject(
                 // to tables that do not have "up" dependencies. Skipping FinalizeDbObject for 
                 // these tables saves a lot of time for datastores with many classes.
 			    if ( pDepDbObject && (pDepDbObject->GetDependenciesUp()->GetCount() > 0) ) 
-				    pCurrDbObject = FinalizeDbObject( pDepDbObject, dbObjects, iLevel + 1, pProp );
-    			
-			    // If it was successfully finalized, check if it has a join path to the class table and 
-			    // it's the shortest path encountered so far.
-			    if ( pCurrDbObject && (pCurrDbObject->GetPathDist() >= 0) && (pCurrDbObject->GetPathDist() < iMinDist) ) {
-				    // If so then it is the current candidate for the next table in the 
-				    // join path.
-				    iMinDist = pCurrDbObject->GetPathDist();
-				    pPathDbObject = (pCurrDbObject->GetPathDist() == 0) ? mDbObject : pCurrDbObject;
-				    pPathDep = pDep;
-			    }
-		    }
-	    }
+				pCurrDbObject = FinalizeDbObject( pDepDbObject, dbObjects, iLevel + 1, pProp );
+			
+			// If it was successfully finalized, check if it has a join path to the class table and 
+			// it's the shortest path encountered so far.
+			if ( pCurrDbObject && (pCurrDbObject->GetPathDist() >= 0) && (pCurrDbObject->GetPathDist() < iMinDist) ) {
+				// If so then it is the current candidate for the next table in the 
+				// join path.
+				iMinDist = pCurrDbObject->GetPathDist();
+				pPathDbObject = (pCurrDbObject->GetPathDist() == 0) ? mDbObject : pCurrDbObject;
+				pPathDep = pDep;
+			}
+		}
+	}
     }
 
 	if ( pPathDbObject ) {

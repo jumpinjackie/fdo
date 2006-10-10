@@ -21,23 +21,32 @@
 #include <Sm/Ph/Mt/ClassReader.h>
 #include <Sm/Ph/Rd/ColumnReader.h>
 
-FdoSmPhMtClassReader::FdoSmPhMtClassReader( FdoSmPhRowsP froms, FdoStringP schemaName, FdoSmPhMgrP mgr ) : 
-	FdoSmPhReader( MakeReader(froms, schemaName, mgr) )
+FdoSmPhMtClassReader::FdoSmPhMtClassReader( FdoSmPhRowsP froms, FdoStringP schemaName, FdoStringP className, FdoSmPhMgrP mgr ) : 
+	FdoSmPhReader( MakeReader(froms, schemaName, mgr, className) )
 {
     // Bulk load physical objects for better performance.
-    CachePhysical( schemaName, mgr );
+    if( className == NULL )
+        CachePhysical( schemaName, mgr );
 }
 
 FdoSmPhMtClassReader::~FdoSmPhMtClassReader(void)
 {
 }
 
-FdoSmPhReaderP FdoSmPhMtClassReader::MakeReader( FdoSmPhRowsP froms, FdoStringP schemaName, FdoSmPhMgrP mgr )
+FdoSmPhReaderP FdoSmPhMtClassReader::MakeReader( FdoSmPhRowsP froms, FdoStringP schemaName, FdoSmPhMgrP mgr, FdoString* className )
 {
     // Generate the where clause
-    FdoStringP where = FdoStringP::Format( 
-        L"where schemaname = %ls and f_classdefinition.classtype = f_classtype.classtype order by f_classdefinition.classname", 
-    	(FdoString*) mgr->FormatSQLVal(schemaName, FdoSmPhColType_String)
+    FdoStringP where;
+    if( className == NULL || className[0] == '\0' )
+        where = FdoStringP::Format( 
+            L"where schemaname = %ls and f_classdefinition.classtype = f_classtype.classtype order by f_classdefinition.classname", 
+    	    (FdoString*) mgr->FormatSQLVal(schemaName, FdoSmPhColType_String)
+    );
+    else
+        where = FdoStringP::Format( 
+            L"where schemaname = %ls and f_classdefinition.classname = %ls and  f_classdefinition.classtype = f_classtype.classtype order by f_classdefinition.classname", 
+    	    (FdoString*) mgr->FormatSQLVal(schemaName, FdoSmPhColType_String),
+            (FdoString*) mgr->FormatSQLVal(className, FdoSmPhColType_String)
     );
 
     // Create a query reader to wrap around
