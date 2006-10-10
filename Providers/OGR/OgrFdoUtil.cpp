@@ -215,6 +215,8 @@ void OgrFdoUtil::ConvertFeature(FdoPropertyValueCollection* src, OGRFeature* dst
                 OGRGeometryFactory::createFromWkb(wkb, NULL, &geom, len);
 
                 dst->SetGeometryDirectly(geom); //the feature now owns this pointer
+
+                delete [] wkb;
             }
         }
         else
@@ -231,13 +233,14 @@ void OgrFdoUtil::ConvertFeature(FdoPropertyValueCollection* src, OGRFeature* dst
             case OFTInteger:
                 {
                     FdoInt32Value* iv = dynamic_cast<FdoInt32Value*>(value.p);
-                    if (iv) dst->SetField(mbpropName, (int)iv->GetInt32());
+                    if (iv && !iv->IsNull()) 
+                        dst->SetField(mbpropName, (int)iv->GetInt32());
                 }
                 break;
             case OFTString:
                 {
                     FdoStringValue* sv = dynamic_cast<FdoStringValue*>(value.p);
-                    if (sv)
+                    if (sv && !sv->IsNull())
                     {
                         FdoString* str = sv->GetString();
                         W2A(str);
@@ -248,7 +251,7 @@ void OgrFdoUtil::ConvertFeature(FdoPropertyValueCollection* src, OGRFeature* dst
             case OFTWideString: 
                 {
                     FdoStringValue* sv = dynamic_cast<FdoStringValue*>(value.p);
-                    if (sv)
+                    if (sv && !sv->IsNull())
                     {
                         FdoString* str = sv->GetString();
                         //dst->SetField(mbpropName, str); //unsupported so far
@@ -258,7 +261,8 @@ void OgrFdoUtil::ConvertFeature(FdoPropertyValueCollection* src, OGRFeature* dst
             case OFTReal:
                 {
                     FdoDoubleValue* iv = dynamic_cast<FdoDoubleValue*>(value.p);
-                    if (iv) dst->SetField(mbpropName, (double)iv->GetDouble());
+                    if (iv && !iv->IsNull()) 
+                        dst->SetField(mbpropName, (double)iv->GetDouble());
                 }
                 break;
             case OFTDate:
@@ -266,19 +270,23 @@ void OgrFdoUtil::ConvertFeature(FdoPropertyValueCollection* src, OGRFeature* dst
             case OFTDateTime:
                 {
                     FdoDateTimeValue* dv = dynamic_cast<FdoDateTimeValue*>(value.p);
-                    FdoDateTime dt = dv->GetDateTime();
 
-                    if (dt.IsDate())
+                    if (dv && !dv->IsNull())
                     {
-                        dst->SetField(mbpropName, dt.year, dt.month, dt.day);
-                    }
-                    else if (dt.IsDateTime())
-                    {
-                        dst->SetField(mbpropName, dt.year, dt.month, dt.day, dt.hour, dt.minute, (int)dt.seconds);
-                    }
-                    else if (dt.IsTime())
-                    {
-                        dst->SetField(mbpropName, 0, 0, 0, dt.hour, dt.minute, (int)dt.seconds);
+                        FdoDateTime dt = dv->GetDateTime();
+
+                        if (dt.IsDate())
+                        {
+                            dst->SetField(mbpropName, dt.year, dt.month, dt.day);
+                        }
+                        else if (dt.IsDateTime())
+                        {
+                            dst->SetField(mbpropName, dt.year, dt.month, dt.day, dt.hour, dt.minute, (int)dt.seconds);
+                        }
+                        else if (dt.IsTime())
+                        {
+                            dst->SetField(mbpropName, 0, 0, 0, dt.hour, dt.minute, (int)dt.seconds);
+                        }
                     }
                 }
                 break;
@@ -486,8 +494,8 @@ int OgrFdoUtil::Wkb2Fgf(const unsigned char* wkb, unsigned char* fgf)
 
 int OgrFdoUtil::Fgf2Wkb(const unsigned char* fgf, unsigned char* wkb)
 {
-    OgrBinaryReader src(wkb);
-    OgrBinaryWriter dst((unsigned char*)fgf);
+    OgrBinaryReader src(fgf);
+    OgrBinaryWriter dst((unsigned char*)wkb);
 
     dst.WriteByte(1); //NDR
 
@@ -528,9 +536,15 @@ int OgrFdoUtil::Fgf2Wkb(const unsigned char* fgf, unsigned char* wkb)
         int dim = src.ReadInt();
         int skip = ((dim & FdoDimensionality_Z) != 0) ? 1 : 0;
 
-        //roll back and set the geom_type to wkb 2.5D
-        *(int*)(dst.m_begin+1) = geom_type | 0x80000000; 
-
+        if (skip)
+        {
+            //roll back and set the geom_type to wkb 2.5D
+            //TODO: do we need to set both the geom type for the parent multi geom
+            //and the child geom? For example in the case of a multipolygon, do we need to 
+            //set it for both the current polygon and the parent multipolygon?
+            *(int*)(dst.m_begin+1) = geom_type | 0x80000000; 
+        }
+        
         // the number of contours in current polygon/linestring
         int contour_count = 1; //for linestrings
 
