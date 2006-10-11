@@ -21,6 +21,12 @@
 ;//************************************************************************************
 ;//************************************************************************************
 
+MessageId=1
+SymbolicName=WFS_UNSUPPORTED_FUNCTION
+Language=English
+'%1$ls': The WFS Provider does not support this function.
+.
+
 ;//************************************************************************************
 ;//************************************************************************************
 ;//** CONNECTION MESSAGES 
@@ -240,6 +246,11 @@ MessageId=7013
 SymbolicName=WFS_SELECTAGGREGATES_INVALID_ARGUMENT
 Language=English
 The SelectAggregates(SpatialExtents) command contains an invalid function argument.
+.
+MessageId=7014
+SymbolicName=WFS_SELECT_INVALID_NAME_PARAMETER
+Language=English
+Class name not set. Cannot execute Select command.
 .
 
 ;//************************************************************************************

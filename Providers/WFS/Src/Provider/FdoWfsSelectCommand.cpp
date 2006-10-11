@@ -94,7 +94,7 @@ void FdoWfsSelectCommand::SetLockStrategy (FdoLockStrategy value)
 FdoIFeatureReader* FdoWfsSelectCommand::Execute ()
 {
 	if (mClassName == NULL)
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_2_BADPARAMETER, "Bad parameter to method"));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(WFS_SELECT_INVALID_NAME_PARAMETER)));
 
 	// first we must find out the proper WFS feature type according to the FDO class name
 	// that is , FDO class name --> GML global element name
