@@ -137,6 +137,11 @@ SymbolicName=FDOWMS_SPATIAL_EXTENTS_RASTER_ARGUMENT_DESC
 Language=English
 An argument that identifies a raster property.
 .
+MessageId=1024
+SymbolicName=FDOWMS_UNSUPPORTED_FUNCTION
+Language=English
+'%1$ls': The WMS Provider does not support this function.
+.
 
 ;//************************************************************************************
 ;//************************************************************************************
@@ -231,6 +236,16 @@ MessageId=3005
 SymbolicName=FDOWMS_CONNECTION_CLOSED
 Language=English
 The Connection to the WMS provider is closed.
+.
+MessageId=3006
+SymbolicName=FDOWMS_COPY_BASE_PROPERTIES_PARENT
+Language=English
+'%1$ls': Cannot copy base properties from unspecified parent (NULL).
+.
+MessageId=3007
+SymbolicName=FDOWMS_FIND_RASTER_PROPERTIES_CLASS
+Language=English
+'%1$ls': Cannot find raster property for unspecified class (NULL).
 .
 
 ;//************************************************************************************
@@ -434,6 +449,11 @@ MessageId=7015
 SymbolicName=FDOWMS_FEATURE_NO_RASTER_PROPERTY
 Language=English
 Class '%1$ls' does not contain a Raster property.
+.
+MessageId=7016
+SymbolicName=FDOWMS_SPATIAL_CONTEXT_INVALID_NAME
+Language=English
+'%1$ls': Invalid spatial context name; cannot activate.
 .
 
 ;//************************************************************************************

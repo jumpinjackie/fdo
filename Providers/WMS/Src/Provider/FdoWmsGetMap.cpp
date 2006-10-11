@@ -85,7 +85,9 @@ FdoWmsGetMap* FdoWmsGetMap::Create (FdoStringCollection* layerNames,
 									FdoString* elevation)
 {
 	if (layerNames == NULL || layerNames->GetCount () == 0)
-		throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID(FDO_2_BADPARAMETER), "Bad parameter to method."));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoWmsGetMap",
+                                                               L"layerNames"));
 
 	return new FdoWmsGetMap (layerNames, styleNames, srsName, imgFormat, height, width, minx, miny, maxx, maxy, version, bTransparent, backgroundColor, timeDimension, elevation);
 }

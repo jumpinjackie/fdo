@@ -162,7 +162,9 @@ FdoString* FdoWmsSpatialExtentsAggregateReader::GetItemName(FdoInt32 i)
 FdoInt32 FdoWmsSpatialExtentsAggregateReader::GetItemIndex(FdoString* itemName)  
 {
     if (0!=wcscmp(itemName, (FdoString*)m_AliasName)) {
-        throw FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)); 
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                                   L"FdoWmsSpatialExtentsAggregateReader::GetItemIndex",
+                                                                   L"itemName"));
     }
 
     return 0;
@@ -181,7 +183,7 @@ FdoPropertyType FdoWmsSpatialExtentsAggregateReader::GetItemType(FdoInt32 i)
 // We only support geometry values (spatialextents to be precise), so any call to this function will fail
 FdoDataType FdoWmsSpatialExtentsAggregateReader::GetItemDataType(FdoInt32 i)
 {
-    throw FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER));
+    throw FdoException::NLSGetMessage(FDO_NLSID(FDOWMS_UNSUPPORTED_FUNCTION), L"FdoWmsSpatialExtentsAggregateReader::GetItemDataType");
 }
 
 // Retrieve data values; these are guaranteed to only be called once per row of data:

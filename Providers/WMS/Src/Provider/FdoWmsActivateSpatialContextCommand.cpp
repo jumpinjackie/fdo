@@ -51,7 +51,8 @@ FdoString* FdoWmsActivateSpatialContextCommand::GetName ()
 void FdoWmsActivateSpatialContextCommand::SetName (FdoString* value)
 {
 	if (value == NULL || wcslen (value) == 0)
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_2_BADPARAMETER, "Bad parameter to method"));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDOWMS_SPATIAL_CONTEXT_INVALID_NAME),
+                                                               L"FdoWmsActivateSpatialContextCommand::SetName"));
 
 	mActiveSpatialContext = value;
 	mConnection->SetActiveSpatialContext (mActiveSpatialContext);

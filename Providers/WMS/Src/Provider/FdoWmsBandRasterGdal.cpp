@@ -71,7 +71,9 @@ FdoByteArray* FdoWmsBandRasterGdal::GetBounds ()
 void FdoWmsBandRasterGdal::SetBounds (FdoByteArray* bounds)
 {
 	if (bounds == NULL)
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_2_BADPARAMETER, "Bad parameter to method."));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoWmsBandRasterGdal::SetBounds",
+                                                               L"bounds"));
 
 	_validate();
 	m_bounds = FDO_SAFE_ADDREF(bounds);
@@ -86,7 +88,9 @@ FdoRasterDataModel* FdoWmsBandRasterGdal::GetDataModel ()
 void FdoWmsBandRasterGdal::SetDataModel (FdoRasterDataModel* dataModel)
 {
 	if (dataModel == NULL)
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_2_BADPARAMETER, "Bad parameter to method."));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoWmsBandRasterGdal::SetDataModel",
+                                                               L"dataModel"));
 
 	_validate();
 	FdoPtr<FdoWmsRasterCapabilities> rasterCap = new FdoWmsRasterCapabilities();
@@ -105,7 +109,9 @@ FdoInt32 FdoWmsBandRasterGdal::GetImageXSize ()
 void FdoWmsBandRasterGdal::SetImageXSize (FdoInt32 size)
 {
     if (size <= 0)
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_2_BADPARAMETER, "Bad parameter to method."));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoWmsBandRasterGdal::SetImageXSize",
+                                                               L"size"));
 
 	_validate();
 	m_image->SetImageXSize(size);
@@ -120,7 +126,9 @@ FdoInt32 FdoWmsBandRasterGdal::GetImageYSize ()
 void FdoWmsBandRasterGdal::SetImageYSize (FdoInt32 size)
 {
     if (size <= 0)
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_2_BADPARAMETER, "Bad parameter to method."));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoWmsBandRasterGdal::SetImageYSize",
+                                                               L"size"));
 
 	_validate();
 	m_image->SetImageYSize(size);

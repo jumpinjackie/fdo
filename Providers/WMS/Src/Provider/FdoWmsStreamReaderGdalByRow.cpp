@@ -49,7 +49,9 @@ FdoInt64 FdoWmsStreamReaderGdalByRow::GetLength()
 void FdoWmsStreamReaderGdalByRow::Skip(const FdoInt32 offset)
 {
     if (offset < 0)
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_2_BADPARAMETER, "Bad parameter to method."));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                                   L"FdoWmsStreamReaderGdalByRow::Skip",
+                                                                   L"offset"));
 
 	m_index += offset;
 }
@@ -82,7 +84,9 @@ FdoInt32 FdoWmsStreamReaderGdalByRow::ReadNext( FdoByte* buffer,
                                     const FdoInt32 count)
 {
     if (count < -1 || offset < 0 || buffer == NULL)
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_2_BADPARAMETER, "Bad parameter to method."));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                                   L"FdoWmsStreamReaderGdalByRow::ReadNext",
+                                                                   L"count/offset/buffer"));
 
 	FdoInt32 countRead = 0;
 	FdoInt64 remains = GetLength() - GetIndex();
@@ -113,7 +117,9 @@ FdoInt32 FdoWmsStreamReaderGdalByRow::ReadNext(  FdoArray<FdoByte> * &buffer,
                                         const FdoInt32 count)
 {
     if (count < -1 || offset < 0)
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_2_BADPARAMETER, "Bad parameter to method."));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                                   L"FdoWmsStreamReaderGdalByRow::ReadNext",
+                                                                   L"offset/count"));
 	FdoInt32 countToRead = (FdoInt32)(count == -1 ? GetLength() - GetIndex() : count);
 	// resize the buffer if necessary
 	buffer = FdoArray<FdoByte>::Create(offset + countToRead);

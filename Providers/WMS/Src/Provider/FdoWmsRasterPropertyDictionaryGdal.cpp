@@ -57,7 +57,9 @@ FdoStringCollection* FdoWmsRasterPropertyDictionayGdal::GetPropertyNames ()
 FdoDataType FdoWmsRasterPropertyDictionayGdal::GetPropertyDataType (FdoString* name)
 {
 	if (name == NULL)
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_2_BADPARAMETER, "Bad parameter to method."));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoWmsRasterPropertyDictionayGdal::GetPropertyDataType",
+                                                               L"name"));
 
 	FdoDataType rv;
 	FdoPtr<FdoRasterDataModel> dataModel = m_raster->GetDataModel();
@@ -78,7 +80,9 @@ FdoDataType FdoWmsRasterPropertyDictionayGdal::GetPropertyDataType (FdoString* n
 FdoDataValue* FdoWmsRasterPropertyDictionayGdal::GetProperty (FdoString* name)
 {
 	if (name == NULL)
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_2_BADPARAMETER, "Bad parameter to method."));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoWmsRasterPropertyDictionayGdal::GetProperty",
+                                                               L"name"));
 
 	FdoDataValue* rv;
 	FdoPtr<FdoRasterDataModel> dataModel = m_raster->GetDataModel();

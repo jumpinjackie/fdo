@@ -717,7 +717,8 @@ void FdoWmsConnection::_setProperties (FdoFeatureClass* featClass)
 void FdoWmsConnection::_setBaseProperties (FdoFeatureClass* featClass, FdoClassDefinition* parent)
 {
 	if (parent == NULL)
-		throw FdoException::Create (FdoException::NLSGetMessage(FDO_2_BADPARAMETER, "Bad parameter to method"));
+		throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDOWMS_COPY_BASE_PROPERTIES_PARENT),
+                                                                L"FdoWmsConnection::_setBaseProperties"));
 
 	FdoPtr<FdoPropertyDefinitionCollection> parentProps = parent->GetProperties ();
 	if (parentProps->GetCount () > 0)
@@ -826,7 +827,8 @@ void FdoWmsConnection::_setDefaultSpatialContextAssociation (FdoClassDefinition*
 FdoRasterPropertyDefinition* FdoWmsConnection::FindRasterProperty (FdoClassDefinition* featClass)
 {
 	if (featClass == NULL) {
-		throw FdoException::Create (FdoException::NLSGetMessage(FDO_2_BADPARAMETER, "Bad parameter to method"));
+		throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDOWMS_FIND_RASTER_PROPERTIES_CLASS),
+                                                                L"FdoWmsConnection::FindRasterProperty"));
     }
 
     FdoRasterPropertyDefinition* rasterProp = NULL;
