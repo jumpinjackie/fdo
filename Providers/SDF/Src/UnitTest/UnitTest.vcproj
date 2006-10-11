@@ -480,6 +480,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\ConnectionInfoTest.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ConnectionInfoTest.h"
+			>
+		</File>
+		<File
 			RelativePath=".\ExtendedSelectTest.cpp"
 			>
 		</File>

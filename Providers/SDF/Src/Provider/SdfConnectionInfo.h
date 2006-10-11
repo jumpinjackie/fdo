@@ -34,6 +34,10 @@ class SdfConnectionInfo : public FdoIConnectionInfo
      * The dictionary of connection parameters.
      */
     FdoPtr<FdoCommonConnPropDictionary> mPropertyDictionary;
+    /**
+     * The string collection used for the dependent files.
+     */
+    FdoPtr<FdoStringCollection> mDependentFiles;
 
     //-------------------------------------------------------
     // Constructor / destructor
