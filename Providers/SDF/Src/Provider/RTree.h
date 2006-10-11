@@ -51,6 +51,8 @@ public:
 
     void Drop();
 
+    void UpdateRootNode();
+
 private:
 
     //database access helper functions
@@ -62,9 +64,6 @@ private:
     int InsertRect2(Bounds& bounds, Node& n, Node& newNode, int level, SQLiteData& featureKey, REC_NO recnoForNode);
     int DeleteRect2(Bounds& r, SQLiteData& featureKey, Node& n, ListNode** ee);
     int Search(Node& node, Bounds& bounds, SearchHitCallback shcb, void* userData);
-
-
-    void UpdateRootNode();
 
     //RTree maintenance logic
     /*static*/ int AddBranch(Branch& branch, Node& node, Node& newNode);

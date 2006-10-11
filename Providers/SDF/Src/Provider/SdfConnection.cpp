@@ -859,6 +859,20 @@ void SdfConnection::ReSyncData()
             }
         }
     }
+
+    stdext::hash_map<void*, void*>::iterator treelist;
+    for (treelist = m_hRTrees.begin(); treelist != m_hRTrees.end(); treelist++)
+    {
+        //Need to re-read the root node in case it was updated by a different connection.
+        FdoPtr<FdoClassDefinition> base = ((FdoClassDefinition*)treelist->first)->GetBaseClass();
+        if (base == NULL)
+        {
+            if (treelist->second != NULL)
+            {
+                ((SdfRTree*)treelist->second)->UpdateRootNode();
+            }
+        }
+    }
 }
 
 void SdfConnection::RegenIndex( FdoClassDefinition *clas, KeyDb* keys, DataDb  *dataDb )
