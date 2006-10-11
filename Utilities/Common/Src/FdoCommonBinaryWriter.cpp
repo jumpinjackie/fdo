@@ -350,7 +350,7 @@ void FdoCommonBinaryWriter::WritePropertyValue(FdoPropertyDefinition* pd, FdoPro
         FdoPtr<FdoByteArray> byteArray = ((FdoGeometryValue*)(expression.p))->GetGeometry();
 
         if (!byteArray)
-            throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+            throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_60_NULL_POINTER)));
 
         //Note we do not need to write the length of a byte array since we know it
         //by subtracting the offsets into property values in the data record

@@ -182,7 +182,10 @@ int FdoCommonOSUtil::ismbslead(const unsigned char *string, const unsigned char 
 
         i = mbrlen((const char*)(string + curPos), MB_CUR_MAX, &pstate);
         if (i < 0)
-            throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+	        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                                   L"FdoCommonOSUtil::ismbslead",
+                                                                   L"string"));
+
         if (i > 0)
 	    curPos += i;
     }
@@ -208,7 +211,9 @@ int FdoCommonOSUtil::ismbcalnum(const unsigned char *string, long stringLength, 
     memset(&pstate, 0, sizeof(pstate));
     size_t lStatus = mbrtowc(&wBuffer, (const char*)current, stringLength - (current-string), &pstate);
     if (lStatus<0)
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoCommonOSUtil::ismbcalnum",
+                                                               L"string/current"));
 
     return iswalnum(wBuffer) ? -1 : 0;
 }
@@ -220,7 +225,10 @@ int FdoCommonOSUtil::ismbcalpha(const unsigned char *string, long stringLength, 
     memset(&pstate, 0, sizeof(pstate));
     size_t lStatus = mbrtowc(&wBuffer, (const char*)current, stringLength - (current-string), &pstate);
     if (lStatus<0)
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoCommonOSUtil::ismbcalpha",
+                                                               L"string/current"));
+
     return iswalpha(wBuffer) ? -1 : 0;
 }
 
