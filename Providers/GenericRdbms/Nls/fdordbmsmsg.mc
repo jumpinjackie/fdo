@@ -1701,3 +1701,45 @@ SymbolicName=FDORDBMS_485
 Language=English
 No column for property '%1$ls'.
 .
+MessageId=2711
+SymbolicName=FDORDBMS_486
+Language=English
+Expected property '%1$ls' to be a geometric property.
+.
+MessageId=2712
+SymbolicName=FDORDBMS_487
+Language=English
+'%1$ls': Invalid data detected in any of the following properties: '%2$ls'.
+.
+MessageId=2713
+SymbolicName=FDORDBMS_488
+Language=English
+'%1$ls': Invalid MBC format: missing root cell.
+.
+MessageId=2714
+SymbolicName=FDORDBMS_489
+Language=English
+'%1$ls': Invalid MBC format: illegal character.
+.
+MessageId=2715
+SymbolicName=FDORDBMS_490
+Language=English
+'%1$ls': MBC error: too many skip characters specified.
+.
+MessageId=2716
+SymbolicName=FDORDBMS_491
+Language=English
+'%1$ls': MBC error: depth exceeds maximum depth.
+.
+MessageId=2717
+SymbolicName=FDORDBMS_492
+Language=English
+'%1$ls': MBC error: extents outside spatial index extents.
+
+
+
+
+
+
+
+.

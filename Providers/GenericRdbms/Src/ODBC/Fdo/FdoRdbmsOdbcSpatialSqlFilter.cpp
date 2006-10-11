@@ -77,7 +77,9 @@ FdoRdbmsOdbcSpatialSqlFilter::FdoRdbmsOdbcSpatialSqlFilter(
 	const FdoSpatialCondition * spatialCondition = dynamic_cast<const FdoSpatialCondition*>( geometricCondition );
     
     if ( NULL == spatialCondition )
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoRdbmsOdbcSpatialSqlFilter::FdoRdbmsOdbcSpatialSqlFilter",
+                                                               L"geometricCondition"));
 
     // Note: needed to cast away constness.
     FdoPtr<FdoExpression> geometryExpression = ((FdoSpatialCondition *)spatialCondition)->GetGeometry();

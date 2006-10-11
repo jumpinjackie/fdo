@@ -598,9 +598,12 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
 							const FdoSmLpPropertyDefinitionCollection * propertyDefs = classDefinition->RefProperties();
 							const FdoSmLpPropertyDefinition * propertyDef = propertyDefs->RefItem(name);
 							if ( propertyDef == NULL )
-								throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+                                throw FdoFilterException::Create(NlsMsgGet1(FDORDBMS_28, "Property '%1$ls' is not found", name));
+
 							if ( FdoPropertyType_GeometricProperty != propertyDef->GetPropertyType() )
-								throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+                                throw FdoFilterException::Create(NlsMsgGet1(FDORDBMS_486,
+                                                                            "Expected property '%1$ls' to be a geometric property.",
+                                                                            name));
 
 							geomPropDef = static_cast<const FdoSmLpGeometricPropertyDefinition *>(propertyDef);
 
