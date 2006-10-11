@@ -74,6 +74,7 @@ FdoPtr<FdoSmPhRdSchemaReader> FdoSmPhOdbcMgr::CreateRdSchemaReader( FdoSmPhRowsP
 FdoPtr<FdoSmPhRdClassReader> FdoSmPhOdbcMgr::CreateRdClassReader( 
     FdoPtr<FdoSmPhRowCollection> rows, 
     FdoStringP schemaName, 
+    FdoStringP className,
     FdoBoolean keyedOnly,
     FdoStringP database,
     FdoStringP owner
@@ -91,7 +92,7 @@ FdoPtr<FdoSmPhRdClassReader> FdoSmPhOdbcMgr::CreateRdClassReader(
         owner = schemaName;
     }
 
-    return FdoSmPhMgr::CreateRdClassReader(rows, schemaName, keyedOnly, database, owner);
+    return FdoSmPhMgr::CreateRdClassReader(rows, schemaName, className, keyedOnly, database, owner);
 }
 
 void FdoSmPhOdbcMgr::SetConfiguration( 

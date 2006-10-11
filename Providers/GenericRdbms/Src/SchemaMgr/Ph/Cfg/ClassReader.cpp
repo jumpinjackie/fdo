@@ -112,6 +112,7 @@ FdoSmPhReaderP FdoSmPhCfgGrdClassReader::MakeReader(FdoSmPhRowsP rows, FdoString
         pSubReader = new FdoSmPhRdClassReader( 
             rows, 
             L"", 
+            L"", 
             mgr,
             false,
             mDatabase,

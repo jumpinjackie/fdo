@@ -45,7 +45,7 @@ public:
 
     // Create various readers for AutoGenerating schemas based on config document directives.
     virtual FdoPtr<FdoSmPhCfgSchemaReader> CreateCfgSchemaReader( FdoSmPhRowsP rows );
-    virtual FdoPtr<FdoSmPhCfgClassReader> CreateCfgClassReader( FdoSmPhRowsP rows, FdoStringP schemaName );
+    virtual FdoPtr<FdoSmPhCfgClassReader> CreateCfgClassReader( FdoSmPhRowsP rows, FdoStringP schemaName  );
     virtual FdoPtr<FdoSmPhCfgPropertyReader> CreateCfgPropertyReader( FdoStringP schemaName, FdoStringP className, FdoSmPhDbObjectP dbObject );
 
     virtual FdoPtr<FdoSmPhRdSchemaReader> CreateRdSchemaReader( 
@@ -57,6 +57,7 @@ public:
     virtual FdoPtr<FdoSmPhRdClassReader> CreateRdClassReader( 
         FdoPtr<FdoSmPhRowCollection> rows, 
         FdoStringP schemaName,
+        FdoStringP className,
         FdoBoolean keyedOnly = true,// If true, skip tables without key.
         FdoStringP database = L"",  // Database where RDBMS schema resides (current connection by default)
         FdoStringP owner = L""      // the RDBMS schema (defaults to current schema)
