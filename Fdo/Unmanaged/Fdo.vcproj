@@ -1610,6 +1610,10 @@
 					RelativePath="Inc\Fdo\Connections\ITransaction.h"
 					>
 				</File>
+				<File
+					RelativePath=".\Inc\Fdo\Connections\ProviderDatastoreType.h"
+					>
+				</File>
 				<Filter
 					Name="Capabilities"
 					>
