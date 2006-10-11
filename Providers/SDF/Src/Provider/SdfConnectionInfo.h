@@ -81,6 +81,18 @@ class SdfConnectionInfo : public FdoIConnectionInfo
         // connection.
         SDF_API virtual FdoIConnectionPropertyDictionary* GetConnectionProperties();
 
+        // Returns the provider type. A provider can be a file-based, database-based or
+        // web-based provider. The valid values the function may return are defined in
+        // the enumeration FdoProviderDatastoreType. The enumeration includes the following
+        // values: FdoProviderDatastoreType_Unknown, FdoProviderDatastoreType_File,
+        // FdoProviderDatastoreType_DatabaseServer, FdoProviderDatastoreType_WebServer.
+        SDF_API virtual FdoProviderDatastoreType GetProviderDatastoreType();
+
+        // File-based providers depend on a various files. This function returns a list
+        // of fully qualified dependend file names. The return parameter will be NULL if
+        // the provider is not a file-based provider.
+        SDF_API virtual FdoStringCollection* GetDependentFileNames();
+
     //-------------------------------------------------------
     // SdfConnectionInfo implementation
     //-------------------------------------------------------

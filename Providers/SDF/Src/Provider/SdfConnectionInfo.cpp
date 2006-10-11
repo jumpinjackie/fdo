@@ -16,8 +16,10 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //  
 #include "stdafx.h"
+#include "SdfConnection.h"
 #include "SdfConnectionInfo.h"
 #include <FdoCommonStringUtil.h>
+#include <FdoCommonFile.h>
 //-------------------------------------------------------
 // Constructor / destructor
 //-------------------------------------------------------
@@ -121,3 +123,36 @@ FdoIConnectionPropertyDictionary* SdfConnectionInfo::GetConnectionProperties()
     return (FDO_SAFE_ADDREF(mPropertyDictionary.p));
 }
 
+// Returns the provider type. A provider can be a file-based, database-based or
+// web-based provider. The valid values the function may return are defined in
+// the enumeration FdoProviderDatastoreType. The enumeration includes the following
+// values: FdoProviderDatastoreType_Unknown, FdoProviderDatastoreType_File,
+// FdoProviderDatastoreType_DatabaseServer, FdoProviderDatastoreType_WebServer.
+FdoProviderDatastoreType SdfConnectionInfo::GetProviderDatastoreType()
+{
+    return FdoProviderDatastoreType_File;
+}
+
+// File-based providers depend on a various files. This function returns a list
+// of fully qualified dependend file names. The return parameter will be NULL if
+// the provider is not a file-based provider.
+FdoStringCollection* SdfConnectionInfo::GetDependentFileNames()
+{
+    // If the connection is not yet open return NULL.
+    if (m_connection->GetConnectionState() != FdoConnectionState_Open)
+        return NULL;
+
+    if (mDependentFiles == NULL)
+    {
+        mDependentFiles = FdoStringCollection::Create();
+        const wchar_t* userPath = mPropertyDictionary->GetProperty(PROP_NAME_FILE);
+        if (FdoCommonFile::IsAbsolutePath(userPath))
+            mDependentFiles->Add(userPath);
+        else
+        {
+            const wchar_t* userPath1 = FdoCommonFile::GetAbsolutePath(userPath);
+            mDependentFiles->Add(userPath1);
+        }
+    }
+    return (FDO_SAFE_ADDREF(mDependentFiles.p));
+}
