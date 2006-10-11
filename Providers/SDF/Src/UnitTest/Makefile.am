@@ -33,6 +33,7 @@ UnitTest_SOURCES = \
   AssociationSelectTest.cpp \
   AssociationUpdateTest.cpp \
   AssociationDeleteTest.cpp \
+  ConnectionInfoTest.cpp \
   ExtendedSelectTest.cpp \
   NlsTest.cpp \
   SelectTest.cpp \
@@ -45,6 +46,7 @@ noinst_HEADERS = $(UnitTest_SOURCES) \
   AssociationSchemaTest.h \
   AssociationSelectTest.h \
   AssociationUpdateTest.h \
+  ConnectionInfoTest.h \
   ExtendedSelectTest.h \
   FdoMultiThreadTest.h \
   FgfStreamWriter.h \
