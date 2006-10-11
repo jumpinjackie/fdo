@@ -693,7 +693,8 @@ FdoSmPhScInfoP FdoSmLpGeometricPropertyDefinition::CreateSpatialContextInfo()
 	{
 		// When metadata exists, then "Default" spatial context should exist
 		if ( FdoSmPhOwnerP(pPhMgr->GetOwner())->GetHasMetaSchema() )
-			throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+			throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_134_SPATIAL_CONTEXT_ERROR_DEFAULT_EXISTS),
+                                                                   L"FdoSmLpGeometricPropertyDefinition::CreateSpatialContextInfo"));
 	}
 	else
 	{

@@ -39,7 +39,8 @@ FdoSmLpSpatialContext::FdoSmLpSpatialContext(
 {
     // Check that these two readers match.
     if (mScgId != scReader->GetGroupId())
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_135_SPATIAL_CONTEXT_ERROR_ID_MISSMATCH),
+                                                               L"FdoSmLpSpatialContext::FdoSmLpSpatialContext"));
 
     // Convert the extent type from string to enumeration.
 
@@ -49,7 +50,8 @@ FdoSmLpSpatialContext::FdoSmLpSpatialContext(
     else if (extentType == L"S")
         mExtentType = FdoSpatialContextExtentType_Static;
     else
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_136_SPATIAL_CONTEXT_ERROR_UNKNOWN_EXTENT_TYPE),
+                                                               L"FdoSmLpSpatialContext::FdoSmLpSpatialContext"));
 
     // Convert the extent from basic types to a geometry in FGF format.
     FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
