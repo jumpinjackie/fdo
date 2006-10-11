@@ -115,6 +115,16 @@ FdoIConnectionPropertyDictionary* FdoRdbmsOdbcConnectionInfo::GetConnectionPrope
     return mPropertyDictionary;
 }
 
+FdoProviderDatastoreType FdoRdbmsOdbcConnectionInfo::GetProviderDatastoreType()
+{
+    return FdoProviderDatastoreType_DatabaseServer;
+}
+
+FdoStringCollection* FdoRdbmsOdbcConnectionInfo::GetDependentFileNames()
+{
+    return NULL;
+}
+
 void FdoRdbmsOdbcConnectionInfo::Dispose()
 {
     delete this;

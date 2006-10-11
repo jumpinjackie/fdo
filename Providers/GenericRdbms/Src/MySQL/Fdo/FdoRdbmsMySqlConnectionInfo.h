@@ -41,6 +41,10 @@ public:
 
     virtual FdoIConnectionPropertyDictionary* GetConnectionProperties();
 
+    virtual FdoProviderDatastoreType GetProviderDatastoreType();
+
+    virtual FdoStringCollection* GetDependentFileNames();
+
 public:
     FdoPtr<FdoRdbmsConnectionPropertyDictionary> mPropertyDictionary;
     FdoRdbmsConnection *mConnection;

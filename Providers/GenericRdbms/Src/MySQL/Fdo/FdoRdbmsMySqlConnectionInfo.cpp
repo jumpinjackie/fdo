@@ -80,3 +80,13 @@ FdoIConnectionPropertyDictionary* FdoRdbmsMySqlConnectionInfo::GetConnectionProp
     FDO_SAFE_ADDREF(mPropertyDictionary.p);
     return mPropertyDictionary;
 }
+
+FdoProviderDatastoreType FdoRdbmsMySqlConnectionInfo::GetProviderDatastoreType()
+{
+    return FdoProviderDatastoreType_DatabaseServer;
+}
+
+FdoStringCollection* FdoRdbmsMySqlConnectionInfo::GetDependentFileNames()
+{
+    return NULL;
+}
