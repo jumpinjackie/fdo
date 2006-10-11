@@ -33,6 +33,7 @@ UnitTest_SOURCES = \
   ShpTests.cpp \
   FileAccessTests.cpp \
   ConnectTests.cpp \
+  ConnectionInfoTest.cpp \
   IndexTests.cpp \
   SelectTests.cpp \
   SelectAggregatesTests.cpp \
@@ -60,6 +61,7 @@ noinst_HEADERS = $(UnitTest_SOURCES) \
   PerformanceTests.h \
   ShpTests.h \
   ConnectTests.h \
+  ConnectionInfoTest.h \
   IndexTests.h \
   ReadOnlyTests.h \
   SpatialFilterTests.h \

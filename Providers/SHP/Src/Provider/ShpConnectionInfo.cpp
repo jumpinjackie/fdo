@@ -126,6 +126,58 @@ FdoProviderDatastoreType ShpConnectionInfo::GetProviderDatastoreType()
 /// file-based provider, NULL otherwise.</returns>
 FdoStringCollection* ShpConnectionInfo::GetDependentFileNames()
 {
-    return NULL;
-}
+    ShpFileSet      *shpFileSet          = NULL;
+    ShapeFile       *shpFile             = NULL;
+    ShapeDBF        *shpDbfFile          = NULL;
+    ShapePRJ        *shpPrjFile          = NULL;
+    ShapeCPG        *shpCpgFile          = NULL;
+    ShapeIndex      *shpIndexFile        = NULL;
+    ShpSpatialIndex *shpSpatialIndexFile = NULL;
 
+    // If the connection is not yet open return NULL.
+    if (mConnection->GetConnectionState() != FdoConnectionState_Open)
+        return NULL;
+
+    if (mDependentFiles == NULL)
+    {
+        mDependentFiles = FdoStringCollection::Create();
+
+        // The connection can be either to a single file or a single non-recursive
+        // directory. To get the list of all dependent files, it is necessary to
+        // get the SHP physical schema first and use it to process the list of SHP
+        // file sets. For each file set, it is required to test whether or not the
+        // file represents a temporary file. If this is the case then the file is
+        // not added to the resulting file list.
+        FdoPtr<ShpPhysicalSchema> shpPhysicalSchema = mConnection->GetPhysicalSchema();
+        FdoInt32 sphFileSetCount = shpPhysicalSchema->GetFileSetCount();
+        for (FdoInt32 index = 0; index < sphFileSetCount; index++)
+        {
+            shpFileSet = shpPhysicalSchema->GetFileSet(index);
+
+            shpFile = shpFileSet->GetShapeFile();
+            if ((shpFile != NULL) && (!shpFile->IsTemporaryFile()))
+                mDependentFiles->Add(shpFile->GetAbsolutePath(shpFile->FileName()));
+
+            shpDbfFile = shpFileSet->GetDbfFile();
+            if ((shpDbfFile != NULL) && (!shpDbfFile->IsTemporaryFile()))
+                mDependentFiles->Add(shpDbfFile->GetAbsolutePath(shpDbfFile->FileName()));
+
+            shpPrjFile = shpFileSet->GetPrjFile();
+            if ((shpPrjFile != NULL) && (!shpPrjFile->IsTemporaryFile()))
+                mDependentFiles->Add(shpPrjFile->GetAbsolutePath(shpPrjFile->FileName()));
+
+            shpCpgFile = shpFileSet->GetCpgFile();
+            if ((shpCpgFile != NULL) && (!shpCpgFile->IsTemporaryFile()))
+                mDependentFiles->Add(shpCpgFile->GetAbsolutePath(shpCpgFile->FileName()));
+
+            shpIndexFile = shpFileSet->GetShapeIndexFile();
+            if ((shpIndexFile != NULL) && (!shpIndexFile->IsTemporaryFile()))
+                mDependentFiles->Add(shpIndexFile->GetAbsolutePath(shpIndexFile->FileName()));
+
+            shpSpatialIndexFile = shpFileSet->GetSpatialIndex();
+            if ((shpSpatialIndexFile != NULL) && (!shpSpatialIndexFile->IsTemporaryFile()))
+                mDependentFiles->Add(shpSpatialIndexFile->GetAbsolutePath(shpSpatialIndexFile->FileName()));
+        }
+    }
+    return (FDO_SAFE_ADDREF(mDependentFiles.p));
+}

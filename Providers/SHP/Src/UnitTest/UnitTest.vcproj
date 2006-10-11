@@ -210,6 +210,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ConnectionInfoTests.cpp"
+				>
+			</File>
+			<File
 				RelativePath="ConnectTests.cpp"
 				>
 			</File>
@@ -312,6 +316,10 @@
 			</File>
 			<File
 				RelativePath="ComparisonTests.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ConnectionInfoTests.h"
 				>
 			</File>
 			<File
