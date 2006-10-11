@@ -189,7 +189,9 @@ void FgfUtil::WriteGeometry(FdoIGeometry* geometry, FdoByteArray ** outputStream
 		break;
 
     default:
-    	throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+    	throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_UNKNOWN_GEOMETRY_TYPE), 
+                                                               L"FgfUtil::WriteGeometry",
+                                                               geometryType));
     }
 }
 
@@ -218,7 +220,9 @@ void FgfUtil::WriteRing(FdoIRing* ring, FdoByteArray ** outputStream)
 {
 	if ( (NULL == ring) ||
 		(NULL == outputStream) )
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FgfUtil::WriteRing",
+                                                               L"ring/outputSream"));
 
 	// StartPoint
 	FdoPtr<FdoICurveSegmentAbstract> curveSeg = ring->GetItem(0);
@@ -251,7 +255,9 @@ void FgfUtil::WriteCurveSegment(FdoICurveSegmentAbstract* curveSeg, FdoByteArray
 	*/
 	if ( (NULL == curveSeg) ||
 		(NULL == outputStream) )
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+	        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                                   L"FgfUtil::WriteCurveSegment",
+                                                                   L"curveSeg/outputStream"));
 
 	FdoGeometryComponentType geomType = curveSeg->GetDerivedType();
 
@@ -295,7 +301,9 @@ void FgfUtil::WriteCurveSegment(FdoICurveSegmentAbstract* curveSeg, FdoByteArray
 		}
 	default:
 		{
-    		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+    		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_UNKNOWN_GEOMETRY_COMPONENT_TYPE),
+                                                                   L"FgfUtil::WriteCurveSegment",
+                                                                   geomType));
 		}
 	} // of switch
 }
@@ -337,7 +345,7 @@ FdoIGeometry* FgfUtil::ReadGeometryFromAggregate(FdoFgfGeometryFactory * factory
 
 	if ( (Index >= numSubGeometries) ||
 		(Index < 0) )
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INDEXOUTOFBOUNDS)));
 
     // Skip sub-geometries that precede the desired one.
 	for (FdoInt32 i=0; i<Index; i++)
@@ -419,7 +427,9 @@ void FgfUtil::SkipGeometry(const FdoByte ** inputStream, const FdoByte * streamE
 		break;
 
     default:
-    	throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+    	throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_UNKNOWN_GEOMETRY_TYPE),
+                                                               L"FgfUtil::SkipGeometry",
+                                                               geometryType));
     }
 }
 
@@ -481,7 +491,9 @@ FdoICurveSegmentAbstract* FgfUtil::ReadCurveSegment(
 
 	default:
 		{
-		    throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		    throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_UNKNOWN_GEOMETRY_COMPONENT_TYPE),
+                                                                   L"FgfUtil::ReadCurveSegment",
+                                                                   geomType));
 		}
 	} // of switch
 
@@ -552,7 +564,9 @@ void FgfUtil::SkipCurveSegments(
 				break;
 			}
 		default:
-    		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+    		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_UNKNOWN_GEOMETRY_COMPONENT_TYPE),
+                                                                   L"FgfUtil::SkipCurveSegments",
+                                                                   geomType));
 		} // of switch
 
         FGFUTIL_SKIP_DIRECTPOSITIONS(inputStream, streamEnd, numOrdsPerPos, numPositions);

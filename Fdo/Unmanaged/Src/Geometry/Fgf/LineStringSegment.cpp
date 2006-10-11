@@ -34,7 +34,9 @@ FdoFgfLineStringSegment::FdoFgfLineStringSegment(
 	if ( (positions == NULL) ||
 		 (factory == NULL) ||
          (0 == positions->GetCount()) )
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoFgfLineStringSegment",
+                                                               L"positions/factory"));
 	
     m_lineString = factory->CreateLineString(positions);
 }
@@ -51,7 +53,9 @@ FdoFgfLineStringSegment::FdoFgfLineStringSegment(
 {
 	if ( (NULL == ordinates) ||
 	     (NULL == factory) )
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoFgfLineStringSegment",
+                                                               L"ordinates/factory"));
 
 	m_lineString = factory->CreateLineString(dimensionType, numOrdinates, ordinates);
 }

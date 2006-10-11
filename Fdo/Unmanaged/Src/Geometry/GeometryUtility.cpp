@@ -39,7 +39,9 @@ FdoString* GeometryUtility::DimensionalityToFgftString(FdoInt32 dimensionality)
     else if ( dimensionality == ( FdoDimensionality_XY | FdoDimensionality_Z | FdoDimensionality_M ) )
         value = xyzm;
     else
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"GeometryUtility::DimensionalityToFgftString",
+                                                               L"dimensionality"));
 
     return value;
 }
@@ -57,7 +59,9 @@ FdoInt32 GeometryUtility::DimensionalityToNumOrdinates(FdoInt32 dimensionality)
     else if ( dimensionality == ( FdoDimensionality_XY | FdoDimensionality_Z | FdoDimensionality_M ) )
         value = 4;
     else
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"GeometryUtility::DimensionalityToNumOrdinates",
+                                                               L"dimensionality"));
 
     return value;
 }
@@ -274,7 +278,9 @@ FdoString* GeometryUtility::CreateGeometryText(FdoIGeometry * geometry)
         }
         break;
     default:
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_UNKNOWN_GEOMETRY_TYPE),
+                                                               L"GeometryUtil::CreateGeometryText",
+                                                               type));
         break;
     }
 
@@ -460,7 +466,8 @@ wchar_t * GeometryUtility::CreateFgftContentForCurveSegment(FdoICurveSegmentAbst
         {
             FdoILineStringSegment * dg = static_cast<FdoILineStringSegment *>(segment);   // derived geometry component
             if (dg->GetCount() < 2)
-        		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_NUM_OF_COORDINATE_POSITIONS),
+                                                                       L"GeometryUtility::CreateFgftContentForCurveSegment"));
             FdoPtr<FdoDirectPositionCollection> positions = dg->GetPositions();
             positions->RemoveAt(0);   // Skip 1st point
             buffer = CreateFgftContentForPositions(dim, positions);
@@ -485,7 +492,9 @@ wchar_t * GeometryUtility::CreateFgftContentForCurveSegment(FdoICurveSegmentAbst
         }
         break;
     default:
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_UNKNOWN_GEOMETRY_COMPONENT_TYPE),
+                                                               L"GeometryUtility::CreateFgftContentForCurveSegment",
+                                                               type));
         break;
     }
 

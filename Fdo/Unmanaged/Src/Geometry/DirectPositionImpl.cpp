@@ -221,7 +221,9 @@ FdoDirectPositionImpl::FdoDirectPositionImpl(const FdoIDirectPosition* pos)
 :   m_ordinates(NULL)
 {
 	if ( NULL == pos )
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoDirectPositionImpl",
+                                                               L"pos"));
 
 	this->m_x = pos->GetX();
 	this->m_y = pos->GetY();

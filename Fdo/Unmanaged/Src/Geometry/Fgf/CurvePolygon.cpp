@@ -33,7 +33,9 @@ FdoFgfCurvePolygon::FdoFgfCurvePolygon(
     : FdoFgfGeometryImpl<FdoICurvePolygon>(factory)
 {
 	if (NULL == exteriorRing)
-         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                                L"FdoFgfCurvePolygon",
+                                                                L"exteriorRing"));
 
     // Cannot use smart pointer for updating a FdoArray.
     FdoByteArray * newByteArray = m_factory->GetByteArray();
@@ -191,7 +193,9 @@ FdoIRing* FdoFgfCurvePolygon::GetInteriorRing(FdoInt32 Index) const
 
 	// Bounds check
 	if (Index > numCurveRings - 2)
-		 throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		 throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                                L"FdoFgfCurvePolygon::GetInteriorRing",
+                                                                L"Index"));
 
 	// Skip to CurveRing
 	FgfUtil::SkipRings(Index+1, dimensionality, &m_streamPtr, m_streamEnd);

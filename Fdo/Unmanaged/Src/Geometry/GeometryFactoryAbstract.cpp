@@ -99,7 +99,9 @@ FdoIEnvelope* FdoGeometryFactoryAbstract::CreateEnvelopeXYZ(double lowerLeftX, d
 FdoIEnvelope* FdoGeometryFactoryAbstract::CreateEnvelope(FdoIEnvelope * envelope)			// Pseudo copy constructor
 {
 	if ( 0 == envelope )
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoIEnvelope",
+                                                               L"envelope"));
 
     FdoEnvelopeImpl* envlImpl = FdoEnvelopeImpl::Create(
 		envelope->GetMinX(),

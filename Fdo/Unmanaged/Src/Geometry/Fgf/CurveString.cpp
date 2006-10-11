@@ -40,7 +40,9 @@ FdoFgfCurveString::FdoFgfCurveString(
 	if ( (NULL == curveSegs) ||
 		  (NULL == factory) ||
           (0 == curveSegs->GetCount()) )
-		 throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		 throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                                L"FdoFgfCurveString",
+                                                                L"curveSegs/factory"));
 
     FdoByteArray * newByteArray = m_factory->GetByteArray();
 
@@ -223,7 +225,7 @@ FdoICurveSegmentAbstract* FdoFgfCurveString::GetItem(FdoInt32 Index) const
 
 	if ( (Index >= numSegs) ||
 		 (Index < 0) )
-		 throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		 throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INDEXOUTOFBOUNDS)));
 
 	/*
 	 *	Note: The first position for the segment to be returned is

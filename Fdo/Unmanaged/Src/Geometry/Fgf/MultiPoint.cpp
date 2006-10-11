@@ -37,7 +37,9 @@ FdoFgfMultiPoint::FdoFgfMultiPoint(
 {
 	if ( (NULL == ordinates) ||
 		 (NULL == factory) )
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoFgfMultiPoint",
+                                                               L"ordinates/factory"));
 
     FdoByteArray * newByteArray = m_factory->GetByteArray();
 
@@ -85,7 +87,9 @@ FdoFgfMultiPoint::FdoFgfMultiPoint(
 	if ( (NULL == points) ||
         (0 == points->GetCount()) ||
 		(NULL == factory) )
-	    throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoFgfMultiPoint",
+                                                               L"points/factory"));
 
     FdoByteArray * newByteArray = m_factory->GetByteArray();
 

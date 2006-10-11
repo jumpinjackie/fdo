@@ -25,7 +25,56 @@ SymbolicName=FDO_1_BADPARAMETER
 Language=English
 Bad Parameter.
 .
-
+MessageId=3
+SymbolicName=FDO_1_UNKNOWN_GEOMETRY_TYPE
+Language=English
+'%1$ls': Unknown geometry type '%2$d' discovered.
+.
+MessageId=4
+SymbolicName=FDO_1_INVALID_NUM_OF_COORDINATE_POSITIONS
+Language=English
+'%1$ls': Invalid number of coordinate positions.
+.
+MessageId=5
+SymbolicName=FDO_1_UNKNOWN_GEOMETRY_COMPONENT_TYPE
+Language=English
+'%1$ls': Unknown geometry component type '%2$d' discovered.
+.
+MessageId=6
+SymbolicName=FDO_1_OPEN_RING
+Language=English
+'%1$ls': Identified an open ring when expecting a closed one.
+.
+MessageId=7
+SymbolicName=FDO_1_RESOLUTION_TOO_FINE_FOR_EXTENT
+Language=English
+'%1$ls': The resolution is too fine for the extents.
+.
+MessageId=8
+SymbolicName=FDO_1_RESOLUTION_TOO_LARGE_FOR_EXTENT
+Language=English
+'%1$ls': The resolution is too large (> 0.1) for the extents.
+.
+MessageId=9
+SymbolicName=FDO_1_COLLINEAR_POINTS
+Language=English
+'%1$ls': The points are collinear.
+.
+MessageId=10
+SymbolicName=FDO_1_MEMORY_DEALLOCATION_ERROR
+Language=English
+'%1$ls': Failed to free memory for object '%2$ls'.
+.
+MessageId=11
+SymbolicName=FDO_1_INVALID_INPUT_ON_CLASS_CREATION
+Language=English
+Cannot create instance of class '%1$ls' due to invalid value for the input parameter(s) '%2$ls'.
+.
+MessageId=12
+SymbolicName=FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION
+Language=English
+'%1$ls': Cannot execute function due to invalid value for the input parameter(s) '%2$ls'.
+.
 
 MessageId=1001
 SymbolicName=SCHEMA_1_BADATTRIBUTENAME
@@ -757,6 +806,7 @@ SymbolicName=SCHEMA_146_DELSCHEMAOBJECTS
 Language=English
 Cannot delete schema definition '%1$ls'; it has objects
 .
+
 MessageId=2001
 SymbolicName=EXPRESSION_1_BLOBVALUENULL
 Language=English
@@ -1169,6 +1219,7 @@ SymbolicName=CLNT_15_XML_WRITE_ERROR
 Language=English
 Error writing to registry file '%1$ls', %2$s
 .
+
 MessageId=8001
 SymbolicName=FUNCTION_CEIL
 Language=English
@@ -1309,9 +1360,6 @@ SymbolicName=FUNCTION_RASTER_ARG
 Language=English
 Argument that represents a raster
 .
-
-
-
 
 MessageId=9001
 SymbolicName=FDO_1_BADALLOC
@@ -1977,4 +2025,49 @@ MessageId=9133
 SymbolicName=FDO_133_UNEXPECTEDERROR_PERFORMING
 Language=English
 Unexpected error encountered while accessing the server.
+.
+MessageId=9134
+SymbolicName=FDO_134_SPATIAL_CONTEXT_ERROR_DEFAULT_EXISTS
+Language=English
+'%1$ls': Default spatial context exists; Cannot create spatial context info.
+.
+MessageId=9135
+SymbolicName=FDO_135_SPATIAL_CONTEXT_ERROR_ID_MISSMATCH
+Language=English
+'%1$ls': The spatial context ids don't match.
+.
+MessageId=9136
+SymbolicName=FDO_136_SPATIAL_CONTEXT_ERROR_UNKNOWN_EXTENT_TYPE
+Language=English
+'%1$ls': Unknown extent type.
+.
+MessageId=9137
+SymbolicName=FDO_137_NAMED_COLLECTION_INDEX_NAME_ERROR
+Language=English
+'%1$ls': Cannot find index in Named Collection for unspecified name (NULL).
+.
+MessageId=9138
+SymbolicName=FDO_138_MBC_ERROR_ROOT_CELL
+Language=English
+'%1$ls': Invalid MBC format: missing root cell.
+.
+MessageId=9139
+SymbolicName=FDO_139_MBC_ERROR_ILLEGAL_CHAR
+Language=English
+'%1$ls': Invalid MBC format: illegal character.
+.
+MessageId=9140
+SymbolicName=FDO_140_MBC_ERROR_SKIP
+Language=English
+'%1$ls': MBC error: too many skip characters specified.
+.
+MessageId=9141
+SymbolicName=FDO_141_MBC_ERROR_MAX_DEPTH
+Language=English
+'%1$ls': MBC error: depth exceeds maximum depth.
+.
+MessageId=9142
+SymbolicName=FDO_142_MBC_ERROR_EXTENTS
+Language=English
+'%1$ls': MBC error: extents outside spatial index extents.
 .

@@ -127,7 +127,9 @@ FdoILineString* FdoFgfGeometryFactory::CreateLineString(FdoDirectPositionCollect
 #endif
 	if ( (NULL == positions) ||
         ( 0 == positions->GetCount()) )
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoILineString",
+                                                               L"positions"));
 
 	FdoPtr<FdoILineString> lineString = new FdoFgfLineString(this, positions);
 
@@ -155,7 +157,9 @@ FdoILineString* FdoFgfGeometryFactory::CreateLineString(FdoInt32 dimensionType, 
 #endif
 	if ( (numOrdinates <= 0) ||
 		 (NULL == ordinates) )
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoILineString",
+                                                               L"ordinates/numOrdinates"));
 
 	FdoPtr<FdoILineString> geometry = new FdoFgfLineString(this, dimensionType, numOrdinates, ordinates);
 
@@ -235,7 +239,9 @@ FdoIGeometry * FdoFgfGeometryFactory::CreateGeometryFromFgf(
 {
 	if ( (NULL == byteArray) &&
 		 (NULL == byteArrayData || count < sizeof(FdoInt32)) )   // Must hold Int32 for geometry type.
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoIGeometry",
+                                                               L"byteArray/byteArrayData/count"));
 
 #ifdef EXTRA_DEBUG
     if (NULL != FdoDebugFile)
@@ -330,7 +336,9 @@ FdoIGeometry * FdoFgfGeometryFactory::CreateGeometryFromFgf(
         CASE_REASSIGN_FGF(CurvePolygon);
         CASE_REASSIGN_FGF(MultiCurvePolygon);
 	    default:
-            throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+            throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_UNKNOWN_GEOMETRY_TYPE),
+                                                                   L"FdoFgfGeometryFactory::CreateGeometryFromFgf",
+                                                                   geometryType));
         }
     }
     else
@@ -351,7 +359,9 @@ FdoIGeometry * FdoFgfGeometryFactory::CreateGeometryFromFgf(
 	    CASE_CREATE_GEOMETRY(CurvePolygon);
 	    CASE_CREATE_GEOMETRY(MultiCurvePolygon);
 	    default:
-            throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+            throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_UNKNOWN_GEOMETRY_TYPE),
+                                                                   L"FdoFgfGeometryFactory::CreateGeometryFromFgf",
+                                                                   geometryType));
 	    }
 
         // Update the pool.
@@ -457,7 +467,9 @@ FdoByteArray * FdoFgfGeometryFactory::GetFgf(FdoIGeometry * geometry)
 		break;
 
 	default:
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_UNKNOWN_GEOMETRY_TYPE),
+                                                               L"FdoFgfGeometryFactory::GetFgf",
+                                                               geometry->GetDerivedType()));
 	}
 
 #ifdef EXTRA_DEBUG
@@ -598,7 +610,9 @@ FdoIGeometry * FdoFgfGeometryFactory::CreateGeometryFromWkb(FdoByteArray * byteA
 #endif
 #define MIN_WKB_SIZE (sizeof(FdoByte)+sizeof(FdoInt32)+sizeof(FdoInt32))    // endian byte, geometry type, at least an integer of data
 	if ( (NULL == byteArray) || (byteArray->GetCount() < MIN_WKB_SIZE) )
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoIGeometry",
+                                                               L"byteArray"));
 
     // Need to copy the array, skipping the initial (endian) byte and 
     // adding the dimensionality (32-bit integer after geometry type).
@@ -642,7 +656,9 @@ FdoByteArray * FdoFgfGeometryFactory::GetWkb(FdoIGeometry * geometry)
     }
 #endif
     if (NULL == geometry)
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoFgfGeometryFactory::GetWkb",
+                                                               L"geometry"));
 
     // WKB only supports XY, no Z or M ordinates.
     FdoInt32 dimensionality = geometry->GetDimensionality();
@@ -735,7 +751,9 @@ FdoIPoint* FdoFgfGeometryFactory::CreatePoint(FdoIDirectPosition* position)
     }
 #endif
 	if (NULL == position)
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoIPoint",
+                                                               L"position"));
 
 	FdoPtr<FdoIPoint> point = new FdoFgfPoint(this, position);
     if (point == NULL)
@@ -764,7 +782,8 @@ FdoIPoint* FdoFgfGeometryFactory::CreatePoint(FdoInt32 dimensionality, double* o
     }
 #endif
 	if (NULL == ordinates)
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"ordinates"));
 
 	FdoPtr<FdoIPoint> point = new FdoFgfPoint(this, dimensionality, ordinates);
     if (point == NULL)
@@ -837,7 +856,9 @@ FdoILinearRing* FdoFgfGeometryFactory::CreateLinearRing(FdoInt32 dimtype, FdoInt
 #endif
 	if ( (NULL == ordinates) ||
 		 (numOrdinates <= 0) )
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoILinearRing",
+                                                               L"ordinates/numOrdinates"));
 
     if (m_private->m_linearRingPool == NULL)
         m_private->m_linearRingPool = FdoFgfLinearRingCache::Create(4);
@@ -884,7 +905,9 @@ FdoILineStringSegment* FdoFgfGeometryFactory::CreateLineStringSegment(FdoDirectP
 #endif
 	if ( (NULL == positions) ||
         (0 == positions->GetCount()) )
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoILineStringSegment",
+                                                               L"positions"));
 
 	FdoPtr<FdoFgfLineStringSegment> lineSegment = new FdoFgfLineStringSegment(this, positions);
 
@@ -917,7 +940,9 @@ FdoILineStringSegment* FdoFgfGeometryFactory::CreateLineStringSegment(FdoInt32 d
 #endif
 	if ( (NULL == ordinates) ||
 		 (numOrdinates <= 0) )
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoILineStringSegment",
+                                                               L"ordinates/numOrdinates"));
 
 	FdoPtr<FdoFgfLineStringSegment> lineSegment = new FdoFgfLineStringSegment(this, dimensionality, numOrdinates, ordinates);
 
@@ -948,7 +973,9 @@ FdoIPolygon* FdoFgfGeometryFactory::CreatePolygon(FdoILinearRing* exteriorRing, 
     }
 #endif
 	if (NULL == exteriorRing)
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoIPolygon",
+                                                               L"exteriorRing"));
 
 	FdoPtr<FdoFgfPolygon> polygon = new FdoFgfPolygon(this, exteriorRing, interiorRings);
 
@@ -981,7 +1008,9 @@ FdoIMultiPoint* FdoFgfGeometryFactory::CreateMultiPoint(FdoPointCollection* poin
 #endif
 	if ( (NULL == points) ||
         (0 == points->GetCount()) )
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoIMultiPoint",
+                                                               L"points"));
 
 	FdoPtr<FdoFgfMultiPoint> multiPoint =  new FdoFgfMultiPoint(this, points);
 
@@ -1014,7 +1043,9 @@ FdoIMultiPoint* FdoFgfGeometryFactory::CreateMultiPoint(FdoInt32 dimensionality,
 #endif
 	if ( (NULL == ordinates) ||
 		(numOrdinates <= 0) )
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoIMultiPoint",
+                                                               L"ordinates/numOrdinates"));
 
 	FdoPtr<FdoFgfMultiPoint> multiPoint =  new FdoFgfMultiPoint(this, dimensionality, numOrdinates, ordinates);
 
@@ -1047,7 +1078,9 @@ FdoIMultiGeometry* FdoFgfGeometryFactory::CreateMultiGeometry(FdoGeometryCollect
 #endif
 	if ( (NULL == geometries) ||
         (0 == geometries->GetCount()) )
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoIMultiGeometry",
+                                                               L"geometries"));
 
 	FdoPtr<FdoFgfMultiGeometry> multiGeometry =  new FdoFgfMultiGeometry(this, geometries);
 
@@ -1080,7 +1113,9 @@ FdoIMultiLineString* FdoFgfGeometryFactory::CreateMultiLineString(FdoLineStringC
 #endif
 	if ( (NULL == lineStrings) ||
         (0 == lineStrings->GetCount()) )
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoIMultiLineString",
+                                                               L"lineStrings"));
 
 	FdoPtr<FdoFgfMultiLineString> multiLineString =  new FdoFgfMultiLineString(this, lineStrings);
 
@@ -1114,7 +1149,9 @@ FdoIMultiPolygon* FdoFgfGeometryFactory::CreateMultiPolygon(FdoPolygonCollection
 #endif
 	if ( (NULL == polygons) ||
         (0 == polygons->GetCount()) )
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoIMultiPolygon",
+                                                               L"polygons"));
 
 	FdoPtr<FdoFgfMultiPolygon> multiPolygon =  new FdoFgfMultiPolygon(this, polygons);
 
@@ -1147,7 +1184,9 @@ FdoICircularArcSegment* FdoFgfGeometryFactory::CreateCircularArcSegment(FdoIDire
 	if ( (NULL == startPoint) ||
 		 (NULL == midPoint) ||
 		 (NULL == endPoint) )
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoICircularArcSegment",
+                                                               L"startPoint/midPoint/endPoint"));
 
 	FdoPtr<FdoFgfCircularArcSegment> circArcSegment = new FdoFgfCircularArcSegment(
         this, startPoint, midPoint, endPoint);
@@ -1180,7 +1219,9 @@ FdoICurveString* FdoFgfGeometryFactory::CreateCurveString(FdoCurveSegmentCollect
 #endif
 	if ( (NULL == curveSegments) ||
         (0 == curveSegments->GetCount()) )
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoICurveString",
+                                                               L"curveSegments"));
 
 	FdoPtr<FdoFgfCurveString> curveString = new FdoFgfCurveString(this, curveSegments);
 
@@ -1212,7 +1253,9 @@ FdoIMultiCurveString* FdoFgfGeometryFactory::CreateMultiCurveString(FdoCurveStri
     }
 #endif
     if ( (NULL == curveStrings) || (0 == curveStrings->GetCount()) )
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoIMultiCurveString",
+                                                               L"curveStrings"));
 
 	FdoPtr<FdoFgfMultiCurveString> multiCurveString = new FdoFgfMultiCurveString(this, curveStrings);
 
@@ -1245,7 +1288,9 @@ FdoIRing* FdoFgfGeometryFactory::CreateRing(FdoCurveSegmentCollection* curveSegm
 #endif
 	if ( (NULL == curveSegments) ||
         (0 == curveSegments->GetCount()) )
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoIRing",
+                                                               L"curveSegments"));
 
 	FdoPtr<FdoFgfRing> ring = new FdoFgfRing(this, curveSegments);
 
@@ -1278,7 +1323,9 @@ FdoICurvePolygon* FdoFgfGeometryFactory::CreateCurvePolygon(FdoIRing* exteriorRi
     }
 #endif
 	if (NULL == exteriorRing)
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoICurvePolygon",
+                                                               L"exteriorRing"));
 
 	FdoPtr<FdoFgfCurvePolygon> curvePolygon = new FdoFgfCurvePolygon(this, exteriorRing, interiorRings);
 
@@ -1311,7 +1358,9 @@ FdoIMultiCurvePolygon* FdoFgfGeometryFactory::CreateMultiCurvePolygon(FdoCurvePo
     }
 #endif
     if ( (NULL == curvePolygons) || 0 == curvePolygons->GetCount() )
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoIMultiCurvePolygon",
+                                                               L"curvePolygons"));
 
 	FdoPtr<FdoFgfMultiCurvePolygon> multiCurvePolygon = new FdoFgfMultiCurvePolygon(this, curvePolygons);
 
@@ -1453,7 +1502,9 @@ FdoByteArray * FdoFgfGeometryFactory::GetByteArray()
 void FdoFgfGeometryFactory::TakeReleasedByteArray(FdoByteArray * byteArray)
 {
 	if (0 == byteArray)
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"FdoFgfGeometryFactory::TakeReleasedByteArray",
+                                                               L"byteArray"));
 
     if (m_private->m_byteArrayPool == NULL)
         m_private->m_byteArrayPool = FdoByteArrayCache::Create(10);

@@ -33,7 +33,9 @@ FdoFgfCircularArcSegment::FdoFgfCircularArcSegment(
 		 (NULL == midPoint) ||
 		 (NULL == endPoint) ||
 		 (NULL == factory) )
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                               L"FdoFgfCircularArcSegment",
+                                                               L"factory/startPoint/midPoint/endPoint"));
 
     FdoPtr<FdoDirectPositionCollection> positions = FdoDirectPositionCollection::Create();
     positions->Add(startPoint);

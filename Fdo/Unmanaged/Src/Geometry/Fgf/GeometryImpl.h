@@ -42,7 +42,9 @@ public:
         if ((NULL == byteArray && NULL == data) ||
             (NULL != byteArray && byteArray->GetCount() <= 0) ||
             (NULL != data && count <= 0))
-		    throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		    throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                                   L"FdoFgfGeometryImpl",
+                                                                   L"byteArray/data/count"));
 
 	    SetFgf(byteArray, data, count);
     }
@@ -91,7 +93,9 @@ public:
         }
         else
         {
-		    throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+		    throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                                   L"FdoFgfGeometryImpl::SetFgf",
+                                                                   L"fgf/fgfData/count"));
         }
         m_streamPtr = m_data;
 

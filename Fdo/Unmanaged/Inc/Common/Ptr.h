@@ -90,7 +90,10 @@ public:
 #endif
     {
         if (nNull != 0)
-            throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+            throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
+                                                                   L"FdoPtr",
+                                                                   L"nNull"));
+
         p = NULL;
     }
 
@@ -164,7 +167,9 @@ public:
 #endif
     {
         if (p==NULL)
-            throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+	        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                                   L"FdoPtr::operator*",
+                                                                   L"p"));
         return *p;
     }
 
@@ -190,7 +195,9 @@ public:
 #endif
     {
         if (p==NULL)
-            throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+	        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                                   L"FdoPtr::operator->",
+                                                                   L"p"));
         return (_NoAddRefReleaseOnFdoPtr<T>*)p;
     }
     
