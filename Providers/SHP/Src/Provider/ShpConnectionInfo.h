@@ -71,6 +71,21 @@ public:
     /// <summary>Gets the FdoIConnectionPropertyDictionary interface that can be used to dynamically query and set the properties required to establish a connection.</summary>
     /// <returns>Returns the property dictionary</returns>
     FdoIConnectionPropertyDictionary* GetConnectionProperties ();
+
+    /// <summary>Returns the provider type. A provider can be a file-based, database-based or
+    /// web-based provider. The valid values the function may return are defined in
+    /// the enumeration FdoProviderDatastoreType. The enumeration includes the following
+    /// values: FdoProviderDatastoreType_Unknown, FdoProviderDatastoreType_File,
+    /// FdoProviderDatastoreType_DatabaseServer, FdoProviderDatastoreType_WebServer.</summary>
+    /// <returns>Returns the provider data store type.</returns>
+    FdoProviderDatastoreType GetProviderDatastoreType();
+
+    /// <summary>File-based providers depend on a various files. This function returns a list
+    /// of fully qualified dependend file names. The return parameter will be NULL if
+    /// the provider is not a file-based provider.</summary>
+    /// <returns>Returns the list of fully-qualified dependend file names if the provider is a
+    /// file-based provider, NULL otherwise.</returns>
+    FdoStringCollection* GetDependentFileNames();
 };
 
 #endif // SHPCONNECTIONINFO_H
