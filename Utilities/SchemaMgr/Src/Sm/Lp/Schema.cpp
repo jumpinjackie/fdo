@@ -72,9 +72,14 @@ const FdoSmLpClassCollection* FdoSmLpSchema::RefClasses() const
     return mClasses;
 }
 
-const FdoSmLpSAD* FdoSmLpSchema::RefSAD() const
+const FdoSmLpClassDefinition* FdoSmLpSchema::RefClass(FdoStringP className) const
 {
 	// Cast this to allow behind-the-scenes loading of this schema.
+	return ((FdoSmLpSchema*) this)->LoadClass(className);
+}
+
+const FdoSmLpSAD* FdoSmLpSchema::RefSAD() const
+{
 	((FdoSmLpSchema*) this)->LoadSchema();
 
 	return FdoSmLpSchemaElement::RefSAD();
@@ -125,8 +130,26 @@ const FdoSmLpClassDefinition* FdoSmLpSchema::FindClass( FdoStringP className ) c
 		localClassName = className.Right( L":" );
 	}
 
+    if( wcscmp(schemaName, GetName()) == 0 )
+    {
+        pFoundClass = ((FdoSmLpSchema*) this)->LoadClass( localClassName );
+        if ( pFoundClass )
+            return( pFoundClass );
+    }
+
+    // May be it's a non qualified metaclass: F_Feature, F_Class or F_ClassDefinition
+    if( ( ((const wchar_t*)schemaName)[0] == '\0' || wcscmp(schemaName,FdoSmPhMgr::mMetaClassSchemaName) == 0 ) && 
+        (wcscmp(localClassName,FdoSmLpClassDefinition::ClassClassName ) == 0 ||
+         wcscmp(localClassName,FdoSmLpClassDefinition::ClassDefinitionName ) == 0 ||
+         wcscmp(localClassName,FdoSmLpClassDefinition::FeatureClassName ) == 0 )
+         )
+    {
+        pFoundClass = mpSchemas->FindClass( FdoSmPhMgr::mMetaClassSchemaName, localClassName );
+        if ( pFoundClass )
+            return( pFoundClass );
+    }
+
     ((FdoSmLpSchema*) this)->LoadSchema();
-	
     // Search this schema if it is the class's schema or class not qualified by 
 	// schema name.
 	if ( (schemaName.GetLength() == 0) || (wcscmp(schemaName, GetName()) == 0) ) 
@@ -148,8 +171,8 @@ void FdoSmLpSchema::TableToClasses(
 {
     FdoInt32 idx;
 
-    for ( idx = 0; idx < RefClasses()->GetCount(); idx++ ) {
-        const FdoSmLpClassDefinition* pClass = RefClasses()->RefItem(idx);
+    for ( idx = 0; idx < mClasses->GetCount(); idx++ ) {
+        const FdoSmLpClassDefinition* pClass = mClasses->RefItem(idx);
 
         if ( (tableName.ICompare(pClass->GetDbObjectName()) == 0) &&
              (ownerName.ICompare(pClass->GetOwner()) == 0) &&
@@ -402,10 +425,13 @@ void FdoSmLpSchema::LoadSchema()
 	}
 }
 
-void FdoSmLpSchema::LoadClasses()
+FdoSmLpClassDefinition* FdoSmLpSchema::LoadClass(FdoStringP className, FdoString* schemaName )
 {
-	// (Re)load the classes
-	FdoSmPhClassReaderP classReader = mPhysicalSchema->CreateClassReader(GetName());
+    FdoSmLpClassDefinition* cls = mClasses->FindItem(className);
+    if( cls != NULL )
+        return cls;
+    
+    FdoSmPhClassReaderP classReader = mPhysicalSchema->CreateClassReader((schemaName!=NULL&&schemaName[0]!='\0')?schemaName:GetName(),className);
 
     while ( classReader->ReadNext() ) {
 		FdoSmLpClassDefinitionP newClass = CreateClassDefinition( classReader );
@@ -413,6 +439,20 @@ void FdoSmLpSchema::LoadClasses()
         // been loaded from the config doc.
         if ( !mPhysicalSchema->GetConfigSchemas() || (!mClasses->FindItem(newClass->GetName())) )
     		mClasses->Add( newClass );
+	}
+    return mClasses->FindItem(className);
+}
+
+void FdoSmLpSchema::LoadClasses()
+{
+	// (Re)load the classes
+	FdoSmPhClassReaderP classReader = mPhysicalSchema->CreateClassReader(GetName());
+
+	while ( classReader->ReadNext() ) {
+		FdoSmLpClassDefinitionP newClass = CreateClassDefinition( classReader );
+        FdoSmLpClassDefinitionP oldClass = mClasses->FindItem(newClass->GetName());
+        if ( oldClass == NULL  )
+    	    mClasses->Add( newClass );
 	}
 }
 

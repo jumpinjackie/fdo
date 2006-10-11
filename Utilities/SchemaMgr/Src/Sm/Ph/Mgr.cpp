@@ -78,6 +78,11 @@ FdoPtr<FdoSmPhClassReader> FdoSmPhMgr::CreateClassReader(FdoStringP schemaName)
 	return( new FdoSmPhClassReader(schemaName, FDO_SAFE_ADDREF(this)) );
 }
 
+FdoPtr<FdoSmPhClassReader> FdoSmPhMgr::CreateClassReader(FdoStringP schemaName, FdoStringP className)
+{
+	return( new FdoSmPhClassReader(schemaName, className, FDO_SAFE_ADDREF(this)) );
+}
+
 FdoPtr<FdoSmPhAssociationReader> FdoSmPhMgr::CreateAssociationReader(
     FdoStringP pkTableName, 
     FdoStringP fkTableName, 
@@ -132,12 +137,13 @@ FdoPtr<FdoSmPhRdSchemaReader> FdoSmPhMgr::CreateRdSchemaReader( FdoSmPhRowsP row
 FdoPtr<FdoSmPhRdClassReader> FdoSmPhMgr::CreateRdClassReader( 
     FdoPtr<FdoSmPhRowCollection> rows, 
     FdoStringP schemaName, 
+    FdoStringP className,
     FdoBoolean keyedOnly,
     FdoStringP database,
     FdoStringP owner
 )
 {
-    return new FdoSmPhRdClassReader( rows, schemaName, FDO_SAFE_ADDREF(this), keyedOnly, database, owner );
+    return new FdoSmPhRdClassReader( rows, schemaName, className, FDO_SAFE_ADDREF(this), keyedOnly, database, owner );
 }
 
 FdoPtr<FdoSmPhRdPropertyReader> FdoSmPhMgr::CreateRdPropertyReader( FdoSmPhDbObjectP dbObject )

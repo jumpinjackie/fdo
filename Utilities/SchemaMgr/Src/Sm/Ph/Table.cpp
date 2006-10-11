@@ -359,8 +359,10 @@ void FdoSmPhTable::CacheUkeys( FdoSmPhRdConstraintReaderP rdr )
 	if ( !mUkeysCollection ) {
         mUkeysCollection = new FdoSmPhBatchColumnCollection();
 
-        LoadUkeys( NewTableUkeyReader(rdr)->SmartCast<FdoSmPhReader>() );
+        LoadUkeys( NewTableUkeyReader(rdr)->SmartCast<FdoSmPhReader>(), false );
     }
+    else
+        LoadUkeys( NewTableUkeyReader(rdr)->SmartCast<FdoSmPhReader>(), true );
 }
 
 void FdoSmPhTable::CacheCkeys( FdoSmPhRdConstraintReaderP rdr )
@@ -369,8 +371,10 @@ void FdoSmPhTable::CacheCkeys( FdoSmPhRdConstraintReaderP rdr )
 	if ( !mCkeysCollection ) {
 		mCkeysCollection = new FdoSmPhCheckConstraintCollection();
 
-        LoadCkeys( NewTableCkeyReader(rdr)->SmartCast<FdoSmPhReader>() );
+        LoadCkeys( NewTableCkeyReader(rdr)->SmartCast<FdoSmPhReader>(), false );
     }
+    else
+        LoadCkeys( NewTableCkeyReader(rdr)->SmartCast<FdoSmPhReader>(), true );
 }
 
 void FdoSmPhTable::CacheFkeys( FdoSmPhRdFkeyReaderP rdr )
@@ -379,8 +383,10 @@ void FdoSmPhTable::CacheFkeys( FdoSmPhRdFkeyReaderP rdr )
     if ( !mFkeysUp ) {
         mFkeysUp = new FdoSmPhFkeyCollection();
 
-        LoadFkeys( NewTableFkeyReader(rdr)->SmartCast<FdoSmPhReader>() );
+        LoadFkeys( NewTableFkeyReader(rdr)->SmartCast<FdoSmPhReader>(), false );
     }
+    else
+        LoadFkeys( NewTableFkeyReader(rdr)->SmartCast<FdoSmPhReader>(), true );
 }
 
 void FdoSmPhTable::CacheIndexes( FdoSmPhRdIndexReaderP rdr )
@@ -389,8 +395,10 @@ void FdoSmPhTable::CacheIndexes( FdoSmPhRdIndexReaderP rdr )
 	if ( !mIndexes ) {
         mIndexes = new FdoSmPhIndexCollection();
 
-        LoadIndexes( NewTableIndexReader(rdr) );
+        LoadIndexes( NewTableIndexReader(rdr), false );
     }
+    else
+        LoadIndexes( NewTableIndexReader(rdr), true );
 }
 
 void FdoSmPhTable::CachePkeys( FdoSmPhRdPkeyReaderP rdr )
@@ -399,8 +407,10 @@ void FdoSmPhTable::CachePkeys( FdoSmPhRdPkeyReaderP rdr )
 	if ( !mPkeyColumns ) {
         mPkeyColumns = new FdoSmPhColumnCollection();
 
-        LoadPkeys( NewTablePkeyReader(rdr)->SmartCast<FdoSmPhReader>() );
+        LoadPkeys( NewTablePkeyReader(rdr)->SmartCast<FdoSmPhReader>(), false );
     }
+    else
+        LoadPkeys( NewTablePkeyReader(rdr)->SmartCast<FdoSmPhReader>(), true );
 }
 
 FdoSchemaExceptionP FdoSmPhTable::Errors2Exception(FdoSchemaException* pFirstException ) const
@@ -874,12 +884,12 @@ void FdoSmPhTable::LoadPkeys(void)
         if ( GetElementState() != FdoSchemaElementState_Added ) {
             FdoPtr<FdoSmPhRdPkeyReader> pkeyRdr = CreatePkeyReader();
 
-            LoadPkeys( pkeyRdr->SmartCast<FdoSmPhReader>() );
+            LoadPkeys( pkeyRdr->SmartCast<FdoSmPhReader>(), false );
         }
     }
 }
 
-void FdoSmPhTable::LoadPkeys( FdoSmPhReaderP pkeyRdr )
+void FdoSmPhTable::LoadPkeys( FdoSmPhReaderP pkeyRdr, bool isSkipAdd )
 {
     // read each primary key column.
     while (pkeyRdr->ReadNext() ) {
@@ -893,7 +903,7 @@ void FdoSmPhTable::LoadPkeys( FdoSmPhReaderP pkeyRdr )
             if ( GetElementState() != FdoSchemaElementState_Deleted )
 		        AddPkeyColumnError( columnName );
 	    }
-	    else {
+	    else if( ! isSkipAdd ) {
 	        mPkeyColumns->Add(pkeyColumn);
 	    }
     }
@@ -915,13 +925,13 @@ void FdoSmPhTable::LoadUkeys()
 			FdoSmPhOwner* pOwner = static_cast<FdoSmPhOwner*>((FdoSmPhSchemaElement*) GetParent());
 			FdoPtr<FdoSmPhRdConstraintReader> ukeyRdr = pOwner->CreateConstraintReader(GetName(), L"U");
 
-            LoadUkeys( ukeyRdr->SmartCast<FdoSmPhReader>() );
+            LoadUkeys( ukeyRdr->SmartCast<FdoSmPhReader>(), false );
         }
     }
 }
 
 
-void FdoSmPhTable::LoadUkeys( FdoSmPhReaderP ukeyRdr )
+void FdoSmPhTable::LoadUkeys( FdoSmPhReaderP ukeyRdr, bool isSkipAdd  )
 {
     FdoStringP		 ukeyNameCurr;
     FdoSmPhColumnsP  ukeysCurr;
@@ -944,7 +954,7 @@ void FdoSmPhTable::LoadUkeys( FdoSmPhReaderP ukeyRdr )
 		// The subcollection is identified by the common ukeyName.
 		// The columns will be grouped this way.
 		if ( ukeyName != ukeyNameCurr ) {
-			if ( ukeysCurr )
+			if ( ukeysCurr && ! isSkipAdd )
 		    	mUkeysCollection->Add( ukeysCurr ); // save the last group
 
 			// Start a new subcollection
@@ -957,7 +967,7 @@ void FdoSmPhTable::LoadUkeys( FdoSmPhReaderP ukeyRdr )
     }
 
 	// Add the last group
-	if ( ukeysCurr )
+	if ( ukeysCurr && ! isSkipAdd )
 		mUkeysCollection->Add( ukeysCurr );
 }
 
@@ -979,12 +989,12 @@ void FdoSmPhTable::LoadCkeys()
 
 			// MySql provider does not support CHECK() and the reader is NULL
             if ( ckeyRdr ) 
-                LoadCkeys( ckeyRdr->SmartCast<FdoSmPhReader>() );
+                LoadCkeys( ckeyRdr->SmartCast<FdoSmPhReader>(), false );
         }
     }
 }
 
-void FdoSmPhTable::LoadCkeys( FdoSmPhReaderP ckeyRdr )
+void FdoSmPhTable::LoadCkeys( FdoSmPhReaderP ckeyRdr, bool isSkipAdd )
 {
     // read each check constraint column.
     while (ckeyRdr && ckeyRdr->ReadNext() ) {
@@ -1004,9 +1014,10 @@ void FdoSmPhTable::LoadCkeys( FdoSmPhReaderP ckeyRdr )
 		    if ( GetElementState() != FdoSchemaElementState_Deleted )
 		        AddCkeyColumnError( columnName );
 		}
-
-		FdoSmPhCheckConstraintP  pConstr = new FdoSmPhCheckConstraint( ckeyName, columnName, clause );
-		mCkeysCollection->Add( pConstr );
+        if( ! isSkipAdd ) {
+		    FdoSmPhCheckConstraintP  pConstr = new FdoSmPhCheckConstraint( ckeyName, columnName, clause );
+		    mCkeysCollection->Add( pConstr );
+        }
 	}
 }
 
@@ -1021,12 +1032,12 @@ void FdoSmPhTable::LoadFkeys(void)
         if ( GetElementState() != FdoSchemaElementState_Added ) {
             FdoPtr<FdoSmPhRdFkeyReader> fkeyRdr = CreateFkeyReader();
 
-            LoadFkeys( fkeyRdr->SmartCast<FdoSmPhReader>() );
+            LoadFkeys( fkeyRdr->SmartCast<FdoSmPhReader>(), false );
         }
     }
 }
 
-void FdoSmPhTable::LoadFkeys( FdoSmPhReaderP fkeyRdr )
+void FdoSmPhTable::LoadFkeys( FdoSmPhReaderP fkeyRdr, bool isSkipAdd  )
 {
     FdoStringP                  nextFkey;
     FdoSmPhFkeyP                fkey;
@@ -1044,7 +1055,8 @@ void FdoSmPhTable::LoadFkeys( FdoSmPhReaderP fkeyRdr )
                 FdoSchemaElementState_Unchanged
             );
 
-            mFkeysUp->Add(fkey);
+            if( ! isSkipAdd )
+                mFkeysUp->Add(fkey);
         }
 
         // Add the column to the foreign key
@@ -1075,12 +1087,12 @@ void FdoSmPhTable::LoadIndexes(void)
         if ( GetElementState() != FdoSchemaElementState_Added ) {
             FdoPtr<FdoSmPhRdIndexReader> indexRdr = CreateIndexReader();
 
-            LoadIndexes( NewTableIndexReader(indexRdr) );
+            LoadIndexes( NewTableIndexReader(indexRdr), false );
         }
     }
 }
 
-void FdoSmPhTable::LoadIndexes( FdoSmPhTableIndexReaderP indexRdr )
+void FdoSmPhTable::LoadIndexes( FdoSmPhTableIndexReaderP indexRdr, bool isSkipAdd )
 {
     FdoStringP            nextIndex;
     FdoSmPhIndexP         index;
@@ -1093,7 +1105,7 @@ void FdoSmPhTable::LoadIndexes( FdoSmPhTableIndexReaderP indexRdr )
             // hit the next index. Create an object for it
             index = CreateIndex( indexRdr ); 
                         
-            if ( index ) 
+            if ( index && ! isSkipAdd ) 
                 mIndexes->Add(index);
         }
 

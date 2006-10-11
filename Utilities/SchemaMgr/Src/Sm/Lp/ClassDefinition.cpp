@@ -146,7 +146,8 @@ FdoSmLpClassDefinitionP FdoSmLpClassBase::GetBaseClass()
 const FdoSmLpClassDefinition* FdoSmLpClassBase::RefMetaClass() const
 {
 	// MetaClasses currently do not have a MetaClass 
-	if ( wcscmp( RefLogicalPhysicalSchema()->GetName(), FdoSmPhMgr::mMetaClassSchemaName ) == 0 )
+	if ( ! ((FdoSmLpClassBase*)this)->GetLogicalPhysicalSchema()->GetPhysicalSchema()->GetOwner()->GetHasMetaSchema() ||
+           wcscmp( RefLogicalPhysicalSchema()->GetName(), FdoSmPhMgr::mMetaClassSchemaName ) == 0 )
 		return(NULL);
 
 	// The MetaClass is the class in the MetaClass schema with the same name as the 
