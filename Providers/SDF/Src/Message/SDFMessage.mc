@@ -481,3 +481,8 @@ SymbolicName=SDFPROVIDER_94_EXINFO_STORAGE_ERROR
 Language=English
 Error reading or writing extended information in SDF file.
 .
+MessageId=95
+SymbolicName=SDFPROVIDER_95_UNSUPPORTED_FUNCTION
+Language=English
+'%1$ls': The SDF Provider does not support this function.
+.

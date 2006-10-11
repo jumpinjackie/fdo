@@ -113,7 +113,9 @@ FdoString* SdfSpatialExtentsAggregateReader::GetItemName(FdoInt32 i)
 FdoInt32 SdfSpatialExtentsAggregateReader::GetItemIndex(FdoString* itemName)  // throw exception if name is invalid
 {
     if (0!=wcscmp(itemName, (FdoString*)m_AliasName))
-        throw FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
+                                                               L"SdfSpatialExtentsAggregateReader::GetItemIndex",
+                                                               L"itemName"));
     return 0;
 }
 
@@ -127,7 +129,8 @@ FdoPropertyType SdfSpatialExtentsAggregateReader::GetItemType(FdoInt32 i)
 FdoDataType SdfSpatialExtentsAggregateReader::GetItemDataType(FdoInt32 i)
 {
     // We only support geometry values (spatialextents to be precise), so any call to this function will fail
-    throw FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER));
+    throw FdoException::NLSGetMessage(FDO_NLSID(SDFPROVIDER_95_UNSUPPORTED_FUNCTION),
+                                      L"SdfSpatialExtentsAggregateReader::GetItemDataType");
 }
 
 // Retrieve data values; these are guaranteed to only be called once per row of data:
