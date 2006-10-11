@@ -67,6 +67,11 @@ SymbolicName=SHP_UNSUPPORTED_FILE_FORMAT_ERROR
 Language=English
 The file '%1$ls' has an unsupported format (%2$ld).
 .
+MessageId=1010
+SymbolicName=SHP_UNSUPPORTED_FUNCTION
+Language=English
+'%1$ls': The SHP Provider does not support this function.
+.
 
 ;//************************************************************************************
 ;//************************************************************************************
