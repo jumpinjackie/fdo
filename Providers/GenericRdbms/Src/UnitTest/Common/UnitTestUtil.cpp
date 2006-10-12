@@ -1141,7 +1141,8 @@ void UnitTestUtil::PrintException( FdoException* e, const char* fileName, FdoBoo
 
 char *UnitTestUtil::GetEnviron(const char *name, const char *suffix)
 {
-	return (char*)UnitTestUtil::InfoUtilConnection->GetEnviron(name, suffix);
+    char* pRet = (char*)UnitTestUtil::InfoUtilConnection->GetEnviron(name, suffix);
+    return (pRet != NULL) ? pRet : "";
 }
 
 const char* UnitTestUtil::GetEnv( const char* pVar, const char* pDefault )
@@ -1198,7 +1199,8 @@ FdoIConnection* UnitTestUtil::CreateConnection(
     if ( lt_string && !lt_method_fixed)
         local_lt_method = atoi(lt_string);
 
-    if ( schemaType == NULL )
+    FdoStringP strSchemaType = schemaType;
+    if ( strSchemaType.GetLength() == 0 )
         pSchemaType = UnitTestUtil::GetEnviron("schematype");
 
     FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore, suffix);
