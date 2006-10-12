@@ -84,7 +84,7 @@ void ConnectionInfoTest::TestProviderInfo ()
 
                 FdoPtr<FdoStringElement> stringCollectionElement = stringCollection->GetItem(0);
                 FdoStringP dependentFileName = stringCollectionElement->GetString();
-                printf(" ......> Found: '%ls'\n", dependentFileName);
+                printf(" ......> Found: '%ls'\n", (FdoString *) dependentFileName);
 
             }
 
