@@ -23,9 +23,9 @@
 #include <Sm/Ph/Rd/ConstraintReader.h>
 #include <Sm/Ph/SpatialIndex.h>
 
-#define   DB_NAME_SUFFIX            "_schema_mgr"
-#define   DB_NAME_COPY_SUFFIX       "_schema_mgr_copy"
-#define   DB_NAME_FOREIGN_SUFFIX    "_schema_mgr_f"
+const char* SchemaMgrTests::DB_NAME_SUFFIX =           "_schema_mgr";
+const char* SchemaMgrTests::DB_NAME_COPY_SUFFIX =      "_schema_mgr_copy";
+const char* SchemaMgrTests::DB_NAME_FOREIGN_SUFFIX =   "_schema_mgr_f";
 
 SchemaMgrTests::SchemaMgrTests (void)
 {
@@ -241,11 +241,13 @@ void SchemaMgrTests::testGenDefault ()
         UnitTestUtil::ExportDb( fdoConn, stream1 );
 		UnitTestUtil::Stream2File( stream1, UnitTestUtil::GetOutputFileName( L"smtables_logical.xml" ) );
 
-        UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_SUFFIX );
+        UnitTestUtil::CloseConnection( fdoConn, false, (char*) DB_NAME_SUFFIX );
 /* TODO: doesn't work on SqlServer
         owner->SetElementState( FdoSchemaElementState_Deleted );
         owner->Commit();
 */
+        phMgr = NULL;
+        mgr = NULL;
         conn->disconnect();
         delete conn;
 
@@ -261,20 +263,6 @@ void SchemaMgrTests::testGenDefault ()
         );
 
         printf( "Copying spatial contexts ...\n" );
-
-        stream1->Reset();
-        FdoXmlSpatialContextSerializer::XmlDeserialize( 
-            fdoConn,
-            FdoXmlSpatialContextReaderP(
-                FdoXmlSpatialContextReader::Create(
-                    FdoXmlReaderP(
-                        FdoXmlReader::Create(stream1)
-                    )
-                )
-            )
-        );
-
-		printf( "Copying spatial contexts ...\n" );
 
         stream1->Reset();
         FdoXmlSpatialContextSerializer::XmlDeserialize( 
@@ -312,7 +300,7 @@ void SchemaMgrTests::testGenDefault ()
 
         UnitTestUtil::Stream2File( stream1, UnitTestUtil::GetOutputFileName( L"gen_default1.xml" ) );
 
-        UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_COPY_SUFFIX );
+        UnitTestUtil::CloseConnection( fdoConn, false, (char*) DB_NAME_COPY_SUFFIX );
 
         // The generated XML file differs depending whether or not it is generated on a
         // SQL Server 2000 or 2005 instance. The difference is with a table system property
@@ -468,8 +456,10 @@ void SchemaMgrTests::testGenGeom ()
         classDef = classes->FindItem( phMgr->GetDcDbObjectName(L"ONE_GEOM") );
         VldGenGeom( classDef );
 
-        UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_COPY_SUFFIX );
+        UnitTestUtil::CloseConnection( fdoConn, false, (char*) DB_NAME_COPY_SUFFIX );
 
+        phMgr = NULL;
+        mgr = NULL;
         delete conn;
         conn = NULL;
 
@@ -598,6 +588,8 @@ void SchemaMgrTests::testGenConfig1 ()
         fOwner->Commit();
         gdbiCommands->tran_end( "FOwner" );
 
+        phMgr = NULL;
+        mgr = NULL;
         delete conn;
 
         printf( "Getting Feature Schemas using config doc ...\n" );
@@ -738,9 +730,6 @@ void SchemaMgrTests::testGenKeys ()
 
         database->Commit();
 
-        conn->disconnect();
-        delete conn;
-
         printf( "Autogenerating schema from datastore ...\n" );
 
         fdoConn = UnitTestUtil::CreateConnection(
@@ -848,8 +837,6 @@ void SchemaMgrTests::testGenKeys ()
 
         database->Commit();
 
-        delete conn;
-
         printf( "Autogenerating updated schema from datastore ...\n" );
 
         fdoConn = UnitTestUtil::CreateConnection(
@@ -885,6 +872,159 @@ void SchemaMgrTests::testGenKeys ()
         CPPUNIT_ASSERT( wcscmp(prop->GetName(), phMgr->GetDcColumnName(L"DATE_COL1")) == 0 );
         prop = idProps->GetItem(1);
         CPPUNIT_ASSERT( wcscmp(prop->GetName(), phMgr->GetDcColumnName(L"STRING_COL2")) == 0 );
+
+        phMgr = NULL;
+        mgr = NULL;
+        conn->disconnect();
+        delete conn;
+
+        printf( "Done\n" );
+    }
+    catch (FdoException* e ) 
+    {
+        UnitTestUtil::FailOnException(e);
+    }
+    catch (CppUnit::Exception exception)
+    {
+        throw exception;
+    }
+    catch (...)
+    {
+        CPPUNIT_FAIL ("unexpected exception encountered");
+    }
+}
+
+void SchemaMgrTests::testFKeys ()
+{
+    StaticConnection* conn = CreateStaticConnection();
+    FdoPtr<FdoIConnection> fdoConn;
+
+    try
+    {
+        char prvenv[100];
+        sprintf( prvenv, "provider=%s", conn->GetServiceName() );
+        FdoStringP provider = conn->GetServiceName();
+#ifdef _WIN32
+        _putenv( prvenv );
+#else
+        putenv( prvenv );
+#endif
+
+        // Sets the other env.
+        UnitTestUtil::SetProvider( conn->GetServiceName() ); 
+
+        printf( "Opening connection ...\n" );
+
+        conn->connect();
+
+        printf( "Predeleting datastores ...\n" );
+
+        FdoSchemaManagerP mgr = conn->CreateSchemaManager();
+
+		FdoSmPhGrdMgrP phMgr = mgr->GetPhysicalSchema()->SmartCast<FdoSmPhGrdMgr>();
+
+        FdoStringP datastore = phMgr->GetDcOwnerName(
+            FdoStringP::Format(
+                L"%hs",
+                UnitTestUtil::GetEnviron("datastore", DB_NAME_SUFFIX)
+            )
+        );
+
+		FdoSmPhDatabaseP database = phMgr->GetDatabase();
+
+		FdoSmPhOwnerP owner = phMgr->FindOwner( datastore, L"", false );
+		if ( owner ) {
+			owner->SetElementState( FdoSchemaElementState_Deleted );
+			owner->Commit();
+		}
+
+		printf( "Creating foreign keys ...\n" );
+
+		owner = database->CreateOwner(
+			datastore, 
+			false
+		);
+		owner->SetPassword( L"test" );
+        owner->Commit();
+
+        // The following creates a table with 3 foreign keys. The table also
+        // contains columns named the same as the foreign keys. This tests 
+        // the name adjustment of Association Properties reverse-engineered
+        // from these foreign keys.
+
+		FdoSmPhTableP table = owner->CreateTable( phMgr->GetDcDbObjectName(L"rtable1") );
+		FdoSmPhColumnP column = table->CreateColumnInt32( phMgr->GetDcColumnName(L"id"), false );
+		table->AddPkeyCol( column->GetName() );
+		FdoSmPhColumnP fkeyColumn = table->CreateColumnInt32( phMgr->GetDcColumnName(L"table1_id"), false );
+		
+        // Create 3 foreign keys plus columns with same names as foreign keys
+        FdoSmPhFkeyP fkey = table->CreateFkey( phMgr->GetDcColumnName("table1_id"), phMgr->GetDcDbObjectName("table1") );
+		fkey->AddFkeyColumn( fkeyColumn, phMgr->GetDcColumnName(L"id") );
+		fkeyColumn = table->CreateColumnInt32( phMgr->GetDcColumnName(L"table2_id"), false );
+		fkey = table->CreateFkey( phMgr->GetDcColumnName("table2_id"), phMgr->GetDcDbObjectName("table2") );
+		fkey->AddFkeyColumn( fkeyColumn, phMgr->GetDcColumnName(L"id") );
+		fkeyColumn = table->CreateColumnInt32( phMgr->GetDcColumnName(L"table3_id"), false );
+		fkey = table->CreateFkey( phMgr->GetDcColumnName("table3_id"), phMgr->GetDcDbObjectName("table3") );
+		fkey->AddFkeyColumn( fkeyColumn, phMgr->GetDcColumnName(L"id") );
+
+        // Create column same as adjusted name for 2nd Association property. Tests
+        // property name that needs 2 adjustments
+		column = table->CreateColumnInt32( L"Assoctable2_id", false );
+        // The following forces the 3rd association property name to be 
+        // adjusted 3 times.
+		column = table->CreateColumnInt32( L"Assoctable3_id", false );
+		column = table->CreateColumnInt32( L"Assoctable3_id1", false );
+        OnTestFkeysCreateTable( table );
+
+        table = owner->CreateTable( phMgr->GetDcDbObjectName(L"table1") );
+		column = table->CreateColumnInt32( phMgr->GetDcColumnName(L"id"), false );
+		table->AddPkeyCol( column->GetName() );
+		column = table->CreateColumnChar( phMgr->GetDcColumnName(L"string_column"), false, 50 );
+        OnTestFkeysCreateTable( table );
+
+        table = owner->CreateTable( phMgr->GetDcDbObjectName(L"table2") );
+		column = table->CreateColumnInt32( phMgr->GetDcColumnName(L"id"), false );
+		table->AddPkeyCol( column->GetName() );
+		column = table->CreateColumnChar( phMgr->GetDcColumnName(L"string_column"), false, 50 );
+        OnTestFkeysCreateTable( table );
+
+        table = owner->CreateTable( phMgr->GetDcDbObjectName(L"table3") );
+		column = table->CreateColumnInt32( phMgr->GetDcColumnName(L"id"), false );
+		table->AddPkeyCol( column->GetName() );
+		column = table->CreateColumnChar( phMgr->GetDcColumnName(L"string_column"), false, 50 );
+        OnTestFkeysCreateTable( table );
+
+        owner->Commit();
+
+        fdoConn = UnitTestUtil::CreateConnection(
+            false,
+            false,
+            DB_NAME_SUFFIX
+        );
+
+        FdoPtr<FdoIDescribeSchema> pDescCmd = (FdoIDescribeSchema*) fdoConn->CreateCommand(FdoCommandType_DescribeSchema);
+        FdoFeatureSchemasP schemas = pDescCmd->Execute();
+        FdoFeatureSchemaP schema = schemas->GetItem(0);
+        FdoClassesP classes = schema->GetClasses();
+
+        FdoClassDefinitionP classDef = classes->GetItem( table2class(phMgr,L"rtable1") );
+        FdoPropertiesP props = classDef->GetProperties();
+
+        FdoPropertyP prop = props->FindItem( AssocNameTestFkeys(phMgr, 1) );
+        CPPUNIT_ASSERT( prop != NULL );
+        CPPUNIT_ASSERT( prop->GetPropertyType() == FdoPropertyType_AssociationProperty );
+
+        prop = props->FindItem( AssocNameTestFkeys(phMgr, 2) );
+        CPPUNIT_ASSERT( prop != NULL );
+        CPPUNIT_ASSERT( prop->GetPropertyType() == FdoPropertyType_AssociationProperty );
+
+        prop = props->FindItem( AssocNameTestFkeys(phMgr, 3) );
+        CPPUNIT_ASSERT( prop != NULL );
+        CPPUNIT_ASSERT( prop->GetPropertyType() == FdoPropertyType_AssociationProperty );
+
+        phMgr = NULL;
+        mgr = NULL;
+        delete conn;
 
         printf( "Done\n" );
     }
@@ -1011,14 +1151,14 @@ void SchemaMgrTests::CreateTableGroup( FdoSmPhOwnerP owner, FdoStringP prefix, F
     viewColumn = view1->CreateColumnDouble( L"DOUBLE_COLUMN", true, L"DOUBLE_COLUMN" );
 }
 
-void SchemaMgrTests::CreateFkey( FdoSmPhOwnerP owner, FdoStringP fTableName, FdoStringP pTableName )
+void SchemaMgrTests::CreateFkey( FdoSmPhOwnerP owner, FdoStringP fTableName, FdoStringP pTableName, FdoStringP pOwnerName )
 {
     FdoSmPhTableP fTable = owner->FindDbObject(fTableName).p->SmartCast<FdoSmPhTable>();
     FdoSmPhColumnP fColumn = fTable->GetColumns()->FindItem( L"FOREIGN_COLUMN" );
 
     FdoStringP fkeyName = FdoStringP::Format( L"FK_%ls_%ls", (FdoString*) fTableName, (FdoString*) pTableName );
 
-    FdoSmPhFkeyP fkey = fTable->CreateFkey( fkeyName, pTableName );
+    FdoSmPhFkeyP fkey = fTable->CreateFkey( fkeyName, pTableName, pOwnerName );
     fkey->AddFkeyColumn( fColumn, L"ID" );
 }
 
@@ -1213,4 +1353,22 @@ FdoStringP SchemaMgrTests::table2class( FdoSmPhGrdMgrP mgr, FdoStringP tableName
 
 void SchemaMgrTests::AddProviderColumns( FdoSmPhTableP table )
 {
+}
+
+FdoStringP SchemaMgrTests::AssocNameTestFkeys( FdoSmPhGrdMgrP mgr, FdoInt32 assocNum )
+{
+    FdoStringP assocName;
+    switch ( assocNum ) {
+    case 1:
+        assocName = FdoStringP::Format( L"Assoc%ls", (FdoString*)mgr->GetDcColumnName("table1_id") );
+        break;
+    case 2:
+        assocName = FdoStringP::Format( L"Assoc%ls", (FdoString*)mgr->GetDcColumnName("table2_id1") );
+        break;
+    case 3:
+        assocName = FdoStringP::Format( L"Assoc%ls", (FdoString*)mgr->GetDcColumnName("table3_id2") );
+        break;
+    }
+
+    return assocName;
 }

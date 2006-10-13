@@ -34,6 +34,8 @@ class MySqlSchemaMgrTests : public SchemaMgrTests
     virtual void AddProviderColumns( FdoSmPhTableP table );
     virtual void VldGenGeom( FdoClassDefinitionP classDef );
     virtual void testConfigError(){};
+
+    virtual void OnTestFkeysCreateTable( FdoSmPhTableP table );
 };
 
 #endif // MYSQL_SCHEMAMGRTESTS_H

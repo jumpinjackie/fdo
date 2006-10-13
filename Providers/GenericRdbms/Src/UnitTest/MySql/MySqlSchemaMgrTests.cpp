@@ -715,3 +715,11 @@ void MySqlSchemaMgrTests::VldGenGeom( FdoClassDefinitionP classDef )
     CPPUNIT_ASSERT( (className == L"NO_WIN") ? (geomPropName == L"" ) : true );
     CPPUNIT_ASSERT( (className == L"ONE_GEOM") ? (geomPropName == L"GEOM1" ) : true );
 }
+
+void MySqlSchemaMgrTests::OnTestFkeysCreateTable( FdoSmPhTableP table )
+{
+    // MySQL only supports foreign keys for InnoDB tables.
+    FdoSmPhMySqlTableP mTable = table->SmartCast<FdoSmPhMySqlTable>();
+
+    mTable->SetStorageEngine( MySQLOvStorageEngineType_InnoDB );
+}

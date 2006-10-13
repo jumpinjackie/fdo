@@ -30,6 +30,7 @@ class SchemaMgrTests : public CppUnit::TestCase
     CPPUNIT_TEST (testGenGeom);
     CPPUNIT_TEST (testGenConfig1);
     CPPUNIT_TEST (testGenKeys);
+    CPPUNIT_TEST (testFKeys);
     CPPUNIT_TEST (testConfigError);
 //    CPPUNIT_TEST (constraints);
 //    CPPUNIT_TEST (delFdoBr);
@@ -47,6 +48,10 @@ protected:
     void testGenConfig1 ();
     void testGenConfigGeom ();
     void testGenKeys();
+    // Tests name collisions between reverse-engineered data and association properties.
+    // Also tests reverse-engineering foreign keys into Association properties for MySQL.
+    virtual void testFKeys();
+
     virtual void testConfigError();
 
     void constraints ();
@@ -77,9 +82,20 @@ protected:
     {
     }
 
-private:
+    virtual void OnTestFkeysCreateTable( FdoSmPhTableP table )
+    {
+    }
+
+    virtual FdoStringP AssocNameTestFkeys( FdoSmPhGrdMgrP mgr, FdoInt32 assocNum );
+
     void CreateTableGroup( FdoSmPhOwnerP owner, FdoStringP prefix, FdoInt32 count, int lt_mode );
-    void CreateFkey( FdoSmPhOwnerP owner, FdoStringP fTableName, FdoStringP pTableName );
+    void CreateFkey( FdoSmPhOwnerP owner, FdoStringP fTableName, FdoStringP pTableName, FdoStringP pOwnerName = L"" );
+
+    static const char* DB_NAME_SUFFIX;
+    static const char* DB_NAME_COPY_SUFFIX;
+    static const char* DB_NAME_FOREIGN_SUFFIX;
+
+private:
     FdoSmPhTableP CreateIxTable( FdoSmPhOwnerP owner, FdoStringP tableName, int lt_mode );
     void AddPkey( FdoSmPhTableP table );
     void AddIndex( FdoSmPhTableP table, bool unique, FdoStringP indexName, FdoStringP columns );
