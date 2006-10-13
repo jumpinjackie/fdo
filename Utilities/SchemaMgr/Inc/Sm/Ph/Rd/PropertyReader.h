@@ -99,9 +99,17 @@ private:
     // data or geometric property.
     bool CheckColumn( FdoSmPhColumnP column );
 
+    // Generate a property name that is not the same 
+    // as any property name for the current class.
+    FdoStringP UniquePropName( FdoStringP origName, FdoStringP prefix );
+    
+    // Add a property name to the "used names" list.
+    void AddUsedName( FdoStringP propName );
+
     FdoSmPhDbObjectP mDbObject;
     FdoSmPhTable* mpTable;
     FdoSmPhColumnsP mIdCols;
+    FdoDictionaryP mUsedNames;
     int mFkeyCount;
     int mFieldIdx;
     int mFkeyIdx;
