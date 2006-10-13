@@ -119,7 +119,6 @@ DWORD dwHighDateTime;
 #include <ShpApplySchemaCommand.h>
 #include <ShpDestroySchemaCommand.h>
 #include <ShpSchemaUtilities.h>
-#include <../../Inc/SHP/ShpCommandType.h>
 
 #endif
 

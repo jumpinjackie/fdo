@@ -46,7 +46,6 @@ template <class FDO_READER> class ShpReader :
     friend class ShpQueryOptimizer;
     friend class ShpFeatIdQueryTester;
     friend class ShpFeatIdQueryEvaluator;
-	friend class ShpImpExtendedSelect;
 
 protected:
     FdoPtr <ShpConnection>              mConnection;
@@ -72,8 +71,6 @@ protected:
     bool            mIsFeatIdQuery;     // Filter is FeatId based query
     int             mFeatidQueryIndex;  // Current index in the stack of pre-computed results 
 
-	bool			mFetchGeometry;		// ExtendedSelect doesn't need geometries for indexing data.
-
 protected:
     ShpReader () {}; // to satisfy _NoAddRefReleaseOnFdoPtr 
 
@@ -90,7 +87,6 @@ public:
         mFirstRead(true),
         mIsFeatIdQuery(true),
         mUseFeatidMergedList(true),
-		mFetchGeometry (true),
         mGeomByteArray (FdoByteArray::Create (SHP_CACHED_GEOMETRY_INITIAL_SIZE))
     {
         FDO_SAFE_ADDREF(connection);
@@ -590,11 +586,6 @@ public:
         throw FdoException::Create (NlsMsgGet(SHP_UNSUPPORTED_DATATYPE, "The '%1$ls' data type is not supported by Shp.", L"Raster"));
     }
 
-    virtual void SetFetchGeometry (bool fetchGeometry)
-    {
-		mFetchGeometry = fetchGeometry;
-	}
-
     /// <summary>Advances the reader to the next item and returns true if there is
     /// another object to read or false if reading is complete. The default
     /// position of the reader is prior to the first item. Thus you must
@@ -737,7 +728,7 @@ private:
             ret = false;
             if (mFeatureNumber < mFileSet->GetShapeIndexFile ()->GetNumObjects ())
             {
-				mFileSet->GetObjectAt (&mData, mType, mFetchGeometry? &mShape : NULL, mFeatureNumber);
+                mFileSet->GetObjectAt (&mData, mType, &mShape, mFeatureNumber);
                 deleted = mData->IsDeleted ();
                 ret = true;
             }
@@ -898,7 +889,7 @@ private:
 			exists = true;
             if ( ret_final )
             {
-                mFileSet->GetObjectAt (&mData, mType, mFetchGeometry? &mShape : NULL, mFeatureNumber);
+                mFileSet->GetObjectAt (&mData, mType, &mShape, mFeatureNumber);
 				
 				exists = ( mData != NULL );
 
@@ -962,7 +953,7 @@ private:
 			exists = true;
             if ( ret_final )
             {
-                mFileSet->GetObjectAt (&mData, mType, mFetchGeometry? &mShape : NULL, mFeatureNumber);
+                mFileSet->GetObjectAt (&mData, mType, &mShape, mFeatureNumber);
 
 				exists = ( mData != NULL );
 

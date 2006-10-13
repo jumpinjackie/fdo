@@ -29,8 +29,6 @@
 #include <FdoCommonStringUtil.h>
 #include <FdoCommonOSUtil.h>
 #include <ShpSelectAggregates.h>
-#include <ShpExtendedSelect.h>
-#include <ShpImpExtendedSelect.h>
 #include <FdoCommonConnStringParser.h>
 
 #ifdef _WIN32
@@ -526,8 +524,6 @@ FdoICommand* ShpConnection::CreateCommand (FdoInt32 commandType)
         case FdoCommandType_DestroySchema:
             ret = new ShpDestroySchemaCommand (this);
             break;
-		case ShpCommandType_ExtendedSelect:
-			return new ShpExtendedSelect( new ShpImpExtendedSelect( this ) );
 
         default:
             throw FdoException::Create (FdoException::NLSGetMessage (FDO_102_COMMAND_NOT_SUPPORTED, "The command '%1$ls' is not supported.", (FdoString*)(FdoCommonMiscUtil::FdoCommandTypeToString (commandType))));
