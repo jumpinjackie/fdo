@@ -136,4 +136,4 @@ FdoStringCollection* FdoWfsConnectionInfo::GetDependentFileNames()
 {
     return NULL;
 }
-    
+
