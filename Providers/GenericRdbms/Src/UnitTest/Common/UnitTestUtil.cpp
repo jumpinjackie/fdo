@@ -1142,7 +1142,7 @@ void UnitTestUtil::PrintException( FdoException* e, const char* fileName, FdoBoo
 char *UnitTestUtil::GetEnviron(const char *name, const char *suffix)
 {
     char* pRet = (char*)UnitTestUtil::InfoUtilConnection->GetEnviron(name, suffix);
-    return (pRet != NULL) ? pRet : "";
+    return (pRet != NULL) ? pRet : (char*)"";
 }
 
 const char* UnitTestUtil::GetEnv( const char* pVar, const char* pDefault )
