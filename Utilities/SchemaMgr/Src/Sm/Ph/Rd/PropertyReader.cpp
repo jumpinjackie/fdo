@@ -47,6 +47,8 @@ FdoSmPhRdPropertyReader::FdoSmPhRdPropertyReader(FdoSmPhDbObjectP dbObject, FdoS
     m_IsGeometryFromOrdinatesWanted(mgr->IsGeometryFromOrdinatesWanted()),
     mFkeyCount(0)
 {
+    mUsedNames = FdoDictionary::Create();
+
     if ( !mDbObject ) {
         // We're done right away if the database object does not exist.
         SetEOF(true);
@@ -106,8 +108,10 @@ bool FdoSmPhRdPropertyReader::ReadNext()
 
                         // Set the property attributes from the column attributes
 
+                        FdoStringP propName = UniquePropName( column->GetBestPropertyName(), L"");
                         FdoSmPhFieldP field = pFields->GetItem(L"attributename");
-                        field->SetFieldValue( column->GetBestPropertyName() );
+                        field->SetFieldValue( propName );
+                        AddUsedName( propName );
 
                         field = pFields->GetItem(L"columnname");
                         field->SetFieldValue( column->GetName() );
@@ -167,12 +171,20 @@ bool FdoSmPhRdPropertyReader::ReadNext()
 
                     row = rows ? rows->GetItem(0) : NULL;
 
-                    if ( row && pPkeyTable && CheckFkey(pFkey) ) {
+                    // Skip foreign keys with non-existent pkey table or pkey
+                    // table in a different owner. Reverse-engineering schemas
+                    // from multiple owners not supported.
+                    if ( row && pPkeyTable && 
+                         ( pPkeyTable->GetParent()->GetQName() == mDbObject->GetParent()->GetQName() ) &&
+                         CheckFkey(pFkey) 
+                    ) {
 						FdoSmPhFieldsP	pFields = row->GetFields();
 
                         // Set property attributes from foreign key attributes.
+                        FdoStringP assocPropName = UniquePropName( pFkey->GetName(), L"Assoc" );
                         FdoSmPhFieldP field = pFields->GetItem(L"attributename");
-                        field->SetFieldValue( pFkey->GetName() );
+                        field->SetFieldValue( assocPropName );
+                        AddUsedName( assocPropName );
 
                         field = pFields->GetItem(L"columnname");
                         field->SetFieldValue( L"" );
@@ -326,4 +338,40 @@ bool FdoSmPhRdPropertyReader::CheckColumn( FdoSmPhColumnP column )
     // If required, a property for this type of column must be 
     // specified in a config document.
     return( !isOrdinate && column && (column->GetType() != FdoSmPhColType_Unknown) );
+}
+
+FdoStringP FdoSmPhRdPropertyReader::UniquePropName( FdoStringP origName, FdoStringP prefix )
+{
+    FdoStringP uniqueName = origName;
+    FdoInt32 idx = (prefix == L"") ? 1: 0;
+    FdoBoolean done = false;
+
+    while ( !done ) {
+        if ( mUsedNames->Contains(uniqueName) ) {
+            // Name not unique, adjust it to be unique.
+            // First try pre-pending prefix, if specified.
+            // After that, add a number to the end. Start
+            // at 1 and keep incrementing until unique name
+            // generated.
+            uniqueName = FdoStringP::Format( 
+                L"%ls%ls%ls",
+                (FdoString*) prefix,
+                (FdoString*) origName,
+                (idx == 0) ? L"" : (FdoString*) FdoStringP::Format( L"%d", idx )
+            );
+
+            idx++;
+        }
+        else {
+            done = true;
+        }
+    }
+
+    return uniqueName;
+}
+
+void FdoSmPhRdPropertyReader::AddUsedName( FdoStringP propName )
+{
+    FdoDictionaryElementP elem = FdoDictionaryElement::Create( propName, L"" );
+    mUsedNames->Add( elem );
 }
