@@ -25,7 +25,7 @@ FdoSmPhRdAssociationReader::FdoSmPhRdAssociationReader(FdoSmPhRowsP froms, FdoSt
 // LogicalPhysical schema reverses primary and foreign tables
     mPkTableName(fkTableName)
 {
-    mpTable = physicalSchema->FindDbObject(pkTableName)->SmartCast<FdoSmPhTable>();
+    mpTable = physicalSchema->FindDbObject(pkTableName).p->SmartCast<FdoSmPhTable>();
     if ( !mpTable ) 
         SetEOF(true);
 }
