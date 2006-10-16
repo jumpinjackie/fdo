@@ -578,6 +578,31 @@ namespace Fdo_Test
             // TODO: If we leave the semi-circular reference, some memory doesn't get released
             //       when we release the pFSchema.  Do we need a way to break this reference count deadlock?
             pfeatureclass2.BaseClass = null;
+
+            FeatureClass pFeatClass3 = new FeatureClass("FeatureClass3", "");
+            pFeatClass3.IsAbstract = false;
+
+            DataPropertyDefinition pPartNum = new DataPropertyDefinition("PartNum", "");
+            pPartNum.DataType = DataType.DataType_Int16;
+            pPartNum.Nullable = true;
+            pFeatClass3.Properties.Add(pPartNum);
+
+            DataValue minValue = new DataValue(-20000);
+            DataValue maxValue = new DataValue(20000);
+            PropertyValueConstraintRange pRange = new PropertyValueConstraintRange(minValue, maxValue);
+            pPartNum.ValueConstraint = pRange;
+
+            DataPropertyDefinition pProp = new DataPropertyDefinition("Volume", "");
+            pProp.DataType = DataType.DataType_Single;
+            pProp.Nullable = false;
+            pProp.ValueConstraint = null;
+            pFeatClass3.Properties.Add(pProp);
+
+            Debug.Assert(((PropertyValueConstraintRange)pPartNum.ValueConstraint).MinValue.ToString() == "-20000");
+            Debug.Assert(((PropertyValueConstraintRange)pPartNum.ValueConstraint).MaxValue.ToString() == "20000");
+            Debug.Assert(pProp.ValueConstraint == null);
+
+
             pFSchema.AcceptChanges();
 
             // Test Enumerator

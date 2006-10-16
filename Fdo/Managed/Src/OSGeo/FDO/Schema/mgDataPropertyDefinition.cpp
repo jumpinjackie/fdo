@@ -181,5 +181,5 @@ NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraint* NAMESPACE_OSGEO_FDO_SCHEMA:
 
 System::Void NAMESPACE_OSGEO_FDO_SCHEMA::DataPropertyDefinition::set_ValueConstraint(NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraint* value )
 {
-	EXCEPTION_HANDLER(GetImpObj()->SetValueConstraint(value->GetImpObj()))
+	EXCEPTION_HANDLER(GetImpObj()->SetValueConstraint(value == NULL ? NULL : value->GetImpObj()))
 }
