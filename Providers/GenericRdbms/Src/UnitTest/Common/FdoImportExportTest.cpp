@@ -72,6 +72,18 @@ xmlns:sqs=\"http://www.autodesk.com/isd/fdo/SQLServerProvider\">\
         <xsl:apply-templates select=\"node()[local-name()='FeatureCollection']\"/>\
     </xsl:copy>\
 </xsl:template>\
+<xsl:template match=\"xs:schema\">\
+    <xsl:copy>\
+        <xsl:apply-templates select=\"@*\"/>\
+        <xsl:apply-templates select=\"xs:annotation\"/>\
+        <xsl:apply-templates select=\"xs:element\">\
+            <xsl:sort select=\"@name\" />\
+        </xsl:apply-templates>\
+        <xsl:apply-templates select=\"xs:complexType\">\
+            <xsl:sort select=\"@name\" />\
+        </xsl:apply-templates>\
+    </xsl:copy>\
+</xsl:template>\
 <xsl:template match=\"ora:SchemaMapping|mql:SchemaMapping|sqs:SchemaMapping\">\
     <xsl:element name=\"SchemaMapping\" namespace=\"{namespace::node()[name()='']}\">\
 		<xsl:for-each select=\"namespace::node()[not(name()='')]\">\
