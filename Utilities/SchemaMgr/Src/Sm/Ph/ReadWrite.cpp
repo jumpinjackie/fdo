@@ -26,7 +26,8 @@ using namespace std;
 
 
 FdoSmPhReadWrite::FdoSmPhReadWrite(FdoPtr<FdoSmPhReadWrite> subReadWrite) :
-    mSubReadWrite(subReadWrite)
+    mSubReadWrite(subReadWrite),
+    mMgr(NULL)
 {
 }
 
