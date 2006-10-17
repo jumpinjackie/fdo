@@ -105,6 +105,16 @@ void GdbiQueryResult::define_exec()
 
 		m_pGdbiCommands->alcnullind(m_pGdbiCommands->get_array_size(), &(colInfo->isNull));
 
+		// In SQLServer the size of RDBI_CHAR is 2 which really is RDBI_STRING
+		if (colInfo->type == RDBI_CHAR && colInfo->size == 2)
+			colInfo->type = RDBI_STRING;
+		else
+		{
+			if (colInfo->type == RDBI_FIXED_CHAR || colInfo->type == RDBI_STRING)
+				// allocate space for null indicator
+				colInfo->size++;
+		}
+
 		if (colInfo->size == 0)
 		{
 			colInfo->value = NULL;
@@ -123,16 +133,6 @@ void GdbiQueryResult::define_exec()
 			}
 			else 
 			{
-				// In SQLServer the size of RDBI_CHAR is 2 which really is RDBI_STRING
-				if (colInfo->type == RDBI_CHAR && colInfo->size == 2)
-					colInfo->type = RDBI_STRING;
-				else
-				{
-					if (colInfo->type == RDBI_FIXED_CHAR || colInfo->type == RDBI_STRING)
-						// allocate space for null indicator
-						colInfo->size++;
-				}
-
 				if( ( m_pGdbiCommands->SupportsUnicode() && colInfo->type == RDBI_STRING ) || colInfo->type == RDBI_WSTRING  )
 				{
 					int size =  colInfo->size * m_pGdbiCommands->get_array_size();

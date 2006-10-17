@@ -67,8 +67,6 @@ void FdoApplySchemaTest::TestSchema ()
 	FdoPtr<FdoIConnection> connection;
 //	FdoPtr<FdoIConnection> copyConnection;
     StaticConnection* staticConn = NULL;
-    FdoSchemaManagerP mgr;
-    const FdoSmLpSchemaCollection* lp = NULL;
 
     // SqlServer does not allow not null columns to be added to existing tables,
     // even if they are empty.
@@ -82,7 +80,10 @@ void FdoApplySchemaTest::TestSchema ()
         mIsOWM = true;
 */
 	try {
-		// delete, re-create and open the datastore
+        FdoSchemaManagerP mgr;
+        const FdoSmLpSchemaCollection* lp = NULL;
+
+        // delete, re-create and open the datastore
 		printf( "Initializing Connection ... \n" );
 		connection = UnitTestUtil::CreateConnection(
 			true,
@@ -343,8 +344,6 @@ void FdoApplySchemaTest::TestOverrides ()
 {
 	FdoPtr<FdoIConnection> connection;
     StaticConnection* staticConn = NULL;
-    FdoSchemaManagerP mgr;
-    const FdoSmLpSchemaCollection* lp = NULL;
 	
 #ifdef RDBI_DEF_SSQL
     mCanAddNotNullCol = false;
@@ -358,6 +357,8 @@ void FdoApplySchemaTest::TestOverrides ()
     mDatastore = UnitTestUtil::GetEnviron("datastore", DB_NAME_OVERRIDE_SUFFIX);
 
     try {
+        FdoSchemaManagerP mgr;
+        const FdoSmLpSchemaCollection* lp = NULL;
 
         // Re-create foreign test datastore first to destroy
         // any dependent views on the overrides database.
@@ -687,8 +688,6 @@ void FdoApplySchemaTest::TestOverrideDefaults ()
 {
 	FdoPtr<FdoIConnection> connection;
     StaticConnection* staticConn = NULL;
-    FdoSchemaManagerP mgr;
-    const FdoSmLpSchemaCollection* lp = NULL;
 
     if ( strcmp(UnitTestUtil::GetEnv("ltmethod", "-1"), "0") == 0 )
         mIsOWM = false;
@@ -698,7 +697,10 @@ void FdoApplySchemaTest::TestOverrideDefaults ()
     mDatastore = UnitTestUtil::GetEnviron("datastore", DB_NAME_OVERRIDE_DEFAULT_SUFFIX);
 
 	try {
-		// delete, re-create and open the datastore
+        FdoSchemaManagerP mgr;
+        const FdoSmLpSchemaCollection* lp = NULL;
+
+        // delete, re-create and open the datastore
 		printf( "Initializing Connection ... \n" );
 		connection = UnitTestUtil::CreateConnection(
 			true,
@@ -874,14 +876,15 @@ void FdoApplySchemaTest::TestLT ()
 {
 	FdoPtr<FdoIConnection> connection;
     StaticConnection* staticConn = NULL;
-    FdoSchemaManagerP mgr;
-    const FdoSmLpSchemaCollection* lp = NULL;
-    FdoSmPhMgrP ph;
 
     int LtLckMethod = GetLtLockMethod();
 
 	try {
-		// delete, re-create and open the datastore
+        FdoSchemaManagerP mgr;
+        const FdoSmLpSchemaCollection* lp = NULL;
+        FdoSmPhMgrP ph;
+
+        // delete, re-create and open the datastore
 		printf( "Initializing Connection ... \n" );
 		connection = UnitTestUtil::CreateConnection(
 			true,
@@ -1225,9 +1228,6 @@ void FdoApplySchemaTest::TestConfigDoc ()
 {
 	FdoPtr<FdoIConnection> connection;
     StaticConnection* staticConn = NULL;
-    FdoSchemaManagerP mgr;
-    const FdoSmLpSchemaCollection* lp = NULL;
-    FdoSmPhMgrP ph;
     FdoIoMemoryStreamP configStream1 = FdoIoMemoryStream::Create();
     FdoIoMemoryStreamP configStream2 = FdoIoMemoryStream::Create();
 
@@ -1242,7 +1242,11 @@ void FdoApplySchemaTest::TestConfigDoc ()
     mCanAddNotNullCol = false;
 #endif
 	try {
-		// delete, re-create and open the datastore
+        FdoSchemaManagerP mgr;
+        const FdoSmLpSchemaCollection* lp = NULL;
+        FdoSmPhMgrP ph;
+
+        // delete, re-create and open the datastore
 		printf( "Initializing Connection ... \n" );
 		connection = UnitTestUtil::CreateConnection(
 			true,

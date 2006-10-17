@@ -1304,6 +1304,8 @@ bool UnitTestUtil::DatastoreExists(const char *suffix)
     if ( FdoSmPhOwnerP(ph->FindOwner(wDatastore, L"", false)) )
         found = true;
 
+    ph = NULL;
+    mgr = NULL;
     staticConn->disconnect();
     delete staticConn;
 

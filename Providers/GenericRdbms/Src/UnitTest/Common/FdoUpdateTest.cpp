@@ -1854,9 +1854,6 @@ void FdoUpdateTest::UpdateNoMeta()
 
         owner->Commit();
 
-        conn->disconnect();
-        conn = NULL;
-
         connection = UnitTestUtil::CreateConnection(
             false,
             false,
@@ -1923,6 +1920,11 @@ void FdoUpdateTest::UpdateNoMeta()
 #endif
 
         connection->Close ();
+
+        phMgr = NULL;
+        mgr = NULL;
+        conn->disconnect();
+        delete conn;
     }
     catch (FdoException *ex)
     {
