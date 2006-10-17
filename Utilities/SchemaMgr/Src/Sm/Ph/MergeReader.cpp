@@ -20,7 +20,7 @@
 #include <Sm/Ph/MergeReader.h>
 
 FdoSmPhMergeReader::FdoSmPhMergeReader( FdoSmPhReaderP reader1, FdoSmPhReaderP reader2, bool unionAll ) :
-    FdoSmPhReader((FdoSmPhReader*) NULL),	
+    FdoSmPhReader(reader1->GetManager(),(FdoSmPhRowCollection*) NULL),	
 	mReader1(reader1),
 	mReader2(reader2),
     mUnionAll(unionAll)
