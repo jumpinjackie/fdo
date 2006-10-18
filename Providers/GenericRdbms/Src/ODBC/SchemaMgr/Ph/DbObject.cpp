@@ -20,6 +20,7 @@
 #include "DbObject.h"
 #include "Owner.h"
 #include "Rd/ColumnReader.h"
+#include "Rd/OraColumnReader.h"
 #include "Rd/DbObjectReader.h"
 #include "Sm/Ph/Rd/DbObjectReader.h"
 #include "ColumnChar.h"
@@ -35,6 +36,9 @@
 #include "ColumnBLOB.h"
 #include "ColumnGeom.h"
 #include "ColumnUnknown.h"
+#include "Mgr.h"
+#include <Inc/Rdbi/context.h>
+
 
 FdoSmPhOdbcDbObject::FdoSmPhOdbcDbObject(
     FdoStringP name,
@@ -249,5 +253,15 @@ FdoSmPhColumnP FdoSmPhOdbcDbObject::NewColumnDbObject(
 
 FdoPtr<FdoSmPhRdColumnReader> FdoSmPhOdbcDbObject::CreateColumnReader()
 {
-    return new FdoSmPhRdOdbcColumnReader( GetManager(), FDO_SAFE_ADDREF(this) );
+   // rdbi_context_def    *rdbi_context = ((FdoSmPhOdbcMgr*)(FdoSmPhMgr*)GetManager())->GetRdbiContext();
+    
+
+    FdoSmPhOdbcMgrP mgr = GetManager()->SmartCast<FdoSmPhOdbcMgr>();
+    rdbi_vndr_info_def info;
+	rdbi_vndr_info( mgr->GetRdbiContext(), &info );
+
+    if( info.dbversion == RDBI_DBVERSION_ODBC_ORACLE )
+        return new FdoSmPhRdOraOdbcColumnReader( GetManager(), FDO_SAFE_ADDREF(this) );
+    else
+        return new FdoSmPhRdOdbcColumnReader( GetManager(), FDO_SAFE_ADDREF(this) );
 }

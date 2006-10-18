@@ -22,6 +22,8 @@
 #include "View.h"
 #include "Mgr.h"
 #include "Rd/DbObjectReader.h"
+#include "Rd/OraDbObjectReader.h"
+#include "Rd/OraPkeyReader.h"
 #include "Rd/ConstraintReader.h"
 #include "Inc/Rdbi/proto.h"
 
@@ -84,7 +86,29 @@ FdoPtr<FdoSmPhRdDbObjectReader> FdoSmPhOdbcOwner::CreateDbObjectReader( FdoStrin
 {
     FdoSmPhOdbcOwner* pOwner = (FdoSmPhOdbcOwner*) this;
 
-    return new FdoSmPhRdOdbcDbObjectReader( FDO_SAFE_ADDREF(pOwner), dbObject );
+    FdoSmPhOdbcMgrP mgr = pOwner->GetManager()->SmartCast<FdoSmPhOdbcMgr>();
+
+    rdbi_vndr_info_def info;
+	rdbi_vndr_info( mgr->GetRdbiContext(), &info );
+
+    if( info.dbversion == RDBI_DBVERSION_ODBC_ORACLE )
+        return new FdoSmPhRdOraOdbcDbObjectReader( FDO_SAFE_ADDREF(pOwner), dbObject );
+    else
+       return new FdoSmPhRdOdbcDbObjectReader( FDO_SAFE_ADDREF(pOwner), dbObject );
+}
+
+FdoPtr<FdoSmPhRdPkeyReader> FdoSmPhOdbcOwner::CreatePkeyReader() const
+{
+    FdoSmPhOdbcOwner* pOwner = (FdoSmPhOdbcOwner*) this;
+    FdoSmPhOdbcMgrP mgr = pOwner->GetManager()->SmartCast<FdoSmPhOdbcMgr>();
+    rdbi_vndr_info_def info;
+	rdbi_vndr_info( mgr->GetRdbiContext(), &info );
+    
+    // The Oracle primary key reader use bulk load to load all the primary keys.
+    if( info.dbversion == RDBI_DBVERSION_ODBC_ORACLE )
+        return new FdoSmPhRdOraOdbcPkeyReader( pOwner->GetManager(), FDO_SAFE_ADDREF(pOwner) );
+    else
+        return (FdoSmPhRdPkeyReader*) NULL;
 }
 
 FdoPtr<FdoSmPhRdConstraintReader> FdoSmPhOdbcOwner::CreateConstraintReader( FdoStringP constraintName) const

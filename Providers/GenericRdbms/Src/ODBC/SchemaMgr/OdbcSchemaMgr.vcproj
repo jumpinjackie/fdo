@@ -340,6 +340,18 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Ph\Rd\OraColumnReader.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Ph\Rd\OraDbObjectReader.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Ph\Rd\OraPkeyReader.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\Ph\Rd\OwnerReader.cpp"
 						>
 					</File>
@@ -519,6 +531,18 @@
 					</File>
 					<File
 						RelativePath=".\Ph\Rd\IndexReader.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Ph\Rd\OraColumnReader.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Ph\Rd\OraDbObjectReader.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Ph\Rd\OraPkeyReader.h"
 						>
 					</File>
 					<File

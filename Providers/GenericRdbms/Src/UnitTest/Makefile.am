@@ -169,6 +169,7 @@ UnitTestOdbc_LDADD =  \
   ../SchemaMgr/Ph/Cfg/libSmPhCfgGrd.la  \
   ../SchemaMgr/Ph/libSmPhGrd.la   \
   ../SchemaMgr/Ph/Rd/libSmPhRdGrd.la  \
+  ../ODBC/SchemaMgr/Ph/Rd/libFdoRdbmsODBC_SchemaMgr_Ph_Rd.la \
   $(FDO)/Unmanaged/Src/libFDO.la   \
   $(FDO)/Unmanaged/Src/Spatial/libFDOSpatial.la   \
   $(FDOTHIRDPARTY)/linux/cppunit/lib/libcppunit.a \

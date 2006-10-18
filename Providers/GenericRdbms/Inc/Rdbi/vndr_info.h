@@ -36,6 +36,19 @@
 #define RDBI_VNDR_INFO_DEFINED
 #include "Inc/rdbi.h"
 
+
+//
+// Defines used to initialize the dbversion field of the rdbi_vndr_info_def structure.
+// It's only used by the ODBC driver to expose the type of backend driver.
+#define  RDBI_DBVERSION_UNKNOW          0
+#define  RDBI_DBVERSION_SQLSERVER       1
+#define  RDBI_DBVERSION_MYSQL           2
+#define  RDBI_DBVERSION_ODBC_ORACLE     3
+#define  RDBI_DBVERSION_ODBC_SQLSERVER  4
+#define  RDBI_DBVERSION_ODBC_ACCESS     5
+#define  RDBI_DBVERSION_ODBC_MYSQL      6
+
+
 typedef struct rdbi_vndr_info_def {
     char name[RDBI_TABLE_NAME_SIZE];         /* vendor name                   */
     unsigned long   dbversion;              /* database version              */

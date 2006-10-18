@@ -67,5 +67,27 @@ int odbcdr_vndr_info(
 	/* cannot fetch more than an array of 10 rows with Geometry */
 	vndr_info->maxFetchSize = 10;
 
+    // Initialize the dbversion with a more precise value
+    if( context->odbcdr_conns[0] != NULL )
+    {
+        switch( context->odbcdr_conns[0]->driver_type )
+        {
+            case ODBCDriverType_OracleNative:
+                vndr_info->dbversion = RDBI_DBVERSION_ODBC_ORACLE;
+                break;
+
+            case ODBCDriverType_SQLServer:
+                vndr_info->dbversion = RDBI_DBVERSION_ODBC_SQLSERVER;
+                break;
+
+            case ODBCDriverType_Access:
+                vndr_info->dbversion = RDBI_DBVERSION_ODBC_ACCESS;
+                break;
+
+            case ODBCDriverType_MySQL:
+                vndr_info->dbversion = RDBI_DBVERSION_ODBC_MYSQL;
+                break;
+        }
+    }
     debug_return(NULL,rdbi_status);
 }

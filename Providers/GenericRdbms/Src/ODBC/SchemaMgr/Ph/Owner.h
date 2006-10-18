@@ -54,6 +54,8 @@ public:
 
 	virtual FdoPtr<FdoSmPhRdConstraintReader> CreateConstraintReader( FdoStringP tableName, FdoStringP constraintType) const;
 
+    virtual FdoPtr<FdoSmPhRdPkeyReader> CreatePkeyReader() const;
+
    	void SetOptions();
 
     // Generates Fdo Feature Schema name from owner name.
