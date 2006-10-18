@@ -540,11 +540,24 @@ public:
     /// Parameters:
     ///      pString - the string to check.
     ///      limit - throw exception if string length is > than this limit.
-    ///      pElementName - the name of the Schema Element that has this value
-    ///          (used in the exception message).
-    ///      pItemName - the name of the Schema Element attribute that has this value
-    ///          (used in the exception message).
-    void ValidateStringLength( FdoStringP pString, size_t limit, FdoStringP pElementName, FdoStringP pItemName ) const;
+    ///      elementNlsNum, dfltElementName - the name of the Schema Element that has 
+    ///          this value (used in the error message).
+    ///          elementNlsNum is the message number from the NLS message catalog.
+    ///          dfltElementName is the element name to use if the message catalog is 
+    ///          not accessible.
+    ///      itemNlsNum, dfltItemName - the name of the Schema Element attribute that 
+    ///          has this value (used in the error message).
+    ///          itemNlsNum is the message number from the NLS message catalog.
+    ///          dfltItemName is the attribute name to use if the message catalog is 
+    ///          not accessible.
+    void ValidateStringLength( 
+        FdoStringP pString, 
+        size_t limit, 
+        FdoInt32   elementNlsNum,
+        const char* dfltElementName,
+        FdoInt32   itemNlsNum,
+        const char* dfltItemName
+    ) const;
 
     /// Sets the rollback cache for this physical schema manager.
     /// It is passed in since it can be shared among schema managers.

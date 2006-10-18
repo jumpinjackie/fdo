@@ -658,19 +658,30 @@ FdoStringP FdoSmPhMgr::FormatSQLVal( FdoStringP value, FdoSmPhColType valueType 
 	return sqlString;
 }
 
-void FdoSmPhMgr::ValidateStringLength( FdoStringP pString, size_t limit, FdoStringP pElementName, FdoStringP pItemName ) const
+void FdoSmPhMgr::ValidateStringLength( 
+    FdoStringP pString, 
+    size_t limit, 
+    FdoInt32   elementNlsNum,
+    const char* dfltElementName,
+    FdoInt32   itemNlsNum,
+    const char* dfltItemName
+) const
 {
-    if ( strlen((const char*) FdoStringP(pString)) > limit ) 
+    if ( strlen((const char*) FdoStringP(pString)) > limit ) {
+        FdoStringP elementName = FdoSmError::NLSGetMessage( elementNlsNum, (char*) dfltElementName );     
+        FdoStringP itemName = FdoSmError::NLSGetMessage( itemNlsNum, (char*) dfltItemName );
+
 		//UTF8 representation of %1$ls %2$ls exceeds %3$d characters, value is '%4$ls'",
         throw FdoSchemaException::Create(
 			FdoSmError::NLSGetMessage(
 				FDO_NLSID( FDOSM_272 ),
-				(FdoString*) pElementName,
-                (FdoString*)pItemName,
+				(FdoString*) elementName,
+                (FdoString*) itemName,
                 limit,
                 (FdoString*) pString
 			)
 		);
+    }
 }
 
 void FdoSmPhMgr::SetRollbackCache( FdoSmPhRbCacheP rollbackCache )
@@ -716,5 +727,3 @@ void FdoSmPhMgr::XMLSerialize( FdoString* sFileName ) const
 	fclose(xmlFp);
 
 }
-
-

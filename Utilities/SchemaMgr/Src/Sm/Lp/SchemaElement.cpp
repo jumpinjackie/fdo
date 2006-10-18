@@ -158,17 +158,18 @@ void FdoSmLpSchemaElement::Update(
         GetName(), 
         pPhysical->GetDcDbObjectName(L"F_SCHEMAINFO"),
         pPhysical->GetDcColumnName(L"SCHEMANAME"),
-        FdoStringP( FdoSmError::NLSGetMessage(FDOSM_269,"Schema Element") ),     
-        FdoStringP( FdoSmError::NLSGetMessage(FDOSM_274,"Name") )
+        FDOSM_269, "Schema Element",     
+        FDOSM_274, "Name"
 	);
 
     ValidateStringLength( 
         GetDescription(), 
         pPhysical->GetDcDbObjectName(L"F_SCHEMAINFO"),
         pPhysical->GetDcColumnName(L"DESCRIPTION"),
-        FdoStringP( FdoSmError::NLSGetMessage(FDOSM_269,"Schema Element") ),     
-        FdoStringP( FdoSmError::NLSGetMessage(FDOSM_271,"Description") )
+        FDOSM_269, "Schema Element",     
+        FDOSM_271, "Description"
 	);
+
 
     if ( (GetElementState() == FdoSchemaElementState_Modified) ||
  		 (GetElementState() == FdoSchemaElementState_Added) ||
@@ -191,7 +192,6 @@ void FdoSmLpSchemaElement::Update(
 	    	LoadSAD(pFdoSAD);
         }
 	}
-
 }
 
 void FdoSmLpSchemaElement::LoadSAD( FdoSchemaAttributeDictionary* pFdoSAD )
@@ -210,16 +210,16 @@ void FdoSmLpSchemaElement::LoadSAD( FdoSchemaAttributeDictionary* pFdoSAD )
             pElement->GetName(), 
             pPhysical->GetDcDbObjectName(L"F_SAD"),
             pPhysical->GetDcColumnName(L"NAME"),
-            FdoStringP( FdoSmError::NLSGetMessage(FDOSM_270,"Schema Attribute Dictionary") ),     
-            FdoStringP( FdoSmError::NLSGetMessage(FDOSM_274,"Name") )
+            FDOSM_270, "Schema Attribute Dictionary",     
+            FDOSM_274, "Name"
     	);
 
         ValidateStringLength( 
             pElement->GetValue(), 
             pPhysical->GetDcDbObjectName(L"F_SAD"),
             pPhysical->GetDcColumnName(L"VALUE"),
-            FdoStringP( FdoSmError::NLSGetMessage(FDOSM_270,"Schema Attribute Dictionary") ),     
-            FdoStringP( FdoSmError::NLSGetMessage(FDOSM_275,"Value") )  
+            FDOSM_270, "Schema Attribute Dictionary",     
+            FDOSM_275, "Value"  
     	);
 
         pSAD->Add( pElement );
@@ -258,16 +258,16 @@ void FdoSmLpSchemaElement::MergeSAD( FdoSchemaAttributeDictionary* pFdoSAD )
             SADName, 
             pPhysical->GetDcDbObjectName(L"F_SAD"),
             pPhysical->GetDcColumnName(L"NAME"),
-            FdoStringP( FdoSmError::NLSGetMessage(FDOSM_270,"Schema Attribute Dictionary") ),     
-            FdoStringP( FdoSmError::NLSGetMessage(FDOSM_274,"Name") )
+            FDOSM_270, "Schema Attribute Dictionary",     
+            FDOSM_274, "Name"
     	);
 
         ValidateStringLength( 
             SADValue, 
             pPhysical->GetDcDbObjectName(L"F_SAD"),
             pPhysical->GetDcColumnName(L"VALUE"),
-            FdoStringP( FdoSmError::NLSGetMessage(FDOSM_270,"Schema Attribute Dictionary") ),     
-            FdoStringP( FdoSmError::NLSGetMessage(FDOSM_275,"Value") )  
+            FDOSM_270, "Schema Attribute Dictionary",     
+            FDOSM_275, "Value"  
     	);
 	}
 }
@@ -281,8 +281,10 @@ void FdoSmLpSchemaElement::ValidateStringLength(
     FdoString* pString, 
     FdoString* pTable,
     FdoString* pColumn,
-    FdoString* pElementName, 
-    FdoString* pItemName 
+    FdoInt32   elementNlsNum,
+    const char* dfltElementName,
+    FdoInt32   itemNlsNum,
+    const char* dfltItemName
 )
 {
    try {
@@ -301,8 +303,10 @@ void FdoSmLpSchemaElement::ValidateStringLength(
                     physicalSchema->ValidateStringLength( 
                         pString, 
                         column->GetLength(),
-   		                pElementName,
-   		                pItemName
+                        elementNlsNum,
+                        dfltElementName,
+                        itemNlsNum,
+                        dfltItemName
 	                );
                 }
             }
