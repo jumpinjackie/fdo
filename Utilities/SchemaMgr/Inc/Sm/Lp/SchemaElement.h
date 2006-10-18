@@ -124,16 +124,24 @@ protected:
     ///          An error is logged if the string will not fit in this column.
     ///          No error is logged if this column does not exist. In this case it is
     ///          assumed that this string will not go into the RDBMS.
-    ///      pElementName - the name of the Schema Element that has this value
-    ///          (used in the error message).
-    ///      pItemName - the name of the Schema Element attribute that has this value
-    ///          (used in the error message).
+    ///      elementNlsNum, dfltElementName - the name of the Schema Element that has 
+    ///          this value (used in the error message).
+    ///          elementNlsNum is the message number from the NLS message catalog.
+    ///          dfltElementName is the element name to use if the message catalog is 
+    ///          not accessible.
+    ///      itemNlsNum, dfltItemName - the name of the Schema Element attribute that 
+    ///          has this value (used in the error message).
+    ///          itemNlsNum is the message number from the NLS message catalog.
+    ///          dfltItemName is the attribute name to use if the message catalog is 
+    ///          not accessible.
     void ValidateStringLength( 
         FdoString* pString, 
         FdoString* pTable,
         FdoString* pColumn,
-        FdoString* pElementName, 
-        FdoString* pItemName
+        FdoInt32   elementNlsNum,
+        const char* dfltElementName,
+        FdoInt32   itemNlsNum,
+        const char* dfltItemName
     );
 
 private:
