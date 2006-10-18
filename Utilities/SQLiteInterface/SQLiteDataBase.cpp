@@ -25,7 +25,6 @@
 SQLiteDataBase::SQLiteDataBase()
 { 
     mDbOpen = false;
-    m_FullPath = NULL; 
     mSartedTransaction = false;
     m_pBtree = NULL; 
 }
@@ -33,9 +32,6 @@ SQLiteDataBase::~SQLiteDataBase()
 { 
     if( mDbOpen )
         close(0);
-
-    if( m_FullPath ) 
-        delete[] m_FullPath; 
 
     if( m_pBtree )
         delete m_pBtree;
@@ -51,20 +47,9 @@ SQLiteBTree* SQLiteDataBase::BTree()
     return m_pBtree; 
 }
 
-int SQLiteDataBase::open(const char *fullPath, unsigned int create, int)
+int SQLiteDataBase::open(unsigned int create, int)
 { 
     mDbOpen = false;
-    if( m_FullPath )
-    {
-        delete[] m_FullPath;
-        m_FullPath = NULL;
-    }
-    if( fullPath )
-    {
-        m_FullPath = new char[strlen(fullPath)+1];
-        strcpy(m_FullPath,fullPath);
-    }
-
     return SQLITE_OK; 
 }
 
@@ -93,11 +78,6 @@ int SQLiteDataBase::openDB( const char *fullPath )
 
 int SQLiteDataBase::close(unsigned int)
 {
-    if( m_FullPath )
-    {
-        delete[] m_FullPath;
-        m_FullPath = NULL;
-    }
     sqlite3_close(mpDB);
     mDbOpen = false;
     return SQLITE_OK; 

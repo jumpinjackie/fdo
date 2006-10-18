@@ -20,7 +20,7 @@
 
 SQLiteMemoryDataBase::SQLiteMemoryDataBase():SQLiteDataBase(  )
 {
-    open(":memory:",(unsigned int) -1,0);
+    open((unsigned int) -1,0);
     openDB(":memory:");
     BTree();
 }

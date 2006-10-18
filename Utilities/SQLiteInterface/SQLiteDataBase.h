@@ -47,7 +47,6 @@ class SQLiteDataBase
 {
 
 private:
-    char            *m_FullPath;
     bool            mDbOpen;
     std::list<SQLiteTable*> mActiveTabs;
     SQLiteBTree*    m_pBtree;
@@ -56,7 +55,7 @@ private:
 
 public:
 
-    int open(const char *fullPath, unsigned int create, int);
+    int open(unsigned int create, int);
 
     int openDB( const char *fullPath ); // It's only needed because the SDF code does not use open to open/create the sdf file
 
