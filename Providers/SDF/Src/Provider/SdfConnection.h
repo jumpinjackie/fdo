@@ -203,8 +203,6 @@ private:
     //full absolute path to SDF file, including name and extension
     char* m_mbsFullPath;
   
-    bool m_bNoEnvPath;
-
     bool m_bReadOnly;
 
     FdoConnectionState m_connState;

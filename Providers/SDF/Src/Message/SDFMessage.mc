@@ -276,11 +276,6 @@ SymbolicName=SDFPROVIDER_52_SDF_HAS_SCHEMA
 Language=English
 Cannot apply schema. The SDF already has a schema.
 .
-MessageId=53
-SymbolicName=SDFPROVIDER_53_SDF_ENV_CLOSE_FAILED
-Language=English
-SDF environment handle was not freed successfully.
-.
 MessageId=54
 SymbolicName=SDFPROVIDER_54_KEY_NOT_UNIQUE
 Language=English

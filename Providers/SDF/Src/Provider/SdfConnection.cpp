@@ -73,11 +73,9 @@ SdfConnection::SdfConnection()
 : m_mbsFullPath(NULL),
   mConnectionString ((wchar_t*)NULL),
   m_env(NULL),
-  m_mbsEnvPath(NULL),
   m_connState(FdoConnectionState_Closed),
   m_connInfo(NULL),
   m_bReadOnly(false),
-  m_bNoEnvPath(false),
   m_dbSchema(NULL),
   m_dbExtendedInfo(NULL)
 {
@@ -87,9 +85,6 @@ SdfConnection::SdfConnection()
 SdfConnection::~SdfConnection()
 {
     CloseDatabases();
-
-    if (m_mbsEnvPath)
-        delete [] m_mbsEnvPath;
 
     if (m_mbsFullPath)
         delete [] m_mbsFullPath;
@@ -212,7 +207,7 @@ FdoConnectionState SdfConnection::Open( SdfCompareHandler* cmpHandler )
 
     m_CompareHandler = FDO_SAFE_ADDREF( cmpHandler );
     
-    if (m_mbsEnvPath == NULL || m_mbsFullPath == NULL)
+    if (m_mbsFullPath == NULL)
         throw FdoConnectionException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_7_ERROR_CONNECTING_TO_FILE)));
 
     //if we are not in create SDF mode, check if the file client 
@@ -255,28 +250,15 @@ FdoConnectionState SdfConnection::Open( SdfCompareHandler* cmpHandler )
         }
     }
 
-    m_bNoEnvPath = false;
-
     //open database first
     m_env = new SQLiteDataBase();
 
     //open the database 
-    if (m_env->open(m_mbsEnvPath, SQLiteDB_CREATE, 0) != 0)
+    if (m_env->open(SQLiteDB_CREATE, 0) != 0)
     {
         delete m_env;
-
-        //Should we have a connection property
-        //specifying where the db env temp files should be?
-
-        m_env = new SQLiteDataBase();
-        m_bNoEnvPath = true;
-
-        if (m_env->open(NULL, SQLiteDB_CREATE, 0) != 0)
-        {
-            delete m_env;
-            m_env = NULL;
-            throw FdoConnectionException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_2_ALLOCATE_ENV_HANDLE_FAILED)));
-        }
+        m_env = NULL;
+        throw FdoConnectionException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_2_ALLOCATE_ENV_HANDLE_FAILED)));
     }
     
     try
@@ -348,22 +330,6 @@ void SdfConnection::CloseDatabases()
         delete m_env;
         m_env = NULL;
 
-        //remove the temp directory if needed
-        if (!m_bNoEnvPath)
-        {
-#ifdef _WIN32
-            int res = _rmdir(m_mbsEnvPath);
-#else
-            int res = rmdir(m_mbsEnvPath);
-#endif
-
-            if (res != 0)
-            {
-                //not much we can do here, this exception
-                //is mostly informational
-                throw FdoConnectionException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_53_SDF_ENV_CLOSE_FAILED),"SDF environment handle was not freed successfully."));
-            }
-        }
     }
 }
 
@@ -495,55 +461,6 @@ void SdfConnection::UpdateConnectionString()
     m_mbsFullPath = new char[strlen(fullPath)+1];
     strcpy(m_mbsFullPath, fullPath);
 
-    //now find a place for for the temporary environment files.
-    
-    char* tmpdir = NULL;
-
-#ifdef _WIN32
-
-    tmpdir = _tempnam(NULL, "sdf");
-
-    if (!tmpdir)
-    {
-        throw FdoConnectionException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_2_ALLOCATE_ENV_HANDLE_FAILED)));
-    }
-
-    int resdir = _mkdir(tmpdir);
-
-    if (resdir != 0)
-    {
-        free(tmpdir);
-        throw FdoConnectionException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_2_ALLOCATE_ENV_HANDLE_FAILED)));
-    }
-
-
-#else
-    
-    //assumes Linux tmp partition is under /tmp
-    //pretty much always true, if not, it is till
-    //fine, as an env open will be attempted with 
-    //an empty string if this one fails
-    tmpdir = (char*)malloc(PATH_MAX);
-    strcpy(tmpdir, "/tmp/sdfXXXXXX");
-
-    //creates temp directory and returns name
-    char* res = mkdtemp(tmpdir);
-
-    if (!res)
-    {
-        free(tmpdir);
-        throw FdoConnectionException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_2_ALLOCATE_ENV_HANDLE_FAILED)));
-    }
-        
-#endif
-
-    if (m_mbsEnvPath) delete [] m_mbsEnvPath; //make sure memory is not leaked!
-    m_mbsEnvPath = new char[strlen(tmpdir) + 1];
-
-    strcpy(m_mbsEnvPath, tmpdir);
-
-    //it was allocated with malloc() by tempnam
-    free(tmpdir);
 
     delete[] fullPath;
     
