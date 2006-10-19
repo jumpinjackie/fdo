@@ -7,21 +7,21 @@ xmlns="http://www.w3.org/TR/REC-html40">
 <meta name=ProgId content=Word.Document>
 <meta name=Generator content="Microsoft Word 11">
 <meta name=Originator content="Microsoft Word 11">
-<link rel=File-List href="7EFFBFBD_files/filelist.xml">
-<link rel=Edit-Time-Data href="7EFFBFBD_files/editdata.mso">
+<link rel=File-List href="12D70A9A_files/filelist.xml">
+<link rel=Edit-Time-Data href="12D70A9A_files/editdata.mso">
 <!--[if gte mso 9]><xml>
  <o:DocumentProperties>
   <o:Author>GB</o:Author>
   <o:Revision>1</o:Revision>
   <o:TotalTime>0</o:TotalTime>
-  <o:Created>2006-10-19T21:58:00Z</o:Created>
+  <o:Created>2006-10-19T22:41:00Z</o:Created>
   <o:Pages>1</o:Pages>
-  <o:Words>2011</o:Words>
-  <o:Characters>11465</o:Characters>
+  <o:Words>2073</o:Words>
+  <o:Characters>11817</o:Characters>
   <o:Company>Autodesk, Inc.</o:Company>
-  <o:Lines>95</o:Lines>
-  <o:Paragraphs>26</o:Paragraphs>
-  <o:CharactersWithSpaces>13450</o:CharactersWithSpaces>
+  <o:Lines>98</o:Lines>
+  <o:Paragraphs>27</o:Paragraphs>
+  <o:CharactersWithSpaces>13863</o:CharactersWithSpaces>
   <o:Version>11.6408</o:Version>
  </o:DocumentProperties>
 </xml><![endif]--><!--[if gte mso 9]><xml>
@@ -84,7 +84,6 @@ h1
 	margin-bottom:3.0pt;
 	margin-left:0in;
 	mso-pagination:widow-orphan;
-	page-break-after:avoid;
 	mso-outline-level:1;
 	font-size:16.0pt;
 	font-family:Arial;}
@@ -94,7 +93,6 @@ h2
 	margin-bottom:3.0pt;
 	margin-left:0in;
 	mso-pagination:widow-orphan;
-	page-break-after:avoid;
 	mso-outline-level:2;
 	font-size:14.0pt;
 	font-family:Arial;}
@@ -104,7 +102,6 @@ h3
 	margin-bottom:3.0pt;
 	margin-left:0in;
 	mso-pagination:widow-orphan;
-	page-break-after:avoid;
 	mso-outline-level:3;
 	font-size:12.0pt;
 	font-family:Arial;}
@@ -140,55 +137,6 @@ span.GramE
 	mso-paper-source:0;}
 div.Section1
 	{page:Section1;}
- /* List Definitions */
- @list l0
-	{mso-list-id:1903252227;
-	mso-list-type:hybrid;
-	mso-list-template-ids:-699084292 67698689 67698691 67698693 67698689 67698691 67698693 67698689 67698691 67698693;}
-@list l0:level1
-	{mso-level-number-format:bullet;
-	mso-level-text:\F0B7;
-	mso-level-tab-stop:.25in;
-	mso-level-number-position:left;
-	margin-left:.25in;
-	text-indent:-.25in;
-	font-family:Symbol;}
-@list l0:level2
-	{mso-level-tab-stop:1.0in;
-	mso-level-number-position:left;
-	text-indent:-.25in;}
-@list l0:level3
-	{mso-level-tab-stop:1.5in;
-	mso-level-number-position:left;
-	text-indent:-.25in;}
-@list l0:level4
-	{mso-level-tab-stop:2.0in;
-	mso-level-number-position:left;
-	text-indent:-.25in;}
-@list l0:level5
-	{mso-level-tab-stop:2.5in;
-	mso-level-number-position:left;
-	text-indent:-.25in;}
-@list l0:level6
-	{mso-level-tab-stop:3.0in;
-	mso-level-number-position:left;
-	text-indent:-.25in;}
-@list l0:level7
-	{mso-level-tab-stop:3.5in;
-	mso-level-number-position:left;
-	text-indent:-.25in;}
-@list l0:level8
-	{mso-level-tab-stop:4.0in;
-	mso-level-number-position:left;
-	text-indent:-.25in;}
-@list l0:level9
-	{mso-level-tab-stop:4.5in;
-	mso-level-number-position:left;
-	text-indent:-.25in;}
-ol
-	{margin-bottom:0in;}
-ul
-	{margin-bottom:0in;}
 -->
 </style>
 <!--[if gte mso 10]>
@@ -220,13 +168,19 @@ ul
 <h1>FDO 3.0 vs. FDO 3.2<o:p></o:p></h1>
 
 <p class=MsoNormal>The naming conventions used in version 3.2 of the FDO API <span
-class=GramE>has been modified</span> from those used in version 3.0. 
-These modifications <span class=GramE>were undertaken</span> to move the
-naming convention used in 3.0 away from its Autodesk roots and position
-itself within the <span class=SpellE>OSGeo</span> framework. As a result of
+class=GramE>have been modified</span> from those exposed in version 3.0. These
+modifications <span class=GramE>were undertaken</span> to move the naming
+conventions used in the API away from its Autodesk roots and position itself
+within the <span class=SpellE>OSGeo</span> framework. As a result of
 implementing these changes, users will be required to modify their applications
 to use the names of the renamed FDO classes, enumerations<span class=GramE>,
 &nbsp;header</span> files, libraries, etc.<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>NOTE:&nbsp;The API changes made moving from
+3.0&nbsp;and&nbsp;3.2 are also applicable when discussing the differences
+between 3.1 and 3.2.<o:p></o:p></p>
 
 <p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
@@ -248,26 +202,22 @@ from the FDO API. <o:p></o:p></p>
 
 <p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
-<p class=MsoNormal>A summary of the changes are as follows:<o:p></o:p></p>
+<p class=MsoNormal>A summary of the required&nbsp;changes are as follows:<o:p></o:p></p>
 
 <p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
-<p class=MsoNormal style='margin-left:.25in;text-indent:-.25in;mso-list:l0 level1 lfo1;
-tab-stops:list .25in'><![if !supportLists]><span style='font-family:Symbol;
-mso-fareast-font-family:Symbol;mso-bidi-font-family:Symbol'><span
-style='mso-list:Ignore'>&middot;<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span></span></span><![endif]>The <span class=SpellE>FdoITopologyCapabilities</span>
-interface <span class=GramE>was removed</span> from the FDO API. <o:p></o:p></p>
+<p class=MsoNormal style='margin-left:.25in;text-indent:-.25in'><span
+style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>The <span class=SpellE>FdoITopologyCapabilities</span> interface <span
+class=GramE>was removed</span> from the FDO API. <o:p></o:p></p>
 
 <p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
-<p class=MsoNormal style='margin-left:.25in;text-indent:-.25in;mso-list:l0 level1 lfo1;
-tab-stops:list .25in'><![if !supportLists]><span style='font-family:Symbol;
-mso-fareast-font-family:Symbol;mso-bidi-font-family:Symbol'><span
-style='mso-list:Ignore'>&middot;<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span></span></span><![endif]>The <span class=SpellE>FdoIConnection</span>
-interface <span class=GramE>was modified</span> to remove the topology related
-capabilities method.<o:p></o:p></p>
+<p class=MsoNormal style='margin-left:.25in;text-indent:-.25in'><span
+style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>The <span class=SpellE>FdoIConnection</span> interface <span
+class=GramE>was modified</span> to remove the topology related capabilities
+method.<o:p></o:p></p>
 
 <p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
@@ -278,86 +228,57 @@ style='font-size:10.0pt;font-family:"Courier New"'> <span class=SpellE>FdoITopol
 
 <p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
-<p class=MsoNormal style='margin-left:.25in;text-indent:-.25in;mso-list:l0 level1 lfo1;
-tab-stops:list .25in'><![if !supportLists]><span style='font-family:Symbol;
-mso-fareast-font-family:Symbol;mso-bidi-font-family:Symbol'><span
-style='mso-list:Ignore'>&middot;<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span></span></span><![endif]>The <span class=SpellE>FdoCommandType</span>
-Enumeration <span class=GramE>was updated</span> to remove the Topology related
-enumeration values. <o:p></o:p></p>
+<p class=MsoNormal style='margin-left:.25in;text-indent:-.25in'><span
+style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>The <span class=SpellE>FdoCommandType</span> Enumeration was updated to
+remove the Topology related enumeration values. <o:p></o:p></p>
 
 <p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span class=SpellE><span
-style='font-size:10.0pt;font-family:"Courier New"'>FdoCommandType_ActivateTopologyArea</span></span><span
-style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+<p class=MsoNormal style='margin-left:.5in'><span class=SpellE>FdoCommandType_ActivateTopologyArea</span><o:p></o:p></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span class=SpellE><span
-style='font-size:10.0pt;font-family:"Courier New"'>FdoCommandType_DeactivateTopologyArea</span></span><span
-style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+<p class=MsoNormal style='margin-left:.5in'><span class=SpellE>FdoCommandType_DeactivateTopologyArea</span><o:p></o:p></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span class=SpellE><span
-style='font-size:10.0pt;font-family:"Courier New"'>FdoCommandType_ActivateTopologyInCommandResult</span></span><span
-style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+<p class=MsoNormal style='margin-left:.5in'><span class=SpellE>FdoCommandType_ActivateTopologyInCommandResult</span><o:p></o:p></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span class=SpellE><span
-style='font-size:10.0pt;font-family:"Courier New"'>FdoCommandType_DeactivateTopologyInCommandResults</span></span><span
-style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+<p class=MsoNormal style='margin-left:.5in'><span class=SpellE>FdoCommandType_DeactivateTopologyInCommandResults</span><o:p></o:p></p>
 
 <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'><o:p>&nbsp;</o:p></span></p>
 
-<p class=MsoNormal style='margin-left:.25in;text-indent:-.25in;mso-list:l0 level1 lfo1;
-tab-stops:list .25in'><![if !supportLists]><span style='font-family:Symbol;
-mso-fareast-font-family:Symbol;mso-bidi-font-family:Symbol'><span
-style='mso-list:Ignore'>&middot;<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span></span></span><![endif]>The following command interfaces <span
-class=GramE>were removed</span> from the FDO API as well as their associated .h
-and .<span class=SpellE>cpp</span> files.<o:p></o:p></p>
+<p class=MsoNormal style='margin-left:.25in;text-indent:-.25in'><span
+style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>The</span> following command interfaces were removed
+from the FDO API as well as their associated .h and .<span class=SpellE>cpp</span>
+files.<o:p></o:p></p>
 
 <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'><o:p>&nbsp;</o:p></span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span class=SpellE><span
-style='font-size:10.0pt;font-family:"Courier New"'>FdoIActivateTopologyArea</span></span><span
-style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+<p class=MsoNormal style='margin-left:.5in'><span class=SpellE>FdoIActivateTopologyArea</span><o:p></o:p></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span class=SpellE><span
-style='font-size:10.0pt;font-family:"Courier New"'>FdoIDeactivateTopologyArea</span></span><span
-style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+<p class=MsoNormal style='margin-left:.5in'><span class=SpellE>FdoIDeactivateTopologyArea</span><o:p></o:p></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span class=SpellE><span
-style='font-size:10.0pt;font-family:"Courier New"'>FdoIActivateTopologyInCommandResults</span></span><span
-style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+<p class=MsoNormal style='margin-left:.5in'><span class=SpellE>FdoIActivateTopologyInCommandResults</span><o:p></o:p></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span class=SpellE><span
-style='font-size:10.0pt;font-family:"Courier New"'>FdoIDeactivateTopologyInCommandResults</span></span><span
-style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+<p class=MsoNormal style='margin-left:.5in'><span class=SpellE>FdoIDeactivateTopologyInCommandResults</span><o:p></o:p></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span class=SpellE><span
-style='font-size:10.0pt;font-family:"Courier New"'>FdoIMoveTopoNode</span></span><span
-style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+<p class=MsoNormal style='margin-left:.5in'><span class=SpellE>FdoIMoveTopoNode</span><o:p></o:p></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span class=SpellE><span
 style='font-size:10.0pt;font-family:"Courier New"'>FdoIReconnectTopoEdge</span></span><o:p></o:p></p>
 
 <p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
-<p class=MsoNormal style='margin-left:.25in;text-indent:-.25in;mso-list:l0 level1 lfo1;
-tab-stops:list .25in'><![if !supportLists]><span style='font-family:Symbol;
-mso-fareast-font-family:Symbol;mso-bidi-font-family:Symbol'><span
-style='mso-list:Ignore'>&middot;<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span></span></span><![endif]>The following schema management classes <span
-class=GramE>were removed</span> from the FDO API as well as their associated .h
-and .<span class=SpellE>cpp</span> files.<o:p></o:p></p>
+<p class=MsoNormal style='margin-left:.25in;text-indent:-.25in'><span
+style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>The</span> following schema management classes were
+removed from the FDO API as well as their associated .h and .<span
+class=SpellE>cpp</span> files.<o:p></o:p></p>
 
 <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'><o:p>&nbsp;</o:p></span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span class=SpellE><span
-style='font-size:10.0pt;font-family:"Courier New"'>FdoTopoGeometryPropertyDefinition</span></span><span
-style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+<p class=MsoNormal style='margin-left:.5in'><span class=SpellE>FdoTopoGeometryPropertyDefinition</span><o:p></o:p></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span class=SpellE><span
-style='font-size:10.0pt;font-family:"Courier New"'>FdoTopology</span></span><span
-style='font-size:10.0pt;font-family:"Courier New"'><o:p></o:p></span></p>
+<p class=MsoNormal style='margin-left:.5in'><span class=SpellE>FdoTopology</span><o:p></o:p></p>
 
 <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'><o:p>&nbsp;</o:p></span></p>
 
@@ -369,17 +290,15 @@ from the FDO API. <o:p></o:p></p>
 
 <p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
-<p class=MsoNormal>A summary of the required changes are as follows:<o:p></o:p></p>
+<p class=MsoNormal>A summary of the required changes&nbsp;are as follows:<o:p></o:p></p>
 
 <p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
-<p class=MsoNormal style='margin-left:.25in;text-indent:-.25in;mso-list:l0 level1 lfo1;
-tab-stops:list .25in'><![if !supportLists]><span style='font-family:Symbol;
-mso-fareast-font-family:Symbol;mso-bidi-font-family:Symbol'><span
-style='mso-list:Ignore'>&middot;<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span></span></span><![endif]>The <span class=SpellE>FdoISchemaCapabilities</span>
-interface <span class=GramE>was modified</span> to remove the following network
-related capabilities method.<o:p></o:p></p>
+<p class=MsoNormal style='margin-left:.25in;text-indent:-.25in'><span
+style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>The <span class=SpellE>FdoISchemaCapabilities</span> interface <span
+class=GramE>was modified</span> to remove the following network related
+capabilities method.<o:p></o:p></p>
 
 <p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
@@ -389,13 +308,10 @@ style='color:blue'>bool</span></span> <span class=SpellE>SupportsNetworkModel</s
 
 <p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
-<p class=MsoNormal style='margin-left:.25in;text-indent:-.25in;mso-list:l0 level1 lfo1;
-tab-stops:list .25in'><![if !supportLists]><span style='font-family:Symbol;
-mso-fareast-font-family:Symbol;mso-bidi-font-family:Symbol'><span
-style='mso-list:Ignore'>&middot;<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span></span></span><![endif]>The <span class=SpellE>FdoCommandType</span>
-Enumeration <span class=GramE>was updated</span> to remove the FDO Network
-related enumeration values. <o:p></o:p></p>
+<p class=MsoNormal style='margin-left:.25in;text-indent:-.25in'><span
+style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>The <span class=SpellE>FdoCommandType</span> Enumeration was updated to
+remove the FDO Network related enumeration values. <o:p></o:p></p>
 
 <p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
@@ -415,13 +331,11 @@ related enumeration values. <o:p></o:p></p>
 
 <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'><o:p>&nbsp;</o:p></span></p>
 
-<p class=MsoNormal style='margin-left:.25in;text-indent:-.25in;mso-list:l0 level1 lfo1;
-tab-stops:list .25in'><![if !supportLists]><span style='font-family:Symbol;
-mso-fareast-font-family:Symbol;mso-bidi-font-family:Symbol'><span
-style='mso-list:Ignore'>&middot;<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span></span></span><![endif]>The following command and reader interfaces <span
-class=GramE>were removed</span> from the FDO API as well as their associated .h
-and .<span class=SpellE>cpp</span> files.<o:p></o:p></p>
+<p class=MsoNormal style='margin-left:.25in;text-indent:-.25in'><span
+style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>The</span> following command and reader interfaces
+were removed from the FDO API as well as their associated .h and .<span
+class=SpellE>cpp</span> files.<o:p></o:p></p>
 
 <p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
@@ -447,13 +361,10 @@ and .<span class=SpellE>cpp</span> files.<o:p></o:p></p>
 
 <p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
-<p class=MsoNormal style='margin-left:.25in;text-indent:-.25in;mso-list:l0 level1 lfo1;
-tab-stops:list .25in'><![if !supportLists]><span style='font-family:Symbol;
-mso-fareast-font-family:Symbol;mso-bidi-font-family:Symbol'><span
-style='mso-list:Ignore'>&middot;<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span></span></span><![endif]>The following enumeration values <span
-class=GramE>were removed</span> from the <span class=SpellE>FdoClassType</span>
-enumeration.<o:p></o:p></p>
+<p class=MsoNormal style='margin-left:.25in;text-indent:-.25in'><span
+style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>The</span> following enumeration values were removed
+from the <span class=SpellE>FdoClassType</span> enumeration.<o:p></o:p></p>
 
 <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'><o:p>&nbsp;</o:p></span></p>
 
@@ -467,13 +378,11 @@ enumeration.<o:p></o:p></p>
 
 <p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
-<p class=MsoNormal style='margin-left:.25in;text-indent:-.25in;mso-list:l0 level1 lfo1;
-tab-stops:list .25in'><![if !supportLists]><span style='font-family:Symbol;
-mso-fareast-font-family:Symbol;mso-bidi-font-family:Symbol'><span
-style='mso-list:Ignore'>&middot;<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span></span></span><![endif]>The following schema management classes <span
-class=GramE>were removed</span> from the API as well as their associated .h and
-.<span class=SpellE>cpp</span> files.<o:p></o:p></p>
+<p class=MsoNormal style='margin-left:.25in;text-indent:-.25in'><span
+style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>The</span> following schema management classes were
+removed from the API as well as their associated .h and .<span class=SpellE>cpp</span>
+files.<o:p></o:p></p>
 
 <p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
@@ -490,8 +399,10 @@ class=GramE>were removed</span> from the API as well as their associated .h and
 
 <h2>Naming Modifications for the FDO API Libraries<o:p></o:p></h2>
 
-<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Renaming
-Library Components in the FDO API <o:p></o:p></span></p>
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Components
+in the FDO API <span class=GramE>were renamed</span>&nbsp;to remove references
+to <span class=SpellE>Gis</span> and to standardize the components to use FDO
+(uppercase) as a prefix.&nbsp;<o:p></o:p></span></p>
 
 <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></p>
 
@@ -696,18 +607,19 @@ Library Components in the FDO API <o:p></o:p></span></p>
  </tr>
 </table>
 
-<h2>Open Source Code Naming Conventions<o:p></o:p></h2>
+<h2>Enforcing Open Source Code Naming Conventions<o:p></o:p></h2>
 
-<p class=MsoNormal>All class names in the FDO API will start with camel case
-&#8220;<span class=SpellE>Fdo</span>&#8221;. The FDO interface definitions will
-start with &#8220;<span class=SpellE>FdoI</span>&#8221;. Class members will be
-defined by getter and setter prefix with Get/Set.&nbsp; <o:p></o:p></p>
+<p class=MsoNormal>With these changes, all class names in the FDO
+API&nbsp;should now start with camel case &#8220;<span class=SpellE>Fdo</span>&#8221;.
+The FDO interface definitions will start with &#8220;<span class=SpellE>FdoI</span>&#8221;.
+Class members will be defined by getter and setter prefix with Get/Set.&nbsp; <o:p></o:p></p>
 
 <p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
-<p class=MsoNormal>The FDO providers have been somewhat standardized to name
-their <span class=SpellE>Fdo</span> implementation classes following the <span
-class=GramE>pattern:</span> <span class=SpellE>Fdo</span>&lt;provider
+<p class=MsoNormal>The FDO <span class=GramE>providers</span>&nbsp;<span
+class=SpellE>implmentations</span> have been&nbsp;'somewhat' standardized to
+name their <span class=SpellE>Fdo</span> implementation classes following the
+pattern: <span class=SpellE>Fdo</span>&lt;provider
 abbreviation&gt;Implementation.<o:p></o:p></p>
 
 <p class=MsoNormal><o:p>&nbsp;</o:p></p>
@@ -720,9 +632,10 @@ The following sections outline the major areas of change.<o:p></o:p></p>
 
 <h3>Managed API Namespaces Changes<o:p></o:p></h3>
 
-<p class=MsoNormal>The namespaces for the FDO Managed APIs currently refer to <span
-class=SpellE>Autodesk.Gis.Fdo</span>.&nbsp; These namespaces <span class=GramE>will
-be modified</span> to reference <span class=SpellE>OSGeo.FDO</span> as follows:<o:p></o:p></p>
+<p class=MsoNormal>In version <span class=GramE>3.0</span> the namespaces for
+the FDO Managed APIs refer to <span class=SpellE>Autodesk.Gis.Fdo</span>.&nbsp;
+These namespaces <span class=GramE>will be modified</span> to reference <span
+class=SpellE>OSGeo.FDO</span> as follows:<o:p></o:p></p>
 
 <p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
@@ -1052,9 +965,8 @@ class=SpellE>Gis</span>.<o:p></o:p></p>
 
 <h3>Type Name Changes<o:p></o:p></h3>
 
-<p class=MsoNormal>There are a number of FDO macro and preprocessor definitions
-that <span class=GramE>were renamed</span> to remove references to <span
-class=SpellE>Gis</span>.<o:p></o:p></p>
+<p class=MsoNormal>There&nbsp;were a number of FDO&nbsp;type definitions that <span
+class=GramE>were renamed</span> to remove references to <span class=SpellE>Gis</span>.<o:p></o:p></p>
 
 <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></p>
 
@@ -1366,8 +1278,9 @@ class=SpellE>Gis</span>.<o:p></o:p></p>
 
 <h3>Class/Interface Name Changes<o:p></o:p></h3>
 
-<p class=MsoNormal>The prefix of the FDO Common classes changed from <span
-class=SpellE>Gis</span> to <span class=SpellE>Fdo</span><o:p></o:p></p>
+<p class=MsoNormal>The prefix&nbsp;for the FDO Common classes&nbsp;<span
+class=GramE>was changed</span> from <span class=SpellE>Gis</span> to <span
+class=SpellE>Fdo</span><o:p></o:p></p>
 
 <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></p>
 
@@ -2011,16 +1924,15 @@ class=SpellE>Gis</span> to <span class=SpellE>Fdo</span><o:p></o:p></p>
 
 <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></p>
 
-<p class=MsoNormal>Note: Class <span class=SpellE><b>GisException</b></span>
+<p class=MsoNormal>NOTE: Class <span class=SpellE><b>GisException</b></span>
 and class <span class=SpellE><b>FdoException</b></span> were merged together to
-form a single <span class=SpellE><b>FdoException</b></span> exception class.<i><span
-style='font-size:10.0pt;font-family:Arial'><o:p></o:p></span></i></p>
+form a single <span class=SpellE><b>FdoException</b></span> exception class.<o:p></o:p></p>
 
-<p class=MsoNormal><i><span style='font-size:10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></i></p>
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
-<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>The
-prefix of the FDO Geometry classes changed from <span class=SpellE><span
-class=GramE>Gis</span></span> to <span class=SpellE>Fdo</span><o:p></o:p></span></p>
+<p class=MsoNormal><span style='mso-bidi-font-style:italic'>The prefix of the
+FDO Geometry classes&nbsp;<span class=GramE>was changed</span> from <span
+class=SpellE>Gis</span> to <span class=SpellE>Fdo</span></span><o:p></o:p></p>
 
 <p class=MsoNormal><i><span style='font-size:10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></i></p>
 
@@ -2556,9 +2468,9 @@ class=GramE>Gis</span></span> to <span class=SpellE>Fdo</span><o:p></o:p></span>
 
 <p class=MsoNormal><i><span style='font-size:10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></i></p>
 
-<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>The
-prefix of the FDO Spatial classes changed from <span class=SpellE><span
-class=GramE>Gis</span></span> to <span class=SpellE>Fdo</span><o:p></o:p></span></p>
+<p class=MsoNormal><span style='mso-bidi-font-style:italic'>The prefix of the
+FDO Spatial&nbsp;API classes&nbsp;<span class=GramE>was changed</span> from <span
+class=SpellE>Gis</span> to <span class=SpellE>Fdo</span><o:p></o:p></span></p>
 
 <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></p>
 
@@ -2626,17 +2538,18 @@ class=GramE>Gis</span></span> to <span class=SpellE>Fdo</span><o:p></o:p></span>
 
 <h3>AGF to FGF Name Change<o:p></o:p></h3>
 
-<p class=MsoNormal>The FDO API uses the term AGF or Autodesk Geometry Format in
-<span class=GramE>it&#8217;s</span> API. This term will be replaced with <span
-class=GramE>FGF which</span> shall represent <span class=SpellE>Fdo</span>
-Geometry Format or Feature Geometry Format. <o:p></o:p></p>
+<p class=MsoNormal>The FDO API used the term AGF or Autodesk Geometry Format
+in&nbsp;version 3.0 of <span class=GramE>it&#8217;s</span> API.&nbsp;In <span
+class=GramE>version</span> 3.2 This term will be replaced with FGF which shall
+represent <span class=SpellE>Fdo</span> Geometry Format or Feature Geometry
+Format. <o:p></o:p></p>
 
 <p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
 <p class=MsoNormal>In order to make this change the geometry class that handles
 the creation of AGF geometry <span class=SpellE>GisAgfGeometryFactory</span>
-and GisAgfGeometryFactory2, will have to be renamed <span class=SpellE>GisFgfGeometryFactory</span>
-and GisFgfGeometryFactory2. There are also factory methods such as <span
+and GisAgfGeometryFactory2, will have to be renamed&nbsp;<span class=SpellE>FdoFgfGeometryFactory</span>
+and&nbsp;FdoFgfGeometryFactory2. There are also factory methods such as <span
 class=SpellE>CreateGeometryFromAgf</span> and <span class=SpellE>GetAgf</span>
 that will need to <span class=GramE>be modified</span>.<o:p></o:p></p>
 
@@ -2647,11 +2560,11 @@ that will need to <span class=GramE>be modified</span>.<o:p></o:p></p>
  <tr style='mso-yfti-irow:0;mso-yfti-firstrow:yes'>
   <td width=295 valign=top style='width:221.4pt;border:solid black 1.5pt;
   border-right:none;background:gray;padding:0in 5.4pt 0in 5.4pt'>
-  <p class=MsoNormal><b><span style='color:white'>3.0 Factory Method Names<o:p></o:p></span></b></p>
+  <p class=MsoNormal><b><span style='color:white'>3.0 Factory Method Name<o:p></o:p></span></b></p>
   </td>
   <td width=295 valign=top style='width:221.4pt;border:solid black 1.5pt;
   border-left:none;background:gray;padding:0in 5.4pt 0in 5.4pt'>
-  <p class=MsoNormal><b><span style='color:white'>3.2 Factory Method Names<o:p></o:p></span></b></p>
+  <p class=MsoNormal><b><span style='color:white'>3.2 Factory Method Name<o:p></o:p></span></b></p>
   </td>
  </tr>
  <tr style='mso-yfti-irow:1'>
@@ -2670,7 +2583,7 @@ that will need to <span class=GramE>be modified</span>.<o:p></o:p></p>
   <td width=295 valign=top style='width:221.4pt;border-top:none;border-left:
   solid black 1.5pt;border-bottom:solid black 1.0pt;border-right:none;
   padding:0in 5.4pt 0in 5.4pt'>
-  <p class=MsoNormal><span class=SpellE>CreateGeometryFromFgf</span><o:p></o:p></p>
+  <p class=MsoNormal><span class=SpellE>CreateGeometryFromAgf</span><o:p></o:p></p>
   </td>
   <td width=295 valign=top style='width:221.4pt;border-top:none;border-left:
   none;border-bottom:solid black 1.0pt;border-right:solid black 1.5pt;
@@ -2682,7 +2595,7 @@ that will need to <span class=GramE>be modified</span>.<o:p></o:p></p>
   <td width=295 valign=top style='width:221.4pt;border-top:none;border-left:
   solid black 1.5pt;border-bottom:solid black 1.0pt;border-right:none;
   padding:0in 5.4pt 0in 5.4pt'>
-  <p class=MsoNormal><span class=SpellE>GetFgf</span><o:p></o:p></p>
+  <p class=MsoNormal><span class=SpellE>GetAgf</span><o:p></o:p></p>
   </td>
   <td width=295 valign=top style='width:221.4pt;border-top:none;border-left:
   none;border-bottom:solid black 1.0pt;border-right:solid black 1.5pt;
@@ -2707,15 +2620,16 @@ that will need to <span class=GramE>be modified</span>.<o:p></o:p></p>
 <h3>SHP Override API Class Naming Conventions<o:p></o:p></h3>
 
 <p class=MsoNormal>Physical Overrides APIs <span class=GramE>are defined</span>
-for SHP, ODBC, <span class=SpellE>MySQL</span> and WMS providers. At this <span
-class=GramE>point</span> the naming conventions for the APIs have not been
-standardized. As a part of the Open Source preparedness effort, these APIs will
-be standardized to use a common prefix of <span class=SpellE><span class=GramE><b>Fdo</b></span></span><span
+for&nbsp;the SHP, ODBC, <span class=SpellE>MySQL</span> and WMS
+providers.&nbsp;In 3.0, the naming conventions for the APIs&nbsp;<span
+class=GramE>had not been standardized</span>. As a part of the Open Source
+preparedness effort, these APIs&nbsp;were standardized to use a common prefix
+of <span class=SpellE><span class=GramE><b>Fdo</b></span></span><span
 class=GramE><b>[</b></span><b>Provider]<span class=SpellE>Ov</span></b>. This
 naming convention is already in use for the ODBC, <span class=SpellE>MySQL</span>
 and WMS providers. The SHP provider <span class=GramE>will be updated</span> to
 also follow this standard. The following table outlines the Open Source class
-names that <span class=GramE>will be used</span> for the SHP Provider. <o:p></o:p></p>
+names that&nbsp;are bow used for the&nbsp;3.2 version of the FDO SHP Provider. <o:p></o:p></p>
 
 <p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
@@ -2828,8 +2742,6 @@ names that <span class=GramE>will be used</span> for the SHP Provider. <o:p></o:
   </td>
  </tr>
 </table>
-
-<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></p>
 
 <h3>File Name Changes<o:p></o:p></h3>
 
@@ -3024,7 +2936,7 @@ convention or to remove GIS from their filenames. <o:p></o:p></span></p>
   none;border-bottom:solid black 1.0pt;border-right:solid black 1.5pt;
   padding:0in 5.4pt 0in 5.4pt'>
   <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Spatial\<span
-  class=SpellE>FdoSpatialGeometryValidity.h</span><o:p></o:p></span></p>
+  class=SpellE>SpatialGeometryValidity.h</span><o:p></o:p></span></p>
   </td>
  </tr>
  <tr style='mso-yfti-irow:13'>
@@ -3038,7 +2950,7 @@ convention or to remove GIS from their filenames. <o:p></o:p></span></p>
   none;border-bottom:solid black 1.0pt;border-right:solid black 1.5pt;
   padding:0in 5.4pt 0in 5.4pt'>
   <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Spatial\<span
-  class=SpellE>FdoSpatialGridTransform.h</span><o:p></o:p></span></p>
+  class=SpellE>SpatialGridTransform.h</span><o:p></o:p></span></p>
   </td>
  </tr>
  <tr style='mso-yfti-irow:14'>
@@ -3085,10 +2997,10 @@ convention or to remove GIS from their filenames. <o:p></o:p></span></p>
 
 <h2>Documentation<o:p></o:p></h2>
 
-<p class=MsoNormal>In Version 3.2, FDO Open Source API reference documentation <span
-class=GramE>will be generated</span> using <span class=SpellE>Doxygen</span>.
-API documentation content will retrieved directly from the header files that
-constitute the public FDO API.<o:p></o:p></p>
+<p class=MsoNormal>In Version 3.2,&nbsp;the FDO Open Source API reference
+documentation <span class=GramE>will be generated</span> using <span
+class=SpellE>Doxygen</span>. API documentation content will retrieved directly
+from the header files that constitute the public FDO API.<o:p></o:p></p>
 
 <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></p>
 
