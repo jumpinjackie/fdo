@@ -39,6 +39,7 @@ class SelectAggregatesTests :
     CPPUNIT_TEST (select_orderby_scrambled_property_ids);
     CPPUNIT_TEST (select_orderby_empty_select_list);
     CPPUNIT_TEST (selectAggregatesSpatialExtentsTest);
+	CPPUNIT_TEST (performance_count_mbr);
     CPPUNIT_TEST_SUITE_END ();
 
     static FdoPtr<FdoIConnection> mConnection;
@@ -61,6 +62,7 @@ protected:
     void select_orderby_scrambled_property_ids();
     void select_orderby_empty_select_list();
     void selectAggregatesSpatialExtentsTest();  // This test is ported from SDF Provider
+	void performance_count_mbr ();
 
     // utility methods:
     void create_schema (FdoString *schemaName, FdoString* className, FdoGeometricType type, bool elevation, bool measure, bool bInsertTestData);

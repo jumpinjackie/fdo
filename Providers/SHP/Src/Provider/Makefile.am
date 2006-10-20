@@ -45,7 +45,7 @@ libSHPProviderSrc_la_SOURCES = \
   ShpSchemaCapabilities.cpp \
   ShpSelectCommand.cpp \
   ShpSelectAggregates.cpp \
-  ShpSpatialExtentsAggregateReader.cpp \
+  ShpOptimizedAggregateReader.cpp \
   ShpInsertCommand.cpp \
   ShpUpdateCommand.cpp \
   ShpDeleteCommand.cpp \
@@ -85,7 +85,7 @@ noinst_HEADERS = $(libSHPProviderSrc_la_SOURCES) \
    ShpSpatialContextReader.h \
    ShpDescribeSchemaMappingCommand.h \
    ShpLpFeatureSchema.h \
-   ShpSpatialExtentsAggregateReader.h \
+   ShpOptimizedAggregateReader.h \
    ShpDestroySchemaCommand.h \
    ShpLpPropertyDefinition.h \
    ShpTopologyCapabilities.h \

@@ -357,6 +357,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ShpOptimizedAggregateReader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ShpOptimizedAggregateReader.h"
+				>
+			</File>
+			<File
 				RelativePath="ShpQueryOptimizer.cpp"
 				>
 			</File>
@@ -378,14 +386,6 @@
 			</File>
 			<File
 				RelativePath="ShpSelectCommand.h"
-				>
-			</File>
-			<File
-				RelativePath=".\ShpSpatialExtentsAggregateReader.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ShpSpatialExtentsAggregateReader.h"
 				>
 			</File>
 			<File

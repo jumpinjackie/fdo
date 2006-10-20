@@ -18,7 +18,7 @@
 #include "stdafx.h"
 #include "ShpSelectAggregates.h"
 #include "ShpConnection.h"
-#include "ShpSpatialExtentsAggregateReader.h"
+#include "ShpOptimizedAggregateReader.h"
 
 ShpSelectAggregates::ShpSelectAggregates(ShpConnection* connection)
     : FdoCommonSelectAggregatesCommand(connection)
@@ -52,38 +52,65 @@ FdoIDataReader* ShpSelectAggregates::Execute()
     FdoFeatureClass* featureClassDef = dynamic_cast<FdoFeatureClass*>(classDef.p);
 
     // Verify if this is a special case we can optimize (no filter, no grouping fitler,
-    // and one aggregate function SpatialExtents() on the main geometry property of the class)
-    bool bCanOptimizeSpatialExtents = false;
-    FdoComputedIdentifier* computedIdentifier = NULL;
-    if (!mFilter && !m_GroupingFilter && (mPropertiesToSelect->GetCount()==1))
+    // and only aggregate functions Count() and/or SpatialExtents())
+ 	bool		bOtherAggrSelected = false;
+	aggr_list	*selAggrList = new aggr_list;
+
+    if (!mFilter && !m_GroupingFilter)
     {
-        FdoPtr<FdoIdentifier> identifier = mPropertiesToSelect->GetItem(0);
-        computedIdentifier = dynamic_cast<FdoComputedIdentifier*>(identifier.p);
-        if (computedIdentifier) 
-        {
-            FdoPtr<FdoExpression> expr = computedIdentifier->GetExpression();
-            FdoFunction* func = dynamic_cast<FdoFunction*>(expr.p);
-            if (func && 0==wcscmp(func->GetName(), FDO_FUNCTION_SPATIALEXTENTS))
-            {
-                FdoPtr<FdoExpressionCollection> args = func->GetArguments();
-                FdoPtr<FdoExpression> arg = args->GetItem(0);
-                FdoIdentifier* argId = dynamic_cast<FdoIdentifier*>(arg.p);
-                if (featureClassDef)
-                {
-                    FdoPtr<FdoGeometricPropertyDefinition> geomProp = featureClassDef->GetGeometryProperty();
-                    if (geomProp && argId && 0==wcscmp(argId->GetName(), geomProp->GetName()))
-                        bCanOptimizeSpatialExtents = true;
-                }
-            }
-        }
+		for (int i = 0; i <  mPropertiesToSelect->GetCount() && !bOtherAggrSelected; i++ )
+		{
+			FdoPtr<FdoIdentifier> identifier = mPropertiesToSelect->GetItem(i);
+			FdoComputedIdentifier* computedIdentifier = dynamic_cast<FdoComputedIdentifier*>(identifier.p);
+			
+			if (computedIdentifier) 
+			{
+				FdoPtr<FdoExpression> expr = computedIdentifier->GetExpression();
+				FdoFunction* func = dynamic_cast<FdoFunction*>(expr.p);
+				if (func && 0==wcscmp(func->GetName(), FDO_FUNCTION_SPATIALEXTENTS))
+				{
+					FdoPtr<FdoExpressionCollection> args = func->GetArguments();
+					FdoPtr<FdoExpression> arg = args->GetItem(0);
+					FdoIdentifier* argId = dynamic_cast<FdoIdentifier*>(arg.p);
+					if (featureClassDef)
+					{
+						FdoPtr<FdoGeometricPropertyDefinition> geomProp = featureClassDef->GetGeometryProperty();
+						if (geomProp && argId && 0==wcscmp(argId->GetName(), geomProp->GetName()))
+						{
+							AggregateElement *id = new AggregateElement;
+							id->name = computedIdentifier->GetName();
+							id->type = FdoPropertyType_GeometricProperty;
+							selAggrList->push_back( id );
+						}
+					}
+				}
+				else if (func && 0 == wcscmp(func->GetName(), FDO_FUNCTION_COUNT))
+				{
+					AggregateElement *id = new AggregateElement;
+					id->name = computedIdentifier->GetName();
+					id->type = FdoPropertyType_DataProperty;
+					selAggrList->push_back( id );
+				}
+				else
+				{
+					// Sorry, no optimization. Clean up.
+					for ( size_t i = 0; i < selAggrList->size(); i++ )
+						delete selAggrList->at(i);
+					delete selAggrList;
+
+					bOtherAggrSelected = true;
+				}
+			}
+		}
     }
 
     // Now perform the actual select aggregates and return the data reader:
-    if (bCanOptimizeSpatialExtents)
+    if ( !bOtherAggrSelected && ( selAggrList->size() > 0 ))
     {
-        return new ShpSpatialExtentsAggregateReader(conn, featureClassDef, computedIdentifier->GetName());
+		// The reader takes ownership of the selAggrList
+        return new ShpOptimizedAggregateReader(conn, featureClassDef, selAggrList );
     }
-    else
+    else			
     {
         return FdoCommonSelectAggregatesCommand::Execute();
     }

@@ -32,6 +32,8 @@
 CPPUNIT_TEST_SUITE_REGISTRATION (SelectAggregatesTests);
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION (SelectAggregatesTests, "SelectAggregatesTests");
 
+#define		USE_MONSTER_SHP		false  // for perpormance test only. 
+
 FdoPtr<FdoIConnection> SelectAggregatesTests::mConnection;
 
 SelectAggregatesTests::SelectAggregatesTests (void)
@@ -953,253 +955,399 @@ void SelectAggregatesTests::selectAggregatesSpatialExtentsTest()
     int count;
     FdoPtr<FdoIConnection> conn = FDO_SAFE_ADDREF(mConnection.p);
 
+	try
+	{
+		// Create class with some test data in it:
+		FdoString *className  = L"MyClass";
+		FdoString *schemaName = L"MySchema";
+		create_schema(schemaName, className, FdoGeometricType_Curve, false, false, true);
 
-    // Create class with some test data in it:
-    FdoString *className  = L"MyClass";
-    FdoString *schemaName = L"MySchema";
-    create_schema(schemaName, className, FdoGeometricType_Curve, false, false, true);
+		FdoPtr<FdoISelectAggregates> advsel = (FdoISelectAggregates*)(conn->CreateCommand(FdoCommandType_SelectAggregates));
 
-    FdoPtr<FdoISelectAggregates> advsel = (FdoISelectAggregates*)(conn->CreateCommand(FdoCommandType_SelectAggregates));
+		advsel->SetFeatureClassName(L"MyClass");
+	    
+		ids = advsel->GetPropertyNames();
 
-    advsel->SetFeatureClassName(L"MyClass");
-    
-    ids = advsel->GetPropertyNames();
-
-    expr = FdoExpression::Parse(L"SpatialExtents(Geometry)");
-    cid = FdoComputedIdentifier::Create(L"MBR", expr);
-    ids->Add(cid);
-
-
-    // Test the optimized case (no filter, no other identifiers in select property list):
-    ////////////////////////////////////////////////////////////////////////////////////
-
-    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-    rdr = advsel->Execute();
-
-    count = 0;
-
-    FdoPtr<FdoIEnvelope> envelopeAllWithoutFilter;
-    while (rdr->ReadNext())
-    {
-        FdoPtr<FdoByteArray> geomBytes = rdr->GetGeometry(L"MBR");
-        FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(geomBytes);
-
-        FdoGeometryType geomType = geom->GetDerivedType();
-        if (geomType != FdoGeometryType_Polygon)
-		    CPPUNIT_FAIL("Expected Polygon geometry for SpatialExtents() result");
-
-        envelopeAllWithoutFilter = geom->GetEnvelope();
-        if (envelopeAllWithoutFilter->GetIsEmpty())
-            CPPUNIT_FAIL("Expected non-empty envelope for SpatialExtents() result");
-        count++;
-    }
-    CPPUNIT_ASSERT_MESSAGE("Expected exactly one row of aggregate data", count==1);
-
-    rdr->Close();
+		expr = FdoExpression::Parse(L"SpatialExtents(Geometry)");
+		cid = FdoComputedIdentifier::Create(L"MBR", expr);
+		ids->Add(cid);
 
 
-    // Test the non-optimized case (with a filter provided):
-    ////////////////////////////////////////////////////////////////////////////////////
+		// Test the optimized case (no filter, no other identifiers in select property list):
+		////////////////////////////////////////////////////////////////////////////////////
 
-    advsel->SetFilter(L"LotSize != -1.0");  // this is an arbitrary value that should allow all rows through
-    rdr = advsel->Execute();
+		FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+		rdr = advsel->Execute();
 
-    count = 0;
-    FdoPtr<FdoIEnvelope> envelopeAllWithFilter;
-    while (rdr->ReadNext())
-    {
-        FdoPtr<FdoByteArray> geomBytes = rdr->GetGeometry(L"MBR");
-        FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(geomBytes);
+		count = 0;
 
-        FdoGeometryType geomType = geom->GetDerivedType();
-        if (geomType != FdoGeometryType_Polygon)
-		    CPPUNIT_FAIL("Expected Polygon geometry for SpatialExtents() result");
+		FdoPtr<FdoIEnvelope> envelopeAllWithoutFilter;
+		while (rdr->ReadNext())
+		{
+			FdoPtr<FdoByteArray> geomBytes = rdr->GetGeometry(L"MBR");
+			FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(geomBytes);
 
-        envelopeAllWithFilter = geom->GetEnvelope();
-        if (envelopeAllWithFilter->GetIsEmpty())
-            CPPUNIT_FAIL("Expected non-empty envelope for SpatialExtents() result");
+			FdoGeometryType geomType = geom->GetDerivedType();
+			if (geomType != FdoGeometryType_Polygon)
+				CPPUNIT_FAIL("Expected Polygon geometry for SpatialExtents() result");
 
-        count++;
-    }
-    CPPUNIT_ASSERT_MESSAGE("Expected exactly one row of aggregate data", count==1);
+			envelopeAllWithoutFilter = geom->GetEnvelope();
+			if (envelopeAllWithoutFilter->GetIsEmpty())
+				CPPUNIT_FAIL("Expected non-empty envelope for SpatialExtents() result");
+			count++;
+		}
+		CPPUNIT_ASSERT_MESSAGE("Expected exactly one row of aggregate data", count==1);
 
-    rdr->Close();
-
-    // Compare the two "all" results to make sure they are equivalent:
-    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinX)", envelopeAllWithoutFilter->GetMinX() == envelopeAllWithFilter->GetMinX());
-    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinY)", envelopeAllWithoutFilter->GetMinY() == envelopeAllWithFilter->GetMinY());
-    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinZ)", FdoCommonOSUtil::_isnan(envelopeAllWithoutFilter->GetMinZ()) && FdoCommonOSUtil::_isnan(envelopeAllWithFilter->GetMinZ()));
-    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxX)", envelopeAllWithoutFilter->GetMaxX() == envelopeAllWithFilter->GetMaxX());
-    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxY)", envelopeAllWithoutFilter->GetMaxY() == envelopeAllWithFilter->GetMaxY());
-    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxZ)", FdoCommonOSUtil::_isnan(envelopeAllWithoutFilter->GetMaxZ()) && FdoCommonOSUtil::_isnan(envelopeAllWithFilter->GetMaxZ()));
+		rdr->Close();
 
 
-    // Test the non-optimized case (filter that returns NULL):
-    ////////////////////////////////////////////////////////////////////////////////////
+		// Test the non-optimized case (with a filter provided):
+		////////////////////////////////////////////////////////////////////////////////////
 
-    advsel->SetFilter(L"LotSize = -1");  // will select 0 rows
-    rdr = advsel->Execute();
+		advsel->SetFilter(L"LotSize != -1.0");  // this is an arbitrary value that should allow all rows through
+		rdr = advsel->Execute();
 
-    count = 0;
-    while (rdr->ReadNext())
-    {
-        CPPUNIT_ASSERT_MESSAGE("Expected NULL result from SpatialExtents with filter returning 0 rows", rdr->IsNull(L"MBR"));
-        count++;
-    }
-    CPPUNIT_ASSERT_MESSAGE("Expected exactly one row of aggregate data", count==1);
+		count = 0;
+		FdoPtr<FdoIEnvelope> envelopeAllWithFilter;
+		while (rdr->ReadNext())
+		{
+			FdoPtr<FdoByteArray> geomBytes = rdr->GetGeometry(L"MBR");
+			FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(geomBytes);
 
-    rdr->Close();
+			FdoGeometryType geomType = geom->GetDerivedType();
+			if (geomType != FdoGeometryType_Polygon)
+				CPPUNIT_FAIL("Expected Polygon geometry for SpatialExtents() result");
 
+			envelopeAllWithFilter = geom->GetEnvelope();
+			if (envelopeAllWithFilter->GetIsEmpty())
+				CPPUNIT_FAIL("Expected non-empty envelope for SpatialExtents() result");
 
-    // Test the non-optimized case (no filter, more than one thing in the identifier property list):
-    ////////////////////////////////////////////////////////////////////////////////////
+			count++;
+		}
+		CPPUNIT_ASSERT_MESSAGE("Expected exactly one row of aggregate data", count==1);
 
-    advsel->SetFilter((FdoFilter*)NULL);  // no filter
-    ids->Add(FdoPtr<FdoIdentifier>(FdoComputedIdentifier::Create(L"MyCount",
-                FdoPtr<FdoExpression>(FdoExpression::Parse(L"Count(Geometry)"))
-             )));
-    rdr = advsel->Execute();
+		rdr->Close();
 
-    count = 0;
-    FdoPtr<FdoIEnvelope> envelopeAllWithoutFilterMultipleIds;
-    while (rdr->ReadNext())
-    {
-        FdoPtr<FdoByteArray> geomBytes = rdr->GetGeometry(L"MBR");
-        FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(geomBytes);
-
-        FdoGeometryType geomType = geom->GetDerivedType();
-        if (geomType != FdoGeometryType_Polygon)
-		    CPPUNIT_FAIL("Expected Polygon geometry for SpatialExtents() result");
-
-        envelopeAllWithoutFilterMultipleIds = geom->GetEnvelope();
-        if (envelopeAllWithoutFilterMultipleIds->GetIsEmpty())
-            CPPUNIT_FAIL("Expected non-empty envelope for SpatialExtents() result");
-
-        FdoInt64 mycount = rdr->GetInt64(L"MyCount");
-        CPPUNIT_ASSERT_MESSAGE("Wrong row count", 4 == mycount);
-
-        count++;
-    }
-    CPPUNIT_ASSERT_MESSAGE("Expected exactly one row of aggregate data", count==1);
-
-    rdr->Close();
-
-    // Compare the two "all" results to make sure they are equivalent:
-    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinX)", envelopeAllWithoutFilter->GetMinX() == envelopeAllWithoutFilterMultipleIds->GetMinX());
-    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinY)", envelopeAllWithoutFilter->GetMinY() == envelopeAllWithoutFilterMultipleIds->GetMinY());
-    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinZ)", FdoCommonOSUtil::_isnan(envelopeAllWithoutFilter->GetMinZ()) && FdoCommonOSUtil::_isnan(envelopeAllWithoutFilterMultipleIds->GetMinZ()));
-    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxX)", envelopeAllWithoutFilter->GetMaxX() == envelopeAllWithoutFilterMultipleIds->GetMaxX());
-    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxY)", envelopeAllWithoutFilter->GetMaxY() == envelopeAllWithoutFilterMultipleIds->GetMaxY());
-    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxZ)", FdoCommonOSUtil::_isnan(envelopeAllWithoutFilter->GetMaxZ()) && FdoCommonOSUtil::_isnan(envelopeAllWithoutFilterMultipleIds->GetMaxZ()));
+		// Compare the two "all" results to make sure they are equivalent:
+		CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinX)", envelopeAllWithoutFilter->GetMinX() == envelopeAllWithFilter->GetMinX());
+		CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinY)", envelopeAllWithoutFilter->GetMinY() == envelopeAllWithFilter->GetMinY());
+		CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinZ)", FdoCommonOSUtil::_isnan(envelopeAllWithoutFilter->GetMinZ()) && FdoCommonOSUtil::_isnan(envelopeAllWithFilter->GetMinZ()));
+		CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxX)", envelopeAllWithoutFilter->GetMaxX() == envelopeAllWithFilter->GetMaxX());
+		CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxY)", envelopeAllWithoutFilter->GetMaxY() == envelopeAllWithFilter->GetMaxY());
+		CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxZ)", FdoCommonOSUtil::_isnan(envelopeAllWithoutFilter->GetMaxZ()) && FdoCommonOSUtil::_isnan(envelopeAllWithFilter->GetMaxZ()));
 
 
-    // Create new empty SHP file :
-    ////////////////////////////////////////////////////////////////////////////////////
+		// Test the non-optimized case (filter that returns NULL):
+		////////////////////////////////////////////////////////////////////////////////////
 
-    create_schema(schemaName, className, FdoGeometricType_Curve, false, false, false);
+		advsel->SetFilter(L"LotSize = -1");  // will select 0 rows
+		rdr = advsel->Execute();
 
+		count = 0;
+		while (rdr->ReadNext())
+		{
+			CPPUNIT_ASSERT_MESSAGE("Expected NULL result from SpatialExtents with filter returning 0 rows", rdr->IsNull(L"MBR"));
+			count++;
+		}
+		CPPUNIT_ASSERT_MESSAGE("Expected exactly one row of aggregate data", count==1);
 
-    // Test the optimized case (no filter, no rows of data):
-    ////////////////////////////////////////////////////////////////////////////////////
-
-    selAggr = (FdoISelectAggregates*)conn->CreateCommand(FdoCommandType_SelectAggregates);
-    selAggr->SetFeatureClassName(L"MyClass");
-    ids = selAggr->GetPropertyNames();
-
-    expr = FdoExpression::Parse(L"SpatialExtents(Geometry)");
-    cid = FdoComputedIdentifier::Create(L"MBR", expr);
-    ids->Add(cid);
-
-    rdr = selAggr->Execute();
-    count = 0;
-    while (rdr->ReadNext())
-    {
-        CPPUNIT_ASSERT_MESSAGE("Expected NULL result from SpatialExtents with filter returning 0 rows", rdr->IsNull(L"MBR"));
-        count++;
-    }
-    CPPUNIT_ASSERT_MESSAGE("Expected exactly one row of aggregate data", count==1);
-
-    rdr->Close();
+		rdr->Close();
 
 
-    // Insert many rows of data, for performance tests :
-    ////////////////////////////////////////////////////////////////////////////////////
+		// Test the non-optimized case (no filter, more than one thing in the identifier property list):
+		////////////////////////////////////////////////////////////////////////////////////
 
-    const int PERF_TEST_NUM_ROWS = 4000;
+		advsel->SetFilter((FdoFilter*)NULL);  // no filter
+		ids->Add(FdoPtr<FdoIdentifier>(FdoComputedIdentifier::Create(L"MyCount",
+					FdoPtr<FdoExpression>(FdoExpression::Parse(L"Count(Geometry)"))
+				 )));
+		rdr = advsel->Execute();
+
+		count = 0;
+		FdoPtr<FdoIEnvelope> envelopeAllWithoutFilterMultipleIds;
+		while (rdr->ReadNext())
+		{
+			FdoPtr<FdoByteArray> geomBytes = rdr->GetGeometry(L"MBR");
+			FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(geomBytes);
+
+			FdoGeometryType geomType = geom->GetDerivedType();
+			if (geomType != FdoGeometryType_Polygon)
+				CPPUNIT_FAIL("Expected Polygon geometry for SpatialExtents() result");
+
+			envelopeAllWithoutFilterMultipleIds = geom->GetEnvelope();
+			if (envelopeAllWithoutFilterMultipleIds->GetIsEmpty())
+				CPPUNIT_FAIL("Expected non-empty envelope for SpatialExtents() result");
+
+			FdoInt64 mycount = rdr->GetInt64(L"MyCount");
+			CPPUNIT_ASSERT_MESSAGE("Wrong row count", 4 == mycount);
+
+			count++;
+		}
+		CPPUNIT_ASSERT_MESSAGE("Expected exactly one row of aggregate data", count==1);
+
+		rdr->Close();
+
+		// Compare the two "all" results to make sure they are equivalent:
+		CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinX)", envelopeAllWithoutFilter->GetMinX() == envelopeAllWithoutFilterMultipleIds->GetMinX());
+		CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinY)", envelopeAllWithoutFilter->GetMinY() == envelopeAllWithoutFilterMultipleIds->GetMinY());
+		CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinZ)", FdoCommonOSUtil::_isnan(envelopeAllWithoutFilter->GetMinZ()) && FdoCommonOSUtil::_isnan(envelopeAllWithoutFilterMultipleIds->GetMinZ()));
+		CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxX)", envelopeAllWithoutFilter->GetMaxX() == envelopeAllWithoutFilterMultipleIds->GetMaxX());
+		CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxY)", envelopeAllWithoutFilter->GetMaxY() == envelopeAllWithoutFilterMultipleIds->GetMaxY());
+		CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxZ)", FdoCommonOSUtil::_isnan(envelopeAllWithoutFilter->GetMaxZ()) && FdoCommonOSUtil::_isnan(envelopeAllWithoutFilterMultipleIds->GetMaxZ()));
+
+
+		// Create new empty SHP file :
+		////////////////////////////////////////////////////////////////////////////////////
+
+		create_schema(schemaName, className, FdoGeometricType_Curve, false, false, false);
+
+
+		// Test the optimized case (no filter, no rows of data):
+		////////////////////////////////////////////////////////////////////////////////////
+
+		selAggr = (FdoISelectAggregates*)conn->CreateCommand(FdoCommandType_SelectAggregates);
+		selAggr->SetFeatureClassName(L"MyClass");
+		ids = selAggr->GetPropertyNames();
+
+		expr = FdoExpression::Parse(L"SpatialExtents(Geometry)");
+		cid = FdoComputedIdentifier::Create(L"MBR", expr);
+		ids->Add(cid);
+
+		rdr = selAggr->Execute();
+		count = 0;
+		while (rdr->ReadNext())
+		{
+			CPPUNIT_ASSERT_MESSAGE("Expected NULL result from SpatialExtents with filter returning 0 rows", rdr->IsNull(L"MBR"));
+			count++;
+		}
+		CPPUNIT_ASSERT_MESSAGE("Expected exactly one row of aggregate data", count==1);
+
+		rdr->Close();
+
+
+		// Insert many rows of data, for performance tests :
+		////////////////////////////////////////////////////////////////////////////////////
+
+		const int PERF_TEST_NUM_ROWS = 4000;
+		clock_t start;
+		clock_t finish;
+		FdoPtr<FdoIFeatureReader> featRdr;
+
+		FdoPtr<FdoIInsert> ins = (FdoIInsert*)conn->CreateCommand(FdoCommandType_Insert);
+		ins->SetFeatureClassName(L"MyClass");
+		FdoPtr<FdoPropertyValueCollection> propVals = ins->GetPropertyValues();
+		FdoPtr<FdoFgfGeometryFactory> fgf = FdoFgfGeometryFactory::GetInstance();
+		double ordinates[2*2];  //2 XY coordinates
+		ordinates[0] =  10.0; ordinates[1] =  10.0;
+		ordinates[2] = 100.0; ordinates[3] = 100.0;
+		FdoPtr<FdoIGeometry> geom = fgf->CreateLineString(FdoDimensionality_XY, ELEMENTS(ordinates), ordinates);
+		FdoPtr<FdoByteArray> geomBytes = fgf->GetFgf(geom);
+		FdoPtr<FdoGeometryValue> geomVal = FdoGeometryValue::Create(geomBytes);
+		FdoPtr<FdoPropertyValue> propVal = FdoPropertyValue::Create(L"Geometry", geomVal);
+		propVals->Add(propVal);
+		for (int i=0; i<PERF_TEST_NUM_ROWS; i++)
+		{
+			featRdr = ins->Execute();
+			featRdr->Close();
+		}
+
+
+		// Test the optimized case for performance (no filter, PERF_TEST_NUM_ROWS rows of data):
+		////////////////////////////////////////////////////////////////////////////////////
+
+		selAggr = (FdoISelectAggregates*)conn->CreateCommand(FdoCommandType_SelectAggregates);
+		selAggr->SetFeatureClassName(L"MyClass");
+		ids = selAggr->GetPropertyNames();
+
+		expr = FdoExpression::Parse(L"SpatialExtents(Geometry)");
+		cid = FdoComputedIdentifier::Create(L"MBR", expr);
+		ids->Add(cid);
+
+		start = clock();
+		rdr = selAggr->Execute();
+		count = 0;
+		while (rdr->ReadNext())
+		{
+			CPPUNIT_ASSERT_MESSAGE("Expected not-null result from SpatialExtents with filter returning all rows", !rdr->IsNull(L"MBR"));
+			FdoPtr<FdoByteArray> bytes = rdr->GetGeometry(L"MBR");
+			count++;
+		}
+		CPPUNIT_ASSERT_MESSAGE("Expected exactly one row of aggregate data", count==1);
+		rdr->Close();
+		finish = clock();
+
+		wprintf(L"Seconds to read SpatialExtents from SHP file containing %d records, using optimization: %g\n", PERF_TEST_NUM_ROWS, (double)(finish-start)/CLOCKS_PER_SEC);
+
+
+		// Test the non-optimized case for performance (no filter, PERF_TEST_NUM_ROWS rows of data):
+		////////////////////////////////////////////////////////////////////////////////////
+
+		selAggr = (FdoISelectAggregates*)conn->CreateCommand(FdoCommandType_SelectAggregates);
+		selAggr->SetFeatureClassName(L"MyClass");
+		selAggr->SetFilter(L"FeatId > -1");
+		ids = selAggr->GetPropertyNames();
+
+		expr = FdoExpression::Parse(L"SpatialExtents(Geometry)");
+		cid = FdoComputedIdentifier::Create(L"MBR", expr);
+		ids->Add(cid);
+
+		start = clock();
+		rdr = selAggr->Execute();
+		count = 0;
+		while (rdr->ReadNext())
+		{
+			CPPUNIT_ASSERT_MESSAGE("Expected not-null result from SpatialExtents with filter returning all rows", !rdr->IsNull(L"MBR"));
+			FdoPtr<FdoByteArray> bytes = rdr->GetGeometry(L"MBR");
+			count++;
+		}
+		CPPUNIT_ASSERT_MESSAGE("Expected exactly one row of aggregate data", count==1);
+		rdr->Close();
+		finish = clock();
+
+		wprintf(L"Seconds to read SpatialExtents from SHP file containing %d records, using no optimization: %g\n", PERF_TEST_NUM_ROWS, (double)(finish-start)/CLOCKS_PER_SEC);
+		}
+	catch (FdoException* e)
+	{
+		fail(e);
+	}
+
+}
+
+void SelectAggregatesTests::performance_count_mbr ()
+{
     clock_t start;
     clock_t finish;
-    FdoPtr<FdoIFeatureReader> featRdr;
 
-    FdoPtr<FdoIInsert> ins = (FdoIInsert*)conn->CreateCommand(FdoCommandType_Insert);
-    ins->SetFeatureClassName(L"MyClass");
-    FdoPtr<FdoPropertyValueCollection> propVals = ins->GetPropertyValues();
-    FdoPtr<FdoFgfGeometryFactory> fgf = FdoFgfGeometryFactory::GetInstance();
-    double ordinates[2*2];  //2 XY coordinates
-    ordinates[0] =  10.0; ordinates[1] =  10.0;
-    ordinates[2] = 100.0; ordinates[3] = 100.0;
-    FdoPtr<FdoIGeometry> geom = fgf->CreateLineString(FdoDimensionality_XY, ELEMENTS(ordinates), ordinates);
-    FdoPtr<FdoByteArray> geomBytes = fgf->GetFgf(geom);
-    FdoPtr<FdoGeometryValue> geomVal = FdoGeometryValue::Create(geomBytes);
-    FdoPtr<FdoPropertyValue> propVal = FdoPropertyValue::Create(L"Geometry", geomVal);
-    propVals->Add(propVal);
-    for (int i=0; i<PERF_TEST_NUM_ROWS; i++)
+    try
     {
-        featRdr = ins->Execute();
-        featRdr->Close();
+
+        FdoPtr<FdoIConnection>	connection = ShpTests::GetConnection ();
+#ifdef _WIN32
+		connection->SetConnectionString (USE_MONSTER_SHP? L"DefaultFileLocation=C:\\bugs\\USA_3G" :
+															  L"DefaultFileLocation=..\\..\\TestData\\Sheboygan");
+#else
+        connection->SetConnectionString (L"DefaultFileLocation=../../TestData/Sheboygan");
+#endif
+        CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == connection->Open ());
+
+		FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+		FdoPtr<FdoISelectAggregates> select = (FdoISelectAggregates*)connection->CreateCommand (FdoCommandType_SelectAggregates);
+ 
+		select->SetFeatureClassName (USE_MONSTER_SHP? L"USA_S0_line" : L"Trees");
+
+        select->SetDistinct(false);
+
+        FdoPtr<FdoIdentifierCollection> selectedIds = select->GetPropertyNames();
+        selectedIds->Clear();
+ 
+		        //////////////////////////////////////////////////////////////////////
+        // Try function count() only:
+        //////////////////////////////////////////////////////////////////////
+		printf("--- Try Count():\n");
+
+        selectedIds->Add(FdoPtr<FdoComputedIdentifier>(FdoComputedIdentifier::Create(L"Total", FdoPtr<FdoExpression>(FdoExpression::Parse(L"Count(\"FeatId\")")))));
+  	 
+        long	 count = 0;
+		FdoInt64 total = 0;
+
+		start = clock();
+
+		FdoPtr<FdoIDataReader> datareader = select->Execute ();
+
+        while (datareader->ReadNext ())
+        {
+            total = datareader->GetInt64(L"Total");
+			printf("total=%ld\n", total);
+			CPPUNIT_ASSERT_MESSAGE("Count wrong", total == (USE_MONSTER_SHP? 28049359 : 45569));
+            count++;
+        }
+        CPPUNIT_ASSERT_MESSAGE("Wrong count(*) rowcount", count==1);
+
+		finish = clock();
+		printf("Seconds to read Count() from SHP file containing %ld records: %g\n", (long)total, (double)((finish-start)/CLOCKS_PER_SEC));
+
+        datareader->Close();
+        datareader = NULL;
+
+        //////////////////////////////////////////////////////////////////////
+        // Try function SpatialExtents() only:
+        //////////////////////////////////////////////////////////////////////
+		printf("--- Try SpatialExtents():\n");
+
+        selectedIds->Clear();
+        selectedIds->Add(FdoPtr<FdoComputedIdentifier>(FdoComputedIdentifier::Create(L"MBR", FdoPtr<FdoExpression>(FdoExpression::Parse(L"SpatialExtents(\"Geometry\")")))));
+  	 
+		start = clock();
+
+		datareader = select->Execute ();
+
+		count = 0;
+        while (datareader->ReadNext ())
+        {
+            FdoPtr<FdoByteArray> geomBytes = datareader->GetGeometry(L"MBR");
+            CPPUNIT_ASSERT_MESSAGE("spatial extents NULL", geomBytes != NULL );
+
+			FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(geomBytes);
+
+			FdoGeometryType geomType = geom->GetDerivedType();
+			if (geomType != FdoGeometryType_Polygon)
+				CPPUNIT_FAIL("Expected Polygon geometry for SpatialExtents() result");
+
+			FdoPtr<FdoIEnvelope>  env = geom->GetEnvelope();
+			printf("env: (%lf, %lf)(%lf, %lf)\n", env->GetMinX(), env->GetMinY(), env->GetMaxX(), env->GetMaxY());
+
+			count++;
+        }
+        CPPUNIT_ASSERT_MESSAGE("Wrong count for SpatialExtents", count==1);
+
+		finish = clock();
+		printf("Seconds to get SpatialExtents(): %g\n", (double)((finish-start)/CLOCKS_PER_SEC));
+
+        datareader->Close();
+        datareader = NULL;
+
+		//////////////////////////////////////////////////////////////////////
+        // Try function SpatialExtents() + Count() :
+        //////////////////////////////////////////////////////////////////////
+		printf("--- Try SpatialExtents() + Count():\n");
+
+		selectedIds->Add(FdoPtr<FdoComputedIdentifier>(FdoComputedIdentifier::Create(L"Total", FdoPtr<FdoExpression>(FdoExpression::Parse(L"Count(\"FeatId\")")))));
+  	 
+		start = clock();
+
+		datareader = select->Execute ();
+
+		count = 0;
+        while (datareader->ReadNext ())
+        {
+            FdoInt64	total = datareader->GetInt64(L"Total");
+			printf("total=%ld\n", total);
+            CPPUNIT_ASSERT_MESSAGE("Count wrong", total == (USE_MONSTER_SHP? 28049359 : 45569));
+
+            FdoPtr<FdoByteArray> geomBytes = datareader->GetGeometry(L"MBR");
+            CPPUNIT_ASSERT_MESSAGE("spatial extents NULL", geomBytes != NULL );
+
+			FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(geomBytes);
+
+			FdoGeometryType geomType = geom->GetDerivedType();
+			if (geomType != FdoGeometryType_Polygon)
+				CPPUNIT_FAIL("Expected Polygon geometry for SpatialExtents() result");
+
+			FdoPtr<FdoIEnvelope>  env = geom->GetEnvelope();
+			//printf("env: (%lf, %lf)(%lf, %lf)\n", env->GetMinX(), env->GetMinY(), env->GetMaxX(), env->GetMaxY());
+
+			count++;
+        }
+        CPPUNIT_ASSERT_MESSAGE("Wrong count for SpatialExtents", count==1);
+
+		finish = clock();
+		printf("Seconds to get SpatialExtents() + Count(): %g\n", (double)((finish-start)/CLOCKS_PER_SEC));
+
+        datareader->Close();
+        datareader = NULL;
     }
-
-
-    // Test the optimized case for performance (no filter, PERF_TEST_NUM_ROWS rows of data):
-    ////////////////////////////////////////////////////////////////////////////////////
-
-    selAggr = (FdoISelectAggregates*)conn->CreateCommand(FdoCommandType_SelectAggregates);
-    selAggr->SetFeatureClassName(L"MyClass");
-    ids = selAggr->GetPropertyNames();
-
-    expr = FdoExpression::Parse(L"SpatialExtents(Geometry)");
-    cid = FdoComputedIdentifier::Create(L"MBR", expr);
-    ids->Add(cid);
-
-    start = clock();
-    rdr = selAggr->Execute();
-    count = 0;
-    while (rdr->ReadNext())
+    catch (FdoException* e)
     {
-        CPPUNIT_ASSERT_MESSAGE("Expected not-null result from SpatialExtents with filter returning all rows", !rdr->IsNull(L"MBR"));
-        FdoPtr<FdoByteArray> bytes = rdr->GetGeometry(L"MBR");
-        count++;
+        fail(e);
     }
-    CPPUNIT_ASSERT_MESSAGE("Expected exactly one row of aggregate data", count==1);
-    rdr->Close();
-    finish = clock();
-
-    wprintf(L"Seconds to read SpatialExtents from SHP file containing %d records, using optimization: %g\n", PERF_TEST_NUM_ROWS, (double)(finish-start)/CLOCKS_PER_SEC);
-
-
-    // Test the non-optimized case for performance (no filter, PERF_TEST_NUM_ROWS rows of data):
-    ////////////////////////////////////////////////////////////////////////////////////
-
-    selAggr = (FdoISelectAggregates*)conn->CreateCommand(FdoCommandType_SelectAggregates);
-    selAggr->SetFeatureClassName(L"MyClass");
-    selAggr->SetFilter(L"FeatId > -1");
-    ids = selAggr->GetPropertyNames();
-
-    expr = FdoExpression::Parse(L"SpatialExtents(Geometry)");
-    cid = FdoComputedIdentifier::Create(L"MBR", expr);
-    ids->Add(cid);
-
-    start = clock();
-    rdr = selAggr->Execute();
-    count = 0;
-    while (rdr->ReadNext())
-    {
-        CPPUNIT_ASSERT_MESSAGE("Expected not-null result from SpatialExtents with filter returning all rows", !rdr->IsNull(L"MBR"));
-        FdoPtr<FdoByteArray> bytes = rdr->GetGeometry(L"MBR");
-        count++;
-    }
-    CPPUNIT_ASSERT_MESSAGE("Expected exactly one row of aggregate data", count==1);
-    rdr->Close();
-    finish = clock();
-
-    wprintf(L"Seconds to read SpatialExtents from SHP file containing %d records, using no optimization: %g\n", PERF_TEST_NUM_ROWS, (double)(finish-start)/CLOCKS_PER_SEC);
 }
