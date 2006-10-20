@@ -52,28 +52,50 @@ FdoIDataReader* SdfSelectAggregates::Execute()
     FdoFeatureClass* featureClassDef = dynamic_cast<FdoFeatureClass*>(classDef.p);
 
     // Verify if this is a special case we can optimize (no filter, no grouping fitler,
-    // and one aggregate function SpatialExtents() on the main geometry property of the class)
+    // and specific aggregate functions (SpatialExtents() on the main geometry property of the class
+    // and the Count() function) 
+    // SpatialExtent and Count can be derived from the RTree and Datadb without needing a full table scan.
+    // This optimization can be a huge performance improvement if the caller wants to find out the extent and the 
+    // number of objects for a given class.
     bool bCanOptimizeSpatialExtents = false;
+    FdoStringP  extentIdName;
+    FdoStringP  countName;
+
     FdoComputedIdentifier* computedIdentifier = NULL;
-    if (!mFilter && !m_GroupingFilter && (mPropertiesToSelect->GetCount()==1))
+    int propsCount = mPropertiesToSelect->GetCount();
+    if (!mFilter && !m_GroupingFilter && (propsCount == 1 || propsCount == 2))
     {
-        FdoPtr<FdoIdentifier> identifier = mPropertiesToSelect->GetItem(0);
-        computedIdentifier = dynamic_cast<FdoComputedIdentifier*>(identifier.p);
-        if (computedIdentifier) 
+        bCanOptimizeSpatialExtents = true;
+        for(int i=0; i<mPropertiesToSelect->GetCount() && bCanOptimizeSpatialExtents;i++)
         {
-            FdoPtr<FdoExpression> expr = computedIdentifier->GetExpression();
-            FdoFunction* func = dynamic_cast<FdoFunction*>(expr.p);
-            if (func && 0==wcscmp(func->GetName(), FDO_FUNCTION_SPATIALEXTENTS))
+            FdoPtr<FdoIdentifier> identifier = mPropertiesToSelect->GetItem(i);
+            computedIdentifier = dynamic_cast<FdoComputedIdentifier*>(identifier.p);
+            if (computedIdentifier) 
             {
-                FdoPtr<FdoExpressionCollection> args = func->GetArguments();
-                FdoPtr<FdoExpression> arg = args->GetItem(0);
-                FdoIdentifier* argId = dynamic_cast<FdoIdentifier*>(arg.p);
-                if (featureClassDef)
+                FdoPtr<FdoExpression> expr = computedIdentifier->GetExpression();
+                FdoFunction* func = dynamic_cast<FdoFunction*>(expr.p);
+                if (func && 0==wcscmp(func->GetName(), FDO_FUNCTION_SPATIALEXTENTS))
                 {
-                    FdoPtr<FdoGeometricPropertyDefinition> geomProp = featureClassDef->GetGeometryProperty();
-                    if (geomProp && argId && 0==wcscmp(argId->GetName(), geomProp->GetName()))
-                        bCanOptimizeSpatialExtents = true;
+                    FdoPtr<FdoExpressionCollection> args = func->GetArguments();
+                    FdoPtr<FdoExpression> arg = args->GetItem(0);
+                    FdoIdentifier* argId = dynamic_cast<FdoIdentifier*>(arg.p);
+                    if (featureClassDef)
+                    {
+                        FdoPtr<FdoGeometricPropertyDefinition> geomProp = featureClassDef->GetGeometryProperty();
+                        if (! (geomProp && argId && 0==wcscmp(argId->GetName(), geomProp->GetName()) ) )
+                            bCanOptimizeSpatialExtents = false;
+                        else
+                            extentIdName = computedIdentifier->GetName();
+                    }
                 }
+                else if (func && 0==wcscmp(func->GetName(), FDO_FUNCTION_COUNT) && propsCount == 2 )
+					countName = computedIdentifier->GetName();
+                else
+                    bCanOptimizeSpatialExtents = false;
+            }
+            else
+            {
+                bCanOptimizeSpatialExtents = false;
             }
         }
     }
@@ -81,7 +103,7 @@ FdoIDataReader* SdfSelectAggregates::Execute()
     // Now perform the actual select aggregates and return the data reader:
     if (bCanOptimizeSpatialExtents)
     {
-        return new SdfSpatialExtentsAggregateReader(conn, featureClassDef, computedIdentifier->GetName());
+        return new SdfSpatialExtentsAggregateReader(conn, featureClassDef, extentIdName, countName );
     }
     else
     {

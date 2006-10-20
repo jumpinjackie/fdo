@@ -21,15 +21,17 @@
 #include "SdfSpatialExtentsAggregateReader.h"
 
 
-SdfSpatialExtentsAggregateReader::SdfSpatialExtentsAggregateReader(SdfConnection* conn, FdoFeatureClass* originalClass, FdoString* aliasName) :
+SdfSpatialExtentsAggregateReader::SdfSpatialExtentsAggregateReader(SdfConnection* conn, FdoFeatureClass* originalClass, FdoString* extentIdName, FdoString* countName) :
     m_ReaderIndex(-1),
-    m_AliasName(aliasName)
+    m_ExtentAliasName(extentIdName),
+    m_CountAliasName(countName),
+    m_Count(0)
 {
     // Get the spatial extents of the given class:
     SdfRTree* rtree = conn->GetRTree(originalClass);
     Bounds bounds = rtree->GetBounds();
 
-    if (Bounds::IsUndefined(bounds))
+    if ( ((const wchar_t*)m_ExtentAliasName)[0] == '\0' || Bounds::IsUndefined(bounds))
         m_Extents = NULL;
     else
     {
@@ -75,6 +77,20 @@ SdfSpatialExtentsAggregateReader::SdfSpatialExtentsAggregateReader(SdfConnection
         // Create a polygon geometry representing the extents from the linear ring
 	    m_Extents = gf->CreatePolygon(linearRing, NULL);
     }
+
+    // Find the aproximate count value which is the key of the last record in the tabe.
+    // This is an aproximation that can be equal or less than the actual count. Deleted 
+    // record will not be taken into account.
+    if ( ((const wchar_t*)m_CountAliasName)[0] != '\0' )
+    {
+        DataDb* datadb = conn->GetDataDb(originalClass);
+        SQLiteData key;
+        SQLiteData data;
+        if( datadb->GetLastFeature( &key, &data ) == SQLiteDB_OK )
+        {
+            m_Count = *(REC_NO*)(key.get_data());
+        }
+    }
 }
 
 SdfSpatialExtentsAggregateReader::~SdfSpatialExtentsAggregateReader()
@@ -100,35 +116,50 @@ void SdfSpatialExtentsAggregateReader::Close()
 
 FdoInt32 SdfSpatialExtentsAggregateReader::GetItemCount(void)
 {
-    return 1;  // always one property in result set
+    if( ((const wchar_t*)m_CountAliasName)[0] != '\0' )
+        return 2;
+
+    return 1;  // At least the extent is always in result set
 }
 
 FdoString* SdfSpatialExtentsAggregateReader::GetItemName(FdoInt32 i)
 {
-    if (i!=0)
-        throw FdoException::NLSGetMessage(FDO_NLSID(FDO_5_INDEXOUTOFBOUNDS));
-    return (FdoString*)m_AliasName;
+    if ( i == 0 )
+        return (FdoString*)m_ExtentAliasName;
+
+    if( i == 1 && ((const wchar_t*)m_CountAliasName)[0] != '\0' )
+        return (FdoString*)m_CountAliasName;
+    
+    throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_37_INVALID_PROPERTY_INDEX)));
 }
 
 FdoInt32 SdfSpatialExtentsAggregateReader::GetItemIndex(FdoString* itemName)  // throw exception if name is invalid
 {
-    if (0!=wcscmp(itemName, (FdoString*)m_AliasName))
+    if (0 == wcscmp(itemName, (FdoString*)m_ExtentAliasName) )
+        return 0;
+    else if ( 0 == wcscmp(itemName, (FdoString*)m_CountAliasName) )
+        return 1;
+    else
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
                                                                L"SdfSpatialExtentsAggregateReader::GetItemIndex",
-                                                               L"itemName"));
-    return 0;
+                                                              L"itemName"));
 }
 
 FdoPropertyType SdfSpatialExtentsAggregateReader::GetItemType(FdoInt32 i)
 {
-    if (i!=0)
-        throw FdoException::NLSGetMessage(FDO_NLSID(FDO_5_INDEXOUTOFBOUNDS));
-    return FdoPropertyType_GeometricProperty;
+    if ( i==0 )
+        return FdoPropertyType_GeometricProperty;
+    else if ( i==1 )
+        return FdoPropertyType_DataProperty;
+
+    throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_37_INVALID_PROPERTY_INDEX)));
 }
 
 FdoDataType SdfSpatialExtentsAggregateReader::GetItemDataType(FdoInt32 i)
 {
-    // We only support geometry values (spatialextents to be precise), so any call to this function will fail
+    if ( i==1 ) // for count only
+        return FdoDataType_Int64;
+
     throw FdoException::NLSGetMessage(FDO_NLSID(SDFPROVIDER_95_UNSUPPORTED_FUNCTION),
                                       L"SdfSpatialExtentsAggregateReader::GetItemDataType");
 }
@@ -143,6 +174,14 @@ void SdfSpatialExtentsAggregateReader::GetGeometryForCache(FdoIdentifier *itemNa
         *bIsNull = !m_Extents;
     if (byteArray)
         *byteArray = geomFGF;
+}
+
+void SdfSpatialExtentsAggregateReader::GetInt64ForCache( FdoIdentifier *itemName, FdoInt64 *int64Value, bool *bIsNull )
+{
+    if (bIsNull)
+        *bIsNull = false;
+    if (int64Value)
+        *int64Value = (FdoInt64)m_Count;
 }
 
 // Retrieve information about the row of items:

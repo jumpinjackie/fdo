@@ -22,7 +22,7 @@ class SdfSpatialExtentsAggregateReader : public FdoCommonReader<FdoIDataReader>
 {
 public:
 
-    SdfSpatialExtentsAggregateReader(SdfConnection* con, FdoFeatureClass* originalClass, FdoString* aliasName);
+    SdfSpatialExtentsAggregateReader(SdfConnection* con, FdoFeatureClass* originalClass, FdoString* extentIdName, FdoString* countName );
     ~SdfSpatialExtentsAggregateReader();
 
 protected:
@@ -38,6 +38,7 @@ public:
     virtual FdoPropertyType GetItemType(FdoInt32 i);
     virtual FdoDataType     GetItemDataType(FdoInt32 i);
     virtual void GetGeometryForCache(FdoIdentifier *itemName, FdoByteArray **byteArray, bool *bIsNull);
+    virtual void GetInt64ForCache( FdoIdentifier *itemName, FdoInt64 *int32Value, bool *bIsNull );
     virtual bool ReaderHasData(void);
 
     // Overriden FdoIReader methods:
@@ -47,6 +48,8 @@ public:
 private:
 
     FdoPtr<FdoIPolygon> m_Extents;  // the geometry that store the spatial extents
-    FdoInt32 m_ReaderIndex;  // the current row we are on (-1 == before first row, 0 == first row, etc)
-    FdoStringP m_AliasName;
+    FdoInt32    m_ReaderIndex;  // the current row we are on (-1 == before first row, 0 == first row, etc)
+    FdoStringP  m_ExtentAliasName;
+    FdoStringP  m_CountAliasName;
+    FdoInt32    m_Count;
 };
