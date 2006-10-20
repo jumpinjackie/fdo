@@ -495,6 +495,16 @@ public:
         { return L"3.2.0.0"; }
     OGR_API virtual FdoIConnectionPropertyDictionary* GetConnectionProperties()
         { return FDO_SAFE_ADDREF((FdoIConnectionPropertyDictionary*)this); }
+    
+    //TODO: in the OGR case this varies -- we could find out the correct answer
+    //once the connection properties are set
+    OGR_API virtual FdoProviderDatastoreType GetProviderDatastoreType() 
+        { return FdoProviderDatastoreType_Unknown; } 
+
+    //TODO: in the OGR case this varies -- we could find out the correct answer
+    //once the connection properties are set
+    OGR_API virtual FdoStringCollection* GetDependentFileNames()
+        { return NULL; }
 
 
 //-------------------------------------------------------
