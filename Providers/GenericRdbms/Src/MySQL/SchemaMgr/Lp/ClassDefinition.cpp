@@ -109,7 +109,7 @@ bool FdoSmLpMySqlClassDefinition::SetSchemaMappings( FdoPhysicalClassMappingP cl
     // Default the table mapping to the one for the Feature Schema.
     FdoSmOvTableMappingType      defaultTableMapping = pSchema->GetTableMapping();
     FdoSmOvTableMappingType      tableMapping = GetTableMapping();
-    FdoStringP                      database = GetDatabase();
+    FdoStringP                      owner = GetOwner();
     FdoSmLpDbObjectP                dbObject = ((FdoSmLpMySqlClassDefinition*)this)->GetDbObject();
     bool                            bHasMappings = FdoSmLpGrdClassDefinition::SetSchemaMappings( classMapping, bIncludeDefaults );
 
@@ -118,7 +118,7 @@ bool FdoSmLpMySqlClassDefinition::SetSchemaMappings( FdoPhysicalClassMappingP cl
     // non-default schema mappings.
     if ( bIncludeDefaults || 
          ((tableMapping != FdoSmOvTableMappingType_BaseTable) && GetIsFixedDbObject()) ||
-         (database.GetLength() > 0 && database != pSchema->GetDatabase()) ||
+         (owner.GetLength() > 0 && owner != pSchema->GetOwner()) ||
          ( mTableDataDirectory.GetLength() > 0 && mTableDataDirectory != pSchema->GetTableDataDirectory()) ||
          ( mTableIndexDirectory.GetLength() > 0 && mTableIndexDirectory != pSchema->GetIndexDataDirectory() ) ||
          ( mTableStorageEngine != MySQLOvStorageEngineType_Default && mTableStorageEngine != StorageEngine_StringToEnum(pSchema->GetTableStorageEngine()) ) ||
@@ -139,8 +139,8 @@ bool FdoSmLpMySqlClassDefinition::SetSchemaMappings( FdoPhysicalClassMappingP cl
             if ( phTable ) 
                 tableMapping->SetPKeyName( phTable->GetPkeyName() );
 
-            if ( database.GetLength() > 0 && database != pSchema->GetDatabase())
-                tableMapping->SetDatabase( database );
+            if ( owner.GetLength() > 0 && owner != pSchema->GetOwner())
+                tableMapping->SetDatabase( owner );
 
             if ( mTableDataDirectory.GetLength() > 0 && mTableDataDirectory != pSchema->GetTableDataDirectory() )
                 tableMapping->SetDataDirectory(mTableDataDirectory);

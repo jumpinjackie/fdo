@@ -65,8 +65,8 @@ FdoPhysicalSchemaMappingP FdoSmLpMySqlSchema::GetSchemaMappings( bool bIncludeDe
 
     // Populate the MySQL-specific parts.
 
-    if ( wcslen(GetDatabase()) > 0 ) {
-        schemaMapping->SetDatabase( GetDatabase() );
+    if ( wcslen(GetOwner()) > 0 ) {
+        schemaMapping->SetDatabase( GetOwner() );
         bHasMappings = true;
     }
 
@@ -108,7 +108,7 @@ void FdoSmLpMySqlSchema::Update(
 	if ( pMySqlOverrides ) {
 
         if ( wcslen(pMySqlOverrides->GetDatabase()) > 0 ) 
-            SetDatabase( pMySqlOverrides->GetDatabase() );
+            SetOwner( pMySqlOverrides->GetDatabase() );
 
         if ( wcslen(pMySqlOverrides->GetDataDirectory()) > 0 ) 
             SetTableDataDirectory ( pMySqlOverrides->GetDataDirectory() );

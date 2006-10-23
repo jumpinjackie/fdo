@@ -150,7 +150,7 @@
 </element>
 </complexType>
 <complexType name="OvOpClassHAType" tableMapping="Concrete">
-<Table name="ops_table_ha"/>
+<Table name="OPS_TABLE_HA"/>
 <element name="ObjectA">
 <PropertyMappingSingle prefix="prefixA"/>
 </element>
@@ -162,7 +162,7 @@
 </element>
 </complexType>
 <complexType name="OvOpClassHAAType" tableMapping="Concrete">
-<Table name="ops_table_haa"/>
+<Table name="OPS_TABLE_HAA"/>
 <element name="ObjectA">
 <PropertyMappingSingle prefix="prefixA"/>
 </element>
@@ -174,7 +174,7 @@
 </element>
 </complexType>
 <complexType name="OvOpClassHAAAType" tableMapping="Concrete">
-<Table name="ops_table_haaa"/>
+<Table name="OPS_TABLE_HAAA"/>
 <element name="OpA">
 <Column name="OPA"/>
 </element>
@@ -183,7 +183,7 @@
 </element>
 </complexType>
 <complexType name="OvOpClassHBType" tableMapping="Concrete">
-<Table name="ops_table_hb"/>
+<Table name="OPS_TABLE_HB"/>
 <element name="ObjectA">
 <PropertyMappingConcrete>
 <Table name="OVOPCLASSHB_FTABLEA"/>
@@ -233,7 +233,7 @@
 </element>
 </complexType>
 <complexType name="OvOpClassHCAType" tableMapping="Concrete">
-<Table name="ops_table_hca"/>
+<Table name="OPS_TABLE_HCA"/>
 <element name="OpA">
 <Column name="OPA"/>
 </element>
@@ -242,7 +242,7 @@
 </element>
 </complexType>
 <complexType name="OvOpClassHDType" tableMapping="Concrete">
-<Table name="opc_table_hd"/>
+<Table name="OPC_TABLE_HD"/>
 <element name="ObjectA">
 <PropertyMappingConcrete>
 <Table name="OVOPCLASSHD_FTABLEA"/>
@@ -286,7 +286,7 @@
 </element>
 </complexType>
 <complexType name="OvOpClassHDAAType" tableMapping="Concrete">
-<Table name="ops_table_hdaa"/>
+<Table name="OPS_TABLE_HDAA"/>
 <element name="OpA">
 <Column name="OPA"/>
 </element>
@@ -295,7 +295,7 @@
 </element>
 </complexType>
 <complexType name="OvOpClassIEType" tableMapping="Concrete">
-<Table name="ops_table_ie"/>
+<Table name="OPS_TABLE_IE"/>
 <element name="OpA">
 <Column name="OPA"/>
 </element>
@@ -304,7 +304,7 @@
 </element>
 </complexType>
 <complexType name="OvOpClassIFType" tableMapping="Concrete">
-<Table name="opc_table_if"/>
+<Table name="OPC_TABLE_IF"/>
 <element name="OpA">
 <Column name="OPA"/>
 </element>

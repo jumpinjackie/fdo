@@ -194,6 +194,8 @@ public:
 
     static void LogicalPhysicalBend(FdoIoStream* stream1, FdoIoStream* stream2, FdoStringP providerName );
 
+    static void LogicalPhysicalSort( FdoIoStream* stream1, FdoIoStream* stream2 );
+
 	static void SortLpSchemas( FdoIoStream* inStream, FdoIoStream* outStream, char* styleSheetString = NULL );
 
 	static void SortXml( FdoIoStream* inStream, char* styleSheetString, FdoIoStream* outStream );

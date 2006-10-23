@@ -1555,19 +1555,7 @@ void UnitTestUtil::LogicalPhysicalFormat(FdoIoStream* stream1, FdoIoStream* stre
     transformer->Transform();
     transformer = NULL;
 
-    tempStream->Reset();
-    stylesheet = FdoXmlReader::Create( L"LogicalPhysicalSorter.xslt" );
-
-    transformer = FdoXslTransformer::Create( 
-        FdoXmlReaderP(FdoXmlReader::Create(tempStream)), 
-        stylesheet, 
-        FdoXmlWriterP(FdoXmlWriter::Create(stream2,false))
-    );
-
-    transformer->Transform();
-    transformer = NULL;
-
-    stream2->Reset();
+    LogicalPhysicalSort( tempStream, stream2 );
 }
 
 void UnitTestUtil::LogicalPhysicalBend( FdoIoStream* stream1, FdoIoStream* stream2, FdoStringP providerName )
@@ -1596,11 +1584,17 @@ void UnitTestUtil::LogicalPhysicalBend( FdoIoStream* stream1, FdoIoStream* strea
     transformer->Transform();
     transformer = NULL;
 
-    tempStream->Reset();
-    stylesheet = FdoXmlReader::Create( L"LogicalPhysicalSorter.xslt" );
+    LogicalPhysicalSort( tempStream, stream2 );
+}
 
-    transformer = FdoXslTransformer::Create( 
-        FdoXmlReaderP(FdoXmlReader::Create(tempStream)), 
+void UnitTestUtil::LogicalPhysicalSort( FdoIoStream* stream1, FdoIoStream* stream2 )
+{
+
+    stream1->Reset();
+    FdoXmlReaderP stylesheet = FdoXmlReader::Create( L"LogicalPhysicalSorter.xslt" );
+
+    FdoXslTransformerP transformer = FdoXslTransformer::Create( 
+        FdoXmlReaderP(FdoXmlReader::Create(stream1)), 
         stylesheet, 
         FdoXmlWriterP(FdoXmlWriter::Create(stream2,false))
     );

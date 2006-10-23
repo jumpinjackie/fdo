@@ -8,6 +8,14 @@ xmlns:fdo="http://fdo.osgeo.org/schemas"
 xmlns:lp="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 >
+<xsl:template match="lp:schema">
+  <xsl:copy>
+    <xsl:apply-templates select="@*"/>
+    <xsl:apply-templates select="lp:class">
+		<xsl:sort select="@name"/>
+    </xsl:apply-templates>
+  </xsl:copy>
+</xsl:template>
 <xsl:template match="lp:properties">
   <xsl:copy>
     <xsl:apply-templates select="lp:property">

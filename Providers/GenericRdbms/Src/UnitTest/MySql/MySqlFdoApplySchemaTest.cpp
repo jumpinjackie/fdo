@@ -95,6 +95,11 @@ FdoRdbmsOvTable* MySqlFdoApplySchemaTest::CreateOvTable(FdoString* name)
         //table->SetStorageEngine(MySQLOvStorageEngineType_InnoDB);
     }
 
+    if (0==wcscmp(name, L"oneforeign"))
+    {
+        table->SetDatabase( FdoStringP(UnitTestUtil::GetEnviron("datastore", DB_NAME_OVERRIDE_SUFFIX)) );
+    }
+
     return table;
 }
 

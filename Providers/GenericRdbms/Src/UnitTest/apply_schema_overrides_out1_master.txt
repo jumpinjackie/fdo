@@ -97,22 +97,22 @@
 </element>
 </complexType>
 <complexType name="OvOpClassHAType">
-<Table name="ops_table_ha"/>
+<Table name="OPS_TABLE_HA"/>
 <element name="ObjectA">
 <PropertyMappingSingle prefix="prefixA"/>
 </element>
 </complexType>
 <complexType name="OvOpClassHAAType">
-<Table name="ops_table_haa"/>
+<Table name="OPS_TABLE_HAA"/>
 <element name="ObjectA">
 <PropertyMappingSingle prefix="prefixA"/>
 </element>
 </complexType>
 <complexType name="OvOpClassHAAAType">
-<Table name="ops_table_haaa"/>
+<Table name="OPS_TABLE_HAAA"/>
 </complexType>
 <complexType name="OvOpClassHBType">
-<Table name="ops_table_hb"/>
+<Table name="OPS_TABLE_HB"/>
 <element name="ObjectA">
 <PropertyMappingConcrete>
 <Table name="OVOPCLASSHB_FTABLEA"/>
@@ -132,10 +132,10 @@
 </element>
 </complexType>
 <complexType name="OvOpClassHCAType">
-<Table name="ops_table_hca"/>
+<Table name="OPS_TABLE_HCA"/>
 </complexType>
 <complexType name="OvOpClassHDType">
-<Table name="opc_table_hd"/>
+<Table name="OPC_TABLE_HD"/>
 <element name="ObjectA">
 <PropertyMappingConcrete>
 <Table name="OVOPCLASSHD_FTABLEA"/>
@@ -161,13 +161,13 @@
 </element>
 </complexType>
 <complexType name="OvOpClassHDAAType">
-<Table name="ops_table_hdaa"/>
+<Table name="OPS_TABLE_HDAA"/>
 </complexType>
 <complexType name="OvOpClassIEType">
-<Table name="ops_table_ie"/>
+<Table name="OPS_TABLE_IE"/>
 </complexType>
 <complexType name="OvOpClassIFType">
-<Table name="opc_table_if"/>
+<Table name="OPC_TABLE_IF"/>
 </complexType>
 </SchemaMapping>
 </fdo:DataStore>

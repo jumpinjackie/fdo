@@ -12,7 +12,7 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 <xsl:template match="lp:schema[@name='F_MetaClass']"/>
 <xsl:template match="lp:column[@name = 'classname' or @name = 'schemaname']">
 </xsl:template>
-<xsl:template match="lp:column[@dataType and not(@name = 'classname' or @name = 'schemaname')]">
+<xsl:template match="lp:column[@dataType and not(@name = 'classname' or @name = 'schemaname' or @name = 'CLASSNAME' or @name = 'SCHEMANAME')]">
 	<xsl:variable name="colName" select="@name"/>
    <xsl:if test="local-name(..)='property' or ../../lp:properties/lp:property[@columnName=$colName or translate(@name,'abcdefghijklmnopqrstuvwxyz','ABCDEFGHIJKLMNOPQRSTUVWXYZ')=substring-before($colName,'_SI_1') or translate(@name,'abcdefghijklmnopqrstuvwxyz','ABCDEFGHIJKLMNOPQRSTUVWXYZ')=substring-before($colName,'_SI_2')]">
 		<xsl:element name="column">

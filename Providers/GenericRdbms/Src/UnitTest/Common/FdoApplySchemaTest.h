@@ -196,6 +196,17 @@ protected:
     bool mCanAddNotNullCol;
     FdoStringP mDatastore;
 	bool mIsLowerDatastoreName;
+
+    static char*      DB_NAME_SUFFIX;
+    static char*      DB_NAME_COPY_SUFFIX;
+    static char*      DB_NAME_OVERRIDE_SUFFIX;
+    static char*      DB_NAME_OVERRIDE_DEFAULT_SUFFIX;
+    static char*      DB_NAME_FOREIGN_SUFFIX;
+    static char*      DB_NAME_CONFIG_SUFFIX;
+
+    static wchar_t*   LT_NAME;
+    static char*      DB_NAME_LT_SUFFIX;
+
 };
 
 #endif // CPP_UNIT_FDOAPPLYSCHEMATEST_H
