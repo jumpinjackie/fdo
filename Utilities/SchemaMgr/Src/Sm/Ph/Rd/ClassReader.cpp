@@ -58,14 +58,24 @@ FdoSmPhRdClassReader::FdoSmPhRdClassReader(
     // Get the RDBMS Schema
     mOwner = mgr->FindOwner(owner, database, false);
     if ( mOwner ) {
+        FdoSmPhDbObjectP pObject;
         if( ((const wchar_t*)className)[0] != '\0' )
         {
-            mDbObjects = new FdoSmPhDbObjectCollection(NULL);
-            FdoSmPhDbObjectP pObject = mOwner->FindDbObject( className );
-            mDbObjects->Add( pObject );
+            // Reading a single class. Assume class table has same name.
+            pObject = mOwner->FindDbObject( className );
+            if ( pObject ) {
+                mDbObjects = new FdoSmPhDbObjectCollection(NULL);
+                mDbObjects->Add( pObject );
+            }
         }
-        else
+
+        if ( !pObject ) 
         {
+            // Reading all classes or table for single class not found.
+            // When table for single class not found, table might exist
+            // but be named differently from class. In this case, must
+            // read all tables.
+
             // Cache all of the objects from the given owner.
             // This pre-load provides better performance than 
             // caching each object individually.
