@@ -325,6 +325,10 @@ void ThreadingTests::tearDown ()
 /* Test running a couple of threads */
 void ThreadingTests::a_few_threads ()
 {
+#ifdef _WIN32
+    CPPUNIT_FAIL("ThreadingTests::a_few_threads disabled");
+#endif
+
     FdoPtr <FdoIConnection> connection;
     FDOCOMMON_THREAD_HANDLE* handles;
     bool success;
