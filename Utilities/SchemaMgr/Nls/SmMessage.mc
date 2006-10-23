@@ -1086,3 +1086,8 @@ SymbolicName=FDOSM_417
 Language=English
 Failed to add check constraint '%1$ls' in table %2$ls
 .
+MessageId=2642
+SymbolicName=FDOSM_418
+Language=English
+Updating of spatial context('%1$ls') is not supported
+.
