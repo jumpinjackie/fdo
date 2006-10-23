@@ -8,9 +8,6 @@
 <!--
  /* Font Definitions */
  @font-face
-	{font-family:Wingdings;
-	panose-1:5 0 0 0 0 0 0 0 0 0;}
-@font-face
 	{font-family:"MS Mincho";
 	panose-1:2 2 6 9 4 2 5 8 3 4;}
 @font-face
@@ -46,33 +43,51 @@ h3
 	margin-left:0in;
 	font-size:12.0pt;
 	font-family:Arial;}
+p.MsoToc1, li.MsoToc1, div.MsoToc1
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+p.MsoToc2, li.MsoToc2, div.MsoToc2
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:12.0pt;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+p.MsoToc3, li.MsoToc3, div.MsoToc3
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:24.0pt;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
 p.MsoListBullet, li.MsoListBullet, div.MsoListBullet
 	{margin-top:0in;
 	margin-right:0in;
 	margin-bottom:6.0pt;
 	margin-left:.25in;
 	text-indent:-.25in;
+	layout-grid-mode:char;
 	font-size:10.0pt;
-	font-family:"Times New Roman";
-	layout-grid-mode:line;}
+	font-family:"Times New Roman";}
 p.MsoList2, li.MsoList2, div.MsoList2
 	{margin-top:0in;
 	margin-right:0in;
 	margin-bottom:6.0pt;
 	margin-left:.5in;
 	text-indent:-.25in;
+	layout-grid-mode:char;
 	font-size:10.0pt;
-	font-family:"Times New Roman";
-	layout-grid-mode:line;}
+	font-family:"Times New Roman";}
 a:link, span.MsoHyperlink
 	{color:blue;
 	text-decoration:underline;}
 a:visited, span.MsoHyperlinkFollowed
 	{color:purple;
 	text-decoration:underline;}
-span.EmailStyle17
-	{font-family:Arial;
-	color:windowtext;}
 p.tableheader, li.tableheader, div.tableheader
 	{margin-top:3.0pt;
 	margin-right:0in;
@@ -90,6 +105,9 @@ p.Char, li.Char, div.Char
 	line-height:12.0pt;
 	font-size:10.0pt;
 	font-family:Verdana;}
+span.EmailStyle21
+	{font-family:Arial;
+	color:windowtext;}
 @page Section1
 	{size:8.5in 11.0in;
 	margin:1.0in 1.25in 1.0in 1.25in;}
@@ -109,11 +127,11 @@ ul
 
 <div class=Section1>
 
-<h1><b><font size=5 face=Arial><span style='font-size:18.0pt'>FDO 3.0 vs. FDO
-3.2</span></font></b></h1>
+<h1><a name="_Toc149388571"><b><font size=5 face=Arial><span style='font-size:
+18.0pt'>FDO 3.0 vs. FDO 3.2</span></font></b></a></h1>
 
-<h1><b><font size=5 face=Arial><span style='font-size:16.0pt'>FDO API Naming
-Changes</span></font></b></h1>
+<h2><a name="_Toc149388572"><b><font size=5 face=Arial><span style='font-size:
+16.0pt'>FDO API Naming Changes</span></font></b></a></h2>
 
 <p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
 12.0pt'>The naming conventions used in version 3.2 of the FDO API have been
@@ -137,15 +155,15 @@ also applicable when discussing the differences between 3.1 and 3.2.</span></fon
 12.0pt'>The following sections provide an overview on the naming changes that
 were made in FDO 3.2.</span></font></p>
 
-<h2><b><font size=4 face=Arial><span style='font-size:14.0pt'>Removal of Unused
-FDO API Interfaces</span></font></b></h2>
+<h3><a name="_Toc149388573"><b><font size=4 face=Arial><span style='font-size:
+14.0pt'>Removal of Unused FDO API Interfaces</span></font></b></a></h3>
 
 <p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
 12.0pt'>There was a subset of the FDO API that had not been implemented in any
 provider. These unimplemented interfaces were removed from the FDO API. </span></font></p>
 
-<h3><b><font size=3 face=Arial><span style='font-size:12.0pt'>Removal of the
-Topology API</span></font></b></h3>
+<h3><a name="_Toc149388574"><b><font size=3 face=Arial><span style='font-size:
+12.0pt'>Removal of the Topology API</span></font></b></a></h3>
 
 <p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
 12.0pt'>Removing the Topology API meant that all the topology related classes,
@@ -178,11 +196,9 @@ related capabilities method.</p>
 <p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
 12.0pt'>&nbsp;</span></font></p>
 
-<p class=MsoNormal style='text-indent:.5in'><font size=2 color=blue
-face="Courier New"><span style='font-size:10.0pt;font-family:"Courier New";
-color:blue'>virtual</span></font><font size=2 face="Courier New"><span
-style='font-size:10.0pt;font-family:"Courier New"'> FdoITopologyCapabilities*
-GetTopologyCapabilities();</span></font></p>
+<p class=MsoNormal style='text-indent:.5in'><font size=3 color=blue
+face="Times New Roman"><span style='font-size:12.0pt;color:blue'>virtual</span></font>
+FdoITopologyCapabilities* GetTopologyCapabilities();</p>
 
 <p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
 12.0pt'>&nbsp;</span></font></p>
@@ -259,8 +275,8 @@ style='font-size:12.0pt'>FdoTopology</span></font></p>
 <p class=MsoNormal><font size=2 face="Courier New"><span style='font-size:10.0pt;
 font-family:"Courier New"'>&nbsp;</span></font></p>
 
-<h3><b><font size=3 face=Arial><span style='font-size:12.0pt'>Removal of the
-Network API</span></font></b></h3>
+<h3><a name="_Toc149388575"><b><font size=3 face=Arial><span style='font-size:
+12.0pt'>Removal of the Network API</span></font></b></a></h3>
 
 <p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
 12.0pt'>Removing the Network API will mean that all the network related
@@ -415,8 +431,8 @@ style='font-size:12.0pt'>FdoNetworkLinkFeatureClass</span></font></p>
 <p class=MsoNormal style='margin-left:.5in'><font size=3 face="Times New Roman"><span
 style='font-size:12.0pt'>FdoNetworkNodeFeatureClass</span></font></p>
 
-<h2><b><font size=4 face=Arial><span style='font-size:14.0pt'>Naming
-Modifications for the FDO API Libraries</span></font></b></h2>
+<h3><a name="_Toc149388576"><b><font size=4 face=Arial><span style='font-size:
+14.0pt'>Naming Modifications for the FDO API Libraries</span></font></b></a></h3>
 
 <p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
 font-family:Arial'>Components in the FDO API were renamed&nbsp;to remove
@@ -609,8 +625,8 @@ font-family:Arial'>&nbsp;</span></font></p>
  </tr>
 </table>
 
-<h2><b><font size=4 face=Arial><span style='font-size:14.0pt'>Enforcing Open
-Source Code Naming Conventions</span></font></b></h2>
+<h3><a name="_Toc149388577"><b><font size=4 face=Arial><span style='font-size:
+14.0pt'>Enforcing Open Source Code Naming Conventions</span></font></b></a></h3>
 
 <p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
 12.0pt'>With these changes, all class names in the FDO API&nbsp;should now
@@ -635,8 +651,8 @@ Fdo&lt;provider abbreviation&gt;Implementation.</span></font></p>
 &#8216;OSGeo&#8217; and &#8216;Fdo&#8217;. The following sections outline the
 major areas of change.</span></font></p>
 
-<h3><b><font size=3 face=Arial><span style='font-size:12.0pt'>Managed API
-Namespaces Changes</span></font></b></h3>
+<h3><a name="_Toc149388578"><b><font size=3 face=Arial><span style='font-size:
+12.0pt'>Managed API Namespaces Changes</span></font></b></a></h3>
 
 <p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
 12.0pt'>In version 3.0 the namespaces for the FDO Managed APIs refer to
@@ -844,8 +860,8 @@ OSGeo.FDO as follows:</span></font></p>
  </tr>
 </table>
 
-<h3><b><font size=3 face=Arial><span style='font-size:12.0pt'>Macro/Preprocessor
-Name Changes</span></font></b></h3>
+<h3><a name="_Toc149388579"><b><font size=3 face=Arial><span style='font-size:
+12.0pt'>Macro/Preprocessor Name Changes</span></font></b></a></h3>
 
 <p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
 12.0pt'>There are a number of FDO macro and preprocessor definitions that were
@@ -1024,7 +1040,8 @@ renamed to remove references to Gis.</span></font></p>
  </tr>
 </table>
 
-<h3><b><font size=3 face=Arial><span style='font-size:12.0pt'>Type Name Changes</span></font></b></h3>
+<h3><a name="_Toc149388580"><b><font size=3 face=Arial><span style='font-size:
+12.0pt'>Type Name Changes</span></font></b></a></h3>
 
 <p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
 12.0pt'>There&nbsp;were a number of FDO&nbsp;type definitions that were renamed
@@ -1343,8 +1360,8 @@ font-family:Arial'>&nbsp;</span></font></p>
  </tr>
 </table>
 
-<h3><b><font size=3 face=Arial><span style='font-size:12.0pt'>Class/Interface
-Name Changes</span></font></b></h3>
+<h3><a name="_Toc149388581"><b><font size=3 face=Arial><span style='font-size:
+12.0pt'>Class/Interface Name Changes</span></font></b></a></h3>
 
 <p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
 12.0pt'>The prefix&nbsp;for the FDO Common classes&nbsp;was changed from Gis to
@@ -2815,8 +2832,8 @@ font-family:Arial'>&nbsp;</span></font></p>
  </tr>
 </table>
 
-<h3><b><font size=3 face=Arial><span style='font-size:12.0pt'>AGF to FGF Name
-Change</span></font></b></h3>
+<h3><a name="_Toc149388582"><b><font size=3 face=Arial><span style='font-size:
+12.0pt'>AGF to FGF Name Change</span></font></b></a></h3>
 
 <p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
 12.0pt'>The FDO API used the term AGF or Autodesk Geometry Format
@@ -2909,8 +2926,8 @@ will need to be modified.</span></font></p>
  </tr>
 </table>
 
-<h3><b><font size=3 face=Arial><span style='font-size:12.0pt'>SHP Override API
-Class Naming Conventions</span></font></b></h3>
+<h3><a name="_Toc149388583"><b><font size=3 face=Arial><span style='font-size:
+12.0pt'>SHP Override API Class Naming Conventions</span></font></b></a></h3>
 
 <p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
 12.0pt'>Physical Overrides APIs are defined for&nbsp;the SHP, ODBC, MySQL and
@@ -3054,7 +3071,8 @@ SHP Provider. </span></font></p>
  </tr>
 </table>
 
-<h3><b><font size=3 face=Arial><span style='font-size:12.0pt'>File Name Changes</span></font></b></h3>
+<h3><a name="_Toc149388584"><b><font size=3 face=Arial><span style='font-size:
+12.0pt'>File Name Changes</span></font></b></a></h3>
 
 <p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
 12.0pt'>Several FDO API files have had their names changes to conform to the
@@ -3303,19 +3321,20 @@ font-family:Arial'>&nbsp;</span></font></p>
  </tr>
 </table>
 
-<h2><b><font size=4 face=Arial><span style='font-size:14.0pt'>Documentation</span></font></b></h2>
+<h3><a name="_Toc149388585"><b><font size=4 face=Arial><span style='font-size:
+14.0pt'>Documentation</span></font></b></a></h3>
 
 <p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
 12.0pt'>In Version 3.2,&nbsp;the FDO Open Source API reference documentation
 will be generated using Doxygen. API documentation content will retrieved
 directly from the header files that constitute the public FDO API.</span></font></p>
 
-<h2><a name="_Toc149366927"><b><font size=5 face=Arial><span style='font-size:
-16.0pt'>Capabilities Related Changes</span></font></b></a></h2>
+<h2><a name="_Toc149388586"></a><a name="_Toc149366927"><b><font size=5
+face=Arial><span style='font-size:16.0pt'>Capabilities Related Changes</span></font></b></a></h2>
 
 <p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
-12.0pt'>In FDO 3.2, additional capabilities support was added to the FDO API for
-the following use cases.</span></font></p>
+12.0pt'>In FDO 3.2, additional capabilities support was added to the FDO API
+for the following use cases.</span></font></p>
 
 <p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
 12.0pt'>&nbsp;</span></font></p>
@@ -3345,8 +3364,8 @@ face="Times New Roman"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&n
 </span></font></span></font><font size=3><span style='font-size:12.0pt'>Support
 specifying explicit geometry types allowed for a geometry property. </span></font></p>
 
-<h3><a name="_Toc149366928"><b><font size=4 face=Arial><span style='font-size:
-14.0pt'>Connection Capabilities</span></font></b></a></h3>
+<h3><a name="_Toc149388587"></a><a name="_Toc149366928"><b><font size=4
+face=Arial><span style='font-size:14.0pt'>Connection Capabilities</span></font></b></a></h3>
 
 <p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
 12.0pt'>The main addition is to indicate whether the data store is read-only or
@@ -3382,7 +3401,7 @@ style='font-size:12.0pt'>// Returns true if write is supported by the provider</
 
 <p class=MsoNormal style='text-indent:.5in'><i><font size=3
 face="Times New Roman"><span style='font-size:12.0pt;font-style:italic'>virtual
-FDO_API bool&nbsp;SupportsWrite()=0&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></font></i></p>
+FDO_API bool&nbsp;SupportsWrite()=0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></font></i></p>
 
 <p class=MsoNormal style='text-indent:.5in'><font size=3 face="Times New Roman"><span
 style='font-size:12.0pt'>&nbsp;</span></font></p>
@@ -3400,11 +3419,11 @@ style='font-size:11.0pt;font-style:italic'>&nbsp;</span></font></i></p>
 
 <p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
 12.0pt'>If write is not supported, then locking, transactions, and multi-user
-write would also not be supported. If multi-user write is supported then write is
-supported.</span></font></p>
+write would also not be supported. If multi-user write is supported then write
+is supported.</span></font></p>
 
-<h3><a name="_Toc149366929"><b><font size=4 face=Arial><span style='font-size:
-14.0pt'>Expression Capabilities</span></font></b></a></h3>
+<h3><a name="_Toc149388588"></a><a name="_Toc149366929"><b><font size=4
+face=Arial><span style='font-size:14.0pt'>Expression Capabilities</span></font></b></a></h3>
 
 <p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
 12.0pt'>Changes were made for Expression capabilities in order to deal with
@@ -3465,13 +3484,14 @@ required for the function.</span></font></p>
 
 <p class=MsoNormal style='margin-left:.5in'><i><font size=3
 face="Times New Roman"><span style='font-size:12.0pt;font-style:italic'>FDO_API
-FdoReadOnlyArgumentDefinitionCollection * GetArguments () &nbsp;</span></font></i></p>
+FdoReadOnlyArgumentDefinitionCollection * GetArguments ()&nbsp; </span></font></i></p>
 
 <p class=MsoNormal style='margin-left:.5in'><font size=3 face="Times New Roman"><span
 style='font-size:12.0pt'>&nbsp;</span></font></p>
 
 <p class=MsoNormal style='margin-left:.5in'><font size=3 face="Times New Roman"><span
-style='font-size:12.0pt'>// Gets the FdoPropertyType of the function return value</span></font></p>
+style='font-size:12.0pt'>// Gets the FdoPropertyType of the function return
+value</span></font></p>
 
 <p class=MsoNormal style='margin-left:.5in'><i><font size=3
 face="Times New Roman"><span style='font-size:12.0pt;font-style:italic'>FDO_API
@@ -3481,8 +3501,9 @@ FdoPropertyType&nbsp;GetReturnPropertyType ()</span></font></i></p>
 style='font-size:12.0pt'>&nbsp;</span></font></p>
 
 <p class=MsoNormal style='margin-left:.5in'><font size=3 face="Times New Roman"><span
-style='font-size:12.0pt'>// Gets the FdoDataType of the function return value.
-This is only valid if the function return property type is FdoPropertyType_DataProperty</span></font></p>
+style='font-size:12.0pt'>// Gets the FdoDataType of the function return value. This
+is only valid if the function return property type is
+FdoPropertyType_DataProperty</span></font></p>
 
 <p class=MsoNormal style='margin-left:.5in'><i><font size=3
 face="Times New Roman"><span style='font-size:12.0pt;font-style:italic'>FDO_API
@@ -3535,8 +3556,8 @@ do now. For the currently supported aggregate functions of min(), max(), avg(),
 ceil(), floor(), etc., the capabilities currently show that they take a double
 value argument and return a double value.</span></font></p>
 
-<h3><a name="_Toc149366930"><b><font size=4 face=Arial><span style='font-size:
-14.0pt'>Schema Capabilities and Schema Limits</span></font></b></a></h3>
+<h3><a name="_Toc149388589"></a><a name="_Toc149366930"><b><font size=4
+face=Arial><span style='font-size:14.0pt'>Schema Capabilities and Schema Limits</span></font></b></a></h3>
 
 <p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
 12.0pt'>Additions were made to the FDO API Schema capabilities in order to be
@@ -3701,8 +3722,8 @@ add the following new functions:</span></font></p>
 
 <p class=MsoNormal style='margin-left:.5in'><font size=3 face="Times New Roman"><span
 style='font-size:12.0pt'>// Returns the maximum size of a value of the given
-type. It includes class name size limits, property name size limits, description
-size limits, etc.</span></font></p>
+type. It includes class name size limits, property name size limits,
+description size limits, etc.</span></font></p>
 
 <p class=MsoNormal style='margin-left:.5in'><i><font size=3
 face="Times New Roman"><span style='font-size:12.0pt;font-style:italic'>virtual
@@ -3740,7 +3761,8 @@ for identity properties</span></font></p>
 
 <p class=MsoNormal style='margin-left:.5in'><i><font size=3
 face="Times New Roman"><span style='font-size:12.0pt;font-style:italic'>virtual
-FDO_API FdoDataType * GetSupportedIdentityPropertyTypes (FdoInt32 &amp;length)=0</span></font></i></p>
+FDO_API FdoDataType * GetSupportedIdentityPropertyTypes (FdoInt32
+&amp;length)=0</span></font></i></p>
 
 <p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
 12.0pt'>&nbsp;</span></font></p>
@@ -3805,7 +3827,8 @@ style='font-size:12.0pt'>// the value returned is the byte length. Note that
 this returns int64 because some providers </span></font></p>
 
 <p class=MsoNormal style='margin-left:.5in'><font size=3 face="Times New Roman"><span
-style='font-size:12.0pt'>// support blob lengths that won&#8217;t fit into int32</span></font></p>
+style='font-size:12.0pt'>// support blob lengths that won&#8217;t fit into
+int32</span></font></p>
 
 <p class=MsoNormal style='margin-left:.5in'><font size=3 face="Times New Roman"><span
 style='font-size:12.0pt'>virtual FDO_API FdoInt64&nbsp;GetMaximumDataValueLength
@@ -3819,7 +3842,8 @@ style='font-size:12.0pt'>// Gets the maximum supported precision for the
 Decimal data property.</span></font></p>
 
 <p class=MsoNormal style='margin-left:.5in'><font size=3 face="Times New Roman"><span
-style='font-size:12.0pt'>virtual FDO_API FdoInt32 GetMaximumDecimalPrecision()=0</span></font></p>
+style='font-size:12.0pt'>virtual FDO_API FdoInt32
+GetMaximumDecimalPrecision()=0</span></font></p>
 
 <p class=MsoNormal style='margin-left:.5in'><font size=3 face="Times New Roman"><span
 style='font-size:12.0pt'>&nbsp;</span></font></p>
@@ -3834,8 +3858,9 @@ style='font-size:12.0pt'>virtual FDO_API FdoInt32 GetMaximumDecimalScale()=0</sp
 <p class=MsoNormal style='margin-left:.5in'><font size=3 face="Times New Roman"><span
 style='font-size:12.0pt'>&nbsp;</span></font></p>
 
-<h3><b><font size=4 face=Arial><span style='font-size:14.0pt'>Geometry <a
-name="_Toc149366931">Types for Geometry Property</a></span></font></b></h3>
+<h3><a name="_Toc149388590"><b><font size=4 face=Arial><span style='font-size:
+14.0pt'>Geometry </span></font></b></a><a name="_Toc149366931"><font size=4><span
+style='font-size:14.0pt'>Types for Geometry Property</span></font></a></h3>
 
 <p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
 12.0pt'>For Geometry properties, the FDO API needed the ability to specify the
@@ -3892,10 +3917,11 @@ style='font-size:12.0pt'>// but there can be more than one.</span></font></p>
 
 <p class=MsoNormal style='margin-left:.5in'><i><font size=3
 face="Times New Roman"><span style='font-size:12.0pt;font-style:italic'>FDO_API
-FdoGeometryType* SetSpecificGeometryTypes (FdoGeometryType* types, FdoInt32 length)</span></font></i></p>
+FdoGeometryType* SetSpecificGeometryTypes (FdoGeometryType* types, FdoInt32
+length)</span></font></i></p>
 
-<h3><b><font size=3 face=Arial><span style='font-size:12.0pt'>Interaction with
-existing methods</span></font></b></h3>
+<h3><a name="_Toc149388591"><b><font size=3 face=Arial><span style='font-size:
+12.0pt'>Interaction with existing methods</span></font></b></a></h3>
 
 <p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
 12.0pt'>&nbsp;</span></font></p>
@@ -3908,9 +3934,9 @@ then FdoGeometryType_Point and FdoGeometryType_MultiPoint will be returned from
 GetSpecificGeometryTypes(). For the other way around, if
 SetSpecificGeometryTypes() is called followed by GetGeometryTypes(), it will
 only return geometric types if all the related geometry types have been
-specified. E.g. it would show FdoGeometricType_Point only if both FdoGeometryType_Point
-and FdoGeometryType_MultiPoint are set. It is possible if no geometric type is
-completely specified that GetGeometryTypes will return 0.</span></font></p>
+specified. E.g. it would show FdoGeometricType_Point only if both
+FdoGeometryType_Point and FdoGeometryType_MultiPoint are set. It is possible if
+no geometric type is completely specified that GetGeometryTypes will return 0.</span></font></p>
 
 <p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
 12.0pt'>&nbsp;</span></font></p>
@@ -3959,8 +3985,8 @@ All of the above plus MultiGeometry.</span></font></p>
 12.0pt'>Due to provider capabilities, the effective list of geometry types for
 a geometric type for a particular provider may be a subset of the above.</span></font></p>
 
-<h3><a name="_Toc149366932"><b><font size=4 face=Arial><span style='font-size:
-14.0pt'>Class Level Capabilities</span></font></b></a></h3>
+<h3><a name="_Toc149388592"></a><a name="_Toc149366932"><b><font size=4
+face=Arial><span style='font-size:14.0pt'>Class Level Capabilities</span></font></b></a></h3>
 
 <p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
 12.0pt'>Add the following method to the <b><span style='font-weight:bold'>FdoClassCapabilities</span></b>
@@ -3979,8 +4005,8 @@ FdoBoolean&nbsp;SupportsWrite()=0</span></font></i></p>
 <p class=MsoNormal style='margin-left:.5in'><i><font size=3
 face="Times New Roman"><span style='font-size:12.0pt;font-style:italic'>&nbsp;</span></font></i></p>
 
-<h2><a name="_Toc149366933"><b><font size=5 face=Arial><span style='font-size:
-16.0pt'>Data Store Type and Dependent Files</span></font></b></a></h2>
+<h2><a name="_Toc149388593"></a><a name="_Toc149366933"><b><font size=5
+face=Arial><span style='font-size:16.0pt'>Data Store Type and Dependent Files</span></font></b></a></h2>
 
 <p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
 12.0pt'>This enhancement is to provide a way for an FDO user to find out
@@ -4116,12 +4142,12 @@ style='font-size:12.0pt'>&nbsp;</span></font></p>
 12.0pt'>&nbsp;</span></font></p>
 
 <p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
-12.0pt'>Some providers support a connection to a file directory, e.g. SHP
-provider. In this case, the list of dependent files would include all the
-relevant files in the directory that are used for that data store. If the
-directory contains additional files that don&#8217;t make up the data store,
-e.g. .doc files, they are not included in the list. If there is a configuration
-file in the directory for the SHP data store, it is included in the list.</span></font></p>
+12.0pt'>Some providers support a connection to a file directory, e.g. SHP provider.
+In this case, the list of dependent files would include all the relevant files
+in the directory that are used for that data store. If the directory contains
+additional files that don&#8217;t make up the data store, e.g. .doc files, they
+are not included in the list. If there is a configuration file in the directory
+for the SHP data store, it is included in the list.</span></font></p>
 
 <p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
 12.0pt'>&nbsp;</span></font></p>
