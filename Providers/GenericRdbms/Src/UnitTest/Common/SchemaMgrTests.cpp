@@ -282,11 +282,28 @@ void SchemaMgrTests::testGenDefault ()
         stream1->Reset();
         schemas->ReadXml( stream1 );   
 
+        FdoSchemaMappingsP mappings = FdoPhysicalSchemaMappingCollection::Create();
+        stream1->Reset();
+        mappings->ReadXml( stream1 );
+
     	FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) fdoConn->CreateCommand(FdoCommandType_ApplySchema);
 
-        pCmd->SetFeatureSchema( FdoFeatureSchemaP(schemas->GetItem(0)) );
-	    pCmd->Execute();
-        
+        FdoInt32 idx;
+
+        for ( idx = 0; idx < schemas->GetCount(); idx++ ) {
+            FdoFeatureSchemaP schema = schemas->GetItem(idx);
+            pCmd->SetFeatureSchema( schema );
+
+            if ( wcscmp(schema->GetName(),L"guest") == 0 ) {
+                FdoPhysicalSchemaMappingP overrides = 
+                    (FdoPhysicalSchemaMapping*) mappings->GetItem( fdoConn, schema->GetName() );
+                if ( overrides )
+                    pCmd->SetPhysicalMapping( overrides );
+            }
+
+            pCmd->Execute();
+        }
+
         stream1 = FdoIoMemoryStream::Create();
 
         UnitTestUtil::ExportDb( 
