@@ -880,7 +880,7 @@ void FdoCommonFile::GetAllFiles (const wchar_t* path, std::vector<std::wstring>&
     {
         // add trailing slash if necessary
         if (FILE_PATH_DELIMITER != pattern[length - 1])
-            pattern[length++] = FILE_PATH_DELIMITER;
+            wcscat (pattern, L"\\");
     }
     wcscat (pattern, L"*");
     if (-1L != (handle = _wfindfirst (pattern, &file )))
