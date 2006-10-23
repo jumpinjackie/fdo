@@ -882,3 +882,39 @@ void FdoAdvancedSelectTest::selectDistinctTest()
         }
     }
 }
+
+
+void FdoAdvancedSelectTest::getDataTypeTest()
+{
+    FdoPtr<FdoIDataReader>myDataReader;
+	FdoPtr<FdoISelectAggregates>selCmdAggreg;
+    FdoPtr<FdoIFeatureReader>myReader;
+
+    if( mConnection == NULL )
+        return;
+
+    try
+    {
+        selCmdAggreg = (FdoISelectAggregates*)mConnection->CreateCommand( FdoCommandType_SelectAggregates );
+        selCmdAggreg->SetFeatureClassName(L"Acad:AcDb3dPolyline");
+        FdoPtr<FdoComputedIdentifier>cmpId = (FdoComputedIdentifier*)FdoExpression::Parse(L"(ceil(segcount)) AS TestFunc");
+        FdoPtr<FdoIdentifierCollection>idCol = selCmdAggreg->GetPropertyNames();
+        idCol->Add( cmpId );
+        myDataReader = selCmdAggreg->Execute();
+        if (myDataReader->ReadNext())
+        {
+            FdoInt32 count = myDataReader->GetPropertyCount();
+            for (int i=0; i<myDataReader->GetPropertyCount(); i++)
+            {
+                FdoString *propName = myDataReader->GetPropertyName(i);
+                FdoDataType dataType = myDataReader->GetDataType(propName);
+            }
+        }
+    }
+
+    catch( FdoException *ex )
+    {
+        printf("getDataTypeTest error: %ls\n", ex->GetExceptionMessage());
+        throw;
+    }
+}

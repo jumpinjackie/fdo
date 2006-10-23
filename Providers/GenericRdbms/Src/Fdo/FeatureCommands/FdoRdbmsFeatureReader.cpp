@@ -367,12 +367,12 @@ FdoDataType FdoRdbmsFeatureReader::GetDataType(FdoString* propertyName)
 
     if( colName != NULL )
     {
-        size_t i;
-        // skip the table. part
-        for(i=0; i<strlen(colName) && colName[i] != '.'; i++ )
-            ;
+        int i;
 
-        if( i < strlen(colName) )
+        // Get the column name
+        for(i=strlen(colName)-1; i>=0 && colName[i] != '.'; i--)
+            ;
+        if( i >=0 )
             colName = &colName[i+1];
 
         // It must be a data property
