@@ -34,6 +34,7 @@ MySqlFdoAssociationSchemaTest.cpp \
 MySqlFdoAssociationSelectTest.cpp \
 MySqlFdoAssociationUpdateTest.cpp \
 MySqlFdoCapabilityTest.cpp \
+MySqlFdoConnectionInfoTest.cpp \
 MySqlFdoConnectTest.cpp \
 MySqlFdoConstraintsTest.cpp \
 MySqlFdoDatastoreTest.cpp \
@@ -63,6 +64,7 @@ MySqlFdoAssociationSchemaTest.h \
 MySqlFdoAssociationSelectTest.h \
 MySqlFdoAssociationUpdateTest.h \
 MySqlFdoCapabilityTest.h \
+MySqlFdoConnectionInfoTest.h \
 MySqlFdoConnectTest.h \
 MySqlFdoConstraintsTest.h \
 MySqlFdoDatastoreTest.h \

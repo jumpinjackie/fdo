@@ -540,6 +540,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Common\FdoConnectionInfoTest.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\FdoConnectionInfoTest.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Common\FdoConnectTest.cpp"
 				>
 			</File>
@@ -793,6 +801,14 @@
 			</File>
 			<File
 				RelativePath=".\MySQL\MySqlFdoCapabilityTest.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MySql\MySqlFdoConnectionInfoTest.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\MySql\MySqlFdoConnectionInfoTest.h"
 				>
 			</File>
 			<File

@@ -26,6 +26,7 @@ OdbcBaseSetup.cpp \
 OdbcConnectionUtil.cpp \
 OdbcDescribeSchemaTest.cpp \
 OdbcFdoAdvancedSelectTest.cpp \
+OdbcFdoConnectionInfoTest.cpp \
 OdbcFdoConnectTest.cpp \
 OdbcFdoDeleteTest.cpp \
 OdbcFdoInsertTest.cpp \
@@ -40,6 +41,7 @@ OdbcBaseSetup.h \
 OdbcConnectionUtil.h \
 OdbcDescribeSchemaTest.h \
 OdbcFdoAdvancedSelectTest.h \
+OdbcFdoConnectionInfoTest.h \
 OdbcFdoConnectTest.h \
 OdbcFdoDeleteTest.h \
 OdbcFdoInsertTest.h \

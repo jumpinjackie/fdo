@@ -468,6 +468,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Common\FdoConnectionInfoTest.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\FdoConnectionInfoTest.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Common\FdoConnectTest.cpp"
 				>
 			</File>
@@ -625,6 +633,14 @@
 			</File>
 			<File
 				RelativePath=".\Odbc\OdbcFdoAdvancedSelectTest.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Odbc\OdbcFdoConnectionInfoTest.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Odbc\OdbcFdoConnectionInfoTest.h"
 				>
 			</File>
 			<File

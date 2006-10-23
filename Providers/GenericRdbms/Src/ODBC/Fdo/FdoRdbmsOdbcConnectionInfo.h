@@ -52,5 +52,20 @@ public:
 protected:
     ~FdoRdbmsOdbcConnectionInfo(void);
     virtual void Dispose();
+
+private:
+    void ProcessProviderDataRequest();
+    void SetProviderDataFromDsn();
+    void SetProviderDataFromOdbcConnectionString(FdoStringP connectionString);
+    void ParseConnectionString(FdoStringP connectionString);
+    void SetProviderType();
+    void SetDependentFiles();
+
+    bool mProviderDataSetLoaded;
+    FdoProviderDatastoreType mProviderType;
+    FdoPtr<FdoStringCollection> mDependentFiles;
+    FdoPtr<FdoStringCollection> mConnectionStringTagNames;
+    FdoPtr<FdoStringCollection> mConnectionStringTagValues;
+
 };
 #endif
