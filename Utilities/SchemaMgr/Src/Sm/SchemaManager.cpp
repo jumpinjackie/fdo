@@ -322,14 +322,21 @@ void FdoSchemaManager::CreateSpatialContext(
 
     FdoSmLpSpatialContextP sc = scs->FindItem(name);
     
-    if ( sc && !update )
-        throw FdoSchemaException::Create( 
-            FdoSmError::NLSGetMessage(
-                //Cannot create Spatial Context '%1$ls', it already exists
-				FDO_NLSID(FDOSM_278),
-				name
-			)
-        );
+    if (sc) {
+        if (update) {
+            throw FdoSchemaException::Create(FdoSmError::NLSGetMessage(
+				FDO_NLSID(FDOSM_418), name ));
+        }
+        else {
+            throw FdoSchemaException::Create( 
+                FdoSmError::NLSGetMessage(
+                    //Cannot create Spatial Context '%1$ls', it already exists
+				    FDO_NLSID(FDOSM_278),
+				    name
+			    )
+            );
+        }
+    }
 
 	if ( !update ) {
 		sc = scs->CreateSpatialContext(
