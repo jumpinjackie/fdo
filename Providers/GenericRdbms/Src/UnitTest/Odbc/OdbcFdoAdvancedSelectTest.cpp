@@ -641,4 +641,8 @@ void OdbcAccessFdoAdvancedSelectTest::TestConcat()
 #endif
 }
 
+void OdbcAccessFdoAdvancedSelectTest::getDataTypeTest()
+{
+}
+
 #endif

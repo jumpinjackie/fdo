@@ -34,6 +34,7 @@ class OdbcAccessFdoAdvancedSelectTest : public FdoAdvancedSelectTest
     CPPUNIT_TEST (TestReaderDestructor);
     CPPUNIT_TEST (TestUpperLower);
     CPPUNIT_TEST (TestConcat);
+    CPPUNIT_TEST (getDataTypeTest);
     CPPUNIT_TEST_SUITE_END ();
 
     void  set_provider();
@@ -48,6 +49,7 @@ class OdbcAccessFdoAdvancedSelectTest : public FdoAdvancedSelectTest
     virtual void selectDistinctTest();
     virtual void TestDefect779194() {};
     virtual void TestDefect785616();
+	virtual void getDataTypeTest();
 
     // Extra tests for this class.
     void Table1Test();
