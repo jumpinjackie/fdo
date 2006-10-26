@@ -930,7 +930,6 @@ void OdbcAccessFdoConnectTest::InfoTest()
         strPWD = connProps->GetProperty(L"Password");
         strConnectionString = connProps->GetProperty(L"ConnectionString");
 
-#if 0
         // These next two tests are coded out until Defect 742563 is fixed.  The generic RDBMS code -- it never
         // updates connection property dictionary as a result of a connection string assignment.
 
@@ -946,8 +945,7 @@ void OdbcAccessFdoConnectTest::InfoTest()
         // test setting valid string first and then get connection info
         // ------------------------------------------------
 
-        FdoPtr<FdoIConnection> connection2 =
-            UnitTestUtil::GetConnection("", false, UnitTestUtil::CONNECTION_ODBC_ACCESS);
+        FdoPtr<FdoIConnection> connection2 = UnitTestUtil::GetProviderConnectionObject();
         if (connection2 == NULL)
             CPPUNIT_FAIL("FAILED - CreateConnection returned NULL\n");
 
@@ -967,7 +965,6 @@ void OdbcAccessFdoConnectTest::InfoTest()
         {
             CPPUNIT_FAIL("FAILED - ConnectionInfo not initialized from connection string as expected\n");
         }
-#endif
 
         // ------------------------------------------------
         // test handling of invalid operations
