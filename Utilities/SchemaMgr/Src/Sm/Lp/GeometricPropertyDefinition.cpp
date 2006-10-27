@@ -235,7 +235,14 @@ void FdoSmLpGeometricPropertyDefinition::SetInherited( const FdoSmLpPropertyDefi
 			FdoSmLpGeometricPropertyDefinition::Cast( pBaseProp );
 
 		if ( pBaseGeomProp ) {
-			if (( mGeometricTypes != pBaseGeomProp->GetGeometryTypes()         ) ||
+		    // Update attributes when base property is modified.
+  		    if ( (GetElementState() == FdoSchemaElementState_Unchanged)
+  	    	    && (pBaseProp->GetElementState() == FdoSchemaElementState_Modified) 
+  		    ) {
+			    mGeometricTypes = pBaseGeomProp->GetGeometryTypes();
+			    mGeometryTypes = pBaseGeomProp->GetSpecificGeometryTypes();
+		    }
+			else if (( mGeometricTypes != pBaseGeomProp->GetGeometryTypes()         ) ||
                 ( mGeometryTypes  != pBaseGeomProp->GetSpecificGeometryTypes() )    ) {
 				// Inherited property cannot redefine geometry types.
 				same = false;
@@ -431,6 +438,7 @@ void FdoSmLpGeometricPropertyDefinition::Commit( bool fromParent )
             pWriter->SetIsReadOnly( GetReadOnly() );
             pWriter->SetDescription( GetDescription() );
             pWriter->SetDataType( FdoStringP::Format(L"%d", GetGeometryTypes()) );
+            pWriter->SetGeometryType( FdoStringP::Format(L"%d", GetSpecificGeometryTypes()) );
 			pWriter->SetHasElevation( GetHasElevation() );
 			pWriter->SetHasMeasure( GetHasMeasure() );
             pWriter->Modify( pTopClass->GetId(), GetName() );
@@ -461,10 +469,11 @@ FdoSchemaExceptionP FdoSmLpGeometricPropertyDefinition::Errors2Exception(FdoSche
 void FdoSmLpGeometricPropertyDefinition::XMLSerialize( FILE* xmlFp, int ref ) const
 {
 	if ( ref == 0 ) {
-		fprintf( xmlFp, "<property xsi:type=\"%ls\" name=\"%ls\" description=\"%ls\"\n geometryTypes=\"%ld\" hasElevation=\"%s\" hasMeasure=\"%s\"\n tableName=\"%ls\" columnName=\"%ls\" colCreator=\"%s\" fixedCol=\"%s\" >\n",
+		fprintf( xmlFp, "<property xsi:type=\"%ls\" name=\"%ls\" description=\"%ls\"\ngeometricTypes=\"%ld\" geometryTypes=\"%ld\" hasElevation=\"%s\" hasMeasure=\"%s\"\n tableName=\"%ls\" columnName=\"%ls\" colCreator=\"%s\" fixedCol=\"%s\" >\n",
                 (FdoString*) FdoSmLpPropertyTypeMapper::Type2String(GetPropertyType()),
 				GetName(), GetDescription(),
 				GetGeometryTypes(),
+				GetSpecificGeometryTypes(),
 				GetHasElevation() ? "True" : "False",
 				GetHasMeasure() ? "True" : "False",
 				GetContainingDbObjectName(),

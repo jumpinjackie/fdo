@@ -96,6 +96,20 @@ public:
 
     static FdoGeometryType MapHexCodeToGeometryType (FdoInt32 gTypeHexCode);
 
+    // Converts a GeometricType to GeometryTypes bitmap of hexcodes.
+
+	static FdoInt32 GetGeometryTypes(FdoInt32 value);
+
+    // Converts GeometryTypes from hexcode to array format.
+    // Caller is responsible for ensuring that the gTypes array has enough entries to 
+    // hold all geometryTypes defined in the hexcode.
+
+    static void GeometryTypesToArray( FdoInt32 hexType, FdoGeometryType* gTypes, FdoInt32& typeCount );
+
+    // Get special hexcode for when no geometryTypes are defined.
+
+    static FdoInt32 GetNoneGeometryTypesCode ();
+
 private:
 
     /// The following enumeration defines hex-codes that map to FDO Geometry Types.
@@ -117,6 +131,7 @@ private:
 
     };  //  enum FdoCommonGeometryTypeHexCode
 
+	static FdoInt32 GetGeometricType(int pos);
 
 };  //  class FdoCommonGeometryUtil
 

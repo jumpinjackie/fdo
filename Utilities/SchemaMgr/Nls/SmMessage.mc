@@ -1091,3 +1091,8 @@ SymbolicName=FDOSM_418
 Language=English
 Updating of spatial context('%1$ls') is not supported
 .
+MessageId=2643
+SymbolicName=FDOSM_419
+Language=English
+Internal error: f_attributedefinition has select column count mismatched between union'ed selects. Please adjust select columns for fake row.
+.

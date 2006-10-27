@@ -17,6 +17,7 @@
  */
 
 #include "stdafx.h"
+#include <Sm/Error.h>
 #include <Sm/Ph/Mt/PropertyReader.h>
 
 FdoSmPhMtPropertyReader::FdoSmPhMtPropertyReader( FdoSmPhRowsP froms, FdoStringP schemaName, FdoSmPhMgrP mgr ) : 
@@ -31,9 +32,25 @@ FdoSmPhMtPropertyReader::~FdoSmPhMtPropertyReader(void)
 FdoSmPhReaderP FdoSmPhMtPropertyReader::MakeReader( FdoSmPhRowsP froms, FdoStringP schemaName, FdoSmPhMgrP mgr )
 {
     FdoSmPhRowP from = froms->GetItem(0);
+    FdoSmPhRowP fromB = froms->GetItem(1);
     FdoSmPhOwner* owner = static_cast<FdoSmPhOwner*>((FdoSmSchemaElement*)(FdoSmPhDbObjectP(from->GetDbObject())->GetParent()));
     double schemaVersion = owner->GetSchemaVersion();
     FdoStringP classidRow;
+
+    // The following error can happen when a field is added to the property reader's select list without
+    // adding it to the fake row (see below).
+    // Although the fake row is only added for older datastores, trap this error for all datastores,
+    // so that it will be caught by the unit tests. 
+    // When this error occurs, you must change the expected counts on the next line to match the 
+    // new field counts for the property reader and adjust the select columns in the classidrow
+    // clause below to be consistent with the property reader fields.
+    if ( (from->GetFields()->GetCount() != 25) || (fromB->GetFields()->GetCount() != 1) ) {
+		throw FdoSchemaException::Create (
+            FdoSmError::NLSGetMessage(
+                FDO_NLSID(FDOSM_419) 
+			)
+		);
+    }
 
     if ( schemaVersion > 0.0 && schemaVersion < 3.0 ) {
         // This block will only be executed for the Oracle Provider, since MetaSchema
@@ -51,7 +68,7 @@ FdoSmPhReaderP FdoSmPhMtPropertyReader::MakeReader( FdoSmPhRowsP froms, FdoStrin
         // The fields for the fake row must be in the same order as the fields setup
         // by FdoSmPhPropertyReader::MakeRows().
         classidRow = FdoStringP::Format(
-            L" union select classid, tablename, 'ClassId', 0, 'CLASSID', null, 'int64', 'number', 20, 0, 0, 0, 0, 1, '%ls', null, null, 1, 1, 0, 0, 0, 0, null, 'Feature' from %ls.f_classdefinition where schemaname = 'F_MetaClass' and classname = 'Feature' ",
+            L" union select classid, tablename, 'ClassId', 0, 'CLASSID', null, 'int64', 'number', 20, 0, 0, 0, 0, 1, '%ls', null, null, 1, 1, 0, 0, 0, 0, null, null, 'Feature' from %ls.f_classdefinition where schemaname = 'F_MetaClass' and classname = 'Feature' ",
             owner->GetName(),
             owner->GetName()
         );

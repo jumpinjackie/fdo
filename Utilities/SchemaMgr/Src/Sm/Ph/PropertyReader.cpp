@@ -105,7 +105,23 @@ FdoStringP FdoSmPhPropertyReader::GetDataType()
 
 FdoStringP FdoSmPhPropertyReader::GetGeometryType()
 {
-	return(GetString(L"", L"geometrytype"));
+    FdoStringP geometryTypeString = GetString(L"", L"geometrytype");
+
+    if ( geometryTypeString == L"" ) 
+    {
+		if (GetDataType().IsNumber())
+		{
+			FdoInt32 geometrictype = atoi(GetDataType());
+			FdoInt32 geometrytype = FdoCommonGeometryUtil::GetGeometryTypes(geometrictype);
+			geometryTypeString = FdoStringP::Format(L"%d", geometrytype);
+		}
+		else
+		{
+			geometryTypeString = FdoStringP::Format(L"%d", FdoCommonGeometryUtil::GetNoneGeometryTypesCode());
+		}
+	}
+
+    return geometryTypeString;
 }
 
 int FdoSmPhPropertyReader::GetIdPosition()
