@@ -20,15 +20,6 @@
 #include "XmlContext.h"
 
 
-#define All_GEOMETRY_POINT               (FdoGeometryType_Point | FdoGeometryType_MultiPoint)
-#define ALL_GEOMETRY_CURVE               (FdoGeometryType_LineString | FdoGeometryType_MultiLineString | FdoGeometryType_CurveString | FdoGeometryType_MultiCurveString)
-#define ALL_GEOMETRY_SURFACE             (FdoGeometryType_Polygon | FdoGeometryType_MultiPolygon | FdoGeometryType_CurvePolygon | FdoGeometryType_MultiCurvePolygon)
-#define ALL_GEOMETRY_POINT_CURVE         (All_GEOMETRY_POINT | ALL_GEOMETRY_CURVE)
-#define ALL_GEOMETRY_POINT_SURFACE       (All_GEOMETRY_POINT | ALL_GEOMETRY_SURFACE)
-#define ALL_GEOMETRY_CURVE_SURFACE       (ALL_GEOMETRY_CURVE | ALL_GEOMETRY_SURFACE)
-#define ALL_GEOMETRY_POINT_CURVE_SURFACE (All_GEOMETRY_POINT | ALL_GEOMETRY_CURVE | ALL_GEOMETRY_SURFACE)
-
-
 
 enum FdoGeometryTypeHexCode
 {
@@ -45,6 +36,15 @@ enum FdoGeometryTypeHexCode
     FdoGeometryTypeHexCode_MultiCurveString  = 0x08000,
     FdoGeometryTypeHexCode_MultiCurvePolygon = 0x10000,
 };
+
+
+static const FdoInt32 All_GEOMETRY_POINT               = (FdoGeometryTypeHexCode_Point | FdoGeometryTypeHexCode_MultiPoint);
+static const FdoInt32 ALL_GEOMETRY_CURVE               = (FdoGeometryTypeHexCode_LineString | FdoGeometryTypeHexCode_MultiLineString | FdoGeometryTypeHexCode_CurveString | FdoGeometryTypeHexCode_MultiCurveString);
+static const FdoInt32 ALL_GEOMETRY_SURFACE             = (FdoGeometryTypeHexCode_Polygon | FdoGeometryTypeHexCode_MultiPolygon | FdoGeometryTypeHexCode_CurvePolygon | FdoGeometryTypeHexCode_MultiCurvePolygon);
+static const FdoInt32 ALL_GEOMETRY_POINT_CURVE         = (All_GEOMETRY_POINT | ALL_GEOMETRY_CURVE);
+static const FdoInt32 ALL_GEOMETRY_POINT_SURFACE       = (All_GEOMETRY_POINT | ALL_GEOMETRY_SURFACE);
+static const FdoInt32 ALL_GEOMETRY_CURVE_SURFACE       = (ALL_GEOMETRY_CURVE | ALL_GEOMETRY_SURFACE);
+static const FdoInt32 ALL_GEOMETRY_POINT_CURVE_SURFACE = (All_GEOMETRY_POINT | ALL_GEOMETRY_CURVE | ALL_GEOMETRY_SURFACE);
 
 
 
