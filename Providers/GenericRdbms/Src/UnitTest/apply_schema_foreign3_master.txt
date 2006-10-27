@@ -100,7 +100,7 @@
 </identityProperties>
 <properties>
 <property xsi:type="Geometric" name="Bounds" description="Bounding box for the feature"
- geometryTypes="4" hasElevation="False" hasMeasure="False"
+geometricTypes="4" geometryTypes="84224" hasElevation="False" hasMeasure="False"
  tableName="" columnName="n/a" colCreator="False" fixedCol="False" >
 </property>
 <property xsi:type="Data" name="ClassId" description="Class id number (uniquely identifies a class)"

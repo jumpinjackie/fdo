@@ -535,6 +535,13 @@ FdoGeometricPropertyDefinition* FdoRdbmsDescribeSchemaCommand::ConvertGeometricP
         pFdoGeomPropDef = FdoGeometricPropertyDefinition::Create(pLpGeomPropDef->GetName(), pLpGeomPropDef->GetDescription());
 
         pFdoGeomPropDef->SetGeometryTypes(pLpGeomPropDef->GetGeometryTypes());
+
+        FdoGeometryType geomTypes[MAX_GEOMETRY_TYPE_SIZE];
+        FdoInt32 geomTypeCount;
+
+        FdoCommonGeometryUtil::GeometryTypesToArray( pLpGeomPropDef->GetSpecificGeometryTypes(), geomTypes, geomTypeCount );
+        pFdoGeomPropDef->SetSpecificGeometryTypes( geomTypes, geomTypeCount );
+
         pFdoGeomPropDef->SetReadOnly(pLpGeomPropDef->GetReadOnly());
         pFdoGeomPropDef->SetHasMeasure(pLpGeomPropDef->GetHasMeasure());
         pFdoGeomPropDef->SetHasElevation(pLpGeomPropDef->GetHasElevation());

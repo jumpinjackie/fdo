@@ -246,26 +246,22 @@ void FdoApplySchemaTest::TestSchema ()
 		// First do xml dumps of LogicalPhysical schema
 
 #ifndef RDBI_DEF_SSQL
-        UnitTestUtil::CheckOutput( 
-            (const char*)LogicalPhysicalBend(L"apply_schema_test1_master.txt"), 
-            (const char*)LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_test1.xml" ) )
-        );
-        UnitTestUtil::CheckOutput( 
-            (const char*)LogicalPhysicalBend(L"apply_schema_test2_master.txt"), 
-            (const char*)LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_test2.xml" ) )
-        );
-        UnitTestUtil::CheckOutput( 
-            (const char*)LogicalPhysicalBend(L"apply_schema_test3_master.txt"), 
-            (const char*)LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_test3.xml" ) )
-        );
-        UnitTestUtil::CheckOutput( 
-            (const char*)LogicalPhysicalBend(L"apply_schema_test4_master.txt"), 
-            (const char*)LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_test4.xml" ) )
-        );
-        UnitTestUtil::CheckOutput( 
-            (const char*)LogicalPhysicalBend(L"apply_schema_test5_master.txt"), 
-            (const char*)LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_test5.xml" ) )
-        );
+        FdoStringP out1master = LogicalPhysicalBend(L"apply_schema_test1_master.txt");
+        FdoStringP out1       = LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_test1.xml" ) );
+        FdoStringP out2master = LogicalPhysicalBend(L"apply_schema_test2_master.txt");
+        FdoStringP out2       = LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_test2.xml" ) );
+        FdoStringP out3master = LogicalPhysicalBend(L"apply_schema_test3_master.txt");
+        FdoStringP out3       = LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_test3.xml" ) );
+        FdoStringP out4master = LogicalPhysicalBend(L"apply_schema_test4_master.txt");
+        FdoStringP out4       = LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_test4.xml" ) );
+        FdoStringP out5master = LogicalPhysicalBend(L"apply_schema_test5_master.txt");
+        FdoStringP out5       = LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_test5.xml" ) );
+        
+        UnitTestUtil::CheckOutput( (const char*) out1master,(const char*) out1 );
+        UnitTestUtil::CheckOutput( (const char*) out2master,(const char*) out2 );
+        UnitTestUtil::CheckOutput( (const char*) out3master,(const char*) out3 );
+        UnitTestUtil::CheckOutput( (const char*) out4master,(const char*) out4 );
+        UnitTestUtil::CheckOutput( (const char*) out5master,(const char*) out5 );
 #endif
 
 #ifdef RDBI_DEF_ORA
@@ -544,20 +540,18 @@ void FdoApplySchemaTest::TestOverrides ()
         // Compare output files with expected results.
 
 #ifndef RDBI_DEF_SSQL
+        FdoStringP ovMaster1 = LogicalPhysicalBend(L"apply_schema_overrides1_master.txt");
+        FdoStringP ov1       = LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_overrides1.xml" ) );
+        FdoStringP ovMaster2 = LogicalPhysicalBend(L"apply_schema_overrides2_master.txt");
+        FdoStringP ov2       = LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_overrides2.xml" ) );
+        FdoStringP ovMaster3 = LogicalPhysicalBend(L"apply_schema_overrides3_master.txt");
+        FdoStringP ov3       = LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_overrides3.xml" ) );
+
 	    // First do xml dumps of LogicalPhysical schema
-        // TODO: get this to work on MySQL and SQL Server
-        UnitTestUtil::CheckOutput( 
-            (const char*)LogicalPhysicalBend(L"apply_schema_overrides1_master.txt"), 
-            (const char*)LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_overrides1.xml" ) )
-        );
-        UnitTestUtil::CheckOutput( 
-            (const char*)LogicalPhysicalBend(L"apply_schema_overrides2_master.txt"), 
-            (const char*)LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_overrides2.xml" ) )
-        );
-        UnitTestUtil::CheckOutput( 
-            (const char*)LogicalPhysicalBend(L"apply_schema_overrides3_master.txt"), 
-            (const char*)LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_overrides3.xml" ) )
-        );
+        // TODO: get this to work on SQL Server
+        UnitTestUtil::CheckOutput( (const char*)ovMaster1, (const char*)ov1 );
+        UnitTestUtil::CheckOutput( (const char*)ovMaster2, (const char*)ov2 );
+        UnitTestUtil::CheckOutput( (const char*)ovMaster3, (const char*)ov3 );
 #endif
 
         // Next, compare described schema mappings.
@@ -645,20 +639,18 @@ void FdoApplySchemaTest::TestOverrides ()
         lp = mgr->RefLogicalPhysicalSchemas();
         lp->XMLSerialize( UnitTestUtil::GetOutputFileName( L"apply_schema_foreign3.xml" ) );
 
+        FdoStringP ovfMaster1 = LogicalPhysicalBend(L"apply_schema_foreign1_master.txt");
+        FdoStringP ovf1       = LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_foreign1.xml" ) );
+        FdoStringP ovfMaster2 = LogicalPhysicalBend(L"apply_schema_foreign2_master.txt");
+        FdoStringP ovf2       = LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_foreign2.xml" ) );
+        FdoStringP ovfMaster3 = LogicalPhysicalBend(L"apply_schema_foreign3_master.txt");
+        FdoStringP ovf3       = LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_foreign3.xml" ) );
+
 #ifndef RDBI_DEF_SSQL
-        UnitTestUtil::CheckOutput( 
-            (const char*)LogicalPhysicalBend(L"apply_schema_foreign1_master.txt"), 
-            (const char*)LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_foreign1.xml" ) )
-        );
-        UnitTestUtil::CheckOutput( 
-            (const char*)LogicalPhysicalBend(L"apply_schema_foreign2_master.txt"), 
-            (const char*)LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_foreign2.xml" ) )
-        );
+        UnitTestUtil::CheckOutput( (const char*)ovfMaster1, (const char*)ovf1 );
+        UnitTestUtil::CheckOutput( (const char*)ovfMaster2, (const char*)ovf2 );
 #endif
-        UnitTestUtil::CheckOutput( 
-            (const char*)LogicalPhysicalBend(L"apply_schema_foreign3_master.txt"), 
-            (const char*)LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_foreign3.xml" ) )
-        );
+        UnitTestUtil::CheckOutput( (const char*)ovfMaster3, (const char*)ovf3 );
 
         //TODO: handle master comparison for other providers
 #ifdef RDBI_DEF_ORA
@@ -2011,6 +2003,9 @@ void FdoApplySchemaTest::CreateElectricSchema( FdoIConnection* connection )
 
 	FdoPtr<FdoGeometricPropertyDefinition> pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"location and shape" );
 	pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve );
+
+    FdoGeometryType geoms[] = {FdoGeometryType_Point, FdoGeometryType_LineString, FdoGeometryType_CurveString};
+    pGeomProp->SetSpecificGeometryTypes( geoms, 3 );
 	pGeomProp->SetHasElevation(true);
     FdoPropertiesP(pDevClass->GetProperties())->Add( pGeomProp );
 
@@ -2245,6 +2240,8 @@ void FdoApplySchemaTest::CreateLandSchema( FdoFeatureSchemaCollection* pSchemas 
 
 	FdoPtr<FdoGeometricPropertyDefinition> pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry'", L"location's" );
 	pGeomProp->SetGeometryTypes( FdoGeometricType_Curve );
+    FdoGeometryType geoms[] = {FdoGeometryType_LineString, FdoGeometryType_MultiLineString};
+    pGeomProp->SetSpecificGeometryTypes( geoms, 2 );
     pGeomProp->SetHasMeasure(true);
 	FdoPropertiesP(pDrvClass->GetProperties())->Add( pGeomProp );
 	pDrvClass->SetGeometryProperty(pGeomProp);
@@ -2290,6 +2287,8 @@ void FdoApplySchemaTest::CreateLandSchema( FdoFeatureSchemaCollection* pSchemas 
     // Test adding geometric property that is not the geometry property.
 	pGeomProp = FdoGeometricPropertyDefinition::Create( L"Grading", L"secondary geometry" );
 	pGeomProp->SetGeometryTypes( FdoGeometricType_Surface  );
+    FdoGeometryType geoms2[] = {FdoGeometryType_CurvePolygon};
+    pGeomProp->SetSpecificGeometryTypes( geoms2, 1 );
 	FdoPropertiesP(pClass->GetProperties())->Add( pGeomProp );
 
 	FdoClassesP(pSchema->GetClasses())->Add( pClass );
@@ -2333,7 +2332,9 @@ void FdoApplySchemaTest::CreateLandSchema( FdoFeatureSchemaCollection* pSchemas 
 	FdoPropertiesP(pBldgClass->GetProperties())->Add( pProp  );
 
 	pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"" );
-	pGeomProp->SetGeometryTypes( FdoGeometricType_Point );
+	pGeomProp->SetGeometryTypes( FdoGeometricType_Curve );
+    FdoGeometryType geoms3[] = {FdoGeometryType_LineString, FdoGeometryType_MultiLineString, FdoGeometryType_CurveString};
+	pGeomProp->SetSpecificGeometryTypes( geoms3, 3 );
     pGeomProp->SetHasElevation(true);
     pGeomProp->SetHasMeasure(true);
 	FdoPropertiesP(pBldgClass->GetProperties())->Add( pGeomProp );

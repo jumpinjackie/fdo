@@ -548,7 +548,7 @@
 </mappingDefinition>
 </property>
 <property xsi:type="Geometric" name="Bounds" description="Bounding box for the feature"
- geometryTypes="4" hasElevation="False" hasMeasure="False"
+geometricTypes="4" geometryTypes="84224" hasElevation="False" hasMeasure="False"
  tableName="ACDB3DPOLYLINE" columnName="n/a" colCreator="False" fixedCol="False" >
 <Inherited baseClass="Feature" />
 </property>
@@ -773,7 +773,7 @@
 </mappingDefinition>
 </property>
 <property xsi:type="Geometric" name="Bounds" description="Bounding box for the feature"
- geometryTypes="4" hasElevation="False" hasMeasure="False"
+geometricTypes="4" geometryTypes="84224" hasElevation="False" hasMeasure="False"
  tableName="ACDBENTITY" columnName="n/a" colCreator="False" fixedCol="False" >
 <Inherited baseClass="Feature" />
 </property>
@@ -1692,7 +1692,7 @@
 </mappingDefinition>
 </property>
 <property xsi:type="Geometric" name="Bounds" description="Bounding box for the feature"
- geometryTypes="4" hasElevation="False" hasMeasure="False"
+geometricTypes="4" geometryTypes="84224" hasElevation="False" hasMeasure="False"
  tableName="ACDBHATCH" columnName="n/a" colCreator="False" fixedCol="False" >
 <Inherited baseClass="Feature" />
 </property>
@@ -2803,7 +2803,7 @@
 </column>
 </property>
 <property xsi:type="Geometric" name="Geometry" description="location and shape"
- geometryTypes="3" hasElevation="True" hasMeasure="False"
+geometricTypes="3" geometryTypes="8384" hasElevation="True" hasMeasure="False"
  tableName="CONDUCTOR" columnName="GEOMETRY" colCreator="True" fixedCol="False" >
 <Inherited baseClass="ElectricDevice" />
 <column name="GEOMETRY" description="" dataType="MDSYS.SDO_GEOMETRY" length="0" scale="0" nullable="True" >
@@ -3099,7 +3099,7 @@
 </mappingDefinition>
 </property>
 <property xsi:type="Geometric" name="Bounds" description="Bounding box for the feature"
- geometryTypes="4" hasElevation="False" hasMeasure="False"
+geometricTypes="4" geometryTypes="84224" hasElevation="False" hasMeasure="False"
  tableName="CONDUCTOR" columnName="n/a" colCreator="False" fixedCol="False" >
 <Inherited baseClass="Feature" />
 </property>
@@ -3392,7 +3392,7 @@
 </column>
 </property>
 <property xsi:type="Geometric" name="Geometry" description="location and shape"
- geometryTypes="3" hasElevation="True" hasMeasure="False"
+geometricTypes="3" geometryTypes="8384" hasElevation="True" hasMeasure="False"
  tableName="ELECTRICDEVICE" columnName="GEOMETRY" colCreator="True" fixedCol="False" >
 <column name="GEOMETRY" description="" dataType="MDSYS.SDO_GEOMETRY" length="0" scale="0" nullable="True" >
 </column>
@@ -3667,7 +3667,7 @@
 </mappingDefinition>
 </property>
 <property xsi:type="Geometric" name="Bounds" description="Bounding box for the feature"
- geometryTypes="4" hasElevation="False" hasMeasure="False"
+geometricTypes="4" geometryTypes="84224" hasElevation="False" hasMeasure="False"
  tableName="ELECTRICDEVICE" columnName="n/a" colCreator="False" fixedCol="False" >
 <Inherited baseClass="Feature" />
 </property>
@@ -3898,7 +3898,7 @@
 </column>
 </property>
 <property xsi:type="Geometric" name="Geometry" description="location and shape"
- geometryTypes="3" hasElevation="True" hasMeasure="False"
+geometricTypes="3" geometryTypes="8384" hasElevation="True" hasMeasure="False"
  tableName="TRANSFORMER" columnName="GEOMETRY" colCreator="True" fixedCol="False" >
 <Inherited baseClass="ElectricDevice" />
 <column name="GEOMETRY" description="" dataType="MDSYS.SDO_GEOMETRY" length="0" scale="0" nullable="True" >
@@ -4232,7 +4232,7 @@
 </mappingDefinition>
 </property>
 <property xsi:type="Geometric" name="Bounds" description="Bounding box for the feature"
- geometryTypes="4" hasElevation="False" hasMeasure="False"
+geometricTypes="4" geometryTypes="84224" hasElevation="False" hasMeasure="False"
  tableName="TRANSFORMER" columnName="n/a" colCreator="False" fixedCol="False" >
 <Inherited baseClass="Feature" />
 </property>
@@ -4360,13 +4360,33 @@
 </SAD>
 </schema >
 <schema name="F_MetaClass" description="Special classes for FDO Feature metaclasses" >
-<class xsi:type="Class" name="Class" description="Non-feature metaclass"
+<class xsi:type="Class" name="Feature" description="Feature metaclass"
  baseClass="ClassDefinition" abstract="False"
- tableName=" " tblCreator="False" fixedTbl="True" >
+ tableName="F_FEATURE" tblCreator="False" fixedTbl="True" >
 <tableMapping>Concrete</tableMapping>
 <identityProperties>
+<property xsi:type="Data" name="ClassId" />
 </identityProperties>
 <properties>
+<property xsi:type="Geometric" name="Bounds" description="Bounding box for the feature"
+geometricTypes="4" geometryTypes="84224" hasElevation="False" hasMeasure="False"
+ tableName="" columnName="n/a" colCreator="False" fixedCol="False" >
+</property>
+<property xsi:type="Data" name="ClassId" description="Class id number (uniquely identifies a class)"
+ dataType="int64" length="0" precision="0" scale="0"
+ readOnly="True" featId="False" system="True" nullable="False" autogenerated="True" defaultValue=""
+ tableName="F_FEATURE" columnName="CLASSID" colCreator="False" fixedCol="True"  >
+</property>
+<property xsi:type="Data" name="FeatId" description="Feature id number (uniquely identifies a feature)"
+ dataType="int64" length="0" precision="0" scale="0"
+ readOnly="True" featId="True" system="True" nullable="False" autogenerated="True" defaultValue=""
+ tableName="F_FEATURE" columnName="FEATID" colCreator="False" fixedCol="True"  >
+</property>
+<property xsi:type="Data" name="RevisionNumber" description="Edit count for supporting optimistic locking.  This value is incremented everytime the object is updated."
+ dataType="double" length="0" precision="0" scale="0"
+ readOnly="True" featId="False" system="True" nullable="False" autogenerated="True" defaultValue=""
+ tableName="F_FEATURE" columnName="REVISIONNUMBER" colCreator="False" fixedCol="True"  >
+</property>
 <property xsi:type="Data" name="ClassName" description="FDO base property: object class name"
  dataType="string" length="30" precision="0" scale="0"
  readOnly="True" featId="False" system="True" nullable="False" autogenerated="False" defaultValue=""
@@ -4450,33 +4470,13 @@
 </table>
 </tables>
 </class>
-<class xsi:type="Class" name="Feature" description="Feature metaclass"
+<class xsi:type="Class" name="Class" description="Non-feature metaclass"
  baseClass="ClassDefinition" abstract="False"
- tableName="F_FEATURE" tblCreator="False" fixedTbl="True" >
+ tableName=" " tblCreator="False" fixedTbl="True" >
 <tableMapping>Concrete</tableMapping>
 <identityProperties>
-<property xsi:type="Data" name="ClassId" />
 </identityProperties>
 <properties>
-<property xsi:type="Geometric" name="Bounds" description="Bounding box for the feature"
- geometryTypes="4" hasElevation="False" hasMeasure="False"
- tableName="" columnName="n/a" colCreator="False" fixedCol="False" >
-</property>
-<property xsi:type="Data" name="ClassId" description="Class id number (uniquely identifies a class)"
- dataType="int64" length="0" precision="0" scale="0"
- readOnly="True" featId="False" system="True" nullable="False" autogenerated="True" defaultValue=""
- tableName="F_FEATURE" columnName="CLASSID" colCreator="False" fixedCol="True"  >
-</property>
-<property xsi:type="Data" name="FeatId" description="Feature id number (uniquely identifies a feature)"
- dataType="int64" length="0" precision="0" scale="0"
- readOnly="True" featId="True" system="True" nullable="False" autogenerated="True" defaultValue=""
- tableName="F_FEATURE" columnName="FEATID" colCreator="False" fixedCol="True"  >
-</property>
-<property xsi:type="Data" name="RevisionNumber" description="Edit count for supporting optimistic locking.  This value is incremented everytime the object is updated."
- dataType="double" length="0" precision="0" scale="0"
- readOnly="True" featId="False" system="True" nullable="False" autogenerated="True" defaultValue=""
- tableName="F_FEATURE" columnName="REVISIONNUMBER" colCreator="False" fixedCol="True"  >
-</property>
 <property xsi:type="Data" name="ClassName" description="FDO base property: object class name"
  dataType="string" length="30" precision="0" scale="0"
  readOnly="True" featId="False" system="True" nullable="False" autogenerated="False" defaultValue=""
@@ -4546,7 +4546,7 @@
 </column>
 </property>
 <property xsi:type="Geometric" name="Geometry" description=""
- geometryTypes="1" hasElevation="True" hasMeasure="True"
+geometricTypes="2" geometryTypes="9344" hasElevation="True" hasMeasure="True"
  tableName="A1_8_SCHOOL" columnName="GEOMETRY" colCreator="True" fixedCol="False" >
 <Inherited baseClass="Build'g" />
 <column name="GEOMETRY" description="" dataType="MDSYS.SDO_GEOMETRY" length="0" scale="0" nullable="True" >
@@ -4569,7 +4569,7 @@
 </column>
 </property>
 <property xsi:type="Geometric" name="Bounds" description="Bounding box for the feature"
- geometryTypes="4" hasElevation="False" hasMeasure="False"
+geometricTypes="4" geometryTypes="84224" hasElevation="False" hasMeasure="False"
  tableName="A1_8_SCHOOL" columnName="n/a" colCreator="False" fixedCol="False" >
 <Inherited baseClass="Feature" />
 </property>
@@ -4672,7 +4672,7 @@
 </column>
 </property>
 <property xsi:type="Geometric" name="Geometry" description=""
- geometryTypes="1" hasElevation="True" hasMeasure="True"
+geometricTypes="2" geometryTypes="9344" hasElevation="True" hasMeasure="True"
  tableName="BUILD_G" columnName="GEOMETRY" colCreator="True" fixedCol="False" >
 <column name="GEOMETRY" description="" dataType="MDSYS.SDO_GEOMETRY" length="0" scale="0" nullable="True" >
 </column>
@@ -4693,7 +4693,7 @@
 </column>
 </property>
 <property xsi:type="Geometric" name="Bounds" description="Bounding box for the feature"
- geometryTypes="4" hasElevation="False" hasMeasure="False"
+geometricTypes="4" geometryTypes="84224" hasElevation="False" hasMeasure="False"
  tableName="BUILD_G" columnName="n/a" colCreator="False" fixedCol="False" >
 <Inherited baseClass="Feature" />
 </property>
@@ -4915,7 +4915,7 @@
 </mappingDefinition>
 </property>
 <property xsi:type="Geometric" name="Bounds" description="Bounding box for the feature"
- geometryTypes="4" hasElevation="False" hasMeasure="False"
+geometricTypes="4" geometryTypes="84224" hasElevation="False" hasMeasure="False"
  tableName="COGO_POINT" columnName="n/a" colCreator="False" fixedCol="False" >
 <Inherited baseClass="Feature" />
 </property>
@@ -5002,13 +5002,13 @@
 </column>
 </property>
 <property xsi:type="Geometric" name="Geometry'" description="location's"
- geometryTypes="2" hasElevation="False" hasMeasure="True"
+geometricTypes="2" geometryTypes="1152" hasElevation="False" hasMeasure="True"
  tableName="DRIVEWAY" columnName="GEOMETRY_" colCreator="True" fixedCol="False" >
 <column name="GEOMETRY_" description="" dataType="MDSYS.SDO_GEOMETRY" length="0" scale="0" nullable="True" >
 </column>
 </property>
 <property xsi:type="Geometric" name="LabelPoint" description="secondary geometry"
- geometryTypes="1" hasElevation="False" hasMeasure="False"
+geometricTypes="1" geometryTypes="576" hasElevation="False" hasMeasure="False"
  tableName="DRIVEWAY" columnName="LABELPOINT" colCreator="True" fixedCol="False" >
 <column name="LABELPOINT" description="" dataType="MDSYS.SDO_GEOMETRY" length="0" scale="0" nullable="True" >
 </column>
@@ -5029,7 +5029,7 @@
 </column>
 </property>
 <property xsi:type="Geometric" name="Bounds" description="Bounding box for the feature"
- geometryTypes="4" hasElevation="False" hasMeasure="False"
+geometricTypes="4" geometryTypes="84224" hasElevation="False" hasMeasure="False"
  tableName="DRIVEWAY" columnName="n/a" colCreator="False" fixedCol="False" >
 <Inherited baseClass="Feature" />
 </property>
@@ -5113,7 +5113,7 @@
 </column>
 </property>
 <property xsi:type="Geometric" name="Grading" description="secondary geometry"
- geometryTypes="4" hasElevation="False" hasMeasure="False"
+geometricTypes="4" geometryTypes="16384" hasElevation="False" hasMeasure="False"
  tableName="PARCEL" columnName="GRADING" colCreator="True" fixedCol="False" >
 <column name="GRADING" description="" dataType="MDSYS.SDO_GEOMETRY" length="0" scale="0" nullable="True" >
 </column>
@@ -5261,7 +5261,7 @@
 </mappingDefinition>
 </property>
 <property xsi:type="Geometric" name="Bounds" description="Bounding box for the feature"
- geometryTypes="4" hasElevation="False" hasMeasure="False"
+geometricTypes="4" geometryTypes="84224" hasElevation="False" hasMeasure="False"
  tableName="PARCEL" columnName="n/a" colCreator="False" fixedCol="False" >
 <Inherited baseClass="Feature" />
 </property>
@@ -5424,7 +5424,7 @@
 </column>
 </property>
 <property xsi:type="Geometric" name="Bounds" description="Bounding box for the feature"
- geometryTypes="4" hasElevation="False" hasMeasure="False"
+geometricTypes="4" geometryTypes="84224" hasElevation="False" hasMeasure="False"
  tableName="ZONING" columnName="n/a" colCreator="False" fixedCol="False" >
 <Inherited baseClass="Feature" />
 </property>

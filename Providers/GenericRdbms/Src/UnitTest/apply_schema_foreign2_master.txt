@@ -100,7 +100,7 @@
 </identityProperties>
 <properties>
 <property xsi:type="Geometric" name="Bounds" description="Bounding box for the feature"
- geometryTypes="4" hasElevation="False" hasMeasure="False"
+geometricTypes="4" geometryTypes="84224" hasElevation="False" hasMeasure="False"
  tableName="" columnName="n/a" colCreator="False" fixedCol="False" >
 </property>
 <property xsi:type="Data" name="ClassId" description="Class id number (uniquely identifies a class)"
@@ -173,7 +173,7 @@
 <Inherited baseClass="Feature" />
 </property>
 <property xsi:type="Geometric" name="Bounds" description="Bounding box for the feature"
- geometryTypes="4" hasElevation="False" hasMeasure="False"
+geometricTypes="4" geometryTypes="84224" hasElevation="False" hasMeasure="False"
  tableName="ONEFOREIGN" columnName="n/a" colCreator="False" fixedCol="False" >
 <Inherited baseClass="Feature" />
 </property>
@@ -277,7 +277,7 @@
 </column>
 </property>
 <property xsi:type="Geometric" name="GeomA" description="a geometry property"
- geometryTypes="15" hasElevation="False" hasMeasure="False"
+geometricTypes="7" geometryTypes="126912" hasElevation="False" hasMeasure="False"
  tableName="OVCLASSC111" columnName="OV_GEOMCOL_A" colCreator="True" fixedCol="True" >
 <Inherited baseClass="OvClassA" />
 <column name="OV_GEOMCOL_A" description="" dataType="MDSYS.SDO_GEOMETRY" length="0" scale="0" nullable="True" >
@@ -1177,7 +1177,7 @@
 </column>
 </property>
 <property xsi:type="Geometric" name="Bounds" description="Bounding box for the feature"
- geometryTypes="4" hasElevation="False" hasMeasure="False"
+geometricTypes="4" geometryTypes="84224" hasElevation="False" hasMeasure="False"
  tableName="OVCLASSC111" columnName="n/a" colCreator="False" fixedCol="False" >
 <Inherited baseClass="Feature" />
 </property>
@@ -1374,14 +1374,14 @@
 </column>
 </property>
 <property xsi:type="Geometric" name="GeomA" description="a geometry property"
- geometryTypes="15" hasElevation="False" hasMeasure="False"
+geometricTypes="7" geometryTypes="126912" hasElevation="False" hasMeasure="False"
  tableName="OVCLASSH1" columnName="OV_GEOMCOL_A" colCreator="True" fixedCol="True" >
 <Inherited baseClass="OvClassA" />
 <column name="OV_GEOMCOL_A" description="" dataType="MDSYS.SDO_GEOMETRY" length="0" scale="0" nullable="True" >
 </column>
 </property>
 <property xsi:type="Geometric" name="GeomF" description="a secondary geometric property"
- geometryTypes="15" hasElevation="False" hasMeasure="False"
+geometricTypes="7" geometryTypes="126912" hasElevation="False" hasMeasure="False"
  tableName="OVCLASSH1" columnName="OV_GEOMCOL_F" colCreator="True" fixedCol="True" >
 <Inherited baseClass="OvClassF" />
 <column name="OV_GEOMCOL_F" description="" dataType="MDSYS.SDO_GEOMETRY" length="0" scale="0" nullable="True" >
@@ -2314,7 +2314,7 @@
 </mappingDefinition>
 </property>
 <property xsi:type="Geometric" name="Bounds" description="Bounding box for the feature"
- geometryTypes="4" hasElevation="False" hasMeasure="False"
+geometricTypes="4" geometryTypes="84224" hasElevation="False" hasMeasure="False"
  tableName="OVCLASSH1" columnName="n/a" colCreator="False" fixedCol="False" >
 <Inherited baseClass="Feature" />
 </property>
@@ -2449,7 +2449,7 @@
 </column>
 </property>
 <property xsi:type="Geometric" name="Floor" description="location and shape"
- geometryTypes="3" hasElevation="True" hasMeasure="False"
+geometricTypes="3" geometryTypes="42688" hasElevation="True" hasMeasure="False"
  tableName="STORAGEB" columnName="FLOOR" colCreator="True" fixedCol="False" >
 <Inherited baseClass="Storage" />
 <column name="FLOOR" description="" dataType="MDSYS.SDO_GEOMETRY" length="0" scale="0" nullable="True" >
@@ -2747,7 +2747,7 @@
 </mappingDefinition>
 </property>
 <property xsi:type="Geometric" name="Bounds" description="Bounding box for the feature"
- geometryTypes="4" hasElevation="False" hasMeasure="False"
+geometricTypes="4" geometryTypes="84224" hasElevation="False" hasMeasure="False"
  tableName="STORAGEB" columnName="n/a" colCreator="False" fixedCol="False" >
 <Inherited baseClass="Feature" />
 </property>
@@ -2885,7 +2885,7 @@
 </column>
 </property>
 <property xsi:type="Geometric" name="GeomA" description="a geometry property"
- geometryTypes="15" hasElevation="False" hasMeasure="False"
+geometricTypes="7" geometryTypes="126912" hasElevation="False" hasMeasure="False"
  tableName="OV_TABLE_C1" columnName="OV_GEOMCOL_A" colCreator="False" fixedCol="True" >
 <Inherited baseClass="OvClassA" />
 <column name="OV_GEOMCOL_A" description="" dataType="MDSYS.SDO_GEOMETRY" length="0" scale="0" nullable="True" >
@@ -3149,7 +3149,7 @@
 <Inherited baseClass="Feature" />
 </property>
 <property xsi:type="Geometric" name="Bounds" description="Bounding box for the feature"
- geometryTypes="4" hasElevation="False" hasMeasure="False"
+geometricTypes="4" geometryTypes="84224" hasElevation="False" hasMeasure="False"
  tableName="OV_TABLE_C1" columnName="n/a" colCreator="False" fixedCol="False" >
 <Inherited baseClass="Feature" />
 </property>
@@ -3273,7 +3273,7 @@
 </column>
 </property>
 <property xsi:type="Geometric" name="GeomA" description="a geometry property"
- geometryTypes="15" hasElevation="False" hasMeasure="False"
+geometricTypes="7" geometryTypes="126912" hasElevation="False" hasMeasure="False"
  tableName="OV_TABLE_C1" columnName="OV_GEOMCOL_A" colCreator="True" fixedCol="True" >
 <Inherited baseClass="OvClassA" />
 <column name="OV_GEOMCOL_A" description="" dataType="MDSYS.SDO_GEOMETRY" length="0" scale="0" nullable="True" >
@@ -3286,7 +3286,7 @@
 <Inherited baseClass="Feature" />
 </property>
 <property xsi:type="Geometric" name="Bounds" description="Bounding box for the feature"
- geometryTypes="4" hasElevation="False" hasMeasure="False"
+geometricTypes="4" geometryTypes="84224" hasElevation="False" hasMeasure="False"
  tableName="OV_TABLE_C1" columnName="n/a" colCreator="False" fixedCol="False" >
 <Inherited baseClass="Feature" />
 </property>
@@ -3398,7 +3398,7 @@
 </column>
 </property>
 <property xsi:type="Geometric" name="GeomA" description="a geometry property"
- geometryTypes="15" hasElevation="False" hasMeasure="False"
+geometricTypes="7" geometryTypes="126912" hasElevation="False" hasMeasure="False"
  tableName="OV_TABLE_C" columnName="OV_GEOMCOL_A" colCreator="True" fixedCol="True" >
 <Inherited baseClass="OvClassA" />
 <column name="OV_GEOMCOL_A" description="" dataType="MDSYS.SDO_GEOMETRY" length="0" scale="0" nullable="True" >
@@ -3411,7 +3411,7 @@
 <Inherited baseClass="Feature" />
 </property>
 <property xsi:type="Geometric" name="Bounds" description="Bounding box for the feature"
- geometryTypes="4" hasElevation="False" hasMeasure="False"
+geometricTypes="4" geometryTypes="84224" hasElevation="False" hasMeasure="False"
  tableName="OV_TABLE_C" columnName="n/a" colCreator="False" fixedCol="False" >
 <Inherited baseClass="Feature" />
 </property>
@@ -3508,7 +3508,7 @@
 </column>
 </property>
 <property xsi:type="Geometric" name="GeomA" description="a geometry property"
- geometryTypes="15" hasElevation="False" hasMeasure="False"
+geometricTypes="7" geometryTypes="126912" hasElevation="False" hasMeasure="False"
  tableName="OVCLASSB" columnName="OV_GEOMCOL_A" colCreator="True" fixedCol="True" >
 <Inherited baseClass="OvClassA" />
 <column name="OV_GEOMCOL_A" description="" dataType="MDSYS.SDO_GEOMETRY" length="0" scale="0" nullable="True" >
@@ -3521,7 +3521,7 @@
 <Inherited baseClass="Feature" />
 </property>
 <property xsi:type="Geometric" name="Bounds" description="Bounding box for the feature"
- geometryTypes="4" hasElevation="False" hasMeasure="False"
+geometricTypes="4" geometryTypes="84224" hasElevation="False" hasMeasure="False"
  tableName="OVCLASSB" columnName="n/a" colCreator="False" fixedCol="False" >
 <Inherited baseClass="Feature" />
 </property>
@@ -3593,7 +3593,7 @@
 </column>
 </property>
 <property xsi:type="Geometric" name="GeomA" description="a geometry property"
- geometryTypes="15" hasElevation="False" hasMeasure="False"
+geometricTypes="7" geometryTypes="126912" hasElevation="False" hasMeasure="False"
  tableName="OVCLASSA" columnName="OV_GEOMCOL_A" colCreator="True" fixedCol="True" >
 <column name="OV_GEOMCOL_A" description="" dataType="MDSYS.SDO_GEOMETRY" length="0" scale="0" nullable="True" >
 </column>
@@ -3605,7 +3605,7 @@
 <Inherited baseClass="Feature" />
 </property>
 <property xsi:type="Geometric" name="Bounds" description="Bounding box for the feature"
- geometryTypes="4" hasElevation="False" hasMeasure="False"
+geometricTypes="4" geometryTypes="84224" hasElevation="False" hasMeasure="False"
  tableName="OVCLASSA" columnName="n/a" colCreator="False" fixedCol="False" >
 <Inherited baseClass="Feature" />
 </property>
@@ -4279,14 +4279,14 @@
 </column>
 </property>
 <property xsi:type="Geometric" name="GeomA" description="a geometry property"
- geometryTypes="15" hasElevation="False" hasMeasure="False"
+geometricTypes="7" geometryTypes="126912" hasElevation="False" hasMeasure="False"
  tableName="OVCLASSH" columnName="OV_GEOMCOL_A" colCreator="True" fixedCol="True" >
 <Inherited baseClass="OvClassA" />
 <column name="OV_GEOMCOL_A" description="" dataType="MDSYS.SDO_GEOMETRY" length="0" scale="0" nullable="True" >
 </column>
 </property>
 <property xsi:type="Geometric" name="GeomF" description="a secondary geometric property"
- geometryTypes="15" hasElevation="False" hasMeasure="False"
+geometricTypes="7" geometryTypes="126912" hasElevation="False" hasMeasure="False"
  tableName="OVCLASSH" columnName="OV_GEOMCOL_F" colCreator="True" fixedCol="True" >
 <Inherited baseClass="OvClassF" />
 <column name="OV_GEOMCOL_F" description="" dataType="MDSYS.SDO_GEOMETRY" length="0" scale="0" nullable="True" >
@@ -5130,7 +5130,7 @@
 <Inherited baseClass="Feature" />
 </property>
 <property xsi:type="Geometric" name="Bounds" description="Bounding box for the feature"
- geometryTypes="4" hasElevation="False" hasMeasure="False"
+geometricTypes="4" geometryTypes="84224" hasElevation="False" hasMeasure="False"
  tableName="OVCLASSH" columnName="n/a" colCreator="False" fixedCol="False" >
 <Inherited baseClass="Feature" />
 </property>
@@ -5309,14 +5309,14 @@
 </column>
 </property>
 <property xsi:type="Geometric" name="GeomA" description="a geometry property"
- geometryTypes="15" hasElevation="False" hasMeasure="False"
+geometricTypes="7" geometryTypes="126912" hasElevation="False" hasMeasure="False"
  tableName="OVCLASSG" columnName="OV_GEOMCOL_A" colCreator="True" fixedCol="True" >
 <Inherited baseClass="OvClassA" />
 <column name="OV_GEOMCOL_A" description="" dataType="MDSYS.SDO_GEOMETRY" length="0" scale="0" nullable="True" >
 </column>
 </property>
 <property xsi:type="Geometric" name="GeomF" description="a secondary geometric property"
- geometryTypes="15" hasElevation="False" hasMeasure="False"
+geometricTypes="7" geometryTypes="126912" hasElevation="False" hasMeasure="False"
  tableName="OVCLASSG" columnName="OV_GEOMCOL_F" colCreator="True" fixedCol="True" >
 <Inherited baseClass="OvClassF" />
 <column name="OV_GEOMCOL_F" description="" dataType="MDSYS.SDO_GEOMETRY" length="0" scale="0" nullable="True" >
@@ -5329,7 +5329,7 @@
 <Inherited baseClass="Feature" />
 </property>
 <property xsi:type="Geometric" name="Bounds" description="Bounding box for the feature"
- geometryTypes="4" hasElevation="False" hasMeasure="False"
+geometricTypes="4" geometryTypes="84224" hasElevation="False" hasMeasure="False"
  tableName="OVCLASSG" columnName="n/a" colCreator="False" fixedCol="False" >
 <Inherited baseClass="Feature" />
 </property>
@@ -5466,14 +5466,14 @@
 </column>
 </property>
 <property xsi:type="Geometric" name="GeomA" description="a geometry property"
- geometryTypes="15" hasElevation="False" hasMeasure="False"
+geometricTypes="7" geometryTypes="126912" hasElevation="False" hasMeasure="False"
  tableName="OV_TABLE_C" columnName="OV_GEOMCOL_A" colCreator="False" fixedCol="True" >
 <Inherited baseClass="OvClassA" />
 <column name="OV_GEOMCOL_A" description="" dataType="MDSYS.SDO_GEOMETRY" length="0" scale="0" nullable="True" >
 </column>
 </property>
 <property xsi:type="Geometric" name="GeomF" description="a secondary geometric property"
- geometryTypes="15" hasElevation="False" hasMeasure="False"
+geometricTypes="7" geometryTypes="126912" hasElevation="False" hasMeasure="False"
  tableName="OV_TABLE_C" columnName="OV_GEOMCOL_F" colCreator="True" fixedCol="True" >
 <column name="OV_GEOMCOL_F" description="" dataType="MDSYS.SDO_GEOMETRY" length="0" scale="0" nullable="True" >
 </column>
@@ -5485,7 +5485,7 @@
 <Inherited baseClass="Feature" />
 </property>
 <property xsi:type="Geometric" name="Bounds" description="Bounding box for the feature"
- geometryTypes="4" hasElevation="False" hasMeasure="False"
+geometricTypes="4" geometryTypes="84224" hasElevation="False" hasMeasure="False"
  tableName="OV_TABLE_C" columnName="n/a" colCreator="False" fixedCol="False" >
 <Inherited baseClass="Feature" />
 </property>
@@ -5613,7 +5613,7 @@
 </column>
 </property>
 <property xsi:type="Geometric" name="GeomA" description="a geometry property"
- geometryTypes="15" hasElevation="False" hasMeasure="False"
+geometricTypes="7" geometryTypes="126912" hasElevation="False" hasMeasure="False"
  tableName="OV_TABLE_C" columnName="OV_GEOMCOL_A" colCreator="False" fixedCol="True" >
 <Inherited baseClass="OvClassA" />
 <column name="OV_GEOMCOL_A" description="" dataType="MDSYS.SDO_GEOMETRY" length="0" scale="0" nullable="True" >
@@ -5626,7 +5626,7 @@
 <Inherited baseClass="Feature" />
 </property>
 <property xsi:type="Geometric" name="Bounds" description="Bounding box for the feature"
- geometryTypes="4" hasElevation="False" hasMeasure="False"
+geometricTypes="4" geometryTypes="84224" hasElevation="False" hasMeasure="False"
  tableName="OV_TABLE_C" columnName="n/a" colCreator="False" fixedCol="False" >
 <Inherited baseClass="Feature" />
 </property>
@@ -5744,7 +5744,7 @@
 </column>
 </property>
 <property xsi:type="Geometric" name="GeomA" description="a geometry property"
- geometryTypes="15" hasElevation="False" hasMeasure="False"
+geometricTypes="7" geometryTypes="126912" hasElevation="False" hasMeasure="False"
  tableName="OV_TABLE_C" columnName="OV_GEOMCOL_A" colCreator="False" fixedCol="True" >
 <Inherited baseClass="OvClassA" />
 <column name="OV_GEOMCOL_A" description="" dataType="MDSYS.SDO_GEOMETRY" length="0" scale="0" nullable="True" >
@@ -5757,7 +5757,7 @@
 <Inherited baseClass="Feature" />
 </property>
 <property xsi:type="Geometric" name="Bounds" description="Bounding box for the feature"
- geometryTypes="4" hasElevation="False" hasMeasure="False"
+geometricTypes="4" geometryTypes="84224" hasElevation="False" hasMeasure="False"
  tableName="OV_TABLE_C" columnName="n/a" colCreator="False" fixedCol="False" >
 <Inherited baseClass="Feature" />
 </property>
@@ -5985,7 +5985,7 @@
 </column>
 </property>
 <property xsi:type="Geometric" name="Floor" description="location and shape"
- geometryTypes="3" hasElevation="True" hasMeasure="False"
+geometricTypes="3" geometryTypes="42688" hasElevation="True" hasMeasure="False"
  tableName="STORAGE" columnName="FLOOR" colCreator="True" fixedCol="False" >
 <column name="FLOOR" description="" dataType="MDSYS.SDO_GEOMETRY" length="0" scale="0" nullable="True" >
 </column>
@@ -6100,7 +6100,7 @@
 <Inherited baseClass="Feature" />
 </property>
 <property xsi:type="Geometric" name="Bounds" description="Bounding box for the feature"
- geometryTypes="4" hasElevation="False" hasMeasure="False"
+geometricTypes="4" geometryTypes="84224" hasElevation="False" hasMeasure="False"
  tableName="STORAGE" columnName="n/a" colCreator="False" fixedCol="False" >
 <Inherited baseClass="Feature" />
 </property>
@@ -6254,7 +6254,7 @@
 </column>
 </property>
 <property xsi:type="Geometric" name="GeomA" description="a geometry property"
- geometryTypes="15" hasElevation="False" hasMeasure="False"
+geometricTypes="7" geometryTypes="126912" hasElevation="False" hasMeasure="False"
  tableName="OV_TABLE_C" columnName="OV_GEOMCOL_A" colCreator="False" fixedCol="True" >
 <Inherited baseClass="OvClassA" />
 <column name="OV_GEOMCOL_A" description="" dataType="MDSYS.SDO_GEOMETRY" length="0" scale="0" nullable="True" >
@@ -6267,7 +6267,7 @@
 <Inherited baseClass="Feature" />
 </property>
 <property xsi:type="Geometric" name="Bounds" description="Bounding box for the feature"
- geometryTypes="4" hasElevation="False" hasMeasure="False"
+geometricTypes="4" geometryTypes="84224" hasElevation="False" hasMeasure="False"
  tableName="OV_TABLE_C" columnName="n/a" colCreator="False" fixedCol="False" >
 <Inherited baseClass="Feature" />
 </property>
@@ -6409,7 +6409,7 @@
 </column>
 </property>
 <property xsi:type="Geometric" name="GeomA" description="a geometry property"
- geometryTypes="15" hasElevation="False" hasMeasure="False"
+geometricTypes="7" geometryTypes="126912" hasElevation="False" hasMeasure="False"
  tableName="OVCLASSE11" columnName="OV_GEOMCOL_A" colCreator="True" fixedCol="True" >
 <Inherited baseClass="OvClassA" />
 <column name="OV_GEOMCOL_A" description="" dataType="MDSYS.SDO_GEOMETRY" length="0" scale="0" nullable="True" >
@@ -6422,7 +6422,7 @@
 <Inherited baseClass="Feature" />
 </property>
 <property xsi:type="Geometric" name="Bounds" description="Bounding box for the feature"
- geometryTypes="4" hasElevation="False" hasMeasure="False"
+geometricTypes="4" geometryTypes="84224" hasElevation="False" hasMeasure="False"
  tableName="OVCLASSE11" columnName="n/a" colCreator="False" fixedCol="False" >
 <Inherited baseClass="Feature" />
 </property>
@@ -6590,14 +6590,14 @@
 </column>
 </property>
 <property xsi:type="Geometric" name="GeomA" description="a geometry property"
- geometryTypes="15" hasElevation="False" hasMeasure="False"
+geometricTypes="7" geometryTypes="126912" hasElevation="False" hasMeasure="False"
  tableName="OV_TABLE_J" columnName="OV_GEOMCOL_A" colCreator="True" fixedCol="True" >
 <Inherited baseClass="OvClassA" />
 <column name="OV_GEOMCOL_A" description="" dataType="MDSYS.SDO_GEOMETRY" length="0" scale="0" nullable="True" >
 </column>
 </property>
 <property xsi:type="Geometric" name="GeomF" description="a secondary geometric property"
- geometryTypes="15" hasElevation="False" hasMeasure="False"
+geometricTypes="7" geometryTypes="126912" hasElevation="False" hasMeasure="False"
  tableName="OV_TABLE_J" columnName="OV_GEOMCOL_F" colCreator="True" fixedCol="True" >
 <Inherited baseClass="OvClassF" />
 <column name="OV_GEOMCOL_F" description="" dataType="MDSYS.SDO_GEOMETRY" length="0" scale="0" nullable="True" >
@@ -7480,7 +7480,7 @@
 </mappingDefinition>
 </property>
 <property xsi:type="Geometric" name="Bounds" description="Bounding box for the feature"
- geometryTypes="4" hasElevation="False" hasMeasure="False"
+geometricTypes="4" geometryTypes="84224" hasElevation="False" hasMeasure="False"
  tableName="OV_TABLE_J" columnName="n/a" colCreator="False" fixedCol="False" >
 <Inherited baseClass="Feature" />
 </property>
@@ -7600,7 +7600,7 @@
 </column>
 </property>
 <property xsi:type="Geometric" name="GeomK" description=""
- geometryTypes="15" hasElevation="False" hasMeasure="False"
+geometricTypes="7" geometryTypes="126912" hasElevation="False" hasMeasure="False"
  tableName="OVCLASSK" columnName="GEOMK" colCreator="True" fixedCol="True" >
 <column name="GEOMK" description="" dataType="MDSYS.SDO_GEOMETRY" length="0" scale="0" nullable="True" >
 </column>
@@ -7612,7 +7612,7 @@
 <Inherited baseClass="Feature" />
 </property>
 <property xsi:type="Geometric" name="Bounds" description="Bounding box for the feature"
- geometryTypes="4" hasElevation="False" hasMeasure="False"
+geometricTypes="4" geometryTypes="84224" hasElevation="False" hasMeasure="False"
  tableName="OVCLASSK" columnName="n/a" colCreator="False" fixedCol="False" >
 <Inherited baseClass="Feature" />
 </property>
