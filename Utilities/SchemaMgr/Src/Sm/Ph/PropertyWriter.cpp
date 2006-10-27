@@ -205,7 +205,12 @@ void FdoSmPhPropertyWriter::SetDataType( FdoStringP sValue )
 
 void FdoSmPhPropertyWriter::SetGeometryType( FdoStringP sValue )
 {
-	SetString(L"", L"geometrytype", sValue);
+    FdoSmPhFieldP pField = GetField( L"", L"geometrytype" );
+ 
+    if ( pField && pField->GetColumn() ) 
+        SetString(L"", L"geometrytype", sValue);
+    else
+     	SetString(L"", L"geometrytype", L"");
 }
 
 void FdoSmPhPropertyWriter::SetIdPosition( int iValue )

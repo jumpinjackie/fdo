@@ -324,3 +324,75 @@ FdoGeometryType FdoCommonGeometryUtil::MapHexCodeToGeometryType (
 
 }  //  MapHexCodeToGeometryType ()
 
+FdoInt32 FdoCommonGeometryUtil::GetGeometryTypes(FdoInt32 value)
+{
+    FdoInt32 currGeometricType;
+
+    // The following sets the corresponding geometry types.
+
+    FdoInt32 geometryTypes = 0x00000;
+
+    for (int i = 0; i < MAX_GEOMETRIC_TYPE_SIZE; i++)
+    {
+        currGeometricType = GetGeometricType(i);
+        if (currGeometricType != -1)
+        {
+            if ((value & currGeometricType) > 0)
+            {
+                switch (currGeometricType)
+                {
+                    case FdoGeometricType_Point:
+                        geometryTypes = geometryTypes | MapGeometryTypeToHexCode(FdoGeometryType_Point);
+                        geometryTypes = geometryTypes | MapGeometryTypeToHexCode(FdoGeometryType_MultiPoint);
+                        break;
+                    case FdoGeometricType_Curve:
+                        geometryTypes = geometryTypes | MapGeometryTypeToHexCode(FdoGeometryType_LineString);
+                        geometryTypes = geometryTypes | MapGeometryTypeToHexCode(FdoGeometryType_MultiLineString);
+                        geometryTypes = geometryTypes | MapGeometryTypeToHexCode(FdoGeometryType_CurveString);
+                        geometryTypes = geometryTypes | MapGeometryTypeToHexCode(FdoGeometryType_MultiCurveString);
+                        break;
+                    case FdoGeometricType_Surface:
+                        geometryTypes = geometryTypes | MapGeometryTypeToHexCode(FdoGeometryType_Polygon);
+                        geometryTypes = geometryTypes | MapGeometryTypeToHexCode(FdoGeometryType_MultiPolygon);
+                        geometryTypes = geometryTypes | MapGeometryTypeToHexCode(FdoGeometryType_CurvePolygon);
+                        geometryTypes = geometryTypes | MapGeometryTypeToHexCode(FdoGeometryType_MultiCurvePolygon);
+                        break;
+                }
+            }
+        }
+    }
+
+	return geometryTypes;
+}
+
+void FdoCommonGeometryUtil::GeometryTypesToArray( FdoInt32 hexType, FdoGeometryType* gTypes, FdoInt32& typeCount )
+{
+    FdoInt32 currTypeHexCode;
+
+    // Based on the current geometry type value fill the corresponding vector with the
+    // selected geometry types.
+    typeCount = 0;
+    for (int i = 0; i < MAX_GEOMETRY_TYPE_SIZE; i++)
+    {
+        currTypeHexCode = MapGeometryTypeToHexCode(i);
+        if ((hexType & currTypeHexCode) > 0)
+            gTypes[typeCount++] = MapHexCodeToGeometryType(currTypeHexCode);
+    }
+}
+
+FdoInt32 FdoCommonGeometryUtil::GetGeometricType(int pos)
+{
+    switch (pos) 
+    {
+        case 0:  return FdoGeometricType_Point;   break;
+        case 1:  return FdoGeometricType_Curve;   break;
+        case 2:  return FdoGeometricType_Surface; break;
+        case 3:  return FdoGeometricType_Solid;   break;
+        default: return -1;                       break;
+    }
+}
+
+FdoInt32 FdoCommonGeometryUtil::GetNoneGeometryTypesCode()
+{
+	return FdoCommonGeometryTypeHexCode_None;
+}
