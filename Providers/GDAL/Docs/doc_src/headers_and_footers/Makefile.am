@@ -17,9 +17,4 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = doc_src
-
-DIST_SUBDIRS = doc_src
-
-EXTRA_DIST = XmlSchema/FdoGrfpConfig.xsd XmlSchema/FdoGrfpOverride.xsd XmlSchema/GrfpConfigExample.xml
-
+EXTRA_DIST = custom.css footer.html header.html

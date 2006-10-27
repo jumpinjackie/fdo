@@ -17,9 +17,8 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = doc_src
+SUBDIRS = group_and_page_definitions headers_and_footers
 
-DIST_SUBDIRS = doc_src
+DIST_SUBDIRS = group_and_page_definitions headers_and_footers
 
-EXTRA_DIST = XmlSchema/FdoGrfpConfig.xsd XmlSchema/FdoGrfpOverride.xsd XmlSchema/GrfpConfigExample.xml
-
+EXTRA_DIST = Doxyfile_GDAL
