@@ -67,7 +67,10 @@ bool FdoRfpRasterCapabilities::SupportsDataModel(FdoRasterDataModel* model)
 
         
       case FdoRasterDataModelType_Palette:
-        return false; // for now this mode is not supported.
+        if( model->GetDataType() != FdoRasterDataType_UnsignedInteger )
+            return false;
+        bands = 1;
+        break;
 
       case FdoRasterDataModelType_Gray:
       case FdoRasterDataModelType_Data:
