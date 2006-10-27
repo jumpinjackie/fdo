@@ -194,7 +194,7 @@ void WmsTestSelect::testServer1 ()
     }
     catch (FdoException* e)
     {
-        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
+        fail(e);
     }
 
 #endif //WIN32
@@ -255,7 +255,7 @@ void WmsTestSelect::testNestedClip ()
     }
     catch (FdoException* e)
     {
-        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
+        fail(e);
     }
 }
 
@@ -287,7 +287,7 @@ void WmsTestSelect::testHttpBasicAuthentification ()
 	}
 	catch(FdoException* ex)
 	{
-		CPPUNIT_FAIL ((const char*)FdoStringP(ex->GetExceptionMessage ()));
+        fail(ex);
 	}
 }
 
@@ -415,7 +415,7 @@ void WmsTestSelect::testServer2 ()
     }
     catch (FdoException* e)
     {
-        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
+        fail(e);
     }
 }
 
@@ -465,7 +465,7 @@ void WmsTestSelect::testResample ()
     }
     catch (FdoException* e)
     {
-        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
+        fail(e);
     }
 }
 
@@ -511,7 +511,7 @@ void WmsTestSelect::testClip ()
     }
     catch (FdoException* e)
     {
-        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
+        fail(e);
     }
 }
 
@@ -538,7 +538,7 @@ void WmsTestSelect::testDefaultHeight()
     }
     catch (FdoException* e)
     {
-        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
+        fail(e);
     }
 }
 
@@ -584,7 +584,7 @@ void WmsTestSelect::testNASAServer ()
 	}
 	catch(FdoException* ex)
 	{
-		CPPUNIT_FAIL ((const char*)FdoStringP(ex->GetExceptionMessage ()));
+        fail(ex);
 	}
 }
 
@@ -627,7 +627,7 @@ void WmsTestSelect::testNASAServer2 ()
 	}
 	catch(FdoException* ex)
 	{
-		CPPUNIT_FAIL ((const char*)FdoStringP(ex->GetExceptionMessage ()));
+        fail(ex);
 	}
 }
 
@@ -680,7 +680,7 @@ void WmsTestSelect::testIntegraphWorld ()
     }
     catch(FdoException* ex)
     {
-	    CPPUNIT_FAIL ((const char*)FdoStringP(ex->GetExceptionMessage ()));
+        fail(ex);
     }
 }
 
@@ -772,7 +772,7 @@ void WmsTestSelect::testCubeServer ()
     }
     catch(FdoException* ex)
     {
-        CPPUNIT_FAIL((const char*)FdoStringP(ex->GetExceptionMessage()));
+        fail(ex);
     }
 }
 
@@ -836,7 +836,7 @@ void WmsTestSelect::testMultiLayers ()
 	}
 	catch(FdoException* ex)
 	{
-        CPPUNIT_FAIL((const char*)FdoStringP(ex->GetExceptionMessage()));
+        fail(ex);
 	}
 }
 
@@ -850,7 +850,7 @@ void WmsTestSelect::testTerraService ()
     }
     catch (FdoException* e)
     {
-        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
+        fail(e);
     }
 }
 
@@ -859,11 +859,11 @@ void WmsTestSelect::testDefect786029()
 {
     try
     {
-        ExecuteSelectServer(L"http://maps.york.ca/wmsconnector/com.esri.wms.Esrimap/WMS_RegOrtho?;DefaultImageHeight=1024", L"Roads"); // or "Ortho"
+        ExecuteSelectServer(L"http://maps.york.ca/wmsconnector/com.esri.wms.Esrimap/WMS_RegOrtho?;DefaultImageHeight=1024", L"Ortho"); // or "Roads"
     }
     catch (FdoException* e)
     {
-        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
+        fail(e);
     }
 }
 
@@ -876,7 +876,7 @@ void WmsTestSelect::testEusoils()
     }
     catch (FdoException* e)
     {
-        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
+        fail(e);
     }
 }
 
@@ -889,7 +889,7 @@ void WmsTestSelect::testEusoilsPesera()
     }
     catch (FdoException* e)
     {
-        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
+        fail(e);
     }
 }
 
@@ -902,7 +902,7 @@ void WmsTestSelect::testEusoilsMeusis()
     }
     catch (FdoException* e)
     {
-        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
+        fail(e);
     }
 }
 
@@ -1201,8 +1201,7 @@ void WmsTestSelect::testSelectSpatialExtents()
     }
 	catch( FdoException *ex )
     {
-        CPPUNIT_FAIL((const char*)(FdoStringP(ex->GetExceptionMessage())));
-        ex->Release();
+        fail(ex);
     }
 }
 
@@ -1227,12 +1226,7 @@ void WmsTestSelect::testTerraServiceThumbnail ()
         raster->SetImageXSize(16);
         raster->SetImageYSize(16);
 
-        FdoPtr<FdoIStreamReader> stream = raster->GetStreamReader ();
-        FdoIStreamReader* streamReader = raster->GetStreamReader ();
-        FdoPtr<FdoIStreamReaderTmpl<FdoByte> > byteStreamReader = static_cast<FdoIStreamReaderTmpl<FdoByte>*> (streamReader);
-
-        CPPUNIT_ASSERT (streamReader != NULL);
-        CPPUNIT_ASSERT (byteStreamReader != NULL);
+        FdoPtr<FdoIStreamReaderTmpl<FdoByte> > byteStreamReader = static_cast<FdoIStreamReaderTmpl<FdoByte>*> (raster->GetStreamReader ());
 
         FdoByte buff[4096];
         FdoInt64 cntTotal = 0;
@@ -1251,6 +1245,135 @@ void WmsTestSelect::testTerraServiceThumbnail ()
     }
     catch (FdoException* e)
     {
-        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
+        fail(e);
+    }
+}
+
+//http://142.176.62.108/cgi-bin/mapserv.exe?map=D:\ms441oci\maps\NS_TOPO_1000.map
+void WmsTestSelect::testNS_TOPO_1000 ()
+{
+    try
+    {
+        FdoPtr<FdoIConnection> connection = WmsTests::GetConnection ();
+
+        FdoStringP sServer = FdoStringP::Format(L"FeatureServer=http://142.176.62.108/cgi-bin/mapserv.exe?map=D:\\ms441oci\\maps\\NS_TOPO_1000.map");
+        connection->SetConnectionString((FdoString*)sServer);
+        FdoConnectionState state = connection->Open ();
+
+        FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*> (connection->CreateCommand (FdoCommandType_Select));
+        cmdSelect->SetFeatureClassName (L"1K_BL_LINE");
+        FdoPtr<FdoIFeatureReader> featReader = cmdSelect->Execute ();
+        CPPUNIT_ASSERT (featReader->ReadNext ());	    
+        FdoPtr<FdoIRaster> raster = featReader->GetRaster (L"Raster");
+
+        raster->SetImageXSize(1024);
+        raster->SetImageYSize(1024);
+
+        FdoPtr<FdoIStreamReaderTmpl<FdoByte> > byteStreamReader = static_cast<FdoIStreamReaderTmpl<FdoByte>*> (raster->GetStreamReader ());
+
+        FdoByte buff[4096];
+        FdoInt64 cntTotal = 0;
+        FdoInt32 cntRead = 0;
+        do
+        {
+            cntRead = byteStreamReader->ReadNext (buff, 0 , 4096);
+            cntTotal += cntRead;
+        }
+        while (cntRead);
+
+        CPPUNIT_ASSERT (cntTotal > 0);
+        CPPUNIT_ASSERT (!featReader->ReadNext ());
+
+        connection->Close ();
+    }
+    catch (FdoException* e)
+    {
+        fail(e);
+    }
+}
+
+//http://142.176.62.108/cgi-bin/mapserv.exe?map=D:\\ms441oci\\maps\\NS_CRS.map
+void WmsTestSelect::testNS_CRS ()
+{
+    try
+    {
+        FdoPtr<FdoIConnection> connection = WmsTests::GetConnection ();
+
+        FdoStringP sServer = FdoStringP::Format(L"FeatureServer=http://142.176.62.108/cgi-bin/mapserv.exe?map=D:\\ms441oci\\maps\\NS_CRS.map&");
+        connection->SetConnectionString((FdoString*)sServer);
+        FdoConnectionState state = connection->Open ();
+
+        FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*> (connection->CreateCommand (FdoCommandType_Select));
+        cmdSelect->SetFeatureClassName (L"NSHPN_TEXT");
+        FdoPtr<FdoIFeatureReader> featReader = cmdSelect->Execute ();
+        CPPUNIT_ASSERT (featReader->ReadNext ());	    
+        FdoPtr<FdoIRaster> raster = featReader->GetRaster (L"Raster");
+
+        raster->SetImageXSize(1024);
+        raster->SetImageYSize(1024);
+
+        FdoPtr<FdoIStreamReaderTmpl<FdoByte> > byteStreamReader = static_cast<FdoIStreamReaderTmpl<FdoByte>*> (raster->GetStreamReader ());
+
+        FdoByte buff[4096];
+        FdoInt64 cntTotal = 0;
+        FdoInt32 cntRead = 0;
+        do
+        {
+            cntRead = byteStreamReader->ReadNext (buff, 0 , 4096);
+            cntTotal += cntRead;
+        }
+        while (cntRead);
+
+        CPPUNIT_ASSERT (cntTotal > 0);
+        CPPUNIT_ASSERT (!featReader->ReadNext ());
+
+        connection->Close ();
+    }
+    catch (FdoException* e)
+    {
+        fail(e);
+    }
+}
+
+//http://www2.dmsolutions.ca/cgi-bin/mswms_gmap
+void WmsTestSelect::testDMSolutions ()
+{
+    try
+    {
+        FdoPtr<FdoIConnection> connection = WmsTests::GetConnection ();
+
+        FdoStringP sServer = FdoStringP::Format(L"FeatureServer=http://www2.dmsolutions.ca/cgi-bin/mswms_gmap");
+        connection->SetConnectionString((FdoString*)sServer);
+        FdoConnectionState state = connection->Open ();
+
+        FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*> (connection->CreateCommand (FdoCommandType_Select));
+        cmdSelect->SetFeatureClassName (L"drainage");
+        FdoPtr<FdoIFeatureReader> featReader = cmdSelect->Execute ();
+        CPPUNIT_ASSERT (featReader->ReadNext ());	    
+        FdoPtr<FdoIRaster> raster = featReader->GetRaster (L"Raster");
+
+        raster->SetImageXSize(1024);
+        raster->SetImageYSize(1024);
+
+        FdoPtr<FdoIStreamReaderTmpl<FdoByte> > byteStreamReader = static_cast<FdoIStreamReaderTmpl<FdoByte>*> (raster->GetStreamReader ());
+
+        FdoByte buff[4096];
+        FdoInt64 cntTotal = 0;
+        FdoInt32 cntRead = 0;
+        do
+        {
+            cntRead = byteStreamReader->ReadNext (buff, 0 , 4096);
+            cntTotal += cntRead;
+        }
+        while (cntRead);
+
+        CPPUNIT_ASSERT (cntTotal > 0);
+        CPPUNIT_ASSERT (!featReader->ReadNext ());
+
+        connection->Close ();
+    }
+    catch (FdoException* e)
+    {
+        fail(e);
     }
 }

@@ -641,7 +641,7 @@ void OverridesTest::TestNoDefaultDataModel()
     }
 	catch (FdoException* e) 
     {
-        fail (e);
+        fail(e);
 	}
 }
 
@@ -694,6 +694,6 @@ void OverridesTest::TestQualifiedName()
 	}
 	catch(FdoException* ex)
 	{
-        CPPUNIT_FAIL((const char*)FdoStringP(ex->GetExceptionMessage()));
+        fail(ex);
 	}
 }

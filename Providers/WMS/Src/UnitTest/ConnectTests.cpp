@@ -43,7 +43,7 @@ void ConnectTests::TestConnection1 ()
     }
     catch (FdoException* e)
     {
-        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
+        fail(e);
     }
 }
 
@@ -59,7 +59,7 @@ void ConnectTests::TestConnection2 ()
     }
     catch (FdoException* e)
     {
-        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
+        fail(e);
     }
 }
 
@@ -75,7 +75,7 @@ void ConnectTests::TestConnection3 ()
     }
     catch (FdoException* e)
     {
-        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
+        fail(e);
     }
 }
 
@@ -91,7 +91,7 @@ void ConnectTests::TestConnection4 ()
     }
     catch (FdoException* e)
     {
-        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
+        fail(e);
     }
 }
 
@@ -107,7 +107,7 @@ void ConnectTests::TestConnection5 ()
     }
     catch (FdoException* e)
     {
-        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
+        fail(e);
     }
 }
 
@@ -123,7 +123,7 @@ void ConnectTests::TestConnection6 ()
     }
     catch (FdoException* e)
     {
-        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
+        fail(e);
     }
 }
 
@@ -139,7 +139,7 @@ void ConnectTests::TestConnection7 ()
     }
     catch (FdoException* e)
     {
-        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
+        fail(e);
     }
 }
 
@@ -158,10 +158,7 @@ void ConnectTests::TestConnectionTimeout ()
     }
     catch (FdoException* e)
     {
-#ifdef _DEBUG
-        wprintf(L"Error: %ls\n", e->GetExceptionMessage());
-#endif
-        e->Release ();        
+        fail(e);
     }
 
     try
@@ -172,10 +169,7 @@ void ConnectTests::TestConnectionTimeout ()
     }
     catch (FdoException* e)
     {
-#ifdef _DEBUG
-        wprintf(L"Error: %ls\n", e->GetExceptionMessage());
-#endif
-        e->Release ();        
+        fail(e);
     }
 }
 

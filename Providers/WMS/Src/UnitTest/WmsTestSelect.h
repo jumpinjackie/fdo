@@ -29,14 +29,15 @@
 class WmsTestSelect : public WmsTests
 {
 	CPPUNIT_TEST_SUITE (WmsTestSelect);
+
 #ifdef _FDO_RUN_INTERNAL_TEST	
     CPPUNIT_TEST (testServer1);
 	CPPUNIT_TEST (testNestedClip);
     CPPUNIT_TEST (testGetBounds);
 	CPPUNIT_TEST (testHttpBasicAuthentification);
-
 #endif
-	CPPUNIT_TEST (testServer2);
+
+    CPPUNIT_TEST (testServer2);
 	CPPUNIT_TEST (testResample);
 	CPPUNIT_TEST (testClip);
 	CPPUNIT_TEST (testDefaultHeight);
@@ -52,6 +53,9 @@ class WmsTestSelect : public WmsTests
     CPPUNIT_TEST (testEusoilsMeusis);
     CPPUNIT_TEST (testSelectSpatialExtents);
     CPPUNIT_TEST (testTerraServiceThumbnail);
+    CPPUNIT_TEST (testNS_TOPO_1000);
+    CPPUNIT_TEST (testNS_CRS);
+    CPPUNIT_TEST (testDMSolutions);
 
 	CPPUNIT_TEST_SUITE_END ();
 
@@ -84,6 +88,9 @@ public:
     void testEusoilsMeusis();
     void testSelectSpatialExtents();
     void testTerraServiceThumbnail();
+    void testNS_TOPO_1000();
+    void testNS_CRS();
+    void testDMSolutions(); 
 };
 
 #endif//FDOWMSTESTSELECT_H

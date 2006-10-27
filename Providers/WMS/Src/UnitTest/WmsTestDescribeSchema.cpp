@@ -39,7 +39,7 @@ void WmsTestDescribeSchema::testServer1 ()
     }
     catch (FdoException* e)
     {
-        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
+        fail(e);
     }
 }
 
@@ -51,7 +51,7 @@ void WmsTestDescribeSchema::testInheritance1 ()
     }
     catch (FdoException* e)
     {
-        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
+        fail(e);
     }
 }
 
@@ -63,7 +63,7 @@ void WmsTestDescribeSchema::testServer2 ()
     }
     catch (FdoException* e)
     {
-        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
+        fail(e);
     }
 }
 
@@ -75,7 +75,7 @@ void WmsTestDescribeSchema::testServer3 ()
     }
     catch (FdoException* e)
     {
-        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
+        fail(e);
     }
 }
 
@@ -121,7 +121,7 @@ void WmsTestDescribeSchema::testServer4 ()
     }
     catch (FdoException* e)
     {
-        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
+        fail(e);
     }
 }
 
@@ -271,7 +271,7 @@ void WmsTestDescribeSchema::testSchemaMapping ()
     }
     catch(FdoException* ex)
     {
-        CPPUNIT_FAIL((const char*)FdoStringP(ex->GetExceptionMessage()));
+        fail(ex);
     }
 }
 

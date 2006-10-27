@@ -40,7 +40,7 @@ void WmsTestSpatialContext::testServer1 ()
 	}
     catch (FdoException* e)
     {
-        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
+        fail(e);
     }
 }
 
@@ -52,7 +52,7 @@ void WmsTestSpatialContext::testServer2 ()
 	}
     catch (FdoException* e)
     {
-        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
+        fail(e);
     }
 }
 

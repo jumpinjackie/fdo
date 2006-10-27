@@ -356,6 +356,6 @@ void CapabilityTest::TestCapabilities ()
     }
     catch (FdoException *ex)
     {
-        CPPUNIT_FAIL((const char*)FdoString(ex->GetExceptionMessage()));
+        WmsTests::fail(ex);
     }
 }
