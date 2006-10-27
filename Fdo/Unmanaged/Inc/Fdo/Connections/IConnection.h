@@ -237,6 +237,14 @@ public:
     /// Returns nothing
     /// 
     FDO_API virtual void SetConfiguration(FdoIoStream* configStream) = 0;
+
+    /// \brief
+    /// Forces the writes of any cached data to the targed datastore.
+    /// 
+    /// \return
+    /// Returns nothing
+    /// 
+    FDO_API virtual void Flush() = 0;
 };
 #endif
 
