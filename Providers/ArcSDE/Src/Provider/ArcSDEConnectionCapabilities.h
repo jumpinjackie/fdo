@@ -99,6 +99,10 @@ public:
     /// Returns true if the provider or datastore can support more than one user writing to a single datastore at
     /// one time.
     virtual bool SupportsMultiUserWrite();
+
+    /// Determines if the provider can support the flush function. Flush is used to write any outstanding data
+    /// to the datastore. This is mainly used by the file based providers to ensure that any cached data is writen to the file.
+    virtual bool SupportsFlush() { return false; }
 };
 
 #endif // ARCSDECONNECTIONCAPABILITIES_H

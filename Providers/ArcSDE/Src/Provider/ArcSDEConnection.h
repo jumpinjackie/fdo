@@ -255,7 +255,7 @@ public:
     void SetActiveVersion (LONG id);
     LONG GetActiveState ();
     void SetActiveState (LONG id);
-    void Flush (); // save current edit session
+    virtual void Flush (); // save current edit session
 
     // Spatial context support:
     FdoString* GetActiveSpatialContext(void);
