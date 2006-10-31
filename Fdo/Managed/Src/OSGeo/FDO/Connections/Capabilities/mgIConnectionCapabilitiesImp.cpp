@@ -128,3 +128,10 @@ System::Boolean NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IConnectionCapabil
 	EXCEPTION_HANDLER(rv = !!GetImpObj()->SupportsCSysWKTFromCSysName())
 	return rv;
 }
+
+System::Boolean NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IConnectionCapabilitiesImp::SupportsFlush()
+{
+	FdoBoolean rv;
+	EXCEPTION_HANDLER(rv = !!GetImpObj()->SupportsFlush())
+	return rv;
+}

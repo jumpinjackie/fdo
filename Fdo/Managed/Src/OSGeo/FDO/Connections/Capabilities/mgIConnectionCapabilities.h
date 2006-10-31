@@ -132,6 +132,15 @@ public:
     /// when creating a new spatial context.
     /// 
     System::Boolean SupportsCSysWKTFromCSysName();
+
+    /// \brief
+    /// Determines if the provider can support the flush function. Flush is used to write any outstanding data
+    /// to the datastore. This is mainly used by the file based providers to ensure that any cached data is writen to the file.
+    ///
+    /// \return
+    /// Returns true if the provider or datastore can support the flush function.
+    ///
+    System::Boolean SupportsFlush();
 };
 
 END_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES

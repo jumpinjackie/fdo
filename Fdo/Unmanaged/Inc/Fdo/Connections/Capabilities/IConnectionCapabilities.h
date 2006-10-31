@@ -147,6 +147,15 @@ public:
     /// one time.
     FDO_API virtual bool SupportsMultiUserWrite() = 0;
 
+    /// \brief
+    /// Determines if the provider can support the flush function. Flush is used to write any outstanding data
+    /// to the datastore. This is mainly used by the file based providers to ensure that any cached data is writen to the file.
+    ///
+    /// \return
+    /// Returns true if the provider or datastore can support the flush function.
+    ///
+    FDO_API virtual bool SupportsFlush() = 0;
+
 };
 #endif
 
