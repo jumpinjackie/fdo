@@ -58,7 +58,7 @@ public:
 
 	FdoOwsGeographicBoundingBoxCollection* GetSRSExtents ();
 
-    FdoBoolean CanSetName() { return false; }
+    FdoBoolean CanSetName() { return true; }
 
 
 	virtual void InitFromXml(FdoXmlSaxContext* pContext, FdoXmlAttributeCollection* attrs);

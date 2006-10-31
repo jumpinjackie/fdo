@@ -316,7 +316,8 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
         // 1. Remove the GML schemas which are useless for the end user
         // 2. Remove all the useless properties inherited from GML schema and XLink schema
         // 3. For those feature classes without any identity properties, make all non-null data properties as identity properties
-        // 4. For those object properties whose class definition only contains one or more geometry properties,
+        // 4. Update Spatial Context Association for geometry properties.
+        // 5. For those object properties whose class definition only contains one or more geometry properties,
         //    change the property type from object to geometry cause it's a customized geometry property and thus shouldn't
         //    be recognized as object property.
         FdoPtr<FdoPhysicalSchemaMappingCollection> mappings = mSchemas->GetXmlSchemaMappings();
@@ -360,13 +361,24 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
                         bNoIdentity = true;
                 }
 
-                // Prepare for implementation of #4
+                // Prepare for implementation of #5
                 FdoPtr<FdoXmlClassMapping> classMapping;
                 for (int k = classMappings->GetCount() - 1; k >= 0; k--) {
                     classMapping = classMappings->GetItem(k);
                     if (wcscmp(classDef->GetName(), classMapping->GetName()) == 0)
                         break;
                     classMapping = NULL;
+                }
+                // Prepare for implementation of #4
+                FdoPtr<FdoWfsFeatureTypeList> pFeatList = mServiceMetadata->GetFeatureTypeList();
+                FdoPtr<FdoWfsFeatureTypeCollection> pFeatColl = pFeatList->GetFeatureTypes();
+                FdoPtr<FdoWfsFeatureType> pFeat = pFeatColl->FindItem(classDef->GetName());
+                if (pFeat == NULL)
+                {
+                    FdoStringP NameFeat = schema->GetName();
+                    NameFeat += L":";
+                    NameFeat += classDef->GetName();
+                    pFeat = pFeatColl->FindItem(NameFeat);
                 }
 
                 FdoPtr<FdoPropertyDefinitionCollection> props = classDef->GetProperties();
@@ -403,8 +415,15 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
                             ids->Add(dataProp);
                         continue; // no need to do the left adjustments
                     }
+                    // Doing #4 
+                    if (prop->GetPropertyType() == FdoPropertyType_GeometricProperty && pFeat != NULL)
+                    {
+                         FdoGeometricPropertyDefinition* pPropGeom = static_cast<FdoGeometricPropertyDefinition*>(prop.p);
+                         if (pPropGeom != NULL && pPropGeom->GetSpatialContextAssociation() == NULL)
+                             pPropGeom->SetSpatialContextAssociation(pFeat->GetSRS());
+                    }
 
-                    // Doing #4
+                    // Doing #5
                     if (elements != NULL)
                     {
                         FdoPtr<FdoXmlElementMapping> element;
