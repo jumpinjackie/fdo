@@ -83,6 +83,10 @@ public:
     // one time.
     virtual bool SupportsMultiUserWrite();
 
+    /// Determines if the provider can support the flush function. Flush is used to write any outstanding data
+    /// to the datastore. This is mainly used by the file based providers to ensure that any cached data is writen to the file.
+    virtual bool SupportsFlush() { return false; }
+
 protected:
 	~FdoRfpConnectionCapabilities(void);
 	virtual void Dispose();

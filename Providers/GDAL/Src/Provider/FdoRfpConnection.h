@@ -189,6 +189,9 @@ public:
     /// <returns>Returns nothing.</returns> 
     virtual void SetConfiguration (FdoIoStream* configStream);
     
+    /// <summary>Forces the writes of any cached data to the targed datastore.</summary>
+    /// <returns>Returns nothing.</returns> 
+    virtual void Flush() {}
 //
 // Non-exposed public methods
 //
