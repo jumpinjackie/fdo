@@ -170,6 +170,14 @@ public: // FdoIConnection overrides
     /// <returns>Returns nothing</returns> 
     void SetConfiguration(FdoIoStream* configStream);
 
+    /// \brief
+    /// Forces the writes of any cached data to the targed datastore.
+    /// 
+    /// \return
+    /// Returns nothing
+    /// 
+    virtual void Flush() {}
+
 public: // FdoWfsConnection specific functions
 
 	FdoWfsDelegate* GetWfsDelegate ();
