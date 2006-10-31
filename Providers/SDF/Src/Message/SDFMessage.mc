@@ -481,3 +481,8 @@ SymbolicName=SDFPROVIDER_95_UNSUPPORTED_FUNCTION
 Language=English
 '%1$ls': The SDF Provider does not support this function.
 .
+MessageId=96
+SymbolicName=SDFPROVIDER_96_SCHEMA_NOT_SET
+Language=English
+Schema is not set - cannot set the class name.
+.

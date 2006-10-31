@@ -80,6 +80,9 @@ void SdfInsert::SetFeatureClassName(FdoIdentifier* value)
 	if( m_ClassName != NULL )
 	{
 		FdoFeatureSchema* schema = m_connection->GetSchema();
+        if (!schema)
+            throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_96_SCHEMA_NOT_SET)));
+
 		FdoPtr<FdoClassCollection> classes = schema->GetClasses();
 		m_ValidationFlag = SdfDataValidator::ValidationFlag( FdoPtr<FdoClassDefinition>(classes->GetItem(m_ClassName->GetName()) ) );
 	}
@@ -103,6 +106,8 @@ void SdfInsert::SetFeatureClassName(FdoString* value)
 	if( m_ClassName != NULL )
 	{
 		FdoFeatureSchema* schema = m_connection->GetSchema();
+        if (!schema)
+            throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_96_SCHEMA_NOT_SET)));
 		FdoPtr<FdoClassCollection> classes = schema->GetClasses();
 		m_ValidationFlag = SdfDataValidator::ValidationFlag( FdoPtr<FdoClassDefinition>(classes->GetItem(m_ClassName->GetName()) ) );
 	}
@@ -146,6 +151,19 @@ FdoBatchParameterValueCollection* SdfInsert::GetBatchParameterValues()
 // case of a batch insert.
 FdoIFeatureReader* SdfInsert::Execute()
 {
+    // verify connection
+    if (m_connection == NULL)
+        throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_39_NO_CONNECTION)));
+
+    // verify connection is open - this implicitly verifies the
+    // connection string is set and is valid
+    if (m_connection->GetConnectionState() != FdoConnectionState_Open)
+        throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_26_CONNECTION_CLOSED)));
+
+    bool readOnly = m_connection->GetReadOnly();
+    if (readOnly)
+		throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_4_CONNECTION_IS_READONLY)));
+
     FdoFeatureSchema* schema = m_connection->GetSchema();
 
     FdoPtr<FdoClassCollection> classes = schema->GetClasses();

@@ -225,8 +225,16 @@ void SdfCreateSpatialContext::SetUpdateExisting(const bool value)
 
 void SdfCreateSpatialContext::Execute()
 {
+    // verify connection
+    if (m_connection == NULL)
+        throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_39_NO_CONNECTION)));
+
 	if (m_connection->GetConnectionState() != FdoConnectionState_Open)
         throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_26_CONNECTION_CLOSED)));
+
+    bool readOnly = m_connection->GetReadOnly();
+    if (readOnly)
+		throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_4_CONNECTION_IS_READONLY)));
 
     BinaryWriter wrt(256);
 

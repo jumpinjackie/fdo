@@ -70,10 +70,18 @@ void SdfApplySchema::SetIgnoreStates( FdoBoolean ignoreStates )
 
 void SdfApplySchema::Execute()
 {
+    // verify connection
+    if (m_connection == NULL)
+        throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_39_NO_CONNECTION)));
+
     // verify connection is open - this implicitly verifies the
     // connection string is set and is valid
     if (m_connection->GetConnectionState() != FdoConnectionState_Open)
         throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_26_CONNECTION_CLOSED)));
+
+    bool readOnly = m_connection->GetReadOnly();
+    if (readOnly)
+		throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_4_CONNECTION_IS_READONLY)));
 
     if (m_schema == NULL)
         throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_27_NULL_REFERENCE)));
