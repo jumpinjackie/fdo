@@ -981,3 +981,44 @@ SdfSchemaMergeContext* SdfConnection::CreateMergeContext(
     return SdfSchemaMergeContext::Create( this, oldSchemas, newSchema, ignoreStates );
 }
 
+void SdfConnection::Flush()
+{
+    stdext::hash_map<void*, void*>::iterator dblist;
+    for (dblist = m_hDataDbs.begin(); dblist != m_hDataDbs.end(); dblist++)
+    {
+        FdoPtr<FdoClassDefinition> base = ((FdoClassDefinition*)dblist->first)->GetBaseClass();
+        if (base == NULL)
+        {
+            if (dblist->second != NULL)
+            {
+                ((DataDb*)dblist->second)->Flush();
+            }
+        }
+    }
+
+    stdext::hash_map<void*, void*>::iterator keylist;
+    for (keylist = m_hKeyDbs.begin(); keylist != m_hKeyDbs.end(); keylist++)
+    {
+        FdoPtr<FdoClassDefinition> base = ((FdoClassDefinition*)keylist->first)->GetBaseClass();
+        if (base == NULL)
+        {
+            if (keylist->second != NULL)
+            {
+                ((KeyDb*)keylist->second)->Flush();
+            }
+        }
+    }
+
+    stdext::hash_map<void*, void*>::iterator treelist;
+    for (treelist = m_hRTrees.begin(); treelist != m_hRTrees.end(); treelist++)
+    {
+        FdoPtr<FdoClassDefinition> base = ((FdoClassDefinition*)treelist->first)->GetBaseClass();
+        if (base == NULL)
+        {
+            if (treelist->second != NULL)
+            {
+                ((SdfRTree*)treelist->second)->Flush();
+            }
+        }
+    }
+}

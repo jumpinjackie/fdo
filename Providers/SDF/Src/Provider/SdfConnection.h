@@ -142,6 +142,8 @@ public:
     SDF_API virtual FdoPhysicalSchemaMapping* CreateSchemaMapping();
 
     SDF_API virtual void SetConfiguration(FdoIoStream* stream);
+
+    SDF_API virtual void Flush();
 public:
 
     // Updates the connection string without doing validation or notification.

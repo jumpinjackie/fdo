@@ -143,3 +143,8 @@ bool SdfConnectionCapabilities::SupportsMultiUserWrite()
 {
     return false;
 }
+
+bool SdfConnectionCapabilities::SupportsFlush() 
+{ 
+    return true; 
+}

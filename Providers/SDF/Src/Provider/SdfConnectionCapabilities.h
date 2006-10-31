@@ -93,4 +93,6 @@ class SdfConnectionCapabilities : public FdoIConnectionCapabilities
         /// Returns true if the provider or datastore can support more than one user writing to a single datastore at
         /// one time.
         SDF_API virtual bool SupportsMultiUserWrite();
+
+        SDF_API virtual bool SupportsFlush();
 };
