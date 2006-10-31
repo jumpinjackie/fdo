@@ -98,6 +98,15 @@ public:
     /// single datastore at one time.</summary>
     /// <returns>Returns true if the provider supports multi-user writing, false otherwise.</returns> 
     virtual bool SupportsMultiUserWrite();
+
+    // \brief
+    /// Determines if the provider can support the flush function. Flush is used to write any outstanding data
+    /// to the datastore. This is mainly used by the file based providers to ensure that any cached data is writen to the file.
+    ///
+    /// \return
+    /// Returns true if the provider or datastore can support the flush function.
+    ///
+    virtual bool SupportsFlush() {return false;}
 };
 
 #endif // FDOWMSCONNECTIONCAPABILITIES_H

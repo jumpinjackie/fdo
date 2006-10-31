@@ -141,6 +141,14 @@ public:
     /// <returns>Returns nothing</returns> 
     void SetConfiguration(FdoIoStream* configStream);
 
+    /// \brief
+    /// Forces the writes of any cached data to the targed datastore.
+    /// 
+    /// \return
+    /// Returns nothing
+    /// 
+    virtual void Flush() {}
+
 public:
     /// <summary>Gets the name of the WMS server set through the connection string.</summary>
     /// <returns>Returns the name of the WMS Server</returns> 
