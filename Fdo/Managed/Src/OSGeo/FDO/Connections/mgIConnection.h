@@ -244,6 +244,13 @@ public:
     /// 
 	__property System::Void set_Configuration( NAMESPACE_OSGEO_COMMON_IO::IoStream* configStream);
 
+    /// \brief
+    /// Forces the writes of any cached data to the targed datastore.
+    /// 
+    /// \return
+    /// Returns nothing
+    /// 
+    System::Void Flush();
 };
 
 END_NAMESPACE_OSGEO_FDO_CONNECTIONS

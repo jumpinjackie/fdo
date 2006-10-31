@@ -216,6 +216,14 @@ public:
     /// 
 	__property System::Void set_Configuration( NAMESPACE_OSGEO_COMMON_IO::IoStream* configStream);
 
+    /// \brief
+    /// Forces the writes of any cached data to the targed datastore.
+    /// 
+    /// \return
+    /// Returns nothing
+    /// 
+    System::Void Flush();
+
 public private:
 	IConnectionImp(System::IntPtr unmanaged, System::Boolean autoDelete);
 

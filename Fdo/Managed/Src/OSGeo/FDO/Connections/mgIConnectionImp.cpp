@@ -188,4 +188,7 @@ System::Void NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionImp::set_Configuration(
 	EXCEPTION_HANDLER(GetImpObj()->SetConfiguration(static_cast<FdoIoStream*>(configStream->UnmanagedObject.ToPointer())))
 }
 
-
+System::Void NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionImp::Flush()
+{
+	EXCEPTION_HANDLER(GetImpObj()->Flush())
+}
