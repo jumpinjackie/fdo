@@ -72,6 +72,8 @@ public:
     // one time.
     virtual bool SupportsMultiUserWrite();
 
+    virtual bool SupportsFlush() { return false; }
+
 protected:
     ~FdoRdbmsOdbcConnectionCapabilities(void);
     virtual void Dispose();

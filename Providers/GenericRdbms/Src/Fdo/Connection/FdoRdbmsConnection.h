@@ -233,6 +233,8 @@ public:
     void SetActiveSpatialContextName(FdoString * spatialContextName);
     void SetDefaultActiveSpatialContextName();
 
+    virtual void Flush() {}
+
 protected:
     //Instantiates the right Schema Manager for this connection's provider.
     virtual FdoSchemaManagerP NewSchemaManager(

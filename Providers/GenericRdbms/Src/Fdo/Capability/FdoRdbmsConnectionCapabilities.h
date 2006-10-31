@@ -69,6 +69,8 @@ public:
     // one time.
     virtual bool SupportsMultiUserWrite();
 
+    virtual bool SupportsFlush() { return false; }
+
 protected:
     ~FdoRdbmsConnectionCapabilities(void);
     virtual void Dispose();
