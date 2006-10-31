@@ -149,6 +149,10 @@ public:
     /// <returns>Returns nothing</returns> 
     void SetConfiguration(FdoIoStream* configStream);
 
+    /// <summary>
+    /// Forces the writes of any cached data to the targed datastore.</summary>
+    /// <returns>Returns nothing</returns> 
+    virtual void Flush();
 };
 
 #endif // [!output UPPER_PREFIX]CONNECTION_H

@@ -162,3 +162,10 @@ bool [!output PREFIX]ConnectionCapabilities::SupportsMultiUserWrite()
 #pragma message ("ToDo: Supports multi-user write")
     return false;
 }
+
+
+bool [!output PREFIX]ConnectionCapabilities::SupportsFlush() 
+{
+#pragma message ("ToDo: Supports Flush")
+    return false;
+}

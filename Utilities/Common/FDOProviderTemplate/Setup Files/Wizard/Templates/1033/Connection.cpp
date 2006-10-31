@@ -323,3 +323,10 @@ void [!output PREFIX]Connection::SetConfiguration(FdoIoStream* configStream)
     throw FdoException::Create(NlsMsgGet([!output UPPER_PREFIX]_CONNECTION_CONFIGURATION_FILE_NOT_SUPPORTED, "[!output PREFIX] Provider does not support configuration files."));
 }
 
+/// <summary>
+/// Forces the writes of any cached data to the targed datastore.</summary>
+/// <returns>Returns nothing</returns> 
+void [!output PREFIX]Connection::Flush()
+{
+}
+
