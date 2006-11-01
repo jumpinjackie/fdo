@@ -1653,6 +1653,11 @@ void SchemaTest::testXmlV2()
 
 void SchemaTest::testXmlAll()
 {
+FdoFeatureSchemasP schemas = FdoFeatureSchemaCollection::Create(NULL);
+schemas->ReadXml( L"schemaA.xml" );
+schemas->ReadXml( L"SchemaB.xml" );
+schemas->WriteXml( L"SchemaC.xml" );
+#if 0
     FdoFeatureSchemasP schemas = FdoFeatureSchemaCollection::Create(NULL);
     FdoFeatureSchemasP schemas2;
 
@@ -1700,6 +1705,7 @@ void SchemaTest::testXmlAll()
     catch ( FdoException* e ) {
 		UnitTestUtil::FailOnException( e );
     }
+#endif
 }
 
 void SchemaTest::testXmlRefs()
@@ -2595,20 +2601,20 @@ FdoFeatureSchema*  SchemaTest::createElectricSchema( FdoFeatureSchema* pAcadSche
 	pTransPhase->SetNullable(false);
 	FdoPropertiesP(pTransClass->GetProperties())->Add( pTransPhase );
 
-	pProp = FdoDataPropertyDefinition::Create( L"InstallDate", L"" );
-	pProp->SetDataType( FdoDataType_DateTime );
-	pProp->SetNullable(true);
-	FdoPropertiesP(pTransClass->GetProperties())->Add( pProp );
+	FdoDataPropertyP pTransDate = FdoDataPropertyDefinition::Create( L"InstallDate", L"" );
+	pTransDate->SetDataType( FdoDataType_DateTime );
+	pTransDate->SetNullable(true);
+	FdoPropertiesP(pTransClass->GetProperties())->Add( pTransDate );
 
 	FdoDataPropertyP pTransPartNum = FdoDataPropertyDefinition::Create( L"PartNum", L"" );
 	pTransPartNum->SetDataType( FdoDataType_Int16 );
 	pTransPartNum->SetNullable(true);
 	FdoPropertiesP(pTransClass->GetProperties())->Add( pTransPartNum );
 
-	pProp = FdoDataPropertyDefinition::Create( L"Volume", L"" );
-	pProp->SetDataType( FdoDataType_Single );
-	pProp->SetNullable(false);
-	FdoPropertiesP(pTransClass->GetProperties())->Add( pProp );
+	FdoDataPropertyP pTransVolume = FdoDataPropertyDefinition::Create( L"Volume", L"" );
+	pTransVolume->SetDataType( FdoDataType_Single );
+	pTransVolume->SetNullable(false);
+	FdoPropertiesP(pTransClass->GetProperties())->Add( pTransVolume );
 
 	pProp = FdoDataPropertyDefinition::Create( L"Picture", L"" );
 	pProp->SetDataType( FdoDataType_BLOB );
@@ -2619,6 +2625,24 @@ FdoFeatureSchema*  SchemaTest::createElectricSchema( FdoFeatureSchema* pAcadSche
 	pProp->SetDataType( FdoDataType_CLOB );
 	pProp->SetNullable(false);
 	FdoPropertiesP(pTransClass->GetProperties())->Add( pProp );
+
+    FdoUniqueConstraintCollectionP uniCons = pTransClass->GetUniqueConstraints();
+
+    FdoUniqueConstraintP uniCon = FdoUniqueConstraint::Create();
+    FdoDataPropertiesP uniConProps = uniCon->GetProperties();
+    uniConProps->Add( pTransPartNum);
+    uniCons->Add( uniCon );
+
+    uniCon = FdoUniqueConstraint::Create();
+    uniConProps = uniCon->GetProperties();
+    uniConProps->Add( pTransPhase);
+    uniConProps->Add( pTransDate);
+    uniCons->Add( uniCon );
+
+    uniCon = FdoUniqueConstraint::Create();
+    uniConProps = uniCon->GetProperties();
+    uniConProps->Add( pTransVolume);
+    uniCons->Add( uniCon );
 
     // Raster property (all defaults)
 
@@ -2758,6 +2782,13 @@ FdoFeatureSchema*  SchemaTest::createElectricSchema( FdoFeatureSchema* pAcadSche
     FdoDataPropertiesP(pAssocProp->GetIdentityProperties())->Add(pTransPartNum);
     FdoDataPropertiesP(pAssocProp->GetReverseIdentityProperties())->Add(pMaintPhase);
     FdoDataPropertiesP(pAssocProp->GetReverseIdentityProperties())->Add(pMaintPartNum);
+
+    uniCons = pMaintClass->GetUniqueConstraints();
+
+    uniCon = FdoUniqueConstraint::Create();
+    uniConProps = uniCon->GetProperties();
+    uniConProps->Add( pMaintPartNum);
+    uniCons->Add( uniCon );
 
     FdoPropertiesP(pMaintClass->GetProperties())->Add( pAssocProp );
 	FdoClassesP(pSchema->GetClasses())->Add( pMaintClass );

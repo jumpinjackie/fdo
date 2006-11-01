@@ -726,13 +726,14 @@ void FdoSchemaMergeContext::AddIdPropRef( FdoClassDefinition* pReferencer, FdoSt
 
 void FdoSchemaMergeContext::AddUniqueConstraintRef( FdoClassDefinition* pClsRef, FdoUniqueConstraint* pUniConsRef, FdoStringsP props )
 {
-    FdoPtr<UniqueConstraintRef> ref = mUniConsRefs->FindItem( pClsRef->GetQualifiedName() );
+    FdoPtr<UniqueConstraintRef> ref = UniqueConstraintRef::Create( pClsRef, pUniConsRef, props );
     
-    if ( ref ) {
-        ref->SetRefClass( pClsRef );
+    FdoPtr<UniqueConstraintRef> oldRef = mUniConsRefs->FindItem( ref->GetName() );
+    
+    if ( oldRef ) {
+        oldRef->SetRefClass( pClsRef );
     }
     else {
-        ref = UniqueConstraintRef::Create( pClsRef, pUniConsRef, props );
         mUniConsRefs->Add( ref );
     }
 }
@@ -2070,9 +2071,10 @@ FdoSchemaMergeContext::UniqueConstraintRef* FdoSchemaMergeContext::UniqueConstra
 FdoSchemaMergeContext::UniqueConstraintRef::UniqueConstraintRef( FdoClassDefinition* pClsRef, FdoUniqueConstraint* pUniConsRef, FdoStringsP strings )
 {
 	FDO_SAFE_ADDREF(pUniConsRef);
+
+    mStrings = strings;
     SetRefClass( pClsRef );
 	mUniConsRef = pUniConsRef;
-    mStrings = strings;
 }
 
 FdoClassDefinition* FdoSchemaMergeContext::UniqueConstraintRef::GetRefClass()
@@ -2086,7 +2088,7 @@ FdoClassDefinition* FdoSchemaMergeContext::UniqueConstraintRef::GetRefClass()
 void FdoSchemaMergeContext::UniqueConstraintRef::SetRefClass( FdoClassDefinition* pClsRef)
 {
     mClsRef = FDO_SAFE_ADDREF(pClsRef);
-    mQName = mClsRef->GetQualifiedName();
+    mQName = mClsRef->GetQualifiedName() + L":" + mStrings->ToString(L":");
 }
 
 FdoUniqueConstraint* FdoSchemaMergeContext::UniqueConstraintRef::GetRefUniqueConstraint()
