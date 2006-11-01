@@ -802,6 +802,12 @@
 </xs:key>
 <xs:unique name="vertable4Key_0">
 <xs:selector xpath=".//vertable4"/>
+<xs:field xpath="id2"/>
+<xs:field xpath="idb1"/>
+<xs:field xpath="idb2"/>
+</xs:unique>
+<xs:unique name="vertable4Key_1">
+<xs:selector xpath=".//vertable4"/>
 <xs:field xpath="name"/>
 </xs:unique>
 </xs:element>
@@ -866,6 +872,12 @@
 <xs:field xpath="id1"/>
 </xs:key>
 <xs:unique name="vertable5Key_0">
+<xs:selector xpath=".//vertable5"/>
+<xs:field xpath="id2"/>
+<xs:field xpath="idb1"/>
+<xs:field xpath="idb2"/>
+</xs:unique>
+<xs:unique name="vertable5Key_1">
 <xs:selector xpath=".//vertable5"/>
 <xs:field xpath="name"/>
 </xs:unique>

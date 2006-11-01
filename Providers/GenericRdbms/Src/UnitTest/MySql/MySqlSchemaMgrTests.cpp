@@ -257,7 +257,7 @@ void MySqlSchemaMgrTests::testWideConstraint ()
         FdoStringP ukeyClause = table->GetAddUkeysSql();
 
         // Verify that all unique key columns got truncate to expected amounts.
-        CPPUNIT_ASSERT( ukeyClause == L"UNIQUE (\"STRING100000\"(760), \"STRING100_1\"), UNIQUE (\"STRING2000\"(350), \"STRING700_1\"(350), \"STRING300_1\"(300)), UNIQUE (\"STRING100000\"(266), \"STRING2000\"(266), \"STRING700_1\"(266), \"STRING100_3\", \"STRING100_4\"), UNIQUE (\"STRING2000\"(64), \"STRING300_1\"(64), \"STRING300_2\"(64), \"STRING300_3\"(64), \"STRING300_4\"(64), \"STRING300_5\"(64), \"STRING300_6\"(64), \"STRING300_7\"(64), \"STRING300_8\"(64), \"STRING300_9\"(64), \"STRING300_10\"(64), \"STRING100_1\"(64), \"STRING100_2\"(64), \"STRING100_3\"(64), \"STRING100_4\"(64), \"STRING40_1\"), UNIQUE (\"STRING100_3\", \"STRING100_4\"), UNIQUE (\"STRING40_3\", \"STRING40_4\")" );
+        CPPUNIT_ASSERT( ukeyClause == L"UNIQUE (\"AUTOINCREMENT_COLUMN\"), UNIQUE (\"STRING100000\"(760), \"STRING100_1\"), UNIQUE (\"STRING2000\"(350), \"STRING700_1\"(350), \"STRING300_1\"(300)), UNIQUE (\"STRING100000\"(266), \"STRING2000\"(266), \"STRING700_1\"(266), \"STRING100_3\", \"STRING100_4\"), UNIQUE (\"STRING2000\"(64), \"STRING300_1\"(64), \"STRING300_2\"(64), \"STRING300_3\"(64), \"STRING300_4\"(64), \"STRING300_5\"(64), \"STRING300_6\"(64), \"STRING300_7\"(64), \"STRING300_8\"(64), \"STRING300_9\"(64), \"STRING300_10\"(64), \"STRING100_1\"(64), \"STRING100_2\"(64), \"STRING100_3\"(64), \"STRING100_4\"(64), \"STRING40_1\"), UNIQUE (\"STRING100_3\", \"STRING100_4\"), UNIQUE (\"STRING40_3\", \"STRING40_4\")" );
 
         // Table 2 tests a case where 3 constraint columns are 
         // over initial truncation limit, 2 are over the next limit
@@ -418,6 +418,16 @@ void MySqlSchemaMgrTests::testWideConstraint ()
 
 void MySqlSchemaMgrTests::AddProviderColumns( FdoSmPhTableP table )
 {
+
+    FdoSmPhColumnP column = table->CreateColumnInt64(
+        L"AUTOINCREMENT_COLUMN",
+        false,
+        true
+    );
+
+    FdoSmPhColumnsP ukeyColumns = new FdoSmPhColumnCollection();
+	table->GetUkeyColumns()->Add( ukeyColumns );
+    table->AddUkeyCol( 0, L"AUTOINCREMENT_COLUMN" );
 
     table->CreateColumnUnknown(
         L"BINARY_COLUMN",
