@@ -1653,11 +1653,6 @@ void SchemaTest::testXmlV2()
 
 void SchemaTest::testXmlAll()
 {
-FdoFeatureSchemasP schemas = FdoFeatureSchemaCollection::Create(NULL);
-schemas->ReadXml( L"schemaA.xml" );
-schemas->ReadXml( L"SchemaB.xml" );
-schemas->WriteXml( L"SchemaC.xml" );
-#if 0
     FdoFeatureSchemasP schemas = FdoFeatureSchemaCollection::Create(NULL);
     FdoFeatureSchemasP schemas2;
 
@@ -1705,7 +1700,6 @@ schemas->WriteXml( L"SchemaC.xml" );
     catch ( FdoException* e ) {
 		UnitTestUtil::FailOnException( e );
     }
-#endif
 }
 
 void SchemaTest::testXmlRefs()
