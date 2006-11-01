@@ -129,6 +129,18 @@ void OdbcBaseFdoInsertTest::insert()
         propertyValue = AddNewProperty( propertyValues, mSetup.GetPropertyNameAcdb3dpolylineRevision());
         propertyValue->SetValue(dataValue);
 
+		FdoDateTime dateTime;
+
+		dateTime.year    = 2006;
+		dateTime.month   = 10;
+		dateTime.day     = 20;
+		dateTime.hour    = 6;
+		dateTime.minute  = 45;
+		dateTime.seconds = 7;
+		dataValue = FdoDataValue::Create(dateTime);
+		propertyValue = AddNewProperty( propertyValues, mSetup.GetPropertyNameAcdb3dpolylineDateTime());
+		propertyValue->SetValue(dataValue);
+
         FdoPtr<FdoIFeatureReader> reader = insertCommand->Execute();
 
 		finish = clock();
@@ -187,8 +199,16 @@ void OdbcMySqlFdoInsertTest::ConfigFileTest()
 
 		finish = clock();
 		printf( "Elapsed: %f seconds\n", ((double)(finish - start) / CLOCKS_PER_SEC) );
-
+    }
+    catch (FdoException *ex)
+    {
+        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+    }
+    if (mConnection != NULL) try
+    {
         // Set the connection back to having no configuration document.
+        // We do this in a separate block in order to ensure that the
+        // Insert command above is released by falling out of scope.
         mConnection->Close();
         mConnection->SetConfiguration(NULL);
         mConnection->Open();
@@ -233,7 +253,36 @@ void OdbcBaseFdoInsertTest::insertCities()
         propertyValue = FdoInsertTest::AddNewProperty( propertyValues, GetPropertyNameCitiesCity());
         propertyValue->SetValue(dataValue);
 
+		dataValue = FdoDataValue::Create(L"2006-10-11");
+		propertyValue = FdoInsertTest::AddNewProperty( propertyValues, GetPropertyNameCitiesDate());
+		propertyValue->SetValue(dataValue);
+
         FdoPtr<FdoIFeatureReader> reader = insertCommand->Execute();
+		FdoPtr<FdoISelect> selectCmd = (FdoISelect*)mConnection->CreateCommand(FdoCommandType_Select);
+		selectCmd->SetFeatureClassName(GetClassNameCities());
+		FdoPtr<FdoIFeatureReader> myReader = selectCmd->Execute();
+		if (myReader)
+		{
+			while (myReader->ReadNext())
+			{
+				if (!myReader->IsNull(GetPropertyNameCitiesCityId()))
+				{
+					FdoInt64 id = myReader->GetInt64(GetPropertyNameCitiesCityId());
+					printf("\nCityId: %ld", id);
+				}
+				if (!myReader->IsNull(GetPropertyNameCitiesDate()))
+				{
+					FdoDateTime dateTime = myReader->GetDateTime(GetPropertyNameCitiesDate());
+					printf(" date: %4d-%02d-%02d %02d:%02d:%02d",dateTime.year, 
+																	dateTime.month,
+																	dateTime.day,
+																	dateTime.hour,
+																	dateTime.minute,
+																	dateTime.seconds);
+				}
+			}
+		}
+		mConnection->Close();
     }
     catch (FdoException *ex)
     {

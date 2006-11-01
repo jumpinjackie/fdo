@@ -243,6 +243,7 @@ the_exit:
 		*connect_id 		  = found_connect;
 		context->odbcdr_current_connect = found_connect;
 		context->odbcdr_connect_count ++ ;
+		rdbi_status = odbcdr_set_sess_env( context );
 	}
 	debug_area() odbcdr_show_context( context, (odbcdr_cursor_def *)NULL );
 	debug_return(NULL, rdbi_status);

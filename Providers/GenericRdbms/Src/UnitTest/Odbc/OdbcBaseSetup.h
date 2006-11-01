@@ -61,6 +61,7 @@ public:
     FdoString * GetPropertyNameCitiesCityId()   { return LikesUC() ? L"CITYID" : L"cityid"; }
     FdoString * GetPropertyNameCitiesName()     { return LikesUC() ? L"NAME"   : L"name"; }
     FdoString * GetPropertyNameCitiesCity()     { return LikesUC() ? L"CITY"   : L"city"; }
+	FdoString * GetPropertyNameCitiesDate()     { return LikesUC() ? L"CDATE"   : L"cdate"; }
 
     FdoString * GetClassNameTable1()            { return LikesUC() ? L"TABLE1"  : L"table1"; }
     FdoString * GetPropertyNameTable1FeatId()   { return LikesUC() ? L"FEATID1" : L"featid1"; }
@@ -70,6 +71,7 @@ public:
     FdoString * GetPropertyNameAcdb3dpolylineFeatId()   { return LikesUC() ? L"FEATID"        : L"featid"; }
     FdoString * GetPropertyNameAcdb3dpolylineClassId()   { return LikesUC() ? L"CLASSID" : L"classid"; }
     FdoString * GetPropertyNameAcdb3dpolylineRevision()  { return LikesUC() ? L"REVISIONNUMBER" : L"revisionnumber"; }
+	FdoString * GetPropertyNameAcdb3dpolylineDateTime()  { return LikesUC() ? L"DATETIME" : L"datetime1"; }
 
 	virtual void CreateDataStore(FdoIConnection* pConnection, const char *suffix);
 	virtual void DestroyDataStore(FdoIConnection* pConnection, const char *suffix);

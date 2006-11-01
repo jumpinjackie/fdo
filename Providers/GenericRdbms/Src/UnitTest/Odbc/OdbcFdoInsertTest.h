@@ -49,6 +49,8 @@ public:
     virtual FdoString * GetPropertyNameCitiesCityId()   { return mSetup.GetPropertyNameCitiesCityId(); }
     virtual FdoString * GetPropertyNameCitiesName()     { return mSetup.GetPropertyNameCitiesName(); }
     virtual FdoString * GetPropertyNameCitiesCity()     { return mSetup.GetPropertyNameCitiesCity(); }
+	virtual FdoString * GetPropertyNameCitiesDate()     { return mSetup.GetPropertyNameCitiesDate(); }
+
 
 protected:
     OdbcBaseSetup mSetup;
@@ -75,7 +77,7 @@ class OdbcMySqlFdoInsertTest : public OdbcBaseFdoInsertTest
     CPPUNIT_TEST_SUB_SUITE (OdbcMySqlFdoInsertTest, FdoInsertTest);
     CPPUNIT_TEST( insertCities );
     CPPUNIT_TEST( insertTable1 );
-    //CPPUNIT_TEST (ConfigFileTest);
+    CPPUNIT_TEST (ConfigFileTest);
     CPPUNIT_TEST_SUITE_END ();
 
 public:
@@ -112,6 +114,7 @@ class OdbcAccessFdoInsertTest : public OdbcBaseFdoInsertTest
     virtual FdoString * GetPropertyNameCitiesCityId()   { return L"CityId"; }
     virtual FdoString * GetPropertyNameCitiesName()     { return L"Name"; }
     virtual FdoString * GetPropertyNameCitiesCity()     { return L"City"; }
+	virtual FdoString * GetPropertyNameCitiesDate()		{ return L"Cdate";}
     void insertLidar();
 
     // Some values that can vary by target datastore...

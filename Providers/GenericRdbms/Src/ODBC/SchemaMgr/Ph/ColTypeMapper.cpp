@@ -52,6 +52,7 @@ static FdoSmPhOdbcColTypeMapEntry typeMap_S[] =
     { FdoSmPhColType_Date,      L"timestamp",    -1, -1 },
     { FdoSmPhColType_Date,      L"date",         -1, -1 },
     { FdoSmPhColType_Date,      L"time",         -1, -1 },
+	{ FdoSmPhColType_Date,      L"datetime",     -1, -1 },
     { FdoSmPhColType_Bool,      L"bit",          -1, -1 }
 };
 static FdoInt32 typeMapSize_S = sizeof(typeMap_S) / sizeof(typeMap_S[0]);

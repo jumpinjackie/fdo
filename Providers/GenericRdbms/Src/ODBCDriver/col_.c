@@ -94,6 +94,7 @@ TypeNameMapEntry typeNameMap_S[] =
     { SQL_DATETIME,         SQL_CODE_DATE,       NULL, "date"},
     { SQL_DATETIME,         SQL_CODE_TIME,       NULL, "time"},
     { SQL_DATETIME,         SQL_CODE_TIMESTAMP,  NULL, "timestamp"},
+	{ SQL_DATETIME,         -1,					 NULL, "datetime"},
     { SQL_TYPE_DATE,        -1,                  NULL, "date" },
     { SQL_TYPE_TIME,        -1,                  NULL, "time" },
     { SQL_TYPE_TIMESTAMP,   -1,                  NULL, "timestamp" },
@@ -125,11 +126,12 @@ TypeNameMapEntry typeNameMap_S[] =
 #define ODBCDR_LONGVARCHAR_LENGTH       (1073741824)
 #define ODBCDR_DECIMAL_LENGTH           (16)
 
-static const char * typeNumberToName(int odbcType, int odbcTypeDateTimeSubcode, const char * odbcTypeName)
+static const char * typeNumberToName(odbcdr_DriverType driver_type, int odbcType, int odbcTypeDateTimeSubcode, const char * odbcTypeName)
 {
     int i;
     int array_size = sizeof(typeNameMap_S) / sizeof(typeNameMap_S[0]);
     static const char * unsupported = "unsupported";
+	static const char * ora_date = "date";
     const char * name = unsupported;
     int found = FALSE;
 
@@ -142,6 +144,10 @@ static const char * typeNumberToName(int odbcType, int odbcTypeDateTimeSubcode, 
                   || strcmp(typeNameMap_S[i].odbcDataTypeName, odbcTypeName) == 0) )
         {
                 name = typeNameMap_S[i].name;
+				if ((strcmp(name, "datetime") == 0) && 
+					(ODBCDriverType_OracleNative == driver_type ||
+					 ODBCDriverType_OracleNonNative == driver_type))
+					name = ora_date;
                 found = TRUE;
         }
     }
@@ -292,7 +298,7 @@ int odbcdr_col_act(
             &ssDataTypeDateTimeSubcode );
         if (ret != ODBCDR_SUCCESS)
             ssDataTypeDateTimeSubcode = -1; /* Some drivers do not support this subcode. */
-        (void) strcpy(newNle.type, typeNumberToName((int)ssDataType2, ssDataTypeDateTimeSubcode, NULL));
+        (void) strcpy(newNle.type, typeNumberToName(connData->driver_type,(int)ssDataType2, ssDataTypeDateTimeSubcode, NULL));
 
         ODBCDR_ODBC_ERR( SQLColAttribute(
             c->hStmt,
@@ -604,7 +610,7 @@ static int odbcdr_col_act_SQLColumns(
                 (_stricmp((const char*)szIsNullable, "YES")==0);
 
             (void) strcpy(newNle.name, (char*)szColumnName);
-            (void) strcpy(newNle.type, typeNumberToName((int)ssDataType, -1, (const char *)szTypeName));
+            (void) strcpy(newNle.type, typeNumberToName(connData->driver_type, (int)ssDataType, -1, (const char *)szTypeName));
 #if 0
             /* Calling code may support "Description" attrbibute later.  Use Remarks when needed. */
             (void) strcpy(newNle.remarks, szRemarks);

@@ -52,6 +52,7 @@ pkeys_.c \
 rdbi_init.c \
 run_sql.c \
 set_schema.c \
+set_sess_env.c \
 show_.c \
 sql.c \
 stores_.c \
