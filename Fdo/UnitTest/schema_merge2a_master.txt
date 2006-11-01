@@ -813,6 +813,19 @@ id</xs:documentation>
 <xs:field xpath="Phase"/>
 <xs:field xpath="PartNum"/>
 </xs:key>
+<xs:unique name="TransformerKey_0">
+<xs:selector xpath=".//Transformer"/>
+<xs:field xpath="PartNum"/>
+</xs:unique>
+<xs:unique name="TransformerKey_1">
+<xs:selector xpath=".//Transformer"/>
+<xs:field xpath="Phase"/>
+<xs:field xpath="InstallDate"/>
+</xs:unique>
+<xs:unique name="TransformerKey_2">
+<xs:selector xpath=".//Transformer"/>
+<xs:field xpath="Volume"/>
+</xs:unique>
 </xs:element>
 <xs:complexType name="TransformerType" abstract="true" fdo:geometryName="Geometry" fdo:geometryInherited="true">
 <xs:annotation>
@@ -1013,6 +1026,10 @@ point location</xs:documentation>
 <xs:selector xpath=".//Maint-x20-Hist"/>
 <xs:field xpath="id"/>
 </xs:key>
+<xs:unique name="Maint-x20-HistKey_0">
+<xs:selector xpath=".//Maint-x20-Hist"/>
+<xs:field xpath="PartNum"/>
+</xs:unique>
 </xs:element>
 <xs:complexType name="Maint-x20-HistType" abstract="false">
 <xs:annotation>
