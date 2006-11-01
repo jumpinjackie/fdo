@@ -31,6 +31,11 @@ int mysql_get_msg (mysql_context_def *context, char *buffer)
         strcpy (buffer, context->mysql_last_err_msg);
         ret = RDBI_NOT_CONNECTED;
     }
+    else if ( '\0' != context->mysql_last_err_msg[0] ) 
+    {
+        strcpy (buffer, context->mysql_last_err_msg);
+        ret = RDBI_GENERIC_ERROR;
+    }
     else
     {
         mysql = context->mysql_connections[context->mysql_current_connect];

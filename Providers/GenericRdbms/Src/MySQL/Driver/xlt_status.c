@@ -20,10 +20,22 @@
 #include "errno.h"
 #include "xlt_status.h"
 
+static void reset_last_msg( 
+	mysql_context_def	*context
+    );
+
+static void set_last_msg( 
+	mysql_context_def	*context,
+    MYSQL* mysql,
+    MYSQL_STMT* stmt
+    );
+
 int
 mysql_xlt_status( 
 	mysql_context_def	*context,
-    int mysql_status
+    int mysql_status,
+    MYSQL* mysql,
+    MYSQL_STMT* stmt
     )
 {
     int  rdbi_status = RDBI_GENERIC_ERROR;
@@ -90,5 +102,48 @@ mysql_xlt_status(
             rdbi_status = RDBI_GENERIC_ERROR;
     }
 
+    if ( mysql_status == MYSQL_SUCCESS ) 
+        reset_last_msg( context );
+    else
+        set_last_msg( context, mysql, stmt );
+
     return rdbi_status;
 }
+
+void reset_last_msg( 
+	mysql_context_def	*context
+    )
+{
+    context->mysql_last_err_msg[0] = '\0';
+}
+
+void set_last_msg( 
+	mysql_context_def	*context,
+    MYSQL* mysql,
+    MYSQL_STMT* stmt
+    )
+{
+    const char *error;
+    const char *dflt_error = "";
+
+    if (stmt && mysql_stmt_errno (stmt))
+    {
+        // Get error message from supplied statement
+        error = mysql_stmt_error (stmt);
+        strncpy( context->mysql_last_err_msg, error, RDBI_MSG_SIZE );
+        context->mysql_last_err_msg[RDBI_MSG_SIZE - 1] = '\0';
+    }
+    else if (mysql)
+    {
+        // No statement so get error message directly from connection.
+        error = mysql_error (mysql);
+    }
+    else 
+        // Should never get here, but assume no error if no connection or 
+        // statement was supplied.
+        error = dflt_error;
+
+    strncpy( context->mysql_last_err_msg, error, RDBI_MSG_SIZE );
+    context->mysql_last_err_msg[RDBI_MSG_SIZE - 1] = '\0';
+}
+

@@ -20,6 +20,9 @@
 
 #include "define.h"
 #include "type.h"
+#include "local.h"
+#include "errno.h"
+#include "xlt_status.h"
 
 #ifdef _WIN32
 #define case_insensitive_compare _stricmp
@@ -237,15 +240,18 @@ int mysql_define (
                 if ((MYSQL_STMT*)NULL != statement)
                 {   /* fetch result set meta information and check prepare was done */
                     prepare_meta_result = mysql_stmt_result_metadata (statement);
-                    if ((MYSQL_RES*)NULL == prepare_meta_result)
-                        ret = RDBI_GENERIC_ERROR;
+                    if ((MYSQL_RES*)NULL == prepare_meta_result) {
+                        ret = mysql_xlt_status( context, MYSQL_GENERIC_ERROR, mysql, statement );
+                    }
                     else
                     {
                         /* allocate the defines array if it hasn't been already allocated */
                         if ((MYSQL_BIND*)NULL == curs->defines)
                             curs->defines = make_defines (prepare_meta_result);
-                        if ((MYSQL_BIND*)NULL == curs->defines)
+                        if ((MYSQL_BIND*)NULL == curs->defines) {
+                            mysql_xlt_status( context, MYSQL_GENERIC_ERROR, mysql, statement );
                             ret = RDBI_INVLD_DESCR_OBJTYPE;
+                        }
                         else
                         {
                             curs->define_count = mysql_num_fields (prepare_meta_result);

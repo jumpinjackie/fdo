@@ -27,7 +27,9 @@
 
 int mysql_xlt_status (
     mysql_context_def *context,
-    int mysql_status
+    int mysql_status,
+    MYSQL* mysql,
+    MYSQL_STMT* stmt
     );
 
 #endif // XLT_STATUS_H

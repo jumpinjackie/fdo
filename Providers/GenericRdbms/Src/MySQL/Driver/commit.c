@@ -19,6 +19,8 @@
 #include "stdafx.h"
 
 #include "commit.h"
+#include "errno.h"
+#include "xlt_status.h"
 
 int mysql_commitx (
     mysql_context_def *context,
@@ -26,6 +28,7 @@ int mysql_commitx (
 {
     MYSQL *mysql;
     int ret;
+    my_bool mysql_status;
 
     if (-1 == context->mysql_current_connect)
         ret = RDBI_NOT_CONNECTED;
@@ -36,10 +39,8 @@ int mysql_commitx (
             ret = RDBI_NOT_CONNECTED;
         else
         {
-            if (0 != mysql_commit (mysql))
-                ret = RDBI_GENERIC_ERROR;
-            else
-                ret = RDBI_SUCCESS;
+            mysql_status = mysql_commit (mysql);
+            ret = mysql_xlt_status( context, 0 == mysql_status ? MYSQL_SUCCESS : MYSQL_GENERIC_ERROR, mysql, (MYSQL_STMT*) NULL );
         }
     }
 

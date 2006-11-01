@@ -20,6 +20,8 @@
 
 #include "fre_cursor.h"
 #include "sql.h"
+#include "errno.h"
+#include "xlt_status.h"
 
 static void print_st_error (MYSQL_STMT *stmt, const char *msg)
 {
@@ -70,6 +72,7 @@ int mysql_sql (
                     result = mysql_stmt_prepare (statement, sql, (unsigned long)strlen (sql));
                     if (0 != result)
                     {
+                        ret = mysql_xlt_status( context, result, mysql, statement );
                         print_st_error (statement, "prepare failed");
                         /* If the prepare operation was unsuccessful, the
                         error message can be obtained by calling mysql_stmt_error()
@@ -80,7 +83,6 @@ int mysql_sql (
                         CR_SERVER_LOST The connection to the server was lost during the query 
                         CR_UNKNOWN_ERROR An unknown error occurred. 
                         */
-                        ret = RDBI_GENERIC_ERROR;
                     }
                     else
                         ret = RDBI_SUCCESS;

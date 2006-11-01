@@ -19,6 +19,8 @@
 #include "stdafx.h"
 
 #include "est_cursor.h"
+#include "errno.h"
+#include "xlt_status.h"
 
 int mysql_est_cursor (mysql_context_def *context, char **cursor)
 {
@@ -43,7 +45,10 @@ int mysql_est_cursor_obj (mysql_context_def *context, char **cursor)
         {
             statement = mysql_stmt_init (mysql);
             if ((MYSQL_STMT *)NULL == statement)
+            {
+                mysql_xlt_status( context, MYSQL_GENERIC_ERROR, mysql, statement );
                 ret = RDBI_MALLOC_FAILED;
+            }
             else
             {
                 curs = (mysql_cursor_def*)malloc (sizeof (mysql_cursor_def));

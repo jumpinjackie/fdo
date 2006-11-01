@@ -20,6 +20,7 @@
 
 #include "execute.h"
 #include "Geometry.h"
+#include "errno.h"
 #include "xlt_status.h"
 
 static void print_st_error (MYSQL_STMT *stmt, const char *msg)
@@ -188,6 +189,7 @@ int mysql_execute (
                 }
                 if (0 != result)
                 {
+                    mysql_xlt_status( context, result, mysql, curs->statement );
                     print_st_error (curs->statement, "bind result failed");
                 }
                 else
@@ -199,7 +201,7 @@ int mysql_execute (
                     }
                     if (0 != result)
                     {
-						ret = mysql_xlt_status(context, result);
+						ret = mysql_xlt_status(context, result, mysql, curs->statement);
                     }
                     else
                     {
@@ -207,7 +209,7 @@ int mysql_execute (
                         if (0 != result)
                         {
                             result = mysql_stmt_errno(curs->statement);
-							ret = mysql_xlt_status(context, result);
+							ret = mysql_xlt_status(context, result, mysql, curs->statement);
                         }
                         else
                         {
@@ -224,7 +226,10 @@ int mysql_execute (
                                 if ((my_ulonglong)-1 != rows) {
                                     *rows_processed = (int)rows; /* truncation possible */
                                     ret = RDBI_SUCCESS;
-                                }                       
+                                } 
+                                else {
+            						mysql_xlt_status(context, MYSQL_GENERIC_ERROR, mysql, curs->statement);
+                                }
                             }
 							else
 							{

@@ -80,7 +80,7 @@ int mysql_fetch (
 				*rows_processed = 0;
                 result = mysql_stmt_fetch (curs->statement);
                 
-                if ((ret = mysql_xlt_status(context, result)) == RDBI_SUCCESS)
+                if ((ret = mysql_xlt_status(context, result, mysql, (MYSQL_STMT*) NULL)) == RDBI_SUCCESS)
                 {
 					// mysql_stmt_affected_rows returns inconsistent values for select
                     //rows  = mysql_stmt_affected_rows (curs->statement);

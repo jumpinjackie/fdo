@@ -21,6 +21,8 @@
 #include "connect.h"
 #include "Inc/ut.h"
 #include "run_sql.h"
+#include "errno.h"
+#include "xlt_status.h"
 #include <malloc.h>
 
 int mysql_connect (
@@ -43,7 +45,7 @@ int mysql_connect (
     int rows_processed;
     int ret;
 
-    ret = RDBI_SUCCESS;
+    ret = mysql_xlt_status(context, MYSQL_SUCCESS, (MYSQL*) NULL, (MYSQL_STMT*) NULL);
 
     /* connect string format db@host:port, default host to localhost, default port to MYSQL_PORT */
     host = "localhost";

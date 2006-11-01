@@ -21,6 +21,8 @@
 #include "local.h"
 #include "define.h"
 #include "type.h"
+#include "errno.h"
+#include "xlt_status.h"
 
 #ifdef _WIN32
 #define case_insensitive_compare _stricmp
@@ -65,7 +67,10 @@ int mysql_desc_slct (
                 {   /* fetch result set meta information and check prepare was done */
                     prepare_meta_result = mysql_stmt_result_metadata (statement);
                     if ((MYSQL_RES*)NULL == prepare_meta_result)
-                        ret = RDBI_GENERIC_ERROR;
+                    {
+                        mysql_xlt_status( context, MYSQL_GENERIC_ERROR, mysql, statement );
+                        ret = RDBI_INVLD_DESCR_OBJTYPE;
+                    }
                     else
                     {
                         position--; /* zero based */

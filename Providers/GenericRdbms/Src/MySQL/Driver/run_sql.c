@@ -51,7 +51,7 @@ int mysql_run_sql (
             result = mysql_query (mysql, sql);
             if (0 != result)
             {   
-				ret = mysql_xlt_status(context, result);
+				ret = mysql_xlt_status(context, result, mysql, (MYSQL_STMT*) NULL);
             }
             else {
                 ret = RDBI_SUCCESS;
