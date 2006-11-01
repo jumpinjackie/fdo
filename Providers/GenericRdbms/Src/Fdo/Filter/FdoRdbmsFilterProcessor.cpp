@@ -1674,12 +1674,11 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter  *filter, const w
         }
     }
 
-
-     // Add the order by clause if it's required
-    AppendOrderBy( filterConstraint );
-
     // Add the group by clause if it's required
     AppendGroupBy( filterConstraint );
+
+	// Add the order by clause if it's required
+    AppendOrderBy( filterConstraint );
 
     PrependString ( L"SELECT " );
 

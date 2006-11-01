@@ -50,6 +50,7 @@ class OdbcAccessFdoAdvancedSelectTest : public FdoAdvancedSelectTest
     virtual void TestDefect779194() {};
     virtual void TestDefect785616();
 	virtual void getDataTypeTest();
+	virtual void groupByorderByTest();
 
     // Extra tests for this class.
     void Table1Test();

@@ -108,7 +108,7 @@ public:
     /// <returns>Returns the list of group by property names.</returns>
     virtual FdoIdentifierCollection* GetOrdering()
     {
-        EXECUTE_METHOD( GetGrouping() );
+        EXECUTE_METHOD( GetOrdering() );
     }
 
     /// <summary>Set the ordering option of the selection. This is only used if the ordering collection is not empty.</summary>

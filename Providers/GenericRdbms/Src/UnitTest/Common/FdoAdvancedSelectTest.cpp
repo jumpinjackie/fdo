@@ -918,3 +918,68 @@ void FdoAdvancedSelectTest::getDataTypeTest()
         throw;
     }
 }
+void FdoAdvancedSelectTest::groupByorderByTest()
+{
+    FdoPtr<FdoIDataReader>myDataReader;
+	FdoPtr<FdoISelectAggregates>selCmdAggreg;
+     try
+    {
+        selCmdAggreg = (FdoISelectAggregates*)mConnection->CreateCommand( FdoCommandType_SelectAggregates );
+        selCmdAggreg->SetFeatureClassName(L"Acad:AcDb3dPolyline");
+        FdoPtr<FdoComputedIdentifier>cmpId = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Sum(xdata2.seq)) AS TestFunc");
+		selCmdAggreg->SetFilter(L"(segcount*xdata2.seq) AS Test, Test > 0 ");
+        FdoPtr<FdoIdentifierCollection>idCol = selCmdAggreg->GetPropertyNames();
+        idCol->Add( cmpId );
+		FdoPtr<FdoIdentifier>id = FdoIdentifier::Create(L"FeatId");
+        FdoPtr<FdoIdentifierCollection>grpCol = selCmdAggreg->GetGrouping();
+        grpCol->Add( id );
+		FdoPtr<FdoIdentifierCollection>orderCol = selCmdAggreg->GetOrdering();
+        FdoPtr<FdoIdentifier>oId = FdoIdentifier::Create(L"FeatId");
+        orderCol->Add( oId );
+        myDataReader = selCmdAggreg->Execute();
+        if( myDataReader != NULL  )
+        {
+            while ( myDataReader->ReadNext() )
+            {
+				printf("Sum(xdata2.seq) = %f\n", myDataReader->GetDouble(L"TestFunc") );
+            }
+        }
+    }
+    catch( FdoException *ex )
+    {
+        printf("FDO advanced select error: %ls\n", ex->GetExceptionMessage());
+        throw;
+    }
+}
+void FdoAdvancedSelectTest::orderByTest2()
+{
+	FdoPtr<FdoIDataReader>myDataReader;
+	FdoPtr<FdoISelectAggregates>selCmdAggreg;
+     try
+    {
+        selCmdAggreg = (FdoISelectAggregates*)mConnection->CreateCommand( FdoCommandType_SelectAggregates );
+        selCmdAggreg->SetFeatureClassName(L"Acad:AcDb3dPolyline");
+        FdoPtr<FdoComputedIdentifier>cmpId = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Sum(xdata2.seq)) AS TestFunc");
+		selCmdAggreg->SetFilter(L"(segcount*xdata2.seq) AS Test, Test > 0 ");
+        FdoPtr<FdoIdentifierCollection>idCol = selCmdAggreg->GetPropertyNames();
+        idCol->Add( cmpId );
+        
+		FdoPtr<FdoIdentifierCollection>orderCol = selCmdAggreg->GetOrdering();
+        FdoPtr<FdoIdentifier>oId = FdoIdentifier::Create(L"TestFunc");
+        orderCol->Add( oId );
+        myDataReader = selCmdAggreg->Execute();
+        if( myDataReader != NULL  )
+        {
+            while ( myDataReader->ReadNext() )
+            {
+				printf("Sum(xdata2.seq) = %f\n", myDataReader->GetDouble(L"TestFunc") );
+            }
+        }
+    }
+    catch( FdoException *ex )
+    {
+        printf("FDO advanced select error: %ls\n", ex->GetExceptionMessage());
+        throw;
+    }
+}
+

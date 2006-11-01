@@ -442,6 +442,68 @@ void OdbcAccessFdoAdvancedSelectTest::groupByTest()
 #endif
 }
 
+void OdbcAccessFdoAdvancedSelectTest::groupByorderByTest()
+{
+#if 0 
+    try
+    {
+        FdoPtr<FdoISelectAggregates> selectAggrCmd = (FdoISelectAggregates*)mConnection->CreateCommand(FdoCommandType_SelectAggregates);
+        selectAggrCmd->SetFeatureClassName(GetEmployeesClassname());
+
+        // Add ids to select:
+        FdoPtr<FdoIdentifierCollection> ids = selectAggrCmd->GetPropertyNames();
+        ids->Clear();
+        FdoPtr<FdoIdentifier> id = FdoIdentifier::Create(L"JOBTITLE");
+        ids->Add(id);
+
+        // Add groupby info:
+        FdoPtr<FdoIdentifierCollection> groupingIds = selectAggrCmd->GetGrouping();
+        groupingIds->Clear();
+        FdoPtr<FdoIdentifier> groupingId = FdoIdentifier::Create(L"JOBTITLE");
+        groupingIds->Add(groupingId);
+
+        // Add grouping filter:
+        FdoPtr<FdoFilter> groupingFilter = FdoFilter::Parse(L"AVG(SALARY) >= 40000.00");
+        selectAggrCmd->SetGroupingFilter(groupingFilter);
+
+		FdoPtr<FdoIdentifierCollection>orderCol = selectAggrCmd->GetOrdering();
+		FdoPtr<FdoIdentifier>oId = FdoIdentifier::Create(L"JOBTITLE");
+        orderCol->Add( oId );
+
+        // Execute the command:
+        FdoPtr<FdoIDataReader> dataReader = selectAggrCmd->Execute();
+
+        // Iterate results:
+        long lRowCount=0;
+        bool bFoundBoxAssembler = false;
+        bool bFoundBoxFlattener = false;
+        bool bFoundBoxArtist = false;
+        while (dataReader->ReadNext())
+        {
+            FdoString *jobTitle = dataReader->GetString(L"JOBTITLE");
+
+            if (0==wcscmp(jobTitle, L"Box Flattener"))
+                bFoundBoxFlattener = true;
+            else if (0==wcscmp(jobTitle, L"Box Assembler"))
+                bFoundBoxAssembler = true;
+            else if (0==wcscmp(jobTitle, L"Box Artist"))
+                bFoundBoxArtist = true;
+
+            lRowCount++;
+        }
+
+        // Validate the results:
+        CPPUNIT_ASSERT_MESSAGE("Expected 3 rows, got differently", lRowCount==3);
+        CPPUNIT_ASSERT_MESSAGE("Expected to find 'Box Flattener' but didn't", bFoundBoxFlattener);
+        CPPUNIT_ASSERT_MESSAGE("Expected to find 'Box Assembler' but didn't", bFoundBoxAssembler);
+        CPPUNIT_ASSERT_MESSAGE("Expected to find 'Box Artist' but didn't", bFoundBoxArtist);
+    }
+    catch (FdoException *e)
+    {
+        UnitTestUtil::fail (e);
+    }
+#endif
+}
 
 // A test that is hard-coded for a known table.
 void OdbcAccessFdoAdvancedSelectTest::TestSelectExpressions()

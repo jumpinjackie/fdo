@@ -32,6 +32,8 @@ class FdoAdvancedSelectTest : public CppUnit::TestCase
   CPPUNIT_TEST (TestDefect779194);
   CPPUNIT_TEST (TestDefect785616);
   CPPUNIT_TEST (getDataTypeTest);
+  //CPPUNIT_TEST( orderByTest2 );
+  CPPUNIT_TEST( groupByorderByTest );
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -49,6 +51,8 @@ public:
     virtual void TestDefect779194();
     virtual void TestDefect785616();
     virtual void getDataTypeTest();
+	virtual void groupByorderByTest();
+	virtual void orderByTest2();
 
 protected:
 	virtual void connect ();
