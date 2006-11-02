@@ -38,6 +38,7 @@ public:
     virtual void insertFlushTest() {};
     virtual void insert2 () {};
     virtual void insert3 () {};
+    virtual void insertBoundary () {};
     virtual void smartPointerInsert() {};
     virtual void conditionalInsert() {};
 

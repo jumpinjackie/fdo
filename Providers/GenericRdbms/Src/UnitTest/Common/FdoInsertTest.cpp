@@ -581,7 +581,7 @@ void FdoInsertTest::insert3 ()
 				if (!featureReader->IsNull(L"byte"))
 				{
 					char bValue = featureReader->GetByte(L"byte");
-					if (bValue != '7')
+					if (bValue != 7)
 						throw FdoException::Create(L"byte: value is not valid");
 				}
 				else
@@ -599,12 +599,202 @@ void FdoInsertTest::insert3 ()
     }
     catch (FdoCommandException *ex)
     {
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+        UnitTestUtil::FailOnException(ex);
     }
     catch (FdoException *ex)
     {
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+        UnitTestUtil::FailOnException(ex);
     }
+}
+
+void FdoInsertTest::insertBoundary()
+{
+    try
+    {
+
+        FdoPtr<FdoIConnection> connection = UnitTestUtil::GetConnection(mSuffix, true);
+
+        try
+        {
+            insertBoundaryCleanup( connection );
+
+            double       coordsBuffer[400];
+            int                 segCount = 2;
+
+            FdoPtr<FdoPropertyValue> propertyValue;
+
+            FdoPtr<FdoITransaction> featureTransaction = connection->BeginTransaction();
+            FdoIInsert *insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
+            insertCommand->SetFeatureClassName(L"Acad:AcDb3dPolyline");
+            FdoPtr<FdoPropertyValueCollection> propertyValues = insertCommand->GetPropertyValues();
+
+            FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+
+			// Use 2D points to accomodate MySql 
+            coordsBuffer[0] = 1.1;
+            coordsBuffer[1] = 2.2;
+            coordsBuffer[2] = 1.1;
+            coordsBuffer[3] = 3.3;
+
+            propertyValue = AddNewProperty( propertyValues, L"Geometry");
+            FdoPtr<FdoILineString> line1 = gf->CreateLineString(FdoDimensionality_XY, 2*3, coordsBuffer);
+            FdoPtr<FdoByteArray> byteArray = gf->GetFgf(line1);
+
+            FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray);
+            propertyValue->SetValue(geometryValue);
+
+            FdoPtr<FdoDataValue> dataValue;
+            dataValue = FdoDataValue::Create(L"801");
+            propertyValue = AddNewProperty( propertyValues, L"color");
+            propertyValue->SetValue(dataValue);
+
+			dataValue = FdoDataValue::Create(GetMinByteValue());
+			propertyValue = AddNewProperty( propertyValues, L"byte");
+			propertyValue->SetValue(dataValue);
+
+			dataValue = FdoDataValue::Create(GetMinInt16Value());
+			propertyValue = AddNewProperty( propertyValues, L"int16");
+			propertyValue->SetValue(dataValue);
+
+			dataValue = FdoDataValue::Create(GetMinInt32Value());
+			propertyValue = AddNewProperty( propertyValues, L"int32");
+			propertyValue->SetValue(dataValue);
+
+			dataValue = FdoDataValue::Create(GetMinInt64Value());
+			propertyValue = AddNewProperty( propertyValues, L"int64");
+			propertyValue->SetValue(dataValue);
+
+			dataValue = FdoDataValue::Create(GetMinSingleValue());
+			propertyValue = AddNewProperty( propertyValues, L"single");
+			propertyValue->SetValue(dataValue);
+
+			dataValue = FdoDataValue::Create(GetMinDoubleValue(), FdoDataType_Double);
+			propertyValue = AddNewProperty( propertyValues, L"double");
+			propertyValue->SetValue(dataValue);
+
+            FdoPtr<FdoIFeatureReader> reader = insertCommand->Execute();
+
+            dataValue = FdoDataValue::Create(L"802");
+            propertyValue = AddNewProperty( propertyValues, L"color");
+            propertyValue->SetValue(dataValue);
+
+			dataValue = FdoDataValue::Create(GetMaxByteValue());
+			propertyValue = AddNewProperty( propertyValues, L"byte");
+			propertyValue->SetValue(dataValue);
+
+			dataValue = FdoDataValue::Create(GetMaxInt16Value());
+			propertyValue = AddNewProperty( propertyValues, L"int16");
+			propertyValue->SetValue(dataValue);
+
+			dataValue = FdoDataValue::Create(GetMaxInt32Value());
+			propertyValue = AddNewProperty( propertyValues, L"int32");
+			propertyValue->SetValue(dataValue);
+
+			dataValue = FdoDataValue::Create(GetMaxInt64Value());
+			propertyValue = AddNewProperty( propertyValues, L"int64");
+			propertyValue->SetValue(dataValue);
+
+			dataValue = FdoDataValue::Create(GetMaxSingleValue());
+			propertyValue = AddNewProperty( propertyValues, L"single");
+			propertyValue->SetValue(dataValue);
+
+			dataValue = FdoDataValue::Create(GetMaxDoubleValue(), FdoDataType_Double);
+			propertyValue = AddNewProperty( propertyValues, L"double");
+			propertyValue->SetValue(dataValue);
+
+            reader = insertCommand->Execute();
+
+            dataValue = FdoDataValue::Create(L"803");
+            propertyValue = AddNewProperty( propertyValues, L"color");
+            propertyValue->SetValue(dataValue);
+
+			dataValue = FdoDataValue::Create(GetSmallestSingleValue());
+			propertyValue = AddNewProperty( propertyValues, L"single");
+			propertyValue->SetValue(dataValue);
+
+			dataValue = FdoDataValue::Create(GetSmallestDoubleValue(), FdoDataType_Double);
+			propertyValue = AddNewProperty( propertyValues, L"double");
+			propertyValue->SetValue(dataValue);
+
+            reader = insertCommand->Execute();
+
+            featureTransaction->Commit();
+			//featureTransaction->Rollback();
+            insertCommand->Release();
+			// check 
+			FdoISelect* selectCmd = (FdoISelect *) connection->CreateCommand(FdoCommandType_Select);
+			selectCmd->SetFeatureClassName(L"Acad:AcDb3dPolyline");
+			FdoPtr<FdoFilter> filter = FdoComparisonCondition::Create(
+					   FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"color")),
+					   FdoComparisonOperations_EqualTo, 
+					   FdoPtr<FdoDataValue>(FdoDataValue::Create(L"801")));
+			selectCmd->SetFilter(filter);
+
+			FdoPtr<FdoIFeatureReader> featureReader = selectCmd->Execute();
+			CPPUNIT_ASSERT(featureReader->ReadNext());
+            CPPUNIT_ASSERT ( featureReader->GetByte(L"byte") == GetMinByteValue() );
+            CPPUNIT_ASSERT ( featureReader->GetInt16(L"int16") == GetMinInt16Value() );
+            CPPUNIT_ASSERT ( featureReader->GetInt32(L"int32") == GetMinInt32Value() );
+            CPPUNIT_ASSERT ( featureReader->GetInt64(L"int64") == GetMinInt64Value() );
+            CPPUNIT_ASSERT ( featureReader->GetSingle(L"single") == GetMinSingleValue() );
+            CPPUNIT_ASSERT ( featureReader->GetDouble(L"double") == GetMinDoubleValue() );
+
+			filter = FdoComparisonCondition::Create(
+					   FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"color")),
+					   FdoComparisonOperations_EqualTo, 
+					   FdoPtr<FdoDataValue>(FdoDataValue::Create(L"802")));
+			selectCmd->SetFilter(filter);
+
+			featureReader = selectCmd->Execute();
+			CPPUNIT_ASSERT(featureReader->ReadNext());
+            CPPUNIT_ASSERT ( featureReader->GetByte(L"byte") == GetMaxByteValue() );
+            CPPUNIT_ASSERT ( featureReader->GetInt16(L"int16") == GetMaxInt16Value() );
+            CPPUNIT_ASSERT ( featureReader->GetInt32(L"int32") == GetMaxInt32Value() );
+            CPPUNIT_ASSERT ( featureReader->GetInt64(L"int64") == GetMaxInt64Value() );
+            CPPUNIT_ASSERT ( featureReader->GetSingle(L"single") == GetMaxSingleValue() );
+            CPPUNIT_ASSERT ( featureReader->GetDouble(L"double") == GetMaxDoubleValue() );
+
+			filter = FdoComparisonCondition::Create(
+					   FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"color")),
+					   FdoComparisonOperations_EqualTo, 
+					   FdoPtr<FdoDataValue>(FdoDataValue::Create(L"803")));
+			selectCmd->SetFilter(filter);
+
+			featureReader = selectCmd->Execute();
+			CPPUNIT_ASSERT(featureReader->ReadNext());
+// TODO: find out why smallest single goes into SqlServer database as 0.
+//            CPPUNIT_ASSERT ( featureReader->GetSingle(L"single") == GetSmallestSingleValue() );
+//            CPPUNIT_ASSERT ( featureReader->GetDouble(L"double") == GetSmallestDoubleValue() );
+
+            insertBoundaryCleanup( connection );
+        }
+        catch (...)
+        {
+            if (connection)
+                connection->Close ();
+            throw;
+        }
+    }
+    catch (FdoCommandException *ex)
+    {
+        UnitTestUtil::FailOnException(ex);
+    }
+    catch (FdoException *ex)
+    {
+        UnitTestUtil::FailOnException(ex);
+    }
+}
+
+void FdoInsertTest::insertBoundaryCleanup( FdoIConnection* connection )
+{
+    FdoPtr<FdoIDelete> deleteCmd = (FdoIDelete *) connection->CreateCommand(FdoCommandType_Delete);
+    deleteCmd->SetFeatureClassName(L"Acad:AcDb3dPolyline");
+    FdoPtr<FdoFilter> filter = FdoComparisonCondition::Create(
+        FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"color")),
+        FdoComparisonOperations_Like, 
+        FdoPtr<FdoDataValue>(FdoDataValue::Create(L"80%")));
+    deleteCmd->SetFilter(filter);
+    deleteCmd->Execute();
 }
 
 void FdoInsertTest::insertDate (FdoIConnection *connection, FdoDateTime dateTime, FdoString*colorIndex)
@@ -1251,3 +1441,74 @@ try
         CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
     }
 }
+
+FdoByte FdoInsertTest::GetMinByteValue()
+{
+    return (FdoByte) 0;
+}
+
+FdoInt16 FdoInsertTest::GetMinInt16Value()
+{
+    return (FdoInt16) -32768;
+}
+
+FdoInt32 FdoInsertTest::GetMinInt32Value()
+{
+    return (FdoInt32) -2147483648LL;
+}
+
+FdoInt64 FdoInsertTest::GetMinInt64Value()
+{
+    return (FdoInt64) -9223372036854775808LL;
+}
+
+FdoFloat FdoInsertTest::GetMinSingleValue()
+{
+    return (FdoFloat) -3.4028234e38;
+}
+
+FdoDouble FdoInsertTest::GetMinDoubleValue()
+{
+    return (FdoDouble) -1.797693134862315e308;
+}
+
+FdoByte FdoInsertTest::GetMaxByteValue()
+{
+    return (FdoByte) 255;
+}
+
+FdoInt16 FdoInsertTest::GetMaxInt16Value()
+{
+    return (FdoInt16) 32767;
+}
+
+FdoInt32 FdoInsertTest::GetMaxInt32Value()
+{
+    return (FdoInt32) 2147483647;
+}
+
+FdoInt64 FdoInsertTest::GetMaxInt64Value()
+{
+    return (FdoInt64) 9223372036854775807;
+}
+
+FdoFloat FdoInsertTest::GetMaxSingleValue()
+{
+    return (FdoFloat) 3.4028234e38;
+}
+
+FdoDouble FdoInsertTest::GetMaxDoubleValue()
+{
+    return (FdoDouble) 1.797693134862315e308;
+}
+
+FdoFloat FdoInsertTest::GetSmallestSingleValue()
+{
+    return (FdoFloat) 1.175495e-38;
+}
+
+FdoDouble FdoInsertTest::GetSmallestDoubleValue()
+{
+    return (FdoDouble) 2.225073858507202e-308;
+}
+

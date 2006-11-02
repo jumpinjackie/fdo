@@ -165,7 +165,6 @@ static int local_desc_slct(
 
 	switch(odbc_type) {
 		case SQL_CHAR :
-        case SQL_TINYINT:              
             if (odbc_precision == 1 ) {
                 *rdbi_type	= RDBI_CHAR;
                 *binary_size = odbc_precision + 1;
@@ -216,6 +215,7 @@ static int local_desc_slct(
 			*binary_size = sizeof(long);
             break;
 		case SQL_SMALLINT:
+        case SQL_TINYINT:              
 			*rdbi_type	= RDBI_SHORT;
 			*binary_size = sizeof(short);
             break;

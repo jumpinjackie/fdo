@@ -30,6 +30,7 @@ class FdoInsertTest : public CppUnit::TestCase
   CPPUNIT_TEST( insertEmptyProps );
   CPPUNIT_TEST( insert2 );
   CPPUNIT_TEST( insert3 );
+  CPPUNIT_TEST( insertBoundary );
   CPPUNIT_TEST( insertDate );
   CPPUNIT_TEST( smartPointerInsert );
   CPPUNIT_TEST( insertFlushTest );
@@ -49,6 +50,7 @@ public:
     virtual void insertFlushTest(); // Insert select while inserting new records
     virtual void insert2 ();
     virtual void insert3 ();
+    virtual void insertBoundary ();
     virtual void insertDate () {};
     virtual void smartPointerInsert();
 	virtual void conditionalInsert();
@@ -59,6 +61,28 @@ protected:
     void insertDateVerification (FdoIConnection *connection, int numOfSuccess);
     void insertDateCleanUp (FdoIConnection *connection);
 	static FdoPropertyValue* AddNewProperty( FdoPropertyValueCollection* propertyValues, const wchar_t *name );
+    void insertBoundaryCleanup( FdoIConnection* connection );
+
+    //Various Max/Min values for various numeric types.
+    //Used by insertBoundary test.
+    //Providers can overrides these if they don't support the same ranges of values.
+
+    virtual FdoByte GetMinByteValue();
+    virtual FdoInt16 GetMinInt16Value();
+    virtual FdoInt32 GetMinInt32Value();
+    virtual FdoInt64 GetMinInt64Value();
+    virtual FdoFloat GetMinSingleValue();
+    virtual FdoDouble GetMinDoubleValue();
+
+    virtual FdoByte GetMaxByteValue();
+    virtual FdoInt16 GetMaxInt16Value();
+    virtual FdoInt32 GetMaxInt32Value();
+    virtual FdoInt64 GetMaxInt64Value();
+    virtual FdoFloat GetMaxSingleValue();
+    virtual FdoDouble GetMaxDoubleValue();
+
+    virtual FdoFloat GetSmallestSingleValue();
+    virtual FdoDouble GetSmallestDoubleValue();
 
     char  mSuffix[12];
 };
