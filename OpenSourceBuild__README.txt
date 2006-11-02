@@ -354,12 +354,12 @@ II. Windows Build Instructions:
 				   NOTE: The initialization file must contain values for service, username and password.
 				   
 				   The initialization file must contain service, username and password for each server type 
-					
+				   DSN name can be specified using DSNOracle, DSNMySql, DSNSqlServer
 				   e.g.: 
                         
-                        serviceOracle=oraserver;usernameOracle=xxxx;passwordOracle=xxxx;
-                        serviceMySql=mysqlserver;usernameMySql=root;passwordMySql=xxxx;
-                        serviceSqlServer=sqlserver;usernameSqlServer=xxxx;passwordSqlServer=xxxx;
+                        serviceOracle=oraserver;usernameOracle=xxxx;passwordOracle=xxxx;DSNOracle=ORACLExxx;
+                        serviceMySql=mysqlserver;usernameMySql=root;passwordMySql=xxxx;DSNMySql=MySQLxxx;
+                        serviceSqlServer=sqlserver;usernameSqlServer=xxxx;passwordSqlServer=xxxx;DSNSqlServer=SqlServerxxx;
 
                   NOTE: You can also run the unit tests separately for each ODBC subtype:
 						
@@ -654,6 +654,7 @@ II. Linux Build Instructions:
             cd [FDO OpenSource]/Providers/GenericRdbms/Src/UnitTest
 
  				-  you must have the DSN created before you will run the unit tests.
+ 				-  DSN name can be specified using DSNOracle, DSNMySql, DSNSqlServer
 
  				-  If you wish to run the ODBC unit tests without specifying 
 				   an initialization file, update the default initialization file 
@@ -676,8 +677,8 @@ II. Linux Build Instructions:
 					
 				   e.g.: 
                         
-                        serviceOracle=oraserver;usernameOracle=xxxx;passwordOracle=xxxx;
-                        serviceMySql=mysqlserver;usernameMySql=root;passwordMySql=xxxx;
+                        serviceOracle=oraserver;usernameOracle=xxxx;passwordOracle=xxxx;DSNOracle=ORACLE;
+                        serviceMySql=mysqlserver;usernameMySql=root;passwordMySql=xxxx;DSNMySql=MySQL;
 
 				   NOTE: You can also run the unit tests separately for each ODBC subtype:
 						
