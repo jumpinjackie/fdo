@@ -165,3 +165,82 @@ void KeyDb::Drop()
         );
     }
 }
+
+int KeyDb::GetFirst( SQLiteData* key, SQLiteData* data )
+{
+    SQLiteCursor *cur = NULL;
+	if( m_db->cursor(0, &cur, FALSE ) != SQLiteDB_OK || cur == NULL )
+		return SQLiteDB_ERROR;
+	
+	if( cur->first() == SQLiteDB_OK )
+	{
+		int size;
+		char *dat;
+		if( cur->get_data(&size, &dat, false ) ==  SQLiteDB_OK )
+		{
+			data->set_size(size);
+			data->set_data(dat);
+			if( cur->get_key(&size, &dat ) !=  SQLiteDB_OK )
+				return SQLiteDB_ERROR;
+
+			key->set_size(size);
+			key->set_data(dat);
+			return SQLiteDB_OK;
+		}
+	}
+
+	return SQLiteDB_NOTFOUND;
+}
+    
+int KeyDb::GetNext( SQLiteData* key, SQLiteData* data )
+{
+    SQLiteCursor *cur = NULL;
+	if( m_db->cursor(0, &cur, FALSE ) != SQLiteDB_OK || cur == NULL )
+		return SQLiteDB_ERROR;
+
+	if( cur->next() == SQLiteDB_OK )
+	{
+		int size;
+		char *dat;
+		if( cur->get_data(&size, &dat, false ) ==  SQLiteDB_OK )
+		{
+			data->set_size(size);
+			data->set_data(dat);
+			if( cur->get_key(&size, &dat ) !=  SQLiteDB_OK )
+				return SQLiteDB_ERROR;
+
+			key->set_size(size);
+			key->set_data(dat);
+			return SQLiteDB_OK;
+		}
+	}
+
+	return SQLiteDB_NOTFOUND;
+}
+
+int KeyDb::GetLast( SQLiteData* key, SQLiteData* data )
+{
+    SQLiteCursor *cur = NULL;
+	if( m_db->cursor(0, &cur, FALSE ) != SQLiteDB_OK || cur == NULL )
+		return SQLiteDB_ERROR;
+	
+	bool empty = false;
+	if( cur->last( empty ) == SQLiteDB_OK && !empty )
+	{
+		int size;
+		char *dat;
+		if( cur->get_data(&size, &dat, false ) ==  SQLiteDB_OK )
+		{
+			data->set_size(size);
+			data->set_data(dat);
+			if( cur->get_key(&size, &dat ) !=  SQLiteDB_OK )
+				return SQLiteDB_ERROR;
+
+			key->set_size(size);
+			key->set_data(dat);
+			return SQLiteDB_OK;
+		}
+	}
+
+	return SQLiteDB_NOTFOUND;
+}

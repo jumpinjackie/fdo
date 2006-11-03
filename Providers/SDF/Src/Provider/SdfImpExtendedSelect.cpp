@@ -96,8 +96,17 @@ static int local_compare( void *handler, const void * lhs, const void * rhs )
 	for(int i=0; i<ctx->propCount && retcode==0; i++ )
 	{
 		if( ctx->propCache[idx1][i].type == -1 || ctx->propCache[idx2][i].type == -1 )
-			continue;
+        {
+            if( ctx->propCache[idx1][i].type == ctx->propCache[idx2][i].type )
+                continue;
 
+            if( ctx->propCache[idx1][i].type == -1 )
+                retcode = -1;
+            else 
+                retcode = 1;
+
+			continue;
+        }
 		switch( ctx->propCache[idx2][i].type )
 		{
 		  case FdoDataType_DateTime :
@@ -332,6 +341,46 @@ void SdfImpExtendedSelect::BuildCacheFile( SdfConnection* conn, FdoClassDefiniti
 
 	conn->FlushAll(clas);
 }
+SdfIScrollableFeatureReader* SdfImpExtendedSelect::ExecuteFastScrollable( )
+{
+    SQLiteData		key;
+    SQLiteData		data;
+    FdoPtr<FdoClassDefinition> cls = FdoPtr<FdoClassCollection>(
+        m_connection->GetSchema()->GetClasses())->GetItem(m_className->GetName());
+	KeyDb  *keyDb = this->m_connection->GetKeyDb( cls );
+	int ret = keyDb->GetLast( &key, &data );
+	if( ret != SQLiteDB_OK )
+		return NULL; // Exception here
+
+	int maxsize = *((int*)data.get_data());
+	REC_NO *indexTable = NULL;
+	indexTable = new REC_NO[maxsize];
+
+	bool found = true;
+	SQLiteData		*pkey;
+    SQLiteData		*pdata;
+	
+	found = ( keyDb->GetFirst( &key, &data ) == SQLiteDB_OK );
+    if( ! found )
+        return NULL;
+
+	pkey = &key;
+	pdata = &data;
+	
+	int i = 0;
+	while( found && i <maxsize )
+	{
+        REC_NO recno = *((REC_NO*)pdata->get_data());
+        indexTable[i] = recno;
+        i++;
+		found = ( keyDb->GetNext( &key, &data ) == SQLiteDB_OK );
+		pkey = &key;
+		pdata = &data;
+	}
+	maxsize = i;
+	return new SdfImpScrollableFeatureReader<SdfIndexedScrollableFeatureReader>(new SdfIndexedScrollableFeatureReader( 
+                        m_connection,cls,indexTable, maxsize) );
+}
 
 SdfIScrollableFeatureReader* SdfImpExtendedSelect::ExecuteScrollable()
 {
@@ -341,8 +390,14 @@ SdfIScrollableFeatureReader* SdfImpExtendedSelect::ExecuteScrollable()
 
 	SQLiteData		key;
     SQLiteData		data;
-	FdoPtr<FdoClassDefinition> cls = FdoPtr<FdoClassCollection>(
+    FdoPtr<FdoClassDefinition> cls = FdoPtr<FdoClassCollection>(
         m_connection->GetSchema()->GetClasses())->GetItem(m_className->GetName());
+
+    FdoPtr<FdoClassDefinition> base = cls->GetBaseClass();
+    if( this->m_filter == NULL && m_orderingProperties->GetCount() == 0 && base == NULL )
+        return ExecuteFastScrollable();
+
+	
 	DataDb  *dataDb = this->m_connection->GetDataDb( cls );
 	int ret = dataDb->GetLastFeature( &key, &data );
 	if( ret != SQLiteDB_OK )

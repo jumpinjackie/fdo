@@ -52,6 +52,12 @@ public:
 
 	void Drop();
 
+    int GetFirst( SQLiteData* key, SQLiteData* data );
+    
+	int GetNext( SQLiteData* key, SQLiteData* data );
+
+    int GetLast( SQLiteData* key, SQLiteData* data );
+
 private:
 
     PhysName m_dbname;

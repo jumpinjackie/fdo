@@ -88,6 +88,7 @@ class SdfImpExtendedSelect : public SdfSelect
 
 		void BuildCacheFile( SdfConnection* conn, FdoClassDefinition* fdoclass, FdoIFeatureReader* reader, FdoPropertyValueCollection* defaultPvc );
 
+        SdfIScrollableFeatureReader* ExecuteFastScrollable( );
     //-------------------------------------------------------
     // Variables
     //-------------------------------------------------------
