@@ -152,13 +152,13 @@ FdoFunctionDefinitionCollection* FdoWmsExpressionCapabilities::GetFunctions()
 	args->Add(rasterArg);
 
     desc = NlsMsgGet(FDOWMS_SPATIAL_EXTENTS_FUNCTION_DESC, "The SpatialExtents function returns the spatial extents of a raster property.");
-    FdoPtr<FdoSignatureDefinition> spatialExtSigDef = FdoSignatureDefinition::Create(FdoDataType_BLOB, args);
+    FdoPtr<FdoSignatureDefinition> spatialExtSigDef = FdoSignatureDefinition::Create(FdoPropertyType_GeometricProperty, FdoDataType_BLOB, args);
     FdoPtr<FdoSignatureDefinitionCollection> spatialExtSigDefCol = FdoSignatureDefinitionCollection::Create();
-    clipSignatureDefCol->Add(spatialExtSigDef);
+    spatialExtSigDefCol->Add(spatialExtSigDef);
     FdoPtr<FdoFunctionDefinition> spatialExtents = FdoFunctionDefinition::Create(FDO_FUNCTION_SPATIALEXTENTS,
                                                                                  desc,
                                                                                  true,
-                                                                                 clipSignatureDefCol);
+                                                                                 spatialExtSigDefCol);
     ret->Add(spatialExtents);
 
     return (FDO_SAFE_ADDREF (ret.p));

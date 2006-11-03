@@ -266,8 +266,15 @@ void CapabilityTest::TestCapabilities ()
 		CPPUNIT_ASSERT(rasterArg->GetDataType() == FdoDataType_Double);
 
 		// SpatialExtents function
-		FdoPtr<FdoFunctionDefinition> selectFunction = functions->GetItem(2);
-		CPPUNIT_ASSERT(STRCASEEQ(selectFunction->GetName(), L"SpatialExtents"));
+		FdoPtr<FdoFunctionDefinition> extentsFunction = functions->GetItem(2);
+		CPPUNIT_ASSERT(STRCASEEQ(extentsFunction->GetName(), L"SpatialExtents"));
+		CPPUNIT_ASSERT(extentsFunction->GetReturnPropertyType() == FdoPropertyType_GeometricProperty);
+
+		args = extentsFunction->GetArguments();
+		CPPUNIT_ASSERT(args->GetCount() == 1);
+		rasterArg = args->GetItem(0);
+		CPPUNIT_ASSERT(STRCASEEQ(rasterArg->GetName(), L"raster"));
+		CPPUNIT_ASSERT(rasterArg->GetDataType() == FdoDataType_BLOB);
 
 
         //
