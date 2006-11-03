@@ -476,6 +476,12 @@ FdoString* DataDb::GetDbName()
     return (FdoString*) m_dbname;
 }
 
+void DataDb::Flush() 
+{ 
+    m_lastRec = 0;
+    m_db->flush(); 
+}
+
 int DataDb::compare(int size1,const void* data1,int size2,const void* data2)
 {
   if( m_CompareHandler == NULL )

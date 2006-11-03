@@ -67,7 +67,7 @@ public:
 
 	bool NeedsAFlush(bool partial=false) { return m_db->needs_a_flush(partial); }
 
-	void Flush() { m_db->flush(); }
+	void Flush();
 
 	// The DataDb can be shared by many reader. The tag is used to identify the
 	// last reader that used the DataDb.
