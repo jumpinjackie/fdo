@@ -30,6 +30,8 @@ void FgfUtil::WriteGeometry(FdoIGeometry* geometry, FdoByteArray ** outputStream
     FdoInt32 dimensionality = 0;
     FdoInt32 numPositions = 0;
     FdoInt32 numOrdsPerPos = 0;
+    FdoInt32 numOrds = 0;
+    const double * ordinates = NULL;
     FdoInt32 numRings = 0;
     FdoInt32 numSubGeometries = 0;
     FdoInt32 numCurveSegments = 0;
@@ -60,19 +62,21 @@ void FgfUtil::WriteGeometry(FdoIGeometry* geometry, FdoByteArray ** outputStream
 	    numPositions = ls->GetCount();
 	    FGFUTIL_WRITE_INT32(outputStream, dimensionality);
 	    FGFUTIL_WRITE_INT32(outputStream, numPositions);
-	    for (i=0;  i < numPositions;  i++)
-	    {
-		    FdoPtr<FdoIDirectPosition> pos = ls->GetItem(i);
-		    WriteDirectPosition(outputStream, pos);
-	    }
+        numOrdsPerPos = GeometryUtility::DimensionalityToNumOrdinates(dimensionality);
+        numOrds = numPositions * numOrdsPerPos;
+        ordinates = ls->GetOrdinates();
+        FGFUTIL_WRITE_DOUBLES(outputStream, numOrds, ordinates);
 		break;
 
 	case FdoGeometryType_Point:
         pt = static_cast<FdoIPoint *>(geometry);
         dimensionality = pt->GetDimensionality();
+	    numPositions = 1;
 	    FGFUTIL_WRITE_INT32(outputStream, dimensionality);
-	    pos = pt->GetPosition();
-	    WriteDirectPosition(outputStream, pos);
+        numOrdsPerPos = GeometryUtility::DimensionalityToNumOrdinates(dimensionality);
+        numOrds = numPositions * numOrdsPerPos;
+        ordinates = pt->GetOrdinates();
+        FGFUTIL_WRITE_DOUBLES(outputStream, numOrds, ordinates);
 		break;
 
 	case FdoGeometryType_Polygon:
@@ -202,14 +206,12 @@ void FgfUtil::WriteLinearRing(FdoILinearRing* lineRing, FdoByteArray ** outputSt
 {
 	// Write the number of positions in this ring
 	FdoInt32 numPositions = lineRing->GetCount();
+	FdoInt32 dimensionality = lineRing->GetDimensionality();
 	FGFUTIL_WRITE_INT32(outputStream, numPositions);
-
-	// Now write the positions
-	for (FdoInt32 i=0; i<numPositions; i++)
-    {
-		FdoPtr<FdoIDirectPosition> pos = lineRing->GetItem(i);
-		WriteDirectPosition(outputStream, pos);
-    }
+    FdoInt32 numOrdsPerPos = GeometryUtility::DimensionalityToNumOrdinates(dimensionality);
+    FdoInt32 numOrds = numPositions * numOrdsPerPos;
+    const double * ordinates = lineRing->GetOrdinates();
+    FGFUTIL_WRITE_DOUBLES(outputStream, numOrds, ordinates);
 }
 
 
@@ -285,17 +287,15 @@ void FgfUtil::WriteCurveSegment(FdoICurveSegmentAbstract* curveSeg, FdoByteArray
 			// we will write numPositions-1 because its start position
 			// has already been written as end point of previous segment
 			// and we will be writing numPosition-1 positions in fgf buffer
-			FdoInt32 numPositions = ((FdoILineStringSegment*)curveSeg)->GetCount();
+            FdoILineStringSegment * lss = (FdoILineStringSegment*)curveSeg;
+        	FdoInt32 dimensionality = lss->GetDimensionality();
+			FdoInt32 numPositions = lss->GetCount();
 			FGFUTIL_WRITE_INT32(outputStream, numPositions-1);
-
-			// Only the points except the startpoint will be written because the startpoint is
-			// already stored as member of CurveString or as end point of previous
-			// segment NOTE: i==1 below.
-			for (FdoInt32 i=1; i<numPositions; i++)
-			{
-				FdoPtr<FdoIDirectPosition> pos = ((FdoILineStringSegment*)curveSeg)->GetItem(i);
-				WriteDirectPosition(outputStream, pos);
-			}
+            FdoInt32 numOrdsPerPos = GeometryUtility::DimensionalityToNumOrdinates(dimensionality);
+            FdoInt32 numOrds = (numPositions-1) * numOrdsPerPos;
+            const double * ordinates = lss->GetOrdinates();
+            ordinates += numOrdsPerPos;
+            FGFUTIL_WRITE_DOUBLES(outputStream, numOrds, ordinates);
 
 			break;
 		}
@@ -473,19 +473,27 @@ FdoICurveSegmentAbstract* FgfUtil::ReadCurveSegment(
 	case FdoGeometryComponentType_LineStringSegment:
 		{
 			FdoInt32 numPositions = ReadInt32(inputStream, streamEnd);
-			FdoPtr<FdoDirectPositionCollection> positions = FdoDirectPositionCollection::Create();
+            FdoInt32 numOrdsPerPos = GeometryUtility::DimensionalityToNumOrdinates(dimensionality);
+            FdoInt32 numOrds = (numPositions+1) * numOrdsPerPos;
+            FdoPtr<FdoDoubleArray> da = FdoDoubleArray::Create(numOrds);
+            double * ordinates = da->GetData();
+            double * currentOrdinates = ordinates;
+            const double * positionOrdinates = startPos->GetOrdinates();
 
 			// add the startPos
-			positions->Add(startPos);
+            for (FdoInt32 i=0;  i < numOrdsPerPos;  i++)
+                *currentOrdinates++ = *positionOrdinates++;
 
 			// Now add remaining positions
-			for (FdoInt32 i=0; i<numPositions; i++)
-			{
-				FdoPtr<FdoIDirectPosition> pos = ReadDirectPosition(factory, dimensionality, inputStream, streamEnd);
-				positions->Add(pos);
-			}
+            numOrds -= numOrdsPerPos;   // Adjust for already having start position.
+    	    FGFUTIL_STREAM_CHECK(inputStream, streamEnd, numOrds);
+            positionOrdinates = (const double *) *inputStream;
+            for (FdoInt32 i=0;  i < numOrds;  i++)
+                *currentOrdinates++ = *positionOrdinates++;
+            *inputStream += numOrds * sizeof(double);
+            numOrds += numOrdsPerPos;   // Adjust for start position + remaining ones.
 
-			curveSeg = factory->CreateLineStringSegment(positions);
+			curveSeg = factory->CreateLineStringSegment(dimensionality, numOrds, ordinates);
 			break;
 		}
 

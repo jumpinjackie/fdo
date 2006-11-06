@@ -84,16 +84,16 @@ FdoFgfGeometryFactory::FdoFgfGeometryFactory()
 // Destructor
 FdoFgfGeometryFactory::~FdoFgfGeometryFactory()
 {
-    delete m_private;
-
 #ifdef EXTRA_DEBUG
     if (NULL != FdoDebugFile)
     {
         fprintf(FdoDebugFile, "FdoFgfGeometryFactory::~FdoFgfGeometryFactory()\n");
         fflush(FdoDebugFile);
-        PrintStats();
+        m_private->PrintStats();
     }
 #endif
+
+    delete m_private;
 }
 
 #ifdef EXTRA_DEBUG
@@ -103,12 +103,19 @@ void FdoFgfGeometryFactory2::PrintStats()
     {
         FdoInt32 ehits=0, rhits=0, misses=0;
         fprintf(FdoDebugFile, "  FdoFgfGeometryFactory::PrintStats():\n");
-        fprintf(FdoDebugFile, "    %d LinearRings created.\n", m_private->m_numLinearRingsCreated);
-        if (m_private->m_linearRingPool != NULL)
+        fprintf(FdoDebugFile, "    %d ByteArrays created.\n", m_numByteArraysCreated);
+        if (m_byteArrayPool != NULL)
         {
-            this->m_private->m_linearRingPool->GetStats(&ehits, &rhits, &misses);
+            m_byteArrayPool->GetStats(&ehits, &rhits, &misses);
             fprintf(FdoDebugFile,
-                "      Pool stats: %d empty hits, %d reusable hits, %d misses\n",
+                "      ByteArray Pool stats: %d empty hits, %d reusable hits, %d misses\n",
+                ehits, rhits, misses);
+        }
+        if (m_linearRingPool != NULL)
+        {
+            m_linearRingPool->GetStats(&ehits, &rhits, &misses);
+            fprintf(FdoDebugFile,
+                "      LinearRing Pool stats: %d empty hits, %d reusable hits, %d misses\n",
                 ehits, rhits, misses);
         }
         fflush(FdoDebugFile);
@@ -118,62 +125,20 @@ void FdoFgfGeometryFactory2::PrintStats()
 
 FdoILineString* FdoFgfGeometryFactory::CreateLineString(FdoDirectPositionCollection * positions)
 {
-#ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
-    {
-        fprintf(FdoDebugFile, "CreateLineString() IN\n");
-        fflush(FdoDebugFile);
-    }
-#endif
-	if ( (NULL == positions) ||
-        ( 0 == positions->GetCount()) )
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
-                                                               L"FdoILineString",
-                                                               L"positions"));
-
-	FdoPtr<FdoILineString> lineString = new FdoFgfLineString(this, positions);
-
-    if (lineString == NULL)
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
-
-#ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
-    {
-        fprintf(FdoDebugFile, "CreateLineString() OUT\n");
-        fflush(FdoDebugFile);
-    }
-#endif
-	return FDO_SAFE_ADDREF(lineString.p);
+    FDOPOOL_CREATE_OBJECT(
+        m_private->m_PoolLineString, FdoPoolFgfLineString, 4,
+        FdoFgfLineString,
+        FdoFgfLineString(this, positions),
+        Reset(positions) );
 }
 
 FdoILineString* FdoFgfGeometryFactory::CreateLineString(FdoInt32 dimensionType, FdoInt32 numOrdinates, double* ordinates)
 {
-#ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
-    {
-        fprintf(FdoDebugFile, "CreateLineString() IN\n");
-        fflush(FdoDebugFile);
-    }
-#endif
-	if ( (numOrdinates <= 0) ||
-		 (NULL == ordinates) )
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
-                                                               L"FdoILineString",
-                                                               L"ordinates/numOrdinates"));
-
-	FdoPtr<FdoILineString> geometry = new FdoFgfLineString(this, dimensionType, numOrdinates, ordinates);
-
-    if (geometry == NULL)
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
-
-#ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
-    {
-        fprintf(FdoDebugFile, "CreateLineString() OUT\n");
-        fflush(FdoDebugFile);
-    }
-#endif
-	return FDO_SAFE_ADDREF(geometry.p);
+    FDOPOOL_CREATE_OBJECT(
+        m_private->m_PoolLineString, FdoPoolFgfLineString, 4,
+        FdoFgfLineString,
+        FdoFgfLineString(this, dimensionType, numOrdinates, ordinates),
+        Reset(dimensionType, numOrdinates, ordinates) );
 }
 
 // Pseudo copy constructor; this method can convert between implementations.
@@ -317,6 +282,11 @@ FdoIGeometry * FdoFgfGeometryFactory::CreateGeometryFromFgf(
         newGeometry = new FdoFgf##type(this, byteArray, byteArrayData, count); \
         break;
 
+#define CASE_CREATE_GEOMETRY2(type) \
+    case FdoGeometryType_##type: \
+        newGeometry = m_private->Create##type(this, byteArray, byteArrayData, count); \
+        break;
+
     if (pooledGeometryToReassignIndex >= 0)
     {
         // Call SetFgf() on the appropriate type.  Unfortunately, we cannot call it
@@ -347,7 +317,7 @@ FdoIGeometry * FdoFgfGeometryFactory::CreateGeometryFromFgf(
 
 	    switch ( geometryType )
 	    {
-	    CASE_CREATE_GEOMETRY(LineString);
+	    CASE_CREATE_GEOMETRY2(LineString);
 	    CASE_CREATE_GEOMETRY(Point);
 	    CASE_CREATE_GEOMETRY(Polygon);
 	    CASE_CREATE_GEOMETRY(MultiPoint);
@@ -804,41 +774,11 @@ FdoIPoint* FdoFgfGeometryFactory::CreatePoint(FdoInt32 dimensionality, double* o
 /************************************************************************/
 FdoILinearRing* FdoFgfGeometryFactory::CreateLinearRing(FdoDirectPositionCollection * positions)
 {
-#ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
-    {
-        fprintf(FdoDebugFile, "CreateLinearRing() IN\n");
-        fflush(FdoDebugFile);
-    }
-#endif
-
-    if (m_private->m_linearRingPool == NULL)
-        m_private->m_linearRingPool = FdoFgfLinearRingCache::Create(4);
-
-    FdoPtr<FdoFgfLinearRing> lineRing = m_private->m_linearRingPool->FindReusableItem();
-
-    if (lineRing == NULL)
-    {
-	    lineRing = new FdoFgfLinearRing(this, positions);
-        if (lineRing == NULL)
-            throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
-    }
-    else
-    {
-        lineRing->Reset(positions);
-    }
-
-    m_private->m_linearRingPool->AddItem(lineRing);
-
-#ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
-    {
-        fprintf(FdoDebugFile, "CreateLinearRing() OUT\n");
-        fflush(FdoDebugFile);
-        PrintStats();
-    }
-#endif
-	return FDO_SAFE_ADDREF(lineRing.p);
+    FDOPOOL_CREATE_OBJECT(
+        m_private->m_linearRingPool, FdoFgfLinearRingPool, 4,
+        FdoFgfLinearRing,
+        FdoFgfLinearRing(this, positions),
+        Reset(positions) );
 }
 
 
@@ -847,46 +787,11 @@ FdoILinearRing* FdoFgfGeometryFactory::CreateLinearRing(FdoDirectPositionCollect
 /************************************************************************/
 FdoILinearRing* FdoFgfGeometryFactory::CreateLinearRing(FdoInt32 dimtype, FdoInt32 numOrdinates, double* ordinates)
 {
-#ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
-    {
-        fprintf(FdoDebugFile, "CreateLinearRing() IN\n");
-        fflush(FdoDebugFile);
-    }
-#endif
-	if ( (NULL == ordinates) ||
-		 (numOrdinates <= 0) )
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
-                                                               L"FdoILinearRing",
-                                                               L"ordinates/numOrdinates"));
-
-    if (m_private->m_linearRingPool == NULL)
-        m_private->m_linearRingPool = FdoFgfLinearRingCache::Create(4);
-
-    FdoPtr<FdoFgfLinearRing> lineRing = m_private->m_linearRingPool->FindReusableItem();
-
-    if (lineRing == NULL)
-    {
-	    lineRing = new FdoFgfLinearRing(this, dimtype, numOrdinates, ordinates);
-        if (lineRing == NULL)
-            throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
-    }
-    else
-    {
-        lineRing->Reset(dimtype, numOrdinates, ordinates);
-    }
-
-    m_private->m_linearRingPool->AddItem(lineRing);
-
-#ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
-    {
-        fprintf(FdoDebugFile, "CreateLinearRing() OUT\n");
-        fflush(FdoDebugFile);
-        PrintStats();
-    }
-#endif
-	return FDO_SAFE_ADDREF(lineRing.p);
+    FDOPOOL_CREATE_OBJECT(
+        m_private->m_linearRingPool, FdoFgfLinearRingPool, 4,
+        FdoFgfLinearRing,
+        FdoFgfLinearRing(this, dimtype, numOrdinates, ordinates),
+        Reset(dimtype, numOrdinates, ordinates) );
 }
 
 //LineStringSegment
@@ -1474,7 +1379,7 @@ FdoIGeometry* FdoFgfGeometryFactory::CreateGeometry(FdoString* fgft)
 FdoByteArray * FdoFgfGeometryFactory::GetByteArray()
 {
     if (m_private->m_byteArrayPool == NULL)
-        m_private->m_byteArrayPool = FdoByteArrayCache::Create(10);
+        m_private->m_byteArrayPool = FdoByteArrayPool::Create(10);
 
     // Acquire or create a byte array, whose ownership we'll hand completely 
     // over to the writer.  Updateable FdoArray types cannot have shared ownership,
@@ -1482,13 +1387,14 @@ FdoByteArray * FdoFgfGeometryFactory::GetByteArray()
     // updateable FdoArray types for the same reason.
 
     FdoByteArray * byteArray = NULL;
-#ifdef POOL_BYTEARRAYS
     byteArray = m_private->m_byteArrayPool->FindReusableItem();
-#endif
 
     if (byteArray == NULL)
     {
 	    byteArray = FdoByteArray::Create(172); // A guess: endian+type+dim+20ordinates
+#ifdef EXTRA_DEBUG
+        m_private->m_numByteArraysCreated++;
+#endif
     }
     else
     {
@@ -1507,11 +1413,9 @@ void FdoFgfGeometryFactory::TakeReleasedByteArray(FdoByteArray * byteArray)
                                                                L"byteArray"));
 
     if (m_private->m_byteArrayPool == NULL)
-        m_private->m_byteArrayPool = FdoByteArrayCache::Create(10);
+        m_private->m_byteArrayPool = FdoByteArrayPool::Create(10);
 
-#ifdef POOL_BYTEARRAYS
     m_private->m_byteArrayPool->AddItem(byteArray);
-#endif
 }
 
 

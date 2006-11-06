@@ -67,37 +67,51 @@ public:
     {
         FdoInt32 freeIndex = -1;
         FdoInt32 reusableIndex = -1;
-        FdoPtr<OBJ> reusableItem;
         FdoInt32 startIndex = m_LastVisitedIndex+1;
+        FdoPtr<OBJ> reusableItem;
         FdoInt32 count = FdoCollection <OBJ, EXC>::GetCount();
 
-        // Nothing notably clever here -- linear search for free entry, also
-        // noting a re-usable item, if found.
-        for (FdoInt32 i=startIndex;  -1 == freeIndex && i < count;  i++)
+        // Nothing notably clever here -- linear search for re-usable item, also
+        // noting a free entry, if found.
+        for (FdoInt32 i=startIndex;  -1 == reusableIndex && i < count;  i++)
         {
             FdoPtr<OBJ> candidate = FdoCollection<OBJ, EXC>::GetItem(i);
-            if (candidate == NULL)
-                freeIndex = i;
-            else if (-1 == reusableIndex && 2 == GET_REFCOUNT(candidate.p))   // '2' == 1 for cache + 1 for 'candidate'
+            if (candidate != NULL && -1 == reusableIndex && 2 == GET_REFCOUNT(candidate.p))   // '2' == 1 for cache + 1 for 'candidate'
             {
                 reusableIndex = i;
                 reusableItem = candidate;
             }
-        }
-        // Roll around to start of array if needed.
-        for (FdoInt32 i=0;  -1 == freeIndex && i < startIndex;  i++)
-        {
-            FdoPtr<OBJ> candidate = FdoCollection <OBJ, EXC>::GetItem(i);
-            if (candidate == NULL)
+            else if (candidate == NULL && -1 == freeIndex)
+            {
                 freeIndex = i;
-            else if (-1 == reusableIndex && 2 == GET_REFCOUNT(candidate.p))
+            }
+        }
+        for (FdoInt32 i=0;  -1 == reusableIndex && i < startIndex;  i++)
+        {
+            FdoPtr<OBJ> candidate = FdoCollection<OBJ, EXC>::GetItem(i);
+            if (candidate != NULL && -1 == reusableIndex && 2 == GET_REFCOUNT(candidate.p))   // '2' == 1 for cache + 1 for 'candidate'
             {
                 reusableIndex = i;
                 reusableItem = candidate;
+            }
+            else if (candidate == NULL && -1 == freeIndex)
+            {
+                freeIndex = i;
             }
         }
 
-        if (-1 != freeIndex)
+        if (reusableItem != NULL)
+        {
+            // We found a re-usable item.
+            // Remember where we found it and release our ownership.
+            m_LastVisitedIndex = reusableIndex;
+            FDO_SAFE_ADDREF(reusableItem.p);    // This increases share for the return value.
+            FdoCollection<OBJ, EXC>::SetItem(reusableIndex, NULL);
+#ifdef EXTRA_DEBUG
+            m_ReusableHits++;
+#endif
+        }
+        else if (-1 != freeIndex)
         {
             // We found an empty entry in the cache.  We'll return NULL,
             // and internally remember where we found the entry for when
@@ -108,22 +122,13 @@ public:
             m_EmptyHits++;
 #endif
         }
-        else if (reusableItem != NULL)
-        {
-            // We found no empty entry, but did find a re-usable item.
-            // Remember where we found it and release our ownership.
-            m_LastVisitedIndex = reusableIndex;
-            FDO_SAFE_ADDREF(reusableItem.p);    // This increases share for the return value.
-            FdoCollection<OBJ, EXC>::SetItem(reusableIndex, NULL);
-#ifdef EXTRA_DEBUG
-            m_ReusableHits++;
-#endif
-        }
         else
         {
-            // We didn't find anything we wanted.  Release the entry
-            // where we started.  We should pick it up as free when the
-            // caller calls AddItem().
+            // We didn't find anything we wanted.  Release the next entry,
+            // effecting a round-robin procedure for a full pool.
+            m_LastVisitedIndex++;
+            if (m_LastVisitedIndex >= count)
+                m_LastVisitedIndex = 0;
             FdoCollection<OBJ, EXC>::SetItem(m_LastVisitedIndex, NULL);
 #ifdef EXTRA_DEBUG
             m_Misses++;
@@ -230,6 +235,34 @@ private:
             delete this; \
         } \
     };
+
+#define FDOPOOL_CREATE_OBJECT( pool_I, poolType_I, poolSize_I, objectType_I, constructorCall_I, resetCall_I ) \
+{ \
+    if ((pool_I) == NULL) \
+        (pool_I) = poolType_I::Create(poolSize_I); \
+    objectType_I * ret = (pool_I)->FindReusableItem(); \
+    if (NULL == ret) \
+    { \
+        try \
+        { \
+            ret = new constructorCall_I; \
+            if ( NULL == ret ) throw; \
+        } \
+        catch (...) \
+        { \
+            throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC))); \
+        } \
+    } \
+    else    /* Re-use an object from the pool.*/ \
+    { \
+        ret->resetCall_I; \
+    } \
+ \
+    (pool_I)->AddItem(ret); \
+ \
+    return ret; \
+}
+
 
 #endif
 

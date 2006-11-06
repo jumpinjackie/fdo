@@ -45,8 +45,9 @@
 #include "MultiCurvePolygon.h"
 
 
-FDOPOOL_DEFINE(FdoByteArrayCache, FdoByteArray)
-FDOPOOL_DEFINE(FdoFgfLinearRingCache, FdoFgfLinearRing)
+FDOPOOL_DEFINE(FdoByteArrayPool,            FdoByteArray)
+FDOPOOL_DEFINE(FdoFgfLinearRingPool,        FdoFgfLinearRing)
+FDOPOOL_DEFINE(FdoPoolFgfLineString,        FdoFgfLineString)
 
 
 /// <summary>This defines private data for the FdoFgfGeometryFactory class.
@@ -54,21 +55,42 @@ FDOPOOL_DEFINE(FdoFgfLinearRingCache, FdoFgfLinearRing)
 /// </summary>
 struct FdoFgfGeometryFactory2
 {
-    FdoPtr<FdoGeometryCollection>    m_geometryPool2;    // A few previous Geometries created; For fast re-creation.
-    FdoPtr<FdoByteArrayCache>        m_byteArrayPool;    // For fast re-creation.
-    FdoPtr<FdoFgfLinearRingCache>   m_linearRingPool;   // For fast re-creation.
+    FdoPtr<FdoGeometryCollection>       m_geometryPool2;    // A few previous Geometries created; For fast re-creation.
+    FdoPtr<FdoByteArrayPool>            m_byteArrayPool;    // For fast re-creation.
+    FdoPtr<FdoFgfLinearRingPool>        m_linearRingPool;   // For fast re-creation.
+    FdoPtr<FdoPoolFgfLineString>        m_PoolLineString;
 
 #ifdef EXTRA_DEBUG
-    FdoInt32 m_numLinearRingsCreated;
+    FdoInt32 m_numByteArraysCreated;
     void PrintStats();
 #endif
     FdoFgfGeometryFactory2()
 #ifdef EXTRA_DEBUG
-        : m_numLinearRingsCreated(0)
+        : m_numByteArraysCreated(0)
 #endif
     {
     };
     ~FdoFgfGeometryFactory2() {};
+
+    // Internal methods for FdoFgfGeometryFactory's use.
+
+#define CREATE_POOLED_GEOMETRY(type) \
+    FdoI##type * Create##type( \
+        FdoFgfGeometryFactory * factory, \
+        FdoByteArray * byteArray, \
+        const FdoByte * data, \
+        FdoInt32 count \
+        ) \
+    { \
+        FDOPOOL_CREATE_OBJECT( \
+            m_Pool##type, FdoPoolFgf##type, 4, \
+            FdoFgf##type, \
+            FdoFgf##type(factory, byteArray, data, count), \
+            Reset(byteArray, data, count) ); \
+    }
+
+    CREATE_POOLED_GEOMETRY(LineString);
+
 };
 #endif
 

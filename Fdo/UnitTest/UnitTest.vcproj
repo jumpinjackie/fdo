@@ -45,14 +45,14 @@
 				AdditionalIncludeDirectories="$(FDOTHIRDPARTY)\cppunit\include;..\Unmanaged\Inc;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
+				BasicRuntimeChecks="0"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="Pch.h"
 				PrecompiledHeaderFile="$(IntDir)/Pch.pch"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -65,8 +65,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="/fixed:no"
 				AdditionalDependencies="cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib"
-				LinkIncremental="2"
+				LinkIncremental="0"
 				AdditionalLibraryDirectories="$(FDOTHIRDPARTY)\cppunit\lib;..\Unmanaged\Lib\Win32\Debug"
 				GenerateDebugInformation="true"
 				SubSystem="1"

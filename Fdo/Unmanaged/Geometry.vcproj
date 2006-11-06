@@ -41,7 +41,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				InlineFunctionExpansion="1"
+				InlineFunctionExpansion="0"
 				AdditionalIncludeDirectories="Inc;Src/Common;Src/Geometry"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;EXP_FDO_GEOM;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"
@@ -139,7 +139,7 @@
 				PrecompiledHeaderFile=""
 				WarningLevel="3"
 				SuppressStartupBanner="true"
-				DebugInformationFormat="1"
+				DebugInformationFormat="3"
 				CompileAs="0"
 			/>
 			<Tool
@@ -153,6 +153,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="/fixed:no"
 				AdditionalDependencies="FDOCommon.lib"
 				OutputFile="$(OutDir)/FDOGeometry.dll"
 				LinkIncremental="1"
