@@ -44,7 +44,11 @@
 typedef struct rdbi_cursor_def {
     char               *vendor_data;        /* Vendor specific cursor area              */
 #ifdef _DEBUG
-    char               *sql;                /* sql string                               */
+    union
+    {
+        char               *sql;            /* sql string                               */
+        wchar_t            *sqlW;            /* sql string                               */
+    };
 #endif
     char                verb[VERB_LEN+1];   /* SQL command verb (1st word in stmt)      */
     int                 status;             /* our own translated status                */
