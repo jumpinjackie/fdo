@@ -41,7 +41,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				InlineFunctionExpansion="0"
+				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="Inc;Src/Common;Src/Geometry"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;EXP_FDO_GEOM;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"
@@ -250,11 +250,11 @@
 				>
 			</File>
 			<File
-				RelativePath="Src\Geometry\GeometryImpl.h"
+				RelativePath="Src\Geometry\Fgf\GeometryImpl.h"
 				>
 			</File>
 			<File
-				RelativePath="Src\Geometry\Fgf\GeometryImpl.h"
+				RelativePath="Src\Geometry\GeometryImpl.h"
 				>
 			</File>
 			<File

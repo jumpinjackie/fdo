@@ -41,7 +41,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				InlineFunctionExpansion="0"
+				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="Inc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;EXP_FDO_SPATIAL;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"

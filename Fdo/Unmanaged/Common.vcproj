@@ -41,7 +41,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				InlineFunctionExpansion="0"
+				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="Inc;$(FDOTHIRDPARTY)/apache/xml-xalan/c/src;$(FDOTHIRDPARTY)/apache/xml-xerces/c/src"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;EXP_FDO_COMMON;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"
@@ -133,7 +133,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="Inc;$(FDOTHIRDPARTY)/apache/xml-xalan/c/src;$(FDOTHIRDPARTY)/apache/xml-xerces/c/src"
-				PreprocessorDefinitions="EXTRA_DEBUG;WIN32;_DEBUG;_WINDOWS;_USRDLL;EXP_FDO_COMMON;_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;EXP_FDO_COMMON;_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="3"
 				TreatWChar_tAsBuiltInType="true"
 				RuntimeTypeInfo="true"

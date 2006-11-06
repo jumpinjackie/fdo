@@ -140,7 +140,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				InlineFunctionExpansion="0"
+				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
 				AdditionalIncludeDirectories="Inc;Src/Fdo;Src/Common;&quot;$(FDOTHIRDPARTY)/apache/xml-xerces/c/src&quot;;Src/Nls"
 				PreprocessorDefinitions="NDEBUG;_USRDLL;EXP_FDO;_CRT_SECURE_NO_DEPRECATE;_CRT_NON_CONFORMING_SWPRINTFS"

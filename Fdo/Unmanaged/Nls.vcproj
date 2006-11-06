@@ -40,7 +40,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				InlineFunctionExpansion="0"
+				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="Src\Nls"
 				PreprocessorDefinitions="NDEBUG,WIN32,_WINDOWS,FULLPROTO;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"
