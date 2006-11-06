@@ -39,7 +39,7 @@ void FdoSmPhGrdClassWriter::Add()
     if ( cmds->IsFieldWriteable( L"f_classdefinition", L"classid" ) )
     {
         // In advance for providers supporting sequences
-        classId = cmds->NextSequenceNumber( DBI_CLASS_SEQUENCE );
+        classId = cmds->NextSequenceNumber( DBI_CLASS_SEQUENCEW );
         SetId( classId );
         FdoSmPhClassWriter::Add();
     }
@@ -47,7 +47,7 @@ void FdoSmPhGrdClassWriter::Add()
     {
         // After insert for the autoincrement ones
         FdoSmPhClassWriter::Add();
-        classId = cmds->NextSequenceNumber( DBI_CLASS_SEQUENCE );
+        classId = cmds->NextSequenceNumber( DBI_CLASS_SEQUENCEW );
         SetId( classId );
     }
 }

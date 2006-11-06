@@ -163,6 +163,7 @@ int odbcdr_bind(
 			(sql_type != SQL_DATE) &&		
 			(sql_type != SQL_TIMESTAMP) &&
             (sql_type != SQL_LONGVARCHAR) &&
+            (sql_type != SQL_WLONGVARCHAR) &&
             (sql_type != SQL_BINARY) &&
             (sql_type != SQL_VARBINARY) &&
             (sql_type != SQL_LONGVARBINARY))

@@ -25,18 +25,14 @@
 #include "structs.h"
 #include "proto_p.h"
 
-int odbcdr_execute_direct(						/* execute an SQL statement		  */
-    odbcdr_context_def  *context,
-	char	  *sql,
-	wchar_t   *sqlW, 					/* cursor associated with SQL stmnt */
-	int    *rows_processed	 			/* # rows processed by this exec	*/
-	);
+int local_odbcdr_execute_direct( odbcdr_context_def  *context, rdbi_string_def *sql, int *rows_processed );
+int local_odbcdr_sql( odbcdr_context_def  *context,	char *cursor, rdbi_string_def* sql,
+	int defer, char *verb, void *ptree, char *cursor_coc);
 
-static int local_odbcdr_run_sql (
+int local_odbcdr_run_sql (
     odbcdr_context_def *context,
-    char *sql,
-	wchar_t *sqlW,
-	int isddl, 
+    rdbi_string_def    *sql,
+	int isddl,
     int *rows_processed
 )
 {
@@ -44,11 +40,18 @@ static int local_odbcdr_run_sql (
     int                 rdbi_status = RDBI_GENERIC_ERROR;
     int                 rows;
     ODBCDR_ERRORINFO_VARS;
-    debug_on1("odbcdr_run_sql", "sql: %.250s ", sql );
+
+#ifdef _DEBUG
+    if (context->odbcdr_UseUnicode){
+        debug_on1("odbcdr_run_sql", "sql: %.250ls ", sql->cwString );
+    }else{
+        debug_on1("odbcdr_run_sql", "sql: %.250s ", sql->ccString );
+    }
+#endif
 
 	if (isddl)
 	{
-		if (RDBI_SUCCESS == (rdbi_status = odbcdr_execute_direct(context, sql, sqlW, &rows)))
+		if (RDBI_SUCCESS == (rdbi_status = local_odbcdr_execute_direct(context, sql, &rows)))
 		{
 			if ( rows_processed ) 
 				(*rows_processed) = rows;
@@ -59,10 +62,7 @@ static int local_odbcdr_run_sql (
 		/* establish cursor */
 		if (RDBI_SUCCESS == (rdbi_status = odbcdr_est_cursor (context, (char **)&c)))
 		{
-			if( sql != NULL )
-				rdbi_status = odbcdr_sql (context, (char *)c, sql, FALSE, NULL, (void *)NULL, (char *) NULL);
-			else
-				rdbi_status = odbcdr_sqlW (context, (char *)c, sqlW, FALSE, NULL, (void *)NULL, (char *) NULL);
+			rdbi_status = local_odbcdr_sql (context, (char *)c, sql, FALSE, NULL, (void *)NULL, (char *) NULL);
 			/* parse command */
 			if ( RDBI_SUCCESS == rdbi_status )
 			{
@@ -73,9 +73,9 @@ static int local_odbcdr_run_sql (
 				}
 			}
 
-			ODBCDR_ERRORINFO_GET(context);
+			ODBCDR_ERRORINFO_GET;
 			odbcdr_fre_cursor (context, (char **)&c);
-			ODBCDR_ERRORINFO_SET(context);
+			ODBCDR_ERRORINFO_SET;
 		}
 	}
 
@@ -84,20 +84,24 @@ static int local_odbcdr_run_sql (
 
 int odbcdr_run_sql (
     odbcdr_context_def *context,
-    char *sql,
-	int isddl, /* not used */
+    const char *sql,
+	int isddl,
     int *rows_processed
 )
 {
-	return local_odbcdr_run_sql( context, sql, NULL, isddl, rows_processed );
+    rdbi_string_def str;
+    str.ccString = sql;
+    return local_odbcdr_run_sql(context, &str, isddl, rows_processed);
 }
 
 int odbcdr_run_sqlW (
     odbcdr_context_def *context,
-    wchar_t *sql,
-	int isddl, /* not used */
+    const wchar_t *sql,
+	int isddl,
     int *rows_processed
 )
 {
-	return local_odbcdr_run_sql( context, NULL, sql, isddl, rows_processed );
+    rdbi_string_def str;
+    str.cwString = sql;
+    return local_odbcdr_run_sql(context, &str, isddl, rows_processed);
 }

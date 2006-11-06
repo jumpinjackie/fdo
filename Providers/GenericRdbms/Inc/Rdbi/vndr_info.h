@@ -50,7 +50,11 @@
 
 
 typedef struct rdbi_vndr_info_def {
-    char name[RDBI_TABLE_NAME_SIZE];         /* vendor name                   */
+    union
+    {
+        char name[RDBI_TABLE_NAME_SIZE];         /* vendor name                   */
+        wchar_t nameW[RDBI_TABLE_NAME_SIZE];     /* vendor name                   */
+    };
     unsigned long   dbversion;              /* database version              */
     long minPrecision;                      /* Minimum allowed precision on numeric columns */
     long maxPrecision;                      /* Maximum allowed precision on numeric columns */

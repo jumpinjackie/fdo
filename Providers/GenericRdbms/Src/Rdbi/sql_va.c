@@ -234,11 +234,10 @@ extern char *rdbi_cat;
 #endif
 
 /*VARARGS3*/
-int
-rdbi_sql_va(rdbi_context_def *context, int opts, int sqlid, char* sql, ...)
-{
-    va_list args;
+int local_rdbi_sql(rdbi_context_def *context, int sqlid, rdbi_string_def *sql, int defer);
 
+int local_rdbi_sql_va(rdbi_context_def *context, int opts, int sqlid, rdbi_string_def* sql, va_list args)
+{
     char    *name;
     int     type, size;
     char    *addr;
@@ -250,15 +249,12 @@ rdbi_sql_va(rdbi_context_def *context, int opts, int sqlid, char* sql, ...)
     int     idx, rc;
     char    tname[10];
 
-
     debug_on("rdbi_sql_va");
-
-    va_start(args, sql);
 
     /*
      *  First, parse the SQL statement (defered parse).
      */
-    rc = rdbi_sql_d(context, sqlid, sql);
+    rc = local_rdbi_sql(context, sqlid, sql, TRUE);
     if(rc != RDBI_SUCCESS) goto the_exit;
 
     /*
@@ -368,8 +364,33 @@ rdbi_sql_va(rdbi_context_def *context, int opts, int sqlid, char* sql, ...)
     }
 
 the_exit:
-    va_end(args);
 
     debug_return(NULL, rc);
+}
+
+int rdbi_sql_va(rdbi_context_def *context, int opts, int sqlid, const char* sql, ...)
+{
+    va_list args;
+    va_start(args, sql);
+    
+    rdbi_string_def str;
+    str.ccString = sql;
+    int rc = local_rdbi_sql_va(context, opts, sqlid, &str, args);
+
+    va_end(args);
+    return rc;
+}
+
+int rdbi_sql_vaW(rdbi_context_def *context, int opts, int sqlid, const wchar_t* sql, ...)
+{
+    va_list args;
+    va_start(args, sql);
+    
+    rdbi_string_def str;
+    str.cwString = sql;
+    int rc = local_rdbi_sql_va(context, opts, sqlid, &str, args);
+
+    va_end(args);
+    return rc;
 }
 

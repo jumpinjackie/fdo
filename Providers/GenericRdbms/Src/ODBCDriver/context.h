@@ -31,34 +31,62 @@
 #include <Inc/rdbi.h>				/* RDBI_MAX_CONNECTS	*/
 #include <sql.h>
 #include <sqlext.h>
+#include <sqltypes.h>
+#include <sqlucode.h>
 
 #include "structs.h"
 
+// these structures don't have as member an rdbi_string_def structure
+// because rdbi_string_def contains pointers and we need buffers
 typedef struct
 {
-    char name[ODBCDR_MAX_BUFF_SIZE];
+    union
+    {
+        char name[ODBCDR_MAX_BUFF_SIZE];
+        wchar_t nameW[ODBCDR_MAX_BUFF_SIZE];
+    };
     char type;
 } odbcdr_NameListEntry_obj_def;
 
 typedef struct
 {
-    char name[ODBCDR_MAX_BUFF_SIZE];
+    union
+    {
+        char name[ODBCDR_MAX_BUFF_SIZE];
+        wchar_t nameW[ODBCDR_MAX_BUFF_SIZE];
+    };
 } odbcdr_NameListEntry_user_def;
 
 typedef struct
 {
-    char name[ODBCDR_MAX_BUFF_SIZE];
+    union
+    {
+        char name[ODBCDR_MAX_BUFF_SIZE];
+        wchar_t nameW[ODBCDR_MAX_BUFF_SIZE];
+    };
 } odbcdr_NameListEntry_store_def;
 
 typedef struct
 {
-    char name[ODBCDR_MAX_BUFF_SIZE];
+    union
+    {
+        char name[ODBCDR_MAX_BUFF_SIZE];
+        wchar_t nameW[ODBCDR_MAX_BUFF_SIZE];
+    };
 } odbcdr_NameListEntry_pkey_def;
 
 typedef struct
 {
-    char name[ODBCDR_MAX_BUFF_SIZE];
-    char type[ODBCDR_MAX_BUFF_SIZE];
+    union
+    {
+        char name[ODBCDR_MAX_BUFF_SIZE];
+        wchar_t nameW[ODBCDR_MAX_BUFF_SIZE];
+    };
+    union
+    {
+        char type[ODBCDR_MAX_BUFF_SIZE];
+        wchar_t typeW[ODBCDR_MAX_BUFF_SIZE];
+    };
 	int  length;
 	int  scale;
 	int  isnullable;
@@ -85,9 +113,11 @@ typedef struct _odbcdr_context_def
     int     odbcdr_ccache_size; 
 
     odbcdr_connData_def *odbcdr_conns[RDBI_MAX_CONNECTS];	/* Login data areas 	*/
-
-    char	odbcdr_automatic_logon_user[2]; 	/* For default logon	*/
-
+    union
+    {
+        char	odbcdr_automatic_logon_user[2]; 	/* For default logon	*/
+        wchar_t	odbcdr_automatic_logon_userW[2]; 	/* For default logon	*/
+    };
     long	odbcdr_rowid;						/* g_rowid bind value */
 
 
@@ -96,9 +126,12 @@ typedef struct _odbcdr_context_def
 *  return the associated message on request.							*
 ************************************************************************/
 
-    short   odbcdr_last_rc; 
-	char	odbcdr_last_err_msg[ODBCDR_MAX_BUFF_SIZE];
-
+    short   odbcdr_last_rc;
+    union
+    {
+	    char	odbcdr_last_err_msg[ODBCDR_MAX_BUFF_SIZE];
+	    wchar_t	odbcdr_last_err_msgW[ODBCDR_MAX_BUFF_SIZE];
+    };
 	long	odbcdr_nameListNextPosition_cols;
 	long	odbcdr_nameListNextPosition_pkeys;
 	long	odbcdr_nameListNextPosition_objs;
@@ -122,15 +155,17 @@ typedef struct _odbcdr_context_def
 	 */
 	odbcdr_NameListEntry_obj_def	odbcdr_singletonName_objects;
 
+	bool	odbcdr_UseUnicode;
 } odbcdr_context_def;
 
 
 /************************************************************************
  *  Macros to temporarily cache the error code and message      		*
  ************************************************************************/
-#define ODBCDR_ERRORINFO_VARS  short __odbcdr_last_rc; char __odbcdr_last_err_msg[ODBCDR_MAX_BUFF_SIZE]; __odbcdr_last_err_msg[0]='\0';
-#define ODBCDR_ERRORINFO_GET(context) __odbcdr_last_rc=context->odbcdr_last_rc; strcpy(__odbcdr_last_err_msg,context->odbcdr_last_err_msg);
-#define ODBCDR_ERRORINFO_SET(context) context->odbcdr_last_rc=__odbcdr_last_rc; strcpy(context->odbcdr_last_err_msg,__odbcdr_last_err_msg);
+#define ODBCDR_ERRORINFO_VARS  short __odbcdr_last_rc; rdbi_string_def __odbcdr_last_err_msg; wchar_t __odbcdr_last_err_msgBuf[ODBCDR_MAX_BUFF_SIZE]; \
+                                __odbcdr_last_err_msg.wString=__odbcdr_last_err_msgBuf; *__odbcdr_last_err_msg.wString=L'\0'; 
+#define ODBCDR_ERRORINFO_GET __odbcdr_last_rc=context->odbcdr_last_rc; ODBCDRV_STRING_COPY_LST(&__odbcdr_last_err_msg, context->odbcdr_last_err_msg);
+#define ODBCDR_ERRORINFO_SET context->odbcdr_last_rc=__odbcdr_last_rc; ODBCDRV_STRING_COPY_RST(context->odbcdr_last_err_msg, &__odbcdr_last_err_msg);
 
 #endif
 

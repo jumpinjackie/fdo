@@ -41,6 +41,7 @@ typedef unsigned char *	PBYTE;
 #define  strnicmp strncasecmp
 #define  _strnicmp strncasecmp
 #define _stricmp  strcasecmp
+#define _wcsnicmp wcsncasecmp
 #endif
 
 typedef SQLHENV odbcdr_environment_def;			/* 1 per instance of odbcdr	*/
@@ -91,7 +92,11 @@ typedef struct bindname_map_def {
 
 typedef struct cursor_def {					/* Statement linked list		*/
 #ifdef _DEBUG
-	char				*sqlstring;			/* The raw sql string.			*/
+    union
+    {
+	    char				*sqlstring;			/* The raw sql string.			*/
+	    wchar_t				*sqlstringW;			/* The raw sql string.			*/
+    };
 #endif
 	odbcdr_cursor_handle_def	hStmt;		/* ODBC statement handle		*/
 	struct cursor_def	*next;				/* Next statement				*/
@@ -111,7 +116,11 @@ typedef struct cursor_def {					/* Statement linked list		*/
 
 
 typedef struct connData_def {			/* Logon Data Area Definition	*/
-	char				db_name[RDBI_DB_NAME_SIZE];	/* Database name		*/
+    union
+    {
+    	char				db_name[RDBI_DB_NAME_SIZE];	/* Database name		*/
+    	wchar_t				db_nameW[RDBI_DB_NAME_SIZE];	/* Database name		*/
+    };
 	odbcdr_service_ctx_def	hDbc;		/* ODBC database conenction handle */
 	unsigned long		dbversion;		/* ? Oracle server version VrrmmPPpp */
 	unsigned long		apiversion;		/* ? Oracle OCI API version		*/
@@ -127,5 +136,41 @@ typedef struct connData_def {			/* Logon Data Area Definition	*/
     odbcdr_DriverType   driver_type;    /* What kind of database        */
 
 } odbcdr_connData_def;
+
+#define ODBCDRV_STRING_COMPARE(pStr1, pStr2) (context->odbcdr_UseUnicode ? \
+    wcscmp((pStr1)->cwString, (pStr2)->cwString) : \
+    strcmp((pStr1)->ccString, (pStr2)->ccString))
+#define ODBCDRV_STRING_COMPARE_LST(pStr1, pStr2) (context->odbcdr_UseUnicode ? \
+    wcscmp((pStr1)->cwString, pStr2##W) : \
+    strcmp((pStr1)->ccString, pStr2))
+#define ODBCDRV_STRING_COMPARE_CST(pStr1, pStr2) (context->odbcdr_UseUnicode ? \
+    wcscmp(pStr1##W, pStr2##W) : \
+    strcmp(pStr1, pStr2))
+#define ODBCDRV_STRING_COPY_ST(pStr1, pStr2)  \
+    if (context->odbcdr_UseUnicode) \
+        wcscpy((pStr1)->wString, (pStr2)->wString); \
+    else \
+        strcpy((pStr1)->cString, (pStr2)->cString);
+#define ODBCDRV_STRING_COPY_LST(pStr1, pStr2)  \
+    if (context->odbcdr_UseUnicode) \
+        wcscpy((pStr1)->wString, pStr2##W); \
+    else \
+        strcpy((pStr1)->cString, pStr2);
+#define ODBCDRV_STRING_COPY_RST(pStr1, pStr2)  \
+    if (context->odbcdr_UseUnicode) \
+        wcscpy(pStr1##W, (pStr2)->wString); \
+    else \
+        strcpy(pStr1, (pStr2)->cString);
+#define ODBCDRV_STRING_COPY_CST(pStr1, pStr2)  \
+    if (context->odbcdr_UseUnicode) \
+        wcscpy(pStr1##W, pStr2##W); \
+    else \
+        strcpy(pStr1, pStr2);
+
+#define ODBCDRV_STRING_EMPTY(pStr1) (NULL == (pStr1)->cwString || (context->odbcdr_UseUnicode ? *(pStr1)->cwString == L'\0' : *(pStr1)->ccString == '\0'))
+
+#define ODBCDRV_STRING_COMPARE_NOCASE_CST(pStr1, pStr2, sz) (context->odbcdr_UseUnicode ? \
+    _wcsnicmp((pStr1)->cwString, pStr2##W, sz) : \
+    _strnicmp((pStr1)->ccString, pStr2, sz))
 
 #endif

@@ -34,10 +34,12 @@
 #define INIT_NULL       SQL_NULL_HENV 
 #define INIT_M_ONE      -1
 #define INIT_SLASH      "/"
+#define INIT_SLASHW      L"/"
 
 #define ODBCDR_CONNECT_STRING_DEFAULT	OS_ODBCDR_CONNECT_STRING
 
 #define ODBCDR_DEFAULT_SCHEMA_NAME      "Default"
+#define ODBCDR_DEFAULT_SCHEMA_NAMEW      L"Default"
 
 
 /*
@@ -129,6 +131,12 @@ typedef enum
 #define ODBCDR_DRIVER_ORACLE_OWM_COLUMN_DELSTATUS "DELSTATUS"
 #define ODBCDR_DRIVER_ORACLE_OWM_COLUMN_LTLOCK    "LTLOCK"
 
+#define ODBCDR_DRIVER_ORACLE_OWM_TABLE_SUFFIXW     L"_LT"
+#define ODBCDR_DRIVER_ORACLE_OWM_COLUMN_VERSIONW   L"VERSION"
+#define ODBCDR_DRIVER_ORACLE_OWM_COLUMN_NEXTVERW   L"NEXTVER"
+#define ODBCDR_DRIVER_ORACLE_OWM_COLUMN_DELSTATUSW L"DELSTATUS"
+#define ODBCDR_DRIVER_ORACLE_OWM_COLUMN_LTLOCKW    L"LTLOCK"
+#define ODBCDR_DRIVER_ORACLE_ROWID_NAMEW           L"ROWID"
 
  /**************************************************************************
  * Macros to use as wrappers around many function calls.
@@ -173,7 +181,6 @@ typedef enum
 		context->odbcdr_last_rc = _odbcValue; \
 	} \
 }
-
 
 /* ODBCDR_RDBI_ERR() -- Call an RDBI function, set status, exit if error
  *	Assume local variable:	int rdbi_status

@@ -145,9 +145,13 @@ void MySqlFdoInsertTest::insertDate ()
                 throw ex;
             }
 
-            FdoStringP expectedErrMsg = FdoStringP::Format(L"Incomplete date/time setting.");
+            wchar_t expectedErrMsg[] = L"Incomplete date/time setting. ";
+            FdoString *excMsg = ex->GetExceptionMessage();
+            // eliminate a space from the end if is the case
+            if (excMsg[wcslen(excMsg) - 1] != L' ')
+                expectedErrMsg[wcslen(expectedErrMsg)-1] = L'\0';
 
-            if ((wcscmp(ex->GetExceptionMessage(), expectedErrMsg)) != 0)
+            if ((wcscmp(excMsg, expectedErrMsg)) != 0)
             {
                 wprintf(L"    Unexpected Exception: %ls\n", ex->GetExceptionMessage());
                 connection->Close();

@@ -15,6 +15,19 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include <Inc/rdbi.h>					/* rdbi status values		*/
+#include <Inc/ut.h>							/* ut_vm_malloc()			*/
+#include <Inc/debugext.h>
+#include "proto_p.h"
+#include <time.h>
+#ifdef _WIN32
+#include "odbcss.h"
+#else
+#include <sqlucode.h>
+#endif
+
+#include <assert.h>
+
 /************************************************************************
 * Name																	*
 *	odbcdr_execute_direct - Execute direct the SQL statement			*
@@ -23,8 +36,7 @@
 *	#include <Inc/rdbi.h>												*
 *	int odbcdr_execute_direct(cursor, count, offset, rows_processed)	*
 *   odbcdr_context_def  *context,										*
-*	char	  *sql,														*
-*	wchar_t   *sqlW, 													*
+*	rdbi_string_def	  *sql,												*
 *	int    *rows_processed	 											*
 *																		*
 * Description															*
@@ -41,30 +53,15 @@
 *
 ************************************************************************/
 
-
-#include <Inc/rdbi.h>					/* rdbi status values		*/
-#include <Inc/ut.h>							/* ut_vm_malloc()			*/
-#include	<Inc/debugext.h>
-#include "proto_p.h"
-#include <time.h>
-#ifdef _WIN32
-#include "odbcss.h"
-#else
-#include <sqlucode.h>
-#endif
-
-#include <assert.h>
-
-int odbcdr_execute_direct(						/* execute an SQL statement		  */
+int local_odbcdr_execute_direct(
     odbcdr_context_def  *context,
-	char	  *sql,
-	wchar_t   *sqlW, 					/* cursor associated with SQL stmnt */
-	int    *rows_processed	 			/* # rows processed by this exec	*/
+	rdbi_string_def     *sql,
+	int    *rows_processed
 	)
 {
 	odbcdr_connData_def		*connData;
 	SQLRETURN				rc;
-	SQLHSTMT    hStmt;
+	SQLHSTMT                hStmt;
 	int 					rdbi_status = RDBI_GENERIC_ERROR;
 
 	debug_on("odbcdr_execute_direct");
@@ -72,10 +69,10 @@ int odbcdr_execute_direct(						/* execute an SQL statement		  */
 	*rows_processed = 0;
 	ODBCDR_RDBI_ERR( odbcdr_get_curr_conn( context, &connData ) );
 	SQLAllocHandle(SQL_HANDLE_STMT,	connData->hDbc, &hStmt);
-	if (sql != NULL)
-		rc = SQLExecDirect(hStmt, (SQLCHAR*)sql, SQL_NTSL);
-	else
-		rc = SQLExecDirectW(hStmt, (SQLWCHAR*)sqlW, SQL_NTSL);
+    if (context->odbcdr_UseUnicode)
+        rc = SQLExecDirectW(hStmt, (SQLWCHAR*)sql->cwString, SQL_NTSL);
+    else
+        rc = SQLExecDirect(hStmt, (SQLCHAR*)sql->ccString, SQL_NTSL);
 
 	if ( rc != ODBCDR_SUCCESS &&
 		rc != SQL_SUCCESS_WITH_INFO &&
@@ -94,6 +91,27 @@ int odbcdr_execute_direct(						/* execute an SQL statement		  */
 	}
 
 the_exit:
-	
 	debug_return(NULL, rdbi_status );
+}
+
+int odbcdr_execute_direct(
+    odbcdr_context_def  *context,
+	const char	  *sql,
+	int    *rows_processed
+	)
+{
+    rdbi_string_def str;
+    str.ccString = sql;
+    return local_odbcdr_execute_direct(context, &str, rows_processed);
+}
+
+int odbcdr_execute_directW(
+    odbcdr_context_def  *context,
+	const wchar_t   *sql,
+	int    *rows_processed
+	)
+{
+    rdbi_string_def str;
+    str.cwString = sql;
+    return local_odbcdr_execute_direct(context, &str, rows_processed);
 }

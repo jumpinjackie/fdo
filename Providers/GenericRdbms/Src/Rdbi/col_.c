@@ -21,8 +21,9 @@
 * Synopsis                                                              *
 *   #include "<Inc/rdbi.h>                                              *
 *   rdbi_col_act(owner, object_name)                                    *
-*   char *owner;                                                        *
-*   char *object_name;                                                  *
+*   const char *owner;                                                  *
+*   const char *object_name;                                            *
+*   const char *dbaselink;                                              *
 *                                                                       *
 * Description                                                           *
 *       This  module  activates  a  fetch  of  all columns for an       *
@@ -60,9 +61,9 @@ static char     *tran_id = "auto-col";
 
 int rdbi_col_act(
     rdbi_context_def *context,
-    char *owner,
-    char *object_name,
-    char *dbaselink
+    const char *owner,
+    const char *object_name,
+    const char *dbaselink
 )
 {
     int     status;
@@ -89,9 +90,40 @@ int rdbi_col_act(
     }
 
     debug_return(NULL, status);
-
 }
 
+int rdbi_col_actW(
+    rdbi_context_def *context,
+    const wchar_t *owner,
+    const wchar_t *object_name,
+    const wchar_t *dbaselink
+)
+{
+    int     status;
+    int     tran_begun = FALSE;
+
+
+    debug_on2("rdbi_col_actW", "owner='%ls', object='%ls'", ISNULL(owner), ISNULL(object_name));
+
+    if (context->rdbi_cnct->autocommit_on) {
+        rdbi_tran_begin(context, tran_id);
+        tran_begun = TRUE;
+    }
+
+    status = (*(context->dispatch.col_actW))(context->drvr, owner, object_name, dbaselink);
+
+    context->rdbi_last_status = status;
+
+    /* ingdr_col_act prefetches all columns so its safe to end the transaction
+    *   here without getting fetch across commit problems.
+    */
+
+    if ( tran_begun ) {
+        rdbi_tran_end(context, tran_id);
+    }
+
+    debug_return(NULL, status);
+}
 
 /************************************************************************
 *                                                                       *
@@ -164,7 +196,6 @@ int rdbi_col_get(
 {
     int   status;
 
-
     debug_on("rdbi_col_get");
 
     status = (*(context->dispatch.col_get))(context->drvr, column_name, type, length, scale, nullable, is_autoincrement,
@@ -185,7 +216,41 @@ int rdbi_col_get(
         }
     }
     debug_return(NULL, status);
+}
 
+int rdbi_col_getW(
+	rdbi_context_def *context,
+    wchar_t *column_name,
+    wchar_t *type,
+    int  *length,
+    int  *scale,
+    int  *nullable,
+    int  *is_autoincrement,
+    int  *position,
+    int  *eof)
+{
+    int   status;
+
+    debug_on("rdbi_col_getW");
+
+    status = (*(context->dispatch.col_getW))(context->drvr, column_name, type, length, scale, nullable, is_autoincrement,
+                            position, eof);
+
+    context->rdbi_last_status = status;
+
+    debug_area()
+    {
+        if (*eof)
+        {
+            debug0("eof=TRUE");
+        }
+        else
+        {
+            debug6("column='%ls', type='%ls', length=%d, scale=%d, nullable=%s, position=%d",
+                ISNULL(column_name), ISNULL(type), *length, *scale, ISTRUE(*nullable), *position);
+        }
+    }
+    debug_return(NULL, status);
 }
 /************************************************************************
 *                                                                       *

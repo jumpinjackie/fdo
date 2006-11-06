@@ -65,43 +65,56 @@
 
 #include <Inc/Rdbi/context.h>
 
-static int local_rdbi_sql(rdbi_context_def *context, int     sqlid,
-             char   *sql,
-			 wchar_t   *sqlW,
-             int    defer);
+int local_rdbi_sql(rdbi_context_def *context, int sqlid, rdbi_string_def *sql, int defer);
 
 int rdbi_sql(
 	rdbi_context_def *context,
     int     sqlid,
-    char   *sql )
+    const char *sql )
 {
-    return local_rdbi_sql(context, sqlid, sql, NULL, FALSE);
+    rdbi_string_def str;
+    str.ccString = sql;
+    return local_rdbi_sql(context, sqlid, &str, FALSE);
 }
 
 int rdbi_sqlW(
 	rdbi_context_def *context,
     int     sqlid,
-    wchar_t   *sql )
+    const wchar_t *sql )
 {
-    return local_rdbi_sql(context, sqlid, NULL, sql, FALSE);
+    rdbi_string_def str;
+    str.cwString = sql;
+    return local_rdbi_sql(context, sqlid, &str, FALSE);
 }
 
 int rdbi_sql_d(
 	rdbi_context_def *context,
     int     sqlid,
-    char   *sql )
+    const char *sql )
 {
-    return local_rdbi_sql(context, sqlid, sql, NULL, TRUE);
+    rdbi_string_def str;
+    str.ccString = sql;
+    return local_rdbi_sql(context, sqlid, &str, TRUE);
+}
+
+int rdbi_sql_dW(
+	rdbi_context_def *context,
+    int     sqlid,
+    const wchar_t *sql )
+{
+    rdbi_string_def str;
+    str.cwString = sql;
+    return local_rdbi_sql(context, sqlid, &str, TRUE);
 }
 
 /*
  *  Extract first word (delimited by a space, tab, or newline)
  *  from the SQL statement.
  */
-static void local_parse (char *sql, char *verb)
+static void local_parse (const char *sql, char *verb)
 {
 #define WORD_LEN    31
-    char *p = sql;
+    const char *p = sql;
     int i;
 
 	while (*p == '\t' || *p == ' ')
@@ -116,10 +129,10 @@ static void local_parse (char *sql, char *verb)
     verb[i] = '\0';
 }
 
-static void local_parseW (wchar_t *sql, char *verb)
+static void local_parseW (const wchar_t *sql, char *verb)
 {
 #define WORD_LEN    31
-    wchar_t *p = sql;
+    const wchar_t *p = sql;
     int i;
 
     // We are searching for English keywords; we can cast a whar_t to char.
@@ -135,11 +148,10 @@ static void local_parseW (wchar_t *sql, char *verb)
     verb[i] = '\0';
 }
 
-static int local_rdbi_sql(
+int local_rdbi_sql(
 	rdbi_context_def *context,
     int     sqlid,
-    char   *sql,
-	wchar_t   *sqlW,
+    rdbi_string_def* sql,
     int     defer )
 {
 
@@ -151,8 +163,15 @@ static int local_rdbi_sql(
 
 	char			stats[128];
 
-    debug_on4("rdbi_sql2", "\tContext: %d Db: %s#%d\n\tSQL: %.120s",
-        sqlid, context->rdbi_cnct->db_name, context->rdbi_cnct->connect_id, sql);
+#ifdef _DEBUG
+    if (context->dispatch.capabilities.supports_unicode == 1){
+        debug_on4("rdbi_sql2", "\tContext: %d Db: %s#%d\n\tSQL: %.120ls",
+            sqlid, context->rdbi_cnct->db_name, context->rdbi_cnct->connect_id, sql->cwString);
+    }else{
+        debug_on4("rdbi_sql2", "\tContext: %d Db: %s#%d\n\tSQL: %.120s",
+            sqlid, context->rdbi_cnct->db_name, context->rdbi_cnct->connect_id, sql->ccString);
+    }
+#endif
 
     cursor = context->rdbi_cursor_ptrs[sqlid];
 
@@ -165,9 +184,12 @@ static int local_rdbi_sql(
 
 	sprintf(stats, "Open Cursor: %d", sqlid);
 	debug_trace(stats, (wchar_t *)NULL, NULL);
-	debug_trace(sql, sqlW, &trace_line_num);
+    if (context->dispatch.capabilities.supports_unicode == 1)
+	    debug_trace(NULL, sql->wString, &trace_line_num);
+    else
+        debug_trace(sql->cString, NULL, &trace_line_num);
 
-    cursor->sql_parsed      = FALSE;    /* set default cursor conditions                            */
+    cursor->sql_parsed      = FALSE;    /* set default cursor conditions */
     cursor->bound_vars      = FALSE;
     cursor->defined_vars    = FALSE;
     cursor->sel_for_update  = FALSE;
@@ -180,14 +202,26 @@ static int local_rdbi_sql(
 	ut_vm_free("rdbi_sql", cursor->sql);
     cursor->sql = (char *)NULL;
  
-  	if( sql )
+  	if( sql->cwString )
   	{
-  		cursor->sql = (char*)ut_vm_malloc("rdbi_sql", strlen(sql) + 1);
-  		if (cursor->sql == (char *)NULL) {
-  			cursor->status = RDBI_MALLOC_FAILED;
-  			goto the_exit;
-  		}
-  		strcpy(cursor->sql, sql);           /* save the sql statement   */  	
+        if (context->dispatch.capabilities.supports_unicode == 1)
+        {
+            cursor->sqlW = (wchar_t*)ut_vm_malloc("rdbi_sql", (wcslen(sql->cwString) + 1)*sizeof(wchar_t));
+  		    if (cursor->sqlW == (wchar_t *)NULL) {
+  			    cursor->status = RDBI_MALLOC_FAILED;
+  			    goto the_exit;
+  		    }
+  		    wcscpy(cursor->sqlW, sql->cwString);
+        }
+        else
+        {
+  		    cursor->sql = (char*)ut_vm_malloc("rdbi_sql", strlen(sql->ccString) + 1);
+  		    if (cursor->sql == (char *)NULL) {
+  			    cursor->status = RDBI_MALLOC_FAILED;
+  			    goto the_exit;
+  		    }
+  		    strcpy(cursor->sql, sql->ccString);
+        }
 	}
 #endif
 
@@ -197,26 +231,20 @@ static int local_rdbi_sql(
     cursor->sel_for_update = 0;
 
     /* get the verb */
-	if( sql )
-		local_parse (sql, cursor->verb);
-	else
-		local_parseW (sqlW, cursor->verb);
-
-    /*
-     * Do the vendor-specific parse
-     */
-	if( sql )
-		cursor->status = (*(context->dispatch.sql))(context->drvr, cursor->vendor_data, sql, defer,
-                                cursor->verb, NULL,
-                                cursor_coc == (rdbi_cursor_def *) NULL ?
+	if (context->dispatch.capabilities.supports_unicode == 1)
+    {
+        local_parseW (sql->cwString, cursor->verb);
+		cursor->status = (*(context->dispatch.sqlW))(context->drvr, cursor->vendor_data, sql->cwString, defer,
+                                cursor->verb, NULL, cursor_coc == (rdbi_cursor_def *) NULL ?
                                 (char *) NULL : cursor_coc->vendor_data);
-	else if( context->dispatch.sqlW != NULL )
-		cursor->status = (*(context->dispatch.sqlW))(context->drvr, cursor->vendor_data, sqlW, defer,
-                                cursor->verb, NULL,
-                                cursor_coc == (rdbi_cursor_def *) NULL ?
+    }
+    else
+    {
+		local_parse (sql->ccString, cursor->verb);
+		cursor->status = (*(context->dispatch.sql))(context->drvr, cursor->vendor_data, sql->ccString, defer,
+                                cursor->verb, NULL, cursor_coc == (rdbi_cursor_def *) NULL ?
                                 (char *) NULL : cursor_coc->vendor_data);
-	else
-		cursor->status = RDBI_GENERIC_ERROR;
+    }
 
     if (cursor->status == RDBI_SUCCESS)
         cursor->sql_parsed =    TRUE;

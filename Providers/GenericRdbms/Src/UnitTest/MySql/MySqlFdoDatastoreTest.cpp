@@ -37,7 +37,13 @@ void MySqlFdoDatastoreTest::ReservedName(FdoIConnection* connection)
     }
     catch (FdoException *ex)
     {
-        if ( wcscmp(ex->GetExceptionMessage(),L"Cannot create datastore, name 'longblob' is a reserved word") != 0 )
+        wchar_t expectedErrMsg[] = L"Cannot create datastore, name 'longblob' is a reserved word ";
+        FdoString *excMsg = ex->GetExceptionMessage();
+        // eliminate a space from the end if is the case
+        if (excMsg[wcslen(excMsg) - 1] != L' ')
+            expectedErrMsg[wcslen(expectedErrMsg)-1] = L'\0';
+
+        if ( wcscmp(excMsg, expectedErrMsg) != 0 )
             throw;
         failed = true;
     }

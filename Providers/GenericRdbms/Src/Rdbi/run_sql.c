@@ -52,7 +52,7 @@
 #include "Inc/ut.h"
 
 
-static int local_rdbi_run_sql (rdbi_context_def *context, char *sql, wchar_t *sqlW, int isddl, int *rows_processed)
+static int local_rdbi_run_sql (rdbi_context_def *context, rdbi_string_def *sql, int isddl, int *rows_processed)
 {
     int   status;
 	int             trace_line_num = 0;
@@ -62,7 +62,10 @@ static int local_rdbi_run_sql (rdbi_context_def *context, char *sql, wchar_t *sq
 
     debug_on("rdbi_run_sql");
 
-	debug_trace(sql, sqlW, &trace_line_num);
+    if (context->dispatch.capabilities.supports_unicode == 1)
+	    debug_trace(NULL, sql->wString, &trace_line_num);
+    else
+        debug_trace(sql->cString, NULL, &trace_line_num);
 
 	*rows_processed = 0;
 
@@ -73,12 +76,10 @@ static int local_rdbi_run_sql (rdbi_context_def *context, char *sql, wchar_t *sq
 			tran_begin = TRUE;
 		}
 	}
-	if( sql != NULL )
-		status = (*(context->dispatch.run_sql))(context->drvr, sql, isddl, rows_processed);
-	else if ( context->dispatch.run_sqlW != NULL )
-		status = (*(context->dispatch.run_sqlW))(context->drvr, sqlW, isddl, rows_processed);
-	else
-		status = RDBI_GENERIC_ERROR;
+	if (context->dispatch.capabilities.supports_unicode == 1)
+		status = (*(context->dispatch.run_sqlW))(context->drvr, sql->cwString, isddl, rows_processed);
+	else 
+		status = (*(context->dispatch.run_sql))(context->drvr, sql->ccString, isddl, rows_processed);
 
 
 	(void) sprintf(stats, "Rows processed: %ld", *rows_processed);
@@ -92,16 +93,19 @@ static int local_rdbi_run_sql (rdbi_context_def *context, char *sql, wchar_t *sq
 		rdbi_tran_end(context, tran_id);
 
     debug_return(NULL, status);
-
 }
 
-int rdbi_run_sql (rdbi_context_def *context, char *sql, int isddl, int *rows_processed)
+int rdbi_run_sql (rdbi_context_def *context, const char *sql, int isddl, int *rows_processed)
 {
-	return local_rdbi_run_sql( context, sql, NULL, isddl, rows_processed );
+    rdbi_string_def str;
+    str.ccString = sql;
+	return local_rdbi_run_sql( context, &str, isddl, rows_processed );
 }
 
-int rdbi_run_sqlW (rdbi_context_def *context, wchar_t *sql, int isddl, int *rows_processed)
+int rdbi_run_sqlW (rdbi_context_def *context, const wchar_t *sql, int isddl, int *rows_processed)
 {
-	return local_rdbi_run_sql( context, NULL, sql, isddl, rows_processed );
+    rdbi_string_def str;
+    str.cwString = sql;
+	return local_rdbi_run_sql( context, &str, isddl, rows_processed );
 }
 

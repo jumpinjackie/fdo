@@ -15,6 +15,20 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include <Inc/ut.h> 					/* ut_vm_malloc()			*/
+#include <Inc/rdbi.h>					/* rdbi status values		*/
+
+#include "proto_p.h"
+#include	<Inc/debugext.h>
+#include <time.h>
+
+#include <assert.h>
+
+#ifdef _WIN32
+#include "odbcss.h"
+#endif
+
+
 /************************************************************************
 * Name																	*
 *	odbcdr_fetch - Fetch the next row[s] from the specified cursor		*
@@ -70,20 +84,6 @@
 *																		*
 ************************************************************************/
 
-#include <Inc/ut.h> 					/* ut_vm_malloc()			*/
-#include <Inc/rdbi.h>					/* rdbi status values		*/
-
-#include "proto_p.h"
-#include	<Inc/debugext.h>
-#include <time.h>
-
-#include <assert.h>
-
-#ifdef _WIN32
-#include "odbcss.h"
-#endif
-
-
 int odbcdr_fetch(								/* fetch rows from oracle	 */
     odbcdr_context_def  *context,
 	char                *cursor,				/* cursor context area		*/
@@ -124,17 +124,22 @@ int odbcdr_fetch2(
 
     }   /* end if geometries */
 
-	//Set the fetch size
-	SQLSetStmtAttr( c->hStmt,
-					SQL_ATTR_ROW_ARRAY_SIZE,
-					(PTR)count,
-					SQL_IS_INTEGER);
+    if (context->odbcdr_UseUnicode)
+    {
+	    //Set the fetch size
+	    SQLSetStmtAttrW( c->hStmt, SQL_ATTR_ROW_ARRAY_SIZE, (PTR)count, SQL_IS_INTEGER);
 
-	//Enable retreival of rows_processed
-	SQLSetStmtAttr( c->hStmt,
-					SQL_ATTR_ROWS_FETCHED_PTR,
-					&rows_in_last_fetch,
-					SQL_IS_POINTER);
+	    //Enable retreival of rows_processed
+	    SQLSetStmtAttrW( c->hStmt, SQL_ATTR_ROWS_FETCHED_PTR, &rows_in_last_fetch, SQL_IS_POINTER);
+    }
+    else
+    {
+	    //Set the fetch size
+	    SQLSetStmtAttr( c->hStmt, SQL_ATTR_ROW_ARRAY_SIZE, (PTR)count, SQL_IS_INTEGER);
+
+	    //Enable retreival of rows_processed
+	    SQLSetStmtAttr( c->hStmt, SQL_ATTR_ROWS_FETCHED_PTR, &rows_in_last_fetch, SQL_IS_POINTER);
+    }
 
 	// if using server cursors and if end of fetch, the value of rows
 	// in last fetch will be garbage. Set it to 0 to get rid of the garbage
@@ -145,26 +150,31 @@ int odbcdr_fetch2(
 		debug0("Running execfetch");
 #ifdef _WIN32
 		// Turn on autofetch
-		SQLSetStmtAttr( c->hStmt,
-					SQL_SOPT_SS_CURSOR_OPTIONS,
-					(PTR)SQL_CO_AF,
-					SQL_IS_INTEGER);
+        if (context->odbcdr_UseUnicode)
+		    SQLSetStmtAttrW( c->hStmt, SQL_SOPT_SS_CURSOR_OPTIONS, (PTR)SQL_CO_AF, SQL_IS_INTEGER);
+        else
+            SQLSetStmtAttr( c->hStmt, SQL_SOPT_SS_CURSOR_OPTIONS, (PTR)SQL_CO_AF, SQL_IS_INTEGER);
 #endif
 
 		rdbi_status = odbcdr_execute( context, cursor, 1, 0, rows_processed ); 
  
 #ifdef _WIN32
-		// Turn off autofetch
-		SQLSetStmtAttr( c->hStmt,
-					SQL_SOPT_SS_CURSOR_OPTIONS,
-					(PTR)SQL_CO_OFF,
-					SQL_IS_INTEGER);
+        if (context->odbcdr_UseUnicode)
+        {
+		    // Turn off autofetch
+		    SQLSetStmtAttrW( c->hStmt, SQL_SOPT_SS_CURSOR_OPTIONS, (PTR)SQL_CO_OFF, SQL_IS_INTEGER);
 
-		//Make sure we are still using fast forward cursors
-		SQLSetStmtAttr( c->hStmt,
-					SQL_SOPT_SS_CURSOR_OPTIONS,
-					(PTR)SQL_CO_FFO,
-					SQL_IS_INTEGER);
+		    //Make sure we are still using fast forward cursors
+		    SQLSetStmtAttrW( c->hStmt, SQL_SOPT_SS_CURSOR_OPTIONS, (PTR)SQL_CO_FFO, SQL_IS_INTEGER);
+        }
+        else
+        {
+		    // Turn off autofetch
+		    SQLSetStmtAttr( c->hStmt, SQL_SOPT_SS_CURSOR_OPTIONS, (PTR)SQL_CO_OFF, SQL_IS_INTEGER);
+
+		    //Make sure we are still using fast forward cursors
+		    SQLSetStmtAttr( c->hStmt, SQL_SOPT_SS_CURSOR_OPTIONS, (PTR)SQL_CO_FFO, SQL_IS_INTEGER);
+        }
 #endif
 
 		if ( rdbi_status != RDBI_SUCCESS &&
@@ -236,4 +246,3 @@ the_exit:
 debug_area() odbcdr_show_context( context, c );
 	debug_return(NULL, rdbi_status );
 }
-

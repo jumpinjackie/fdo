@@ -73,3 +73,20 @@ int rdbi_usr_exists(
 
 }
 
+int rdbi_usr_existsW(
+	rdbi_context_def *context,
+    wchar_t *user_name,
+    int  *exists)
+{
+    int   status;
+
+    debug_on("rdbi_usr_exists");
+
+    status = (*(context->dispatch.usr_existsW))(context->drvr, user_name, exists);
+
+    context->rdbi_last_status = status;
+
+    debug_return(NULL, status);
+
+}
+

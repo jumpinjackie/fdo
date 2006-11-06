@@ -15,6 +15,14 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include <Inc/ut.h> 					/* ut_vm_malloc()			*/
+#include <Inc/rdbi.h>					/* rdbi status values		*/
+#include	<Inc/debugext.h>
+#include "proto_p.h"
+#ifndef _WIN32
+#include <sqlucode.h>
+#endif
+
 /************************************************************************
 * Name																	*
 *	odbcdr_desc_slct - Describe the n'th select'ed column				*
@@ -90,22 +98,12 @@
 *																		*
 ************************************************************************/
 
-#include <Inc/ut.h> 					/* ut_vm_malloc()			*/
-#include <Inc/rdbi.h>					/* rdbi status values		*/
-#include	<Inc/debugext.h>
-#include "proto_p.h"
-#ifndef _WIN32
-#include <sqlucode.h>
-#endif
-
-
-static int local_desc_slct(
+int local_odbcdr_desc_slct(
     odbcdr_context_def *context,
 	char *cursor,		/* RDBI work area 				*/
 	int   position, 	/* position within select clause	*/
 	int   name_size, 	/* The maximum size of name 		*/
-	char *name, 		/* Name of this field(MBCS)			*/
-	wchar_t *nameW, 	/* Name of this field(UNICODE)		*/
+	rdbi_string_def *name, 		/* Name of this field				*/
 	int  *rdbi_type,	/* rdbi constant					*/
 	int  *binary_size,	/* bytes of memory to hold it		*/
 	int  *null_ok		/* TRUE iff NULLs ok in this column */
@@ -133,33 +131,31 @@ static int local_desc_slct(
 	/*
 	** Get the variable information
 	*/
-	if( name != NULL )
-	{
-		ODBCDR_ODBC_ERR( SQLDescribeCol(c->hStmt,
-						    (SQLUSMALLINT)position, 
-						    (SQLCHAR*)name, 
-						    (SQLUSMALLINT)name_size,
-						    &column_name_length, 
-						    &odbc_type,
-						    &odbc_precision,
-						    &odbc_scale,
-						    &odbc_nullable),
+    if (context->odbcdr_UseUnicode){
+	    ODBCDR_ODBC_ERR( SQLDescribeColW(c->hStmt,
+					        (SQLUSMALLINT)position, 
+                            (SQLWCHAR*)name->wString, 
+					        (SQLUSMALLINT)name_size,
+					        &column_name_length, 
+					        &odbc_type,
+					        &odbc_precision,
+					        &odbc_scale,
+					        &odbc_nullable),
                         SQL_HANDLE_STMT, c->hStmt,
-						"SQLDescribeCol", "describe" );
-	}
-	else {
-		ODBCDR_ODBC_ERR( SQLDescribeColW(c->hStmt,
-						    (SQLUSMALLINT)position, 
-						    (SQLWCHAR*)nameW, 
-						    (SQLUSMALLINT)name_size,
-						    &column_name_length, 
-						    &odbc_type,
-						    &odbc_precision,
-						    &odbc_scale,
-						    &odbc_nullable),
+					    "SQLDescribeCol", "describe" );
+    }else{
+	    ODBCDR_ODBC_ERR( SQLDescribeCol(c->hStmt,
+					        (SQLUSMALLINT)position, 
+                            (SQLCHAR*)name->cString, 
+					        (SQLUSMALLINT)name_size,
+					        &column_name_length, 
+					        &odbc_type,
+					        &odbc_precision,
+					        &odbc_scale,
+					        &odbc_nullable),
                         SQL_HANDLE_STMT, c->hStmt,
-						L"SQLDescribeCol", L"describe" );
-	}
+					    "SQLDescribeCol", "describe" );
+    }
 	rdbi_status = RDBI_SUCCESS;
 	*null_ok = odbc_nullable; 
 
@@ -189,6 +185,10 @@ static int local_desc_slct(
 			break;
         case SQL_LONGVARCHAR:
 			*rdbi_type	= RDBI_STRING;
+			*binary_size = 255;  // 'text': Arbitrary for now.
+			break;
+        case SQL_WLONGVARCHAR:
+			*rdbi_type	= RDBI_WSTRING;
 			*binary_size = 255;  // 'text': Arbitrary for now.
 			break;
 		case SQL_TYPE_TIMESTAMP :
@@ -266,7 +266,13 @@ static int local_desc_slct(
 			rdbi_status = RDBI_INCOMPATIBLE_COLUMN_TYPES;
 	}
 
-	debug3("name '%s', ora type %d, length %d", name, odbc_type, odbc_precision);
+#ifdef _DEBUG
+    if (context->odbcdr_UseUnicode){
+        debug3("name '%ls', ora type %d, length %d", name->cwString, odbc_type, odbc_precision);
+    }else{
+        debug3("name '%s', ora type %d, length %d", name->ccString, odbc_type, odbc_precision);
+    }
+#endif
 
 the_exit:
 	debug_area() odbcdr_show_context( context, c );
@@ -276,7 +282,6 @@ the_exit:
     
 	debug_return(NULL, rdbi_status);
 }
-
 
 int odbcdr_desc_slct(
     odbcdr_context_def *context,
@@ -289,7 +294,10 @@ int odbcdr_desc_slct(
 	int  *null_ok		/* TRUE iff NULLs ok in this column */
 	)
 {
-	return local_desc_slct(context, cursor, position, name_size, name, NULL, rdbi_type, binary_size, null_ok );
+    rdbi_string_def str;
+    str.cString = name;
+    return local_odbcdr_desc_slct(context, cursor, position, name_size, 
+        &str, rdbi_type, binary_size, null_ok);
 }
 
 int odbcdr_desc_slctW(
@@ -303,5 +311,8 @@ int odbcdr_desc_slctW(
 	int  *null_ok		/* TRUE iff NULLs ok in this column */
 	)
 {
-	return local_desc_slct(context, cursor, position, name_size, NULL, name, rdbi_type, binary_size, null_ok );
+    rdbi_string_def str;
+    str.wString = name;
+    return local_odbcdr_desc_slct(context, cursor, position, name_size, 
+        &str, rdbi_type, binary_size, null_ok);
 }

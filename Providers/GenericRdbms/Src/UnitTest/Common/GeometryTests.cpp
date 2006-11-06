@@ -65,9 +65,9 @@ void GeometryTests::setUp ()
         {
             CPPUNIT_ASSERT_MESSAGE ("rdbi_connect failed", RDBI_SUCCESS == do_rdbi_connect (dataStoreName, userName, userPassword));
             if ( mRdbiContext->dispatch.capabilities.supports_unicode == 1 )
-                CPPUNIT_ASSERT_MESSAGE ("rdbi_set_schemaW failed", RDBI_SUCCESS == rdbi_set_schemaW (mRdbiContext, (wchar_t*)(const wchar_t*)dataStoreName));
+                CPPUNIT_ASSERT_MESSAGE ("rdbi_set_schemaW failed", RDBI_SUCCESS == rdbi_set_schemaW (mRdbiContext, dataStoreName));
             else
-                CPPUNIT_ASSERT_MESSAGE ("rdbi_set_schema failed", RDBI_SUCCESS == rdbi_set_schema (mRdbiContext, (char*)(const char*)dataStoreName));
+                CPPUNIT_ASSERT_MESSAGE ("rdbi_set_schema failed", RDBI_SUCCESS == rdbi_set_schema (mRdbiContext, dataStoreName));
         }
         catch (CppUnit::Exception exception)
         {
@@ -152,6 +152,14 @@ int  GeometryTests::do_insert_geometry( int cursor, FdoInt32 *featId, FdoIGeomet
     return 0;
 }
 
+int GeometryTests::rdbi_sql_Ex( rdbi_context_def *context, int sqlid, FdoStringP sql )
+{
+    if (context->dispatch.capabilities.supports_unicode == 1)
+        return ::rdbi_sqlW( context, sqlid, sql );
+    else
+        return ::rdbi_sql( context, sqlid, sql );
+}
+
 void GeometryTests::ddl ()
 {
     int cursor;
@@ -164,15 +172,15 @@ void GeometryTests::ddl ()
 
         // drop the table if it already exists... ignore errors
         sprintf (select, "drop table foo");
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql (mRdbiContext, cursor, select));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, select));
         rdbi_execute (mRdbiContext, cursor, 1, 0);
 
         sprintf (select, "create table foo (id decimal(10), position %s)", get_geometry_type ());
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql (mRdbiContext, cursor, select));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, select));
         CPPUNIT_ASSERT_MESSAGE ("rdbi_execute failed", RDBI_SUCCESS == rdbi_execute (mRdbiContext, cursor, 1, 0));
 
         sprintf (select, "drop table foo");
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql (mRdbiContext, cursor, select));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, select));
         CPPUNIT_ASSERT_MESSAGE ("rdbi_execute failed", RDBI_SUCCESS == rdbi_execute (mRdbiContext, cursor, 1, 0));
 
         CPPUNIT_ASSERT_MESSAGE ("rdbi_fre_cursor failed", RDBI_SUCCESS == rdbi_fre_cursor (mRdbiContext, cursor));
@@ -225,11 +233,11 @@ void GeometryTests::define ()
 
         // drop the table if it already exists... ignore errors
         sprintf (select, "drop table foo");
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql (mRdbiContext, cursor, select));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, select));
         rdbi_execute (mRdbiContext, cursor, 1, 0);
 
         sprintf (select, "create table foo (id decimal(10), position %s)", get_geometry_type ());
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql (mRdbiContext, cursor, select));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, select));
         CPPUNIT_ASSERT_MESSAGE ("rdbi_execute failed", RDBI_SUCCESS == rdbi_execute (mRdbiContext, cursor, 1, 0));
 
         // insert a row
@@ -242,14 +250,13 @@ void GeometryTests::define ()
         CPPUNIT_ASSERT_MESSAGE ("do_insert_geometry", RDBI_SUCCESS == do_insert_geometry( cursor, &featId, &geometry )); 
 
         sprintf (select, "select position from foo where id=%ld", featId);
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql_va failed", RDBI_SUCCESS == rdbi_sql_va (mRdbiContext, RDBI_VA_EXEC, cursor,
-            select,
-            /*bind variables*/
-            RDBI_VA_EOL,
-            /*define variables*/
-            RDBI_GEOMETRY, sizeof (answer), &answer,
-            RDBI_VA_EOL));
-
+        if (mRdbiContext->dispatch.capabilities.supports_unicode == 1){
+            CPPUNIT_ASSERT_MESSAGE ("rdbi_sql_va failed", RDBI_SUCCESS == rdbi_sql_vaW (mRdbiContext, RDBI_VA_EXEC, cursor,
+                FdoStringP(select), RDBI_VA_EOL, RDBI_GEOMETRY, sizeof (answer), &answer, RDBI_VA_EOL));
+        }else{
+            CPPUNIT_ASSERT_MESSAGE ("rdbi_sql_va failed", RDBI_SUCCESS == rdbi_sql_va (mRdbiContext, RDBI_VA_EXEC, cursor,
+                FdoStringP(select), RDBI_VA_EOL, RDBI_GEOMETRY, sizeof (answer), &answer, RDBI_VA_EOL));
+        }
         count = 0;
         do
         {
@@ -269,7 +276,7 @@ void GeometryTests::define ()
         CPPUNIT_ASSERT_MESSAGE ("rdbi_end_select failed", RDBI_SUCCESS == rdbi_end_select (mRdbiContext, cursor));
 
         sprintf (select, "drop table foo");
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql (mRdbiContext, cursor, select));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, select));
         CPPUNIT_ASSERT_MESSAGE ("rdbi_execute failed", RDBI_SUCCESS == rdbi_execute (mRdbiContext, cursor, 1, 0));
 
         CPPUNIT_ASSERT_MESSAGE ("rdbi_fre_cursor failed", RDBI_SUCCESS == rdbi_fre_cursor (mRdbiContext, cursor));
@@ -322,11 +329,11 @@ void GeometryTests::bind ()
 
         // drop the table if it already exists... ignore errors
         sprintf (select, "drop table foo");
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql (mRdbiContext, cursor, select));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, select));
         rdbi_execute (mRdbiContext, cursor, 1, 0);
 
         sprintf (select, "create table foo (id decimal(10), position %s)", get_geometry_type ());
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql (mRdbiContext, cursor, select));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, select));
         CPPUNIT_ASSERT_MESSAGE ("rdbi_execute failed", RDBI_SUCCESS == rdbi_execute (mRdbiContext, cursor, 1, 0));
 
         // insert a row using bind
@@ -336,25 +343,23 @@ void GeometryTests::bind ()
         position = factory->CreatePositionXY (522.5, 763.0);
         geometry = factory->CreatePoint (position);
         p = get_geometry_text (geometry);
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql_va failed", RDBI_SUCCESS == rdbi_sql_va (mRdbiContext, RDBI_VA_EXEC, cursor,
-            select,
-            /*bind variables*/
-            RDBI_INT, sizeof(id), &id,
-            RDBI_GEOMETRY, sizeof (geometry), &geometry,
-            RDBI_VA_EOL,
-            /*define variables*/
-            RDBI_VA_EOL));
+        if (mRdbiContext->dispatch.capabilities.supports_unicode == 1){
+            CPPUNIT_ASSERT_MESSAGE ("rdbi_sql_va failed", RDBI_SUCCESS == rdbi_sql_vaW (mRdbiContext, RDBI_VA_EXEC, cursor,
+                FdoStringP(select), RDBI_INT, sizeof(id), &id, RDBI_GEOMETRY, sizeof (geometry), &geometry, RDBI_VA_EOL, RDBI_VA_EOL));
+        }else{
+            CPPUNIT_ASSERT_MESSAGE ("rdbi_sql_va failed", RDBI_SUCCESS == rdbi_sql_va (mRdbiContext, RDBI_VA_EXEC, cursor,
+                FdoStringP(select), RDBI_INT, sizeof(id), &id, RDBI_GEOMETRY, sizeof (geometry), &geometry, RDBI_VA_EOL, RDBI_VA_EOL));
+        }
 
         // check it got inserted
         sprintf (select, "select position from foo where id=%s", get_bind_var (1));
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql_va failed", RDBI_SUCCESS == rdbi_sql_va (mRdbiContext, RDBI_VA_EXEC, cursor,
-            select,
-            /*bind variables*/
-            RDBI_INT, sizeof(id), &id,
-            RDBI_VA_EOL,
-            /*define variables*/
-            RDBI_GEOMETRY, sizeof (answer), &answer,
-            RDBI_VA_EOL));
+        if (mRdbiContext->dispatch.capabilities.supports_unicode == 1){
+            CPPUNIT_ASSERT_MESSAGE ("rdbi_sql_va failed", RDBI_SUCCESS == rdbi_sql_vaW (mRdbiContext, RDBI_VA_EXEC, cursor,
+            FdoStringP(select), RDBI_INT, sizeof(id), &id, RDBI_VA_EOL, RDBI_GEOMETRY, sizeof (answer), &answer, RDBI_VA_EOL));
+        }else{
+            CPPUNIT_ASSERT_MESSAGE ("rdbi_sql_va failed", RDBI_SUCCESS == rdbi_sql_va (mRdbiContext, RDBI_VA_EXEC, cursor,
+            FdoStringP(select), RDBI_INT, sizeof(id), &id, RDBI_VA_EOL, RDBI_GEOMETRY, sizeof (answer), &answer, RDBI_VA_EOL));
+        }
         count = 0;
         do
         {
@@ -374,7 +379,7 @@ void GeometryTests::bind ()
         CPPUNIT_ASSERT_MESSAGE ("rdbi_end_select failed", RDBI_SUCCESS == rdbi_end_select (mRdbiContext, cursor));
 
         sprintf (select, "drop table foo");
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql (mRdbiContext, cursor, select));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, select));
         CPPUNIT_ASSERT_MESSAGE ("rdbi_execute failed", RDBI_SUCCESS == rdbi_execute (mRdbiContext, cursor, 1, 0));
 
         CPPUNIT_ASSERT_MESSAGE ("rdbi_fre_cursor failed", RDBI_SUCCESS == rdbi_fre_cursor (mRdbiContext, cursor));

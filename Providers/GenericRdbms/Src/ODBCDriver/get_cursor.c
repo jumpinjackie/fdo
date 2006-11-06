@@ -79,3 +79,4 @@ int odbcdr_get_cursor(
   the_exit:
 	debug_return( NULL, rdbi_status );
 }
+

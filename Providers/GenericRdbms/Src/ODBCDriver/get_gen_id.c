@@ -15,6 +15,14 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include <Inc/rdbi.h>
+#include <Inc/ut.h>
+#include <Inc/debugext.h>
+#include "proto_p.h"
+
+int local_odbcdr_sql(odbcdr_context_def  *context, char *cursor, rdbi_string_def* sql, int defer,
+	char *verb, void *ptree, char *cursor_coc);
+
 /************************************************************************
 * Name																	*
 *	odbcdr_get_gen_id - Gets the last value generated for an            *
@@ -22,8 +30,8 @@
 *                                                                       *
 * Synopsis																*
 *	#include <Inc/rdbi.h>												*
-*	rdbi_get_gen_id(table_name, id) 								    *
-*	char *table_name;													*
+*	odbcdr_get_gen_id(table_name, id) 								    *
+*	rdbi_string_def *table_name;										*
 *	int  *id;														    *
 *																		*
 * Description															*
@@ -41,27 +49,31 @@
 *	Returns an rdbi status code from inc/rdbi.h 						*
 *																		*
 ************************************************************************/
-#include <Inc/rdbi.h>
-#include <Inc/ut.h>
-#include	<Inc/debugext.h>
-#include "proto_p.h"
 
-int odbcdr_get_gen_id(
+int local_odbcdr_get_gen_id(
     odbcdr_context_def  *context,
-	char *table_name_I,
+	rdbi_string_def     *table_name_I,
 	int  *id_O
 	)
 {
-	char				    sql_buf[100];
+	wchar_t				    sql_buf[100];
+    rdbi_string_def         sqlval;
 	int 				    rows;
 	odbcdr_cursor_def	    *c = NULL;
 	odbcdr_connData_def	    *connData;
     SQLLEN                  null_ind;
 	int 				    rdbi_status = RDBI_GENERIC_ERROR;
-	int						global_identity = (table_name_I[0] == '\0'); 
+	int						global_identity = ODBCDRV_STRING_EMPTY(table_name_I);
     ODBCDR_ERRORINFO_VARS;
+    sqlval.wString = sql_buf;
 
-	debug_on1("odbcdr_get_gen_id", "table_name '%s'", ISNULL(table_name_I));
+#ifdef _DEBUG
+    if (context->odbcdr_UseUnicode){
+        debug_on1("odbcdr_get_gen_id", "table_name '%ls'", ISNULL(table_name_I->cwString));
+    }else{
+        debug_on1("odbcdr_get_gen_id", "table_name '%s'", ISNULL(table_name_I->ccString));
+    }
+#endif
 
     *id_O = 0;
 	
@@ -76,9 +88,12 @@ int odbcdr_get_gen_id(
 
 			ODBCDR_RDBI_ERR( odbcdr_est_cursor(context, (char **)&c) );
 
-			sprintf(sql_buf, "select @@IDENTITY" );  
+            if (context->odbcdr_UseUnicode)
+                odbcdr_swprintf(sqlval.wString, 100, L"select @@IDENTITY" );
+            else
+                sprintf(sqlval.cString, "select @@IDENTITY" );
 
-			ODBCDR_RDBI_ERR( odbcdr_sql( context, (char *)c, sql_buf, FALSE, (char *)NULL,
+			ODBCDR_RDBI_ERR( local_odbcdr_sql( context, (char *)c, &sqlval, FALSE, (char *)NULL,
 									(void *)NULL, (char *) NULL) );
 
 			/* define output locations */
@@ -99,9 +114,12 @@ int odbcdr_get_gen_id(
 
 		ODBCDR_RDBI_ERR( odbcdr_est_cursor(context, (char **)&c) );
 
-		sprintf(sql_buf, "select IDENT_CURRENT('%s')", table_name_I);
+        if (context->odbcdr_UseUnicode)
+            odbcdr_swprintf(sqlval.wString, 100, L"select IDENT_CURRENT('%ls')", table_name_I->cwString);
+        else
+            sprintf(sqlval.cString, "select IDENT_CURRENT('%s')", table_name_I->ccString);
 
-		ODBCDR_RDBI_ERR( odbcdr_sql( context, (char *)c, sql_buf, FALSE, (char *)NULL,
+		ODBCDR_RDBI_ERR( local_odbcdr_sql( context, (char *)c, &sqlval, FALSE, (char *)NULL,
 									(void *)NULL, (char *) NULL) );
 
 		/* define output locations */
@@ -123,10 +141,32 @@ the_exit:
 	
 /*	if ( !global_identity && c != (odbcdr_cursor_def *)NULL) {   */
 	if ( c != (odbcdr_cursor_def *)NULL) {   
-	    ODBCDR_ERRORINFO_GET(context);
+	    ODBCDR_ERRORINFO_GET;
 	    odbcdr_fre_cursor (context, (char **)&c);
-	    ODBCDR_ERRORINFO_SET(context);
+	    ODBCDR_ERRORINFO_SET;
 	}
 
 	debug_return(NULL, rdbi_status);
+}
+
+int odbcdr_get_gen_id(
+    odbcdr_context_def  *context,
+	const char *table_name_I,
+	int  *id_O
+	)
+{
+    rdbi_string_def str;
+    str.ccString = table_name_I;
+    return local_odbcdr_get_gen_id(context,	&str, id_O);
+}
+
+int odbcdr_get_gen_idW(
+    odbcdr_context_def  *context,
+	const wchar_t *table_name_I,
+	int  *id_O
+	)
+{
+    rdbi_string_def str;
+    str.cwString = table_name_I;
+    return local_odbcdr_get_gen_id(context,	&str, id_O);
 }

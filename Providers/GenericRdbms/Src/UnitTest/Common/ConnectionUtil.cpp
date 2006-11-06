@@ -55,7 +55,11 @@ StaticConnection::~StaticConnection (void)
 void StaticConnection::SetSchema ( char* suffix ) 
 {
     sprintf( mDatastore, "%s%s", UnitTestUtil::GetEnviron( "datastore" ), suffix );
-    rdbi_set_schema( m_rdbi_context, mDatastore );
+    FdoStringP strDatastore = mDatastore;
+    if (m_rdbi_context->dispatch.capabilities.supports_unicode == 1)
+        ::rdbi_set_schemaW( m_rdbi_context, strDatastore );
+    else
+        ::rdbi_set_schema( m_rdbi_context, strDatastore );
 }
 
 int StaticConnection::do_rdbi_init (rdbi_context_def** rdbi_context)

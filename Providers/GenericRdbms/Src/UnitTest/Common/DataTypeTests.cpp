@@ -63,9 +63,9 @@ void DataTypeTests::setUp ()
         {
             CPPUNIT_ASSERT_MESSAGE ("rdbi_connect failed", RDBI_SUCCESS == do_rdbi_connect (dataStoreName, userName, userPassword));
             if ( mRdbiContext->dispatch.capabilities.supports_unicode == 1 )
-                CPPUNIT_ASSERT_MESSAGE ("rdbi_set_schemaW failed", RDBI_SUCCESS == rdbi_set_schemaW (mRdbiContext, (wchar_t*)(const wchar_t*)dataStoreName));
+                CPPUNIT_ASSERT_MESSAGE ("rdbi_set_schemaW failed", RDBI_SUCCESS == rdbi_set_schemaW (mRdbiContext, dataStoreName));
             else
-                CPPUNIT_ASSERT_MESSAGE ("rdbi_set_schema failed", RDBI_SUCCESS == rdbi_set_schema (mRdbiContext, (char*)(const char*)dataStoreName));
+                CPPUNIT_ASSERT_MESSAGE ("rdbi_set_schema failed", RDBI_SUCCESS == rdbi_set_schema (mRdbiContext, dataStoreName));
         }
         catch (CppUnit::Exception exception)
         {
@@ -132,6 +132,28 @@ char *DataTypeTests::get_date_time (const struct tm *when)
     return ("");
 }
 
+int DataTypeTests::rdbi_sql_Ex( rdbi_context_def *context, int sqlid, FdoStringP sql )
+{
+    if (context->dispatch.capabilities.supports_unicode == 1)
+        return ::rdbi_sqlW( context, sqlid, sql );
+    else
+        return ::rdbi_sql( context, sqlid, sql );
+}
+
+int DataTypeTests::rdbi_desc_slct_Ex( rdbi_context_def *context, int sqlid, int pos, int name_len, char *name, int *rdbi_type, int *binary_size, int *null_ok )
+{
+    if (context->dispatch.capabilities.supports_unicode == 1)
+    {
+        wchar_t wname[1024];
+        wname[0] = L'\0';
+        int rc = ::rdbi_desc_slctW( context, sqlid, pos, name_len, wname, rdbi_type, binary_size, null_ok );
+        strcpy (name, FdoStringP(wname));
+        return rc;
+    }
+    else
+        return ::rdbi_desc_slct( context, sqlid, pos, name_len, name, rdbi_type, binary_size, null_ok );
+}
+
 void DataTypeTests::roundtrip_insert (
     char *sql_type,
     int rdbi_type,
@@ -161,12 +183,12 @@ void DataTypeTests::roundtrip_insert (
 
         // drop the table if it already exists... ignore errors
         sprintf (statement, "drop table bar");
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql (mRdbiContext, cursor, statement));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, statement));
 		rdbi_execute (mRdbiContext, cursor, 1, 0);
 
         // create the table with 2 columns (not null/null)
         sprintf (statement, "create table bar (xyz1 %s, xyz2 %s null ) %s", sql_type, sql_type, get_geometry_storage());
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql (mRdbiContext, cursor, statement));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, statement));
         CPPUNIT_ASSERT_MESSAGE ("rdbi_execute failed", RDBI_SUCCESS == rdbi_execute (mRdbiContext, cursor, 1, 0));		
 
         // insert a row with the data
@@ -176,20 +198,21 @@ void DataTypeTests::roundtrip_insert (
         (void) rdbi_set_nnull (mRdbiContext, (void *)&null_ind1, 0, 0 );
         (void) rdbi_set_null  (mRdbiContext, (void *)&null_ind2, 0, 0 );
 
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql_va failed", RDBI_SUCCESS == rdbi_sql_va (mRdbiContext,
-            RDBI_VA_BNDNULLS|RDBI_VA_EXEC, cursor, statement,
-            /*bind variables*/
-            rdbi_type, size, variable, &null_ind1,
-            rdbi_type, size, &variable2, &null_ind2,
-            RDBI_VA_EOL,
-            /*define variables*/
-            RDBI_VA_EOL));
+        if (mRdbiContext->dispatch.capabilities.supports_unicode == 1){
+            CPPUNIT_ASSERT_MESSAGE ("rdbi_sql_va failed", RDBI_SUCCESS == rdbi_sql_vaW (mRdbiContext,
+                RDBI_VA_BNDNULLS|RDBI_VA_EXEC, cursor, FdoStringP(statement), rdbi_type, size, variable, &null_ind1,
+                rdbi_type, size, &variable2, &null_ind2, RDBI_VA_EOL, RDBI_VA_EOL));
+        }else{
+            CPPUNIT_ASSERT_MESSAGE ("rdbi_sql_va failed", RDBI_SUCCESS == rdbi_sql_va (mRdbiContext,
+                RDBI_VA_BNDNULLS|RDBI_VA_EXEC, cursor, FdoStringP(statement), rdbi_type, size, variable, &null_ind1,
+                rdbi_type, size, &variable2, &null_ind2, RDBI_VA_EOL, RDBI_VA_EOL));
+        }
 
         // describe the select
         sprintf (statement, "select * from bar");
 
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql (mRdbiContext, cursor, statement));
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_desc_slct failed", RDBI_SUCCESS == rdbi_desc_slct (mRdbiContext, cursor, 1, sizeof (statement), statement, &type, &bytes, &null_ok));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, statement));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_desc_slct failed", RDBI_SUCCESS == rdbi_desc_slct_Ex (mRdbiContext, cursor, 1, sizeof (statement), statement, &type, &bytes, &null_ok));
 		CPPUNIT_ASSERT_MESSAGE ("column wrong name", 0 == FdoCommonOSUtil::stricmp ("xyz1", statement));
         CPPUNIT_ASSERT_MESSAGE ("column wrong type", is_datatype_equal(rdbi_type, type) );
         // CPPUNIT_ASSERT_MESSAGE ("column wrong size", rdbi_scale == bytes);
@@ -307,20 +330,20 @@ void DataTypeTests::roundtrip_update (
         (void) rdbi_set_nnull (mRdbiContext, (void *)&null_ind1, 0, 0 );
         (void) rdbi_set_null  (mRdbiContext, (void *)&null_ind2, 0, 0 );
 
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql_va failed", RDBI_SUCCESS == rdbi_sql_va (mRdbiContext,
-            RDBI_VA_BNDNULLS|RDBI_VA_EXEC, cursor, statement,
-            /*bind variables*/
-            rdbi_type, size, variable, &null_ind1,
-            rdbi_type, size, &variable2, &null_ind2,
-            RDBI_VA_EOL,
-            /*define variables*/
-            RDBI_VA_EOL));
-
+        if (mRdbiContext->dispatch.capabilities.supports_unicode == 1){
+            CPPUNIT_ASSERT_MESSAGE ("rdbi_sql_va failed", RDBI_SUCCESS == rdbi_sql_vaW (mRdbiContext,
+                RDBI_VA_BNDNULLS|RDBI_VA_EXEC, cursor, FdoStringP(statement), rdbi_type, size, variable, &null_ind1,
+                rdbi_type, size, &variable2, &null_ind2, RDBI_VA_EOL,RDBI_VA_EOL));
+        }else{
+            CPPUNIT_ASSERT_MESSAGE ("rdbi_sql_va failed", RDBI_SUCCESS == rdbi_sql_va (mRdbiContext,
+                RDBI_VA_BNDNULLS|RDBI_VA_EXEC, cursor, FdoStringP(statement), rdbi_type, size, variable, &null_ind1,
+                rdbi_type, size, &variable2, &null_ind2, RDBI_VA_EOL,RDBI_VA_EOL));
+        }
         // describe the select
         sprintf (statement, "select * from bar");
 
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql (mRdbiContext, cursor, statement));
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_desc_slct failed", RDBI_SUCCESS == rdbi_desc_slct (mRdbiContext, cursor, 1, sizeof (statement), statement, &type, &bytes, &null_ok));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, statement));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_desc_slct failed", RDBI_SUCCESS == rdbi_desc_slct_Ex (mRdbiContext, cursor, 1, sizeof (statement), statement, &type, &bytes, &null_ok));
 		CPPUNIT_ASSERT_MESSAGE ("column wrong name", 0 == FdoCommonOSUtil::stricmp ("xyz1", statement));
         CPPUNIT_ASSERT_MESSAGE ("column wrong type", is_datatype_equal(rdbi_type, type) );
         // CPPUNIT_ASSERT_MESSAGE ("column wrong size", rdbi_scale == bytes);
@@ -379,7 +402,7 @@ void DataTypeTests::roundtrip_update (
 
         // clean up
         sprintf (statement, "drop table bar");
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql (mRdbiContext, cursor, statement));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, statement));
         CPPUNIT_ASSERT_MESSAGE ("rdbi_execute failed", RDBI_SUCCESS == rdbi_execute (mRdbiContext, cursor, 1, 0));
 
         CPPUNIT_ASSERT_MESSAGE ("rdbi_fre_cursor failed", RDBI_SUCCESS == rdbi_fre_cursor (mRdbiContext, cursor));

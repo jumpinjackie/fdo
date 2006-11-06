@@ -27,15 +27,6 @@
 #include "Rd/ConstraintReader.h"
 #include "Inc/Rdbi/proto.h"
 
-struct odbcdr_context_def;
-
-extern "C" {
-    int odbcdr_run_sql (
-        odbcdr_context_def *context,
-        char *sql
-    );
-}
-
 FdoSmPhOdbcOwner::FdoSmPhOdbcOwner(
     FdoStringP name,
     bool hasMetaSchema,
@@ -53,8 +44,15 @@ FdoSmPhOdbcOwner::~FdoSmPhOdbcOwner(void)
 void FdoSmPhOdbcOwner::SetCurrent()
 {
     FdoSmPhOdbcMgrP mgr = GetManager()->SmartCast<FdoSmPhOdbcMgr>();
-
-    if ( RDBI_SUCCESS != rdbi_set_schema( mgr->GetRdbiContext(), (char*)(const char*)FdoStringP(GetName()) ))
+    rdbi_context_def* mContext = mgr->GetRdbiContext();
+    FdoStringP pName = GetName();
+    int rdbi_status = RDBI_GENERIC_ERROR;
+    if (mContext->dispatch.capabilities.supports_unicode == 1)
+        rdbi_status = ::rdbi_set_schemaW(mContext, pName);
+    else
+        rdbi_status = ::rdbi_set_schema(mContext, pName);
+    
+    if ( RDBI_SUCCESS != rdbi_status )
     {
         rdbi_get_msg(mgr->GetRdbiContext()); 
         throw FdoSchemaException::Create( mgr->GetRdbiContext()->last_error_msg ); 

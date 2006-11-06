@@ -36,9 +36,12 @@
 #include "proto_p.h"
 
 
-char *odbcdr_vndr_name(
-    odbcdr_context_def  *context
-   )
+char *odbcdr_vndr_name(odbcdr_context_def  *context)
 {
 	return ("ODBC");
+}
+
+wchar_t *odbcdr_vndr_nameW(odbcdr_context_def  *context)
+{
+	return (L"ODBC");
 }

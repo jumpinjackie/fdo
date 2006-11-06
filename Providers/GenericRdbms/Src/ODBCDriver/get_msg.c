@@ -41,13 +41,15 @@
 
 #include <Inc/ut.h> 					/* ut_vm_malloc()			*/
 #include <Inc/rdbi.h>					/* rdbi status values		*/
-#include	<Inc/debugext.h>
+#include <Inc/debugext.h>
 #include "proto_p.h"
 
-void odbcdr_get_msg(		/* Get a message describing the last operation	*/
-    odbcdr_context_def  *context,
-	char *buffer			/* Output buffer								*/
-	)
+#define MSG_NODBOPEN  "No current open database."
+#define MSG_NODBOPENW L"No current open database."
+#define MSG_EMPTY  ""
+#define MSG_EMPTYW L""
+
+void local_odbcdr_get_msg(odbcdr_context_def  *context, rdbi_string_def *buffer)
 {
 	int				rs;
 
@@ -59,15 +61,35 @@ void odbcdr_get_msg(		/* Get a message describing the last operation	*/
 
 	if ( rs == RDBI_NOT_CONNECTED )
 	{
-		strcpy( buffer, "No current open database." );
+		ODBCDRV_STRING_COPY_LST( buffer, MSG_NODBOPEN );
 	}
 	else if ( rs == RDBI_SUCCESS )
 	{
-		if ( context->odbcdr_last_rc != ODBCDR_SUCCESS )
-			strcpy( buffer, context->odbcdr_last_err_msg );
-        else
-            strcpy( buffer, "" );
+        if ( context->odbcdr_last_rc != ODBCDR_SUCCESS ){
+			ODBCDRV_STRING_COPY_LST( buffer, context->odbcdr_last_err_msg );
+        }else{
+            ODBCDRV_STRING_COPY_LST( buffer, MSG_EMPTY );
+        }
 	}
-
 	debug_return_void(NULL);
+}
+
+void odbcdr_get_msg(		/* Get a message describing the last operation	*/
+    odbcdr_context_def  *context,
+	char *buffer			/* Output buffer								*/
+	)
+{
+    rdbi_string_def str;
+    str.cString = buffer;
+    return local_odbcdr_get_msg(context, &str);
+}
+
+void odbcdr_get_msgW(		/* Get a message describing the last operation	*/
+    odbcdr_context_def  *context,
+	wchar_t *buffer			/* Output buffer								*/
+	)
+{
+    rdbi_string_def str;
+    str.wString = buffer;
+    return local_odbcdr_get_msg(context, &str);
 }

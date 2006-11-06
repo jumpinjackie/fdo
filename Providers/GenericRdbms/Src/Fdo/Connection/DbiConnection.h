@@ -110,8 +110,6 @@ public:
 
     //dbi_context_def *GetCtxt() { return mContext; }
 
-    int DoSql (char *sql_buf, int *rows_processed, bool bThrowException = false);
-
     //
     // Get a schema utility object
     FDORDBMS_TEST FdoRdbmsSchemaUtil* GetSchemaUtil( );

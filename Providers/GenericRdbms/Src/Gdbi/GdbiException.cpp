@@ -38,6 +38,11 @@ wchar_t*  Gdbi_nls_msg_get_S( int msg_num, char* default_msg, char* catalog, cha
 	return ret;
 }
 
+wchar_t*  Gdbi_nls_msg_get_SW( int msg_num, char* default_msg, char* catalog, wchar_t* warg1 )
+{
+	return (wchar_t*)FdoCommonNlsUtil::NLSGetMessage( msg_num, default_msg, catalog, warg1 );
+}
+
 GdbiException* GdbiException::Create()
 {
     return new GdbiException();

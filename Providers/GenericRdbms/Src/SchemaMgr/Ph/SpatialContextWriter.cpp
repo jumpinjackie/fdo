@@ -39,7 +39,7 @@ void FdoSmPhGrdSpatialContextWriter::Add()
     if ( cmds->IsFieldWriteable( L"f_spatialcontext", L"scid" ) )
     {
         // In advance for providers supporting sequences
-        SpatialContextId = cmds->NextSequenceNumber( DBI_PLAN_SEQUENCE );
+        SpatialContextId = cmds->NextSequenceNumber( DBI_PLAN_SEQUENCEW );
         SetId( SpatialContextId );
         FdoSmPhSpatialContextWriter::Add();
     }
@@ -47,7 +47,7 @@ void FdoSmPhGrdSpatialContextWriter::Add()
     {
         // After insert for the autoincrement ones
         FdoSmPhSpatialContextWriter::Add();
-        SpatialContextId = cmds->NextSequenceNumber( DBI_PLAN_SEQUENCE );
+        SpatialContextId = cmds->NextSequenceNumber( DBI_PLAN_SEQUENCEW );
         SetId( SpatialContextId );
     }
 }

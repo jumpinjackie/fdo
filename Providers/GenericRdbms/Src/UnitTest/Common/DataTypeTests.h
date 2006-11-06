@@ -114,6 +114,8 @@ protected:
     void time ();
     void timestamp ();
     void longlong ();
+    int rdbi_sql_Ex( rdbi_context_def *context, int sqlid, FdoStringP sql );
+    int rdbi_desc_slct_Ex( rdbi_context_def *context, int sqlid, int pos, int name_len, char *name, int *rdbi_type, int *binary_size, int *null_ok );
 
     virtual int do_rdbi_init ();
     virtual int do_rdbi_connect (const char* dataStoreName, const char* userName, const char* userPassword);

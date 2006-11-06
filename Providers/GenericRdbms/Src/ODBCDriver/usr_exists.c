@@ -60,3 +60,17 @@ int odbcdr_usr_exists(
 	debug_return(NULL, rdbi_status);
 
 }
+
+int odbcdr_usr_existsW(
+    odbcdr_context_def  *context,
+	wchar_t *user_name,
+	int  *exists
+	)
+{
+	int rdbi_status = RDBI_GENERIC_ERROR;
+
+    // This is an obsolete function.
+
+    *exists=FALSE;
+	debug_return(NULL, rdbi_status);
+}

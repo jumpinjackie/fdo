@@ -65,9 +65,9 @@ void SelectTests::setUp ()
         {
             CPPUNIT_ASSERT_MESSAGE ("rdbi_connect failed", RDBI_SUCCESS == do_rdbi_connect (dataStoreName, userName, userPassword));
             if ( mRdbiContext->dispatch.capabilities.supports_unicode == 1 )
-                CPPUNIT_ASSERT_MESSAGE ("rdbi_set_schemaW failed", RDBI_SUCCESS == rdbi_set_schemaW (mRdbiContext, (wchar_t*)(const wchar_t*)dataStoreName));
+                CPPUNIT_ASSERT_MESSAGE ("rdbi_set_schemaW failed", RDBI_SUCCESS == rdbi_set_schemaW (mRdbiContext, dataStoreName));
             else
-                CPPUNIT_ASSERT_MESSAGE ("rdbi_set_schema failed", RDBI_SUCCESS == rdbi_set_schema (mRdbiContext, (char*)(const char*)dataStoreName));
+                CPPUNIT_ASSERT_MESSAGE ("rdbi_set_schema failed", RDBI_SUCCESS == rdbi_set_schema (mRdbiContext, dataStoreName));
         }
         catch (CppUnit::Exception exception)
         {
@@ -134,6 +134,28 @@ char *SelectTests::get_date_time (const struct tm *when)
     return ("");
 }
 
+int SelectTests::rdbi_sql_Ex( rdbi_context_def *context, int sqlid, FdoStringP sql )
+{
+    if (context->dispatch.capabilities.supports_unicode == 1)
+        return ::rdbi_sqlW( context, sqlid, sql );
+    else
+        return ::rdbi_sql( context, sqlid, sql );
+}
+
+int SelectTests::rdbi_desc_slct_Ex( rdbi_context_def *context, int sqlid, int pos, int name_len, char *name, int *rdbi_type, int *binary_size, int *null_ok )
+{
+    if (context->dispatch.capabilities.supports_unicode == 1)
+    {
+        wchar_t wname[1024];
+        wname[0] = L'\0';
+        int rc = ::rdbi_desc_slctW( context, sqlid, pos, name_len, wname, rdbi_type, binary_size, null_ok );
+        strcpy (name, FdoStringP(wname));
+        return rc;
+    }
+    else
+        return ::rdbi_desc_slct( context, sqlid, pos, name_len, name, rdbi_type, binary_size, null_ok );
+}
+
 void SelectTests::ddl ()
 {
     int cursor;
@@ -146,15 +168,15 @@ void SelectTests::ddl ()
 
         // drop the table if it already exists... ignore errors
         query = "drop table foo";
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql (mRdbiContext, cursor, query));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, query));
         rdbi_execute (mRdbiContext, cursor, 1, 0);
 
         query = "create table foo (id decimal(10), description varchar(50))";
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql (mRdbiContext, cursor, query));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, query));
         CPPUNIT_ASSERT_MESSAGE ("rdbi_execute failed", RDBI_SUCCESS == rdbi_execute (mRdbiContext, cursor, 1, 0));
 
         query = "drop table foo";
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql (mRdbiContext, cursor, query));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, query));
         CPPUNIT_ASSERT_MESSAGE ("rdbi_execute failed", RDBI_SUCCESS == rdbi_execute (mRdbiContext, cursor, 1, 0));
 
         CPPUNIT_ASSERT_MESSAGE ("rdbi_fre_cursor failed", RDBI_SUCCESS == rdbi_fre_cursor (mRdbiContext, cursor));
@@ -203,25 +225,25 @@ void SelectTests::define ()
 
         // drop the table if it already exists... ignore errors
         query = "drop table foo";
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql (mRdbiContext, cursor, query));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, query));
         rdbi_execute (mRdbiContext, cursor, 1, 0);
 
         query = "create table foo (id decimal(10), description varchar(50))";
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql (mRdbiContext, cursor, query));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, query));
         CPPUNIT_ASSERT_MESSAGE ("rdbi_execute failed", RDBI_SUCCESS == rdbi_execute (mRdbiContext, cursor, 1, 0));
 
         // insert a row
         query = "insert into foo values (42, '" ANSWER "')";
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql (mRdbiContext, cursor, query));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, query));
         CPPUNIT_ASSERT_MESSAGE ("rdbi_execute failed", RDBI_SUCCESS == rdbi_execute (mRdbiContext, cursor, 1, 0));
 
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql_va failed", RDBI_SUCCESS == rdbi_sql_va (mRdbiContext, RDBI_VA_EXEC, cursor,
-            "select description from foo where id=42",
-            /*bind variables*/
-            RDBI_VA_EOL,
-            /*define variables*/
-            RDBI_STRING, sizeof (answer), answer,
-            RDBI_VA_EOL));
+        if (mRdbiContext->dispatch.capabilities.supports_unicode == 1){
+            CPPUNIT_ASSERT_MESSAGE ("rdbi_sql_va failed", RDBI_SUCCESS == rdbi_sql_vaW (mRdbiContext, RDBI_VA_EXEC, cursor,
+            L"select description from foo where id=42", RDBI_VA_EOL, RDBI_STRING, sizeof (answer), answer, RDBI_VA_EOL));
+        }else{
+            CPPUNIT_ASSERT_MESSAGE ("rdbi_sql_va failed", RDBI_SUCCESS == rdbi_sql_va (mRdbiContext, RDBI_VA_EXEC, cursor,
+            "select description from foo where id=42", RDBI_VA_EOL, RDBI_STRING, sizeof (answer), answer, RDBI_VA_EOL));
+        }
         count = 0;
         do
         {
@@ -238,7 +260,7 @@ void SelectTests::define ()
         CPPUNIT_ASSERT_MESSAGE ("rdbi_end_select failed", RDBI_SUCCESS == rdbi_end_select (mRdbiContext, cursor));
 
         query = "drop table foo";
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql (mRdbiContext, cursor, query));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, query));
         CPPUNIT_ASSERT_MESSAGE ("rdbi_execute failed", RDBI_SUCCESS == rdbi_execute (mRdbiContext, cursor, 1, 0));
 
         CPPUNIT_ASSERT_MESSAGE ("rdbi_fre_cursor failed", RDBI_SUCCESS == rdbi_fre_cursor (mRdbiContext, cursor));
@@ -287,34 +309,33 @@ void SelectTests::bind ()
 
         // drop the table if it already exists... ignore errors
         query = "drop table foo";
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql (mRdbiContext, cursor, query));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, query));
         rdbi_execute (mRdbiContext, cursor, 1, 0);
 
         query = "create table foo (id decimal(10), description varchar(50))";
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql (mRdbiContext, cursor, query));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, query));
         CPPUNIT_ASSERT_MESSAGE ("rdbi_execute failed", RDBI_SUCCESS == rdbi_execute (mRdbiContext, cursor, 1, 0));
 
         // insert a couple of rows
         query = "insert into foo values (2525, 'if man is still alive')";
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql (mRdbiContext, cursor, query));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, query));
         CPPUNIT_ASSERT_MESSAGE ("rdbi_execute failed", RDBI_SUCCESS == rdbi_execute (mRdbiContext, cursor, 1, 0));
         query = "insert into foo values (42, '" ANSWER "')";
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql (mRdbiContext, cursor, query));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, query));
         CPPUNIT_ASSERT_MESSAGE ("rdbi_execute failed", RDBI_SUCCESS == rdbi_execute (mRdbiContext, cursor, 1, 0));
         query = "insert into foo values (99, 'bottles of beer on the wall')";
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql (mRdbiContext, cursor, query));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, query));
         CPPUNIT_ASSERT_MESSAGE ("rdbi_execute failed", RDBI_SUCCESS == rdbi_execute (mRdbiContext, cursor, 1, 0));
 
         hit = 42;
         sprintf (select, "select description from foo where id=%s", get_bind_var (1));
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql_va failed", RDBI_SUCCESS == rdbi_sql_va (mRdbiContext, RDBI_VA_EXEC, cursor,
-            select,
-            /*bind variables*/
-            RDBI_INT, sizeof(hit), &hit,
-            RDBI_VA_EOL,
-            /*define variables*/
-            RDBI_STRING, sizeof (answer), answer,
-            RDBI_VA_EOL));
+        if (mRdbiContext->dispatch.capabilities.supports_unicode == 1){
+            CPPUNIT_ASSERT_MESSAGE ("rdbi_sql_va failed", RDBI_SUCCESS == rdbi_sql_vaW (mRdbiContext, RDBI_VA_EXEC, cursor,
+                FdoStringP(select), RDBI_INT, sizeof(hit), &hit, RDBI_VA_EOL, RDBI_STRING, sizeof (answer), answer, RDBI_VA_EOL));
+        }else{
+            CPPUNIT_ASSERT_MESSAGE ("rdbi_sql_va failed", RDBI_SUCCESS == rdbi_sql_va (mRdbiContext, RDBI_VA_EXEC, cursor,
+                FdoStringP(select), RDBI_INT, sizeof(hit), &hit, RDBI_VA_EOL, RDBI_STRING, sizeof (answer), answer, RDBI_VA_EOL));
+        }
         count = 0;
         rows = 0;
         do
@@ -332,7 +353,7 @@ void SelectTests::bind ()
         CPPUNIT_ASSERT_MESSAGE ("rdbi_end_select failed", RDBI_SUCCESS == rdbi_end_select (mRdbiContext, cursor));
 
         query = "drop table foo";
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql (mRdbiContext, cursor, query));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, query));
         CPPUNIT_ASSERT_MESSAGE ("rdbi_execute failed", RDBI_SUCCESS == rdbi_execute (mRdbiContext, cursor, 1, 0));
 
         CPPUNIT_ASSERT_MESSAGE ("rdbi_fre_cursor failed", RDBI_SUCCESS == rdbi_fre_cursor (mRdbiContext, cursor));
@@ -403,7 +424,7 @@ void SelectTests::describe ()
 
         // drop the table if it already exists... ignore errors
         query = "drop table bar";
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql (mRdbiContext, cursor, query));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, query));
         rdbi_execute (mRdbiContext, cursor, 1, 0);
 
         // not RDBI_BLOB, RDBI_RAW, RDBI_ROWID, RDBI_GEOMETRY or RDBI_BLOB_REF
@@ -446,7 +467,7 @@ void SelectTests::describe ()
             "salary decimal (8, 2)," // RDBI_DOUBLE
             "phone decimal(7)," // RDBI_LONG
             "birthday timestamp)"); // RDBI_DATE
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql (mRdbiContext, cursor, statement));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, statement));
         CPPUNIT_ASSERT_MESSAGE ("rdbi_execute failed", RDBI_SUCCESS == rdbi_execute (mRdbiContext, cursor, 1, 0));
 
         // set up an bound insert
@@ -460,7 +481,7 @@ void SelectTests::describe ()
             get_bind_var (7),
             get_bind_var (8),
             allow_timestamp_notnull()? get_bind_var (9) : "NULL");
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql (mRdbiContext, cursor, statement));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, statement));
 
         // define the bind variables
 // DS: why size is "sizeof (name) - 1" ?
@@ -547,52 +568,52 @@ void SelectTests::describe ()
 
         // describe the select
         query = "select * from bar";
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql (mRdbiContext, cursor, query));
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_desc_slct failed", RDBI_SUCCESS == rdbi_desc_slct (mRdbiContext, cursor, 1, sizeof (name), name, &type, &size, &null_ok));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, query));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_desc_slct failed", RDBI_SUCCESS == rdbi_desc_slct_Ex (mRdbiContext, cursor, 1, sizeof (name), name, &type, &size, &null_ok));
         CPPUNIT_ASSERT_MESSAGE ("name wrong name", 0 == FdoCommonOSUtil::stricmp ("name", name));
         CPPUNIT_ASSERT_MESSAGE ("name wrong type", RDBI_STRING == type);
         CPPUNIT_ASSERT_MESSAGE ("name wrong size", 200 == size);
 
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_desc_slct failed", RDBI_SUCCESS == rdbi_desc_slct (mRdbiContext, cursor, 2, sizeof (name), name, &type, &size, &null_ok));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_desc_slct failed", RDBI_SUCCESS == rdbi_desc_slct_Ex (mRdbiContext, cursor, 2, sizeof (name), name, &type, &size, &null_ok));
         CPPUNIT_ASSERT_MESSAGE ("initials wrong name", 0 == FdoCommonOSUtil::stricmp ("initials", name));
         CPPUNIT_ASSERT_MESSAGE ("initials wrong type", RDBI_CHAR == type);
         CPPUNIT_ASSERT_MESSAGE ("initials wrong size", get_char_size() == size);
 
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_desc_slct failed", RDBI_SUCCESS == rdbi_desc_slct (mRdbiContext, cursor, 3, sizeof (name), name, &type, &size, &null_ok));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_desc_slct failed", RDBI_SUCCESS == rdbi_desc_slct_Ex (mRdbiContext, cursor, 3, sizeof (name), name, &type, &size, &null_ok));
         CPPUNIT_ASSERT_MESSAGE ("grade wrong name", 0 == FdoCommonOSUtil::stricmp ("grade", name));
         CPPUNIT_ASSERT_MESSAGE ("grade wrong type", RDBI_SHORT == type);
 #pragma message ("ToDo: fix MySql so it doesn't lie about the binary size")
         CPPUNIT_ASSERT_MESSAGE ("grade wrong size", 2 <= size);
 
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_desc_slct failed", RDBI_SUCCESS == rdbi_desc_slct (mRdbiContext, cursor, 4, sizeof (name), name, &type, &size, &null_ok));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_desc_slct failed", RDBI_SUCCESS == rdbi_desc_slct_Ex (mRdbiContext, cursor, 4, sizeof (name), name, &type, &size, &null_ok));
         CPPUNIT_ASSERT_MESSAGE ("salutation wrong name", 0 == FdoCommonOSUtil::stricmp ("salutation", name));
 #pragma message ("ToDo: fix MySql so it doesn't alter the coloumn type")
         CPPUNIT_ASSERT_MESSAGE ("salutation wrong type", (RDBI_FIXED_CHAR == type) || (RDBI_STRING == type));
         CPPUNIT_ASSERT_MESSAGE ("salutation wrong size", 4 == size);
 
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_desc_slct failed", RDBI_SUCCESS == rdbi_desc_slct (mRdbiContext, cursor, 5, sizeof (name), name, &type, &size, &null_ok));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_desc_slct failed", RDBI_SUCCESS == rdbi_desc_slct_Ex (mRdbiContext, cursor, 5, sizeof (name), name, &type, &size, &null_ok));
         CPPUNIT_ASSERT_MESSAGE ("employee wrong name", 0 == FdoCommonOSUtil::stricmp ("employee", name));
  //       CPPUNIT_ASSERT_MESSAGE ("employee wrong type", RDBI_DOUBLE == type);
         //CPPUNIT_ASSERT_MESSAGE ("employee wrong size", 8 <= size);
 
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_desc_slct failed", RDBI_SUCCESS == rdbi_desc_slct (mRdbiContext, cursor, 6, sizeof (name), name, &type, &size, &null_ok));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_desc_slct failed", RDBI_SUCCESS == rdbi_desc_slct_Ex (mRdbiContext, cursor, 6, sizeof (name), name, &type, &size, &null_ok));
         CPPUNIT_ASSERT_MESSAGE ("height wrong name", 0 == FdoCommonOSUtil::stricmp ("height", name));
         CPPUNIT_ASSERT_MESSAGE ("height wrong type", RDBI_DOUBLE == type);
         CPPUNIT_ASSERT_MESSAGE ("height wrong size", 8 <= size);
 
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_desc_slct failed", RDBI_SUCCESS == rdbi_desc_slct (mRdbiContext, cursor, 7, sizeof (name), name, &type, &size, &null_ok));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_desc_slct failed", RDBI_SUCCESS == rdbi_desc_slct_Ex (mRdbiContext, cursor, 7, sizeof (name), name, &type, &size, &null_ok));
         CPPUNIT_ASSERT_MESSAGE ("salary wrong name", 0 == FdoCommonOSUtil::stricmp ("salary", name));
         CPPUNIT_ASSERT_MESSAGE ("salary wrong type", RDBI_DOUBLE == type);
         CPPUNIT_ASSERT_MESSAGE ("salary wrong size", 8 <= size);
 
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_desc_slct failed", RDBI_SUCCESS == rdbi_desc_slct (mRdbiContext, cursor, 8, sizeof (name), name, &type, &size, &null_ok));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_desc_slct failed", RDBI_SUCCESS == rdbi_desc_slct_Ex (mRdbiContext, cursor, 8, sizeof (name), name, &type, &size, &null_ok));
         CPPUNIT_ASSERT_MESSAGE ("phone wrong name", 0 == FdoCommonOSUtil::stricmp ("phone", name));
         CPPUNIT_ASSERT_MESSAGE ("phone wrong type", RDBI_LONG == type);
         CPPUNIT_ASSERT_MESSAGE ("phone wrong size", 4 <= size);
         
         if ( allow_timestamp_notnull() )
         {
-            CPPUNIT_ASSERT_MESSAGE ("rdbi_desc_slct failed", RDBI_SUCCESS == rdbi_desc_slct (mRdbiContext, cursor, 9, sizeof (name), name, &type, &size, &null_ok));
+            CPPUNIT_ASSERT_MESSAGE ("rdbi_desc_slct failed", RDBI_SUCCESS == rdbi_desc_slct_Ex (mRdbiContext, cursor, 9, sizeof (name), name, &type, &size, &null_ok));
             CPPUNIT_ASSERT_MESSAGE ("birthday wrong name", 0 == FdoCommonOSUtil::stricmp ("birthday", name));
             CPPUNIT_ASSERT_MESSAGE ("birthday wrong type", RDBI_DATE == type);
             CPPUNIT_ASSERT_MESSAGE ("birthday wrong size", 11 <= size);
@@ -675,7 +696,7 @@ void SelectTests::describe ()
         CPPUNIT_ASSERT_MESSAGE ("phone wrong value", 9671111 == phone);
 
         query = "drop table bar";
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql (mRdbiContext, cursor, query));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, query));
         CPPUNIT_ASSERT_MESSAGE ("rdbi_execute failed", RDBI_SUCCESS == rdbi_execute (mRdbiContext, cursor, 1, 0));
 
         CPPUNIT_ASSERT_MESSAGE ("rdbi_fre_cursor failed", RDBI_SUCCESS == rdbi_fre_cursor (mRdbiContext, cursor));

@@ -15,6 +15,17 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include    <Inc/rdbi.h>
+#include    <Inc/ut.h>
+#include	<Inc/debugext.h>
+#include    "proto_p.h"
+
+#define _check_status  if (rdbi_status != RDBI_SUCCESS) goto the_exit;
+int local_odbcdr_col_act(odbcdr_context_def *context, rdbi_string_def *owner, rdbi_string_def *object_name, rdbi_string_def *dbaselink);
+int local_odbcdr_col_get(odbcdr_context_def *context, rdbi_string_def *column_name, rdbi_string_def *type, int *length,
+	        int *scale,int *nullable, int *is_autoincrement, int *position, int  *eof);
+
+
 /************************************************************************
 *																		*
 * Name																	*
@@ -57,24 +68,21 @@
 *
 ************************************************************************/
 
-#include    <Inc/rdbi.h>
-#include    <Inc/ut.h>
-#include	<Inc/debugext.h>
-#include    "proto_p.h"
-
-#define _check_status  if (rdbi_status != RDBI_SUCCESS) goto the_exit;
-
-int odbcdr_pkeys_act(
+int local_odbcdr_pkeys_act(
     odbcdr_context_def *context,
-    char *owner,
-    const char *object
+    rdbi_string_def *owner,
+    rdbi_string_def *object
 	)
 {
+    rdbi_string_def dbaselink;
+    SQLWCHAR    szColumnNameBuf[ODBCDR_MAX_BUFF_SIZE];
+    rdbi_string_def szColumnName;
+    SQLWCHAR    szTypeNameBuf[ODBCDR_MAX_BUFF_SIZE];
+    rdbi_string_def szTypeName;
 	odbcdr_cursor_def	*c;
 	odbcdr_connData_def	*connData = NULL;
-	int 				rdbi_status = RDBI_GENERIC_ERROR;
+	int 		rdbi_status = RDBI_GENERIC_ERROR;
     SQLINTEGER  cbColumnName = 0;
-    SQLCHAR     szColumnName[ODBCDR_MAX_BUFF_SIZE];
     SQLRETURN   ret = SQL_SUCCESS;
     long        i;
     int         found;
@@ -82,17 +90,20 @@ int odbcdr_pkeys_act(
     int         bDriverIsNativeOracle = FALSE;
     int         bDriverIsOracle = FALSE;
     odbcdr_NameListEntry_pkey_def * nle;
-
+    SQLSMALLINT charType;
+    szColumnName.wString = (wchar_t *)szColumnNameBuf;
+    szTypeName.wString = (wchar_t *)szTypeNameBuf;
+    dbaselink.wString = NULL;
 
 	debug_on("odbcdr_pkeys_act");
 
-    if (NULL == object || '\0' == object[0])
+    if ( ODBCDRV_STRING_EMPTY(object) )
         goto the_exit;
 
-	ODBCDR_RDBI_ERR( odbcdr_get_curr_conn( context, &connData ) );
+	ODBCDR_RDBI_ERR( odbcdr_get_curr_conn ( context, &connData ) );
 
 	/* Deactivate any outstanding queries */
-	rdbi_status = odbcdr_pkeys_deac( context );
+	rdbi_status = odbcdr_pkeys_deac ( context );
 	_check_status;
 
     /* Check driver type, so we can make driver-specific decisions where required. */
@@ -117,25 +128,27 @@ int odbcdr_pkeys_act(
     /* We do not exit with error if ret != SQL_SUCCESS because some drivers do
      * not support SQLPrimaryKeys.
      */
-    ret = SQLPrimaryKeys(
-        c->hStmt,
-        NULL, 
-        0,
-        NULL,
-        0,
-        (SQLCHAR*)object, 
-        SQL_NTS);
+    if (context->odbcdr_UseUnicode)
+    {
+        charType = SQL_C_WCHAR;
+        ret = SQLPrimaryKeysW( c->hStmt, NULL, 0, NULL, 0, (SQLWCHAR*)object->cwString,  SQL_NTS);
+    }
+    else
+    {
+        charType = SQL_C_CHAR;
+        ret = SQLPrimaryKeys( c->hStmt, NULL, 0, NULL, 0, (SQLCHAR*)object->ccString,  SQL_NTS);
+    }
 
     if (ret == SQL_SUCCESS)
     {
         ODBCDR_ODBC_ERR( SQLBindCol(
-            c->hStmt, 4,  SQL_CHAR, szColumnName, sizeof(szColumnName), &cbColumnName),
-            SQL_HANDLE_STMT, c->hStmt, L"SQLBindCol", L"Fetching primary keys" );
+            c->hStmt, 4,  charType, szColumnName.wString, ODBCDR_MAX_BUFF_SIZE, &cbColumnName),
+            SQL_HANDLE_STMT, c->hStmt, "SQLBindCol", "Fetching primary keys" );
 
         while (ret != SQL_NO_DATA)
         {
             odbcdr_NameListEntry_pkey_def newNle;
-            szColumnName[0] = '\0';
+            *szColumnName.wString = L'\0';
 
             ret = SQLFetch(c->hStmt);
 
@@ -145,7 +158,7 @@ int odbcdr_pkeys_act(
             if (ret == SQL_NO_DATA)
                 break;
 
-            (void) strcpy(newNle.name, (char*)szColumnName);
+            ODBCDRV_STRING_COPY_RST(newNle.name, &szColumnName);
             if (NULL == ut_da_append( &context->odbcdr_nameList_pkeys, 1L, (void *) &newNle ))
             {
                 rdbi_status = RDBI_MALLOC_FAILED;
@@ -164,8 +177,11 @@ int odbcdr_pkeys_act(
     if (!bFoundIdentityProperties && bDriverIsOracle)
     {
         // Build the Oracle Workspace Manager (OWM) auxiliary table name:
-        char objectNameOWM[ODBCDR_MAX_BUFF_SIZE];
-        sprintf(objectNameOWM, "%s%s", object, ODBCDR_DRIVER_ORACLE_OWM_TABLE_SUFFIX);
+        // use szTypeName as temporary for OWM
+        if (context->odbcdr_UseUnicode)
+            odbcdr_swprintf(szTypeName.wString, ODBCDR_MAX_BUFF_SIZE, L"%ls%ls", object->cwString, ODBCDR_DRIVER_ORACLE_OWM_TABLE_SUFFIXW);
+        else
+            sprintf(szTypeName.cString, "%s%s", object->ccString, ODBCDR_DRIVER_ORACLE_OWM_TABLE_SUFFIX);
 
 #ifndef _WIN32
         /* Easysoft's ODBC driver for Oracle doesn't like cursor re-use. */
@@ -175,23 +191,19 @@ int odbcdr_pkeys_act(
         connData->keys = c;
 #endif
 
-        ret = SQLPrimaryKeys(
-            c->hStmt,
-            NULL, 
-            0,
-            NULL, 
-            0,
-            (SQLCHAR*)objectNameOWM, 
-            SQL_NTS);
+        if (context->odbcdr_UseUnicode)
+            ret = SQLPrimaryKeysW(c->hStmt, NULL, 0, NULL, 0, (SQLWCHAR*)szTypeName.cwString, SQL_NTS);
+        else
+            ret = SQLPrimaryKeys(c->hStmt, NULL, 0, NULL, 0, (SQLCHAR*)szTypeName.ccString, SQL_NTS);
 
         if (ret == SQL_SUCCESS)
         {
             ODBCDR_ODBC_ERR( SQLBindCol(
-                c->hStmt, 4,  SQL_C_CHAR, szColumnName, sizeof(szColumnName), &cbColumnName),
-                SQL_HANDLE_STMT, c->hStmt, L"SQLBindCol", L"Fetching primary keys" );
+                c->hStmt, 4,  charType, szColumnName.wString, ODBCDR_MAX_BUFF_SIZE, &cbColumnName),
+                SQL_HANDLE_STMT, c->hStmt, "SQLBindCol", "Fetching primary keys" );
 
             while (ret != SQL_NO_DATA) {
-                szColumnName[0] = '\0';
+                *szColumnName.wString = L'\0';
 
                 ret = SQLFetch(c->hStmt);
                 if (ret != SQL_SUCCESS && ret != SQL_NO_DATA)
@@ -201,14 +213,13 @@ int odbcdr_pkeys_act(
                     break;
 
                 // Filter out workspace-manager-specific primary key columns:
-                if (0!=_strnicmp((char*)szColumnName, ODBCDR_DRIVER_ORACLE_OWM_COLUMN_VERSION, sizeof(szColumnName)) &&
-                    0!=_strnicmp((char*)szColumnName, ODBCDR_DRIVER_ORACLE_OWM_COLUMN_NEXTVER, sizeof(szColumnName)) &&
-                    0!=_strnicmp((char*)szColumnName, ODBCDR_DRIVER_ORACLE_OWM_COLUMN_DELSTATUS, sizeof(szColumnName)) &&
-                    0!=_strnicmp((char*)szColumnName, ODBCDR_DRIVER_ORACLE_OWM_COLUMN_LTLOCK, sizeof(szColumnName))
-                   )
+                if (0!=ODBCDRV_STRING_COMPARE_NOCASE_CST(&szColumnName, ODBCDR_DRIVER_ORACLE_OWM_COLUMN_VERSION, ODBCDR_MAX_BUFF_SIZE) &&
+                    0!=ODBCDRV_STRING_COMPARE_NOCASE_CST(&szColumnName, ODBCDR_DRIVER_ORACLE_OWM_COLUMN_NEXTVER, ODBCDR_MAX_BUFF_SIZE) &&
+                    0!=ODBCDRV_STRING_COMPARE_NOCASE_CST(&szColumnName, ODBCDR_DRIVER_ORACLE_OWM_COLUMN_DELSTATUS, ODBCDR_MAX_BUFF_SIZE) &&
+                    0!=ODBCDRV_STRING_COMPARE_NOCASE_CST(&szColumnName, ODBCDR_DRIVER_ORACLE_OWM_COLUMN_LTLOCK, ODBCDR_MAX_BUFF_SIZE))
                 {
                     odbcdr_NameListEntry_pkey_def newNle;
-                    (void) strcpy(newNle.name, (char*)szColumnName);
+                    ODBCDRV_STRING_COPY_RST(newNle.name, &szColumnName);
                     if (NULL == ut_da_append( &context->odbcdr_nameList_pkeys, 1L, (void *) &newNle ))
                     {
                         rdbi_status = RDBI_MALLOC_FAILED;
@@ -218,6 +229,7 @@ int odbcdr_pkeys_act(
                 }
             }
         }
+        *szTypeName.wString = L'\0';
     }
 
 
@@ -242,7 +254,7 @@ int odbcdr_pkeys_act(
              * list of columns.  So, this code block is not compiled for now.
              */
             odbcdr_NameListEntry_pkey_def newNle;
-            (void) strcpy(newNle.name, ODBCDR_DRIVER_ORACLE_ROWID_NAME);
+            ODBCDRV_STRING_COPY_CST(newNle.name, ODBCDR_DRIVER_ORACLE_ROWID_NAME);
             if (NULL == ut_da_append( &context->odbcdr_nameList_pkeys, 1L, (void *) &newNle ))
             {
                 rdbi_status = RDBI_MALLOC_FAILED;
@@ -260,23 +272,18 @@ int odbcdr_pkeys_act(
             _check_status;
             connData->keys = c;
 #endif
-
-            ret = SQLSpecialColumns(
-                c->hStmt,
-                SQL_BEST_ROWID,
-                NULL,
-                0,
-                NULL, 
-                0,
-                (SQLCHAR*)object,
-                SQL_NTS,
-                SQL_SCOPE_CURROW, /* Ideally we would use SQL_SCOPE_SESSION, but is not always
-                                   * a guarantee that the rowid will be immutable. */
-                SQL_NULLABLE    /* From Microsoft ODBC docs: "Some drivers cannot support SQL_NO_NULLS,
-                                 * and these drivers will return an empty result set if SQL_NO_NULLS was
-                                 * specified. Applications should be prepared for this case and request
-                                 * SQL_NO_NULLS only if it is absolutely required. */
-                );
+            /* SQL_SCOPE_CURROW -> Ideally we would use SQL_SCOPE_SESSION, but is not always
+             * a guarantee that the rowid will be immutable. */
+            /* SQL_NULLABLE -> From Microsoft ODBC docs: "Some drivers cannot support SQL_NO_NULLS,
+             * and these drivers will return an empty result set if SQL_NO_NULLS was
+             * specified. Applications should be prepared for this case and request
+             * SQL_NO_NULLS only if it is absolutely required. */
+            if (context->odbcdr_UseUnicode)
+                ret = SQLSpecialColumnsW(c->hStmt, SQL_BEST_ROWID, NULL, 0, NULL, 
+                    0, (SQLWCHAR*)object->cwString, SQL_NTS, SQL_SCOPE_CURROW, SQL_NULLABLE);
+            else
+                ret = SQLSpecialColumns(c->hStmt, SQL_BEST_ROWID, NULL, 0, NULL, 
+                    0, (SQLCHAR*)object->ccString, SQL_NTS, SQL_SCOPE_CURROW, SQL_NULLABLE);
 
             /* We do not exit with error if ret != SQL_SUCCESS because some drivers do
              * not support SQLSpecialColumns.
@@ -286,7 +293,6 @@ int odbcdr_pkeys_act(
                 SQLINTEGER  cbDataType = 0;
                 SQLSMALLINT ssDataType = 0;
                 SQLINTEGER  cbTypeName = 0;
-                SQLCHAR    szTypeName[ODBCDR_MAX_BUFF_SIZE];
                 SQLINTEGER  cbColumnSize = 0;
                 SQLINTEGER  iColumnSize = 0;
                 SQLINTEGER  cbBufferLen = 0;
@@ -296,11 +302,11 @@ int odbcdr_pkeys_act(
                 SQLINTEGER  cbPseudoColumn = 0;
                 SQLSMALLINT iPseudoColumn = 0;
 
-                szTypeName[0] = '\0';
+                *szTypeName.wString = L'\0';
 
                 ODBCDR_ODBC_ERR( SQLBindCol(
-                    c->hStmt, 2,  SQL_C_CHAR, szColumnName, sizeof(szColumnName), &cbColumnName ),
-                SQL_HANDLE_STMT, c->hStmt, L"SQLBindCol", L"Fetching primary keys" );
+                    c->hStmt, 2,  charType, szColumnName.wString, ODBCDR_MAX_BUFF_SIZE, &cbColumnName ),
+                SQL_HANDLE_STMT, c->hStmt, "SQLBindCol", "Fetching primary keys" );
 
 #if 0
                 /* If it becomes possible (and necessary) to return completely described
@@ -310,32 +316,32 @@ int odbcdr_pkeys_act(
                  */
                 ODBCDR_ODBC_ERR( SQLBindCol(
                     c->hStmt, 3,  SQL_C_SSHORT, &ssDataType, 0, &cbDataType),
-                SQL_HANDLE_STMT, c->hStmt, L"SQLBindCol", L"Fetching primary keys" );
+                SQL_HANDLE_STMT, c->hStmt, "SQLBindCol", "Fetching primary keys" );
 
                 ODBCDR_ODBC_ERR( SQLBindCol(
-                    c->hStmt, 4,  SQL_C_CHAR, szTypeName, sizeof(szTypeName), &cbTypeName),
-                SQL_HANDLE_STMT, c->hStmt, L"SQLBindCol", L"Fetching primary keys" ); 
+                    c->hStmt, 4,  charType, szTypeName.wString, ODBCDR_MAX_BUFF_SIZE, &cbTypeName),
+                SQL_HANDLE_STMT, c->hStmt, "SQLBindCol", "Fetching primary keys" ); 
 
                  //NOTE: parameter 5 is in *bytes* not *characters*!
                 ODBCDR_ODBC_ERR( SQLBindCol(
                     c->hStmt, 5,  SQL_C_SLONG, &iColumnSize, 0, &cbColumnSize),
-                SQL_HANDLE_STMT, c->hStmt, L"SQLBindCol", L"Fetching primary keys" );
+                SQL_HANDLE_STMT, c->hStmt, "SQLBindCol", "Fetching primary keys" );
 
                 ODBCDR_ODBC_ERR( SQLBindCol(
                     c->hStmt, 6,  SQL_C_SLONG, &iBufferLen, 0, &cbBufferLen),
-                SQL_HANDLE_STMT, c->hStmt, L"SQLBindCol", L"Fetching primary keys" );
+                SQL_HANDLE_STMT, c->hStmt, "SQLBindCol", "Fetching primary keys" );
 
                 ODBCDR_ODBC_ERR( SQLBindCol(
                     c->hStmt, 7,  SQL_C_SSHORT, &iDecimalDigits, 0, &cbDecimalDigits),
-                SQL_HANDLE_STMT, c->hStmt, L"SQLBindCol", L"Fetching primary keys" );
+                SQL_HANDLE_STMT, c->hStmt, "SQLBindCol", "Fetching primary keys" );
 
                 ODBCDR_ODBC_ERR( SQLBindCol(
                     c->hStmt, 8,  SQL_C_SSHORT, &iPseudoColumn, 0, &cbPseudoColumn),
-                SQL_HANDLE_STMT, c->hStmt, L"SQLBindCol", L"Fetching primary keys" );
+                SQL_HANDLE_STMT, c->hStmt, "SQLBindCol", "Fetching primary keys" );
 #endif
                 while (ret != SQL_NO_DATA)
                 {
-                    szColumnName[0] = '\0';
+                    *szColumnName.wString = L'\0';
 
                     ret = SQLFetch(c->hStmt);
                     if (ret != SQL_SUCCESS && ret != SQL_NO_DATA)
@@ -348,7 +354,7 @@ int odbcdr_pkeys_act(
                      * column name for a table, and Schema Manager requires that a primary
                      * key appear in the column list.
                      */
-                    if (strcmp((char *)szColumnName, ODBCDR_DRIVER_ORACLE_ROWID_NAME)==0)
+                    if (ODBCDRV_STRING_COMPARE_LST(&szColumnName, ODBCDR_DRIVER_ORACLE_ROWID_NAME)==0)
                         continue;
                                                                                                      
 
@@ -358,7 +364,7 @@ int odbcdr_pkeys_act(
                     for (i=0, found=false;  !found && i < context->odbcdr_nameList_pkeys.size;  i++)
                     {
                         nle = (odbcdr_NameListEntry_pkey_def *) ut_da_get(&context->odbcdr_nameList_pkeys, i);
-                        if (strcmp(nle->name, (char*)szColumnName) == 0)
+                        if (ODBCDRV_STRING_COMPARE_LST(&szColumnName, nle->name) == 0)
                             found = true;
                     }
 
@@ -366,7 +372,7 @@ int odbcdr_pkeys_act(
                     {
                         /* Add name to the list. */
                         odbcdr_NameListEntry_pkey_def newNle;
-                        (void) strcpy(newNle.name, (char*)szColumnName);
+                        ODBCDRV_STRING_COPY_RST(newNle.name, &szColumnName);
                         if (NULL == ut_da_append( &context->odbcdr_nameList_pkeys, 1L, (void *) &newNle ))
                         {
                             rdbi_status = RDBI_MALLOC_FAILED;
@@ -385,8 +391,6 @@ int odbcdr_pkeys_act(
 
     if (!bFoundIdentityProperties)
     {
-	    char column_name[ODBCDR_MAX_BUFF_SIZE];
-	    char type[ODBCDR_MAX_BUFF_SIZE];
 	    int  length;
 	    int  scale;
 	    int  nullable;
@@ -394,14 +398,14 @@ int odbcdr_pkeys_act(
 	    int  position;
 	    int  eof = FALSE;
 
-        ODBCDR_RDBI_ERR( odbcdr_col_act( context, owner, (char *)object, NULL ) );
+        ODBCDR_RDBI_ERR( local_odbcdr_col_act( context, owner, object, &dbaselink ) );
 
         while (!eof && rdbi_status == RDBI_SUCCESS)
         {
-            rdbi_status = odbcdr_col_get(
+            rdbi_status = local_odbcdr_col_get(
                 context,
-	            column_name,
-	            type,
+	            &szColumnName,
+	            &szTypeName,
 	            &length,
 	            &scale,
 	            &nullable,
@@ -413,7 +417,7 @@ int odbcdr_pkeys_act(
             if (!eof && rdbi_status == RDBI_SUCCESS && is_autoincrement)
             {
                 odbcdr_NameListEntry_pkey_def newNle;
-                (void) strcpy(newNle.name, column_name);
+                ODBCDRV_STRING_COPY_RST(newNle.name, &szColumnName);
                 if (NULL == ut_da_append( &context->odbcdr_nameList_pkeys, 1L, (void *) &newNle ))
                 {
                     rdbi_status = RDBI_MALLOC_FAILED;
@@ -432,8 +436,6 @@ int odbcdr_pkeys_act(
 
     if (!bFoundIdentityProperties)
     {
-	    char column_name[ODBCDR_MAX_BUFF_SIZE];
-	    char type[ODBCDR_MAX_BUFF_SIZE];
 	    int  length;
 	    int  scale;
 	    int  nullable;
@@ -441,14 +443,14 @@ int odbcdr_pkeys_act(
 	    int  position;
 	    int  eof = FALSE;
 
-        ODBCDR_RDBI_ERR( odbcdr_col_act( context, owner, (char *)object, NULL ) );
+        ODBCDR_RDBI_ERR( local_odbcdr_col_act( context, owner, object, &dbaselink ) );
 
         while (!eof && rdbi_status == RDBI_SUCCESS)
         {
-            rdbi_status = odbcdr_col_get(
+            rdbi_status = local_odbcdr_col_get(
                 context,
-	            column_name,
-	            type,
+	            &szColumnName,
+	            &szTypeName,
 	            &length,
 	            &scale,
 	            &nullable,
@@ -460,7 +462,7 @@ int odbcdr_pkeys_act(
             if (!eof && rdbi_status == RDBI_SUCCESS && !nullable)
             {
                 odbcdr_NameListEntry_pkey_def newNle;
-                (void) strcpy(newNle.name, column_name);
+                ODBCDRV_STRING_COPY_RST(newNle.name, &szColumnName);
                 if (NULL == ut_da_append( &context->odbcdr_nameList_pkeys, 1L, (void *) &newNle ))
                 {
                     rdbi_status = RDBI_MALLOC_FAILED;
@@ -490,9 +492,33 @@ the_exit:
         connData->keys = NULL;
     }
 	debug_return(NULL, rdbi_status);
-
 }
 
+int odbcdr_pkeys_act(
+    odbcdr_context_def *context,
+    const char *owner,
+    const char *object
+	)
+{
+    rdbi_string_def strOwner;
+    rdbi_string_def strObject;
+    strOwner.ccString = owner;
+    strObject.ccString = object;
+    return local_odbcdr_pkeys_act(context, &strOwner, &strObject);
+}
+
+int odbcdr_pkeys_actW(
+    odbcdr_context_def *context,
+    const wchar_t *owner,
+    const wchar_t *object
+	)
+{
+    rdbi_string_def strOwner;
+    rdbi_string_def strObject;
+    strOwner.cwString = owner;
+    strObject.cwString = object;
+    return local_odbcdr_pkeys_act(context, &strOwner, &strObject);
+}
 
 /************************************************************************
 *																		*
@@ -523,14 +549,13 @@ the_exit:
 *																		*
 ************************************************************************/
 
-int odbcdr_pkeys_get(
+int local_odbcdr_pkeys_get(
     odbcdr_context_def *context,
-	char *name,
+	rdbi_string_def *name,
 	int  *eof
 	)
 {
-  	int					rdbi_status = RDBI_GENERIC_ERROR;
-
+  	int	rdbi_status = RDBI_GENERIC_ERROR;
 
 	debug_on("odbcdr_pkeys_get");
 
@@ -549,14 +574,34 @@ int odbcdr_pkeys_get(
     else
     {
         odbcdr_NameListEntry_pkey_def * nle = (odbcdr_NameListEntry_pkey_def *) ut_da_get(&context->odbcdr_nameList_pkeys, context->odbcdr_nameListNextPosition_pkeys++);
-        (void) strcpy(name, nle->name);
+        ODBCDRV_STRING_COPY_LST(name, nle->name);
     }
 
 	rdbi_status = RDBI_SUCCESS;
 the_exit:
 	debug_return(NULL, rdbi_status);
 }
+int odbcdr_pkeys_get(
+    odbcdr_context_def *context,
+	char *name,
+	int  *eof
+	)
+{
+    rdbi_string_def str;
+    str.cString = name;
+    return local_odbcdr_pkeys_get(context, &str, eof);
+}
 
+int odbcdr_pkeys_getW(
+    odbcdr_context_def *context,
+	wchar_t *name,
+	int  *eof
+	)
+{
+    rdbi_string_def str;
+    str.wString = name;
+    return local_odbcdr_pkeys_get(context, &str, eof);
+}
 
 /************************************************************************
 *																		*

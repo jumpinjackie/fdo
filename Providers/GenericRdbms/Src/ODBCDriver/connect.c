@@ -15,6 +15,28 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <Inc/ut.h>
+#include <Inc/debugext.h>
+#include <Inc/rdbi.h>					/* rdbi status values		*/
+
+#include "proto_p.h"
+#include "structs.h"
+
+// for SQL_PRESERVE_CURSORS
+#ifdef _WIN32
+#include "odbcss.h"
+#endif
+
+
+static int do_connect(odbcdr_context_def *context, int connect_id, rdbi_string_def *uid, rdbi_string_def *pswd, rdbi_string_def *connect_string);
+static int alter_session(void);
+static int get_dbversion(unsigned long *dbversion);
+static int get_drivertype(odbcdr_connData_def * connData, odbcdr_DriverType *driver_type);
+static void DumpError2( SQLSMALLINT eHandleType, SQLHANDLE hodbc);
+static void DumpError2W( SQLSMALLINT eHandleType, SQLHANDLE hodbc);
+
 /************************************************************************
 * Name																	*
 *	odbcdr_connect - Establish a connection to an ODBC RDBMS			*
@@ -104,33 +126,11 @@
 *																		*
 ************************************************************************/
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <Inc/ut.h>
-#include <Inc/debugext.h>
-#include <Inc/rdbi.h>					/* rdbi status values		*/
-
-#include "proto_p.h"
-#include "structs.h"
-
-// for SQL_PRESERVE_CURSORS
-#ifdef _WIN32
-#include "odbcss.h"
-#endif
-
-
-static int do_connect(odbcdr_context_def *context, int connect_id, char *uid, char *pswd, char *connect_string);
-static int alter_session(void);
-static int get_dbversion(unsigned long *dbversion);
-static int get_drivertype(odbcdr_connData_def * connData, odbcdr_DriverType *driver_type);
-static void DumpError2( SQLSMALLINT eHandleType, SQLHANDLE hodbc);
-
-
-int odbcdr_connect(
+int local_odbcdr_connect(
     odbcdr_context_def *context,
-	char  *connect_string,
-	char  *user,
-	char  *pswd,
+	rdbi_string_def  *connect_string,
+	rdbi_string_def  *user,
+	rdbi_string_def  *pswd,
 	char **vendor_data,
 	int   *connect_id
 	)
@@ -139,13 +139,25 @@ int odbcdr_connect(
 	int 				found_connect;
 	int					default_connect		= FALSE;
 	odbcdr_connData_def	*new_connData;
-	char				user_local[ODBCDR_CONNECTION_SIZE];
-	char				pswd_local[ODBCDR_CONNECTION_SIZE];
-	char				connect_string_local[ODBCDR_CONNECTION_SIZE];
+	wchar_t				user_localBuf[ODBCDR_CONNECTION_SIZE];
+    rdbi_string_def     user_local;
+	wchar_t				pswd_localBuf[ODBCDR_CONNECTION_SIZE];
+    rdbi_string_def     pswd_local;
+	wchar_t				connect_string_localBuf[ODBCDR_CONNECTION_SIZE];
+    rdbi_string_def     connect_string_local;
 	int					rdbi_status = RDBI_GENERIC_ERROR;
-
-	debug_on1("odbcdr_connect", "connect_string '%s'", (connect_string==NULL) );
-	debug1( "user '%s'", (user==NULL) );
+    connect_string_local.wString = connect_string_localBuf;
+    user_local.wString = user_localBuf;
+    pswd_local.wString = pswd_localBuf;
+#ifdef _DEBUG
+    if (context->odbcdr_UseUnicode){
+        debug_on1("odbcdr_connect", "connect_string '%ls'", connect_string->cwString );
+        debug1( "user '%ls'", user->cwString );
+    }else{
+        debug_on1("odbcdr_connect", "connect_string '%s'", connect_string->ccString );
+        debug1( "user '%s'", user->ccString );
+    }
+#endif
 
 	new_connData = (odbcdr_connData_def *)NULL;
 	if( context->odbcdr_connect_count >= RDBI_MAX_CONNECTS ) {
@@ -153,9 +165,8 @@ int odbcdr_connect(
 		goto the_exit;
 	}
 
-	if( (user == NULL || user[0] == '\0') && 
-        (connect_string == NULL || connect_string[0] == '0') ) {
-
+	if( ODBCDRV_STRING_EMPTY(user) && ODBCDRV_STRING_EMPTY(connect_string) )
+    {
 		rdbi_status = RDBI_INVLD_USER_PSWD;
 		context->odbcdr_last_rc = ODBCDR_INVLD_USER_PSWD;
 		goto the_exit;
@@ -168,7 +179,7 @@ int odbcdr_connect(
 				i++ ) {
 		if( context->odbcdr_conns[i] == (odbcdr_connData_def *)NULL ) {
 
-			new_connData = (odbcdr_connData_def *) ut_vm_malloc( "odbcdr_connect",
+			new_connData = (odbcdr_connData_def *) ut_vm_malloc( "odbcdr_connectW",
 													sizeof( odbcdr_connData_def ) );
 			if( new_connData == (odbcdr_connData_def *)NULL ) {
 				rdbi_status = RDBI_MALLOC_FAILED;
@@ -176,8 +187,8 @@ int odbcdr_connect(
 			}
 			memset((char *)new_connData, '\0', sizeof(*new_connData));
 			context->odbcdr_conns[i] = new_connData;
-            if (user != NULL)
-    			strcpy( new_connData->db_name, user );
+            if (user->cwString != NULL)
+                ODBCDRV_STRING_COPY_RST( new_connData->db_name, user );
 			new_connData->dbversion = ODBCDR_DBVERS8;  /* MS SQL Sever 5K */
 
 			found_connect = i;
@@ -196,33 +207,31 @@ int odbcdr_connect(
 
 	debug2("conn# %d, conn 0x%p", found_connect, new_connData);
 
-	connect_string_local[0] = '\0';
-    user_local[0] = '\0';
-
     /* Get local versions of input parameters, guaranteeing that there
      * are no NULL's.
      */
-	connect_string_local[0] = '\0';
-    user_local[0] = '\0';
-    pswd_local[0] = '\0';
-	if( connect_string != NULL )
-		(void) strcpy( connect_string_local, connect_string );
-	if (user != NULL)
-		(void) strcpy( user_local, user );
-	if (pswd != NULL)
-		(void) strcpy( pswd_local, pswd );
+    *connect_string_local.wString = L'\0';
+    *user_local.wString = L'\0';
+    *pswd_local.wString = L'\0';
+    if( connect_string->cwString != NULL )
+		ODBCDRV_STRING_COPY_ST( &connect_string_local, connect_string );
+    if (user->cwString != NULL)
+		ODBCDRV_STRING_COPY_ST( &user_local, user );
+    if (pswd->cwString != NULL)
+		ODBCDRV_STRING_COPY_ST( &pswd_local, pswd );
 
 	rdbi_status = do_connect( context,
                               found_connect,
-							  user_local,
-							  pswd_local,
-							  connect_string_local);
+							  &user_local,
+							  &pswd_local,
+							  &connect_string_local);
 
 	/*
 	 * No specific connect area required -- we keep it internal
 	 * to this library anyway.
 	 */
-	*vendor_data = NULL;
+    if (vendor_data != NULL)
+	    *vendor_data = NULL;
 	if( rdbi_status != RDBI_SUCCESS ) {
 		debug0( "connect FAILED!" );
 		goto the_exit;
@@ -249,27 +258,71 @@ the_exit:
 	debug_return(NULL, rdbi_status);
 }
 
+int odbcdr_connect(
+    odbcdr_context_def *context,
+	const char  *connect_string,
+	const char  *user,
+	const char  *pswd,
+	char **vendor_data,
+	int   *connect_id
+	)
+{
+    rdbi_string_def strConnect_string;
+    rdbi_string_def strUser;
+    rdbi_string_def strPswd;
+    strConnect_string.ccString = connect_string;
+    strUser.ccString = user;
+    strPswd.ccString = pswd;
+    return local_odbcdr_connect(context, &strConnect_string, &strUser, &strPswd, vendor_data, connect_id);
+}
+
+int odbcdr_connectW(
+    odbcdr_context_def *context,
+	const wchar_t  *connect_string,
+	const wchar_t  *user,
+	const wchar_t  *pswd,
+	char **vendor_data,
+	int   *connect_id
+	)
+{
+    rdbi_string_def strConnect_string;
+    rdbi_string_def strUser;
+    rdbi_string_def strPswd;
+    strConnect_string.cwString = connect_string;
+    strUser.cwString = user;
+    strPswd.cwString = pswd;
+    return local_odbcdr_connect(context, &strConnect_string, &strUser, &strPswd, vendor_data, connect_id);
+}
 
 static
 int	do_connect(
     odbcdr_context_def *context,
-	int				 connect_id,
-	char			*uid,
-	char			*pswd,
-	char			*connect_string
+	int				connect_id,
+	rdbi_string_def *uid,
+	rdbi_string_def	*pswd,
+	rdbi_string_def	*connect_string
 	)
 {
+	wchar_t         sql_buf[50];
+    rdbi_string_def sqlval;
+	SQLHSTMT        hStmt5;
+	SQLRETURN       rc;
+	int	            rdbi_status = RDBI_GENERIC_ERROR;
+    wchar_t         szOutConnBuf[1024];
+    rdbi_string_def szOutConn;
+    SQLSMALLINT     cbOutConn;
+    szOutConn.wString = szOutConnBuf;
+    sqlval.wString = sql_buf;
 
-	char        sql_buf[50];
-	SQLHSTMT    hStmt5;
-	SQLRETURN   rc;
-	int	        rdbi_status = RDBI_GENERIC_ERROR;
-    char        szOutConn[1024];
-    const char *paramDelimiter;
-    SQLSMALLINT cbOutConn;
-
-	debug_on3("odbcdr_connect:do_connect", "cid: %d, uid: '%s', dblink: '%s'",
-			connect_id, ISNULL((char *)uid), ISNULL((char *)connect_string));
+#ifdef _DEBUG
+    if (context->odbcdr_UseUnicode){
+	    debug_on3("odbcdr_connectW:do_connect", "cid: %d, uid: '%ls', dblink: '%ls'",
+            connect_id, uid->cwString, connect_string->cwString);
+    }else{
+	    debug_on3("odbcdr_connectW:do_connect", "cid: %d, uid: '%s', dblink: '%s'",
+            connect_id, uid->ccString, connect_string->ccString);
+    }
+#endif
 
 	/*
 	** Set up ODBC environment (only once for all connections).
@@ -295,7 +348,10 @@ int	do_connect(
         // This connection setting must be set before connecting and we do not have enough info about the driver at this point to determine
         // whether or not we are using SQL Server or another ODBC data source, so we always set it.
         // Other drivers should safely ignore this setting since it is SQLServer-specific, so ignore the returned error code:
-        rc = SQLSetConnectAttr(hDbc, SQL_COPT_SS_PRESERVE_CURSORS, (SQLPOINTER)SQL_PC_ON, SQL_IS_INTEGER); 
+        if (context->odbcdr_UseUnicode)
+            rc = SQLSetConnectAttrW(hDbc, SQL_COPT_SS_PRESERVE_CURSORS, (SQLPOINTER)SQL_PC_ON, SQL_IS_INTEGER); 
+        else
+            rc = SQLSetConnectAttr(hDbc, SQL_COPT_SS_PRESERVE_CURSORS, (SQLPOINTER)SQL_PC_ON, SQL_IS_INTEGER); 
 #endif
 
         /* There are two distinct cases:
@@ -316,26 +372,43 @@ int	do_connect(
          * (driver name and one of several tags denoting the datastore).  Thus, 
          * the 2+ parameters must be separated.  The separator is a semicolon.
          */
-        paramDelimiter = strchr (connect_string, ';');
-        if (NULL == paramDelimiter)
+        if (context->odbcdr_UseUnicode)
         {
-            /* One parameter -- this must be an ODBC Data Source Name (DSN). */
-            rc = SQLConnect(hDbc, 
-                                 (SQLCHAR*)connect_string, SQL_NTS,
-                                 (SQLCHAR*)uid, SQL_NTS,
-                                 (SQLCHAR*)pswd, SQL_NTS);
+            if (NULL == wcschr (connect_string->cwString, L';'))
+            {
+                /* One parameter -- this must be an ODBC Data Source Name (DSN). */
+                rc = SQLConnectW(hDbc, (SQLWCHAR*)connect_string->cwString, SQL_NTS,
+                    (SQLWCHAR*)uid->cwString, SQL_NTS,(SQLWCHAR*)pswd->cwString, SQL_NTS);
+            }
+            else
+            {
+                /* Two or more parameters -- treat it as a real connection string. */
+                rc = SQLDriverConnectW(hDbc, NULL, (SQLWCHAR*) connect_string->cwString, SQL_NTS, 
+                    (SQLWCHAR*)szOutConn.wString, 1024, &cbOutConn, SQL_DRIVER_NOPROMPT);
+            }
         }
         else
         {
-            /* Two or more parameters -- treat it as a real connection string. */
-            rc = SQLDriverConnect(hDbc, NULL,
-                                 (SQLCHAR*) connect_string, SQL_NTS, 
-                                 (SQLCHAR*)szOutConn,  sizeof(szOutConn), &cbOutConn, 
-                                 SQL_DRIVER_NOPROMPT);
+            if (NULL == strchr (connect_string->ccString, ';'))
+            {
+                /* One parameter -- this must be an ODBC Data Source Name (DSN). */
+                rc = SQLConnect(hDbc, (SQLCHAR*)connect_string->ccString, SQL_NTS,
+                    (SQLCHAR*)uid->ccString, SQL_NTS, (SQLCHAR*)pswd->ccString, SQL_NTS);
+            }
+            else
+            {
+                /* Two or more parameters -- treat it as a real connection string. */
+                rc = SQLDriverConnect(hDbc, NULL, (SQLCHAR*)connect_string->ccString, SQL_NTS, 
+                    (SQLCHAR*)szOutConn.cString, 1024, &cbOutConn, SQL_DRIVER_NOPROMPT);
+            }
         }
 
-        if ( rc == SQL_ERROR )  {
-            DumpError2(SQL_HANDLE_DBC, hDbc);
+        if ( rc == SQL_ERROR )
+        {
+            if (context->odbcdr_UseUnicode)
+                DumpError2W(SQL_HANDLE_DBC, hDbc);
+            else
+                DumpError2(SQL_HANDLE_DBC, hDbc);
         } else {
             rdbi_status = RDBI_SUCCESS;
  		
@@ -349,46 +422,90 @@ int	do_connect(
 
             if (ODBCDriverType_SQLServer == context->odbcdr_conns[connect_id]->driver_type)
             {
-			    rc = SQLAllocHandle(SQL_HANDLE_STMT,	hDbc,&hStmt5);
-			    sprintf(sql_buf, "SET NOCOUNT OFF");
-			    rc = SQLExecDirect(hStmt5, (SQLCHAR*)sql_buf, SQL_NTS);
+                if (context->odbcdr_UseUnicode)
+                {
+			        rc = SQLAllocHandle(SQL_HANDLE_STMT,	hDbc,&hStmt5);
+                    odbcdr_swprintf(sqlval.wString, 50, L"SET NOCOUNT OFF");
+                    rc = SQLExecDirectW(hStmt5, (SQLWCHAR*)sqlval.wString, SQL_NTS);
 
-			    rc = SQLFreeHandle(SQL_HANDLE_STMT, hStmt5);
+			        rc = SQLFreeHandle(SQL_HANDLE_STMT, hStmt5);
 
-		        /*
-		        ** Set up default connection properties
-		        */
-		        // Use server side cursors by default
-		        rc = SQLSetConnectAttr(hDbc, SQL_ATTR_CURSOR_TYPE, (SQLPOINTER)SQL_CURSOR_STATIC, SQL_IS_INTEGER); 
-		        rc = SQLSetConnectAttr(hDbc, SQL_ATTR_CONCURRENCY, (SQLPOINTER)SQL_CONCUR_READ_ONLY, SQL_IS_INTEGER); 
-		        rc = SQLSetConnectAttr(hDbc, SQL_ATTR_ROW_ARRAY_SIZE, (SQLPOINTER)1, SQL_IS_INTEGER); 
-                // TODO: investigate "[Microsoft][ODBC Driver Manager] Option type out of range"
-                //if ( rc == SQL_ERROR )
-                //    DumpError2(SQL_HANDLE_DBC, hDbc);
+		            /*
+		            ** Set up default connection properties
+		            */
+		            // Use server side cursors by default
+		            rc = SQLSetConnectAttrW(hDbc, SQL_ATTR_CURSOR_TYPE, (SQLPOINTER)SQL_CURSOR_STATIC, SQL_IS_INTEGER); 
+		            rc = SQLSetConnectAttrW(hDbc, SQL_ATTR_CONCURRENCY, (SQLPOINTER)SQL_CONCUR_READ_ONLY, SQL_IS_INTEGER); 
+		            rc = SQLSetConnectAttrW(hDbc, SQL_ATTR_ROW_ARRAY_SIZE, (SQLPOINTER)1, SQL_IS_INTEGER); 
+                    // TODO: investigate "[Microsoft][ODBC Driver Manager] Option type out of range"
+                    //if ( rc == SQL_ERROR )
+                    //    DumpError2(SQL_HANDLE_DBC, hDbc);
 
-		        // Operate in syncronous mode
-		        rc = SQLSetConnectAttr(hDbc, SQL_ATTR_ASYNC_ENABLE, SQL_ASYNC_ENABLE_OFF, SQL_IS_INTEGER);
-                if ( rc == SQL_ERROR )
-                    DumpError2(SQL_HANDLE_DBC, hDbc);
+		            // Operate in syncronous mode
+		            rc = SQLSetConnectAttrW(hDbc, SQL_ATTR_ASYNC_ENABLE, SQL_ASYNC_ENABLE_OFF, SQL_IS_INTEGER);
+                    if ( rc == SQL_ERROR )
+                        DumpError2W(SQL_HANDLE_DBC, hDbc);
 
-		        // Use autocommit mode
-		        rc = SQLSetConnectAttr(hDbc, SQL_ATTR_AUTOCOMMIT, (SQLPOINTER)SQL_AUTOCOMMIT_ON, SQL_IS_UINTEGER);
-                if ( rc == SQL_ERROR )
-                    DumpError2(SQL_HANDLE_DBC, hDbc);
+		            // Use autocommit mode
+		            rc = SQLSetConnectAttrW(hDbc, SQL_ATTR_AUTOCOMMIT, (SQLPOINTER)SQL_AUTOCOMMIT_ON, SQL_IS_UINTEGER);
+                    if ( rc == SQL_ERROR )
+                        DumpError2W(SQL_HANDLE_DBC, hDbc);
 
+                }
+                else
+                {
+			        rc = SQLAllocHandle(SQL_HANDLE_STMT,	hDbc,&hStmt5);
+                    sprintf(sqlval.cString, "SET NOCOUNT OFF");
+                    rc = SQLExecDirect(hStmt5, (SQLCHAR*)sqlval.ccString, SQL_NTS);
+
+			        rc = SQLFreeHandle(SQL_HANDLE_STMT, hStmt5);
+
+		            /*
+		            ** Set up default connection properties
+		            */
+		            // Use server side cursors by default
+		            rc = SQLSetConnectAttr(hDbc, SQL_ATTR_CURSOR_TYPE, (SQLPOINTER)SQL_CURSOR_STATIC, SQL_IS_INTEGER); 
+		            rc = SQLSetConnectAttr(hDbc, SQL_ATTR_CONCURRENCY, (SQLPOINTER)SQL_CONCUR_READ_ONLY, SQL_IS_INTEGER); 
+		            rc = SQLSetConnectAttr(hDbc, SQL_ATTR_ROW_ARRAY_SIZE, (SQLPOINTER)1, SQL_IS_INTEGER); 
+                    // TODO: investigate "[Microsoft][ODBC Driver Manager] Option type out of range"
+                    //if ( rc == SQL_ERROR )
+                    //    DumpError2(SQL_HANDLE_DBC, hDbc);
+
+		            // Operate in syncronous mode
+		            rc = SQLSetConnectAttr(hDbc, SQL_ATTR_ASYNC_ENABLE, SQL_ASYNC_ENABLE_OFF, SQL_IS_INTEGER);
+                    if ( rc == SQL_ERROR )
+                        DumpError2(SQL_HANDLE_DBC, hDbc);
+
+		            // Use autocommit mode
+		            rc = SQLSetConnectAttr(hDbc, SQL_ATTR_AUTOCOMMIT, (SQLPOINTER)SQL_AUTOCOMMIT_ON, SQL_IS_UINTEGER);
+                    if ( rc == SQL_ERROR )
+                        DumpError2(SQL_HANDLE_DBC, hDbc);
+
+                }
             }
             else if (ODBCDriverType_MySQL == context->odbcdr_conns[connect_id]->driver_type)
             {
-                rc = SQLAllocHandle(SQL_HANDLE_STMT,	hDbc,&hStmt5);
-                sprintf(sql_buf, "set sql_mode='ANSI_QUOTES'");
-                rc = SQLExecDirect(hStmt5, (SQLCHAR*)sql_buf, SQL_NTS);
-                rc = SQLFreeHandle(SQL_HANDLE_STMT, hStmt5);
+                if (context->odbcdr_UseUnicode)
+                {
+                    rc = SQLAllocHandle(SQL_HANDLE_STMT,	hDbc,&hStmt5);
+                    odbcdr_swprintf(sqlval.wString, 50, L"set sql_mode='ANSI_QUOTES'");
+                    rc = SQLExecDirectW(hStmt5, (SQLWCHAR*)sqlval.cwString, SQL_NTS);
+                    rc = SQLFreeHandle(SQL_HANDLE_STMT, hStmt5);
+                }
+                else
+                {
+                    rc = SQLAllocHandle(SQL_HANDLE_STMT,	hDbc,&hStmt5);
+                    sprintf(sqlval.cString, "set sql_mode='ANSI_QUOTES'");
+                    rc = SQLExecDirect(hStmt5, (SQLCHAR*)sqlval.ccString, SQL_NTS);
+                    rc = SQLFreeHandle(SQL_HANDLE_STMT, hStmt5);
+                }
             }
         }
 	}	/* end of ODBC connection block */
     
 	debug_return(NULL, rdbi_status);
 }
+
 
 static int
 alter_session()
@@ -482,6 +599,13 @@ static void DumpError2
     )
 {
 }
+static void DumpError2W
+    (
+    SQLSMALLINT eHandleType,
+    SQLHANDLE hodbc
+    )
+{
+}
 
 #else
 
@@ -493,8 +617,8 @@ static void DumpError2
     SQLHANDLE hodbc
     )
     {
-    SQLTCHAR    szState[SQL_SQLSTATE_SIZE + 1];
-    SQLTCHAR    szMessage[SQL_MAX_MESSAGE_LENGTH + 1];
+    SQLCHAR    szState[SQL_SQLSTATE_SIZE + 1];
+    SQLCHAR    szMessage[SQL_MAX_MESSAGE_LENGTH + 1];
     SQLINTEGER  nServerError;
     SQLSMALLINT cbMessage;
     UINT        nRec = 1;
@@ -502,7 +626,32 @@ static void DumpError2
     while (SQL_SUCCEEDED(SQLGetDiagRec(eHandleType, hodbc, nRec, szState,
         &nServerError, szMessage, SQL_MAX_MESSAGE_LENGTH + 1, &cbMessage)))
         {
-        _tprintf(_T("Message: %s\n"), szMessage);
+#ifdef _DEBUG
+        printf("Message: %s\n", szMessage);
+#endif
+        nRec++;
+        }
+
+    return;
+    }
+static void DumpError2W
+    (
+    SQLSMALLINT eHandleType,
+    SQLHANDLE hodbc
+    )
+    {
+    SQLWCHAR    szState[SQL_SQLSTATE_SIZE + 1];
+    SQLWCHAR    szMessage[SQL_MAX_MESSAGE_LENGTH + 1];
+    SQLINTEGER  nServerError;
+    SQLSMALLINT cbMessage;
+    UINT        nRec = 1;
+
+    while (SQL_SUCCEEDED(SQLGetDiagRecW(eHandleType, hodbc, nRec, szState,
+        &nServerError, szMessage, SQL_MAX_MESSAGE_LENGTH + 1, &cbMessage)))
+        {
+#ifdef _DEBUG
+        wprintf(L"Message: %ls\n", szMessage);
+#endif
         nRec++;
         }
 

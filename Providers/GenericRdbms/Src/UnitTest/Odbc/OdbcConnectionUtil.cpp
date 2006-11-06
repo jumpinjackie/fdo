@@ -78,12 +78,10 @@ int OdbcStaticConnection::do_rdbi_init (rdbi_context_def** rdbi_context)
 int OdbcStaticConnection::do_rdbi_connect (rdbi_context_def* rdbi_context, int& id)
 {
 	FdoStringP csStr = UnitTestUtil::GetConnectionString(Connection_NoDatastore);
-    return (rdbi_connect (
-        rdbi_context,
-		(char*)(const char*)csStr,
-        "",
-        "",
-        &id));
+    if (rdbi_context->dispatch.capabilities.supports_unicode == 1)
+        return (rdbi_connectW (rdbi_context, csStr, L"", L"", &id));
+    else
+        return (rdbi_connect (rdbi_context, csStr, "", "", &id));
 }
 
 FdoSchemaManagerP OdbcStaticConnection::CreateSchemaManager()

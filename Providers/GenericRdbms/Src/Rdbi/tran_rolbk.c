@@ -61,8 +61,11 @@ rdbi_tran_rolbk(rdbi_context_def *context)
 
     rc = rdbi_est_cursor(context, &sqlid);
     if (rc != RDBI_SUCCESS) goto the_exit;
-
-    rc = rdbi_sql(context, sqlid, "rollback");
+    
+    if (context->dispatch.capabilities.supports_unicode == 1)
+        rc = rdbi_sqlW(context, sqlid, L"rollback");
+    else
+        rc = rdbi_sql(context, sqlid, "rollback");
     if (rc != RDBI_SUCCESS) goto the_exit;
 
     rc = rdbi_execute(context, sqlid, 1, 0);

@@ -32,13 +32,10 @@ FdoSmPhRdOdbcOwnerReader::FdoSmPhRdOdbcOwnerReader(
     FdoSmPhOdbcMgr*      pMgr = (FdoSmPhOdbcMgr*)(FdoSmPhMgr*)mgr;
 
     rdbi_context = pMgr->GetRdbiContext();
-
-    INVOKE_RDBI_FUNC(
-        rdbi_users_act(
-            rdbi_context,
-            (char*)(const char*) ownerName
-        )
-    );
+    if (rdbi_context->dispatch.capabilities.supports_unicode == 1)
+        INVOKE_RDBI_FUNC(rdbi_users_actW (rdbi_context, ownerName))
+    else
+        INVOKE_RDBI_FUNC(rdbi_users_act (rdbi_context, ownerName))
 }
 
 FdoSmPhRdOdbcOwnerReader::~FdoSmPhRdOdbcOwnerReader(void)
@@ -62,21 +59,28 @@ FdoStringP FdoSmPhRdOdbcOwnerReader::GetDescription()
 bool FdoSmPhRdOdbcOwnerReader::ReadNext()
 {
     bool rc = true;
-    char ownerName[1000];
+    FdoStringP pOwnerName;
     int eof;
 
     if ( IsEOF() ) 
         return false;
 
+    wchar_t ownerNameBuf[1000];
+    rdbi_string_def ownerName;
+    ownerName.wString = ownerNameBuf;
+    *ownerName.wString = L'\0';
+    
     // Get the next owner
-
-    INVOKE_RDBI_FUNC(
-        rdbi_users_get(
-            rdbi_context,
-            ownerName,
-            &eof
-        )
-    );
+    if (rdbi_context->dispatch.capabilities.supports_unicode == 1)
+    {
+        INVOKE_RDBI_FUNC(rdbi_users_getW (rdbi_context, ownerName.wString, &eof))
+        pOwnerName = ownerName.cwString;
+    }
+    else
+    {
+        INVOKE_RDBI_FUNC(rdbi_users_get (rdbi_context, ownerName.cString, &eof))
+        pOwnerName = ownerName.ccString;
+    }
 
     // Check if we're done
     if ( eof )
@@ -87,7 +91,7 @@ bool FdoSmPhRdOdbcOwnerReader::ReadNext()
     else
     {
         // Set the field values according to the current owner.
-        SetString( L"", L"name", FdoStringP(ownerName) );
+        SetString( L"", L"name", pOwnerName );
 
         SetBOF(false);
     }

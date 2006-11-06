@@ -15,6 +15,25 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include    <Inc/rdbi.h>
+#include    <Inc/ut.h>
+#include	<Inc/debugext.h>
+#include    "proto_p.h"
+
+#define _check_status  if (rdbi_status != RDBI_SUCCESS) goto the_exit;
+#ifndef _WIN32
+#define  strnicmp strncasecmp
+#define  _strnicmp strncasecmp
+#define _stricmp  strcasecmp
+#define _wcsnicmp wcsncasecmp
+#endif
+#define TABLE_TYPES   "TABLE,VIEW"
+#define TABLE_TYPESW  L"TABLE,VIEW"
+#define TABLE_STRING  "TABLE"
+#define TABLE_STRINGW L"TABLE"
+#define VIEW_STRING   "VIEW"
+#define VIEW_STRINGW  L"VIEW"
+
 /************************************************************************
 *																		*
 * Name																	*
@@ -23,8 +42,8 @@
 * Synopsis																*
 *	odbcdr_objects_act(context, target)    				    			*
 *	odbcdr_context_def *context;										*
-*   const char *owner;                                                  *
-*   const char *target;                                                 *
+*   rdbi_string_def *owner;                                                  *
+*   rdbi_string_def *target;                                                 *
 *																		*
 * Description															*
 *		This  module  activates  a	fetch  of  all objects for a  		*
@@ -55,38 +74,30 @@
 *
 ************************************************************************/
 
-#include    <Inc/rdbi.h>
-#include    <Inc/ut.h>
-#include	<Inc/debugext.h>
-#include    "proto_p.h"
-
-#define _check_status  if (rdbi_status != RDBI_SUCCESS) goto the_exit;
-
-#ifndef _WIN32
-#define _stricmp  strcasecmp
-#endif
-
-int odbcdr_objects_act(
+int local_odbcdr_objects_act(
     odbcdr_context_def *context,
-    const char *owner,
-    const char *target
+    rdbi_string_def *owner,
+    rdbi_string_def *target
 	)
 {
+    SQLWCHAR     szObjectNameBuf[ODBCDR_MAX_BUFF_SIZE];
+    rdbi_string_def szObjectName;
+    SQLWCHAR     szObjectTypeBuf[ODBCDR_MAX_BUFF_SIZE];
+    rdbi_string_def szObjectType;
 	odbcdr_cursor_def	*c;
 	odbcdr_connData_def	*connData = NULL;
 	int 				rdbi_status = RDBI_GENERIC_ERROR;
-    int                 owner_set =  (NULL != owner  && owner[0]  != '\0');
-	int 				target_set = (NULL != target && target[0] != '\0');
-    const char* cTableTypes = "TABLE,VIEW";
-    SQLCHAR     szObjectName[ODBCDR_MAX_BUFF_SIZE];
-    SQLCHAR     szObjectType[ODBCDR_MAX_BUFF_SIZE];
+    int                 owner_set = !ODBCDRV_STRING_EMPTY(owner);
+	int 				target_set = !ODBCDRV_STRING_EMPTY(target);
     SQLINTEGER  cbTable = 0;
     SQLINTEGER  cbTable2 = 0;
     SQLRETURN   ret = SQL_SUCCESS;
     long        i;
     int         found;
 	odbcdr_NameListEntry_obj_def * nle;
-
+    SQLSMALLINT charType;
+    szObjectName.wString = (wchar_t *)szObjectNameBuf;
+    szObjectType.wString = (wchar_t *)szObjectTypeBuf;
 
 	debug_on("odbcdr_objects_act");
 
@@ -113,40 +124,41 @@ int odbcdr_objects_act(
 	    connData->objects = c;
     }
 
-    ODBCDR_ODBC_ERR( SQLTables(
-        c->hStmt,
-        NULL,
-        0,
-        (SQLCHAR *) (owner_set ? owner : NULL), 
-        SQL_NTS,
-        NULL, 
-        0,
-        (SQLCHAR*)cTableTypes, 
-        SQL_NTS ),
-        SQL_HANDLE_STMT, c->hStmt, L"SQLTables", L"Fetching tables and views");
+    if (context->odbcdr_UseUnicode)
+    {
+        charType = SQL_C_WCHAR;
+        ODBCDR_ODBC_ERR( SQLTablesW(c->hStmt, NULL, 0, (SQLWCHAR *) (owner_set ? owner->cwString : NULL), 
+            SQL_NTS, NULL, 0, (SQLWCHAR*)TABLE_TYPESW,  SQL_NTS), 
+            SQL_HANDLE_STMT, c->hStmt, "SQLTables", "Fetching tables and views");
+    }else{
+        charType = SQL_C_CHAR;
+        ODBCDR_ODBC_ERR( SQLTables(c->hStmt, NULL, 0, (SQLCHAR *) (owner_set ? owner->ccString : NULL), 
+            SQL_NTS, NULL, 0, (SQLCHAR*)TABLE_TYPES,  SQL_NTS), 
+            SQL_HANDLE_STMT, c->hStmt, "SQLTables", "Fetching tables and views");
+    }
 
     ODBCDR_ODBC_ERR( SQLBindCol(
         c->hStmt,
         3,
-        SQL_CHAR,
-        szObjectName,
-        sizeof(szObjectName),
+        charType,
+        szObjectName.wString,
+        ODBCDR_MAX_BUFF_SIZE,
         &cbTable),
-        SQL_HANDLE_STMT, c->hStmt, L"SQLBindCol", L"Fetching tables and views");
+        SQL_HANDLE_STMT, c->hStmt, "SQLBindCol", "Fetching tables and views");
 
     ODBCDR_ODBC_ERR( SQLBindCol(
         c->hStmt,
         4,
-        SQL_CHAR,
-        szObjectType,
-        sizeof(szObjectType),
+        charType,
+        szObjectType.wString,
+        ODBCDR_MAX_BUFF_SIZE,
         &cbTable2),
-        SQL_HANDLE_STMT, c->hStmt, L"SQLBindCol", L"Fetching tables and views");
+        SQL_HANDLE_STMT, c->hStmt, "SQLBindCol", "Fetching tables and views");
 
     while (ret != SQL_NO_DATA)
     {
-        szObjectName[0] = '\0';
-        szObjectType[0] = '\0';
+        *szObjectName.wString = L'\0';
+        *szObjectType.wString = L'\0';
 
         ret = SQLFetch(c->hStmt);
 
@@ -157,17 +169,17 @@ int odbcdr_objects_act(
             break;
 
         // Filter out other objects if asked for a specific object.
-        if (target_set && strcmp(target, (char*)szObjectName) != 0)
+        if (target_set && ODBCDRV_STRING_COMPARE(target, &szObjectName) != 0)
             continue;
 
         /* We only support tables and views. */
-        if (strcmp((char*)szObjectType, "TABLE") != 0 && strcmp((char*)szObjectType, "VIEW") != 0)
+        if (ODBCDRV_STRING_COMPARE_LST(&szObjectType, TABLE_STRING) != 0 && ODBCDRV_STRING_COMPARE_LST(&szObjectType, VIEW_STRING) != 0)
             continue;
 
         if (target_set)
         {
-            (void) strcpy(context->odbcdr_singletonName_objects.name, (char*)szObjectName);
-            context->odbcdr_singletonName_objects.type = szObjectType[0];
+            ODBCDRV_STRING_COPY_RST(context->odbcdr_singletonName_objects.name, &szObjectName);
+            context->odbcdr_singletonName_objects.type = (char)(context->odbcdr_UseUnicode ? *szObjectType.wString : *szObjectType.cString);
             context->odbcdr_singletonNameInUse = true;
         }
         else
@@ -176,7 +188,7 @@ int odbcdr_objects_act(
             for (i=0, found=false;  !found && i < context->odbcdr_nameList_objs.size;  i++)
             {
                 nle = (odbcdr_NameListEntry_obj_def *) ut_da_get(&context->odbcdr_nameList_objs, i);
-                if (strcmp(nle->name, (char*)szObjectName) == 0)
+                if (ODBCDRV_STRING_COMPARE_LST(&szObjectName, nle->name) == 0)
                     found = true;
             }
 
@@ -184,8 +196,8 @@ int odbcdr_objects_act(
             {
                 /* Add name to the list. */
                 odbcdr_NameListEntry_obj_def newNle;
-                (void) strcpy(newNle.name, (char*)szObjectName);
-                newNle.type = szObjectType[0];
+                ODBCDRV_STRING_COPY_RST(newNle.name, &szObjectName);
+                newNle.type = (char)(context->odbcdr_UseUnicode ? *szObjectType.wString : *szObjectType.cString);
                 if (NULL == ut_da_append( &context->odbcdr_nameList_objs, 1L, (void *) &newNle ))
                 {
                     rdbi_status = RDBI_MALLOC_FAILED;
@@ -209,9 +221,33 @@ the_exit:
         connData->objects = NULL;
     }
 	debug_return(NULL, rdbi_status);
-
 }
 
+int odbcdr_objects_act(
+    odbcdr_context_def *context,
+    const char *owner,
+    const char *target
+	)
+{
+    rdbi_string_def strOwner;
+    rdbi_string_def strTarget;
+    strOwner.ccString = owner;
+    strTarget.ccString = target;
+    return local_odbcdr_objects_act(context, &strOwner, &strTarget);
+}
+
+int odbcdr_objects_actW(
+    odbcdr_context_def *context,
+    const wchar_t *owner,
+    const wchar_t *target
+	)
+{
+    rdbi_string_def strOwner;
+    rdbi_string_def strTarget;
+    strOwner.cwString = owner;
+    strTarget.cwString = target;
+    return local_odbcdr_objects_act(context, &strOwner, &strTarget);
+}
 
 /************************************************************************
 *																		*
@@ -221,8 +257,8 @@ the_exit:
 * Synopsis																*
 *	odbcdr_objects_get(context, name, eof)								*
 *	odbcdr_context_def *context;										*
-*	char *name;		        											*
-*   char *type;                                                         *
+*	rdbi_string_def *name;		        								*
+*   rdbi_string_def *type;                                              *
 *	int  *eof;															*
 *																		*
 * Description															*
@@ -249,17 +285,15 @@ the_exit:
 * Remarks																*
 *																		*
 ************************************************************************/
-
-int odbcdr_objects_get(
+int local_odbcdr_objects_get(
     odbcdr_context_def *context,
-	char *name,
-    char *type,
+	rdbi_string_def *name,
+    rdbi_string_def *type,
 	int  *eof
 	)
 {
-  	int					rdbi_status = RDBI_GENERIC_ERROR;
-
-
+  	int	rdbi_status = RDBI_GENERIC_ERROR;
+    
 	debug_on("odbcdr_objects_get");
 
 	/* assume not end of fetch */
@@ -275,9 +309,17 @@ int odbcdr_objects_get(
         }
         else
         {
-            (void) strcpy(name, context->odbcdr_singletonName_objects.name);
-            type[0] = context->odbcdr_singletonName_objects.type;
-            type[1] = '0';
+            ODBCDRV_STRING_COPY_LST(name, context->odbcdr_singletonName_objects.name);
+            if (context->odbcdr_UseUnicode)
+            {
+                *type->wString = (wchar_t)context->odbcdr_singletonName_objects.type;
+                *(type->wString+1) = L'\0';
+            }
+            else
+            {
+                *type->cString = (char)context->odbcdr_singletonName_objects.type;
+                *(type->cString+1) = '\0';
+            }
             context->odbcdr_singletonNameReturned = true;
 
             // Callers for singletons only fetch one row, never looping to
@@ -308,18 +350,52 @@ int odbcdr_objects_get(
         else
         {
             odbcdr_NameListEntry_obj_def * nle = (odbcdr_NameListEntry_obj_def *) ut_da_get(&context->odbcdr_nameList_objs, context->odbcdr_nameListNextPosition_objs++);
-            (void) strcpy(name, nle->name);
-            type[0] = nle->type;
-            type[1] = '0';
+            ODBCDRV_STRING_COPY_LST(name, nle->name);
+            if (context->odbcdr_UseUnicode)
+            {
+                *type->wString = (wchar_t)nle->type;
+                *(type->wString+1) = L'\0';
+            }
+            else
+            {
+                *type->cString = (char)nle->type;
+                *(type->cString+1) = '\0';
+            }
         }
     }
 
 	rdbi_status = RDBI_SUCCESS;
 the_exit:
 	debug_return(NULL, rdbi_status);
-
 }
 
+int odbcdr_objects_get(
+    odbcdr_context_def *context,
+	char *name,
+    char *type,
+	int  *eof
+	)
+{
+    rdbi_string_def strName;
+    rdbi_string_def strType;
+    strName.cString = name;
+    strType.cString = type;
+    return local_odbcdr_objects_get(context, &strName, &strType, eof);
+}
+
+int odbcdr_objects_getW(
+    odbcdr_context_def *context,
+	wchar_t *name,
+    wchar_t *type,
+	int  *eof
+	)
+{
+    rdbi_string_def strName;
+    rdbi_string_def strType;
+    strName.wString = name;
+    strType.wString = type;
+    return local_odbcdr_objects_get(context, &strName, &strType, eof);
+}
 
 /************************************************************************
 *																		*

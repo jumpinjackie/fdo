@@ -33,12 +33,10 @@ FdoSmPhRdOdbcSchemaReader::FdoSmPhRdOdbcSchemaReader(FdoSmPhRowsP rows, FdoSmPhO
 
     rdbi_context = pMgr->GetRdbiContext();
 
-    INVOKE_RDBI_FUNC(
-        rdbi_users_act(
-            rdbi_context,
-            (char*)(const char*) ownerName
-        )
-    );
+    if (rdbi_context->dispatch.capabilities.supports_unicode == 1)
+        INVOKE_RDBI_FUNC(rdbi_users_actW (rdbi_context, ownerName))
+    else
+        INVOKE_RDBI_FUNC(rdbi_users_act (rdbi_context, ownerName))
 }
 
 
@@ -49,22 +47,28 @@ FdoSmPhRdOdbcSchemaReader::~FdoSmPhRdOdbcSchemaReader(void)
 bool FdoSmPhRdOdbcSchemaReader::ReadNext()
 {
     bool rc = true;
-    char name[1000];
+    FdoStringP pName;
     int eof;
 
     if ( IsEOF() ) 
         return false;
 
+    wchar_t nameBuf[1000];
+    rdbi_string_def name;
+    name.wString = nameBuf;
+    *name.wString = L'\0';
+
     // Get the next owner
-
-    INVOKE_RDBI_FUNC(
-        rdbi_users_get(
-            rdbi_context,
-            name,
-            &eof
-        )
-    );
-
+    if (rdbi_context->dispatch.capabilities.supports_unicode == 1)
+    {
+        INVOKE_RDBI_FUNC(rdbi_users_getW (rdbi_context, name.wString, &eof))
+        pName = name.cwString;
+    }
+    else
+    {
+        INVOKE_RDBI_FUNC(rdbi_users_get( rdbi_context, name.cString, &eof))
+        pName = name.ccString;
+    }
     // Check if we're done
     if ( eof )
     {
@@ -74,7 +78,7 @@ bool FdoSmPhRdOdbcSchemaReader::ReadNext()
     else
     {
         // Set the field values according to the current schema.
-        if (name[0] == '\0')
+        if (pName.GetLength() == 0)
         {
             // This ODBC driver doesn't support schemas, so assign 
             // a default value.
@@ -82,8 +86,8 @@ bool FdoSmPhRdOdbcSchemaReader::ReadNext()
         }
         else
         {
-            SetString( L"", L"schemaname", FdoStringP(name) );
-            SetString( L"", L"tableowner", FdoStringP(name) );
+            SetString( L"", L"schemaname", pName );
+            SetString( L"", L"tableowner", pName );
         }
 
         SetBOF(false);

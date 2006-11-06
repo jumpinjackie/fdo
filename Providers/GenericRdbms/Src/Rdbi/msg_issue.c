@@ -61,6 +61,7 @@ char *rdbi_cat = "RdbmsMsg.dll";
 extern wchar_t*  Gdbi_nls_msg_get_0( int msg_num, char* default_msg, char* catalog );
 
 extern wchar_t*  Gdbi_nls_msg_get_S( int msg_num, char* default_msg, char* catalog, char* arg1 );
+extern wchar_t*  Gdbi_nls_msg_get_SW( int msg_num, char* default_msg, char* catalog, wchar_t* arg1 );
 
 #include "global.h"                 /* rdbi global area                 */
 
@@ -86,4 +87,9 @@ void rdbi_msg_set_0( rdbi_context_def *context, int msg_num, char* default_msg )
 void rdbi_msg_set_S( rdbi_context_def *context, int msg_num, char* default_msg, char* arg1 )
 {
 	msg_set(  context, Gdbi_nls_msg_get_S( msg_num, default_msg, MF_RDBI, arg1 ) );
+}
+
+void rdbi_msg_set_SW( rdbi_context_def *context, int msg_num, char* default_msg, wchar_t* arg1 )
+{
+	msg_set(  context, Gdbi_nls_msg_get_SW( msg_num, default_msg, MF_RDBI, arg1 ) );
 }

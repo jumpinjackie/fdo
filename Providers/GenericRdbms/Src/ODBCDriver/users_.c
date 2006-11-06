@@ -15,6 +15,15 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include    <Inc/rdbi.h>
+#include    <Inc/ut.h>
+#include	<Inc/debugext.h>
+#include    "proto_p.h"
+
+#define _check_status  if (rdbi_status != RDBI_SUCCESS) goto the_exit;
+#define TABLESTYPES  "TABLE,VIEW"
+#define TABLESTYPESW L"TABLE,VIEW"
+
 /************************************************************************
 *																		*
 * Name																	*
@@ -46,33 +55,38 @@
 *
 ************************************************************************/
 
-#include    <Inc/rdbi.h>
-#include    <Inc/ut.h>
-#include	<Inc/debugext.h>
-#include    "proto_p.h"
-
-#define _check_status  if (rdbi_status != RDBI_SUCCESS) goto the_exit;
-
-int odbcdr_users_act(
+int local_odbcdr_users_act(
     odbcdr_context_def *context,
-    const char *target
-	)
+    rdbi_string_def *target)
 {
 	odbcdr_cursor_def	*c;
 	odbcdr_connData_def	*connData = NULL;
-	int 				rdbi_status = RDBI_GENERIC_ERROR;
-	int 				target_set = (NULL != target && target[0] != '\0');
+	int rdbi_status = RDBI_GENERIC_ERROR;
+	int target_set;
     SQLUINTEGER schemaUsages = 0;
-    SQLCHAR*    schemaToGet = (SQLCHAR*)SQL_ALL_SCHEMAS;
-    const char* cTableTypes = "TABLE,VIEW";
-    SQLCHAR     szSchema[ODBCDR_MAX_BUFF_SIZE];
+    // vectors can be used as SQLCHAR
+    wchar_t    schemaToGet[10];
+    SQLWCHAR    szSchemaBuf[ODBCDR_MAX_BUFF_SIZE];
+    rdbi_string_def szSchema;
     SQLINTEGER  cbSchema = 0;
     SQLRETURN   ret = SQL_SUCCESS;
     long        i;
     int         found;
+    SQLSMALLINT charType;
     odbcdr_NameListEntry_user_def * nle;
+    szSchema.wString = (wchar_t *)szSchemaBuf;
 
-
+    if (context->odbcdr_UseUnicode)
+    {
+        odbcdr_swprintf(schemaToGet, 10, L"%s", SQL_ALL_SCHEMAS);
+        charType = SQL_C_WCHAR;
+    }
+    else
+    {
+        sprintf((char*)schemaToGet, "%s", SQL_ALL_SCHEMAS);
+        charType = SQL_C_CHAR;
+    }
+    target_set = !ODBCDRV_STRING_EMPTY(target);
 	debug_on("odbcdr_users_act");
 
 	ODBCDR_RDBI_ERR( odbcdr_get_curr_conn( context, &connData ) );
@@ -81,13 +95,13 @@ int odbcdr_users_act(
 	rdbi_status = odbcdr_users_deac( context );
 	_check_status;
 
-    ODBCDR_ODBC_ERR( SQLGetInfo(
-        connData->hDbc, 
-        SQL_SCHEMA_USAGE,
-        (SQLPOINTER)&schemaUsages,
-        0,
-        NULL),
-        SQL_HANDLE_DESC, connData->hDbc, L"SQLGetInfo", "Fetching schemas" );
+    if (context->odbcdr_UseUnicode){
+        ODBCDR_ODBC_ERR( SQLGetInfoW(connData->hDbc, SQL_SCHEMA_USAGE, (SQLPOINTER)&schemaUsages,
+            0, NULL),SQL_HANDLE_DESC, connData->hDbc, "SQLGetInfo", "Fetching schemas" );
+    }else{
+        ODBCDR_ODBC_ERR( SQLGetInfo(connData->hDbc, SQL_SCHEMA_USAGE, (SQLPOINTER)&schemaUsages,
+            0, NULL),SQL_HANDLE_DESC, connData->hDbc, "SQLGetInfo", "Fetching schemas" );
+    }
 
     if (schemaUsages & SQL_SU_DML_STATEMENTS)
     {
@@ -106,32 +120,23 @@ int odbcdr_users_act(
          * schema multiple times.  We filter out repeats by immediately
          * fetching all results and storing the unique ones in a local list.
          */
+        if (context->odbcdr_UseUnicode){
+            ODBCDR_ODBC_ERR( SQLTablesW(c->hStmt, NULL, 0, (SQLWCHAR*)schemaToGet,  SQL_NTS,
+                NULL, 0, (SQLWCHAR*)TABLESTYPESW,  SQL_NTS ),
+                SQL_HANDLE_STMT, c->hStmt, "SQLTables", "Fetching schemas");
+        }else{
+            ODBCDR_ODBC_ERR( SQLTables(c->hStmt, NULL, 0, (SQLCHAR*)schemaToGet,  SQL_NTS,
+                NULL, 0, (SQLCHAR*)TABLESTYPES,  SQL_NTS ),
+                SQL_HANDLE_STMT, c->hStmt, "SQLTables", "Fetching schemas");
+        }
 
-        ODBCDR_ODBC_ERR( SQLTables(
-            c->hStmt,
-            NULL,
-            0,
-            schemaToGet, 
-            SQL_NTS,
-            NULL, 
-            0,
-            (SQLCHAR*)cTableTypes, 
-            SQL_NTS ),
-            SQL_HANDLE_STMT, c->hStmt, L"SQLTables", L"Fetching schemas");
-
-
-        ODBCDR_ODBC_ERR( SQLBindCol(
-            c->hStmt,
-            2,
-            SQL_CHAR,
-            szSchema,
-            sizeof(szSchema),
-            &cbSchema),
-            SQL_HANDLE_STMT, c->hStmt, L"SQLBindCol", L"Fetching schemas");
+        ODBCDR_ODBC_ERR( SQLBindCol(c->hStmt, 2, charType, szSchema.wString,
+            ODBCDR_MAX_BUFF_SIZE, &cbSchema),
+            SQL_HANDLE_STMT, c->hStmt, "SQLBindCol", "Fetching schemas");
 
         while (ret != SQL_NO_DATA)
         {
-            szSchema[0] = '\0';
+            *szSchema.wString = L'\0';
 
             ret = SQLFetch(c->hStmt);
 
@@ -141,14 +146,14 @@ int odbcdr_users_act(
             if (ret == SQL_NO_DATA)
                 break;
 
-            if (target_set && strcmp(target, (char*)szSchema) != 0)
+            if (target_set && ODBCDRV_STRING_COMPARE(target, &szSchema) != 0)
                 continue;
 
             /* Look for the name already in the list. */
             for (i=0, found=false;  !found && i < context->odbcdr_nameList_users.size;  i++)
             {
                 nle = (odbcdr_NameListEntry_user_def *) ut_da_get(&context->odbcdr_nameList_users, i);
-                if (strcmp(nle->name, (char*)szSchema) == 0)
+                if (ODBCDRV_STRING_COMPARE_LST(&szSchema, nle->name) == 0)
                     found = true;
             }
 
@@ -156,7 +161,7 @@ int odbcdr_users_act(
             {
                 /* Add name to the list. */
                 odbcdr_NameListEntry_user_def newNle;
-                (void) strcpy(newNle.name, (char*)szSchema);
+                ODBCDRV_STRING_COPY_RST(newNle.name, &szSchema);
                 if (NULL == ut_da_append( &context->odbcdr_nameList_users, 1L, (void *) &newNle ))
                 {
                     rdbi_status = RDBI_MALLOC_FAILED;
@@ -168,10 +173,10 @@ int odbcdr_users_act(
     else /* The data store did not support the right DML statement. */
     {
         /* Make a single, default name. */
-        if (!target_set || strcmp(target, ODBCDR_DEFAULT_SCHEMA_NAME) == 0)
+        if (!target_set || ODBCDRV_STRING_COMPARE_LST(target, ODBCDR_DEFAULT_SCHEMA_NAME) == 0)
         {
             odbcdr_NameListEntry_user_def newNle;
-            newNle.name[0] = '\0';
+            newNle.nameW[0] = L'\0';
             if (NULL == ut_da_append( &context->odbcdr_nameList_users, 1L, (void *) &newNle ))
             {
                 rdbi_status = RDBI_MALLOC_FAILED;
@@ -195,9 +200,27 @@ the_exit:
         connData->users = NULL;
     }
 	debug_return(NULL, rdbi_status);
-
 }
 
+int odbcdr_users_act(
+    odbcdr_context_def *context,
+    const char *target
+	)
+{
+    rdbi_string_def str;
+    str.ccString = target;
+    return local_odbcdr_users_act(context, &str);
+}
+
+int odbcdr_users_actW(
+    odbcdr_context_def *context,
+    const wchar_t *target
+	)
+{
+    rdbi_string_def str;
+    str.cwString = target;
+    return local_odbcdr_users_act(context, &str);
+}
 
 /************************************************************************
 *																		*
@@ -227,15 +250,13 @@ the_exit:
 * Remarks																*
 *																		*
 ************************************************************************/
-
-int odbcdr_users_get(
+int local_odbcdr_users_get(
     odbcdr_context_def *context,
-	char *name,
+	rdbi_string_def *name,
 	int  *eof
 	)
 {
-  	int					rdbi_status = RDBI_GENERIC_ERROR;
-
+  	int rdbi_status = RDBI_GENERIC_ERROR;
 
 	debug_on("odbcdr_users_get");
 
@@ -254,15 +275,35 @@ int odbcdr_users_get(
     else
     {
         odbcdr_NameListEntry_user_def * nle = (odbcdr_NameListEntry_user_def *) ut_da_get(&context->odbcdr_nameList_users, context->odbcdr_nameListNextPosition_users++);
-        (void) strcpy(name, nle->name);
+        ODBCDRV_STRING_COPY_LST(name, nle->name)
     }
 
 	rdbi_status = RDBI_SUCCESS;
 the_exit:
 	debug_return(NULL, rdbi_status);
-
 }
 
+int odbcdr_users_get(
+    odbcdr_context_def *context,
+	char *name,
+	int  *eof
+	)
+{
+    rdbi_string_def str;
+    str.cString = name;
+    return local_odbcdr_users_get(context, &str, eof);
+}
+
+int odbcdr_users_getW(
+    odbcdr_context_def *context,
+	wchar_t *name,
+	int  *eof
+	)
+{
+    rdbi_string_def str;
+    str.wString = name;
+    return local_odbcdr_users_get(context, &str, eof);
+}
 
 /************************************************************************
 *																		*

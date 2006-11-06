@@ -20,9 +20,9 @@
 * Synopsis                                                              *
 *   #include <Inc/rdbi.h>                                               *
 *   rdbi_connect(connect_string, dataset, passwd, connect_id)           *
-*   char    *connect_string;                                            *
-*   char    *dataset;                                                   *
-*   char    *passwd;                                                    *
+*   const char    *connect_string;                                      *
+*   const char    *dataset;                                             *
+*   const char    *passwd;                                              *
 *   int     *connect_id;                                                *
 *                                                                       *
 * Description                                                           *
@@ -74,23 +74,72 @@
 #include <Inc/Rdbi/proto.h>
 #include <Inc/ut.h>
 
+static int local_rdbi_connect( rdbi_context_def *context,
+    rdbi_string_def    *connect_string,  /* rdbms-specific connect information   */
+    rdbi_string_def    *dataset,         /* Data set name                        */
+    rdbi_string_def    *passwd,          /* password                             */
+    int     *connect_id             /* output connection identifier         */
+    );
 int
 rdbi_connect(
     rdbi_context_def *context,
-    char    *connect_string,        /* rdbms-specific connect information   */
-    char    *dataset,               /* Data set name                        */
-    char    *passwd,                /* password                             */
+    const char    *connect_string,        /* rdbms-specific connect information   */
+    const char    *dataset,               /* Data set name                        */
+    const char    *passwd,                /* password                             */
+    int     *connect_id             /* output connection identifier         */
+)
+{
+    rdbi_string_def strConnect_string;
+    rdbi_string_def strDataset;
+    rdbi_string_def strPswd;
+    strConnect_string.ccString = connect_string;
+    strDataset.ccString = dataset;
+    strPswd.ccString = passwd;
+    return local_rdbi_connect(context, &strConnect_string, &strDataset, &strPswd, connect_id);
+}
+
+int
+rdbi_connectW(
+    rdbi_context_def *context,
+    const wchar_t *connect_string, /* rdbms-specific connect information   */
+    const wchar_t *dataset,        /* Data set name                        */
+    const wchar_t *passwd,         /* password                             */
     int     *connect_id            /* output connection identifier         */
 )
+{
+    rdbi_string_def strConnect_string;
+    rdbi_string_def strDataset;
+    rdbi_string_def strPswd;
+    strConnect_string.cwString = connect_string;
+    strDataset.cwString = dataset;
+    strPswd.cwString = passwd;
+    return local_rdbi_connect(context, &strConnect_string, &strDataset, &strPswd, connect_id);
+}
+
+int
+local_rdbi_connect(
+    rdbi_context_def *context,
+    rdbi_string_def    *connect_string,  /* rdbms-specific connect information   */
+    rdbi_string_def    *dataset,         /* Data set name                        */
+    rdbi_string_def    *passwd,          /* password                             */
+    int     *connect_id             /* output connection identifier         */
+    )
 {
     int               i;            /* Index into rdbi_connections array    */
     int               new_id;
     int               status;
     rdbi_connect_def *old_cnct;
 
-    debug_on2("rdbi_connect", "connect_string '%s', dataset '%s'",
-        ISNULL(connect_string), ISNULL(dataset));
-
+    if (context->dispatch.capabilities.supports_unicode == 1)
+    {
+        debug_on2("rdbi_connect", "connect_string '%ls', dataset '%ls'",
+            ISNULL(connect_string->cwString), ISNULL(dataset->cwString));
+    }
+    else
+    {
+        debug_on2("rdbi_connect", "connect_string '%s', dataset '%s'",
+            ISNULL(connect_string->ccString), ISNULL(dataset->ccString));
+    }
     old_cnct  = context->rdbi_cnct;
 
     /*
@@ -112,10 +161,12 @@ rdbi_connect(
     }
     context->rdbi_cnct = &context->rdbi_connection[new_id];
 
-
-    status = (*(context->dispatch.connect))(context->drvr, connect_string, dataset, passwd,
-                                            &(context->rdbi_cnct->vendor_data),
-                                            connect_id);
+    if (context->dispatch.capabilities.supports_unicode == 1)
+        status = (*(context->dispatch.connectW))(context->drvr, connect_string->cwString, dataset->cwString, 
+                    passwd->cwString, &(context->rdbi_cnct->vendor_data), connect_id);
+    else
+        status = (*(context->dispatch.connect))(context->drvr, connect_string->ccString, dataset->ccString, 
+                    passwd->ccString, &(context->rdbi_cnct->vendor_data), connect_id);
     /*
      * Initialize variables for this connection
      */
@@ -138,4 +189,3 @@ the_exit:
     context->rdbi_last_status = status;
     debug_return(NULL, status);
 }
-

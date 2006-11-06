@@ -24,10 +24,10 @@
 *	#include <Inc/dbi/prse.h>											*
 *	int odbcdr_sql(cursor, sql, defer, verb, ptree, cursor_coc)			*
 *	char				*cursor;										*
-*	char				*sql;											*
+*	const char				*sql;									    *
 *	int					defer;											*
 *	char				*verb;											*
-*	void	*ptree; 										*
+*	void	*ptree; 										            *
 *	char				*cursor_coc;									*
 *																		*
 * Description															*
@@ -75,21 +75,17 @@
 #include <wchar.h>
 #endif
 
-//char * rdbi_vis_owner();
-
 char	*odbcdr_bindable_verbs[] = { "select", "insert", "update", "delete", NULL };
-void replace_substring(char *search_str, char *find_str, char *replace_str);
-int num_define_vars(char *sql);
+#define ROLLBACK_STRING  "rollback"
+#define ROLLBACK_STRINGW L"rollback"
 
-
-
-static int local_odbcdr_sql(
+int local_odbcdr_sql(
     odbcdr_context_def  *context,
 	char				*cursor,
-	char				*sql,
-	wchar_t				*sqlW,
+	rdbi_string_def     *sql,
 	int					defer,
 	char				*verb,
+	void				*ptree,
 	char				*cursor_coc
 	)
 {
@@ -100,10 +96,22 @@ static int local_odbcdr_sql(
 	int					i = 0;
 	SQLRETURN			rc;
 
-	debug_on5("odbcdr_sql", "c:%#x %sdeferred verb '%s' %.550s %.550s", cursor,
-		defer?"":"non-",
-		ISNULL(verb), ISNULL(sql),
-		sql ? "" : ISNULL(((odbcdr_cursor_def*)cursor)->sqlstring));
+#ifdef _DEBUG
+    if (context->odbcdr_UseUnicode)
+    {
+	    debug_on5("odbcdr_sql", "c:%#x %sdeferred verb '%s' %.550ls %.550ls", cursor,
+		    defer? "":"non-",
+            ISNULL(verb), ISNULL(sql->cwString),
+            sql->wString ? L"" : ISNULL(((odbcdr_cursor_def*)cursor)->sqlstringW));
+    }
+    else
+    {
+	    debug_on5("odbcdr_sql", "c:%#x %sdeferred verb '%s' %.550s %.550s", cursor,
+		    defer?"":"non-",
+            ISNULL(verb), ISNULL(sql->ccString),
+            sql->ccString ? "" : ISNULL(((odbcdr_cursor_def*)cursor)->sqlstring));
+    }
+#endif
 
 	ODBCDR_RDBI_ERR( odbcdr_get_cursor( context, cursor, &c ) );
 
@@ -113,19 +121,28 @@ static int local_odbcdr_sql(
 	c->is_rollback = FALSE;
 
 #ifdef _DEBUG
-    if( sql != (char *)NULL ) {
+    if( sql->ccString ) {
 		if( c->sqlstring != (char *)NULL ) {
 			ut_vm_free( _db_function, c->sqlstring );
 			c->sqlstring = NULL;
 		}
-
-		c->sqlstring = (char*)ut_vm_malloc( "odbcdr_sql: sql string", strlen( sql ) + 1 ); 
-		if( c->sqlstring == (char *)NULL ) {
-			rdbi_status = RDBI_MALLOC_FAILED;
-			goto the_exit;
-		}
-
-		strcpy( c->sqlstring, sql );
+        if (context->odbcdr_UseUnicode)
+        {
+            c->sqlstringW = (wchar_t*)ut_vm_malloc( "odbcdr_sql: sql string", (wcslen( sql->cwString ) + 1)*sizeof(wchar_t) ); 
+            if( c->sqlstringW == (wchar_t *)NULL ) {
+			    rdbi_status = RDBI_MALLOC_FAILED;
+			    goto the_exit;
+		    }
+        }
+        else
+        {
+            c->sqlstring = (char*)ut_vm_malloc( "odbcdr_sql: sql string", strlen( sql->ccString ) + 1 ); 
+		    if( c->sqlstring == (char *)NULL ) {
+			    rdbi_status = RDBI_MALLOC_FAILED;
+			    goto the_exit;
+		    }
+        }
+        ODBCDRV_STRING_COPY_RST(c->sqlstring, sql)
 	} 
 #endif
 	/*
@@ -133,8 +150,7 @@ static int local_odbcdr_sql(
 	** In ODBC, transactions must be managed through the
 	** transaction API calls.
 	*/
-	if ( (sql != NULL && (strcmp(sql, "rollback") == 0)) ||
-		 (sqlW != NULL && (wcscmp(sqlW, L"rollback") == 0) ) ) {
+	if ( sql != NULL && (ODBCDRV_STRING_COMPARE_LST(sql, ROLLBACK_STRING) == 0) ) {
 		// We do not prepare and execute "rollback" statements.
 		// in ODBC. Instead, an SQLEndTran() function call will
 		// be run in odbcdr_execute()
@@ -163,22 +179,15 @@ static int local_odbcdr_sql(
 		/*
 		** Now we can parse the SQL
 		*/
-		if( sql != NULL )
-		{
-			ODBCDR_ODBC_ERR( SQLPrepare( c->hStmt, 
-                            (SQLCHAR*)sql, 
-                            SQL_NTS),
-					    SQL_HANDLE_STMT, c->hStmt,
-					    "SQLPrepare", "SQL statement" );	
-		}
-		else
-		{
-			ODBCDR_ODBC_ERR( SQLPrepareW( c->hStmt, 
-                            (SQLWCHAR*)sqlW, 
-                            SQL_NTS),
-					    SQL_HANDLE_STMT, c->hStmt,
-					    L"SQLPrepare", L"SQL statement" );
-		}
+        if (context->odbcdr_UseUnicode){
+            ODBCDR_ODBC_ERR( SQLPrepareW( c->hStmt, (SQLWCHAR*)sql->cwString, 
+                        SQL_NTS), SQL_HANDLE_STMT, c->hStmt,
+				    "SQLPrepare", "SQL statement" );
+        }else{
+            ODBCDR_ODBC_ERR( SQLPrepare( c->hStmt, (SQLCHAR*)sql->ccString, 
+                        SQL_NTS),SQL_HANDLE_STMT, c->hStmt,
+				    "SQLPrepare", "SQL statement" );
+        }
 	}
 
 	ODBCDR_ODBC_ERR( rc,
@@ -189,36 +198,40 @@ static int local_odbcdr_sql(
 
 the_exit:
 
-
 	debug_area() odbcdr_show_context( context, c );
 	debug1("Returning cursor c:%#x", cursor);
 	debug_return(NULL, rdbi_status );
+
 }
 
 int odbcdr_sql(
     odbcdr_context_def  *context,
 	char				*cursor,
-	char				*sql,
+	const char			*sql,
 	int					defer,
 	char				*verb,
 	void				*ptree,
 	char				*cursor_coc
 	)
 {
-	return local_odbcdr_sql(context, cursor, sql, NULL, defer, verb, cursor_coc  );
+    rdbi_string_def str;
+    str.ccString = sql;
+    return local_odbcdr_sql(context, cursor, &str, defer, verb, ptree, cursor_coc);
 }
 
 int odbcdr_sqlW(
     odbcdr_context_def  *context,
 	char				*cursor,
-	wchar_t				*sql,
+	const wchar_t	    *sql,
 	int					defer,
 	char				*verb,
-	void	*ptree,
+	void                *ptree,
 	char				*cursor_coc
 	)
 {
-	return local_odbcdr_sql(context, cursor, NULL, sql, defer, verb, cursor_coc  );
+    rdbi_string_def str;
+    str.cwString = sql;
+    return local_odbcdr_sql(context, cursor, &str, defer, verb, ptree, cursor_coc);
 }
 
 /*
@@ -310,10 +323,10 @@ void replace_substring(char *search_str, char *find_str, char *replace_str)
 ** a function that calls another function 
 ** ( ie. select a, fn1(b, fn5(c)) col_alias, d from tab1)
 */
-int num_define_vars(char *sql) {
+int num_define_vars(const char *sql) {
 	int commas_found = 0;	// the number of commas between select..from, excluding those inside sql function calls 
-	char *from_pos;	// the position of the from string in the sql string
-	char *pos;
+	const char *from_pos;	// the position of the from string in the sql string
+	const char *pos;
 
 	// find the position of the "from" substring in the sql string
 	from_pos = strstr(sql, "from");

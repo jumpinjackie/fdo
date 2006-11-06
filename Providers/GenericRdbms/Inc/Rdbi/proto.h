@@ -54,14 +54,31 @@ int rdbi_break(
         );
 int rdbi_col_act(
         rdbi_context_def *context,
-        char *owner,
-        char *object_name,
-        char  *dbaselink
+        const char *owner,
+        const char *object_name,
+        const char  *dbaselink
+        );
+int rdbi_col_actW(
+        rdbi_context_def *context,
+        const wchar_t *owner,
+        const wchar_t *object_name,
+        const wchar_t *dbaselink
         );
 int rdbi_col_get(
         rdbi_context_def *context,
         char *column_name,
         char *type,
+        int *length,
+        int *scale,
+        int *nullable,
+        int *is_autoincrement,
+        int *position,
+        int *eof
+        );
+int rdbi_col_getW(
+        rdbi_context_def *context,
+        wchar_t *column_name,
+        wchar_t *type,
         int *length,
         int *scale,
         int *nullable,
@@ -77,9 +94,16 @@ int rdbi_commit(
         );
 int rdbi_connect(
         rdbi_context_def *context,
-        char *connect_string,
-        char *dataset,
-        char *passwd,
+        const char *connect_string,
+        const char *dataset,
+        const char *passwd,
+        int *connect_id
+        );
+int rdbi_connectW(
+        rdbi_context_def *context,
+        const wchar_t *connect_string,
+        const wchar_t *dataset,
+        const wchar_t *passwd,
         int *connect_id
         );
 int rdbi_crsr_nrows(
@@ -197,10 +221,21 @@ int rdbi_objects_act(
         const char *owner,
         const char *target
         );
+int rdbi_objects_actW(
+        rdbi_context_def *context,
+        const wchar_t *owner,
+        const wchar_t *target
+        );
 int rdbi_objects_get(
         rdbi_context_def *context,
         char *object_name,
         char *object_type,
+        int *eof
+        );
+int rdbi_objects_getW(
+        rdbi_context_def *context,
+        wchar_t *object_name,
+        wchar_t *object_type,
         int *eof
         );
 int rdbi_objects_deac(
@@ -226,23 +261,35 @@ int rdbi_is_null(
 int rdbi_sql(
         rdbi_context_def *context,
         int sqlid,
-        char *sql
+        const char *sql
         );
 int rdbi_sqlW(
         rdbi_context_def *context,
         int sqlid,
-        wchar_t *sql
+        const wchar_t *sql
         );
 int rdbi_sql_d(
         rdbi_context_def *context,
         int sqlid,
-        char *sql
+        const char *sql
+        );
+int rdbi_sql_dW(
+        rdbi_context_def *context,
+        int sqlid,
+        const wchar_t *sql
         );
 int rdbi_sql_va(
         rdbi_context_def *context,
         int opts,
         int sqlid,
-        char *sql,
+        const char *sql,
+        ... /* long va_alist */
+        );
+int rdbi_sql_vaW(
+        rdbi_context_def *context,
+        int opts,
+        int sqlid,
+        const wchar_t *sql,
         ... /* long va_alist */
         );
 int rdbi_switch(
@@ -273,6 +320,11 @@ int rdbi_pkeys_act(
         const char *owner,
         const char *object
         );
+int rdbi_pkeys_actW(
+    	rdbi_context_def *context,
+        const wchar_t *owner,
+        const wchar_t *object
+        );
 int rdbi_pkeys_deac(
         rdbi_context_def *context
         );
@@ -281,9 +333,18 @@ int rdbi_pkeys_get(
         char *name,
         int  *eof
         );
+int rdbi_pkeys_getW(
+	    rdbi_context_def *context,
+        wchar_t *name,
+        int  *eof
+        );
 int rdbi_users_act(
     	rdbi_context_def *context,
         const char *target
+        );
+int rdbi_users_actW(
+    	rdbi_context_def *context,
+        const wchar_t *target
         );
 int rdbi_users_deac(
         rdbi_context_def *context
@@ -291,6 +352,11 @@ int rdbi_users_deac(
 int rdbi_users_get(
 	    rdbi_context_def *context,
         char *name,
+        int  *eof
+        );
+int rdbi_users_getW(
+	    rdbi_context_def *context,
+        wchar_t *name,
         int  *eof
         );
 int rdbi_stores_act(
@@ -304,9 +370,19 @@ int rdbi_stores_get(
         char *name,
         int  *eof
         );
+int rdbi_stores_getW(
+	    rdbi_context_def *context,
+        wchar_t *name,
+        int  *eof
+        );
 int rdbi_usr_exists(
         rdbi_context_def *context,
         char *user_name,
+        int *exists
+        );
+int rdbi_usr_existsW(
+        rdbi_context_def *context,
+        wchar_t *user_name,
         int *exists
         );
 int rdbi_version(
@@ -317,11 +393,15 @@ int rdbi_version(
 void rdbi_msg_set_0( rdbi_context_def *context, int msg_num, char* default_msg );
 
 void rdbi_msg_set_S( rdbi_context_def *context, int msg_num, char* default_msg, char* arg1 );
+void rdbi_msg_set_SW( rdbi_context_def *context, int msg_num, char* default_msg, wchar_t* arg1 );
 
 char * rdbi_vis_owner(
         rdbi_context_def *context
         );
 char * rdbi_vndr_name(
+        rdbi_context_def *context
+        );
+wchar_t * rdbi_vndr_nameW(
         rdbi_context_def *context
         );
 
@@ -399,17 +479,22 @@ int rdbi_lob_close(
         );
 int rdbi_get_gen_id(
         rdbi_context_def  *context,
-	    char *table_name,
+	    const char *table_name,
+	    int  *id
+	    );
+int rdbi_get_gen_idW(
+        rdbi_context_def  *context,
+	    const wchar_t *table_name,
 	    int  *id
 	    );
 
-int rdbi_set_schema (rdbi_context_def *context, char *schema_name);
-int rdbi_set_schemaW (rdbi_context_def *context, wchar_t *schema_name);
+int rdbi_set_schema (rdbi_context_def *context, const char *schema_name);
+int rdbi_set_schemaW (rdbi_context_def *context, const wchar_t *schema_name);
 int rdbi_est_cursor_obj(rdbi_context_def *context, int *sqlid);
 int rdbi_init_context(rdbi_context_def *context);
 
-int rdbi_run_sql (rdbi_context_def *context, char *sql, int isDDL, int *rows_processed);
-int rdbi_run_sqlW (rdbi_context_def *context, wchar_t *sql, int isDDL, int *rows_processed);
+int rdbi_run_sql (rdbi_context_def *context, const char *sql, int isDDL, int *rows_processed);
+int rdbi_run_sqlW (rdbi_context_def *context, const wchar_t *sql, int isDDL, int *rows_processed);
 int rdbi_autocommit_on (rdbi_context_def *context);
 int rdbi_autocommit_off (rdbi_context_def *context);
 int rdbi_autocommit_mode (rdbi_context_def *context);

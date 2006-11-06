@@ -129,7 +129,10 @@ void rdbi_get_msg(rdbi_context_def *context)               /* Get msg text for l
             break;
 
 		case RDBI_GEOMETRY_CONVERION_ERROR:
-			rdbi_msg_set_S( context, RDBI_33, "RDBMS(%1$ls): Geometry conversion error.",(*(context->dispatch.vndr_name))(context->drvr));
+            if (context->dispatch.capabilities.supports_unicode == 1)
+                rdbi_msg_set_SW( context, RDBI_33, "RDBMS(%1$ls): Geometry conversion error.",(*(context->dispatch.vndr_nameW))(context->drvr));
+            else
+                rdbi_msg_set_S( context, RDBI_33, "RDBMS(%1$ls): Geometry conversion error.",(*(context->dispatch.vndr_name))(context->drvr));
 			break;
 
 		case RDBI_DATA_TRUNCATED:
@@ -138,9 +141,23 @@ void rdbi_get_msg(rdbi_context_def *context)               /* Get msg text for l
 
         default:
 			{
-				char	msg_buf[RDBI_MSG_SIZE];
-            (*(context->dispatch.get_msg))(context->drvr, msg_buf);
-			rdbi_msg_set_S( context, RDBI_34,"RDBMS: %1$ls",msg_buf );
+                // Some non-unicode drivers (e.g. MySQL) may issue globalized message.
+                // These providers will only implement get_msgW in order to avoid
+                // converting globalized messages from wchar_t* to char* and back to
+                // wchar_t*.
+                if ( (context->dispatch.capabilities.supports_unicode == 1) ||
+                     ((context->dispatch.get_msgW != NULL) && (context->dispatch.get_msg == NULL))
+                ) {
+                    wchar_t msg_buf[RDBI_MSG_SIZE];
+                    (*(context->dispatch.get_msgW))(context->drvr, msg_buf);
+                    rdbi_msg_set_SW( context, RDBI_34,"RDBMS: %1$ls", msg_buf );
+                }
+                else
+                {
+                    char msg_buf[RDBI_MSG_SIZE];
+                    (*(context->dispatch.get_msg))(context->drvr, msg_buf);
+                    rdbi_msg_set_S( context, RDBI_34,"RDBMS: %1$ls", msg_buf );
+                }
 			}
     }
     debug_return_void(NULL);

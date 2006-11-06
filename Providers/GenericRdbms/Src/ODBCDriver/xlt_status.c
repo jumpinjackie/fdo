@@ -61,6 +61,7 @@
 
 static int get_error_from_diag_rec(odbcdr_context_def *context, SQLSMALLINT handle_type, SQLHANDLE handle);
 static void save_err_msg( odbcdr_context_def *context, SQLSMALLINT plm_handle_type, SQLHANDLE plm_handle, int ConnInd);
+static void save_err_msgW( odbcdr_context_def *context, SQLSMALLINT plm_handle_type, SQLHANDLE plm_handle, int ConnInd);
 
 int
 odbcdr_xlt_status(		 /* Return RDBI equiv of SQL Server status  */
@@ -102,7 +103,10 @@ odbcdr_xlt_status(		 /* Return RDBI equiv of SQL Server status  */
 		case SQL_INVALID_HANDLE :
 		case SQL_STILL_EXECUTING :
 			rdbi_status = RDBI_GENERIC_ERROR;
-			save_err_msg(context, handle_type, handle, 1); // 1 = assuming a connection has already been made
+            if (context->odbcdr_UseUnicode)
+			    save_err_msgW(context, handle_type, handle, 1); // 1 = assuming a connection has already been made
+            else
+                save_err_msg(context, handle_type, handle, 1); // 1 = assuming a connection has already been made
 			break;
 		default:
 			rdbi_status = RDBI_GENERIC_ERROR;
@@ -121,14 +125,16 @@ static int get_error_from_diag_rec(
 	int		crit_err_found = FALSE;
 	RETCODE	rec_retcode = SQL_SUCCESS;
 	RETCODE	field_retcode = SQL_SUCCESS;
-	UCHAR		szSqlState[ODBCDR_MAX_BUFF_SIZE] = "";
-	UCHAR 	 	szErrorMsg[ODBCDR_MAX_BUFF_SIZE] = "";
+	SQLWCHAR	szSqlState[ODBCDR_MAX_BUFF_SIZE];
+	SQLWCHAR 	szErrorMsg[ODBCDR_MAX_BUFF_SIZE];
 	SDWORD		pfNativeError = 0L;
 	SWORD	 	pcbErrorMsg = 0;
 	SQLSMALLINT cRecNmbr = 1;
 	SDWORD  	SS_Severity = 0;
 	SQLINTEGER	Rownumber = 0;
 	SQLINTEGER  Colnumber = 0;
+    szSqlState[0] = L'\0';
+    szErrorMsg[0] = L'\0';
 
 	/*
 	** Loop through the diagnostic records until there are no records
@@ -137,29 +143,40 @@ static int get_error_from_diag_rec(
 	** ignore the rest.
 	*/
 	while ((rec_retcode != SQL_NO_DATA_FOUND) && !crit_err_found) {
-		rec_retcode = SQLGetDiagRec(handle_type, handle,
+		rec_retcode = (context->odbcdr_UseUnicode) ? 
+            SQLGetDiagRecW(handle_type, handle,
 					cRecNmbr, szSqlState, &pfNativeError,
-					szErrorMsg, ODBCDR_MAX_BUFF_SIZE - 1, &pcbErrorMsg);
+                    szErrorMsg, ODBCDR_MAX_BUFF_SIZE, &pcbErrorMsg) : 
+            SQLGetDiagRec(handle_type, handle,
+					cRecNmbr, (SQLCHAR*)szSqlState, &pfNativeError,
+					(SQLCHAR*)szErrorMsg, ODBCDR_MAX_BUFF_SIZE, &pcbErrorMsg);
  
 		if (rec_retcode != SQL_NO_DATA_FOUND) {
-			field_retcode = SQLGetDiagField(
-					handle_type, handle, cRecNmbr,
+			field_retcode = (context->odbcdr_UseUnicode) ? 
+                SQLGetDiagFieldW( handle_type, handle, cRecNmbr,
 					SQL_DIAG_ROW_NUMBER, &Rownumber,
-					SQL_IS_INTEGER,
-					NULL);
+					SQL_IS_INTEGER, NULL) :
+                SQLGetDiagField( handle_type, handle, cRecNmbr,
+					SQL_DIAG_ROW_NUMBER, &Rownumber,
+					SQL_IS_INTEGER, NULL);
+
 			if (Rownumber != SQL_NO_ROW_NUMBER  && Rownumber != SQL_ROW_NUMBER_UNKNOWN)	{
-				field_retcode = SQLGetDiagField(
-						handle_type, handle, cRecNmbr,
+				field_retcode = (context->odbcdr_UseUnicode) ? 
+                    SQLGetDiagFieldW( handle_type, handle, cRecNmbr,
 						SQL_DIAG_COLUMN_NUMBER , &Colnumber,
-						SQL_IS_INTEGER,
-						NULL);
+						SQL_IS_INTEGER, NULL) : 
+                    SQLGetDiagField( handle_type, handle, cRecNmbr,
+						SQL_DIAG_COLUMN_NUMBER , &Colnumber,
+						SQL_IS_INTEGER, NULL);
 			}
 #ifdef _WIN32
-			field_retcode = SQLGetDiagField(
-					handle_type, handle, cRecNmbr,
+			field_retcode = (context->odbcdr_UseUnicode) ? 
+                SQLGetDiagFieldW( handle_type, handle, cRecNmbr,
 					SQL_DIAG_SS_SEVERITY, &SS_Severity,
-					SQL_IS_INTEGER,
-					NULL);
+                    SQL_IS_INTEGER, NULL):
+                SQLGetDiagField(handle_type, handle, cRecNmbr,
+					SQL_DIAG_SS_SEVERITY, &SS_Severity,
+					SQL_IS_INTEGER,NULL);
 #endif
 
 			switch( pfNativeError ) {
@@ -217,12 +234,13 @@ static int get_error_from_diag_rec(
 
 	} // End while.
 
-
-	save_err_msg( context, handle_type, handle, 1); // 1 = assuming a connection has already been made
+    if (context->odbcdr_UseUnicode)
+	    save_err_msgW( context, handle_type, handle, 1); // 1 = assuming a connection has already been made
+    else
+        save_err_msg( context, handle_type, handle, 1); // 1 = assuming a connection has already been made
 
 	return rdbi_status;
 }
-
 
 ///////////////////////////////////////////////////////////////////////////
 static void save_err_msg( 
@@ -232,8 +250,8 @@ static void save_err_msg(
 	int ConnInd)	    			// Connection indicator
 {
 	RETCODE		plm_retcode = SQL_SUCCESS;
-	UCHAR		plm_szSqlState[ODBCDR_MAX_BUFF_SIZE] = "";
-	UCHAR 	 	plm_szErrorMsg[ODBCDR_MAX_BUFF_SIZE] = "";
+	UCHAR		plm_szSqlState[ODBCDR_MAX_BUFF_SIZE];
+	UCHAR 	 	plm_szErrorMsg[ODBCDR_MAX_BUFF_SIZE];
 	SDWORD		plm_pfNativeError = 0L;
 	SWORD	 	plm_pcbErrorMsg = 0;
 	SQLSMALLINT 	plm_cRecNmbr = 1;
@@ -244,6 +262,8 @@ static void save_err_msg(
 	SQLSMALLINT	plm_cbSS_Procname, plm_cbSS_Srvname;
 	SQLCHAR   	plm_SS_Procname[555];
 	SQLCHAR   	plm_SS_Srvname[555];
+    plm_szSqlState[0] = '\0';
+    plm_szSqlState[0] = '\0';
 
 	debug_on("odbcdr_xlt_status: save_err_msg");
 
@@ -324,3 +344,107 @@ static void save_err_msg(
 	debug_return_void(NULL);
 
 }
+
+static void save_err_msgW( 
+	odbcdr_context_def  *context, 
+	SQLSMALLINT plm_handle_type,	// Handle type
+	SQLHANDLE plm_handle,			// Handle name
+	int ConnInd)	    			// Connection indicator
+{
+	RETCODE		plm_retcode = SQL_SUCCESS;
+	SQLWCHAR    plm_szSqlState[ODBCDR_MAX_BUFF_SIZE];
+	SQLWCHAR 	plm_szErrorMsg[ODBCDR_MAX_BUFF_SIZE];
+	SDWORD		plm_pfNativeError = 0L;
+	SWORD	 	plm_pcbErrorMsg = 0;
+	SQLSMALLINT plm_cRecNmbr = 1;
+	SDWORD  	plm_SS_MsgState = 0;
+	SDWORD  	plm_SS_Severity = 0;
+	SQLINTEGER	plm_Rownumber = 0;
+	USHORT		plm_SS_Line;
+	SQLSMALLINT	plm_cbSS_Procname, plm_cbSS_Srvname;
+	SQLWCHAR   	plm_SS_Procname[555];
+	SQLWCHAR   	plm_SS_Srvname[555];
+    plm_szSqlState[0] = L'\0';
+    plm_szErrorMsg[0] = L'\0';
+
+	debug_on("odbcdr_xlt_status: save_err_msg");
+
+	context->odbcdr_last_err_msgW[0] = L'\0';
+
+  	while (plm_retcode != SQL_NO_DATA_FOUND) {
+		plm_retcode = SQLGetDiagRecW(plm_handle_type, plm_handle,
+					plm_cRecNmbr, plm_szSqlState, &plm_pfNativeError,
+					plm_szErrorMsg, ODBCDR_MAX_BUFF_SIZE - 1, &plm_pcbErrorMsg);
+ 
+		// Note that if the application has not yet made a
+		// successful connection, the SQLGetDiagField
+		// information has not yet been cached by ODBC
+		// Driver Manager and these calls to SQLGetDiagField
+		// will fail.
+		if (plm_retcode != SQL_NO_DATA_FOUND) {
+			if (ConnInd) {
+				plm_retcode = SQLGetDiagFieldW(
+						plm_handle_type, plm_handle, plm_cRecNmbr,
+						SQL_DIAG_ROW_NUMBER, &plm_Rownumber,
+						SQL_IS_INTEGER,
+						NULL);
+#ifdef _WIN32
+				plm_retcode = SQLGetDiagFieldW(
+						plm_handle_type, plm_handle, plm_cRecNmbr,
+						SQL_DIAG_SS_LINE, &plm_SS_Line,
+						SQL_IS_INTEGER,
+						NULL);
+				plm_retcode = SQLGetDiagFieldW(
+						plm_handle_type, plm_handle, plm_cRecNmbr,
+						SQL_DIAG_SS_MSGSTATE, &plm_SS_MsgState,
+						SQL_IS_INTEGER,
+						NULL);
+				plm_retcode = SQLGetDiagFieldW(
+						plm_handle_type, plm_handle, plm_cRecNmbr,
+						SQL_DIAG_SS_SEVERITY, &plm_SS_Severity,
+						SQL_IS_INTEGER,
+						NULL);
+				plm_retcode = SQLGetDiagFieldW(
+						plm_handle_type, plm_handle, plm_cRecNmbr,
+						SQL_DIAG_SS_PROCNAME, &plm_SS_Procname,
+						sizeof(plm_SS_Procname),
+						&plm_cbSS_Procname);
+				plm_retcode = SQLGetDiagFieldW(
+						plm_handle_type, plm_handle, plm_cRecNmbr,
+						SQL_DIAG_SS_SRVNAME, &plm_SS_Srvname,
+						sizeof(plm_SS_Srvname),
+						&plm_cbSS_Srvname);
+#endif
+			} // if ConnInd
+			// display error messages, filtering out expected "errors"
+            if ((plm_pfNativeError == 5701) ||	// Change database context error code
+                (plm_pfNativeError == 5703)	) {	// Change language setting error code
+					break;// out of while loop, do not display error messages
+			} else {
+				
+				// Save the message.
+				wcscpy( context->odbcdr_last_err_msgW, (wchar_t*)plm_szErrorMsg );
+
+				debug1("szSqlState = %ls",plm_szSqlState);
+				debug1("pfNativeError = %d",plm_pfNativeError);
+				debug1("szErrorMsg = %ls",plm_szErrorMsg);
+				debug1("pcbErrorMsg = %d",plm_pcbErrorMsg);
+				if (ConnInd) {
+					debug1("ODBCRowNumber = %d", plm_Rownumber);
+					debug1("SSrvrLine = %d", plm_Rownumber);
+					debug1("SSrvrMsgState = %d",plm_SS_MsgState);
+					debug1("SSrvrSeverity = %d",plm_SS_Severity);
+					debug1("SSrvrProcname = %ls",plm_SS_Procname);
+					debug1("SSrvrSrvname = %ls",plm_SS_Srvname);
+				}
+				break;
+			} //else
+		} //if plm_retcode
+		plm_cRecNmbr++; //Increment to next diagnostic record.
+	} // End while.
+
+	debug_return_void(NULL);
+
+}
+
+///////////////////////////////////////////////////////////////////////////

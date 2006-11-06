@@ -73,7 +73,7 @@ void odbcdr_get_o_t_s(
 			*odbcdr_datatype = SQL_C_CHAR; 
 			break;
 		case RDBI_WSTRING:
-			*odbcdr_datatype = SQL_WCHAR; 
+			*odbcdr_datatype = SQL_C_WCHAR; 
 			break;
 		case RDBI_CHAR:
 			*odbcdr_datatype = SQL_C_CHAR;  

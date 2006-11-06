@@ -59,3 +59,12 @@ char *rdbi_vndr_name(rdbi_context_def *context)              /* Return name stri
     debug_return(NULL, vendor);
 }
 
+wchar_t *rdbi_vndr_nameW(rdbi_context_def *context)              /* Return name string of RDBM vendor    */
+{
+    wchar_t *vendor;
+
+    debug_on( "rdbi_vndr_name" );
+    vendor = (*(context->dispatch.vndr_nameW))(context->drvr);
+    debug_return(NULL, vendor);
+}
+

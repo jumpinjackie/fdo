@@ -21,7 +21,7 @@
 * Synopsis																*
 *	#include <Inc/rdbi.h>												*
 *	rdbi_get_gen_id(table_name, id) 								    *
-*	char *table_name;													*
+*	const char *table_name;											    *
 *	int  *id;														    *
 *																		*
 * Description															*
@@ -49,7 +49,7 @@
 
 int rdbi_get_gen_id(
     rdbi_context_def  *context,
-	char *table_name,
+	const char *table_name,
 	int  *id
 	)
 {
@@ -58,6 +58,22 @@ int rdbi_get_gen_id(
 	debug_on1("rdbi_get_gen_id", "table_name '%s'", ISNULL(table_name));
 
     context->rdbi_last_status = (*(context->dispatch.get_gen_id)) (context->drvr, table_name, id);
+
+    debug_return(NULL, context->rdbi_last_status);
+
+}
+
+int rdbi_get_gen_idW(
+    rdbi_context_def  *context,
+	const wchar_t *table_name,
+	int  *id
+	)
+{
+	int rdbi_status = RDBI_GENERIC_ERROR;
+
+	debug_on1("rdbi_get_gen_id", "table_name '%ls'", ISNULL(table_name));
+
+    context->rdbi_last_status = (*(context->dispatch.get_gen_idW)) (context->drvr, table_name, id);
 
     debug_return(NULL, context->rdbi_last_status);
 

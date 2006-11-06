@@ -15,6 +15,13 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include    <Inc/rdbi.h>
+#include    <Inc/ut.h>
+#include	<Inc/debugext.h>
+#include    "proto_p.h"
+
+#define _check_status  if (rdbi_status != RDBI_SUCCESS) goto the_exit;
+
 /************************************************************************
 *																		*
 * Name																	*
@@ -40,25 +47,24 @@
 *                                                                       *
 ************************************************************************/
 
-#include    <Inc/rdbi.h>
-#include    <Inc/ut.h>
-#include	<Inc/debugext.h>
-#include    "proto_p.h"
-
-#define _check_status  if (rdbi_status != RDBI_SUCCESS) goto the_exit;
-
 int odbcdr_stores_act(
     odbcdr_context_def *context
 	)
 {
-    SQLCHAR outDataSourceName[SQL_MAX_DSN_LENGTH+1];
+    // vectors can be used as char*
+    SQLWCHAR outDataSourceNameBuf[SQL_MAX_DSN_LENGTH+1];
+    rdbi_string_def outDataSourceName;
+    SQLWCHAR outDataSourceDescBuf[ODBCDR_MAX_BUFF_SIZE];
+    rdbi_string_def outDataSourceDesc;
+
     SQLSMALLINT outDataSourceNameLength = 0;
-    SQLCHAR outDataSourceDesc[ODBCDR_MAX_BUFF_SIZE];
     SQLSMALLINT outDataSourceDescLength = 0;
     SQLUSMALLINT direction = SQL_FETCH_FIRST;
 
-	int 				rdbi_status = RDBI_GENERIC_ERROR;
+	int 		rdbi_status = RDBI_GENERIC_ERROR;
     SQLRETURN   ret = SQL_SUCCESS;
+    outDataSourceName.wString = (wchar_t *)outDataSourceNameBuf;
+    outDataSourceDesc.wString = (wchar_t *)outDataSourceDescBuf;
 
 	debug_on("odbcdr_stores_act");
 
@@ -90,19 +96,21 @@ int odbcdr_stores_act(
     // Retrieve the list of DSN names, both SYSTEM and USER. 
     do
     {
-        ret = SQLDataSources(context->odbcdr_env,
-                             direction,
-                             outDataSourceName,
-                             SQL_MAX_DSN_LENGTH+1,
-                             &outDataSourceNameLength,
-                             outDataSourceDesc,
-                             ODBCDR_MAX_BUFF_SIZE,
-                             &outDataSourceDescLength);
+        if (context->odbcdr_UseUnicode)
+            ret = SQLDataSourcesW(context->odbcdr_env, direction, (SQLWCHAR*)outDataSourceName.wString,
+                                 SQL_MAX_DSN_LENGTH+1, &outDataSourceNameLength,
+                                 (SQLWCHAR*)outDataSourceDesc.wString, ODBCDR_MAX_BUFF_SIZE,
+                                 &outDataSourceDescLength);
+        else
+            ret = SQLDataSources(context->odbcdr_env, direction, (SQLCHAR*)outDataSourceName.cString,
+                                 SQL_MAX_DSN_LENGTH+1, &outDataSourceNameLength,
+                                 (SQLCHAR*)outDataSourceDesc.cString, ODBCDR_MAX_BUFF_SIZE,
+                                 &outDataSourceDescLength);
 
         if (ret == SQL_SUCCESS) {
             /* Add name to the list. */
             odbcdr_NameListEntry_store_def newNle;
-            (void) strcpy(newNle.name, (char*)outDataSourceName);
+            ODBCDRV_STRING_COPY_RST(newNle.name, &outDataSourceName);
             if (NULL == ut_da_append( &context->odbcdr_nameList_stores, 1L, (void *) &newNle ))
             {
                 rdbi_status = RDBI_MALLOC_FAILED;
@@ -119,6 +127,7 @@ int odbcdr_stores_act(
 the_exit:
 	debug_return(NULL, rdbi_status);
 }
+
 
 
 /************************************************************************
@@ -149,15 +158,13 @@ the_exit:
 * Remarks																*
 *																		*
 ************************************************************************/
-
-int odbcdr_stores_get(
+int local_odbcdr_stores_get(
     odbcdr_context_def *context,
-	char *name,
+	rdbi_string_def *name,
 	int  *eof
 	)
 {
-  	int					rdbi_status = RDBI_GENERIC_ERROR;
-
+  	int rdbi_status = RDBI_GENERIC_ERROR;
 
 	debug_on("odbcdr_stores_get");
 
@@ -176,15 +183,35 @@ int odbcdr_stores_get(
     else
     {
         odbcdr_NameListEntry_store_def * nle = (odbcdr_NameListEntry_store_def *) ut_da_get(&context->odbcdr_nameList_stores, context->odbcdr_nameListNextPosition_stores++);
-        (void) strcpy(name, nle->name);
+        ODBCDRV_STRING_COPY_LST(name, nle->name)
     }
 
 	rdbi_status = RDBI_SUCCESS;
 the_exit:
 	debug_return(NULL, rdbi_status);
-
 }
 
+int odbcdr_stores_get(
+    odbcdr_context_def *context,
+	char *name,
+	int  *eof
+	)
+{
+    rdbi_string_def str;
+    str.cString = name;
+    return local_odbcdr_stores_get(context, &str, eof);
+}
+
+int odbcdr_stores_getW(
+    odbcdr_context_def *context,
+	wchar_t *name,
+	int  *eof
+	)
+{
+    rdbi_string_def str;
+    str.wString = name;
+    return local_odbcdr_stores_get(context, &str, eof);
+}
 
 /************************************************************************
 *																		*

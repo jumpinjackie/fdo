@@ -131,11 +131,20 @@ FdoConnectionState DbiConnection::Open (
             // disrupting the other drivers just to get the special case.  Only
             // ODBC Provider currently supports a property actually called
             // "ConnectionString".
-            if (mParsedConnection->mConnectionStringProperty.GetLength() == 0)
-                rdbi_status = rdbi_connect ( mContext, (char*)(const char*)(mParsedConnection->mDataSource), (char*)(const char*)(mParsedConnection->mUser), (char*)(const char*)(mParsedConnection->mPassword), &mDbiContextId );
+            if (mContext->dispatch.capabilities.supports_unicode == 1)
+            {
+                if (mParsedConnection->mConnectionStringProperty.GetLength() == 0)
+                    rdbi_status = rdbi_connectW ( mContext, mParsedConnection->mDataSource, mParsedConnection->mUser, mParsedConnection->mPassword, &mDbiContextId );
+                else
+                    rdbi_status = rdbi_connectW ( mContext, mParsedConnection->mConnectionStringProperty, NULL, NULL, &mDbiContextId );
+            }
             else
-                rdbi_status = rdbi_connect ( mContext, (char*)(const char*)(mParsedConnection->mConnectionStringProperty), NULL, NULL, &mDbiContextId );
-
+            {
+                if (mParsedConnection->mConnectionStringProperty.GetLength() == 0)
+                    rdbi_status = rdbi_connect ( mContext, mParsedConnection->mDataSource, mParsedConnection->mUser, mParsedConnection->mPassword, &mDbiContextId );
+                else
+                    rdbi_status = rdbi_connect ( mContext, mParsedConnection->mConnectionStringProperty, NULL, NULL, &mDbiContextId );
+            }
             if( rdbi_status == RDBI_SUCCESS ) {
                 mOpen = FdoConnectionState_Pending;
             }
@@ -150,9 +159,9 @@ FdoConnectionState DbiConnection::Open (
             int rc;
 
             if ( mGdbiConnection && mGdbiConnection->GetCommands()->SupportsUnicode() ) 
-                rc =  rdbi_set_schemaW( mContext, (wchar_t*)(const wchar_t*)(mParsedConnection->mSchema) );
+                rc =  ::rdbi_set_schemaW( mContext, mParsedConnection->mSchema );
             else 
-                rc =  rdbi_set_schema( mContext, (char*)(const char*)(mParsedConnection->mSchema) );
+                rc =  ::rdbi_set_schema( mContext, mParsedConnection->mSchema );
 
             if ( rc == RDBI_SUCCESS ) {
 				if ( rdbi_autocommit_off(mContext) == RDBI_SUCCESS )
@@ -230,13 +239,15 @@ bool DbiConnection::SetTransactionLock( const char *sqlStatement )
 
     rdbi_est_cursor( mContext, &util_cursor);
 
-    rc = rdbi_sql_va( mContext, RDBI_VA_DEFNAMES|RDBI_VA_EXEC,
-                        util_cursor,
-                        (char *)sqlStatement,
-                        RDBI_VA_EOL,
-                        "1", RDBI_STRING, 128,
-                            (void *) parm,
-                        RDBI_VA_EOL);
+    if (mContext->dispatch.capabilities.supports_unicode == 1){
+        rc = ::rdbi_sql_vaW( mContext, RDBI_VA_DEFNAMES|RDBI_VA_EXEC,
+                        util_cursor, FdoStringP(sqlStatement), RDBI_VA_EOL,
+                        "1", RDBI_STRING, 128, (void *) parm, RDBI_VA_EOL);
+    }else{
+        rc = rdbi_sql_va( mContext, RDBI_VA_DEFNAMES|RDBI_VA_EXEC,
+                        util_cursor, sqlStatement, RDBI_VA_EOL,
+                        "1", RDBI_STRING, 128, (void *) parm, RDBI_VA_EOL);
+    }
     if ( rc == RDBI_SUCCESS )
     {
         ret = true;
@@ -305,47 +316,6 @@ DbiConnection::ParseInfo::~ParseInfo ()
  * Copied from adb/do_sql.c
  * Return 0 if OK, non-zero is the Oracle error code.
  */
-int DbiConnection::DoSql (char *sql_buf, int *rows_processed, bool bThrowException)
-{
-
-    SWITCH_CONTEXT
-    int rc;
-    int rdb_status;
-    int     util_cursor;
-
-    rc = RDBI_GENERIC_ERROR;
-    rdb_status = RDBI_SUCCESS;
-    *rows_processed = -1;
-    rc = rdbi_est_cursor ( mContext, &util_cursor);
-    rdb_status = rdbi_sql ( mContext, util_cursor, sql_buf);
-    if (rdb_status == RDBI_SUCCESS)
-        rdb_status = rdbi_execute ( mContext, util_cursor, 1, 0);
-    if (rdb_status == RDBI_SUCCESS)
-        *rows_processed = rdbi_crsr_nrows ( mContext, util_cursor);
-    else
-        rdbi_get_msg( mContext );
-
-    (void)rdbi_fre_cursor ( mContext, util_cursor);
-    if (rc!=RDBI_SUCCESS)
-    {
-        rdbi_get_msg( mContext );
-        goto the_exit;
-    }
-
-the_exit:
-    if (rdb_status == RDBI_SUCCESS)
-        rdb_status = rc;
-    else {
-        if (bThrowException)
-            THROW_DBI_EXCEPTION;
-    }
-
-
-
-
-    return (rdb_status);
-}
-
  int DbiConnection::dbi_ver_dbase( char *db_name, int  *exists)
  {
      INVOKE_DBI_FUNC(dbi_ver_dbase( mContext, db_name, exists) );
@@ -808,9 +778,9 @@ void DbiConnection::SetActiveSchema(const wchar_t * schemaName)
         int rc = RDBI_GENERIC_ERROR;
 
         if ( mGdbiConnection && mGdbiConnection->GetCommands()->SupportsUnicode() ) 
-            rc =  rdbi_set_schemaW( mContext, (wchar_t*)(const wchar_t*)(schemaNameP) );
+            rc =  ::rdbi_set_schemaW( mContext, schemaNameP );
         else 
-            rc =  rdbi_set_schema( mContext, (char*)(const char*)(schemaNameP) );
+            rc =  ::rdbi_set_schema( mContext, schemaNameP );
 
         if ( rc != RDBI_SUCCESS )
         {

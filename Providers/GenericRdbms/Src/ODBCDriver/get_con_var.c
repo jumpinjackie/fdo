@@ -56,3 +56,16 @@ odbcdr_get_con_var(
 	debug_return(NULL, TRUE);
 }
 
+int
+odbcdr_get_con_varW(
+    odbcdr_context_def  *context,
+	wchar_t	*value
+	)
+{
+	debug_on("odbcdr_get_con_var");
+
+	wcscpy(value, L"TWO_TASK");
+
+	debug_return(NULL, TRUE);
+}
+

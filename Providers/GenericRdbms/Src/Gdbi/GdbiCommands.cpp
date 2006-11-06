@@ -18,7 +18,6 @@
  */
 #include "stdafx.h"
 #include "GdbiCommands.h"
-#include <Inc/Util/thread.h>
 #include "FdoCommonOSUtil.h"
 
 GdbiCommands::GdbiCommands( rdbi_context_def* rdbi_context ):
@@ -50,7 +49,7 @@ void GdbiCommands::CheckDB()
 void GdbiCommands::ThrowException()
 {
     if( m_pRdbiContext->last_error_msg == NULL )
-        rdbi_get_msg (m_pRdbiContext);
+        ::rdbi_get_msg (m_pRdbiContext);
     
     throw GdbiException::Create( m_pRdbiContext->last_error_msg );
 }
@@ -60,29 +59,15 @@ int GdbiCommands::err_stat()
 	return m_pRdbiContext->rdbi_last_status;
 }
 
-int GdbiCommands::run_sql( char *sql, bool isDDL,  int *rows_processed  )
-{
-    CheckDB();
-    int rc = RDBI_GENERIC_ERROR;
-
-	rc = ::rdbi_run_sql (m_pRdbiContext, sql, isDDL ? 1 : 0, rows_processed );
-
-    if( rc == RDBI_SUCCESS )
-        return rc;
-
-    ThrowException();
-    return RDBI_GENERIC_ERROR; // to supress a compiler warning
-}
-
-int GdbiCommands::run_sql( wchar_t *sql, bool isDDL,  int *rows_processed  )
+int GdbiCommands::run_sql( FdoStringP sql, bool isDDL,  int *rows_processed  )
 {
     CheckDB();
     int rc = RDBI_GENERIC_ERROR;
 
 	if( SupportsUnicode() )
-		rc = ::rdbi_run_sqlW (m_pRdbiContext, sql, isDDL ? 1 : 0, rows_processed );
+        rc = ::rdbi_run_sqlW (m_pRdbiContext, sql, isDDL ? 1 : 0, rows_processed );
 	else
-		rc = ::rdbi_run_sql (m_pRdbiContext, (char*) (const char*) FdoStringP( sql, true ), isDDL ? 1 : 0, rows_processed );
+		rc = ::rdbi_run_sql (m_pRdbiContext, sql, isDDL ? 1 : 0, rows_processed );
 
     if( rc == RDBI_SUCCESS )
         return rc;
@@ -91,24 +76,7 @@ int GdbiCommands::run_sql( wchar_t *sql, bool isDDL,  int *rows_processed  )
     return RDBI_GENERIC_ERROR; // to supress a compiler warning
 }
 
-int GdbiCommands::sql( char *sql,  int *qid  )
-{
-    CheckDB();
-    int rc = RDBI_GENERIC_ERROR;
-
-    rc = ::rdbi_est_cursor (m_pRdbiContext, qid);
-
-    if( rc == RDBI_SUCCESS )
-        rc = ::rdbi_sql (m_pRdbiContext, *qid, sql );
-
-    if( rc == RDBI_SUCCESS )
-        return rc;
-
-    ThrowException();
-    return RDBI_GENERIC_ERROR; // to supress a compiler warning
-}
-
-int GdbiCommands::sql( wchar_t *sql,  int *qid  )
+int GdbiCommands::sql( FdoStringP sql,  int *qid  )
 {
     CheckDB();
     int rc = RDBI_GENERIC_ERROR;
@@ -120,7 +88,7 @@ int GdbiCommands::sql( wchar_t *sql,  int *qid  )
 		if( SupportsUnicode() )
 			rc = ::rdbi_sqlW (m_pRdbiContext, *qid, sql );
 		else
-			rc = ::rdbi_sql (m_pRdbiContext, *qid, (char*) (const char*) FdoStringP( sql, true ) );
+			rc = ::rdbi_sql (m_pRdbiContext, *qid, sql );
 	}
 
     if( rc == RDBI_SUCCESS )
@@ -151,8 +119,6 @@ int GdbiCommands::free_cursor( int qid  )
 
     if( ::rdbi_fre_cursor (m_pRdbiContext, qid) == RDBI_SUCCESS )
         return RDBI_SUCCESS;
-
-	
 
     ThrowException();
     return RDBI_GENERIC_ERROR; // to supress a compiler warning
@@ -326,27 +292,24 @@ int GdbiCommands::vndr_info(
 //
 // Use the RDBMS sequence number capability(i.e Oracle )
 // TODO: need to cache the sequences for all sequences. Currently it will only work with one sequence for feature ids
-long GdbiCommands::NextSequenceNumber(  char* dbiSequenceName )
+long GdbiCommands::NextSequenceNumber(  FdoString* dbiSequenceName )
 {
-    char    *dbiSeqName;
-    char    adbSeqName[30];
+    FdoString* dbiSeqName = dbiSequenceName;
+    FdoString* adbSeqName;
 
     if( dbiSequenceName == NULL || dbiSequenceName[0] == '\0' )
-        dbiSeqName = DBI_FEATURE_SEQUENCE;
-    else
-        dbiSeqName = dbiSequenceName;
+        dbiSeqName = DBI_FEATURE_SEQUENCEW;
 
-    if ( strcmp( dbiSeqName, DBI_FEATURE_SEQUENCE ) == 0 )
-        strcpy( adbSeqName, ADB_FEATURESEQ );
-    else if ( strcmp( dbiSeqName, DBI_CLASS_SEQUENCE ) == 0 )
-        strcpy( adbSeqName, ADB_CLASSSEQ );
-    else if ( strcmp( dbiSeqName, DBI_PLAN_SEQUENCE ) == 0 )
-        strcpy( adbSeqName, ADB_PLANSEQ );
-    else if ( strcmp( dbiSeqName, DBI_PLAN_GROUP_SEQUENCE ) == 0 )
-        strcpy( adbSeqName, ADB_PLANGROUPSEQ );
-    else 
-        // Todo: Throw exception.
-        strcpy( adbSeqName, dbiSeqName );
+    if ( wcscmp( dbiSeqName, DBI_FEATURE_SEQUENCEW ) == 0 )
+        adbSeqName = ADB_FEATURESEQW;
+    else if ( wcscmp( dbiSeqName, DBI_CLASS_SEQUENCEW ) == 0 )
+        adbSeqName = ADB_CLASSSEQW;
+    else if ( wcscmp( dbiSeqName, DBI_PLAN_SEQUENCEW ) == 0 )
+        adbSeqName = ADB_PLANSEQW;
+    else if ( wcscmp( dbiSeqName, DBI_PLAN_GROUP_SEQUENCEW ) == 0 )
+        adbSeqName = ADB_PLANGROUPSEQW;
+    else // Todo: Throw exception.
+        adbSeqName = dbiSeqName;
 
     // Call specific provider implementation to get a number
     if( m_pRdbiContext->dispatch.capabilities.supports_sequence )
@@ -361,10 +324,10 @@ long GdbiCommands::NextSequenceNumber(  char* dbiSequenceName )
 // In case sequence is not supported the method simulate a sequence allocation scheme.
 // The caller should start a transaction if one is not started. Apply Schema does.
 
-long GdbiCommands::NextGDBISequenceNumber(  char* adbSequenceName )
+long GdbiCommands::NextGDBISequenceNumber( FdoString* adbSequenceName )
 {
     bool                rc = false; 
-    char                tmp_buf[128];
+    FdoStringP          strUse;
     int                 cursor;
     int                 select_begun = FALSE;
     int                 number = 0;
@@ -382,31 +345,41 @@ long GdbiCommands::NextGDBISequenceNumber(  char* adbSequenceName )
     }
 
     /* build SQL update command */
-    sprintf(tmp_buf,
-            "update %s set startnum=startnum+%d where seqid='%s';", ADB_SEQUENCE_TABLE,ADB_SN_ALLOC_INCREMENT, adbSequenceName);
+    strUse = FdoStringP::Format( L"update %ls set startnum=startnum+%d where seqid='%ls';", ADB_SEQUENCE_TABLEW, ADB_SN_ALLOC_INCREMENT, adbSequenceName);
 
-    if( sql( tmp_buf, &cursor ) == RDBI_SUCCESS )
+    if( sql( strUse, &cursor ) == RDBI_SUCCESS )
         this->execute( cursor );
 
     if( cursor != - 1 )
         this->free_cursor( cursor );
 
      /* build SQL update command */
-    sprintf(tmp_buf,
-            "select startnum from %s where seqid='%s';", ADB_SEQUENCE_TABLE, adbSequenceName);
+    strUse = FdoStringP::Format( L"select startnum from %ls where seqid='%ls';", ADB_SEQUENCE_TABLEW, adbSequenceName);
 
-    if( rdbi_est_cursor(m_pRdbiContext, &cursor) != RDBI_SUCCESS )
+    if( ::rdbi_est_cursor(m_pRdbiContext, &cursor) != RDBI_SUCCESS )
         goto the_exit;
 
-    if( rdbi_sql_va( m_pRdbiContext, RDBI_VA_EXEC, cursor, tmp_buf,
-                            /* bind variables */
-                            RDBI_VA_EOL,
-                            /* define variables */
-                            RDBI_DOUBLE, 0, &doubleVal,
-                            RDBI_VA_EOL ) != RDBI_SUCCESS )
-                goto the_exit;
-
-    if( rdbi_fetch (m_pRdbiContext, cursor, 1, &rows_proc) != RDBI_SUCCESS )
+    if (SupportsUnicode())
+    {
+        if( ::rdbi_sql_vaW( m_pRdbiContext, RDBI_VA_EXEC, cursor, strUse,
+                                /* bind variables */
+                                RDBI_VA_EOL,
+                                /* define variables */
+                                RDBI_DOUBLE, 0, &doubleVal,
+                                RDBI_VA_EOL ) != RDBI_SUCCESS )
+                    goto the_exit;
+    }
+    else
+    {
+        if( ::rdbi_sql_va( m_pRdbiContext, RDBI_VA_EXEC, cursor, strUse,
+                                /* bind variables */
+                                RDBI_VA_EOL,
+                                /* define variables */
+                                RDBI_DOUBLE, 0, &doubleVal,
+                                RDBI_VA_EOL ) != RDBI_SUCCESS )
+                    goto the_exit;
+    }
+    if( ::rdbi_fetch (m_pRdbiContext, cursor, 1, &rows_proc) != RDBI_SUCCESS )
             goto the_exit;
 
     if(rows_proc == 0) goto the_exit;
@@ -433,23 +406,23 @@ the_exit:
 }
 
 // In case sequence is not supported this method simulate a sequence allocation scheme.
-long GdbiCommands::NextRDBMSAutoincrementNumber(  char* adbSequenceName )
+long GdbiCommands::NextRDBMSAutoincrementNumber( FdoString* adbSequenceName )
 {
-    char                tableName[GDBI_TABLE_NAME_SIZE];
+    FdoStringP tableName;
     int                 number = 0;
     bool                seqSupported = true;
 
     CheckDB();
 
     // Get the table name from the sequence name.
-    if ( strcmp( adbSequenceName, ADB_CLASSSEQ ) == 0 )
-        strcpy( tableName, ADB_CLASSDEF_TAB );
-    else if ( strcmp( adbSequenceName, ADB_PLANSEQ ) == 0 )
-        strcpy( tableName, ADB_SPATIAL_CONTEXT_TABLE );
-    else if ( strcmp( adbSequenceName, ADB_PLANGROUPSEQ ) == 0 )
-        strcpy( tableName, ADB_SPATIAL_CONTEXT_GROUP_TABLE );
-	else if ( strcmp( adbSequenceName, ADB_FEATURESEQ ) == 0 )
-	    tableName[0] = '\0';
+    if ( wcscmp( adbSequenceName, ADB_CLASSSEQW ) == 0 )
+        tableName = ADB_CLASSDEF_TABW;
+    else if ( wcscmp( adbSequenceName, ADB_PLANSEQW ) == 0 )
+        tableName = ADB_SPATIAL_CONTEXT_TABLEW;
+    else if ( wcscmp( adbSequenceName, ADB_PLANGROUPSEQW ) == 0 )
+        tableName = ADB_SPATIAL_CONTEXT_GROUP_TABLEW;
+	else if ( wcscmp( adbSequenceName, ADB_FEATURESEQW ) == 0 )
+	    tableName = L"";
     else 
         seqSupported = false;
 
@@ -460,16 +433,23 @@ long GdbiCommands::NextRDBMSAutoincrementNumber(  char* adbSequenceName )
     }
     else
     {
-        if ( rdbi_get_gen_id ( m_pRdbiContext, tableName, &number ) != RDBI_SUCCESS )
-            ThrowException();
-
+        if (SupportsUnicode())
+        {
+            if ( ::rdbi_get_gen_idW ( m_pRdbiContext, tableName, &number ) != RDBI_SUCCESS )
+                ThrowException();
+        }
+        else
+        {
+            if ( ::rdbi_get_gen_id ( m_pRdbiContext, tableName, &number ) != RDBI_SUCCESS )
+                ThrowException();
+        }
         // Note: The number is the current generated one.
     }
 
     return number;
 }
 
-long GdbiCommands::NextRDBMSSequenceNumber(  char* adbSequenceName )
+long GdbiCommands::NextRDBMSSequenceNumber( FdoString* adbSequenceName )
 {
 
     bool                rc = false;                     /* return code */
@@ -477,8 +457,7 @@ long GdbiCommands::NextRDBMSSequenceNumber(  char* adbSequenceName )
     int                 tran_begun = FALSE;
     int                 select_begun = FALSE;
     int                 sqlid_coc = -1;
-    char                sql_buf[ADB_SQL_LEN];   /* place to format SQL command */
-    char                tmp_buf[60];
+    FdoStringP          sql_buf;   /* place to format SQL command */
     int                 rows_proc;
     gdbi_full_seq_def   *gptr = &mFeatureSeq;
     long                number = -1;
@@ -486,11 +465,7 @@ long GdbiCommands::NextRDBMSSequenceNumber(  char* adbSequenceName )
 
     CheckDB();
 
-#ifdef _WIN32
-    if ( (gptr->next < gptr->size) && (_stricmp(adbSequenceName, gptr->seq_name) == 0) )
-#else
-    if ( (gptr->next < gptr->size) && (strcasecmp(adbSequenceName, gptr->seq_name) == 0) )
-#endif
+    if ( (gptr->next < gptr->size) && (FdoCommonOSUtil::wcsicmp(adbSequenceName, gptr->seq_name) == 0) )
     {
         number = gptr->sequence[gptr->next];
         gptr->next++;
@@ -498,32 +473,32 @@ long GdbiCommands::NextRDBMSSequenceNumber(  char* adbSequenceName )
         goto the_exit;
     }
 
-    if (CURSOR == -1) {
-        if( rdbi_est_cursor(m_pRdbiContext, &CURSOR) != RDBI_SUCCESS )
+    if (CURSOR == -1)
+    {
+        if( ::rdbi_est_cursor(m_pRdbiContext, &CURSOR) != RDBI_SUCCESS )
             goto the_exit;
 
         select_begun = TRUE;
 
         /* build SQL select command */
-        sprintf(sql_buf,
-            "select %s.nextval from %s", adbSequenceName, ADB_SEQUENCE_TABLE);
+        sql_buf = FdoStringP::Format(L"select %ls.nextval from %ls", adbSequenceName, ADB_SEQUENCE_TABLEW);
 
         /* add the where clause for other than 'feature' numbers */
-        if (FdoCommonOSUtil::stricmp(adbSequenceName, ADB_FEATURESEQ) == 0)   {
-
-            if( rdbi_sql_va( m_pRdbiContext, 0, CURSOR, sql_buf,
+        if (FdoCommonOSUtil::wcsicmp(adbSequenceName, ADB_FEATURESEQW) != 0)
+            sql_buf += FdoStringP::Format(L" where %ls = '%ls'", ADB_SEQID_COLUMNW, adbSequenceName);
+        if (SupportsUnicode())
+        {
+            if( ::rdbi_sql_vaW( m_pRdbiContext, 0, CURSOR, sql_buf,
                             /* bind variables */
                             RDBI_VA_EOL,
                             /* define variables */
-                            RDBI_LONG, 0, (char *)gptr->sequence,
+                            RDBI_LONG, 0, gptr->sequence,
                             RDBI_VA_EOL ) != RDBI_SUCCESS )
                 goto the_exit;
         }
-        else    {
-            sprintf(tmp_buf, " where %s = '%s'", ADB_SEQID_COLUMN, adbSequenceName);
-            strcat(sql_buf, tmp_buf);
-
-            if( rdbi_sql_va( m_pRdbiContext, 0, CURSOR, sql_buf,
+        else
+        {
+            if( ::rdbi_sql_va( m_pRdbiContext, 0, CURSOR, sql_buf,
                             /* bind variables */
                             RDBI_VA_EOL,
                             /* define variables */
@@ -533,12 +508,12 @@ long GdbiCommands::NextRDBMSSequenceNumber(  char* adbSequenceName )
         }
     }
 
-    if (   (0 == FdoCommonOSUtil::stricmp (adbSequenceName, ADB_FEATURESEQ))
-        || (0 == FdoCommonOSUtil::stricmp (adbSequenceName, ADB_USERSEQ)))
+    if (   (0 == FdoCommonOSUtil::wcsicmp (adbSequenceName, ADB_FEATURESEQW))
+        || (0 == FdoCommonOSUtil::wcsicmp (adbSequenceName, ADB_USERSEQW)))
     {
         /* select next feature ids */
         gptr->size = ADB_SN_ALLOC_INCREMENT;
-        if( rdbi_exec_fetch(m_pRdbiContext, CURSOR, gptr->size, FALSE, &rows_proc) != RDBI_SUCCESS )
+        if( ::rdbi_exec_fetch(m_pRdbiContext, CURSOR, gptr->size, FALSE, &rows_proc) != RDBI_SUCCESS )
             goto the_exit;
 
         if(rows_proc == 0) goto the_exit;
@@ -548,7 +523,7 @@ long GdbiCommands::NextRDBMSSequenceNumber(  char* adbSequenceName )
     else
     {
 
-        if( rdbi_exec_fetch(m_pRdbiContext, CURSOR, 1, FALSE, &rows_proc) != RDBI_SUCCESS )
+        if( ::rdbi_exec_fetch(m_pRdbiContext, CURSOR, 1, FALSE, &rows_proc) != RDBI_SUCCESS )
             goto the_exit;
 
         if(rows_proc == 0) goto the_exit;
@@ -562,13 +537,13 @@ long GdbiCommands::NextRDBMSSequenceNumber(  char* adbSequenceName )
 
     number = gptr->sequence[gptr->next];
     gptr->next++;
-    strcpy( gptr->seq_name, adbSequenceName );
+    wcscpy( gptr->seq_name, adbSequenceName );
 
     rc = true;
 the_exit:
     if (select_begun) {
-        rdbi_end_select(m_pRdbiContext, CURSOR);
-        rdbi_fre_cursor(m_pRdbiContext, CURSOR);
+        ::rdbi_end_select(m_pRdbiContext, CURSOR);
+        ::rdbi_fre_cursor(m_pRdbiContext, CURSOR);
     }
 
     if( ! rc )
@@ -639,4 +614,3 @@ int GdbiCommands::autocommit_mode()
 
 	return autoCmt;
 }
-

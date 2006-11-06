@@ -20,7 +20,7 @@
 *                                                                       *
 * Synopsis                                                              *
 *   #include "<Inc/rdbi.h>                                              *
-*   rdbi_users_act(rdbi_context_def *context);                          *
+*   rdbi_stores_act(rdbi_context_def *context);                          *
 *                                                                       *
 * Description                                                           *
 *       This  module  activates  a  fetch  of  all datastores without   *
@@ -96,7 +96,6 @@ int rdbi_stores_get(
 {
     int   status;
 
-
     debug_on("rdbi_stores_get");
 
     status = (*(context->dispatch.stores_get))(context->drvr, name, eof);
@@ -104,8 +103,24 @@ int rdbi_stores_get(
     context->rdbi_last_status = status;
 
     debug_return(NULL, status);
-
 }
+
+int rdbi_stores_getW(
+	rdbi_context_def *context,
+    wchar_t *name,
+    int  *eof)
+{
+    int   status;
+
+    debug_on("rdbi_stores_getW");
+
+    status = (*(context->dispatch.stores_getW))(context->drvr, name, eof);
+
+    context->rdbi_last_status = status;
+
+    debug_return(NULL, status);
+}
+
 /************************************************************************
 *                                                                       *
 * Name                                                                  *

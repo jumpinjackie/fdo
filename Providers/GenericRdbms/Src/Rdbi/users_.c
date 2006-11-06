@@ -79,6 +79,36 @@ int rdbi_users_act(
 
 }
 
+int rdbi_users_actW(
+	rdbi_context_def *context,
+    const wchar_t *target)
+{
+    int     status;
+    int     tran_begun = FALSE;
+
+    debug_on("rdbi_users_actW");
+
+    if (context->rdbi_cnct->autocommit_on) {
+        rdbi_tran_begin(context, tran_id);
+        tran_begun = TRUE;
+    }
+
+    status = (*(context->dispatch.users_actW))(context->drvr, target);
+
+    context->rdbi_last_status = status;
+
+    /* This code is based on rdbi_col_act, which assumes that prefetches 
+    * occur, making it safe to end the transaction
+    * without getting fetch across commit problems.  We'll do the same.
+    */
+
+    if ( tran_begun ) {
+        rdbi_tran_end(context, tran_id);
+    }
+
+    debug_return(NULL, status);
+
+}
 
 /************************************************************************
 *                                                                       *
@@ -125,8 +155,25 @@ int rdbi_users_get(
     context->rdbi_last_status = status;
 
     debug_return(NULL, status);
-
 }
+
+int rdbi_users_getW(
+	rdbi_context_def *context,
+    wchar_t *name,
+    int  *eof)
+{
+    int   status;
+
+
+    debug_on("rdbi_users_getW");
+
+    status = (*(context->dispatch.users_getW))(context->drvr, name, eof);
+
+    context->rdbi_last_status = status;
+
+    debug_return(NULL, status);
+}
+
 /************************************************************************
 *                                                                       *
 * Name                                                                  *

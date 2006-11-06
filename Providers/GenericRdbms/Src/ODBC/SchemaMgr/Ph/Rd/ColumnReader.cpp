@@ -37,15 +37,11 @@ FdoSmPhRdOdbcColumnReader::FdoSmPhRdOdbcColumnReader(
     FdoStringP ownerName = dbObject->GetOwner();
 
     SetString( FdoStringP::mEmptyString, L"table_name", objectName );
-
-    INVOKE_RDBI_FUNC(
-        rdbi_col_act(
-            rdbi_context,
-            (char*)(const char*) ownerName,
-            (char*)(const char*) objectName,
-            NULL
-        )
-    );
+    if (rdbi_context->dispatch.capabilities.supports_unicode == 1){
+        INVOKE_RDBI_FUNC(rdbi_col_actW(rdbi_context, ownerName, objectName, NULL));
+    }else{
+        INVOKE_RDBI_FUNC(rdbi_col_act(rdbi_context, ownerName, objectName, NULL));
+    }
 }
 
 FdoSmPhRdOdbcColumnReader::~FdoSmPhRdOdbcColumnReader(void)
@@ -55,34 +51,59 @@ FdoSmPhRdOdbcColumnReader::~FdoSmPhRdOdbcColumnReader(void)
 bool FdoSmPhRdOdbcColumnReader::ReadNext()
 {
     bool rc = true;
-    char columnName[1000];
-    char type[1000];
     int  length;
     int  scale;
     int  nullable;
     int is_autoincrement;
     int  position;
     int eof;
+    FdoStringP nameString;
+    FdoStringP typeString;
 
     if ( IsEOF() ) 
         return false;
+    
+    wchar_t columnNameBuf[1000];
+    wchar_t typeBuf[1000];
+    rdbi_string_def columnName;
+    rdbi_string_def type;
+    columnName.wString = columnNameBuf;
+    type.wString = typeBuf;
+    *columnName.wString = *type.wString = L'\0';
 
     // Get the next key column name
-
-    INVOKE_RDBI_FUNC(
-        rdbi_col_get(
+    if (rdbi_context->dispatch.capabilities.supports_unicode == 1)
+    {
+        INVOKE_RDBI_FUNC(rdbi_col_getW(
             rdbi_context,
-            columnName,
-            type,
+            columnName.wString,
+            type.wString,
             &length,
             &scale,
             &nullable,
             &is_autoincrement,
             &position,
-            &eof
-        )
-    );
+            &eof));
 
+        nameString = columnName.cwString;
+        typeString = type.cwString;
+    }
+    else
+    {
+        INVOKE_RDBI_FUNC(rdbi_col_get(
+            rdbi_context,
+            columnName.cString,
+            type.cString,
+            &length,
+            &scale,
+            &nullable,
+            &is_autoincrement,
+            &position,
+            &eof));
+        
+        nameString = columnName.ccString;
+        typeString = type.ccString;
+    }
     // Check if we're done
     if ( eof )
     {
@@ -91,8 +112,6 @@ bool FdoSmPhRdOdbcColumnReader::ReadNext()
     }
     else
     {
-        FdoStringP nameString = columnName;
-        FdoStringP typeString = type;
         mColType = FdoSmPhOdbcColTypeMapper::String2Type( typeString, length, scale );
         SetString( FdoStringP::mEmptyString, L"name", nameString );
         SetInt64( FdoStringP::mEmptyString, "type", mColType);

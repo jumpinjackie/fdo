@@ -15,12 +15,22 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include <Inc/rdbi.h>					/* rdbi status values		*/
+#include    <Inc/ut.h>
+#include	<Inc/debugext.h>
+#include "proto_p.h"
+#include <stdio.h>
+#include <wchar.h>
+
+int local_odbcdr_sql( odbcdr_context_def  *context,	char *cursor, rdbi_string_def* sql,
+	int defer, char *verb, void *ptree, char *cursor_coc);
+
 /************************************************************************
 * Name                                                                  *
 *   odbcdr_set_schema - Alter the session schema.                       *
 *                                                                       *
 * Synopsis                                                              *
-*   odbcdr_set_schema(char *schema_name)                                *
+*   odbcdr_set_schema(const char *schema_name)                          *
 *                                                                       *
 * Description                                                           *
 *   This  module uses 'alter session' to change the current schema.     *
@@ -34,42 +44,48 @@
 *                                                                       *
 ************************************************************************/
 
-#include <Inc/rdbi.h>					/* rdbi status values		*/
-#include    <Inc/ut.h>
-#include	<Inc/debugext.h>
-#include "proto_p.h"
-#include <stdio.h>
-#include <wchar.h>
-
 /* Makes the given schema (SqlServer database) the current schema */
-int odbcdr_set_schemaW (
+int local_odbcdr_set_schema (
     odbcdr_context_def *context,
-    wchar_t *schema_name
-)
+    rdbi_string_def *schema_name
+    )
 {
     wchar_t              sql_buf[200];
+    rdbi_string_def      sqlval;
     int                  rows;
     odbcdr_cursor_def    *c;
     odbcdr_connData_def  *connData;
     int                  rdbi_status;
-    
-    debug_on1("odbcdr_set_schema", "schema_name '%s'", ISNULL(schema_name));
+    bool                 schema_valid = false;
+    sqlval.wString = sql_buf;
+#ifdef _DEBUG
+    if (context->odbcdr_UseUnicode){
+        debug_on1("odbcdr_set_schema", "schema_name '%ls'", ISNULL(schema_name->cwString));
+    }else{
+        debug_on1("odbcdr_set_schema", "schema_name '%s'", ISNULL(schema_name->ccString));
+    }
+#endif
+    schema_valid = !ODBCDRV_STRING_EMPTY(schema_name);
 
     ODBCDR_RDBI_ERR( odbcdr_get_curr_conn( context, &connData ) );
 
     rdbi_status = RDBI_SUCCESS;
 
-    if (ODBCDriverType_SQLServer == connData->driver_type && NULL != schema_name && (wcslen(schema_name) > 0))
+    if (ODBCDriverType_SQLServer == connData->driver_type && schema_valid)
     {
-	    (void) swprintf(sql_buf, 199, L"USE \"%ls\"", schema_name);
-
-        debug1("%.120ls", sql_buf);
+        if (context->odbcdr_UseUnicode){
+            (void) odbcdr_swprintf(sqlval.wString, 200, L"USE \"%ls\"", schema_name->cwString);
+            debug1("%.120ls", sqlval.cwString);
+        }else{
+            (void) sprintf(sqlval.cString, "USE \"%s\"", schema_name->ccString);
+            debug1("%.120s", sqlval.ccString);
+        }
 
         /* establish cursor */
         if (RDBI_SUCCESS == (rdbi_status = odbcdr_est_cursor (context, (char **)&c)))
         {
             /* parse command */
-            if (RDBI_SUCCESS == (rdbi_status = odbcdr_sqlW (context, (char *)c, sql_buf,
+            if (RDBI_SUCCESS == (rdbi_status = local_odbcdr_sql (context, (char *)c, &sqlval,
                 FALSE, "", (void *)NULL, (char *) NULL)))
             {
                 /* execute the SQL statement */
@@ -78,18 +94,20 @@ int odbcdr_set_schemaW (
             odbcdr_fre_cursor (context, (char **)&c);
         }
     }
-    else if (ODBCDriverType_OracleNative == connData->driver_type &&
-             NULL != schema_name && schema_name[0] != '\0')
+    else if (ODBCDriverType_OracleNative == connData->driver_type && schema_valid)
     {
-	    (void) swprintf(sql_buf, 199, L"alter session set current_schema = %ls", schema_name);
-
-        debug1("%.120ls", sql_buf);
-
+        if (context->odbcdr_UseUnicode){
+            (void) odbcdr_swprintf(sqlval.wString, 200, L"alter session set current_schema = %ls", schema_name->cwString);
+            debug1("%.120ls", sqlval.cwString);
+        }else{
+            (void) sprintf(sqlval.cString, "alter session set current_schema = %s", schema_name->ccString);
+            debug1("%.120s", sqlval.ccString);
+        }
         /* establish cursor */
         if (RDBI_SUCCESS == (rdbi_status = odbcdr_est_cursor (context, (char **)&c)))
         {
             /* parse command */
-            if (RDBI_SUCCESS == (rdbi_status = odbcdr_sqlW (context, (char *)c, sql_buf,
+            if (RDBI_SUCCESS == (rdbi_status = local_odbcdr_sql (context, (char *)c, &sqlval,
                 FALSE, "", (void *)NULL, (char *) NULL)))
             {
                 /* execute the SQL statement */
@@ -102,71 +120,23 @@ int odbcdr_set_schemaW (
 the_exit:
     debug_return (NULL, rdbi_status);
 }
-
 int odbcdr_set_schema (
     odbcdr_context_def *context,
-    char *schema_name
+    const char *schema_name
 )
 {
-    char                 sql_buf[200];
-    int                  rows;
-    odbcdr_cursor_def    *c;
-    odbcdr_connData_def  *connData;
-    int                  rdbi_status;
-    
-    debug_on1("odbcdr_set_schema", "schema_name '%s'", ISNULL(schema_name));
-
-    ODBCDR_RDBI_ERR( odbcdr_get_curr_conn( context, &connData ) );
-
-    rdbi_status = RDBI_SUCCESS;
-
-    if (ODBCDriverType_SQLServer == connData->driver_type && NULL != schema_name && (strlen(schema_name) > 0))
-    {
-	    (void) sprintf(sql_buf, "USE %s", schema_name);
-
-        debug1("%.120s", sql_buf);
-
-        /* establish cursor */
-        if (RDBI_SUCCESS == (rdbi_status = odbcdr_est_cursor (context, (char **)&c)))
-        {
-            /* parse command */
-            if (RDBI_SUCCESS == (rdbi_status = odbcdr_sql (context, (char *)c, sql_buf,
-                FALSE, "", (void *)NULL, (char *) NULL)))
-            {
-                /* execute the SQL statement */
-                rdbi_status = odbcdr_execute( context, (char *)c, 1, 0, &rows );
-            }
-            odbcdr_fre_cursor (context, (char **)&c);
-        }
-    }
-    else if (ODBCDriverType_OracleNative == connData->driver_type &&
-             NULL != schema_name && schema_name[0] != '\0')
-    {
-	    (void) sprintf(sql_buf, "alter session set current_schema = %s", schema_name);
-
-        debug1("%.120s", sql_buf);
-
-        /* establish cursor */
-        if (RDBI_SUCCESS == (rdbi_status = odbcdr_est_cursor (context, (char **)&c)))
-        {
-            /* parse command */
-            if (RDBI_SUCCESS == (rdbi_status = odbcdr_sql (context, (char *)c, sql_buf,
-                FALSE, "", (void *)NULL, (char *) NULL)))
-            {
-                /* execute the SQL statement */
-                rdbi_status = odbcdr_execute( context, (char *)c, 1, 0, &rows );
-            }
-            odbcdr_fre_cursor (context, (char **)&c);
-        }
-    }
-
-    if (RDBI_SUCCESS == rdbi_status)
-    {
-        connData->db_name[0] = '\0';
-        if (NULL != schema_name)
-            (void) strcpy (connData->db_name, schema_name);
-    }
-
-the_exit:
-    debug_return (NULL, rdbi_status);
+    rdbi_string_def str;
+    str.ccString = schema_name;
+    return local_odbcdr_set_schema(context, &str);
 }
+
+int odbcdr_set_schemaW (
+    odbcdr_context_def *context,
+    const wchar_t *schema_name
+)
+{
+    rdbi_string_def str;
+    str.cwString = schema_name;
+    return local_odbcdr_set_schema(context, &str);
+}
+

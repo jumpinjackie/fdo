@@ -35,13 +35,10 @@ FdoSmPhRdOdbcDbObjectReader::FdoSmPhRdOdbcDbObjectReader(
 
     rdbi_context = pMgr->GetRdbiContext();
 
-    INVOKE_RDBI_FUNC(
-        rdbi_objects_act(
-            rdbi_context,
-            (char*)(const char*) ownerName,
-            (char*)(const char*) objectName
-        )
-    );
+    if (rdbi_context->dispatch.capabilities.supports_unicode == 1)
+        INVOKE_RDBI_FUNC(rdbi_objects_actW (rdbi_context, ownerName, objectName))
+    else
+        INVOKE_RDBI_FUNC(rdbi_objects_act (rdbi_context, ownerName, objectName))
 }
 
 FdoSmPhRdOdbcDbObjectReader::~FdoSmPhRdOdbcDbObjectReader(void)
@@ -58,23 +55,33 @@ FdoSmPhDbObjType FdoSmPhRdOdbcDbObjectReader::GetType()
 bool FdoSmPhRdOdbcDbObjectReader::ReadNext()
 {
     bool rc = true;
-    char objectName[1000];
-    char type[2];
     int eof;
-
+    char pType;
+    FdoStringP pObjectName;
     if ( IsEOF() ) 
         return false;
 
-    // Get the next object
+    wchar_t objectNameBuf[1000];
+    wchar_t typeBuf[2];
+    rdbi_string_def objectName;
+    rdbi_string_def type;
+    objectName.wString = objectNameBuf;
+    type.wString = typeBuf;
+    *objectName.wString = *type.wString = L'\0';
 
-    INVOKE_RDBI_FUNC(
-        rdbi_objects_get(
-            rdbi_context,
-            objectName,
-            type,
-            &eof
-        )
-    );
+    // Get the next object
+    if (rdbi_context->dispatch.capabilities.supports_unicode == 1)
+    {
+        INVOKE_RDBI_FUNC(rdbi_objects_getW (rdbi_context, objectName.wString, type.wString, &eof))
+        pObjectName = objectName.cwString;
+        pType = (char)*type.cwString;
+    }
+    else
+    {
+        INVOKE_RDBI_FUNC(rdbi_objects_get (rdbi_context, objectName.cString, type.cString, &eof))
+        pObjectName = objectName.ccString;
+        pType = *type.ccString;
+    }
 
     // Check if we're done
     if ( eof )
@@ -85,11 +92,11 @@ bool FdoSmPhRdOdbcDbObjectReader::ReadNext()
     else
     {
         // Set the field values according to the current object.
-        SetString( L"", L"name", FdoStringP(objectName) );
+        SetString( L"", L"name", pObjectName );
 
-        if (type[0] == 'T')
+        if (pType == 'T')
             m_objectType = FdoSmPhDbObjType_Table;
-        else if (type[0] == 'V')
+        else if (pType == 'V')
             m_objectType = FdoSmPhDbObjType_View;
         else
             m_objectType = FdoSmPhDbObjType_Unknown;

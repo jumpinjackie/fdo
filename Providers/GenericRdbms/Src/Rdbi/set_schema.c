@@ -19,7 +19,7 @@
 *   rdbi_set_schema - Alter the session schema.                         *
 *                                                                       *
 * Synopsis                                                              *
-*   rdbi_set_schema(char *schema_name)                                  *
+*   rdbi_set_schema(const char *schema_name)                            *
 *                                                                       *
 * Description                                                           *
 *   This  module alters the current schema.                             *
@@ -44,13 +44,13 @@
 #include	<Inc/Rdbi/context.h>
 #include <Inc/ut.h>
 
-int rdbi_set_schema (rdbi_context_def *context, char *schema_name)
+int rdbi_set_schema (rdbi_context_def *context, const char *schema_name)
 {
     int   status;
 	char			sql[200];
 	int             trace_line_num;
 
-    debug_on("rdbi_usr_exists");
+    debug_on("rdbi_set_schema");
 	
 	sprintf(sql, "set current_schema = %s", schema_name);
 	debug_trace(sql, (wchar_t *)NULL, &trace_line_num);
@@ -66,13 +66,13 @@ int rdbi_set_schema (rdbi_context_def *context, char *schema_name)
 
 }
 
-int rdbi_set_schemaW (rdbi_context_def *context, wchar_t *schema_name)
+int rdbi_set_schemaW (rdbi_context_def *context, const wchar_t *schema_name)
 {
     int   status;
 	wchar_t			sql[200];
 	int             trace_line_num;
 
-    debug_on("rdbi_usr_exists");
+    debug_on("rdbi_set_schemaW");
 	
 	swprintf(sql, 199, L"set current_schema = %ls", schema_name);
 	debug_trace((char*) NULL, sql, &trace_line_num);

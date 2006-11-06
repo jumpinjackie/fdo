@@ -48,6 +48,7 @@ protected:
 	void define ();
 	void bind ();
 	void describe ();
+    int rdbi_sql_Ex( rdbi_context_def *context, int sqlid, FdoStringP sql );
 
     virtual void set_provider() {  CPPUNIT_FAIL ("naked set_provider() called"); };
     virtual int do_rdbi_init ();

@@ -54,6 +54,7 @@ extern wchar_t*  Gdbi_nls_msg_get_0( int msg_num, char* default_msg, char* catal
 
 extern wchar_t*  Gdbi_nls_msg_get_S( int msg_num, char* default_msg, char* catalog, char* arg1 );
 
+extern wchar_t*  Gdbi_nls_msg_get_SW( int msg_num, char* default_msg, char* catalog, wchar_t* warg1 );
 
 class GdbiException: public FdoException
 {

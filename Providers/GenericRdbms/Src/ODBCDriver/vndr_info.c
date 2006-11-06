@@ -53,9 +53,16 @@ int odbcdr_vndr_info(
     debug_on("odbcdr_vndr_info");
 
 	/* name should always be within 30 char, just truncate if too long */
-
-	strncpy( vndr_info->name, odbcdr_vndr_name(context), RDBI_TABLE_NAME_SIZE );
-	vndr_info->name[RDBI_TABLE_NAME_SIZE] = '\0';
+    if (context->odbcdr_UseUnicode)
+    {
+	    wcsncpy( vndr_info->nameW, odbcdr_vndr_nameW(context), RDBI_TABLE_NAME_SIZE );
+	    vndr_info->nameW[RDBI_TABLE_NAME_SIZE-1] = L'\0';
+    }
+    else
+    {
+	    strncpy( vndr_info->name, odbcdr_vndr_name(context), RDBI_TABLE_NAME_SIZE );
+	    vndr_info->name[RDBI_TABLE_NAME_SIZE-1] = '\0';
+    }
 
 	vndr_info->minPrecision = 0;
 	vndr_info->maxPrecision = 38;

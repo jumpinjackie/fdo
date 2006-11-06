@@ -82,13 +82,23 @@ FdoIConnectionPropertyDictionary* FdoRdbmsOdbcConnectionInfo::GetConnectionPrope
         GdbiConnection * gdbiConnection = dbiConnection->GetGdbiConnection();
         rdbi_context_def * rdbiContext = gdbiConnection->GetRdbiContext();
 
+        wchar_t nameBuf[GDBI_MAXIMUM_STRING_SIZE+1];
+        rdbi_string_def name;
+        name.wString = nameBuf;
+        *name.wString = L'\0';
+        int   eof = FALSE;
+
         if (RDBI_SUCCESS == rdbi_stores_act(rdbiContext))
         {
-            char  name[GDBI_MAXIMUM_STRING_SIZE+1];
-            int   eof = FALSE;
-            while (RDBI_SUCCESS == rdbi_stores_get(rdbiContext, name, &eof) && !eof)
+            if (rdbiContext->dispatch.capabilities.supports_unicode == 1)
             {
-                dataSourceNameCollection->Add(name);
+                while (RDBI_SUCCESS == rdbi_stores_getW(rdbiContext, name.wString, &eof) && !eof)
+                    dataSourceNameCollection->Add(name.cwString);
+            }
+            else
+            {
+                while (RDBI_SUCCESS == rdbi_stores_get(rdbiContext, name.cString, &eof) && !eof)
+                    dataSourceNameCollection->Add(name.ccString);
             }
             (void) rdbi_stores_deac(rdbiContext);
         }

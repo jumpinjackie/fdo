@@ -70,18 +70,32 @@ void odbcdr_show_context(
 	}
 	else
 	{
-		if( c == (odbcdr_cursor_def *)NULL )
+#ifdef _DEBUG
+        if( c == (odbcdr_cursor_def *)NULL )
 		{
-			debug2("  conn# %d, db '%s'", context->odbcdr_current_connect,
-				context->odbcdr_conns[context->odbcdr_current_connect]->db_name);
+            if (context->odbcdr_UseUnicode){
+			    debug2("  conn# %d, db '%ls'", context->odbcdr_current_connect,
+                    context->odbcdr_conns[context->odbcdr_current_connect]->db_nameW);
+            }else{
+			    debug2("  conn# %d, db '%s'", context->odbcdr_current_connect,
+				    context->odbcdr_conns[context->odbcdr_current_connect]->db_name);
+            }
 		}
 		else
 		{
-			debug3("  conn# %d, db '%s', curs v8+ 0x%lx",
-					context->odbcdr_current_connect,
-					context->odbcdr_conns[context->odbcdr_current_connect]->db_name,
-					c->hStmt );
+            if (context->odbcdr_UseUnicode){
+			    debug3("  conn# %d, db '%ls', curs v8+ 0x%lx",
+					    context->odbcdr_current_connect,
+                        context->odbcdr_conns[context->odbcdr_current_connect]->db_nameW,
+					    c->hStmt );
+            }else{
+			    debug3("  conn# %d, db '%s', curs v8+ 0x%lx",
+					    context->odbcdr_current_connect,
+					    context->odbcdr_conns[context->odbcdr_current_connect]->db_name,
+					    c->hStmt );
+            }
 		}
+#endif
 	}
 
 	debug_return_void(NULL);

@@ -64,12 +64,12 @@ int mysql_rdbi_init (void **contextp, rdbi_methods methods)
         else
         {
 			methods->close_cursor = NULL;
-            methods->connect    = (int (*)(void*, char*, char*, char*, char**, int*))mysql_connect;
+            methods->connect    = (int (*)(void*, const char*, const char*, const char*, char**, int*))mysql_connect;
             methods->disconnect = (int (*)(void*, char**))mysql_disconnect;
             methods->est_cursor = (int (*)(void*, char**))mysql_est_cursor;
             methods->est_cursor_obj = (int (*)(void*, char**))mysql_est_cursor_obj;
             methods->fre_cursor = (int (*)(void*, char**))mysql_fre_cursor;
-            methods->sql        = (int (*)(void*, char*, char*, int, char*, void*, char*))mysql_sql;
+            methods->sql        = (int (*)(void*, char*, const char*, int, char*, void*, char*))mysql_sql;
             methods->execute    = (int (*)(void*, char*, int, int, int*))mysql_execute;
             methods->exec_coc   = NULL;
             methods->define     = (int (*)(void*, char*, char*, int, int, char*, void*))mysql_define;
@@ -97,7 +97,7 @@ int mysql_rdbi_init (void **contextp, rdbi_methods methods)
             methods->usr_exists = NULL;
             methods->get_con_var = NULL;
             methods->do_break   = NULL;
-            methods->set_schema = (int (*)(void*, char*))mysql_set_schema;
+            methods->set_schema = (int (*)(void*, const char*))mysql_set_schema;
             methods->set_schemaW = NULL;
             methods->vndr_info  = (int (*)(void*, rdbi_vndr_info_def*))mysql_vndr_info;
             methods->geom_srid_set = NULL;
@@ -111,7 +111,7 @@ int mysql_rdbi_init (void **contextp, rdbi_methods methods)
             methods->lob_open       = NULL;
             methods->lob_close      = NULL;
             methods->term           = (int (*)(void*))mysql_term;
-            methods->run_sql        = (int (*)(void*, char*, int, int*))mysql_run_sql;
+            methods->run_sql        = (int (*)(void*, const char*, int, int*))mysql_run_sql;
 			methods->autocommit_on = NULL;
 			methods->autocommit_off = NULL;
 			methods->autocommit_mode = NULL;
@@ -120,7 +120,7 @@ int mysql_rdbi_init (void **contextp, rdbi_methods methods)
 			methods->capabilities.supports_unicode = 0;
             methods->capabilities.supports_int64_binding = 1;
 
-            methods->get_gen_id     = (int (*)(void*, char*, int*))mysql_get_gen_id;
+            methods->get_gen_id     = (int (*)(void*, const char*, int*))mysql_get_gen_id;
 
             *contextp = context;
             ret = RDBI_SUCCESS;
