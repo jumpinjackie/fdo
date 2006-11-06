@@ -82,5 +82,5 @@ fi
 
 mkdir -p "/usr/local/fdo-3.2.0/lib"
 
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/fdo-3.2.0/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/fdo-3.2.0/lib:$SDEHOME/lib
 
