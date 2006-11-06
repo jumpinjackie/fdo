@@ -101,9 +101,12 @@ static int local_compare( void *handler, const void * lhs, const void * rhs )
                 continue;
 
             if( ctx->propCache[idx1][i].type == -1 )
-                retcode = -1;
-            else 
                 retcode = 1;
+            else 
+                retcode = -1;
+
+            if( ctx->options[i] == FdoOrderingOption_Descending )
+			    retcode *= -1; 
 
 			continue;
         }
@@ -390,8 +393,13 @@ SdfIScrollableFeatureReader* SdfImpExtendedSelect::ExecuteScrollable()
 
 	SQLiteData		key;
     SQLiteData		data;
+
+
     FdoPtr<FdoClassDefinition> cls = FdoPtr<FdoClassCollection>(
         m_connection->GetSchema()->GetClasses())->GetItem(m_className->GetName());
+
+   m_connection->FlushAll( cls );
+
 
     FdoPtr<FdoClassDefinition> base = cls->GetBaseClass();
     if( this->m_filter == NULL && m_orderingProperties->GetCount() == 0 && base == NULL )
