@@ -1489,7 +1489,7 @@ FdoInt32 FdoInsertTest::GetMaxInt32Value()
 
 FdoInt64 FdoInsertTest::GetMaxInt64Value()
 {
-    return (FdoInt64) 9223372036854775807;
+    return (FdoInt64) 9223372036854775807LL;
 }
 
 FdoFloat FdoInsertTest::GetMaxSingleValue()
