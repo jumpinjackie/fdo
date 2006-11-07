@@ -15,7 +15,6 @@
 ;//Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ;//
 
-
 MessageId=1757
 SymbolicName=RDBI_3
 Language=English
@@ -1735,11 +1734,14 @@ MessageId=2717
 SymbolicName=FDORDBMS_492
 Language=English
 '%1$ls': MBC error: extents outside spatial index extents.
-
-
-
-
-
-
-
+.
+MessageId=2718
+SymbolicName=FDORDBMS_493
+Language=English
+MySQL client (libmysql) version %1$d.%2$d.%3$d is too old, FDO requires at least version 5; 
+.
+MessageId=2719
+SymbolicName=FDORDBMS_494
+Language=English
+MySQL database version %1$d.%2$d.%3$d is too old, FDO requires at least version 5.0.15; 
 .

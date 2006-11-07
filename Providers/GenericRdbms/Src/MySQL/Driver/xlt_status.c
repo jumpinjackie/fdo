@@ -17,8 +17,10 @@
  ************************************************************************/
 
 #include "stdafx.h"
+#include <wchar.h>
 #include "errno.h"
 #include "xlt_status.h"
+#include "nls.h"
 
 static void reset_last_msg( 
 	mysql_context_def	*context
@@ -28,6 +30,12 @@ static void set_last_msg(
 	mysql_context_def	*context,
     MYSQL* mysql,
     MYSQL_STMT* stmt
+    );
+
+static void cat_msg( 
+	wchar_t*& msg,
+	const wchar_t* msg2,
+    size_t& len_left
     );
 
 int
@@ -125,13 +133,36 @@ void set_last_msg(
 {
     const char *error;
     const char *dflt_error = "";
+    wchar_t* err_msg = context->mysql_last_err_msg;
+    size_t err_msg_left = RDBI_MSG_SIZE;
+
+    unsigned long client_version = mysql_get_client_version();
+
+    // The messages issued, when MySQL client or server is too old, are rather 
+    // cryptic. Therefore, prepend more explanatory info when one of the other
+    // is too old to work with the MySQL Provider.
+
+    if ( client_version < 50000 ) {
+        // Pre-version 5 clients can't handle some version 5 data types used in the
+        // information_schema, so MySQL provider can't work with them.
+        const wchar_t* client_msg = mysql_nls_client_version( client_version );
+        cat_msg( err_msg, client_msg, err_msg_left );
+    }
+
+    if ( mysql ) {
+        unsigned long server_version = mysql_get_server_version( mysql );
+
+        if ( server_version < 50015 ) {
+            // Also, various errors can occur when database has too old a version.
+            const wchar_t* server_msg = mysql_nls_server_version( server_version );
+            cat_msg( err_msg, server_msg, err_msg_left );
+        }
+    }
 
     if (stmt && mysql_stmt_errno (stmt))
     {
         // Get error message from supplied statement
         error = mysql_stmt_error (stmt);
-        strncpy( context->mysql_last_err_msg, error, RDBI_MSG_SIZE );
-        context->mysql_last_err_msg[RDBI_MSG_SIZE - 1] = '\0';
     }
     else if (mysql)
     {
@@ -143,7 +174,24 @@ void set_last_msg(
         // statement was supplied.
         error = dflt_error;
 
-    strncpy( context->mysql_last_err_msg, error, RDBI_MSG_SIZE );
-    context->mysql_last_err_msg[RDBI_MSG_SIZE - 1] = '\0';
+    swprintf( err_msg, err_msg_left, L"%hs", error );
+    err_msg[err_msg_left - 1] = 0;
 }
 
+void cat_msg( 
+	wchar_t*& msg,
+	const wchar_t* msg2,
+    size_t& len_left
+    )
+{
+    if ( len_left > 0 ) {
+        size_t msg2_len = wcslen( msg2 );
+        if ( msg2_len > len_left ) 
+            msg2_len = len_left;
+
+        wcsncpy( msg, msg2, len_left );
+        msg[len_left - 1] = 0;
+        msg += msg2_len;
+        len_left = len_left - msg2_len;
+    }
+ }

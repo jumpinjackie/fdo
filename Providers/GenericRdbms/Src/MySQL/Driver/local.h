@@ -29,7 +29,7 @@ typedef struct _mysql_context_def
     long  mysql_current_connect; /* index into mysql_connections */
 	long  mysql_current_connect2; /* 2nd connection for DDLs */
     MYSQL *mysql_connections[RDBI_MAX_CONNECTS]; /* connection objects */
-    char  mysql_last_err_msg[RDBI_MSG_SIZE];
+    wchar_t  mysql_last_err_msg[RDBI_MSG_SIZE];
 } mysql_context_def;
 
 typedef struct _mysql_redefine_def

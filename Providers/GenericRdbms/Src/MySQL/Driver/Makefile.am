@@ -36,6 +36,7 @@ libmysqldr_la_SOURCES = \
   get_gen_id.c \
   get_msg.c \
   init.c \
+  nls.c \
   null.c \
   rdbi_init.c \
   run_sql.c \
@@ -67,6 +68,7 @@ noinst_HEADERS = $(libmysqldr_la_SOURCES) \
   get_msg.h \
   init.h \
   local.h \
+  nls.h \
   null.h \
   rdbi_init.h \
   run_sql.h \
@@ -83,6 +85,7 @@ INCLUDES = \
   -I../../.. \
   -I/usr/include/mysql \
   -I$(FDOMYSQL)/include \
+  -I$(FDOUTILITIES)/Common/Inc \
   -I$(FDO)/Unmanaged/Inc
 
 libmysqldr_la_LDFLAGS =

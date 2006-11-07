@@ -25,6 +25,6 @@
 
 #include "local.h"
 
-int mysql_get_msg (mysql_context_def *context, char *buffer);
+int mysql_get_msgW (mysql_context_def *context, wchar_t *buffer);
 
 #endif // GET_MSG_H

@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..;$(FDOMYSQL)\include;..\..\..\..\Oracle;$(FDO)\Unmanaged\inc"
+				AdditionalIncludeDirectories="..\..\..;&quot;$(FDOMYSQL)\include&quot;;&quot;$(FDOUTILITIES)\Common\Inc&quot;;&quot;$(FDO)\Unmanaged\inc&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -108,7 +108,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\..\..;$(FDOMYSQL)\include;..\..\..\..\Oracle;$(FDO)\Unmanaged\inc"
+				AdditionalIncludeDirectories="..\..\..;&quot;$(FDOMYSQL)\include&quot;;&quot;$(FDOUTILITIES)\Common\Inc&quot;;&quot;$(FDO)\Unmanaged\inc&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -173,7 +173,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..;$(FDOMYSQL)\include;..\..\..\..\Oracle;$(FDO)\Unmanaged\inc"
+				AdditionalIncludeDirectories="..\..\..;&quot;$(FDOMYSQL)\include&quot;;&quot;$(FDOUTILITIES)\Common\Inc&quot;;&quot;$(FDO)\Unmanaged\inc&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -248,7 +248,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\..;$(FDOMYSQL)\include;..\..\..\..\Oracle;$(FDO)\Unmanaged\inc"
+				AdditionalIncludeDirectories="..\..\..;&quot;$(FDOMYSQL)\include&quot;;&quot;$(FDOUTILITIES)\Common\Inc&quot;;&quot;$(FDO)\Unmanaged\inc&quot;"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
@@ -606,14 +606,14 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\null.c"
+				RelativePath=".\nls.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="2"
+						UsePrecompiledHeader="0"
 						CompileAs="2"
 					/>
 				</FileConfiguration>
@@ -622,7 +622,64 @@
 					>
 					<Tool
 						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
 						CompileAs="2"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugDynamic|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="ReleaseDynamic|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\null.c"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugDynamic|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="ReleaseDynamic|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
 					/>
 				</FileConfiguration>
 			</File>
@@ -915,6 +972,10 @@
 			</File>
 			<File
 				RelativePath="local.h"
+				>
+			</File>
+			<File
+				RelativePath=".\nls.h"
 				>
 			</File>
 			<File

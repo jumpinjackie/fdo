@@ -17,10 +17,11 @@
  */
 
 #include "stdafx.h"
+#include  <wchar.h>
 
 #include "get_msg.h"
 
-int mysql_get_msg (mysql_context_def *context, char *buffer)
+int mysql_get_msgW (mysql_context_def *context, wchar_t *buffer)
 {
     MYSQL *mysql;
     const char *message;
@@ -28,12 +29,12 @@ int mysql_get_msg (mysql_context_def *context, char *buffer)
 
     if (-1 == context->mysql_current_connect)
     {
-        strcpy (buffer, context->mysql_last_err_msg);
+        wcscpy (buffer, context->mysql_last_err_msg);
         ret = RDBI_NOT_CONNECTED;
     }
-    else if ( '\0' != context->mysql_last_err_msg[0] ) 
+    else if ( 0 != context->mysql_last_err_msg[0] ) 
     {
-        strcpy (buffer, context->mysql_last_err_msg);
+        wcscpy (buffer, context->mysql_last_err_msg);
         ret = RDBI_GENERIC_ERROR;
     }
     else
@@ -44,13 +45,13 @@ int mysql_get_msg (mysql_context_def *context, char *buffer)
         {
             /* should be an error for no last error */
             ret = RDBI_GENERIC_ERROR;
-            buffer[0] = '\0';
+            buffer[0] = 0;
         }
         else
         {
             /* should be an error for message buffer not big enough */
-            strncpy (buffer, message, RDBI_MSG_SIZE);
-            buffer[RDBI_MSG_SIZE - 1] = '\0'; 
+            swprintf (buffer, RDBI_MSG_SIZE, L"%hs", message );
+            buffer[RDBI_MSG_SIZE - 1] = 0; 
             ret = RDBI_SUCCESS;
         }
     }

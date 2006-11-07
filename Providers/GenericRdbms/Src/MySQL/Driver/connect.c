@@ -24,6 +24,7 @@
 #include "errno.h"
 #include "xlt_status.h"
 #include <malloc.h>
+#include <wchar.h>
 
 int mysql_connect (
     mysql_context_def *context,
@@ -94,7 +95,8 @@ int mysql_connect (
                     handle = mysql_real_connect (mysql, host, user, pswd, db, port, NULL, 0);
                     if ((MYSQL *)NULL == handle) {
                         // mysql_get_msg() will get this
-                        strncpy(context->mysql_last_err_msg, mysql_error(mysql), RDBI_MSG_SIZE);
+                        swprintf(context->mysql_last_err_msg, RDBI_MSG_SIZE, L"%hs", mysql_error(mysql));
+                        context->mysql_last_err_msg[RDBI_MSG_SIZE - 1] = 0;
                         ret = RDBI_GENERIC_ERROR;
                     }
                     else
