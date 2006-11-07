@@ -109,6 +109,15 @@ void FdoXmlDeserializable::ReadXml(
         params->Add( 
             FdoDictionaryElementP( 
                 FdoDictionaryElement::Create( 
+                    L"element_default_nullability", 
+                    FdoStringP::Format( L"'%ls'", mFlags->GetElementDefaultNullability() ? L"yes" : L"no" )
+                ) 
+            ) 
+        );
+
+        params->Add( 
+            FdoDictionaryElementP( 
+                FdoDictionaryElement::Create( 
                     L"use_gml_id", 
                     FdoStringP::Format( L"'%ls'", mFlags->GetUseGmlId() ? L"yes" : L"no" )
                 ) 
