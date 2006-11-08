@@ -76,7 +76,11 @@ int SdfCompareHandler::Compare( const wchar_t* name, FdoInt16 val1, FdoInt16 val
 
 int SdfCompareHandler::Compare( const wchar_t* name, const wchar_t* val1, const wchar_t* val2 )
 {
-	return wcscmp(val1,val2);
+#ifdef WIN32
+	return wcscoll(val1,val2); 
+#else
+    return wcscmp(val1,val2); 
+#endif
 }
 
 int SdfCompareHandler::Compare( const wchar_t* name, FdoDateTime tm1, FdoDateTime tm2 )
