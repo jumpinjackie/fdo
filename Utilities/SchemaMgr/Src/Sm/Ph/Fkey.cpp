@@ -79,6 +79,12 @@ FdoSmPhColumnsP FdoSmPhFkey::GetFkeyColumns()
 	return mFkeyColumns;
 }
 
+FdoStringP FdoSmPhFkey::GetBestPropertyName() const
+{
+    // Filter out characters not allowed in schema element names.
+    return FdoStringP(GetName()).Replace(L":",L"_").Replace(L".",L"_");
+}
+
 void FdoSmPhFkey::AddFkeyColumn( FdoSmPhColumnP column, FdoStringP pkeyColumnName )
 {
     GetFkeyColumns()->Add( column );

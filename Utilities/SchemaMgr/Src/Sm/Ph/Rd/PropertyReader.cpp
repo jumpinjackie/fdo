@@ -181,7 +181,7 @@ bool FdoSmPhRdPropertyReader::ReadNext()
 						FdoSmPhFieldsP	pFields = row->GetFields();
 
                         // Set property attributes from foreign key attributes.
-                        FdoStringP assocPropName = UniquePropName( pFkey->GetName(), L"Assoc" );
+                        FdoStringP assocPropName = UniquePropName( pFkey->GetBestPropertyName(), L"Assoc" );
                         FdoSmPhFieldP field = pFields->GetItem(L"attributename");
                         field->SetFieldValue( assocPropName );
                         AddUsedName( assocPropName );
