@@ -214,6 +214,7 @@ void ShpLpClassDefinition::ConvertLogicalToPhysical(
     wchar_t* dbfFilename;
     wchar_t* shpFilename;
 	wchar_t* cpgFilename;
+	wchar_t* prjFilename;
 
     VALIDATE_ARGUMENT(configLogicalClass);
 
@@ -321,6 +322,12 @@ void ShpLpClassDefinition::ConvertLogicalToPhysical(
         wcscpy (cpgFilename, directory);
         wcscat (cpgFilename, physicalFilename);
         wcscat (cpgFilename, CPG_EXTENSION);
+
+		// Build prjFilename:
+        prjFilename = (wchar_t*)alloca (sizeof(wchar_t) * (length + wcslen (PRJ_EXTENSION) + 1));
+        wcscpy (prjFilename, directory);
+        wcscat (prjFilename, physicalFilename);
+        wcscat (prjFilename, PRJ_EXTENSION);
     }
     else
     {
@@ -406,9 +413,21 @@ void ShpLpClassDefinition::ConvertLogicalToPhysical(
 				ShapeCPG _cpg (cpgFilename, setlocale(LC_ALL, NULL ));
 		}
 
+		// create the SHP and PRJ files
         if (geometry != NULL)
+		{
             ShapeFile _shp (shpFilename, shape_type, geometry->GetHasMeasure ());
 	
+			// Create a PRJ file in case the associated Spatial context is set.
+			FdoStringP	scName = geometry->GetSpatialContextAssociation();
+			if ( scName != L"") 
+			{
+				ShpSpatialContextCollection	*scs = m_connection->GetSpatialContexts();
+				ShpSpatialContext *sc = scs->GetItem(scName );		
+
+				ShapePRJ _prj (prjFilename, sc->GetCoordinateSystemWkt() );
+			}
+		}
 
         // Create the physical FileSet:
         FdoString* base = ShpFileSet::CreateBaseName (shpFilename);

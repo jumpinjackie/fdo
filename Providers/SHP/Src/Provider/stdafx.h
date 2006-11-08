@@ -116,9 +116,11 @@ DWORD dwHighDateTime;
 #include <ShpUpdateCommand.h>
 #include <ShpDeleteCommand.h>
 #include <ShpGetSpatialContextsCommand.h>
+#include <ShpCreateSpatialContextCommand.h>
 #include <ShpApplySchemaCommand.h>
 #include <ShpDestroySchemaCommand.h>
 #include <ShpSchemaUtilities.h>
+#include <../../Inc/SHP/ShpCommandType.h>
 
 #endif
 

@@ -29,6 +29,8 @@
 #include <FdoCommonStringUtil.h>
 #include <FdoCommonOSUtil.h>
 #include <ShpSelectAggregates.h>
+#include <ShpExtendedSelect.h>
+#include <ShpImpExtendedSelect.h>
 #include <FdoCommonConnStringParser.h>
 
 #ifdef _WIN32
@@ -509,6 +511,9 @@ FdoICommand* ShpConnection::CreateCommand (FdoInt32 commandType)
         case FdoCommandType_GetSpatialContexts:
             ret = new ShpGetSpatialContextsCommand (this);
             break;
+        case FdoCommandType_CreateSpatialContext:
+            ret = new ShpCreateSpatialContextCommand (this);
+            break;
         case FdoCommandType_Insert:
             ret = new ShpInsertCommand (this);
             break;
@@ -524,6 +529,8 @@ FdoICommand* ShpConnection::CreateCommand (FdoInt32 commandType)
         case FdoCommandType_DestroySchema:
             ret = new ShpDestroySchemaCommand (this);
             break;
+		case ShpCommandType_ExtendedSelect:
+			return new ShpExtendedSelect( new ShpImpExtendedSelect( this ) );
 
         default:
             throw FdoException::Create (FdoException::NLSGetMessage (FDO_102_COMMAND_NOT_SUPPORTED, "The command '%1$ls' is not supported.", (FdoString*)(FdoCommonMiscUtil::FdoCommandTypeToString (commandType))));
@@ -687,6 +694,29 @@ void ShpConnection::SetConfiguration(FdoIoStream* configStream)
     mConfigured = true;
 }
 
+void ShpConnection::Flush()
+{
+	FdoPtr<ShpLpFeatureSchemaCollection> schemas = GetLpSchemas();
+    int count = schemas->GetCount();
+
+    for ( int i = 0; i < count; i++ )
+    {
+        FdoPtr<ShpLpFeatureSchema> lpSchema = schemas->GetItem (i);
+        FdoPtr<ShpLpClassDefinitionCollection> classes = lpSchema->GetLpClasses ();
+        int class_count = classes->GetCount ();
+
+        for (int j = 0; j < classes->GetCount (); j++)
+        {
+            FdoPtr<ShpLpClassDefinition> lpClass = classes->GetItem (j);
+
+            ShpFileSet* fileset = lpClass->GetPhysicalFileSet ();
+ 
+			// Reopen in the same mode in case it was open for update 
+			fileset->FlushFileset();
+		}
+	}
+}
+
 ShpSpatialContextCollection* ShpConnection::GetSpatialContexts ( bool bDynamic )
 {
     // If not required to recompute the extents, quick exit
@@ -804,6 +834,57 @@ ShpSpatialContextCollection* ShpConnection::GetSpatialContexts ( bool bDynamic )
     return FDO_SAFE_ADDREF( mSpatialContextColl.p );
 }
 
+void ShpConnection::CreateSpatialContext(
+    FdoString* name,
+    FdoString* description,
+    FdoString* csName,
+    FdoString* wkt,
+    FdoSpatialContextExtentType extentType,
+    FdoByteArray * extent,
+    double xyTolerance,
+    double zTolerance,
+	bool   update
+)
+{
+	bool	found = false;
+
+    // Check if an identical one as WKT exists
+    for ( FdoInt32 j = 0; j < mSpatialContextColl->GetCount() && !found; j++ )
+    {
+        FdoPtr<ShpSpatialContext> sp = mSpatialContextColl->GetItem(j);
+        found = ( wkt == sp->GetCoordinateSystemWkt() );
+    }
+
+    // Append the new Coordinate System
+    if ( !found )
+    {
+        FdoPtr<ShpSpatialContext> new_sp = new ShpSpatialContext();
+        FdoInt32 idxGenName = 1;
+        FdoStringP newName = name;
+
+        // search for SC name duplicates
+        while (mSpatialContextColl->FindItem(newName))
+        {
+            newName = FdoStringP::Format(L"%ls_%d", (FdoString*)name, idxGenName);
+            idxGenName++;
+        }
+
+        // set the new SC params
+        new_sp->SetName( newName );
+        new_sp->SetCoordSysName( csName );
+        new_sp->SetCoordinateSystemWkt( wkt );
+
+		// These settings will be ignored when saved to .PRJ
+		new_sp->SetDescription(description);
+		new_sp->SetExtent(extent);
+		new_sp->SetExtentType(extentType);
+		new_sp->SetIsFromConfigFile(false);
+		new_sp->SetXYTolerance(xyTolerance);
+		new_sp->SetZTolerance(zTolerance);
+
+        mSpatialContextColl->Add( new_sp );
+    }                    
+}
 
 FdoString* ShpConnection::GetDirectory ()
 {

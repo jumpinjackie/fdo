@@ -80,6 +80,7 @@ public:
     void Flush (bool useCopyFiles = false);
     void PutData (ShpConnection* connection, FdoString* class_name, FdoPropertyValueCollection* values, RowData* row, Shape* shape, bool batch = false);
 	void ReopenFileset(FdoCommonFile::OpenFlags flags );
+	void FlushFileset();
 	void SetFilesDeleted();
     bool IsWritable();
 

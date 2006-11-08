@@ -130,3 +130,8 @@ bool ShpConnectionCapabilities::SupportsMultiUserWrite()
 {
     return false;
 }
+
+bool ShpConnectionCapabilities::SupportsFlush()
+{
+	return true;
+}

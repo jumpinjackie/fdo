@@ -395,6 +395,11 @@ SymbolicName=SHP_DEFAULT_SCHEMA_DESCRIPTION
 Language=English
 Default schema.
 .
+MessageId=4041
+SymbolicName=SHP_INVALID_INDEXOF_PARAM
+Language=English
+Only ordering properties or the identity property are allowed as IndexOf() argument.
+.
 
 ;//************************************************************************************
 ;//************************************************************************************
@@ -540,6 +545,21 @@ MessageId=9002
 SymbolicName=SHP_SPATIALCONTEXT_INVALIDOPTION
 Language=English
 Unsupported option.
+.
+MessageId=9003
+SymbolicName=SHP_SPATIALCONTEXT_EMPTYWKT
+Language=English
+WKT cannot be empty.
+.
+MessageId=9004
+SymbolicName=SHP_SPATIALCONTEXT_INVALIDWKT
+Language=English
+Invalid WKT. Cannot extract coordinate system name.
+.
+MessageId=9005
+SymbolicName=SHP_SPATIALCONTEXT_CONFLICTINGWKT
+Language=English
+Spatial Context name conflicts with the coordinate system name in WKT.
 .
 
 ;//************************************************************************************

@@ -484,7 +484,7 @@ void ShpFileSet::GetObjectAt (RowData** row, eShapeTypes& type, Shape** shape, i
 
     // read the attributes. The requested row might not exist.
     *row = GetDbfFile ()->GetRowAt (nRecordNumber);
-    if ((*row) && !(*row)->IsDeleted ())
+    if ((*row) && !(*row)->IsDeleted () && shape )
     {
         // seek to the shape offset
         GetShapeIndexFile ()->GetObjectAt (nRecordNumber, offset, length);
@@ -1040,6 +1040,34 @@ void ShpFileSet::ReopenFileset( FdoCommonFile::OpenFlags flags )
 				this->GetSpatialIndex()->FlushNodeCache(TRUE);
 			}
 			this->GetSpatialIndex()->Reopen( flags );
+		}
+	}
+}
+
+void ShpFileSet::FlushFileset()
+{
+	FdoCommonFile::OpenFlags	flag = FdoCommonFile::IDF_OPEN_UPDATE;
+
+	// Do flush only when the file is open for write
+	if ( mFilesExist )
+	{
+		if (!this->GetDbfFile ()->IsReadOnly ()) 
+			this->GetDbfFile ()->Reopen( flag );
+
+		if (!this->GetShapeFile ()->IsReadOnly ())
+			this->GetShapeFile()->Reopen( flag );
+
+		if (!this->GetShapeIndexFile ()->IsReadOnly ()) 
+			this->GetShapeIndexFile()->Reopen( flag );
+		
+		if (this->GetSpatialIndex() && !this->GetSpatialIndex ()->IsReadOnly ())
+		{
+			if ( !this->GetSpatialIndex ()->IsTemporaryFile() ) 
+			{
+				this->GetSpatialIndex()->WriteSSIHeader();
+				this->GetSpatialIndex()->FlushNodeCache(TRUE);
+			}
+			this->GetSpatialIndex()->Reopen( flag );
 		}
 	}
 }

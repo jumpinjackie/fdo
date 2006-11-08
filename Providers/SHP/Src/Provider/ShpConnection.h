@@ -37,6 +37,7 @@ class ShpConnection : public FdoIConnection
     friend class ShpSelectCommand;
     friend class ShpSelectAggregates;
     friend class ShpGetSpatialContextsCommand;
+	friend class ShpCreateSpatialContextCommand;
     friend class ShpQueryOptimizer;
     friend class ShpFeatureReader;
 
@@ -233,6 +234,10 @@ public:
     /// <returns>Returns nothing</returns> 
     void SetConfiguration(FdoIoStream* configStream);
 
+    /// <summary>Forces the writes of any cached data to the targed datastore.</summary>
+    /// <returns> Returns nothing </returns>
+    /// 
+    void Flush();
 
     ////////////////////////////////////////////////////////////////////////
     // Non-published schema management APIs:
@@ -249,6 +254,18 @@ public:
     ////////////////////////////////////////////////////////////////////////
 
 	ShpSpatialContextCollection* GetSpatialContexts(bool bDynamic = false);
+	void CreateSpatialContext(
+								FdoString* name,
+								FdoString* description,
+								FdoString* coordinateSystem,
+								FdoString* coordinateSystemWkt,
+								FdoSpatialContextExtentType extentType,
+								FdoByteArray * extent,
+								double xyTolerance,
+								double zTolerance,
+								bool   update
+							);
+
     FdoString* GetDirectory ();
     FdoString* GetFile ();
     FdoString* GetTemporary (); // this will return NULL if no temporary directory was specified

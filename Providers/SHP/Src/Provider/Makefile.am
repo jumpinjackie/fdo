@@ -51,12 +51,16 @@ libSHPProviderSrc_la_SOURCES = \
   ShpDeleteCommand.cpp \
   ShpTopologyCapabilities.cpp \
   ShpGetSpatialContextsCommand.cpp \
+  ShpCreateSpatialContextCommand.cpp \
   ShpSpatialContext.cpp \
   ShpSpatialContextReader.cpp \
   ShpPhysicalSchema.cpp \
   ShpLpClassDefinition.cpp \
   ShpLpFeatureSchema.cpp \
-  ShpLpPropertyDefinition.cpp
+  ShpLpPropertyDefinition.cpp \
+  ShpScrollableFeatureReader.cpp \
+  ShpCompareHandler.cpp \
+  ShpImpExtendedSelect.cpp
 
 noinst_HEADERS = $(libSHPProviderSrc_la_SOURCES) \
    resource.h \
@@ -76,6 +80,7 @@ noinst_HEADERS = $(libSHPProviderSrc_la_SOURCES) \
    ShpSelectAggregates.h \
    ShpConnectionInfo.h \
    ShpGetSpatialContextsCommand.h \
+   ShpCreateSpatialContextCommand.h \
    ShpSelectCommand.h \
    ShpDeleteCommand.h \
    ShpInsertCommand.h \

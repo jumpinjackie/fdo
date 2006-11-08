@@ -4639,6 +4639,95 @@ void InsertTests::insert_2connects ()
 	}
 }
 
+void InsertTests::insert_2connects_flush ()
+{
+    try
+    {
+        create_schema (FdoGeometricType_Curve, false, false);
+
+		// Do Describe schema of 1st connection and Insert on second.
+        FdoPtr<FdoIDescribeSchema> describe = (FdoIDescribeSchema*)mConnection->CreateCommand (FdoCommandType_DescribeSchema);
+        FdoPtr<FdoFeatureSchemaCollection> schemas = describe->Execute ();
+
+		// Create 2 connections on the same fileset
+		FdoPtr<FdoIConnection>    pConnection1 = ShpTests::GetConnection ();
+		pConnection1->SetConnectionString (L"DefaultFileLocation=" LOCATION);
+		CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == pConnection1->Open ());
+
+		FdoPtr<FdoIConnection>    pConnection2 = ShpTests::GetConnection ();
+		pConnection2->SetConnectionString (L"DefaultFileLocation=" LOCATION);
+		CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == pConnection2->Open ());
+
+		// Do an insert on 1st connection 
+		FdoPtr<FdoIInsert> insert = (FdoIInsert*)pConnection2->CreateCommand (FdoCommandType_Insert);
+
+        insert->SetFeatureClassName (L"Test");
+        FdoPtr<FdoPropertyValueCollection> values = insert->GetPropertyValues ();
+        FdoPtr<FdoValueExpression> expression = FdoDecimalValue::Create (INT_MAX);
+        FdoPtr<FdoPropertyValue> value = FdoPropertyValue::Create (L"Id", expression);
+        values->Add (value);
+        expression = (FdoValueExpression*)FdoExpression::Parse (L"'~!@#$%^&*()'");
+        value = FdoPropertyValue::Create (L"Street", expression);
+        values->Add (value);
+        expression = (FdoValueExpression*)ShpTests::ParseByDataType (L"-8.8282e12", FdoDataType_Decimal);
+        value = FdoPropertyValue::Create (L"Area", expression);
+        values->Add (value);
+        expression = (FdoValueExpression*)FdoExpression::Parse (L"false");
+        value = FdoPropertyValue::Create (L"Vacant", expression);
+        values->Add (value);
+        expression = (FdoValueExpression*)FdoExpression::Parse (L"DATE'1957-3-2'");
+        value = FdoPropertyValue::Create (L"Birthday", expression);
+        values->Add (value);
+
+        // add geometry value:
+        FdoPtr<FdoGeometryValue> geometry = (FdoGeometryValue*)FdoExpression::Parse (L"GEOMFROMTEXT ('LINESTRING XY ( 7171.723 8282.99, 6824.82 6545.87, 8920.5 9929.77)')");
+        value = FdoPropertyValue::Create (L"Geometry", geometry);
+        values->Add (value);
+        FdoPtr<FdoIFeatureReader> reader = insert->Execute ();
+
+		CPPUNIT_ASSERT_MESSAGE ("Conn1: Wrong number of features in TheSchema:Test after flush", get_count( pConnection1, L"TheSchema:Test" )== 1); 
+
+		//////////// Now the 2nd connection should see the updates on the same class
+		pConnection1->Flush();
+
+		CPPUNIT_ASSERT_MESSAGE ("Conn2: Wrong number of features in TheSchema:Test", get_count( pConnection2, L"TheSchema:Test" )== 1); 
+	
+		// Check the extents - This should suffice since it's just one geometry.
+		FdoPtr<FdoISelectAggregates> advsel = (FdoISelectAggregates*)(pConnection2->CreateCommand(FdoCommandType_SelectAggregates));
+		advsel->SetFeatureClassName(L"TheSchema:Test");
+	    
+		FdoPtr<FdoIdentifierCollection> ids = advsel->GetPropertyNames();
+		FdoPtr<FdoExpression> expr = FdoExpression::Parse(L"SpatialExtents(Geometry)");
+		FdoPtr<FdoComputedIdentifier> cid = FdoComputedIdentifier::Create(L"MBR", expr);
+		ids->Add(cid);
+
+		FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+		FdoPtr<FdoIDataReader> rdr = advsel->Execute();
+
+		FdoPtr<FdoIEnvelope> extents;
+		while (rdr->ReadNext())
+		{
+			if ( rdr->IsNull(L"MBR") )
+				CPPUNIT_FAIL("Expected not-null envelope for SpatialExtents() result");
+
+			FdoPtr<FdoByteArray> geomBytes = rdr->GetGeometry(L"MBR");
+			FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(geomBytes);
+
+			FdoGeometryType geomType = geom->GetDerivedType();
+			if (geomType != FdoGeometryType_Polygon)
+				CPPUNIT_FAIL("Expected Polygon geometry for SpatialExtents() result");
+
+			extents = geom->GetEnvelope();
+			if (extents->GetIsEmpty())
+				CPPUNIT_FAIL("Expected non-empty envelope for SpatialExtents() result");
+		}
+	}
+	catch (FdoException* ge) 
+	{
+		fail (ge);
+	}
+}
+
 int InsertTests::get_count( FdoIConnection* connection, FdoString* class_name )
 {
 	FdoPtr<FdoISelect> select = (FdoISelect*)connection->CreateCommand (FdoCommandType_Select);

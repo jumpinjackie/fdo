@@ -60,6 +60,7 @@ class InsertTests :
     CPPUNIT_TEST (insert_large_first_geometry);
     CPPUNIT_TEST (insert_no_geometry);
 	CPPUNIT_TEST (insert_2connects);
+	CPPUNIT_TEST (insert_2connects_flush);
     //CPPUNIT_TEST (wide2mbPerformaceTest);
     CPPUNIT_TEST (insert_with_locale);
 	CPPUNIT_TEST_SUITE_END ();
@@ -110,6 +111,7 @@ protected:
     void insert_large_first_geometry ();
     void insert_no_geometry ();
 	void insert_2connects();
+	void insert_2connects_flush();
 
     // Helper methods:
 	void insert_connection( FdoIConnection* connection,  FdoIInsert *pInsert, FdoString* className, FdoString* id);

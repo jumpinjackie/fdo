@@ -50,7 +50,7 @@
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -309,11 +309,35 @@
 			Name="CommandsFeature"
 			>
 			<File
+				RelativePath="..\..\Inc\SHP\IExtendedSelect.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\Inc\SHP\IScrollableFeatureReader.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\Inc\SHP\ShpCommandType.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ShpCompareHandler.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\Inc\SHP\ShpCompareHandler.h"
+				>
+			</File>
+			<File
 				RelativePath="ShpDeleteCommand.cpp"
 				>
 			</File>
 			<File
 				RelativePath="ShpDeleteCommand.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ShpExtendedSelect.h"
 				>
 			</File>
 			<File
@@ -349,6 +373,18 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ShpImpExtendedSelect.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ShpImpExtendedSelect.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ShpImpScrollableFeatureReader.h"
+				>
+			</File>
+			<File
 				RelativePath="ShpInsertCommand.cpp"
 				>
 			</File>
@@ -370,6 +406,14 @@
 			</File>
 			<File
 				RelativePath="ShpQueryOptimizer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ShpScrollableFeatureReader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ShpScrollableFeatureReader.h"
 				>
 			</File>
 			<File
@@ -444,6 +488,14 @@
 		<Filter
 			Name="CommandsSpatialContext"
 			>
+			<File
+				RelativePath=".\ShpCreateSpatialContextCommand.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ShpCreateSpatialContextCommand.h"
+				>
+			</File>
 			<File
 				RelativePath="ShpGetSpatialContextsCommand.cpp"
 				>

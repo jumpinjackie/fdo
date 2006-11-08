@@ -48,7 +48,8 @@ UnitTest_SOURCES = \
   UpdateTests.cpp \
   FidelityTests.cpp \
   UnitTestUtil.cpp \
-  BigPerformanceTests.cpp
+  BigPerformanceTests.cpp \
+  ExtendedSelectTests.cpp
 
 noinst_HEADERS = $(UnitTest_SOURCES) \
   BigPerformanceTests.h \
@@ -72,7 +73,8 @@ noinst_HEADERS = $(UnitTest_SOURCES) \
   FidelityTests.h \
   OverridesTest.h \
   SelectAggregatesTests.h \
-  UpdateTests.h
+  UpdateTests.h \
+  ExtendedSelectTests.h
 
 INCLUDES = \
   -I../ShpRead \

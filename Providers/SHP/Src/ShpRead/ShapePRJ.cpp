@@ -60,6 +60,27 @@ ShapePRJ::ShapePRJ (const wchar_t* name, int& status)
         throw FdoCommonFile::ErrorCodeToException (code, name, IDF_OPEN_READ);
 }
 
+ShapePRJ::ShapePRJ (const WCHAR* name, const WCHAR* wkt) :
+    mWKT( wkt )
+{
+    ErrorCode code; 
+
+    _FDORPT0(0, "Creating new ShapePRJ object\n");
+
+    if (OpenFile (name, (OpenFlags)(IDF_CREATE_NEW | IDF_OPEN_UPDATE), code))
+    {
+		// Convert to UTF8
+		char*	wkt2 = (char *)(const char *)mWKT; 
+
+        if (!WriteFile (wkt2, (long) strlen(wkt2)))
+            throw FdoCommonFile::LastErrorToException (L"ShapePRJ::ShapePRJ(wkt)");
+
+        CloseFile ();
+    }
+    else
+        throw FdoCommonFile::ErrorCodeToException (code, name, (OpenFlags)(IDF_CREATE_NEW | IDF_OPEN_UPDATE));
+ }
+
 FdoStringP ShapePRJ::GetWKT()
 {
     return mWKT;

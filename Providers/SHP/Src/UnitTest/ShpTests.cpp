@@ -1369,6 +1369,35 @@ void ShpTests::copy (FdoIConnection* target_connection, FdoString* target_class,
     connection->SetConnectionString (connect_string);
     CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == connection->Open ());
 
+	// Create a new spatial context
+    FdoPtr<FdoICreateSpatialContext> cscCmd = (FdoICreateSpatialContext *)target_connection->CreateCommand( FdoCommandType_CreateSpatialContext );
+
+    cscCmd->SetName(L""); // Leave it empty to avoid confict with WKT
+    cscCmd->SetDescription(L"test");
+    cscCmd->SetCoordinateSystem(L""); // Leave it empty to avoid confict with WKT
+    cscCmd->SetUpdateExisting(false);
+    cscCmd->SetXYTolerance(.02);
+    cscCmd->SetZTolerance(.001);
+    
+	// Copy the spatial contexts from source to target
+	FdoPtr<FdoIGetSpatialContexts> spatialContexts = (FdoIGetSpatialContexts*)connection->CreateCommand (FdoCommandType_GetSpatialContexts);
+    FdoPtr<FdoISpatialContextReader> pScReader = spatialContexts->Execute();
+    int cnt = 0;
+	FdoStringP	scname;
+
+    while (pScReader->ReadNext())
+    {
+		FdoStringP	scName = pScReader->GetName();
+		FdoStringP	wkt = pScReader->GetCoordinateSystemWkt();
+
+		if ( wkt != L"" )
+		{
+			cscCmd->SetCoordinateSystemWkt(wkt);
+			cscCmd->Execute();
+		}
+    }
+
+	// Now copy the classes
     FdoPtr<FdoIDescribeSchema> describe = (FdoIDescribeSchema*)connection->CreateCommand (FdoCommandType_DescribeSchema);
     FdoPtr<FdoFeatureSchemaCollection> schemas = describe->Execute ();
     dup = false;

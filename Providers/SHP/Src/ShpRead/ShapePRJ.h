@@ -32,6 +32,7 @@ class ShapePRJ : public FdoCommonFile
 
 public:
     ShapePRJ (const wchar_t* name, int& status);
+	ShapePRJ (const wchar_t* name, const wchar_t* wkt);
     virtual ~ShapePRJ (void);
 
     FdoStringP GetWKT();

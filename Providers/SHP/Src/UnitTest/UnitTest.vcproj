@@ -222,6 +222,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ExtendedSelectTests.cpp"
+				>
+			</File>
+			<File
 				RelativePath="FidelityTests.cpp"
 				>
 			</File>
@@ -328,6 +332,10 @@
 			</File>
 			<File
 				RelativePath="DeleteTests.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ExtendedSelectTests.h"
 				>
 			</File>
 			<File

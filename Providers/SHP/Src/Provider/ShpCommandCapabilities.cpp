@@ -44,11 +44,13 @@ FdoInt32* ShpCommandCapabilities::GetCommands (FdoInt32& size)
         FdoCommandType_DescribeSchema,
         FdoCommandType_DescribeSchemaMapping,
         FdoCommandType_GetSpatialContexts,
+		FdoCommandType_CreateSpatialContext,
         FdoCommandType_Insert,
         FdoCommandType_Update,
         FdoCommandType_Delete,
         FdoCommandType_ApplySchema,
         FdoCommandType_DestroySchema,
+		(FdoCommandType) ShpCommandType_ExtendedSelect
     };
 
     size = sizeof (commands) / sizeof (FdoCommandType);

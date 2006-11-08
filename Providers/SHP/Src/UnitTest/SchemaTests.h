@@ -53,6 +53,7 @@ class SchemaTests :
     CPPUNIT_TEST (ignore_states);
     CPPUNIT_TEST (describe_Fix784301);
     CPPUNIT_TEST (read_only_files);
+	CPPUNIT_TEST (test_create_PRJ);
     CPPUNIT_TEST_SUITE_END ();
 
     static FdoPtr<FdoIConnection> mConnection;
@@ -113,6 +114,7 @@ protected:
     void describe_Fix784301 ();
     void read_only_files ();
 
+	void test_create_PRJ ();
 
     // Helper methods
     ///////////////////////////////////////////////////////////////////////////
