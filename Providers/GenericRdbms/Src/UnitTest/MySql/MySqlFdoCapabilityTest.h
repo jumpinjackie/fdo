@@ -26,7 +26,11 @@ class MySqlFdoCapabilityTest : public FdoCapabilityTest
     CPPUNIT_TEST_SUB_SUITE (MySqlFdoCapabilityTest, FdoCapabilityTest);
     CPPUNIT_TEST_SUITE_END ();
 
-    void  set_provider();
+    void InitSchemaCapabilitiesFlags ();
+    void InitSchemaCapabilitiesMaxDataValueLimits ();
+    void InitSchemaCapabilitiesNameSizeLimits ();
+    void SetProvider();
+
 };
 
 #endif // MYSQL_CAPABILITIESTEST_H

@@ -121,7 +121,7 @@ FdoInt32 FdoRdbmsSchemaCapabilities::GetNameSizeLimit(FdoSchemaElementNameType n
         case FdoSchemaElementNameType_Datastore:    return   30;
         case FdoSchemaElementNameType_Schema:       return  255;
         case FdoSchemaElementNameType_Class:        return  255;
-        case FdoSchemaElementNameType_Property:     return 4000;
+        case FdoSchemaElementNameType_Property:     return  255;
         case FdoSchemaElementNameType_Description:  return  255;
     }
 

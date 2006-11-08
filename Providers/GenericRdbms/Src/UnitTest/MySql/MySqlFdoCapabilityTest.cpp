@@ -23,7 +23,51 @@
 CPPUNIT_TEST_SUITE_REGISTRATION( MySqlFdoCapabilityTest );
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( MySqlFdoCapabilityTest, "FdoCapabilityTest");
 
-void MySqlFdoCapabilityTest::set_provider()
+
+void MySqlFdoCapabilityTest::InitSchemaCapabilitiesFlags ()
 {
+
+    // Only set those flags that need to be changed to FALSE.
+
+    m_expectedSchemaCapabilities->supportsNetworkModel                   = false;
+    m_expectedSchemaCapabilities->supportsExclusiveValueRangeConstraints = false;
+    m_expectedSchemaCapabilities->supportsInclusiveValueRangeConstraints = false;
+    m_expectedSchemaCapabilities->supportsValueConstraintsList           = false;
+
+}  //  InitSchemaCapabilitiesFlags ()
+
+void MySqlFdoCapabilityTest::InitSchemaCapabilitiesMaxDataValueLimits ()
+{
+
+    m_expectedSchemaCapabilities->blobDataValueLimit     = (FdoInt64)(-1);
+    m_expectedSchemaCapabilities->booleanDataValueLimit  = (FdoInt64)sizeof(FdoBoolean);
+    m_expectedSchemaCapabilities->byteDataValueLimit     = (FdoInt64)sizeof(FdoByte);
+    m_expectedSchemaCapabilities->clobDataValueLimit     = (FdoInt64)(-1);
+    m_expectedSchemaCapabilities->dateTimeDataValueLimit = (FdoInt64)sizeof(FdoDateTime);
+    m_expectedSchemaCapabilities->decimalDataValueLimit  = (FdoInt64)(65+30);
+    m_expectedSchemaCapabilities->doubleDataValueLimit   = (FdoInt64)sizeof(FdoDouble);
+    m_expectedSchemaCapabilities->int16DataValueLimit    = (FdoInt64)sizeof(FdoInt16);
+    m_expectedSchemaCapabilities->int32DataValueLimit    = (FdoInt64)sizeof(FdoInt32);
+    m_expectedSchemaCapabilities->int64DataValueLimit    = (FdoInt64)sizeof(FdoInt64);
+    m_expectedSchemaCapabilities->singleDataValueLimit   = (FdoInt64)sizeof(FdoFloat);
+    m_expectedSchemaCapabilities->stringDataValueLimit   = (FdoInt64)(2147483648LL - 1);
+
+}  //  InitSchemaCapabilitiesMaxDataValueLimits ()
+
+void MySqlFdoCapabilityTest::InitSchemaCapabilitiesNameSizeLimits ()
+{
+
+    m_expectedSchemaCapabilities->classNameLimit     = 200;
+    m_expectedSchemaCapabilities->datastoreNameLimit = 64;
+    m_expectedSchemaCapabilities->descriptionLimit   = 255;
+    m_expectedSchemaCapabilities->propertyNameLimit  = 255;
+    m_expectedSchemaCapabilities->schemaNameLimit    = 200;
+
+}  //  InitSchemaCapabilitiesNameSizeLimits ()
+
+void MySqlFdoCapabilityTest::SetProvider ()
+{
+
 	UnitTestUtil::SetProvider( "MySql" );
-}
+
+}  //  SetProvider ()

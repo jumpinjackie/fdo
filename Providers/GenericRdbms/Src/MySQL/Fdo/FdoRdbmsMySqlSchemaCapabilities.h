@@ -43,8 +43,8 @@ public:
         switch (dataType)
         {
             case FdoDataType_String:   return (FdoInt64)(2147483648LL - 1);
-            case FdoDataType_BLOB:     return (FdoInt64)(4294967296LL - 1);
-            case FdoDataType_CLOB:     return (FdoInt64)(4294967296LL - 1);
+            case FdoDataType_BLOB:     return (FdoInt64)(-1);
+            case FdoDataType_CLOB:     return (FdoInt64)(-1);
             case FdoDataType_Decimal:  return (FdoInt64)(GetMaximumDecimalScale() + GetMaximumDecimalPrecision());
             case FdoDataType_Boolean:  return (FdoInt64)sizeof(FdoBoolean);
             case FdoDataType_Byte:     return (FdoInt64)sizeof(FdoByte);
@@ -87,7 +87,7 @@ public:
             case FdoSchemaElementNameType_Datastore:   return   64;
             case FdoSchemaElementNameType_Schema:      return  200;
             case FdoSchemaElementNameType_Class:       return  200;
-            case FdoSchemaElementNameType_Property:    return 4000;
+            case FdoSchemaElementNameType_Property:    return  255;
             case FdoSchemaElementNameType_Description: return  255;
         }
         return -1;
