@@ -132,6 +132,7 @@ private:
     //helper functions
     recno_list* RecnoFromKey();
     bool IsAxisAlignedRectangle(FdoByteArray* fgf, Bounds& bounds);
+    bool IsAllDataEnclosed( Bounds& bounds );
     recno_list* recno_list_union(recno_list* left, recno_list* right);
     recno_list* recno_list_intersection(recno_list* left, recno_list* right);
     bool AreEqual(double d1, double d2);

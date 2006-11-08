@@ -371,21 +371,29 @@ void SdfQueryOptimizer::ProcessSpatialCondition(FdoSpatialCondition& filter)
             Bounds bounds;
             if (IsAxisAlignedRectangle(fgf, bounds))
             {
-                recno_list* rl = new recno_list;
+                if( IsAllDataEnclosed( bounds ) )
+                {
+                    m_retvals.push_back(NULL);
+                    m_filters.push_back(NULL);
+                }
+                else
+                {
+                    recno_list* rl = new recno_list;
 
-                //search the R-Tree for records whose bounds overlap
-                //the given IEnvelope
-                m_rtree->Search(bounds, (SearchHitCallback)SearchCallback, rl);
+                    //search the R-Tree for records whose bounds overlap
+                    //the given IEnvelope
+                    m_rtree->Search(bounds, (SearchHitCallback)SearchCallback, rl);
 
-                //no need to sort the returned list of records
-                //GetResult() will do it
+                    //no need to sort the returned list of records
+                    //GetResult() will do it
 
-                //push the matched feature record numbers on the result stack
-                //if (rl->size() > 0)
-                m_retvals.push_back(rl);
+                    //push the matched feature record numbers on the result stack
+                    //if (rl->size() > 0)
+                    m_retvals.push_back(rl);
 
-                //optimize away this filter, since the R-Tree handled it
-                m_filters.push_back(NULL);
+                    //optimize away this filter, since the R-Tree handled it
+                    m_filters.push_back(NULL);
+                }
             }
             else 
             {
@@ -720,7 +728,15 @@ bool SdfQueryOptimizer::IsAxisAlignedRectangle(FdoByteArray* fgf, Bounds& bounds
     return true;
 }
 
+bool SdfQueryOptimizer::IsAllDataEnclosed( Bounds& bounds )
+{
+    Bounds dataBounds = m_rtree->GetBounds();
 
+    return( bounds.minx <= dataBounds.minx &&
+            bounds.miny <= dataBounds.miny &&
+            bounds.maxx >= dataBounds.maxx &&
+            bounds.maxy >= dataBounds.maxy );
+}
 
 
 recno_list* SdfQueryOptimizer::recno_list_union(recno_list* left, recno_list* right)
