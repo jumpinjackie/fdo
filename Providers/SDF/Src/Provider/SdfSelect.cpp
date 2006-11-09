@@ -123,7 +123,11 @@ FdoIFeatureReader* SdfSelect::Execute()
     bool disposeFilter = false;
 
 	m_connection->FlushAll( clas );
-	
+
+    // Need to re-synch the Rtree root note as it may have changed by a different connection
+    // since the Rtree was initialized
+    if( rt )
+	    rt->UpdateRootNode();
 
     //if we have a filter, perform any spatial and key queries if necessary
     //using the query optimizer

@@ -81,6 +81,11 @@ FdoInt32 SdfDelete::Execute()
     recno_list* features = NULL;
     KeyDb* keys = m_connection->GetKeyDb(clas);
 
+    // Need to re-synch the Rtree root note as it may have changed by a different connection
+    // since the Rtree was initialized
+	if( rt )
+	    rt->UpdateRootNode();
+
     FdoPtr<FdoFilter>rdrFilter = m_filter;
 	FDO_SAFE_ADDREF( m_filter );
 

@@ -84,10 +84,17 @@ FdoInt32 SdfUpdate::Execute()
 
 	m_connection->FlushAll( clas, true );
 
+    
+
     //get the R-Tree for this feature class... 
     SdfRTree* rt = m_connection->GetRTree(clas);
     recno_list* features = NULL;
     KeyDb* keys = m_connection->GetKeyDb(clas);
+
+    // Need to re-synch the Rtree root note as it may have changed by a different connection
+    // since the Rtree was initialized
+	if( rt )
+	    rt->UpdateRootNode();
 
     FdoFilter* rdrFilter = m_filter;
     bool disposeFilter = false;
