@@ -165,14 +165,18 @@ bool FdoRfpRasterUtil::GetKeyColor(FdoStringP filePath, FdoPtr<FdoRfpKeyColorCol
 /// </returns> 
 bool FdoRfpRasterUtil::GetGeoReferenceInfo(GDALDatasetH hDS, FdoPtr<FdoRfpGeoreference>& geoRef)
 {
-#ifdef notdef
-    char* mbFilePath = NULL;
-    wide_to_multibyte(mbFilePath, filePath);
-#endif
-
     double adfGeoTransform[6];
 
-    GDALGetGeoTransform( hDS, adfGeoTransform );
+    // For now we don't permit ungeoreferenced rasters since mapguide
+    // and map don't allow them.  Issue FDO238
+    if( GDALGetGeoTransform( hDS, adfGeoTransform ) != CE_None
+        || (adfGeoTransform[0] == 0.0 
+            && adfGeoTransform[1] == 1.0 
+            && adfGeoTransform[2] == 0.0 
+            && adfGeoTransform[3] == 0.0 
+            && adfGeoTransform[4] == 0.0 
+            && fabs(adfGeoTransform[5]) == 1.0) )
+        return false;
 
     // TODO Set rotation properly!
     geoRef->SetXInsertion( adfGeoTransform[0] );
