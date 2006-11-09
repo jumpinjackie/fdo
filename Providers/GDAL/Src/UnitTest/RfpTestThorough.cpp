@@ -489,7 +489,7 @@ void RfpTestThorough::testCapabilities()
                 // palette	
                 dm->SetDataModelType(FdoRasterDataModelType_Palette);
                 dm->SetBitsPerPixel(8);
-                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == false);
+                FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == true);
                 dm->SetBitsPerPixel(24);
                 FDO_CPPUNIT_ASSERT (capabilities->SupportsDataModel(dm) == false);
             }
