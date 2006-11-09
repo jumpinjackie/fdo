@@ -30,6 +30,7 @@
 #ifdef _WIN32
 #include <windows.h>
 #endif
+#include "FdoRfpConnection.h"
 #include "FdoCommonStringUtil.h"
 #include "FdoRfpRasterUtil.h"
 #include "FdoRfpGeoreference.h"
@@ -86,7 +87,8 @@ void FdoRfpGeoRasterExtractor::_getAllFiles(const char* path, std::vector<std::s
 #endif
 
 // extract all the georeferenced rasters from the specified location
-void FdoRfpGeoRasterExtractor::ExtractRasters(FdoString* location,
+void FdoRfpGeoRasterExtractor::ExtractRasters(FdoRfpConnection* conn,
+                                              FdoString* location,
                                               const FdoPtr<FdoRfpGeoRasterCollection>& rasters, 
                                               FdoStringP& currentCoord, 
                                               FdoRfpRect& extent, 
@@ -101,7 +103,7 @@ void FdoRfpGeoRasterExtractor::ExtractRasters(FdoString* location,
     wide_to_multibyte(mbLocation, location);
     std::string location1 = mbLocation;
     std::vector<std::string> files;
-    FdoPtr<FdoRfpDatasetCache>  datasetCache = FdoRfpDatasetCache::Create();
+    FdoPtr<FdoRfpDatasetCache>  datasetCache = conn->GetDatasetCache();
 
     // determine whethere location is a path 
     bool bPath = false;
@@ -211,7 +213,7 @@ void FdoRfpGeoRasterExtractor::ExtractRasters(FdoString* location,
         for (j=0; j < frameNumber; j++)
         {
             FdoRfpGeoBandRasterP rasterFile = new FdoRfpGeoBandRasterRot(
-                fileName, j, 
+                conn, fileName, j, 
                 geoRef->GetXInsertion(), geoRef->GetYInsertion(),
                 geoRef->GetXResolution(), geoRef->GetYResolution(),                                                  
                 width, height,

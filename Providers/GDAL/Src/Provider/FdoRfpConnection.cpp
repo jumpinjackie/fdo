@@ -42,6 +42,7 @@
 #include "FdoRfpDescribeSchemaCommand.h"
 #include "FdoRfpDescribeSchemaMapping.h"
 #include "FdoRfpGetSpatialContexts.h"
+#include "FdoRfpDatasetCache.h"
 #include "FdoRfpGlobals.h"
 #include <GdalFile/Override/FdoGrfpOverrides.h>
 #include <gdal.h>
@@ -274,7 +275,7 @@ void FdoRfpConnection::_buildUpSchemaDatas()
         FdoGrfpPhysicalSchemaMappingP mapping1;
         if (mapping != NULL)
             mapping1 = SP_STATIC_CAST(FdoGrfpPhysicalSchemaMapping, mapping);
-        FdoRfpSchemaDataP schemaData = FdoRfpSchemaData::Create(m_spatialContexts, fs, mapping1);
+        FdoRfpSchemaDataP schemaData = FdoRfpSchemaData::Create(this, fs, mapping1);
         m_schemaDatas->Add(schemaData);
     }
 }
@@ -549,7 +550,11 @@ FdoPtr<FdoRfpClassData> FdoRfpConnection::GetClassData(const FdoPtr<FdoClassDefi
 FdoPtr<FdoRfpSpatialContextCollection> FdoRfpConnection::GetSpatialContexts()
 {
     //Ensure the connection is established
-    _validateOpen();
+
+    // in fact, we want to fetch this down in low level code before things
+    // are open sometimes.
+
+    //_validateOpen();
     return m_spatialContexts; 
 }
 
@@ -601,6 +606,16 @@ void FdoRfpConnection::DestroySpatialContext(FdoString* contextName)
             m_activeSpatialContext = L"";
     }
 
+}
+
+// Get dataset cache.
+//Get active spatial context
+FdoRfpDatasetCache *FdoRfpConnection::GetDatasetCache()
+{
+    if( m_datasetCache.p == NULL )
+        m_datasetCache = FdoRfpDatasetCache::Create();
+
+    return FDO_SAFE_ADDREF(m_datasetCache.p);
 }
 
 class FdoRfpGeometryCapabilities : public FdoIGeometryCapabilities

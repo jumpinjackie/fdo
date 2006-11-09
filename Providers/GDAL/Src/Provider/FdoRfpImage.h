@@ -34,38 +34,54 @@
 //
 #include <gdal.h>
 
+class FdoRfpDatasetCache;
+
 class FdoRfpImage : public FdoIDisposable
 {
 //
 // Data members
 //
-public:
+private:
     GDALDatasetH 		m_ds;
 
     GDALRasterBandH             m_redBand;
-
+    
+public:
+    FdoPtr<FdoRfpDatasetCache>  m_datasetCache;
+    FdoStringP                  m_datasetName;
+         
     int                         m_bandList[4];
     int                         m_components;
 
     int                         m_blockXSize;
     int                         m_blockYSize;
 
+    int                         m_xSize;
+    int                         m_ySize;
+
     int                         m_bytesPerPixel; // total over all components
     GDALDataType                m_gdalDataType;
+
+    GDALDatasetH                GetDS(); 
+    void                        ReleaseDS();
 
 //
 // Constructor(s), desctrucotr, factory function(s)
 //
 protected:
     FdoRfpImage();
-    FdoRfpImage(GDALDatasetH hDS);
+
+    void Initialize( FdoRfpDatasetCache* datasetCache, FdoStringP datasetName );
+
     void Dispose() { delete this; }
     virtual ~FdoRfpImage(void);
 
 public:
-    static FdoRfpImage* Create(GDALDatasetH image)
+    static FdoRfpImage* Create( FdoRfpDatasetCache* datasetCache, FdoStringP datasetName )
 	{
-            return new FdoRfpImage(image);
+            FdoRfpImage *image = new FdoRfpImage();
+            image->Initialize( datasetCache, datasetName );
+            return image;
 	}
 };
 

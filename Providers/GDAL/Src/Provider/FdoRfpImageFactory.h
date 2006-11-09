@@ -23,26 +23,4 @@
  *
  */
 
-#ifndef FDORFPIMAGEFACTORY_H
-#define FDORFPIMAGEFACTORY_H
-
-#ifdef _WIN32
-#pragma once
-#endif //_WIN32
-
-typedef void *GDALDatasetH;
-
-//
-// All image factories are defined in this header file
-//
-
-class FdoRfpImageFactoryGdal
-{
-public:
-	static void CreateImage(FdoString* path, GDALDatasetH& image, int frameNumber=0);
-	static void DestroyImage(GDALDatasetH image);
-	static int GetImageSize(const GDALDatasetH image);
-};
-
-
-#endif
+// This class no longer exists.  This code will eventually be removed.

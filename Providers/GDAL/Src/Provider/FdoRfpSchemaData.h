@@ -51,7 +51,7 @@ protected:
 	FdoRfpSchemaData(void);
 	virtual ~FdoRfpSchemaData(void);
 public:
-	static FdoRfpSchemaData* Create(const FdoPtr<FdoRfpSpatialContextCollection>& contexts, const FdoPtr<FdoFeatureSchema>& featureSchema, const FdoPtr<FdoGrfpPhysicalSchemaMapping>& schemaMapping);
+	static FdoRfpSchemaData* Create(FdoRfpConnection *conn, const FdoPtr<FdoFeatureSchema>& featureSchema, const FdoPtr<FdoGrfpPhysicalSchemaMapping>& schemaMapping);
 
 //
 // Exposed functions
@@ -67,7 +67,7 @@ public:
 //
 private:
 	// called by the static create
-	void _buildUp(const FdoPtr<FdoRfpSpatialContextCollection>& conn, const FdoPtr<FdoFeatureSchema>& featureSchema, const FdoPtr<FdoGrfpPhysicalSchemaMapping>& schemaMapping);
+	void _buildUp(FdoRfpConnection *conn, const FdoPtr<FdoFeatureSchema>& featureSchema, const FdoPtr<FdoGrfpPhysicalSchemaMapping>& schemaMapping);
 
 };
 

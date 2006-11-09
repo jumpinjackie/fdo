@@ -37,7 +37,7 @@ FdoRfpSchemaData::~FdoRfpSchemaData(void)
 {
 }
 
-void FdoRfpSchemaData::_buildUp(const FdoPtr<FdoRfpSpatialContextCollection>& contexts, const FdoPtr<FdoFeatureSchema>& featureSchema, const FdoPtr<FdoGrfpPhysicalSchemaMapping>& schemaMapping)
+void FdoRfpSchemaData::_buildUp(FdoRfpConnection *conn, const FdoPtr<FdoFeatureSchema>& featureSchema, const FdoPtr<FdoGrfpPhysicalSchemaMapping>& schemaMapping)
 {
 	m_classDatas = FdoRfpClassDataCollection::Create();
 	m_featureSchema = featureSchema;
@@ -52,16 +52,16 @@ void FdoRfpSchemaData::_buildUp(const FdoPtr<FdoRfpSpatialContextCollection>& co
 		FdoGrfpClassDefinitionP classMapping;
 		if (classesMapping != NULL)
 			classMapping = classesMapping->GetItem(classDefinition->GetName());
-		FdoRfpClassDataP classData = FdoRfpClassData::Create(contexts, classDefinition, classMapping);
+		FdoRfpClassDataP classData = FdoRfpClassData::Create(conn, classDefinition, classMapping);
 		m_classDatas->Add(classData);
 	}
 
 }
 
-FdoRfpSchemaData* FdoRfpSchemaData::Create(const FdoPtr<FdoRfpSpatialContextCollection>& contexts, const FdoPtr<FdoFeatureSchema>& featureSchema, const FdoPtr<FdoGrfpPhysicalSchemaMapping>& schemaMapping)
+FdoRfpSchemaData* FdoRfpSchemaData::Create(FdoRfpConnection *conn, const FdoPtr<FdoFeatureSchema>& featureSchema, const FdoPtr<FdoGrfpPhysicalSchemaMapping>& schemaMapping)
 {
 	FdoRfpSchemaData* schemaData = new FdoRfpSchemaData();
-	schemaData->_buildUp(contexts, featureSchema, schemaMapping);
+	schemaData->_buildUp(conn, featureSchema, schemaMapping);
 	return schemaData;
 }
 

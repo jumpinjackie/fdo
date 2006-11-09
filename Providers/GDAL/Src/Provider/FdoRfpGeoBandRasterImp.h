@@ -46,12 +46,14 @@ private:
 // ctor and dtor
 //
 public:
-    FdoRfpGeoBandRasterRot(FdoString* imagePath, 
+    FdoRfpGeoBandRasterRot(FdoRfpConnection* conn,
+                           FdoString* imagePath, 
                            double insertionX, double insertionY,
                            double resX, double resY,
                            int width, int height,
                            double rotationX, double rotationY);
-    FdoRfpGeoBandRasterRot(FdoString* imagePath, int frameNumber,  
+    FdoRfpGeoBandRasterRot(FdoRfpConnection* conn,
+                           FdoString* imagePath, int frameNumber,  
                            double insertionX, double insertionY,
                            double resX, double resY,
                            int width, int height,

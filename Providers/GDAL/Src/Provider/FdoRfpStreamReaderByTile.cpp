@@ -360,8 +360,8 @@ void FdoRfpStreamReaderGdalByTile::_getTile()
 
     // If this would go off the right or bottom of the image, we may 
     // need to trip the read window.
-    int fileXSize = GDALGetRasterXSize( m_image->m_ds );
-    int fileYSize = GDALGetRasterYSize( m_image->m_ds );
+    int fileXSize = m_image->m_xSize;
+    int fileYSize = m_image->m_ySize;
     int wrkBlockXSize = m_blockXSize;
     int wrkBlockYSize = m_blockYSize;
 
@@ -416,7 +416,7 @@ void FdoRfpStreamReaderGdalByTile::_getTile()
         wrkComponents = 3;
 
     // Read into interleaved buffer.
-    eErr = GDALDatasetRasterIO( m_image->m_ds, GF_Read, 
+    eErr = GDALDatasetRasterIO( m_image->GetDS(), GF_Read, 
                                 fileWinXOff, fileWinYOff, fileWinXSize, fileWinYSize,
                                 m_tileData, wrkBlockXSize, wrkBlockYSize, 
                                 m_gdalDataType, 
@@ -429,4 +429,6 @@ void FdoRfpStreamReaderGdalByTile::_getTile()
         multibyte_to_wide( msg, CPLGetLastErrorMsg() );
         throw FdoException::Create( msg );
     }
+
+    m_image->ReleaseDS();
 }

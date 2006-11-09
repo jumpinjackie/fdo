@@ -22,14 +22,29 @@
  * $Revision: 23 $
  *
  */
+
 #include "FDORFP.h"
 #include "FdoRfpImage.h"
-#include "FdoRfpImageFactory.h"
+#include "FdoRfpDatasetCache.h"
 
-FdoRfpImage::FdoRfpImage( GDALDatasetH hDS )
+FdoRfpImage::FdoRfpImage()
 
 {
-    m_ds = hDS;
+}
+
+void FdoRfpImage::Initialize( FdoRfpDatasetCache* datasetCache, FdoStringP datasetName )
+
+{
+    m_datasetCache = FDO_SAFE_ADDREF( datasetCache );
+
+    m_datasetName = datasetName;
+
+    m_ds = NULL;
+    m_redBand = NULL;
+
+    // force opening of dataset.  If this doesn't work ... yikes!
+    if( GetDS() == NULL )
+        return;
     
     m_redBand = GDALGetRasterBand( m_ds, 1 );
     
@@ -61,12 +76,35 @@ FdoRfpImage::FdoRfpImage( GDALDatasetH hDS )
     m_bytesPerPixel = GDALGetDataTypeSize( m_gdalDataType ) * m_components / 8;
 
     GDALGetBlockSize( m_redBand, &m_blockXSize, &m_blockYSize );
+
+    m_xSize = GDALGetRasterXSize( m_ds );
+    m_ySize = GDALGetRasterYSize( m_ds );
+
+    ReleaseDS();
 }
 
 FdoRfpImage::~FdoRfpImage()
 {
-    if( m_ds )
-        FdoRfpImageFactoryGdal::DestroyImage(m_ds);
+    ReleaseDS();
+}
+
+GDALDatasetH FdoRfpImage::GetDS()
+
+{
+    if( m_ds == NULL )
+        m_ds = m_datasetCache->LockDataset( m_datasetName, false );
+
+    return m_ds;
+}
+
+void FdoRfpImage::ReleaseDS()
+
+{
+    if( m_ds != NULL )
+    {
+        m_datasetCache->UnlockDataset( m_ds );
+        m_ds = NULL;
+    }
 }
 
 FdoRfpImageCollection::FdoRfpImageCollection()
@@ -86,8 +124,5 @@ FdoRfpImageCollection* FdoRfpImageCollection::Create()
 {
 	return new FdoRfpImageCollection();
 }
-
-
-
 
 

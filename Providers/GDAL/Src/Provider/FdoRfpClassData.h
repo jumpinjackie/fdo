@@ -42,9 +42,10 @@ class FdoRfpClassData :
 // Data members
 //
 private:
-	FdoPtr<FdoRfpGeoRasterCollection> m_geoRasters;
-	FdoClassDefinitionP m_classDefinition;
-
+        FdoPtr<FdoRfpGeoRasterCollection> m_geoRasters;
+        FdoClassDefinitionP m_classDefinition;
+        FdoPtr<FdoRfpConnection> m_connection;
+    
 	// these two are used to form spatial context for this feature class
 	FdoRfpRect			m_extent; // extent
 	FdoStringP			m_coord;  // coordinate system name
@@ -57,7 +58,7 @@ protected:
 	FdoRfpClassData(void);
 	virtual ~FdoRfpClassData(void);
 public:
-	static FdoRfpClassData* Create(const FdoPtr<FdoRfpSpatialContextCollection>& contexts, const FdoClassDefinitionP& classDefinition, const FdoPtr<FdoGrfpClassDefinition>& classMapping);
+	static FdoRfpClassData* Create(FdoRfpConnection *conn, const FdoClassDefinitionP& classDefinition, const FdoPtr<FdoGrfpClassDefinition>& classMapping);
 
 //
 // Exposed functions
@@ -73,13 +74,13 @@ public:
 //
 private:
 	// called by the static create
-	void _buildUp(const FdoPtr<FdoRfpSpatialContextCollection>& contexts, const FdoClassDefinitionP& classDefinition, const FdoPtr<FdoGrfpClassDefinition>& classMapping);
+	void _buildUp(FdoRfpConnection *conn, const FdoClassDefinitionP& classDefinition, const FdoPtr<FdoGrfpClassDefinition>& classMapping);
 
 	// Extract all rasters from specified location
-	void _buildUpGeoRastersFromLocation(FdoString* location, FdoStringCollection* coordSystems);
+	void _buildUpGeoRastersFromLocation(FdoRfpConnection *conn, FdoString* location, FdoStringCollection* coordSystems);
 
 	// Extract all rasters from image catalogue
-	void _buildUpGeoRastersFromCatalogue(const FdoPtr<FdoGrfpRasterFeatureCollection>& featureCatalogue, FdoStringCollection* coordSystems);
+	void _buildUpGeoRastersFromCatalogue(FdoRfpConnection *conn, const FdoPtr<FdoGrfpRasterFeatureCollection>& featureCatalogue, FdoStringCollection* coordSystems);
 
 };
 

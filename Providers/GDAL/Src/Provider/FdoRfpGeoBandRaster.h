@@ -31,6 +31,7 @@
 
 #include "FdoRfpRect.h"
 class FdoRfpKeyColorCollection;
+class FdoRfpConnection;
 
 //
 // class forwards
@@ -43,6 +44,8 @@ class FdoRfpGeoBandRaster : public FdoDisposable
 // data members
 //
 protected:
+    FdoPtr<FdoRfpConnection> m_connection;
+
     FdoPtr<FdoRfpImage>     m_image;
     FdoStringP              m_imagePath;
     int                     m_frameNumber;
@@ -51,8 +54,8 @@ protected:
 // ctor and dtor
 //
 protected:
-    FdoRfpGeoBandRaster(FdoString* imagePath);
-    FdoRfpGeoBandRaster(FdoString* imagePath, int frameNumber);
+    FdoRfpGeoBandRaster(FdoRfpConnection* connection, FdoString* imagePath);
+    FdoRfpGeoBandRaster(FdoRfpConnection* connection, FdoString* imagePath, int frameNumber);
     virtual ~FdoRfpGeoBandRaster();
 private:
     FdoRfpGeoBandRaster();

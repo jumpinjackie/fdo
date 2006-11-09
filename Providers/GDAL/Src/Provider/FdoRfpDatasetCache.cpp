@@ -28,7 +28,7 @@
 #include <gdal.h>
 #include <cpl_conv.h>
 
-const static int nOpenDatasetMaximum = 32;
+const static int nOpenDatasetMaximum = 3;
 
 
 FdoRfpDatasetCache::FdoRfpDatasetCache(void)

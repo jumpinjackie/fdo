@@ -27,7 +27,6 @@
 
 #include "FDORFP.h"
 #include "FdoRfpBandRaster.h"
-#include "FdoRfpImageFactory.h"
 #include "FdoRfpRasterCapabilities.h"
 #include "FdoRfpGeoRaster.h"
 #include "FdoRfpStreamReaderByTile.h"
@@ -201,7 +200,8 @@ FdoRasterDataModel* FdoRfpBandRaster::GetDataModel ()
         dataModel->SetDataModelType(FdoRasterDataModelType_RGBA);
     else if( image->m_components == 3 )
         dataModel->SetDataModelType(FdoRasterDataModelType_RGB);
-    else if( GDALGetRasterColorInterpretation( image->m_redBand ) == GCI_PaletteIndex )
+    else if( GDALGetRasterColorInterpretation( GDALGetRasterBand(image->GetDS(), image->m_bandList[0]) ) 
+             == GCI_PaletteIndex )
         dataModel->SetDataModelType(FdoRasterDataModelType_Palette);
     else
         dataModel->SetDataModelType(FdoRasterDataModelType_Gray);
@@ -238,6 +238,8 @@ FdoRasterDataModel* FdoRfpBandRaster::GetDataModel ()
     }
 
     m_dataModel = dataModel;
+
+    image->ReleaseDS();
 
     return FDO_SAFE_ADDREF(m_dataModel.p);
 }
@@ -410,7 +412,7 @@ FdoDataValue* FdoRfpBandRaster::GetNullPixelValue ()
     int bGotNoData;
     double dfNoData;
     
-    dfNoData = GDALGetRasterNoDataValue( image->m_redBand, &bGotNoData );
+    dfNoData = GDALGetRasterNoDataValue( GDALGetRasterBand( image->GetDS(), image->m_bandList[0]), &bGotNoData );
 
     if( image->m_components == 1 && bGotNoData )
     {
@@ -502,10 +504,8 @@ void FdoRfpBandRaster::_computePixelWindow(
     FdoRfpRect viewBounds = _getRequestBounds();
     double origResolutionX, origResolutionY;
 
-    origResolutionX = (origBounds.m_maxX - origBounds.m_minX) / 
-        GDALGetRasterXSize( image->m_ds );
-    origResolutionY = -1 * (origBounds.m_maxY - origBounds.m_minY) / 
-        GDALGetRasterYSize( image->m_ds );
+    origResolutionX = (origBounds.m_maxX - origBounds.m_minX) / image->m_xSize;
+    origResolutionY = -1 * (origBounds.m_maxY - origBounds.m_minY) / image->m_ySize;
 
     winXOff = (int) floor((viewBounds.m_minX - origBounds.m_minX) / origResolutionX);
     winYOff = (int) floor((viewBounds.m_maxY - origBounds.m_maxY) / origResolutionY);

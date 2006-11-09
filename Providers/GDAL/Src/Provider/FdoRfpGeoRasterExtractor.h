@@ -33,13 +33,13 @@
 #include <string>
 
 class FdoRfpGeoRasterCollection;
-class FdoRfpSpatialContext;
+class FdoRfpConnection;
 
 class FdoRfpGeoRasterExtractor
 {
 public:
 	// extract all the georeferenced rasters from the specified location
-	void ExtractRasters(FdoString* location, const FdoPtr<FdoRfpGeoRasterCollection>& rasters, FdoStringP& currentCoord, FdoRfpRect& extent, bool& bFirstRaster, FdoStringCollection* coordSystems);
+	void ExtractRasters(FdoRfpConnection *conn, FdoString* location, const FdoPtr<FdoRfpGeoRasterCollection>& rasters, FdoStringP& currentCoord, FdoRfpRect& extent, bool& bFirstRaster, FdoStringCollection* coordSystems);
 
 private:
 	void _getAllFiles(const char* path, std::vector<std::string>& files);

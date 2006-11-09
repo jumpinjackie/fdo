@@ -41,6 +41,7 @@ class FdoRfpRasterImageCollection;
 class FdoRfpSpatialContext;
 class FdoRfpSpatialContextCollection;
 class FdoRfpSchemaDataCollection;
+class FdoRfpDatasetCache;
 
 //
 // Implementation of FdoIConnection
@@ -55,6 +56,9 @@ private:
     //Spatial contexts and active spatial context name
     FdoPtr<FdoRfpSpatialContextCollection>    m_spatialContexts;
     FdoStringP                            m_activeSpatialContext;
+
+    // Dataset cache
+    FdoPtr<FdoRfpDatasetCache>            m_datasetCache;
 
     //Logical feature schema
     FdoFeatureSchemasP                    m_featureSchemas;
@@ -71,7 +75,7 @@ private:
 
     // The connection state
     FdoConnectionState                    m_state;
-    
+
     /**
      * Connection information object.
      */
@@ -223,6 +227,9 @@ public:
 
     // Destroy a spatial context
     void DestroySpatialContext(FdoString* contextName);
+
+    // Fetch the dataset cache
+    FdoRfpDatasetCache *GetDatasetCache();
 
 //
 // Internally used helper functions

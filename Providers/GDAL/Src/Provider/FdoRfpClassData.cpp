@@ -45,8 +45,12 @@ FdoRfpClassData::~FdoRfpClassData(void)
 {
 }
 
-void FdoRfpClassData::_buildUp(const FdoPtr<FdoRfpSpatialContextCollection>& contexts, const FdoClassDefinitionP& classDefinition, const FdoPtr<FdoGrfpClassDefinition>& classMapping)
+void FdoRfpClassData::_buildUp(FdoRfpConnection *conn,
+                               const FdoClassDefinitionP& classDefinition, 
+                               const FdoPtr<FdoGrfpClassDefinition>& classMapping)
 {
+    FdoPtr<FdoRfpSpatialContextCollection> contexts = conn->GetSpatialContexts();
+
     m_classDefinition = classDefinition;
     m_geoRasters = FdoRfpGeoRasterCollection::Create();
     if (classMapping == NULL)
@@ -99,9 +103,9 @@ void FdoRfpClassData::_buildUp(const FdoPtr<FdoRfpSpatialContextCollection>& con
         FdoGrfpRasterFeaturesP featureCatalogue = location->GetFeatureCatalogue();
 
         if (featureCatalogue->GetCount() == 0)
-            _buildUpGeoRastersFromLocation(location->GetName(), coordSystems);
+            _buildUpGeoRastersFromLocation(conn, location->GetName(), coordSystems);
         else
-            _buildUpGeoRastersFromCatalogue(featureCatalogue, coordSystems);
+            _buildUpGeoRastersFromCatalogue(conn, featureCatalogue, coordSystems);
     }
 	
     // First decide whether the coordinate system is already set for the class
@@ -199,17 +203,21 @@ void FdoRfpClassData::_buildUp(const FdoPtr<FdoRfpSpatialContextCollection>& con
 }
 
 // Extract all rasters from specified location, return value is the associated coordinate system name
-void FdoRfpClassData::_buildUpGeoRastersFromLocation(FdoString* location, FdoStringCollection* coordSystems)
+void FdoRfpClassData::_buildUpGeoRastersFromLocation(FdoRfpConnection *conn, 
+                                                     FdoString* location, 
+                                                     FdoStringCollection* coordSystems)
 {
 	FdoRfpGeoRasterExtractor extractor;
-	extractor.ExtractRasters(location, m_geoRasters, m_coord, m_extent, m_bFirstRaster, coordSystems);
+	extractor.ExtractRasters(conn, location, m_geoRasters, m_coord, m_extent, m_bFirstRaster, coordSystems);
 }
 	
 // Extract all rasters from image catalogue, return value is the associated coordinate system name
-void FdoRfpClassData::_buildUpGeoRastersFromCatalogue(const FdoPtr<FdoGrfpRasterFeatureCollection>& featureCatalogue, FdoStringCollection* coordSystems)
+void FdoRfpClassData::_buildUpGeoRastersFromCatalogue(FdoRfpConnection *conn,
+                                                      const FdoPtr<FdoGrfpRasterFeatureCollection>& featureCatalogue, 
+                                                      FdoStringCollection* coordSystems)
 {	
     VALIDATE_ARGUMENT(coordSystems);
-    FdoPtr<FdoRfpDatasetCache>  datasetCache = FdoRfpDatasetCache::Create();
+    FdoPtr<FdoRfpDatasetCache>  datasetCache = conn->GetDatasetCache();
     
     FdoInt32 i, j, bandCount;
 
@@ -255,6 +263,7 @@ void FdoRfpClassData::_buildUpGeoRastersFromCatalogue(const FdoPtr<FdoGrfpRaster
             bool bHasGeoInfo = FdoRfpRasterUtil::GetGeoReferenceInfo(hDS, geoRef);
 
             datasetCache->UnlockDataset( hDS );
+            hDS = NULL;
 
             // coordinate system handling
             //
@@ -301,7 +310,8 @@ void FdoRfpClassData::_buildUpGeoRastersFromCatalogue(const FdoPtr<FdoGrfpRaster
                 }
             }
 
-            FdoRfpGeoBandRasterP geoBandRaster = new FdoRfpGeoBandRasterRot(path, imageDef->GetFrameNumber()-1,
+            FdoRfpGeoBandRasterP geoBandRaster = new FdoRfpGeoBandRasterRot(m_connection, path, 
+                                                                            imageDef->GetFrameNumber()-1,
                                                                             insX, insY,
                                                                             resX, resY,
                                                                             width,height,
@@ -325,10 +335,14 @@ void FdoRfpClassData::_buildUpGeoRastersFromCatalogue(const FdoPtr<FdoGrfpRaster
 }
 
 
-FdoRfpClassData* FdoRfpClassData::Create(const FdoPtr<FdoRfpSpatialContextCollection>& contexts, const FdoClassDefinitionP& classDefinition, const FdoPtr<FdoGrfpClassDefinition>& classMapping)
+FdoRfpClassData* FdoRfpClassData::Create(FdoRfpConnection *conn, const FdoClassDefinitionP& classDefinition, const FdoPtr<FdoGrfpClassDefinition>& classMapping)
 {
 	FdoRfpClassData* classData = new FdoRfpClassData();
-	classData->_buildUp(contexts, classDefinition, classMapping);
+
+        classData->m_connection = conn;
+        FDO_SAFE_ADDREF( classData->m_connection.p );
+
+	classData->_buildUp(conn, classDefinition, classMapping);
 	return classData;
 }
 

@@ -29,22 +29,32 @@
 #include <gdal.h>
 
 // geo band raster implemenation with rotation support
-FdoRfpGeoBandRasterRot::FdoRfpGeoBandRasterRot(FdoString* imagePath, 
-        double insertionX, double insertionY,
-        double resX, double resY,
-        int width, int height,
-        double rotationX, double rotationY) : FdoRfpGeoBandRaster(imagePath), m_insertionX(insertionX), m_insertionY(insertionY),
-        m_resX(resX), m_resY(resY), m_width(width), m_height(height), m_rotationX(rotationX), m_rotationY(rotationY)
+FdoRfpGeoBandRasterRot::FdoRfpGeoBandRasterRot(
+    FdoRfpConnection *conn,
+    FdoString* imagePath, 
+    double insertionX, double insertionY,
+    double resX, double resY,
+    int width, int height,
+    double rotationX, double rotationY) : 
+        FdoRfpGeoBandRaster(conn,imagePath), 
+        m_insertionX(insertionX), m_insertionY(insertionY),
+        m_resX(resX), m_resY(resY), m_width(width), m_height(height), 
+        m_rotationX(rotationX), m_rotationY(rotationY)
 {
 }
 
 // geo band raster implemenation with rotation support
-FdoRfpGeoBandRasterRot::FdoRfpGeoBandRasterRot(FdoString* imagePath, int frameNumber, 
-        double insertionX, double insertionY,
-        double resX, double resY,
-        int width, int height,
-        double rotationX, double rotationY) : FdoRfpGeoBandRaster(imagePath, frameNumber), m_insertionX(insertionX), m_insertionY(insertionY),
-        m_resX(resX), m_resY(resY), m_width(width), m_height(height), m_rotationX(rotationX), m_rotationY(rotationY)
+FdoRfpGeoBandRasterRot::FdoRfpGeoBandRasterRot(
+    FdoRfpConnection *conn,
+    FdoString* imagePath, int frameNumber, 
+    double insertionX, double insertionY,
+    double resX, double resY,
+    int width, int height,
+    double rotationX, double rotationY) : 
+        FdoRfpGeoBandRaster(conn, imagePath, frameNumber), 
+        m_insertionX(insertionX), m_insertionY(insertionY),
+        m_resX(resX), m_resY(resY), m_width(width), m_height(height), 
+        m_rotationX(rotationX), m_rotationY(rotationY)
 {
 }
 

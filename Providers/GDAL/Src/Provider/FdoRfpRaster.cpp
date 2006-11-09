@@ -26,7 +26,6 @@
 #include "FDORFP.h"
 #include "FdoRfpBandRaster.h"
 #include "FdoRfpRaster.h"
-#include "FdoRfpImageFactory.h"
 #include "FdoRfpGeoRaster.h"
 #include "FdoRfpRasterPropertyDictionary.h"
 #include "FdoRfpStreamReaderRGB24.h"
