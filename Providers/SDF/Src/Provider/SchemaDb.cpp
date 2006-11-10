@@ -638,10 +638,12 @@ void SchemaDb::ReadDataPropertyDefinition(BinaryReader& rdr, FdoPropertyDefiniti
                     FdoPtr<FdoPropertyValueConstraintRange> constraintRange = FdoPropertyValueConstraintRange::Create();
                     constraintRange->SetMaxInclusive(rdr.ReadByte() != 0);
                     FdoPtr<FdoDataValue> maxValue = rdr.ReadDataValue();
-                    constraintRange->SetMaxValue(maxValue);
+                    if (maxValue)
+                        constraintRange->SetMaxValue(maxValue);
                     constraintRange->SetMinInclusive(rdr.ReadByte() != 0);
                     FdoPtr<FdoDataValue> minValue = rdr.ReadDataValue();
-                    constraintRange->SetMinValue(minValue);
+                    if (minValue)
+                        constraintRange->SetMinValue(minValue);
                     constraint = FDO_SAFE_ADDREF(constraintRange.p);
                 }
                 break;

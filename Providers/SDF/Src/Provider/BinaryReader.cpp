@@ -18,6 +18,7 @@
 #include "stdafx.h"
 #include "BinaryReader.h"
 #include "utf8_.h"
+#include "BinaryWriter.h"
 
 //use this to avoid entres equal to 0 in the 
 //unicode string hash table -- because hash_map
@@ -388,10 +389,15 @@ FdoDataValue* BinaryReader::ReadDataValue()
         }
         break;
 
+        case SDF_UNDEFINED_DATATYPE:
+            return NULL;
+            break;             
+
 
         // Unsupported types:
         case FdoDataType_BLOB:
         case FdoDataType_CLOB:
+
         default:
             throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_20_SCHEMA_STORAGE_ERROR)));
         break;

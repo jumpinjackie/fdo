@@ -269,6 +269,12 @@ void BinaryWriter::WriteDateTime(FdoDateTime dt)
 void BinaryWriter::WriteDataValue(FdoDataValue* dataValue)
 {
     // Write data type and isnull:
+    if (!dataValue)
+    {
+        WriteByte(SDF_UNDEFINED_DATATYPE);
+        WriteByte(1);
+        return;
+    }
     WriteByte(dataValue->GetDataType());
     WriteByte(dataValue->IsNull() ? 1 : 0);
 

@@ -16,6 +16,8 @@
 #ifndef BINARYWRITER_H
 #define BINARYWRITER_H
 
+#define SDF_UNDEFINED_DATATYPE 255
+
 class BinaryWriter
 {
 public:
