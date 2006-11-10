@@ -124,7 +124,7 @@ FdoFunctionDefinitionCollection* SdfExpressionCapabilities::GetFunctions()
         m_supportedFunctions->Add(function);
 
         desc = FdoException::NLSGetMessage(FUNCTION_COUNT, "Returns the number of objects in the query");
-        function = FdoCommonMiscUtil::CreateFunctionDefinition(FDO_FUNCTION_COUNT, desc, true, 14,
+        function = FdoCommonMiscUtil::CreateFunctionDefinition(FDO_FUNCTION_COUNT, desc, true, 12,
             FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_Boolean, 
             FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_Double, 
             FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_Single, 
@@ -135,11 +135,8 @@ FdoFunctionDefinitionCollection* SdfExpressionCapabilities::GetFunctions()
             FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_Int32, 
             FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_Int64,
             FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_String, 
-            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_BLOB, 
-            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_CLOB,
             FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_GeometricProperty, FdoDataType_Int32,
-            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_AssociationProperty, FdoDataType_Int32
-            );
+            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_AssociationProperty, FdoDataType_Int32);
         m_supportedFunctions->Add(function);
 
         desc = FdoException::NLSGetMessage(FUNCTION_MIN, "Returns the minimum value of an expression");
