@@ -60,7 +60,7 @@ void MySqlFdoCapabilityTest::InitSchemaCapabilitiesNameSizeLimits ()
     m_expectedSchemaCapabilities->classNameLimit     = 200;
     m_expectedSchemaCapabilities->datastoreNameLimit = 64;
     m_expectedSchemaCapabilities->descriptionLimit   = 255;
-    m_expectedSchemaCapabilities->propertyNameLimit  = 255;
+    m_expectedSchemaCapabilities->propertyNameLimit  = 200;
     m_expectedSchemaCapabilities->schemaNameLimit    = 200;
 
 }  //  InitSchemaCapabilitiesNameSizeLimits ()

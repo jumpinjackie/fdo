@@ -87,7 +87,7 @@ public:
             case FdoSchemaElementNameType_Datastore:   return   64;
             case FdoSchemaElementNameType_Schema:      return  200;
             case FdoSchemaElementNameType_Class:       return  200;
-            case FdoSchemaElementNameType_Property:    return  255;
+            case FdoSchemaElementNameType_Property:    return  200;
             case FdoSchemaElementNameType_Description: return  255;
         }
         return -1;
