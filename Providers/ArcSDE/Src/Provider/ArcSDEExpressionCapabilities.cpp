@@ -72,24 +72,14 @@ FdoFunctionDefinitionCollection* ArcSDEExpressionCapabilities::GetFunctions()
         m_supportedFunctions->Add(function);
 
         desc = FdoException::NLSGetMessage(FUNCTION_COUNT, "Returns the number of objects in the query");
-        function = FdoCommonMiscUtil::CreateFunctionDefinition(FDO_FUNCTION_COUNT, desc, true, 16,
-            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_Boolean, 
-            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_Double, 
-            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_Single, 
-            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_Decimal, 
-            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_Byte, 
+        function = FdoCommonMiscUtil::CreateFunctionDefinition(FDO_FUNCTION_COUNT, desc, true, 7,
+            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_BLOB, 
             FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_DateTime, 
+            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_Double, 
             FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_Int16, 
             FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_Int32, 
-            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_Int64,
-            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_String, 
-            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_BLOB, 
-            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_CLOB,
-            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_ObjectProperty, FdoDataType_Int32,
-            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_GeometricProperty, FdoDataType_Int32,
-            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_AssociationProperty, FdoDataType_Int32,
-            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_RasterProperty, FdoDataType_Int32
-            );
+            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_Single, 
+            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_String);
         m_supportedFunctions->Add(function);
 
         desc = FdoException::NLSGetMessage(FUNCTION_MIN, "Returns the minimum value of an expression");
