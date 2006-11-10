@@ -94,68 +94,40 @@ FdoFunctionDefinitionCollection* ShpExpressionCapabilities::GetFunctions()
         m_supportedFunctions->Add(function);
 
         desc = FdoException::NLSGetMessage(FUNCTION_SUM, "Returns the sum of values of an expression");
-        function = FdoCommonMiscUtil::CreateFunctionDefinition(FDO_FUNCTION_SUM, desc, true, 7,
-            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Double, 
-            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Single, 
+        function = FdoCommonMiscUtil::CreateFunctionDefinition(FDO_FUNCTION_SUM, desc, true, 2,
             FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Decimal, 
-            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Byte, 
-            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Int16, 
-            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Int32, 
-            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Int64);
+            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Int32);
         m_supportedFunctions->Add(function);
 
         desc = FdoException::NLSGetMessage(FUNCTION_COUNT, "Returns the number of objects in the query");
-        function = FdoCommonMiscUtil::CreateFunctionDefinition(FDO_FUNCTION_COUNT, desc, true, 16,
+        function = FdoCommonMiscUtil::CreateFunctionDefinition(FDO_FUNCTION_COUNT, desc, true, 9,
             FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_Boolean, 
-            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_Double, 
-            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_Single, 
-            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_Decimal, 
-            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_Byte, 
             FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_DateTime, 
-            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_Int16, 
+            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_Decimal, 
             FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_Int32, 
-            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_Int64,
             FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_String, 
-            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_BLOB, 
-            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_DataProperty, FdoDataType_CLOB,
             FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_ObjectProperty, FdoDataType_Int32,
             FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_GeometricProperty, FdoDataType_Int32,
             FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_AssociationProperty, FdoDataType_Int32,
-            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_RasterProperty, FdoDataType_Int32
-            );
+            FdoPropertyType_DataProperty, FdoDataType_Int64, 1, FdoPropertyType_RasterProperty, FdoDataType_Int32);
         m_supportedFunctions->Add(function);
 
         desc = FdoException::NLSGetMessage(FUNCTION_MIN, "Returns the minimum value of an expression");
-        function = FdoCommonMiscUtil::CreateFunctionDefinition(FDO_FUNCTION_MIN, desc, true, 7,
-            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Double, 
-            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Single, 
+        function = FdoCommonMiscUtil::CreateFunctionDefinition(FDO_FUNCTION_MIN, desc, true, 2,
             FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Decimal, 
-            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Byte, 
-            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Int16, 
-            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Int32, 
-            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Int64);
+            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Int32);
         m_supportedFunctions->Add(function);
 
         desc = FdoException::NLSGetMessage(FUNCTION_AVG, "Returns the average value of an expression");
-        function = FdoCommonMiscUtil::CreateFunctionDefinition(FDO_FUNCTION_AVG, desc, true, 7,
-            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Double, 
-            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Single, 
+        function = FdoCommonMiscUtil::CreateFunctionDefinition(FDO_FUNCTION_AVG, desc, true, 2,
             FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Decimal, 
-            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Byte, 
-            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Int16, 
-            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Int32, 
-            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Int64);
+            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Int32);
         m_supportedFunctions->Add(function);
 
         desc = FdoException::NLSGetMessage(FUNCTION_MAX, "Returns the maximum value of an expression");
-        function = FdoCommonMiscUtil::CreateFunctionDefinition(FDO_FUNCTION_MAX, desc, true, 7,
-            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Double, 
-            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Single, 
+        function = FdoCommonMiscUtil::CreateFunctionDefinition(FDO_FUNCTION_MAX, desc, true, 2,
             FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Decimal, 
-            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Byte, 
-            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Int16, 
-            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Int32, 
-            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Int64);
+            FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Int32);
         m_supportedFunctions->Add(function);
     }
 
