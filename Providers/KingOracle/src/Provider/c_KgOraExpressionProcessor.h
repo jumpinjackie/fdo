@@ -265,7 +265,8 @@ public:
   //const std::vector<c_KgOraSqlParamDesc*> GetParamList() const { return m_ParamList; }
     
   
-  void ApplySqlParameters(oracle::occi::Statement* OraStm);
+  void ApplySqlParameters(oracle::occi::Statement* OraStm,int ParamOffest=0);
+  int GetSqlParametersCount();
   
 protected:
   

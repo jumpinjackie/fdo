@@ -28,6 +28,7 @@
 c_KgOraSelectCommand::c_KgOraSelectCommand (c_KgOraConnection* Conn) 
     : c_KgOraFdoFeatureCommand<FdoISelect> (Conn)
 {
+  m_OrderingOption = FdoOrderingOption_Ascending;
 }
 
 
@@ -147,6 +148,7 @@ FdoIFeatureReader* c_KgOraSelectCommand::Execute ()
       fproc.GetExpressionProcessor().ApplySqlParameters(occi_stm);
       
       occi_rset = occi_stm->executeQuery();
+      //m_Connection->OCCI_TerminateStatement(occi_stm);
     }
     catch(oracle::occi::SQLException& ea)
     {
@@ -283,6 +285,29 @@ string c_KgOraSelectCommand::CreateSqlString(c_KgOraFilterProcessor& FilterProc,
     
     delete sbuff;
     
+    FdoPtr<FdoIdentifierCollection> order_ident_col = GetOrdering();
+    long order_count = order_ident_col->GetCount();
+    if( order_count > 0 )
+    {
+      string sep;
+      sqlstr += " ORDER BY ";
+      for(long ind=0; ind<order_count; ind++)
+      {
+        FdoPtr<FdoIdentifier> order_ident = order_ident_col->GetItem(ind);
+        FdoStringP fdostr = order_ident->GetName();
+        sqlstr += sep + (const char*)fdostr;
+        if( GetOrderingOption() == FdoOrderingOption_Ascending )
+        {
+          sqlstr += " ASC ";
+        }
+        else
+        {
+          sqlstr += " DESC ";
+        }
+        sep = ",";
+      }
+    }
+    
     // Test vremena za fetch iz oracle
     #ifdef _DEBUG
       //TestArrayFetch(ClassId, Filter, Props);
@@ -378,3 +403,31 @@ void c_KgOraSelectCommand::CreateFilterSqlString(FdoFilter* Filter,string& Where
 
 
 }//end of c_KgOraSelectCommand::CreateFilterSqlString
+
+
+/// <summary>Gets the FdoIdentifierCollection that holds the list of order by property names. If empty no ordering is used. This list is initially
+/// empty and the caller need to add the property that the command should use as a order by criteria.</summary>
+/// <returns>Returns the list of group by property names.</returns> 
+FdoIdentifierCollection* c_KgOraSelectCommand::GetOrdering()
+{ 
+  if( m_OrderingIdentifiers.p == NULL )
+    m_OrderingIdentifiers = FdoIdentifierCollection::Create();
+    
+  return FDO_SAFE_ADDREF(m_OrderingIdentifiers.p); 
+}
+
+/// <summary>Set the ordering option of the selection. This is only used if the ordering collection is not empty.</summary>
+/// <param name="option">Is the ordering option and should be set to one of FdoOrderingOption_Ascending or FdoOrderingOption_Descending.
+/// FdoOrderingOption_Ascending is the default value.</param> 
+/// <returns>Returns nothing</returns> 
+void c_KgOraSelectCommand::SetOrderingOption( FdoOrderingOption  Option ) 
+{
+  m_OrderingOption = Option;
+}
+
+/// <summary>Gets the ordering option.</summary>
+/// <returns>Returns the ordering option.</returns> 
+FdoOrderingOption c_KgOraSelectCommand::GetOrderingOption( )
+{ 
+  return m_OrderingOption; 
+}

@@ -1,3 +1,19 @@
+/*
+* Copyright (C) 2006  SL-King d.o.o
+* 
+* This library is free software; you can redistribute it and/or
+* modify it under the terms of version 2.1 of the GNU Lesser
+* General Public License as published by the Free Software Foundation.
+* 
+* This library is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* Lesser General Public License for more details.
+* 
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+*/
 #include "StdAfx.h"
 
 #include "c_KgOraFilterProcessor.h"
@@ -66,7 +82,7 @@ FdoInt32 c_KgOraDelete::Execute()
   
   int delete_num=0;
   oracle::occi::Statement* occi_stm=NULL;
-  oracle::occi::ResultSet* occi_rset=NULL;
+  
   try
   {
     occi_stm = m_Connection->OCCI_CreateStatement();
@@ -81,10 +97,11 @@ FdoInt32 c_KgOraDelete::Execute()
     delete_num = occi_stm->executeUpdate();
     
     m_Connection->OCCI_Commit();
+    if( occi_stm ) m_Connection->OCCI_TerminateStatement(occi_stm);
   }
   catch(oracle::occi::SQLException& ea)
   {
-    occi_rset = NULL;
+    if( occi_stm ) m_Connection->OCCI_TerminateStatement(occi_stm);  
     FdoStringP gstr = ea.what();
     throw FdoCommandException::Create( gstr );    
   }

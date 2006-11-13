@@ -123,6 +123,7 @@ protected:
   void InsertSdoGeomMetadata(FdoString* TableName,FdoGeometricPropertyDefinition* GeomProp);
   void CreateIndex(FdoString* TableName,FdoGeometricPropertyDefinition* GeomProp);
   void CreatePrimaryKey(FdoString* TableName,FdoDataPropertyDefinitionCollection* IdentPropColl);
+  void CreateTableSequence(FdoString* TableName);
 };
 
 #endif

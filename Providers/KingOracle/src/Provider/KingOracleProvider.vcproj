@@ -93,7 +93,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning $(ProjectName).dll"
-				CommandLine="..\..\..\..\thirdparty\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;0.4.2.0%PROVIDERS_VERSION%&quot; $(OutDir)\$(ProjectName).dll&#x0D;&#x0A;..\copydebug.bat&#x0D;&#x0A;..\copyunittest.bat&#x0D;&#x0A;"
+				CommandLine="..\..\..\..\thirdparty\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;0.4.4.0%PROVIDERS_VERSION%&quot; $(OutDir)\$(ProjectName).dll&#x0D;&#x0A;..\copydebug.bat&#x0D;&#x0A;..\copyunittest.bat&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -170,7 +170,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning $(ProjectName).dll"
-				CommandLine="..\..\..\..\thirdparty\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;0.4.2.0%PROVIDERS_VERSION%&quot; $(OutDir)\$(ProjectName).dll&#x0D;&#x0A;..\copyunittest.bat&#x0D;&#x0A;"
+				CommandLine="..\..\..\..\thirdparty\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;0.4.4.0%PROVIDERS_VERSION%&quot; $(OutDir)\$(ProjectName).dll&#x0D;&#x0A;..\copyunittest.bat&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -247,7 +247,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning $(ProjectName).dll"
-				CommandLine="..\..\..\..\thirdparty\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;0.4.2.0%PROVIDERS_VERSION%&quot; $(OutDir)\$(ProjectName).dll&#x0D;&#x0A;..\copyfdo2fdo.bat&#x0D;&#x0A;"
+				CommandLine="..\..\..\..\thirdparty\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;0.4.4.0%PROVIDERS_VERSION%&quot; $(OutDir)\$(ProjectName).dll&#x0D;&#x0A;..\copyfdo2fdo.bat&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>

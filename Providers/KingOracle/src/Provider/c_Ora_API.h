@@ -40,7 +40,8 @@ public:
   static SDO_GEOMETRY* c_Ora_API::CreateOptimizedRect(long Srid,double MinX,double MinY,double MaxX,double MaxY);
   
   static long GetSrid(oracle::occi::Connection*Conn,const char* CoordSysName);
-  
+  static long GetSequenceNextVal(oracle::occi::Connection*Conn,const char* SequenceName);  
+  static bool ResetSequence(oracle::occi::Connection*Conn,const char* SequenceName,const char* FullTableName,const char* ColumnName);
   static bool GetOracleVersion(oracle::occi::Connection*Conn,int& MainVersion,int& SubVersion);
   
   static bool IsGeodeticCoordSystem(const char* CoordSysWkt);

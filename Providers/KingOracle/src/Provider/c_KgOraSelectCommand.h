@@ -28,7 +28,8 @@ class c_KgOraSelectCommand :
 
 protected:
     FdoPtr<FdoIdentifierCollection> m_PropertyNames;
-
+    FdoOrderingOption m_OrderingOption;
+    FdoPtr<FdoIdentifierCollection> m_OrderingIdentifiers;
 protected:
     c_KgOraSelectCommand (c_KgOraConnection* Connection);
     virtual ~c_KgOraSelectCommand (void);
@@ -85,17 +86,17 @@ public:
     /// <summary>Gets the FdoIdentifierCollection that holds the list of order by property names. If empty no ordering is used. This list is initially
     /// empty and the caller need to add the property that the command should use as a order by criteria.</summary>
     /// <returns>Returns the list of group by property names.</returns> 
-    virtual FdoIdentifierCollection* GetOrdering(){ return NULL; }
+    virtual FdoIdentifierCollection* GetOrdering();
 
     /// <summary>Set the ordering option of the selection. This is only used if the ordering collection is not empty.</summary>
     /// <param name="option">Is the ordering option and should be set to one of FdoOrderingOption_Ascending or FdoOrderingOption_Descending.
     /// FdoOrderingOption_Ascending is the default value.</param> 
     /// <returns>Returns nothing</returns> 
-    virtual void SetOrderingOption( FdoOrderingOption  option ) {}
+    virtual void SetOrderingOption( FdoOrderingOption  option );
 
     /// <summary>Gets the ordering option.</summary>
     /// <returns>Returns the ordering option.</returns> 
-    virtual FdoOrderingOption GetOrderingOption( ){ return (FdoOrderingOption)0; }
+    virtual FdoOrderingOption GetOrderingOption( );
     
 protected:
   string c_KgOraSelectCommand::CreateSqlString(c_KgOraFilterProcessor& FilterProc,int& GeomSqlColumnIndex,FdoStringCollection* SqlColumns);

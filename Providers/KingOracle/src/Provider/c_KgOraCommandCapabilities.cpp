@@ -134,7 +134,7 @@ bool c_KgOraCommandCapabilities::SupportsSelectDistinct()
 /// 
 bool c_KgOraCommandCapabilities::SupportsSelectOrdering()
 {
-    return (false);
+    return (true);
 }
 
 /// \brief

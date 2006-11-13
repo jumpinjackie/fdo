@@ -541,14 +541,21 @@ void c_KgOraExpressionProcessor::ProcessGeometryValue(FdoGeometryValue& Expr)
   
 }//end of c_KgOraExpressionProcessor::ProcessGeometryValue
 
-void c_KgOraExpressionProcessor::ApplySqlParameters(oracle::occi::Statement* OraStm)
+
+int c_KgOraExpressionProcessor::GetSqlParametersCount()
+{
+  return m_ParamList.size();
+      
+}//end of c_KgOraExpressionProcessor::GetSqlParametersCount
+
+void c_KgOraExpressionProcessor::ApplySqlParameters(oracle::occi::Statement* OraStm,int ParamOffest/*=0*/)
 {
   if( m_ParamList.size() > 0 )
   {
     long psize = m_ParamList.size();
     for(long pind=0;pind<psize;pind++)
     {
-      m_ParamList[pind]->ApplySqlParameter(OraStm,pind+1);      
+      m_ParamList[pind]->ApplySqlParameter(OraStm,pind+1+ParamOffest);      
     }
   }
       

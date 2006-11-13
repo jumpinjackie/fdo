@@ -71,14 +71,32 @@ FdoInt32 c_KgOraSQLCommand::ExecuteNonQuery()
     
     occi_stm->setSQL( (const char*)m_SqlStr);
  
-
-
+// set parameters
+    FdoPtr<FdoParameterValueCollection> params = GetParameterValues();
+    if( params.p && (params->GetCount() > 0) )
+    {
+      long count = params->GetCount();
+      for(long ind=0;ind<count;ind++)
+      {
+        FdoPtr<FdoParameterValue> param = params->GetItem(ind);
+        FdoPtr<FdoLiteralValue> lval = param->GetValue();
+        //FdoDataValue*
+        FdoDataValue* dataval = dynamic_cast<FdoDataValue*>(lval.p);
+        if( dataval )
+        {    
+          c_FdoOra_API::SetOracleStatementData(occi_stm,ind+1, dataval);
+        }
+      }
+    }
+    
     ret = occi_stm->executeUpdate();
     m_Connection->OCCI_Commit();
+    
+    if( occi_stm ) m_Connection->OCCI_TerminateStatement(occi_stm);
   }
   catch(oracle::occi::SQLException& ea)
-  {
-    occi_rset = NULL;
+  { 
+    if( occi_stm ) m_Connection->OCCI_TerminateStatement(occi_stm);
     FdoStringP gstr = ea.what();
     throw FdoCommandException::Create( gstr );    
   }
@@ -127,7 +145,15 @@ FdoISQLDataReader* c_KgOraSQLCommand::ExecuteReader()
   }
   catch(oracle::occi::SQLException& ea)
   {
-    occi_rset = NULL;
+    
+    if( occi_stm ) 
+    {
+      if( occi_rset ) occi_stm->closeResultSet(occi_rset);
+      occi_rset=NULL;
+      m_Connection->OCCI_TerminateStatement(occi_stm);
+      occi_stm=NULL;
+    }
+    
     FdoStringP gstr = ea.what();
     throw FdoCommandException::Create( gstr );    
   }

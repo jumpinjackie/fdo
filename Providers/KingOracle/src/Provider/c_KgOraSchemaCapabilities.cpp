@@ -53,11 +53,16 @@ FdoDataType* c_KgOraSchemaCapabilities::GetDataTypes (FdoInt32& Length)
 {
     static FdoDataType types[] =
     {
-        FdoDataType_Decimal,
-        FdoDataType_Int32,
-        FdoDataType_String,
+        FdoDataType_Boolean,
+        FdoDataType_Byte,
         FdoDataType_DateTime,
-        FdoDataType_Boolean
+        FdoDataType_Decimal,
+        FdoDataType_Double,
+        FdoDataType_Int16,
+        FdoDataType_Int32,
+        FdoDataType_Int64,
+        FdoDataType_Single,
+        FdoDataType_String,
     };
 
     Length = sizeof (types) / sizeof (FdoDataType);

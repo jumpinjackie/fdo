@@ -187,6 +187,129 @@ long c_Ora_API::GetSrid(oracle::occi::Connection*Conn,const char* CoordSysName)
   
 }//end of c_Ora_API::GetSrid
 
+long c_Ora_API::GetSequenceNextVal(oracle::occi::Connection*Conn,const char* SequenceName)
+{
+  oracle::occi::Statement* occi_stm=NULL;
+  oracle::occi::ResultSet* occi_rset=NULL;
+  long nextval = 0;
+
+  occi_stm = Conn->createStatement();  
+  
+  string sqlstr;
+  sqlstr = " select ";
+  sqlstr = sqlstr + SequenceName + ".nextval from dual";
+  
+  
+  occi_stm->setSQL(sqlstr);
+  
+  occi_rset = occi_stm->executeQuery();
+  
+  if( occi_rset->next() != oracle::occi::ResultSet::END_OF_FETCH )
+  {
+    if( !occi_rset->isNull(1) )
+    {
+      nextval = occi_rset->getInt(1);
+    }      
+  }
+  
+  occi_stm->closeResultSet(occi_rset);
+  Conn->terminateStatement (occi_stm);
+  
+  return nextval;
+  
+}//end of c_Ora_API::GetSequenceNextVal
+
+bool c_Ora_API::ResetSequence(oracle::occi::Connection*Conn,const char* SequenceName,const char* FullTableName,const char* ColumnName)
+{
+  oracle::occi::Statement* occi_stm=NULL;
+  oracle::occi::ResultSet* occi_rset=NULL;
+  long nextval = 0;
+
+try
+{
+  occi_stm = Conn->createStatement();  
+  
+  oracle::occi::Number maxid;
+  
+  string sql,strseq;
+  strseq = SequenceName;
+  
+  string col = ColumnName;
+  sql = "SELECT MAX(";
+  sql = sql + col +") as MAXID from " + FullTableName;    
+  
+  occi_stm->setSQL(sql);
+  
+  occi_rset = occi_stm->executeQuery();
+  
+  if( occi_rset->next() != oracle::occi::ResultSet::END_OF_FETCH )
+  {
+    if( !occi_rset->isNull(1) )
+    {
+     
+      
+      maxid = occi_rset->getNumber(1);
+      
+       occi_stm->closeResultSet(occi_rset);
+      occi_rset = NULL;
+      
+      
+      sql = "SELECT " + strseq + ".nextval as CURR from dual";  
+      occi_stm->setSQL(sql);  
+      occi_rset = occi_stm->executeQuery();
+      if( occi_rset->next() != oracle::occi::ResultSet::END_OF_FETCH )
+      {
+        if( !occi_rset->isNull(1) )
+        {
+          oracle::occi::Number currval;
+          
+          currval = occi_rset->getNumber(1);
+          occi_stm->closeResultSet(occi_rset);
+          occi_rset = NULL;
+          
+          long inc;
+          inc = maxid -  currval;
+          // now calculate increment
+          if( (long)inc > 0 )
+          {
+            char buff[64];
+            sprintf(buff,"%ld",inc);
+            string incstr = buff;
+           
+            sql = "ALTER SEQUENCE " + strseq + " INCREMENT BY " + incstr + " MINVALUE 0";  
+            occi_stm->executeUpdate(sql); 
+            
+            sql = "SELECT " + strseq + ".nextval from dual";    
+            occi_stm->setSQL(sql);  
+            occi_rset = occi_stm->executeQuery();
+            occi_rset->next();
+            
+            sql = "ALTER SEQUENCE " + strseq + " INCREMENT BY 1";     
+            occi_stm->executeUpdate(sql);
+          }  
+        }
+      }
+    }      
+  }
+
+  
+  
+  
+  
+  if( occi_rset ) occi_stm->closeResultSet(occi_rset);
+  if( occi_stm ) Conn->terminateStatement (occi_stm);
+  
+  return true;
+}
+catch(oracle::occi::SQLException& )
+{
+  if( occi_rset ) occi_stm->closeResultSet(occi_rset);
+  if( occi_stm ) Conn->terminateStatement (occi_stm);
+}
+return false;  
+  
+}//end of c_Ora_API::GetSequenceNextVal
+
 
 bool c_Ora_API::GetOracleVersion(oracle::occi::Connection*Conn,int& MainVersion,int& SubVersion)
 {
@@ -194,7 +317,7 @@ bool c_Ora_API::GetOracleVersion(oracle::occi::Connection*Conn,int& MainVersion,
   oracle::occi::Statement* occi_stm=NULL;
   oracle::occi::ResultSet* occi_rset=NULL;
   long srid = 0;
-
+  bool ret=false;
 try
 {
   occi_stm = Conn->createStatement();  
@@ -221,35 +344,43 @@ try
         if( banner.find("10.2") != string::npos )
         {
           MainVersion = 10;
-          SubVersion = 1;
-          return true;
+          SubVersion = 1;   
+          ret = true;       
         }
-        if( banner.find("10.1") != string::npos )
+        else
         {
-          MainVersion = 10;
-          SubVersion = 1;
-          return true;
-        }
-        if( banner.find("9.2") != string::npos )
-        {
-          MainVersion = 9;
-          SubVersion = 2;
-          return true;
-        }
-        if( banner.find("9.1") != string::npos )
-        {
-          MainVersion = 9;
-          SubVersion = 1;
-          return true;
+          if( banner.find("10.1") != string::npos )
+          {
+            MainVersion = 10;
+            SubVersion = 1;
+            ret = true;
+          } 
+          else
+          {
+            if( banner.find("9.2") != string::npos )
+            {
+              MainVersion = 9;
+              SubVersion = 2;
+              ret = true;
+            }
+            else
+            if( banner.find("9.1") != string::npos )
+            {
+              MainVersion = 9;
+              SubVersion = 1;
+              ret = true;
+            }
+          }
         }
       }
     }      
   }
   
+
   occi_stm->closeResultSet(occi_rset);
   Conn->terminateStatement (occi_stm);
   
-  return false;
+  return ret;
 }
 catch(oracle::occi::SQLException& )
 {

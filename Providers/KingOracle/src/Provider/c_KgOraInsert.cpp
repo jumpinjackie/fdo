@@ -1,6 +1,23 @@
+/*
+* Copyright (C) 2006  SL-King d.o.o
+* 
+* This library is free software; you can redistribute it and/or
+* modify it under the terms of version 2.1 of the GNU Lesser
+* General Public License as published by the Free Software Foundation.
+* 
+* This library is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* Lesser General Public License for more details.
+* 
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+*/
 #include "StdAfx.h"
 #include "c_KgOraInsert.h"
 #include "c_FdoOra_API.h"
+#include "c_Ora_API.h"
 #include "c_FgfToSdoGeom.h"
 
 c_KgOraInsert::c_KgOraInsert(c_KgOraConnection *Conn)
@@ -122,6 +139,20 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
   FdoStringP fultablename = phys_class->GetOracleFullTableName();
   FdoStringP table_alias = phys_class->GetOraTableAlias();
   
+  bool use_seq_for_identity = false;
+  FdoPtr<FdoDataPropertyDefinition> ident_for_seq;
+  FdoStringP seqname = phys_class->GetUseSequenceForIdentity();
+  if( seqname.GetLength() > 0 )
+  {
+  // take the name of identity property
+    FdoPtr<FdoDataPropertyDefinitionCollection> ident_col = classdef->GetIdentityProperties();
+    if( ident_col->GetCount() == 1 )
+    {
+      ident_for_seq = ident_col->GetItem(0);      
+      use_seq_for_identity = true;
+    }
+  }
+  
   c_KgOraSridDesc orasrid;
   m_Connection->GetOracleSridDesc(classdef,orasrid);
   
@@ -179,7 +210,6 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
       
       strbuff.ClearBuffer();
       expr->Process( &expproc );
-      
       
       colvalues += sep + strbuff.GetString();
       sep = ",";
@@ -247,6 +277,7 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
               }
               else
               {
+                if( occi_stm ) m_Connection->OCCI_TerminateStatement(occi_stm);
                 throw FdoCommandException::Create( L"Unknown parameter batch value type. No data value no geometry value." );    
               }
             }
@@ -256,9 +287,17 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
           int update_num = occi_stm->executeUpdate();
         }
       }
-      
       m_Connection->OCCI_TerminateStatement(occi_stm);
       m_Connection->OCCI_Commit();
+      
+      // after batch insert reset table sequence if nesseseary
+      if( use_seq_for_identity )
+      {
+        FdoStringP fdostr = ident_for_seq->GetName();
+        c_Ora_API::ResetSequence(m_Connection->GetOcciConnection(),seqname,fultablename,fdostr);
+      }
+      
+      
     }
     catch(oracle::occi::SQLException& ea)
     {
@@ -266,82 +305,148 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
       FdoStringP gstr = ea.getMessage().c_str();
       throw FdoCommandException::Create( gstr );    
     }
-
     
     return new c_KgOraFeatureReaderInsert(m_PropertyValues,classdef);
   }
   else
   {
-  if( m_PropertyValues.p )
-  {
-    c_FilterStringBuffer strbuff;
-    c_KgOraExpressionProcessor expproc(&strbuff,schemadesc,m_ClassId,orasrid);
-    
-    
-    FdoStringP colnames;
-    FdoStringP colvalues;
-    FdoStringP sep;
-    
-    unsigned int count = m_PropertyValues->GetCount();
-    for(unsigned int ind=0;ind<count;ind++)
+  // Single values insert
+    if( m_PropertyValues.p )
     {
-      FdoPtr<FdoPropertyValue> propval = m_PropertyValues->GetItem(ind);
-      FdoPtr<FdoIdentifier> propid = propval->GetName();
-      
-      colnames += sep + propid->GetName();
-     
-      
-      FdoPtr<FdoValueExpression> expr = propval->GetValue();
-      
-      strbuff.ClearBuffer();
-      expr->Process( &expproc );
+      c_FilterStringBuffer strbuff;
+      c_KgOraExpressionProcessor expproc(&strbuff,schemadesc,m_ClassId,orasrid);
+        
+      FdoStringP colnames;
+      FdoStringP colvalues;
+      FdoStringP sep;
       
       
-      colvalues += sep + strbuff.GetString();
-      sep = ",";
-    }
-    
-    c_FilterStringBuffer sqlstr;
-    sqlstr.AppendString("INSERT INTO ");
-    sqlstr.AppendString(fultablename);
-    sqlstr.AppendString(" ( ");
-    sqlstr.AppendString(colnames);
-    sqlstr.AppendString(" ) ");
-    sqlstr.AppendString(" VALUES ( ");
-    sqlstr.AppendString(colvalues);
-    sqlstr.AppendString(" ) ");
-    
-    oracle::occi::Statement* occi_stm=NULL;
-    
-    try
-    {
-      occi_stm = m_Connection->OCCI_CreateStatement();
+      bool prop_in_seq = false;
+      bool used_seq = false;
       
-      D_KGORA_ELOG_WRITE1("Execute Insert: '%s",sqlstr.GetString());
       
-      #ifdef _DEBUG
-      #endif
-      occi_stm->setSQL(sqlstr.GetString());
       
-      expproc.ApplySqlParameters(occi_stm);
-      
+      // first check if this class is using oracle sequences
+      // if so check if identiy is inside properties and check 
+      // if value is null than set it to sequence value
+      if( use_seq_for_identity )
+      {
+        unsigned int prop_count = m_PropertyValues->GetCount();
+        bool found_identity = false;
+        for(unsigned int ind=0;ind<prop_count;ind++)
+        { 
+          FdoPtr<FdoPropertyValue> propval = m_PropertyValues->GetItem(ind);
+          FdoPtr<FdoIdentifier> propid = propval->GetName();
+          if( wcscmp(propid->GetName(),ident_for_seq->GetName()) == 0 )
+          {
+            long seqval = c_Ora_API::GetSequenceNextVal(m_Connection->GetOcciConnection(),seqname);
+            FdoPtr<FdoDataValue> newval = FdoDataValue::Create((GisInt32)seqval);
+            propval->SetValue(newval);
+            found_identity = true;
+            break;
+          }
+        }
+        
+        if( !found_identity )
+        {
+          
+          long seqval = c_Ora_API::GetSequenceNextVal(m_Connection->GetOcciConnection(),seqname);
+          FdoPtr<FdoDataValue> newval = FdoDataValue::Create((GisInt32)seqval);
+          
+          FdoPtr<FdoPropertyValue> propval = FdoPropertyValue::Create(ident_for_seq->GetName(),newval);
+          m_PropertyValues->Insert(0,propval);
 
-      int update_num = occi_stm->executeUpdate();
+        }
+      }
       
-      m_Connection->OCCI_TerminateStatement(occi_stm);
-      m_Connection->OCCI_Commit();
-    }
-    catch(oracle::occi::SQLException& ea)
-    {
-      if( occi_stm ) m_Connection->OCCI_TerminateStatement(occi_stm);
-      FdoStringP gstr = ea.getMessage().c_str();
-      throw FdoCommandException::Create( gstr );    
-    }
+      
+      unsigned int prop_count = m_PropertyValues->GetCount();
+      for(unsigned int ind=0;ind<prop_count;ind++)
+      {
+        FdoPtr<FdoPropertyValue> propval = m_PropertyValues->GetItem(ind);
+        FdoPtr<FdoIdentifier> propid = propval->GetName();
+        
+        colnames += sep + propid->GetName();
 
-    
-    return new c_KgOraFeatureReaderInsert(m_PropertyValues,classdef);
-    
-  }
+        FdoPtr<FdoValueExpression> expr = propval->GetValue();
+        
+        
+        prop_in_seq = false;
+        if( use_seq_for_identity && !used_seq)
+        {
+
+          
+          if( wcscmp(propid->GetName(),ident_for_seq->GetName()) == 0 )
+          {
+          // if it is data val end if it is null put sequence inot it 
+            FdoDataValue* dataval = dynamic_cast<FdoDataValue*>(expr.p);
+            if( dataval && dataval->IsNull() )
+            {
+             
+              colvalues += sep + seqname + L".nextval";
+              used_seq = true;
+              prop_in_seq = true;
+            }
+            
+          }
+          else
+          {
+
+            FdoStringP str = propid->GetName();
+            
+          }
+        }
+        
+        if( !prop_in_seq )
+        {
+          strbuff.ClearBuffer();
+          expr->Process( &expproc );
+          colvalues += sep + strbuff.GetString();              
+        }
+        
+        sep = ",";
+      }
+      
+      c_FilterStringBuffer sqlstr;
+      sqlstr.AppendString("INSERT INTO ");
+      sqlstr.AppendString(fultablename);
+      sqlstr.AppendString(" ( ");
+      sqlstr.AppendString(colnames);
+      sqlstr.AppendString(" ) ");
+      sqlstr.AppendString(" VALUES ( ");
+      sqlstr.AppendString(colvalues);
+      sqlstr.AppendString(" ) ");
+      
+      oracle::occi::Statement* occi_stm=NULL;
+      
+      try
+      {
+        occi_stm = m_Connection->OCCI_CreateStatement();
+        
+        D_KGORA_ELOG_WRITE1("Execute Insert: '%s",sqlstr.GetString());
+        
+        occi_stm->setSQL(sqlstr.GetString());
+        
+        expproc.ApplySqlParameters(occi_stm);
+        
+
+        int update_num = occi_stm->executeUpdate();
+        
+        m_Connection->OCCI_Commit();
+        if( occi_stm ) m_Connection->OCCI_TerminateStatement(occi_stm);
+        
+      }
+      catch(oracle::occi::SQLException& ea)
+      {
+        if( occi_stm ) m_Connection->OCCI_TerminateStatement(occi_stm);
+        FdoStringP gstr = ea.getMessage().c_str();
+        throw FdoCommandException::Create( gstr );    
+      }
+
+      
+      return new c_KgOraFeatureReaderInsert(m_PropertyValues,classdef);
+      
+    }
   }
   
   

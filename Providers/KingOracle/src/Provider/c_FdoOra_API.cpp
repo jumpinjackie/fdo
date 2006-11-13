@@ -571,11 +571,12 @@ c_KgOraSchemaDesc* c_FdoOra_API::DescribeSchema(c_KgOraConnection* KgOraConn,con
         );
         */
         occi_stm->setSQL(  
-        " select a.owner, a.table_name, a.column_name, a.srid, a.diminfo, b.CS_NAME, b.WKTEXT, c.index_name, d.sdo_layer_gtype, d.SDO_ROOT_MBR  "
+        " select a.owner, a.table_name, a.column_name, a.srid, a.diminfo, b.CS_NAME, b.WKTEXT, c.index_name, d.sdo_layer_gtype, s.sequence_name, d.SDO_ROOT_MBR  "
         " from all_tab_columns t, all_sdo_geom_metadata a "
         " LEFT JOIN MDSYS.CS_SRS b ON  a.srid = b.srid "
         " LEFT JOIN ALL_SDO_INDEX_INFO c ON  a.owner = c.table_owner and a.table_name = c.table_name "
         " LEFT JOIN ALL_SDO_INDEX_METADATA d ON c.sdo_index_owner = d.sdo_index_owner and c.index_name = d.sdo_index_name "
+        " LEFT JOIN all_sequences s on s.sequence_name = CONCAT(a.table_name,'_FDOSEQ') "
         " where t.owner = a.owner and t.table_name=a.table_name and t.column_name = a.column_name "
         " order by a.owner, a.table_name "
         );
@@ -594,11 +595,12 @@ c_KgOraSchemaDesc* c_FdoOra_API::DescribeSchema(c_KgOraConnection* KgOraConn,con
         */
         
         occi_stm->setSQL(  
-        " select a.owner, a.table_name, a.column_name, a.srid, a.diminfo, b.CS_NAME, b.WKTEXT, c.index_name, d.sdo_layer_gtype "
+        " select a.owner, a.table_name, a.column_name, a.srid, a.diminfo, b.CS_NAME, b.WKTEXT, c.index_name, d.sdo_layer_gtype, s.sequence_name "
         " from all_tab_columns t, all_sdo_geom_metadata a "
         " LEFT JOIN MDSYS.CS_SRS b ON  a.srid = b.srid "
         " LEFT JOIN ALL_SDO_INDEX_INFO c ON a.table_name = c.table_name "
         " LEFT JOIN ALL_SDO_INDEX_METADATA d ON c.sdo_index_owner = d.sdo_index_owner and c.index_name = d.sdo_index_name "
+        " LEFT JOIN all_sequences s on s.sequence_name = CONCAT(a.table_name,'_FDOSEQ') "
         " where t.owner = a.owner and t.table_name=a.table_name and t.column_name = a.column_name "
         " order by a.owner, a.table_name "
         );
@@ -621,11 +623,12 @@ c_KgOraSchemaDesc* c_FdoOra_API::DescribeSchema(c_KgOraConnection* KgOraConn,con
         */
         
         occi_stm->setSQL(  
-        " select a.owner, a.table_name, a.column_name, a.srid, a.diminfo, b.CS_NAME, b.WKTEXT, c.index_name, d.sdo_layer_gtype, d.SDO_ROOT_MBR  "
+        " select a.owner, a.table_name, a.column_name, a.srid, a.diminfo, b.CS_NAME, b.WKTEXT, c.index_name, d.sdo_layer_gtype, s.sequence_name, d.SDO_ROOT_MBR  "
         " from all_tab_columns t, all_sdo_geom_metadata a "
         " LEFT JOIN MDSYS.CS_SRS b ON  a.srid = b.srid "
         " LEFT JOIN ALL_SDO_INDEX_INFO c ON  a.owner = c.table_owner and a.table_name = c.table_name "
         " LEFT JOIN ALL_SDO_INDEX_METADATA d ON c.sdo_index_owner = d.sdo_index_owner and c.index_name = d.sdo_index_name "
+        " LEFT JOIN all_sequences s on s.sequence_name = CONCAT(a.table_name,'_FDOSEQ') "
         " where t.owner = a.owner and t.table_name=a.table_name and t.column_name = a.column_name and t.owner = :1 "
         " order by a.owner, a.table_name "
         );
@@ -642,11 +645,12 @@ c_KgOraSchemaDesc* c_FdoOra_API::DescribeSchema(c_KgOraConnection* KgOraConn,con
             );
       */
         occi_stm->setSQL(  
-        " select a.owner, a.table_name, a.column_name, a.srid, a.diminfo, b.CS_NAME, b.WKTEXT, c.index_name, d.sdo_layer_gtype "
+        " select a.owner, a.table_name, a.column_name, a.srid, a.diminfo, b.CS_NAME, b.WKTEXT, c.index_name, d.sdo_layer_gtype, s.sequence_name "
         " from all_tab_columns t, all_sdo_geom_metadata a "
         " LEFT JOIN MDSYS.CS_SRS b ON  a.srid = b.srid "
         " LEFT JOIN ALL_SDO_INDEX_INFO c ON a.table_name = c.table_name "
         " LEFT JOIN ALL_SDO_INDEX_METADATA d ON c.sdo_index_owner = d.sdo_index_owner and c.index_name = d.sdo_index_name "
+        " LEFT JOIN all_sequences s on s.sequence_name = CONCAT(a.table_name,'_FDOSEQ') "
         " where t.owner = a.owner and t.table_name=a.table_name and t.column_name = a.column_name and t.owner = :1 "
         " order by a.owner, a.table_name "
         );
@@ -664,7 +668,7 @@ c_KgOraSchemaDesc* c_FdoOra_API::DescribeSchema(c_KgOraConnection* KgOraConn,con
     oracle::occi::Number ora_srid;
     SDO_GEOMETRY *ora_geom;
     string ora_coord_sys_name,ora_coord_sys_wktext,ora_layer_gtype;
-    string ora_fullname;
+    string ora_fullname,ora_sequence_name;
     
     
     
@@ -696,9 +700,11 @@ c_KgOraSchemaDesc* c_FdoOra_API::DescribeSchema(c_KgOraConnection* KgOraConn,con
       
       ora_layer_gtype = occi_rs->getString(9);    
       
+      ora_sequence_name = occi_rs->getString(10);    
       
-      if(  ( KgOraConn->GetOracleMainVersion() >= 10 ) && (!occi_rs->isNull(10) ) )
-        ora_geom = (SDO_GEOMETRY*)occi_rs->getObject(10); // oracle is 1 based - our index is 0 based
+      
+      if(  ( KgOraConn->GetOracleMainVersion() >= 10 ) && (!occi_rs->isNull(11) ) )
+        ora_geom = (SDO_GEOMETRY*)occi_rs->getObject(11); // oracle is 1 based - our index is 0 based
       else
         ora_geom = NULL;
       if(ora_geom )
@@ -916,19 +922,36 @@ c_KgOraSchemaDesc* c_FdoOra_API::DescribeSchema(c_KgOraConnection* KgOraConn,con
         c_OCCI_API::GetTablePkeyColumns(occi_conn,ora_tableowner.c_str(),ora_tablename.c_str(),pcols);
         if( pcols.size() > 0 )
         {
+          bool isidentity_int=true;
           vector<string>::iterator iter = pcols.begin();
           for ( iter = pcols.begin( ) ; iter != pcols.end( ) ; iter++ )
           {
             FdoStringP gstr = iter->c_str();
             FdoPtr<FdoDataPropertyDefinition> entid = dynamic_cast<FdoDataPropertyDefinition*>(pdc->FindItem(gstr));
             if( entid.p )
-            {
-            
+            {            
               entid->SetNullable(false);
               FdoPtr<FdoDataPropertyDefinitionCollection> ic = fc->GetIdentityProperties();
               ic->Add( entid );
-            }
-  
+              
+              FdoDataType datatype = entid->GetDataType();
+              if( (datatype == FdoDataType_Int16) || (datatype == FdoDataType_Int32) || (datatype == FdoDataType_Int64) )
+              {
+                
+              }
+              else
+              {
+                isidentity_int = false;
+              }
+            }  
+          }
+          
+         // If primary ky is one int column and if there is sequence TableName_FDOSEQ
+         // then this sequence will be use to populuate identity id during inserts
+          if( (pcols.size() == 1) && (isidentity_int = true) && (ora_sequence_name.length()>0) )
+          {
+            FdoStringP fdostr = ora_sequence_name.c_str();
+            phys_class->SetUseSequenceForIdentity(fdostr);
           }
           
         }
