@@ -83,16 +83,18 @@ ShpFeatIdQueryEvaluator::ShpFeatIdQueryEvaluator(FdoIReader* reader, FdoClassDef
 }
 
 ShpFeatIdQueryEvaluator::~ShpFeatIdQueryEvaluator()
-{    
-
+{   
     for (retno_lists::iterator iter = m_FeatidLists.begin(); iter != m_FeatidLists.end(); iter++)
     {
         interval_res* x = *iter;
         delete x;
     }
 
-    if ( m_MergedFeatidList )
-        delete m_MergedFeatidList;
+	if ( m_MergedFeatidList )
+		delete m_MergedFeatidList;
+
+	if (m_MergedFeatidListLeaf )
+		delete m_MergedFeatidListLeaf;
 }
 
 
@@ -428,7 +430,7 @@ recno_list* ShpFeatIdQueryEvaluator::FeatidListsUnion(recno_list* left, recno_li
 
     //dispose of inputs and return newly allocated list
     delete left;
-    delete right;
+	right->clear();
 
     return ret;
 }
@@ -472,7 +474,7 @@ recno_list* ShpFeatIdQueryEvaluator::FeatidListsIntersection(recno_list* left, r
 
     //dispose of inputs and return newly allocated list
     delete left;
-    delete right;
+	right->clear();
 
     return ret;
 }
@@ -680,9 +682,11 @@ void ShpFeatIdQueryEvaluator::ProcessLeafExpession( interval_res* curr_filter, i
         {
         case FdoBinaryLogicalOperations_And:
             m_MergedFeatidListLeaf = FeatidListsIntersection( m_MergedFeatidListLeaf, tmp_list );
+			delete tmp_list;
             break;
         case FdoBinaryLogicalOperations_Or:
             m_MergedFeatidListLeaf = FeatidListsUnion( m_MergedFeatidListLeaf, tmp_list );
+			delete tmp_list;
             break;
         case ShpLogicalOperation_None:
             m_MergedFeatidListLeaf = tmp_list;  // No merging if first time.     
