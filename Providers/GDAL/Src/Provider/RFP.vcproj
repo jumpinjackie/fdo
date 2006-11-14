@@ -309,10 +309,6 @@
 				>
 			</File>
 			<File
-				RelativePath="FdoRfpImageFactory.cpp"
-				>
-			</File>
-			<File
 				RelativePath="FdoRfpKeyColor.cpp"
 				>
 			</File>
