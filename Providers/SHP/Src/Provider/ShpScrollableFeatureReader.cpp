@@ -20,11 +20,13 @@
 #include "ShpConnection.h"
 
 
-ShpScrollableFeatureReader::ShpScrollableFeatureReader(ShpConnection* connection, FdoString* className, FdoFilter* filter, SortElementDef *sortedTable, unsigned int tableSize, PropertyStub* propStubs, int numProps  )
+ShpScrollableFeatureReader::ShpScrollableFeatureReader(ShpConnection* connection, FdoString* className, FdoFilter* filter, SortContextDef *ctx, 
+													   SortElementDef *sortedTable, unsigned int tableSize, PropertyStub* propStubs, int numProps  )
 : ShpFeatureReader(connection, className, NULL, NULL)
 {
 	m_Filter = filter;
     m_SortedTable = sortedTable;  // Transfer the ownership of this array; need to be freed by this class
+	m_Ctx = ctx;
 	m_TableSize = tableSize;
 	m_PropStubs = propStubs;
 	m_NumProps = numProps;
@@ -35,36 +37,39 @@ ShpScrollableFeatureReader::ShpScrollableFeatureReader(ShpConnection* connection
 ShpScrollableFeatureReader::~ShpScrollableFeatureReader()
 {
 	// Clean up
-	if ( m_SortedTable && m_SortedTable->ctx )
+	if ( m_Ctx )
 	{
-		SortContextDef	*ctx = m_SortedTable->ctx;
-
-		for( int i = 0; i < ctx->propCount; i++) {
-			delete[] ctx->names[i];
+		for( int i = 0; i < m_Ctx->propCount; i++) {
+			delete[] m_Ctx->names[i];
 		}
-		if ( ctx->names )
-			delete[] ctx->names;
-		if ( ctx->options )
-			delete[] ctx->options;
-		if ( ctx->featIds )
-			delete[] ctx->featIds;
+		if ( m_Ctx->names )
+			delete[] m_Ctx->names;
+		if ( m_Ctx->options )
+			delete[] m_Ctx->options;
+		if ( m_Ctx->featIds )
+			delete[] m_Ctx->featIds;
 
-		if ( ctx->propCount > 0 )
+		if ( m_Ctx->propCount > 0 )
 		{
 			for( int i = 0; i < (int)m_TableSize; i++ )
 			{
-				for( int j = 0; j < ctx->propCount; j++ )
+				SortElementDef  *pRow = &m_SortedTable[i];
+
+				for( int j = 0; j < m_Ctx->propCount; j++ )
 				{
-					if( ctx->propCache[i][j].type == FdoDataType_String && ctx->propCache[i][j].value.strVal != NULL )
-						delete[] ctx->propCache[i][j].value.strVal;
-					else if ( ctx->propCache[i][j].type == FdoDataType_DateTime && ctx->propCache[i][j].value.dateVal != NULL )
-						delete ctx->propCache[i][j].value.dateVal;
+					DataPropertyDef *pProp = pRow->propCache[j];
+
+					if( pProp->type == FdoDataType_String && pProp->value.strVal != NULL )
+						delete[] pProp->value.strVal;
+					else if ( pProp->type == FdoDataType_DateTime && pProp->value.dateVal != NULL )
+						delete pProp->value.dateVal;
+
+					delete pProp;
 				}
-				delete[] ctx->propCache[i];
+				delete[] pRow->propCache;
 			}
-			delete[] ctx->propCache;
 		}
-		delete ctx;
+		delete m_Ctx;
 	}
 
 	if( m_SortedTable != NULL )
@@ -72,10 +77,10 @@ ShpScrollableFeatureReader::~ShpScrollableFeatureReader()
 
 	if ( m_PropStubs )
 	{
-//		for ( int i = 0; i < m_NumProps; i++ )
-//			delete [] m_PropStubs->m_name;
+		for ( int i = 0; i < m_NumProps; i++ )
+			delete [] m_PropStubs->m_name;
 
-//		delete[] m_PropStubs;
+		delete[] m_PropStubs;
 	}
 }
 
@@ -107,8 +112,8 @@ bool ShpScrollableFeatureReader::ReadNext()
 		return false;
 	}
 
-	FdoInt32 index = m_SortedTable [m_CurrentIndex].index;
-	mFeatureNumber = m_SortedTable->ctx->featIds[index];
+	FdoInt32 index = m_SortedTable ? m_SortedTable [m_CurrentIndex].index : m_CurrentIndex;
+	mFeatureNumber = m_Ctx->featIds[index];
 
 	GetData();
 
@@ -124,8 +129,8 @@ bool ShpScrollableFeatureReader::ReadFirst()
 {
 	m_CurrentIndex = 0;
 
-	FdoInt32 index = m_SortedTable [m_CurrentIndex].index;
-	mFeatureNumber = m_SortedTable->ctx->featIds[index];
+	FdoInt32 index = m_SortedTable ? m_SortedTable [m_CurrentIndex].index : m_CurrentIndex;
+	mFeatureNumber = m_Ctx->featIds[index];
 
 	GetData();
 
@@ -136,8 +141,8 @@ bool ShpScrollableFeatureReader::ReadLast()
 {
 	m_CurrentIndex = m_TableSize - 1;
 
-	FdoInt32 index = m_SortedTable [m_CurrentIndex].index;
-	mFeatureNumber = m_SortedTable->ctx->featIds[index];
+	FdoInt32 index = m_SortedTable ? m_SortedTable [m_CurrentIndex].index : m_CurrentIndex;
+	mFeatureNumber = m_Ctx->featIds[index];
 
 	GetData();
 
@@ -153,8 +158,8 @@ bool ShpScrollableFeatureReader::ReadPrevious()
 		return false;
 	}
 
-	FdoInt32 index = m_SortedTable [m_CurrentIndex].index;
-	mFeatureNumber = m_SortedTable->ctx->featIds[index];
+	FdoInt32 index = m_SortedTable ? m_SortedTable [m_CurrentIndex].index : m_CurrentIndex;
+	mFeatureNumber = m_Ctx->featIds[index];
 
     GetData();
 
@@ -177,8 +182,8 @@ bool  ShpScrollableFeatureReader::ReadAtIndex( unsigned int recordindex )
 
 	m_CurrentIndex = recordindex - 1;  // One-based
 
-	FdoInt32 index = m_SortedTable [m_CurrentIndex].index;
-	mFeatureNumber = m_SortedTable->ctx->featIds[index];
+	FdoInt32 index = m_SortedTable ? m_SortedTable [m_CurrentIndex].index : m_CurrentIndex;
+	mFeatureNumber = m_Ctx->featIds[index];
 
     GetData();
 
@@ -237,7 +242,7 @@ unsigned int ShpScrollableFeatureReader::IndexOf(FdoPropertyValueCollection* key
 					throw FdoCommandException::Create(NlsMsgGet(SHP_INVALID_INDEXOF_PARAM, 
 							"Only ordering properties or the identity property are allowed as IndexOf() argument"));
 			}
-			rowid = SearchSortedTable( m_SortedTable, m_TableSize, m_PropStubs, m_NumProps, keyVals);
+			rowid = SearchSortedTable( m_Ctx, m_SortedTable, m_TableSize, m_PropStubs, m_NumProps, keyVals);
 		}
 
 		found = false;
@@ -258,7 +263,7 @@ REC_NO ShpScrollableFeatureReader::FindRowidByFeatNum( REC_NO featid )
 	int			k;
 
 	// When the featids are in order (no deletes) then rowid is matching
-	if ( m_SortedTable->ctx->featIds[featid] == featid )
+	if ( m_Ctx->featIds[featid] == featid )
 	{
 		rowid = featid + 1; // One-based
 	}
@@ -267,7 +272,7 @@ REC_NO ShpScrollableFeatureReader::FindRowidByFeatNum( REC_NO featid )
 		found = false;
 		for ( k = featid - 1; k >=0 && !found; k-- )
 		{
-			found = (m_SortedTable->ctx->featIds[k] == featid);
+			found = (m_Ctx->featIds[k] == featid);
 		}
 		rowid = k + 1; // it is the current row index + 1. 
 	}
@@ -275,7 +280,7 @@ REC_NO ShpScrollableFeatureReader::FindRowidByFeatNum( REC_NO featid )
 	return rowid;
 }
 
-REC_NO ShpScrollableFeatureReader::SearchSortedTable( SortElementDef *sortedTable, unsigned int tableSize, PropertyStub* propStubs, int numProps, FdoPropertyValueCollection* keyVal)
+REC_NO ShpScrollableFeatureReader::SearchSortedTable( SortContextDef *ctx, SortElementDef *sortedTable, unsigned int tableSize, PropertyStub* propStubs, int numProps, FdoPropertyValueCollection* keyVal)
 {
 	REC_NO		rowid = 0;
 	bool		found;
@@ -284,13 +289,10 @@ REC_NO ShpScrollableFeatureReader::SearchSortedTable( SortElementDef *sortedTabl
 	SortElementDef		elem;
 	elem.index = 0;
 
-	SortContextDef		ctx; 
+	DataPropertyDef **propCache = new DataPropertyDef*[1];
+	propCache[0] = new DataPropertyDef [numProps];
 
-	ctx.propCount = numProps;
-	ctx.propCache = new DataPropertyDef*[1];
-	ctx.propCache[0] = new DataPropertyDef [numProps];
-
-	elem.ctx = &ctx;
+	elem.propCache = propCache;
 
 	// Use the property stubs to match the key properties
 	for ( int i = 0; i < numProps ; i++ )
@@ -309,7 +311,9 @@ REC_NO ShpScrollableFeatureReader::SearchSortedTable( SortElementDef *sortedTabl
 		}
 
 		// Invalidate a property not selected. Compare() will skip it.
-		ctx.propCache[0][i].type = found? prop.m_dataType : -1;
+		DataPropertyDef	*pProp = elem.propCache[i];
+
+		pProp->type = found? prop.m_dataType : -1;
 
 		if ( found )
 		{
@@ -321,58 +325,63 @@ REC_NO ShpScrollableFeatureReader::SearchSortedTable( SortElementDef *sortedTabl
 				case FdoDataType_Boolean : 
 				{
 					FdoBooleanValue * typedValue = (FdoBooleanValue *)(valueExpr.p);
-					ctx.propCache[0][i].value.intVal = typedValue->GetBoolean();
+					pProp->value.intVal = typedValue->GetBoolean();
 					break;
 				}
 				case FdoDataType_DateTime :
 				{
-					ctx.propCache[0][i].value.dateVal = new FdoDateTime();
+					pProp->value.dateVal = new FdoDateTime();
 					FdoDateTimeValue * typedValue = (FdoDateTimeValue *)(valueExpr.p);
-					*ctx.propCache[0][i].value.dateVal = typedValue->GetDateTime();
+					*pProp->value.dateVal = typedValue->GetDateTime();
 					break;
 				}
 				case FdoDataType_Decimal :
 				{
 					FdoDecimalValue * typedValue = (FdoDecimalValue *)(valueExpr.p);
-					ctx.propCache[0][i].value.dblVal = typedValue->GetDecimal();
+					pProp->value.dblVal = typedValue->GetDecimal();
 					break;
 				}
 				case FdoDataType_Int32 : 
 				{
 					FdoInt32Value * typedValue = (FdoInt32Value *)(valueExpr.p);
-					ctx.propCache[0][i].value.intVal = typedValue->GetInt32();
+					pProp->value.intVal = typedValue->GetInt32();
 					break;
 				}
 				case FdoDataType_String : 
 				{
 					FdoStringValue * typedValue = (FdoStringValue *)(valueExpr.p);
 					FdoString	*tmpStr = typedValue->GetString();
-					ctx.propCache[0][i].value.strVal = new wchar_t[wcslen(tmpStr)+1];
-					wcscpy( ctx.propCache[0][i].value.strVal, tmpStr );
+					pProp->value.strVal = new wchar_t[wcslen(tmpStr)+1];
+					wcscpy( pProp->value.strVal, tmpStr );
 					break;
 				}
 				default:
-					throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_71_DATA_TYPE_NOT_SUPPORTED), FdoCommonMiscUtil::FdoDataTypeToString((FdoDataType)ctx.propCache[i]->type)));
+					throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_71_DATA_TYPE_NOT_SUPPORTED), FdoCommonMiscUtil::FdoDataTypeToString((FdoDataType)sortedTable->propCache[i]->type)));
 					break;
 			}
 		}		
 	} // For each property in the key
 
 	// Bsearch the sorted table for the 1st record matching the (partial) criteria
+	SortMutex.Enter();
+
+	GlobalSortCtx = ctx;
 	SortElementDef	*elem1 = (SortElementDef *)bsearch( (void *)&elem, (void *)sortedTable, tableSize, sizeof(SortElementDef), compare );
+	
+	SortMutex.Leave();
 
 	rowid = elem1->index;
 	
 	// Clean up
 	for ( int i = 0; i < numProps ; i++ )
 	{
-		if ( ctx.propCache[0][i].type == FdoDataType_DateTime )
-			delete ctx.propCache[0][i].value.dateVal;
-		else if ( ctx.propCache[0][i].type == FdoDataType_String )
-			delete [] ctx.propCache[0][i].value.strVal;
+		if ( propCache[i]->type == FdoDataType_DateTime )
+			delete propCache[i]->value.dateVal;
+		else if ( propCache[i]->type == FdoDataType_String )
+			delete [] propCache[i]->value.strVal;
 	}
-	delete [] ctx.propCache[0];
-	delete ctx.propCache;
+	delete [] propCache[0];
+	delete propCache;
 
 	return rowid + 1; // Zero-Based, adjust
 }
@@ -394,8 +403,12 @@ REC_NO ShpScrollableFeatureReader::SearchNewSortedTable( FdoPropertyValueCollect
 	if( reader == NULL || !reader->ReadNext() )
 		return 0;
 	
-	// TODO: Optimize memory, use reader->mFeatIdFilterExecutor to get the size of the featid list
-	int maxsize = reader->mFileSet->GetShapeIndexFile ()->GetNumObjects ();
+	// Optimize memory in the presence of a filter: use the reader to get the size of the featid list
+	int maxsize = reader->mMaxNumObjects;
+
+	// Not available when not a feaid query 
+	if ( maxsize == 0 )
+		maxsize = reader->mFileSet->GetShapeIndexFile ()->GetNumObjects ();
 	
 	PropertyStub		*propStubs = NULL;
 	int					numProps = keyVals->GetCount();
@@ -405,7 +418,7 @@ REC_NO ShpScrollableFeatureReader::SearchNewSortedTable( FdoPropertyValueCollect
 	memset (ctx, '\0', sizeof(SortContextDef));
 
 	// Use the same comparison handler
-	ctx->compareHandler = m_SortedTable->ctx->compareHandler;
+	ctx->compareHandler = m_Ctx->compareHandler;
 	ctx->propCount = numProps;
 	ctx->options = new FdoOrderingOption[ctx->propCount];
 	ctx->names = new FdoString*[ctx->propCount];
@@ -448,12 +461,13 @@ REC_NO ShpScrollableFeatureReader::SearchNewSortedTable( FdoPropertyValueCollect
 		wcscpy( (wchar_t*)ctx->names[i], propName );
 	}		
 	
-	// initialize the ordering property cache
-	ctx->propCache = new DataPropertyDef*[maxsize];
-
 	// Populate the array to be sorted with actual data. 
-	ctx->featIds = new REC_NO[maxsize];
+
+	// Don't initialize another list of featid since it is available in m_Ctx
+	ctx->featIds = NULL;
 	SortElementDef  *sortedTable = new SortElementDef[maxsize];
+
+	// initialize the ordering property cache
 
 	// First read done above
 	i = 0;
@@ -463,23 +477,27 @@ REC_NO ShpScrollableFeatureReader::SearchNewSortedTable( FdoPropertyValueCollect
 	{
 		REC_NO featid = reader->mFeatureNumber; // Zero-based
 
-	    sortedTable[i].index = i;
-	    sortedTable[i].ctx = ctx;
-	    ctx->featIds[i]= featid;
+		SortElementDef	*pRow = &sortedTable[i];
 
-		ctx->propCache[i] = new DataPropertyDef[ctx->propCount];
+	    pRow->index = i;
+
+		pRow->propCache = new DataPropertyDef*[ctx->propCount];
 
 		// This is skipped if !doSorting
 	    for( int j = 0; j < ctx->propCount; j++ )
 	    {
 		    PropertyStub  ps = propStubs[j];
 
-		    ctx->propCache[i][j].type = ps.m_dataType;
+			pRow->propCache[j] = new DataPropertyDef;
+
+			DataPropertyDef *pProp = pRow->propCache[j];
+
+		    pProp->type = ps.m_dataType;
 			FdoString *pName = ps.m_name;
 
 			if ( reader->IsNull( pName ) )
 			{
-				ctx->propCache[i][j].type = -1;
+				pProp->type = -1;
 				continue;
 			}
 
@@ -487,40 +505,40 @@ REC_NO ShpScrollableFeatureReader::SearchNewSortedTable( FdoPropertyValueCollect
 		    {
 				case FdoDataType_Boolean : 
 				case FdoDataType_Byte : 
-					ctx->propCache[i][j].value.intVal = (int)reader->GetByte( pName );
+					pProp->value.intVal = (int)reader->GetByte( pName );
 					break;
 
 				case FdoDataType_DateTime :
-					ctx->propCache[i][j].value.dateVal = new FdoDateTime();
-					*ctx->propCache[i][j].value.dateVal = reader->GetDateTime( pName );
+					pProp->value.dateVal = new FdoDateTime();
+					*pProp->value.dateVal = reader->GetDateTime( pName );
 					break;
 
 				case FdoDataType_Decimal :		  
 				case FdoDataType_Double :
-					ctx->propCache[i][j].value.dblVal = reader->GetDouble( pName );
+					pProp->value.dblVal = reader->GetDouble( pName );
 					break;
 
 				case FdoDataType_Int16 : 
-					ctx->propCache[i][j].value.intVal = reader->GetInt16( pName );
+					pProp->value.intVal = reader->GetInt16( pName );
 					break;
 
 				case FdoDataType_Int32 : 
-					ctx->propCache[i][j].value.intVal = reader->GetInt32( pName );
+					pProp->value.intVal = reader->GetInt32( pName );
 					break;
 
 				case FdoDataType_Int64 : 
-					ctx->propCache[i][j].value.int64Val = reader->GetInt64( pName );
+					pProp->value.int64Val = reader->GetInt64( pName );
 					break;
 
 				case FdoDataType_Single :
-					ctx->propCache[i][j].value.dblVal = reader->GetSingle( pName );
+					pProp->value.dblVal = reader->GetSingle( pName );
 					break;
 
 				case FdoDataType_String : 
 				{
 					FdoString*	tmpStr = reader->GetString( pName );
-					ctx->propCache[i][j].value.strVal = new wchar_t[wcslen(tmpStr)+1];
-					wcscpy( ctx->propCache[i][j].value.strVal , tmpStr );
+					pProp->value.strVal = new wchar_t[wcslen(tmpStr)+1];
+					wcscpy( pProp->value.strVal , tmpStr );
 					break;
 				}
 			
@@ -534,27 +552,33 @@ REC_NO ShpScrollableFeatureReader::SearchNewSortedTable( FdoPropertyValueCollect
 		// get the next record
 		hasMore = reader->ReadNext();
 	}
+	// Adjust the size (account for deleted records)
 	maxsize = i;
 
 	// Reset the flag.
 	reader->SetFetchGeometry( true );
 
 	// Build the sorted list
+	SortMutex.Enter();
+
+	GlobalSortCtx = ctx;
 	qsort( (void*)sortedTable, maxsize, sizeof(SortElementDef), compare );
 	
+	SortMutex.Leave();
+
 	// Do the search. It returns the rowid in this temporary table
-	REC_NO rowid = SearchSortedTable( sortedTable, maxsize, propStubs, numProps, keyVals);
+	REC_NO rowid = SearchSortedTable( ctx, sortedTable, maxsize, propStubs, numProps, keyVals);
 
 	// Clean up
 	for ( int i = 0; i < numProps ; i++ )
 	{
-		if ( ctx->propCache[0][i].type == FdoDataType_DateTime )
-			delete ctx->propCache[0][i].value.dateVal;
-		else if ( ctx->propCache[0][i].type == FdoDataType_String )
-			delete [] ctx->propCache[0][i].value.strVal;
+		if ( sortedTable->propCache[0][i].type == FdoDataType_DateTime )
+			delete sortedTable->propCache[0][i].value.dateVal;
+		else if ( sortedTable->propCache[0][i].type == FdoDataType_String )
+			delete [] sortedTable->propCache[0][i].value.strVal;
 	}
-	delete [] ctx->propCache[0];
-	delete ctx->propCache;
+	delete [] sortedTable->propCache[0];
+	delete sortedTable->propCache;
 	delete ctx;
 
 	return rowid;

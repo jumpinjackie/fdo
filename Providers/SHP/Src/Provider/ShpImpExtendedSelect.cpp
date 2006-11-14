@@ -97,9 +97,13 @@ ShpIScrollableFeatureReader* ShpImpExtendedSelect::ExecuteScrollable()
 	if( reader == NULL || !reader->ReadNext() )
 		return NULL;
 	
-	// TODO: Optimize memory, use reader->mFeatIdFilterExecutor to get the size of the featid list
-	int maxsize = reader->mFileSet->GetShapeIndexFile ()->GetNumObjects ();
-	
+	// Optimize memory in the presence of a filter: use the reader to get the size of the featid list
+	int maxsize = reader->mMaxNumObjects;
+
+	// Not available when not a feaid query 
+	if ( maxsize == 0 )
+		maxsize = reader->mFileSet->GetShapeIndexFile ()->GetNumObjects ();
+
 	PropertyStub		*propStubs = NULL;
 
 	// Create and initialize a sorting context.
@@ -151,16 +155,17 @@ ShpIScrollableFeatureReader* ShpImpExtendedSelect::ExecuteScrollable()
 			ctx->names[i] = new wchar_t[wcslen(id->GetName())+1];
 			wcscpy( (wchar_t*)ctx->names[i], id->GetName() );
 		}		
-		
-		// initialize the ordering property cache
-		ctx->propCache = new DataPropertyDef*[maxsize];
 	}
 
 	// Populate the array to be sorted with actual data. 
 	ctx->featIds = new REC_NO[maxsize];
-	SortElementDef  *sortedTable = new SortElementDef[maxsize];
 
-	// First read done above
+	SortElementDef  *sortedTable = NULL;
+
+	if ( doSorting )
+		sortedTable = new SortElementDef[maxsize];
+
+	// Initialize the ordering property cache (First read done above)
 	i = 0;
 	bool	hasMore = true;
 
@@ -168,91 +173,106 @@ ShpIScrollableFeatureReader* ShpImpExtendedSelect::ExecuteScrollable()
 	{
 		REC_NO featid = reader->mFeatureNumber; // Zero-based
 
-	    sortedTable[i].index = i;
-	    sortedTable[i].ctx = ctx;
+		// When no sorting properties, just populate the featid list
 	    ctx->featIds[i]= featid;
 
 		if ( doSorting )
-			ctx->propCache[i] = new DataPropertyDef[ctx->propCount];
+		{
+			SortElementDef  *pRow = &sortedTable[i];
 
-		// This is skipped if !doSorting
-	    for( int j = 0; j < ctx->propCount; j++ )
-	    {
-		    PropertyStub  ps = propStubs[j];
+			pRow->index = i;
+			pRow->propCache = new DataPropertyDef*[ctx->propCount];
 
-		    ctx->propCache[i][j].type = ps.m_dataType;
-			FdoString *pName = ps.m_name;
-
-			if ( reader->IsNull( pName ) )
+			// This is skipped if !doSorting
+			for( int j = 0; j < ctx->propCount; j++ )
 			{
-				ctx->propCache[i][j].type = -1;
-				continue;
-			}
+				PropertyStub  ps = propStubs[j];
 
-		    switch( ps.m_dataType )
-		    {
-				case FdoDataType_Boolean : 
-				case FdoDataType_Byte : 
-					ctx->propCache[i][j].value.intVal = (int)reader->GetByte( pName );
-					break;
+				// Initialize a property 
+				pRow->propCache[j] = new DataPropertyDef;
+				DataPropertyDef *pProp = pRow->propCache[j];
 
-				case FdoDataType_DateTime :
-					ctx->propCache[i][j].value.dateVal = new FdoDateTime();
-					*ctx->propCache[i][j].value.dateVal = reader->GetDateTime( pName );
-					break;
+				pProp->type = ps.m_dataType;
+				FdoString *pName = ps.m_name;
 
-				case FdoDataType_Decimal :		  
-				case FdoDataType_Double :
-					ctx->propCache[i][j].value.dblVal = reader->GetDouble( pName );
-					break;
-
-				case FdoDataType_Int16 : 
-					ctx->propCache[i][j].value.intVal = reader->GetInt16( pName );
-					break;
-
-				case FdoDataType_Int32 : 
-					ctx->propCache[i][j].value.intVal = reader->GetInt32( pName );
-					break;
-
-				case FdoDataType_Int64 : 
-					ctx->propCache[i][j].value.int64Val = reader->GetInt64( pName );
-					break;
-
-				case FdoDataType_Single :
-					ctx->propCache[i][j].value.dblVal = reader->GetSingle( pName );
-					break;
-
-				case FdoDataType_String : 
+				if ( reader->IsNull( pName ) )
 				{
-					FdoString*	tmpStr = reader->GetString( pName );
-					ctx->propCache[i][j].value.strVal = new wchar_t[wcslen(tmpStr)+1];
-					wcscpy( ctx->propCache[i][j].value.strVal , tmpStr );
-					break;
+					pProp->type = -1;
+					continue;
 				}
-			
-		      default:
-                  throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_71_DATA_TYPE_NOT_SUPPORTED), FdoCommonMiscUtil::FdoDataTypeToString(ps.m_dataType)));
-			      break;
-		    }
-	    }
+
+				switch( ps.m_dataType )
+				{
+					case FdoDataType_Boolean : 
+					case FdoDataType_Byte : 
+						pProp->value.intVal = (int)reader->GetByte( pName );
+						break;
+
+					case FdoDataType_DateTime :
+						pProp->value.dateVal = new FdoDateTime();
+						*pProp->value.dateVal = reader->GetDateTime( pName );
+						break;
+
+					case FdoDataType_Decimal :		  
+					case FdoDataType_Double :
+						pProp->value.dblVal = reader->GetDouble( pName );
+						break;
+
+					case FdoDataType_Int16 : 
+						pProp->value.intVal = reader->GetInt16( pName );
+						break;
+
+					case FdoDataType_Int32 : 
+						pProp->value.intVal = reader->GetInt32( pName );
+						break;
+
+					case FdoDataType_Int64 : 
+						pProp->value.int64Val = reader->GetInt64( pName );
+						break;
+
+					case FdoDataType_Single :
+						pProp->value.dblVal = reader->GetSingle( pName );
+						break;
+
+					case FdoDataType_String : 
+					{
+						FdoString*	tmpStr = reader->GetString( pName );
+						pProp->value.strVal = new wchar_t[wcslen(tmpStr)+1];
+						wcscpy( pProp->value.strVal , tmpStr );
+						break;
+					}
+				
+				  default:
+					  throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_71_DATA_TYPE_NOT_SUPPORTED), FdoCommonMiscUtil::FdoDataTypeToString(ps.m_dataType)));
+					  break;
+				}
+			}
+		}
         i++;
 
 		// get the next record
 		hasMore = reader->ReadNext();
 	}
+	// Adjust the size (account for deleted records)
 	maxsize = i;
 
 	// Reset the flag.
 	reader->SetFetchGeometry( true );
 
 	// Build the sorted list
-	if ( doSorting )
-		qsort( (void*)sortedTable, maxsize, sizeof(SortElementDef), compare );
+	if ( doSorting ) {
+	    SortMutex.Enter();
+
+		GlobalSortCtx = ctx;
+		qsort( (void*)sortedTable, maxsize, sizeof(SortElementDef), compare);
+
+		SortMutex.Leave();
+	}
 
 	// The sorted table and sorting context will be freed by the reader
 	return new ShpImpScrollableFeatureReader<ShpScrollableFeatureReader>(new ShpScrollableFeatureReader( 
 																				mConnection, mClassName->GetText(), GetFilter(),
-																				sortedTable, maxsize, 
+																				ctx, sortedTable, maxsize, 
 																				propStubs, m_orderingProperties->GetCount()) );
 }
 

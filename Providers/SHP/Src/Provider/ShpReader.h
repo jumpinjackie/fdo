@@ -66,6 +66,7 @@ protected:
     FdoStringP      mClassName;
     FdoStringP      mLogicalIdentityPropertyName;
     FdoStringP      mLogicalGeometryPropertyName;
+	int				mMaxNumObjects;		
            
     // Query optimizer 
     bool            mFirstRead;         // 1st ReadNext()  
@@ -92,6 +93,7 @@ public:
         mIsFeatIdQuery(true),
         mUseFeatidMergedList(true),
 		mFetchGeometry (true),
+		mMaxNumObjects (0),
         mGeomByteArray (FdoByteArray::Create (SHP_CACHED_GEOMETRY_INITIAL_SIZE))
     {
         FDO_SAFE_ADDREF(connection);
@@ -948,6 +950,9 @@ private:
 
             recno_list*    featid_list = mFeatIdFilterExecutor->GetMergedFeatidList();
 
+			if ( featid_list )
+				mMaxNumObjects = (int) featid_list->size();
+
             // Quit if already at the end of the list. This covers an empty list.
             if ( featid_list == NULL || mFeatidQueryIndex == featid_list->size() )
             {
@@ -996,6 +1001,8 @@ private:
         bool            ret;
 
         FdoInt32        numRecords = mFileSet->GetShapeIndexFile()->GetNumObjects();
+
+		mMaxNumObjects = numRecords;
 
         // Try to merge the result lists into one unique list.
         if ( mFirstRead )
