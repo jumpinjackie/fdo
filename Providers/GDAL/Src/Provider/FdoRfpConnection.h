@@ -202,7 +202,7 @@ public:
 // Used by some commands
 public:
     //Get the class definition by its qualified name
-    void GetClassDef(const FdoPtr<FdoIdentifier>& identifier, FdoPtr<FdoClassDefinition>& classDef);
+    void GetClassDef(FdoIdentifier* identifier, FdoPtr<FdoClassDefinition>& classDef);
 
     //Get a reference to the feature schema collection
     FdoPtr<FdoFeatureSchemaCollection> GetFeatureSchemas();
@@ -211,7 +211,7 @@ public:
     FdoPtr<FdoPhysicalSchemaMappingCollection> GetSchemaMappings();
 
     //Get class data of "FeatureName.ClassName"
-    FdoPtr<FdoRfpClassData> GetClassData(const FdoPtr<FdoClassDefinition>&);
+    FdoPtr<FdoRfpClassData> GetClassData(FdoClassDefinition* classDef);
 
     //Get all spatial contexts
     FdoPtr<FdoRfpSpatialContextCollection> GetSpatialContexts();
@@ -223,7 +223,7 @@ public:
     void ActivateSpatialContext(FdoString* contextName);
 
     // Create a spatial context
-    void CreateSpatialContext(const FdoPtr<FdoRfpSpatialContext>&, bool bUpdateExist);
+    void CreateSpatialContext(FdoRfpSpatialContext* spatialContext, bool bUpdateExist);
 
     // Destroy a spatial context
     void DestroySpatialContext(FdoString* contextName);

@@ -503,7 +503,7 @@ void FdoRfpConnection::SetConfiguration (FdoIoStream* configStream)
 }
 
 //Get the class definition by its qualified name
-void FdoRfpConnection::GetClassDef(const FdoPtr<FdoIdentifier>& identifier, FdoPtr<FdoClassDefinition>& classDef)
+void FdoRfpConnection::GetClassDef(FdoIdentifier* identifier, FdoPtr<FdoClassDefinition>& classDef)
 {
     //Ensure the connection is established
     _validateOpen();
@@ -535,7 +535,7 @@ FdoPtr<FdoPhysicalSchemaMappingCollection> FdoRfpConnection::GetSchemaMappings()
 
 
 //Get class data of "FeatureName.ClassName"
-FdoPtr<FdoRfpClassData> FdoRfpConnection::GetClassData(const FdoPtr<FdoClassDefinition>& classDef)
+FdoPtr<FdoRfpClassData> FdoRfpConnection::GetClassData(FdoClassDefinition* classDef)
 {
     //Ensure the connection is established
     _validateOpen();
@@ -577,7 +577,7 @@ void FdoRfpConnection::ActivateSpatialContext(FdoString* contextName)
 }
 
 // Create a spatial context
-void FdoRfpConnection::CreateSpatialContext(const FdoPtr<FdoRfpSpatialContext>& spatialContext, bool bUpdateExist)
+void FdoRfpConnection::CreateSpatialContext(FdoRfpSpatialContext* spatialContext, bool bUpdateExist)
 {
     _validateOpen();
     FdoInt32 index = m_spatialContexts->IndexOf(spatialContext->GetName());

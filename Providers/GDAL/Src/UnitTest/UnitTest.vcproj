@@ -209,6 +209,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\RfpTestAAIGrid.cpp"
+				>
+			</File>
+			<File
 				RelativePath="RfpTestBand.cpp"
 				>
 			</File>
@@ -241,6 +245,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\RfpTestJpg.cpp"
+				>
+			</File>
+			<File
 				RelativePath="RfpTestLogOutputter.cpp"
 				>
 			</File>
@@ -250,6 +258,10 @@
 			</File>
 			<File
 				RelativePath="RfpTestMrSID.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\RfpTestPng.cpp"
 				>
 			</File>
 			<File
@@ -342,6 +354,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\RfpTestAAIGrid.h"
+				>
+			</File>
+			<File
 				RelativePath="RfpTestBand.h"
 				>
 			</File>
@@ -378,6 +394,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\RfpTestJpg.h"
+				>
+			</File>
+			<File
 				RelativePath="RfpTestLogOutputter.h"
 				>
 			</File>
@@ -387,6 +407,10 @@
 			</File>
 			<File
 				RelativePath="RfpTestMrSID.h"
+				>
+			</File>
+			<File
+				RelativePath=".\RfpTestPng.h"
 				>
 			</File>
 			<File

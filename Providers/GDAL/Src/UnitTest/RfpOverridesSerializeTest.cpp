@@ -208,7 +208,7 @@ void RfpOverridesSerializeTest::TestConfiguration(FdoGrfpPhysicalSchemaMapping* 
     }
 	catch (FdoException* e) 
     {
-        CPPUNIT_FAIL((const char*)FdoString(e->GetExceptionMessage()));
+        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
 	}
 }
 
@@ -222,7 +222,7 @@ void RfpOverridesSerializeTest::TestBaseProperties(FdoPhysicalElementMapping* el
     }
 	catch (FdoException* e) 
     {
-        CPPUNIT_FAIL((const char*)FdoString(e->GetExceptionMessage()));
+        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
 	}
 }
 
@@ -261,7 +261,7 @@ void RfpOverridesSerializeTest::testSimple ()
     }
 	catch (FdoException* e) 
     {
-        CPPUNIT_FAIL((const char*)FdoString(e->GetExceptionMessage()));
+        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
 	}
 	catch (char* error) 
     {
@@ -316,7 +316,7 @@ void RfpOverridesSerializeTest::testSetConfiguration()
     }
 	catch (FdoException* e) 
     {
-        CPPUNIT_FAIL((const char*)FdoString(e->GetExceptionMessage()));
+        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
 	}
 }
 

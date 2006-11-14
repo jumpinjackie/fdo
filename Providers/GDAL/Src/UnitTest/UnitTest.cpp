@@ -39,6 +39,10 @@
 #include "RfpTestBand.h"
 #include "RfpTestBandConfig.h"
 #include "RfpTestSpatialContext.h"
+#include "RfpTestAAIGrid.h"
+#include "RfpTestPng.h"
+#include "RfpTestJpg.h"
+
 #include <iostream>
 
 // The following macros are used as switches to determine
@@ -52,17 +56,33 @@
 #define TEST_GEOTIFF
 #define TEST_RASTERCONVERSION
 #define TEST_DEM
-//#define TEST_BAND_CONFIG
+#define TEST_BAND_CONFIG
+#define TEST_BAND
+#define TEST_AAIGrid
+#define TEST_PNG
+#define TEST_JPG
+
 //#define TEST_SPATIAL_CONTEXT
 //#define TEST_ECW
 //#define TEST_JP2
 //#define TEST_MRSID
-//#define TEST_BAND
 //#define TEST_MOSAIC
 
 void UnitTestMainProc()
 {
 	CppUnit::TextUi::TestRunner runner;
+
+#ifdef TEST_JPG	
+	runner.addTest(RfpTestJpg::suite());
+#endif
+
+#ifdef TEST_PNG	
+	runner.addTest(RfpTestPng::suite());
+#endif
+
+#ifdef TEST_AAIGrid
+	runner.addTest(RfpTestAAIGird::suite());
+#endif
 
 #ifdef TEST_NO_CONFIG	
 	runner.addTest(RfpNoConfigTest::suite());

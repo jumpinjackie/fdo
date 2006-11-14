@@ -135,55 +135,62 @@ void RfpTestBandConfig::testOverrides()
 // --------------------------------------------------------------
 void RfpTestBandConfig::testGeoReference()
 {
-	FdoPtr<FdoIConnection> connection = CreateConnection();
-	FdoPtr<FdoIoStream> stream = FdoIoFileStream::Create(L"../../TestData/rotated/GeoReference.xml", L"r");
-	connection->SetConfiguration(stream);
-	connection->Open();
+    try
+    {
+        FdoPtr<FdoIConnection> connection = CreateConnection();
+        FdoPtr<FdoIoStream> stream = FdoIoFileStream::Create(L"../../TestData/rotated/GeoReference.xml", L"r");
+        connection->SetConfiguration(stream);
+        connection->Open();
 
-	FdoICommand* cmd = connection->CreateCommand(FdoCommandType_Select);
-	FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*>(cmd);
+        FdoICommand* cmd = connection->CreateCommand(FdoCommandType_Select);
+        FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*>(cmd);
 
-	cmdSelect->SetFeatureClassName(L"Photo");
-	FdoPtr<FdoIFeatureReader> featureReader = cmdSelect->Execute();
+        cmdSelect->SetFeatureClassName(L"Photo");
+        FdoPtr<FdoIFeatureReader> featureReader = cmdSelect->Execute();
 
-	// first feature "lefttop", the config file has no georeference tag, so geo-info has to be retrieved from the raster image
-	CPPUNIT_ASSERT(featureReader->ReadNext());
+        // first feature "lefttop", the config file has no georeference tag, so geo-info has to be retrieved from the raster image
+        CPPUNIT_ASSERT(featureReader->ReadNext());
 
-	FdoPtr<FdoIRaster> raster = featureReader->GetRaster(L"Image");
-    FdoInt32 xSize = raster->GetImageXSize();
-    FdoInt32 ySize = raster->GetImageYSize();
-	CPPUNIT_ASSERT(xSize == 756);
-	CPPUNIT_ASSERT(ySize == 516);
+        FdoPtr<FdoIRaster> raster = featureReader->GetRaster(L"Image");
+        FdoInt32 xSize = raster->GetImageXSize();
+        FdoInt32 ySize = raster->GetImageYSize();
+        CPPUNIT_ASSERT(xSize == 756);
+        CPPUNIT_ASSERT(ySize == 516);
 
-    FdoPtr<FdoFgfGeometryFactory> geomFactory = FdoFgfGeometryFactory::GetInstance();
-    FdoPtr<FdoByteArray> ba = raster->GetBounds();
-    FdoPtr<FdoIGeometry> geometery = geomFactory->CreateGeometryFromFgf(ba);
-    FdoPtr<FdoIEnvelope> bounds = geometery->GetEnvelope();
+        FdoPtr<FdoFgfGeometryFactory> geomFactory = FdoFgfGeometryFactory::GetInstance();
+        FdoPtr<FdoByteArray> ba = raster->GetBounds();
+        FdoPtr<FdoIGeometry> geometery = geomFactory->CreateGeometryFromFgf(ba);
+        FdoPtr<FdoIEnvelope> bounds = geometery->GetEnvelope();
 
-    CPPUNIT_ASSERT(fabs(bounds->GetMinX() - 515.000000) < 0.001);
-	CPPUNIT_ASSERT(fabs(bounds->GetMinY() - 0.00000000) < 0.001);
-	CPPUNIT_ASSERT(fabs(bounds->GetMaxX() - 1271.00000) < 0.001) ;
-	CPPUNIT_ASSERT(fabs(bounds->GetMaxY() - 516.000000) < 0.001);
+        CPPUNIT_ASSERT(fabs(bounds->GetMinX() - 515.000000) < 0.001);
+        CPPUNIT_ASSERT(fabs(bounds->GetMinY() - 0.00000000) < 0.001);
+        CPPUNIT_ASSERT(fabs(bounds->GetMaxX() - 1271.00000) < 0.001) ;
+        CPPUNIT_ASSERT(fabs(bounds->GetMaxY() - 516.000000) < 0.001);
 
-	// second feature "leftbottom", the config file has georeference info. so they should be taken preference.
-	CPPUNIT_ASSERT(featureReader->ReadNext());
+        // second feature "leftbottom", the config file has georeference info. so they should be taken preference.
+        CPPUNIT_ASSERT(featureReader->ReadNext());
 
-	raster = featureReader->GetRaster(L"Image");
-    xSize = raster->GetImageXSize();
-	ySize = raster->GetImageYSize();
-	CPPUNIT_ASSERT(xSize == 756);
-	CPPUNIT_ASSERT(ySize == 516);
+        raster = featureReader->GetRaster(L"Image");
+        xSize = raster->GetImageXSize();
+        ySize = raster->GetImageYSize();
+        CPPUNIT_ASSERT(xSize == 756);
+        CPPUNIT_ASSERT(ySize == 516);
 
-    ba = raster->GetBounds();
-    geometery = geomFactory->CreateGeometryFromFgf(ba);
-    bounds = geometery->GetEnvelope();
+        ba = raster->GetBounds();
+        geometery = geomFactory->CreateGeometryFromFgf(ba);
+        bounds = geometery->GetEnvelope();
 
-	CPPUNIT_ASSERT(fabs(bounds->GetMinX() - 100000.000000) < 0.001);
-	CPPUNIT_ASSERT(fabs(bounds->GetMinY() - 100000.000000) < 0.001);
-	CPPUNIT_ASSERT(fabs(bounds->GetMaxX() - 100756.000000) < 0.001);
-	CPPUNIT_ASSERT(fabs(bounds->GetMaxY() - 100516.000000) < 0.001);
-	
-	connection->Close();
+        CPPUNIT_ASSERT(fabs(bounds->GetMinX() - 100000.000000) < 0.001);
+        CPPUNIT_ASSERT(fabs(bounds->GetMinY() - 100000.000000) < 0.001);
+        CPPUNIT_ASSERT(fabs(bounds->GetMaxX() - 100756.000000) < 0.001);
+        CPPUNIT_ASSERT(fabs(bounds->GetMaxY() - 100516.000000) < 0.001);
+
+        connection->Close();
+    }
+    catch (FdoException* e)
+    {
+        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
+    }
 }
 
 // --------------------------------------------------------------
@@ -353,12 +360,10 @@ void RfpTestBandConfig::testGetNullValue2()
 
 	FdoPtr<FdoIRaster> raster = featureReader->GetRaster(L"Image");
     FdoDataValue* nullVal = raster->GetNullPixelValue();
-	FdoPtr<FdoSingleValue> val = static_cast<FdoSingleValue*>(nullVal);
+	FdoPtr<FdoInt16Value> val = static_cast<FdoInt16Value*>(nullVal);
 
-	CPPUNIT_ASSERT(nullVal->GetDataType() == FdoDataType_Single);	
-
-	const float fVoidValue = 3.4028235e+038;
-	CPPUNIT_ASSERT(val->GetSingle () == fVoidValue);
+	CPPUNIT_ASSERT(nullVal->GetDataType() == FdoDataType_Int16);	
+	CPPUNIT_ASSERT(val->GetInt16() == -32767);
 
 	connection->Close();
 #endif

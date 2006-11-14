@@ -60,8 +60,8 @@ void RfpTestBand::testSelect()
 	CPPUNIT_ASSERT(raster->GetImageXSize() == 800);
 	CPPUNIT_ASSERT(raster->GetImageYSize() == 600);
 	FdoPtr<FdoRasterDataModel> dataModel = raster->GetDataModel();
-	CPPUNIT_ASSERT(dataModel->GetBitsPerPixel() == 32);
-	CPPUNIT_ASSERT(dataModel->GetDataModelType() == FdoRasterDataModelType_RGBA);
+	CPPUNIT_ASSERT(dataModel->GetBitsPerPixel() == 24);
+	CPPUNIT_ASSERT(dataModel->GetDataModelType() == FdoRasterDataModelType_RGB);
 	CPPUNIT_ASSERT(dataModel->GetTileSizeX() == raster->GetImageXSize());
 	CPPUNIT_ASSERT(dataModel->GetTileSizeY() == raster->GetImageYSize());
 
@@ -71,8 +71,8 @@ void RfpTestBand::testSelect()
 	CPPUNIT_ASSERT(raster->GetImageXSize() == 800);
 	CPPUNIT_ASSERT(raster->GetImageYSize() == 600);
 	dataModel = raster->GetDataModel();
-	CPPUNIT_ASSERT(dataModel->GetBitsPerPixel() == 32);
-	CPPUNIT_ASSERT(dataModel->GetDataModelType() == FdoRasterDataModelType_RGBA);
+	CPPUNIT_ASSERT(dataModel->GetBitsPerPixel() == 24);
+	CPPUNIT_ASSERT(dataModel->GetDataModelType() == FdoRasterDataModelType_RGB);
 	CPPUNIT_ASSERT(dataModel->GetTileSizeX() == raster->GetImageXSize());
 	CPPUNIT_ASSERT(dataModel->GetTileSizeY() == raster->GetImageYSize());
 
@@ -92,8 +92,8 @@ void RfpTestBand::testSelect()
 	CPPUNIT_ASSERT(raster->GetImageXSize() == 800);
 	CPPUNIT_ASSERT(raster->GetImageYSize() == 600);
 	dataModel = raster->GetDataModel();
-	CPPUNIT_ASSERT(dataModel->GetBitsPerPixel() == 32);
-	CPPUNIT_ASSERT(dataModel->GetDataModelType() == FdoRasterDataModelType_RGBA);
+	CPPUNIT_ASSERT(dataModel->GetBitsPerPixel() == 24);
+	CPPUNIT_ASSERT(dataModel->GetDataModelType() == FdoRasterDataModelType_RGB);
 	CPPUNIT_ASSERT(dataModel->GetTileSizeX() == raster->GetImageXSize());
 	CPPUNIT_ASSERT(dataModel->GetTileSizeY() == raster->GetImageYSize());
 

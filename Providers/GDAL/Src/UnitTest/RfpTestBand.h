@@ -25,14 +25,19 @@
 class RfpTestBand : public RfpTestCase
 {
 	FDO_CPPUNIT_DEFINE(testSelect);
-	FDO_CPPUNIT_DEFINE(testClippedMosaic);
-	FDO_CPPUNIT_DEFINE(testMosaic4by4);
+
+    // TODO: Enable when MOSAIC and CLIP supported
+	//FDO_CPPUNIT_DEFINE(testClippedMosaic);
+	//FDO_CPPUNIT_DEFINE(testMosaic4by4);
 
 	CPPUNIT_TEST_SUITE(RfpTestBand);
 	CPPUNIT_TEST(testSelect);
-	CPPUNIT_TEST(testClippedMosaic);
-	CPPUNIT_TEST(testMosaic4by4);
-	CPPUNIT_TEST_SUITE_END();
+
+    // TODO: Enable when MOSAIC and CLIP supported
+    //CPPUNIT_TEST(testClippedMosaic);
+	//CPPUNIT_TEST(testMosaic4by4);
+
+    CPPUNIT_TEST_SUITE_END();
 
 public:
 	RfpTestBand(void);
