@@ -214,7 +214,7 @@ private:
     FdoXmlSpatialContextFlagsP  mXmlFlags;
 
     FdoBoolean              mIsActiveSC;
-    FdoByteArray*           mExtent;
+    FdoPtr<FdoByteArray>    mExtent;
 
     FdoXmlSCReadHandler*     mSCHandler;
 };

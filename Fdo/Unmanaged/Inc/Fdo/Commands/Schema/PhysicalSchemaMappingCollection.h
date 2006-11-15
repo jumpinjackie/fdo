@@ -140,6 +140,7 @@ protected:
 /// \endcond
 
 private:
+    FdoPtr<FdoXmlSkipElementHandler> m_XmlSkipper;
 };
 
 /// \brief

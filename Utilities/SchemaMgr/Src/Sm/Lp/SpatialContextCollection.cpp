@@ -147,13 +147,14 @@ void FdoSmLpSpatialContextCollection::Load()
 
 	        while (scReader->ReadNext())
 	        {
+                FdoPtr<FdoByteArray> pExtVal = scReader->GetExtent();
 				FdoSmLpSpatialContextP sc = NewSpatialContext(
                     scReader->GetName(),
                     scReader->GetDescription(),
                     scReader->GetCoordinateSystem(),
                     scReader->GetCoordinateSystemWkt(),
                     scReader->GetExtentType(),
-                    scReader->GetExtent(),
+                    pExtVal.p,
                     scReader->GetXYTolerance(),
                     scReader->GetZTolerance(),
                     true,
@@ -237,14 +238,14 @@ void FdoSmLpSpatialContextCollection::Load()
             for ( idx = 0; idx <  phScs->GetCount(); idx++ ) 
             {
                 FdoSmPhSpatialContextP phSc = phScs->GetItem( idx );
-
+                FdoPtr<FdoByteArray> pExtVal = phSc->GetExtent();
 		        FdoSmLpSpatialContextP sc = NewSpatialContext(
                     phSc->GetName(),
                     phSc->GetDescription(),
                     phSc->GetCoordinateSystem(),
                     phSc->GetCoordinateSystemWkt(),
                     phSc->GetExtentType(),
-                    phSc->GetExtent(),
+                    pExtVal.p,
                     phSc->GetXYTolerance(),
                     phSc->GetZTolerance(),
                     true,

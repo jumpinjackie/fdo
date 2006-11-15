@@ -50,8 +50,6 @@ FdoXmlSpatialContextReader::FdoXmlSpatialContextReader(
     else
         mXmlFlags = FdoXmlSpatialContextFlags::Create();
 
-    mExtent = NULL;
-
     // Initialize the reader handler
     mSCHandler = FdoXmlSCReadHandler::Create();
     mSCHandler->mFirst = false;
@@ -60,9 +58,6 @@ FdoXmlSpatialContextReader::FdoXmlSpatialContextReader(
     
 FdoXmlSpatialContextReader::~FdoXmlSpatialContextReader()
 {
-    if ( mExtent != NULL )
-        mExtent->Release(); 
-
     FDO_SAFE_RELEASE(mSCHandler);
 }
 
@@ -111,9 +106,7 @@ FdoByteArray* FdoXmlSpatialContextReader::GetExtent()
 {
     ThrowOnNotRead( L"FdoXmlSpatialContextReader::GetExtent()" );
 
-    if ( mExtent ) 
-        mExtent->AddRef();
-    return mExtent;
+    return FDO_SAFE_ADDREF(mExtent.p);
 }
 
 const double FdoXmlSpatialContextReader::GetXYTolerance()
@@ -142,10 +135,7 @@ bool FdoXmlSpatialContextReader::ReadNext()
     FdoXmlSaxContextP context = FdoXmlSaxContext::Create( mXmlReader );
 
     // Clear out extents for previously read spatial context
-    if ( mExtent ) {
-        mExtent->Release();
-        mExtent = NULL;
-    }
+    mExtent = NULL;
 
     // Re-initialze the read handler so the next spatial context can be read.
     mSCHandler->Setup( mXmlFlags );

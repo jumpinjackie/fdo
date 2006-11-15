@@ -75,7 +75,8 @@ const FdoSmLpClassCollection* FdoSmLpSchema::RefClasses() const
 const FdoSmLpClassDefinition* FdoSmLpSchema::RefClass(FdoStringP className) const
 {
 	// Cast this to allow behind-the-scenes loading of this schema.
-	return ((FdoSmLpSchema*) this)->LoadClass(className);
+    FdoPtr<FdoSmLpClassDefinition> pRet = ((FdoSmLpSchema*) this)->LoadClass(className);
+    return pRet.p;
 }
 
 const FdoSmLpSAD* FdoSmLpSchema::RefSAD() const
