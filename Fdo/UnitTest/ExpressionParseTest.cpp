@@ -24,7 +24,8 @@
 #include "malloc.h"  // for alloca()
 
 #ifndef _WIN32
-#include <stdint.h>
+#   define LLONG_MAX    9223372036854775807LL
+#   define LLONG_MIN    (-LLONG_MAX - 1LL)
 #endif
 
 CPPUNIT_TEST_SUITE_REGISTRATION (ExpressionParseTest);
@@ -406,33 +407,17 @@ void ExpressionParseTest::testBoundaryValues()
         CPPUNIT_ASSERT(pLVal2 != NULL);   
         CPPUNIT_ASSERT(pLVal2->GetInt32() == LONG_MAX);  
 
-#ifdef _WIN32
         pVal = FdoInt64Value::Create(LLONG_MIN);
-#else
-        pVal = FdoInt64Value::Create(INT64_MIN);
-#endif
         pVal2 = roundTripBoundaryValue(pVal);
         FdoInt64Value* pLLVal2 = dynamic_cast<FdoInt64Value*>((FdoDataValue*) pVal2);
         CPPUNIT_ASSERT(pLLVal2 != NULL);  
-#ifdef _WIN32
         CPPUNIT_ASSERT(pLLVal2->GetInt64() == LLONG_MIN);   
-#else
-        CPPUNIT_ASSERT(pLLVal2->GetInt64() == INT64_MIN);   
-#endif
 
-#ifdef _WIN32
         pVal = FdoInt64Value::Create(LLONG_MAX);
-#else
-        pVal = FdoInt64Value::Create(INT64_MAX);
-#endif
         pVal2 = roundTripBoundaryValue(pVal);
         pLLVal2 = dynamic_cast<FdoInt64Value*>((FdoDataValue*) pVal2);
         CPPUNIT_ASSERT(pLLVal2 != NULL);   
-#ifdef _WIN32
         CPPUNIT_ASSERT(pLLVal2->GetInt64() == LLONG_MAX);   
-#else
-        CPPUNIT_ASSERT(pLLVal2->GetInt64() == INT64_MAX);   
-#endif
 
         pVal = FdoInt64Value::Create(LONG_MIN);
         pVal2 = roundTripBoundaryValue(pVal);
