@@ -39,6 +39,7 @@ MySqlFdoConnectTest.cpp \
 MySqlFdoConstraintsTest.cpp \
 MySqlFdoDatastoreTest.cpp \
 MySqlFdoDeleteTest.cpp \
+MySqlFdoForeignSchemaTest.cpp \
 MySqlFdoImportExportTest.cpp \
 MySqlFdoInsertTest.cpp \
 MySqlFdoMultiThreadTest.cpp \
@@ -69,6 +70,7 @@ MySqlFdoConnectTest.h \
 MySqlFdoConstraintsTest.h \
 MySqlFdoDatastoreTest.h \
 MySqlFdoDeleteTest.h \
+MySqlFdoForeignSchemaTest.h \
 MySqlFdoImportExportTest.h \
 MySqlFdoInsertTest.h \
 MySqlFdoMultiThreadTest.h \

@@ -40,6 +40,7 @@ FdoConnectTest.cpp \
 FdoConstraintsTest.cpp \
 FdoDatastoreTest.cpp \
 FdoDeleteTest.cpp \
+FdoForeignSchemaTest.cpp \
 FdoImportExportTest.cpp \
 FdoInsertTest.cpp \
 FdoMultiThreadTest.cpp \
@@ -72,6 +73,7 @@ FdoConnectTest.h \
 FdoConstraintsTest.h \
 FdoDatastoreTest.h \
 FdoDeleteTest.h \
+FdoForeignSchemaTest.h \
 FdoImportExportTest.h \
 FdoInsertTest.h \
 FdoMultiThreadTest.h \

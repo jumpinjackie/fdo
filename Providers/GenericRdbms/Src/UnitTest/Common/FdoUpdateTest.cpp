@@ -2081,7 +2081,7 @@ void FdoUpdateTest::CreateExternalData( FdoPtr<FdoIConnection> connection, FdoSm
     }
 
     reader = insertCommand->Execute();
-    CPPUNIT_ASSERT( reader == NULL );
+    CPPUNIT_ASSERT( reader!= NULL );
     
     dataValue = FdoDataValue::Create(L"KEY1_2");
     propertyValue = FdoUpdateTest::AddNewProperty( propertyValues, phMgr->GetDcColumnName(L"KEY1") );

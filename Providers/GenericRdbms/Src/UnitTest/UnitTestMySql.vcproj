@@ -580,6 +580,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Common\FdoForeignSchemaTest.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\FdoForeignSchemaTest.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Common\FdoImportExportTest.cpp"
 				>
 			</File>
@@ -841,6 +849,14 @@
 			</File>
 			<File
 				RelativePath=".\MySQL\MySqlFdoDeleteTest.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MySql\MySqlFdoForeignSchemaTest.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\MySql\MySqlFdoForeignSchemaTest.h"
 				>
 			</File>
 			<File
