@@ -37,6 +37,7 @@
 #include <FdoStd.h>
 #include <Fdo/Expression/StringValue.h>
 #include <Fdo/Expression/Int32Value.h>
+#include <Fdo/Expression/Int64Value.h>
 #include <Fdo/Expression/DoubleValue.h>
 #include <Fdo/Expression/DateTimeValue.h>
 #include <Fdo/Expression/BooleanValue.h>
@@ -54,7 +55,8 @@
 {
 	FdoIDisposable*	m_node;		// constraint parse tree node
 	FdoInt32		m_id;		// enumerations, keywords, ...
-	FdoInt32		m_integer;	// integer values (Int8, Int16, Int32, TODO:I64 )
+	FdoInt32		m_integer;	// integer values (Int8, Int16, Int32 )
+	FdoInt64		m_int64;	// 64bit integer values 
 	double			m_double;	// floating point values (single(float), double)
 	FdoString*		m_string;	// string
 	_FdoDateTime	m_datetime;	// date time
@@ -78,7 +80,7 @@
 %token FdoToken_RELATE
 // data types
 %token FdoToken_IDENTIFIER FdoToken_PARAMETER FdoToken_STRING
-%token FdoToken_INTEGER  FdoToken_DOUBLE FdoToken_DATETIME
+%token FdoToken_INTEGER  FdoToken_INT64 FdoToken_DOUBLE FdoToken_DATETIME
 %token FdoToken_BLOB FdoToken_CLOB
 // operators
 %token FdoToken_Add FdoToken_Subtract FdoToken_Multiply FdoToken_Divide 
@@ -99,9 +101,10 @@
 %type <m_node>		double string boolean FdoToken_Negate
 %type <m_node>		FdoToken_BLOB FdoToken_CLOB FdoToken_TRUE FdoToken_FALSE
 %type <m_node>		FdoToken_NULL FdoToken_GEOMFROMTEXT
-%type <m_node>		integer datetime
+%type <m_node>		integer int64 datetime
 %type <m_double>	FdoToken_DOUBLE
 %type <m_integer>	FdoToken_INTEGER
+%type <m_int64>		FdoToken_INT64
 %type <m_string>	FdoToken_IDENTIFIER FdoToken_STRING FdoToken_PARAMETER
 %type <m_datetime>	FdoToken_DATETIME
 
@@ -218,6 +221,7 @@ BEConstraint :
 						range->SetMinInclusive(true);
 						range->SetMaxInclusive(true);
 						$$=Node_Add(L"Constraint Range", range);
+						FDO_SAFE_RELEASE($1); 
 						FDO_SAFE_RELEASE($3); 
 						FDO_SAFE_RELEASE($5);
 					}
@@ -237,6 +241,7 @@ INConstraint :
 							FDO_SAFE_RELEASE(dvTemp);
 						}
 						$$=Node_Add(L"Constraint List",list);
+						FDO_SAFE_RELEASE($1); 
 						FDO_SAFE_RELEASE($4); 
 						FDO_SAFE_RELEASE(dvCol);
 					}
@@ -288,10 +293,12 @@ GTConstraint :
 	  Identifier FdoToken_GT DataValue
 					{
 						$$ = $3;
+						FDO_SAFE_RELEASE($1); 
 					}
 	| '(' Identifier FdoToken_GT DataValue ')'
 					{
 						$$ = $4;
+						FDO_SAFE_RELEASE($2); 
 					}
 	;
 
@@ -299,10 +306,12 @@ LTConstraint :
 	  Identifier FdoToken_LT DataValue
 					{
 						$$ = $3;
+						FDO_SAFE_RELEASE($1); 
 					}
 	| '(' Identifier FdoToken_LT DataValue ')'
 					{
 						$$ = $4;
+						FDO_SAFE_RELEASE($2); 
 					}
 	;
 
@@ -310,10 +319,12 @@ EqualConstraint :
 	  Identifier FdoToken_EQ DataValue
 					{
 						$$ = $3;
+						FDO_SAFE_RELEASE($1); 
 					}
 	| '(' Identifier FdoToken_EQ DataValue ')'
 					{
 						$$ = $4;
+						FDO_SAFE_RELEASE($2); 
 					}
 	;
 
@@ -321,10 +332,12 @@ GEConstraint :
 	  Identifier FdoToken_GE DataValue
 					{
 						$$ = $3;
+						FDO_SAFE_RELEASE($1); 
 					}
 	| '(' Identifier FdoToken_GE DataValue ')'
 					{
 						$$ = $4;
+						FDO_SAFE_RELEASE($2); 
 					}
 	;
 
@@ -332,10 +345,12 @@ LEConstraint :
 	  Identifier FdoToken_LE DataValue
 					{
 						$$ = $3;
+						FDO_SAFE_RELEASE($1); 
 					}
 	| '(' Identifier FdoToken_LE DataValue ')'
 					{
 						$$ = $4;
+						FDO_SAFE_RELEASE($2); 
 					}
 	;
 
@@ -368,8 +383,10 @@ DataValue :
 //	| decimal
 	| double			// double and single precision
  						{$$=Node_Copy(L"double", $1);}
-	| integer			// 16bit, 32bit, 64bit
+	| integer			// 16bit, 32bit
  						{$$=Node_Copy(L"integer", $1);}
+	| int64 			// 64bit
+ 						{$$=Node_Copy(L"int64", $1);}
 	| string			// e.g. 'abc', "abc" (NOT!)
  						{$$=Node_Copy(L"string", $1);}
 	| FdoToken_BLOB 	// '{' bytes... '}'	// e.g. BLOB { \x01 \x02 }	// TBD?
@@ -389,6 +406,9 @@ string :
 	;
 integer :
 	FdoToken_INTEGER	{$$=Node_Add(L"INTEGER", FdoInt32Value::Create($1));}
+	;
+int64 :
+	FdoToken_INT64  	{$$=Node_Add(L"INT64", FdoInt64Value::Create($1));}
 	;
 double :
 	FdoToken_DOUBLE		{$$=Node_Add(L"DOUBLE", FdoDoubleValue::Create($1));}

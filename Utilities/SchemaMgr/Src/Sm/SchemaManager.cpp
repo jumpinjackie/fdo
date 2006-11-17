@@ -46,6 +46,29 @@ FdoSmPhMgrP FdoSchemaManager::GetPhysicalSchema(void)
 	return mPhysicalSchema;
 }
 
+FdoFeatureSchemasP FdoSchemaManager::GetFdoSchemas( FdoStringP schemaName)
+{
+    try
+    {
+        // Load all constraints in one select, for performance.
+        GetPhysicalSchema()->SetBulkLoadConstraints(true);
+
+        FdoSmLpSchemasP pLpSchemaColl = GetLogicalPhysicalSchemas();
+
+        return pLpSchemaColl->GetFdoSchemas( schemaName );
+    }
+    catch (FdoSchemaException *ex)
+    {
+        // Catch and rethrow FdoSchemaExceptions here so the following
+        // catch for FdoExceptions doesn't get them.
+        throw ex;
+    }
+    catch (FdoException *ex)
+    {
+        throw FdoSchemaException::Create(ex->GetExceptionMessage(), ex);
+    }
+}
+
 FdoSchemaMappingsP FdoSchemaManager::GetSchemaMappings( 
     FdoStringP schemaName, 
     bool bIncludeDefaults 

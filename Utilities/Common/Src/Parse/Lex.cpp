@@ -811,6 +811,7 @@ bool FdoLex::getnumber(FdoCommonParse *pParse, bool sign)
 
     bool		dot;					// Dot flag
     double      rnum;					// Real number 
+    FdoInt64    i64num;
     wchar_t		str[maxCharLength];		// Input char storage
 	wchar_t*	pstr = str;
 
@@ -868,22 +869,53 @@ bool FdoLex::getnumber(FdoCommonParse *pParse, bool sign)
 	{        
 		// Integer number 
 		*pstr = CHR_NULL;
+
+#ifdef _WIN32
+        i64num = _wtoi64( str );
+#else
+        i64num atoll ( (const char*) FdoStringP(str) );   
+#endif
+
+
+        FdoStringP checkStr = FdoStringP::Format(
+#ifdef _WIN32
+            L"%I64d",
+#else
+            L"%lld",
+#endif
+            i64num
+        );
+
+
+        if ( checkStr == str ) {
+            if (i64num <= LONG_MAX && i64num >= LONG_MIN) 
+		    {
+			    try  
+			    {
+				    FDO_SAFE_RELEASE(m_data);
+				    m_data = FdoInt32Value::Create((FdoInt32)i64num);
+	                return true;
+			    } catch (...) {
+			    }
+            }
+            else 
+            {
+			    try  
+			    {
+				    FDO_SAFE_RELEASE(m_data);
+				    m_data = FdoInt64Value::Create(i64num);
+	                return true;
+			    } catch (...) {
+			    }
+            }
+        }
+
 #ifdef _WIN32
         rnum = _wtof(str);
 #else
         wchar_t *end;
         rnum =  wcstod(str, NULL);
 #endif
-        if (rnum < (double)LONG_MAX && rnum > (double)LONG_MIN) 
-		{
-			try  
-			{
-				FDO_SAFE_RELEASE(m_data);
-				m_data = FdoInt32Value::Create((FdoInt32)rnum);
-	            return true;
-			} catch (...) {
-			}
-        }
     }
 	else 
 	{

@@ -75,8 +75,7 @@ const FdoSmLpClassCollection* FdoSmLpSchema::RefClasses() const
 const FdoSmLpClassDefinition* FdoSmLpSchema::RefClass(FdoStringP className) const
 {
 	// Cast this to allow behind-the-scenes loading of this schema.
-    FdoPtr<FdoSmLpClassDefinition> pRet = ((FdoSmLpSchema*) this)->LoadClass(className);
-    return pRet.p;
+	return (FdoSmLpClassDefinition*)(((FdoSmLpSchema*) this)->LoadClass(className));
 }
 
 const FdoSmLpSAD* FdoSmLpSchema::RefSAD() const
@@ -115,7 +114,7 @@ const FdoSmLpClassDefinition* FdoSmLpSchema::FindClass( FdoStringP className ) c
 {
 	FdoStringP					        schemaName;
 	FdoStringP					        localClassName;
-	const FdoSmLpClassDefinition*	pFoundClass = NULL;
+	const FdoSmLpClassDefinition*      	pFoundClass = NULL;
 
 	// Check if class name qualified by schema name.
 	FdoStringP leftString = className.Left( L":" );
@@ -133,7 +132,7 @@ const FdoSmLpClassDefinition* FdoSmLpSchema::FindClass( FdoStringP className ) c
 
     if( wcscmp(schemaName, GetName()) == 0 )
     {
-        pFoundClass = ((FdoSmLpSchema*) this)->LoadClass( localClassName );
+        pFoundClass = (FdoSmLpClassDefinition*)(((FdoSmLpSchema*) this)->LoadClass( localClassName ));
         if ( pFoundClass )
             return( pFoundClass );
     }
@@ -435,7 +434,7 @@ void FdoSmLpSchema::LoadSchema()
 	}
 }
 
-FdoSmLpClassDefinition* FdoSmLpSchema::LoadClass(FdoStringP className, FdoString* schemaName )
+FdoSmLpClassDefinitionP FdoSmLpSchema::LoadClass(FdoStringP className, FdoString* schemaName )
 {
     FdoSmLpClassDefinition* cls = mClasses->FindItem(className);
     if( cls != NULL )

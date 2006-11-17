@@ -66,6 +66,15 @@ public:
 	FdoSmPhMgrP GetPhysicalSchema();
 
 
+	
+    // Converts this Schema Manager's logical-physical schemas into a collection
+    // of FDO (logical) schemas.
+    FdoFeatureSchemasP GetFdoSchemas( 
+        FdoStringP schemaName
+            // if specified, convert and return only the specified schema plus 
+            // any it depends on. If "" then convert all schemas.
+    );
+    
 	/*****************************************************************************
 	* DESCRIPTION:
 	*	Gets the Schema Mappings for the feature schemas on this connection.
@@ -73,7 +82,7 @@ public:
 	* FUNCTION VALUE:
 	*	The Physical Schema Manager.
 	*****************************************************************************/
-	
+
     FdoSchemaMappingsP GetSchemaMappings( 
         FdoStringP schemaName, 
     /// If specified, return only the mappings for this schema.

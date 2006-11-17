@@ -136,6 +136,11 @@ SymbolicName=FDOSM_25
 Language=English
 Internal error: FdoSmPhWriter derivation must override %1$ls function or provide sub-writer
 .
+MessageId=2231
+SymbolicName=FDOSM_26
+Language=English
+Unable to find schema '%1$ls'
+.
 MessageId=2327
 SymbolicName=FDOSM_122
 Language=English
