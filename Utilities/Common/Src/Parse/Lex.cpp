@@ -873,7 +873,7 @@ bool FdoLex::getnumber(FdoCommonParse *pParse, bool sign)
 #ifdef _WIN32
         i64num = _wtoi64( str );
 #else
-        i64num atoll ( (const char*) FdoStringP(str) );   
+        i64num = atoll ( (const char*) FdoStringP(str) );   
 #endif
 
 
