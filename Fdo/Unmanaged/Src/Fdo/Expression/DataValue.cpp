@@ -72,23 +72,46 @@ FdoDataValue* FdoDataValue::Create(FdoString* value, FdoDataType dataType)
     {
         // Construct a FdoDateTimeValue from a standard XML Schema dateTime string
         // Current support format: YYYY-MM-DDThh:mm:ss
-        FdoStringP sDateTime(value);
-        FdoInt16 year = (FdoInt16) sDateTime.Left(L"-").ToLong();
+        FdoStringsP dayTokens = FdoStringCollection::Create(value, L"-", true);
+        FdoInt32 tokenCount = dayTokens->GetCount();
+        FdoInt32 idx = 0;
+        FdoInt32 sign = 1;
 
-        sDateTime = sDateTime.Right(L"-");
-        FdoInt8 month = (FdoInt8) sDateTime.Left(L"-").ToLong();
+        FdoInt16 year = 0;
+        FdoInt8 month = 0;
+        FdoInt8 day = 0;
+        FdoInt8 hour = 0;
+        FdoInt8 minutes = 0;
+        FdoFloat seconds = 0;
 
-        sDateTime = sDateTime.Right(L"-");
-        FdoInt8 day = (FdoInt8) sDateTime.Left(L"T").ToLong();
+        if ( (idx < tokenCount) && (wcslen(dayTokens->GetString(idx)) == 0) ) {
+            sign = -1;
+            idx++;
+        }
 
-        sDateTime = sDateTime.Right(L"T");
-        FdoInt8 hour = (FdoInt8) sDateTime.Left(L":").ToLong();
+        if ( idx < tokenCount )
+            year = (FdoInt16)(sign * FdoStringP(dayTokens->GetString(idx++),false).ToLong());
 
-        sDateTime = sDateTime.Right(L":");
-        FdoInt8 minutes = (FdoInt8) sDateTime.Left(L":").ToLong();
+        if ( idx < tokenCount )
+            month = (FdoInt8) FdoStringP(dayTokens->GetString(idx++),false).ToLong();
 
-        sDateTime = sDateTime.Right(L":");
-        FdoFloat seconds = (FdoFloat) sDateTime.Left(L":").ToDouble();
+        if ( idx < tokenCount )
+            day = (FdoInt8) FdoStringP(dayTokens->GetString(idx),false).Left(L"T").ToLong();
+
+        if ( idx < tokenCount ) {
+            FdoStringsP timeTokens = FdoStringCollection::Create(FdoStringP(dayTokens->GetString(idx),false).Right(L"T"), L":", true);
+            idx = 0;
+            tokenCount = timeTokens->GetCount();
+
+            if ( idx < tokenCount )
+                hour = (FdoInt8) FdoStringP(timeTokens->GetString(idx++),false).ToLong();
+
+            if ( idx < tokenCount )
+                minutes = (FdoInt8) FdoStringP(timeTokens->GetString(idx++),false).ToLong();
+
+            if ( idx < tokenCount )
+                seconds = (FdoFloat) FdoStringP(timeTokens->GetString(idx++),false).ToDouble();
+        }
 
         return FdoDateTimeValue::Create(FdoDateTime(year, month, day, hour, minutes, seconds));
     }
@@ -127,9 +150,9 @@ FdoDataValue* FdoDataValue::Create(FdoString* value, FdoDataType dataType)
     return (FdoDataValue*) NULL; //to suppress compiler warning.
 }
 
-FdoString* FdoDataValue::GetStringValue(FdoDataValue* dataValue)
+FdoString* FdoDataValue::GetXmlValue()
 {
-    switch (dataValue->GetDataType())
+    switch (GetDataType())
     {
     case FdoDataType_Boolean:
     case FdoDataType_Byte:
@@ -141,17 +164,27 @@ FdoString* FdoDataValue::GetStringValue(FdoDataValue* dataValue)
     case FdoDataType_Single:
     case FdoDataType_BLOB:
     case FdoDataType_CLOB:
-        return dataValue->ToString();
+        return ToString();
     case FdoDataType_DateTime:
     {
         // Return standard XML Schema dateTime string
         // Current support format: YYYY-MM-DDThh:mm:ss
-        FdoDateTime dateTime = (static_cast<FdoDateTimeValue*>(dataValue))->GetDateTime();
-        FdoStringP sDateTime = FdoStringP::Format(L"%d-%d-%dT%d:%d:%.0f", dateTime.year, dateTime.month, dateTime.day, dateTime.hour, dateTime.minute, dateTime.seconds);
-        return FdoStringUtility::MakeString(sDateTime);
+        FdoDateTime dateTime = (static_cast<FdoDateTimeValue*>(this))->GetDateTime();
+
+        FdoInt8 seconds = (FdoInt8) dateTime.seconds;
+        FdoFloat frac = (FdoFloat)(dateTime.seconds - seconds);
+
+        FdoStringP sFrac;
+
+        if ( frac >= 0.000001 ) 
+            sFrac = FdoStringP(L".") + FdoStringP::Format( L"%g", frac ).Right(L".");
+
+        m_XmlValue = FdoStringP::Format(L"%04d-%02d-%02dT%02d:%02d:%02d%ls", dateTime.year, dateTime.month, dateTime.day, dateTime.hour, dateTime.minute, seconds, (FdoString*) sFrac);
+        
+        return m_XmlValue;
     }
     case FdoDataType_String:
-        return (static_cast<FdoStringValue*>(dataValue))->GetString();
+        return (static_cast<FdoStringValue*>(this))->GetString();
     }
 
 	FdoExpressionException*	pExcept = FdoExpressionException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));

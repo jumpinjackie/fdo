@@ -59,28 +59,29 @@
      FdoToken_PARAMETER = 285,
      FdoToken_STRING = 286,
      FdoToken_INTEGER = 287,
-     FdoToken_DOUBLE = 288,
-     FdoToken_DATETIME = 289,
-     FdoToken_BLOB = 290,
-     FdoToken_CLOB = 291,
-     FdoToken_Add = 292,
-     FdoToken_Subtract = 293,
-     FdoToken_Multiply = 294,
-     FdoToken_Divide = 295,
-     FdoToken_Negate = 296,
-     FdoToken_EQ = 297,
-     FdoToken_NE = 298,
-     FdoToken_GT = 299,
-     FdoToken_GE = 300,
-     FdoToken_LT = 301,
-     FdoToken_LE = 302,
-     FdoToken_LeftParenthesis = 303,
-     FdoToken_RightParenthesis = 304,
-     FdoToken_Comma = 305,
-     FdoToken_Dot = 306,
-     FdoToken_Colon = 307,
-     FdoToken_AS = 308,
-     FdoToken_BETWEEN = 309
+     FdoToken_INT64 = 288,
+     FdoToken_DOUBLE = 289,
+     FdoToken_DATETIME = 290,
+     FdoToken_BLOB = 291,
+     FdoToken_CLOB = 292,
+     FdoToken_Add = 293,
+     FdoToken_Subtract = 294,
+     FdoToken_Multiply = 295,
+     FdoToken_Divide = 296,
+     FdoToken_Negate = 297,
+     FdoToken_EQ = 298,
+     FdoToken_NE = 299,
+     FdoToken_GT = 300,
+     FdoToken_GE = 301,
+     FdoToken_LT = 302,
+     FdoToken_LE = 303,
+     FdoToken_LeftParenthesis = 304,
+     FdoToken_RightParenthesis = 305,
+     FdoToken_Comma = 306,
+     FdoToken_Dot = 307,
+     FdoToken_Colon = 308,
+     FdoToken_AS = 309,
+     FdoToken_BETWEEN = 310
    };
 #endif
 #define FdoToken_NULL 258
@@ -113,28 +114,29 @@
 #define FdoToken_PARAMETER 285
 #define FdoToken_STRING 286
 #define FdoToken_INTEGER 287
-#define FdoToken_DOUBLE 288
-#define FdoToken_DATETIME 289
-#define FdoToken_BLOB 290
-#define FdoToken_CLOB 291
-#define FdoToken_Add 292
-#define FdoToken_Subtract 293
-#define FdoToken_Multiply 294
-#define FdoToken_Divide 295
-#define FdoToken_Negate 296
-#define FdoToken_EQ 297
-#define FdoToken_NE 298
-#define FdoToken_GT 299
-#define FdoToken_GE 300
-#define FdoToken_LT 301
-#define FdoToken_LE 302
-#define FdoToken_LeftParenthesis 303
-#define FdoToken_RightParenthesis 304
-#define FdoToken_Comma 305
-#define FdoToken_Dot 306
-#define FdoToken_Colon 307
-#define FdoToken_AS 308
-#define FdoToken_BETWEEN 309
+#define FdoToken_INT64 288
+#define FdoToken_DOUBLE 289
+#define FdoToken_DATETIME 290
+#define FdoToken_BLOB 291
+#define FdoToken_CLOB 292
+#define FdoToken_Add 293
+#define FdoToken_Subtract 294
+#define FdoToken_Multiply 295
+#define FdoToken_Divide 296
+#define FdoToken_Negate 297
+#define FdoToken_EQ 298
+#define FdoToken_NE 299
+#define FdoToken_GT 300
+#define FdoToken_GE 301
+#define FdoToken_LT 302
+#define FdoToken_LE 303
+#define FdoToken_LeftParenthesis 304
+#define FdoToken_RightParenthesis 305
+#define FdoToken_Comma 306
+#define FdoToken_Dot 307
+#define FdoToken_Colon 308
+#define FdoToken_AS 309
+#define FdoToken_BETWEEN 310
 
 
 
@@ -145,7 +147,8 @@ typedef union _FDO_FILTER_YYSTYPE
 {
 	FdoIDisposable*	m_node;		// expression or filter parse tree node
 	FdoInt32		m_id;		// enumerations, keywords, ...
-	FdoInt32		m_integer;	// integer values (Int8, Int16, Int32, TODO:I64 )
+	FdoInt32		m_integer;	// integer values (Int8, Int16, Int32 )
+	FdoInt64		m_int64;	// 64-bit integer values
 	double			m_double;	// floating point values (single(float), double)
 	FdoString*		m_string;	// string
 	_FdoDateTime	m_datetime;	// date time

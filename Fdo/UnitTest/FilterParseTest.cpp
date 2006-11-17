@@ -21,6 +21,8 @@
 #include "TestProcessor.h"
 #endif
 
+#include "UnitTestUtil.h"
+
 CPPUNIT_TEST_SUITE_REGISTRATION (FilterParseTest);
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION (FilterParseTest, "FilterParseTest");
 
@@ -227,5 +229,91 @@ void FilterParseTest::test()
     ParseFilter(L"( (Width+Length)*2 ) AS perimeter, perimeter > 100 AND perimeter < 1000");
     ParseFilter(L"( (Width+Length)*2 ) AS perimeter, ( Width*Length ) AS Area, Area > 1000 OR perimeter < 100");
     ParseFilter(L"( (Width+Length)*2 ) AS perimeter, ( Width*Length ) AS Area, Area > perimeter");
+}
+
+void FilterParseTest::testBoundaryValues()
+{
+    try
+    {
+        // Test boundary values for "in" filter
+    
+        FdoPtr<FdoIdentifier> ident = FdoIdentifier::Create( L"amount" );
+
+        FdoPtr<FdoValueExpressionCollection> expressions = FdoValueExpressionCollection::Create();
+
+        expressions->Add( FdoByteValue::Create(0) );
+        expressions->Add( FdoByteValue::Create(UCHAR_MAX) );
+        expressions->Add( FdoInt16Value::Create(SHRT_MIN) );
+        expressions->Add( FdoInt16Value::Create(SHRT_MAX) );
+        expressions->Add( FdoInt32Value::Create(LONG_MIN) );
+        expressions->Add( FdoInt32Value::Create(LONG_MAX) );
+        expressions->Add( FdoInt64Value::Create(LLONG_MIN) );
+        expressions->Add( FdoInt64Value::Create(LLONG_MAX) );
+        expressions->Add( FdoInt64Value::Create(LONG_MIN) );
+        expressions->Add( FdoInt64Value::Create(LONG_MAX) );
+
+        FdoPtr<FdoInCondition> in1 = FdoInCondition::Create( ident, expressions );
+        FdoPtr<FdoFilter> filter = FdoFilter::Parse(in1->ToString());
+        CPPUNIT_ASSERT( filter != NULL );
+        FdoInCondition* in2 = dynamic_cast<FdoInCondition*>((FdoFilter*) filter);
+        CPPUNIT_ASSERT( in2 != NULL );
+
+        FdoPtr<FdoValueExpressionCollection> expressions2 = in2->GetValues();
+        CPPUNIT_ASSERT( expressions2->GetCount() == 10 );
+
+        FdoPtr<FdoValueExpression> pVal2 = expressions2->GetItem(0);
+        FdoInt32Value* pLVal2 = dynamic_cast<FdoInt32Value*>((FdoValueExpression*) pVal2);
+        CPPUNIT_ASSERT(pLVal2 != NULL);   
+        CPPUNIT_ASSERT(pLVal2->GetInt32() == 0);   
+    
+        pVal2 = expressions2->GetItem(1);
+        pLVal2 = dynamic_cast<FdoInt32Value*>((FdoValueExpression*) pVal2);
+        CPPUNIT_ASSERT(pLVal2 != NULL);   
+        CPPUNIT_ASSERT(pLVal2->GetInt32() == UCHAR_MAX);  
+
+        pVal2 = expressions2->GetItem(2);
+        pLVal2 = dynamic_cast<FdoInt32Value*>((FdoValueExpression*) pVal2);
+        CPPUNIT_ASSERT(pLVal2 != NULL);   
+        CPPUNIT_ASSERT(pLVal2->GetInt32() == SHRT_MIN);   
+    
+        pVal2 = expressions2->GetItem(3);
+        pLVal2 = dynamic_cast<FdoInt32Value*>((FdoValueExpression*) pVal2);
+        CPPUNIT_ASSERT(pLVal2 != NULL);   
+        CPPUNIT_ASSERT(pLVal2->GetInt32() == SHRT_MAX);  
+
+        pVal2 = expressions2->GetItem(4);
+        pLVal2 = dynamic_cast<FdoInt32Value*>((FdoValueExpression*) pVal2);
+        CPPUNIT_ASSERT(pLVal2 != NULL);   
+        CPPUNIT_ASSERT(pLVal2->GetInt32() == LONG_MIN);   
+    
+        pVal2 = expressions2->GetItem(5);
+        pLVal2 = dynamic_cast<FdoInt32Value*>((FdoValueExpression*) pVal2);
+        CPPUNIT_ASSERT(pLVal2 != NULL);   
+        CPPUNIT_ASSERT(pLVal2->GetInt32() == LONG_MAX);  
+
+        pVal2 = expressions2->GetItem(6);
+        FdoInt64Value* pLLVal2 = dynamic_cast<FdoInt64Value*>((FdoValueExpression*) pVal2);
+        CPPUNIT_ASSERT(pLLVal2 != NULL);   
+        CPPUNIT_ASSERT(pLLVal2->GetInt64() == LLONG_MIN);   
+    
+        pVal2 = expressions2->GetItem(7);
+        pLLVal2 = dynamic_cast<FdoInt64Value*>((FdoValueExpression*) pVal2);
+        CPPUNIT_ASSERT(pLLVal2 != NULL);   
+        CPPUNIT_ASSERT(pLLVal2->GetInt64() == LLONG_MAX);   
+
+        pVal2 = expressions2->GetItem(8);
+        pLVal2 = dynamic_cast<FdoInt32Value*>((FdoValueExpression*) pVal2);
+        CPPUNIT_ASSERT(pLVal2 != NULL);   
+        CPPUNIT_ASSERT(pLVal2->GetInt32() == LONG_MIN);   
+    
+        pVal2 = expressions2->GetItem(9);
+        pLVal2 = dynamic_cast<FdoInt32Value*>((FdoValueExpression*) pVal2);
+        CPPUNIT_ASSERT(pLVal2 != NULL);   
+        CPPUNIT_ASSERT(pLVal2->GetInt32() == LONG_MAX);   
+    }
+    catch (FdoException *e)
+    {
+        UnitTestUtil::FailOnException( e );
+    }
 }
 

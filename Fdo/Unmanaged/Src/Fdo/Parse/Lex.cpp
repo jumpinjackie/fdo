@@ -796,6 +796,7 @@ bool FdoLex::getnumber(FdoParse *pParse, bool sign)
 
     bool		dot;					// Dot flag
     double      rnum;					// Real number 
+    FdoInt64    i64num;
     wchar_t		str[maxCharLength];		// Input char storage
 	wchar_t*	pstr = str;
 
@@ -853,22 +854,60 @@ bool FdoLex::getnumber(FdoParse *pParse, bool sign)
 	{        
 		// Integer number 
 		*pstr = CHR_NULL;
+
+#ifdef _WIN32
+        i64num = _wtoi64( str );
+#else
+        i64num atoll ( (const char*) FdoStringP(str) );   
+#endif
+
+        // Check if anything lost, during i64 convert, by converting back to string
+        // and comparing with original string. Not terribly efficient but good enough
+        // when parsing expression strings.
+        FdoStringP checkStr = FdoStringP::Format(
+#ifdef _WIN32
+            L"%I64d",
+#else
+            L"%lld",
+#endif
+            i64num
+        );
+
+
+        if ( checkStr == str ) {
+            // String converted to in64 ok.
+
+            if (i64num <= LONG_MAX && i64num >= LONG_MIN) 
+		    {
+                // In Int32 range so wrap in int32
+			    try  
+			    {
+				    FDO_SAFE_RELEASE(m_data);
+				    m_data = FdoInt32Value::Create((FdoInt32)i64num);
+	                return true;
+			    } catch (...) {
+			    }
+            }
+            else 
+            {
+                // otherwise, wrap in int64
+			    try  
+			    {
+				    FDO_SAFE_RELEASE(m_data);
+				    m_data = FdoInt64Value::Create(i64num);
+	                return true;
+			    } catch (...) {
+			    }
+            }
+        }
+
+        // Convert to int64 did not work, fall back to double.
 #ifdef _WIN32
         rnum = _wtof(str);
 #else
         wchar_t *end;
         rnum =  wcstod(str, NULL);
 #endif
-        if (rnum < (double)LONG_MAX && rnum > (double)LONG_MIN) 
-		{
-			try  
-			{
-				FDO_SAFE_RELEASE(m_data);
-				m_data = FdoInt32Value::Create((FdoInt32)rnum);
-	            return true;
-			} catch (...) {
-			}
-        }
     }
 	else 
 	{

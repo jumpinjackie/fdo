@@ -108,10 +108,11 @@ FdoString* FdoByteValue::ToString()
     }
 
 #ifdef _WIN32
-    _snwprintf(szBuf, iBufLen, L"\\0x%02X", (FdoInt32)GetByte());
+    _itow((FdoInt32)GetByte(), szBuf, 10);
 #else
-    swprintf(szBuf, iBufLen, L"\\0x%02X", (FdoInt32)GetByte());
-#endif
+	swprintf(szBuf, iBufLen, L"%d", (FdoInt32)GetByte());
+#endif		
+
     m_toString = FdoStringUtility::MakeString(szBuf);
     return m_toString;
 }

@@ -212,11 +212,13 @@ public:
 
 	static FdoDataValue* Create(FdoString* value, FdoDataType dataType);
 
-    static FdoString* GetStringValue(FdoDataValue* dataValue);
+    // Get the value as an XML format string.
+    FdoString* GetXmlValue();
 
 protected:
 /// \cond DOXYGEN-IGNORE
     bool        m_isNull;
+    FdoStringP  m_XmlValue; // Manages GetXmlValue return string when datatype is datetime.
 };
 /// \endcond
 
