@@ -20,6 +20,8 @@
 #include "MySqlFdoForeignSchemaTest.h"
 #include "UnitTestUtil.h"
 
+#define   DB_NAME_SUFFIX            "_fs"
+
 CPPUNIT_TEST_SUITE_REGISTRATION( MySqlFdoForeignSchemaTest );
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( MySqlFdoForeignSchemaTest, "FdoForeignSchemaTest");
 
@@ -29,7 +31,7 @@ void MySqlFdoForeignSchemaTest::set_provider()
 }
 void MySqlFdoForeignSchemaTest::create_foreign_datastore()
 {
-	bool dbExists = UnitTestUtil::DatastoreExists("");
+	bool dbExists = UnitTestUtil::DatastoreExists(DB_NAME_SUFFIX);
 	FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore, "");
 	FdoIConnection* connection = UnitTestUtil::GetProviderConnectionObject();
 
@@ -39,15 +41,15 @@ void MySqlFdoForeignSchemaTest::create_foreign_datastore()
 
 	if (dbExists)
 	{
-		sqlStmt = FdoStringP::Format(L"drop database %ls", (FdoString*) FdoStringP(UnitTestUtil::GetEnviron("datastore","")));
+		sqlStmt = FdoStringP::Format(L"drop database %ls", (FdoString*) FdoStringP(UnitTestUtil::GetEnviron("datastore",DB_NAME_SUFFIX)));
 		UnitTestUtil::Sql2Db(sqlStmt, connection);
 	}
 	sqlStmt = FdoStringP::Format(
-		L"create database %ls character set latin1 collate latin1_bin", (FdoString*) FdoStringP(UnitTestUtil::GetEnviron("datastore","")));
+		L"create database %ls character set latin1 collate latin1_bin", (FdoString*) FdoStringP(UnitTestUtil::GetEnviron("datastore",DB_NAME_SUFFIX)));
    
 	UnitTestUtil::Sql2Db(sqlStmt, connection);
 
-	userConnectString = UnitTestUtil::GetConnectionString(Connection_WithDatastore, "");
+	userConnectString = UnitTestUtil::GetConnectionString(Connection_WithDatastore, DB_NAME_SUFFIX);
     connection->SetConnectionString (userConnectString);
     connection->Open ();
 
@@ -59,7 +61,7 @@ void MySqlFdoForeignSchemaTest::create_foreign_datastore()
 }
 void MySqlFdoForeignSchemaTest::insert()
 {
-	FdoPtr<FdoIConnection> connection = UnitTestUtil::GetConnection("", false);
+	FdoPtr<FdoIConnection> connection = UnitTestUtil::GetConnection(DB_NAME_SUFFIX, false);
 	try
 	{
 		FdoIInsert *insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
