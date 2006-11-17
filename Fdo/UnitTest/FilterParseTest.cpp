@@ -21,6 +21,10 @@
 #include "TestProcessor.h"
 #endif
 
+#ifndef _WIN32
+#include <stdint.h>
+#endif
+
 #include "UnitTestUtil.h"
 
 CPPUNIT_TEST_SUITE_REGISTRATION (FilterParseTest);
@@ -247,8 +251,13 @@ void FilterParseTest::testBoundaryValues()
         expressions->Add( FdoInt16Value::Create(SHRT_MAX) );
         expressions->Add( FdoInt32Value::Create(LONG_MIN) );
         expressions->Add( FdoInt32Value::Create(LONG_MAX) );
+#ifdef _WIN32
         expressions->Add( FdoInt64Value::Create(LLONG_MIN) );
         expressions->Add( FdoInt64Value::Create(LLONG_MAX) );
+#else
+        expressions->Add( FdoInt64Value::Create(INT64_MIN) );
+        expressions->Add( FdoInt64Value::Create(INT64_MAX) );
+#endif
         expressions->Add( FdoInt64Value::Create(LONG_MIN) );
         expressions->Add( FdoInt64Value::Create(LONG_MAX) );
 
@@ -294,12 +303,20 @@ void FilterParseTest::testBoundaryValues()
         pVal2 = expressions2->GetItem(6);
         FdoInt64Value* pLLVal2 = dynamic_cast<FdoInt64Value*>((FdoValueExpression*) pVal2);
         CPPUNIT_ASSERT(pLLVal2 != NULL);   
+#ifdef _WIN32
         CPPUNIT_ASSERT(pLLVal2->GetInt64() == LLONG_MIN);   
-    
+#else
+        CPPUNIT_ASSERT(pLLVal2->GetInt64() == INT64_MIN);   
+#endif
+
         pVal2 = expressions2->GetItem(7);
         pLLVal2 = dynamic_cast<FdoInt64Value*>((FdoValueExpression*) pVal2);
         CPPUNIT_ASSERT(pLLVal2 != NULL);   
+#ifdef _WIN32
         CPPUNIT_ASSERT(pLLVal2->GetInt64() == LLONG_MAX);   
+#else
+        CPPUNIT_ASSERT(pLLVal2->GetInt64() == INT64_MAX);   
+#endif
 
         pVal2 = expressions2->GetItem(8);
         pLVal2 = dynamic_cast<FdoInt32Value*>((FdoValueExpression*) pVal2);
