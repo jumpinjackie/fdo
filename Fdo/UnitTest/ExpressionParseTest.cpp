@@ -140,7 +140,7 @@ void ExpressionParseTest::testExpressions()
 	ParseExpression(L"123456789012345678901", 
         L"1.23456789012346e+020");
 #else
-	ParseExpression(L"12345678901234567", 
+	ParseExpression(L"123456789012345678901", 
         L"1.23456789012346e+20");
 #endif
 	ParseExpression(L"1.2e13", 
