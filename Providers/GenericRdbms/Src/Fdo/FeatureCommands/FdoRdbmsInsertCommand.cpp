@@ -372,6 +372,110 @@ FdoIFeatureReader* FdoRdbmsInsertCommand::Execute ()
         featInfoCol->GetCount() > 0 
     )
         reader = new FdoRdbmsFeatureInfoReader( featInfoCol, classDefinition );
+	else
+	{
+		FdoSmLpDataPropertyDefinitionCollection* idProperties = 
+			((FdoSmLpClassBase *)classDefinition)->GetIdentityProperties();
+		FdoPtr<FdoSmLpDataPropertyDefinition> idPropDef;
+		FdoPtr<FdoPropertyValue> idProp;
+		for (int i=0; i < idProperties->GetCount(); i++)
+		{
+			idPropDef = idProperties->GetItem(i);
+			idProp = mPropertyValues->FindItem(idPropDef->GetName());
+		
+			FdoPropertyValue *newIdProp = FdoPropertyValue::Create();
+			newIdProp->SetName( idPropDef->GetName() );
+			FdoDataValue *newValue = FdoDataValue::Create(idPropDef->GetDataType());
+			if (idProp)
+			{
+				FdoPtr<FdoValueExpression> literalExpression = idProp->GetValue();
+				FdoDataValue *idDataValue = (dynamic_cast<FdoDataValue*>(literalExpression.p));
+				if (!idDataValue->IsNull())
+				{
+					FdoString *stringValue;
+					if (idDataValue->GetDataType() == FdoDataType_String)
+						stringValue = (static_cast<FdoStringValue*>(idDataValue))->GetString();
+					else
+						stringValue = idDataValue->ToString();
+
+					switch (idPropDef->GetDataType())
+					{
+						case FdoDataType_Boolean:
+							(static_cast<FdoBooleanValue*>(newValue))->SetBoolean(FdoStringP(stringValue).ToBoolean());
+							newIdProp->SetValue(newValue);
+							break;
+
+						case FdoDataType_Byte:
+							(static_cast<FdoByteValue*>(newValue))->SetByte((FdoByte)FdoStringP(stringValue).ToLong());
+							newIdProp->SetValue(newValue);
+							break;
+
+						case FdoDataType_DateTime:
+							if (idDataValue->GetDataType() == FdoDataType_DateTime)
+								(static_cast<FdoDateTimeValue*>(newValue))->SetDateTime((static_cast<FdoDateTimeValue*>(idDataValue))->GetDateTime());
+							else
+								(static_cast<FdoDateTimeValue*>(newValue))->SetDateTime(mFdoConnection->DbiToFdoTime(mConnection->GetUtility()->UnicodeToUtf8(stringValue)));
+							newIdProp->SetValue(newValue);
+							break;
+
+						case FdoDataType_String:
+							(static_cast<FdoStringValue*>(newValue))->SetString(stringValue);
+							newIdProp->SetValue(newValue);
+							break;
+
+						case FdoDataType_Decimal:
+							(static_cast<FdoDecimalValue*>(newValue))->SetDecimal(FdoStringP(stringValue).ToDouble());
+							newIdProp->SetValue( newValue );
+							break;
+
+						case FdoDataType_Double:
+							(static_cast<FdoDoubleValue*>(newValue))->SetDouble(FdoStringP(stringValue).ToDouble());
+							newIdProp->SetValue(newValue);
+							break;
+
+						case FdoDataType_Int16:
+							(static_cast<FdoInt16Value*>(newValue))->SetInt16((FdoInt16)FdoStringP(stringValue).ToLong());
+							newIdProp->SetValue(newValue);
+							break;
+
+						case FdoDataType_Int32:
+							(static_cast<FdoInt32Value*>(newValue))->SetInt32(FdoStringP(stringValue).ToLong());
+							newIdProp->SetValue(newValue);
+							break;
+
+						case FdoDataType_Int64:
+							(static_cast<FdoInt64Value*>(newValue))->SetInt64(FdoStringP(stringValue).ToLong());
+							newIdProp->SetValue(newValue);
+							break;
+
+						case FdoDataType_Single:
+							(static_cast<FdoSingleValue*>(newValue))->SetSingle((FdoFloat)FdoStringP(stringValue).ToDouble());
+							newIdProp->SetValue(newValue);
+							break;
+
+						default:
+							// It should not happen. Prim key column cannot be BLOB, GEOMETRY etc.
+							throw FdoCommandException::Create(NlsMsgGet1(FDORDBMS_54, "Unhandled type: %1$d", idPropDef->GetDataType()));
+							break;
+					}
+				}
+				else
+				{
+					newValue->SetNull();
+					newIdProp->SetValue(newValue);
+				}
+			}
+			else
+			{	
+				newValue->SetNull();
+				newIdProp->SetValue(newValue);
+			}
+			featInfoCol->Add(newIdProp);
+			newValue->Release();
+			newIdProp->Release();
+		}
+		reader = new FdoRdbmsFeatureInfoReader( featInfoCol, classDefinition );
+	}
     return reader;
 }
 
