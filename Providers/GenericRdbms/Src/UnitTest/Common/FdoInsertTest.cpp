@@ -26,6 +26,11 @@
 #define  DBG(X)
 #endif
 
+#ifndef _WIN32
+#   define LLONG_MAX    9223372036854775807LL
+#   define LLONG_MIN    (-LLONG_MAX - 1LL)
+#endif
+
 FdoInsertTest::FdoInsertTest(void)
 {
     mSuffix[0] = '\0';
@@ -616,10 +621,11 @@ void FdoInsertTest::insertBoundary()
 
         try
         {
+            bool supportsZ = (FdoPtr<FdoIGeometryCapabilities>(connection->GetGeometryCapabilities())->GetDimensionalities() & FdoDimensionality_Z);
             insertBoundaryCleanup( connection );
 
             double       coordsBuffer[400];
-            int                 segCount = 2;
+            int                 oordCount = 0;
 
             FdoPtr<FdoPropertyValue> propertyValue;
 
@@ -631,13 +637,22 @@ void FdoInsertTest::insertBoundary()
             FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
 
 			// Use 2D points to accomodate MySql 
-            coordsBuffer[0] = 1.1;
-            coordsBuffer[1] = 2.2;
-            coordsBuffer[2] = 1.1;
-            coordsBuffer[3] = 3.3;
+            coordsBuffer[oordCount++] = 1.1;
+            coordsBuffer[oordCount++] = 2.2;
+            if ( supportsZ ) 
+                coordsBuffer[oordCount++] = 0.0;
+
+            coordsBuffer[oordCount++] = 1.1;
+            coordsBuffer[oordCount++] = 3.3;
+            if ( supportsZ ) 
+                coordsBuffer[oordCount++] = 0.0;
 
             propertyValue = AddNewProperty( propertyValues, L"Geometry");
-            FdoPtr<FdoILineString> line1 = gf->CreateLineString(FdoDimensionality_XY, 2*3, coordsBuffer);
+            FdoPtr<FdoILineString> line1 = gf->CreateLineString(
+                supportsZ ? FdoDimensionality_XY|FdoDimensionality_Z : FdoDimensionality_XY, 
+                oordCount, 
+                coordsBuffer
+            );
             FdoPtr<FdoByteArray> byteArray = gf->GetFgf(line1);
 
             FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray);
@@ -708,6 +723,10 @@ void FdoInsertTest::insertBoundary()
             propertyValue = AddNewProperty( propertyValues, L"color");
             propertyValue->SetValue(dataValue);
 
+			dataValue = FdoDataValue::Create(GetMaxInt64Value() - 1);
+			propertyValue = AddNewProperty( propertyValues, L"int64");
+			propertyValue->SetValue(dataValue);
+
 			dataValue = FdoDataValue::Create(GetSmallestSingleValue());
 			propertyValue = AddNewProperty( propertyValues, L"single");
 			propertyValue->SetValue(dataValue);
@@ -762,6 +781,7 @@ void FdoInsertTest::insertBoundary()
 
 			featureReader = selectCmd->Execute();
 			CPPUNIT_ASSERT(featureReader->ReadNext());
+            CPPUNIT_ASSERT ( featureReader->GetInt64(L"int64") == (GetMaxInt64Value() - 1) );
 // TODO: find out why smallest single goes into SqlServer database as 0.
 //            CPPUNIT_ASSERT ( featureReader->GetSingle(L"single") == GetSmallestSingleValue() );
 //            CPPUNIT_ASSERT ( featureReader->GetDouble(L"double") == GetSmallestDoubleValue() );
@@ -1449,17 +1469,17 @@ FdoByte FdoInsertTest::GetMinByteValue()
 
 FdoInt16 FdoInsertTest::GetMinInt16Value()
 {
-    return (FdoInt16) -32768;
+    return (FdoInt16) SHRT_MIN;
 }
 
 FdoInt32 FdoInsertTest::GetMinInt32Value()
 {
-    return (FdoInt32) -2147483648LL;
+    return (FdoInt32) LONG_MIN;
 }
 
 FdoInt64 FdoInsertTest::GetMinInt64Value()
 {
-    return (FdoInt64) -9223372036854775808LL;
+    return (FdoInt64) LLONG_MIN;
 }
 
 FdoFloat FdoInsertTest::GetMinSingleValue()
@@ -1474,22 +1494,22 @@ FdoDouble FdoInsertTest::GetMinDoubleValue()
 
 FdoByte FdoInsertTest::GetMaxByteValue()
 {
-    return (FdoByte) 255;
+    return (FdoByte) UCHAR_MAX;
 }
 
 FdoInt16 FdoInsertTest::GetMaxInt16Value()
 {
-    return (FdoInt16) 32767;
+    return (FdoInt16) SHRT_MAX;
 }
 
 FdoInt32 FdoInsertTest::GetMaxInt32Value()
 {
-    return (FdoInt32) 2147483647;
+    return (FdoInt32) LONG_MAX;
 }
 
 FdoInt64 FdoInsertTest::GetMaxInt64Value()
 {
-    return (FdoInt64) 9223372036854775807LL;
+    return (FdoInt64) LLONG_MAX;
 }
 
 FdoFloat FdoInsertTest::GetMaxSingleValue()

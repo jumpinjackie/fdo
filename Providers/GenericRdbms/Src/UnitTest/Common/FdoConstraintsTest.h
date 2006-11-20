@@ -17,6 +17,9 @@
 #ifndef CPP_UNIT_FDOCONSTRAINTSTEST_H
 #define CPP_UNIT_FDOCONSTRAINTSTEST_H
 
+#define DBG(x)		//x
+#define DBG_MAX(x)		//x
+
 class FdoConstraintsTest : public CppUnit::TestCase
 {
 	CPPUNIT_TEST_SUITE( FdoConstraintsTest );
@@ -47,10 +50,60 @@ public:
     void setUp ();
 
 protected:
-    virtual void  set_provider() {};   
+    virtual void  set_provider() {};
 
 	void TestConstraints();
 
+    template< class T> void CheckListConstraint(FdoString* pPropName, FdoPtr<FdoDataValueCollection> pList, T* pMaster, FdoInt32 masterCount )
+    {
+        CPPUNIT_ASSERT_MESSAGE( 
+            (const char*) FdoStringP::Format( L"Wrong number of List Values %ls", pPropName ),
+            pList->GetCount() == masterCount     
+        );
+
+	    for ( int j = 0; j < pList->GetCount(); j++ ) {
+		    FdoPtr<FdoDataValue>	val = pList->GetItem(j);
+		    bool					valMatched = false;
+
+            for ( int k = 0; k < masterCount && !valMatched; k++ ) {
+			    FdoPtr<FdoDataValue>   val1 = FdoDataValue::Create( pMaster[k] );
+			    valMatched = ( wcscmp(val->ToString(), val1->ToString()) == 0 );
+		    }	
+
+            CPPUNIT_ASSERT_MESSAGE( 
+                (const char*) FdoStringP::Format( L"Wrong List Value %ls", pPropName ),
+                valMatched
+            );
+		    DBG(printf("%ls,", val->ToString()));
+	    }
+	    DBG(printf("))\n"));
+    }    
+    
+    template< class T> void CheckDoubleListConstraint(FdoString* pPropName, FdoPtr<FdoDataValueCollection> pList, T* pMaster, FdoInt32 masterCount, FdoDataType dataType )
+    {
+        CPPUNIT_ASSERT_MESSAGE( 
+            (const char*) FdoStringP::Format( L"Wrong number of List Values %ls", pPropName ),
+            pList->GetCount() == masterCount     
+        );
+
+	    for ( int j = 0; j < pList->GetCount(); j++ ) {
+		    FdoPtr<FdoDataValue>	val = pList->GetItem(j);
+		    bool					valMatched = false;
+
+            for ( int k = 0; k < masterCount && !valMatched; k++ ) {
+			    FdoPtr<FdoDataValue>   val1 = FdoDataValue::Create( pMaster[k], dataType );
+			    valMatched = ( wcscmp(val->ToString(), val1->ToString()) == 0 );
+		    }	
+
+            CPPUNIT_ASSERT_MESSAGE( 
+                (const char*) FdoStringP::Format( L"Wrong List Value %ls", pPropName ),
+                valMatched
+            );
+		    DBG(printf("%ls,", val->ToString()));
+	    }
+	    DBG(printf("))\n"));
+    }    
+    
 };
 
 #endif	//CPP_UNIT_FDOCONSTRAINTSTEST_H

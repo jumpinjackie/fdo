@@ -1518,7 +1518,9 @@ void FdoApplySchemaTest::TestConfigDoc ()
         FdoDataPropertyP dataProp;
         FdoPtr<FdoPropertyValueConstraintRange> valCons;
         FdoPtr<FdoDoubleValue> dblVal;
+        FdoPtr<FdoDecimalValue> decimalVal;
         FdoPtr<FdoInt32Value> intVal;
+        FdoPtr<FdoInt16Value> int16Val;
         FdoInt32 ix;
 
         if ( supportsRange ) {
@@ -1528,8 +1530,8 @@ void FdoApplySchemaTest::TestConfigDoc ()
             valCons = (FdoPropertyValueConstraintRange*)(dataProp->GetValueConstraint());
             if ( !valCons ) 
                 CPPUNIT_FAIL( "Parcel check constraint missing; if on SqlServer 2005 then this is expected" );
-            intVal = (FdoInt32Value*)(valCons->GetMaxValue());
-            CPPUNIT_ASSERT( intVal->GetInt32() == 10000000 );
+            decimalVal = (FdoDecimalValue*)(valCons->GetMaxValue());
+            CPPUNIT_ASSERT( decimalVal->GetDecimal() == 10000000 );
         }
 
         classDef = classes->GetItem( L"Zoning" );
@@ -1575,8 +1577,8 @@ void FdoApplySchemaTest::TestConfigDoc ()
             properties = classDef->GetProperties();
             dataProp = (FdoDataPropertyDefinition*)(properties->GetItem(L"PartNum"));
             valCons = (FdoPropertyValueConstraintRange*)(dataProp->GetValueConstraint());
-            intVal = (FdoInt32Value*)(valCons->GetMinValue());
-            CPPUNIT_ASSERT( intVal->GetInt32() == 0 );
+            int16Val = (FdoInt16Value*)(valCons->GetMinValue());
+            CPPUNIT_ASSERT( int16Val->GetInt16() == 0 );
         }
 
         classDef = classes->GetItem( L"Pole" );

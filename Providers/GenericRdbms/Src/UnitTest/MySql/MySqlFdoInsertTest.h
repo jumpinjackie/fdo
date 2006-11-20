@@ -24,12 +24,14 @@
 class MySqlFdoInsertTest : public FdoInsertTest
 {
     CPPUNIT_TEST_SUB_SUITE (MySqlFdoInsertTest, FdoInsertTest);
+    CPPUNIT_TEST( insertBoundaryUnsigned );
     CPPUNIT_TEST_SUITE_END ();
 
     void  set_provider();
     void insertDate ();
 public:
 	virtual void conditionalInsert() { }
+    virtual void insertBoundaryUnsigned();
 };
 
 

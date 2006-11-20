@@ -19,33 +19,60 @@
 #include "UnitTestUtil.h"
 #include "Parse/Parse.h"
 
+#ifndef _WIN32
+#   define LLONG_MAX    9223372036854775807LL
+#   define LLONG_MIN    (-LLONG_MAX - 1LL)
+#endif
+
 #define			DB_NAME_CONSTRAINTS_SUFFIX "_constraints"
 
 #define			SCHEMA_NAME			L"constraints"
 #define			CLASS_NAME			L"cdataclass"	// lower case to compensate for MySQl on Linux
 #define			CLASS_NAME_BASE		L"CDataBaseClass"
-#define			PROPERTY_1			L"IntRange"
-#define			PROPERTY_2			L"IntList"
-#define			PROPERTY_3			L"StringList"
+
+#define			PROPERTY_1R		L"IntRange"
+#define			PROPERTY_2R		L"ByteRange"
+#define			PROPERTY_3R		L"StringRange"
+#define			PROPERTY_4R		L"SingleRange"
+
+#define			PROPERTY_2		L"IntList"
+#define			PROPERTY_3		L"StringList"
 
 #define			PROPERTY_4		L"unique1"
 #define			PROPERTY_5		L"unique2_1"
 #define			PROPERTY_6		L"unique2_2"
 
+#define			PROPERTY_7		L"ByteList"
+#define			PROPERTY_8		L"DoubleList"
+#define			PROPERTY_9		L"DatetimeList"
+#define			PROPERTY_10		L"Int64List"
+#define			PROPERTY_11		L"SingleList"
+#define			PROPERTY_12		L"LargeStringList"
+
 #define			NUM_UNIQUE_KEYS			3
-#define			NUM_CHECK_CONSTRAINTS	3
+#define			NUM_CHECK_CONSTRAINTS	11 // 12
+
+#define			MIN_INCLUSIVE	true
+#define			MAX_INCLUSIVE	false
 
 #define			INT_MIN_INCLUSIVE	true
 #define			INT_MAX_INCLUSIVE	false
 
+static int      LARGE_STRING_COUNT = 65;
+
 static int		INT_RANGE[2]	= {10, 20};
-static int		INT_LIST[3]		= {10, 20, 30};
-const wchar_t*	STRING_LIST[]	= { L"open", L"close" };
+static FdoByte	BYTE_RANGE[2]	= {11, 22};
+static wchar_t	*STRING_RANGE[2]= {L"MOM", L"PAPA"};
+static float    SINGLE_RANGE[1] = { (float) 0.000001};
+static int		INT_LIST[5]		= {10, 20, 30, LONG_MIN, LONG_MAX};
+static FdoInt64	INT64_LIST[4]		= {LLONG_MIN, 52, LLONG_MAX - 1, LLONG_MAX};
+static FdoByte	BYTE_LIST[3]	= {1, 2, 3};
+static double	DOUBLE_LIST[3]	= {0.123456789012345678901234567890, 100, 0.123456789012345678901234567890};
+static float	SINGLE_LIST[3]	= { (float) 0.1234567, (float) 100, (float) 1.12345678};
+static const wchar_t*	STRING_LIST[]	= { L"open", L"close" };
+static  wchar_t   LARGE_STRING_LIST[395][20];
 
 #define			RECREATE_CONSTRAINTS_DB		true
-
-#define DBG(x)		//x
-#define DBG_MAX(x)		//x
 
 static FdoPropertyValue* AddNewProperty( FdoPropertyValueCollection* propertyValues, const wchar_t *name )
 {
@@ -306,7 +333,7 @@ void FdoConstraintsTest::CreateConstraintsSchema( FdoIConnection* connection )
 	FdoDataPropertiesP(pCData->GetIdentityProperties())->Add( pProp );
 
 	//////////////  1st property ///////////////
-	FdoPtr<FdoDataPropertyDefinition> pRangeInt = FdoDataPropertyDefinition::Create( PROPERTY_1, L"" );
+	FdoPtr<FdoDataPropertyDefinition> pRangeInt = FdoDataPropertyDefinition::Create( PROPERTY_1R, L"" );
 	pRangeInt->SetDataType( FdoDataType_Int32 );
 	pRangeInt->SetNullable(false);
 
@@ -326,6 +353,69 @@ void FdoConstraintsTest::CreateConstraintsSchema( FdoIConnection* connection )
 	}
 	FdoPropertiesP(pCData->GetProperties())->Add( pRangeInt  );
 
+	//////////////  2nd range property ///////////////
+	FdoPtr<FdoDataPropertyDefinition> pRangeByte = FdoDataPropertyDefinition::Create( PROPERTY_2R, L"" );
+	pRangeByte->SetDataType( FdoDataType_Byte );
+	pRangeByte->SetNullable(true);
+
+	// Add CHECK constraint
+ 	if ( schemaCap->SupportsExclusiveValueRangeConstraints() && schemaCap->SupportsInclusiveValueRangeConstraints())
+	{
+	    FdoPtr<FdoPropertyValueConstraintRange>  newRangeConstr2R =  FdoPropertyValueConstraintRange::Create();
+	    newRangeConstr2R->SetMinInclusive(MIN_INCLUSIVE);
+	    FdoPtr<FdoDataValue>   val2R = FdoDataValue::Create( BYTE_RANGE[0] );
+	    newRangeConstr2R->SetMinValue( val2R );
+
+	    newRangeConstr2R->SetMaxInclusive(MAX_INCLUSIVE);
+	    val2R = FdoDataValue::Create( BYTE_RANGE[1] );
+	    newRangeConstr2R->SetMaxValue( val2R );
+    	
+	    pRangeByte->SetValueConstraint(newRangeConstr2R);
+    }
+
+	FdoPropertiesP(pCData->GetProperties())->Add( pRangeByte  );
+
+	//////////////  3rd range property ///////////////
+	FdoPtr<FdoDataPropertyDefinition> pRangeString = FdoDataPropertyDefinition::Create( PROPERTY_3R, L"" );
+	pRangeString->SetDataType( FdoDataType_String );
+	pRangeString->SetLength(10);
+	pRangeString->SetNullable(true);
+
+	// Add CHECK constraint
+ 	if ( schemaCap->SupportsExclusiveValueRangeConstraints() && schemaCap->SupportsInclusiveValueRangeConstraints())
+	{
+	    FdoPtr<FdoPropertyValueConstraintRange>  newRangeConstr3R =  FdoPropertyValueConstraintRange::Create();
+	    newRangeConstr3R->SetMinInclusive(MIN_INCLUSIVE);
+	    FdoPtr<FdoDataValue>   val3R = FdoDataValue::Create( STRING_RANGE[0] );
+	    newRangeConstr3R->SetMinValue( val3R );
+
+	    newRangeConstr3R->SetMaxInclusive(MAX_INCLUSIVE);
+	    val3R = FdoDataValue::Create( STRING_RANGE[1] );
+	    newRangeConstr3R->SetMaxValue( val3R );
+	    pRangeString->SetValueConstraint(newRangeConstr3R);
+    }
+
+	FdoPropertiesP(pCData->GetProperties())->Add( pRangeString  );
+
+	//////////////  4th range property ///////////////
+	FdoPtr<FdoDataPropertyDefinition> pRangeSingle = FdoDataPropertyDefinition::Create( PROPERTY_4R, L"" );
+	pRangeSingle->SetDataType( FdoDataType_Single );
+	pRangeSingle->SetNullable(true);
+
+	// Add CHECK constraint
+ 	if ( schemaCap->SupportsExclusiveValueRangeConstraints() && schemaCap->SupportsInclusiveValueRangeConstraints())
+	{
+	    FdoPtr<FdoPropertyValueConstraintRange>  newRangeConstr4R =  FdoPropertyValueConstraintRange::Create();
+	    newRangeConstr4R->SetMinInclusive(MIN_INCLUSIVE);
+	    FdoPtr<FdoDataValue>   val4R = FdoDataValue::Create( SINGLE_RANGE[0] );
+	    newRangeConstr4R->SetMinValue( val4R );
+
+	    pRangeSingle->SetValueConstraint(newRangeConstr4R);
+    }
+
+	FdoPropertiesP(pCData->GetProperties())->Add( pRangeSingle  );
+
+
 	//////////////  2nd property ///////////////
 	FdoPtr<FdoDataPropertyDefinition> pListInt = FdoDataPropertyDefinition::Create( PROPERTY_2, L"" );
 	pListInt->SetDataType( FdoDataType_Int32 );
@@ -343,6 +433,10 @@ void FdoConstraintsTest::CreateConstraintsSchema( FdoIConnection* connection )
 		list2->Add( val4 );
 		FdoPtr<FdoDataValue>   val5 = FdoDataValue::Create( INT_LIST[2] );
 		list2->Add( val5 );
+		FdoPtr<FdoDataValue>   val6 = FdoDataValue::Create( INT_LIST[3] );
+		list2->Add( val6 );
+		FdoPtr<FdoDataValue>   val7 = FdoDataValue::Create( INT_LIST[4] );
+		list2->Add( val7 );
 		pListInt->SetValueConstraint(newListConstr2);
 	}
 	FdoPropertiesP(pCData->GetProperties())->Add( pListInt  );
@@ -366,6 +460,153 @@ void FdoConstraintsTest::CreateConstraintsSchema( FdoIConnection* connection )
 		pListString->SetValueConstraint(newListConstr3);
 	}
 	FdoPropertiesP(pCData->GetProperties())->Add( pListString  );
+
+	//////////////  7th property ///////////////
+	FdoPtr<FdoDataPropertyDefinition> pListByte7 = FdoDataPropertyDefinition::Create( PROPERTY_7, L"" );
+	pListByte7->SetDataType( FdoDataType_Byte );
+	pListByte7->SetNullable(true);
+
+	// Add CHECK constraint
+	if ( schemaCap->SupportsValueConstraintsList() )
+	{
+	    FdoPtr<FdoPropertyValueConstraintList>  newListConstr7 =  FdoPropertyValueConstraintList::Create();
+	    FdoPtr<FdoDataValueCollection> list7 = newListConstr7->GetConstraintList();
+
+	    FdoPtr<FdoDataValue>   val37 = FdoDataValue::Create( BYTE_LIST[0] );
+	    list7->Add( val37 );
+	    FdoPtr<FdoDataValue>   val47 = FdoDataValue::Create( BYTE_LIST[1] );
+	    list7->Add( val47 );
+	    FdoPtr<FdoDataValue>   val57 = FdoDataValue::Create( BYTE_LIST[2] );
+	    list7->Add( val57 );
+	    pListByte7->SetValueConstraint(newListConstr7);
+    }
+
+	FdoPropertiesP(pCData->GetProperties())->Add( pListByte7  );
+
+	//////////////  8th property ///////////////
+	FdoPtr<FdoDataPropertyDefinition> pListDouble8 = FdoDataPropertyDefinition::Create( PROPERTY_8, L"" );
+	pListDouble8->SetDataType( FdoDataType_Double );
+	pListDouble8->SetNullable(true);
+
+	// Add CHECK constraint
+	if ( schemaCap->SupportsValueConstraintsList() )
+	{
+	    FdoPtr<FdoPropertyValueConstraintList>  newListConstr8 =  FdoPropertyValueConstraintList::Create();
+	    FdoPtr<FdoDataValueCollection> list8 = newListConstr8->GetConstraintList();
+
+	    FdoPtr<FdoDataValue>   val38 = FdoDataValue::Create( DOUBLE_LIST[0], FdoDataType_Double );
+	    list8->Add( val38 );
+	    FdoPtr<FdoDataValue>   val48 = FdoDataValue::Create( DOUBLE_LIST[1], FdoDataType_Double );
+	    list8->Add( val48 );
+	    FdoPtr<FdoDataValue>   val58 = FdoDataValue::Create( DOUBLE_LIST[2], FdoDataType_Double );
+	    list8->Add( val58 );
+	    pListDouble8->SetValueConstraint(newListConstr8);
+    }
+
+	FdoPropertiesP(pCData->GetProperties())->Add( pListDouble8  );
+
+#pragma message ("TODO: Fix FdoDataType_DateTime check clause")
+
+/* TODO: FdoDataType_DateTime doesn't work yet
+
+	//////////////  9th property ///////////////
+	FdoPtr<FdoDataPropertyDefinition> pDatetimeList9 = FdoDataPropertyDefinition::Create( PROPERTY_9, L"" );
+	pDatetimeList9->SetDataType( FdoDataType_DateTime );
+	pDatetimeList9->SetNullable(true);
+
+	// Add CHECK constraint
+	if ( schemaCap->SupportsValueConstraintsList() )
+	{
+	    FdoPtr<FdoPropertyValueConstraintList>  newListConstr9 =  FdoPropertyValueConstraintList::Create();
+	    FdoPtr<FdoDataValueCollection> list9 = newListConstr9->GetConstraintList();
+
+	    FdoDateTime dateTime;
+        dateTime.day = 31;
+        dateTime.month = 10;
+        dateTime.year = 2003;
+        dateTime.hour = 3;
+        dateTime.minute = 2;
+        dateTime.seconds = 1;
+
+	    FdoPtr<FdoDataValue> val39 = FdoDataValue::Create(dateTime);
+
+	    list9->Add( val39 );
+	    list9->Add( val39 );
+	    list9->Add( val39 );
+	    pDatetimeList9->SetValueConstraint(newListConstr9);
+    }
+
+	FdoPropertiesP(pCData->GetProperties())->Add( pDatetimeList9  );
+*/
+	//////////////  10th property ///////////////
+	FdoPtr<FdoDataPropertyDefinition> pListInt64 = FdoDataPropertyDefinition::Create( PROPERTY_10, L"" );
+	pListInt64->SetDataType( FdoDataType_Int64 );
+	pListInt64->SetNullable(true);
+
+	// Add CHECK constraint
+	if ( schemaCap->SupportsValueConstraintsList() )
+	{
+	    FdoPtr<FdoPropertyValueConstraintList>  newListConstr10 =  FdoPropertyValueConstraintList::Create();
+	    FdoPtr<FdoDataValueCollection> list10 = newListConstr10->GetConstraintList();
+
+	    FdoPtr<FdoDataValue>   val138 = FdoDataValue::Create( INT64_LIST[0] );
+	    list10->Add( val138 );
+	    FdoPtr<FdoDataValue>   val148 = FdoDataValue::Create( INT64_LIST[1] );
+	    list10->Add( val148 );
+	    FdoPtr<FdoDataValue>   val158 = FdoDataValue::Create( INT64_LIST[2] );
+	    list10->Add( val158 );
+	    FdoPtr<FdoDataValue>   val168 = FdoDataValue::Create( INT64_LIST[3] );
+	    list10->Add( val168 );
+	    pListInt64->SetValueConstraint(newListConstr10);
+    }
+
+	FdoPropertiesP(pCData->GetProperties())->Add( pListInt64  );
+
+	//////////////  11th property ///////////////
+	FdoPtr<FdoDataPropertyDefinition> pListSingle = FdoDataPropertyDefinition::Create( PROPERTY_11, L"" );
+	pListSingle->SetDataType( FdoDataType_Single );
+	pListSingle->SetNullable(true);
+
+	// Add CHECK constraint
+	if ( schemaCap->SupportsValueConstraintsList() )
+	{
+	    FdoPtr<FdoPropertyValueConstraintList>  newListConstr11 =  FdoPropertyValueConstraintList::Create();
+	    FdoPtr<FdoDataValueCollection> list11 = newListConstr11->GetConstraintList();
+
+	    FdoPtr<FdoDataValue>   val238 = FdoDataValue::Create( SINGLE_LIST[0] );
+	    list11->Add( val238 );
+	    FdoPtr<FdoDataValue>   val248 = FdoDataValue::Create( SINGLE_LIST[1] );
+	    list11->Add( val248 );
+	    FdoPtr<FdoDataValue>   val258 = FdoDataValue::Create( SINGLE_LIST[2] );
+	    list11->Add( val258 );
+	    pListSingle->SetValueConstraint(newListConstr11);
+    }
+
+	FdoPropertiesP(pCData->GetProperties())->Add( pListSingle  );
+
+	//////////////  12th property ///////////////
+	FdoPtr<FdoDataPropertyDefinition> pListLargeString = FdoDataPropertyDefinition::Create( PROPERTY_12, L"" );
+	pListLargeString->SetDataType( FdoDataType_String );
+    pListLargeString->SetLength(20);
+	pListSingle->SetNullable(true);
+
+	// Add CHECK constraint
+	if ( schemaCap->SupportsValueConstraintsList() )
+	{
+	    FdoPtr<FdoPropertyValueConstraintList>  newListConstr12 =  FdoPropertyValueConstraintList::Create();
+	    FdoPtr<FdoDataValueCollection> list12 = newListConstr12->GetConstraintList();
+
+        FdoInt32 idx;
+        for ( idx = 0; idx < LARGE_STRING_COUNT; idx++ ) {
+            wcscpy( LARGE_STRING_LIST[idx], FdoStringP::Format( L"%06d", idx ) );
+            FdoPtr<FdoDataValue>   val338 = FdoDataValue::Create( LARGE_STRING_LIST[idx] );
+            list12->Add( val338 );
+        }
+
+        pListLargeString->SetValueConstraint(newListConstr12);
+    }
+
+	FdoPropertiesP(pCData->GetProperties())->Add( pListLargeString  );
 
 	//// Add the class to schema
 	FdoClassesP(pSchema->GetClasses())->Add( pCData );
@@ -420,7 +661,7 @@ void FdoConstraintsTest::CreateConstraintsSchema( FdoIConnection* connection )
 	// This should succeed
 
 	FdoStringP	insertSql2 = FdoStringP::Format(L"insert into %ls (classid, revisionnumber, %ls, %ls, %ls, %ls) values ", 
-					CLASS_NAME, PROPERTY_1, PROPERTY_2, PROPERTY_3, PROPERTY_4 );
+					CLASS_NAME, PROPERTY_1R, PROPERTY_2, PROPERTY_3, PROPERTY_4 );
 
 	FdoStringP	insertSql = FdoStringP::Format(L"%ls ( 0, 0, 10, 20, 'open', 1000 )", (FdoString *) insertSql2 );
 
@@ -444,7 +685,7 @@ void FdoConstraintsTest::CreateConstraintsSchema( FdoIConnection* connection )
 
 	// This should succeed
 	insertSql2 = FdoStringP::Format(L"insert into %ls (classid, revisionnumber, %ls, %ls, %ls, %ls, %ls) values ", 
-					CLASS_NAME, PROPERTY_1, PROPERTY_2, PROPERTY_3, PROPERTY_5, PROPERTY_6 );
+					CLASS_NAME, PROPERTY_1R, PROPERTY_2, PROPERTY_3, PROPERTY_5, PROPERTY_6 );
 
 	insertSql = FdoStringP::Format(L"%ls ( 0, 0, 10, 20, 'open', 1000, 2000 )", (FdoString *) insertSql2 );
 
@@ -472,7 +713,7 @@ void FdoConstraintsTest::CreateConstraintsSchema( FdoIConnection* connection )
 	{
 
 		FdoStringP	insertSql1 = FdoStringP::Format(L"insert into %ls (classid, revisionnumber, %ls, %ls, %ls) values ", 
-						CLASS_NAME, PROPERTY_1, PROPERTY_2, PROPERTY_3 );
+						CLASS_NAME, PROPERTY_1R, PROPERTY_2, PROPERTY_3 );
 
 		bool	checkSuccess = true;
 		try {
@@ -633,22 +874,68 @@ void FdoConstraintsTest::DescribeConstraintsSchema( FdoIConnection* connection, 
 
 		if ( pConstr->GetConstraintType() == FdoPropertyValueConstraintType_Range )
 		{
-			DBG(printf("Check Range key #%d: (%ls >= %ld and %ls <= %ld)\n", count, pProp->GetName(), INT_RANGE[0], pProp->GetName(), INT_RANGE[1] ));
-			
 			FdoPropertyValueConstraintRange*		pConstrR = (FdoPropertyValueConstraintRange*)(pConstr.p);
 
-			CPPUNIT_ASSERT_MESSAGE("Wrong range property", (wcscmp( pProp->GetName(), PROPERTY_1 ) == 0));
-			CPPUNIT_ASSERT_MESSAGE("Wrong MinInclusive", pConstrR->GetMinInclusive() == INT_MIN_INCLUSIVE );
-			CPPUNIT_ASSERT_MESSAGE("Wrong MaxInclusive", pConstrR->GetMaxInclusive() == INT_MAX_INCLUSIVE );
+			if ( wcscmp( pProp->GetName(), PROPERTY_1R) == 0 ) 
+			{
+				CPPUNIT_ASSERT_MESSAGE("Wrong MinInclusive", pConstrR->GetMinInclusive() == MIN_INCLUSIVE );
+				CPPUNIT_ASSERT_MESSAGE("Wrong MaxInclusive", pConstrR->GetMaxInclusive() == MAX_INCLUSIVE );
 
-			FdoDataValue*	valMin = pConstrR->GetMinValue();
-			FdoDataValue*	valMax = pConstrR->GetMaxValue();
+				FdoDataValue*	valMin = pConstrR->GetMinValue();
+				FdoDataValue*	valMax = pConstrR->GetMaxValue();
 
-			FdoPtr<FdoDataValue>   val1 = FdoDataValue::Create( INT_RANGE[0] );
-			FdoPtr<FdoDataValue>   val2 = FdoDataValue::Create( INT_RANGE[1] );
+				FdoPtr<FdoDataValue>   val1 = FdoDataValue::Create( INT_RANGE[0] );
+				FdoPtr<FdoDataValue>   val2 = FdoDataValue::Create( INT_RANGE[1] );
 
-			CPPUNIT_ASSERT_MESSAGE("Wrong Min Value Prop1",  wcscmp(valMin->ToString(), val1->ToString()) == 0 );
-			CPPUNIT_ASSERT_MESSAGE("Wrong Max Value Prop1",  wcscmp(valMax->ToString(), val2->ToString()) == 0 );
+				CPPUNIT_ASSERT_MESSAGE("Wrong Min Value Prop1R",  wcscmp(valMin->ToString(), val1->ToString()) == 0 );
+				CPPUNIT_ASSERT_MESSAGE("Wrong Max Value Prop1R",  wcscmp(valMax->ToString(), val2->ToString()) == 0 );
+			}
+			else if ( wcscmp( pProp->GetName(), PROPERTY_2R) == 0 ) 
+			{
+				CPPUNIT_ASSERT_MESSAGE("Wrong MinInclusive", pConstrR->GetMinInclusive() == MIN_INCLUSIVE );
+				CPPUNIT_ASSERT_MESSAGE("Wrong MaxInclusive", pConstrR->GetMaxInclusive() == MAX_INCLUSIVE );
+
+				FdoDataValue*	valMin = pConstrR->GetMinValue();
+				FdoDataValue*	valMax = pConstrR->GetMaxValue();
+
+				FdoByteValue*	valMin1 = dynamic_cast<FdoByteValue*>(valMin);
+				FdoByteValue*	valMax1 = dynamic_cast<FdoByteValue*>(valMax);
+
+				if ( valMin1 == NULL || valMax1 == NULL )
+				{
+					CPPUNIT_ASSERT_MESSAGE("Wrong data type for Prop2R", false);
+				}
+
+				CPPUNIT_ASSERT_MESSAGE("Wrong Min Value Prop2",  valMin1->GetByte() == BYTE_RANGE[0] );//wcscmp(valMin->ToString(), val1->ToString()) == 0 );
+				CPPUNIT_ASSERT_MESSAGE("Wrong Max Value Prop2",  valMax1->GetByte() == BYTE_RANGE[1] );//wcscmp(valMax->ToString(), val2->ToString()) == 0 );
+			}
+			else if ( wcscmp( pProp->GetName(), PROPERTY_3R) == 0 ) 
+			{
+				CPPUNIT_ASSERT_MESSAGE("Wrong MinInclusive", pConstrR->GetMinInclusive() == MIN_INCLUSIVE );
+				CPPUNIT_ASSERT_MESSAGE("Wrong MaxInclusive", pConstrR->GetMaxInclusive() == MAX_INCLUSIVE );
+
+				FdoDataValue*	valMin = pConstrR->GetMinValue();
+				FdoDataValue*	valMax = pConstrR->GetMaxValue();
+
+				FdoPtr<FdoDataValue>   val1 = FdoDataValue::Create( STRING_RANGE[0] );
+				FdoPtr<FdoDataValue>   val2 = FdoDataValue::Create( STRING_RANGE[1] );
+
+				CPPUNIT_ASSERT_MESSAGE("Wrong Min Value Prop3R",  wcscmp(valMin->ToString(), val1->ToString()) == 0 );
+				CPPUNIT_ASSERT_MESSAGE("Wrong Max Value Prop3R",  wcscmp(valMax->ToString(), val2->ToString()) == 0 );
+			}
+			else if ( wcscmp( pProp->GetName(), PROPERTY_4R) == 0 ) 
+			{
+				CPPUNIT_ASSERT_MESSAGE("Wrong MinInclusive", pConstrR->GetMinInclusive() == MIN_INCLUSIVE );
+				CPPUNIT_ASSERT_MESSAGE("Wrong MaxInclusive", pConstrR->GetMaxInclusive() == MAX_INCLUSIVE );
+
+				FdoDataValue*	valMin = pConstrR->GetMinValue();
+				FdoDataValue*	valMax = pConstrR->GetMaxValue();
+
+				FdoPtr<FdoDataValue>   val1 = FdoDataValue::Create( SINGLE_RANGE[0] );
+
+				CPPUNIT_ASSERT_MESSAGE("Wrong Min Value Prop4R",  wcscmp(valMin->ToString(), val1->ToString()) == 0 );
+				CPPUNIT_ASSERT_MESSAGE("Wrong Max Value Prop4R (not null)",  valMax == NULL );
+			}
 			
 			count++;
 		}
@@ -660,39 +947,45 @@ void FdoConstraintsTest::DescribeConstraintsSchema( FdoIConnection* connection, 
 			FdoPtr<FdoDataValueCollection>		pList = pConstrL->GetConstraintList();
 
 			if ( wcscmp( pProp->GetName(), PROPERTY_2 ) == 0) {
-				
 				DBG(printf("Check List key #%d: (%ls in (", count, pProp->GetName()));
-
-				for ( int j = 0; j < pList->GetCount(); j++ ) {
-					FdoPtr<FdoDataValue>	val = pList->GetItem(j);
-					bool					valMatched = false;
-
-					for ( int k = 0; k < sizeof(INT_LIST) && !valMatched; k++ ) {
-						FdoPtr<FdoDataValue>   val1 = FdoDataValue::Create( INT_LIST[k] );
-						valMatched = ( wcscmp(val->ToString(), val1->ToString()) == 0 );
-					}	
-					CPPUNIT_ASSERT_MESSAGE("Wrong List Value Prop2",  valMatched );
-					DBG(printf("%ls,", val->ToString()));
-				}
-				DBG(printf("))\n"));
-				count++;
+                CheckListConstraint( pProp->GetName(), pList, INT_LIST, sizeof(INT_LIST) / sizeof(int) );
+                count++;
 			}
 			else if ( wcscmp( pProp->GetName(), PROPERTY_3 ) == 0) {
 				DBG(printf("Check List key #%d: (%ls in (", count, pProp->GetName()));
+                CheckListConstraint( pProp->GetName(), pList, STRING_LIST, sizeof(STRING_LIST) / sizeof(wchar_t*) );
+                count++;
+			}
+			else if ( wcscmp( pProp->GetName(), PROPERTY_7 ) == 0) {
+				DBG(printf("Check List key #%d: (%ls in (", count, pProp->GetName()));
+                CheckListConstraint( pProp->GetName(), pList, BYTE_LIST, sizeof(BYTE_LIST) );
+                count++;
+			}
+			else if ( wcscmp( pProp->GetName(), PROPERTY_8 ) == 0) {
+				DBG(printf("Check List key #%d: (%ls in (", count, pProp->GetName()));
+                CheckDoubleListConstraint( pProp->GetName(), pList, DOUBLE_LIST, sizeof(DOUBLE_LIST) / sizeof(double), FdoDataType_Double );
+                count++;
+			}
+			else if ( wcscmp( pProp->GetName(), PROPERTY_10 ) == 0) {
+				DBG(printf("Check List key #%d: (%ls in (", count, pProp->GetName()));
+                CheckListConstraint( pProp->GetName(), pList, INT64_LIST, sizeof(INT64_LIST) / sizeof(FdoInt64) );
+                count++;
+			}
+			else if ( wcscmp( pProp->GetName(), PROPERTY_11 ) == 0) {
+				DBG(printf("Check List key #%d: (%ls in (", count, pProp->GetName()));
+                CheckListConstraint( pProp->GetName(), pList, SINGLE_LIST, sizeof(SINGLE_LIST) / sizeof(float) );
+                count++;
+			}
+			else if ( wcscmp( pProp->GetName(), PROPERTY_12 ) == 0) {
+				DBG(printf("Check List key #%d: (%ls in (", count, pProp->GetName()));
 
-				for ( int j = 0; j < pList->GetCount(); j++ ) {
-					FdoPtr<FdoDataValue>	val = pList->GetItem(j);
-					bool					valMatched = false;
-					
-					for ( int k = 0; k < sizeof(INT_LIST) && !valMatched; k++ ) {
-						FdoPtr<FdoDataValue>   val1 = FdoDataValue::Create( STRING_LIST[k] );
-						valMatched = ( wcscmp(val->ToString(), val1->ToString() ) == 0 );
-					}
-					CPPUNIT_ASSERT_MESSAGE("Wrong List Value Prop3",  valMatched );
-					DBG(printf("%ls,", val->ToString()));
-				}
-				DBG(printf("))\n"));
-				count++;
+                FdoInt32 idx;
+                for ( idx = 0; idx < LARGE_STRING_COUNT; idx++ ) {
+                    wcscpy( LARGE_STRING_LIST[idx], FdoStringP::Format( L"%06d", idx ) );
+                }
+
+                CheckListConstraint( pProp->GetName(), pList, LARGE_STRING_LIST, LARGE_STRING_COUNT );
+                count++;
 			}
 		}
 	}
@@ -756,7 +1049,7 @@ void FdoConstraintsTest::UpdateUniqueConstraints( FdoIConnection* connection )
 
 	// Add some duplicate data. It should succeed because the constraints on PROPERTY_4 and PROPERTY_5 were removed above
 	FdoStringP	insertSql2 = FdoStringP::Format(L"insert into %ls (classid, revisionnumber, %ls, %ls, %ls, %ls, %ls, %ls) values ", 
-					CLASS_NAME, PROPERTY_1, PROPERTY_2, PROPERTY_3, PROPERTY_4, PROPERTY_5, PROPERTY_6 );
+					CLASS_NAME, PROPERTY_1R, PROPERTY_2, PROPERTY_3, PROPERTY_4, PROPERTY_5, PROPERTY_6 );
 
 	long   value = 7777;
 	FdoStringP	insertSql = FdoStringP::Format(L"%ls ( 0, 0, 10, 20, 'open', 1000, 1000, %ld )", (FdoString *) insertSql2, value );
@@ -847,7 +1140,7 @@ void FdoConstraintsTest::UpdateCheckConstraints( FdoIConnection* connection )
 	FdoPtr<FdoPropertyDefinitionCollection> pProps = pClass2->GetProperties();
 
 	FdoStringP	insertSql1 = FdoStringP::Format(L"insert into %ls (classid, revisionnumber, %ls, %ls, %ls, %ls, %ls) values ", 
-								CLASS_NAME, PROPERTY_1, PROPERTY_2, PROPERTY_3, PROPERTY_4, PROPERTY_6 );
+								CLASS_NAME, PROPERTY_1R, PROPERTY_2, PROPERTY_3, PROPERTY_4, PROPERTY_6 );
 
 	for ( int i = 0; i < pProps->GetCount(); i++ ) {
 		FdoPtr<FdoDataPropertyDefinition>	pProp = (FdoDataPropertyDefinition *)pProps->GetItem(i);
@@ -862,57 +1155,59 @@ void FdoConstraintsTest::UpdateCheckConstraints( FdoIConnection* connection )
 
 		if ( pConstr->GetConstraintType() == FdoPropertyValueConstraintType_Range )
 		{
-			// Remove the constraint
-			pProp->SetValueConstraint( NULL );
+			if ( wcscmp( pProp->GetName(), PROPERTY_1R ) == 0) {
+			    // Remove the constraint
+			    pProp->SetValueConstraint( NULL );
 
-			pApplyCmd->Execute();
+			    pApplyCmd->Execute();
 
-			// New value to insert into PROPERTY_1, outside range
-			// This should succeed since the constraint on PROPERTY_1 was removed
-			FdoInt32 value = 2000;
-			FdoStringP	insertSql = FdoStringP::Format(L"%ls (0, 0, %ld, 20, 'open', 6666, 8888 )", (FdoString *) insertSql1, value );
-			UnitTestUtil::Sql2Db( insertSql, connection );
+			    // New value to insert into PROPERTY_1, outside range
+			    // This should succeed since the constraint on PROPERTY_1 was removed
+			    FdoInt32 value = 2000;
+			    FdoStringP	insertSql = FdoStringP::Format(L"%ls (0, 0, %ld, 20, 'open', 6666, 8888 )", (FdoString *) insertSql1, value );
+			    UnitTestUtil::Sql2Db( insertSql, connection );
 
-			// Restore the range CHECK constraint
-			FdoPtr<FdoPropertyValueConstraintRange>  newRangeConstr1 =  FdoPropertyValueConstraintRange::Create();
-			newRangeConstr1->SetMinInclusive(INT_MIN_INCLUSIVE);
+			    // Restore the range CHECK constraint
+			    FdoPtr<FdoPropertyValueConstraintRange>  newRangeConstr1 =  FdoPropertyValueConstraintRange::Create();
+			    newRangeConstr1->SetMinInclusive(INT_MIN_INCLUSIVE);
 
-			FdoPtr<FdoDataValue>   val1 = FdoDataValue::Create( INT_RANGE[0] );
-			newRangeConstr1->SetMinValue( val1 );
+			    FdoPtr<FdoDataValue>   val1 = FdoDataValue::Create( INT_RANGE[0] );
+			    newRangeConstr1->SetMinValue( val1 );
 
-			newRangeConstr1->SetMaxInclusive(INT_MAX_INCLUSIVE);
-			FdoPtr<FdoDataValue>   val2 = FdoDataValue::Create( INT_RANGE[1] );
-			newRangeConstr1->SetMaxValue( val2 );
-			pProp->SetValueConstraint(newRangeConstr1);
+			    newRangeConstr1->SetMaxInclusive(INT_MAX_INCLUSIVE);
+			    FdoPtr<FdoDataValue>   val2 = FdoDataValue::Create( INT_RANGE[1] );
+			    newRangeConstr1->SetMaxValue( val2 );
+			    pProp->SetValueConstraint(newRangeConstr1);
 
-			bool error = false;
-			try	{
-				pApplyCmd->Execute();
-			} catch (FdoException *ex) {
-				DBG(printf("Expected check constraint violation exception: %ls\n", (FdoString* )ex->GetExceptionMessage()));
-				ex->Release();
-				error = true;
-			}
-			CPPUNIT_ASSERT_MESSAGE("Expected check constraint violation exception on PROPERTY_1", error == true);
+			    bool error = false;
+			    try	{
+				    pApplyCmd->Execute();
+			    } catch (FdoException *ex) {
+				    DBG(printf("Expected check constraint violation exception: %ls\n", (FdoString* )ex->GetExceptionMessage()));
+				    ex->Release();
+				    error = true;
+			    }
+			    CPPUNIT_ASSERT_MESSAGE("Expected check constraint violation exception on PROPERTY_1", error == true);
 
-			// Enlarge the range CHECK constraint
-			newRangeConstr1->SetMaxInclusive(INT_MAX_INCLUSIVE);
-			val2 = FdoDataValue::Create( value + 1 ); // Note: INT_MAX_INCLUSIVE is FALSE
-			newRangeConstr1->SetMaxValue( val2 ); 
-			pProp->SetValueConstraint(newRangeConstr1);
+			    // Enlarge the range CHECK constraint
+			    newRangeConstr1->SetMaxInclusive(INT_MAX_INCLUSIVE);
+			    val2 = FdoDataValue::Create( value + 1 ); // Note: INT_MAX_INCLUSIVE is FALSE
+			    newRangeConstr1->SetMaxValue( val2 ); 
+			    pProp->SetValueConstraint(newRangeConstr1);
 
-			pApplyCmd->Execute();
+			    pApplyCmd->Execute();
 
-			// Try insert again. It should succeed.
-			insertSql = FdoStringP::Format(L"%ls (0, 0, %ld, 20, 'open', 6667, 8889 )", (FdoString *) insertSql1, value );
-			UnitTestUtil::Sql2Db( insertSql, connection );
+			    // Try insert again. It should succeed.
+			    insertSql = FdoStringP::Format(L"%ls (0, 0, %ld, 20, 'open', 6667, 8889 )", (FdoString *) insertSql1, value );
+			    UnitTestUtil::Sql2Db( insertSql, connection );
+            }
 		}
 		else if (pConstr->GetConstraintType() == FdoPropertyValueConstraintType_List)
 		{
 			if ( wcscmp( pProp->GetName(), PROPERTY_2 ) == 0) {
 
 				// Add a new value to the list.
-				FdoPtr<FdoPropertyValueConstraintList>  pConstrList =  (FdoPropertyValueConstraintList *)pConstr.p;
+				FdoPtr<FdoPropertyValueConstraintList>  pConstrList =  FDO_SAFE_ADDREF((FdoPropertyValueConstraintList *)pConstr.p);
 				FdoPtr<FdoDataValueCollection>			pList = pConstrList->GetConstraintList();
 
 				int		newValue = 77;
@@ -926,10 +1221,11 @@ void FdoConstraintsTest::UpdateCheckConstraints( FdoIConnection* connection )
 				FdoStringP insertSql = FdoStringP::Format(L"%ls (0, 0, 10, %ld, 'open', 6668, 8890 )", (FdoString *) insertSql1, newValue );
 				UnitTestUtil::Sql2Db( insertSql, connection );
 			}
-			else if ( wcscmp( pProp->GetName(), PROPERTY_3 ) == 0) {
+#if 0
+            else if ( wcscmp( pProp->GetName(), PROPERTY_3 ) == 0) {
 
 				// Replace the 2nd constraint in ('open', 'close') with ('open', 'semi-close');
-				FdoPtr<FdoPropertyValueConstraintList>  pConstrList =  (FdoPropertyValueConstraintList *)pConstr.p;
+				FdoPtr<FdoPropertyValueConstraintList>  pConstrList =  FDO_SAFE_ADDREF((FdoPropertyValueConstraintList *)pConstr.p);
 				FdoPtr<FdoDataValueCollection>			pList = pConstrList->GetConstraintList();
 
 				// Note: SqlServer doesn't like constraints like "semi-close" or "semi_close"! 
@@ -946,8 +1242,10 @@ void FdoConstraintsTest::UpdateCheckConstraints( FdoIConnection* connection )
 				FdoStringP insertSql = FdoStringP::Format(L"%ls (0, 0, 10, 10, '%ls', 6669, 8891 )", (FdoString *) insertSql1, newValue );
 				UnitTestUtil::Sql2Db( insertSql, connection );
 			}
+#endif
 		}
 	}
 
 	//DescribeConstraintsSchema( connection, CLASS_NAME_BASE, NUM_UNIQUE_KEYS-1, NUM_CHECK_CONSTRAINTS-1 );
 }
+

@@ -845,11 +845,6 @@ SymbolicName=FDORDBMS_168
 Language=English
 Cannot apply schema, no schema was supplied
 .
-MessageId=2387
-SymbolicName=FDORDBMS_182
-Language=English
-Unable to find schema
-.
 MessageId=2392
 SymbolicName=FDORDBMS_187
 Language=English
