@@ -711,7 +711,11 @@ void FdoSmPhMgr::OnAfterCommit()
  
 void FdoSmPhMgr::XMLSerialize( FdoString* sFileName ) const
 {
+#ifdef _WIN32
+	FILE* xmlFp = _wfopen( sFileName, L"w" );
+#else
 	FILE* xmlFp = fopen( (const char*) FdoStringP(sFileName), "w" );
+#endif
 
 	fprintf( xmlFp, "<?xml version=\"1.0\" standalone=\"yes\"?>\n" );
 	fprintf( xmlFp, "<physical xmlns:xsi=\"http://www.w3.org/2001/XMLSchema\" >\n" );
