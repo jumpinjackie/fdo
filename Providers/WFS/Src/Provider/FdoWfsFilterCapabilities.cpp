@@ -119,16 +119,23 @@ FdoSpatialOperations* FdoWfsFilterCapabilities::GetSpatialOperations (FdoInt32& 
 /// <returns>Returns the list of distance operations</returns> 
 FdoDistanceOperations* FdoWfsFilterCapabilities::GetDistanceOperations (FdoInt32& length)
 {
-    // WFS does not support Distance operations
-    //static FdoDistanceOperations operations[] =
-    //{
-    //  FdoDistanceOperations_Beyond,
-    //  FdoDistanceOperations_Within
-    //};
+    if (!m_ogcFilterCapabilities)
+    {
+        length = 0;
+        return NULL;
+    }
+
+    static FdoDistanceOperations operations[2];
+    FdoPtr<FdoWfsOgcSpatialCapabilities> spatialCaps = m_ogcFilterCapabilities->GetSpatialCapabilities();
+    FdoInt32 spatialOps = spatialCaps->GetSpatialOperators();
 
     length = 0;
+    if (spatialOps & FdoWfsOgcSpatialCapabilities::SpatialOperators_Beyond)
+        operations[length++] = FdoDistanceOperations_Beyond;
+    if (spatialOps & FdoWfsOgcSpatialCapabilities::SpatialOperators_DWithin)
+        operations[length++] = FdoDistanceOperations_Within;
 
-    return (NULL);
+    return (operations);
 }
 
 /// <summary>Determines if the feature provider supports geodesic distance measurement. Returns false if the feature provider supports only linear distance measurement.</summary>

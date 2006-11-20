@@ -39,8 +39,7 @@ FdoExpressionType* FdoWfsExpressionCapabilities::GetExpressionTypes (FdoInt32& l
     static FdoExpressionType types[] =
     {
       FdoExpressionType_Basic,
-    //  FdoExpressionType_Function
-    //  FdoExpressionType_Parameter
+      FdoExpressionType_Function
     };
 
     length = sizeof(types) / sizeof(types[0]);
