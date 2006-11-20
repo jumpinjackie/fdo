@@ -83,30 +83,31 @@
      FdoToken_PARAMETER = 285,
      FdoToken_STRING = 286,
      FdoToken_INTEGER = 287,
-     FdoToken_DOUBLE = 288,
-     FdoToken_DATETIME = 289,
-     FdoToken_BLOB = 290,
-     FdoToken_CLOB = 291,
-     FdoToken_Add = 292,
-     FdoToken_Subtract = 293,
-     FdoToken_Multiply = 294,
-     FdoToken_Divide = 295,
-     FdoToken_Negate = 296,
-     FdoToken_EQ = 297,
-     FdoToken_NE = 298,
-     FdoToken_GT = 299,
-     FdoToken_GE = 300,
-     FdoToken_LT = 301,
-     FdoToken_LE = 302,
-     FdoToken_LeftParenthesis = 303,
-     FdoToken_RightParenthesis = 304,
-     FdoToken_LeftSquareBrackets = 305,
-     FdoToken_RightSquareBrackets = 306,
-     FdoToken_Comma = 307,
-     FdoToken_Dot = 308,
-     FdoToken_Colon = 309,
-     FdoToken_AS = 310,
-     FdoToken_BETWEEN = 311
+     FdoToken_INT64 = 288,
+     FdoToken_DOUBLE = 289,
+     FdoToken_DATETIME = 290,
+     FdoToken_BLOB = 291,
+     FdoToken_CLOB = 292,
+     FdoToken_Add = 293,
+     FdoToken_Subtract = 294,
+     FdoToken_Multiply = 295,
+     FdoToken_Divide = 296,
+     FdoToken_Negate = 297,
+     FdoToken_EQ = 298,
+     FdoToken_NE = 299,
+     FdoToken_GT = 300,
+     FdoToken_GE = 301,
+     FdoToken_LT = 302,
+     FdoToken_LE = 303,
+     FdoToken_LeftParenthesis = 304,
+     FdoToken_RightParenthesis = 305,
+     FdoToken_LeftSquareBrackets = 306,
+     FdoToken_RightSquareBrackets = 307,
+     FdoToken_Comma = 308,
+     FdoToken_Dot = 309,
+     FdoToken_Colon = 310,
+     FdoToken_AS = 311,
+     FdoToken_BETWEEN = 312
    };
 #endif
 #define FdoToken_NULL 258
@@ -139,30 +140,31 @@
 #define FdoToken_PARAMETER 285
 #define FdoToken_STRING 286
 #define FdoToken_INTEGER 287
-#define FdoToken_DOUBLE 288
-#define FdoToken_DATETIME 289
-#define FdoToken_BLOB 290
-#define FdoToken_CLOB 291
-#define FdoToken_Add 292
-#define FdoToken_Subtract 293
-#define FdoToken_Multiply 294
-#define FdoToken_Divide 295
-#define FdoToken_Negate 296
-#define FdoToken_EQ 297
-#define FdoToken_NE 298
-#define FdoToken_GT 299
-#define FdoToken_GE 300
-#define FdoToken_LT 301
-#define FdoToken_LE 302
-#define FdoToken_LeftParenthesis 303
-#define FdoToken_RightParenthesis 304
-#define FdoToken_LeftSquareBrackets 305
-#define FdoToken_RightSquareBrackets 306
-#define FdoToken_Comma 307
-#define FdoToken_Dot 308
-#define FdoToken_Colon 309
-#define FdoToken_AS 310
-#define FdoToken_BETWEEN 311
+#define FdoToken_INT64 288
+#define FdoToken_DOUBLE 289
+#define FdoToken_DATETIME 290
+#define FdoToken_BLOB 291
+#define FdoToken_CLOB 292
+#define FdoToken_Add 293
+#define FdoToken_Subtract 294
+#define FdoToken_Multiply 295
+#define FdoToken_Divide 296
+#define FdoToken_Negate 297
+#define FdoToken_EQ 298
+#define FdoToken_NE 299
+#define FdoToken_GT 300
+#define FdoToken_GE 301
+#define FdoToken_LT 302
+#define FdoToken_LE 303
+#define FdoToken_LeftParenthesis 304
+#define FdoToken_RightParenthesis 305
+#define FdoToken_LeftSquareBrackets 306
+#define FdoToken_RightSquareBrackets 307
+#define FdoToken_Comma 308
+#define FdoToken_Dot 309
+#define FdoToken_Colon 310
+#define FdoToken_AS 311
+#define FdoToken_BETWEEN 312
 
 
 
@@ -174,6 +176,7 @@
 #include <FdoStd.h>
 #include <Fdo/Expression/StringValue.h>
 #include <Fdo/Expression/Int32Value.h>
+#include <Fdo/Expression/Int64Value.h>
 #include <Fdo/Expression/DoubleValue.h>
 #include <Fdo/Expression/DateTimeValue.h>
 #include <Fdo/Expression/BooleanValue.h>
@@ -206,7 +209,8 @@ typedef union FDO_CONSTRAINT_YYSTYPE _FDO_CONSTRAINT_YYSTYPE
 {
 	FdoIDisposable*	m_node;		// constraint parse tree node
 	FdoInt32		m_id;		// enumerations, keywords, ...
-	FdoInt32		m_integer;	// integer values (Int8, Int16, Int32, TODO:I64 )
+	FdoInt32		m_integer;	// integer values (Int8, Int16, Int32 )
+	FdoInt64		m_int64;	// 64bit integer values 
 	double			m_double;	// floating point values (single(float), double)
 	FdoString*		m_string;	// string
 	_FdoDateTime	m_datetime;	// date time
@@ -323,20 +327,20 @@ union fdo_constraint_yyalloc
 /* FDO_CONSTRAINT_YYFINAL -- State number of the termination state. */
 #define FDO_CONSTRAINT_YYFINAL  21
 /* FDO_CONSTRAINT_YYLAST -- Last index in FDO_CONSTRAINT_YYTABLE.  */
-#define FDO_CONSTRAINT_YYLAST   103
+#define FDO_CONSTRAINT_YYLAST   108
 
 /* FDO_CONSTRAINT_YYNTOKENS -- Number of terminals. */
-#define FDO_CONSTRAINT_YYNTOKENS  62
+#define FDO_CONSTRAINT_YYNTOKENS  63
 /* FDO_CONSTRAINT_YYNNTS -- Number of nonterminals. */
-#define FDO_CONSTRAINT_YYNNTS  19
+#define FDO_CONSTRAINT_YYNNTS  20
 /* FDO_CONSTRAINT_YYNRULES -- Number of rules. */
-#define FDO_CONSTRAINT_YYNRULES  52
+#define FDO_CONSTRAINT_YYNRULES  54
 /* FDO_CONSTRAINT_YYNRULES -- Number of states. */
-#define FDO_CONSTRAINT_YYNSTATES  99
+#define FDO_CONSTRAINT_YYNSTATES  101
 
 /* FDO_CONSTRAINT_YYTRANSLATE(FDO_CONSTRAINT_YYLEX) -- Bison symbol number corresponding to FDO_CONSTRAINT_YYLEX.  */
 #define FDO_CONSTRAINT_YYUNDEFTOK  2
-#define FDO_CONSTRAINT_YYMAXUTOK   311
+#define FDO_CONSTRAINT_YYMAXUTOK   312
 
 #define FDO_CONSTRAINT_YYTRANSLATE(FDO_CONSTRAINT_YYX) 						\
   ((unsigned int) (FDO_CONSTRAINT_YYX) <= FDO_CONSTRAINT_YYMAXUTOK ? fdo_constraint_yytranslate[FDO_CONSTRAINT_YYX] : FDO_CONSTRAINT_YYUNDEFTOK)
@@ -348,12 +352,12 @@ static const unsigned char fdo_constraint_yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-      57,    58,     2,     2,    59,     2,     2,     2,     2,     2,
+      58,    59,     2,     2,    60,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,    60,     2,    61,     2,     2,     2,     2,     2,     2,
+       2,    61,     2,    62,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -375,7 +379,7 @@ static const unsigned char fdo_constraint_yytranslate[] =
       25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
       35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
       45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
-      55,    56
+      55,    56,    57
 };
 
 #if FDO_CONSTRAINT_YYDEBUG
@@ -388,40 +392,40 @@ static const unsigned char fdo_constraint_yyprhs[] =
       56,    60,    64,    68,    74,    78,    84,    88,    94,    98,
      104,   108,   114,   115,   117,   121,   125,   127,   129,   131,
      133,   135,   137,   139,   141,   143,   145,   147,   149,   151,
-     153,   155,   159
+     153,   155,   157,   159,   163
 };
 
 /* FDO_CONSTRAINT_YYRHS -- A `-1'-separated list of the rules' RHS. */
 static const fdo_constraint_yysigned_char fdo_constraint_yyrhs[] =
 {
-      63,     0,    -1,    64,    -1,     1,    -1,    57,    64,    58,
-      -1,    65,    -1,    66,    -1,    67,    -1,    68,    -1,    69,
-      -1,    71,    -1,    72,    -1,    68,    10,    69,    -1,    68,
-      10,    72,    -1,    71,    10,    69,    -1,    71,    10,    72,
-      -1,    80,    56,    74,    10,    74,    -1,    80,    14,    57,
-      73,    58,    -1,    -1,    70,    -1,    57,    67,    58,    -1,
-      67,    11,    67,    -1,    80,    44,    74,    -1,    57,    80,
-      44,    74,    58,    -1,    80,    46,    74,    -1,    57,    80,
-      46,    74,    58,    -1,    80,    42,    74,    -1,    57,    80,
-      42,    74,    58,    -1,    80,    45,    74,    -1,    57,    80,
-      45,    74,    58,    -1,    80,    47,    74,    -1,    57,    80,
-      47,    74,    58,    -1,    -1,    74,    -1,    73,    59,    74,
-      -1,    57,    74,    58,    -1,    75,    -1,    79,    -1,    78,
-      -1,    77,    -1,    76,    -1,    35,    -1,    36,    -1,     3,
-      -1,     4,    -1,     5,    -1,    31,    -1,    32,    -1,    33,
-      -1,    34,    -1,    29,    -1,    60,    80,    61,    -1,    57,
-      80,    58,    -1
+      64,     0,    -1,    65,    -1,     1,    -1,    58,    65,    59,
+      -1,    66,    -1,    67,    -1,    68,    -1,    69,    -1,    70,
+      -1,    72,    -1,    73,    -1,    69,    10,    70,    -1,    69,
+      10,    73,    -1,    72,    10,    70,    -1,    72,    10,    73,
+      -1,    82,    57,    75,    10,    75,    -1,    82,    14,    58,
+      74,    59,    -1,    -1,    71,    -1,    58,    68,    59,    -1,
+      68,    11,    68,    -1,    82,    45,    75,    -1,    58,    82,
+      45,    75,    59,    -1,    82,    47,    75,    -1,    58,    82,
+      47,    75,    59,    -1,    82,    43,    75,    -1,    58,    82,
+      43,    75,    59,    -1,    82,    46,    75,    -1,    58,    82,
+      46,    75,    59,    -1,    82,    48,    75,    -1,    58,    82,
+      48,    75,    59,    -1,    -1,    75,    -1,    74,    60,    75,
+      -1,    58,    75,    59,    -1,    76,    -1,    81,    -1,    80,
+      -1,    78,    -1,    79,    -1,    77,    -1,    36,    -1,    37,
+      -1,     3,    -1,     4,    -1,     5,    -1,    31,    -1,    32,
+      -1,    33,    -1,    34,    -1,    35,    -1,    29,    -1,    61,
+      82,    62,    -1,    58,    82,    59,    -1
 };
 
 /* FDO_CONSTRAINT_YYRLINE[FDO_CONSTRAINT_YYN] -- source line where rule number FDO_CONSTRAINT_YYN was defined.  */
 static const unsigned short fdo_constraint_yyrline[] =
 {
-       0,   116,   116,   117,   121,   125,   126,   127,   143,   151,
-     159,   167,   175,   184,   193,   202,   215,   227,   246,   249,
-     256,   260,   288,   292,   299,   303,   310,   314,   321,   325,
-     332,   336,   343,   346,   353,   362,   364,   367,   369,   371,
-     373,   375,   377,   379,   384,   385,   388,   391,   394,   397,
-     401,   403,   405
+       0,   119,   119,   120,   124,   128,   129,   130,   146,   154,
+     162,   170,   178,   187,   196,   205,   218,   231,   251,   254,
+     261,   265,   293,   298,   306,   311,   319,   324,   332,   337,
+     345,   350,   358,   361,   368,   377,   379,   382,   384,   386,
+     388,   390,   392,   394,   396,   401,   402,   405,   408,   411,
+     414,   417,   421,   423,   425
 };
 #endif
 
@@ -440,8 +444,8 @@ static const char *const fdo_constraint_yytname[] =
   "FdoToken_INSIDE", "FdoToken_OVERLAPS", "FdoToken_TOUCHES", 
   "FdoToken_WITHIN", "FdoToken_RELATE", "FdoToken_IDENTIFIER", 
   "FdoToken_PARAMETER", "FdoToken_STRING", "FdoToken_INTEGER", 
-  "FdoToken_DOUBLE", "FdoToken_DATETIME", "FdoToken_BLOB", 
-  "FdoToken_CLOB", "FdoToken_Add", "FdoToken_Subtract", 
+  "FdoToken_INT64", "FdoToken_DOUBLE", "FdoToken_DATETIME", 
+  "FdoToken_BLOB", "FdoToken_CLOB", "FdoToken_Add", "FdoToken_Subtract", 
   "FdoToken_Multiply", "FdoToken_Divide", "FdoToken_Negate", 
   "FdoToken_EQ", "FdoToken_NE", "FdoToken_GT", "FdoToken_GE", 
   "FdoToken_LT", "FdoToken_LE", "FdoToken_LeftParenthesis", 
@@ -452,7 +456,7 @@ static const char *const fdo_constraint_yytname[] =
   "INConstraint", "ORConstraint", "GTConstraint", "LTConstraint", 
   "EqualConstraint", "GEConstraint", "LEConstraint", 
   "DataValueCollection", "DataValue", "boolean", "string", "integer", 
-  "double", "datetime", "Identifier", 0
+  "int64", "double", "datetime", "Identifier", 0
 };
 #endif
 
@@ -466,20 +470,20 @@ static const unsigned short fdo_constraint_yytoknum[] =
      275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
      285,   286,   287,   288,   289,   290,   291,   292,   293,   294,
      295,   296,   297,   298,   299,   300,   301,   302,   303,   304,
-     305,   306,   307,   308,   309,   310,   311,    40,    41,    44,
-      91,    93
+     305,   306,   307,   308,   309,   310,   311,   312,    40,    41,
+      44,    91,    93
 };
 # endif
 
 /* FDO_CONSTRAINT_YYR1[FDO_CONSTRAINT_YYN] -- Symbol number of symbol that rule FDO_CONSTRAINT_YYN derives.  */
 static const unsigned char fdo_constraint_yyr1[] =
 {
-       0,    62,    63,    63,    64,    64,    64,    64,    64,    64,
-      64,    64,    64,    64,    64,    64,    65,    66,    67,    67,
-      67,    67,    68,    68,    69,    69,    70,    70,    71,    71,
-      72,    72,    73,    73,    73,    74,    74,    74,    74,    74,
-      74,    74,    74,    74,    75,    75,    76,    77,    78,    79,
-      80,    80,    80
+       0,    63,    64,    64,    65,    65,    65,    65,    65,    65,
+      65,    65,    65,    65,    65,    65,    66,    67,    68,    68,
+      68,    68,    69,    69,    70,    70,    71,    71,    72,    72,
+      73,    73,    74,    74,    74,    75,    75,    75,    75,    75,
+      75,    75,    75,    75,    75,    76,    76,    77,    78,    79,
+      80,    81,    82,    82,    82
 };
 
 /* FDO_CONSTRAINT_YYR2[FDO_CONSTRAINT_YYN] -- Number of symbols composing right hand side of rule FDO_CONSTRAINT_YYN.  */
@@ -490,7 +494,7 @@ static const unsigned char fdo_constraint_yyr2[] =
        3,     3,     3,     5,     3,     5,     3,     5,     3,     5,
        3,     5,     0,     1,     3,     3,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     3,     3
+       1,     1,     1,     3,     3
 };
 
 /* FDO_CONSTRAINT_YYDEFACT[STATE-NAME] -- Default rule to reduce with in state
@@ -498,47 +502,49 @@ static const unsigned char fdo_constraint_yyr2[] =
    means the default is an error.  */
 static const unsigned char fdo_constraint_yydefact[] =
 {
-       0,     3,    50,    18,     0,     0,     2,     5,     6,     7,
+       0,     3,    52,    18,     0,     0,     2,     5,     6,     7,
        8,     9,    19,    10,    11,     0,     0,     0,     0,     0,
        0,     1,    18,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     4,    20,     0,     0,     0,     0,     0,    52,
-       0,    51,    18,    21,     0,     0,    12,    13,     0,    14,
-      15,    32,    43,    44,    45,    46,    47,    48,    49,    41,
-      42,     0,    26,    36,    40,    39,    38,    37,    22,    28,
-      24,    30,     0,    26,    22,    28,     0,     0,     0,     0,
-       0,     0,    33,     0,     0,    27,    23,    29,    25,    31,
-       0,     0,    17,     0,    35,    16,     0,     0,    34
+       0,     0,     4,    20,     0,     0,     0,     0,     0,    54,
+       0,    53,    18,    21,     0,     0,    12,    13,     0,    14,
+      15,    32,    44,    45,    46,    47,    48,    49,    50,    51,
+      42,    43,     0,    26,    36,    41,    39,    40,    38,    37,
+      22,    28,    24,    30,     0,    26,    22,    28,     0,     0,
+       0,     0,     0,     0,    33,     0,     0,    27,    23,    29,
+      25,    31,     0,     0,    17,     0,    35,    16,     0,     0,
+      34
 };
 
 /* FDO_CONSTRAINT_YYDEFGOTO[NTERM-NUM]. */
 static const fdo_constraint_yysigned_char fdo_constraint_yydefgoto[] =
 {
       -1,     5,     6,     7,     8,     9,    10,    11,    12,    13,
-      14,    81,    62,    63,    64,    65,    66,    67,    48
+      14,    83,    63,    64,    65,    66,    67,    68,    69,    48
 };
 
 /* FDO_CONSTRAINT_YYPACT[STATE-NUM] -- Index in FDO_CONSTRAINT_YYTABLE of the portion describing
    STATE-NUM.  */
-#define FDO_CONSTRAINT_YYPACT_NINF -30
+#define FDO_CONSTRAINT_YYPACT_NINF -40
 static const fdo_constraint_yysigned_char fdo_constraint_yypact[] =
 {
-      12,   -30,   -30,    -7,    31,     6,   -30,   -30,   -30,     7,
-      25,   -30,   -30,    30,   -30,    40,     3,    -6,    34,    31,
-     -10,   -30,    38,    42,    42,    13,    11,    11,    11,    11,
-      11,    11,   -30,   -30,    11,    11,    11,    11,    11,   -30,
-      15,   -30,    38,     7,    23,    31,   -30,   -30,   -19,   -30,
-     -30,    11,   -30,   -30,   -30,   -30,   -30,   -30,   -30,   -30,
-     -30,    11,   -30,   -30,   -30,   -30,   -30,   -30,   -30,   -30,
-     -30,   -30,    64,    19,    35,    36,    39,    43,    -6,    -9,
-     -21,   -29,   -30,    45,    11,   -30,   -30,   -30,   -30,   -30,
-      11,    11,   -30,    11,   -30,   -30,    39,    43,   -30
+      12,   -40,   -40,    -4,    27,    17,   -40,   -40,   -40,    20,
+      18,   -40,   -40,    24,   -40,    36,   -10,    -6,    15,    27,
+     -24,   -40,    38,    47,    47,     6,    11,    11,    11,    11,
+      11,    11,   -40,   -40,    11,    11,    11,    11,    11,   -40,
+      21,   -40,    38,    20,    34,    27,   -40,   -40,   -21,   -40,
+     -40,    11,   -40,   -40,   -40,   -40,   -40,   -40,   -40,   -40,
+     -40,   -40,    11,   -40,   -40,   -40,   -40,   -40,   -40,   -40,
+     -40,   -40,   -40,   -40,    79,    31,    32,    35,    39,    41,
+      -6,   -37,   -29,   -39,   -40,    42,    11,   -40,   -40,   -40,
+     -40,   -40,    11,    11,   -40,    11,   -40,   -40,    39,    41,
+     -40
 };
 
 /* FDO_CONSTRAINT_YYPGOTO[NTERM-NUM].  */
 static const fdo_constraint_yysigned_char fdo_constraint_yypgoto[] =
 {
-     -30,   -30,    72,   -30,   -30,    16,   -30,     8,   -30,   -30,
-      32,   -30,   -27,   -30,   -30,   -30,   -30,   -30,    17
+     -40,   -40,    89,   -40,   -40,    29,   -40,    16,   -40,   -40,
+      63,   -40,   -27,   -40,   -40,   -40,   -40,   -40,   -40,    33
 };
 
 /* FDO_CONSTRAINT_YYTABLE[FDO_CONSTRAINT_YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -548,48 +554,49 @@ static const fdo_constraint_yysigned_char fdo_constraint_yypgoto[] =
 #define FDO_CONSTRAINT_YYTABLE_NINF -19
 static const fdo_constraint_yysigned_char fdo_constraint_yytable[] =
 {
-      68,    69,    70,    71,    72,    22,    21,    73,    74,    75,
-      76,    77,   -18,     1,    52,    53,    54,    15,    22,    17,
-      18,    20,     2,   -18,    82,    90,    91,    29,    30,    92,
-      93,    46,    49,    34,    83,    23,    40,    39,    43,    44,
-      24,     2,    55,    56,    57,    58,    59,    60,    25,    39,
-       3,    41,    33,     4,    25,    47,    50,    95,    78,    79,
-       2,    32,    80,    96,    97,    26,    98,     2,    61,     3,
-      51,     2,     4,    39,    84,    16,    34,    85,    35,    36,
-      37,    38,    26,     0,    27,    28,    29,    30,    19,     0,
-      31,     4,    39,    86,    87,    42,    31,    88,     4,    45,
-       0,    89,     4,    94
+      70,    71,    72,    73,    74,    22,    34,    75,    76,    77,
+      78,    79,   -18,     1,    52,    53,    54,    21,    92,    93,
+      94,    95,    39,   -18,    84,     2,    29,    30,    23,    25,
+      39,    22,    17,    15,    24,    85,    18,    20,    41,    46,
+      49,     2,    55,    56,    57,    58,    59,    60,    61,    32,
+      25,    43,    40,    33,     3,    44,     2,     4,    34,    97,
+      35,    36,    37,    38,    51,    98,    99,     2,   100,    62,
+       3,    80,    31,     4,    39,    81,     2,    26,    82,    26,
+      39,    27,    28,    29,    30,    19,    47,    50,     4,    86,
+      87,    88,    16,    31,    89,     0,    42,     0,    90,     4,
+      91,    96,     0,     0,     0,    45,     0,     0,     4
 };
 
 static const fdo_constraint_yysigned_char fdo_constraint_yycheck[] =
 {
-      27,    28,    29,    30,    31,    11,     0,    34,    35,    36,
-      37,    38,     0,     1,     3,     4,     5,     0,    11,     3,
-       3,     4,    29,    11,    51,    46,    47,    46,    47,    58,
-      59,    23,    24,    42,    61,    10,    19,    58,    22,    22,
-      10,    29,    31,    32,    33,    34,    35,    36,    14,    58,
-      57,    61,    58,    60,    14,    23,    24,    84,    42,    42,
-      29,    58,    45,    90,    91,    42,    93,    29,    57,    57,
-      57,    29,    60,    58,    10,     3,    42,    58,    44,    45,
-      46,    47,    42,    -1,    44,    45,    46,    47,    57,    -1,
-      56,    60,    58,    58,    58,    57,    56,    58,    60,    57,
-      -1,    58,    60,    58
+      27,    28,    29,    30,    31,    11,    43,    34,    35,    36,
+      37,    38,     0,     1,     3,     4,     5,     0,    47,    48,
+      59,    60,    59,    11,    51,    29,    47,    48,    10,    14,
+      59,    11,     3,     0,    10,    62,     3,     4,    62,    23,
+      24,    29,    31,    32,    33,    34,    35,    36,    37,    59,
+      14,    22,    19,    59,    58,    22,    29,    61,    43,    86,
+      45,    46,    47,    48,    58,    92,    93,    29,    95,    58,
+      58,    42,    57,    61,    59,    42,    29,    43,    45,    43,
+      59,    45,    46,    47,    48,    58,    23,    24,    61,    10,
+      59,    59,     3,    57,    59,    -1,    58,    -1,    59,    61,
+      59,    59,    -1,    -1,    -1,    58,    -1,    -1,    61
 };
 
 /* FDO_CONSTRAINT_YYSTOS[STATE-NUM] -- The (internal number of the) accessing
    symbol of state STATE-NUM.  */
 static const unsigned char fdo_constraint_yystos[] =
 {
-       0,     1,    29,    57,    60,    63,    64,    65,    66,    67,
-      68,    69,    70,    71,    72,    80,    64,    67,    80,    57,
-      80,     0,    11,    10,    10,    14,    42,    44,    45,    46,
-      47,    56,    58,    58,    42,    44,    45,    46,    47,    58,
-      80,    61,    57,    67,    80,    57,    69,    72,    80,    69,
-      72,    57,     3,     4,     5,    31,    32,    33,    34,    35,
-      36,    57,    74,    75,    76,    77,    78,    79,    74,    74,
-      74,    74,    74,    74,    74,    74,    74,    74,    67,    80,
-      80,    73,    74,    74,    10,    58,    58,    58,    58,    58,
-      46,    47,    58,    59,    58,    74,    74,    74,    74
+       0,     1,    29,    58,    61,    64,    65,    66,    67,    68,
+      69,    70,    71,    72,    73,    82,    65,    68,    82,    58,
+      82,     0,    11,    10,    10,    14,    43,    45,    46,    47,
+      48,    57,    59,    59,    43,    45,    46,    47,    48,    59,
+      82,    62,    58,    68,    82,    58,    70,    73,    82,    70,
+      73,    58,     3,     4,     5,    31,    32,    33,    34,    35,
+      36,    37,    58,    75,    76,    77,    78,    79,    80,    81,
+      75,    75,    75,    75,    75,    75,    75,    75,    75,    75,
+      68,    82,    82,    74,    75,    75,    10,    59,    59,    59,
+      59,    59,    47,    48,    59,    60,    59,    75,    75,    75,
+      75
 };
 
 #if ! defined (FDO_CONSTRAINT_YYSIZE_T) && defined (__SIZE_TYPE__)
@@ -1334,6 +1341,7 @@ fdo_constraint_yyreduce:
 						range->SetMinInclusive(true);
 						range->SetMaxInclusive(true);
 						pParse->fdo_constraint_yyval.m_node=Node_Add(L"Constraint Range", range);
+						FDO_SAFE_RELEASE(pParse->fdo_constraint_yyvsp[-4].m_node); 
 						FDO_SAFE_RELEASE(pParse->fdo_constraint_yyvsp[-2].m_node); 
 						FDO_SAFE_RELEASE(pParse->fdo_constraint_yyvsp[0].m_node);
 					}
@@ -1353,6 +1361,7 @@ fdo_constraint_yyreduce:
 							FDO_SAFE_RELEASE(dvTemp);
 						}
 						pParse->fdo_constraint_yyval.m_node=Node_Add(L"Constraint List",list);
+						FDO_SAFE_RELEASE(pParse->fdo_constraint_yyvsp[-4].m_node); 
 						FDO_SAFE_RELEASE(pParse->fdo_constraint_yyvsp[-1].m_node); 
 						FDO_SAFE_RELEASE(dvCol);
 					}
@@ -1414,6 +1423,7 @@ fdo_constraint_yyreduce:
 
     {
 						pParse->fdo_constraint_yyval.m_node = pParse->fdo_constraint_yyvsp[0].m_node;
+						FDO_SAFE_RELEASE(pParse->fdo_constraint_yyvsp[-2].m_node); 
 					}
     break;
 
@@ -1421,6 +1431,7 @@ fdo_constraint_yyreduce:
 
     {
 						pParse->fdo_constraint_yyval.m_node = pParse->fdo_constraint_yyvsp[-1].m_node;
+						FDO_SAFE_RELEASE(pParse->fdo_constraint_yyvsp[-3].m_node); 
 					}
     break;
 
@@ -1428,6 +1439,7 @@ fdo_constraint_yyreduce:
 
     {
 						pParse->fdo_constraint_yyval.m_node = pParse->fdo_constraint_yyvsp[0].m_node;
+						FDO_SAFE_RELEASE(pParse->fdo_constraint_yyvsp[-2].m_node); 
 					}
     break;
 
@@ -1435,6 +1447,7 @@ fdo_constraint_yyreduce:
 
     {
 						pParse->fdo_constraint_yyval.m_node = pParse->fdo_constraint_yyvsp[-1].m_node;
+						FDO_SAFE_RELEASE(pParse->fdo_constraint_yyvsp[-3].m_node); 
 					}
     break;
 
@@ -1442,6 +1455,7 @@ fdo_constraint_yyreduce:
 
     {
 						pParse->fdo_constraint_yyval.m_node = pParse->fdo_constraint_yyvsp[0].m_node;
+						FDO_SAFE_RELEASE(pParse->fdo_constraint_yyvsp[-2].m_node); 
 					}
     break;
 
@@ -1449,6 +1463,7 @@ fdo_constraint_yyreduce:
 
     {
 						pParse->fdo_constraint_yyval.m_node = pParse->fdo_constraint_yyvsp[-1].m_node;
+						FDO_SAFE_RELEASE(pParse->fdo_constraint_yyvsp[-3].m_node); 
 					}
     break;
 
@@ -1456,6 +1471,7 @@ fdo_constraint_yyreduce:
 
     {
 						pParse->fdo_constraint_yyval.m_node = pParse->fdo_constraint_yyvsp[0].m_node;
+						FDO_SAFE_RELEASE(pParse->fdo_constraint_yyvsp[-2].m_node); 
 					}
     break;
 
@@ -1463,6 +1479,7 @@ fdo_constraint_yyreduce:
 
     {
 						pParse->fdo_constraint_yyval.m_node = pParse->fdo_constraint_yyvsp[-1].m_node;
+						FDO_SAFE_RELEASE(pParse->fdo_constraint_yyvsp[-3].m_node); 
 					}
     break;
 
@@ -1470,6 +1487,7 @@ fdo_constraint_yyreduce:
 
     {
 						pParse->fdo_constraint_yyval.m_node = pParse->fdo_constraint_yyvsp[0].m_node;
+						FDO_SAFE_RELEASE(pParse->fdo_constraint_yyvsp[-2].m_node); 
 					}
     break;
 
@@ -1477,6 +1495,7 @@ fdo_constraint_yyreduce:
 
     {
 						pParse->fdo_constraint_yyval.m_node = pParse->fdo_constraint_yyvsp[-1].m_node;
+						FDO_SAFE_RELEASE(pParse->fdo_constraint_yyvsp[-3].m_node); 
 					}
     break;
 
@@ -1533,65 +1552,75 @@ fdo_constraint_yyreduce:
 
   case 40:
 
-    {pParse->fdo_constraint_yyval.m_node=Node_Copy(L"string", pParse->fdo_constraint_yyvsp[0].m_node);}
+    {pParse->fdo_constraint_yyval.m_node=Node_Copy(L"int64", pParse->fdo_constraint_yyvsp[0].m_node);}
     break;
 
   case 41:
 
-    {pParse->fdo_constraint_yyval.m_node=Node_Copy(L"TODO:BLOB", NULL);}
+    {pParse->fdo_constraint_yyval.m_node=Node_Copy(L"string", pParse->fdo_constraint_yyvsp[0].m_node);}
     break;
 
   case 42:
 
-    {pParse->fdo_constraint_yyval.m_node=Node_Copy(L"TODO:CLOB", NULL);}
+    {pParse->fdo_constraint_yyval.m_node=Node_Copy(L"TODO:BLOB", NULL);}
     break;
 
   case 43:
 
-    {pParse->fdo_constraint_yyval.m_node=Node_Add(L"NULL", FdoDataValue::Create(FdoDataType_Boolean));}
+    {pParse->fdo_constraint_yyval.m_node=Node_Copy(L"TODO:CLOB", NULL);}
     break;
 
   case 44:
 
-    {pParse->fdo_constraint_yyval.m_node=Node_Add(L"TRUE", FdoBooleanValue::Create(true));}
+    {pParse->fdo_constraint_yyval.m_node=Node_Add(L"NULL", FdoDataValue::Create(FdoDataType_Boolean));}
     break;
 
   case 45:
 
-    {pParse->fdo_constraint_yyval.m_node=Node_Add(L"FALSE", FdoBooleanValue::Create(false));}
+    {pParse->fdo_constraint_yyval.m_node=Node_Add(L"TRUE", FdoBooleanValue::Create(true));}
     break;
 
   case 46:
 
-    {pParse->fdo_constraint_yyval.m_node=Node_Add(L"STRING", FdoDataValue::Create(pParse->fdo_constraint_yyvsp[0].m_string));}
+    {pParse->fdo_constraint_yyval.m_node=Node_Add(L"FALSE", FdoBooleanValue::Create(false));}
     break;
 
   case 47:
 
-    {pParse->fdo_constraint_yyval.m_node=Node_Add(L"INTEGER", FdoInt32Value::Create(pParse->fdo_constraint_yyvsp[0].m_integer));}
+    {pParse->fdo_constraint_yyval.m_node=Node_Add(L"STRING", FdoDataValue::Create(pParse->fdo_constraint_yyvsp[0].m_string));}
     break;
 
   case 48:
 
-    {pParse->fdo_constraint_yyval.m_node=Node_Add(L"DOUBLE", FdoDoubleValue::Create(pParse->fdo_constraint_yyvsp[0].m_double));}
+    {pParse->fdo_constraint_yyval.m_node=Node_Add(L"INTEGER", FdoInt32Value::Create(pParse->fdo_constraint_yyvsp[0].m_integer));}
     break;
 
   case 49:
 
-    {pParse->fdo_constraint_yyval.m_node=Node_Add(L"DateTime", FdoDataValue::Create(pParse->fdo_constraint_yyvsp[0].m_datetime));}
+    {pParse->fdo_constraint_yyval.m_node=Node_Add(L"INT64", FdoInt64Value::Create(pParse->fdo_constraint_yyvsp[0].m_int64));}
     break;
 
   case 50:
 
-    {pParse->fdo_constraint_yyval.m_node = Node_Add(L"IDENTIFIER", FdoIdentifier::Create(pParse->fdo_constraint_yyvsp[0].m_string));}
+    {pParse->fdo_constraint_yyval.m_node=Node_Add(L"DOUBLE", FdoDoubleValue::Create(pParse->fdo_constraint_yyvsp[0].m_double));}
     break;
 
   case 51:
 
-    {pParse->fdo_constraint_yyval.m_node = pParse->fdo_constraint_yyvsp[-1].m_node;}
+    {pParse->fdo_constraint_yyval.m_node=Node_Add(L"DateTime", FdoDataValue::Create(pParse->fdo_constraint_yyvsp[0].m_datetime));}
     break;
 
   case 52:
+
+    {pParse->fdo_constraint_yyval.m_node = Node_Add(L"IDENTIFIER", FdoIdentifier::Create(pParse->fdo_constraint_yyvsp[0].m_string));}
+    break;
+
+  case 53:
+
+    {pParse->fdo_constraint_yyval.m_node = pParse->fdo_constraint_yyvsp[-1].m_node;}
+    break;
+
+  case 54:
 
     {pParse->fdo_constraint_yyval.m_node = pParse->fdo_constraint_yyvsp[-1].m_node;}
     break;

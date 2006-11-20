@@ -126,12 +126,17 @@ void FdoCommonParse::Trace(FdoString* pDebug)
 void FdoCommonParse::Abort(void)
 {
 	// go through collection and release nodes
+/* TODO: The following can release objects too many times if their parse tree
+//    reference has been released.
+// However, commenting this out leads to some memory leaks that need to be addressed.
+
 	for (FdoInt32 i=0; i<m_nodes->GetCount(); i++)
 	{
 		FdoIDisposable* pItem = m_nodes->GetItem(i);
 		pItem->Release();
 		pItem->Release();
 	}
+*/
 	m_nodes->Clear();
 }
 
@@ -181,9 +186,11 @@ FdoInt32 FdoCommonParse::GetLexeme(FdoCommonParse *pParse, void* pyylval)
 					return FdoToken_STRING;
 				case FdoDataType_Int16:
 				case FdoDataType_Int32:
-				case FdoDataType_Int64:
 					yylval->m_integer = ((FdoInt32Value*)(m_lex->m_data))->GetInt32();
 					return FdoToken_INTEGER;
+				case FdoDataType_Int64:
+					yylval->m_int64 = ((FdoInt64Value*)(m_lex->m_data))->GetInt64();
+					return FdoToken_INT64;
 				case FdoDataType_Single:
 				case FdoDataType_Double:
 					yylval->m_double = ((FdoDoubleValue*)(m_lex->m_data))->GetDouble();
@@ -307,7 +314,7 @@ FdoPropertyValueConstraint* FdoCommonParse::ParseConstraint(FdoString* pwzConstr
 	try
 	{
 		fdo_constraint_yyparse(this);
-	    if (m_root == NULL)
+        if (m_root == NULL)
             throw FdoExpressionException::Create(NlsMsgGetFdo(FDO_NLSID(PARSE_4_STRINGINCORRECTLYFORMATTED)));
 	}
 	catch (FdoException* exception)

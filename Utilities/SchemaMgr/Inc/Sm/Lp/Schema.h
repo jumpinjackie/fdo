@@ -223,7 +223,6 @@ public:
     /// Mainly for unit testing.
     virtual void XMLSerialize( FILE* xmlFp, int ref ) const;
 
-    FdoSmLpClassDefinition* LoadClass(FdoStringP className, FdoString* schemaName=NULL);
     const FdoSmLpClassDefinition* RefClass(FdoStringP className) const;
 
 protected:
@@ -299,6 +298,8 @@ private:
     void LoadSchema();
     /// Loads the classes for this schema
     void LoadClasses();
+
+    FdoSmLpClassDefinitionP LoadClass(FdoStringP className, FdoString* schemaName=NULL);
 
     /// Destroys classes, relations and SAD.
     /// Just the in-memory objects, they are not removed
