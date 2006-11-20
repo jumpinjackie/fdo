@@ -2071,3 +2071,198 @@ SymbolicName=FDO_142_MBC_ERROR_EXTENTS
 Language=English
 '%1$ls': MBC error: extents outside spatial index extents.
 .
+MessageId=9143
+SymbolicName=FDO_143_URL_ERROR
+Language=English
+The requested URL returned error: '%1$ls'.
+.
+MessageId=9144
+SymbolicName=FDO_144_URL_SERVICE_UNAVAILABLE
+Language=English
+The HTTP service is unavailable.
+.
+MessageId=9145
+SymbolicName=FDO_145_URL_BAD_REQUEST
+Language=English
+The HTTP request could not be understood by the server due to malformed syntax.
+.
+MessageId=9146
+SymbolicName=FDO_146_URL_NOT_AUTHORIZED
+Language=English
+The HTTP request is missing user authentication or the user authorization has been refused by the server. 
+.
+MessageId=9147
+SymbolicName=FDO_147_URL_ACCESS_DENIED
+Language=English
+The HTTP request was denied (forbidden) by the server. 
+.
+MessageId=9148
+SymbolicName=FDO_148_URI_NOT_FOUND
+Language=English
+The HTTP request URI was not found by the server.
+.
+MessageId=9149
+SymbolicName=FDO_149_URL_REQUEST_NOT_ALLOWED
+Language=English
+The method specified in the HTTP request is not allowed for the resource identified by the URI.
+.
+MessageId=9150
+SymbolicName=FDO_150_URL_REQUEST_NOT_ACCEPTABLE
+Language=English
+The HTTP request generated an unaceptable response by the server.
+.
+MessageId=9151
+SymbolicName=FDO_151_URL_PROXY_AUTHENTICATION_REQUIRED
+Language=English
+The client is not authorized to access the HTTP Proxy Server.
+.
+MessageId=9152
+SymbolicName=FDO_152_URL_REQUEST_TIMEOUT
+Language=English
+HTTP server timeout. The client did not produce a request within the time that the server allowed.
+.
+MessageId=9153
+SymbolicName=FDO_153_URL_NOT_AVAILABLE
+Language=English
+The requested HTTP resource is no longer available at the server.
+.
+MessageId=9154
+SymbolicName=FDO_154_URL_REQUEST_TOO_LONG
+Language=English
+The HTTP server is refusing to service the request because the Request-URI is longer than the server is willing to interpret.
+.
+MessageId=9155
+SymbolicName=FDO_155_URL_INTERNAL_SERVER_ERROR
+Language=English
+The HTTP server encountered an unexpected internal condition which prevented it from fulfilling the request.
+.
+MessageId=9156
+SymbolicName=FDO_156_URL_REQUEST_NOT_IMPLEMENTED
+Language=English
+The HTTP server does not support the functionality required to fulfill the request.
+.
+MessageId=9157
+SymbolicName=FDO_157_URL_OVERLOADED
+Language=English
+The HTTP server, while acting as a gateway or proxy, received an invalid response from the upstream server it accessed in attempting to fulfill the request. 
+.
+MessageId=9158
+SymbolicName=FDO_158_URL_SERVICE_UNAVAILABLE
+Language=English
+The HTTP server is currently unable to handle the request due to a temporary overloading or maintenance of the server. 
+.
+MessageId=9159
+SymbolicName=FDO_159_URL_GATEWAY_TIMEOUT
+Language=English
+The HTTP server, while acting as a gateway or proxy, did not receive a timely response from the upstream server specified by the URI. 
+.
+MessageId=9160
+SymbolicName=FDO_160_HTTP_UNSUPPORTED_VERION
+Language=English
+The server does not support, or refuses to support, the HTTP protocol version that was used in the request message.
+.
+MessageId=9161
+SymbolicName=FDO_161_UNABLE_CONNECT_HOST
+Language=English
+Unable to connect to the host.
+.
+MessageId=9162
+SymbolicName=FDO_162_CONNECT_HOST_TIMEOUT
+Language=English
+The connection to the host has timed out.
+.
+MessageId=9163
+SymbolicName=FDO_163_UNABLE_RESOLVE_HOST
+Language=English
+Unable to resolve the host. Host not found.
+.
+MessageId=9164
+SymbolicName=FDO_164_UNSUPPORTED_HTTP_PROTOCOL
+Language=English
+Unsupported HTTP Protocol.
+.
+MessageId=9165
+SymbolicName=FDO_165_MALFORMED_URL
+Language=English
+Malformed URL.
+.
+MessageId=9166
+SymbolicName=FDO_166_UNABLE_RESOLVE_PROXY
+Language=English
+Couldn't resolve proxy name.
+.
+MessageId=9167
+SymbolicName=FDO_167_DOWNLOAD_PARTIAL_FILE
+Language=English
+Downloaded a partial file.
+.
+MessageId=9168
+SymbolicName=FDO_168_FAILURE_OPEN_FILE
+Language=English
+Could not open/read from file.
+.
+MessageId=9169
+SymbolicName=FDO_169_FAILURE_POST
+Language=English
+Failure to HTTP POST data.
+.
+MessageId=9170
+SymbolicName=FDO_170_FAILURE_SSL_CONNECT
+Language=English
+Server SSL connect error.
+.
+MessageId=9171
+SymbolicName=FDO_171_UNABLE_RESUME_DOWNLOAD
+Language=English
+Could not resume data download.
+.
+MessageId=9172
+SymbolicName=FDO_172_ABORTED_BY_CALLBACK
+Language=English
+The operation was aborted by an application callback.
+.
+MessageId=9173
+SymbolicName=FDO_173_ENDLESS_URL_REDIRECT
+Language=English
+The number of URL redirects hit the maximum amount.
+.
+MessageId=9174
+SymbolicName=FDO_174_SSL_PEER_CERTIFICATE
+Language=English
+The SSL peer certificate was not ok.
+.
+MessageId=9175
+SymbolicName=FDO_175_SERVER_RETURNED_NOTHING
+Language=English
+The server returned no data.
+.
+MessageId=9176
+SymbolicName=FDO_176_FAILURE_SENDING_NETWORK_DATA
+Language=English
+Failure sending Network data.
+.
+MessageId=9177
+SymbolicName=FDO_177_FAILURE_RECIEVING_NETWORK_DATA
+Language=English
+Failure receiving Network data.
+.
+MessageId=9178
+SymbolicName=FDO_178_SSL_CERTIFICATE_ERROR
+Language=English
+Error using the the local SSL certificate.
+.
+MessageId=9179
+SymbolicName=FDO_179_SSL_CIPHER_ERROR
+Language=English
+Couldn't use the specified SSL cipher.
+.
+MessageId=9180
+SymbolicName=FDO_180_CACERT_CIPHER_ERROR
+Language=English
+Server SSL certificate verification failed. Verify path and access rights.
+.
+MessageId=9181
+SymbolicName=FDO_181_LDAP_INVALID_URL
+Language=English
+Invalid LDAP URL.
+.
