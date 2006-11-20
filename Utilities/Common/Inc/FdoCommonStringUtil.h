@@ -280,6 +280,7 @@ public:
     static size_t   StringLength(FdoString* string);
     static FdoInt32 StringCompare(FdoString* string1, FdoString* string2);
     static FdoInt32 StringCompareNoCase(FdoString* string1, FdoString* string2);
+    static FdoInt32 StringCompareNoCaseN(FdoString* string1, FdoString* string2, FdoSize count);
     static void     StringCopy(wchar_t* string1, FdoString* string2);
     static void     SubstringCopy(wchar_t* string1, FdoString* string2, size_t length);
     static void     StringConcatenate(wchar_t* string1, FdoString* string2);

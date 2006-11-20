@@ -180,6 +180,155 @@ size_t FdoOwsHttpHandler::_writeCallback( void *ptr, size_t size, size_t nmemb)
     return len;
 }
 
+FdoException* FdoOwsHttpHandler::_translateError(CURLcode curlCode, FdoString *error_msg)
+{
+    FdoException* e;
+
+    switch (curlCode)
+    {
+    case CURLE_UNSUPPORTED_PROTOCOL:
+        e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_164_UNSUPPORTED_HTTP_PROTOCOL)));
+        break;
+    case CURLE_URL_MALFORMAT:
+        e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_165_MALFORMED_URL)));
+        break;
+    case CURLE_COULDNT_RESOLVE_PROXY:
+        e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_166_UNABLE_RESOLVE_PROXY)));
+        break;
+    case CURLE_COULDNT_RESOLVE_HOST:
+        e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_163_UNABLE_RESOLVE_HOST)));
+        break;
+    case CURLE_COULDNT_CONNECT:
+        e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_161_UNABLE_CONNECT_HOST)));
+        break;
+    case CURLE_PARTIAL_FILE:
+        e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_167_DOWNLOAD_PARTIAL_FILE)));
+        break;
+    case CURLE_READ_ERROR:
+        e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_168_FAILURE_OPEN_FILE)));
+        break;
+    case CURLE_OUT_OF_MEMORY:
+        e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(CLNT_5_OUTOFMEMORY)));
+        break;
+    case CURLE_OPERATION_TIMEOUTED:
+        e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_162_CONNECT_HOST_TIMEOUT)));
+        break;
+    case CURLE_HTTP_POST_ERROR:
+        e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_169_FAILURE_POST)));
+        break;
+    case CURLE_SSL_CONNECT_ERROR:
+        e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_170_FAILURE_SSL_CONNECT)));
+        break;
+    case CURLE_BAD_DOWNLOAD_RESUME:
+        e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_171_UNABLE_RESUME_DOWNLOAD)));
+        break;
+    case CURLE_FILE_COULDNT_READ_FILE:  
+        e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_168_FAILURE_OPEN_FILE)));
+        break;
+    case CURLE_ABORTED_BY_CALLBACK:
+        e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_172_ABORTED_BY_CALLBACK)));
+        break;
+    case CURLE_TOO_MANY_REDIRECTS:
+        e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_173_ENDLESS_URL_REDIRECT)));
+        break;
+    case CURLE_SSL_PEER_CERTIFICATE:
+        e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_174_SSL_PEER_CERTIFICATE)));
+        break;
+    case CURLE_GOT_NOTHING:
+        e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_175_SERVER_RETURNED_NOTHING)));
+        break;
+    case CURLE_SEND_ERROR:
+        e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_176_FAILURE_SENDING_NETWORK_DATA)));
+        break;
+    case CURLE_RECV_ERROR:
+        e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_177_FAILURE_RECIEVING_NETWORK_DATA)));
+        break;
+    case CURLE_SSL_CERTPROBLEM:
+        e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_178_SSL_CERTIFICATE_ERROR)));
+        break;
+    case CURLE_SSL_CIPHER:
+        e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_179_SSL_CIPHER_ERROR)));
+        break;
+    case CURLE_SSL_CACERT:
+        e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_180_CACERT_CIPHER_ERROR)));
+        break;
+    case CURLE_LDAP_INVALID_URL:
+        e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_181_LDAP_INVALID_URL)));
+        break;
+    case CURLE_HTTP_RETURNED_ERROR:
+        if (FdoCommonStringUtil::StringCompareNoCaseN(error_msg, L"The requested URL returned error:", 33) == 0) {
+            FdoStringP str(error_msg);
+            FdoStringP strErrorNum = str.Right(L": ");
+            
+            if (strErrorNum == L"400") {
+                e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_145_URL_BAD_REQUEST)));
+            }
+            else if (strErrorNum == L"401") {
+                e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_146_URL_NOT_AUTHORIZED)));
+            }
+            else if (strErrorNum == L"403") {
+                e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_147_URL_ACCESS_DENIED)));
+            }
+            else if (strErrorNum == L"404") {
+                e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_148_URI_NOT_FOUND)));
+            }
+            else if (strErrorNum == L"405") {
+                e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_149_URL_REQUEST_NOT_ALLOWED)));
+            }
+            else if (strErrorNum == L"406") {
+                e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_150_URL_REQUEST_NOT_ACCEPTABLE)));
+            }
+            else if (strErrorNum == L"407") {
+                e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_151_URL_PROXY_AUTHENTICATION_REQUIRED)));
+            }
+            else if (strErrorNum == L"408") {
+                e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_152_URL_REQUEST_TIMEOUT)));
+            }
+            else if (strErrorNum == L"410") {
+                e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_153_URL_NOT_AVAILABLE)));
+            }
+            else if (strErrorNum == L"414") {
+                e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_154_URL_REQUEST_TOO_LONG)));
+            }
+            else if (strErrorNum == L"500") {
+                e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_155_URL_INTERNAL_SERVER_ERROR)));
+            }
+            else if (strErrorNum == L"501") {
+                e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_156_URL_REQUEST_NOT_IMPLEMENTED)));
+            }
+            else if (strErrorNum == L"502") {
+                e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_157_URL_OVERLOADED)));
+            }
+            else if (strErrorNum == L"503") {
+                e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_158_URL_SERVICE_UNAVAILABLE)));
+            }
+            else if (strErrorNum == L"504") {
+                e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_159_URL_GATEWAY_TIMEOUT)));
+            }
+            else if (strErrorNum == L"505") {
+                e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_160_HTTP_UNSUPPORTED_VERION)));
+            }
+            else
+            {
+                e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_133_UNEXPECTEDERROR_PERFORMING)));
+                e->SetCause (FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_143_URL_ERROR), (FdoString*)strErrorNum)));
+            }
+        }
+        else 
+        {
+            e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_133_UNEXPECTEDERROR_PERFORMING)));
+            e->SetCause (FdoException::Create(error_msg));
+        }
+
+        break;
+    default:
+        e = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_133_UNEXPECTEDERROR_PERFORMING)));
+        e->SetCause (FdoException::Create(error_msg));
+    }
+
+    return e;
+}
+
 void FdoOwsHttpHandler::Perform()
 {
     // run this object
@@ -193,9 +342,7 @@ void FdoOwsHttpHandler::Perform()
     {
         wchar_t* wError;
         multibyte_to_wide(wError, m_errorBuffer);
-        FdoException* e = FdoException::Create(FdoException::NLSGetMessage(FDO_133_UNEXPECTEDERROR_PERFORMING, "Unexpected error encountered while accessing the server."));
-        e->SetCause (FdoException::Create(wError));
-        throw e;
+        throw _translateError(m_curlCode, wError);
     }
 }
 
@@ -218,6 +365,7 @@ void FdoOwsHttpHandler::Proc()
     // something is wrong. After that, it would generate the exception from the 
     // error buffer and throw it out  in the main thread so that the user can catch it.
 
+    m_curlCode = CURLE_OK;
     CURLcode rv = CURL_LAST;
     for(;;) {
         if (curlHandle == NULL) break;
@@ -360,9 +508,9 @@ void FdoOwsHttpHandler::Proc()
 
     if (rv != CURLE_OK) {
         // error occurs, set the state to BeforeConnect
+        m_curlCode = rv;
         boost::mutex::scoped_lock lock(m_mutex);
         m_connectionState = ConnectionState_BeforeConnect;
-
     }
 
     if (curlHandle != NULL)

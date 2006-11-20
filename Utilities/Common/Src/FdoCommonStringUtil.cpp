@@ -325,6 +325,18 @@ FdoInt32 FdoCommonStringUtil::StringCompareNoCase(FdoString* string1, FdoString*
 #endif
 }
 
+FdoInt32 FdoCommonStringUtil::StringCompareNoCaseN(FdoString* string1, FdoString* string2, FdoSize count)
+{
+    if (string1 == NULL || string2 == NULL)
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_14_NULLSTRING)));
+
+#ifdef _WIN32
+    return _wcsnicmp(string1, string2, count);
+#else
+    return wcsncasecmp(string1, string2, count);
+#endif
+}
+
 void FdoCommonStringUtil::StringCopy(wchar_t* string1, FdoString* string2)
 {
     if (string1 == NULL || string2 == NULL)
