@@ -57,6 +57,7 @@ class WmsTestSelect : public WmsTests
     CPPUNIT_TEST (testNS_CRS);
     CPPUNIT_TEST (testDMSolutions);
     CPPUNIT_TEST (testNS_TOPO_5000);
+    CPPUNIT_TEST (testNASAServerDefaultOverrides);
 
 	CPPUNIT_TEST_SUITE_END ();
 
@@ -93,6 +94,7 @@ public:
     void testNS_CRS();
     void testDMSolutions(); 
     void testNS_TOPO_5000();
+    void testNASAServerDefaultOverrides();
 
 };
 

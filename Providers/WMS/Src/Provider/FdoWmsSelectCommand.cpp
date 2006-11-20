@@ -226,7 +226,7 @@ FdoIFeatureReader* FdoWmsSelectCommand::Execute ()
 				spatialContextName = rasterDefinition->GetSpatialContextName ();
 
 				// Get the prefered image format from the overrides
-				imageFormat = _getImageFormat (rasterDefinition->GetFormatType ());
+				imageFormat = mConnection->GetImageFormat (rasterDefinition->GetFormatType ());
 
 				// Get the "Transparent" value
 				bTransparent = rasterDefinition->GetTransparent ();
@@ -321,7 +321,7 @@ FdoIFeatureReader* FdoWmsSelectCommand::Execute ()
 
 	if (!mConnection->IsConfigured ())
 	{
-		imageFormat = _getDefaultImageFormat ();
+		imageFormat = mConnection->GetDefaultImageFormat ();
 	}
 
     // Calculate the bounding box of the layer(s)
@@ -572,50 +572,6 @@ FdoStringP FdoWmsSelectCommand::_getSpatialContextAssociation (FdoFeatureClass* 
 	}
 
 	return spatialContext;	
-}
-
-FdoStringP FdoWmsSelectCommand::_getImageFormat (FdoWmsOvFormatType formatType)
-{
-	switch (formatType)
-	{
-	case FdoWmsOvFormatType_Png:
-		return FdoWmsGlobals::RasterMIMEFormat_PNG;
-	case FdoWmsOvFormatType_Tif:
-		return FdoWmsGlobals::RasterMIMEFormat_TIFF;
-	case FdoWmsOvFormatType_Jpg:
-		return FdoWmsGlobals::RasterMIMEFormat_JPEG;
-	case FdoWmsOvFormatType_Gif:
-		return FdoWmsGlobals::RasterMIMEFormat_GIF;	
-	}
-
-	return FdoWmsGlobals::RasterMIMEFormat_PNG;
-}
-
-FdoStringP FdoWmsSelectCommand::_getDefaultImageFormat ()
-{
-	FdoStringP imageFormat = FdoWmsGlobals::RasterMIMEFormat_PNG;
-
-	FdoWmsServiceMetadataP metadata = mConnection->GetWmsServiceMetadata ();
-	FdoPtr<FdoWmsCapabilities> capa = static_cast<FdoWmsCapabilities *> (metadata->GetCapabilities ());
-    FdoPtr<FdoOwsRequestMetadataCollection> reqMetadatas = capa->GetRequestMetadatas ();
-    FdoPtr<FdoOwsRequestMetadata> reqMetadata = reqMetadatas->FindItem (FdoWmsXmlGlobals::WmsGetMapRequest);
-    FdoWmsRequestMetadata* getMapMetadata = static_cast<FdoWmsRequestMetadata*>(reqMetadata.p);
-    FdoStringsP imageFormats = getMapMetadata->GetFormats ();
-
-	// Find the most suitable image format which the server supports. If the user doesn't use
-	// configuration file, the image format will be determined as following:
-	//	"PNG" is prefered is it's supported; Otherwise "TIFF"; Otherwise "JPEG"; Otherwise "GIF"	    
-
-	if (imageFormats->IndexOf (FdoWmsGlobals::RasterMIMEFormat_PNG) != -1)
-		imageFormat = FdoWmsGlobals::RasterMIMEFormat_PNG;
-	else if (imageFormats->IndexOf (FdoWmsGlobals::RasterMIMEFormat_TIFF) != -1)
-		imageFormat = FdoWmsGlobals::RasterMIMEFormat_TIFF;
-	else if (imageFormats->IndexOf (FdoWmsGlobals::RasterMIMEFormat_JPEG) != -1)
-		imageFormat = FdoWmsGlobals::RasterMIMEFormat_JPEG;
-	else if (imageFormats->IndexOf (FdoWmsGlobals::RasterMIMEFormat_GIF) != -1)
-		imageFormat = FdoWmsGlobals::RasterMIMEFormat_GIF;
-
-	return imageFormat;
 }
 
 // Analysis the properties to check whether the RESAMPLE or CLIP function is invoked.

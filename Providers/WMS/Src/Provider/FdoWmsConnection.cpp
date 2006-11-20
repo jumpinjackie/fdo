@@ -41,9 +41,10 @@
 #include "FdoWmsActivateSpatialContextCommand.h"
 #include "FdoWmsSelectAggregatesCommand.h"
 #include "FdoWmsUtils.h"
+#include "FdoWmsXmlGlobals.h"
+#include "FdoWmsRequestMetadata.h"
 
 #include <Fdo/Schema/FeatureClass.h>
-#include <WMS/Override/FdoWmsOvPhysicalSchemaMapping.h>
 #include <FdoCommonConnStringParser.h>
 
 /// Class GDALRegister is used to register and unregister GDAL library.
@@ -273,6 +274,7 @@ FdoConnectionState FdoWmsConnection::Open ()
     else
 	{
 		_buildUpDefaultSchemaMappings ();
+        _buildUpDefaultPhysicalSchemaMappings ();
 	}
 
 	mServer = location;
@@ -551,9 +553,121 @@ FdoFeatureSchemaCollection* FdoWmsConnection::GetSchemas ()
 
 /// <summary>Gets the physical schema mappings.</summary>
 /// <returns>Returns the physical schema mappins. Returns NULL if the connection is not configured.</returns>
-FdoPhysicalSchemaMappingCollection* FdoWmsConnection::GetSchemaMappings ()
+FdoPhysicalSchemaMappingCollection* FdoWmsConnection::GetSchemaMappings (FdoBoolean bGenerateDefault)
 {
-	return FDO_SAFE_ADDREF (mConfigSchemaMappings.p);
+    if (mConfigured || bGenerateDefault) 
+        return FDO_SAFE_ADDREF (mConfigSchemaMappings.p);
+    else
+        return NULL;
+}
+
+/// <summary>Creates a set of default physical schema mappings for the current connection.</summary>
+/// <returns>Returns the physical schema mappins. Returns NULL if the connection is not configured.</returns>
+void FdoWmsConnection::_buildUpDefaultPhysicalSchemaMappings()
+{
+    mConfigSchemaMappings = FdoPhysicalSchemaMappingCollection::Create();
+    for (FdoInt32 i=0; i<mSchemas->GetCount(); i++)
+    {
+        FdoFeatureSchemaP featureSchema = mSchemas->GetItem(i);
+        FdoWmsOvPhysicalSchemaMappingP configMapping = FdoWmsOvPhysicalSchemaMapping::Create();
+        configMapping->SetName(featureSchema->GetName());
+
+        FdoWmsOvClassesP configClasses = configMapping->GetClasses();
+        FdoClassesP featureClasses = featureSchema->GetClasses();
+        for (FdoInt32 j=0; j<featureClasses->GetCount(); j++)
+        {
+            FdoClassDefinitionP featureClassDefn = featureClasses->GetItem(j);
+            if (!featureClassDefn->GetIsAbstract()) 
+            {
+                FdoWmsOvClassDefinitionP configClassDefn = FdoWmsOvClassDefinition::Create();
+                configClassDefn->SetName(featureClassDefn->GetName());
+
+                FdoWmsOvRasterDefinitionP configRasterDefn = FdoWmsOvRasterDefinition::Create();
+        	    FdoRasterPropertyP featureRasterDefn = FindRasterProperty(featureClassDefn);
+
+                configRasterDefn->SetName(featureRasterDefn->GetName());
+                configRasterDefn->SetFormatType(GetImageFormatType(GetDefaultImageFormat())); 
+                configRasterDefn->SetBackgroundColor(L"0xFFFFFF");
+
+                FdoString* scName = featureRasterDefn->GetSpatialContextAssociation();
+                configRasterDefn->SetSpatialContextName(scName);
+
+                FdoWmsOvLayersP configLayersCollection = configRasterDefn->GetLayers();
+                FdoWmsOvLayerDefinitionP configLayerDefn = FdoWmsOvLayerDefinition::Create();
+
+	            FdoPtr<FdoDictionaryElement> nameElement = mLayerMappings->GetItem (configClassDefn->GetName());
+	            FdoString* layerName = nameElement->GetValue ();
+                configLayerDefn->SetName(layerName);
+
+                configLayerDefn->SetStyle(NULL);
+                configLayersCollection->Add(configLayerDefn);
+        
+                configClassDefn->SetRasterDefinition(configRasterDefn);
+                configClasses->Add(configClassDefn);
+            }
+        }
+
+        mConfigSchemaMappings->Add(configMapping);
+    }
+}
+
+/// <summary>Get the default image format. The prefered image format can be specified in configuration XML file</summary>
+FdoString* FdoWmsConnection::GetImageFormat (FdoWmsOvFormatType formatType)
+{
+	switch (formatType)
+	{
+	case FdoWmsOvFormatType_Tif:
+		return FdoWmsGlobals::RasterMIMEFormat_TIFF;
+	case FdoWmsOvFormatType_Jpg:
+		return FdoWmsGlobals::RasterMIMEFormat_JPEG;
+	case FdoWmsOvFormatType_Gif:
+		return FdoWmsGlobals::RasterMIMEFormat_GIF;	
+	case FdoWmsOvFormatType_Png:
+    default:
+		return FdoWmsGlobals::RasterMIMEFormat_PNG;
+	}
+}
+
+/// <summary>Get the default image format type that is used in the FDO WMS Configuration file. </summary>
+FdoWmsOvFormatType FdoWmsConnection::GetImageFormatType (FdoString* imageFormat)
+{
+	if (imageFormat == FdoWmsGlobals::RasterMIMEFormat_TIFF)
+        return FdoWmsOvFormatType_Tif;
+	else if (imageFormat == FdoWmsGlobals::RasterMIMEFormat_JPEG)
+        return FdoWmsOvFormatType_Jpg;
+	else if (imageFormat == FdoWmsGlobals::RasterMIMEFormat_GIF)
+        return FdoWmsOvFormatType_Gif;
+    else
+        return FdoWmsOvFormatType_Png;
+}
+
+/// <summary>If the user hasn't specified the image format using the configuration file, then the format 
+/// will be determined in the following order if the server supports: PNG, JPEG, TIFF and GIF. </summary>
+FdoString* FdoWmsConnection::GetDefaultImageFormat()
+{
+	FdoString* imageFormat = FdoWmsGlobals::RasterMIMEFormat_PNG;
+
+	FdoWmsServiceMetadataP metadata = GetWmsServiceMetadata ();
+	FdoPtr<FdoWmsCapabilities> capa = static_cast<FdoWmsCapabilities *> (metadata->GetCapabilities ());
+    FdoPtr<FdoOwsRequestMetadataCollection> reqMetadatas = capa->GetRequestMetadatas ();
+    FdoPtr<FdoOwsRequestMetadata> reqMetadata = reqMetadatas->FindItem (FdoWmsXmlGlobals::WmsGetMapRequest);
+    FdoWmsRequestMetadata* getMapMetadata = static_cast<FdoWmsRequestMetadata*>(reqMetadata.p);
+    FdoStringsP imageFormats = getMapMetadata->GetFormats ();
+
+	// Find the most suitable image format which the server supports. If the user doesn't use
+	// configuration file, the image format will be determined as following:
+	//	"PNG" is prefered is it's supported; Otherwise "TIFF"; Otherwise "JPEG"; Otherwise "GIF"	    
+
+	if (imageFormats->IndexOf (FdoWmsGlobals::RasterMIMEFormat_PNG) != -1)
+		imageFormat = FdoWmsGlobals::RasterMIMEFormat_PNG;
+	else if (imageFormats->IndexOf (FdoWmsGlobals::RasterMIMEFormat_TIFF) != -1)
+		imageFormat = FdoWmsGlobals::RasterMIMEFormat_TIFF;
+	else if (imageFormats->IndexOf (FdoWmsGlobals::RasterMIMEFormat_JPEG) != -1)
+		imageFormat = FdoWmsGlobals::RasterMIMEFormat_JPEG;
+	else if (imageFormats->IndexOf (FdoWmsGlobals::RasterMIMEFormat_GIF) != -1)
+		imageFormat = FdoWmsGlobals::RasterMIMEFormat_GIF;
+
+	return imageFormat;
 }
 
 // build up the feature schemas
@@ -826,23 +940,29 @@ void FdoWmsConnection::_setDefaultSpatialContextAssociation (FdoClassDefinition*
 /// <returns>Return the raster definition for the specified class. If not found, return NULL.</returns>
 FdoRasterPropertyDefinition* FdoWmsConnection::FindRasterProperty (FdoClassDefinition* featClass)
 {
-	if (featClass == NULL) {
-		throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDOWMS_FIND_RASTER_PROPERTIES_CLASS),
+    if (featClass == NULL) {
+        throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDOWMS_FIND_RASTER_PROPERTIES_CLASS),
                                                                 L"FdoWmsConnection::FindRasterProperty"));
     }
 
     FdoRasterPropertyDefinition* rasterProp = NULL;
-	FdoPtr<FdoReadOnlyPropertyDefinitionCollection> baseProps = featClass->GetBaseProperties ();
-	for (FdoInt32 i=0; i<baseProps->GetCount (); i++) {
-		FdoPtr<FdoPropertyDefinition> baseProp = baseProps->GetItem (i);
-		rasterProp = dynamic_cast<FdoRasterPropertyDefinition *> (baseProp.p);
-	}
+    FdoPtr<FdoReadOnlyPropertyDefinitionCollection> baseProps = featClass->GetBaseProperties ();
+    for (FdoInt32 i=0; i<baseProps->GetCount (); i++) {
+        FdoPtr<FdoPropertyDefinition> baseProp = baseProps->GetItem (i);
+        if (baseProp->GetPropertyType() == FdoPropertyType_RasterProperty) {
+            rasterProp = static_cast<FdoRasterPropertyDefinition *> (baseProp.p);
+            break;
+        }
+    }
 
-	FdoPtr<FdoPropertyDefinitionCollection> props = featClass->GetProperties ();
-	for (FdoInt32 i=0; i<props->GetCount (); i++) {
-		FdoPtr<FdoPropertyDefinition> prop = props->GetItem (i);
-		rasterProp = dynamic_cast<FdoRasterPropertyDefinition *> (prop.p);
-	}
+    FdoPtr<FdoPropertyDefinitionCollection> props = featClass->GetProperties ();
+    for (FdoInt32 i=0; i<props->GetCount (); i++) {
+        FdoPtr<FdoPropertyDefinition> prop = props->GetItem (i);
+        if (prop->GetPropertyType() == FdoPropertyType_RasterProperty) {
+            rasterProp = static_cast<FdoRasterPropertyDefinition *> (prop.p);
+            break;
+        }
+    }
 
     return FDO_SAFE_ADDREF(rasterProp);
 }

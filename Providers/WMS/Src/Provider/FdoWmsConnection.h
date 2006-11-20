@@ -25,6 +25,7 @@
 
 #include "FdoWmsServiceMetadata.h"
 #include <Fdo/Schema/FeatureSchemaCollection.h>
+#include <WMS/Override/FdoWmsOvPhysicalSchemaMapping.h>
 
 // Class Declarations
 class FdoWmsConnection : public FdoIConnection
@@ -164,7 +165,7 @@ public:
 
 	/// <summary>Gets the physical schema mappings.</summary>
 	/// <returns>Returns the physical schema mappins. Returns NULL if the connection is not configured.</returns>
-	FdoPhysicalSchemaMappingCollection* GetSchemaMappings ();
+	FdoPhysicalSchemaMappingCollection* GetSchemaMappings (FdoBoolean bGenerateDefault = false);
 
 	/// <summary>Set the active spatial context.</summary>
 	/// <returns>Returns nothing.</returns>
@@ -189,6 +190,16 @@ public:
 	/// <summary>Search the class and it's parents for its raster property definition.</summary>
 	/// <returns>Return the raster definition for the specified class. If not found, return NULL.</returns>
 	FdoRasterPropertyDefinition* FindRasterProperty (FdoClassDefinition* featClass);
+
+	/// <summary>Get the default image format. The prefered image format can be specified in configuration XML file</summary>
+    FdoString* GetImageFormat (FdoWmsOvFormatType formatType);
+
+	/// <summary>Get the default image format type that is used in the FDO WMS Configuration file. </summary>
+    FdoWmsOvFormatType GetImageFormatType(FdoString* imageFormat);
+
+    /// <summary>If the user hasn't specified the image format using the configuration file, then the format 
+    /// will be determined in the following order if the server supports: PNG, JPEG, TIFF and GIF. </summary>
+    FdoString* GetDefaultImageFormat();
 
 protected:
     /**
@@ -265,6 +276,10 @@ private:
 
 	// set the spatial context associated to the raster property of the class
 	void _setDefaultSpatialContextAssociation (FdoClassDefinition* featClass);	
+
+    // Creates a set of default physical schema mappings for the current connection
+    void _buildUpDefaultPhysicalSchemaMappings();
+
 };
 
 #endif // FDOWMSCONNECTION_H

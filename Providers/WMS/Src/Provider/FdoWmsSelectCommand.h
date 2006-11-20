@@ -117,15 +117,6 @@ private:
 	void _setSpatialContextAssociation (FdoFeatureClass* featClass, FdoString* spatialContext);
 	FdoStringP _getSpatialContextAssociation (FdoFeatureClass* featClass);
 
-	// get the default image format. The prefered image format can be specified in
-	// configuration XML file by user. 
-	FdoStringP _getImageFormat (FdoWmsOvFormatType formatType);
-	
-	// If the user hasn't specify the image format using the configuration file, 
-	// then the format will be determined in the following order if the server 
-	// supports: PNG, JPEG, TIFF and GIF.
-	FdoStringP _getDefaultImageFormat ();
-
 	// Get the default image height which is specified by the user in the connection string.
 	// if it's not set, use 600 pixels arbitarily as default height value.
 	FdoSize _getDefaultImageHeight ();

@@ -23,7 +23,8 @@
 
 FdoWmsOvRasterDefinition::FdoWmsOvRasterDefinition(void) :
     m_pXmlContentHandler(NULL),
-    m_formmatType(FdoWmsOvFormatType_Png)
+    m_formmatType(FdoWmsOvFormatType_Png),
+    m_transparent(false)
 {
 	m_layers = FdoWmsOvLayerCollection::Create(this);
 }

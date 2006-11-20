@@ -589,6 +589,82 @@ void WmsTestSelect::testNASAServer ()
 }
 
 //http://wms.jpl.nasa.gov/wms.cgi?
+void WmsTestSelect::testNASAServerDefaultOverrides ()
+{	
+    try
+    {
+	    FdoPtr<FdoIConnection> conn = this->GetConnection ();
+	    conn->SetConnectionString (L"FeatureServer=http://wms.jpl.nasa.gov/wms.cgi?");
+	    CPPUNIT_ASSERT (FdoConnectionState_Open == conn->Open ());
+
+	    FdoPtr<FdoIDescribeSchemaMapping> cmdDescribeSchemaMapping = static_cast<FdoIDescribeSchemaMapping *> (conn->CreateCommand (FdoCommandType_DescribeSchemaMapping));
+        cmdDescribeSchemaMapping->SetIncludeDefaults(false);
+	    FdoSchemaMappingsP schemaMappings = cmdDescribeSchemaMapping->Execute ();
+        CPPUNIT_ASSERT (schemaMappings == NULL);
+
+        cmdDescribeSchemaMapping->SetIncludeDefaults(true);
+	    schemaMappings = cmdDescribeSchemaMapping->Execute ();
+        FdoInt32 numSchemas = schemaMappings->GetCount();
+        CPPUNIT_ASSERT (numSchemas == 1);
+
+        for (FdoInt32 i=0; i<1; i++)
+        {
+            FdoPhysicalSchemaMappingP schemaMapping = schemaMappings->GetItem(i);
+            FdoWmsOvPhysicalSchemaMapping* ovMapping = static_cast<FdoWmsOvPhysicalSchemaMapping*>(schemaMapping.p);
+            CPPUNIT_ASSERT (FdoStringP(ovMapping->GetName()) == L"WMS_Schema");
+            
+            FdoWmsOvClassesP ovClasses = ovMapping->GetClasses();
+            FdoInt32 numClasses = ovClasses->GetCount();
+            CPPUNIT_ASSERT (numClasses == 18);
+
+            FdoWmsOvClassDefinitionP ovClass = ovClasses->GetItem(0);
+            CPPUNIT_ASSERT (FdoStringP(ovClass->GetName()) == L"global_mosaic");
+
+            FdoWmsOvRasterDefinitionP ovRasterDef = ovClass->GetRasterDefinition();
+            CPPUNIT_ASSERT (FdoStringP(ovRasterDef->GetName()) == L"Raster");
+
+            CPPUNIT_ASSERT (FdoStringP(ovRasterDef->GetBackgroundColor()) == L"0xFFFFFF");
+            CPPUNIT_ASSERT (ovRasterDef->GetFormatType() == FdoWmsOvFormatType_Png);
+            CPPUNIT_ASSERT (FdoStringP(ovRasterDef->GetSpatialContextName()) == L"EPSG:4326");
+            CPPUNIT_ASSERT (FdoStringP(ovRasterDef->GetTimeDimension()) == L"");
+            CPPUNIT_ASSERT (FdoStringP(ovRasterDef->GetElevationDimension()) == L"");
+            CPPUNIT_ASSERT (ovRasterDef->GetTransparent() == false);
+            
+            FdoWmsOvLayersP ovLayers = ovRasterDef->GetLayers();
+            FdoInt32 numLayers = ovLayers->GetCount();
+            CPPUNIT_ASSERT (numLayers == 1);
+
+            FdoWmsOvLayerDefinitionP ovLayer = ovLayers->GetItem(0);
+            CPPUNIT_ASSERT (FdoStringP(ovLayer->GetName()) == L"global_mosaic");
+
+            ovClass = ovClasses->GetItem(1);
+            CPPUNIT_ASSERT (FdoStringP(ovClass->GetName()) == L"global_mosaic_base");
+
+            ovRasterDef = ovClass->GetRasterDefinition();
+            CPPUNIT_ASSERT (FdoStringP(ovRasterDef->GetName()) == L"Raster");
+
+            CPPUNIT_ASSERT (FdoStringP(ovRasterDef->GetBackgroundColor()) == L"0xFFFFFF");
+            CPPUNIT_ASSERT (ovRasterDef->GetFormatType() == FdoWmsOvFormatType_Png);
+            CPPUNIT_ASSERT (FdoStringP(ovRasterDef->GetSpatialContextName()) == L"EPSG:4326");
+            CPPUNIT_ASSERT (FdoStringP(ovRasterDef->GetTimeDimension()) == L"");
+            CPPUNIT_ASSERT (FdoStringP(ovRasterDef->GetElevationDimension()) == L"");
+            CPPUNIT_ASSERT (ovRasterDef->GetTransparent() == false);
+            
+            ovLayers = ovRasterDef->GetLayers();
+            numLayers = ovLayers->GetCount();
+            CPPUNIT_ASSERT (numLayers == 1);
+
+            ovLayer = ovLayers->GetItem(0);
+            CPPUNIT_ASSERT (FdoStringP(ovLayer->GetName()) == L"global_mosaic_base");
+        }
+	}
+	catch(FdoException* ex)
+	{
+        fail(ex);
+	}
+}
+
+//http://wms.jpl.nasa.gov/wms.cgi?
 void WmsTestSelect::testNASAServer2 ()
 {	
     try

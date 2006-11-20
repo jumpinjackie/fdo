@@ -49,7 +49,7 @@ FdoPhysicalSchemaMappingCollection* FdoWmsDescribeSchemaMappingCommand::Execute(
 {
 	VALIDATE_ARGUMENT (mConnection.p);
 
-	return mConnection->GetSchemaMappings ();
+	return mConnection->GetSchemaMappings (mbIncludeDefaults);
 }
 
 void FdoWmsDescribeSchemaMappingCommand::Dispose ()
