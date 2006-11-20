@@ -64,6 +64,7 @@ private:
     boost::condition m_condition;
 
     //error related
+    CURLcode m_curlCode;
     char m_errorBuffer[CURL_ERROR_SIZE];
 
     bool m_bValidDocument;
@@ -78,6 +79,8 @@ private:
 
     //support timeout
     unsigned int m_tvConnect;
+
+
 
 protected:
     FdoOwsHttpHandler();
@@ -124,7 +127,7 @@ private:
     // instance callbacks, called directly by static callbacks
     size_t _headerCallback( void *ptr, size_t size, size_t nmemb); 
     size_t _writeCallback( void *ptr, size_t size, size_t nmemb);
-
+    FdoException* _translateError(CURLcode curlCode, FdoString *error_msg);
 };
 
 
