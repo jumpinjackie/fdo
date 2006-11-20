@@ -56,6 +56,7 @@ class WmsTestSelect : public WmsTests
     CPPUNIT_TEST (testNS_TOPO_1000);
     CPPUNIT_TEST (testNS_CRS);
     CPPUNIT_TEST (testDMSolutions);
+    CPPUNIT_TEST (testNS_TOPO_5000);
 
 	CPPUNIT_TEST_SUITE_END ();
 
@@ -91,6 +92,8 @@ public:
     void testNS_TOPO_1000();
     void testNS_CRS();
     void testDMSolutions(); 
+    void testNS_TOPO_5000();
+
 };
 
 #endif//FDOWMSTESTSELECT_H

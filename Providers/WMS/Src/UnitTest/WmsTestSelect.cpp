@@ -1292,6 +1292,49 @@ void WmsTestSelect::testNS_TOPO_1000 ()
     }
 }
 
+//http://142.176.62.108/cgi-bin/mapserv.exe?map=D:\ms441oci\maps\NS_TOPO_5000.map
+void WmsTestSelect::testNS_TOPO_5000 ()
+{
+    try
+    {
+        FdoPtr<FdoIConnection> connection = WmsTests::GetConnection ();
+
+        FdoStringP sServer = FdoStringP::Format(L"FeatureServer=http://142.176.62.108/cgi-bin/mapserv.exe?map=D:\\ms441oci\\maps\\NS_TOPO_5000.map");
+        connection->SetConnectionString((FdoString*)sServer);
+        FdoConnectionState state = connection->Open ();
+
+        FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*> (connection->CreateCommand (FdoCommandType_Select));
+        cmdSelect->SetFeatureClassName (L"NS_TOPO_5000.5K_DL_LINE");
+        FdoPtr<FdoIFeatureReader> featReader = cmdSelect->Execute ();
+        CPPUNIT_ASSERT (featReader->ReadNext ());	    
+        FdoPtr<FdoIRaster> raster = featReader->GetRaster (L"Raster");
+
+        raster->SetImageXSize(1024);
+        raster->SetImageYSize(1024);
+
+        FdoPtr<FdoIStreamReaderTmpl<FdoByte> > byteStreamReader = static_cast<FdoIStreamReaderTmpl<FdoByte>*> (raster->GetStreamReader ());
+
+        FdoByte buff[4096];
+        FdoInt64 cntTotal = 0;
+        FdoInt32 cntRead = 0;
+        do
+        {
+            cntRead = byteStreamReader->ReadNext (buff, 0 , 4096);
+            cntTotal += cntRead;
+        }
+        while (cntRead);
+
+        CPPUNIT_ASSERT (cntTotal > 0);
+        CPPUNIT_ASSERT (!featReader->ReadNext ());
+
+        connection->Close ();
+    }
+    catch (FdoException* e)
+    {
+        fail(e);
+    }
+}
+
 //http://142.176.62.108/cgi-bin/mapserv.exe?map=D:\\ms441oci\\maps\\NS_CRS.map
 void WmsTestSelect::testNS_CRS ()
 {

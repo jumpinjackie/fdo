@@ -808,6 +808,9 @@ void FdoWmsSelectCommand::_analysisIdentifier (FdoString* srsName, FdoWmsBoundin
 		// Get the default HEIGHT value and calculate the WIDTH value.
 		height = _getDefaultImageHeight ();		
 		width = (FdoSize)((bbox->GetMaxX() - bbox->GetMinX()) / (bbox->GetMaxY() - bbox->GetMinY()) * height);
+        if (width > 2048) {
+            width = 2048;
+        }
 	}
 }
 
