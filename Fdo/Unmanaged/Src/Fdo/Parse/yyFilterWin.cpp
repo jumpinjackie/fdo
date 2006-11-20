@@ -83,28 +83,29 @@
      FdoToken_PARAMETER = 285,
      FdoToken_STRING = 286,
      FdoToken_INTEGER = 287,
-     FdoToken_DOUBLE = 288,
-     FdoToken_DATETIME = 289,
-     FdoToken_BLOB = 290,
-     FdoToken_CLOB = 291,
-     FdoToken_Add = 292,
-     FdoToken_Subtract = 293,
-     FdoToken_Multiply = 294,
-     FdoToken_Divide = 295,
-     FdoToken_Negate = 296,
-     FdoToken_EQ = 297,
-     FdoToken_NE = 298,
-     FdoToken_GT = 299,
-     FdoToken_GE = 300,
-     FdoToken_LT = 301,
-     FdoToken_LE = 302,
-     FdoToken_LeftParenthesis = 303,
-     FdoToken_RightParenthesis = 304,
-     FdoToken_Comma = 305,
-     FdoToken_Dot = 306,
-     FdoToken_Colon = 307,
-     FdoToken_AS = 308,
-     FdoToken_BETWEEN = 309
+     FdoToken_INT64 = 288,
+     FdoToken_DOUBLE = 289,
+     FdoToken_DATETIME = 290,
+     FdoToken_BLOB = 291,
+     FdoToken_CLOB = 292,
+     FdoToken_Add = 293,
+     FdoToken_Subtract = 294,
+     FdoToken_Multiply = 295,
+     FdoToken_Divide = 296,
+     FdoToken_Negate = 297,
+     FdoToken_EQ = 298,
+     FdoToken_NE = 299,
+     FdoToken_GT = 300,
+     FdoToken_GE = 301,
+     FdoToken_LT = 302,
+     FdoToken_LE = 303,
+     FdoToken_LeftParenthesis = 304,
+     FdoToken_RightParenthesis = 305,
+     FdoToken_Comma = 306,
+     FdoToken_Dot = 307,
+     FdoToken_Colon = 308,
+     FdoToken_AS = 309,
+     FdoToken_BETWEEN = 310
    };
 #endif
 #define FdoToken_NULL 258
@@ -137,28 +138,29 @@
 #define FdoToken_PARAMETER 285
 #define FdoToken_STRING 286
 #define FdoToken_INTEGER 287
-#define FdoToken_DOUBLE 288
-#define FdoToken_DATETIME 289
-#define FdoToken_BLOB 290
-#define FdoToken_CLOB 291
-#define FdoToken_Add 292
-#define FdoToken_Subtract 293
-#define FdoToken_Multiply 294
-#define FdoToken_Divide 295
-#define FdoToken_Negate 296
-#define FdoToken_EQ 297
-#define FdoToken_NE 298
-#define FdoToken_GT 299
-#define FdoToken_GE 300
-#define FdoToken_LT 301
-#define FdoToken_LE 302
-#define FdoToken_LeftParenthesis 303
-#define FdoToken_RightParenthesis 304
-#define FdoToken_Comma 305
-#define FdoToken_Dot 306
-#define FdoToken_Colon 307
-#define FdoToken_AS 308
-#define FdoToken_BETWEEN 309
+#define FdoToken_INT64 288
+#define FdoToken_DOUBLE 289
+#define FdoToken_DATETIME 290
+#define FdoToken_BLOB 291
+#define FdoToken_CLOB 292
+#define FdoToken_Add 293
+#define FdoToken_Subtract 294
+#define FdoToken_Multiply 295
+#define FdoToken_Divide 296
+#define FdoToken_Negate 297
+#define FdoToken_EQ 298
+#define FdoToken_NE 299
+#define FdoToken_GT 300
+#define FdoToken_GE 301
+#define FdoToken_LT 302
+#define FdoToken_LE 303
+#define FdoToken_LeftParenthesis 304
+#define FdoToken_RightParenthesis 305
+#define FdoToken_Comma 306
+#define FdoToken_Dot 307
+#define FdoToken_Colon 308
+#define FdoToken_AS 309
+#define FdoToken_BETWEEN 310
 
 
 
@@ -189,7 +191,8 @@ typedef union FDO_FILTER_YYSTYPE _FDO_FILTER_YYSTYPE
 {
 	FdoIDisposable*	m_node;		// expression or filter parse tree node
 	FdoInt32		m_id;		// enumerations, keywords, ...
-	FdoInt32		m_integer;	// integer values (Int8, Int16, Int32, TODO:I64 )
+	FdoInt32		m_integer;	// integer values (Int8, Int16, Int32 )
+	FdoInt64		m_int64;	// 64-bit integer values
 	double			m_double;	// floating point values (single(float), double)
 	FdoString*		m_string;	// string
 	_FdoDateTime	m_datetime;	// date time
@@ -304,22 +307,22 @@ union fdo_filter_yyalloc
 #endif
 
 /* FDO_FILTER_YYFINAL -- State number of the termination state. */
-#define FDO_FILTER_YYFINAL  56
+#define FDO_FILTER_YYFINAL  58
 /* FDO_FILTER_YYLAST -- Last index in FDO_FILTER_YYTABLE.  */
-#define FDO_FILTER_YYLAST   284
+#define FDO_FILTER_YYLAST   303
 
 /* FDO_FILTER_YYNTOKENS -- Number of terminals. */
-#define FDO_FILTER_YYNTOKENS  58
+#define FDO_FILTER_YYNTOKENS  59
 /* FDO_FILTER_YYNNTS -- Number of nonterminals. */
-#define FDO_FILTER_YYNNTS  36
+#define FDO_FILTER_YYNNTS  37
 /* FDO_FILTER_YYNRULES -- Number of rules. */
-#define FDO_FILTER_YYNRULES  87
+#define FDO_FILTER_YYNRULES  90
 /* FDO_FILTER_YYNRULES -- Number of states. */
-#define FDO_FILTER_YYNSTATES  124
+#define FDO_FILTER_YYNSTATES  127
 
 /* FDO_FILTER_YYTRANSLATE(FDO_FILTER_YYLEX) -- Bison symbol number corresponding to FDO_FILTER_YYLEX.  */
 #define FDO_FILTER_YYUNDEFTOK  2
-#define FDO_FILTER_YYMAXUTOK   309
+#define FDO_FILTER_YYMAXUTOK   310
 
 #define FDO_FILTER_YYTRANSLATE(FDO_FILTER_YYX) 						\
   ((unsigned int) (FDO_FILTER_YYX) <= FDO_FILTER_YYMAXUTOK ? fdo_filter_yytranslate[FDO_FILTER_YYX] : FDO_FILTER_YYUNDEFTOK)
@@ -331,7 +334,7 @@ static const unsigned char fdo_filter_yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-      56,    57,     2,     2,    55,     2,     2,     2,     2,     2,
+      57,    58,     2,     2,    56,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -357,7 +360,8 @@ static const unsigned char fdo_filter_yytranslate[] =
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
       25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
       35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
-      45,    46,    47,    48,    49,    50,    51,    52,    53,    54
+      45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
+      55
 };
 
 #if FDO_FILTER_YYDEBUG
@@ -368,54 +372,56 @@ static const unsigned char fdo_filter_yyprhs[] =
        0,     0,     3,     5,     9,    11,    15,    17,    19,    21,
       23,    25,    29,    33,    37,    41,    43,    45,    47,    49,
       51,    53,    55,    57,    59,    61,    63,    65,    67,    69,
-      74,    75,    77,    81,    86,    88,    90,    94,   100,   102,
-     104,   106,   108,   110,   113,   116,   120,   122,   124,   126,
-     128,   130,   132,   134,   138,   144,   147,   149,   151,   153,
-     155,   159,   162,   166,   170,   174,   179,   181,   183,   185,
+      71,    73,    78,    79,    81,    85,    90,    92,    94,    98,
+     104,   106,   108,   110,   112,   114,   117,   120,   124,   126,
+     128,   130,   132,   134,   136,   138,   142,   148,   151,   153,
+     155,   157,   159,   163,   166,   170,   174,   178,   183,   185,
      187,   189,   191,   193,   195,   197,   199,   201,   203,   205,
-     207,   209,   211,   213,   215,   217,   219,   221
+     207,   209,   211,   213,   215,   217,   219,   221,   223,   225,
+     227
 };
 
 /* FDO_FILTER_YYRHS -- A `-1'-separated list of the rules' RHS. */
 static const fdo_filter_yysigned_char fdo_filter_yyrhs[] =
 {
-      59,     0,    -1,    78,    -1,    72,    55,    78,    -1,     1,
-      -1,    56,    60,    57,    -1,    77,    -1,    61,    -1,    68,
-      -1,    71,    -1,    74,    -1,    60,    37,    60,    -1,    60,
-      38,    60,    -1,    60,    39,    60,    -1,    60,    40,    60,
-      -1,    63,    -1,    67,    -1,    66,    -1,    65,    -1,    64,
-      -1,    35,    -1,    36,    -1,     3,    -1,     4,    -1,     5,
-      -1,    31,    -1,    32,    -1,    33,    -1,    34,    -1,    71,
-      56,    69,    57,    -1,    -1,    60,    -1,    69,    55,    60,
-      -1,     9,    56,    31,    57,    -1,    29,    -1,    73,    -1,
-      72,    55,    73,    -1,    56,    60,    57,    53,    71,    -1,
-      75,    -1,    76,    -1,    70,    -1,    62,    -1,    30,    -1,
-      52,    31,    -1,    41,    60,    -1,    56,    78,    57,    -1,
-      79,    -1,    84,    -1,    87,    -1,    86,    -1,    89,    -1,
-      85,    -1,    74,    -1,    81,    55,    74,    -1,    71,    14,
-      56,    81,    57,    -1,    71,     3,    -1,    82,    -1,    88,
-      -1,    80,    -1,    83,    -1,    71,    92,    60,    -1,    12,
-      78,    -1,    78,    10,    78,    -1,    78,    11,    78,    -1,
-      60,    90,    60,    -1,    71,    91,    60,    93,    -1,    42,
-      -1,    43,    -1,    44,    -1,    45,    -1,    46,    -1,    47,
-      -1,    13,    -1,    15,    -1,    16,    -1,    17,    -1,    19,
-      -1,    20,    -1,    22,    -1,    24,    -1,    23,    -1,    25,
-      -1,    26,    -1,    27,    -1,    18,    -1,    21,    -1,    66,
-      -1,    32,    -1
+      60,     0,    -1,    80,    -1,    74,    56,    80,    -1,     1,
+      -1,    57,    61,    58,    -1,    79,    -1,    62,    -1,    70,
+      -1,    73,    -1,    76,    -1,    61,    38,    61,    -1,    61,
+      39,    61,    -1,    61,    40,    61,    -1,    61,    41,    61,
+      -1,    64,    -1,    69,    -1,    68,    -1,    66,    -1,    67,
+      -1,    65,    -1,    36,    -1,    37,    -1,     3,    -1,     4,
+      -1,     5,    -1,    31,    -1,    32,    -1,    33,    -1,    34,
+      -1,    35,    -1,    73,    57,    71,    58,    -1,    -1,    61,
+      -1,    71,    56,    61,    -1,     9,    57,    31,    58,    -1,
+      29,    -1,    75,    -1,    74,    56,    75,    -1,    57,    61,
+      58,    54,    73,    -1,    77,    -1,    78,    -1,    72,    -1,
+      63,    -1,    30,    -1,    53,    31,    -1,    42,    61,    -1,
+      57,    80,    58,    -1,    81,    -1,    86,    -1,    89,    -1,
+      88,    -1,    91,    -1,    87,    -1,    76,    -1,    83,    56,
+      76,    -1,    73,    14,    57,    83,    58,    -1,    73,     3,
+      -1,    84,    -1,    90,    -1,    82,    -1,    85,    -1,    73,
+      94,    61,    -1,    12,    80,    -1,    80,    10,    80,    -1,
+      80,    11,    80,    -1,    61,    92,    61,    -1,    73,    93,
+      61,    95,    -1,    43,    -1,    44,    -1,    45,    -1,    46,
+      -1,    47,    -1,    48,    -1,    13,    -1,    15,    -1,    16,
+      -1,    17,    -1,    19,    -1,    20,    -1,    22,    -1,    24,
+      -1,    23,    -1,    25,    -1,    26,    -1,    27,    -1,    18,
+      -1,    21,    -1,    68,    -1,    32,    -1,    33,    -1
 };
 
 /* FDO_FILTER_YYRLINE[FDO_FILTER_YYN] -- source line where rule number FDO_FILTER_YYN was defined.  */
 static const unsigned short fdo_filter_yyrline[] =
 {
-       0,   120,   120,   121,   122,   128,   129,   130,   131,   132,
-     133,   137,   138,   139,   140,   144,   147,   149,   151,   153,
-     155,   157,   159,   164,   165,   168,   171,   174,   177,   181,
-     185,   186,   187,   191,   196,   207,   208,   212,   222,   223,
-     227,   228,   232,   234,   239,   244,   245,   246,   250,   251,
-     255,   256,   260,   261,   266,   271,   275,   276,   277,   278,
-     282,   287,   291,   292,   296,   300,   305,   306,   307,   308,
-     309,   310,   311,   315,   316,   320,   321,   322,   323,   324,
-     325,   326,   327,   328,   329,   330,   334,   335
+       0,   122,   122,   123,   124,   130,   131,   132,   133,   134,
+     135,   139,   140,   141,   142,   146,   149,   151,   153,   155,
+     157,   159,   161,   163,   168,   169,   172,   175,   178,   181,
+     184,   188,   192,   193,   194,   198,   203,   214,   215,   219,
+     229,   230,   234,   235,   239,   241,   246,   251,   252,   253,
+     257,   258,   262,   263,   267,   268,   273,   278,   282,   283,
+     284,   285,   289,   294,   298,   299,   303,   307,   312,   313,
+     314,   315,   316,   317,   318,   322,   323,   327,   328,   329,
+     330,   331,   332,   333,   334,   335,   336,   337,   341,   342,
+     343
 };
 #endif
 
@@ -434,16 +440,16 @@ static const char *const fdo_filter_yytname[] =
   "FdoToken_INSIDE", "FdoToken_OVERLAPS", "FdoToken_TOUCHES", 
   "FdoToken_WITHIN", "FdoToken_RELATE", "FdoToken_IDENTIFIER", 
   "FdoToken_PARAMETER", "FdoToken_STRING", "FdoToken_INTEGER", 
-  "FdoToken_DOUBLE", "FdoToken_DATETIME", "FdoToken_BLOB", 
-  "FdoToken_CLOB", "FdoToken_Add", "FdoToken_Subtract", 
+  "FdoToken_INT64", "FdoToken_DOUBLE", "FdoToken_DATETIME", 
+  "FdoToken_BLOB", "FdoToken_CLOB", "FdoToken_Add", "FdoToken_Subtract", 
   "FdoToken_Multiply", "FdoToken_Divide", "FdoToken_Negate", 
   "FdoToken_EQ", "FdoToken_NE", "FdoToken_GT", "FdoToken_GE", 
   "FdoToken_LT", "FdoToken_LE", "FdoToken_LeftParenthesis", 
   "FdoToken_RightParenthesis", "FdoToken_Comma", "FdoToken_Dot", 
   "FdoToken_Colon", "FdoToken_AS", "FdoToken_BETWEEN", "','", "'('", 
   "')'", "$accept", "fdo", "Expression", "BinaryExpression", "DataValue", 
-  "boolean", "string", "integer", "double", "datetime", "Function", 
-  "ExpressionCollection", "GeometryValue", "Identifier", 
+  "boolean", "string", "integer", "int64", "double", "datetime", 
+  "Function", "ExpressionCollection", "GeometryValue", "Identifier", 
   "ComputedIdentifier", "ComputedIdentifier2", "ValueExpression", 
   "LiteralValue", "Parameter", "UnaryExpression", "Filter", 
   "LogicalOperator", "GeometricCondition", "ValueExpressionCollection", 
@@ -464,22 +470,23 @@ static const unsigned short fdo_filter_yytoknum[] =
      275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
      285,   286,   287,   288,   289,   290,   291,   292,   293,   294,
      295,   296,   297,   298,   299,   300,   301,   302,   303,   304,
-     305,   306,   307,   308,   309,    44,    40,    41
+     305,   306,   307,   308,   309,   310,    44,    40,    41
 };
 # endif
 
 /* FDO_FILTER_YYR1[FDO_FILTER_YYN] -- Symbol number of symbol that rule FDO_FILTER_YYN derives.  */
 static const unsigned char fdo_filter_yyr1[] =
 {
-       0,    58,    59,    59,    59,    60,    60,    60,    60,    60,
-      60,    61,    61,    61,    61,    62,    62,    62,    62,    62,
-      62,    62,    62,    63,    63,    64,    65,    66,    67,    68,
-      69,    69,    69,    70,    71,    72,    72,    73,    74,    74,
-      75,    75,    76,    76,    77,    78,    78,    78,    79,    79,
-      80,    80,    81,    81,    82,    83,    84,    84,    84,    84,
-      85,    86,    87,    87,    88,    89,    90,    90,    90,    90,
-      90,    90,    90,    91,    91,    92,    92,    92,    92,    92,
-      92,    92,    92,    92,    92,    92,    93,    93
+       0,    59,    60,    60,    60,    61,    61,    61,    61,    61,
+      61,    62,    62,    62,    62,    63,    63,    63,    63,    63,
+      63,    63,    63,    63,    64,    64,    65,    66,    67,    68,
+      69,    70,    71,    71,    71,    72,    73,    74,    74,    75,
+      76,    76,    77,    77,    78,    78,    79,    80,    80,    80,
+      81,    81,    82,    82,    83,    83,    84,    85,    86,    86,
+      86,    86,    87,    88,    89,    89,    90,    91,    92,    92,
+      92,    92,    92,    92,    92,    93,    93,    94,    94,    94,
+      94,    94,    94,    94,    94,    94,    94,    94,    95,    95,
+      95
 };
 
 /* FDO_FILTER_YYR2[FDO_FILTER_YYN] -- Number of symbols composing right hand side of rule FDO_FILTER_YYN.  */
@@ -487,13 +494,14 @@ static const unsigned char fdo_filter_yyr2[] =
 {
        0,     2,     1,     3,     1,     3,     1,     1,     1,     1,
        1,     3,     3,     3,     3,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     4,
-       0,     1,     3,     4,     1,     1,     3,     5,     1,     1,
-       1,     1,     1,     2,     2,     3,     1,     1,     1,     1,
-       1,     1,     1,     3,     5,     2,     1,     1,     1,     1,
-       3,     2,     3,     3,     3,     4,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1
+       1,     4,     0,     1,     3,     4,     1,     1,     3,     5,
+       1,     1,     1,     1,     1,     2,     2,     3,     1,     1,
+       1,     1,     1,     1,     1,     3,     5,     2,     1,     1,
+       1,     1,     3,     2,     3,     3,     3,     4,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1
 };
 
 /* FDO_FILTER_YYDEFACT[STATE-NAME] -- Default rule to reduce with in state
@@ -501,57 +509,57 @@ static const unsigned char fdo_filter_yyr2[] =
    means the default is an error.  */
 static const unsigned char fdo_filter_yydefact[] =
 {
-       0,     4,    22,    23,    24,     0,     0,    34,    42,    25,
-      26,    27,    28,    20,    21,     0,     0,     0,     0,     0,
-       7,    41,    15,    19,    18,    17,    16,     8,    40,     9,
-       0,    35,    10,    38,    39,     6,     2,    46,    58,    56,
-      59,    47,    51,    49,    48,    57,    50,     0,     0,    61,
-       0,    44,     9,    43,     0,     0,     1,    72,     0,     0,
-       0,     0,    66,    67,    68,    69,    70,    71,     0,    55,
-       0,    73,    74,    75,    84,    76,    77,    85,    78,    80,
-      79,    81,    82,    83,    30,     0,     0,     0,     0,     0,
-       0,     0,     0,     5,    45,    11,    12,    13,    14,    64,
-       0,    31,     0,     0,    60,    36,     3,    62,    63,    33,
-       5,     0,    52,     0,     0,    29,    87,    86,    65,    37,
-       0,    54,    32,    53
+       0,     4,    23,    24,    25,     0,     0,    36,    44,    26,
+      27,    28,    29,    30,    21,    22,     0,     0,     0,     0,
+       0,     7,    43,    15,    20,    18,    19,    17,    16,     8,
+      42,     9,     0,    37,    10,    40,    41,     6,     2,    48,
+      60,    58,    61,    49,    53,    51,    50,    59,    52,     0,
+       0,    63,     0,    46,     9,    45,     0,     0,     1,    74,
+       0,     0,     0,     0,    68,    69,    70,    71,    72,    73,
+       0,    57,     0,    75,    76,    77,    86,    78,    79,    87,
+      80,    82,    81,    83,    84,    85,    32,     0,     0,     0,
+       0,     0,     0,     0,     0,     5,    47,    11,    12,    13,
+      14,    66,     0,    33,     0,     0,    62,    38,     3,    64,
+      65,    35,     5,     0,    54,     0,     0,    31,    89,    90,
+      88,    67,    39,     0,    56,    34,    55
 };
 
 /* FDO_FILTER_YYDEFGOTO[NTERM-NUM]. */
 static const fdo_filter_yysigned_char fdo_filter_yydefgoto[] =
 {
-      -1,    18,    19,    20,    21,    22,    23,    24,    25,    26,
-      27,   102,    28,    52,    30,    31,    32,    33,    34,    35,
-      55,    37,    38,   113,    39,    40,    41,    42,    43,    44,
-      45,    46,    68,    85,    86,   118
+      -1,    19,    20,    21,    22,    23,    24,    25,    26,    27,
+      28,    29,   104,    30,    54,    32,    33,    34,    35,    36,
+      37,    57,    39,    40,   115,    41,    42,    43,    44,    45,
+      46,    47,    48,    70,    87,    88,   121
 };
 
 /* FDO_FILTER_YYPACT[STATE-NUM] -- Index in FDO_FILTER_YYTABLE of the portion describing
    STATE-NUM.  */
-#define FDO_FILTER_YYPACT_NINF -99
+#define FDO_FILTER_YYPACT_NINF -101
 static const short fdo_filter_yypact[] =
 {
-      26,   -99,   -99,   -99,   -99,   -48,    72,   -99,   -99,   -99,
-     -99,   -99,   -99,   -99,   -99,   156,   -15,    72,    25,   237,
-     -99,   -99,   -99,   -99,   -99,   -99,   -99,   -99,   -99,   115,
-     -29,   -99,   -99,   -99,   -99,   -99,    10,   -99,   -99,   -99,
-     -99,   -99,   -99,   -99,   -99,   -99,   -99,    -3,    72,   -99,
-     156,   -99,   -23,   -99,   198,     8,   -99,   -99,   156,   156,
-     156,   156,   -99,   -99,   -99,   -99,   -99,   -99,   156,   -99,
-     -19,   -99,   -99,   -99,   -99,   -99,   -99,   -99,   -99,   -99,
-     -99,   -99,   -99,   -99,   156,   156,   156,   143,    72,    72,
-      -8,   221,   -25,   -10,   -99,   -16,   -16,   -99,   -99,     2,
-     197,     2,   -50,    77,     2,   -99,    10,   -99,    40,   -99,
-     -99,    22,   -99,   -46,   156,   -99,   -99,   -99,   -99,   -99,
-     197,   -99,     2,   -99
+      27,  -101,  -101,  -101,  -101,   -49,    73,  -101,  -101,  -101,
+    -101,  -101,  -101,  -101,  -101,  -101,   148,   -19,    73,    17,
+     255,  -101,  -101,  -101,  -101,  -101,  -101,  -101,  -101,  -101,
+    -101,   192,   -27,  -101,  -101,  -101,  -101,  -101,    11,  -101,
+    -101,  -101,  -101,  -101,  -101,  -101,  -101,  -101,  -101,     3,
+      73,  -101,   148,  -101,   -17,  -101,   218,     9,  -101,  -101,
+     148,   148,   148,   148,  -101,  -101,  -101,  -101,  -101,  -101,
+     148,  -101,   -13,  -101,  -101,  -101,  -101,  -101,  -101,  -101,
+    -101,  -101,  -101,  -101,  -101,  -101,   148,   148,   148,   113,
+      73,    73,   -20,   234,   -25,   -11,  -101,     1,     1,  -101,
+    -101,   -14,   193,   -14,   -51,    95,   -14,  -101,    11,  -101,
+      39,  -101,  -101,    22,  -101,   -47,   148,  -101,  -101,  -101,
+    -101,  -101,  -101,   193,  -101,   -14,  -101
 };
 
 /* FDO_FILTER_YYPGOTO[NTERM-NUM].  */
 static const fdo_filter_yysigned_char fdo_filter_yypgoto[] =
 {
-     -99,   -99,   -14,   -99,   -99,   -99,   -99,   -99,   -51,   -99,
-     -99,   -99,   -99,     0,   -99,   -34,   -98,   -99,   -99,   -99,
-       4,   -99,   -99,   -99,   -99,   -99,   -99,   -99,   -99,   -99,
-     -99,   -99,   -99,   -99,   -99,   -99
+    -101,  -101,   -15,  -101,  -101,  -101,  -101,  -101,  -101,   -53,
+    -101,  -101,  -101,  -101,     0,  -101,   -36,  -100,  -101,  -101,
+    -101,     4,  -101,  -101,  -101,  -101,  -101,  -101,  -101,  -101,
+    -101,  -101,  -101,  -101,  -101,  -101,  -101
 };
 
 /* FDO_FILTER_YYTABLE[FDO_FILTER_YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -561,68 +569,72 @@ static const fdo_filter_yysigned_char fdo_filter_yypgoto[] =
 #define FDO_FILTER_YYTABLE_NINF -1
 static const unsigned char fdo_filter_yytable[] =
 {
-      29,    51,   112,    54,    36,   114,    29,   115,    47,   120,
-      49,   121,    58,    59,    60,    61,    53,    29,    88,    89,
-      88,    89,   123,    60,    61,    56,    87,     1,    90,     2,
-       3,     4,   110,    84,    91,     5,    92,   100,     6,    58,
-      59,    60,    61,   111,    95,    96,    97,    98,    29,   109,
-      88,     7,   117,   105,    99,     7,     8,     9,    10,    11,
-      12,    13,    14,     0,     0,    94,     0,    15,     0,     0,
-     101,   103,   104,     0,     0,     2,     3,     4,    16,     0,
-       0,     5,    17,     0,     6,     0,     0,    29,    29,    29,
-       0,   106,   107,   108,     0,     0,     0,     0,     0,     0,
-     122,     7,     8,     9,    10,    11,    12,    13,    14,   116,
-      11,   119,     0,    15,    58,    59,    60,    61,    69,     0,
-       0,     0,     0,     0,    16,     0,     0,     0,    48,    70,
-      71,    72,    73,    74,    75,    76,    77,    78,    79,    80,
-      81,    82,    83,     0,     0,     0,     2,     3,     4,     0,
-       0,     0,     5,     0,     0,     6,     0,     0,     0,     2,
-       3,     4,     0,     0,     0,     5,     0,     0,     0,     0,
-       0,    84,     7,     8,     9,    10,    11,    12,    13,    14,
-       0,     0,     0,     0,    15,     7,     8,     9,    10,    11,
-      12,    13,    14,     0,     0,    16,     0,    15,     0,    17,
-       2,     3,     4,     0,     0,     0,     5,     0,    16,     0,
-       0,    57,    50,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     8,     9,    10,
-      11,    12,    13,    14,    57,    58,    59,    60,    61,     0,
-      62,    63,    64,    65,    66,    67,     0,     0,     0,    16,
-      57,     0,     0,     0,     0,    93,     0,     0,    58,    59,
-      60,    61,     0,    62,    63,    64,    65,    66,    67,     0,
-       0,     0,     0,     0,    58,    59,    60,    61,   110,    62,
-      63,    64,    65,    66,    67
+      31,    53,   114,    56,    38,   116,    31,   117,    49,   123,
+      51,   124,    55,    60,    61,    62,    63,    58,    31,    90,
+      91,    90,    91,   126,    60,    61,    62,    63,     1,    89,
+       2,     3,     4,   112,    92,    93,     5,    94,   111,     6,
+      86,    62,    63,   113,   102,    97,    98,    99,   100,    90,
+      31,     7,   120,   107,     0,   101,     7,     8,     9,    10,
+      11,    12,    13,    14,    15,     0,     0,    96,     0,    16,
+       0,   103,   105,   106,     0,     0,     2,     3,     4,     0,
+      17,     0,     5,     0,    18,     6,     0,     0,     0,    31,
+      31,    31,     0,   108,   109,   110,     0,     0,     0,     0,
+       0,   125,     7,     8,     9,    10,    11,    12,    13,    14,
+      15,     0,     0,   122,     0,    16,     2,     3,     4,     0,
+       0,     0,     5,     0,     0,     6,    17,   118,   119,    12,
+      50,     0,     0,    60,    61,    62,    63,     0,     0,     0,
+       0,     0,     7,     8,     9,    10,    11,    12,    13,    14,
+      15,     2,     3,     4,     0,    16,     0,     5,     0,     0,
+       0,     0,     0,     0,     0,     0,    17,     0,     0,     0,
+      18,     0,     0,     0,     0,     0,     0,     7,     8,     9,
+      10,    11,    12,    13,    14,    15,     0,     0,     0,     0,
+      16,     0,     0,     0,     0,    71,     2,     3,     4,     0,
+       0,    17,     5,     0,     0,    52,    72,    73,    74,    75,
+      76,    77,    78,    79,    80,    81,    82,    83,    84,    85,
+       0,     0,     0,     8,     9,    10,    11,    12,    13,    14,
+      15,    59,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,    17,    59,     0,    86,
+       0,     0,     0,     0,     0,     0,    60,    61,    62,    63,
+       0,    64,    65,    66,    67,    68,    69,     0,    59,     0,
+       0,     0,    60,    61,    62,    63,    95,    64,    65,    66,
+      67,    68,    69,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,   112,    60,    61,    62,    63,     0,    64,    65,
+      66,    67,    68,    69
 };
 
 static const fdo_filter_yysigned_char fdo_filter_yycheck[] =
 {
-       0,    15,   100,    17,     0,    55,     6,    57,    56,    55,
-       6,    57,    37,    38,    39,    40,    31,    17,    10,    11,
-      10,    11,   120,    39,    40,     0,    55,     1,    31,     3,
-       4,     5,    57,    56,    48,     9,    50,    56,    12,    37,
-      38,    39,    40,    53,    58,    59,    60,    61,    48,    57,
-      10,    29,   103,    87,    68,    29,    30,    31,    32,    33,
-      34,    35,    36,    -1,    -1,    57,    -1,    41,    -1,    -1,
-      84,    85,    86,    -1,    -1,     3,     4,     5,    52,    -1,
-      -1,     9,    56,    -1,    12,    -1,    -1,    87,    88,    89,
-      -1,    87,    88,    89,    -1,    -1,    -1,    -1,    -1,    -1,
-     114,    29,    30,    31,    32,    33,    34,    35,    36,    32,
-      33,   111,    -1,    41,    37,    38,    39,    40,     3,    -1,
-      -1,    -1,    -1,    -1,    52,    -1,    -1,    -1,    56,    14,
-      15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
-      25,    26,    27,    -1,    -1,    -1,     3,     4,     5,    -1,
-      -1,    -1,     9,    -1,    -1,    12,    -1,    -1,    -1,     3,
-       4,     5,    -1,    -1,    -1,     9,    -1,    -1,    -1,    -1,
-      -1,    56,    29,    30,    31,    32,    33,    34,    35,    36,
-      -1,    -1,    -1,    -1,    41,    29,    30,    31,    32,    33,
-      34,    35,    36,    -1,    -1,    52,    -1,    41,    -1,    56,
-       3,     4,     5,    -1,    -1,    -1,     9,    -1,    52,    -1,
-      -1,    13,    56,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    30,    31,    32,
-      33,    34,    35,    36,    13,    37,    38,    39,    40,    -1,
-      42,    43,    44,    45,    46,    47,    -1,    -1,    -1,    52,
-      13,    -1,    -1,    -1,    -1,    57,    -1,    -1,    37,    38,
-      39,    40,    -1,    42,    43,    44,    45,    46,    47,    -1,
-      -1,    -1,    -1,    -1,    37,    38,    39,    40,    57,    42,
-      43,    44,    45,    46,    47
+       0,    16,   102,    18,     0,    56,     6,    58,    57,    56,
+       6,    58,    31,    38,    39,    40,    41,     0,    18,    10,
+      11,    10,    11,   123,    38,    39,    40,    41,     1,    56,
+       3,     4,     5,    58,    31,    50,     9,    52,    58,    12,
+      57,    40,    41,    54,    57,    60,    61,    62,    63,    10,
+      50,    29,   105,    89,    -1,    70,    29,    30,    31,    32,
+      33,    34,    35,    36,    37,    -1,    -1,    58,    -1,    42,
+      -1,    86,    87,    88,    -1,    -1,     3,     4,     5,    -1,
+      53,    -1,     9,    -1,    57,    12,    -1,    -1,    -1,    89,
+      90,    91,    -1,    89,    90,    91,    -1,    -1,    -1,    -1,
+      -1,   116,    29,    30,    31,    32,    33,    34,    35,    36,
+      37,    -1,    -1,   113,    -1,    42,     3,     4,     5,    -1,
+      -1,    -1,     9,    -1,    -1,    12,    53,    32,    33,    34,
+      57,    -1,    -1,    38,    39,    40,    41,    -1,    -1,    -1,
+      -1,    -1,    29,    30,    31,    32,    33,    34,    35,    36,
+      37,     3,     4,     5,    -1,    42,    -1,     9,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    53,    -1,    -1,    -1,
+      57,    -1,    -1,    -1,    -1,    -1,    -1,    29,    30,    31,
+      32,    33,    34,    35,    36,    37,    -1,    -1,    -1,    -1,
+      42,    -1,    -1,    -1,    -1,     3,     3,     4,     5,    -1,
+      -1,    53,     9,    -1,    -1,    57,    14,    15,    16,    17,
+      18,    19,    20,    21,    22,    23,    24,    25,    26,    27,
+      -1,    -1,    -1,    30,    31,    32,    33,    34,    35,    36,
+      37,    13,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    53,    13,    -1,    57,
+      -1,    -1,    -1,    -1,    -1,    -1,    38,    39,    40,    41,
+      -1,    43,    44,    45,    46,    47,    48,    -1,    13,    -1,
+      -1,    -1,    38,    39,    40,    41,    58,    43,    44,    45,
+      46,    47,    48,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    58,    38,    39,    40,    41,    -1,    43,    44,
+      45,    46,    47,    48
 };
 
 /* FDO_FILTER_YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -630,18 +642,18 @@ static const fdo_filter_yysigned_char fdo_filter_yycheck[] =
 static const unsigned char fdo_filter_yystos[] =
 {
        0,     1,     3,     4,     5,     9,    12,    29,    30,    31,
-      32,    33,    34,    35,    36,    41,    52,    56,    59,    60,
-      61,    62,    63,    64,    65,    66,    67,    68,    70,    71,
-      72,    73,    74,    75,    76,    77,    78,    79,    80,    82,
-      83,    84,    85,    86,    87,    88,    89,    56,    56,    78,
-      56,    60,    71,    31,    60,    78,     0,    13,    37,    38,
-      39,    40,    42,    43,    44,    45,    46,    47,    90,     3,
-      14,    15,    16,    17,    18,    19,    20,    21,    22,    23,
-      24,    25,    26,    27,    56,    91,    92,    55,    10,    11,
-      31,    60,    60,    57,    57,    60,    60,    60,    60,    60,
-      56,    60,    69,    60,    60,    73,    78,    78,    78,    57,
-      57,    53,    74,    81,    55,    57,    32,    66,    93,    71,
-      55,    57,    60,    74
+      32,    33,    34,    35,    36,    37,    42,    53,    57,    60,
+      61,    62,    63,    64,    65,    66,    67,    68,    69,    70,
+      72,    73,    74,    75,    76,    77,    78,    79,    80,    81,
+      82,    84,    85,    86,    87,    88,    89,    90,    91,    57,
+      57,    80,    57,    61,    73,    31,    61,    80,     0,    13,
+      38,    39,    40,    41,    43,    44,    45,    46,    47,    48,
+      92,     3,    14,    15,    16,    17,    18,    19,    20,    21,
+      22,    23,    24,    25,    26,    27,    57,    93,    94,    56,
+      10,    11,    31,    61,    61,    58,    58,    61,    61,    61,
+      61,    61,    57,    61,    71,    61,    61,    75,    80,    80,
+      80,    58,    58,    54,    76,    83,    56,    58,    32,    33,
+      68,    95,    73,    56,    58,    61,    76
 };
 
 #if ! defined (FDO_FILTER_YYSIZE_T) && defined (__SIZE_TYPE__)
@@ -1328,80 +1340,90 @@ fdo_filter_yyreduce:
 
   case 19:
 
-    {pParse->fdo_filter_yyval.m_node=Node_Copy(L"string", pParse->fdo_filter_yyvsp[0].m_node);}
+    {pParse->fdo_filter_yyval.m_node=Node_Copy(L"int64", pParse->fdo_filter_yyvsp[0].m_node);}
     break;
 
   case 20:
 
-    {pParse->fdo_filter_yyval.m_node=Node_Copy(L"TODO:BLOB", NULL);}
+    {pParse->fdo_filter_yyval.m_node=Node_Copy(L"string", pParse->fdo_filter_yyvsp[0].m_node);}
     break;
 
   case 21:
 
-    {pParse->fdo_filter_yyval.m_node=Node_Copy(L"TODO:CLOB", NULL);}
+    {pParse->fdo_filter_yyval.m_node=Node_Copy(L"TODO:BLOB", NULL);}
     break;
 
   case 22:
 
-    {pParse->fdo_filter_yyval.m_node=Node_Add(L"NULL", FdoDataValue::Create(FdoDataType_Boolean));}
+    {pParse->fdo_filter_yyval.m_node=Node_Copy(L"TODO:CLOB", NULL);}
     break;
 
   case 23:
 
-    {pParse->fdo_filter_yyval.m_node=Node_Add(L"TRUE", FdoBooleanValue::Create(true));}
+    {pParse->fdo_filter_yyval.m_node=Node_Add(L"NULL", FdoDataValue::Create(FdoDataType_Boolean));}
     break;
 
   case 24:
 
-    {pParse->fdo_filter_yyval.m_node=Node_Add(L"FALSE", FdoBooleanValue::Create(false));}
+    {pParse->fdo_filter_yyval.m_node=Node_Add(L"TRUE", FdoBooleanValue::Create(true));}
     break;
 
   case 25:
 
-    {pParse->fdo_filter_yyval.m_node=Node_Add(L"STRING", FdoDataValue::Create(pParse->fdo_filter_yyvsp[0].m_string));}
+    {pParse->fdo_filter_yyval.m_node=Node_Add(L"FALSE", FdoBooleanValue::Create(false));}
     break;
 
   case 26:
 
-    {pParse->fdo_filter_yyval.m_node=Node_Add(L"INTEGER", FdoInt32Value::Create(pParse->fdo_filter_yyvsp[0].m_integer));}
+    {pParse->fdo_filter_yyval.m_node=Node_Add(L"STRING", FdoDataValue::Create(pParse->fdo_filter_yyvsp[0].m_string));}
     break;
 
   case 27:
 
-    {pParse->fdo_filter_yyval.m_node=Node_Add(L"DOUBLE", FdoDoubleValue::Create(pParse->fdo_filter_yyvsp[0].m_double));}
+    {pParse->fdo_filter_yyval.m_node=Node_Add(L"INTEGER", FdoInt32Value::Create(pParse->fdo_filter_yyvsp[0].m_integer));}
     break;
 
   case 28:
 
-    {pParse->fdo_filter_yyval.m_node=Node_Add(L"DateTime", FdoDataValue::Create(pParse->fdo_filter_yyvsp[0].m_datetime));}
+    {pParse->fdo_filter_yyval.m_node=Node_Add(L"INT64", FdoInt64Value::Create(pParse->fdo_filter_yyvsp[0].m_int64));}
     break;
 
   case 29:
 
-    {pParse->fdo_filter_yyval.m_node=Node_Add(L"ExpressionCollection", FdoFunction::Create(((FdoIdentifier*)pParse->fdo_filter_yyvsp[-3].m_node)->GetName(), (FdoExpressionCollection*)pParse->fdo_filter_yyvsp[-1].m_node));FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[-3].m_node); FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[-1].m_node);}
+    {pParse->fdo_filter_yyval.m_node=Node_Add(L"DOUBLE", FdoDoubleValue::Create(pParse->fdo_filter_yyvsp[0].m_double));}
     break;
 
   case 30:
 
-    {pParse->fdo_filter_yyval.m_node=pParse->AddNodeToDelete(FdoExpressionCollection::Create());}
+    {pParse->fdo_filter_yyval.m_node=Node_Add(L"DateTime", FdoDataValue::Create(pParse->fdo_filter_yyvsp[0].m_datetime));}
     break;
 
   case 31:
 
-    {pParse->fdo_filter_yyval.m_node=pParse->AddNodeToDelete(FdoExpressionCollection::Create()); ((FdoExpressionCollection*)pParse->fdo_filter_yyval.m_node)->Add((FdoExpression*)pParse->fdo_filter_yyvsp[0].m_node); Node_Trace(L"Expression Arg 1,");FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[0].m_node); }
+    {pParse->fdo_filter_yyval.m_node=Node_Add(L"ExpressionCollection", FdoFunction::Create(((FdoIdentifier*)pParse->fdo_filter_yyvsp[-3].m_node)->GetName(), (FdoExpressionCollection*)pParse->fdo_filter_yyvsp[-1].m_node));FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[-3].m_node); FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[-1].m_node);}
     break;
 
   case 32:
 
-    {((FdoExpressionCollection*)pParse->fdo_filter_yyval.m_node)->Add((FdoExpression*)pParse->fdo_filter_yyvsp[0].m_node); Node_Trace(L"Expression Arg N,");FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[0].m_node); }
+    {pParse->fdo_filter_yyval.m_node=pParse->AddNodeToDelete(FdoExpressionCollection::Create());}
     break;
 
   case 33:
 
-    {pParse->fdo_filter_yyval.m_node=Node_Add(L"GeomFromText('FGFT')", pParse->FgftToGeometryValue(pParse->fdo_filter_yyvsp[-1].m_string));}
+    {pParse->fdo_filter_yyval.m_node=pParse->AddNodeToDelete(FdoExpressionCollection::Create()); ((FdoExpressionCollection*)pParse->fdo_filter_yyval.m_node)->Add((FdoExpression*)pParse->fdo_filter_yyvsp[0].m_node); Node_Trace(L"Expression Arg 1,");FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[0].m_node); }
     break;
 
   case 34:
+
+    {((FdoExpressionCollection*)pParse->fdo_filter_yyval.m_node)->Add((FdoExpression*)pParse->fdo_filter_yyvsp[0].m_node); Node_Trace(L"Expression Arg N,");FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[0].m_node); }
+    break;
+
+  case 35:
+
+    {pParse->fdo_filter_yyval.m_node=Node_Add(L"GeomFromText('FGFT')", pParse->FgftToGeometryValue(pParse->fdo_filter_yyvsp[-1].m_string));}
+    break;
+
+  case 36:
 
     {
 						    FdoComputedIdentifier* id = pParse->FindComputedIdentifier( pParse->fdo_filter_yyvsp[0].m_string );
@@ -1412,17 +1434,17 @@ fdo_filter_yyreduce:
 						}
     break;
 
-  case 35:
-
-    {}
-    break;
-
-  case 36:
-
-    {}
-    break;
-
   case 37:
+
+    {}
+    break;
+
+  case 38:
+
+    {}
+    break;
+
+  case 39:
 
     {
                         FdoComputedIdentifier* id = FdoComputedIdentifier::Create(((FdoIdentifier*)pParse->fdo_filter_yyvsp[0].m_node)->GetName(), (FdoExpression*)pParse->fdo_filter_yyvsp[-3].m_node);
@@ -1432,254 +1454,259 @@ fdo_filter_yyreduce:
                     }
     break;
 
-  case 38:
+  case 40:
 
     {pParse->fdo_filter_yyval.m_node=Node_Copy(L"LiteralValue", pParse->fdo_filter_yyvsp[0].m_node);}
     break;
 
-  case 39:
+  case 41:
 
     {pParse->fdo_filter_yyval.m_node=Node_Copy(L"Parameter", pParse->fdo_filter_yyvsp[0].m_node);}
     break;
 
-  case 40:
+  case 42:
 
     {pParse->fdo_filter_yyval.m_node=Node_Copy(L"GeometryValue", pParse->fdo_filter_yyvsp[0].m_node);}
     break;
 
-  case 41:
+  case 43:
 
     {pParse->fdo_filter_yyval.m_node=Node_Copy(L"DataValue", pParse->fdo_filter_yyvsp[0].m_node);}
     break;
 
-  case 42:
+  case 44:
 
     {pParse->fdo_filter_yyval.m_node = Node_Add(L"PARAMETER", FdoParameter::Create(pParse->fdo_filter_yyvsp[0].m_string));}
     break;
 
-  case 43:
+  case 45:
 
     {pParse->fdo_filter_yyval.m_node = Node_Add(L":Parameter", FdoParameter::Create(pParse->fdo_filter_yyvsp[0].m_string));}
     break;
 
-  case 44:
+  case 46:
 
     {pParse->fdo_filter_yyval.m_node = Node_Add(L"UnaryExpression", FdoUnaryExpression::Create(FdoUnaryOperations_Negate, (FdoExpression*)pParse->fdo_filter_yyvsp[0].m_node));FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[0].m_node);}
     break;
 
-  case 45:
+  case 47:
 
     {pParse->fdo_filter_yyval.m_node=Node_Copy(L"(Filter)", pParse->fdo_filter_yyvsp[-1].m_node);}
     break;
 
-  case 46:
+  case 48:
 
     {pParse->fdo_filter_yyval.m_node=Node_Copy(L"LogicalOperator", pParse->fdo_filter_yyvsp[0].m_node);}
     break;
 
-  case 47:
+  case 49:
 
     {pParse->fdo_filter_yyval.m_node=Node_Copy(L"SearchCondition", pParse->fdo_filter_yyvsp[0].m_node);}
     break;
 
-  case 48:
+  case 50:
 
     {pParse->fdo_filter_yyval.m_node=Node_Copy(L"BinaryLogicalOperator", pParse->fdo_filter_yyvsp[0].m_node);}
     break;
 
-  case 49:
+  case 51:
 
     {pParse->fdo_filter_yyval.m_node=Node_Copy(L"UnaryLogicalOperator", pParse->fdo_filter_yyvsp[0].m_node);}
     break;
 
-  case 50:
+  case 52:
 
     {pParse->fdo_filter_yyval.m_node=Node_Copy(L"DistanceCondition", pParse->fdo_filter_yyvsp[0].m_node);}
     break;
 
-  case 51:
+  case 53:
 
     {pParse->fdo_filter_yyval.m_node=Node_Copy(L"SpatialCondition", pParse->fdo_filter_yyvsp[0].m_node);}
     break;
 
-  case 52:
+  case 54:
 
     {pParse->fdo_filter_yyval.m_node=pParse->AddNodeToDelete(FdoValueExpressionCollection::Create()); ((FdoValueExpressionCollection*)pParse->fdo_filter_yyval.m_node)->Add((FdoValueExpression*)pParse->fdo_filter_yyvsp[0].m_node); Node_Trace(L"ValueExpression 1");FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[0].m_node); }
     break;
 
-  case 53:
+  case 55:
 
     {((FdoValueExpressionCollection*)pParse->fdo_filter_yyval.m_node)->Add((FdoValueExpression*)pParse->fdo_filter_yyvsp[0].m_node); Node_Trace(L"ValueExpression n");FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[0].m_node); }
     break;
 
-  case 54:
+  case 56:
 
     {pParse->fdo_filter_yyval.m_node=Node_Add(L"ValueExpressionCollection", FdoInCondition::Create((FdoIdentifier*)pParse->fdo_filter_yyvsp[-4].m_node, (FdoValueExpressionCollection*)pParse->fdo_filter_yyvsp[-1].m_node));FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[-4].m_node); FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[-1].m_node);}
     break;
 
-  case 55:
+  case 57:
 
     {pParse->fdo_filter_yyval.m_node=Node_Add(L"NULL", FdoNullCondition::Create((FdoIdentifier*)pParse->fdo_filter_yyvsp[-1].m_node));FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[-1].m_node);}
     break;
 
-  case 56:
+  case 58:
 
     {pParse->fdo_filter_yyval.m_node=Node_Copy(L"InCondition", pParse->fdo_filter_yyvsp[0].m_node);}
     break;
 
-  case 57:
+  case 59:
 
     {pParse->fdo_filter_yyval.m_node=Node_Copy(L"ComparisonCondition", pParse->fdo_filter_yyvsp[0].m_node);}
     break;
 
-  case 58:
+  case 60:
 
     {pParse->fdo_filter_yyval.m_node=Node_Copy(L"GeometricCondition", pParse->fdo_filter_yyvsp[0].m_node);}
     break;
 
-  case 59:
+  case 61:
 
     {pParse->fdo_filter_yyval.m_node=Node_Copy(L"NullCondition", pParse->fdo_filter_yyvsp[0].m_node);}
     break;
 
-  case 60:
+  case 62:
 
     {pParse->fdo_filter_yyval.m_node=Node_Add(L"Id-SpatialOp-Expression", FdoSpatialCondition::Create((FdoIdentifier*)pParse->fdo_filter_yyvsp[-2].m_node, (FdoSpatialOperations)pParse->fdo_filter_yyvsp[-1].m_id, (FdoExpression*)pParse->fdo_filter_yyvsp[0].m_node));FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[-2].m_node); FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[0].m_node);}
     break;
 
-  case 61:
+  case 63:
 
     {pParse->fdo_filter_yyval.m_node=Node_Add(L"NOT", FdoUnaryLogicalOperator::Create((FdoFilter*)pParse->fdo_filter_yyvsp[0].m_node, FdoUnaryLogicalOperations_Not));FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[0].m_node);}
     break;
 
-  case 62:
+  case 64:
 
     {pParse->fdo_filter_yyval.m_node=Node_Add(L"AND", FdoBinaryLogicalOperator::Create((FdoFilter*)pParse->fdo_filter_yyvsp[-2].m_node, FdoBinaryLogicalOperations_And, (FdoFilter*)pParse->fdo_filter_yyvsp[0].m_node));FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[-2].m_node); FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[0].m_node);}
     break;
 
-  case 63:
+  case 65:
 
     {pParse->fdo_filter_yyval.m_node=Node_Add(L"OR", FdoBinaryLogicalOperator::Create((FdoFilter*)pParse->fdo_filter_yyvsp[-2].m_node, FdoBinaryLogicalOperations_Or, (FdoFilter*)pParse->fdo_filter_yyvsp[0].m_node));FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[-2].m_node); FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[0].m_node);}
     break;
 
-  case 64:
+  case 66:
 
     {pParse->fdo_filter_yyval.m_node=Node_Add(L"ComparisonOperations", FdoComparisonCondition::Create((FdoExpression*)pParse->fdo_filter_yyvsp[-2].m_node, (FdoComparisonOperations)pParse->fdo_filter_yyvsp[-1].m_id, (FdoExpression*)pParse->fdo_filter_yyvsp[0].m_node));FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[-2].m_node); FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[0].m_node);}
     break;
 
-  case 65:
+  case 67:
 
     {pParse->fdo_filter_yyval.m_node=Node_Add(L"Indentifier-DistanceOp-Expression", FdoDistanceCondition::Create((FdoIdentifier*)pParse->fdo_filter_yyvsp[-3].m_node, (FdoDistanceOperations)pParse->fdo_filter_yyvsp[-2].m_id, (FdoExpression*)pParse->fdo_filter_yyvsp[-1].m_node, ((FdoDoubleValue*)pParse->fdo_filter_yyvsp[0].m_node)->GetDouble()));FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[-3].m_node); FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[-1].m_node);FDO_SAFE_RELEASE(pParse->fdo_filter_yyvsp[0].m_node);}
     break;
 
-  case 66:
+  case 68:
 
     {pParse->fdo_filter_yyval.m_id=FdoComparisonOperations_EqualTo; Node_Trace(L"EQ");}
     break;
 
-  case 67:
+  case 69:
 
     {pParse->fdo_filter_yyval.m_id=FdoComparisonOperations_NotEqualTo; Node_Trace(L"NE");}
     break;
 
-  case 68:
+  case 70:
 
     {pParse->fdo_filter_yyval.m_id=FdoComparisonOperations_GreaterThan; Node_Trace(L"GT");}
     break;
 
-  case 69:
+  case 71:
 
     {pParse->fdo_filter_yyval.m_id=FdoComparisonOperations_GreaterThanOrEqualTo; Node_Trace(L"GE");}
     break;
 
-  case 70:
+  case 72:
 
     {pParse->fdo_filter_yyval.m_id=FdoComparisonOperations_LessThan; Node_Trace(L"LT");}
     break;
 
-  case 71:
+  case 73:
 
     {pParse->fdo_filter_yyval.m_id=FdoComparisonOperations_LessThanOrEqualTo; Node_Trace(L"LE");}
     break;
 
-  case 72:
+  case 74:
 
     {pParse->fdo_filter_yyval.m_id=FdoComparisonOperations_Like; Node_Trace(L"LIKE");}
     break;
 
-  case 73:
+  case 75:
 
     {pParse->fdo_filter_yyval.m_id=FdoDistanceOperations_Beyond; Node_Trace(L"BEYOND");}
     break;
 
-  case 74:
+  case 76:
 
     {pParse->fdo_filter_yyval.m_id=FdoDistanceOperations_Within; Node_Trace(L"WITHINDISTANCE");}
     break;
 
-  case 75:
+  case 77:
 
     {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Contains; Node_Trace(L"CONTAINS");}
     break;
 
-  case 76:
+  case 78:
 
     {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Crosses; Node_Trace(L"CROSSES");}
     break;
 
-  case 77:
+  case 79:
 
     {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Disjoint; Node_Trace(L"DISJOINT");}
     break;
 
-  case 78:
+  case 80:
 
     {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Equals; Node_Trace(L"EQUALS");}
     break;
 
-  case 79:
+  case 81:
 
     {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Inside; Node_Trace(L"INSIDE");}
     break;
 
-  case 80:
+  case 82:
 
     {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Intersects; Node_Trace(L"INTERSECTS");}
     break;
 
-  case 81:
+  case 83:
 
     {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Overlaps; Node_Trace(L"OVERLAPS");}
     break;
 
-  case 82:
+  case 84:
 
     {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Touches; Node_Trace(L"TOUCHES");}
     break;
 
-  case 83:
+  case 85:
 
     {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Within; Node_Trace(L"WITHIN");}
     break;
 
-  case 84:
+  case 86:
 
     {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_CoveredBy; Node_Trace(L"COVEREDBY");}
     break;
 
-  case 85:
+  case 87:
 
     {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_EnvelopeIntersects; Node_Trace(L"ENVELOPEINTERSECTS");}
     break;
 
-  case 86:
+  case 88:
 
     {pParse->fdo_filter_yyval.m_node=Node_Copy(L"double", pParse->fdo_filter_yyvsp[0].m_node);}
     break;
 
-  case 87:
+  case 89:
 
     {pParse->fdo_filter_yyval.m_node=Node_Add(L"INTEGER", FdoDoubleValue::Create((double)pParse->fdo_filter_yyvsp[0].m_integer));}
+    break;
+
+  case 90:
+
+    {pParse->fdo_filter_yyval.m_node=Node_Add(L"INT64", FdoDoubleValue::Create((double)pParse->fdo_filter_yyvsp[0].m_int64));}
     break;
 
 

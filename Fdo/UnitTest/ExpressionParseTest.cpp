@@ -23,6 +23,10 @@
 #include "UnitTestUtil.h"
 #include "malloc.h"  // for alloca()
 
+#ifndef _WIN32
+#   define LLONG_MAX    9223372036854775807LL
+#   define LLONG_MIN    (-LLONG_MAX - 1LL)
+#endif
 
 CPPUNIT_TEST_SUITE_REGISTRATION (ExpressionParseTest);
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION (ExpressionParseTest, "ExpressionParseTest");
@@ -131,12 +135,13 @@ void ExpressionParseTest::testExpressions()
 	ParseExpression(L"a+b*34/12");
 	//ParseExpression(L"“a", L"a");
 	//ParseExpression(L"‘a", L"'a'");
+	ParseExpression(L"12345678901234567");
 #ifdef _WIN32
-	ParseExpression(L"12345678901234567", 
-        L"1.23456789012346e+016");
+	ParseExpression(L"123456789012345678901", 
+        L"1.23456789012346e+020");
 #else
-	ParseExpression(L"12345678901234567", 
-        L"1.23456789012346e+16");
+	ParseExpression(L"123456789012345678901", 
+        L"1.23456789012346e+20");
 #endif
 	ParseExpression(L"1.2e13", 
         L"12000000000000");
@@ -360,3 +365,96 @@ void ExpressionParseTest::testLargeExpressions()
     }
 }
 
+void ExpressionParseTest::testBoundaryValues()
+{
+    try
+    {
+        // Test boundary value in binary expression
+
+        FdoPtr<FdoDataValue> pVal = FdoByteValue::Create(0);
+        FdoPtr<FdoDataValue> pVal2 = roundTripBoundaryValue(pVal);
+        FdoInt32Value* pLVal2 = dynamic_cast<FdoInt32Value*>((FdoDataValue*) pVal2);
+        CPPUNIT_ASSERT(pLVal2 != NULL);   
+        CPPUNIT_ASSERT(pLVal2->GetInt32() == 0);   
+    
+        pVal = FdoByteValue::Create(UCHAR_MAX);
+        pVal2 = roundTripBoundaryValue(pVal);
+        pLVal2 = dynamic_cast<FdoInt32Value*>((FdoDataValue*) pVal2);
+        CPPUNIT_ASSERT(pLVal2 != NULL);   
+        CPPUNIT_ASSERT(pLVal2->GetInt32() == UCHAR_MAX);  
+
+        pVal = FdoInt16Value::Create(SHRT_MIN);
+        pVal2 = roundTripBoundaryValue(pVal);
+        pLVal2 = dynamic_cast<FdoInt32Value*>((FdoDataValue*) pVal2);
+        CPPUNIT_ASSERT(pLVal2 != NULL);   
+        CPPUNIT_ASSERT(pLVal2->GetInt32() == SHRT_MIN);   
+    
+        pVal = FdoInt16Value::Create(SHRT_MAX);
+        pVal2 = roundTripBoundaryValue(pVal);
+        pLVal2 = dynamic_cast<FdoInt32Value*>((FdoDataValue*) pVal2);
+        CPPUNIT_ASSERT(pLVal2 != NULL);   
+        CPPUNIT_ASSERT(pLVal2->GetInt32() == SHRT_MAX);  
+
+        pVal = FdoInt32Value::Create(LONG_MIN);
+        pVal2 = roundTripBoundaryValue(pVal);
+        pLVal2 = dynamic_cast<FdoInt32Value*>((FdoDataValue*) pVal2);
+        CPPUNIT_ASSERT(pLVal2 != NULL);   
+        CPPUNIT_ASSERT(pLVal2->GetInt32() == LONG_MIN);   
+    
+        pVal = FdoInt32Value::Create(LONG_MAX);
+        pVal2 = roundTripBoundaryValue(pVal);
+        pLVal2 = dynamic_cast<FdoInt32Value*>((FdoDataValue*) pVal2);
+        CPPUNIT_ASSERT(pLVal2 != NULL);   
+        CPPUNIT_ASSERT(pLVal2->GetInt32() == LONG_MAX);  
+
+        pVal = FdoInt64Value::Create(LLONG_MIN);
+        pVal2 = roundTripBoundaryValue(pVal);
+        FdoInt64Value* pLLVal2 = dynamic_cast<FdoInt64Value*>((FdoDataValue*) pVal2);
+        CPPUNIT_ASSERT(pLLVal2 != NULL);  
+        CPPUNIT_ASSERT(pLLVal2->GetInt64() == LLONG_MIN);   
+
+        pVal = FdoInt64Value::Create(LLONG_MAX);
+        pVal2 = roundTripBoundaryValue(pVal);
+        pLLVal2 = dynamic_cast<FdoInt64Value*>((FdoDataValue*) pVal2);
+        CPPUNIT_ASSERT(pLLVal2 != NULL);   
+        CPPUNIT_ASSERT(pLLVal2->GetInt64() == LLONG_MAX);   
+
+        pVal = FdoInt64Value::Create(LONG_MIN);
+        pVal2 = roundTripBoundaryValue(pVal);
+        pLVal2 = dynamic_cast<FdoInt32Value*>((FdoDataValue*) pVal2);
+        CPPUNIT_ASSERT(pLVal2 != NULL);   
+        CPPUNIT_ASSERT(pLVal2->GetInt32() == LONG_MIN);   
+    
+        pVal = FdoInt64Value::Create(LONG_MAX);
+        pVal2 = roundTripBoundaryValue(pVal);
+        pLVal2 = dynamic_cast<FdoInt32Value*>((FdoDataValue*) pVal2);
+        CPPUNIT_ASSERT(pLVal2 != NULL);   
+        CPPUNIT_ASSERT(pLVal2->GetInt32() == LONG_MAX);   
+    }
+    catch (FdoException *e)
+    {
+        UnitTestUtil::FailOnException( e );
+    }
+}
+
+FdoPtr<FdoDataValue> ExpressionParseTest::roundTripBoundaryValue( FdoDataValue* pVal)
+{
+    FdoPtr<FdoParameter> pParam = FdoParameter::Create(L"AndSoIsThis");
+    FdoPtr<FdoBinaryExpression> pBExpr = FdoBinaryExpression::Create(pVal, FdoBinaryOperations_Multiply, pParam);
+        
+    FdoStringP exprString = pBExpr->ToString();
+        
+    FdoPtr<FdoExpression> pExpression = FdoExpression::Parse(exprString);
+    CPPUNIT_ASSERT( pExpression != NULL );
+
+    FdoBinaryExpression* pBExpr2 = dynamic_cast<FdoBinaryExpression*>((FdoExpression*) pExpression);
+    CPPUNIT_ASSERT( pBExpr2 != NULL );
+    
+    FdoPtr<FdoExpression> pVal2 = pBExpr2->GetLeftExpression();
+    CPPUNIT_ASSERT( pVal2 != NULL );
+
+    FdoPtr<FdoDataValue> pDVal2 = FDO_SAFE_ADDREF(dynamic_cast<FdoDataValue*>((FdoExpression*) pVal2));
+    CPPUNIT_ASSERT( pDVal2 != NULL );
+
+    return pDVal2;
+}

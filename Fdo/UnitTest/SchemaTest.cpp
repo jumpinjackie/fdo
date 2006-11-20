@@ -2356,6 +2356,11 @@ FdoFeatureSchema* SchemaTest::createAcadSchema()
 	pProp->SetNullable(true);
 	FdoPropertiesP(pEntClass->GetProperties())->Add( pProp );
 
+    FdoPtr<FdoDataValue> minVal = FdoDataValue::Create( (FdoByte) 16 );
+    FdoPtr<FdoDataValue> maxVal = FdoDataValue::Create( (FdoByte) 128 );
+    FdoPtr<FdoPropertyValueConstraintRange> constraint = FdoPropertyValueConstraintRange::Create( minVal, maxVal );
+    pProp->SetValueConstraint( constraint );
+
 	pObjProp = FdoObjectPropertyDefinition::Create( L"xdata", L"xdata" );
 	pObjProp->SetClass( pXData );
 	pObjProp->SetIdentityProperty( pXDataSeq );
@@ -2594,6 +2599,13 @@ FdoFeatureSchema*  SchemaTest::createElectricSchema( FdoFeatureSchema* pAcadSche
 	pTransPhase->SetLength(1);
 	pTransPhase->SetNullable(false);
 	FdoPropertiesP(pTransClass->GetProperties())->Add( pTransPhase );
+
+    FdoPtr<FdoPropertyValueConstraintList> constraint = FdoPropertyValueConstraintList::Create();
+    FdoPtr<FdoDataValueCollection> values = constraint->GetConstraintList();
+    values->Add( FdoStringValue::Create(L"A") );
+    values->Add( FdoStringValue::Create(L"B") );
+    values->Add( FdoStringValue::Create(L"C") );
+    pTransPhase->SetValueConstraint( constraint );
 
 	FdoDataPropertyP pTransDate = FdoDataPropertyDefinition::Create( L"InstallDate", L"" );
 	pTransDate->SetDataType( FdoDataType_DateTime );

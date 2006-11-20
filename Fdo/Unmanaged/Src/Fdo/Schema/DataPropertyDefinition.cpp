@@ -752,10 +752,8 @@ void FdoDataPropertyDefinition::_writeXml( FdoSchemaXmlContext* pContext )
 					FdoDataValueP dv = dvCol->GetItem(i);
 
 					writer->WriteStartElement( L"Value" );
-					wchar_t* pData = (wchar_t*)FdoDataValue::GetStringValue(dv);
-					FdoStringP pDataEx = pData;
-					FdoStringUtility::ClearString(pData);
-                    writer->WriteCharacters(pDataEx);
+					FdoStringP pData = dv->GetXmlValue();
+                    writer->WriteCharacters(pData);
 					writer->WriteEndElement();
 				}
 
@@ -781,10 +779,8 @@ void FdoDataPropertyDefinition::_writeXml( FdoSchemaXmlContext* pContext )
 					{
 						writer->WriteAttribute( L"inclusive", L"false" );
 					}
-					wchar_t* pData = (wchar_t*)FdoDataValue::GetStringValue(dv);
-					FdoStringP pDataEx = pData;
-					FdoStringUtility::ClearString(pData);
-					writer->WriteAttribute( L"value", pDataEx );
+					FdoStringP pData = dv->GetXmlValue();
+					writer->WriteAttribute( L"value", pData);
 
 					writer->WriteEndElement();
 				}
@@ -803,10 +799,8 @@ void FdoDataPropertyDefinition::_writeXml( FdoSchemaXmlContext* pContext )
 					{
 						writer->WriteAttribute( L"inclusive", L"false" );
 					}
-					wchar_t* pData = (wchar_t*)FdoDataValue::GetStringValue(dv);
-					FdoStringP pDataEx = pData;
-					FdoStringUtility::ClearString(pData);
-					writer->WriteAttribute( L"value", pDataEx );
+					FdoStringP pData = dv->GetXmlValue();
+					writer->WriteAttribute( L"value", pData );
 
 					writer->WriteEndElement();
 				}

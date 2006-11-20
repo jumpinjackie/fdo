@@ -24,9 +24,11 @@
 class FilterParseTest : public CppUnit::TestCase
 {
   FDO_CPPUNIT_DEFINE(test);
+  FDO_CPPUNIT_DEFINE(testBoundaryValues);
 
   CPPUNIT_TEST_SUITE(FilterParseTest);
   CPPUNIT_TEST(test);
+  CPPUNIT_TEST(testBoundaryValues);
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -38,6 +40,7 @@ protected:
     void ParseFilter(FdoString* pwzFilter, FdoString* pwzResult = NULL);
     void ParseFilterToNull(FdoString* pwzFilter);
     void test();
+    void testBoundaryValues();
 };
 
 #endif

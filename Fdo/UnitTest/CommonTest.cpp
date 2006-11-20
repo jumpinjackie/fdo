@@ -300,6 +300,30 @@ void CommonTest::testString()
 
     s1 = L"\xF6\xE4\x33\xB4\xDF\xC4"; // some non-ASCII7 characters
 	CPPUNIT_ASSERT( !s1.IsNumber() );
+
+    s1 = L"12345";
+	CPPUNIT_ASSERT( s1.ToLong() == 12345 );
+
+    s1 = L"12345.678";
+	CPPUNIT_ASSERT( s1.ToLong() == 12345 );
+
+    s1 = L"0";
+	CPPUNIT_ASSERT( s1.ToLong() == 0 );
+
+    s1 = L"0.0";
+	CPPUNIT_ASSERT( s1.ToLong() == 0 );
+
+    s1 = L"0x10";
+	CPPUNIT_ASSERT( s1.ToLong() == 16 );
+
+    s1 = L"0X101";
+	CPPUNIT_ASSERT( s1.ToLong() == 257 );
+
+    s1 = L"\\0xff";
+	CPPUNIT_ASSERT( s1.ToLong() == 255 );
+
+    s1 = L"\\0Xff";
+	CPPUNIT_ASSERT( s1.ToLong() == 255 );
 }
 
 void CommonTest::testStringCollection()

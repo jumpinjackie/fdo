@@ -117,7 +117,10 @@ Acad layer</xs:documentation>
 </xs:element>
 <xs:element name="ColourIndex" minOccurs="0">
 <xs:simpleType>
-<xs:restriction base="fdo:byte"/>
+<xs:restriction base="fdo:byte">
+<xs:maxExclusive value="128"/>
+<xs:minExclusive value="16"/>
+</xs:restriction>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation>
@@ -856,7 +859,13 @@ no</fdo:attribute>
 </xs:element>
 <xs:element name="InstallDate" minOccurs="0">
 <xs:simpleType>
-<xs:restriction base="xs:dateTime"/>
+<xs:restriction base="xs:dateTime">
+<xs:enumeration value="1975-11-25T14:32:00"/>
+<xs:enumeration value="2006-02-25T14:32:01"/>
+<xs:enumeration value="-3000-01-01T00:00:00.1234"/>
+<xs:enumeration value="2006-12-01T05:59:15"/>
+<xs:enumeration value="1865-12-02T15:59:15.123457"/>
+</xs:restriction>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>

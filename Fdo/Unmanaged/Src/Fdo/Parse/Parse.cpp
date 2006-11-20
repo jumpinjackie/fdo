@@ -186,9 +186,11 @@ FdoInt32 FdoParse::GetLexeme(FdoParse *pParse, void* pyylval)
 					return FdoToken_STRING;
 				case FdoDataType_Int16:
 				case FdoDataType_Int32:
-				case FdoDataType_Int64:
 					yylval->m_integer = ((FdoInt32Value*)(m_lex->m_data))->GetInt32();
 					return FdoToken_INTEGER;
+				case FdoDataType_Int64:
+					yylval->m_int64 = ((FdoInt64Value*)(m_lex->m_data))->GetInt64();
+					return FdoToken_INT64;
 				case FdoDataType_Single:
 				case FdoDataType_Double:
 					yylval->m_double = ((FdoDoubleValue*)(m_lex->m_data))->GetDouble();

@@ -114,7 +114,10 @@ Acad layer</xs:documentation>
 </xs:element>
 <xs:element name="ColourIndex" minOccurs="0">
 <xs:simpleType>
-<xs:restriction base="fdo:byte"/>
+<xs:restriction base="fdo:byte">
+<xs:maxExclusive value="128"/>
+<xs:minExclusive value="16"/>
+</xs:restriction>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation>
@@ -822,6 +825,9 @@ A, B or C</xs:documentation>
 <xs:simpleType>
 <xs:restriction base="xs:string">
 <xs:maxLength value="1"/>
+<xs:enumeration value="A"/>
+<xs:enumeration value="B"/>
+<xs:enumeration value="C"/>
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
