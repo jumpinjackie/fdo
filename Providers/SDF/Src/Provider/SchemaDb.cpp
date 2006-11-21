@@ -77,10 +77,9 @@ SchemaDb::SchemaDb(SQLiteDataBase* env, const char* filename, bool bReadOnly) :
         if (
                (m_majorVersion != SDFPROVIDER_VERSION_MAJOR_3 || m_minorVersion != SDFPROVIDER_VERSION_MINOR_3_0)
             && (m_majorVersion != SDFPROVIDER_VERSION_MAJOR_3 || m_minorVersion != SDFPROVIDER_VERSION_MINOR_3_1)
-            && (m_majorVersion != SDFPROVIDER_VERSION_MAJOR_3 || m_minorVersion != SDFPROVIDER_VERSION_MINOR_3_2)
             )
             throw FdoConnectionException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_5_INCORRECT_SDF_VERSION),
-                m_majorVersion, m_minorVersion, SDFPROVIDER_VERSION_MAJOR_CURRENT, SDFPROVIDER_VERSION_MINOR_CURRENT_NLS));
+                m_majorVersion, m_minorVersion, SDFPROVIDER_VERSION_MAJOR_CURRENT, SDFPROVIDER_VERSION_MINOR_CURRENT));
     }
     else
     {
@@ -701,7 +700,15 @@ void SchemaDb::ReadObjectPropertyDefinition(BinaryReader& rdr, FdoPropertyDefini
 
 void SchemaDb::WriteSchema(FdoFeatureSchema* schema)
 {
-    //now write schema to database
+    if (m_majorVersion != SDFPROVIDER_VERSION_MAJOR_CURRENT || 
+        m_minorVersion != SDFPROVIDER_VERSION_MINOR_CURRENT)
+    {
+        WriteMetadata(SDFPROVIDER_VERSION_MAJOR_CURRENT, SDFPROVIDER_VERSION_MINOR_CURRENT);
+        m_majorVersion = SDFPROVIDER_VERSION_MAJOR_CURRENT;
+        m_minorVersion = SDFPROVIDER_VERSION_MINOR_CURRENT;
+    }
+
+    //now write schema to database-GUI
     BinaryWriter wrt(256);
     wrt.WriteString(schema->GetName());
     wrt.WriteString(schema->GetDescription());
