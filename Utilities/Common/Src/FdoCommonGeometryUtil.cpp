@@ -396,3 +396,14 @@ FdoInt32 FdoCommonGeometryUtil::GetNoneGeometryTypesCode()
 {
 	return FdoCommonGeometryTypeHexCode_None;
 }
+
+FdoInt32 FdoCommonGeometryUtil::GetCountGeometryTypesFromHex (FdoInt32 hexType)
+{
+    FdoInt32 typeCount = 0;
+    for (int i = 0; i < MAX_GEOMETRY_TYPE_SIZE; i++)
+    {
+        if ((hexType & MapGeometryTypeToHexCode(i)) != 0)
+            typeCount++;
+    }
+    return typeCount;
+}

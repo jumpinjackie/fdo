@@ -110,6 +110,10 @@ public:
 
     static FdoInt32 GetNoneGeometryTypesCode ();
 
+    // Get count of GeometryTypes from hex value including NONE
+
+    static FdoInt32 GetCountGeometryTypesFromHex (FdoInt32 hexType);
+
 private:
 
     /// The following enumeration defines hex-codes that map to FDO Geometry Types.
