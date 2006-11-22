@@ -546,6 +546,11 @@ void FdoInsertTest::insert3 ()
 			propertyValue = AddNewProperty( propertyValues, L"byte");
 			propertyValue->SetValue(dataValue);
 
+			FdoFloat floatValue = 3.1415901;
+			dataValue = FdoDataValue::Create(floatValue);
+			propertyValue = AddNewProperty( propertyValues, L"single");
+			propertyValue->SetValue(dataValue);
+
             dataValue = FdoDataValue::Create(1);
             propertyValue = AddNewProperty( propertyValues, L"xdata.seq");
             propertyValue->SetValue(dataValue);
@@ -591,6 +596,15 @@ void FdoInsertTest::insert3 ()
 				}
 				else
 					throw FdoException::Create(L"byte: 'null' is not valid");
+
+                if (!featureReader->IsNull(L"single"))
+				{
+					FdoFloat bValue = featureReader->GetSingle(L"single");
+					if (bValue != (FdoFloat) 3.1415901)
+						throw FdoException::Create(L"single: value is not valid");
+				}
+				else
+					throw FdoException::Create(L"single: 'null' is not valid");
 			}
 			featureReader->Close();
             connection->Close();
@@ -782,8 +796,7 @@ void FdoInsertTest::insertBoundary()
 			featureReader = selectCmd->Execute();
 			CPPUNIT_ASSERT(featureReader->ReadNext());
             CPPUNIT_ASSERT ( featureReader->GetInt64(L"int64") == (GetMaxInt64Value() - 1) );
-// TODO: find out why smallest single goes into SqlServer database as 0.
-//            CPPUNIT_ASSERT ( featureReader->GetSingle(L"single") == GetSmallestSingleValue() );
+            CPPUNIT_ASSERT ( featureReader->GetSingle(L"single") == GetSmallestSingleValue() );
 //            CPPUNIT_ASSERT ( featureReader->GetDouble(L"double") == GetSmallestDoubleValue() );
 
             insertBoundaryCleanup( connection );
@@ -1484,7 +1497,7 @@ FdoInt64 FdoInsertTest::GetMinInt64Value()
 
 FdoFloat FdoInsertTest::GetMinSingleValue()
 {
-    return (FdoFloat) -3.4028234e38;
+    return (FdoFloat) -3.4028233e38;
 }
 
 FdoDouble FdoInsertTest::GetMinDoubleValue()
@@ -1514,7 +1527,7 @@ FdoInt64 FdoInsertTest::GetMaxInt64Value()
 
 FdoFloat FdoInsertTest::GetMaxSingleValue()
 {
-    return (FdoFloat) 3.4028234e38;
+    return (FdoFloat) 3.4028233e38;
 }
 
 FdoDouble FdoInsertTest::GetMaxDoubleValue()

@@ -468,6 +468,8 @@ void FdoRdbmsSchemaUtil::CheckClass(const wchar_t* className)
     if (className)
     {
         const FdoSmLpClassDefinition *classDefinition = this->GetClass(className);
+        if ( classDefinition == NULL ) 
+            throw FdoSchemaException::Create(NlsMsgGet1(FDORDBMS_333, "Class '%1$ls' not found", className));
         if (classDefinition->RefIdentityProperties()->GetCount() == 0)
             throw FdoSchemaException::Create(NlsMsgGet1(FDORDBMS_266, "Creating/Updating a standalone instance for class '%1$ls' is not allowed", className));
         if (classDefinition->RefDbObject() == NULL)

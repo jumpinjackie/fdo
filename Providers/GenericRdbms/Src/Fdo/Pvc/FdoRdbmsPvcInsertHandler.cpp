@@ -936,7 +936,7 @@ void FdoRdbmsPvcInsertHandler::SetBindValues(const FdoSmLpClassDefinition *class
                         case FdoDataType_Single:
                             {
                                 float singleValue = (static_cast<FdoSingleValue*>(dataValue))->GetSingle();
-                                sprintf((char*)bind[j].value.strvalue, "%.*f", (scale != -100) ? scale : 8, singleValue);
+                                sprintf((char*)bind[j].value.strvalue, "%.8g", singleValue);
                             }
                             break;
 
