@@ -745,22 +745,6 @@ void FdoWmsSelectCommand::_analysisIdentifier (FdoString* srsName, FdoWmsBoundin
 
 	if (!bClip && !bResample)
 	{
-		// The user hasn't set the bbox by using CLIP/RESAMPLE function, 
-		// so we can get the extent corresponding to the spatial context.
-		//FdoWmsServiceMetadataP metadata = mConnection->GetWmsServiceMetadata ();
-		//FdoPtr<FdoWmsCapabilities> capa = static_cast<FdoWmsCapabilities *> (metadata->GetCapabilities ());
-		//FdoStringsP srsNames = capa->GetCRSNames ();
-		//FdoWmsBoundingBoxCollectionP bboxes = capa->GetCRSExtents ();
-		//FdoInt32 idx = srsNames->IndexOf (srsName);
-		//if (idx != -1)
-		//{
-		//	FdoWmsBoundingBoxP extent = bboxes->GetItem (idx);
-		//	bbox->SetMaxX (extent->GetMaxX ());
-		//	bbox->SetMinX (extent->GetMinX ());
-		//	bbox->SetMaxY (extent->GetMaxY ());
-		//	bbox->SetMinY (extent->GetMinY ());
-		//}
-
 		// Get the default HEIGHT value and calculate the WIDTH value.
 		height = _getDefaultImageHeight ();		
 		width = (FdoSize)((bbox->GetMaxX() - bbox->GetMinX()) / (bbox->GetMaxY() - bbox->GetMinY()) * height);

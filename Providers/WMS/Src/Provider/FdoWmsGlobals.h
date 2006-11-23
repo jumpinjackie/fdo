@@ -71,6 +71,7 @@ namespace FdoWmsGlobals
 	static FdoString *RasterMIMEFormat_GIF				    = L"image/gif";
 
 	static FdoString *DefaultEPSGCode     				    = L"EPSG:4326";
+	static FdoString *DefaultEPSGCode2     				    = L"CRS:4326";
 };
 
 

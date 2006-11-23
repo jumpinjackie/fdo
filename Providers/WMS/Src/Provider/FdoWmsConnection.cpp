@@ -650,7 +650,15 @@ FdoString* FdoWmsConnection::GetDefaultImageFormat()
 	FdoWmsServiceMetadataP metadata = GetWmsServiceMetadata ();
 	FdoPtr<FdoWmsCapabilities> capa = static_cast<FdoWmsCapabilities *> (metadata->GetCapabilities ());
     FdoPtr<FdoOwsRequestMetadataCollection> reqMetadatas = capa->GetRequestMetadatas ();
+
     FdoPtr<FdoOwsRequestMetadata> reqMetadata = reqMetadatas->FindItem (FdoWmsXmlGlobals::WmsGetMapRequest);
+    if (reqMetadata == NULL) {
+        reqMetadata = reqMetadatas->FindItem (FdoWmsXmlGlobals::WmsGetMapRequest2);
+    }
+    if (reqMetadata == NULL) {
+		throw FdoCommandException::Create (NlsMsgGet (FDOWMS_12005_GETMAP_NOT_SUPPORTED, "The WMS GetMap request is not supported."));
+    }
+
     FdoWmsRequestMetadata* getMapMetadata = static_cast<FdoWmsRequestMetadata*>(reqMetadata.p);
     FdoStringsP imageFormats = getMapMetadata->GetFormats ();
 

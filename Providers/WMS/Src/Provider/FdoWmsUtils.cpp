@@ -78,7 +78,9 @@ void _calcLayerBoundingBox (FdoWmsLayer* layer, FdoString* srsName, FdoWmsBoundi
     // they provide "LatLongBoundingBox". In this case, we will make use of the 
     // "LatLongBoundingBox" and take it as same as "EPSG:4326". Although they are not
     // exactly the same.
-    if ( !bFound && wcscmp (srsName, FdoWmsGlobals::DefaultEPSGCode) == 0)
+    if ( !bFound && (wcscmp (srsName, FdoWmsGlobals::DefaultEPSGCode) == 0 
+                     || 
+                     wcscmp (srsName, FdoWmsGlobals::DefaultEPSGCode2) == 0 ))
     {
         FdoPtr<FdoOwsGeographicBoundingBox> geoBBox = layer->GetGeographicBoundingBox ();
         if (geoBBox != NULL)

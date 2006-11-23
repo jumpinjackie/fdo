@@ -58,6 +58,10 @@ class WmsTestSelect : public WmsTests
     CPPUNIT_TEST (testDMSolutions);
     CPPUNIT_TEST (testNS_TOPO_5000);
     CPPUNIT_TEST (testNASAServerDefaultOverrides);
+    CPPUNIT_TEST (testCeoware2);
+    CPPUNIT_TEST (testLioib);
+    CPPUNIT_TEST (testKortPlandk);
+    CPPUNIT_TEST (testLibcwms);
 
 	CPPUNIT_TEST_SUITE_END ();
 
@@ -95,7 +99,10 @@ public:
     void testDMSolutions(); 
     void testNS_TOPO_5000();
     void testNASAServerDefaultOverrides();
-
+    void testCeoware2();
+    void testLioib ();
+    void testKortPlandk ();
+    void testLibcwms ();
 };
 
 #endif//FDOWMSTESTSELECT_H

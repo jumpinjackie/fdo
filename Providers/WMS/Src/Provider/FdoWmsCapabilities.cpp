@@ -20,6 +20,7 @@
 #include "FdoWmsCapabilities.h"
 #include <FdoWmsRequestMetadata.h>
 #include "FdoWmsXmlGlobals.h"
+#include "FdoWmsGlobals.h"
 
 FdoWmsCapabilities::FdoWmsCapabilities(void)
 {
@@ -228,7 +229,7 @@ void FdoWmsCapabilities::_removeNonReferedSRS ()
 				// if the CRS is EPSG:4326 and there are <LatLonBoundingBox> tags in the metadata
 				// we can make use of these tags to calculate approximate extent.
 				FdoStringP crsName = mCRSNames->GetString (i);
-				if (crsName == L"EPSG:4326")
+				if (crsName == FdoWmsGlobals::DefaultEPSGCode || crsName == FdoWmsGlobals::DefaultEPSGCode2)
 				{
 					// calculate the extent through <LatLonBoundingBox> tags.
 					FdoWmsBoundingBoxP llBox = FdoWmsBoundingBox::Create ();

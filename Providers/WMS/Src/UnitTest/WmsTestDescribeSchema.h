@@ -35,7 +35,10 @@ class WmsTestDescribeSchema : public WmsTests
 	CPPUNIT_TEST (testServer2);
 	CPPUNIT_TEST (testServer3);
 	CPPUNIT_TEST (testServer4);
+	CPPUNIT_TEST (testCeoware2);
+    CPPUNIT_TEST (testKortPlandk);
 	CPPUNIT_TEST (testSchemaMapping);
+    CPPUNIT_TEST (testLibCwms);
 	CPPUNIT_TEST_SUITE_END ();
 
 public:
@@ -49,13 +52,16 @@ public:
 	void testServer2 ();
 	void testServer3 ();
 	void testServer4 ();
+	void testCeoware2 ();
+	void testKortPlandk ();
 	void testSchemaMapping ();
+	void testLibCwms ();
 
 private:
 	// Helper to return the string presentation of the property type
 	static FdoString* PropertyTypeToString (FdoPropertyType propType);
 	// Helper to test and print out schema
-	void TestServer (FdoString* featureServer);
+	void TestServer (FdoString* featureServer, FdoInt32 numClasses = 0);
 	// Helper to test interitance
 	void TestInheritance (FdoString* featureServer);
 };

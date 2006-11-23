@@ -75,7 +75,7 @@ GDALDataset* FdoWmsRasterGdal::_getDataset() {
         VSIFCloseL( fp );
 	    m_gdalDataSet = (GDALDataset*)GDALOpen(vfileName, GA_ReadOnly);
 		if (!m_gdalDataSet)
-			throw FdoException::Create(FdoException::NLSGetMessage(FDO_57_UNEXPECTEDERROR, "Unexpected error encountered."));
+			throw FdoException::Create(FdoException::NLSGetMessage(FDOWMS_12006_NO_DATA_RETURNED, "The WMS Server returned no data from the GetMap request."));
     }
     return m_gdalDataSet;
 }

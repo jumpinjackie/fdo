@@ -28,6 +28,7 @@ namespace FdoWmsXmlGlobals
 
 	static FdoString *WmsVersion                            = L"1.3.0";
 	static FdoString *WmsGetMapRequest                      = L"GetMap";
+	static FdoString *WmsGetMapRequest2                     = L"Map";
 
     static FdoString *WmsCapabilitiesCapability             = L"Capability";
 

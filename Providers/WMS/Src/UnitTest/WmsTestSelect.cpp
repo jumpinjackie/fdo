@@ -1496,3 +1496,182 @@ void WmsTestSelect::testDMSolutions ()
         fail(e);
     }
 }
+
+//http://ceoware2.ccrs.nrcan.gc.ca/cubewerx/cubeserv/cubeserv.cgi 
+void WmsTestSelect::testCeoware2 ()
+{
+    try
+    {
+        FdoPtr<FdoIConnection> connection = WmsTests::GetConnection ();
+
+        FdoStringP sServer = FdoStringP::Format(L"FeatureServer=http://ceoware2.ccrs.nrcan.gc.ca/cubewerx/cubeserv/cubeserv.cgi");
+        connection->SetConnectionString((FdoString*)sServer);
+        FdoConnectionState state = connection->Open ();
+
+        FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*> (connection->CreateCommand (FdoCommandType_Select));
+        cmdSelect->SetFeatureClassName (L"GRFM_AFR_1C CEOWARE2");
+        FdoPtr<FdoIFeatureReader> featReader = cmdSelect->Execute ();
+        CPPUNIT_ASSERT (featReader->ReadNext ());	    
+        FdoPtr<FdoIRaster> raster = featReader->GetRaster (L"Raster");
+
+        raster->SetImageXSize(1024);
+        raster->SetImageYSize(1024);
+
+        FdoPtr<FdoIStreamReaderTmpl<FdoByte> > byteStreamReader = static_cast<FdoIStreamReaderTmpl<FdoByte>*> (raster->GetStreamReader ());
+
+        FdoByte buff[4096];
+        FdoInt64 cntTotal = 0;
+        FdoInt32 cntRead = 0;
+        do
+        {
+            cntRead = byteStreamReader->ReadNext (buff, 0 , 4096);
+            cntTotal += cntRead;
+        }
+        while (cntRead);
+
+        CPPUNIT_ASSERT (cntTotal > 0);
+        CPPUNIT_ASSERT (!featReader->ReadNext ());
+
+        connection->Close ();
+    }
+    catch (FdoException* e)
+    {
+        fail(e);
+    }
+}
+
+//http://lioib.lio.mnr.gov.on.ca/lioogc/default.asp?
+void WmsTestSelect::testLioib ()
+{
+    bool failed = true;
+    try
+    {
+        FdoPtr<FdoIConnection> connection = WmsTests::GetConnection ();
+
+        FdoStringP sServer = FdoStringP::Format(L"FeatureServer=http://lioib.lio.mnr.gov.on.ca/lioogc/default.asp?");
+        connection->SetConnectionString((FdoString*)sServer);
+        FdoConnectionState state = connection->Open ();
+
+        FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*> (connection->CreateCommand (FdoCommandType_Select));
+        cmdSelect->SetFeatureClassName (L"OGC_Settlements");
+        FdoPtr<FdoIFeatureReader> featReader = cmdSelect->Execute ();
+        CPPUNIT_ASSERT (featReader->ReadNext ());	    
+        FdoPtr<FdoIRaster> raster = featReader->GetRaster (L"Raster");
+
+        raster->SetImageXSize(1024);
+        raster->SetImageYSize(1024);
+
+        FdoPtr<FdoIStreamReaderTmpl<FdoByte> > byteStreamReader = static_cast<FdoIStreamReaderTmpl<FdoByte>*> (raster->GetStreamReader ());
+
+        connection->Close ();
+
+        failed = false;
+    }
+    catch (FdoException* e)
+    {
+        e->Release();
+    }
+
+    CPPUNIT_ASSERT (failed == true);	    
+}
+
+//http://kort.plandk.dk/scripts/mapserv.pl?service=wms
+void WmsTestSelect::testKortPlandk ()
+{
+    try
+    {
+        FdoPtr<FdoIConnection> connection = WmsTests::GetConnection ();
+
+        FdoStringP sServer = FdoStringP::Format(L"FeatureServer=http://kort.plandk.dk/scripts/mapserv.pl?service=wms");
+        connection->SetConnectionString((FdoString*)sServer);
+        FdoConnectionState state = connection->Open ();
+
+        FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*> (connection->CreateCommand (FdoCommandType_Select));
+        cmdSelect->SetFeatureClassName (L"plandk_r");
+        FdoPtr<FdoIFeatureReader> featReader = cmdSelect->Execute ();
+        CPPUNIT_ASSERT (featReader->ReadNext ());	    
+        FdoPtr<FdoIRaster> raster = featReader->GetRaster (L"Raster");
+
+        raster->SetImageXSize(1024);
+        raster->SetImageYSize(1024);
+
+        FdoPtr<FdoIStreamReaderTmpl<FdoByte> > byteStreamReader = static_cast<FdoIStreamReaderTmpl<FdoByte>*> (raster->GetStreamReader ());
+
+        FdoByte buff[4096];
+        FdoInt64 cntTotal = 0;
+        FdoInt32 cntRead = 0;
+        do
+        {
+            cntRead = byteStreamReader->ReadNext (buff, 0 , 4096);
+            cntTotal += cntRead;
+        }
+        while (cntRead);
+
+        CPPUNIT_ASSERT (cntTotal > 0);
+        CPPUNIT_ASSERT (!featReader->ReadNext ());
+
+        connection->Close ();
+    }
+    catch (FdoException* e)
+    {
+        fail(e);
+    }
+}
+
+//http://libcwms.gov.bc.ca/wmsconnector/com.esri.wsit.WMSServlet/ogc_layer_service?version=1.1.1
+void WmsTestSelect::testLibcwms ()
+{
+    try
+    {
+        FdoPtr<FdoIConnection> connection = WmsTests::GetConnection ();
+
+        FdoStringP sServer = FdoStringP::Format(L"FeatureServer=http://libcwms.gov.bc.ca/wmsconnector/com.esri.wsit.WMSServlet/ogc_layer_service?version=1.1.1");
+        connection->SetConnectionString((FdoString*)sServer);
+        FdoConnectionState state = connection->Open ();
+
+        FdoPtr<FdoIDescribeSchema> cmdDS = static_cast<FdoIDescribeSchema *> (connection->CreateCommand (FdoCommandType_DescribeSchema));
+        FdoPtr<FdoFeatureSchemaCollection> schemas = cmdDS->Execute ();
+        FdoInt32 cntSchemas = schemas->GetCount ();
+        CPPUNIT_ASSERT (cntSchemas == 1);
+
+        FdoPtr<FdoFeatureSchema> schema = schemas->GetItem (0);
+        FdoPtr<FdoClassCollection> classes = schema->GetClasses ();
+        FdoPtr<FdoClassDefinition> clsDef = classes->GetItem (L"DBM_7H_MIL_BOUNDARIES_LINE");
+        FdoFeatureClass* featClsDef = static_cast<FdoFeatureClass *> (clsDef.p);
+        FdoPtr<FdoReadOnlyPropertyDefinitionCollection> props = clsDef->GetBaseProperties ();
+        FdoPtr<FdoPropertyDefinition> prop = props->GetItem (L"Raster");
+        FdoRasterPropertyDefinition* rasterProp = (FdoRasterPropertyDefinition*)(prop.p);
+        FdoStringP rasterAssoc = rasterProp->GetSpatialContextAssociation();
+        CPPUNIT_ASSERT (rasterAssoc == L"EPSG:102190");
+
+        FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*> (connection->CreateCommand (FdoCommandType_Select));
+        cmdSelect->SetFeatureClassName (L"DBM_7H_MIL_BOUNDARIES_LINE");
+        FdoPtr<FdoIFeatureReader> featReader = cmdSelect->Execute ();
+        CPPUNIT_ASSERT (featReader->ReadNext ());	    
+        FdoPtr<FdoIRaster> raster = featReader->GetRaster (L"Raster");
+
+        raster->SetImageXSize(1024);
+        raster->SetImageYSize(1024);
+
+        FdoPtr<FdoIStreamReaderTmpl<FdoByte> > byteStreamReader = static_cast<FdoIStreamReaderTmpl<FdoByte>*> (raster->GetStreamReader ());
+
+        FdoByte buff[4096];
+        FdoInt64 cntTotal = 0;
+        FdoInt32 cntRead = 0;
+        do
+        {
+            cntRead = byteStreamReader->ReadNext (buff, 0 , 4096);
+            cntTotal += cntRead;
+        }
+        while (cntRead);
+
+        CPPUNIT_ASSERT (cntTotal > 0);
+        CPPUNIT_ASSERT (!featReader->ReadNext ());
+
+        connection->Close ();
+    }
+    catch (FdoException* e)
+    {
+        fail(e);
+    }
+}

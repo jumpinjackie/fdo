@@ -31,11 +31,12 @@ WmsTestDescribeSchema::~WmsTestDescribeSchema(void)
 {
 }
 
+//http://CADCISDJIAB.ads.autodesk.com/cgi-bin/mapserv.exe?map=wms/wms.map&
 void WmsTestDescribeSchema::testServer1 ()
 {
     try 
     {
-	    TestServer(L"http://CADCISDJIAB.ads.autodesk.com/cgi-bin/mapserv.exe?map=wms/wms.map&");
+	    TestServer(L"http://CADCISDJIAB.ads.autodesk.com/cgi-bin/mapserv.exe?map=wms/wms.map&", 15);
     }
     catch (FdoException* e)
     {
@@ -43,6 +44,7 @@ void WmsTestDescribeSchema::testServer1 ()
     }
 }
 
+//http://CADCISDJIAB.ads.autodesk.com/cgi-bin/mapserv.exe?map=wms/wms.map&
 void WmsTestDescribeSchema::testInheritance1 ()
 {
     try 
@@ -55,18 +57,19 @@ void WmsTestDescribeSchema::testInheritance1 ()
     }
 }
 
+//http://wms.jpl.nasa.gov/wms.cgi
 void WmsTestDescribeSchema::testServer2 ()
 {
     try 
     {
-	    TestServer(L"http://wms.jpl.nasa.gov/wms.cgi");
+	    TestServer(L"http://wms.jpl.nasa.gov/wms.cgi", 19);
     }
     catch (FdoException* e)
     {
         fail(e);
     }
 }
-
+//http://globe.digitalearth.gov/viz-bin/wmt.cgi
 void WmsTestDescribeSchema::testServer3 ()
 {
     try 
@@ -79,45 +82,12 @@ void WmsTestDescribeSchema::testServer3 ()
     }
 }
 
+//http://fbinter.stadt-berlin.de/fb/wms/oma_ogc_capabilitiesrequest.jsp
 void WmsTestDescribeSchema::testServer4 ()
 {
     try 
     {
-        FdoPtr<FdoIConnection> conn = this->GetConnection ();
-        FdoStringP connString = FdoStringP(L"FeatureServer=http://fbinter.stadt-berlin.de/fb/wms/oma_ogc_capabilitiesrequest.jsp");
-        conn->SetConnectionString (connString);
-        CPPUNIT_ASSERT (FdoConnectionState_Open == conn->Open ());
-
-        FdoPtr<FdoIDescribeSchema> cmdDS = static_cast<FdoIDescribeSchema *> (conn->CreateCommand (FdoCommandType_DescribeSchema));
-        FdoPtr<FdoFeatureSchemaCollection> schemas = cmdDS->Execute ();
-        FdoInt32 cntSchemas = schemas->GetCount ();
-        CPPUNIT_ASSERT (cntSchemas == 1);
-
-        FdoPtr<FdoFeatureSchema> schema = schemas->GetItem (0);
-
-        FdoPtr<FdoClassCollection> classes = schema->GetClasses ();
-        FdoInt32 cntClasses = classes->GetCount ();
-
-        for (FdoInt32 j=0; j<cntClasses; j++)
-        {
-            FdoPtr<FdoClassDefinition> clsDef = classes->GetItem (j);
-            FdoStringP clsName = clsDef->GetName ();
-            FdoFeatureClass* featClsDef = static_cast<FdoFeatureClass *> (clsDef.p);
-            CPPUNIT_ASSERT (featClsDef != NULL);
-            CPPUNIT_ASSERT (featClsDef->GetGeometryProperty() == NULL);
-            FdoBoolean bAbstract = featClsDef->GetIsAbstract();
-
-            FdoPtr<FdoPropertyDefinitionCollection> props = clsDef->GetProperties ();
-            FdoInt32 cntProps = props->GetCount ();
-            for (FdoInt32 k=0; k<cntProps; k++)
-            {
-                FdoPtr<FdoPropertyDefinition> prop = props->GetItem (k);
-                FdoStringP propName = prop->GetName ();
-                FdoPropertyType propType = prop->GetPropertyType ();
-            }		
-        }
-
-		CPPUNIT_ASSERT (cntClasses == 24);
+	    TestServer(L"http://fbinter.stadt-berlin.de/fb/wms/oma_ogc_capabilitiesrequest.jsp", 24);
     }
     catch (FdoException* e)
     {
@@ -125,7 +95,46 @@ void WmsTestDescribeSchema::testServer4 ()
     }
 }
 
-void WmsTestDescribeSchema::TestServer (FdoString* featureServer)
+//  http://ceoware2.ccrs.nrcan.gc.ca/cubewerx/cubeserv/cubeserv.cgi 
+void WmsTestDescribeSchema::testCeoware2 ()
+{
+    try 
+    {
+	    TestServer(L"http://ceoware2.ccrs.nrcan.gc.ca/cubewerx/cubeserv/cubeserv.cgi", 282);
+    }
+    catch (FdoException* e)
+    {
+        fail(e);
+    }
+}
+
+// http://kort.plandk.dk/scripts/mapserv.pl?service=wms
+void WmsTestDescribeSchema::testKortPlandk ()
+{
+    try 
+    {
+	    TestServer(L"http://kort.plandk.dk/scripts/mapserv.pl?service=wms", 12);
+    }
+    catch (FdoException* e)
+    {
+        fail(e);
+    }
+}
+
+// http://libcwms.gov.bc.ca/wmsconnector/com.esri.wsit.WMSServlet/ogc_layer_service?version=1.1.1
+void WmsTestDescribeSchema::testLibCwms ()
+{
+    try 
+    {
+	    TestServer(L"http://libcwms.gov.bc.ca/wmsconnector/com.esri.wsit.WMSServlet/ogc_layer_service?version=1.1.1", 69);
+    }
+    catch (FdoException* e)
+    {
+        fail(e);
+    }
+}
+
+void WmsTestDescribeSchema::TestServer (FdoString* featureServer, FdoInt32 numClasses)
 {
     FdoPtr<FdoIConnection> conn = this->GetConnection ();
     FdoStringP connString = FdoStringP(L"FeatureServer=") + featureServer;
@@ -172,6 +181,8 @@ void WmsTestDescribeSchema::TestServer (FdoString* featureServer)
 #endif
         }		
     }
+
+    CPPUNIT_ASSERT (cntClasses == numClasses);
 }
 
 void WmsTestDescribeSchema::TestInheritance (FdoString* featureServer)
