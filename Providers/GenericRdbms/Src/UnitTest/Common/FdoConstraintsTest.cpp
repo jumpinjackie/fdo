@@ -58,7 +58,7 @@
 #define			INT_MIN_INCLUSIVE	true
 #define			INT_MAX_INCLUSIVE	false
 
-static int      LARGE_STRING_COUNT = 65;
+static int      LARGE_STRING_COUNT = 100;
 
 static int		INT_RANGE[2]	= {10, 20};
 static FdoByte	BYTE_RANGE[2]	= {11, 22};
@@ -71,6 +71,10 @@ static double	DOUBLE_LIST[3]	= {0.123456789012345678901234567890, 100, 0.1234567
 static float	SINGLE_LIST[3]	= { (float) 0.1234567, (float) 100, (float) 1.12345678};
 static const wchar_t*	STRING_LIST[]	= { L"open", L"close" };
 static  wchar_t   LARGE_STRING_LIST[395][20];
+
+static int		UPD_INT_RANGE[2]	= {10, 2001};
+static int		UPD_INT_LIST[6]		= {10, 20, 30, LONG_MIN, LONG_MAX, 77};
+static const wchar_t*	UPD_STRING_LIST[]	= { L"semiclosed", L"close" };
 
 #define			RECREATE_CONSTRAINTS_DB		true
 
@@ -182,10 +186,10 @@ void FdoConstraintsTest::TestDescribeConstraints ()
 		);
 
 		printf( "Describe Constraints Schema class %ls... \n", (FdoString *)CLASS_NAME_BASE );
-		DescribeConstraintsSchema( connection, CLASS_NAME_BASE, NUM_UNIQUE_KEYS, NUM_CHECK_CONSTRAINTS );
+		DescribeConstraintsSchema( connection, CLASS_NAME_BASE, NUM_UNIQUE_KEYS, NUM_CHECK_CONSTRAINTS, false );
 
 		printf( "Describe Constraints Schema class %ls... \n", (FdoString *)CLASS_NAME );
-		DescribeConstraintsSchema( connection, CLASS_NAME, 0, 0 );
+		DescribeConstraintsSchema( connection, CLASS_NAME, 0, 0, false );
 
         printf( "Closing Connection ... \n" );
 		UnitTestUtil::CloseConnection(
@@ -307,6 +311,66 @@ void FdoConstraintsTest::TestUpdateUniqueConstraints ()
 	}
    	catch (...)
    	{
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+}
+
+void FdoConstraintsTest::TestDescribeUpdatedConstraints ()
+{
+	FdoPtr<FdoIConnection> connection;
+    StaticConnection* staticConn = NULL;
+    FdoStringP provider = UnitTestUtil::GetEnv("provider","Oracle");
+
+	try
+	{
+		printf( "Initializing Connection ... \n" );
+		connection = UnitTestUtil::CreateConnection(
+			false,
+			false,
+            DB_NAME_CONSTRAINTS_SUFFIX,
+            NULL,
+            NULL,
+            0
+		);
+
+		printf( "Describe Constraints Schema class %ls... \n", (FdoString *)CLASS_NAME_BASE );
+		DescribeConstraintsSchema( connection, CLASS_NAME_BASE, NUM_UNIQUE_KEYS - 1, NUM_CHECK_CONSTRAINTS, true );
+
+		printf( "Describe Constraints Schema class %ls... \n", (FdoString *)CLASS_NAME );
+		DescribeConstraintsSchema( connection, CLASS_NAME, 0, 0, false );
+
+        printf( "Closing Connection ... \n" );
+		UnitTestUtil::CloseConnection(
+			connection,
+			false,
+            DB_NAME_CONSTRAINTS_SUFFIX
+		);
+
+        connection = NULL;
+    }
+	catch ( FdoException* e ) 
+	{
+		try {
+			if ( connection) connection->Close(); 
+		}
+		catch ( ... ) 
+		{
+		}
+		UnitTestUtil::FailOnException( e );
+	}
+	catch ( CppUnit::Exception e ) 
+	{
+		if (connection) connection->Close(); 
+		throw;
+	}
+   	catch (...)
+   	{
+        try {
+		    if (connection) connection->Close(); 
+        }
+        catch ( ... ) 
+		{
+		}
    		CPPUNIT_FAIL ("caught unexpected exception");
    	}
 }
@@ -659,22 +723,17 @@ void FdoConstraintsTest::CreateConstraintsSchema( FdoIConnection* connection )
 	//////////////////////////////// Test UNIQUE ////////////////////////////////////////
 
 	// This should succeed
+	FdoStringP	insertSql2 = FdoStringP::Format(L"insert into %ls (classid, revisionnumber, %ls, %ls, %ls, %ls, %ls, %ls) values ", 
+					CLASS_NAME, PROPERTY_1R, PROPERTY_2, PROPERTY_3, PROPERTY_4, PROPERTY_3R, PROPERTY_4R );
 
-	FdoStringP	insertSql2 = FdoStringP::Format(L"insert into %ls (classid, revisionnumber, %ls, %ls, %ls, %ls) values ", 
-					CLASS_NAME, PROPERTY_1R, PROPERTY_2, PROPERTY_3, PROPERTY_4 );
-
-	FdoStringP	insertSql = FdoStringP::Format(L"%ls ( 0, 0, 10, 20, 'open', 1000 )", (FdoString *) insertSql2 );
+	FdoStringP	insertSql = FdoStringP::Format(L"%ls ( 0, 0, 10, 20, 'open', 1000, 'PA', 0.000002 )", (FdoString *) insertSql2 );
 
 	// FIX for ORACLE FEATID!!!
-	try {
-		UnitTestUtil::Sql2Db( insertSql, connection );
-	} catch (FdoException *ex) {
-		ex->Release();
-	}
+    UnitTestUtil::Sql2Db( insertSql, connection );
 
 	bool	uniqueSuccess1 = true;
 	try {
-		FdoStringP	insertSql = FdoStringP::Format(L"%ls ( 0, 0, 10, 20, 'open', 1000 )", (FdoString *) insertSql2 );
+		insertSql = FdoStringP::Format(L"%ls ( 0, 0, 10, 20, 'open', 1000 )", (FdoString *) insertSql2 );
 		UnitTestUtil::Sql2Db( insertSql, connection );
 	} catch (FdoException *ex) {
 		DBG(printf("Expected unique constraint violation exception: %ls", (FdoString* )ex->GetExceptionMessage()));
@@ -689,12 +748,7 @@ void FdoConstraintsTest::CreateConstraintsSchema( FdoIConnection* connection )
 
 	insertSql = FdoStringP::Format(L"%ls ( 0, 0, 10, 20, 'open', 1000, 2000 )", (FdoString *) insertSql2 );
 
-	// FIX for ORACLE FEATID!!!
-	try {
-		UnitTestUtil::Sql2Db( insertSql, connection );
-	} catch (FdoException *ex) {
-		ex->Release();
-	}
+	UnitTestUtil::Sql2Db( insertSql, connection );
 	
 	bool	uniqueSuccess2 = true;
 	try {
@@ -795,7 +849,7 @@ bool FdoConstraintsTest::TestParser(FdoString* clause)
 }
 
 
-void FdoConstraintsTest::DescribeConstraintsSchema( FdoIConnection* connection, FdoString* className, int numUkeys, int numCkeys )
+void FdoConstraintsTest::DescribeConstraintsSchema( FdoIConnection* connection, FdoString* className, int numUkeys, int numCkeys, bool afterUpdate )
 {
 	FdoPtr<FdoISchemaCapabilities>	schemaCap = connection->GetSchemaCapabilities();
 
@@ -803,7 +857,6 @@ void FdoConstraintsTest::DescribeConstraintsSchema( FdoIConnection* connection, 
 
     pDescCmd->SetSchemaName( SCHEMA_NAME );
 	FdoPtr<FdoFeatureSchemaCollection> pSchemas2 = pDescCmd->Execute();
-
 	FdoPtr<FdoFeatureSchema> pSchema2 = pSchemas2->GetItem( SCHEMA_NAME );
     FdoPtr<FdoClassCollection> pClasses2 = pSchema2->GetClasses();
    	FdoPtr<FdoClassDefinition> pClass2 = pClasses2->GetItem( className );
@@ -847,8 +900,12 @@ void FdoConstraintsTest::DescribeConstraintsSchema( FdoIConnection* connection, 
 	}
 
 	CPPUNIT_ASSERT_MESSAGE("Wrong number of unique keys", count == numUkeys );
-	if ( numUkeys != 0 )
-		CPPUNIT_ASSERT_MESSAGE("Unique keys properties not found", found_unique1 && found_unique2 && found_unique3);
+    if ( numUkeys != 0 ) {
+        if ( afterUpdate ) 
+		    CPPUNIT_ASSERT_MESSAGE("Unique keys properties not found", found_unique1 && found_unique3);
+        else
+            CPPUNIT_ASSERT_MESSAGE("Unique keys properties not found", found_unique1 && found_unique2 && found_unique3);
+    }
 
 	///////////////// CHECK() CONSTRAINTS //////////////////////////////////////////
 
@@ -884,8 +941,8 @@ void FdoConstraintsTest::DescribeConstraintsSchema( FdoIConnection* connection, 
 				FdoDataValue*	valMin = pConstrR->GetMinValue();
 				FdoDataValue*	valMax = pConstrR->GetMaxValue();
 
-				FdoPtr<FdoDataValue>   val1 = FdoDataValue::Create( INT_RANGE[0] );
-				FdoPtr<FdoDataValue>   val2 = FdoDataValue::Create( INT_RANGE[1] );
+                FdoPtr<FdoDataValue>   val1 = FdoDataValue::Create( afterUpdate ? UPD_INT_RANGE[0] : INT_RANGE[0] );
+                FdoPtr<FdoDataValue>   val2 = FdoDataValue::Create( afterUpdate ? UPD_INT_RANGE[1] : INT_RANGE[1] );
 
 				CPPUNIT_ASSERT_MESSAGE("Wrong Min Value Prop1R",  wcscmp(valMin->ToString(), val1->ToString()) == 0 );
 				CPPUNIT_ASSERT_MESSAGE("Wrong Max Value Prop1R",  wcscmp(valMax->ToString(), val2->ToString()) == 0 );
@@ -948,12 +1005,22 @@ void FdoConstraintsTest::DescribeConstraintsSchema( FdoIConnection* connection, 
 
 			if ( wcscmp( pProp->GetName(), PROPERTY_2 ) == 0) {
 				DBG(printf("Check List key #%d: (%ls in (", count, pProp->GetName()));
-                CheckListConstraint( pProp->GetName(), pList, INT_LIST, sizeof(INT_LIST) / sizeof(int) );
+                CheckListConstraint( 
+                    pProp->GetName(), 
+                    pList, 
+                    afterUpdate ? UPD_INT_LIST : INT_LIST, 
+                    (afterUpdate ? sizeof(UPD_INT_LIST) : sizeof(INT_LIST)) / sizeof(int) 
+                );
                 count++;
 			}
 			else if ( wcscmp( pProp->GetName(), PROPERTY_3 ) == 0) {
 				DBG(printf("Check List key #%d: (%ls in (", count, pProp->GetName()));
-                CheckListConstraint( pProp->GetName(), pList, STRING_LIST, sizeof(STRING_LIST) / sizeof(wchar_t*) );
+                CheckListConstraint( 
+                    pProp->GetName(), 
+                    pList, 
+                    afterUpdate ? UPD_STRING_LIST : STRING_LIST, 
+                    (afterUpdate ? sizeof(UPD_STRING_LIST) : sizeof(STRING_LIST)) / sizeof(wchar_t*) 
+                );
                 count++;
 			}
 			else if ( wcscmp( pProp->GetName(), PROPERTY_7 ) == 0) {
@@ -1221,7 +1288,6 @@ void FdoConstraintsTest::UpdateCheckConstraints( FdoIConnection* connection )
 				FdoStringP insertSql = FdoStringP::Format(L"%ls (0, 0, 10, %ld, 'open', 6668, 8890 )", (FdoString *) insertSql1, newValue );
 				UnitTestUtil::Sql2Db( insertSql, connection );
 			}
-#if 0
             else if ( wcscmp( pProp->GetName(), PROPERTY_3 ) == 0) {
 
 				// Replace the 2nd constraint in ('open', 'close') with ('open', 'semi-close');
@@ -1236,16 +1302,30 @@ void FdoConstraintsTest::UpdateCheckConstraints( FdoIConnection* connection )
 				pList->RemoveAt(1);
 				pList->Add( newVal );
 				pProp->SetValueConstraint( pConstrList );
-				pApplyCmd->Execute();
+			    bool error = false;
+
+                // Following fails because some rows have stringlist='open'
+			    try	{
+				    pApplyCmd->Execute();
+			    } catch (FdoException *ex) {
+				    DBG(printf("Expected check constraint violation exception: %ls\n", (FdoString* )ex->GetExceptionMessage()));
+				    ex->Release();
+				    error = true;
+			    }
+			    CPPUNIT_ASSERT_MESSAGE("Expected check constraint violation exception on PROPERTY_3", error == true);
 
 				// Now try to insert. It should succeed.
+                FdoStringP deleteSql = FdoStringP::Format(L"delete from %ls where stringlist = 'open'", CLASS_NAME) ;
+				UnitTestUtil::Sql2Db( deleteSql, connection );
+
+                // No "open" stringlist's, ApplySchema should succeed this time.
+    		    pApplyCmd->Execute();
+                
+                // Now try to insert. It should succeed.
 				FdoStringP insertSql = FdoStringP::Format(L"%ls (0, 0, 10, 10, '%ls', 6669, 8891 )", (FdoString *) insertSql1, newValue );
 				UnitTestUtil::Sql2Db( insertSql, connection );
 			}
-#endif
 		}
 	}
-
-	//DescribeConstraintsSchema( connection, CLASS_NAME_BASE, NUM_UNIQUE_KEYS-1, NUM_CHECK_CONSTRAINTS-1 );
 }
 

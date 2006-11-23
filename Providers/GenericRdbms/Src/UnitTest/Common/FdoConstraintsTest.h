@@ -29,6 +29,7 @@ class FdoConstraintsTest : public CppUnit::TestCase
 	CPPUNIT_TEST( TestDescribeConstraints );
 	CPPUNIT_TEST( TestUpdateUniqueConstraints );
 	CPPUNIT_TEST( TestUpdateCheckConstraints );
+	CPPUNIT_TEST( TestDescribeUpdatedConstraints );
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -37,10 +38,11 @@ public:
 	void TestDescribeConstraints(void);
 	void TestUpdateUniqueConstraints(void);
 	void TestUpdateCheckConstraints(void);
+	void TestDescribeUpdatedConstraints(void);
 	void TestParser(void);
 
     void CreateConstraintsSchema(FdoIConnection * connection);
-	void DescribeConstraintsSchema(FdoIConnection * connection, FdoString *className, int numUkeys, int numCkeys);
+	void DescribeConstraintsSchema(FdoIConnection * connection, FdoString *className, int numUkeys, int numCkeys, bool afterUpdate);
 	void UpdateCheckConstraints(FdoIConnection * connection);
 	void UpdateUniqueConstraints(FdoIConnection * connection);
 	bool TestParser(FdoString* clause);
@@ -61,20 +63,20 @@ protected:
             pList->GetCount() == masterCount     
         );
 
-	    for ( int j = 0; j < pList->GetCount(); j++ ) {
-		    FdoPtr<FdoDataValue>	val = pList->GetItem(j);
+        for ( int j = 0; j < masterCount; j++ ) {
+		    FdoPtr<FdoDataValue>   val1 = FdoDataValue::Create( pMaster[j] );
 		    bool					valMatched = false;
 
-            for ( int k = 0; k < masterCount && !valMatched; k++ ) {
-			    FdoPtr<FdoDataValue>   val1 = FdoDataValue::Create( pMaster[k] );
+    	    for ( int k = 0; k < pList->GetCount() && !valMatched; k++ ) {
+	    	    FdoPtr<FdoDataValue>	val = pList->GetItem(k);
 			    valMatched = ( wcscmp(val->ToString(), val1->ToString()) == 0 );
 		    }	
 
             CPPUNIT_ASSERT_MESSAGE( 
-                (const char*) FdoStringP::Format( L"Wrong List Value %ls", pPropName ),
+                (const char*) FdoStringP::Format( L"Missing List Value %ls", pPropName ),
                 valMatched
             );
-		    DBG(printf("%ls,", val->ToString()));
+		    DBG(printf("%ls,", val1->ToString()));
 	    }
 	    DBG(printf("))\n"));
     }    
