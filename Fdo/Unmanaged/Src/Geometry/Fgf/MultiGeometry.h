@@ -41,6 +41,9 @@ public:
 
 	FdoFgfMultiGeometry(FdoFgfGeometryFactory * factory, FdoByteArray * byteArray, const FdoByte * data, FdoInt32 count);
 
+    // Support object re-use, matching the constructor.
+	void Reset(FdoByteArray * byteArray, const FdoByte * data, FdoInt32 count);
+
 	~FdoFgfMultiGeometry();
 
 	// From FdoIGeometry

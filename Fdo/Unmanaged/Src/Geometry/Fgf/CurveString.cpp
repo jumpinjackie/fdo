@@ -78,8 +78,18 @@ FdoFgfCurveString::FdoFgfCurveString(
     const FdoByte * data,
     FdoInt32 count
     )
-    : FdoFgfGeometryImpl<FdoICurveString>(factory, byteArray, data, count)
+    : FdoFgfGeometryImpl<FdoICurveString>(factory)
 {
+    Reset(byteArray, data, count);
+}
+
+void FdoFgfCurveString::Reset(
+    FdoByteArray * byteArray,
+    const FdoByte * data,
+    FdoInt32 count
+    )
+{
+    SetFgf(byteArray, data, count);
 }
 
 

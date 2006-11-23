@@ -65,8 +65,18 @@ FdoFgfMultiLineString::FdoFgfMultiLineString(
     const FdoByte * data,
     FdoInt32 count
     )
-    : FdoFgfGeometryImpl<FdoIMultiLineString>(factory, byteArray, data, count)
+    : FdoFgfGeometryImpl<FdoIMultiLineString>(factory)
 {
+    Reset(byteArray, data, count);
+}
+
+void FdoFgfMultiLineString::Reset(
+    FdoByteArray * byteArray,
+    const FdoByte * data,
+    FdoInt32 count
+    )
+{
+    SetFgf(byteArray, data, count);
 }
 
 

@@ -78,8 +78,18 @@ FdoFgfMultiGeometry::FdoFgfMultiGeometry(
     const FdoByte * data,
     FdoInt32 count
     )
-    : FdoFgfGeometryImpl<FdoIMultiGeometry>(factory, byteArray, data, count)
+    : FdoFgfGeometryImpl<FdoIMultiGeometry>(factory)
 {
+    Reset(byteArray, data, count);
+}
+
+void FdoFgfMultiGeometry::Reset(
+    FdoByteArray * byteArray,
+    const FdoByte * data,
+    FdoInt32 count
+    )
+{
+    SetFgf(byteArray, data, count);
 }
 
 

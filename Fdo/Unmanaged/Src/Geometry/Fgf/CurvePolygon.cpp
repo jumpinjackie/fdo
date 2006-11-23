@@ -72,8 +72,18 @@ FdoFgfCurvePolygon::FdoFgfCurvePolygon(
     const FdoByte * data,
     FdoInt32 count
     )
-    : FdoFgfGeometryImpl<FdoICurvePolygon>(factory, byteArray, data, count)
+    : FdoFgfGeometryImpl<FdoICurvePolygon>(factory)
 {
+    Reset(byteArray, data, count);
+}
+
+void FdoFgfCurvePolygon::Reset(
+    FdoByteArray * byteArray,
+    const FdoByte * data,
+    FdoInt32 count
+    )
+{
+    SetFgf(byteArray, data, count);
 }
 
 

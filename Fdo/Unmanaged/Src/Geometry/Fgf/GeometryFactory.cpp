@@ -32,11 +32,6 @@
 
 #define WKB_LITTLE_ENDIAN    (1)
 
-#ifdef EXTRA_DEBUG
-    FILE * FdoDebugFile = NULL;
-#endif
-
-
 FdoFgfGeometryFactory* FdoFgfGeometryFactory::GetInstance()
 {
     FdoGeometryThreadData * threadData = FdoGeometryThreadData::GetValue();
@@ -52,12 +47,6 @@ FdoFgfGeometryFactory* FdoFgfGeometryFactory::GetInstance()
             throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
     }
 
-#ifdef EXTRA_DEBUG
-    if (NULL == FdoDebugFile)
-    {
-        FdoDebugFile = fopen("D:\\temp\\FdoDebugFile.log", "w+");
-    }
-#endif
 	return FDO_SAFE_ADDREF((threadData->geometryFactory).p);
 }
 
@@ -68,13 +57,23 @@ FdoFgfGeometryFactory * FdoFgfGeometryFactory::GetPrivateInstance(
     FdoInt32 numCurveSegments,
     FdoInt32 numRings)
 {
-	throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_3_NOTIMPLEMENTED)));
+    // Only a limited implementation is available, which uses defaults for
+    // the pool sizes.  The returned object is, however, a private one,
+    // i.e. not in thread-local storage.
+    FdoFgfGeometryFactory * gf = new FdoFgfGeometryFactory();
+    return gf;
 }
 
 
 // Constructor
 FdoFgfGeometryFactory::FdoFgfGeometryFactory()
 {
+#ifdef EXTRA_DEBUG
+    char fileName[1000];
+    sprintf(fileName, "D:\\temp\\FdoDebugFile0x%lx.log", (long)(this));
+    m_private->m_fdoDebugFile = fopen(fileName, "w+");
+#endif
+
     m_private = new FdoFgfGeometryFactory2();
     if (NULL == m_private)
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
@@ -85,11 +84,12 @@ FdoFgfGeometryFactory::FdoFgfGeometryFactory()
 FdoFgfGeometryFactory::~FdoFgfGeometryFactory()
 {
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "FdoFgfGeometryFactory::~FdoFgfGeometryFactory()\n");
-        fflush(FdoDebugFile);
-        m_private->PrintStats();
+        fprintf(m_private->m_fdoDebugFile, "FdoFgfGeometryFactory::~FdoFgfGeometryFactory()\n");
+        fflush(m_private->m_fdoDebugFile);
+        m_private->PrintStats(m_private->m_fdoDebugFile);
+        fclose(m_private->m_fdoDebugFile);
     }
 #endif
 
@@ -97,28 +97,37 @@ FdoFgfGeometryFactory::~FdoFgfGeometryFactory()
 }
 
 #ifdef EXTRA_DEBUG
-void FdoFgfGeometryFactory2::PrintStats()
+void FdoFgfGeometryFactory2::PrintStats(FILE * fileHandle)
 {
-    if (NULL != FdoDebugFile)
+    if (NULL != fileHandle)
     {
         FdoInt32 ehits=0, rhits=0, misses=0;
-        fprintf(FdoDebugFile, "  FdoFgfGeometryFactory::PrintStats():\n");
-        fprintf(FdoDebugFile, "    %d ByteArrays created.\n", m_numByteArraysCreated);
+        fprintf(fileHandle, "  FdoFgfGeometryFactory::PrintStats():\n");
+        int debugFlag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
+        fprintf(fileHandle, "    memory debug flag = 0x%lx.\n", debugFlag);
+        fprintf(fileHandle, "    %d ByteArrays created.\n", m_numByteArraysCreated);
         if (m_byteArrayPool != NULL)
         {
             m_byteArrayPool->GetStats(&ehits, &rhits, &misses);
-            fprintf(FdoDebugFile,
+            fprintf(fileHandle,
                 "      ByteArray Pool stats: %d empty hits, %d reusable hits, %d misses\n",
+                ehits, rhits, misses);
+        }
+        if (this->m_PoolLineString != NULL)
+        {
+            m_PoolLineString->GetStats(&ehits, &rhits, &misses);
+            fprintf(fileHandle,
+                "      LineString Pool stats: %d empty hits, %d reusable hits, %d misses\n",
                 ehits, rhits, misses);
         }
         if (m_linearRingPool != NULL)
         {
             m_linearRingPool->GetStats(&ehits, &rhits, &misses);
-            fprintf(FdoDebugFile,
+            fprintf(fileHandle,
                 "      LinearRing Pool stats: %d empty hits, %d reusable hits, %d misses\n",
                 ehits, rhits, misses);
         }
-        fflush(FdoDebugFile);
+        fflush(fileHandle);
     }
 }
 #endif
@@ -145,29 +154,29 @@ FdoILineString* FdoFgfGeometryFactory::CreateLineString(FdoInt32 dimensionType, 
 FdoIGeometry * FdoFgfGeometryFactory::CreateGeometry(FdoIGeometry * geometry)
 {
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateGeometry(geometry=0x%lx) type=%d IN\n",
+        fprintf(m_private->m_fdoDebugFile, "CreateGeometry(geometry=0x%lx) type=%d IN\n",
             (long)geometry, (int)(geometry->GetDerivedType()));
-        fflush(FdoDebugFile);
+        fflush(m_private->m_fdoDebugFile);
         try
         {
             //if (geometry->GetDerivedType() == FdoGeometryType_LineString)
             {
                 FdoString * fgftString = geometry->GetText();
-                fprintf(FdoDebugFile, "  fgft='%S'\n", fgftString);
-                fflush(FdoDebugFile);
+                fprintf(m_private->m_fdoDebugFile, "  fgft='%S'\n", fgftString);
+                fflush(m_private->m_fdoDebugFile);
             }
         }
         catch ( FdoException* e )
         {
-            fprintf(FdoDebugFile, "  Caught FdoException from GetText(): <<%S>>\n", e->GetExceptionMessage());
-            fflush(FdoDebugFile);
+            fprintf(m_private->m_fdoDebugFile, "  Caught FdoException from GetText(): <<%S>>\n", e->GetExceptionMessage());
+            fflush(m_private->m_fdoDebugFile);
         }
         catch (...)
         {
-            fprintf(FdoDebugFile, "  Caught unknown exception from GetText().\n");
-            fflush(FdoDebugFile);
+            fprintf(m_private->m_fdoDebugFile, "  Caught unknown exception from GetText().\n");
+            fflush(m_private->m_fdoDebugFile);
         }
 
     }
@@ -183,11 +192,11 @@ FdoIGeometry * FdoFgfGeometryFactory::CreateGeometry(FdoIGeometry * geometry)
     newByteArray = NULL;
 
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateGeometry() OUT\n",
+        fprintf(m_private->m_fdoDebugFile, "CreateGeometry() OUT\n",
             (long)geometry);
-        fflush(FdoDebugFile);
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 	return FDO_SAFE_ADDREF(newGeometry.p);
@@ -209,19 +218,14 @@ FdoIGeometry * FdoFgfGeometryFactory::CreateGeometryFromFgf(
                                                                L"byteArray/byteArrayData/count"));
 
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateGeometryFromFgf(0x%lx, 0x%lx, count=%d) IN\n",
+        fprintf(m_private->m_fdoDebugFile, "CreateGeometryFromFgf(0x%lx, 0x%lx, count=%d) IN\n",
             (long)byteArray, (long)byteArrayData, count);
-        fflush(FdoDebugFile);
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 	FdoPtr<FdoIGeometry> newGeometry;
-
-    if (m_private->m_geometryPool2 == NULL)
-    {
-        m_private->m_geometryPool2 = FdoGeometryCollection::Create();
-    }
 
 	const FdoByte *         streamPtr = NULL;
 	const FdoByte *         streamEnd = NULL;
@@ -237,123 +241,46 @@ FdoIGeometry * FdoFgfGeometryFactory::CreateGeometryFromFgf(
     }
 
 	FdoGeometryType geometryType = (FdoGeometryType) FgfUtil::ReadInt32(&streamPtr, streamEnd);
-
-    FdoInt32        pooledGeometryToReplaceIndex = -1;
-    FdoInt32        pooledGeometryToReassignIndex = -1;
-    bool            done = false;
-
-    for (FdoInt32 i = 0;  !done && i < m_private->m_geometryPool2->GetCount(); i++)
+#ifdef EXTRA_DEBUG
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        FdoPtr<FdoIGeometry>  pooledGeometry = m_private->m_geometryPool2->GetItem(i);
-
-        if (pooledGeometry != NULL)
-        {
-            FdoGeometryType pooledGeometryType = pooledGeometry->GetDerivedType();
-            if (pooledGeometryType == geometryType)
-            {
-                // New FGF is the same type as the pooled geometry.
-                FdoInt32 refCount = GET_REFCOUNT(pooledGeometry.p);
-                if (2 == refCount)  // 2 == local variable pointer + pool pointer
-                {
-                    // This factory is the exclusive owner of this pooled geometry.  Just re-assign its FGF.
-                    pooledGeometryToReassignIndex = i;
-                }
-                else
-                {
-                    // We found a geometry of the correct type, but we aren't the excusive owner.
-                    pooledGeometryToReplaceIndex = i;
-                }
-                done = true;    // Done, whether we re-used the geometry or not (only pool 1 of each type)
-            }
-        }
+        fprintf(m_private->m_fdoDebugFile, "FdoFgfGeometryFactory::CreateGeometryFromFgf GeometryType=%d\n", (int) geometryType);
+        fflush(m_private->m_fdoDebugFile);
     }
+#endif
 
-#define CASE_REASSIGN_FGF(type) \
-    case FdoGeometryType_##type: \
-        { \
-            newGeometry = m_private->m_geometryPool2->GetItem(pooledGeometryToReassignIndex); \
-            FdoFgf##type * derivedGeom = (FdoFgf##type *)(newGeometry.p); \
-            derivedGeom->SetFgf(byteArray, byteArrayData, count); \
-        } \
-        break;
-
-#define CASE_CREATE_GEOMETRY(type) \
-    case FdoGeometryType_##type: \
-        newGeometry = new FdoFgf##type(this, byteArray, byteArrayData, count); \
-        break;
-
-#define CASE_CREATE_GEOMETRY2(type) \
+#define CASE_CREATE_POOLED_GEOMETRY(type) \
     case FdoGeometryType_##type: \
         newGeometry = m_private->Create##type(this, byteArray, byteArrayData, count); \
         break;
 
-    if (pooledGeometryToReassignIndex >= 0)
+    // Call SetFgf() on the appropriate type.  Unfortunately, we cannot call it
+    // directly on the base FdoFgfGeometryImpl type because it's a template on an 
+    // abstract type (FdoIGeometry).
+    switch ( geometryType )
     {
-        // Call SetFgf() on the appropriate type.  Unfortunately, we cannot call it
-        // directly on the base FdoFgfGeometryImpl type because it's a template on an 
-        // abstract type (FdoIGeometry).
-	    switch ( geometryType )
-	    {
-        CASE_REASSIGN_FGF(LineString);
-        CASE_REASSIGN_FGF(Point);
-        CASE_REASSIGN_FGF(Polygon);
-        CASE_REASSIGN_FGF(MultiPoint);
-        CASE_REASSIGN_FGF(MultiGeometry);
-        CASE_REASSIGN_FGF(MultiLineString);
-        CASE_REASSIGN_FGF(MultiPolygon);
-        CASE_REASSIGN_FGF(CurveString);
-        CASE_REASSIGN_FGF(MultiCurveString);
-        CASE_REASSIGN_FGF(CurvePolygon);
-        CASE_REASSIGN_FGF(MultiCurvePolygon);
-	    default:
-            throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_UNKNOWN_GEOMETRY_TYPE),
-                                                                   L"FdoFgfGeometryFactory::CreateGeometryFromFgf",
-                                                                   geometryType));
-        }
+    CASE_CREATE_POOLED_GEOMETRY(LineString);
+    CASE_CREATE_POOLED_GEOMETRY(Point);
+    CASE_CREATE_POOLED_GEOMETRY(Polygon);
+    CASE_CREATE_POOLED_GEOMETRY(MultiPoint);
+    CASE_CREATE_POOLED_GEOMETRY(MultiGeometry);
+    CASE_CREATE_POOLED_GEOMETRY(MultiLineString);
+    CASE_CREATE_POOLED_GEOMETRY(MultiPolygon);
+    CASE_CREATE_POOLED_GEOMETRY(CurveString);
+    CASE_CREATE_POOLED_GEOMETRY(MultiCurveString);
+    CASE_CREATE_POOLED_GEOMETRY(CurvePolygon);
+    CASE_CREATE_POOLED_GEOMETRY(MultiCurvePolygon);
+    default:
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_UNKNOWN_GEOMETRY_TYPE),
+                                                               L"FdoFgfGeometryFactory::CreateGeometryFromFgf",
+                                                               geometryType));
     }
-    else
-    {
-        // We did not get anything from the pool.  Really create a new geometry.
-
-	    switch ( geometryType )
-	    {
-	    CASE_CREATE_GEOMETRY2(LineString);
-	    CASE_CREATE_GEOMETRY(Point);
-	    CASE_CREATE_GEOMETRY(Polygon);
-	    CASE_CREATE_GEOMETRY(MultiPoint);
-	    CASE_CREATE_GEOMETRY(MultiGeometry);
-	    CASE_CREATE_GEOMETRY(MultiLineString);
-	    CASE_CREATE_GEOMETRY(MultiPolygon);
-	    CASE_CREATE_GEOMETRY(CurveString);
-	    CASE_CREATE_GEOMETRY(MultiCurveString);
-	    CASE_CREATE_GEOMETRY(CurvePolygon);
-	    CASE_CREATE_GEOMETRY(MultiCurvePolygon);
-	    default:
-            throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_UNKNOWN_GEOMETRY_TYPE),
-                                                                   L"FdoFgfGeometryFactory::CreateGeometryFromFgf",
-                                                                   geometryType));
-	    }
-
-        // Update the pool.
-        if (pooledGeometryToReplaceIndex >= 0)
-        {
-            m_private->m_geometryPool2->SetItem(pooledGeometryToReplaceIndex, newGeometry);
-        }
-        else
-        {
-            (void) m_private->m_geometryPool2->Add(newGeometry);
-        }
-    } // end creation of new geometry
-
-    if (newGeometry == NULL)
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
 
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateGeometryFromFgf() OUT\n",
-            (long)byteArray, (long)byteArrayData, count);
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreateGeometryFromFgf() OUT\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
     return FDO_SAFE_ADDREF(newGeometry.p);
@@ -377,10 +304,10 @@ FdoIGeometry * FdoFgfGeometryFactory::CreateGeometryFromFgf(
 FdoByteArray * FdoFgfGeometryFactory::GetFgf(FdoIGeometry * geometry)
 {
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "FdoFgfGeometryFactory::GetFgf() IN\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "FdoFgfGeometryFactory::GetFgf() IN\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 	FdoPtr<FdoByteArray> array = 0;
@@ -443,10 +370,10 @@ FdoByteArray * FdoFgfGeometryFactory::GetFgf(FdoIGeometry * geometry)
 	}
 
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "FdoFgfGeometryFactory::GetFgf() OUT\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "FdoFgfGeometryFactory::GetFgf() OUT\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 	return FDO_SAFE_ADDREF(array.p);
@@ -454,13 +381,6 @@ FdoByteArray * FdoFgfGeometryFactory::GetFgf(FdoIGeometry * geometry)
 
 static FdoByteArray * CreateFgfFromWkb(FdoInt32 geometryType, FdoByte * byteArray, FdoInt32 byteArraySize, FdoInt32 * numBytesRead)
 {
-#ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
-    {
-        fprintf(FdoDebugFile, "CreateFgfFromWkb() IN\n");
-        fflush(FdoDebugFile);
-    }
-#endif
     // Assume that byteArray points to WKB data immediately after the geometry type.
     // We'll use the available WKB data to create FGF data and then create a geometry object.
 
@@ -559,23 +479,16 @@ static FdoByteArray * CreateFgfFromWkb(FdoInt32 geometryType, FdoByte * byteArra
     if (NULL != numBytesRead)
         *numBytesRead = byteArraySize - numBytes;
 
-#ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
-    {
-        fprintf(FdoDebugFile, "CreateFgfFromWkb() OUT\n");
-        fflush(FdoDebugFile);
-    }
-#endif
 	return fgfByteArray;
 }
 
 FdoIGeometry * FdoFgfGeometryFactory::CreateGeometryFromWkb(FdoByteArray * byteArray)
 {
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateGeometryFromWkb() IN\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreateGeometryFromWkb() IN\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 #define MIN_WKB_SIZE (sizeof(FdoByte)+sizeof(FdoInt32)+sizeof(FdoInt32))    // endian byte, geometry type, at least an integer of data
@@ -606,10 +519,10 @@ FdoIGeometry * FdoFgfGeometryFactory::CreateGeometryFromWkb(FdoByteArray * byteA
     FdoPtr<FdoIGeometry> geometry = this->CreateGeometryFromFgf(fgfByteArray);
 
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateGeometryFromWkb() OUT\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreateGeometryFromWkb() OUT\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
     return FDO_SAFE_ADDREF(geometry.p);
@@ -619,10 +532,10 @@ FdoIGeometry * FdoFgfGeometryFactory::CreateGeometryFromWkb(FdoByteArray * byteA
 FdoByteArray * FdoFgfGeometryFactory::GetWkb(FdoIGeometry * geometry)
 {
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "FdoFgfGeometryFactory::GetWkb() IN\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "FdoFgfGeometryFactory::GetWkb() IN\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
     if (NULL == geometry)
@@ -697,10 +610,10 @@ FdoByteArray * FdoFgfGeometryFactory::GetWkb(FdoIGeometry * geometry)
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_10_UNSUPPORTEDGEOMETRYTYPE)));
 	}
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "FdoFgfGeometryFactory::GetWkb() OUT\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "FdoFgfGeometryFactory::GetWkb() OUT\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 	return wkb;
@@ -714,10 +627,10 @@ FdoByteArray * FdoFgfGeometryFactory::GetWkb(FdoIGeometry * geometry)
 FdoIPoint* FdoFgfGeometryFactory::CreatePoint(FdoIDirectPosition* position)
 {
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreatePoint() IN\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreatePoint() IN\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 	if (NULL == position)
@@ -729,10 +642,10 @@ FdoIPoint* FdoFgfGeometryFactory::CreatePoint(FdoIDirectPosition* position)
     if (point == NULL)
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreatePoint() OUT\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreatePoint() OUT\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 	return FDO_SAFE_ADDREF(point.p);
@@ -745,10 +658,10 @@ FdoIPoint* FdoFgfGeometryFactory::CreatePoint(FdoIDirectPosition* position)
 FdoIPoint* FdoFgfGeometryFactory::CreatePoint(FdoInt32 dimensionality, double* ordinates)
 {
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreatePoint() IN\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreatePoint() IN\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 	if (NULL == ordinates)
@@ -759,10 +672,10 @@ FdoIPoint* FdoFgfGeometryFactory::CreatePoint(FdoInt32 dimensionality, double* o
     if (point == NULL)
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreatePoint() OUT\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreatePoint() OUT\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 	return FDO_SAFE_ADDREF(point.p);
@@ -802,10 +715,10 @@ FdoILinearRing* FdoFgfGeometryFactory::CreateLinearRing(FdoInt32 dimtype, FdoInt
 FdoILineStringSegment* FdoFgfGeometryFactory::CreateLineStringSegment(FdoDirectPositionCollection * positions)
 {
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateLineStringSegment() IN\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreateLineStringSegment() IN\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 	if ( (NULL == positions) ||
@@ -820,10 +733,10 @@ FdoILineStringSegment* FdoFgfGeometryFactory::CreateLineStringSegment(FdoDirectP
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
 
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateLineStringSegment() OUT\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreateLineStringSegment() OUT\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
     return FDO_SAFE_ADDREF(lineSegment.p);
@@ -837,10 +750,10 @@ FdoILineStringSegment* FdoFgfGeometryFactory::CreateLineStringSegment(FdoDirectP
 FdoILineStringSegment* FdoFgfGeometryFactory::CreateLineStringSegment(FdoInt32 dimensionality, FdoInt32 numOrdinates, double* ordinates)
 {
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateLineStringSegment() IN\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreateLineStringSegment() IN\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 	if ( (NULL == ordinates) ||
@@ -855,10 +768,10 @@ FdoILineStringSegment* FdoFgfGeometryFactory::CreateLineStringSegment(FdoInt32 d
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
 
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateLineStringSegment() OUT\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreateLineStringSegment() OUT\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
     return FDO_SAFE_ADDREF(lineSegment.p);
@@ -871,10 +784,10 @@ FdoILineStringSegment* FdoFgfGeometryFactory::CreateLineStringSegment(FdoInt32 d
 FdoIPolygon* FdoFgfGeometryFactory::CreatePolygon(FdoILinearRing* exteriorRing, FdoLinearRingCollection* interiorRings)
 {
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreatePolygon() IN\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreatePolygon() IN\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 	if (NULL == exteriorRing)
@@ -888,10 +801,10 @@ FdoIPolygon* FdoFgfGeometryFactory::CreatePolygon(FdoILinearRing* exteriorRing, 
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
 
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreatePolygon() OUT\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreatePolygon() OUT\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 	return FDO_SAFE_ADDREF(polygon.p);
@@ -905,10 +818,10 @@ FdoIPolygon* FdoFgfGeometryFactory::CreatePolygon(FdoILinearRing* exteriorRing, 
 FdoIMultiPoint* FdoFgfGeometryFactory::CreateMultiPoint(FdoPointCollection* points)
 {
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateMultiPoint() IN\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreateMultiPoint() IN\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 	if ( (NULL == points) ||
@@ -923,10 +836,10 @@ FdoIMultiPoint* FdoFgfGeometryFactory::CreateMultiPoint(FdoPointCollection* poin
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
 
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateMultiPoint() OUT\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreateMultiPoint() OUT\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 	return FDO_SAFE_ADDREF(multiPoint.p);
@@ -940,10 +853,10 @@ FdoIMultiPoint* FdoFgfGeometryFactory::CreateMultiPoint(FdoPointCollection* poin
 FdoIMultiPoint* FdoFgfGeometryFactory::CreateMultiPoint(FdoInt32 dimensionality, FdoInt32 numOrdinates, double* ordinates)
 {
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateMultiPoint() IN\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreateMultiPoint() IN\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 	if ( (NULL == ordinates) ||
@@ -958,10 +871,10 @@ FdoIMultiPoint* FdoFgfGeometryFactory::CreateMultiPoint(FdoInt32 dimensionality,
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
 
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateMultiPoint() OUT\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreateMultiPoint() OUT\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 	return FDO_SAFE_ADDREF(multiPoint.p);
@@ -975,10 +888,10 @@ FdoIMultiPoint* FdoFgfGeometryFactory::CreateMultiPoint(FdoInt32 dimensionality,
 FdoIMultiGeometry* FdoFgfGeometryFactory::CreateMultiGeometry(FdoGeometryCollection* geometries)
 {
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateMultiGeometry() IN\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreateMultiGeometry() IN\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 	if ( (NULL == geometries) ||
@@ -993,10 +906,10 @@ FdoIMultiGeometry* FdoFgfGeometryFactory::CreateMultiGeometry(FdoGeometryCollect
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
 
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateMultiGeometry() OUT\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreateMultiGeometry() OUT\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 	return FDO_SAFE_ADDREF(multiGeometry.p);
@@ -1010,10 +923,10 @@ FdoIMultiGeometry* FdoFgfGeometryFactory::CreateMultiGeometry(FdoGeometryCollect
 FdoIMultiLineString* FdoFgfGeometryFactory::CreateMultiLineString(FdoLineStringCollection* lineStrings)
 {
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateMultiLineString() IN\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreateMultiLineString() IN\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 	if ( (NULL == lineStrings) ||
@@ -1028,10 +941,10 @@ FdoIMultiLineString* FdoFgfGeometryFactory::CreateMultiLineString(FdoLineStringC
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
 
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateMultiLineString() OUT\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreateMultiLineString() OUT\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 	return FDO_SAFE_ADDREF(multiLineString.p);
@@ -1046,10 +959,10 @@ FdoIMultiLineString* FdoFgfGeometryFactory::CreateMultiLineString(FdoLineStringC
 FdoIMultiPolygon* FdoFgfGeometryFactory::CreateMultiPolygon(FdoPolygonCollection* polygons)
 {
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateMultiPolygon() IN\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreateMultiPolygon() IN\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 	if ( (NULL == polygons) ||
@@ -1064,10 +977,10 @@ FdoIMultiPolygon* FdoFgfGeometryFactory::CreateMultiPolygon(FdoPolygonCollection
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
 
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateMultiPolygon() OUT\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreateMultiPolygon() OUT\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 	return FDO_SAFE_ADDREF(multiPolygon.p);
@@ -1080,10 +993,10 @@ FdoIMultiPolygon* FdoFgfGeometryFactory::CreateMultiPolygon(FdoPolygonCollection
 FdoICircularArcSegment* FdoFgfGeometryFactory::CreateCircularArcSegment(FdoIDirectPosition* startPoint, FdoIDirectPosition* midPoint, FdoIDirectPosition* endPoint)
 {
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateCircularArcSegment() IN\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreateCircularArcSegment() IN\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 	if ( (NULL == startPoint) ||
@@ -1099,10 +1012,10 @@ FdoICircularArcSegment* FdoFgfGeometryFactory::CreateCircularArcSegment(FdoIDire
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
 
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateCircularArcSegment() OUT\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreateCircularArcSegment() OUT\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 	return FDO_SAFE_ADDREF(circArcSegment.p);
@@ -1116,10 +1029,10 @@ FdoICircularArcSegment* FdoFgfGeometryFactory::CreateCircularArcSegment(FdoIDire
 FdoICurveString* FdoFgfGeometryFactory::CreateCurveString(FdoCurveSegmentCollection* curveSegments)
 {
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateCurveString() IN\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreateCurveString() IN\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 	if ( (NULL == curveSegments) ||
@@ -1134,10 +1047,10 @@ FdoICurveString* FdoFgfGeometryFactory::CreateCurveString(FdoCurveSegmentCollect
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
 
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateCurveString() OUT\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreateCurveString() OUT\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 	return FDO_SAFE_ADDREF(curveString.p);
@@ -1151,10 +1064,10 @@ FdoICurveString* FdoFgfGeometryFactory::CreateCurveString(FdoCurveSegmentCollect
 FdoIMultiCurveString* FdoFgfGeometryFactory::CreateMultiCurveString(FdoCurveStringCollection* curveStrings)
 {
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateMultiCurveString() IN\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreateMultiCurveString() IN\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
     if ( (NULL == curveStrings) || (0 == curveStrings->GetCount()) )
@@ -1168,10 +1081,10 @@ FdoIMultiCurveString* FdoFgfGeometryFactory::CreateMultiCurveString(FdoCurveStri
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
 
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateMultiCurveString() OUT\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreateMultiCurveString() OUT\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 	return FDO_SAFE_ADDREF(multiCurveString.p);
@@ -1185,10 +1098,10 @@ FdoIMultiCurveString* FdoFgfGeometryFactory::CreateMultiCurveString(FdoCurveStri
 FdoIRing* FdoFgfGeometryFactory::CreateRing(FdoCurveSegmentCollection* curveSegments)
 {
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateRing() IN\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreateRing() IN\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 	if ( (NULL == curveSegments) ||
@@ -1203,10 +1116,10 @@ FdoIRing* FdoFgfGeometryFactory::CreateRing(FdoCurveSegmentCollection* curveSegm
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
 
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateRing() OUT\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreateRing() OUT\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 	return FDO_SAFE_ADDREF(ring.p);
@@ -1221,10 +1134,10 @@ FdoIRing* FdoFgfGeometryFactory::CreateRing(FdoCurveSegmentCollection* curveSegm
 FdoICurvePolygon* FdoFgfGeometryFactory::CreateCurvePolygon(FdoIRing* exteriorRing, FdoRingCollection* interiorRings)
 {
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateCurvePolygon() IN\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreateCurvePolygon() IN\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 	if (NULL == exteriorRing)
@@ -1238,10 +1151,10 @@ FdoICurvePolygon* FdoFgfGeometryFactory::CreateCurvePolygon(FdoIRing* exteriorRi
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
 
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateCurvePolygon() OUT\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreateCurvePolygon() OUT\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 	return FDO_SAFE_ADDREF(curvePolygon.p);
@@ -1256,10 +1169,10 @@ FdoICurvePolygon* FdoFgfGeometryFactory::CreateCurvePolygon(FdoIRing* exteriorRi
 FdoIMultiCurvePolygon* FdoFgfGeometryFactory::CreateMultiCurvePolygon(FdoCurvePolygonCollection* curvePolygons)
 {
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateMultiCurvePolygon() IN\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreateMultiCurvePolygon() IN\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
     if ( (NULL == curvePolygons) || 0 == curvePolygons->GetCount() )
@@ -1273,10 +1186,10 @@ FdoIMultiCurvePolygon* FdoFgfGeometryFactory::CreateMultiCurvePolygon(FdoCurvePo
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
 
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateMultiCurvePolygon() OUT\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreateMultiCurvePolygon() OUT\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 	return FDO_SAFE_ADDREF(multiCurvePolygon.p);
@@ -1287,10 +1200,10 @@ FdoIMultiCurvePolygon* FdoFgfGeometryFactory::CreateMultiCurvePolygon(FdoCurvePo
 FdoIGeometry * FdoFgfGeometryFactory::CreateGeometry(FdoIEnvelope * envelope)
 {
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateGeometry(envelope) IN\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreateGeometry(envelope) IN\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
     int dimensionality = FdoDimensionality_XY;
@@ -1333,10 +1246,10 @@ FdoIGeometry * FdoFgfGeometryFactory::CreateGeometry(FdoIEnvelope * envelope)
     FdoPtr<FdoIPolygon> geometry = CreatePolygon(ring, NULL);
 
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateGeometry(envelope) OUT\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreateGeometry(envelope) OUT\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
     return FDO_SAFE_ADDREF(geometry.p);
@@ -1345,10 +1258,10 @@ FdoIGeometry * FdoFgfGeometryFactory::CreateGeometry(FdoIEnvelope * envelope)
 FdoIGeometry* FdoFgfGeometryFactory::CreateGeometry(FdoString* fgft)
 {
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateGeometry(fgft) IN\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreateGeometry(fgft) IN\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 	FdoPtr<FdoIGeometry>	geometry;
@@ -1367,10 +1280,10 @@ FdoIGeometry* FdoFgfGeometryFactory::CreateGeometry(FdoString* fgft)
 		delete parse;
 	}
 #ifdef EXTRA_DEBUG
-    if (NULL != FdoDebugFile)
+    if (NULL != m_private->m_fdoDebugFile)
     {
-        fprintf(FdoDebugFile, "CreateGeometry(fgft) OUT\n");
-        fflush(FdoDebugFile);
+        fprintf(m_private->m_fdoDebugFile, "CreateGeometry(fgft) OUT\n");
+        fflush(m_private->m_fdoDebugFile);
     }
 #endif
 	return FDO_SAFE_ADDREF(geometry.p);

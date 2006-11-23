@@ -65,8 +65,18 @@ FdoFgfMultiCurveString::FdoFgfMultiCurveString(
     const FdoByte * data,
     FdoInt32 count
     )
-    : FdoFgfGeometryImpl<FdoIMultiCurveString>(factory, byteArray, data, count)
+    : FdoFgfGeometryImpl<FdoIMultiCurveString>(factory)
 {
+    Reset(byteArray, data, count);
+}
+
+void FdoFgfMultiCurveString::Reset(
+    FdoByteArray * byteArray,
+    const FdoByte * data,
+    FdoInt32 count
+    )
+{
+    SetFgf(byteArray, data, count);
 }
 
 

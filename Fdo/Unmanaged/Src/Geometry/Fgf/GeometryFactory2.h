@@ -48,33 +48,75 @@
 FDOPOOL_DEFINE(FdoByteArrayPool,            FdoByteArray)
 FDOPOOL_DEFINE(FdoFgfLinearRingPool,        FdoFgfLinearRing)
 FDOPOOL_DEFINE(FdoPoolFgfLineString,        FdoFgfLineString)
+FDOPOOL_DEFINE(FdoPoolFgfPoint,             FdoFgfPoint)
+FDOPOOL_DEFINE(FdoPoolFgfPolygon,           FdoFgfPolygon)
+FDOPOOL_DEFINE(FdoPoolFgfMultiPoint,        FdoFgfMultiPoint)
+FDOPOOL_DEFINE(FdoPoolFgfMultiGeometry,     FdoFgfMultiGeometry)
+FDOPOOL_DEFINE(FdoPoolFgfMultiLineString,   FdoFgfMultiLineString)
+FDOPOOL_DEFINE(FdoPoolFgfMultiPolygon,      FdoFgfMultiPolygon)
+FDOPOOL_DEFINE(FdoPoolFgfCurveString,       FdoFgfCurveString)
+FDOPOOL_DEFINE(FdoPoolFgfMultiCurveString,  FdoFgfMultiCurveString)
+FDOPOOL_DEFINE(FdoPoolFgfCurvePolygon,      FdoFgfCurvePolygon)
+FDOPOOL_DEFINE(FdoPoolFgfMultiCurvePolygon, FdoFgfMultiCurvePolygon)
 
+#define FDO_GEOM_POOL_DECLARE(type) FdoPtr<FdoPoolFgf##type>        m_Pool##type;
+#define FDO_GEOM_POOL_NULLIFY(type) m_Pool##type = NULL;
 
 /// <summary>This defines private data for the FdoFgfGeometryFactory class.
 /// Changes can be made here without affecting the public interface.
 /// </summary>
 struct FdoFgfGeometryFactory2
 {
-    FdoPtr<FdoGeometryCollection>       m_geometryPool2;    // A few previous Geometries created; For fast re-creation.
     FdoPtr<FdoByteArrayPool>            m_byteArrayPool;    // For fast re-creation.
     FdoPtr<FdoFgfLinearRingPool>        m_linearRingPool;   // For fast re-creation.
-    FdoPtr<FdoPoolFgfLineString>        m_PoolLineString;
+    FDO_GEOM_POOL_DECLARE(LineString);
+    FDO_GEOM_POOL_DECLARE(Point);
+    FDO_GEOM_POOL_DECLARE(Polygon);
+    FDO_GEOM_POOL_DECLARE(MultiPoint);
+    FDO_GEOM_POOL_DECLARE(MultiGeometry);
+    FDO_GEOM_POOL_DECLARE(MultiLineString);
+    FDO_GEOM_POOL_DECLARE(MultiPolygon);
+    FDO_GEOM_POOL_DECLARE(CurveString);
+    FDO_GEOM_POOL_DECLARE(MultiCurveString);
+    FDO_GEOM_POOL_DECLARE(CurvePolygon);
+    FDO_GEOM_POOL_DECLARE(MultiCurvePolygon);
 
 #ifdef EXTRA_DEBUG
     FdoInt32 m_numByteArraysCreated;
-    void PrintStats();
+    void PrintStats(FILE * fileHandle);
+    FILE * m_fdoDebugFile;
 #endif
     FdoFgfGeometryFactory2()
 #ifdef EXTRA_DEBUG
-        : m_numByteArraysCreated(0)
+        : m_numByteArraysCreated(0),
+          m_fdoDebugFile(NULL)
 #endif
     {
     };
-    ~FdoFgfGeometryFactory2() {};
+    ~FdoFgfGeometryFactory2()
+    {
+        // Geometry object destructors may try to hand back byte arrays
+        // to the factory.  Rather than let automatic destruction do this
+        // in an undefined order, we'll do it manually here to ensure that
+        // the byte array pool is still defined until the last step.
+        m_linearRingPool = NULL;
+        FDO_GEOM_POOL_NULLIFY(LineString);
+        FDO_GEOM_POOL_NULLIFY(Point);
+        FDO_GEOM_POOL_NULLIFY(Polygon);
+        FDO_GEOM_POOL_NULLIFY(MultiPoint);
+        FDO_GEOM_POOL_NULLIFY(MultiGeometry);
+        FDO_GEOM_POOL_NULLIFY(MultiLineString);
+        FDO_GEOM_POOL_NULLIFY(MultiPolygon);
+        FDO_GEOM_POOL_NULLIFY(CurveString);
+        FDO_GEOM_POOL_NULLIFY(MultiCurveString);
+        FDO_GEOM_POOL_NULLIFY(CurvePolygon);
+        FDO_GEOM_POOL_NULLIFY(MultiCurvePolygon);
+        m_byteArrayPool = NULL;
+    };
 
     // Internal methods for FdoFgfGeometryFactory's use.
 
-#define CREATE_POOLED_GEOMETRY(type) \
+#define DEFINE_CREATE_POOLED_GEOMETRY(type) \
     FdoI##type * Create##type( \
         FdoFgfGeometryFactory * factory, \
         FdoByteArray * byteArray, \
@@ -89,7 +131,17 @@ struct FdoFgfGeometryFactory2
             Reset(byteArray, data, count) ); \
     }
 
-    CREATE_POOLED_GEOMETRY(LineString);
+    DEFINE_CREATE_POOLED_GEOMETRY(LineString);
+    DEFINE_CREATE_POOLED_GEOMETRY(Point);
+    DEFINE_CREATE_POOLED_GEOMETRY(Polygon);
+    DEFINE_CREATE_POOLED_GEOMETRY(MultiPoint);
+    DEFINE_CREATE_POOLED_GEOMETRY(MultiGeometry);
+    DEFINE_CREATE_POOLED_GEOMETRY(MultiLineString);
+    DEFINE_CREATE_POOLED_GEOMETRY(MultiPolygon);
+    DEFINE_CREATE_POOLED_GEOMETRY(CurveString);
+    DEFINE_CREATE_POOLED_GEOMETRY(MultiCurveString);
+    DEFINE_CREATE_POOLED_GEOMETRY(CurvePolygon);
+    DEFINE_CREATE_POOLED_GEOMETRY(MultiCurvePolygon);
 
 };
 #endif

@@ -86,8 +86,19 @@ FdoFgfPoint::FdoFgfPoint(
     const FdoByte * data,
     FdoInt32 count
     )
-    : FdoFgfGeometryImpl<FdoIPoint>(factory, byteArray, data, count)
+    : FdoFgfGeometryImpl<FdoIPoint>(factory)
 {
+    Reset(byteArray, data, count);
+}
+
+
+void FdoFgfPoint::Reset(
+    FdoByteArray * byteArray,
+    const FdoByte * data,
+    FdoInt32 count
+    )
+{
+    SetFgf(byteArray, data, count);
 }
 
 

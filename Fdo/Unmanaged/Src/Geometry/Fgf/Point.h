@@ -46,7 +46,10 @@ public:
 	// Just latch onto the data stream.
 	FdoFgfPoint(FdoFgfGeometryFactory * factory, FdoByteArray * byteArray, const FdoByte * data, FdoInt32 count);
 
-	virtual ~FdoFgfPoint();
+    // Support object re-use, matching the constructor.
+	void Reset(FdoByteArray * byteArray, const FdoByte * data, FdoInt32 count);
+
+    virtual ~FdoFgfPoint();
 
 
 	// From FdoIGeometry

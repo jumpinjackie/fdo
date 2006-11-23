@@ -118,9 +118,19 @@ FdoFgfMultiPoint::FdoFgfMultiPoint(
     const FdoByte * data,
     FdoInt32 count
     )
-    : FdoFgfGeometryImpl<FdoIMultiPoint>(factory, byteArray, data, count),
+    : FdoFgfGeometryImpl<FdoIMultiPoint>(factory),
       m_ordinates(NULL)
 {
+    Reset(byteArray, data, count);
+}
+
+void FdoFgfMultiPoint::Reset(
+    FdoByteArray * byteArray,
+    const FdoByte * data,
+    FdoInt32 count
+    )
+{
+    SetFgf(byteArray, data, count);
 }
 
 

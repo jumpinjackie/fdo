@@ -64,8 +64,18 @@ FdoFgfMultiCurvePolygon::FdoFgfMultiCurvePolygon(
     const FdoByte * data,
     FdoInt32 count
     )
-    : FdoFgfGeometryImpl<FdoIMultiCurvePolygon>(factory, byteArray, data, count)
+    : FdoFgfGeometryImpl<FdoIMultiCurvePolygon>(factory)
 {
+    Reset(byteArray, data, count);
+}
+
+void FdoFgfMultiCurvePolygon::Reset(
+    FdoByteArray * byteArray,
+    const FdoByte * data,
+    FdoInt32 count
+    )
+{
+    SetFgf(byteArray, data, count);
 }
 
 
