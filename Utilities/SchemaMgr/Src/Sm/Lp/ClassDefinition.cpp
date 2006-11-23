@@ -1352,10 +1352,18 @@ void FdoSmLpClassBase::CreateCkeys( bool bMerge )
 			FdoSmLpCheckConstraintP		lpCkey = pLpCheckConstraints->GetItem(i);
 			
 			bool	found = false;
-			for ( int j = 0; j < phCkeys->GetCount() && !found; j++ ) {
-				FdoSmPhCheckConstraintP		phCkey = phCkeys->GetItem(j);
-				found = ( wcscmp(phCkey->GetColumnName(), lpCkey->GetColumnName()) == 0 );
-			}
+
+		    for ( int j = 0; j < phCkeys->GetCount() && !found; j++ ) {
+			    FdoSmPhCheckConstraintP		phCkey = phCkeys->GetItem(j);
+			    found = ( wcscmp(phCkey->GetColumnName(), lpCkey->GetColumnName()) == 0 );
+
+                // If the constraint is on the "to delete" list, it needs to be re-added.
+                if ( found && (phTable->GetDeletedConstraints()->IndexOf(phCkey->GetName()) >= 0) ) { 
+                    found = false;
+                    break;
+                }
+            }
+
 			if ( !found ) {
 				FdoSmPhCheckConstraintP  phCkey = new FdoSmPhCheckConstraint( L"", lpCkey->GetColumnName(), lpCkey->GetClause());
 				phCkey->SetElementState(FdoSchemaElementState_Added);

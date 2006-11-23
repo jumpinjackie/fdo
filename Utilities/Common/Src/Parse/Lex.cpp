@@ -832,8 +832,17 @@ bool FdoLex::getnumber(FdoCommonParse *pParse, bool sign)
 		*pstr = m_ch;
 		pstr++;
         m_ch = if_getch(pParse);
-        pstr = getdigits(pParse, pstr);
-        dot = true;
+        // Some RDBMS's (e.g. SqlServer) put dots after integers that don't
+        // fit in an int32. Therefore, ignore the dot if it is not followed
+        // by a digit. This allows dot-terminated integers, outside the int32 range,
+        // to be parsed as int64.
+        if ( iswdigit(m_ch) ) {
+            pstr = getdigits(pParse, pstr);
+            dot = true;
+        }
+        else {
+            pstr--;
+        }
     } 
 	else 
 	{
