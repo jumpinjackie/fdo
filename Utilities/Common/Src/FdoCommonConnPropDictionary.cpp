@@ -81,39 +81,10 @@ void FdoCommonConnPropDictionary::SetProperty (FdoString* name, FdoString* value
 
     // compute the new connection string length
     FdoPtr<ConnectionProperty> pProperty;
-    size_t length = 0;
     int count = mProperties->GetCount ();
-    for (int i = 0; i < count; i++)
-    {
-        pProperty = mProperties->GetItem(i);
-
-        // skip over properties that aren't set:
-        // NOTE: if a required property isn't set, FdoIConnection::Open() should throw appropriate exception
-        if (!pProperty->GetIsPropertySet ())
-            continue;
-
-        // verify we have a valid token
-        const wchar_t* pname  = pProperty->GetName ();
-        const wchar_t* pvalue = pProperty->GetValue ();
-        if (pname == NULL || pvalue == NULL)
-            continue;
-        size_t nameLen  = wcslen (pname);
-        size_t valueLen = wcslen (pvalue);
-        if (nameLen == 0)   // but zero-length values are ok
-            continue;
-
-        // account for the token length
-        length += nameLen;      // name
-        length += 1;            // =
-        length += valueLen;     // value
-        length += 1;        // ;
-    }
 
     // generate the new connection string
-    wchar_t* connection_string;
-    connection_string = new wchar_t[length + 2 + 1];
-    connection_string[0] = L'\0';
-    length = 0;
+    FdoStringP connection_string;
     for (int i = 0; i < count; i++)
     {
         pProperty = mProperties->GetItem(i);
@@ -126,27 +97,22 @@ void FdoCommonConnPropDictionary::SetProperty (FdoString* name, FdoString* value
         // verify we have a valid token
         const wchar_t* tname  = pProperty->GetName ();
         const wchar_t* tvalue = pProperty->GetValue ();
-        if (tname == NULL || tvalue == NULL)
-            continue;
-        size_t nameLen  = wcslen (tname);
-        if (nameLen == 0)   // but zero-length values are ok
+        if (tname == NULL || tvalue == NULL || wcslen (tname) == 0)
             continue;
 
-        wcscat (connection_string, tname);                              // name
-        wcscat (connection_string, CONNECTIONPROPERTY_SEPARATOR);       // =
+        connection_string += tname;                              // name
+        connection_string += CONNECTIONPROPERTY_SEPARATOR;       // =
 		if (tvalue != NULL && (pProperty->GetIsPropertyQuoted() || wcsrchr(tvalue, L';') != NULL))
 		{
-			wcscat (connection_string, L"\"");                              // "
-			wcscat (connection_string, tvalue);                             // value
-			wcscat (connection_string, L"\"");                              // "
+			connection_string += L"\"";                              // "
+			connection_string += tvalue;                             // value
+			connection_string += L"\"";                              // "
 		}
 		else
-			wcscat (connection_string, tvalue);                             // value
-        wcscat (connection_string, CONNECTIONPROPERTY_DELIMITER);   // ;
-        length++;
+			connection_string += tvalue;                             // value
+        connection_string += CONNECTIONPROPERTY_DELIMITER;           // ;
     }
 
     // update it on the connection
     mConnection->SetConnectionString (connection_string);
-    delete [] connection_string;
 }

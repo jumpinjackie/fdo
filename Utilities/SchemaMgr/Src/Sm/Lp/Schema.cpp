@@ -446,7 +446,7 @@ FdoSmLpClassDefinitionP FdoSmLpSchema::LoadClass(FdoStringP className, FdoString
 		FdoSmLpClassDefinitionP newClass = CreateClassDefinition( classReader );
         // When there is a config document, skip any classes already loaded, since they've
         // been loaded from the config doc.
-        if ( !mPhysicalSchema->GetConfigSchemas() || (!mClasses->FindItem(newClass->GetName())) )
+        if ( !mPhysicalSchema->GetConfigSchemas() || (!FdoPtr<FdoSmLpClassDefinition>(mClasses->FindItem(newClass->GetName()))) )
     		mClasses->Add( newClass );
 	}
     return mClasses->FindItem(className);
