@@ -190,13 +190,7 @@ bool FdoSmLpMySqlGeometricPropertyDefinition::CheckGeomPropShapeType (FdoGeometr
         long allowedHexTypes = GetSpecificGeometryTypes() ;
         // call FdoCommonGeometryUtil::MapHexCodeToGeometryType only if we have a single geometry allowed
         // otherwise skip the test if we have more than one geometries (e.g. point and multipoint)
-        if (allowedHexTypes != FdoCommonGeometryUtil::GetAllGeometryTypesCode() && 
-            allowedHexTypes != FdoCommonGeometryUtil::GetCurveGeometryTypesCode() && 
-            allowedHexTypes != FdoCommonGeometryUtil::GetCurveSurfaceGeometryTypesCode() && 
-            allowedHexTypes != FdoCommonGeometryUtil::GetPointCurveGeometryTypesCode() && 
-            allowedHexTypes != FdoCommonGeometryUtil::GetPointGeometryTypesCode() && 
-            allowedHexTypes != FdoCommonGeometryUtil::GetPointSurfaceGeometryTypesCode() && 
-            allowedHexTypes != FdoCommonGeometryUtil::GetSurfaceGeometryTypesCode())
+        if (FdoCommonGeometryUtil::GetCountGeometryTypesFromHex(allowedHexTypes) <= 1)
                 allowedGeomType = FdoCommonGeometryUtil::MapHexCodeToGeometryType(allowedHexTypes);
             retVal = ((allowedGeomType == FdoGeometryType_MultiGeometry) || (allowedGeomType == geomType) );
     }
