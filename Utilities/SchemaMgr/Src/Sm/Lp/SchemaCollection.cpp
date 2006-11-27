@@ -294,8 +294,8 @@ void FdoSmLpSchemaCollection::Load()
             FdoSmLpSchemaP rdrSchema = NewSchema(rdr);
             // Skip any schemas already loaded from config doc.
             // Config doc takes precedence.
-            if ( !schemas || (!FindItem(rdrSchema->GetName())) )
-    		    this->Add( NewSchema(rdr) );
+            if ( !schemas || (!FdoPtr<FdoSmLpSchema>(FindItem(rdrSchema->GetName()))) )
+    		    this->Add( rdrSchema );
 	    }
 	}
 }
@@ -303,7 +303,11 @@ void FdoSmLpSchemaCollection::Load()
 
 void FdoSmLpSchemaCollection::XMLSerialize( FdoString* sFileName ) const
 {
+#ifdef _WIN32
+	FILE* xmlFp = _wfopen( sFileName, L"w" );
+#else
 	FILE* xmlFp = fopen( (const char*) FdoStringP(sFileName), "w" );
+#endif
 
 	fprintf( xmlFp, "<?xml version=\"1.0\" standalone=\"yes\"?>\n" );
     fprintf( xmlFp, "<schemas xmlns:xsi=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical\" >\n" );
@@ -859,8 +863,8 @@ void FdoSmLpSchemaCollection::ConvertConstraints(const FdoSmLpClassDefinition* p
 				{
 					FdoPropertyValueConstraintRange*	pConstrR = static_cast<FdoPropertyValueConstraintRange*>((FdoPropertyValueConstraint*)pConstr);
 					
-					pConstrR->SetMinValue( FixDataValueType( FdoPtr<FdoDataValue>(pConstrR->GetMinValue()), propType ));
-					pConstrR->SetMaxValue( FixDataValueType( FdoPtr<FdoDataValue>(pConstrR->GetMaxValue()), propType ));
+					pConstrR->SetMinValue( FdoPtr<FdoDataValue>(FixDataValueType( FdoPtr<FdoDataValue>(pConstrR->GetMinValue()), propType )));
+					pConstrR->SetMaxValue( FdoPtr<FdoDataValue>(FixDataValueType( FdoPtr<FdoDataValue>(pConstrR->GetMaxValue()), propType )));
 				} 
 				else if ( pConstr->GetConstraintType() == FdoPropertyValueConstraintType_List ) 
 				{
@@ -869,7 +873,7 @@ void FdoSmLpSchemaCollection::ConvertConstraints(const FdoSmLpClassDefinition* p
 
 					for ( int i = 0; i < vals->GetCount(); i++ )
 					{
-						vals->SetItem( i, FixDataValueType(vals->GetItem(i), propType) );
+						vals->SetItem( i, FdoPtr<FdoDataValue>(FixDataValueType(vals->GetItem(i), propType) ));
 					}	
 				}
 
