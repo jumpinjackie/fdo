@@ -201,6 +201,9 @@ public:
     /// will be determined in the following order if the server supports: PNG, JPEG, TIFF and GIF. </summary>
     FdoString* GetDefaultImageFormat();
 
+    // Gets the version from client request
+    FdoStringP GetRequestWMSVersion(const wchar_t* pStr);
+
 protected:
     /**
      * The connection string containing details about how to connect to FdoWms.

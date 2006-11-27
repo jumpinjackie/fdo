@@ -18,6 +18,7 @@
 
 #include "stdafx.h"
 
+#include <wctype.h>
 #include <malloc.h>
 #include <string.h>
 #include <gdal_priv.h>
@@ -252,9 +253,9 @@ FdoConnectionState FdoWmsConnection::Open ()
 
     mLayerMappings = FdoDictionary::Create();
 
+    FdoStringP pVersion = GetRequestWMSVersion(location);
     FdoWmsDelegateP wmsDelegate = FdoWmsDelegate::Create(location, user, password);
-    mWmsServiceMetadata = wmsDelegate->GetServiceMetadata();
-
+    mWmsServiceMetadata = wmsDelegate->GetServiceMetadata(pVersion);
 	if (mConfigured)
     {
         // Some layer names may contain ":" or "." characters which are not allowed
@@ -1046,4 +1047,39 @@ void FdoWmsConnection::_buildUpClassLayerMapping (FdoWmsLayer* layer)
         FdoPtr<FdoDictionaryElement> pair = FdoDictionaryElement::Create (modLayerName, layerName);
         mLayerMappings->Add (pair);
     }
+}
+
+FdoStringP FdoWmsConnection::GetRequestWMSVersion(const wchar_t* pStr)
+{
+    FdoStringP pRetStr;
+    wchar_t tmpBuf[21];
+    const wchar_t* pVersion = L"version=";
+    if (pStr == NULL)
+        return pRetStr;
+    int idx = 0, idxVers = 0, idxResPos = -1;
+    while(*(pStr+idx) != L'\0' && *(pVersion+idxVers) != L'\0')
+    {
+        if (towlower(*(pStr+idx)) == *(pVersion+idxVers))
+        {
+            idxResPos = (idxResPos == -1) ? idx : idxResPos;
+            idxVers++;
+        }
+        else
+        {
+            idxVers = 0;
+            idx = (idxResPos != -1) ? idxResPos : idx;
+            idxResPos = -1;
+        }
+        idx++;
+    }
+    if (idxResPos == -1)
+        return pRetStr;
+
+    idx = idxResPos+8;
+    while (*(pStr+idx) != L'\0' && *(pStr+idx) != L'&') idx++;
+    int szcopy = (20 < idx-idxResPos-8) ? (20) : (idx-idxResPos-8);
+    wcsncpy(tmpBuf, pStr+idxResPos+8, szcopy );
+    tmpBuf[szcopy] = L'\0';
+    pRetStr = tmpBuf;
+    return pRetStr;
 }

@@ -38,7 +38,7 @@ public:
     static FdoWmsDelegate* Create(FdoString* defaultUrl, FdoString* userName, FdoString* passwd);
 
 public:
-    FdoWmsServiceMetadata* GetServiceMetadata();
+    FdoWmsServiceMetadata* GetServiceMetadata(FdoString* pVersion);
 
 	FdoIoStream* GetMap(FdoStringCollection* layerNames, 
 		FdoStringCollection* styleNames,

@@ -48,10 +48,13 @@ FdoWmsDelegate* FdoWmsDelegate::Create(FdoString* defaultUrl, FdoString* userNam
     return new FdoWmsDelegate(defaultUrl, userName, passwd);
 }
 
-FdoWmsServiceMetadata* FdoWmsDelegate::GetServiceMetadata()
+FdoWmsServiceMetadata* FdoWmsDelegate::GetServiceMetadata(FdoString* pVersion)
 {
     FdoPtr<FdoOwsGetCapabilities> request = FdoOwsGetCapabilities::Create(FdoWmsXmlGlobals::WMSServiceName);
-    request->SetVersion(FdoWmsXmlGlobals::WmsVersion);
+    if (pVersion == NULL || wcslen(pVersion) == 0)
+        request->SetVersion(FdoWmsXmlGlobals::WmsVersion);
+    else
+        request->SetVersion(L""); // version already in URL.
     FdoPtr<FdoOwsResponse> response = Invoke(request);
     FdoPtr<FdoIoStream> stream = response->GetStream();
     FdoWmsServiceMetadataP rv = FdoWmsServiceMetadata::Create();

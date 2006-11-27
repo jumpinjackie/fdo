@@ -32,21 +32,21 @@ class WmsTestSelect : public WmsTests
 
 #ifdef _FDO_RUN_INTERNAL_TEST	
     CPPUNIT_TEST (testServer1);
-	CPPUNIT_TEST (testNestedClip);
+    CPPUNIT_TEST (testNestedClip);
     CPPUNIT_TEST (testGetBounds);
-	CPPUNIT_TEST (testHttpBasicAuthentification);
+    CPPUNIT_TEST (testHttpBasicAuthentification);
 #endif
 
     CPPUNIT_TEST (testServer2);
-	CPPUNIT_TEST (testResample);
-	CPPUNIT_TEST (testClip);
-	CPPUNIT_TEST (testDefaultHeight);
-	CPPUNIT_TEST (testNASAServer);
-	CPPUNIT_TEST (testNASAServer2);
+    CPPUNIT_TEST (testResample);
+    CPPUNIT_TEST (testClip);
+    CPPUNIT_TEST (testDefaultHeight);
+    CPPUNIT_TEST (testNASAServer);
+    CPPUNIT_TEST (testNASAServer2);
     CPPUNIT_TEST (testIntegraphWorld);
     CPPUNIT_TEST (testCubeServer);
     CPPUNIT_TEST (testMultiLayers);
-	CPPUNIT_TEST (testTerraService);
+    CPPUNIT_TEST (testTerraService);
     CPPUNIT_TEST (testDefect786029);
     CPPUNIT_TEST (testEusoils);
     CPPUNIT_TEST (testEusoilsPesera);
@@ -62,6 +62,8 @@ class WmsTestSelect : public WmsTests
     CPPUNIT_TEST (testLioib);
     CPPUNIT_TEST (testKortPlandk);
     CPPUNIT_TEST (testLibcwms);
+    CPPUNIT_TEST (testStoboWms);
+    CPPUNIT_TEST (testLinuxgurrl);
 
 	CPPUNIT_TEST_SUITE_END ();
 
@@ -103,6 +105,8 @@ public:
     void testLioib ();
     void testKortPlandk ();
     void testLibcwms ();
+    void testStoboWms ();
+    void testLinuxgurrl ();
 };
 
 #endif//FDOWMSTESTSELECT_H
