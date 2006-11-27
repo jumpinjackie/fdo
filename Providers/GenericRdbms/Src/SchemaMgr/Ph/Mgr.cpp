@@ -266,8 +266,11 @@ void FdoSmPhGrdMgr::ExecSchemaFile( FdoStringP fileName, FdoStringsP keywords )
         (FdoString*) GetHomeDir(),
         (FdoString*) fileName
     );
-
+#ifdef _WIN32
+    init_file = _wfopen( (const wchar_t*) fullFileName, L"rt" );
+#else
     init_file = fopen( (const char*) fullFileName, "rt" );
+#endif
     if (init_file == NULL) {                        /* errors - so exit */
         throw FdoSchemaException::Create (
             NlsMsgGet1 (
