@@ -57,11 +57,13 @@ FdoString* FdoOwsRequest::GetRequest ()
 FdoStringP FdoOwsRequest::EncodeKVP()
 {
     FdoStringP ret;
-    ret += FdoOwsGlobals::version;
-    ret += FdoOwsGlobals::Equal;
-    ret += m_version;
-
-    ret += FdoOwsGlobals::And;
+    if (m_version.GetLength() != 0)
+    {
+        ret += FdoOwsGlobals::version;
+        ret += FdoOwsGlobals::Equal;
+        ret += m_version;
+        ret += FdoOwsGlobals::And;
+    }
     ret += FdoOwsGlobals::service;
     ret += FdoOwsGlobals::Equal;
     ret += m_service;
