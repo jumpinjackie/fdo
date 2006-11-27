@@ -148,7 +148,7 @@ FdoStringP FdoSmPhView::GetAddRootSql()
     FdoStringsP     colClauses = FdoStringCollection::Create();
 
     for ( i = 0; i < columns->GetCount(); i++ ) {
-        colClauses->Add( columns->GetItem(i)->GetDbRootName() );
+        colClauses->Add( FdoSmPhColumnP(columns->GetItem(i))->GetDbRootName() );
     }
 
     FdoStringP selClause = FdoStringP::Format(

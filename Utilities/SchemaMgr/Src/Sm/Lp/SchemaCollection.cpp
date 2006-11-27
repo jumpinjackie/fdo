@@ -294,8 +294,8 @@ void FdoSmLpSchemaCollection::Load()
             FdoSmLpSchemaP rdrSchema = NewSchema(rdr);
             // Skip any schemas already loaded from config doc.
             // Config doc takes precedence.
-            if ( !schemas || (!FindItem(rdrSchema->GetName())) )
-    		    this->Add( NewSchema(rdr) );
+            if ( !schemas || (!FdoPtr<FdoSmLpSchema>(FindItem(rdrSchema->GetName()))) )
+    		    this->Add( rdrSchema );
 	    }
 	}
 }
@@ -863,8 +863,8 @@ void FdoSmLpSchemaCollection::ConvertConstraints(const FdoSmLpClassDefinition* p
 				{
 					FdoPropertyValueConstraintRange*	pConstrR = static_cast<FdoPropertyValueConstraintRange*>((FdoPropertyValueConstraint*)pConstr);
 					
-					pConstrR->SetMinValue( FixDataValueType( FdoPtr<FdoDataValue>(pConstrR->GetMinValue()), propType ));
-					pConstrR->SetMaxValue( FixDataValueType( FdoPtr<FdoDataValue>(pConstrR->GetMaxValue()), propType ));
+					pConstrR->SetMinValue( FdoPtr<FdoDataValue>(FixDataValueType( FdoPtr<FdoDataValue>(pConstrR->GetMinValue()), propType )));
+					pConstrR->SetMaxValue( FdoPtr<FdoDataValue>(FixDataValueType( FdoPtr<FdoDataValue>(pConstrR->GetMaxValue()), propType )));
 				} 
 				else if ( pConstr->GetConstraintType() == FdoPropertyValueConstraintType_List ) 
 				{
@@ -873,7 +873,7 @@ void FdoSmLpSchemaCollection::ConvertConstraints(const FdoSmLpClassDefinition* p
 
 					for ( int i = 0; i < vals->GetCount(); i++ )
 					{
-						vals->SetItem( i, FixDataValueType(vals->GetItem(i), propType) );
+						vals->SetItem( i, FdoPtr<FdoDataValue>(FixDataValueType(vals->GetItem(i), propType) ));
 					}	
 				}
 

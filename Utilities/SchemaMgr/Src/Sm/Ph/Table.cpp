@@ -349,7 +349,7 @@ void FdoSmPhTable::ForceDelete()
     // Must explicitly delete any foreign keys when table is deleted.
     FdoSmPhFkeysP   fkeys = GetFkeysUp();
     for ( i = 0; i < fkeys->GetCount(); i++ ) {
-        fkeys->GetItem(i)->SetElementState(FdoSchemaElementState_Deleted);
+        FdoSmPhFkeyP(fkeys->GetItem(i))->SetElementState(FdoSchemaElementState_Deleted);
     }
 }
 
