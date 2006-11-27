@@ -26,7 +26,8 @@ libFDOSpatial_la_SOURCES = \
   SpatialEnvelope.cpp \
   SpatialUtility.cpp \
   SpatialUtilityGeometryExtents.cpp \
-  SpatialUtilityCircularArc.cpp
+  SpatialUtilityCircularArc.cpp \
+  SpatialGeometryConverter.cpp
 
 noinst_HEADERS = $(libFDOSpatial_la_SOURCES) \
   MathUtility.h \
