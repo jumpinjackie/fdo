@@ -192,7 +192,7 @@ FdoXmlSaxHandler* FdoPhysicalSchemaMappingCollection::XmlStartElement(
                         // Get the Schema Mapping from the connection. This ensures 
                         // we get the appropriate class of Schema Mapping for the provider,
                         // without generic FDO having to know these provider-specific classes.
-                        FdoPhysicalSchemaMapping* mapping = connection->CreateSchemaMapping();
+                        FdoPtr<FdoPhysicalSchemaMapping> mapping = connection->CreateSchemaMapping();
 
                         if ( mapping ) {
                             // Sanity check to ensure we created the right schema mapping.
@@ -217,7 +217,6 @@ FdoXmlSaxHandler* FdoPhysicalSchemaMappingCollection::XmlStartElement(
                                 Add(mapping);
                                 mapping->InitFromXml( context, atts );
                                 ret = mapping;
-                                mapping->Release();
                             }
                         }
                     }
@@ -239,7 +238,9 @@ FdoXmlSaxHandler* FdoPhysicalSchemaMappingCollection::XmlStartElement(
 
             if ( !ret ) {
                 // A C++ class for this Schema Mapping was not found, skip this mapping.
-                ret = FdoXmlSkipElementHandler::Create();
+                if (m_XmlSkipper == NULL)
+                    m_XmlSkipper = FdoXmlSkipElementHandler::Create();
+                ret = m_XmlSkipper;
             }
         }
         catch ( FdoException* e ) {
