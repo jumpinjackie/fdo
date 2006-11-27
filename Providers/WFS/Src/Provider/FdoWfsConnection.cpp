@@ -456,6 +456,8 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
                                 props->RemoveAt(k);
                                 // then add another new geometry property with the same name
                                 FdoPtr<FdoGeometricPropertyDefinition> newGeoProp = FdoGeometricPropertyDefinition::Create(prop->GetName(), prop->GetDescription());
+                                if (pFeat != NULL)
+                                    newGeoProp->SetSpatialContextAssociation(pFeat->GetSRS());
                                 props->Add(newGeoProp);
                                 // and we still have to change the element mapping's class mapping
                                 FdoPtr<FdoXmlClassMapping> elementClass = FdoXmlClassMapping::Create(FdoGml212::mGeometryProperty,
@@ -514,6 +516,8 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
                     // then add another new geometry property with the same name
                     FdoPtr<FdoGeometricPropertyDefinition> newGeoProp = FdoGeometricPropertyDefinition::Create(L"GEOMETRY", FdoGml212::mGeometryProperty);
                     newGeoProp->SetGeometryTypes(pNewTypeGeom);
+                    if (pFeat != NULL)
+                        newGeoProp->SetSpatialContextAssociation(pFeat->GetSRS());
                     props->Add(newGeoProp);
                 }
                 if (bNameModified)
