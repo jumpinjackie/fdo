@@ -1,0 +1,40 @@
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Gdal1.3", "GDAL1.3\src\Gdal1.3.vcproj", "{F0B80E4B-FD5B-4371-9E47-7B82424EBA53}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "openssl", "openssl\openssl.vcproj", "{00D47558-B06D-4CC5-AF16-61940361BCE3}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "curllib", "libcurl\lib\curllib.vcproj", "{787710F8-272B-4807-AD1D-934BA6E4FBB3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{00D47558-B06D-4CC5-AF16-61940361BCE3} = {00D47558-B06D-4CC5-AF16-61940361BCE3}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "boost_1_32_0", "boost_1_32_0\boost_1_32_0.vcproj", "{317315E2-24B6-490C-967D-4B77B7DF5C34}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F0B80E4B-FD5B-4371-9E47-7B82424EBA53}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F0B80E4B-FD5B-4371-9E47-7B82424EBA53}.Debug|Win32.Build.0 = Debug|Win32
+		{F0B80E4B-FD5B-4371-9E47-7B82424EBA53}.Release|Win32.ActiveCfg = Release|Win32
+		{F0B80E4B-FD5B-4371-9E47-7B82424EBA53}.Release|Win32.Build.0 = Release|Win32
+		{00D47558-B06D-4CC5-AF16-61940361BCE3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{00D47558-B06D-4CC5-AF16-61940361BCE3}.Debug|Win32.Build.0 = Debug|Win32
+		{00D47558-B06D-4CC5-AF16-61940361BCE3}.Release|Win32.ActiveCfg = Release|Win32
+		{00D47558-B06D-4CC5-AF16-61940361BCE3}.Release|Win32.Build.0 = Release|Win32
+		{787710F8-272B-4807-AD1D-934BA6E4FBB3}.Debug|Win32.ActiveCfg = Debug_SSL_Static|Win32
+		{787710F8-272B-4807-AD1D-934BA6E4FBB3}.Debug|Win32.Build.0 = Debug_SSL_Static|Win32
+		{787710F8-272B-4807-AD1D-934BA6E4FBB3}.Release|Win32.ActiveCfg = Release_SSL_Static|Win32
+		{787710F8-272B-4807-AD1D-934BA6E4FBB3}.Release|Win32.Build.0 = Release_SSL_Static|Win32
+		{317315E2-24B6-490C-967D-4B77B7DF5C34}.Debug|Win32.ActiveCfg = Debug|Win32
+		{317315E2-24B6-490C-967D-4B77B7DF5C34}.Debug|Win32.Build.0 = Debug|Win32
+		{317315E2-24B6-490C-967D-4B77B7DF5C34}.Release|Win32.ActiveCfg = Release|Win32
+		{317315E2-24B6-490C-967D-4B77B7DF5C34}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

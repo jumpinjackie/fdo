@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="boost_1_32_0"
+	ProjectGUID="{317315E2-24B6-490C-967D-4B77B7DF5C34}"
+	RootNamespace="boost_1_32_0"
+	Keyword="MakeFileProj"
+	>
+	<Platforms>
+		<Platform
+			Name="Win32"
+		/>
+	</Platforms>
+	<ToolFiles>
+	</ToolFiles>
+	<Configurations>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory="."
+			IntermediateDirectory="."
+			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="bjam -sTOOLS=vc-8_0 &quot;-sBUILD=debug&quot; &quot;--without-serialization&quot;"
+				ReBuildCommandLine="bjam -sTOOLS=vc-8_0 &quot;-sBUILD=debug&quot; &quot;--without-serialization&quot; clean&#x0D;&#x0A;bjam -sTOOLS=vc-8_0 &quot;-sBUILD=debug&quot; &quot;--without-serialization&quot;"
+				CleanCommandLine="bjam -sTOOLS=vc-8_0 &quot;-sBUILD=debug&quot; &quot;--without-serialization&quot; clean"
+				Output="boost_1_32_0"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory=" ..\windows\bin\VC8\release"
+			IntermediateDirectory=" ..\windows\lib\VC8\release"
+			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="bjam -sTOOLS=vc-8_0 &quot;-sBUILD=release&quot; &quot;--without-serialization&quot;"
+				ReBuildCommandLine="bjam -sTOOLS=vc-8_0 &quot;-sBUILD=release&quot; &quot;--without-serialization&quot; clean&#x0D;&#x0A;bjam -sTOOLS=vc-8_0 &quot;-sBUILD=release&quot; &quot;--without-serialization&quot;"
+				CleanCommandLine="bjam -sTOOLS=vc-8_0 &quot;-sBUILD=release&quot; &quot;--without-serialization&quot; clean"
+				Output="boost_1_32_0"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

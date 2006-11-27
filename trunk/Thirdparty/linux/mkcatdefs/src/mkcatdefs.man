@@ -1,0 +1,361 @@
+.\"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+.\" message extraction tool manual page
+.\"
+.\" Modification history
+.\"   Mnemonic    Release Date        Who     Review
+.\"
+.\"   NLSTOOLS    victor  92dec09     Mike Tardif
+.\"       Created.
+.\"
+.\"	ID: $RCSfile: mkcatdefs.man $ $Revision: 4.3 $ $Date: 1997/02/11 18:52:51 $ $Author: greg $
+.\"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+.\"
+.\" Copyright (c) 1990, OPEN SOFTWARE FOUNDATION, INC.
+.\" ALL RIGHTS RESERVED
+.\"
+.TH MKCATDEFS 1 "GeoVision Systems Inc"
+.SH NAME
+mkcatdefs \- preprocesses a message source file
+.SH SYNTAX
+.B /usr/local/bin/mkcatdefs 
+.I cat-name
+.IR msf-file ...
+.SH DESCRIPTION
+The 
+.B mkcatdefs
+message facility program preprocesses a 
+message source file that contains mnemonic identifiers.
+.PP
+The 
+.B mkcatdefs
+program produces the
+.IB cat-name _msg.h
+file containing definition statements equating the mnemonic 
+identifiers with set numbers and message identifier
+numbers assigned by 
+.BR mkcatdefs .
+The 
+.IB cat-name _msg.h
+file is required in your 
+application program if you use mnemonic identifiers.
+.PP
+The 
+.B mkcatdefs
+program sends message source data, with 
+numbers instead of mnemonic identifiers, to standard output. This 
+output is suitable as input to the 
+.B gencat 
+program.
+
+.SH SUBCOMMANDS
+Use the \fB$set\fR command in a source file to give a group 
+of messages a set number. The format of the \fB$set\fR command 
+is as follows:
+.sp .5
+.nf
+.ft B
+$set  \fIn\fR  [ \fIcomment\fR ]
+.ft B
+$set  \fIidentifier\fR  [ \fIcomment\fR ]
+.ft R
+.fi
+.sp .5
+The set number is specified by \fIn\fR. Instead of a number, 
+you can specify a mnemonic identifier that must contain only ASCII letters, 
+digits, or the _ (underscore character);
+the first character must not be a digit.
+The maximum length of an identifier is 64 bytes. The 
+.B mkcatdefs
+program assigns 
+a set number to the identifier. The assigned set number is one higher 
+than the preceding set number, or 1 if it is the first \fB$set\fR.
+The 
+.B mkcatdefs
+program inserts a \fB$delset\fR before the \fB$set\fR 
+in the output message source file.
+.PP
+You can mix numbers and mnemonic identifiers.
+You must leave at least one space after the set identifier or number.
+.PP
+You can include a comment in the \fB$set\fR command, but it 
+is not required. The following example includes a comment:
+.sp .5
+.nf
+set  CEM  Communication Error Messages
+.ft R
+.fi
+.sp .5
+Use the \fB$delset\fR command to remove all of the messages 
+belonging to the specified set from a catalog. The format of the \fB$delset\fR
+command is as follows:
+.ft B
+.sp .5
+.nf
+$delset  \fIn\fR  [ \fIcomment\fR ]
+.fi
+.ft R
+.PP
+The message set is specified by \fIn\fR. The \fB$delset\fR 
+command must be placed in the proper set number order with respect 
+to any \fB$set\fR commands in the same source file. You can include 
+a comment in the \fB$delset\fR command also.
+.PP
+You can include a comment line anywhere in the source file, except 
+within message text. Indicate comments as follows:
+.ft B
+.sp .5
+.nf
+$  \fR[ \fIcomment\fR ]
+.fi
+.ft R
+.PP
+You must leave at least one space after the \fB$\fR.
+.PP
+Enter the message text and mnemonic message identifier as follows:
+.ft I
+.sp .5
+.nf
+identifier  message_text
+n  message_text
+.fi
+.ft R
+.PP
+The message set number is specified by \fIn\fR. Instead of a number, 
+you can specify a mnemonic
+\fIidentifier\fR can be either a number or a mnemonic identifier and can 
+contain only ASCII letters, digits, or the _  (underscore character);
+the first character must not be a digit.
+The maximum length of an identifier is 64 bytes. The 
+.B mkcatdefs 
+program assigns a message number to the identifier. The assigned number 
+is one higher than the preceding message number, or 1 if it is the 
+first message after the \fB$set\fR command.
+.PP
+Note that 
+.B mkcatdefs
+inserts a \fB$delset\fR before the \fB$set\fR, 
+which means you cannot add, delete, or replace single messages in 
+the catalog if you are using mnemonic message identifiers. You must 
+enter all of the messages in the set.
+.PP
+You can mix numbers and mnemonic identifiers.
+You must leave at least one space after the message identifier or number.
+.PP
+X/Open specifies that you leave only one space between the 
+message number and the message text. All text following the first 
+nonspace character to the end of the line
+is included in the message text. 
+If the source contains a \fB$quote\fR command preceding the message, 
+all text between the quotation marks is included. Use a \fB\e\fR 
+(backslash) character to continue message text on the following line. 
+The \fB\e\fR must be the last character on the line, as in the following 
+example:
+.sp .5
+.nf
+FIVE    Text associated with \e
+.br
+message FIVE.
+.ft R
+.fi
+.sp .5
+These two lines define the following single-line message:
+.sp .5
+.nf
+FIVE    Text associated with message FIVE.
+.ft R
+.fi
+.sp .5
+The \fB\e\fR can be used to include special characters in the 
+message text. These special characters are defined as follows:
+.TP
+\fB\en\fR
+Inserts a newline character.
+.TP
+\fB\et\fR
+Inserts a horizontal tab character. 
+.TP
+\fB\ev\fR
+Inserts a vertical tab. 
+.TP
+\fB\eb\fR
+Inserts a backspace character. 
+.TP
+\fB\er\fR
+Inserts a carriage-return character. 
+.TP
+\fB\ef\fR
+Inserts a formfeed character. 
+.TP
+\fB\e\e\fR
+Inserts a \fB\e\fR (backslash) character. 
+.TP
+\fB\e\fIddd\fR
+Inserts the single-byte character associated 
+with the octal value represented by the valid octal digits\fI ddd\fR. 
+One, two, or three octal digits can be specified; however, you must 
+include leading zeros if the characters following the octal digits 
+are also valid octal digits.
+.PP
+You can also include 
+.B printf()
+conversion specifications 
+in messages that are displayed by applications using 
+.BR printf() . 
+You can use the \fB$quote\fR command in a message source file 
+to define a character for delimiting message text. The format for 
+this command is as follows:
+.ft B
+.sp .5
+.nf
+$quote\fR  [ \fIchar\fR ]  [ \fIcomment\fR ]
+.fi
+.ft R
+.SH EXAMPLES
+.PP
+Use the specified character before and after the message text 
+as shown in the following example source file:
+.sp .5
+.nf
+$quote  "  Use a double quotation mark to delimit message text
+.br
+$set  MSFAC  Message Facility - symbolic identifiers
+.br
+SYM_FORM  "Symbolic identifiers can only contain ASCII letters \e
+.br
+or digits or the _ (underscore character)\en"
+.br
+SYM_LEN  "Symbolic identifiers cannot be more than 64 \e
+.br
+bytes long\en"
+.br
+5  "You can mix symbolic identifiers and numbers \en"
+.br
+$quote  :
+.br
+MSG_H  :Remember to include the "msg_h" file in your program\en:
+.fi
+.ft R
+.PP
+In this example, the \fB$quote\fR command sets the quote character 
+to " (double quote), then changes it to : (colon)
+before the last message, which contains double quotes.
+.PP
+If the message text source defined were in a 
+file called \fBsymb.msf\fR, 
+you could use the 
+.B mkcatdefs
+command as follows:
+.sp .5
+.nf
+$ mkcatdefs symb symb.msf >symb.msg 
+\fRor\fP 
+$ mkcatdefs symb symb.msf | gencat symb.cat
+.ft R
+.fi
+.sp .5
+.PP
+When you process the file with 
+.BR mkcatdefs , 
+the modified 
+source is written to standard output.  Standard output can either be 
+redirected to a file using the \fB>\fR 
+(redirection mnemonic) or piped to 
+.BR gencat .
+.PP
+The following source is created:
+.sp .5
+.nf
+$quote  "  Use double quotation marks to delimit message text
+.br
+$delset  1
+.br
+$set  1
+.br
+1  "Symbolic identifiers can only contain ASCII letters \e
+.br
+or digits or the _ (underscore character)\en"
+.br
+2  "Symbolic identifiers cannot be more than 64 \e
+.br
+bytes long\en"
+.br
+5  "You can mix symbolic identifiers and numbers\en"
+.br
+$quote  :
+.br
+6  :Remember to include the "\fIcat-name\fB_msg.h\fR" file in your program\en:
+.fi
+.ft R
+.PP
+Note that the assigned message numbers are noncontiguous because 
+the source contained a specific number. The 
+.B mkcatdefs
+program 
+always assigns the previous number plus 1 to a mnemonic identifier.
+.PP
+The 
+.B mkcatdefs 
+program also produces a definition file 
+for inclusion in your program. 
+The name of the file is \fIcat-name\fR, 
+and is entered as the first argument to the 
+.B mkcatdefs
+command. 
+.PP
+The generated \fBsymb_msg.h\fR file would appear as follows:
+.sp .5
+.nf
+\&\&#ifndef _H_SYMB_MSG
+.br
+\&\&#define _H_SYMB_MSG
+.br
+\&\&#include <limits.h>
+.br
+\&\&#include <nl_types.h>
+.br
+\&\&#define MF_SYMB "symb.cat"
+.br
+.br
+.br
+/* The following was generated from symb.msf. */
+.br
+.br
+/* definitions for set MSFAC */
+.br
+\&\&#define MSFAC 1
+.br
+.br
+\&\&#define SYM_FORM 1
+.br
+\&\&#define SYM_LEN 2
+.br
+\&\&#define MSG_H 6
+.br
+\&\&#endif
+.ft R
+.fi
+.sp .5
+Note that 
+.B mkcatdefs
+also created  a mnemonic \fBMF_SYMB\fR 
+by adding \fBMF_\fR to the \fIcat-name\fR using uppercase 
+letters. The 
+.B mkcatdefs
+program assumes that the name of the 
+generated catalog should be \fIcat-name\fB.cat\fR, and generates 
+this mnemonic for your use with 
+.BR catopen . 
+The \fIcat-name\fB.cat\fR file 
+includes \fBlimits.h\fR and \fBnl_types.h\fR, 
+you do not need to include them in your application program. 
+(\fBnl_types\fR
+defines special data types required by the message facility routines.)
+.SH SEE ALSO
+extract(1), gencat(1), catgets(3), catopen(3)
+.SH AUTHOR
+Mike P. Tardif from a re-implementation of the similarly named
+command on
+.I AIX
+and
+.I Ultrix
+.br
