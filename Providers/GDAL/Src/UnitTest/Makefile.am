@@ -51,7 +51,10 @@ UnitTest_SOURCES = \
   RfpTestJp2.cpp \
   RfpTestEcw.cpp \
   RfpTestDem.cpp \
-  RfpTestBandConfig.cpp
+  RfpTestBandConfig.cpp \
+  RfpTestPng.cpp \
+  RfpTestJpg.cpp \
+  RfpTestAAIGrid.cpp
 
 noinst_HEADERS = $(UnitTest_SOURCES) \
   RfpNoConfigTest.h \
@@ -74,7 +77,10 @@ noinst_HEADERS = $(UnitTest_SOURCES) \
   stdafx.h \
   UnitTest.h \
   UnitTestUtil.h \
-  XmlFormatter.h
+  XmlFormatter.h \
+  RfpTestPng.h \
+  RfpTestJpg.h \
+  RfpTestAAIGrid.h
 
 INCLUDES = \
   -I.. \
