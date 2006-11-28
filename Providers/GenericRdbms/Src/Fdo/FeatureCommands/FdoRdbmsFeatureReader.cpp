@@ -370,7 +370,7 @@ FdoDataType FdoRdbmsFeatureReader::GetDataType(FdoString* propertyName)
         int i;
 
         // Get the column name
-        for(i=strlen(colName)-1; i>=0 && colName[i] != '.'; i--)
+        for(i=(int)strlen(colName)-1; i>=0 && colName[i] != '.'; i--)
             ;
         if( i >=0 )
             colName = &colName[i+1];
@@ -503,25 +503,21 @@ void  FdoRdbmsFeatureReader::FetchProperties ()
             //const char* tableNameString = mConnection->GetUtility()->UnicodeToUtf8(tableName);
 
             FdoPropertyType type;
-            FdoPropertyValue *FeatIdProp = mCurrentFeatId->GetItem(0);
-            FdoIdentifier *id = FeatIdProp->GetName();
-            const wchar_t *primKey = Property2ColName( id->GetText(), &type );
-            id->Release();
+            FdoPtr<FdoPropertyValue> FeatIdProp = mCurrentFeatId->GetItem(0);
+            FdoPtr<FdoIdentifier> id = FeatIdProp->GetName();
+            const char *primKey = Property2ColName( id->GetText(), &type );
             if( primKey == NULL || type != FdoPropertyType_DataProperty )
                 throw "";
 
             mAttrQueryCache[mAttrsQidIdx].statement = mConnection->GetGdbiConnection()->Prepare( (const wchar_t*)FdoStringP::Format(gql_query,(FdoString *)tableName, primKey) );
             mAttrQueryCache[mAttrsQidIdx].statement->Bind( 1, &mFeatNum, NULL);
-            FeatIdProp->Release();
         }
 
         //
         // Initialize the bind variable
-        FdoPropertyValue *FeatIdProp = mCurrentFeatId->GetItem(0);
-        FdoInt32Value *dataValue = (static_cast<FdoInt32Value*>(FeatIdProp->GetValue()));
+        FdoPtr<FdoPropertyValue> FeatIdProp = mCurrentFeatId->GetItem(0);
+        FdoPtr<FdoInt32Value> dataValue = (static_cast<FdoInt32Value*>(FeatIdProp->GetValue()));
         mFeatNum = dataValue->GetInt32();
-        dataValue->Release();
-        FeatIdProp->Release();
         mAttrQueryCache[mAttrsQidIdx].query = mAttrQueryCache[mAttrsQidIdx].statement->ExecuteQuery();
 
         if( mAttrQueryCache[mAttrsQidIdx].query->ReadNext() == RDBI_END_OF_FETCH )
@@ -605,9 +601,8 @@ FdoClassDefinition *FdoRdbmsFeatureReader::GetClassDefinition()
     FdoPtr<FdoFeatureSchema> schm = mSchemaCollection->FindItem( pClass->RefLogicalPhysicalSchema()->GetName() );
     if( schm )
     {
-        FdoClassCollection *classes = schm->GetClasses();
+        FdoPtr<FdoClassCollection> classes = schm->GetClasses();
         classDef = classes->FindItem( pClass->GetName() );
-        classes->Release();
     }
 
     if( classDef )
@@ -1090,21 +1085,15 @@ bool  FdoRdbmsFeatureReader::GetIfFeatId( const wchar_t *propertyName, long *fea
     if( NULL == mCurrentFeatId || mCurrentFeatId->GetCount() != 1 )
         return false;
 
-    FdoPropertyValue *FeatIdProp = mCurrentFeatId->GetItem(0);
-    FdoIdentifier *id = FeatIdProp->GetName();
+    FdoPtr<FdoPropertyValue> FeatIdProp = mCurrentFeatId->GetItem(0);
+    FdoPtr<FdoIdentifier> id = FeatIdProp->GetName();
     if( FeatIdProp && id->GetName() && id->GetText() &&
         wcscmp( propertyName, id->GetText() ) == 0 )
     {
-        FdoInt32Value *featIdValue = (static_cast<FdoInt32Value*>(FeatIdProp->GetValue()));
+        FdoPtr<FdoInt32Value> featIdValue = (static_cast<FdoInt32Value*>(FeatIdProp->GetValue()));
         *featId = (FdoInt32)featIdValue->GetInt32();
-        featIdValue->Release();
-        id->Release();
-        FeatIdProp->Release();
         return true;
     }
-    id->Release();
-    FeatIdProp->Release();
-
     return false;
 }
 
@@ -1146,6 +1135,24 @@ const wchar_t* FdoRdbmsFeatureReader::GetString( const wchar_t *propertyName )
             throw FdoCommandException::Create(NlsMsgGet1( FDORDBMS_385, strNUllPropetryExp,  propertyName ));
         propertyValue = mStringMap.AddtoMap((char *) colName, value, mConnection->GetUtility() );
 
+    }
+    catch ( FdoCommandException* exc )
+    {
+        // Try to throw a better exception, otherwise re-throw the dbi exception
+        // Note that we only do this when something goes wrong for performance reason; we don't want all that agly
+        // string compares to happen every time.
+        ThrowPropertyNotFoundExp( propertyName, exc );
+
+        throw;
+    }
+    catch ( FdoException* exc)
+    {
+        // Try to throw a better exception, otherwise re-throw the dbi exception
+        // Note that we only do this when something goes wrong for performance reason; we don't want all that agly
+        // string compares to happen every time.
+        ThrowPropertyNotFoundExp( propertyName, exc );
+
+        throw;
     }
     catch ( ... )
     {
@@ -1364,6 +1371,24 @@ bool FdoRdbmsFeatureReader::IsNull( const wchar_t *propertyName )
         }
 
     }
+    catch ( FdoCommandException* exc )
+    {
+        // Try to throw a better exception, otherwise re-throw the dbi exception
+        // Note that we only do this when something goes wrong for performance reason; we don't want all that agly
+        // string compares to happen every time.
+        ThrowPropertyNotFoundExp( propertyName, exc );
+
+        throw;
+    }
+    catch ( FdoException* exc )
+    {
+        // Try to throw a better exception, otherwise re-throw the dbi exception
+        // Note that we only do this when something goes wrong for performance reason; we don't want all that agly
+        // string compares to happen every time.
+        ThrowPropertyNotFoundExp( propertyName, exc );
+
+        throw;
+    }
     catch ( ... )
     {
         // Try to throw a better exception, otherwise re-throw the dbi exception
@@ -1377,7 +1402,7 @@ bool FdoRdbmsFeatureReader::IsNull( const wchar_t *propertyName )
    // return ( ccode != DBI_SUCCESS );
 }
 
-void FdoRdbmsFeatureReader::ThrowPropertyNotFoundExp( const wchar_t* propertyName )
+void FdoRdbmsFeatureReader::ThrowPropertyNotFoundExp( const wchar_t* propertyName, FdoException* exc)
 {
     // See if this property is one returned by out query, in that case we will throw an intelligent error
     int  idx;
@@ -1394,7 +1419,11 @@ void FdoRdbmsFeatureReader::ThrowPropertyNotFoundExp( const wchar_t* propertyNam
             }
         }
         if (idx == mProperties->GetCount())
+        {
+            if (exc)
+                exc->Release();
             throw FdoCommandException::Create(NlsMsgGet1(FDORDBMS_261, "Property '%1$ls' not selected", propertyName));
+        }
     }
 
     FdoPropertyType type;
@@ -1402,6 +1431,8 @@ void FdoRdbmsFeatureReader::ThrowPropertyNotFoundExp( const wchar_t* propertyNam
     const char *colName = PROPERTY2COLNAME_EXT( propertyName, &type, &found );
     if( colName == NULL )
     {
+        if (exc)
+            exc->Release();
         if( ! found )
             throw FdoCommandException::Create(NlsMsgGet2(FDORDBMS_59, "Property '%1$ls' not defined for class '%2$ls'", propertyName, mLastClassName));
         else
@@ -1421,7 +1452,7 @@ FdoByteArray* FdoRdbmsFeatureReader::GetGeometry(const wchar_t* propertyName, bo
 
 FdoByteArray* FdoRdbmsFeatureReader::GetGeometry(const wchar_t* propertyName, bool checkIsNullOnly, GdbiQueryResult *query)
 {
-	FdoIGeometry	*geom = NULL;
+    FdoPtr<FdoIGeometry> pgeom;
     FdoByteArray	*byteArray = NULL;
     bool            isSupportedType = false;
     bool            unsupportedTypeExp = false;
@@ -1497,7 +1528,9 @@ FdoByteArray* FdoRdbmsFeatureReader::GetGeometry(const wchar_t* propertyName, bo
              ( FdoSmOvGeometricColumnType_Default == columnType &&
                FdoSmOvGeometricContentType_Default == contentType ) )
         {
+        	FdoIGeometry	*geom = NULL;
             query->GetBinaryValue( (const wchar_t *) FdoStringP(colName), sizeof(FdoIGeometry *), (char*)&geom, &isNull,NULL);
+            pgeom = FDO_SAFE_ADDREF(geom);
         }
         else if ( FdoSmOvGeometricColumnType_Double == columnType &&
                   FdoSmOvGeometricContentType_Ordinates == contentType )
@@ -1525,19 +1558,19 @@ FdoByteArray* FdoRdbmsFeatureReader::GetGeometry(const wchar_t* propertyName, bo
                 if (NULL != colNameZ)
                     dimensionality |= FdoDimensionality_Z;
 
-                geom = gf->CreatePoint(dimensionality, ordinates);
+                pgeom = gf->CreatePoint(dimensionality, ordinates);
             }
         }
 
-        if ( geom && geom->GetDerivedType() != FdoGeometryType_None )
+        if ( pgeom && pgeom->GetDerivedType() != FdoGeometryType_None )
             isSupportedType = true;
 
-        if ( geom != NULL )
+        if ( pgeom != NULL )
         {
             if ( isSupportedType )
             {
                 FdoPtr<FdoFgfGeometryFactory>  gf = FdoFgfGeometryFactory::GetInstance();
-                byteArray = gf->GetFgf( geom );
+                byteArray = gf->GetFgf( pgeom );
             }
             else
             {
@@ -1556,6 +1589,28 @@ FdoByteArray* FdoRdbmsFeatureReader::GetGeometry(const wchar_t* propertyName, bo
         {
             throw FdoCommandException::Create(NlsMsgGet1( FDORDBMS_385, strNUllPropetryExp, propertyName ));
         }
+    }
+    catch ( FdoCommandException* exc )
+    {
+        if ( !unsupportedTypeExp)
+        {
+            // Try to throw a better exception, otherwise re-throw the dbi exception
+            // Note that we only do this when something goes wrong for performance reason; we don't want all that agly
+            // string compares to happen every time.
+            ThrowPropertyNotFoundExp( propertyName, exc );
+        }
+        throw;
+    }
+    catch ( FdoException* exc )
+    {
+        if ( !unsupportedTypeExp)
+        {
+            // Try to throw a better exception, otherwise re-throw the dbi exception
+            // Note that we only do this when something goes wrong for performance reason; we don't want all that agly
+            // string compares to happen every time.
+            ThrowPropertyNotFoundExp( propertyName, exc );
+        }
+        throw;
     }
     catch(...)
     {
@@ -1824,11 +1879,9 @@ bool FdoRdbmsFeatureReader::ReadNext( )
             if ( mCurrentFeatId != NULL ) 
             {
                 // Just reinitialize the value
-                FdoPropertyValue *FeatIdProp = mCurrentFeatId->GetItem(0);
-                FdoDataValue  *featNum = FdoDataValue::Create((FdoInt32) dbiFeature.feat_num );
+                FdoPtr<FdoPropertyValue> FeatIdProp = mCurrentFeatId->GetItem(0);
+                FdoPtr<FdoDataValue> featNum = FdoDataValue::Create((FdoInt32) dbiFeature.feat_num );
                 FeatIdProp->SetValue( featNum );
-                featNum->Release();
-                FeatIdProp->Release();
             }
         }
     } // if( mIsFeatureQuery )

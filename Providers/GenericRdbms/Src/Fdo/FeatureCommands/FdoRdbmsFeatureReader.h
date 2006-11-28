@@ -144,7 +144,7 @@ class FdoRdbmsFeatureReader: public FdoIFeatureReader
 
       void FetchProperties ( );
 
-      void ThrowPropertyNotFoundExp( const wchar_t* propertyName );
+      void ThrowPropertyNotFoundExp( const wchar_t* propertyName, FdoException* exc = NULL);
 
       void AddToList(FdoPropertyDefinitionCollection *propertyDefinitions, FdoPropertyDefinition *propertyDefinition);
 
