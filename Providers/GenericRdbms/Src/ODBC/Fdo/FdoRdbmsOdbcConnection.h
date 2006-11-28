@@ -36,9 +36,9 @@ class FdoRdbmsOdbcFilterProcessor;
 class FdoRdbmsOdbcConnection: public FdoRdbmsConnection
 {
 private:
-    FdoRdbmsOdbcFilterProcessor *mFilterProcessor;
+    FdoPtr<FdoRdbmsOdbcFilterProcessor> mFilterProcessor;
 
-    FdoIConnectionInfo          *mConnectionInfo;
+    FdoPtr<FdoIConnectionInfo> mConnectionInfo;
 
 protected:
     virtual ~FdoRdbmsOdbcConnection ();

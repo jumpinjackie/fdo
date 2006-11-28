@@ -83,16 +83,16 @@ FdoStringP FdoRdbmsOdbcFilterProcessor::GetGeometryColumnNameForProperty(const F
 
    		if ( bChangeFilter) 
         {
-            FdoStringP  tmpRetVal(retVal);
+            size_t szRetVal = retVal.GetLength();
+            size_t szSuff = wcslen(NOTINDEXED_SUFFIX);
 
-    	    FdoStringP suffixName = FdoStringP::Format( L"%ls",
-		        	    (FdoString *) tmpRetVal.Mid( wcslen(retVal) - wcslen(NOTINDEXED_SUFFIX), wcslen(retVal)));
+    	    FdoStringP suffixName;
+            if (szRetVal > szSuff)
+                suffixName = FdoStringP::Format( L"%ls", (FdoString *) retVal.Mid( szRetVal - szSuff, szRetVal));
 
             // Strip the suffix from the column name
             if ( suffixName.ICompare(NOTINDEXED_SUFFIX) == 0 )
-            {
-                retVal = FdoStringP::Format(L"%ls", (FdoString *) tmpRetVal.Mid( 0, wcslen(retVal) - wcslen(NOTINDEXED_SUFFIX)));
-            }
+                retVal = FdoStringP::Format(L"%ls", (FdoString *) retVal.Mid( 0, szRetVal - szSuff));
         }
 	}
 
@@ -129,10 +129,9 @@ void FdoRdbmsOdbcFilterProcessor::ProcessSpatialCondition(FdoSpatialCondition& f
     FdoStringP columnName2 = GetGeometryColumnNameForProperty(geomProp, false);
 
     FdoStringP spatialClause;
-    FdoGeometryValue *geom = dynamic_cast<FdoGeometryValue*>(filter.GetGeometry());
-    FdoFgfGeometryFactory   *gf = NULL;
-    FdoByteArray            *geomFgf = NULL;
-    FdoIGeometry            *geometryObj = NULL;
+    FdoPtr<FdoGeometryValue> geom = dynamic_cast<FdoGeometryValue*>(filter.GetGeometry());
+    FdoPtr<FdoByteArray>     geomFgf;
+    FdoPtr<FdoIGeometry>     geometryObj;
 
     geomFgf = geom->GetGeometry();
 
@@ -140,7 +139,7 @@ void FdoRdbmsOdbcFilterProcessor::ProcessSpatialCondition(FdoSpatialCondition& f
         throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_46, "No geometry value"));
 
     // Geometry factory
-    gf = FdoFgfGeometryFactory::GetInstance();
+    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
 
     geometryObj = gf->CreateGeometryFromFgf(geomFgf);
 

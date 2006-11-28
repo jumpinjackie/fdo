@@ -245,6 +245,8 @@ the_exit:
 	if (rdbi_status != RDBI_SUCCESS) {
 		if (new_connData != (odbcdr_connData_def *)NULL)
 		{
+            if (SQL_NULL_HDBC != new_connData->hDbc)
+                SQLFreeHandle(SQL_HANDLE_DBC, new_connData->hDbc);
 			ut_vm_free( "odbcdr_connect: conn Data", (char *)new_connData );
 			context->odbcdr_conns[found_connect] = (odbcdr_connData_def *)NULL;
 		}
@@ -343,6 +345,8 @@ int	do_connect(
 		odbcdr_service_ctx_def	hDbc = SQL_NULL_HDBC;
 		rc = SQLAllocHandle(SQL_HANDLE_DBC,	context->odbcdr_env, &hDbc);
 
+		context->odbcdr_conns[connect_id]->hDbc = hDbc;
+		context->odbcdr_conns[connect_id]->apiversion = SQL_OV_ODBC3; //CMB: check this
 #ifdef _WIN32
         // For SQL Server ODBC Driver only: enable SQL_COPT_SS_PRESERVE_CURSORS (Do not close open server cursors if a transaction is committed);
         // This connection setting must be set before connecting and we do not have enough info about the driver at this point to determine
@@ -412,9 +416,6 @@ int	do_connect(
         } else {
             rdbi_status = RDBI_SUCCESS;
  		
-			context->odbcdr_conns[connect_id]->hDbc = hDbc;
-			context->odbcdr_conns[connect_id]->apiversion = SQL_OV_ODBC3; //CMB: check this
-
             /* Now that we have a connection, we can inspect for driver type more thoroughly. */
             rdbi_status = get_drivertype(
                 context->odbcdr_conns[connect_id],

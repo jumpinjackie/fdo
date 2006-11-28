@@ -477,7 +477,7 @@ void FdoRdbmsConnection::SetConnectionString (const wchar_t* value)
     {
         // Update the connection property dictionary:
         FdoPtr<FdoIConnectionInfo> connInfo = GetConnectionInfo();
-        FdoPtr<FdoCommonConnPropDictionary> connDict = dynamic_cast<FdoCommonConnPropDictionary*>(connInfo->GetConnectionProperties());
+        FdoPtr<FdoCommonConnPropDictionary> connDict = static_cast<FdoCommonConnPropDictionary*>(connInfo->GetConnectionProperties());
         
         // Update the connection string:
         mConnectionString = value;

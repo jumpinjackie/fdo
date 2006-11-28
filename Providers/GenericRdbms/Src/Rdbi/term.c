@@ -58,6 +58,11 @@ int rdbi_term (rdbi_context_def **contextp)
 
     context = *contextp;
     status = RDBI_GENERIC_ERROR;
+	if( context->last_error_msg != NULL )
+	{
+		free( context->last_error_msg );
+		context->last_error_msg = NULL;
+	}
     if (context->rdbi_initialized)
     {
         for (i=0; i<context->rdbi_num_cursor_ptrs; i++)

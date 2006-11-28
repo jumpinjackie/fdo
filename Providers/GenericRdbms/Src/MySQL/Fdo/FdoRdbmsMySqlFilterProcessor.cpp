@@ -148,10 +148,10 @@ void FdoRdbmsMySqlFilterProcessor::ProcessSpatialCondition(FdoSpatialCondition& 
     FdoStringP columnName2 = GetGeometryColumnNameForProperty(geomProp, false);
 
     FdoStringP spatialClause;
-    FdoGeometryValue *geom = dynamic_cast<FdoGeometryValue*>(filter.GetGeometry());
-    FdoFgfGeometryFactory   *gf = NULL;
-    FdoByteArray            *geomFgf = NULL;
-    FdoIGeometry            *geometryObj = NULL;
+    FdoPtr<FdoGeometryValue> geom = dynamic_cast<FdoGeometryValue*>(filter.GetGeometry());
+    FdoPtr<FdoFgfGeometryFactory>  gf;
+    FdoPtr<FdoByteArray> geomFgf;
+    FdoPtr<FdoIGeometry> geometryObj;
 
     geomFgf = geom->GetGeometry();
 

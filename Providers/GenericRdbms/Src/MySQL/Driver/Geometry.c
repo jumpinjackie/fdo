@@ -25,7 +25,7 @@
 void *GeometryFromWkb (void *wkb, unsigned long size)
 {
     FdoPtr<FdoFgfGeometryFactory> factory;
-    FdoByteArray* array;
+    FdoPtr<FdoByteArray> array;
     FdoIGeometry *g = NULL;
 
     factory = FdoFgfGeometryFactory::GetInstance ();
@@ -33,11 +33,9 @@ void *GeometryFromWkb (void *wkb, unsigned long size)
     try
     {
         g = factory->CreateGeometryFromWkb (array);
-        array->Release ();
     }
     catch (...)
     {
-        array->Release ();
     }
 
     return (void *)g;
@@ -53,7 +51,7 @@ void FreeGeometry (void *geometry)
 char *WkbFromGeometry (void *geometry, int *size)
 {
     FdoPtr<FdoFgfGeometryFactory> factory;
-    FdoByteArray* array;
+    FdoPtr<FdoByteArray> array;
     void *ret = NULL;
 	
 	*size = 0;
@@ -69,11 +67,9 @@ char *WkbFromGeometry (void *geometry, int *size)
         ret = malloc (*size);
         memset (ret, 0, *size);
         memmove (((char*)ret) + 4, array->GetData (), *size - 4);
-        array->Release ();
     }
     catch (...)
     {
-        array->Release ();
     }
 
     return (char*)(ret);

@@ -315,17 +315,3 @@ static void context_initW( odbcdr_context_def *context)
 	context->odbcdr_nameList_pkeys.el_size = sizeof(odbcdr_NameListEntry_pkey_def);
 
 }
-
-int odbcdr_swprintf(wchar_t* buffer, size_t bufferSize, const wchar_t* format, ...)
-{
-    int retVal = 0;
-    va_list  varargs;
-    
-    va_start(varargs, format);
-
-    retVal = vswprintf(buffer, bufferSize, format, varargs);
-
-    va_end(varargs);
-
-    return retVal;
-}

@@ -115,9 +115,8 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
         values[i].name[0] = '\0';
 		values[i].valueNeedsFree = false;
     }
-
-    duplicate = new bool[propValCollection->GetCount()];
-    for (i=0;i<propValCollection->GetCount(); i++)
+    duplicate = new bool[count];
+    for (i=0;i<count; i++)
     {
         duplicate[i] = false;
         for (j=i+1; j<propValCollection->GetCount(); j++)
@@ -147,22 +146,18 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
     {
         if (duplicate[i] == true)
             continue;
-        FdoPropertyValue* propertyValue = propValCollection->GetItem(i);
+        FdoPtr<FdoPropertyValue> propertyValue = propValCollection->GetItem(i);
         if ( propertyValue == NULL )
             throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_39, "Property value is NULL"));
         FdoPtr<FdoIdentifier>id = propertyValue->GetName();
         const wchar_t* name  = id->GetText();
 
-        FdoValueExpression *literalExpression = propertyValue->GetValue();
-        FdoIStreamReader *streamReader = propertyValue->GetStreamReader();
-
-        propertyValue->Release();
+        FdoPtr<FdoValueExpression> literalExpression = propertyValue->GetValue();
+        FdoPtr<FdoIStreamReader> streamReader = propertyValue->GetStreamReader();
 
         // Skip the streamed properties for now ...
         if ( literalExpression == NULL && streamReader == NULL)
             continue;  // Must not have been set
-
-        FDO_SAFE_RELEASE(literalExpression);
 
         for( j =0; properties!= NULL && j<properties->GetCount(); j++ )
         {
@@ -359,7 +354,6 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
                 bindIndex++;
                 // do not increment bindIndex here
             }
-            FDO_SAFE_RELEASE(streamReader);
         }
         else
         {
@@ -450,17 +444,15 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
             if (skipIndex == i)
                 continue;
 
-            FdoPropertyValue* propertyValue = propValCollection->GetItem(propIdx);
+            FdoPtr<FdoPropertyValue> propertyValue = propValCollection->GetItem(propIdx);
             if ( propertyValue == NULL )
                 throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_39, "Property value is NULL"));
-            FdoIdentifier *id = propertyValue->GetName();
+            FdoPtr<FdoIdentifier> id = propertyValue->GetName();
             const wchar_t* name  = id->GetText();
-            id->Release();
 
-            FdoValueExpression *literalExpression = propertyValue->GetValue();
-            FdoIStreamReader *streamReader = propertyValue->GetStreamReader();
+            FdoPtr<FdoValueExpression> literalExpression = propertyValue->GetValue();
+            FdoPtr<FdoIStreamReader> streamReader = propertyValue->GetStreamReader();
 
-            propertyValue->Release();
             if ( literalExpression == NULL && streamReader == NULL )
                 continue;  // Must not have been set
 
@@ -482,12 +474,9 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
                     }
                 }
                 if( j < properties->GetCount() )
-                {
-                    literalExpression->Release();
                     continue; // This is a primary key column; should appear in the where clause as: where prim_col1 = :1 and prim_col2= :2 ...
-                }
 
-                geomValue = (dynamic_cast<FdoGeometryValue*>(literalExpression));
+                geomValue = (dynamic_cast<FdoGeometryValue*>(literalExpression.p));
 
                 if ( geomValue )
                 {
@@ -496,7 +485,7 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
                 }
                 else
                 {
-                    dataValue = (static_cast<FdoDataValue*>(literalExpression));
+                    dataValue = (static_cast<FdoDataValue*>(literalExpression.p));
                     dataType = dataValue->GetDataType();
                     isNull = dataValue->IsNull();
                 }
@@ -608,14 +597,13 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
 							geomPropDef = static_cast<const FdoSmLpGeometricPropertyDefinition *>(propertyDef);
 
 							FdoPtr<FdoFgfGeometryFactory>gf = FdoFgfGeometryFactory::GetInstance();
-                            FdoPtr<FdoByteArray>ba = (static_cast<FdoGeometryValue*>(literalExpression))->GetGeometry();
+                            FdoPtr<FdoByteArray>ba = (static_cast<FdoGeometryValue*>(literalExpression.p))->GetGeometry();
                             int index = bindIndex-1;
 							if (FdoSmOvGeometricColumnType_Double == geomPropDef->GetGeometricColumnType() )
 							{
 								if (ba == NULL)
 									break;
 
-								FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
 								FdoPtr<FdoIGeometry>    geomValue = gf->CreateGeometryFromFgf( ba );
 								FdoGeometryType         geomType = geomValue->GetDerivedType();
 
@@ -774,23 +762,8 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
                 }
 		
 				// Binding done above.
-				if ( dataType == FdoRdbmsDataType_Geometry )
-				{
-					//FDO_SAFE_RELEASE(dataValue);
+				if ( dataType == FdoRdbmsDataType_Geometry || dataType == FdoDataType_BLOB || dataType == FdoDataType_String)
 					continue;
-				}
-				// Binding done above.
-				else if ( dataType == FdoDataType_BLOB )
-				{
-					FDO_SAFE_RELEASE(dataValue);
-					FDO_SAFE_RELEASE(streamReader);
-					continue;
-				}
-				else if ( dataType == FdoDataType_String  )
-				{
-					FDO_SAFE_RELEASE(dataValue);
-					continue;
-				}
 			}
 
             const char *val = "";
@@ -800,6 +773,7 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
             int size;
             if (isNull)
             {
+                values[index].valueNeedsFree = true;
                 values[index].value.strvalue = new char[2];
                 val = " ";
                 strcpy((char*)values[index].value.strvalue, val);
@@ -810,6 +784,7 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
             {
                 if (strlen(val) > 0)
                 {
+                    values[index].valueNeedsFree = true;
                     values[index].value.strvalue = new char[strlen(val) + 1];
                     strcpy( (char*)values[index].value.strvalue, val );
                     mConnection->GetGdbiCommands()->set_nnull(&values[index].null_ind, 0,0);
@@ -817,6 +792,7 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
                 }
                 else
                 {
+                    values[index].valueNeedsFree = true;
                     values[index].value.strvalue = new char[2];
                     val = "";
                     strcpy((char*)values[index].value.strvalue, val);
@@ -825,7 +801,6 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
                 }
             }
             statement->Bind( bindIndex++, size, (char *)values[index].value.strvalue, &values[index].null_ind );
-            dataValue->Release();
         }
 
         delete [] duplicate;
@@ -839,14 +814,13 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
             // Initialize the bind variable
             const FdoSmLpDataPropertyDefinition *propertyDefinition = properties->RefItem(i);
 
-            FdoPropertyValue *propVal = propValCollection->GetItem( propertyDefinition->GetName() );
-            FdoValueExpression *literalExpression = propVal->GetValue();
+            FdoPtr<FdoPropertyValue> propVal = propValCollection->GetItem( propertyDefinition->GetName() );
+            FdoPtr<FdoValueExpression> literalExpression = propVal->GetValue();
 
-            propVal->Release();
             if ( literalExpression == NULL )
                 continue;  // Must not have been set
 
-            FdoDataValue *dataValue = (static_cast<FdoDataValue*>(literalExpression));
+            FdoDataValue *dataValue = ((FdoDataValue*)literalExpression.p);
 
             // Values need to be converted to string as the bind variable are bound to a string
             const char *val = NULL;
@@ -879,17 +853,19 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
             }
             if( val != NULL )
             {
+                values[index].valueNeedsFree = true;
                 values[index].value.strvalue = new char[strlen(val) + 1];
                 strcpy( (char*)values[index].value.strvalue, val );
             }
             else if ( wVal != NULL ) 
             {
+                values[index].valueNeedsFree = true;
                 values[index].value.strvalue = (char*)(new wchar_t[wcslen(wVal) + 1]);
                 wcscpy( (wchar_t*)values[index].value.strvalue, wVal );
             }
             else if( intVal != -1 )
             {
-
+                values[index].valueNeedsFree = true;
                 if ( mConnection->GetGdbiCommands()->SupportsUnicode() ) {
 #ifdef _WIN32
                     swprintf((wchar_t*)mTmpStringValue,GDBI_MAXIMUM_STRING_SIZE,L"%I64d",intVal);
@@ -921,8 +897,6 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
                 statement->Bind(bindIndex++, (int)wcslen((wchar_t*)values[index].value.strvalue)+1, (wchar_t *)values[index].value.strvalue, &values[index].null_ind);
             else
                 statement->Bind(bindIndex++, (int)strlen((char*)values[index].value.strvalue)+1, (char *)values[index].value.strvalue, &values[index].null_ind);
-
-            FDO_SAFE_RELEASE(dataValue);
         }
 
 		AdditionalBinds( statement, values, bindIndex );

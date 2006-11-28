@@ -123,13 +123,13 @@ FdoInt32 FdoRdbmsUpdateCommand::Execute ()
     if (!mPropertyValues)
         throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_36, "Property values collection is not set"));
 
-    FdoRdbmsConnection *conn = static_cast<FdoRdbmsConnection*>(GetConnection());
+    FdoPtr<FdoRdbmsConnection> conn = static_cast<FdoRdbmsConnection*>(GetConnection());
     if (conn->GetIsTransactionStarted() == false)
     {
         mConnection->GetGdbiCommands()->tran_begin(TRANSACTION_NAME);
         bBeginTransaction = true;
     }
-    FDO_SAFE_RELEASE(conn);
+    conn = NULL;
 
     const FdoSmLpClassDefinition *classDefinition = mConnection->GetSchemaUtil()->GetClass(className->GetText());
 
@@ -162,7 +162,7 @@ FdoInt32 FdoRdbmsUpdateCommand::Execute ()
     lockConflictsChecked = true;
 
     const FdoSmLpGeometricPropertyDefinition *pGeometryProp = NULL;
-    FdoByteArray *geometry = NULL;
+    FdoPtr<FdoByteArray> geometry;
 
     if( isFeatClass )
     {
@@ -181,12 +181,9 @@ FdoInt32 FdoRdbmsUpdateCommand::Execute ()
             }
             if ( i >= 0 )
             {
-                FdoValueExpression *literalExpression = propertyValue->GetValue();
+                FdoPtr<FdoValueExpression> literalExpression = propertyValue->GetValue();
                 if ( literalExpression != NULL )
-                {
-                    geometry = (static_cast<FdoGeometryValue*>(literalExpression))->GetGeometry();
-                    literalExpression->Release();
-                }
+                    geometry = ((FdoGeometryValue*)literalExpression.p)->GetGeometry();
             }
         }
     }
@@ -262,9 +259,8 @@ FdoInt32 FdoRdbmsUpdateCommand::Execute ()
                         //
                         // Update the FeatId property value.
                         featId = (int)query->GetInt64(prmColName, NULL, NULL );
-                        FdoDataValue  *featNum = FdoDataValue::Create(mConnection->GetUtility()->Utf8ToUnicode(ut_itoa( featId, buffer) ) );
-                        FdoPropertyValue *propVal = NULL;
-                        propVal = mPropertyValues->FindItem( prmPrtName );
+                        FdoPtr<FdoDataValue> featNum = FdoDataValue::Create(mConnection->GetUtility()->Utf8ToUnicode(ut_itoa( featId, buffer) ) );
+                        FdoPtr<FdoPropertyValue> propVal = mPropertyValues->FindItem( prmPrtName );
                         if (propVal == NULL)
                         {
                             propVal = FdoPropertyValue::Create(  );
@@ -273,14 +269,12 @@ FdoInt32 FdoRdbmsUpdateCommand::Execute ()
                             addedIndentProperties = true;
                         }
                         propVal->SetValue( featNum );
-                        propVal->Release();
-                        featNum->Release();
                     }
                 }
                 else
                 {
                     // following needs to change to handle numeric columns.
-                    FdoPropertyValue *propVal = NULL;
+                    FdoPtr<FdoPropertyValue> propVal;
                     const wchar_t* name = properties->RefItem(i)->GetName();
                     propVal = mPropertyValues->FindItem( name );
                     if( propVal == NULL )
@@ -291,10 +285,8 @@ FdoInt32 FdoRdbmsUpdateCommand::Execute ()
                         addedIndentProperties = true;
                     }
                     const wchar_t* strVal = query->GetString(  properties->RefItem(i)->GetColumnName(), NULL, NULL );
-                    FdoDataValue  *propData = FdoDataValue::Create( strVal );
+                    FdoPtr<FdoDataValue> propData = FdoDataValue::Create( strVal );
                     propVal->SetValue( propData );
-                    propData->Release();
-                    propVal->Release();
                 }
             }
             //
@@ -349,7 +341,6 @@ FdoInt32 FdoRdbmsUpdateCommand::Execute ()
         query->Close();
         delete query;
         query = NULL;
-        FDO_SAFE_RELEASE(geometry);
         if (bBeginTransaction == true)
         {
             bBeginTransaction = false;

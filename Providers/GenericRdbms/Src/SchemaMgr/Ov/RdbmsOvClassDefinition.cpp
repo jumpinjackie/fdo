@@ -210,11 +210,11 @@ FdoXmlSaxHandler* FdoRdbmsOvClassDefinition::XmlStartElement(
             if (!mCurrAtts)
                 mCurrAtts = FDO_SAFE_ADDREF(atts);
             if (mCurrAtts) {
-                if (NULL != mCurrAtts->FindItem(L"GeometricColumnType") ||
-                    NULL != mCurrAtts->FindItem(L"GeometricContentType") ||
-                    NULL != mCurrAtts->FindItem(L"xColumnName") ||
-                    NULL != mCurrAtts->FindItem(L"yColumnName") ||
-                    NULL != mCurrAtts->FindItem(L"zColumnName")) {
+                if (NULL != FdoPtr<FdoXmlAttribute>(mCurrAtts->FindItem(L"GeometricColumnType")) ||
+                    NULL != FdoPtr<FdoXmlAttribute>(mCurrAtts->FindItem(L"GeometricContentType")) ||
+                    NULL != FdoPtr<FdoXmlAttribute>(mCurrAtts->FindItem(L"xColumnName")) ||
+                    NULL != FdoPtr<FdoXmlAttribute>(mCurrAtts->FindItem(L"yColumnName")) ||
+                    NULL != FdoPtr<FdoXmlAttribute>(mCurrAtts->FindItem(L"zColumnName"))) {
 
                     // We now know that the current element represents a Geometric Property
                     // so create one.

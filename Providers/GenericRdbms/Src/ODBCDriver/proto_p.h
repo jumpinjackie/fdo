@@ -173,6 +173,10 @@ int odbcdr_autocommit_off( odbcdr_context_def *context );
 
 int odbcdr_autocommit_mode( odbcdr_context_def *context );
 
-int odbcdr_swprintf(wchar_t* buffer, size_t bufferSize, const wchar_t* format, ...);
+#ifdef _WIN32
+    #define odbcdr_swprintf swprintf_s
+#else
+    #define odbcdr_swprintf swprintf
+#endif
 
 #endif /* ODBCDR_PROTO_P_H */

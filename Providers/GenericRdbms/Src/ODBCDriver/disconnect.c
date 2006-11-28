@@ -94,17 +94,16 @@ int odbcdr_disconnect(					/* terminate Oracle connection	*/
 		_check_status2();
 		connData->identity = (odbcdr_cursor_def *)NULL;
 	}
-
+	rdbi_status = odbcdr_col_deac(context);
+	_check_status2();
 	if( connData->cols != (odbcdr_cursor_def *)NULL ) {
-		rdbi_status = odbcdr_col_deac(context);
-		_check_status2();
 		rdbi_status = odbcdr_fre_cursor( context, (char **)&connData->cols );
 		_check_status2();
 		connData->cols = (odbcdr_cursor_def *)NULL;
 	}
+	rdbi_status = odbcdr_users_deac(context);
+	_check_status2();
 	if( connData->users != (odbcdr_cursor_def *)NULL ) {
-		rdbi_status = odbcdr_users_deac(context);
-		_check_status2();
 		rdbi_status = odbcdr_fre_cursor( context, (char **)&connData->users );
 		_check_status2();
 		connData->users = (odbcdr_cursor_def *)NULL;

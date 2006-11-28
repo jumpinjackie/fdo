@@ -54,18 +54,12 @@ int odbcdr_rdbi_init( odbcdr_context_def **, rdbi_methods	methods );
 wchar_t* getComDir (); // in Odbc.cpp
 #define OD_MAX_RETRY_COUNT 10
 
-FdoRdbmsOdbcConnection::FdoRdbmsOdbcConnection():
-mFilterProcessor( NULL ),
-mConnectionInfo(NULL)
+FdoRdbmsOdbcConnection::FdoRdbmsOdbcConnection()
 {
 }
 
 FdoRdbmsOdbcConnection::~FdoRdbmsOdbcConnection ()
 {
-    if( mFilterProcessor )
-        delete mFilterProcessor;
-
-    FDO_SAFE_RELEASE(mConnectionInfo);
 }
 
 FdoRdbmsOdbcConnection* FdoRdbmsOdbcConnection::Create()
@@ -100,15 +94,14 @@ FdoRdbmsFilterProcessor* FdoRdbmsOdbcConnection::GetFilterProcessor()
     if( mFilterProcessor == NULL )
         mFilterProcessor = new FdoRdbmsOdbcFilterProcessor( this );
 
-    return FDO_SAFE_ADDREF(mFilterProcessor);
+    return FDO_SAFE_ADDREF(mFilterProcessor.p);
 }
 
 FdoIConnectionInfo* FdoRdbmsOdbcConnection::GetConnectionInfo()
 {
     if (mConnectionInfo == NULL)
         mConnectionInfo = new FdoRdbmsOdbcConnectionInfo(this);
-    FDO_SAFE_ADDREF(mConnectionInfo);
-    return mConnectionInfo;
+    return FDO_SAFE_ADDREF(mConnectionInfo.p);
 }
 
 FdoIConnectionCapabilities* FdoRdbmsOdbcConnection::GetConnectionCapabilities()
