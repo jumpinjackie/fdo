@@ -505,7 +505,7 @@ void  FdoRdbmsFeatureReader::FetchProperties ()
             FdoPropertyType type;
             FdoPtr<FdoPropertyValue> FeatIdProp = mCurrentFeatId->GetItem(0);
             FdoPtr<FdoIdentifier> id = FeatIdProp->GetName();
-            const char *primKey = Property2ColName( id->GetText(), &type );
+            const wchar_t *primKey = Property2ColName( id->GetText(), &type );
             if( primKey == NULL || type != FdoPropertyType_DataProperty )
                 throw "";
 
