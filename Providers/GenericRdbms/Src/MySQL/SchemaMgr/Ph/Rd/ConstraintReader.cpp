@@ -132,7 +132,7 @@ FdoSmPhReaderP FdoSmPhRdMySqlConstraintReader::MakeReader(
 
 //TODO: cache this query to make full use of the binds.
     FdoSmPhRdGrdQueryReader* reader =
-        new FdoSmPhRdGrdQueryReader( rows->GetItem(0), sqlString, owner->GetManager(), binds );
+        new FdoSmPhRdGrdQueryReader( FdoSmPhRowP(rows->GetItem(0)), sqlString, owner->GetManager(), binds );
 
     return( reader );
 }
@@ -238,7 +238,7 @@ FdoSmPhReaderP FdoSmPhRdMySqlConstraintReader::MakeReader(
 
 //TODO: cache this query to make full use of the binds.
     FdoSmPhRdGrdQueryReader* reader =
-        new FdoSmPhRdGrdQueryReader( rows->GetItem(0), sqlString, owner->GetManager(), binds );
+        new FdoSmPhRdGrdQueryReader( FdoSmPhRowP(rows->GetItem(0)), sqlString, owner->GetManager(), binds );
 
     return( reader );
 }

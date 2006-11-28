@@ -164,16 +164,10 @@ FdoStringsP FdoSmPhMySqlDbObject::GetKeyColsSql( FdoSmPhColumnCollection* column
             
         if ( constrColLen > 0  )
             // Generate key column clause with length specification
-            colClauses->Add( 
-                FdoStringP::Format( 
-                    L"%ls(%d)",
-                    (FdoString*)(columns->GetItem(i)->GetDbName()),
-                    constrColLen
-                )
-            );
+            colClauses->Add( FdoStringP::Format( L"%ls(%d)",(FdoString*)(column->GetDbName()),constrColLen));
         else
             // No length specification needed.
-            colClauses->Add( (FdoString*)(columns->GetItem(i)->GetDbName()) );
+            colClauses->Add( (FdoString*)(column->GetDbName()) );
     }
 
     return colClauses;

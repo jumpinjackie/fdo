@@ -176,12 +176,13 @@ long FdoRdbmsPvcInsertHandler::Execute( const FdoSmLpClassDefinition *classDefin
 
             if( useLocalInsertString && ( classDefinition->GetClassType() == FdoClassType_FeatureClass ) )
             {
-                FdoIdentifier *currPropName = NULL;
+                FdoPtr<FdoIdentifier> currPropName;
 	            const FdoSmLpPropertyDefinitionCollection *allProps = classDefinition->RefProperties();
 
 	            for( int i = 0; i < propValCollection->GetCount(); i++ )
 	            {
-                    currPropName = propValCollection->GetItem(i)->GetName();
+                    FdoPtr<FdoPropertyValue> pPropVal = propValCollection->GetItem(i);
+                    currPropName = pPropVal->GetName();
 		            const FdoSmLpDataPropertyDefinition *aProp =
                         FdoSmLpDataPropertyDefinition::Cast(allProps->RefItem(currPropName->GetName()));
                     if ( aProp != NULL )
@@ -191,8 +192,6 @@ long FdoRdbmsPvcInsertHandler::Execute( const FdoSmLpClassDefinition *classDefin
 			                useLocalInsertString = false;
 		                }
                     }
-                    currPropName->Release();
-                    currPropName = NULL;
                     if( !useLocalInsertString )
                         break;
                 }
@@ -747,9 +746,9 @@ void FdoRdbmsPvcInsertHandler::SetBindValues(const FdoSmLpClassDefinition *class
 
                 if (bind[j].type == FdoRdbmsDataType_Geometry) {
 
-                    FdoFgfGeometryFactory * gf = FdoFgfGeometryFactory::GetInstance();
-                    FdoByteArray        *ba = geomValue->GetGeometry();
-                    FdoIGeometry	*newGeomValue = NULL;
+                    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+                    FdoPtr<FdoByteArray> ba = geomValue->GetGeometry();
+                    FdoIGeometry *newGeomValue = NULL;
                     if ( ba )
                     {
                         mConnection->GetSchemaUtil()->SetActiveSpatialContext( classDefinition, name );
@@ -775,8 +774,6 @@ void FdoRdbmsPvcInsertHandler::SetBindValues(const FdoSmLpClassDefinition *class
                     FdoIGeometry *oldGeomValue = (FdoIGeometry*) bind[j].value.strvalue;
                     FDO_SAFE_RELEASE( oldGeomValue );
                     bind[j].value.strvalue = (char*) newGeomValue;
-                    FDO_SAFE_RELEASE( ba );
-                    FDO_SAFE_RELEASE( gf );
                     foundColumn = true;
                     break;
                 }
@@ -1345,6 +1342,7 @@ void FdoRdbmsPvcInsertHandler::SetBindVariables(const FdoSmLpClassDefinition *cu
                                 bind[bind_no].len = size;
                         }
                         bind[bind_no].value.strvalue = new char[bind[bind_no].len];
+                        bind[bind_no].valueNeedsFree = true;
                         mConnection->GetGdbiCommands()->bind(gid, temp, RDBI_STRING, bind[bind_no].len,
                                           (char*)bind[bind_no].value.strvalue, &bind[bind_no].null_ind);
 

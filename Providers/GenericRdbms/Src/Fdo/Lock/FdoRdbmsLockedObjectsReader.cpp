@@ -147,9 +147,9 @@ FdoPropertyValueCollection *FdoRdbmsLockedObjectsReader::GetIdentity ()
     int                         i,
                                 count;
 
-    FdoPropertyValue            *property_value             = NULL;
+    FdoPtr<FdoPropertyValue>            property_value;
 
-    FdoPropertyValueCollection  *property_value_collection  = NULL;
+    FdoPtr<FdoPropertyValueCollection>  property_value_collection;
 
     try {
 
@@ -168,24 +168,19 @@ FdoPropertyValueCollection *FdoRdbmsLockedObjectsReader::GetIdentity ()
       // Copy all the entries from the internal identity collection to this
       // newly created one.
 
-      if ( lockInfoQueryHandler->GetPrimaryKey() == NULL) return property_value_collection;
+      if ( lockInfoQueryHandler->GetPrimaryKey() == NULL) return FDO_SAFE_ADDREF(property_value_collection.p);
 
       count = lockInfoQueryHandler->GetPrimaryKey()->GetCount();
       for (i = 0; i < count; i++) {
-		  
-		  property_value = LockUtility::CreateIdentity(fdo_connection,
-							lockInfoQueryHandler->GetPrimaryKey()->GetItem(i)->GetColumnName(),
-						    lockInfoQueryHandler->GetPrimaryKey()->GetItem(i)->GetColumnValue(),
-							class_name);
+		  FdoPtr<FdoRdbmsPrimaryKeyColumn> pPrimKeyCol = lockInfoQueryHandler->GetPrimaryKey()->GetItem(i);
+		  property_value = LockUtility::CreateIdentity(fdo_connection, pPrimKeyCol->GetColumnName(), 
+                            pPrimKeyCol->GetColumnValue(), class_name);
 		  if (property_value)
-		  {
 			property_value_collection->Add(property_value);
-			property_value->Release();
-		  }
 
       }  //  for (i = 0; ...
 
-      return property_value_collection;
+      return FDO_SAFE_ADDREF(property_value_collection.p);
 
     }  //  try ...
 

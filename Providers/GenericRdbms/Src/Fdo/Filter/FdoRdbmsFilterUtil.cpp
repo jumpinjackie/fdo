@@ -271,10 +271,8 @@ FdoIdentifierCollection* FdoRdbmsFilterUtil::GetIdentPropList( const FdoSmLpClas
         if ( pFeatIdProp && pFeatIdProp->RefColumn() )
         {
 			colName = pFeatIdProp->GetName();
-            FdoIdentifier* selProp = FdoIdentifier::Create( colName );
-			
+            FdoPtr<FdoIdentifier> selProp = FdoIdentifier::Create( colName );
             selProps->Add( selProp );
-            FDO_SAFE_RELEASE( selProp );
 			isFeatId = true;
         }
     }
@@ -282,12 +280,11 @@ FdoIdentifierCollection* FdoRdbmsFilterUtil::GetIdentPropList( const FdoSmLpClas
 	{
 		if (isFeatId)	// Avoid adding FeatId property again
 		{ 
-			if (FdoStringP(pIdentProps->GetItem(i)->GetName()).ICompare(colName) == 0)
+            if (FdoStringP(FdoSmLpDataPropertyP(pIdentProps->GetItem(i))->GetName()).ICompare(colName) == 0)
 				continue;
 		}
-		FdoIdentifier* selProp = FdoIdentifier::Create( pIdentProps->GetItem(i)->GetName());
+		FdoPtr<FdoIdentifier> selProp = FdoIdentifier::Create( FdoSmLpDataPropertyP(pIdentProps->GetItem(i))->GetName());
 		selProps->Add( selProp );
-		FDO_SAFE_RELEASE( selProp );
 	}
 
 	return (selProps);

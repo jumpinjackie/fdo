@@ -66,7 +66,7 @@ bool FdoSmPhRdGrdQueryReader::ReadNext()
         SetEOF(true);
 
     // Nothing to do if no more rows.
-    if ( this->IsEOF() )
+    if ( this->IsEOF() || mResults == NULL)
         return false;
 
     if ( !mResults->ReadNext() ) {
@@ -127,6 +127,9 @@ void FdoSmPhRdGrdQueryReader::Execute()
 {
     int i,j;
     int col = 0;
+    if ( mResults )
+        delete mResults;
+    mResults = NULL;
 
     SetBOF(true);
     SetEOF(false);
@@ -188,9 +191,6 @@ void FdoSmPhRdGrdQueryReader::Execute()
             }
         }
         else {
-            if ( mResults )
-                delete mResults;
-
             mResults = mQuery->ExecuteQuery();
 
 			FdoSmPhRdGrdRowArrayP rowArray;

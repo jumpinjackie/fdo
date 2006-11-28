@@ -28,7 +28,6 @@ FdoRdbmsDataStoreReader::FdoRdbmsDataStoreReader( FdoRdbmsConnection *connection
     mPhOwnerReader ( phReader ),
 	mIncludeNonFdoEnabledDatastores ( includeNonFdoDb )
 {
-	FDO_SAFE_ADDREF(mPhOwnerReader.p);
 	mIsFdoEnabled = true;
 	mDatastoreName = L"";
 	mDatastoreDescription = L"";

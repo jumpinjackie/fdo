@@ -133,7 +133,7 @@ FdoSmPhReaderP FdoSmPhRdMySqlFkeyReader::MakeReader(
 
 //TODO: cache this query to make full use of the binds.
     FdoSmPhRdGrdQueryReader* reader =
-        new FdoSmPhRdGrdQueryReader( rows->GetItem(0), sql, mgr, binds );
+        new FdoSmPhRdGrdQueryReader( FdoSmPhRowP(rows->GetItem(0)), sql, mgr, binds );
 
     return( reader );
 }

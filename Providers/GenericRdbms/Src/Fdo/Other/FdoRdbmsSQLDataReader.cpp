@@ -199,6 +199,42 @@ const wchar_t* FdoRdbmsSQLDataReader::GetString(const wchar_t* columnName)
 
         colValue = mStringMap.AddtoMap(colName, tmpVal, mConnection->GetUtility());
     }
+    catch ( FdoCommandException* exc )
+    {
+        try
+        {
+            FindColumnIndex( columnName ); /*throws a column not found exception*/
+            throw exc;
+        }
+        catch ( FdoCommandException* exc2 )
+        {
+            exc->Release();
+            throw exc2;
+        }
+        catch ( FdoException* exc2 )
+        {
+            exc->Release();
+            throw exc2;
+        }
+    }
+    catch ( FdoException* exc )
+    {
+        try
+        {
+            FindColumnIndex( columnName ); /*throws a column not found exception*/
+            throw exc;
+        }
+        catch ( FdoCommandException* exc2 )
+        {
+            exc->Release();
+            throw exc2;
+        }
+        catch ( FdoException* exc2 )
+        {
+            exc->Release();
+            throw exc2;
+        }
+    }
     catch ( ... )
     {
         // Try to throw a better exception, otherwise re-throw the dbi exception
@@ -226,6 +262,42 @@ FdoIStreamReader* FdoRdbmsSQLDataReader::GetLOBStreamReader(const wchar_t* colum
         mQueryResult->GetBinaryValue(  columnName, sizeof(void *), (char *)&pLOBLocator, &isNULL, NULL);
 		if( isNULL )
             throw FdoCommandException::Create(NlsMsgGet1( FDORDBMS_386, strNUllColumnExp,  columnName ));
+    }
+    catch ( FdoCommandException* exc )
+    {
+        try
+        {
+            FindColumnIndex( columnName ); /*throws a column not found exception*/
+            throw exc;
+        }
+        catch ( FdoCommandException* exc2 )
+        {
+            exc->Release();
+            throw exc2;
+        }
+        catch ( FdoException* exc2 )
+        {
+            exc->Release();
+            throw exc2;
+        }
+    }
+    catch ( FdoException* exc )
+    {
+        try
+        {
+            FindColumnIndex( columnName ); /*throws a column not found exception*/
+            throw exc;
+        }
+        catch ( FdoCommandException* exc2 )
+        {
+            exc->Release();
+            throw exc2;
+        }
+        catch ( FdoException* exc2 )
+        {
+            exc->Release();
+            throw exc2;
+        }
     }
     catch ( ... )
     {
@@ -273,6 +345,44 @@ bool FdoRdbmsSQLDataReader::IsNull(const wchar_t* columnName)
         {
             return mQueryResult->GetIsNull( (char *)mConnection->GetUtility()->UnicodeToUtf8( columnName) );
         }
+    }
+    catch ( FdoCommandException* exc )
+    {
+        try
+        {
+            // Make sure the column exists
+            FindColumnIndex( columnName ); /*throws a column not found exception*/
+            exc->Release();
+        }
+        catch ( FdoCommandException* exc2 )
+        {
+            throw exc2;
+        }
+        catch ( FdoException* exc2 )
+        {
+            throw exc2;
+        }
+        // In this case this is NULL
+        return true;
+    }
+    catch ( FdoException* exc )
+    {
+        try
+        {
+            // Make sure the column exists
+            FindColumnIndex( columnName ); /*throws a column not found exception*/
+            exc->Release();
+        }
+        catch ( FdoCommandException* exc2 )
+        {
+            throw exc2;
+        }
+        catch ( FdoException* exc2 )
+        {
+            throw exc2;
+        }
+        // In this case this is NULL
+        return true;
     }
     catch ( ... )
     {
@@ -335,6 +445,44 @@ FdoByteArray* FdoRdbmsSQLDataReader::GetGeometry(const wchar_t* columnName, bool
         {
             throw FdoCommandException::Create(NlsMsgGet1( FDORDBMS_385, "Property '%1$ls' value is NULL; use IsNull method before trying to access the property value",
                                              columnName ));
+        }
+    }
+    catch ( FdoCommandException* exc )
+    {
+        try
+        {
+            if ( !unsupportedTypeExp)
+                FindColumnIndex( columnName ); /*throws a column not found exception*/
+            throw exc;
+        }
+        catch ( FdoCommandException* exc2 )
+        {
+            exc->Release();
+            throw exc2;
+        }
+        catch ( FdoException* exc2 )
+        {
+            exc->Release();
+            throw exc2;
+        }
+    }
+    catch ( FdoException* exc )
+    {
+        try
+        {
+            if ( !unsupportedTypeExp)
+                FindColumnIndex( columnName ); /*throws a column not found exception*/
+            throw exc;
+        }
+        catch ( FdoCommandException* exc2 )
+        {
+            exc->Release();
+            throw exc2;
+        }
+        catch ( FdoException* exc2 )
+        {
+            exc->Release();
+            throw exc2;
         }
     }
     catch ( ... )

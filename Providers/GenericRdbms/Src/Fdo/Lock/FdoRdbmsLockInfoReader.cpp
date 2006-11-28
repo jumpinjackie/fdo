@@ -166,9 +166,9 @@ FdoPropertyValueCollection *FdoRdbmsLockInfoReader::GetIdentity ()
     int                         i,
                                 count;
 
-    FdoPropertyValue            *property_value             = NULL;
+    FdoPtr<FdoPropertyValue> property_value;
 
-    FdoPropertyValueCollection *property_value_collection   = NULL;
+    FdoPtr<FdoPropertyValueCollection> property_value_collection;
 
 	validQuery();
 
@@ -189,18 +189,17 @@ FdoPropertyValueCollection *FdoRdbmsLockInfoReader::GetIdentity ()
       // Copy all the entries from the internal identity collection to this
       // newly created one.
 
-      if (identity_collection == NULL) return property_value_collection;
+      if (identity_collection == NULL) return FDO_SAFE_ADDREF(property_value_collection.p);
 
       count = identity_collection->GetCount();
       for (i = 0; i < count; i++) {
 
         property_value = identity_collection->GetItem(i);
         property_value_collection->Add(property_value);
-        property_value->Release();
 
       }  //  for (i = 0; ...
 
-      return property_value_collection;
+      return FDO_SAFE_ADDREF(property_value_collection.p);
 
     }  //  try ...
 
@@ -387,8 +386,8 @@ FdoRdbmsLockInfoReader::ReadStatus FdoRdbmsLockInfoReader::GetNextDataSet ()
 // +---------------------------------------------------------------------------
 
 {
-	FdoRdbmsPrimaryKeyColumn *curr_pky_col;
-	FdoPropertyValue		 *identity_value;
+	FdoPtr<FdoRdbmsPrimaryKeyColumn> curr_pky_col;
+	FdoPtr<FdoPropertyValue> identity_value;
 
 	try 
 	{
@@ -417,7 +416,6 @@ FdoRdbmsLockInfoReader::ReadStatus FdoRdbmsLockInfoReader::GetNextDataSet ()
 										   request_class_name    )) == NULL)
 					return FAILURE;
 			   identity_collection->Add(identity_value);
-			   identity_value->Release();
 		}
 
       return SUCCESS;
