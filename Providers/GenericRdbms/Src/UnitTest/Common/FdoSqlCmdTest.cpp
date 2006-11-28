@@ -32,7 +32,7 @@
 
 #define  SQLCMD_TABLE_NAME  L"FdoSqlTest"
 
-FdoSqlCmdTest::FdoSqlCmdTest(void): mConnection(NULL)
+FdoSqlCmdTest::FdoSqlCmdTest(void)
 {
 #ifdef _WIN32
         _putenv("GVC_TRACE_FILE=d:\\geometrytest.txt");
@@ -55,11 +55,8 @@ void FdoSqlCmdTest::setUp ()
 void FdoSqlCmdTest::tearDown ()
 {
     if( mConnection != NULL )
-    {
         mConnection->Close();
-        mConnection->Release();
-        mConnection = NULL;
-    }
+    mConnection = NULL;
 }
 
 void FdoSqlCmdTest::connect ()
@@ -73,19 +70,16 @@ void FdoSqlCmdTest::connect ()
     {
         ( printf("FDO error: %ls\n", ex->GetExceptionMessage()) );
         if( mConnection != NULL )
-        {
             mConnection->Close();
-            mConnection->Release();
-            mConnection= NULL;
-        }
-    ex->Release();
+        mConnection= NULL;
+        ex->Release();
         throw;
     }
 }
 
 void FdoSqlCmdTest::CreateTable ()
 {
-    FdoISQLCommand *sqlCmd = NULL;
+    FdoPtr<FdoISQLCommand> sqlCmd;
 
     if( mConnection != NULL )
     {
@@ -98,17 +92,10 @@ void FdoSqlCmdTest::CreateTable ()
                                 SQLCMD_TABLE_NAME, number_type, number_type, number_type, get_datetime_type());
             sqlCmd->SetSQLStatement( sql );
             sqlCmd->ExecuteNonQuery();
-
-            if( sqlCmd)
-                sqlCmd->Release();
         }
         catch( FdoException *ex )
         {
-            if( sqlCmd)
-                sqlCmd->Release();
-
-			CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
-            throw;
+			UnitTestUtil::fail (ex);
         }
     }
 
@@ -116,7 +103,7 @@ void FdoSqlCmdTest::CreateTable ()
 
 void FdoSqlCmdTest::BasicInsert ()
 {
-    FdoISQLCommand *sqlCmd = NULL;
+    FdoPtr<FdoISQLCommand> sqlCmd;
 
     if( mConnection != NULL )
     {
@@ -132,17 +119,10 @@ void FdoSqlCmdTest::BasicInsert ()
             sql = FdoStringP::Format(L"insert into %ls values ('name3',10,2000.3456,1, %ls)", SQLCMD_TABLE_NAME, get_datetime());
             sqlCmd->SetSQLStatement( (FdoString *)sql );
             sqlCmd->ExecuteNonQuery();
-
-            if( sqlCmd)
-                sqlCmd->Release();
         }
         catch( FdoException *ex )
         {
-            if( sqlCmd)
-                sqlCmd->Release();
-
-			CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));	
-            throw;
+			UnitTestUtil::fail (ex);
         }
     }
 
@@ -154,7 +134,7 @@ void FdoSqlCmdTest::BindInsert ()
 
 void FdoSqlCmdTest::Delete ()
 {
-    FdoISQLCommand *sqlCmd = NULL;
+    FdoPtr<FdoISQLCommand> sqlCmd;
 
     if( mConnection != NULL )
     {
@@ -167,13 +147,10 @@ void FdoSqlCmdTest::Delete ()
             int colDeleted = sqlCmd->ExecuteNonQuery();
 
             DBG(printf("Deleted %d columns\n", colDeleted ));
-            if( sqlCmd)
-                sqlCmd->Release();
         }
         catch( FdoException *ex )
         {
-			CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
-            throw;
+			UnitTestUtil::fail (ex);
         }
     }
 
@@ -181,8 +158,8 @@ void FdoSqlCmdTest::Delete ()
 
 void FdoSqlCmdTest::doGetSC()
 {
-    FdoRdbmsGetSpatialContexts  *gscCmd = 0;
-    FdoISpatialContextReader*   reader = 0;
+    FdoPtr<FdoRdbmsGetSpatialContexts> gscCmd;
+    FdoPtr<FdoISpatialContextReader> reader;
     int                         n = 0;
     bool        active_only = true;
 
@@ -208,9 +185,7 @@ void FdoSqlCmdTest::doGetSC()
                 const wchar_t* descr = reader->GetDescription();
                 const wchar_t* cs_wkt = reader->GetCoordinateSystemWkt();
 
-                FdoByteArray*  extent = reader->GetExtent();
-                extent->Release();
-
+                FdoPtr<FdoByteArray> extent = reader->GetExtent();
                 FdoSpatialContextExtentType type = reader->GetExtentType();
                 bool is_active = reader->IsActive();
      
@@ -227,24 +202,10 @@ void FdoSqlCmdTest::doGetSC()
         }
         catch (FdoException *ex )
         {
- 	        if ( gscCmd != 0 )
-                gscCmd->Release();
-
-            if ( reader != 0 )
-                reader->Release();   
-
             printf("doGetSC(): Failed (active=%d).\n", active_only);
-		    CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
-		    throw;
+		    UnitTestUtil::fail (ex);
         }
     }
-
- 	if ( gscCmd != 0 )
-        gscCmd->Release();
-
-    if ( reader != 0 )
-        reader->Release();   
-
 }
 
 void FdoSqlCmdTest::CreateActivateDestroySC()
@@ -344,7 +305,7 @@ void FdoSqlCmdTest::CreateActivateDestroySC()
 
 void FdoSqlCmdTest::DropTable ()
 {
-    FdoISQLCommand *sqlCmd = NULL;
+    FdoPtr<FdoISQLCommand> sqlCmd;
 
     if( mConnection != NULL )
     {
@@ -354,17 +315,10 @@ void FdoSqlCmdTest::DropTable ()
             FdoStringP sql = FdoStringP::Format(L"drop table %ls", SQLCMD_TABLE_NAME);
             sqlCmd->SetSQLStatement( (FdoString *)sql );
             sqlCmd->ExecuteNonQuery();
-
-            if( sqlCmd)
-                sqlCmd->Release();
         }
         catch( FdoException *ex )
         {
-            if( sqlCmd)
-                sqlCmd->Release();
-
-			CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
-			throw;
+			UnitTestUtil::fail (ex);
         }
     }
 
@@ -373,100 +327,90 @@ void FdoSqlCmdTest::DropTable ()
 
 void FdoSqlCmdTest::ReadQueryResult( FdoISQLDataReader *myReader )
 {
-    try
+    for( int i = 0; i<myReader->GetColumnCount(); i++ )
     {
-        for( int i = 0; i<myReader->GetColumnCount(); i++ )
+        const wchar_t * name = myReader->GetColumnName( i);
+        if(  myReader->IsNull( name ) )
         {
-            const wchar_t * name = myReader->GetColumnName( i);
-            if(  myReader->IsNull( name ) )
-            {
-                DBG(printf("Null value  "));
-                continue;
-            }
-            switch( myReader->GetColumnType( name ) )
-            {
-                case FdoDataType_Boolean:
-                        DBG(printf("%s ",myReader->GetBoolean( name )?"True":"False"));
-                    break;
-
-                case FdoDataType_Byte:
-                        DBG(printf("%x ",myReader->GetByte( name ) ));
-                    break;
-
-                case FdoDataType_DateTime:
-                    {
-                     FdoDateTime  time = myReader->GetDateTime( name );
-                     DBG(printf("%s ", ctime((const time_t*)&time )));
-                    }
-                    break;
-
-                case FdoDataType_Decimal:
-                    DBG(printf("%g ",myReader->GetDouble( name ) ));
-                    break;
-
-                case FdoDataType_Double:
-                    DBG(printf("%g ",myReader->GetDouble( name ) ));
-                    break;
-
-
-                case FdoDataType_Int16:
-                    DBG(printf("%d ",myReader->GetInt16( name ) ));
-                    break;
-
-
-                case FdoDataType_Int32:
-                    DBG(printf("%d ",myReader->GetInt32( name ) ));
-                    break;
-
-
-                case FdoDataType_Int64:
-                    DBG(printf("%d ",myReader->GetInt64( name ) ));
-                    break;
-
-
-                case FdoDataType_Single:
-                    DBG(printf("%f ",myReader->GetSingle( name ) ));
-                    break;
-
-
-                case FdoDataType_String:
-                    DBG(printf("%ls ",myReader->GetString( name ) ));
-                    break;
-
-
-                case FdoDataType_BLOB:
-                case FdoDataType_CLOB:
-                    throw "Not supported";
-                    break;
-
-
-                default:
-                    throw "Unknown fdo data type";
-            }
+            DBG(printf("Null value  "));
+            continue;
         }
-    }
-    catch( FdoException *ex )
-    {
-		CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
-		throw;
+        switch( myReader->GetColumnType( name ) )
+        {
+            case FdoDataType_Boolean:
+                    DBG(printf("%s ",myReader->GetBoolean( name )?"True":"False"));
+                break;
+
+            case FdoDataType_Byte:
+                    DBG(printf("%x ",myReader->GetByte( name ) ));
+                break;
+
+            case FdoDataType_DateTime:
+                {
+                 FdoDateTime  time = myReader->GetDateTime( name );
+                 DBG(printf("%s ", ctime((const time_t*)&time )));
+                }
+                break;
+
+            case FdoDataType_Decimal:
+                DBG(printf("%g ",myReader->GetDouble( name ) ));
+                break;
+
+            case FdoDataType_Double:
+                DBG(printf("%g ",myReader->GetDouble( name ) ));
+                break;
+
+
+            case FdoDataType_Int16:
+                DBG(printf("%d ",myReader->GetInt16( name ) ));
+                break;
+
+
+            case FdoDataType_Int32:
+                DBG(printf("%d ",myReader->GetInt32( name ) ));
+                break;
+
+
+            case FdoDataType_Int64:
+                DBG(printf("%d ",myReader->GetInt64( name ) ));
+                break;
+
+
+            case FdoDataType_Single:
+                DBG(printf("%f ",myReader->GetSingle( name ) ));
+                break;
+
+
+            case FdoDataType_String:
+                DBG(printf("%ls ",myReader->GetString( name ) ));
+                break;
+
+
+            case FdoDataType_BLOB:
+            case FdoDataType_CLOB:
+                throw FdoException::Create(L"Not supported");
+                break;
+
+            default:
+                throw FdoException::Create(L"Unknown fdo data type");
+        }
     }
     printf("\n");
 }
 
 void FdoSqlCmdTest::Query ()
 {
-    FdoISQLDataReader *myReader = NULL;
-    FdoISQLCommand *selCmd = NULL;
+    FdoPtr<FdoISQLDataReader> myReader;
+    FdoPtr<FdoISQLCommand> selCmd;
 
     if( mConnection != NULL )
     {
         try
         {
-            FdoISQLCommand *selCmd = (FdoISQLCommand*)mConnection->CreateCommand( FdoCommandType_SQLCommand );
+            FdoPtr<FdoISQLCommand> selCmd = (FdoISQLCommand*)mConnection->CreateCommand( FdoCommandType_SQLCommand );
             FdoStringP sql = FdoStringP::Format(L"select * from %ls", SQLCMD_TABLE_NAME);
             selCmd->SetSQLStatement( (FdoString *)sql );
             myReader = selCmd->ExecuteReader();
-            selCmd->Release();
             selCmd = NULL;
             if( myReader != NULL  )
             {
@@ -480,24 +424,13 @@ void FdoSqlCmdTest::Query ()
                 {
                     ReadQueryResult( myReader );
                 }
-                myReader->Release();
                 myReader = NULL;
             }
-
-            if( selCmd)
-                selCmd->Release();
             selCmd = NULL;
         }
         catch( FdoException *ex )
         {
-            if( myReader )
-                myReader->Release();
-
-            if( selCmd)
-                selCmd->Release();
-
-			CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
-            throw;
+			UnitTestUtil::fail (ex);
         }
     }
 
@@ -512,7 +445,7 @@ void FdoSqlCmdTest::QueryGeometry()
     {
         try
         {
-            FdoISQLCommand *selCmd = (FdoISQLCommand*)mConnection->CreateCommand( FdoCommandType_SQLCommand );
+            FdoPtr<FdoISQLCommand> selCmd = (FdoISQLCommand*)mConnection->CreateCommand( FdoCommandType_SQLCommand );
             selCmd->SetSQLStatement(L"select * from acdb3dpolyline");
             myReader = selCmd->ExecuteReader();
 
@@ -536,18 +469,15 @@ void FdoSqlCmdTest::QueryGeometry()
                 {
                     if ( !myReader->IsNull( geomColName) )
                     {
-                        FdoByteArray* byteArray = myReader->GetGeometry( geomColName );
-
+                        FdoPtr<FdoByteArray> byteArray = myReader->GetGeometry( geomColName );
                         DBG(printf(" \tGeometry byte array size: %d\n", byteArray->GetCount()));
-                        byteArray->Release();
                     }
                 }
             }
         }
         catch( FdoException *ex )
         {
-			CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
-            throw;
+			UnitTestUtil::fail (ex);
         }
     }
 

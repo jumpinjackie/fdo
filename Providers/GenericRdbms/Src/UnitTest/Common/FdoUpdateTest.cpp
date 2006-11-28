@@ -36,6 +36,7 @@ FdoUpdateTest::FdoUpdateTest(void)
 
 FdoUpdateTest::FdoUpdateTest(char *suffix)
 {
+    m_DisableFailures = false;
 	m_hasGeom = m_hasAssoc = true;
     strncpy(mSuffix, suffix, 11 );
     mSuffix[11] = '\0';
@@ -255,7 +256,10 @@ void FdoUpdateTest::MainFdoUpdateTest (FdoIConnection* Conn)
     }
     catch (FdoException *ex)
     {
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+        if (m_DisableFailures)
+            throw ex;
+        else
+            UnitTestUtil::fail(ex);
     }
 }
 
@@ -308,7 +312,7 @@ void FdoUpdateTest::UpdateObjectProperty()
         {
             connection->Close ();
         }
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+        UnitTestUtil::fail(ex);
     }
     catch (...)
     {
@@ -375,7 +379,7 @@ void FdoUpdateTest::UpdateAttributesOnly()
         {
             connection->Close ();
         }
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+        UnitTestUtil::fail(ex);
     }
     catch (...)
     {
@@ -388,7 +392,7 @@ void FdoUpdateTest::UpdateAttributesOnly()
 void FdoUpdateTest::UpdateNonFeatureClass()
 {
     //putenv("GVC_TRACE_FILE=e:\\Danube\\gvc.trace");
-    FdoIConnection* connection = NULL;
+    FdoPtr<FdoIConnection> connection;
     FdoPtr<FdoITransaction> featureTransaction;
 
     try
@@ -425,24 +429,17 @@ void FdoUpdateTest::UpdateNonFeatureClass()
         featureTransaction->Commit();
 
         connection->Close();
-        connection->Release();
     }
     catch (FdoException *ex)
     {
         if( connection )
-        {
             connection->Close ();
-            connection->Release();
-        }
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+        UnitTestUtil::fail(ex);
     }
     catch (...)
     {
         if (connection)
-        {
             connection->Close ();
-            connection->Release();
-        }
         throw;
     }
 
@@ -450,7 +447,7 @@ void FdoUpdateTest::UpdateNonFeatureClass()
 
 void FdoUpdateTest::FdoUpdateTestTypes ()
 {
-    FdoIConnection* connection = NULL;
+    FdoPtr<FdoIConnection> connection;
     FdoPtr<FdoITransaction> featureTransaction;
 
     try
@@ -538,33 +535,23 @@ void FdoUpdateTest::FdoUpdateTestTypes ()
         featureTransaction->Commit();
 
         connection->Close();
-        connection->Release();
     }
     catch (FdoCommandException *ex)
     {
         if( connection )
-        {
             connection->Close ();
-            connection->Release();
-        }
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+        UnitTestUtil::fail(ex);
     }
     catch (FdoException *ex)
     {
         if( connection )
-        {
             connection->Close ();
-            connection->Release();
-        }
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+        UnitTestUtil::fail(ex);
     }
     catch (...)
     {
         if( connection )
-        {
             connection->Close ();
-            connection->Release();
-        }
         throw;
     }
 }
@@ -572,7 +559,7 @@ void FdoUpdateTest::FdoUpdateTestTypes ()
 void FdoUpdateTest::UpdateMultiIdFeatureClass()
 {
     //putenv("GVC_TRACE_FILE=e:\\Danube\\gvc.trace");
-    FdoIConnection* connection = NULL;
+    FdoPtr<FdoIConnection> connection;
     FdoPtr<FdoITransaction> featureTransaction;
 
     try
@@ -630,25 +617,21 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
         coordsBuffer[2] = 0;
 
         propertyValue = FdoUpdateTest::AddNewProperty( propertyValues, L"Geometry");
-        FdoFgfGeometryFactory * gf = FdoFgfGeometryFactory::GetInstance();
+        FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
 
         bool supportsZ = (FdoPtr<FdoIGeometryCapabilities>(connection->GetGeometryCapabilities())->GetDimensionalities() & FdoDimensionality_Z);
-		FdoILineString* line1;
+		FdoPtr<FdoILineString> line1;
 
 		if ( supportsZ )
 			line1 = gf->CreateLineString(FdoDimensionality_XY|FdoDimensionality_Z, segCount*3, coordsBuffer);
 		else
 			line1 = gf->CreateLineString(FdoDimensionality_XY, segCount*2, coordsBuffer);
 
-        FdoByteArray *byteArray = gf->GetFgf(line1);
+        FdoPtr<FdoByteArray> byteArray = gf->GetFgf(line1);
         FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray);
         propertyValue->SetValue(geometryValue);
 
-        line1->Release();
-        byteArray->Release();
-
         FdoPtr<FdoIFeatureReader> reader = insertCommand->Execute();
-
         dataValue = FdoDataValue::Create(L"2");
         propertyValue = propertyValues->GetItem(L"PIN");
         propertyValue->SetValue(dataValue);
@@ -795,9 +778,6 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
         byteArray = gf->GetFgf(line1);
         geometryValue = FdoGeometryValue::Create(byteArray);
         propertyValue->SetValue(geometryValue);
-        line1->Release();
-        byteArray->Release();
-        gf->Release();
 
         UpdateCommand->Execute();
 
@@ -932,16 +912,12 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
         CPPUNIT_ASSERT( rowCount == 2 );
 
         connection->Close ();
-        connection->Release();
     }
     catch (FdoException *ex)
     {
         try {
             if( connection )
-            {
                 connection->Close ();
-                connection->Release();
-            }
         }
         catch ( ... )
         {
@@ -952,10 +928,7 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
     {
         try {
             if( connection )
-            {
                 connection->Close ();
-                connection->Release();
-            }
         }
         catch ( ... )
         {
@@ -968,7 +941,7 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
 void FdoUpdateTest::UpdateSingleIdFeatureClass()
 {
     //putenv("GVC_TRACE_FILE=e:\\Danube\\gvc.trace");
-    FdoIConnection* connection = NULL;
+    FdoPtr<FdoIConnection> connection;
     FdoPtr<FdoITransaction> featureTransaction;
 
     try
@@ -1018,25 +991,21 @@ void FdoUpdateTest::UpdateSingleIdFeatureClass()
         coordsBuffer[2] = 0;
 
         propertyValue = FdoUpdateTest::AddNewProperty( propertyValues, L"Geometry");
-        FdoFgfGeometryFactory * gf = FdoFgfGeometryFactory::GetInstance();
+        FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
         bool supportsZ = (FdoPtr<FdoIGeometryCapabilities>(connection->GetGeometryCapabilities())->GetDimensionalities() & FdoDimensionality_Z);
 
-        FdoILineString* line1 = NULL;
+        FdoPtr<FdoILineString> line1;
 		
 		if ( supportsZ )
 			line1 = gf->CreateLineString(FdoDimensionality_XY|FdoDimensionality_Z, segCount*3, coordsBuffer);
 		else
 			line1 = gf->CreateLineString(FdoDimensionality_XY, segCount*2, coordsBuffer);
 
-        FdoByteArray *byteArray = gf->GetFgf(line1);
+        FdoPtr<FdoByteArray> byteArray = gf->GetFgf(line1);
         FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray);
         propertyValue->SetValue(geometryValue);
 
-        line1->Release();
-        byteArray->Release();
-
         FdoPtr<FdoIFeatureReader> reader = insertCommand->Execute();
-
         dataValue = FdoDataValue::Create(L"Toronto");
         propertyValue = propertyValues->GetItem(L"Name");
         propertyValue->SetValue(dataValue);
@@ -1183,9 +1152,6 @@ void FdoUpdateTest::UpdateSingleIdFeatureClass()
         byteArray = gf->GetFgf(line1);
         geometryValue = FdoGeometryValue::Create(byteArray);
         propertyValue->SetValue(geometryValue);
-        line1->Release();
-        byteArray->Release();
-        gf->Release();
 
         UpdateCommand->Execute();
 
@@ -1315,16 +1281,12 @@ void FdoUpdateTest::UpdateSingleIdFeatureClass()
         CPPUNIT_ASSERT( rowCount == 2 );
 
         connection->Close ();
-        connection->Release();
     }
     catch (FdoException *ex)
     {
         try {
             if( connection )
-            {
                 connection->Close ();
-                connection->Release();
-            }
         }
         catch ( ... )
         {
@@ -1335,10 +1297,7 @@ void FdoUpdateTest::UpdateSingleIdFeatureClass()
     {
         try {
             if( connection )
-            {
                 connection->Close ();
-                connection->Release();
-            }
         }
         catch ( ... )
         {
@@ -1352,23 +1311,18 @@ void FdoUpdateTest::CheckGeometry(FdoPtr<FdoIFeatureReader> rdr, FdoString* prop
 {
     CPPUNIT_ASSERT( !rdr->IsNull(propName) );
 
-    FdoFgfGeometryFactory * gf = FdoFgfGeometryFactory::GetInstance();
-    FdoByteArray* sGeom = rdr->GetGeometry( propName );
+    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+    FdoPtr<FdoByteArray> sGeom = rdr->GetGeometry( propName );
     CPPUNIT_ASSERT( sGeom );
 
-    FdoILineString* line1 = (FdoILineString*) gf->CreateGeometryFromFgf( sGeom );
-    FdoIDirectPosition* pos = line1->GetItem(0);
+    FdoPtr<FdoILineString> line1 = (FdoILineString*) gf->CreateGeometryFromFgf( sGeom );
+    FdoPtr<FdoIDirectPosition> pos = line1->GetItem(0);
 
     CPPUNIT_ASSERT( expectedX == pos->GetX() );
     CPPUNIT_ASSERT( expectedY == pos->GetY() );
 
     if ( line1->GetDimensionality() == 3 ) 
         CPPUNIT_ASSERT( expectedZ == pos->GetZ() );
-
-    gf->Release();
-    sGeom->Release();
-    line1->Release();
-    pos->Release();
 }
 
 
@@ -1597,7 +1551,7 @@ void FdoUpdateTest::ConditionalUpdate()
 	}
     catch (FdoException *ex)
     {
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+        UnitTestUtil::fail(ex);
 
         // Clean up the long transaction test environment. To ensure the clean-up
         // works deactivate the currently active long transaction first.
@@ -2280,7 +2234,7 @@ void FdoUpdateTest::SelectNoMetaSpatial( FdoPtr<FdoIConnection> connection, FdoS
     // Try select with filter
 
 
-    FdoFgfGeometryFactory * gf = FdoFgfGeometryFactory::GetInstance();
+    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
 
     double ordsXYExt[15];
     ordsXYExt[0] = 2.5; ordsXYExt[1] = 2.5; ordsXYExt[2] = 0.0;
@@ -2291,7 +2245,7 @@ void FdoUpdateTest::SelectNoMetaSpatial( FdoPtr<FdoIConnection> connection, FdoS
 
     FdoPtr<FdoILinearRing> extRing = gf->CreateLinearRing(FdoDimensionality_XY|FdoDimensionality_Z, 15, ordsXYExt);
     FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(extRing, NULL );
-    FdoPtr<FdoGeometryValue> geomValue = FdoPtr<FdoGeometryValue>(FdoGeometryValue::Create(FdoPtr<FdoByteArray>(gf->GetFgf(poly))));
+    FdoPtr<FdoGeometryValue> geomValue = FdoGeometryValue::Create(FdoPtr<FdoByteArray>(gf->GetFgf(poly)));
     FdoPtr<FdoSpatialCondition> spatialFilter = FdoPtr<FdoSpatialCondition>(FdoSpatialCondition::Create(phMgr->GetDcColumnName(L"GEOMETRY"),
                                                                       FdoSpatialOperations_Intersects,
                                                                       geomValue));

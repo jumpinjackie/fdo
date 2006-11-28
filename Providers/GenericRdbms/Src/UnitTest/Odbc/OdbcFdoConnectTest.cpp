@@ -166,8 +166,7 @@ void OdbcMySqlFdoConnectTest::ConnectByDsn()
     }
     catch (FdoException *ex)
     {
-		CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
-        throw;
+		UnitTestUtil::fail (ex);
     }
 }
 
@@ -304,8 +303,7 @@ void OdbcOracleFdoConnectTest::ConfigFileTest()
     }
     catch (FdoException *ex)
     {
-		CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
-        throw;
+		UnitTestUtil::fail (ex);
     }
 }
 
@@ -325,11 +323,7 @@ void OdbcAccessFdoConnectTest::connect ()
     }
     catch (FdoException *ex)
     {
-        if (mConnection)
-        {
-            mConnection->Release();
-            mConnection= NULL;
-        }
+        mConnection= NULL;
         UnitTestUtil::fail (ex);
     }
 }
@@ -351,8 +345,7 @@ void OdbcAccessFdoConnectTest::StaticCreateTest()
     }
     catch (FdoException *ex)
     {
-		CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
-        throw;
+		UnitTestUtil::fail (ex);
     }
 }
 
@@ -370,8 +363,7 @@ void OdbcAccessFdoConnectTest::StringTest()
     }
     catch (FdoException *ex)
     {
-		CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
-        throw;
+		UnitTestUtil::fail (ex);
     }
 }
 
@@ -490,8 +482,7 @@ void OdbcAccessFdoConnectTest::ConfigFileTest()
     }
     catch (FdoException *ex)
     {
-		CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
-        throw;
+		UnitTestUtil::fail (ex);
     }
 
     try
@@ -514,8 +505,7 @@ void OdbcAccessFdoConnectTest::ConfigFileTest()
     }
     catch (FdoException *ex)
     {
-		CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
-        throw;
+		UnitTestUtil::fail (ex);
     }
 }
 
@@ -613,8 +603,7 @@ void OdbcAccessFdoConnectTest::OpenTest()
     }
     catch (FdoException *ex)
     {
-		CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
-        throw;
+		UnitTestUtil::fail (ex);
     }
 }
 
@@ -782,8 +771,7 @@ void OdbcAccessFdoConnectTest::CapabilitiesTest()
     }
     catch (FdoException *ex)
     {
-		CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
-        throw;
+		UnitTestUtil::fail (ex);
     }
 }
 
@@ -1008,14 +996,15 @@ void OdbcAccessFdoConnectTest::InfoTest()
     }
     catch (FdoException *ex)
     {
-		CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
-        throw;
+		UnitTestUtil::fail (ex);
     }
 }
 
 void OdbcAccessFdoConnectTest::ConnectWithParmTest()
 {
-	// call the static method
+    try
+    {
+    	// call the static method
         FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
         if (connection == NULL)
             CPPUNIT_FAIL("FAILED - CreateConnection returned NULL\n");
@@ -1048,6 +1037,11 @@ void OdbcAccessFdoConnectTest::ConnectWithParmTest()
 		connProps->SetProperty(L"ConnectionString",L"\"\"");
 
 		connection->Open();
+    }
+    catch (FdoException *ex)
+    {
+		UnitTestUtil::fail (ex);
+    }
 }
 
 #endif

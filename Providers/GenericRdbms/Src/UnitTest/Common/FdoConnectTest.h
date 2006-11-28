@@ -41,7 +41,7 @@ protected:
 	virtual void connectPropDictionaryTest(){};
 	virtual void connectWithInvalidString();
 
-    FdoIConnection* mConnection;
+    FdoPtr<FdoIConnection> mConnection;
     void ReadAcDbPolyline( int connNumber, FdoIFeatureReader *myReader );
 
 protected:

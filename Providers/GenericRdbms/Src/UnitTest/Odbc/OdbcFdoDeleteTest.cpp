@@ -107,7 +107,7 @@ void OdbcBaseFdoDeleteTest::FeatureDelete ()
     }
     catch (FdoException *ex)
     {
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+        UnitTestUtil::fail(ex);
     }
 }
 
@@ -142,7 +142,7 @@ void OdbcMySqlFdoDeleteTest::ConfigFileTest()
     }
     catch (FdoException *ex)
     {
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+        UnitTestUtil::fail(ex);
     }
 }
 

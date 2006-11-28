@@ -67,7 +67,7 @@ public:
     virtual void TestDateFilter();
 
 protected:
-    static FdoIConnection* mConnection;
+    FdoPtr<FdoIConnection> mConnection;
     virtual void  set_provider() {};   
 
 	static FdoFilter* CreateFilter();

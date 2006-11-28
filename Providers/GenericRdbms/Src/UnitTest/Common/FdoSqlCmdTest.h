@@ -66,7 +66,7 @@ protected:
 
     virtual void  set_provider() {};
 
-    FdoIConnection* mConnection;
+    FdoPtr<FdoIConnection> mConnection;
 
     void ReadQueryResult( FdoISQLDataReader *myReader );
     char* FdoTypeToStr( FdoDataType type );

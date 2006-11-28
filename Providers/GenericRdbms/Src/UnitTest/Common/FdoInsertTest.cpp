@@ -38,6 +38,7 @@ FdoInsertTest::FdoInsertTest(void)
 
 FdoInsertTest::FdoInsertTest(char *suffix)
 {
+    m_DisableFailures = false;
     strncpy(mSuffix, suffix, 11 );
     mSuffix[11] = '\0';
 }
@@ -89,10 +90,9 @@ FdoPropertyValue* FdoInsertTest::AddNewProperty( FdoPropertyValueCollection* pro
 void FdoInsertTest::MainInsertTest (FdoIConnection *conn)
 {
 	clock_t start, finish;
+    FdoPtr<FdoIConnection> connection;
     try
     {
-
-        FdoPtr<FdoIConnection> connection;
         if( conn == NULL )
             connection = UnitTestUtil::GetConnection(mSuffix, true);
         else
@@ -148,11 +148,11 @@ void FdoInsertTest::MainInsertTest (FdoIConnection *conn)
             line[0] = '\0';
             FdoPtr<FdoITransaction> featureTransaction = connection->BeginTransaction();
 
-            FdoIInsert *insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
+            FdoPtr<FdoIInsert> insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
             insertCommand->SetFeatureClassName(L"Acad:AcDb3dPolyline");
             FdoPtr<FdoPropertyValueCollection> propertyValues = insertCommand->GetPropertyValues();
 
-            FdoIInsert *insertCommand2 = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
+            FdoPtr<FdoIInsert> insertCommand2 = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
             insertCommand2->SetFeatureClassName(L"AcDbEntity.xdata2");
             FdoPtr<FdoPropertyValueCollection> propertyValues2 = insertCommand2->GetPropertyValues();
 
@@ -357,11 +357,8 @@ void FdoInsertTest::MainInsertTest (FdoIConnection *conn)
 
             featureTransaction->Commit();
 
-            insertCommand->Release();
-			insertCommand2->Release();
 			finish = clock();
 			printf( "Elapsed: %f seconds\n", ((double)(finish - start) / CLOCKS_PER_SEC) );
-            connection->Close();
         }
         catch (...)
         {
@@ -369,14 +366,15 @@ void FdoInsertTest::MainInsertTest (FdoIConnection *conn)
                 connection->Close ();
             throw;
         }
-    }
-    catch (FdoCommandException *ex)
-    {
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+        if (connection)
+            connection->Close();
     }
     catch (FdoException *ex)
     {
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+        if (m_DisableFailures)
+            throw ex;
+        else
+            UnitTestUtil::fail(ex);
     }
 }
 
@@ -385,15 +383,15 @@ void FdoInsertTest::insert2 ()
 	clock_t start, finish;
     try
     {
-        FdoIConnection* connection = UnitTestUtil::GetConnection(mSuffix, false);
+        FdoPtr<FdoIConnection> connection = UnitTestUtil::GetConnection(mSuffix, false);
 
         try
         {
            // FdoPtr<FdoITransaction> featureTransaction = connection->BeginTransaction();
-            FdoIInsert *insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
+            FdoPtr<FdoIInsert> insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
             insertCommand->SetFeatureClassName(L"testClass");
             FdoPtr<FdoPropertyValueCollection> propertyValues = insertCommand->GetPropertyValues();
-            FdoIInsert *insertCommand2 = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
+            FdoPtr<FdoIInsert> insertCommand2 = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
             insertCommand2->SetFeatureClassName(L"testClass.Object2");
             FdoPtr<FdoPropertyValueCollection> propertyValues2 = insertCommand2->GetPropertyValues();
 
@@ -460,28 +458,22 @@ void FdoInsertTest::insert2 ()
 
             FdoPtr<FdoIFeatureReader> reader3 = insertCommand2->Execute();
 
-            insertCommand->Release();
-            insertCommand2->Release();
           //  featureTransaction->Commit();
 			finish = clock();
 			printf( "Elapsed: %f seconds\n", ((double)(finish - start) / CLOCKS_PER_SEC) );
-            
-			connection->Close();
-            connection->Release();
         }
         catch (...)
         {
             if (connection)
-            {
                 connection->Close ();
-                connection->Release();
-            }
             throw;
         }
+        if (connection)
+            connection->Close();
     }
     catch (FdoException *ex)
     {
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+        UnitTestUtil::fail(ex);
     }
 }
 
@@ -505,7 +497,7 @@ void FdoInsertTest::insert3 ()
             FdoPtr<FdoPropertyValue> propertyValue;
 
             FdoPtr<FdoITransaction> featureTransaction = connection->BeginTransaction();
-            FdoIInsert *insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
+            FdoPtr<FdoIInsert> insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
             insertCommand->SetFeatureClassName(L"Acad:AcDb3dPolyline");
             FdoPtr<FdoPropertyValueCollection> propertyValues = insertCommand->GetPropertyValues();
 
@@ -565,9 +557,8 @@ void FdoInsertTest::insert3 ()
 
             featureTransaction->Commit();
 			//featureTransaction->Rollback();
-            insertCommand->Release();
 			// check 
-			FdoISelect* selectCmd = (FdoISelect *) connection->CreateCommand(FdoCommandType_Select);
+			FdoPtr<FdoISelect> selectCmd = (FdoISelect *) connection->CreateCommand(FdoCommandType_Select);
 			selectCmd->SetFeatureClassName(L"Acad:AcDb3dPolyline");
 			FdoPtr<FdoFilter> filter = FdoComparisonCondition::Create(
 					   FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"color")),
@@ -575,7 +566,7 @@ void FdoInsertTest::insert3 ()
 					   FdoPtr<FdoDataValue>(FdoDataValue::Create(L"652")));
 			selectCmd->SetFilter(filter);
 
-			FdoIFeatureReader* featureReader = selectCmd->Execute();
+			FdoPtr<FdoIFeatureReader> featureReader = selectCmd->Execute();
 			bool isTrue;
 			while (featureReader->ReadNext())
 			{
@@ -607,7 +598,6 @@ void FdoInsertTest::insert3 ()
 					throw FdoException::Create(L"single: 'null' is not valid");
 			}
 			featureReader->Close();
-            connection->Close();
         }
         catch (...)
         {
@@ -615,6 +605,8 @@ void FdoInsertTest::insert3 ()
                 connection->Close ();
             throw;
         }
+        if (connection)
+            connection->Close();
     }
     catch (FdoCommandException *ex)
     {
@@ -644,7 +636,7 @@ void FdoInsertTest::insertBoundary()
             FdoPtr<FdoPropertyValue> propertyValue;
 
             FdoPtr<FdoITransaction> featureTransaction = connection->BeginTransaction();
-            FdoIInsert *insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
+            FdoPtr<FdoIInsert> insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
             insertCommand->SetFeatureClassName(L"Acad:AcDb3dPolyline");
             FdoPtr<FdoPropertyValueCollection> propertyValues = insertCommand->GetPropertyValues();
 
@@ -753,9 +745,8 @@ void FdoInsertTest::insertBoundary()
 
             featureTransaction->Commit();
 			//featureTransaction->Rollback();
-            insertCommand->Release();
 			// check 
-			FdoISelect* selectCmd = (FdoISelect *) connection->CreateCommand(FdoCommandType_Select);
+			FdoPtr<FdoISelect> selectCmd = (FdoISelect *) connection->CreateCommand(FdoCommandType_Select);
 			selectCmd->SetFeatureClassName(L"Acad:AcDb3dPolyline");
 			FdoPtr<FdoFilter> filter = FdoComparisonCondition::Create(
 					   FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"color")),
@@ -807,6 +798,8 @@ void FdoInsertTest::insertBoundary()
                 connection->Close ();
             throw;
         }
+        if (connection)
+            connection->Close ();
     }
     catch (FdoCommandException *ex)
     {
@@ -840,7 +833,7 @@ void FdoInsertTest::insertDate (FdoIConnection *connection, FdoDateTime dateTime
         bool supportsZ = (FdoPtr<FdoIGeometryCapabilities>(connection->GetGeometryCapabilities())->GetDimensionalities() & FdoDimensionality_Z);
 
         FdoPtr<FdoITransaction> featureTransaction = connection->BeginTransaction();
-        FdoIInsert *insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
+        FdoPtr<FdoIInsert> insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
         insertCommand->SetFeatureClassName(L"Acad:AcDb3dPolyline");
         FdoPtr<FdoPropertyValueCollection> propertyValues = insertCommand->GetPropertyValues();
 
@@ -887,7 +880,6 @@ void FdoInsertTest::insertDate (FdoIConnection *connection, FdoDateTime dateTime
         wprintf(L"    Number of rows entered: %d \n", numberInsertedObjects);
 
         featureTransaction->Commit();
-        insertCommand->Release();
     }
     catch ( ... )
     {
@@ -905,9 +897,9 @@ void FdoInsertTest::insertDateVerification (FdoIConnection *connection, int numO
     FdoStringP        currentColor,
                       currentObjectData;
     FdoDateTime       currentDateTime;
-    FdoISelect        *selectCmd          = NULL;
+    FdoPtr<FdoISelect> selectCmd;
     FdoPtr<FdoFilter> filter;
-    FdoIFeatureReader *featureReader      = NULL;
+    FdoPtr<FdoIFeatureReader> featureReader;
 
     try {
 
@@ -993,13 +985,7 @@ void FdoInsertTest::insertDateVerification (FdoIConnection *connection, int numO
         }
 
         if (featureReader != NULL)
-        {
             featureReader->Close();
-            featureReader->Release();
-            featureReader = NULL;
-        }
-
-        FDO_SAFE_RELEASE(selectCmd);
 
         if ((numberOfObjects != numOfSuccess) ||
             (!dateObjectFound)     ||
@@ -1019,13 +1005,7 @@ void FdoInsertTest::insertDateVerification (FdoIConnection *connection, int numO
     catch ( ... ) {
 
         if (featureReader != NULL)
-        {
             featureReader->Close();
-            featureReader->Release();
-            featureReader = NULL;
-        }
-
-        FDO_SAFE_RELEASE(selectCmd);
         throw;
     } 
 }
@@ -1132,8 +1112,6 @@ try
                 propertyValue->SetValue(dataValue);
                 FdoPtr<FdoIFeatureReader> reader = insertCommand->Execute();
             }
-
-            connection->Close();
         }
         catch (...)
         {
@@ -1141,14 +1119,16 @@ try
                 connection->Close ();
             throw;
         }
+        if (connection)
+            connection->Close();
     }
     catch (FdoCommandException *ex)
     {
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+        UnitTestUtil::fail(ex);
     }
     catch (FdoException *ex)
     {
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+        UnitTestUtil::fail(ex);
     }
 }
 
@@ -1167,12 +1147,14 @@ void FdoInsertTest::insertEmptyProps()
     }
     catch (FdoCommandException *ex)
     {
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+        UnitTestUtil::fail(ex);
     }
     catch (FdoException *ex)
     {
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+        UnitTestUtil::fail(ex);
     }
+    if (connection)
+        connection->Close();
 }
 
 void FdoInsertTest::insertFlushTest()
@@ -1272,9 +1254,6 @@ try
             }
 
             featureTransaction->Commit();
-
-            // close the connection
-            connection->Close();
         }
         catch (...)
         {
@@ -1282,14 +1261,17 @@ try
                 connection->Close ();
             throw;
         }
+        // close the connection
+        if (connection)
+            connection->Close();
     }
     catch (FdoCommandException *ex)
     {
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+        UnitTestUtil::fail(ex);
     }
     catch (FdoException *ex)
     {
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+        UnitTestUtil::fail(ex);
     }
 }
 
@@ -1444,8 +1426,6 @@ try
 		rollback_lt->SetName((FdoString *)insLtName);
 		rollback_lt->Execute();
         ltCreated = false;
-
-        connection->Close ();
     }
     catch (FdoCommandException *ex)
     {
@@ -1458,7 +1438,7 @@ try
             ltCreated = false;
         }
         connection->Close ();
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+        UnitTestUtil::fail(ex);
     }
     catch (FdoException *ex)
     {
@@ -1471,8 +1451,10 @@ try
             ltCreated = false;
         }
         connection->Close ();
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+        UnitTestUtil::fail(ex);
     }
+    if (connection)
+        connection->Close ();
 }
 
 FdoByte FdoInsertTest::GetMinByteValue()

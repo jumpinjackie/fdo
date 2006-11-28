@@ -20,18 +20,15 @@
 
 // Check whether a class definition has a property named "Geometry".
 // The property does NOT have to actually be geometric.
-FdoConnectTest::FdoConnectTest(void): mConnection(NULL)
+FdoConnectTest::FdoConnectTest(void)
 {
 }
 
 FdoConnectTest::~FdoConnectTest(void)
 {
     if( mConnection != NULL )
-    {
         mConnection->Close();
-        mConnection->Release();
-        mConnection = NULL;
-    }
+    mConnection = NULL;
 }
 
 void FdoConnectTest::setUp ()
@@ -42,11 +39,8 @@ void FdoConnectTest::setUp ()
 void FdoConnectTest::tearDown ()
 {
     if( mConnection != NULL )
-    {
         mConnection->Close();
-        mConnection->Release();
-        mConnection = NULL;
-    }
+    mConnection = NULL;
 }
 
 bool FdoConnectTest::HasGeometry(FdoIConnection * connection,FdoString * className)
@@ -94,10 +88,7 @@ void FdoConnectTest::connect ()
     catch (FdoException *ex)
     {
         if (mConnection)
-        {
-            mConnection->Release();
             mConnection= NULL;
-        }
         UnitTestUtil::fail (ex);
     }
 
@@ -126,15 +117,15 @@ void FdoConnectTest::ReadAcDbPolyline( int connNumber, FdoIFeatureReader *myRead
     catch( FdoException *ex)
     {
         printf("(%s)FDO exception: %ls \n", (connNumber==1)?"First":"Second", ex->GetExceptionMessage() );
-		CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+        UnitTestUtil::fail(ex);
     }
 }
 
 void FdoConnectTest::query ()
 {
     connect();
-    FdoIFeatureReader *myFirstReader = NULL;
-    FdoIFeatureReader *mySecondReader = NULL;
+    FdoPtr<FdoIFeatureReader> myFirstReader;
+    FdoPtr<FdoIFeatureReader> mySecondReader;
     FdoPtr<FdoComparisonCondition> filter = FdoPtr<FdoComparisonCondition>(FdoComparisonCondition::Create(
                         FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"segcount")),
                         FdoComparisonOperations_LessThan,
@@ -143,61 +134,32 @@ void FdoConnectTest::query ()
     {
          try
         {
-            //mConn = UnitTestUtil::GetConnection("", true);
-
-            FdoISelect  *firstSelCmd = (FdoISelect*)mConnection->CreateCommand(  FdoCommandType_Select );
+            FdoPtr<FdoISelect> firstSelCmd = (FdoISelect*)mConnection->CreateCommand(  FdoCommandType_Select );
             firstSelCmd->SetFilter(filter);
             firstSelCmd->SetFeatureClassName(L"Acad:AcDb3dPolyline");
             myFirstReader = firstSelCmd->Execute( );
-            firstSelCmd->Release();
         }
         catch (FdoException *ex )
         {
-			CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
-           // mConn->Release();
-           // mConn= NULL;
-            throw;
+			UnitTestUtil::fail(ex);
         }
         try
         {
-            FdoISelect  *selCmd = (FdoISelect*)mConnection->CreateCommand(  FdoCommandType_Select );
+            FdoPtr<FdoISelect> selCmd = (FdoISelect*)mConnection->CreateCommand(  FdoCommandType_Select );
             selCmd->SetFeatureClassName(L"L\x00e4nd:Parcel");
             mySecondReader = selCmd->Execute( );
             if( mySecondReader != NULL  && myFirstReader != NULL )
             {
                 while ( mySecondReader->ReadNext() && myFirstReader->ReadNext() )
                 {
-                    //printf("\n");
                     ReadAcDbPolyline( 2, mySecondReader );
                     ReadAcDbPolyline( 1,myFirstReader );
                 }
-                mySecondReader->Release();
-                myFirstReader->Release();
             }
-            selCmd->Release();
-            /*if( mConn != NULL )
-            {
-                mConn->Close();
-                mConn->Release();
-                mConn = NULL;
-            }*/
         }
         catch( FdoException *ex )
         {
-            if( mySecondReader )
-                mySecondReader->Release();
-
-             if( myFirstReader )
-                myFirstReader->Release();
-
-           /*  if( mConn != NULL )
-            {
-                mConn->Close();
-                mConn->Release();
-            }*/
-
-			CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
-            throw;
+			UnitTestUtil::fail(ex);
         }
     }
 }

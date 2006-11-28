@@ -28,14 +28,7 @@ FdoConnectionInfoTest::FdoConnectionInfoTest ()
 
 FdoConnectionInfoTest::~FdoConnectionInfoTest ()
 {
-
-    if (mConnection != NULL) {
-
-        mConnection->Release();
-        mConnection = NULL;
-
-    }  //  if (mConnection != NULL) ...
-
+    mConnection = NULL;
 }  //  ~FdoConnectionInfoTest ()
 
 void FdoConnectionInfoTest::setUp ()
@@ -47,14 +40,7 @@ void FdoConnectionInfoTest::setUp ()
 
 void FdoConnectionInfoTest::tearDown ()
 {
-
-    if (mConnection != NULL) {
-
-        mConnection->Release();
-        mConnection = NULL;
-
-    }  //  if (mConnection != NULL) ...
-
+    mConnection = NULL;
 }  //  tearDown ()
 
 void FdoConnectionInfoTest::set_provider ()

@@ -65,7 +65,7 @@ protected:
     void CheckList (FdoStringP dependentFileName);
     void CrossCheck ();
 
-    FdoIConnection                *mConnection;
+    FdoPtr<FdoIConnection> mConnection;
     std::vector<FileNameDataSet*> mExpectedFileList;
 
 };

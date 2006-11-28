@@ -18,18 +18,15 @@
 #include "FdoAdvancedSelectTest.h"
 #include "UnitTestUtil.h"
 
-FdoAdvancedSelectTest::FdoAdvancedSelectTest(void): mConnection(NULL)
+FdoAdvancedSelectTest::FdoAdvancedSelectTest(void)
 {
 }
 
 FdoAdvancedSelectTest::~FdoAdvancedSelectTest(void)
 {
     if( mConnection != NULL )
-    {
         mConnection->Close();
-		mConnection->Release();
-		mConnection = NULL;
-    }
+	mConnection = NULL;
 }
 
 void FdoAdvancedSelectTest::setUp ()
@@ -41,11 +38,8 @@ void FdoAdvancedSelectTest::setUp ()
 void FdoAdvancedSelectTest::tearDown ()
 {
     if( mConnection != NULL )
-    {
         mConnection->Close();
-		mConnection->Release();
-		mConnection = NULL;
-    }
+	mConnection = NULL;
 }
 
 void FdoAdvancedSelectTest::connect ()
@@ -59,13 +53,9 @@ void FdoAdvancedSelectTest::connect ()
     {
         printf("FDO error: %ls\n", ex->GetExceptionMessage());
         if( mConnection != NULL )
-        {
             mConnection->Close();
-		    mConnection->Release();
-            mConnection= NULL;
-        }
-	ex->Release();
-        throw;
+        mConnection= NULL;
+    	UnitTestUtil::fail(ex);
     }
 }
 
@@ -73,9 +63,7 @@ void FdoAdvancedSelectTest::read_feature_data( FdoIFeatureReader *myReader, bool
 {
     try
     {
-        FdoClassDefinition *classDef = myReader->GetClassDefinition();
-        classDef->Release();
-        classDef = myReader->GetClassDefinition();
+        FdoPtr<FdoClassDefinition> classDef = myReader->GetClassDefinition();
         if( classDef )
         {
             printf(" \tClassName: %ls\n",classDef->GetName() );
@@ -101,8 +89,6 @@ void FdoAdvancedSelectTest::read_feature_data( FdoIFeatureReader *myReader, bool
                 printf("\t%d) %ls\n", i+1, property->GetName());
             }
             printf("\n");
-
-            classDef->Release();
         }
         if( ! myReader->IsNull(L"RevisionNumber") )
             printf(" \tColor: %d\n", myReader->GetInt64(L"RevisionNumber") );
@@ -120,7 +106,7 @@ void FdoAdvancedSelectTest::read_feature_data( FdoIFeatureReader *myReader, bool
        if( ! myReader->IsNull(L"xdata") )
         {
 
-            FdoIFeatureReader   *objReader = myReader->GetFeatureObject(L"xdata");
+            FdoPtr<FdoIFeatureReader> objReader = myReader->GetFeatureObject(L"xdata");
             if( objReader )
             {
                 printf(" \txdata: \n" );
@@ -128,13 +114,11 @@ void FdoAdvancedSelectTest::read_feature_data( FdoIFeatureReader *myReader, bool
                 if( classDef )
                 {
                     printf(" \t\tClassName: %ls\n",classDef->GetName() );
-                    classDef->Release();
                 }
                 while ( objReader->ReadNext() )
                 {
                     printf(" \t\tDataValue: %ls\n", objReader->GetString(L"DataValue"));
                 }
-                objReader->Release();
             }
         }
 
@@ -143,7 +127,7 @@ void FdoAdvancedSelectTest::read_feature_data( FdoIFeatureReader *myReader, bool
             if( ! myReader->IsNull(L"xdata2") )
                 {
 
-                    FdoIFeatureReader   *objReader2 = myReader->GetFeatureObject(L"xdata2");
+                    FdoPtr<FdoIFeatureReader> objReader2 = myReader->GetFeatureObject(L"xdata2");
                     if( objReader2 )
                     {
                         printf(" \txdata: \n" );
@@ -152,24 +136,20 @@ void FdoAdvancedSelectTest::read_feature_data( FdoIFeatureReader *myReader, bool
                         {
                             printf(" \t\tClassName: %ls\n",classDef->GetName() );
                             printf(" \t\tQualified ClassName: %ls\n", (const wchar_t*) classDef->GetQualifiedName() );
-                            classDef->Release();
                         }
                         while ( objReader2->ReadNext() )
                         {
                             printf(" \t\tDataValue: %ls\n", objReader2->GetString(L"DataValue"));
                         }
                     }
-			        objReader2->Release();
                 }
         }
-
-
         printf("\n");
     }
     catch( FdoException *ex )
     {
         printf("FDO exception: %ls \n", ex->GetExceptionMessage() );
-        throw;
+        UnitTestUtil::fail(ex);
     }
 }
 
@@ -215,7 +195,7 @@ void FdoAdvancedSelectTest::compIdentFilterTest ()
         catch( FdoException *ex )
         {
             printf("FDO advanced select error: %ls\n", ex->GetExceptionMessage());
-            throw;
+            UnitTestUtil::fail(ex);
         }
     }
 }
@@ -273,7 +253,7 @@ void FdoAdvancedSelectTest::compIdentPropertyTest ()
         catch( FdoException *ex )
         {
             printf("FDO advanced select error: %ls\n", ex->GetExceptionMessage());
-            throw;
+            UnitTestUtil::fail(ex);
         }
     }
 }
@@ -411,7 +391,7 @@ void FdoAdvancedSelectTest::orderByTest()
         catch( FdoException *ex )
         {
             printf("FDO advanced select error: %ls\n", ex->GetExceptionMessage());
-            throw;
+            UnitTestUtil::fail(ex);
         }
 
         //
@@ -421,12 +401,11 @@ void FdoAdvancedSelectTest::orderByTest()
             printf("Order by on already ordered collection:\n");
             selCmd = (FdoISelect*)mConnection->CreateCommand( FdoCommandType_Select );
             selCmd->SetFeatureClassName(L"Acad:AcDbEntity.xdata2");
-            FdoComparisonCondition* filterPtr = FdoComparisonCondition::Create(
+            FdoPtr<FdoComparisonCondition> filterPtr = FdoComparisonCondition::Create(
 						FdoPtr<FdoIdentifier> (FdoIdentifier::Create(L"seq")), 
 						FdoComparisonOperations_GreaterThan, 
 						FdoPtr<FdoDataValue>(FdoDataValue::Create((int)0)));
 			selCmd->SetFilter(filterPtr);
-            filterPtr->Release();
             FdoPtr<FdoIdentifierCollection>idCol = selCmd->GetOrdering();
             FdoPtr<FdoIdentifier>id = FdoIdentifier::Create(L"DataValue");
             idCol->Add( id );
@@ -444,7 +423,7 @@ void FdoAdvancedSelectTest::orderByTest()
         catch( FdoException *ex )
         {
             printf("FDO advanced select error: %ls\n", ex->GetExceptionMessage());
-            throw;
+            UnitTestUtil::fail(ex);
         }
     }
 }
@@ -482,7 +461,7 @@ void FdoAdvancedSelectTest::functionTest()
     catch( FdoException *ex )
     {
         printf("FDO advanced select error: %ls\n", ex->GetExceptionMessage());
-        throw;
+        UnitTestUtil::fail(ex);
     }
 
     // Use number function in the select list
@@ -519,7 +498,7 @@ void FdoAdvancedSelectTest::functionTest()
     catch( FdoException *ex )
     {
         printf("FDO advanced select error: %ls\n", ex->GetExceptionMessage());
-        throw;
+        UnitTestUtil::fail(ex);
     }
 
 
@@ -564,7 +543,7 @@ void FdoAdvancedSelectTest::functionTest()
     catch( FdoException *ex )
     {
         printf("FDO advanced select error: %ls\n", ex->GetExceptionMessage());
-        throw;
+        UnitTestUtil::fail(ex);
     }
 
     // Use nested function
@@ -591,7 +570,7 @@ void FdoAdvancedSelectTest::functionTest()
     catch( FdoException *ex )
     {
         printf("FDO advanced select error: %ls\n", ex->GetExceptionMessage());
-        throw;
+        UnitTestUtil::fail(ex);
     }
 
     // Use function of a math expression
@@ -655,7 +634,7 @@ void FdoAdvancedSelectTest::functionTest()
     catch( FdoException *ex )
     {
         printf("FDO advanced select error: %ls\n", ex->GetExceptionMessage());
-        throw;
+        UnitTestUtil::fail(ex);
     }
 
     // Use a string function 
@@ -685,7 +664,7 @@ void FdoAdvancedSelectTest::functionTest()
     catch( FdoException *ex )
     {
         printf("FDO advanced select error: %ls\n", ex->GetExceptionMessage());
-        throw;
+        UnitTestUtil::fail(ex);
     }
 
     // Use string concat function 
@@ -720,7 +699,7 @@ void FdoAdvancedSelectTest::functionTest()
     catch( FdoException *ex )
     {
         printf("FDO advanced select error: %ls\n", ex->GetExceptionMessage());
-        throw;
+        UnitTestUtil::fail(ex);
     }
 }
 
@@ -762,7 +741,7 @@ void FdoAdvancedSelectTest::TestDefect785616()
     catch( FdoException *ex )
     {
         printf("FDO advanced select error: %ls\n", ex->GetExceptionMessage());
-        throw;
+        UnitTestUtil::fail(ex);
     }
 }
 
@@ -795,7 +774,7 @@ void FdoAdvancedSelectTest::groupByTest()
     catch( FdoException *ex )
     {
         printf("FDO advanced select error: %ls\n", ex->GetExceptionMessage());
-        throw;
+        UnitTestUtil::fail(ex);
     }
 }
 
@@ -816,7 +795,7 @@ void FdoAdvancedSelectTest::TestDefect779194()
     catch( FdoException *ex )
     {
         printf("FDO advanced select error: %ls\n", ex->GetExceptionMessage());
-        throw;
+        UnitTestUtil::fail(ex);
     }
 }
 
@@ -878,7 +857,7 @@ void FdoAdvancedSelectTest::selectDistinctTest()
         catch( FdoException *ex )
         {
             printf("SelectDistinctTest error: %ls\n", ex->GetExceptionMessage());
-            throw;
+            UnitTestUtil::fail(ex);
         }
     }
 }
@@ -915,7 +894,7 @@ void FdoAdvancedSelectTest::getDataTypeTest()
     catch( FdoException *ex )
     {
         printf("getDataTypeTest error: %ls\n", ex->GetExceptionMessage());
-        throw;
+        UnitTestUtil::fail(ex);
     }
 }
 void FdoAdvancedSelectTest::groupByorderByTest()
@@ -948,7 +927,7 @@ void FdoAdvancedSelectTest::groupByorderByTest()
     catch( FdoException *ex )
     {
         printf("FDO advanced select error: %ls\n", ex->GetExceptionMessage());
-        throw;
+        UnitTestUtil::fail(ex);
     }
 }
 void FdoAdvancedSelectTest::orderByTest2()
@@ -979,7 +958,6 @@ void FdoAdvancedSelectTest::orderByTest2()
     catch( FdoException *ex )
     {
         printf("FDO advanced select error: %ls\n", ex->GetExceptionMessage());
-        throw;
+        UnitTestUtil::fail(ex);
     }
 }
-

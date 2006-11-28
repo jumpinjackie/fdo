@@ -40,7 +40,7 @@ CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(OdbcSqlServerFdoConnectionInfoTest, "OdbcS
 CPPUNIT_TEST_SUITE_REGISTRATION(OdbcAccessFdoConnectionInfoTest);
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(OdbcAccessFdoConnectionInfoTest, "FdoConnectionInfoTest");
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(OdbcAccessFdoConnectionInfoTest, "OdbcAccessFdoConnectionInfoTest");
-CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(OdbcAccessFdoConnectionInfoTest, "OdbcSqlServerTests");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(OdbcAccessFdoConnectionInfoTest, "OdbcAccessTests");
 
 CPPUNIT_TEST_SUITE_REGISTRATION(OdbcExcelFdoConnectionInfoTest);
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(OdbcExcelFdoConnectionInfoTest, "FdoConnectionInfoTest");
@@ -91,13 +91,10 @@ void OdbcMySqlFdoConnectionInfoTest::TestProviderInfo ()
 
     }  //  try ...
 
-	catch (FdoException *e) {
-
+	catch (FdoException *e)
+    {
         mConnection->Close();
-        FdoStringP errMsg = e->GetExceptionMessage();
-        const char *failMsg = (const char*) errMsg;
-        CPPUNIT_FAIL(failMsg);
-
+        UnitTestUtil::fail (e);
 	}  //  catch ...
 
 }  //  TestProviderInfo ()
@@ -139,13 +136,10 @@ void OdbcOracleFdoConnectionInfoTest::TestProviderInfo ()
 
     }  //  try ...
 
-	catch (FdoException *e) {
-
+	catch (FdoException *e)
+    {
         mConnection->Close();
-        FdoStringP errMsg = e->GetExceptionMessage();
-        const char *failMsg = (const char*) errMsg;
-        CPPUNIT_FAIL(failMsg);
-
+        UnitTestUtil::fail (e);
 	}  //  catch ...
 
 }  //  TestProviderInfo ()
@@ -189,13 +183,10 @@ void OdbcSqlServerFdoConnectionInfoTest::TestProviderInfo ()
 
     }  //  try ...
 
-	catch (FdoException *e) {
-
+	catch (FdoException *e)
+    {
         mConnection->Close();
-        FdoStringP errMsg = e->GetExceptionMessage();
-        const char *failMsg = (const char*) errMsg;
-        CPPUNIT_FAIL(failMsg);
-
+        UnitTestUtil::fail (e);
 	}  //  catch ...
 
 }  //  TestProviderInfo ()
@@ -247,8 +238,6 @@ void OdbcAccessFdoConnectionInfoTest::TestProviderInfo ()
         userConnectionString =
                 UnitTestUtil::GetConnectionString(Connection_WithDatastore);
         ExecuteTest(userConnectionString);
-        mConnection->Release();
-        mConnection = NULL;
 
         printf("\nODBC Access Test: Case 2: \n");
 		mConnection = UnitTestUtil::GetProviderConnectionObject();
@@ -257,8 +246,7 @@ void OdbcAccessFdoConnectionInfoTest::TestProviderInfo ()
                                         (FdoString *)connectionStringDriver,
                                         (FdoString *)connectionStringDbq);
         ExecuteTest(userConnectionString);
-        mConnection->Release();
-        mConnection = NULL;
+        mConnection->Close();
 
         // Clear the list of expected dependent files.
 
@@ -266,13 +254,9 @@ void OdbcAccessFdoConnectionInfoTest::TestProviderInfo ()
 
     }  //  try ...
 
-	catch (FdoException *e) {
-
-        mConnection->Close();
-        FdoStringP errMsg = e->GetExceptionMessage();
-        const char *failMsg = (const char*) errMsg;
-        CPPUNIT_FAIL(failMsg);
-
+	catch (FdoException *e) 
+    {
+        UnitTestUtil::fail (e);
 	}  //  catch ...
 
 }  //  TestProviderInfo ()
@@ -332,18 +316,15 @@ void OdbcExcelFdoConnectionInfoTest::TestProviderInfo ()
         ExecuteTest(userConnectionString);
 
         // Clear the list of expected dependent files.
-
+        mConnection->Close();
         ClearFileNameList ();
 
     }  //  try ...
 
-	catch (FdoException *e) {
-
+	catch (FdoException *e)
+    {
         mConnection->Close();
-        FdoStringP errMsg = e->GetExceptionMessage();
-        const char *failMsg = (const char*) errMsg;
-        CPPUNIT_FAIL(failMsg);
-
+        UnitTestUtil::fail (e);
 	}  //  catch ...
 
 }  //  TestProviderInfo ()
@@ -403,18 +384,15 @@ void OdbcTextFdoConnectionInfoTest::TestProviderInfo ()
         ExecuteTest(userConnectionString);
 
         // Clear the list of expected dependent files.
-
+        mConnection->Close();
         ClearFileNameList ();
 
     }  //  try ...
 
-	catch (FdoException *e) {
-
+	catch (FdoException *e)
+    {
         mConnection->Close();
-        FdoStringP errMsg = e->GetExceptionMessage();
-        const char *failMsg = (const char*) errMsg;
-        CPPUNIT_FAIL(failMsg);
-
+        UnitTestUtil::fail (e);
 	}  //  catch ...
 
 }  //  TestProviderInfo ()

@@ -180,8 +180,7 @@ void OdbcMySqlFdoSelectTest::ConfigFileTest()
     }
     catch (FdoException *ex)
     {
-		CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
-        throw;
+		UnitTestUtil::fail(ex);
     }
 }
 

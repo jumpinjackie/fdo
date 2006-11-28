@@ -156,7 +156,7 @@ void OdbcBaseFdoUpdateTest::updateCities()
     }
     catch (FdoException *ex)
     {
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+        UnitTestUtil::fail (ex);
     }
 }
 
@@ -174,7 +174,7 @@ void OdbcBaseFdoUpdateTest::updateTable1()
         {
             UnitTestUtil::CreateTable1(connection);
 
-            FdoIUpdate *updateCommand =
+            FdoPtr<FdoIUpdate> updateCommand =
                 (FdoIUpdate *) connection->CreateCommand(FdoCommandType_Update);
             updateCommand->SetFeatureClassName(L"TABLE1");
             FdoPtr<FdoPropertyValueCollection> propertyValues =
@@ -233,7 +233,6 @@ void OdbcBaseFdoUpdateTest::updateTable1()
             count = updateCommand->Execute();
             CPPUNIT_ASSERT_MESSAGE ("Update failed to update 1 record", count==1);
 
-            updateCommand->Release();
         }
         catch (...)
         {
@@ -242,7 +241,7 @@ void OdbcBaseFdoUpdateTest::updateTable1()
     }
     catch (FdoException *ex)
     {
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+        UnitTestUtil::fail (ex);
     }
 #endif
 }
@@ -257,7 +256,7 @@ void OdbcAccessFdoUpdateTest::updateCities()
         FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
 		connection->SetConnectionString(UnitTestUtil::GetConnectionString(Connection_WithDSN, ""));
         connection->Open();
-        FdoIUpdate *updateCommand =
+        FdoPtr<FdoIUpdate> updateCommand =
             (FdoIUpdate *) connection->CreateCommand(FdoCommandType_Update);
         updateCommand->SetFeatureClassName(GetClassNameCities());
         FdoPtr<FdoPropertyValueCollection> propertyValues =
@@ -277,14 +276,12 @@ void OdbcAccessFdoUpdateTest::updateCities()
         propertyValue->SetValue(dataValue);
 
         int count = updateCommand->Execute();
-        updateCommand->Release();
-
 		finish = clock();
 		printf( "Elapsed: %f seconds\n", ((double)(finish - start) / CLOCKS_PER_SEC) );
     }
     catch (FdoException *ex)
     {
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+        UnitTestUtil::fail (ex);
     }
 }
 
@@ -298,7 +295,7 @@ void OdbcAccessFdoUpdateTest::updateTable1()
         connection->Open();
         try
         {
-            FdoIUpdate *updateCommand =
+            FdoPtr<FdoIUpdate> updateCommand =
                 (FdoIUpdate *) connection->CreateCommand(FdoCommandType_Update);
             updateCommand->SetFeatureClassName(L"TABLE1");
             FdoPtr<FdoPropertyValueCollection> propertyValues =
@@ -358,8 +355,6 @@ void OdbcAccessFdoUpdateTest::updateTable1()
             count = updateCommand->Execute();
             CPPUNIT_ASSERT_MESSAGE ("Update failed to update 1 record", count==1);
 
-            updateCommand->Release();
-
 			finish = clock();
 			printf( "Elapsed: %f seconds\n", ((double)(finish - start) / CLOCKS_PER_SEC) );
         }
@@ -370,7 +365,7 @@ void OdbcAccessFdoUpdateTest::updateTable1()
     }
     catch (FdoException *ex)
     {
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+        UnitTestUtil::fail (ex);
     }
 }
 
@@ -392,81 +387,72 @@ void OdbcExcelFdoUpdateTest::updateTable1()
         connection->SetConnectionString(GetConnectString());
         connection->Open();
 
-        try
-        {
-            FdoIUpdate *updateCommand =
-                (FdoIUpdate *) connection->CreateCommand(FdoCommandType_Update);
-            updateCommand->SetFeatureClassName(L"TABLE1");
-            FdoPtr<FdoPropertyValueCollection> propertyValues =
-                updateCommand->GetPropertyValues();
+        FdoPtr<FdoIUpdate> updateCommand =
+            (FdoIUpdate *) connection->CreateCommand(FdoCommandType_Update);
+        updateCommand->SetFeatureClassName(L"TABLE1");
+        FdoPtr<FdoPropertyValueCollection> propertyValues =
+            updateCommand->GetPropertyValues();
 
-            FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+        FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
 
-			start = clock();
-            printf("start update feature class\n");
-            FdoPtr<FdoDataValue> dataValue;
-            FdoPtr<FdoPropertyValue> propertyValue;
+		start = clock();
+        printf("start update feature class\n");
+        FdoPtr<FdoDataValue> dataValue;
+        FdoPtr<FdoPropertyValue> propertyValue;
 
-            dataValue = FdoDataValue::Create(L"FakeNameUpdate");
-            propertyValue = AddNewProperty( propertyValues, L"NAME");
-            propertyValue->SetValue(dataValue);
+        dataValue = FdoDataValue::Create(L"FakeNameUpdate");
+        propertyValue = AddNewProperty( propertyValues, L"NAME");
+        propertyValue->SetValue(dataValue);
 
-            propertyValue = AddNewProperty( propertyValues, L"Geometry" );
-            FdoPtr<FdoIDirectPosition> pos = gf->CreatePositionXY(50, 60);
-            FdoPtr<FdoIPoint> pt = gf->CreatePoint(pos);
-            FdoPtr<FdoByteArray> byteArray = gf->GetFgf(pt);
-            FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray);
-            propertyValue->SetValue(geometryValue);
+        propertyValue = AddNewProperty( propertyValues, L"Geometry" );
+        FdoPtr<FdoIDirectPosition> pos = gf->CreatePositionXY(50, 60);
+        FdoPtr<FdoIPoint> pt = gf->CreatePoint(pos);
+        FdoPtr<FdoByteArray> byteArray = gf->GetFgf(pt);
+        FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray);
+        propertyValue->SetValue(geometryValue);
 
-            FdoPtr<FdoFilter> filter = FdoComparisonCondition::Create(
-                FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"NAME") ),
-                FdoComparisonOperations_EqualTo,
-                FdoPtr<FdoDataValue>(FdoDataValue::Create(L"MyName") ) );
+        FdoPtr<FdoFilter> filter = FdoComparisonCondition::Create(
+            FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"NAME") ),
+            FdoComparisonOperations_EqualTo,
+            FdoPtr<FdoDataValue>(FdoDataValue::Create(L"MyName") ) );
 
-            updateCommand->SetFilter(filter);
+        updateCommand->SetFilter(filter);
 
-             int count = updateCommand->Execute();
-            CPPUNIT_ASSERT_MESSAGE ("Update failed to update 1 record", count==1);
+         int count = updateCommand->Execute();
+        CPPUNIT_ASSERT_MESSAGE ("Update failed to update 1 record", count==1);
 
-            // Now change the values back so that subsequent runs of the test will succeed.
-            // Make them not quite the golden values, so that we can view the changes after the test.
+        // Now change the values back so that subsequent runs of the test will succeed.
+        // Make them not quite the golden values, so that we can view the changes after the test.
+        propertyValues->Clear();
+        return;
 
-            propertyValues->Clear();
+        dataValue = FdoDataValue::Create(L"MyName");
+        propertyValue = AddNewProperty( propertyValues, L"NAME");
+        propertyValue->SetValue(dataValue);
 
-            dataValue = FdoDataValue::Create(L"MyName");
-            propertyValue = AddNewProperty( propertyValues, L"NAME");
-            propertyValue->SetValue(dataValue);
+        propertyValue = AddNewProperty( propertyValues, L"Geometry" );
+        pos = gf->CreatePositionXY(11, 21);
+        pt = gf->CreatePoint(pos);
+        byteArray = gf->GetFgf(pt);
+        geometryValue = FdoGeometryValue::Create(byteArray);
+        propertyValue->SetValue(geometryValue);
 
-            propertyValue = AddNewProperty( propertyValues, L"Geometry" );
-            pos = gf->CreatePositionXY(11, 21);
-            pt = gf->CreatePoint(pos);
-            byteArray = gf->GetFgf(pt);
-            geometryValue = FdoGeometryValue::Create(byteArray);
-            propertyValue->SetValue(geometryValue);
+        filter = FdoComparisonCondition::Create(
+            FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"NAME") ),
+            FdoComparisonOperations_EqualTo,
+            FdoPtr<FdoDataValue>(FdoDataValue::Create(L"FakeNameUpdate") ) );
 
-            filter = FdoComparisonCondition::Create(
-                FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"NAME") ),
-                FdoComparisonOperations_EqualTo,
-                FdoPtr<FdoDataValue>(FdoDataValue::Create(L"FakeNameUpdate") ) );
+        updateCommand->SetFilter(filter);
 
-            updateCommand->SetFilter(filter);
+        count = updateCommand->Execute();
+        CPPUNIT_ASSERT_MESSAGE ("Update failed to update 1 record", count==1);
 
-            count = updateCommand->Execute();
-            CPPUNIT_ASSERT_MESSAGE ("Update failed to update 1 record", count==1);
-
-            updateCommand->Release();
-
-			finish = clock();
-			printf( "Elapsed: %f seconds\n", ((double)(finish - start) / CLOCKS_PER_SEC) );
-        }
-        catch (...)
-        {
-            throw;
-        }
+		finish = clock();
+		printf( "Elapsed: %f seconds\n", ((double)(finish - start) / CLOCKS_PER_SEC) );
     }
     catch (FdoException *ex)
     {
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+        UnitTestUtil::fail (ex);
     }
 }
 #endif

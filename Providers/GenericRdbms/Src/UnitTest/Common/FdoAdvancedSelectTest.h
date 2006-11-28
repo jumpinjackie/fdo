@@ -50,16 +50,16 @@ public:
     virtual void selectDistinctTest();
     virtual void TestDefect779194();
     virtual void TestDefect785616();
-    virtual void getDataTypeTest();
 	virtual void groupByorderByTest();
 	virtual void orderByTest2();
+    virtual void getDataTypeTest();
 
 protected:
 	virtual void connect ();
     
     virtual void  set_provider() {};   
 
-    FdoIConnection* mConnection;
+    FdoPtr<FdoIConnection> mConnection;
 
 private:
 

@@ -251,7 +251,7 @@ void OdbcAccessFdoSchemaTest::SchemaMappingTest()
     }
     catch (FdoException* e)
     {
-		CPPUNIT_FAIL (UnitTestUtil::w2a(e->GetExceptionMessage()));
+		UnitTestUtil::fail(e);
     }
 }
 #endif

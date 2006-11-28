@@ -233,11 +233,11 @@ void OdbcConnectionUtil::CleanFiles(std::vector<std::wstring>& files, FdoStringP
 		size_t count = files.size();
 		for (size_t i = 0; i < count; i++)
 		{
-			const wchar_t* name;
+			FdoStringP name;
 			if (lng != files[i].length())
 			{
 				name = files[i].c_str ();
-				if (0 == memcmp(name, pTypeNamecst, lng*sizeof(wchar_t)))
+                if (name.Contains(pTypeName))
 					FdoCommonFile::Delete (name, true);
 			}
 		}

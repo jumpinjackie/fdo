@@ -48,7 +48,7 @@ void DescribeSchemaTest::dropDb ()
 
 void DescribeSchemaTest::describe2()
 {
-    FdoIConnection* connection = NULL;
+    FdoPtr<FdoIConnection> connection;
     try
     {
         FdoIConnection* connection  = UnitTestUtil::GetConnection("", true);
@@ -59,13 +59,8 @@ void DescribeSchemaTest::describe2()
     }
     catch ( FdoException* e )
     {
-        try {
-            if (connection)
-                connection->Close();
-        }
-        catch ( ... )
-        {
-        }
+        if (connection)
+            connection->Close();
         UnitTestUtil::FailOnException( e );
     }
     catch (...)
@@ -110,7 +105,7 @@ void DescribeSchemaTest::describe()
         {
             CPPUNIT_ASSERT( fsc->GetCount() == 5 );
 
-            CPPUNIT_ASSERT( !fsc->FindItem(L"F_MetaClass") );
+            CPPUNIT_ASSERT( !FdoFeatureSchemaP(fsc->FindItem(L"F_MetaClass")) );
 
             FdoFeatureSchemaP fs = fsc->GetItem( L"Acad" );
             CPPUNIT_ASSERT( fs != NULL );

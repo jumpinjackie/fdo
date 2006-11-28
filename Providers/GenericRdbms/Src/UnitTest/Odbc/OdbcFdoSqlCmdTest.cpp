@@ -59,18 +59,14 @@ void OdbcSqlServerFdoSqlCmdTest::connect ()
     }
     catch (FdoException *ex)
     {
-        if (mConnection)
-        {
-            mConnection->Release();
-            mConnection= NULL;
-        }
+        mConnection= NULL;
         UnitTestUtil::fail (ex);
     }
 }
 
 void OdbcSqlServerFdoSqlCmdTest::CreateAndDrop8bitTable ()
 {
-    FdoISQLCommand *sqlCmd = NULL;
+    FdoPtr<FdoISQLCommand> sqlCmd;
 
     if( mConnection != NULL )
     {
@@ -84,24 +80,14 @@ void OdbcSqlServerFdoSqlCmdTest::CreateAndDrop8bitTable ()
             sqlCmd->SetSQLStatement( sql );
             sqlCmd->ExecuteNonQuery();
 
-            if( sqlCmd)
-                sqlCmd->Release();
-
             sqlCmd = (FdoISQLCommand*)mConnection->CreateCommand( FdoCommandType_SQLCommand );
             sql = FdoStringP::Format(L"drop table %ls", SQLCMD_8BIT_TABLE_NAME);
             sqlCmd->SetSQLStatement( (FdoString *)sql );
             sqlCmd->ExecuteNonQuery();
-
-            if( sqlCmd)
-                sqlCmd->Release();
         }
         catch( FdoException *ex )
         {
-            if( sqlCmd)
-                sqlCmd->Release();
-
-			CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
-            throw;
+			UnitTestUtil::fail(ex);
         }
     }
 
@@ -227,11 +213,7 @@ void OdbcAccessFdoSqlCmdTest::connect ()
     }
     catch (FdoException *ex)
     {
-        if (mConnection)
-        {
-            mConnection->Release();
-            mConnection= NULL;
-        }
+        mConnection= NULL;
         UnitTestUtil::fail (ex);
     }
 }

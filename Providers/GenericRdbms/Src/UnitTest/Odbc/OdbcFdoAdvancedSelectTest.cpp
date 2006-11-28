@@ -26,6 +26,10 @@ CPPUNIT_TEST_SUITE_REGISTRATION( OdbcAccessFdoAdvancedSelectTest );
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcAccessFdoAdvancedSelectTest, "FdoAdvancedSelectTest");
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcAccessFdoAdvancedSelectTest, "OdbcAccessFdoAdvancedSelectTest");
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcAccessFdoAdvancedSelectTest, "OdbcAccessTests");
+CPPUNIT_TEST_SUITE_REGISTRATION( OdbcMySqlFdoAdvancedSelectTest );
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcMySqlFdoAdvancedSelectTest, "FdoAdvancedSelectTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcMySqlFdoAdvancedSelectTest, "OdbcMySqlFdoAdvancedSelectTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcMySqlFdoAdvancedSelectTest, "OdbcMySqlTests");
 
 void OdbcAccessFdoAdvancedSelectTest::set_provider()
 {
@@ -42,11 +46,27 @@ void OdbcAccessFdoAdvancedSelectTest::connect ()
     }
     catch (FdoException *ex)
     {
-        if (mConnection)
-        {
-            mConnection->Release();
-            mConnection= NULL;
-        }
+        mConnection= NULL;
+        UnitTestUtil::fail (ex);
+    }
+}
+
+void OdbcMySqlFdoAdvancedSelectTest::set_provider()
+{
+	UnitTestUtil::SetProvider( "OdbcMySql" );
+}
+
+void OdbcMySqlFdoAdvancedSelectTest::connect ()
+{
+    try
+    {
+        mConnection = UnitTestUtil::GetProviderConnectionObject();
+        mConnection->SetConnectionString(UnitTestUtil::GetConnectionString());
+        mConnection->Open();
+    }
+    catch (FdoException *ex)
+    {
+        mConnection= NULL;
         UnitTestUtil::fail (ex);
     }
 }
@@ -237,8 +257,6 @@ void OdbcAccessFdoAdvancedSelectTest::TestReaderDestructor()
 // A test that is hard-coded for a known table.
 void OdbcAccessFdoAdvancedSelectTest::selectDistinctTest()
 {
-#if 0
-    // Test not enabled yet.  Try after fixing defect 673849.01.
     try
     {
         FdoPtr<FdoISelectAggregates> selectAggrCmd = (FdoISelectAggregates*)mConnection->CreateCommand(FdoCommandType_SelectAggregates);
@@ -323,7 +341,6 @@ void OdbcAccessFdoAdvancedSelectTest::selectDistinctTest()
     {
         UnitTestUtil::fail (e);
     }
-#endif
 }
 
 
@@ -505,6 +522,110 @@ void OdbcAccessFdoAdvancedSelectTest::groupByorderByTest()
 #endif
 }
 
+void OdbcMySqlFdoAdvancedSelectTest::compIdentPropertyTest()
+{
+    try
+    {
+        FdoPtr<FdoISelectAggregates> selectAggrCmd = (FdoISelectAggregates*)mConnection->CreateCommand(FdoCommandType_SelectAggregates);
+        selectAggrCmd->SetFeatureClassName(GetCitiesClassname());
+
+        // Control ID's to select:
+        FdoPtr<FdoIdentifierCollection> ids = selectAggrCmd->GetPropertyNames();
+        ids->Clear();
+
+        // Add computed property
+        FdoPtr<FdoIdentifierCollection> groupingIds = selectAggrCmd->GetGrouping();
+        groupingIds->Clear();
+        FdoPtr<FdoExpressionCollection> arguments1 = FdoExpressionCollection::Create();
+        FdoPtr<FdoExpression> argument1 = FdoIdentifier::Create(L"cityid");
+        arguments1->Add(argument1);
+        FdoPtr<FdoExpression> expr1 = FdoFunction::Create(L"COUNT", arguments1);
+        FdoPtr<FdoIdentifier> id1 = FdoComputedIdentifier::Create(L"COUNT_CITYID", expr1);
+        ids->Add(id1);
+
+        // Execute the command:
+        FdoPtr<FdoIDataReader> dataReader = selectAggrCmd->Execute();
+
+        // Iterate results:
+        long lRowCount=0;
+        while (dataReader->ReadNext())
+        {
+            //FdoString *jobTitle = dataReader->GetString(L"name");
+            FdoInt64 foo = dataReader->GetInt64(L"COUNT_CITYID");
+            lRowCount++;
+        }
+
+        // Validate the results:
+        CPPUNIT_ASSERT_MESSAGE("Expected 1 row, got differently", lRowCount==1);
+    }
+    catch (FdoException *e)
+    {
+        UnitTestUtil::fail (e);
+    }
+}
+
+void OdbcMySqlFdoAdvancedSelectTest::groupByorderByTest()
+{
+#if 0 
+    try
+    {
+        FdoPtr<FdoISelectAggregates> selectAggrCmd = (FdoISelectAggregates*)mConnection->CreateCommand(FdoCommandType_SelectAggregates);
+        selectAggrCmd->SetFeatureClassName(GetEmployeesClassname());
+
+        // Add ids to select:
+        FdoPtr<FdoIdentifierCollection> ids = selectAggrCmd->GetPropertyNames();
+        ids->Clear();
+        FdoPtr<FdoIdentifier> id = FdoIdentifier::Create(L"JOBTITLE");
+        ids->Add(id);
+
+        // Add groupby info:
+        FdoPtr<FdoIdentifierCollection> groupingIds = selectAggrCmd->GetGrouping();
+        groupingIds->Clear();
+        FdoPtr<FdoIdentifier> groupingId = FdoIdentifier::Create(L"JOBTITLE");
+        groupingIds->Add(groupingId);
+
+        // Add grouping filter:
+        FdoPtr<FdoFilter> groupingFilter = FdoFilter::Parse(L"AVG(SALARY) >= 40000.00");
+        selectAggrCmd->SetGroupingFilter(groupingFilter);
+
+		FdoPtr<FdoIdentifierCollection>orderCol = selectAggrCmd->GetOrdering();
+		FdoPtr<FdoIdentifier>oId = FdoIdentifier::Create(L"JOBTITLE");
+        orderCol->Add( oId );
+
+        // Execute the command:
+        FdoPtr<FdoIDataReader> dataReader = selectAggrCmd->Execute();
+
+        // Iterate results:
+        long lRowCount=0;
+        bool bFoundBoxAssembler = false;
+        bool bFoundBoxFlattener = false;
+        bool bFoundBoxArtist = false;
+        while (dataReader->ReadNext())
+        {
+            FdoString *jobTitle = dataReader->GetString(L"JOBTITLE");
+
+            if (0==wcscmp(jobTitle, L"Box Flattener"))
+                bFoundBoxFlattener = true;
+            else if (0==wcscmp(jobTitle, L"Box Assembler"))
+                bFoundBoxAssembler = true;
+            else if (0==wcscmp(jobTitle, L"Box Artist"))
+                bFoundBoxArtist = true;
+
+            lRowCount++;
+        }
+
+        // Validate the results:
+        CPPUNIT_ASSERT_MESSAGE("Expected 3 rows, got differently", lRowCount==3);
+        CPPUNIT_ASSERT_MESSAGE("Expected to find 'Box Flattener' but didn't", bFoundBoxFlattener);
+        CPPUNIT_ASSERT_MESSAGE("Expected to find 'Box Assembler' but didn't", bFoundBoxAssembler);
+        CPPUNIT_ASSERT_MESSAGE("Expected to find 'Box Artist' but didn't", bFoundBoxArtist);
+    }
+    catch (FdoException *e)
+    {
+        UnitTestUtil::fail (e);
+    }
+#endif
+}
 // A test that is hard-coded for a known table.
 void OdbcAccessFdoAdvancedSelectTest::TestSelectExpressions()
 {

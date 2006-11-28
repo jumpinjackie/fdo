@@ -724,9 +724,8 @@ void FdoImportExportTest::AddSC( FdoXmlWriter* writer, FdoString* name, FdoStrin
             FdoSpatialContextExtentType_Static
     );
 
-    FdoByteArray* extent = SerializeExtent( 0, 0, 150 * idx, 100 * idx );
+    FdoPtr<FdoByteArray> extent = SerializeExtent( 0, 0, 150 * idx, 100 * idx );
     SCWriter->SetExtent( extent );
-    extent->Release();
     SCWriter->SetXYTolerance( 0.001 );
     SCWriter->SetZTolerance( 0.01 );
 
@@ -759,14 +758,11 @@ void FdoImportExportTest::AddFeature( FdoIInsert* insertCommand, FdoInt32 idx )
     coordsBuffer[1] = 10 * idx;
 
     propertyValue = AddNewProperty( propertyValues, L"Geometry");
-    FdoFgfGeometryFactory * gf = FdoFgfGeometryFactory::GetInstance();
-    FdoILineString* line1 = gf->CreateLineString(FdoDimensionality_XY, segCount*2, coordsBuffer);
-    FdoByteArray *byteArray = gf->GetFgf(line1);
+    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+    FdoPtr<FdoILineString> line1 = gf->CreateLineString(FdoDimensionality_XY, segCount*2, coordsBuffer);
+    FdoPtr<FdoByteArray> byteArray = gf->GetFgf(line1);
     FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray);
     propertyValue->SetValue(geometryValue);
-
-    line1->Release();
-    byteArray->Release();
 
     FdoPtr<FdoIFeatureReader> reader = insertCommand->Execute();
 }
