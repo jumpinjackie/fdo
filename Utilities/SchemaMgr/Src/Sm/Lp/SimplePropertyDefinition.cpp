@@ -210,7 +210,7 @@ void FdoSmLpSimplePropertyDefinition::CreateColumn( FdoSmPhDbObjectP dbObject )
             FdoSmPhOwnerP owner = pPhysical->GetOwner();
 
     		// Column name is property name adjusted to be RDBMS-friendly.
-	    	columnName = ((FdoSmLpClassDefinition*)RefParentClass())->UniqueColumnName( 
+	    	FdoStringP columnNameGen = ((FdoSmLpClassDefinition*)RefParentClass())->UniqueColumnName( 
                 dbObject, 
                 this, 
                 columnName.GetLength() > 0 ? (FdoString*) columnName : GetName(), 
@@ -228,17 +228,20 @@ void FdoSmLpSimplePropertyDefinition::CreateColumn( FdoSmPhDbObjectP dbObject )
                 // By default, column override is match to column
                 // by case-sensitive name compare
 				FdoSmPhColumnsP columns = dbObject->GetColumns();
-                foundColumn = columns->FindItem(columnName);
+                foundColumn = columns->FindItem(columnNameGen);
+                // search with real name
+                if ( !foundColumn )
+                    foundColumn = columns->FindItem(columnName);
                 if ( !foundColumn ) {
                     // However, if no case-sensitive match, a match to column
                     // of default case is done if such a column exists.
-                    FdoStringP CiColumnName = pPhysical->GetDcColumnName(columnName);
-                    if ( CiColumnName != columnName ) {
-                        columnName = CiColumnName;
-                        foundColumn = columns->FindItem(columnName);
+                    FdoStringP CiColumnName = pPhysical->GetDcColumnName(columnNameGen);
+                    if ( CiColumnName != columnNameGen ) {
+                        columnNameGen = CiColumnName;
+                        foundColumn = columns->FindItem(columnNameGen);
                         // Matched to default case so change case of
                         // property's column name.
-                        SetColumnName(columnName);
+                        SetColumnName(columnNameGen);
                     }
                 }
                 SetColumn( foundColumn );
@@ -248,7 +251,7 @@ void FdoSmLpSimplePropertyDefinition::CreateColumn( FdoSmPhDbObjectP dbObject )
             if ( owner->GetHasMetaSchema() && ((ColumnIsForeign()) || (!GetIsFixedColumn()) || (!foundColumn)) ) {
     		    // Create the column 
                 if ( (!ColumnIsForeign()) || (!GetIsSystem()) ) {
-        		    SetColumn( NewColumn(dbObject, columnName) );
+        		    SetColumn( NewColumn(dbObject, columnNameGen) );
                     mbColumnCreator = true;
                 }
             }
