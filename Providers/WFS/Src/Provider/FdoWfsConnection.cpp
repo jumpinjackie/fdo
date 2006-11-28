@@ -231,6 +231,7 @@ void FdoWfsConnection::Close ()
 {
     mServiceMetadata = NULL;
     mDelegate = NULL;
+    mSchemas = NULL;
 }
 
 /// <summary>Begins a transaction and returns an object that realizes
