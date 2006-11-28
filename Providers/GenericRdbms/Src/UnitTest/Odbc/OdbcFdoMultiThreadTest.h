@@ -34,6 +34,8 @@ public:
 	virtual void InsertTest(){}
 	virtual void UpdateTest(){}
 	virtual void CombinationTest(){}
+private:
+    static bool m_SetupDone;
 };
 
 #ifdef _WIN32

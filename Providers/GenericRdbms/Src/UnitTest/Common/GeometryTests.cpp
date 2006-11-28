@@ -216,10 +216,10 @@ void GeometryTests::define ()
     char select[1024];
     FdoPtr<FdoFgfGeometryFactory> factory;
     FdoPtr<FdoIDirectPosition> position;
-    //FdoPtr<FdoIGeometry> geometry;
-	FdoIGeometry* geometry;
+    FdoPtr<FdoIGeometry> geometry;
     char *p;
     FdoIGeometry*	answer = NULL;
+    FdoPtr<FdoIGeometry> panswer;
     char *q;
     int rc;
     int count;
@@ -247,7 +247,7 @@ void GeometryTests::define ()
 
         p = get_geometry_text (geometry);
 
-        CPPUNIT_ASSERT_MESSAGE ("do_insert_geometry", RDBI_SUCCESS == do_insert_geometry( cursor, &featId, &geometry )); 
+        CPPUNIT_ASSERT_MESSAGE ("do_insert_geometry", RDBI_SUCCESS == do_insert_geometry( cursor, &featId, &geometry.p )); 
 
         sprintf (select, "select position from foo where id=%ld", featId);
         if (mRdbiContext->dispatch.capabilities.supports_unicode == 1){
@@ -265,6 +265,7 @@ void GeometryTests::define ()
             if ((RDBI_END_OF_FETCH != rc) && (0 != rows))
             {
                 q = get_geometry_text (answer);
+                panswer = answer;
                 CPPUNIT_ASSERT_MESSAGE ("fetched value incorrect", 0 == strcmp (p, q));
                 delete[] q;
                 count++;
@@ -314,9 +315,10 @@ void GeometryTests::bind ()
     int id;
     FdoPtr<FdoFgfGeometryFactory> factory;
     FdoPtr<FdoIDirectPosition> position;
-    FdoIGeometry* geometry;
+    FdoPtr<FdoIGeometry> geometry;
     char *p;
     FdoIGeometry *answer = NULL;
+    FdoPtr<FdoIGeometry> panswer;
     char *q;
     int rc;
     int count;
@@ -345,10 +347,10 @@ void GeometryTests::bind ()
         p = get_geometry_text (geometry);
         if (mRdbiContext->dispatch.capabilities.supports_unicode == 1){
             CPPUNIT_ASSERT_MESSAGE ("rdbi_sql_va failed", RDBI_SUCCESS == rdbi_sql_vaW (mRdbiContext, RDBI_VA_EXEC, cursor,
-                FdoStringP(select), RDBI_INT, sizeof(id), &id, RDBI_GEOMETRY, sizeof (geometry), &geometry, RDBI_VA_EOL, RDBI_VA_EOL));
+                FdoStringP(select), RDBI_INT, sizeof(id), &id, RDBI_GEOMETRY, sizeof (geometry.p), &geometry, RDBI_VA_EOL, RDBI_VA_EOL));
         }else{
             CPPUNIT_ASSERT_MESSAGE ("rdbi_sql_va failed", RDBI_SUCCESS == rdbi_sql_va (mRdbiContext, RDBI_VA_EXEC, cursor,
-                FdoStringP(select), RDBI_INT, sizeof(id), &id, RDBI_GEOMETRY, sizeof (geometry), &geometry, RDBI_VA_EOL, RDBI_VA_EOL));
+                FdoStringP(select), RDBI_INT, sizeof(id), &id, RDBI_GEOMETRY, sizeof (geometry.p), &geometry, RDBI_VA_EOL, RDBI_VA_EOL));
         }
 
         // check it got inserted
@@ -368,6 +370,7 @@ void GeometryTests::bind ()
             if ((RDBI_END_OF_FETCH != rc) && (0 != rows))
             {
                 q = get_geometry_text (answer);
+                panswer = answer;
                 CPPUNIT_ASSERT_MESSAGE ("fetched value incorrect", 0 == strcmp (p, q));
                 delete[] q;
                 count++;

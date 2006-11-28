@@ -54,7 +54,7 @@ public:
     virtual void UpdateSingleIdFeatureClass ();
 	virtual void ConditionalUpdate ();
 	virtual void UpdateNoMeta ();
-
+    virtual void DisableFailures(){m_DisableFailures=true;};
 protected:
     virtual void  set_provider() {};   
 
@@ -88,6 +88,7 @@ protected:
 protected:
 	bool m_hasGeom;
 	bool m_hasAssoc;
+    bool m_DisableFailures;
 
 protected:
     void ConditionalUpdateSetup (FdoIConnection *connection, FdoStringP insLtName);

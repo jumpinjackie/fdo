@@ -1201,7 +1201,7 @@ FdoSmPhTableP SchemaMgrTests::CreateIxTable( FdoSmPhOwnerP owner, FdoStringP tab
 
 void SchemaMgrTests::AddPkey( FdoSmPhTableP table )
 {
-    if ( table->GetColumns()->FindItem(L"ID") ) 
+    if ( FdoPtr<FdoSmPhColumn>(table->GetColumns()->FindItem(L"ID")) ) 
         table->AddPkeyCol( L"ID" );
     else
         table->AddPkeyCol( L"id" );
@@ -1215,7 +1215,7 @@ void SchemaMgrTests::AddIndex( FdoSmPhTableP table, bool unique, FdoStringP inde
     FdoSmPhIndexP index = table->CreateIndex( table->GetManager()->GetDcColumnName(indexName), unique );
 
     for ( idx = 0; idx < parsedColumns->GetCount(); idx++ ) {
-        index->AddColumn( table->GetColumns()->GetItem( index->GetManager()->GetDcColumnName(parsedColumns->GetString(idx)) ) );
+        index->AddColumn( FdoSmPhColumnP(table->GetColumns()->GetItem( index->GetManager()->GetDcColumnName(parsedColumns->GetString(idx))) ) );
     }
 }
 

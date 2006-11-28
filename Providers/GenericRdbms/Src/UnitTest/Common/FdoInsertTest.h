@@ -54,6 +54,7 @@ public:
     virtual void insertDate () {};
     virtual void smartPointerInsert();
 	virtual void conditionalInsert();
+    virtual void DisableFailures(){m_DisableFailures=true;};
 
 protected:
     virtual void  set_provider() {};   
@@ -85,6 +86,7 @@ protected:
     virtual FdoDouble GetSmallestDoubleValue();
 
     char  mSuffix[12];
+    bool m_DisableFailures;
 };
 
 #endif

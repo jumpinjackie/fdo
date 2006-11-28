@@ -1548,7 +1548,8 @@ void FdoApplySchemaTest::TestConfigDoc ()
             ucons = constraints->GetItem(ix);
             dataProps = ucons->GetProperties();
             if ( dataProps->GetCount() == 2 )
-                constraintFound = ( dataProps->FindItem(L"Authority") && dataProps->FindItem(L"ZoningType") );
+                constraintFound = ( FdoPtr<FdoDataPropertyDefinition>(dataProps->FindItem(L"Authority")) && 
+                                    FdoPtr<FdoDataPropertyDefinition>(dataProps->FindItem(L"ZoningType")) );
         }
 
         CPPUNIT_ASSERT( constraintFound );
@@ -1568,7 +1569,8 @@ void FdoApplySchemaTest::TestConfigDoc ()
             ucons = constraints->GetItem(ix);
             dataProps = ucons->GetProperties();
             if ( dataProps->GetCount() == 2 )
-                constraintFound = ( dataProps->FindItem(L"Phase") && dataProps->FindItem(L"PartNum") );
+                constraintFound = ( FdoPtr<FdoDataPropertyDefinition>(dataProps->FindItem(L"Phase")) && 
+                FdoPtr<FdoDataPropertyDefinition>(dataProps->FindItem(L"PartNum")) );
         }
 
         CPPUNIT_ASSERT( constraintFound );
@@ -1593,7 +1595,7 @@ void FdoApplySchemaTest::TestConfigDoc ()
             ucons = constraints->GetItem(ix);
             dataProps = ucons->GetProperties();
             if ( dataProps->GetCount() == 1 )
-                constraintFound = ( dataProps->FindItem(L"Height") != NULL  );
+                constraintFound = ( FdoPtr<FdoDataPropertyDefinition>(dataProps->FindItem(L"Height")) != NULL  );
         }
 
         CPPUNIT_ASSERT( constraintFound );

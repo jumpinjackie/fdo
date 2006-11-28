@@ -260,7 +260,7 @@ void DataTypeTests::roundtrip_insert (
 			double y = p->GetY();
 
 			FdoIGeometry** pg1 = (FdoIGeometry**)(addr1);
-			FdoPtr<FdoIPoint> g1 = (FdoIPoint *) (*pg1);
+			FdoIPoint* g1 = (FdoIPoint *) (*pg1);
 			FdoPtr<FdoIDirectPosition> p1 = g1->GetPosition();
 			double x1 = p1->GetX();
 			double y1 = p1->GetY();

@@ -245,8 +245,8 @@ void MySqlSchemaMgrTests::testWideConstraint ()
 
         // Test an index.
         FdoSmPhIndexP index = table->CreateIndex(L"table1_ix1", true );
-        index->GetColumns()->Add( table->GetColumns()->GetItem(L"STRING2000") );
-        index->GetColumns()->Add( table->GetColumns()->GetItem(L"STRING700_1") );
+        index->GetColumns()->Add( FdoSmPhColumnP(table->GetColumns()->GetItem(L"STRING2000")) );
+        index->GetColumns()->Add( FdoSmPhColumnP(table->GetColumns()->GetItem(L"STRING700_1")) );
 
         FdoStringP pkeyClause = table->GetAddPkeySql();
 
@@ -387,6 +387,11 @@ void MySqlSchemaMgrTests::testWideConstraint ()
                     (FdoString*) (FdoStringP(prefix100) + L"ab")
                 )
             );
+        }
+        catch ( FdoException* exc ) 
+        {
+            exc->Release();
+            duplicate = false;
         }
         catch ( ... ) 
         {

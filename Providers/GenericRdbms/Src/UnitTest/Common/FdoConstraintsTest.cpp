@@ -688,7 +688,8 @@ void FdoConstraintsTest::CreateConstraintsSchema( FdoIConnection* connection )
 		FdoPropertiesP(pCData->GetProperties())->Add( pUnique1Int  );
 
 		FdoPtr<FdoUniqueConstraint>  newUniqueConstr1 = FdoUniqueConstraint::Create();
-		newUniqueConstr1->GetProperties()->Add( pUnique1Int );
+        FdoPtr<FdoDataPropertyDefinitionCollection> pDataPropColl = newUniqueConstr1->GetProperties();
+		pDataPropColl->Add( pUnique1Int );
 		constraints->Add( newUniqueConstr1 );
 
 		//////////////  2nd unique property - Composite ///////////////
@@ -703,8 +704,9 @@ void FdoConstraintsTest::CreateConstraintsSchema( FdoIConnection* connection )
 		FdoPropertiesP(pCData->GetProperties())->Add( pUnique22Int  );
 
 		FdoPtr<FdoUniqueConstraint>  newUniqueConstr2 = FdoUniqueConstraint::Create();
-		newUniqueConstr2->GetProperties()->Add( pUnique21Int );
-		newUniqueConstr2->GetProperties()->Add( pUnique22Int );
+        pDataPropColl = newUniqueConstr2->GetProperties();
+		pDataPropColl->Add( pUnique21Int );
+		pDataPropColl->Add( pUnique22Int );
 		constraints->Add( newUniqueConstr2 );
 
 		// Create a new class based on the previous ...
@@ -938,8 +940,8 @@ void FdoConstraintsTest::DescribeConstraintsSchema( FdoIConnection* connection, 
 				CPPUNIT_ASSERT_MESSAGE("Wrong MinInclusive", pConstrR->GetMinInclusive() == MIN_INCLUSIVE );
 				CPPUNIT_ASSERT_MESSAGE("Wrong MaxInclusive", pConstrR->GetMaxInclusive() == MAX_INCLUSIVE );
 
-				FdoDataValue*	valMin = pConstrR->GetMinValue();
-				FdoDataValue*	valMax = pConstrR->GetMaxValue();
+				FdoPtr<FdoDataValue>	valMin = pConstrR->GetMinValue();
+				FdoPtr<FdoDataValue>	valMax = pConstrR->GetMaxValue();
 
                 FdoPtr<FdoDataValue>   val1 = FdoDataValue::Create( afterUpdate ? UPD_INT_RANGE[0] : INT_RANGE[0] );
                 FdoPtr<FdoDataValue>   val2 = FdoDataValue::Create( afterUpdate ? UPD_INT_RANGE[1] : INT_RANGE[1] );
@@ -952,11 +954,11 @@ void FdoConstraintsTest::DescribeConstraintsSchema( FdoIConnection* connection, 
 				CPPUNIT_ASSERT_MESSAGE("Wrong MinInclusive", pConstrR->GetMinInclusive() == MIN_INCLUSIVE );
 				CPPUNIT_ASSERT_MESSAGE("Wrong MaxInclusive", pConstrR->GetMaxInclusive() == MAX_INCLUSIVE );
 
-				FdoDataValue*	valMin = pConstrR->GetMinValue();
-				FdoDataValue*	valMax = pConstrR->GetMaxValue();
+				FdoPtr<FdoDataValue>	valMin = pConstrR->GetMinValue();
+				FdoPtr<FdoDataValue>	valMax = pConstrR->GetMaxValue();
 
-				FdoByteValue*	valMin1 = dynamic_cast<FdoByteValue*>(valMin);
-				FdoByteValue*	valMax1 = dynamic_cast<FdoByteValue*>(valMax);
+				FdoByteValue*	valMin1 = dynamic_cast<FdoByteValue*>(valMin.p);
+				FdoByteValue*	valMax1 = dynamic_cast<FdoByteValue*>(valMax.p);
 
 				if ( valMin1 == NULL || valMax1 == NULL )
 				{
@@ -971,8 +973,8 @@ void FdoConstraintsTest::DescribeConstraintsSchema( FdoIConnection* connection, 
 				CPPUNIT_ASSERT_MESSAGE("Wrong MinInclusive", pConstrR->GetMinInclusive() == MIN_INCLUSIVE );
 				CPPUNIT_ASSERT_MESSAGE("Wrong MaxInclusive", pConstrR->GetMaxInclusive() == MAX_INCLUSIVE );
 
-				FdoDataValue*	valMin = pConstrR->GetMinValue();
-				FdoDataValue*	valMax = pConstrR->GetMaxValue();
+				FdoPtr<FdoDataValue>	valMin = pConstrR->GetMinValue();
+				FdoPtr<FdoDataValue>	valMax = pConstrR->GetMaxValue();
 
 				FdoPtr<FdoDataValue>   val1 = FdoDataValue::Create( STRING_RANGE[0] );
 				FdoPtr<FdoDataValue>   val2 = FdoDataValue::Create( STRING_RANGE[1] );
@@ -985,8 +987,8 @@ void FdoConstraintsTest::DescribeConstraintsSchema( FdoIConnection* connection, 
 				CPPUNIT_ASSERT_MESSAGE("Wrong MinInclusive", pConstrR->GetMinInclusive() == MIN_INCLUSIVE );
 				CPPUNIT_ASSERT_MESSAGE("Wrong MaxInclusive", pConstrR->GetMaxInclusive() == MAX_INCLUSIVE );
 
-				FdoDataValue*	valMin = pConstrR->GetMinValue();
-				FdoDataValue*	valMax = pConstrR->GetMaxValue();
+				FdoPtr<FdoDataValue>	valMin = pConstrR->GetMinValue();
+				FdoPtr<FdoDataValue>	valMax = pConstrR->GetMaxValue();
 
 				FdoPtr<FdoDataValue>   val1 = FdoDataValue::Create( SINGLE_RANGE[0] );
 
@@ -1125,7 +1127,8 @@ void FdoConstraintsTest::UpdateUniqueConstraints( FdoIConnection* connection )
 	// Restore the uniqueness of PROPERTY_4
 	FdoPtr<FdoDataPropertyDefinition> pUnique4 = FdoDataPropertyDefinition::Create( PROPERTY_4, L"" );
 	FdoPtr<FdoUniqueConstraint>  newUniqueConstr4 = FdoUniqueConstraint::Create();
-	newUniqueConstr4->GetProperties()->Add( pUnique4 );
+    FdoPtr<FdoDataPropertyDefinitionCollection> pDatPropCol = newUniqueConstr4->GetProperties();
+	pDatPropCol->Add( pUnique4 );
 	pUniqueCs->Add( newUniqueConstr4 );
 
 	bool error = false;

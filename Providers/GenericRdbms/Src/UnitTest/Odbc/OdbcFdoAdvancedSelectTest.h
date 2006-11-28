@@ -81,6 +81,38 @@ protected:
 
 };
 
+
+class OdbcMySqlFdoAdvancedSelectTest : public FdoAdvancedSelectTest
+{
+    CPPUNIT_TEST_SUB_SUITE (OdbcMySqlFdoAdvancedSelectTest, FdoAdvancedSelectTest);
+    CPPUNIT_TEST_SUITE_END ();
+
+    void  set_provider();
+
+    // Overridden tests.
+    virtual void connect ();
+    virtual void compIdentFilterTest() {};
+    virtual void compIdentPropertyTest();
+    virtual void orderByTest() {};
+    virtual void groupByTest() {};
+    virtual void functionTest() {};
+    virtual void getDataTypeTest() {};
+    virtual void selectDistinctTest() {};
+    virtual void TestDefect779194() {};
+    virtual void TestDefect785616() {};
+	virtual void groupByorderByTest();
+
+protected:
+    FdoString * GetSchemaName() {return L"Fdo";}
+    FdoStringP GetCitiesClassname()
+    {
+        FdoStringP className = GetSchemaName();
+        className += L":";
+        className += L"cities";
+        return className;
+    }
+};
+
 #endif
 
 #endif // ODBC_ADVANCEDSELECTTEST_H

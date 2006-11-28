@@ -100,7 +100,7 @@ void FdoDatastoreTest::ListDatabaseProperties( FdoIDataStorePropertyDictionary* 
     }
     catch (FdoException *ex)
     {
-       CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+        UnitTestUtil::fail(ex);
     }
 }
 
@@ -147,9 +147,9 @@ int FdoDatastoreTest::ListDatastores( bool include )
 			if ( FdoCommonOSUtil::wcsicmp( string, datastore ) == 0 )
 			{
 				/*DBG*/(printf("Checking %ls...\n", string ));
-				ListDatabaseProperties( pReader->GetDataStoreProperties() );
+				FdoPtr<FdoIDataStorePropertyDictionary> dictionary = pReader->GetDataStoreProperties();
+				ListDatabaseProperties( dictionary );
 
-				FdoIDataStorePropertyDictionary *dictionary = pReader->GetDataStoreProperties();
 				//FdoStringP ltmode = dictionary->GetProperty(L"LtMode");
 				//FdoStringP lckmode = dictionary->GetProperty(L"LockMode");
 
@@ -161,16 +161,15 @@ int FdoDatastoreTest::ListDatastores( bool include )
 			
 			DBG_MAX(printf("%ls  ['%ls'] [fdo: %s]\n", string, string2, bVal? "yes" : "no"));
 		}
-
+        pListDataStoresCmd = NULL;
+        pReader = NULL;
 		connection->Close ();
     }
     catch (FdoException *ex)
     {
         if (connection)
-        {
     	    connection->Close ();
-        }
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+        UnitTestUtil::fail(ex);
     }
 	return countDb;
 }
@@ -200,10 +199,8 @@ void FdoDatastoreTest::Cmd_CreateDatastore()
     catch (FdoException *ex)
     {
         if (connection)
-        {
     	    connection->Close ();
-        }
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+        UnitTestUtil::fail(ex);
     }
 }
 
@@ -242,8 +239,8 @@ void FdoDatastoreTest::CreateDatastore( FdoIConnection* connection, FdoString* d
 			CPPUNIT_ASSERT_MESSAGE("Unknown property name", false);
 		}
 	}
-					
-	ListDatabaseProperties( pCreateCmd->GetDataStoreProperties() );
+
+    ListDatabaseProperties( dictionary );
 
 	// Create
 	pCreateCmd->Execute();
@@ -304,7 +301,7 @@ void FdoDatastoreTest::DestroyDatastore(bool ignoreEx)
 				CPPUNIT_ASSERT_MESSAGE("Unknown property name", false);
 			}
 		}
-		ListDatabaseProperties( pDestroyCmd->GetDataStoreProperties() );
+		ListDatabaseProperties( dictionary );
 
 		// Delete
 		pDestroyCmd->Execute();
@@ -314,11 +311,11 @@ void FdoDatastoreTest::DestroyDatastore(bool ignoreEx)
     catch (FdoException *ex)
     {
         if (connection)
-        {
     	    connection->Close ();
-        }
 		if ( !ignoreEx )
-			CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+			UnitTestUtil::fail(ex);
+        else
+            ex->Release();
     }
 }
 
@@ -343,10 +340,8 @@ void FdoDatastoreTest::TestReservedName()
     catch (FdoException *ex)
     {
         if (connection)
-        {
     	    connection->Close ();
-        }
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+        UnitTestUtil::fail(ex);
     }
 }
 
@@ -397,7 +392,6 @@ void FdoDatastoreTest::DropAllMyDatastores()
 					pDestroyCmd->Execute();
 
 				} catch (FdoException *ex) {
-					UnitTestUtil::w2a(ex->GetExceptionMessage());
 					ex->Release();
 				}
 			}			
@@ -408,9 +402,7 @@ void FdoDatastoreTest::DropAllMyDatastores()
     catch (FdoException *ex)
     {
         if (connection)
-        {
     	    connection->Close ();
-        }
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
+        UnitTestUtil::fail(ex);
     }
 }

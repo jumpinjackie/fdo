@@ -934,6 +934,7 @@ void UnitTestUtil::CreateDB(bool addSchema, bool useBaseMapping, char* suffix, i
         connection->Open ();
 
 		CreateDB( connection, datastore, (char *)description, password, schemaType, local_lt_method );
+        connection->Close();
         connectString = UnitTestUtil::GetConnectionString(Connection_WithDatastore, suffix);
         connection->SetConnectionString ( connectString);
         connection->Open ();
@@ -963,7 +964,7 @@ void UnitTestUtil::CreateDB( FdoIConnection* connection, char *datastore, char *
 {
     FdoPtr<FdoRdbmsCreateDataStore> createCmd = (FdoRdbmsCreateDataStore*)connection->CreateCommand( FdoCommandType_CreateDataStore );
 	
-	FdoIDataStorePropertyDictionary* dictionary = createCmd->GetDataStoreProperties();
+	FdoPtr<FdoIDataStorePropertyDictionary> dictionary = createCmd->GetDataStoreProperties();
 
 	int count;
 	FdoString **names = dictionary->GetPropertyNames(count);
@@ -1142,7 +1143,7 @@ void UnitTestUtil::PrintException( FdoException* e, const char* fileName, FdoBoo
 char *UnitTestUtil::GetEnviron(const char *name, const char *suffix)
 {
     char* pRet = (char*)UnitTestUtil::InfoUtilConnection->GetEnviron(name, suffix);
-    return (pRet != NULL) ? pRet : (char*)"";
+    return (pRet != NULL) ? pRet : (char *) "";
 }
 
 const char* UnitTestUtil::GetEnv( const char* pVar, const char* pDefault )

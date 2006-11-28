@@ -62,13 +62,11 @@ void MySqlFdoConnectionInfoTest::TestProviderInfo ()
 
     }  //  try ...
 
-	catch (FdoException *e) {
-
-        mConnection->Close();
-        FdoStringP errMsg = e->GetExceptionMessage();
-        const char *failMsg = (const char*) errMsg;
-        CPPUNIT_FAIL(failMsg);
-
+	catch (FdoException *e)
+    {
+        if (mConnection)
+            mConnection->Close();
+        UnitTestUtil::fail(e);
 	}  //  catch ...
 
 }  //  TestProviderInfo ()

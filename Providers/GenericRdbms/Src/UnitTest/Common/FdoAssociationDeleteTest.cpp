@@ -243,6 +243,7 @@ void FdoAssociationDeleteTest::masterTestWithObj(AssociationDeleteType type )
     {
         printf("Delete Master Test(OBJ) Error: %ls\n", exp->GetExceptionMessage() );
 		UnitTestUtil::PrintException(exp, UnitTestUtil::GetOutputFileName( L"TestSchema.txt" ) );
+        exp->Release();
 		CPPUNIT_FAIL ( "Delete Master Test(OBJ) Error");
     }
 }

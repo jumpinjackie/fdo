@@ -34,12 +34,11 @@ FdoCapabilityTest::FdoCapabilityTest ()
 FdoCapabilityTest::~FdoCapabilityTest ()
 {
 
-    if (m_expectedSchemaCapabilities != NULL) {
-
+    if (m_expectedSchemaCapabilities != NULL) 
         m_expectedSchemaCapabilities->Clear();
 
-    }  //  if (m_expectedSchemaCapabilities != NULL) ...
-
+    delete m_expectedSchemaCapabilities;
+    m_expectedSchemaCapabilities = NULL;
 }  //  ~FdoCapabilityTest ()
 
 
@@ -62,7 +61,7 @@ void FdoCapabilityTest::setUp ()
 void FdoCapabilityTest::Connection ()
 {
 
-    FdoIConnection* connection = NULL;
+    FdoPtr<FdoIConnection> connection;
 
     try {
 
@@ -80,7 +79,7 @@ void FdoCapabilityTest::Connection ()
       for (i = 0; i < 20; i++)
         lockArray[i] = false;
 
-	  FdoIConnectionCapabilities *connectionCapabilities = connection->GetConnectionCapabilities();
+	  FdoPtr<FdoIConnectionCapabilities> connectionCapabilities = connection->GetConnectionCapabilities();
       FdoSpatialContextExtentType *contextExtentType = connectionCapabilities->GetSpatialContextTypes(size);
       FdoThreadCapability threadCapability = connectionCapabilities->GetThreadCapability();
       bool supportsLocking = connectionCapabilities->SupportsLocking();
@@ -129,7 +128,7 @@ void FdoCapabilityTest::Connection ()
       //for ( i = 0; i < size; i++ )
       //    CPPUNIT_ASSERT( lockArray[i] );
 
-      FdoICommandCapabilities *commandCapabilities = connection->GetCommandCapabilities();
+      FdoPtr<FdoICommandCapabilities> commandCapabilities = connection->GetCommandCapabilities();
       FdoInt32 *commands = commandCapabilities->GetCommands(size);
 
       if (commandCapabilities == NULL)
@@ -152,16 +151,16 @@ void FdoCapabilityTest::Connection ()
       bool supportsParameters = commandCapabilities->SupportsParameters();
       bool supportsTimeout2 = commandCapabilities->SupportsTimeout();
 
-      FdoIFilterCapabilities* filterCapabilities = connection->GetFilterCapabilities();
+      FdoPtr<FdoIFilterCapabilities> filterCapabilities = connection->GetFilterCapabilities();
       FdoConditionType *conditionTypes = filterCapabilities->GetConditionTypes(size);
       FdoDistanceOperations *distanceOperations = filterCapabilities->GetDistanceOperations(size);
       FdoSpatialOperations *spatialOperations = filterCapabilities->GetSpatialOperations(size);
       bool supportsGeodesicDistance = filterCapabilities->SupportsGeodesicDistance();
       bool nonLiteralGeometricOperations = filterCapabilities->SupportsNonLiteralGeometricOperations();
         
-      FdoIExpressionCapabilities* expressionCapabilities = connection->GetExpressionCapabilities();
+      FdoPtr<FdoIExpressionCapabilities> expressionCapabilities = connection->GetExpressionCapabilities();
       FdoExpressionType *expressionTypes = expressionCapabilities->GetExpressionTypes(size);
-      FdoFunctionDefinitionCollection*    functions = expressionCapabilities->GetFunctions();
+      FdoPtr<FdoFunctionDefinitionCollection> functions = expressionCapabilities->GetFunctions();
 
       m_numSupportedFunctions = 0;
       if (functions) {
@@ -265,39 +264,39 @@ void FdoCapabilityTest::Connection ()
 //	    expressionCapabilities->Release();
 //        functions->Release();
 //
-
-      connection->Close ();
-	  connection->Release();
-
+        for (int i = 0; i < 20; i++)
+        {
+            delete m_supportedFunctions[i];
+            m_supportedFunctions[i] = NULL;
+        }
     }  //  try ...
 
     catch (FdoException *ex) {
 
-      if (connection) {
-
+      if (connection)
           connection->Close ();
-	      connection->Release();    
 
-      }  //  if (connection) ...
-
-      CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
-
+        for (int i = 0; i < 20; i++)
+        {
+            delete m_supportedFunctions[i];
+            m_supportedFunctions[i] = NULL;
+        }
+      UnitTestUtil::fail(ex);
     }  //  catch ...
 
 }  //  Connection ()
 
 void FdoCapabilityTest::Datastore()
 {
-    FdoIConnection* connection = NULL;
+    FdoPtr<FdoIConnection> connection;
     try {
 
       connection = UnitTestUtil::GetProviderConnectionObject();
 
       int count;
 
-      FdoIConnectionInfo* connectionInfo = connection->GetConnectionInfo();
-	  FdoIConnectionPropertyDictionary *dictionary = connectionInfo->GetConnectionProperties();
-      connectionInfo->Release();
+      FdoPtr<FdoIConnectionInfo> connectionInfo = connection->GetConnectionInfo();
+	  FdoPtr<FdoIConnectionPropertyDictionary> dictionary = connectionInfo->GetConnectionProperties();
 
 #ifdef _WIN32
       dictionary->SetProperty(L"Username", (FdoStringP)UnitTestUtil::GetEnviron("username"));
@@ -321,23 +320,14 @@ void FdoCapabilityTest::Datastore()
       for (int i=0; i<count; i++)
         printf("%d. %ls \n", i, datastores[i]);
 
-      dictionary->Release();
       connection->Close ();
-      connection->Release();
-
     }  //  try ...
 
     catch (FdoException *ex) {
 
-      if (connection) {
-
+      if (connection)
           connection->Close ();
-	      connection->Release();
-    
-      }  //  if (connection) ...
-
-        CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
-
+      UnitTestUtil::fail(ex);
     }  //  catch ...
 
 }  //  Datastore ()
@@ -346,7 +336,7 @@ void FdoCapabilityTest::Schema ()
 {
 
     bool           schemaCapabilityCheckFailed = false;
-    FdoIConnection *connection                 = NULL;
+    FdoPtr<FdoIConnection> connection;
 
     try {
 
@@ -372,11 +362,12 @@ void FdoCapabilityTest::Schema ()
         Schema_CheckClassTypes(schemaCapabilities);
 
       }  //  try ...
-
-      catch ( ... ) {
-
+      catch ( FdoException* exc ){
+        exc->Release();
         schemaCapabilityCheckFailed = true;
-
+      }
+      catch ( ... ) {
+        schemaCapabilityCheckFailed = true;
       }  //  catch ...
 
       // Check the supported data types.
@@ -386,11 +377,12 @@ void FdoCapabilityTest::Schema ()
         Schema_CheckDataTypes(schemaCapabilities);
 
       }  //  try ...
-
-      catch ( ... ) {
-
+      catch ( FdoException* exc ){
+        exc->Release();
         schemaCapabilityCheckFailed = true;
-
+      }
+      catch ( ... ) {
+        schemaCapabilityCheckFailed = true;
       }  //  catch ...
 
       // Check the supported identity property data types.
@@ -400,7 +392,10 @@ void FdoCapabilityTest::Schema ()
         Schema_CheckIdPropDataTypes(schemaCapabilities);
 
       }  //  try ...
-
+      catch ( FdoException* exc ){
+        exc->Release();
+        schemaCapabilityCheckFailed = true;
+      }
       catch ( ... ) {
 
         schemaCapabilityCheckFailed = true;
@@ -414,7 +409,10 @@ void FdoCapabilityTest::Schema ()
         Schema_CheckAutoGeneratedDataTypes(schemaCapabilities);
 
       }  //  try ...
-
+      catch ( FdoException* exc ){
+        exc->Release();
+        schemaCapabilityCheckFailed = true;
+      }
       catch ( ... ) {
 
         schemaCapabilityCheckFailed = true;
@@ -428,7 +426,10 @@ void FdoCapabilityTest::Schema ()
         Schema_CheckMaxDataValueLimits(schemaCapabilities);
 
       }  //  try ...
-
+      catch ( FdoException* exc ){
+        exc->Release();
+        schemaCapabilityCheckFailed = true;
+      }
       catch ( ... ) {
 
         schemaCapabilityCheckFailed = true;
@@ -442,7 +443,10 @@ void FdoCapabilityTest::Schema ()
         Schema_CheckNameSizeLimits(schemaCapabilities);
 
       }  //  try ...
-
+      catch ( FdoException* exc ){
+        exc->Release();
+        schemaCapabilityCheckFailed = true;
+      }
       catch ( ... ) {
 
         schemaCapabilityCheckFailed = true;
@@ -456,7 +460,10 @@ void FdoCapabilityTest::Schema ()
         Schema_CheckReservedCharacters(schemaCapabilities);
 
       }  //  try ...
-
+      catch ( FdoException* exc ){
+        exc->Release();
+        schemaCapabilityCheckFailed = true;
+      }
       catch ( ... ) {
 
         schemaCapabilityCheckFailed = true;
@@ -470,7 +477,10 @@ void FdoCapabilityTest::Schema ()
         Schema_CheckFlags(schemaCapabilities);
 
       }  //  try ...
-
+      catch ( FdoException* exc ){
+        exc->Release();
+        schemaCapabilityCheckFailed = true;
+      }
       catch ( ... ) {
 
         schemaCapabilityCheckFailed = true;
@@ -478,8 +488,6 @@ void FdoCapabilityTest::Schema ()
       }  //  catch ...
 
       connection->Close ();
-	  connection->Release();
-      connection = NULL;
 
       if (schemaCapabilityCheckFailed)
           throw FdoException::Create(
@@ -489,15 +497,10 @@ void FdoCapabilityTest::Schema ()
 
     catch (FdoException *ex) {
 
-      if (connection) {
-
+      if (connection)
           connection->Close ();
-	      connection->Release();    
 
-      }  //  if (connection) ...
-
-      CPPUNIT_FAIL (UnitTestUtil::w2a(ex->GetExceptionMessage()));
-
+      UnitTestUtil::fail(ex);
     }  //  catch ...
 
 }  //  Schema ()
@@ -981,8 +984,7 @@ void FdoCapabilityTest::InitSchemaCapabilitiesNameSizeLimits ()
 void FdoCapabilityTest::InitSchemaCapabilitiesReservedCharacters ()
 {
 
-    m_expectedSchemaCapabilities->reservedCharacters =
-                                                    FdoStringP::Format(L".:");
+    m_expectedSchemaCapabilities->reservedCharacters = L".:";
 
 }  //  InitSchemaCapabilitiesReservedCharacters ()
 
@@ -1004,7 +1006,7 @@ void FdoCapabilityTest::InitSupportedFunctions ()
 {
 
     for (int i = 0; i < 20; i++)
-      m_supportedFunctions[i] = NULL;
+        m_supportedFunctions[i] = NULL;
 
     // Add the list of expected functions.
     m_supportedFunctions[0] = new FctObject();
@@ -2331,7 +2333,7 @@ FdoCapabilityTest::FctSignature::~FctSignature ()
 
       if (arguments[i] != NULL) {
 
-          delete[] arguments[i];
+          delete arguments[i];
           arguments[i] = NULL;
 
       }  //  if (arguments[i] != NULL) ...
@@ -2366,7 +2368,7 @@ FdoCapabilityTest::FctObject::~FctObject ()
 
       if (signature[i] != NULL) {
 
-          delete[] signature[i];
+          delete signature[i];
           signature[i] = NULL;
 
       }  //  if (signature[i] != NULL) ...

@@ -54,6 +54,7 @@ void SelectTests::setUp ()
 		        pDelCmd->Execute();
 		        connection->Close();
             }
+            catch( FdoException* exc) { exc->Release(); }
             catch(...) { }
 
 	        UnitTestUtil::CreateDB(false, false, DB_SUFFIX);

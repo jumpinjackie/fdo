@@ -32,6 +32,7 @@ static    bool   use_threads = true;
 struct ConnectInfo {
     int   connectionId;
     FdoIConnection  *mConn;
+    FdoStringP msgException;
 };
 
 FdoMultiThreadTest::FdoMultiThreadTest(void)
@@ -68,6 +69,7 @@ void FdoMultiThreadTest::StartTest ( FunctionInfo *funInfo )
 	    {
             info[i].connectionId = i;
             info[i].mConn = GetConnection();
+            info[i].msgException = L"";
 	    } 
     }
     catch (FdoException *ex )
@@ -114,6 +116,11 @@ void FdoMultiThreadTest::StartTest ( FunctionInfo *funInfo )
 	for (i = 0; i < NUMBER_OF_THREADS && use_threads; i++)
 		CloseHandle(phThreads[i]);
 #endif
+    for (i = 0; i < NUMBER_OF_THREADS; i++)
+    {
+        if (info[i].msgException.GetLength() != 0)
+            UnitTestUtil::fail(FdoException::Create(info[i].msgException));
+    }
 }
 
 void FdoMultiThreadTest::QueryTest()
@@ -207,6 +214,8 @@ void* FdoMultiThreadTest::StartQuery( void *lpParameter)
 	catch (FdoException *ex )
 	{
 		printf("FDO error: %ls\n", ex->GetExceptionMessage());
+        cnInfo->msgException = ex->GetExceptionMessage();
+        ex->Release();
 	}
 
     return 0;
@@ -221,8 +230,17 @@ void* FdoMultiThreadTest::StartInsert( void *lpParameter)
     ConnectInfo  *cnInfo = (ConnectInfo*)lpParameter;
     FdoInsertTest   test;
 
-    test.MainInsertTest( cnInfo->mConn );
-
+    test.DisableFailures();
+    try
+    {
+        test.MainInsertTest( cnInfo->mConn );
+    }
+	catch (FdoException *ex )
+	{
+		printf("FDO error: %ls\n", ex->GetExceptionMessage());
+        cnInfo->msgException = ex->GetExceptionMessage();
+        ex->Release();
+	}
     return 0;
 }
 
@@ -235,7 +253,16 @@ void* FdoMultiThreadTest::StartUpdate( void *lpParameter)
     ConnectInfo  *cnInfo = (ConnectInfo*)lpParameter;
     FdoUpdateTest   test;
 
-    test.MainFdoUpdateTest( cnInfo->mConn );
-
+    test.DisableFailures();
+    try
+    {
+        test.MainFdoUpdateTest( cnInfo->mConn );
+    }
+	catch (FdoException *ex )
+	{
+		printf("FDO error: %ls\n", ex->GetExceptionMessage());
+        cnInfo->msgException = ex->GetExceptionMessage();
+        ex->Release();
+	}
     return 0;
 }

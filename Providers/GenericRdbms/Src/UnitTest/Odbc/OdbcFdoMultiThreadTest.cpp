@@ -21,17 +21,19 @@
 #include "UnitTestUtil.h"
 #include "OdbcBaseSetup.h"
 
+#ifdef _WIN32
 CPPUNIT_TEST_SUITE_REGISTRATION( OdbcOracleFdoMultiThreadTest );
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcOracleFdoMultiThreadTest, "FdoMultiThreadTest");
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcOracleFdoMultiThreadTest, "OdbcOracleFdoMultiThreadTest");
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcOracleFdoMultiThreadTest, "OdbcOracleTests");
 
-#ifdef _WIN32
 CPPUNIT_TEST_SUITE_REGISTRATION( OdbcAccessFdoMultiThreadTest );
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcAccessFdoMultiThreadTest, "FdoMultiThreadTest");
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcAccessFdoMultiThreadTest, "OdbcAccessFdoMultiThreadTest");
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcAccessFdoMultiThreadTest, "OdbcAccessTests");
 #endif
+
+bool OdbcOracleFdoMultiThreadTest::m_SetupDone = false;
 
 void OdbcOracleFdoMultiThreadTest::set_provider()
 {
@@ -106,15 +108,19 @@ void OdbcOracleFdoMultiThreadTest::QueryTest()
 
 FdoIConnection * OdbcOracleFdoMultiThreadTest::GetConnection()
 {
-	// setup first
-	OdbcBaseSetup pOdbcSetup(DataBaseType_Oracle);
     FdoIConnection* mConnection = UnitTestUtil::GetProviderConnectionObject();
-	mConnection->SetConnectionString ( UnitTestUtil::GetConnectionString(Connection_OraSetup, "") );
-	mConnection->Open();
-	pOdbcSetup.CreateDataStore(mConnection, "");
-	mConnection->Close();
-	// open with DSN
-	mConnection->SetConnectionString(UnitTestUtil::GetConnectionString(Connection_WithDSN, ""));
+	// setup first
+    if (!m_SetupDone)
+    {
+	    OdbcBaseSetup pOdbcSetup(DataBaseType_Oracle);
+	    mConnection->SetConnectionString ( UnitTestUtil::GetConnectionString(Connection_OraSetup, "") );
+	    mConnection->Open();
+	    pOdbcSetup.CreateDataStore(mConnection, "");
+	    mConnection->Close();
+        m_SetupDone = true;
+    }
+    // open with DSN
+    mConnection->SetConnectionString(UnitTestUtil::GetConnectionString(Connection_WithDSN, ""));
     mConnection->Open();
 	return mConnection;
 }
@@ -127,12 +133,18 @@ void OdbcAccessFdoMultiThreadTest::set_provider()
 
 void OdbcAccessFdoMultiThreadTest::QueryTest()
 {
+#if 0
+    // Hard-to-track occasional failures are happening.  They may originate
+    // in the Microsoft ODBC Driver.
+    CPPUNIT_FAIL("OdbcAccessFdoMultiThreadTest::QueryTest disable");
+#else
     FunctionInfo funcInfo;
 
     funcInfo.Function1 = StartOdbcQuery;
     funcInfo.Function2 = StartOdbcQuery;
 
     StartTest( &funcInfo );
+#endif
 }
 
 FdoIConnection * OdbcAccessFdoMultiThreadTest::GetConnection()
