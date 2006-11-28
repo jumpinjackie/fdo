@@ -511,7 +511,7 @@ void FdoXmlWriter::WriteIndent()
 
 FdoStringP FdoXmlWriter::StackElement::EncodeValue ( FdoStringP value )
 {
-    return value.Replace(L"&",L"&amp;").Replace(L"<",L"&lt;").Replace(L">",L"&gt;");
+    return value.Replace(L"&",L"&amp;").Replace(L"<",L"&lt;").Replace(L">",L"&gt;").Replace(L"'",L"&apos;").Replace(L"\"",L"&quot;");
 }
 
 
