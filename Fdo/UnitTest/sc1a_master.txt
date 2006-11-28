@@ -45,7 +45,7 @@ Subway Map</gml:srsName>
 <gml:srsName>
 Non-Earth (Meter)</gml:srsName>
 <fdo:WKT>
-LOCAL_CS [ "Non-Earth (Meter)", LOCAL_DATUM ["Local Datum", 0], UNIT ["Meter", 1.0], AXIS ["X", EAST], AXIS["Y", NORTH]]</fdo:WKT>
+LOCAL_CS [ &quot;Non-Earth (Meter)&quot;, LOCAL_DATUM [&quot;Local Datum&quot;, 0], UNIT [&quot;Meter&quot;, 1.0], AXIS [&quot;X&quot;, EAST], AXIS[&quot;Y&quot;, NORTH]]</fdo:WKT>
 </fdo:WKTCRS>
 </gml:baseCRS>
 <gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
