@@ -130,7 +130,7 @@ void FdoSmSchemaElement::XMLSerialize( FILE* xmlFp, int ref  ) const
 {
 	if ( ref == 0 ) {
 		for ( int i = 0; i < mErrors->GetCount(); i++ )
-			mErrors->GetItem(i)->XMLSerialize( xmlFp, ref );
+            FdoSmErrorP(mErrors->GetItem(i))->XMLSerialize( xmlFp, ref );
 	}
 }
 

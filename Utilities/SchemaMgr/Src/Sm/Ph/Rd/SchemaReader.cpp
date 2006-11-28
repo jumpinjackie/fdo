@@ -38,7 +38,9 @@ bool FdoSmPhRdSchemaReader::ReadNext()
         // First read, autogenerate feature schema for 
         // current physical schema
         FdoSmPhRowsP pFroms = GetRows();
-        FdoSmPhRow* pFrom = pFroms ? pFroms->GetItem(0) : NULL;
+        FdoSmPhRowP pFrom;
+        if (pFroms != NULL)
+            pFrom = pFroms->GetItem(0);
 
         if ( pFrom ) {
 			FdoSmPhFieldsP pFields = pFrom->GetFields();

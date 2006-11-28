@@ -237,7 +237,7 @@ void FdoSchemaManager::ApplySchema(
             // schema already exists.
         	GetLogicalPhysicalSchemas();
 
-	        if ( mLpSchemas->FindItem(pFeatSchema->GetName()) )
+            if ( FdoSmLpSchemaP(mLpSchemas->FindItem(pFeatSchema->GetName())) )
                 schemaState = FdoSchemaElementState_Modified;
             else
                 schemaState = FdoSchemaElementState_Added;

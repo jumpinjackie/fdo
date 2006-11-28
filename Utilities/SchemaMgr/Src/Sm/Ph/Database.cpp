@@ -120,7 +120,7 @@ void FdoSmPhDatabase::OnAfterCommit()
 
     if ( mOwners ) {
         for ( idx = 0; idx < mOwners->GetCount(); idx++ )
-            mOwners->GetItem(idx)->OnAfterCommit();
+            FdoSmPhOwnerP(mOwners->GetItem(idx))->OnAfterCommit();
     }
 }
 
