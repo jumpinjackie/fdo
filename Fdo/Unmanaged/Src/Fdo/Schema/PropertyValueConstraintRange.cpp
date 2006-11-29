@@ -211,7 +211,6 @@ FdoStringP FdoPropertyValueConstraintRange::ValueToString( FdoPtr<FdoDataValue> 
     if ( value ) {
         FdoString* stringValue = value->ToString();
         stringContainer = stringValue;
-        FdoStringUtility::ClearString( (wchar_t*&) stringValue );
     }
 
     return stringContainer;

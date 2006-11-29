@@ -133,8 +133,6 @@ FdoDictionaryP FdoPropertyValueConstraintList::ValuesToDictionary( FdoDataValueC
         // Skip duplicate values.
         if ( !valueDictionary->Contains(value) )
             valueDictionary->Add( FdoDictionaryElementP(FdoDictionaryElement::Create(value,L"")) );
-
-        FdoStringUtility::ClearString( (wchar_t*&) value );
     }
 
     return valueDictionary;
