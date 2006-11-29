@@ -51,12 +51,12 @@
 */
 FdoString* FdoSmPhMgr::mMetaClassSchemaName = L"F_MetaClass";
 
-const FdoStringP FdoSmPhMgr::SchemaType(L"schema", false);
-const FdoStringP FdoSmPhMgr::ClassType(L"class", false);
-const FdoStringP FdoSmPhMgr::PropertyType(L"property", false);
+const FdoStringP FdoSmPhMgr::SchemaType(L"schema", true);
+const FdoStringP FdoSmPhMgr::ClassType(L"class", true);
+const FdoStringP FdoSmPhMgr::PropertyType(L"property", true);
 
-const FdoStringP FdoSmPhMgr::ObjPrefix( L"A", false);
-const FdoStringP FdoSmPhMgr::RdSchemaPrefix(L"Fdo", false);
+const FdoStringP FdoSmPhMgr::ObjPrefix( L"A", true);
+const FdoStringP FdoSmPhMgr::RdSchemaPrefix(L"Fdo", true);
 
 FdoSmPhMgr::FdoSmPhMgr()
 {
