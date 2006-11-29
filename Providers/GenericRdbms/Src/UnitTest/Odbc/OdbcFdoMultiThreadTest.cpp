@@ -133,7 +133,7 @@ void OdbcAccessFdoMultiThreadTest::set_provider()
 
 void OdbcAccessFdoMultiThreadTest::QueryTest()
 {
-#if 0
+#if 1
     // Hard-to-track occasional failures are happening.  They may originate
     // in the Microsoft ODBC Driver.
     CPPUNIT_FAIL("OdbcAccessFdoMultiThreadTest::QueryTest disable");

@@ -41,7 +41,7 @@ private:
 
       FdoRdbmsSQLDataReader & operator=(const FdoRdbmsSQLDataReader &right);
 
-      int FindColumnIndex( const wchar_t* columnName );
+      int FindColumnIndex( const wchar_t* columnName, FdoException* exc = NULL);
 
       // Method in aid of GetGeometry()
       FdoByteArray* GetGeometry(const wchar_t* propertyName, bool checkIsNullOnly);
