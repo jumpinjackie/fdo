@@ -522,9 +522,6 @@ private:
 
     /// table for converting between UTF8 and Unicode.
     static Tab tab[];
-
-    /// General purpose refcounter for when pointing to a static string.
-    static const long mAttachedRefCount;
 };
 
 #endif
