@@ -109,14 +109,14 @@ FdoRfpStreamReaderGdalByTile::FdoRfpStreamReaderGdalByTile(
         if( m_bytesPerSample == 4 )
             m_gdalDataType = GDT_Float32;
         else if( m_bytesPerSample == 8 )
-            m_gdalDataType == GDT_Float64;
+            m_gdalDataType = GDT_Float64;
     }
     else if( m_dataModel->GetDataType() == FdoRasterDataType_Integer )
     {
         if( m_bytesPerSample == 2 )
             m_gdalDataType = GDT_Int16;
         else if( m_bytesPerSample == 4 )
-            m_gdalDataType == GDT_Int32;
+            m_gdalDataType = GDT_Int32;
     }
     else if( m_dataModel->GetDataType() == FdoRasterDataType_UnsignedInteger )
     {
@@ -125,7 +125,7 @@ FdoRfpStreamReaderGdalByTile::FdoRfpStreamReaderGdalByTile(
         else if( m_bytesPerSample == 2 )
             m_gdalDataType = GDT_UInt16;
         else if( m_bytesPerSample == 4 )
-            m_gdalDataType == GDT_UInt32;
+            m_gdalDataType = GDT_UInt32;
     }
 
     // If we have unknown then we are in trouble!  But for now we will 

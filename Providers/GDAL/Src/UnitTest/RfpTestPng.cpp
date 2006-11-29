@@ -45,59 +45,66 @@ void RfpTestPng::_tearDown()
 
 void RfpTestPng::testLoad()
 {
-	FdoPtr<FdoIConnection> connection = CreateConnection();
-	connection->SetConnectionString(L"DefaultRasterFileLocation=../../TestData/PNG");
-	connection->Open();
-
-	FdoICommand* cmd = connection->CreateCommand(FdoCommandType_Select);
-	FdoPtr<FdoISelect> cmdSelect = dynamic_cast<FdoISelect*>(cmd);
-	cmdSelect->SetFeatureClassName(L"default");
-	FdoPtr<FdoIFeatureReader> featureReader = cmdSelect->Execute();
-
-    FdoInt32 count=0;
-    while (featureReader->ReadNext())
+	try
     {
-        FdoStringP name = featureReader->GetString(L"FeatId");
-        FdoPtr<FdoIRaster> raster = featureReader->GetRaster(L"Raster");
-        FdoInt32 xsize = raster->GetImageXSize();
-        FdoInt32 ysize = raster->GetImageYSize();
+	    FdoPtr<FdoIConnection> connection = CreateConnection();
+	    connection->SetConnectionString(L"DefaultRasterFileLocation=../../TestData/PNG");
+	    connection->Open();
 
-	    FdoPtr<FdoRasterDataModel> dataModel = raster->GetDataModel();
-        FdoInt32 ppb = dataModel->GetBitsPerPixel();
-	    FdoRasterDataModelType dmType = dataModel->GetDataModelType();
+	    FdoICommand* cmd = connection->CreateCommand(FdoCommandType_Select);
+	    FdoPtr<FdoISelect> cmdSelect = dynamic_cast<FdoISelect*>(cmd);
+	    cmdSelect->SetFeatureClassName(L"default");
+	    FdoPtr<FdoIFeatureReader> featureReader = cmdSelect->Execute();
 
-	    FdoInt32 xTileSize = dataModel->GetTileSizeX();
-	    FdoInt32 yTileSize = dataModel->GetTileSizeY();
+        FdoInt32 count=0;
+        while (featureReader->ReadNext())
+        {
+            FdoStringP name = featureReader->GetString(L"FeatId");
+            FdoPtr<FdoIRaster> raster = featureReader->GetRaster(L"Raster");
+            FdoInt32 xsize = raster->GetImageXSize();
+            FdoInt32 ysize = raster->GetImageYSize();
 
-	    dataModel->SetTileSizeX(1024);
-	    dataModel->SetTileSizeY(1024);
+	        FdoPtr<FdoRasterDataModel> dataModel = raster->GetDataModel();
+            FdoInt32 ppb = dataModel->GetBitsPerPixel();
+	        FdoRasterDataModelType dmType = dataModel->GetDataModelType();
 
-	    raster->SetDataModel(dataModel);
+	        FdoInt32 xTileSize = dataModel->GetTileSizeX();
+	        FdoInt32 yTileSize = dataModel->GetTileSizeY();
 
-	    FdoPtr<FdoIStreamReaderTmpl<FdoByte> > reader = dynamic_cast<FdoIStreamReaderTmpl<FdoByte>*>(raster->GetStreamReader());	
-	    int numTileRows = (xsize - 1) / 1024 + 1;
-	    int numTileCols = (ysize - 1) / 1024 + 1;
-	    const int bytesTile = 1024 * 1024 * 1;
+	        dataModel->SetTileSizeX(1024);
+	        dataModel->SetTileSizeY(1024);
 
-	    FdoByte* buffer = new FdoByte[bytesTile];
-	    for (int i = 0; i < numTileRows; i++)
-	    {
-		    // read the first tile of the tile row
-		    FdoInt32 numRead = reader->ReadNext(buffer, 0, bytesTile);
-		    CPPUNIT_ASSERT(numRead == bytesTile);
-		    // skip the rest tiles
-		    reader->Skip(bytesTile * (numTileCols - 1));
-	    }
-        
-	    // no data
-	    CPPUNIT_ASSERT(reader->ReadNext(buffer, 0, 1) == 0);
-	    delete buffer;
-        count++;
+	        raster->SetDataModel(dataModel);
+
+	        FdoPtr<FdoIStreamReaderTmpl<FdoByte> > reader = dynamic_cast<FdoIStreamReaderTmpl<FdoByte>*>(raster->GetStreamReader());	
+	        int numTileRows = (xsize - 1) / 1024 + 1;
+	        int numTileCols = (ysize - 1) / 1024 + 1;
+	        const int bytesTile = 1024 * 1024 * 1;
+
+	        FdoByte* buffer = new FdoByte[bytesTile];
+	        for (int i = 0; i < numTileRows; i++)
+	        {
+		        // read the first tile of the tile row
+		        FdoInt32 numRead = reader->ReadNext(buffer, 0, bytesTile);
+		        CPPUNIT_ASSERT(numRead == bytesTile);
+		        // skip the rest tiles
+		        reader->Skip(bytesTile * (numTileCols - 1));
+	        }
+            
+	        // no data
+	        CPPUNIT_ASSERT(reader->ReadNext(buffer, 0, 1) == 0);
+	        delete buffer;
+            count++;
+        }
+
+        CPPUNIT_ASSERT(count == 11);
+
+	    connection->Close();
     }
-
-    CPPUNIT_ASSERT(count == 11);
-
-	connection->Close();
+	catch (FdoException* e) 
+    {
+        CPPUNIT_FAIL((const char*)FdoStringP(e->GetExceptionMessage()));
+	}
 }
 
 void RfpTestPng::testSpecialCharacters()
