@@ -37,6 +37,7 @@ UnitTest_SOURCES = \
   ExtendedSelectTest.cpp \
   NlsTest.cpp \
   SelectTest.cpp \
+  SpatialContextTest.cpp \
   UnitTestUtil.cpp
 
 noinst_HEADERS = $(UnitTest_SOURCES) \
@@ -53,6 +54,7 @@ noinst_HEADERS = $(UnitTest_SOURCES) \
   MasterTest.h \
   NlsTest.h \
   SelectTest.h \
+  SpatialContextTest.h \
   UnitTestUtil.h \
   tester-linux.h
 

@@ -532,6 +532,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\SpatialContextTest.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\SpatialContextTest.h"
+			>
+		</File>
+		<File
 			RelativePath=".\UnitTestUtil.cpp"
 			>
 		</File>

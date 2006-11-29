@@ -895,18 +895,20 @@ FdoByteArray* SdfConnection::GetDataExtents()
     {
         SdfRTree* rt = (SdfRTree*)iter->second;
 
-        Bounds b1 = rt->GetBounds();
+        if ( rt ) {
+            Bounds b1 = rt->GetBounds();
 
-        if (!Bounds::IsUndefined(b1))
-        {
-            if (Bounds::IsUndefined(ret))
+            if (!Bounds::IsUndefined(b1))
             {
-                ret = b1;
-            }
-            else
-            {
-                Bounds b2 = Bounds::CombineBounds(b1, ret);
-                ret = b2;
+                if (Bounds::IsUndefined(ret))
+                {
+                    ret = b1;
+                }
+                else
+                {
+                    Bounds b2 = Bounds::CombineBounds(b1, ret);
+                    ret = b2;
+                }
             }
         }
     }
