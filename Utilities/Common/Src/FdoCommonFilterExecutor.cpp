@@ -2381,7 +2381,7 @@ bool FdoCommonFilterExecutor::IsGreaterThan (FdoDataValue* argLeft, FdoDataValue
             if (FdoDataType_String != argRight->GetDataType ())
                 throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
             else
-                ret = 0 > wcscmp (((FdoStringValue*)argLeft)->GetString (), ((FdoStringValue*)argRight)->GetString ());
+                ret = 0 < wcscmp (((FdoStringValue*)argLeft)->GetString (), ((FdoStringValue*)argRight)->GetString ());
             break;
         case FdoDataType_BLOB:
         case FdoDataType_CLOB:
