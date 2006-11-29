@@ -318,11 +318,15 @@ the_exit:
 FdoPtr<FdoIInsert>  UnitTestUtil::InsertObject( FdoIConnection* connection, FdoPtr<FdoIInsert> insertCmd, FdoStringP schemaName, FdoString* className, ... )
 {
     va_list arguments;
-    FdoString* arg;
+    FdoDataType dataType;
+    FdoString* propName;
+    FdoString* strArg;
+    FdoInt32 int32Arg;
+    FdoBoolean boolArg;
 
     va_start(arguments, className);
 
-    arg = va_arg(arguments,FdoString*);
+    propName = va_arg(arguments,FdoString*);
 
     FdoPtr<FdoIInsert> insertCommand = insertCmd;
     
@@ -336,16 +340,32 @@ FdoPtr<FdoIInsert>  UnitTestUtil::InsertObject( FdoIConnection* connection, FdoP
     insertCommand->SetFeatureClassName(schemaName + L":" + FdoStringP(className));
     propertyValues = insertCommand->GetPropertyValues();
 
-    while ( arg != NULL ) {
+    while ( propName != NULL ) {
 
-        propertyValue = AddNewProperty( propertyValues, arg);
-        arg = va_arg(arguments,FdoString*);
-        
-        if ( arg != NULL ) {
-            dataValue = FdoDataValue::Create(arg);
-            propertyValue->SetValue(dataValue);
-            arg = va_arg(arguments,FdoString*);
+        propertyValue = AddNewProperty( propertyValues, propName);
+        dataType = va_arg(arguments,FdoDataType);
+
+        switch ( dataType ) {
+        case FdoDataType_String:
+            strArg = va_arg(arguments,FdoString*);
+            dataValue = FdoDataValue::Create(strArg);
+            break;
+        case FdoDataType_Int32:
+            int32Arg = va_arg(arguments,FdoInt32);
+            dataValue = FdoDataValue::Create(int32Arg);
+            break;
+        case FdoDataType_Boolean:
+            boolArg = va_arg(arguments,FdoBoolean);
+            dataValue = FdoDataValue::Create(boolArg);
+            break;
+        default:
+            throw FdoException::Create( L"UnitTestUtil::InsertObject dataType not yet implemented; please implement" );
+            break;
         }
+        
+        propertyValue->SetValue(dataValue);
+
+        propName = va_arg(arguments,FdoString*);
     }
         
 	FdoPtr<FdoIFeatureReader> rdr = insertCommand->Execute();

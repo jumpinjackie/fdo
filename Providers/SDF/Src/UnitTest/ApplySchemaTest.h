@@ -36,6 +36,7 @@ class ApplySchemaTest : public CppUnit::TestCase
   CPPUNIT_TEST_SUITE( ApplySchemaTest );
   CPPUNIT_TEST( TestSchema );
   CPPUNIT_TEST( TestDelete );
+  CPPUNIT_TEST( TestReformatTable );
   CPPUNIT_TEST(TestSpecificGeometryTypes);
   CPPUNIT_TEST_SUITE_END();
 
@@ -48,6 +49,9 @@ protected:
 
     void TestSchema ();
     void TestDelete ();
+    // Verifies that tables get properly reformatted after a property
+    // is added to a class definition.
+    void TestReformatTable ();
 
 	void CreateAcadSchema( FdoIConnection* connection );
 	void CreateElectricSchema( FdoIConnection* connection );
@@ -56,6 +60,7 @@ protected:
 	void CreateLongStringSchema( FdoIConnection* connection );
 	void CreateErrorSchema( FdoIConnection* connection );
 	void CreateDlteSchema( FdoIConnection* connection );
+	void CreateRefmtSchema( FdoIConnection* connection );
 
 	void DeleteAcadSchema( FdoIConnection* connection );
 
@@ -73,6 +78,7 @@ protected:
     void ModDelAcadSchema( FdoFeatureSchemaCollection* pSchemas );
 	void ModDlteSchema( FdoIConnection* connection );
     void ModDlteSchema2( FdoIConnection* connection );
+	void ModRefmtSchema( FdoIConnection* connection );
 	void ModAddProperty( FdoIConnection* connection );
 	void ModDelProperty( FdoIConnection* connection );
 	void ModDescription( FdoIConnection* connection );
@@ -90,6 +96,9 @@ protected:
 
 	void CreateDlteData( FdoIConnection* connection );
 	void VldDlteSchema( FdoIConnection* connection );
+
+	void CreateRefmtData( FdoIConnection* connection );
+	void VldRefmtSchema( FdoIConnection* connection );
 
     void CreateClassGroup( FdoFeatureSchema* pSchema, FdoInt32 idx );
     void DeleteDlteClass( FdoIConnection* connection, FdoFeatureSchema* pSchema, FdoInt32 idx, bool delCls=true );

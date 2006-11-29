@@ -151,6 +151,9 @@ void TableReformatter::Reformat()
 				if( dataBlobModified )
 					mOrigData->UpdateFeature( recNo, &data );
 				
+                if ( mOrigData->NeedsAFlush() )
+                    mOrigData->Flush();
+
 				if( destwrt != NULL )
 					delete destwrt;
 

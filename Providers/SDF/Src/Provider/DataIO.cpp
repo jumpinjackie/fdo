@@ -351,7 +351,9 @@ void DataIO::WriteProperty(FdoPropertyDefinition* pd, PropertyIndex* propIndex, 
                 break;
 
         case FdoDataType_String : 
-                wrt.WriteRawString(reader->ReadString());
+
+                
+            wrt.WriteRawString(reader->ReadRawString(len));
                 break;
         }
     }
@@ -853,7 +855,7 @@ void DataIO::MakeDataRecord(PropertyIndex* srcpi, BinaryReader& reader , FdoClas
     //base properties first
     for (int i=0; i<bpdc->GetCount(); i++)
     {
-		FdoPtr<FdoPropertyDefinition> pd = (FdoPropertyDefinition*)bpdc->GetItem(i);
+        FdoPtr<FdoPropertyDefinition> pd = (FdoPropertyDefinition*)bpdc->GetItem(i);
 
         //save offset of property data to the reserved position at the
         //beginning of the record
