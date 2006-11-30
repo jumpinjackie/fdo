@@ -21,7 +21,7 @@ noinst_LTLIBRARIES = libTestCommon.la
 
 EXTRA_DIST = \
   TestCommon.sln \
-  TestCommon.vcproj \
+  TestCommon.vcproj
 
 libTestCommon_la_SOURCES = \
   Src/TestCommonFeatureCommands.cpp \
