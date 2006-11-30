@@ -615,3 +615,14 @@ void FdoSmLpObjectPropertyClass::AddTargetConflictError
 		)
 	);
 }
+
+
+FdoStringP FdoSmLpObjectPropertyClass::GetQName() const
+{
+    FdoSmLpObjectPropertyP objProp = ((FdoSmLpObjectPropertyClass*)this)->GetObjectProperty();
+    FdoPtr<FdoSmLpPropertyDefinition> topProp = objProp->GetTopProperty();
+    const FdoSmSchemaElement* topPropClass = topProp->GetParent();
+    const FdoSmSchemaElement* topPropSchema = topPropClass->GetParent();
+    
+	return( topPropSchema->GetQName() + L":" + GetName() );
+}
