@@ -315,6 +315,7 @@ int GdbiQueryResult::GetBinaryValue( const wchar_t *colName, int length, char *a
 int GdbiQueryResult::GetAsciiValue( const wchar_t *colName, int length, char *address, bool *null_ind, int *ccode )
 {
     std::map <std::wstring,GdbiColumnInfoType*>::iterator iter;
+    char    tmpDblBuffer[60];
 	char	lascii[200];
 	int		lccode = RDBI_SUCCESS;
     FdoStringP  upperName = FdoStringP(colName).Upper();
@@ -349,11 +350,11 @@ int GdbiQueryResult::GetAsciiValue( const wchar_t *colName, int length, char *ad
 				do_copy(lascii, address, length, &lccode); 
 				break;
 			case RDBI_FLOAT:
-				sprintf(lascii, "%s", ut_dtoa( (double) (*(float *)((char*)colInfo->value + mArrayPos*colInfo->size))) );
+				sprintf(lascii, "%s", ut_dtoa( (double) (*(float *)((char*)colInfo->value + mArrayPos*colInfo->size)), tmpDblBuffer) );
 				do_copy(lascii, address, length, &lccode);
 				break;
 			case RDBI_DOUBLE:
-				sprintf(lascii, "%s", ut_dtoa( (*(double *)((char*)colInfo->value + mArrayPos*colInfo->size))) );
+				sprintf(lascii, "%s", ut_dtoa( (*(double *)((char*)colInfo->value + mArrayPos*colInfo->size)), tmpDblBuffer ) );
 				do_copy(lascii, address, length, &lccode);
 				break;
 			default:

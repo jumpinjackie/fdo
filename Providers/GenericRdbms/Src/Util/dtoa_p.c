@@ -20,20 +20,14 @@
 #include <locale.h>
 #include <Inc/ut.h>
 
-#define ROWS    20
-#define COLS    60
-
-static char     s[ROWS][COLS];              /*  several buffers so that 10  */
-static int      s_index = 0;                /*      calls won't clober      */
-
 char * ut_dtoa_p(
         double d,
-        int p
+        int p,
+        char   *ptr
         )
 {
     int             left;                   /*  digits to left of decimal   */
     int             right;                  /*  digits to right of decimal  */
-    char            *ptr;                   /*  pointer to buffer used      */
     register char   *end;                   /*  end of formatted string     */
     char            radix = '\0';                   /*  radix character             */
     struct lconv    *nls;
@@ -57,10 +51,6 @@ char * ut_dtoa_p(
     right = p - left;                       /*  determine digits allowed    */
     if (right < 0)                          /*      on right, within        */
         right = 0;                          /*          precision           */
-
-    s_index %= ROWS;
-    ptr = s[s_index];               /*  allocate a buffer           */
-    s_index++;
 
                                             /*  format with appropriate     */
     sprintf (ptr, "%.*f", right, d);        /*      decimals                */

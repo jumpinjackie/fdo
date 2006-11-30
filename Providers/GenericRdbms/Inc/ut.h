@@ -107,9 +107,9 @@ char * ut_itoa( int i,  char * dst );
 
 char * ut_ltoa( long l, char * dst );
 
-char * ut_dtoa_p( double d, int p );
+char * ut_dtoa_p( double d, int p, char   *ptr );
 
-char * ut_dtoa( double n );
+char * ut_dtoa( double n, char   *ptr  );
 
 #endif
 

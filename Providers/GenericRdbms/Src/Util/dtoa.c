@@ -23,15 +23,17 @@
 #define FLT_PRECISION   6
 
 char * ut_dtoa(
-        double n
+        double n,
+        char   *ptr 
         )
 {
-    return ut_dtoa_p(n,DBL_PRECISION);
+    return ut_dtoa_p(n,DBL_PRECISION, ptr);
 }
 char * ut_ftoa(
-        double n
+        double n, 
+        char   *ptr 
         )
 {
-    return ut_dtoa_p(n,FLT_PRECISION);
+    return ut_dtoa_p(n,FLT_PRECISION, ptr);
 }
 

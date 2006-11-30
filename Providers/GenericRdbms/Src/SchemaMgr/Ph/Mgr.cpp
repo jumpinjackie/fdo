@@ -29,7 +29,7 @@
 #define MAX_STACK 200
 #define MAX_STATIC_CURSORS 80
 
-FdoSmPhGrdMgr::StringMap FdoSmPhGrdMgr::mReservedDbObjectNames;
+//FdoSmPhGrdMgr::StringMap FdoSmPhGrdMgr::mReservedDbObjectNames;
 
 FdoSmPhGrdMgr::FdoSmPhGrdMgr( GdbiConnection* connection ) :
     mGdbiConnection(connection),

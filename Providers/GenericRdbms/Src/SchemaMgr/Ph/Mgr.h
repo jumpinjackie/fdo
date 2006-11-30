@@ -240,7 +240,7 @@ private:
     FdoStringP          mHomeDir;
 
     // General reserved word list (words reserved by most RDBMS's).
-    static StringMap mReservedDbObjectNames;
+    StringMap mReservedDbObjectNames;
 	FdoSmPhStaticReadersP mStaticReaders;
 };
 
