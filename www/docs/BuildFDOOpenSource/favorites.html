@@ -1,0 +1,42 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   
+      <link rel="stylesheet" type="text/css" href="style/commons.css">
+      <title>
+         [Favorites]
+         
+         
+      </title><script type="text/JavaScript">
+                        
+
+                        function loadFromFavorites()
+                        {
+                            if(navigator.appName == "Netscape")
+                            {
+                                document.getElementById('favoritesList').contentDocument.open();
+                                for (i = 0; i < top.favoritesList.length; i++) {
+                                    document.getElementById('favoritesList').contentDocument.write('<div><a target="content" onclick="top.selectFavoriteItem('+i+');" href="' + top.favoritesList[i][0] + '">' + top.favoritesList[i][1] + '</a></div>');
+                                }
+                                document.getElementById('favoritesList').contentDocument.close();
+                            }
+                            else if(navigator.appName == "Microsoft Internet Explorer")
+                            {
+                                document.frames("favoritesList").document.open();
+                                for (i = 0; i < top.favoritesList.length; i++) {
+                                    document.frames("favoritesList").document.write('<div><a target="content"  onclick="top.selectFavoriteItem('+i+');" href="' + top.favoritesList[i][0] + '">' + top.favoritesList[i][1] + '</a></div>');
+                                }
+                                document.frames("favoritesList").document.close();
+                            }
+                            else alert("Unsupported browser !");
+
+
+                        }
+
+
+                    </script></head>
+   <body class="search_htmlbody" onload="top.initalFavoritesLoad(); top.refreshFavoritesList(); javascript:loadFromFavorites();">
+      <div id="navigationMenuitemNext" onClick="top.removeSeceltedFavoriteItem();"><a href="#" onclick="javascript: return false" class="navigationLink"><img border="0" src="images/next.gif" align="absmiddle" width="24" height="24">Remove selected from Favorites</a></div>
+      <div><iframe name="favoritesList" class="favoritesList" id="favoritesList" height="100%" width="100%"></iframe></div>
+   </body>
+</html>

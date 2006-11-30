@@ -1,0 +1,22 @@
+/* Modified by non-chm-output-bipane.pl, a post-process  */
+/* script for HTML output.                Nov 30, 2006.  */
+
+.searchPhrase {text-align: center; font-weight:bold;}
+
+.searchField {width: 100%;}
+
+.searchResultList {display:block; width: 100%; height: 100%;}
+
+.seacrchButton {width: 100%;}
+
+.searchForm {display:inline; height: 100%;}
+
+.tableSearch {width: 100%; height: 100%;}
+
+.tdSearchPhrase {height: 1%;}
+
+.tdSearchField {width: 70%; height: 1%;}
+
+.tdSeacrchButton {width: 30%; height: 1%;}
+
+.tdSearchList {height: 98%;}

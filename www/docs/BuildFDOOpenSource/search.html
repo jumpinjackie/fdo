@@ -1,0 +1,38 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   
+      <link rel="stylesheet" type="text/css" href="style/search.css">
+      <link rel="stylesheet" type="text/css" href="style/commons.css">
+      <title>
+         [SEARCH]
+         
+         
+      </title><script type="text/JavaScript">
+                        top.isContentEnable = 0;
+                    </script></head>
+   <body class="search_htmlbody"><script type="text/JavaScript" src="scripts/search-entries.js"></script><script type="text/JavaScript" src="scripts/search-data.js"></script><script type="text/JavaScript" src="scripts/stop-words.js"></script><script type="text/JavaScript" src="scripts/search-processing.js"></script><form name="searchForm" class="searchForm" onSubmit="javascript:SearchString(document.forms['searchForm'].searchData.value);return false" action="#">
+         <table class="tableSearch">
+            <tr>
+               <td class="tdSearchMethod">
+                  <div><span class="tdSearchMethodField">Search method</span><span class="tdSearchMethodOr"><input type="radio" name="searchMethod" value="or" onclick="javascript:switchSearchMethod('or')" checked="true">or</span><span class="tdSearchMethodAnd"><input type="radio" name="searchMethod" value="and" onclick="javascript:switchSearchMethod('and')">and</span></div>
+               </td>
+               <td class="tdSearchHighlight"><a href="#" class="button" onclick="javascropt:switchHighliting()" onmouseout="window.status='';" onmouseover="window.status='Highlight on/off'; return true;">Highlight on/off</a></td>
+            </tr>
+            <tr>
+               <td colspan="2" class="tdSearchPhrase">
+                  <div class="searchPhrase">Search help for:</div>
+               </td>
+            </tr>
+            <tr>
+               <td class="tdSearchField"><input type="text" name="searchData" id="searchData" class="searchField"></td>
+               <td class="tdSeacrchButton"><a href="#" class="button" onclick="javascript:SearchString(document.forms['searchForm'].searchData.value);return false" onmouseout="window.status='';" onmouseover="window.status='Search'; return true;">Search</a></td>
+            </tr>
+            <tr>
+               <td colspan="2" class="tdSearchList"><script type="text/JavaScript">
+                                        document.write('<select multiple id="searchList" name="searchList" onchange="javascript:ViewDocument();" class="searchResultList"/>');
+                                    </script></td>
+            </tr>
+         </table><iframe name="hiddenFrame" id="hiddenFrame"></iframe></form>
+   </body>
+</html>

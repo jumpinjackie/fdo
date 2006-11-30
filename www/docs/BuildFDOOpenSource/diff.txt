@@ -1,0 +1,8 @@
+156c156
+< 			<exslf:result select="(following::* | descendant::*)[not(ancestor-or-self::*/@toc='false')][@type = $contextName][1]"/>
+---
+> 			<exslf:result select="(following::* | descendant::*)[@type = $contextName and not(@toc='false')][1]"/>
+170c170
+< 			<exslf:result select="(preceding::* | ancestor::*)[not(ancestor-or-self::*/@toc='false')][@type = $contextName][last()]"/>
+---
+> 			<exslf:result select="(preceding::* | ancestor::*)[@type = $contextName and not(@toc='false')][last()]"/>

@@ -1,0 +1,237 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   
+      <title>Provider Overview</title>
+      <link rel="stylesheet" type="text/css" href="../style/cpm.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd_html_standard.css"><script type="text/javascript" src="../scripts/ac_common.js"></script><script type="text/javascript" src="../scripts/ac.strings.js"></script><script type="text/javascript" src="../scripts/acmap.js"></script><script type="text/javascript" src="../scripts/ac.acad_ak.js"></script><script language="javascript">
+            function hideInfo() {
+                info = document.getElementById('infoline');
+                info.innerHTML = ' ';
+                info.style.visibility = 'hidden';
+            }
+            function showInfo(title) {
+                info = document.getElementById('infoline');
+                info.innerHTML = title;
+                info.style.visibility='visible';
+            }
+        </script><meta type="description" content="Provider Overview">
+      <meta type="keywords" content="">
+      <meta type="topic-type" content="concept">
+   </head>
+   <body onLoad="javascript:initFrame('WS73099cc142f487555e01641096cb1c9da-7f97.htm','4'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
+      <!--
+                            Name = Topic;
+                            Class =  CPM-Topic ISD-Topic ;
+                            Url = WS73099cc142f487555e01641096cb1c9da-7f97.htm-->
+      <div class="head">
+         <div class="head-block">
+            <div class="nav-group">
+               <!--browse buttons-->
+               <div class="browse">
+                  <nobr>
+                     <div id="homeTitle" style="display:none">Home: The Essential FDO</div><a href="WS73099cc142f487551e5a0cb10850d4cd7c-5344.htm" target="content" class="headNavLink" onmouseover="showInfo(document.getElementById('homeTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-home-xp.gif" border="0"></a><span class="home-button-separator">&nbsp;</span><div id="prevTitle" style="display:none">Related Documentation</div><a href="WS1a9193826455f5ff9110c71085341391d-2db3.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">The Essential FDO</div><a href="WS73099cc142f487551e5a0cb10850d4cd7c-5344.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">System Requirements</div><a href="WS73099cc142f487551e5a0cb10850d4cd7c-5340.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-next-xp.gif" border="0"></a></nobr>
+               </div>
+               <!--end browse buttons-->
+            </div>
+            <div class="button-info"><span id="infoline">&nbsp;</span></div>
+            <div class="ancestry"><a href="WS73099cc142f487551e5a0cb10850d4cd7c-5344.htm">The Essential FDO</a>&nbsp;&gt;&nbsp;
+            </div>
+            <div class="head-text"><span>Provider Overview</span></div>
+         </div>
+      </div>
+      <div class="head-margin">&nbsp;</div>
+      <div style="line-height: 0pt">&nbsp;</div>
+      <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS73099cc142f487555e01641096cb1c9da-7f97"></a></span>
+               
+               
+      <!--Body-->
+                  
+      <p><span style="display:none"><a name="WS73099cc142f4875520a47a10f192cc9dc-6f18"></a></span>
+                        
+                        
+                        The
+         following RDBMS-based and file-based FDO providers are included.
+         The full provider name is listed here; subsequent references in
+         this document may use a shortened name. Autodesk® providers are
+         only included with commercial Autodesk software. Open source providers
+         are also part of the Open Source Geospatial Foundation (OSGeo).
+      </p>
+                  <span style="display:none"><a name="WS73099cc142f487555e01641096cb1c9da-7f96"></a></span><table cellpadding="0" cellspacing="0" class="ruled-wide">
+         <colgroup>
+            <col style="width:1.292in">
+            <col style="width:3.958in">
+                              
+            <tr class="RuledWideHeading">
+                                    
+               <th class="table-heading">Provider Name</th>
+                                    
+               <th class="table-heading">Description</th>
+                                 
+            </tr>
+                           
+                              
+            <tr class="RuledWideOddRow">
+                                    
+               <td class="table-body">
+                                          OSGeo FDO Provider for ArcSDE
+               </td>
+                                    
+               <td class="table-body">Read/write access to feature data in an ESRI ArcSDE-based
+                  data store (that is, with an underlying Oracle or SQL Server database).
+                  Supports describing schema, and inserting, selecting, updating,
+                  and deleting feature data in existing schemas; does not support
+                  creating or deleting schemas.
+               </td>
+                                 
+            </tr>
+                              
+            <tr class="RuledWideEvenRow">
+                                    
+               <td class="table-body">
+                                          OSGeo FDO Provider for MySQL
+               </td>
+                                    
+               <td class="table-body">Read/write access to feature data in a MySQL-based data
+                  store. Supports spatial data types and spatial query operations.
+                  Custom API can gather information, transmit exceptions, list data
+                  stores, and create connection objects. MySQL architecture supports
+                  various storage engines, characteristics, and capabilities.
+               </td>
+                                 
+            </tr>
+                              
+            <tr class="RuledWideOddRow">
+                                    
+               <td class="table-body">
+                                          OSGeo FDO Provider for ODBC
+               </td>
+                                    
+               <td class="table-body">Read/write to feature data in a ODBC-based data store.
+                  Supports XYZ feature objects and can define feature classes for
+                  any relational database table with X, Y, and optionally, Z columns;
+                  does not support creating or deleting schema. Object locations are
+                  stored in separate properties in the object definition.
+               </td>
+                                 
+            </tr>
+                              
+            <tr class="RuledWideEvenRow">
+                                    
+               <td class="table-body">
+                                          OSGeo FDO Provider for SDF
+               </td>
+                                    
+               <td class="table-body">Read-write access to feature data in an SDF-based data
+                  store. Autodesk’s geospatial file format, SDF, supports multiple
+                  features/attributes, provides high performance for large data sets,
+                  and interoperability with other Autodesk products. Supports spatial
+                  indexing and is a valid alternative to database storage. Note that
+                  this release of the SDF provider supports version 3.0 of the SDF
+                  file format.
+               </td>
+                                 
+            </tr>
+                              
+            <tr class="RuledWideOddRow">
+                                    
+               <td class="table-body">
+                                          OSGeo FDO Provider for SHP
+               </td>
+                                    
+               <td class="table-body">Read/write access to existing spatial and attribute data
+                  in an ESRI SHP-based data store, which consists of separate shape
+                  files for geometry, index, and attributes. Each SHP file and its
+                  associated DBF file is treated as a feature class with a single
+                  geometry property. This is a valid alternative to database storage but
+                  does not support locking.
+               </td>
+                                 
+            </tr>
+                              
+            <tr class="RuledWideEvenRow">
+                                    
+               <td class="table-body">
+                                          OSGeo FDO Provider for WFS
+               </td>
+                                    
+               <td class="table-body">Read-only access to feature data in an OGC WFS-based
+                  data store. Supports a client/server environment and retrieves geospatial
+                  data encoded in GML from one or more Web Feature Services sites.
+                  Client/server communication is encoded in XML with the exception
+                  of feature geometries, which are encoded in GML. Note that there
+                  is no public API documentation for this provider; all WFS functionality
+                  is accessible through the base FDO API.
+               </td>
+                                 
+            </tr>
+                              
+            <tr class="RuledWideOddRow">
+                                    
+               <td class="table-body">
+                                          OSGeo Provider for WMS
+               </td>
+                                    
+               <td class="table-body">Read-only to feature data in an OGC WMS-based data store.
+                  Web Map Service (WMS) produces maps of spatially referenced data
+                  dynamically from geographic information, which are generally rendered
+                  in PNG, GIF, or JPEG, or as vector-based Scalable Vector Graphics
+                  (SVG) or Web Computer Graphics Metafile (WebCGM) formats.
+               </td>
+                                 
+            </tr>
+                              
+            <tr class="RuledWideEvenRow">
+                                    
+               <td class="table-body">
+                                          Autodesk FDO Provider for Oracle
+               </td>
+                                    
+               <td class="table-body">Read/write access to feature data in an Oracle-based
+                  data store. Supports spatial indexing, long transactions, and persistent
+                  locking. Custom API can gather provider information, transmit client
+                  services exceptions, list data stores, and create connection objects.
+               </td>
+                                 
+            </tr>
+                              
+            <tr class="RuledWideOddRow">
+                                    
+               <td class="table-body">
+                                          Autodesk FDO Provider for Raster
+               </td>
+                                    
+               <td class="table-body">Read-only access to feature data in a raster-based file
+                  format. Supports various image and GIS data formats (for example,
+                  JPEG, PNG, MrSID, and others). Supports georeferenced file-based
+                  raster images and file-based grid coverages. Pixel-based images,
+                  such as satellite images, are useful underneath vector data.
+               </td>
+                                 
+            </tr>
+                              
+            <tr class="RuledWideEvenRow">
+                                    
+               <td class="table-body">
+                                          Autodesk
+                  FDO Provider for SQL Server
+               </td>
+                                    
+               <td class="table-body">Read/write access to feature data in a Microsoft SQL
+                  Server-based data store. A custom API supports schema read/write
+                  access and geospatial and non-geospatial data read/write access.
+               </td>
+                                 
+            </tr>
+                           
+         </colgroup>
+      </table>
+                  
+      <p></p>
+               
+            
+      <!---->
+      <!--See also-->
+      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Please send us your comment about this page</span></a></div><br></body>
+</html>

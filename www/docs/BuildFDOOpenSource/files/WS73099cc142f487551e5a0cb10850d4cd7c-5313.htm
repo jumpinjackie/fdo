@@ -1,0 +1,288 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   
+      <title>Data Store Management API</title>
+      <link rel="stylesheet" type="text/css" href="../style/cpm.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd_html_standard.css"><script type="text/javascript" src="../scripts/ac_common.js"></script><script type="text/javascript" src="../scripts/ac.strings.js"></script><script type="text/javascript" src="../scripts/acmap.js"></script><script type="text/javascript" src="../scripts/ac.acad_ak.js"></script><script language="javascript">
+            function hideInfo() {
+                info = document.getElementById('infoline');
+                info.innerHTML = ' ';
+                info.style.visibility = 'hidden';
+            }
+            function showInfo(title) {
+                info = document.getElementById('infoline');
+                info.innerHTML = title;
+                info.style.visibility='visible';
+            }
+        </script><meta type="description" content="Data Store Management API">
+      <meta type="keywords" content="">
+      <meta type="topic-type" content="concept">
+   </head>
+   <body onLoad="javascript:initFrame('WS73099cc142f487551e5a0cb10850d4cd7c-5313.htm','42'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
+      <!--
+                            Name = Topic;
+                            Class =  CPM-Topic ISD-Topic ;
+                            Url = WS73099cc142f487551e5a0cb10850d4cd7c-5313.htm-->
+      <div class="head">
+         <div class="head-block">
+            <div class="nav-group">
+               <!--browse buttons-->
+               <div class="browse">
+                  <nobr>
+                     <div id="homeTitle" style="display:none">Home: The Essential FDO</div><a href="WS73099cc142f487551e5a0cb10850d4cd7c-5344.htm" target="content" class="headNavLink" onmouseover="showInfo(document.getElementById('homeTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-home-xp.gif" border="0"></a><span class="home-button-separator">&nbsp;</span><div id="prevTitle" style="display:none">User Management Capabilities</div><a href="WS73099cc142f487551e5a0cb10850d4cd7c-5317.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">The Essential FDO</div><a href="WS73099cc142f487551e5a0cb10850d4cd7c-5344.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">Spatial Context API</div><a href="WS73099cc142f487551e5a0cb10850d4cd7c-5302.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-next-xp.gif" border="0"></a></nobr>
+               </div>
+               <!--end browse buttons-->
+            </div>
+            <div class="button-info"><span id="infoline">&nbsp;</span></div>
+            <div class="ancestry"><a href="WS73099cc142f487551e5a0cb10850d4cd7c-5344.htm">The Essential FDO</a>&nbsp;&gt;&nbsp;
+            </div>
+            <div class="head-text"><span>Data Store Management API</span></div>
+         </div>
+      </div>
+      <div class="head-margin">&nbsp;</div>
+      <div style="line-height: 0pt">&nbsp;</div>
+      <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS73099cc142f487551e5a0cb10850d4cd7c-5313"></a></span>
+               
+               
+      <!--Body-->
+                  
+      <p><span style="display:none"><a name="WS73099cc142f4875520a47a10f192cc9dc-6edf"></a></span>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        You can use this API to create a data
+         store, destroy a data store, or list data stores. Three RDBMS providers
+         (Oracle, MySQL, and SQL Server) and one file-based provider (SDF)
+         support the data store commands. You can use the <span class="code">FdoICommandCapabilities</span> object to verify
+         this.
+      </p>
+                  
+      <p><span style="display:none"><a name="WS73099cc142f4875520a47a10f192cc9dc-6ede"></a></span> The procedure used for creating and destroying
+         a data store in an RDBMS-based provider is slightly different than
+         the procedure used for these operations in the SDF provider. The
+         key difference is that the connection to the RDBMS-based provider
+         is in the pending state, and the connection to the SDF provider
+         is in the closed state.
+      </p>
+                  
+      <div class="section"><span style="display:none"><a name="WS73099cc142f487555e01641096cb1c9da-7f94"></a></span>
+                        
+         <p class="section_title_h1"><a name="TOC_ENTRY__d0e1223"></a>Oracle, MySQL, and SQL Server Providers
+         </p>
+                        
+         <p><span style="display:none"><a name="WS73099cc142f4875520a47a10f192cc9dc-6edd"></a></span>
+                              
+                              To
+            create or destroy a data store, do the following:
+         </p>
+                        
+         <!--OList--><span style="display:none"><a name="WS73099cc142f487551e5a0cb10850d4cd7c-5312"></a></span>
+                           
+         <ol type="1" start="1">
+            <li>Open
+               a connection in the pending state to the provider as a user with administrative
+               privileges.
+            </li>
+            <li>
+                                    
+                                    
+                                    Use
+               the connection object to create the <span class="code">FdoICreateDataStore</span> or <span class="code">FdoIDestroyDataStore</span> command object
+            </li>
+            <li>Use
+               the command object to get the appropriate property dictionary.
+            </li>
+            <li>Use
+               the property dictionary first to determine what properties must
+               be given values and then to set those properties values.
+            </li>
+            <li>Call
+               the command object's <span class="code">Execute()</span> method.
+            </li>
+            <li>
+                                    
+                                    To
+               verify the result of these operations, use the connection object
+               to create an <span class="code">FdoIListDataStores</span> command.
+               Calling the <span class="code">Execute</span> method
+               on this object returns a data store property reader containing a
+               list of the data stores in the data source. By default this list
+               includes all of the data stores in the data source. Optionally,
+               you can exclude the data stores not created using the <span class="code">FdoICreateDataStore</span> command.
+            </li>
+         </ol>
+                           
+                           
+                           
+                           
+                           
+                        
+                        
+         <p><span style="display:none"><a name="WS73099cc142f4875520a47a10f192cc9dc-6edc"></a></span>
+                              
+                              The
+            difference between data stores created using the <span class="code">FdoICreateDataStore</span> command and ones
+            created by non-FDO means (for example, from the SQL command-line)
+            is that the former contain a set of FDO-specific tables whose names
+            are prefixed with <span class="code">F_</span> or <span class="code">f_</span>, and which hold FDO metadata. You
+            can view the list of tables created by the <span class="code">FdoICreateDataStore</span> command
+            using the following operations for each provider type:
+         </p>
+                        
+         <!--UList--><span style="display:none"><a name="WS73099cc142f487551e5a0cb10850d4cd7c-5311"></a></span>
+                           
+         <ul>
+            <li>
+                                    Oracle: <span class="code">sql&gt;
+                  select owner,table_name from dba_tables where owner = '&lt;data
+                  store name&gt;';</span> 
+                                 
+            </li>
+            <li>
+                                    MySQL: <span class="code">mysql&gt;
+                  show tables from &lt;database name&gt;;</span> 
+                                 
+            </li>
+            <li>
+                                    SQL
+               Server: In the <span class="uis-unspecified">Enterprise Manager </span> application
+               window, under <span class="uis-unspecified">Console Root </span>, click <span class="uis-unspecified">Microsoft
+                  SQL Servers</span>, click <span class="uis-unspecified">SQL Server Group</span>,
+               click <em class="mild">SQL_Servername</em>, click <span class="uis-unspecified">Databases</span> ,
+               click <em class="mild"> database_name</em>, click <span class="uis-unspecified">Tables</span>.
+            </li>
+         </ul>
+                           
+                           
+                        
+                        
+         <p><span style="display:none"><a name="WS73099cc142f4875520a47a10f192cc9dc-6edb"></a></span>Depending on the provider, most of the following
+            values are displayed:
+         </p>
+                        
+         <!--UList--><span style="display:none"><a name="WS73099cc142f487551e5a0cb10850d4cd7c-5310"></a></span>
+                           
+         <ul>
+            <li>
+                                    <span class="code">f_associationdefinition</span> 
+                                 
+            </li>
+            <li>
+                                    <span class="code">f_attributedefinition</span> 
+                                 
+            </li>
+            <li>
+                                    <span class="code">f_attributedependencies</span> 
+                                 
+            </li>
+            <li>
+                                    <span class="code">f_classdefinition</span> 
+                                 
+            </li>
+            <li>
+                                    <span class="code">f_classtype</span> 
+                                 
+            </li>
+            <li>
+                                    <span class="code">f_dbopen</span> 
+                                 
+            </li>
+            <li>
+                                    <span class="code">f_lockname</span> 
+                                 
+            </li>
+            <li>
+                                    <span class="code">f_options</span> 
+                                 
+            </li>
+            <li>
+                                    <span class="code">f_sad</span> 
+                                 
+            </li>
+            <li>
+                                    <span class="code">f_schemainfo</span> 
+                                 
+            </li>
+            <li>
+                                    <span class="code">f_schemaoptions</span> 
+                                 
+            </li>
+            <li>
+                                    <span class="code">f_sequence</span> 
+                                 
+            </li>
+            <li>
+                                    <span class="code">f_spatialcontext</span> 
+                                 
+            </li>
+            <li>
+                                    <span class="code">f_spatialcontextgeom</span> 
+                                 
+            </li>
+            <li>
+                                    <span class="code">f_spatialcontextgroup</span> 
+                                 
+            </li>
+         </ul>
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                        
+                     
+      </div>
+                  
+      <div class="section"><span style="display:none"><a name="WS73099cc142f487555e01641096cb1c9da-7f93"></a></span>
+                        
+         <p class="section_title_h1"><a name="TOC_ENTRY__d0e1484"></a>SDF Provider
+         </p>
+                        
+         <p><span style="display:none"><a name="WS73099cc142f4875520a47a10f192cc9dc-6eda"></a></span>
+                              
+                              To
+            create or destroy a data store, do the following:
+         </p>
+                        
+         <!--OList--><span style="display:none"><a name="WS73099cc142f487551e5a0cb10850d4cd7c-530f"></a></span>
+                           
+         <ol type="1" start="1">
+            <li>
+                                    
+                                    
+                                    Use the <span class="code">FdoICreateDataStore</span> command
+               to create an SDF file and the <span class="code">FdoIDestroyDataStore</span> command
+               to delete it. These operations are performed with the connection
+               in the closed state.
+            </li>
+            <li>
+                                    Verify
+               these operations by looking in the file system. The SDF provider does
+               not support the <span class="code">FdoIListDataStores</span> command. 
+            </li>
+         </ol>
+                           
+                        
+                     
+      </div>
+               
+            
+      <!---->
+      <!--See also-->
+      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Please send us your comment about this page</span></a></div><br></body>
+</html>

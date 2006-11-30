@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet
+	version="1.1"
+	xmlns:exsl="http://exslt.org/common"
+ 	extension-element-prefixes="exsl exslf"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:exslf="http://exslt.org/functions"
+	xmlns:ia="http://www.intelliarts.com/"
+	xmlns:regexp="com.intelliarts.xslt.extension.RegexpTest"
+	xmlns:strings="com.intelliarts.xslt.extension.StringUtils"
+    xmlns:ia-func="http://www.intelliarts.com/exsl/function"
+	exclude-result-prefixes="exsl ia xsl ia-func regexp strings">
+
+	<xsl:variable name="indexConf" select="document($index.configuration.file)/index.configuration.set/index.configuration"/>
+
+	<xsl:variable name="indexSeeAlsoConf" select="$indexConf/see.also"/>
+	<xsl:variable name="seeAlsoPattern" select="normalize-space($indexSeeAlsoConf/pattern)"/>
+	<xsl:variable name="seeAlsoPrecedes" select="$indexSeeAlsoConf/order[not(normalize-space(.)='follow')]"/>
+	<xsl:variable name="seeAlsoLower" select="$indexSeeAlsoConf/lowercase[normalize-space(.)='yes']"/>
+	<xsl:variable name="seeAlsoPeriodChar" select="$indexSeeAlsoConf/period.char"/>
+
+	<xsl:template name="createINDEX">
+		<xsl:document href="{concat($output.dir,'index.hhk')}" output="html" encoding="{$chm.output.encoding}" indent="yes">
+			<html>
+				<head>
+					<title>
+						Index File
+					</title>
+				</head>
+				<body>
+					<ul>
+						<xsl:comment>index</xsl:comment>
+						<xsl:call-template name="create-index-entries"/>
+					</ul>
+				</body>
+			</html>
+		</xsl:document>
+	</xsl:template>
+
+	<xsl:template name="create-index-entries">
+
+		<xsl:variable name="nodes">
+			<ia:nodes>
+				<xsl:for-each select="//*[contains(@class, ' CPM-IndexEntry ')]">
+					<xsl:variable name="text">
+						<xsl:choose>
+							<xsl:when test="text()">
+								<xsl:value-of select="text()"/>
+							</xsl:when>
+							<xsl:when test="@text">
+								<xsl:value-of select="@text"/>
+							</xsl:when>
+						</xsl:choose>
+					</xsl:variable>
+					<ia:index-nodes>
+						<xsl:variable name="href" select="ia-func:getHrefForIndexEntry(.)"/>
+						<xsl:call-template name="create-index-node">
+							<xsl:with-param name="href" select="$href"/>
+							<xsl:with-param name="text" select="normalize-space($text)"/>
+						</xsl:call-template>
+					</ia:index-nodes>
+				</xsl:for-each>
+			</ia:nodes>
+		</xsl:variable>
+
+		<xsl:apply-templates select="exsl:node-set($nodes)" mode="index-postprocess"/>
+
+    </xsl:template>
+
+	<xsl:template match="ia:nodes" mode="index-postprocess">
+		<xsl:variable name="a">
+			<ia:levels>
+				<xsl:apply-templates select="ia:index-nodes" mode="first"/>
+			</ia:levels>
+		</xsl:variable>
+		<xsl:apply-templates select="exsl:node-set($a)" mode="second"/>
+	</xsl:template>
+
+    <xsl:template match="ia:index-nodes" mode="first">
+		<xsl:apply-templates select="ia:level | ia:value" mode="first"/>
+	</xsl:template>
+
+	<xsl:template match="ia:level" mode="first">
+		<xsl:copy>
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates mode="first"/>
+		</xsl:copy>
+	</xsl:template>
+
+	<xsl:template match="ia:value" mode="first">
+		<xsl:copy>
+			<xsl:copy-of select="@*"/>
+			<xsl:value-of select="normalize-space(.)"/>
+		</xsl:copy>
+	</xsl:template>
+
+
+	<xsl:template match="ia:level" mode="second">
+		<LI>
+			<OBJECT type="text/sitemap">
+				<param name="Name">
+					<xsl:attribute name="value">
+						<xsl:call-template name="format-text">
+							<xsl:with-param name="text" select="@name"/>
+						</xsl:call-template>
+					</xsl:attribute>
+				</param>
+                <xsl:variable name="href" select="descendant::ia:value[1]/@href[1]"/>
+				<xsl:if test="$href">
+					<param name="Local" value="{$href}"/>
+				</xsl:if>
+			</OBJECT>
+		</LI>
+			<UL>
+				<xsl:apply-templates mode="second">
+					<xsl:sort select="@sort-directive | @name" order="ascending"/>
+				</xsl:apply-templates>
+			</UL>
+	</xsl:template>
+
+	<xsl:template match="ia:value" mode="second">
+		<xsl:variable name="href" select="@href"/>
+		<xsl:call-template name="make-index-ref">
+			<xsl:with-param name="href" select="$href"/>
+			<xsl:with-param name="inner-text" select="normalize-space(.)"/>
+		</xsl:call-template>
+	</xsl:template>
+
+	<xsl:template name="make-index-ref">
+		<xsl:param name="href"/>
+		<xsl:param name="inner-text"/>
+
+		<LI>
+			<OBJECT type="text/sitemap">
+				<param name="Name">
+					<xsl:attribute name="value">
+						<xsl:call-template name="format-text">
+							<xsl:with-param name="text" select="$inner-text"/>
+						</xsl:call-template>
+					</xsl:attribute>
+				</param>
+				<xsl:variable name="name" select="ia-func:fetchText($inner-text)"/>
+
+				<xsl:choose>
+					<xsl:when test="$indexSeeAlsoConf and regexp:find($name, $seeAlsoPattern)">
+						<xsl:variable name="seeAlsoParts" select="regexp:split($name, $seeAlsoPattern)"/>
+						<xsl:if test="$debug-enabled">
+							<xsl:message>
+								<xsl:text>See also pattern was found for entry = '</xsl:text>
+								<xsl:value-of select="$name"/>
+								<xsl:text>'</xsl:text>
+							</xsl:message>
+							<xsl:message>
+								<xsl:text>See also parts:</xsl:text>
+								<xsl:for-each select="$seeAlsoParts">
+									<xsl:value-of select="concat(position(),': &quot;', ., '&quot;')"/>
+									<xsl:if test="not(position() = last())">
+										<xsl:text>,</xsl:text>
+									</xsl:if>
+								</xsl:for-each>
+							</xsl:message>
+						</xsl:if>
+						<xsl:variable name="seeAlsoIntDest">
+							<xsl:choose>
+								<xsl:when test="$seeAlsoPrecedes">
+									<xsl:value-of select="$seeAlsoParts[count($seeAlsoParts)]"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="$seeAlsoParts[1]"/>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:variable>
+
+						<xsl:variable name="destValues" select="//ia:value[normalize-space(.) = normalize-space($seeAlsoIntDest)]"/>
+
+						<xsl:choose>
+							<xsl:when test="$destValues">
+								<param name="See Also" value="{$destValues/@index}"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<param name="See Also" value="{normalize-space($seeAlsoIntDest)}"/>
+							</xsl:otherwise>
+						</xsl:choose>
+
+
+					</xsl:when>
+					<xsl:otherwise>
+						<param name="Local" value="{$href}"/>
+					</xsl:otherwise>
+				</xsl:choose>
+
+			</OBJECT>
+		</LI>
+
+	</xsl:template>
+
+	<xsl:variable name="so-directive" select="'&lt;so&gt;'"/>
+
+	<xsl:template name="format-text">
+		<xsl:param name="text"/>
+		<xsl:param name="formatting" select="'Default Para Font'"/>
+		<xsl:choose>
+			<xsl:when test="contains($text, $so-directive)">
+				<xsl:call-template name="format-text">
+					<xsl:with-param name="text" select="substring-before($text, $so-directive)"/>
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:when test="starts-with($text, '&lt;')">
+				<xsl:variable name="formatting-name" select="substring-before(substring-after($text, '&lt;'), '&gt;')"/>
+				<xsl:call-template name="format-text">
+					<xsl:with-param name="text" select="substring-after($text, '&gt;')"/>
+					<xsl:with-param name="formatting" select="$formatting-name"/>
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:when test="contains($text, '&lt;')">
+				<xsl:call-template name="format-text">
+					<xsl:with-param name="text" select="substring-before($text, '&lt;')"/>
+					<xsl:with-param name="formatting" select="$formatting"/>
+				</xsl:call-template>
+				<xsl:call-template name="format-text">
+					<xsl:with-param name="text" select="concat('&lt;', substring-after($text, '&lt;'))"/>
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$text"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+
+	<xsl:template name="create-index-node">
+		<xsl:param name="href"/>
+		<xsl:param name="text"/>
+		<xsl:param name="category" select="''"/>
+		<xsl:param name="idx-prefix" select="''"/>
+
+		<xsl:choose>
+			<xsl:when test="contains($text, ';')">
+				<xsl:call-template name="create-index-node">
+					<xsl:with-param name="href" select="$href"/>
+					<xsl:with-param name="text" select="substring-before($text, ';')"/>
+				</xsl:call-template>
+				<xsl:call-template name="create-index-node">
+					<xsl:with-param name="href" select="$href"/>
+					<xsl:with-param name="text" select="substring-after($text, ';')"/>
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:otherwise>
+				<!-- Constants -->
+				<xsl:variable name="nopage-directive" select="'&lt;$nopage&gt;'"/>
+				<xsl:variable name="singlepage-directive" select="'&lt;$singlepage&gt;'"/>
+				<xsl:variable name="startrange-directive" select="'&lt;$startrange&gt;'"/>
+				<xsl:variable name="endrange-directive" select="'&lt;$endrange&gt;'"/>
+
+				<!-- Some conditions -->
+				<xsl:variable name="starts-with-nopage-directive" select="starts-with($text, $nopage-directive)"/>
+
+<!--				<xsl:if test="not($starts-with-nopage-directive)">-->
+
+					<xsl:variable name="starts-with-singlepage-directive" select="starts-with($text, $singlepage-directive)"/>
+					<xsl:variable name="starts-with-startrange-directive" select="starts-with($text, $startrange-directive)"/>
+					<xsl:variable name="starts-with-endrange-directive" select="starts-with($text, $endrange-directive)"/>
+
+					<xsl:variable name="real-text">
+						<!-- Exclude '<$nopage>' from text -->
+						<xsl:variable name="temp1">
+							<xsl:choose>
+								<xsl:when test="$starts-with-nopage-directive">
+									<xsl:value-of select="substring-after($text, $nopage-directive)"/>
+								</xsl:when>
+								<xsl:otherwise><xsl:value-of select="$text"/></xsl:otherwise>
+							</xsl:choose>
+						</xsl:variable>
+						<!-- Exclude '<$singlepage>' from text -->
+						<xsl:variable name="temp2">
+							<xsl:choose>
+								<xsl:when test="$starts-with-singlepage-directive">
+									<xsl:value-of select="substring-after($temp1, $singlepage-directive)"/>
+								</xsl:when>
+								<xsl:otherwise><xsl:value-of select="$temp1"/></xsl:otherwise>
+							</xsl:choose>
+						</xsl:variable>
+						<!-- Exclude '<$startrange>' from text -->
+						<xsl:variable name="temp3">
+							<xsl:choose>
+								<xsl:when test="$starts-with-startrange-directive">
+									<xsl:value-of select="substring-after($temp2, $startrange-directive)"/>
+								</xsl:when>
+								<xsl:otherwise><xsl:value-of select="$temp2"/></xsl:otherwise>
+							</xsl:choose>
+						</xsl:variable>
+						<!-- Exclude '<$endrange>' from text -->
+						<xsl:variable name="temp4">
+							<xsl:choose>
+								<xsl:when test="$starts-with-endrange-directive">
+									<xsl:value-of select="substring-after($temp3, $endrange-directive)"/>
+								</xsl:when>
+								<xsl:otherwise><xsl:value-of select="$temp3"/></xsl:otherwise>
+							</xsl:choose>
+						</xsl:variable>
+
+						<xsl:value-of select="$temp4"/>
+					</xsl:variable>
+
+					<xsl:variable name="name">
+						<xsl:value-of select="substring-before($real-text, ':')"/>
+					</xsl:variable>
+					<xsl:variable name="name-for-prefix">
+						<xsl:choose>
+							<xsl:when test="$starts-with-startrange-directive or $starts-with-endrange-directive">
+								<xsl:value-of select="substring-after($text, 'range&gt;')"/>
+							</xsl:when>
+							<xsl:otherwise><xsl:value-of select="substring-before($text, ':')"/></xsl:otherwise>
+						</xsl:choose>
+					</xsl:variable>
+
+					<xsl:variable name="category-name">
+						<xsl:choose>
+							<xsl:when test="string-length($category) > 0"><xsl:value-of select="concat($category, ':', $name)"/></xsl:when>
+							<xsl:otherwise><xsl:value-of select="$name"/></xsl:otherwise>
+						</xsl:choose>
+					</xsl:variable>
+
+					<xsl:variable name="prefix">
+						<xsl:choose>
+							<xsl:when test="string-length($idx-prefix) > 0"><xsl:value-of select="concat($idx-prefix, ', ', $name-for-prefix)"/></xsl:when>
+							<xsl:otherwise><xsl:value-of select="$name-for-prefix"/></xsl:otherwise>
+						</xsl:choose>
+					</xsl:variable>
+
+
+						<xsl:choose>
+							<xsl:when test="contains($real-text, '[')">
+								<!-- Processes index with sort directive -->
+								<xsl:variable name="sort-string" select="substring-before(substring-after($text,'['), ']')"/>
+
+								<xsl:choose>
+									<xsl:when test="contains(substring-before($real-text, '['), ':')">
+										<ia:level name="{$name}" category="{$category-name}">
+											<xsl:if test="$starts-with-nopage-directive">
+												<xsl:attribute name="nopage">true</xsl:attribute>
+											</xsl:if>
+											<xsl:if test="$starts-with-singlepage-directive">
+												<xsl:attribute name="singlepage">true</xsl:attribute>
+											</xsl:if>
+											<xsl:call-template name="create-index-node">
+												<xsl:with-param name="href" select="$href"/>
+												<xsl:with-param name="idx-prefix" select="$prefix"/>
+												<xsl:with-param name="category" select="$category-name"/>
+												<xsl:with-param name="text" select="substring-after($real-text, ':')"/>
+											</xsl:call-template>
+										</ia:level>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:variable name="value">
+											<xsl:call-template name="fetch-value">
+												<xsl:with-param name="text" select="substring-before($text,'[')"/>
+											</xsl:call-template>
+										</xsl:variable>
+
+										<xsl:variable name="sort-directive">
+											<xsl:call-template name="fetch-value">
+												<xsl:with-param name="text" select="$sort-string"/>
+											</xsl:call-template>
+										</xsl:variable>
+
+										<xsl:variable name="sort-category" select="substring-before($sort-string, concat(':', $sort-directive))"/>
+
+										<xsl:call-template name="create-ia-value">
+											<xsl:with-param name="href" select="$href"/>
+											<xsl:with-param name="idx-prefix" select="$idx-prefix"/>
+											<xsl:with-param name="text" select="$value"/>
+											<xsl:with-param name="sort-under" select="$sort-category"/>
+											<xsl:with-param name="sort-directive" select="$sort-directive"/>
+											<xsl:with-param name="starts-with-nopage-directive" select="$starts-with-nopage-directive"/>
+											<xsl:with-param name="starts-with-singlepage-directive" select="$starts-with-singlepage-directive"/>
+										</xsl:call-template>
+
+									</xsl:otherwise>
+								</xsl:choose>
+							</xsl:when>
+							<xsl:when test="contains($real-text, ':')">
+								<!-- Processes index without sort directive, but with category level(s) -->
+								<ia:level name="{$name}" category="{$category-name}">
+									<xsl:if test="$starts-with-nopage-directive">
+										<xsl:attribute name="nopage">true</xsl:attribute>
+									</xsl:if>
+									<xsl:if test="$starts-with-singlepage-directive">
+										<xsl:attribute name="singlepage">true</xsl:attribute>
+									</xsl:if>
+									<xsl:call-template name="create-index-node">
+										<xsl:with-param name="href" select="$href"/>
+										<xsl:with-param name="idx-prefix" select="$prefix"/>
+										<xsl:with-param name="category" select="$category-name"/>
+										<xsl:with-param name="text" select="substring-after($real-text, ':')"/>
+									</xsl:call-template>
+								</ia:level>
+							</xsl:when>
+							<xsl:otherwise>
+								<!-- No categories, value only-->
+								<xsl:call-template name="create-ia-value">
+									<xsl:with-param name="href" select="$href"/>
+									<xsl:with-param name="idx-prefix" select="$idx-prefix"/>
+									<xsl:with-param name="text" select="$real-text"/>
+									<xsl:with-param name="starts-with-nopage-directive" select="$starts-with-nopage-directive"/>
+									<xsl:with-param name="starts-with-singlepage-directive" select="$starts-with-singlepage-directive"/>
+								</xsl:call-template>
+							</xsl:otherwise>
+						</xsl:choose>
+<!--					</xsl:if>-->
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+	<!-- Fetches last value from multivalue string where values separated by ':' -->
+	<xsl:template name="fetch-value">
+		<xsl:param name="text"/>
+		<xsl:choose>
+			<xsl:when test="contains($text, ':')">
+				<xsl:call-template name="fetch-value">
+					<xsl:with-param name="text" select="substring-after($text,':')"/>
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:otherwise><xsl:value-of select="$text"/></xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+	<exslf:function name="ia-func:fetchText">
+		<xsl:param name="text"/>
+		<xsl:choose>
+			<xsl:when test="contains($text, '&lt;') and contains($text, '&gt;')">
+				<xsl:variable name="preText" select="substring-before($text, '&lt;')"/>
+				<xsl:variable name="postText" select="substring-after($text, '&gt;')"/>
+				<exslf:result select="ia-func:fetchText(concat($preText,$postText))"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<exslf:result select="$text"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</exslf:function>
+
+	<xsl:template name="create-ia-value">
+		<xsl:param name="href"/>
+		<xsl:param name="idx-prefix" select="''"/>
+		<xsl:param name="text"/>
+		<xsl:param name="sort-directive" select="$text"/>
+		<xsl:param name="sort-under"/>
+		<xsl:param name="starts-with-nopage-directive"/>
+		<xsl:param name="starts-with-singlepage-directive"/>
+		<ia:value href="{$href}" sort-directive="{$sort-directive}">
+			<xsl:if test="$sort-under">
+				<xsl:attribute name="sort-under"><xsl:value-of select="$sort-under"/></xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$starts-with-nopage-directive">
+				<xsl:attribute name="nopage">true</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$starts-with-singlepage-directive">
+				<xsl:attribute name="singlepage">true</xsl:attribute>
+			</xsl:if>
+			<xsl:attribute name="index">
+				<xsl:choose>
+					<xsl:when test="string-length($idx-prefix) > 0"><xsl:value-of select="concat($idx-prefix, ', ', $text)"/></xsl:when>
+					<xsl:otherwise><xsl:value-of select="$text"/></xsl:otherwise>
+				</xsl:choose>
+			</xsl:attribute>
+			<xsl:value-of select="$text"/>
+		</ia:value>
+	</xsl:template>
+
+</xsl:stylesheet>

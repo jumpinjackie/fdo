@@ -1,0 +1,147 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   
+      <title>Configuration</title>
+      <link rel="stylesheet" type="text/css" href="../style/cpm.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd_html_standard.css"><script type="text/javascript" src="../scripts/ac_common.js"></script><script type="text/javascript" src="../scripts/ac.strings.js"></script><script type="text/javascript" src="../scripts/acmap.js"></script><script type="text/javascript" src="../scripts/ac.acad_ak.js"></script><script language="javascript">
+            function hideInfo() {
+                info = document.getElementById('infoline');
+                info.innerHTML = ' ';
+                info.style.visibility = 'hidden';
+            }
+            function showInfo(title) {
+                info = document.getElementById('infoline');
+                info.innerHTML = title;
+                info.style.visibility='visible';
+            }
+        </script><meta type="description" content="Configuration">
+      <meta type="keywords" content="">
+      <meta type="topic-type" content="concept">
+   </head>
+   <body onLoad="javascript:initFrame('WS73099cc142f4875518cef0a10b4f5d51a8-7dee.htm','74'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
+      <!--
+                            Name = Topic;
+                            Class =  CPM-Topic ISD-Topic ;
+                            Url = WS73099cc142f4875518cef0a10b4f5d51a8-7dee.htm-->
+      <div class="head">
+         <div class="head-block">
+            <div class="nav-group">
+               <!--browse buttons-->
+               <div class="browse">
+                  <nobr>
+                     <div id="homeTitle" style="display:none">Home: The Essential FDO</div><a href="WS73099cc142f487551e5a0cb10850d4cd7c-5344.htm" target="content" class="headNavLink" onmouseover="showInfo(document.getElementById('homeTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-home-xp.gif" border="0"></a><span class="home-button-separator">&nbsp;</span><div id="prevTitle" style="display:none">Installation</div><a href="WS73099cc142f4875518cef0a10b4f5d51a8-7def.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">Installing and Configuring the MySQL on Linux</div><a href="WS73099cc142f4875518cef0a10b4f5d51a8-7df0.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">Installing and Configuring ODBC on Linux</div><a href="WS73099cc142f4875518cef0a10b4f5d51a8-7dec.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-next-xp.gif" border="0"></a></nobr>
+               </div>
+               <!--end browse buttons-->
+            </div>
+            <div class="button-info"><span id="infoline">&nbsp;</span></div>
+            <div class="ancestry"><a href="WS1a9193826455f5ff1eae43410b4d164b91-7764.htm">Installing RDBMS Clients
+                  Used By The Open Source Providers</a>&nbsp;&gt;&nbsp;<a href="WS73099cc142f4875518cef0a10b4f5d51a8-7df0.htm">Installing and Configuring
+                  the MySQL on Linux</a>&nbsp;&gt;&nbsp;
+            </div>
+            <div class="head-text"><span>Configuration</span></div>
+         </div>
+      </div>
+      <div class="head-margin">&nbsp;</div>
+      <div style="line-height: 0pt">&nbsp;</div>
+      <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS73099cc142f4875518cef0a10b4f5d51a8-7dee"></a></span>
+                  
+                  
+      <!--Body-->
+                     
+      <p>Configuration consists
+         of setting up the mysql server as a service and of setting passwords
+         for the 2 root and 2 anonymous accounts.
+      </p>
+                     
+      <p>Return to the page
+         containing the table of contents for Chapter 2. Click on <span class="uis-unspecified">2.
+            Installing and Upgrading MySQL</span>. Click on <span class="uis-unspecified">2.10.2
+            Unix Post-Installation Procedures</span>. Scroll down to the
+         paragraph whose first sentence is <span class="uis-unspecified">If
+            you install MySQL from a source distribution or using a binary distribution
+            format that does not install mysql.server automatically, you can
+            install it manually. </span> and read to the line containing
+         the shell command <span class="code">shell&gt; chkconfig --add mysql</span>.
+      </p>
+                     
+      <div>
+         <div class="note-note"><span class="label">Note</span>
+                              <span class="code">chkconfig</span> uses a commented
+            line from the <span class="filePath">/etc/init.d/mysql</span>file,
+            namely, <span class="code"># chkconfig: 2345 64 36</span>
+                           
+         </div>
+      </div>
+                     
+      <p>Verify that chkconfig
+         has written the correct entries to the <span class="filePath">/etc/rc*.d</span> directories.
+      </p>
+                     
+      <!--UList--><span style="display:none"><a name="WS73099cc142f4875518cef0a10b4f5d51a8-7d27"></a></span>
+                        
+      <ul>
+         <li>
+                                 <span class="filePath">/etc/rc0.d</span>, <span class="filePath">/etc/rc1.d</span>, and <span class="filePath">/etc/rc6.d</span> should
+            contain <span class="filePath">K36mysql -&gt; ../init.d/mysql</span>
+                              
+         </li>
+         <li>
+                                 <span class="filePath">/etc/rc2.d</span>, <span class="filePath">/etc/rc3.d</span>, <span class="filePath">/etc/rc4.d</span>, and <span class="filePath">/etc/rc5.d</span> should
+            contain <span class="filePath">S64mysql -&gt; ../init.d/mysql</span>
+                              
+         </li>
+      </ul>
+                        
+                     
+                     
+      <p>Return to the page
+         containing the table of contents for Chapter 2. Click on <span class="uis-unspecified">2.
+            Installing and Upgrading MySQL</span>. Click on <span class="uis-unspecified">2.10.3
+            Securing the Initial MySQL Accounts</span>. Follow the instructions
+         for securing the 2 root and 2 anonymous accounts.
+      </p>
+                     
+      <div>
+         <div class="note-note"><span class="label">Note</span>If you get an error
+            message like <span class="uis-unspecified">ERROR
+               2003 (HY00): Can’t connect to MySQL server on ‘&lt;hostname&gt;’
+               (&lt;somenumber&gt;)</span> when setting the password for the
+            ‘’@’&lt;hostname&gt;” or the ‘root’@’&lt;hostname&gt;’ account,
+            verify that the IP address that &lt;hostname&gt; maps to in the <span class="filePath">/etc/hosts</span> file
+            is correct.
+         </div>
+      </div>
+                     
+      <p>You can use the Fdo
+         User Manager API to create a user account with the usage privilege
+         if you are using the enterprise version of FDO. Otherwise you can use
+         the 2 SQL commands, <span class="code">create user &lt;user&gt; identified
+            by ‘&lt;password&gt;’</span> and <span class="code">grant select, insert, update,
+            delete, create, create view, drop, index, alter on *.* to ‘&lt;user&gt;’@’%’
+            identified by ‘&lt;password&gt;’</span>. In either case you must
+         be connected as a user, for example, root, with the grant privilege.
+         The value &lt;user&gt; can be ‘&lt;username&gt;’@’localhost’ if
+         the connection local, or it must be ‘&lt;username&gt;’@’,hostname.’
+         if the connection is remote. The value of &lt;hostname&gt; is &lt;host
+         label&gt;.&lt;domain name&gt;, for example, <em class="mild">someComputer.someCompany.com</em>.
+      </p>
+                     
+      <div>
+         <div class="note-note"><span class="label">Note</span>If you enabled remote
+            root access when you installed MySQL, you can create user accounts
+            by way of a remote connection. Otherwise, you will have to connect
+            locally in order to create a user account. 
+         </div>
+      </div>
+                     
+      <p>You can use the FDO
+         Data Store Management API to create a data store.
+      </p>
+                  
+               
+      <!---->
+      <!--See also-->
+      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Please send us your comment about this page</span></a></div><br></body>
+</html>

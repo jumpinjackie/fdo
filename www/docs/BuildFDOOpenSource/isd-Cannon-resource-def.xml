@@ -1,0 +1,70 @@
+<resources>
+	<file type="image" id="logo">images/logo.gif</file>
+	<file type="image" id="banner">images/banner.jpg</file>
+
+	<file type="image">images/ac.chickletred.gif</file>
+	<file type="image">images/ac.chickletred2.gif</file>
+	<file type="image">images/ac.cmdaccess_blank.gif</file>
+	<file type="image">images/ac.hlp_page.gif</file>
+	<file type="image">images/ac.keyboard.gif</file>
+	<file type="image">images/ac.mainback.gif</file>
+	<file type="image" id="arrow">images/ac.menuaro.gif</file>
+	<file type="image">images/ac.mouse.gif</file>
+	<file type="image">images/ac.pg_end.gif</file>
+	<file type="image">images/ac.pg_next.gif</file>
+	<file type="image">images/ac.pg_prev.gif</file>
+	<file type="image">images/ac.pg_up.gif</file>
+	<file type="image" id="collapse-arrow">images/ac.right.gif</file>
+	<file type="image" id="collapse-arrow-down">images/ac.down.gif</file>
+	<file type="image">images/ac.tabs_c.gif</file>
+	<file type="image">images/ac.tabs_not.gif</file>
+	<file type="image">images/ac.tabs_p.gif</file>
+	<file type="image">images/ac.tabs_r.gif</file>
+	<file type="image">images/ac.tabs_x.GIF</file>
+	<file type="image">images/head_graphic.gif</file>
+
+	<file type="image">images/tab-bkg.gif</file>
+	<file type="image">images/tab-bkg-x.gif</file>
+	<file type="image">images/tab-bkg-o.gif</file>
+
+	<file type="image" id="tab-left">images/tab-left.gif</file>
+	<file type="image" id="tab-left-active">images/tab-left-x.gif</file>
+	<file type="image" id="tab-left-disabled">images/tab-left-o.gif</file>
+	<file type="image" id="tab-right">images/tab-right.gif</file>
+	<file type="image" id="tab-right-active">images/tab-right-x.gif</file>
+	<file type="image" id="tab-right-disabled">images/tab-right-o.gif</file>
+
+	<file type="image" id="nav-next" >images/nav-next-xp.gif</file>
+	<file type="image" id="nav-null">images/nav-null-xp.gif</file>
+	<file type="image" id="nav-prev">images/nav-prev-xp.gif</file>
+	<file type="image" id="nav-up">images/nav-up-xp.gif</file>
+
+	<file type="html" id="DoCommentsPage">html/ac.cmtdialog.htm</file>
+
+	<file type="css">style/cpm.css</file>
+	<file type="css">style/isd.css</file>
+<!--	<file type="css">style/ad-mh.css</file>-->
+<!--	<file type="css">style/TableStyles.css</file>-->
+	<file type="javascript">ac_common.js</file>
+<!--	<file type="javascript">ac.strings.js</file>-->
+<!--	<file type="javascript">aw-search.js</file>-->
+	<file type="javascript">scripts/acmap.js</file>
+	<file type="javascript">scripts/ac.acad_ak.js</file>
+<!--	<file type="javascript" tag="CHMUpdate">scripts/ac.chm-update.js</file>-->
+	<file type="html">ac-report-Idh.h</file>
+	<file type="html">ContextIdAliases.h</file>
+
+	<!-- Answerworks files tagged with AW -->
+	<copy-to-chm-root-folder>root</copy-to-chm-root-folder>
+ <!--       <file type="image" tag="AW" id="AWask">aw.awAskButton.gif</file>-->
+ <!--	<file type="image">aw.awAskDn.gif</file>-->
+ <!--	<file type="image">aw.awAskOn.gif</file>-->
+ <!--	<file type="image">aw.awAskUp.gif</file>-->
+ <!--	<file type="html">aw.awHistory.htm</file>-->
+ <!--	<file type="html">aw.awQuery.htm</file>-->
+ <!--	<file type="html">aw.awResults.htm</file>-->
+ <!--	<file type="html">aw.awTab.htm</file>-->
+ <!--	<file type="html">aw.querytips.htm</file>-->
+
+             
+</resources>

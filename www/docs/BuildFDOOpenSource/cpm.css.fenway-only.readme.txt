@@ -1,0 +1,37 @@
+/* 3/15/2006 Bill Crawford */
+
+/* ----------------------------------------------------------------------------
+   !! IMPORTANT !! This version of cpm.css is for Fenway-CUG only! See the 
+   appended 'Fenway-CUG Only' section. The rules undo the change made to the 
+   standard cpm.css that reformats widget-section heads in dialog topics.
+ ---------------------------------------------------------------------------- */
+
+...
+
+
+[ Standard cpm.css content ]
+
+
+...
+
+/* -----------------------------------------------------------------------------------------------
+								!! Fenway-CUG Only !!
+ ----------------------------------------------------------------------------------------------- */
+/* The following rules are appended to the Fenway-CUG version *only* of cpm.css.                 */
+
+div.dl_section {
+margin-left: 0;
+}
+
+div.dl_section p.title {
+background-color: #79d;
+color: white;
+padding-left: 6pt;
+padding-right: 6pt;
+padding-top: 4pt;
+padding-bottom: 5pt;
+margin-top: 8pt;
+margin-bottom: -4pt;
+margin-left: 0pt;
+}
+

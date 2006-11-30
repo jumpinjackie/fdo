@@ -1,0 +1,786 @@
+ce-logger:  duration 0 seconds
+
+ce.archival.init.remote:
+ce.archival.init.remote:  duration 0 seconds
+
+ce.archival:
+     [echo] Archiving old build files/directories in C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840/..
+     [java] Running in same VM Executing 'com.autodesk.wwl.util.filesystem.archival.Main' with arguments:
+'10'
+'C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840/..'
+
+The ' characters around the executable and arguments are
+not part of the command.
+     [java] Files and Empty Directories older than 10 days will be deleted.
+     [java] .
+     [java] 
+     [java] The following files/directories are deleted:
+     [java] == End Of Deleted File List ==
+ce.archival:  duration 0 seconds
+
+ce.archival.remote:
+ce.archival.remote:  duration 0 seconds
+
+content-sort:
+[echoproperties] #Ant properties
+#Fri Nov 10 09:44:16 PST 2006
+file.encoding.pkg=sun.io
+env.PROMPT=$P$G
+ant.file.ce-country-edits=C\:\\cmsbuild-resources\\production\\ce_2x\\common-build-lib\\ce-country-edits.xml
+java.home=c\:\\Program Files\\Java\\j2re1.4.2_03
+cygwin.user.home=C\:/cygwin/home/Administrator
+java.endorsed.dirs=c\:\\Program Files\\Java\\j2re1.4.2_03\\lib\\endorsed
+env.LOGNAME=Administrator
+env.MODE=production
+env.USERNAME=Administrator
+src.dir=.
+sun.os.patch.level=Service Pack 1
+java.vendor.url=http\://java.sun.com/
+env.COMPUTERNAME=ESCHER
+java.version=1.4.2_03
+ant.file.ce-content-sort=C\:\\cmsbuild-resources\\production\\ce_2x\\common-build-lib\\ce-content-sort.xml
+ant.file.merge-map=C\:\\cmsbuild-resources\\production\\ce_2x\\common-build-lib\\ce-merge-map.xml
+index.configuration.file=conf/transformation/index/English.xml
+java.vendor.url.bug=http\://java.sun.com/cgi-bin/bugreport.cgi
+env.USERPROFILE=C\:\\Documents and Settings\\Administrator
+env.SSH_CLIENT=144.111.39.118 34594 22
+user.name=Administrator
+sun.io.unicode.encoding=UnicodeLittle
+ant.file.conditional-preprocess=C\:\\cmsbuild-resources\\production\\ce_2x\\common-build-lib\\preprocess_filter.xml
+ant.file.ce-logger=C\:\\cmsbuild-resources\\production\\ce_2x\\common-build-lib\\ce-logger.xml
+java.runtime.name=Java(TM) 2 Runtime Environment, Standard Edition
+ant.file.prepare=C\:\\cmsbuild-resources\\production\\ce_2x\\common-build-lib\\ce-prepare.xml
+env.SSH_CONNECTION=144.111.39.118 34594 144.111.18.235 22
+java.specification.name=Java Platform API Specification
+product-filterattrib-list=build
+user.timezone=
+path.separator=;
+log.file=remote-build.log
+env.PROCESSOR_IDENTIFIER=x86 Family 15 Model 4 Stepping 1, GenuineIntel
+ant.file.Set\ Production\ vs.\ Preview\ properties=C\:\\cmsbuild-resources\\production\\ce_2x\\common-build-lib\\ce-set-prod-vs-prev-properties.xml
+file.encoding=Cp1252
+build=C\:/build/ISD/Marble-BICW/English/2006_11_10_09_43_47_840
+env.HOME=C\:\\cygwin\\home\\Administrator
+env.NUMBER_OF_PROCESSORS=1
+ant.file=c\:\\build\\ISD\\Marble-BICW\\English\\2006_11_10_09_43_47_840\\ce-remote-transform.xml
+env.WINDIR=C\:\\WINDOWS
+archival.path=C\:\\build\\ISD\\Marble-BICW\\English\\2006_11_10_09_43_47_840/..
+java.io.tmpdir=c\:\\DOCUME~1\\SSHD_S~1.000\\LOCALS~1\\Temp\\
+ant.file.ce-archival=C\:\\cmsbuild-resources\\production\\ce_2x\\common-build-lib\\ce-util.xml
+user.language=en
+line.separator=\r\n
+env.ANT_OPTS=-Xmx1024m
+contentsort.configuration.file=conf/transformation/contentsort/English.xml
+chm.display_ouput=No
+env.COMMONPROGRAMFILES=C\:\\Program Files\\Common Files
+java.vm.info=mixed mode
+java.util.prefs.PreferencesFactory=java.util.prefs.WindowsPreferencesFactory
+java.vm.specification.name=Java Virtual Machine Specification
+env.PATHEXT=.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH
+env.LOGONSERVER=\\\\ESCHER
+ant.file.generate-xref-labels=C\:\\cmsbuild-resources\\production\\ce_2x\\common-build-lib\\xreflabels.xml
+java.awt.printerjob=sun.awt.windows.WPrinterJob
+is.CHM=no
+ant.file.add-entities=C\:\\cmsbuild-resources\\production\\ce_2x\\common-build-lib\\add-entities.xml
+loglevel=verbose
+ant.version=Apache Ant version 1.6.2 compiled on July 16 2004
+env.USERDOMAIN=ESCHER
+hhp-edits-file=NO-HHP-EDITS
+env.PROCESSOR_LEVEL=15
+env.CYGWIN=ntsec tty
+os.name=Windows 2003
+java.specification.vendor=Sun Microsystems Inc.
+env.TMP=c\:\\DOCUME~1\\SSHD_S~1.000\\LOCALS~1\\Temp
+filterattrib=
+java.vm.name=Java HotSpot(TM) Client VM
+ant.file.get-properties=C\:\\cmsbuild-resources\\production\\ce_2x\\common-build-lib\\ce-get-properties.xml
+env.OS=Windows_NT
+java.library.path=c\:\\Program Files\\Java\\j2re1.4.2_03\\bin;.;C\:\\WINDOWS\\system32;C\:\\WINDOWS;c\:\\WINDOWS\\system32;c\:\\WINDOWS;c\:\\WINDOWS\\System32\\Wbem;c\:\\ant\\bin;c\:\\Program Files\\Java\\j2re1.4.2_03\\bin;c\:\\Program Files\\HTML Help Workshop;C\:\\cygwin\\bin;C\:\\cygwin\\bin
+env.PATH=c\:\\WINDOWS\\system32;c\:\\WINDOWS;c\:\\WINDOWS\\System32\\Wbem;c\:\\ant\\bin;c\:\\Program Files\\Java\\j2re1.4.2_03\\bin;c\:\\Program Files\\HTML Help Workshop;C\:\\cygwin\\bin;C\:\\cygwin\\bin
+ant.java.version=1.4
+chm.compatibility=1.1 or later
+basedir=C\:\\build\\ISD\\Marble-BICW\\English\\2006_11_10_09_43_47_840
+java.class.version=48.0
+env.SHLVL=1
+ant.home=c\:/ant
+ant.file.query-chapters=C\:\\cmsbuild-resources\\production\\ce_2x\\common-build-lib\\query_chapters.xml
+ant.file.get-bookmap=C\:\\cmsbuild-resources\\production\\ce_2x\\common-build-lib\\ce-query_bookmap.xml
+env.HOMEDRIVE=C\:
+ant.file.conreflib-getfiles=C\:\\cmsbuild-resources\\production\\ce_2x\\common-build-lib\\ce-conreflib.xml
+log.level.medium=info
+env.SYSTEMROOT=C\:\\WINDOWS
+env.COMSPEC=C\:\\WINDOWS\\system32\\cmd.exe
+log.level.low=warn
+sun.boot.library.path=c\:\\Program Files\\Java\\j2re1.4.2_03\\bin
+env.SYSTEMDRIVE=C\:
+env.PROCESSOR_REVISION=0401
+java.awt.graphicsenv=sun.awt.Win32GraphicsEnvironment
+user.variant=
+ant.file.ce-assign-buildmachine=C\:\\cmsbuild-resources\\production\\ce_2x\\common-build-lib\\ce-assign-buildmachine.xml
+env.USER=Administrator
+hhp-edits-section=NO-HHP-EDITS
+ant.project.name=remote transformation
+env.PROGRAMFILES=C\:\\Program Files
+java.vm.specification.version=1.0
+variables.file=conf/transformation/variables/English/variables.var
+awt.toolkit=sun.awt.windows.WToolkit
+log.level.default=error
+sun.cpu.isalist=pentium i486 i386
+java.ext.dirs=c\:\\Program Files\\Java\\j2re1.4.2_03\\lib\\ext
+os.version=5.2
+user.home=C\:\\Documents and Settings\\Administrator
+java.vm.vendor=Sun Microsystems Inc.
+common_lib=C\:/cmsbuild-resources/production/ce_2x/common-build-lib
+resource.def.file=isd-Bond-resource-def.xml
+ant.file.book-set-properties=C\:\\cmsbuild-resources\\production\\ce_2x\\common-build-lib\\ce-set-properties.xml
+skip.language.preprocess=no
+user.dir=c\:\\build\\ISD\\Marble-BICW\\English\\2006_11_10_09_43_47_840
+env.MAIL=/var/spool/mail/Administrator
+ant.file.bookmap-files-property=C\:\\cmsbuild-resources\\production\\ce_2x\\common-build-lib\\bookmap_files_property.xml
+ant.file.ce-get-env=C\:\\cmsbuild-resources\\production\\ce_2x\\common-build-lib\\ce-get-env.xml
+env.PWD=/cygdrive/c/build/ISD/Marble-BICW/English/2006_11_10_09_43_47_840
+sun.cpu.endian=little
+wslocale=English
+env.ALLUSERSPROFILE=C\:\\Documents and Settings\\All Users
+log.level.high=verbose
+env.PROCESSOR_ARCHITECTURE=x86
+java.vm.version=1.4.2_03-b02
+java.class.path=c\:/ant/lib/ant-launcher.jar;c\:\\ant\\lib\\ant-antlr.jar;c\:\\ant\\lib\\ant-apache-bcel.jar;c\:\\ant\\lib\\ant-apache-bsf.jar;c\:\\ant\\lib\\ant-apache-log4j.jar;c\:\\ant\\lib\\ant-apache-oro.jar;c\:\\ant\\lib\\ant-apache-regexp.jar;c\:\\ant\\lib\\ant-apache-resolver.jar;c\:\\ant\\lib\\ant-commons-logging.jar;c\:\\ant\\lib\\ant-commons-net.jar;c\:\\ant\\lib\\ant-contrib.jar;c\:\\ant\\lib\\ant-icontract.jar;c\:\\ant\\lib\\ant-jai.jar;c\:\\ant\\lib\\ant-javamail.jar;c\:\\ant\\lib\\ant-jdepend.jar;c\:\\ant\\lib\\ant-jmf.jar;c\:\\ant\\lib\\ant-jsch.jar;c\:\\ant\\lib\\ant-junit.jar;c\:\\ant\\lib\\ant-launcher.jar;c\:\\ant\\lib\\ant-netrexx.jar;c\:\\ant\\lib\\ant-nodeps.jar;c\:\\ant\\lib\\ant-starteam.jar;c\:\\ant\\lib\\ant-stylebook.jar;c\:\\ant\\lib\\ant-swing.jar;c\:\\ant\\lib\\ant-trax.jar;c\:\\ant\\lib\\ant-vaj.jar;c\:\\ant\\lib\\ant-weblogic.jar;c\:\\ant\\lib\\ant-xalan1.jar;c\:\\ant\\lib\\ant-xslp.jar;c\:\\ant\\lib\\ant.jar;c\:\\ant\\lib\\cryptix32-pgp.jar;c\:\\ant\\lib\\cryptix32.jar;c\:\\ant\\lib\\jsch-0.1.17.jar;c\:\\ant\\lib\\saxon.jar;c\:\\ant\\lib\\xercesImpl.jar;c\:\\ant\\lib\\xml-apis.jar;c\:\\ant\\lib\\xp.jar;c\:\\ant\\lib\\xt.jar;c\:\\Program Files\\Java\\j2re1.4.2_03\\lib\\tools.jar
+env.HOMEPATH=\\cygwin\\home\\Administrator
+ant.library.dir=c\:/ant/lib
+filterattribvalue=
+ant.file.cleanup=C\:\\cmsbuild-resources\\production\\ce_2x\\common-build-lib\\cleanup.xml
+os.arch=x86
+java.vm.specification.vendor=Sun Microsystems Inc.
+file.separator=\\
+java.runtime.version=1.4.2_03-b02
+sun.boot.class.path=c\:\\Program Files\\Java\\j2re1.4.2_03\\lib\\rt.jar;c\:\\Program Files\\Java\\j2re1.4.2_03\\lib\\i18n.jar;c\:\\Program Files\\Java\\j2re1.4.2_03\\lib\\sunrsasign.jar;c\:\\Program Files\\Java\\j2re1.4.2_03\\lib\\jsse.jar;c\:\\Program Files\\Java\\j2re1.4.2_03\\lib\\jce.jar;c\:\\Program Files\\Java\\j2re1.4.2_03\\lib\\charsets.jar;c\:\\Program Files\\Java\\j2re1.4.2_03\\classes
+ant.file.get-qr-storage=C\:\\cmsbuild-resources\\production\\ce_2x\\common-build-lib\\qr_storage.xml
+html.image.dir.ouput=images
+env.TEMP=c\:\\DOCUME~1\\SSHD_S~1.000\\LOCALS~1\\Temp
+sun.java2d.fontpath=
+env.ANT_HOME=c\:/ant
+user.country=US
+entry.xsl=med_online_help.xsl
+env.SHELL=/bin/bash
+language=English
+ant.file.build-image-info=C\:\\cmsbuild-resources\\production\\ce_2x\\common-build-lib\\image_info.xml
+ant.file.remote\ transformation=C\:\\build\\ISD\\Marble-BICW\\English\\2006_11_10_09_43_47_840\\ce-remote-transform.xml
+java.vendor=Sun Microsystems Inc.
+art.dir.ouput=images
+ant.file.Common\ Library=C\:\\cmsbuild-resources\\production\\ce_2x\\common-build-lib\\ce-common-lib.xml
+java.specification.version=1.4
+sun.arch.data.model=32
+Project base dir set to: C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840
+    [param] Override ignored for language
+  [antcall] calling target ce-content-sort in build file C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\ce-remote-transform.xml
+parsing buildfile C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\ce-remote-transform.xml with URI = file:///C:/build/ISD/Marble-BICW/English/2006_11_10_09_43_47_840/ce-remote-transform.xml
+Project base dir set to: C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840
+parsing buildfile jar:file:/C:/ant/lib/ant-contrib.jar!/net/sf/antcontrib/antlib.xml with URI = jar:file:/C:/ant/lib/ant-contrib.jar!/net/sf/antcontrib/antlib.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-common-lib.xml from C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\ce-remote-transform.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-common-lib.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-get-env.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-get-env.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-get-env.xml
+ [property] Loading Environment env.
+Override ignored for property env.COMMONPROGRAMFILES
+Override ignored for property env.TEMP
+Override ignored for property env.SSH_CONNECTION
+Override ignored for property env.HOME
+Override ignored for property env.ANT_OPTS
+Override ignored for property env.PROGRAMFILES
+Override ignored for property env.USERNAME
+Override ignored for property env.PWD
+Override ignored for property env.COMSPEC
+Override ignored for property env.PROCESSOR_LEVEL
+Override ignored for property env.SSH_CLIENT
+Override ignored for property env.USERPROFILE
+Override ignored for property env.PROCESSOR_REVISION
+Override ignored for property env.HOMEPATH
+Override ignored for property env.USER
+Override ignored for property env.PROCESSOR_ARCHITECTURE
+Override ignored for property env.OS
+Override ignored for property env.PATHEXT
+Override ignored for property env.PROMPT
+Override ignored for property env.WINDIR
+Override ignored for property env.ALLUSERSPROFILE
+Override ignored for property env.HOMEDRIVE
+Override ignored for property env.PATH
+Override ignored for property env.PROCESSOR_IDENTIFIER
+Override ignored for property env.SYSTEMROOT
+Override ignored for property env.NUMBER_OF_PROCESSORS
+Override ignored for property env.ANT_HOME
+Override ignored for property env.CYGWIN
+Override ignored for property env.SHLVL
+Override ignored for property env.SYSTEMDRIVE
+Override ignored for property env.SHELL
+Override ignored for property env.TMP
+Override ignored for property env.USERDOMAIN
+Override ignored for property env.MAIL
+Override ignored for property env.LOGNAME
+Override ignored for property env.COMPUTERNAME
+Override ignored for property env.LOGONSERVER
+Override ignored for property env.MODE
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-set-prod-vs-prev-properties.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-set-prod-vs-prev-properties.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-set-prod-vs-prev-properties.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/bookmap_files_property.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\bookmap_files_property.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/bookmap_files_property.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-query_bookmap.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-query_bookmap.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-query_bookmap.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/query_chapters.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\query_chapters.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/query_chapters.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-get-properties.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-get-properties.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-get-properties.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-set-properties.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-set-properties.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-set-properties.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/add-entities.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\add-entities.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/add-entities.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/preprocess_filter.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\preprocess_filter.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/preprocess_filter.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/xreflabels.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\xreflabels.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/xreflabels.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-prepare.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-prepare.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-prepare.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/image_info.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\image_info.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/image_info.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/cleanup.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\cleanup.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/cleanup.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/qr_storage.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\qr_storage.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/qr_storage.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-assign-buildmachine.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-assign-buildmachine.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-assign-buildmachine.xml
+parsing buildfile jar:file:/C:/ant/lib/ant-contrib.jar!/net/sf/antcontrib/antlib.xml with URI = jar:file:/C:/ant/lib/ant-contrib.jar!/net/sf/antcontrib/antlib.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-merge-map.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-merge-map.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-merge-map.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-logger.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-logger.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-logger.xml
+Override ignored for property log.level.high
+Override ignored for property log.level.medium
+Override ignored for property log.level.low
+Override ignored for property log.level.default
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-country-edits.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-country-edits.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-country-edits.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-conreflib.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-conreflib.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-conreflib.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-content-sort.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-content-sort.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-content-sort.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-util.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-util.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-util.xml
+Override ignored for property log.file
+Trying to override old definition of task preprocess
+Trying to override old definition of task index-preprocess
+Trying to override old definition of task generate-search-data
+  [antcall] Entering C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\ce-remote-transform.xml...
+Build sequence for target `ce-content-sort' is [content-sort.init, ce-content-sort]
+Complete build sequence is [content-sort.init, ce-content-sort, cross-book-query, get-conref-lib.init-common, delete-last-line-in-dtd, add-entity, check-uptodate, update-img-list, build-image-info, zip-non-CHM, ce.archival.init.server, transform-country-xml2xsl, get-conref-lib.exportlibrary.common, ce.archival.init.remote, ce.archival, ce.archival.remote, ce-prepare, copy-dtd, get-entities, ce-close-project-dtd, xquery-current, xquery-versions, xquery, get-conref-lib.init-div, get-conref-lib.init, get-conref-lib.exportlibrary.div, get-conref-lib.exportlibrary, get-conref-lib.move-to-source.common, get-conref-lib.move-to-source.div, get-conref-lib.move-to-source, get-conref-lib, leave-assigned-queue, prepare-filter, apply-filter, conditional-preprocess, parse.bookxmlfilepath.noselection, book-only-query, xquery-conref-current, get-assigned-machine, ce-get-assigned-machine, preview-build, fo-preprocess, generate-search-data, ce-set-loglevel, ce-make-logfolder, ce-logger, exclude-filtering, language-preprocess, fo-transform, remote-fo-transformation, set-properties, get-bookmap, check-query-type, class-cleanup, fixTOC, production-build, test-property, fetch-country-xml-from-xhive, apply-country-xsl2content, ce-apply-country-edits, content-sort, parse.bookxmlfilepath.fileselection, xhive.retrieve.bookxmlfile, get-properties, get-qr-storage, ce.archival.server, apply-hhp-edits, ce-merge-map, copy.specific.html.addons, html-transform, remote-html-transformation-preview, cleanup, get-conref-lib.xquery, test-hhc, fixTOC-steps, remote-html-transformation, get-book-list, ce-leave-assigned-queue, make-zip, ce-set-prod-vs-prev-properties, generate-xref-labels, ]
+
+content-sort.init:
+Override ignored for property content-sort.basedir
+     [copy] Copying 1 file to C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\utils
+     [copy] Copying C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\conf\transformation\contentsort\English.xml to C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\utils\content-sorting-config.xml
+content-sort.init:  duration 0 seconds
+
+ce-content-sort:
+     [echo] Updated 2006-09-13 with content-sort-config.xml
+     [echo] basedir = C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840
+     [echo] content-sort.basedir = .
+     [java] Running in same VM Executing 'com.icl.saxon.StyleSheet' with arguments:
+'-u'
+'-o'
+'./sorted-out.xml'
+'./map_content.xml'
+'./utils/content-sorting.xsl'
+'language=English'
+'sorting.config=content-sorting-config.xml'
+
+The ' characters around the executable and arguments are
+not part of the command.
+     [java] [INFO] Sorting started. Locale = en_US
+     [java] [INFO] Sorting configuration = content-sorting-config.xml
+     [move] Moving 1 files to C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840
+     [move] Attempting to rename: C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\sorted-out.xml to C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\map_content.xml
+ce-content-sort:  duration 0 seconds
+  [antcall] Exiting C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\ce-remote-transform.xml.
+content-sort:  duration 0 seconds
+
+exclude-filtering:
+     [move] Moving 1 files to C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840
+     [move] Attempting to rename: C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\map_content.xml to C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\stage1.xml
+Project base dir set to: C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840
+  [antcall] calling target conditional-preprocess in build file C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\ce-remote-transform.xml
+parsing buildfile C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\ce-remote-transform.xml with URI = file:///C:/build/ISD/Marble-BICW/English/2006_11_10_09_43_47_840/ce-remote-transform.xml
+Project base dir set to: C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840
+parsing buildfile jar:file:/C:/ant/lib/ant-contrib.jar!/net/sf/antcontrib/antlib.xml with URI = jar:file:/C:/ant/lib/ant-contrib.jar!/net/sf/antcontrib/antlib.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-common-lib.xml from C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\ce-remote-transform.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-common-lib.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-get-env.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-get-env.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-get-env.xml
+ [property] Loading Environment env.
+Override ignored for property env.COMMONPROGRAMFILES
+Override ignored for property env.TEMP
+Override ignored for property env.SSH_CONNECTION
+Override ignored for property env.HOME
+Override ignored for property env.ANT_OPTS
+Override ignored for property env.PROGRAMFILES
+Override ignored for property env.USERNAME
+Override ignored for property env.PWD
+Override ignored for property env.COMSPEC
+Override ignored for property env.PROCESSOR_LEVEL
+Override ignored for property env.SSH_CLIENT
+Override ignored for property env.USERPROFILE
+Override ignored for property env.PROCESSOR_REVISION
+Override ignored for property env.HOMEPATH
+Override ignored for property env.USER
+Override ignored for property env.PROCESSOR_ARCHITECTURE
+Override ignored for property env.OS
+Override ignored for property env.PATHEXT
+Override ignored for property env.PROMPT
+Override ignored for property env.WINDIR
+Override ignored for property env.ALLUSERSPROFILE
+Override ignored for property env.HOMEDRIVE
+Override ignored for property env.PATH
+Override ignored for property env.PROCESSOR_IDENTIFIER
+Override ignored for property env.SYSTEMROOT
+Override ignored for property env.NUMBER_OF_PROCESSORS
+Override ignored for property env.ANT_HOME
+Override ignored for property env.CYGWIN
+Override ignored for property env.SHLVL
+Override ignored for property env.SYSTEMDRIVE
+Override ignored for property env.SHELL
+Override ignored for property env.TMP
+Override ignored for property env.USERDOMAIN
+Override ignored for property env.MAIL
+Override ignored for property env.LOGNAME
+Override ignored for property env.COMPUTERNAME
+Override ignored for property env.LOGONSERVER
+Override ignored for property env.MODE
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-set-prod-vs-prev-properties.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-set-prod-vs-prev-properties.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-set-prod-vs-prev-properties.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/bookmap_files_property.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\bookmap_files_property.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/bookmap_files_property.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-query_bookmap.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-query_bookmap.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-query_bookmap.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/query_chapters.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\query_chapters.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/query_chapters.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-get-properties.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-get-properties.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-get-properties.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-set-properties.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-set-properties.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-set-properties.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/add-entities.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\add-entities.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/add-entities.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/preprocess_filter.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\preprocess_filter.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/preprocess_filter.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/xreflabels.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\xreflabels.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/xreflabels.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-prepare.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-prepare.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-prepare.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/image_info.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\image_info.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/image_info.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/cleanup.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\cleanup.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/cleanup.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/qr_storage.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\qr_storage.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/qr_storage.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-assign-buildmachine.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-assign-buildmachine.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-assign-buildmachine.xml
+parsing buildfile jar:file:/C:/ant/lib/ant-contrib.jar!/net/sf/antcontrib/antlib.xml with URI = jar:file:/C:/ant/lib/ant-contrib.jar!/net/sf/antcontrib/antlib.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-merge-map.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-merge-map.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-merge-map.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-logger.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-logger.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-logger.xml
+Override ignored for property log.level.high
+Override ignored for property log.level.medium
+Override ignored for property log.level.low
+Override ignored for property log.level.default
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-country-edits.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-country-edits.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-country-edits.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-conreflib.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-conreflib.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-conreflib.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-content-sort.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-content-sort.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-content-sort.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-util.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-util.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-util.xml
+Override ignored for property log.file
+Trying to override old definition of task preprocess
+Trying to override old definition of task index-preprocess
+Trying to override old definition of task generate-search-data
+  [antcall] Entering C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\ce-remote-transform.xml...
+Build sequence for target `conditional-preprocess' is [prepare-filter, apply-filter, conditional-preprocess]
+Complete build sequence is [prepare-filter, apply-filter, conditional-preprocess, cross-book-query, get-conref-lib.init-common, delete-last-line-in-dtd, add-entity, check-uptodate, update-img-list, build-image-info, zip-non-CHM, ce.archival.init.server, transform-country-xml2xsl, get-conref-lib.exportlibrary.common, ce.archival.init.remote, ce.archival, ce.archival.remote, ce-prepare, copy-dtd, get-entities, ce-close-project-dtd, xquery-current, xquery-versions, xquery, get-conref-lib.init-div, get-conref-lib.init, get-conref-lib.exportlibrary.div, get-conref-lib.exportlibrary, get-conref-lib.move-to-source.common, get-conref-lib.move-to-source.div, get-conref-lib.move-to-source, get-conref-lib, leave-assigned-queue, parse.bookxmlfilepath.noselection, book-only-query, xquery-conref-current, get-assigned-machine, ce-get-assigned-machine, preview-build, fo-preprocess, generate-search-data, ce-set-loglevel, ce-make-logfolder, ce-logger, exclude-filtering, language-preprocess, fo-transform, remote-fo-transformation, set-properties, get-bookmap, check-query-type, class-cleanup, fixTOC, production-build, test-property, fetch-country-xml-from-xhive, apply-country-xsl2content, ce-apply-country-edits, content-sort, parse.bookxmlfilepath.fileselection, xhive.retrieve.bookxmlfile, get-properties, get-qr-storage, ce.archival.server, apply-hhp-edits, ce-merge-map, copy.specific.html.addons, html-transform, remote-html-transformation-preview, cleanup, get-conref-lib.xquery, test-hhc, fixTOC-steps, remote-html-transformation, get-book-list, content-sort.init, ce-leave-assigned-queue, make-zip, ce-content-sort, ce-set-prod-vs-prev-properties, generate-xref-labels, ]
+
+prepare-filter:
+     [echo] Filtering out the following product-exclude attribute(s): build
+prepare-filter:  duration 0 seconds
+
+apply-filter:
+     [copy] Copying 1 file to C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840
+     [copy] Copying C:\cmsbuild-resources\production\ce_2x\common-build-lib\filter.xsl to C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\filter.xsl
+Replacing: @WSLOCALE@ -> English
+Replacing: @PRODUCT-FILTER-EXPRESSION@ -> build
+Replacing: @FILTER-EXPRESSION@ -> false()
+     [echo] Filtering out the following filter expression: /
+     [echo] Filtering out content tagged with the CountrySpecific element where the language attribute has another value than "English"
+     [xslt] Using class org.apache.tools.ant.taskdefs.optional.TraXLiaison
+     [xslt] Processing C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\stage1.xml to C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\stage1_filtered.xml
+     [xslt] Loading stylesheet C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\filter.xsl
+     [move] Moving 1 files to C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840
+     [move] Attempting to rename: C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\stage1_filtered.xml to C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\stage1.xml
+apply-filter:  duration 0 seconds
+
+conditional-preprocess:
+conditional-preprocess:  duration 0 seconds
+  [antcall] Exiting C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\ce-remote-transform.xml.
+     [move] Moving 1 files to C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840
+     [move] Attempting to rename: C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\stage1.xml to C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\map_content.xml
+Project base dir set to: C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840
+  [antcall] calling target class-cleanup in build file C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\ce-remote-transform.xml
+parsing buildfile C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\ce-remote-transform.xml with URI = file:///C:/build/ISD/Marble-BICW/English/2006_11_10_09_43_47_840/ce-remote-transform.xml
+Project base dir set to: C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840
+parsing buildfile jar:file:/C:/ant/lib/ant-contrib.jar!/net/sf/antcontrib/antlib.xml with URI = jar:file:/C:/ant/lib/ant-contrib.jar!/net/sf/antcontrib/antlib.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-common-lib.xml from C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\ce-remote-transform.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-common-lib.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-get-env.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-get-env.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-get-env.xml
+ [property] Loading Environment env.
+Override ignored for property env.COMMONPROGRAMFILES
+Override ignored for property env.TEMP
+Override ignored for property env.SSH_CONNECTION
+Override ignored for property env.HOME
+Override ignored for property env.ANT_OPTS
+Override ignored for property env.PROGRAMFILES
+Override ignored for property env.USERNAME
+Override ignored for property env.PWD
+Override ignored for property env.COMSPEC
+Override ignored for property env.PROCESSOR_LEVEL
+Override ignored for property env.SSH_CLIENT
+Override ignored for property env.USERPROFILE
+Override ignored for property env.PROCESSOR_REVISION
+Override ignored for property env.HOMEPATH
+Override ignored for property env.USER
+Override ignored for property env.PROCESSOR_ARCHITECTURE
+Override ignored for property env.OS
+Override ignored for property env.PATHEXT
+Override ignored for property env.PROMPT
+Override ignored for property env.WINDIR
+Override ignored for property env.ALLUSERSPROFILE
+Override ignored for property env.HOMEDRIVE
+Override ignored for property env.PATH
+Override ignored for property env.PROCESSOR_IDENTIFIER
+Override ignored for property env.SYSTEMROOT
+Override ignored for property env.NUMBER_OF_PROCESSORS
+Override ignored for property env.ANT_HOME
+Override ignored for property env.CYGWIN
+Override ignored for property env.SHLVL
+Override ignored for property env.SYSTEMDRIVE
+Override ignored for property env.SHELL
+Override ignored for property env.TMP
+Override ignored for property env.USERDOMAIN
+Override ignored for property env.MAIL
+Override ignored for property env.LOGNAME
+Override ignored for property env.COMPUTERNAME
+Override ignored for property env.LOGONSERVER
+Override ignored for property env.MODE
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-set-prod-vs-prev-properties.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-set-prod-vs-prev-properties.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-set-prod-vs-prev-properties.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/bookmap_files_property.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\bookmap_files_property.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/bookmap_files_property.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-query_bookmap.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-query_bookmap.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-query_bookmap.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/query_chapters.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\query_chapters.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/query_chapters.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-get-properties.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-get-properties.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-get-properties.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-set-properties.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-set-properties.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-set-properties.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/add-entities.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\add-entities.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/add-entities.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/preprocess_filter.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\preprocess_filter.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/preprocess_filter.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/xreflabels.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\xreflabels.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/xreflabels.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-prepare.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-prepare.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-prepare.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/image_info.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\image_info.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/image_info.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/cleanup.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\cleanup.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/cleanup.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/qr_storage.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\qr_storage.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/qr_storage.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-assign-buildmachine.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-assign-buildmachine.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-assign-buildmachine.xml
+parsing buildfile jar:file:/C:/ant/lib/ant-contrib.jar!/net/sf/antcontrib/antlib.xml with URI = jar:file:/C:/ant/lib/ant-contrib.jar!/net/sf/antcontrib/antlib.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-merge-map.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-merge-map.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-merge-map.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-logger.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-logger.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-logger.xml
+Override ignored for property log.level.high
+Override ignored for property log.level.medium
+Override ignored for property log.level.low
+Override ignored for property log.level.default
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-country-edits.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-country-edits.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-country-edits.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-conreflib.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-conreflib.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-conreflib.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-content-sort.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-content-sort.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-content-sort.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-util.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-util.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-util.xml
+Override ignored for property log.file
+Trying to override old definition of task preprocess
+Trying to override old definition of task index-preprocess
+Trying to override old definition of task generate-search-data
+  [antcall] Entering C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\ce-remote-transform.xml...
+Build sequence for target `class-cleanup' is [class-cleanup]
+Complete build sequence is [class-cleanup, cross-book-query, get-conref-lib.init-common, delete-last-line-in-dtd, add-entity, check-uptodate, update-img-list, build-image-info, zip-non-CHM, ce.archival.init.server, transform-country-xml2xsl, get-conref-lib.exportlibrary.common, ce.archival.init.remote, ce.archival, ce.archival.remote, ce-prepare, copy-dtd, get-entities, ce-close-project-dtd, xquery-current, xquery-versions, xquery, get-conref-lib.init-div, get-conref-lib.init, get-conref-lib.exportlibrary.div, get-conref-lib.exportlibrary, get-conref-lib.move-to-source.common, get-conref-lib.move-to-source.div, get-conref-lib.move-to-source, get-conref-lib, leave-assigned-queue, prepare-filter, apply-filter, conditional-preprocess, parse.bookxmlfilepath.noselection, book-only-query, xquery-conref-current, get-assigned-machine, ce-get-assigned-machine, preview-build, fo-preprocess, generate-search-data, ce-set-loglevel, ce-make-logfolder, ce-logger, exclude-filtering, language-preprocess, fo-transform, remote-fo-transformation, set-properties, get-bookmap, check-query-type, fixTOC, production-build, test-property, fetch-country-xml-from-xhive, apply-country-xsl2content, ce-apply-country-edits, content-sort, parse.bookxmlfilepath.fileselection, xhive.retrieve.bookxmlfile, get-properties, get-qr-storage, ce.archival.server, apply-hhp-edits, ce-merge-map, copy.specific.html.addons, html-transform, remote-html-transformation-preview, cleanup, get-conref-lib.xquery, test-hhc, fixTOC-steps, remote-html-transformation, get-book-list, content-sort.init, ce-leave-assigned-queue, make-zip, ce-content-sort, ce-set-prod-vs-prev-properties, generate-xref-labels, ]
+
+class-cleanup:
+     [copy] Copying 1 file to C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840
+     [copy] Copying C:\cmsbuild-resources\production\ce_2x\common-build-lib\class-cleanup.xsl to C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\class-cleanup.xsl
+     [move] Moving 1 files to C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840
+     [move] Attempting to rename: C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\map_content.xml to C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\map_content_preclass_fix.xml
+     [xslt] Using class org.apache.tools.ant.taskdefs.optional.TraXLiaison
+     [xslt] Processing C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\map_content_preclass_fix.xml to C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\map_content.xml
+     [xslt] Loading stylesheet C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\class-cleanup.xsl
+class-cleanup:  duration 0 seconds
+  [antcall] Exiting C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\ce-remote-transform.xml.
+exclude-filtering:  duration 0 seconds
+
+copy.specific.html.addons:
+copy.specific.html.addons:  duration 0 seconds
+
+language-preprocess:
+     [echo] Generating language.properties...
+     [java] Running in same VM Executing 'com.icl.saxon.StyleSheet' with arguments:
+'-o'
+'language.properties'
+'src/locale-mappings.xml'
+'src/locale-property-gen.xsl'
+'language=English'
+
+The ' characters around the executable and arguments are
+not part of the command.
+ [property] Loading C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\language.properties
+     [echo] Index preprocessing...
+     [echo] Locale: English
+     [echo] lib: C:/cmsbuild-resources/production/ce_2x/common-build-lib
+     [echo] [DEBUG] Locale used for index-preprocess: en_US
+     [move] Moving 1 files to C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840
+     [move] Attempting to rename: C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\stage1.xml to C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\map_content.xml
+language-preprocess:  duration 1 second
+
+generate-search-data:
+     [echo] is.CHM no
+generate-search-data:  duration 0 seconds
+
+html-transform:
+     [echo] html.image.dir.ouput = images
+     [echo] art.dir.ouput = images
+     [echo] build = C:/build/ISD/Marble-BICW/English/2006_11_10_09_43_47_840
+     [echo] basedir = C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840
+     [echo] html-transform.output.dir   = ./files
+     [echo] html-transform.art.dir      = ../images
+     [echo] html-transform.resource.dir = ../
+     [java] Running in same VM Executing 'com.icl.saxon.StyleSheet' with arguments:
+'-u'
+'-o'
+'out.html'
+'map_content.xml'
+'./med_online_help.xsl'
+'output.dir=./files'
+'art.dir=../images'
+'variables.file=conf/transformation/variables/English/variables.var'
+'book.xml.file=book.xml'
+'xref.labels.file=conf/XrefLabels.xml'
+'qr.storage.file=Command_Data.xml'
+'chm.compatibility=1.1 or later'
+'chm.display_ouput=No'
+'use.locale.in.image.path=yes'
+'language=English'
+'use.alinks=no'
+'resource.dir=../'
+'index.configuration.file=conf/transformation/index/English.xml'
+'resource.def.file=isd-Bond-resource-def.xml'
+'search.configuration.file=conf/transformation/search/English.xml'
+
+The ' characters around the executable and arguments are
+not part of the command.
+     [java] Recoverable error
+     [java] Failure reading file:/c:/build/ISD/Marble-BICW/English/2006_11_10_09_43_47_840/Command_Data.xml: no more input
+     [java] [DEBUG] Link created for Xref with label = 'Configure the ArcSDE Server'
+     [java] [DEBUG] Link created for Xref with label = 'Run the ArcSDE Unit Tests'
+html-transform:  duration 2 seconds
+
+test-hhc:
+[available] Unable to find toc.hhc to set property hhc.exists
+test-hhc:  duration 0 seconds
+
+fixTOC:
+Skipped because property 'hhc.exists' not set.
+fixTOC:  duration 0 seconds
+
+fixTOC-steps:
+fixTOC-steps:  duration 0 seconds
+
+zip-non-CHM:
+Project base dir set to: C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840
+  [antcall] calling target make-zip in build file C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\ce-remote-transform.xml
+parsing buildfile C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\ce-remote-transform.xml with URI = file:///C:/build/ISD/Marble-BICW/English/2006_11_10_09_43_47_840/ce-remote-transform.xml
+Project base dir set to: C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840
+parsing buildfile jar:file:/C:/ant/lib/ant-contrib.jar!/net/sf/antcontrib/antlib.xml with URI = jar:file:/C:/ant/lib/ant-contrib.jar!/net/sf/antcontrib/antlib.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-common-lib.xml from C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\ce-remote-transform.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-common-lib.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-get-env.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-get-env.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-get-env.xml
+ [property] Loading Environment env.
+Override ignored for property env.COMMONPROGRAMFILES
+Override ignored for property env.TEMP
+Override ignored for property env.SSH_CONNECTION
+Override ignored for property env.HOME
+Override ignored for property env.ANT_OPTS
+Override ignored for property env.PROGRAMFILES
+Override ignored for property env.USERNAME
+Override ignored for property env.PWD
+Override ignored for property env.COMSPEC
+Override ignored for property env.PROCESSOR_LEVEL
+Override ignored for property env.SSH_CLIENT
+Override ignored for property env.USERPROFILE
+Override ignored for property env.PROCESSOR_REVISION
+Override ignored for property env.HOMEPATH
+Override ignored for property env.USER
+Override ignored for property env.PROCESSOR_ARCHITECTURE
+Override ignored for property env.OS
+Override ignored for property env.PATHEXT
+Override ignored for property env.PROMPT
+Override ignored for property env.WINDIR
+Override ignored for property env.ALLUSERSPROFILE
+Override ignored for property env.HOMEDRIVE
+Override ignored for property env.PATH
+Override ignored for property env.PROCESSOR_IDENTIFIER
+Override ignored for property env.SYSTEMROOT
+Override ignored for property env.NUMBER_OF_PROCESSORS
+Override ignored for property env.ANT_HOME
+Override ignored for property env.CYGWIN
+Override ignored for property env.SHLVL
+Override ignored for property env.SYSTEMDRIVE
+Override ignored for property env.SHELL
+Override ignored for property env.TMP
+Override ignored for property env.USERDOMAIN
+Override ignored for property env.MAIL
+Override ignored for property env.LOGNAME
+Override ignored for property env.COMPUTERNAME
+Override ignored for property env.LOGONSERVER
+Override ignored for property env.MODE
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-set-prod-vs-prev-properties.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-set-prod-vs-prev-properties.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-set-prod-vs-prev-properties.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/bookmap_files_property.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\bookmap_files_property.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/bookmap_files_property.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-query_bookmap.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-query_bookmap.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-query_bookmap.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/query_chapters.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\query_chapters.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/query_chapters.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-get-properties.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-get-properties.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-get-properties.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-set-properties.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-set-properties.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-set-properties.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/add-entities.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\add-entities.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/add-entities.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/preprocess_filter.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\preprocess_filter.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/preprocess_filter.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/xreflabels.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\xreflabels.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/xreflabels.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-prepare.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-prepare.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-prepare.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/image_info.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\image_info.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/image_info.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/cleanup.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\cleanup.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/cleanup.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/qr_storage.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\qr_storage.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/qr_storage.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-assign-buildmachine.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-assign-buildmachine.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-assign-buildmachine.xml
+parsing buildfile jar:file:/C:/ant/lib/ant-contrib.jar!/net/sf/antcontrib/antlib.xml with URI = jar:file:/C:/ant/lib/ant-contrib.jar!/net/sf/antcontrib/antlib.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-merge-map.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-merge-map.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-merge-map.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-logger.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-logger.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-logger.xml
+Override ignored for property log.level.high
+Override ignored for property log.level.medium
+Override ignored for property log.level.low
+Override ignored for property log.level.default
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-country-edits.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-country-edits.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-country-edits.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-conreflib.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-conreflib.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-conreflib.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-content-sort.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-content-sort.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-content-sort.xml
+Importing file C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-util.xml from C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-common-lib.xml
+parsing buildfile C:\cmsbuild-resources\production\ce_2x\common-build-lib\ce-util.xml with URI = file:///C:/cmsbuild-resources/production/ce_2x/common-build-lib/ce-util.xml
+Override ignored for property log.file
+Trying to override old definition of task preprocess
+Trying to override old definition of task index-preprocess
+Trying to override old definition of task generate-search-data
+  [antcall] Entering C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\ce-remote-transform.xml...
+Build sequence for target `make-zip' is [make-zip]
+Complete build sequence is [make-zip, cross-book-query, get-conref-lib.init-common, delete-last-line-in-dtd, add-entity, check-uptodate, update-img-list, build-image-info, zip-non-CHM, ce.archival.init.server, transform-country-xml2xsl, get-conref-lib.exportlibrary.common, ce.archival.init.remote, ce.archival, ce.archival.remote, ce-prepare, copy-dtd, get-entities, ce-close-project-dtd, xquery-current, xquery-versions, xquery, get-conref-lib.init-div, get-conref-lib.init, get-conref-lib.exportlibrary.div, get-conref-lib.exportlibrary, get-conref-lib.move-to-source.common, get-conref-lib.move-to-source.div, get-conref-lib.move-to-source, get-conref-lib, leave-assigned-queue, prepare-filter, apply-filter, conditional-preprocess, parse.bookxmlfilepath.noselection, book-only-query, xquery-conref-current, get-assigned-machine, ce-get-assigned-machine, preview-build, fo-preprocess, generate-search-data, ce-set-loglevel, ce-make-logfolder, ce-logger, exclude-filtering, language-preprocess, fo-transform, remote-fo-transformation, set-properties, get-bookmap, check-query-type, class-cleanup, fixTOC, production-build, test-property, fetch-country-xml-from-xhive, apply-country-xsl2content, ce-apply-country-edits, content-sort, parse.bookxmlfilepath.fileselection, xhive.retrieve.bookxmlfile, get-properties, get-qr-storage, ce.archival.server, apply-hhp-edits, ce-merge-map, copy.specific.html.addons, html-transform, remote-html-transformation-preview, cleanup, get-conref-lib.xquery, test-hhc, fixTOC-steps, remote-html-transformation, get-book-list, content-sort.init, ce-leave-assigned-queue, ce-content-sort, ce-set-prod-vs-prev-properties, generate-xref-labels, ]
+
+make-zip:
+      [zip] Building zip: C:\build\ISD\Marble-BICW\English\2006_11_10_09_43_47_840\remote-result.zip
+      [zip] adding entry contents-data.html
+      [zip] adding entry contents.html
+      [zip] adding entry favorites.html
+      [zip] adding directory files/
+      [zip] adding entry files/WS1a9193826455f5ff12ae99810b26fdce1b-7feb.htm
+      [zip] adding entry files/WS1a9193826455f5ff12ae99810b26fdce1b-7fed.htm
+      [zip] adding entry files/WS1a9193826455f5ff12ae99810b26fdce1b-7fef.htm
+      [zip] adding entry files/WS1a9193826455f5ff12ae99810b26fdce1b-7ff2.htm
+      [zip] adding entry files/WS1a9193826455f5ff12ae99810b26fdce1b-7ff3.htm
+      [zip] adding entry files/WS1a9193826455f5ff13ee121107bdda7722-6898.htm
+      [zip] adding entry files/WS1a9193826455f5ff15dea8810ea7e19512-7ad9.htm
+      [zip] adding entry files/WS1a9193826455f5ff1955f1510a86ab16de-56a1.htm
+      [zip] adding entry files/WS1a9193826455f5ff1955f1510a86ab16de-57e1.htm
+      [zip] adding entry files/WS1a9193826455f5ff1955f1510a86ab16de-57f5.htm
+      [zip] adding entry files/WS1a9193826455f5ff1b17d1110e119dca16-7fdf.htm
+      [zip] adding entry files/WS1a9193826455f5ff1b17d1110e119dca16-7fe1.htm
+      [zip] adding entry files/WS1a9193826455f5ff1b17d1110e119dca16-7fe5.htm
+      [zip] adding entry files/WS1a9193826455f5ff1eae43410b4d164b91-7f4a.htm
+      [zip] adding entry files/WS1a9193826455f5ff36b67310b29445ec2-7f44.htm
+      [zip] adding entry files/WS1a9193826455f5ff36b67310b29445ec2-7f46.htm
+      [zip] adding entry files/WS1a9193826455f5ff36b67310b29445ec2-7fa8.htm
+      [zip] adding entry files/WS1a9193826455f5ff36b67310b29445ec2-7faa.htm
+      [zip] adding entry files/WS1a9193826455f5ff36b67310b29445ec2-7fac.htm
+      [zip] adding entry files/WS1a9193826455f5ff36b67310b29445ec2-7faf.htm
+      [zip] adding entry files/WS1a9193826455f5ff36b67310b29445ec2-7fb0.htm
+      [zip] adding entry files/WS1a9193826455f5ff36b67310b29445ec2-7fb7.htm
+      [zip] adding entry files/WS1a9193826455f5ff36b67310b29445ec2-7fba.htm
+      [zip] adding entry files/WS1a9193826455f5ff36b67310b29445ec2-7fbc.htm
+      [zip] adding entry files/WS1a9193826455f5ff85ce5a10defe5d82a-7f0d.htm
+      [zip] adding entry files/WS1a9193826455f5ff85ce5a10defe5d82a-7ff7.htm
+      [zip] adding entry files/WS1a9193826455f5ff85ce5a10defe5d82a-7ff9.htm
+      [zip] adding entry files/WS1a9193826455f5ff85ce5a10defe5d82a-7ffb.htm
+      [zip] adding entry files/WS1a9193826455f5ff85ce5a10defe5d82a-7ffe.htm
+      [zip] adding entry files/WS1a9193826455f5ff9110c71085341391d-24f9.htm
+      [zip] adding entry files/WS1a9193826455f5ff9110c71085341391d-4031.htm
+      [zip] adding entry files/WS73099cc142f4875510b13df10ec0b2c48a-7eeb.htm
+      [zip] adding entry files/WS73099cc142f4875518cef0a10b4f5d51a8-7b42.htm
+      [zip] adding entry files/WS73099cc142f4875518cef0a10b4f5d51a8-7b43.htm
+      [zip] adding entry files/WS73099cc142f4875518cef0a10b4f5d51a8-7b44.htm
+      [zip] adding entry files/WS73099cc142f4875518cef0a10b4f5d51a8-7b45.htm
+      [zip] adding entry files/WS73099cc142f4875518cef0a10b4f5d51a8-7b46.htm
+      [zip] adding entry files/WS73099cc142f4875518cef0a10b4f5d51a8-7b47.htm
+      [zip] adding entry files/WS73099cc142f4875518cef0a10b4f5d51a8-7b49.htm
+      [zip] adding entry files/WS73099cc142f487551d92abb10dc573c45d-7e34.htm
+      [zip] adding entry files/WS73099cc142f487551d92abb10dc573c45d-7e36.htm
+      [zip] adding entry files/WS73099cc142f487551d92abb10dc573c45d-7e3a.htm
+      [zip] adding entry files/WS73099cc142f487551d92abb10dc573c45d-7e3c.htm
+      [zip] adding entry files/WS73099cc142f487551d92abb10dc573c45d-7e3e.htm
+      [zip] adding entry files/WS73099cc142f487551e5a0cb10850d4cd7c-596a.htm
+      [zip] adding entry files/WS73099cc142f487551e5a0cb10850d4cd7c-596c.htm
+      [zip] adding entry files/WS73099cc142f48755b0eae110a8ea4f1d97d0.htm
+      [zip] adding entry files/WS73099cc142f48755b0eae110a8ea4f1d97d5.htm
+      [zip] adding entry files/WS73099cc142f48755b0eae110a8ea4f1d97d6.htm
+      [zip] adding entry files/WS73099cc142f48755b0eae110a8ea4f1d97d8.htm
+      [zip] adding entry files/WS73099cc142f48755b0eae110a8ea4f1d97d9.htm
+      [zip] adding entry index.html
+      [zip] adding entry indexes-data.html
+      [zip] adding entry indexes.html
+      [zip] adding entry left_tab.html
+      [zip] adding entry out.html
+      [zip] adding entry remote-build.log

@@ -1,0 +1,252 @@
+<resources>
+	<file type="image" id="logo">images/logo.gif</file>
+	<!--<file type="image" id="banner">images/banner.jpg</file>--> 
+               <!--banner.jpg is obsolete. Please use head_graphic instead.  hdr 10/31/06 -->
+
+	<file type="image">images/ac.chickletred.gif</file>
+	<file type="image">images/ac.chickletred2.gif</file>
+	<file type="image">images/ac.cmdaccess_blank.gif</file>
+	<file type="image">images/ac.hlp_page.gif</file>
+	<file type="image">images/ac.keyboard.gif</file>
+	<file type="image">images/ac.mainback.gif</file>
+	<file type="image" id="arrow">images/ac.menuaro.gif</file>
+	<file type="image">images/ac.mouse.gif</file>
+	<file type="image">images/ac.pg_end.gif</file>
+	<file type="image">images/ac.pg_next.gif</file>
+	<file type="image">images/ac.pg_prev.gif</file>
+	<file type="image">images/ac.pg_up.gif</file>
+	<file type="image" id="collapse-arrow">images/ac.right.gif</file>
+	<file type="image" id="collapse-arrow-down">images/ac.down.gif</file>
+	<file type="image">images/ac.tabs_c.gif</file>
+	<file type="image">images/ac.tabs_not.gif</file>
+	<file type="image">images/ac.tabs_p.gif</file>
+	<file type="image">images/ac.tabs_r.gif</file>
+	<file type="image">images/ac.tabs_x.GIF</file>
+	<file type="image">images/head_graphic.gif</file>
+
+	<file type="image">images/tab-bkg.gif</file>
+	<file type="image">images/tab-bkg-x.gif</file>
+	<file type="image">images/tab-bkg-o.gif</file>
+
+	<file type="image" id="tab-left">images/tab-left.gif</file>
+	<file type="image" id="tab-left-active">images/tab-left-x.gif</file>
+	<file type="image" id="tab-left-disabled">images/tab-left-o.gif</file>
+	<file type="image" id="tab-right">images/tab-right.gif</file>
+	<file type="image" id="tab-right-active">images/tab-right-x.gif</file>
+	<file type="image" id="tab-right-disabled">images/tab-right-o.gif</file>
+
+	<file type="image" id="nav-next" >images/nav-next-xp.gif</file>
+	<file type="image" id="nav-null">images/nav-null-xp.gif</file>
+	<file type="image" id="nav-prev">images/nav-prev-xp.gif</file>
+	<file type="image" id="nav-up">images/nav-up-xp.gif</file>
+
+	<file type="html" id="DoCommentsPage">html/ac.cmtdialog.htm</file>
+
+	<file type="html">surface-walk_controller.swf</file>
+	<file type="html">surface-walk_config.xml</file>
+	<file type="html">surface-walk.swf</file>
+	<file type="html">surface-walk.html</file>
+	<file type="html">surface-walk_nofp_bg.gif</file>
+
+	<file type="html">coord_sys_latlong.htm</file>
+	<file type="html">coord_sys_latlong.swf</file>
+
+	<file type="html">coord_sys_set.htm</file>
+	<file type="html">coord_sys_set.swf</file>
+
+	<file type="html">coord_sys_albers.htm</file>
+	<file type="html">coord_sys_albers.swf</file>
+
+	<file type="html">query_to_view.htm</file>
+	<file type="html">query_to_view.swf</file>
+
+	<file type="html">images_to_layer.htm</file>
+	<file type="html">images_to_layer.swf</file>
+
+	<file type="html">image_insert.htm</file>
+	<file type="html">image_insert.swf</file>
+
+	<file type="html">image_transform.htm</file>
+	<file type="html">image_transform.swf</file>
+
+	<file type="html">web_service.htm</file>
+	<file type="html">web_service.swf</file>
+
+	<file type="html">civil3d_parcels_export.htm</file>
+	<file type="html">civil3d_parcels_export.swf</file>
+
+	<file type="html">civil3d_parcels_import.htm</file>
+	<file type="html">civil3d_parcels_import.swf</file>
+
+	<file type="html">point_data.htm</file>
+	<file type="html">point_data.swf</file>
+
+	<file type="html">query_dwg.htm</file>
+	<file type="html">query_dwg.swf</file>
+
+	<file type="html">query_fdo.htm</file>
+	<file type="html">query_fdo.swf</file>
+
+	<file type="html">multi-user.htm</file>
+	<file type="html">multi-user.swf</file>
+
+	<file type="html">cleanup.htm</file>
+	<file type="html">cleanup.swf</file>
+
+	<file type="html">sdf_create.htm</file>
+	<file type="html">sdf_create.swf</file>
+
+	<file type="html">bulk_copy.htm</file>
+	<file type="html">bulk_copy.swf</file>
+
+	<file type="html">draft_new_feature_photo.htm</file>
+	<file type="html">draft_new_feature_photo.swf</file>
+
+	<file type="html">edit_shp.htm</file>
+	<file type="html">edit_shp.swf</file>
+
+	<file type="html">edit_shp_india.htm</file>
+	<file type="html">edit_shp_india.swf</file>
+
+	<file type="html">edit_offline_check_out.htm</file>
+	<file type="html">edit_offline_check_out.swf</file>
+
+	<file type="html">edit_offline_check_in.htm</file>
+	<file type="html">edit_offline_check_in.swf</file>
+
+	<file type="html">data_table_transparency.htm</file>
+	<file type="html">data_table_transparency.swf</file>
+
+	<file type="html">data_table_zoom.htm</file>
+	<file type="html">data_table_zoom.swf</file>
+
+	<file type="html">data_table_scroll.htm</file>
+	<file type="html">data_table_scroll.swf</file>
+
+	<file type="html">export_records.htm</file>
+	<file type="html">export_records.swf</file>
+
+	<file type="html">scale_ranges.htm</file>
+	<file type="html">scale_ranges.swf</file>
+
+	<file type="html">scale_ranges_roads.htm</file>
+	<file type="html">scale_ranges_roads.swf</file>
+
+	<file type="html">points_to_symbols.htm</file>
+	<file type="html">points_to_symbols.swf</file>
+
+	<file type="html">label_features.htm</file>
+	<file type="html">label_features.swf</file>
+
+	<file type="html">label_features_cities.htm</file>
+	<file type="html">label_features_cities.swf</file>
+
+	<file type="html">transparent_features.htm</file>
+	<file type="html">transparent_features.swf</file>
+
+	<file type="html">theme_multiple.htm</file>
+	<file type="html">theme_multiple.swf</file>
+
+	<file type="html">theme_indiv_values.htm</file>
+	<file type="html">theme_indiv_values.swf</file>
+
+	<file type="html">theme_manual.htm</file>
+	<file type="html">theme_manual.swf</file>
+
+	<file type="html">theme_manual_colors.htm</file>
+	<file type="html">theme_manual_colors.swf</file>
+
+	<file type="html">surface_elevation.htm</file>
+	<file type="html">surface_elevation.swf</file>
+
+	<file type="html">surface_hillshade.htm</file>
+	<file type="html">surface_hillshade.swf</file>
+
+	<file type="html">surface_manual_color.htm</file>
+	<file type="html">surface_manual_color.swf</file>
+
+	<file type="html">surface_manual_rule.htm</file>
+	<file type="html">surface_manual_rule.swf</file>
+
+	<file type="html">surface_3d.htm</file>
+	<file type="html">surface_3d.swf</file>
+
+	<file type="html">surface_3D_exag.htm</file>
+	<file type="html">surface_3D_exag.swf</file>
+
+	<file type="html">surface_draping.htm</file>
+	<file type="html">surface_draping.swf</file>
+
+	<file type="html">surface_slope.htm</file>
+	<file type="html">surface_slope.swf</file>
+
+	<file type="html">surface_contours.htm</file>
+	<file type="html">surface_contours.swf</file>
+
+	<file type="html">topology_create.htm</file>
+	<file type="html">topology_create.swf</file>
+
+	<file type="html">topology_load.htm</file>
+	<file type="html">topology_load.swf</file>
+
+	<file type="html">topology_path.htm</file>
+	<file type="html">topology_path.swf</file>
+
+	<file type="html">topology_overlay.htm</file>
+	<file type="html">topology_overlay.swf</file>
+
+	<file type="html">layer_export.htm</file>
+	<file type="html">layer_export.swf</file>
+
+	<file type="html">layer_import.htm</file>
+	<file type="html">layer_import.swf</file>
+
+	<file type="html">layer_file_save.htm</file>
+	<file type="html">layer_file_save.swf</file>
+
+	<file type="html">layer_file_drag.htm</file>
+	<file type="html">layer_file_drag.swf</file>
+
+	<file type="html">draw_order.htm</file>
+	<file type="html">draw_order.swf</file>
+
+	<file type="html">autocad_layers.htm</file>
+	<file type="html">autocad_layers.swf</file>
+
+	<file type="html">legend_place.htm</file>
+	<file type="html">legend_place.swf</file>
+
+	<file type="html">legend_edit.htm</file>
+	<file type="html">legend_edit.swf</file>
+
+	<file type="html">legend_explode.htm</file>
+	<file type="html">legend_explode.swf</file>
+
+	<file type="html">publish_mapguide.htm</file>
+	<file type="html">publish_mapguide.swf</file>
+
+	<file type="html">publish_mapbook.htm</file>
+	<file type="html">publish_mapbook.swf</file>
+
+	<file type="html">publish_dwf_options.htm</file>
+	<file type="html">publish_dwf_options.swf</file>
+
+
+	<file type="css">style/cpm.css</file>
+	<file type="css">style/isd.css</file>
+<!--<file type="css">style/isd-html.css</file>-->
+<!--<file type="css">style/ad-mh.css</file>-->
+<!--<file type="css">style/TableStyles.css</file>-->
+	
+<file type="javascript">scripts/ac_common.js</file>
+	<file type="javascript">scripts/ac.strings.js</file>
+	<file type="javascript">scripts/acmap.js</file>
+	<file type="javascript">scripts/ac.acad_ak.js</file>
+<!--<file type="javascript" tag="CHMUpdate">scripts/ac.chm-update.js</file>-->
+<!--<file type="javascript">aw-search.js</file>-->
+	<file type="html">ac-report-Idh.h</file>
+	<file type="html">ContextIdAliases.h</file>
+
+	<copy-to-chm-root-folder>root</copy-to-chm-root-folder> 
+               <!--hdr changed from aw to root on 10/31/06 -->
+</resources>
