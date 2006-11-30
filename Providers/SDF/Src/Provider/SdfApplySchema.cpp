@@ -86,7 +86,13 @@ void SdfApplySchema::Execute()
     if (m_schema == NULL)
         throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_27_NULL_REFERENCE)));
 
+    // Make sure the data is commited before editing the schema
+    m_connection->Flush();
+
     //tell the connection to update its schema database
     m_connection->SetSchema(m_schema, m_bIgnoreStates);
+
+    // Make sure to flush any data that may be modified/added as a result of modifying the schema
+    m_connection->Flush();
 }
 

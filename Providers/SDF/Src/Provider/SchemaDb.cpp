@@ -315,7 +315,10 @@ void SchemaDb::SetSchema(SdfISchemaMergeContextFactory* mergeFactory, FdoFeature
         throw;
     }
 
-    if ( transactionStarted ) {
+    // Flush all the changes
+    m_db->flush();
+
+    if ( transactionStarted ) {    
         // Successful, so commit schema changes.
         if ( m_env->commit() != 0 ) 
             throw FdoSchemaException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_79_COMMIT_TRANSACTION)));

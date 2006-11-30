@@ -225,6 +225,8 @@ void ExInfoDb::WriteExtendedSchemaInfo(FdoFeatureSchema* schema)
     if (m_db->put(0, &keyExSchemaInfo, &dataExSchemaInfo, 0) != 0)
         throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_94_EXINFO_STORAGE_ERROR)));
 
+    m_db->flush();
+
 	// The following closes any open cursors so inserting features would work. 
 	CloseCursor();
 }
