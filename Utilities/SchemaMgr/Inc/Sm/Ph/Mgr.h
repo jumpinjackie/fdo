@@ -30,21 +30,21 @@ typedef FdoPtr<FdoSmPhMgr> FdoSmPhMgrP;
 #include <Sm/Ph/Rb/Cache.h>
 
 // Metaschema tables
-static const FdoStringP FDO_OPTIONS_TABLE = L"f_options";
-static const FdoStringP FDO_DBOPEN_TABLE = L"f_dbopen";
+static const FdoStringP FDO_OPTIONS_TABLE = FdoStringP(L"f_options",true);
+static const FdoStringP FDO_DBOPEN_TABLE = FdoStringP(L"f_dbopen",true);
 
 
 // Metaschema columns
 
 // Misc constants
-static const FdoStringP LT_MODE_OPTION	= L"LT_MODE";
-static const FdoStringP LCK_MODE_OPTION = L"LOCKING_MODE";
-static const FdoStringP FDO_SESSION_COLUMN = L"sessionid";
-static const FdoStringP FDO_PROCESS_COLUMN = L"process";
-static const FdoStringP FDO_USER_NUM_COLUMN = L"usernum";
-static const FdoStringP FDO_DBUSER_COLUMN = L"dbuser";
-static const FdoStringP FDO_ACCESS_MODE_COLUMN = L"accessmode";
-static const FdoStringP FDO_OPENDATE_COLUMN = L"opendate";
+static const FdoStringP LT_MODE_OPTION	= FdoStringP(L"LT_MODE",true);
+static const FdoStringP LCK_MODE_OPTION = FdoStringP(L"LOCKING_MODE",true);
+static const FdoStringP FDO_SESSION_COLUMN = FdoStringP(L"sessionid",true);
+static const FdoStringP FDO_PROCESS_COLUMN = FdoStringP(L"process",true);
+static const FdoStringP FDO_USER_NUM_COLUMN = FdoStringP(L"usernum",true);
+static const FdoStringP FDO_DBUSER_COLUMN = FdoStringP(L"dbuser",true);
+static const FdoStringP FDO_ACCESS_MODE_COLUMN = FdoStringP(L"accessmode",true);
+static const FdoStringP FDO_OPENDATE_COLUMN = FdoStringP(L"opendate",true);
 
 static const int	PROCESS_COLUMN_LENGTH = 12;	
 
@@ -53,8 +53,8 @@ static const int	PROCESS_COLUMN_LENGTH = 12;
 // Lock Table Constants
 // --------------------
 
-static const FdoStringP LOCK_CORE_TABLE = L"f_lock";
-static const FdoStringP LOCK_USED_TABLE = L"f_lockid_in_table";
+static const FdoStringP LOCK_CORE_TABLE = FdoStringP(L"f_lock",true);
+static const FdoStringP LOCK_USED_TABLE = FdoStringP(L"f_lockid_in_table",true);
 
 
 // ---------------------------
@@ -62,69 +62,69 @@ static const FdoStringP LOCK_USED_TABLE = L"f_lockid_in_table";
 // ---------------------------
 
 //   -> Table F_LOCK:
-static const FdoStringP LOCK_CORE_CREATEDATE    = L"createdate";
-static const FdoStringP LOCK_CORE_DESCRIPTION   = L"description";
-static const FdoStringP LOCK_CORE_LOCKID        = L"lockid";
-static const FdoStringP LOCK_CORE_USERNAME      = L"username";
+static const FdoStringP LOCK_CORE_CREATEDATE    = FdoStringP(L"createdate",true);
+static const FdoStringP LOCK_CORE_DESCRIPTION   = FdoStringP(L"description",true);
+static const FdoStringP LOCK_CORE_LOCKID        = FdoStringP(L"lockid",true);
+static const FdoStringP LOCK_CORE_USERNAME      = FdoStringP(L"username",true);
 
-static const FdoStringP LOCK_USED_DATASTORENAME = L"datastorename";
-static const FdoStringP LOCK_USED_LOCKID        = L"lockid";
-static const FdoStringP LOCK_USED_TABLENAME     = L"tablename";
+static const FdoStringP LOCK_USED_DATASTORENAME = FdoStringP(L"datastorename",true);
+static const FdoStringP LOCK_USED_LOCKID        = FdoStringP(L"lockid",true);
+static const FdoStringP LOCK_USED_TABLENAME     = FdoStringP(L"tablename",true);
 
 
 // --------------------------------
 // Long Transaction Table Constants
 // --------------------------------
 
-static const FdoStringP LT_ACTIVE_LT_TABLE  = L"f_activelt";
-static const FdoStringP LT_CORE_TABLE       = L"f_lt";
-static const FdoStringP LT_DEPENDENCY_TABLE = L"f_ltdependency";
-static const FdoStringP LT_USED_TABLE       = L"f_ltid_in_table";
+static const FdoStringP LT_ACTIVE_LT_TABLE  = FdoStringP(L"f_activelt",true);
+static const FdoStringP LT_CORE_TABLE       = FdoStringP(L"f_lt",true);
+static const FdoStringP LT_DEPENDENCY_TABLE = FdoStringP(L"f_ltdependency",true);
+static const FdoStringP LT_USED_TABLE       = FdoStringP(L"f_ltid_in_table",true);
 
 
 // ----------------------------------------
 // Long Transaction Table Column Constants
 // ----------------------------------------
 //   -> Table F_ACTIVELT:
-static const FdoStringP LT_ACTIVE_LT_ACTIVATEDATE = L"activatedate";
-static const FdoStringP LT_ACTIVE_LT_ACTIVELTID   = L"activeltid";
-static const FdoStringP LT_ACTIVE_LT_SESSIONID    = L"sessionid";
-static const FdoStringP LT_ACTIVE_LT_USERNAME     = L"username";
+static const FdoStringP LT_ACTIVE_LT_ACTIVATEDATE = FdoStringP(L"activatedate",true);
+static const FdoStringP LT_ACTIVE_LT_ACTIVELTID   = FdoStringP(L"activeltid",true);
+static const FdoStringP LT_ACTIVE_LT_SESSIONID    = FdoStringP(L"sessionid",true);
+static const FdoStringP LT_ACTIVE_LT_USERNAME     = FdoStringP(L"username",true);
 
 //   -> Table F_LT:
-static const FdoStringP LT_CORE_CREATEDATE        = L"createdate";
-static const FdoStringP LT_CORE_DESCRIPTION       = L"description";
-static const FdoStringP LT_CORE_LOCKID            = L"lockid";
-static const FdoStringP LT_CORE_LOCKTYPE          = L"locktype";
-static const FdoStringP LT_CORE_LTID              = L"ltid";
-static const FdoStringP LT_CORE_LTNAME            = L"ltname";
-static const FdoStringP LT_CORE_USERNAME          = L"username";
+static const FdoStringP LT_CORE_CREATEDATE        = FdoStringP(L"createdate",true);
+static const FdoStringP LT_CORE_DESCRIPTION       = FdoStringP(L"description",true);
+static const FdoStringP LT_CORE_LOCKID            = FdoStringP(L"lockid",true);
+static const FdoStringP LT_CORE_LOCKTYPE          = FdoStringP(L"locktype",true);
+static const FdoStringP LT_CORE_LTID              = FdoStringP(L"ltid",true);
+static const FdoStringP LT_CORE_LTNAME            = FdoStringP(L"ltname",true);
+static const FdoStringP LT_CORE_USERNAME          = FdoStringP(L"username",true);
 
 //   -> Table F_LTDEPENDENCY:
-static const FdoStringP LT_DEPENDENCY_CHILDLTID   = L"childltid";
-static const FdoStringP LT_DEPENDENCY_PARENTLTID  = L"parentltid";
+static const FdoStringP LT_DEPENDENCY_CHILDLTID   = FdoStringP(L"childltid",true);
+static const FdoStringP LT_DEPENDENCY_PARENTLTID  = FdoStringP(L"parentltid",true);
 
 //   -> Table F_LTID_IN_TABLE:
-static const FdoStringP LT_USED_DATASTORENAME     = L"datastorename";
-static const FdoStringP LT_USED_LTID              = L"ltid";
-static const FdoStringP LT_USED_TABLENAME         = L"tablename";
+static const FdoStringP LT_USED_DATASTORENAME     = FdoStringP(L"datastorename",true);
+static const FdoStringP LT_USED_LTID              = FdoStringP(L"ltid",true);
+static const FdoStringP LT_USED_TABLENAME         = FdoStringP(L"tablename",true);
 
 
 // -----------------------------------------------------------------
 // Long Transaction General Constants (for example: used as aliases)
 // -----------------------------------------------------------------
 
-static const FdoStringP LT_INFO_CREATEDATE    = L"LT_CREATEDATE";
-static const FdoStringP LT_INFO_DESCRIPTION   = L"LT_DESCRIPTION";
-static const FdoStringP LT_INFO_FREEZE_MODE   = L"LT_FREEZE_MODE";
-static const FdoStringP LT_INFO_FREEZE_OWNER  = L"LT_FREEZE_OWNER";
-static const FdoStringP LT_INFO_FREEZE_WRITER = L"LT_FREEZE_WRITER";
-static const FdoStringP LT_INFO_LTID          = L"LT_ID";
-static const FdoStringP LT_INFO_LTNAME        = L"LT_NAME";
-static const FdoStringP LT_INFO_USERNAME      = L"LT_OWNER";
-static const FdoStringP LT_INFO_IS_ACTIVE     = L"LT_IS_ACTIVE";
-static const FdoStringP LT_INFO_IS_REFRESHED  = L"LT_IS_REFRESHED";
-static const FdoStringP LT_INFO_LOCK_ID       = L"LT_LOCK_ID";
+static const FdoStringP LT_INFO_CREATEDATE    = FdoStringP(L"LT_CREATEDATE",true);
+static const FdoStringP LT_INFO_DESCRIPTION   = FdoStringP(L"LT_DESCRIPTION",true);
+static const FdoStringP LT_INFO_FREEZE_MODE   = FdoStringP(L"LT_FREEZE_MODE",true);
+static const FdoStringP LT_INFO_FREEZE_OWNER  = FdoStringP(L"LT_FREEZE_OWNER",true);
+static const FdoStringP LT_INFO_FREEZE_WRITER = FdoStringP(L"LT_FREEZE_WRITER",true);
+static const FdoStringP LT_INFO_LTID          = FdoStringP(L"LT_ID",true);
+static const FdoStringP LT_INFO_LTNAME        = FdoStringP(L"LT_NAME",true);
+static const FdoStringP LT_INFO_USERNAME      = FdoStringP(L"LT_OWNER",true);
+static const FdoStringP LT_INFO_IS_ACTIVE     = FdoStringP(L"LT_IS_ACTIVE",true);
+static const FdoStringP LT_INFO_IS_REFRESHED  = FdoStringP(L"LT_IS_REFRESHED",true);
+static const FdoStringP LT_INFO_LOCK_ID       = FdoStringP(L"LT_LOCK_ID",true);
    
 class FdoSmPhSchemaReader;
 class FdoSmPhClassReader;

@@ -61,7 +61,12 @@ FdoSmLpSpatialContext::FdoSmLpSpatialContext(
                                                 scgReader->GetXMax(),
                                                 scgReader->GetYMax());
     FdoPtr<FdoIGeometry> geom = gf->CreateGeometry(env); 
-    mExtent = gf->GetFgf(geom);
+    
+    FdoPtr<FdoByteArray>ext = gf->GetFgf(geom);
+    if( ext ) // make a copy of the byte array as the one obtained from the factory is not thread safe.
+        mExtent = FdoByteArray::Create( ext->GetData(), ext->GetCount() );
+
+    ext = NULL;
 }
 
 FdoSmLpSpatialContext::FdoSmLpSpatialContext(
@@ -127,7 +132,15 @@ FdoByteArray* FdoSmLpSpatialContext::GetExtent()
 {
     Finalize();
 
-    return FDO_SAFE_ADDREF(mExtent.p);
+    // Make a copy of the extent byte array as the caller may insist on putting it in 
+    // the geometry pool which may cause it to be shared by aother threads.
+    // the extent byte array is not in the pool and should not be in there as the spatial context
+    // can be used by many threads.
+    FdoByteArray* ext = NULL;
+    if( mExtent )
+        ext = FdoByteArray::Create( mExtent->GetData(), mExtent->GetCount() );
+
+    return ext;
 }
 
 double FdoSmLpSpatialContext::GetXYTolerance()
