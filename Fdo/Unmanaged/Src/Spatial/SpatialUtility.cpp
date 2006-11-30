@@ -1646,7 +1646,11 @@ bool FdoSpatialUtility::PolygonContains(FdoIPolygon* poly, FdoIGeometry* geom, b
             int dim;
             GET_POSITION(pt, &x, &y, &dim);
 
-            return PointInPolygon(poly, x, y);
+            bool isOnExtBoundary = false;
+            bool isInside = PointInPolygon(poly, x, y, &isOnExtBoundary);
+            if (isOnExtBoundary)
+                isInside = !strictInside;
+            return isInside;
         }
     case FdoGeometryType_LineString : 
         return PolygonContainsLineString(poly, (FdoILineString*)geom, strictInside);
