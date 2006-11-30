@@ -40,14 +40,24 @@ FdoStringP::Tab FdoStringP::tab[] =
 
 const wchar_t* FdoStringP::mEmptyString = L"";
 
-const long FdoStringP::mAttachedRefCount = -1;
+static const long* GetAttachedRefCount()
+{
+    static const long attachedRefCount = -1;
+    return &attachedRefCount;
+}
+
+static const wchar_t* GetEmptyString()
+{
+    static const wchar_t* EmptyString = L"";
+    return EmptyString;
+}
 
 FdoStringP::FdoStringP(void) :
 	mwString(NULL),
 	msString(NULL),
 	mRefCount(NULL)
 {
-	SetString(mEmptyString, true);
+	SetString(GetEmptyString(), true);
 }
 
 
@@ -585,7 +595,7 @@ void FdoStringP::SetString(FdoString* wValue, FdoBoolean bAttach)
 	Release();
 
     if ( bAttach ) {
-        mRefCount = (long*) &mAttachedRefCount;
+        mRefCount = (long*) GetAttachedRefCount();
         mwString = (wchar_t*) workString;
     }
     else {
