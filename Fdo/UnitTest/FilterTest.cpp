@@ -424,19 +424,19 @@ void FilterTest::testConditionRoundtrip()
 {
 
 	// Use this identifier 
-	FdoIdentifier*          pIdent = FdoIdentifier::Create(L"Identifier with spaces");
+	FdoPtr<FdoIdentifier>          pIdent = FdoIdentifier::Create(L"Identifier with spaces");
 
 	/// NullCondition
-	FdoNullCondition*       pNull = FdoNullCondition::Create(pIdent);
+	FdoPtr<FdoNullCondition>       pNull = FdoNullCondition::Create(pIdent);
 	doRoundtrip( "NullCondition", pNull );
 
 	/// ComparisonCondition
-	FdoDataValue*           pDVal = FdoInt32Value::Create(123);
+	FdoPtr<FdoDataValue>           pDVal = FdoInt32Value::Create(123);
 	FdoComparisonCondition* pCompare = FdoComparisonCondition::Create(pIdent, FdoComparisonOperations_EqualTo, pDVal);
 	doRoundtrip( "ComparisonCondition", pCompare );
 
 	/// IN condition
-    FdoInCondition*         pIn = FdoInCondition::Create(pIdent, aszNames, 3);
+    FdoPtr<FdoInCondition>         pIn = FdoInCondition::Create(pIdent, aszNames, 3);
 	doRoundtrip( "InCondition", pIn );
 
 	double*		ordsXYZ = new double[3];
@@ -444,17 +444,19 @@ void FilterTest::testConditionRoundtrip()
 
 	FdoPtr<FdoFgfGeometryFactory>	gf = FdoFgfGeometryFactory::GetInstance();
 	FdoPtr<FdoIGeometry>			pnt = gf->CreatePoint(FdoDimensionality_XY|FdoDimensionality_Z, ordsXYZ);
-	FdoGeometryValue*				pGVal1 = FdoGeometryValue::Create(gf->GetFgf(pnt));
+    FdoPtr<FdoByteArray> fgfByteArray = gf->GetFgf(pnt);
+	FdoPtr<FdoGeometryValue>		pGVal1 = FdoGeometryValue::Create(fgfByteArray);
+
 
 	delete [] ordsXYZ;
 
 	/// Distance condition
-	FdoDistanceCondition*   pDistance = FdoDistanceCondition::Create(pIdent, FdoDistanceOperations_Beyond, pGVal1, 3.14);
+	FdoPtr<FdoDistanceCondition>   pDistance = FdoDistanceCondition::Create(pIdent, FdoDistanceOperations_Beyond, pGVal1, 3.14);
 	doRoundtrip( "DistanceCondition", pDistance );
 
 
 	/// Spatial Condition
-    FdoSpatialCondition*    pSpatial = FdoSpatialCondition::Create(pIdent, FdoSpatialOperations_Within, pGVal1);
+    FdoPtr<FdoSpatialCondition>    pSpatial = FdoSpatialCondition::Create(pIdent, FdoSpatialOperations_Within, pGVal1);
 	doRoundtrip( "SpatialCondition", pSpatial );
 }
 

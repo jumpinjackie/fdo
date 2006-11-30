@@ -218,7 +218,17 @@ void CommandTest::testIdentifierCollection()
     FDO_CPPUNIT_ASSERT(pIdentColl->IndexOf(pIdent3) == 1);
     FDO_CPPUNIT_ASSERT(pIdentColl->IndexOf(pIdent4) == -1);
 
-    
+    // attempt to add an identifier with a duplicate text value:
+    FdoPtr<FdoIdentifier> pIdent2Duplicate = FdoIdentifier::Create(L"Ident2.set.later");
+    try
+    {
+        pIdentColl->Add(pIdent2Duplicate);
+        CPPUNIT_FAIL("Expected error due to duplicate entry in FdoIdentifierCollection");
+    }
+    catch (FdoException *e)
+    {
+        e->Release();  // we expect an exception
+    }
 
     // release memory
     pIdentColl->Release();
