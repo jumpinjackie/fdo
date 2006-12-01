@@ -431,7 +431,9 @@ ShpSpatialIndex* ShpFileSet::GetSpatialIndex ( bool populateRtree )
 
 		if (!mSSI->IsNew())
 		{
-			if ( (int)mSSI->GetNObjects() > GetShapeIndexFile ()->GetNumObjects() )
+			// Validate ...
+			if ( (((int)mSSI->GetNObjects() == 0 ) && ( GetShapeIndexFile ()->GetNumObjects() > 0) ) || 
+				  ((int)mSSI->GetNObjects() > GetShapeIndexFile ()->GetNumObjects()) )
 			{   
 				// close the existing one and try again
 				wchar_t *idx_file = (wchar_t*)alloca (sizeof (wchar_t) * (1 + wcslen (GetSpatialIndex ()->FileName ())));

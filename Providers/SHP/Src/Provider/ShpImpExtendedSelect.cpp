@@ -87,13 +87,24 @@ void ShpImpExtendedSelect::SetCompareHandler( ShpCompareHandler*  handler )
 ShpIScrollableFeatureReader* ShpImpExtendedSelect::ExecuteScrollable()
 {
 	int		i = 0;
+	bool	isFeatIdQuery = false;
 	bool	doSorting = ( m_orderingProperties->GetCount() > 0 );
+
+	// Special case, optimized: FeatId as ordering property
+	bool	isFeatidQuery = m_orderingProperties->GetCount() == 1 && ( wcscmp(m_orderingProperties->GetItem(0)->GetName(), L"FeatId") == 0 );
 
 	// Do regular select in order to collect data
 	FdoPtr<ShpFeatureReader>	reader = (ShpFeatureReader*)ShpSelectCommand::Execute();
 
+	// We do fetches also in the case of a filter
+	bool	doFetches = doSorting || (this->GetFilter() != NULL );
+
 	// Set a flag on the reader not to read the SHP file.
 	reader->SetFetchGeometry( false );
+
+	// Set a flag on the reader to return deleted row as well
+	reader->SetFetchDeletes( true );
+
 	if( reader == NULL || !reader->ReadNext() )
 		return NULL;
 	
@@ -113,10 +124,16 @@ ShpIScrollableFeatureReader* ShpImpExtendedSelect::ExecuteScrollable()
 	// It may be needed regardless no ordering option
 	ctx->compareHandler = m_compareHandler;
 
-	if ( doSorting )
+	if ( doFetches )
 	{
 		ctx->compareHandler = m_compareHandler;
-		ctx->propCount = m_orderingProperties->GetCount();
+
+		// Count the number of properties
+		if ( m_orderingProperties->GetCount() != 0 )
+			ctx->propCount = m_orderingProperties->GetCount();
+		else if (this->GetFilter() != NULL )
+			ctx->propCount = 1;
+
 		ctx->options = new FdoOrderingOption[ctx->propCount];
 		ctx->names = new FdoString*[ctx->propCount];
 
@@ -127,153 +144,192 @@ ShpIScrollableFeatureReader* ShpImpExtendedSelect::ExecuteScrollable()
 		// Get the names of the ordered properties. Create properties stubs.
 		propStubs = new PropertyStub[ctx->propCount];
 
-		for( i = 0; i < ctx->propCount; i++ )
+		if ( m_orderingProperties->GetCount() != 0 )
 		{
-			FdoPtr<FdoIdentifier> id = m_orderingProperties->GetItem( i );
-
-			// Need the property type. Get it from the reader.
-			propStubs[i].m_name = new wchar_t[wcslen(id->GetName())+1];
-			wcscpy( (wchar_t*)propStubs[i].m_name, id->GetName() );
-
-			if ( wcscmp( id->GetName(), reader->mLogicalIdentityPropertyName ) == 0 )
+			for( i = 0; i < ctx->propCount; i++ )
 			{
-				propStubs[i].m_dataType = FdoDataType_Int32;
-			}
-			else
-			{
-				for ( int j = 0; j < numCols; j++ )
+				FdoPtr<FdoIdentifier> id = m_orderingProperties->GetItem( i );
+
+				// Need the property type. Get it from the reader.
+				propStubs[i].m_name = new wchar_t[wcslen(id->GetName())+1];
+				wcscpy( (wchar_t*)propStubs[i].m_name, id->GetName() );
+
+				if ( wcscmp( id->GetName(), reader->mLogicalIdentityPropertyName ) == 0 )
 				{
-					if ( wcscmp( infoCols->GetColumnNameAt(j), id->GetName() ) == 0 )
+					propStubs[i].m_dataType = FdoDataType_Int32;
+				}
+				else
+				{
+					for ( int j = 0; j < numCols; j++ )
 					{
-						propStubs[i].m_dataType = ShpSchemaUtilities::DbfTypeToFdoType(infoCols->GetColumnTypeAt(j));
-						break;
+						if ( wcscmp( infoCols->GetColumnNameAt(j), id->GetName() ) == 0 )
+						{
+							propStubs[i].m_dataType = ShpSchemaUtilities::DbfTypeToFdoType(infoCols->GetColumnTypeAt(j));
+							break;
+						}
 					}
 				}
-			}
 
-			ctx->options[i] = GetOrderingOption( id->GetName() );
-			ctx->names[i] = new wchar_t[wcslen(id->GetName())+1];
-			wcscpy( (wchar_t*)ctx->names[i], id->GetName() );
-		}		
+				ctx->options[i] = GetOrderingOption( id->GetName() );
+				ctx->names[i] = new wchar_t[wcslen(id->GetName())+1];
+				wcscpy( (wchar_t*)ctx->names[i], id->GetName() );
+			}
+		}
+		else if (this->GetFilter() != NULL )
+		{
+			// Populate the table elements with FeatId as property.
+			propStubs[0].m_name = new wchar_t[wcslen(L"FeatId")+1];
+			wcscpy( (wchar_t*)propStubs[0].m_name, L"FeatId" );
+			propStubs[0].m_dataType = FdoDataType_Int32;
+
+			// Populate the ctx with sane values
+			ctx->options[0] = GetOrderingOption( L"FeatId" );
+			ctx->names[0] = new wchar_t[wcslen(L"FeatId")+1];
+			wcscpy( (wchar_t*)ctx->names[0], L"FeatId" );
+
+			isFeatIdQuery = reader->mIsFeatIdQuery;
+		}
 	}
 
-	// Populate the array to be sorted with actual data. 
-	ctx->featIds = new REC_NO[maxsize];
+	ctx->propStubs = propStubs;
 
 	SortElementDef  *sortedTable = NULL;
 
-	if ( doSorting )
-		sortedTable = new SortElementDef[maxsize];
-
-	// Initialize the ordering property cache (First read done above)
-	i = 0;
-	bool	hasMore = true;
-
-	while( hasMore )
+	// Allow for an optimization: in case there is no filtering and the ordering property is just "FeatId",
+	// then we don't need reading the files since the Featids are consecutive (including the deletes).
+	if ( !doFetches && isFeatidQuery )
 	{
-		REC_NO featid = reader->mFeatureNumber; // Zero-based
+		doSorting = false;	
+	}
 
-		// When no sorting properties, just populate the featid list
-	    ctx->featIds[i]= featid;
+	// Optimize Case 1: no ordering property, no filter: No need to fetch, return a reader
+	if ( !doFetches )
+	{
+		// The sorting context will be freed by the reader
+		return new ShpImpScrollableFeatureReader<ShpScrollableFeatureReader>(new ShpScrollableFeatureReader( 
+																				mConnection, mClassName->GetText(), GetFilter(),
+																				ctx, NULL, false, maxsize, 0 ) );
+	}
 
-		if ( doSorting )
+	// Optimize Case 2: Featid ordering property, no filter: No need to fetch, return a reader
+	if ( isFeatidQuery && (this->GetFilter() == NULL) )
+	{
+		// The sorting context will be freed by the reader
+		return new ShpImpScrollableFeatureReader<ShpScrollableFeatureReader>(new ShpScrollableFeatureReader( 
+																				mConnection, mClassName->GetText(), GetFilter(),
+																				ctx, NULL, true, maxsize, 0 ) );
+	}
+
+	sortedTable = new SortElementDef[maxsize];
+
+	// Initialize the ordering property cache (first read done above).
+	i = 0;
+
+	do
+	{		
+		SortElementDef  *pRow = &sortedTable[i];
+
+		pRow->propCache = new DataPropertyDef*[ctx->propCount];
+
+		// This works both for filtered and not filtered
+		pRow->index = reader->GetInt32(L"FeatId") - 1;
+
+		// This is skipped if !doSorting
+		for( int j = 0; j < ctx->propCount; j++ )
 		{
-			SortElementDef  *pRow = &sortedTable[i];
+			PropertyStub  ps = propStubs[j];
 
-			pRow->index = i;
-			pRow->propCache = new DataPropertyDef*[ctx->propCount];
+			// Initialize a property 
+			pRow->propCache[j] = new DataPropertyDef;
+			DataPropertyDef *pProp = pRow->propCache[j];
 
-			// This is skipped if !doSorting
-			for( int j = 0; j < ctx->propCount; j++ )
+			pProp->type = ps.m_dataType;
+			FdoString *pName = ps.m_name;
+
+			if ( reader->IsNull( pName ) )
 			{
-				PropertyStub  ps = propStubs[j];
+				pProp->type = SHP_NULL_VALUE_TYPE;
+				continue;
+			}
 
-				// Initialize a property 
-				pRow->propCache[j] = new DataPropertyDef;
-				DataPropertyDef *pProp = pRow->propCache[j];
+			switch( ps.m_dataType )
+			{
+				case FdoDataType_Boolean : 
+				case FdoDataType_Byte : 
+					pProp->value.intVal = (int)reader->GetByte( pName );
+					break;
 
-				pProp->type = ps.m_dataType;
-				FdoString *pName = ps.m_name;
+				case FdoDataType_DateTime :
+					pProp->value.dateVal = new FdoDateTime();
+					*pProp->value.dateVal = reader->GetDateTime( pName );
+					break;
 
-				if ( reader->IsNull( pName ) )
+				case FdoDataType_Decimal :		  
+				case FdoDataType_Double :
+					pProp->value.fltVal = (float)reader->GetDouble( pName );
+					break;
+
+				case FdoDataType_Int16 : 
+					pProp->value.intVal = reader->GetInt16( pName );
+					break;
+
+				case FdoDataType_Int32 : 
+					pProp->value.intVal = reader->GetInt32( pName );
+					break;
+
+				case FdoDataType_Single :
+					pProp->value.fltVal = reader->GetSingle( pName );
+					break;
+
+				case FdoDataType_String : 
 				{
-					pProp->type = -1;
-					continue;
+					FdoString*	tmpStr = reader->GetString( pName );
+					pProp->value.strVal = new wchar_t[wcslen(tmpStr)+1];
+					wcscpy( pProp->value.strVal , tmpStr );
+					break;
 				}
-
-				switch( ps.m_dataType )
-				{
-					case FdoDataType_Boolean : 
-					case FdoDataType_Byte : 
-						pProp->value.intVal = (int)reader->GetByte( pName );
-						break;
-
-					case FdoDataType_DateTime :
-						pProp->value.dateVal = new FdoDateTime();
-						*pProp->value.dateVal = reader->GetDateTime( pName );
-						break;
-
-					case FdoDataType_Decimal :		  
-					case FdoDataType_Double :
-						pProp->value.dblVal = reader->GetDouble( pName );
-						break;
-
-					case FdoDataType_Int16 : 
-						pProp->value.intVal = reader->GetInt16( pName );
-						break;
-
-					case FdoDataType_Int32 : 
-						pProp->value.intVal = reader->GetInt32( pName );
-						break;
-
-					case FdoDataType_Int64 : 
-						pProp->value.int64Val = reader->GetInt64( pName );
-						break;
-
-					case FdoDataType_Single :
-						pProp->value.dblVal = reader->GetSingle( pName );
-						break;
-
-					case FdoDataType_String : 
-					{
-						FdoString*	tmpStr = reader->GetString( pName );
-						pProp->value.strVal = new wchar_t[wcslen(tmpStr)+1];
-						wcscpy( pProp->value.strVal , tmpStr );
-						break;
-					}
-				
-				  default:
-					  throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_71_DATA_TYPE_NOT_SUPPORTED), FdoCommonMiscUtil::FdoDataTypeToString(ps.m_dataType)));
-					  break;
-				}
+			
+			  default:
+				  throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_71_DATA_TYPE_NOT_SUPPORTED), FdoCommonMiscUtil::FdoDataTypeToString(ps.m_dataType)));
+				  break;
 			}
 		}
+		
         i++;
 
 		// get the next record
-		hasMore = reader->ReadNext();
-	}
+	} while (reader->ReadNext());
+
 	// Adjust the size (account for deleted records)
 	maxsize = i;
 
-	// Reset the flag.
+	// Reset the flags.
 	reader->SetFetchGeometry( true );
+	reader->SetFetchDeletes( false );
 
 	// Build the sorted list
 	if ( doSorting ) {
+#ifdef _WIN32
+		qsort_s( (void*)sortedTable, maxsize, sizeof(SortElementDef), compare, (void *)ctx);
+#else
 	    SortMutex.Enter();
 
 		GlobalSortCtx = ctx;
 		qsort( (void*)sortedTable, maxsize, sizeof(SortElementDef), compare);
 
 		SortMutex.Leave();
+#endif
 	}
 
+	bool	useTableIndex = doFetches;
+							
 	// The sorted table and sorting context will be freed by the reader
 	return new ShpImpScrollableFeatureReader<ShpScrollableFeatureReader>(new ShpScrollableFeatureReader( 
 																				mConnection, mClassName->GetText(), GetFilter(),
-																				ctx, sortedTable, maxsize, 
-																				propStubs, m_orderingProperties->GetCount()) );
+																				ctx, sortedTable, 
+																				useTableIndex, 
+																				maxsize,
+																				m_orderingProperties->GetCount()) );
 }
 
 

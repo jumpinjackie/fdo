@@ -21,39 +21,36 @@
 
 // Some local types used for sorting
 typedef struct _DataProperty_ {
-	int				type; // FdoDataType and allow for -1
+	FdoByte			type;  //FdoDataType and allow for -1
 	union {
 		FdoInt32	intVal;
-		FdoInt64	int64Val;
-		double		dblVal;
+		FdoFloat	fltVal;
 		FdoDateTime* dateVal;
 		wchar_t*	strVal;
 	} value;
 } DataPropertyDef;
 
+typedef struct _PropertyStub
+{
+    wchar_t*		m_name;
+    FdoDataType		m_dataType;
+} PropertyStub;
+
 typedef struct _SortContext_ {
-	REC_NO				*featIds;
 	int					propCount;
 	FdoOrderingOption	*options;
 	FdoString			**names;
 	ShpCompareHandler	*compareHandler;
+	PropertyStub		*propStubs;
 } SortContextDef;
 
-typedef struct _PropertyStub
-{
-    wchar_t*		m_name;
-    int				m_recordIndex;
-    FdoDataType		m_dataType;
-	FdoPropertyType m_propertyType;
-    bool			m_isAutoGen;
-} PropertyStub;
-
 typedef struct _SortElement_ {
-	REC_NO			index;
+	REC_NO			index;	// featid zero-based
 	DataPropertyDef	**propCache;
 } SortElementDef;
 
 
+#define	SHP_NULL_VALUE_TYPE		255 // greater than any FdoDataType
 
 class ShpScrollableFeatureReader : public ShpFeatureReader
 {
@@ -63,8 +60,7 @@ public:
     // constructs an ShpFeatureReader using the specified
     // connection, class definition, and Shp reader
     FDOSHP_API ShpScrollableFeatureReader( ShpConnection* connection, FdoString* className, FdoFilter* filter, SortContextDef *ctx, 
-											SortElementDef  *sortedTable, unsigned int tableSize, 
-											PropertyStub*	props, int numProps );
+											SortElementDef  *sortedTable, bool useTableIndex, unsigned int tableSize, int numProps );
 
 public:
 
@@ -88,9 +84,9 @@ public:
 
 	FDOSHP_API virtual bool ReadAt(FdoPropertyValueCollection* key);
 
-	FDOSHP_API virtual bool  ReadAtIndex( unsigned int recordindex );
+	FDOSHP_API virtual bool  ReadAtIndex( REC_NO recordindex );
 
-	FDOSHP_API unsigned int IndexOf(FdoPropertyValueCollection* key);
+	FDOSHP_API REC_NO IndexOf(FdoPropertyValueCollection* key);
 
 protected:
     // default destructor
@@ -99,18 +95,19 @@ protected:
     // dispose this object
     virtual void Dispose();
 
-	//static int compare(const void * lhs, const void * rhs );
-
 private:
-	void	GetData();
+	bool	GetData();
 	REC_NO	FindRowidByFeatNum( REC_NO featid );
-	REC_NO	SearchSortedTable( SortContextDef *ctx, SortElementDef *sortedTable, unsigned int tableSize, PropertyStub* propStubs, int numProps, FdoPropertyValueCollection* keyVals);
-	REC_NO	SearchNewSortedTable( FdoPropertyValueCollection *keyVals );
+	REC_NO	SearchSortedTable( SortContextDef *ctx, SortElementDef *sortedTable, unsigned int tableSize, PropertyStub* propStubs, int numProps, FdoPropertyValueCollection* keyVals, REC_NO *featid);
+	REC_NO	SearchNewSortedTable( FdoPropertyValueCollection *keyVals, REC_NO *featid );
 
 private:
 	FdoFilter*				m_Filter;
 	SortContextDef			*m_Ctx;
 	SortElementDef			*m_SortedTable;
+	bool					m_UseTableIndex;
+	bool					m_IsFeatidQuery;
+	FdoOrderingOption		m_FeatidQueryOpt;
 	unsigned int			m_TableSize;
 	int						m_CurrentIndex;
 
@@ -119,28 +116,38 @@ private:
 
 };
 
-// Static context needed by qsort Compare()
+// Static context needed by qsort Compare() on Linux
+#ifndef _WIN32
 static	FdoCommonThreadMutex SortMutex;
 static	SortContextDef	*GlobalSortCtx;
+#endif
 
 // qsort compare function
+#ifdef _WIN32
+static int compare(void *ctxCompare, const void * lhs, const void * rhs )
+#else
 static int compare(const void * lhs, const void * rhs )
+#endif
 {
 	int retcode = 0;
 
 	SortElementDef  *elem1 = (SortElementDef*)lhs;
 	SortElementDef  *elem2 = (SortElementDef*)rhs;
-
-	SortContextDef  *ctx = GlobalSortCtx;
+	SortContextDef  *ctx;
+#ifndef _WIN32
+	ctx = GlobalSortCtx;
+#else
+	ctx = (SortContextDef *)ctxCompare;
+#endif
 
 	for(int i=0; i<ctx->propCount && retcode==0; i++ )
 	{
 		// Deal with null values (they come last in ascending ordered collection  
-		if( elem1->propCache[i]->type == -1 || elem2->propCache[i]->type == -1 )
+		if( elem1->propCache[i]->type == SHP_NULL_VALUE_TYPE || elem2->propCache[i]->type == SHP_NULL_VALUE_TYPE )
 		{
-			if( elem1->propCache[i]->type == -1 && elem2->propCache[i]->type == -1 )
+			if( elem1->propCache[i]->type == SHP_NULL_VALUE_TYPE && elem2->propCache[i]->type == SHP_NULL_VALUE_TYPE )
 				retcode = 0;
-			else if ( elem1->propCache[i]->type == -1 )
+			else if ( elem1->propCache[i]->type == SHP_NULL_VALUE_TYPE )
 				retcode = 1;
 			else
 				retcode = -1;
@@ -151,7 +158,7 @@ static int compare(const void * lhs, const void * rhs )
 			continue;
 		}
 
-		FdoDataType	dataType = (FdoDataType)elem2->propCache[i]->type;
+		FdoDataType	dataType =  ctx->propStubs[i].m_dataType;
 		switch( dataType )
 		{
 			case FdoDataType_DateTime :
@@ -161,7 +168,7 @@ static int compare(const void * lhs, const void * rhs )
 			case FdoDataType_Decimal :
 			case FdoDataType_Single : 
 			case FdoDataType_Double :
-				retcode = ctx->compareHandler->Compare( ctx->names[i], elem1->propCache[i]->value.dblVal, elem2->propCache[i]->value.dblVal);
+				retcode = ctx->compareHandler->Compare( ctx->names[i], elem1->propCache[i]->value.fltVal, elem2->propCache[i]->value.fltVal);
 				break;
 
 			case FdoDataType_Boolean : 
@@ -169,10 +176,6 @@ static int compare(const void * lhs, const void * rhs )
 			case FdoDataType_Int16 : 
 			case FdoDataType_Int32 : 
 				retcode = ctx->compareHandler->Compare( ctx->names[i], elem1->propCache[i]->value.intVal, elem2->propCache[i]->value.intVal);
-				break;
-
-			case FdoDataType_Int64 : 
-				retcode = ctx->compareHandler->Compare( ctx->names[i], elem1->propCache[i]->value.int64Val, elem2->propCache[i]->value.int64Val);
 				break;
 			
 			case FdoDataType_String : 
@@ -189,5 +192,6 @@ static int compare(const void * lhs, const void * rhs )
 
     return retcode;
 }
+
 
 #endif

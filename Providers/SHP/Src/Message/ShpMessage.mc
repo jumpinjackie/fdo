@@ -184,7 +184,11 @@ SymbolicName=SHP_INVALID_CONNECTION_PROPERTY_NAME
 Language=English
 Invalid connection property name '%1$ls'
 .
-
+MessageId=2022
+SymbolicName=SHP_CONNECTION_FILE_INVALID_FILECODE
+Language=English
+The file '%1$ls' has an invalid File Code number (%2$d).
+.
 
 ;//************************************************************************************
 ;//************************************************************************************

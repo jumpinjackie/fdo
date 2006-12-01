@@ -75,6 +75,7 @@ protected:
     int             mFeatidQueryIndex;  // Current index in the stack of pre-computed results 
 
 	bool			mFetchGeometry;		// ExtendedSelect doesn't need geometries for indexing data.
+	bool			mFetchDeletes;		// ExtendedSelect needs fetching the deleted rows to use the featid as index.
 
 protected:
     ShpReader () {}; // to satisfy _NoAddRefReleaseOnFdoPtr 
@@ -93,6 +94,7 @@ public:
         mIsFeatIdQuery(true),
         mUseFeatidMergedList(true),
 		mFetchGeometry (true),
+		mFetchDeletes (false),
 		mMaxNumObjects (0),
         mGeomByteArray (FdoByteArray::Create (SHP_CACHED_GEOMETRY_INITIAL_SIZE))
     {
@@ -598,6 +600,11 @@ public:
 		mFetchGeometry = fetchGeometry;
 	}
 
+    virtual void SetFetchDeletes (bool fetchDeletes)
+    {
+		mFetchDeletes = fetchDeletes;
+	}
+
     /// <summary>Advances the reader to the next item and returns true if there is
     /// another object to read or false if reading is complete. The default
     /// position of the reader is prior to the first item. Thus you must
@@ -745,8 +752,10 @@ private:
                 ret = true;
             }
 
-            if (deleted)
+            if (deleted && !mFetchDeletes)
+			{
                 pass = false;
+			}
             else
                 if (ret && mFilter != NULL)
                 {
@@ -911,8 +920,10 @@ private:
                 ret = true;
             }
 
-            if (deleted || !exists)
+            if ((deleted && !mFetchDeletes) || !exists)
+			{
                 pass = false;
+			}
             else
                 if ( ret_final )
                 {
@@ -976,7 +987,7 @@ private:
 					deleted = mData->IsDeleted ();
             }
 
-            if (deleted || !exists)
+            if ( (deleted && !mFetchDeletes) || !exists)
                 pass = false;
             else
                 if ( ret_final )

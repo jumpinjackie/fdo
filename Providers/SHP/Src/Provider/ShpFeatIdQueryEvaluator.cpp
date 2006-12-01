@@ -93,8 +93,12 @@ ShpFeatIdQueryEvaluator::~ShpFeatIdQueryEvaluator()
 	if ( m_MergedFeatidList )
 		delete m_MergedFeatidList;
 
+	m_MergedFeatidList = NULL;
+
 	if (m_MergedFeatidListLeaf )
 		delete m_MergedFeatidListLeaf;
+
+	m_MergedFeatidListLeaf = NULL;
 }
 
 
@@ -430,6 +434,7 @@ recno_list* ShpFeatIdQueryEvaluator::FeatidListsUnion(recno_list* left, recno_li
 
     //dispose of inputs and return newly allocated list
     delete left;
+
 	right->clear();
 
     return ret;
@@ -474,6 +479,7 @@ recno_list* ShpFeatIdQueryEvaluator::FeatidListsIntersection(recno_list* left, r
 
     //dispose of inputs and return newly allocated list
     delete left;
+
 	right->clear();
 
     return ret;
@@ -603,7 +609,10 @@ bool  ShpFeatIdQueryEvaluator::MergeFeatidLists( size_t maxAllowedSize, int maxR
 					throw FdoException::Create (L"Invalid logical operation type");
 				}
 			}
-			
+
+			delete m_MergedFeatidListLeaf;
+			m_MergedFeatidListLeaf = NULL;
+		
 			first_leaf = false;
 		}
 	}
@@ -677,24 +686,42 @@ void ShpFeatIdQueryEvaluator::ProcessLeafExpession( interval_res* curr_filter, i
             throw FdoException::Create (L"Invalid comparison operation type");
         }
 
+		// The merge functions returns the tmp_list in case the right arg. is NULL.
+		bool	deleteTmpList = true;
+
         // Use current binary logical operation to merge the current list
+
         switch ( curr_logical_op )
         {
         case FdoBinaryLogicalOperations_And:
+			deleteTmpList = (m_MergedFeatidListLeaf != NULL );
             m_MergedFeatidListLeaf = FeatidListsIntersection( m_MergedFeatidListLeaf, tmp_list );
-			delete tmp_list;
             break;
         case FdoBinaryLogicalOperations_Or:
+			deleteTmpList = (m_MergedFeatidListLeaf != NULL );
             m_MergedFeatidListLeaf = FeatidListsUnion( m_MergedFeatidListLeaf, tmp_list );
-			delete tmp_list;
             break;
         case ShpLogicalOperation_None:
-            m_MergedFeatidListLeaf = tmp_list;  // No merging if first time.     
+			{
+				// No merging if first time, just copy.  
+				m_MergedFeatidListLeaf = new recno_list;
+				recno_list::iterator iter1 = tmp_list->begin();
+				while (iter1 != tmp_list->end())
+				{
+					m_MergedFeatidListLeaf->push_back(*iter1++);
+				}
+			}
             break;
         default:
             throw FdoException::Create (L"Invalid logical operation type");
         }
-		
+	
+		if ( deleteTmpList )
+		{
+			delete tmp_list;
+			tmp_list = NULL;
+		}
+
 		if ( (m_LogicalOpsList.size() != 0 ) && m_LogicalOpsList[curr_filter->depth] == ShpUnaryLogicalOperation_Not )
 			m_MergedFeatidListLeaf = FeatidListNegate( m_MergedFeatidListLeaf, maxRecords );
 
