@@ -240,6 +240,8 @@ public:
 	/// Get the function name that returns current database name in the format and case used in F_SCHEMAINFO
 	virtual FdoString* GetDbNameClause(bool isEqual) = 0;
 
+	/// Insert Meta class
+	virtual void CreateMetaClass() = 0;
 protected:
     //Unused constructor needed only to build on Linux
     FdoSmPhOwner() {}
