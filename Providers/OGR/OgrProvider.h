@@ -95,6 +95,8 @@ public:
         { return NULL; }
     OGR_API virtual void SetConfiguration(FdoIoStream* stream) 
         {}
+    OGR_API virtual void Flush() 
+        {}
 
 
     //-------------------------------------------------------
@@ -136,6 +138,8 @@ public:
         length = sizeof(spatialTypes) / sizeof(FdoSpatialContextExtentType);
         return spatialTypes;
     }
+    OGR_API virtual bool SupportsFlush()
+        { return false; }
 
 
     //-------------------------------------------------------
@@ -981,6 +985,7 @@ class OgrSpatialContextReader : public FdoISpatialContextReader
         OgrConnection* m_connection;
         int m_nIndex;
         std::wstring m_wkt;
+        std::wstring m_name;
 };
 
 //feature reader -- returned when executing a select command

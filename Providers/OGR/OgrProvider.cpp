@@ -308,8 +308,8 @@ bool OgrConnection::IsPropertyDatastoreName(FdoString* name)
 
 bool OgrConnection::IsPropertyEnumerable(FdoString* name)
 {
-    if (wcscmp(name, PROP_NAME_READONLY) == 0)
-        return true;
+    //if (wcscmp(name, PROP_NAME_READONLY) == 0)
+    //    return true;
 
     return false;
 }
@@ -555,6 +555,8 @@ FdoIFeatureReader* OgrConnection::Insert(FdoIdentifier* fcname, FdoPropertyValue
         layer->SetAttributeFilter(filter);
         return new OgrFeatureReader(this, layer, NULL);
     }
+
+    throw FdoCommandException::Create(L"Insert of feature failed.");
 }
 
 
@@ -583,7 +585,11 @@ void OgrSpatialContextReader::Dispose()
 
 FdoString* OgrSpatialContextReader::GetName()
 {
-    return L"";
+    const char* name = m_connection->GetOGRDataSource()->GetLayer(m_nIndex)->GetLayerDefn()->GetName();
+    A2W(name);
+
+    m_name = wname;
+    return m_name.c_str();
 }
 
 FdoString* OgrSpatialContextReader::GetDescription()
@@ -593,16 +599,19 @@ FdoString* OgrSpatialContextReader::GetDescription()
 
 FdoString* OgrSpatialContextReader::GetCoordinateSystem()
 {
-    return L"";
+    return GetCoordinateSystemWkt();
 }
 
 FdoString* OgrSpatialContextReader::GetCoordinateSystemWkt()
 {
+    static const wchar_t* ArbitraryWkt_Meter = L"LOCAL_CS [ \"Non-Earth (Meter)\", LOCAL_DATUM [\"Local Datum\", 0], UNIT [\"Meter\", 1.0], AXIS [\"X\", EAST], AXIS[\"Y\", NORTH]]";
+
     char* wkt = NULL;
+    
     m_connection->GetOGRDataSource()->GetLayer(m_nIndex)->GetSpatialRef()->exportToWkt(&wkt);
     
     if (wkt == NULL)
-        return NULL;
+        return ArbitraryWkt_Meter;
     
     A2W(wkt);
     m_wkt = wwkt;
@@ -828,23 +837,28 @@ FdoByteArray* OgrFeatureReader::GetGeometry(FdoString* propertyName)
 const FdoByte* OgrFeatureReader::GetGeometry(FdoString* propertyName, FdoInt32* len)
 {
     OGRGeometry* geom = m_poFeature->GetGeometryRef();
-    
-    size_t wkblen = geom->WkbSize();
-    
-    //allocate enough to hold the geom array
-    if (m_fgflen < wkblen)
-    {
-        delete [] m_fgf;
-        delete [] m_wkb;
-        m_fgflen = wkblen;
-        m_fgf = new unsigned char[m_fgflen*2];
-        m_wkb = new unsigned char[m_fgflen];
+
+    if (geom)
+    {    
+        size_t wkblen = geom->WkbSize();
+        
+        //allocate enough to hold the geom array
+        if (m_fgflen < wkblen)
+        {
+            delete [] m_fgf;
+            delete [] m_wkb;
+            m_fgflen = wkblen;
+            m_fgf = new unsigned char[m_fgflen*2];
+            m_wkb = new unsigned char[m_fgflen];
+        }
+        
+        geom->exportToWkb(wkbNDR, (unsigned char*)m_wkb);
+        
+        *len = OgrFdoUtil::Wkb2Fgf(m_wkb, m_fgf);
+        return (const unsigned char*)m_fgf;
     }
-    
-    geom->exportToWkb(wkbNDR, (unsigned char*)m_wkb);
-    
-    *len = OgrFdoUtil::Wkb2Fgf(m_wkb, m_fgf);
-    return (const unsigned char*)m_fgf;
+
+    throw FdoException::Create(L"Geometry is null.");
 }
 
 FdoIRaster* OgrFeatureReader::GetRaster(FdoString* propertyName)

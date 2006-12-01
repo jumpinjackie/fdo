@@ -130,11 +130,10 @@ FdoClassDefinition* OgrFdoUtil::ConvertClass(OGRLayer* layer, FdoIdentifierColle
         default: gpd->SetGeometryTypes(7); break;
         }
 
-        if (gpd.p)
-        {
-            pdc->Add(gpd);
-            fc->SetGeometryProperty(gpd);
-        }
+        gpd->SetSpatialContextAssociation(wname);
+
+        pdc->Add(gpd);
+        fc->SetGeometryProperty(gpd);
 
     }
 
