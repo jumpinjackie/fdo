@@ -374,7 +374,7 @@ void FdoInsertTest::MainInsertTest (FdoIConnection *conn)
         if (m_DisableFailures)
             throw ex;
         else
-            UnitTestUtil::fail(ex);
+            TestCommonFail(ex);
     }
 }
 
@@ -473,7 +473,7 @@ void FdoInsertTest::insert2 ()
     }
     catch (FdoException *ex)
     {
-        UnitTestUtil::fail(ex);
+        TestCommonFail(ex);
     }
 }
 
@@ -538,7 +538,7 @@ void FdoInsertTest::insert3 ()
 			propertyValue = AddNewProperty( propertyValues, L"byte");
 			propertyValue->SetValue(dataValue);
 
-			FdoFloat floatValue = 3.1415901;
+			FdoFloat floatValue = (FdoFloat)3.1415901;
 			dataValue = FdoDataValue::Create(floatValue);
 			propertyValue = AddNewProperty( propertyValues, L"single");
 			propertyValue->SetValue(dataValue);
@@ -1124,11 +1124,11 @@ try
     }
     catch (FdoCommandException *ex)
     {
-        UnitTestUtil::fail(ex);
+        TestCommonFail(ex);
     }
     catch (FdoException *ex)
     {
-        UnitTestUtil::fail(ex);
+        TestCommonFail(ex);
     }
 }
 
@@ -1147,11 +1147,11 @@ void FdoInsertTest::insertEmptyProps()
     }
     catch (FdoCommandException *ex)
     {
-        UnitTestUtil::fail(ex);
+        TestCommonFail(ex);
     }
     catch (FdoException *ex)
     {
-        UnitTestUtil::fail(ex);
+        TestCommonFail(ex);
     }
     if (connection)
         connection->Close();
@@ -1267,11 +1267,11 @@ try
     }
     catch (FdoCommandException *ex)
     {
-        UnitTestUtil::fail(ex);
+        TestCommonFail(ex);
     }
     catch (FdoException *ex)
     {
-        UnitTestUtil::fail(ex);
+        TestCommonFail(ex);
     }
 }
 
@@ -1438,7 +1438,7 @@ try
             ltCreated = false;
         }
         connection->Close ();
-        UnitTestUtil::fail(ex);
+        TestCommonFail(ex);
     }
     catch (FdoException *ex)
     {
@@ -1451,7 +1451,7 @@ try
             ltCreated = false;
         }
         connection->Close ();
-        UnitTestUtil::fail(ex);
+        TestCommonFail(ex);
     }
     if (connection)
         connection->Close ();

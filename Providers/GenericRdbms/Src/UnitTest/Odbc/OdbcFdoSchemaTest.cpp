@@ -251,7 +251,7 @@ void OdbcAccessFdoSchemaTest::SchemaMappingTest()
     }
     catch (FdoException* e)
     {
-		UnitTestUtil::fail(e);
+		TestCommonFail(e);
     }
 }
 #endif

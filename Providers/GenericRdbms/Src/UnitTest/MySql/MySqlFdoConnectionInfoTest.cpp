@@ -66,7 +66,7 @@ void MySqlFdoConnectionInfoTest::TestProviderInfo ()
     {
         if (mConnection)
             mConnection->Close();
-        UnitTestUtil::fail(e);
+        TestCommonFail(e);
 	}  //  catch ...
 
 }  //  TestProviderInfo ()

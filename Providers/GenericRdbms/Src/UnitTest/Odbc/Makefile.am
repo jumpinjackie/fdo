@@ -68,7 +68,8 @@ INCLUDES = \
   -I../../ \
   -I../Common \
   -I../ \
-  -I../../Fdo/FeatureCommands
+  -I../../Fdo/FeatureCommands \
+  -I$(FDOUTILITIES)/TestCommon/Inc
 
 libOdbcUnitTests_la_LDFLAGS =
 

@@ -44,7 +44,6 @@ public:
     UnitTestUtil(void);
     ~UnitTestUtil(void);
 
-    static void fail (FdoException* ge);
     // Executes a set of SQL commands against the given connection.
     // A single command can span multiple elements in the
     // sCommands array. All commands must be separated by ';'

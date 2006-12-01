@@ -86,7 +86,7 @@ void OdbcBaseFdoInsertTest::connect ()
     catch (FdoException *ex)
     {
         mConnection = NULL;
-        UnitTestUtil::fail (ex);
+        TestCommonFail (ex);
     }
 }
 
@@ -146,7 +146,7 @@ void OdbcBaseFdoInsertTest::insert()
     }
     catch (FdoException *ex)
     {
-        UnitTestUtil::fail (ex);
+        TestCommonFail (ex);
     }
 }
 
@@ -167,7 +167,7 @@ void OdbcMySqlFdoInsertTest::ConfigFileTest()
         }
         catch (FdoException *ex)
         {
-            UnitTestUtil::fail (ex);
+            TestCommonFail (ex);
         }
 
         FdoPtr<FdoIInsert> insertCommand =
@@ -207,7 +207,7 @@ void OdbcMySqlFdoInsertTest::ConfigFileTest()
     }
     catch (FdoException *ex)
     {
-        UnitTestUtil::fail (ex);
+        TestCommonFail (ex);
     }
     if (mConnection != NULL) try
     {
@@ -220,7 +220,7 @@ void OdbcMySqlFdoInsertTest::ConfigFileTest()
     }
     catch (FdoException *ex)
     {
-        UnitTestUtil::fail (ex);
+        TestCommonFail (ex);
     }
 }
 
@@ -291,7 +291,7 @@ void OdbcBaseFdoInsertTest::insertCities()
     }
     catch (FdoException *ex)
     {
-        UnitTestUtil::fail (ex);
+        TestCommonFail (ex);
     }
 }
 
@@ -343,7 +343,7 @@ void OdbcBaseFdoInsertTest::insertTable1()
     }
     catch (FdoException *ex)
     {
-        UnitTestUtil::fail (ex);
+        TestCommonFail (ex);
     }
 }
 
@@ -411,7 +411,7 @@ void OdbcAccessFdoInsertTest::insertLidar()
     }
     catch (FdoException *ex)
     {
-        UnitTestUtil::fail (ex);
+        TestCommonFail (ex);
     }
 }
 
@@ -476,7 +476,7 @@ void OdbcExcelFdoInsertTest::insertTable1()
     }
     catch (FdoException *ex)
     {
-        UnitTestUtil::fail (ex);
+        TestCommonFail (ex);
     }
 }
 
@@ -541,7 +541,7 @@ void OdbcExcelFdoInsertTest::insertPoints()
     }
     catch (FdoException *ex)
     {
-        UnitTestUtil::fail (ex);
+        TestCommonFail (ex);
     }
 }
 

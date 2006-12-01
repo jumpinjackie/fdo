@@ -166,7 +166,7 @@ void OdbcMySqlFdoConnectTest::ConnectByDsn()
     }
     catch (FdoException *ex)
     {
-		UnitTestUtil::fail (ex);
+		TestCommonFail (ex);
     }
 }
 
@@ -303,7 +303,7 @@ void OdbcOracleFdoConnectTest::ConfigFileTest()
     }
     catch (FdoException *ex)
     {
-		UnitTestUtil::fail (ex);
+		TestCommonFail (ex);
     }
 }
 
@@ -324,7 +324,7 @@ void OdbcAccessFdoConnectTest::connect ()
     catch (FdoException *ex)
     {
         mConnection= NULL;
-        UnitTestUtil::fail (ex);
+        TestCommonFail (ex);
     }
 }
 
@@ -345,7 +345,7 @@ void OdbcAccessFdoConnectTest::StaticCreateTest()
     }
     catch (FdoException *ex)
     {
-		UnitTestUtil::fail (ex);
+		TestCommonFail (ex);
     }
 }
 
@@ -363,7 +363,7 @@ void OdbcAccessFdoConnectTest::StringTest()
     }
     catch (FdoException *ex)
     {
-		UnitTestUtil::fail (ex);
+		TestCommonFail (ex);
     }
 }
 
@@ -482,7 +482,7 @@ void OdbcAccessFdoConnectTest::ConfigFileTest()
     }
     catch (FdoException *ex)
     {
-		UnitTestUtil::fail (ex);
+		TestCommonFail (ex);
     }
 
     try
@@ -505,7 +505,7 @@ void OdbcAccessFdoConnectTest::ConfigFileTest()
     }
     catch (FdoException *ex)
     {
-		UnitTestUtil::fail (ex);
+		TestCommonFail (ex);
     }
 }
 
@@ -603,7 +603,7 @@ void OdbcAccessFdoConnectTest::OpenTest()
     }
     catch (FdoException *ex)
     {
-		UnitTestUtil::fail (ex);
+		TestCommonFail (ex);
     }
 }
 
@@ -771,7 +771,7 @@ void OdbcAccessFdoConnectTest::CapabilitiesTest()
     }
     catch (FdoException *ex)
     {
-		UnitTestUtil::fail (ex);
+		TestCommonFail (ex);
     }
 }
 
@@ -996,7 +996,7 @@ void OdbcAccessFdoConnectTest::InfoTest()
     }
     catch (FdoException *ex)
     {
-		UnitTestUtil::fail (ex);
+		TestCommonFail (ex);
     }
 }
 
@@ -1040,7 +1040,7 @@ void OdbcAccessFdoConnectTest::ConnectWithParmTest()
     }
     catch (FdoException *ex)
     {
-		UnitTestUtil::fail (ex);
+		TestCommonFail (ex);
     }
 }
 

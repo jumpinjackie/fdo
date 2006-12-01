@@ -108,7 +108,9 @@ INCLUDES = \
   -I../../Fdo/Other \
   -I../../ \
   -I../ \
-  -I../../Fdo/FeatureCommands
+  -I../../Fdo/FeatureCommands \
+  -I$(FDOUTILITIES)/TestCommon/Inc
+
 
 libCommonUnitTests_la_LDFLAGS =
 

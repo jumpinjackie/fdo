@@ -47,7 +47,7 @@ void OdbcAccessFdoAdvancedSelectTest::connect ()
     catch (FdoException *ex)
     {
         mConnection= NULL;
-        UnitTestUtil::fail (ex);
+        TestCommonFail (ex);
     }
 }
 
@@ -67,7 +67,7 @@ void OdbcMySqlFdoAdvancedSelectTest::connect ()
     catch (FdoException *ex)
     {
         mConnection= NULL;
-        UnitTestUtil::fail (ex);
+        TestCommonFail (ex);
     }
 }
 
@@ -95,7 +95,7 @@ void OdbcAccessFdoAdvancedSelectTest::TestDefect785616()
     }
     catch (FdoException* e)
     {
-        UnitTestUtil::fail (e);
+        TestCommonFail (e);
     }
 }
 
@@ -126,7 +126,7 @@ void OdbcAccessFdoAdvancedSelectTest::Table1Test()
     }
     catch (FdoException* e)
     {
-        UnitTestUtil::fail (e);
+        TestCommonFail (e);
     }
 }
 
@@ -163,7 +163,7 @@ void OdbcAccessFdoAdvancedSelectTest::RestrictedPropertiesTable1Test()
     }
     catch (FdoException* e)
     {
-        UnitTestUtil::fail (e);
+        TestCommonFail (e);
     }
 }
 
@@ -222,7 +222,7 @@ void OdbcAccessFdoAdvancedSelectTest::ComparisonFilterTable1Test()
     }
     catch (FdoException* e)
     {
-        UnitTestUtil::fail (e);
+        TestCommonFail (e);
     }
 }
 
@@ -248,7 +248,7 @@ void OdbcAccessFdoAdvancedSelectTest::TestReaderDestructor()
     }
     catch (FdoException* e)
     {
-        UnitTestUtil::fail (e);
+        TestCommonFail (e);
     }
 #endif
 }
@@ -339,7 +339,7 @@ void OdbcAccessFdoAdvancedSelectTest::selectDistinctTest()
     }
     catch (FdoException *e)
     {
-        UnitTestUtil::fail (e);
+        TestCommonFail (e);
     }
 }
 
@@ -392,7 +392,7 @@ void OdbcAccessFdoAdvancedSelectTest::orderByTest()
     }
     catch (FdoException *e)
     {
-        UnitTestUtil::fail (e);
+        TestCommonFail (e);
     }
 #endif
 }
@@ -454,7 +454,7 @@ void OdbcAccessFdoAdvancedSelectTest::groupByTest()
     }
     catch (FdoException *e)
     {
-        UnitTestUtil::fail (e);
+        TestCommonFail (e);
     }
 #endif
 }
@@ -517,7 +517,7 @@ void OdbcAccessFdoAdvancedSelectTest::groupByorderByTest()
     }
     catch (FdoException *e)
     {
-        UnitTestUtil::fail (e);
+        TestCommonFail (e);
     }
 #endif
 }
@@ -560,7 +560,7 @@ void OdbcMySqlFdoAdvancedSelectTest::compIdentPropertyTest()
     }
     catch (FdoException *e)
     {
-        UnitTestUtil::fail (e);
+        TestCommonFail (e);
     }
 }
 
@@ -622,7 +622,7 @@ void OdbcMySqlFdoAdvancedSelectTest::groupByorderByTest()
     }
     catch (FdoException *e)
     {
-        UnitTestUtil::fail (e);
+        TestCommonFail (e);
     }
 #endif
 }
@@ -664,7 +664,7 @@ void OdbcAccessFdoAdvancedSelectTest::TestSelectExpressions()
     }
     catch (FdoException *e)
     {
-        UnitTestUtil::fail (e);
+        TestCommonFail (e);
     }
 }
 
@@ -718,7 +718,7 @@ void OdbcAccessFdoAdvancedSelectTest::TestCount()
     }
     catch (FdoException *e)
     {
-        UnitTestUtil::fail (e);
+        TestCommonFail (e);
     }
 }
 
@@ -769,7 +769,7 @@ void OdbcAccessFdoAdvancedSelectTest::TestUpperLower()
     }
     catch (FdoException *e)
     {
-        UnitTestUtil::fail (e);
+        TestCommonFail (e);
     }
 #endif
 }
@@ -819,7 +819,7 @@ void OdbcAccessFdoAdvancedSelectTest::TestConcat()
     }
     catch (FdoException *e)
     {
-        UnitTestUtil::fail (e);
+        TestCommonFail (e);
     }
 #endif
 }

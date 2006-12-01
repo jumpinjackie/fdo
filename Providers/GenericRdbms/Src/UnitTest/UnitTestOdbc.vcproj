@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\include&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\inc&quot;;&quot;$(FDO)\Unmanaged&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\Gdbi;..\Fdo\Lt;..\Fdo\Other;..\Fdo\Connection;..\Fdo\FeatureCommands;..\Fdo\SpatialContext;..\LongTransactionManager;..\..;..\..\inc;..\..\inc\fdo;../;..\LockManager;Common"
+				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\include&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\inc&quot;;&quot;$(FDO)\Unmanaged&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\Gdbi;..\Fdo\Lt;..\Fdo\Other;..\Fdo\Connection;..\Fdo\FeatureCommands;..\Fdo\SpatialContext;..\LongTransactionManager;..\..;..\..\inc;..\..\inc\fdo;../;..\LockManager;Common;$(FDOUTILITIES)\TestCommon\inc"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -65,9 +65,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib ODBCCP32.Lib FDONLS.lib Rdbi.lib ODBCDriver.lib cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib gdbi.lib geometry_fgf.lib ProvidersCommon.lib grdschemamgr.lib rdbmsoverrides.lib schemamgr_lpnew.lib schemamgr_phnew.lib schemamgrnew.lib FDOSpatial.lib SchemaMgr_OVNew.lib OdbcSchemaMgr.lib ODBCOverrides.lib util.lib FdoGeneric.lib Advapi32.lib User32.lib"
+				AdditionalDependencies="odbc32.lib ODBCCP32.Lib FDONLS.lib Rdbi.lib ODBCDriver.lib cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib gdbi.lib geometry_fgf.lib ProvidersCommon.lib grdschemamgr.lib rdbmsoverrides.lib schemamgr_lpnew.lib schemamgr_phnew.lib schemamgrnew.lib FDOSpatial.lib SchemaMgr_OVNew.lib OdbcSchemaMgr.lib ODBCOverrides.lib util.lib FdoGeneric.lib Advapi32.lib User32.lib TestCommon.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\Lib\Win32\Debug;&quot;$(FDO)\Unmanaged\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Debug&quot;"
+				AdditionalLibraryDirectories="..\..\Lib\Win32\Debug;&quot;$(FDO)\Unmanaged\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\TestCommon\Lib\Win32\Debug&quot;"
 				IgnoreDefaultLibraryNames="libcmtd.lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
@@ -125,7 +125,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\include&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\inc&quot;;&quot;$(FDO)\Unmanaged&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\Gdbi;..\Fdo\Lt;..\Fdo\Other;..\Fdo\Connection;..\Fdo\FeatureCommands;..\Fdo\SpatialContext;..\LongTransactionManager;..\..;..\..\inc;..\..\inc\fdo;../;..\LockManager;Common"
+				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\include&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\inc&quot;;&quot;$(FDO)\Unmanaged&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\Gdbi;..\Fdo\Lt;..\Fdo\Other;..\Fdo\Connection;..\Fdo\FeatureCommands;..\Fdo\SpatialContext;..\LongTransactionManager;..\..;..\..\inc;..\..\inc\fdo;../;..\LockManager;Common;$(FDOUTILITIES)\TestCommon\inc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="2"
 				TreatWChar_tAsBuiltInType="true"
@@ -145,8 +145,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib ODBCCP32.Lib FDONLS.lib Rdbi.lib ODBCDriver.lib cppunit.lib FDO.lib FDOCommon.lib FDOGeometry.lib gdbi.lib geometry_fgf.lib ProvidersCommon.lib grdschemamgr.lib rdbmsoverrides.lib schemamgr_lpnew.lib schemamgr_phnew.lib schemamgrnew.lib FDOSpatial.lib SchemaMgr_OVNew.lib OdbcSchemaMgr.lib ODBCOverrides.lib util.lib FdoGeneric.lib Advapi32.lib User32.lib"
-				AdditionalLibraryDirectories="..\..\Lib\Win32\Release;&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Release&quot;"
+				AdditionalDependencies="odbc32.lib ODBCCP32.Lib FDONLS.lib Rdbi.lib ODBCDriver.lib cppunit.lib FDO.lib FDOCommon.lib FDOGeometry.lib gdbi.lib geometry_fgf.lib ProvidersCommon.lib grdschemamgr.lib rdbmsoverrides.lib schemamgr_lpnew.lib schemamgr_phnew.lib schemamgrnew.lib FDOSpatial.lib SchemaMgr_OVNew.lib OdbcSchemaMgr.lib ODBCOverrides.lib util.lib FdoGeneric.lib Advapi32.lib User32.lib TestCommon.lib"
+				AdditionalLibraryDirectories="..\..\Lib\Win32\Release;&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\TestCommon\Lib\Win32\Release&quot;"
 				IgnoreDefaultLibraryNames="libc.lib"
 			/>
 			<Tool

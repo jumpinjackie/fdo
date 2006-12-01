@@ -623,6 +623,9 @@ FdoClassDefinition *FdoRdbmsFeatureReader::FilterClassDefinition(
     FdoClassDefinition *returnClassDef = NULL;
     bool isComputed = false;
 
+    if( mColCount == -1 )
+        (void)GetPropertyCount(); // Initializes the column description
+
     if (mProperties && mProperties->GetCount() > 0)
     {
         FdoClassDefinitionP nextBaseClass = classDef->GetBaseClass();
@@ -653,6 +656,7 @@ FdoClassDefinition *FdoRdbmsFeatureReader::FilterClassDefinition(
                 if (wcscmp(selectedName, dataProperty->GetName()) == 0)
                 {
                     idProperties->RemoveAt(j);
+                    properties->Remove(dataProperty);
                     subsetIdProperties->Add(dataProperty);
                     break;
                 }
@@ -751,12 +755,13 @@ FdoClassDefinition *FdoRdbmsFeatureReader::FilterClassDefinition(
             FdoPtr<FdoPropertyDefinition> item = subsetProperties->GetItem(i);
             properties->Add(item);
         }
-        FdoPtr<FdoDataPropertyDefinitionCollection> dataProperties = returnClassDef->GetIdentityProperties();
+        FdoPtr<FdoDataPropertyDefinitionCollection> retIdProperties = returnClassDef->GetIdentityProperties();
         for (int i=0; i<subsetIdProperties->GetCount(); i++)
         {
             FdoPtr<FdoDataPropertyDefinition> item = subsetIdProperties->GetItem(i);
-            dataProperties->Add(item);
-        }
+            if (!properties->Contains(item))
+                properties->Add(item);
+            retIdProperties->Add(item);        }
     }
     else
     {

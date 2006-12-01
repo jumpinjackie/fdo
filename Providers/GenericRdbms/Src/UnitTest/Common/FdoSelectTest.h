@@ -36,6 +36,8 @@ class FdoSelectTest : public CppUnit::TestCase
 //  CPPUNIT_TEST(feature_select_obj_distinct);
   CPPUNIT_TEST(feature_geom_query);
   CPPUNIT_TEST(concurrent_select);
+  CPPUNIT_TEST(_duplicateComputedIdTest);
+  CPPUNIT_TEST(_secondComputedIdTest);
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -65,6 +67,14 @@ public:
     // Tests that are common to some providers but not others;
     // Each provider that wants to run a common test should add a CPPUNIT_TEST() macro entry for it:
     virtual void TestDateFilter();
+
+    virtual void _duplicateComputedIdTest() {
+        TestCommonFeatureCommands::duplicateComputedIdTest(mConnection, L"Acad:AcDb3dPolyline", L"segcount");
+    }
+
+    virtual void _secondComputedIdTest() {
+        TestCommonFeatureCommands::secondComputedIdTest(mConnection, L"Acad:AcDb3dPolyline", L"segcount");
+    }
 
 protected:
     FdoPtr<FdoIConnection> mConnection;

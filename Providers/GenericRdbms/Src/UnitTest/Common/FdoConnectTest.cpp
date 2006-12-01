@@ -89,7 +89,7 @@ void FdoConnectTest::connect ()
     {
         if (mConnection)
             mConnection= NULL;
-        UnitTestUtil::fail (ex);
+        TestCommonFail (ex);
     }
 
 }
@@ -117,7 +117,7 @@ void FdoConnectTest::ReadAcDbPolyline( int connNumber, FdoIFeatureReader *myRead
     catch( FdoException *ex)
     {
         printf("(%s)FDO exception: %ls \n", (connNumber==1)?"First":"Second", ex->GetExceptionMessage() );
-        UnitTestUtil::fail(ex);
+        TestCommonFail(ex);
     }
 }
 
@@ -141,7 +141,7 @@ void FdoConnectTest::query ()
         }
         catch (FdoException *ex )
         {
-			UnitTestUtil::fail(ex);
+			TestCommonFail(ex);
         }
         try
         {
@@ -159,7 +159,7 @@ void FdoConnectTest::query ()
         }
         catch( FdoException *ex )
         {
-			UnitTestUtil::fail(ex);
+			TestCommonFail(ex);
         }
     }
 }

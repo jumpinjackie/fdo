@@ -70,5 +70,6 @@
 
 #include <Rdbms.h>
 #include <Rdbms/Override/RdbmsOv.h>
+#include <TestCommon.h>
 
 #endif //_GENERICRDBMSUNITTESTCOMMONPCH_H_

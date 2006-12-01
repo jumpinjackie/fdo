@@ -156,7 +156,29 @@ void OdbcTextDescribeSchemaTest::describe()
                 FdoString* className = featureClass->GetName();
                 FdoPtr<FdoISelect> select = (FdoISelect*)connection->CreateCommand (FdoCommandType_Select);
                 select->SetFeatureClassName (className);
-                select->Execute();
+                FdoPtr<FdoIFeatureReader> reader = select->Execute();
+                FdoString* countryKey;
+                while (reader->ReadNext())
+                {
+                    countryKey = reader->GetString(L"COUNTRY_KEY");
+                }
+                reader = NULL;
+
+                FdoPtr<FdoISelectAggregates> selectAggr = (FdoISelectAggregates*)connection->CreateCommand (FdoCommandType_SelectAggregates);
+                selectAggr->SetFeatureClassName (className);
+                FdoPtr<FdoIdentifierCollection> ids = selectAggr->GetPropertyNames();
+                ids->Clear();
+                FdoPtr<FdoExpression> expr = FdoExpression::Parse(L"count(COUNTRY_KEY)");
+                FdoPtr<FdoComputedIdentifier> compId = FdoComputedIdentifier::Create(L"MYCOMPID", expr);
+                ids->Add(compId);
+                FdoPtr<FdoIDataReader> dataReader = selectAggr->Execute();
+                FdoInt32 mycount;
+                while (dataReader->ReadNext())
+                {
+                    mycount = dataReader->GetInt32(L"MYCOMPID");
+                    CPPUNIT_ASSERT_MESSAGE("SelectAggregates returned incorrect count", 176 == mycount);
+                }
+                dataReader = NULL;
             }
         }
     }

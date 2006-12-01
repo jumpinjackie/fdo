@@ -203,7 +203,7 @@ void FdoSelectTest::read_feature_data( FdoIFeatureReader *myReader, bool subset 
     }
     catch( FdoException *ex )
     {
-		UnitTestUtil::fail (ex);
+		TestCommonFail (ex);
         throw;
     }
 }
@@ -253,7 +253,7 @@ void FdoSelectTest::feature_query ()
         }
         catch( FdoException *ex )
         {
-			UnitTestUtil::fail (ex);
+			TestCommonFail (ex);
         }
     }
 	finish = clock();
@@ -294,7 +294,7 @@ void FdoSelectTest::feature_object_query ()
         catch( FdoException *ex )
         {
             DBG( printf("FDO Feature query error: %ls\n", ex->GetExceptionMessage()) );
-			UnitTestUtil::fail (ex);
+			TestCommonFail (ex);
         }
     }
 }
@@ -381,7 +381,7 @@ void FdoSelectTest::read_non_feature_data( FdoIFeatureReader *myReader, bool sub
     catch( FdoException *ex )
     {
         DBG( printf("FDO exception: %ls \n", ex->GetExceptionMessage() ) );
-        UnitTestUtil::fail (ex);
+        TestCommonFail (ex);
     }
 }
 
@@ -416,7 +416,7 @@ void FdoSelectTest::non_feature_query ()
         catch( FdoException *ex )
         {
             DBG( printf("FDO Feature query error: %ls\n", ex->GetExceptionMessage()) );
-            UnitTestUtil::fail (ex);
+            TestCommonFail (ex);
         }
     }
 }
@@ -466,7 +466,7 @@ void FdoSelectTest::distance_query()
         catch( FdoException *ex )
         {
             DBG( printf("FDO Feature query error: %ls\n", ex->GetExceptionMessage()) );
-            UnitTestUtil::fail (ex);
+            TestCommonFail (ex);
         }
     }
 }
@@ -512,7 +512,7 @@ void FdoSelectTest::spatial_query()
         catch( FdoException *ex )
         {
             DBG( printf("FDO Feature query error: %ls\n", ex->GetExceptionMessage()) );
-            UnitTestUtil::fail (ex);
+            TestCommonFail (ex);
         }
     }
 }
@@ -573,7 +573,7 @@ void FdoSelectTest::feature_subset_query ()
         catch( FdoException *ex )
         {
             DBG( printf("FDO Feature query error: %ls\n", ex->GetExceptionMessage()) );
-            UnitTestUtil::fail (ex);
+            TestCommonFail (ex);
         }
     }
 }
@@ -617,7 +617,7 @@ void FdoSelectTest::feature_subset_query2 ()
         catch( FdoException *ex )
         {
             DBG( printf("FDO Feature query error: %ls\n", ex->GetExceptionMessage()) );
-            UnitTestUtil::fail (ex);
+            TestCommonFail (ex);
         }
     }
 }
@@ -652,7 +652,7 @@ void FdoSelectTest::read_feature_data2( FdoIFeatureReader *myReader )
     catch( FdoException *ex )
     {
         DBG( printf("FDO exception: %ls \n", ex->GetExceptionMessage() ) );
-        UnitTestUtil::fail (ex);
+        TestCommonFail (ex);
     }
 }
 
@@ -677,10 +677,6 @@ void FdoSelectTest::non_feature_subset_query ()
             name = FdoIdentifier::Create(L"Age");
             names->Add(name);
             name = FdoIdentifier::Create(L"LastName");
-            names->Add(name);
-            name = FdoIdentifier::Create(L"LastName");
-            names->Add(name);
-            name = FdoIdentifier::Create(L"Object.ObjectWeight");
             names->Add(name);
  //           name = FdoIdentifier::Create(L"FirstName");
 //            names->Add(name);
@@ -714,7 +710,7 @@ void FdoSelectTest::non_feature_subset_query ()
         catch( FdoException *ex )
         {
             DBG( printf("FDO Feature query error: %ls\n", ex->GetExceptionMessage()) );
-            UnitTestUtil::fail (ex);
+            TestCommonFail (ex);
         }
     }
 }
@@ -756,7 +752,7 @@ void FdoSelectTest::feature_select_obj_distinct()
         }
         catch( FdoException *ex )
         {
-			UnitTestUtil::fail (ex);
+			TestCommonFail (ex);
         }
     }
 }
@@ -840,7 +836,7 @@ void FdoSelectTest::feature_geom_query ()
         }
         catch( FdoException *ex )
         {
-			UnitTestUtil::fail (ex);
+			TestCommonFail (ex);
         }
     }
 }
@@ -875,7 +871,7 @@ void FdoSelectTest::TestDateFilter()
         }
         catch (FdoException* e)
         {
-            UnitTestUtil::fail (e);
+            TestCommonFail (e);
         }
     }
 }
@@ -910,6 +906,6 @@ void FdoSelectTest::concurrent_select()
     }
     catch (FdoException* e)
     {
-        UnitTestUtil::fail (e);
+        TestCommonFail (e);
     }
 }

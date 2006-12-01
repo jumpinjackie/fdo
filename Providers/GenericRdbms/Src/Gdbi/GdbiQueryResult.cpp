@@ -98,7 +98,7 @@ void GdbiQueryResult::define_exec()
         FdoStringP  upperName = FdoStringP(colName).Upper();
         const wchar_t* name = (const wchar_t*)upperName;
         if (mColMap->find (name) != mColMap->end())
-            continue;
+            continue; // TODO: throw new GdbiException(FdoCommonNlsUtil::NLSGetMessage( FDORDBMS_495, "Duplicate columns of name '%1$ls' found in query result.", fdordbms_cat, name));
         mColMap->insert( std::pair<std::wstring,GdbiColumnInfoType*> ( name, colInfo ) );
         colInfo->original_type = colInfo->type;
         colInfo->index = idx-1;

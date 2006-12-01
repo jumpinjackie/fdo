@@ -59,6 +59,32 @@ public:
     OdbcOracleFdoSelectTest(void)   { this->mSetup.SetTypeDB(DataBaseType_Oracle); }
     virtual void set_provider()     { UnitTestUtil::SetProvider( "OdbcOracle" ); }
     virtual int numPropertiesInPolylineClass() { return 17; }
+
+    virtual void _duplicateComputedIdTest() {
+        // determine feature class name:
+        FdoStringP schemaName = FdoStringP(UnitTestUtil::GetEnviron("datastore")).Upper();
+#ifdef _WIN32
+        FdoStringP fcn = schemaName + L":ACDB3DPOLYLINE";
+#else
+        // For Linux, Easysoft's default config does not report schema names.
+        FdoStringP fcn = L"ACDB3DPOLYLINE";
+#endif
+
+        TestCommonFeatureCommands::duplicateComputedIdTest(mConnection, fcn, L"CLASSID");
+    }
+
+    virtual void _secondComputedIdTest() {
+        // determine feature class name:
+        FdoStringP schemaName = FdoStringP(UnitTestUtil::GetEnviron("datastore")).Upper();
+#ifdef _WIN32
+        FdoStringP fcn = schemaName + L":ACDB3DPOLYLINE";
+#else
+        // For Linux, Easysoft's default config does not report schema names.
+        FdoStringP fcn = L"ACDB3DPOLYLINE";
+#endif
+
+        TestCommonFeatureCommands::secondComputedIdTest(mConnection, fcn, L"CLASSID");
+    }
 };
 
 class OdbcMySqlFdoSelectTest : public OdbcFdoSelectTest
@@ -74,8 +100,16 @@ public:
     virtual void ConfigFileTest();
     FdoString * GetConfigFile2() {return L"MySqlTestConfig2.xml";}
 
-    virtual FdoString * GetClassName()          { return L"testClass"; }
+    virtual FdoString * GetClassName()          { return L"testclass"; }
     virtual int numPropertiesInPolylineClass() { return 15; }
+
+    virtual void _duplicateComputedIdTest() {
+        TestCommonFeatureCommands::duplicateComputedIdTest(mConnection, L"acdb3dpolyline", L"featid");
+    }
+
+    virtual void _secondComputedIdTest() {
+        TestCommonFeatureCommands::secondComputedIdTest(mConnection, L"acdb3dpolyline", L"featid");
+    }
 };
 
 #ifdef _WIN32
@@ -88,6 +122,14 @@ class OdbcSqlServerFdoSelectTest : public OdbcFdoSelectTest
 
     OdbcSqlServerFdoSelectTest(void) { this->mSetup.SetTypeDB(DataBaseType_SqlServer); }
     virtual void set_provider()      { UnitTestUtil::SetProvider( "OdbcSqlServer" ); }
+
+    virtual void _duplicateComputedIdTest() {
+        TestCommonFeatureCommands::duplicateComputedIdTest(mConnection, L"acdb3dpolyline", L"featid");
+    }
+
+    virtual void _secondComputedIdTest() {
+        TestCommonFeatureCommands::secondComputedIdTest(mConnection, L"acdb3dpolyline", L"featid");
+    }
 };
 
 class OdbcAccessFdoSelectTest : public OdbcFdoSelectTest
@@ -121,6 +163,22 @@ public:
 
     virtual void feature_query () {};
     virtual void concurrent_select () {};
+
+    virtual void _duplicateComputedIdTest() {
+        // determine feature class name:
+        FdoStringP fcn = GetSchemaName();
+        fcn += L":TABLE1";
+
+        TestCommonFeatureCommands::duplicateComputedIdTest(mConnection, fcn, L"FEATID1");
+    }
+
+    virtual void _secondComputedIdTest() {
+        // determine feature class name:
+        FdoStringP fcn = GetSchemaName();
+        fcn += L":TABLE1";
+
+        TestCommonFeatureCommands::secondComputedIdTest(mConnection, fcn, L"FEATID1");
+    }
 };
 
 class OdbcDbaseFdoSelectTest : public OdbcAccessFdoSelectTest
@@ -167,6 +225,22 @@ class OdbcExcelFdoSelectTest : public OdbcFdoSelectTest
 
     virtual void feature_query () {};
     virtual void concurrent_select () {};
+
+    virtual void _duplicateComputedIdTest() {
+        // determine feature class name:
+        FdoStringP fcn = GetSchemaName();
+        fcn += L":ALLTYPES";
+
+        TestCommonFeatureCommands::duplicateComputedIdTest(mConnection, fcn, L"ID");
+    }
+
+    virtual void _secondComputedIdTest() {
+        // determine feature class name:
+        FdoStringP fcn = GetSchemaName();
+        fcn += L":ALLTYPES";
+
+        TestCommonFeatureCommands::secondComputedIdTest(mConnection, fcn, L"ID");
+    }
 };
 #endif
 

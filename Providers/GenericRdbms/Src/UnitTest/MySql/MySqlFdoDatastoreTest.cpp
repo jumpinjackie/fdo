@@ -44,7 +44,7 @@ void MySqlFdoDatastoreTest::ReservedName(FdoIConnection* connection)
             expectedErrMsg[wcslen(expectedErrMsg)-1] = L'\0';
 
         if ( wcscmp(excMsg, expectedErrMsg) != 0 )
-            UnitTestUtil::fail(ex);
+            TestCommonFail(ex);
         else
             ex->Release();
         failed = true;

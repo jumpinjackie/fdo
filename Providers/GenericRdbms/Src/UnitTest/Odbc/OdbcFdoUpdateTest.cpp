@@ -93,7 +93,7 @@ void OdbcBaseFdoUpdateTest::connect ()
     catch (FdoException *ex)
     {
         mConnection = NULL;
-        UnitTestUtil::fail (ex);
+        TestCommonFail (ex);
     }
 
 }
@@ -156,7 +156,7 @@ void OdbcBaseFdoUpdateTest::updateCities()
     }
     catch (FdoException *ex)
     {
-        UnitTestUtil::fail (ex);
+        TestCommonFail (ex);
     }
 }
 
@@ -241,7 +241,7 @@ void OdbcBaseFdoUpdateTest::updateTable1()
     }
     catch (FdoException *ex)
     {
-        UnitTestUtil::fail (ex);
+        TestCommonFail (ex);
     }
 #endif
 }
@@ -281,7 +281,7 @@ void OdbcAccessFdoUpdateTest::updateCities()
     }
     catch (FdoException *ex)
     {
-        UnitTestUtil::fail (ex);
+        TestCommonFail (ex);
     }
 }
 
@@ -365,7 +365,7 @@ void OdbcAccessFdoUpdateTest::updateTable1()
     }
     catch (FdoException *ex)
     {
-        UnitTestUtil::fail (ex);
+        TestCommonFail (ex);
     }
 }
 
@@ -452,7 +452,7 @@ void OdbcExcelFdoUpdateTest::updateTable1()
     }
     catch (FdoException *ex)
     {
-        UnitTestUtil::fail (ex);
+        TestCommonFail (ex);
     }
 }
 #endif

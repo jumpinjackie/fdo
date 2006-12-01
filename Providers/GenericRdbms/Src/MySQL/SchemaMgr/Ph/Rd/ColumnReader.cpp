@@ -158,7 +158,6 @@ FdoSmPhReaderP FdoSmPhRdMySqlColumnReader::MakeQueryReader (
               L"             When 'bit' THEN CONVERT( MID(column_type,INSTR(column_type,'(')+1,INSTR(column_type,')')-INSTR(column_type,'(')-1), UNSIGNED) \n"
               L"             ELSE ifnull(character_octet_length,numeric_precision) \n"
               L" END as size, \n"
-              L" ifnull(character_octet_length,numeric_precision) as size,\n"
               L" numeric_scale as scale,\n"
               L" if(is_nullable='YES',1,0) as nullable,\n"
               L" lower(data_type) as type_string,\n"

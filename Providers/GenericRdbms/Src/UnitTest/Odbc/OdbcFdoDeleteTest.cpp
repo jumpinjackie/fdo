@@ -81,7 +81,7 @@ void OdbcBaseFdoDeleteTest::connect ()
     catch (FdoException *ex)
     {
         mConnection = NULL;
-        UnitTestUtil::fail (ex);
+        TestCommonFail (ex);
     }
 
 }
@@ -107,7 +107,7 @@ void OdbcBaseFdoDeleteTest::FeatureDelete ()
     }
     catch (FdoException *ex)
     {
-        UnitTestUtil::fail(ex);
+        TestCommonFail(ex);
     }
 }
 
@@ -142,7 +142,7 @@ void OdbcMySqlFdoDeleteTest::ConfigFileTest()
     }
     catch (FdoException *ex)
     {
-        UnitTestUtil::fail(ex);
+        TestCommonFail(ex);
     }
 }
 

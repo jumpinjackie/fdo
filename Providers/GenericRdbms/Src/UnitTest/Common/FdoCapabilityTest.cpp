@@ -281,7 +281,7 @@ void FdoCapabilityTest::Connection ()
             delete m_supportedFunctions[i];
             m_supportedFunctions[i] = NULL;
         }
-      UnitTestUtil::fail(ex);
+       TestCommonFail(ex);
     }  //  catch ...
 
 }  //  Connection ()
@@ -327,7 +327,7 @@ void FdoCapabilityTest::Datastore()
 
       if (connection)
           connection->Close ();
-      UnitTestUtil::fail(ex);
+      TestCommonFail(ex);
     }  //  catch ...
 
 }  //  Datastore ()
@@ -500,7 +500,7 @@ void FdoCapabilityTest::Schema ()
       if (connection)
           connection->Close ();
 
-      UnitTestUtil::fail(ex);
+      TestCommonFail(ex);
     }  //  catch ...
 
 }  //  Schema ()

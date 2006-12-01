@@ -50,11 +50,11 @@ void MySqlFdoConnectTest::connectPropDictionaryTest()
 	}
 	catch (FdoException* exception)
 	{
-        UnitTestUtil::fail(exception);
+        TestCommonFail(exception);
 	}
 	catch (...)
 	{
-        UnitTestUtil::fail(FdoException::Create(L"Unknown exception"));
+        TestCommonFail(FdoException::Create(L"Unknown exception"));
 	}
 }
 

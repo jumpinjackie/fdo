@@ -60,7 +60,7 @@ void OdbcSqlServerFdoSqlCmdTest::connect ()
     catch (FdoException *ex)
     {
         mConnection= NULL;
-        UnitTestUtil::fail (ex);
+        TestCommonFail (ex);
     }
 }
 
@@ -87,7 +87,7 @@ void OdbcSqlServerFdoSqlCmdTest::CreateAndDrop8bitTable ()
         }
         catch( FdoException *ex )
         {
-			UnitTestUtil::fail(ex);
+			TestCommonFail(ex);
         }
     }
 
@@ -152,7 +152,7 @@ void OdbcAccessFdoSqlCmdTest::EmployeesTest()
         }
         catch (FdoException* e)
         {
-            UnitTestUtil::fail (e);
+            TestCommonFail (e);
         }
     }
 }
@@ -198,7 +198,7 @@ void OdbcAccessFdoSqlCmdTest::Table1Test()
         }
         catch (FdoException* e)
         {
-            UnitTestUtil::fail (e);
+            TestCommonFail (e);
         }
     }
 }
@@ -214,7 +214,7 @@ void OdbcAccessFdoSqlCmdTest::connect ()
     catch (FdoException *ex)
     {
         mConnection= NULL;
-        UnitTestUtil::fail (ex);
+        TestCommonFail (ex);
     }
 }
 #endif

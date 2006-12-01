@@ -100,7 +100,8 @@ INCLUDES = \
   -I../../ \
   -I../ \
   -I../Common \
-  -I../../Fdo/FeatureCommands
+  -I../../Fdo/FeatureCommands \
+  -I$(FDOUTILITIES)/TestCommon/Inc
 
 libMySqlUnitTests_la_LDFLAGS =
 

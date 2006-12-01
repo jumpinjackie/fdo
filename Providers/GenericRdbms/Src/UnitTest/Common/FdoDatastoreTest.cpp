@@ -100,7 +100,7 @@ void FdoDatastoreTest::ListDatabaseProperties( FdoIDataStorePropertyDictionary* 
     }
     catch (FdoException *ex)
     {
-        UnitTestUtil::fail(ex);
+        TestCommonFail(ex);
     }
 }
 
@@ -169,7 +169,7 @@ int FdoDatastoreTest::ListDatastores( bool include )
     {
         if (connection)
     	    connection->Close ();
-        UnitTestUtil::fail(ex);
+        TestCommonFail(ex);
     }
 	return countDb;
 }
@@ -200,7 +200,7 @@ void FdoDatastoreTest::Cmd_CreateDatastore()
     {
         if (connection)
     	    connection->Close ();
-        UnitTestUtil::fail(ex);
+        TestCommonFail(ex);
     }
 }
 
@@ -313,7 +313,7 @@ void FdoDatastoreTest::DestroyDatastore(bool ignoreEx)
         if (connection)
     	    connection->Close ();
 		if ( !ignoreEx )
-			UnitTestUtil::fail(ex);
+			TestCommonFail(ex);
         else
             ex->Release();
     }
@@ -341,7 +341,7 @@ void FdoDatastoreTest::TestReservedName()
     {
         if (connection)
     	    connection->Close ();
-        UnitTestUtil::fail(ex);
+        TestCommonFail(ex);
     }
 }
 
@@ -403,6 +403,6 @@ void FdoDatastoreTest::DropAllMyDatastores()
     {
         if (connection)
     	    connection->Close ();
-        UnitTestUtil::fail(ex);
+        TestCommonFail(ex);
     }
 }

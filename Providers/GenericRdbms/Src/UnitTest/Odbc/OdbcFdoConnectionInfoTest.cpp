@@ -94,7 +94,7 @@ void OdbcMySqlFdoConnectionInfoTest::TestProviderInfo ()
 	catch (FdoException *e)
     {
         mConnection->Close();
-        UnitTestUtil::fail (e);
+        TestCommonFail (e);
 	}  //  catch ...
 
 }  //  TestProviderInfo ()
@@ -139,7 +139,7 @@ void OdbcOracleFdoConnectionInfoTest::TestProviderInfo ()
 	catch (FdoException *e)
     {
         mConnection->Close();
-        UnitTestUtil::fail (e);
+        TestCommonFail (e);
 	}  //  catch ...
 
 }  //  TestProviderInfo ()
@@ -186,7 +186,7 @@ void OdbcSqlServerFdoConnectionInfoTest::TestProviderInfo ()
 	catch (FdoException *e)
     {
         mConnection->Close();
-        UnitTestUtil::fail (e);
+        TestCommonFail (e);
 	}  //  catch ...
 
 }  //  TestProviderInfo ()
@@ -256,7 +256,7 @@ void OdbcAccessFdoConnectionInfoTest::TestProviderInfo ()
 
 	catch (FdoException *e) 
     {
-        UnitTestUtil::fail (e);
+        TestCommonFail (e);
 	}  //  catch ...
 
 }  //  TestProviderInfo ()
@@ -324,7 +324,7 @@ void OdbcExcelFdoConnectionInfoTest::TestProviderInfo ()
 	catch (FdoException *e)
     {
         mConnection->Close();
-        UnitTestUtil::fail (e);
+        TestCommonFail (e);
 	}  //  catch ...
 
 }  //  TestProviderInfo ()
@@ -392,7 +392,7 @@ void OdbcTextFdoConnectionInfoTest::TestProviderInfo ()
 	catch (FdoException *e)
     {
         mConnection->Close();
-        UnitTestUtil::fail (e);
+        TestCommonFail (e);
 	}  //  catch ...
 
 }  //  TestProviderInfo ()

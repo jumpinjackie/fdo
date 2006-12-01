@@ -58,7 +58,9 @@ CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcExcelFdoSelectTest, "OdbcExcelTests")
 void OdbcFdoSelectTest::setUp ()
 {
     mConnection = NULL;
+
     set_provider();
+
     connect();
 }
 
@@ -96,7 +98,7 @@ void OdbcFdoSelectTest::connect ()
     catch (FdoException *ex)
     {
         mConnection = NULL;
-        UnitTestUtil::fail (ex);
+        TestCommonFail (ex);
     }
 }
 
@@ -137,7 +139,7 @@ void OdbcFdoSelectTest::feature_query()
         }
         catch (FdoException* e)
         {
-            UnitTestUtil::fail (e);
+            TestCommonFail (e);
         }
     }
 }
@@ -180,7 +182,7 @@ void OdbcMySqlFdoSelectTest::ConfigFileTest()
     }
     catch (FdoException *ex)
     {
-		UnitTestUtil::fail(ex);
+		TestCommonFail(ex);
     }
 }
 
@@ -222,7 +224,7 @@ void OdbcAccessFdoSelectTest::Table1Test()
         }
         catch (FdoException* e)
         {
-            UnitTestUtil::fail (e);
+            TestCommonFail (e);
         }
     }
 }
@@ -287,7 +289,7 @@ void OdbcAccessFdoSelectTest::ComparisonFilterTable1Test()
         }
         catch (FdoException* e)
         {
-            UnitTestUtil::fail (e);
+            TestCommonFail (e);
         }
     }
 }
@@ -329,7 +331,7 @@ void OdbcAccessFdoSelectTest::RestrictedPropertiesTable1Test()
         }
         catch (FdoException* e)
         {
-            UnitTestUtil::fail (e);
+            TestCommonFail (e);
         }
     }
 }
@@ -416,7 +418,7 @@ void OdbcAccessFdoSelectTest::Table2Test()
         }
         catch (FdoException* e)
         {
-            UnitTestUtil::fail (e);
+            TestCommonFail (e);
         }
     }
 }
@@ -441,7 +443,7 @@ void OdbcAccessFdoSelectTest::TestDefect779194()
         }
         catch (FdoException* e)
         {
-            UnitTestUtil::fail (e);
+            TestCommonFail (e);
         }
     }
 }
@@ -482,7 +484,7 @@ void OdbcExcelFdoSelectTest::AllTypesTest()
         }
         catch (FdoException* e)
         {
-            UnitTestUtil::fail (e);
+            TestCommonFail (e);
         }
     }
 }
@@ -531,7 +533,7 @@ void OdbcExcelFdoSelectTest::AllTypesConfigFileTest()
     }
     catch (FdoException* e)
     {
-        UnitTestUtil::fail (e);
+        TestCommonFail (e);
     }
 }
 
@@ -578,7 +580,7 @@ void OdbcExcelFdoSelectTest::AllTypesConfigFileTest_defect814052()
     }
     catch (FdoException* e)
     {
-        UnitTestUtil::fail (e);
+        TestCommonFail (e);
     }
 }
 
@@ -623,7 +625,7 @@ void OdbcExcelFdoSelectTest::CityTest()
         }
         catch (FdoException* e)
         {
-            UnitTestUtil::fail (e);
+            TestCommonFail (e);
         }
     }
 }

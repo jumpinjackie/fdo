@@ -259,7 +259,7 @@ void FdoUpdateTest::MainFdoUpdateTest (FdoIConnection* Conn)
         if (m_DisableFailures)
             throw ex;
         else
-            UnitTestUtil::fail(ex);
+            TestCommonFail(ex);
     }
 }
 
@@ -312,7 +312,7 @@ void FdoUpdateTest::UpdateObjectProperty()
         {
             connection->Close ();
         }
-        UnitTestUtil::fail(ex);
+        TestCommonFail(ex);
     }
     catch (...)
     {
@@ -379,7 +379,7 @@ void FdoUpdateTest::UpdateAttributesOnly()
         {
             connection->Close ();
         }
-        UnitTestUtil::fail(ex);
+        TestCommonFail(ex);
     }
     catch (...)
     {
@@ -434,7 +434,7 @@ void FdoUpdateTest::UpdateNonFeatureClass()
     {
         if( connection )
             connection->Close ();
-        UnitTestUtil::fail(ex);
+        TestCommonFail(ex);
     }
     catch (...)
     {
@@ -540,13 +540,13 @@ void FdoUpdateTest::FdoUpdateTestTypes ()
     {
         if( connection )
             connection->Close ();
-        UnitTestUtil::fail(ex);
+        TestCommonFail(ex);
     }
     catch (FdoException *ex)
     {
         if( connection )
             connection->Close ();
-        UnitTestUtil::fail(ex);
+        TestCommonFail(ex);
     }
     catch (...)
     {
@@ -1551,7 +1551,7 @@ void FdoUpdateTest::ConditionalUpdate()
 	}
     catch (FdoException *ex)
     {
-        UnitTestUtil::fail(ex);
+        TestCommonFail(ex);
 
         // Clean up the long transaction test environment. To ensure the clean-up
         // works deactivate the currently active long transaction first.

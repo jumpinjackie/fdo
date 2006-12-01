@@ -86,7 +86,7 @@ void * StartOdbcQuery(void * lpParameter)
         }
         catch (FdoException* e)
         {
-            UnitTestUtil::fail (e);
+            TestCommonFail (e);
         }
     }
     return 0;

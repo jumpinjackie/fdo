@@ -119,7 +119,7 @@ void FdoMultiThreadTest::StartTest ( FunctionInfo *funInfo )
     for (i = 0; i < NUMBER_OF_THREADS; i++)
     {
         if (info[i].msgException.GetLength() != 0)
-            UnitTestUtil::fail(FdoException::Create(info[i].msgException));
+            TestCommonFail(FdoException::Create(info[i].msgException));
     }
 }
 

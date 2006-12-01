@@ -95,7 +95,7 @@ void FdoSqlCmdTest::CreateTable ()
         }
         catch( FdoException *ex )
         {
-			UnitTestUtil::fail (ex);
+			TestCommonFail (ex);
         }
     }
 
@@ -122,7 +122,7 @@ void FdoSqlCmdTest::BasicInsert ()
         }
         catch( FdoException *ex )
         {
-			UnitTestUtil::fail (ex);
+			TestCommonFail (ex);
         }
     }
 
@@ -150,7 +150,7 @@ void FdoSqlCmdTest::Delete ()
         }
         catch( FdoException *ex )
         {
-			UnitTestUtil::fail (ex);
+			TestCommonFail (ex);
         }
     }
 
@@ -203,7 +203,7 @@ void FdoSqlCmdTest::doGetSC()
         catch (FdoException *ex )
         {
             printf("doGetSC(): Failed (active=%d).\n", active_only);
-		    UnitTestUtil::fail (ex);
+		    TestCommonFail (ex);
         }
     }
 }
@@ -318,7 +318,7 @@ void FdoSqlCmdTest::DropTable ()
         }
         catch( FdoException *ex )
         {
-			UnitTestUtil::fail (ex);
+			TestCommonFail (ex);
         }
     }
 
@@ -430,7 +430,7 @@ void FdoSqlCmdTest::Query ()
         }
         catch( FdoException *ex )
         {
-			UnitTestUtil::fail (ex);
+			TestCommonFail (ex);
         }
     }
 
@@ -477,7 +477,7 @@ void FdoSqlCmdTest::QueryGeometry()
         }
         catch( FdoException *ex )
         {
-			UnitTestUtil::fail (ex);
+			TestCommonFail (ex);
         }
     }
 

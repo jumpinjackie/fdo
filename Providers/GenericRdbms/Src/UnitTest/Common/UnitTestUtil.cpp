@@ -24,6 +24,8 @@
 #include "../Fdo/DataStore/FdoRdbmsDeleteDataStore.h"
 #include "../Fdo/DataStore/FdoRdbmsCreateDatastore.h"
 #include <Sm/Ph/Rd/DbObjectReader.h>
+#include <TestCommon.h>
+
 
 char *UnitTestUtil::CommandFilesDirectory = NULL;
 // UnitTestUtil::InfoUtilConnection and UnitTestUtil::ActiveProviderName MUST be declared 
@@ -100,7 +102,7 @@ xmlns:fdo=\"http://www.autodesk.com/isd/fdo\" \
 </xsl:template>\
 </xsl:stylesheet>";
 
-void UnitTestUtil::fail (FdoException* ge)
+void TestCommonFail (FdoException* ge)
 {
     wchar_t message[2000];
     char* multibyte;
@@ -891,7 +893,7 @@ FdoIConnection* UnitTestUtil::GetProviderConnectionObject()
     }
     catch (FdoException* ge)
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 
     return (ret);

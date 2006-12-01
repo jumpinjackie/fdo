@@ -1740,3 +1740,8 @@ SymbolicName=FDORDBMS_494
 Language=English
 MySQL database version %1$d.%2$d.%3$d is too old, FDO requires at least version 5.0.15; 
 .
+MessageId=2720
+SymbolicName=FDORDBMS_495
+Language=English
+Duplicate columns of name '%1$ls' found in query result.
+.

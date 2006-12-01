@@ -126,6 +126,7 @@ UnitTestMySql_LDADD =  \
   $(FDO)/Unmanaged/Src/Spatial/libFDOSpatial.la   \
   $(FDOTHIRDPARTY)/linux/cppunit/lib/libcppunit.a \
   $(FDOUTILITIES)/Common/libProvidersCommon.la \
+  $(FDOUTILITIES)/TestCommon/libTestCommon.la \
   $(FDOUTILITIES)/SchemaMgr/Src/Sm/libSchemaMgr.la \
   $(FDOUTILITIES)/SchemaMgr/Src/Sm/Lp/libSmLogicalPhysical.la  \
   $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ph/libSmPhysical.la  \
@@ -174,6 +175,7 @@ UnitTestOdbc_LDADD =  \
   $(FDO)/Unmanaged/Src/Spatial/libFDOSpatial.la   \
   $(FDOTHIRDPARTY)/linux/cppunit/lib/libcppunit.a \
   $(FDOUTILITIES)/Common/libProvidersCommon.la \
+  $(FDOUTILITIES)/TestCommon/libTestCommon.la \
   $(FDOUTILITIES)/SchemaMgr/Src/Sm/libSchemaMgr.la \
   $(FDOUTILITIES)/SchemaMgr/Src/Sm/Lp/libSmLogicalPhysical.la  \
   $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ph/libSmPhysical.la  \
@@ -197,6 +199,7 @@ INCLUDES = \
   -I$(FDOTHIRDPARTY)/linux/cppunit/include \
   -I$(FDOUTILITIES)/SchemaMgr/Inc \
   -I$(FDOUTILITIES)/Common/Inc \
+  -I$(FDOUTILITIES)/TestCommon/Inc \
   -I../LockManager \
   -I../LongTransactionManager \
   -I../Gdbi \
