@@ -1,0 +1,173 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   
+      <title>Binary Build Tools</title>
+      <link rel="stylesheet" type="text/css" href="../style/cpm.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd_html_standard.css"><script type="text/javascript" src="../scripts/ac_common.js"></script><script type="text/javascript" src="../scripts/ac.strings.js"></script><script type="text/javascript" src="../scripts/acmap.js"></script><script type="text/javascript" src="../scripts/ac.acad_ak.js"></script><script language="javascript">
+            function hideInfo() {
+                info = document.getElementById('infoline');
+                info.innerHTML = ' ';
+                info.style.visibility = 'hidden';
+            }
+            function showInfo(title) {
+                info = document.getElementById('infoline');
+                info.innerHTML = title;
+                info.style.visibility='visible';
+            }
+        </script><meta type="description" content="Binary Build Tools">
+      <meta type="keywords" content="">
+      <meta type="topic-type" content="concept">
+   </head>
+   <body onLoad="javascript:initFrame('WS73099cc142f4875520a47a10f192cc9dc-75c8.htm','44'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
+      <!--
+                            Name = Topic;
+                            Class =  CPM-Topic ISD-Topic ;
+                            Url = WS73099cc142f4875520a47a10f192cc9dc-75c8.htm-->
+      <div class="head">
+         <div class="head-block">
+            <div class="nav-group">
+               <!--browse buttons-->
+               <div class="browse">
+                  <nobr>
+                     <div id="homeTitle" style="display:none">Home: Building FDO Open Source</div><a href="WS73099cc142f487551e5a0cb10850d4cd7c-596c.htm" target="content" class="headNavLink" onmouseover="showInfo(document.getElementById('homeTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-home-xp.gif" border="0"></a><span class="home-button-separator">&nbsp;</span><div id="prevTitle" style="display:none">Install the Build Tools</div><a href="WS73099cc142f4875520a47a10f192cc9dc-75c9.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">Install the Build Tools</div><a href="WS73099cc142f4875520a47a10f192cc9dc-75c9.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">Documentation Build Tools</div><a href="WS1a9193826455f5ff1b17d1110e119dca16-7fe5.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-next-xp.gif" border="0"></a></nobr>
+               </div>
+               <!--end browse buttons-->
+            </div>
+            <div class="button-info"><span id="infoline">&nbsp;</span></div>
+            <div class="ancestry"><a href="WS1a9193826455f5ff1955f1510a86ab16de-56a1.htm">Building FDO on Linux</a>&nbsp;&gt;&nbsp;<a href="WS73099cc142f4875520a47a10f192cc9dc-75c9.htm">Install the Build Tools</a>&nbsp;&gt;&nbsp;
+            </div>
+            <div class="head-text"><span>Binary Build Tools</span></div>
+         </div>
+      </div>
+      <div class="head-margin">&nbsp;</div>
+      <div style="line-height: 0pt">&nbsp;</div>
+      <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS73099cc142f4875520a47a10f192cc9dc-75c8"></a></span>
+                  
+                  
+      <!--Body-->
+                     
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-73ba"></a></span>The following software is used during the process of
+         building the FDO binaries.
+      </p>
+                     <span style="display:none"><a name="WS1a9193826455f5ff1b17d1110e119dca16-7fe6"></a></span><table cellpadding="0" cellspacing="0" class="ruled-wide">
+         <colgroup>
+            <col style="width:0.576in">
+            <col style="width:3.111in">
+            <col style="width:0.585in">
+            <col style="width:0.958in">
+                                 
+            <tr class="RuledWideHeading">
+                                       
+               <th class="table-heading">Tool</th>
+                                       
+               <th class="table-heading">Description</th>
+                                       
+               <th class="table-heading">Path</th>
+                                       
+               <th class="table-heading">Download from</th>
+                                    
+            </tr>
+                              
+                                 
+            <tr class="RuledWideOddRow">
+                                       
+               <td class="table-body">autoconf</td>
+                                       
+               <td class="table-body">produces shell scripts to configure software source code packages
+                  automatically; depends on GNU m4 (version 1.4 or greater)
+               </td>
+                                       
+               <td class="table-body">/usr/bin</td>
+                                       
+               <td class="table-body">Part of RHEL3</td>
+                                    
+            </tr>
+                                 
+            <tr class="RuledWideEvenRow">
+                                       
+               <td class="table-body">automake</td>
+                                       
+               <td class="table-body">generates makefile.in files from makefile.am input files</td>
+                                       
+               <td class="table-body">/usr/bin</td>
+                                       
+               <td class="table-body">Part of RHEL3</td>
+                                    
+            </tr>
+                                 
+            <tr class="RuledWideOddRow">
+                                       
+               <td class="table-body">make</td>
+                                       
+               <td class="table-body">controls the generation of executables and other non-source files
+                  of a program from the program's source files
+               </td>
+                                       
+               <td class="table-body">/usr/bin</td>
+                                       
+               <td class="table-body">Part of RHEL3</td>
+                                    
+            </tr>
+                                 
+            <tr class="RuledWideEvenRow">
+                                       
+               <td class="table-body">bison</td>
+                                       
+               <td class="table-body">a general purpose parser generator that converts a grammar description
+                  for an LALR context-free grammar into a C program to parse that
+                  grammar.
+               </td>
+                                       
+               <td class="table-body">/usr/bin</td>
+                                       
+               <td class="table-body">Part of RHEL3</td>
+                                    
+            </tr>
+                                 
+            <tr class="RuledWideOddRow">
+                                       
+               <td class="table-body">sed</td>
+                                       
+               <td class="table-body">(streams editor) is a text filter tool. It takes text
+                  input, performs one or more operations on the text and outputs the modified
+                  text.
+               </td>
+                                       
+               <td class="table-body">/bin</td>
+                                       
+               <td class="table-body">Part of RHEL3</td>
+                                    
+            </tr>
+                                 
+            <tr class="RuledWideEvenRow">
+                                       
+               <td class="table-body">perl</td>
+                                       
+               <td class="table-body">scripting language. This is used to build the FDO third-party OpenSSL
+                  components and to run the ArcSDE unit tests.
+               </td>
+                                       
+               <td class="table-body">/usr/bin</td>
+                                       
+               <td class="table-body">Part of RHEL3</td>
+                                    
+            </tr>
+                              
+         </colgroup>
+      </table>
+                     
+      <div>
+         <div class="note-note"><span class="label">Note</span>The FDO build requires
+            the use of bison version 1.875. This happens to be the installed
+            version on the Red Hat Linux machine used during the writing of
+            this document. You can obtain an rpm for version 1.875-5 from <a href="http://rpmfind.net/linux/RPM/fedora/1/i386/bison-1.875-5.i386.html">http://rpmfind.net/linux/RPM/fedora/1/i386/bison-1.875-5.i386.html</a>.
+         </div>
+      </div>
+                  
+               
+      <!---->
+      <!--See also-->
+      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Please send us your comment about this page</span></a></div><br></body>
+</html>

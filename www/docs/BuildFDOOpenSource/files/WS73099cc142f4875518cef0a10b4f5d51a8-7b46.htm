@@ -1,0 +1,151 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   
+      <title>Run the build_thirdparty.bat Script</title>
+      <link rel="stylesheet" type="text/css" href="../style/cpm.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd_html_standard.css"><script type="text/javascript" src="../scripts/ac_common.js"></script><script type="text/javascript" src="../scripts/ac.strings.js"></script><script type="text/javascript" src="../scripts/acmap.js"></script><script type="text/javascript" src="../scripts/ac.acad_ak.js"></script><script language="javascript">
+            function hideInfo() {
+                info = document.getElementById('infoline');
+                info.innerHTML = ' ';
+                info.style.visibility = 'hidden';
+            }
+            function showInfo(title) {
+                info = document.getElementById('infoline');
+                info.innerHTML = title;
+                info.style.visibility='visible';
+            }
+        </script><meta type="description" content="Run the build_thirdparty.bat Script">
+      <meta type="keywords" content="">
+      <meta type="topic-type" content="concept">
+   </head>
+   <body onLoad="javascript:initFrame('WS73099cc142f4875518cef0a10b4f5d51a8-7b46.htm','19'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
+      <!--
+                            Name = Topic;
+                            Class =  CPM-Topic ISD-Topic ;
+                            Url = WS73099cc142f4875518cef0a10b4f5d51a8-7b46.htm-->
+      <div class="head">
+         <div class="head-block">
+            <div class="nav-group">
+               <!--browse buttons-->
+               <div class="browse">
+                  <nobr>
+                     <div id="homeTitle" style="display:none">Home: Building FDO Open Source</div><a href="WS73099cc142f487551e5a0cb10850d4cd7c-596c.htm" target="content" class="headNavLink" onmouseover="showInfo(document.getElementById('homeTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-home-xp.gif" border="0"></a><span class="home-button-separator">&nbsp;</span><div id="prevTitle" style="display:none">Build Order</div><a href="WS1a9193826455f5ff1955f1510a86ab16de-57e1.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">Building FDO</div><a href="WS73099cc142f487551e5a0cb10850d4cd7c-596a.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">Optionally Run the build_parse.bat Script</div><a href="WS73099cc142f4875518cef0a10b4f5d51a8-7b45.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-next-xp.gif" border="0"></a></nobr>
+               </div>
+               <!--end browse buttons-->
+            </div>
+            <div class="button-info"><span id="infoline">&nbsp;</span></div>
+            <div class="ancestry"><a href="WS73099cc142f487551e5a0cb10850d4cd7c-596c.htm">Building FDO on Windows</a>&nbsp;&gt;&nbsp;<a href="WS73099cc142f487551e5a0cb10850d4cd7c-596a.htm">Building FDO</a>&nbsp;&gt;&nbsp;
+            </div>
+            <div class="head-text"><span>Run the build_thirdparty.bat Script</span></div>
+         </div>
+      </div>
+      <div class="head-margin">&nbsp;</div>
+      <div style="line-height: 0pt">&nbsp;</div>
+      <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS73099cc142f4875518cef0a10b4f5d51a8-7b46"></a></span>
+                  
+                  
+      <!--Body-->
+                     
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-7377"></a></span>The assumption is that you are not changing
+         the third-party software. So these binaries need only be built once.
+         If you notice a third-party component has been updated during a
+         run of checkoutsvn.bat, you must run this script again. You can
+         use command-line options to limit the build to the components that
+         have changed.
+      </p>
+                     
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-7376"></a></span>In the same cmd.exe window where you ran the
+         setenvironment.bat script enter <span class="code">build_thirdparty
+            -h</span>. The help text is contained in the following list:
+      </p>
+                     
+      <!--UList--><span style="display:none"><a name="WS73099cc142f487551d92abb10dc573c45d-7e38"></a></span>
+                        
+      <ul>
+         <li>build_thirdparty.bat
+            [-h] [-o=OutFolder] [-c=BuildType] [-a=Action] [-w=WithModule]
+         </li>
+         <li>Help:
+            -h[elp]
+         </li>
+         <li>OutFolder:
+            -o[utpath]=destination folder for binaries
+         </li>
+         <li>BuildType:
+            -c[onfig]=release(default), debug
+         </li>
+         <li>Action:
+            -a[ction]=build(default), buildinstall, install, clean
+         </li>
+         <li>WithModule:
+            -w[ith]=all(default), fdo, providers, sdf, wfs, wms
+         </li>
+         <li>BuildDocs:
+                 -d[ocs]=skip(default), build
+         </li>
+      </ul>
+                        
+                        
+                        
+                        
+                        
+                        
+                     
+                     
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-7375"></a></span>The default action is to build all of the thirdparty
+         release DLLs and write them to Thirdparty subfolders.
+      </p>
+                     
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-7374"></a></span>If you only specify the <span class="code">-c=debug</span> option,
+         you get all of the thirdparty debug DLLs written to Thirdparty subfolders.
+      </p>
+                     
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-7373"></a></span>If you specify the <span class="code">-a=buildinstall</span> option,
+         you get DLLs copied from Thirdparty subfolders to <span class="filePath">Fdo\Bin</span> in the folder specified
+         using the -o option.
+      </p>
+                     
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-7372"></a></span>If you specify the <span class="code">-w=fdo</span> option,
+         you get apache DLLs built and written to <span class="filePath">Thirdparty\apache</span> subfolders.
+         If you specified an install option, you get the apache DLLs copied
+         to <span class="filePath">Fdo\Bin in the folder
+            specified using the -o option</span>.
+      </p>
+                     
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-7371"></a></span>If you specify the <span class="code">-w=sdf</span> option,
+         you get a .lib built and written to a <span class="filePath">Thirdparty\Sqllite3.1.5</span> subfolder.
+         This .lib is used during the SDF provider build and is only used
+         by the SDF provider. An install option has no effect.
+      </p>
+                     
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-7370"></a></span>If you specify the <span class="code">-w=wfs</span> option,
+         you get a curl lib built and written to a libcurl subfolder, an
+         openssl lib built and written to an openssl subfolder, and a boost
+         DLL built and written to a boost subfolder. If you specified an
+         install option, you get the boost DLL copied to <span class="filePath">Fdo\Bin in the folder specified using the
+            -o option</span>.
+      </p>
+                     
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-736f"></a></span>If you specify the <span class="code">-w=wfs</span> option,
+         you get a curl lib built and written to a libcurl subfolder, an
+         openssl lib built and written to an openssl subfolder, a boost DLL
+         built and written to a boost subfolder, and a GDAL DLL built and
+         written to a GDAL1.3 subfolder. If you specified an install option,
+         you get the boost and GDAL (gdal13.dll) DLLs copied to <span class="filePath">Fdo\Bin in the folder specified using the
+            -o option</span>.
+      </p>
+                     
+      <div>
+         <div class="note-note"><span class="label">Note</span>The gdal13.dll file is
+            used by the WMS provider. The GDAL provider is a different .dll
+            file.
+         </div>
+      </div>
+                  
+               
+      <!---->
+      <!--See also-->
+      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Please send us your comment about this page</span></a></div><br></body>
+</html>

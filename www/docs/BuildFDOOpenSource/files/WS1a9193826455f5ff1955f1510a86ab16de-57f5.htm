@@ -1,0 +1,293 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   
+      <title>Run the build.bat Script</title>
+      <link rel="stylesheet" type="text/css" href="../style/cpm.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd_html_standard.css"><script type="text/javascript" src="../scripts/ac_common.js"></script><script type="text/javascript" src="../scripts/ac.strings.js"></script><script type="text/javascript" src="../scripts/acmap.js"></script><script type="text/javascript" src="../scripts/ac.acad_ak.js"></script><script language="javascript">
+            function hideInfo() {
+                info = document.getElementById('infoline');
+                info.innerHTML = ' ';
+                info.style.visibility = 'hidden';
+            }
+            function showInfo(title) {
+                info = document.getElementById('infoline');
+                info.innerHTML = title;
+                info.style.visibility='visible';
+            }
+        </script><meta type="description" content="Run the build.bat Script">
+      <meta type="keywords" content="">
+      <meta type="topic-type" content="concept">
+   </head>
+   <body onLoad="javascript:initFrame('WS1a9193826455f5ff1955f1510a86ab16de-57f5.htm','21'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
+      <!--
+                            Name = Topic;
+                            Class =  CPM-Topic ISD-Topic ;
+                            Url = WS1a9193826455f5ff1955f1510a86ab16de-57f5.htm-->
+      <div class="head">
+         <div class="head-block">
+            <div class="nav-group">
+               <!--browse buttons-->
+               <div class="browse">
+                  <nobr>
+                     <div id="homeTitle" style="display:none">Home: Building FDO Open Source</div><a href="WS73099cc142f487551e5a0cb10850d4cd7c-596c.htm" target="content" class="headNavLink" onmouseover="showInfo(document.getElementById('homeTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-home-xp.gif" border="0"></a><span class="home-button-separator">&nbsp;</span><div id="prevTitle" style="display:none">Optionally Run the build_parse.bat Script</div><a href="WS73099cc142f4875518cef0a10b4f5d51a8-7b45.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">Building FDO</div><a href="WS73099cc142f487551e5a0cb10850d4cd7c-596a.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">Unit Tests</div><a href="WS1a9193826455f5ff36b67310b29445ec2-7fb0.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-next-xp.gif" border="0"></a></nobr>
+               </div>
+               <!--end browse buttons-->
+            </div>
+            <div class="button-info"><span id="infoline">&nbsp;</span></div>
+            <div class="ancestry"><a href="WS73099cc142f487551e5a0cb10850d4cd7c-596c.htm">Building FDO on Windows</a>&nbsp;&gt;&nbsp;<a href="WS73099cc142f487551e5a0cb10850d4cd7c-596a.htm">Building FDO</a>&nbsp;&gt;&nbsp;
+            </div>
+            <div class="head-text"><span>Run the build.bat Script</span></div>
+         </div>
+      </div>
+      <div class="head-margin">&nbsp;</div>
+      <div style="line-height: 0pt">&nbsp;</div>
+      <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS1a9193826455f5ff1955f1510a86ab16de-57f5"></a></span>
+                  
+                  
+      <!--Body-->
+                     
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-736d"></a></span>In the same cmd.exe window where you ran the setenvironment.bat
+         script enter <span class="code">build -h</span>. The build
+         help text is contained in the following list:
+      </p>
+                     
+      <!--UList--><span style="display:none"><a name="WS73099cc142f4875518cd91d10b0018785b-7fcf"></a></span>
+                        
+      <ul>
+         <li>build.bat
+            [-h] [-o=OutFolder] [-c=BuildType] [-a=Action] [-w=WithModule] [-d=BuildDocs]
+         </li>
+         <li>Help:
+            -h[elp]
+         </li>
+         <li>OutFolder:
+            -o[utpath]=destination folder for binaries
+         </li>
+         <li>BuildType:
+            -c[onfig]=release(default), debug
+         </li>
+         <li>Action:
+            -a[ction]=build(default), buildinstall, install, clean
+         </li>
+         <li>WithModule:
+            -w[ith]=all(default), fdo, providers, shp, sdf, wfs, wms, arcsde,
+            odbc, mysql, gdal
+         </li>
+         <li>BuildDocs:
+                 -d[ocs]=skip(default), build
+         </li>
+      </ul>
+                        
+                        
+                        
+                        
+                        
+                        
+                     
+                     
+      <div>
+         <div class="note-note"><span class="label">Note</span>If you give the action
+            option argument a value of buildinstall or install, you must also
+            provide an outpath option argument whose value is not the build
+            folder or one of it subfolders.
+         </div>
+      </div>
+                     
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-736c"></a></span>The default action is to build all of the FDO
+         core release .dll and .lib files and write them to Fdo subfolders
+         and to build all of the provider release .dll and .lib files and
+         write them to Provider subfolders.
+      </p>
+                     
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-736b"></a></span>If you only specify the <span class="code">-c=debug</span> option,
+         you get all of the FDO core debug .dll and .lib files written to
+         Fdo subfolders and all of the provider debug .dll and .lib files
+         written to Provider subfolders.
+      </p>
+                     
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-736a"></a></span>If you specify the <span class="code">-a=buildinstall</span> option,
+         you get the Fdo core and provider .dll files copied to <span class="filePath">Fdo\Bin</span> in the folder specified
+         using the -o option, .lib files copied to <span class="filePath">Fdo\Lib </span>in
+         the folder specified using the -o option, and the providers.xml
+         file copied to <span class="filePath">Fdo\Bin</span> in
+         the folder specified using the -o option.
+      </p>
+                     
+      <div>
+         <div class="note-note"><span class="label">Note</span>The providers.xml file
+            is used by FDO to identify where FDO provider binaries are installed.
+         </div>
+      </div>
+                     
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-7369"></a></span>If you specify the <span class="code">-w=fdo</span> option,
+         you get FDO .dll and .lib files built and written to Fdo subfolders.
+         If you specified an install option, you get the .dlls copied to <span class="filePath">Fdo\Bin </span>in the folder specified
+         using the -o option, the .lib files copied to <span class="filePath">Fdo\Lib</span> in the folder specified
+         using the -o option, and some .h files copied to <span class="filePath">Fdo\Inc </span> in the folder specified
+         using the -o option.
+      </p>
+                     
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-7368"></a></span>If you specify the <span class="code">-w=arcsde</span> option,
+         you get the arcsde .dll files built and written to <span class="filePath">Providers\ArcSDE</span> subfolders. If
+         you specified an install option, you get the .dlls copied to <span class="filePath">Fdo\Bin </span>in the folder specified using
+         the -o option.
+      </p>
+                     
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-7367"></a></span>If you specify the <span class="code">-w=gdal</span> option,
+         you get the GRFP* .dll and .lib files built and written to <span class="filePath">Providers\GDAL</span> subfolders. If you
+         specified an install option, you get the .dll files copied to <span class="filePath">Fdo\Bin </span>in the folder specified
+         using the -o option and the .lib file copied to <span class="filePath">Fdo\Lib</span> in the folder specified
+         using the -o option.
+      </p>
+                     
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-7366"></a></span>If you specify the <span class="code">-w=mysql</span> option,
+         you get the mysql .dll and .lib files and the generic rdbms .dll
+         and .lib files built and written to <span class="filePath">Providers\GenericRdbms</span> subfolders.
+         If you specified an install option, you get the .dll files copied
+         to <span class="filePath">Fdo\Bin</span> in
+         the folder specified using the -o option, the .lib files copied
+         to <span class="filePath">Fdo\Lib </span>in
+         the folder specified using the -o option, some .sql files copied
+         to <span class="filePath">Fdo\Bin\com </span> in
+         the folder specified using the -o option, and some .h files copied
+         to <span class="filePath">Fdo\Inc</span> in
+         the folder specified using the -o option.
+      </p>
+                     
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-7365"></a></span>If you specify the <span class="code">-w=odbc</span> option,
+         you get the odbc .dll and .lib files and the generic rdbms .dll
+         and .lib files built and written to <span class="filePath">Providers\GenericRdbms</span> subfolders.
+         If you specified an install option, you get the .dll files copied
+         to <span class="filePath">Fdo\Bin</span> in
+         the folder specified using the -o option, the .lib files copied
+         to <span class="filePath">Fdo\Lib </span>, in
+         the folder specified using the -o option and some .h files copied
+         to <span class="filePath">Fdo\Inc</span> in
+         the folder specified using the -o option.
+      </p>
+                     
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-7364"></a></span>If you specify the <span class="code">-w=sdf</span> option,
+         you get the sdf .dll files built and written to a <span class="filePath">Providers\SDF</span> subfolder. If you
+         specified an install option, you get the .dll files copied to <span class="filePath">Fdo\Bin</span> in the folder specified
+         using the -o option and some .h files copied to <span class="filePath">Fdo\Inc\SDF </span> in the folder specified
+         using the -o option.
+      </p>
+                     
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-7363"></a></span>If you specify the <span class="code">-w=shp</span> option,
+         you get the shp .dll and .lib files built and written to a <span class="filePath">Providers\SHP</span> subfolder. If you
+         specified an install option, you get the .dll files copied to <span class="filePath">Fdo\Bin</span> in the folder specified
+         using the -o option, the .lib file copied to <span class="filePath">Fdo\Lib </span> in the folder specified using
+         the -o option and some .h files copied to <span class="filePath">Fdo\Inc\SHP</span> in
+         the folder specified using the -o option.
+      </p>
+                     
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-7362"></a></span>If you specify the <span class="code">-w=wfs</span> option,
+         you get the wfs .dll files built and written to a <span class="filePath">Provider\WFS</span> subfolder and you
+         get the ows .dll file built and written to a Utilities\OWS subfolder.
+         If you specified an install option, you get the wfs and ows .dll
+         files copied to <span class="filePath">Fdo\Bin</span> in
+         the folder specified using the -o option.
+      </p>
+                     
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-7361"></a></span>If you specify the <span class="code">-w=wms</span> option,
+         you get the wms .dll and .lib files built and written to a <span class="filePath">Provider\WMS</span> subfolder and an ows
+         .dll file built and written to a <span class="filePath">Utilities\OWS</span> subfolder.
+         If you specified an install option, you get the wms and ows .dll
+         files copied to <span class="filePath">Fdo\Bin</span> in
+         the folder specified using the -o optionand some .h files copies
+         to <span class="filePath">Fdo\Inc </span> in
+         the folder specified using the -o option.
+      </p>
+                     
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-7360"></a></span>If you specified the <span class="code">-d=build</span> option
+      </p>
+                     
+      <!--UList--><span style="display:none"><a name="WS73099cc142f487551d92abb10dc573c45d-7e37"></a></span>
+                        
+      <ul>
+         <li>and
+            you are building the thirdparty .dll files, you get no effect.
+         </li>
+         <li>and
+            you are building the FDO core, you get the FDO API unmanaged reference
+            .html files built and written to <span class="filePath">&lt;buildFolderPath&gt;\Fdo\Docs\HTML\FDO_API</span> and
+            the FDO_API.chm files built and written to <span class="filePath">&lt;buildFolderPath&gt;\Fdo\Docs</span>. You
+            also get the FDO API managed reference .html files built and written to <span class="filePath">&lt;buildFolderPath&gt;\Fdo\Docs\HTML\FDO_API_managed</span> and
+            the FDO_API_managed.chm built and written to <span class="filePath">&lt;buildFolderPath&gt;\Fdo\Docs</span>.
+            If you specified an install option, you get FDO API reference .html
+            copied to <span class="filePath">&lt;outputFolder\Fdo\Docs\HTML\FDO_API</span>,
+            the FDO API managed reference .html files copied to <span class="filePath">&lt;outputFolder\Fdo\Docs\HTML\FDO_API_managed</span>,
+            the FDO_API.chm, FDO_API_managed.chm, FDG_FDODevGuide.pdf, and the
+            FET_TheEssentialFDOI.pdf copied to <span class="filePath">&lt;outputFolder&gt;\Fdo\Docs</span>.
+         </li>
+         <li>and
+            you are building the ArcSDE provider, you get the ArcSDE API reference
+            .html files built and written to <span class="filePath">Providers\ArcSDE\Docs\HTML\ArcSDE</span> and
+            the ArcSDE_Provider_API.chm built and written to <span class="filePath">Providers\ArcSDE\Docs</span>. If you specified
+            an install option, you get the .html files copied to <span class="filePath">&lt;outputFolder&gt;\Fdo\Docs\HTML\ArcSDE</span> and
+            the .chm file copied to <span class="filePath">&lt;outputFolder&gt;\Fdo\Docs</span>.
+         </li>
+         <li>and
+            you are building the GDAL provider, you get no effect.
+         </li>
+         <li>and
+            you are building the MySQL provider, you get the MySQL API reference
+            .html files built and written to <span class="filePath">Providers\MySQL\Docs\HTML\MySQL</span> and
+            the MySQL_Provider_API.chm built and written to <span class="filePath">Providers\MySQL\Docs</span>. If you specified
+            an install option, you get the .html files copied to <span class="filePath">&lt;outputFolder&gt;\Fdo\Docs\HTML\MySQL</span> and
+            the .chm file copied to <span class="filePath">&lt;outputFolder&gt;\Fdo\Docs</span>.
+         </li>
+         <li>and
+            you are building the ODBC provider, you get the ODBC API reference
+            .html files built and written to <span class="filePath">Providers\ODBC\Docs\HTML\ODBC</span> and
+            the ODBC_Provider_API.chm built and written to <span class="filePath">Providers\ODBC\Docs</span>. If you specified
+            an install option, you get the .html files copied to <span class="filePath">&lt;outputFolder&gt;\Fdo\Docs\HTML\ODBC</span> and
+            the .chm file copied to <span class="filePath">&lt;outputFolder&gt;\Fdo\Docs</span>.
+         </li>
+         <li>and
+            you are building the SDF provider, you get the SDF API reference
+            .html files built and written to <span class="filePath">Providers\SDF\Docs\HTML\SDF</span> and
+            the SDF_Provider_API.chm built and written to <span class="filePath">Providers\SDF\Docs</span>. If you specified
+            an install option, you get the .html files copied to <span class="filePath">&lt;outputFolder&gt;\Fdo\Docs\HTML\SDF</span> and
+            the .chm file copied to <span class="filePath">&lt;outputFolder&gt;\Fdo\Docs</span>.
+         </li>
+         <li>and
+            you are building the SHP provider, you get the SHP API reference
+            .html files built and written to <span class="filePath">Providers\SHP\Docs\HTML\SHP</span> and
+            the SHP_Provider_API.chm built and written to <span class="filePath">Providers\SHP\Docs</span>. If you specified
+            an install option, you get the .html files copied to <span class="filePath">&lt;outputFolder&gt;\Fdo\Docs\HTML\SHP</span> and
+            the .chm file copied to <span class="filePath">&lt;outputFolder&gt;\Fdo\Docs</span>.
+         </li>
+         <li>and
+            you are building the WFS provider, you get the WFS API reference
+            .html files built and written to <span class="filePath">Providers\WFS\Docs\HTML\WFS</span> and
+            the WFS_Provider_API.chm built and written to <span class="filePath">Providers\WFS\Docs</span>. If you specified
+            an install option, you get the .html files copied to <span class="filePath">&lt;outputFolder&gt;\Fdo\Docs\HTML\WFS</span> and
+            the .chm file copied to <span class="filePath">&lt;outputFolder&gt;\Fdo\Docs</span>.
+         </li>
+         <li>and
+            you are building the WMS provider, you get the WMS API reference
+            .html files built and written to <span class="filePath">Providers\WMS\Docs\HTML\WMS</span> and
+            the WMS_Provider_API.chm built and written to <span class="filePath">Providers\WMS\Docs</span>. If you specified
+            an install option, you get the .html files copied to <span class="filePath">&lt;outputFolder&gt;\Fdo\Docs\HTML\WMS</span> and
+            the .chm file copied to <span class="filePath">&lt;outputFolder&gt;\Fdo\Docs</span>.
+         </li>
+      </ul>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                     
+                  
+               
+      <!---->
+      <!--See also-->
+      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Please send us your comment about this page</span></a></div><br></body>
+</html>

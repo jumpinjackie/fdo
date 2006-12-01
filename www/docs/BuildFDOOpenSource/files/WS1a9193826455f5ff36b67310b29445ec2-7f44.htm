@@ -1,0 +1,203 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   
+      <title>Updating the Source</title>
+      <link rel="stylesheet" type="text/css" href="../style/cpm.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd_html_standard.css"><script type="text/javascript" src="../scripts/ac_common.js"></script><script type="text/javascript" src="../scripts/ac.strings.js"></script><script type="text/javascript" src="../scripts/acmap.js"></script><script type="text/javascript" src="../scripts/ac.acad_ak.js"></script><script language="javascript">
+            function hideInfo() {
+                info = document.getElementById('infoline');
+                info.innerHTML = ' ';
+                info.style.visibility = 'hidden';
+            }
+            function showInfo(title) {
+                info = document.getElementById('infoline');
+                info.innerHTML = title;
+                info.style.visibility='visible';
+            }
+        </script><meta type="description" content="Updating the Source">
+      <meta type="keywords" content="">
+      <meta type="topic-type" content="concept">
+   </head>
+   <body onLoad="javascript:initFrame('WS1a9193826455f5ff36b67310b29445ec2-7f44.htm','42'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
+      <!--
+                            Name = Topic;
+                            Class =  CPM-Topic ISD-Topic ;
+                            Url = WS1a9193826455f5ff36b67310b29445ec2-7f44.htm-->
+      <div class="head">
+         <div class="head-block">
+            <div class="nav-group">
+               <!--browse buttons-->
+               <div class="browse">
+                  <nobr>
+                     <div id="homeTitle" style="display:none">Home: Building FDO Open Source</div><a href="WS73099cc142f487551e5a0cb10850d4cd7c-596c.htm" target="content" class="headNavLink" onmouseover="showInfo(document.getElementById('homeTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-home-xp.gif" border="0"></a><span class="home-button-separator">&nbsp;</span><div id="prevTitle" style="display:none">Review the Copyright and Licensing Information</div><a href="WS73099cc142f4875520a47a10f192cc9dc-75ca.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">Building FDO on Linux</div><a href="WS1a9193826455f5ff1955f1510a86ab16de-56a1.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">Install the Build Tools</div><a href="WS73099cc142f4875520a47a10f192cc9dc-75c9.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-next-xp.gif" border="0"></a></nobr>
+               </div>
+               <!--end browse buttons-->
+            </div>
+            <div class="button-info"><span id="infoline">&nbsp;</span></div>
+            <div class="ancestry"><a href="WS1a9193826455f5ff1955f1510a86ab16de-56a1.htm">Building FDO on Linux</a>&nbsp;&gt;&nbsp;
+            </div>
+            <div class="head-text"><span>Updating the Source</span></div>
+         </div>
+      </div>
+      <div class="head-margin">&nbsp;</div>
+      <div style="line-height: 0pt">&nbsp;</div>
+      <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS1a9193826455f5ff36b67310b29445ec2-7f44"></a></span>
+               
+               
+      <!--Body-->
+                  
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-73bf"></a></span>You can update the source by running the <span class="filePath">checkoutsvn.sh</span> script.
+      </p>
+                  
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-73be"></a></span>In a terminal window where the current directory
+         is the build directory, enter checkoutsvn -h. The help text displayed
+         is as follows:
+      </p>
+                  
+      <!--UList--><span style="display:none"><a name="WS1a9193826455f5ff1b17d1110e119dca16-7fe7"></a></span>
+                     
+      <ul>
+         <li>checkoutsvn.sh
+            [--h]
+         </li>
+         <li> [--o
+            OutFolder]
+         </li>
+         <li>[--w
+            WithModule]
+         </li>
+         <li>--s
+            Source
+         </li>
+         <li>--u
+            UserId
+         </li>
+         <li>--p
+            UserPassword
+         </li>
+         <li>Help:
+                      --h[elp]
+         </li>
+         <li>Source:
+            --s[ource]=location of source file, either branch location, tag
+            location or trunk
+            <div>
+               <div class="note-note"><span class="label">Note</span>The
+                  possible arguments are <span class="code">--s
+                     trunk</span>, <span class="code">--s &lt;tagIdentifier&gt;</span>,
+                  and <span class="code">--s &lt;branchIdentifier&gt;</span>.
+                  Get the tag or branch identifier by browsing <a class="webLink" href="http://fdo.osgeo.org">http://fdo.osgeo.org</a>,
+                  clicking the Subversion link and then clicking the tag or branches
+                  link.
+               </div>
+            </div>
+                           
+         </li>
+         <li>OutFolder:
+                 --o[utpath]=destination folder for files
+         </li>
+         <li>WithModule:
+                --w[ith]=all(default) fdo thirdparty providers utilities shp
+            sdf wfs wms arcsde rdbms gdal
+         </li>
+         <li>User:
+                      --u[ser]=user id
+         </li>
+         <li>Password:
+                  --p[assword]=user password
+         </li>
+      </ul>
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                  
+                  
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-73bd"></a></span>You can update all of the source by running
+         the <span class="filePath">checkoutsvn.sh</span> script
+         in the build directory. The syntax is <span class="code">./checkoutsvn.sh
+            --o /home/OpenSource --s &lt;source&gt; --u yourusername --p yourpassword</span>. 
+      </p>
+                  
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-73bc"></a></span>You can update the source for specified components
+         by using the with option. The syntax is <span class="code">./checkoutsvn.sh
+            --o /home/OpenSource --s &lt;source&gt;--u yourusername --p yourpassword
+            --w desiredComponent</span>. 
+      </p>
+                  
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-73bb"></a></span>The possible arguments for the with option are:
+      </p>
+                  
+      <!--UList--><span style="display:none"><a name="WS73099cc142f48755f1b4fd10b3ae696ba-7f4d"></a></span>
+                     
+      <ul>
+         <li>
+                              <span class="code">all</span> - updates all directories
+         </li>
+         <li>
+                              <span class="code">providers</span> - updates the <span class="filePath">ArcSDE</span>, <span class="filePath">GDAL</span>, <span class="filePath">GenericRdbms</span>, <span class="filePath">SDF</span>, <span class="filePath">SHP</span>, <span class="filePath">WFS</span>, and <span class="filePath">WMS</span> directories 
+         </li>
+         <li>
+                              <span class="code">fdocore</span> - updates the <span class="filePath">Fdo</span>, <span class="filePath">Thirdparty</span>,
+            and <span class="filePath">Utilities</span> directories 
+         </li>
+         <li>
+                              <span class="code">thirdparty</span> - updates the <span class="filePath">Thirdparty</span> directory
+         </li>
+         <li>
+                              <span class="code">fdo</span> - updates the <span class="filePath">Fdo</span> directory
+         </li>
+         <li>
+                              <span class="code">utilities</span> - updates the <span class="filePath">Utilities</span> directory
+         </li>
+         <li>
+                              <span class="code">arcsde</span> - updates the <span class="filePath">ArcSDE</span> directory
+         </li>
+         <li>
+                              <span class="code">gdal</span> - updates the <span class="filePath">GDAL</span> directory
+         </li>
+         <li>
+                              <span class="code">rdbms</span> - updates the <span class="filePath">GenericRdbms</span> directory, which contains
+            the MySQL and ODBC components
+         </li>
+         <li>
+                              <span class="code">sdf</span> - updates the <span class="filePath">SDF</span> directory
+         </li>
+         <li>
+                              <span class="code">shp</span> - updates the <span class="filePath">SHP</span> directory
+         </li>
+         <li>
+                              <span class="code">wfs</span> - updates the <span class="filePath">WFS</span> directory
+         </li>
+         <li>
+                              <span class="code">wms</span> - updates the <span class="filePath">WMS</span> directory
+         </li>
+      </ul>
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                  
+               
+            
+      <!---->
+      <!--See also-->
+      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Please send us your comment about this page</span></a></div><br></body>
+</html>

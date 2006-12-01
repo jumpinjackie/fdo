@@ -1,0 +1,83 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+      <link rel="stylesheet" type="text/css" href="style/commons.css">
+      <link rel="stylesheet" type="text/css" href="style/header.css"><script type="text/javascript">
+function selectTab(tabNum)
+{
+    var x = document.getElementById('tabTable').rows[0].cells;
+    var tabNames = new Array("iframeToc","iframeIndex","iframeSearch","iframeFavorites")
+    for(i = 0; i < 4; i++)
+    {
+        if(tabNum != i) {
+            x[i].className="tab_inactive";
+            hideSection(tabNames[i]);
+        } else {
+            x[i].className="tab_active";
+            showSection(tabNames[i]);
+        }
+    }
+
+}
+
+function hideSection(buttonID)
+{
+    var x = document.getElementById(buttonID);
+    x.style.visibility = "hidden";
+    x.style.zIndex="1";
+    x.style.position="absolute";
+    x.style.top="0%";
+}
+
+function showSection(buttonID)
+{
+    var x = document.getElementById(buttonID);
+    x.style.visibility = "visible";
+    x.style.zIndex=3;
+    x.style.position="relative";
+    x.style.top="0%";
+
+}
+
+                    </script><title>header frame</title>
+   </head>
+   <body topmargin="0" leftmargin="0" rightmargin="0" bottommargin="0" scroll="no" onLoad="top.checkURLParams(); javascript: selectTab(0);">
+      <table cellspacing="0" cellpadding="0" class="contentTable">
+         <tr>
+            <td id="book-title">
+               <div class="book-title"><span>Building FDO Open Source</span></div>
+            </td>
+         </tr>
+         <tr>
+            <td id="nav-tabs">
+               <table height="100%" width="100%" cellspacing="0" cellpadding="0">
+                  <tr>
+                     <td>
+                        <table class="headermenu" cellspacing="0" cellpadding="0" width="100%" height="100%" id="tabTable">
+                           <tr>
+                              <td align="center" class="tab_active" onClick="javascript: selectTab(0);" id="Contents"><a class="tabLink">Contents</a></td>
+                              <td align="center" class="tab_inactive" onClick="javascript: selectTab(1);" id="Index"><a class="tabLink">Index</a></td>
+                              <td align="center" class="tab_inactive" onClick="javascript: selectTab(2);" id="Search"><a class="tabLink">Search</a></td>
+                              <td align="center" class="tab_inactive" onClick="javascript: selectTab(3);" id="Favorites"><a class="tabLink">Favorites</a></td>
+                           </tr>
+                        </table>
+                     </td>
+                  </tr>
+                  </tr>
+</tr>
+               </table>
+            </td>
+         </tr>
+         <tr>
+            <td class="tdTOC" height="94%">
+               <div class="hidennFrame" id="iframeIndex"><iframe id="iframeIndexFrame" frameborder="no" scrolling="no" name="iframeIndex" src="indexes.html" class="iframeTOC"></iframe></div>
+               <div class="hidennFrame" id="iframeSearch"><iframe id="iframeSearchFrame" frameborder="no" scrolling="no" name="iframeSearch" src="search.html" class="iframeTOC"></iframe></div>
+               <div class="hidennFrame" id="iframeToc"><iframe id="iframeTocFrame" frameborder="no" scrolling="no" name="iframeToc" src="contents.html" class="iframeTOC"></iframe></div>
+               <div class="hidennFrame" id="iframeFavorites"><iframe id="iframeFavoritesFrame" frameborder="no" scrolling="no" name="iframeFavorites" src="favorites.html" class="iframeTOC"></iframe></div>
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

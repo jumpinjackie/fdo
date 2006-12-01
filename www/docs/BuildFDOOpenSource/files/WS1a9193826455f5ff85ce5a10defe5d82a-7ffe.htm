@@ -1,0 +1,257 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   
+      <title>Configure the ArcSDE Server</title>
+      <link rel="stylesheet" type="text/css" href="../style/cpm.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd_html_standard.css"><script type="text/javascript" src="../scripts/ac_common.js"></script><script type="text/javascript" src="../scripts/ac.strings.js"></script><script type="text/javascript" src="../scripts/acmap.js"></script><script type="text/javascript" src="../scripts/ac.acad_ak.js"></script><script language="javascript">
+            function hideInfo() {
+                info = document.getElementById('infoline');
+                info.innerHTML = ' ';
+                info.style.visibility = 'hidden';
+            }
+            function showInfo(title) {
+                info = document.getElementById('infoline');
+                info.innerHTML = title;
+                info.style.visibility='visible';
+            }
+        </script><meta type="description" content="Configure the ArcSDE Server">
+      <meta type="keywords" content="">
+      <meta type="topic-type" content="concept">
+   </head>
+   <body onLoad="javascript:initFrame('WS1a9193826455f5ff85ce5a10defe5d82a-7ffe.htm','25'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
+      <!--
+                            Name = Topic;
+                            Class =  CPM-Topic ISD-Topic ;
+                            Url = WS1a9193826455f5ff85ce5a10defe5d82a-7ffe.htm-->
+      <div class="head">
+         <div class="head-block">
+            <div class="nav-group">
+               <!--browse buttons-->
+               <div class="browse">
+                  <nobr>
+                     <div id="homeTitle" style="display:none">Home: Building FDO Open Source</div><a href="WS73099cc142f487551e5a0cb10850d4cd7c-596c.htm" target="content" class="headNavLink" onmouseover="showInfo(document.getElementById('homeTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-home-xp.gif" border="0"></a><span class="home-button-separator">&nbsp;</span><div id="prevTitle" style="display:none">Run the FDO Unit Tests</div><a href="WS1a9193826455f5ff36b67310b29445ec2-7fac.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">Unit Tests</div><a href="WS1a9193826455f5ff36b67310b29445ec2-7fb0.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">Run the ArcSDE Unit Tests</div><a href="WS73099cc142f487551d92abb10dc573c45d-7e36.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-next-xp.gif" border="0"></a></nobr>
+               </div>
+               <!--end browse buttons-->
+            </div>
+            <div class="button-info"><span id="infoline">&nbsp;</span></div>
+            <div class="ancestry"><a href="WS73099cc142f487551e5a0cb10850d4cd7c-596c.htm">Building FDO on Windows</a>&nbsp;&gt;&nbsp;<a href="WS1a9193826455f5ff36b67310b29445ec2-7fb0.htm">Unit Tests</a>&nbsp;&gt;&nbsp;
+            </div>
+            <div class="head-text"><span>Configure the ArcSDE Server</span></div>
+         </div>
+      </div>
+      <div class="head-margin">&nbsp;</div>
+      <div style="line-height: 0pt">&nbsp;</div>
+      <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS1a9193826455f5ff85ce5a10defe5d82a-7ffe"></a></span>
+                  
+                  
+      <!--Body-->
+                     
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-735d"></a></span>You must configure the ArcSDE Server before
+         you can execute the unit tests. The tests are actually run on the
+         server. The unit tests can be run against an Oracle database or
+         a Sql Server 2000 database. You must configure the ArcSDE server
+         for running the unit tests against each type of database. Most of
+         the configuration is done by a perl script called SetupTestData.perl.
+         Before running the script on the server, you must edit it to change
+         some hard-coded values and you must set the SDEHOME environment
+         variable. Configuring the server to run tests in the Sql Server
+         2000 database requires some additional manual steps.
+      </p>
+                     
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-735c"></a></span>The first step is to copy the <span class="filePath">C:\OpenSource\Providers\ArcSDE\TestData</span> folder
+         to the machine hosting the ArcSDE server. This folder contains the
+         test data and the SetupTestData.perl script. Alternatively, you
+         can use subversion to checkout the fdoarcsde.osgeo.org repository
+         on the server.
+      </p>
+                     
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-735b"></a></span>The second step is to install ActiveState perl
+         on the server. This is available from <a class="webLink" href="http://www.activestate.com/ActivePerl">http://www.activestate.com/ActivePerl</a>.
+      </p>
+                     
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-735a"></a></span>The third step is to create two Sql Server databases.
+         If you want to run the tests in Sql Server 2000, you must create
+         a database called ‘testmultidb’ using the SQL Server Enterprise
+         Manager tool and create a database called ‘testsingledb’ using the
+         ArcSDE server post installation tool.
+      </p>
+                     
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-7359"></a></span>To create the ‘testmultidb’ database, do the
+         following:
+      </p>
+                     
+      <!--OList--><span style="display:none"><a name="WS1a9193826455f5ff85ce5a10defe5d82a-7ffd"></a></span>
+                        
+      <ol type="1" start="1">
+         <li>Invoke
+            the Enterprise Manager tool.
+         </li>
+         <li>In
+            the explorer pane right-click <span class="filePath">Console Root\Microsoft
+               SQL Servers\SQL Server Group\&lt;SQL Server Name&gt;\Databases</span> and
+            select <span class="uis-unspecified">New Database...</span> from the pop-up
+            menu.
+         </li>
+         <li>Type <span class="code">testmultidb</span> in the text box labeled <span class="uis-unspecified">Name</span> in
+            the tab labeled <span class="uis-unspecified">General</span> in the dialog box
+            labeled <span class="uis-unspecified">Database Properties</span> and click <span class="uis-unspecified">OK</span>.
+         </li>
+      </ol>
+                        
+                        
+                     
+                     
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-7358"></a></span>To create the ‘testsingledb’ database, do the
+         following:
+      </p>
+                     
+      <!--OList--><span style="display:none"><a name="WS1a9193826455f5ff85ce5a10defe5d82a-7ffc"></a></span>
+                        
+      <ol type="1" start="1">
+         <li>Set
+            the SDEHOME environment variable. The value is such that running
+            the command <span class="code">dir %SDEHOME%\etc</span> in
+            a cmd.exe window results in a list including giomgr.defs and dbinit.sde. The
+            value should be something like <span class="filePath">C:\ArcGIS\ArcSDE\sqlexe</span>.
+            You can set this variable permanently by using the Control Panel,
+            or you can set it temporarily in a cmd.exe window. In the latter
+            case you must then run the post installation tool from the command-line.
+         </li>
+         <li>Invoke
+            the post installation tool. The menu path for this tool will be
+            something like <span class="uis-unspecified">Start</span> 
+                                 <span class="glyphArrow"><img src="../images/ac.menuaro.gif"></span> 
+                                 <span class="uis-unspecified">Programs</span> 
+                                 <span class="glyphArrow"><img src="../images/ac.menuaro.gif"></span> 
+                                 <span class="uis-unspecified">ArcGIS</span> 
+                                 <span class="glyphArrow"><img src="../images/ac.menuaro.gif"></span> 
+                                 <span class="uis-unspecified">ArcSDE</span> 
+                                 <span class="glyphArrow"><img src="../images/ac.menuaro.gif"></span> 
+                                 <span class="uis-unspecified">ArcSDE
+               for Microsoft SQL Server Post Installation</span>. The equivalent
+            filesystem path is something like <span class="filePath">C:\ArcGIS\ArcSDE\sqlexe\tools\ArcSdeSetupSql.exe</span>.
+         </li>
+         <li>In
+            the window labeled <span class="uis-unspecified">ArcSDE for SqlServer</span> click
+            the radio button labeled <span class="uis-unspecified">Custom</span>.
+            Click <span class="uis-unspecified">Next</span>.
+            <div>
+               <div class="note-note"><span class="label">Note</span>The reason for doing a custom install is
+                  to disable the authorization step.
+               </div>
+            </div>
+                              
+         </li>
+         <li>In
+            the window labeled <span class="uis-unspecified">Select ArcSDE Setup Wizard Option</span> uncheck <span class="uis-unspecified">Authorize
+               ArcSDE</span> and leave checked <span class="uis-unspecified">Define Database and
+               SDE User</span>, <span class="uis-unspecified">Repository Setup</span>, and <span class="uis-unspecified">Create
+               ArcSDE Service</span>. Click <span class="uis-unspecified">Next</span>.
+         </li>
+         <li>In
+            the window labeled <span class="uis-unspecified">User Information</span> click the
+            radio button labeled <span class="uis-unspecified">SQL Server Authentication</span>.
+            Fill in the text boxes labeled <span class="uis-unspecified">sysadmin user name</span> and <span class="uis-unspecified">sysadmin user
+               password</span>. Click <span class="uis-unspecified">Next</span>.
+         </li>
+         <li>In
+            the window labeled <span class="uis-unspecified">Create Spatial Database</span> fill
+            in the text boxes labeled <span class="uis-unspecified">SDE user password</span> and <span class="uis-unspecified">Database
+               name</span>. Click <span class="uis-unspecified">Next</span>.
+         </li>
+         <li>In
+            the window labeled <span class="uis-unspecified">ArcSDE configuration files</span> leave
+            the defaults selected. Click <span class="uis-unspecified">Next</span>.
+         </li>
+         <li>In
+            the window labeled <span class="uis-unspecified">User Information</span> review the
+            connection information. The values are either defaults or ones that
+            you provided in previous screens. Click <span class="uis-unspecified">Next</span>.
+         </li>
+         <li>A dialog
+            appears displaying the text <span class="uis-unspecified">The ArcSDE Repository
+               was successfully completed. Would you like to view the status?</span>.
+            Click <span class="uis-unspecified">No</span>. If you are told that the
+            repository was unsuccessfuly completed, try re-executing the operation
+            (click <span class="uis-unspecified">Back</span> to return to the previous
+            screen and click <span class="uis-unspecified">Next</span>. If you are not rewarded
+            with success, you will have to view the status and debug the operation.
+         </li>
+         <li>In
+            the window labeled <span class="uis-unspecified">ArcSDE service information</span> review
+            the information that will be used to create the service that listens
+            for requests pertaining to the database that you just created. The
+            service name and service port number values must be unique to the
+            services file. On WINNT the services files is located in <span class="filePath">C:\WINNT\system32\drivers\etc</span>.
+            Click <span class="uis-unspecified">Next</span>. This will cause the
+            service name and port number to be added to the services file, and
+            the service to be started. You will be notified by an information
+            dialog that the service was successfully started. Click <span class="uis-unspecified">OK</span> in
+            this dialog, and the final screen of the wizard is displayed. If
+            you get an error message, try re-executing the operation; doing
+            this has been known to correct the problem.
+         </li>
+      </ol>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                     
+                     
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-7357"></a></span>The fourth step is to edit the “HARDCODED SETTINGS”
+         section within the SetupTestData.perl script. If you wish to install
+         test data in an oracle instance, set <span class="code">$INSTALLORACLE=”Y”</span>.
+         If you wish to install test data in a SQL Server instance, set <span class="code">$INSTANCESQLSERVER=”Y”</span>. Verify the
+         values of all of the settings; each setting is described within
+         the script.
+      </p>
+                     
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-7356"></a></span>The fifth step is to run the SetupTestData.perl
+         script from the command-line on the machine hosting the ArcSDE server.
+         This requires that Oracle’s sqlplus.exe and Sql Server’s osql.exe
+         must be in the PATH environment variable so that the script can
+         find them.
+      </p>
+                     
+      <div>
+         <div class="note-note"><span class="label">Note</span>You can install test data
+            against both Oracle and Sql Server simultaneously.
+         </div>
+      </div>
+                     
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-7355"></a></span>The script will ask you to specify whether you
+         want to install or uninstall test data. The test data in question
+         is contained in the <span class="filePath">C:\OpenSource\Providers\ArcSDE\TestData</span> folder.
+      </p>
+                     
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-7354"></a></span>The script will ask you to specify a test dataset
+         name. This name is used to create RDBMS test users with names in
+         the form “FDO_&lt;datasetName&gt;_&lt;suffix&gt;.” The test users
+         will own the test data.
+      </p>
+                     
+      <div>
+         <div class="note-note"><span class="label">Note</span>Dataset names may be no
+            longer than five characters.
+         </div>
+      </div>
+                     
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-7353"></a></span>If you encounter any problems installing test
+         users or test data, you can run the script again and type ‘U’ for
+         Uninstall, when prompted, to undo all of the changes. After you
+         have identified and solved the problem, you can try the install
+         again.
+      </p>
+                  
+               
+      <!---->
+      <!--See also-->
+      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Please send us your comment about this page</span></a></div><br></body>
+</html>
