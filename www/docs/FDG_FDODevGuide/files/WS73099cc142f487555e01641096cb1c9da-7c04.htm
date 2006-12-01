@@ -1,0 +1,321 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   
+      <title>Geometry Value</title>
+      <link rel="stylesheet" type="text/css" href="../style/cpm.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd_html_standard.css"><script type="text/javascript" src="../scripts/ac_common.js"></script><script type="text/javascript" src="../scripts/ac.strings.js"></script><script type="text/javascript" src="../scripts/acmap.js"></script><script type="text/javascript" src="../scripts/ac.acad_ak.js"></script><script language="javascript">
+            function hideInfo() {
+                info = document.getElementById('infoline');
+                info.innerHTML = ' ';
+                info.style.visibility = 'hidden';
+            }
+            function showInfo(title) {
+                info = document.getElementById('infoline');
+                info.innerHTML = title;
+                info.style.visibility='visible';
+            }
+        </script><meta type="description" content="Geometry Value">
+      <meta type="keywords" content="">
+      <meta type="topic-type" content="concept">
+   </head>
+   <body onLoad="javascript:initFrame('WS73099cc142f487555e01641096cb1c9da-7c04.htm','83'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
+      <!--
+                            Name = Topic;
+                            Class =  CPM-Topic ISD-Topic ;
+                            Url = WS73099cc142f487555e01641096cb1c9da-7c04.htm-->
+      <div class="head">
+         <div class="head-block">
+            <div class="nav-group">
+               <!--browse buttons-->
+               <div class="browse">
+                  <nobr>
+                     <div id="homeTitle" style="display:none">Home: FDO Developer's Guide</div><a href="WS73099cc142f487551d92abb10dc573c45d-7fdf.htm" target="content" class="headNavLink" onmouseover="showInfo(document.getElementById('homeTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-home-xp.gif" border="0"></a><span class="home-button-separator">&nbsp;</span><div id="prevTitle" style="display:none">Special Character</div><a href="WS73099cc142f487555e01641096cb1c9da-7c05.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">Language Issues</div><a href="WS7106c181349dd8d01e893df105df83cc25-7ffe.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">The Geometry API</div><a href="WSfacf1429558a55de8821c21057fbebc2b-78b.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-next-xp.gif" border="0"></a></nobr>
+               </div>
+               <!--end browse buttons-->
+            </div>
+            <div class="button-info"><span id="infoline">&nbsp;</span></div>
+            <div class="ancestry"><a href="WSfacf1429558a55de8821c21057fbebc2b-7ff.htm">Filter and Expression Languages</a>&nbsp;&gt;&nbsp;<a href="WS7106c181349dd8d01e893df105df83cc25-7ffe.htm">Language Issues</a>&nbsp;&gt;&nbsp;
+            </div>
+            <div class="head-text"><span>Geometry Value</span></div>
+         </div>
+      </div>
+      <div class="head-margin">&nbsp;</div>
+      <div style="line-height: 0pt">&nbsp;</div>
+      <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS73099cc142f487555e01641096cb1c9da-7c04"></a></span>
+                  
+                  
+      <!--Body-->
+                     
+      <p>
+                           Geometry
+         values are handled using a function call GeomFromText('AGF Text
+         string'), as is typical in an SQL query. 
+      </p>
+                     
+      <p>The Autodesk extension
+         to WKT, referred to as AGF Text, is a superset of WKT (that is,
+         you can enter WKT as valid AGF Text strings). Dimensionality is
+         optional. It can be XY, XYM, XYZ, or XYZM. If it is not specified, it
+         is assumed to be XY. For more information about AGF, see <span class="char_link"><a href="WSfacf1429558a55de8821c21057fbebc2b-787.htm">
+               <!--Reference = WSfacf1429558a55de8821c21057fbebc2b-787; Target topic = WSfacf1429558a55de8821c21057fbebc2b-787.htm-->GisAgfGeometryFactory</a></span>.
+      </p>
+                     
+      <div>
+         <div class="note-note"><span class="label">Note</span>Extra
+            ordinates are ignored, rather than generating an error during AGF
+            text parsing. For example, in the string “POINT (10 11 12)”, the
+            ‘12’ is ignored because the dimensionality is assumed to be XY.
+         </div>
+      </div>
+                     
+      <p>The following is the
+         grammar definition for AGF Text:
+      </p>
+                     
+      <p>&lt;AGF Text&gt; ::=
+         POINT &lt;Dimensionality&gt; &lt;PointEntity&gt; 
+      </p>
+                     
+      <p>| LINESTRING &lt;Dimensionality&gt;
+         &lt;LineString&gt; 
+      </p>
+                     
+      <p>| POLYGON &lt;Dimensionality&gt;
+         &lt;Polygon&gt; 
+      </p>
+                     
+      <p>| CURVESTRING &lt;Dimensionality&gt;
+         &lt;CurveString&gt; 
+      </p>
+                     
+      <p>| CURVEPOLYGON &lt;Dimensionality&gt;
+         &lt;CurvePolygon&gt; 
+      </p>
+                     
+      <p>| MULTIPOINT &lt;Dimensionality&gt;
+         &lt;MultiPoint&gt; 
+      </p>
+                     
+      <p>| MULTILINESTRING
+         &lt;Dimensionality&gt; &lt;MultiLineString&gt; 
+      </p>
+                     
+      <p>| MULTIPOLYGON &lt;Dimensionality&gt;
+         &lt;MultiPolygon&gt; 
+      </p>
+                     
+      <p>| MULTICURVESTRING
+         &lt;Dimensionality&gt; &lt;MultiCurveString&gt; 
+      </p>
+                     
+      <p>| MULTICURVEPOLYGON
+         &lt;Dimensionality&gt; &lt;MultiCurvePolygon&gt; 
+      </p>
+                     
+      <p>| GEOMETRYCOLLECTION
+         &lt;GeometryCollection&gt; 
+      </p>
+                     
+      <p>&lt;PointEntity&gt;
+         ::= '(' &lt;Point&gt; ')' 
+      </p>
+                     
+      <p>&lt;LineString&gt;
+         ::= '(' &lt;PointCollection&gt; ')' 
+      </p>
+                     
+      <p>&lt;Polygon&gt; ::=
+         '(' &lt;LineStringCollection&gt; ')' 
+      </p>
+                     
+      <p>&lt;MultiPoint&gt;
+         ::= '(' &lt;PointCollection&gt; ')' 
+      </p>
+                     
+      <p>&lt;MultiLineString&gt;
+         ::= '(' &lt;LineStringCollection&gt; ')' 
+      </p>
+                     
+      <p>&lt;MultiPolygon&gt;
+         ::= '(' &lt;PolygonCollection&gt; ')' 
+      </p>
+                     
+      <p>&lt;GeometryCollection
+         : '(' &lt;AGF Collection Text&gt; ')' 
+      </p>
+                     
+      <p>&lt;CurveString&gt;
+         ::= '(' &lt;Point&gt; '(' &lt;CurveSegmentCollection&gt; ')' ')' 
+      </p>
+                     
+      <p>&lt;CurvePolygon&gt;
+         ::= '(' &lt;CurveStringCollection&gt; ')' 
+      </p>
+                     
+      <p>&lt;MultiCurveString&gt;
+         ::= '(' &lt;CurveStringCollection&gt; ')' 
+      </p>
+                     
+      <p>&lt;MultiCurvePolygon&gt;
+         ::= '(' &lt;CurvePolygonCollection&gt; ')' 
+      </p>
+                     
+      <p>&lt;Dimensionality&gt;
+         ::= // default to XY 
+      </p>
+                     
+      <p>| XY </p>
+                     
+      <p>| XYZ </p>
+                     
+      <p>| XYM </p>
+                     
+      <p>| XYZM </p>
+                     
+      <p>&lt;Point&gt; ::=
+         DOUBLE DOUBLE 
+      </p>
+                     
+      <p>| DOUBLE DOUBLE DOUBLE </p>
+                     
+      <p>| DOUBLE DOUBLE DOUBLE
+         DOUBLE 
+      </p>
+                     
+      <p>&lt;PointCollection&gt;
+         ::= &lt;Point&gt; 
+      </p>
+                     
+      <p>| &lt;PointCollection
+         ',' &lt;Point&gt; 
+      </p>
+                     
+      <p>&lt;LineStringCollection&gt;
+         ::= &lt;LineString&gt; 
+      </p>
+                     
+      <p>| &lt;LineStringCollection&gt;
+         ',' &lt;LineString&gt; 
+      </p>
+                     
+      <p>&lt;PolygonCollection&gt;
+         ::= &lt;Polygon&gt; 
+      </p>
+                     
+      <p>| &lt;PolygonCollection&gt;
+         ',' &lt;Polygon&gt; 
+      </p>
+                     
+      <p>&lt;AGF Collection
+         Text&gt; ::= &lt;AGF Text&gt; 
+      </p>
+                     
+      <p>| &lt;AGF Collection
+         Text&gt; ',' &lt;AGF Text&gt; 
+      </p>
+                     
+      <p>&lt;CurveSegment&gt;
+         ::= CIRCULARARCSEGMENT '(' &lt;Point&gt; ',' &lt;Point&gt; ')' 
+      </p>
+                     
+      <p>| LINESTRINGSEGMENT
+         '(' &lt;PointCollection&gt; ')' 
+      </p>
+                     
+      <p>&lt;CurveSegmentCollection&gt;
+         ::= &lt;CurveSegment&gt; 
+      </p>
+                     
+      <p>| &lt;CurveSegmentCollection&gt;
+         ',' &lt;CurveSegment&gt; 
+      </p>
+                     
+      <p>&lt;CurveStringCollection&gt;
+         ::= &lt;CurveString&gt; 
+      </p>
+                     
+      <p>| &lt;CurveStringCollection&gt;
+         ',' &lt;CurveString&gt; 
+      </p>
+                     
+      <p>&lt;CurvePolygonCollection&gt;
+         ::= &lt;CurvePolygon&gt; 
+      </p>
+                     
+      <p>| &lt;CurvePolygonCollection&gt;
+         ',' &lt;CurvePolygon&gt; 
+      </p>
+                     
+      <p></p>
+                     
+      <p>The only other token
+         type is DOUBLE, representing a double precision floating point values.
+         Integer (non-decimal point) input is converted to DOUBLE in the
+         lexical analyzer. 
+      </p>
+                     
+      <p>Examples of the Autodesk
+         extensions include: 
+      </p>
+                     
+      <p>POINT XY (10 11) //
+         equivalent to POINT (10 11) 
+      </p>
+                     
+      <p>POINT XYZ (10 11 12) </p>
+                     
+      <p>POINT XYM (10 11 1.2) </p>
+                     
+      <p>POINT XYZM (10 11
+         12 1.2) 
+      </p>
+                     
+      <p>GEOMETRYCOLLECTION
+         (POINT xyz (10 11 12),POINT XYM (30 20 1.8), LINESTRING XYZM(1 2
+         3 4, 3 5 15, 3 20 20)) 
+      </p>
+                     
+      <p>CURVESTRING (0 0 (LINESTRINGSEGMENT
+         (10 10, 20 20, 30 40)))) 
+      </p>
+                     
+      <p>CURVESTRING (0 0 (CIRCULARARCSEGMENT
+         (11 11, 12 12), LINESTRINGSEGMENT (10 10, 20 20, 30 40))) 
+      </p>
+                     
+      <p>CURVESTRING (0 0 (ARC
+         (11 11, 12 12), LINESTRINGSEGMENT (10 10, 20 20, 30 40))) 
+      </p>
+                     
+      <p>CURVESTRING XYZ (0
+         0 0 (LINESTRINGSEGMENT (10 10 1, 20 20 1, 30 40 1))) 
+      </p>
+                     
+      <p>MULTICURVESTRING ((0
+         0 (LINESTRINGSEGMENT (10 10, 20 20, 30 40))),(0 0 (ARC (11 11, 12
+         12), LINESTRINGSEGMENT (10 10, 20 20, 30 40)))) 
+      </p>
+                     
+      <p>CURVEPOLYGON ((0 0
+         (LINESTRINGSEGMENT (10 10, 10 20, 20 20), ARC (20 15, 10 10))),
+         (0 0 (ARC (11 11, 12 12), LINESTRINGSEGMENT (10 10, 20 20, 40 40,
+         90 90)))) 
+      </p>
+                     
+      <p>MULTICURVEPOLYGON
+         (((0 0 (LINESTRINGSEGMENT (10 10, 10 20, 20 20), ARC (20 15, 10
+         10))), (0 0 (ARC (11 11, 12 12), LINESTRINGSEGMENT (10 10, 20 20,
+         40 40, 90 90)))),((0 0 (LINESTRINGSEGMENT (10 10, 10 20, 20 20),
+         ARC (20 15, 10 10))), (0 0 (ARC (11 11, 12 12), LINESTRINGSEGMENT
+         (10 10, 20 20, 40 40, 90 90))))) 
+      </p>
+                     
+      <p></p>
+                  
+               
+      <!---->
+      <!--See also-->
+      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+</html>

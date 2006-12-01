@@ -1,0 +1,87 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   
+      <title>WKB and AGF</title>
+      <link rel="stylesheet" type="text/css" href="../style/cpm.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd_html_standard.css"><script type="text/javascript" src="../scripts/ac_common.js"></script><script type="text/javascript" src="../scripts/ac.strings.js"></script><script type="text/javascript" src="../scripts/acmap.js"></script><script type="text/javascript" src="../scripts/ac.acad_ak.js"></script><script language="javascript">
+            function hideInfo() {
+                info = document.getElementById('infoline');
+                info.innerHTML = ' ';
+                info.style.visibility = 'hidden';
+            }
+            function showInfo(title) {
+                info = document.getElementById('infoline');
+                info.innerHTML = title;
+                info.style.visibility='visible';
+            }
+        </script><meta type="description" content="WKB and AGF">
+      <meta type="keywords" content="">
+      <meta type="topic-type" content="concept">
+   </head>
+   <body onLoad="javascript:initFrame('WSfacf1429558a55de8821c21057fbebc2b-78a.htm','86'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
+      <!--
+                            Name = Topic;
+                            Class =  CPM-Topic ;
+                            Url = WSfacf1429558a55de8821c21057fbebc2b-78a.htm-->
+      <div class="head">
+         <div class="head-block">
+            <div class="nav-group">
+               <!--browse buttons-->
+               <div class="browse">
+                  <nobr>
+                     <div id="homeTitle" style="display:none">Home: FDO Developer's Guide</div><a href="WS73099cc142f487551d92abb10dc573c45d-7fdf.htm" target="content" class="headNavLink" onmouseover="showInfo(document.getElementById('homeTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-home-xp.gif" border="0"></a><span class="home-button-separator">&nbsp;</span><div id="prevTitle" style="display:none">Description of the Geometry API</div><a href="WS7106c181349dd8d07bd9f2105df83cd65-8000.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">The Geometry API</div><a href="WSfacf1429558a55de8821c21057fbebc2b-78b.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">Basic / Pure Geometry</div><a href="WSfacf1429558a55de8821c21057fbebc2b-789.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-next-xp.gif" border="0"></a></nobr>
+               </div>
+               <!--end browse buttons-->
+            </div>
+            <div class="button-info"><span id="infoline">&nbsp;</span></div>
+            <div class="ancestry"><a href="WSfacf1429558a55de8821c21057fbebc2b-78b.htm">The Geometry API</a>&nbsp;&gt;&nbsp;
+            </div>
+            <div class="head-text"><span>WKB and AGF</span></div>
+         </div>
+      </div>
+      <div class="head-margin">&nbsp;</div>
+      <div style="line-height: 0pt">&nbsp;</div>
+      <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-78a"></a></span>
+               
+               
+      <!--Body-->
+                  
+      <p>
+                        
+                        The WKB and AGF formats are differ in only a
+         few significant details:
+      </p>
+                  
+      <!--UList--><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-746"></a></span>
+                     
+      <ul>
+         <li>WKB defines a byte order of the data in every
+            piece of geometry. This is stored as a byte field, which as a result
+            might change the memory alignment from word to byte. In AGF, only
+            one memory alignment type is supported, which is the same alignment
+            type as used by the .NET framework and Windows (encoded using the
+            little-endian byte order format). As a result, this byte flag does
+            not need to be stored.
+         </li>
+         <li>WKB is defined as a 2D format only. This
+            is insufficient to represent 3D points, polylines and polygons.
+            In AGF, the dimension flag has been added. In particular, a flag
+            is included for each geometry piece to indicate whether the geometry
+            is 2D, 3D, or even 4D (storing a measure value as used by dynamic
+            segmentation.
+         </li>
+         <li>In AGF, geometry types are included that
+            are not yet covered by any WKB specification.
+         </li>
+      </ul>
+                     
+                     
+                  
+               
+            
+      <!---->
+      <!--See also-->
+      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+</html>

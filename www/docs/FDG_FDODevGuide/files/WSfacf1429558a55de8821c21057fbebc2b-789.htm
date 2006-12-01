@@ -1,0 +1,313 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   
+      <title>Basic / Pure Geometry</title>
+      <link rel="stylesheet" type="text/css" href="../style/cpm.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd_html_standard.css"><script type="text/javascript" src="../scripts/ac_common.js"></script><script type="text/javascript" src="../scripts/ac.strings.js"></script><script type="text/javascript" src="../scripts/acmap.js"></script><script type="text/javascript" src="../scripts/ac.acad_ak.js"></script><script language="javascript">
+            function hideInfo() {
+                info = document.getElementById('infoline');
+                info.innerHTML = ' ';
+                info.style.visibility = 'hidden';
+            }
+            function showInfo(title) {
+                info = document.getElementById('infoline');
+                info.innerHTML = title;
+                info.style.visibility='visible';
+            }
+        </script><meta type="description" content="Basic / Pure Geometry">
+      <meta type="keywords" content="">
+      <meta type="topic-type" content="concept">
+   </head>
+   <body onLoad="javascript:initFrame('WSfacf1429558a55de8821c21057fbebc2b-789.htm','87'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
+      <!--
+                            Name = Topic;
+                            Class =  CPM-Topic ;
+                            Url = WSfacf1429558a55de8821c21057fbebc2b-789.htm-->
+      <div class="head">
+         <div class="head-block">
+            <div class="nav-group">
+               <!--browse buttons-->
+               <div class="browse">
+                  <nobr>
+                     <div id="homeTitle" style="display:none">Home: FDO Developer's Guide</div><a href="WS73099cc142f487551d92abb10dc573c45d-7fdf.htm" target="content" class="headNavLink" onmouseover="showInfo(document.getElementById('homeTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-home-xp.gif" border="0"></a><span class="home-button-separator">&nbsp;</span><div id="prevTitle" style="display:none">WKB and AGF</div><a href="WSfacf1429558a55de8821c21057fbebc2b-78a.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">The Geometry API</div><a href="WSfacf1429558a55de8821c21057fbebc2b-78b.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">GisGeometryStreamFactory</div><a href="WSfacf1429558a55de8821c21057fbebc2b-788.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-next-xp.gif" border="0"></a></nobr>
+               </div>
+               <!--end browse buttons-->
+            </div>
+            <div class="button-info"><span id="infoline">&nbsp;</span></div>
+            <div class="ancestry"><a href="WSfacf1429558a55de8821c21057fbebc2b-78b.htm">The Geometry API</a>&nbsp;&gt;&nbsp;
+            </div>
+            <div class="head-text"><span>Basic / Pure Geometry</span></div>
+         </div>
+      </div>
+      <div class="head-margin">&nbsp;</div>
+      <div style="line-height: 0pt">&nbsp;</div>
+      <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-789"></a></span>
+               
+               
+      <!--Body-->
+                  
+      <p>
+                        In
+         this section, the memory layout of each simple geometry type is
+         described. The format is taken from the OGC specification, built
+         on the memory layout of a C++ struct. All arrays have a computable
+         size and are inline; they do not point to a different location in memory.
+         The actual architecture of this format allows streaming of geometry data.
+      </p>
+                  
+      <p>First, the different
+         data types, their size, and memory layout are discussed
+      </p>
+                  
+      <div class="codeBlock">
+                        <pre class="codeLine">// int == 4 byte integer in little endian encoding</pre>
+                        <pre class="codeLine">// float == 4 byte IEEE floating number in little endian encoding</pre>
+                        <pre class="codeLine">// double == 8 byte IEEE double number in little endian encoding.</pre>
+                        <pre class="codeLine">// char == 2 byte unicode character in little endian encoding</pre>
+                        <pre class="codeLine">// GisInt32 == 4 byte integer in little endian encoding</pre>
+                        <pre class="codeLine">// double == 8 byte IEEE double number in little endian encoding.</pre>
+                        <pre class="codeLine">// the type of the geometry</pre>
+                        <pre class="codeLine">enum GeometryType : int</pre>
+                        <pre class="codeLine">{</pre>
+                        <pre class="codeLine">None = 0,</pre>
+                        <pre class="codeLine">Point = 1,</pre>
+                        <pre class="codeLine">LineString = 2,</pre>
+                        <pre class="codeLine">Polygon = 3,</pre>
+                        <pre class="codeLine">MultiPoint = 4,</pre>
+                        <pre class="codeLine">MultiLineString = 5,</pre>
+                        <pre class="codeLine">MultiPolygon = 6,</pre>
+                        <pre class="codeLine">MultiGeometry = 7,</pre>
+                        <pre class="codeLine"> = 10,</pre>
+                        <pre class="codeLine">CurvePolygon = 11,</pre>
+                        <pre class="codeLine">MultiCurveString = 12,</pre>
+                        <pre class="codeLine">MultiCurvePolygon = 13</pre>
+                        <pre class="codeLine">}</pre>
+                     </div>
+                  
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-74f"></a></span>
+                        
+         <p class="section_title_h1"><a name="TOC_ENTRY__d0e10160"></a>Coordinate Types
+         </p>
+                        
+         <p>This is a bit field,
+            for example, xym == coordinateDimensionality.XY | CoordinateDimensionality.M.
+            The following sequence defines the type of coordinates used for
+            this object: 
+         </p>
+                        
+         <div class="codeBlock">
+                              <pre class="codeLine">enum CoordinateDimensionality : int</pre>
+                              <pre class="codeLine">{</pre>
+                              <pre class="codeLine">XY = 0,</pre>
+                              <pre class="codeLine">Z = 1,</pre>
+                              <pre class="codeLine">M = 2</pre>
+                              <pre class="codeLine">}</pre>
+                           </div>
+                     
+      </div>
+                  
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-74e"></a></span>
+                        
+         <p class="section_title_h1"><a name="TOC_ENTRY__d0e10190"></a>Basic Geometry
+         </p>
+                        
+         <p>The following sequence
+            establishes the basic pure geometry:
+         </p>
+                        
+         <div class="codeBlock">
+                              <pre class="codeLine">struct Geometry </pre>
+                              <pre class="codeLine">{</pre>
+                              <pre class="codeLine">int geomType;</pre>
+                              <pre class="codeLine">CoordinateDimensionality type;</pre>
+                              <pre class="codeLine">}</pre>
+                           </div>
+                     
+      </div>
+                  
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-74d"></a></span>
+                        
+         <p class="section_title_h1"><a name="TOC_ENTRY__d0e10217"></a>Defining a Method for Notation 
+         </p>
+                        
+         <p>The following sequence
+            defines a method for notation within this specification:
+         </p>
+                        
+         <div class="codeBlock">
+                              <pre class="codeLine">// Define a method for notation within this specification</pre>
+                              <pre class="codeLine">// int PositionSize(geometry)</pre>
+                              <pre class="codeLine">// {</pre>
+                              <pre class="codeLine">// if (geometry.type == CoordinateDimensionality.XY |</pre>
+                              <pre class="codeLine">// CoordinateDimensionality.M || </pre>
+                              <pre class="codeLine">// geometry.type == CoordinateDimensionality.XY |</pre>
+                              <pre class="codeLine">// CoordinateDimensionality.Z)</pre>
+                              <pre class="codeLine">// return 3;</pre>
+                              <pre class="codeLine">// if (geometry.type == CoordinateDimensionality.XY |</pre>
+                              <pre class="codeLine">// CoordinateDimensionality.M | CoordinateDimensionality.Z)</pre>
+                              <pre class="codeLine">// return 4</pre>
+                              <pre class="codeLine">// return 2;</pre>
+                              <pre class="codeLine">// }</pre>
+                              <pre class="codeLine">struct Point // : Geometry</pre>
+                              <pre class="codeLine">{</pre>
+                              <pre class="codeLine">int geomType; // == GeometryType.Point;</pre>
+                              <pre class="codeLine">CoordinateDimensionality type; // all types allowed</pre>
+                              <pre class="codeLine">double[] coords; // size = PositionSize(this) </pre>
+                              <pre class="codeLine">}</pre>
+                              <pre class="codeLine">struct LineString </pre>
+                              <pre class="codeLine">{</pre>
+                              <pre class="codeLine">int geomType; </pre>
+                              <pre class="codeLine">CoordinateDimensionality type; </pre>
+                              <pre class="codeLine">int numPts; // &gt;0</pre>
+                              <pre class="codeLine">double[] coords; // size = numPts* PositionSize(this)</pre>
+                              <pre class="codeLine">}</pre>
+                              <pre class="codeLine">struct MultiPoint </pre>
+                              <pre class="codeLine">{</pre>
+                              <pre class="codeLine">int geomType; </pre>
+                              <pre class="codeLine">int numPoints; // &gt; 0 </pre>
+                              <pre class="codeLine">Point[] points; // size = numPoints</pre>
+                              <pre class="codeLine">}</pre>
+                              <pre class="codeLine">struct MultiLineString </pre>
+                              <pre class="codeLine">{</pre>
+                              <pre class="codeLine">int geomType; </pre>
+                              <pre class="codeLine">int numLineStrings; // &gt;= 0 </pre>
+                              <pre class="codeLine">LineString[] lineStrings; // size = numLineStrings</pre>
+                              <pre class="codeLine">}</pre>
+                              <pre class="codeLine">// building block for polygons, not geometry by itself</pre>
+                              <pre class="codeLine">struct LinearRing </pre>
+                              <pre class="codeLine">{</pre>
+                              <pre class="codeLine">int numPts; // &gt;0</pre>
+                              <pre class="codeLine">double[] coords; // size = numPts* PositionSize(polygon) </pre>
+                              <pre class="codeLine">}</pre>
+                              <pre class="codeLine">struct Polygon </pre>
+                              <pre class="codeLine">{</pre>
+                              <pre class="codeLine">int geomType; </pre>
+                              <pre class="codeLine">CoordinateDimensionality type; </pre>
+                              <pre class="codeLine">int numRings; // &gt;= 1 as there has to be at least one ring </pre>
+                              <pre class="codeLine">LinearRing[] lineStrings; // size = numRings</pre>
+                              <pre class="codeLine">}</pre>
+                              <pre class="codeLine">struct MultiPolygon </pre>
+                              <pre class="codeLine">{</pre>
+                              <pre class="codeLine">int geomType; </pre>
+                              <pre class="codeLine">int numPolygons; // &gt;= 0</pre>
+                              <pre class="codeLine">Polygon[] polygons; // size = numPolygons</pre>
+                              <pre class="codeLine">}</pre>
+                              <pre class="codeLine">struct MultiGeometry </pre>
+                              <pre class="codeLine">{</pre>
+                              <pre class="codeLine">int geomType; </pre>
+                              <pre class="codeLine">int numGeom; // &gt;= 0 </pre>
+                              <pre class="codeLine">Geometry[] geometry; // size = numGeom</pre>
+                              <pre class="codeLine">}</pre>
+                              <pre class="codeLine">enum CurveElementType : int</pre>
+                              <pre class="codeLine">{</pre>
+                              <pre class="codeLine">LineString = 1,</pre>
+                              <pre class="codeLine">CircularArc = 2</pre>
+                              <pre class="codeLine">}</pre>
+                              <pre class="codeLine">struct CurveStringElement</pre>
+                              <pre class="codeLine">{</pre>
+                              <pre class="codeLine">int CurveElementType;</pre>
+                              <pre class="codeLine">}</pre>
+                              <pre class="codeLine">struct LinearCurveStringElement </pre>
+                              <pre class="codeLine">{</pre>
+                              <pre class="codeLine">int CurveElementType; </pre>
+                              <pre class="codeLine">int length;</pre>
+                              <pre class="codeLine">double[] coords; // size = this.length * PositionSize (this)</pre>
+                              <pre class="codeLine">}</pre>
+                              <pre class="codeLine">struct CircularArcCurveStringElement </pre>
+                              <pre class="codeLine">{</pre>
+                              <pre class="codeLine">int CurveElementType; // == CurveElmentType.Arc</pre>
+                              <pre class="codeLine">double[] coords; // size = 2 * PositionSize(this)</pre>
+                              <pre class="codeLine">}</pre>
+                              <pre class="codeLine">struct CurveString </pre>
+                              <pre class="codeLine">{</pre>
+                              <pre class="codeLine">int geomType; </pre>
+                              <pre class="codeLine">CoordinateDimensionality type; // all types allowed</pre>
+                              <pre class="codeLine">double[] startPoint; // size = PositionSize(this)</pre>
+                              <pre class="codeLine">int numElements; // &gt;=0</pre>
+                              <pre class="codeLine">CurveStringElement[] elements; // size = numElements</pre>
+                              <pre class="codeLine">}</pre>
+                              <pre class="codeLine">struct Ring</pre>
+                              <pre class="codeLine">{</pre>
+                              <pre class="codeLine">double[] startPoint; // size = PositionSize(this)</pre>
+                              <pre class="codeLine">int numElements; // &gt;=0</pre>
+                              <pre class="codeLine">CurveStringElement[] elements; // size = numElements</pre>
+                              <pre class="codeLine">}</pre>
+                              <pre class="codeLine">struct MultiCurveString </pre>
+                              <pre class="codeLine">{</pre>
+                              <pre class="codeLine">int geomType; </pre>
+                              <pre class="codeLine">int numCurveStrings; // &gt;= 0 </pre>
+                              <pre class="codeLine">CurveString[] curveStrings; // size = numCurveStrings</pre>
+                              <pre class="codeLine">}</pre>
+                              <pre class="codeLine">struct CurvePolygon </pre>
+                              <pre class="codeLine">{</pre>
+                              <pre class="codeLine">int geomType; ;</pre>
+                              <pre class="codeLine">CoordinateDimensionality type; </pre>
+                              <pre class="codeLine">int numRings; // &gt;=1 as there has to be at least one ring</pre>
+                              <pre class="codeLine">Ring[] rings; // size = numRings</pre>
+                              <pre class="codeLine">}</pre>
+                              <pre class="codeLine">struct MultiCurvePolygon</pre>
+                              <pre class="codeLine">{</pre>
+                              <pre class="codeLine">int geomType; </pre>
+                              <pre class="codeLine">int numPolygons; // &gt;=0</pre>
+                              <pre class="codeLine">CurvePolygon[] polygons; // size = numElements</pre>
+                              <pre class="codeLine">}</pre>
+                           </div>
+                        
+         <p></p>
+                        
+         <p>In the following example
+            in the OpenGIS specification, a polygon within the byte array representing
+            the stream is investigated:
+         </p>
+                        <span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-749"></a></span><div class="figure-anchor">
+                              
+            <p><img src="../images/FDO_geometry_bytearray.ai"></p>
+                           
+         </div>
+                        
+         <p>T = 3 stands for GeometryType
+            == GeometryType.Polygon
+         </p>
+                        
+         <p>CT = 0 stands for
+            CoordinateDimensionality == CoordinateDimensionality.XY
+         </p>
+                        
+         <p>NR = 2 stands for
+            number of rings = 2
+         </p>
+                        
+         <p>NP =3 stands for number
+            of points = 3
+         </p>
+                     
+      </div>
+                  
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-74c"></a></span>
+                        
+         <p class="section_title_h1"><a name="TOC_ENTRY__d0e10599"></a>GIS Geometry API
+         </p>
+                        
+         <p>
+                              There
+            are two classes in the GIS Geometry API relevant to AGF:
+         </p>
+                        
+         <!--UList--><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-745"></a></span>
+                           
+         <ul>
+            <li>GisGeometryStreamFactory</li>
+            <li>GisAgfGeometryFactory</li>
+         </ul>
+                           
+                        
+                     
+      </div>
+               
+            
+      <!---->
+      <!--See also-->
+      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+</html>

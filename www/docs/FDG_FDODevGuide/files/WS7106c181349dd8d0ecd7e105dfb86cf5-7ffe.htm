@@ -1,0 +1,148 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   
+      <title>Working with Schemas</title>
+      <link rel="stylesheet" type="text/css" href="../style/cpm.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd_html_standard.css"><script type="text/javascript" src="../scripts/ac_common.js"></script><script type="text/javascript" src="../scripts/ac.strings.js"></script><script type="text/javascript" src="../scripts/acmap.js"></script><script type="text/javascript" src="../scripts/ac.acad_ak.js"></script><script language="javascript">
+            function hideInfo() {
+                info = document.getElementById('infoline');
+                info.innerHTML = ' ';
+                info.style.visibility = 'hidden';
+            }
+            function showInfo(title) {
+                info = document.getElementById('infoline');
+                info.innerHTML = title;
+                info.style.visibility='visible';
+            }
+        </script><meta type="description" content="Working with Schemas">
+      <meta type="keywords" content="">
+      <meta type="topic-type" content="concept">
+   </head>
+   <body onLoad="javascript:initFrame('WS7106c181349dd8d0ecd7e105dfb86cf5-7ffe.htm','43'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
+      <!--
+                            Name = Topic;
+                            Class =  CPM-Topic ;
+                            Url = WS7106c181349dd8d0ecd7e105dfb86cf5-7ffe.htm-->
+      <div class="head">
+         <div class="head-block">
+            <div class="nav-group">
+               <!--browse buttons-->
+               <div class="browse">
+                  <nobr>
+                     <div id="homeTitle" style="display:none">Home: FDO Developer's Guide</div><a href="WS73099cc142f487551d92abb10dc573c45d-7fdf.htm" target="content" class="headNavLink" onmouseover="showInfo(document.getElementById('homeTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-home-xp.gif" border="0"></a><span class="home-button-separator">&nbsp;</span><div id="prevTitle" style="display:none">Schema Overrides</div><a href="WS7106c181349dd8d0ecd7e105dfb86cf5-7fff.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">Schema Management</div><a href="WSfacf1429558a55de8821c21057fbebc2b-90b.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">FDOFeatureClass</div><a href="WSfacf1429558a55de8821c21057fbebc2b-90a.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-next-xp.gif" border="0"></a></nobr>
+               </div>
+               <!--end browse buttons-->
+            </div>
+            <div class="button-info"><span id="infoline">&nbsp;</span></div>
+            <div class="ancestry"><a href="WSfacf1429558a55de8821c21057fbebc2b-90b.htm">Schema Management</a>&nbsp;&gt;&nbsp;
+            </div>
+            <div class="head-text"><span>Working with Schemas</span></div>
+         </div>
+      </div>
+      <div class="head-margin">&nbsp;</div>
+      <div style="line-height: 0pt">&nbsp;</div>
+      <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS7106c181349dd8d0ecd7e105dfb86cf5-7ffe"></a></span>
+               
+               
+      <!--Body-->
+                  
+      <p>
+                        There
+         are three primary operations involved with schema management:
+      </p>
+                  
+      <!--UList--><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-86e"></a></span>
+                     
+      <ul>
+         <li>Creating a schema</li>
+         <li>Describing a schema </li>
+         <li>Modifying a schema </li>
+      </ul>
+                     
+                     
+                  
+                  
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-883"></a></span>
+                        
+         <p class="section_title_h1"><a name="TOC_ENTRY__d0e4405"></a><span style="display:none"><a name="WS7106c181349dd8d0ecd7e105dfb86cf5-7ffd"></a></span>Creating a Schema
+         </p>
+                        
+         <p>
+                              The following
+            basic steps are required to create a schema (some steps are optional;
+            some may be done in an alternate order to achieve the same result):
+         </p>
+                        
+         <!--UList--><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-86d"></a></span>
+                           
+         <ul>
+            <li>Use the FdoFeatureSchema::Create(“SchemaName”, “FeatureSchema
+               Description”) method to create a schema. 
+            </li>
+            <li>Use the FdoFeatureSchema::GetClasses() method
+               to return a class collection. 
+            </li>
+            <li>Use the FdoClass::Create(“className”, “classDescription”)
+               or FdoFeatureClass::Create(“className”, “classDescription”) method
+               to create FdoClass or FdoFeatureClass type objects. 
+            </li>
+            <li>Use the FdoClassCollection::Add(class) method
+               to add FdoClass or FdoFeatureClass objects to the class collection. 
+            </li>
+            <li>Use the FdoGeometricPropertyDefinition::Create(“name”, “Description”)
+               method to create FdoGeometryProperty. 
+            </li>
+            <li>Use the FdoDataPropertyDefinition::Create(“name”,
+               “Description”) method to create FdoDataProperty. 
+            </li>
+            <li>Use the FdoObjectPropertyDefinition::Create(“name”, “Description”)
+               method to create FdoObjectProperty. 
+            </li>
+            <li>Use the FdoClassDefinition::GetProperties()
+               and Add(property) methods to add property to class definition. 
+            </li>
+            <li>Use the FdoIApplySchemaCommand::SetFeatureSchema(feature
+               schema) method to set the schema object for the IFdoApplySchemaCommand. 
+            </li>
+            <li>Use the FdoAssociationPropertydefinition
+               class to represent the association between two classes. The class
+               of the associated class must already be defined in the feature schema
+               and cannot be abstract.
+            </li>
+            <li>Use the FdoIApplySchemaCommand::Execute()
+               method to execute changes to the feature schema.
+            </li>
+         </ul>
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                        
+                        
+         <p>For an example of
+            schema creation, see <span class="char_link"><a href="WS7106c181349dd8d0ecd7e105dfb86cf5-7ffa.htm#WSfacf1429558a55de8821c21057fbebc2b-878">
+                  <!--Reference = WSfacf1429558a55de8821c21057fbebc2b-878; Target topic = WS7106c181349dd8d0ecd7e105dfb86cf5-7ffa.htm-->Example: Creating a Feature Schema</a></span>.
+         </p>
+                        
+         <p>Use the FdoClassDefinition::GetIdentityProperties()
+            and Add(Property Object) methods to set the property as FdoClass
+            or FdoFeatureClass Identifier. FDO allows multiple Identifiers for
+            both types of classes, although Identifiers have slight differences
+            in both cases.
+         </p>
+                     
+      </div>
+               
+            
+      <!---->
+      <!--See also-->
+      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+</html>

@@ -1,0 +1,114 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   
+      <title>Memory Management</title>
+      <link rel="stylesheet" type="text/css" href="../style/cpm.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd_html_standard.css"><script type="text/javascript" src="../scripts/ac_common.js"></script><script type="text/javascript" src="../scripts/ac.strings.js"></script><script type="text/javascript" src="../scripts/acmap.js"></script><script type="text/javascript" src="../scripts/ac.acad_ak.js"></script><script language="javascript">
+            function hideInfo() {
+                info = document.getElementById('infoline');
+                info.innerHTML = ' ';
+                info.style.visibility = 'hidden';
+            }
+            function showInfo(title) {
+                info = document.getElementById('infoline');
+                info.innerHTML = title;
+                info.style.visibility='visible';
+            }
+        </script><meta type="description" content="Memory Management">
+      <meta type="keywords" content="">
+      <meta type="topic-type" content="concept">
+   </head>
+   <body onLoad="javascript:initFrame('WS7106c181349dd8d0121cc40105df83cac6-8000.htm','16'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
+      <!--
+                            Name = Topic;
+                            Class =  CPM-Topic ISD-Topic ;
+                            Url = WS7106c181349dd8d0121cc40105df83cac6-8000.htm-->
+      <div class="head">
+         <div class="head-block">
+            <div class="nav-group">
+               <!--browse buttons-->
+               <div class="browse">
+                  <nobr>
+                     <div id="homeTitle" style="display:none">Home: FDO Developer's Guide</div><a href="WS73099cc142f487551d92abb10dc573c45d-7fdf.htm" target="content" class="headNavLink" onmouseover="showInfo(document.getElementById('homeTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-home-xp.gif" border="0"></a><span class="home-button-separator">&nbsp;</span><div id="prevTitle" style="display:none">Development Practices</div><a href="WSfacf1429558a55de8821c21057fbebc2b-82c.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">Development Practices</div><a href="WSfacf1429558a55de8821c21057fbebc2b-82c.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">Exception Handling</div><a href="WS7106c181349dd8d0121cc40105df83cac6-7fff.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-next-xp.gif" border="0"></a></nobr>
+               </div>
+               <!--end browse buttons-->
+            </div>
+            <div class="button-info"><span id="infoline">&nbsp;</span></div>
+            <div class="ancestry"><a href="WSfacf1429558a55de8821c21057fbebc2b-82c.htm">Development Practices</a>&nbsp;&gt;&nbsp;
+            </div>
+            <div class="head-text"><span>Memory Management</span></div>
+         </div>
+      </div>
+      <div class="head-margin">&nbsp;</div>
+      <div style="line-height: 0pt">&nbsp;</div>
+      <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS7106c181349dd8d0121cc40105df83cac6-8000"></a></span>
+               
+               
+      <!--Body-->
+                  
+      <p><span style="display:none"><a name="WS73099cc142f4875540c8010ee636d6bb-7ef1"></a></span>
+                        Some FDO functions (for example, the Create
+         methods) allocate memory when they are called. This memory needs
+         to be freed to prevent memory leaks. All destructors on FDO classes
+         are protected, so you must call a Release() function to destroy
+         them (thus freeing their allocated memory). Each class inherits
+         from the GisIDisposable class, which defines the AddRef() and Release()
+         functions. 
+      </p>
+                  
+      <p><span style="display:none"><a name="WS73099cc142f4875540c8010ee636d6bb-7ef0"></a></span>In addition, these classes are reference counted,
+         and the count is increased when you retrieve them through a Get
+         function. After finishing with the object, you need to release it
+         (just as with COM objects). The object is destroyed only when the
+         reference count hits 0. For example: 
+      </p>
+                  
+      <div class="codeBlock">
+                        <pre class="codeLine">FdoFeatureClass* pBase = myClass-&gt;GetBaseClass(); </pre>
+                        <pre class="codeLine">... </pre>
+                        <pre class="codeLine">// Must release reference added by GetBaseClass when done. </pre>
+                        <pre class="codeLine">GIS_SAFE_RELEASE(pBase); </pre>
+                     </div>
+                  
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-803"></a></span>
+                        
+         <p class="section_title_h1"><a name="TOC_ENTRY__d0e1586"></a>GIS_SAFE_RELEASE (*ptr)
+         </p>
+                        
+         <p><span style="display:none"><a name="WS73099cc142f4875540c8010ee636d6bb-7eef"></a></span>
+                              If the “*ptr” argument is not null, GIS_SAFE_RELEASE
+            calls the release() method of the object pointed to by the “*ptr”
+            argument.
+         </p>
+                     
+      </div>
+                  
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-802"></a></span>
+                        
+         <p class="section_title_h1"><a name="TOC_ENTRY__d0e1600"></a>GisPtr
+         </p>
+                        
+         <p><span style="display:none"><a name="WS73099cc142f4875540c8010ee636d6bb-7eee"></a></span>
+                              A GisPtr
+            smart pointer is provided to help manage memory. You wrap an FDO
+            object in a GisPtr. The object is then released automatically when
+            the GisPtr goes out of scope. The following code illustrates how
+            to use GisPtr: 
+         </p>
+                        
+         <div class="codeBlock">
+                              <pre class="codeLine">GisPtr&lt;FdoFeatureClass&gt; pBase = myClass-&gt;GetBaseClass(); </pre>
+                              <pre class="codeLine">... </pre>
+                              <pre class="codeLine">// No need to release. Automatically happens when pBase </pre>
+                              <pre class="codeLine">// is destroyed. </pre>
+                           </div>
+                     
+      </div>
+               
+            
+      <!---->
+      <!--See also-->
+      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+</html>

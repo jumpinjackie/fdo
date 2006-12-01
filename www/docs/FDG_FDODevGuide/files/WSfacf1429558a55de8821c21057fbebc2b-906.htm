@@ -1,0 +1,119 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   
+      <title>Schema Element States</title>
+      <link rel="stylesheet" type="text/css" href="../style/cpm.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd_html_standard.css"><script type="text/javascript" src="../scripts/ac_common.js"></script><script type="text/javascript" src="../scripts/ac.strings.js"></script><script type="text/javascript" src="../scripts/acmap.js"></script><script type="text/javascript" src="../scripts/ac.acad_ak.js"></script><script language="javascript">
+            function hideInfo() {
+                info = document.getElementById('infoline');
+                info.innerHTML = ' ';
+                info.style.visibility = 'hidden';
+            }
+            function showInfo(title) {
+                info = document.getElementById('infoline');
+                info.innerHTML = title;
+                info.style.visibility='visible';
+            }
+        </script><meta type="description" content="Schema Element States">
+      <meta type="keywords" content="">
+      <meta type="topic-type" content="concept">
+   </head>
+   <body onLoad="javascript:initFrame('WSfacf1429558a55de8821c21057fbebc2b-906.htm','48'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
+      <!--
+                            Name = Topic;
+                            Class =  CPM-Topic ;
+                            Url = WSfacf1429558a55de8821c21057fbebc2b-906.htm-->
+      <div class="head">
+         <div class="head-block">
+            <div class="nav-group">
+               <!--browse buttons-->
+               <div class="browse">
+                  <nobr>
+                     <div id="homeTitle" style="display:none">Home: FDO Developer's Guide</div><a href="WS73099cc142f487551d92abb10dc573c45d-7fdf.htm" target="content" class="headNavLink" onmouseover="showInfo(document.getElementById('homeTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-home-xp.gif" border="0"></a><span class="home-button-separator">&nbsp;</span><div id="prevTitle" style="display:none">Modifying Models</div><a href="WSfacf1429558a55de8821c21057fbebc2b-907.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">Schema Management</div><a href="WSfacf1429558a55de8821c21057fbebc2b-90b.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">Rollback Mechanism</div><a href="WSfacf1429558a55de8821c21057fbebc2b-905.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-next-xp.gif" border="0"></a></nobr>
+               </div>
+               <!--end browse buttons-->
+            </div>
+            <div class="button-info"><span id="infoline">&nbsp;</span></div>
+            <div class="ancestry"><a href="WSfacf1429558a55de8821c21057fbebc2b-90b.htm">Schema Management</a>&nbsp;&gt;&nbsp;
+            </div>
+            <div class="head-text"><span>Schema Element States</span></div>
+         </div>
+      </div>
+      <div class="head-margin">&nbsp;</div>
+      <div style="line-height: 0pt">&nbsp;</div>
+      <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-906"></a></span>
+               
+               
+      <!--Body-->
+                  
+      <p>
+                        
+                        
+                        All
+         elements within the model maintain a state flag. This flag can be
+         retrieved by calling FdoSchemaElement::GetElementState(), but it
+         cannot be directly set. Instead, its state changes in reaction to
+         the changes made to the model:
+      </p>
+                  
+      <!--UList--><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-867"></a></span>
+                     
+      <ul>
+         <li>
+                              <em class="strong">Unchanged. </em>When
+            a schema model is retrieved via FdoIDescribeSchema, all elements
+            are initially marked Unchanged. 
+         </li>
+         <li>
+                              <em class="strong">Detached. </em>Removing
+            an element from an owning collection sets its state to Detached. 
+         </li>
+         <li>
+                              <em class="strong">Deleted. </em>Calling
+            the Delete() method on an element sets its state to Deleted. 
+         </li>
+         <li>
+                              <em class="strong">Added. </em>Placing
+            an element within a collection marks the element as Added. 
+         </li>
+         <li>
+                              <em class="strong">Modified. </em>When
+            adding or removing a sub-element, such as a property element from
+            a class, the class element state will be changed to Modified. 
+         </li>
+      </ul>
+                     
+                     
+                     
+                     
+                  
+                  
+      <p>Additionally, when
+         an element that is contained by another element is changed in any
+         way, the containing element is also marked as Modified. So, for
+         example, if a new value is added to the SchemaAttributeDictionary
+         of the “Class3” element in our model, both the “Class3” FdoClass
+         object and the FdoFeatureSchema object would be marked as Modified.
+      </p>
+                  
+      <p>The state flags are
+         maintained until the changes are accepted, that is, when IApplySchema
+         is executed. At that time, all elements marked Deleted are released
+         and all other elements are set to Unchanged.
+      </p>
+                  
+      <div>
+         <div class="note-note"><span class="label">Note</span>When
+            you remove an element from an owning collection, its state is marked
+            as Detached. All collections currently in FDO are owning collections,
+            except for one, the collections FdoClassDefinition::GetIdentityProperties().
+         </div>
+      </div>
+               
+            
+      <!---->
+      <!--See also-->
+      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+</html>

@@ -1,0 +1,112 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   
+      <title>Code</title>
+      <link rel="stylesheet" type="text/css" href="../style/cpm.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd_html_standard.css"><script type="text/javascript" src="../scripts/ac_common.js"></script><script type="text/javascript" src="../scripts/ac.strings.js"></script><script type="text/javascript" src="../scripts/acmap.js"></script><script type="text/javascript" src="../scripts/ac.acad_ak.js"></script><script language="javascript">
+            function hideInfo() {
+                info = document.getElementById('infoline');
+                info.innerHTML = ' ';
+                info.style.visibility = 'hidden';
+            }
+            function showInfo(title) {
+                info = document.getElementById('infoline');
+                info.innerHTML = title;
+                info.style.visibility='visible';
+            }
+        </script><meta type="description" content="Code">
+      <meta type="keywords" content="">
+      <meta type="topic-type" content="concept">
+   </head>
+   <body onLoad="javascript:initFrame('WSfacf1429558a55de8821c21057fbebc2b-abb.htm','37'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
+      <!--
+                            Name = Topic;
+                            Class =  CPM-Topic ISD-Topic ;
+                            Url = WSfacf1429558a55de8821c21057fbebc2b-abb.htm-->
+      <div class="head">
+         <div class="head-block">
+            <div class="nav-group">
+               <!--browse buttons-->
+               <div class="browse">
+                  <nobr>
+                     <div id="homeTitle" style="display:none">Home: FDO Developer's Guide</div><a href="WS73099cc142f487551d92abb10dc573c45d-7fdf.htm" target="content" class="headNavLink" onmouseover="showInfo(document.getElementById('homeTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-home-xp.gif" border="0"></a><span class="home-button-separator">&nbsp;</span><div id="prevTitle" style="display:none">Geometry Capabilities</div><a href="WS1a9193826455f5ff9110c71085341391d-3d54.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">Geometry Capabilities</div><a href="WS1a9193826455f5ff9110c71085341391d-3d54.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">Raster Capabilities</div><a href="WS1a9193826455f5ff9110c71085341391d-3d53.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-next-xp.gif" border="0"></a></nobr>
+               </div>
+               <!--end browse buttons-->
+            </div>
+            <div class="button-info"><span id="infoline">&nbsp;</span></div>
+            <div class="ancestry"><a href="WSfacf1429558a55de8821c21057fbebc2b-ac2.htm">Capabilities</a>&nbsp;&gt;&nbsp;<a href="WS1a9193826455f5ff9110c71085341391d-3d54.htm">Geometry Capabilities</a>&nbsp;&gt;&nbsp;
+            </div>
+            <div class="head-text"><span>Code</span></div>
+         </div>
+      </div>
+      <div class="head-margin">&nbsp;</div>
+      <div style="line-height: 0pt">&nbsp;</div>
+      <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-abb"></a></span>
+                  
+                  
+      <!--Body-->
+                     
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-a82"></a></span>
+                           
+         <p class="section_title_h1"><a name="TOC_ENTRY__d0e3907"></a>Declarations
+         </p>
+                           
+         <p>
+                                 
+                                 The
+            object and variable declarations are the following:
+         </p>
+                           
+         <div class="codeBlock">
+                                 <pre class="codeLine">FdoIGeometryCapabilities * geometryCapabilities;</pre>
+                                 <pre class="codeLine">GisInt32 numGeometryTypes = 0;</pre>
+                                 <pre class="codeLine">GisGeometryType * geometryTypes;</pre>
+                                 <pre class="codeLine">GisInt32 numGeometryComponnentTypes = 0;</pre>
+                                 <pre class="codeLine">GisGeometryComponentType * geometryComponentTypes;</pre>
+                                 <pre class="codeLine">GisInt32 dimensionalities = 0;</pre>
+                              </div>
+                        
+      </div>
+                     
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-a81"></a></span>
+                           
+         <p class="section_title_h1"><a name="TOC_ENTRY__d0e3955"></a>Method calls
+         </p>
+                           
+         <p>The method calls are the following:</p>
+                           
+         <div class="codeBlock">
+                                 <pre class="codeLine">geometryCapabilities = connection-&gt;GetGeometryCapabilities();</pre>
+                                 <pre class="codeLine">geometryTypes = geometryCapabilities-&gt;</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;GetGeometryTypes(numGeometryTypes);</pre>
+                                 <p class="codeComment">//
+               loop through geometryTypes
+            </p>
+                                 <pre class="codeLine">geometryComponentTypes = geometryCapabilities-&gt;</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;GetGeometryComponentTypes(numGeometryComponentTypes);</pre>
+                                 <p class="codeComment">//
+               loop through geometryComponentTypes
+            </p>
+                                 <pre class="codeLine">dimensionalities = geometryCapabilities-&gt;GetDimensionalities();</pre>
+                                 <p class="codeComment">//
+               GisDimensinality_XY is 0 and so is always a given
+            </p>
+                                 <pre class="codeLine">if (dimensionalities &amp; GisDimensionality_Z) {</pre>
+                                 <p class="codeComment">&nbsp;&nbsp;// do whatever</p>
+                                 <pre class="codeLine">}</pre>
+                                 <pre class="codeLine">if (dimensionalities &amp; GisDimensionality_M) {</pre>
+                                 <p class="codeComment">&nbsp;&nbsp;//
+               do whatever
+            </p>
+                                 <pre class="codeLine">}</pre>
+                              </div>
+                        
+      </div>
+                  
+               
+      <!---->
+      <!--See also-->
+      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+</html>

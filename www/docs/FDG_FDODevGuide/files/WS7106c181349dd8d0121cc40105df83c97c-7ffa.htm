@@ -1,0 +1,92 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   
+      <title>Deleting Values</title>
+      <link rel="stylesheet" type="text/css" href="../style/cpm.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd_html_standard.css"><script type="text/javascript" src="../scripts/ac_common.js"></script><script type="text/javascript" src="../scripts/ac.strings.js"></script><script type="text/javascript" src="../scripts/acmap.js"></script><script type="text/javascript" src="../scripts/ac.acad_ak.js"></script><script language="javascript">
+            function hideInfo() {
+                info = document.getElementById('infoline');
+                info.innerHTML = ' ';
+                info.style.visibility = 'hidden';
+            }
+            function showInfo(title) {
+                info = document.getElementById('infoline');
+                info.innerHTML = title;
+                info.style.visibility='visible';
+            }
+        </script><meta type="description" content="Deleting Values">
+      <meta type="keywords" content="">
+      <meta type="topic-type" content="concept">
+   </head>
+   <body onLoad="javascript:initFrame('WS7106c181349dd8d0121cc40105df83c97c-7ffa.htm','57'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
+      <!--
+                            Name = Topic;
+                            Class =  CPM-Topic ;
+                            Url = WS7106c181349dd8d0121cc40105df83c97c-7ffa.htm-->
+      <div class="head">
+         <div class="head-block">
+            <div class="nav-group">
+               <!--browse buttons-->
+               <div class="browse">
+                  <nobr>
+                     <div id="homeTitle" style="display:none">Home: FDO Developer's Guide</div><a href="WS73099cc142f487551d92abb10dc573c45d-7fdf.htm" target="content" class="headNavLink" onmouseover="showInfo(document.getElementById('homeTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-home-xp.gif" border="0"></a><span class="home-button-separator">&nbsp;</span><div id="prevTitle" style="display:none">Updating Values</div><a href="WS7106c181349dd8d0121cc40105df83c97c-7ffc.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">Data Maintenance Operations</div><a href="WS1a9193826455f5ff9110c71085341391d-3d51.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">Related Class Topics</div><a href="WS7106c181349dd8d0121cc40105df83c97c-7ff9.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-next-xp.gif" border="0"></a></nobr>
+               </div>
+               <!--end browse buttons-->
+            </div>
+            <div class="button-info"><span id="infoline">&nbsp;</span></div>
+            <div class="ancestry"><a href="WSfacf1429558a55de8821c21057fbebc2b275.htm">Data Maintenance</a>&nbsp;&gt;&nbsp;<a href="WS1a9193826455f5ff9110c71085341391d-3d51.htm">Data Maintenance Operations</a>&nbsp;&gt;&nbsp;
+            </div>
+            <div class="head-text"><span>Deleting Values</span></div>
+         </div>
+      </div>
+      <div class="head-margin">&nbsp;</div>
+      <div style="line-height: 0pt">&nbsp;</div>
+      <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS7106c181349dd8d0121cc40105df83c97c-7ffa"></a></span>
+                  
+                  
+      <!--Body-->
+                     
+      <p>
+                           In addition
+         to inserting (see <span class="char_link"><a href="WS7106c181349dd8d0121cc40105df83c97c-8000.htm">
+               <!--Reference = WS7106c181349dd8d0121cc40105df83c97c-8000; Target topic = WS7106c181349dd8d0121cc40105df83c97c-8000.htm-->Inserting Values</a></span>) and updating (see <span class="char_link"><a href="WS7106c181349dd8d0121cc40105df83c97c-7ffc.htm">
+               <!--Reference = WS7106c181349dd8d0121cc40105df83c97c-7ffc; Target topic = WS7106c181349dd8d0121cc40105df83c97c-7ffc.htm-->Updating Values</a></span>) values, you can delete the
+         values. The deletion operation involves identifying a feature class
+         (“table”) whose feature class objects (“rows”) are to be deleted.
+      </p>
+                     
+      <p>First, create an FdoIDelete
+         command object and use the command object’s SetFeatureClassName()
+         method to identify the feature class. Then, create a filter to identity
+         the feature class objects that you want to delete, and use the command
+         object’s SetFilter() method to attach the filter to it. You can use
+         the same filter that was specified in the preceding section, <span class="char_link"><a href="WS7106c181349dd8d0121cc40105df83c97c-7ffc.htm">
+               <!--Reference = WS7106c181349dd8d0121cc40105df83c97c-7ffc; Target topic = WS7106c181349dd8d0121cc40105df83c97c-7ffc.htm-->Updating Values</a></span>. Finally, execute the command.
+      </p>
+                     
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b29a"></a></span>
+                           
+         <p class="section_title_h1"><a name="TOC_ENTRY__d0e7964"></a>Example: Deleting Property Values
+                              
+         </p>
+                           
+         <div class="codeBlock">
+                                 <pre class="codeLine">GisPtr&lt;FdoIDelete&gt; sampleDelete;</pre>
+                                 <pre class="codeLine">sampleDelete =</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;(FdoIDelete *)connection-&gt;CreateCommand(FdoCommandType_Delete);</pre>
+                                 <pre class="codeLine">GisInt32 numDeleted = 0;</pre>
+                                 <pre class="codeLine">sampleDelete-&gt; </pre>
+                                 <pre class="codeLine">SetFeatureClassName(L"SampleFeatureSchema:SampleFeatureClass");</pre>
+                                 <pre class="codeLine">sampleDelete-&gt;SetFilter(L"( SampleIdentityDataProperty = 101 )");</pre>
+                                 <pre class="codeLine">numDeleted = sampleDelete-&gt;Execute();</pre>
+                              </div>
+                        
+      </div>
+                  
+               
+      <!---->
+      <!--See also-->
+      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+</html>

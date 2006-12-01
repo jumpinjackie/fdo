@@ -1,0 +1,268 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   
+      <title>Establishing a Connection</title>
+      <link rel="stylesheet" type="text/css" href="../style/cpm.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd_html_standard.css"><script type="text/javascript" src="../scripts/ac_common.js"></script><script type="text/javascript" src="../scripts/ac.strings.js"></script><script type="text/javascript" src="../scripts/acmap.js"></script><script type="text/javascript" src="../scripts/ac.acad_ak.js"></script><script language="javascript">
+            function hideInfo() {
+                info = document.getElementById('infoline');
+                info.innerHTML = ' ';
+                info.style.visibility = 'hidden';
+            }
+            function showInfo(title) {
+                info = document.getElementById('infoline');
+                info.innerHTML = title;
+                info.style.visibility='visible';
+            }
+        </script><meta type="description" content="Establishing a Connection">
+      <meta type="keywords" content="">
+      <meta type="topic-type" content="concept">
+   </head>
+   <body onLoad="javascript:initFrame('WS7106c181349dd8d0121cc40105df83c831-7fff.htm','22'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
+      <!--
+                            Name = Topic;
+                            Class =  CPM-Topic ISD-Topic ;
+                            Url = WS7106c181349dd8d0121cc40105df83c831-7fff.htm-->
+      <div class="head">
+         <div class="head-block">
+            <div class="nav-group">
+               <!--browse buttons-->
+               <div class="browse">
+                  <nobr>
+                     <div id="homeTitle" style="display:none">Home: FDO Developer's Guide</div><a href="WS73099cc142f487551d92abb10dc573c45d-7fdf.htm" target="content" class="headNavLink" onmouseover="showInfo(document.getElementById('homeTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-home-xp.gif" border="0"></a><span class="home-button-separator">&nbsp;</span><div id="prevTitle" style="display:none">Connection Semantics</div><a href="WS7106c181349dd8d0121cc40105df83c831-8000.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">Establishing a Connection</div><a href="WSfacf1429558a55de8821c21057fbebc2b2a0.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">Connection Example</div><a href="WS7106c181349dd8d0121cc40105df83c831-7ffe.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-next-xp.gif" border="0"></a></nobr>
+               </div>
+               <!--end browse buttons-->
+            </div>
+            <div class="button-info"><span id="infoline">&nbsp;</span></div>
+            <div class="ancestry"><a href="WSfacf1429558a55de8821c21057fbebc2b2a0.htm">Establishing a Connection</a>&nbsp;&gt;&nbsp;
+            </div>
+            <div class="head-text"><span>Establishing a Connection</span></div>
+         </div>
+      </div>
+      <div class="head-margin">&nbsp;</div>
+      <div style="line-height: 0pt">&nbsp;</div>
+      <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS7106c181349dd8d0121cc40105df83c831-7fff"></a></span>
+               
+               
+      <!--Body-->
+                  
+      <p>
+                        As
+         mentioned in a previous section, <span class="char_link"><a href="WS7106c181349dd8d0121cc40105df83c831-8000.htm">
+               <!--Reference = WS7106c181349dd8d0121cc40105df83c831-8000; Target topic = WS7106c181349dd8d0121cc40105df83c831-8000.htm-->Connection Semantics</a></span>,
+         the FDO API uses a provider to connect to a data store and its underlying
+         data source technology. These data source technologies must be installed
+         and configured. Certain values generated during data source installation
+         and configuration are used as arguments during the connection process.
+         Because the FDO API does not provide any methods to automate the
+         collection and presentation of these configuration values, either
+         the application developer must request the user to input these configuration
+         values during the connection process, or the application developer
+         can provide an application configuration interface, which would
+         populate the application with the container configuration values
+         and thus allow the user to choose them from lists.
+      </p>
+                  
+      <div>
+         <div class="note-note"><span class="label">Note</span>For more information about connecting, see <span class="bookTitle">The
+               Essential FDO</span>.
+         </div>
+      </div>
+                  
+      <!--UList--><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b2bd"></a></span>
+                     
+      <p class="list-intro"><span style="display:none"><a name="WS73099cc142f487555e01641096cb1c9da-7e76"></a></span>A
+         connection can be made in either one or two steps:
+      </p>
+                     
+      <ul>
+         <li>
+                              <em class="strong">One-step
+               connection. </em>If the user sets the required connection
+            properties and calls the connection object’s Open() method once,
+            the returned state is FdoConnectionState_Open, no additional information
+            is needed.
+         </li>
+         <li>
+                              <em class="strong">Two-step
+               connection. </em>If the user sets the required connection
+            properties and calls the connection object’s Open() method, the
+            returned state is FdoConnectionState_Pending, additional information
+            is needed to complete the connection. In this case, the first call
+            to Open() has resulted in the retrieval of a list of values for
+            a property that becomes a required property for the second call
+            to the Open() method. After the user has selected one of the values
+            in the list, the second call to Open() should result in FdoConnectionState_Open.
+         </li>
+      </ul>
+                     
+                  
+                  
+      <p>Connecting to a data store by way of the Oracle
+         or the ArcSDE provider, for example, can be done in either one or
+         two steps. In the first step, the data store parameter is not required.
+         If the user does not give the data store parameter a value, the
+         FDO will retrieve the list of data store values from the data source
+         so that the user can choose from them during the second step. Otherwise
+         the user can give the data store a value in the first step, and
+         assuming that the value is valid, the connection will be completed
+         in one step.
+      </p>
+                  
+      <p>The following steps are preliminary to establishing
+         a connection:
+      </p>
+                  
+      <!--OList--><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b2b7"></a></span>
+                     
+      <ol type="1" start="1">
+         <li>Get
+            the display names for all of the providers in the registry.
+         </li>
+         <li>Use
+            the display names to create a menu list, which the user will select
+            from when making a connection.
+         </li>
+      </ol>
+                     
+                  
+                  
+      <p>After the user initiates a connection attempt,
+         do the following:
+      </p>
+                  
+      <!--OList--><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b2b8"></a></span>
+                     
+      <ol type="1" start="1">
+         <li>Loop
+            through the providers in the registry until you match the display name
+            selected by the user from the connection menu with a provider display
+            name in the registry and retrieve the internal name for that provider.
+         </li>
+         <li>Get
+            an instance of the connection manager.
+         </li>
+         <li>Call
+            the manager’s CreateConnection() method using the provider internal
+            name as an argument to obtain a connection object.
+         </li>
+         <li>Obtain
+            a connection info object by calling the connection object’s GetConnectionInfo()
+            method.
+         </li>
+         <li>Obtain
+            a connection property dictionary object by calling the connection info
+            object’s GetConnection Properties() method and use this dictionary to
+            construct a dialog box requesting connection information from the user.
+         </li>
+         <li>Get
+            a list of connection property names by calling the dictionary’s
+            GetPropertyNames() method and loop through the list constructing
+            a data entry line in the dialog box for each name in the list.
+         </li>
+         <li>Use
+            the GetLocalizedName method to obtain the label for the data entry line
+            in the dialog.
+         </li>
+         <li>Use
+            the IsPropertyRequired method to determine whether to mark the line
+            as either required or optional; the dialog box handler should not
+            permit the user to click OK in the dialog box unless a required
+            field has a value.
+         </li>
+         <li>Use
+            the IsPropertyProtected method to determine whether the dialog box handler
+            should process the field value as protected data.
+         </li>
+         <li>Use
+            the IsPropertyEnumerable method to determine whether to call the EnumeratePropertyValues
+            method to get a list of valid values. Then,
+         </li>
+      </ol>
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                  
+                  
+      <p>If IsPropertyEnumerable returns True and EnumeratePropertyValues
+         sets the updates count parameter to 0, then grey (make unavailable)
+         this line in the dialog;
+      </p>
+                  
+      <p>If the count is 1, set the line value to the
+         value in the returned list;
+      </p>
+                  
+      <p>If the count is greater than 1, then set up
+         a spin box for this line containing the list of values and then
+         call the GetProperty method;
+      </p>
+                  
+      <p>If this method returns a value that is in the
+         list, set the exposed spin-box value in the dialog box line to this
+         value;
+      </p>
+                  
+      <p>If this method returns the empty string, call
+         the GetPropertyDefault method and if this returns a value that is
+         in the list, and set the exposed spin-box value in the dialog box
+         line to this value;
+      </p>
+                  
+      <p>Otherwise, set the exposed spin-box value to
+         some value in the returned list.
+      </p>
+                  
+      <!--OList--><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b2b9"></a></span>
+                     
+      <ol type="1" start="1">
+         <li>If
+            the property is not enumerable, call the GetProperty method to determine
+            whether you get a non-empty return value, set the value for that
+            line in the dialog box to the return value.
+         </li>
+         <li>If
+            the property is not enumerable and does not yet have a value, call
+            the GetPropertyDefault method and set the value for that line in
+            the dialog box to the return value.
+         </li>
+         <li>After
+            processing each property in the dictionary, expose the dialog.
+         </li>
+         <li>After
+            the user has okayed the connection dialog box and the dialog box handler
+            has determined that all of the required information has been filled
+            in, the dialog box handler uses the dictionary’s SetProperty() method
+            to update the dictionary with the values specified by the user.
+         </li>
+         <li>Call
+            the connection object’s Open() method and check the returned connection
+            state value; if the value is FdoConnectionState_Pending, then reconstruct
+            the connection dialog box and present it to the user for further
+            input.
+         </li>
+         <li>If
+            the return value is FdoConnectionState_Open, the connection process is
+            complete.
+         </li>
+      </ol>
+                     
+                     
+                     
+                     
+                     
+                  
+               
+            
+      <!---->
+      <!--See also-->
+      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+</html>

@@ -1,0 +1,102 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   
+      <title>Filter and Expression Text</title>
+      <link rel="stylesheet" type="text/css" href="../style/cpm.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd_html_standard.css"><script type="text/javascript" src="../scripts/ac_common.js"></script><script type="text/javascript" src="../scripts/ac.strings.js"></script><script type="text/javascript" src="../scripts/acmap.js"></script><script type="text/javascript" src="../scripts/ac.acad_ak.js"></script><script language="javascript">
+            function hideInfo() {
+                info = document.getElementById('infoline');
+                info.innerHTML = ' ';
+                info.style.visibility = 'hidden';
+            }
+            function showInfo(title) {
+                info = document.getElementById('infoline');
+                info.innerHTML = title;
+                info.style.visibility='visible';
+            }
+        </script><meta type="description" content="Filter and Expression Text">
+      <meta type="keywords" content="">
+      <meta type="topic-type" content="concept">
+   </head>
+   <body onLoad="javascript:initFrame('WS7106c181349dd8d01e893df105df83cc25-7ffd.htm','68'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
+      <!--
+                            Name = Topic;
+                            Class =  CPM-Topic ;
+                            Url = WS7106c181349dd8d01e893df105df83cc25-7ffd.htm-->
+      <div class="head">
+         <div class="head-block">
+            <div class="nav-group">
+               <!--browse buttons-->
+               <div class="browse">
+                  <nobr>
+                     <div id="homeTitle" style="display:none">Home: FDO Developer's Guide</div><a href="WS73099cc142f487551d92abb10dc573c45d-7fdf.htm" target="content" class="headNavLink" onmouseover="showInfo(document.getElementById('homeTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-home-xp.gif" border="0"></a><span class="home-button-separator">&nbsp;</span><div id="prevTitle" style="display:none">Expressions</div><a href="WS7106c181349dd8d01e893df105df83cc25-7fff.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">Filter and Expression Languages</div><a href="WSfacf1429558a55de8821c21057fbebc2b-7ff.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">Language Issues</div><a href="WS7106c181349dd8d01e893df105df83cc25-7ffe.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-next-xp.gif" border="0"></a></nobr>
+               </div>
+               <!--end browse buttons-->
+            </div>
+            <div class="button-info"><span id="infoline">&nbsp;</span></div>
+            <div class="ancestry"><a href="WSfacf1429558a55de8821c21057fbebc2b-7ff.htm">Filter and Expression Languages</a>&nbsp;&gt;&nbsp;
+            </div>
+            <div class="head-text"><span>Filter and Expression Text</span></div>
+         </div>
+      </div>
+      <div class="head-margin">&nbsp;</div>
+      <div style="line-height: 0pt">&nbsp;</div>
+      <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS7106c181349dd8d01e893df105df83cc25-7ffd"></a></span>
+               
+               
+      <!--Body-->
+                  
+      <p>
+                        
+                        
+                        
+                        In general, commands
+         in FDO do not support the SQL command language (the one exception
+         is the optional SQLCommand). However, to facilitate ease of use for
+         application developers, expressions and filters in FDO can be specified using
+         a textual notation that is based syntactically on expressions and
+         SQL WHERE clauses. The biggest difference between this approach
+         and SQL is that these clauses are not intended to work against tables
+         and columns, but against feature classes, properties, and relationships.
+         For example, a filter to select roads with four or more lanes might
+         look like:
+      </p>
+                  
+      <div class="codeBlock">
+                        <pre class="codeLine">Lanes &gt;= 4</pre>
+                     </div>
+                  
+      <p>Similarly, a filter
+         to select all PipeNetworks that have at least one Pipe in the proposed
+         state might look like:
+      </p>
+                  
+      <div class="codeBlock">
+                        <pre class="codeLine">Pipes.state = "proposed"</pre>
+                     </div>
+                  
+      <p>Furthermore, a filter
+         to select all existing parcels whose owner contains the text “Smith”
+         might look like:
+      </p>
+                  
+      <div class="codeBlock">
+                        <pre class="codeLine">state = "existing" and owner like "%Smith%"</pre>
+                     </div>
+                  
+      <p>Finally, a filter
+         to select all parcels that are either affected or encroached upon
+         by some change might look like:
+      </p>
+                  
+      <div class="codeBlock">
+                        <pre class="codeLine">state in ("affected", "encroached")</pre>
+                     </div>
+               
+            
+      <!---->
+      <!--See also-->
+      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+</html>

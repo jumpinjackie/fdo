@@ -1,0 +1,285 @@
+/* Modified by non-chm-output-bipane.pl, a post-process  */
+/* script for HTML output.                Nov 29, 2006.  */
+
+body {
+margin-top: 0;
+}
+
+div.head-idx-toc {
+background-color: #aaa;
+margin-left: -12pt;
+margin-right: -12pt;
+}
+
+/*
+
+form.ask-me {
+width: 208pt;
+padding-top: 0;
+padding-bottom: 0;
+margin-top: 0;
+margin-bottom: 0;
+height: 0;
+float: left;
+}
+
+input.ask-me-image {
+cursor: hand;
+margin-bottom: 0pt;
+margin-top: 0pt;
+margin-right: 4pt;
+height: 21;
+position: relative;
+top: 1;
+}
+
+input.ask-me-text {
+padding-left: 5;
+padding-top: 1pt;
+margin-bottom: 2;
+margin-top: 0pt;
+width: 160pt;
+height: 24;
+}
+
+span.toc-idx-links {
+color: white;
+font-weight: normal;
+font-size: 10pt;
+white-space: nowrap;
+padding-bottom: 2px;
+padding-right: 6pt;
+margin-top: 2px;
+background-color: #aaa;
+}
+
+span.toc-idx-links a {
+color: white;
+font-weight: normal;
+}
+
+span.toc-idx-links a:visited {
+color: white;
+font-weight: normal;
+}
+
+*/
+
+div.book-title {
+margin-top: 6pt;
+margin-bottom: 6pt;
+}
+
+div.book-title span {
+color: white;
+font-size: 10pt;
+font-weight: bold;
+line-height: 12pt;
+padding-top: 1pt;
+padding-bottom: 2pt;
+/* background-color: #beb; */
+filter: dropshadow(color=#333333, offx=1, offy=1, positive=1);
+}
+
+@media print {
+
+   div.book-title span {
+   font-size: 14pt;
+   color: #666;
+   filter: glow-off;
+   }
+
+}
+
+/*
+
+div.book-title-link {
+position: relative;
+top: 3pt;
+font-weight: normal;
+display: none;
+}
+
+div.book-title-link a {
+font-size: 10pt;
+line-height: 12pt;
+color: white;
+font-weight: normal;
+}
+
+div.book-title-link a:visited {
+color: white;
+font-weight: normal;
+}
+
+div.book-title-link a.no-link {
+text-decoration: none;
+}
+
+*/
+
+div.toc {
+margin-top: 12pt;
+}
+
+p.toc-1 a { 
+text-decoration: none;
+font-weight: bold;
+color: #338;
+}
+
+p.toc-1 a:visited { 
+text-decoration: none;
+font-weight: bold;
+color: #338;
+}
+
+p.toc-1 a:hover {
+text-decoration: underline;
+}
+
+p.toc-2 a {
+text-decoration: none;
+font-weight: bold;
+color: #56b;
+}
+
+p.toc-2 a:visited {
+text-decoration: none;
+font-weight: bold;
+color: #56b;
+}
+
+p.toc-2 a:hover {
+text-decoration: underline;
+}
+
+p.toc-3 a {
+font-weight: normal;
+text-decoration: none;
+}
+
+p.toc-3 a:hover {
+text-decoration: underline;
+}
+
+p.toc-4 a {
+font-weight: normal; text-decoration: none;
+}
+
+p.toc-4 a:hover {
+text-decoration: underline;
+}
+
+p.toc-5 a {
+font-weight: normal;
+text-decoration: none;
+}
+
+p.toc-5 a:hover {
+text-decoration: underline;
+}
+
+p.toc-1 {
+margin-top: 14pt;
+margin-bottom: 1pt;
+line-height: 11pt;
+}
+
+p.toc-2 {
+margin-top: 10pt;
+margin-bottom: 1pt;
+margin-left: 25pt;
+line-height: 11pt;
+}
+
+p.toc-3 {
+margin-top: 5pt;
+margin-bottom: 1pt;
+margin-left: 50pt;
+line-height: 11pt;
+}
+
+p.toc-4 {
+margin-top: 5pt;
+margin-bottom: 1pt;
+margin-left: 75pt;
+line-height: 11pt;
+}
+
+p.toc-5 {
+margin-top: 5pt;
+margin-bottom: 1pt;
+margin-left: 100pt;
+line-height: 11pt;
+}
+
+div.idx {
+margin-top: 12pt;
+}
+
+p.idx-1 a {
+font-weight: normal;
+text-decoration: none;
+}
+
+p.idx-2 a {
+font-weight: normal;
+text-decoration: none;
+}
+
+p.idx-3 a {
+font-weight: normal;
+text-decoration: none;
+}
+
+p.idx-1 a:hover {
+text-decoration: underline;
+}
+
+p.idx-2 a:hover {
+text-decoration: underline;
+}
+
+p.idx-3 a:hover {
+text-decoration: underline;
+}
+
+p.idx-letter {
+margin-top: 5pt;
+margin-bottom: 0pt;
+font-weight: bold;
+font-weight: normal;
+}
+
+p.idx-1 {
+margin-top: 0pt;
+margin-bottom: 0pt;
+font-weight: normal;
+}
+
+p.idx-2 {
+margin-top: 0pt;
+margin-left: 25pt;
+margin-bottom: 0pt;
+font-weight: normal;
+}
+
+p.idx-3 {
+margin-top: 0pt;
+margin-left: 50pt;
+margin-bottom: 0pt;
+font-weight: normal;
+}
+
+/*
+
+span.toc-idx-links {
+visibility: hidden;
+}
+
+div.book-title-link {
+display: none;
+}
+
+*/

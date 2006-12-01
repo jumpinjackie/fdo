@@ -1,0 +1,210 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   
+      <title>Connection Semantics</title>
+      <link rel="stylesheet" type="text/css" href="../style/cpm.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd_html_standard.css"><script type="text/javascript" src="../scripts/ac_common.js"></script><script type="text/javascript" src="../scripts/ac.strings.js"></script><script type="text/javascript" src="../scripts/acmap.js"></script><script type="text/javascript" src="../scripts/ac.acad_ak.js"></script><script language="javascript">
+            function hideInfo() {
+                info = document.getElementById('infoline');
+                info.innerHTML = ' ';
+                info.style.visibility = 'hidden';
+            }
+            function showInfo(title) {
+                info = document.getElementById('infoline');
+                info.innerHTML = title;
+                info.style.visibility='visible';
+            }
+        </script><meta type="description" content="Connection Semantics">
+      <meta type="keywords" content="">
+      <meta type="topic-type" content="concept">
+   </head>
+   <body onLoad="javascript:initFrame('WS7106c181349dd8d0121cc40105df83c831-8000.htm','21'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
+      <!--
+                            Name = Topic;
+                            Class =  CPM-Topic ISD-Topic ;
+                            Url = WS7106c181349dd8d0121cc40105df83c831-8000.htm-->
+      <div class="head">
+         <div class="head-block">
+            <div class="nav-group">
+               <!--browse buttons-->
+               <div class="browse">
+                  <nobr>
+                     <div id="homeTitle" style="display:none">Home: FDO Developer's Guide</div><a href="WS73099cc142f487551d92abb10dc573c45d-7fdf.htm" target="content" class="headNavLink" onmouseover="showInfo(document.getElementById('homeTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-home-xp.gif" border="0"></a><span class="home-button-separator">&nbsp;</span><div id="prevTitle" style="display:none">Establishing a Connection</div><a href="WSfacf1429558a55de8821c21057fbebc2b2a0.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">Establishing a Connection</div><a href="WSfacf1429558a55de8821c21057fbebc2b2a0.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">Establishing a Connection</div><a href="WS7106c181349dd8d0121cc40105df83c831-7fff.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-next-xp.gif" border="0"></a></nobr>
+               </div>
+               <!--end browse buttons-->
+            </div>
+            <div class="button-info"><span id="infoline">&nbsp;</span></div>
+            <div class="ancestry"><a href="WSfacf1429558a55de8821c21057fbebc2b2a0.htm">Establishing a Connection</a>&nbsp;&gt;&nbsp;
+            </div>
+            <div class="head-text"><span>Connection Semantics</span></div>
+         </div>
+      </div>
+      <div class="head-margin">&nbsp;</div>
+      <div style="line-height: 0pt">&nbsp;</div>
+      <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS7106c181349dd8d0121cc40105df83c831-8000"></a></span>
+               
+               
+      <!--Body-->
+                  
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b2b5"></a></span>
+                        
+         <p class="section_title_h1"><a name="TOC_ENTRY__d0e1937"></a>Data Sources and Data Stores
+         </p>
+                        
+         <p>
+                              
+                              
+                              
+                              The FDO API uses connection
+            semantics to implement access to feature schema data. The term data
+            store is used to refer to a collection of zero or more objects,
+            which instantiate class definitions belonging to one or more FDO
+            feature schema. The connection is to a data store because that is
+            where data objects are stored. The underlying data source technologies
+            used to hold data stores can be relational databases, such as, a
+            MySQL database, or a file-based solution, such as an SDF file.
+         </p>
+                        
+         <p>The mapping of a data store to data source technology
+            can be one-to-one or many-to-one. 
+         </p>
+                        
+         <!--UList--><span style="display:none"><a name="WS73099cc142f487555e01641096cb1c9da-7c03"></a></span>
+                           
+         <ul>
+            <li>One-to-one
+               when the connection is made by way of FDO Provider for ArcSDE and
+               the ArcSDE server is using an Oracle database.
+            </li>
+            <li>Many-to-one
+               when the data source is a MySQL database and the connection is made
+               by way of the OSGeo FDO Provider for MySQL (in this case, the data
+               store is like a container within a container).
+            </li>
+         </ul>
+                           
+                        
+                        
+         <p>When many-to-one mapping is possible, a connection
+            can be made in one or two steps. For more information, see <span class="char_link"><a href="WS7106c181349dd8d0121cc40105df83c831-7fff.htm">
+                  <!--Reference = WS7106c181349dd8d0121cc40105df83c831-7fff; Target topic = WS7106c181349dd8d0121cc40105df83c831-7fff.htm-->Establishing a Connection</a></span> and <span class="bookTitle">The Essential
+               FDO</span>.
+         </p>
+                        
+         <p>The underlying data source technologies differ
+            in the connection parameters used for connecting to a particular
+            provider. The values for these parameters are generated during the
+            installation and configuration of the container technologies. For
+            more information about these values and the process of installing
+            and configuring the associated data source technologies, see the appropriate
+            appendix in this document and <span class="bookTitle">The Essential FDO</span>.
+         </p>
+                     
+      </div>
+                  
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b2b6"></a></span>
+                        
+         <p class="section_title_h1"><a name="TOC_ENTRY__d0e2003"></a>Providers
+         </p>
+                        
+         <p>You connect to a data store by way of a provider.</p>
+                        
+         <p>The FDO API contains a registry interface that
+            you can use to register or deregister a provider. Sample code for
+            registering and deregistering a provider is located in <span class="char_link"><a href="WS7106c181349dd8d0121cc40105df83c831-7ffe.htm">
+                  <!--Reference = WS7106c181349dd8d0121cc40105df83c831-7ffe; Target topic = WS7106c181349dd8d0121cc40105df83c831-7ffe.htm-->Connection Example</a></span>.
+         </p>
+                        
+         <p>The providers are registered during the initialization
+            of the FDO SDK. In order to connect to a provider, you will need
+            the name of the provider in a particular format: &lt;Company/Foundation/Originator&gt;.&lt;Provider&gt;.&lt;Version&gt;.
+            The &lt;Company/Foundation/Originator&gt; and &lt;Provider&gt; values
+            are invariable. For specific values, see <span class="bookTitle">The Essential FDO</span>.
+         </p>
+                        
+         <p>In order to connect, you will need the full
+            name including the &lt;Version&gt; value. You can retrieve the full
+            name from the registry and display the set of provider names in
+            a connection menu list. If, for whatever reason, you deregister
+            a provider, save the registry information for that provider in case
+            you want to reregister it again. The provider object returned by
+            the registry has a Set() method to allow you to change values. However,
+            the only value you can safely change is the display name. Sample
+            code for retrieving the provider registry information is located
+            in <span class="char_link"><a href="WS7106c181349dd8d0121cc40105df83c831-7ffe.htm">
+                  <!--Reference = WS7106c181349dd8d0121cc40105df83c831-7ffe; Target topic = WS7106c181349dd8d0121cc40105df83c831-7ffe.htm-->Connection Example</a></span>
+                              <span class="char_link"><a href="javascript:hhctrl_d0e2030.Click()">
+                  <!--Cannot find direct link-->
+                  <!--Reference = WS7106c181349dd8d0121cc40105dfb84fb2-7ffe; Target topic = -->
+                  						No label
+                  					</a></span>.
+         </p>
+                        
+         <p>The registry contains the following information
+            about a provider:
+         </p>
+                        
+         <!--UList--><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b2bc"></a></span>
+                           
+         <ul>
+            <li>
+                                    <em class="strong">Name. </em>The
+               unique name of the feature provider. This name should be of the
+               form &lt;Company/Foundation/Originator&gt;.&lt;Provider&gt;.&lt;Version&gt;,
+               for example, Autodesk.Oracle.3.0 or OSGeo.MySQL.3.0.
+            </li>
+            <li>
+                                    <em class="strong">DisplayName. </em>A
+               user-friendly display name of the feature provider. The initial
+               values of this property for the pre-registered providers are “Autodesk
+               FDO Provider for Oracle”, “OSGeo FDO Provider for SDF”, etc., or
+               the equivalent in the language of the country where the application
+               is being used.
+            </li>
+            <li>
+                                    <em class="strong">Description. </em>A
+               brief description of the feature provider. For example, the the
+               OsGeo FDO Provider for SDF description is “Read/write access to Autodesk's
+               spatial database format, a file-based personal geodatabase that supports
+               multiple features/attributes, spatial indexing, and file-locking.”
+            </li>
+            <li>
+                                    <em class="strong">Version. </em>The
+               version of the feature provider. The version number string has the
+               form &lt;VersionMajor&gt;.&lt;VersionMinor&gt;.&lt;BuildMajor&gt;.&lt;BuildMinor&gt;,
+               for example, 3.0.0.0.
+            </li>
+            <li>
+                                    <em class="strong">FDOVersion. </em>The
+               version of the feature data objects specification to which the feature
+               provider conforms. The version number string has the form &lt;VersionMajor&gt;.&lt;VersionMinor&gt;.&lt;BuildMajor&gt;.&lt;BuildMinor&gt;,
+               for example, 3.0.1.0. 
+            </li>
+            <li>
+                                    <em class="strong">libraryPath. </em>The
+               FULL library path including the library name of the provider, for
+               example, &lt;FDO SDK Install Location&gt;/bin/FdoRdbms.dll.
+            </li>
+            <li>
+                                    <em class="strong">isManaged. </em>A
+               flag indicating whether the provider is a managed or unmanaged .NET
+               provider. 
+            </li>
+         </ul>
+                           
+                           
+                           
+                           
+                           
+                           
+                        
+                     
+      </div>
+               
+            
+      <!---->
+      <!--See also-->
+      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+</html>

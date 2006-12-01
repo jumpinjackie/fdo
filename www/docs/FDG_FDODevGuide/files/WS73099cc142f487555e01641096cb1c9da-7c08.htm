@@ -1,0 +1,112 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   
+      <title>Expression Grammar</title>
+      <link rel="stylesheet" type="text/css" href="../style/cpm.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd_html_standard.css"><script type="text/javascript" src="../scripts/ac_common.js"></script><script type="text/javascript" src="../scripts/ac.strings.js"></script><script type="text/javascript" src="../scripts/acmap.js"></script><script type="text/javascript" src="../scripts/ac.acad_ak.js"></script><script language="javascript">
+            function hideInfo() {
+                info = document.getElementById('infoline');
+                info.innerHTML = ' ';
+                info.style.visibility = 'hidden';
+            }
+            function showInfo(title) {
+                info = document.getElementById('infoline');
+                info.innerHTML = title;
+                info.style.visibility='visible';
+            }
+        </script><meta type="description" content="Expression Grammar">
+      <meta type="keywords" content="">
+      <meta type="topic-type" content="concept">
+   </head>
+   <body onLoad="javascript:initFrame('WS73099cc142f487555e01641096cb1c9da-7c08.htm','72'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
+      <!--
+                            Name = Topic;
+                            Class =  CPM-Topic ISD-Topic ;
+                            Url = WS73099cc142f487555e01641096cb1c9da-7c08.htm-->
+      <div class="head">
+         <div class="head-block">
+            <div class="nav-group">
+               <!--browse buttons-->
+               <div class="browse">
+                  <nobr>
+                     <div id="homeTitle" style="display:none">Home: FDO Developer's Guide</div><a href="WS73099cc142f487551d92abb10dc573c45d-7fdf.htm" target="content" class="headNavLink" onmouseover="showInfo(document.getElementById('homeTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-home-xp.gif" border="0"></a><span class="home-button-separator">&nbsp;</span><div id="prevTitle" style="display:none">Filter Grammar</div><a href="WS73099cc142f487555e01641096cb1c9da-7c09.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">Language Issues</div><a href="WS7106c181349dd8d01e893df105df83cc25-7ffe.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">Filter and Expression Keywords</div><a href="WSfacf1429558a55de8821c21057fbebc2b-795.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-next-xp.gif" border="0"></a></nobr>
+               </div>
+               <!--end browse buttons-->
+            </div>
+            <div class="button-info"><span id="infoline">&nbsp;</span></div>
+            <div class="ancestry"><a href="WSfacf1429558a55de8821c21057fbebc2b-7ff.htm">Filter and Expression Languages</a>&nbsp;&gt;&nbsp;<a href="WS7106c181349dd8d01e893df105df83cc25-7ffe.htm">Language Issues</a>&nbsp;&gt;&nbsp;
+            </div>
+            <div class="head-text"><span>Expression Grammar</span></div>
+         </div>
+      </div>
+      <div class="head-margin">&nbsp;</div>
+      <div style="line-height: 0pt">&nbsp;</div>
+      <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS73099cc142f487555e01641096cb1c9da-7c08"></a></span>
+                  
+                  
+      <!--Body-->
+                     
+      <p>
+                           The
+         FdoExpression::Parse() method supports the following expression
+         grammar:
+      </p>
+                     
+      <div class="codeBlock">
+                           <pre class="codeLine">&lt;Expression&gt; ::= '(' Expression ')'</pre>
+                           <pre class="codeLine">| &lt;UnaryExpression&gt;</pre>
+                           <pre class="codeLine">| &lt;BinaryExpression&gt;</pre>
+                           <pre class="codeLine">| &lt;Function&gt;</pre>
+                           <pre class="codeLine">| &lt;Identifier&gt;</pre>
+                           <pre class="codeLine">| &lt;ValueExpression&gt;</pre>
+                           <pre class="codeLine">&lt;BinaryExpression&gt; ::=</pre>
+                           <pre class="codeLine">&lt;Expression&gt; '+' &lt;Expression&gt;</pre>
+                           <pre class="codeLine">| &lt;Expression&gt; '-' &lt;Expression&gt;</pre>
+                           <pre class="codeLine">| &lt;Expression&gt; '*' &lt;Expression&gt;</pre>
+                           <pre class="codeLine">| &lt;Expression&gt; '/' &lt;Expression&gt;</pre>
+                           <pre class="codeLine">&lt;DataValue&gt; ::=</pre>
+                           <pre class="codeLine">TRUE</pre>
+                           <pre class="codeLine">| FALSE</pre>
+                           <pre class="codeLine">| DATETIME</pre>
+                           <pre class="codeLine">| DOUBLE</pre>
+                           <pre class="codeLine">| INTEGER</pre>
+                           <pre class="codeLine">| STRING</pre>
+                           <pre class="codeLine">| BLOB </pre>
+                           <pre class="codeLine">| CLOB</pre>
+                           <pre class="codeLine">| NULL</pre>
+                           <pre class="codeLine">&lt;Function&gt; ::= &lt;Identifier&gt; '(' &lt;ExpressionCollection&gt; ')'</pre>
+                           <pre class="codeLine">&lt;ExpressionCollection&gt; ::= </pre>
+                           <pre class="codeLine">| &lt;Expression&gt; </pre>
+                           <pre class="codeLine">| &lt;ExpressionCollection&gt; ',' &lt;Expression&gt;</pre>
+                           <pre class="codeLine">&lt;GeometryValue&gt; ::= GEOMFROMTEXT '(' STRING ')'</pre>
+                           <pre class="codeLine">&lt;Identifier&gt; ::= IDENTIFIER</pre>
+                           <pre class="codeLine">&lt;ValueExpression&gt; ::= &lt;LiteralValue&gt; | &lt;Parameter&gt;;</pre>
+                           <pre class="codeLine">&lt;LiteralValue&gt; ::= &lt;GeometryValue&gt; | &lt;DataValue&gt;</pre>
+                           <pre class="codeLine">&lt;Parameter&gt; ::= PARAMETER | ':'STRING</pre>
+                           <pre class="codeLine">&lt;UnaryExpression&gt; ::= '-' &lt;Expression&gt;</pre>
+                        </div>
+                     
+      <!--UList--><span style="display:none"><a name="WS73099cc142f487555e01641096cb1c9da-7c07"></a></span>
+                        
+      <p class="list-intro"><span style="display:none"><a name="WS73099cc142f487555e01641096cb1c9da-7c06"></a></span>Expression Operator Precedence
+      </p>
+                     
+                     
+      <p>The precedence is
+         shown in YACC notation, that is, the highest precedence operators
+         are at the bottom. 
+      </p>
+                     
+      <div class="codeBlock">
+                           <pre class="codeLine">%left Add Subtract</pre>
+                           <pre class="codeLine">%left Multiply Divide</pre>
+                           <pre class="codeLine">%left Negate</pre>
+                        </div>
+                  
+               
+      <!---->
+      <!--See also-->
+      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+</html>

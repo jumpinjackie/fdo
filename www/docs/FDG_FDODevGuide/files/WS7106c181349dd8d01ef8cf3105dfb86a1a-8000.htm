@@ -1,0 +1,118 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   
+      <title>What Is FDO Provider for WMS?</title>
+      <link rel="stylesheet" type="text/css" href="../style/cpm.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd_html_standard.css"><script type="text/javascript" src="../scripts/ac_common.js"></script><script type="text/javascript" src="../scripts/ac.strings.js"></script><script type="text/javascript" src="../scripts/acmap.js"></script><script type="text/javascript" src="../scripts/ac.acad_ak.js"></script><script language="javascript">
+            function hideInfo() {
+                info = document.getElementById('infoline');
+                info.innerHTML = ' ';
+                info.style.visibility = 'hidden';
+            }
+            function showInfo(title) {
+                info = document.getElementById('infoline');
+                info.innerHTML = title;
+                info.style.visibility='visible';
+            }
+        </script><meta type="description" content="What Is FDO Provider for WMS?">
+      <meta type="keywords" content="">
+      <meta type="topic-type" content="concept">
+   </head>
+   <body onLoad="javascript:initFrame('WS7106c181349dd8d01ef8cf3105dfb86a1a-8000.htm','127'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
+      <!--
+                            Name = Topic;
+                            Class =  CPM-Topic ISD-Topic ;
+                            Url = WS7106c181349dd8d01ef8cf3105dfb86a1a-8000.htm-->
+      <div class="head">
+         <div class="head-block">
+            <div class="nav-group">
+               <!--browse buttons-->
+               <div class="browse">
+                  <nobr>
+                     <div id="homeTitle" style="display:none">Home: FDO Developer's Guide</div><a href="WS73099cc142f487551d92abb10dc573c45d-7fdf.htm" target="content" class="headNavLink" onmouseover="showInfo(document.getElementById('homeTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-home-xp.gif" border="0"></a><span class="home-button-separator">&nbsp;</span><div id="prevTitle" style="display:none">OSGeo FDO Provider for WMS</div><a href="WSfacf1429558a55de8821c21057fbebc2b-955.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">OSGeo FDO Provider for WMS</div><a href="WSfacf1429558a55de8821c21057fbebc2b-955.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">FDO Provider for WMS Capabilities</div><a href="WS7106c181349dd8d0ecd7e105dfb859b5-7ff9.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-next-xp.gif" border="0"></a></nobr>
+               </div>
+               <!--end browse buttons-->
+            </div>
+            <div class="button-info"><span id="infoline">&nbsp;</span></div>
+            <div class="ancestry"><a href="WSfacf1429558a55de8821c21057fbebc2b-955.htm">OSGeo FDO Provider for WMS</a>&nbsp;&gt;&nbsp;
+            </div>
+            <div class="head-text"><span>What Is FDO Provider for WMS?</span></div>
+         </div>
+      </div>
+      <div class="head-margin">&nbsp;</div>
+      <div style="line-height: 0pt">&nbsp;</div>
+      <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS7106c181349dd8d01ef8cf3105dfb86a1a-8000"></a></span>
+               
+               
+      <!--Body-->
+                  
+      <p><span style="display:none"><a name="WS1a9193826455f5ff104d7f510f19418261-7aa5"></a></span>
+                        The
+         Feature Data Objects (FDO) API provides access to data in a data
+         store. A provider is a specific implementation of the FDO API that
+         provides access to data in a particular data store.
+         The FDO Provider for WMS provides FDO with access to a WMS-based data
+         store. 
+      </p>
+                  
+      <p><span style="display:none"><a name="WS1a9193826455f5ff104d7f510f19418261-7aa4"></a></span>An Open Geospatial Consortium (OGC) Web Map
+         Service (WMS) produces maps of spatially referenced data dynamically
+         from geographic information. This international standard defines
+         a "map" to be a portrayal of geographic information as a digital
+         image file suitable for display on a computer screen. A map is not
+         the data itself. Maps by WMS are generally rendered in a pictorial
+         format, such as PNG, GIF or JPEG, or occasionally as vector-based
+         graphical elements in Scalable Vector Graphics (SVG) or Web Computer
+         Graphics Metafile (WebCGM) formats.
+      </p>
+                  
+      <p><span style="display:none"><a name="WS1a9193826455f5ff104d7f510f19418261-7aa3"></a></span>The FDO Provider for WMS has the following characteristics:
+      </p>
+                  
+      <!--UList--><span style="display:none"><a name="WS1a9193826455f5ff9110c71085341391d-2bac"></a></span>
+                     
+      <ul>
+         <li>The
+            FDO Provider for WMS serves up map information originating from
+            an OGC Basic Web Map Service that provides pictorially formatted
+            images, such as PNG, GIF, or JPEG.
+         </li>
+         <li>WMS
+            map data is exposed through an FDO feature schema whose classes
+            contain an FDO Raster property definition. The FDO schema exposed
+            from the FDO Provider for WMS conforms to a pre-defined FDO schema
+            that is specific to WMS and that acts as the basis for all FDO interaction
+            with WMS data, regardless of the originating source of the WMS images.
+         </li>
+         <li>WMS
+            data manipulation operations are limited to querying features based
+            on spatial and non-spatial constraints. Schema manipulation operations
+            are not supported.
+         </li>
+      </ul>
+                     
+                     
+                  
+                  
+      <p><span style="display:none"><a name="WS1a9193826455f5ff104d7f510f19418261-7aa2"></a></span>The FDO Provider for WMS can run in a multi-platform
+         environment, including Windows and Linux.
+      </p>
+                  
+      <p><span style="display:none"><a name="WS1a9193826455f5ff104d7f510f19418261-7aa1"></a></span>For more information, see <span class="bookTitle">The Essential FDO</span> (<span class="uis-unspecified">FET_TheEssentialFDO.pdf</span>)
+         and the <span class="bookTitle">OSGeo FDO Provider for
+            WMS API Reference Help</span> (<span class="uis-unspecified">WMS_Provider_API.chm</span>).
+      </p>
+                  
+      <p><span style="display:none"><a name="WS1a9193826455f5ff104d7f510f19418261-7aa0"></a></span></p>
+                  
+      <p><span style="display:none"><a name="WS1a9193826455f5ff104d7f510f19418261-7a9f"></a></span></p>
+                  
+      <p><span style="display:none"><a name="WS1a9193826455f5ff104d7f510f19418261-7a9e"></a></span></p>
+               
+            
+      <!---->
+      <!--See also-->
+      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+</html>

@@ -1,0 +1,353 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   
+      <title>Inserting Values</title>
+      <link rel="stylesheet" type="text/css" href="../style/cpm.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd_html_standard.css"><script type="text/javascript" src="../scripts/ac_common.js"></script><script type="text/javascript" src="../scripts/ac.strings.js"></script><script type="text/javascript" src="../scripts/acmap.js"></script><script type="text/javascript" src="../scripts/ac.acad_ak.js"></script><script language="javascript">
+            function hideInfo() {
+                info = document.getElementById('infoline');
+                info.innerHTML = ' ';
+                info.style.visibility = 'hidden';
+            }
+            function showInfo(title) {
+                info = document.getElementById('infoline');
+                info.innerHTML = title;
+                info.style.visibility='visible';
+            }
+        </script><meta type="description" content="Inserting Values">
+      <meta type="keywords" content="">
+      <meta type="topic-type" content="concept">
+   </head>
+   <body onLoad="javascript:initFrame('WS7106c181349dd8d0121cc40105df83c97c-8000.htm','55'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
+      <!--
+                            Name = Topic;
+                            Class =  CPM-Topic ;
+                            Url = WS7106c181349dd8d0121cc40105df83c97c-8000.htm-->
+      <div class="head">
+         <div class="head-block">
+            <div class="nav-group">
+               <!--browse buttons-->
+               <div class="browse">
+                  <nobr>
+                     <div id="homeTitle" style="display:none">Home: FDO Developer's Guide</div><a href="WS73099cc142f487551d92abb10dc573c45d-7fdf.htm" target="content" class="headNavLink" onmouseover="showInfo(document.getElementById('homeTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-home-xp.gif" border="0"></a><span class="home-button-separator">&nbsp;</span><div id="prevTitle" style="display:none">Data Maintenance Operations</div><a href="WS1a9193826455f5ff9110c71085341391d-3d51.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">Data Maintenance Operations</div><a href="WS1a9193826455f5ff9110c71085341391d-3d51.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">Updating Values</div><a href="WS7106c181349dd8d0121cc40105df83c97c-7ffc.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-next-xp.gif" border="0"></a></nobr>
+               </div>
+               <!--end browse buttons-->
+            </div>
+            <div class="button-info"><span id="infoline">&nbsp;</span></div>
+            <div class="ancestry"><a href="WSfacf1429558a55de8821c21057fbebc2b275.htm">Data Maintenance</a>&nbsp;&gt;&nbsp;<a href="WS1a9193826455f5ff9110c71085341391d-3d51.htm">Data Maintenance Operations</a>&nbsp;&gt;&nbsp;
+            </div>
+            <div class="head-text"><span>Inserting Values</span></div>
+         </div>
+      </div>
+      <div class="head-margin">&nbsp;</div>
+      <div style="line-height: 0pt">&nbsp;</div>
+      <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS7106c181349dd8d0121cc40105df83c97c-8000"></a></span>
+                  
+                  
+      <!--Body-->
+                     
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b297"></a></span>
+                           
+         <p class="section_title_h1"><a name="TOC_ENTRY__d0e7323"></a>Preconditions
+         </p>
+                           
+         <p>In a previous chapter,
+            we created a feature schema and added a feature class to it. The
+            feature class had three properties: an integer data property, a
+            string data property, and a geometric property. We applied this
+            feature schema to the data store. We are now ready to create feature
+            data objects, which are instances of the feature class, and insert
+            them into the data store.
+         </p>
+                        
+      </div>
+                     
+      <div class="section"><span style="display:none"><a name="WS7106c181349dd8d0121cc40105df83c97c-7fff"></a></span>
+                           
+         <p class="section_title_h1"><a name="TOC_ENTRY__d0e7332"></a>Property Values in General
+         </p>
+                           
+         <p>
+                                 We can
+            now create feature data objects, which are instances of the feature
+            class, by defining a set of property values corresponding to the
+            properties defined for the class and then inserting them into the data
+            store.
+         </p>
+                           
+         <p>An FDO class correspondends
+            roughly to a table definition in a relational database and a property
+            of a class corresponds roughly to a column definition in a table.
+            Adding the property values corresponds roughly to adding a row in
+            the table.
+         </p>
+                           
+         <p>The main distinction
+            between a data value or geometry value and a property value is the
+            order in which they are created. A data value or geometry value
+            object is created first and is then used to create a property value object.
+            The property value object is then added to the value collection
+            object belonging to the Insert command object. Then, the command
+            is executed.
+         </p>
+                           
+         <p>An insert operation
+            consists of the following steps:
+         </p>
+                           
+         <!--OList--><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b29b"></a></span>
+                              
+         <ol type="1" start="1">
+            <li>Create the insert command object (type FdoIInsert); this
+               object can be reused for multiple insert operations.
+            </li>
+            <li>Point the insert command object at the feature
+               class to which you are adding values (call the SetFeatureClassName(&lt;className&gt;) method).
+            </li>
+            <li>From the insert command object, obtain a
+               pointer using the GetPropertyValues() method to a value collection
+               object (type FdoPropertyValueCollection). You will add property
+               values to the insert command object by adding values to the collection
+               object.
+            </li>
+            <li>Create a data value (type FdoDataValue) or
+               geometry value (type FdoGeometryValue) object. Creating the data
+               value is straightforward; you pass the string or integer value to
+               a static Create() method. Creating the geometry value is described
+               in <span class="char_link"><a href="WS7106c181349dd8d0121cc40105df83c97c-8000.htm#WS7106c181349dd8d0121cc40105df83c97c-7ffe">
+                     <!--Reference = WS7106c181349dd8d0121cc40105df83c97c-7ffe; Target topic = WS7106c181349dd8d0121cc40105df83c97c-8000.htm-->Geometry Property Values</a></span>.
+            </li>
+            <li>Create a property value (type FdoPropertyValue)
+               object, which involves passing the data value or geometry value
+               object as an argument to a static Create() method.
+            </li>
+            <li>Add the property value object to the value
+               collection object.
+            </li>
+            <li>Execute the Insert command.</li>
+         </ol>
+                              
+                              
+                              
+                              
+                              
+                              
+                           
+                        
+      </div>
+                     
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b298"></a></span>
+                           
+         <p class="section_title_h1"><a name="TOC_ENTRY__d0e7384"></a>Data Property Values
+         </p>
+                           
+         <p>
+                                 A
+            data value object contains data whose type is one of the following:
+         </p>
+                           
+         <!--UList--><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b29e"></a></span>
+                              
+         <ul>
+            <li>Boolean</li>
+            <li>Byte</li>
+            <li>DateTime</li>
+            <li>Decimal</li>
+            <li>Double</li>
+            <li>Int16</li>
+            <li>Int32</li>
+            <li>Int64</li>
+            <li>Single (another floating point type)</li>
+            <li>String</li>
+            <li>Binary large object (BLOB)</li>
+            <li>Character large object (CLOB)</li>
+         </ul>
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                           
+                           
+         <p>The data value object
+            is added to the data property value object. The data property value
+            object is added to the property value collection belonging to the
+            Insert command.
+         </p>
+                        
+      </div>
+                     
+      <div class="section"><span style="display:none"><a name="WS7106c181349dd8d0121cc40105df83c97c-7ffe"></a></span>
+                           
+         <p class="section_title_h1"><a name="TOC_ENTRY__d0e7444"></a>Geometry Property Values
+         </p>
+                           
+         <p>
+                                 A
+            geometry property value object contains a geometry in the form of
+            a byte array. A geometry can be relatively simple, for example, a
+            point (a single pair of ordinates), or quite complex, for example,
+            a polygon (one or more arrays of ordinates). In the latter case,
+            a number of geometry objects are created and then combined together
+            to form the target geometry. Finally, the target geometry is converted
+            to a byte array and incorporated into the geometry property value
+            object.
+         </p>
+                           
+         <p>Creating a geometry
+            value object consists of the following steps:
+         </p>
+                           
+         <!--OList--><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b29c"></a></span>
+                              
+         <ol type="1" start="1">
+            <li>Create a geometry value object (type FdoGeometryValue)
+               using a static Create() method.
+            </li>
+            <li>Create a geometry factory object (type GisAgfGeometryFactory) using
+               a static GetInstance() method. This object is used to create the geometry
+               object or objects which comprise the target geometry.
+            </li>
+            <li>Create the required geometry object or objects
+               using the appropriate Create&lt;geometry&gt; method() belonging
+               to the geometry factory object.
+            </li>
+            <li>Use the geometry factory object to convert
+               the target geometry object to a byte array.
+            </li>
+            <li>Incorporate the byte array into the geometry
+               property value object.
+            </li>
+         </ol>
+                              
+                              
+                              
+                              
+                           
+                        
+      </div>
+                     
+      <div class="section"><span style="display:none"><a name="WS7106c181349dd8d0121cc40105df83c97c-7ffd"></a></span>
+                           
+         <p class="section_title_h1"><a name="TOC_ENTRY__d0e7483"></a>Example: Inserting an Integer,
+            a String, and a Geometry Value
+         </p>
+                           
+         <p>
+                                 The following
+            sample code shows how to insert an integer, a string, and a geometry
+            value:
+         </p>
+                           
+         <div class="codeBlock">
+                                 <pre class="codeLine">// create the insert command</pre>
+                                 <pre class="codeLine">GisPtr&lt;FdoIInsert&gt; sampleInsert;</pre>
+                                 <pre class="codeLine">sampleInsert = (FdoIInsert *)</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;connection-&gt;CreateCommand(FdoCommandType_Insert);</pre>
+                                 <pre class="codeLine">// index returned by the operation which adds a value to the value</pre>
+                                 <pre class="codeLine">// collection</pre>
+                                 <pre class="codeLine">GisInt32 valueCollectionIndex = 0;</pre>
+                                 <pre class="codeLine">// point the Insert command to the target class</pre>
+                                 <pre class="codeLine">// use a fully qualified class name</pre>
+                                 <pre class="codeLine">// whose format is &lt;schemaName&gt;:&lt;className&gt;</pre>
+                                 <pre class="codeLine">sampleInsert-&gt; SetFeatureClassName(L"SampleFeatureSchema:SampleFeatureClass");</pre>
+                                 <pre class="codeLine">// get the pointer to the value collection used to add properties</pre>
+                                 <pre class="codeLine">// to the Insert command</pre>
+                                 <pre class="codeLine">GisPtr&lt;FdoPropertyValueCollection&gt; samplePropertyValues;</pre>
+                                 <pre class="codeLine">samplePropertyValues = sampleInsert-&gt;GetPropertyValues();</pre>
+                                 <pre class="codeLine">// create an FdoDataValue for the identity property value</pre>
+                                 <pre class="codeLine">GisPtr&lt;FdoDataValue&gt; sampleIdentityDataValue;</pre>
+                                 <pre class="codeLine">sampleIdentityDataValue = FdoDataValue::Create(101);</pre>
+                                 <pre class="codeLine">// add the FdoDataValue to the identity property value</pre>
+                                 <pre class="codeLine">GisPtr&lt;FdoPropertyValue&gt; sampleIdentityPropertyValue;</pre>
+                                 <pre class="codeLine">sampleIdentityPropertyValue =</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;FdoPropertyValue::Create(L"SampleIdentityDataProperty", </pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;sampleIdentityDataValue);</pre>
+                                 <pre class="codeLine">// add the identity property value to the value collection</pre>
+                                 <pre class="codeLine">valueCollectionIndex =</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;samplePropertyValues-&gt;Add(sampleIdentityPropertyValue);</pre>
+                                 <pre class="codeLine">// create an FdoDataValue for the name property value</pre>
+                                 <pre class="codeLine">GisPtr&lt;FdoDataValue&gt; sampleNameDataValue;</pre>
+                                 <pre class="codeLine">sampleNameDataValue = FdoDataValue::Create(L"Blue Lake");</pre>
+                                 <pre class="codeLine">// add the FdoDataValue to the name property value</pre>
+                                 <pre class="codeLine">GisPtr&lt;FdoPropertyValue&gt; sampleNamePropertyValue;</pre>
+                                 <pre class="codeLine">sampleNamePropertyValue =</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;FdoPropertyValue::Create(L"SampleNameDataProperty",</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;sampleNameDataValue);</pre>
+                                 <pre class="codeLine">// add the name property value to the value collection</pre>
+                                 <pre class="codeLine">valueCollectionIndex =</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;samplePropertyValues-&gt;Add(sampleNamePropertyValue);</pre>
+                                 <pre class="codeLine">// create an FdoGeometryValue for the geometry property value</pre>
+                                 <pre class="codeLine">// this polygon represents a lake which has an island</pre>
+                                 <pre class="codeLine">// the outer shoreline of the lake is defined as a linear ring</pre>
+                                 <pre class="codeLine">// the shoreline of the island is defined as a linear ring</pre>
+                                 <pre class="codeLine">// the outer shoreline is the external boundary of the polygon</pre>
+                                 <pre class="codeLine">// the island shoreline is an internal linear ring</pre>
+                                 <pre class="codeLine">// a polygon geometry can have zero or more internal rings</pre>
+                                 <pre class="codeLine">GisPtr&lt;FdoGeometryValue&gt; sampleGeometryValue;</pre>
+                                 <pre class="codeLine">sampleGeometryValue = FdoGeometryValue::Create();</pre>
+                                 <pre class="codeLine">// create an instance of a geometry factory used to create the</pre>
+                                 <pre class="codeLine">// geometry objects</pre>
+                                 <pre class="codeLine">GisPtr&lt;GisAgfGeometryFactory&gt; sampleGeometryFactory;</pre>
+                                 <pre class="codeLine">sampleGeometryFactory = GisAgfGeometryFactory::GetInstance();</pre>
+                                 <pre class="codeLine">// define the external boundary of the polygon, the shoreline of</pre>
+                                 <pre class="codeLine">// Blue Lake</pre>
+                                 <pre class="codeLine">GisPtr&lt;GisILinearRing&gt; exteriorRingBlueLake;</pre>
+                                 <pre class="codeLine">GisInt32 numBlueLakeShorelineOrdinates = 10;</pre>
+                                 <pre class="codeLine">double blueLakeExteriorRingOrdinates[] = {52.0, 18.0, 66.0, 23.0,</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;73.0, 9.0, 48.0, 6.0, 52.0, 18.0};</pre>
+                                 <pre class="codeLine">exteriorRingBlueLake = sampleGeometryFactory-&gt;CreateLinearRing(</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;GisDimensionality_XY, numBlueLakeShorelineOrdinates,</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;blueLakeExteriorRingOrdinates);</pre>
+                                 <pre class="codeLine">// define the shoreline of Goose Island which is on Blue Lake</pre>
+                                 <pre class="codeLine">// this is the sole member of the list of interior rings</pre>
+                                 <pre class="codeLine">GisPtr&lt;GisILinearRing&gt; linearRingGooseIsland;</pre>
+                                 <pre class="codeLine">GisInt32 numGooseIslandShorelineOrdinates = 10;</pre>
+                                 <pre class="codeLine">double gooseIslandLinearRingOrdinates[] = {59.0, 18.0, 67.0, 18.0,</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;67.0, 13.0, 59.0, 13.0, 59.0, 18.0};</pre>
+                                 <pre class="codeLine">linearRingGooseIsland = sampleGeometryFactory-&gt;CreateLinearRing(</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;GisDimensionality_XY, numGooseIslandShorelineOrdinates,</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;gooseIslandLinearRingOrdinates);</pre>
+                                 <pre class="codeLine">// add the Goose Island linear ring to the list of interior rings</pre>
+                                 <pre class="codeLine">GisPtr&lt;GisLinearRingCollection&gt; interiorRingsBlueLake;</pre>
+                                 <pre class="codeLine">interiorRingsBlueLake = GisLinearRingCollection::Create();</pre>
+                                 <pre class="codeLine">interiorRingsBlueLake-&gt;Add(linearRingGooseIsland);</pre>
+                                 <pre class="codeLine">// create the Blue Lake polygon</pre>
+                                 <pre class="codeLine">GisPtr&lt;GisIPolygon&gt; blueLake;</pre>
+                                 <pre class="codeLine">blueLake =</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;sampleGeometryFactory-&gt;CreatePolygon(exteriorRingBlueLake,</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;interiorRingsBlueLake);</pre>
+                                 <pre class="codeLine">// convert the Blue Lake polygon into a byte array</pre>
+                                 <pre class="codeLine">// and set the geometry value to this byte array</pre>
+                                 <pre class="codeLine">GisByteArray * geometryByteArray =</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;sampleGeometryFactory-&gt;GetAgf(blueLake);</pre>
+                                 <pre class="codeLine">sampleGeometryValue-&gt;SetGeometry(geometryByteArray);</pre>
+                                 <pre class="codeLine">// add the Blue Lake FdoGeometryValue to the geometry property value</pre>
+                                 <pre class="codeLine">GisPtr&lt;FdoPropertyValue&gt; sampleGeometryPropertyValue;</pre>
+                                 <pre class="codeLine">sampleGeometryPropertyValue =</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;FdoPropertyValue::Create(L"SampleGeometryProperty",</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;sampleGeometryValue);</pre>
+                                 <pre class="codeLine">// add the geometry property value to the value collection</pre>
+                                 <pre class="codeLine">valueCollectionIndex =</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;samplePropertyValues-&gt;Add(sampleGeometryPropertyValue);</pre>
+                                 <pre class="codeLine">// do the insertion</pre>
+                                 <pre class="codeLine">// the command returns an FdoIFeatureReader</pre>
+                                 <pre class="codeLine">GisPtr&lt;FdoIFeatureReader sampleFeatureReader;</pre>
+                                 <pre class="codeLine">sampleFeatureReader = sampleInsert-&gt;Execute();</pre>
+                              </div>
+                        
+      </div>
+                  
+               
+      <!---->
+      <!--See also-->
+      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+</html>

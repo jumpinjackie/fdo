@@ -1,0 +1,123 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   
+      <title>Code</title>
+      <link rel="stylesheet" type="text/css" href="../style/cpm.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd_html_standard.css"><script type="text/javascript" src="../scripts/ac_common.js"></script><script type="text/javascript" src="../scripts/ac.strings.js"></script><script type="text/javascript" src="../scripts/acmap.js"></script><script type="text/javascript" src="../scripts/ac.acad_ak.js"></script><script language="javascript">
+            function hideInfo() {
+                info = document.getElementById('infoline');
+                info.innerHTML = ' ';
+                info.style.visibility = 'hidden';
+            }
+            function showInfo(title) {
+                info = document.getElementById('infoline');
+                info.innerHTML = title;
+                info.style.visibility='visible';
+            }
+        </script><meta type="description" content="Code">
+      <meta type="keywords" content="">
+      <meta type="topic-type" content="concept">
+   </head>
+   <body onLoad="javascript:initFrame('WSfacf1429558a55de8821c21057fbebc2b-abd.htm','33'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
+      <!--
+                            Name = Topic;
+                            Class =  CPM-Topic ISD-Topic ;
+                            Url = WSfacf1429558a55de8821c21057fbebc2b-abd.htm-->
+      <div class="head">
+         <div class="head-block">
+            <div class="nav-group">
+               <!--browse buttons-->
+               <div class="browse">
+                  <nobr>
+                     <div id="homeTitle" style="display:none">Home: FDO Developer's Guide</div><a href="WS73099cc142f487551d92abb10dc573c45d-7fdf.htm" target="content" class="headNavLink" onmouseover="showInfo(document.getElementById('homeTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-home-xp.gif" border="0"></a><span class="home-button-separator">&nbsp;</span><div id="prevTitle" style="display:none">Expression Capabilities</div><a href="WS1a9193826455f5ff9110c71085341391d-3d56.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">Expression Capabilities</div><a href="WS1a9193826455f5ff9110c71085341391d-3d56.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">Filter Capabilities</div><a href="WS1a9193826455f5ff9110c71085341391d-3d55.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-next-xp.gif" border="0"></a></nobr>
+               </div>
+               <!--end browse buttons-->
+            </div>
+            <div class="button-info"><span id="infoline">&nbsp;</span></div>
+            <div class="ancestry"><a href="WSfacf1429558a55de8821c21057fbebc2b-ac2.htm">Capabilities</a>&nbsp;&gt;&nbsp;<a href="WS1a9193826455f5ff9110c71085341391d-3d56.htm">Expression Capabilities</a>&nbsp;&gt;&nbsp;
+            </div>
+            <div class="head-text"><span>Code</span></div>
+         </div>
+      </div>
+      <div class="head-margin">&nbsp;</div>
+      <div style="line-height: 0pt">&nbsp;</div>
+      <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-abd"></a></span>
+                  
+                  
+      <!--Body-->
+                     
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-a86"></a></span>
+                           
+         <p class="section_title_h1"><a name="TOC_ENTRY__d0e3622"></a>Declarations
+         </p>
+                           
+         <p>
+                                 
+                                 The
+            object and variable declarations are the following:
+         </p>
+                           
+         <div class="codeBlock">
+                                 <pre class="codeLine">FdoIExpressionCapabilities * expressionCapabilities;</pre>
+                                 <pre class="codeLine">GisInt32 numExpressionTypes = 0;</pre>
+                                 <p class="codeComment">// this is an enumerated
+               type
+            </p>
+                                 <pre class="codeLine">FdoExpressionType * expressionTypes;</pre>
+                                 <pre class="codeLine">GisInt32 numFunctionDefinitions = 0;</pre>
+                                 <pre class="codeLine">FdoFunctionDefinitionCollection * functions;</pre>
+                                 <pre class="codeLine">FdoFunctionDefinition * functionDefinition;</pre>
+                                 <pre class="codeLine">GisString * functionName;</pre>
+                                 <pre class="codeLine">GisString * functionDescription;</pre>
+                                 <pre class="codeLine">GisInt32 numArgumentDefinitions = 0;</pre>
+                                 <pre class="codeLine">FdoReadOnlyArgumentDefinitionCollection * arguments;</pre>
+                                 <pre class="codeLine">FdoArgumentDefinition * argumentDefinition;</pre>
+                                 <pre class="codeLine">GisString * argumentName;</pre>
+                                 <pre class="codeLine">GisString * argumentDescription;</pre>
+                                 <pre class="codeLine">FdoDataType argumentType;</pre>
+                              </div>
+                        
+      </div>
+                     
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-a85"></a></span>
+                           
+         <p class="section_title_h1"><a name="TOC_ENTRY__d0e3697"></a>Method Calls
+         </p>
+                           
+         <p>The method calls are the following:</p>
+                           
+         <div class="codeBlock">
+                                 <pre class="codeLine">expressionCapabilities = connection-&gt;GetExpressionCapabilities();</pre>
+                                 <p class="codeComment">//
+               this returns a list of expression types
+            </p>
+                                 <pre class="codeLine">expressionTypes = expressionCapabilities-&gt;GetExpressionTypes();</pre>
+                                 <p class="codeComment">//
+               loop through the expression Types
+            </p>
+                                 <pre class="codeLine">functions = expressionCapabilities-&gt;GetFunctions();</pre>
+                                 <pre class="codeLine">numFunctionDefinitions = functions-&gt;GetCount();</pre>
+                                 <pre class="codeLine">for (int i = 0; i &lt; numFunctionDefinitions; i++) {</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;functionDefinition = functions-&gt;GetItem(i);</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;functionName = functionDefinition-&gt;GetName();</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;functionDescription = functionDefinition-&gt;GetDescription();</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;arguments = functionDefinition-&gt;GetArguments();</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;numArgumentDefinitions = arguments-&gt;GetCount();</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;for ( int j = 0; j &lt; numArgumentDefinitions; j++) {</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;argumentDefinition = arguments-&gt;GetItem(j);</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;argumentName = argumentDefinition-&gt;GetName();</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;argumentDescription = argumentDefinition-&gt;GetDescription();</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;argumentType = argumentDefinition-&gt;GetDataType();</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;}</pre>
+                                 <pre class="codeLine">}</pre>
+                              </div>
+                        
+      </div>
+                  
+               
+      <!---->
+      <!--See also-->
+      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+</html>

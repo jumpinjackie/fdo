@@ -1,0 +1,166 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   
+      <title>Code</title>
+      <link rel="stylesheet" type="text/css" href="../style/cpm.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd_html_standard.css"><script type="text/javascript" src="../scripts/ac_common.js"></script><script type="text/javascript" src="../scripts/ac.strings.js"></script><script type="text/javascript" src="../scripts/acmap.js"></script><script type="text/javascript" src="../scripts/ac.acad_ak.js"></script><script language="javascript">
+            function hideInfo() {
+                info = document.getElementById('infoline');
+                info.innerHTML = ' ';
+                info.style.visibility = 'hidden';
+            }
+            function showInfo(title) {
+                info = document.getElementById('infoline');
+                info.innerHTML = title;
+                info.style.visibility='visible';
+            }
+        </script><meta type="description" content="Code">
+      <meta type="keywords" content="">
+      <meta type="topic-type" content="concept">
+   </head>
+   <body onLoad="javascript:initFrame('WSfacf1429558a55de8821c21057fbebc2b-ac0.htm','27'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
+      <!--
+                            Name = Topic;
+                            Class =  CPM-Topic ISD-Topic ;
+                            Url = WSfacf1429558a55de8821c21057fbebc2b-ac0.htm-->
+      <div class="head">
+         <div class="head-block">
+            <div class="nav-group">
+               <!--browse buttons-->
+               <div class="browse">
+                  <nobr>
+                     <div id="homeTitle" style="display:none">Home: FDO Developer's Guide</div><a href="WS73099cc142f487551d92abb10dc573c45d-7fdf.htm" target="content" class="headNavLink" onmouseover="showInfo(document.getElementById('homeTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-home-xp.gif" border="0"></a><span class="home-button-separator">&nbsp;</span><div id="prevTitle" style="display:none">Connection Capabilities</div><a href="WS1a9193826455f5ff9110c71085341391d-3d59.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">Connection Capabilities</div><a href="WS1a9193826455f5ff9110c71085341391d-3d59.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">Schema Capabilities</div><a href="WS1a9193826455f5ff9110c71085341391d-3d58.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-next-xp.gif" border="0"></a></nobr>
+               </div>
+               <!--end browse buttons-->
+            </div>
+            <div class="button-info"><span id="infoline">&nbsp;</span></div>
+            <div class="ancestry"><a href="WSfacf1429558a55de8821c21057fbebc2b-ac2.htm">Capabilities</a>&nbsp;&gt;&nbsp;<a href="WS1a9193826455f5ff9110c71085341391d-3d59.htm">Connection Capabilities</a>&nbsp;&gt;&nbsp;
+            </div>
+            <div class="head-text"><span>Code</span></div>
+         </div>
+      </div>
+      <div class="head-margin">&nbsp;</div>
+      <div style="line-height: 0pt">&nbsp;</div>
+      <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-ac0"></a></span>
+                  
+                  
+      <!--Body-->
+                     
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-a8f"></a></span>
+                           
+         <p class="section_title_h1"><a name="TOC_ENTRY__d0e3058"></a>Declarations
+         </p>
+                           
+         <p>
+                                 
+                                 
+                                 The
+            object and variable declarations are the following:
+         </p>
+                           
+         <div class="codeBlock">
+                                 <pre class="codeLine">FdoIConnectionCapabilities * connectionCapabilities;</pre>
+                                 <p class="codeComment">// FdoThreadCapability
+               is an enumerated type
+            </p>
+                                 <pre class="codeLine">FdoThreadCapability threadCapability;</pre>
+                                 <p class="codeComment">// FdoSpatialContextExtentType
+               is an enumerated type
+            </p>
+                                 <pre class="codeLine">FdoSpatialContextExtentType * spatialContextExtentTypes;</pre>
+                                 <pre class="codeLine">GisInt32 numSpatialContexts;</pre>
+                                 <p class="codeComment">// FdoLockType is an
+               enumerated type
+            </p>
+                                 <pre class="codeLine">FdoLockType * lockTypes;</pre>
+                                 <pre class="codeLine">GisInt32 numLockTypes;</pre>
+                                 <pre class="codeLine">bool supportsLocking;</pre>
+                                 <pre class="codeLine">bool supportsTimeout;</pre>
+                                 <pre class="codeLine">bool supportsTransactions;</pre>
+                                 <pre class="codeLine">bool supportsLongTransactions;</pre>
+                                 <pre class="codeLine">bool supportsSQL;</pre>
+                                 <pre class="codeLine">bool supportsConfiguration;</pre>
+                              </div>
+                        
+      </div>
+                     
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-a8e"></a></span>
+                           
+         <p class="section_title_h1"><a name="TOC_ENTRY__d0e3142"></a>Method calls
+         </p>
+                           
+         <p>The method calls are the following:</p>
+                           
+         <div class="codeBlock">
+                                 <pre class="codeLine">connectionCapabilities = connection-&gt;GetConnectionCapabilities();</pre>
+                                 <p class="codeComment">//
+               GetThreadCapability() returns a single value
+            </p>
+                                 <pre class="codeLine">threadCapability = connectionCapabilities-&gt;GetThreadCapability();</pre>
+                                 <p class="codeComment">//
+               GetSpatialContextTypes() returns a list
+            </p>
+                                 <pre class="codeLine">spatialContextExtentTypes = connectionCapabilities-&gt;</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;GetSpatialContextTypes(numSpatialContexts);</pre>
+                                 <p class="codeComment">//
+               loop through the spatialContextExtentTypes
+            </p>
+                                 <pre class="codeLine">supportsLocking = connectionCapabilities-&gt;SupportsLocking();</pre>
+                                 <p class="codeComment">//
+               GetLockTypes() returns a list
+            </p>
+                                 <pre class="codeLine">lockTypes = connectionCapabilities-&gt;GetLockTypes(numLockTypes);</pre>
+                                 <p class="codeComment">//
+               loop through the lockTypes
+            </p>
+                                 <pre class="codeLine">supportsTimeout = connectionCapabilities-&gt;SupportsTimeout();</pre>
+                                 <pre class="codeLine">supportsTransactions = connectionCapabilities-&gt;</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;SupportsTransactions();</pre>
+                                 <pre class="codeLine">supportsLongTransactions = connectionCapabilities-&gt;</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;SupportsLongTransactions();</pre>
+                                 <pre class="codeLine">supportsSQL = connectionCapabilities-&gt;SupportsSQL();</pre>
+                                 <pre class="codeLine">supportsConfiguration = connectionCapabilities-&gt;</pre>
+                                 <pre class="codeLine">&nbsp;&nbsp;SupportsConfiguration();</pre>
+                              </div>
+                        
+      </div>
+                     
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-a8d"></a></span>
+                           
+         <p class="section_title_h1"><a name="TOC_ENTRY__d0e3211"></a>Reference
+         </p>
+                           
+         <p>For more information, see these <span class="bookTitle">FDO
+               API Reference Help</span> topics:
+         </p>
+                           
+         <!--UList--><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-a7b"></a></span>
+                              
+         <ul>
+            <li>class
+               FdoIConnectionCapabilities
+            </li>
+            <li>enum
+               FdoLockType
+            </li>
+            <li>enum
+               FdoSpatialContextExtentType
+            </li>
+            <li>enum
+               FdoThreadCapability
+            </li>
+         </ul>
+                              
+                              
+                              
+                           
+                        
+      </div>
+                  
+               
+      <!---->
+      <!--See also-->
+      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+</html>
