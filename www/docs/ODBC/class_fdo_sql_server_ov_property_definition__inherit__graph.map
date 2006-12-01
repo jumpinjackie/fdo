@@ -1,6 +1,0 @@
-base referer
-rect $class_fdo_sql_server_ov_association_property_definition.html 7,415 335,607
-rect $class_fdo_sql_server_ov_data_property_definition.html 359,415 647,607
-rect $class_fdo_sql_server_ov_geometric_property_definition.html 671,447 962,575
-rect $class_fdo_sql_server_ov_object_property_definition.html 986,391 1284,631
-rect $class_fdo_rdbms_ov_property_definition.html 538,7 780,167
