@@ -32,7 +32,8 @@ ArcSDEFeatureInfoReader::ArcSDEFeatureInfoReader (FdoPropertyValueCollection *in
     {
         FdoPtr<FdoPropertyValue> propVal = mFeatInfoCollection->GetItem(i);
         FdoPtr<FdoIdentifier> id = propVal->GetName();
-        idCollection->Add(id);
+        if (!idCollection->Contains(id))
+            idCollection->Add(id);
     }
     mClassDefinition = ArcSDESchemaManager::CloneAndPruneClass(definition, idCollection);
 }
