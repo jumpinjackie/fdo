@@ -34,10 +34,10 @@ const FdoStringP FdoXml::mFdsUri(	 L"http://fdo.osgeo.org/schemas/fds", true );
 const FdoStringP FdoXml::mWfsNs(	 L"wfs", true );
 const FdoStringP FdoXml::mWfsUri(	 L"http://www.opengis.net/wfs", true );
  
-const FdoStringP FdoXml::mDefaultRoot = FdoXml::mFdoNs + L":DataStore";
+const FdoStringP FdoXml::mDefaultRoot(FdoXml::mFdoNs + L":DataStore", true);
 
 const FdoStringP FdoXml::mGmlProviderName( L"OSGeo.GML.1.0", true );
 
-const FdoStringP FdoXml::mFeatureCollectionName = L"FeatureCollection";
-const FdoStringP FdoXml::mFeatureMemberName = L"featureMember";
+const FdoStringP FdoXml::mFeatureCollectionName(L"FeatureCollection", true);
+const FdoStringP FdoXml::mFeatureMemberName(L"featureMember", true);
 
