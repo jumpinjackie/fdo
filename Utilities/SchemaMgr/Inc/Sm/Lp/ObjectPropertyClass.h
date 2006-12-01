@@ -70,6 +70,9 @@ public:
     /// class level.
     virtual void WriteDb( FdoSmPhPropertyWriterP pWriter ) const;
 
+    /// Get a fully qualified class name ( "[schemaname]:[classname]" ).
+	virtual FdoStringP GetQName() const;
+
 protected:
     //Unused constructor needed only to build on Linux
     FdoSmLpObjectPropertyClass() {}

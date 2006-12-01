@@ -17,7 +17,30 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = Common TestCommon OWS SchemaMgr SQLiteInterface
+noinst_LTLIBRARIES = libTestCommon.la
 
-DIST_SUBDIRS = Common TestCommon OWS SchemaMgr SQLiteInterface
+EXTRA_DIST = \
+  TestCommon.sln \
+  TestCommon.vcproj
+
+libTestCommon_la_SOURCES = \
+  Src/TestCommonFeatureCommands.cpp \
+  Src/TestCommonMiscUtil.cpp \
+  Src/stdafx.cpp
+
+noinst_HEADERS = $(libTestCommon_la_SOURCES) \
+  Inc/TestCommonFeatureCommands.h \
+  Inc/TestCommonMiscUtil.h \
+  Inc/TestCommon.h \
+  Inc/stdafx.h
+
+INCLUDES = \
+  -I$(FDO)/Unmanaged/Inc \
+  -I./Inc \
+  -I$(FDOUTILITIES)/Common/Inc \
+  -I$(FDO)/Unmanaged/Src/Common
+
+libTestCommon_la_LDFLAGS = 
+
+CXXFLAGS = @CXXFLAGS@ -D__USE_GNU -DLINUX -DLINUX_IA32 -pthread -DHAVE_GEOM_INFO_TYPE
 
