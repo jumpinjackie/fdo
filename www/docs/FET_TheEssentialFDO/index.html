@@ -1,0 +1,156 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+      <link rel="stylesheet" type="text/css" href="style/commons.css">
+      <link rel="stylesheet" type="text/css" href="style/header.css"><script type="text/javascript">
+                        var frameName = "Autodesk online help";
+                        var currPageNumber = 0;
+                        var TOChistory = new Array();
+                        var TOChistoryPos = 0;
+                        var isContentEnable = 0;
+                        var highlightedIndexes = new Array();
+                        var highlightedIndexesNum = 0;
+                        var searchWordList = new Array();
+                        var highlightingEnabled = true;
+                        var searchMethod = 'or';
+                        var favoritesList = new Array();
+                        var selectedFavoriteItem = 0;
+                        var isPageLoaded = 0;
+                        var currentSearchPage = 0;
+                        var searchReqest = "";
+                        var searchResults = new Array();
+
+                        function message(title)
+                        {
+                            alert(title + "\nTOChistory.length: " + TOChistory.length + "\nTOChistoryPos: " + TOChistoryPos
+                                + "\nTOChistory: " + TOChistory.toString());
+                        }
+
+                        function addTOCHistoryItem(pageNumber)
+                        {
+                            if(TOChistoryPos < (TOChistory.length - 1))
+                                TOChistory.length = TOChistoryPos + 1;
+                                TOChistory[TOChistory.length] = pageNumber;
+                                TOChistoryPos = TOChistory.length - 1;
+                        // message("addTOCHistoryItem end");
+                        }
+
+                        function changeCurrPageNumber(newPageNumber)
+                        {
+                            currPageNumber = newPageNumber;
+                        }
+
+                        function goForward()
+                        {
+                        // message("goForward begin");
+                            if(TOChistoryPos < TOChistory.length - 1)
+                            {
+                                TOChistoryPos++;
+                                contentTree.expandTOCNode(TOChistory[TOChistoryPos]);
+                                window.open(fileItems[TOChistory[TOChistoryPos]], "content");
+                            }
+                        // message("goForward end");
+                        }
+
+                        function goBack()
+                        {
+                        // message("goBack begin");
+                            if(TOChistoryPos > 0)
+                            {
+                                TOChistoryPos--;
+                                contentTree.expandTOCNode(TOChistory[TOChistoryPos]);
+                                window.open(fileItems[TOChistory[TOChistoryPos]], "content");
+                            }
+                        // message("goBack begin");
+                        }
+
+                        function GotoNextPrev(shiftValue)
+                        {
+                            if(isContentEnable)
+                            {
+                                nextPageNumber = currPageNumber + shiftValue;
+                                if(nextPageNumber >= fileItems.length)
+                                nextPageNumber = fileItems.length - 1;
+                                else if(nextPageNumber < 0)
+                                nextPageNumber = 0;
+
+                                if ((nextPageNumber == currPageNumber) || (fileItems[nextPageNumber] == null)) return;
+                                contentTree.expandTOCNode(nextPageNumber);
+                                addTOCHistoryItem(nextPageNumber);
+                                window.open(fileItems[nextPageNumber], "content");
+                            }
+                        }
+
+                        function selectTab(tabNum)
+                        {
+                            var x = document.getElementById('tabTable').rows[0].cells;
+                            for(i = 0; i < 3; i++)
+                            {
+                                x[i].className="tab_inactive";
+                            }
+                            x[tabNum].className="tab_active";
+                        }
+
+                        function hideSection(buttonID)
+                        {
+                            document.getElementById(buttonID).style.visibility = "hidden";
+                        }
+
+                        function showSection(buttonID)
+                        {
+                            document.getElementById(buttonID).style.visibility = "visible";
+                        }
+
+                        function selectFavoriteItem(number) {
+                            selectedFavoriteItem = number;
+                        }
+
+                        function removeSeceltedFavoriteItem() {
+
+                            if (selectedFavoriteItem < top.favoritesList.length) {
+                                top.favoritesList.splice(selectedFavoriteItem,1);
+                                top.synchronizeFavoriteData();
+                            }
+                        }
+
+                        function setPageLoaded(param) {
+                            isPageLoaded = param;
+                            
+                        }
+
+                        function checkURLParams () {
+                            var args = new Object(  );
+                            var query = window.location.search.substring(1);     // Get query string
+                            var pairs = query.split(",");                 // Break at comma
+                            for(var i = 0; i < pairs.length; i++) {
+                                var pos = pairs[i].indexOf('=');          // Look for "name=value"
+                                if (pos == -1) continue;                  // If not found, skip
+                                var argname = pairs[i].substring(0,pos);  // Extract the name
+                                var value = pairs[i].substring(pos+1);    // Extract the value
+                                args[argname] = unescape(value);
+                            }
+                            if (args.url != null && args.topicNumber != null) {
+                                contentTree.expandTOCNode(args.topicNumber);
+                                window.open('./files/'+args.url, "content");
+                            }
+                        }
+
+                    </script><script type="text/JavaScript" src="scripts/favorites.js"></script>
+<title>The Essential FDO</title>
+   </head><script type="text/JavaScript" src="scripts/toc-treedata.js"></script><FRAMESET cols="300px, 100%">
+      <FRAME src="left_tab.html" name="left_tab" id="left_tab" class="iframeToc" scrolling="no">
+      <FRAME src="./files/WS73099cc142f487551e5a0cb10850d4cd7c-5344.htm" name="content" id="content" class="iframeContent" scrolling="yes">
+      <NOFRAMES>
+         Your browser does not support Frames.
+         
+      </NOFRAMES>
+   </FRAMESET>
+   <noscript>
+      <p>Your browser doesn't support JavaScript. View
+         <a href="contents.html">help contents</a>.
+         
+      </p>
+   </noscript>
+</html>

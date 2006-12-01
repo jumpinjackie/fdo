@@ -1,0 +1,165 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   
+      <title>What Is the Feature Data Objects API?</title>
+      <link rel="stylesheet" type="text/css" href="../style/cpm.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd_html_standard.css"><script type="text/javascript" src="../scripts/ac_common.js"></script><script type="text/javascript" src="../scripts/ac.strings.js"></script><script type="text/javascript" src="../scripts/acmap.js"></script><script type="text/javascript" src="../scripts/ac.acad_ak.js"></script><script language="javascript">
+            function hideInfo() {
+                info = document.getElementById('infoline');
+                info.innerHTML = ' ';
+                info.style.visibility = 'hidden';
+            }
+            function showInfo(title) {
+                info = document.getElementById('infoline');
+                info.innerHTML = title;
+                info.style.visibility='visible';
+            }
+        </script><meta type="description" content="What Is the Feature Data Objects API?">
+      <meta type="keywords" content="">
+      <meta type="topic-type" content="concept">
+   </head>
+   <body onLoad="javascript:initFrame('WS73099cc142f487551e5a0cb10850d4cd7c-5343.htm','1'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
+      <!--
+                            Name = Topic;
+                            Class =  CPM-Topic ISD-Topic ;
+                            Url = WS73099cc142f487551e5a0cb10850d4cd7c-5343.htm-->
+      <div class="head">
+         <div class="head-block">
+            <div class="nav-group">
+               <!--browse buttons-->
+               <div class="browse">
+                  <nobr>
+                     <div id="homeTitle" style="display:none">Home: The Essential FDO</div><a href="WS73099cc142f487551e5a0cb10850d4cd7c-5344.htm" target="content" class="headNavLink" onmouseover="showInfo(document.getElementById('homeTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-home-xp.gif" border="0"></a><span class="home-button-separator">&nbsp;</span><div id="prevTitle" style="display:none">The Essential FDO</div><a href="WS73099cc142f487551e5a0cb10850d4cd7c-5344.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">The Essential FDO</div><a href="WS73099cc142f487551e5a0cb10850d4cd7c-5344.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">Objectives</div><a href="WS73099cc142f487551e5a0cb10850d4cd7c-5341.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-next-xp.gif" border="0"></a></nobr>
+               </div>
+               <!--end browse buttons-->
+            </div>
+            <div class="button-info"><span id="infoline">&nbsp;</span></div>
+            <div class="ancestry"><a href="WS73099cc142f487551e5a0cb10850d4cd7c-5344.htm">The Essential FDO</a>&nbsp;&gt;&nbsp;
+            </div>
+            <div class="head-text"><span>What Is the Feature Data Objects API?</span></div>
+         </div>
+      </div>
+      <div class="head-margin">&nbsp;</div>
+      <div style="line-height: 0pt">&nbsp;</div>
+      <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS73099cc142f487551e5a0cb10850d4cd7c-5343"></a></span>
+               
+               
+      <!--Body-->
+                  
+      <p>The FDO API
+         provides a generic interface to a number of back-end data source
+         technologies for storing, retrieving, and updating GIS (Geographic
+         Information System) data.
+      </p>
+                  
+      <p>
+                        FDO provides a model for extending this interface
+         to additional data source technologies. The generic API is extensible,
+         and it is possible to add custom commands to a particular provider.
+         A provider is a specifc implementation of the FDO API that provides
+         access to date stored in a particular data source technology. For
+         example, the MySQL provider provides access to GIS data stored in
+         an MySQL database, and the OSGeo FDO Provider for SHP provides access
+         to GIS data stored in a SHP file. The extent to which a provider
+         implements the FDO API is limited by the native capabilities of
+         the underlying data source technology.
+      </p>
+                  
+      <p>A client application
+         creates a connection to a provider and then uses the connection
+         object to create command objects for FDO actions such as Select.
+         The client uses the command object to set the command parameters
+         with the option of leaving some parameters with default values.
+         Where appropriate such as in the case of Select, execution of the
+         command returns a reader object containing the results of the command.
+      </p>
+                  
+      <p>A client application
+         can use the FDO Capabilities API to determine what services a particular
+         provider offers. For example, the OSGeo FDO Provider for SDF supports
+         the insertion of data, and the OSGeo FDO Provider for WMS does not.
+      </p>
+                  
+      <p>The storage of FDO
+         feature data can be modeled as a containment hierarchy:
+      </p>
+                  
+      <!--UList--><span style="display:none"><a name="WS73099cc142f487551e5a0cb10850d4cd7c-5342"></a></span>
+                     
+      <ul>
+         <li>A
+            data source may contain one or more data stores.
+         </li>
+         <li>
+                              A data store may contain one or more feature schema
+            and one or more spatial contexts.
+         </li>
+         <li>A
+            feature schema may contain one or more feature classes.
+         </li>
+         <li>A
+            feature class contains a feature geometry property, optionally one
+            or more non-feature geometry properties, and optionally other types
+            of properties. 
+         </li>
+      </ul>
+                     
+                     
+                     
+                  
+                  
+      <p>A geometry is represented
+         using geometric constructs either defined as lists of one or more
+         XY or XYZ points or defined parametrically, for example, as a circular
+         arc. While geometry typically is two- or three-dimensional, it may also
+         contain the measurement dimension (M) to provide the basis for dynamic
+         segments. FDO Geometry is based on the <a class="webLink" href="http://portal.opengeospatial.org/files/?artifact_id=829OpenGIS Simple Features Implementation Specification for SQL">http://portal.opengeospatial.org/files/?artifact_id=829OpenGIS Simple Features Implementation
+            Specification for SQL
+                           </a> (version 1.1, document 99-049),
+         but is extended to include z and measure dimensions and circular
+         arcs. 
+      </p>
+                  
+      <p>A schema is a logical
+         description of the data types used to model real-world objects.
+         A schema is not the actual data instances (that is, not a particular road
+         or land parcel), rather it is metadata. A schema is a model of the
+         types of data that would be found in a data store. FDO feature schemas
+         can be written to an XML file. The FDO XML format for schema is
+         based on the <a class="webLink" href="http://portal.opengeospatial.org/files/?artifact_id=1034OpenGIS Consortium Geography Markup Language">http://portal.opengeospatial.org/files/?artifact_id=1034OpenGIS Consortium
+            Geography Markup Language
+                           </a> (version 2.1.1, document
+         02-009). The schema model is object-based using classes and properties
+         and is independent of any physical storage format.
+      </p>
+                  
+      <p>The API is available
+         in two formats, enterprise and open source, on two platforms, Windows
+         and Linux. The enterprise version of the API contains all of the
+         open source components plus some proprietary components. The enterprise
+         version of this document describes both open source and proprietary components.
+         The open source version of this document describes only the open
+         source components.
+      </p>
+                  
+      <p>The enterprise edition
+         is released as part of the Autodesk Map 3D and Autodesk MapGuide
+         Enterprise products. The FDO API is not exposed in these products.
+      </p>
+                  
+      <p>The open source edition
+         is released as source code which may be downloaded from the Open
+         Source Geospatial Foundation website (<a class="webLink" href="http://www.osgeo.org">http://www.osgeo.org</a>) in
+         the form of gzipped tarfiles or directly from Subversion repositories.
+         The project name is Fdo. The project documentation includes a document
+         about how to build and install the Fdo software from source on both
+         platforms.
+      </p>
+               
+            
+      <!---->
+      <!--See also-->
+      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+</html>
