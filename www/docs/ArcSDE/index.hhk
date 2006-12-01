@@ -1,0 +1,199 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML><HEAD></HEAD><BODY>
+<OBJECT type="text/site properties">
+<param name="FrameName" value="right">
+</OBJECT>
+<UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_schema_mapping_9d0cb3721b05d308a7ffa0eb1f51b475.html#9d0cb3721b05d308a7ffa0eb1f51b475"><param name="Name" value="_writeXml"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping.html"><param name="Name" value="ArcSDEClassMapping"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping.html#5dc396fa8ffd52c322bb77cc9467b6df"><param name="Name" value="ArcSDEClassMapping"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping.html#946dd15fb05e7b9e54e0ad1ee58444cd"><param name="Name" value="Create"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping.html#72b83c53ee7ad9c2ee7cec17b8cfb8ec"><param name="Name" value="Dispose"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping.html#b9a6fd7952cc46adac544ef5022a7262"><param name="Name" value="GetDatabaseName"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping.html#897f819d3c451fa391ccee120de9d2be"><param name="Name" value="GetGeometryStorageType"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping.html#75dd68bcc3aafdd85dc363216fde4026"><param name="Name" value="GetIndexes"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping.html#ea82b4a4377bbc4e16914d7b002c4acc"><param name="Name" value="GetOwnerName"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping.html#80d86960699ca0fb4afde0d90668d79b"><param name="Name" value="GetProperties"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping.html#ad6a0a9334617349243341baf40c84d7"><param name="Name" value="GetTableName"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping.html#c2abe6e98cc188eee97b9e4a566619f4"><param name="Name" value="InitFromXml"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping.html#b6fec23fc0e598cbc832c681b4b2a22f"><param name="Name" value="m_DatabaseName"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping.html#5b38fc79f1049626fc4740c78fff5161"><param name="Name" value="m_GeometryStorageType"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping.html#7b97d6620e8ebbcdf3bef1d930068be0"><param name="Name" value="m_IndexMappings"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping.html#03315dc74cf32cd5569936be2b592037"><param name="Name" value="m_OwnerName"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping.html#13b747f5c905a8e53795facf8a5ba3cb"><param name="Name" value="m_PropertyMappings"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping.html#01b6ddb6085199920e8b47e5dc9b9d55"><param name="Name" value="m_TableName"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping.html#b47d2aaa03cb01218625a99781a368a0"><param name="Name" value="SetDatabaseName"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping.html#33dc8dc822f7fac81a1a6267b24398a0"><param name="Name" value="SetGeometryStorageType"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping.html#bed793a15b70a35931437dc8de2c4b75"><param name="Name" value="SetOwnerName"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping.html#2845ba02efd640af368e68ba5578434c"><param name="Name" value="SetTableName"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping.html#5dc774c9acfd774fc1f00c5ca0f9d028"><param name="Name" value="XmlEndElement"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping.html#d32ab66c67fdd4b3a8cc26f9fd19dbcc"><param name="Name" value="XmlStartElement"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping.html#d7264101a0d5e577ae12993280fc01a4"><param name="Name" value="~ArcSDEClassMapping"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping_collection.html"><param name="Name" value="ArcSDEClassMappingCollection"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping_collection.html#5dd0141d2bf21bf27ccfac1dfd6fa56a"><param name="Name" value="ArcSDEClassMappingCollection"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping_collection.html#84d951c94c0b5b658a5d2a0d66087855"><param name="Name" value="Create"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping_collection.html#2861b7d26d1900f4bdf63c8a4290f5f8"><param name="Name" value="Dispose"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_fdo_arc_s_d_e_class_mapping_8h_53d3fdc1a17cac8c7fba6f6eb721d911.html#53d3fdc1a17cac8c7fba6f6eb721d911"><param name="Name" value="ArcSDEGeometryStorageType"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_fdo_arc_s_d_e_class_mapping_8h_53d3fdc1a17cac8c7fba6f6eb721d911.html#53d3fdc1a17cac8c7fba6f6eb721d911d542cb237c2aaeb286b751c4d1cb198e"><param name="Name" value="ArcSDEGeometryStorageType_LOB"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_fdo_arc_s_d_e_class_mapping_8h_53d3fdc1a17cac8c7fba6f6eb721d911.html#53d3fdc1a17cac8c7fba6f6eb721d91158ab03b36b5fb4814d939d19c89db814"><param name="Name" value="ArcSDEGeometryStorageType_Normalized"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_fdo_arc_s_d_e_class_mapping_8h_53d3fdc1a17cac8c7fba6f6eb721d911.html#53d3fdc1a17cac8c7fba6f6eb721d9111284e012b3607b1b527dcd8b99ab51b8"><param name="Name" value="ArcSDEGeometryStorageType_SdeBinary"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_fdo_arc_s_d_e_class_mapping_8h_53d3fdc1a17cac8c7fba6f6eb721d911.html#53d3fdc1a17cac8c7fba6f6eb721d9113e4669d5f8b22a635ebb80a3577f47fc"><param name="Name" value="ArcSDEGeometryStorageType_Spatial"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_fdo_arc_s_d_e_class_mapping_8h_53d3fdc1a17cac8c7fba6f6eb721d911.html#53d3fdc1a17cac8c7fba6f6eb721d911339453590f867b6e41deaee4ca0ef251"><param name="Name" value="ArcSDEGeometryStorageType_SQL"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_fdo_arc_s_d_e_class_mapping_8h_53d3fdc1a17cac8c7fba6f6eb721d911.html#53d3fdc1a17cac8c7fba6f6eb721d9110b515202743efe6a1fb618876b1553e6"><param name="Name" value="ArcSDEGeometryStorageType_WKB"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping.html"><param name="Name" value="ArcSDEIndexMapping"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping.html#e012cba4a24e1cc53b7cd289dd274d95"><param name="Name" value="ArcSDEIndexMapping"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping.html#8f39f1953cfe0af8f1c2ad21b0e5d02e"><param name="Name" value="Create"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping.html#c083ed1538517989e275260274b4b451"><param name="Name" value="Dispose"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping.html#613fb96523695006880a304e149a65b5"><param name="Name" value="GetPropertyNames"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping.html#d3f6e6673f325772a773bbb204dc9adc"><param name="Name" value="InitFromXml"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping.html#22b789377c6ba5bff13a58fc81eeb47c"><param name="Name" value="IsAscending"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping.html#020773dc199a8ea6a4527c64ff95e12b"><param name="Name" value="IsUnique"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping.html#aa9d7a9387aa176d30c5c2bb13bf5727"><param name="Name" value="m_Ascending"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping.html#cc9e1ddc737c2593aed7a65efbbc9cc7"><param name="Name" value="m_IndexPropertyMappings"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping.html#b6f568726942f7978bc312e1a5e1b682"><param name="Name" value="m_Unique"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping.html#840de84c5df49d81f4327bf27be45ce1"><param name="Name" value="SetAscending"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping.html#275935cc343638a570f3f8ea45365fbe"><param name="Name" value="SetUnique"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping.html#6c5a8245bf312573480ad0a448f3b579"><param name="Name" value="XmlEndElement"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping.html#787a4bdaa44cfe0dc373fcb78b244cc8"><param name="Name" value="XmlStartElement"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping.html#8a287d00eab532838f162687ba535015"><param name="Name" value="~ArcSDEIndexMapping"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping_collection.html"><param name="Name" value="ArcSDEIndexMappingCollection"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping_collection.html#9f88a97c49f30f053bb985627343109f"><param name="Name" value="ArcSDEIndexMappingCollection"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping_collection.html#253e08cc1ecdfbd634aa85a4f368a57a"><param name="Name" value="Create"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping_collection.html#edd4d606b89942bd6116410b6aceac71"><param name="Name" value="Dispose"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping_collection.html#0b6ed3c94c4d17211d0116bac2d21129"><param name="Name" value="~ArcSDEIndexMappingCollection"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_property_mapping.html"><param name="Name" value="ArcSDEPropertyMapping"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_property_mapping.html#bb4a084a407a0265662a66a2e46aa7cf"><param name="Name" value="ArcSDEPropertyMapping"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_property_mapping.html#2d14a6705a884d6f320f3e8a64aed3c4"><param name="Name" value="Create"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_property_mapping.html#0dee12846f875c97bb961ac638180453"><param name="Name" value="Dispose"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_property_mapping.html#9cb4f6c016c60bd2451fc1e5e7773f71"><param name="Name" value="GetColumnName"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_property_mapping.html#4bd07b90bb762a52057a718e14e9cbd9"><param name="Name" value="GetColumnType"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_property_mapping.html#9e6f08d124d5511a91d83aa62a51a5cd"><param name="Name" value="InitFromXml"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_property_mapping.html#623c254591dc17275f1a1ce824189ab4"><param name="Name" value="m_ColumnName"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_property_mapping.html#403ab74ac2a772774e41fb02d82ee60e"><param name="Name" value="m_ColumnType"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_property_mapping.html#67ffae429f4a5371f99b0fef87592fc0"><param name="Name" value="SetColumnName"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_property_mapping.html#6340ea8b9872319f56707465f3368236"><param name="Name" value="SetColumnType"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_property_mapping.html#f70352acb05d31b74de5a8283d618d55"><param name="Name" value="XmlEndElement"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_property_mapping.html#7b0c8ffc5fc2a92610235d60260c6d23"><param name="Name" value="XmlStartElement"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_property_mapping.html#edc618c7f506fb946632a7caa4dca754"><param name="Name" value="~ArcSDEPropertyMapping"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_property_mapping_collection.html"><param name="Name" value="ArcSDEPropertyMappingCollection"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_property_mapping_collection.html#9a72b6ec19a572d7076bf3f9b2f4c617"><param name="Name" value="ArcSDEPropertyMappingCollection"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_property_mapping_collection.html#2cb287ab683f90c681e5ac76f5466018"><param name="Name" value="Create"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_property_mapping_collection.html#f173a3146859d0cd8a5b6d6fb71b79cd"><param name="Name" value="Dispose"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_property_mapping_collection.html#44a04e6c3490c2ece3b826dd4684fbac"><param name="Name" value="~ArcSDEPropertyMappingCollection"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_schema_mapping.html"><param name="Name" value="ArcSDESchemaMapping"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_schema_mapping.html#9d0cb3721b05d308a7ffa0eb1f51b475"><param name="Name" value="_writeXml"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_schema_mapping.html#92766f3b24654f6464e2cace207a3f04"><param name="Name" value="ArcSDESchemaMapping"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_schema_mapping.html#9ce6b6b048808e4c43eb0783b061295e"><param name="Name" value="Create"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_schema_mapping.html#bff9ba4809a2a3470124725efcffcc97"><param name="Name" value="Dispose"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_schema_mapping.html#271897d9da64a6e7096dacca693fd5de"><param name="Name" value="GetClasses"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_schema_mapping.html#ce81926e0df8cc77d0dd418ac51e61a9"><param name="Name" value="GetProvider"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_schema_mapping.html#b33bd2c22f868fcb1f5ef66924662678"><param name="Name" value="InitFromXml"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_schema_mapping.html#7035e2b3cfe69b42d23720646cfbf2ea"><param name="Name" value="m_ClassMappings"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_schema_mapping.html#a3a09e48413e823d6d21fb13083f473a"><param name="Name" value="XmlEndElement"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_schema_mapping.html#5b262739bdd8ec4cb1e3c960b0f2ba56"><param name="Name" value="XmlStartElement"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_schema_mapping.html#b09078ce0a56156efd30427070883d20"><param name="Name" value="~ArcSDESchemaMapping"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping_946dd15fb05e7b9e54e0ad1ee58444cd.html#946dd15fb05e7b9e54e0ad1ee58444cd"><param name="Name" value="Create"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping_946dd15fb05e7b9e54e0ad1ee58444cd.html#946dd15fb05e7b9e54e0ad1ee58444cd"><param name="Name" value="ArcSDEClassMapping"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping_collection_84d951c94c0b5b658a5d2a0d66087855.html#84d951c94c0b5b658a5d2a0d66087855"><param name="Name" value="ArcSDEClassMappingCollection"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping_8f39f1953cfe0af8f1c2ad21b0e5d02e.html#8f39f1953cfe0af8f1c2ad21b0e5d02e"><param name="Name" value="ArcSDEIndexMapping"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping_collection_253e08cc1ecdfbd634aa85a4f368a57a.html#253e08cc1ecdfbd634aa85a4f368a57a"><param name="Name" value="ArcSDEIndexMappingCollection"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_property_mapping_2d14a6705a884d6f320f3e8a64aed3c4.html#2d14a6705a884d6f320f3e8a64aed3c4"><param name="Name" value="ArcSDEPropertyMapping"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_property_mapping_collection_2cb287ab683f90c681e5ac76f5466018.html#2cb287ab683f90c681e5ac76f5466018"><param name="Name" value="ArcSDEPropertyMappingCollection"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_schema_mapping_9ce6b6b048808e4c43eb0783b061295e.html#9ce6b6b048808e4c43eb0783b061295e"><param name="Name" value="ArcSDESchemaMapping"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping_72b83c53ee7ad9c2ee7cec17b8cfb8ec.html#72b83c53ee7ad9c2ee7cec17b8cfb8ec"><param name="Name" value="Dispose"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping_72b83c53ee7ad9c2ee7cec17b8cfb8ec.html#72b83c53ee7ad9c2ee7cec17b8cfb8ec"><param name="Name" value="ArcSDEClassMapping"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping_collection_2861b7d26d1900f4bdf63c8a4290f5f8.html#2861b7d26d1900f4bdf63c8a4290f5f8"><param name="Name" value="ArcSDEClassMappingCollection"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping_c083ed1538517989e275260274b4b451.html#c083ed1538517989e275260274b4b451"><param name="Name" value="ArcSDEIndexMapping"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping_collection_edd4d606b89942bd6116410b6aceac71.html#edd4d606b89942bd6116410b6aceac71"><param name="Name" value="ArcSDEIndexMappingCollection"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_property_mapping_0dee12846f875c97bb961ac638180453.html#0dee12846f875c97bb961ac638180453"><param name="Name" value="ArcSDEPropertyMapping"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_property_mapping_collection_f173a3146859d0cd8a5b6d6fb71b79cd.html#f173a3146859d0cd8a5b6d6fb71b79cd"><param name="Name" value="ArcSDEPropertyMappingCollection"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_schema_mapping_bff9ba4809a2a3470124725efcffcc97.html#bff9ba4809a2a3470124725efcffcc97"><param name="Name" value="ArcSDESchemaMapping"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_fdo_arc_s_d_e_class_mapping_8h.html"><param name="Name" value="FdoArcSDEClassMapping.h"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_fdo_arc_s_d_e_class_mapping_8h.html#53d3fdc1a17cac8c7fba6f6eb721d911"><param name="Name" value="ArcSDEGeometryStorageType"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_fdo_arc_s_d_e_class_mapping_8h.html#53d3fdc1a17cac8c7fba6f6eb721d911d542cb237c2aaeb286b751c4d1cb198e"><param name="Name" value="ArcSDEGeometryStorageType_LOB"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_fdo_arc_s_d_e_class_mapping_8h.html#53d3fdc1a17cac8c7fba6f6eb721d91158ab03b36b5fb4814d939d19c89db814"><param name="Name" value="ArcSDEGeometryStorageType_Normalized"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_fdo_arc_s_d_e_class_mapping_8h.html#53d3fdc1a17cac8c7fba6f6eb721d9111284e012b3607b1b527dcd8b99ab51b8"><param name="Name" value="ArcSDEGeometryStorageType_SdeBinary"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_fdo_arc_s_d_e_class_mapping_8h.html#53d3fdc1a17cac8c7fba6f6eb721d9113e4669d5f8b22a635ebb80a3577f47fc"><param name="Name" value="ArcSDEGeometryStorageType_Spatial"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_fdo_arc_s_d_e_class_mapping_8h.html#53d3fdc1a17cac8c7fba6f6eb721d911339453590f867b6e41deaee4ca0ef251"><param name="Name" value="ArcSDEGeometryStorageType_SQL"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_fdo_arc_s_d_e_class_mapping_8h.html#53d3fdc1a17cac8c7fba6f6eb721d9110b515202743efe6a1fb618876b1553e6"><param name="Name" value="ArcSDEGeometryStorageType_WKB"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_schema_mapping_271897d9da64a6e7096dacca693fd5de.html#271897d9da64a6e7096dacca693fd5de"><param name="Name" value="GetClasses"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_property_mapping_9cb4f6c016c60bd2451fc1e5e7773f71.html#9cb4f6c016c60bd2451fc1e5e7773f71"><param name="Name" value="GetColumnName"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_property_mapping_4bd07b90bb762a52057a718e14e9cbd9.html#4bd07b90bb762a52057a718e14e9cbd9"><param name="Name" value="GetColumnType"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping_b9a6fd7952cc46adac544ef5022a7262.html#b9a6fd7952cc46adac544ef5022a7262"><param name="Name" value="GetDatabaseName"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping_897f819d3c451fa391ccee120de9d2be.html#897f819d3c451fa391ccee120de9d2be"><param name="Name" value="GetGeometryStorageType"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping_75dd68bcc3aafdd85dc363216fde4026.html#75dd68bcc3aafdd85dc363216fde4026"><param name="Name" value="GetIndexes"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping_ea82b4a4377bbc4e16914d7b002c4acc.html#ea82b4a4377bbc4e16914d7b002c4acc"><param name="Name" value="GetOwnerName"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping_80d86960699ca0fb4afde0d90668d79b.html#80d86960699ca0fb4afde0d90668d79b"><param name="Name" value="GetProperties"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping_613fb96523695006880a304e149a65b5.html#613fb96523695006880a304e149a65b5"><param name="Name" value="GetPropertyNames"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_schema_mapping_ce81926e0df8cc77d0dd418ac51e61a9.html#ce81926e0df8cc77d0dd418ac51e61a9"><param name="Name" value="GetProvider"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping_ad6a0a9334617349243341baf40c84d7.html#ad6a0a9334617349243341baf40c84d7"><param name="Name" value="GetTableName"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping_c2abe6e98cc188eee97b9e4a566619f4.html#c2abe6e98cc188eee97b9e4a566619f4"><param name="Name" value="InitFromXml"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping_c2abe6e98cc188eee97b9e4a566619f4.html#c2abe6e98cc188eee97b9e4a566619f4"><param name="Name" value="ArcSDEClassMapping"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping_d3f6e6673f325772a773bbb204dc9adc.html#d3f6e6673f325772a773bbb204dc9adc"><param name="Name" value="ArcSDEIndexMapping"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_property_mapping_9e6f08d124d5511a91d83aa62a51a5cd.html#9e6f08d124d5511a91d83aa62a51a5cd"><param name="Name" value="ArcSDEPropertyMapping"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_schema_mapping_b33bd2c22f868fcb1f5ef66924662678.html#b33bd2c22f868fcb1f5ef66924662678"><param name="Name" value="ArcSDESchemaMapping"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping_22b789377c6ba5bff13a58fc81eeb47c.html#22b789377c6ba5bff13a58fc81eeb47c"><param name="Name" value="IsAscending"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping_020773dc199a8ea6a4527c64ff95e12b.html#020773dc199a8ea6a4527c64ff95e12b"><param name="Name" value="IsUnique"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping_aa9d7a9387aa176d30c5c2bb13bf5727.html#aa9d7a9387aa176d30c5c2bb13bf5727"><param name="Name" value="m_Ascending"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_schema_mapping_7035e2b3cfe69b42d23720646cfbf2ea.html#7035e2b3cfe69b42d23720646cfbf2ea"><param name="Name" value="m_ClassMappings"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_property_mapping_623c254591dc17275f1a1ce824189ab4.html#623c254591dc17275f1a1ce824189ab4"><param name="Name" value="m_ColumnName"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_property_mapping_403ab74ac2a772774e41fb02d82ee60e.html#403ab74ac2a772774e41fb02d82ee60e"><param name="Name" value="m_ColumnType"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping_b6fec23fc0e598cbc832c681b4b2a22f.html#b6fec23fc0e598cbc832c681b4b2a22f"><param name="Name" value="m_DatabaseName"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping_5b38fc79f1049626fc4740c78fff5161.html#5b38fc79f1049626fc4740c78fff5161"><param name="Name" value="m_GeometryStorageType"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping_7b97d6620e8ebbcdf3bef1d930068be0.html#7b97d6620e8ebbcdf3bef1d930068be0"><param name="Name" value="m_IndexMappings"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping_cc9e1ddc737c2593aed7a65efbbc9cc7.html#cc9e1ddc737c2593aed7a65efbbc9cc7"><param name="Name" value="m_IndexPropertyMappings"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping_03315dc74cf32cd5569936be2b592037.html#03315dc74cf32cd5569936be2b592037"><param name="Name" value="m_OwnerName"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping_13b747f5c905a8e53795facf8a5ba3cb.html#13b747f5c905a8e53795facf8a5ba3cb"><param name="Name" value="m_PropertyMappings"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping_01b6ddb6085199920e8b47e5dc9b9d55.html#01b6ddb6085199920e8b47e5dc9b9d55"><param name="Name" value="m_TableName"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping_b6f568726942f7978bc312e1a5e1b682.html#b6f568726942f7978bc312e1a5e1b682"><param name="Name" value="m_Unique"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping_840de84c5df49d81f4327bf27be45ce1.html#840de84c5df49d81f4327bf27be45ce1"><param name="Name" value="SetAscending"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_property_mapping_67ffae429f4a5371f99b0fef87592fc0.html#67ffae429f4a5371f99b0fef87592fc0"><param name="Name" value="SetColumnName"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_property_mapping_6340ea8b9872319f56707465f3368236.html#6340ea8b9872319f56707465f3368236"><param name="Name" value="SetColumnType"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping_b47d2aaa03cb01218625a99781a368a0.html#b47d2aaa03cb01218625a99781a368a0"><param name="Name" value="SetDatabaseName"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping_33dc8dc822f7fac81a1a6267b24398a0.html#33dc8dc822f7fac81a1a6267b24398a0"><param name="Name" value="SetGeometryStorageType"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping_bed793a15b70a35931437dc8de2c4b75.html#bed793a15b70a35931437dc8de2c4b75"><param name="Name" value="SetOwnerName"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping_2845ba02efd640af368e68ba5578434c.html#2845ba02efd640af368e68ba5578434c"><param name="Name" value="SetTableName"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping_275935cc343638a570f3f8ea45365fbe.html#275935cc343638a570f3f8ea45365fbe"><param name="Name" value="SetUnique"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping_5dc774c9acfd774fc1f00c5ca0f9d028.html#5dc774c9acfd774fc1f00c5ca0f9d028"><param name="Name" value="XmlEndElement"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping_5dc774c9acfd774fc1f00c5ca0f9d028.html#5dc774c9acfd774fc1f00c5ca0f9d028"><param name="Name" value="ArcSDEClassMapping"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping_6c5a8245bf312573480ad0a448f3b579.html#6c5a8245bf312573480ad0a448f3b579"><param name="Name" value="ArcSDEIndexMapping"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_property_mapping_f70352acb05d31b74de5a8283d618d55.html#f70352acb05d31b74de5a8283d618d55"><param name="Name" value="ArcSDEPropertyMapping"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_schema_mapping_a3a09e48413e823d6d21fb13083f473a.html#a3a09e48413e823d6d21fb13083f473a"><param name="Name" value="ArcSDESchemaMapping"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping_d32ab66c67fdd4b3a8cc26f9fd19dbcc.html#d32ab66c67fdd4b3a8cc26f9fd19dbcc"><param name="Name" value="XmlStartElement"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping_d32ab66c67fdd4b3a8cc26f9fd19dbcc.html#d32ab66c67fdd4b3a8cc26f9fd19dbcc"><param name="Name" value="ArcSDEClassMapping"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping_787a4bdaa44cfe0dc373fcb78b244cc8.html#787a4bdaa44cfe0dc373fcb78b244cc8"><param name="Name" value="ArcSDEIndexMapping"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_property_mapping_7b0c8ffc5fc2a92610235d60260c6d23.html#7b0c8ffc5fc2a92610235d60260c6d23"><param name="Name" value="ArcSDEPropertyMapping"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_schema_mapping_5b262739bdd8ec4cb1e3c960b0f2ba56.html#5b262739bdd8ec4cb1e3c960b0f2ba56"><param name="Name" value="ArcSDESchemaMapping"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_class_mapping_d7264101a0d5e577ae12993280fc01a4.html#d7264101a0d5e577ae12993280fc01a4"><param name="Name" value="~ArcSDEClassMapping"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping_8a287d00eab532838f162687ba535015.html#8a287d00eab532838f162687ba535015"><param name="Name" value="~ArcSDEIndexMapping"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_index_mapping_collection_0b6ed3c94c4d17211d0116bac2d21129.html#0b6ed3c94c4d17211d0116bac2d21129"><param name="Name" value="~ArcSDEIndexMappingCollection"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_property_mapping_edc618c7f506fb946632a7caa4dca754.html#edc618c7f506fb946632a7caa4dca754"><param name="Name" value="~ArcSDEPropertyMapping"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_property_mapping_collection_44a04e6c3490c2ece3b826dd4684fbac.html#44a04e6c3490c2ece3b826dd4684fbac"><param name="Name" value="~ArcSDEPropertyMappingCollection"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_arc_s_d_e_schema_mapping_b09078ce0a56156efd30427070883d20.html#b09078ce0a56156efd30427070883d20"><param name="Name" value="~ArcSDESchemaMapping"></OBJECT>
+</UL>
