@@ -1,0 +1,4 @@
+base referer
+rect $class_fdo_rdbms_ov_data_property_definition.html 7,215 276,375
+rect $class_fdo_rdbms_ov_property_definition.html 158,7 400,167
+rect $class_fdo_odbc_ov_property_definition.html 300,231 532,359

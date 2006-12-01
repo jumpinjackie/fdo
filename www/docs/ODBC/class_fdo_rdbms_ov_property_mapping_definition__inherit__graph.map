@@ -1,0 +1,5 @@
+base referer
+rect $class_fdo_rdbms_ov_property_mapping_relation.html 151,199 436,391
+rect $class_fdo_rdbms_ov_property_mapping_single.html 460,207 735,383
+rect $class_fdo_rdbms_ov_property_mapping_class.html 7,439 276,583
+rect $class_fdo_rdbms_ov_property_mapping_concrete.html 300,439 591,583
