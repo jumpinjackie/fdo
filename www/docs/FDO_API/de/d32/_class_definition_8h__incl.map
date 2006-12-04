@@ -1,9 +1,0 @@
-base referer
-rect $d6/d27/_fdo_std_8h.html 952,281 1027,308
-rect $d1/d12/_class_capabilities_8h.html 640,307 856,333
-rect $d4/d76/_class_type_8h.html 274,155 450,181
-rect $d4/dfc/_data_property_definition_collection_8h.html 595,357 902,384
-rect $d7/d8b/_property_definition_collection_8h.html 608,205 888,232
-rect $d1/dc3/_read_only_property_definition_collection_8h.html 192,256 531,283
-rect $de/d22/_read_only_data_property_definition_collection_8h.html 178,408 546,435
-rect $d4/d0a/_unique_constraint_collection_8h.html 611,53 886,80

@@ -1,6 +1,0 @@
-base referer
-rect $d4/d48/class_fdo_feature_schema.html 7,215 215,535
-rect $d1/dba/class_fdo_feature_schema_collection.html 239,271 447,479
-rect $d7/d94/class_fdo_physical_schema_mapping.html 471,319 666,431
-rect $db/dcd/class_fdo_physical_schema_mapping_collection.html 690,255 972,495
-rect $d4/d33/class_fdo_xml_schema_mapping.html 482,583 655,775
