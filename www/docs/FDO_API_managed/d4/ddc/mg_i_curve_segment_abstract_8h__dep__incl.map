@@ -1,8 +1,0 @@
-base referer
-rect $db/d6d/mg_i_arc_segment_abstract_8h.html 269,7 448,33
-rect $d2/d1f/mg_i_curve_segment_abstract_imp_8h.html 251,57 467,84
-rect $d1/d55/mg_i_line_string_segment_8h.html 273,108 444,135
-rect $d3/da2/mg_i_arc_segment_abstract_imp_8h.html 517,57 717,84
-rect $d5/dc9/mg_i_circular_arc_segment_8h.html 529,7 705,33
-rect $d5/de1/mg_i_circular_arc_segment_imp_8h.html 768,32 965,59
-rect $d5/d66/mg_i_line_string_segment_imp_8h.html 521,108 713,135
