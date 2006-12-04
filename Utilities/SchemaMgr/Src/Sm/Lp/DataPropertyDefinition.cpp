@@ -25,9 +25,9 @@
 #include <Sm/Ph/PropertyWriter.h>
 #include <Utilities/SchemaMgr/Overrides/TableMappingType.h>
 
-const FdoStringP FdoSmLpDataPropertyDefinition::mClassNamePropName(L"ClassName");
+const FdoStringP FdoSmLpDataPropertyDefinition::mClassNamePropName(L"ClassName", true);
 
-const FdoStringP FdoSmLpDataPropertyDefinition::mSchemaNamePropName(L"SchemaName");
+const FdoStringP FdoSmLpDataPropertyDefinition::mSchemaNamePropName(L"SchemaName", true);
 
 
 

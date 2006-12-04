@@ -32,10 +32,10 @@
 
 #include <Sm/Error.h>
 
-const FdoStringP FdoSmLpClassDefinition::ClassDefinitionName(L"ClassDefinition");
-const FdoStringP FdoSmLpClassDefinition::ClassClassName(L"Class");
-const FdoStringP FdoSmLpClassDefinition::FeatureClassName(L"Feature");
-const FdoStringP FdoSmLpClassDefinition::DefaultGeometricPropertyName(L"Geometry");
+const FdoStringP FdoSmLpClassDefinition::ClassDefinitionName(L"ClassDefinition", true);
+const FdoStringP FdoSmLpClassDefinition::ClassClassName(L"Class", true);
+const FdoStringP FdoSmLpClassDefinition::FeatureClassName(L"Feature", true);
+const FdoStringP FdoSmLpClassDefinition::DefaultGeometricPropertyName(L"Geometry", true);
 
 FdoSmLpClassBase::FdoSmLpClassBase(FdoSmPhClassReaderP classReader, FdoSmLpSchemaElement* parent) : 
 	FdoSmLpSchemaElement(classReader->GetName(), classReader->GetDescription(), parent),
