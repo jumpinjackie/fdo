@@ -1,0 +1,8 @@
+base referer
+rect $d0/ded/_i_base_select_8h.html 184,96 288,123
+rect $d2/d52/_i_select_8h.html 372,7 447,34
+rect $d8/d82/_fdo_8h.html 529,108 585,135
+rect $df/d05/_i_insert_8h.html 201,210 271,236
+rect $df/dcb/_i_select_aggregates_8h.html 339,108 480,135
+rect $d1/db7/_i_connection_manager_8h.html 635,83 789,110
+rect $dd/d47/_connection_manager_8h.html 840,108 992,135

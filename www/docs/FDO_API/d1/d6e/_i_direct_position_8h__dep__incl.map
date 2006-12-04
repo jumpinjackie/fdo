@@ -1,0 +1,14 @@
+base referer
+rect $d8/d28/_fdo_geometry_8h.html 847,348 961,375
+rect $d2/d11/_direct_position_impl_8h.html 417,671 559,698
+rect $d7/dfb/_geometry_std_8h.html 656,514 768,540
+rect $da/d6a/_envelope_impl_8h.html 205,722 320,748
+rect $d6/d46/_geometry_stream_reader_8h.html 399,164 577,191
+rect $d1/db7/_geometry_stream_writer_8h.html 627,252 797,279
+rect $d8/d88/_i_arc_segment_abstract_8h.html 408,519 568,546
+rect $d9/d25/_i_curve_abstract_8h.html 201,367 324,394
+rect $d4/d2c/_i_line_string_8h.html 440,418 536,444
+rect $de/d3f/_i_curve_segment_abstract_8h.html 175,468 351,495
+rect $dd/ddc/_i_line_string_segment_8h.html 412,468 564,495
+rect $d2/dd9/_i_linear_ring_8h.html 212,266 313,292
+rect $d0/dfc/_i_point_8h.html 455,620 521,647

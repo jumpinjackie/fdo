@@ -1,0 +1,17 @@
+base referer
+rect $db/de0/_memory_stream_8h.html 154,7 279,33
+rect $df/d4a/_named_collection_8h.html 148,57 284,84
+rect $df/d00/_string_collection_8h.html 152,108 280,135
+rect $d4/d7f/_vector_8h.html 180,159 252,185
+rect $db/da8/_i_disposable_collection_8h.html 339,235 502,261
+rect $d6/d27/_fdo_std_8h.html 179,260 254,287
+rect $d6/d7e/_i_curve_polygon_8h.html 715,336 835,363
+rect $de/d3f/_i_curve_segment_abstract_8h.html 332,412 508,439
+rect $df/d2b/_i_curve_string_8h.html 558,437 664,464
+rect $dc/dce/_i_ring_8h.html 579,361 643,388
+rect $dd/d23/_i_direct_position_8h.html 156,564 276,591
+rect $d2/dd9/_i_linear_ring_8h.html 370,564 471,591
+rect $d3/d65/_i_polygon_8h.html 568,615 654,641
+rect $d4/d2c/_i_line_string_8h.html 372,615 468,641
+rect $d0/dfc/_i_point_8h.html 387,716 454,743
+rect $d0/d41/_i_geometry_8h.html 168,767 264,793

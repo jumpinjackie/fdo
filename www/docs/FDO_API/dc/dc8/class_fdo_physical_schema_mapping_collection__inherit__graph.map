@@ -1,0 +1,6 @@
+base referer
+rect $d6/daa/class_fdo_collection.html 7,215 460,535
+rect $d7/da5/class_fdo_i_disposable.html 161,7 305,167
+rect $d6/d4e/class_fdo_xml_deserializable.html 484,255 692,495
+rect $d8/df6/class_fdo_xml_sax_handler.html 511,15 665,159
+rect $d9/dbd/class_fdo_xml_serializable.html 716,295 919,455

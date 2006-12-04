@@ -1,0 +1,10 @@
+base referer
+rect $d3/dd9/class_fdo_client_service_exception.html 7,591 220,767
+rect $df/d94/class_fdo_command_exception.html 244,583 439,775
+rect $d6/d82/class_fdo_connection_exception.html 463,583 663,775
+rect $d0/da1/class_fdo_expression_exception.html 687,583 887,775
+rect $d5/d2c/class_fdo_filter_exception.html 911,583 1073,775
+rect $df/d14/class_fdo_schema_exception.html 1097,583 1279,775
+rect $d7/df4/class_fdo_spatial_context_mismatch_exception.html 1303,583 1580,775
+rect $d4/dd5/class_fdo_xml_exception.html 1604,591 1753,767
+rect $d7/da5/class_fdo_i_disposable.html 817,7 961,167

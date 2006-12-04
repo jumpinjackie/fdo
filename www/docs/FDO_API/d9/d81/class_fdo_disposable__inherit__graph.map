@@ -1,0 +1,15 @@
+base referer
+rect $d9/d82/class_fdo_context.html 7,535 127,679
+rect $d3/db5/class_fdo_dictionary_element.html 151,503 335,711
+rect $d4/df4/class_fdo_io_stream.html 359,487 471,727
+rect $d3/dcf/class_fdo_io_text_reader.html 495,551 620,663
+rect $de/db8/class_fdo_io_text_writer.html 644,535 761,679
+rect $d9/d7f/class_fdo_vector_element.html 1119,543 1252,671
+rect $d9/d9b/class_fdo_xml_char_data_handler.html 1276,559 1447,655
+rect $d1/dda/class_fdo_xml_copy_handler.html 1471,519 1647,695
+rect $dd/d5d/class_fdo_xml_name_collection_handler.html 1671,495 1911,719
+rect $de/d88/class_fdo_xml_reader.html 1935,447 2076,767
+rect $d4/d86/class_fdo_xml_skip_element_handler.html 2556,567 2745,647
+rect $d8/d53/class_fdo_xml_writer.html 2769,343 2943,871
+rect $d5/dd7/class_fdo_xsl_transformer.html 3185,455 3321,759
+rect $d7/da5/class_fdo_i_disposable.html 1487,7 1631,167
