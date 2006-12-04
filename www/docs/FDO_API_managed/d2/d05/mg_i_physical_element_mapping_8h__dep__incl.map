@@ -1,0 +1,9 @@
+base referer
+rect $dd/dc9/mg_i_physical_property_mapping_8h.html 263,7 471,33
+rect $d2/d0f/mg_physical_element_mapping_8h.html 266,57 468,84
+rect $d7/d1c/mg_physical_property_mapping_8h.html 520,7 723,33
+rect $de/d3f/mg_physical_class_mapping_8h.html 528,57 715,84
+rect $d0/da3/mg_physical_schema_mapping_8h.html 520,108 723,135
+rect $d3/d3f/mg_xml_element_mapping_8h.html 534,159 710,185
+rect $d5/d3a/mg_xml_class_mapping_8h.html 780,57 940,84
+rect $d3/da5/mg_xml_schema_mapping_8h.html 772,108 948,135

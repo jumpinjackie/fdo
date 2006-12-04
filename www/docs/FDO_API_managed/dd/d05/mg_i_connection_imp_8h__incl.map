@@ -1,0 +1,4 @@
+base referer
+rect $d1/d40/mg_i_connection_8h.html 203,32 435,59
+rect $df/d45/mg_connection_state_8h.html 484,7 745,34
+rect $da/da7/mg_command_type_8h.html 491,58 739,84
