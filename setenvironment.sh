@@ -20,63 +20,74 @@
 export FDO=$PWD/Fdo
 
 if test ! -e "$FDO"; then
-   echo "Invalid FDO path. The setenvironment script sets the default "
-   echo "value to: $FDO. Please modify the setenvironment.sh script "
-   echo "with a valid path."
+   echo ""
+   echo "Invalid FDO path provided. "
+   echo "The setenvironment script sets the default value to: "
+   echo "$FDO"
+   echo "Please modify the setenvironment.sh script with a valid path."
    echo ""
 fi
 
 export FDOUTILITIES=$PWD/Utilities
 
 if test ! -e "$FDOUTILITIES"; then
-   echo "Invalid FDO Utilities path provided. The setenvironment script "
-   echo "sets the default value to: $FDOUTILITIES. Please modify the "
-   echo "setenvironment.sh script with a valid path."
+   echo ""
+   echo "Invalid FDO Utilities path provided. "
+   echo "The setenvironment script sets the default value to: "
+   echo "$FDOUTILITIES" 
+   echo "Please modify the setenvironment.sh script with a valid path."
    echo ""
 fi
 
 export FDOTHIRDPARTY=$PWD/Thirdparty
 
 if test ! -e "$FDOTHIRDPARTY"; then
-   echo "Invalid FDO Thirdparty path provided. The setenvironment script "
-   echo "sets the default value to: $FDOTHIRDPARTY. Please modify the "
-   echo "setenvironment.sh script with a valid path."
+   echo ""
+   echo "Invalid FDO Thirdparty path provided. "
+   echo "The setenvironment script sets the default value to: "
+   echo "$FDOTHIRDPARTY"
+   echo "Please modify the setenvironment.sh script with a valid path."
    echo ""
 fi
 
 export SDEHOME=$FDOTHIRDPARTY/ESRI/ArcSDEClient91/Linux
 
 if test ! -e "$SDEHOME"; then
-   echo "OPTIONAL: The default location for the ArcSDE client SDK"
-   echo "files was not found. The setenvironment script sets the default"
-   echo "value to: $FDOTHIRDPARTY/ESRI/ArcSDEClient91/Linux. If you need to "
-   echo "build the FDO ArcSDE Provider, modify the setenvironment.sh script "
-   echo "with a valid path and set $SDEHOME to point to the location of the "
-   echo "ArcSDE client installation."
+   echo ""
+   echo "OPTIONAL: The default location for the ArcSDE client SDK files"
+   echo "was not found. The setenvironment script sets the default value to: "
+   echo "$FDOTHIRDPARTY/ESRI/ArcSDEClient91/Linux. "
+   echo "If you need to build the FDO ArcSDE Provider, modify the "
+   echo "setenvironment.sh script with a valid path and set SDEHOME to "
+   echo "point to the location of the ArcSDE client installation."
    echo ""
 fi
 
 export FDOMYSQL=$FDOTHIRDPARTY/mysql/rhlinux
 
 if test ! -e "$FDOMYSQL"; then
+   echo ""
    echo "OPTIONAL: The default location for the MySQL SDK files "
    echo "was not found. The setenvironment script sets the default value to: "
-   echo "$FDOTHIRDPARTY/mysql/rhlinux. If you need to build the FDO MySQL "
-   echo "Provider, and have chosen not to install the MySQL SDK using the"
-   echo "recommended RPM installtion process, modify the setenvironment.sh "
-   echo "script and set $FDOMYSQL to point to the location of the MySQL client"
-   echo "installation. If you have chosen to install the MySQL client using "
-   echo "the RPM install, this environment variable does not need to be set"
+   echo "$FDOTHIRDPARTY/mysql/rhlinux "
+   echo "If you need to build the FDO MySQL Provider, and have chosen not "
+   echo "to install the MySQL SDK using the recommended RPM installtion "
+   echo "process, modify the setenvironment.sh script and set FDOMYSQL to point"
+   echo "to the location of the MySQL client installation. If you have chosen "
+   echo "to install the MySQL client using the RPM install, this environment "
+   echo "variable does not need to be set"
    echo ""
 fi
 
 export FDOODBC=/usr
 
 if test ! -e "$FDOODBC"; then
+   echo ""
    echo "OPTIONAL: The default path for the ODBC SDK files was not found. "
-   echo "The setenvironment script sets the default value to: $FDOODBC."
+   echo "The setenvironment script sets the default value to: "
+   echo "$FDOODBC"
    echo "If you need to build the ODBC prvovider, modify the setenvironment.sh "
-   echo "script and set $FDOODBC to point to the location of the ODBC SDK"
+   echo "script and set FDOODBC to point to the location of the ODBC SDK"
    echo ""
 fi
 
