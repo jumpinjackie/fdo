@@ -21,11 +21,12 @@ The features are described on the <a href="featureDescriptions.html">feature des
 				<th>SHP</th>
 				<th>WFS</th>
 				<th>WMS</th>
+				<th>GDAL</th>
 			</tr>
 		</thead>
 		<tbody align="center">
 			<tr>
-				<td colspan="8"><strong>Commands</strong></td>
+				<td colspan="9"><strong>Commands</strong></td>
 			</tr>
 			<tr>
 				<td>Connection</td>
@@ -36,16 +37,40 @@ The features are described on the <a href="featureDescriptions.html">feature des
 				<td><strong>o</strong></td> <!-- SHP -->
 				<td><strong>o</strong></td> <!-- WFS -->
 				<td><strong>o</strong></td> <!-- WMS -->
+				<td><strong>o</strong></td> <!-- GDAL -->
 			</tr>
 			<tr>
-				<td>Datastore</td>
-				<td></td> <!-- ArcSDE -->
+				<td>List Datastores</td>
+				<td><strong>o</strong></td> <!-- ArcSDE -->
 				<td><strong>o</strong></td> <!-- MySQL -->
 				<td></td> <!-- ODBC -->
 				<td></td> <!-- SDF -->
 				<td></td> <!-- SHP -->
 				<td></td> <!-- WFS -->
 				<td></td> <!-- WMS -->
+				<td></td> <!-- GDAL -->
+			</tr>
+			<tr>
+				<td>Create Datastore</td>
+				<td></td> <!-- ArcSDE -->
+				<td><strong>o</strong></td> <!-- MySQL -->
+				<td><strong>o</strong></td> <!-- ODBC -->
+				<td><strong>o</strong></td> <!-- SDF -->
+				<td></td> <!-- SHP -->
+				<td></td> <!-- WFS -->
+				<td></td> <!-- WMS -->
+				<td></td> <!-- GDAL -->
+			</tr>
+			<tr>
+				<td>Destroy Datastore</td>
+				<td></td> <!-- ArcSDE -->
+				<td><strong>o</strong></td> <!-- MySQL -->
+				<td><strong>o</strong></td> <!-- ODBC -->
+				<td><strong>o</strong></td> <!-- SDF -->
+				<td></td> <!-- SHP -->
+				<td></td> <!-- WFS -->
+				<td></td> <!-- WMS -->
+				<td></td> <!-- GDAL -->
 			</tr>
 			<tr>
 				<td>Describe Schema</td>
@@ -56,6 +81,7 @@ The features are described on the <a href="featureDescriptions.html">feature des
 				<td><strong>o</strong></td> <!-- SHP -->
 				<td><strong>o</strong></td> <!-- WFS -->
 				<td><strong>o</strong></td> <!-- WMS -->
+				<td><strong>o</strong></td> <!-- GDAL -->
 			</tr>
 			<tr>
 				<td>Apply Schema</td>
@@ -66,13 +92,47 @@ The features are described on the <a href="featureDescriptions.html">feature des
 				<td><strong>o</strong></td> <!-- SHP -->
 				<td></td> <!-- WFS -->
 				<td></td> <!-- WMS -->
+				<td></td> <!-- GDAL -->
 			</tr>
 			<tr>
-				<td>Spatial Context</td>
+				<td>Destroy Schema</td>
 				<td></td> <!-- ArcSDE -->
 				<td><strong>o</strong></td> <!-- MySQL -->
 				<td></td> <!-- ODBC -->
+				<td></td> <!-- SDF -->
+				<td><strong>o</strong></td> <!-- SHP -->
+				<td></td> <!-- WFS -->
+				<td></td> <!-- WMS -->
+				<td></td> <!-- GDAL -->
+			</tr>
+			<tr>
+				<td>Get Spatial Contexts</td>
+				<td><strong>o</strong></td> <!-- ArcSDE -->
+				<td><strong>o</strong></td> <!-- MySQL -->
+				<td><strong>o</strong></td> <!-- ODBC -->
 				<td><strong>o</strong></td> <!-- SDF -->
+				<td><strong>o</strong></td> <!-- SHP -->
+				<td><strong>o</strong></td> <!-- WFS -->
+				<td><strong>o</strong></td> <!-- WMS -->
+				<td><strong>o</strong></td> <!-- GDAL -->
+			</tr>
+			<tr>
+				<td>Create Spatial Context</td>
+				<td><strong>o</strong></td> <!-- ArcSDE -->
+				<td><strong>o</strong></td> <!-- MySQL -->
+				<td></td> <!-- ODBC -->
+				<td><strong>o</strong></td> <!-- SDF -->
+				<td><strong>o</strong></td> <!-- SHP -->
+				<td></td> <!-- WFS -->
+				<td></td> <!-- WMS -->
+				<td></td> <!-- GDAL -->
+			</tr>
+			<tr>
+				<td>Destroy Spatial Context</td>
+				<td><strong>o</strong></td> <!-- ArcSDE -->
+				<td><strong>o</strong></td> <!-- MySQL -->
+				<td></td> <!-- ODBC -->
+				<td></td> <!-- SDF -->
 				<td></td> <!-- SHP -->
 				<td></td> <!-- WFS -->
 				<td></td> <!-- WMS -->
@@ -86,6 +146,7 @@ The features are described on the <a href="featureDescriptions.html">feature des
 				<td><strong>o</strong></td> <!-- SHP -->
 				<td><strong>o</strong></td> <!-- WFS -->
 				<td><strong>o</strong></td> <!-- WMS -->
+				<td><strong>o</strong></td> <!-- GDAL -->
 			</tr>
 			<tr>
 				<td>Select Aggregates</td>
@@ -94,8 +155,9 @@ The features are described on the <a href="featureDescriptions.html">feature des
 				<td><strong>o</strong></td> <!-- ODBC -->
 				<td><strong>o</strong></td> <!-- SDF -->
 				<td><strong>o</strong></td> <!-- SHP -->
-				<td></td> <!-- WFS -->
-				<td></td> <!-- WMS -->
+				<td><strong>o</strong></td> <!-- WFS -->
+				<td><strong>o</strong></td> <!-- WMS -->
+				<td><strong>o</strong></td> <!-- GDAL -->
 			</tr>
 			<tr>
 				<td>Insert</td>
@@ -106,6 +168,7 @@ The features are described on the <a href="featureDescriptions.html">feature des
 				<td><strong>o</strong></td> <!-- SHP -->
 				<td></td> <!-- WFS -->
 				<td></td> <!-- WMS -->
+				<td></td> <!-- GDAL -->
 			</tr>
 			<tr>
 				<td>Update</td>
@@ -116,6 +179,7 @@ The features are described on the <a href="featureDescriptions.html">feature des
 				<td><strong>o</strong></td> <!-- SHP -->
 				<td></td> <!-- WFS -->
 				<td></td> <!-- WMS -->
+				<td></td> <!-- GDAL -->
 			</tr>
 			<tr>
 				<td>Delete</td>
@@ -126,6 +190,7 @@ The features are described on the <a href="featureDescriptions.html">feature des
 				<td><strong>o</strong></td> <!-- SHP -->
 				<td></td> <!-- WFS -->
 				<td></td> <!-- WMS -->
+				<td></td> <!-- GDAL -->
 			</tr>
 			<tr>
 				<td>SQL Command</td>
@@ -133,9 +198,11 @@ The features are described on the <a href="featureDescriptions.html">feature des
 				<td><strong>o</strong></td> <!-- MySQL -->
 				<td><strong>o</strong></td> <!-- ODBC -->
 				<td></td> <!-- SDF -->
-				<td></td> <!-- SHP -->
+				<td><strong>o</strong></td> <!-- SHP -->
 				<td></td> <!-- WFS -->
 				<td></td> <!-- WMS -->
+				<td></td> <!-- GDAL -->
+				<td></td> <!-- GDAL -->
 			</tr>
 			<tr>
 				<td>Transactions</td>
@@ -146,6 +213,7 @@ The features are described on the <a href="featureDescriptions.html">feature des
 				<td></td> <!-- SHP -->
 				<td></td> <!-- WFS -->
 				<td></td> <!-- WMS -->
+				<td></td> <!-- GDAL -->
 			</tr>
 			<tr>
 				<td>Locking</td>
@@ -156,6 +224,7 @@ The features are described on the <a href="featureDescriptions.html">feature des
 				<td></td> <!-- SHP -->
 				<td></td> <!-- WFS -->
 				<td></td> <!-- WMS -->
+				<td></td> <!-- GDAL -->
 			</tr>
 			<tr>
 				<td>Long Transactions</td>
@@ -166,9 +235,10 @@ The features are described on the <a href="featureDescriptions.html">feature des
 				<td></td> <!-- SHP -->
 				<td></td> <!-- WFS -->
 				<td></td> <!-- WMS -->
+				<td></td> <!-- GDAL -->
 			</tr>
 			<tr>
-				<td colspan="8"><strong>Schema Capabilities</strong></td>
+				<td colspan="9"><strong>Schema Capabilities</strong></td>
 			</tr>
 			<tr>
 				<td>Schema Overrides</td>
@@ -178,17 +248,19 @@ The features are described on the <a href="featureDescriptions.html">feature des
 				<td></td> <!-- SDF -->
 				<td><strong>o</strong></td> <!-- SHP -->
 				<td></td> <!-- WFS -->
-				<td></td> <!-- WMS -->
+				<td><strong>o</strong></td> <!-- WMS -->
+				<td><strong>o</strong></td> <!-- GDAL -->
 			</tr>
 			<tr>
 				<td>Foreign Schemas</td>
 				<td></td> <!-- ArcSDE -->
-				<td></td> <!-- MySQL -->
-				<td></td> <!-- ODBC -->
+				<td><strong>o</strong></td> <!-- MySQL -->
+				<td><strong>o</strong></td> <!-- ODBC -->
 				<td></td> <!-- SDF -->
 				<td></td> <!-- SHP -->
 				<td></td> <!-- WFS -->
 				<td></td> <!-- WMS -->
+				<td></td> <!-- GDAL -->
 			</tr>
 			<tr>
 				<td>Associations</td>
@@ -199,6 +271,7 @@ The features are described on the <a href="featureDescriptions.html">feature des
 				<td></td> <!-- SHP -->
 				<td></td> <!-- WFS -->
 				<td></td> <!-- WMS -->
+				<td></td> <!-- GDAL -->
 			</tr>
 			<tr>
 				<td>Data Property Constraints</td>
@@ -209,6 +282,7 @@ The features are described on the <a href="featureDescriptions.html">feature des
 				<td><strong>o</strong></td> <!-- SHP -->
 				<td></td> <!-- WFS -->
 				<td></td> <!-- WMS -->
+				<td></td> <!-- GDAL -->
 			</tr>
 			<tr>
 				<td>Inheritance</td>
@@ -219,6 +293,7 @@ The features are described on the <a href="featureDescriptions.html">feature des
 				<td><strong>o</strong></td> <!-- SHP -->
 				<td><strong>o</strong></td> <!-- WFS -->
 				<td><strong>o</strong></td> <!-- WMS -->
+				<td><strong>o</strong></td> <!-- GDAL -->
 			</tr>
 			<tr>
 				<td>Object Properties</td>
@@ -229,9 +304,10 @@ The features are described on the <a href="featureDescriptions.html">feature des
 				<td></td> <!-- SHP -->
 				<td><strong>o</strong></td> <!-- WFS -->
 				<td></td> <!-- WMS -->
+				<td></td> <!-- GDAL -->
 			</tr>
 			<tr>
-				<td colspan="8"><strong>Setup and Tools</strong></td>
+				<td colspan="9"><strong>Setup and Tools</strong></td>
 			</tr>
 			<tr>
 				<td>Feature Schema Serialization</td>
@@ -242,6 +318,7 @@ The features are described on the <a href="featureDescriptions.html">feature des
 				<td><strong>o</strong></td> <!-- SHP -->
 				<td><strong>o</strong></td> <!-- WFS -->
 				<td><strong>o</strong></td> <!-- WMS -->
+				<td><strong>o</strong></td> <!-- GDAL -->
 			</tr>
 			<tr>
 				<td>Feature Data Serialization</td>
@@ -252,6 +329,7 @@ The features are described on the <a href="featureDescriptions.html">feature des
 				<td><strong>o</strong></td> <!-- SHP -->
 				<td><strong>o</strong></td> <!-- WFS -->
 				<td><strong>o</strong></td> <!-- WMS -->
+				<td><strong>o</strong></td> <!-- GDAL -->
 			</tr>
 			<tr>
 				<td>XML Configuration</td>
@@ -262,6 +340,7 @@ The features are described on the <a href="featureDescriptions.html">feature des
 				<td></td> <!-- SHP -->
 				<td></td> <!-- WFS -->
 				<td><strong>o</strong></td> <!-- WMS -->
+				<td><strong>o</strong></td> <!-- GDAL -->
 			</tr>
 		</tbody>
 	</table>
