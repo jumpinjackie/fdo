@@ -321,58 +321,58 @@ II. Windows Build Instructions:
         MySql:
 
             cd [FDO OpenSource]\Providers\GenericRdbms\Src\UnitTest
-			
-			If you wish to run the MySql unit tests without specifying 
-			an initialization file, update the default initialization file 
-			"MySqlInit.txt" file with valid values for username, password and service
-			for the service against which the unit tests should be executed and 
-			run "Dbg\UnitTestMySql.exe" with no additional parameters.
-			
-			NOTE: Do not drop MySqlInit.txt in subversion if you choose to modify it
-			
-			If you wish to run the unit test and specify your own 
-			initialization file, create your the file with valid values for username, 
-			password and service and run the unit test by specifying the initialization file 
-			on the command line when executing the unit tests. 
-		   
-			e.g. Dbg\UnitTestMySql.exe initfiletest=MySqlInitEx.txt
-		   
-			NOTE: The initialization file must contain values for service, username and password.
-		   
-			e.g.: service=mysqlserver;username=root;password=xxxx;
-		   
+
+            If you wish to run the MySql unit tests without specifying 
+            an initialization file, update the default initialization file 
+            "MySqlInit.txt" file with valid values for username, password and service
+            for the service against which the unit tests should be executed and 
+            run "Dbg\UnitTestMySql.exe" with no additional parameters.
+
+            NOTE: Do not drop MySqlInit.txt in subversion if you choose to modify it
+
+            If you wish to run the unit test and specify your own 
+            initialization file, create your the file with valid values for username, 
+            password and service and run the unit test by specifying the initialization file 
+            on the command line when executing the unit tests. 
+
+            e.g. Dbg\UnitTestMySql.exe initfiletest=MySqlInitEx.txt
+
+            NOTE: The initialization file must contain values for service, username and password.
+
+            e.g.: service=mysqlserver;username=root;password=xxxx;
+
         Odbc:
 
             cd [FDO OpenSource]\Providers\GenericRdbms\Src\UnitTest
-			
- 			If you wish to run the ODBC unit tests without specifying 
-			an initialization file, update the default initialization file 
-			"OdbcInit.txt" file with valid values for username, password and service
-			for the services against which the unit tests should be executed and 
-			run "Dbg\UnitTestOdbc.exe" with no additional parameters.
+
+            If you wish to run the ODBC unit tests without specifying 
+            an initialization file, update the default initialization file 
+            "OdbcInit.txt" file with valid values for username, password and service
+            for the services against which the unit tests should be executed and 
+            run "Dbg\UnitTestOdbc.exe" with no additional parameters.
 				
-			NOTE: Do not drop OdbcInit.txt in subversion if you choose to modify it
+            NOTE: Do not drop OdbcInit.txt in subversion if you choose to modify it
 				
-			If you wish to run the unit test and specify your own 
-			initialization file, create your the file with valid values for username, 
-			password and the service names. Run the unit test by specifying the 
-			initialization file on the command line when executing the unit tests. 
+            If you wish to run the unit test and specify your own 
+            initialization file, create your the file with valid values for username, 
+            password and the service names. Run the unit test by specifying the 
+            initialization file on the command line when executing the unit tests. 
 			   
-			e.g. Dbg\UnitTestOdbc.exe initfiletest=OdbcInitEx.txt
+            e.g. Dbg\UnitTestOdbc.exe initfiletest=OdbcInitEx.txt
 			   
-			NOTE: The initialization file must contain values for service, username and password.
+            NOTE: The initialization file must contain values for service, username and password.
 			   
-			The initialization file must contain service, username and password for each server type 
-			DSN name can be specified using DSNOracle, DSNMySql, DSNSqlServer
-			
-			e.g.: 
-           
+            The initialization file must contain service, username and password for each server type 
+            DSN name can be specified using DSNOracle, DSNMySql, DSNSqlServer
+
+            e.g.: 
+
             serviceOracle=oraserver;usernameOracle=xxxx;passwordOracle=xxxx;DSNOracle=ORACLExxx;
             serviceMySql=mysqlserver;usernameMySql=root;passwordMySql=xxxx;DSNMySql=MySQLxxx;
             serviceSqlServer=sqlserver;usernameSqlServer=xxxx;passwordSqlServer=xxxx;DSNSqlServer=SqlServerxxx;
 
             NOTE: You can also run the unit tests separately for each ODBC subtype:
-			
+
             MySql:       Dbg\UnitTestOdbc.exe OdbcMySqlTests
             Oracle:      Dbg\UnitTestOdbc.exe OdbcOracleTests
             SqlServer:   Dbg\UnitTestOdbc.exe OdbcSqlServerTests
@@ -640,58 +640,58 @@ II. Linux Build Instructions:
 
             cd [FDO OpenSource]/Providers/GenericRdbms/Src/UnitTest
 
-			If you wish to run the MySql unit tests without specifying 
-		    an initialization file, update the default initialization file 
-			"MySqlInit.txt" file with valid values for username, password and service
-			for the service against which the unit tests should be executed and 
-			run ./UnitTestMySql with no additional parameters.
-		
-			NOTE: Do not drop MySqlInit.txt in subversion if you choose to modify it
-		
-			If you wish to run the unit test and specify your own 
-			initialization file, create your the file with valid values for username, 
-			password and service and run the unit test by specifying the initialization file 
-			on the command line when executing the unit tests. 
-		
-			e.g. ./UnitTestMySql initfiletest=MySqlInitEx.txt
-		
-			NOTE: The initialization file must contain values for service, username and password.
-		
-			e.g.: service=mysqlserver;username=root;password=xxxx;
-		
+            If you wish to run the MySql unit tests without specifying 
+            an initialization file, update the default initialization file 
+            "MySqlInit.txt" file with valid values for username, password and service
+            for the service against which the unit tests should be executed and 
+            run ./UnitTestMySql with no additional parameters.
+
+            NOTE: Do not drop MySqlInit.txt in subversion if you choose to modify it
+
+            If you wish to run the unit test and specify your own 
+            initialization file, create your the file with valid values for username, 
+            password and service and run the unit test by specifying the initialization file 
+            on the command line when executing the unit tests. 
+
+            e.g. ./UnitTestMySql initfiletest=MySqlInitEx.txt
+
+            NOTE: The initialization file must contain values for service, username and password.
+
+            e.g.: service=mysqlserver;username=root;password=xxxx;
+
         Odbc:
 
             cd [FDO OpenSource]/Providers/GenericRdbms/Src/UnitTest
 
- 			you must have the DSN created before you will run the unit tests.
- 			DSN name can be specified using DSNOracle, DSNMySql, DSNSqlServer
+            you must have the DSN created before you will run the unit tests.
+            DSN name can be specified using DSNOracle, DSNMySql, DSNSqlServer
 
- 			If you wish to run the ODBC unit tests without specifying 
-			an initialization file, update the default initialization file 
-			"OdbcInit.txt" file with valid values for username, password and service
-			for the services against which the unit tests should be executed and 
-			run ./UnitTestOdbc with no additional parameters.
-		
-			NOTE: Do not drop OdbcInit.txt in subversion if you choose to modify it
-		
-			If you wish to run the unit test and specify your own 
-			initialization file, create your the file with valid values for username, 
-			password and the service names. Run the unit test by specifying the 
-			initialization file on the command line when executing the unit tests. 
+            If you wish to run the ODBC unit tests without specifying 
+            an initialization file, update the default initialization file 
+            "OdbcInit.txt" file with valid values for username, password and service
+            for the services against which the unit tests should be executed and 
+            run ./UnitTestOdbc with no additional parameters.
+
+            NOTE: Do not drop OdbcInit.txt in subversion if you choose to modify it
+
+            If you wish to run the unit test and specify your own 
+            initialization file, create your the file with valid values for username, 
+            password and the service names. Run the unit test by specifying the 
+            initialization file on the command line when executing the unit tests. 
 			   
-			e.g. ./UnitTestOdbc initfiletest=OdbcInitEx.txt
-		
-			NOTE: The initialization file must contain values for service, username and password.
-		
-			The initialization file must contain service, username and password for each server type 
-		
-			e.g.: 
-            
-			serviceOracle=oraserver;usernameOracle=xxxx;passwordOracle=xxxx;DSNOracle=ORACLE;
+            e.g. ./UnitTestOdbc initfiletest=OdbcInitEx.txt
+
+            NOTE: The initialization file must contain values for service, username and password.
+
+            The initialization file must contain service, username and password for each server type 
+
+            e.g.: 
+
+            serviceOracle=oraserver;usernameOracle=xxxx;passwordOracle=xxxx;DSNOracle=ORACLE;
             serviceMySql=mysqlserver;usernameMySql=root;passwordMySql=xxxx;DSNMySql=MySQL;
 
-			NOTE: You can also run the unit tests separately for each ODBC subtype:
-			
+            NOTE: You can also run the unit tests separately for each ODBC subtype:
+
             MySql:   ./UnitTestOdbc OdbcMySqlTests
             Oracle:  ./UnitTestOdbc OdbcOracleTests
 
