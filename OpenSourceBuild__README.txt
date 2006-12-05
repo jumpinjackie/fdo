@@ -196,7 +196,7 @@ II. Build Notes
      This script can be modifed and used to set the correct environment variables 
      and PATH settings.
 
- 10. The build_thirdparty.bat file is ude to build the FDO Thirdparty binaries. The following 
+ 10. The build_thirdparty.bat file is used to build the FDO Thirdparty binaries. The following 
      is a general guideline on how to use the build_thirdparty.bat build script.
   
            **************************************************************************
