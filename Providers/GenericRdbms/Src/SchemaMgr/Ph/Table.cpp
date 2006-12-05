@@ -126,9 +126,7 @@ bool FdoSmPhGrdTable::DeleteColumn( FdoSmPhColumnP column )
 
 void FdoSmPhGrdTable::DropConstraint( FdoStringP constraintName )
 {
-	FdoStringP sqlStmt = FdoStringP::Format( L"%ls %ls", 
-								(FdoString *)GetDropConstraintSql(), 
-								(FdoString *)constraintName);
+	FdoStringP sqlStmt = GetDropConstraintSql(constraintName); 
 
 	// Ignore the error
 	try	{
