@@ -343,7 +343,7 @@ FdoPtr<FdoIInsert>  UnitTestUtil::InsertObject( FdoIConnection* connection, FdoP
     while ( propName != NULL ) {
 
         propertyValue = AddNewProperty( propertyValues, propName);
-        dataType = va_arg(arguments,FdoDataType);
+        dataType = (FdoDataType)va_arg(arguments,int);
 
         switch ( dataType ) {
         case FdoDataType_String:
@@ -355,7 +355,7 @@ FdoPtr<FdoIInsert>  UnitTestUtil::InsertObject( FdoIConnection* connection, FdoP
             dataValue = FdoDataValue::Create(int32Arg);
             break;
         case FdoDataType_Boolean:
-            boolArg = va_arg(arguments,FdoBoolean);
+            boolArg = (FdoBoolean)va_arg(arguments,int);
             dataValue = FdoDataValue::Create(boolArg);
             break;
         default:
