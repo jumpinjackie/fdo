@@ -102,8 +102,8 @@ create table f_options (
 
 /* Set versioning Oracle Workspace Manager versioning method */
 #ifdef Oracle
-insert into f_options values ('LT_MODE', '2');
-insert into f_options values ('LOCKING_MODE', '2');
+insert into f_options values ('LT_MODE', '0');
+insert into f_options values ('LOCKING_MODE', '0');
 #else
 insert into f_options values ('LT_MODE', '1');
 insert into f_options values ('LOCKING_MODE', '1');
