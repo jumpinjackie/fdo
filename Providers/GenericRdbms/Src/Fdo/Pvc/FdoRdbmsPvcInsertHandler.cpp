@@ -140,9 +140,9 @@ long FdoRdbmsPvcInsertHandler::Execute( const FdoSmLpClassDefinition *classDefin
         const FdoSmLpDbObject* table = classDefinition->RefDbObject();
         FdoStringP tableName = table->RefDbObject()->GetDbQName();
 
-        const wchar_t *name = classDefinition->GetName();
+        FdoStringP name = classDefinition->GetQName();
 		if( mInsertAutoIncrementProperties )
-			insertQuery = GetInsertQuery( (const wchar_t*)(FdoStringP(name,true)+FdoStringP(L"WithId")), true );
+			insertQuery = GetInsertQuery( (const wchar_t*)(name+FdoStringP(L"WithId")), true );
 		else
 			insertQuery = GetInsertQuery(  name, false );
 
