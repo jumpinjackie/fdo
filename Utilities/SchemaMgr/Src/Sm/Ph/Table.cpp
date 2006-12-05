@@ -76,7 +76,7 @@ FdoSmPhBatchColumnsP FdoSmPhTable::GetUkeyColumns()
 {
     LoadUkeys();
 
-	return FDO_SAFE_ADDREF( mUkeysCollection.p );
+	return mUkeysCollection;
 }
 
 const FdoSmPhCheckConstraintCollection* FdoSmPhTable::RefCkeyColl() const
@@ -86,11 +86,11 @@ const FdoSmPhCheckConstraintCollection* FdoSmPhTable::RefCkeyColl() const
     return (FdoSmPhCheckConstraintCollection*) ckeys;
 }
 
-FdoSmPhCheckConstraintCollection* FdoSmPhTable::GetCkeyColl()
+FdoSmPhCheckConstraintsP FdoSmPhTable::GetCkeyColl()
 {
     LoadCkeys();
 
-	return FDO_SAFE_ADDREF( mCkeysCollection.p );
+	return  mCkeysCollection;
 }
 
 const FdoSmPhIndexCollection* FdoSmPhTable::RefIndexes() const
@@ -743,11 +743,12 @@ FdoStringP FdoSmPhTable::GetDeleteColSql()
     );
 }
 
-FdoStringP FdoSmPhTable::GetDropConstraintSql()
+FdoStringP FdoSmPhTable::GetDropConstraintSql(FdoStringP constraintName)
 {
     return FdoStringP::Format( 
-        L"alter table %ls drop constraint ", 
-        (FdoString*) GetDDLQName() 
+        L"alter table %ls drop constraint %ls", 
+        (FdoString*) GetDDLQName(),
+		(FdoString *)GetConstraintDDLName(constraintName)
     );
 }
 
@@ -863,6 +864,12 @@ FdoStringP FdoSmPhTable::GetAddCkeySql(int uCollNum)
 		(FdoString*) elem->GetClause()
 	);
 }
+
+FdoStringP FdoSmPhTable::GetConstraintDDLName( FdoStringP constraintName ) const
+{
+    return constraintName;
+}
+
 
 FdoStringP FdoSmPhTable::GenPkeyName()
 {
