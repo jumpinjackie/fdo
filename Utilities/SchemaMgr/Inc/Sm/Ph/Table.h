@@ -58,7 +58,7 @@ public:
 
     /// Returns all the unique columns in this table.
     const FdoSmPhCheckConstraintCollection* RefCkeyColl() const;
-    FdoSmPhCheckConstraintCollection* GetCkeyColl();
+    FdoSmPhCheckConstraintsP GetCkeyColl();
 
     /// Returns a CHECK() clause, each provider must implement. It should be pure virtual.
 	virtual FdoStringP GetCkeyClause( FdoStringP columnName, FdoDataPropertyP fdoProp ) { return L""; }
@@ -104,7 +104,7 @@ public:
     virtual FdoStringP GetDeleteColSql();
 
 	/// Get SQL clause for dropping a constraint
-	virtual FdoStringP GetDropConstraintSql();
+	virtual FdoStringP GetDropConstraintSql(FdoStringP constraintName);
 
 	/// Get SQL clause for adding a constraint
 	virtual FdoStringP GetAddConstraintSql(FdoStringP constraint);
@@ -123,6 +123,10 @@ public:
 
 	/// Get SQL for creating a CHECK constraint on an existing table
 	FdoStringP GetAddCkeySql(int uCollNum);
+
+    // Given a constraint name, return the name to use in DDL operations, such 
+    // as dropping the constraint.
+    virtual FdoStringP GetConstraintDDLName( FdoStringP constraintName ) const;
 
     /// Set the long transaction mode.
     /// Can only be changed on new tables.
