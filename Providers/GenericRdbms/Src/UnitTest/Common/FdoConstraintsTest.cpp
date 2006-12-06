@@ -1111,7 +1111,7 @@ void FdoConstraintsTest::UpdateUniqueConstraints( FdoIConnection* connection )
 	FdoDataPropertyP			 pProp0 = pProps0->GetItem(0);
 	printf("Unique key on (%ls, %ls) updated to (%ls)\n", PROPERTY_5, PROPERTY_6, PROPERTY_6);
 
-	pProps0->RemoveAt( isMySQL? 1 : 0 );
+	pProps0->RemoveAt( pProps0->IndexOf(PROPERTY_5) );
 	//pUniqueCs->RemoveAt(index2);
 	pApplyCmd->Execute();
 
