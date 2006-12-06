@@ -142,17 +142,26 @@ FdoIFeatureReader* FdoWfsSelectCommand::Execute ()
 		FdoPtr<FdoWfsFeatureTypeList> typeList = metadata->GetFeatureTypeList();
 		FdoPtr<FdoWfsFeatureTypeCollection> types = typeList->GetFeatureTypes();
 		FdoInt32 count = types->GetCount();
-		for (int i = 0; i < count; i++) {
+        std::wstring lhs = featureTypeName;
+		for (int i = 0; i < count; i++)
+        {
 			FdoPtr<FdoWfsFeatureType> featureType = types->GetItem(i);
-            std::wstring lhs = featureTypeName;
             std::wstring rhs = featureType->GetName();
-            std::wstring::size_type ndx = rhs.find(lhs); 
-            if (ndx != std::wstring::npos && 
-                (ndx == 0 || (ndx + lhs.size() == rhs.size() && rhs[ndx - 1] == L':'))) {
-                featureTypeName = featureType->GetName();
-				srsName = featureType->GetSRS();
-				break;
-			}
+            std::wstring::size_type idxSep = rhs.find(L':');
+            bool foundit = false;
+            if (idxSep != std::wstring::npos){
+                std::wstring::size_type szComp = rhs.size() - (idxSep+1);
+                if(lhs.size() == szComp && !rhs.compare(idxSep+1, szComp < lhs.size() ? lhs.size() : szComp, lhs))
+                    foundit = true;
+            }
+            else {
+                if (rhs == featureTypeName)
+                    foundit = true;
+            }
+            if (foundit){
+			    srsName = featureType->GetSRS();
+                break;
+            }
 		}
 	}
 
