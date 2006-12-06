@@ -172,10 +172,11 @@ FdoStringP FdoSmPhMySqlTable::GetAddStorageSql()
     return storageSql;
 }
 
-FdoStringP FdoSmPhMySqlTable::GetDropConstraintSql()
+FdoStringP FdoSmPhMySqlTable::GetDropConstraintSql(FdoStringP constraintName )
 {
     return FdoStringP::Format( 
-        L"alter table %ls drop index ", 
-        (FdoString*) GetName() 
+        L"alter table %ls drop index %ls", 
+        (FdoString*) GetDDLQName(),
+		(FdoString *)GetConstraintDDLName(constraintName)
     );
 }

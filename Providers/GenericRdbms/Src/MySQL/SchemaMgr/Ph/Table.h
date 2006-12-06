@@ -62,7 +62,7 @@ public:
     virtual FdoPtr<FdoSmPhRdIndexReader> CreateIndexReader() const;
 
 	/// Get SQL clause for dropping a constraint
-	virtual FdoStringP GetDropConstraintSql();
+	virtual FdoStringP GetDropConstraintSql(FdoStringP constraintName);
 
 private:
     FdoSmPhMySqlTable() {};
