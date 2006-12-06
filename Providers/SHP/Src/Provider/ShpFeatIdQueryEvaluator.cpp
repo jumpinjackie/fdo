@@ -198,6 +198,7 @@ void ShpFeatIdQueryEvaluator::ProcessComparisonCondition(FdoComparisonCondition&
     recno_list*  retFeatNum = &results->queryResults;
 
     FdoInt32    featid = ProcessInt32Expression( right );
+
     retFeatNum->push_back( featid-1 );  // featids are 1-based to FDO users, 0-based internally
     m_FeatidLists.push_back( results );
 }
@@ -520,15 +521,27 @@ bool ShpFeatIdQueryEvaluator::AreEqual(double/*&*/ d1, double/*&*/ d2)
 // Process an expression by invoking the handler of the concrete expression class
 FdoInt32 ShpFeatIdQueryEvaluator::ProcessInt32Expression( FdoExpression *exp )
 {
-	if( exp == NULL )
-        throw FdoException::Create (NlsMsgGet(SHP_EXPRESSION_NULL_PARAMETER, "Null parameter." ));
- 
-    FdoDataValue *dVal = static_cast<FdoDataValue *>((FdoExpression*)exp);
+	FdoInt32	featid = 0;
+	bool		bIsNull;
 
-	if( dVal == NULL || dVal->GetDataType() != FdoDataType_Int32)
-        throw FdoException::Create (NlsMsgGet(SHP_EXPRESSION_INVALID_PARAMETER_TYPE, "Invalid parameter type." ));
-    
-    return (dynamic_cast<FdoInt32Value*>(dVal))->GetInt32();
+	if( exp == NULL )
+		throw FdoException::Create (NlsMsgGet(SHP_EXPRESSION_NULL_PARAMETER, "Null parameter." ));
+
+	FdoDataValue *dVal = dynamic_cast<FdoDataValue *>((FdoExpression*)exp);
+
+	if ( dVal == NULL )
+	{
+		exp->Process (this);
+		featid = GetInt32Result(bIsNull);
+	}
+	else
+	{
+		if( dVal->GetDataType() != FdoDataType_Int32)
+			throw FdoException::Create (NlsMsgGet(SHP_EXPRESSION_INVALID_PARAMETER_TYPE, "Invalid parameter type." ));
+	    
+		featid = (dynamic_cast<FdoInt32Value*>(dVal))->GetInt32();
+	}
+	return featid;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
