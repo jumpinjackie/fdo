@@ -287,7 +287,7 @@ void MySqlFdoInsertTest::insertBoundaryUnsigned()
                 break;
 
             case 2:
-                CPPUNIT_ASSERT ( featureReader->GetInt64(L"uint_column") == 4294967295 );
+                CPPUNIT_ASSERT ( featureReader->GetInt64(L"uint_column") == 4294967295LL);
                 break;
             }
         }
