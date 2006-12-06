@@ -2169,7 +2169,7 @@ void FdoSmLpClassBase::FinalizePhDbObject()
                     // don't create a new one.
                     mPhDbObject = dbObject;
                 }
-                else if ( mbHasFdoIdentity ) {
+                else if ( mbHasFdoIdentity && FdoSmPhOwnerP(pPhysical->GetOwner())->GetHasMetaSchema() ) {
 
                     // No table is created if there are no id properties. Classes without id
 	                // are only used as object property types.
