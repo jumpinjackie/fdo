@@ -206,13 +206,21 @@ bool ShpSchemaCapabilities::SupportsCompositeId()
 
 FdoInt32 ShpSchemaCapabilities::GetNameSizeLimit (FdoSchemaElementNameType nameType)
 {
+    FdoInt32 classLimit;
+
+#ifdef _WIN32
+    classLimit = 162; // 166 - 4 for the file extension.
+#else
+    classLimit = 251; // 255 - 4 for the file extension.
+#endif
+
     switch (nameType)
     {
-        case FdoSchemaElementNameType_Datastore:   return 255;  // == class name size limit
-        case FdoSchemaElementNameType_Schema:      return 7;    // == wcslen("default")
-        case FdoSchemaElementNameType_Class:       return 255;  // == max filename length on windows/linux
-        case FdoSchemaElementNameType_Property:    return 11;   // == max dbf column name size length (see DBF spec)
-        case FdoSchemaElementNameType_Description: return 0;    // DBF doesn't store column descriptions
+        case FdoSchemaElementNameType_Datastore:   return -1;           // SHP does not generate data stores
+        case FdoSchemaElementNameType_Schema:      return 7;            // == wcslen("default")
+        case FdoSchemaElementNameType_Class:       return classLimit;
+        case FdoSchemaElementNameType_Property:    return 11;           // == max dbf column name size length (see DBF spec)
+        case FdoSchemaElementNameType_Description: return 0;            // DBF doesn't store column descriptions
     }
     return -1;
 }
