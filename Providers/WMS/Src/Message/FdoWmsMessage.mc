@@ -247,6 +247,11 @@ SymbolicName=FDOWMS_FIND_RASTER_PROPERTIES_CLASS
 Language=English
 '%1$ls': Cannot find raster property for unspecified class (NULL).
 .
+MessageId=3008
+SymbolicName=FDOWMS_VERSION_NOT_SUPPORTED
+Language=English
+The WMS version '%1$ls' is not supported.
+.
 
 ;//************************************************************************************
 ;//************************************************************************************

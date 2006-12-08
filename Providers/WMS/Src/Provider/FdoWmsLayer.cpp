@@ -31,7 +31,8 @@ FdoWmsLayer::FdoWmsLayer(void) :
     mFixedWidth(-1),
     mFixedHeight(-1),
 	mParent(NULL),
-    mbSkipProcessingElement(false)
+    mbSkipProcessingElement(false),
+    mProcessed(false)
 {
     mKeywordList = FdoStringCollection::Create();
     mCoordinateReferenceSystems = FdoStringCollection::Create();
@@ -420,5 +421,14 @@ void FdoWmsLayer::SetParent (FdoWmsLayer* parent)
 {
 	// Soft reference to avoid circular reference. DO NOT ADDREF
     mParent = parent;
+}
+
+FdoBoolean FdoWmsLayer::GetLayerProcessed() const
+{
+    return mProcessed;
+}
+void FdoWmsLayer::SetLayerProcessed(FdoBoolean state)
+{
+    mProcessed = state;
 }
 

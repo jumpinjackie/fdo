@@ -31,116 +31,62 @@ ConnectTests::~ConnectTests (void)
 {
 }
 
-void ConnectTests::TestConnection1 ()
+void ConnectTests::TestConnection(FdoString* connString, bool expectedExc)
 {
     try
     {
         FdoPtr<FdoIConnection> connection = WmsTests::GetConnection ();
 
-        connection->SetConnectionString(L"FeatureServer=http://www.terraservice.net/ogccapabilities.ashx");
+        connection->SetConnectionString(connString);
         FdoConnectionState state = connection->Open ();
         connection->Close ();
     }
     catch (FdoException* e)
     {
-        fail(e);
+        if (!expectedExc)
+            fail(e);
+        else
+        {
+            FdoStringP txt = e->GetExceptionMessage();
+            e->Release();
+            printf ("\n Expected exception: %s \n", (const char*)txt);
+        }
     }
+}
+
+void ConnectTests::TestConnection1 ()
+{
+    TestConnection(L"FeatureServer=http://www.terraservice.net/ogccapabilities.ashx");
 }
 
 void ConnectTests::TestConnection2 ()
 {
-    try
-    {
-        FdoPtr<FdoIConnection> connection = WmsTests::GetConnection ();
-
-        connection->SetConnectionString(L"FeatureServer=http://wms.jpl.nasa.gov/wms.cgi");
-        FdoConnectionState state = connection->Open ();
-        connection->Close ();
-    }
-    catch (FdoException* e)
-    {
-        fail(e);
-    }
+    TestConnection(L"FeatureServer=http://wms.jpl.nasa.gov/wms.cgi");
 }
 
 void ConnectTests::TestConnection3 ()
 {
-    try
-    {
-        FdoPtr<FdoIConnection> connection = WmsTests::GetConnection ();
-
-        connection->SetConnectionString(L"FeatureServer=http://globe.digitalearth.gov/viz-bin/wmt.cgi");
-        FdoConnectionState state = connection->Open ();
-        connection->Close ();
-    }
-    catch (FdoException* e)
-    {
-        fail(e);
-    }
+    TestConnection(L"FeatureServer=http://globe.digitalearth.gov/viz-bin/wmt.cgi");
 }
 
 void ConnectTests::TestConnection4 ()
 {
-    try
-    {
-        FdoPtr<FdoIConnection> connection = WmsTests::GetConnection ();
-
-        connection->SetConnectionString(L"FeatureServer=http://demo.cubewerx.com/demo/cubeserv/cubeserv.cgi");
-        FdoConnectionState state = connection->Open ();
-        connection->Close ();
-    }
-    catch (FdoException* e)
-    {
-        fail(e);
-    }
+    TestConnection(L"FeatureServer=http://demo.cubewerx.com/demo/cubeserv/cubeserv.cgi");
 }
 
 void ConnectTests::TestConnection5 ()
 {
-    try
-    {
-        FdoPtr<FdoIConnection> connection = WmsTests::GetConnection ();
-
-        connection->SetConnectionString(L"FeatureServer=http://www.geographynetwork.com/servlet/com.esri.wms.Esrimap");
-        FdoConnectionState state = connection->Open ();
-        connection->Close ();
-    }
-    catch (FdoException* e)
-    {
-        fail(e);
-    }
+    TestConnection(L"FeatureServer=http://www.geographynetwork.com/servlet/com.esri.wms.Esrimap", true);
 }
 
 void ConnectTests::TestConnection6 ()
 {
-    try
-    {
-        FdoPtr<FdoIConnection> connection = WmsTests::GetConnection ();
-
-        connection->SetConnectionString(L"FeatureServer=http://www.geographynetwork.ca/wmsconnector/com.esri.wms.Esrimap/Geobase_NRN_NewfoundlandAndLabrador_I_Detail");
-        FdoConnectionState state = connection->Open ();
-        connection->Close ();
-    }
-    catch (FdoException* e)
-    {
-        fail(e);
-    }
+    TestConnection(L"FeatureServer=http://www.geographynetwork.ca/wmsconnector/com.esri.wms.Esrimap/Geobase_NRN_NewfoundlandAndLabrador_I_Detail");
 }
 
 void ConnectTests::TestConnection7 ()
 {
-    try
-    {
-        FdoPtr<FdoIConnection> connection = WmsTests::GetConnection ();
-
-        connection->SetConnectionString(L"FeatureServer=http://maps1.intergraph.com/wms/world/request.asp");
-        FdoConnectionState state = connection->Open ();
-        connection->Close ();
-    }
-    catch (FdoException* e)
-    {
-        fail(e);
-    }
+    TestConnection(L"FeatureServer=http://maps1.intergraph.com/wms/world/request.asp");
 }
 
 // the following sites sometimes response very slow and they are 
@@ -149,27 +95,41 @@ void ConnectTests::TestConnection7 ()
 // http://gis2.gov.ns.ca/servlet/com.esri.wms.Esrimap?
 void ConnectTests::TestConnectionTimeout ()
 {    
-    FdoPtr<FdoIConnection> connection = WmsTests::GetConnection ();
-    try
-    {
-        connection->SetConnectionString(L"FeatureServer=http://terraservice.net/ogccapabilities.ashx?");
-        FdoConnectionState state = connection->Open ();
-        connection->Close ();
-    }
-    catch (FdoException* e)
-    {
-        fail(e);
-    }
-
-    try
-    {
-        connection->SetConnectionString(L"FeatureServer=http://gis2.gov.ns.ca/servlet/com.esri.wms.Esrimap?");
-        FdoConnectionState state = connection->Open ();
-        connection->Close ();
-    }
-    catch (FdoException* e)
-    {
-        fail(e);
-    }
+    TestConnection(L"FeatureServer=http://terraservice.net/ogccapabilities.ashx?");
+    TestConnection(L"FeatureServer=http://gis2.gov.ns.ca/servlet/com.esri.wms.Esrimap?");
 }
 
+void ConnectTests::TestConnection8 ()
+{
+    TestConnection(L"FeatureServer=http://atlas.walis.wa.gov.au/servlet/com.esri.wms.Esrimap", true);
+}
+
+void ConnectTests::TestConnection9 ()
+{
+    TestConnection(L"FeatureServer=http://www.dottedeyes.com/wms");
+}
+
+void ConnectTests::TestConnection10 ()
+{
+    TestConnection(L"FeatureServer=http://data.mapguide.com/mapguide/mapagent/mapagent.fcgi");
+}
+
+void ConnectTests::TestConnection11 ()
+{
+    TestConnection(L"FeatureServer=http://cgdi-dev.geoconnections.org/cgi-bin/tomatlasmapper");
+}
+
+void ConnectTests::TestConnection12 ()
+{
+    TestConnection(L"FeatureServer=http://map.genimap.com/GenimapWMS/v1/GenimapWMS?cid=demo");
+}
+
+void ConnectTests::TestConnection13 ()
+{
+    TestConnection(L"FeatureServer=http://www.mapguide.com/mapguide/mapagent/mapagent.fcgi");
+}
+
+void ConnectTests::TestConnection14 ()
+{
+    TestConnection(L"FeatureServer=http://ceoware2.ccrs.nrcan.gc.ca/cuberwerx/cubeserv/cuberserv.cgi");
+}

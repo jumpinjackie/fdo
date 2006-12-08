@@ -69,6 +69,9 @@ public:
     FdoOwsGeographicBoundingBox* GetGeographicBoundingBox() const;
     void SetGeographicBoundingBox(FdoOwsGeographicBoundingBox* value);
 
+    FdoBoolean GetLayerProcessed() const;
+    void SetLayerProcessed(FdoBoolean state);
+
     FdoWmsBoundingBoxCollection* GetBoundingBoxes() const;
     FdoWmsLayerCollection* GetLayers() const;
     FdoWmsStyleCollection* GetStyles() const;
@@ -119,6 +122,7 @@ private:
     FdoOwsGeographicBoundingBoxP mGeographicBoundingBox;
     FdoPtr<FdoWmsLayerCollection> mChildLayers;
 	FdoWmsLayer* mParent;
+    FdoBoolean mProcessed;
 };
 
 typedef FdoPtr<FdoWmsLayer> FdoWmsLayerP;

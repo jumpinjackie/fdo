@@ -256,6 +256,15 @@ FdoConnectionState FdoWmsConnection::Open ()
     FdoStringP pVersion = GetRequestWMSVersion(location);
     FdoWmsDelegateP wmsDelegate = FdoWmsDelegate::Create(location, user, password);
     mWmsServiceMetadata = wmsDelegate->GetServiceMetadata(pVersion);
+    if (!wcscmp(mWmsServiceMetadata->GetVersion(), L"1.0.0"))
+    {
+        Close ();
+        throw FdoException::Create (NlsMsgGet(FDOWMS_VERSION_NOT_SUPPORTED, "The WMS version '%1$ls' is not supported.", L"1.0.0"));
+    }
+    FdoPtr<FdoWmsServiceMetadata> metadata = this->GetWmsServiceMetadata ();
+    FdoPtr<FdoWmsCapabilities> capa = static_cast<FdoWmsCapabilities *> (metadata->GetCapabilities ());
+    if (capa)
+        capa->FillUpGeographicDataLayers();
 	if (mConfigured)
     {
         // Some layer names may contain ":" or "." characters which are not allowed
@@ -263,8 +272,6 @@ FdoConnectionState FdoWmsConnection::Open ()
         // such characters with blank " ".
         if (mLayerMappings != NULL && mLayerMappings->GetCount () == 0)
         {
-            FdoPtr<FdoWmsServiceMetadata> metadata = this->GetWmsServiceMetadata ();
-            FdoPtr<FdoWmsCapabilities> capa = static_cast<FdoWmsCapabilities *> (metadata->GetCapabilities ());
             if (capa != NULL)
             {
                 FdoPtr<FdoWmsLayerCollection> layers = capa->GetLayers ();
@@ -756,8 +763,20 @@ void FdoWmsConnection::_addFeatureClass (FdoClassCollection* featClasses, FdoWms
         // Create the FDO Feature class and set it's properties
         //
 		FdoPtr<FdoFeatureClass> featClass = FdoFeatureClass::Create ();		
-		featClass->SetName (modLayerName);
-		featClass->SetDescription (layer->GetAbstract ());		
+
+        // Set the unique layer name
+        featClass->SetName (modLayerName);
+
+        // Set the layer title
+        FdoString* title = layer->GetTitle ();
+        if (FdoCommonStringUtil::StringCompare(title, L"") != 0) {
+            featClass->SetDescription (title);
+        }
+        else {
+            featClass->SetDescription (layer->GetAbstract ());
+        }
+
+        // Flag the class as Abstract
 		if (bAbstract)
 		{
 			featClass->SetIsAbstract (true);

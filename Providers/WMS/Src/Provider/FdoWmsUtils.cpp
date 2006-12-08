@@ -56,10 +56,8 @@ void _calcLayerBoundingBox (FdoWmsLayer* layer, FdoString* srsName, FdoWmsBoundi
 {   
     // First we need to check whether the SRS is supported by the layer.
     // If so, the extent for the SRS is saved to "bbox".
-    // Because the SRS attribute can be inheritanced, so we need to check
-    // the layer's parents when it's necessary.
-    bool bFound = false;
-
+    // each layer has updated the bounding boxes 
+    // so no need to check the parent or the geographic bounding box
     FdoPtr<FdoWmsBoundingBoxCollection> bboxes = layer->GetBoundingBoxes ();
     for (int i=0; i<bboxes->GetCount(); i++)
     {
@@ -70,34 +68,7 @@ void _calcLayerBoundingBox (FdoWmsLayer* layer, FdoString* srsName, FdoWmsBoundi
             bbox->SetMinX (tempBBox->GetMinX ());
             bbox->SetMaxY (tempBBox->GetMaxY ());
             bbox->SetMinY (tempBBox->GetMinY ());
-            bFound = true;
         }
-    }
-    // We need special care for EPSG:4326. Sometimes some layers support EPSG:4326,
-    // however they don't provide the corresponding extents for EPSG:4326. Instead,
-    // they provide "LatLongBoundingBox". In this case, we will make use of the 
-    // "LatLongBoundingBox" and take it as same as "EPSG:4326". Although they are not
-    // exactly the same.
-    if ( !bFound && (wcscmp (srsName, FdoWmsGlobals::DefaultEPSGCode) == 0 
-                     || 
-                     wcscmp (srsName, FdoWmsGlobals::DefaultEPSGCode2) == 0 ))
-    {
-        FdoPtr<FdoOwsGeographicBoundingBox> geoBBox = layer->GetGeographicBoundingBox ();
-        if (geoBBox != NULL)
-        {
-            bbox->SetMinX (geoBBox->GetWestBoundLongitude ());
-            bbox->SetMaxX (geoBBox->GetEastBoundLongitude ());
-            bbox->SetMinY (geoBBox->GetSouthBoundLatitude ());
-            bbox->SetMaxY (geoBBox->GetNorthBoundLatitude ());
-            bFound = true;
-        }
-    }
-
-    if (!bFound)
-    {
-        FdoPtr<FdoWmsLayer> parentLayer = layer->GetParent ();
-        if (parentLayer != NULL)
-            _calcLayerBoundingBox (parentLayer, srsName, bbox);
     }
 }
 

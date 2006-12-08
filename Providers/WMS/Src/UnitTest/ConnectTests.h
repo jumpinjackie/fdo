@@ -35,6 +35,14 @@ class ConnectTests :  public WmsTests
     CPPUNIT_TEST (TestConnection5);
     CPPUNIT_TEST (TestConnection6);
     CPPUNIT_TEST (TestConnection7);
+    CPPUNIT_TEST (TestConnection8);
+    CPPUNIT_TEST (TestConnection9);
+    CPPUNIT_TEST (TestConnection10);
+    CPPUNIT_TEST (TestConnection11);
+    CPPUNIT_TEST (TestConnection12);
+    CPPUNIT_TEST (TestConnection13);
+    // disabled because the server respond with page not found
+    //CPPUNIT_TEST (TestConnection14);
 
     // Currently the provider does not support "transfer" timeout. And connecting
     // to this server always cause timeout.
@@ -46,13 +54,22 @@ public:
     virtual ~ConnectTests (void);
 
 protected:
-	void TestConnection1 ();
+    void TestConnection(FdoString* connString, bool expectedExc = false);
+	
+    void TestConnection1 ();
 	void TestConnection2 ();
 	void TestConnection3 ();
 	void TestConnection4 ();
 	void TestConnection5 ();
 	void TestConnection6 ();
 	void TestConnection7 ();
+	void TestConnection8 ();
+	void TestConnection9 ();
+	void TestConnection10 ();
+	void TestConnection11 ();
+	void TestConnection12 ();
+	void TestConnection13 ();
+	void TestConnection14 ();
     void TestConnectionTimeout ();
 };
 
