@@ -231,9 +231,9 @@ FdoInt64 ArcSDESchemaCapabilities::GetMaximumDataValueLength (FdoDataType dataTy
 {
     switch (dataType)
     {
-        case FdoDataType_String:   return (FdoInt64)2^32; // ArcSDE's limit itself
-        case FdoDataType_BLOB:     return (FdoInt64)2^32; // Oracle's limit, which is higher than SQL Server's limit
-        case FdoDataType_CLOB:     return (FdoInt64)2^32; // Oracle's limit, which is higher than SQL Server's limit
+        case FdoDataType_String:   return (FdoInt64)4294967296LL; // ArcSDE's limit itself
+        case FdoDataType_BLOB:     return (FdoInt64)4294967296LL; // Oracle's limit, which is higher than SQL Server's limit
+        case FdoDataType_CLOB:     return (FdoInt64)4294967296LL; // Oracle's limit, which is higher than SQL Server's limit
         case FdoDataType_Decimal:  return (FdoInt64)(GetMaximumDecimalScale() + GetMaximumDecimalPrecision());
         case FdoDataType_Boolean:  return (FdoInt64)sizeof(FdoBoolean);
         case FdoDataType_Byte:     return (FdoInt64)sizeof(FdoByte);
