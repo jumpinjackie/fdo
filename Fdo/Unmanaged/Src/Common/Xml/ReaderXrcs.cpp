@@ -37,6 +37,7 @@ FdoXmlReaderXrcs::FdoXmlReaderXrcs(FdoIoTextReader* reader) :
     // by xsi:schemaLocation attributes. In some cases this can cause an 
     // exception to be thrown after a long pause.
     mpParser->setFeature( XERCES_CPP_NAMESPACE::XMLUni::fgXercesSchema, false );
+    mpParser->setFeature( XERCES_CPP_NAMESPACE::XMLUni::fgXercesLoadExternalDTD, false );
 }
 
 FdoXmlReaderXrcs::~FdoXmlReaderXrcs(void)
