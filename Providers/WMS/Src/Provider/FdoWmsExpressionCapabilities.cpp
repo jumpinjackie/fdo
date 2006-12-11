@@ -60,6 +60,7 @@ FdoFunctionDefinitionCollection* FdoWmsExpressionCapabilities::GetFunctions()
     FdoString* desc = NlsMsgGet(FDOWMS_RESAMPLE_RASTER_ARGUMENT_DESC, "An argument that identifies the raster property definition.");
     FdoPtr<FdoArgumentDefinition> rasterArg = FdoArgumentDefinition::Create(FdoWmsGlobals::ResampleFunctionRasterArgumentName, 
                                                                             desc, 
+                                                                            FdoPropertyType_RasterProperty,
                                                                             FdoDataType_BLOB);
     args->Add(rasterArg);
 
@@ -104,7 +105,7 @@ FdoFunctionDefinitionCollection* FdoWmsExpressionCapabilities::GetFunctions()
 	args->Add(widthArg);
 
     desc = NlsMsgGet(FDOWMS_RESAMPLE_FUNCTION_DESC, "The RESAMPLE function returns a raster with the specified extents and size.");
-    FdoPtr<FdoSignatureDefinition> resampleSignatureDef = FdoSignatureDefinition::Create(FdoDataType_BLOB, args);
+    FdoPtr<FdoSignatureDefinition> resampleSignatureDef = FdoSignatureDefinition::Create(FdoPropertyType_RasterProperty, FdoDataType_BLOB, args);
     FdoPtr<FdoSignatureDefinitionCollection> resampleSignatureDefCol = FdoSignatureDefinitionCollection::Create();
     resampleSignatureDefCol->Add(resampleSignatureDef);
     FdoPtr<FdoFunctionDefinition> resampleFunction = FdoFunctionDefinition::Create(FdoWmsGlobals::ResampleFunctionName,
@@ -116,7 +117,7 @@ FdoFunctionDefinitionCollection* FdoWmsExpressionCapabilities::GetFunctions()
 	// CLIP function
 	args = FdoArgumentDefinitionCollection::Create();
     desc = NlsMsgGet(FDOWMS_CLIP_RASTER_ARGUMENT_DESC, "An argument that identifies the raster property definition.");
-	rasterArg = FdoArgumentDefinition::Create(FdoWmsGlobals::ClipFunctionRasterArgumentName, desc, FdoDataType_BLOB);
+	rasterArg = FdoArgumentDefinition::Create(FdoWmsGlobals::ClipFunctionRasterArgumentName, desc, FdoPropertyType_RasterProperty, FdoDataType_BLOB);
 	args->Add(rasterArg);
 
     desc = NlsMsgGet(FDOWMS_CLIP_MINX_ARGUMENT_DESC, "The X coordinate corresponding to the lower left corner of the CLIP boundary.");
@@ -136,7 +137,7 @@ FdoFunctionDefinitionCollection* FdoWmsExpressionCapabilities::GetFunctions()
     args->Add(maxYArg);
 
     desc = NlsMsgGet(FDOWMS_CLIP_FUNCTION_DESC, "The CLIP function returns a raster with the specified extents.");
-    FdoPtr<FdoSignatureDefinition> clipSignatureDef = FdoSignatureDefinition::Create(FdoDataType_BLOB, args);
+    FdoPtr<FdoSignatureDefinition> clipSignatureDef = FdoSignatureDefinition::Create(FdoPropertyType_RasterProperty, FdoDataType_BLOB, args);
     FdoPtr<FdoSignatureDefinitionCollection> clipSignatureDefCol = FdoSignatureDefinitionCollection::Create();
     clipSignatureDefCol->Add(clipSignatureDef);
 	FdoPtr<FdoFunctionDefinition> clipFunction = FdoFunctionDefinition::Create(FdoWmsGlobals::ClipFunctionName,
@@ -148,7 +149,7 @@ FdoFunctionDefinitionCollection* FdoWmsExpressionCapabilities::GetFunctions()
     // SpatialExtents function
     args = FdoArgumentDefinitionCollection::Create();
     desc = NlsMsgGet(FDOWMS_SPATIAL_EXTENTS_RASTER_ARGUMENT_DESC, "An argument that identifies a raster property.");
-	rasterArg = FdoArgumentDefinition::Create(FdoWmsGlobals::ExtentsFunctionRasterArgumentName, desc, FdoDataType_BLOB);
+	rasterArg = FdoArgumentDefinition::Create(FdoWmsGlobals::ExtentsFunctionRasterArgumentName, desc, FdoPropertyType_RasterProperty, FdoDataType_BLOB);
 	args->Add(rasterArg);
 
     desc = NlsMsgGet(FDOWMS_SPATIAL_EXTENTS_FUNCTION_DESC, "The SpatialExtents function returns the spatial extents of a raster property.");

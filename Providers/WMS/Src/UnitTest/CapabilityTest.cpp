@@ -205,6 +205,7 @@ void CapabilityTest::TestCapabilities ()
 		FdoPtr<FdoFunctionDefinition> resampleFunction = functions->GetItem(0);
 		CPPUNIT_ASSERT(STRCASEEQ(resampleFunction->GetName(), L"RESAMPLE"));
 		CPPUNIT_ASSERT(resampleFunction->GetReturnType() == FdoDataType_BLOB);
+		CPPUNIT_ASSERT(resampleFunction->GetReturnPropertyType() == FdoPropertyType_RasterProperty);
 
 		FdoPtr<FdoReadOnlyArgumentDefinitionCollection> args = resampleFunction->GetArguments();
 		CPPUNIT_ASSERT(args->GetCount() == 7);
@@ -212,6 +213,7 @@ void CapabilityTest::TestCapabilities ()
 		FdoPtr<FdoArgumentDefinition> rasterArg = args->GetItem(0);
 		CPPUNIT_ASSERT(STRCASEEQ(rasterArg->GetName(), L"raster"));
 		CPPUNIT_ASSERT(rasterArg->GetDataType() == FdoDataType_BLOB);
+		CPPUNIT_ASSERT(rasterArg->GetPropertyType() == FdoPropertyType_RasterProperty);
 
 		rasterArg = args->GetItem(1);
 		CPPUNIT_ASSERT(STRCASEEQ(rasterArg->GetName(), L"minX"));
@@ -240,6 +242,7 @@ void CapabilityTest::TestCapabilities ()
 		// CLIP function
 		FdoPtr<FdoFunctionDefinition> clipFunction = functions->GetItem(1);
 		CPPUNIT_ASSERT(STRCASEEQ(clipFunction->GetName(), L"CLIP"));
+		CPPUNIT_ASSERT(clipFunction->GetReturnPropertyType() == FdoPropertyType_RasterProperty);
 		CPPUNIT_ASSERT(clipFunction->GetReturnType() == FdoDataType_BLOB);
 
 		args = clipFunction->GetArguments();
@@ -248,6 +251,7 @@ void CapabilityTest::TestCapabilities ()
 		rasterArg = args->GetItem(0);
 		CPPUNIT_ASSERT(STRCASEEQ(rasterArg->GetName(), L"raster"));
 		CPPUNIT_ASSERT(rasterArg->GetDataType() == FdoDataType_BLOB);
+		CPPUNIT_ASSERT(rasterArg->GetPropertyType() == FdoPropertyType_RasterProperty);
 
 		rasterArg = args->GetItem(1);
 		CPPUNIT_ASSERT(STRCASEEQ(rasterArg->GetName(), L"minX"));
@@ -269,13 +273,14 @@ void CapabilityTest::TestCapabilities ()
 		FdoPtr<FdoFunctionDefinition> extentsFunction = functions->GetItem(2);
 		CPPUNIT_ASSERT(STRCASEEQ(extentsFunction->GetName(), L"SpatialExtents"));
 		CPPUNIT_ASSERT(extentsFunction->GetReturnPropertyType() == FdoPropertyType_GeometricProperty);
+		CPPUNIT_ASSERT(extentsFunction->GetReturnType() == FdoDataType_BLOB);
 
 		args = extentsFunction->GetArguments();
 		CPPUNIT_ASSERT(args->GetCount() == 1);
 		rasterArg = args->GetItem(0);
 		CPPUNIT_ASSERT(STRCASEEQ(rasterArg->GetName(), L"raster"));
+		CPPUNIT_ASSERT(rasterArg->GetPropertyType() == FdoPropertyType_RasterProperty);
 		CPPUNIT_ASSERT(rasterArg->GetDataType() == FdoDataType_BLOB);
-
 
         //
         // Test FdoIRasterCapabilities
