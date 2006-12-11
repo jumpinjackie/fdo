@@ -55,6 +55,9 @@ public:
     /// 
 	FDOWMS_API FdoWmsBoundingBoxCollection* GetCRSExtents ();
     
+    // Update all SRS-es and all bounding boxes for layers.
+    // update them each layer has all information without querying the parent
+    void FillUpGeographicDataLayers();
 protected:
     FdoWmsCapabilities(void);
     virtual ~FdoWmsCapabilities(void);
@@ -62,8 +65,21 @@ protected:
     virtual FdoOwsRequestMetadata* OnCreateRequestMetadata(FdoString* name);
 
 private:
+    // update SRSes and bounding boxes for a layer (recursive mode)
+    void _processGeographicDataLayer(FdoWmsLayer* layer, FdoBoolean processLayers = true);
+    //Get the default SRS even is from parent. FdoBoolean returns if we have it from parent
+    FdoString* GetDefaultSRS(FdoWmsLayer* layer, FdoBoolean& isParentDefault);
+    // search a bounding box for a SRS
+    FdoWmsBoundingBox* _SearchBoundingBox(FdoWmsBoundingBoxCollection* boundingBoxes, FdoString* SRSName);
+    // search a bounding box for a SRS in the parent layers
+    FdoWmsBoundingBox* _SearchParentBoundingBox(FdoWmsLayer* layer, FdoString* SRSName);
+    // returns if a SRS is supported by the layer (is looking in parents also if is necessarry)
+    bool IsSRSSupportedbyLayer(FdoWmsLayer* layer, FdoString* SRSName);
+    // returns parent bounding boxes. if parent layer was not processed it will be 
+    // using _processGeographicDataLayer but withou processing sub-layers
+    FdoWmsBoundingBoxCollection* GetParentBoundingBoxes(FdoWmsLayer* layer);
+
 	void _buildUpCRS ();
-	void _getTotalExtent (FdoWmsBoundingBox*, const FdoWmsBoundingBox*);
 	void _processLayerSRSName (FdoWmsLayer*, FdoStringCollection*);
 	void _processLayerSRSExtent (FdoWmsLayer*, FdoString*, FdoWmsBoundingBox*, bool);
 	void _removeNonReferedSRS ();

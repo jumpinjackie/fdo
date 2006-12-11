@@ -142,18 +142,6 @@ void FdoWmsCapabilities::_buildUpCRS ()
 	_removeNonReferedSRS ();
 }
 
-void FdoWmsCapabilities::_getTotalExtent (FdoWmsBoundingBox* desBox, const FdoWmsBoundingBox* srcBox)
-{
-	if (desBox->GetMinX () > srcBox->GetMinX ())
-		desBox->SetMaxX (srcBox->GetMinX ());
-	if (desBox->GetMinY () > srcBox->GetMinY ())
-		desBox->SetMaxY (srcBox->GetMinY ());
-	if (desBox->GetMaxX () < srcBox->GetMaxX ())
-		desBox->SetMaxX (srcBox->GetMaxX ());
-	if (desBox->GetMaxY () < srcBox->GetMaxY ())
-		desBox->SetMaxY (srcBox->GetMaxY ());
-}
-
 // helper function to process the SRS information of the WMS layer
 void FdoWmsCapabilities::_processLayerSRSName (FdoWmsLayer* layer, FdoStringCollection* names)
 {
@@ -177,7 +165,6 @@ void FdoWmsCapabilities::_processLayerSRSName (FdoWmsLayer* layer, FdoStringColl
 	}
 }
 
-
 void FdoWmsCapabilities::_processLayerSRSExtent (FdoWmsLayer* layer, FdoString* crsName, FdoWmsBoundingBox* extent, bool bFirstMatch)
 {
 	FdoPtr<FdoWmsBoundingBoxCollection> bboxes = layer->GetBoundingBoxes ();
@@ -200,7 +187,14 @@ void FdoWmsCapabilities::_processLayerSRSExtent (FdoWmsLayer* layer, FdoString* 
 			else
 			{
 				// get the total extents of all the BoundingBoxes referenced to the CRS
-				_getTotalExtent (extent, bbox);
+	            if (extent->GetMinX () > bbox->GetMinX ())
+		            extent->SetMaxX (bbox->GetMinX ());
+	            if (extent->GetMinY () > bbox->GetMinY ())
+		            extent->SetMaxY (bbox->GetMinY ());
+	            if (extent->GetMaxX () < bbox->GetMaxX ())
+		            extent->SetMaxX (bbox->GetMaxX ());
+	            if (extent->GetMaxY () < bbox->GetMaxY ())
+		            extent->SetMaxY (bbox->GetMaxY ());
 			}
 		}
 	}
@@ -294,4 +288,244 @@ void FdoWmsCapabilities::_calcLayerGeographicBoundingBox (FdoWmsLayer* layer, Fd
 FdoOwsRequestMetadata* FdoWmsCapabilities::OnCreateRequestMetadata(FdoString* name)
 {
     return FdoWmsRequestMetadata::Create(name);
+}
+
+// search a bounding box for a SRS
+FdoWmsBoundingBox* FdoWmsCapabilities::_SearchBoundingBox(FdoWmsBoundingBoxCollection* boundingBoxes, FdoString* SRSName)
+{
+    if (boundingBoxes->GetCount() != 0)
+    {
+        for(int i = 0; i < boundingBoxes->GetCount(); i++)
+        {
+            FdoPtr<FdoWmsBoundingBox> pItem = boundingBoxes->GetItem(i);
+            if (!wcscmp(pItem->GetCRS(), SRSName))
+                return FDO_SAFE_ADDREF(pItem.p);
+        }
+    }
+    return NULL;
+}
+
+//Get the default SRS even is from parent. FdoBoolean returns if we have it from parent
+FdoString* FdoWmsCapabilities::GetDefaultSRS(FdoWmsLayer* layer, FdoBoolean& isParentDefault)
+{
+    FdoPtr<FdoStringCollection> pSRSColl = layer->GetCoordinateReferenceSystems();
+    if (pSRSColl != NULL && pSRSColl->GetCount() != 0)
+    {
+        FdoPtr<FdoStringElement> elemString = pSRSColl->GetItem(0);
+        return elemString->GetString();
+    }
+    FdoPtr<FdoWmsLayer> parentLayer = layer->GetParent();
+    if (parentLayer)
+    {
+        isParentDefault = true;
+        return GetDefaultSRS(parentLayer, isParentDefault);
+    }
+    return NULL;
+}
+
+// returns if a SRS is supported by the layer (is looking in parents also if is necessarry)
+bool FdoWmsCapabilities::IsSRSSupportedbyLayer(FdoWmsLayer* layer, FdoString* SRSName)
+{
+    FdoPtr<FdoStringCollection> pSRSColl = layer->GetCoordinateReferenceSystems();
+    for (FdoInt32 i=0; i < pSRSColl->GetCount (); i++)
+    {
+        FdoPtr<FdoStringElement> elemString = pSRSColl->GetItem(i);
+        if (elemString->GetString() == SRSName)
+            return true;
+    }
+    FdoPtr<FdoWmsLayer> parentLayer = layer->GetParent();
+    return (parentLayer != NULL) ? IsSRSSupportedbyLayer(parentLayer, SRSName) : false;
+}
+
+// returns parent bounding boxes. if parent layer was not processed it will be 
+// using _processGeographicDataLayer but withou processing sub-layers
+FdoWmsBoundingBoxCollection* FdoWmsCapabilities::GetParentBoundingBoxes(FdoWmsLayer* layer)
+{
+    FdoPtr<FdoWmsLayer> parentLayer = layer->GetParent();
+    if (parentLayer)
+    {
+        if (!parentLayer->GetLayerProcessed())
+            _processGeographicDataLayer(parentLayer, false);
+
+        FdoPtr<FdoWmsBoundingBoxCollection> boundingBoxes = parentLayer->GetBoundingBoxes();
+        return FDO_SAFE_ADDREF(boundingBoxes.p);
+    }
+    return NULL;
+}
+
+// search a bounding box for a SRS in the parent layers
+FdoWmsBoundingBox* FdoWmsCapabilities::_SearchParentBoundingBox(FdoWmsLayer* layer, FdoString* SRSName)
+{
+    FdoPtr<FdoWmsLayer> parentLayer = layer->GetParent();
+    if (parentLayer)
+    {
+        FdoPtr<FdoWmsBoundingBoxCollection> boundingBoxes = parentLayer->GetBoundingBoxes();
+        FdoPtr<FdoWmsBoundingBox> pBox = _SearchBoundingBox(boundingBoxes, SRSName);
+        if (pBox)
+            return FDO_SAFE_ADDREF(pBox.p);
+        else
+            return _SearchParentBoundingBox(parentLayer, SRSName);
+    }
+    return NULL;
+}
+
+// update SRSes and bounding boxes for a layer (recursive mode)
+void FdoWmsCapabilities::_processGeographicDataLayer(FdoWmsLayer* layer, FdoBoolean processLayers)
+{
+    if (processLayers)
+    {
+        // start with sub-layers in case we must process them
+        FdoPtr<FdoWmsLayerCollection> layers = layer->GetLayers();
+	    for (FdoInt32 i=0; i < layers->GetCount (); i++)
+	    {
+		    FdoPtr<FdoWmsLayer> _layer = layers->GetItem (i);
+		    _processGeographicDataLayer (_layer);
+	    }
+    }
+    // if somehow the layer was already processed don't do it anymore 
+    if (layer->GetLayerProcessed())
+        return;
+    FdoPtr<FdoOwsGeographicBoundingBox> geoBox = layer->GetGeographicBoundingBox();
+    FdoPtr<FdoWmsBoundingBoxCollection> boundingBoxes = layer->GetBoundingBoxes();
+    if (geoBox != NULL)
+    {
+        // in case we have a GeographicBoundingBox try to fill up all supported BoundingBoxes
+        FdoBoolean isParentDefault = false;
+        // get the default SRS even is from parent
+        FdoStringP defaultSRS = GetDefaultSRS(layer, isParentDefault);
+        if (defaultSRS.GetLength() != 0)
+        {
+            // look if we have an bounding box for this default SRS
+            FdoPtr<FdoWmsBoundingBox> pBox = _SearchBoundingBox(boundingBoxes, defaultSRS);
+            if (pBox == NULL)
+            {
+                // in case we don't have a bounding box for the default SRS, try to generate one
+                FdoPtr<FdoWmsBoundingBox> parentBox;
+                // in case we have a default SRS from parent we must see if we have a bounding box on the parent
+                if (isParentDefault)
+                    parentBox = _SearchParentBoundingBox(layer, defaultSRS);
+                pBox = FdoWmsBoundingBox::Create();
+                pBox->SetCRS(defaultSRS);
+                if (parentBox)
+                {
+                    // add parent bounding box 
+                    pBox->SetMinY(parentBox->GetMinY ());
+                    pBox->SetMinX(parentBox->GetMinX ());
+                    pBox->SetMaxX(parentBox->GetMaxX ());
+                    pBox->SetMaxY(parentBox->GetMaxY ());
+                }
+                else
+                {
+                    // generate a new one using default SRS and GeographicBoundingBox
+                    pBox->SetMinY(geoBox->GetSouthBoundLatitude ());
+                    pBox->SetMinX(geoBox->GetWestBoundLongitude ());
+                    pBox->SetMaxX(geoBox->GetEastBoundLongitude ());
+                    pBox->SetMaxY(geoBox->GetNorthBoundLatitude ());
+                }
+                boundingBoxes->Add(pBox);
+            }
+            else
+            {
+                // in case default SRS has a bounding box look if global default SRS is supported by layer
+                // if yes generate a new one using global default SRS and GeographicBoundingBox
+                defaultSRS = FdoWmsGlobals::DefaultEPSGCode;
+                bool isSRSSupported = IsSRSSupportedbyLayer(layer, defaultSRS);
+                if (!isSRSSupported)
+                {
+                    defaultSRS = FdoWmsGlobals::DefaultEPSGCode2;
+                    isSRSSupported = IsSRSSupportedbyLayer(layer, defaultSRS);
+                }
+                if (isSRSSupported)
+                {
+                    // add it only in case we don't have a bounding box for global default SRS
+                    pBox = _SearchBoundingBox(boundingBoxes, defaultSRS);
+                    if (pBox == NULL)
+                    {
+                        pBox = FdoWmsBoundingBox::Create();
+                        pBox->SetCRS(defaultSRS);
+                        pBox->SetMinY(geoBox->GetSouthBoundLatitude ());
+                        pBox->SetMinX(geoBox->GetWestBoundLongitude ());
+                        pBox->SetMaxX(geoBox->GetEastBoundLongitude ());
+                        pBox->SetMaxY(geoBox->GetNorthBoundLatitude ());
+                        boundingBoxes->Add(pBox);
+                    }
+                    else
+                    {
+                        // here we could verify if (geoBox data) == (pBox data)
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        // we don't have a GeographicBoundingBox so try to see what we can support
+        if (boundingBoxes->GetCount() == 0)
+        {
+            // in case layer don't have anything try get data from parent
+            FdoPtr<FdoWmsBoundingBoxCollection> parentBoxes = GetParentBoundingBoxes(layer);
+            if (parentBoxes != NULL && parentBoxes->GetCount())
+            {
+                for(FdoInt32 i = 0; i < parentBoxes->GetCount(); i++)
+                {
+                    FdoPtr<FdoWmsBoundingBox> pItem = parentBoxes->GetItem(i);
+                    FdoPtr<FdoWmsBoundingBox> pBox = FdoWmsBoundingBox::Create();
+                    pBox->SetCRS(pItem->GetCRS());
+                    pBox->SetMinY(pItem->GetMinX());
+                    pBox->SetMinX(pItem->GetMinY());
+                    pBox->SetMaxX(pItem->GetMaxX());
+                    pBox->SetMaxY(pItem->GetMaxY());
+                    boundingBoxes->Add(pBox);
+                }
+            }
+        }
+    }
+    // do not clean the root layer
+    FdoPtr<FdoWmsLayerCollection> layers = GetLayers ();
+    FdoPtr<FdoWmsLayer> rootLayer = layers->GetItem (0);
+    if (layer != rootLayer.p)
+    {
+        // copy root bounding boxes (all layer must have root bounding boxes)
+        if (!rootLayer->GetLayerProcessed())
+            _processGeographicDataLayer(rootLayer, false);
+
+        FdoPtr<FdoWmsBoundingBoxCollection> rootBoxes = rootLayer->GetBoundingBoxes();
+        for(FdoInt32 i = 0; i < rootBoxes->GetCount(); i++)
+        {
+            FdoPtr<FdoWmsBoundingBox> pItem = rootBoxes->GetItem(i);
+            FdoPtr<FdoWmsBoundingBox> pBox = _SearchBoundingBox(boundingBoxes, pItem->GetCRS());
+            if (pBox == NULL)
+            {
+                pBox = FdoWmsBoundingBox::Create();
+                pBox->SetCRS(pItem->GetCRS());
+                pBox->SetMinY(pItem->GetMinY ());
+                pBox->SetMinX(pItem->GetMinX ());
+                pBox->SetMaxX(pItem->GetMaxX ());
+                pBox->SetMaxY(pItem->GetMaxY ());
+                boundingBoxes->Add(pBox);
+            }
+        }
+        // rebuild supported SRS list
+        FdoPtr<FdoStringCollection> pSRSColl = layer->GetCoordinateReferenceSystems();
+        pSRSColl->Clear();
+        for(FdoInt32 i = 0; i < boundingBoxes->GetCount(); i++)
+        {
+            FdoPtr<FdoWmsBoundingBox> pItem = boundingBoxes->GetItem(i);
+            pSRSColl->Add(pItem->GetCRS());
+        }
+    }
+    layer->SetLayerProcessed(true);
+}
+
+// Update all SRS-es and all bounding boxes for layers.
+// update them each layer has all information without querying the parent
+void FdoWmsCapabilities::FillUpGeographicDataLayers()
+{
+	FdoPtr<FdoWmsLayerCollection> layers = GetLayers ();
+    // Start with root to get all sub-layers
+    if (layers->GetCount() > 0) 
+    {
+        FdoPtr<FdoWmsLayer> rootLayer = layers->GetItem (0);
+	    _processGeographicDataLayer (rootLayer);
+	}
 }
