@@ -126,10 +126,10 @@ void FdoOwsOgcFilterSerializer::ProcessComparisonCondition (FdoComparisonConditi
 	{
 		startElement = FdoOwsGlobals::PropertyIsLike;
 		mWriter->WriteStartElement(startElement);
-		mWriter->WriteStartElement(FdoOwsGlobals::PropertyName);
 		mWriter->WriteAttribute(FdoOwsGlobals::wildCard, L"*");
 		mWriter->WriteAttribute(FdoOwsGlobals::singleChar, L"#");
 		mWriter->WriteAttribute(FdoOwsGlobals::escapeChar, L"!");
+		mWriter->WriteStartElement(FdoOwsGlobals::PropertyName);
 
 		if (mPrefix.GetLength())
 		{
