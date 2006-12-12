@@ -36,11 +36,11 @@ SET XALANROOT=%FDOTHIRDPARTY%\apache\xml-xalan\c
 SET XERCESCROOT=%FDOTHIRDPARTY%\apache\xml-xerces\c
 SET NLSDIR=%FDOTHIRDPARTY%\apache\xml-xalan\c\Src\xalanc\NLS
 
-if not exist %SDEHOME% SET SDEHOME="%FDOTHIRDPARTY%\ESRI\ArcSDEClient91\Windows"
-if not exist %SDEHOME% echo Optional FDO environment variable SDEHOME is not set
+if not exist "%SDEHOME%" SET SDEHOME=%FDOTHIRDPARTY%\ESRI\ArcSDEClient91\Windows
+if not exist "%SDEHOME%" echo Optional FDO environment variable SDEHOME is not set
 
-if not exist %FDOMYSQL% SET FDOMYSQL="%PROGRAMFILES%\MySQL\MySQL Server 5.0"
-if not exist %FDOMYSQL% echo Optional FDO environment variable FDOMYSQL is not set
+if not exist "%FDOMYSQL%" SET FDOMYSQL=%PROGRAMFILES%\MySQL\MySQL Server 5.0
+if not exist "%FDOMYSQL%" echo Optional FDO environment variable FDOMYSQL is not set
 
 SET ACTIVENAMECHECK="Microsoft .Net Framework"
 SET ACTIVEPATHCHECK="%windir%\Microsoft.NET\Framework\v2.0.50727"
