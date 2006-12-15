@@ -46,11 +46,10 @@ ArcSDEConnection::ArcSDEConnection (void) :
     m_lCachedRdbmsId (-2L),
     m_lCachedRdbmsBehaviours (0L),
     mTransaction (NULL),
-	mSchemaCollection (NULL), 
 	mSchemaCollectionFullyLoaded (false),
 	mCachedRegistrations(NULL),
     mCachedRegistrationCount(0),
-    mCachedMetadataListCount(NULL),
+    mCachedMetadataListCount(0),
     mCachedMetadataList(0)
 {
 }
