@@ -37,7 +37,7 @@ private:
 
 public:
 
-    // Prevent the use of the Assignment Operation by defining it and not implemeting it.
+    // Prevent the use of the Assignment Operation by defining it and not implementing it.
     // DO NOT IMPLEMENT
     ArcSDEReleaseLockCommand & operator= (const ArcSDEReleaseLockCommand &right);
 

@@ -121,7 +121,7 @@ public:
 
 
 
-    // Prevent the use of the Assignment Operation by defining it and not implemeting it.
+    // Prevent the use of the Assignment Operation by defining it and not implementing it.
     // DO NOT IMPLEMENT
     ArcSDEReader & operator= (const ArcSDEReader &right);
 

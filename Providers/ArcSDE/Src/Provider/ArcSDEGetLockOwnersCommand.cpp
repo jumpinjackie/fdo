@@ -63,8 +63,7 @@ FdoILockOwnersReader* ArcSDEGetLockOwnersCommand::Execute ()
 
     // process the list of registered arcsde tables, checking for locks by user (or not)
     // Read all registered arcsde tables, adding them into their schema:
-    result = SE_registration_get_info_list (connection->GetConnection (), &registrations, &count);
-    handle_sde_err<FdoCommandException> (connection->GetConnection(), result, __FILE__, __LINE__, ARCSDE_REGISTRATION_INFO_GET, "Table registration info could not be retrieved.");
+	connection->GetArcSDERegistrationList(&registrations, &count);
     user_name[0] = '\0'; // cache to speed up processing
     for (int i = 0; i < count; i++)
     {
@@ -87,7 +86,6 @@ FdoILockOwnersReader* ArcSDEGetLockOwnersCommand::Execute ()
             SE_table_free_rowlocks_list (number, ids, users);
         }
     }
-    SE_registration_free_info_list (count, registrations);
 
     return (FDO_SAFE_ADDREF (ret.p));
 }

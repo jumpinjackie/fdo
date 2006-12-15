@@ -27,10 +27,11 @@
 #include <sdeerno.h>
 
 
-ArcSDEDescribeSchemaCommand::ArcSDEDescribeSchemaCommand (FdoIConnection *connection) :
+ArcSDEDescribeSchemaCommand::ArcSDEDescribeSchemaCommand (FdoIConnection *connection, FdoIdentifier* fdoClassIdToLoad) :
     ArcSDECommand<FdoIDescribeSchema> (connection),
     mSchemaName (NULL)
 {
+	mFdoClassIdToLoad = FDO_SAFE_ADDREF(fdoClassIdToLoad);
 }
 
 /** Do not implement the copy constructor. **/
@@ -122,6 +123,7 @@ void ArcSDEDescribeSchemaCommand::addClass (ArcSDEConnection* connection, FdoFea
     CHAR description[SE_MAX_DESCRIPTION_LEN];
     CHAR property[SE_MAX_METADATA_PROPERTY_LEN];
     CHAR value[SE_MAX_METADATA_VALUE_LEN];
+    CHAR metadata_qual_table[SE_MAX_OBJECT_NAME_LEN];
     FdoPtr<FdoPropertyDefinition> property_definiton;
     FdoPtr<FdoDataPropertyDefinition> data_definition;
     FdoPtr<FdoGeometricPropertyDefinition> geometry_definition;
@@ -215,19 +217,23 @@ void ArcSDEDescribeSchemaCommand::addClass (ArcSDEConnection* connection, FdoFea
             // default data type to -1:
             dataType = (FdoDataType)-1L;
 
-            // search for metadata overrides for this column:
+            // search for metadata overrides for this column (only in debug mode, since this is only
+			// required for ApplySchema support which is only supported in debug mode):
+#ifdef _DEBUG
             for (int j = 0; j < num_records; j++)
             {
-                GetArcSDEMetadata(metadata_list[j], classname, property, value, description);
+                GetArcSDEMetadata(metadata_list[j], classname, property, value, description, metadata_qual_table);
 
-                if (0 == connection->RdbmsNamesMatch (property, columns[i].column_name))
+                if ((0 == connection->RdbmsNamesMatch (property, columns[i].column_name))
+                    && (0==strcmp(qualified_table_name, metadata_qual_table))
+                    )
                 {
                     if (0 == strcmp (METADATA_CN_PROPNAME, classname))
                     {
                         multibyte_to_wide (fdoPropertyName, value);
 
                         // store as schema mapping override:
-                        FdoPtr<ArcSDEPropertyMapping> propertyMapping = mConnection->GetPropertyMapping(newFdoClass, fdoPropertyName);
+                        FdoPtr<ArcSDEPropertyMapping> propertyMapping = mConnection->GetPropertyMapping(newFdoClass, fdoPropertyName, false);
                         wchar_t* wColumnName = NULL;
                         multibyte_to_wide (wColumnName, columns[i].column_name);
                         propertyMapping->SetColumnName(wColumnName);
@@ -242,7 +248,7 @@ void ArcSDEDescribeSchemaCommand::addClass (ArcSDEConnection* connection, FdoFea
                         //TODO: validate that underlying ArcSDE type is appropriate for the overriden fdo data type
 
                         // store as schema mapping override:
-                        FdoPtr<ArcSDEPropertyMapping> propertyMapping = mConnection->GetPropertyMapping(newFdoClass, fdoPropertyName);
+                        FdoPtr<ArcSDEPropertyMapping> propertyMapping = mConnection->GetPropertyMapping(newFdoClass, fdoPropertyName, false);
                         propertyMapping->SetColumnType(columns[i].sde_type);
                     }
 
@@ -258,6 +264,8 @@ void ArcSDEDescribeSchemaCommand::addClass (ArcSDEConnection* connection, FdoFea
 
                 }
             }
+#endif
+
 
             if (SE_SHAPE_TYPE == columns[i].sde_type)
             {
@@ -306,7 +314,6 @@ void ArcSDEDescribeSchemaCommand::addClass (ArcSDEConnection* connection, FdoFea
                         {
                             geometry_definition->SetSpatialContextAssociation(ArcSDESpatialContextUtility::SRIDToSpatialContextName(connection, srid));
                         }
-
                         SE_coordref_free (coordRef);
                         SE_layerinfo_free (info);
                     }
@@ -414,7 +421,7 @@ void ArcSDEDescribeSchemaCommand::addClass (ArcSDEConnection* connection, FdoFea
                 wchar_t* wColumnName = NULL;
                 multibyte_to_wide(wColumnName, mbColumnName);
 
-                FdoString* wPropertyName = connection->ColumnToProperty(newFdoClass, wColumnName);
+                FdoString* wPropertyName = connection->ColumnToProperty(newFdoClass, wColumnName, false);
                 classProperty = classProperties->FindItem(wPropertyName);
 
                 if (classProperty && classProperty->GetPropertyType() == FdoPropertyType_DataProperty)
@@ -487,6 +494,7 @@ void ArcSDEDescribeSchemaCommand::addTable (
     CHAR owner[SE_MAX_OWNER_LEN+1];
     CHAR table_name[SE_MAX_SCHEMA_TABLE_LEN+1];
     CHAR database_name[SE_MAX_DATABASE_LEN+1];
+    CHAR metadata_qual_table[SE_MAX_OBJECT_NAME_LEN];
     wchar_t* wdatabase_name = NULL;
     wchar_t* wowner = NULL;
     wchar_t* wtable = NULL;
@@ -511,7 +519,6 @@ void ArcSDEDescribeSchemaCommand::addTable (
         // Get (possibly qualified) table name:
         result = SE_reginfo_get_table_name (registration, qualified_table_name);
         handle_sde_err<FdoSchemaException> (connection->GetConnection(), result, __FILE__, __LINE__, ARCSDE_REGISTRATION_INFO_ITEM, "Table registration info item '%1$ls' could not be retrieved.", L"qualified_table_name");
-
         result = SE_table_parse_qualified_name(connection->GetConnection(), qualified_table_name, database_name, owner, table_name, NULL, FALSE);
         handle_sde_err<FdoSchemaException> (connection->GetConnection(), result, __FILE__, __LINE__, ARCSDE_REGISTRATION_INFO_ITEM, "Table registration info item '%1$ls' could not be retrieved.", L"qualified_table_name");
 
@@ -543,6 +550,7 @@ void ArcSDEDescribeSchemaCommand::addTable (
         fdoClassName = wtable;
         fdoClassDesc = NULL;
 
+
         // Read this table's metadata & interpret it:
         // NOTE: ArcSDE 9.0/9.1 client on Oracle contains a bug which causes SE_table_metadata_get_info_list() to
         //       fail to retrieve metadata for tables not owned by the connected user.
@@ -558,17 +566,16 @@ void ArcSDEDescribeSchemaCommand::addTable (
             sprintf(whereClause, "OBJECT_OWNER = '%s' AND OBJECT_NAME = '%s'",
                 owner, table_name);
 
-        // Get this table's metadata:
-        result = SE_metadata_get_info_list (connection->GetConnection (),
-            whereClause, &metadata_list, &count);
 
-        if (result == SE_SUCCESS)  // NOTE: may get error here due to ArcSDE bugs; better to ignore the error than throw away the whole table
+        // Get this table's metadata (only in debug mode, since this is only required for
+		// ApplySchema support which is only supported in debug mode):
+#ifdef _DEBUG
+        connection->GetArcSDEMetadataList(&metadata_list, &count);
+        for (int i = 0; i < count; i++)
         {
-
-            for (int i = 0; i < count; i++)
+            GetArcSDEMetadata(metadata_list[i], classname, property, value, description, metadata_qual_table);
+            if (0==strcmp(metadata_qual_table, qualified_table_name))
             {
-                GetArcSDEMetadata(metadata_list[i], classname, property, value, description);
-
                 if (0==strcmp(classname, METADATA_CN_CLASSSCHEMA))
                 {
                     wchar_t* fdoSchemaNameTemp = NULL;
@@ -583,53 +590,61 @@ void ArcSDEDescribeSchemaCommand::addTable (
 
                 if (0==strcmp(classname, METADATA_CN_CLASSDESC))
                     multibyte_to_wide (fdoClassDesc, value);
-
-                // TODO: METADATA_CN_CLASSATTRIBUTE, METADATA_CN_CLASSBASE, METADATA_CN_CLASSABSTRACT
             }
+
+            // TODO: METADATA_CN_CLASSATTRIBUTE, METADATA_CN_CLASSBASE, METADATA_CN_CLASSABSTRACT
         }
+#endif
 
 
-        // Store the overrides always:
-        FdoPtr<ArcSDEClassMapping> classMapping = mConnection->GetClassMapping(fdoSchemaName, fdoClassName);
-        classMapping->SetDatabaseName(wdatabase_name);
-        classMapping->SetOwnerName(wowner);
-        classMapping->SetTableName(wtable);
+		// Get or create the schema this class belongs in:
+		schema = findOrCreateSchema (schemas, fdoSchemaName, fdoSchemaDesc);
+		FdoPtr<FdoClassCollection> classes = schema->GetClasses();
+		FdoPtr<FdoClassDefinition> preloadedClass = classes->FindItem(fdoClassName);
 
+		// optimization: only load information for a specific class if only that class is requested:
+		if ((preloadedClass==NULL)
+		  && ((mFdoClassIdToLoad==NULL)
+		    || ((0==wcscmp(mFdoClassIdToLoad->GetSchemaName(),fdoSchemaName)) && (0==wcscmp(mFdoClassIdToLoad->GetName(),fdoClassName)))))
+		{
+			// Store the overrides always:
+			FdoPtr<ArcSDEClassMapping> classMapping = mConnection->GetClassMapping(fdoSchemaName, fdoClassName, false);
+			classMapping->SetDatabaseName(wdatabase_name);
+			classMapping->SetOwnerName(wowner);
+			classMapping->SetTableName(wtable);
 
-        // Get or create the schema this class belongs in:
-        schema = findOrCreateSchema (schemas, fdoSchemaName, fdoSchemaDesc);
+			// if we don't have a class decription yet, get a default description from class registration info:
+			if (NULL == fdoClassDesc)
+			{
+				result = SE_reginfo_get_description (registration, description);
+				if (SE_SUCCESS == result)
+					multibyte_to_wide (fdoClassDesc, description);
+				if (NULL == fdoClassDesc)
+					fdoClassDesc = L"Default class description";
+			}
 
-        // if we don't have a class decription yet, get a default description from class registration info:
-        if (NULL == fdoClassDesc)
-        {
-            result = SE_reginfo_get_description (registration, description);
-            if (SE_SUCCESS == result)
-                multibyte_to_wide (fdoClassDesc, description);
-            if (NULL == fdoClassDesc)
-                fdoClassDesc = L"Default class description";
-        }
+			// Create the FDO class and its FDO properties:
+			addClass (connection, schema, fdoClassName, fdoClassDesc, qualified_table_name, registration, metadata_list, count);
 
-        // Create the FDO class and its FDO properties:
-        addClass (connection, schema, fdoClassName, fdoClassDesc, qualified_table_name, registration, metadata_list, count);
-
-        // Populate the schema attributes dictionary:
-        //TODO: do we want to try to expose native ArcSDE metadata as schema attributes?
-        /*
-        dictionary = schema->GetAttributes ();
-        for (int i = 0; i < count; i++)
-        {
-            GetArcSDEMetadata(metadata_list[i], classname, property, value, NULL);
-            if (   (0 != strcmp (SCHEMA_KEYWORD, classname))
-                && (0 != strcmp (CLASS_KEYWORD, classname))
-                && (0 != strcmp (COLUMN_KEYWORD, classname)))
-            {
-                multibyte_to_wide (wproperty, property);
-                multibyte_to_wide (wvalue, value);
-                if ((NULL != wproperty) && (NULL != wvalue))
-                    dictionary->Add (wproperty, wvalue);
-            }
-        }
-        */
+			// Populate the schema attributes dictionary:
+			//TODO: do we want to try to expose native ArcSDE metadata as schema attributes?
+			/*
+			dictionary = schema->GetAttributes ();
+			for (int i = 0; i < count; i++)
+			{
+				GetArcSDEMetadata(metadata_list[i], classname, property, value, NULL);
+				if (   (0 != strcmp (SCHEMA_KEYWORD, classname))
+					&& (0 != strcmp (CLASS_KEYWORD, classname))
+					&& (0 != strcmp (COLUMN_KEYWORD, classname)))
+				{
+					multibyte_to_wide (wproperty, property);
+					multibyte_to_wide (wvalue, value);
+					if ((NULL != wproperty) && (NULL != wvalue))
+						dictionary->Add (wproperty, wvalue);
+				}
+			}
+			*/
+		}
     }
     catch (FdoException *e)
     {
@@ -644,9 +659,6 @@ void ArcSDEDescribeSchemaCommand::addTable (
                 classes->Remove(addedClass);
         }
     }
-
-    if (NULL != metadata_list)
-        SE_table_metadata_free_info_list (count, metadata_list);
 }
 
 
@@ -673,22 +685,15 @@ FdoFeatureSchemaCollection* ArcSDEDescribeSchemaCommand::Execute ()
 
     // Load schemas, unless already cached:
     //TODO: need to check database to see if it has changed since it was cached!
-    FdoPtr<FdoFeatureSchemaCollection> cachedSchemas = connection->GetSchemaCollection (false);
-    if (cachedSchemas == NULL)
+	bool bIsFullyLoaded = false;
+    FdoPtr<FdoFeatureSchemaCollection> cachedSchemas = connection->GetSchemaCollection (NULL, false, &bIsFullyLoaded);
+    FdoPtr<FdoPhysicalSchemaMappingCollection> schemaMappings = connection->GetSchemaMappingCollection(NULL, NULL, false);
+    if (!bIsFullyLoaded)
     {
-        // Read schema from database:
-        cachedSchemas = FdoFeatureSchemaCollection::Create (NULL);
-
-        // Reset schema mapping overrides to an empty collection:
-        FdoPtr<FdoPhysicalSchemaMappingCollection> schemaMappings = FdoPhysicalSchemaMappingCollection::Create();
-        connection->SetSchemaMappingCollection(schemaMappings);
-
         // Read all registered arcsde tables, adding them into their schema:
-        result = SE_registration_get_info_list (connection->GetConnection (), &registrations, &count);
-        handle_sde_err<FdoSchemaException> (connection->GetConnection(), result, __FILE__, __LINE__, ARCSDE_REGISTRATION_INFO_GET, "Table registration info could not be retrieved.");
+        connection->GetArcSDERegistrationList(&registrations, &count);
         for (int i = 0; i < count; i++)
             addTable (connection, cachedSchemas, registrations[i]);
-        SE_registration_free_info_list (count, registrations);
 
         // Mark all schemas as "unchanged":
         size = cachedSchemas->GetCount ();
@@ -699,7 +704,7 @@ FdoFeatureSchemaCollection* ArcSDEDescribeSchemaCommand::Execute ()
         }
 
         // Cache these schemas on this connection:
-        connection->SetSchemaCollection (cachedSchemas);
+        connection->SetSchemaCollection (cachedSchemas, mFdoClassIdToLoad==NULL);
     }
 
     // clone the relevant schemas from the cached schema collection:
@@ -714,7 +719,7 @@ FdoFeatureSchemaCollection* ArcSDEDescribeSchemaCommand::Execute ()
 //    CHAR description[SE_MAX_DESCRIPTION_LEN];
 //    CHAR property[SE_MAX_METADATA_PROPERTY_LEN];
 //    CHAR value[SE_MAX_METADATA_VALUE_LEN];
-void ArcSDEDescribeSchemaCommand::GetArcSDEMetadata(const SE_METADATAINFO &metadata, CHAR* classname, CHAR* property, CHAR* value, CHAR* description)
+void ArcSDEDescribeSchemaCommand::GetArcSDEMetadata(const SE_METADATAINFO &metadata, CHAR* classname, CHAR* property, CHAR* value, CHAR* description, CHAR* metadata_qual_table)
 {
     LONG result = 0L;
 
@@ -739,6 +744,12 @@ void ArcSDEDescribeSchemaCommand::GetArcSDEMetadata(const SE_METADATAINFO &metad
     if (NULL != description)
     {
         result = SE_metadatainfo_get_description (metadata, description);
+        handle_sde_err<FdoSchemaException>(result, __FILE__, __LINE__, ARCSDE_METADATA_MANIPULATE_FAILED, "Failed to get or set ArcSDE metadata.");
+    }
+
+    if (NULL != metadata_qual_table)
+    {
+        result = SE_metadatainfo_get_object_name (metadata, metadata_qual_table);
         handle_sde_err<FdoSchemaException>(result, __FILE__, __LINE__, ARCSDE_METADATA_MANIPULATE_FAILED, "Failed to get or set ArcSDE metadata.");
     }
 }

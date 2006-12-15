@@ -43,9 +43,15 @@ ArcSDEConnection::ArcSDEConnection (void) :
     mPartialConnection (false),
     mActiveVersion (-1L),
     mActiveState (-1L),
-    m_lCachedRdbmsId(-2L),
-    m_lCachedRdbmsBehaviours(0L),
-    mTransaction (NULL)
+    m_lCachedRdbmsId (-2L),
+    m_lCachedRdbmsBehaviours (0L),
+    mTransaction (NULL),
+	mSchemaCollection (NULL), 
+	mSchemaCollectionFullyLoaded (false),
+	mCachedRegistrations(NULL),
+    mCachedRegistrationCount(0),
+    mCachedMetadataListCount(NULL),
+    mCachedMetadataList(0)
 {
 }
 
@@ -225,6 +231,7 @@ FdoConnectionState ArcSDEConnection::Open ()
     LONG result;
     FdoConnectionState ret;
 
+
     // Disconnect if currently 'partially' connected (but not if already 'fully' connected):
     if (GetConnectionState() == FdoConnectionState_Pending)
         Close();
@@ -349,7 +356,19 @@ FdoConnectionState ArcSDEConnection::Open ()
 /// <returns>Returns nothing</returns> 
 void ArcSDEConnection::Close ()
 {
-    // Clean up:
+	// Clean up:
+	if (mCachedRegistrations != NULL)
+	{
+		SE_registration_free_info_list (mCachedRegistrationCount, mCachedRegistrations);
+		mCachedRegistrationCount = 0;
+		mCachedRegistrations = NULL;
+	}
+    if (NULL != mCachedMetadataList)
+    {
+        SE_table_metadata_free_info_list (mCachedMetadataListCount, mCachedMetadataList);
+        mCachedMetadataList = NULL;
+        mCachedMetadataListCount = 0;
+    }
     if (NULL != mConnection)
     {
         SetActiveVersion (-1L);
@@ -358,6 +377,7 @@ void ArcSDEConnection::Close ()
     }
     mPartialConnection = false;
     mSchemaCollection = NULL;
+	mSchemaCollectionFullyLoaded = false;
     mSchemaMappingCollection = NULL;
     m_lCachedRdbmsId = -2;  // -2 means not-yet-cached
     m_sCachedRdbmsSystemTablePrefix = L"";
@@ -526,8 +546,8 @@ FdoClassDefinition* ArcSDEConnection::GetRequestedClassDefinition (FdoIdentifier
     if (NULL == name)
         throw FdoException::Create (NlsMsgGet(ARCSDE_CLASS_NAME_EMPTY, "Unexpected empty or null FDO class name."));
 
-    // get the schemas we know about
-    schemas = GetSchemaCollection ();
+    // Load information for the requested class only, to optimize performance:
+    schemas = GetSchemaCollection (name);
 
     // get the schema name
     schema = NULL;
@@ -581,31 +601,69 @@ FdoClassDefinition* ArcSDEConnection::GetRequestedClassDefinition (FdoIdentifier
 }
 
 // Returns the current schema.
-FdoFeatureSchemaCollection* ArcSDEConnection::GetSchemaCollection (bool bAutoLoad)
+FdoFeatureSchemaCollection* ArcSDEConnection::GetSchemaCollection (FdoIdentifier* name, bool bAutoLoad, bool* bIsFullyLoaded)
 {
-    if ((mSchemaCollection == NULL) && bAutoLoad)
+    if (!mSchemaCollectionFullyLoaded && bAutoLoad && (name==NULL || !ClassAlreadyLoaded(name->GetSchemaName(), name->GetName())))
     {
         // use describe schema to get the list of all classes & schema mappings
-        FdoPtr<FdoIDescribeSchema> describe = new ArcSDEDescribeSchemaCommand (this);
-        mSchemaCollection = describe->Execute ();
+        FdoPtr<FdoIDescribeSchema> describe = new ArcSDEDescribeSchemaCommand (this, name);
+        FdoPtr<FdoFeatureSchemaCollection> dummy = describe->Execute ();
     }
 
+    // Set to empty collection if not set:
+	if (mSchemaCollection == NULL)
+		mSchemaCollection = FdoFeatureSchemaCollection::Create (NULL);
+
+	if (bIsFullyLoaded!=NULL)
+		*bIsFullyLoaded = mSchemaCollectionFullyLoaded;
     return (FDO_SAFE_ADDREF(mSchemaCollection.p));
 }
 
 // Stores the schema as the current schema.
-void ArcSDEConnection::SetSchemaCollection (FdoFeatureSchemaCollection* schemaCollection)
+void ArcSDEConnection::SetSchemaCollection (FdoFeatureSchemaCollection* schemaCollection, bool bFullyLoaded)
 {
     mSchemaCollection = FDO_SAFE_ADDREF(schemaCollection);
+	mSchemaCollectionFullyLoaded = bFullyLoaded;
+
+	// If schema is being set to NULL (due to ApplySchema), de-cache the schema registration info since
+	// it is now stale:
+	if (schemaCollection==NULL)
+	{
+        if (mCachedRegistrations != NULL)
+        {
+    		SE_registration_free_info_list (mCachedRegistrationCount, mCachedRegistrations);
+	    	mCachedRegistrationCount = 0;
+		    mCachedRegistrations = NULL;
+        }
+
+        if (mCachedMetadataList != NULL)
+        {
+            SE_table_metadata_free_info_list (mCachedMetadataListCount, mCachedMetadataList);
+            mCachedMetadataList = NULL;
+            mCachedMetadataListCount = 0;
+        }
+	}
 }
 
 // Returns the current schema mapping collection.
-FdoPhysicalSchemaMappingCollection* ArcSDEConnection::GetSchemaMappingCollection (bool bAutoLoad)
+FdoPhysicalSchemaMappingCollection* ArcSDEConnection::GetSchemaMappingCollection (FdoString* fdoSchemaName, FdoString* fdoClassName, bool bAutoLoad)
 {
-    if ((mSchemaMappingCollection == NULL) && bAutoLoad)
+    // Create an empty collection if not yet done so.
+    if (mSchemaMappingCollection == NULL)
+        mSchemaMappingCollection = FdoPhysicalSchemaMappingCollection::Create();
+
+    if (!mSchemaCollectionFullyLoaded && bAutoLoad && !ClassAlreadyLoaded(fdoSchemaName, fdoClassName))
     {
+		// If a class name is specified, this is an optimized case:
+		FdoPtr<FdoIdentifier> classId;
+		if (fdoClassName != NULL)
+		{
+			FdoStringP qualifiedClassName = FdoStringP::Format(L"%ls:%ls", fdoSchemaName, fdoClassName);
+			classId = FdoIdentifier::Create(qualifiedClassName);
+		}
+
         // use describe schema to get the list of all classes & schema mappings
-        FdoPtr<FdoIDescribeSchema> describe = new ArcSDEDescribeSchemaCommand (this);
+        FdoPtr<FdoIDescribeSchema> describe = new ArcSDEDescribeSchemaCommand (this, classId);
         FdoPtr<FdoFeatureSchemaCollection> dummy = describe->Execute ();
     }
 
@@ -618,10 +676,10 @@ void ArcSDEConnection::SetSchemaMappingCollection (FdoPhysicalSchemaMappingColle
     mSchemaMappingCollection = FDO_SAFE_ADDREF(schemaMappingCollection);
 }
 
-ArcSDESchemaMapping* ArcSDEConnection::GetSchemaMapping(FdoString* fdoSchemaName)
+ArcSDESchemaMapping* ArcSDEConnection::GetSchemaMapping(FdoString* fdoSchemaName, FdoString* fdoClassName, bool bAutoLoad)
 {
     FdoPtr<ArcSDESchemaMapping> schemaMapping;
-    FdoPtr<FdoPhysicalSchemaMappingCollection> schemaMappings = this->GetSchemaMappingCollection();
+    FdoPtr<FdoPhysicalSchemaMappingCollection> schemaMappings = this->GetSchemaMappingCollection(fdoSchemaName, fdoClassName, bAutoLoad);
 
     schemaMapping = (ArcSDESchemaMapping*)schemaMappings->GetItem(ARCSDE_PROVIDER_NAME, fdoSchemaName);
     if (schemaMapping == NULL)
@@ -634,9 +692,9 @@ ArcSDESchemaMapping* ArcSDEConnection::GetSchemaMapping(FdoString* fdoSchemaName
     return FDO_SAFE_ADDREF(schemaMapping.p);
 }
 
-ArcSDEClassMapping* ArcSDEConnection::GetClassMapping(FdoString* fdoSchemaName, FdoString *fdoClassName)
+ArcSDEClassMapping* ArcSDEConnection::GetClassMapping(FdoString* fdoSchemaName, FdoString *fdoClassName, bool bAutoLoad)
 {
-    FdoPtr<ArcSDESchemaMapping> schemaMapping = GetSchemaMapping(fdoSchemaName);
+    FdoPtr<ArcSDESchemaMapping> schemaMapping = GetSchemaMapping(fdoSchemaName, fdoClassName, bAutoLoad);
     FdoPtr<ArcSDEClassMappingCollection> classMappings = schemaMapping->GetClasses();
     FdoPtr<ArcSDEClassMapping> classMapping;
 
@@ -652,10 +710,10 @@ ArcSDEClassMapping* ArcSDEConnection::GetClassMapping(FdoString* fdoSchemaName, 
     return FDO_SAFE_ADDREF(classMapping.p);
 }
 
-ArcSDEPropertyMapping* ArcSDEConnection::GetPropertyMapping(FdoClassDefinition* definition, FdoString *fdoPropertyName)
+ArcSDEPropertyMapping* ArcSDEConnection::GetPropertyMapping(FdoClassDefinition* definition, FdoString *fdoPropertyName, bool bAutoLoad)
 {
     FdoPtr<FdoFeatureSchema> schema = definition->GetFeatureSchema ();
-    FdoPtr<ArcSDEClassMapping> classMapping = GetClassMapping(schema->GetName (), definition->GetName ());
+    FdoPtr<ArcSDEClassMapping> classMapping = GetClassMapping(schema->GetName (), definition->GetName (), bAutoLoad);
     FdoPtr<ArcSDEPropertyMappingCollection> propertyMappings = classMapping->GetProperties();
     FdoPtr<ArcSDEPropertyMapping> propertyMapping;
 
@@ -834,7 +892,7 @@ FdoClassDefinition* ArcSDEConnection::TableToClass (FdoString* wQualifiedTableNa
     return (FDO_SAFE_ADDREF(ret.p));
 }
 
-FdoString* ArcSDEConnection::ColumnToProperty (FdoClassDefinition* definition, FdoString* columnName)
+FdoString* ArcSDEConnection::ColumnToProperty (FdoClassDefinition* definition, FdoString* columnName, bool bAutoLoad)
 {
     FdoString* ret;
 
@@ -842,7 +900,7 @@ FdoString* ArcSDEConnection::ColumnToProperty (FdoClassDefinition* definition, F
 
     // check overrides
     FdoPtr<FdoFeatureSchema> schema = definition->GetFeatureSchema ();
-    FdoPtr<ArcSDESchemaMapping> schemaMapping = GetSchemaMapping (schema->GetName ());
+    FdoPtr<ArcSDESchemaMapping> schemaMapping = GetSchemaMapping (schema->GetName (), definition->GetName(), bAutoLoad);
     FdoPtr<ArcSDEClassMappingCollection> classMappings = schemaMapping->GetClasses ();
     ArcSDEClassMapping* classMapping = classMappings->FindItem (definition->GetName ());
     if (NULL != classMapping)
@@ -1267,3 +1325,52 @@ LONG ArcSDEConnection::ConnectToArcSDE(const CHAR* server, const CHAR* instance,
     return result;
 }
 
+
+void ArcSDEConnection::GetArcSDERegistrationList(SE_REGINFO** registrations, long *count)
+{
+	// Load registration list, if required:
+	if (mCachedRegistrations == NULL)
+	{
+	    long result = SE_registration_get_info_list (mConnection, &mCachedRegistrations, &mCachedRegistrationCount);
+		handle_sde_err<FdoCommandException> (mConnection, result, __FILE__, __LINE__, ARCSDE_REGISTRATION_INFO_GET, "Table registration info could not be retrieved.");
+	}
+
+	// Return a pointer to internal cache:
+	*registrations = mCachedRegistrations;
+	*count = mCachedRegistrationCount;
+}
+
+
+void ArcSDEConnection::GetArcSDEMetadataList(SE_METADATAINFO** pMetadataList, long* count)
+{
+    if (mCachedMetadataList == NULL)
+    {
+        long result = SE_metadata_get_info_list (GetConnection (),
+            "NOT CLASS_NAME='SDE internal'", &mCachedMetadataList, &mCachedMetadataListCount);
+        if (result != SE_SUCCESS)  // NOTE: may get error here due to ArcSDE bugs; better to ignore the error than throw away the whole table
+        {
+            mCachedMetadataList = NULL;
+            mCachedMetadataListCount = 0;
+        }
+    }
+
+    *pMetadataList = mCachedMetadataList;
+    *count = mCachedMetadataListCount;
+}
+
+bool ArcSDEConnection::ClassAlreadyLoaded(FdoString* fdoSchemaName, FdoString* fdoClassName)
+{
+    if (mSchemaCollection && fdoSchemaName && fdoClassName)
+    {
+        FdoPtr<FdoFeatureSchema> alreadyLoadedSchema = mSchemaCollection->FindItem(fdoSchemaName);
+        if (alreadyLoadedSchema)
+        {
+            FdoPtr<FdoClassCollection> classes = alreadyLoadedSchema->GetClasses();
+            FdoPtr<FdoClassDefinition> alreadyLoadedClass = classes->FindItem(fdoClassName);
+            if (alreadyLoadedClass)
+                return true;
+        }
+    }
+
+    return false;
+}

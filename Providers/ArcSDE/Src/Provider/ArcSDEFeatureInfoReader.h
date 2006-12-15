@@ -33,11 +33,11 @@ private:
     
     ArcSDEFeatureInfoReader (FdoPropertyValueCollection *info, FdoClassDefinition *definition);
 
-    // Prevent the use of the Copy Constructor by defining it and not implemeting it.
+    // Prevent the use of the Copy Constructor by defining it and not implementing it.
     // DO NOT IMPLEMENT
     ArcSDEFeatureInfoReader (const ArcSDEFeatureInfoReader &right);
 
-    // Prevent the use of the Assignment Operation by defining it and not implemeting it.
+    // Prevent the use of the Assignment Operation by defining it and not implementing it.
     // DO NOT IMPLEMENT
     ArcSDEFeatureInfoReader& operator= (const ArcSDEFeatureInfoReader &right);
 

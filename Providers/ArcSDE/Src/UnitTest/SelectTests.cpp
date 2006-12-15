@@ -123,8 +123,13 @@ void SelectTests::simple ()
 	    IDs->Add(areaID);
 	    IDs->Add(nameID);
         reader = select->Execute ();
+		long lCount=0;
         while (reader->ReadNext ())
+		{
+			lCount++;
             ProcessFeature (reader, IDs);
+		}
+		printf("\nFeatures Read=%d\n", lCount);
         reader->Close();
     }
     catch (FdoException *e)

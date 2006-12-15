@@ -26,16 +26,18 @@ class ArcSDEDescribeSchemaCommand :
 {
     friend class ArcSDEConnection;
 
+private:
     wchar_t* mSchemaName;
+	FdoPtr<FdoIdentifier> mFdoClassIdToLoad;
 
 private:
     //
-    // Prevent the use of the copy constructor by definning it and not implemeting it.
+    // Prevent the use of the copy constructor by defining it and not implementing it.
     // DO NOT IMPLEMENT
     ArcSDEDescribeSchemaCommand (const ArcSDEDescribeSchemaCommand &right);
 
     // Constructs an instance of a DescribeSchema command using the given connection.
-    ArcSDEDescribeSchemaCommand (FdoIConnection* connection);
+    ArcSDEDescribeSchemaCommand (FdoIConnection* connection, FdoIdentifier* fdoClassIdToLoad=NULL);
 
 protected:
     // Default destructor for DescribeSchema command.
@@ -45,7 +47,7 @@ protected:
     // Misc protected functions:
     ////////////////////////////////////////////
 
-    void GetArcSDEMetadata(const SE_METADATAINFO &metadata, CHAR* classname, CHAR* property, CHAR* value, CHAR* description);
+    void GetArcSDEMetadata(const SE_METADATAINFO &metadata, CHAR* classname, CHAR* property, CHAR* value, CHAR* description, CHAR* metadata_qual_table);
     void addClass (ArcSDEConnection* connection, FdoFeatureSchema* schema, wchar_t* class_name, wchar_t* class_description,
         CHAR* qualified_table_name, SE_REGINFO registration, SE_METADATAINFO *metadata_list, LONG num_records);
     void addTable (ArcSDEConnection* connection, FdoFeatureSchemaCollection* schemas, SE_REGINFO registration);
@@ -60,7 +62,7 @@ protected:
 
 public:
     //
-    // Prevent the use of the Assignment Operation by definning it and not implemeting it.
+    // Prevent the use of the Assignment Operation by defining it and not implementing it.
     // DO NOT IMPLEMENT
     ArcSDEDescribeSchemaCommand & operator= (const ArcSDEDescribeSchemaCommand &right);
 

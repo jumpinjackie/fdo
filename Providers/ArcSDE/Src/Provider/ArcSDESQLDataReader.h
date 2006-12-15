@@ -32,7 +32,7 @@ public:
     ArcSDESQLDataReader (ArcSDEConnection *connection, SE_STREAM stream);
     virtual ~ArcSDESQLDataReader (void);
 
-    // Prevent the use of the Assignment Operation by definning it and not implemeting it.
+    // Prevent the use of the Assignment Operation by defining it and not implementing it.
     // DO NOT IMPLEMENT
     ArcSDESQLDataReader & operator= (const ArcSDESQLDataReader &right);
 

@@ -64,6 +64,11 @@ protected:
      * Cached schema information.
      */
     FdoPtr<FdoFeatureSchemaCollection> mSchemaCollection;
+	bool mSchemaCollectionFullyLoaded;
+    SE_REGINFO *mCachedRegistrations;
+    LONG mCachedRegistrationCount;
+    SE_METADATAINFO *mCachedMetadataList;
+    LONG mCachedMetadataListCount;
 
     /**
      * Cached schema mapping information.
@@ -220,26 +225,26 @@ public:
     FdoClassDefinition* GetRequestedClassDefinition (FdoIdentifier* name);
 
     // Returns the current schema.
-    FdoFeatureSchemaCollection* GetSchemaCollection (bool bAutoLoad = true);
+    FdoFeatureSchemaCollection* GetSchemaCollection (FdoIdentifier* name = NULL, bool bAutoLoad = true, bool* bIsFullyLoaded=NULL);
 
     // Stores the schema collection as the current schema collection.
-    void SetSchemaCollection (FdoFeatureSchemaCollection* schemaCollection);
+    void SetSchemaCollection (FdoFeatureSchemaCollection* schemaCollection, bool bFullyLoaded);
 
     // Returns the current schema mapping collection.
-    FdoPhysicalSchemaMappingCollection* GetSchemaMappingCollection (bool bAutoLoad = true);
+    FdoPhysicalSchemaMappingCollection* GetSchemaMappingCollection (FdoString* fdoSchemaName=NULL, FdoString* fdoClassName=NULL, bool bAutoLoad = true);
 
     // Sets the current schema mapping collection.
     void SetSchemaMappingCollection (FdoPhysicalSchemaMappingCollection* schemaCollection);
 
     // Schema Mapping utility methods:
-    ArcSDESchemaMapping* GetSchemaMapping (FdoString *fdoSchemaName);
-    ArcSDEClassMapping* GetClassMapping (FdoString *fdoSchemaName, FdoString *fdoClassName);
-    ArcSDEPropertyMapping* GetPropertyMapping (FdoClassDefinition* definition, FdoString *fdoPropertyName);
+    ArcSDESchemaMapping* GetSchemaMapping (FdoString *fdoSchemaName, FdoString* fdoClassName=NULL, bool bAutoLoad=true);
+    ArcSDEClassMapping* GetClassMapping (FdoString *fdoSchemaName, FdoString *fdoClassName, bool bAutoLoad=true);
+    ArcSDEPropertyMapping* GetPropertyMapping (FdoClassDefinition* definition, FdoString *fdoPropertyName, bool bAutoLoad=true);
     ArcSDEIndexMapping* GetIndexMapping (FdoString *fdoSchemaName, FdoString *fdoClassName, FdoString *arcSdeIndexName);
     void ClassToTable (CHAR* table, FdoClassDefinition* definition);
     void PropertyToColumn (CHAR* column, FdoClassDefinition* definition, FdoIdentifier* property);
     FdoClassDefinition* TableToClass (FdoString* wQualifiedTableName);
-    FdoString* ColumnToProperty (FdoClassDefinition* definition, FdoString* columnName);
+    FdoString* ColumnToProperty (FdoClassDefinition* definition, FdoString* columnName, bool bAutoLoad=true);
 
     // Schema utility methods:
     FdoPropertyDefinition* GetProperty (FdoClassDefinition* definition, FdoString *fdoPropertyName);
@@ -273,6 +278,15 @@ public:
     // Transaction support
     FdoITransaction* GetTransaction ();
     void SetTransaction (FdoITransaction* transaction);
+
+	// Get cached registration list:
+	void GetArcSDERegistrationList(SE_REGINFO** registrations, long *count);
+
+    // Get cached metadata list:
+    void GetArcSDEMetadataList(SE_METADATAINFO** pMetadataList, long *pCount);
+
+    // Returns true if-and-only-if the given schemaname and classname are not NULL and have already been cached:
+    bool ClassAlreadyLoaded(FdoString* fdoSchemaName, FdoString* fdoClassName);
 };
 
 #endif // ARCSDECONNECTION_H

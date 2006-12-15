@@ -828,7 +828,7 @@ void ArcSDEApplySchemaCommand::Execute ()
 
     // Clear the schema cache, to force reload during next DescribeSchema:
     FdoPtr<ArcSDEConnection> connection = static_cast<ArcSDEConnection*>(GetConnection ());
-    connection->SetSchemaCollection (NULL);
+    connection->SetSchemaCollection (NULL, false);
     connection->SetSchemaMappingCollection (NULL);
 }
 
