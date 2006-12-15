@@ -69,7 +69,7 @@ public:
     //          FdoString* - property name (if NULL then all objects in the class are deleted ).
     //          FdoDataType - property type
     //          FdoDataValue - property value. All objects whose given property has this value are deleted.
-    static void DeleteObjects( FdoIConnection* connection, FdoStringP schemaName, FdoStringP className, ... );
+    static void DeleteObjects( FdoIConnection* connection, FdoStringP schemaName, FdoString* className, ... );
     //      connection - object is inserted into the datastore for this connection
     //      insertCmd - updated to the insert command that inserted the object. The same insertCmd can
     //          be re-used by repeated passing it to InsertObject

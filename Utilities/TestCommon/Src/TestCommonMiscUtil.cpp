@@ -102,7 +102,7 @@ FdoPtr<FdoIInsert>  TestCommonMiscUtil::InsertObject( FdoIConnection* connection
     return insertCommand;
 }
 
-void TestCommonMiscUtil::DeleteObjects( FdoIConnection* connection, FdoStringP schemaName, FdoStringP className, ... )
+void TestCommonMiscUtil::DeleteObjects( FdoIConnection* connection, FdoStringP schemaName, FdoString* className, ... )
 {
     va_list arguments;
 
@@ -135,15 +135,15 @@ FdoPtr<FdoDataValue> TestCommonMiscUtil::ArgsToDataValue( va_list& arguments )
     FdoFloat floatArg;
     FdoString* strArg;
 
-    FdoDataType dataType = (FdoDataType) va_arg(arguments,FdoDataType);
+    FdoDataType dataType = (FdoDataType) va_arg(arguments,int);
 
     switch ( dataType ) {
     case FdoDataType_Boolean:
-        boolArg = (FdoBoolean) va_arg(arguments,FdoBoolean);
+        boolArg = (FdoBoolean) va_arg(arguments,int);
         dataValue = FdoDataValue::Create(boolArg);
         break;
     case FdoDataType_Byte:
-        byteArg = (FdoByte) va_arg(arguments,FdoByte);
+        byteArg = (FdoByte) va_arg(arguments,int);
         dataValue = FdoDataValue::Create(byteArg);
         break;
     case FdoDataType_Int32:
@@ -151,7 +151,7 @@ FdoPtr<FdoDataValue> TestCommonMiscUtil::ArgsToDataValue( va_list& arguments )
         dataValue = FdoDataValue::Create(int32Arg);
         break;
     case FdoDataType_Single:
-        floatArg = (FdoFloat) va_arg(arguments,FdoFloat);
+        floatArg = (FdoFloat) va_arg(arguments,double);
         dataValue = FdoDataValue::Create(floatArg);
         break;
     case FdoDataType_String:
