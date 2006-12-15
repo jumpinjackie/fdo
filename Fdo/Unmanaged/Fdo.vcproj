@@ -311,6 +311,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Src\Fdo\Expression\Internal.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Src\Fdo\Expression\Internal.h"
+					>
+				</File>
+				<File
 					RelativePath="Src\Fdo\Expression\Parameter.cpp"
 					>
 				</File>
@@ -432,6 +440,14 @@
 				</File>
 				<File
 					RelativePath="Src\Fdo\Schema\GeometricPropertyDefinition.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Src\Fdo\Schema\Internal.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Src\Fdo\Schema\Internal.h"
 					>
 				</File>
 				<File

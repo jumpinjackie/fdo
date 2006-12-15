@@ -30,6 +30,7 @@ EXTRA_DIST = \
     Common/Array.h \
     Common/ArrayHelper.h \
     Common/Collection.h \
+    Common/Compare.h \
     Common/Context.h \
     Common/Dictionary.h \
     Common/DictionaryElement.h \

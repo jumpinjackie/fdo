@@ -16,9 +16,16 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //  
 #include <Fdo/Expression/ByteValue.h>
+#include <Fdo/Expression/DecimalValue.h>
+#include <Fdo/Expression/DoubleValue.h>
+#include <Fdo/Expression/Int16Value.h>
+#include <Fdo/Expression/Int32Value.h>
+#include <Fdo/Expression/Int64Value.h>
+#include <Fdo/Expression/SingleValue.h>
 #include <Fdo/Expression/ExpressionException.h>
 #include <Fdo/Expression/IExpressionProcessor.h>
 #include "StringUtility.h"
+#include "Internal.h"
 
 #include <time.h>
 #include <stdio.h>
@@ -117,3 +124,33 @@ FdoString* FdoByteValue::ToString()
     return m_toString;
 }
 
+FdoCompareType FdoInternalByteValue::DoCompare( FdoDataValue* other )
+{
+    FdoCompareType compare = FdoCompareType_Undefined;
+    
+    switch ( other->GetDataType() ) {
+
+    // Same type, do simple comparison
+    case FdoDataType_Byte:
+        {
+            FdoByte byte1 = (*this)->GetByte();
+            FdoByte byte2 = static_cast<FdoByteValue*>(other)->GetByte();
+
+            compare = FdoCompare( byte1, byte2 );
+        }
+        break;
+
+    // Other value's type has larger range, invoke that type to do a reverse comparison
+    case FdoDataType_Decimal:
+    case FdoDataType_Double:
+    case FdoDataType_Int16:
+    case FdoDataType_Int32:
+    case FdoDataType_Int64:
+    case FdoDataType_Single:
+        // Call that type's reverse comparison.
+        compare = ReverseCompare( other );
+        break;
+    }
+
+    return compare;
+}

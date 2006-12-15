@@ -486,7 +486,7 @@ void FdoDataPropertyDefinition::Set( FdoPropertyDefinition* pProperty, FdoSchema
             if ( m_propertyValueConstraint || constraint ) {
                 bool constraintChanged = (((m_propertyValueConstraint == NULL) != (constraint == NULL)) || (!m_propertyValueConstraint->Equals(constraint)) ); 
                 if ( constraintChanged ) {
-                    if ( (GetElementState() == FdoSchemaElementState_Added) || (pContext->CanModDataConstraint(pDataProperty)) ) {
+                    if ( (GetElementState() == FdoSchemaElementState_Added) || (pContext->CheckModDataConstraint(this, pDataProperty)) ) {
                         SetValueConstraint( (FdoPropertyValueConstraint*) NULL );
                         if ( constraint ) {
                             if ( constraint->GetConstraintType() == FdoPropertyValueConstraintType_Range )
@@ -509,18 +509,6 @@ void FdoDataPropertyDefinition::Set( FdoPropertyDefinition* pProperty, FdoSchema
                             if ( m_propertyValueConstraint )
                                 m_propertyValueConstraint->Set( constraint, GetQualifiedName(), pContext );
                         }
-                    }
-                    else {
-                        pContext->AddError( 
-                            FdoSchemaExceptionP(
-                                FdoSchemaException::Create(
-                                    FdoException::NLSGetMessage(
-                                        FDO_NLSID(SCHEMA_98_MODDATACONSTRAINT),
-                                        (FdoString*) GetQualifiedName()
-                                    )
-                                )
-                            )
-                        );
                     }
                 }
             }

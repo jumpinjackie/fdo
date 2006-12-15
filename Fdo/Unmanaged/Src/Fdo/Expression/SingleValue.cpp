@@ -19,6 +19,7 @@
 #include <Fdo/Expression/ExpressionException.h>
 #include <Fdo/Expression/IExpressionProcessor.h>
 #include "StringUtility.h"
+#include "Internal.h"
 
 #include <time.h>
 
@@ -111,3 +112,71 @@ FdoString* FdoSingleValue::ToString()
     return m_toString;
 }
 
+FdoSingleValue* FdoInternalSingleValue::Create(
+    FdoDataValue* src, 
+    FdoBoolean truncate, 
+    FdoBoolean nullIfIncompatible
+)
+{
+    FdoSingleValue* ret = NULL;
+
+    switch ( src->GetDataType() ) {
+    case FdoDataType_Byte:
+        ret = FdoSingleValue::Create( (FdoFloat)(static_cast<FdoByteValue*>(src)->GetByte()) );
+        break;
+
+    case FdoDataType_Int16:
+        ret = FdoSingleValue::Create( (FdoFloat)(static_cast<FdoInt16Value*>(src)->GetInt16()) );
+        break;
+
+    case FdoDataType_Int32:
+        ret = FdoSingleValue::Create( (FdoFloat)(static_cast<FdoInt32Value*>(src)->GetInt32()) );
+        break;
+
+    case FdoDataType_Int64:
+        ret = FdoSingleValue::Create( (FdoFloat)(static_cast<FdoInt64Value*>(src)->GetInt64()) );
+        break;
+
+    case FdoDataType_Single:
+        ret = FdoSingleValue::Create( static_cast<FdoSingleValue*>(src)->GetSingle() );
+        break;
+    }
+
+    return ret;
+}
+
+FdoCompareType FdoInternalSingleValue::DoCompare( FdoDataValue* other )
+{
+    FdoCompareType compare = FdoCompareType_Undefined;
+
+    FdoPtr<FdoDataValue> otherValue;
+    
+    switch ( other->GetDataType() ) {
+    // Same type, do simple comparison
+    case FdoDataType_Single:
+        {
+            FdoFloat num1 = (*this)->GetSingle();
+            FdoFloat num2 = static_cast<FdoSingleValue*>(other)->GetSingle();
+
+            compare = FdoCompare( num1, num2 );
+        }
+        break;
+ 
+    // Other values's type has smaller range. Convert other value to this value's type and compare.
+    case FdoDataType_Byte:
+    case FdoDataType_Int16:
+        otherValue = FdoInternalSingleValue::Create( other );
+        compare = Compare( otherValue );
+        break;
+
+    // Other value's type has larger range or finer precision, invoke that type to do a reverse comparison.
+    case FdoDataType_Decimal:
+    case FdoDataType_Double:
+    case FdoDataType_Int32:
+    case FdoDataType_Int64:
+        compare = ReverseCompare( otherValue );
+        break;
+    }
+
+    return compare;
+}

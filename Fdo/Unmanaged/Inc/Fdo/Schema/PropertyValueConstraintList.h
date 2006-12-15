@@ -45,6 +45,8 @@
 /// there will be an upper limit of the number of objects of that class that have non-null values for the property.
 class FdoPropertyValueConstraintList : public FdoPropertyValueConstraint
 {
+    friend class FdoInternalPropertyValueConstraintList;
+
 protected:
     /// Constructs a default instance of a FdoPropertyValueConstraintList.
     FdoPropertyValueConstraintList();

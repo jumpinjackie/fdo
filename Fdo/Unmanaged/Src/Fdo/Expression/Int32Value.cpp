@@ -19,6 +19,7 @@
 #include <Fdo/Expression/ExpressionException.h>
 #include <Fdo/Expression/IExpressionProcessor.h>
 #include "StringUtility.h"
+#include "Internal.h"
 
 #include <time.h>
 
@@ -115,3 +116,72 @@ FdoString* FdoInt32Value::ToString()
     return m_toString;
 }
 
+FdoInt32Value* FdoInternalInt32Value::Create(
+    FdoDataValue* src, 
+    FdoBoolean truncate, 
+    FdoBoolean nullIfIncompatible
+)
+{
+    FdoInt32Value* ret = NULL;
+
+    switch ( src->GetDataType() ) {
+    case FdoDataType_Byte:
+        ret = FdoInt32Value::Create( (FdoInt32)(static_cast<FdoByteValue*>(src)->GetByte()) );
+        break;
+
+    case FdoDataType_Int16:
+        ret = FdoInt32Value::Create( (FdoInt32)(static_cast<FdoInt16Value*>(src)->GetInt16()) );
+        break;
+
+    case FdoDataType_Int32:
+        ret = FdoInt32Value::Create( static_cast<FdoInt32Value*>(src)->GetInt32() );
+        break;
+    }
+
+    return ret;
+}
+
+FdoCompareType FdoInternalInt32Value::DoCompare( FdoDataValue* other )
+{
+    FdoCompareType compare = FdoCompareType_Undefined;
+
+    FdoPtr<FdoDataValue> thisValue;
+    FdoPtr<FdoDataValue> otherValue;
+    
+    switch ( other->GetDataType() ) {
+    // Same type, do simple comparison
+    case FdoDataType_Int32:
+        {
+            FdoInt32 num1 = (*this)->GetInt32();
+            FdoInt32 num2 = static_cast<FdoInt32Value*>(other)->GetInt32();
+
+            compare = FdoCompare( num1, num2 );
+        }
+        break;
+
+    // Other values's type has smaller range. Convert other value to this value's type and compare.
+    case FdoDataType_Byte:
+    case FdoDataType_Int16:
+        otherValue = FdoInternalInt32Value::Create( other );
+        compare = FdoPtr<FdoInternalDataValue>(FdoInternalDataValue::Create(thisValue))->Compare( otherValue );
+        break;
+
+    // Other value's type has larger range, invoke that type to do a reverse comparison.
+    case FdoDataType_Decimal:
+    case FdoDataType_Double:
+    case FdoDataType_Int64:
+        compare = ReverseCompare( other );
+        break;
+
+    // Single type has larger range but less precision.
+    case FdoDataType_Single:
+        // Double has larger range and precision that either int32 or single so convert
+        // both to double and compare.
+        thisValue = FdoInternalDoubleValue::Create( (FdoDataValue*) this );
+        otherValue = FdoInternalDoubleValue::Create( other );
+        compare = FdoPtr<FdoInternalDataValue>(FdoInternalDataValue::Create(thisValue))->Compare( otherValue );
+        break;
+    }
+
+    return compare;
+}

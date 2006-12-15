@@ -470,6 +470,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Inc\Common\Compare.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Inc\Common\Context.h"
 				>
 			</File>
