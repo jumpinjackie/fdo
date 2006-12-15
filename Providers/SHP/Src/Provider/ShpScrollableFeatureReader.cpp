@@ -305,7 +305,7 @@ REC_NO ShpScrollableFeatureReader::FindRowidByFeatNum( REC_NO featid )
 		found = ( m_SortedTable[i].index == featid - 1) ;
 		rowid = i + 1;
 	}
-	return rowid;
+	return found? rowid : 0;
 }
 
 REC_NO ShpScrollableFeatureReader::SearchSortedTable( SortContextDef *ctx, SortElementDef *sortedTable, unsigned int tableSize, PropertyStub* propStubs, int numProps, FdoPropertyValueCollection* keyVal, REC_NO *featid)
