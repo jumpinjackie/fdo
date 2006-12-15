@@ -19,7 +19,7 @@
 #include <Fdo/Expression/ExpressionException.h>
 #include <Fdo/Expression/IExpressionProcessor.h>
 #include "StringUtility.h"
-#include "Internal.h"
+#include "ExpressionInternal.h"
 
 #include <time.h>
 #include <stdio.h>

@@ -287,6 +287,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Src\Fdo\Expression\ExpressionInternal.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Src\Fdo\Expression\ExpressionInternal.h"
+					>
+				</File>
+				<File
 					RelativePath="Src\Fdo\Expression\Function.cpp"
 					>
 				</File>
@@ -308,14 +316,6 @@
 				</File>
 				<File
 					RelativePath="Src\Fdo\Expression\Int64Value.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Src\Fdo\Expression\Internal.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Src\Fdo\Expression\Internal.h"
 					>
 				</File>
 				<File
@@ -443,14 +443,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\Src\Fdo\Schema\Internal.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Src\Fdo\Schema\Internal.h"
-					>
-				</File>
-				<File
 					RelativePath=".\Src\Fdo\Schema\MergeContext.cpp"
 					>
 				</File>
@@ -561,6 +553,14 @@
 							Outputs="Src/Fdo/Schema/SchemaFromInternal.h"
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\Src\Fdo\Schema\SchemaInternal.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Src\Fdo\Schema\SchemaInternal.h"
+					>
 				</File>
 				<File
 					RelativePath="Src\Fdo\Schema\TopoFeaturePropertyDefinition.cpp"

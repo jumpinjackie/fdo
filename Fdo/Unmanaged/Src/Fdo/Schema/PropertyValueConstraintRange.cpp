@@ -29,8 +29,8 @@
 #include <Fdo/Expression/Int64Value.h>
 #include <Fdo/Expression/SingleValue.h>
 #include <Fdo/Expression/StringValue.h>
-#include "../Expression/Internal.h"
-#include "Internal.h"
+#include "../Expression/ExpressionInternal.h"
+#include "SchemaInternal.h"
 
 
 // Constructs a default instance of a FdoPropertyValueConstraintRange.

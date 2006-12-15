@@ -21,7 +21,7 @@
 #include <Fdo/Schema/PropertyValueConstraintList.h>
 #include "XmlContext.h"
 #include "StringUtility.h"
-#include "Internal.h"
+#include "SchemaInternal.h"
 
 // Constructs a default instance of a FdoPropertyValueConstraintList.
 FdoPropertyValueConstraintList::FdoPropertyValueConstraintList():m_constraintList( NULL )

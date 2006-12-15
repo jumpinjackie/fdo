@@ -18,7 +18,7 @@
 #include <Fdo/Expression/DataValue.h>
 #include <Fdo/Expression/ExpressionException.h>
 #include <Fdo/Expression/IExpressionProcessor.h>
-#include "Internal.h"
+#include "ExpressionInternal.h"
 
 #include <time.h>
 

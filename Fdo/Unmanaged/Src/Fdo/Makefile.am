@@ -65,7 +65,7 @@ libFDOSrc_la_SOURCES = \
   Expression/Int16Value.cpp \
   Expression/Int32Value.cpp \
   Expression/Int64Value.cpp \
-  Expression/Internal.cpp \
+  Expression/ExpressionInternal.cpp \
   Expression/Parameter.cpp \
   Expression/SingleValue.cpp \
   Expression/StringValue.cpp \
@@ -96,7 +96,7 @@ libFDOSrc_la_SOURCES = \
   Schema/FeatureSchema.cpp \
   Schema/FeatureSchemaCollection.cpp \
   Schema/GeometricPropertyDefinition.cpp \
-  Schema/Internal.cpp \
+  Schema/SchemaInternal.cpp \
   Schema/ObjectPropertyDefinition.cpp \
   Schema/PropertyDefinition.cpp \
   Schema/PropertyDefinitionCollection.cpp \

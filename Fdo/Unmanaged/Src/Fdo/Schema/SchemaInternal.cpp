@@ -17,7 +17,7 @@
 // 
 //
 
-#include "Internal.h"
+#include "SchemaInternal.h"
 
 FdoInternalPropertyValueConstraint* FdoInternalPropertyValueConstraint::Create( FdoPropertyValueConstraint* constraint )
 {

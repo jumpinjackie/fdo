@@ -23,7 +23,7 @@
 #include <Fdo/Schema/AssociationPropertyDefinition.h>
 #include <Fdo/Commands/CommandType.h>
 #include <Fdo/Commands/Feature/ISelect.h>
-#include "Internal.h"
+#include "SchemaInternal.h"
 
 FdoSchemaMergeContext::FdoSchemaMergeContext( FdoFeatureSchemaCollection* schemas, bool defaultCapability ) :
     mIgnoreStates(true),
