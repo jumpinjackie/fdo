@@ -1116,7 +1116,7 @@ bool FdoLex::get_timevalue(
 		// Error !!! Wrong hour value
 		throw FdoException::Create(NlsMsgGetFdo(FDO_NLSID(PARSE_3_DATETIMEOUTOFRANGE)));
 	}
-	if (m_ch != ':') {
+	if (m_ch != ':' && m_ch != '-') {
 		// Error !!! Wrong datetime format
 		throw FdoException::Create(NlsMsgGetFdo(FDO_NLSID(PARSE_2_INVALIDDATETIME)));
 	}
@@ -1130,7 +1130,7 @@ bool FdoLex::get_timevalue(
 		// Error !!! Wrong minute value
 		throw FdoException::Create(NlsMsgGetFdo(FDO_NLSID(PARSE_3_DATETIMEOUTOFRANGE)));
 	}
-	if (m_ch != ':') {
+	if (m_ch != ':' && m_ch != '-') {
 		// Error !!! Wrong datetime string format
 		throw FdoException::Create(NlsMsgGetFdo(FDO_NLSID(PARSE_2_INVALIDDATETIME)));
 	}
@@ -1183,7 +1183,7 @@ bool FdoLex::get_timestamp(
 		throw FdoException::Create(NlsMsgGetFdo(FDO_NLSID(PARSE_2_INVALIDDATETIME)));
 	}
 
-	if (m_ch != ' ') {
+	if (m_ch != ' ' && m_ch != '-') {
 		// Error !!! Wrong format
 		throw FdoException::Create(NlsMsgGetFdo(FDO_NLSID(PARSE_2_INVALIDDATETIME)));
 	}

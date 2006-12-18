@@ -828,6 +828,9 @@ void FdoSmLpSchemaCollection::ConvertConstraints(const FdoSmLpClassDefinition* p
 
 	FdoSmLpCheckConstraintCollection*	pLpCKeys = (FdoSmLpCheckConstraintCollection *)((FdoSmLpClassBase *)pLpClassDef)->RefCheckConstraints();
 
+	FdoSmPhDbObjectP					pPhObject = ((FdoSmLpClassBase *)pLpClassDef)->FindPhDbObject();
+    FdoSmPhTableP						pPhTable = pPhObject.p->SmartCast<FdoSmPhTable>();
+
 
 	// For each constraint, try to find a matching data property
 	for ( int j = 0; j < pLpCKeys->GetCount(); j++ ) {
@@ -844,7 +847,14 @@ void FdoSmLpSchemaCollection::ConvertConstraints(const FdoSmLpClassDefinition* p
             try {
 				parser = new FdoCommonParse();
 				if (parser)
-					pConstr = parser->ParseConstraint( pLpCKey->GetClause() );
+				{
+					FdoStringP	clause = pLpCKey->GetClause();
+
+					// The constraint parser might need help
+					clause = pPhTable->FixCkeyClause( clause );
+
+					pConstr = parser->ParseConstraint( clause );
+				}
             }
             catch ( FdoExpressionException* ex ) {
                 // The LogicalPhysical Schema also sends back constraints defined
@@ -894,7 +904,7 @@ FdoPtr<FdoDataValue> FdoSmLpSchemaCollection::FixDataValueType( FdoPtr<FdoDataVa
 	FdoPtr<FdoDataValue>	ret = val;
 
 	// Fast return if nothing to do
-	if ( val == NULL )
+	if ( val == NULL || propType == FdoDataType_DateTime )
 		return ret;
 
 	FdoDataType	constrType = val->GetDataType();
@@ -904,6 +914,7 @@ FdoPtr<FdoDataValue> FdoSmLpSchemaCollection::FixDataValueType( FdoPtr<FdoDataVa
 		FdoDataValue	*newData = NULL;
 
         switch (constrType) {
+
         case FdoDataType_Int32:
 			valInt32 = ((FdoInt32Value*)(FdoDataValue*)val)->GetInt32();
 
