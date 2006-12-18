@@ -690,8 +690,11 @@ void SchemaDb::ReadGeometricPropertyDefinition(BinaryReader& rdr, FdoPropertyDef
     gpd->SetHasElevation(rdr.ReadByte() != 0);
     gpd->SetHasMeasure(rdr.ReadByte() != 0);
     gpd->SetReadOnly(rdr.ReadByte() != 0);        
-	if( m_scName != NULL )
+	if( m_scName != NULL && m_scName[0] != '\0')
 		gpd->SetSpatialContextAssociation( m_scName );
+    else
+		gpd->SetSpatialContextAssociation( L"Default" );
+
     //add property to collection
     pdc->Add(gpd);
 }

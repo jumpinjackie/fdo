@@ -79,6 +79,7 @@ void SdfCreateDataStore::Execute()
         //use the unpublished CreateSpatialContext command.
         //It does exactly what we need to set the coord sys. Use default values
         SdfCreateSpatialContext* create = new SdfCreateSpatialContext(m_connection);
+        create->SetName(L"Default");
 
         create->Execute();
 

@@ -60,7 +60,12 @@ void SdfSpatialContextReader::Dispose()
 FdoString* SdfSpatialContextReader::GetName()
 {
     if (!m_firstRead)
-        return m_scName;
+    {
+        if (m_scName == NULL || m_scName[0] == '\0')
+            return L"Default";
+        else
+            return m_scName;
+    }
 
     throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_42_READER_NOT_INIT)));
 }
