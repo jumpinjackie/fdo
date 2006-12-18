@@ -187,6 +187,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Src\TestCommonConstraints.cpp"
+				>
+			</File>
+			<File
 				RelativePath="Src\TestCommonFeatureCommands.cpp"
 				>
 			</File>
@@ -201,6 +205,10 @@
 			>
 			<File
 				RelativePath="Inc\stdafx.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Inc\TestCommonConstraints.h"
 				>
 			</File>
 			<File

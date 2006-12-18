@@ -713,7 +713,7 @@ void FdoCommonMiscUtil::ThrowPropertyConstraintException(FdoDataPropertyDefiniti
         case FdoPropertyValueConstraintType_List:
         {
             FdoPropertyValueConstraintList* listConstraint = static_cast<FdoPropertyValueConstraintList*>(valueConstraint.p);
-            FdoStringsP listStringCollection;
+            FdoStringsP listStringCollection = FdoStringCollection::Create();
             FdoPtr<FdoDataValueCollection> listValues = listConstraint->GetConstraintList();
             for (int i=0; i<listValues->GetCount(); i++)
                 listStringCollection->Add(FdoPtr<FdoDataValue>(listValues->GetItem(i))->ToString());

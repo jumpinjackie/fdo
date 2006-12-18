@@ -24,11 +24,13 @@ EXTRA_DIST = \
   TestCommon.vcproj
 
 libTestCommon_la_SOURCES = \
+  Src/TestCommonConstraints.cpp \
   Src/TestCommonFeatureCommands.cpp \
   Src/TestCommonMiscUtil.cpp \
   Src/stdafx.cpp
 
 noinst_HEADERS = $(libTestCommon_la_SOURCES) \
+  Inc/TestCommonConstraints.h \
   Inc/TestCommonFeatureCommands.h \
   Inc/TestCommonMiscUtil.h \
   Inc/TestCommon.h \
