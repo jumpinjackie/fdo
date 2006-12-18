@@ -34,6 +34,7 @@ UnitTest_SOURCES = \
   AssociationUpdateTest.cpp \
   AssociationDeleteTest.cpp \
   ConnectionInfoTest.cpp \
+  ConstraintsTest.cpp \
   ExtendedSelectTest.cpp \
   NlsTest.cpp \
   SelectTest.cpp \
@@ -48,6 +49,7 @@ noinst_HEADERS = $(UnitTest_SOURCES) \
   AssociationSelectTest.h \
   AssociationUpdateTest.h \
   ConnectionInfoTest.h \
+  ConstraintsTest.h \
   ExtendedSelectTest.h \
   FdoMultiThreadTest.h \
   FgfStreamWriter.h \
@@ -60,10 +62,12 @@ noinst_HEADERS = $(UnitTest_SOURCES) \
 
 INCLUDES = \
   -I$(FDO)/Unmanaged/Inc \
+  -I$(FDOUTILITIES)/TestCommon/Inc \
   -I$(FDOTHIRDPARTY)/linux/cppunit/include/ \
   -I../../Inc
 
 UnitTest_LDADD = \
+  $(FDOUTILITIES)/TestCommon/libTestCommon.la \
   $(FDO)/Unmanaged/Src/libFDO.la \
   $(FDOTHIRDPARTY)/linux/cppunit/lib/libcppunit.a \
   -ldl \

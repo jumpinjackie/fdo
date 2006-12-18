@@ -82,6 +82,11 @@ bool SdfSchemaMergeContext::CanDeleteSchema( FdoFeatureSchema* schema )
     return true;
 }
 
+bool SdfSchemaMergeContext::CanModDataConstraint( FdoDataPropertyDefinition* prop )
+{
+    return true;
+}
+
 void SdfSchemaMergeContext::Merge()
 {
     CommitSchemas();

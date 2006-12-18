@@ -42,8 +42,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(FDOTHIRDPARTY)\CppUnit\include\;$(FDO)\Unmanaged\Inc;..\..\Inc"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;IGNORE_THREAD_TEST"
+				AdditionalIncludeDirectories="&quot;$(FDOTHIRDPARTY)\CppUnit\include\&quot;;&quot;$(FDO)\Unmanaged\Inc&quot;;..\..\Inc;&quot;$(FDOUTILITIES)\TestCommon\inc&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;IGNORE_THREAD_TEST;__CPPUNIT_MFC_APP"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -68,7 +68,7 @@
 				AdditionalDependencies="cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib"
 				OutputFile="$(OutDir)/UnitTest.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(FDOTHIRDPARTY)\CppUnit\lib\;$(FDO)\Unmanaged\Lib\Win32\Debug"
+				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\CppUnit\lib\&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\TestCommon\Lib\Win32\Debug&quot;"
 				IgnoreDefaultLibraryNames="libcmtd.lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/UnitTest.pdb"
@@ -126,7 +126,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="$(FDOTHIRDPARTY)\CppUnit\include\;$(FDO)\Unmanaged\Inc;..\..\Inc"
+				AdditionalIncludeDirectories="&quot;$(FDOTHIRDPARTY)\CppUnit\include\&quot;;&quot;$(FDO)\Unmanaged\Inc&quot;;..\..\Inc;&quot;$(FDOUTILITIES)\TestCommon\inc&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;IGNORE_THREAD_TEST"
 				RuntimeLibrary="2"
 				TreatWChar_tAsBuiltInType="true"
@@ -150,7 +150,7 @@
 				AdditionalDependencies="cppunit.lib FDO.lib FDOCommon.lib FDOGeometry.lib"
 				OutputFile="$(OutDir)/UnitTest.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(FDOTHIRDPARTY)\CppUnit\lib\;$(FDO)\Unmanaged\Lib\Win32\Release"
+				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\CppUnit\lib\&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\TestCommon\Lib\Win32\Release&quot;"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -485,6 +485,14 @@
 		</File>
 		<File
 			RelativePath=".\ConnectionInfoTest.h"
+			>
+		</File>
+		<File
+			RelativePath=".\ConstraintsTest.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ConstraintsTest.h"
 			>
 		</File>
 		<File

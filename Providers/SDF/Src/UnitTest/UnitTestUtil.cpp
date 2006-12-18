@@ -21,20 +21,6 @@
  // License along with this library; if not, write to the Free Software
  // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-FdoPropertyValue* UnitTestUtil::AddNewProperty( FdoPropertyValueCollection* propertyValues, const wchar_t *name )
-{
-    FdoPropertyValue*  propertyValue = propertyValues->FindItem( name );
-
-    if ( !propertyValue ) 
-    {
-        propertyValue =  FdoPropertyValue::Create();
-        propertyValue->SetName( name );
-        propertyValues->Add( propertyValue );
-    }
-    
-    return propertyValue;
-}
-
 FdoIConnection* UnitTestUtil::OpenConnection( FdoString* fileName, bool re_create )
 {
 #ifdef _WIN32
@@ -313,72 +299,5 @@ the_exit:
     fclose(fp2);
 
     return( retcode );
-}
-
-FdoPtr<FdoIInsert>  UnitTestUtil::InsertObject( FdoIConnection* connection, FdoPtr<FdoIInsert> insertCmd, FdoStringP schemaName, FdoString* className, ... )
-{
-    va_list arguments;
-    FdoDataType dataType;
-    FdoString* propName;
-    FdoString* strArg;
-    FdoInt32 int32Arg;
-    FdoBoolean boolArg;
-
-    va_start(arguments, className);
-
-    propName = va_arg(arguments,FdoString*);
-
-    FdoPtr<FdoIInsert> insertCommand = insertCmd;
-    
-    if ( !insertCommand )
-        insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
-
-    FdoPtr<FdoPropertyValueCollection> propertyValues;
-    FdoPtr<FdoDataValue> dataValue;
-    FdoPtr<FdoPropertyValue> propertyValue;
-
-    insertCommand->SetFeatureClassName(schemaName + L":" + FdoStringP(className));
-    propertyValues = insertCommand->GetPropertyValues();
-
-    while ( propName != NULL ) {
-
-        propertyValue = AddNewProperty( propertyValues, propName);
-        dataType = (FdoDataType)va_arg(arguments,int);
-
-        switch ( dataType ) {
-        case FdoDataType_String:
-            strArg = va_arg(arguments,FdoString*);
-            dataValue = FdoDataValue::Create(strArg);
-            break;
-        case FdoDataType_Int32:
-            int32Arg = va_arg(arguments,FdoInt32);
-            dataValue = FdoDataValue::Create(int32Arg);
-            break;
-        case FdoDataType_Boolean:
-            boolArg = (FdoBoolean)va_arg(arguments,int);
-            dataValue = FdoDataValue::Create(boolArg);
-            break;
-        default:
-            throw FdoException::Create( L"UnitTestUtil::InsertObject dataType not yet implemented; please implement" );
-            break;
-        }
-        
-        propertyValue->SetValue(dataValue);
-
-        propName = va_arg(arguments,FdoString*);
-    }
-        
-	FdoPtr<FdoIFeatureReader> rdr = insertCommand->Execute();
-
-    va_end(arguments);
-
-    return insertCommand;
-}
-
-void UnitTestUtil::DeleteObjects( FdoIConnection* connection, FdoStringP schemaName, FdoStringP className )
-{
-    FdoPtr<FdoIDelete> deleteCommand = (FdoIDelete *) connection->CreateCommand(FdoCommandType_Delete);
-    deleteCommand->SetFeatureClassName(schemaName + L":" + className);
-	deleteCommand->Execute();
 }
 

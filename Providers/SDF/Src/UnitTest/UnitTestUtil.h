@@ -23,6 +23,7 @@
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include <Fdo.h>
+#include <TestCommonMiscUtil.h>
 
 
 /* 
@@ -36,8 +37,6 @@ class UnitTestUtil
 
 public:
     static FdoIConnection* OpenConnection( FdoString* fileName, bool re_create );
-
-    static FdoPropertyValue* AddNewProperty( FdoPropertyValueCollection* propertyValues, const wchar_t *name );
 
     static void ExportDb( 
         FdoIConnection* connection, 
@@ -70,9 +69,6 @@ public:
     //      -1 - they are different.
     static int CompareFiles( const char* file1Name, const char* file2Name );
 
-    static FdoPtr<FdoIInsert> InsertObject( FdoIConnection* connection, FdoPtr<FdoIInsert> insertCmd, FdoStringP schemaName, FdoString* className, ... );
-
-    static void DeleteObjects( FdoIConnection* connection, FdoStringP schemaName, FdoStringP className );
 };
 
 #endif

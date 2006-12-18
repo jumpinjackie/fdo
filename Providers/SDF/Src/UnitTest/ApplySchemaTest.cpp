@@ -405,7 +405,7 @@ void ApplySchemaTest::CreateAcadSchema( FdoIConnection* connection )
 
   	// Insert a row with null colour. Subsequent removal of colour property should succeed.
 
-    UnitTestUtil::InsertObject( connection, (FdoIInsert*) NULL, L"Acad", L"AcDbEntity", L"Layer", FdoDataType_String, L"default", NULL );
+    TestCommonMiscUtil::InsertObject( connection, (FdoIInsert*) NULL, L"Acad", L"AcDbEntity", L"Layer", FdoDataType_String, L"default", NULL );
 }
 
 void ApplySchemaTest::CreateElectricSchema( FdoIConnection* connection )
@@ -1770,7 +1770,7 @@ void ApplySchemaTest::ModErrors( FdoIConnection* connection )
     pClass->Delete();
 
     // Has Base Class
-    UnitTestUtil::InsertObject( connection, (FdoIInsert*) NULL, L"Electric'l", L"Conductor", L"underground", FdoDataType_Boolean, false, NULL );
+    TestCommonMiscUtil::InsertObject( connection, (FdoIInsert*) NULL, L"Electric'l", L"Conductor", L"underground", FdoDataType_Boolean, false, NULL );
 	pClass = (FdoFeatureClass*) FdoClassesP(pSchema->GetClasses())->GetItem( L"Conductor" );
 	pClass->Delete();
 
@@ -2324,7 +2324,7 @@ void ApplySchemaTest::CreateDlteData( FdoIConnection* connection )
             FdoStringP className = FdoStringP::Format( L"FeatClass%d", idx1 );
             FdoStringP stringAVal = FdoStringP::Format( L"StringPropA%d_%d", idx1, idx2 );
 
-            insertCmd = UnitTestUtil::InsertObject( connection, insertCmd, L"Dlte", className, L"StringPropA", FdoDataType_String, (FdoString*) stringAVal, NULL );
+            insertCmd = TestCommonMiscUtil::InsertObject( connection, insertCmd, L"Dlte", className, L"StringPropA", FdoDataType_String, (FdoString*) stringAVal, NULL );
         }
     }
 }
@@ -2337,7 +2337,7 @@ void ApplySchemaTest::CreateRefmtData( FdoIConnection* connection )
     for ( idx = 0; idx < REFMT_BASE_ROW_COUNT; idx++ ) {
         FdoStringP stringVal = FdoStringP::Format( L"StringProp%d", idx );
 
-        insertCmd = UnitTestUtil::InsertObject( 
+        insertCmd = TestCommonMiscUtil::InsertObject( 
             connection, 
             insertCmd, 
             L"Refmt", 
@@ -2358,7 +2358,7 @@ void ApplySchemaTest::CreateRefmtData( FdoIConnection* connection )
         FdoStringP string1Val = FdoStringP::Format( L"String1Property%d", idx );
         FdoStringP string2Val = FdoStringP::Format( L"p%d", idx );
 
-        insertCmd = UnitTestUtil::InsertObject( 
+        insertCmd = TestCommonMiscUtil::InsertObject( 
             connection, 
             insertCmd, 
             L"Refmt", 
@@ -2484,7 +2484,7 @@ void ApplySchemaTest::CreateClassGroup( FdoFeatureSchema* pSchema, FdoInt32 idx 
 void ApplySchemaTest::DeleteDlteClass( FdoIConnection* connection, FdoFeatureSchema* pSchema, FdoInt32 idx, bool delCls )
 {
     FdoStringP className = FdoStringP::Format( L"FeatClass%d", idx );
-    UnitTestUtil::DeleteObjects( connection, L"Dlte", className );
+    TestCommonMiscUtil::DeleteObjects( connection, L"Dlte", className, (FdoString*) NULL );
 
     if( delCls )
     {

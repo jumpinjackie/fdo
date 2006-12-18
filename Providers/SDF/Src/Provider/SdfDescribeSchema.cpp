@@ -94,7 +94,7 @@ FdoFeatureSchemaCollection* SdfDescribeSchema::Execute()
 
     // Re-read a fresh copy of the schema from the SDF file; this is significant
     // if the caller has changed the spatial contexts in the file since doing ApplySchema:
-    FdoFeatureSchema *schema = m_connection->GetSchema(GetSchemaName(), true);
+    FdoFeatureSchemaP schema = m_connection->GetSchema(GetSchemaName(), true);
     if (schema)
     {
         schemaCollection->Add(schema);

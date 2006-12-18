@@ -41,6 +41,7 @@ public:
 	virtual bool CanDeleteProperty( FdoPropertyDefinition* prop );
 	virtual bool CanModElementDescription( FdoSchemaElement* element );
     virtual bool CanDeleteSchema( FdoFeatureSchema* schema );
+    virtual bool CanModDataConstraint( FdoDataPropertyDefinition* prop );
 
     // Performs the schema merge
     //
