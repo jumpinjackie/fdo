@@ -63,6 +63,9 @@ public:
     /// Returns a CHECK() clause, each provider must implement. It should be pure virtual.
 	virtual FdoStringP GetCkeyClause( FdoStringP columnName, FdoDataPropertyP fdoProp ) { return L""; }
 
+    /// Returns a CHECK() clause, each provider must implement. It should be pure virtual.
+	virtual FdoStringP FixCkeyClause( FdoStringP checkClause ) { return checkClause; }
+
     /// Returns all the indexes in this table.
     const FdoSmPhIndexCollection* RefIndexes() const;
     FdoSmPhIndexesP GetIndexes();
