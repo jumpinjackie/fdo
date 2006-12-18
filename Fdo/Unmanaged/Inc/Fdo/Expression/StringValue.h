@@ -142,6 +142,9 @@ public:
     }
 
 protected:
+    // See FdoDataValue::DoCompare()
+    virtual FdoCompareType DoCompare( FdoDataValue* other );
+
     wchar_t*    m_data;
 };
 #endif

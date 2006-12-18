@@ -111,3 +111,81 @@ FdoString* FdoDoubleValue::ToString()
     return m_toString;
 }
 
+FdoDoubleValue* FdoDoubleValue::Create(
+    FdoDataValue* src, 
+    FdoBoolean truncate, 
+    FdoBoolean nullIfIncompatible
+)
+{
+    FdoDoubleValue* ret = NULL;
+
+    switch ( src->GetDataType() ) {
+    case FdoDataType_Byte:
+        ret = FdoDoubleValue::Create( (double)(static_cast<FdoByteValue*>(src)->GetByte()) );
+        break;
+
+    case FdoDataType_Decimal:
+        ret = FdoDoubleValue::Create( static_cast<FdoDecimalValue*>(src)->GetDecimal() );
+        break;
+
+    case FdoDataType_Double:
+        ret = FdoDoubleValue::Create( static_cast<FdoDoubleValue*>(src)->GetDouble() );
+        break;
+
+    case FdoDataType_Int16:
+        ret = FdoDoubleValue::Create( (double)(static_cast<FdoInt16Value*>(src)->GetInt16()) );
+        break;
+
+    case FdoDataType_Int32:
+        ret = FdoDoubleValue::Create( (double)(static_cast<FdoInt32Value*>(src)->GetInt32()) );
+        break;
+
+    case FdoDataType_Int64:
+        ret = FdoDoubleValue::Create( (double)(static_cast<FdoInt64Value*>(src)->GetInt64()) );
+        break;
+
+    case FdoDataType_Single:
+        ret = FdoDoubleValue::Create( (double)(static_cast<FdoSingleValue*>(src)->GetSingle()) );
+        break;
+    }
+
+    return ret;
+}
+
+FdoCompareType FdoDoubleValue::DoCompare( FdoDataValue* other )
+{
+    FdoCompareType compare = FdoCompareType_Undefined;
+
+    FdoPtr<FdoDataValue> otherValue = FDO_SAFE_ADDREF(other);
+    
+    switch ( other->GetDataType() ) {
+    // Same type, do simple comparison
+    case FdoDataType_Double:
+        {
+            FdoDouble num1 = GetDouble();
+            FdoDouble num2 = static_cast<FdoDoubleValue*>(other)->GetDouble();
+
+            compare = FdoCompare( num1, num2 );
+        }
+        break;
+
+    // Other values's type has smaller range. Convert other value to this value's type and compare.
+    // Decimal and Double actually have same range and precision. Decimal-Double comparison has been
+    // arbitrarily implemented in FdoDoubleValue
+    case FdoDataType_Byte:
+    case FdoDataType_Decimal:
+    case FdoDataType_Int16:
+    case FdoDataType_Int32:
+    case FdoDataType_Single:
+        otherValue = FdoDoubleValue::Create( other );
+        compare = Compare( otherValue );
+        break;
+
+    // Other value's type has more precision, invoke that type to do a reverse comparison.
+    case FdoDataType_Int64:
+        compare = ReverseCompare( other );
+        break;
+    }
+
+    return compare;
+}

@@ -137,6 +137,9 @@ public:
     }
 
 protected:
+    // See FdoDataValue::DoCompare()
+    virtual FdoCompareType DoCompare( FdoDataValue* other );
+
 /// \cond DOXYGEN-IGNORE
     FdoByte m_data;
 };

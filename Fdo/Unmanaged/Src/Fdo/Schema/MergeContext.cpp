@@ -342,6 +342,93 @@ bool FdoSchemaMergeContext::CheckDeleteProperty( FdoPropertyDefinition* prop )
     return canDelete;
 }
 
+bool FdoSchemaMergeContext::CheckModDataConstraint( FdoDataPropertyDefinition* oldProp, FdoDataPropertyDefinition* newProp )
+{
+    bool canMod = false;
+
+    if ( CanModDataConstraint(oldProp) ) {
+        canMod = true;
+
+        FdoClassDefinitionP classDef = (FdoClassDefinition*)(oldProp->GetParent());  
+
+        // Constraint can always be modified if the class has no objects.
+        if ( ClassHasObjects(classDef) ) {
+            FdoPtr<FdoPropertyValueConstraint> oldConstraint = oldProp->GetValueConstraint();
+            FdoPtr<FdoPropertyValueConstraint> newConstraint = newProp->GetValueConstraint();
+
+            if ( newConstraint && !oldConstraint ) {
+
+                // Adding constraint to property is not yet supported, since existing 
+                // property values might violate constraint.
+                AddError( 
+                    FdoSchemaExceptionP(
+                        FdoSchemaException::Create(
+                            FdoException::NLSGetMessage(
+                            FDO_NLSID(SCHEMA_147_MODCONSTRAINT),
+                                (FdoString*) oldProp->GetQualifiedName()
+                            )
+                        )
+                    )
+                );
+
+                canMod = false;
+            }
+            else if ( newConstraint && oldConstraint ) {
+                if ( newConstraint->GetConstraintType() != oldConstraint->GetConstraintType() ) {
+                    // Changing constraint type not yet supported, since existing 
+                    // property values might violate new constraint.
+                    AddError( 
+                        FdoSchemaExceptionP(
+                            FdoSchemaException::Create(
+                                FdoException::NLSGetMessage(
+                                FDO_NLSID(SCHEMA_148_MODCONSTRAINTTYPE),
+                                    (FdoString*) oldProp->GetQualifiedName()
+                                )
+                            )
+                        )
+                    );
+
+                    canMod = false;
+                }
+                else {
+                    if ( !newConstraint->Contains( oldConstraint ) ) {
+                        // Making constraint more restrictive not yet supported, since existing 
+                        // property values might violate constraint.
+                        AddError( 
+                            FdoSchemaExceptionP(
+                                FdoSchemaException::Create(
+                                    FdoException::NLSGetMessage(
+                                    FDO_NLSID(SCHEMA_147_MODCONSTRAINT),
+                                        (FdoString*) oldProp->GetQualifiedName()
+                                    )
+                                )
+                            )
+                        );
+
+                        canMod = false;
+                    }
+                }
+            }
+            // Removing constraint is supported.
+        }
+    }
+    else {
+        // Data Constraint modification not supported.
+        AddError( 
+            FdoSchemaExceptionP(
+                FdoSchemaException::Create(
+                    FdoException::NLSGetMessage(
+                        FDO_NLSID(SCHEMA_98_MODDATACONSTRAINT),
+                       (FdoString*) oldProp->GetQualifiedName()
+                    )
+                )
+            )
+        );
+    }
+
+    return canMod;
+}
+
 bool FdoSchemaMergeContext::CanModElementDescription( FdoSchemaElement* element )
 {
     return mDefaultCapability;

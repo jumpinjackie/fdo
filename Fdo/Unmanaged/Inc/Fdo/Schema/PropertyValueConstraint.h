@@ -62,6 +62,18 @@ public:
     // Returns true if this Property Value Constraint is the same as pConstraint
     // (all members have the same values).
     virtual bool Equals( FdoPropertyValueConstraint* pConstraint ) = 0;
+
+    // \brief
+    // Checks if a constraint domain is contained within another
+    // 
+    // \param value 
+    // The Property Value constraint to compare with
+    // 
+    // \return
+    // Returns true if this constraint's domain is a superset of the domain
+    // for pConstraint (all values that do not violate pConstraint also do not
+    // violate this constraint).
+    virtual bool Contains( FdoPropertyValueConstraint* pConstraint ) = 0;
 /// \endcond
 };
 

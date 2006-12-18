@@ -140,7 +140,7 @@
 				PrecompiledHeaderFile=""
 				WarningLevel="3"
 				SuppressStartupBanner="true"
-				DebugInformationFormat="1"
+				DebugInformationFormat="3"
 				CompileAs="0"
 			/>
 			<Tool
@@ -154,6 +154,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="/fixed:no"
 				AdditionalDependencies="Xalan-C_1D.lib Xerces-C_2D.lib FDONLS.lib"
 				OutputFile="$(OutDir)/FDOCommon.dll"
 				LinkIncremental="1"
@@ -466,6 +467,10 @@
 			</File>
 			<File
 				RelativePath="Inc\Common\Collection.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Inc\Common\Compare.h"
 				>
 			</File>
 			<File

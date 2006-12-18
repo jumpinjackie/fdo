@@ -465,6 +465,7 @@ public:
     // Find a class in the given schema collection.
     FdoClassDefinition* FindClass( FdoFeatureSchemaCollection* pSchemas, const FdoString* schemaName, const FdoString* className );
     
+    bool CheckModDataConstraint( FdoDataPropertyDefinition* oldProp, FdoDataPropertyDefinition* newProp );
 
 protected:
     FDO_API FdoSchemaMergeContext() {}

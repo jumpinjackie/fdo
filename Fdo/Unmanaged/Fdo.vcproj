@@ -46,7 +46,7 @@
 				AdditionalIncludeDirectories="Inc;Src/Fdo;Src/Common;&quot;$(FDOTHIRDPARTY)/apache/xml-xerces/c/src&quot;;Src/Nls"
 				PreprocessorDefinitions="_DEBUG;_USRDLL;EXP_FDO;XML_DEBUG;_CRT_SECURE_NO_DEPRECATE;_CRT_NON_CONFORMING_SWPRINTFS"
 				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
+				BasicRuntimeChecks="0"
 				RuntimeLibrary="3"
 				TreatWChar_tAsBuiltInType="true"
 				RuntimeTypeInfo="true"
@@ -70,6 +70,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="/fixed:no"
 				AdditionalDependencies="FDOCommon.lib FDOGeometry.lib Xerces-C_2D.lib Version.lib"
 				OutputFile="$(OutDir)/FDO.dll"
 				LinkIncremental="1"
@@ -283,6 +284,14 @@
 				</File>
 				<File
 					RelativePath="Src\Fdo\Expression\ExpressionException.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Src\Fdo\Expression\ExpressionInternal.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Src\Fdo\Expression\ExpressionInternal.h"
 					>
 				</File>
 				<File

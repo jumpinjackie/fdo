@@ -121,6 +121,39 @@ bool FdoPropertyValueConstraintList::Equals( FdoPropertyValueConstraint* pConstr
     return equals;
 }
 
+bool FdoPropertyValueConstraintList::Contains( FdoPropertyValueConstraint* pConstraint )
+{
+    bool contains = false;
+    FdoInt32 idx;
+
+    // Not equal if other constraint is not a list.
+    if ( pConstraint->GetConstraintType() == FdoPropertyValueConstraintType_List ) {
+        FdoPropertyValueConstraintList* pListConstraint = (FdoPropertyValueConstraintList*) pConstraint;
+        FdoPtr<FdoDataValueCollection> valueList = pListConstraint->GetConstraintList();
+
+        // Contains other list if all other list values in this list. Build dictionaries from lists to 
+        // weed out duplicate values.
+
+        FdoDictionaryP myValues = ValuesToDictionary( m_constraintList );
+        FdoDictionaryP theirValues = ValuesToDictionary( valueList );
+
+        // Can't contain other constraint list if it has more values
+        if ( myValues->GetCount() >= theirValues->GetCount() ) {
+
+            contains = true;
+            for ( idx = 0; idx < theirValues->GetCount(); idx++ ) {
+                FdoDictionaryElementP theirValue = theirValues->GetItem(idx);
+                if ( !myValues->Contains(theirValue->GetName()) ) {
+                    contains = false;
+                    break;
+                }
+            }
+        }
+    }
+
+    return contains;
+}
+
 
 FdoDictionaryP FdoPropertyValueConstraintList::ValuesToDictionary( FdoDataValueCollection* values ) 
 {

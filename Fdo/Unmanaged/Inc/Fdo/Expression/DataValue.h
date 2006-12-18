@@ -32,6 +32,14 @@
 /// value such as a string or a number.
 class FdoDataValue : public FdoLiteralValue
 {
+    friend class FdoInternalDataValue;
+    friend class FdoByteValue;
+    friend class FdoDecimalValue;
+    friend class FdoDoubleValue;
+    friend class FdoInt16Value;
+    friend class FdoInt32Value;
+    friend class FdoInt64Value;
+    friend class FdoSingleValue;
 protected:
 /// \cond DOXYGEN-IGNORE
     /// \brief
@@ -216,6 +224,51 @@ public:
     FdoString* GetXmlValue();
 
 protected:
+    /// \brief
+    /// Compares this data value with another data value
+    /// 
+    /// \param other 
+    /// Input the other data value
+    /// 
+    /// \return
+    /// Returns:
+    ///     FdoCompareType_Equal when this and the other value are equal or both null.
+    ///     FdoCompareType_Greater when this value is greater than the other value
+    ///     FdoCompareType_Less when this value is less than the other value
+    ///     FdoCompareType_Undefined when these two values cannot be compared. Cases where this happens
+    ///      are:
+    ///         - one value is null and the other is not null
+    ///         - the values have incompatible types (e.g. Int32 and DateTime).
+    ///         
+    /// 
+    FdoCompareType Compare( FdoDataValue* other );
+
+    // ReverseCompare is the same as Compare except for two of the return values:
+    ///     FdoCompareType_Greater when the other value is greater than this value
+    ///     FdoCompareType_Less when the other value is less than this value
+    FdoCompareType ReverseCompare( FdoDataValue* other );
+
+    /// \brief
+    /// Type-specific comparison function. Each sub-class has its own implementation.
+    /// 
+    /// \param other 
+    /// Input the other data value
+    /// 
+    /// \return
+    /// Returns:
+    ///     FdoCompareType_Equal when this and the other value are equal or both null.
+    ///     FdoCompareType_Greater when this value is greater than the other value
+    ///     FdoCompareType_Less when this value is less than the other value
+    ///     FdoCompareType_Undefined when these two values cannot be compared. Cases where this happens
+    ///      are:
+    ///         - one value is null and the other is not null
+    ///         - the values have incompatible types (e.g. Int32 and DateTime).
+    ///
+    ///     Base implementation always returns FdoCompareType_Undefined.
+    ///         
+    /// 
+    virtual FdoCompareType DoCompare( FdoDataValue* other );
+
 /// \cond DOXYGEN-IGNORE
     bool        m_isNull;
     FdoStringP  m_XmlValue; // Manages GetXmlValue return string when datatype is datetime.

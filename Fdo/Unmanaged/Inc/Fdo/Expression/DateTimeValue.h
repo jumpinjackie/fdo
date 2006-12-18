@@ -144,6 +144,9 @@ public:
     }
 
 protected:
+    // See FdoDataValue::DoCompare()
+    virtual FdoCompareType DoCompare( FdoDataValue* other );
+
 /// \cond DOXYGEN-IGNORE
     FdoDateTime m_data;
 };

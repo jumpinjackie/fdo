@@ -122,3 +122,17 @@ FdoString* FdoStringValue::ToString()
     return m_toString;
 }
 
+FdoCompareType FdoStringValue::DoCompare( FdoDataValue* other )
+{
+    FdoCompareType compare = FdoCompareType_Undefined;
+
+    // Only comparison with other strings currently supported.
+    if ( other->GetDataType() == GetDataType() ) {
+        FdoString* str1 = GetString();
+        FdoString* str2 = static_cast<FdoStringValue*>(other)->GetString();
+
+        compare = FdoCompare( FdoStringP(str1,true), FdoStringP(str2,true) );
+    }
+
+    return compare;
+}

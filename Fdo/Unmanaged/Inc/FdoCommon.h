@@ -30,6 +30,7 @@
 #include <Common/Ptr.h>
 #include <Common/Array.h>
 #include <Common/ArrayHelper.h>
+#include <Common/Compare.h>
 #include <Common/StringP.h>
 #include <Common/Dimensionality.h>
 #include <Common/GeometryType.h>

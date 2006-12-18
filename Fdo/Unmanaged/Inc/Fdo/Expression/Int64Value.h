@@ -31,6 +31,9 @@
 /// The FdoInt64Value class derives from FdoDataValue and represents a 64-bit signed integer value.
 class FdoInt64Value : public FdoDataValue
 {
+    friend class FdoByteValue;
+    friend class FdoInt16Value;
+    friend class FdoInt32Value;
 protected:
 /// \cond DOXYGEN-IGNORE
     /// \brief
@@ -138,6 +141,38 @@ public:
     }
 
 protected:
+    /// \brief
+    /// Constructs an instance of an FdoInt64Value from another FdoDataValue.
+    /// 
+    /// \param src 
+    /// Input the other FdoDataValue. Must be of one of the following types:
+    ///     FdoDataType_Byte
+    ///     FdoDataType_Int16
+    ///     FdoDataType_Int32
+    ///     FdoDataType_Int64
+    /// \param truncate 
+    /// Input in the future, will determine what to do if source value does not fit in the int64
+    /// number range:
+    ///     true - truncate the value to fit.
+    ///     false - throw an exception
+    /// \param nullIfIncompatible 
+    /// Input in the future, will determine what to do if source value type is not compatible with the 
+    /// FDO int64 type:
+    ///     true - return NULL.
+    ///     false - throw an exception
+    /// 
+    /// \return
+    /// Returns an FdoInt64Value
+    /// 
+    static FdoInt64Value* Create(
+        FdoDataValue* src, 
+        FdoBoolean truncate = false, 
+        FdoBoolean nullIfIncompatible = false
+    );
+
+    // See FdoDataValue::DoCompare()
+    virtual FdoCompareType DoCompare( FdoDataValue* other );
+
     FdoInt64    m_data;
 };
 #endif

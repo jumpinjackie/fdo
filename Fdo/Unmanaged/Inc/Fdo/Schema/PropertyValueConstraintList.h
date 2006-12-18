@@ -98,6 +98,18 @@ public:
     // (same constraint type and all members have the same values).
     virtual bool Equals( FdoPropertyValueConstraint* pConstraint );
 
+    // \brief
+    // Checks if a constraint domain is contained within another
+    // 
+    // \param value 
+    // The Property Value constraint to compare with
+    // 
+    // \return
+    // Returns true if this constraint's domain is a superset of the domain
+    // for pConstraint (all values that do not violate pConstraint also do not
+    // violate this constraint).
+    virtual bool Contains( FdoPropertyValueConstraint* pConstraint );
+
 private:
     // Builds dictionary from given data values, filtering out duplicates.
     FdoDictionaryP ValuesToDictionary( FdoDataValueCollection* values );

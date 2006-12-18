@@ -177,6 +177,17 @@ public:
     // (same constraint type and all members have the same values).
     virtual bool Equals( FdoPropertyValueConstraint* pConstraint );
 
+    // \brief
+    // Checks if a constraint domain is contained within another
+    // 
+    // \param value 
+    // The Property Value constraint to compare with
+    // 
+    // \return
+    // Returns true if this constraint's domain is a superset of the domain
+    // for pConstraint (all values that do not violate pConstraint also do not
+    // violate this constraint).
+    virtual bool Contains( FdoPropertyValueConstraint* pConstraint );
 
 private:
     // \brief
@@ -201,6 +212,41 @@ private:
     // \return
     // Returns the data value as a string. L"" if the value is null.
     FdoStringP ValueToString( FdoPtr<FdoDataValue> value );
+    
+    // \brief
+    // Compares the ends of two range constraints.
+    // 
+    // \param myInclusive 
+    // First constraint's inclusivity setting. When the first and second values are equal, the 
+    // inclusive settings are then checked:
+    //    When isMax is true, inclusive values are greater than exclusive values
+    //    When isMax is false, inclusive values are less than exclusive values
+    // There is currently a limitation in that, for integral types, inclusive values are not checked
+    // when the values differ by 1. Therefore, values are sometimes reported as not equal when 
+    // they are equal.
+    // 
+    // \param myValue 
+    // Value from the first constraint
+    // 
+    // \param myInclusive 
+    // Second constraint's inclusivity setting
+    //
+    // \param theirValue 
+    // Value from the second constraint
+    //
+    // \param isMax
+    // Determines how null and not null values are compared:
+    //   true: values are maximum end of ranges. NULL values are considered to be greater than not null values.
+    //   false: they are the minimum ends. NULL values are considered to be less than not null values.
+    //
+    // \return
+    // Returns:
+    //     FdoCompareType_Equal when first and second values are equal
+    //     FdoCompareType_Greater when the first value is greater than the second value
+    //     FdoCompareType_Less when the first value is less than the second value
+    //     FdoCompareType_Undefined when these two values have incompatible types.
+
+    FdoCompareType CompareEnd( FdoBoolean myInclusive, FdoPtr<FdoDataValue> myValue, FdoBoolean theirInclusive, FdoPtr<FdoDataValue> theirValue, FdoBoolean isMax );
     
     FdoDataValue*	m_minValue;
 	FdoDataValue*	m_maxValue;

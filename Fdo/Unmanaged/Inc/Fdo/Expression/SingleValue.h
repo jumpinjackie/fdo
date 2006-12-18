@@ -31,6 +31,10 @@
 /// The FdoSingleValue class derives from FdoDataValue and represents a single precision floating point number.
 class FdoSingleValue : public FdoDataValue
 {
+    friend class FdoByteValue;
+    friend class FdoInt16Value;
+    friend class FdoInt32Value;
+    friend class FdoInt64Value;
 protected:
 /// \cond DOXYGEN-IGNORE
     /// \brief
@@ -138,6 +142,39 @@ public:
     }
 
 protected:
+    /// \brief
+    /// Constructs an instance of an FdoSingleValue from another FdoDataValue.
+    /// 
+    /// \param src 
+    /// Input the other FdoDataValue. Must be of one of the following types:
+    ///     FdoDataType_Byte
+    ///     FdoDataType_Int16
+    ///     FdoDataType_Int32
+    ///     FdoDataType_Int64
+    ///     FdoDataType_Single
+    /// \param truncate 
+    /// Input in the future, will determine what to do if source value does not fit in the double 
+    /// number range:
+    ///     true - truncate the value to fit.
+    ///     false - throw an exception
+    /// \param nullIfIncompatible 
+    /// Input in the future, will determine what to do if source value type is not compatible with the 
+    /// FDO float type:
+    ///     true - return NULL.
+    ///     false - throw an exception
+    /// 
+    /// \return
+    /// Returns an FdoSingleValue
+    /// 
+    static FdoSingleValue* Create(
+        FdoDataValue* src, 
+        FdoBoolean truncate = false, 
+        FdoBoolean nullIfIncompatible = false
+    );
+
+    // See FdoDataValue::DoCompare()
+    virtual FdoCompareType DoCompare( FdoDataValue* other );
+
     float   m_data;
 };
 #endif

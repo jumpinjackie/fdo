@@ -65,6 +65,7 @@ libFDOSrc_la_SOURCES = \
   Expression/Int16Value.cpp \
   Expression/Int32Value.cpp \
   Expression/Int64Value.cpp \
+  Expression/ExpressionInternal.cpp \
   Expression/Parameter.cpp \
   Expression/SingleValue.cpp \
   Expression/StringValue.cpp \

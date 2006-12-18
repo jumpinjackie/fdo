@@ -335,4 +335,39 @@ void FdoDataValue::SetNull()
 	m_isNull = true;
 }
 
+FdoCompareType FdoDataValue::Compare( FdoDataValue* other )
+{
+    if ( (!this) || IsNull() ) {
+        if ( !other || other->IsNull() ) 
+            // Equal if both null
+            return FdoCompareType_Equal;
+        else
+            // this is null, other is not null
+            return FdoCompareType_Undefined;
+    }
 
+    if ( !other || other->IsNull() ) 
+            // this is not null, other is null
+        return FdoCompareType_Undefined;
+
+    // Both not null, call type-specific comparison function.
+    return DoCompare( other );
+}
+
+FdoCompareType FdoDataValue::ReverseCompare( FdoDataValue* other )
+{
+    FdoCompareType compare = other->Compare( this );
+
+    // Reverse greater and less than return values.
+    if ( compare == FdoCompareType_Greater ) 
+        compare = FdoCompareType_Less;
+    else if ( compare == FdoCompareType_Less ) 
+        compare = FdoCompareType_Greater;
+
+    return compare;
+}
+
+FdoCompareType FdoDataValue::DoCompare( FdoDataValue* other )
+{
+    return FdoCompareType_Undefined;
+}

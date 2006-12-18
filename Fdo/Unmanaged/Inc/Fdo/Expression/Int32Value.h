@@ -31,6 +31,8 @@
 /// The FdoInt32Value class derives from FdoDataValue and represents a 32-bit signed integer value.
 class FdoInt32Value : public FdoDataValue
 {
+    friend class FdoByteValue;
+    friend class FdoInt16Value;
 protected:
 /// \cond DOXYGEN-IGNORE
     /// \brief
@@ -140,6 +142,37 @@ public:
     }
 
 protected:
+    /// \brief
+    /// Constructs an instance of an FdoInt32Value from another FdoDataValue.
+    /// 
+    /// \param src 
+    /// Input the other FdoDataValue. Must be of one of the following types:
+    ///     FdoDataType_Byte
+    ///     FdoDataType_Int16
+    ///     FdoDataType_Int32
+    /// \param truncate 
+    /// Input in the future, will determine what to do if source value does not fit in the int32
+    /// number range:
+    ///     true - truncate the value to fit.
+    ///     false - throw an exception
+    /// \param nullIfIncompatible 
+    /// Input in the future, will determine what to do if source value type is not compatible with the 
+    /// FDO int32 type:
+    ///     true - return NULL.
+    ///     false - throw an exception
+    /// 
+    /// \return
+    /// Returns an FdoInt32Value
+    /// 
+    static FdoInt32Value* Create(
+        FdoDataValue* src, 
+        FdoBoolean truncate = false, 
+        FdoBoolean nullIfIncompatible = false
+    );
+
+    // See FdoDataValue::DoCompare()
+    virtual FdoCompareType DoCompare( FdoDataValue* other );
+
     FdoInt32    m_data;
 };
 #endif
