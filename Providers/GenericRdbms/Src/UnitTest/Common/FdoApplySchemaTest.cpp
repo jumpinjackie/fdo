@@ -391,6 +391,47 @@ void FdoApplySchemaTest::TestOverrides ()
         staticConn->connect();
         staticConn->SetSchema( DB_NAME_OVERRIDE_SUFFIX );
 
+        mgr = staticConn->CreateSchemaManager();
+        FdoSmPhMgrP ph = mgr->GetPhysicalSchema();
+        FdoSmPhOwnerP owner = ph->GetOwner();
+
+        FdoSmPhTableP table = owner->CreateTable( ph->GetDcDbObjectName(L"viewbase") );
+        FdoSmPhColumnP column = table->CreateColumnInt64( ph->GetDcColumnName(L"id"), false );
+        table->AddPkeyCol( column->GetName() );
+        column = table->CreateColumnChar( ph->GetDcColumnName(L"col1"), true, 50 );
+        column = table->CreateColumnInt16( ph->GetDcColumnName(L"col2"), true );
+        column = table->CreateColumnChar( ph->GetDcColumnName(L"view_op_col1"), true, 50 );
+        column = table->CreateColumnInt16( ph->GetDcColumnName(L"view_op_col2"), true );
+        column = table->CreateColumnGeom( ph->GetDcColumnName(L"geometry"), (FdoSmPhScInfo*) NULL );
+
+        FdoSmPhViewP view = owner->CreateView( ph->GetDcDbObjectName(L"view1"), L"", owner->GetName(), ph->GetDcDbObjectName(L"viewbase" ));
+        column = view->CreateColumnInt64(ph->GetDcColumnName(L"id"), false, true, ph->GetDcColumnName(L"id") );
+        column = view->CreateColumnChar(ph->GetDcColumnName(L"col1"), true, 50, ph->GetDcColumnName(L"col1") );
+        column = view->CreateColumnInt16( ph->GetDcColumnName(L"col2"), true, false, ph->GetDcColumnName(L"col2") );
+        column = view->CreateColumnChar(ph->GetDcColumnName(L"view_op_col1"), true, 50, ph->GetDcColumnName(L"view_op_col1") );
+        column = view->CreateColumnInt16( ph->GetDcColumnName(L"view_op_col2"), true, false, ph->GetDcColumnName(L"view_op_col2") );
+        column = view->CreateColumnGeom( ph->GetDcColumnName(L"geometry"), (FdoSmPhScInfo*) NULL, true, true, false, ph->GetDcColumnName(L"geometry") );
+
+        view = owner->CreateView( ph->GetDcDbObjectName(L"view2"), L"", owner->GetName(), ph->GetDcDbObjectName(L"viewbase" ));
+        column = view->CreateColumnInt64(ph->GetDcColumnName(L"id"), false, true, ph->GetDcColumnName(L"id") );
+        column = view->CreateColumnChar(ph->GetDcColumnName(L"col1"), true, 50, ph->GetDcColumnName(L"col1") );
+        column = view->CreateColumnInt16( ph->GetDcColumnName(L"col2"), true, false, ph->GetDcColumnName(L"col2") );
+
+        table = owner->CreateTable( ph->GetDcDbObjectName(L"viewbaseop") );
+        column = table->CreateColumnInt64( ph->GetDcColumnName(L"id"), false );
+        table->AddPkeyCol( column->GetName() );
+        column = table->CreateColumnInt32( ph->GetDcColumnName(L"seq"), false );
+        column = table->CreateColumnChar( ph->GetDcColumnName(L"col1"), true, 50 );
+        column = table->CreateColumnInt16( ph->GetDcColumnName(L"col2"), true );
+
+        view = owner->CreateView( ph->GetDcDbObjectName(L"view_op"), L"", owner->GetName(), ph->GetDcDbObjectName(L"viewbaseop" ));
+        column = view->CreateColumnInt64(ph->GetDcColumnName(L"id"), false, true, ph->GetDcColumnName(L"id") );
+        column = view->CreateColumnInt32(ph->GetDcColumnName(L"seq"), false, true, ph->GetDcColumnName(L"seq") );
+        column = view->CreateColumnChar(ph->GetDcColumnName(L"col1"), true, 50, ph->GetDcColumnName(L"col1") );
+        column = view->CreateColumnInt16( ph->GetDcColumnName(L"col2"), true, false, ph->GetDcColumnName(L"col2") );
+
+        owner->Commit();
+
         // Create RDBMS-specific elements (such as filegroups on SQL Server, tablespaces on Oracle, etc):
         wchar_t *wDatastore = NULL;
         multibyte_to_wide(wDatastore, UnitTestUtil::GetEnviron("datastore", DB_NAME_OVERRIDE_SUFFIX));
@@ -429,7 +470,6 @@ void FdoApplySchemaTest::TestOverrides ()
         mgr = staticConn->CreateSchemaManager();
         lp = mgr->RefLogicalPhysicalSchemas();
         lp->XMLSerialize( UnitTestUtil::GetOutputFileName( L"apply_schema_overrides3.xml" ) );
-        FdoSmPhMgrP ph = mgr->GetPhysicalSchema();
 
         FdoSmLpQClassesP classes;
 #ifdef RDBI_DEF_SSQL
@@ -464,9 +504,9 @@ void FdoApplySchemaTest::TestOverrides ()
 		UnitTestUtil::GrantDatastore( connection, mgr, L"select", UnitTestUtil::GetEnviron("datastore", DB_NAME_FOREIGN_SUFFIX) );
 #endif
 
-        FdoSmPhOwnerP owner = ph->GetOwner();
-        FdoSmPhTableP table = owner->CreateTable( ph->GetDcDbObjectName(L"storage") );
-        FdoSmPhColumnP column = table->CreateColumnInt64( ph->GetDcColumnName(L"id"), false );
+        owner = ph->GetOwner();
+        table = owner->CreateTable( ph->GetDcDbObjectName(L"storage") );
+        column = table->CreateColumnInt64( ph->GetDcColumnName(L"id"), false );
         column = table->CreateColumnChar( ph->GetDcColumnName(L"storage"), true, 50 );
         column = table->CreateColumnGeom( ph->GetDcColumnName(L"floor"), (FdoSmPhScInfo*) NULL );
         column = table->CreateColumnInt16( ph->GetDcColumnName(L"extra"), !mCanAddNotNullCol );
@@ -580,6 +620,11 @@ void FdoApplySchemaTest::TestOverrides ()
 		printf( "Creating Foreign Schema ... \n" );
 
         ModOverrideSchemaForeign( pSchema );
+        // TODO: Can't yet handle properties whose columns are missing in the foreign table.
+        FdoClassesP fdoClasses = pSchema->GetClasses();
+        fdoClasses->RemoveAt( fdoClasses->IndexOf(L"view1") );
+        fdoClasses->RemoveAt( fdoClasses->IndexOf(L"view2") );
+        fdoClasses->RemoveAt( fdoClasses->IndexOf(L"view_op") );
 
         FdoRdbmsOvSchemaMappingP mapping = (FdoRdbmsOvPhysicalSchemaMapping*) mappings->GetItem( connection, pSchema->GetName());
         ShemaOvSetOwner(mapping, FdoStringP(UnitTestUtil::GetEnviron("datastore", DB_NAME_OVERRIDE_SUFFIX)) );
@@ -4559,6 +4604,106 @@ void FdoApplySchemaTest::ModOverrideSchema2( FdoIConnection* connection, FdoRdbm
     FdoPropertiesP(pFeatClass->GetProperties())->Add( pGeomProp );
     pFeatClass->SetGeometryProperty(pGeomProp);
 
+    FdoClassP pViewOpClass = FdoClass::Create( L"view_op", L"a class" );
+    FdoClassesP(pSchema->GetClasses())->Add( pViewOpClass );
+    pFeatClass->SetIsAbstract(false);
+
+    FdoDataPropertyP pSeqProp = FdoDataPropertyDefinition::Create( L"seq", L"" );
+    pSeqProp->SetDataType( FdoDataType_Int32 );
+    pSeqProp->SetNullable(false);
+    FdoPropertiesP(pViewOpClass->GetProperties())->Add( pSeqProp );
+
+    pProp = FdoDataPropertyDefinition::Create( L"col1", L"" );
+    pProp->SetDataType( FdoDataType_String );
+    pProp->SetNullable(true);
+    pProp->SetLength(50);
+    FdoPropertiesP(pViewOpClass->GetProperties())->Add( pProp );
+
+    pProp = FdoDataPropertyDefinition::Create( L"col2", L"" );
+    pProp->SetDataType( FdoDataType_Int16 );
+    pProp->SetNullable(true);
+    FdoPropertiesP(pViewOpClass->GetProperties())->Add( pProp );
+
+    pProp = FdoDataPropertyDefinition::Create( L"col3", L"" );
+    pProp->SetDataType( FdoDataType_Int32 );
+    pProp->SetNullable(true);
+    FdoPropertiesP(pViewOpClass->GetProperties())->Add( pProp );
+
+    pFeatClass = FdoFeatureClass::Create( L"view1", L"a class" );
+    FdoClassesP(pSchema->GetClasses())->Add( pFeatClass );
+    pFeatClass->SetIsAbstract(false);
+
+    pProp = FdoDataPropertyDefinition::Create( L"id", L"id" );
+    pProp->SetDataType( FdoDataType_Int64 );
+    pProp->SetNullable(false);
+    pProp->SetIsAutoGenerated(true);
+    FdoPropertiesP(pFeatClass->GetProperties())->Add( pProp );
+    FdoDataPropertiesP(pFeatClass->GetIdentityProperties())->Add( pProp );
+
+    pProp = FdoDataPropertyDefinition::Create( L"Column1", L"" );
+    pProp->SetDataType( FdoDataType_String );
+    pProp->SetNullable(true);
+    pProp->SetLength(50);
+    FdoPropertiesP(pFeatClass->GetProperties())->Add( pProp );
+
+    pProp = FdoDataPropertyDefinition::Create( L"col2", L"" );
+    pProp->SetDataType( FdoDataType_Int16 );
+    pProp->SetNullable(true);
+    FdoPropertiesP(pFeatClass->GetProperties())->Add( pProp );
+
+    pProp = FdoDataPropertyDefinition::Create( L"col3", L"" );
+    pProp->SetDataType( FdoDataType_Int32 );
+    pProp->SetNullable(true);
+    FdoPropertiesP(pFeatClass->GetProperties())->Add( pProp );
+
+    pGeomProp = FdoGeometricPropertyDefinition::Create( L"geometry", L"" );
+    FdoPropertiesP(pFeatClass->GetProperties())->Add( pGeomProp );
+    pFeatClass->SetGeometryProperty(pGeomProp);
+
+    pObProp = FdoObjectPropertyDefinition::Create( L"view_op", L"" );
+    pObProp->SetClass( pViewOpClass );
+    pObProp->SetObjectType( FdoObjectType_Value );
+    FdoPropertiesP(pFeatClass->GetProperties())->Add( pObProp );
+
+    FdoClassP pClass = FdoClass::Create( L"view2", L"a class" );
+    FdoClassesP(pSchema->GetClasses())->Add( pClass );
+    pFeatClass->SetIsAbstract(false);
+
+    pProp = FdoDataPropertyDefinition::Create( L"id", L"id" );
+    pProp->SetDataType( FdoDataType_Int64 );
+    pProp->SetNullable(false);
+    pProp->SetIsAutoGenerated(true);
+    FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+    FdoDataPropertiesP(pClass->GetIdentityProperties())->Add( pProp );
+
+    pProp = FdoDataPropertyDefinition::Create( L"col1", L"" );
+    pProp->SetDataType( FdoDataType_String );
+    pProp->SetNullable(true);
+    pProp->SetLength(50);
+    FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+
+    pProp = FdoDataPropertyDefinition::Create( L"col2", L"" );
+    pProp->SetDataType( FdoDataType_Int16 );
+    pProp->SetNullable(true);
+    FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+
+    pProp = FdoDataPropertyDefinition::Create( L"col3", L"" );
+    pProp->SetDataType( FdoDataType_Int32 );
+    pProp->SetNullable(true);
+    FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+
+    pObProp = FdoObjectPropertyDefinition::Create( L"view_op", L"" );
+    pObProp->SetClass( pViewOpClass );
+    pObProp->SetObjectType( FdoObjectType_Collection );
+    pObProp->SetIdentityProperty( pSeqProp );
+    FdoPropertiesP(pClass->GetProperties())->Add( pObProp );
+
+    pObProp = FdoObjectPropertyDefinition::Create( L"view_op_table", L"" );
+    pObProp->SetClass( pViewOpClass );
+    pObProp->SetObjectType( FdoObjectType_Collection );
+    pObProp->SetIdentityProperty( pSeqProp );
+    FdoPropertiesP(pClass->GetProperties())->Add( pObProp );
+
     pCmd->SetFeatureSchema( pSchema );
 
     if ( pOverrides ) 
@@ -5095,6 +5240,48 @@ FdoRdbmsOvPhysicalSchemaMapping* FdoApplySchemaTest::CreateOverrides( FdoIConnec
         L""
     );
     GeometricPropOvSetColumn(pGeomProp4, pGeomCol4);
+
+    pClass = CreateOvClassDefinition( L"view1" );
+    ClassesOvAdd(pOverrides, pClass);
+    pTable = CreateOvTable( L"view1" );
+    ClassOvSetTable(pClass, pTable);
+    pProp = CreateOvDataPropertyDefinition( 
+        L"Column1"
+    );
+    pCol = CreateOvColumn( 
+        L"col1"
+    );
+    DataPropOvSetColumn(pProp, pCol);
+    PropertiesOvAdd(pClass, pProp);
+    pObProp = CreateOvObjectPropertyDefinition( 
+        L"view_op"
+    );
+    mapping = CreateOvPropertyMappingSingle();
+    ObjectPropertyOvSetMappingDefinition(pObProp, mapping);
+    PropertiesOvAdd(pClass, pObProp);
+
+    pClass = CreateOvClassDefinition( L"view2" );
+    ClassesOvAdd(pOverrides, pClass);
+    pTable = CreateOvTable( L"view2" );
+    ClassOvSetTable(pClass, pTable);
+    pProp = CreateOvDataPropertyDefinition( 
+        L"col3"
+    );
+    pCol = CreateOvColumn( 
+        L"column3"
+    );
+    DataPropOvSetColumn(pProp, pCol);
+    PropertiesOvAdd(pClass, pProp);
+    pObProp = CreateOvObjectPropertyDefinition( 
+        L"view_op"
+    );
+    FdoPtr<FdoRdbmsOvPropertyMappingConcrete> cMapping = CreateOvPropertyMappingConcrete();
+    FdoRdbmsOvClassP obClass = CreateOvClassDefinition( L"view_op" );
+    pTable = CreateOvTable( L"view_op" );
+    ClassOvSetTable(obClass, pTable);
+    PropertyMappingOvSetInternalClass( cMapping, obClass );
+    ObjectPropertyOvSetMappingDefinition(pObProp, cMapping);
+    PropertiesOvAdd(pClass, pObProp);
 
     return pOverrides;
 }

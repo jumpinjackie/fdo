@@ -169,5 +169,25 @@
 <complexType name="OvOpClassIFType">
 <Table name="OPC_TABLE_IF"/>
 </complexType>
+<complexType name="view1Type">
+<Table name="VIEW1"/>
+<element name="Column1">
+<Column name="COL1"/>
+</element>
+<element name="view_op">
+<PropertyMappingSingle prefix="view_op"/>
+</element>
+</complexType>
+<complexType name="view2Type">
+<Table name="VIEW2"/>
+<element name="col3">
+<Column name="COLUMN3"/>
+</element>
+<element name="view_op">
+<PropertyMappingConcrete>
+<Table name="VIEW_OP"/>
+</PropertyMappingConcrete>
+</element>
+</complexType>
 </SchemaMapping>
 </fdo:DataStore>

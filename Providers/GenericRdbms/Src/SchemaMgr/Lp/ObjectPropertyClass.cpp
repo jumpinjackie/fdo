@@ -149,7 +149,14 @@ void FdoSmLpGrdObjectPropertyClass::InitProperties (
     FdoSmLpPropertiesP pNestedProps = 
 		GetNestedProperties();
 
-    FdoSmPhDbObjectP pPhTable = pPhysical->FindDbObject(GetDbObjectName());
+    FdoSmPhDbObjectP pPhDbObject = pPhysical->FindDbObject(GetDbObjectName());
+    FdoSmPhTableP pPhTable = pPhDbObject.p->SmartCast<FdoSmPhTable>();
+
+    // Treat created columns has having fixed names when that associated database object
+    // is in the current datastore but is not a table. This prevents name adjustment for 
+    // columns in local views. 
+    bool isFixedColumn = pPhDbObject && (!pPhTable) && (wcslen(this->GetOwner()) == 0);
+
 
 	/* Add all Object property class properties if mapping is "concrete".
 	   When mapping is "class" then this class merely represents a 
@@ -180,7 +187,7 @@ void FdoSmLpGrdObjectPropertyClass::InitProperties (
                 // Generate column name, with prefix if specified
                 FdoStringP colName;
                 if ( prefix.GetLength() > 0 ) 
-                    colName = UniqueColumnName( pPhTable, NULL, (prefix + L"_" + pRefProp->GetName()) );
+                    colName = UniqueColumnName( pPhDbObject, NULL, (prefix + L"_" + pRefProp->GetName()), isFixedColumn );
 
 	            // For each ref class property, find the corresponding
 		        // nested property.
@@ -311,9 +318,10 @@ void FdoSmLpGrdObjectPropertyClass::InitProperties (
                 // property must attach to an already existing column.
                 if ( !(GetIsFromFdo() && (GetElementState() == FdoSchemaElementState_Unchanged)) )
                     targetColName = UniqueColumnName(
-                        pPhTable, 
+                        pPhDbObject, 
                         NULL, 
-                        targetColName
+                        targetColName,
+                        isFixedColumn
                     );
                 targetColumnNames->Add( targetColName );
 		    }

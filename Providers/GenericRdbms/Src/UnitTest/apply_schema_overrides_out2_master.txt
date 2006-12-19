@@ -315,5 +315,96 @@
 <Column name="OPID1"/>
 </element>
 </complexType>
+<complexType name="view1Type" tableMapping="Concrete">
+<Table name="VIEW1"/>
+<element name="Column1">
+<Column name="COL1"/>
+</element>
+<element name="col2">
+<Column name="COL2"/>
+</element>
+<element name="col3">
+<Column name="COL3"/>
+</element>
+<element name="geometry">
+<GeometricColumn name="GEOMETRY"/>
+</element>
+<element name="id">
+<Column name="ID"/>
+</element>
+<element name="view_op">
+<PropertyMappingSingle prefix="view_op"/>
+</element>
+</complexType>
+<complexType name="view2Type" tableMapping="Concrete">
+<Table name="VIEW2"/>
+<element name="col1">
+<Column name="COL1"/>
+</element>
+<element name="col2">
+<Column name="COL2"/>
+</element>
+<element name="col3">
+<Column name="COLUMN3"/>
+</element>
+<element name="id">
+<Column name="ID"/>
+</element>
+<element name="view_op">
+<PropertyMappingConcrete>
+<Table name="VIEW_OP"/>
+<element name="col1">
+<Column name="COL1"/>
+</element>
+<element name="col2">
+<Column name="COL2"/>
+</element>
+<element name="col3">
+<Column name="COL3"/>
+</element>
+<element name="seq">
+<Column name="SEQ"/>
+</element>
+<element name="view2_id">
+<Column name="VIEW2_ID"/>
+</element>
+</PropertyMappingConcrete>
+</element>
+<element name="view_op_table">
+<PropertyMappingConcrete>
+<Table pkeyName="PK_VIEW2_VIEW_OP1" name="VIEW2_VIEW_OP1"/>
+<element name="col1">
+<Column name="COL1"/>
+</element>
+<element name="col2">
+<Column name="COL2"/>
+</element>
+<element name="col3">
+<Column name="COL3"/>
+</element>
+<element name="seq">
+<Column name="SEQ"/>
+</element>
+<element name="view2_id">
+<Column name="VIEW2_ID"/>
+</element>
+</PropertyMappingConcrete>
+</element>
+</complexType>
+<complexType name="view_opType" tableMapping="Concrete">
+<Table name="VIEW_OP1"/>
+<element name="col1">
+<Column name="COL1"/>
+</element>
+<element name="col2">
+<Column name="COL2"/>
+</element>
+<element name="col3">
+<Column name="COL3"/>
+</element>
+<element name="seq">
+<Column name="SEQ"/>
+</element>
+</complexType>
 </SchemaMapping>
 </fdo:DataStore>
