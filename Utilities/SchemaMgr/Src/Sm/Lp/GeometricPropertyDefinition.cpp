@@ -735,6 +735,13 @@ FdoSmPhColumnP FdoSmLpGeometricPropertyDefinition::NewColumn( FdoSmPhDbObjectP d
 
 FdoSmPhColumnP FdoSmLpGeometricPropertyDefinition::NewSiColumn( FdoSmPhDbObjectP dbObject, FdoStringP columnName, bool isNullable )
 {
+    FdoSmPhTableP table = dbObject->SmartCast<FdoSmPhTable>();
+    FdoSmPhOwnerP owner = GetLogicalPhysicalSchema()->GetPhysicalSchema()->FindOwner();
+
+    // Skip creating new column in views not managed by Schema Manager.
+    if ( (!owner->GetHasMetaSchema()) || ((!table) && (!ColumnIsForeign())) ) 
+        return (FdoSmPhColumn*) NULL;
+
     FdoSmPhColumnP column = dbObject->CreateColumnChar(
         columnName,
         isNullable,
@@ -742,7 +749,6 @@ FdoSmPhColumnP FdoSmLpGeometricPropertyDefinition::NewSiColumn( FdoSmPhDbObjectP
         columnName
     );
 
-    FdoSmPhTableP table = dbObject->SmartCast<FdoSmPhTable>();
     if (table != NULL) {
         FdoSmPhIndexP idx = table->CreateIndex(columnName + FDOSMLP_SI_COLUMN_IDX_SUFFIX, false);
         idx->AddColumn(column);
@@ -752,6 +758,13 @@ FdoSmPhColumnP FdoSmLpGeometricPropertyDefinition::NewSiColumn( FdoSmPhDbObjectP
 
 FdoSmPhColumnP FdoSmLpGeometricPropertyDefinition::NewOrdColumn( FdoSmPhDbObjectP dbObject, FdoStringP columnName, bool isNullable )
 {
+    FdoSmPhTableP table = dbObject->SmartCast<FdoSmPhTable>();
+    FdoSmPhOwnerP owner = GetLogicalPhysicalSchema()->GetPhysicalSchema()->FindOwner();
+
+    // Skip creating new column in views not managed by Schema Manager.
+    if ( (!owner->GetHasMetaSchema()) || ((!table) && (!ColumnIsForeign())) ) 
+        return (FdoSmPhColumn*) NULL;
+
 	return dbObject->CreateColumnDouble(
         columnName,
         isNullable,

@@ -206,25 +206,43 @@ void FdoSmLpSimplePropertyDefinition::CreateColumn( FdoSmPhDbObjectP dbObject )
 	FdoSmPhMgrP pPhysical = GetLogicalPhysicalSchema()->GetPhysicalSchema();
 
 	if ( dbObject ) {
-		try {
-            FdoSmPhOwnerP owner = pPhysical->GetOwner();
+        FdoSmPhOwnerP owner = pPhysical->GetOwner();
 
+        FdoSmPhTableP table = dbObject->SmartCast<FdoSmPhTable>();
+        bool isFixedColumn = GetIsFixedColumn();
+        if ( isFixedColumn ) {
+            if ( owner->GetHasMetaSchema() && ColumnIsForeign() && !GetIsSystem() ) 
+                // Although column has been designated as fixed, it is a non-system 
+                // foreign column so it is really not fixed (It's a column in a foreign
+                // table view.
+                isFixedColumn = false;
+        }
+        else {
+            if ( (!owner->GetHasMetaSchema()) || ((!ColumnIsForeign()) && (!table)) ) 
+                // The column name has been designated as non fixed but, the datastore is not FDO-enabled
+                // or the column will be in a non-foreign non-table. In these cases, it is really fixed.
+                // This ensures we do not adjust non-foreign view column names.
+                isFixedColumn = true;
+        }
+
+		try {
     		// Column name is property name adjusted to be RDBMS-friendly.
 	    	FdoStringP columnNameGen = ((FdoSmLpClassDefinition*)RefParentClass())->UniqueColumnName( 
                 dbObject, 
                 this, 
                 columnName.GetLength() > 0 ? (FdoString*) columnName : GetName(), 
-                GetIsFixedColumn() && (!ColumnIsForeign() || !owner->GetHasMetaSchema()) 
+                isFixedColumn 
             );
 
             // skip column creation for  pre-existing non-foreign columns
             // with overridden names. 
+            // Also skips creation for non-foreign columns when the containing database object is not a table. 
             // Just attach to the column in this case.
             // For foreign columns, a column in the referencing view is 
             // always created.
 
             FdoSmPhColumnP foundColumn;
-            if ( (!ColumnIsForeign() || !owner->GetHasMetaSchema()) && GetIsFixedColumn() ) {
+            if ( (!ColumnIsForeign() || !owner->GetHasMetaSchema()) && isFixedColumn ) {
                 // By default, column override is match to column
                 // by case-sensitive name compare
 				FdoSmPhColumnsP columns = dbObject->GetColumns();
@@ -237,25 +255,35 @@ void FdoSmLpSimplePropertyDefinition::CreateColumn( FdoSmPhDbObjectP dbObject )
                     // of default case is done if such a column exists.
                     FdoStringP CiColumnName = pPhysical->GetDcColumnName(columnNameGen);
                     if ( CiColumnName != columnNameGen ) {
-                        columnNameGen = CiColumnName;
-                        foundColumn = columns->FindItem(columnNameGen);
                         // Matched to default case so change case of
                         // property's column name.
-                        SetColumnName(columnNameGen);
+                        columnNameGen = CiColumnName;
+                        foundColumn = columns->FindItem(columnNameGen);
                     }
                 }
-                SetColumn( foundColumn );
             }
 
+            if ( foundColumn ) 
+                SetColumn( foundColumn );
+            else
+                SetColumnName(columnNameGen);
+ 
+            // Create the column in the datastore if all of the following are true ...
 
-            if ( owner->GetHasMetaSchema() && ((ColumnIsForeign()) || (!GetIsFixedColumn()) || (!foundColumn)) ) {
-    		    // Create the column 
-                if ( (!ColumnIsForeign()) || (!GetIsSystem()) ) {
-        		    SetColumn( NewColumn(dbObject, columnNameGen) );
-                    mbColumnCreator = true;
+            // datastore is fdo-enabled and column does not yet exist
+            if ( owner->GetHasMetaSchema() && (!foundColumn) ) {
+                // column is in a table or a foreign schema wrapping view
+                if ( ColumnIsForeign() || table ) {
+                    // column is not a system column in a foreign schema wrapping view.
+                    // System properties not applicable to foreign schema.
+                    if ( (!ColumnIsForeign()) || (!GetIsSystem()) ) {
+        		        // Create the column 
+     		            SetColumn( NewColumn(dbObject, columnNameGen) );
+                        mbColumnCreator = true;
+                    }
                 }
             }
-		}
+ 		}
 		catch ( FdoSchemaException* se )
 		{
 			// Log column type errors.
@@ -268,7 +296,7 @@ void FdoSmLpSimplePropertyDefinition::CreateColumn( FdoSmPhDbObjectP dbObject )
                     dbObject, 
                     this, 
                     columnName.GetLength() > 0 ? (FdoString*) columnName : GetName(), 
-                    GetIsFixedColumn() && (!ColumnIsForeign()) 
+                    isFixedColumn 
                 ) 
             );
 
