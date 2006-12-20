@@ -529,8 +529,8 @@ int SQLiteTable::put(SQLiteTransaction *txid, SQLiteData *key, SQLiteData *data,
 
     if (key->get_size() == 0)
     {
-        // new record
-        mMykey = m_nextKey++;
+        sync_id_pool();
+        mMykey = m_nextKey;
         key->set_size( sizeof(SQLiteRecNumbDef) );
         key->set_data(&mMykey );
     }
@@ -637,24 +637,29 @@ int SQLiteTable::del(SQLiteTransaction *txnid, SQLiteData *key, unsigned int fla
 
     m_pDb->close_all_read_cursors(); // all read cursors need to be closed before a write cursor is aquired.
 
-    if( mCacheSize && mTabCache->get(txnid, key, &data, flags ) == 0 )
+    if( mTabCache )
     {
-        mTabCache->del( key );
+        mTabCache->flush();
+        mCacheSize = 0;
     }
-
     if( m_pDb->BTree()->cursor(  mRootDataPage, &pCur, 1, mCmpHandler ) )
         return SQLITE_ERROR;
 
     rc = pCur->move_to( key->get_size(), (unsigned char*)key->get_data(), found );
     if( found )
     { 
-        if( m_pDb->begin_transaction( ) == SQLITE_OK ) 
+        if( ! m_pDb->transaction_started() )
         {
-            rc = pCur->delete_current();
-            m_pDb->commit();
+            if( m_pDb->begin_transaction( ) == SQLITE_OK ) 
+            {
+                rc = pCur->delete_current();
+                m_pDb->commit();
+            }
+            else 
+                rc = SQLITE_ERROR;
         }
-        else 
-            rc = SQLITE_ERROR;
+        else
+            rc = pCur->delete_current();
     }
     pCur->close();
     delete pCur;
@@ -689,6 +694,7 @@ void SQLiteTable::flush()
 	if( mTabCache )
     {
         mTabCache->flush();
+        sync_id_pool();
         mCacheSize = 0;
     }
 }
