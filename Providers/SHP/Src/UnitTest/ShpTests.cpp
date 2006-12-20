@@ -1235,7 +1235,10 @@ void ShpTests::Compare (const wchar_t* fut, const wchar_t* ref, unsigned long st
             while (bad.ReadFile (&buffer1, 1L))
                 if (good.ReadFile (&buffer2, 1L))
                 {
-                    if (buffer1 != buffer2)
+					// The 29th byte is LDID. The original file might not have it set but (i.e. is 0) but the 
+					// copy file does (takes the locale into account).
+					bool isLDID = ((count + start) == 29);
+                    if ((buffer1 != buffer2) && (buffer1 != 0 && isLDID))
                     {
                         char message[1024];
                         sprintf (message, "compare error at offset 0x%x, expected 0x%x, got 0x%x", count + start, buffer2, buffer1);

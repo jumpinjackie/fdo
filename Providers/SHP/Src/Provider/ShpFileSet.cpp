@@ -905,10 +905,13 @@ void ShpFileSet::PutData (ShpConnection* connection, FdoString* class_name, FdoP
                                         row->SetData (j, true,  (wchar_t*)NULL);
                                     else
 									{
-										FdoStringP  shpCpg;
-										if (this->GetCpgFile())
-											shpCpg = this->GetCpgFile()->GetCodePage();
-                                        row->SetData (j, false, (wchar_t*)string->GetString (), (wchar_t*)(FdoString *)shpCpg);
+										// Get the code page from LDID. If not valid try the .CPG file.
+										FdoStringP  codePage = this->GetDbfFile()->GetCodePage();
+
+										if (codePage == L"" && this->GetCpgFile() )
+											codePage = this->GetCpgFile()->GetCodePage();
+
+                                        row->SetData (j, false, (wchar_t*)string->GetString (), (wchar_t*)(FdoString *)codePage);
 									}
                                     break;
 

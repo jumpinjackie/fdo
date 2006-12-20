@@ -1180,7 +1180,7 @@ void ShpConnection::CompressFileSet (const wchar_t*    baseName)
     FdoStringP    ssiC_name = FdoStringP::Format(L"%ls%ls", (FdoString *)ssi_name, CPY_SUFFIX);
 
     // Create compressed DBF file
-    ShapeDBF *dbfC = new ShapeDBF ((FdoString *)dbfC_name, fileset->GetDbfFile()->GetColumnInfo());
+    ShapeDBF *dbfC = new ShapeDBF ((FdoString *)dbfC_name, fileset->GetDbfFile()->GetColumnInfo(), fileset->GetDbfFile()->GetLDID());
     delete dbfC;
 
     dbfC = new ShapeDBF ((FdoString *)dbfC_name);

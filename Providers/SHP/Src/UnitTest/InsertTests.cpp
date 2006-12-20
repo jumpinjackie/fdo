@@ -23,11 +23,13 @@
 #include <FdoSpatial.h>
 #include <FdoCommonFile.h>
 #include <ShapeCPG.h> 
+#include <ShapeDBF.h> 
 
 #ifdef _WIN32
 #define LOCATION L"..\\..\\TestData\\Testing"
 #define SCHEMA_NAME L"\\schema.xml"
 #define CPG_NAME L"\\Test.cpg"
+#define DBG_NAME L"\\Test.dbf"
 #else
 #define LOCATION L"../../TestData/Testing"
 #define SCHEMA_NAME L"/schema.xml"
@@ -260,7 +262,7 @@ void InsertTests::insert_with_locale ()
 {
 	char  locale[50];
 	strcpy(locale, setlocale(LC_ALL, ""));
-	printf("locale= %s\n", locale);
+	if (VERBOSE) printf("locale= %s\n", locale);
 
 #ifdef _WIN32
 	insert_locale(locale, ".28591", L"88591", L"sgshlweeppa");
@@ -279,7 +281,8 @@ void InsertTests::insert_with_locale ()
 
 void InsertTests::insert_locale (char *orig_locale, char *new_locale, FdoString *expected_cpg, const wchar_t *a_value )
 {
-    printf("..locale: %s \n", new_locale);
+    if (VERBOSE) printf("..locale: %s \n", new_locale);
+
     try
     {
 		setlocale(LC_ALL, new_locale);
@@ -292,12 +295,26 @@ void InsertTests::insert_locale (char *orig_locale, char *new_locale, FdoString 
 		// This throws exception if not found.
 		ShapeCPG  *cpg = new ShapeCPG( LOCATION CPG_NAME, status );
 
+		// This throws exception if not found.
+		ShapeDBF  *dbf = new ShapeDBF( LOCATION DBG_NAME );
+
 		// Restore the locale.  
 		setlocale(LC_ALL, orig_locale);
 
 		FdoString *esriCodepage = (FdoString *)cpg->GetCodePage();
+		if (VERBOSE) printf("CPG: %ls\n", (FdoString*)esriCodepage );
+
         CPPUNIT_ASSERT_MESSAGE ("incorrect value for ESRI codepage", wcscmp( esriCodepage, expected_cpg)==0);
 		delete cpg;
+
+		FdoString *esriCodepage2 = dbf->GetCodePage();
+		if (VERBOSE) printf("LDID: %ls\n", (FdoString*)esriCodepage2 );
+
+		// Apparenttly LDID supports code pages <= 1257
+		FdoStringP	codepage = FdoStringP(expected_cpg);
+		if ( codepage.ToLong() <= 1257 )
+			CPPUNIT_ASSERT_MESSAGE ("incorrect value for ESRI codepage2", wcscmp( esriCodepage2, expected_cpg)==0);
+		delete dbf;
 
         FdoPtr<FdoIInsert> insert = (FdoIInsert*)mConnection->CreateCommand (FdoCommandType_Insert);
         insert->SetFeatureClassName (L"TheSchema:Test");
@@ -421,7 +438,7 @@ void InsertTests::wide2mbPerformaceTest()
 
 	clock_t end = clock();
 	double  passed =  (double)(end-start)/CLOCKS_PER_SEC;
-	printf("passed wcstombs: %lf (%lf per sec)\n", passed, passed/N);
+	if (VERBOSE) printf("passed wcstombs: %lf (%lf per sec)\n", passed, passed/N);
 
 	/////////////// Wide_to_multibyte_cpg() //////////////////////////
 	start = clock();
@@ -437,7 +454,7 @@ void InsertTests::wide2mbPerformaceTest()
 
 	end = clock();
 	passed =  (double)(end-start)/CLOCKS_PER_SEC;
-	printf("passed w2m_cpg: %lf (%lf per sec)\n", passed, passed/N);
+	if (VERBOSE) printf("passed w2m_cpg: %lf (%lf per sec)\n", passed, passed/N);
 	
 	/////////////// Test native conversion with codepage
 	start = clock();
@@ -464,7 +481,7 @@ void InsertTests::wide2mbPerformaceTest()
 	
 	end = clock();
 	passed =  (double)(end-start)/CLOCKS_PER_SEC;
-	printf("passed WideCharToMultiByte(): %lf (%lf per sec)\n", passed, passed/N);
+	if (VERBOSE) printf("passed WideCharToMultiByte(): %lf (%lf per sec)\n", passed, passed/N);
 
 #else
 	/// Test iconv() 

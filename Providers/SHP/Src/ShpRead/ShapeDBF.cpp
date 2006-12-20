@@ -169,7 +169,7 @@ ShapeDBF::ShapeDBF (const WCHAR* name) :
         throw FdoCommonFile::ErrorCodeToException (status, name, IDF_OPEN_READ);
 }
 
-ShapeDBF::ShapeDBF (const WCHAR* name, ColumnInfo* info) :
+ShapeDBF::ShapeDBF (const WCHAR* name, ColumnInfo* info, BYTE ldid) :
     m_pColumnInfo (NewColumnInfo (info)),
     m_nRecordStart (0),
     mHeaderDirty (false),
@@ -198,6 +198,9 @@ ShapeDBF::ShapeDBF (const WCHAR* name, ColumnInfo* info) :
             for (int i = 0; i < count; i++)
                 size += info->GetColumnWidthAt (i);
             m_DBFHeader.wRecordSize = size;
+
+			m_DBFHeader.cLDID[0] = (ldid == 0)? GetLDIDFromLocale() : ldid;
+
             PutFileHeaderDetails ();
             // write the fields
             for (int i = 0; i < count; i++)
@@ -309,6 +312,9 @@ void ShapeDBF::GetFileHeaderDetails(int& nColumns)
     CheckDBFFormat ();
     // This is a supported DBF
     nColumns = ((m_DBFHeader.wHeaderSize - 1) / nFIELD_DESCRIPTOR_SIZE ) - 1;
+
+	// Set the ESRI code page based on m_DBFHeader.cLDID
+	SetCodePage();
 }
 
 // it is assumed that everything is updated except for the date
@@ -524,3 +530,68 @@ RowData* ShapeDBF::GetRowDataFromCache(int nRecord)
     return pRowData;
 }
 
+FdoStringP ShapeDBF::GetCodePage()
+{
+	return mCodePageESRI;
+}
+
+void ShapeDBF::SetCodePage()
+{
+	BYTE	ldid = m_DBFHeader.cLDID[0];
+
+	// Find the mapping LDID->codepage
+	if ( ldid > 0 )
+	{
+		bool	found = false;
+		int		numLDIDs = sizeof(EsriCodePageMapper)/sizeof(EsriCodePageMap);
+		for ( int i = 0; i < numLDIDs && !found; i++ )
+		{
+			found = ( EsriCodePageMapper[i].cLDID == ldid );
+			if ( found )
+				mCodePageESRI = FdoStringP::Format(L"%ld", EsriCodePageMapper[i].codePage);
+		}	
+	}
+}
+
+BYTE ShapeDBF::GetLDIDFromLocale()
+{
+	BYTE		ldid = 0;
+	ULONG		cpg = 0;
+
+	// Get the locale and convert to codepage
+	FdoStringP  pLocale = FdoStringP( setlocale(LC_ALL, NULL) );
+
+	mCodePageESRI = pLocale.Right(L".");
+#ifndef _WIN32
+	if ( pLocale.Contains(L"@") )
+		mCodePageESRI = pLocale.Left(L"@");
+
+	if ( pLocale.Contains(L"iso") )
+		mCodePageESRI = pLocale.Right(L"iso");
+	else if ( pLocale.Contains(L"cp") )
+		mCodePageESRI = pLocale.Right(L"cp");
+	else if ( pLocale.Contains(L"big5") )
+		mCodePageESRI = L"950";  // zh_TW.big5
+	else if ( pLocale.Contains(L"ujis") )
+		mCodePageESRI = L"932";  // ja_JP.ujis		
+#endif
+	if (mCodePageESRI.IsNumber())
+	{
+		cpg = mCodePageESRI.ToLong();
+
+		// Find the mapping codepage->LDID
+		int	 numLDIDs = sizeof(EsriCodePageMapper)/sizeof(EsriCodePageMap);
+		for ( int i = 0; i < numLDIDs && (ldid == 0); i++ )
+		{
+			if ( EsriCodePageMapper[i].codePage == cpg )
+				ldid = EsriCodePageMapper[i].cLDID;
+		}
+	}
+	else
+	{
+		// No mapping. LDID = 0;
+		mCodePageESRI = L"";
+	}
+
+	return ldid;
+}

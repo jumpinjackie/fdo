@@ -175,11 +175,13 @@ public:
                 type = info->GetColumnTypeAt (i);
                 if (type == column_type)
 				{
-					WCHAR* cpg = NULL;
-					if (mFileSet->GetCpgFile())
-						cpg = (WCHAR*)(FdoString *)mFileSet->GetCpgFile()->GetCodePage();
+					// Get the code page from LDID. If not valid try the .CPG file.
+					FdoStringP  codePage = mFileSet->GetDbfFile()->GetCodePage();
 
-					mData->GetData (data, i, type, cpg);
+					if (codePage == L"" && mFileSet->GetCpgFile())
+						codePage = mFileSet->GetCpgFile()->GetCodePage();
+
+					mData->GetData (data, i, type, (WCHAR*)(FdoString *)codePage);
 				}
                 else
                     throw FdoException::Create (NlsMsgGet(SHP_VALUE_TYPE_MISMATCH, "Value type (%1$ls) to insert, update or retrieve doesn't match the type (%2$ls) of property '%3$ls'.", type_name, ColumnTypeToString (type), propertyName));
