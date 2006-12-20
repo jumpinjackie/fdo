@@ -79,8 +79,17 @@ int mysql_fetch (
             {
 				*rows_processed = 0;
                 result = mysql_stmt_fetch (curs->statement);
-                
-                if ((ret = mysql_xlt_status(context, result, mysql, (MYSQL_STMT*) NULL)) == RDBI_SUCCESS)
+                ret = mysql_xlt_status(context, result, mysql, (MYSQL_STMT*) NULL);
+				if (ret == RDBI_DATA_TRUNCATED)
+				{
+					for (int i=0; i<curs->define_count; i++)
+					{
+						if (curs->defines[i].error && (curs->defines[i].buffer_type == MYSQL_TYPE_BLOB))
+						// ignore data truncation error on BLOBs
+							ret = RDBI_SUCCESS;
+					}
+				}
+                if (ret == RDBI_SUCCESS)
                 {
 					// mysql_stmt_affected_rows returns inconsistent values for select
                     //rows  = mysql_stmt_affected_rows (curs->statement);

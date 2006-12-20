@@ -50,8 +50,9 @@ static FdoSmPhMySqlColTypeMapEntry byteEntry( FdoSmPhColType_Byte, L"tinyint", t
 static FdoSmPhMySqlColTypeMapEntry tinyIntEntry( FdoSmPhColType_Int16, L"tinyint" );
 static FdoSmPhMySqlColTypeMapEntry charEntry( FdoSmPhColType_String, L"char" );
 static FdoSmPhMySqlColTypeMapEntry textEntry( FdoSmPhColType_String, L"text" );
-static FdoSmPhMySqlColTypeMapEntry longTextEntry( FdoSmPhColType_String, L"longtext" );
-static FdoSmPhMySqlColTypeMapEntry mediumTextEntry( FdoSmPhColType_String, L"mediumtext" );
+// All TEXT type columns are mapped to Unknown type
+//static FdoSmPhMySqlColTypeMapEntry longTextEntry( FdoSmPhColType_BLOB, L"longtext" );
+//static FdoSmPhMySqlColTypeMapEntry mediumTextEntry( FdoSmPhColType_String, L"mediumtext" );
 static FdoSmPhMySqlColTypeMapEntry enumEntry( FdoSmPhColType_String, L"enum" );
 static FdoSmPhMySqlColTypeMapEntry setEntry( FdoSmPhColType_String, L"set" );
 static FdoSmPhMySqlColTypeMapEntry yearEntry( FdoSmPhColType_Int32, L"year" );
@@ -91,8 +92,8 @@ FdoSmPhMySqlColTypeMapEntry* FdoSmPhMySqlColTypeMapper::mMap[] = {
     &tinyIntEntry,
     &charEntry,
     &textEntry,
-    &longTextEntry,
-    &mediumTextEntry,
+    /* &longTextEntry,
+    &mediumTextEntry,*/
     &enumEntry,
     &setEntry,
     &yearEntry,

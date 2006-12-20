@@ -110,6 +110,13 @@ int mysql_desc_slct (
 #endif
                                         break;
 
+									case RDBI_BLOB:
+										if (fields[position].length > BLOB_MAX_LENGTH)
+											*binary_size = BLOB_MAX_LENGTH;
+										else
+											*binary_size = fields[position].length;
+										break;
+
 									default:
 										*binary_size = fields[position].length;
 										break;

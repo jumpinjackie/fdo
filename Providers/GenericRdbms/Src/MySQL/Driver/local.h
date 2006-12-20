@@ -23,6 +23,11 @@
 #pragma once
 #endif // _WIN32
 
+/* this limit is temporary and should be removed when BLOB, TEXT, LONGTEXT etc.
+   are truly supported.
+*/
+#define BLOB_MAX_LENGTH 65535
+
 typedef struct _mysql_context_def
 {
     long  mysql_connect_count; /* number of open connections */

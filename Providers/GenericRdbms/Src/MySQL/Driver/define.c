@@ -30,6 +30,7 @@
 #define case_insensitive_compare strcasecmp
 #endif
 
+
 static int indexof_field (MYSQL_RES *prepare_meta_result, char *name)
 {
     unsigned int num_fields;
@@ -68,9 +69,9 @@ static int indexof_field (MYSQL_RES *prepare_meta_result, char *name)
 /// MYSQL_TYPE_MEDIUM_BLOB MEDIUMBLOB/MEDIUMTEXT  
 /// MYSQL_TYPE_LONG_BLOB   LONGBLOB/LONGTEXT  
 /// </pre>
-static int field_size (enum enum_field_types type, int length)
+static unsigned long field_size (enum enum_field_types type, unsigned long length)
 {
-    int ret;
+    unsigned long ret;
 
     switch (type)
     {
@@ -109,11 +110,16 @@ static int field_size (enum enum_field_types type, int length)
             break;
         case MYSQL_TYPE_STRING:
         case MYSQL_TYPE_VAR_STRING:
+			ret = length;
+			break;
         case MYSQL_TYPE_TINY_BLOB:
         case MYSQL_TYPE_BLOB:
         case MYSQL_TYPE_MEDIUM_BLOB:
         case MYSQL_TYPE_LONG_BLOB:
-            ret = length;
+			if (length > BLOB_MAX_LENGTH)
+				ret = BLOB_MAX_LENGTH;
+			else
+				ret = length;
             break;
         case MYSQL_TYPE_NULL:
             ret = 0;
@@ -144,12 +150,12 @@ static MYSQL_BIND *make_defines (MYSQL_RES *prepare_meta_result)
 {
     unsigned int num_fields;
     MYSQL_FIELD *fields;
-    int buffer_size;
+    unsigned long buffer_size;
     unsigned int i;
     enum enum_field_types type;
     unsigned long length;
-    int size;
-    int allocation;
+    unsigned long size;
+    unsigned long allocation;
     MYSQL_BIND *p;
     char* buffer;
     unsigned long* lengths;
