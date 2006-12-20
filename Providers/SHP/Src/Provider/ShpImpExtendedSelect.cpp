@@ -99,8 +99,9 @@ ShpIScrollableFeatureReader* ShpImpExtendedSelect::ExecuteScrollable()
 	// We do fetches also in the case of a filter
 	bool	doFetches = doSorting || (this->GetFilter() != NULL );
 
-	// Set a flag on the reader not to read the SHP file.
-	reader->SetFetchGeometry( false );
+	// Set a flag on the reader not to read the SHP file. Unless the reader tells otherwise.
+	if ( isFeatidQuery && reader->mIsFeatIdQuery )
+		reader->SetFetchGeometry( false );
 
 	// Set a flag on the reader to return deleted row as well
 	reader->SetFetchDeletes( true );
