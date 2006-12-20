@@ -21,33 +21,38 @@
 #include "ArcSDESpatialContextReader.h"
 
 
-ArcSDESpatialContextReader::ArcSDESpatialContextReader(ArcSDEConnection* connection, SE_SPATIALREFINFO *arrSpatialRefs, LONG lSpatialRefCount, bool bActiveOnly)
+ArcSDESpatialContextReader::ArcSDESpatialContextReader(ArcSDEConnection* connection, bool bActiveOnly)
+{
+    Init(connection);
+    if (bActiveOnly)
+    {
+        // Get the active spatial context name and convert it to a SRID:
+        FdoString* spatialContextName = connection->GetActiveSpatialContext();
+        if (NULL != spatialContextName)
+            mlActiveOnlySRID = ArcSDESpatialContextUtility::SpatialContextNameToSRID(mConnection, spatialContextName);
+    }
+}
+
+ArcSDESpatialContextReader::ArcSDESpatialContextReader(ArcSDEConnection* connection, long lSridOnly)
+{
+    Init(connection);
+    mlActiveOnlySRID = lSridOnly;
+}
+
+void ArcSDESpatialContextReader::Init(ArcSDEConnection* connection)
 {
     mConnection = FDO_SAFE_ADDREF(connection);
-    mArrSpatialRefs = arrSpatialRefs;
-    mlSpatialRefCount = lSpatialRefCount;
+    // NOTE: we are not keeping our own cache of spatial references here;
+    // this could be a potential issue if a client starts a spatial context reader
+    // and then closes the connection or creates/destroys a spatial context, then continues reading from the reader.
+    // However, the likelihood of such scenarios are rare.
+    connection->GetArcSDESpatialRefList(&mArrSpatialRefs, &mlSpatialRefCount);
     mlCurrentSpatialRef = -1L;
-    mbActiveOnly = bActiveOnly;
+    mlActiveOnlySRID = -1L;
 }
 
 ArcSDESpatialContextReader::~ArcSDESpatialContextReader(void)
 {
-    // clean up:
-
-    // NOTE: the way we allocate the SE_SPATIANREFINFO array is different than the way SE_spatialref_get_info_list()
-    //       allocates it, so we need to deallocate them differently:
-    if (NULL != mArrSpatialRefs)
-    {
-        if (mbActiveOnly)
-        {
-            SE_spatialrefinfo_free(mArrSpatialRefs[0]);
-            delete[] mArrSpatialRefs;
-        }
-        else
-        {
-            SE_spatialref_free_info_list(mlSpatialRefCount, mArrSpatialRefs);
-        }
-    }
 }
 
 void ArcSDESpatialContextReader::Validate(void)
@@ -292,6 +297,10 @@ bool ArcSDESpatialContextReader::ReadNext()
     mDescription = (FdoString*)NULL;
     mCoordSysWkt = (FdoString*)NULL;
     mCoordSysName = (FdoString*)NULL;
+
+    // If searching for active spatial context only, skip all those that aren't the active one:
+    while ((mlActiveOnlySRID!=-1) && (mlCurrentSpatialRef < mlSpatialRefCount) && (GetSRID() != mlActiveOnlySRID))
+        mlCurrentSpatialRef++;
 
     return (mlCurrentSpatialRef < mlSpatialRefCount);
 }

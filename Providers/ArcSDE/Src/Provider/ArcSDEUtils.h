@@ -80,7 +80,7 @@ void convert_sde_shape_to_fgf(SE_SHAPE shape, FdoByteArray*& fgf);
 
 void DebugByteArray(unsigned char pByteArray[], long lByteCount, char *strMessage);
 
-LONG GetCoordRefFromColumn(SE_CONNECTION connection, const char *strTable, const char *strColumn, SE_COORDREF &coordref);
+LONG GetCoordRefFromColumn(ArcSDEConnection* connection, const char *strTable, const char *strColumn, SE_COORDREF &coordref);
 LONG SetShapeCoordRef(SE_SHAPE &shape, SE_COORDREF &coordref);
 
 

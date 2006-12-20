@@ -456,7 +456,11 @@ SymbolicName=ARCSDE_SCHEMA_GET_INDEX_FAILED
 Language=English
 Failed to read index(es) on class '%1$ls'.
 .
-
+MessageId=3030
+SymbolicName=ARCSDE_LAYER_INFO_GET
+Language=English
+Spatial layer information could not be retrieved.
+.
 
 
 

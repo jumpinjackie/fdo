@@ -444,24 +444,19 @@ void DebugByteArray(unsigned char pByteArray[], long lByteCount, char *strMessag
 
 
 // NOTE: callers must free the returned coordref via SE_coordref_free()
-LONG GetCoordRefFromColumn(SE_CONNECTION connection, const char *strTable, const char *strColumn, SE_COORDREF &coordref)
+LONG GetCoordRefFromColumn(ArcSDEConnection* connection, const char *strTable, const char *strColumn, SE_COORDREF &coordref)
 {
     SE_LAYERINFO layerinfo;
     LONG result = SE_SUCCESS;
 
-    result = SE_layerinfo_create(NULL, &layerinfo);
+    result = connection->GetArcSDELayerInfo(layerinfo, strTable, strColumn);
     if (SE_SUCCESS == result)
     {
-        result = SE_layer_get_info(connection, strTable, strColumn, layerinfo);
+        result = SE_coordref_create (&coordref);
         if (SE_SUCCESS == result)
         {
-            result = SE_coordref_create (&coordref);
-            if (SE_SUCCESS == result)
-            {
-                result = SE_layerinfo_get_coordref(layerinfo, coordref);
-            }
+            result = SE_layerinfo_get_coordref(layerinfo, coordref);
         }
-        SE_layerinfo_free(layerinfo);
     }
 
     return result;
@@ -1744,7 +1739,7 @@ void GetFilterInfo(ArcSDEConnection *connection, FdoFilter* filter, FdoClassDefi
 
             // set coordinate system for each spatial filter to match the column's coordinate system:
             //TODO: use the active spatial context instead of the column's coordinate system?
-            result = GetCoordRefFromColumn (connection->GetConnection (), table, spatialFilters[i].column, coordref);
+            result = GetCoordRefFromColumn (connection, table, spatialFilters[i].column, coordref);
             if (SE_SUCCESS == result)
             {
                 result = SetShapeCoordRef (spatialFilters[i].filter.shape, coordref);

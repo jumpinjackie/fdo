@@ -313,7 +313,7 @@ void ArcSDECreateSpatialContext::Execute()
         lResult = SE_spatialref_alter(connectionArcSDE, seSpatialRefInfo);
         handle_sde_err<FdoCommandException>(connection->GetConnection(), lResult, __FILE__, __LINE__, ARCSDE_SPATIALREF_STORE_ERROR, "Failed to create or update an ArcSDE spatial reference system in the datastore.");
 
-	SE_spatialrefinfo_free(seSpatialRefInfo);
+    	SE_spatialrefinfo_free(seSpatialRefInfo);
         SE_coordref_free(seCoordRef);
     }
     else
@@ -349,5 +349,8 @@ void ArcSDECreateSpatialContext::Execute()
         if (0 != wcsncmp(wAuthName, wNewAuthName, wcslen(wAuthName)))
             throw FdoException::Create(NlsMsgGet2(ARCSDE_SIMILAR_SPATIAL_CONTEXT_EXISTS, "The spatial context '%1$ls' being created matches the coordinate system, extents, and resolution of existing spatial context '%2$ls'; ArcSDE does not allow this.", (const wchar_t*)m_wcsName, (const wchar_t*)newSpatialContextName));
     }
+
+    // Clear spatial context cache since the list has now changed:
+    mConnection->DecacheSpatialContexts();
 }
 

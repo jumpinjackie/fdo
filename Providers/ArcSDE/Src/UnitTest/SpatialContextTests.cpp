@@ -103,6 +103,10 @@ void SpatialContextTests::tearDown ()
 
 void SpatialContextTests::test_create_delete()
 {
+    FdoPtr<FdoIGetSpatialContexts> cmdGetSpatialContexts;
+    FdoPtr<FdoISpatialContextReader> scReader;
+    bool bFound = false;
+
     if (CreateSchemaOnly()) return;
 
     try
@@ -133,65 +137,13 @@ void SpatialContextTests::test_create_delete()
         // Get all spatial contexts, validating the one we created is there and is set right:
         //////////////////////////////////////////////////////////////////////
 
-        FdoPtr<FdoIGetSpatialContexts> cmdGetSpatialContexts = (FdoIGetSpatialContexts*)mConnection->CreateCommand(FdoCommandType_GetSpatialContexts);
-        cmdGetSpatialContexts->SetActiveOnly(false);
-        FdoPtr<FdoISpatialContextReader> scReader = cmdGetSpatialContexts->Execute();
-        bool bFound = false;
-        while (scReader->ReadNext())
-        {
-            // Get spatial context's general info:
-            FdoString *name  = scReader->GetName();
-            FdoString *desc  = scReader->GetDescription();
-            FdoString *coordSysName = scReader->GetCoordinateSystem();
-            FdoString *coordSysWkt  = scReader->GetCoordinateSystemWkt();
-            FdoSpatialContextExtentType contextType = scReader->GetExtentType();
-            double zTolerance = scReader->GetZTolerance();
-            double zyTolerance = scReader->GetXYTolerance();
-            double minx,miny,maxx,maxy;
-            get_extent(scReader, minx, miny, maxx, maxy);
+        ValidateSC2();
 
-            /* // Uncomment this for additional debug info:
-            printf("\nCOORDSYS:");
-            printf("\n  name=%ls", name);
-            printf("\n  desc=%ls", desc);
-            printf("\n  coordsys=%ls", coordSysName);
-            printf("\n  corodsyswkt=%ls", coordSysWkt);
-            printf("\n  extenttype=%ls", contextType==FdoSpatialContextExtentType_Static ? L"Static" : L"Dynamic");
-            printf("\n  xTolerance=%f", zTolerance);
-            printf("\n  zyTolerance=%f", zyTolerance);
-            printf("\n  minx=%f", minx);
-            printf("\n  miny=%f", miny);
-            printf("\n  maxx=%f", maxx);
-            printf("\n  maxy=%f", maxy);
-            printf("\n");
-            */
+        // Clear cache by disconnecting/reconnecting
+        mConnection->Close();
+        mConnection->Open();
 
-            // validate this spatial context, if its the one we created earlier:
-            if (0==wcscmp(name, spatial_context_name2))
-            {
-                bFound = true;
-                CPPUNIT_ASSERT_MESSAGE("Spatial Context description mismatch", 0==wcscmp(desc, spatial_context_desc2));
-
-                CPPUNIT_ASSERT_MESSAGE("Spatial context coordsys id/name mismatch", 0==wcscmp(coordSysName, spatial_context_coordsysID2));
-
-                // NOTE: the wkt we retrieve will almost always be formatted slightly differently than what we provided
-                //        (e.g. spacing, removal of ".0" on floating point values, etc), so we can't do a straight test comparison.
-                //CPPUNIT_ASSERT_MESSAGE("Spatial Context coordsys wkt mismatch", 0==wcscmp(coordSysWkt, spatial_context_coordsysWKT));
-
-                CPPUNIT_ASSERT_MESSAGE("Spatial Context type mismatch", contextType==spatial_context_extent_type2);
-                CPPUNIT_ASSERT_MESSAGE("Spatial Context tolerance mismatch", zTolerance==spatial_context_ztolerance2);
-                if (!ArcSDETests::fuzzyEqual(minx, spatial_context_minx2))
-                   CPPUNIT_ASSERT_MESSAGE("Extent minx wrong", ArcSDETests::fuzzyEqual(minx, spatial_context_minx2));
-                if (!ArcSDETests::fuzzyEqual(maxx, spatial_context_maxx2))
-                   CPPUNIT_ASSERT_MESSAGE("Extent maxx wrong", ArcSDETests::fuzzyEqual(maxx, spatial_context_maxx2));
-                if (!ArcSDETests::fuzzyEqual(miny, spatial_context_miny2))
-                   CPPUNIT_ASSERT_MESSAGE("Extent miny wrong", ArcSDETests::fuzzyEqual(miny, spatial_context_miny2));
-                if (!ArcSDETests::fuzzyEqual(maxy, spatial_context_maxy2))
-                   CPPUNIT_ASSERT_MESSAGE("Extent maxy wrong", ArcSDETests::fuzzyEqual(maxy, spatial_context_maxy2));
-            }
-        }
-
-        CPPUNIT_ASSERT_MESSAGE("Spatial Context not found", bFound);
+        ValidateSC2();
 
 
         //////////////////////////////////////////////////////////////////////
@@ -206,6 +158,21 @@ void SpatialContextTests::test_create_delete()
         //////////////////////////////////////////////////////////////////////
         // Get all spatial contexts, validating the one we created is now gone:
         //////////////////////////////////////////////////////////////////////
+
+        cmdGetSpatialContexts = (FdoIGetSpatialContexts*)mConnection->CreateCommand(FdoCommandType_GetSpatialContexts);
+        cmdGetSpatialContexts->SetActiveOnly(false);
+        scReader = cmdGetSpatialContexts->Execute();
+        bFound = false;
+        while (scReader->ReadNext())
+        {
+            if (0==wcscmp(scReader->GetName(), spatial_context_name2))
+                bFound = true;
+        }
+        CPPUNIT_ASSERT_MESSAGE("Spatial context was not deleted properly", !bFound);
+
+        // Clear cache by disconnecting/reconnecting
+        mConnection->Close();
+        mConnection->Open();
 
         cmdGetSpatialContexts = (FdoIGetSpatialContexts*)mConnection->CreateCommand(FdoCommandType_GetSpatialContexts);
         cmdGetSpatialContexts->SetActiveOnly(false);
@@ -667,4 +634,68 @@ void SpatialContextTests::delete_class ()
     feature->Delete ();
     apply->SetFeatureSchema (schema);
     apply->Execute ();
+}
+
+
+void SpatialContextTests::ValidateSC2()
+{
+    FdoPtr<FdoIGetSpatialContexts> cmdGetSpatialContexts = (FdoIGetSpatialContexts*)mConnection->CreateCommand(FdoCommandType_GetSpatialContexts);
+    cmdGetSpatialContexts->SetActiveOnly(false);
+    FdoPtr<FdoISpatialContextReader> scReader = cmdGetSpatialContexts->Execute();
+    bool bFound = false;
+    while (scReader->ReadNext())
+    {
+        // Get spatial context's general info:
+        FdoString *name  = scReader->GetName();
+        FdoString *desc  = scReader->GetDescription();
+        FdoString *coordSysName = scReader->GetCoordinateSystem();
+        FdoString *coordSysWkt  = scReader->GetCoordinateSystemWkt();
+        FdoSpatialContextExtentType contextType = scReader->GetExtentType();
+        double zTolerance = scReader->GetZTolerance();
+        double zyTolerance = scReader->GetXYTolerance();
+        double minx,miny,maxx,maxy;
+        get_extent(scReader, minx, miny, maxx, maxy);
+
+        /* // Uncomment this for additional debug info:
+        printf("\nCOORDSYS:");
+        printf("\n  name=%ls", name);
+        printf("\n  desc=%ls", desc);
+        printf("\n  coordsys=%ls", coordSysName);
+        printf("\n  corodsyswkt=%ls", coordSysWkt);
+        printf("\n  extenttype=%ls", contextType==FdoSpatialContextExtentType_Static ? L"Static" : L"Dynamic");
+        printf("\n  xTolerance=%f", zTolerance);
+        printf("\n  zyTolerance=%f", zyTolerance);
+        printf("\n  minx=%f", minx);
+        printf("\n  miny=%f", miny);
+        printf("\n  maxx=%f", maxx);
+        printf("\n  maxy=%f", maxy);
+        printf("\n");
+        */
+
+        // validate this spatial context, if its the one we created earlier:
+        if (0==wcscmp(name, spatial_context_name2))
+        {
+            bFound = true;
+            CPPUNIT_ASSERT_MESSAGE("Spatial Context description mismatch", 0==wcscmp(desc, spatial_context_desc2));
+
+            CPPUNIT_ASSERT_MESSAGE("Spatial context coordsys id/name mismatch", 0==wcscmp(coordSysName, spatial_context_coordsysID2));
+
+            // NOTE: the wkt we retrieve will almost always be formatted slightly differently than what we provided
+            //        (e.g. spacing, removal of ".0" on floating point values, etc), so we can't do a straight test comparison.
+            //CPPUNIT_ASSERT_MESSAGE("Spatial Context coordsys wkt mismatch", 0==wcscmp(coordSysWkt, spatial_context_coordsysWKT));
+
+            CPPUNIT_ASSERT_MESSAGE("Spatial Context type mismatch", contextType==spatial_context_extent_type2);
+            CPPUNIT_ASSERT_MESSAGE("Spatial Context tolerance mismatch", zTolerance==spatial_context_ztolerance2);
+            if (!ArcSDETests::fuzzyEqual(minx, spatial_context_minx2))
+               CPPUNIT_ASSERT_MESSAGE("Extent minx wrong", ArcSDETests::fuzzyEqual(minx, spatial_context_minx2));
+            if (!ArcSDETests::fuzzyEqual(maxx, spatial_context_maxx2))
+               CPPUNIT_ASSERT_MESSAGE("Extent maxx wrong", ArcSDETests::fuzzyEqual(maxx, spatial_context_maxx2));
+            if (!ArcSDETests::fuzzyEqual(miny, spatial_context_miny2))
+               CPPUNIT_ASSERT_MESSAGE("Extent miny wrong", ArcSDETests::fuzzyEqual(miny, spatial_context_miny2));
+            if (!ArcSDETests::fuzzyEqual(maxy, spatial_context_maxy2))
+               CPPUNIT_ASSERT_MESSAGE("Extent maxy wrong", ArcSDETests::fuzzyEqual(maxy, spatial_context_maxy2));
+        }
+    }
+
+    CPPUNIT_ASSERT_MESSAGE("Spatial Context not found", bFound);
 }

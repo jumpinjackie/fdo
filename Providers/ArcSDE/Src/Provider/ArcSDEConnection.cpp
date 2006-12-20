@@ -50,7 +50,12 @@ ArcSDEConnection::ArcSDEConnection (void) :
 	mCachedRegistrations(NULL),
     mCachedRegistrationCount(0),
     mCachedMetadataListCount(0),
-    mCachedMetadataList(0)
+    mCachedMetadataList(0),
+    mCachedLayerList(NULL),
+    mCachedLayerListCount(0),
+    mCachedSpatialRefList(NULL),
+    mCachedSpatialRefSRIDList(NULL),
+    mCachedSpatialRefListCount(0)
 {
 }
 
@@ -356,18 +361,8 @@ FdoConnectionState ArcSDEConnection::Open ()
 void ArcSDEConnection::Close ()
 {
 	// Clean up:
-	if (mCachedRegistrations != NULL)
-	{
-		SE_registration_free_info_list (mCachedRegistrationCount, mCachedRegistrations);
-		mCachedRegistrationCount = 0;
-		mCachedRegistrations = NULL;
-	}
-    if (NULL != mCachedMetadataList)
-    {
-        SE_table_metadata_free_info_list (mCachedMetadataListCount, mCachedMetadataList);
-        mCachedMetadataList = NULL;
-        mCachedMetadataListCount = 0;
-    }
+    DecacheSchema();
+    DecacheSpatialContexts();
     if (NULL != mConnection)
     {
         SetActiveVersion (-1L);
@@ -375,9 +370,6 @@ void ArcSDEConnection::Close ()
         mConnection = NULL;
     }
     mPartialConnection = false;
-    mSchemaCollection = NULL;
-	mSchemaCollectionFullyLoaded = false;
-    mSchemaMappingCollection = NULL;
     m_lCachedRdbmsId = -2;  // -2 means not-yet-cached
     m_sCachedRdbmsSystemTablePrefix = L"";
     m_mbDatabaseName[0] = '\0';
@@ -623,25 +615,6 @@ void ArcSDEConnection::SetSchemaCollection (FdoFeatureSchemaCollection* schemaCo
 {
     mSchemaCollection = FDO_SAFE_ADDREF(schemaCollection);
 	mSchemaCollectionFullyLoaded = bFullyLoaded;
-
-	// If schema is being set to NULL (due to ApplySchema), de-cache the schema registration info since
-	// it is now stale:
-	if (schemaCollection==NULL)
-	{
-        if (mCachedRegistrations != NULL)
-        {
-    		SE_registration_free_info_list (mCachedRegistrationCount, mCachedRegistrations);
-	    	mCachedRegistrationCount = 0;
-		    mCachedRegistrations = NULL;
-        }
-
-        if (mCachedMetadataList != NULL)
-        {
-            SE_table_metadata_free_info_list (mCachedMetadataListCount, mCachedMetadataList);
-            mCachedMetadataList = NULL;
-            mCachedMetadataListCount = 0;
-        }
-	}
 }
 
 // Returns the current schema mapping collection.
@@ -1357,6 +1330,150 @@ void ArcSDEConnection::GetArcSDEMetadataList(SE_METADATAINFO** pMetadataList, lo
     *count = mCachedMetadataListCount;
 }
 
+long ArcSDEConnection::GetArcSDELayerInfo(SE_LAYERINFO &pLayerInfo, const CHAR* tableName, const CHAR* columnName)
+{
+    long result = SE_SUCCESS;
+
+    pLayerInfo = NULL;
+
+    if (mCachedLayerList == NULL)
+    {
+        result = SE_layer_get_info_list(GetConnection(), &mCachedLayerList, &mCachedLayerListCount);
+    }
+
+    if (result == SE_SUCCESS)
+    {
+        for (int i=0; i<mCachedLayerListCount; i++)
+        {
+            CHAR cachedTableName[SE_QUALIFIED_TABLE_NAME];
+            CHAR cachedColumnName[SE_MAX_COLUMN_LEN];
+            result = SE_layerinfo_get_spatial_column(mCachedLayerList[i], cachedTableName, cachedColumnName);
+            if ((result==SE_SUCCESS) && (0==strcmp(tableName, cachedTableName)) && (0==strcmp(columnName, cachedColumnName)))
+            {
+                pLayerInfo = mCachedLayerList[i];
+                break;
+            }
+        }
+    }
+
+    if ((pLayerInfo == NULL) && (result==SE_SUCCESS))
+        result = SE_FAILURE;
+
+    return result;
+}
+
+
+void ArcSDEConnection::GetArcSDESpatialRefList(SE_SPATIALREFINFO** pSpatialRefInfoList, long *pCount)
+{
+    if (mCachedSpatialRefList == NULL)
+    {
+        LONG lResult = SE_SUCCESS;
+
+        // fetch all ArcSDE Spatial Reference Systems (equivalent to FDO Spatial Contexts):
+        mCachedSpatialRefListCreatedByUs = false;
+        lResult = SE_spatialref_get_info_list(GetConnection(), &mCachedSpatialRefList, &mCachedSpatialRefListCount);
+        if (lResult != SE_SUCCESS)
+        {
+            mCachedSpatialRefListCreatedByUs = true;
+            FdoPtr<FdoISQLCommand> sql = (FdoISQLCommand*)CreateCommand(FdoCommandType_SQLCommand);
+            sql->SetSQLStatement(FdoStringP::Format(L"select * from %lsSPATIAL_REFERENCES", RdbmsSystemTablePrefix()));
+            FdoPtr<FdoISQLDataReader> sqlReader = sql->ExecuteReader();
+
+            // Cache all rows:
+            long lMaxArraySize = 20;
+            mCachedSpatialRefListCount = 0;
+            mCachedSpatialRefList = new SE_SPATIALREFINFO[lMaxArraySize];
+            mCachedSpatialRefSRIDList = new long[lMaxArraySize];
+            while (sqlReader->ReadNext())
+            {
+                // Dynamically resize array if needed:
+                if (lMaxArraySize==mCachedSpatialRefListCount)
+                {
+                    lMaxArraySize = lMaxArraySize * 2;
+
+                    SE_SPATIALREFINFO *newCachedSpatialRefList = new SE_SPATIALREFINFO[lMaxArraySize];
+                    long *newCachedSpatialRefSRIDList = new long[lMaxArraySize];
+                    for (int i=0; i<mCachedSpatialRefListCount; i++)
+                    {
+                        newCachedSpatialRefList[i] = mCachedSpatialRefList[i];
+                        newCachedSpatialRefSRIDList[i] = mCachedSpatialRefSRIDList[i];
+                    }
+                    delete[] mCachedSpatialRefList;
+                    delete[] mCachedSpatialRefSRIDList;
+                    mCachedSpatialRefList = newCachedSpatialRefList;
+                    mCachedSpatialRefSRIDList = newCachedSpatialRefSRIDList;
+                }
+
+                // Create one SE_SPATIALREFINFO for this row:
+                lResult = SE_spatialrefinfo_create (&(mCachedSpatialRefList[mCachedSpatialRefListCount]));
+                handle_sde_err<FdoException>(lResult, __FILE__, __LINE__, ARCSDE_FAILED_TO_READ_SRS, "Failed to get or set information for this ArcSDE Spatial Reference System.");
+
+                // Read auth name:
+                FdoStringP wAuthName;
+                if (!sqlReader->IsNull(AdjustSystemColumnName(L"auth_name")))
+                    wAuthName = sqlReader->GetString(AdjustSystemColumnName(L"auth_name"));
+                lResult = SE_spatialrefinfo_set_auth_name(mCachedSpatialRefList[mCachedSpatialRefListCount], (const char*)wAuthName);
+                handle_sde_err<FdoException>(lResult, __FILE__, __LINE__, ARCSDE_FAILED_TO_READ_SRS, "Failed to get or set information for this ArcSDE Spatial Reference System.");
+
+                // Read SRID:
+                long srid = 0;
+                if (!sqlReader->IsNull(AdjustSystemColumnName(L"srid")))
+                    srid = sqlReader->GetInt32(AdjustSystemColumnName(L"srid"));
+                mCachedSpatialRefSRIDList[mCachedSpatialRefListCount] = srid;
+
+                // Read description:
+                FdoStringP desc;
+                if (!sqlReader->IsNull(AdjustSystemColumnName(L"description")))
+                    desc = sqlReader->GetString(AdjustSystemColumnName(L"description"));
+                // NOTE: for some unknown scary reason, we get unexpected garbage at the end of the description,
+                //    even though the description appears valid in the RDBMS, so we need to trim it:
+                //TODO: see if we can fix this issue!!
+                // NOTE: if FdoStringP::Left() doesnt find the given suffix (e.g. in the case of a natively-created spatial reference system),
+                //    it returns the entire string unchanged.
+                FdoStringP fixedDesc = desc.Left(SPATIALCONTEXT_DESC_SUFFIX);
+                lResult = SE_spatialrefinfo_set_description(mCachedSpatialRefList[mCachedSpatialRefListCount], (const char*)fixedDesc);
+                handle_sde_err<FdoException>(lResult, __FILE__, __LINE__, ARCSDE_FAILED_TO_READ_SRS, "Failed to get or set information for this ArcSDE Spatial Reference System.");
+
+                // Create new empty coordref:
+                SE_COORDREF coordref;
+                lResult = SE_coordref_create(&coordref);
+                handle_sde_err<FdoException>(lResult, __FILE__, __LINE__, ARCSDE_FAILED_TO_READ_SRS, "Failed to get or set information for this ArcSDE Spatial Reference System.");
+
+                // Read coordsys srtext/description:
+                FdoStringP coordsysWkt;
+                if (!sqlReader->IsNull(AdjustSystemColumnName(L"srtext")))
+                    coordsysWkt = sqlReader->GetString(AdjustSystemColumnName(L"srtext"));
+                lResult = SE_coordref_set_by_description(coordref, coordsysWkt);
+                handle_sde_err<FdoException>(lResult, __FILE__, __LINE__, ARCSDE_FAILED_TO_READ_SRS, "Failed to get or set information for this ArcSDE Spatial Reference System.");
+
+                // Read coordsys extents:
+                double dFalseX  = sqlReader->GetDouble(AdjustSystemColumnName(L"falsex"));
+                double dFalseY  = sqlReader->GetDouble(AdjustSystemColumnName(L"falsey"));
+                double dFalseZ  = sqlReader->GetDouble(AdjustSystemColumnName(L"falsez"));
+                double dXYunits = sqlReader->GetDouble(AdjustSystemColumnName(L"xyunits"));
+                double dZunits = 1.0;
+                if (!sqlReader->IsNull(AdjustSystemColumnName(L"zunits")))
+                    dZunits = sqlReader->GetDouble(AdjustSystemColumnName(L"zunits"));
+                lResult = SE_coordref_set_xy(coordref, dFalseX, dFalseY, dXYunits);
+                handle_sde_err<FdoException>(lResult, __FILE__, __LINE__, ARCSDE_FAILED_TO_READ_SRS, "Failed to get or set information for this ArcSDE Spatial Reference System.");
+                lResult = SE_coordref_set_z(coordref, dFalseZ, dZunits);
+                handle_sde_err<FdoException>(lResult, __FILE__, __LINE__, ARCSDE_FAILED_TO_READ_SRS, "Failed to get or set information for this ArcSDE Spatial Reference System.");
+
+                // Store coordref onto cached spatialref:
+                lResult = SE_spatialrefinfo_set_coordref(mCachedSpatialRefList[mCachedSpatialRefListCount], coordref);
+                handle_sde_err<FdoException>(lResult, __FILE__, __LINE__, ARCSDE_FAILED_TO_READ_SRS, "Failed to get or set information for this ArcSDE Spatial Reference System.");
+
+                // Done reading, increase count:
+                mCachedSpatialRefListCount++;
+            }
+        }
+    }
+
+    // Return cached spatial context list to caller:
+    *pSpatialRefInfoList = mCachedSpatialRefList;
+    *pCount = mCachedSpatialRefListCount;
+}
+
 bool ArcSDEConnection::ClassAlreadyLoaded(FdoString* fdoSchemaName, FdoString* fdoClassName)
 {
     if (mSchemaCollection && fdoSchemaName && fdoClassName)
@@ -1372,4 +1489,63 @@ bool ArcSDEConnection::ClassAlreadyLoaded(FdoString* fdoSchemaName, FdoString* f
     }
 
     return false;
+}
+
+
+void ArcSDEConnection::DecacheSchema()
+{
+	if (mCachedRegistrations != NULL)
+	{
+		SE_registration_free_info_list (mCachedRegistrationCount, mCachedRegistrations);
+		mCachedRegistrationCount = 0;
+		mCachedRegistrations = NULL;
+	}
+    if (mCachedMetadataList != NULL)
+    {
+        SE_table_metadata_free_info_list (mCachedMetadataListCount, mCachedMetadataList);
+        mCachedMetadataList = NULL;
+        mCachedMetadataListCount = 0;
+    }
+    if (mCachedLayerList != NULL)
+    {
+        SE_layer_free_info_list(mCachedLayerListCount, mCachedLayerList);
+        mCachedLayerList = NULL;
+        mCachedLayerListCount = 0;
+    }
+
+    mSchemaCollection = NULL;
+	mSchemaCollectionFullyLoaded = false;
+    mSchemaMappingCollection = NULL;
+}
+
+
+void ArcSDEConnection::DecacheSpatialContexts()
+{
+    if (mCachedSpatialRefList != NULL)
+    {
+        if (mCachedSpatialRefListCreatedByUs)
+        {
+            for (int i=0; i<mCachedSpatialRefListCount; i++)
+                SE_spatialrefinfo_free(mCachedSpatialRefList[i]);
+            delete[] mCachedSpatialRefList;
+            delete[] mCachedSpatialRefSRIDList;
+        }
+        else
+        {
+            SE_spatialref_free_info_list(mCachedSpatialRefListCount, mCachedSpatialRefList);
+        }
+        mCachedSpatialRefList = NULL;
+        mCachedSpatialRefSRIDList = NULL;
+        mCachedSpatialRefListCount = 0;
+    }
+}
+
+FdoStringP ArcSDEConnection::AdjustSystemColumnName(FdoString *name)
+{
+    // Different RDBMS's have different default case for column names
+    FdoStringP nameCorrected = name;
+    if (RdbmsId() == SE_DBMS_IS_SQLSERVER)
+        return nameCorrected.Lower();
+    else
+        return nameCorrected.Upper();
 }

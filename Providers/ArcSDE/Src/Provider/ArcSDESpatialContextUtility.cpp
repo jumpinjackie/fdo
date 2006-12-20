@@ -51,22 +51,17 @@ LONG ArcSDESpatialContextUtility::SpatialContextNameToSRID(ArcSDEConnection* con
 }
 
 
-
 // Get the spatial context name from an ArcSDE SRID:
 FdoStringP ArcSDESpatialContextUtility::SRIDToSpatialContextName(ArcSDEConnection* connection, LONG srid)
 {
-    SE_SPATIALREFINFO spatialRefInfo;
-    LONG result = SE_spatialrefinfo_create(&spatialRefInfo);
-    handle_sde_err<FdoSchemaException>(connection->GetConnection(), result, __FILE__, __LINE__, ARCSDE_RETRIEVE_COORDSYS_FAILED, "Error while retrieving active coordinate reference system.");
-    result = SE_spatialref_get_info(connection->GetConnection(), srid, spatialRefInfo);
-    handle_sde_err<FdoSchemaException>(connection->GetConnection(), result, __FILE__, __LINE__, ARCSDE_RETRIEVE_COORDSYS_FAILED, "Error while retrieving active coordinate reference system.");
-
-    FdoStringP ret = GetSpatialContextName(spatialRefInfo);
-
-    SE_spatialrefinfo_free (spatialRefInfo);
-
+    FdoStringP ret;
+    FdoPtr<ArcSDEGetSpatialContexts> getSCs = new ArcSDEGetSpatialContexts(connection, srid);
+    FdoPtr<FdoISpatialContextReader> scReader = getSCs->Execute();
+    if (scReader->ReadNext())
+        ret = scReader->GetName();
     return ret;
 }
+
 
 FdoStringP ArcSDESpatialContextUtility::GetSpatialContextName(SE_SPATIALREFINFO spatialRefInfo)
 {
@@ -100,6 +95,7 @@ FdoStringP ArcSDESpatialContextUtility::GetSpatialContextName(SE_SPATIALREFINFO 
 
     return spatialContextName;
 }
+
 
 FdoStringP ArcSDESpatialContextUtility::GetSpatialContextName(FdoString* wAuthName, LONG lSRID)
 {
@@ -144,4 +140,3 @@ FdoByteArray* ArcSDESpatialContextUtility::EnvelopeToFgf(SE_ENVELOPE envelope)
     // Convert Fgf polygon to byte array:
     return fgfFactory->GetFgf(polygon);
 }
-

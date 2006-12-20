@@ -52,6 +52,8 @@ protected:
     void create_spatial_context2 ();
     FdoClassDefinition* create_class(FdoFeatureSchema *&schema);
     void delete_class(void);
+    void ValidateSC2();
+
 };
 
 #endif // CPP_UNIT_SpatialContextTests_H

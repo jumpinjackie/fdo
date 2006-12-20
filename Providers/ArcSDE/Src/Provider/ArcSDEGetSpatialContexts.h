@@ -26,7 +26,7 @@ public:
     // 0-argument constructor to please FdoPtr::operator->() :
     ArcSDEGetSpatialContexts();
 
-    ArcSDEGetSpatialContexts(FdoIConnection *connection);
+    ArcSDEGetSpatialContexts(FdoIConnection *connection, long srid = -1);
     virtual ~ArcSDEGetSpatialContexts(void);
 
     // methods inherited from FdoIGetSpatialContexts:
@@ -37,6 +37,7 @@ public:
 
 protected:
     bool m_bActiveOnly;
+    long m_lSridOnly;
 };
 
 

@@ -270,53 +270,48 @@ void ArcSDEDescribeSchemaCommand::addClass (ArcSDEConnection* connection, FdoFea
             if (SE_SHAPE_TYPE == columns[i].sde_type)
             {
                 geometry_definition = FdoGeometricPropertyDefinition::Create (fdoPropertyName, property_description);
-                result = SE_layerinfo_create (NULL, &info);
+                result = connection->GetArcSDELayerInfo(info, qualified_table_name, columns[i].column_name);
                 if (SE_SUCCESS == result)
                 {
-                    result = SE_layer_get_info (connection->GetConnection (), qualified_table_name, columns[i].column_name, info);
+                    result = SE_layerinfo_get_shape_types (info, &shapes);
                     if (SE_SUCCESS == result)
                     {
-                        result = SE_layerinfo_get_shape_types (info, &shapes);
-                        if (SE_SUCCESS == result)
-                        {
-                            FdoGeometryType geomTypes[20];
-                            FdoInt32 geomTypeCount = 0;
+                        FdoGeometryType geomTypes[20];
+                        FdoInt32 geomTypeCount = 0;
 
-                            if (0 != (shapes & SE_POINT_TYPE_MASK))
-                                geomTypes[geomTypeCount++] = FdoGeometryType_Point;
-                            if (0 != (shapes & SE_POINT_TYPE_MASK) && 0 != (shapes & SE_MULTIPART_TYPE_MASK))
-                                geomTypes[geomTypeCount++] = FdoGeometryType_MultiPoint;
-                            if (0 != (shapes & SE_LINE_TYPE_MASK) || 0 != (shapes & SE_SIMPLE_LINE_TYPE_MASK))
-                                geomTypes[geomTypeCount++] = FdoGeometryType_LineString;
-                            if ((0 != (shapes & SE_LINE_TYPE_MASK) || 0 != (shapes & SE_SIMPLE_LINE_TYPE_MASK)) && 0 != (shapes & SE_MULTIPART_TYPE_MASK))
-                                geomTypes[geomTypeCount++] = FdoGeometryType_MultiLineString;
-                            if (0 != (shapes & SE_AREA_TYPE_MASK))
-                                geomTypes[geomTypeCount++] = FdoGeometryType_Polygon;
-                            if (0 != (shapes & SE_AREA_TYPE_MASK) && 0 != (shapes & SE_MULTIPART_TYPE_MASK))
-                                geomTypes[geomTypeCount++] = FdoGeometryType_MultiPolygon;
-                            geometry_definition->SetSpecificGeometryTypes (geomTypes, geomTypeCount);
-                        }
-
-                        // Set measure and elevation:
-                        geometry_definition->SetHasElevation(SE_layerinfo_is_3D(info)==TRUE);
-                        geometry_definition->SetHasMeasure(SE_layerinfo_is_measured(info)==TRUE);
-
-                        // Set associated spatial context:
-                        SE_COORDREF coordRef;
-                        LONG srid = 0L;
-                        result = SE_coordref_create(&coordRef);
-                        handle_sde_err<FdoSchemaException>(connection->GetConnection(), result, __FILE__, __LINE__, ARCSDE_COORDREF_ERROR, "Unexpected error encountered while manipulating an ArcSDE coordinate reference.");
-                        result = SE_layerinfo_get_coordref(info, coordRef);
-                        handle_sde_err<FdoSchemaException>(connection->GetConnection(), result, __FILE__, __LINE__, ARCSDE_COORDREF_ERROR, "Unexpected error encountered while manipulating an ArcSDE coordinate reference.");
-                        result = SE_coordref_get_srid (coordRef, &srid);
-                        handle_sde_err<FdoSchemaException>(connection->GetConnection(), result, __FILE__, __LINE__, ARCSDE_COORDREF_ERROR, "Unexpected error encountered while manipulating an ArcSDE coordinate reference.");
-                        if (srid!=0)  //NOTE: in some rare cases, it seems I may get srid==0 even though the database shows something different; possible corruption of data?
-                        {
-                            geometry_definition->SetSpatialContextAssociation(ArcSDESpatialContextUtility::SRIDToSpatialContextName(connection, srid));
-                        }
-                        SE_coordref_free (coordRef);
-                        SE_layerinfo_free (info);
+                        if (0 != (shapes & SE_POINT_TYPE_MASK))
+                            geomTypes[geomTypeCount++] = FdoGeometryType_Point;
+                        if (0 != (shapes & SE_POINT_TYPE_MASK) && 0 != (shapes & SE_MULTIPART_TYPE_MASK))
+                            geomTypes[geomTypeCount++] = FdoGeometryType_MultiPoint;
+                        if (0 != (shapes & SE_LINE_TYPE_MASK) || 0 != (shapes & SE_SIMPLE_LINE_TYPE_MASK))
+                            geomTypes[geomTypeCount++] = FdoGeometryType_LineString;
+                        if ((0 != (shapes & SE_LINE_TYPE_MASK) || 0 != (shapes & SE_SIMPLE_LINE_TYPE_MASK)) && 0 != (shapes & SE_MULTIPART_TYPE_MASK))
+                            geomTypes[geomTypeCount++] = FdoGeometryType_MultiLineString;
+                        if (0 != (shapes & SE_AREA_TYPE_MASK))
+                            geomTypes[geomTypeCount++] = FdoGeometryType_Polygon;
+                        if (0 != (shapes & SE_AREA_TYPE_MASK) && 0 != (shapes & SE_MULTIPART_TYPE_MASK))
+                            geomTypes[geomTypeCount++] = FdoGeometryType_MultiPolygon;
+                        geometry_definition->SetSpecificGeometryTypes (geomTypes, geomTypeCount);
                     }
+
+                    // Set measure and elevation:
+                    geometry_definition->SetHasElevation(SE_layerinfo_is_3D(info)==TRUE);
+                    geometry_definition->SetHasMeasure(SE_layerinfo_is_measured(info)==TRUE);
+
+                    // Set associated spatial context:
+                    SE_COORDREF coordRef;
+                    LONG srid = 0L;
+                    result = SE_coordref_create(&coordRef);
+                    handle_sde_err<FdoSchemaException>(connection->GetConnection(), result, __FILE__, __LINE__, ARCSDE_COORDREF_ERROR, "Unexpected error encountered while manipulating an ArcSDE coordinate reference.");
+                    result = SE_layerinfo_get_coordref(info, coordRef);
+                    handle_sde_err<FdoSchemaException>(connection->GetConnection(), result, __FILE__, __LINE__, ARCSDE_COORDREF_ERROR, "Unexpected error encountered while manipulating an ArcSDE coordinate reference.");
+                    result = SE_coordref_get_srid (coordRef, &srid);
+                    handle_sde_err<FdoSchemaException>(connection->GetConnection(), result, __FILE__, __LINE__, ARCSDE_COORDREF_ERROR, "Unexpected error encountered while manipulating an ArcSDE coordinate reference.");
+                    if (srid!=0)  //NOTE: in some rare cases, it seems I may get srid==0 even though the database shows something different; possible corruption of data?
+                    {
+                        geometry_definition->SetSpatialContextAssociation(ArcSDESpatialContextUtility::SRIDToSpatialContextName(connection, srid));
+                    }
+                    SE_coordref_free (coordRef);
                 }
                 property_definiton = FDO_SAFE_ADDREF(geometry_definition.p);
                 ((FdoFeatureClass*)newFdoClass.p)->SetGeometryProperty (geometry_definition);

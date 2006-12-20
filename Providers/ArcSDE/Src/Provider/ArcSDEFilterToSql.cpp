@@ -686,7 +686,7 @@ void ArcSDEFilterToSql::ProcessGeometricCondition (FdoIdentifier* fdoPropertyNam
 
     // Get the sde coordref for the column the spatial filter applies to:
     SE_COORDREF coordRef;
-    lResult = GetCoordRefFromColumn(m_Connection->GetConnection(), table, column, coordRef);
+    lResult = GetCoordRefFromColumn(m_Connection, table, column, coordRef);
     handle_sde_err<FdoCommandException>(m_Connection->GetConnection(), lResult, __FILE__, __LINE__, ARCSDE_FAILED_PROCESSING_SPATIAL_CONDITION, "Failed to process the given spatial condition.");
 
     // Get sde shape from spatial filter:

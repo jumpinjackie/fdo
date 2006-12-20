@@ -526,7 +526,7 @@ void ArcSDEFeatureCommand<FDO_COMMAND>::assignValue (ArcSDEConnection* connectio
                     ret = SE_stream_describe_column (stream, columnIndex, &column);
                     handle_sde_err<FdoException>(stream, ret, __FILE__, __LINE__, ARCSDE_STREAM_GET_COLUMN_FAILED, "Failed to retrieve column information from the stream.");
 
-                    ret = GetCoordRefFromColumn (connection->GetConnection(), table, column.column_name, coordref);
+                    ret = GetCoordRefFromColumn (connection, table, column.column_name, coordref);
                     handle_sde_err<FdoException>(stream, ret, __FILE__, __LINE__, ARCSDE_COORDREF_ERROR, "Unexpected error encountered while manipulating an ArcSDE coordinate reference.");
 
                     FdoPtr<FdoByteArray> fgf = geometry->GetGeometry ();

@@ -69,6 +69,12 @@ protected:
     LONG mCachedRegistrationCount;
     SE_METADATAINFO *mCachedMetadataList;
     LONG mCachedMetadataListCount;
+    SE_LAYERINFO *mCachedLayerList;
+    LONG mCachedLayerListCount;
+    SE_SPATIALREFINFO *mCachedSpatialRefList;
+    LONG* mCachedSpatialRefSRIDList;
+    LONG mCachedSpatialRefListCount;
+    bool mCachedSpatialRefListCreatedByUs;
 
     /**
      * Cached schema mapping information.
@@ -236,6 +242,12 @@ public:
     // Sets the current schema mapping collection.
     void SetSchemaMappingCollection (FdoPhysicalSchemaMappingCollection* schemaCollection);
 
+    // Empty all schema-related caches.  This is called by ApplySchema and when the connection is closed.
+    void DecacheSchema();
+
+    // Empty spatial context cache.  This is called by Create/DestroySpatialContext and when the connection is closed.
+    void DecacheSpatialContexts();
+
     // Schema Mapping utility methods:
     ArcSDESchemaMapping* GetSchemaMapping (FdoString *fdoSchemaName, FdoString* fdoClassName=NULL, bool bAutoLoad=true);
     ArcSDEClassMapping* GetClassMapping (FdoString *fdoSchemaName, FdoString *fdoClassName, bool bAutoLoad=true);
@@ -285,8 +297,16 @@ public:
     // Get cached metadata list:
     void GetArcSDEMetadataList(SE_METADATAINFO** pMetadataList, long *pCount);
 
+    // Get cached layer information:
+    long GetArcSDELayerInfo(SE_LAYERINFO &pLayerInfo, const CHAR* tableName, const CHAR* columnName);
+
+    void GetArcSDESpatialRefList(SE_SPATIALREFINFO** pSpatialRefInfo, long *count);
+
     // Returns true if-and-only-if the given schemaname and classname are not NULL and have already been cached:
     bool ClassAlreadyLoaded(FdoString* fdoSchemaName, FdoString* fdoClassName);
+
+    // Returns the proper system column name to use depending on which RDBMS is in use:
+    FdoStringP AdjustSystemColumnName(FdoString *name);
 };
 
 #endif // ARCSDECONNECTION_H

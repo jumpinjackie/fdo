@@ -53,6 +53,9 @@ void ArcSDEDestroySpatialContext::Execute()
     LONG lResult = SE_spatialref_delete(mConnection->GetConnection(), lSRID);
     handle_sde_err<FdoCommandException>(mConnection->GetConnection(), lResult, __FILE__, __LINE__, ARCSDE_SPATIALCONTEXT_DELETE_FAILED, "Failed to delete spatial context '%1$ls'.", (const wchar_t*)m_wcsName);
 
+    // Clear spatial context cache since the list has now changed:
+    mConnection->DecacheSpatialContexts();
+
     // If this was the active spatial context, reset the active spatial context:
     if ((mConnection->GetActiveSpatialContext() != NULL) && (0==wcscmp(m_wcsName, mConnection->GetActiveSpatialContext())))
         mConnection->SetActiveSpatialContextToDefault();

@@ -23,9 +23,10 @@ class ArcSDESpatialContextReader :
 {
 public:
     // 0-argument constructor to please FdoPtr::operator->() :
-    ArcSDESpatialContextReader() { ArcSDESpatialContextReader(NULL, NULL, 0, false); }
+    ArcSDESpatialContextReader() { ArcSDESpatialContextReader(NULL, false); }
 
-    ArcSDESpatialContextReader(ArcSDEConnection *connection, SE_SPATIALREFINFO *arrSpatialRefs, LONG lSpatialRefCount, bool bActiveOnly);
+    ArcSDESpatialContextReader(ArcSDEConnection* connection, bool bActiveOnly);
+    ArcSDESpatialContextReader(ArcSDEConnection* connection, long lSridOnly);
     virtual ~ArcSDESpatialContextReader(void);
 
     // methods inherited from FdoISpatialContextReader:
@@ -46,13 +47,14 @@ public:
     virtual long GetSRID();
 
 protected:
+    void Init(ArcSDEConnection* connection);
     void Validate(void);
 
     FdoPtr<ArcSDEConnection> mConnection;
     SE_SPATIALREFINFO *mArrSpatialRefs;
     LONG mlSpatialRefCount;
     LONG mlCurrentSpatialRef;
-    bool mbActiveOnly;
+    long mlActiveOnlySRID;
 
 
     // cache for the current Spatial Context:
