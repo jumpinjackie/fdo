@@ -942,6 +942,7 @@ FdoRasterPropertyDefinition * FdoCommonSchemaUtil::DeepCopyFdoRasterPropertyDefi
     newProperty->SetNullable(property->GetNullable());
     newProperty->SetDefaultImageXSize(property->GetDefaultImageXSize());
     newProperty->SetDefaultImageYSize(property->GetDefaultImageYSize());
+    newProperty->SetSpatialContextAssociation(property->GetSpatialContextAssociation());
 
     FdoPtr<FdoRasterDataModel> newRasterDataModel = FdoRasterDataModel::Create();
     if ( newRasterDataModel == NULL ) {
