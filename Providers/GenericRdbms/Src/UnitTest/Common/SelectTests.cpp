@@ -707,6 +707,7 @@ void SelectTests::describe ()
     {
         const char *msg = exception.what ();
         char message[RDBI_MSG_SIZE];
+        memset( (void*) message, 0, (size_t) RDBI_MSG_SIZE );
         rdbi_get_msg (mRdbiContext);
 #ifdef _WIN32
 		WideCharToMultiByte ( CP_THREAD_ACP, 0, mRdbiContext->last_error_msg, (int)wcslen(mRdbiContext->last_error_msg), message, RDBI_MSG_SIZE, NULL,  NULL);

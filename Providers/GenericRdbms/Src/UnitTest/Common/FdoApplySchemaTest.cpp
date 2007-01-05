@@ -248,6 +248,7 @@ void FdoApplySchemaTest::TestSchema ()
 #ifndef RDBI_DEF_SSQL
         FdoStringP out1master = LogicalPhysicalBend(L"apply_schema_test1_master.txt");
         FdoStringP out1       = LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_test1.xml" ) );
+
         FdoStringP out2master = LogicalPhysicalBend(L"apply_schema_test2_master.txt");
         FdoStringP out2       = LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_test2.xml" ) );
         FdoStringP out3master = LogicalPhysicalBend(L"apply_schema_test3_master.txt");
@@ -1509,7 +1510,6 @@ void FdoApplySchemaTest::TestConfigDoc ()
         table->AddUkeyCol( numUkeys - 1, ph->GetDcColumnName(L"authority") );
         table->AddUkeyCol( numUkeys - 1, ph->GetDcColumnName(L"zoningtype") );
 		ukeyColumns->SetElementState(FdoSchemaElementState_Added);
-        grdOwner->ActivateAndExecute( L"alter table zoning add constraint z1 unique ( authority, zoningtype )" );
 
         table = owner->GetDbObject( ph->GetDcDbObjectName(L"transformer") )->SmartCast<FdoSmPhTable>();
 
@@ -1519,7 +1519,6 @@ void FdoApplySchemaTest::TestConfigDoc ()
         table->AddUkeyCol( numUkeys - 1, ph->GetDcColumnName(L"phase") );
         table->AddUkeyCol( numUkeys - 1, ph->GetDcColumnName(L"partnum") );
 		ukeyColumns->SetElementState(FdoSchemaElementState_Added);
-        grdOwner->ActivateAndExecute( L"alter table transformer add constraint z2 unique ( phase, partnum )" );
 
         if ( supportsRange ) {
             constraint = new FdoSmPhCheckConstraint( L"partnum_check", ph->GetDcColumnName(L"partnum"), L"partnum > 0" );
@@ -1534,7 +1533,6 @@ void FdoApplySchemaTest::TestConfigDoc ()
 		numUkeys = table->GetUkeyColumns()->GetCount();
         table->AddUkeyCol( numUkeys - 1, ph->GetDcColumnName(L"height") );
 		ukeyColumns->SetElementState(FdoSchemaElementState_Added);
-        grdOwner->ActivateAndExecute( L"alter table pole add constraint z3 unique ( height )" );
 
         if ( supportsRange ) {
             constraint = new FdoSmPhCheckConstraint( L"height_check", ph->GetDcColumnName(L"height"), L"height > 5" );
@@ -1585,7 +1583,7 @@ void FdoApplySchemaTest::TestConfigDoc ()
         FdoDataPropertiesP dataProps;
 
 		// SchemaMgr is adding an unique constraint on auto-incremented columns
-		CPPUNIT_ASSERT( constraints->GetCount() == 4);
+		CPPUNIT_ASSERT( constraints->GetCount() == 2);
 
         bool constraintFound = false;
 
@@ -1605,8 +1603,7 @@ void FdoApplySchemaTest::TestConfigDoc ()
         classDef = classes->GetItem( L"Transformer" );
         constraints = classDef->GetUniqueConstraints();
 
-		// SchemaMgr is adding an unique constraint on auto-incremented columns
-		CPPUNIT_ASSERT( constraints->GetCount() == 2);
+		CPPUNIT_ASSERT( constraints->GetCount() == 1);
 
         constraintFound = false;
 
@@ -1631,8 +1628,7 @@ void FdoApplySchemaTest::TestConfigDoc ()
         classDef = classes->GetItem( L"Pole" );
         constraints = classDef->GetUniqueConstraints();
 
-		// SchemaMgr is adding an unique constraint on auto-incremented columns
-		CPPUNIT_ASSERT( constraints->GetCount() == 2);
+		CPPUNIT_ASSERT( constraints->GetCount() == 1);
 
         constraintFound = false;
 

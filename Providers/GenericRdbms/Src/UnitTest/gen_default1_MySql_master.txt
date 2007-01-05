@@ -340,16 +340,6 @@
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
-<xs:element name="LONGTEXT_COLUMN" minOccurs="0">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:string">
-<xs:maxLength value="65535"/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
 <xs:element name="MEDIUMBLOB_COLUMN" minOccurs="0">
 <xs:simpleType>
 <xs:restriction base="xs:hexBinary"/>
@@ -365,16 +355,6 @@
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
-</xs:element>
-<xs:element name="MEDIUMTEXT_COLUMN" minOccurs="0">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:string">
-<xs:maxLength value="65535"/>
-</xs:restriction>
-</xs:simpleType>
 </xs:element>
 <xs:element name="MULTILINESTRING_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="curve " fdo:geometryTypes="multilinestring ">
 <xs:annotation>

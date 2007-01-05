@@ -26,7 +26,6 @@
 #include <Sm/Ph/Rd/DbObjectReader.h>
 #include <TestCommon.h>
 
-
 char *UnitTestUtil::CommandFilesDirectory = NULL;
 // UnitTestUtil::InfoUtilConnection and UnitTestUtil::ActiveProviderName MUST be declared 
 // and initialized in provider unit test
@@ -101,28 +100,6 @@ xmlns:fdo=\"http://www.autodesk.com/isd/fdo\" \
   </xsl:copy>\
 </xsl:template>\
 </xsl:stylesheet>";
-
-void TestCommonFail (FdoException* ge)
-{
-    wchar_t message[2000];
-    char* multibyte;
-    FdoPtr<FdoException> cause;
-
-    wcscpy(message, (wchar_t*)ge->GetExceptionMessage ());
-    cause = ge->GetCause();
-    while (cause != NULL)
-    {
-        wcscat(message, L" [");
-        wcscat(message, cause->GetExceptionMessage());
-        wcscat(message, L"]");
-        cause = cause->GetCause();
-    }
-    wide_to_multibyte (multibyte, message);
-    if (NULL == multibyte)
-        multibyte = "Exception message could not be converted.";
-    ge->Release ();
-    CPPUNIT_FAIL (multibyte);
-}
 
 void UnitTestUtil::Sql2Db(const wchar_t** sCommands, FdoIConnection* connection)
 {

@@ -12,6 +12,21 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 <xsl:param name="providerName"/>
 <xsl:template match="lp:schema[@name='F_MetaClass' or starts-with(@name,'abcdef1234567890')]"/>
 <xsl:template match="lp:class[@name='aCxdATA' and $providerName='SqlServer']"/>
+<xsl:template match="lp:class[@name='Zoning' and ($providerName='SqlServer' or $providerName='MySql')]">
+  <xsl:copy>
+    <xsl:apply-templates select="@*"/>
+    <xsl:apply-templates select="lp:tableMapping|lp:identityProperties|lp:properties"/>
+    <xsl:element name="uniqueConstraints">
+		<xsl:element name="uniqueConstraint">
+			<xsl:element name="property">
+				<xsl:attribute name="xsi:type">Data</xsl:attribute>
+				<xsl:attribute name="name">PolyNum</xsl:attribute>
+			</xsl:element>
+		</xsl:element>
+    </xsl:element>
+    <xsl:apply-templates select="lp:table|lp:tables"/>
+  </xsl:copy>
+</xsl:template>
 <xsl:template match="lp:table">
   <xsl:copy>
     <xsl:apply-templates select="@*|node()"/>
