@@ -34,6 +34,7 @@
 #define LOCATION L"../../TestData/Testing"
 #define SCHEMA_NAME L"/schema.xml"
 #define CPG_NAME L"/Test.cpg"
+#define DBG_NAME L"/Test.dbf"
 #endif
 
 CPPUNIT_TEST_SUITE_REGISTRATION (InsertTests);

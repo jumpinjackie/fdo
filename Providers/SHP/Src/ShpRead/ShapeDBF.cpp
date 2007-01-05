@@ -34,6 +34,7 @@
 
 #include <wctype.h>
 #include <time.h>
+#include <locale.h>
 
 static ColumnInfo NoColumns (0);
 /**
