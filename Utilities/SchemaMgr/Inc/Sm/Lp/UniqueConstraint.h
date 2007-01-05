@@ -31,6 +31,11 @@ class FdoSmLpUniqueConstraint : public FdoIDisposable
 public:
 	
 	FdoSmLpDataPropertyDefinitionCollection *GetProperties();
+	const FdoSmLpDataPropertyDefinitionCollection *RefProperties() const;
+
+    /// Serialize this class to an XML file.
+    /// Primarily for unit testing.
+	virtual void XMLSerialize( FILE* xmlFp, int ref ) const;
 
 protected:
 
