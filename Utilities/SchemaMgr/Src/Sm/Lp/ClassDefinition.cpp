@@ -1151,35 +1151,46 @@ void FdoSmLpClassBase::CreateUkeys( bool merge )
    
    		FdoSmLpUniqueConstraintsP   pLpUniqueConstraints = GetUniqueConstraints();
    
+        // If Lp class already has unique constraints then need to ensure no duplicates
+        // added. When a config file is used, it is possible for a constraint to be
+        // in the config file and the RDBMS
+        bool checkUnique = (pLpUniqueConstraints->GetCount() > 0);
+
    		for ( int i = 0; i < ukeysPhColumnsColl->GetCount(); i++ ) {
    			FdoSmPhColumnsP	pUniqueCols = ukeysPhColumnsColl->GetItem(i);
    
-   			FdoSmLpUniqueConstraintP	pUniqueC = new FdoSmLpUniqueConstraint();
-   			FdoSmLpDataPropertiesP		pProps = pUniqueC->GetProperties();
-            bool                        allFound = true;
-   
-   			for ( int j = 0; j < pUniqueCols->GetCount(); j++ ) {
-   				FdoSmPhColumnP	pUniqueCol = pUniqueCols->GetItem(j);
-   
-   				// Match the data property by column name and add the property to the collection
-   				const FdoSmLpSimplePropertyDefinition* pMatchedProp = 		 
-   						FdoSmLpSimplePropertyDefinition::ColName2Property( mProperties, pUniqueCol->GetName() );
-   				
-                if ( pMatchedProp ) {
-                    if ( !pMatchedProp->GetIsSystem() )
-    					pProps->Add( (FdoSmLpDataPropertyDefinition *)pMatchedProp );
+            if ( !(checkUnique && HasUkey(pUniqueCols)) ) {
+                // Ukey not already present in LP class. 
+                if ( !phTable->IsUkeyPkey(pUniqueCols) ) {
+                    // Ukey is not the primary key
+   			        FdoSmLpUniqueConstraintP	pUniqueC = new FdoSmLpUniqueConstraint();
+   			        FdoSmLpDataPropertiesP		pProps = pUniqueC->GetProperties();
+                    bool                        allFound = true;
+           
+   			        for ( int j = 0; j < pUniqueCols->GetCount(); j++ ) {
+   				        FdoSmPhColumnP	pUniqueCol = pUniqueCols->GetItem(j);
+           
+   				        // Match the data property by column name and add the property to the collection
+   				        const FdoSmLpSimplePropertyDefinition* pMatchedProp = 		 
+   						        FdoSmLpSimplePropertyDefinition::ColName2Property( mProperties, pUniqueCol->GetName() );
+           				
+                        if ( pMatchedProp ) {
+                            if ( !pMatchedProp->GetIsSystem() )
+    					        pProps->Add( (FdoSmLpDataPropertyDefinition *)pMatchedProp );
+                        }
+                        else {
+                            allFound = false;
+                        }
+ 			        }
+                    
+                    // Skip the constraint if any of its columns do not correspond
+                    // to a property.
+                    if ( allFound && (pProps->GetCount() > 0) ) 
+			        {
+                        pLpUniqueConstraints->Add(pUniqueC);
+			        }
                 }
-                else {
-                    allFound = false;
-                }
- 			}
-            
-            // Skip the constraint if any of its columns do not correspond
-            // to a property.
-            if ( allFound && (pProps->GetCount() > 0) ) 
-			{
-                pLpUniqueConstraints->Add(pUniqueC);
-			}
+            }
    		}
    
    		count = ukeysPhColumnsColl->GetCount();
@@ -1826,7 +1837,10 @@ void FdoSmLpClassBase::CreateUkeysFromFdo()
 		for ( int j = 0; j < pFdoUniqueCs->GetCount(); j++ ) {
 			FdoDataPropertyP	 pFdoDataProp = pFdoUniqueCs->GetItem(j);
 			FdoSmLpDataPropertyP pLpDataProp = mProperties->FindItem( pFdoDataProp->GetName() )->SmartCast<FdoSmLpDataPropertyDefinition>(true);
-			pLpUniqueC->GetProperties()->Add( pLpDataProp );
+            if ( pLpDataProp ) 
+                pLpUniqueC->GetProperties()->Add( pLpDataProp );
+            else
+                AddUkeyPropMissingError( pFdoDataProp );
 		}	
 
 		if ( pFdoUniqueCs->GetCount() != 0 )
@@ -1888,6 +1902,43 @@ bool FdoSmLpClassBase::MatchUkey( FdoClassDefinitionP pClass, FdoSmPhColumnsP pP
 	return found;
 }	
 
+bool FdoSmLpClassBase::HasUkey(  FdoSmPhColumnsP pPhColls )
+{
+	FdoSmLpUniqueConstraintsP pLpUniqueConstraints = GetUniqueConstraints();
+
+	// Find a match between LP and PH. Some FDO constraints may be deleted.
+	bool found = false;
+	for ( int i = 0; i < pLpUniqueConstraints->GetCount() && !found; i++ ) {
+
+		FdoSmLpUniqueConstraintP		pLpUniqueC = pLpUniqueConstraints->GetItem(i);
+		FdoSmLpDataPropertiesP		    pLpDataProps = pLpUniqueC->GetProperties();
+
+		// No match if size is different.
+		if ( pPhColls->GetCount() != pLpDataProps->GetCount())
+			continue;
+
+		// Match each component of the unique key
+		bool matchedAll = true;
+		for ( int j = 0; j < pPhColls->GetCount() && matchedAll; j++ ){
+			FdoSmPhColumnP			pPhCol = pPhColls->GetItem(j);	
+
+			// Unfortunatelly the order may be different so don't match by position.
+            bool matched = false;
+			for ( int k = 0; k < pLpDataProps->GetCount() && !matched; k++ ) {
+				FdoSmLpDataPropertyP		pLpDataProp = pLpDataProps->GetItem(k);
+
+				matched = ( wcscmp(pPhCol->GetName(), pLpDataProp->GetColumnName() ) == 0 );
+			}
+			if ( !matched )
+				matchedAll = false; 
+		}
+		if ( matchedAll )
+			found = true;
+	}
+
+	return found;
+}	
+
 void FdoSmLpClassBase::DropUkeys()
 {
 	// Check the contraints still match Physical vs. FDO
@@ -1902,22 +1953,24 @@ void FdoSmLpClassBase::DropUkeys()
 		for ( int i = 0; i < ukeysPhColumnsColl->GetCount(); i++ ) {
 			FdoSmPhColumnsP		pPhColls = ((FdoSmPhBatchColumnCollection *)ukeysPhColumnsColl)->GetItem(i);	
 
-			bool	found = MatchUkey( pRootClass, pPhColls );
+            if ( !phTable->IsUkeyPkey(pPhColls) ) {
+			    bool	found = MatchUkey( pRootClass, pPhColls );
 
-			// Try also the base classes. Walk up the hierarchy.
-			FdoClassDefinitionP		pCurrClass = pRootClass;
-			FdoClassDefinitionP		pBaseClass;
+			    // Try also the base classes. Walk up the hierarchy.
+			    FdoClassDefinitionP		pCurrClass = pRootClass;
+			    FdoClassDefinitionP		pBaseClass;
 
-			while ( !found && ( (pBaseClass = pCurrClass->GetBaseClass()) != NULL ) ) {
-				found = MatchUkey( pBaseClass, pPhColls );
-				pCurrClass = pBaseClass;
-			}
+			    while ( !found && ( (pBaseClass = pCurrClass->GetBaseClass()) != NULL ) ) {
+				    found = MatchUkey( pBaseClass, pPhColls );
+				    pCurrClass = pBaseClass;
+			    }
 
-			// Still not found, add it to the list of constraints to be deleted.
-			if ( !found ) {
-				FdoStringsP		pDeletedConstraints = phTable->GetDeletedConstraints();
-				pDeletedConstraints->Add( pPhColls->GetName() );
-			}
+			    // Still not found, add it to the list of constraints to be deleted.
+			    if ( !found ) {
+				    FdoStringsP		pDeletedConstraints = phTable->GetDeletedConstraints();
+				    pDeletedConstraints->Add( pPhColls->GetName() );
+			    }
+            }
 		}
 	}
 }
@@ -3111,6 +3164,19 @@ void FdoSmLpClassBase::AddForeignNoFeatIdError( const FdoSmLpPropertyDefinition*
 	);
 }
 
+void FdoSmLpClassBase::AddUkeyPropMissingError(FdoDataPropertyDefinition* pProp)
+{
+	GetErrors()->Add( FdoSmErrorType_Other, 
+        FdoSchemaException::Create(
+            FdoSmError::NLSGetMessage(
+				FDO_NLSID(FDOSM_27),
+				(FdoString*)(pProp->GetName()),
+				(FdoString*)(GetQName())
+			)
+		)
+	);
+}
+
 void FdoSmLpClassBase::XMLSerialize( FILE* xmlFp, int ref  ) const
 {
 	if ( ref == 0 ) {
@@ -3150,14 +3216,14 @@ void FdoSmLpClassBase::XMLSerialize( FILE* xmlFp, int ref  ) const
 		for ( int i = 0; i < RefProperties()->GetCount(); i++ )
 			RefProperties()->RefItem(i)->XMLSerialize(xmlFp, ref);
 		fprintf( xmlFp, "</properties>\n" );
-/*
-        if ( mIndexes.GetCount() > 0 ) {
-		    fprintf( xmlFp, "<indexes>\n" );
-		    for ( int i = 0; i < mIndexes.GetCount(); i++ )
-			    mIndexes.RefItem(i)->XMLSerialize(xmlFp, ref);
-		    fprintf( xmlFp, "</indexes>\n" );
+
+        if ( RefUniqueConstraints()->GetCount() > 0 ) {
+		    fprintf( xmlFp, "<uniqueConstraints>\n" );
+		    for ( int i = 0; i < RefUniqueConstraints()->GetCount(); i++ )
+			    RefUniqueConstraints()->RefItem(i)->XMLSerialize(xmlFp, ref);
+		    fprintf( xmlFp, "</uniqueConstraints>\n" );
         }
-*/
+
 		if ( RefDbObject() ) 
 			RefDbObject()->XMLSerialize(xmlFp, ref);
 

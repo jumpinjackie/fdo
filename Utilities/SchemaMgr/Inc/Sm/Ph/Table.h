@@ -88,6 +88,9 @@ public:
     /// Returns NULL when size is 0.
 	virtual const FdoLockType* GetLockTypes(FdoInt32& size) const;
 
+    // Returns true if the given unique key has the same columns as the primary key.
+    FdoBoolean IsUkeyPkey( FdoSmPhColumnsP ukeyColumns );
+
     /// Get SQL "create table" statement.
     virtual FdoStringP GetAddSql();
 

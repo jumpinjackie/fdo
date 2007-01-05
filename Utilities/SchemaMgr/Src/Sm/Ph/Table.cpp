@@ -201,6 +201,28 @@ void FdoSmPhTable::SetPkeyName( FdoStringP pkeyName )
     mPkeyName = pkeyName;
 }
 
+FdoBoolean FdoSmPhTable::IsUkeyPkey( FdoSmPhColumnsP ukeyColumns )
+{
+    FdoBoolean      isUkeyPkey  = false;
+    FdoInt32        idx;
+    FdoSmPhColumnsP pkeyColumns = GetPkeyColumns();
+
+    if ( (ukeyColumns->GetCount() > 0) && (ukeyColumns->GetCount() == pkeyColumns->GetCount()) ) {
+        isUkeyPkey = true;
+
+        for ( idx = 0; idx < ukeyColumns->GetCount(); idx++ ) {
+            FdoSmPhColumnP ukeyColumn = ukeyColumns->GetItem( idx );
+
+            if ( pkeyColumns->IndexOf(ukeyColumn->GetName()) < 0 ) {
+                isUkeyPkey = false;
+                break;
+            }
+        }
+    }
+
+    return isUkeyPkey;
+}
+
 void FdoSmPhTable::SetLtMode( FdoLtLockModeType mode )
 {
     if ( (mode != GetLtMode()) && (GetElementState() != FdoSchemaElementState_Added) ) {
@@ -562,20 +584,24 @@ void FdoSmPhTable::CommitUConstraints(bool isBeforeParent)
 			FdoSmPhColumnsP		ukeyColumns = mUkeysCollection->GetItem(i);	
 
 			if ( ukeyColumns->GetElementState() == FdoSchemaElementState_Added ) {
-				FdoStringsP ukColNames = GetKeyColsSql( ukeyColumns );
+                // Unique key redundant (and illegal in Oracle) if has same columns
+                // as primary key.
+                if ( !IsUkeyPkey(ukeyColumns) ) {
+				    FdoStringsP ukColNames = GetKeyColsSql( ukeyColumns );
 
-				FdoStringP ukeySql = FdoStringP::Format( 
-							L"UNIQUE (%ls)",
-							(FdoString*) ukColNames->ToString()
-				);
+				    FdoStringP ukeySql = FdoStringP::Format( 
+							    L"UNIQUE (%ls)",
+							    (FdoString*) ukColNames->ToString()
+				    );
 
-				if ( !AddConstraint( ukeySql ) ) {
-					AddUkeyError(ukColNames->ToString());
+				    if ( !AddConstraint( ukeySql ) ) {
+					    AddUkeyError(ukColNames->ToString());
 
-					// This will trigger error reporting
-					if (GetElementState() == FdoSchemaElementState_Unchanged )
-						SetElementState(FdoSchemaElementState_Modified);
-				} 
+					    // This will trigger error reporting
+					    if (GetElementState() == FdoSchemaElementState_Unchanged )
+						    SetElementState(FdoSchemaElementState_Modified);
+				    } 
+                }
 				ukeyColumns->SetElementState(FdoSchemaElementState_Unchanged);
 			}
 		}
@@ -787,13 +813,15 @@ FdoStringP FdoSmPhTable::GetAddUkeysSql()
     FdoSmPhBatchColumnsP     ukeyColumnsColl = GetUkeyColumns();
 	int						 count = ukeyColumnsColl->GetCount();
     FdoStringP				 ukeySql;
-	FdoStringP				 ukeyCollSql;
+    FdoStringsP				 ukeyCollSql = FdoStringCollection::Create();
 
 	for ( int i = 0; i < count; i++ )	{
 
 		FdoSmPhColumnsP     ukeyColumns = ukeyColumnsColl->GetItem(i);
 
-		if ( ukeyColumns->GetCount() > 0 ) {
+        // Unique key redundant (and illegal in Oracle) if has same columns
+        // as primary key.
+		if ( (ukeyColumns->GetCount() > 0) && !IsUkeyPkey(ukeyColumns) ) {
 			FdoStringsP ukColNames = GetKeyColsSql( ukeyColumns );
 
 			ukeySql = FdoStringP::Format( 
@@ -801,13 +829,11 @@ FdoStringP FdoSmPhTable::GetAddUkeysSql()
 				(FdoString*) ukColNames->ToString()
 			);
 
-			ukeyCollSql += ukeySql;	
-			if ( i != count - 1 )
-				ukeyCollSql += L", ";
+			ukeyCollSql->Add(ukeySql);	
 		}	
 	}
 
-    return ukeyCollSql;
+    return ukeyCollSql->ToString();
 }
 
 FdoStringP FdoSmPhTable::GetAddUkeySql(int uCollNum)

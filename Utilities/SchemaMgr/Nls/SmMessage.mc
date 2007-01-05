@@ -141,6 +141,11 @@ SymbolicName=FDOSM_26
 Language=English
 Unable to find schema '%1$ls'
 .
+MessageId=2232
+SymbolicName=FDOSM_27
+Language=English
+Unique Constraint property '%1$ls' is not a data property in class '%2$ls'
+.
 MessageId=2327
 SymbolicName=FDOSM_122
 Language=English

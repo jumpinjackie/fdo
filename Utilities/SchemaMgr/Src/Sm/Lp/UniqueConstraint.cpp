@@ -27,7 +27,27 @@ FdoSmLpDataPropertyDefinitionCollection *FdoSmLpUniqueConstraint::GetProperties(
 	return FDO_SAFE_ADDREF(mProperties.p);
 }
 
+const FdoSmLpDataPropertyDefinitionCollection *FdoSmLpUniqueConstraint::RefProperties() const
+{
+	return mProperties.p;
+}
+
 void FdoSmLpUniqueConstraint::Dispose()
 {
 	delete this;
 }
+
+void FdoSmLpUniqueConstraint::XMLSerialize( FILE* xmlFp, int ref  ) const
+{
+
+	if ( ref == 0 ) {
+		fprintf( xmlFp, "<uniqueConstraint>\n" );
+
+		for ( int i = 0; i < RefProperties()->GetCount(); i++ )
+			RefProperties()->RefItem(i)->XMLSerialize(xmlFp, 1);
+		fprintf( xmlFp, "</uniqueConstraint>\n" );
+
+	}
+
+}
+

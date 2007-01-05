@@ -700,11 +700,12 @@ private:
         const wchar_t* columnName
     );
     void AddForeignNoFeatIdError( const FdoSmLpPropertyDefinition* pFeatId );
+    void AddUkeyPropMissingError(FdoDataPropertyDefinition* pProp);
 
 	void DropUkeys();
 	void CreateUkeysFromFdo();
 	bool MatchUkey( FdoClassDefinitionP pClass, FdoSmPhColumnsP pPhColls );
-
+    bool HasUkey(  FdoSmPhColumnsP pPhColls );
 	void DropCkeys();
 	void CreateCkeysFromFdo();
 	bool MatchCkey( FdoClassDefinitionP pClass, FdoSmPhCheckConstraintP pCkey );
