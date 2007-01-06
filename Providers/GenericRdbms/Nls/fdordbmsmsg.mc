@@ -1673,12 +1673,12 @@ Incomplete date/time setting.
 MessageId=2705
 SymbolicName=FDORDBMS_481
 Language=English
-The runtime was not found (module %1$ls).
+The runtime was not found (module %1$ls). Please verify your %2$ls client component installation.
 .
 MessageId=2706
 SymbolicName=FDORDBMS_482
 Language=English
-The runtime was not found (procedure %1$ls in module %2$ls).
+The runtime was not found (procedure %1$ls in module %2$ls). Please verify your %3$ls client component installation.
 .
 MessageId=2707
 SymbolicName=FDORDBMS_483

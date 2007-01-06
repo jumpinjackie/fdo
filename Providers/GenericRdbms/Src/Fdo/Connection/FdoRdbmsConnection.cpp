@@ -189,18 +189,20 @@ void FdoRdbmsConnection::Close ()
 
 #ifdef _WIN32
 
-LONG WINAPI DelayLoadDllExceptionFilter(PEXCEPTION_POINTERS pExcPointers, wchar_t* errorMessage)
+LONG WINAPI DelayLoadDllExceptionFilter(PEXCEPTION_POINTERS pExcPointers, wchar_t* errorMessage, rdbi_context_def *context)
 {
     wchar_t *moduleName;
     wchar_t procName[512];
     LONG lDisposition = EXCEPTION_EXECUTE_HANDLER;  
     PDelayLoadInfo pDelayLoadInfo = 
         PDelayLoadInfo(pExcPointers->ExceptionRecord->ExceptionInformation[0]);
+    char *vendorName = rdbi_vndr_name(context);
+
 
     switch (pExcPointers->ExceptionRecord->ExceptionCode) {
     case VcppException(ERROR_SEVERITY_ERROR, ERROR_MOD_NOT_FOUND):
         multibyte_to_wide(moduleName, pDelayLoadInfo->szDll);
-        wcscpy(errorMessage, NlsMsgGet1(FDORDBMS_481, "The runtime was not found (module %1$ls).", moduleName));
+        wcscpy(errorMessage, NlsMsgGet2(FDORDBMS_481, "The runtime was not found (module %1$ls). Please verify your %2$ls client component installation.", moduleName, (FdoString *) FdoStringP(vendorName)));
         break;
 
     case VcppException(ERROR_SEVERITY_ERROR, ERROR_PROC_NOT_FOUND):
@@ -209,7 +211,7 @@ LONG WINAPI DelayLoadDllExceptionFilter(PEXCEPTION_POINTERS pExcPointers, wchar_
             FdoCommonOSUtil::swprintf(procName, ELEMENTS(procName), L"%s", pDelayLoadInfo->dlp.szProcName);
         else
             FdoCommonOSUtil::swprintf(procName, ELEMENTS(procName), L"%d", pDelayLoadInfo->dlp.dwOrdinal);
-        wcscpy(errorMessage, NlsMsgGet2(FDORDBMS_482, "The runtime was not found (procedure %1$ls in module %2$ls).", procName, moduleName));
+        wcscpy(errorMessage, NlsMsgGet3(FDORDBMS_482, "The runtime was not found (procedure %1$ls in module %2$ls). Please verify your %3$ls client component installation.", procName, moduleName, (FdoString *) FdoStringP(vendorName)));
         break;
 
     default:
@@ -240,7 +242,7 @@ void FdoRdbmsConnection::DbiOpen(bool skipPending)
         
 #ifdef _WIN32
     }
-    __except(DelayLoadDllExceptionFilter(GetExceptionInformation(), errorMessage))
+    __except(DelayLoadDllExceptionFilter(GetExceptionInformation(), errorMessage, GetDbiConnection()->GetGdbiConnection()->GetRdbiContext()))
     {
         throw FdoException::Create (errorMessage);
     }
