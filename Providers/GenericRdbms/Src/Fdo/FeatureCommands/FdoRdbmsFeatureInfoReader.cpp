@@ -21,6 +21,7 @@
 #include "FdoRdbmsFeatureInfoReader.h"
 #include <Inc/Nls/fdordbms_msg.h>
 #include "GdbiException.h"
+#include <Sm/Lp/ObjectPropertyClass.h>
 
 static  char  *strNotSupportedExp = "Function not supported by this reader";
 static  char  *strEndOfRecordExp = "End of feature data or NextFeature not called";
@@ -51,10 +52,21 @@ FdoClassDefinition *FdoRdbmsFeatureInfoReader::GetClassDefinition()
 
     FdoPtr<FdoDataPropertyDefinition> property;
     FdoPtr<FdoPropertyDefinitionCollection> properties = FdoPropertyDefinitionCollection::Create(NULL);
-    FdoFeatureClass *featureClass = FdoFeatureClass::Create(mClassDefinition->GetName(), mClassDefinition->GetDescription());
+    FdoClassDefinition *classDefinition = NULL;
+    const FdoSmLpObjectPropertyClass *objectPropertyClass = dynamic_cast<const FdoSmLpObjectPropertyClass *> (mClassDefinition);
+    if (objectPropertyClass != NULL)
+    {
+        const FdoSmLpObjectPropertyDefinition* def = objectPropertyClass->RefObjectProperty();
+        const FdoSmLpClassDefinition *classDef = def->RefClass();
+        classDefinition = FdoClass::Create(classDef->GetName(), classDef->GetDescription());
+    }
+    else
+    {
+        classDefinition = FdoFeatureClass::Create(mClassDefinition->GetName(), mClassDefinition->GetDescription());
+    }
 
-    featureClass->SetIsAbstract(false);
-    properties = featureClass->GetProperties();
+    classDefinition->SetIsAbstract(false);
+    properties = classDefinition->GetProperties();
 
     for (int i=0; i<mFeatInfoCollection->GetCount(); i++)
     {
@@ -69,7 +81,7 @@ FdoClassDefinition *FdoRdbmsFeatureInfoReader::GetClassDefinition()
         properties->Add(property);
     }
 
-    return featureClass;
+    return classDefinition;
 }
 
 int FdoRdbmsFeatureInfoReader::GetDepth()

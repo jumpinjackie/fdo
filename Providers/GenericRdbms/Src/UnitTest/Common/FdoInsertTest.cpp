@@ -283,7 +283,10 @@ void FdoInsertTest::MainInsertTest (FdoIConnection *conn)
                         propertyValue->SetValue(dataValue);
 
                         FdoPtr<FdoIFeatureReader> reader2 = insertCommand2->Execute();
-
+                        if (reader2->ReadNext())
+                        {
+                            FdoPtr<FdoClassDefinition> classDef = reader2->GetClassDefinition();
+                        }
 
                         dataValue = FdoDataValue::Create((FdoInt64) feat);
                         propertyValue = AddNewProperty( propertyValues2, L"AcDbEntity_FeatId");
