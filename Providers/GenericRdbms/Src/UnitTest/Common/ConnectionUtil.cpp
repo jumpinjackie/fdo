@@ -102,7 +102,10 @@ void StaticConnection::connect ()
         CPPUNIT_ASSERT_MESSAGE ("rdbi_initialize failed", RDBI_SUCCESS == do_rdbi_init (&m_rdbi_context));
         try
         {
-            CPPUNIT_ASSERT_MESSAGE ("rdbi_connect failed", RDBI_SUCCESS == do_rdbi_connect (m_rdbi_context, id));
+            if (! (RDBI_SUCCESS == do_rdbi_connect (m_rdbi_context, id)) ) {
+                rdbi_get_msg( m_rdbi_context );
+                throw FdoException::Create( m_rdbi_context->last_error_msg );
+            }
     
             m_gdbi_conn = new GdbiConnection(m_rdbi_context);
 
@@ -263,9 +266,9 @@ wchar_t *ConnectionUtil::GetConnectionString(StringConnTypeRequest pTypeReq, con
 	connectString[0] = L'\0';
 
     if (Connection_WithDatastore == pTypeReq)
-		swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"service=%hs;username=%hs;password=%hs;datastore=%hs", service, username, password, datastore);
+        swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"service=%hs;username=%hs;password=%hs;datastore=%hs", service, username ? username : "", password ? password : "", datastore);
 	else
-		swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"service=%hs;username=%hs;password=%hs;", service, username, password);
+        swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"service=%hs;username=%hs;password=%hs;", service, username ? username : "", password ? password : "");
 	return connectString;
 }
 

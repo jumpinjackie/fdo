@@ -79,6 +79,9 @@ void FdoCapabilityTest::Connection ()
       for (i = 0; i < 20; i++)
         lockArray[i] = false;
 
+      for (i = 0; i < 20; i++)
+        m_supportedFunctions[i] = NULL;
+
 	  FdoPtr<FdoIConnectionCapabilities> connectionCapabilities = connection->GetConnectionCapabilities();
       FdoSpatialContextExtentType *contextExtentType = connectionCapabilities->GetSpatialContextTypes(size);
       FdoThreadCapability threadCapability = connectionCapabilities->GetThreadCapability();
@@ -266,8 +269,10 @@ void FdoCapabilityTest::Connection ()
 //
         for (int i = 0; i < 20; i++)
         {
-            delete m_supportedFunctions[i];
-            m_supportedFunctions[i] = NULL;
+            if ( m_supportedFunctions[i] ) {
+                delete m_supportedFunctions[i];
+                m_supportedFunctions[i] = NULL;
+            }
         }
     }  //  try ...
 
@@ -278,8 +283,10 @@ void FdoCapabilityTest::Connection ()
 
         for (int i = 0; i < 20; i++)
         {
-            delete m_supportedFunctions[i];
-            m_supportedFunctions[i] = NULL;
+            if ( m_supportedFunctions[i] ) {
+                delete m_supportedFunctions[i];
+                m_supportedFunctions[i] = NULL;
+            }
         }
        TestCommonFail(ex);
     }  //  catch ...
