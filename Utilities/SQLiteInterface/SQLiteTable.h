@@ -46,7 +46,8 @@ private:
     unsigned int           mCacheSize;
     unsigned int           mMaxCacheSize;
     bool                mIsReadOnly;
-	bool                mUseIntKey;
+	bool                mUseIntKey;         // true if the table is supposed to have an integer key
+    bool                mActualUseIntKey;   // true if the table actual has an integer key
     SQLiteData          mDd;
     SQLiteRecNumbDef          mMykey;
 	SQLiteBTreeCompareHandler *mCmpHandler;
@@ -90,6 +91,10 @@ public:
     int Drop();
 
     const char* GetName();
+
+    bool GetUseIntKey();
+
+    bool GetActualUseIntKey();
 
 private:
 

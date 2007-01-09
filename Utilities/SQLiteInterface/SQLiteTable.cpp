@@ -36,6 +36,7 @@ SQLiteTable::SQLiteTable(SQLiteDataBase*  db)
     mTabCache = NULL;
     pmCur = NULL;
 	mUseIntKey = false;
+    mActualUseIntKey = false;
 	mCmpHandler = NULL;
 }
 
@@ -179,6 +180,8 @@ void SQLiteTable::find_root_page( const char   *tabName )
             mRootDataPage = queryRes->IntValue( "rootpage", isNull, bfound );
             if( isNull || ! bfound )
                 mRootDataPage = -1;
+            else
+                mActualUseIntKey = true;
         }
         queryRes->Close();
         delete queryRes;
@@ -194,6 +197,8 @@ void SQLiteTable::find_root_page( const char   *tabName )
                 mRootDataPage = queryRes->IntValue( "rootpage", isNull, bfound );
                 if( isNull || ! bfound )
                     mRootDataPage = -1;
+                else
+                    mActualUseIntKey = false;
             }
             queryRes->Close();
             delete queryRes;
@@ -306,6 +311,9 @@ int SQLiteTable::open( SQLiteTransaction *txnid,
                 (void)m_pDb->ExecuteNonQuery( szSQL ); // Do not fail as this is not required by new providers.
 			}
         }
+
+        // Actual integer key status always matches intended status right after table is created.
+        mActualUseIntKey = ! useNoIntKey;
     }
     if( mRootDataPage == -1 )
         goto the_exit;
@@ -330,7 +338,7 @@ int SQLiteTable::open( SQLiteTransaction *txnid,
     }
     if( strncmp(utf8NewTabName,"RTREE", 5 ) == 0 )
         mMaxCacheSize = SQLiteDB_MAXCACHESIZE*5;
- 
+ 	
 	mUseIntKey = ! useNoIntKey;
 	
     mIsOpen = true;
@@ -395,8 +403,8 @@ int SQLiteTable::Drop()
 	if( m_pDb->begin_transaction( ) != SQLITE_OK )
         return SQLITE_ERROR;  
     
-    if ( mUseIntKey ) {
-        sprintf(szSQL,"drop table %s", mTableName );
+    if ( mActualUseIntKey ) {
+        sprintf(szSQL,"drop table '%s'", mTableName );
 	    if( m_pDb->ExecuteNonQuery( szSQL ) != SQLITE_OK ) 
 	    {
 		    m_pDb->commit();
@@ -428,6 +436,16 @@ int SQLiteTable::Drop()
 const char* SQLiteTable::GetName()
 {
     return mTableName;
+}
+
+bool SQLiteTable::GetUseIntKey()
+{
+    return mUseIntKey;
+}
+
+bool SQLiteTable::GetActualUseIntKey()
+{
+    return mActualUseIntKey;
 }
 
 int SQLiteTable::close(unsigned int flags) 
