@@ -188,9 +188,9 @@ void FdoWmsCapabilities::_processLayerSRSExtent (FdoWmsLayer* layer, FdoString* 
 			{
 				// get the total extents of all the BoundingBoxes referenced to the CRS
 	            if (extent->GetMinX () > bbox->GetMinX ())
-		            extent->SetMaxX (bbox->GetMinX ());
+		            extent->SetMinX (bbox->GetMinX ());
 	            if (extent->GetMinY () > bbox->GetMinY ())
-		            extent->SetMaxY (bbox->GetMinY ());
+		            extent->SetMinY (bbox->GetMinY ());
 	            if (extent->GetMaxX () < bbox->GetMaxX ())
 		            extent->SetMaxX (bbox->GetMaxX ());
 	            if (extent->GetMaxY () < bbox->GetMaxY ())
@@ -471,8 +471,8 @@ void FdoWmsCapabilities::_processGeographicDataLayer(FdoWmsLayer* layer, FdoBool
                     FdoPtr<FdoWmsBoundingBox> pItem = parentBoxes->GetItem(i);
                     FdoPtr<FdoWmsBoundingBox> pBox = FdoWmsBoundingBox::Create();
                     pBox->SetCRS(pItem->GetCRS());
-                    pBox->SetMinY(pItem->GetMinX());
-                    pBox->SetMinX(pItem->GetMinY());
+                    pBox->SetMinX(pItem->GetMinX());
+                    pBox->SetMinY(pItem->GetMinY());
                     pBox->SetMaxX(pItem->GetMaxX());
                     pBox->SetMaxY(pItem->GetMaxY());
                     boundingBoxes->Add(pBox);
