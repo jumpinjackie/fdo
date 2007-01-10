@@ -874,7 +874,7 @@
 	        </xsl:variable>
 
 			<xsl:choose>
-				<xsl:when test="$nextMaxOccurs = '1' and ($fdoType = 'geometricProperty' or $fdoType = 'geometricAssociation')">
+				<xsl:when test="$fdoType = 'geometricProperty' or ($nextMaxOccurs = '1' and $fdoType = 'geometricAssociation')">
    					<!-- URI and local name indicate that this is a Geometric property -->
 	                <xsl:call-template name="ElementMapping">
 	                    <xsl:with-param name="elementElem" select="$elementElem"/>
@@ -1056,7 +1056,7 @@
 				<xsl:with-param name="elementElem" select="$elementElem" />
 			</xsl:call-template>
 		</xsl:when>
-		<xsl:when test="$maxOccurs = '1' and $fdoType = 'geometricProperty'">
+		<xsl:when test="$fdoType = 'geometricProperty'">
 			<!-- Type is a GML geometry. -->
 			<!-- Generate the geometric property -->
             <xsl:call-template name="ElementMapping">
@@ -1379,7 +1379,7 @@
           </xsl:call-template>
         </xsl:variable>
 
-        <xsl:if test="$maxOccurs = '1' and ($fdoType = 'geometricProperty' or $fdoType = 'geometricAssociation')">
+        <xsl:if test="$fdoType = 'geometricProperty' or ($maxOccurs = '1' and $fdoType = 'geometricAssociation')">
           <!-- URI and local name indicate that this is a Geometric property -->
           <xsl:call-template name="ElementMapping">
             <xsl:with-param name="elementElem" select="$elementElem"/>

@@ -39,6 +39,7 @@
 using namespace std;
 FdoXmlFeaturePropertyReaderImpl::FdoXmlFeaturePropertyReaderImpl()
 {
+    m_activeGmlGeometryType = FdoXmlGeometryHandler::GmlGeometryType_Unknown;
 }
 
 FdoXmlFeaturePropertyReaderImpl::~FdoXmlFeaturePropertyReaderImpl()
@@ -49,6 +50,7 @@ FdoXmlFeaturePropertyReaderImpl::FdoXmlFeaturePropertyReaderImpl(FdoXmlReader* r
 {
 	m_xmlReader = FDO_SAFE_ADDREF(reader);
 	m_flags = FDO_SAFE_ADDREF(flags);
+    m_activeGmlGeometryType = FdoXmlGeometryHandler::GmlGeometryType_Unknown;
 }
 
 FdoXmlFeaturePropertyReaderImpl * FdoXmlFeaturePropertyReaderImpl::Create(FdoXmlReader* reader, FdoXmlFeatureFlags* flags)
@@ -237,6 +239,7 @@ FdoXmlSaxHandler* FdoXmlFeaturePropertyReaderImpl::XmlStartElement(
 			m_parsingStateStack.push_back(ParsingState_GmlGeometryAssociation);
 			
 			m_geometryHandler = FdoXmlGeometryHandler::Create();
+            m_geometryHandler->SetExpectedGmlGeometry((FdoXmlGeometryHandler::GmlGeometryType)m_activeGmlGeometryType);
 			nextSaxHandler = m_geometryHandler;
 			break;
 		//geometry association
@@ -245,6 +248,7 @@ FdoXmlSaxHandler* FdoXmlFeaturePropertyReaderImpl::XmlStartElement(
 			m_parsingStateStack.push_back(ParsingState_GeometryAssociation);
 			
 			m_geometryHandler = FdoXmlGeometryHandler::Create();
+            m_geometryHandler->SetExpectedGmlGeometry((FdoXmlGeometryHandler::GmlGeometryType)m_activeGmlGeometryType);
 			nextSaxHandler = m_geometryHandler;
 			break;
 
@@ -609,16 +613,47 @@ FdoXmlFeaturePropertyReaderImpl::GmlBaseType FdoXmlFeaturePropertyReaderImpl::ge
             {
                 // first try gml well known properties
                 if (wcscmp(elementUri, FdoXml::mGmlUri) == 0) {
+                    m_activeGmlGeometryType = FdoXmlGeometryHandler::GmlGeometryType_Unknown;
                     if (wcscmp(elementName, L"boundedBy") == 0)
+                    {
                         rv = GmlBaseType_BoundingShape;
-                    else if (wcscmp(elementName, L"pointProperty") == 0 ||
-                                wcscmp(elementName, L"polygonProperty") == 0 ||
-                                wcscmp(elementName, L"lineStringProperty") == 0 ||
-                                wcscmp(elementName, L"multiPointProperty") == 0 ||
-                                wcscmp(elementName, L"multiLineStringProperty") == 0 ||
-                                wcscmp(elementName, L"multiPolygonProperty") == 0 ||
-                                wcscmp(elementName, L"multiGeometryProperty") == 0 ||
-                                wcscmp(elementName, L"geometryProperty") == 0 ||
+                    }
+                    else if (wcscmp(elementName, L"pointProperty") == 0)
+                    {
+                        m_activeGmlGeometryType = FdoXmlGeometryHandler::GmlGeometryType_Point;
+                        rv = GmlBaseType_GmlGeometryAssociation;
+                    }
+                    else if (wcscmp(elementName, L"polygonProperty") == 0)
+                    {
+                        m_activeGmlGeometryType = FdoXmlGeometryHandler::GmlGeometryType_Polygon;
+                        rv = GmlBaseType_GmlGeometryAssociation;
+                    }
+                    else if (wcscmp(elementName, L"lineStringProperty") == 0)
+                    {
+                        m_activeGmlGeometryType = FdoXmlGeometryHandler::GmlGeometryType_LineString;
+                        rv = GmlBaseType_GmlGeometryAssociation;
+                    }
+                    else if (wcscmp(elementName, L"multiPointProperty") == 0)
+                    {
+                        m_activeGmlGeometryType = FdoXmlGeometryHandler::GmlGeometryType_MultiPoint;
+                        rv = GmlBaseType_GmlGeometryAssociation;
+                    }
+                    else if (wcscmp(elementName, L"multiLineStringProperty") == 0)
+                    {
+                        m_activeGmlGeometryType = FdoXmlGeometryHandler::GmlGeometryType_MultiLineString;
+                        rv = GmlBaseType_GmlGeometryAssociation;
+                    }
+                    else if (wcscmp(elementName, L"multiPolygonProperty") == 0)
+                    {
+                        m_activeGmlGeometryType = FdoXmlGeometryHandler::GmlGeometryType_MultiPolygon;
+                        rv = GmlBaseType_GmlGeometryAssociation;
+                    }
+                    else if (wcscmp(elementName, L"multiGeometryProperty") == 0)
+                    {
+                        m_activeGmlGeometryType = FdoXmlGeometryHandler::GmlGeometryType_MultiGeometry;
+                        rv = GmlBaseType_GmlGeometryAssociation;
+                    }
+                    else if (wcscmp(elementName, L"geometryProperty") == 0 ||
                                 wcscmp(elementName, L"location") == 0 ||
                                 wcscmp(elementName, L"centerOf") == 0 ||
                                 wcscmp(elementName, L"position") == 0 ||
@@ -633,13 +668,15 @@ FdoXmlFeaturePropertyReaderImpl::GmlBaseType FdoXmlFeaturePropertyReaderImpl::ge
                                 wcscmp(elementName, L"multiEdgeOf") == 0 ||
                                 wcscmp(elementName, L"multiCoverage") == 0 ||
                                 wcscmp(elementName, L"multiExtentOf") == 0)
+                    {
                         rv = GmlBaseType_GmlGeometryAssociation;
-
+                    }
                 }
                 if (rv != GmlBaseType_Unknown)
                     break;
                 if (m_lpClassStack.back() != NULL) { // it is a property
 
+                    m_activeGmlGeometryType = FdoXmlGeometryHandler::GmlGeometryType_Unknown;
                     FdoXmlLpClassDefinition* classDef = m_lpClassStack.back();
                     FdoPtr<FdoXmlLpPropertyDefinition> prop = classDef->PropertyFromGml(elementUri, elementName);
                     if (prop != NULL) {
@@ -648,17 +685,51 @@ FdoXmlFeaturePropertyReaderImpl::GmlBaseType FdoXmlFeaturePropertyReaderImpl::ge
                             FdoPtr<FdoXmlClassMapping> elementClass = element->GetClassMapping();
                             if (elementClass != NULL) { // it is an object or feature association or geometry association
                                 FdoString* wkBaseName = elementClass->GetWkBaseName();
-                                if (wcscmp(wkBaseName, FdoGml212::mPointProperty) == 0 ||
-                                    wcscmp(wkBaseName, FdoGml212::mPolygonProperty) == 0 ||
-                                    wcscmp(wkBaseName, FdoGml212::mLineStringProperty) == 0 ||
-                                    wcscmp(wkBaseName, FdoGml212::mMultiPointProperty) == 0 ||
-                                    wcscmp(wkBaseName, FdoGml212::mMultiPolygonProperty) == 0 ||
-                                    wcscmp(wkBaseName, FdoGml212::mMultiLineStringProperty) == 0 ||
-                                    wcscmp(wkBaseName, FdoGml212::mMultiGeometryProperty) == 0 ||
-                                    wcscmp(wkBaseName, FdoGml212::mGeometryAssociation) == 0 ||
-                                    wcscmp(wkBaseName, FdoGml212::mGeometryProperty) == 0 ||
-                                    wcscmp(wkBaseName, FdoGml212::mAbstractGeometry) == 0) // geometry association
+                                if (wcscmp(wkBaseName, FdoGml212::mPointProperty) == 0)
+                                {
+                                    m_activeGmlGeometryType = FdoXmlGeometryHandler::GmlGeometryType_Point;
                                     rv = GmlBaseType_GeometryAssociation;
+                                }
+                                else if (wcscmp(wkBaseName, FdoGml212::mPolygonProperty) == 0)
+                                {
+                                    m_activeGmlGeometryType = FdoXmlGeometryHandler::GmlGeometryType_Polygon;
+                                    rv = GmlBaseType_GeometryAssociation;
+                                }
+                                else if (wcscmp(wkBaseName, FdoGml212::mLineStringProperty) == 0)
+                                {
+                                    m_activeGmlGeometryType = FdoXmlGeometryHandler::GmlGeometryType_LineString;
+                                    rv = GmlBaseType_GeometryAssociation;
+                                }
+                                else if (wcscmp(wkBaseName, FdoGml212::mMultiPointProperty) == 0)
+                                {
+                                    m_activeGmlGeometryType = FdoXmlGeometryHandler::GmlGeometryType_MultiPoint;
+                                    rv = GmlBaseType_GeometryAssociation;
+                                }
+                                else if (wcscmp(wkBaseName, FdoGml212::mMultiPolygonProperty) == 0)
+                                {
+                                    m_activeGmlGeometryType = FdoXmlGeometryHandler::GmlGeometryType_MultiPolygon;
+                                    rv = GmlBaseType_GeometryAssociation;
+                                }
+                                else if (wcscmp(wkBaseName, FdoGml212::mMultiLineStringProperty) == 0)
+                                {
+                                    m_activeGmlGeometryType = FdoXmlGeometryHandler::GmlGeometryType_MultiLineString;
+                                    rv = GmlBaseType_GeometryAssociation;
+                                }
+                                else if (wcscmp(wkBaseName, FdoGml212::mMultiGeometryProperty) == 0)
+                                {
+                                    m_activeGmlGeometryType = FdoXmlGeometryHandler::GmlGeometryType_MultiGeometry;
+                                    rv = GmlBaseType_GeometryAssociation;
+                                }
+                                else if (wcscmp(wkBaseName, FdoGml212::mGeometryAssociation) == 0)
+                                {
+                                    m_activeGmlGeometryType = FdoXmlGeometryHandler::GmlGeometryType_GeometryAssociation;
+                                    rv = GmlBaseType_GeometryAssociation;
+                                }
+                                else if (wcscmp(wkBaseName, FdoGml212::mGeometryProperty) == 0 ||
+                                    wcscmp(wkBaseName, FdoGml212::mAbstractGeometry) == 0) // geometry association
+                                {
+                                    rv = GmlBaseType_GeometryAssociation;
+                                }
                                 else if (wcscmp(wkBaseName, FdoGml212::mFeatureAssociation) == 0) // feature association
                                     rv = GmlBaseType_FeatureAssociation;
                                 else // object property

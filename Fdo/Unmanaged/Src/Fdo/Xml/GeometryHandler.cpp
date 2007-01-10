@@ -44,6 +44,7 @@ FdoXmlGeometryHandler::FdoXmlGeometryHandler()
 	m_parsingStateStack.push_back(ParsingState_Start);
 
 	m_isMultiGeometry = false;
+    m_typeGeomExpected = GmlGeometryType_Unknown;
 }
 
 FdoXmlGeometryHandler::~FdoXmlGeometryHandler()
@@ -70,7 +71,13 @@ FdoXmlSaxHandler* FdoXmlGeometryHandler::XmlStartElement(
 	FdoXmlSaxHandler* nextHandler = NULL;
 	FdoXmlGeometry* newGeometry = NULL;
 
-	GmlGeometryType curType = getGmlGeometryType(name);
+    // in case we know the geometry type, use it
+	GmlGeometryType curType = m_typeGeomExpected;
+    //try to detect geometry type in case we don't know the geometry type
+    if (curType == GmlGeometryType_Unknown)
+        curType = getGmlGeometryType(name);
+    m_typeGeomExpected = GmlGeometryType_Unknown;
+    
 	switch(curType)
 	{
 	//Point
@@ -414,8 +421,9 @@ FdoXmlGeometryHandler::GmlGeometryType FdoXmlGeometryHandler::getGmlGeometryType
 	else if (wcscmp( name, L"Z" ) == 0){
 		geoType = GmlGeometryType_Z;
 	}
-	else{
-		geoType  = GmlGeometryType_Unknown;
+	else
+    {
+	    geoType  = GmlGeometryType_Unknown;
 	}
 
 	return geoType;
