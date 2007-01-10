@@ -325,19 +325,27 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
         FdoInt32 count = mSchemas->GetCount();
         for (int i = count - 1; i >= 0; i--) {
             FdoPtr<FdoFeatureSchema> schema = mSchemas->GetItem(i);
+            FdoPtr<FdoXmlSchemaMapping> mapping = static_cast<FdoXmlSchemaMapping*>(mappings->GetItem(FdoXml::mGmlProviderName, schema->GetName()));
             
             // Doing #1
             if (wcscmp(schema->GetName(), FdoWfsGlobals::GMLSchemaName) == 0 ||
-                wcscmp(schema->GetName(), FdoWfsGlobals::XLinkSchemaName) == 0) {
-                    mSchemas->RemoveAt(i);
-                    continue;
-                }
+                wcscmp(schema->GetName(), FdoWfsGlobals::XLinkSchemaName) == 0)
+            {
+                // remove schema from schema collection and from schema mapping
+                mappings->Remove(mapping.p);
+                mSchemas->RemoveAt(i);
+                continue;
+            }
 
-            FdoPtr<FdoXmlSchemaMapping> mapping = static_cast<FdoXmlSchemaMapping*>(mappings->GetItem(FdoXml::mGmlProviderName, schema->GetName()));
             FdoPtr<FdoClassCollection> classes = schema->GetClasses();
             FdoPtr<FdoXmlClassMappingCollection> classMappings = mapping->GetClassMappings();
-            if (classes == NULL)
+            if (classes == NULL || classes->GetCount() == 0)
+            {
+                // remove schema from schema collection and from schema mapping
+                mappings->Remove(mapping.p);
+                mSchemas->RemoveAt(i);
                 continue;
+                }
             
             bool bNameModified = false;
             for (int j  = classes->GetCount() - 1; j >= 0; j--) {
@@ -353,13 +361,17 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
                 bool bNoIdentity = false;
                 int cntGeometricProperties = 0;
                 FdoPtr<FdoDataPropertyDefinitionCollection> ids;
-                if (base != NULL && (wcscmp(base->GetName(), FdoWfsGlobals::AbstractFeature) == 0 || 
-                    wcscmp(base->GetName(), L"AbstractFeatureCollection") == 0 ||
-                    wcscmp(base->GetName(), L"AbstractFeatureCollectionBase") == 0)) {
-                    classDef->SetBaseClass(NULL);
-                    ids = classDef->GetIdentityProperties();
-                    if (ids->GetCount() == 0)
-                        bNoIdentity = true;
+                if (base != NULL)
+                {
+                    FdoPtr<FdoSchemaElement> parentElem = base->GetParent();
+                    // in case base parent is from gml set base class to NULL
+                    if(parentElem != NULL && (wcscmp(parentElem->GetName(), FdoWfsGlobals::GMLSchemaName) == 0))
+                    {
+                        classDef->SetBaseClass(NULL);
+                        ids = classDef->GetIdentityProperties();
+                        if (ids->GetCount() == 0)
+                            bNoIdentity = true;
+                    }
                 }
 
                 // Prepare for implementation of #5
@@ -392,6 +404,7 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
                     // Doing #2 
                     FdoStringP name = prop->GetName();
                     if (name.Contains(L"/xlink") ||
+                        name.Contains(L"xlink/") ||
                         name.Contains(L"/type") ||
                         name.Contains(L"/gml"))
                     {
@@ -436,12 +449,61 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
                         }
                         if (element == NULL)
                             continue;
+                        if (prop->GetPropertyType() == FdoPropertyType_AssociationProperty)
+                        {
+                            FdoAssociationPropertyDefinition* ascProp = static_cast<FdoAssociationPropertyDefinition*>(prop.p);
+                            FdoPtr<FdoClassDefinition> ascClassDef = ascProp->GetAssociatedClass();
+                            // remove associations properties associated with a class from gml schema
+                            if (ascClassDef->GetIsAbstract() && wcscmp(ascClassDef->GetName(), FdoWfsGlobals::AbstractFeature) == 0)
+                            {
+                                for (int m = elements->GetCount() - 1; m >= 0; m--)
+                                {
+                                    element = elements->GetItem(m);
+                                    if (wcscmp(name, element->GetName()) == 0) 
+                                    {
+                                        elements->RemoveAt(m);
+                                        break;
+                                    }
+                                }
+                                props->RemoveAt(k);
+                                continue;
+                            }
+                        }
                         if (prop->GetPropertyType() == FdoPropertyType_ObjectProperty)
                         {
                             FdoObjectPropertyDefinition* objProp = static_cast<FdoObjectPropertyDefinition*>(prop.p);
                             FdoPtr<FdoClassDefinition> objClassDef = objProp->GetClass();
+                            FdoPtr<FdoClassDefinition> objBaseClassDef = objClassDef->GetBaseClass();
+                            FdoPtr<FdoSchemaElement> pObjParent = objClassDef->GetParent();
                             FdoPtr<FdoPropertyDefinitionCollection> objClassProps = objClassDef->GetProperties();
-                            bool allGeoProp = true;
+                            // study the class if has no properties (including base classes)
+                            int objPropsCount = objClassProps->GetCount();
+                            while(objPropsCount == 0 && objBaseClassDef != NULL)
+                            {
+                                objBaseClassDef = objBaseClassDef->GetBaseClass();
+                                if(objBaseClassDef != NULL)
+                                {
+                                    FdoPtr<FdoPropertyDefinitionCollection> objBaseClassProps = objBaseClassDef->GetProperties();
+                                    objPropsCount = objBaseClassProps->GetCount();
+                                }
+                            }
+                            // in case no property found or the parent is from gml schema remove the property (gml schema was removed)
+                            if (objPropsCount == 0 || (pObjParent != NULL && wcscmp(pObjParent->GetName(), FdoWfsGlobals::GMLSchemaName) == 0))
+                            {
+                                for (int m = elements->GetCount() - 1; m >= 0; m--)
+                                {
+                                    element = elements->GetItem(m);
+                                    if (wcscmp(name, element->GetName()) == 0) 
+                                    {
+                                        elements->RemoveAt(m);
+                                        break;
+                                    }
+                                }
+                                props->RemoveAt(k);
+                                continue;
+                            }
+                            // we can replace the property only class if has properies and all are geometric property
+                            bool allGeoProp = (objClassProps->GetCount() != 0);
                             for (int m = objClassProps->GetCount() - 1; m >= 0; m--)
                             {
                                 FdoPtr<FdoPropertyDefinition> objClassProp = objClassProps->GetItem(m);
@@ -475,6 +537,7 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
                         }
                     }
                 } // end of for each property
+                // in case we have a choice for geometry property replace them with only one geometry propertyy
                 if (cntGeometricProperties)
                 {
                     FdoPtr<FdoXmlClassMapping> elementClass = FdoXmlClassMapping::Create(L"GEOMETRY",
