@@ -43,7 +43,7 @@ public:
     virtual FdoPropertyType GetItemType(FdoInt32 i);
     virtual FdoDataType     GetItemDataType(FdoInt32 i);
     virtual void GetGeometryForCache(FdoIdentifier *itemName, FdoByteArray **byteArray, bool *bIsNull);
-	void ShpOptimizedAggregateReader::GetInt64ForCache( FdoIdentifier *itemName, FdoInt64 *int32Value, bool *bIsNull );
+	void GetInt64ForCache( FdoIdentifier *itemName, FdoInt64 *int32Value, bool *bIsNull );
 	virtual bool ReaderHasData(void);
 
     // Overriden FdoIReader methods:
