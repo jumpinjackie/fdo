@@ -113,6 +113,9 @@ private:
 	FdoStringP m_dataProperty;
 	//std::vector<double> m_coordinates;
 	FdoPtr<FdoXmlCoordinateGroup> m_coordinates;
+
+    void SetExpectedGmlGeometry(GmlGeometryType typeGeomExpected){m_typeGeomExpected = typeGeomExpected;};
+    GmlGeometryType m_typeGeomExpected;
 };
 
 typedef FdoPtr<FdoXmlGeometryHandler> FdoXmlGeometryHandlerP;
