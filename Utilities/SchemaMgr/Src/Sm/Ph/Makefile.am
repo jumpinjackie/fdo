@@ -24,6 +24,7 @@ noinst_LTLIBRARIES = libSmPhysical.la
 libSmPhysical_la_SOURCES = \
   AssociationReader.cpp \
   AssociationWriter.cpp \
+  CharacterSet.cpp \
   ClassPropertyReader.cpp \
   ClassPropertySADReader.cpp \
   ClassReader.cpp \
@@ -31,6 +32,7 @@ libSmPhysical_la_SOURCES = \
   ClassSOReader.cpp \
   ClassSOWriter.cpp \
   ClassWriter.cpp \
+  Collation.cpp \
   Column.cpp \
   ColumnChar.cpp \
   ColumnDate.cpp \

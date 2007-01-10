@@ -35,8 +35,8 @@ FdoSmPhReaderP FdoSmPhMtSchemaReader::MakeReader( FdoSmPhRowsP froms, FdoSmPhOwn
     if ( dsInfo ) {
         // Generate the where clause for retrieving datastore information
         whereClause = FdoStringP::Format( 
-            L"where upper(schemaname) = upper('%ls')", 
-	        owner->GetName()
+            L"where upper(schemaname) = '%ls'", 
+	        (FdoString*) FdoStringP(owner->GetName()).Upper()
         );
     }
     else {
