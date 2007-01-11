@@ -44,10 +44,13 @@ ShpOptimizedAggregateReader::ShpOptimizedAggregateReader(ShpConnection* conn, Fd
 			m_Extents = NULL;
 		else
 		{
+			// Use a tolerance to compensate the bounding box storage as floats while the ordinates are doubles. 
+			FdoPtr<FdoGeometricPropertyDefinition> geomProp = originalClass->GetGeometryProperty();
+			double	xyRes = conn->GetToleranceXY( geomProp )/2.0;
+
 			// Build an extents geometry out of the spatial extents;
 			// We ignore M dimensionality since FdoIEnvelope only exposes XYZ envelopes
 			FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-			FdoPtr<FdoGeometricPropertyDefinition> geomProp = originalClass->GetGeometryProperty();
 			FdoBoolean hasElevation = geomProp->GetHasElevation();
 			FdoDimensionality geomDim = (FdoDimensionality)
 				(hasElevation ? FdoDimensionality_XY | FdoDimensionality_Z : FdoDimensionality_XY);
@@ -55,28 +58,28 @@ ShpOptimizedAggregateReader::ShpOptimizedAggregateReader(ShpConnection* conn, Fd
 			// Copy the extent values to an array of doubles
 			FdoInt32 i=0;
 			FdoDouble ordinates[15];
-			ordinates[i++] = shpFile->GetBoundingBoxMinX(); 
-			ordinates[i++] = shpFile->GetBoundingBoxMinY(); 
+			ordinates[i++] = shpFile->GetBoundingBoxMinX() - xyRes; 
+			ordinates[i++] = shpFile->GetBoundingBoxMinY() - xyRes; 
 			if (hasElevation)
 				ordinates[i++] = shpFile->GetBoundingBoxMinZ(); 
 
-			ordinates[i++] = shpFile->GetBoundingBoxMaxX(); 
-			ordinates[i++] = shpFile->GetBoundingBoxMinY(); 
+			ordinates[i++] = shpFile->GetBoundingBoxMaxX() + xyRes; 
+			ordinates[i++] = shpFile->GetBoundingBoxMinY() - xyRes; 
 			if (hasElevation)
 				ordinates[i++] = shpFile->GetBoundingBoxMaxZ(); 
 
-			ordinates[i++] = shpFile->GetBoundingBoxMaxX(); 
-			ordinates[i++] = shpFile->GetBoundingBoxMaxY(); 
+			ordinates[i++] = shpFile->GetBoundingBoxMaxX() + xyRes; 
+			ordinates[i++] = shpFile->GetBoundingBoxMaxY() + xyRes; 
 			if (hasElevation)
 				ordinates[i++] = shpFile->GetBoundingBoxMaxZ(); 
 
-			ordinates[i++] = shpFile->GetBoundingBoxMinX(); 
-			ordinates[i++] = shpFile->GetBoundingBoxMaxY(); 
+			ordinates[i++] = shpFile->GetBoundingBoxMinX() - xyRes; 
+			ordinates[i++] = shpFile->GetBoundingBoxMaxY() + xyRes; 
 			if (hasElevation)
 				ordinates[i++] = shpFile->GetBoundingBoxMinZ(); 
 
-			ordinates[i++] = shpFile->GetBoundingBoxMinX(); 
-			ordinates[i++] = shpFile->GetBoundingBoxMinY(); 
+			ordinates[i++] = shpFile->GetBoundingBoxMinX() - xyRes; 
+			ordinates[i++] = shpFile->GetBoundingBoxMinY() - xyRes; 
 			if (hasElevation)
 				ordinates[i++] = shpFile->GetBoundingBoxMinZ(); 
 

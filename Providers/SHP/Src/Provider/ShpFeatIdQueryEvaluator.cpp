@@ -264,7 +264,7 @@ void ShpFeatIdQueryEvaluator::ProcessSpatialCondition(FdoSpatialCondition& filte
 
     if (0 != wcscmp (gpd->GetName (), idname->GetName ()))
         throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_104_READER_PROPERTY_NOT_SELECTED), idname->GetName ()));
-
+	
     if (m_RTree)
     {
         // For each bounding box build a sorted list of candidates (primary filter) and save it.
@@ -290,10 +290,13 @@ void ShpFeatIdQueryEvaluator::ProcessSpatialCondition(FdoSpatialCondition& filte
 
         recno_list*  retFeatNum = &results->queryResults;
 
-        results->searchArea.xMin = searchArea.xMin;
-        results->searchArea.yMin = searchArea.yMin;
-        results->searchArea.xMax = searchArea.xMax;
-        results->searchArea.yMax = searchArea.yMax;
+		// Use a tolerance to compensate the bounding box storage as floats while the ordinates are doubles. 
+		double	xyRes = m_Connection->GetToleranceXY( gpd )/2.0;
+
+        results->searchArea.xMin = searchArea.xMin - xyRes;
+        results->searchArea.yMin = searchArea.yMin - xyRes;
+        results->searchArea.xMax = searchArea.xMax + xyRes;
+        results->searchArea.yMax = searchArea.yMax + xyRes;
 
         bool            done = false;
         do

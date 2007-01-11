@@ -266,6 +266,7 @@ public:
 								bool   update
 							);
 
+	double GetToleranceXY( FdoGeometricPropertyDefinition* geomProp );
     FdoString* GetDirectory ();
     FdoString* GetFile ();
     FdoString* GetTemporary (); // this will return NULL if no temporary directory was specified

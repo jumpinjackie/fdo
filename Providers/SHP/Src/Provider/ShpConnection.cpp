@@ -1255,3 +1255,19 @@ void ShpConnection::CompressFileSet (const wchar_t*    baseName)
         EXECUTE_NO_EX( FdoCommonFile::Delete((FdoString *)ssiC_name, true));
     }
 }
+
+double ShpConnection::GetToleranceXY( FdoGeometricPropertyDefinition* geomProp )
+{
+	double		xyTol = SPATIALCONTEXT_DEFAULT_XY_TOLERANCE;
+	FdoStringP	scName = geomProp->GetSpatialContextAssociation();
+
+	if ( scName != L"" )
+	{
+		ShpSpatialContextCollectionP	scs = GetSpatialContexts();
+		ShpSpatialContextP				sc = scs->FindItem(scName);
+		FdoStringP						wkt = sc->GetCoordinateSystemWkt();
+		if ( wkt.Contains( L"GEOGCS" ) )
+			xyTol = SPATIALCONTEXT_DEFAULT_XY_TOLERANCE_LL;
+	}
+	return xyTol;
+}

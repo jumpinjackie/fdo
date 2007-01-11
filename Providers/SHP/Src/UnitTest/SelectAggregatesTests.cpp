@@ -1029,11 +1029,11 @@ void SelectAggregatesTests::selectAggregatesSpatialExtentsTest()
 		rdr->Close();
 
 		// Compare the two "all" results to make sure they are equivalent:
-		CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinX)", envelopeAllWithoutFilter->GetMinX() == envelopeAllWithFilter->GetMinX());
-		CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinY)", envelopeAllWithoutFilter->GetMinY() == envelopeAllWithFilter->GetMinY());
+		CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinX)", fabs(envelopeAllWithoutFilter->GetMinX() - envelopeAllWithFilter->GetMinX()) < 0.001);
+		CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinY)", fabs(envelopeAllWithoutFilter->GetMinY() - envelopeAllWithFilter->GetMinY()) < 0.001);
 		CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinZ)", FdoCommonOSUtil::_isnan(envelopeAllWithoutFilter->GetMinZ()) && FdoCommonOSUtil::_isnan(envelopeAllWithFilter->GetMinZ()));
-		CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxX)", envelopeAllWithoutFilter->GetMaxX() == envelopeAllWithFilter->GetMaxX());
-		CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxY)", envelopeAllWithoutFilter->GetMaxY() == envelopeAllWithFilter->GetMaxY());
+		CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxX)", fabs(envelopeAllWithoutFilter->GetMaxX() - envelopeAllWithFilter->GetMaxX()) < 0.001);
+		CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxY)", fabs(envelopeAllWithoutFilter->GetMaxY() - envelopeAllWithFilter->GetMaxY()) < 0.001);
 		CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxZ)", FdoCommonOSUtil::_isnan(envelopeAllWithoutFilter->GetMaxZ()) && FdoCommonOSUtil::_isnan(envelopeAllWithFilter->GetMaxZ()));
 
 
@@ -1088,11 +1088,11 @@ void SelectAggregatesTests::selectAggregatesSpatialExtentsTest()
 		rdr->Close();
 
 		// Compare the two "all" results to make sure they are equivalent:
-		CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinX)", envelopeAllWithoutFilter->GetMinX() == envelopeAllWithoutFilterMultipleIds->GetMinX());
-		CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinY)", envelopeAllWithoutFilter->GetMinY() == envelopeAllWithoutFilterMultipleIds->GetMinY());
+		CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinX)", fabs(envelopeAllWithoutFilter->GetMinX() - envelopeAllWithoutFilterMultipleIds->GetMinX()) < 0.001);
+		CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinY)", fabs(envelopeAllWithoutFilter->GetMinY() - envelopeAllWithoutFilterMultipleIds->GetMinY()) < 0.001);
 		CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinZ)", FdoCommonOSUtil::_isnan(envelopeAllWithoutFilter->GetMinZ()) && FdoCommonOSUtil::_isnan(envelopeAllWithoutFilterMultipleIds->GetMinZ()));
-		CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxX)", envelopeAllWithoutFilter->GetMaxX() == envelopeAllWithoutFilterMultipleIds->GetMaxX());
-		CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxY)", envelopeAllWithoutFilter->GetMaxY() == envelopeAllWithoutFilterMultipleIds->GetMaxY());
+		CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxX)", fabs(envelopeAllWithoutFilter->GetMaxX() - envelopeAllWithoutFilterMultipleIds->GetMaxX()) < 0.001);
+		CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxY)", fabs(envelopeAllWithoutFilter->GetMaxY() - envelopeAllWithoutFilterMultipleIds->GetMaxY()) < 0.001);
 		CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxZ)", FdoCommonOSUtil::_isnan(envelopeAllWithoutFilter->GetMaxZ()) && FdoCommonOSUtil::_isnan(envelopeAllWithoutFilterMultipleIds->GetMaxZ()));
 
 
