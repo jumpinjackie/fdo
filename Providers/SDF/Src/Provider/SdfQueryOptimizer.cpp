@@ -361,7 +361,7 @@ void SdfQueryOptimizer::ProcessSpatialCondition(FdoSpatialCondition& filter)
     FdoPtr<FdoGeometricPropertyDefinition> gpd = PropertyIndex::FindGeomProp(m_class);
     FdoPtr<FdoIdentifier> idname = filter.GetPropertyName();
 
-    if (m_rtree && wcscmp(gpd->GetName(), idname->GetName()) == 0)
+    if (m_rtree && gpd && wcscmp(gpd->GetName(), idname->GetName()) == 0)
     {
         //is it cartesian aligned rectangle search?
         if (filter.GetOperation() == FdoSpatialOperations_EnvelopeIntersects )
