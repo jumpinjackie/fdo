@@ -876,38 +876,49 @@ bool ArcSDETests::fuzzyEqual (const double d1, const double d2)
 
 
 // Accesses all the data on the current feature.
-void ArcSDETests::ProcessFeature (FdoIFeatureReader* featureReader, FdoIdentifierCollection* IDs)
+void ArcSDETests::ProcessFeature (FdoIFeatureReader* featureReader, FdoFeatureClass* classDef, FdoIdentifierCollection* IDs, bool bVerifyPropertyPresence)
 {
-    FdoPtr<FdoFeatureClass> classDef = (FdoFeatureClass*)featureReader->GetClassDefinition();
-    FdoPtr<FdoPropertyDefinitionCollection> propColl = classDef->GetProperties();
+	static FdoPtr<FdoFgfGeometryFactory> factory;
+    if (!factory)
+        factory = FdoFgfGeometryFactory::GetInstance();
+
+    FdoPropertyDefinitionCollection* propColl = classDef->GetProperties();
+    FdoPropertyDefinition* prop;
+    FdoString* propName;
+    FdoDataPropertyDefinition* dataProp;
+    FdoDataType propDataType;
 	bool bShouldBeIn = false;
 	bool bFound = false;
     bool bIsNull = false;
-
+	FdoByteArray* fgf;
+    FdoIGeometry* geom;
 
     // access all the data properties
     for (int i=0; i<propColl->GetCount(); i++)
     {
-        FdoPtr<FdoPropertyDefinition> prop = propColl->GetItem(i);
-        FdoString* propName = prop->GetName();
+        prop = propColl->GetItem(i);
+        propName = prop->GetName();
 		bFound = false;
 
-		// Determine if this property should be in the reader or not:
-		bShouldBeIn = false;
-		if (NULL==IDs)
-			bShouldBeIn = true;
-		else
-		{
-			for (FdoInt32 i=0; i<IDs->GetCount(); i++)
-			{
-				FdoPtr<FdoIdentifier> ID = IDs->GetItem(i);
-				if (0==wcscmp(propName, ID->GetName()))
-				{
-					bShouldBeIn = true;
-					break;
-				}
-			}
-		}
+        if (bVerifyPropertyPresence)
+        {
+		    // Determine if this property should be in the reader or not:
+		    bShouldBeIn = false;
+		    if (NULL==IDs)
+			    bShouldBeIn = true;
+		    else
+		    {
+			    for (FdoInt32 i=0; i<IDs->GetCount(); i++)
+			    {
+				    FdoPtr<FdoIdentifier> ID = IDs->GetItem(i);
+				    if (0==wcscmp(propName, ID->GetName()))
+				    {
+					    bShouldBeIn = true;
+					    break;
+				    }
+			    }
+		    }
+        }
 
         try
         {
@@ -925,8 +936,8 @@ void ArcSDETests::ProcessFeature (FdoIFeatureReader* featureReader, FdoIdentifie
         }
         else if (prop->GetPropertyType() == FdoPropertyType_DataProperty)
 		{
-			FdoDataPropertyDefinition* dataProp = (FdoDataPropertyDefinition*)prop.p;
-			FdoDataType propDataType = dataProp->GetDataType();
+			dataProp = (FdoDataPropertyDefinition*)prop;
+			propDataType = dataProp->GetDataType();
 
 			try
 			{
@@ -983,13 +994,15 @@ void ArcSDETests::ProcessFeature (FdoIFeatureReader* featureReader, FdoIdentifie
 		}
 		else if (prop->GetPropertyType() == FdoPropertyType_GeometricProperty)
 		{
-			// access the geometric property
-			FdoPtr<FdoGeometricPropertyDefinition> geomProp = classDef->GetGeometryProperty();
-			if (0!=wcscmp(propName, geomProp->GetName()))
-				CPPUNIT_FAIL("Expecting at most one geometric property, found at least two");
+            if (bVerifyPropertyPresence)
+            {
+			    // access the geometric property
+			    FdoPtr<FdoGeometricPropertyDefinition> geomProp = classDef->GetGeometryProperty();
+			    if (0!=wcscmp(propName, geomProp->GetName()))
+				    CPPUNIT_FAIL("Expecting at most one geometric property, found at least two");
+            }
 
 			// access the FGF geometric data
-			FdoPtr<FdoByteArray> fgf;
 			try
 			{
 				fgf = featureReader->GetGeometry(propName);
@@ -1003,23 +1016,28 @@ void ArcSDETests::ProcessFeature (FdoIFeatureReader* featureReader, FdoIdentifie
 
 			if (bFound)
 			{
-				FdoInt32 numBytes = fgf->GetCount();
-
 				// make a geometry
-				FdoPtr<FdoFgfGeometryFactory> factory = FdoFgfGeometryFactory::GetInstance();
-				FdoPtr<FdoIGeometry> geom = factory->CreateGeometryFromFgf(fgf);
-				FdoPtr<FdoIEnvelope> bbox = geom->GetEnvelope();
+				geom = factory->CreateGeometryFromFgf(fgf);
+                geom->Release();
+                fgf->Release();
 			}
 		}
 
-		// fail if this property SHOULD NOT have been in the reader:
-		if (bFound && !bShouldBeIn)
-			CPPUNIT_FAIL("Property should NOT have been in the reader, but was.");
+        if (bVerifyPropertyPresence)
+        {
+    		// fail if this property SHOULD NOT have been in the reader:
+	    	if (bFound && !bShouldBeIn)
+		    	CPPUNIT_FAIL("Property should NOT have been in the reader, but was.");
 
-		// fail if this property SHOULD have been in the reader:
-		if (!bFound && bShouldBeIn)
-			CPPUNIT_FAIL("Property SHOULD have been in the reader, but was not.");
+    		// fail if this property SHOULD have been in the reader:
+	    	if (!bFound && bShouldBeIn)
+		    	CPPUNIT_FAIL("Property SHOULD have been in the reader, but was not.");
+        }
+
+        prop->Release();
     }
+
+    propColl->Release();
 }
 
 

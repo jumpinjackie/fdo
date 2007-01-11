@@ -159,6 +159,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="/fixed:no"
 				AdditionalDependencies="sde91.lib pe91.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib FDOSpatial.lib Advapi32.lib"
 				OutputFile="$(OutDir)/ArcSDEProvider.dll"
 				LinkIncremental="1"

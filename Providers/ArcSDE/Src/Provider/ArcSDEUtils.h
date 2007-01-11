@@ -21,6 +21,7 @@
 #include <malloc.h>
 
 
+
 // Constants for ArcSDE Metadata:
 extern const char* METADATA_CN_CLASSSCHEMA;
 extern const char* METADATA_CN_CLASSNAME;
@@ -75,7 +76,7 @@ void convert_wkb_to_fgf (unsigned char** output, unsigned char** wkb);
 void convert_fgf_to_wkb (unsigned char** outWKB, unsigned char** inFGF);
 void convert_fdo_operator_to_sde_method(FdoSpatialOperations fdoSpatialOperation, LONG &sdeSearchMethod, BOOL &sdeSearchTruth);
 void convert_fgf_to_sde_shape(ArcSDEConnection *connection, FdoByteArray* fgf, SE_COORDREF coordref, SE_SHAPE& shape, bool bCropToExtents = false);
-void convert_sde_shape_to_fgf(SE_SHAPE shape, FdoByteArray*& fgf);
+void convert_sde_shape_to_fgf(ArcSDEConnection* connection, SE_SHAPE shape, FdoByteArray*& fgf);
 
 
 void DebugByteArray(unsigned char pByteArray[], long lByteCount, char *strMessage);
@@ -272,14 +273,14 @@ void GetFilterInfo(ArcSDEConnection *connection, FdoFilter* filter, FdoClassDefi
 void ApplyFilterInfoToStream(ArcSDEConnection *connection, SE_STREAM queryStream, const CHAR* table, CHAR* whereClause, const int columnCount, const CHAR** columnNames, const SHORT spatialFilterCount, SE_FILTER* spatialFilters, FdoOrderingOption orderingOption = FdoOrderingOption_Ascending, FdoIdentifierCollection* orderingIds = NULL);
 
 // Add one or more spatial filters that represent the given spatial operation:
-void AddSpatialFilters(SE_CONNECTION connection, const FdoSpatialOperations fdoSpatialOperation, const char* sdeColumnName, SE_SHAPE &shape, std::vector<SE_FILTER> &spatialFilters);
+void AddSpatialFilters(ArcSDEConnection* conn, const FdoSpatialOperations fdoSpatialOperation, const char* sdeColumnName, SE_SHAPE &shape, std::vector<SE_FILTER> &spatialFilters);
 
 // Apply the given info to the given SE_QUERYINFO object:
 void ApplyFilterInfoToQueryInfo(ArcSDEConnection *connection, SE_QUERYINFO query_info, const CHAR *table, const CHAR *whereClause, FdoInt32 numProperties, const CHAR **columnNames, FdoOrderingOption orderingOption, FdoIdentifierCollection* ids);
 
 // Gets the endpoints of the given shape as an array of new SE_SHAPE objects;
 // The returned SE_SHAPE array needs to be freed by the caller using delete[]:
-SE_SHAPE* GetEndPointsAsShapes(SE_SHAPE shape, long &lEndpointCount);
+SE_SHAPE* GetEndPointsAsShapes(ArcSDEConnection *connection, SE_SHAPE shape, long &lEndpointCount);
 
 
 

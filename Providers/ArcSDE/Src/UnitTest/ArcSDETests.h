@@ -159,7 +159,7 @@ public:
     static bool fuzzyEqual (const double d1, const double d2);
 
     // Accesses all the data on the current feature.
-    void ProcessFeature (FdoIFeatureReader* featureReader, FdoIdentifierCollection* IDs = NULL);
+    void ProcessFeature (FdoIFeatureReader* featureReader, FdoFeatureClass* classDef=NULL, FdoIdentifierCollection* IDs = NULL, bool bVerifyPropertyPresence = true);
 
     // Activate the given spatial context; don't report error if spatial context not found:
     void ActivateSpatialContext(FdoIConnection* connection, FdoString* scName);
@@ -557,6 +557,7 @@ static FdoStringP QClassName##CLASSMETHODNAME() { return FdoStringP::Format(L"%l
     DECLARE_CLASS(Sde, FdoTest1, Roads, L"Roads");
     DECLARE_CLASS(TestSingleDb, Metadcov, TestClassComplex, L"TESTB");
     DECLARE_CLASS(TestMultiDb, Metadcov, TestClassSimpleMultiDb, L"TESTA");
+    DECLARE_CLASS(Sde, Australia, LargeWithGeom, L"LARGEWITHGEOM");
 };
 
 #endif // CPP_UNIT_ArcSDETests_H

@@ -55,8 +55,24 @@ ArcSDEConnection::ArcSDEConnection (void) :
     mCachedLayerListCount(0),
     mCachedSpatialRefList(NULL),
     mCachedSpatialRefSRIDList(NULL),
-    mCachedSpatialRefListCount(0)
+    mCachedSpatialRefListCount(0),
+	mGeomBuffer_ordinates(NULL),
+	mGeomBuffer_ordinates_cursize(0),
+    mGeomBuffer_part_offsets(NULL),
+	mGeomBuffer_part_offsets_cursize(0),
+    mGeomBuffer_subpart_offsets(NULL),
+	mGeomBuffer_subpart_offsets_cursize(0),
+    mGeomBuffer_offsets(NULL),
+	mGeomBuffer_offsets_cursize(0),
+    mGeomBuffer_pointsXY(NULL),
+	mGeomBuffer_pointsXY_cursize(0),
+    mGeomBuffer_pointsZ(NULL),
+	mGeomBuffer_pointsZ_cursize(0),
+    mGeomBuffer_pointsM(NULL),
+	mGeomBuffer_pointsM_cursize(0),
+    mGeomFactory(NULL)
 {
+    mGeomFactory = FdoFgfGeometryFactory::GetInstance();
 }
 
 ArcSDEConnection::~ArcSDEConnection (void)
@@ -75,6 +91,22 @@ ArcSDEConnection::~ArcSDEConnection (void)
             mTransaction->SetConnection (NULL);
             mTransaction->Release ();
         }
+
+    // Free up geometry-conversion buffers;
+    // NOTE: we don't need to free up these buffers on Close() since they are not database-specific:
+    FDO_SAFE_RELEASE(mGeomFactory);
+	if (mGeomBuffer_part_offsets != NULL)
+        free(mGeomBuffer_part_offsets);
+    if (mGeomBuffer_subpart_offsets != NULL)
+        free(mGeomBuffer_subpart_offsets);
+	if (mGeomBuffer_offsets != NULL)
+        free(mGeomBuffer_offsets);
+    if (mGeomBuffer_pointsXY != NULL)
+        free(mGeomBuffer_pointsXY);
+    if (mGeomBuffer_pointsZ != NULL)
+        free(mGeomBuffer_pointsZ);
+    if (mGeomBuffer_pointsM != NULL)
+        free(mGeomBuffer_pointsM);
 }
 
 // <summary>Dispose this object.</summary>

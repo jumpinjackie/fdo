@@ -77,7 +77,7 @@ protected:
         ColumnDefinition();
         ~ColumnDefinition ();
 
-        void ClearCache();
+        void ClearCache(bool bReaderClosing);
     };
 
     SE_STREAM mStream;
@@ -94,6 +94,7 @@ protected:
     FdoOrderingOption mOrderingOption;
     FdoPtr<FdoIdentifierCollection> mOrderingIds;
     long mStreamStatsIndex;
+    bool mRowNotValidated;  // Whether or not the reader has validated the current row of data
 
 public:
     ArcSDEReader (ArcSDEConnection *connection, FdoClassDefinition* fdoClassDef, FdoIdentifierCollection* propertiesToSelect);
@@ -333,7 +334,7 @@ protected:
     virtual ColumnDefinition* getColumnDef (int arcSdeColumnIndex);
 
     // Clears the locally-cached values on each column:
-    void ClearCachedColumnValues(void);
+    void ClearCachedColumnValues(bool bReaderClosing);
 };
 
 #endif // ARCSDEREADER_H

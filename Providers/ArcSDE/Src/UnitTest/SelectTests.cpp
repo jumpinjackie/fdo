@@ -88,6 +88,9 @@ void SelectTests::setUp ()
         // establish a class to play with
         ArcSDETests::CreateSchema (mConnection, nullableClass);
 
+        // Create a table for performance testing:
+        create_large_table_with_geom();
+
         bSchemaCreated = true;
     }
 }
@@ -112,8 +115,9 @@ void SelectTests::simple ()
         FdoPtr<FdoISelect> select = (FdoISelect*)mConnection->CreateCommand (FdoCommandType_Select);
         select->SetFeatureClassName (ArcSDETestConfig::QClassNameOntarioRoads());
         FdoPtr<FdoIFeatureReader> reader = select->Execute ();
+        FdoPtr<FdoFeatureClass> classDef = (FdoFeatureClass*)reader->GetClassDefinition();
         while (reader->ReadNext ())
-            ProcessFeature (reader);
+            ProcessFeature (reader, classDef);
         reader->Close();
 
 	    // test identifier collection:
@@ -123,11 +127,12 @@ void SelectTests::simple ()
 	    IDs->Add(areaID);
 	    IDs->Add(nameID);
         reader = select->Execute ();
+        classDef = (FdoFeatureClass*)reader->GetClassDefinition();
 		long lCount=0;
         while (reader->ReadNext ())
 		{
 			lCount++;
-            ProcessFeature (reader, IDs);
+            ProcessFeature (reader, classDef, IDs);
 		}
 		printf("\nFeatures Read=%d\n", lCount);
         reader->Close();
@@ -181,8 +186,9 @@ void SelectTests::simple_filter ()
         select->SetFeatureClassName (ArcSDETestConfig::QClassNameOntarioRoads());
         select->SetFilter (FdoPtr<FdoFilter>(FdoFilter::Parse (L"objectid < 3")));
         FdoPtr<FdoIFeatureReader> reader = select->Execute ();
+        FdoPtr<FdoFeatureClass> classDef = (FdoFeatureClass*)reader->GetClassDefinition();
         while (reader->ReadNext ())
-            ProcessFeature (reader);
+            ProcessFeature (reader, classDef);
         reader->Close();
     }
     catch (FdoException *e)
@@ -202,10 +208,11 @@ void SelectTests::string_with_quote ()
         select->SetFeatureClassName (ArcSDETestConfig::QClassNameParcels());
         select->SetFilter (FdoPtr<FdoFilter>(FdoFilter::Parse (L"RLDESCR4 = 'SW1/4 SEC 34; TH S 89*44''25\"'")));
         FdoPtr<FdoIFeatureReader> reader = select->Execute ();
+        FdoPtr<FdoFeatureClass> classDef = (FdoFeatureClass*)reader->GetClassDefinition();
         bool found = false;
         while (reader->ReadNext ())
         {
-            ProcessFeature (reader);
+            ProcessFeature (reader, classDef);
             found = true;
         }
         reader->Close();
@@ -230,9 +237,10 @@ void SelectTests::simple_erroneous_filter ()
         try
         {
             FdoPtr<FdoIFeatureReader> reader = select->Execute (); // should get exception here
+            FdoPtr<FdoFeatureClass> classDef = (FdoFeatureClass*)reader->GetClassDefinition();
             failed = false;
             while (reader->ReadNext ())
-                ProcessFeature (reader);
+                ProcessFeature (reader, classDef);
             reader->Close();
         }
         catch (FdoException *e)
@@ -245,9 +253,10 @@ void SelectTests::simple_erroneous_filter ()
         try
         {
             FdoPtr<FdoIFeatureReader> reader = select->ExecuteWithLock (); // should get exception here
+            FdoPtr<FdoFeatureClass> classDef = (FdoFeatureClass*)reader->GetClassDefinition();
             failed = false;
             while (reader->ReadNext ()) // not here
-                ProcessFeature (reader);
+                ProcessFeature (reader, classDef);
             reader->Close();
         }
         catch (FdoException *e)
@@ -688,10 +697,11 @@ void SelectTests::simple_filter2()
         select->SetFilter (FdoPtr<FdoFilter>(FdoFilter::Parse (L"NAME like '%\\_%' ESCAPE '\\'")));
         reader = select->Execute ();
         long lCount=0;
+        FdoPtr<FdoFeatureClass> classDef = (FdoFeatureClass*)reader->GetClassDefinition();
         while (reader->ReadNext ())
         {
             CPPUNIT_ASSERT_MESSAGE("Wrong id retrieved", id1 == reader->GetInt32(L"FID"));
-            ProcessFeature (reader);
+            ProcessFeature (reader, classDef);
             lCount++;
         }
         reader->Close();
@@ -711,12 +721,13 @@ void SelectTests::simple_filter2()
         select->SetFeatureClassName (ArcSDETestConfig::QClassNameOntarioRoads());
         select->SetFilter (FdoPtr<FdoFilter>(FdoFilter::Parse (L"objectid*5+2-1<20 and objectid>1")));
         reader = select->Execute ();
+        classDef = (FdoFeatureClass*)reader->GetClassDefinition();
         lCount=0;
         while (reader->ReadNext ())
         {
             id1 = reader->GetInt32(L"OBJECTID");
             CPPUNIT_ASSERT_MESSAGE("Wrong id retrieved", (id1==2) || (id1==3));
-            ProcessFeature (reader);
+            ProcessFeature (reader, classDef);
             lCount++;
         }
         reader->Close();
@@ -728,10 +739,11 @@ void SelectTests::simple_filter2()
         select->SetFeatureClassName (ArcSDETestConfig::QClassNameParcels());
         select->SetFilter (FdoPtr<FdoFilter>(FdoFilter::Parse (L"RTYPE in ('AGR', 'RES')")));
         reader = select->Execute ();
+        classDef = (FdoFeatureClass*)reader->GetClassDefinition();
         lCount=0;
         while (reader->ReadNext ())
         {
-            ProcessFeature (reader);
+            ProcessFeature (reader, classDef);
             lCount++;
         }
         reader->Close();
@@ -778,12 +790,13 @@ void SelectTests::simple_filter2()
         select->SetFeatureClassName (ArcSDETestConfig::QClassNameOntarioRoads());
         select->SetFilter (FdoPtr<FdoFilter>(FdoFilter::Parse (L"FNODE_ null and FCODE null")));
         reader = select->Execute ();
+        classDef = (FdoFeatureClass*)reader->GetClassDefinition();
         lCount=0;
         while (reader->ReadNext ())
         {
             id1 = reader->GetInt32(L"OBJECTID");
             CPPUNIT_ASSERT_MESSAGE("Wrong row retrieved from NULL test", id1==idNullAbbrNullName);
-            ProcessFeature (reader);
+            ProcessFeature (reader, classDef);
             lCount++;
         }
         reader->Close();
@@ -794,12 +807,13 @@ void SelectTests::simple_filter2()
         select->SetFeatureClassName (ArcSDETestConfig::QClassNameOntarioRoads());
         select->SetFilter (FdoPtr<FdoFilter>(FdoFilter::Parse (L"FNODE_ null OR FCODE null")));
         reader = select->Execute ();
+        classDef = (FdoFeatureClass*)reader->GetClassDefinition();
         lCount=0;
         while (reader->ReadNext ())
         {
             id1 = reader->GetInt32(L"OBJECTID");
             CPPUNIT_ASSERT_MESSAGE("Wrong row retrieved from NULL test", (id1==idNullAbbrNullName) || (id1==idNullAbbrNonNullName) || (id1==idNonNullAbbrNullName));
-            ProcessFeature (reader);
+            ProcessFeature (reader, classDef);
             lCount++;
         }
         reader->Close();
@@ -817,12 +831,13 @@ void SelectTests::simple_filter2()
         select->SetFeatureClassName (ArcSDETestConfig::QClassNameOntarioRoads());
         select->SetFilter (FdoPtr<FdoFilter>(FdoFilter::Parse (L"(-LENGTH + MNRCODE) >= -300.0")));
         reader = select->Execute ();
+        classDef = (FdoFeatureClass*)reader->GetClassDefinition();
         lCount=0;
         while (reader->ReadNext ())
         {
             id1 = reader->GetInt32(L"OBJECTID");
             CPPUNIT_ASSERT_MESSAGE("Wrong row retrieved from NULL test", (id1==5) || (id1==6) || (id1==792));
-            ProcessFeature (reader);
+            ProcessFeature (reader, classDef);
             lCount++;
         }
         reader->Close();
@@ -834,10 +849,11 @@ void SelectTests::simple_filter2()
         select->SetFeatureClassName (ArcSDETestConfig::QClassNameParcels());
         select->SetFilter (FdoPtr<FdoFilter>(FdoFilter::Parse (L"RLDESCR4 > '2' and RLDESCR4 <= '3' and RLDESCR4 != '276_0010005'")));
         reader = select->Execute ();
+        classDef = (FdoFeatureClass*)reader->GetClassDefinition();
         lCount=0;
         while (reader->ReadNext ())
         {
-            ProcessFeature (reader);
+            ProcessFeature (reader, classDef);
             lCount++;
         }
         reader->Close();
@@ -1464,6 +1480,217 @@ void SelectTests::spatial_filter_buffer_outside_extents ()
             lCountBuffered++;
         reader->Close();
         CPPUNIT_ASSERT_MESSAGE("Expected 0 features for buffered spatial query beyond the spatial extents", lCountBuffered==0);
+    }
+    catch (FdoException* ge) 
+    {
+        fail (ge);
+    }
+}
+
+
+
+void SelectTests::select_large_table_with_geom()
+{
+    if (CreateSchemaOnly()) return;
+
+    try
+    {
+        double secs_start = ((double)(long)clock()) / 1000.0;
+        printf("\nSelect and read all properties begin: clock=%f\n", secs_start);
+
+        FdoPtr<FdoISelect> select = (FdoISelect*)mConnection->CreateCommand (FdoCommandType_Select);
+        select->SetFeatureClassName (ArcSDETestConfig::QClassNameLargeWithGeom());
+        FdoPtr<FdoIFeatureReader> reader = select->Execute ();
+        FdoPtr<FdoFeatureClass> classDef = (FdoFeatureClass*)reader->GetClassDefinition();
+        long lCount=0;
+        while (reader->ReadNext ())
+        {
+			lCount++;
+            ProcessFeature (reader, classDef, NULL, false);
+
+            if (lCount % 10000 == 9999)
+                printf("\nSelect and read all properties progress features=%d: clock=%f\n", lCount, ((double)(long)clock()) / 1000.0);
+        }
+        reader->Close();
+        double secs_end = ((double)(long)clock()) / 1000.0;
+		printf("\nFeatures Read=%d\n", lCount);
+        printf("\nSelect and read all properties end: clock=%f, elapsed time=%f, features per sec=%f\n", secs_end, secs_end-secs_start, (double)lCount/(secs_end-secs_start));
+
+
+        secs_start = ((double)(long)clock()) / 1000.0;
+        printf("\nSelect but dont read all properties begin: clock=%f\n", secs_start);
+        select = (FdoISelect*)mConnection->CreateCommand (FdoCommandType_Select);
+        select->SetFeatureClassName (ArcSDETestConfig::QClassNameLargeWithGeom());
+        reader = select->Execute ();
+        lCount=0;
+        while (reader->ReadNext ())
+        {
+			lCount++;
+
+            if (lCount % 10000 == 9999)
+                printf("\nSelect and read all properties progress features=%d: clock=%f\n", lCount, ((double)(long)clock()) / 1000.0);
+        }
+        reader->Close();
+        secs_end = ((double)(long)clock()) / 1000.0;
+		printf("\nFeatures Read=%d\n", lCount);
+        printf("\nSelect but dont read all properties end: clock=%f, elapsed time=%f, features per sec=%f\n", secs_end, secs_end-secs_start, (double)lCount/(secs_end-secs_start));
+    }
+    catch (FdoException* ge) 
+    {
+        fail (ge);
+    }
+}
+
+
+
+void SelectTests::create_large_table_with_geom()
+{
+    const int num_records = 103100;
+
+    try
+    {
+        // Clean up previous tests:
+        CleanUpClass(mConnection, ArcSDETestConfig::ClassSchemaLargeWithGeom(), ArcSDETestConfig::ClassNameLargeWithGeom());
+
+        FdoPtr<FdoIApplySchema> apply = (FdoIApplySchema*)mConnection->CreateCommand (FdoCommandType_ApplySchema);
+        FdoPtr<FdoFeatureSchema> schema = ArcSDETests::GetDefaultSchema(mConnection);
+        FdoPtr<FdoClassCollection> classes = schema->GetClasses ();
+
+        // build the data properties
+        // assemble the class
+        FdoPtr<FdoFeatureClass> cls = FdoFeatureClass::Create (ArcSDETestConfig::ClassNameLargeWithGeom(), L"");
+        FdoPtr<FdoPropertyDefinitionCollection> properties = cls->GetProperties ();
+        FdoPtr<FdoDataPropertyDefinitionCollection> idProperties = cls->GetIdentityProperties ();
+        FdoPtr<FdoDataPropertyDefinition> property;
+        // Add read-only property:
+        property = FdoDataPropertyDefinition::Create (L"ID", L"");
+        property->SetDataType (FdoDataType_Int32);
+        property->SetNullable (false);
+        property->SetIsAutoGenerated (true);
+        property->SetReadOnly (true);
+        properties->Add (property);
+        idProperties->Add(property);
+        // Add geometry property:
+        FdoPtr<FdoGeometricPropertyDefinition> geomProp = FdoGeometricPropertyDefinition::Create(L"GEOMETRY", L"");
+        geomProp->SetGeometryTypes(FdoGeometricType_Curve);
+        geomProp->SetHasElevation(false);
+        geomProp->SetHasMeasure(false);
+        properties->Add (geomProp);
+        cls->SetGeometryProperty(geomProp);
+        // Add two read-write properties with default values:
+        property = FdoDataPropertyDefinition::Create (L"NAME", L"");
+        property->SetDataType (FdoDataType_String);
+        property->SetNullable (false);
+        property->SetReadOnly (false);
+        properties->Add (property);
+        property = FdoDataPropertyDefinition::Create (L"AREA", L"");
+        property->SetDataType (FdoDataType_Double);
+        property->SetNullable (false);
+        property->SetReadOnly (false);
+        properties->Add (property);
+
+        // submit the new schema
+        classes->Add (cls);
+        apply->SetFeatureSchema (schema);
+        apply->Execute ();
+
+
+        //////////////////////////////////////////////////////////////////////
+        // Add some random data:
+        //////////////////////////////////////////////////////////////////////
+
+        printf("\nInsert data begin: clock=%f\n", ((double)(long)clock()) / 1000.0);
+
+        FdoPtr<FdoIInsert> insert = (FdoIInsert*)mConnection->CreateCommand (FdoCommandType_Insert);
+        insert->SetFeatureClassName (ArcSDETestConfig::QClassNameLargeWithGeom());
+        FdoPtr<FdoPropertyValueCollection> values = insert->GetPropertyValues ();
+        FdoPtr<FdoValueExpression> expression;
+        FdoPtr<FdoPropertyValue> value;
+        FdoPtr<FdoIFeatureReader> reader;
+        int string_size;
+        srand ((unsigned)time (NULL));  // randommize
+        wchar_t string_value[100];
+        double double_value;
+        FdoPtr<FdoStringValue> strVal;
+        FdoPtr<FdoDoubleValue> dblVal;
+        FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+
+
+        // Set up the property value collection:
+
+        FdoPtr<FdoPropertyValue> propertyValue;
+        FdoPtr<FdoParameter>  parameter;
+
+        values->Clear(); // NOTE: this should probably not be necessary!
+
+        parameter = FdoParameter::Create(L"Param0");
+        propertyValue = FdoPropertyValue::Create(L"NAME", parameter);
+        values->Add(propertyValue);
+
+        parameter = FdoParameter::Create(L"Param1");
+        propertyValue = FdoPropertyValue::Create(L"AREA", parameter);
+        values->Add(propertyValue);
+
+        parameter = FdoParameter::Create(L"ParamGeom");
+        propertyValue = FdoPropertyValue::Create(L"GEOMETRY", parameter);
+        values->Add(propertyValue);
+
+        FdoPtr<FdoBatchParameterValueCollection> batchParameters = insert->GetBatchParameterValues();
+        FdoPtr<FdoParameterValueCollection> parameterValues;
+        FdoPtr<FdoParameterValue>           parameterValue;
+
+        for (int i=0; i<num_records;i++)
+        {
+            // Generate a random string:
+            string_size = 1 + (rand() % 60);
+            for (int j=0; j<string_size; j++)
+                string_value[j] = L'a' + (rand() % 26);
+            string_value[string_size] = (wchar_t)0;
+            strVal = FdoStringValue::Create(string_value);
+
+            // generate a random double:
+            double_value = (double)rand() / 1000.0;
+            dblVal = FdoDoubleValue::Create(double_value);
+
+            // generate a random geometry value:
+            FdoInt32 numOrdinates = 2*(2 + rand() % 2); // 2 or 3 vertices
+            double ordinates[2*10];
+            for (int z=0; z<(numOrdinates); z++)
+            {
+                //OLD WAY: ordinates[z] = ((double)rand() / (double)RAND_MAX) * 1000.0;
+
+                if (z%2 == 0)  // X VALUE
+                    ordinates[z] = (double)(i % (num_records/50)) / 2.0;
+                else  // Y VALUE
+                    ordinates[z] = (double)(i / (num_records/50))*20.0 + ((double)z/(double)numOrdinates)*15.0;
+            }
+            FdoPtr<FdoILineString> lineString = gf->CreateLineString(FdoDimensionality_XY, numOrdinates, ordinates);
+            FdoPtr<FdoByteArray> geomByteArray = gf->GetFgf(lineString);
+            FdoPtr<FdoGeometryValue> geomValue = FdoGeometryValue::Create(geomByteArray);
+
+            // Fill the batch parameter value collection with multiple rows of data:
+            parameterValues = FdoParameterValueCollection::Create();
+            parameterValue = FdoParameterValue::Create(L"Param0", strVal);
+            parameterValues->Add(parameterValue);
+            parameterValue = FdoParameterValue::Create(L"Param1", dblVal);
+            parameterValues->Add(parameterValue);
+            parameterValue = FdoParameterValue::Create(L"ParamGeom", geomValue);
+            parameterValues->Add(parameterValue);
+            batchParameters->Add(parameterValues);
+
+            // Perform the batch insert:
+            if (i % 100 == 99)
+            {
+                reader = insert->Execute();
+                batchParameters->Clear();
+            }
+
+            if (i % 1000 == 999)
+            {
+                printf("\nInsert data progress = %d features inserted: clock=%f\n", i, ((double)(long)clock()) / 1000.0);
+            }
+        }
+        printf("\nInsert data end: clock=%f\n", ((double)(long)clock()) / 1000.0);
     }
     catch (FdoException* ge) 
     {

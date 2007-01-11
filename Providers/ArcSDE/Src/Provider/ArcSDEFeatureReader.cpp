@@ -78,7 +78,8 @@ FdoClassDefinition* ArcSDEFeatureReader::GetClassDefinition ()
     // SPR 613159 Can not access class definition without calling ReadNext()
     // We allow accessing the class definition prior at any time.
 #else
-    validate ();
+    if (mRowNotValidated)
+        validate ();
 #endif // MIMIC_OTHER_PROVIDER
     return (FdoCommonSchemaUtil::DeepCopyFdoClassDefinition(mClassDefPruned));
 }

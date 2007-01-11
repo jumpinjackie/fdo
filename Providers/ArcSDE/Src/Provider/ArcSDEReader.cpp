@@ -37,7 +37,8 @@ ArcSDEReader::ArcSDEReader (ArcSDEConnection *connection, FdoClassDefinition* fd
     mDistinct (false),
     mSelectingAggregates (false),
     mOrderingOption (FdoOrderingOption_Ascending),
-    mStreamStatsIndex (-1L)
+    mStreamStatsIndex (-1L),
+    mRowNotValidated(true)
 {
     FDO_SAFE_ADDREF(mConnection.p);
     FDO_SAFE_ADDREF(mClassDef.p);
@@ -103,6 +104,8 @@ void ArcSDEReader::validate ()
            || (mDistinct && (mStreamStatsIndex >= getColumnDef(0)->mStreamStats->distinct->num_distinct)) )
             throw FdoException::Create(NlsMsgGet(ARCSDE_READER_EXHAUSTED, "Reader is exhausted."));
     }
+
+    mRowNotValidated = false;
 }
 
 /** Do not implement the copy constructor. **/
@@ -158,6 +161,7 @@ FdoByte ArcSDEReader::GetByte (FdoString* identifier)
 /// <returns>Returns the date and time value.</returns> 
 FdoDateTime ArcSDEReader::GetDateTime (FdoString* identifier)
 {
+    if (mRowNotValidated)
     validate ();
 
     ColumnDefinition* columnDef = NULL;
@@ -191,6 +195,7 @@ FdoDateTime ArcSDEReader::GetDateTime (FdoString* identifier)
 /// <returns>Returns the double floating point value</returns> 
 double ArcSDEReader::GetDouble (FdoString* identifier)
 {
+    if (mRowNotValidated)
     validate ();
 
     ColumnDefinition* columnDef = NULL;
@@ -220,6 +225,7 @@ double ArcSDEReader::GetDouble (FdoString* identifier)
 /// <returns>Returns the FdoInt16 value.</returns> 
 FdoInt16 ArcSDEReader::GetInt16 (FdoString* identifier)
 {
+    if (mRowNotValidated)
     validate ();
 
     ColumnDefinition* columnDef = NULL;
@@ -249,6 +255,7 @@ FdoInt16 ArcSDEReader::GetInt16 (FdoString* identifier)
 /// <returns>Returns the FdoInt32 value</returns> 
 FdoInt32 ArcSDEReader::GetInt32 (FdoString* identifier)
 {
+    if (mRowNotValidated)
     validate ();
 
     ColumnDefinition* columnDef = NULL;
@@ -278,6 +285,7 @@ FdoInt32 ArcSDEReader::GetInt32 (FdoString* identifier)
 /// <returns>Returns the FdoInt64 value.</returns> 
 FdoInt64 ArcSDEReader::GetInt64 (FdoString* identifier)
 {
+    if (mRowNotValidated)
     validate ();
 
     ColumnDefinition* columnDef = NULL;
@@ -304,6 +312,7 @@ FdoInt64 ArcSDEReader::GetInt64 (FdoString* identifier)
 /// <returns>Returns the single value</returns> 
 float ArcSDEReader::GetSingle (FdoString* identifier)
 {
+    if (mRowNotValidated)
     validate ();
 
     ColumnDefinition* columnDef = NULL;
@@ -333,10 +342,10 @@ float ArcSDEReader::GetSingle (FdoString* identifier)
 /// <returns>Returns the string value</returns> 
 FdoString* ArcSDEReader::GetString (FdoString* identifier)
 {
+    if (mRowNotValidated)
     validate ();
 
     ColumnDefinition* columnDef = NULL;
-    wchar_t* value = NULL;
 
     columnDef = getColumnDef (identifier);
     if (columnDef->mPropertyType != FdoDataType_String)
@@ -344,8 +353,6 @@ FdoString* ArcSDEReader::GetString (FdoString* identifier)
     if (SE_IS_NULL_VALUE == columnDef->mBindIsNull)
         throw FdoException::Create (NlsMsgGet1(ARCSDE_NULL_VALUE, "The value of property '%1$ls' is null.", identifier));
 
-    if (NULL == columnDef->mValuePointer)
-    {
         CHAR *mbValue = NULL;
         if (mSelectingAggregates)
             ; // do nothing; an exception will have be thrown by now since the type doesn't match
@@ -354,14 +361,13 @@ FdoString* ArcSDEReader::GetString (FdoString* identifier)
         else
             mbValue = columnDef->mBindVariable._string;
 
-        multibyte_to_wide (value, mbValue);
-        if (NULL != value)
+    if (NULL == columnDef->mValuePointer)
         {
-            columnDef->mValuePointerSize = (int)wcslen (value) + 1;
+        columnDef->mValuePointerSize = columnDef->mDataLength + 1;
             columnDef->mValuePointer = new wchar_t[columnDef->mValuePointerSize];
-            wcscpy ((wchar_t*)(columnDef->mValuePointer), value);
         }
-    }
+
+    multibyte_to_wide_noalloc((wchar_t*)columnDef->mValuePointer, mbValue);
 
     return (wchar_t*)(columnDef->mValuePointer);
 }
@@ -374,6 +380,7 @@ FdoString* ArcSDEReader::GetString (FdoString* identifier)
 /// <returns>Returns the reference to LOBValue</returns> 
 FdoLOBValue* ArcSDEReader::GetLOB(FdoString* identifier)
 {
+    if (mRowNotValidated)
     validate ();
 
     ColumnDefinition* columnDef = NULL;
@@ -408,6 +415,7 @@ FdoLOBValue* ArcSDEReader::GetLOB(FdoString* identifier)
 /// <returns>Returns a reference to a LOB stream reader</returns> 
 FdoIStreamReader* ArcSDEReader::GetLOBStreamReader(FdoString* identifier )
 {
+    if (mRowNotValidated)
     validate ();
 
     ColumnDefinition* columnDef = NULL;
@@ -443,6 +451,7 @@ FdoIStreamReader* ArcSDEReader::GetLOBStreamReader(FdoString* identifier )
 /// <returns>Returns true if the value is null.</returns> 
 bool ArcSDEReader::IsNull (FdoString* identifier)
 {
+    if (mRowNotValidated)
     validate ();
 
     // Get appropriate ColumnDefinition:
@@ -478,31 +487,9 @@ bool ArcSDEReader::IsNull (FdoString* identifier)
 /// of Geometric type; otherwise, an exception is thrown.</summary>
 /// <param name="identifier">Input the property or column name.</param> 
 /// <returns>Returns the byte array in FGF format.</returns> 
-FdoByteArray* ArcSDEReader::GetGeometry (FdoString* identifier)
+FdoByteArray* ArcSDEReader::GetGeometry (FdoString* propertyName)
 {
-    validate ();
-
-    FdoInt32 count = 0;
-    const FdoByte* pureByteArray = GetGeometry(identifier, &count);
-    FdoByteArray* ret = FdoByteArray::Create (pureByteArray, (long)count);
-    return (ret);
-}
-
-
-
-/// <summary>Gets the geometry value of the specified property as a byte array in 
-/// FGF format. Because no conversion is performed, the property must be
-/// of Geometric type; otherwise, an exception is thrown. 
-/// This method is a language-specific performance optimization that returns a
-/// pointer to the array data, rather than to an object that encapsulates
-/// the array.  The array's memory area is only guaranteed to be valid
-/// until a call to ReadNext() or Close(), or the disposal of this reader
-/// object.</summary>
-/// <param name="propertyName">Input the property name.</param> 
-/// <param name="count">Output the number of bytes in the array.</param> 
-/// <returns>Returns a pointer to the byte array in FGF format.</returns> 
-const FdoByte * ArcSDEReader::GetGeometry(FdoString* propertyName, FdoInt32 * count)
-{
+    if (mRowNotValidated)
     validate ();
 
     ColumnDefinition* columnDef = NULL;
@@ -523,13 +510,33 @@ const FdoByte * ArcSDEReader::GetGeometry(FdoString* propertyName, FdoInt32 * co
 
     if (NULL == columnDef->mValuePointer)
     {
-        convert_sde_shape_to_fgf(columnDef->mBindVariable._shape, (FdoByteArray*&)columnDef->mValuePointer);
+        convert_sde_shape_to_fgf(mConnection, columnDef->mBindVariable._shape, (FdoByteArray*&)columnDef->mValuePointer);
         columnDef->mValuePointerSize = ((const FdoByteArray*)columnDef->mValuePointer)->GetCount();
     }
 
-    // return byte array length & byte array:
-    *count = columnDef->mValuePointerSize;
-    return ((const FdoByteArray*)columnDef->mValuePointer)->GetData();
+    // return FdoByteArray:
+    return FDO_SAFE_ADDREF((FdoByteArray*)columnDef->mValuePointer);
+}
+
+
+
+/// <summary>Gets the geometry value of the specified property as a byte array in 
+/// FGF format. Because no conversion is performed, the property must be
+/// of Geometric type; otherwise, an exception is thrown. 
+/// This method is a language-specific performance optimization that returns a
+/// pointer to the array data, rather than to an object that encapsulates
+/// the array.  The array's memory area is only guaranteed to be valid
+/// until a call to ReadNext() or Close(), or the disposal of this reader
+/// object.</summary>
+/// <param name="propertyName">Input the property name.</param> 
+/// <param name="count">Output the number of bytes in the array.</param> 
+/// <returns>Returns a pointer to the byte array in FGF format.</returns> 
+const FdoByte * ArcSDEReader::GetGeometry(FdoString* propertyName, FdoInt32 * count)
+{
+    FdoByteArray* fdoByteArray = GetGeometry(propertyName);
+    fdoByteArray->Release();
+    *count = fdoByteArray->GetCount();
+    return fdoByteArray->GetData();
 }
 
 /// <summary>Gets the raster object of the specified property.
@@ -543,7 +550,7 @@ FdoIRaster* ArcSDEReader::GetRaster(FdoString* propertyName)
 }
 
 // Clears the locally-cached values on each column:
-void ArcSDEReader::ClearCachedColumnValues(void)
+void ArcSDEReader::ClearCachedColumnValues(bool bReaderClosing)
 {
     if (mColumnDefs != NULL)  // If mColumnDefs not initialized, nothing to do
     {
@@ -551,7 +558,7 @@ void ArcSDEReader::ClearCachedColumnValues(void)
         for (int iColumn=0; iColumn<mColumnCount; iColumn++)
         {
             ColumnDefinition *columnDef = getColumnDef(iColumn);
-            columnDef->ClearCache();
+            columnDef->ClearCache(bReaderClosing);
         }
     }
 }
@@ -566,13 +573,14 @@ bool ArcSDEReader::ReadNext ()
 {
     bool ret = false;
     LONG result = 0L;
+    mRowNotValidated = true;
 
     mReady = true;
     if (mDistinct || mSelectingAggregates)
     {
         // NOTE: don't need to initialize bind variables here, since we use the stream statistics mechanism instead
 
-        ClearCachedColumnValues();
+        ClearCachedColumnValues(false);
 
         mStreamStatsIndex ++;  // move to next distinct value
         if (mSelectingAggregates)
@@ -582,8 +590,6 @@ bool ArcSDEReader::ReadNext ()
     }
     else
     {
-        validate (); // by the time we get here, any derived class will have initialized mStream
-
         // Set up bind variables, if not yet done so:
         if (!m_bBindVariablesInitialized)
         {
@@ -619,7 +625,7 @@ bool ArcSDEReader::ReadNext ()
             m_bBindVariablesInitialized = true;
         }
 
-        ClearCachedColumnValues();
+        ClearCachedColumnValues(false);
 
 
         // Fetch next row:
@@ -648,7 +654,7 @@ void ArcSDEReader::Close ()
     if (mConnection->GetConnectionState() == FdoConnectionState_Open) // connection close frees all it's streams
         if (NULL != mStream)
         {
-            ClearCachedColumnValues ();
+            ClearCachedColumnValues (true);
             result = SE_stream_free (mStream);
             mStream = NULL;
             // we allow the possibility that the stream was closed when the SE_CONNECTION was closed
@@ -691,19 +697,26 @@ ArcSDEReader::ColumnDefinition::~ColumnDefinition ()
     if (NULL != mStreamStats)
         SE_table_free_stats(mStreamStats);
 
-    ClearCache();
+    ClearCache(true);
 }
 
-void ArcSDEReader::ColumnDefinition::ClearCache()
+void ArcSDEReader::ColumnDefinition::ClearCache(bool bReaderClosing)
 {
     if (mPropertyType == FdoDataType_String)
+    {
+        if (bReaderClosing)
+        {
 	    delete[] (wchar_t*)mValuePointer;
-    else if (mPropertyType == (FdoDataType)-1)
-	    delete[] (unsigned char*)mValuePointer;
-    else if (NULL != mValuePointer)
-	    throw FdoException::Create(NlsMsgGet(ARCSDE_UNEXPECTED_ERROR, "Unexpected error encountered in ArcSDE Provider."));
-
+            mValuePointer = NULL;
+            mValuePointerSize = 0;
+        }
+    }
+    else if (mPropertyType == (FdoDataType)-1 && NULL != mValuePointer)
+    {
+        (void) ((FdoByteArray*)mValuePointer)->Release();
     mValuePointer = NULL;
     mValuePointerSize = 0;
 }
-
+    else if (NULL != mValuePointer)
+	    throw FdoException::Create(NlsMsgGet(ARCSDE_UNEXPECTED_ERROR, "Unexpected error encountered in ArcSDE Provider."));
+}

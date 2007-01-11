@@ -499,11 +499,12 @@ LONG SetShapeCoordRef(SE_SHAPE &shape, SE_COORDREF &coordref)
 
 
 
-void AddSpatialFilters(SE_CONNECTION connection, const FdoSpatialOperations fdoSpatialOperation, const char* sdeColumnName, SE_SHAPE &shape, std::vector<SE_FILTER> &spatialFilters)
+void AddSpatialFilters(ArcSDEConnection* conn, const FdoSpatialOperations fdoSpatialOperation, const char* sdeColumnName, SE_SHAPE &shape, std::vector<SE_FILTER> &spatialFilters)
 {
     //NOTE: see ArcSDE CHM file page "Fetching Data", for details on each ArcSDE spatial operator (e.g. SM_AI_OR_ET, etc)
 
     // Initialize common settings of filter:
+    SE_CONNECTION connection = conn->GetConnection();
     SE_FILTER newSpatialFilter;
     // NOTE: we don't know the name of the table in here, so let caller set newSpatialFilter.table
     strcpy (newSpatialFilter.column, sdeColumnName);
@@ -543,7 +544,7 @@ void AddSpatialFilters(SE_CONNECTION connection, const FdoSpatialOperations fdoS
             handle_sde_err<FdoCommandException>(connection, lResult, __FILE__, __LINE__, ARCSDE_FAILED_PROCESSING_SPATIAL_CONDITION, "Failed to process the given spatial condition.");
 
             // Add a new spatial filter (disjoint):
-            AddSpatialFilters(connection, FdoSpatialOperations_Disjoint, sdeColumnName, coordrefExtentShape, spatialFilters);
+            AddSpatialFilters(conn, FdoSpatialOperations_Disjoint, sdeColumnName, coordrefExtentShape, spatialFilters);
 
             // Clean up:
             SE_shape_free(shape);
@@ -598,7 +599,7 @@ void AddSpatialFilters(SE_CONNECTION connection, const FdoSpatialOperations fdoS
 
                     // Add one new spatial filter per line endpoint:
                     LONG lEndpointCount = 0L;
-                    SE_SHAPE* endpointShapes = GetEndPointsAsShapes(shape, lEndpointCount);
+                    SE_SHAPE* endpointShapes = GetEndPointsAsShapes(conn, shape, lEndpointCount);
                     for (long i=0; i<lEndpointCount; i++)
                     {
                         newSpatialFilter.filter.shape = endpointShapes[i];
@@ -703,18 +704,26 @@ void AddSpatialFilters(SE_CONNECTION connection, const FdoSpatialOperations fdoS
 }
 
 
+#define RESIZE(arr, type, newsize) \
+	if (arr==NULL) { \
+		arr = (type)malloc(newsize); \
+		arr##_cursize = newsize; \
+	} else if (arr##_cursize < (newsize)) { \
+		free(arr); \
+		arr##_cursize = ((newsize) > (arr##_cursize*2)) ? (newsize) : arr##_cursize*2; \
+		arr = (type)malloc(arr##_cursize); \
+	}
+
+
 void convert_fgf_to_sde_shape(ArcSDEConnection *connection, FdoByteArray* fgf, SE_COORDREF coordref, SE_SHAPE& result_shape, bool bCropToExtents)
 {
     LONG lResult = SE_SUCCESS;
 
     // Convert FGF to FdoIGeometry:
-    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+    FdoFgfGeometryFactory* gf = connection->mGeomFactory;
     FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(fgf);
     double z,m;
     FdoInt32 dim = geom->GetDimensionality();
-    SE_POINT *sePointXY = NULL;
-    double* sePointZ = NULL;
-    double* sePointM = NULL;
     long totalNumPoints = 0;
     long numPoints = 0;
     SE_SHAPE temp_shape = NULL;
@@ -806,25 +815,29 @@ void convert_fgf_to_sde_shape(ArcSDEConnection *connection, FdoByteArray* fgf, S
                 FdoPtr<FdoIPoint> point;
 
                 // Allocate arrays for XY, Z, and M (as required):
-                sePointXY = (SE_POINT*)malloc(totalNumPoints * sizeof(SE_POINT));
+                RESIZE(connection->mGeomBuffer_pointsXY, SE_POINT*, totalNumPoints * sizeof(SE_POINT));
                 if (dim & FdoDimensionality_Z)
-                    sePointZ = (double*)malloc(totalNumPoints * sizeof(double));
+                {
+                    RESIZE(connection->mGeomBuffer_pointsZ, double*, totalNumPoints * sizeof(double));
+                }
                 if (dim & FdoDimensionality_M)
-                    sePointM = (double*)malloc(totalNumPoints * sizeof(double));
+                {
+                    RESIZE(connection->mGeomBuffer_pointsM, double*, totalNumPoints * sizeof(double));
+                }
 
                 // Populate arrays for XY, Z and M (as required):
                 for (FdoInt32 i=0; i<totalNumPoints; i++)
                 {
                     point = multiPoint->GetItem(i);
-                    point->GetPositionByMembers(&sePointXY[i].x, &sePointXY[i].y, &z, &m, &dim);
+                    point->GetPositionByMembers(&(connection->mGeomBuffer_pointsXY[i].x), &(connection->mGeomBuffer_pointsXY[i].y), &z, &m, &dim);
                     if (dim & FdoDimensionality_Z)
-                        sePointZ[i] = z;
+                        connection->mGeomBuffer_pointsZ[i] = z;
                     if (dim & FdoDimensionality_M)
-                        sePointM[i] = m;
+                        connection->mGeomBuffer_pointsM[i] = m;
                 }
 
                 // Populate the SE_SHAPE based on the XY,Z, and M arrays:
-                lResult = SE_shape_generate_point (totalNumPoints, sePointXY, sePointZ, sePointM, *work_shape);
+                lResult = SE_shape_generate_point (totalNumPoints, connection->mGeomBuffer_pointsXY, connection->mGeomBuffer_pointsZ, connection->mGeomBuffer_pointsM, *work_shape);
                 handle_sde_err<FdoCommandException>(connection->GetConnection(), lResult, __FILE__, __LINE__, ARCSDE_CONVERT_SHAPE_FAILED, "Failed to convert FGF geometry to ArcSDE shape.");
             }
             break;
@@ -835,24 +848,29 @@ void convert_fgf_to_sde_shape(ArcSDEConnection *connection, FdoByteArray* fgf, S
                 totalNumPoints = lineString->GetCount();
 
                 // Allocate arrays for XY, Z, and M (as required):
-                sePointXY = (SE_POINT*)malloc(totalNumPoints * sizeof(SE_POINT));
+                RESIZE(connection->mGeomBuffer_pointsXY, SE_POINT*, totalNumPoints * sizeof(SE_POINT));
                 if (dim & FdoDimensionality_Z)
-                    sePointZ = (double*)malloc(totalNumPoints * sizeof(double));
+                {
+                    RESIZE(connection->mGeomBuffer_pointsZ, double*, totalNumPoints * sizeof(double));
+                }
                 if (dim & FdoDimensionality_M)
-                    sePointM = (double*)malloc(totalNumPoints * sizeof(double));
+                {
+                    RESIZE(connection->mGeomBuffer_pointsM, double*, totalNumPoints * sizeof(double));
+                }
+
 
                 // Populate arrays for XY, Z and M (as required):
                 for (FdoInt32 i=0; i<totalNumPoints; i++)
                 {
-                    lineString->GetItemByMembers(i, &sePointXY[i].x, &sePointXY[i].y, &z, &m, &dim);
+                    lineString->GetItemByMembers(i, &(connection->mGeomBuffer_pointsXY)[i].x, &(connection->mGeomBuffer_pointsXY)[i].y, &z, &m, &dim);
                     if (dim & FdoDimensionality_Z)
-                        sePointZ[i] = z;
+                        connection->mGeomBuffer_pointsZ[i] = z;
                     if (dim & FdoDimensionality_M)
-                        sePointM[i] = m;
+                        connection->mGeomBuffer_pointsM[i] = m;
                 }
 
                 // Populate the SE_SHAPE based on the XY,Z, and M arrays:
-                lResult = SE_shape_generate_line (totalNumPoints, 1, NULL, sePointXY, sePointZ, sePointM, *work_shape);
+                lResult = SE_shape_generate_line (totalNumPoints, 1, NULL, connection->mGeomBuffer_pointsXY, connection->mGeomBuffer_pointsZ, connection->mGeomBuffer_pointsM, *work_shape);
                 handle_sde_err<FdoCommandException>(connection->GetConnection(), lResult, __FILE__, __LINE__, ARCSDE_CONVERT_SHAPE_FAILED, "Failed to convert FGF geometry to ArcSDE shape.");
             }
             break;
@@ -862,13 +880,13 @@ void convert_fgf_to_sde_shape(ArcSDEConnection *connection, FdoByteArray* fgf, S
                 FdoIMultiLineString *multiLineString = static_cast<FdoIMultiLineString*>(geom.p);
                 FdoPtr<FdoILineString> lineString;
                 FdoInt32 numLineStrings = multiLineString->GetCount();
-                LONG *lineStringOffsets = (LONG*)malloc(numLineStrings * sizeof(LONG));
+                RESIZE(connection->mGeomBuffer_offsets, LONG*, numLineStrings * sizeof(LONG));
 
                 // Figure out the total number of points and each linestring's offset in the offset array:
                 for (FdoInt32 i=0; i<numLineStrings; i++)
                 {
                     // Set this linestring's offset in the 'flat' point arrays:
-                    lineStringOffsets[i] = totalNumPoints;
+                    connection->mGeomBuffer_offsets[i] = totalNumPoints;
 
                     // Add this linestring's number of points to totalNumPoints:
                     lineString = multiLineString->GetItem(i);
@@ -876,11 +894,15 @@ void convert_fgf_to_sde_shape(ArcSDEConnection *connection, FdoByteArray* fgf, S
                 }
 
                 // Allocate arrays for XY, Z, and M (as required):
-                sePointXY = (SE_POINT*)malloc(totalNumPoints * sizeof(SE_POINT));
+                RESIZE(connection->mGeomBuffer_pointsXY, SE_POINT*, totalNumPoints * sizeof(SE_POINT));
                 if (dim & FdoDimensionality_Z)
-                    sePointZ = (double*)malloc(totalNumPoints * sizeof(double));
+                {
+                    RESIZE(connection->mGeomBuffer_pointsZ, double*, totalNumPoints * sizeof(double));
+                }
                 if (dim & FdoDimensionality_M)
-                    sePointM = (double*)malloc(totalNumPoints * sizeof(double));
+                {
+                    RESIZE(connection->mGeomBuffer_pointsM, double*, totalNumPoints * sizeof(double));
+                }
 
                 // Populate arrays for XY, Z and M (as required):
                 long lPointIndex = 0;
@@ -890,19 +912,18 @@ void convert_fgf_to_sde_shape(ArcSDEConnection *connection, FdoByteArray* fgf, S
                     numPoints = lineString->GetCount();
                     for (FdoInt32 j=0; j<numPoints; j++)
                     {
-                        lineString->GetItemByMembers(j, &sePointXY[lPointIndex].x, &sePointXY[lPointIndex].y, &z, &m, &dim);
+                        lineString->GetItemByMembers(j, &(connection->mGeomBuffer_pointsXY)[lPointIndex].x, &(connection->mGeomBuffer_pointsXY)[lPointIndex].y, &z, &m, &dim);
                         if (dim & FdoDimensionality_Z)
-                            sePointZ[lPointIndex] = z;
+                            connection->mGeomBuffer_pointsZ[lPointIndex] = z;
                         if (dim & FdoDimensionality_M)
-                            sePointM[lPointIndex] = m;
+                            connection->mGeomBuffer_pointsM[lPointIndex] = m;
 
                         lPointIndex++;
                     }
                 }
 
                 // Populate the SE_SHAPE based on the XY,Z, and M arrays:
-                lResult = SE_shape_generate_line (totalNumPoints, numLineStrings, lineStringOffsets, sePointXY, sePointZ, sePointM, *work_shape);
-                free(lineStringOffsets);
+                lResult = SE_shape_generate_line (totalNumPoints, numLineStrings, connection->mGeomBuffer_offsets, connection->mGeomBuffer_pointsXY, connection->mGeomBuffer_pointsZ, connection->mGeomBuffer_pointsM, *work_shape);
                 handle_sde_err<FdoCommandException>(connection->GetConnection(), lResult, __FILE__, __LINE__, ARCSDE_CONVERT_SHAPE_FAILED, "Failed to convert FGF geometry to ArcSDE shape.");
             }
             break;
@@ -923,11 +944,15 @@ void convert_fgf_to_sde_shape(ArcSDEConnection *connection, FdoByteArray* fgf, S
                 }
 
                 // Allocate arrays for XY, Z, and M (as required):
-                sePointXY = (SE_POINT*)malloc(totalNumPoints * sizeof(SE_POINT));
+                RESIZE(connection->mGeomBuffer_pointsXY, SE_POINT*, totalNumPoints * sizeof(SE_POINT));
                 if (dim & FdoDimensionality_Z)
-                    sePointZ = (double*)malloc(totalNumPoints * sizeof(double));
+                {
+                    RESIZE(connection->mGeomBuffer_pointsZ, double*, totalNumPoints * sizeof(double));
+                }
                 if (dim & FdoDimensionality_M)
-                    sePointM = (double*)malloc(totalNumPoints * sizeof(double));
+                {
+                    RESIZE(connection->mGeomBuffer_pointsM, double*, totalNumPoints * sizeof(double));
+                }
 
                 // Populate arrays for XY, Z and M (as required):
                 long lPointIndex = 0;
@@ -936,11 +961,11 @@ void convert_fgf_to_sde_shape(ArcSDEConnection *connection, FdoByteArray* fgf, S
                 numPoints = linearRing->GetCount();
                 for (FdoInt32 i=0; i<numPoints; i++)
                 {
-                    linearRing->GetItemByMembers(i, &sePointXY[lPointIndex].x, &sePointXY[lPointIndex].y, &z, &m, &dim);
+                    linearRing->GetItemByMembers(i, &(connection->mGeomBuffer_pointsXY)[lPointIndex].x, &(connection->mGeomBuffer_pointsXY)[lPointIndex].y, &z, &m, &dim);
                     if (dim & FdoDimensionality_Z)
-                        sePointZ[lPointIndex] = z;
+                        connection->mGeomBuffer_pointsZ[lPointIndex] = z;
                     if (dim & FdoDimensionality_M)
-                        sePointM[lPointIndex] = m;
+                        connection->mGeomBuffer_pointsM[lPointIndex] = m;
 
                     lPointIndex++;
                 }
@@ -951,18 +976,18 @@ void convert_fgf_to_sde_shape(ArcSDEConnection *connection, FdoByteArray* fgf, S
                     numPoints = linearRing->GetCount();
                     for (FdoInt32 j=0; j<numPoints; j++)
                     {
-                        linearRing->GetItemByMembers(j, &sePointXY[lPointIndex].x, &sePointXY[lPointIndex].y, &z, &m, &dim);
+                        linearRing->GetItemByMembers(j, &(connection->mGeomBuffer_pointsXY)[lPointIndex].x, &(connection->mGeomBuffer_pointsXY)[lPointIndex].y, &z, &m, &dim);
                         if (dim & FdoDimensionality_Z)
-                            sePointZ[lPointIndex] = z;
+                            connection->mGeomBuffer_pointsZ[lPointIndex] = z;
                         if (dim & FdoDimensionality_M)
-                            sePointM[lPointIndex] = m;
+                            connection->mGeomBuffer_pointsM[lPointIndex] = m;
 
                         lPointIndex++;
                     }
                 }
 
                 // Populate the SE_SHAPE based on the XY,Z, and M arrays:
-                lResult = SE_shape_generate_polygon (totalNumPoints, 1, NULL, sePointXY, sePointZ, sePointM, *work_shape);
+                lResult = SE_shape_generate_polygon (totalNumPoints, 1, NULL, connection->mGeomBuffer_pointsXY, connection->mGeomBuffer_pointsZ, connection->mGeomBuffer_pointsM, *work_shape);
                 handle_sde_err<FdoCommandException>(connection->GetConnection(), lResult, __FILE__, __LINE__, ARCSDE_CONVERT_SHAPE_FAILED, "Failed to convert FGF geometry to ArcSDE shape.");
             }
             break;
@@ -975,11 +1000,11 @@ void convert_fgf_to_sde_shape(ArcSDEConnection *connection, FdoByteArray* fgf, S
 
                 // Figure out the total number of points, and the part offsets:
                 FdoInt32 numPolygons = multiPolygon->GetCount();
-                LONG *polygonOffsets = (LONG*)malloc(numPolygons * sizeof(LONG));
+                RESIZE(connection->mGeomBuffer_offsets, LONG*, numPolygons * sizeof(LONG));
                 for (FdoInt32 i=0; i<numPolygons;i ++)
                 {
                     // Store this polygon's offset in the 'flat' point arrays:
-                    polygonOffsets[i] = totalNumPoints;
+                    connection->mGeomBuffer_offsets[i] = totalNumPoints;
 
                     // Add this polygon's number of points to totalNumPoints:
                     polygon = multiPolygon->GetItem(i);
@@ -994,11 +1019,15 @@ void convert_fgf_to_sde_shape(ArcSDEConnection *connection, FdoByteArray* fgf, S
                 }
 
                 // Allocate arrays for XY, Z, and M (as required):
-                sePointXY = (SE_POINT*)malloc(totalNumPoints * sizeof(SE_POINT));
+                RESIZE(connection->mGeomBuffer_pointsXY, SE_POINT*, totalNumPoints * sizeof(SE_POINT));
                 if (dim & FdoDimensionality_Z)
-                    sePointZ = (double*)malloc(totalNumPoints * sizeof(double));
+                {
+                    RESIZE(connection->mGeomBuffer_pointsZ, double*, totalNumPoints * sizeof(double));
+                }
                 if (dim & FdoDimensionality_M)
-                    sePointM = (double*)malloc(totalNumPoints * sizeof(double));
+                {
+                    RESIZE(connection->mGeomBuffer_pointsM, double*, totalNumPoints * sizeof(double));
+                }
 
                 // Populate arrays for XY, Z and M (as required):
                 long lPointIndex = 0;
@@ -1011,11 +1040,11 @@ void convert_fgf_to_sde_shape(ArcSDEConnection *connection, FdoByteArray* fgf, S
                     numPoints = linearRing->GetCount();
                     for (FdoInt32 i=0; i<numPoints; i++)
                     {
-                        linearRing->GetItemByMembers(i, &sePointXY[lPointIndex].x, &sePointXY[lPointIndex].y, &z, &m, &dim);
+                        linearRing->GetItemByMembers(i, &(connection->mGeomBuffer_pointsXY)[lPointIndex].x, &(connection->mGeomBuffer_pointsXY)[lPointIndex].y, &z, &m, &dim);
                         if (dim & FdoDimensionality_Z)
-                            sePointZ[lPointIndex] = z;
+                            connection->mGeomBuffer_pointsZ[lPointIndex] = z;
                         if (dim & FdoDimensionality_M)
-                            sePointM[lPointIndex] = m;
+                            connection->mGeomBuffer_pointsM[lPointIndex] = m;
 
                         lPointIndex++;
                     }
@@ -1027,11 +1056,11 @@ void convert_fgf_to_sde_shape(ArcSDEConnection *connection, FdoByteArray* fgf, S
                         numPoints = linearRing->GetCount();
                         for (FdoInt32 k=0; k<numPoints; k++)
                         {
-                            linearRing->GetItemByMembers(k, &sePointXY[lPointIndex].x, &sePointXY[lPointIndex].y, &z, &m, &dim);
+                            linearRing->GetItemByMembers(k, &(connection->mGeomBuffer_pointsXY)[lPointIndex].x, &(connection->mGeomBuffer_pointsXY)[lPointIndex].y, &z, &m, &dim);
                             if (dim & FdoDimensionality_Z)
-                                sePointZ[lPointIndex] = z;
+                                connection->mGeomBuffer_pointsZ[lPointIndex] = z;
                             if (dim & FdoDimensionality_M)
-                                sePointM[lPointIndex] = m;
+                                connection->mGeomBuffer_pointsM[lPointIndex] = m;
 
                             lPointIndex++;
                         }
@@ -1039,8 +1068,7 @@ void convert_fgf_to_sde_shape(ArcSDEConnection *connection, FdoByteArray* fgf, S
                 }
 
                 // Populate the SE_SHAPE based on the XY,Z, and M arrays:
-                lResult = SE_shape_generate_polygon (totalNumPoints, numPolygons, polygonOffsets, sePointXY, sePointZ, sePointM, *work_shape);
-                free(polygonOffsets);
+                lResult = SE_shape_generate_polygon (totalNumPoints, numPolygons, connection->mGeomBuffer_offsets, connection->mGeomBuffer_pointsXY, connection->mGeomBuffer_pointsZ, connection->mGeomBuffer_pointsM, *work_shape);
                 handle_sde_err<FdoCommandException>(connection->GetConnection(), lResult, __FILE__, __LINE__, ARCSDE_CONVERT_SHAPE_FAILED, "Failed to convert FGF geometry to ArcSDE shape.");
             }
             break;
@@ -1069,9 +1097,6 @@ void convert_fgf_to_sde_shape(ArcSDEConnection *connection, FdoByteArray* fgf, S
     }
 
     // clean up:
-    free(sePointXY);
-    free(sePointZ);
-    free(sePointM);
     if (temp_shape != NULL)
         SE_shape_free(temp_shape);
     if (temp_coordref != NULL)
@@ -1090,7 +1115,7 @@ void convert_fgf_to_sde_shape(ArcSDEConnection *connection, FdoByteArray* fgf, S
       if (bHasM) { ordinates[iOrdinateIndex] = measure[inputCoordIndex];  iOrdinateIndex++; } }
 
 
-void convert_sde_shape_to_fgf(SE_SHAPE shape, FdoByteArray*& fgf)
+void convert_sde_shape_to_fgf(ArcSDEConnection* connection, SE_SHAPE shape, FdoByteArray*& fgf)
 {
     LONG lResult = SE_SUCCESS;
     FdoPtr<FdoIGeometry> geom;
@@ -1112,20 +1137,22 @@ void convert_sde_shape_to_fgf(SE_SHAPE shape, FdoByteArray*& fgf)
     handle_sde_err<FdoCommandException>(lResult, __FILE__, __LINE__, ARCSDE_GEOMETRY_CONVERSION_SHAPE_TO_FGF, "Error encountered while converting ArcSDE shape to FGF.");
 
     // Get shape's point/part/subpart data:
-    LONG *part_offsets = (LONG*)malloc(numParts * sizeof(LONG));
-    LONG *subpart_offsets = (LONG*)malloc(numSubParts * sizeof(LONG));
-    SE_POINT *point_array = (SE_POINT*)malloc(numPoints * sizeof(SE_POINT));
-    LFLOAT *z = NULL;
-    LFLOAT *measure = NULL;
+	RESIZE(connection->mGeomBuffer_part_offsets, LONG*, numParts * sizeof(LONG));
+	RESIZE(connection->mGeomBuffer_subpart_offsets, LONG*, numSubParts * sizeof(LONG));
+	RESIZE(connection->mGeomBuffer_pointsXY, SE_POINT*, numPoints * sizeof(SE_POINT));
     if (bHasZ)
-        z = (LFLOAT*)malloc(numPoints * sizeof(LFLOAT));
+	{
+		RESIZE(connection->mGeomBuffer_pointsZ,LFLOAT*,numPoints * sizeof(LFLOAT));
+	}
     if (bHasM)
-        measure = (LFLOAT*)malloc(numPoints * sizeof(LFLOAT));
-    lResult = SE_shape_get_all_points (shape, SE_DEFAULT_ROTATION, part_offsets, subpart_offsets, point_array, z, measure);
+	{
+		RESIZE(connection->mGeomBuffer_pointsM,LFLOAT*,numPoints * sizeof(LFLOAT));
+	}
+    lResult = SE_shape_get_all_points (shape, SE_DEFAULT_ROTATION, connection->mGeomBuffer_part_offsets, connection->mGeomBuffer_subpart_offsets, connection->mGeomBuffer_pointsXY, connection->mGeomBuffer_pointsZ, connection->mGeomBuffer_pointsM);
     handle_sde_err<FdoCommandException>(lResult, __FILE__, __LINE__, ARCSDE_GEOMETRY_CONVERSION_SHAPE_TO_FGF, "Error encountered while converting ArcSDE shape to FGF.");
 
     // Convert this shape's data to FdoIGeometry:
-    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+    FdoFgfGeometryFactory *gf = connection->mGeomFactory;
     switch (shape_type)
     {
         /*
@@ -1139,27 +1166,25 @@ void convert_sde_shape_to_fgf(SE_SHAPE shape, FdoByteArray*& fgf)
         case SG_POINT_SHAPE:
         {
             FdoInt32 iNumOrdinates = 2 + (bHasZ ? 1 : 0) + (bHasM ? 1 : 0);
-            double *ordinates = (double*)alloca(iNumOrdinates * sizeof(double));
+			RESIZE(connection->mGeomBuffer_ordinates, double*, iNumOrdinates * sizeof(double));
 
-            ADD_POINT(ordinates, iOrdinateIndex, point_array, z, measure, 0);
+            ADD_POINT(connection->mGeomBuffer_ordinates, iOrdinateIndex, connection->mGeomBuffer_pointsXY, connection->mGeomBuffer_pointsZ, connection->mGeomBuffer_pointsM, 0);
 
-            geom = gf->CreatePoint(dim, ordinates);
+            geom = gf->CreatePoint(dim, connection->mGeomBuffer_ordinates);
         }
         break;
 
         case SG_MULTI_POINT_SHAPE:
         {
             FdoInt32 iNumOrdinates = numParts * (2 + (bHasZ ? 1 : 0) + (bHasM ? 1 : 0));
-            double *ordinates = (double*)malloc(iNumOrdinates * sizeof(double));
+			RESIZE(connection->mGeomBuffer_ordinates, double*, iNumOrdinates * sizeof(double));
 
             for (FdoInt32 i=0; i<numParts; i++)
             {
-                ADD_POINT(ordinates, iOrdinateIndex, point_array, z, measure, i);
+                ADD_POINT(connection->mGeomBuffer_ordinates, iOrdinateIndex, connection->mGeomBuffer_pointsXY, connection->mGeomBuffer_pointsZ, connection->mGeomBuffer_pointsM, i);
             }
 
-            geom = gf->CreateMultiPoint(dim, iNumOrdinates, ordinates);
-
-            free(ordinates);
+            geom = gf->CreateMultiPoint(dim, iNumOrdinates, connection->mGeomBuffer_ordinates);
         }
         break;
 
@@ -1167,16 +1192,15 @@ void convert_sde_shape_to_fgf(SE_SHAPE shape, FdoByteArray*& fgf)
         case SG_SIMPLE_LINE_SHAPE:
         {
             FdoInt32 iNumOrdinates = numPoints * (2 + (bHasZ ? 1 : 0) + (bHasM ? 1 : 0));
-            double *ordinates = (double*)malloc(iNumOrdinates * sizeof(double));
+			RESIZE(connection->mGeomBuffer_ordinates, double*, iNumOrdinates * sizeof(double));
+
 
             for (FdoInt32 i=0; i<numPoints; i++)
             {
-                ADD_POINT(ordinates, iOrdinateIndex, point_array, z, measure, i);
+                ADD_POINT(connection->mGeomBuffer_ordinates, iOrdinateIndex, connection->mGeomBuffer_pointsXY, connection->mGeomBuffer_pointsZ, connection->mGeomBuffer_pointsM, i);
             }
 
-            geom = gf->CreateLineString(dim, iNumOrdinates, ordinates);
-
-            free(ordinates);
+            geom = gf->CreateLineString(dim, iNumOrdinates, connection->mGeomBuffer_ordinates);
         }
         break;
 
@@ -1185,7 +1209,7 @@ void convert_sde_shape_to_fgf(SE_SHAPE shape, FdoByteArray*& fgf)
         {
             FdoPtr<FdoLineStringCollection> lineStrings = FdoLineStringCollection::Create();
             FdoInt32 iNumOrdinates = numPoints * (2 + (bHasZ ? 1 : 0) + (bHasM ? 1 : 0));
-            double *ordinates = (double*)malloc(iNumOrdinates * sizeof(double));  // allocate max number of ordinates for one linestring
+			RESIZE(connection->mGeomBuffer_ordinates, double*, iNumOrdinates * sizeof(double));  // allocate max number of connection->mGeomBuffer_ordinates for one linestring
 
             int iSdePointIndex = 0;
             for (FdoInt32 i=0; i<numParts; i++)
@@ -1198,15 +1222,13 @@ void convert_sde_shape_to_fgf(SE_SHAPE shape, FdoByteArray*& fgf)
 
                 for (FdoInt32 j=0; j<numPointsForPart; j++)
                 {
-                    ADD_POINT(ordinates, iOrdinateIndex, point_array, z, measure, iSdePointIndex);
+                    ADD_POINT(connection->mGeomBuffer_ordinates, iOrdinateIndex, connection->mGeomBuffer_pointsXY, connection->mGeomBuffer_pointsZ, connection->mGeomBuffer_pointsM, iSdePointIndex);
                     iSdePointIndex++;
                 }
 
-                FdoPtr<FdoILineString> lineString = gf->CreateLineString(dim, iOrdinateIndex, ordinates);
+                FdoPtr<FdoILineString> lineString = gf->CreateLineString(dim, iOrdinateIndex, connection->mGeomBuffer_ordinates);
                 lineStrings->Add(lineString);
             }
-
-            free(ordinates);
 
             geom = gf->CreateMultiLineString(lineStrings);
         }
@@ -1217,7 +1239,7 @@ void convert_sde_shape_to_fgf(SE_SHAPE shape, FdoByteArray*& fgf)
             FdoPtr<FdoILinearRing> exteriorRing;
             FdoPtr<FdoLinearRingCollection> interiorRings = FdoLinearRingCollection::Create();
             FdoInt32 iNumOrdinates = numPoints * (2 + (bHasZ ? 1 : 0) + (bHasM ? 1 : 0));
-            double *ordinates = (double*)malloc(iNumOrdinates * sizeof(double));  // allocate one array big enough for any given polygon ring
+			RESIZE(connection->mGeomBuffer_ordinates, double*, iNumOrdinates * sizeof(double));  // allocate one array big enough for any given polygon ring
 
             int iSdePointIndex = 0;
             for (FdoInt32 i=0; i<numSubParts; i++)
@@ -1229,18 +1251,16 @@ void convert_sde_shape_to_fgf(SE_SHAPE shape, FdoByteArray*& fgf)
                 iOrdinateIndex = 0;
                 for (FdoInt32 j=0; j<numPointsForSubPart; j++)
                 {
-                    ADD_POINT(ordinates, iOrdinateIndex, point_array, z, measure, iSdePointIndex);
+                    ADD_POINT(connection->mGeomBuffer_ordinates, iOrdinateIndex, connection->mGeomBuffer_pointsXY, connection->mGeomBuffer_pointsZ, connection->mGeomBuffer_pointsM, iSdePointIndex);
                     iSdePointIndex++;
                 }
 
-                FdoPtr<FdoILinearRing> linearRing = gf->CreateLinearRing(dim, iOrdinateIndex, ordinates);
+                FdoPtr<FdoILinearRing> linearRing = gf->CreateLinearRing(dim, iOrdinateIndex, connection->mGeomBuffer_ordinates);
                 if (i==0)  // subpart 1 is always the outer ring
                     exteriorRing = linearRing;
                 else  // subparts 2,3,4,... are always the inner rings
                     interiorRings->Add(linearRing);
             }
-
-            free(ordinates);
 
             geom = gf->CreatePolygon(exteriorRing, interiorRings);
         }
@@ -1252,7 +1272,7 @@ void convert_sde_shape_to_fgf(SE_SHAPE shape, FdoByteArray*& fgf)
 
             FdoPtr<FdoILinearRing> exteriorRing;
             FdoInt32 iNumOrdinates = numPoints * (2 + (bHasZ ? 1 : 0) + (bHasM ? 1 : 0));
-            double *ordinates = (double*)malloc(iNumOrdinates * sizeof(double));  // allocate one array big enough for any given polygon ring
+			RESIZE(connection->mGeomBuffer_ordinates, double*, iNumOrdinates * sizeof(double));  // allocate one array big enough for any given polygon ring
 
             int iSdePointIndex = 0;
             for (FdoInt32 p=0; p<numParts; p++)
@@ -1272,11 +1292,11 @@ void convert_sde_shape_to_fgf(SE_SHAPE shape, FdoByteArray*& fgf)
                     iOrdinateIndex = 0;
                     for (FdoInt32 j=0; j<numPointsForSubPart; j++)
                     {
-                        ADD_POINT(ordinates, iOrdinateIndex, point_array, z, measure, iSdePointIndex);
+                        ADD_POINT(connection->mGeomBuffer_ordinates, iOrdinateIndex, connection->mGeomBuffer_pointsXY, connection->mGeomBuffer_pointsZ, connection->mGeomBuffer_pointsM, iSdePointIndex);
                         iSdePointIndex++;
                     }
 
-                    FdoPtr<FdoILinearRing> linearRing = gf->CreateLinearRing(dim, iOrdinateIndex, ordinates);
+                    FdoPtr<FdoILinearRing> linearRing = gf->CreateLinearRing(dim, iOrdinateIndex, connection->mGeomBuffer_ordinates);
                     if (i==0)  // subpart 1 is always the outer ring
                         exteriorRing = linearRing;
                     else  // subparts 2,3,4,... are always the inner rings
@@ -1287,8 +1307,6 @@ void convert_sde_shape_to_fgf(SE_SHAPE shape, FdoByteArray*& fgf)
                 polygons->Add(polygon);
             }
 
-            free(ordinates);
-
             geom = gf->CreateMultiPolygon(polygons);
         }
         break;
@@ -1297,14 +1315,7 @@ void convert_sde_shape_to_fgf(SE_SHAPE shape, FdoByteArray*& fgf)
             throw FdoException::Create(NlsMsgGet(ARCSDE_GEOMETRY_CONVERSION_SHAPE_TO_FGF, "Error encountered while converting ArcSDE shape to FGF."));
         break;
     }
-
-    // clean up:
-    free(part_offsets);
-    free(subpart_offsets);
-    free(point_array);
-    free(z);
-    free(measure);
-
+	
     // Convert geom to FGF for caller:
     fgf = gf->GetFgf(geom);
 }
@@ -1933,16 +1944,11 @@ FdoString* GetAggregateFunctionPropertyName(FdoFunction *fdoFunction)
 
 // Gets the endpoints of the given shape as an array of new SE_SHAPE objects;
 // The returned SE_SHAPE array needs to be freed by the caller using delete[]:
-SE_SHAPE* GetEndPointsAsShapes(SE_SHAPE shape, long &lEndpointCount)
+SE_SHAPE* GetEndPointsAsShapes(ArcSDEConnection *connection, SE_SHAPE shape, long &lEndpointCount)
 {
     LONG lResult = SE_SUCCESS;
     SE_SHAPE *resultShapes = NULL;
     FdoException *exception = NULL;
-    LONG *part_offsets = NULL;
-    LONG *subpart_offsets = NULL;
-    SE_POINT *point_array = NULL;
-    LFLOAT *z = NULL;
-    LFLOAT *measure = NULL;
     SE_COORDREF coordref = NULL;
 
     try
@@ -1968,16 +1974,18 @@ SE_SHAPE* GetEndPointsAsShapes(SE_SHAPE shape, long &lEndpointCount)
         handle_sde_err<FdoCommandException>(lResult, __FILE__, __LINE__, ARCSDE_FAILED_PROCESSING_SPATIAL_CONDITION, "Failed to process the given spatial condition.");
 
         // Get shape's point/part/subpart data:
-        part_offsets = (LONG*)malloc(numParts * sizeof(LONG));
-        subpart_offsets = (LONG*)malloc(numSubParts * sizeof(LONG));
-        point_array = (SE_POINT*)malloc(numPoints * sizeof(SE_POINT));
-        z = NULL;
-        measure = NULL;
+        RESIZE(connection->mGeomBuffer_part_offsets, LONG*, numParts * sizeof(LONG));
+        RESIZE(connection->mGeomBuffer_subpart_offsets, LONG*, numSubParts * sizeof(LONG));
+        RESIZE(connection->mGeomBuffer_pointsXY, SE_POINT*, numPoints * sizeof(SE_POINT));
         if (bHasZ)
-            z = (LFLOAT*)malloc(numPoints * sizeof(LFLOAT));
+        {
+            RESIZE(connection->mGeomBuffer_pointsZ, double*, numPoints * sizeof(double));
+        }
         if (bHasM)
-            measure = (LFLOAT*)malloc(numPoints * sizeof(LFLOAT));
-        lResult = SE_shape_get_all_points (shape, SE_DEFAULT_ROTATION, part_offsets, subpart_offsets, point_array, z, measure);
+        {
+            RESIZE(connection->mGeomBuffer_pointsM, double*, numPoints * sizeof(double));
+        }
+        lResult = SE_shape_get_all_points (shape, SE_DEFAULT_ROTATION, connection->mGeomBuffer_part_offsets, connection->mGeomBuffer_subpart_offsets, connection->mGeomBuffer_pointsXY, connection->mGeomBuffer_pointsZ, connection->mGeomBuffer_pointsM);
         handle_sde_err<FdoException>(lResult, __FILE__, __LINE__, ARCSDE_FAILED_PROCESSING_SPATIAL_CONDITION, "Failed to process the given spatial condition.");
 
         // Get shape's coordref:
@@ -2002,12 +2010,13 @@ SE_SHAPE* GetEndPointsAsShapes(SE_SHAPE shape, long &lEndpointCount)
                 SE_POINT *endpointXY = NULL;
                 LFLOAT   *endpointZ  = NULL;
                 LFLOAT   *endpointM  = NULL;
-                LONG lOffset = ((j==0)  ?  subpart_offsets[part_offsets[i]]  :  subpart_offsets[part_offsets[i]]+numPointsForPart-1 );
-                endpointXY = point_array + lOffset;
+                LONG lOffset = ((j==0) ? connection->mGeomBuffer_subpart_offsets[connection->mGeomBuffer_part_offsets[i]]
+                                       : connection->mGeomBuffer_subpart_offsets[connection->mGeomBuffer_part_offsets[i]]+numPointsForPart-1 );
+                endpointXY = connection->mGeomBuffer_pointsXY + lOffset;
                 if (bHasZ)
-                    endpointZ = z + lOffset;
+                    endpointZ = connection->mGeomBuffer_pointsZ + lOffset;
                 if (bHasM)
-                    endpointM = measure + lOffset;
+                    endpointM = connection->mGeomBuffer_pointsM + lOffset;
 
                 // Create a new SE_SHAPE for this endpoint, and store it in the resultShapes array:
                 SE_SHAPE newShape;
@@ -2026,11 +2035,6 @@ SE_SHAPE* GetEndPointsAsShapes(SE_SHAPE shape, long &lEndpointCount)
 
     // cleanup (NOTE: the new SE_SHAPE instances will be cleaned up later on, after the stream is executed):
     SE_coordref_free (coordref);
-    free(part_offsets);
-    free(subpart_offsets);
-    free(point_array);
-    free(z);
-    free(measure);
 
     // Re-throw exception if any:
     if (exception)

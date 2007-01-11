@@ -28,6 +28,7 @@ class SelectTests :
     public ArcSDETests
 {
     CPPUNIT_TEST_SUITE (SelectTests);
+    CPPUNIT_TEST (select_large_table_with_geom);
     CPPUNIT_TEST (simple);
     CPPUNIT_TEST (get_class_before_readnext);
     CPPUNIT_TEST (simple_filter);
@@ -79,6 +80,10 @@ protected:
     void spatial_query_outside_coordsys_extents();
     void multiple_databases();
     void spatial_filter_buffer_outside_extents();
+    void select_large_table_with_geom();
+
+    // helper methods:
+    void create_large_table_with_geom();
 };
 
 #endif // CPP_UNIT_SelectTests_H
