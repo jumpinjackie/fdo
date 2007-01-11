@@ -36,7 +36,7 @@
     const char* p = (mb);\
     size_t i = strlen (p);\
     i++;\
-    w = (wchar_t*)alloca (i * sizeof (wchar_t));\
+    w = (wchar_t*)alloca(i * sizeof (wchar_t));\
     i = MultiByteToWideChar (\
         CP_THREAD_ACP,\
         0,\
@@ -69,6 +69,45 @@
         mb = NULL;\
     if (NULL==mb) throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));\
 }
+
+// macro to convert a multibyte string into a wide character string,
+// assuming adequate space has already been provided in w
+#define multibyte_to_wide_noalloc(w,mb)\
+{\
+    const char* p = (mb);\
+    size_t i = strlen (p);\
+    i++;\
+    i = MultiByteToWideChar (\
+        CP_THREAD_ACP,\
+        0,\
+        p,\
+        (int)i,\
+        w,\
+        (int)i);\
+    if (0 == i)\
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));\
+}
+
+// macro to convert a wide character string into a multibyte string,
+// assuming adequate space has already been provided in mb
+#define wide_to_multibyte_noalloc(mb,w)\
+{\
+    const wchar_t* p = (w);\
+    size_t i = wcslen (p);\
+    i++;\
+    i = WideCharToMultiByte (\
+        CP_THREAD_ACP,\
+        0,\
+        p,\
+        (int)i,\
+        mb,\
+        (int)i * 6,\
+        NULL,\
+        NULL);\
+    if (0 == i)\
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));\
+}
+
 #else
 // macro to convert a multibyte string into a wide character string, allocating space on the stack
 #define multibyte_to_wide(w,mb)\
@@ -94,6 +133,30 @@
     if (0 > i)\
         mb = NULL;\
     if (NULL==mb) throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));\
+}
+
+// macro to convert a multibyte string into a wide character string,
+// assuming adequate space has already been provided in w
+#define multibyte_to_wide_noalloc(w,mb)\
+{\
+    const char* p = (mb);\
+    size_t i = strlen (p);\
+    i++;\
+    i = mbstowcs (w, p, i);\
+    if (0 > i)\
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));\
+}
+
+// macro to convert a wide character string into a multibyte string,
+// assuming adequate space has already been provided in w
+#define wide_to_multibyte_noalloc(mb,w)\
+{\
+    const wchar_t* p = (w);\
+    size_t i = wcslen (p);\
+    i++;\
+    i = wcstombs (mb, p, i*6);\
+    if (0 > i)\
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));\
 }
 #endif
 
