@@ -32,7 +32,6 @@
 class FdoDoubleValue : public FdoDataValue
 {
     friend class FdoByteValue;
-    friend class FdoDoubleValue;
     friend class FdoInt16Value;
     friend class FdoInt32Value;
     friend class FdoInt64Value;
