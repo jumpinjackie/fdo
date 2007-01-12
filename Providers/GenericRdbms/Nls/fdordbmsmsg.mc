@@ -1745,3 +1745,8 @@ SymbolicName=FDORDBMS_495
 Language=English
 Duplicate columns of name '%1$ls' found in query result.
 .
+MessageId=2730
+SymbolicName=FDORDBMS_505
+Language=English
+Unknown MySQL server host '%1$ls'
+.

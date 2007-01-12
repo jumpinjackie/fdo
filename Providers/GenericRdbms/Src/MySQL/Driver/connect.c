@@ -17,6 +17,12 @@
  */
 
 #include "stdafx.h"
+#include <errmsg.h>
+
+#include "nls.h"
+#include <Inc/Nls/fdordbms_msg.h>
+#include <Common/Std.h>
+#include <Common/StringP.h>
 
 #include "connect.h"
 #include "Inc/ut.h"
@@ -95,7 +101,17 @@ int mysql_connect (
                     handle = mysql_real_connect (mysql, host, user, pswd, db, port, NULL, 0);
                     if ((MYSQL *)NULL == handle) {
                         // mysql_get_msg() will get this
-                        swprintf(context->mysql_last_err_msg, RDBI_MSG_SIZE, L"%hs", mysql_error(mysql));
+                        // Handle the case when the host is not found.
+                        // The language setting is only on the server. If the host is invalid, the message
+                        // returned by mysql_error is in English.
+                        if (mysql_errno(mysql) == CR_UNKNOWN_HOST)
+                        {
+                            swprintf(context->mysql_last_err_msg, RDBI_MSG_SIZE, mysql_nls_msg_get(FDORDBMS_505, "Unknown MySQL server host '%1$ls'", (FdoString *) FdoStringP(host)));
+                        }
+                        else
+                        {
+                            swprintf(context->mysql_last_err_msg, RDBI_MSG_SIZE, L"%hs", mysql_error(mysql));
+                        }
                         context->mysql_last_err_msg[RDBI_MSG_SIZE - 1] = 0;
                         ret = RDBI_GENERIC_ERROR;
                     }

@@ -29,4 +29,6 @@ const wchar_t* mysql_nls_client_version( unsigned long client_version );
 // Constructs a message indicating that the connected MySQL database is too old for FDO
 const wchar_t* mysql_nls_server_version( unsigned long client_version );
 
+const wchar_t* mysql_nls_msg_get(int msg_num, char* default_msg,  ...);
+
 #endif // MYSQL_NLS_H
