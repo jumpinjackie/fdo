@@ -52,25 +52,6 @@ KeyDb::KeyDb(SQLiteDataBase* env, const char* filename, FdoString* dbname, bool 
             throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_10_ERROR_ACCESSING_SDFDB)));
         }
     }
-
-    if ( !bReadOnly ) 
-    {
-        if ( m_db->GetUseIntKey() != m_db->GetActualUseIntKey() ) {
-            // Index should be for integer key but it is actually for non-integer key, or vice versa.
-            // This is an indication that the index is corrupt, so drop and rebuild it. 
-
-            m_db->Drop();
-            m_db->close(0);
-
-            if (res = m_db->open(0, filename, (const char*)PhysName("KEY:", (const char*)PhysName(L"", dbname,false),false), (const char*) m_dbname, SQLiteDB_CREATE, 0, bUseIntKey) != 0)
-            {
-                //printf("%s\n", env->strerror(res));
-                throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_10_ERROR_ACCESSING_SDFDB)));
-            }
-
-            m_IndexNeedsRegen = true;
-        }
-    }
 }
 
 KeyDb::~KeyDb()
