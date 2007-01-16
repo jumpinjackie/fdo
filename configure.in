@@ -176,6 +176,9 @@ AC_CONFIG_FILES(Fdo/UnitTest/Makefile)
 #FdoCommon
 AC_CONFIG_FILES([Utilities/Common/Makefile])
 
+#TestCommon
+AC_CONFIG_FILES([Utilities/TestCommon/Makefile])
+
 #SQLiteInterface
 AC_CONFIG_FILES([Utilities/SQLiteInterface/Makefile])
 

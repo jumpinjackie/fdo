@@ -19850,6 +19850,8 @@ fi
 #FdoCommon
           ac_config_files="$ac_config_files Utilities/Common/Makefile"
 
+#TestCommon
+          ac_config_files="$ac_config_files Utilities/TestCommon/Makefile"
 
 #SQLiteInterface
           ac_config_files="$ac_config_files Utilities/SQLiteInterface/Makefile"
@@ -20471,6 +20473,7 @@ do
   "Fdo/Docs/XmlSchema/Makefile" ) CONFIG_FILES="$CONFIG_FILES Fdo/Docs/XmlSchema/Makefile" ;;
   "Fdo/UnitTest/Makefile" ) CONFIG_FILES="$CONFIG_FILES Fdo/UnitTest/Makefile" ;;
   "Utilities/Common/Makefile" ) CONFIG_FILES="$CONFIG_FILES Utilities/Common/Makefile" ;;
+  "Utilities/TestCommon/Makefile" ) CONFIG_FILES="$CONFIG_FILES Utilities/TestCommon/Makefile" ;;
   "Utilities/SQLiteInterface/Makefile" ) CONFIG_FILES="$CONFIG_FILES Utilities/SQLiteInterface/Makefile" ;;
   "Utilities/OWS/Makefile" ) CONFIG_FILES="$CONFIG_FILES Utilities/OWS/Makefile" ;;
   "Utilities/OWS/Src/Makefile" ) CONFIG_FILES="$CONFIG_FILES Utilities/OWS/Src/Makefile" ;;
