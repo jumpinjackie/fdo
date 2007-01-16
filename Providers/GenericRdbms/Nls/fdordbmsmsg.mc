@@ -1760,3 +1760,8 @@ SymbolicName=FDORDBMS_505
 Language=English
 Unknown MySQL server host '%1$ls'
 .
+MessageId=2731
+SymbolicName=FDORDBMS_506
+Language=English
+No current open database.
+.

@@ -38,16 +38,30 @@
 *		Void.															*
 *																		*
 ************************************************************************/
-
+#include <Fdo.h>
+#include <Inc/Nls/fdordbms_msg.h>
 #include <Inc/ut.h> 					/* ut_vm_malloc()			*/
 #include <Inc/rdbi.h>					/* rdbi status values		*/
 #include <Inc/debugext.h>
 #include "proto_p.h"
 
-#define MSG_NODBOPEN  "No current open database."
-#define MSG_NODBOPENW L"No current open database."
 #define MSG_EMPTY  ""
 #define MSG_EMPTYW L""
+
+
+extern char *fdordbms_cat;
+
+const wchar_t* ocdcdr_nls_msg_get(int msg_num, char* default_msg,  ...)
+{
+    FdoString *ret = NULL;
+    va_list varargs;
+    va_start(varargs, default_msg);
+    ret = FdoException::NLSGetMessage(msg_num, default_msg, MF_FDORDBMS, varargs
+);
+    va_end(varargs);
+    return ret;
+}
+
 
 void local_odbcdr_get_msg(odbcdr_context_def  *context, rdbi_string_def *buffer)
 {
@@ -61,7 +75,10 @@ void local_odbcdr_get_msg(odbcdr_context_def  *context, rdbi_string_def *buffer)
 
 	if ( rs == RDBI_NOT_CONNECTED )
 	{
-		ODBCDRV_STRING_COPY_LST( buffer, MSG_NODBOPEN );
+        if (context->odbcdr_UseUnicode)
+            wcscpy(buffer->wString, ocdcdr_nls_msg_get(FDORDBMS_506, "No current open database."));
+        else
+            strcpy(buffer->cString, FdoStringP(ocdcdr_nls_msg_get(FDORDBMS_506, "No current open database.")));
 	}
 	else if ( rs == RDBI_SUCCESS )
 	{
