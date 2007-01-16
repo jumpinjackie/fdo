@@ -116,6 +116,11 @@ SymbolicName=FDOSM_20
 Language=English
 Cannot modify primary key name for existing table %1$ls.
 .
+MessageId=2226
+SymbolicName=FDOSM_21
+Language=English
+Character Set '%1$ls' does not exist or is inaccessible from current connection.
+.
 MessageId=2227
 SymbolicName=FDOSM_22
 Language=English
@@ -145,6 +150,11 @@ MessageId=2232
 SymbolicName=FDOSM_27
 Language=English
 Unique Constraint property '%1$ls' is not a data property in class '%2$ls'
+.
+MessageId=2233
+SymbolicName=FDOSM_28
+Language=English
+Collation '%1$ls' does not exist or is inaccessible from current connection.
 .
 MessageId=2327
 SymbolicName=FDOSM_122

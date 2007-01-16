@@ -171,6 +171,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Src\Sm\Ph\CharacterSet.cpp"
+				>
+			</File>
+			<File
 				RelativePath="Src\Sm\Ph\ClassPropertyReader.cpp"
 				>
 			</File>
@@ -188,6 +192,10 @@
 			</File>
 			<File
 				RelativePath="Src\Sm\Ph\ClassWriter.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Src\Sm\Ph\Collation.cpp"
 				>
 			</File>
 			<File
@@ -211,11 +219,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Src\Sm\Ph\ColumnList.cpp"
+				RelativePath=".\src\Sm\Ph\ColumnList.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\Sm\Ph\ColumnList.cpp"
+				RelativePath=".\Src\Sm\Ph\ColumnList.cpp"
 				>
 			</File>
 			<File
@@ -438,6 +446,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath=".\Src\Sm\Ph\Rd\CharacterSetReader.cpp"
+					>
+				</File>
+				<File
 					RelativePath="Src\Sm\Ph\Rd\ClassReader.cpp"
 					>
 					<FileConfiguration
@@ -456,6 +468,10 @@
 							ObjectFile="$(IntDir)/$(InputName)1.obj"
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\Src\Sm\Ph\Rd\CollationReader.cpp"
+					>
 				</File>
 				<File
 					RelativePath="Src\Sm\Ph\Rd\ColumnReader.cpp"
@@ -959,6 +975,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Inc\Sm\Ph\CharacterSet.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Inc\Sm\Ph\CheckConstraint.h"
 				>
 			</File>
@@ -988,6 +1008,10 @@
 			</File>
 			<File
 				RelativePath="Inc\Sm\Ph\ClassWriter.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Inc\Sm\Ph\Collation.h"
 				>
 			</File>
 			<File
@@ -1326,7 +1350,15 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Inc\Sm\Ph\Rd\CharacterSetReader.h"
+					>
+				</File>
+				<File
 					RelativePath="Inc\Sm\Ph\Rd\ClassReader.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Inc\Sm\Ph\Rd\CollationReader.h"
 					>
 				</File>
 				<File

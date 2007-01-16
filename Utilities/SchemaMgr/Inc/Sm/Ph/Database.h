@@ -23,6 +23,8 @@
 #endif
 
 #include <Sm/Ph/OwnerCollection.h>
+#include <Sm/Ph/CharacterSet.h>
+#include <Sm/Ph/Collation.h>
 
 class FdoSmPhMgr;
 class FdoSmPhRdOwnerReader;
@@ -70,6 +72,28 @@ public:
     /// Create a new owner.
     virtual FdoSmPhOwnerP CreateOwner(FdoStringP owner, bool hasMetaSchema = true );
 
+    /// Get character set by name. 
+
+    /// Get a read-only pointer, NULL if character set not in database
+    const FdoSmPhCharacterSet* RefCharacterSet(FdoStringP characterSetName) const;
+
+    /// Get a read-write smart pointer, NULL if character set not in database
+    virtual FdoSmPhCharacterSetP FindCharacterSet(FdoStringP characterSetName);
+
+    /// Get a read-write smart pointer, throws FdoSchemaException if character set not in database
+    FdoSmPhCharacterSetP GetCharacterSet(FdoStringP characterSetName);
+
+    /// Get collation set by name. 
+
+    /// Get a read-only pointer, NULL if collation not in database
+    const FdoSmPhCollation* RefCollation(FdoStringP collationName) const;
+
+    /// Get a read-write smart pointer, NULL if collation not in database
+    virtual FdoSmPhCollationP FindCollation(FdoStringP collationName);
+
+    /// Get a read-write smart pointer, throws FdoSchemaException if collation not in database
+    FdoSmPhCollationP GetCollation(FdoStringP collationName);
+
     /// Deactivate the current owner leaving no owner current.
     /// Does nothing by default. Providers that can support this
     /// functionality can override.
@@ -78,10 +102,26 @@ public:
     /// Remove an owner from the cache
     void DiscardOwner( FdoSmPhOwner* owner );
 
-    /// Create a reader to get all owner objects for this database.
-    /// TODO: add flag to cache owners
-    virtual FdoPtr<FdoSmPhRdOwnerReader> CreateOwnerReader( FdoStringP owner = L"") const = 0;
+    /// Create a reader to get owner objects for this database.
+    virtual FdoPtr<FdoSmPhRdOwnerReader> CreateOwnerReader( 
+        FdoStringP owner = L""
+            // When specified, get this particular owner if present in database
+            // When L"", get all owners for this database.
+    ) const = 0;
 
+    /// Create a reader to get character sets for this database.
+    virtual FdoPtr<FdoSmPhRdCharacterSetReader> CreateCharacterSetReader( 
+        FdoStringP characterSetName = L""
+            // When specified, get this particular character set if present in database
+            // When L"", get all character sets for this database.
+    ) const;
+
+    /// Create a reader to get collations for this database.
+    virtual FdoPtr<FdoSmPhRdCollationReader> CreateCollationReader( 
+        FdoStringP collationName = L""
+            // When specified, get this particular collation if present in database
+            // When L"", get all collation for this database.
+    ) const;
 
     /// Gather all errors for this element and child elements into a chain of exceptions.
     /// Adds each error as an exception, to the given exception chain and returns
@@ -106,6 +146,12 @@ protected:
     /// Returns the owner (datastore) cache.
     FdoSmPhOwnersP GetOwners();
 
+    /// Returns the character set cache.
+    FdoSmPhCharacterSetsP GetCharacterSets();
+
+    /// Returns the collation cache.
+    FdoSmPhCollationsP GetCollations();
+
     /// Instantiate an owner (can be new or existing).
     virtual FdoSmPhOwnerP NewOwner(
         FdoStringP owner,
@@ -113,12 +159,34 @@ protected:
    		FdoSchemaElementState elementState = FdoSchemaElementState_Added
     ) = 0;
 
+    // Instantiate a character set.
+    // Implementing Character Sets is optional so this function always returns NULL.
+    // Providers that implement character sets must override this function.
+    virtual FdoSmPhCharacterSetP NewCharacterSet(
+        FdoStringP characterSetName,
+        FdoSmPhRdCharacterSetReader* reader
+    );
+
+    // Instantiate a collation.
+    // Implementing Collation is optional so this function always returns NULL.
+    // Providers that implement collations must override this function.
+    virtual FdoSmPhCollationP NewCollation(
+        FdoStringP collationName,
+        FdoSmPhRdCollationReader* reader
+    );
+
     /// Commit modifications to owners.
     virtual void CommitChildren( bool isBeforeParent );
 
 private:
     /// Owner cache for this database.
 	FdoSmPhOwnersP mOwners;
+
+    /// Character Set cache for this database.
+    FdoSmPhCharacterSetsP mCharacterSets;
+
+    /// Collation cache for this database.
+    FdoSmPhCollationsP mCollations;
 };
 
 typedef FdoPtr<FdoSmPhDatabase> FdoSmPhDatabaseP;

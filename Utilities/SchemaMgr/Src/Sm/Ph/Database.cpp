@@ -20,6 +20,8 @@
 #include <Sm/Ph/Database.h>
 #include <Sm/Error.h>
 #include <Sm/Ph/Rd/OwnerReader.h>
+#include <Sm/Ph/Rd/CharacterSetReader.h>
+#include <Sm/Ph/Rd/CollationReader.h>
 
 FdoSmPhDatabase::FdoSmPhDatabase(
     FdoStringP name, 
@@ -83,6 +85,96 @@ FdoSmPhOwnerP FdoSmPhDatabase::GetOwner(FdoStringP owner)
     return(pOwner);
 }
 
+const FdoSmPhCharacterSet* FdoSmPhDatabase::RefCharacterSet(FdoStringP characterSetName) const
+{
+    return (FdoSmPhCharacterSet*) ((FdoSmPhDatabase*) this)->FindCharacterSet(characterSetName);
+}
+
+FdoSmPhCharacterSetP FdoSmPhDatabase::FindCharacterSet(FdoStringP characterSetName)
+{
+    FdoSmPhCharacterSetsP characterSets = GetCharacterSets();
+
+    // Look up the character set in the cache. 
+    FdoSmPhCharacterSetP characterSet = characterSets->FindItem(characterSetName);
+
+    if ( !characterSet ) {
+        // Not in cache so read it in.
+        FdoPtr<FdoSmPhRdCharacterSetReader> reader = CreateCharacterSetReader( characterSetName );
+
+        if ( reader && reader->ReadNext() )
+		{
+			characterSet = NewCharacterSet(reader->GetString(L"",L"character_set_name"), reader);
+        }
+
+        if ( characterSet )
+            // Character set found, add it the the cache.
+            characterSets->Add( characterSet );
+    }
+
+    return( characterSet );
+}
+
+FdoSmPhCharacterSetP FdoSmPhDatabase::GetCharacterSet(FdoStringP characterSetName)
+{
+    FdoSmPhCharacterSetP characterSet = FindCharacterSet( characterSetName);
+
+    if ( !characterSet ) {
+        throw FdoSchemaException::Create(
+            FdoSmError::NLSGetMessage(
+                FDO_NLSID(FDOSM_21),
+				(FdoString*) characterSetName
+            )
+        );
+    }
+
+    return( characterSet );
+}
+
+const FdoSmPhCollation* FdoSmPhDatabase::RefCollation(FdoStringP collationName) const
+{
+    return (FdoSmPhCollation*) ((FdoSmPhDatabase*) this)->FindCollation(collationName);
+}
+
+FdoSmPhCollationP FdoSmPhDatabase::FindCollation(FdoStringP collationName)
+{
+    FdoSmPhCollationsP collations = GetCollations();
+
+    // Look up the collation in the cache. 
+    FdoSmPhCollationP collation = collations->FindItem(collationName);
+
+    if ( !collation ) {
+        // Not in cache so read it in.
+        FdoPtr<FdoSmPhRdCollationReader> reader = CreateCollationReader( collationName );
+
+        if ( reader && reader->ReadNext() )
+		{
+			collation = NewCollation(reader->GetString(L"",L"collation_name"), reader);
+        }
+
+        if ( collation )
+            // Collation found, add it the the cache.
+            collations->Add( collation );
+    }
+
+    return( collation );
+}
+
+FdoSmPhCollationP FdoSmPhDatabase::GetCollation(FdoStringP collationName)
+{
+    FdoSmPhCollationP collation = FindCollation( collationName);
+
+    if ( !collation ) {
+        throw FdoSchemaException::Create(
+            FdoSmError::NLSGetMessage(
+                FDO_NLSID(FDOSM_28),
+				(FdoString*) collationName
+            )
+        );
+    }
+
+    return( collation );
+}
+
 FdoSmPhOwnerP FdoSmPhDatabase::CreateOwner(FdoStringP owner, bool hasMetaSchema)
 {
     FdoStringP name = GetName();
@@ -124,6 +216,16 @@ void FdoSmPhDatabase::OnAfterCommit()
     }
 }
 
+FdoPtr<FdoSmPhRdCharacterSetReader> FdoSmPhDatabase::CreateCharacterSetReader( FdoStringP characterSetName ) const
+{
+    return (FdoSmPhRdCharacterSetReader*) NULL;
+}
+
+FdoPtr<FdoSmPhRdCollationReader> FdoSmPhDatabase::CreateCollationReader( FdoStringP collationName ) const
+{
+    return (FdoSmPhRdCollationReader*) NULL;
+}
+
 FdoSchemaExceptionP FdoSmPhDatabase::Errors2Exception(FdoSchemaException* pFirstException ) const
 {
 	// Tack on errors for this element
@@ -160,6 +262,42 @@ FdoSmPhOwnersP FdoSmPhDatabase::GetOwners()
     }
 
     return mOwners;
+}
+
+FdoSmPhCharacterSetsP FdoSmPhDatabase::GetCharacterSets()
+{
+    if ( !mCharacterSets ) {
+        // Character Set cache not initialized so initialize it.
+        mCharacterSets = new FdoSmPhCharacterSetCollection();
+    }
+
+    return mCharacterSets;
+}
+
+FdoSmPhCollationsP FdoSmPhDatabase::GetCollations()
+{
+    if ( !mCollations ) {
+        // Collation cache not initialized so initialize it.
+        mCollations = new FdoSmPhCollationCollection();
+    }
+
+    return mCollations;
+}
+
+FdoSmPhCharacterSetP FdoSmPhDatabase::NewCharacterSet(
+    FdoStringP characterSetName,
+    FdoSmPhRdCharacterSetReader* reader
+)
+{
+    return (FdoSmPhCharacterSet*) NULL;
+}
+
+FdoSmPhCollationP FdoSmPhDatabase::NewCollation(
+    FdoStringP collationName,
+    FdoSmPhRdCollationReader* reader
+)
+{
+    return (FdoSmPhCollation*) NULL;
 }
 
 void FdoSmPhDatabase::CommitChildren( bool isBeforeParent )
