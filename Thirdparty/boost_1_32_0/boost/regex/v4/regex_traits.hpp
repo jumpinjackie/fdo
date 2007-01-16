@@ -317,9 +317,9 @@ public:
    static locale_type BOOST_REGEX_CALL imbue(locale_type l){ return l; }
    locale_type BOOST_REGEX_CALL getloc()const{ return locale_type(); }
    void swap(c_regex_traits&){}
-   c_regex_traits<regex_wchar_type>()
+   c_regex_traits()
    { init(); }
-   ~c_regex_traits<regex_wchar_type>()
+   ~c_regex_traits()
    { m_free(); }
    struct sentry
    {
