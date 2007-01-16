@@ -32,6 +32,7 @@ class MySqlSelectTests : public SelectTests
     int do_rdbi_connect (const char* dataStoreName, const char* userName, const char* userPassword);
     virtual char *get_date_time (const struct tm *when);
     char *get_bind_var (int n){ return ("?"); }
+    virtual int get_char_size() { return 3; };
 };
 
 #endif // MYSQL_SELECTTESTS_H

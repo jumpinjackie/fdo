@@ -21,22 +21,15 @@
 #include "Table.h"
 #include "View.h"
 #include "Mgr.h"
+#include "CharacterSet.h"
 #include "Rd/DbObjectReader.h"
 #include "Rd/ColumnReader.h"
 #include "Rd/ConstraintReader.h"
 #include "Rd/FkeyReader.h"
 #include "Rd/IndexReader.h"
+#include "Rd/OwnerReader.h"
 #include "Rd/PkeyReader.h"
 #include "Inc/Rdbi/proto.h"
-
-struct mysql_context_def;
-
-extern "C" {
-    int mysql_run_sql (
-        mysql_context_def *context,
-        char *sql
-    );
-}
 
 FdoInt32 FdoSmPhMySqlOwner::mTempTableNum = 0;
 FdoCommonThreadMutex FdoSmPhMySqlOwner::mMutex;
@@ -46,14 +39,28 @@ FdoSmPhMySqlOwner::FdoSmPhMySqlOwner(
     bool hasMetaSchema,
     const FdoSmPhDatabase* pDatabase,
     FdoSchemaElementState elementState,
-    FdoSmPhRdDbObjectReader* reader
+    FdoSmPhRdOwnerReader* reader
 ) :
     FdoSmPhGrdOwner(name, hasMetaSchema, pDatabase, elementState)
 {
+    if ( reader )
+        mCharacterSetName = reader->GetString( L"", L"default_character_set_name" );
 }
 
 FdoSmPhMySqlOwner::~FdoSmPhMySqlOwner(void)
 {
+}
+
+FdoSmPhCharacterSetP FdoSmPhMySqlOwner::GetCharacterSet()
+{
+    FdoSmPhCharacterSetP characterSet;
+
+    if ( mCharacterSetName != L"" ) {
+        FdoSmPhDatabase* pDatabase = (FdoSmPhDatabase*)(FdoSmSchemaElement*)GetParent();
+        characterSet = pDatabase->FindCharacterSet( mCharacterSetName );
+    }
+
+    return characterSet;
 }
 
 FdoStringP FdoSmPhMySqlOwner::GetKeyColumnUsageTable()
@@ -73,7 +80,7 @@ FdoStringP FdoSmPhMySqlOwner::GetKeyColumnUsageTable()
         // Create the temporary table from the key_column_usage table.
         // Make all string fields case sensitive
         FdoStringP sqlStmt = FdoStringP::Format( 
-            L"create temporary table %ls.%ls ( "
+            L"create temporary table \"%ls\".\"%ls\" ( "
             L" constraint_schema varchar(64) not null collate utf8_bin,"
             L" constraint_name varchar(64) not null collate utf8_bin,"
             L" table_schema varchar(64) not null collate utf8_bin,"
@@ -93,7 +100,7 @@ FdoStringP FdoSmPhMySqlOwner::GetKeyColumnUsageTable()
 
         // Populate the temporary table from key_column_usage. Just need rows for this owner.
         sqlStmt = FdoStringP::Format( 
-            L"insert into  %ls.%ls ( "
+            L"insert into  \"%ls\".\"%ls\" ( "
             L" constraint_schema,"
             L" constraint_name,"
             L" table_schema,"
@@ -114,7 +121,7 @@ FdoStringP FdoSmPhMySqlOwner::GetKeyColumnUsageTable()
             L" referenced_table_schema,"
             L" referenced_table_name,"
             L" referenced_column_name"
-            L" from information_schema.key_column_usage where table_catalog is null and table_schema = %ls",
+            L" from information_schema.key_column_usage where table_catalog is null and table_schema collate utf8_bin = %ls",
             GetName(),
             (FdoString*) mKeyColumnUsageTable,
             (FdoString*) GetManager()->FormatSQLVal( GetName(), FdoSmPhColType_String )
@@ -143,7 +150,7 @@ FdoStringP FdoSmPhMySqlOwner::GetTableConstraintsTable()
         // Create the temporary table from the table_constraints table.
         // Make all string fields case sensitive
         FdoStringP sqlStmt = FdoStringP::Format( 
-            L"create temporary table %ls.%ls ( "
+            L"create temporary table \"%ls\".\"%ls\" ( "
             L" constraint_schema varchar(64) not null collate utf8_bin,"
             L" constraint_name varchar(64) not null collate utf8_bin,"
             L" table_schema varchar(64) not null collate utf8_bin,"
@@ -159,7 +166,7 @@ FdoStringP FdoSmPhMySqlOwner::GetTableConstraintsTable()
 
         // Populate the temporary table from table_constraints. Just need rows for this owner.
         sqlStmt = FdoStringP::Format( 
-            L"insert into  %ls.%ls ( "
+            L"insert into  \"%ls\".\"%ls\" ( "
             L" constraint_schema,"
             L" constraint_name,"
             L" table_schema,"
@@ -172,7 +179,7 @@ FdoStringP FdoSmPhMySqlOwner::GetTableConstraintsTable()
             L" table_schema,"
             L" table_name,"
             L" constraint_type"
-            L" from information_schema.table_constraints where constraint_catalog is null and table_schema = %ls",
+            L" from information_schema.table_constraints where constraint_catalog is null and table_schema collate utf8_bin = %ls",
             GetName(),
             (FdoString*) mTableConstraintsTable,
             (FdoString*) GetManager()->FormatSQLVal( GetName(), FdoSmPhColType_String )
@@ -203,12 +210,13 @@ FdoStringP FdoSmPhMySqlOwner::GetTablesTable(bool createTemp)
         // Create the temporary table from the tables table.
         // Make all string fields case sensitive
         FdoStringP sqlStmt = FdoStringP::Format( 
-            L"create temporary table %ls.%ls ( "
+            L"create temporary table \"%ls\".\"%ls\" ( "
             L" table_schema varchar(64) not null collate utf8_bin,"
             L" table_name varchar(64) not null collate utf8_bin,"
             L" table_type varchar(64) not null collate utf8_bin,"
             L" engine varchar(64) null collate utf8_bin,"
             L" auto_increment bigint null,"
+            L" table_collation varchar(64) null collate utf8_bin,"
             L" primary key ( table_name )"
             L")",
             GetName(),
@@ -219,20 +227,22 @@ FdoStringP FdoSmPhMySqlOwner::GetTablesTable(bool createTemp)
 
         // Populate the temporary table from information_schema.tables. Just need rows for this owner.
         sqlStmt = FdoStringP::Format( 
-            L"insert into  %ls.%ls ( "
+            L"insert into  \"%ls\".\"%ls\" ( "
             L" table_schema,"
             L" table_name,"
             L" table_type,"
             L" engine,"
-            L" auto_increment"
+            L" auto_increment,"
+            L" table_collation"
             L")"
             L" select "
             L" table_schema,"
             L" table_name,"
             L" table_type,"
             L" engine,"
-            L" auto_increment"
-            L" from information_schema.tables where table_catalog is null and table_schema = %ls",
+            L" auto_increment,"
+            L" table_collation"
+            L" from information_schema.tables where table_catalog is null and table_schema collate utf8_bin = %ls",
             GetName(),
             (FdoString*) mTablesTable,
             (FdoString*) GetManager()->FormatSQLVal( GetName(), FdoSmPhColType_String )
@@ -266,7 +276,7 @@ FdoStringP FdoSmPhMySqlOwner::GetColumnsTable(bool createTemp)
         // Create the temporary table from the tables table.
         // Make all string fields case sensitive
         FdoStringP sqlStmt = FdoStringP::Format( 
-            L"create temporary table %ls.%ls ( "
+            L"create temporary table \"%ls\".\"%ls\" ( "
             L" table_schema varchar(64) not null collate utf8_bin,"
             L" table_name varchar(64) not null collate utf8_bin,"
             L" column_name varchar(64) not null collate utf8_bin,"
@@ -278,6 +288,7 @@ FdoStringP FdoSmPhMySqlOwner::GetColumnsTable(bool createTemp)
             L" numeric_scale bigint null,"
             L" column_type longtext not null,"
             L" extra varchar(20) not null collate utf8_bin,"
+            L" character_set_name varchar(64) null collate utf8_bin,"
             L" primary key ( table_name, ordinal_position )"
             L")",
             GetName(),
@@ -288,7 +299,7 @@ FdoStringP FdoSmPhMySqlOwner::GetColumnsTable(bool createTemp)
 
         // Populate the temporary table from information_schema.columns. Just need rows for this owner.
         sqlStmt = FdoStringP::Format( 
-            L"insert into  %ls.%ls ( "
+            L"insert into  \"%ls\".\"%ls\" ( "
             L" table_schema,"
             L" table_name,"
             L" column_name,"
@@ -299,7 +310,8 @@ FdoStringP FdoSmPhMySqlOwner::GetColumnsTable(bool createTemp)
             L" numeric_precision,"
             L" numeric_scale,"
             L" column_type,"
-            L" extra"
+            L" extra,"
+            L" character_set_name"
             L")"
             L" select "
             L" table_schema,"
@@ -312,8 +324,9 @@ FdoStringP FdoSmPhMySqlOwner::GetColumnsTable(bool createTemp)
             L" numeric_precision,"
             L" numeric_scale,"
             L" column_type,"
-            L" extra"
-            L" from information_schema.columns where table_catalog is null and table_schema = %ls",
+            L" extra,"
+            L" character_set_name"
+            L" from information_schema.columns where table_catalog is null and table_schema collate utf8_bin = %ls",
             GetName(),
             (FdoString*) mColumnsTable,
             (FdoString*) GetManager()->FormatSQLVal( GetName(), FdoSmPhColType_String )
@@ -466,20 +479,45 @@ bool FdoSmPhMySqlOwner::Add()
     FdoSmPhMySqlMgrP mgr = GetManager()->SmartCast<FdoSmPhMySqlMgr>();
     GdbiConnection* gdbiConn = mgr->GetGdbiConnection();
 
-    // TODO: Always latin1 ok for now since data is always utf8.
-    // Need to revisit this issue at some point.
     FdoStringP sqlStmt = FdoStringP::Format(
-        L"create database %ls character set latin1 collate latin1_bin",
+        L"create database %ls",
         (FdoString*) GetDbName()
     );
 
     // Create the owner (datastore)
     gdbiConn->ExecuteNonQuery( (const char*) sqlStmt );
 
+    // Now that owner exists, retrieve its character set name.
+    FdoSmPhDatabase* pDatabase = (FdoSmPhDatabase*)(FdoSmSchemaElement*)GetParent();
+    FdoSmPhRdOwnerReaderP ownerReader = pDatabase->CreateOwnerReader( GetName() );
+    if ( ownerReader->ReadNext() ) {
+        mCharacterSetName = ownerReader->GetString( L"", L"default_character_set_name" );
+    }
+    else {
+        // If owner not found, name may have been converted by lower case by MySQL.
+        ownerReader = pDatabase->CreateOwnerReader( GetManager()->GetDcOwnerName(GetName()) );
+        if ( ownerReader->ReadNext() )
+            mCharacterSetName = ownerReader->GetString( L"", L"default_character_set_name" );
+    }
+
     if ( GetHasMetaSchema() ) {
+        FdoSmPhMySqlCharacterSetP characterSet = GetCharacterSet().p->SmartCast<FdoSmPhMySqlCharacterSet>();
+
         FdoStringsP keywords = FdoStringCollection::Create();
         keywords->Add( rdbi_vndr_name(mgr->GetRdbiContext()) );
         keywords->Add( L"MySQL" );
+
+        // MySql has a 1000 byte limit on index widths.
+        // Some MetaSchema indexes require truncation when the max character size
+        // for the owner's character set is > 1. Pass the character size down to the 
+        // script so that the right amount of truncation can be performed.
+        if ( characterSet && (characterSet->GetCharLen() == 1) ) 
+            keywords->Add( L"Char1Byte" );
+        else if ( characterSet && (characterSet->GetCharLen() == 2) ) 
+            keywords->Add( L"Char2Byte" );
+        else
+            keywords->Add( L"Char3Byte" );
+        // char length is at most 3 bytes for factory character sets.
 
         // Switch to newly created owner and add the MetaSchema
 
@@ -586,7 +624,7 @@ void FdoSmPhMySqlOwner::DropTempTable( FdoStringP tableName)
         GdbiConnection* gdbiConn = mgr->GetGdbiConnection();
 
         FdoStringP sqlStmt = FdoStringP::Format( 
-            L"drop temporary table if exists %ls.%ls",
+            L"drop temporary table if exists \"%ls\".\"%ls\"",
             GetName(),
             (FdoString*) tableName
             );

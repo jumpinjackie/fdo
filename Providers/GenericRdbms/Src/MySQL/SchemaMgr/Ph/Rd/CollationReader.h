@@ -1,3 +1,5 @@
+#ifndef FDOSMPHRDMYSQLCOLLATIONREADER_H
+#define FDOSMPHRDMYSQLCOLLATIONREADER_H      1
 /*
  * Copyright (C) 2004-2006  Autodesk, Inc.
  * 
@@ -16,27 +18,35 @@
  *
  */
 
-#ifndef MYSQL_FDOUPDATETEST_H
-#define MYSQL_FDOUPDATETEST_H
+#ifdef _WIN32
+#pragma once
+#endif
 
-#include "FdoUpdateTest.h"
+#include <Sm/Ph/Rd/CollationReader.h>
 
-class MySqlFdoUpdateTest : public FdoUpdateTest
+// MySql Collation reader implementation
+class FdoSmPhRdMySqlCollationReader : public FdoSmPhRdCollationReader
 {
-    CPPUNIT_TEST_SUB_SUITE (MySqlFdoUpdateTest, FdoUpdateTest);
-    CPPUNIT_TEST( testForeignDataStore );
-    CPPUNIT_TEST_SUITE_END ();
-
-    void  set_provider();
-    virtual FdoStringP TableIdGeomName() {return L"t\xe4ble id geom";}
-
 public:
-	virtual void ConditionalUpdate () { }
-    void testForeignDataStore();
+    FdoSmPhRdMySqlCollationReader (
+        FdoSmPhDatabaseP database, 
+        FdoStringP collationName
+    );
 
-protected:
-    virtual const char* NoMetaSuffix();
-	static const wchar_t* mForeignPolygonTest[];
+    // Deactivates the query.
+    ~FdoSmPhRdMySqlCollationReader(void);
+
+private:
+    // Create the Collation reader
+    FdoSmPhReaderP MakeQueryReader (
+        FdoSmPhDatabaseP database, 
+        FdoStringP collationName
+    );
+
+    FdoSmPhRowP MakeBinds (
+        FdoSmPhMgrP mgr, 
+        FdoStringP collationName
+    );
 };
 
-#endif // MYSQL_FDOUPDATETEST_H
+#endif

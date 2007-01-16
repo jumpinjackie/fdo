@@ -43,15 +43,33 @@ public:
 
     ~FdoSmPhMySqlDatabase(void);
 
-    // Create a reader to get all owner objects for this database.
-    // TODO: add flag to cache owners
+    /// Create a reader to get owner objects for this database.
     virtual FdoPtr<FdoSmPhRdOwnerReader> CreateOwnerReader( FdoStringP owner = L"") const;
 
+    /// Create a reader to get character sets for this database.
+    virtual FdoPtr<FdoSmPhRdCharacterSetReader> CreateCharacterSetReader( FdoStringP characterSetName = L"") const;
+
+    /// Create a reader to get collations for this database.
+    virtual FdoPtr<FdoSmPhRdCollationReader> CreateCollationReader( FdoStringP collationName = L"") const;
+
 protected:
+    /// Instantiate an owner (can be new or existing).
     virtual FdoSmPhOwnerP NewOwner(
         FdoStringP owner,
         bool hasMetaSchema,
         FdoSchemaElementState elementState
+    );
+
+    // Instantiate a character set (must exist in RDBMS).
+    virtual FdoSmPhCharacterSetP NewCharacterSet(
+        FdoStringP characterSetName,
+        FdoSmPhRdCharacterSetReader* reader
+    );
+
+    // Instantiate a collation (must exist in RDBMS).
+    virtual FdoSmPhCollationP NewCollation(
+        FdoStringP collationName,
+        FdoSmPhRdCollationReader* reader
     );
 
     virtual bool Add() {return true;}

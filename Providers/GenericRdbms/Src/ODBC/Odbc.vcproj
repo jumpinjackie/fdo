@@ -40,6 +40,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="-Zm112"
 				Optimization="0"
 				AdditionalIncludeDirectories=".\;..\LongTransactionManager;..\GenericLongTransactionManager;..\..\inc\fdo;../../inc/rdbi;../;../../;../../inc;../Fdo/Connection;../Fdo/Other;../Fdo/FeatureCommands;../Fdo/Custom;../Fdo/Schema;..\Fdo\Capability;../Fdo/Lt;../Fdo/Lock;..\Fdo\FeatureCommands;../Fdo/SpatialContext;$(FDO)\Unmanaged;$(FDO)\Unmanaged\inc;$(FDOUTILITIES)/SchemaMgr/inc;$(FDOUTILITIES)\Common\inc;../../../Oracle\inc\Fdo\fdo;../../../Oracle;..\Gdbi;..\LockManager"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;ODBC_EXPORTS;FDORDBMS_EXPORTS;_LIB;_CRT_SECURE_NO_DEPRECATE"

@@ -162,7 +162,8 @@ FdoSmPhReaderP FdoSmPhRdMySqlColumnReader::MakeQueryReader (
               L" if(is_nullable='YES',1,0) as nullable,\n"
               L" lower(data_type) as type_string,\n"
               L" instr(column_type,'unsigned') as isunsigned,\n"
-			  L" if(extra='auto_increment',1,0) as is_autoincremented\n"
+			  L" if(extra='auto_increment',1,0) as is_autoincremented,\n"
+              L" character_set_name\n"
               L" from %ls%ls\n"
               L" where table_schema collate utf8_bin = ? \n"
               L" %ls"
@@ -188,6 +189,12 @@ FdoSmPhReaderP FdoSmPhRdMySqlColumnReader::MakeQueryReader (
             row, 
             L"isunsigned",
             row->CreateColumnInt64(L"isunsigned",false)
+        );
+
+        field = new FdoSmPhField(
+            row, 
+            L"character_set_name",
+            row->CreateColumnDbObject(L"character_set_name",true)
         );
 
         reader = new FdoSmPhRdGrdQueryReader (row, sql, mgr, MakeBinds (mgr, ownerName, objectName));

@@ -19,8 +19,12 @@
 #include "stdafx.h"
 #include "Database.h"
 #include "Owner.h"
+#include "CharacterSet.h"
+#include "Collation.h"
 #include "Mgr.h"
 #include "Rd/OwnerReader.h"
+#include "Rd/CharacterSetReader.h"
+#include "Rd/CollationReader.h"
 
 FdoSmPhMySqlDatabase::FdoSmPhMySqlDatabase(
     FdoStringP name,
@@ -42,6 +46,20 @@ FdoPtr<FdoSmPhRdOwnerReader> FdoSmPhMySqlDatabase::CreateOwnerReader( FdoStringP
     return new FdoSmPhRdMySqlOwnerReader( FDO_SAFE_ADDREF(pDatabase), owner );
 }
 
+FdoPtr<FdoSmPhRdCharacterSetReader> FdoSmPhMySqlDatabase::CreateCharacterSetReader( FdoStringP characterSetName ) const
+{
+    FdoSmPhMySqlDatabase* pDatabase = (FdoSmPhMySqlDatabase*) this;
+
+    return new FdoSmPhRdMySqlCharacterSetReader( FDO_SAFE_ADDREF(pDatabase), characterSetName );
+}
+
+FdoPtr<FdoSmPhRdCollationReader> FdoSmPhMySqlDatabase::CreateCollationReader( FdoStringP collationName ) const
+{
+    FdoSmPhMySqlDatabase* pDatabase = (FdoSmPhMySqlDatabase*) this;
+
+    return new FdoSmPhRdMySqlCollationReader( FDO_SAFE_ADDREF(pDatabase), collationName );
+}
+
 FdoSmPhOwnerP FdoSmPhMySqlDatabase::NewOwner(
     FdoStringP owner,
     bool hasMetaSchema,
@@ -56,6 +74,30 @@ FdoSmPhOwnerP FdoSmPhMySqlDatabase::NewOwner(
         hasMetaSchema,
         this,
         elementState
+    );
+}
+
+FdoSmPhCharacterSetP FdoSmPhMySqlDatabase::NewCharacterSet(
+    FdoStringP characterSetName,
+    FdoSmPhRdCharacterSetReader* reader
+)
+{
+    return new FdoSmPhMySqlCharacterSet(
+        characterSetName,
+        this,
+        reader
+    );
+}
+
+FdoSmPhCollationP FdoSmPhMySqlDatabase::NewCollation(
+    FdoStringP collationName,
+    FdoSmPhRdCollationReader* reader
+)
+{
+    return new FdoSmPhMySqlCollation(
+        collationName,
+        this,
+        reader
     );
 }
 

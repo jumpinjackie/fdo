@@ -45,9 +45,9 @@ void FdoSmPhGrdOwner::AddMetaSchema( FdoStringsP keywords, bool IsSystem)
 		mgr->ExecSchemaFile( L"fdo_sys_idx.sql", keywords );
 
         FdoStringP sqlStmt = FdoStringP::Format(
-            L"update f_schemainfo set description = '%ls' where upper(schemaname) = upper('%ls')",
+            L"update f_schemainfo set description = '%ls' where upper(schemaname) = '%ls'",
             GetDescription(),
-            GetName()
+            (FdoString*) FdoStringP(GetName()).Upper()
         );
   
         gdbiConn->ExecuteNonQuery( (const char*) sqlStmt );

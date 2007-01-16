@@ -41,10 +41,13 @@ public:
         bool hasMetaSchema,
         const FdoSmPhDatabase* pDatabase,
         FdoSchemaElementState elementState = FdoSchemaElementState_Added,
-        FdoSmPhRdDbObjectReader* reader = NULL
+        FdoSmPhRdOwnerReader* reader = NULL
     );
 
     ~FdoSmPhMySqlOwner(void);
+
+    // Gets this owner's default character set.
+    FdoSmPhCharacterSetP GetCharacterSet();
 
     // The following two functions support a performance enhancement. Queries that join two 
     // information_schema tables are slow. The Schema Manager currently runs queries that 
@@ -144,6 +147,8 @@ private:
     void DropTempTable( FdoStringP tableName );
     // Generate next unique number for temporary table name.
     FdoInt32 NextTempTableNum();
+
+    FdoStringP mCharacterSetName;
 
     FdoStringP mKeyColumnUsageTable;
     FdoStringP mTableConstraintsTable;

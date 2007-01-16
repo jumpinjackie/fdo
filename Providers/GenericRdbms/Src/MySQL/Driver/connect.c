@@ -31,6 +31,12 @@
 #include "xlt_status.h"
 #include <malloc.h>
 #include <wchar.h>
+#include <locale.h>
+
+static int set_characterset (
+    mysql_context_def *context,
+    bool isDDL
+);
 
 int mysql_connect (
     mysql_context_def *context,
@@ -128,6 +134,8 @@ int mysql_connect (
                             // delimited in SQL statements, thus allowing queries on tables
                             // and columns with special characters in their names.
                             ret = mysql_run_sql( context, "set sql_mode='ANSI_QUOTES'", false, &rows_processed );
+                            if ( ret == 0 ) 
+                                ret = set_characterset( context, false );
 						}
 						else if (context->mysql_current_connect2 == -1)
 						{
@@ -136,6 +144,8 @@ int mysql_connect (
 							context->mysql_connections[index] = handle;
                             // See note 10 lines above.
                             ret = mysql_run_sql( context, "set sql_mode='ANSI_QUOTES'", true, &rows_processed );
+                            if ( ret == 0 ) 
+                                ret = set_characterset( context, true );
 							break;
 						}
 
@@ -146,4 +156,25 @@ int mysql_connect (
     }
 
     return (ret);
+}
+
+int set_characterset (
+    mysql_context_def *context,
+    bool isDDL
+)
+{
+    int ret = 0;
+    int rows_processed;
+
+    ret = mysql_run_sql( context, "set character_set_connection='utf8'", isDDL, &rows_processed );
+    if ( ret == 0 ) 
+        ret = mysql_run_sql( context, "set character_set_client='utf8'", isDDL, &rows_processed );
+    if ( ret == 0 ) 
+        ret = mysql_run_sql( context, "set character_set_results='utf8'", isDDL, &rows_processed );
+    if ( ret == 0 ) 
+        ret = mysql_run_sql( context, "set collation_connection='utf8_bin'", isDDL, &rows_processed );
+    if ( ret == 0 ) 
+        ret = mysql_run_sql( context, "set collation_database='utf8_bin'", isDDL, &rows_processed );
+
+    return ret;
 }

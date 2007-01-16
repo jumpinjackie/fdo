@@ -54,6 +54,7 @@ int mysql_rdbi_init (void **contextp, rdbi_methods methods)
         memset (context, 0, sizeof (mysql_context_def));
         context->mysql_current_connect = -1;
 		context->mysql_current_connect2 = -1;
+        context->mysql_char_size = 3; // for UTF8 character set
         //initialized = mysql_library_init (-1, NULL, NULL); /* not embedded server */
         initialized = 1;
         if (0 == initialized)

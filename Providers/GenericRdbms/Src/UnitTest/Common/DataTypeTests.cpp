@@ -162,7 +162,8 @@ void DataTypeTests::roundtrip_insert (
     void *variable,
     int size,
     double tolerance,
-    bool is_ora_int64_test)
+    bool is_ora_int64_test,
+    int out_rdbi_type)
 {
     int cursor;
     char statement[1024];
@@ -175,6 +176,7 @@ void DataTypeTests::roundtrip_insert (
     long null_ind2 = 0;
     int rows;
 	long *variable2 = 0; // NOTE: for geometries, we need null data.
+    int desc_rdbi_type = (out_rdbi_type == -1) ? rdbi_type : out_rdbi_type;
 
     cursor = -1;
     try
@@ -214,7 +216,7 @@ void DataTypeTests::roundtrip_insert (
         CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, statement));
         CPPUNIT_ASSERT_MESSAGE ("rdbi_desc_slct failed", RDBI_SUCCESS == rdbi_desc_slct_Ex (mRdbiContext, cursor, 1, sizeof (statement), statement, &type, &bytes, &null_ok));
 		CPPUNIT_ASSERT_MESSAGE ("column wrong name", 0 == FdoCommonOSUtil::stricmp ("xyz1", statement));
-        CPPUNIT_ASSERT_MESSAGE ("column wrong type", is_datatype_equal(rdbi_type, type) );
+        CPPUNIT_ASSERT_MESSAGE ("column wrong type", is_datatype_equal(desc_rdbi_type, type) );
         // CPPUNIT_ASSERT_MESSAGE ("column wrong size", rdbi_scale == bytes);
         // CPPUNIT_ASSERT_MESSAGE ("column not nullable", 0 != null_ok);
 
@@ -304,7 +306,8 @@ void DataTypeTests::roundtrip_update (
     void *variable,
     int size,
     double tolerance,
-    bool is_ora_int64_test)
+    bool is_ora_int64_test,
+    int out_rdbi_type)
 {
     int cursor;
     char statement[1024];
@@ -317,6 +320,7 @@ void DataTypeTests::roundtrip_update (
     long null_ind2 = 0;
     int rows;
 	long *variable2 = 0; // NOTE: for geometries, we need null data.
+    int desc_rdbi_type = (out_rdbi_type == -1) ? rdbi_type : out_rdbi_type;
 
     cursor = -1;
     try
@@ -345,7 +349,7 @@ void DataTypeTests::roundtrip_update (
         CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, statement));
         CPPUNIT_ASSERT_MESSAGE ("rdbi_desc_slct failed", RDBI_SUCCESS == rdbi_desc_slct_Ex (mRdbiContext, cursor, 1, sizeof (statement), statement, &type, &bytes, &null_ok));
 		CPPUNIT_ASSERT_MESSAGE ("column wrong name", 0 == FdoCommonOSUtil::stricmp ("xyz1", statement));
-        CPPUNIT_ASSERT_MESSAGE ("column wrong type", is_datatype_equal(rdbi_type, type) );
+        CPPUNIT_ASSERT_MESSAGE ("column wrong type", is_datatype_equal(desc_rdbi_type, type) );
         // CPPUNIT_ASSERT_MESSAGE ("column wrong size", rdbi_scale == bytes);
         // CPPUNIT_ASSERT_MESSAGE ("column not nullable", 0 != null_ok);
 

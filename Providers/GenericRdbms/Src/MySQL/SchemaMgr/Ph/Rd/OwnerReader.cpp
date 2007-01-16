@@ -67,7 +67,8 @@ FdoSmPhReaderP FdoSmPhRdMySqlOwnerReader::MakeQueryReader(
 
         sqlString = FdoStringP::Format(
               L"select schema_name as name, \n"
-              L" (select table_name from information_schema.tables T where S.schema_name = T.table_schema and T.table_name = 'F_SCHEMAINFO') as schemas_table\n"
+              L" (select table_name from information_schema.tables T where S.schema_name = T.table_schema and T.table_name = 'F_SCHEMAINFO') as schemas_table,\n"
+              L" default_character_set_name \n"
               L" from information_schema.schemata S\n"
               L" %ls\n"
               L" order by schema_name asc",
@@ -76,6 +77,12 @@ FdoSmPhReaderP FdoSmPhRdMySqlOwnerReader::MakeQueryReader(
 
         FdoSmPhRowsP rows = MakeRows( mgr );
         FdoSmPhRowP row = rows->GetItem(0);
+
+        FdoSmPhFieldP field = new FdoSmPhField(
+            row, 
+            L"default_character_set_name",
+            row->CreateColumnInt64(L"default_character_set_name",false)
+        );
 
         reader = new FdoSmPhRdGrdQueryReader(row, sqlString, mgr, MakeBinds(mgr,ownerName) );
 /*

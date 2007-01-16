@@ -56,6 +56,7 @@ FdoSmPhMySqlDbObject::FdoSmPhMySqlDbObject(
         mStorageEngine = StorageEngineStringToEnum(reader->GetString(L"", L"storage_engine"));
         mDataDirectory = reader->GetString(L"", L"data_directory");
         mIndexDirectory = reader->GetString(L"", L"index_directory");
+        mCollationName = reader->GetString(L"", L"table_collation");
 
         // TEMPORARY WORKAROUNDS - BEGIN:
         // Need to add a FdoSmPhRdDbObjectReader::IsNull() method to detect NULL values for column seed:
@@ -86,6 +87,30 @@ bool FdoSmPhMySqlDbObject::GetSupportsWrite() const
     // to expensive to determine whether or not the class is writable. 
     return true;
 }
+
+FdoSmPhCharacterSetP FdoSmPhMySqlDbObject::GetCharacterSet()
+{
+    FdoSmPhCharacterSetP characterSet;
+    FdoSmPhMySqlOwner* pOwner = (FdoSmPhMySqlOwner*)(FdoSmSchemaElement*)(GetParent());
+
+    if ( mCollationName != L"" ) {
+        // Object has collation so retrieve it.
+        FdoSmPhDatabase* pDatabase = (FdoSmPhDatabase*)(FdoSmSchemaElement*)(pOwner->GetParent());
+        FdoSmPhCollationP collation = pDatabase->FindCollation( mCollationName );
+        
+        // get the character set for the collation.
+        if ( collation )
+            characterSet = collation->GetCharacterSet();
+    }
+    else {
+        // Object has no collation (likely a new object)
+        // Get default character set (from owner).
+        characterSet = pOwner->GetCharacterSet();
+    }
+
+    return characterSet;
+}
+
 
 FdoStringsP FdoSmPhMySqlDbObject::GetKeyColsSql( FdoSmPhColumnCollection* columns )
 {
@@ -151,10 +176,22 @@ FdoStringsP FdoSmPhMySqlDbObject::GetKeyColsSql( FdoSmPhColumnCollection* column
 
         // Initially assume no truncation required.
         FdoInt32 constrColLen = 0;
+        FdoInt64 colBinarySize = column->GetDbBinarySize();
+        FdoInt32 colLen = column->GetLength();
 
-        if ( (largeColCount > 0) && (column->GetDbBinarySize() > colMaxLen) )
-            // Truncating and column needs to be truncated
-            constrColLen = colMaxLen;
+        if ( (largeColCount > 0) && (colBinarySize > colMaxLen) ) {
+            // For character type columns, length and binary size differ
+            // when the character set is not Latin1. Calculate the 
+            // size/length ratio (bytes per length unit).
+            FdoInt32 bytesPerUnit = 1;
+            if ( colLen > 0 ) 
+                bytesPerUnit = (FdoInt32)(colBinarySize / colLen);
+
+            // Truncating and column needs to be truncated.
+            // Divide by Bytes/LengthUnit to convert from truncated binary size
+            // to length.
+            constrColLen = (FdoInt32)(colMaxLen / bytesPerUnit);
+        }
         else if ( (column->GetType() == FdoSmPhColType_String) && (column->GetTypeName().ICompare(L"varchar") != 0) )
             // text key columns always need length specified since 
             // maximum length for various text types is greater

@@ -18,6 +18,7 @@
 
 #include "stdafx.h"
 #include "ColumnChar.h"
+#include "CharacterSet.h"
 
 FdoStringP FdoSmPhMySqlColumnChar::GetTypeSql()
 {
@@ -30,3 +31,17 @@ FdoStringP FdoSmPhMySqlColumnChar::GetTypeSql()
         return FdoSmPhColumnChar::GetTypeName();
 }
 
+FdoInt64 FdoSmPhMySqlColumnChar::GetDbBinarySize()
+{
+    FdoInt64 charCount = GetLength();
+    FdoInt64 charSize = 3; // Max character size in bytes.
+                           // Assume largest size by default. 
+
+    // Max character size is determine by column's character set. 
+    FdoSmPhMySqlCharacterSetP characterSet = GetCharacterSet().p->SmartCast<FdoSmPhMySqlCharacterSet>();
+    if ( characterSet ) 
+        charSize = characterSet->GetCharLen();
+
+    // Size is max characters X max character size. 
+    return charCount * charSize;
+}

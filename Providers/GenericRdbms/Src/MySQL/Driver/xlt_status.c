@@ -152,7 +152,7 @@ void set_last_msg(
     if ( mysql ) {
         unsigned long server_version = mysql_get_server_version( mysql );
 
-        if ( server_version < 50015 ) {
+        if ( server_version < 50022 ) {
             // Also, various errors can occur when database has too old a version.
             const wchar_t* server_msg = mysql_nls_server_version( server_version );
             cat_msg( err_msg, server_msg, err_msg_left );

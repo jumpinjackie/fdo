@@ -57,6 +57,7 @@ protected:
     virtual void  set_timestamp_nnull ( char *nullind ) { rdbi_set_nnull( mRdbiContext, nullind, 0, 0); }
     virtual bool allow_timestamp_notnull() { return true;};
     virtual int get_char_size() { return 1; };
+    virtual int get_single_char_size() { return get_char_size(); };
 };
 
 #endif // SELECTTESTS_H

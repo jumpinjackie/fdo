@@ -573,12 +573,12 @@ void SelectTests::describe ()
         CPPUNIT_ASSERT_MESSAGE ("rdbi_desc_slct failed", RDBI_SUCCESS == rdbi_desc_slct_Ex (mRdbiContext, cursor, 1, sizeof (name), name, &type, &size, &null_ok));
         CPPUNIT_ASSERT_MESSAGE ("name wrong name", 0 == FdoCommonOSUtil::stricmp ("name", name));
         CPPUNIT_ASSERT_MESSAGE ("name wrong type", RDBI_STRING == type);
-        CPPUNIT_ASSERT_MESSAGE ("name wrong size", 200 == size);
+        CPPUNIT_ASSERT_MESSAGE ("name wrong size", 200 == (size / get_char_size()));
 
         CPPUNIT_ASSERT_MESSAGE ("rdbi_desc_slct failed", RDBI_SUCCESS == rdbi_desc_slct_Ex (mRdbiContext, cursor, 2, sizeof (name), name, &type, &size, &null_ok));
         CPPUNIT_ASSERT_MESSAGE ("initials wrong name", 0 == FdoCommonOSUtil::stricmp ("initials", name));
-        CPPUNIT_ASSERT_MESSAGE ("initials wrong type", RDBI_CHAR == type);
-        CPPUNIT_ASSERT_MESSAGE ("initials wrong size", get_char_size() == size);
+        CPPUNIT_ASSERT_MESSAGE ("initials wrong type", ((get_char_size() == 1) ? RDBI_CHAR : RDBI_FIXED_CHAR) == type);
+        CPPUNIT_ASSERT_MESSAGE ("initials wrong size", get_single_char_size() == size);
 
         CPPUNIT_ASSERT_MESSAGE ("rdbi_desc_slct failed", RDBI_SUCCESS == rdbi_desc_slct_Ex (mRdbiContext, cursor, 3, sizeof (name), name, &type, &size, &null_ok));
         CPPUNIT_ASSERT_MESSAGE ("grade wrong name", 0 == FdoCommonOSUtil::stricmp ("grade", name));
@@ -590,7 +590,7 @@ void SelectTests::describe ()
         CPPUNIT_ASSERT_MESSAGE ("salutation wrong name", 0 == FdoCommonOSUtil::stricmp ("salutation", name));
 #pragma message ("ToDo: fix MySql so it doesn't alter the coloumn type")
         CPPUNIT_ASSERT_MESSAGE ("salutation wrong type", (RDBI_FIXED_CHAR == type) || (RDBI_STRING == type));
-        CPPUNIT_ASSERT_MESSAGE ("salutation wrong size", 4 == size);
+        CPPUNIT_ASSERT_MESSAGE ("salutation wrong size", 4 == (size/get_char_size()));
 
         CPPUNIT_ASSERT_MESSAGE ("rdbi_desc_slct failed", RDBI_SUCCESS == rdbi_desc_slct_Ex (mRdbiContext, cursor, 5, sizeof (name), name, &type, &size, &null_ok));
         CPPUNIT_ASSERT_MESSAGE ("employee wrong name", 0 == FdoCommonOSUtil::stricmp ("employee", name));

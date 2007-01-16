@@ -50,7 +50,7 @@ public:
 
     virtual int GetRdbType()
     {
-        return RDBI_DOUBLE;
+        return RDBI_LONGLONG;
     }
 };
 

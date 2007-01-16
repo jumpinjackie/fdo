@@ -215,3 +215,15 @@ const wchar_t* MySqlFdoUpdateTest::mForeignPolygonTest[] = {
     L"FSDATE DATE) ENGINE=MyISAM;",
     NULL
 };
+
+const char* MySqlFdoUpdateTest::NoMetaSuffix()
+{
+#ifdef _WIN32
+    static const char* noMetaSuffix = "_no_meta\xe4\xe5";
+#else
+    static const char* noMetaSuffix = "_no_meta";
+#endif
+
+    return noMetaSuffix;
+}
+

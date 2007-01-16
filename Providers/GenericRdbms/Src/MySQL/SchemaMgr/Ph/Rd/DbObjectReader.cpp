@@ -154,7 +154,8 @@ FdoSmPhReaderP FdoSmPhRdMySqlDbObjectReader::MakeQueryReader(
             L"  ist.auto_increment as autoincrement_column_seed, \n"
             L"  ist.engine as storage_engine, \n"
             L"  ' ' as data_directory, \n"
-            L"  ' ' as index_directory \n"
+            L"  ' ' as index_directory, \n"
+            L"  table_collation \n"
             L"  from %ls ist%ls \n"
             L"  where ist.table_schema collate utf8_bin = ?\n"
             L"  %ls\n"
@@ -232,6 +233,7 @@ FdoSmPhRowsP FdoSmPhRdMySqlDbObjectReader::MakeRows( FdoSmPhMgrP mgr )
     pField = new FdoSmPhField(row, L"storage_engine", row->CreateColumnChar(L"storage_engine",true, 64)); // can be NULL (e.g. for views)
     pField = new FdoSmPhField(row, L"data_directory", row->CreateColumnChar(L"data_directory",true, 256));
     pField = new FdoSmPhField(row, L"index_directory", row->CreateColumnChar(L"index_directory",true, 256));
+    pField = new FdoSmPhField(row, L"table_collation", row->CreateColumnDbObject(L"table_collation",true));
 
     return rows;
 }

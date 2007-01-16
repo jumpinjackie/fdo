@@ -40,6 +40,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="-Zm110"
 				Optimization="0"
 				AdditionalIncludeDirectories="$(FDO)\Unmanaged\Inc;$(FDO)\Unmanaged;$(FDOUTILITIES)\SchemaMgr\Inc;..\..\..;..\..\..\Inc;$(FDOUTILITIES)\Common\Inc"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;FDORDBMS_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
@@ -234,6 +235,14 @@
 				Name="Ph"
 				>
 				<File
+					RelativePath=".\Ph\CharacterSet.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Ph\Collation.cpp"
+					>
+				</File>
+				<File
 					RelativePath="Ph\ColTypeMapper.cpp"
 					>
 				</File>
@@ -296,6 +305,14 @@
 				<Filter
 					Name="Rdb"
 					>
+					<File
+						RelativePath=".\Ph\Rd\CharacterSetReader.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Ph\Rd\CollationReader.cpp"
+						>
+					</File>
 					<File
 						RelativePath="Ph\Rd\ColumnReader.cpp"
 						>
@@ -395,6 +412,14 @@
 				Name="Ph"
 				>
 				<File
+					RelativePath=".\Ph\CharacterSet.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Ph\Collation.h"
+					>
+				</File>
+				<File
 					RelativePath="Ph\ColTypeMapper.h"
 					>
 				</File>
@@ -493,6 +518,14 @@
 				<Filter
 					Name="Rdb"
 					>
+					<File
+						RelativePath=".\Ph\Rd\CharacterSetReader.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Ph\Rd\CollationReader.h"
+						>
+					</File>
 					<File
 						RelativePath="Ph\Rd\ColumnReader.h"
 						>

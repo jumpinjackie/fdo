@@ -16,27 +16,35 @@
  *
  */
 
-#ifndef MYSQL_FDOUPDATETEST_H
-#define MYSQL_FDOUPDATETEST_H
+#include "stdafx.h"
+#include "Database.h"
+#include "Collation.h"
+#include <Sm/Ph/Rd/CollationReader.h>
 
-#include "FdoUpdateTest.h"
-
-class MySqlFdoUpdateTest : public FdoUpdateTest
+FdoSmPhMySqlCollation::FdoSmPhMySqlCollation(
+    FdoStringP name,
+    const FdoSmPhDatabase* pDatabase,
+    FdoSmPhRdCollationReader* reader
+) :
+    FdoSmPhCollation(name, pDatabase, reader)
 {
-    CPPUNIT_TEST_SUB_SUITE (MySqlFdoUpdateTest, FdoUpdateTest);
-    CPPUNIT_TEST( testForeignDataStore );
-    CPPUNIT_TEST_SUITE_END ();
+}
 
-    void  set_provider();
-    virtual FdoStringP TableIdGeomName() {return L"t\xe4ble id geom";}
+FdoSmPhMySqlCollation::~FdoSmPhMySqlCollation(void)
+{
+}
 
-public:
-	virtual void ConditionalUpdate () { }
-    void testForeignDataStore();
+bool FdoSmPhMySqlCollation::Add()
+{
+    return false;
+}
 
-protected:
-    virtual const char* NoMetaSuffix();
-	static const wchar_t* mForeignPolygonTest[];
-};
+bool FdoSmPhMySqlCollation::Modify()
+{
+    return false;
+}
 
-#endif // MYSQL_FDOUPDATETEST_H
+bool FdoSmPhMySqlCollation::Delete()
+{
+    return false;
+}

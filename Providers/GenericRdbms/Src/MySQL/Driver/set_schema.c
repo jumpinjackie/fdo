@@ -32,7 +32,7 @@ int mysql_set_schema (
 
     stmt = (char*)alloca( strlen(schema_name) + 10 );
 
-    sprintf( stmt, "use %s", schema_name );
+    sprintf( stmt, "use \"%s\"", schema_name );
 	
     ret = mysql_run_sql( context, stmt, 0, NULL );
 	if (ret == RDBI_SUCCESS)

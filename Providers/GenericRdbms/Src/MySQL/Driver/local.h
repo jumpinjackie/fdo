@@ -35,6 +35,8 @@ typedef struct _mysql_context_def
 	long  mysql_current_connect2; /* 2nd connection for DDLs */
     MYSQL *mysql_connections[RDBI_MAX_CONNECTS]; /* connection objects */
     wchar_t  mysql_last_err_msg[RDBI_MSG_SIZE];
+    long mysql_char_size; // Character size in bytes as defined by current connection
+                          // character set. 
 } mysql_context_def;
 
 typedef struct _mysql_redefine_def

@@ -20,6 +20,8 @@ AUTOMAKE_OPTIONS = foreign
 noinst_LTLIBRARIES = libFdoRdbmsMySQL_SchemaMgr_Ph_Rd.la
 
 libFdoRdbmsMySQL_SchemaMgr_Ph_Rd_la_SOURCES = \
+  CharacterSetReader.cpp \
+  CollationReader.cpp \
   ColumnReader.cpp \
   ConstraintReader.cpp \
   DbObjectReader.cpp \
@@ -29,6 +31,8 @@ libFdoRdbmsMySQL_SchemaMgr_Ph_Rd_la_SOURCES = \
   PkeyReader.cpp
 
 noinst_HEADERS = $(libFdoRdbmsMySQL_SchemaMgr_Ph_Rd_la_SOURCES) \
+  CharacterSetReader.h \
+  CollationReader.h \
   ColumnReader.h \
   ConstraintReader.h \
   DbObjectReader.h \

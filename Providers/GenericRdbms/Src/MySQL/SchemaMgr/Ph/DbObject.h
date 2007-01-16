@@ -40,6 +40,7 @@ public:
     MySQLOvStorageEngineType GetStorageEngine() const { return mStorageEngine; };
     FdoString* GetDataDirectory() const { return mDataDirectory; };
     FdoString* GetIndexDirectory() const { return mIndexDirectory; };
+    FdoSmPhCharacterSetP GetCharacterSet();
 
     // Convert storage engine between string and enumerated type:
     static FdoString* StorageEngineEnumToString(MySQLOvStorageEngineType storageEngine);
@@ -226,6 +227,7 @@ private:
     MySQLOvStorageEngineType mStorageEngine;
     FdoStringP mDataDirectory;
     FdoStringP mIndexDirectory;
+    FdoStringP mCollationName;
 };
 
 typedef FdoPtr<FdoSmPhMySqlDbObject> FdoSmPhMySqlDbObjectP;

@@ -24,6 +24,8 @@ DIST_SUBDIRS = Rd
 noinst_LTLIBRARIES = libFdoRdbmsMySQL_SchemaMgr_Ph.la
 
 libFdoRdbmsMySQL_SchemaMgr_Ph_la_SOURCES = \
+  CharacterSet.cpp \
+  Collation.cpp \
   ColTypeMapper.cpp \
   ColumnChar.cpp \
   Column.cpp \
@@ -39,6 +41,8 @@ libFdoRdbmsMySQL_SchemaMgr_Ph_la_SOURCES = \
   View.cpp
 
 noinst_HEADERS = $(libFdoRdbmsMySQL_SchemaMgr_Ph_la_SOURCES) \
+  CharacterSet.h \
+  Collation.h \
   ColTypeMapper.h \
   Column.h \
   ColumnBLOB.h \

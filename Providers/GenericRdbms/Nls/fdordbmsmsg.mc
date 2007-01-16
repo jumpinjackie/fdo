@@ -165,6 +165,11 @@ SymbolicName=FDORDBMS_3
 Language=English
 Cannot create datastore, name '%1$ls' is a reserved word
 .
+MessageId=2209
+SymbolicName=FDORDBMS_4
+Language=English
+Collations can only be retrieved from current MySQL server
+.
 MessageId=2210
 SymbolicName=FDORDBMS_5
 Language=English
@@ -179,6 +184,11 @@ MessageId=2212
 SymbolicName=FDORDBMS_7
 Language=English
 Cannot turn on persistent locking for table '%1$ls': it is accessed through a database link.
+.
+MessageId=2213
+SymbolicName=FDORDBMS_8
+Language=English
+Character Sets can only be retrieved from current MySQL server
 .
 MessageId=2215
 SymbolicName=FDORDBMS_10

@@ -30,6 +30,9 @@ protected:
     FdoSmPhMySqlColumn(FdoSmPhRdColumnReader* reader);
     virtual ~FdoSmPhMySqlColumn(void);
 
+    // Get this column's character set. 
+    FdoSmPhCharacterSetP GetCharacterSet();
+
     virtual FdoStringP GetAddSql();
 
 	virtual FdoStringP GetAutoincrementSql();
@@ -37,6 +40,9 @@ protected:
 protected:
     // NOTE: The following constructor is to satisfy the compiler, and should never actually be called:
     FdoSmPhMySqlColumn() {}
+
+private:
+    FdoStringP mCharacterSetName;
 };
 
 typedef FdoPtr<FdoSmPhMySqlColumn> FdoSmPhMySqlColumnP;

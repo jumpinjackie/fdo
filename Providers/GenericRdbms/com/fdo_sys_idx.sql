@@ -95,7 +95,15 @@ create unique index f_classdef_pk_idx on f_classdefinition(classid)
 #endif
 ;
 
+#ifdef MySQL
+#ifdef Char3Byte
+create unique index f_classdef_schnm_idx on f_classdefinition(classname(150), schemaname(150))
+#else
 create unique index f_classdef_schnm_idx on f_classdefinition(classname, schemaname)
+#endif
+#else
+create unique index f_classdef_schnm_idx on f_classdefinition(classname, schemaname)
+#endif
 #ifdef Oracle
     pctfree 5
     storage (initial     4K
@@ -139,7 +147,19 @@ create unique index f_association_pk_idx on f_associationdefinition(pseudocolnam
 #endif
 ;
              
+#ifdef MySQL
+#ifdef Char1Byte
 create unique index f_sad_pk_idx on f_sad(ownername, elementname, elementtype, name) 
+#endif
+#ifdef Char2Byte
+create unique index f_sad_pk_idx on f_sad(ownername(150), elementname(150), elementtype, name(150)) 
+#endif
+#ifdef Char3Byte
+create unique index f_sad_pk_idx on f_sad(ownername(100), elementname(100), elementtype, name(100)) 
+#endif
+#else
+create unique index f_sad_pk_idx on f_sad(ownername, elementname, elementtype, name) 
+#endif
 #ifdef Oracle           
     pctfree 5
     storage (initial     4K
@@ -150,7 +170,19 @@ create unique index f_sad_pk_idx on f_sad(ownername, elementname, elementtype, n
 #endif
 ;
 
+#ifdef MySQL
+#ifdef Char1Byte
 create unique index f_schemaoptions_pk_idx on f_schemaoptions(ownername, elementname, elementtype, name) 
+#endif
+#ifdef Char2Byte
+create unique index f_schemaoptions_pk_idx on f_schemaoptions(ownername(150), elementname(150), elementtype, name(150)) 
+#endif
+#ifdef Char3Byte
+create unique index f_schemaoptions_pk_idx on f_schemaoptions(ownername(100), elementname(100), elementtype, name(100)) 
+#endif
+#else
+create unique index f_schemaoptions_pk_idx on f_schemaoptions(ownername, elementname, elementtype, name) 
+#endif
 #ifdef Oracle           
     pctfree 5
     storage (initial     4K

@@ -40,6 +40,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="-Zm112"
 				Optimization="0"
 				AdditionalIncludeDirectories="../..;$(FDO)/Unmanaged/inc;$(FDOTHIRDPARTY)/oracle/oci/include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_CRT_NON_CONFORMING_SWPRINTFS"

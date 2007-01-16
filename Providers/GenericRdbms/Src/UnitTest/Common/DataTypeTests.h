@@ -74,19 +74,21 @@ public:
         char *sql_type,
         int rdbi_type, int rdbi_scale, int rdbi_precision,
         void *variable, int size, double tolerance = 0.0,
-        bool is_ora_int64_test = false);
+        bool is_ora_int64_test = false,
+        int out_rdbi_type = -1);
 
 	   void roundtrip_update (
         char *sql_type,
         int rdbi_type, int rdbi_scale, int rdbi_precision,
         void *variable, int size, double tolerance = 0.0,
-        bool is_ora_int64_test = false);
+        bool is_ora_int64_test = false,
+        int out_rdbi_type = -1);
 
 protected:
     virtual void set_provider() {  CPPUNIT_FAIL ("naked set_provider() called"); };
 	void geometry();
-    void single_char ();
-    void single_character ();
+    virtual void single_char ();
+    virtual void single_character ();
     void dozen_char ();
     void dozen_character ();
     void char_varying ();

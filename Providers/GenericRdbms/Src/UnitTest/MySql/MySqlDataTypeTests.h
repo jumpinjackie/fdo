@@ -26,6 +26,9 @@ class MySqlDataTypeTests :	public DataTypeTests
     CPPUNIT_TEST_SUB_SUITE (MySqlDataTypeTests, DataTypeTests);
     CPPUNIT_TEST_SUITE_END ();
 
+    virtual void single_char ();
+    virtual void single_character ();
+
     void set_provider();
     int do_rdbi_init ();
     int do_rdbi_connect (const char* dataStoreName, const char* userName, const char* userPassword);

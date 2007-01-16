@@ -25,9 +25,11 @@ class MySqlSchemaMgrTests : public SchemaMgrTests
 {
     CPPUNIT_TEST_SUB_SUITE (MySqlSchemaMgrTests, SchemaMgrTests);
     CPPUNIT_TEST (testWideConstraint);
+    CPPUNIT_TEST (testCharacterSets);
     CPPUNIT_TEST_SUITE_END ();
 
     void testWideConstraint();
+    void testCharacterSets();
     
 	virtual StaticConnection* CreateStaticConnection();
     virtual FdoIoStream* OverrideBend( FdoIoStream* stream1, FdoStringP oldOwnerPrefix, FdoStringP newOwnerPrefix );

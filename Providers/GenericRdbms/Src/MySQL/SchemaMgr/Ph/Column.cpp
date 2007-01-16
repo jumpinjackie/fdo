@@ -25,7 +25,7 @@ FdoSmPhMySqlColumn::FdoSmPhMySqlColumn(FdoSmPhRdColumnReader* reader)
 {
     if (NULL != reader)
     {
-        ; //TODO: read MySQL-specific column attributes from given reader
+        mCharacterSetName = reader->GetString( L"", L"character_set_name" );
     }
 }
 
@@ -35,6 +35,24 @@ FdoSmPhMySqlColumn::~FdoSmPhMySqlColumn(void)
 {
 }
 
+FdoSmPhCharacterSetP FdoSmPhMySqlColumn::GetCharacterSet()
+{
+    FdoSmPhCharacterSetP characterSet;
+    FdoSmPhMySqlDbObject* pDbObject = dynamic_cast<FdoSmPhMySqlDbObject*>((FdoSmSchemaElement*)(GetParent()));
+
+    if ( mCharacterSetName != L"" ) {
+        // Column has character set, retrieve it.
+        FdoSmPhDatabase* pDatabase = (FdoSmPhDatabase*)(FdoSmSchemaElement*)(pDbObject->GetParent()->GetParent());
+        characterSet = pDatabase->FindCharacterSet( mCharacterSetName );
+    }
+    else {
+        // Column does not have character set (might be new column.
+        // Get the default set (from containing object).
+        characterSet = pDbObject->GetCharacterSet();
+    }
+
+    return characterSet;
+}
 
 FdoStringP FdoSmPhMySqlColumn::GetAddSql()
 {

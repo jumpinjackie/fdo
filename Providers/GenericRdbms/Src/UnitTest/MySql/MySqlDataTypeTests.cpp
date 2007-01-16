@@ -24,6 +24,25 @@ extern initializer mysql_rdbi_init;
 CPPUNIT_TEST_SUITE_REGISTRATION (MySqlDataTypeTests);
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION (MySqlDataTypeTests, "DataTypeTests");
 
+void MySqlDataTypeTests::single_char ()
+{
+    char ch[2];
+
+    ch[0] = 'K'; ch[1] = '\0'; // Null terminator
+    roundtrip_insert ("CHAR", RDBI_CHAR, 1, 0, &ch, 1, 0.0, false, RDBI_FIXED_CHAR);
+	ch[0] = 'F';
+	roundtrip_update ("CHAR", RDBI_CHAR, 1, 0, &ch, 1, 0.0, false, RDBI_FIXED_CHAR);
+}
+
+void MySqlDataTypeTests::single_character ()
+{
+    char ch[2];
+
+    ch[0] = 'S'; ch[1] = '\0'; // Null terminator
+    roundtrip_insert ("CHARACTER", RDBI_CHAR, 1, 0, &ch, 1, 0.0, false, RDBI_FIXED_CHAR);
+}
+
+
 void MySqlDataTypeTests::set_provider()
 {
 	UnitTestUtil::SetProvider( "MySql" );

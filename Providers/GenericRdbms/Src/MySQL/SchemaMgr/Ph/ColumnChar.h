@@ -66,6 +66,8 @@ public:
     // Get SQL sub-clause for column type indicator
     virtual FdoStringP GetTypeSql();
 
+    virtual FdoInt64 GetDbBinarySize();
+
     static const FdoInt64 mVarcharMaxLen = 255;
     static const FdoInt64 mTextMaxLen = 65535;
     static const FdoInt64 mMediumTextMaxLen = 16777215;
