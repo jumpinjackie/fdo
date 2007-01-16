@@ -22,11 +22,14 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Utils", "Utils\FDOUtils.vcp
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTest", "UnitTest\UnitTest.vcproj", "{D21428C0-F639-4410-9A29-421493E0F217}"
 	ProjectSection(ProjectDependencies) = postProject
-		{31607A09-F8CA-43B3-9195-C1D5FB18E0D7} = {31607A09-F8CA-43B3-9195-C1D5FB18E0D7}
 		{C8A43164-7819-4EDE-805F-7C02097B3B99} = {C8A43164-7819-4EDE-805F-7C02097B3B99}
+		{31607A09-F8CA-43B3-9195-C1D5FB18E0D7} = {31607A09-F8CA-43B3-9195-C1D5FB18E0D7}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestCommon", "..\..\..\Utilities\TestCommon\TestCommon.vcproj", "{31607A09-F8CA-43B3-9195-C1D5FB18E0D7}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestCommon", "%FDOUTILITIES%\TestCommon\TestCommon.vcproj", "{31607A09-F8CA-43B3-9195-C1D5FB18E0D7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9037A345-04EB-418C-98D0-3D5B19FC9D55} = {9037A345-04EB-418C-98D0-3D5B19FC9D55}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
