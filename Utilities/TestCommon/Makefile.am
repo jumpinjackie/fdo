@@ -39,6 +39,7 @@ noinst_HEADERS = $(libTestCommon_la_SOURCES) \
 INCLUDES = \
   -I$(FDO)/Unmanaged/Inc \
   -I./Inc \
+  -I$(FDOTHIRDPARTY)/linux/cppunit/include \
   -I$(FDOUTILITIES)/Common/Inc \
   -I$(FDO)/Unmanaged/Src/Common
 
