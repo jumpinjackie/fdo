@@ -80,16 +80,28 @@ int mysql_fetch (
 				*rows_processed = 0;
                 result = mysql_stmt_fetch (curs->statement);
                 ret = mysql_xlt_status(context, result, mysql, (MYSQL_STMT*) NULL);
-				if (ret == RDBI_DATA_TRUNCATED)
+
+				// Post-process BLOB columns
+				for (int i=0; i<curs->define_count; i++)
 				{
-					for (int i=0; i<curs->define_count; i++)
+					if (curs->defines[i].buffer_type != MYSQL_TYPE_BLOB)
+						continue;
+
+					// avoid datatruncation error on BLOBs
+					if (ret == RDBI_DATA_TRUNCATED && curs->defines[i].error)
+						ret = RDBI_SUCCESS;
+					else
 					{
-						if (curs->defines[i].error && (curs->defines[i].buffer_type == MYSQL_TYPE_BLOB))
-						// ignore data truncation error on BLOBs
-							ret = RDBI_SUCCESS;
+						// MySql doesn't clean up the internal buffer which is copied into the user's buffer.
+						// Therefore consider the returned length of the BLOB. By inserting a null terminator 
+						// helps the caller to handle the TEXT columns.
+						unsigned long	*size = curs->defines[i].length;
+						char			*address = (char *)curs->defines[i].buffer;
+						address[*size] = '\0';
 					}
 				}
-                if (ret == RDBI_SUCCESS)
+
+				if (ret == RDBI_SUCCESS)
                 {
 					// mysql_stmt_affected_rows returns inconsistent values for select
                     //rows  = mysql_stmt_affected_rows (curs->statement);
