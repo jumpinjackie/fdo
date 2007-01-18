@@ -1743,17 +1743,62 @@ Language=English
 MessageId=2718
 SymbolicName=FDORDBMS_493
 Language=English
-MySQL client (libmysql) version %1$d.%2$d.%3$d is too old, FDO requires at least version 5; 
+MySQL client (libmysql) version %1$d.%2$d.%3$d is too old, FDO requires at least version %4$ls; 
 .
 MessageId=2719
 SymbolicName=FDORDBMS_494
 Language=English
-MySQL database version %1$d.%2$d.%3$d is too old, FDO requires at least version 5.0.15; 
+MySQL database version %1$d.%2$d.%3$d is too old, FDO requires at least version %4$ls; 
 .
 MessageId=2720
 SymbolicName=FDORDBMS_495
 Language=English
 Duplicate columns of name '%1$ls' found in query result.
+.
+MessageId=2721
+SymbolicName=FDORDBMS_496
+Language=English
+Base for all metaclasses
+.
+MessageId=2722
+SymbolicName=FDORDBMS_497
+Language=English
+FDO base property: object class name
+.
+MessageId=2723
+SymbolicName=FDORDBMS_498
+Language=English
+FDO base property: object class schema name
+.
+MessageId=2724
+SymbolicName=FDORDBMS_499
+Language=English
+Feature metaclass
+.
+MessageId=2725
+SymbolicName=FDORDBMS_500
+Language=English
+Feature id number (uniquely identifies a feature)
+.
+MessageId=2726
+SymbolicName=FDORDBMS_501
+Language=English
+Class id number (uniquely identifies a class)
+.
+MessageId=2727
+SymbolicName=FDORDBMS_502
+Language=English
+Edit count for supporting optimistic locking.  This value is incremented everytime the object is updated.
+.
+MessageId=2728
+SymbolicName=FDORDBMS_503
+Language=English
+Bounding box for the feature
+.
+MessageId=2729
+SymbolicName=FDORDBMS_504
+Language=English
+Non-feature metaclass
 .
 MessageId=2730
 SymbolicName=FDORDBMS_505
@@ -1764,4 +1809,109 @@ MessageId=2731
 SymbolicName=FDORDBMS_506
 Language=English
 No current open database.
+.
+MessageId=2732
+SymbolicName=FDORDBMS_507
+Language=English
+Geometric Property '%1$ls' does not have a column
+.
+MessageId=2733
+SymbolicName=FDORDBMS_508
+Language=English
+Geometric Property '%1$ls' already has a spatial index
+.
+MessageId=2734
+SymbolicName=FDORDBMS_509
+Language=English
+Geometric Property '%1$ls' is not in a schema
+.
+MessageId=2735
+SymbolicName=FDORDBMS_510
+Language=English
+Geometric Property '%1$ls' is not in a class
+.
+MessageId=2736
+SymbolicName=FDORDBMS_511
+Language=English
+Geometric Property '%1$ls' is not in the current datastore
+.
+MessageId=2737
+SymbolicName=FDORDBMS_512
+Language=English
+Property '%1$ls' is not a geometric property
+.
+MessageId=2738
+SymbolicName=FDORDBMS_513
+Language=English
+Oracle client must be at least 10g
+.
+MessageId=2739
+SymbolicName=FDORDBMS_514
+Language=English
+The runtime was not found (module '%1$ls'). Please verify your Oracle client component installation.
+.
+MessageId=2740
+SymbolicName=FDORDBMS_515
+Language=English
+The Oracle runtime was not found (procedure '%1$ls' in module '%2$ls'). Please verify your Oracle client component installation.
+.
+MessageId=2741
+SymbolicName=FDORDBMS_516
+Language=English
+Schema Mapping Set '%1$ls', for provider '%2$ls', is not an Oracle Provider Schema Mapping set.
+.
+MessageId=2742
+SymbolicName=FDORDBMS_517
+Language=English
+Geometric Property '%1$ls' not in current datastore
+.
+MessageId=2743
+SymbolicName=FDORDBMS_518
+Language=English
+Too many connections active - can't establish another.
+.
+MessageId=2744
+SymbolicName=FDORDBMS_519
+Language=English
+Failed to connect to '%1$s'. Invalid data source, user name or password.
+.
+MessageId=2745
+SymbolicName=FDORDBMS_520
+Language=English
+Invalid database version (<9i)
+.
+MessageId=2746
+SymbolicName=FDORDBMS_521
+Language=English
+Failed to connect to '%1$s'. RDBMS error %2$d
+.
+MessageId=2747
+SymbolicName=FDORDBMS_522
+Language=English
+Cannot open more than %1$d databases. Open Failed on '%2$s'
+.
+MessageId=2748
+SymbolicName=FDORDBMS_523
+Language=English
+Cannot open more than %1$d databases.
+.
+MessageId=2749
+SymbolicName=FDORDBMS_524
+Language=English
+Geometric Property '%1$ls' does not have a table
+.
+MessageId=2750
+SymbolicName=FDORDBMS_525
+Language=English
+Invalid access mode '%1$s' for database '%2$s'
+.
+MessageId=2751
+SymbolicName=FDORDBMS_526
+Language=English
+There is no currently open database
+.
+MessageId=2752
+SymbolicName=FDORDBMS_527
+Language=English
+Versioning context not set, cannot open database '%1$s'
 .
