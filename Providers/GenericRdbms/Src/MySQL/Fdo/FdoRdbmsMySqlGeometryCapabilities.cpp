@@ -46,7 +46,7 @@ FdoGeometryComponentType* FdoRdbmsMySqlGeometryCapabilities::GetGeometryComponen
     static FdoGeometryComponentType  rdbmsGeomCompTypes[] = {
                                         // MySQL Provider currently doesn't support curve segments
                                         FdoGeometryComponentType_LinearRing,
-                                        FdoGeometryComponentType_LineStringSegment
+                                        // FdoGeometryComponentType_LineStringSegment
 
                                      // MySQL Provider currently doesn't support curve segments:
                                      // FdoGeometryComponentType_CircularArcSegment,
