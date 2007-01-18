@@ -154,7 +154,7 @@ create table f_sad (
              maxextents  9999
              pctincrease 50)
 #else
-    ownername    varchar(400) not null,
+    ownername    varchar(401) not null,
     elementname  varchar(200) not null,
     elementtype  varchar(30) not null,
     name         varchar(200) not null,
