@@ -32,6 +32,7 @@
 #include "FdoRdbmsMySqlConnectionCapabilities.h"
 #include "FdoRdbmsMySqlCommandCapabilities.h"
 #include "FdoRdbmsMySqlFilterCapabilities.h"
+#include "Rdbms/FdoRdbmsCommandType.h"
 
 #include "DbiConnection.h"
 #include <Inc/Rdbi/proto.h>
@@ -87,6 +88,9 @@ FdoICommand *FdoRdbmsMySqlConnection::CreateCommand (FdoInt32 commandType)
 		case FdoCommandType_CreateLongTransaction:
 		case FdoCommandType_GetLongTransactions:
 		case FdoCommandType_RollbackLongTransaction:
+        case FdoRdbmsCommandType_CreateSpatialIndex:
+        case FdoRdbmsCommandType_DestroySpatialIndex:
+        case FdoRdbmsCommandType_GetSpatialIndexes:
 			throw FdoConnectionException::Create(NlsMsgGet(FDORDBMS_10, "Command not supported"));
 			break;
 

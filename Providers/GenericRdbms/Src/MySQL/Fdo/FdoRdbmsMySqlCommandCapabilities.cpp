@@ -51,9 +51,9 @@ int* FdoRdbmsMySqlCommandCapabilities::GetCommands(int& size)
         FdoCommandType_DescribeSchemaMapping,
         FdoCommandType_SQLCommand,
 		// Custom commands
-        FdoRdbmsCommandType_CreateSpatialIndex,
-        FdoRdbmsCommandType_DestroySpatialIndex,
-        FdoRdbmsCommandType_GetSpatialIndexes
+        //FdoRdbmsCommandType_CreateSpatialIndex,
+        //FdoRdbmsCommandType_DestroySpatialIndex,
+        //FdoRdbmsCommandType_GetSpatialIndexes
     };
     size = sizeof(commands)/sizeof(int);
     return (int*) commands;
