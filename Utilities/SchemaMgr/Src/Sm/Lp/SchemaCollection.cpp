@@ -796,30 +796,51 @@ void FdoSmLpSchemaCollection::ConvertConstraints(const FdoSmLpClassDefinition* p
 	// UNIQUE() constraints : Load from the database
 	///////////////////////////////////////////////////////////////////////////
 
-	FdoSmLpUniqueConstraintCollection*			uLpUKeys = (FdoSmLpUniqueConstraintCollection *)((FdoSmLpClassBase *)pLpClassDef)->RefUniqueConstraints();
-	FdoPtr<FdoUniqueConstraintCollection>		pFdoUKeys = pFdoClassDef->GetUniqueConstraints();
-	FdoPropertiesP								pFdoProps = pFdoClassDef->GetProperties();
+	FdoSmLpUniqueConstraintCollection*			    uLpUKeys = (FdoSmLpUniqueConstraintCollection *)((FdoSmLpClassBase *)pLpClassDef)->RefUniqueConstraints();
+	FdoPtr<FdoUniqueConstraintCollection>		    pFdoUKeys = pFdoClassDef->GetUniqueConstraints();
+	FdoPropertiesP								    pFdoProps = pFdoClassDef->GetProperties();
+	FdoPtr<FdoReadOnlyPropertyDefinitionCollection>	pFdoBaseProps = pFdoClassDef->GetBaseProperties();
 
 	for ( int i = 0; i < uLpUKeys->GetCount(); i++ ) {
 		FdoSmLpUniqueConstraintP	pLpUniqueC = uLpUKeys->GetItem(i);
-		FdoSmLpDataPropertiesP		pLpProps = pLpUniqueC->GetProperties();
 
-		// New constraints
-		FdoPtr<FdoUniqueConstraint>	pFdoUniqueC = FdoUniqueConstraint::Create();
-		FdoDataPropertiesP			pFdoUniqueProps = pFdoUniqueC->GetProperties();
+        // Skip inherited constraints since already defined on base class.
+        if ( !pLpUniqueC->GetBaseConstraint() ) {
+		    FdoSmLpDataPropertiesP		pLpProps = pLpUniqueC->GetProperties();
 
-		for ( int j = 0; j < pLpProps->GetCount(); j++ ) {
-			FdoSmLpDataPropertyP	pLpProp = pLpProps->GetItem(j);
-			
-			// Find the Fdo data property
-			FdoDataPropertyP   pFdoProp = (FdoDataPropertyDefinition *)pFdoProps->FindItem(pLpProp->GetName());
-					
-			// Match the names and add to collection
-			if ( pFdoProp && ( wcscmp(pLpProp->GetName(), pFdoProp->GetName()) == 0 ) )
-				pFdoUniqueProps->Add( pFdoProp );
-		}
-		if ( pFdoUniqueProps->GetCount() != 0 )
-			pFdoUKeys->Add(pFdoUniqueC);
+		    // New constraints
+		    FdoPtr<FdoUniqueConstraint>	pFdoUniqueC = FdoUniqueConstraint::Create();
+		    FdoDataPropertiesP			pFdoUniqueProps = pFdoUniqueC->GetProperties();
+    	    bool                        constraintOk = true;	
+    		
+            for ( int j = 0; j < pLpProps->GetCount(); j++ ) {
+			    FdoSmLpDataPropertyP	pLpProp = pLpProps->GetItem(j);
+    			
+			    // Find the Fdo data property
+			    FdoDataPropertyP   pFdoProp = (FdoDataPropertyDefinition *)pFdoProps->FindItem(pLpProp->GetName());
+
+			    // Match the names and add to collection
+                if ( pFdoProp && ( wcscmp(pLpProp->GetName(), pFdoProp->GetName()) == 0 ) ) {
+				    pFdoUniqueProps->Add( pFdoProp );
+                }
+                else {
+                    try { 
+                        pFdoProp = (FdoDataPropertyDefinition *)pFdoBaseProps->GetItem(pLpProp->GetName());
+                    }
+                    catch (...) {
+                    }
+
+                    if ( pFdoProp && ( wcscmp(pLpProp->GetName(), pFdoProp->GetName()) == 0 ) ) {
+				        pFdoUniqueProps->Add( pFdoProp );
+                    }
+                    else {
+                        constraintOk = false;
+                    }
+                }
+		    }
+		    if ( constraintOk && (pFdoUniqueProps->GetCount() != 0) )
+			    pFdoUKeys->Add(pFdoUniqueC);
+        }
 	}
 
 	///////////////////////////////////////////////////////////////////////////

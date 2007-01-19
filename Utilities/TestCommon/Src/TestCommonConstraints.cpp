@@ -27,6 +27,7 @@
 #define            SCHEMA_NAME            L"constraints"
 #define            CLASS_NAME             L"cdataclass"    // lower case to compensate for MySQl on Linux
 #define            CLASS_NAME_BASE        L"CDataBaseClass"
+#define            CLASS_NAME_SUB        L"CDataSubClass"
 
 #define            PROP_FEATID            L"FeatureId"
 
@@ -428,6 +429,338 @@ void TestCommonConstraints::TestDateTimeConstraints ()
             }
             CPPUNIT_FAIL ("caught unexpected exception");
         }
+    }
+}
+
+void TestCommonConstraints::TestBaseReferences ()
+{
+    FdoPtr<FdoIConnection> connection;
+
+    try
+    {
+        // delete, re-create and open the datastore
+        printf( "Initializing Connection ... \n" );
+        connection = CreateConnection( true );
+
+        printf( "Creating Constraints Schema ... \n" );
+            
+        FdoPtr<FdoISchemaCapabilities>    schemaCap = connection->GetSchemaCapabilities();
+
+        if ( schemaCap->SupportsUniqueValueConstraints() && schemaCap->SupportsCompositeUniqueValueConstraints() ) {
+            FdoPtr<FdoIApplySchema>            pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
+
+            FdoFeatureSchemasP pSchemas = FdoFeatureSchemaCollection::Create(NULL);
+
+            FdoPtr<FdoFeatureSchema> pSchema = FdoFeatureSchema::Create( SCHEMA_NAME, L"AutoCAD schema" );
+            pSchemas->Add( pSchema );
+
+            FdoPtr<FdoFeatureClass> pCData = FdoFeatureClass::Create( CLASS_NAME_BASE, L"Constraints" );
+            pCData->SetIsAbstract(false);
+
+            FdoPtr<FdoDataPropertyDefinition> pProp = FdoDataPropertyDefinition::Create( PROP_FEATID, L"" );
+            pProp->SetDataType( FdoDataType_Int32 );
+            pProp->SetNullable(false);
+            FdoPropertiesP(pCData->GetProperties())->Add( pProp );
+            FdoDataPropertiesP(pCData->GetIdentityProperties())->Add( pProp );
+
+            //// Add the class to schema
+            FdoClassesP(pSchema->GetClasses())->Add( pCData );
+
+            FdoClassDefinitionP pClass = FdoClassesP( pSchema->GetClasses() )->GetItem( CLASS_NAME_BASE );
+
+            //////////////  1st unique property - single ///////////////
+            FdoPtr<FdoDataPropertyDefinition> pUnique1Int = FdoDataPropertyDefinition::Create( PROP_UNIQUE1, L"" );
+            pUnique1Int->SetDataType( FdoDataType_Int32 );
+            pUnique1Int->SetNullable(true);
+            FdoPropertiesP(pCData->GetProperties())->Add( pUnique1Int  );
+
+            //////////////  2nd unique property - Composite ///////////////
+            FdoPtr<FdoDataPropertyDefinition> pUnique21Int = FdoDataPropertyDefinition::Create( PROP_UNIQUE2_1, L"" );
+            pUnique21Int->SetDataType( FdoDataType_Int32 );
+            pUnique21Int->SetNullable(true);
+            FdoPropertiesP(pCData->GetProperties())->Add( pUnique21Int  );
+
+            // Create a new class based on the previous ...
+            FdoPtr<FdoFeatureClass> pCDataDerived = FdoFeatureClass::Create( CLASS_NAME, L"Constraits" );
+            pCDataDerived->SetBaseClass( pCData );
+            pCDataDerived->SetIsAbstract(false);
+            FdoPtr<FdoUniqueConstraintCollection> constraints = pCDataDerived->GetUniqueConstraints();
+
+            //// Add the class to schema
+            FdoClassesP(pSchema->GetClasses())->Add( pCDataDerived );
+
+            // Create constaint on base property
+            FdoPtr<FdoUniqueConstraint>  newUniqueConstr1 = FdoUniqueConstraint::Create();
+            FdoPtr<FdoDataPropertyDefinitionCollection> pDataPropColl = newUniqueConstr1->GetProperties();
+            pDataPropColl->Add( pUnique1Int );
+            constraints->Add( newUniqueConstr1 );
+
+            FdoPtr<FdoDataPropertyDefinition> pUnique22Int = FdoDataPropertyDefinition::Create( PROP_UNIQUE2_2, L"" );
+            pUnique22Int->SetDataType( FdoDataType_Int32 );
+            pUnique22Int->SetNullable(true);
+            FdoPropertiesP(pCDataDerived->GetProperties())->Add( pUnique22Int  );
+
+            // Create composite constraint on property and base property.
+            FdoPtr<FdoUniqueConstraint>  newUniqueConstr2 = FdoUniqueConstraint::Create();
+            pDataPropColl = newUniqueConstr2->GetProperties();
+            pDataPropColl->Add( pUnique21Int );
+            pDataPropColl->Add( pUnique22Int );
+            constraints->Add( newUniqueConstr2 );
+
+            // Create a new class based on the previous ...
+            FdoPtr<FdoFeatureClass> pCDataSubDerived = FdoFeatureClass::Create( CLASS_NAME_SUB, L"Constraits" );
+            pCDataSubDerived->SetBaseClass( pCDataDerived);
+            pCDataSubDerived->SetIsAbstract(false);
+            constraints = pCDataSubDerived->GetUniqueConstraints();
+
+            //// Add the class to schema
+            FdoClassesP(pSchema->GetClasses())->Add( pCDataSubDerived );
+
+            // Create duplicate constaint on base property (should disappear on DescribeSchema)
+            newUniqueConstr1 = FdoUniqueConstraint::Create();
+            pDataPropColl = newUniqueConstr1->GetProperties();
+            pDataPropColl->Add( pUnique1Int );
+            constraints->Add( newUniqueConstr1 );
+
+            // Create constraint on subset of properties from a base class constraint - OK.
+            newUniqueConstr2 = FdoUniqueConstraint::Create();
+            pDataPropColl = newUniqueConstr2->GetProperties();
+            pDataPropColl->Add( pUnique22Int );
+            constraints->Add( newUniqueConstr2 );
+
+            ///////// Done.
+            pCmd->SetFeatureSchema( pSchema );
+            pCmd->Execute();
+
+            FdoPtr<FdoIInsert> insertCmd;
+
+            // This should succeed
+            TestCommonMiscUtil::InsertObject(
+                connection,
+                insertCmd,
+                SCHEMA_NAME,
+                CLASS_NAME_BASE,
+                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection,CLASS_NAME_BASE),
+                PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 1000,
+                (FdoString*) NULL
+            );
+
+            // Unique constraint not on base class so should succeed.
+            TestCommonMiscUtil::InsertObject(
+                connection,
+                insertCmd,
+                SCHEMA_NAME,
+                CLASS_NAME_BASE,
+                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME_BASE),
+                PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 1000,
+                (FdoString*) NULL
+            );
+
+            // This should succeed
+            TestCommonMiscUtil::InsertObject(
+                connection,
+                insertCmd,
+                SCHEMA_NAME,
+                CLASS_NAME,
+                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME),
+                PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 2000,
+                (FdoString*) NULL
+            );
+
+            bool    uniqueSuccess1 = true;
+            try {
+                TestCommonMiscUtil::InsertObject(
+                    connection,
+                    insertCmd,
+                    SCHEMA_NAME,
+                    CLASS_NAME,
+                    PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME),
+                    PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 2000,
+                    (FdoString*) NULL
+                );
+            } catch (FdoException *ex) {
+                DBG(printf("Expected unique constraint violation exception: %ls", (FdoString* )ex->GetExceptionMessage()));
+                ex->Release();
+                uniqueSuccess1 = false;
+            }
+            CPPUNIT_ASSERT_MESSAGE("Should get unique constraint violation prop #4", uniqueSuccess1 == false );
+
+            // This should succeed
+            TestCommonMiscUtil::InsertObject(
+                connection,
+                insertCmd,
+                SCHEMA_NAME,
+                CLASS_NAME_BASE,
+                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME_BASE),
+                PROP_UNIQUE2_1,  FdoDataType_Int32,  (FdoInt32) 1000,
+                (FdoString*) NULL
+            );
+
+            // Unique constraint not on base class so should succeed.
+            TestCommonMiscUtil::InsertObject(
+                connection,
+                insertCmd,
+                SCHEMA_NAME,
+                CLASS_NAME_BASE,
+                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME_BASE),
+                PROP_UNIQUE2_1,  FdoDataType_Int32,  (FdoInt32) 1000,
+                (FdoString*) NULL
+                );
+
+            // This should succeed
+            TestCommonMiscUtil::InsertObject(
+                connection,
+                insertCmd,
+                SCHEMA_NAME,
+                CLASS_NAME,
+                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME),
+                PROP_UNIQUE2_1,  FdoDataType_Int32,  (FdoInt32) 1000,
+                PROP_UNIQUE2_2,  FdoDataType_Int32,  (FdoInt32) 2000,
+                (FdoString*) NULL
+                );
+
+            bool    uniqueSuccess2 = true;
+
+            try {
+                TestCommonMiscUtil::InsertObject(
+                    connection,
+                    insertCmd,
+                    SCHEMA_NAME,
+                    CLASS_NAME,
+                    PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME),
+                    PROP_UNIQUE2_1,  FdoDataType_Int32,  (FdoInt32) 1000,
+                    PROP_UNIQUE2_2,  FdoDataType_Int32,  (FdoInt32) 2000,
+                    (FdoString*) NULL
+                    );
+
+            } catch (FdoException *ex) {
+                DBG(printf("Expected unique constraint violationexception: %ls", (FdoString* )ex->GetExceptionMessage()));
+                ex->Release();
+                uniqueSuccess2 = false;
+            }
+
+            CPPUNIT_ASSERT_MESSAGE("Should get unique constraint violation prop #[5,6]", uniqueSuccess2 == false ); 
+            
+            // This should succeed
+
+            TestCommonMiscUtil::InsertObject(
+                connection,
+                insertCmd,
+                SCHEMA_NAME,
+                CLASS_NAME,
+                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME),
+                PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 3000,
+                PROP_UNIQUE2_1,  FdoDataType_Int32,  (FdoInt32) 2000,
+                PROP_UNIQUE2_2,  FdoDataType_Int32,  (FdoInt32) 2000,
+                (FdoString*) NULL
+                );
+           
+            // This should succeed
+
+            TestCommonMiscUtil::InsertObject(
+                connection,
+                insertCmd,
+                SCHEMA_NAME,
+                CLASS_NAME,
+                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME),
+                PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 4000,
+                PROP_UNIQUE2_1,  FdoDataType_Int32,  (FdoInt32) 1000,
+                PROP_UNIQUE2_2,  FdoDataType_Int32,  (FdoInt32) 3000,
+                (FdoString*) NULL
+                );
+            
+            FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
+
+            pDescCmd->SetSchemaName( SCHEMA_NAME );
+            FdoPtr<FdoFeatureSchemaCollection> pSchemas2 = pDescCmd->Execute();
+            FdoPtr<FdoFeatureSchema> pSchema2 = pSchemas2->GetItem( SCHEMA_NAME );
+            FdoPtr<FdoClassCollection> pClasses2 = pSchema2->GetClasses();
+            FdoPtr<FdoClassDefinition> pClass2 = pClasses2->GetItem( CLASS_NAME );
+            FdoPtr<FdoClassDefinition> pClassBase2 = pClass2->GetBaseClass();
+            FdoPtr<FdoClassDefinition> pClassSub2 = pClasses2->GetItem( CLASS_NAME_SUB );
+
+            ///////////////// UNIQUE() CONSTRAINTS //////////////////////////////////////////
+            FdoPtr<FdoUniqueConstraintCollection> pUniqueCs = pClass2->GetUniqueConstraints();
+
+            int     count = 0;
+            bool    found_unique1 = false;
+            bool    found_unique2 = false;
+            bool    found_unique3 = false;
+
+            for ( int i = 0; i < pUniqueCs->GetCount(); i++ ) {
+                FdoPtr<FdoUniqueConstraint>  pUniqueC = pUniqueCs->GetItem(i);
+                FdoDataPropertiesP             pProps = pUniqueC->GetProperties();
+                    
+                printf("Unique key #%d:\n", i);
+
+                for ( int j = 0; j < pProps->GetCount(); j++ ) {
+                    FdoDataPropertyP    pProp = pProps->GetItem(j);
+
+                    printf("\t%d %ls\n", j, pProp->GetName());
+                    count++;
+                    
+                    if ( wcscmp(pProp->GetName(), PROP_UNIQUE1 ) == 0 )
+                        found_unique1 = true;
+                    else if ( wcscmp(pProp->GetName(), PROP_UNIQUE2_1 ) == 0 )
+                        found_unique2 = true;
+                    else if ( wcscmp(pProp->GetName(), PROP_UNIQUE2_2 ) == 0 )
+                        found_unique3 = true;
+                }    
+            }
+
+            CPPUNIT_ASSERT_MESSAGE("Wrong number of unique keys", count == 3 );
+            CPPUNIT_ASSERT_MESSAGE("Unique keys properties not found", found_unique1 && found_unique2 && found_unique3);
+
+            // None of the unique constraints on derived class should find their way to the base
+            // class.
+            pUniqueCs = pClassBase2->GetUniqueConstraints();
+            CPPUNIT_ASSERT_MESSAGE("Base class has unique keys", pUniqueCs->GetCount() == 0 );
+
+            // Sub class should have on 1 constraint (one with subset of properties). Duplicate
+            // constraint should disappear
+            pUniqueCs = pClassSub2->GetUniqueConstraints();
+            CPPUNIT_ASSERT_MESSAGE("Sub class does not have 1 unique key", pUniqueCs->GetCount() == 1 );
+            FdoPtr<FdoUniqueConstraint>  pUniqueC = pUniqueCs->GetItem(0);
+            FdoDataPropertiesP             pProps = pUniqueC->GetProperties();
+            CPPUNIT_ASSERT_MESSAGE("Sub class unique key does not have 1 property ", pProps->GetCount() == 1 );
+            pProp = pProps->GetItem(0);
+            CPPUNIT_ASSERT( wcscmp(pProp->GetName(), PROP_UNIQUE2_2) == 0);
+
+            printf( "Closing Connection ... \n" );
+            
+            connection->Close();
+        }
+    }
+    catch ( FdoException* e ) 
+    {
+        try {
+            if ( connection) connection->Close(); 
+        }
+        catch ( ... ) 
+        {
+        }
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        try {
+            if ( connection) connection->Close(); 
+        }
+        catch ( ... ) 
+        {
+        }
+        throw;
+    }
+    catch (...)
+    {
+        try {
+            if ( connection) connection->Close(); 
+        }
+        catch ( ... ) 
+        {
+        }
+
+        CPPUNIT_FAIL ("caught unexpected exception");
     }
 }
 
@@ -951,7 +1284,6 @@ void TestCommonConstraints::DescribeConstraintsSchema( FdoIConnection* connectio
 
     pDescCmd->SetSchemaName( SCHEMA_NAME );
     FdoPtr<FdoFeatureSchemaCollection> pSchemas2 = pDescCmd->Execute();
-pSchemas2->WriteXml( L"constraints.xml" );
     FdoPtr<FdoFeatureSchema> pSchema2 = pSchemas2->GetItem( SCHEMA_NAME );
     FdoPtr<FdoClassCollection> pClasses2 = pSchema2->GetClasses();
     FdoPtr<FdoClassDefinition> pClass2 = pClasses2->GetItem( className );

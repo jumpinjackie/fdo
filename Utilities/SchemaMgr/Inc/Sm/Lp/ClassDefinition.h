@@ -701,10 +701,14 @@ private:
     );
     void AddForeignNoFeatIdError( const FdoSmLpPropertyDefinition* pFeatId );
     void AddUkeyPropMissingError(FdoDataPropertyDefinition* pProp);
+    void AddUkeyBasePropError(FdoDataPropertyDefinition* pProp);
 
 	void DropUkeys();
 	void CreateUkeysFromFdo();
 	bool MatchUkey( FdoClassDefinitionP pClass, FdoSmPhColumnsP pPhColls );
+
+    // Checks if given unique constraint has a base constraint and sets it if it does.
+    void MatchInheritedUkey( FdoSmLpUniqueConstraintP ukey );
     bool HasUkey(  FdoSmPhColumnsP pPhColls );
 	void DropCkeys();
 	void CreateCkeysFromFdo();
