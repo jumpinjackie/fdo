@@ -23,6 +23,20 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
     </xsl:apply-templates>
   </xsl:copy>
 </xsl:template>
+<xsl:template match="lp:uniqueConstraints">
+  <xsl:copy>
+    <xsl:apply-templates select="lp:uniqueConstraint">
+		<xsl:sort select="count(lp:property)"/>
+    </xsl:apply-templates>
+  </xsl:copy>
+</xsl:template>
+<xsl:template match="lp:uniqueConstraint">
+  <xsl:copy>
+    <xsl:apply-templates select="lp:property">
+		<xsl:sort select="@name"/>
+    </xsl:apply-templates>
+  </xsl:copy>
+</xsl:template>
 <xsl:template match="lp:table">
   <xsl:copy>
     <xsl:apply-templates select="@*|lp:target"/>

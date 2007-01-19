@@ -10,7 +10,7 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 >
 
 <xsl:template match="lp:schema[@name='F_MetaClass']"/>
-<xsl:template match="lp:column[@name = 'classname' or @name = 'schemaname']">
+<xsl:template match="lp:column[@name = 'classname' or @name = 'schemaname' or @name = 'CLASSNAME' or @name = 'SCHEMANAME']">
 </xsl:template>
 <xsl:template match="lp:column[@dataType and not(@name = 'classname' or @name = 'schemaname' or @name = 'CLASSNAME' or @name = 'SCHEMANAME')]">
 	<xsl:variable name="colName" select="@name"/>

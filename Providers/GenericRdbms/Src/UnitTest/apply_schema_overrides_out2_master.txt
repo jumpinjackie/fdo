@@ -112,7 +112,7 @@
 <Column name="OPID1"/>
 </element>
 <element name="OvClassH_FeatId">
-<Column name="OVCLASSH_FTABLED_OVCLASSH_FEA1"/>
+<Column name="OVCLASSH_FTABLED_OVCLASSH_F1"/>
 </element>
 <element name="OvOpClassHD_OpId1">
 <Column name="OVCLASSH_FTABLED_OPID1"/>

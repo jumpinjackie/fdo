@@ -14,7 +14,7 @@
 <Table pkeyName="PK_OVCLASSC111" name="OVCLASSC111"/>
 <element name="Object-x20-B">
 <PropertyMappingConcrete>
-<Table pkeyName="PK_OVCLASSC111_OPS_TABLE_HA" name="OVCLASSC111_OPS_TABLE_HA"/>
+<Table pkeyName="PK_OVCLASSC111_OPS_TA1" name="OVCLASSC111_OPS_TABLE1"/>
 <element name="ObjectA">
 <PropertyMappingSingle prefix="prefixA"/>
 </element>
@@ -31,10 +31,10 @@
 </element>
 <element name="Object-x20-D">
 <PropertyMappingConcrete>
-<Table pkeyName="PK_OVCLASSC111_OPC_TABLE_HD" name="OVCLASSC111_OPC_TABLE_HD"/>
+<Table pkeyName="PK_OVCLASSC111_OPC_TA2" name="OVCLASSC111_OPC_TABLE1"/>
 <element name="ObjectA">
 <PropertyMappingConcrete>
-<Table pkeyName="PK_OVCLASSC111_OPC_TABLE_HD_O1" name="OVCLASSC111_OPC_TABLE_HD_OPC_1"/>
+<Table pkeyName="PK_OVCLASSC111_OPC_TA1" name="OVCLASSC111_OPC_TABLE2"/>
 <element name="ObjectA">
 <PropertyMappingSingle prefix="prefixA"/>
 </element>
@@ -48,10 +48,10 @@
 <Column name="OPID1"/>
 </element>
 <element name="OvClassC111_FeatId">
-<Column name="OVCLASSC111_OPC_TABLE_HD_OVCL1"/>
+<Column name="OVCLASSC111_OPC_TABLE1_OVCL1"/>
 </element>
 <element name="OvOpClassHD_OpId1">
-<Column name="OVCLASSC111_OPC_TABLE_HD_OPID1"/>
+<Column name="OVCLASSC111_OPC_TABLE1_OPID1"/>
 </element>
 </PropertyMappingConcrete>
 </element>
@@ -253,7 +253,7 @@
 <Column name="OPID1"/>
 </element>
 <element name="OvClassH_FeatId">
-<Column name="OVCLASSH_FTABLED_OVCLASSH_FEA1"/>
+<Column name="OVCLASSH_FTABLED_OVCLASSH_F1"/>
 </element>
 <element name="OvOpClassHD_OpId1">
 <Column name="OVCLASSH_FTABLED_OPID1"/>

@@ -38,10 +38,10 @@
 <Column name="OPID1"/>
 </element>
 <element name="OvClassC111_FeatId">
-<Column name="OVCLASSC111_OPC_TABLE_HD_OVCL1"/>
+<Column name="OVCLASSC111_OPC_TABLE1_OVCL1"/>
 </element>
 <element name="OvOpClassHD_OpId1">
-<Column name="OVCLASSC111_OPC_TABLE_HD_OPID1"/>
+<Column name="OVCLASSC111_OPC_TABLE1_OPID1"/>
 </element>
 </PropertyMappingConcrete>
 </element>
@@ -224,7 +224,7 @@
 <Column name="OPID1"/>
 </element>
 <element name="OvClassH_FeatId">
-<Column name="OVCLASSH_FTABLED_OVCLASSH_FEA1"/>
+<Column name="OVCLASSH_FTABLED_OVCLASSH_F1"/>
 </element>
 <element name="OvOpClassHD_OpId1">
 <Column name="OVCLASSH_FTABLED_OPID1"/>

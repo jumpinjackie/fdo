@@ -62,10 +62,10 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
   </xsl:copy>
 </xsl:template>
 <xsl:template match="lp:property[@name='GEOMETRY' and $providerName='SqlServer']"/>
-<xsl:template match="lp:sequence|lp:sequenceSynonym"/>
+<xsl:template match="lp:sequence[not($providerName = 'Oracle')]|lp:sequenceSynonym[not($providerName = 'Oracle')]"/>
 <xsl:template match="lp:column[@name = 'CLASSNAME' or @name = 'SCHEMANAME']"/>
 <xsl:template match="lp:column[$providerName  = 'SqlServer' and @name = 'GEOMETRY1' and  local-name(..) = 'table']"/>
-<xsl:template match="lp:column[@dataType and not($providerName='Oracle' or @name = 'CLASSNAME' or @name = 'SCHEMANAME') and not($providerName  = 'SqlServer' and @name = 'GEOMETRY1' and  local-name(..) = 'table')]">
+<xsl:template match="lp:column[@dataType and not(@name = 'CLASSNAME' or @name = 'SCHEMANAME') and not($providerName  = 'SqlServer' and @name = 'GEOMETRY1' and  local-name(..) = 'table')]">
 	<xsl:variable name="colName" select="@name"/>
 	<xsl:choose>
 		<xsl:when test="local-name(..) = 'property'">
@@ -93,6 +93,20 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 			<xsl:value-of select="@description"/>
 		</xsl:attribute>
 		<xsl:choose>
+			<xsl:when test="$providerName = 'Oracle'">
+				<xsl:attribute name="dataType">
+					<xsl:value-of select="@dataType"/>
+				</xsl:attribute>
+				<xsl:attribute name="length">
+					<xsl:value-of select="@length"/>
+				</xsl:attribute>
+				<xsl:attribute name="scale">
+					<xsl:value-of select="@scale"/>
+				</xsl:attribute>
+				<xsl:attribute name="nullable">
+					<xsl:value-of select="@nullable"/>
+				</xsl:attribute>
+			</xsl:when>
 			<xsl:when test="$propNode/@xsi:type='Data'">
 					<xsl:choose>
 						<xsl:when test="$propNode/@dataType = 'string'" >
@@ -288,8 +302,8 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 </xsl:template>
 <xsl:template match="@idColumn">
 	<xsl:attribute name="idColumn">
-		<xsl:call-template name="tolower">
-			<xsl:with-param name="inString" select="."/>
+		<xsl:call-template name="bendColumnName">
+			<xsl:with-param name="inName" select="."/>
 		</xsl:call-template>
 	</xsl:attribute>
 </xsl:template>
@@ -320,7 +334,7 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
    </xsl:choose>
 </xsl:template>
 <xsl:template match="@pkeyName"/>
-<xsl:template match="@tablespace"/>
+<xsl:template match="@tablespace[not($providerName = 'Oracle')]"/>
 <xsl:template match="@*|node()">
   <xsl:copy>
     <xsl:apply-templates select="@*|node()"/>
@@ -330,7 +344,14 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 	<xsl:param name="inName"/>
 	<xsl:choose>
 		<xsl:when test="$providerName='Oracle'">
-			<xsl:value-of select="$inName"/>
+			<xsl:choose>
+				<xsl:when test="$inName='OVCLASSC111_OPC_TABLE_HD_OVCL1'">OVCLASSC111_OPC_TABLE1_OVCL1</xsl:when>
+				<xsl:when test="$inName='OVCLASSC111_OPC_TABLE_HD_OPID1'">OVCLASSC111_OPC_TABLE1_OPID1</xsl:when>
+				<xsl:when test="$inName='OVCLASSH_FTABLED_OVCLASSH_FEA1'">OVCLASSH_FTABLED_OVCLASSH_F1</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="$inName"/>
+				</xsl:otherwise>
+			</xsl:choose>
 		</xsl:when>
 		<xsl:otherwise>
 			<xsl:choose>
@@ -354,11 +375,12 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 				<xsl:when test="$inName='NGPREFIX012345_PREFIXA_OPB'">testverylongprefix012345_prefixa_opb</xsl:when>
 				<xsl:when test="$inName='STVERYLONGPREFIX012345_OPA'">testverylongprefix012345_opa</xsl:when>
 				<xsl:when test="$inName='STVERYLONGPREFIX012345_OPB'">testverylongprefix012345_opb</xsl:when>
-				<xsl:when test="$inName='OVCLASSH_FTABLED_OVCLASSH_FEA1'">ovclassh_ftabled_ovclassh_featid</xsl:when>
-				<xsl:when test="$inName='OVCLASSC111_OPC_TABLE_HD_OVCL1'">ovclassc111_opc_table_hd_ovclassc111_featid</xsl:when>
-				<xsl:when test="$inName='OVCLASSC111_OPC_TABLE_HD_OPID'">ovclassc111_opc_table_hd_opid1</xsl:when>
+				<xsl:when test="$inName='OVCLASSC111_OPC_TABLE1_OVCL1'">ovclassc111_opc_table_hd_ovclassc111_featid</xsl:when>
+				<xsl:when test="$inName='OVCLASSC111_OPC_TABLE1_OPID1'">ovclassc111_opc_table_hd_opid1</xsl:when>
+				<xsl:when test="$inName='OVCLASSH_FTABLED_OVCLASSH_F1'">ovclassh_ftabled_ovclassh_featid</xsl:when>
 				<xsl:when test="$inName='GEOMETRY1' and $providerName='SqlServer'">geometry</xsl:when>
 				<xsl:otherwise>
+
 					<xsl:call-template name="tolower">
 						<xsl:with-param name="inString" select="$inName"/>
 					</xsl:call-template>
@@ -371,7 +393,14 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 	<xsl:param name="inName"/>
 	<xsl:choose>
 		<xsl:when test="$providerName='Oracle'">
-			<xsl:value-of select="$inName"/>
+			<xsl:choose>
+				<xsl:when test="$inName='OVCLASSC111_OPC_TABLE_HD'">OVCLASSC111_OPC_TABLE1</xsl:when>
+				<xsl:when test="$inName='OVCLASSC111_OPC_TABLE_HD_OPC_1'">OVCLASSC111_OPC_TABLE2</xsl:when>
+				<xsl:when test="$inName='OVCLASSC111_OPS_TABLE_HA'">OVCLASSC111_OPS_TABLE1</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="$inName"/>
+				</xsl:otherwise>
+			</xsl:choose>
 		</xsl:when>
 		<xsl:otherwise>
 			<xsl:choose>
@@ -386,7 +415,9 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 				<xsl:when test="$inName='POLYLINE_ACDBVERTEXDATA_ACDBV2'">polyline_acdbvertexdata_acdbvertexcoordinatevalue1</xsl:when>
 				<xsl:when test="$inName='ELECTRICDEVICE_MAINT_HISTORY_1'">electricdevice_maint_history_maint_history_item</xsl:when>
 				<xsl:when test="$inName='MAINT_HISTORY_MAINT_HISTORY_I1'">maint_history_maint_history_item</xsl:when>
-				<xsl:when test="$inName='OVCLASSC111_OPC_TABLE_HD_OPC_1'">ovclassc111_opc_table_hd_opc_table_hda</xsl:when>
+				<xsl:when test="$inName='OVCLASSC111_OPC_TABLE1'">ovclassc111_opc_table_hd</xsl:when>
+				<xsl:when test="$inName='OVCLASSC111_OPC_TABLE2'">ovclassc111_opc_table_hd_opc_table_hda</xsl:when>
+				<xsl:when test="$inName='OVCLASSC111_OPS_TABLE1'">ovclassc111_ops_table_ha</xsl:when>
 				<xsl:otherwise>
 					<xsl:call-template name="tolower">
 						<xsl:with-param name="inString" select="$inName"/>

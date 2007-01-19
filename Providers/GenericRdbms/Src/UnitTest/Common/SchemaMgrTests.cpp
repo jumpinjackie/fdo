@@ -129,6 +129,8 @@ void SchemaMgrTests::testGenDefault ()
         table->AddCkeyCol( constraint );
         constraint = new FdoSmPhCheckConstraint( L"int32_check", L"INT32_COLUMN", L"int32_column = 45 or int32_column > 100" );
         table->AddCkeyCol( constraint );
+        constraint = new FdoSmPhCheckConstraint( L"single_check", L"SINGLE_COLUMN", L"single_column = 45 or double_column > 100" );
+        table->AddCkeyCol( constraint );
 
         FdoSmPhTableP table2 = owner->CreateTable( phMgr->GetDcDbObjectName(L"TABLE2" ));
         SetLtLck(table2, lt_mode);

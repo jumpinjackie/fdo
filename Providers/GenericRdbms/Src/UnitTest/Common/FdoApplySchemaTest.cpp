@@ -890,14 +890,14 @@ void FdoApplySchemaTest::TestOverrideErrors ()
 			false,
             DB_NAME_SUFFIX
 		);
-/*
+
 		// Compare output files with expected results.
 	    FdoStringP provider = UnitTestUtil::GetEnviron("provider","");
    		UnitTestUtil::CheckOutput( 
-            (const char*) FdoStringP::Format( L"apply_schema_overrides_err1%ls_master.txt", (FdoString*) provider ), 
+            "apply_schema_overrides_err1_master.txt",
             UnitTestUtil::GetOutputFileName( L"apply_schema_overrides_err1.txt" )
         );
-*/
+
 	}
 	catch ( FdoException* e ) 
 	{
@@ -4266,6 +4266,21 @@ void FdoApplySchemaTest::CreateOverrideSchema( FdoIConnection* connection, FdoRd
                 L"another secondary geometric property" 
             );
 	        FdoPropertiesP(pFeatClass->GetProperties())->Add( pGeomProp3 );
+        }
+
+        if ( idx == 9 ) {
+            FdoPtr<FdoReadOnlyPropertyDefinitionCollection> pBaseProps = pBaseClass->GetBaseProperties();
+
+            FdoPtr<FdoUniqueConstraint> constr = FdoUniqueConstraint::Create();
+            FdoDataPropertiesP(constr->GetProperties())->Add( pProp );
+            FdoPropertyP pBaseProp = pBaseProps->GetItem( L"DataC" );
+            FdoDataPropertiesP(constr->GetProperties())->Add( (FdoDataPropertyDefinition*)(pBaseProp.p) );
+            FdoPtr<FdoUniqueConstraintCollection>(pFeatClass->GetUniqueConstraints())->Add( constr );
+
+            constr = FdoUniqueConstraint::Create();
+            pBaseProp = pBaseProps->GetItem( L"DataH" );
+            FdoDataPropertiesP(constr->GetProperties())->Add( (FdoDataPropertyDefinition*)(pBaseProp.p) );
+            FdoPtr<FdoUniqueConstraintCollection>(pFeatClass->GetUniqueConstraints())->Add( constr );
         }
 
         pFeatClass->SetGeometryProperty( pGeomProp );
