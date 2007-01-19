@@ -1029,6 +1029,9 @@ void FdoSmPhTable::LoadCkeys()
 
 void FdoSmPhTable::LoadCkeys( FdoSmPhReaderP ckeyRdr, bool isSkipAdd )
 {
+    FdoStringP		         ckeyNameCurr;
+    FdoSmPhCheckConstraintP  ckeyCurr;
+
     // read each check constraint column.
     while (ckeyRdr && ckeyRdr->ReadNext() ) {
 
@@ -1047,11 +1050,27 @@ void FdoSmPhTable::LoadCkeys( FdoSmPhReaderP ckeyRdr, bool isSkipAdd )
 		    if ( GetElementState() != FdoSchemaElementState_Deleted )
 		        AddCkeyColumnError( columnName );
 		}
-        if( ! isSkipAdd ) {
-		    FdoSmPhCheckConstraintP  pConstr = new FdoSmPhCheckConstraint( ckeyName, columnName, clause );
-		    mCkeysCollection->Add( pConstr );
+
+        if( ! isSkipAdd  ) {
+            if ( ckeyName != ckeyNameCurr ) { 
+                if ( ckeyCurr ) 
+        		    mCkeysCollection->Add( ckeyCurr );
+
+                ckeyCurr = new FdoSmPhCheckConstraint( ckeyName, columnName, clause );
+            }
+            else {
+                // FDO does not support multi-column value constraints.
+                // Also, Schema Manager is not yet set up to handle them so skip them.
+                ckeyCurr = NULL;
+            }
         }
+
+        ckeyNameCurr = ckeyName;
 	}
+
+    // Add the last constraint
+	if ( ckeyCurr && ! isSkipAdd )
+		mCkeysCollection->Add( ckeyCurr );
 }
 
 
