@@ -33,6 +33,23 @@ public:
 	FdoSmLpDataPropertyDefinitionCollection *GetProperties();
 	const FdoSmLpDataPropertyDefinitionCollection *RefProperties() const;
 
+    // Get the base constraint if constraint actually defined on base class.
+    // Returnes NULL if this constraint does not have a base
+    FdoPtr<FdoSmLpUniqueConstraint> GetBaseConstraint();
+    const FdoSmLpUniqueConstraint* RefBaseConstraint() const;
+
+    // Compare this constraint with another one.
+    // Returns 0 if the two costraints have the same properties by name.
+    // Return -1 otherwise.
+    FdoInt32 Compare( FdoPtr<FdoSmLpUniqueConstraint> other ) const;
+
+    // Create a unique constraint inherited from this constraint.
+    // Returns NULL if not all the constrained properties are in the subClass.
+    FdoPtr<FdoSmLpUniqueConstraint> CreateInherited( FdoSmLpClassBase* pSubClass, FdoSmLpPropertyDefinitionCollection* pSubClassProperties );
+
+    // Sets the base constraint for this constraint.
+    void SetBaseConstraint( FdoPtr<FdoSmLpUniqueConstraint> baseConstraint );
+
     /// Serialize this class to an XML file.
     /// Primarily for unit testing.
 	virtual void XMLSerialize( FILE* xmlFp, int ref ) const;
@@ -45,6 +62,7 @@ protected:
 
 private:
 	FdoSmLpDataPropertiesP	mProperties;
+    FdoPtr<FdoSmLpUniqueConstraint> mBaseConstraint;
 
 };
 

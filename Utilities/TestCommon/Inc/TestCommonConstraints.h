@@ -31,6 +31,7 @@ class TestCommonConstraints : public CppUnit::TestCase
 	CPPUNIT_TEST( TestDescribeUpdatedConstraints );
     CPPUNIT_TEST( TestRestrictCheckConstraints );
 	CPPUNIT_TEST( TestDateTimeConstraints );
+    CPPUNIT_TEST( TestBaseReferences );
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -42,6 +43,9 @@ public:
 	virtual void TestDescribeUpdatedConstraints(void);
 	virtual void TestRestrictCheckConstraints(void);
 	virtual void TestDateTimeConstraints(void);
+
+    // Tests unique constraints that reference base properties.
+	virtual void TestBaseReferences(void);
 
     void CreateConstraintsSchema(FdoIConnection * connection);
 	void DescribeConstraintsSchema(FdoIConnection * connection, FdoString *className, int numUkeys, int numCkeys, bool afterUpdate);

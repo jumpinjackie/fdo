@@ -1186,7 +1186,9 @@ void FdoSmLpClassBase::CreateUkeys( bool merge )
                     // Skip the constraint if any of its columns do not correspond
                     // to a property.
                     if ( allFound && (pProps->GetCount() > 0) ) 
-			        {
+			        {   
+                        // If constraint is inherited, match it with its base constraint.
+                        MatchInheritedUkey( pUniqueC );
                         pLpUniqueConstraints->Add(pUniqueC);
 			        }
                 }
@@ -1837,10 +1839,17 @@ void FdoSmLpClassBase::CreateUkeysFromFdo()
 		for ( int j = 0; j < pFdoUniqueCs->GetCount(); j++ ) {
 			FdoDataPropertyP	 pFdoDataProp = pFdoUniqueCs->GetItem(j);
 			FdoSmLpDataPropertyP pLpDataProp = mProperties->FindItem( pFdoDataProp->GetName() )->SmartCast<FdoSmLpDataPropertyDefinition>(true);
-            if ( pLpDataProp ) 
+            if ( pLpDataProp ) {
+                // If class shares table with base class then unique constraints on base properties are not allowed,
+                // since these would prevent multiple objects from being added to base class or 
+                // other classes derived from it. 
+                if ( (Get_TableMapping() == FdoSmOvTableMappingType_BaseTable) && (pLpDataProp->GetBaseProperty()) )
+                    AddUkeyBasePropError( pFdoDataProp );
                 pLpUniqueC->GetProperties()->Add( pLpDataProp );
-            else
+            }
+            else {
                 AddUkeyPropMissingError( pFdoDataProp );
+            }
 		}	
 
 		if ( pFdoUniqueCs->GetCount() != 0 )
@@ -1853,7 +1862,9 @@ void FdoSmLpClassBase::CreateUkeysFromFdo()
 		FdoSmLpUniqueConstraintsP   pLpUniqueConstraintsB = mBaseClass->GetUniqueConstraints();
 		for ( int j = 0; j < pLpUniqueConstraintsB->GetCount(); j++ ) {
 			FdoSmLpUniqueConstraintP		pLpUniqueC = pLpUniqueConstraintsB->GetItem(j);
-			pLpUniqueConstraints->Add( pLpUniqueC );
+            FdoSmLpUniqueConstraintP        pLpInhUniqueC = pLpUniqueC->CreateInherited( this, mProperties );
+			if ( pLpInhUniqueC ) 
+                pLpUniqueConstraints->Add( pLpInhUniqueC );
 		}	
 	}
 }
@@ -1901,6 +1912,26 @@ bool FdoSmLpClassBase::MatchUkey( FdoClassDefinitionP pClass, FdoSmPhColumnsP pP
 
 	return found;
 }	
+
+void FdoSmLpClassBase::MatchInheritedUkey( FdoSmLpUniqueConstraintP ukey )
+{
+    if ( mBaseClass ) {
+        FdoSmLpUniqueConstraintsP baseUkeys = mBaseClass->GetUniqueConstraints();
+        FdoInt32 idx;
+
+        // Check each constraint from the base class
+        for ( idx = 0; idx < baseUkeys->GetCount(); idx++ ) {
+            FdoSmLpUniqueConstraintP baseUkey = baseUkeys->GetItem(idx);
+
+            if ( ukey->Compare(baseUkey) == 0 ) {
+                // Same as given constraint so given constraint is inherited from base constraint.
+                ukey->SetBaseConstraint( baseUkey );
+                break;
+            }
+        }
+    }
+}
+
 
 bool FdoSmLpClassBase::HasUkey(  FdoSmPhColumnsP pPhColls )
 {
@@ -3172,6 +3203,19 @@ void FdoSmLpClassBase::AddUkeyPropMissingError(FdoDataPropertyDefinition* pProp)
 				FDO_NLSID(FDOSM_27),
 				(FdoString*)(pProp->GetName()),
 				(FdoString*)(GetQName())
+			)
+		)
+	);
+}
+
+void FdoSmLpClassBase::AddUkeyBasePropError(FdoDataPropertyDefinition* pProp)
+{
+	GetErrors()->Add( FdoSmErrorType_Other, 
+        FdoSchemaException::Create(
+            FdoSmError::NLSGetMessage(
+				FDO_NLSID(FDOSM_29),
+				(FdoString*)(GetQName()),
+				(FdoString*)(pProp->GetName())
 			)
 		)
 	);

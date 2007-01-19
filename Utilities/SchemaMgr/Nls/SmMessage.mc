@@ -156,6 +156,11 @@ SymbolicName=FDOSM_28
 Language=English
 Collation '%1$ls' does not exist or is inaccessible from current connection.
 .
+MessageId=2234
+SymbolicName=FDOSM_29
+Language=English
+Class '%1$ls' uses Base table mapping; Cannot include base property '%2$ls' in unique constraint
+.
 MessageId=2327
 SymbolicName=FDOSM_122
 Language=English
