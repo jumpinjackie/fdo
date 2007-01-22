@@ -231,6 +231,11 @@ int KeyDb::GetLast( SQLiteData* key, SQLiteData* data )
 		char *dat;
 		if( cur->get_data(&size, &dat, false ) ==  SQLiteDB_OK )
 		{
+            if( size != sizeof(REC_NO) )
+	        {
+		        m_IndexNeedsRegen = true;
+		        return SQLiteDB_ERROR; 
+	        }
 			data->set_size(size);
 			data->set_data(dat);
 			if( cur->get_key(&size, &dat ) !=  SQLiteDB_OK )

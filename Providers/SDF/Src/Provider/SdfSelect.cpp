@@ -1,6 +1,6 @@
 // 
 //  
-//  Copyright (C) 2004-2006  Autodesk, Inc.
+//  Copyright (C) 2004-2007  Autodesk, Inc.
 //  
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -112,7 +112,12 @@ FdoIFeatureReader* SdfSelect::Execute()
 
     //get feature class
     FdoPtr<FdoClassDefinition> clas = FdoPtr<FdoClassCollection>(
-        m_connection->GetSchema()->GetClasses())->GetItem(m_className->GetName());
+        m_connection->GetSchema()->GetClasses())->FindItem(m_className->GetName());
+    if( clas == NULL )
+        throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_75_CLASS_NOTFOUND), m_className->GetName()));
+    
+    if( m_filter != NULL )
+        SdfQueryOptimizer::ValidateFilter( clas, m_filter );
 
     //get the R-Tree for this feature class... 
     SdfRTree* rt = m_connection->GetRTree(clas);

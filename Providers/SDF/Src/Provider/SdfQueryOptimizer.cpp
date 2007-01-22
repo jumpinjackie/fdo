@@ -1,6 +1,6 @@
 // 
 //  
-//  Copyright (C) 2004-2006  Autodesk, Inc.
+//  Copyright (C) 2004-2007  Autodesk, Inc.
 //  
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -281,19 +281,17 @@ void SdfQueryOptimizer::ProcessComparisonCondition(FdoComparisonCondition& filte
     //information to get a particular feature record number out of the 
     //identity property collection
     m_retvals.push_back(NULL);
-
+ 
     if (filter.GetOperation() != FdoComparisonOperations_EqualTo)
         return;
 
     FdoPtr<FdoExpression> left = filter.GetLeftExpression();
     FdoPtr<FdoExpression> right = filter.GetRightExpression();
-
     
     //This could be optimized by a struct similar to the
     //PropertyIndex used for the full property collection
     FdoIdentifier* ident = dynamic_cast<FdoIdentifier*>(left.p);
     FdoDataValue* val = dynamic_cast<FdoDataValue*>(right.p);
-
 
     if (ident && val)
     {
@@ -330,7 +328,7 @@ void SdfQueryOptimizer::ProcessInCondition(FdoInCondition& filter)
     //pushing NULL on return stack means no features are excluded for this 
     //condition
     m_retvals.push_back(NULL);
-
+    
 }
 
 void SdfQueryOptimizer::ProcessNullCondition(FdoNullCondition& filter)
@@ -341,6 +339,7 @@ void SdfQueryOptimizer::ProcessNullCondition(FdoNullCondition& filter)
     //pushing NULL on return stack means no features are excluded for this 
     //condition
     m_retvals.push_back(NULL);
+
 }
 
 void SdfQueryOptimizer::ProcessSpatialCondition(FdoSpatialCondition& filter)
@@ -479,11 +478,17 @@ void SdfQueryOptimizer::ProcessSpatialCondition(FdoSpatialCondition& filter)
                             filter.GetPropertyName(), filter.GetOperation(), gv));
                     }
                 }
-                break;
+                break;                
+
             default:
                 m_filters.push_back(FDO_SAFE_ADDREF(&filter));
                 break;
             }
+        }
+        else if ( filter.GetOperation() == FdoSpatialOperations_Inside )
+        {
+            // The capability says so and can't change the capability yet! It's actually supported by the common code
+            throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_98_SPATIAL_OP_NOTSUPPORTED)));
         }
         else
         {
@@ -656,7 +661,9 @@ bool SdfQueryOptimizer::IsAxisAlignedRectangle(FdoByteArray* fgf, Bounds& bounds
     //TODO
     //Check if all this is fast with the new faster FDO geometry
 
-    FdoIPolygon* box = dynamic_cast<FdoIPolygon*>(fgfgeom.p);
+    FdoIPolygon* box = NULL;
+    if( fgfgeom->GetDerivedType() == FdoGeometryType_Polygon )
+        box = (FdoIPolygon*)(fgfgeom.p);
 
     //it has to be a polygon
     if (box == NULL)
@@ -833,3 +840,144 @@ bool SdfQueryOptimizer::AreEqual(double/*&*/ d1, double/*&*/ d2)
     return false;
 }
 
+
+void SdfQueryOptimizer::ValidateFilter( FdoClassDefinition *cls, FdoFilter *filter )
+{
+    class SdfFilterValidator : public virtual FdoIExpressionProcessor, public virtual FdoIFilterProcessor
+    {
+    private:
+        FdoClassDefinition* m_class;
+
+    protected:
+
+        void HandleExpr( FdoExpression *exp )
+        {
+            exp->Process( this );
+        }
+        void HandleFilter( FdoFilter *filter )
+        {
+            filter->Process( this );
+        }
+    public:
+
+        SdfFilterValidator( FdoClassDefinition *cls )
+        {
+            m_class = cls;
+        }
+
+        virtual void Dispose() { delete this; }
+
+         /// <summary>Increase the reference count.</summary>
+        /// <returns>Returns the new reference count (value for debugging use only).</returns>
+        FdoInt32 AddRef()
+        {
+            // NOTE: due to multiple inheritance, there is an ambiguity in which AddRef() method to call.
+            //  Calling BOTH AddRef() methods leads to instances of this class being prematurely released.
+            return FdoIFilterProcessor::AddRef();
+        }
+
+        /// <summary>Decrease the reference count.</summary>
+        /// <returns>Returns the new reference count (value for debugging use only).</returns>
+        FdoInt32 Release ()
+        {
+            // NOTE: due to multiple inheritance, there is an ambiguity in which Release() method to call.
+            //  Calling BOTH Release() methods leads to instances of this class being prematurely released.
+            return FdoIFilterProcessor::Release();
+        }
+
+        virtual void ProcessBinaryExpression(FdoBinaryExpression& expr)
+        {
+            HandleExpr( FdoPtr<FdoExpression>(expr.GetLeftExpression()) );
+            HandleExpr( FdoPtr<FdoExpression>(expr.GetRightExpression()) );
+        }
+        virtual void ProcessBooleanValue(FdoBooleanValue& expr) {  }
+        virtual void ProcessByteValue(FdoByteValue& expr){   }
+        virtual void ProcessDateTimeValue(FdoDateTimeValue& expr){   }
+        virtual void ProcessDoubleValue(FdoDoubleValue& expr){   }
+        virtual void ProcessDecimalValue(FdoDecimalValue& expr){   }
+        virtual void ProcessInt16Value(FdoInt16Value& expr){  }
+        virtual void ProcessInt32Value(FdoInt32Value& expr){  }
+        virtual void ProcessInt64Value(FdoInt64Value& expr){  }
+        virtual void ProcessSingleValue(FdoSingleValue& expr){  }
+        virtual void ProcessStringValue(FdoStringValue& expr){  }
+        virtual void ProcessBLOBValue(FdoBLOBValue& expr){   }
+        virtual void ProcessCLOBValue(FdoCLOBValue& expr){  }
+        virtual void ProcessFunction(FdoFunction& expr)
+        {
+            FdoPtr<FdoExpressionCollection>col = expr.GetArguments();
+            for(int i=0; i<col->GetCount(); i++)
+                HandleExpr( FdoPtr<FdoExpression>(col->GetItem( i ) ) );
+        }
+        virtual void ProcessGeometryValue(FdoGeometryValue& expr){  }
+        virtual void ProcessParameter(FdoParameter& expr){  }
+        virtual void ProcessUnaryExpression(FdoUnaryExpression& expr)
+        {
+            HandleExpr( FdoPtr<FdoExpression>(expr.GetExpression()) );
+        }
+        virtual void ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator& filter)
+        {
+            HandleFilter( FdoPtr<FdoFilter>(filter.GetLeftOperand()) );
+            HandleFilter( FdoPtr<FdoFilter>(filter.GetRightOperand()) );
+        }
+        virtual void ProcessComparisonCondition(FdoComparisonCondition& filter)
+        {
+            HandleExpr( FdoPtr<FdoExpression>(filter.GetLeftExpression()) );
+            HandleExpr( FdoPtr<FdoExpression>(filter.GetRightExpression()) );
+        }
+        virtual void ProcessDistanceCondition(FdoDistanceCondition& filter){  }
+
+        virtual void ProcessInCondition(FdoInCondition& filter)
+        {
+            ProcessIdentifier( *(FdoPtr<FdoIdentifier>(filter.GetPropertyName())) );
+        }
+        virtual void ProcessNullCondition(FdoNullCondition& filter)
+        {
+            ProcessIdentifier( *(FdoPtr<FdoIdentifier>(filter.GetPropertyName())) );
+        }
+        virtual void ProcessSpatialCondition(FdoSpatialCondition& filter){  }
+
+        virtual void ProcessUnaryLogicalOperator(FdoUnaryLogicalOperator& filter)
+        {
+            HandleFilter( FdoPtr<FdoFilter>(filter.GetOperand()) );
+        }
+
+        virtual void ProcessIdentifier(FdoIdentifier& expr)
+        {
+             // This is used to validate the property names referenced in the filter.
+            FdoPtr<FdoPropertyDefinitionCollection>props = m_class->GetProperties();
+            FdoPtr<FdoReadOnlyPropertyDefinitionCollection>basePops = m_class->GetBaseProperties();
+            FdoPtr<FdoPropertyDefinition> prop;
+
+            int length;
+            // If any of the identifiers is a decorated name of the form <obj proper>.<property>, then this is
+            // an association or object proeperty; assume it exist for now.
+            if( expr.GetScope( length ) && length > 0 )
+                return;
+
+            prop = props->FindItem( expr.GetName() );
+            if( prop != NULL )
+                return;
+
+            try
+            {
+                prop = basePops->GetItem( expr.GetName() );
+                if( prop != NULL )
+                    return;
+            }
+            catch(FdoException *exp )
+            {
+                exp->Release();
+            }
+
+            throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_97_PROPERTY_NOTFOUND), expr.GetName(), m_class->GetName() ));
+        }
+
+        virtual void ProcessComputedIdentifier(FdoComputedIdentifier& expr)
+        {
+            HandleExpr( FdoPtr<FdoExpression>(expr.GetExpression()) );
+        }
+    };
+
+    SdfFilterValidator  validator(cls);
+    filter->Process( &validator ); 
+}

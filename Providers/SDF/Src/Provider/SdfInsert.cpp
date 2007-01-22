@@ -1,6 +1,6 @@
 // 
 //  
-//  Copyright (C) 2004-2006  Autodesk, Inc.
+//  Copyright (C) 2004-2007  Autodesk, Inc.
 //  
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -168,7 +168,9 @@ FdoIFeatureReader* SdfInsert::Execute()
 
     FdoPtr<FdoClassCollection> classes = schema->GetClasses();
 
-    FdoPtr<FdoClassDefinition> clas = classes->GetItem(m_ClassName->GetName());
+    FdoPtr<FdoClassDefinition> clas = classes->FindItem(m_ClassName->GetName());
+    if( clas == NULL )
+        throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_75_CLASS_NOTFOUND), m_ClassName->GetName()));
 
 	if( clas->GetIsAbstract() )
 		throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_71_ABSTRACT_CLASS)));

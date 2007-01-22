@@ -355,7 +355,7 @@ SdfIScrollableFeatureReader* SdfImpExtendedSelect::ExecuteFastScrollable( )
 	if( ret != SQLiteDB_OK )
 		return NULL; // Exception here
 
-	int maxsize = *((int*)data.get_data());
+	REC_NO maxsize = *((REC_NO*)data.get_data());
 	REC_NO *indexTable = NULL;
 	indexTable = new REC_NO[maxsize];
 
@@ -402,9 +402,12 @@ SdfIScrollableFeatureReader* SdfImpExtendedSelect::ExecuteScrollable()
 
 
     FdoPtr<FdoClassDefinition> base = cls->GetBaseClass();
+    SdfIScrollableFeatureReader *fastScrollable = NULL;
     if( this->m_filter == NULL && m_orderingProperties->GetCount() == 0 && base == NULL )
-        return ExecuteFastScrollable();
+        fastScrollable = ExecuteFastScrollable();
 
+    if( NULL != fastScrollable )
+        return fastScrollable;
 	
 	DataDb  *dataDb = this->m_connection->GetDataDb( cls );
 	int ret = dataDb->GetLastFeature( &key, &data );

@@ -971,7 +971,7 @@ Bounds SdfRTree::GetBounds()
 {
     Bounds ret;
 
-    for (int i=0; i<m_rootNode.count; i++)
+    for (int i=0; i<MAXCARD; i++)
     {
         Bounds b1 = m_rootNode.branch[i].bounds;
 
