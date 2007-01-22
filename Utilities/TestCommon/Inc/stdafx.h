@@ -74,6 +74,7 @@ using namespace std;
 
 
 #include <FdoStd.h>
+#include <Fdo/Expression/DataValueCollection.h>
 #include <Fdo.h>
 
 #include <FdoCommonMiscUtil.h>
