@@ -1,5 +1,5 @@
 /***************************************************************************
- * Copyright (C) 2004-2006  Autodesk, Inc.
+ * Copyright (C) 2004-2007  Autodesk, Inc.
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser
@@ -103,8 +103,7 @@ class LockUtility
                            LT_IN_CURR_COLUMN,
                            ROW_LOCK_TYPE_COLUMN};
 
-    enum ExceptionIds     {ACTIVE_LT_ERROR,
-                           ADMINISTRATOR_ROLE_REQUIRED,
+    enum ExceptionIds     {ADMINISTRATOR_ROLE_REQUIRED,
                            CLASS_NAME_RETRIEVAL_FAILURE,
                            CLEAR_LOCK_REPORT_FAILURE,
                            CLOSING_LOCK_CONFLICT_READER_FAILURE,

@@ -1,5 +1,5 @@
 /***************************************************************************
- * Copyright (C) 2004-2006  Autodesk, Inc.
+ * Copyright (C) 2004-2007  Autodesk, Inc.
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser
@@ -2511,6 +2511,11 @@ wchar_t *LockUtility::GetExceptionMessage (ExceptionIds exception_id)
       case LOCK_OWNER_RETRIEVAL_FAILURE:
         return NlsMsgGet(FDORDBMS_89, "Failed to retrieve lock owner");
         break;
+	
+	  case LOCK_SUPPORT_DATASTORE_ERROR:
+		return NlsMsgGet(FDORDBMS_452,
+				         "Locking is not supported for this datastore");
+		break;
 
       case LOCK_TYPE_RETRIEVAL_FAILURE:
         return NlsMsgGet(FDORDBMS_90, "Failed to retrieve lock type");
@@ -2543,11 +2548,6 @@ wchar_t *LockUtility::GetExceptionMessage (ExceptionIds exception_id)
       case LT_DESCRIPTION_LENGTH_ERROR:
         return NlsMsgGet(FDORDBMS_357,
                          "Long transaction description too long (max: 255)");
-        break;
-
-      case LT_NAME_LENGTH_ERROR:
-        return NlsMsgGet(FDORDBMS_358,
-                         "Long transaction name too long (max: 30)");
         break;
 
       case LT_NAME_NULL_ERROR:
@@ -2634,42 +2634,39 @@ wchar_t *LockUtility::GetExceptionMessage (ExceptionIds  exception_id,
 
     switch (exception_id) {
 
-      case ACTIVE_LT_ERROR:
-        return NlsMsgGet1(FDORDBMS_366,
-                          "%1$ls: Cannot process active long transaction",
-                          parameter_1);
-        break;
-
       case INVALID_CONTEXT:
-        return NlsMsgGet1(FDORDBMS_353,
-                          "Invalid context for command '%1$ls'",
-                          parameter_1);
+        return NlsMsgGet1(
+                FDORDBMS_353,
+                "Invalid context for command '%1$ls'",
+                parameter_1);
         break;
 
       case LT_NAME_NOT_UNIQUE:
         return NlsMsgGet1(
-                      FDORDBMS_362,
-                      "Long transaction name '%1$ls' not unique; cannot create",
-                      parameter_1);
+                FDORDBMS_362,
+                "Long transaction name '%1$ls' not unique; cannot create",
+                parameter_1);
         break;
 
       case LT_CONFLICT_LOAD_ERROR:
         return NlsMsgGet1(
-                      FDORDBMS_402,
-                      "%1$ls: Failed to load version conflicts",
-                      parameter_1);
+                FDORDBMS_402,
+                "%1$ls: Failed to load version conflicts",
+                parameter_1);
         break;
 
       case READER_POSITIONING_ERROR:
-        return NlsMsgGet1(FDORDBMS_383,
-                          "Reader '%1$ls' is not positioned correctly",
-                          parameter_1);
+        return NlsMsgGet1(
+                FDORDBMS_383,
+                "Reader '%1$ls' is not positioned correctly",
+                parameter_1);
         break;
 
       case ROOT_LT_ERROR:
-        return NlsMsgGet1(FDORDBMS_367,
-                          "%1$ls: Cannot process root long transaction",
-                          parameter_1);
+        return NlsMsgGet1(
+                FDORDBMS_367,
+                "%1$ls: Cannot process root long transaction",
+                parameter_1);
         break;
 
       case UNSUPPORTED_ORACLE_VERSION:
@@ -2703,7 +2700,7 @@ wchar_t *LockUtility::GetExceptionMessage (ExceptionIds  exception_id,
       case INVALID_LT_NAME:
         return NlsMsgGet2(
                 FDORDBMS_363,
-                "Invalid long transaction name ('%1$ls') for command '%2$ls'",
+                "%1$ls: Invalid long transaction name ('%2$ls')",
                 parameter_1,
                 parameter_2);
         break;
@@ -2715,18 +2712,13 @@ wchar_t *LockUtility::GetExceptionMessage (ExceptionIds  exception_id,
                 parameter_2,
                 parameter_1);
         break;
-	
-	  case LOCK_SUPPORT_DATASTORE_ERROR:
-		return NlsMsgGet(
-				FDORDBMS_452,
-				"Locking is not supported for this datastore");
-		break;
 
       case LOCK_TYPE_INPUT_ERROR:
-        return NlsMsgGet2(FDORDBMS_239,
-                          "Invalid lock type '%1$ls' for command '%2$ls'",
-                          parameter_1,
-                          parameter_2);
+        return NlsMsgGet2(
+                FDORDBMS_239,
+                "Invalid lock type '%1$ls' for command '%2$ls'",
+                parameter_1,
+                parameter_2);
         break;
 
       case LT_ACTIVE_SESSION_ERROR:
@@ -2737,11 +2729,20 @@ wchar_t *LockUtility::GetExceptionMessage (ExceptionIds  exception_id,
                 parameter_2);
         break;
 
+      case LT_CONFLICT_ENV_ERROR:
+        return NlsMsgGet2(
+                FDORDBMS_403,
+                "%1$ls: Version conflicts caused by Oracle data from the following Oracle users outside current data store: %2$ls",
+                parameter_1,
+                parameter_2);
+        break;
+
       case LT_DOES_NOT_EXIST:
-        return NlsMsgGet2(FDORDBMS_361,
-                          "%1$ls: Long transaction '%2$ls' does not exist",
-                          parameter_1,
-                          parameter_2);
+        return NlsMsgGet2(
+                FDORDBMS_361,
+                "%1$ls: Long transaction '%2$ls' does not exist",
+                parameter_1,
+                parameter_2);
         break;
 
       case LT_LEAF_ERROR:
@@ -2752,21 +2753,21 @@ wchar_t *LockUtility::GetExceptionMessage (ExceptionIds  exception_id,
                 parameter_2);
         break;
 
-      case LT_CONFLICT_ENV_ERROR:
-        return NlsMsgGet2(FDORDBMS_403,
-                          "%1$ls: Version conflicts caused by Oracle data from the following Oracle users outside current data store: %2$ls",
-                          parameter_1,
-                          parameter_2);
+      case LT_NAME_LENGTH_ERROR:
+        return NlsMsgGet2(
+                FDORDBMS_358,
+                "%1$ls: Long transaction name ('%2$ls') too long (0 < name <= 30)",
+                parameter_1,
+                parameter_2);
         break;
 
       case UNSUPPORTED_LOCK_TYPE:
-        return NlsMsgGet2(FDORDBMS_355,
-                          "Unsupported lock type '%1$ls' for command '%2$ls'",
-                          parameter_1,
-                          parameter_2);
+        return NlsMsgGet2(
+                FDORDBMS_355,
+                "Unsupported lock type '%1$ls' for command '%2$ls'",
+                parameter_1,
+                parameter_2);
         break;
-
-	  
 
       default:
         return NlsMsgGet(FDORDBMS_100, "Unknown error code");
