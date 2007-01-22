@@ -1877,8 +1877,9 @@ bool FdoCommonFilterExecutor::IsLessThan (FdoDataValue* argLeft, FdoDataValue* a
                 ret = ((t1.year < t2.year) ||
                       ((t1.year == t2.year) && (t1.month < t2.month)) ||
                       ((t1.year == t2.year) && (t1.month == t2.month) && (t1.day < t2.day)) ||
-                      ((t1.year == t2.year) && (t1.month == t2.month) && (t1.day == t2.day) && (t1.hour < t2.hour) && (t1.minute < t2.minute)) ||
-                      ((t1.year == t2.year) && (t1.month == t2.month) && (t1.day == t2.day) && (t1.hour == t2.hour) && (t1.minute == t2.minute) && (t1.seconds = t2.seconds)));
+                      ((t1.year == t2.year) && (t1.month == t2.month) && (t1.day == t2.day) && (t1.hour < t2.hour)) ||
+                      ((t1.year == t2.year) && (t1.month == t2.month) && (t1.day == t2.day) && (t1.hour == t2.hour) && (t1.minute < t2.minute)) ||
+                      ((t1.year == t2.year) && (t1.month == t2.month) && (t1.day == t2.day) && (t1.hour == t2.hour) && (t1.minute == t2.minute) && (t1.seconds < t2.seconds)));
             }
             break;
         case FdoDataType_Decimal:
@@ -2163,8 +2164,9 @@ bool FdoCommonFilterExecutor::IsGreaterThan (FdoDataValue* argLeft, FdoDataValue
                 ret = ((t1.year > t2.year) ||
                       ((t1.year == t2.year) && (t1.month > t2.month)) ||
                       ((t1.year == t2.year) && (t1.month == t2.month) && (t1.day > t2.day)) ||
-                      ((t1.year == t2.year) && (t1.month == t2.month) && (t1.day == t2.day) && (t1.hour > t2.hour) && (t1.minute > t2.minute)) ||
-                      ((t1.year == t2.year) && (t1.month == t2.month) && (t1.day == t2.day) && (t1.hour == t2.hour) && (t1.minute == t2.minute) && (t1.seconds = t2.seconds)));
+                      ((t1.year == t2.year) && (t1.month == t2.month) && (t1.day == t2.day) && (t1.hour > t2.hour)) ||
+                      ((t1.year == t2.year) && (t1.month == t2.month) && (t1.day == t2.day) && (t1.hour == t2.hour) && (t1.minute > t2.minute)) ||
+                      ((t1.year == t2.year) && (t1.month == t2.month) && (t1.day == t2.day) && (t1.hour == t2.hour) && (t1.minute == t2.minute) && (t1.seconds > t2.seconds)));
             }
             break;
         case FdoDataType_Decimal:
