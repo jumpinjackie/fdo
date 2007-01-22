@@ -1,5 +1,5 @@
 /***************************************************************************
- * Copyright (C) 2004-2006  Autodesk, Inc.
+ * Copyright (C) 2004-2007  Autodesk, Inc.
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser
@@ -113,9 +113,11 @@ void FdoRdbmsGetLongTransactions::SetName (FdoString *value)
         if ((wcslen(value) >  DBI_VERSION_NAME_LENGTH) ||
             (wcslen(value) == 0                      )    )
              throw FdoCommandException::Create(
-                      NlsMsgGet1(FDORDBMS_358, 
-                                 "Invalid long transaction name '%1$ls'",
-                                 value));
+                      NlsMsgGet2(
+                        FDORDBMS_358, 
+                        "%1$ls: Long transaction name ('%2$ls') too long (0 < name <= 30)",
+                        L"FdoIGetLongTransactions",
+                        value));
 
     // The basic tests to ensure the given long transaction name is valid have
     // been completed and the given name can be stored with the command.

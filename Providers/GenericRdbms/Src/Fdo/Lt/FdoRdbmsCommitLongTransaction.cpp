@@ -1,5 +1,5 @@
 /***************************************************************************
- * Copyright (C) 2004-2006  Autodesk, Inc.
+ * Copyright (C) 2004-2007  Autodesk, Inc.
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser
@@ -156,9 +156,11 @@ void FdoRdbmsCommitLongTransaction::SetName (FdoString *value)
                 FDORDBMSLONGTRANSACTIONCONSTANTS_LT_NAME_MAX_LENGTH) ||
         (wcslen(value) == 0                                        )    )
         throw FdoCommandException::Create(
-                      NlsMsgGet1(FDORDBMS_358, 
-                                 "Invalid long transaction name '%1$ls'",
-                                 value));
+                NlsMsgGet2(
+                    FDORDBMS_358, 
+                    "%1$ls: Long transaction name ('%2$ls') too long (0 < name <= 30)",
+                    L"FdoICommitLongTransaction",
+                    value));
 
     if (wcscmp(value, FDO_ROOTLONGTRANSACTION) == 0)
         throw FdoCommandException::Create(
@@ -240,9 +242,9 @@ FdoILongTransactionConflictDirectiveEnumerator
           throw FdoCommandException::Create(
               NlsMsgGet2(
                 FDORDBMS_363, 
-                "Invalid long transaction name ('%1$ls') for command '%2$ls'",
+                "%1$ls: Invalid long transaction name ('%2$ls')",
                 L"NULL",
-                L"FdoIRollbackLongTransaction"));
+                L"FdoICommitLongTransaction"));
 
       // Set a shortcut reference to the Long Transaction Manager. 
 
