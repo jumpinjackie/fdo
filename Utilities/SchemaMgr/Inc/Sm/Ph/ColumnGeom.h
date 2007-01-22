@@ -134,6 +134,10 @@ public:
     /// Remove current spatial index without deleting it from datastore.
     void DiscardSpatialIndex( FdoSmPhSpatialIndex* index );
 
+	virtual FdoInt64 GetSRID()
+	{
+		return 0;
+	}
 protected:
 
     // unused constructor needed only to build on Linux
