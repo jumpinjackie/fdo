@@ -43,7 +43,7 @@ void FdoSmPhGrdOwner::AddMetaSchema( FdoStringsP keywords, bool IsSystem)
 	else	{
 		mgr->ExecSchemaFile( L"fdo_sys.sql", keywords );
 		mgr->ExecSchemaFile( L"fdo_sys_idx.sql", keywords );
-
+		CreateMetaClass();
         FdoStringP sqlStmt = FdoStringP::Format(
             L"update f_schemainfo set description = '%ls' where upper(schemaname) = '%ls'",
             GetDescription(),

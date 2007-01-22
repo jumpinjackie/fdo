@@ -44,6 +44,7 @@ public:
     ~FdoSmPhOdbcOwner(void);
 	// Get the schema name
 	FdoString* GetDbNameClause(bool isEqual);
+	void CreateMetaClass();
 
     // Make this owner the current schema
     virtual void SetCurrent();

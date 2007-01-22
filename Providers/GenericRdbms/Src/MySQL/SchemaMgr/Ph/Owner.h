@@ -83,6 +83,9 @@ public:
     void DropTablesTable();
     void DropColumnsTable();
 
+	// Create Meta class 
+	void CreateMetaClass();
+
 	// Get the function name that returns the datastore name from the server
 	FdoString* GetDbNameClause(bool isEqual);
 
