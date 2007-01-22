@@ -1133,7 +1133,7 @@ Long transaction description too long (max: 255)
 MessageId=2573
 SymbolicName=FDORDBMS_358
 Language=English
-Invalid long transaction name '%1$ls'
+%1$ls: Long transaction name ('%2$ls') too long (0 < name <= 30)
 .
 MessageId=2574
 SymbolicName=FDORDBMS_359
@@ -1158,17 +1158,12 @@ Long transaction name '%1$ls' not unique; cannot create
 MessageId=2578
 SymbolicName=FDORDBMS_363
 Language=English
-Invalid long transaction name ('%1$ls') for command '%2$ls'
+%1$ls: Invalid long transaction name ('%2$ls')
 .
 MessageId=2579
 SymbolicName=FDORDBMS_364
 Language=English
 Table %1$ls is not in the current datastore; datastore schema needs to be upgraded 
-.
-MessageId=2590
-SymbolicName=FDORDBMS_366
-Language=English
-%1$ls: Cannot process active long transaction
 .
 MessageId=2591
 SymbolicName=FDORDBMS_367
@@ -1325,31 +1320,6 @@ SymbolicName=FDORDBMS_408
 Language=English
 An instance of class '%1$ls' is already associated to the same instance of class '%2$ls'
 .
-MessageId=2633
-SymbolicName=FDORDBMS_409
-Language=English
-Long transaction '%1$ls' does not exist
-.
-MessageId=2634
-SymbolicName=FDORDBMS_410
-Language=English
-Cannot process active long transaction
-.
-MessageId=2635
-SymbolicName=FDORDBMS_411
-Language=English
-Cannot process root long transaction
-.
-MessageId=2636
-SymbolicName=FDORDBMS_412
-Language=English
-Long transaction '%1$ls' is not a leaf long transaction
-.
-MessageId=2637
-SymbolicName=FDORDBMS_413
-Language=English
-Long transaction '%1$ls' or descendent active in a session
-.
 MessageId=2638
 SymbolicName=FDORDBMS_414
 Language=English
@@ -1473,22 +1443,22 @@ Failed to retrieve data for active long transaction %1$ls
 MessageId=2663
 SymbolicName=FDORDBMS_439
 Language=English
-Root long transaction cannot be %1$ls
+Root long transaction cannot be committed
 .
 MessageId=2664
 SymbolicName=FDORDBMS_440
 Language=English
-Active transaction - Cannot %1$ls transaction %2$ls
+Active transaction - Cannot commit long transaction %1$ls
 .
 MessageId=2665
 SymbolicName=FDORDBMS_441
 Language=English
-Cannot start transaction; request to %1$ls long transaction '%2$ls' canceled
+Cannot start transaction; request to commit long transaction '%1$ls' canceled
 .
 MessageId=2666
 SymbolicName=FDORDBMS_442
 Language=English
-%1$ls failure due to inaccessible data store(s): %2$ls
+%1$ls: Operation failure due to inaccessible data store(s): %2$ls
 .
 MessageId=2667
 SymbolicName=FDORDBMS_443
@@ -1914,4 +1884,19 @@ MessageId=2752
 SymbolicName=FDORDBMS_527
 Language=English
 Versioning context not set, cannot open database '%1$s'
+.
+MessageId=2753
+SymbolicName=FDORDBMS_528
+Language=English
+Root long transaction cannot be rolled back
+.
+MessageId=2754
+SymbolicName=FDORDBMS_529
+Language=English
+Active transaction - Cannot rollback long transaction %1$ls
+.
+MessageId=2755
+SymbolicName=FDORDBMS_530
+Language=English
+Cannot start transaction; request to rollback long transaction '%1$ls' canceled
 .
