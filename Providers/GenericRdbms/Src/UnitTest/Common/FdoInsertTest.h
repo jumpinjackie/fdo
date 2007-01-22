@@ -35,6 +35,7 @@ class FdoInsertTest : public CppUnit::TestCase
   CPPUNIT_TEST( smartPointerInsert );
   CPPUNIT_TEST( insertFlushTest );
   //CPPUNIT_TEST( conditionalInsert );
+  CPPUNIT_TEST( insertAutoGen );
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -55,6 +56,7 @@ public:
     virtual void smartPointerInsert();
 	virtual void conditionalInsert();
     virtual void DisableFailures(){m_DisableFailures=true;};
+	virtual void insertAutoGen(); //Insert empty non-feature
 
 protected:
     virtual void  set_provider() {};   
