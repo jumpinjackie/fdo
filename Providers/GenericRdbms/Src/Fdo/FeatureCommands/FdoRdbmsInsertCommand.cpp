@@ -382,7 +382,12 @@ FdoIFeatureReader* FdoRdbmsInsertCommand::Execute ()
 		{
 			idPropDef = idProperties->GetItem(i);
 			idProp = mPropertyValues->FindItem(idPropDef->GetName());
-		
+			if (!idProp)
+			{
+				if (mAutoGenPropertyValues)
+					// Check auto-generated values
+					idProp = mAutoGenPropertyValues->FindItem(idPropDef->GetName());
+			}
 			FdoPropertyValue *newIdProp = FdoPropertyValue::Create();
 			newIdProp->SetName( idPropDef->GetName() );
 			FdoDataValue *newValue = FdoDataValue::Create(idPropDef->GetDataType());
@@ -460,16 +465,10 @@ FdoIFeatureReader* FdoRdbmsInsertCommand::Execute ()
 					}
 				}
 				else
-				{
-					newValue->SetNull();
-					newIdProp->SetValue(newValue);
-				}
+					newIdProp->SetValue((FdoDataValue*)NULL);
 			}
 			else
-			{	
-				newValue->SetNull();
-				newIdProp->SetValue(newValue);
-			}
+				newIdProp->SetValue((FdoDataValue*)NULL);
 			featInfoCol->Add(newIdProp);
 			newValue->Release();
 			newIdProp->Release();
