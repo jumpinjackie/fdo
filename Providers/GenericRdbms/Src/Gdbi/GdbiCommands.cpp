@@ -19,6 +19,9 @@
 #include "stdafx.h"
 #include "GdbiCommands.h"
 #include "FdoCommonOSUtil.h"
+#ifdef HAVE_GEOM_INFO_TYPE
+#include <inc/geometry/fgf/AllGeometry_c.h>
+#endif
 
 GdbiCommands::GdbiCommands( rdbi_context_def* rdbi_context ):
 m_pRdbiContext( rdbi_context )
@@ -613,4 +616,30 @@ int GdbiCommands::autocommit_mode()
 	int autoCmt = ::rdbi_autocommit_mode(m_pRdbiContext);
 
 	return autoCmt;
+}
+int GdbiCommands::geom_to_fgf ( 
+    int             sqlid,
+    void *          rdbmsGeometryInfo_I,
+    void **         fgfGeometryByteArray_O )
+{
+#ifdef HAVE_GEOM_INFO_TYPE
+    RdbmsGeometryValueInfo * geomInfo2 = (RdbmsGeometryValueInfo *) rdbmsGeometryInfo_I;
+
+    int rc = ::rdbi_geom_to_fgf(m_pRdbiContext, sqlid, geomInfo2, (pByteArray_def *)fgfGeometryByteArray_O);
+
+    return rc;
+#else
+    return FALSE;
+#endif
+}
+int GdbiCommands::geom_srid_set(
+	int				sqlid,
+	char			*geom_col_name,
+	long			srid)
+{
+	int rc = ::rdbi_geom_srid_set(m_pRdbiContext, sqlid, geom_col_name, srid);
+	if (rc == RDBI_SUCCESS)
+		return rc;
+
+	return RDBI_GENERIC_ERROR;
 }

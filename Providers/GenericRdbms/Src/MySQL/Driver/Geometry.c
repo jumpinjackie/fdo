@@ -48,12 +48,11 @@ void FreeGeometry (void *geometry)
     FDO_SAFE_RELEASE(g);
 }
 
-char *WkbFromGeometry (void *geometry, int *size)
+char *WkbFromGeometry (void *geometry, int *size, int srid)
 {
     FdoPtr<FdoFgfGeometryFactory> factory;
     FdoPtr<FdoByteArray> array;
     void *ret = NULL;
-	
 	*size = 0;
 
     if ( geometry == NULL )
@@ -66,6 +65,7 @@ char *WkbFromGeometry (void *geometry, int *size)
         *size = array->GetCount () + 4;
         ret = malloc (*size);
         memset (ret, 0, *size);
+		memcpy(ret, (void *)&srid, 4);
         memmove (((char*)ret) + 4, array->GetData (), *size - 4);
     }
     catch (...)

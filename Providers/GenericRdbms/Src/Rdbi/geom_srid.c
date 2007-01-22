@@ -41,7 +41,7 @@
 #include <Inc/Rdbi/cursor.h>   
 #include	<Inc/Rdbi/context.h>
 
-int rdbi_geom_srid_set ( rdbi_context_def *context, int sqlid, long srid ) 
+int rdbi_geom_srid_set ( rdbi_context_def *context, int sqlid, char *col_name, long srid ) 
 {
     rdbi_cursor_def *cursor;        /* for convenience          */
     int     rc = FALSE;
@@ -50,7 +50,7 @@ int rdbi_geom_srid_set ( rdbi_context_def *context, int sqlid, long srid )
 
     cursor = context->rdbi_cursor_ptrs[sqlid];
      
-    rc = (*(context->dispatch.geom_srid_set))( context->drvr, cursor->vendor_data, srid );
+    rc = (*(context->dispatch.geom_srid_set))( context->drvr, cursor->vendor_data, col_name, srid );
 
     debug_return(NULL, rc );
 }

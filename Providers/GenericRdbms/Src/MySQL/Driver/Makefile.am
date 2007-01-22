@@ -33,6 +33,7 @@ libmysqldr_la_SOURCES = \
   execute.c \
   fetch.c \
   fre_cursor.c \
+  geom_srid.c	\
   get_gen_id.c \
   get_msg.c \
   init.c \
@@ -64,6 +65,7 @@ noinst_HEADERS = $(libmysqldr_la_SOURCES) \
   fetch.h \
   fre_cursor.h \
   Geometry.h \
+  geom_srid.h	\
   get_gen_id.h \
   get_msg.h \
   init.h \

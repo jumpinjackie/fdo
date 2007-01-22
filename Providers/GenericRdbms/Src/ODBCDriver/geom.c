@@ -163,6 +163,7 @@ static int geom_convertToSqlServer_S( odbcdr_context_def *context,
 int odbcdr_geom_srid_set ( 
 	odbcdr_context_def	*context,
     char   *cursor,                     /* cursor associated with SQL stmnt */
+	char	*col_name,
     long srid ) 
 {
     odbcdr_cursor_def    *c;

@@ -413,6 +413,7 @@ int rdbi_vndr_info (
 int rdbi_geom_srid_set (
         rdbi_context_def *context,
         int sqlid,
+		char *col_name,
         long srid );
 
 int rdbi_geom_dimens_set (

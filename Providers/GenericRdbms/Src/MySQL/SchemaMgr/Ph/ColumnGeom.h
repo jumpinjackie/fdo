@@ -20,6 +20,8 @@
 
 #include <Inc/rdbi.h>
 #include <Sm/Ph/ColumnGeom.h>
+#include "Rd/ColumnReader.h"
+#include "Column.h"
 
 // Represents a MySql geometric type column.
 class FdoSmPhMySqlColumnGeom :
@@ -43,6 +45,7 @@ public:
     {
         m_FdoGeomType = FdoGeometricType_Point | FdoGeometricType_Curve | FdoGeometricType_Surface;
         m_FdoGeometryType = FdoCommonGeometryUtil::GetAllGeometryTypesCode();
+		mSRID = -1;
         if (NULL != reader)
         {
             try
@@ -75,10 +78,12 @@ public:
     {
         return FdoStringP::Format(L"%d", m_FdoGeometryType);
     }
+	virtual FdoInt64 GetSRID();
 
 protected:
     long m_FdoGeomType;
     long m_FdoGeometryType;
+	FdoInt64 mSRID;
 
     virtual void PostFinalize()
     {

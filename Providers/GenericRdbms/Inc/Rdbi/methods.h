@@ -130,7 +130,7 @@ typedef struct rdbi_methods_def {
     int  (*set_schema)(void*,const char*);
     int  (*set_schemaW)(void*,const wchar_t*);
     int  (*vndr_info)(void*, rdbi_vndr_info_def *);
-    int  (*geom_srid_set)(void*,char*,long);
+    int  (*geom_srid_set)(void*,char*,char*,long);
     int  (*geom_dimens_set)(void*,char*,int);
     int  (*get_geoms_ext)( void *, char *, char *,  pIGeometry_def *);
     int  (*lob_create_ref)(void*,char*,void**);

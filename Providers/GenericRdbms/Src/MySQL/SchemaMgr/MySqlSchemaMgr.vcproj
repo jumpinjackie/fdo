@@ -456,6 +456,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Ph\ColumnGeom.cpp"
+					>
+				</File>
+				<File
 					RelativePath="Ph\ColumnGeom.h"
 					>
 				</File>

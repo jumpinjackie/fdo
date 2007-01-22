@@ -1185,6 +1185,10 @@ void FdoRdbmsPvcInsertHandler::SetBindVariables(const FdoSmLpClassDefinition *cu
                         mConnection->GetGdbiCommands()->bind(gid, temp, RDBI_GEOMETRY, bind[bind_no].len,
                                             (char *)&bind[bind_no].value.strvalue, &bind[bind_no].null_ind);
                         bind_no++;
+						const FdoSmPhColumnP gColumn = ((FdoSmLpSimplePropertyDefinition*)geomProp)->GetColumn();
+						FdoSmPhColumnGeomP geomCol = gColumn.p->SmartCast<FdoSmPhColumnGeom>();
+						if (geomCol)
+							mConnection->GetGdbiCommands()->geom_srid_set(gid, temp, (long)geomCol->GetSRID());
                     }
                     break;
                 case FdoSmOvGeometricColumnType_Double:

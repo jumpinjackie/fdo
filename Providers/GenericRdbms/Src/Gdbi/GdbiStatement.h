@@ -81,6 +81,10 @@ public:
 	bool SupportsInt64Binding();
 
 	int set_array_size(int arraySize);
+
+	int geom_srid_set(
+			int				parmIndex,
+			long			srid );
 };
 
 #endif //_GDBISTATEMENT_

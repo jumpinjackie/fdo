@@ -16,24 +16,19 @@
  *
  */
 
-#ifndef MYSQL_FDOFOREIGNSCHEMATEST_H
-#define MYSQL_FDOFOREIGNSCHEMATEST_H
+#ifndef GEOM_SRID_H
+#define GEOM_SRID_H
 
-#include "FdoForeignSchemaTest.h"
+#ifdef _WIN32
+#pragma once
+#endif // _WIN32
 
-class MySqlFdoForeignSchemaTest : public FdoForeignSchemaTest
-{
-    CPPUNIT_TEST_SUB_SUITE (MySqlFdoForeignSchemaTest, FdoForeignSchemaTest);
-	CPPUNIT_TEST( insertSRID );
-	CPPUNIT_TEST( updateGeomWithSRID );
-    CPPUNIT_TEST_SUITE_END ();
+#include "local.h"
 
-    void  set_provider();
-	void  create_foreign_datastore();
-	void  insert();
-	void insertSRID();
-	void updateGeomWithSRID();
-};
+int mysql_geom_srid_set ( 
+	mysql_context_def	*context,
+    char   *cursor,                     /* cursor associated with SQL stmnt */
+	char	*geom_col_name,
+    long srid ) ;
 
-#endif // MYSQL_FDOFOREIGNSCHEMATEST_H
-
+#endif // GEOM_SRID_H

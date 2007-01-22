@@ -134,7 +134,7 @@ static void adjust_binds (mysql_cursor_def* cursor)
                     cursor->rebinds[i].original = cursor->binds[i].buffer;
 
                 // get bound geometry value set by caller 
-				buffer = WkbFromGeometry (*((void**)(cursor->rebinds[i].original)), &size);
+				buffer = WkbFromGeometry (*((void**)(cursor->rebinds[i].original)), &size, cursor->srids[i]);
 
                 // Set up substitute bind buffer, containing geometry in WKB blob form.
                 if (NULL != cursor->rebinds[i].substitution)

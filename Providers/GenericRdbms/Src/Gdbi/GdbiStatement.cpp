@@ -147,3 +147,13 @@ int GdbiStatement::set_array_size(int arraySize)
 	}
 	throw new GdbiException(L"Not a valid query");
 }
+
+int GdbiStatement::geom_srid_set(
+				int		parmIndex,
+				long	srid
+				)
+{
+	return m_pGdbiCommands->geom_srid_set(m_QueryId->GetQueryId(), 
+		                                  FdoCommonOSUtil::itoa(parmIndex, buffer),
+										  srid);
+}

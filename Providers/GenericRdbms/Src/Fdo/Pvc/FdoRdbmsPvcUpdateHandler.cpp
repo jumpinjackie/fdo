@@ -686,6 +686,11 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
 
 							if( geom != NULL )
 							{
+								// Set SRID for the geometry column
+								const FdoSmPhColumnP gColumn = ((FdoSmLpSimplePropertyDefinition*)geomPropDef)->GetColumn();
+								FdoSmPhColumnGeomP geomCol = gColumn.p->SmartCast<FdoSmPhColumnGeom>();
+								if (geomCol)
+									statement->geom_srid_set(bindIndex-1, (long)geomCol->GetSRID());
 								FdoStringsP geomSiKeys;
 								
 								const FdoSmPhColumn *columnSi1 = geomPropDef->RefColumnSi1();

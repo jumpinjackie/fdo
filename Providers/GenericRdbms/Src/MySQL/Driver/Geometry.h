@@ -26,6 +26,6 @@
 
 extern   void *GeometryFromWkb (void *wkb, unsigned long size);
 extern    void FreeGeometry (void *geometry);
-extern    char *WkbFromGeometry (void *geometry, int* size);
+extern    char *WkbFromGeometry (void *geometry, int* size, int srid);
 
 #endif // GEOMETRY_H

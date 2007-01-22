@@ -36,6 +36,7 @@ int mysql_bind (
     int index;
     int type;
     MYSQL_BIND *binds;
+	int		*srids;
     int ret;
 
     if (-1 == context->mysql_current_connect)
@@ -70,22 +71,29 @@ int mysql_bind (
                             if (index >= curs->bind_count)
                             {
                                 binds = (MYSQL_BIND *)malloc ((index + 1) * sizeof (MYSQL_BIND));
-                                if ((MYSQL_BIND*)NULL == binds)
+								srids = (int*)malloc((index + 1) * sizeof(int));
+                                if ((MYSQL_BIND*)NULL == binds || (int*)NULL == srids)
                                 {
                                     if ((MYSQL_BIND*)NULL != curs->binds)
                                         free (curs->binds);
+									if ((int*)NULL != curs->srids)
+										free (curs->srids);
                                     curs->bind_count = 0;
                                 }
                                 else
                                 {
                                     memset (binds, 0, (index + 1) * sizeof (MYSQL_BIND));
+									memset (srids, 0, (index + 1) * sizeof (int));
                                     if ((MYSQL_BIND*)NULL != curs->binds)
                                     {
                                         memcpy (binds, curs->binds, curs->bind_count * sizeof (MYSQL_BIND));
-                                        free (curs->binds);
+										free (curs->binds);
+										memcpy (srids, curs->srids, curs->bind_count * sizeof (int));
+										free (curs->srids);
                                     }
                                     curs->bind_count = index + 1;
                                     curs->binds = binds;
+									curs->srids = srids;
                                 }
                             }
                             if (index >= curs->bind_count)

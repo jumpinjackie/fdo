@@ -28,6 +28,7 @@ libFdoRdbmsMySQL_SchemaMgr_Ph_la_SOURCES = \
   Collation.cpp \
   ColTypeMapper.cpp \
   ColumnChar.cpp \
+  ColumnGeom.cpp	\
   Column.cpp \
   ColumnDecimal.cpp \
   Database.cpp \

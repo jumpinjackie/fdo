@@ -231,6 +231,15 @@ public:
 	int lob_create_ref(int sqlid, void **lob_ref);
 	int lob_destroy_ref(int sqlid, void *lob_ref);
 
+    int geom_to_fgf ( 
+            int             sqlid,
+            void *          rdbmsGeometryInfo_I,
+            void **         fgfGeometryByteArray_O );
+
+	int geom_srid_set(
+			int				sqlid,
+			char			*geom_col_name,
+			long			srid );
 };
 
 #endif // _GDBICOMMANDS_

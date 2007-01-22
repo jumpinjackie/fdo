@@ -39,6 +39,7 @@
 #include "run_sql.h"
 #include "get_gen_id.h"
 #include "null.h"
+#include "geom_srid.h"
 
 int mysql_rdbi_init (void **contextp, rdbi_methods methods)
 {
@@ -102,7 +103,7 @@ int mysql_rdbi_init (void **contextp, rdbi_methods methods)
             methods->set_schema = (int (*)(void*, const char*))mysql_set_schema;
             methods->set_schemaW = NULL;
             methods->vndr_info  = (int (*)(void*, rdbi_vndr_info_def*))mysql_vndr_info;
-            methods->geom_srid_set = NULL;
+            methods->geom_srid_set = (int  (*)(void*,char*,char*, long))mysql_geom_srid_set;
             methods->geom_dimens_set = NULL;
             methods->get_geoms_ext = NULL;
             methods->lob_create_ref = NULL;

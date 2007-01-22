@@ -56,6 +56,7 @@ typedef struct _mysql_cursor_def
     MYSQL_BIND *binds;
     mysql_define_def *redefines; /* array of size define_count, NULL entries for non-geometries */
     mysql_define_def *rebinds; /* array of size bind_count, NULL entries for non-geometries */
+	int	  *srids; /* array of SRIDs, 0 if not explicitly set and for non-geometries */
 } mysql_cursor_def;
 
 #endif // LOCAL_H
