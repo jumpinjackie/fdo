@@ -120,3 +120,9 @@ FdoBoolean FdoConstraintsTest::CanRestrictCheckConstraint()
 {
     return true;
 }
+
+FdoBoolean FdoConstraintsTest::CanHandleExactFloatValue()
+{
+    return false;
+}
+

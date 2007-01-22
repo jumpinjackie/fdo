@@ -43,6 +43,7 @@ public:
 protected:
     virtual FdoIConnection* CreateConnection( FdoBoolean recreateDb = false );
     virtual FdoBoolean CanRestrictCheckConstraint();
+    virtual FdoBoolean CanHandleExactFloatValue();
     virtual void  set_provider() {};
 
 };
