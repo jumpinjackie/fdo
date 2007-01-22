@@ -57,8 +57,8 @@
 
 #define            NUM_UNIQUE_KEYS        3
 
-#define            MIN_INCLUSIVE          true
-#define            MAX_INCLUSIVE          false
+#define            MIN_INCLUSIVE          false
+#define            MAX_INCLUSIVE          true
 
 #define            INT_MIN_INCLUSIVE      true
 #define            INT_MAX_INCLUSIVE      false
@@ -798,8 +798,8 @@ void TestCommonConstraints::CreateConstraintsSchema( FdoIConnection* connection 
                 FdoDataType_Byte, 
                 BYTE_RANGE, 
                 sizeof(BYTE_RANGE) / sizeof(FdoByte),
-                MIN_INCLUSIVE,
-                MAX_INCLUSIVE
+                INT_MIN_INCLUSIVE,
+                INT_MAX_INCLUSIVE
             );
 
             //////////////  Byte List property ///////////////
@@ -833,7 +833,7 @@ void TestCommonConstraints::CreateConstraintsSchema( FdoIConnection* connection 
                     dateTime.seconds = 1;
 
                     FdoPtr<FdoPropertyValueConstraintRange>  newRangeConstr9R =  FdoPropertyValueConstraintRange::Create();
-                    newRangeConstr9R->SetMinInclusive(MIN_INCLUSIVE);
+                    newRangeConstr9R->SetMinInclusive(true);
                     FdoPtr<FdoDataValue>   val9R = FdoDataValue::Create( dateTime );
                     newRangeConstr9R->SetMinValue( val9R );
 
@@ -844,7 +844,7 @@ void TestCommonConstraints::CreateConstraintsSchema( FdoIConnection* connection 
                     dateTime.minute = 0;
                     dateTime.seconds = 0;
 
-                    newRangeConstr9R->SetMaxInclusive(MAX_INCLUSIVE);
+                    newRangeConstr9R->SetMaxInclusive(true);
                     val9R = FdoDataValue::Create( dateTime );
                     newRangeConstr9R->SetMaxValue( val9R );
                     
@@ -944,8 +944,8 @@ void TestCommonConstraints::CreateConstraintsSchema( FdoIConnection* connection 
                 FdoDataType_Int16, 
                 INT16_RANGE, 
                 sizeof(INT16_RANGE) / sizeof(FdoInt16),
-                MIN_INCLUSIVE,
-                MAX_INCLUSIVE
+                INT_MIN_INCLUSIVE,
+                INT_MAX_INCLUSIVE
             );
 
             break;
@@ -1222,7 +1222,7 @@ void TestCommonConstraints::CreateConstraintsSchema( FdoIConnection* connection 
                 SCHEMA_NAME,
                 CLASS_NAME,
                 PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME),
-                PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 22,
+                PROP_INT32_R , FdoDataType_Int32,  INT32_RANGE[1],
                 PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
                 PROP_STRING_L,  FdoDataType_String, L"open",
                 (FdoString*) NULL
@@ -1233,6 +1233,27 @@ void TestCommonConstraints::CreateConstraintsSchema( FdoIConnection* connection 
             checkSuccess = false;
         }
         CPPUNIT_ASSERT_MESSAGE("Should get check constraint violation prop #1", checkSuccess == false );
+
+        checkSuccess = true;
+        try {
+            TestCommonMiscUtil::InsertObject(
+                connection,
+                insertCmd,
+                SCHEMA_NAME,
+                CLASS_NAME,
+                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME),
+                PROP_INT32_R , FdoDataType_Int32,  INT32_RANGE[0] - 1,
+                PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
+                PROP_STRING_L,  FdoDataType_String, L"open",
+                (FdoString*) NULL
+            );
+        } catch (FdoException *ex) {
+            DBG(printf("Expected RangeInt constraint exception: %ls", (FdoString* )ex->GetExceptionMessage()));
+            ex->Release();
+            checkSuccess = false;
+        }
+        CPPUNIT_ASSERT_MESSAGE("Should get check constraint violation prop #1", checkSuccess == false );
+
 
         checkSuccess = true;
         try {
@@ -1273,6 +1294,377 @@ void TestCommonConstraints::CreateConstraintsSchema( FdoIConnection* connection 
             checkSuccess = false;
         }
         CPPUNIT_ASSERT_MESSAGE("Should get check constraint violation prop #3", checkSuccess == false );
+
+
+        if ( CanHandleExactFloatValue() ) {
+
+            TestCommonMiscUtil::InsertObject(
+                connection,
+                insertCmd,
+                SCHEMA_NAME,
+                CLASS_NAME,
+                PROP_FEATID, FdoDataType_Int32, 99999999,
+                PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 10,
+                PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
+                PROP_STRING_L,  FdoDataType_String, L"open",
+                PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 8000,
+                PROP_UNIQUE2_1,  FdoDataType_Int32,  (FdoInt32) 8000,
+                (FdoString*) NULL
+            );
+
+            UpdateAllValues( connection, CLASS_NAME, 99999999);
+
+            TestCommonMiscUtil::DeleteObjects( 
+                connection,
+                SCHEMA_NAME,
+                CLASS_NAME,
+                PROP_FEATID,
+                FdoDataType_Int32,
+                (FdoInt32) 99999999,
+                NULL
+            );
+        }
+    }
+}
+
+void TestCommonConstraints::UpdateAllValues(     
+    FdoIConnection* connection,
+    FdoString* pClassName, 
+    FdoInt32 featId 
+)
+{
+    UpdateRangeIntegralValues( connection, pClassName, PROP_FEATID, featId, PROP_BYTE_R, BYTE_RANGE );
+    UpdateRangeIntegralValues( connection, pClassName, PROP_FEATID, featId, PROP_INT16_R, INT16_RANGE );
+    UpdateRangeIntegralValues( connection, pClassName, PROP_FEATID, featId, PROP_INT32_R, INT32_RANGE );
+    UpdateRangeIntegralValues( connection, pClassName, PROP_FEATID, featId, PROP_INT64_R, INT64_RANGE );
+    UpdateRangeDoubleValues( connection, pClassName, PROP_FEATID, featId, PROP_DOUBLE_R, FdoDataType_Double, DOUBLE_RANGE );
+    if ( CanHandleExactFloatValue() )
+        UpdateRangeDoubleValues( connection, pClassName, PROP_FEATID, featId, PROP_DECIMAL_R, FdoDataType_Decimal, DOUBLE_RANGE );
+    UpdateRangeSingleValues( connection, pClassName, PROP_FEATID, featId);
+    UpdateRangeStringValues( connection, pClassName, PROP_FEATID, featId);
+    UpdateRangeDateValues( connection, pClassName, PROP_FEATID, featId );
+
+    UpdateListValues( connection, pClassName, PROP_FEATID, featId, PROP_BYTE_L, BYTE_LIST[1], (FdoByte) 4 );
+    UpdateListValues( connection, pClassName, PROP_FEATID, featId, PROP_INT32_L, INT32_LIST[1], (FdoInt32) 500 );
+    UpdateListValues( connection, pClassName, PROP_FEATID, featId, PROP_INT64_L, INT64_LIST[1], (FdoInt64) 800 );
+    
+    if ( this->CanHandleExactFloatValue() ) {
+        UpdateListDoubleValues( connection, pClassName, PROP_FEATID, featId, PROP_DOUBLE_L, FdoDataType_Double);
+        UpdateListValues( connection, pClassName, PROP_FEATID, featId, PROP_SINGLE_L, SINGLE_LIST[1], (FdoFloat) 200.43 );
+    }
+
+    UpdateListValues( connection, pClassName, PROP_FEATID, featId, PROP_STRING_L, STRING_LIST[1], L"not_in" );
+    UpdateListDateValues( connection, pClassName, PROP_FEATID, featId );
+
+}
+
+void TestCommonConstraints::UpdateRangeDoubleValues( 
+    FdoIConnection* connection,
+    FdoString* pClassName, 
+    FdoString* pIdName, 
+    FdoInt32 idValue, 
+    FdoString* pPropName,
+    FdoDataType dataType, 
+    FdoDouble* pRange
+)
+{
+    FdoPtr<FdoDataValueCollection> badValues = FdoDataValueCollection::Create();
+    FdoPtr<FdoDataValueCollection> goodValues = FdoDataValueCollection::Create();
+
+    badValues->Add( 
+        FdoPtr<FdoDataValue>(
+            FdoDataValue::Create(
+               this->CanHandleExactFloatValue() ? (FdoDouble) pRange[0] : (FdoDouble)(pRange[0] - 0.01), 
+                dataType
+            )
+        ) 
+    );
+    badValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create((FdoDouble)(pRange[1] + 0.01), dataType)) );
+    goodValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create((FdoDouble) (pRange[0] + 0.01), dataType)) );
+    goodValues->Add( 
+        FdoPtr<FdoDataValue>(
+            FdoDataValue::Create(
+                this->CanHandleExactFloatValue() ? (FdoDouble)pRange[1] : (FdoDouble)(pRange[1] - 0.01), 
+                dataType
+            )
+        ) 
+    );
+
+    UpdateRangeValues( connection, pClassName, pIdName, idValue, pPropName, goodValues, badValues );
+}
+
+void TestCommonConstraints::UpdateRangeDateValues( 
+    FdoIConnection* connection,
+    FdoString* pClassName, 
+    FdoString* pIdName, 
+    FdoInt32 idValue
+)
+{
+    FdoDateTime minDateTime;
+    minDateTime.year = 2005;
+    minDateTime.month = 5;
+    minDateTime.day = 15;
+    minDateTime.hour = 0;
+    minDateTime.minute = 2;
+    minDateTime.seconds = 1;
+
+    FdoDateTime maxDateTime;
+    maxDateTime.year = 2006;
+    maxDateTime.month = 2;
+    maxDateTime.day = 1;
+    maxDateTime.hour = 18;
+    maxDateTime.minute = 0;
+    maxDateTime.seconds = 0;
+
+    FdoDateTime dateTime;
+
+    FdoPtr<FdoDataValueCollection> badValues = FdoDataValueCollection::Create();
+    FdoPtr<FdoDataValueCollection> goodValues = FdoDataValueCollection::Create();
+
+    goodValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create(minDateTime)) );
+    goodValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create(maxDateTime)) );
+
+    dateTime = minDateTime;
+    dateTime.year = dateTime.year - 1;
+    dateTime.month = dateTime.month + 1;
+    badValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create(dateTime)) );
+    dateTime = minDateTime;
+    dateTime.month = dateTime.month - 1;
+    dateTime.day = dateTime.day + 1;
+    badValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create(dateTime)) );
+    dateTime = minDateTime;
+    dateTime.day = dateTime.day - 1;
+    dateTime.hour = dateTime.hour + 1;
+    badValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create(dateTime)) );
+    dateTime = minDateTime;
+    dateTime.hour = dateTime.hour - 1;
+    dateTime.minute = dateTime.minute + 1;
+    badValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create(dateTime)) );
+    dateTime = minDateTime;
+    dateTime.minute = dateTime.minute - 1;
+    dateTime.seconds = (FdoFloat)(dateTime.seconds + 0.001);
+    badValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create(dateTime)) );
+    dateTime = minDateTime;
+    dateTime.seconds = (FdoFloat)(dateTime.seconds - 0.001);
+    badValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create(dateTime)) );
+
+    dateTime = maxDateTime;
+    dateTime.year = dateTime.year + 1;
+    dateTime.month = dateTime.month - 1;
+    badValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create(dateTime)) );
+    dateTime = maxDateTime;
+    dateTime.month = dateTime.month + 1;
+    dateTime.day = dateTime.day - 1;
+    badValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create(dateTime)) );
+    dateTime = maxDateTime;
+    dateTime.day = dateTime.day + 1;
+    dateTime.hour = dateTime.hour - 1;
+    badValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create(dateTime)) );
+    dateTime = maxDateTime;
+    dateTime.hour = dateTime.hour + 1;
+    dateTime.minute = dateTime.minute - 1;
+    badValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create(dateTime)) );
+    dateTime = maxDateTime;
+    dateTime.minute = dateTime.minute + 1;
+    badValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create(dateTime)) );
+    dateTime.seconds = (FdoFloat)(dateTime.seconds - 0.001);
+    dateTime = maxDateTime;
+    dateTime.seconds = (FdoFloat)(dateTime.seconds + 0.001);
+    badValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create(dateTime)) );
+
+    UpdateRangeValues( connection, pClassName, pIdName, idValue, PROP_DATE_R, goodValues, badValues );
+}
+
+void TestCommonConstraints::UpdateRangeSingleValues( 
+    FdoIConnection* connection,
+    FdoString* pClassName, 
+    FdoString* pIdName, 
+    FdoInt32 idValue
+)
+{
+    FdoFloat singleInside = (FdoFloat)(SINGLE_RANGE[0] + 0.000001);
+
+    FdoPtr<FdoDataValueCollection> badValues = FdoDataValueCollection::Create();
+    FdoPtr<FdoDataValueCollection> goodValues = FdoDataValueCollection::Create();
+
+    goodValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create(singleInside)) );
+    badValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create(SINGLE_RANGE[0])) );
+
+    UpdateRangeValues( connection, pClassName, pIdName, idValue, PROP_SINGLE_R, goodValues, badValues );
+}
+
+void TestCommonConstraints::UpdateRangeStringValues( 
+    FdoIConnection* connection,
+    FdoString* pClassName, 
+    FdoString* pIdName, 
+    FdoInt32 idValue
+)
+{
+    FdoPtr<FdoDataValueCollection> badValues = FdoDataValueCollection::Create();
+    FdoPtr<FdoDataValueCollection> goodValues = FdoDataValueCollection::Create();
+
+    goodValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create(L"MOMA")) );
+    goodValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create(STRING_RANGE[1])) );
+    badValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create(STRING_RANGE[0])) );
+    badValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create(L"PAPAA")) );
+
+    UpdateRangeValues( connection, pClassName, pIdName, idValue, PROP_STRING_R, goodValues, badValues );
+}
+
+void TestCommonConstraints::UpdateRangeValues( 
+    FdoIConnection* connection,
+    FdoString* pClassName, 
+    FdoString* pIdName, 
+    FdoInt32 idValue, 
+    FdoString* pPropName,
+    FdoDataValueCollection* goodValues,
+    FdoDataValueCollection* badValues
+)
+{
+    FdoInt32 idx;
+    FdoPtr<FdoDataValue> val;
+
+    for ( idx = 0; idx < goodValues->GetCount(); idx++ ) {
+        val = goodValues->GetItem( idx );
+        UpdateValue( connection, pClassName, pIdName, idValue, pPropName, val, true );
+    }
+
+    for ( idx = 0; idx < badValues->GetCount(); idx++ ) {
+        val = badValues->GetItem( idx );
+        UpdateValue( connection, pClassName, pIdName, idValue, pPropName, val, false );
+    }
+}
+
+void TestCommonConstraints::UpdateListDoubleValues( 
+    FdoIConnection* connection,
+    FdoString* pClassName, 
+    FdoString* pIdName, 
+    FdoInt32 idValue, 
+    FdoString* pPropName,
+    FdoDataType dataType
+)
+{
+    UpdateValue( 
+        connection, 
+        pClassName, 
+        pIdName, 
+        idValue, 
+        pPropName, 
+        FdoPtr<FdoDataValue>( FdoDataValue::Create(DOUBLE_LIST[1],dataType) ), 
+        true 
+    );
+
+    UpdateValue( 
+        connection, 
+        pClassName, 
+        pIdName, 
+        idValue, 
+        pPropName, 
+        FdoPtr<FdoDataValue>( FdoDataValue::Create((FdoDouble)(5000.54),dataType) ), 
+        false 
+    );
+}
+
+void TestCommonConstraints::UpdateListDateValues( 
+    FdoIConnection* connection,
+    FdoString* pClassName, 
+    FdoString* pIdName, 
+    FdoInt32 idValue
+)
+{
+    FdoDateTime dateTime;
+    dateTime.day = 31;
+    dateTime.month = 10;
+    dateTime.year = 2003;
+    dateTime.hour = 3;
+    dateTime.minute = 2;
+    dateTime.seconds = 1;
+
+    UpdateValue( 
+        connection, 
+        pClassName, 
+        pIdName, 
+        idValue, 
+        PROP_DATE_L, 
+        FdoPtr<FdoDataValue>( FdoDataValue::Create(dateTime) ), 
+        true 
+    );
+
+    dateTime.seconds = 55;
+
+    UpdateValue( 
+        connection, 
+        pClassName, 
+        pIdName, 
+        idValue, 
+        PROP_DATE_L, 
+        FdoPtr<FdoDataValue>( FdoDataValue::Create(dateTime) ), 
+        false 
+    );
+}
+
+void TestCommonConstraints::UpdateValue( 
+    FdoIConnection* connection,
+    FdoString* pClassName, 
+    FdoString* pIdName,
+    FdoInt32 featId,
+    FdoString* pPropName,
+    FdoDataValue* pValue,
+    bool expectedSuccess
+)
+{
+    bool testSucceeded = true;
+    FdoInt32 count = 0;
+    FdoStringP errMsg;
+
+    FdoPtr<FdoIUpdate> update = (FdoIUpdate*)connection->CreateCommand(FdoCommandType_Update); 
+
+    update->SetFeatureClassName( pClassName );
+
+    FdoPtr<FdoFilter> filter = FdoFilter::Parse(
+        FdoStringP::Format( L"(%ls = %d)", pIdName, featId )
+    );
+
+    update->SetFilter(filter);
+
+    FdoPtr<FdoPropertyValue> pv = FdoPropertyValue::Create( pPropName, pValue );
+    FdoPtr<FdoPropertyValueCollection> pvc = update->GetPropertyValues();
+    pvc->Add(pv);
+
+    try {
+        count = update->Execute();
+    }
+    catch ( FdoException* ex ) {
+        testSucceeded = false;
+        errMsg = ex->GetExceptionMessage();
+        ex->Release();
+    }
+
+    if ( expectedSuccess ) {
+        CPPUNIT_ASSERT_MESSAGE(
+            (const char*) FdoStringP::Format( 
+                L"Update %ls.%ls to %ls should have succeeded: %ls",
+                pClassName, pPropName, pValue->ToString(), (FdoString*) errMsg
+            ),
+            testSucceeded == true 
+        );
+
+        CPPUNIT_ASSERT_MESSAGE(
+            (const char*) FdoStringP::Format( 
+                L"Update %ls.%ls to %ls should have updated one feature",
+                pClassName, pPropName, pValue->ToString()
+            ),
+            (testSucceeded == false) || (count == 1)
+        );
+    }
+    else {
+        CPPUNIT_ASSERT_MESSAGE(
+            (const char*) FdoStringP::Format( 
+                L"Update %ls.%ls to %ls should have failed with constraint violation",
+                pClassName, pPropName, pValue->ToString()
+            ),
+            testSucceeded == false 
+        );
     }
 }
 
@@ -1364,8 +1756,8 @@ void TestCommonConstraints::DescribeConstraintsSchema( FdoIConnection* connectio
 
                 if ( wcscmp( pProp->GetName(), PROP_INT32_R ) == 0 ) 
                 {
-                    CPPUNIT_ASSERT_MESSAGE("Wrong MinInclusive", pConstrR->GetMinInclusive() == MIN_INCLUSIVE );
-                    CPPUNIT_ASSERT_MESSAGE("Wrong MaxInclusive", pConstrR->GetMaxInclusive() == MAX_INCLUSIVE );
+                    CPPUNIT_ASSERT_MESSAGE("Wrong MinInclusive", pConstrR->GetMinInclusive() == INT_MIN_INCLUSIVE );
+                    CPPUNIT_ASSERT_MESSAGE("Wrong MaxInclusive", pConstrR->GetMaxInclusive() == INT_MAX_INCLUSIVE );
 
                     FdoPtr<FdoDataValue>    valMin = pConstrR->GetMinValue();
                     FdoPtr<FdoDataValue>    valMax = pConstrR->GetMaxValue();
@@ -1378,8 +1770,8 @@ void TestCommonConstraints::DescribeConstraintsSchema( FdoIConnection* connectio
                 }
                 else if ( wcscmp( pProp->GetName(), PROP_BYTE_R) == 0 ) 
                 {
-                    CPPUNIT_ASSERT_MESSAGE("Wrong MinInclusive", pConstrR->GetMinInclusive() == MIN_INCLUSIVE );
-                    CPPUNIT_ASSERT_MESSAGE("Wrong MaxInclusive", pConstrR->GetMaxInclusive() == MAX_INCLUSIVE );
+                    CPPUNIT_ASSERT_MESSAGE("Wrong MinInclusive", pConstrR->GetMinInclusive() == INT_MIN_INCLUSIVE );
+                    CPPUNIT_ASSERT_MESSAGE("Wrong MaxInclusive", pConstrR->GetMaxInclusive() == INT_MAX_INCLUSIVE );
 
                     FdoPtr<FdoDataValue>    valMin = pConstrR->GetMinValue();
                     FdoPtr<FdoDataValue>    valMax = pConstrR->GetMaxValue();
@@ -1415,7 +1807,6 @@ void TestCommonConstraints::DescribeConstraintsSchema( FdoIConnection* connectio
                 else if ( wcscmp( pProp->GetName(), PROP_SINGLE_R) == 0 ) 
                 {
                     CPPUNIT_ASSERT_MESSAGE("Wrong MinInclusive", pConstrR->GetMinInclusive() == MIN_INCLUSIVE );
-                    CPPUNIT_ASSERT_MESSAGE("Wrong MaxInclusive", pConstrR->GetMaxInclusive() == MAX_INCLUSIVE );
 
                     FdoPtr<FdoDataValue>    valMin = pConstrR->GetMinValue();
                     FdoPtr<FdoDataValue>    valMax = pConstrR->GetMaxValue();
@@ -2321,7 +2712,7 @@ void TestCommonConstraints::RestrictCheckConstraints( FdoIConnection* connection
 
             FdoPtr<FdoPropertyValueConstraint> constr = dataProp->GetValueConstraint();
             FdoPropertyValueConstraintRange* constrR = (FdoPropertyValueConstraintRange*) constr.p;
-            constrR->SetMinInclusive(false);
+            constrR->SetMaxInclusive(false);
             dataProp->SetValueConstraint(constr);
 
             FdoStringP messages;
@@ -2331,13 +2722,13 @@ void TestCommonConstraints::RestrictCheckConstraints( FdoIConnection* connection
                 messages = ex->GetExceptionMessage();
                 ex->Release();
             }
-            CPPUNIT_ASSERT_MESSAGE("Setting Mininclusive false should have failed", messages != L"" );
+            CPPUNIT_ASSERT_MESSAGE("Setting Maxinclusive false should have failed", messages != L"" );
             CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.StringRange'; property has values and new constraint is more restrictive" ) );
         
-            constrR->SetMinInclusive(false);
-            FdoPtr<FdoDataValue> val = constrR->GetMinValue();
+            constrR->SetMaxInclusive(false);
+            FdoPtr<FdoDataValue> val = constrR->GetMaxValue();
             FdoStringValue* stringVal = (FdoStringValue*) val.p;
-            stringVal->SetString( L"LZZZZZZZZZZZZZ" );
+            stringVal->SetString( L"PAPAA" );
             dataProp->SetValueConstraint(constr);
             pApplyCmd->Execute();
 
@@ -2346,7 +2737,7 @@ void TestCommonConstraints::RestrictCheckConstraints( FdoIConnection* connection
             dataProp->SetValueConstraint(constr);
             pApplyCmd->Execute();
 
-            constrR->SetMaxInclusive(false);
+            constrR->SetMinInclusive(false);
             dataProp->SetValueConstraint(constr);
             try {
                 pApplyCmd->Execute();
@@ -2356,7 +2747,7 @@ void TestCommonConstraints::RestrictCheckConstraints( FdoIConnection* connection
             }
             CPPUNIT_ASSERT_MESSAGE("Setting ranges to exclusive should have failed.", messages != L"" );
             CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.StringRange'; property has values and new constraint is more restrictive" ) );
-            constrR->SetMaxInclusive(true);
+            constrR->SetMinInclusive(true);
         }
 
         prop = FdoPropertiesP(pClass2->GetProperties())->FindItem( PROP_DOUBLE_R );
@@ -2365,19 +2756,19 @@ void TestCommonConstraints::RestrictCheckConstraints( FdoIConnection* connection
 
             FdoPtr<FdoPropertyValueConstraint> constr = dataProp->GetValueConstraint();
             FdoPropertyValueConstraintRange* constrR = (FdoPropertyValueConstraintRange*) constr.p;
-            constrR->SetMinInclusive(false);
-            constrR->SetMaxInclusive(true);
-            FdoPtr<FdoDataValue> val = constrR->GetMinValue();
+            constrR->SetMinInclusive(true);
+            constrR->SetMaxInclusive(false);
+            FdoPtr<FdoDataValue> val = constrR->GetMaxValue();
             FdoDoubleValue* doubleVal = (FdoDoubleValue*) val.p;
-            doubleVal->SetDouble( doubleVal->GetDouble() - 1e-10 );
+            doubleVal->SetDouble( doubleVal->GetDouble() + 1e-10 );
             dataProp->SetValueConstraint(constr);
 
             pApplyCmd->Execute();
         
-            constrR->SetMaxInclusive(false);
-            val = constrR->GetMaxValue();
+            constrR->SetMinInclusive(false);
+            val = constrR->GetMinValue();
             doubleVal = (FdoDoubleValue*) val.p;
-            doubleVal->SetDouble( doubleVal->GetDouble() + 1e-10 );
+            doubleVal->SetDouble( doubleVal->GetDouble() - 1e-10 );
             dataProp->SetValueConstraint(constr);
             pApplyCmd->Execute();
 
@@ -3029,6 +3420,11 @@ FdoIConnection* TestCommonConstraints::CreateConnection( FdoBoolean )
 }
 
 FdoBoolean TestCommonConstraints::CanRestrictCheckConstraint()
+{
+    return true;
+}
+
+FdoBoolean TestCommonConstraints::CanHandleExactFloatValue()
 {
     return true;
 }

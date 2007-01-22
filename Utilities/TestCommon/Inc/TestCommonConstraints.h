@@ -62,10 +62,84 @@ protected:
 
     virtual FdoIConnection* CreateConnection( FdoBoolean recreateDb = false );
     virtual FdoBoolean CanRestrictCheckConstraint();
+    virtual FdoBoolean CanHandleExactFloatValue();
 
     virtual FdoInt32 GetExpectedCheckConstraintCount( FdoIConnection* connection );
 
     FdoInt32 GetNextFeatId( FdoIConnection* connection, FdoString* className );
+
+    void UpdateAllValues( 
+        FdoIConnection* connection,
+        FdoString* pClassName, 
+        FdoInt32 featId 
+    );
+
+    void UpdateRangeDoubleValues( 
+        FdoIConnection* connection,
+        FdoString* pClassName, 
+        FdoString* pIdName, 
+        FdoInt32 idValue, 
+        FdoString* pPropName,
+        FdoDataType dataType, 
+        FdoDouble* pRange
+    );
+
+    void UpdateRangeDateValues( 
+        FdoIConnection* connection,
+        FdoString* pClassName, 
+        FdoString* pIdName, 
+        FdoInt32 idValue
+    );
+
+    void UpdateRangeSingleValues( 
+        FdoIConnection* connection,
+        FdoString* pClassName, 
+        FdoString* pIdName, 
+        FdoInt32 idValue
+    );
+
+    void UpdateRangeStringValues( 
+        FdoIConnection* connection,
+        FdoString* pClassName, 
+        FdoString* pIdName, 
+        FdoInt32 idValue
+    );
+
+    void UpdateRangeValues( 
+        FdoIConnection* connection,
+        FdoString* pClassName, 
+        FdoString* pIdName, 
+        FdoInt32 idValue, 
+        FdoString* pPropName,
+        FdoDataValueCollection* goodValues,
+        FdoDataValueCollection* badValues
+    );
+
+    void UpdateListDoubleValues( 
+        FdoIConnection* connection,
+        FdoString* pClassName, 
+        FdoString* pIdName, 
+        FdoInt32 idValue, 
+        FdoString* pPropName,
+        FdoDataType dataType
+    );
+
+    void UpdateListDateValues( 
+        FdoIConnection* connection,
+        FdoString* pClassName, 
+        FdoString* pIdName, 
+        FdoInt32 idValue
+    );
+
+    void UpdateValue( 
+        FdoIConnection* connection,
+        FdoString* pClassName, 
+        FdoString* pIdName,
+        FdoInt32 featId,
+        FdoString* pPropName,
+        FdoDataValue* pValue,
+        bool expectedSuccess
+    );
 
     template< class T> void CheckListConstraint(FdoString* pPropName, FdoPtr<FdoDataValueCollection> pList, T* pMaster, FdoInt32 masterCount )
     {
@@ -170,8 +244,8 @@ protected:
             FdoPtr<FdoDataValue>   valR = FdoDataValue::Create( pRange[0] );
             newRangeConstrR->SetMinValue( valR );
 
+            newRangeConstrR->SetMaxInclusive(maxInclusive);
             if ( pRangeCount > 1 ) {
-                newRangeConstrR->SetMaxInclusive(maxInclusive);
                 valR = FdoDataValue::Create( pRange[1] );
                 newRangeConstrR->SetMaxValue( valR );
             }    
@@ -287,6 +361,57 @@ protected:
         FdoPropertiesP(pClass->GetProperties())->Add( pProp  );
 
         return pProp;
+    }
+
+    template< class T> void UpdateRangeIntegralValues( 
+        FdoIConnection* connection,
+        FdoString* pClassName, 
+        FdoString* pIdName, 
+        FdoInt32 idValue, 
+        FdoString* pPropName,
+        T* pRange
+    )
+    {
+        FdoPtr<FdoDataValueCollection> badValues = FdoDataValueCollection::Create();
+        FdoPtr<FdoDataValueCollection> goodValues = FdoDataValueCollection::Create();
+
+        badValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create((T)(pRange[0] - 1))) );
+        badValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create((T) pRange[1])) );
+        goodValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create((T) pRange[0])) );
+        goodValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create((T)(pRange[1] - 1))) );
+
+        UpdateRangeValues( connection, pClassName, pIdName, idValue, pPropName, goodValues, badValues );
+    }
+
+    template< class T> void UpdateListValues( 
+        FdoIConnection* connection,
+        FdoString* pClassName, 
+        FdoString* pIdName, 
+        FdoInt32 idValue, 
+        FdoString* pPropName,
+        T goodValue,
+        T badValue
+    )
+    {
+        UpdateValue( 
+            connection, 
+            pClassName, 
+            pIdName, 
+            idValue, 
+            pPropName, 
+            FdoPtr<FdoDataValue>( FdoDataValue::Create(goodValue) ), 
+            true 
+        );
+
+        UpdateValue( 
+            connection, 
+            pClassName, 
+            pIdName, 
+            idValue, 
+            pPropName, 
+            FdoPtr<FdoDataValue>( FdoDataValue::Create(badValue) ), 
+            false 
+        );
     }
 };
 

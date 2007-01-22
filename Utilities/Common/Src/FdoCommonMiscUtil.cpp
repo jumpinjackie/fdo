@@ -701,11 +701,15 @@ void FdoCommonMiscUtil::ThrowPropertyConstraintException(FdoDataPropertyDefiniti
         case FdoPropertyValueConstraintType_Range:
         {
             FdoPropertyValueConstraintRange* rangeConstraint = static_cast<FdoPropertyValueConstraintRange*>(valueConstraint.p);
+            FdoPtr<FdoDataValue> minValue = rangeConstraint->GetMinValue();
+            bool minNotNull = ( minValue && !(minValue->IsNull()) );
+            FdoPtr<FdoDataValue> maxValue = rangeConstraint->GetMaxValue();
+            bool maxNotNull = ( maxValue && !(maxValue->IsNull()) );
             FdoStringP rangeString = FdoStringP::Format(L"%ls %ls N %ls %ls",
-                FdoPtr<FdoDataValue>(rangeConstraint->GetMinValue())->ToString(),
-                rangeConstraint->GetMinInclusive() ? L"<=" : L"<",
-                rangeConstraint->GetMaxInclusive() ? L"<=" : L"<",
-                FdoPtr<FdoDataValue>(rangeConstraint->GetMaxValue())->ToString() );
+                minNotNull ? minValue->ToString() : L"",
+                minNotNull ? (rangeConstraint->GetMinInclusive() ? L"<=" : L"<") : L"",
+                maxNotNull ? (rangeConstraint->GetMaxInclusive() ? L"<=" : L"<") : L"",
+                maxNotNull ? maxValue->ToString() : L"" );
             throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_111_PROPERTY_RANGE_CONSTRAINT_VIOLATED), dataProperty->GetName(), (FdoString*)rangeString, dataValue->ToString()));
         }
         break;
