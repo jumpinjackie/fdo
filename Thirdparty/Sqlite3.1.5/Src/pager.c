@@ -2249,6 +2249,11 @@ int sqlite3pager_get(Pager *pPager, Pgno pgno, void **ppPage){
       if( rc!=SQLITE_OK ){
         return rc;
       }
+      // OSGeo change: leaving a lock may result in a deadlock if the user keeps a reader around
+      // Here we at least know there is no writer actively writing to the file(no exclusive lock). Not perfect but...
+      sqlite3OsUnlock(&pPager->fd, NO_LOCK);  
+      pPager->state = NO_LOCK;
+      // End OSGeo change
     }
 
     /* If a journal file exists, and there is no RESERVED lock on the
@@ -2642,7 +2647,16 @@ int sqlite3pager_begin(void *pData, int exFlag){
   Pager *pPager = pPg->pPager;
   int rc = SQLITE_OK;
   assert( pPg->nRef>0 );
-  assert( pPager->state!=PAGER_UNLOCK );
+  //assert( pPager->state!=PAGER_UNLOCK );
+  // Start OSGeo code
+  // We need to put the shared lock back(we may have remove it in sqlite3pager_get to avoid deadlocks).
+    if( pPager->state==PAGER_UNLOCK ){
+      rc = pager_wait_on_lock(pPager, SHARED_LOCK);
+      if( rc!=SQLITE_OK ){
+        return rc;
+      }
+    }
+  // End OSGeo code
   if( pPager->state==PAGER_SHARED ){
     assert( pPager->aInJournal==0 );
     if( MEMDB ){
