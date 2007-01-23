@@ -290,6 +290,15 @@ FdoStringP FdoCommonMiscUtil::FdoCommandTypeToString (FdoInt32 command)
         case FdoCommandType_SelectAggregates:
             ret = L"FdoCommandType_SelectAggregates";
             break;
+        case FdoCommandType_CreateDataStore:
+            ret = L"FdoCommandType_CreateDataStore";
+            break;
+        case FdoCommandType_DestroyDataStore:
+            ret = L"FdoCommandType_DestroyDataStore";
+            break;
+        case FdoCommandType_ListDataStores:
+            ret = L"FdoCommandType_ListDataStores";
+            break;
         default:
             {
                 wchar_t buffer[9];
