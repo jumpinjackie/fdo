@@ -18,9 +18,6 @@
 #ifndef ARCSDEUTILS_H
 #define ARCSDEUTILS_H
 
-#include <malloc.h>
-
-
 
 // Constants for ArcSDE Metadata:
 extern const char* METADATA_CN_CLASSSCHEMA;

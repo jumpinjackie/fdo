@@ -18,12 +18,7 @@
  */
 
 #include "stdafx.h"
-
-#include <malloc.h>
-#include <string.h>
 #include "ArcSDEUtils.h"
-
-#include <sdeerno.h>
 
 ArcSDETransaction::ArcSDETransaction () :
     mConnection (NULL),

@@ -21,12 +21,6 @@
 #include "ArcSDEUtils.h"
 #include "ArcSDEProvider.h"
 
-#include <malloc.h>
-#include <string.h>
-
-#include <sdeerno.h>
-
-
 ArcSDEDescribeSchemaCommand::ArcSDEDescribeSchemaCommand (FdoIConnection *connection, FdoIdentifier* fdoClassIdToLoad) :
     ArcSDECommand<FdoIDescribeSchema> (connection),
     mSchemaName (NULL)

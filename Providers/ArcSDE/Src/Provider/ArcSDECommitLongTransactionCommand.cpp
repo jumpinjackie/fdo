@@ -19,8 +19,6 @@
 
 #include "stdafx.h"
 
-#include <sdeerno.h>
-
 ArcSDECommitLongTransactionCommand::ArcSDECommitLongTransactionCommand (FdoIConnection *connection) :
     ArcSDEFeatureCommand<FdoICommitLongTransaction> (connection),
     mName ()

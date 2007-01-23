@@ -20,11 +20,6 @@
 #include "stdafx.h"
 #include "ArcSDEUtils.h"
 
-#include <malloc.h>
-#include <string.h>
-
-#include <sdeerno.h>
-
 
 ArcSDEFeatureReader::ArcSDEFeatureReader (ArcSDEConnection* connection, FdoClassDefinition* fdoClassDef, FdoFilter* filter, FdoIdentifierCollection* propertiesToSelect) :
     ArcSDEReader(connection, fdoClassDef, propertiesToSelect),

@@ -19,10 +19,6 @@
 
 #include "stdafx.h"
 
-#include <malloc.h>
-
-#include <sdeerno.h>
-
 ArcSDEDestroySchemaCommand::ArcSDEDestroySchemaCommand (FdoIConnection *connection) :
     ArcSDECommand<FdoIDestroySchema> (connection),
     mSchemaName (NULL)

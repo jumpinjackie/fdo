@@ -189,9 +189,13 @@ if ($INSTALLACTION ne "U") {
         print TEMPSQL "\nEXEC sp_grantdbaccess '" . $username . "';";
         # Give users db_owner rights on databases;  this allows user to see eachother's tables as well as perform select/insert/update/delete on eachother's tables:
         if ($username eq $readonlyusername)
+        {
           print TEMPSQL "\nEXEC sp_addrolemember 'db_datareader', '" . $username . "';";
+        }
         else
+        {
           print TEMPSQL "\nEXEC sp_addrolemember 'db_owner', '" . $username . "';";
+        }
         print TEMPSQL "\nGRANT CREATE TABLE, CREATE PROCEDURE, CREATE VIEW, CREATE FUNCTION TO " . $username . ";";
       }
     }

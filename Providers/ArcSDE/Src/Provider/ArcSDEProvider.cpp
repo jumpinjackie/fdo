@@ -18,9 +18,6 @@
  */
 
 #include "stdafx.h"
-
-#include <malloc.h>
-
 #include <ArcSDEProvider.h>
 
 #ifdef _WIN32

@@ -323,7 +323,10 @@ public:
     // Get cached layer information:
     long GetArcSDELayerInfo(SE_LAYERINFO &pLayerInfo, const CHAR* tableName, const CHAR* columnName);
 
-    void GetArcSDESpatialRefList(SE_SPATIALREFINFO** pSpatialRefInfo, long *count);
+    // Get cached spatial reference information;
+    // NOTE: when retrieving SRIDs, if *pSpatialRefSrids!=NULL then rely on the SRIDs returned in pSpatialRefSrids as opposed
+    // to those in pSpatialRefInfo since they may not be set correctly:
+    void GetArcSDESpatialRefList(SE_SPATIALREFINFO** pSpatialRefInfoList, LONG** pSpatialRefSridList, long *count);
 
     // Returns true if-and-only-if the given schemaname and classname are not NULL and have already been cached:
     bool ClassAlreadyLoaded(FdoString* fdoSchemaName, FdoString* fdoClassName);

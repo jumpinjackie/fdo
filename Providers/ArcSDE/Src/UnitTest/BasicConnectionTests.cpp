@@ -276,127 +276,6 @@ void BasicConnectionTests::schema_capabilities ()
     }
 }
 
-static wchar_t* Command (int command)
-{
-    wchar_t* ret;
-
-    switch (command)
-    {
-        case FdoCommandType_Select:
-            ret = L"FdoCommandType_Select";
-            break;
-        case FdoCommandType_Insert:
-            ret = L"FdoCommandType_Insert";
-            break;
-        case FdoCommandType_Delete:
-            ret = L"FdoCommandType_Delete";
-            break;
-        case FdoCommandType_Update:
-            ret = L"FdoCommandType_Update";
-            break;
-        case FdoCommandType_DescribeSchema:
-            ret = L"FdoCommandType_DescribeSchema";
-            break;
-        case FdoCommandType_ApplySchema:
-            ret = L"FdoCommandType_ApplySchema";
-            break;
-        case FdoCommandType_DestroySchema:
-            ret = L"FdoCommandType_DestroySchema";
-            break;
-        case FdoCommandType_ActivateSpatialContext:
-            ret = L"FdoCommandType_ActivateSpatialContext";
-            break;
-        case FdoCommandType_CreateSpatialContext:
-            ret = L"FdoCommandType_CreateSpatialContext";
-            break;
-        case FdoCommandType_DestroySpatialContext:
-            ret = L"FdoCommandType_DestroySpatialContext";
-            break;
-        case FdoCommandType_GetSpatialContexts:
-            ret = L"FdoCommandType_GetSpatialContexts";
-            break;
-        case FdoCommandType_CreateMeasureUnit:
-            ret = L"FdoCommandType_CreateMeasureUnit";
-            break;
-        case FdoCommandType_DestroyMeasureUnit:
-            ret = L"FdoCommandType_DestroyMeasureUnit";
-            break;
-        case FdoCommandType_GetMeasureUnits:
-            ret = L"FdoCommandType_GetMeasureUnits";
-            break;
-        case FdoCommandType_SQLCommand:
-            ret = L"FdoCommandType_SQLCommand";
-            break;
-        case FdoCommandType_AcquireLock:
-            ret = L"FdoCommandType_AcquireLock";
-            break;
-        case FdoCommandType_GetLockInfo:
-            ret = L"FdoCommandType_GetLockInfo";
-            break;
-        case FdoCommandType_GetLockedObjects:
-            ret = L"FdoCommandType_GetLockedObjects";
-            break;
-        case FdoCommandType_GetLockOwners:
-            ret = L"FdoCommandType_GetLockOwners";
-            break;
-        case FdoCommandType_ReleaseLock:
-            ret = L"FdoCommandType_ReleaseLock";
-            break;
-        case FdoCommandType_ActivateLongTransaction:
-            ret = L"FdoCommandType_ActivateLongTransaction";
-            break;
-        case FdoCommandType_DeactivateLongTransaction:
-            ret = L"FdoCommandType_DeactivateLongTransaction";
-            break;
-        case FdoCommandType_CommitLongTransaction:
-            ret = L"FdoCommandType_CommitLongTransaction";
-            break;
-        case FdoCommandType_CreateLongTransaction:
-            ret = L"FdoCommandType_CreateLongTransaction";
-            break;
-        case FdoCommandType_GetLongTransactions:
-            ret = L"FdoCommandType_GetLongTransactions";
-            break;
-        case FdoCommandType_FreezeLongTransaction:
-            ret = L"FdoCommandType_FreezeLongTransaction";
-            break;
-        case FdoCommandType_RollbackLongTransaction:
-            ret = L"FdoCommandType_RollbackLongTransaction";
-            break;
-        case FdoCommandType_ActivateLongTransactionCheckpoint:
-            ret = L"FdoCommandType_ActivateLongTransactionCheckpoint";
-            break;
-        case FdoCommandType_CreateLongTransactionCheckpoint:
-            ret = L"FdoCommandType_CreateLongTransactionCheckpoint";
-            break;
-        case FdoCommandType_GetLongTransactionCheckpoints:
-            ret = L"FdoCommandType_GetLongTransactionCheckpoints";
-            break;
-        case FdoCommandType_RollbackLongTransactionCheckpoint:
-            ret = L"FdoCommandType_RollbackLongTransactionCheckpoint";
-            break;
-        case FdoCommandType_ChangeLongTransactionPrivileges:
-            ret = L"FdoCommandType_ChangeLongTransactionPrivileges";
-            break;
-        case FdoCommandType_GetLongTransactionPrivileges:
-            ret = L"FdoCommandType_GetLongTransactionPrivileges";
-            break;
-        case FdoCommandType_ChangeLongTransactionSet:
-            ret = L"FdoCommandType_ChangeLongTransactionSet";
-            break;
-        case FdoCommandType_GetLongTransactionsInSet:
-            ret = L"FdoCommandType_GetLongTransactionsInSet";
-            break;
-        case FdoCommandType_FirstProviderCommand:
-            ret = L"FdoCommandType_FirstProviderCommand";
-            break;
-        default:
-            ret = L"Unknown command";
-            break;
-    }
-
-    return (ret);
-}
 
 void BasicConnectionTests::command_capabilities ()
 {
@@ -412,7 +291,7 @@ void BasicConnectionTests::command_capabilities ()
         commands = command_capabilities->GetCommands (length);
         for (int i = 0; i < length; i++)
         {
-            wprintf (L"    The provider supports command %ls.\n", Command (*commands));
+            wprintf (L"    The provider supports command %ls.\n", (FdoString *)FdoCommonMiscUtil::FdoCommandTypeToString(*commands));
             commands++;
         }
         wprintf (L"    The provider commands do %lssupport parameterization.\n", (command_capabilities->SupportsParameters () ? L"" : L"not "));

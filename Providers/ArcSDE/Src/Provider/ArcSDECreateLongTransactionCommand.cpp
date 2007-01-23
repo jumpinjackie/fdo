@@ -19,8 +19,6 @@
 
 #include "stdafx.h"
 
-#include <sdeerno.h>
-
 // set to 1 to delete an existing version of the same name
 #define DRACONIAN 0
 

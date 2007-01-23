@@ -18,12 +18,6 @@
  */
 
 #include "stdafx.h"
-
-#include <math.h>
-#include <malloc.h>
-#include <string.h>
-#include <typeinfo>
-
 #include "ArcSDEUtils.h"
 
 

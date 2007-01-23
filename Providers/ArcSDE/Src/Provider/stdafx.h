@@ -32,6 +32,10 @@
 #include <limits>       // For quiet_NaN()
 #include <float.h>      // For _isnan()
 #include <stdlib.h>
+#include <string.h>
+#include <typeinfo>
+
+#include <sdeerno.h>
 
 #include <FdoSde.h>
 #include <FdoCommon.h>

@@ -18,11 +18,6 @@
  */
 
 #include "stdafx.h"
-
-#include <malloc.h>
-
-#include <sdeerno.h>
-
 #include "ArcSDESQLCommand.h"
 #include "ArcSDEFeatureReader.h"
 #include "ArcSDEUtils.h"

@@ -52,6 +52,7 @@ protected:
 
     FdoPtr<ArcSDEConnection> mConnection;
     SE_SPATIALREFINFO *mArrSpatialRefs;
+    LONG *mArrSpatialRefSrids;
     LONG mlSpatialRefCount;
     LONG mlCurrentSpatialRef;
     long mlActiveOnlySRID;

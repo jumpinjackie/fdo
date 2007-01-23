@@ -112,6 +112,9 @@ void SelectTests::simple ()
 
     try
     {
+        double secs_start = ((double)(long)clock()) / 1000.0;
+        printf("\nSelect and read all properties begin: clock=%f\n", secs_start);
+
         FdoPtr<FdoISelect> select = (FdoISelect*)mConnection->CreateCommand (FdoCommandType_Select);
         select->SetFeatureClassName (ArcSDETestConfig::QClassNameOntarioRoads());
         FdoPtr<FdoIFeatureReader> reader = select->Execute ();
@@ -136,6 +139,10 @@ void SelectTests::simple ()
 		}
 		printf("\nFeatures Read=%d\n", lCount);
         reader->Close();
+
+        double secs_end = ((double)(long)clock()) / 1000.0;
+		printf("\nFeatures Read=%d\n", lCount);
+        printf("\nSelect and read all properties end: clock=%f, elapsed time=%f, features per sec=%f\n", secs_end, secs_end-secs_start, (double)lCount/(secs_end-secs_start));
     }
     catch (FdoException *e)
     {

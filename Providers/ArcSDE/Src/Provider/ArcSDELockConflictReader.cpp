@@ -19,8 +19,6 @@
 
 #include "stdafx.h"
 
-#include <sdeerno.h>
-
 ArcSDELockConflictReader::ArcSDELockConflictReader (ArcSDEConnection* connection, FdoString* cls, CHAR* table, FdoString* property) :
     mConnection (connection),
     mClassName (cls),

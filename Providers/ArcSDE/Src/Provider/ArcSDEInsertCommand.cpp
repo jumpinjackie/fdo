@@ -18,11 +18,6 @@
  */
 
 #include "stdafx.h"
-
-#include <malloc.h>
-
-#include <sdeerno.h>
-
 #include "ArcSDEUtils.h"
 
 ArcSDEInsertCommand::ArcSDEInsertCommand (FdoIConnection *connection) :

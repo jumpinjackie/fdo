@@ -19,8 +19,6 @@
 
 #include "stdafx.h"
 
-#include <sdeerno.h>
-
 #include <ArcSDELongTransactionReader.h>
 
 ArcSDEGetLongTransactionsCommand::ArcSDEGetLongTransactionsCommand (FdoIConnection *connection) :

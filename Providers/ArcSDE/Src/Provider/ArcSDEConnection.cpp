@@ -18,11 +18,6 @@
  */
 
 #include "stdafx.h"
-
-#include <malloc.h>
-#include <string.h>
-
-#include <sdeerno.h>
 #include <FdoCommonConnStringParser.h>
 #include "ArcSDEProvider.h"
 #include "ArcSDEUtils.h"
@@ -1395,7 +1390,7 @@ long ArcSDEConnection::GetArcSDELayerInfo(SE_LAYERINFO &pLayerInfo, const CHAR* 
 }
 
 
-void ArcSDEConnection::GetArcSDESpatialRefList(SE_SPATIALREFINFO** pSpatialRefInfoList, long *pCount)
+void ArcSDEConnection::GetArcSDESpatialRefList(SE_SPATIALREFINFO** pSpatialRefInfoList, LONG** pSpatialRefSridList, long *pCount)
 {
     if (mCachedSpatialRefList == NULL)
     {
@@ -1503,6 +1498,7 @@ void ArcSDEConnection::GetArcSDESpatialRefList(SE_SPATIALREFINFO** pSpatialRefIn
 
     // Return cached spatial context list to caller:
     *pSpatialRefInfoList = mCachedSpatialRefList;
+    *pSpatialRefSridList = mCachedSpatialRefSRIDList;
     *pCount = mCachedSpatialRefListCount;
 }
 

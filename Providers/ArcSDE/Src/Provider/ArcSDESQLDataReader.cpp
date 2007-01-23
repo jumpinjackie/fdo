@@ -19,9 +19,6 @@
 
 #include "stdafx.h"
 
-#include <malloc.h>
-#include <sdeerno.h>
-
 ArcSDESQLDataReader::ArcSDESQLDataReader (ArcSDEConnection *connection, SE_STREAM stream) :
     ArcSDEReader(connection, NULL, NULL)
 {

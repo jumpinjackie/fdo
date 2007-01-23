@@ -18,10 +18,6 @@
  */
 
 #include "stdafx.h"
-
-#include <malloc.h>
-#include <string.h>
-
 #include <ArcSDELongTransactionReader.h>
 
 ArcSDELongTransactionReader::ArcSDELongTransactionReader (ArcSDEConnection* connection, LONG count, SE_VERSIONINFO* info) :

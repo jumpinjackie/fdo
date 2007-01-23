@@ -63,7 +63,7 @@ FdoStringP ArcSDESpatialContextUtility::SRIDToSpatialContextName(ArcSDEConnectio
 }
 
 
-FdoStringP ArcSDESpatialContextUtility::GetSpatialContextName(SE_SPATIALREFINFO spatialRefInfo)
+FdoStringP ArcSDESpatialContextUtility::GetSpatialContextName(SE_SPATIALREFINFO spatialRefInfo, LONG srid)
 {
     FdoStringP spatialContextName;
     LONG lResult = -1;
@@ -86,8 +86,13 @@ FdoStringP ArcSDESpatialContextUtility::GetSpatialContextName(SE_SPATIALREFINFO 
     else  // use SRID as name
     {
         LONG lSRID = -1;
-        lResult = SE_spatialrefinfo_get_srid(spatialRefInfo, &lSRID);
-        handle_sde_err<FdoException>(lResult, __FILE__, __LINE__, ARCSDE_FAILED_TO_READ_SRS, "Failed to get or set information for this ArcSDE Spatial Reference System.");
+        if (srid != -1)
+            lSRID = srid;
+        else
+        {
+            lResult = SE_spatialrefinfo_get_srid(spatialRefInfo, &lSRID);
+            handle_sde_err<FdoException>(lResult, __FILE__, __LINE__, ARCSDE_FAILED_TO_READ_SRS, "Failed to get or set information for this ArcSDE Spatial Reference System.");
+        }
 
         wchar_t wBuffer[50];
         spatialContextName = FdoCommonOSUtil::ltow(lSRID, wBuffer, 50);

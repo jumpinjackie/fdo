@@ -19,8 +19,6 @@
 
 #include "stdafx.h"
 
-#include <sdeerno.h>
-
 ArcSDEDeactivateLongTransactionCommand::ArcSDEDeactivateLongTransactionCommand (FdoIConnection *connection) :
     ArcSDECommand<FdoIDeactivateLongTransaction> (connection)
 {

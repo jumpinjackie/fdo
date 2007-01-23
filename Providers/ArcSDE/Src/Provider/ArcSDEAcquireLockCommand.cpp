@@ -19,10 +19,6 @@
 
 #include "stdafx.h"
 
-#include <malloc.h>
-
-#include <sdeerno.h>
-
 ArcSDEAcquireLockCommand::ArcSDEAcquireLockCommand (FdoIConnection *connection) :
     ArcSDEFeatureCommand<FdoIAcquireLock> (connection),
     mType (FdoLockType_None),

@@ -19,10 +19,6 @@
 
 #include "stdafx.h"
 
-#include <malloc.h>
-
-#include <sdeerno.h>
-
 ArcSDEGetLockInfoCommand::ArcSDEGetLockInfoCommand (FdoIConnection *connection) :
     ArcSDEFeatureCommand<FdoIGetLockInfo> (connection)
 {

@@ -46,7 +46,7 @@ void ArcSDESpatialContextReader::Init(ArcSDEConnection* connection)
     // this could be a potential issue if a client starts a spatial context reader
     // and then closes the connection or creates/destroys a spatial context, then continues reading from the reader.
     // However, the likelihood of such scenarios are rare.
-    connection->GetArcSDESpatialRefList(&mArrSpatialRefs, &mlSpatialRefCount);
+    connection->GetArcSDESpatialRefList(&mArrSpatialRefs, &mArrSpatialRefSrids, &mlSpatialRefCount);
     mlCurrentSpatialRef = -1L;
     mlActiveOnlySRID = -1L;
 }
@@ -73,7 +73,7 @@ FdoString* ArcSDESpatialContextReader::GetName()
 
     if (mSpatialContextName == L"")
     {
-        mSpatialContextName = ArcSDESpatialContextUtility::GetSpatialContextName(mArrSpatialRefs[mlCurrentSpatialRef]);
+        mSpatialContextName = ArcSDESpatialContextUtility::GetSpatialContextName(mArrSpatialRefs[mlCurrentSpatialRef], mArrSpatialRefSrids ? mArrSpatialRefSrids[mlCurrentSpatialRef] : -1);
     }
 
     return mSpatialContextName;
@@ -317,8 +317,13 @@ long ArcSDESpatialContextReader::GetSRID()
     LONG lSRID = -1L;
     LONG lResult = SE_SUCCESS;
 
-    lResult = SE_spatialrefinfo_get_srid(mArrSpatialRefs[mlCurrentSpatialRef], &lSRID);
-    handle_sde_err<FdoException>(lResult, __FILE__, __LINE__, ARCSDE_FAILED_TO_READ_SRS, "Failed to get or set information for this ArcSDE Spatial Reference System.");
+    if (mArrSpatialRefSrids)
+        lSRID = mArrSpatialRefSrids[mlCurrentSpatialRef];
+    else
+    {
+        lResult = SE_spatialrefinfo_get_srid(mArrSpatialRefs[mlCurrentSpatialRef], &lSRID);
+        handle_sde_err<FdoException>(lResult, __FILE__, __LINE__, ARCSDE_FAILED_TO_READ_SRS, "Failed to get or set information for this ArcSDE Spatial Reference System.");
+    }
 
     return lSRID;
 }

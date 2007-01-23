@@ -19,8 +19,6 @@
 
 #include "stdafx.h"
 
-#include <sdeerno.h>
-
 ArcSDELongTransactionConflictDirectiveEnumerator::ArcSDELongTransactionConflictDirectiveEnumerator (ArcSDEConnection* connection) :
     mConnection (connection),
     mConflicts (ConflictCollection::Create ()),

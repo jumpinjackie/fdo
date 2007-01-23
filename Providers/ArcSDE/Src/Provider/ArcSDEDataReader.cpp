@@ -20,11 +20,6 @@
 #include "stdafx.h"
 #include "ArcSDEUtils.h"
 
-#include <malloc.h>
-#include <string.h>
-
-#include <sdeerno.h>
-
 
 ArcSDEDataReader::ArcSDEDataReader (ArcSDEConnection* connection, FdoClassDefinition* fdoClassDef, FdoFilter* filter, FdoIdentifierCollection* propertiesToSelect,
     bool bDistinct, FdoOrderingOption eOrderingOption, FdoIdentifierCollection* pOrderingIds, FdoFilter* pGroupingFilter, FdoIdentifierCollection* pGroupingIds) :

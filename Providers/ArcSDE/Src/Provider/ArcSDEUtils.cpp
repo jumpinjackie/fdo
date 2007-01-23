@@ -19,8 +19,6 @@
 
 
 #include "stdafx.h"
-#include <math.h>
-
 #include "ArcSDEUtils.h"
 
 #ifdef _WIN32

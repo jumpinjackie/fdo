@@ -19,8 +19,6 @@
 
 #include "stdafx.h"
 
-#include <sdeerno.h>
-
 ArcSDELockOwnersReader::ArcSDELockOwnersReader () :
     mOwners (OwnerArray::Create ()),
     mIndex (-1)

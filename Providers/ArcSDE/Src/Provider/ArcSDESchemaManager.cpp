@@ -17,12 +17,6 @@
  */
 
 #include "stdafx.h"
-
-#include <malloc.h>
-#include <string.h>
-
-#include <sdeerno.h>
-
 #include "ArcSDEUtils.h"
 
 

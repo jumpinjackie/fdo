@@ -29,7 +29,7 @@ public:
     static FdoStringP SRIDToSpatialContextName(ArcSDEConnection* connection, LONG srid);
 
     // Get the spatial context name from an ArcSDE SE_SPATIALREFINFO:
-    static FdoStringP GetSpatialContextName(SE_SPATIALREFINFO spatialRefInfo);
+    static FdoStringP GetSpatialContextName(SE_SPATIALREFINFO spatialRefInfo, LONG srid = -1);
 
     // Get the spatial context name from an ArcSDE authname and SRID:
     static FdoStringP GetSpatialContextName(FdoString* authName, LONG srid);

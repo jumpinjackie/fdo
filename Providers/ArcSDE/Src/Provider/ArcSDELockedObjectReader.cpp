@@ -19,8 +19,6 @@
 
 #include "stdafx.h"
 
-#include <sdeerno.h>
-
 ArcSDELockedObjectReader::ArcSDELockedObjectReader (ArcSDEConnection* connection) :
     mConnection (connection),
     mLocks (LockCollection::Create ()),

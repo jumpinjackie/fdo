@@ -21,10 +21,6 @@
 #include "ArcSDESelectCommand.h"
 #include "ArcSDEFeatureReader.h"
 
-#include <malloc.h>
-
-#include <sdeerno.h>
-
 
 ArcSDESelectCommand::ArcSDESelectCommand (FdoIConnection *connection) :
     ArcSDEFeatureCommand<FdoISelect> (connection),

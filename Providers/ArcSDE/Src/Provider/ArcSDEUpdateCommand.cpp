@@ -18,11 +18,6 @@
  */
 
 #include "stdafx.h"
-
-#include <malloc.h>
-
-#include <sdeerno.h>
-
 #include "ArcSDEUtils.h"
 
 static int OS__cdecl compare (const void *key, const void *element)

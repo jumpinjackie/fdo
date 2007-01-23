@@ -212,8 +212,15 @@ void BasicSchemaTests::describe ()
 
     try
     {
+        double startSeconds = (double)(long)clock()/1000.0;
+        printf("\nBasicSchemaTests::describe(): describeschema begin clock=%f", startSeconds);
+
         FdoIDescribeSchema*  describe = (FdoIDescribeSchema*)mConnection->CreateCommand (FdoCommandType_DescribeSchema);
         FdoFeatureSchemaCollection* schemas = describe->Execute ();
+
+        double endSeconds = (double)(long)clock()/1000.0;
+        printf("\nBasicSchemaTests::describe(): describeschema end clock=%f, elapsed time=%f", endSeconds, endSeconds-startSeconds);
+
         show_schema (schemas);
         schemas->Release ();
         describe->Release ();

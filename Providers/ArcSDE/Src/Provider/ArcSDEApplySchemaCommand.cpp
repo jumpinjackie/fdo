@@ -20,13 +20,6 @@
 #include "stdafx.h"
 #include "ArcSDEUtils.h"
 
-#include <malloc.h>
-#include <string.h>
-
-#include <sdeerno.h>
-
-
-
 ArcSDEApplySchemaCommand::ArcSDEApplySchemaCommand (FdoIConnection *connection) :
     ArcSDECommand<FdoIApplySchema> (connection),
     mSchema (NULL)

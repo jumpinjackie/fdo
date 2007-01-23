@@ -19,8 +19,6 @@
 
 #include "stdafx.h"
 
-#include <sdeerno.h>
-
 ArcSDERollbackLongTransactionCommand::ArcSDERollbackLongTransactionCommand (FdoIConnection *connection) :
     ArcSDEFeatureCommand<FdoIRollbackLongTransaction> (connection),
     mName ()

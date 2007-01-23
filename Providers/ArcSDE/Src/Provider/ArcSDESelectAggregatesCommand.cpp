@@ -21,10 +21,6 @@
 #include "ArcSDESelectAggregatesCommand.h"
 #include "ArcSDEDataReader.h"
 
-#include <malloc.h>
-
-#include <sdeerno.h>
-
 
 ArcSDESelectAggregatesCommand::ArcSDESelectAggregatesCommand (FdoIConnection *connection) :
     ArcSDEFeatureCommand<FdoISelectAggregates> (connection),
