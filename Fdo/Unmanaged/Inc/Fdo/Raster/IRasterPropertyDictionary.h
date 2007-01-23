@@ -24,7 +24,7 @@
 #include <FdoStd.h>
 #include <Fdo/Raster/RasterDataModelType.h>
 #include <Fdo/Raster/RasterDataOrganization.h>
-#include <Fdo/Raster/DataValueCollection.h>
+#include <Fdo/Expression/DataValueCollection.h>
 
 /// \brief
 /// The FdoIRasterPropertyDictionary exposes a dictionary style

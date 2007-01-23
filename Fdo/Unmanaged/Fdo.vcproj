@@ -2148,10 +2148,6 @@
 				Name="Raster"
 				>
 				<File
-					RelativePath="Inc\Fdo\Raster\DataValueCollection.h"
-					>
-				</File>
-				<File
 					RelativePath="Inc\Fdo\Raster\IRaster.h"
 					>
 				</File>

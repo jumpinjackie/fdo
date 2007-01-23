@@ -1,9 +1,9 @@
-#ifndef _DATAVALUECOLLECTION_H_
-#define _DATAVALUECOLLECTION_H_
+#ifndef _RASTERDATAVALUECOLLECTION_H_
+#define _RASTERDATAVALUECOLLECTION_H_
 // 
 
 //
-// Copyright (C) 2004-2006  Autodesk, Inc.
+// Copyright (C) 2004-2007  Autodesk, Inc.
 // 
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of version 2.1 of the GNU Lesser
@@ -23,24 +23,12 @@
 #pragma once
 #endif
 
+// This header is deprecated since it used to define the same class as fdo/Expression/DataValueCollection.h.
+// However it is being kept for backward compatibility.
+
 #include <FdoStd.h>
+#include <Fdo/Expression/DataValueCollection.h>
 
-/// \brief
-/// The FdoDataValueCollection represents a collection of FdoDataValue and FdoException classes.
-class FdoDataValueCollection : public FdoCollection<FdoDataValue, FdoException>
-{
-public:
-    FdoDataValueCollection () :
-        FdoCollection<FdoDataValue, FdoException> ()
-    {
-    }
-    
-    ~FdoDataValueCollection ()
-    {
-    }
-
-};
-
-#endif // _DATAVALUECOLLECTION_H_
+#endif // _RASTERDATAVALUECOLLECTION_H_
 
 
