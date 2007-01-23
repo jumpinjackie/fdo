@@ -360,6 +360,11 @@ void FdoSchemaManager::CreateSpatialContext(
             );
         }
     }
+    else {
+        if (update)
+            throw FdoSchemaException::Create(FdoSmError::NLSGetMessage(
+				FDO_NLSID(FDOSM_420), name ));
+    }
 
 	if ( !update ) {
 		sc = scs->CreateSpatialContext(
