@@ -1121,3 +1121,8 @@ SymbolicName=FDOSM_419
 Language=English
 Internal error: f_attributedefinition has select column count mismatched between union'ed selects. Please adjust select columns for fake row.
 .
+MessageId=2644
+SymbolicName=FDOSM_420
+Language=English
+Cannot update spatial context '%1$ls' because it does not exist.
+.
