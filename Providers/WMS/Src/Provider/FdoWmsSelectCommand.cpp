@@ -826,7 +826,7 @@ void FdoWmsSelectCommand::AdjustResolutionWithExtent(FdoSize& resolutionX, FdoSi
     double deltaExtentsY = fabs(dMaxY - dMinY);
  
     // Adjust resolution to the next power of 2
-    FdoSize maxresolution = max(resolutionX,resolutionY);
+    FdoSize maxresolution = (((resolutionX) > (resolutionY)) ? (resolutionX) : (resolutionY));
     FdoSize power2resolution;
     for (power2resolution=1; power2resolution<MAXPOWER2RESOLUTION && power2resolution<maxresolution; power2resolution<<=1)
         ;
