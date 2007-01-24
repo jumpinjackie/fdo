@@ -202,19 +202,17 @@ protected:
 		    FdoPtr<FdoDataValue>	val = pList->GetItem(j);
 		    bool					valMatched = false;
 
-            // Some providers' DescribeSchema implementations set the constraint
-            // values for date properties to string. Temporarily skip this check
-            // for these providers until this bug is fixed. 
-            if ( val->GetDataType() == FdoDataType_DateTime ) {
-                for ( int k = 0; k < masterCount && !valMatched; k++ ) {
-			        valMatched = ( wcscmp(val->ToString(), pMaster[k]) == 0 );
-		        }	
+            if ( val->GetDataType() != FdoDataType_DateTime ) 
+                CPPUNIT_ASSERT_MESSAGE( "Wrong type for datetime constraint returned", false);
 
-                CPPUNIT_ASSERT_MESSAGE( 
-                    (const char*) FdoStringP::Format( L"Wrong List Value %ls", pPropName ),
-                    valMatched
-                );
-            }
+            for ( int k = 0; k < masterCount && !valMatched; k++ ) {
+		        valMatched = ( wcscmp(val->ToString(), pMaster[k]) == 0 );
+	        }	
+
+            CPPUNIT_ASSERT_MESSAGE( 
+                (const char*) FdoStringP::Format( L"Wrong List Value %ls", pPropName ),
+                valMatched
+            );
 
 		    DBG(printf("%ls,", val->ToString()));
 	    }

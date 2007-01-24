@@ -925,7 +925,7 @@ FdoPtr<FdoDataValue> FdoSmLpSchemaCollection::FixDataValueType( FdoPtr<FdoDataVa
 	FdoPtr<FdoDataValue>	ret = val;
 
 	// Fast return if nothing to do
-	if ( val == NULL || propType == FdoDataType_DateTime )
+	if ( val == NULL )
 		return ret;
 
 	FdoDataType	constrType = val->GetDataType();
@@ -1023,6 +1023,39 @@ FdoPtr<FdoDataValue> FdoSmLpSchemaCollection::FixDataValueType( FdoPtr<FdoDataVa
 
             break;
 
+		case FdoDataType_String:
+
+            switch (propType) {
+            case FdoDataType_DateTime:
+				{
+					newData = val;	// In case the conversion fail, return the same.
+
+					FdoStringP	valString = ((FdoStringValue*)(FdoDataValue*)val)->GetString();
+					const char	*timeStr = (const char *)valString;
+
+					if( timeStr != NULL && *timeStr != '\0' )
+					{
+						char		*fmt = valString.Contains(L":") ? "%4d-%02d-%02d %02d:%02d:%02d" : "%4d-%02d-%02d-%02d-%02d-%02d";
+						int			year, month, day, hour, minute, seconds;
+
+						year = month = day = hour = minute = seconds = 0;
+
+						int count = sscanf(timeStr, fmt, &year, &month, &day, &hour, &minute, &seconds);     
+
+						// Check the number of successfully read items
+						if ( count >= 3 )
+							newData = FdoDateTimeValue::Create(FdoDateTime((FdoInt16)year, (FdoInt8)month, (FdoInt8)day, 
+																		  (FdoInt8)hour, (FdoInt8)minute, (float)seconds));
+					}
+				}
+				break;
+			// Other cases...
+
+			default:
+				;
+			}
+
+			break;
         }
 
         ret = newData;
