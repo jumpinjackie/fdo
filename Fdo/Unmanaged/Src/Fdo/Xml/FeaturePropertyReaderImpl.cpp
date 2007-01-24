@@ -395,17 +395,23 @@ FdoBoolean FdoXmlFeaturePropertyReaderImpl::XmlEndElement(
 	case ParsingState_BoundingShape:
 
 		//"Bounds" is FDO property for gml:boundedBy
-		tempGeometry =  m_geometryHandler->GetGeometry();
-		if (tempGeometry)
-		{
-			tempByteArray = tempGeometry->GetFgf();
+        try
+        {
+		    tempGeometry =  m_geometryHandler->GetGeometry();
+		    if (tempGeometry)
+		    {
+			    tempByteArray = tempGeometry->GetFgf();
 
-			isPauseParsing = curFeatureHandler->FeatureGeometricProperty(m_featureContext, 
-				L"Bounds", 
-				tempByteArray->GetData(), 
-				tempByteArray->GetCount());
-		}		
-
+			    isPauseParsing = curFeatureHandler->FeatureGeometricProperty(m_featureContext, 
+				    L"Bounds", 
+				    tempByteArray->GetData(), 
+				    tempByteArray->GetCount());
+		    }		
+        }
+        catch(FdoException* ex)
+        {ex->Release();}
+        catch(...)
+        {}
 		FDO_SAFE_RELEASE(tempGeometry);
 		FDO_SAFE_RELEASE(tempByteArray);
 
@@ -413,73 +419,87 @@ FdoBoolean FdoXmlFeaturePropertyReaderImpl::XmlEndElement(
 
 	//gml geometry association
 	case ParsingState_GmlGeometryAssociation:
-    {
-		tempGeometry =  m_geometryHandler->GetGeometry();
-		tempByteArray = tempGeometry->GetFgf();
-        FdoStringP pPropName = name;
-        bool found = false;
-        if (NULL != m_lpClassStack.back())
+        try
         {
-            FdoXmlLpClassDefinition* classDef = m_lpClassStack.back();
-            FdoString* pBaseName = classDef->PropertyMappingNameFromGmlAlias(name);
-            if (pBaseName != NULL)
+            tempGeometry =  m_geometryHandler->GetGeometry();
+            if (tempGeometry)
             {
-                pPropName = pBaseName;
-                found = true;
+		        tempByteArray = tempGeometry->GetFgf();
+                FdoStringP pPropName = name;
+                bool found = false;
+                if (NULL != m_lpClassStack.back())
+                {
+                    FdoXmlLpClassDefinition* classDef = m_lpClassStack.back();
+                    FdoString* pBaseName = classDef->PropertyMappingNameFromGmlAlias(name);
+                    if (pBaseName != NULL)
+                    {
+                        pPropName = pBaseName;
+                        found = true;
+                    }
+                }
+                if (!found)
+                {
+                    pPropName = L"gml/";
+                    pPropName += name;
+                }
+                if (tempByteArray != NULL)
+                {
+                    isPauseParsing = curFeatureHandler->FeatureGeometricProperty(m_featureContext, 
+			            pPropName,
+			            tempByteArray->GetData(), 
+			            tempByteArray->GetCount());
+                } else
+                {
+		            isPauseParsing = curFeatureHandler->FeatureGeometricProperty(m_featureContext, 
+			            pPropName,
+			            NULL, 
+			            0);
+                }
             }
         }
-        if (!found)
-        {
-            pPropName = L"gml/";
-            pPropName += name;
-        }
-        if (tempByteArray != NULL)
-        {
-            isPauseParsing = curFeatureHandler->FeatureGeometricProperty(m_featureContext, 
-			    pPropName,
-			    tempByteArray->GetData(), 
-			    tempByteArray->GetCount());
-        } else
-        {
-		    isPauseParsing = curFeatureHandler->FeatureGeometricProperty(m_featureContext, 
-			    pPropName,
-			    NULL, 
-			    0);
-        }
-
+        catch(FdoException* ex)
+        {ex->Release();}
+        catch(...)
+        {}
 		FDO_SAFE_RELEASE(tempGeometry);
 		FDO_SAFE_RELEASE(tempByteArray);
-    }
 		break;
 
 	//geometry association
 	case ParsingState_GeometryAssociation:
-    {
-		tempGeometry =  m_geometryHandler->GetGeometry();
-		tempByteArray = tempGeometry->GetFgf();
-        FdoStringP pPropName = name;
-        if (NULL != m_lpClassStack.back())
+        try
         {
-            FdoXmlLpClassDefinition* classDef = m_lpClassStack.back();
-            FdoString* pBaseName = classDef->PropertyMappingNameFromGmlAlias(name);
-            if (pBaseName != NULL)
-                pPropName = pBaseName;
+            tempGeometry =  m_geometryHandler->GetGeometry();
+            if (tempGeometry)
+            {
+		        tempByteArray = tempGeometry->GetFgf();
+                FdoStringP pPropName = name;
+                if (NULL != m_lpClassStack.back())
+                {
+                    FdoXmlLpClassDefinition* classDef = m_lpClassStack.back();
+                    FdoString* pBaseName = classDef->PropertyMappingNameFromGmlAlias(name);
+                    if (pBaseName != NULL)
+                        pPropName = pBaseName;
+                }
+                if (tempByteArray != NULL) {
+		            isPauseParsing = curFeatureHandler->FeatureGeometricProperty(m_featureContext, 
+			            pPropName,
+			            tempByteArray->GetData(), 
+			            tempByteArray->GetCount());
+                } else {
+		            isPauseParsing = curFeatureHandler->FeatureGeometricProperty(m_featureContext, 
+			            pPropName,
+			            NULL, 
+			            0);
+                }
+            }
         }
-        if (tempByteArray != NULL) {
-		    isPauseParsing = curFeatureHandler->FeatureGeometricProperty(m_featureContext, 
-			    pPropName,
-			    tempByteArray->GetData(), 
-			    tempByteArray->GetCount());
-        } else {
-		    isPauseParsing = curFeatureHandler->FeatureGeometricProperty(m_featureContext, 
-			    pPropName,
-			    NULL, 
-			    0);
-        }
-
-		FDO_SAFE_RELEASE(tempGeometry);
-		FDO_SAFE_RELEASE(tempByteArray);
-    }
+        catch(FdoException* ex)
+        {ex->Release();}
+        catch(...)
+        {}
+	    FDO_SAFE_RELEASE(tempGeometry);
+	    FDO_SAFE_RELEASE(tempByteArray);
 		break;
 
 	//Generic Complex Type

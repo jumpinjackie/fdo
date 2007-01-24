@@ -71,11 +71,10 @@ FdoXmlSaxHandler* FdoXmlGeometryHandler::XmlStartElement(
 	FdoXmlSaxHandler* nextHandler = NULL;
 	FdoXmlGeometry* newGeometry = NULL;
 
-    // in case we know the geometry type, use it
-	GmlGeometryType curType = m_typeGeomExpected;
-    //try to detect geometry type in case we don't know the geometry type
+	GmlGeometryType curType = getGmlGeometryType(name);
+    // in case we don't know the geometry type, use expected geom
     if (curType == GmlGeometryType_Unknown)
-        curType = getGmlGeometryType(name);
+        curType = m_typeGeomExpected;
     m_typeGeomExpected = GmlGeometryType_Unknown;
     
 	switch(curType)
