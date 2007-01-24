@@ -557,6 +557,7 @@ public:
     /// \param path 
     /// The relative path.
     /// 
+    /// \return
     /// Returns absolute path if can be transformed or passed parameter
     /// otherwise.
     /// 
@@ -580,10 +581,23 @@ public:
     /// \param path 
     /// The path.
     /// 
+    /// \return
     /// Returns true if the specified name points to an absolute directory and false
     /// otherwise.
     /// 
 	static bool IsAbsolutePath(const wchar_t *pFilename);
+
+    /// \brief
+    /// Determines the directory and filename parts from the specified path.
+    /// 
+    /// \param path 
+    /// The path.
+    /// 
+    /// \return
+    /// Returns true if the specified loaction points to a directory and false
+    /// otherwise.
+    /// 
+    static bool GetFileDirectoryAndName(const wchar_t *location, FdoStringP& directory, FdoStringP& name);
 
     /// \brief
     /// Changes the read-write access mode of a file.
