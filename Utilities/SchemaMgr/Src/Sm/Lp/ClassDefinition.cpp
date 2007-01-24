@@ -1410,6 +1410,14 @@ FdoStringsP FdoSmLpClassBase::GetDbIds()
 void FdoSmLpClassBase::SetTableMapping( FdoSmOvTableMappingType mappingType )
 {
     mTableMapping = mappingType;
+
+    if ( mTableMapping == FdoSmOvTableMappingType_Default  ) 
+        // Default table mapping to the schema-wide one
+        mTableMapping = RefLogicalPhysicalSchema()->GetTableMapping();
+
+    // Special Case, Base table mapping is only applicable to class that has base class.
+    if ( (mTableMapping == FdoSmOvTableMappingType_BaseTable) && (mBaseClassName == L"") )
+        mTableMapping = FdoSmOvTableMappingType_ConcreteTable;
 }
 
 void FdoSmLpClassBase::SetIsDbObjectCreator( bool bCreator )
