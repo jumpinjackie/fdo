@@ -3542,6 +3542,14 @@ FdoSmLpPropertyP FdoSmLpClassDefinition::CreateProperty(
             this
         );
         break;
+
+    case FdoPropertyType_RasterProperty:
+        throw FdoSchemaException::Create(FdoSmError::NLSGetMessage(FDO_NLSID(FDOSM_421)));
+        break;
+
+    default:
+        throw FdoSchemaException::Create(FdoSmError::NLSGetMessage(FDO_NLSID(FDOSM_422)));
+        break;
     }
 
     lpProp->Update( pFdoProp, elementState, pClassOverrides, bIgnoreStates );
