@@ -1129,6 +1129,59 @@ bool FdoCommonFile::IsAbsolutePath(const wchar_t *pFilename)
 #endif
 }
 
+bool FdoCommonFile::GetFileDirectoryAndName(const wchar_t *location, FdoStringP& directory, FdoStringP& filename)
+{
+#ifndef _WIN32
+    struct stat my_stat;
+    char* mbLocation = NULL;
+    wide_to_multibyte(mbLocation, location);
+    if (0 != stat (mbLocation, &my_stat))
+        return false;
+#else
+    DWORD attributes = GetFileAttributesW (location);
+    if ((INVALID_FILE_ATTRIBUTES == attributes))
+        return false;
+#endif
+
+    // Extract the file name and path from location. There are two kinds of delimiters, 
+    // The last one appears would be selected to extract the file name.
+    // e.g. location1="c:\\path1/test.bmp", index would be set at "/".
+    const wchar_t* pdest = wcsrchr(location, FILE_PATH_DELIMITER); // L'\\'
+    const wchar_t* pdest2 = wcsrchr(location, FILE_PATH_DELIMITER2); // L'/'
+
+    int index = (int)(pdest - location);
+    int index2 = (int)(pdest2 - location);
+
+    if (index2 > index) {
+        index = index2;
+        pdest = pdest2;
+    }
+
+    // extract the filename
+    if (pdest) {
+        wchar_t lfilename[500];
+#ifdef _WIN32            
+        wcscpy_s(lfilename, 500, pdest + 1);
+#else
+        lfilename = pdest+1;
+#endif
+        filename = lfilename;
+    }
+
+    // extract the directory name
+    if (index) {
+        wchar_t path[500];
+#ifdef _WIN32            
+        wcsncpy_s(path, 500, location, index);
+#else
+        wcsncpy(path, location, index);
+#endif
+        directory = path;
+    }
+
+    return true;
+}
+
 void FdoCommonFile::Chmod(FdoString* filePath, bool bReadWrite)
 {
 #ifdef _WIN32

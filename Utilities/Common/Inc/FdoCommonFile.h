@@ -586,6 +586,16 @@ public:
 	static bool IsAbsolutePath(const wchar_t *pFilename);
 
     /// \brief
+    /// Determines the directory and filename parts from the specified path.
+    /// 
+    /// \param path 
+    /// The path.
+    /// 
+    /// Returns nothing.
+    /// 
+    static bool GetFileDirectoryAndName(const wchar_t *location, FdoStringP& directory, FdoStringP& name);
+
+    /// \brief
     /// Changes the read-write access mode of a file.
     /// On Windows this sets/clears the read-only flag.
     /// On Linux this only sets/clears the file's owner write flag.
