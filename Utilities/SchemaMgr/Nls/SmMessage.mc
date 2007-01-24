@@ -1126,3 +1126,13 @@ SymbolicName=FDOSM_420
 Language=English
 Cannot update spatial context '%1$ls' because it does not exist.
 .
+MessageId=2645
+SymbolicName=FDOSM_421
+Language=English
+Raster properties are not supported for the current Provider.
+.
+MessageId=2646
+SymbolicName=FDOSM_422
+Language=English
+Unknown property type discovered.
+.
