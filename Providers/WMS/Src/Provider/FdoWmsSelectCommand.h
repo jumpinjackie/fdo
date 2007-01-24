@@ -134,6 +134,9 @@ private:
     // This method is used to get the original name of the layer.
     FdoString* _getOriginalLayerName (FdoString* mangledLayerName);
 
+    // Adjust the resolution of the grid layer according the extent.
+    void AdjustResolutionWithExtent(FdoSize& resolutionX, FdoSize& resolutionY, double dMinX, double dMinY, double dMaxX, double dMaxY);
+
 	// Lock support
     FdoLockType mType;
     FdoLockStrategy mStrategy;

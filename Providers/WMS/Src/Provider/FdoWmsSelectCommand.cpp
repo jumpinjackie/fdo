@@ -28,6 +28,11 @@
 #include <WMS/Override/FdoWmsOvPhysicalSchemaMapping.h>
 
 #include <malloc.h>
+#include <math.h>
+
+#define MAXPOWER2RESOLUTION 4096
+#define DEFAULTRESOLUTIONX 1000
+#define DEFAULTRESOLUTIONY 1000
 
 FdoWmsSelectCommand::FdoWmsSelectCommand (FdoWmsConnection* connection) :
     FdoWmsFeatureCommand<FdoISelect> (connection),
@@ -745,12 +750,11 @@ void FdoWmsSelectCommand::_analysisIdentifier (FdoString* srsName, FdoWmsBoundin
 
 	if (!bClip && !bResample)
 	{
-		// Get the default HEIGHT value and calculate the WIDTH value.
-		height = _getDefaultImageHeight ();		
-		width = (FdoSize)((bbox->GetMaxX() - bbox->GetMinX()) / (bbox->GetMaxY() - bbox->GetMinY()) * height);
-        if (width > 2048) {
+        height = DEFAULTRESOLUTIONX;
+        width = DEFAULTRESOLUTIONY;
+        AdjustResolutionWithExtent(width, height, bbox->GetMinX(), bbox->GetMinY(), bbox->GetMaxX(), bbox->GetMaxY());
+        if (width > 2048)
             width = 2048;
-        }
 	}
 }
 
@@ -816,3 +820,25 @@ FdoString* FdoWmsSelectCommand::_getOriginalLayerName (FdoString* mangledLayerNa
     return L"";
 }
 
+void FdoWmsSelectCommand::AdjustResolutionWithExtent(FdoSize& resolutionX, FdoSize& resolutionY, double dMinX, double dMinY, double dMaxX, double dMaxY)
+{
+    double deltaExtentsX = fabs(dMaxX - dMinX);
+    double deltaExtentsY = fabs(dMaxY - dMinY);
+ 
+    // Adjust resolution to the next power of 2
+    FdoSize maxresolution = max(resolutionX,resolutionY);
+    FdoSize power2resolution;
+    for (power2resolution=1; power2resolution<MAXPOWER2RESOLUTION && power2resolution<maxresolution; power2resolution<<=1)
+        ;
+        
+    if (deltaExtentsX > deltaExtentsY)
+    {
+        resolutionX = power2resolution;
+        resolutionY = static_cast<int>(resolutionX * deltaExtentsY / deltaExtentsX);
+    }
+    else
+    {
+        resolutionY = power2resolution;
+        resolutionX = static_cast<int>(resolutionY * deltaExtentsX / deltaExtentsY);
+    }
+}
