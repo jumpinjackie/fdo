@@ -1163,7 +1163,7 @@ bool FdoCommonFile::GetFileDirectoryAndName(const wchar_t *location, FdoStringP&
 #ifdef _WIN32            
         wcscpy_s(lfilename, 500, pdest + 1);
 #else
-        lfilename = pdest+1;
+        wcscpy(lfilename, pdest + 1);
 #endif
         filename = lfilename;
     }
