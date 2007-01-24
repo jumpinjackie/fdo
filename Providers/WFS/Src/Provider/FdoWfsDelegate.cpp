@@ -81,23 +81,54 @@ FdoIFeatureReader* FdoWfsDelegate::GetFeature(FdoFeatureSchemaCollection* schema
                                               FdoString* srsName,
                                               FdoStringCollection* propertiesToSelect,
                                               FdoString* from,
-                                              FdoFilter* where)
+                                              FdoFilter* where,
+                                              FdoString* schemaName)
 {
     FdoPtr<FdoWfsGetFeature> request = FdoWfsGetFeature::Create(targetNamespace, 
                                                                 srsName, 
                                                                 propertiesToSelect, 
                                                                 from, 
-                                                                where);
+                                                                where,
+                                                                schemaName);
     FdoPtr<FdoOwsResponse> response;
+    FdoException* exc1 = NULL;
     try
     {
         response = Invoke(request);
     }
     catch(FdoException* exc) // some servers request to have the class name in the front of properties, so we will try to place them
     {
-        exc->Release();
+        exc1 = exc;
         request->EncodeWithClassName(true);
-        response = Invoke(request); // if second time we will get an exception then is something wrong.
+        try
+        {
+            response = Invoke(request);
+        }
+        catch(FdoException* exc2) // rare cases
+        {
+            exc2->Release();
+            request->SetSchemaName(L""); // remove schema name
+            request->EncodeWithClassName(false);
+            try
+            {
+                response = Invoke(request);
+            }
+            catch(FdoException* exc3)
+            {
+                exc3->Release();
+                request->EncodeWithClassName(true);
+                try
+                {
+                    response = Invoke(request);
+                }
+                catch(FdoException* exc4)
+                {
+                    exc4->Release();
+                    throw exc1;
+                }
+            }
+        }
+        exc1->Release();
     }
     FdoPtr<FdoIoStream> stream = response->GetStream();
 

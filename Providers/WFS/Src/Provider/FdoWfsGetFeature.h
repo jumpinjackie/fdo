@@ -33,13 +33,15 @@ private:
     FdoStringP m_targetNamespace;
     FdoStringP m_srsName;
     bool m_encodeWithClassName;
+    FdoStringP m_schemaName;
 
 protected:
     FdoWfsGetFeature() {};
     FdoWfsGetFeature(FdoString* targetNamespace, FdoString* srsName,
                                 FdoStringCollection* propertiesToSelect,
                                 FdoString* from,
-                                FdoFilter* where);
+                                FdoFilter* where,
+                                FdoString* schemaName);
     virtual ~FdoWfsGetFeature();
     virtual void Dispose() { delete this; }
 
@@ -47,12 +49,14 @@ public:
     static FdoWfsGetFeature* Create(FdoString* targetNamespace, FdoString* srsName,
                                 FdoStringCollection* propertiesToSelect,
                                 FdoString* from,
-                                FdoFilter* where);
+                                FdoFilter* where,
+                                FdoString* schemaName);
 
     virtual FdoStringP EncodeKVP();
     virtual FdoStringP EncodeXml();
 
     virtual void EncodeWithClassName(bool bVal) {m_encodeWithClassName = bVal;};
+    virtual void SetSchemaName(FdoStringP schemaName) {m_schemaName = schemaName;}
 };
 
 typedef FdoPtr<FdoWfsGetFeature> FdoWfsGetFeatureP;

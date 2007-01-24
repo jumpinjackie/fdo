@@ -25,12 +25,13 @@
 //#define DEBUG_LIMIT_FEATURES
 
 FdoWfsGetFeature::FdoWfsGetFeature(FdoString* targetNamespace, FdoString* srsName, 
-                                   FdoStringCollection* propertiesToSelect,
+                                    FdoStringCollection* propertiesToSelect,
                                     FdoString* from,
-                                    FdoFilter* where) : FdoOwsRequest(FdoWfsGlobals::WFS, FdoWfsGlobals::GetFeature),
+                                    FdoFilter* where,
+                                    FdoString* schemaName) : FdoOwsRequest(FdoWfsGlobals::WFS, FdoWfsGlobals::GetFeature),
                                     m_targetNamespace(targetNamespace), m_srsName(srsName),
                                     m_propertiesToSelect(propertiesToSelect),
-                                    m_from(from), m_where(where)
+                                    m_from(from), m_where(where), m_schemaName(schemaName)
 {
     m_encodeWithClassName = false;
     SetVersion(FdoWfsGlobals::WfsVersion);
@@ -43,10 +44,9 @@ FdoWfsGetFeature::~FdoWfsGetFeature()
 }
 
 FdoWfsGetFeature* FdoWfsGetFeature::Create(FdoString* targetNamespace, FdoString* srsName, FdoStringCollection* propertiesToSelect,
-                            FdoString* from,
-                            FdoFilter* where)
+                            FdoString* from, FdoFilter* where, FdoString* schemaName)
 {
-    return new FdoWfsGetFeature(targetNamespace, srsName, propertiesToSelect, from, where);
+    return new FdoWfsGetFeature(targetNamespace, srsName, propertiesToSelect, from, where, schemaName);
 }
 
 FdoStringP FdoWfsGetFeature::EncodeKVP()
@@ -63,7 +63,10 @@ FdoStringP FdoWfsGetFeature::EncodeKVP()
     ret += FdoWfsGlobals::And;
     ret += FdoWfsGlobals::TYPENAME;
     ret += FdoWfsGlobals::Equal;
-    ret += m_from;
+    if (m_schemaName.GetLength() != 0)
+        ret += m_schemaName + L":" + m_from;
+    else
+        ret += m_from;
     // PROPERTYNAME, optional
     FdoInt32 numProps = 0;
     if (m_propertiesToSelect != NULL)

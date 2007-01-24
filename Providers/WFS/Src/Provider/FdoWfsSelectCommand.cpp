@@ -100,6 +100,7 @@ FdoIFeatureReader* FdoWfsSelectCommand::Execute ()
 	// that is , FDO class name --> GML global element name
 	// and that global element name actually represents the valid WFS feature type
 	// that is recognized by WFS servers.
+	FdoString* schemaFeatureName = NULL;
 	FdoString* featureTypeName = NULL;
 	FdoString* targetNamespace = L"";
 	FdoPtr<FdoFeatureSchemaCollection> schemas = mConnection->GetSchemas();
@@ -123,6 +124,7 @@ FdoIFeatureReader* FdoWfsSelectCommand::Execute ()
 						    // we found it
                             elementClass = elementMapping->GetClassMapping();
 						    featureTypeName = elementMapping->GetName();
+                            schemaFeatureName = schema->GetName();
 						    targetNamespace = mapping->GetTargetNamespace();
 						    break;
 					    }
@@ -138,31 +140,15 @@ FdoIFeatureReader* FdoWfsSelectCommand::Execute ()
 	// and at the same time find out the srs name that this feature type uses
 	FdoString* srsName = L"EPSG:4326";
 	if (featureTypeName != NULL) {
-		FdoPtr<FdoWfsServiceMetadata> metadata = mConnection->GetServiceMetadata();
-		FdoPtr<FdoWfsFeatureTypeList> typeList = metadata->GetFeatureTypeList();
-		FdoPtr<FdoWfsFeatureTypeCollection> types = typeList->GetFeatureTypes();
-		FdoInt32 count = types->GetCount();
-        std::wstring lhs = featureTypeName;
-		for (int i = 0; i < count; i++)
-        {
-			FdoPtr<FdoWfsFeatureType> featureType = types->GetItem(i);
-            std::wstring rhs = featureType->GetName();
-            std::wstring::size_type idxSep = rhs.find(L':');
-            bool foundit = false;
-            if (idxSep != std::wstring::npos){
-                std::wstring::size_type szComp = rhs.size() - (idxSep+1);
-                if(lhs.size() == szComp && !rhs.compare(idxSep+1, szComp < lhs.size() ? lhs.size() : szComp, lhs))
-                    foundit = true;
-            }
-            else {
-                if (rhs == featureTypeName)
-                    foundit = true;
-            }
-            if (foundit){
-			    srsName = featureType->GetSRS();
-                break;
-            }
-		}
+        FdoPtr<FdoWfsServiceMetadata> metadata = mConnection->GetServiceMetadata();
+        FdoPtr<FdoWfsFeatureTypeList> typeList = metadata->GetFeatureTypeList();
+        FdoPtr<FdoWfsFeatureTypeCollection> featTypes = typeList->GetFeatureTypes();
+        FdoPtr<FdoWfsFeatureType> featureType = featTypes->FindItem (mClassName->GetName());
+        if (featureType == NULL) {
+            featureType = featTypes->FindItem (mClassName->GetText());
+            if (featureType != NULL)
+            srsName = featureType->GetSRS();
+        }
 	}
 
 	if (featureTypeName == NULL || srsName == NULL) { // no match found
@@ -253,7 +239,7 @@ FdoIFeatureReader* FdoWfsSelectCommand::Execute ()
 
 	// yeah, all the parameters that WfsDeleget::GetFeature needs are ready
 	FdoPtr<FdoWfsDelegate> delegate = mConnection->GetWfsDelegate();
-	FdoPtr<FdoIFeatureReader> ret = delegate->GetFeature(schemas, mappings, targetNamespace, srsName, props, featureTypeName, mFilter);	
+	FdoPtr<FdoIFeatureReader> ret = delegate->GetFeature(schemas, mappings, targetNamespace, srsName, props, featureTypeName, mFilter, schemaFeatureName);
 
 	FdoWfsFeatureReader* reader = dynamic_cast<FdoWfsFeatureReader *>(ret.p);
 	if (reader)

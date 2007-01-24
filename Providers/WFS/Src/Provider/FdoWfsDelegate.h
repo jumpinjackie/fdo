@@ -44,7 +44,8 @@ public:
                                     FdoString* targetNamespace, FdoString* srsName,
                                     FdoStringCollection* propertiesToSelect,
                                     FdoString* from,
-                                    FdoFilter* where);
+                                    FdoFilter* where,
+                                    FdoString* schemaName);
 
 };
 
