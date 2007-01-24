@@ -136,20 +136,22 @@ void FdoSmLpGrdClassDefinition::Update(
 )
 {
     FdoSmLpSchemaP pSchema = GetLogicalPhysicalSchema();
+    FdoSmOvTableMappingType tableMappingType = FdoSmOvTableMappingType_Default;
 
-    // Extract any class overrides
-    if ( pClassOverrides  ) {
-        FdoRdbmsOvClassDefinition* pRdbmsOverrides = (FdoRdbmsOvClassDefinition*) pClassOverrides;
-        FdoRdbmsOvTableP tableOverrides = pRdbmsOverrides->GetTable();
+    if ( (GetElementState() == FdoSchemaElementState_Added) || GetIsFromFdo() ) {
+        // Extract any class overrides
+        if ( pClassOverrides  ) {
+            FdoRdbmsOvClassDefinition* pRdbmsOverrides = (FdoRdbmsOvClassDefinition*) pClassOverrides;
 
-        if ( (GetElementState() == FdoSchemaElementState_Added) || GetIsFromFdo() ) {
-            // TODO: the following is inconsistent with the way table name is handle
-            // In both cases should report modification errors or ignore on modification.
-            SetTableMapping( pRdbmsOverrides->GetTableMapping() );
+            tableMappingType = pRdbmsOverrides->GetTableMapping();
             // Save the table mapping specified by overrides, since mDbObjectMapping
             // may get defaulted.
-            SetOvTableMapping( FdoSmOvTableMappingTypeMapper::Type2String( pRdbmsOverrides->GetTableMapping() ) );
+            SetOvTableMapping( FdoSmOvTableMappingTypeMapper::Type2String( tableMappingType ) );
         }
+
+        // TODO: the following is inconsistent with the way table name is handle
+        // In both cases should report modification errors or ignore on modification.
+        SetTableMapping( tableMappingType );
 	}
 }
 
