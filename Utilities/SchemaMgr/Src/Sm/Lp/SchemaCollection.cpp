@@ -1035,7 +1035,7 @@ FdoPtr<FdoDataValue> FdoSmLpSchemaCollection::FixDataValueType( FdoPtr<FdoDataVa
 
 					if( timeStr != NULL && *timeStr != '\0' )
 					{
-						char		*fmt = valString.Contains(L":") ? "%4d-%02d-%02d %02d:%02d:%02d" : "%4d-%02d-%02d-%02d-%02d-%02d";
+						const char		*fmt = valString.Contains(L":") ? "%4d-%02d-%02d %02d:%02d:%02d" : "%4d-%02d-%02d-%02d-%02d-%02d";
 						int			year, month, day, hour, minute, seconds;
 
 						year = month = day = hour = minute = seconds = 0;
