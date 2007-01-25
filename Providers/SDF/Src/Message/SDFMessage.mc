@@ -1,5 +1,5 @@
 ;//
-;//Copyright (C) 2004-2006  Autodesk, Inc.
+;//Copyright (C) 2004-2007  Autodesk, Inc.
 ;//
 ;//This library is free software; you can redistribute it and/or
 ;//modify it under the terms of version 2.1 of the GNU Lesser
@@ -485,4 +485,14 @@ MessageId=96
 SymbolicName=SDFPROVIDER_96_SCHEMA_NOT_SET
 Language=English
 Schema is not set - cannot set the class name.
+.
+MessageId=97
+SymbolicName=SDFPROVIDER_97_PROPERTY_NOTFOUND
+Language=English
+Property '%1$ls' is not found in class '%2$ls'.
+.
+MessageId=98
+SymbolicName=SDFPROVIDER_98_SPATIAL_OP_NOTSUPPORTED
+Language=English
+Spatial operation not supported
 .
