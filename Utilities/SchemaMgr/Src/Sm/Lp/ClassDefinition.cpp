@@ -3408,42 +3408,20 @@ FdoSmLpClassDefinition::FdoSmLpClassDefinition(FdoSmPhClassReaderP classReader, 
                 gpd->SetHasMeasure(false);
                 gpd->SetHasElevation((bool)(columnZ != NULL));
 				gpd->SetSpatialContextAssociation(L"Default");
+                FdoGeometryType geomType = FdoGeometryType_Point;
+                gpd->SetSpecificGeometryTypes( &geomType, 1 );
                 FdoSmLpPropertyP newProp = schema->CreateGeometricProperty(
                     gpd, columnX->GetName(), columnY->GetName(), columnZ == NULL ? L"" : columnZ->GetName(), true, this );
+
+                newProp->Update( gpd, FdoSchemaElementState_Unchanged, (FdoPhysicalClassMapping*) NULL, false );
                 GetProperties()->Add( newProp );
+
             }
         }
     }
 
-/*
-    // Load the indexes
-
-    FdoSmPhClassIndexReaderP pIndexReader = classReader->GetClassIndexReader();
-
-    // Prime the index readers with one read.
-    pIndexReader->ReadNext();
-
-    while ( !pIndexReader->IsEOF() ) {
-        FdoSmPhIndexPropertyReaderP pIndexPropReader = pIndexReader->GetPropertyReader();
-
-        FdoSmLpIndex* pIndex = new FdoSmLpIndex( 
-            pIndexReader,
-            this
-        );
-
-        while ( pIndexPropReader->ReadNext() ) {
-            pIndex->AddProperty( pIndexPropReader->GetAttributeName() );
-        }
-
-        mIndexes.Add(pIndex);
-        pIndex->Release();
-
-        // pIndexPropReader->ReadNext() also positions at the next index so 
-        // no need to call pIndexReader->ReadNext() here.
-    }
-
 	// Load the Schema Attribute Dictionary
-*/
+
 	FdoSmPhClassSADReaderP pSADReader = classReader->GetClassSADReader();
 	LoadSAD(pSADReader);
 
