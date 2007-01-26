@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2006  Autodesk, Inc.
+ * Copyright (C) 2004-2007  Autodesk, Inc.
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser
@@ -343,6 +343,42 @@ const wchar_t* OdbcBaseSetup::mOracleNonAcadTest[] = {
 	L"( FEATID1, NAME, X, Y )",
 	L" values ",
 	L"( 2, 'His''Name', 20, 25 );",
+#ifdef _WIN32
+    L"",
+	L"create table ALLDBTYPES (",
+	L"DBTYPE_VARCHAR2 VARCHAR2(10),",
+	L"DBTYPE_NUMBER NUMBER,",
+    L"DBTYPE_NUMBER_20_0 NUMBER(20,0),",
+    L"DBTYPE_NUMBER_27_5 NUMBER(27,5),",
+    L"DBTYPE_INTEGER INTEGER,",
+    L"DBTYPE_SMALLINT SMALLINT,",
+    L"DBTYPE_DECIMAL DECIMAL,",
+    L"DBTYPE_DECIMAL_26 DECIMAL(26),",
+    L"DBTYPE_NUMERIC NUMERIC,",
+    L"DBTYPE_NUMERIC_25_3 NUMERIC(25,3),",
+    L"DBTYPE_FLOAT FLOAT,",
+    L"DBTYPE_REAL REAL,",
+    L"DBTYPE_VARCHAR VARCHAR(10),",
+    L"DBTYPE_DATE DATE,",
+    L"DBTYPE_CHAR CHAR,",
+    L"DBTYPE_TIMESTAMP TIMESTAMP,",
+    L"DBTYPE_RAW10 RAW(10),",
+    L"DBTYPE_LONGRAW LONG RAW,",
+    L"DBTYPE_TIMESTAMP_TZ TIMESTAMP WITH TIME ZONE,",
+    L"DBTYPE_INTERVAL_YM INTERVAL YEAR TO MONTH,",
+    L"DBTYPE_INTERVAL_DS INTERVAL DAY TO SECOND,",
+    L"DBTYPE_TIMESTAMP_LTZ TIMESTAMP WITH LOCAL TIME ZONE",
+	L");",
+    L"",
+	L"create table ALLDBTYPES2 (",
+	L"DBTYPE_VARCHAR2 VARCHAR2(10),",
+    L"DBTYPE_LONG LONG",
+	L");",
+	L"create table ALLDBTYPES3 (",
+	L"DBTYPE_VARCHAR2 VARCHAR2(10),",
+    L"DBTYPE_LONGVARCHAR LONG VARCHAR",
+	L");",
+#endif
     L"",
     NULL
 };

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2006  Autodesk, Inc.
+ * Copyright (C) 2004-2007  Autodesk, Inc.
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser
@@ -38,6 +38,7 @@ class OdbcOracleFdoConnectTest : public FdoConnectTest
 {
     CPPUNIT_TEST_SUB_SUITE (OdbcOracleFdoConnectTest, FdoConnectTest);
     CPPUNIT_TEST (ConfigFileTest);
+    CPPUNIT_TEST (AllDatabaseTypesTest);
     CPPUNIT_TEST_SUITE_END ();
 
     void  set_provider();
@@ -46,12 +47,15 @@ class OdbcOracleFdoConnectTest : public FdoConnectTest
     void query () {};
 
     void ConfigFileTest();
+    void AllDatabaseTypesTest();
 
     // Some values that can vary by target datastore...
     FdoString * GetConfigFile() {return L"OracleTestConfig.xml";}
     FdoString * GetConfigFile2() {return L"OracleTestConfig2.xml";}
     FdoString * GetSchemaName() {return L"Acdb";}
     FdoString * GetPhysicalSchemaName() {return L"";}
+
+    void AssertAllDatabaseTypes(FdoClassDefinition * classDef);
 };
 
 #ifdef _WIN32

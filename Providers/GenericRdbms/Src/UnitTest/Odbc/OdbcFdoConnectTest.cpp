@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2006  Autodesk, Inc.
+ * Copyright (C) 2004-2007  Autodesk, Inc.
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser
@@ -306,6 +306,257 @@ void OdbcOracleFdoConnectTest::ConfigFileTest()
 		TestCommonFail (ex);
     }
 }
+
+void OdbcOracleFdoConnectTest::AllDatabaseTypesTest()
+{
+#ifdef _WIN32
+	OdbcBaseSetup pOdbcSetup(DataBaseType_Oracle);
+	try
+	{
+		FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_OraSetup);
+		// Create/open primary connection:
+		FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
+		connection->SetConnectionString ( userConnectString);
+		connection->Open();
+		pOdbcSetup.CreateDataStore(connection.p, L"");
+		connection->Close();
+	}
+    catch (FdoException *ex)
+	{
+		ex->Release();
+	}
+    try
+    {
+        // call the static method
+        FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
+        if (connection == NULL)
+            CPPUNIT_FAIL("FAILED - CreateConnection returned NULL\n");
+
+        connection->SetConnectionString(UnitTestUtil::GetConnectionString(Connection_WithDSN));
+        connection->Open();
+
+        // Inspect tables that collectively contain has at least one column of all the database'
+        // built-in column types that a client can create.  Multiple tables are used due to 
+        // Oracle's restrictions on multiple LONG column types in one table.
+
+        // First, check incremental class loading by doing a Select on each one.
+
+        FdoPtr<FdoISelect> selectCmd = (FdoISelect*)connection->CreateCommand(FdoCommandType_Select);
+        selectCmd->SetFeatureClassName(L"ALLDBTYPES");
+        FdoPtr<FdoIFeatureReader> readerIncr = selectCmd->Execute();
+        FdoPtr<FdoClassDefinition> classDefIncr = readerIncr->GetClassDefinition();
+        AssertAllDatabaseTypes(classDefIncr);
+
+        selectCmd = (FdoISelect*)connection->CreateCommand(FdoCommandType_Select);
+        selectCmd->SetFeatureClassName(L"ALLDBTYPES2");
+        readerIncr = selectCmd->Execute();
+        classDefIncr = readerIncr->GetClassDefinition();
+        AssertAllDatabaseTypes(classDefIncr);
+
+        selectCmd = (FdoISelect*)connection->CreateCommand(FdoCommandType_Select);
+        selectCmd->SetFeatureClassName(L"ALLDBTYPES3");
+        readerIncr = selectCmd->Execute();
+        classDefIncr = readerIncr->GetClassDefinition();
+        AssertAllDatabaseTypes(classDefIncr);
+
+        readerIncr->Close();
+
+        // Now re-open the database (to get rid of any partial schema loading)
+        // and get a full schema description.
+
+        connection->Close();
+        connection->Open();
+
+        FdoPtr<FdoIDescribeSchema> describeSchemaCmd =
+            (FdoIDescribeSchema*)connection->CreateCommand(FdoCommandType_DescribeSchema);
+        FdoPtr<FdoFeatureSchemaCollection> schemas = describeSchemaCmd->Execute();
+
+        if (schemas == NULL)
+            CPPUNIT_FAIL("FAILED - DescribeSchema returned NULL collection\n");
+
+        bool foundAllTypesClass = false;
+        bool foundAllTypesClass2 = false;
+        bool foundAllTypesClass3 = false;
+        FdoInt32 numSchemas = schemas->GetCount();
+
+        for (int i=0; i<numSchemas && !foundAllTypesClass; i++)
+        {
+            FdoPtr<FdoFeatureSchema> schema = schemas->GetItem(i);
+            FdoPtr<FdoClassCollection> classes = schema->GetClasses();
+
+            FdoInt32 numClasses = classes->GetCount();
+            for (int j=0; j<numClasses; j++)
+            {
+                FdoPtr<FdoClassDefinition> classDef = classes->GetItem(j);
+
+                // analyze the feature class
+                FdoString* className = classDef->GetName();
+                if (wcscmp(className, L"ALLDBTYPES")==0 ||
+                    wcscmp(className, L"ALLDBTYPES2")==0 ||
+                    wcscmp(className, L"ALLDBTYPES3")==0)
+                {
+                    if (wcscmp(className, L"ALLDBTYPES")==0)    foundAllTypesClass = true;
+                    if (wcscmp(className, L"ALLDBTYPES2")==0)   foundAllTypesClass2 = true;
+                    if (wcscmp(className, L"ALLDBTYPES3")==0)   foundAllTypesClass3 = true;
+
+                    AssertAllDatabaseTypes(classDef);
+
+                    // Select from the table and check the reader's class 
+                    // definition too.
+                    FdoPtr<FdoISelect> selectCmd = (FdoISelect*)connection->CreateCommand(FdoCommandType_Select);
+                    selectCmd->SetFeatureClassName(className);
+                    FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+                    FdoPtr<FdoClassDefinition> classDef2 = reader->GetClassDefinition();
+                    AssertAllDatabaseTypes(classDef2);
+                }
+            }
+        }
+
+        if (!foundAllTypesClass)
+            CPPUNIT_FAIL("FAILED - did not find class ALLDBTYPES\n");
+        if (!foundAllTypesClass2)
+            CPPUNIT_FAIL("FAILED - did not find class ALLDBTYPES2\n");
+        if (!foundAllTypesClass3)
+            CPPUNIT_FAIL("FAILED - did not find class ALLDBTYPES3\n");
+
+    }
+    catch (FdoException *ex)
+    {
+		TestCommonFail (ex);
+    }
+#else
+     CPPUNIT_FAIL("OdbcOracleFdoConnectTest::AllDatabaseTypesTest disable");
+#endif
+}
+
+struct OdbcOracleAllDatabaseTypesMapEntry
+{
+    FdoStringP      propName;
+    FdoDataType     dataType;
+    FdoInt32        length;             // -1 == don't care
+    FdoInt32        precision;          // -1 == don't care
+    FdoInt32        scale;              // -1 == don't care
+};
+
+// Any column types that are not in these lists will not appear in FDO
+// class definitions (schema manager skips unsupported types).
+// Multiple tables are used because Oracle has restrictions on how 
+// many "long" columns may appear in one table.
+static OdbcOracleAllDatabaseTypesMapEntry OdbcOracleAllDatabaseTypesMap_S[] =
+{
+    { L"DBTYPE_VARCHAR2",       FdoDataType_String,     10, -1, -1 },
+    { L"DBTYPE_NUMBER",         FdoDataType_Double,     -1,  0,  0 },
+    { L"DBTYPE_NUMBER_20_0",    FdoDataType_Decimal,    -1, 20,  0 },
+    { L"DBTYPE_NUMBER_27_5",    FdoDataType_Decimal,    -1, 27,  5 },
+    { L"DBTYPE_INTEGER",        FdoDataType_Decimal,    -1, 38,  0 },
+    { L"DBTYPE_SMALLINT",       FdoDataType_Decimal,    -1, 38,  0 },
+    { L"DBTYPE_DECIMAL",        FdoDataType_Decimal,    -1, 38,  0 },
+    { L"DBTYPE_DECIMAL_26",     FdoDataType_Decimal,    -1, 26,  0 },
+    { L"DBTYPE_NUMERIC",        FdoDataType_Decimal,    -1, 38,  0 },
+    { L"DBTYPE_NUMERIC_25_3",   FdoDataType_Decimal,    -1, 25,  3 },
+    { L"DBTYPE_FLOAT",          FdoDataType_Double,     -1,  0,  0 },
+    { L"DBTYPE_REAL",           FdoDataType_Double,     -1,  0,  0 },
+    { L"DBTYPE_VARCHAR",        FdoDataType_String,     10,  0,  0 },
+    { L"DBTYPE_DATE",           FdoDataType_DateTime,    0,  0,  0 },
+    { L"DBTYPE_CHAR",           FdoDataType_String,      1,  0,  0 },
+    { L"DBTYPE_TIMESTAMP",      FdoDataType_String,      0,  0,  0 },
+};
+static OdbcOracleAllDatabaseTypesMapEntry OdbcOracleAllDatabaseTypesMap2_S[] =
+{
+    { L"DBTYPE_VARCHAR2",       FdoDataType_String,     10, -1, -1 },
+    { L"DBTYPE_LONG",           FdoDataType_String, 1073741824,  0,  0 }
+};
+static OdbcOracleAllDatabaseTypesMapEntry OdbcOracleAllDatabaseTypesMap3_S[] =
+{
+    { L"DBTYPE_VARCHAR2",       FdoDataType_String,     10, -1, -1 },
+    { L"DBTYPE_LONGVARCHAR",    FdoDataType_String, 1073741824,  0,  0 }
+};
+
+static FdoInt32 OdbcOracleAllDatabaseTypesMapSize_S = 
+    sizeof(OdbcOracleAllDatabaseTypesMap_S) / sizeof(OdbcOracleAllDatabaseTypesMap_S[0]);
+static FdoInt32 OdbcOracleAllDatabaseTypesMapSize2_S = 
+    sizeof(OdbcOracleAllDatabaseTypesMap2_S) / sizeof(OdbcOracleAllDatabaseTypesMap2_S[0]);
+static FdoInt32 OdbcOracleAllDatabaseTypesMapSize3_S = 
+    sizeof(OdbcOracleAllDatabaseTypesMap3_S) / sizeof(OdbcOracleAllDatabaseTypesMap3_S[0]);
+
+void OdbcOracleFdoConnectTest::AssertAllDatabaseTypes(FdoClassDefinition * classDef)
+{
+    FdoInt32 numPropertiesMatchedToMap = 0;
+
+    FdoString * className = classDef->GetName();
+
+    OdbcOracleAllDatabaseTypesMapEntry * typeMap = NULL;
+    FdoInt32 typeMapSize = 0;
+    if (wcscmp(className, L"ALLDBTYPES")==0)
+    {
+        typeMap = OdbcOracleAllDatabaseTypesMap_S;
+        typeMapSize = OdbcOracleAllDatabaseTypesMapSize_S;
+    }
+    else if (wcscmp(className, L"ALLDBTYPES2")==0)
+    {
+        typeMap = OdbcOracleAllDatabaseTypesMap2_S;
+        typeMapSize = OdbcOracleAllDatabaseTypesMapSize2_S;
+    }
+    else if (wcscmp(className, L"ALLDBTYPES3")==0)
+    {
+        typeMap = OdbcOracleAllDatabaseTypesMap3_S;
+        typeMapSize = OdbcOracleAllDatabaseTypesMapSize3_S;
+    }
+    else
+    {
+        CPPUNIT_FAIL("FAILED - no type map found\n");
+    }
+
+    printf("Checking column type conversion for class '%ls'...\n", className);
+
+    FdoPtr<FdoPropertyDefinitionCollection> classProps = classDef->GetProperties();
+
+    FdoInt32 numProps = classProps->GetCount();
+    for (FdoInt32 i=0; i<numProps; i++)
+    {
+        FdoPtr<FdoPropertyDefinition> propDef = classProps->GetItem(i);
+
+        FdoString* propName = propDef->GetName();
+        FdoPropertyType propType = propDef->GetPropertyType();
+
+        if (FdoPropertyType_DataProperty != propType)
+            CPPUNIT_FAIL("FAILED - unexpectedly encountered a property of type other than Data\n");
+
+        FdoDataPropertyDefinition* dataPropDef = (FdoDataPropertyDefinition*)propDef.p;
+
+        FdoDataType dataDataType = dataPropDef->GetDataType();
+        FdoInt32 dataLength = dataPropDef->GetLength();
+        FdoInt32 dataPrecision = dataPropDef->GetPrecision();
+        FdoInt32 dataScale = dataPropDef->GetScale();
+
+        printf("    Property '%ls' length=%d precision=%d scale=%d\n", 
+            propName, dataLength, dataPrecision, dataScale);
+
+        bool foundTypeMapEntry = false;
+        for (FdoInt32 j=0;
+            j < typeMapSize && !foundTypeMapEntry;
+            j++)
+        {
+            OdbcOracleAllDatabaseTypesMapEntry * mapEntry = &typeMap[j];
+            if (wcscmp(propName, mapEntry->propName)==0)
+            {
+                foundTypeMapEntry = true;
+                numPropertiesMatchedToMap++;
+                if (mapEntry->length != -1)
+                    CPPUNIT_ASSERT( dataLength == mapEntry->length );
+                if (mapEntry->precision != -1)
+                    CPPUNIT_ASSERT( dataPrecision == mapEntry->precision );
+                if (mapEntry->scale != -1)
+                    CPPUNIT_ASSERT( dataScale == mapEntry->scale );
+            }
+        }
+        if (!foundTypeMapEntry)
+            CPPUNIT_FAIL("FAILED - mismatch while checking properties in class ALLDBTYPES\n");
+    }
+    if (numPropertiesMatchedToMap != typeMapSize)
+        CPPUNIT_FAIL("FAILED - mismatch while checking all properties in class ALLDBTYPES\n");
+}
+
 
 #ifdef _WIN32
 void OdbcAccessFdoConnectTest::set_provider()
