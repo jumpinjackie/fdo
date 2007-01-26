@@ -81,6 +81,18 @@ class OdbcTextDescribeSchemaTest : public DescribeSchemaTest
     FdoString * GetPhysicalSchemaName() {return L"";}
 };
 
+class OdbcAccessDescribeSchemaTest : public DescribeSchemaTest
+{
+    CPPUNIT_TEST_SUB_SUITE (OdbcAccessDescribeSchemaTest, DescribeSchemaTest);
+    CPPUNIT_TEST_SUITE_END ();
+
+    void  set_provider();
+    virtual void describe ();
+
+    FdoString * GetConfigFile() {return L"MsTestConfig.xml";}
+	FdoString * GetConnectString() {return L"DataSourceName=MsTest;UserId=;Password=;";}
+};
+
 #endif
 
 #endif // ODBC_DESCRIBESCHEMA_H

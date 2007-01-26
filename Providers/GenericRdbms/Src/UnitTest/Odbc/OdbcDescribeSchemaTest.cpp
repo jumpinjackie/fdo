@@ -39,6 +39,13 @@ CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcTextDescribeSchemaTest, "OdbcTextDesc
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcTextDescribeSchemaTest, "OdbcTextTests");
 #endif
 
+#ifdef _WIN32
+CPPUNIT_TEST_SUITE_REGISTRATION (OdbcAccessDescribeSchemaTest);
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcAccessDescribeSchemaTest, "DescribeSchemaTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcAccessDescribeSchemaTest, "OdbcAccessDescribeSchemaTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcAccessDescribeSchemaTest, "OdbcAccessTests");
+#endif
+
 void OdbcDescribeSchemaTest::LoadTestData(FdoIConnection* connection)
 {
 	UnitTestUtil::Sql2Db( (const wchar_t**) mInputSchema, connection );
@@ -199,6 +206,84 @@ void OdbcTextDescribeSchemaTest::describe()
             connection->Close();
         throw;
     }
+}
+
+void OdbcAccessDescribeSchemaTest::set_provider()
+{
+    UnitTestUtil::SetProvider( "OdbcAccess" );
+}
+
+// The function checks the geometric type property value on a describe schema
+// command execution. It should indicate POINT only.
+// This unit test is for defect 872623
+void OdbcAccessDescribeSchemaTest::describe()
+{
+    try
+    {
+        // call the static method
+        FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
+        if (connection == NULL)
+            CPPUNIT_FAIL("FAILED - CreateConnection returned NULL\n");
+
+        // Now open the database with the given 
+        connection->SetConnectionString(GetConnectString());
+        connection->Open();
+
+        // Now analyse the schema with the mappings in place.
+        // This is a modified version of DescribeSchemaTest::SchemaTest().
+        FdoPtr<FdoIDescribeSchema> describeSchemaCmd =
+            (FdoIDescribeSchema*)connection->CreateCommand(FdoCommandType_DescribeSchema);
+        FdoPtr<FdoFeatureSchemaCollection> schemas = describeSchemaCmd->Execute();
+
+        if (schemas == NULL)
+            CPPUNIT_FAIL("FAILED - DescribeSchema returned NULL collection\n");
+
+        FdoInt32 numSchemas = schemas->GetCount();
+        for (int i=0; i<numSchemas; i++)
+        {
+            FdoPtr<FdoFeatureSchema> schema = schemas->GetItem(i);
+
+            FdoString* schemaName = schema->GetName();
+			wprintf(L"Current schema '%ls'\n", schemaName);
+            FdoPtr<FdoClassCollection> classes = schema->GetClasses();
+
+            FdoInt32 numClasses = classes->GetCount();
+            for (int j=0; j<numClasses; j++)
+            {
+                // Note the assumption here that it is a feature class (it is set up so
+                // in the test data).
+                FdoPtr<FdoClassDefinition> classDef = classes->GetItem(j);
+
+                // analyze the feature class
+                FdoString* className = classDef->GetName();
+    			wprintf(L"Current class '%ls'\n", className);
+            
+                FdoPropertiesP props = classDef->GetProperties();
+
+                FdoInt32 numProps = props->GetCount();
+                for (int k=0; k<numProps; k++ ) {
+                    FdoPropertyP prop = props->GetItem(k);
+
+                    if ( prop->GetPropertyType() == FdoPropertyType_GeometricProperty ) {
+                        FdoGeometricPropertyDefinition* geomProp = (FdoGeometricPropertyDefinition*)(prop.p);
+
+                        wprintf(L"Current geometry property '%ls' '%ls'\n", geomProp->GetName(), geomProp->GetDescription());
+                        FdoInt32 geomType = geomProp->GetGeometryTypes();
+                        CPPUNIT_ASSERT( geomType == FdoGeometricType_Point );
+                        FdoInt32 specGeomCount = 0;
+                        FdoGeometryType* specGeomTypes = geomProp->GetSpecificGeometryTypes( specGeomCount );
+                        CPPUNIT_ASSERT( specGeomCount == 1 );
+                        CPPUNIT_ASSERT( specGeomTypes[0] == FdoGeometryType_Point );
+                    }
+                }
+            }
+        }
+    }
+    catch (FdoException *ex)
+    {
+		TestCommonFail (ex);
+    }
+
 }
 
 #endif
