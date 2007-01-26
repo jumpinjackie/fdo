@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2006  Autodesk, Inc.
+ * Copyright (C) 2004-2007  Autodesk, Inc.
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser
@@ -36,8 +36,9 @@ static FdoSmPhOraOdbcColTypeMapEntry typeMap_S[] =
     { FdoSmPhColType_String,    L"VARCHAR",      -1, -1 },
     { FdoSmPhColType_String,    L"VARCHAR2",     -1, -1 },
     { FdoSmPhColType_String,    L"CHAR",         -1, -1 },
-    { FdoSmPhColType_BLOB,      L"BLOB",         -1, -1 },
+    { FdoSmPhColType_String,    L"LONG",         -1, -1 },
     { FdoSmPhColType_String,    L"UNKNOWN",       0,  0 },
+    { FdoSmPhColType_Date,      L"TIMESTAMP(6)", -1, -1 },
     { FdoSmPhColType_Date,      L"DATE",         -1, -1 }
 };
 static FdoInt32 localTypeMapSize_S = sizeof(typeMap_S) / sizeof(typeMap_S[0]);
@@ -48,6 +49,7 @@ FdoSmPhRdOraOdbcColumnReader::FdoSmPhRdOraOdbcColumnReader(
     FdoSmPhMgrP mgr,
     FdoSmPhDbObjectP    dbObject
 ) 
+: mSize(-1)
 {
     FdoStringP objectName = FdoStringP(dbObject->GetName());
     const FdoSmPhOwner*owner = (const FdoSmPhOwner*)(dbObject->GetParent());
@@ -58,7 +60,7 @@ FdoSmPhRdOraOdbcColumnReader::FdoSmPhRdOraOdbcColumnReader(
 
     // Generate SQL statement for selecting the columns.
     FdoStringP sqlString = FdoStringP::Format(
-        L"select table_name, column_name as name, data_type as type, data_length as \"size\", data_scale as scale, nullable\n"
+        L"select table_name, column_name as name, data_type as type, data_length as \"size\", data_precision as \"precision\", data_scale as scale, nullable\n"
         L"         from  all_tab_columns\n"
         L"         where\n"
         L"         owner     = :1 \n"
@@ -70,10 +72,18 @@ FdoSmPhRdOraOdbcColumnReader::FdoSmPhRdOraOdbcColumnReader(
     // Create a field object for each field in the select list
     FdoSmPhRowsP rows = MakeRows(mgr);
 
+    FdoSmPhRowP row = rows->GetItem(0);
+
+    FdoSmPhFieldP field = new FdoSmPhField(
+        row, 
+        L"precision",
+        row->CreateColumnInt64(L"precision",false)
+    );
+
     // Create and set the bind variables
     FdoSmPhRowP binds = new FdoSmPhRow( mgr, L"Binds" );
 
-    FdoSmPhFieldP field = new FdoSmPhField(
+    field = new FdoSmPhField(
         binds,
         L"owner_name",
         binds->CreateColumnDbObject(L"owner_name",false)
@@ -106,8 +116,8 @@ FdoSmPhColType FdoSmPhRdOraOdbcColumnReader::String2Type( FdoString* colTypeStri
         return FdoSmPhColType_Unknown;
     }
 
-    if ( wcscmp(colTypeString, L"NUMBER") == 0 ) {
-        if ( size == 0 )
+    if ( wcscmp(colTypeString, L"NUMBER") == 0 || wcscmp(colTypeString, L"FLOAT") == 0 ) {
+        if ( scale == -1 )  // -1 == NULL
             return FdoSmPhColType_Double;
         else
             return FdoSmPhColType_Decimal;
@@ -137,6 +147,7 @@ FdoSmPhColType FdoSmPhRdOraOdbcColumnReader::String2Type( FdoString* colTypeStri
 bool FdoSmPhRdOraOdbcColumnReader::ReadNext()
 {
     int length;
+    int precision;
     int scale;
     bool eof = true;
 
@@ -159,14 +170,68 @@ bool FdoSmPhRdOraOdbcColumnReader::ReadNext()
     SetString( L"", L"type", wColType );
     SetBoolean( L"", L"nullable", wcscmp(GetString(L"", L"nullable"),L"Y")==0 );
 	SetBoolean( L"", L"is_autoincremented", false );
-    SetLong( L"", L"scale", scale=GetLong(L"", L"scale") );
-    SetLong( L"", L"size", length=GetLong(L"", L"size") );
-
+    FdoStringP scaleStr = GetString(L"", L"scale");
+    bool scaleIsNull = scaleStr.GetLength() <= 0;
+	FdoStringP lengthStr = FdoSmPhRdColumnReader::GetString( L"", L"size" );
+    length = lengthStr.ToLong();
+    precision = GetLong(L"", L"precision");
+    scale = scaleIsNull ? -1 : GetLong(L"", L"scale");
     mColType = String2Type( wColType, length, scale );
 
+    // Mimic what Oracle's ODBC driver returns for length on
+    // the LONG type (yes, that's 1GB, at least for Oracle 10.2.0.1;
+    // some versions return 2GB-1).
+    if (FdoSmPhColType_String == mColType && wColType == L"LONG")
+    {
+        length = 1073741824;
+    }
+
+    // Mimic what Oracle's ODBC driver returns for precision on
+    // NUMBER types that have no specific precision.
+    // This gets us past the internal creation of column
+    // objects in Schema Manager, which reject a size of zero.
+    if (FdoSmPhColType_Double == mColType && precision <= 0)
+    {
+        precision = 15;
+    }
+
+    // Mimic what Oracle's ODBC driver returns for precision on
+    // several numeric types (NUMERIC, DECIMAL, INTEGER, SMALLINT).
+    // The precision returned through the all_tab_columns view used
+    // here is actually NULL (seen as zero in this reader).
+    if (FdoSmPhColType_Decimal == mColType && precision <= 0)
+    {
+        precision = 38;
+    }
+
+    // "precision" should be used as "size" for numerics in this reader.
+    if (FdoSmPhColType_Double == mColType ||
+        FdoSmPhColType_Decimal == mColType)
+    {
+        length = precision;
+    }
+
+    // Re-map NULL scale to zero, now that we are done using this difference.
+    if (scale == -1)
+        scale = 0;
+    SetLong( L"", L"scale", scale );
+    SetLong( L"", L"size", length );
+    mSize = length;     // Work around a defect in base query reader by saving size in this reader.
+ 
     SetBOF(false);
 
     return true;
+}
+
+FdoStringP FdoSmPhRdOraOdbcColumnReader::GetString( FdoStringP tableName, FdoStringP fieldName )
+{
+    FdoStringP ret;
+    if (fieldName == L"size")
+        ret = FdoStringP::Format(L"%d", mSize);
+    else
+        ret = FdoSmPhRdColumnReader::GetString(tableName, fieldName);
+
+    return ret;
 }
 
 FdoSmPhColType FdoSmPhRdOraOdbcColumnReader::GetType()

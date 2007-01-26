@@ -1,7 +1,7 @@
 #ifndef FdoSmPhRdOraOdbcColumnReader_H
 #define FdoSmPhRdOraOdbcColumnReader_H      1
 /*
- * Copyright (C) 2004-2006  Autodesk, Inc.
+ * Copyright (C) 2004-2007  Autodesk, Inc.
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser
@@ -36,12 +36,14 @@ public:
 
     // Get the type enum for the current column
     virtual FdoSmPhColType GetType();
+	virtual FdoStringP GetString( FdoStringP tableName, FdoStringP fieldName );
 
 private:
 
     FdoSmPhColType String2Type( FdoString* colTypeString, int size, int scale );
 
     FdoSmPhColType      mColType;
+    FdoInt32            mSize;
 };
 
 #endif
