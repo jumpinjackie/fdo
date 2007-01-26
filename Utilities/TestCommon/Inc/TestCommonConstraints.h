@@ -62,7 +62,8 @@ protected:
 
     virtual FdoIConnection* CreateConnection( FdoBoolean recreateDb = false );
     virtual FdoBoolean CanRestrictCheckConstraint();
-    virtual FdoBoolean CanHandleExactFloatValue();
+    virtual FdoDouble GetDoubleRounding(FdoDataType dataType);
+    virtual FdoFloat GetSecondsIncrement();
 
     virtual FdoInt32 GetExpectedCheckConstraintCount( FdoIConnection* connection );
 
