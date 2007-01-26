@@ -46,7 +46,7 @@ void FdoAdvancedSelectTest::connect ()
 {
     try
     {
-        mConnection = (FdoIConnection *) UnitTestUtil::GetConnection("", true);
+        mConnection = (FdoIConnection *) UnitTestUtil::GetConnection(L"", true);
 
     }
     catch (FdoException *ex)

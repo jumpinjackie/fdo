@@ -36,10 +36,10 @@ FdoInsertTest::FdoInsertTest(void)
     mSuffix[0] = '\0';
 }
 
-FdoInsertTest::FdoInsertTest(char *suffix)
+FdoInsertTest::FdoInsertTest(wchar_t *suffix)
 {
     m_DisableFailures = false;
-    strncpy(mSuffix, suffix, 11 );
+    wcsncpy(mSuffix, suffix, 11 );
     mSuffix[11] = '\0';
 }
 
@@ -1294,7 +1294,7 @@ try
             L"aaaaaaaaaabbbbiiiii", 
             L"3333"};
 
-        connection = UnitTestUtil::GetConnection("LT", true, Connection_WithDatastore, 1, true );
+        connection = UnitTestUtil::GetConnection(L"LT", true, Connection_WithDatastore, 1, true );
 
         // Setup the long transaction environment required for this test.
         // NOTE: The long transaction names are prefixed with the current user

@@ -62,7 +62,7 @@ public:
 
     virtual void _duplicateComputedIdTest() {
         // determine feature class name:
-        FdoStringP schemaName = FdoStringP(UnitTestUtil::GetEnviron("datastore")).Upper();
+        FdoStringP schemaName = UnitTestUtil::GetEnviron("datastore").Upper();
 #ifdef _WIN32
         FdoStringP fcn = schemaName + L":ACDB3DPOLYLINE";
 #else
@@ -75,7 +75,7 @@ public:
 
     virtual void _secondComputedIdTest() {
         // determine feature class name:
-        FdoStringP schemaName = FdoStringP(UnitTestUtil::GetEnviron("datastore")).Upper();
+        FdoStringP schemaName = UnitTestUtil::GetEnviron("datastore").Upper();
 #ifdef _WIN32
         FdoStringP fcn = schemaName + L":ACDB3DPOLYLINE";
 #else

@@ -25,9 +25,9 @@ FdoDeleteTest::FdoDeleteTest(void)
     mSuffix[0] = '\0';
 }
 
-FdoDeleteTest::FdoDeleteTest(char *suffix)
+FdoDeleteTest::FdoDeleteTest(wchar_t *suffix)
 {
-    strncpy(mSuffix, suffix, 11 );
+    wcsncpy(mSuffix, suffix, 11 );
     mSuffix[11] = '\0';
 }
 

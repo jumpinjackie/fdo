@@ -22,9 +22,9 @@
 
 bool OdbcBaseSetup::OracleDataSupportCreated = false;
 
-void OdbcBaseSetup::DestroyDataStore(FdoIConnection* pConnection, const char *suffix)
+void OdbcBaseSetup::DestroyDataStore(FdoIConnection* pConnection, FdoString *suffix)
 {
-	const char *pDatastore = UnitTestUtil::GetEnviron("datastore", suffix);
+	FdoStringP pDatastore = UnitTestUtil::GetEnviron("datastore", suffix);
 
 	FdoStringP pQueryStringDrp;
 	if (DataBaseType_Oracle == m_typeDB)
@@ -51,11 +51,11 @@ void OdbcBaseSetup::DestroyDataStore(FdoIConnection* pConnection, const char *su
 	}
 }
 
-void OdbcBaseSetup::CreateDataStore(FdoIConnection* pConnection, const char *suffix)
+void OdbcBaseSetup::CreateDataStore(FdoIConnection* pConnection, FdoString *suffix)
 {
 	if (DataBaseType_Oracle == m_typeDB && OdbcBaseSetup::OracleDataSupportCreated == true)
 		return;
-	const char *pDatastore = UnitTestUtil::GetEnviron("datastore", suffix);
+	FdoStringP pDatastore = UnitTestUtil::GetEnviron("datastore", suffix);
 	// clean the before start
 	DestroyDataStore(pConnection, suffix);
 
@@ -97,7 +97,7 @@ void OdbcBaseSetup::CreateDataStore(FdoIConnection* pConnection, const char *suf
 		UnitTestUtil::Sql2Db( (const wchar_t*) pQueryStringDrp, pConnection );
 
 		pConnection->Close();
-		pConnection->SetConnectionString ( UnitTestUtil::GetConnectionString(Connection_NoDatastore, "") );
+		pConnection->SetConnectionString ( UnitTestUtil::GetConnectionString(Connection_NoDatastore) );
 		pConnection->Open();
 		UnitTestUtil::Sql2Db( (const wchar_t**) mOracleAcadTestData, pConnection );
 		UnitTestUtil::Sql2Db( (const wchar_t**) mOracleNonAcadTest, pConnection );

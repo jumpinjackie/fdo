@@ -51,18 +51,18 @@ void OdbcMySqlFdoConnectTest::ConnectByDsn()
 		OdbcBaseSetup pOdbcSetup;
 		try
 		{
-			FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore, "");
+			FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore);
 			// Create/open primary connection:
 			connection = UnitTestUtil::GetProviderConnectionObject();
 			connection->SetConnectionString ( userConnectString);
 			connection->Open();
-			pOdbcSetup.CreateDataStore(connection.p, "");
+			pOdbcSetup.CreateDataStore(connection.p, L"");
 			connection->Close();
 		}
 		catch(...){}
 
         // Now open the database with the given 
-        connection->SetConnectionString(UnitTestUtil::GetConnectionString(Connection_WithDSN, ""));
+        connection->SetConnectionString(UnitTestUtil::GetConnectionString(Connection_WithDSN));
         connection->Open();
 
         // Now check the schema.
@@ -161,7 +161,7 @@ void OdbcMySqlFdoConnectTest::ConnectByDsn()
         // for debugging.
         FdoIoMemoryStreamP schemaStream = FdoIoMemoryStream::Create();
         schemas->WriteXml(schemaStream);
-		pOdbcSetup.DestroyDataStore(connection.p, "");
+		pOdbcSetup.DestroyDataStore(connection.p, L"");
 		connection->Close();
     }
     catch (FdoException *ex)
@@ -180,12 +180,12 @@ void OdbcOracleFdoConnectTest::ConfigFileTest()
 	OdbcBaseSetup pOdbcSetup(DataBaseType_Oracle);
 	try
 	{
-		FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_OraSetup, "");
+		FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_OraSetup);
 		// Create/open primary connection:
 		FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
 		connection->SetConnectionString ( userConnectString);
 		connection->Open();
-		pOdbcSetup.CreateDataStore(connection.p, "");
+		pOdbcSetup.CreateDataStore(connection.p, L"");
 		connection->Close();
 	}
     catch (FdoException *ex)
@@ -205,7 +205,7 @@ void OdbcOracleFdoConnectTest::ConfigFileTest()
         connection->SetConfiguration(fileStream);
 
         // Now open the database with the given 
-        connection->SetConnectionString(UnitTestUtil::GetConnectionString(Connection_WithDSN, ""));
+        connection->SetConnectionString(UnitTestUtil::GetConnectionString(Connection_WithDSN));
         connection->Open();
 
         // Now analyse the schema with the mappings in place.
@@ -569,7 +569,7 @@ void OdbcAccessFdoConnectTest::connect ()
     try
     {
         mConnection = UnitTestUtil::GetProviderConnectionObject();
-		mConnection->SetConnectionString(UnitTestUtil::GetConnectionString(Connection_WithDSN, ""));
+		mConnection->SetConnectionString(UnitTestUtil::GetConnectionString(Connection_WithDSN));
         mConnection->Open();
     }
     catch (FdoException *ex)

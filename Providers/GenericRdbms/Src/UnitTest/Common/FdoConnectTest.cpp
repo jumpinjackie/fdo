@@ -83,7 +83,7 @@ void FdoConnectTest::connect ()
 {
     try
     {
-        mConnection = UnitTestUtil::GetConnection("", true);
+        mConnection = UnitTestUtil::GetConnection(L"", true);
     }
     catch (FdoException *ex)
     {

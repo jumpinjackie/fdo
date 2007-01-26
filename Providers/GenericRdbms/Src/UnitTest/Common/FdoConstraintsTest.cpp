@@ -19,7 +19,7 @@
 #include "UnitTestUtil.h"
 #include "Parse/Parse.h"
 
-#define			DB_NAME_CONSTRAINTS_SUFFIX "_constraints"
+#define			DB_NAME_CONSTRAINTS_SUFFIX L"_constraints"
 
 #define			RECREATE_CONSTRAINTS_DB		true
 

@@ -53,7 +53,7 @@ protected:
         FdoIoStream* outStream1, 
         FdoIoStream* outStream2, 
         FdoXmlSpatialContextFlags* flags,
-        char* dbName,
+        FdoString* dbName,
         FdoBoolean createDB = true,
         FdoBoolean importSC = true,
         FdoBoolean importSchemas = true

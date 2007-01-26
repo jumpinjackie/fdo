@@ -47,7 +47,7 @@ public:
         return NULL;
     }
 
-    virtual void SetSchema ( char* suffix );
+    virtual void SetSchema ( FdoString* suffix );
 
 protected:
     void init ();
@@ -59,7 +59,7 @@ protected:
 
     rdbi_context_def *m_rdbi_context;
     GdbiConnection* m_gdbi_conn;
-    char mDatastore[100];
+    FdoStringP mDatastore;
 };
 
 
@@ -68,8 +68,9 @@ class ConnectionUtil
 public:
 	ConnectionUtil(void);
 
-	virtual wchar_t *GetConnectionString(StringConnTypeRequest pTypeReq = Connection_WithDatastore, const char *suffix = "");
-	virtual const char *GetEnviron( const char *name, const char *suffix = "" );
+	virtual wchar_t *GetConnectionString(StringConnTypeRequest pTypeReq = Connection_WithDatastore, FdoString *suffix = L"");
+	virtual FdoStringP GetEnviron( const char *name, FdoString *suffix = L"" );
+    virtual FdoStringP GetEnv( const char* name );
 	virtual StaticConnection* NewStaticConnection() = 0;
 	virtual void SetProvider( const char *providerName ) = 0;
 	virtual FdoInsertTest* GetInsertTest () = 0;

@@ -23,9 +23,9 @@
 #include <Sm/Ph/Rd/ConstraintReader.h>
 #include <Sm/Ph/SpatialIndex.h>
 
-const char* SchemaMgrTests::DB_NAME_SUFFIX =           "_schema_mgr";
-const char* SchemaMgrTests::DB_NAME_COPY_SUFFIX =      "_schema_mgr_copy";
-const char* SchemaMgrTests::DB_NAME_FOREIGN_SUFFIX =   "_schema_mgr_f";
+FdoString* SchemaMgrTests::DB_NAME_SUFFIX =           L"_schema_mgr";
+FdoString* SchemaMgrTests::DB_NAME_COPY_SUFFIX =      L"_schema_mgr_copy";
+FdoString* SchemaMgrTests::DB_NAME_FOREIGN_SUFFIX =   L"_schema_mgr_f";
 
 SchemaMgrTests::SchemaMgrTests (void)
 {
@@ -77,10 +77,7 @@ void SchemaMgrTests::testGenDefault ()
         printf( "Predeleting schema ...\n" );
 
         FdoStringP datastore = phMgr->GetDcOwnerName(
-            FdoStringP::Format(
-                L"%hs",
-                UnitTestUtil::GetEnviron("datastore", DB_NAME_SUFFIX)
-            )
+            UnitTestUtil::GetEnviron("datastore", DB_NAME_SUFFIX)
         );
 
         FdoSmPhOwnerP owner = phMgr->FindOwner( datastore, L"", false );
@@ -243,7 +240,7 @@ void SchemaMgrTests::testGenDefault ()
         UnitTestUtil::ExportDb( fdoConn, stream1 );
 		UnitTestUtil::Stream2File( stream1, UnitTestUtil::GetOutputFileName( L"smtables_logical.xml" ) );
 
-        UnitTestUtil::CloseConnection( fdoConn, false, (char*) DB_NAME_SUFFIX );
+        UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_SUFFIX );
 /* TODO: doesn't work on SqlServer
         owner->SetElementState( FdoSchemaElementState_Deleted );
         owner->Commit();
@@ -319,7 +316,7 @@ void SchemaMgrTests::testGenDefault ()
 
         UnitTestUtil::Stream2File( stream1, UnitTestUtil::GetOutputFileName( L"gen_default1.xml" ) );
 
-        UnitTestUtil::CloseConnection( fdoConn, false, (char*) DB_NAME_COPY_SUFFIX );
+        UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_COPY_SUFFIX );
 
         // The generated XML file differs depending whether or not it is generated on a
         // SQL Server 2000 or 2005 instance. The difference is with a table system property
@@ -401,10 +398,7 @@ void SchemaMgrTests::testGenGeom ()
         printf( "Predeleting schema ...\n" );
 
         FdoStringP datastore = phMgr->GetDcOwnerName(
-            FdoStringP::Format(
-                L"%hs",
-                UnitTestUtil::GetEnviron("datastore", DB_NAME_SUFFIX)
-            )
+            UnitTestUtil::GetEnviron("datastore", DB_NAME_SUFFIX)
         );
 
         FdoSmPhOwnerP owner = phMgr->FindOwner( datastore, L"", false );
@@ -475,7 +469,7 @@ void SchemaMgrTests::testGenGeom ()
         classDef = classes->FindItem( phMgr->GetDcDbObjectName(L"ONE_GEOM") );
         VldGenGeom( classDef );
 
-        UnitTestUtil::CloseConnection( fdoConn, false, (char*) DB_NAME_COPY_SUFFIX );
+        UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_COPY_SUFFIX );
 
         phMgr = NULL;
         mgr = NULL;
@@ -532,24 +526,15 @@ void SchemaMgrTests::testGenConfig1 ()
         FdoSmPhDatabaseP database = phMgr->GetDatabase();
 
         FdoStringP datastore = phMgr->GetDcOwnerName(
-            FdoStringP::Format(
-                L"%hs",
-                UnitTestUtil::GetEnviron("datastore", DB_NAME_SUFFIX)
-            )
+            UnitTestUtil::GetEnviron("datastore", DB_NAME_SUFFIX)
         );
 
         FdoStringP fDatastore = phMgr->GetDcOwnerName(
-            FdoStringP::Format(
-                L"%hs",
-                UnitTestUtil::GetEnviron("datastore", DB_NAME_FOREIGN_SUFFIX)
-            )
+            UnitTestUtil::GetEnviron("datastore", DB_NAME_FOREIGN_SUFFIX)
         );
 
         FdoStringP datastorePrefix = phMgr->GetDcOwnerName(
-            FdoStringP::Format(
-                L"%hs",
-                UnitTestUtil::GetEnviron("datastore", "")
-            )
+            UnitTestUtil::GetEnviron("datastore")
         );
 
         FdoSmPhOwnerP owner = phMgr->FindOwner( datastore, L"", false );
@@ -613,7 +598,7 @@ void SchemaMgrTests::testGenConfig1 ()
 
         printf( "Getting Feature Schemas using config doc ...\n" );
 
-        FdoStringP dbConnectString = UnitTestUtil::GetConnectionString(Connection_WithDatastore, "_schema_mgr");
+        FdoStringP dbConnectString = UnitTestUtil::GetConnectionString(Connection_WithDatastore, L"_schema_mgr");
 
         fdoConn = UnitTestUtil::GetProviderConnectionObject();
         FdoIoFileStreamP stream1 = FdoIoFileStream::Create( L"config1_in.xml", L"rt" );
@@ -628,7 +613,7 @@ void SchemaMgrTests::testGenConfig1 ()
         FdoIoStreamP stream4 = OverrideBend( stream3, datastorePrefix, L"(user)" );
         UnitTestUtil::Stream2File( stream4, UnitTestUtil::GetOutputFileName( L"schemaGenConfig1.xml" ) );
 
-        UnitTestUtil::CloseConnection( fdoConn, false, "_schema_mgr" );
+        UnitTestUtil::CloseConnection( fdoConn, false, L"_schema_mgr" );
 
 #ifdef RDBI_DEF_ORA
 	    UnitTestUtil::CheckOutput( "schemaGenConfig1_master.txt", UnitTestUtil::GetOutputFileName( L"schemaGenConfig1.xml" ) );
@@ -684,10 +669,7 @@ void SchemaMgrTests::testGenKeys ()
         GdbiCommands* gdbiCommands = gdbiConn->GetCommands();
 
         FdoStringP datastore = phMgr->GetDcOwnerName(
-            FdoStringP::Format(
-                L"%hs",
-                UnitTestUtil::GetEnviron("datastore", DB_NAME_SUFFIX)
-            )
+            UnitTestUtil::GetEnviron("datastore", DB_NAME_SUFFIX)
         );
 
         FdoSmPhOwnerP owner = phMgr->FindOwner( datastore, L"", false );
@@ -820,7 +802,7 @@ void SchemaMgrTests::testGenKeys ()
         idProps = featClass->GetIdentityProperties();
         CPPUNIT_ASSERT( idProps->GetCount() == 0 );        
 
-        UnitTestUtil::CloseConnection( fdoConn, false, "_schema_mgr" );
+        UnitTestUtil::CloseConnection( fdoConn, false, L"_schema_mgr" );
 
         printf( "Updating original schema ...\n" );
 
@@ -861,7 +843,7 @@ void SchemaMgrTests::testGenKeys ()
         fdoConn = UnitTestUtil::CreateConnection(
             false,
             false,
-            "_schema_mgr"
+            L"_schema_mgr"
         );
 
         pDescCmd = (FdoIDescribeSchema*) fdoConn->CreateCommand(FdoCommandType_DescribeSchema);
@@ -943,10 +925,7 @@ void SchemaMgrTests::testFKeys ()
 		FdoSmPhGrdMgrP phMgr = mgr->GetPhysicalSchema()->SmartCast<FdoSmPhGrdMgr>();
 
         FdoStringP datastore = phMgr->GetDcOwnerName(
-            FdoStringP::Format(
-                L"%hs",
-                UnitTestUtil::GetEnviron("datastore", DB_NAME_SUFFIX)
-            )
+            UnitTestUtil::GetEnviron("datastore", DB_NAME_SUFFIX)
         );
 
 		FdoSmPhDatabaseP database = phMgr->GetDatabase();
@@ -1066,10 +1045,7 @@ void SchemaMgrTests::testConfigError ()
     FdoPtr<FdoIConnection> fdoConn;
     StaticConnection* conn = CreateStaticConnection();
  
-    FdoStringP datastoreName = FdoStringP::Format(
-        L"%hs",
-        UnitTestUtil::GetEnviron("datastore", "")
-    );
+    FdoStringP datastoreName = UnitTestUtil::GetEnviron("datastore");
 
     try
     {
@@ -1085,11 +1061,11 @@ void SchemaMgrTests::testConfigError ()
         // Sets the other env.
         UnitTestUtil::SetProvider( conn->GetServiceName() ); 
 
-        fdoConn = UnitTestUtil::GetConnection("", true);
+        fdoConn = UnitTestUtil::GetConnection(L"", true);
         fdoConn->Close();
         fdoConn = NULL;
 
-        FdoStringP dbConnectString = UnitTestUtil::GetConnectionString(Connection_WithDatastore, "");
+        FdoStringP dbConnectString = UnitTestUtil::GetConnectionString(Connection_WithDatastore);
 
         fdoConn = UnitTestUtil::GetProviderConnectionObject();
         FdoIoFileStreamP stream1 = FdoIoFileStream::Create( L"config1_in.xml", L"rt" );

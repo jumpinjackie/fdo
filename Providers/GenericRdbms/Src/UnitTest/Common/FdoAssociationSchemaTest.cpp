@@ -20,7 +20,7 @@
 #include "FdoAssociationSchemaTest.h"
 #include "UnitTestUtil.h"
 
-#define DB_SUFFIX	"_assoc"
+#define DB_SUFFIX	L"_assoc"
 
 FdoAssociationSchemaTest::FdoAssociationSchemaTest(void)
 {
@@ -45,13 +45,13 @@ void FdoAssociationSchemaTest::createFreshDb()
 {
 	try
     {
-		FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore, "");
+		FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore, L"");
         FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
         connection->SetConnectionString( userConnectString );
         connection->Open();
 		FdoPtr<FdoIDestroyDataStore> pDelCmd = (FdoIDestroyDataStore*)connection->CreateCommand( FdoCommandType_DestroyDataStore );
 		FdoPtr<FdoIDataStorePropertyDictionary> dictionary = pDelCmd->GetDataStoreProperties();
-		dictionary->SetProperty( L"DataStore", FdoStringP(UnitTestUtil::GetEnviron("datastore", DB_SUFFIX)) );
+		dictionary->SetProperty( L"DataStore", UnitTestUtil::GetEnviron("datastore", DB_SUFFIX) );
 		pDelCmd->Execute();
 		connection->Close();
     }

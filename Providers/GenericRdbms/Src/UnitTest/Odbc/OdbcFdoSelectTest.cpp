@@ -84,15 +84,15 @@ void OdbcFdoSelectTest::connect ()
             StringConnTypeRequest connectionType = Connection_NoDatastore;
             if (DataBaseType_Oracle == mSetup.GetTypeDB() )
                 connectionType = Connection_OraSetup;
-		    mConnection->SetConnectionString ( UnitTestUtil::GetConnectionString(connectionType, "") );
+		    mConnection->SetConnectionString ( UnitTestUtil::GetConnectionString(connectionType) );
 		    mConnection->Open();
-		    mSetup.CreateDataStore(mConnection, "");
+		    mSetup.CreateDataStore(mConnection, L"");
 		    mSetup.CreateAcadSchema(mConnection);
 		    mSetup.CreateNonAcadSchema(mConnection);
 
 		    mConnection->Close();
         }
-		mConnection->SetConnectionString ( UnitTestUtil::GetConnectionString(Connection_WithDSN, "") );
+		mConnection->SetConnectionString ( UnitTestUtil::GetConnectionString(Connection_WithDSN) );
 		mConnection->Open();
     }
     catch (FdoException *ex)

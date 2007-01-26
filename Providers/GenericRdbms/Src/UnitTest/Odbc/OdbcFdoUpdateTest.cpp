@@ -79,15 +79,15 @@ void OdbcBaseFdoUpdateTest::connect ()
             StringConnTypeRequest connectionType = Connection_NoDatastore;
             if (DataBaseType_Oracle == mSetup.GetTypeDB() )
                 connectionType = Connection_OraSetup;
-		    mConnection->SetConnectionString ( UnitTestUtil::GetConnectionString(connectionType, "") );
+		    mConnection->SetConnectionString ( UnitTestUtil::GetConnectionString(connectionType) );
 		    mConnection->Open();
-		    mSetup.CreateDataStore(mConnection, "");
+		    mSetup.CreateDataStore(mConnection, L"");
 		    mSetup.CreateAcadSchema(mConnection);
 		    mSetup.CreateNonAcadSchema(mConnection);
 
 		    mConnection->Close();
         }
-		mConnection->SetConnectionString ( UnitTestUtil::GetConnectionString(Connection_WithDSN, "") );
+		mConnection->SetConnectionString ( UnitTestUtil::GetConnectionString(Connection_WithDSN) );
 		mConnection->Open();
     }
     catch (FdoException *ex)
@@ -254,7 +254,7 @@ void OdbcAccessFdoUpdateTest::updateCities()
     try
     {
         FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
-		connection->SetConnectionString(UnitTestUtil::GetConnectionString(Connection_WithDSN, ""));
+		connection->SetConnectionString(UnitTestUtil::GetConnectionString(Connection_WithDSN));
         connection->Open();
         FdoPtr<FdoIUpdate> updateCommand =
             (FdoIUpdate *) connection->CreateCommand(FdoCommandType_Update);
@@ -291,7 +291,7 @@ void OdbcAccessFdoUpdateTest::updateTable1()
     try
     {
         FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
-		connection->SetConnectionString(UnitTestUtil::GetConnectionString(Connection_WithDSN, ""));
+		connection->SetConnectionString(UnitTestUtil::GetConnectionString(Connection_WithDSN));
         connection->Open();
         try
         {

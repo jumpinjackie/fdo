@@ -53,7 +53,7 @@ public:
 	virtual StaticConnection* NewStaticConnection ();
 	virtual FdoInsertTest* GetInsertTest ();
 	virtual FdoStringP GetOutputFileName (FdoString* pBaseFileName);
-	virtual wchar_t* GetConnectionString(StringConnTypeRequest pTypeReq = Connection_WithDatastore, const char *suffix = "");
+	virtual wchar_t* GetConnectionString(StringConnTypeRequest pTypeReq = Connection_WithDatastore, FdoString *suffix = L"");
 	virtual const char* GetSuffixTest(){return "_odbc";};
 
 protected:

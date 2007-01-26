@@ -20,7 +20,7 @@
 #include "FdoAssociationUpdateTest.h"
 #include "UnitTestUtil.h"
 
-#define DB_SUFFIX	"_assoc"
+#define DB_SUFFIX	L"_assoc"
 
 FdoAssociationUpdateTest::FdoAssociationUpdateTest(void)
 {

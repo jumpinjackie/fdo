@@ -40,7 +40,7 @@ class FdoInsertTest : public CppUnit::TestCase
 
 public:
     FdoInsertTest(void);
-    FdoInsertTest(char *suffix);
+    FdoInsertTest(wchar_t *suffix);
     virtual ~FdoInsertTest(void);
     void setUp ();
 
@@ -87,7 +87,7 @@ protected:
     virtual FdoFloat GetSmallestSingleValue();
     virtual FdoDouble GetSmallestDoubleValue();
 
-    char  mSuffix[12];
+    wchar_t  mSuffix[12];
     bool m_DisableFailures;
 };
 

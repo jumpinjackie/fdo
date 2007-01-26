@@ -21,8 +21,8 @@
 #include "UnitTestUtil.h"
 #include "XmlFormatter.h"
 
-#define   DB_NAME_SRC_SUFFIX        "_impexp_src"
-#define   DB_NAME_DEST_SUFFIX       "_impexp_dest"
+#define   DB_NAME_SRC_SUFFIX        L"_impexp_src"
+#define   DB_NAME_DEST_SUFFIX       L"_impexp_dest"
 
 FdoImportExportTest::FdoImportExportTest(void)
 {
@@ -403,7 +403,7 @@ void FdoImportExportTest::DoTest(
     FdoIoStream* outStream1,            // export to this XML document (excludes default spatial context) 
     FdoIoStream* outStream2,            // export to this XML document (excludes default spatial context)
     FdoXmlSpatialContextFlags* flags,   // spatial context serialization flags
-    char* dbName,                       // Datastore to import into and export from
+    FdoString* dbName,                  // Datastore to import into and export from
     FdoBoolean createDB,                // true - re-create database before running test
     FdoBoolean importSC,                // true - import spatial contexts
     FdoBoolean importSchemas            // true - import feature schemas.

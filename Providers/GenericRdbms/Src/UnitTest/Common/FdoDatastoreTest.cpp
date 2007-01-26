@@ -116,7 +116,7 @@ int FdoDatastoreTest::ListDatastores( bool include )
 
     try
     {
- 		wchar_t *connectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore, "");
+ 		wchar_t *connectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore);
 		connection = UnitTestUtil::GetProviderConnectionObject();
 		connection->SetConnectionString ( connectString);
 
@@ -130,10 +130,7 @@ int FdoDatastoreTest::ListDatastores( bool include )
 
 		FdoPtr<FdoIDataStoreReader>	pReader = pListDataStoresCmd->Execute();
 
-		FdoStringP datastore = FdoStringP::Format(
-								L"%hs",
-								UnitTestUtil::GetEnviron("datastore", "_DBCMD")
-								);
+		FdoStringP datastore = UnitTestUtil::GetEnviron("datastore", L"_DBCMD");
 
 		DBG(printf("\n.DATABASES\n"));
 		while ( pReader->ReadNext() )
@@ -180,7 +177,7 @@ void FdoDatastoreTest::Cmd_CreateDatastore()
 
     try
     {
-		wchar_t *connectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore, "");
+		wchar_t *connectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore);
 		connection = UnitTestUtil::GetProviderConnectionObject();
 		connection->SetConnectionString ( connectString);
 
@@ -188,10 +185,7 @@ void FdoDatastoreTest::Cmd_CreateDatastore()
 
         CreateDatastore( 
             connection,
-   			FdoStringP::Format(
-    			L"%hs",
-	    		UnitTestUtil::GetEnviron("datastore", "_DBCMD")
-            )
+    		UnitTestUtil::GetEnviron("datastore", L"_DBCMD")
 		);
     
         connection->Close ();
@@ -259,7 +253,7 @@ void FdoDatastoreTest::DestroyDatastore(bool ignoreEx)
 
     try
     {
-		wchar_t *connectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore, "");
+		wchar_t *connectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore);
 		connection = UnitTestUtil::GetProviderConnectionObject();
 		connection->SetConnectionString ( connectString);
 
@@ -281,10 +275,7 @@ void FdoDatastoreTest::DestroyDatastore(bool ignoreEx)
 
 			if ( wcscmp( name, L"DataStore" ) == 0 )
 			{
-				FdoStringP datastore = FdoStringP::Format(
-										L"%hs",
-										UnitTestUtil::GetEnviron("datastore", "_DBCMD")
-										);
+				FdoStringP datastore = UnitTestUtil::GetEnviron("datastore", L"_DBCMD");
  				dictionary->SetProperty( name, datastore );
 			}
 			else if ( wcscmp( name, L"Description" ) == 0 )
@@ -327,7 +318,7 @@ void FdoDatastoreTest::TestReservedName()
 
     try
     {
-		wchar_t *connectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore, "");
+		wchar_t *connectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore);
 		connection = UnitTestUtil::GetProviderConnectionObject();
 		connection->SetConnectionString ( connectString);
 
@@ -357,7 +348,7 @@ void FdoDatastoreTest::DropAllMyDatastores()
 
     try
     {
- 		wchar_t *connectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore, "");
+ 		wchar_t *connectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore);
 		connection = UnitTestUtil::GetProviderConnectionObject();
 		connection->SetConnectionString ( connectString);
 
@@ -369,10 +360,7 @@ void FdoDatastoreTest::DropAllMyDatastores()
 
 		FdoPtr<FdoIDataStoreReader>	pReader = pListDataStoresCmd->Execute();
 
-		FdoStringP datastore = FdoStringP::Format(
-								L"%hs",
-								UnitTestUtil::GetEnviron("datastore", "")
-								);
+		FdoStringP datastore = UnitTestUtil::GetEnviron("datastore");
 
 		DBG(printf("\n.DATABASES\n"));
 		while ( pReader->ReadNext() )

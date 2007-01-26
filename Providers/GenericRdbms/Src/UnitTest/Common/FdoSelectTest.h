@@ -42,7 +42,7 @@ class FdoSelectTest : public CppUnit::TestCase
 
 public:
     FdoSelectTest(void);
-    FdoSelectTest(char* suffix);
+    FdoSelectTest(wchar_t* suffix);
     virtual ~FdoSelectTest(void);
     void setUp ();
     void tearDown ();
@@ -88,7 +88,7 @@ private:
     void read_non_feature_data( FdoIFeatureReader *myReader, bool subset = false );
     void read_feature_data2( FdoIFeatureReader *myReader );
 
-    char mSuffix[12];
+    wchar_t mSuffix[12];
 };
 
 #endif // CPP_UNIT_FDOSELECTTEST_H

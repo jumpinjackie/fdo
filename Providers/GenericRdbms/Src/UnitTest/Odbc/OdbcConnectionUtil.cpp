@@ -412,13 +412,13 @@ void OdbcConnectionUtil::SetProvider( const char *providerName )
     }
 }
 
-wchar_t *OdbcConnectionUtil::GetConnectionString(StringConnTypeRequest pTypeReq, const char *suffix)
+wchar_t *OdbcConnectionUtil::GetConnectionString(StringConnTypeRequest pTypeReq, FdoString *suffix)
 {
-    char *service = UnitTestUtil::GetEnviron("service");
-    char *username = UnitTestUtil::GetEnviron("username");
-    char *password = UnitTestUtil::GetEnviron("password");
-    char *datastore = UnitTestUtil::GetEnviron("datastore", suffix);
-    char *dsnname = UnitTestUtil::GetEnviron("dsnname");
+    FdoStringP service = UnitTestUtil::GetEnviron("service");
+    FdoStringP username = UnitTestUtil::GetEnviron("username");
+    FdoStringP password = UnitTestUtil::GetEnviron("password");
+    FdoStringP datastore = UnitTestUtil::GetEnviron("datastore", suffix);
+    FdoStringP dsnname = UnitTestUtil::GetEnviron("dsnname");
 	
 	FdoStringP OracleDriverName = theOracleDriverName;
 
@@ -429,83 +429,236 @@ wchar_t *OdbcConnectionUtil::GetConnectionString(StringConnTypeRequest pTypeReq,
 	{
 		case Connection_WithDatastore:
 			if (m_ProviderActive == L"OdbcMySql")
-				swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"ConnectionString=\"DRIVER={MySQL ODBC 3.51 Driver};SERVER=%hs;DATABASE=%hs;USER=%hs;PASSWORD=%hs;OPTION=3;\"", service, datastore, username, password);
+				swprintf( 
+                    connectString, 
+                    sizeof(connectString)/sizeof(wchar_t), 
+                    L"ConnectionString=\"DRIVER={MySQL ODBC 3.51 Driver};SERVER=%ls;DATABASE=%ls;USER=%ls;PASSWORD=%ls;OPTION=3;\"", 
+                    (FdoString*) service, 
+                    (FdoString*) datastore, 
+                    (FdoString*) username, 
+                    (FdoString*) password
+                );
 			else if (m_ProviderActive == L"OdbcSqlServer")
-				swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"ConnectionString=\"DRIVER={SQL Server};SERVER=%hs;DATABASE=%hs;UID=%hs;PWD=%hs;\"", service, datastore, username, password);
+				swprintf( 
+                    connectString, 
+                    sizeof(connectString)/sizeof(wchar_t), 
+                    L"ConnectionString=\"DRIVER={SQL Server};SERVER=%ls;DATABASE=%ls;UID=%ls;PWD=%ls;\"", 
+                    (FdoString*) service, 
+                    (FdoString*) datastore, 
+                    (FdoString*) username, 
+                    (FdoString*) password
+                );
 			else if (m_ProviderActive == L"OdbcOracle")
 			{
 #ifdef _WIN32
 				FdoStringP pDatastore = datastore;
 				pDatastore = pDatastore.Upper();
-				swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"ConnectionString=\"DRIVER={%hs};UID=%hs;PWD=%hs;DBQ=%hs;XSM=%hs;\"", (const char*)OracleDriverName, (const char*)pDatastore, password, service, (const char*)pDatastore);
+				swprintf( 
+                    connectString, 
+                    sizeof(connectString)/sizeof(wchar_t), 
+                    L"ConnectionString=\"DRIVER={%ls};UID=%ls;PWD=%ls;DBQ=%ls;XSM=%ls;\"", 
+                    (FdoString*)OracleDriverName, 
+                    (FdoString*)pDatastore, 
+                    (FdoString*)password, 
+                    (FdoString*)service, 
+                    (FdoString*)pDatastore);
 #else
 				// We do not support extracting a schema from a DSN on Linux, so connect straight to the needed one.
-				swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"DataSourceName=%hs;UserId=%hs;Password=%hs;", dsnname, datastore, password);
+				swprintf( 
+                    connectString, 
+                    sizeof(connectString)/sizeof(wchar_t), 
+                    L"DataSourceName=%ls;UserId=%ls;Password=%ls;", 
+                    (FdoString*)dsnname, 
+                    (FdoString*)datastore, 
+                    (FdoString*)password
+                );
 #endif
 			}
 			else if (m_ProviderActive == L"OdbcAccess")
-				swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"DataSourceName=%hs;UserId=;Password=;", dsnname);
+				swprintf( 
+                    connectString, 
+                    sizeof(connectString)/sizeof(wchar_t), 
+                    L"DataSourceName=%ls;UserId=;Password=;", 
+                    (FdoString*)dsnname
+                );
 			else if (m_ProviderActive == L"OdbcExcel")
-				swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"DataSourceName=%hs;UserId=;Password=;", dsnname);
+				swprintf( 
+                    connectString, 
+                    sizeof(connectString)/sizeof(wchar_t), 
+                    L"DataSourceName=%ls;UserId=;Password=;", 
+                    (FdoString*) dsnname
+                );
 			else if (m_ProviderActive == L"OdbcText")
-				swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"DataSourceName=%hs;UserId=;Password=;", dsnname);
+				swprintf( 
+                    connectString, 
+                    sizeof(connectString)/sizeof(wchar_t), 
+                    L"DataSourceName=%ls;UserId=;Password=;", 
+                    (FdoString*) dsnname
+                );
 		break;
 
 		case Connection_NoDatastore:
 			if (m_ProviderActive == L"OdbcMySql")
-				swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"ConnectionString=\"DRIVER={MySQL ODBC 3.51 Driver};SERVER=%hs;USER=%hs;PASSWORD=%hs;OPTION=3;\"", service, username, password);
+				swprintf( 
+                    connectString, 
+                    sizeof(connectString)/sizeof(wchar_t), 
+                    L"ConnectionString=\"DRIVER={MySQL ODBC 3.51 Driver};SERVER=%ls;USER=%ls;PASSWORD=%ls;OPTION=3;\"", 
+                    (FdoString*)service, 
+                    (FdoString*)username, 
+                    (FdoString*)password
+                );
 			else if (m_ProviderActive == L"OdbcSqlServer")
-				swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"ConnectionString=\"DRIVER={SQL Server};SERVER=%hs;UID=%hs;PWD=%hs;\"", service, username, password);
+				swprintf( 
+                    connectString, 
+                    sizeof(connectString)/sizeof(wchar_t), 
+                    L"ConnectionString=\"DRIVER={SQL Server};SERVER=%ls;UID=%ls;PWD=%ls;\"", 
+                    (FdoString*)service, 
+                    (FdoString*)username, 
+                    (FdoString*)password
+                );
 			else if (m_ProviderActive == L"OdbcOracle")
 			{
 #ifdef _WIN32
 				FdoStringP pDatastore = datastore;
 				pDatastore = pDatastore.Upper();
-				swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"ConnectionString=\"DRIVER={%hs};UID=%hs;PWD=%hs;DBQ=%hs;XSM=Default;\"", (const char*)OracleDriverName, (const char*)pDatastore /*username*/, password, service);
+				swprintf( 
+                    connectString, 
+                    sizeof(connectString)/sizeof(wchar_t), 
+                    L"ConnectionString=\"DRIVER={%ls};UID=%ls;PWD=%ls;DBQ=%ls;XSM=Default;\"", 
+                    (FdoString*)OracleDriverName, 
+                    (FdoString*)pDatastore /*username*/, 
+                    (FdoString*)password, 
+                    (FdoString*)service
+                );
 #else
 				// We do not support extracting a schema from a DSN on Linux, so connect straight to the needed one.
-				swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"DataSourceName=%hs;UserId=%hs;Password=%hs;", dsnname, datastore, password);
+				swprintf( 
+                    connectString, 
+                    sizeof(connectString)/sizeof(wchar_t), 
+                    L"DataSourceName=%ls;UserId=%ls;Password=%ls;", 
+                    (FdoString*)dsnname, 
+                    (FdoString*)datastore, 
+                    (FdoString*)password
+                );
 #endif
 			}
 			else if (m_ProviderActive == L"OdbcAccess")
-				swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"DataSourceName=%hs;UserId=;Password=;", dsnname);
+				swprintf( 
+                    connectString, 
+                    sizeof(connectString)/sizeof(wchar_t), 
+                    L"DataSourceName=%ls;UserId=;Password=;", 
+                    (FdoString*)dsnname
+                );
 			else if (m_ProviderActive == L"OdbcExcel")
-				swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"DataSourceName=%hs;UserId=;Password=;", dsnname);
+				swprintf( 
+                    connectString, 
+                    sizeof(connectString)/sizeof(wchar_t), 
+                    L"DataSourceName=%ls;UserId=;Password=;", 
+                    (FdoString*)dsnname
+                );
 			else if (m_ProviderActive == L"OdbcText")
-				swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"DataSourceName=%hs;UserId=;Password=;", dsnname);
+				swprintf( 
+                    connectString, 
+                    sizeof(connectString)/sizeof(wchar_t), 
+                    L"DataSourceName=%ls;UserId=;Password=;", 
+                    (FdoString*)dsnname
+                );
 		break;
 		
 		case Connection_WithDSN:
 			if (m_ProviderActive == L"OdbcMySql")
-				swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"DataSourceName=%hs;UserId=%hs;Password=%hs;", dsnname, username, password);
+				swprintf( 
+                    connectString, 
+                    sizeof(connectString)/sizeof(wchar_t), 
+                    L"DataSourceName=%ls;UserId=%ls;Password=%ls;", 
+                    (FdoString*)dsnname, 
+                    (FdoString*)username, 
+                    (FdoString*)password
+                );
 			else if (m_ProviderActive == L"OdbcSqlServer")
-				swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"DataSourceName=%hs;UserId=%hs;Password=%hs;", dsnname, username, password);
+				swprintf( 
+                    connectString, 
+                    sizeof(connectString)/sizeof(wchar_t), 
+                    L"DataSourceName=%ls;UserId=%ls;Password=%ls;", 
+                    (FdoString*)dsnname, 
+                    (FdoString*)username, 
+                    (FdoString*)password
+                );
 			else if (m_ProviderActive == L"OdbcOracle")
 			{
 #ifdef _WIN32
 			FdoStringP pDatastore = datastore;
 			pDatastore = pDatastore.Upper();
-            swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"DataSourceName=%hs;UserId=%hs;Password=%hs;", dsnname, (const char*)pDatastore, password);
+            swprintf( 
+                connectString, 
+                sizeof(connectString)/sizeof(wchar_t), 
+                L"DataSourceName=%ls;UserId=%ls;Password=%ls;", 
+                (FdoString*)dsnname, 
+                (FdoString*)pDatastore, 
+                (FdoString*)password
+            );
 #else
 			// We do not support extracting a schema from a DSN on Linux, so connect straight to the needed one.
-			swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"DataSourceName=%hs;UserId=%hs;Password=%hs;", dsnname, datastore, password);
+			swprintf( 
+                connectString, 
+                sizeof(connectString)/sizeof(wchar_t), 
+                L"DataSourceName=%ls;UserId=%ls;Password=%ls;", 
+                (FdoString*)dsnname, 
+                (FdoString*)datastore, 
+                (FdoString*)password
+            );
 #endif
 			}
 			else if (m_ProviderActive == L"OdbcAccess")
-				swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"DataSourceName=%hs;UserId=;Password=;", dsnname);
+				swprintf( 
+                    connectString, 
+                    sizeof(connectString)/sizeof(wchar_t), 
+                    L"DataSourceName=%ls;UserId=;Password=;", 
+                    (FdoString*)dsnname
+                );
 			else if (m_ProviderActive == L"OdbcDbase")
-				swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"DataSourceName=%hs;UserId=;Password=;", dsnname);
+				swprintf( 
+                    connectString, 
+                    sizeof(connectString)/sizeof(wchar_t), 
+                    L"DataSourceName=%ls;UserId=;Password=;", 
+                    (FdoString*)dsnname
+                );
 			else if (m_ProviderActive == L"OdbcExcel")
-				swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"DataSourceName=%hs;UserId=;Password=;", dsnname);
+				swprintf( 
+                    connectString, 
+                    sizeof(connectString)/sizeof(wchar_t), 
+                    L"DataSourceName=%ls;UserId=;Password=;", 
+                    (FdoString*)dsnname
+                );
 			else if (m_ProviderActive == L"OdbcText")
-				swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"DataSourceName=%hs;UserId=;Password=;", dsnname);
+				swprintf( 
+                    connectString, 
+                    sizeof(connectString)/sizeof(wchar_t), 
+                    L"DataSourceName=%ls;UserId=;Password=;", 
+                    (FdoString*)dsnname
+                );
 		break;
 		case Connection_OraSetup:
 #ifdef _WIN32
-			swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"ConnectionString=\"DRIVER={%hs};UID=%hs;PWD=%hs;DBQ=%hs;XSM=Default;\"", (const char*)OracleDriverName, username, password, service);
+			swprintf( 
+                connectString, 
+                sizeof(connectString)/sizeof(wchar_t), 
+                L"ConnectionString=\"DRIVER={%ls};UID=%ls;PWD=%ls;DBQ=%ls;XSM=Default;\"", 
+                (FdoString*)OracleDriverName, 
+                (FdoString*)username, 
+                (FdoString*)password, 
+                (FdoString*)service
+            );
 #else
 			// We do not support extracting a schema from a DSN on Linux, so connect straight to the needed one.
-			swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"DataSourceName=%hs;UserId=%hs;Password=%hs;", dsnname, username, password);
+			swprintf( 
+                connectString, 
+                sizeof(connectString)/sizeof(wchar_t), 
+                L"DataSourceName=%ls;UserId=%ls;Password=%ls;", 
+                (FdoString*)dsnname, 
+                (FdoString*)username, 
+                (FdoString*)password
+            );
 #endif
 		break;
 	}
@@ -654,8 +807,8 @@ void OdbcConnectionUtil::SetupExcelDSN()
 void OdbcConnectionUtil::SetupSqlServerDSN()
 {
     char teststr[1024];
-    sprintf (teststr, "DSN=%s%cDescription=Test SqlServer DSN for FDO ODBC provider%cSERVER=%s%cDATABASE=%s%c%c", (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"DSNSqlServer" ), 
-		'\0', '\0', (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"serviceSqlServer" ), '\0', UnitTestUtil::GetEnviron("datastore", ""), '\0', '\0', '\0');
+    sprintf (teststr, "DSN=%s%cDescription=Test SqlServer DSN for FDO ODBC provider%cSERVER=%s%cDATABASE=%ls%c%c", (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"DSNSqlServer" ), 
+		'\0', '\0', (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"serviceSqlServer" ), '\0', (FdoString*)(UnitTestUtil::GetEnviron("datastore", L"")), '\0', '\0', '\0');
     m_SetupSqlServerDSNdone = true;
     if (!SQLConfigDataSource (NULL, ODBC_ADD_DSN, "SQL Server", teststr))
     {
@@ -670,8 +823,8 @@ void OdbcConnectionUtil::SetupSqlServerDSN()
 void OdbcConnectionUtil::SetupMySqlDSN()
 {
     char teststr[1024];
-    sprintf (teststr, "DSN=%s%cDescription=Test MySql DSN for FDO ODBC provider%cSERVER=%s%cDATABASE=%s%cOPTION=3%c%c", (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"DSNMySql" ), 
-		'\0','\0', (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"serviceMySql" ), '\0', UnitTestUtil::GetEnviron("datastore", ""), '\0', '\0', '\0');
+    sprintf (teststr, "DSN=%s%cDescription=Test MySql DSN for FDO ODBC provider%cSERVER=%s%cDATABASE=%ls%cOPTION=3%c%c", (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"DSNMySql" ), 
+		'\0','\0', (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"serviceMySql" ), '\0', (FdoString*)(UnitTestUtil::GetEnviron("datastore", L"")), '\0', '\0', '\0');
     m_SetupMySqlDSNdone = true;
     if (!SQLConfigDataSource (NULL, ODBC_ADD_DSN, "MySQL ODBC 3.51 Driver", teststr))
     {
@@ -747,7 +900,7 @@ void OdbcConnectionUtil::SetupOracleDSN()
     if (SQLRETURN_OK(rc) && '\0' != theOracleDriverName[0])
     {
         char* datastoreUpper = driverDesc;
-        strcpy(datastoreUpper, UnitTestUtil::GetEnviron("datastore", ""));
+        sprintf(datastoreUpper, "%ls", (FdoString*) UnitTestUtil::GetEnviron("datastore", L""));
         (void) _strupr_s(datastoreUpper, 1024);
 
         sprintf ( teststr, "DSN=%s%cDescription=Oracle DSN for FDO ODBC provider%cServerName=%s%cUserID=%s%c%c", (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"DSNOracle"), '\0',

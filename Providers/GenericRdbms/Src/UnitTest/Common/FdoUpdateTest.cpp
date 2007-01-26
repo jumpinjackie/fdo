@@ -34,11 +34,11 @@ FdoUpdateTest::FdoUpdateTest(void)
     mSuffix[0] = '\0';
 }
 
-FdoUpdateTest::FdoUpdateTest(char *suffix)
+FdoUpdateTest::FdoUpdateTest(wchar_t *suffix)
 {
     m_DisableFailures = false;
 	m_hasGeom = m_hasAssoc = true;
-    strncpy(mSuffix, suffix, 11 );
+    wcsncpy(mSuffix, suffix, 11 );
     mSuffix[11] = '\0';
 }
 
@@ -564,7 +564,7 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
 
     try
     {
-        connection = UnitTestUtil::GetConnection((char*)(this->MultiIdSuffix()), true);
+        connection = UnitTestUtil::GetConnection(this->MultiIdSuffix(), true);
         UnitTestUtil::CreateLandSchema(connection);
         UnitTestUtil::CreateNonUniqueSchema(connection);
 
@@ -1337,7 +1337,7 @@ void FdoUpdateTest::ConditionalUpdate()
 
 	try
 	{
-        connection = UnitTestUtil::GetConnection("LT", true, Connection_WithDatastore, 1, true);
+        connection = UnitTestUtil::GetConnection(L"LT", true, Connection_WithDatastore, 1, true);
 
         // Generate the necessary long transaction names.
 
@@ -1770,10 +1770,7 @@ void FdoUpdateTest::UpdateNoMeta()
     FdoStringP table_noid_nogeom = TableNoIdNoGeomName();
 
     try {
-        FdoStringP datastore = FdoStringP::Format(
-            L"%hs",
-            UnitTestUtil::GetEnviron("datastore", (char*)(NoMetaSuffix()))
-        );
+        FdoStringP datastore = UnitTestUtil::GetEnviron("datastore", NoMetaSuffix());
 
         printf( "\nOpening Connection ...\n" );
 
@@ -1811,7 +1808,7 @@ void FdoUpdateTest::UpdateNoMeta()
         connection = UnitTestUtil::CreateConnection(
             false,
             false,
-            (char*)(NoMetaSuffix())
+            NoMetaSuffix()
         );
 
         CreateExternalData( connection, phMgr, table_id_geom, m_hasGeom, m_hasAssoc );
@@ -2325,17 +2322,17 @@ void FdoUpdateTest::VldNoMetaRow(
     }
 }
 
-const char* FdoUpdateTest::NoMetaSuffix()
+FdoString* FdoUpdateTest::NoMetaSuffix()
 {
-    static const char* noMetaSuffix = "_no_meta";
+    static FdoString* noMetaSuffix = L"_no_meta";
 
     return noMetaSuffix;
 }
 
 
-const char* FdoUpdateTest::MultiIdSuffix()
+FdoString* FdoUpdateTest::MultiIdSuffix()
 {
-    static const char* multiIdSuffix = "";
+    static FdoString* multiIdSuffix = L"";
 
     return multiIdSuffix;
 }

@@ -91,9 +91,9 @@ protected:
     void CreateTableGroup( FdoSmPhOwnerP owner, FdoStringP prefix, FdoInt32 count, int lt_mode );
     void CreateFkey( FdoSmPhOwnerP owner, FdoStringP fTableName, FdoStringP pTableName, FdoStringP pOwnerName = L"" );
 
-    static const char* DB_NAME_SUFFIX;
-    static const char* DB_NAME_COPY_SUFFIX;
-    static const char* DB_NAME_FOREIGN_SUFFIX;
+    static FdoString* DB_NAME_SUFFIX;
+    static FdoString* DB_NAME_COPY_SUFFIX;
+    static FdoString* DB_NAME_FOREIGN_SUFFIX;
 
 private:
     FdoSmPhTableP CreateIxTable( FdoSmPhOwnerP owner, FdoStringP tableName, int lt_mode );

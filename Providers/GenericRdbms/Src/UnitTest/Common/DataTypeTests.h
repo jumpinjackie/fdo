@@ -21,7 +21,7 @@
 
 #include <Inc/Rdbi/proto.h>
 
-#define DB_SUFFIX "_rdbitest"
+#define DB_SUFFIX L"_rdbitest"
 
 class DataTypeTests :
     public CppUnit::TestCase

@@ -20,7 +20,7 @@
 #include "UnitTestUtil.h"
 #include "GeometryTests.h"
 
-#define DB_SUFFIX "_rdbitest"
+#define DB_SUFFIX L"_rdbitest"
 
 GeometryTests::GeometryTests (void)
 {
@@ -44,7 +44,7 @@ void GeometryTests::setUp ()
         {
 	        try
             {
-		        FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore, "");
+		        FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore);
                 FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
                 connection->SetConnectionString( userConnectString );
                 connection->Open();

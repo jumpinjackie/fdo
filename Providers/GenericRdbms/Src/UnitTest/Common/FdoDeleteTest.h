@@ -31,7 +31,7 @@ class FdoDeleteTest : public CppUnit::TestCase
 
 public:
     FdoDeleteTest(void);
-    FdoDeleteTest(char*);
+    FdoDeleteTest(wchar_t*);
     virtual ~FdoDeleteTest(void);
     virtual void setUp ();
 
@@ -42,7 +42,7 @@ protected:
     virtual void  set_provider() {};   
 
 private:
-    char  mSuffix[12];
+    wchar_t  mSuffix[12];
 };
 
 #endif // CPP_UNIT_FDODELETETEST_H

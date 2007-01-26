@@ -35,7 +35,7 @@ public:
     void testForeignDataStore();
 
 protected:
-    virtual const char* NoMetaSuffix();
+    virtual FdoString* NoMetaSuffix();
 	static const wchar_t* mForeignPolygonTest[];
 };
 

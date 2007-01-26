@@ -40,7 +40,7 @@ class FdoUpdateTest : public CppUnit::TestCase
 
 public:
     FdoUpdateTest(void);
-    FdoUpdateTest(char*);
+    FdoUpdateTest(wchar_t*);
     virtual ~FdoUpdateTest(void);
     void setUp ();
 
@@ -75,8 +75,8 @@ protected:
     );
     void CheckGeometry(FdoPtr<FdoIFeatureReader> rdr, FdoString* propName, double expectedX, double expectedY, double expectedZ);
 
-    virtual const char* NoMetaSuffix();
-    virtual const char* MultiIdSuffix();
+    virtual FdoString* NoMetaSuffix();
+    virtual FdoString* MultiIdSuffix();
     virtual FdoStringP TableIdGeomName();
     virtual FdoStringP TableNoIdNoGeomName();
     virtual FdoStringP Key2ColName();
@@ -92,7 +92,7 @@ protected:
 
 protected:
     void ConditionalUpdateSetup (FdoIConnection *connection, FdoStringP insLtName);
-    char  mSuffix[12];
+    wchar_t  mSuffix[12];
 };
 
 #endif // CPP_UNIT_FDOUPDATETEST_H

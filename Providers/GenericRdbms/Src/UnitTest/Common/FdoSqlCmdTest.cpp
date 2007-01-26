@@ -63,7 +63,7 @@ void FdoSqlCmdTest::connect ()
 {
     try
     {
-        mConnection = (FdoIConnection *) UnitTestUtil::GetConnection("", true);
+        mConnection = (FdoIConnection *) UnitTestUtil::GetConnection(L"", true);
 
     }
     catch (FdoException *ex)
@@ -251,7 +251,7 @@ void FdoSqlCmdTest::CreateActivateDestroySC()
 
         try
         {
-            FdoPtr<FdoIConnection> mConn = UnitTestUtil::GetConnection("", false);
+            FdoPtr<FdoIConnection> mConn = UnitTestUtil::GetConnection(L"", false);
 
             ascCmd = (FdoRdbmsActivateSpatialContext *)mConn->CreateCommand( FdoCommandType_ActivateSpatialContext );
 
@@ -269,7 +269,7 @@ void FdoSqlCmdTest::CreateActivateDestroySC()
 
         try
         {
-            FdoPtr<FdoIConnection> mConn = UnitTestUtil::GetConnection("", false);
+            FdoPtr<FdoIConnection> mConn = UnitTestUtil::GetConnection(L"", false);
 
             ascCmd = (FdoRdbmsActivateSpatialContext *)mConn->CreateCommand( FdoCommandType_ActivateSpatialContext );
 
@@ -287,7 +287,7 @@ void FdoSqlCmdTest::CreateActivateDestroySC()
 
         try
         {
-            FdoPtr<FdoIConnection> mConn = UnitTestUtil::GetConnection("", false);
+            FdoPtr<FdoIConnection> mConn = UnitTestUtil::GetConnection(L"", false);
 
             dscCmd = (FdoRdbmsDestroySpatialContext *)mConn->CreateCommand( FdoCommandType_DestroySpatialContext );
 

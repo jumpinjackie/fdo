@@ -65,7 +65,7 @@ void FdoCapabilityTest::Connection ()
 
     try {
 
-      connection = UnitTestUtil::GetConnection("", true);
+      connection = UnitTestUtil::GetConnection(L"", true);
 
 	  //const wchar_t **strings;
 	  //const wchar_t **strings2;
@@ -236,21 +236,21 @@ void FdoCapabilityTest::Connection ()
 //	    const wchar_t *value = dictionary->GetProperty(L"Username");
 //
 //#ifdef _WIN32
-//        dictionary->SetProperty(L"Username", (FdoStringP)UnitTestUtil::GetEnviron("username"));
+//        dictionary->SetProperty(L"Username", UnitTestUtil::GetEnviron("username"));
 //	    const wchar_t *password = dictionary->GetProperty(L"Password");
-//	    dictionary->SetProperty(L"Password", (FdoStringP)UnitTestUtil::GetEnviron("password"));
-//	    dictionary->SetProperty(L"DataStore", (FdoStringP)UnitTestUtil::GetEnviron("datastore"));
-//	    dictionary->SetProperty(L"Service", (FdoStringP)UnitTestUtil::GetEnviron("service"));
+//	    dictionary->SetProperty(L"Password", UnitTestUtil::GetEnviron("password"));
+//	    dictionary->SetProperty(L"DataStore", UnitTestUtil::GetEnviron("datastore"));
+//	    dictionary->SetProperty(L"Service", UnitTestUtil::GetEnviron("service"));
 //#else
-//	    wchar_t temp[128];
-//	    mbstowcs(temp, UnitTestUtil::GetEnviron("username"), sizeof(temp));
+//	    FdoStringP temp;
+//	    temp = UnitTestUtil::GetEnviron("username");
 //        dictionary->SetProperty(L"Username", temp);
 //	    const wchar_t *password = dictionary->GetProperty(L"Password");
-//	    mbstowcs(temp, UnitTestUtil::GetEnviron("password"), sizeof(temp));
+//	    temp = UnitTestUtil::GetEnviron("password");
 //	    dictionary->SetProperty(L"Password", temp);
-//	    mbstowcs(temp, UnitTestUtil::GetEnviron("datastore"), sizeof(temp));
+//	    temp = UnitTestUtil::GetEnviron("datastore");
 //	    dictionary->SetProperty(L"DataStore", temp);
-//	    mbstowcs(temp, UnitTestUtil::GetEnviron("service"), sizeof(temp));
+//	    temp = UnitTestUtil::GetEnviron("service");
 //	    dictionary->SetProperty(L"Service", temp);
 //
 //#endif
@@ -306,18 +306,18 @@ void FdoCapabilityTest::Datastore()
 	  FdoPtr<FdoIConnectionPropertyDictionary> dictionary = connectionInfo->GetConnectionProperties();
 
 #ifdef _WIN32
-      dictionary->SetProperty(L"Username", (FdoStringP)UnitTestUtil::GetEnviron("username"));
+      dictionary->SetProperty(L"Username", UnitTestUtil::GetEnviron("username"));
 	  const wchar_t *password = dictionary->GetProperty(L"Password");
-	  dictionary->SetProperty(L"Password", (FdoStringP)UnitTestUtil::GetEnviron("password"));
+	  dictionary->SetProperty(L"Password", UnitTestUtil::GetEnviron("password"));
 	  dictionary->SetProperty(L"Service", (FdoStringP)UnitTestUtil::GetEnviron("service"));
 #else
-	  wchar_t temp[128];
-	  mbstowcs(temp, UnitTestUtil::GetEnviron("username"), sizeof(temp));
+	  FdoStringP temp;
+	  temp = UnitTestUtil::GetEnviron("username");
       dictionary->SetProperty(L"Username", temp);
 	  const wchar_t *password = dictionary->GetProperty(L"Password");
-	  mbstowcs(temp, UnitTestUtil::GetEnviron("password"), sizeof(temp));
+	  temp = UnitTestUtil::GetEnviron("password");
 	  dictionary->SetProperty(L"Password", temp);
-	  mbstowcs(temp, UnitTestUtil::GetEnviron("service"), sizeof(temp));
+	  temp = UnitTestUtil::GetEnviron("service");
 	  dictionary->SetProperty(L"Service", temp);
 
 #endif

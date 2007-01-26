@@ -28,7 +28,7 @@
 CPPUNIT_TEST_SUITE_REGISTRATION( MySqlSchemaMgrTests );
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( MySqlSchemaMgrTests, "SchemaMgrTests");
 
-#define   DB_NAME_SUFFIX            "_schema_mgr"
+#define   DB_NAME_SUFFIX            L"_schema_mgr"
 
 StaticConnection* MySqlSchemaMgrTests::CreateStaticConnection()
 {
@@ -86,10 +86,7 @@ void MySqlSchemaMgrTests::testWideConstraint ()
         printf( "Predeleting schema ...\n" );
 
         FdoStringP datastore = phMgr->GetDcOwnerName(
-            FdoStringP::Format(
-                L"%hs",
-                UnitTestUtil::GetEnviron("datastore", DB_NAME_SUFFIX)
-            )
+            UnitTestUtil::GetEnviron("datastore", DB_NAME_SUFFIX)
         );
 
         FdoSmPhOwnerP owner = phMgr->FindOwner( datastore, L"", false );

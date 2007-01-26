@@ -44,7 +44,6 @@ StaticConnection::StaticConnection (void) :
     m_rdbi_context(NULL),
     m_gdbi_conn(NULL)
 {
-    mDatastore[0] = 0;
 }
 
 StaticConnection::~StaticConnection (void)
@@ -52,9 +51,9 @@ StaticConnection::~StaticConnection (void)
     disconnect();
 }
 
-void StaticConnection::SetSchema ( char* suffix ) 
+void StaticConnection::SetSchema ( FdoString* suffix ) 
 {
-    sprintf( mDatastore, "%s%s", UnitTestUtil::GetEnviron( "datastore" ), suffix );
+    mDatastore = UnitTestUtil::GetEnviron("datastore", suffix );
     FdoStringP strDatastore = mDatastore;
     if (m_rdbi_context->dispatch.capabilities.supports_unicode == 1)
         ::rdbi_set_schemaW( m_rdbi_context, strDatastore );
@@ -255,24 +254,39 @@ ConnectionUtil::~ConnectionUtil(void)
 
 }
 
-wchar_t *ConnectionUtil::GetConnectionString(StringConnTypeRequest pTypeReq, const char *suffix)
+wchar_t *ConnectionUtil::GetConnectionString(StringConnTypeRequest pTypeReq, FdoString *suffix)
 {
-    char *service = UnitTestUtil::GetEnviron("service");
-    char *username = UnitTestUtil::GetEnviron("username");
-    char *password = UnitTestUtil::GetEnviron("password");
-    char *datastore = UnitTestUtil::GetEnviron("datastore", suffix);
+    FdoStringP service = UnitTestUtil::GetEnviron("service");
+    FdoStringP username = UnitTestUtil::GetEnviron("username");
+    FdoStringP password = UnitTestUtil::GetEnviron("password");
+    FdoStringP datastore = UnitTestUtil::GetEnviron("datastore", suffix);
 	
 	static wchar_t connectString[200];
 	connectString[0] = L'\0';
 
     if (Connection_WithDatastore == pTypeReq)
-        swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"service=%hs;username=%hs;password=%hs;datastore=%hs", service, username ? username : "", password ? password : "", datastore);
+        swprintf( connectString, 
+            sizeof(connectString)/sizeof(wchar_t), 
+            L"service=%ls;username=%ls;password=%ls;datastore=%ls", 
+            (FdoString*) service, 
+            (FdoString*) username, 
+            (FdoString*) password, 
+            (FdoString*) datastore
+        );
 	else
-        swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"service=%hs;username=%hs;password=%hs;", service, username ? username : "", password ? password : "");
+        swprintf( 
+            connectString, 
+            sizeof(connectString)/sizeof(wchar_t), 
+            L"service=%ls;username=%ls;password=%ls;", 
+            (FdoString*) service, 
+            (FdoString*) username, 
+            (FdoString*) password
+        );
+
 	return connectString;
 }
 
-const char* ConnectionUtil::GetEnviron(const char *name, const char *suffix)
+FdoStringP ConnectionUtil::GetEnviron(const char *name, FdoString *suffix)
 {
     static char    uname [1024];
     int   size=1024;
@@ -281,40 +295,44 @@ const char* ConnectionUtil::GetEnviron(const char *name, const char *suffix)
 
     if (_stricmp(name, "service") == 0)
     {
-        return getenv("service");
+        return GetEnv("service");
     }
     else if (_stricmp(name, "username") == 0)
     {
-        return getenv("username");
+        return GetEnv("username");
     }
     else if (_stricmp(name, "password") == 0)
     {
-        return getenv("password");
+        return GetEnv("password");
     }
     else if (_stricmp(name, "datastore") == 0)
     {
-        static char source[128];
-        char *datastore = getenv("datastore");
+        FdoStringP source;
+        FdoStringP datastore = GetEnv("datastore");
         if (datastore == NULL)
-            sprintf(source, "fdo_%s", uname);
+            source = FdoStringP::Format( L"fdo_%hs", uname);
         else
-            strcpy(source, datastore);
-        strcat(source, suffix);
+            source = datastore;
+        source = source + suffix;
 		if (GetSuffixTest() != NULL)
-			strcat(source, GetSuffixTest());
+			source = source + GetSuffixTest();
         return source;
     }
     else if (_stricmp(name, "provider") == 0)
     {
-        static char provider[128];
-        char *prov = getenv("provider");
-        if (prov != NULL )
-            strcpy(provider, prov);
+        FdoStringP provider = GetEnv("provider");
         return provider;
     }
     else if (_stricmp(name, "dsnname") == 0)
     {
-        return getenv("dsnname");
+        return GetEnv("dsnname");
     }
-    return NULL;
+    return L"";
+}
+
+FdoStringP ConnectionUtil::GetEnv(const char* name)
+{
+    const char* env = getenv( name );
+
+    return env;
 }

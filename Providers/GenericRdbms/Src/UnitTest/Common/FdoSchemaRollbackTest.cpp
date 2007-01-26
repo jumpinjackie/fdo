@@ -19,7 +19,7 @@
 #include "UnitTestUtil.h"
 #include "ConnectionUtil.h"
 
-#define   DB_NAME_SUFFIX            "_Rollback_schema"
+#define   DB_NAME_SUFFIX            L"_Rollback_schema"
 
 FdoSchemaRollbackTest::FdoSchemaRollbackTest(void) :
     mCanAddNotNullCol(true)

@@ -42,10 +42,17 @@ FdoString * OdbcSqlServerFdoSqlCmdTest::GetConnectString()
 	// here we use DSN, we can not call UnitTestUtil::GetConnectionString
 	static wchar_t connectString[200];
 	connectString[0] = L'\0';
-    char *dsnname = UnitTestUtil::GetEnviron("dsnname");
-    char *username = UnitTestUtil::GetEnviron("username");
-    char *password = UnitTestUtil::GetEnviron("password");
-	swprintf( connectString, sizeof(connectString)/sizeof(wchar_t), L"DataSourceName=%hs;UserId=%hs;Password=%hs;", dsnname, username, password);
+    FdoStringP dsnname = UnitTestUtil::GetEnviron("dsnname");
+    FdoStringP username = UnitTestUtil::GetEnviron("username");
+    FdoStringP password = UnitTestUtil::GetEnviron("password");
+	swprintf( 
+        connectString, 
+        sizeof(connectString)/sizeof(wchar_t), 
+        L"DataSourceName=%ls;UserId=%ls;Password=%ls;", 
+        (FdoString*) dsnname, 
+        (FdoString*) username, 
+        (FdoString*) password
+    );
 	return connectString;
 }
 

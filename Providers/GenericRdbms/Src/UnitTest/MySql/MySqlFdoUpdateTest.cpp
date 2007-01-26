@@ -36,12 +36,12 @@ void MySqlFdoUpdateTest::testForeignDataStore()
     try
     {
         printf( "Initializing Connection ... \n" );
-	    FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore, "");
+	    FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore, L"");
 	    connection = UnitTestUtil::GetProviderConnectionObject();
 	    connection->SetConnectionString ( userConnectString);
 	    connection->Open();
 
-        FdoStringP datastore = FdoStringP::Format(L"%hs", UnitTestUtil::GetEnviron("datastore", "_foreign_sch"));
+        FdoStringP datastore = UnitTestUtil::GetEnviron("datastore", L"_foreign_sch");
         FdoStringP pQueryStringCr = L"CREATE DATABASE ";
 	    pQueryStringCr += datastore;
 	    pQueryStringCr += L";";
@@ -49,7 +49,7 @@ void MySqlFdoUpdateTest::testForeignDataStore()
         {
             UnitTestUtil::Sql2Db( (const wchar_t*) pQueryStringCr, connection.p );
             connection->Close();
-            userConnectString = UnitTestUtil::GetConnectionString(Connection_WithDatastore, "_foreign_sch");
+            userConnectString = UnitTestUtil::GetConnectionString(Connection_WithDatastore, L"_foreign_sch");
 	        connection->SetConnectionString ( userConnectString);
 	        connection->Open();
             UnitTestUtil::Sql2Db( (const wchar_t**) mForeignPolygonTest, connection.p );
@@ -57,7 +57,7 @@ void MySqlFdoUpdateTest::testForeignDataStore()
         }
         catch(...){}
         
-        userConnectString = UnitTestUtil::GetConnectionString(Connection_WithDatastore, "_foreign_sch");
+        userConnectString = UnitTestUtil::GetConnectionString(Connection_WithDatastore, L"_foreign_sch");
         connection->SetConnectionString ( userConnectString);
 	    connection->Open();
 
@@ -216,13 +216,9 @@ const wchar_t* MySqlFdoUpdateTest::mForeignPolygonTest[] = {
     NULL
 };
 
-const char* MySqlFdoUpdateTest::NoMetaSuffix()
+FdoString* MySqlFdoUpdateTest::NoMetaSuffix()
 {
-#ifdef _WIN32
-    static const char* noMetaSuffix = "_no_meta\xe4\xe5";
-#else
-    static const char* noMetaSuffix = "_no_meta";
-#endif
+    FdoString* noMetaSuffix = L"_no_meta\x30b0\x30b1";
 
     return noMetaSuffix;
 }

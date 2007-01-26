@@ -51,7 +51,7 @@ void DescribeSchemaTest::describe2()
     FdoPtr<FdoIConnection> connection;
     try
     {
-        FdoIConnection* connection  = UnitTestUtil::GetConnection("", true);
+        FdoIConnection* connection  = UnitTestUtil::GetConnection(L"", true);
         FdoPtr<FdoIDescribeSchema>  pDescSchemaCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
         FdoFeatureSchemasP          fsc = pDescSchemaCmd->Execute();
 
@@ -81,7 +81,7 @@ void DescribeSchemaTest::describe()
         connection = UnitTestUtil::CreateConnection(
             true,
             true,
-            "_describeschema",
+            L"_describeschema",
             NULL,
             NULL,
             0
@@ -152,7 +152,7 @@ void DescribeSchemaTest::describe()
         UnitTestUtil::CloseConnection(
             connection,
             false,
-            "_describeschema"
+            L"_describeschema"
         );
 
     }

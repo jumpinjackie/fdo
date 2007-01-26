@@ -21,7 +21,7 @@
 #include <Rdbms/Override/RdbmsOvPhysicalSchemaMapping.h>
 #include <Rdbms/Override/RdbmsOvPropertyMappingConcrete.h>
 
-#define DB_SUFFIX "_nometaschema"
+#define DB_SUFFIX L"_nometaschema"
 
 FdoSchemaTest::FdoSchemaTest(void) :
     m_bDatabaseCreated(false)
@@ -43,7 +43,7 @@ void FdoSchemaTest::DropDatastore()
     try
     {
         FdoStringP dataStoreName = UnitTestUtil::GetEnviron("datastore", DB_SUFFIX);
-        FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore, "");
+        FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore, L"");
         FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
         connection->SetConnectionString( userConnectString );
         connection->Open();

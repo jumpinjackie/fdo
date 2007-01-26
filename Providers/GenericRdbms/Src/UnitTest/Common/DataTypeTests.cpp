@@ -42,7 +42,7 @@ void DataTypeTests::setUp ()
         {
 	        try
             {
-		        FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore, "");
+		        FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore);
                 FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
                 connection->SetConnectionString( userConnectString );
                 connection->Open();

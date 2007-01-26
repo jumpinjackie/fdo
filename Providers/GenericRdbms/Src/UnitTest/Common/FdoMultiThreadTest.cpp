@@ -50,7 +50,7 @@ void FdoMultiThreadTest::setUp ()
 
 FdoIConnection * FdoMultiThreadTest::GetConnection()
 {
-	return UnitTestUtil::GetConnection("", true);
+	return UnitTestUtil::GetConnection(L"", true);
 }
 
 void FdoMultiThreadTest::StartTest ( FunctionInfo *funInfo )

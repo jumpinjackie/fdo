@@ -18,7 +18,7 @@
 #include "FdoAssociationDeleteTest.h"
 #include "UnitTestUtil.h"
 
-#define DB_SUFFIX	"_assoc"
+#define DB_SUFFIX	L"_assoc"
 
 FdoAssociationDeleteTest::FdoAssociationDeleteTest(void)
 {

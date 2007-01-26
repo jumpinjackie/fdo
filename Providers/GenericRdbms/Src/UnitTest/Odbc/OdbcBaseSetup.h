@@ -73,8 +73,8 @@ public:
     FdoString * GetPropertyNameAcdb3dpolylineRevision()  { return LikesUC() ? L"REVISIONNUMBER" : L"revisionnumber"; }
 	FdoString * GetPropertyNameAcdb3dpolylineDateTime()  { return LikesUC() ? L"DATETIME" : L"datetime1"; }
 
-	virtual void CreateDataStore(FdoIConnection* pConnection, const char *suffix);
-	virtual void DestroyDataStore(FdoIConnection* pConnection, const char *suffix);
+	virtual void CreateDataStore(FdoIConnection* pConnection, FdoString *suffix);
+	virtual void DestroyDataStore(FdoIConnection* pConnection, FdoString *suffix);
 	virtual void CreateAcadSchema(FdoIConnection* pConnection);
 	virtual void CreateNonAcadSchema(FdoIConnection* pConnection);
 

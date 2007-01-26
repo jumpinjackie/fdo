@@ -20,7 +20,7 @@
 #include "FdoAssociationInsertTest.h"
 #include "UnitTestUtil.h"
 
-#define DB_SUFFIX	"_assoc"
+#define DB_SUFFIX	L"_assoc"
 
 static FdoPropertyValue* AddNewProperty( FdoPropertyValueCollection* propertyValues, const wchar_t *name )
 {

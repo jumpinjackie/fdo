@@ -876,19 +876,19 @@ FdoIConnection* UnitTestUtil::GetProviderConnectionObject()
     return (ret);
 }
 
-wchar_t *UnitTestUtil::GetConnectionString(StringConnTypeRequest pTypeReq, const char *suffix)
+wchar_t *UnitTestUtil::GetConnectionString(StringConnTypeRequest pTypeReq, FdoString *suffix)
 {
 	return UnitTestUtil::InfoUtilConnection->GetConnectionString(pTypeReq, suffix);
 }
 
-void UnitTestUtil::CreateDB(bool addSchema, bool useBaseMapping, char* suffix, int lt_method, bool lt_method_fixed)
+void UnitTestUtil::CreateDB(bool addSchema, bool useBaseMapping, FdoString *suffix, int lt_method, bool lt_method_fixed)
 {
-    char *service = UnitTestUtil::GetEnviron("service");
-    char *username = UnitTestUtil::GetEnviron("username");
-    char *password = UnitTestUtil::GetEnviron("password");
-    char *datastore = UnitTestUtil::GetEnviron("datastore", suffix);
-    char *schemaType = UnitTestUtil::GetEnviron("schematype");
-    const char *description = UnitTestUtil::GetEnv("description",(char*) NULL);
+    FdoStringP service = UnitTestUtil::GetEnviron("service");
+    FdoStringP username = UnitTestUtil::GetEnviron("username");
+    FdoStringP password = UnitTestUtil::GetEnviron("password");
+    FdoStringP datastore = UnitTestUtil::GetEnviron("datastore", suffix);
+    FdoStringP schemaType = UnitTestUtil::GetEnviron("schematype");
+    FdoStringP description = FdoStringP::Format( L"%hs", UnitTestUtil::GetEnv("description",(char*) NULL) );
 
      // Long Transaction method defaults to the one passed in.
     // If it is not fixed, it can be overridden by ltmethod from
@@ -912,7 +912,7 @@ void UnitTestUtil::CreateDB(bool addSchema, bool useBaseMapping, char* suffix, i
     {
         connection->Open ();
 
-		CreateDB( connection, datastore, (char *)description, password, schemaType, local_lt_method );
+		CreateDB( connection, datastore, description, password, (char*)(const char*)schemaType, local_lt_method );
         connection->Close();
         connectString = UnitTestUtil::GetConnectionString(Connection_WithDatastore, suffix);
         connection->SetConnectionString ( connectString);
@@ -939,7 +939,7 @@ void UnitTestUtil::CreateDB(bool addSchema, bool useBaseMapping, char* suffix, i
     connection->Close ();
 }
 
-void UnitTestUtil::CreateDB( FdoIConnection* connection, char *datastore, char *description, char *password, char *schemaType, int local_lt_method )
+void UnitTestUtil::CreateDB( FdoIConnection* connection, FdoString *datastore, FdoString *description, FdoString *password, char *schemaType, int local_lt_method )
 {
     FdoPtr<FdoRdbmsCreateDataStore> createCmd = (FdoRdbmsCreateDataStore*)connection->CreateCommand( FdoCommandType_CreateDataStore );
 	
@@ -953,15 +953,15 @@ void UnitTestUtil::CreateDB( FdoIConnection* connection, char *datastore, char *
 		
 		if ( wcscmp( name, L"DataStore" ) == 0 )
 		{
-            dictionary->SetProperty( name, FdoStringP::Format(L"%hs",datastore) );
+            dictionary->SetProperty( name, datastore );
 		} 
 		else if ( wcscmp( name, L"Password" ) == 0 )
 		{
-			dictionary->SetProperty( name, FdoStringP::Format(L"%hs",password) );
+			dictionary->SetProperty( name, password );
 		}
 		else if ( wcscmp( name, L"Description" ) == 0 )
 		{
-			dictionary->SetProperty( name, FdoStringP::Format(L"%hs",description) );
+			dictionary->SetProperty( name, description );
 		}
 		else if ( (wcscmp( name, L"LtMode" ) == 0 )|| (wcscmp( name, L"LockMode" ) == 0))
 		{
@@ -1010,7 +1010,7 @@ void UnitTestUtil::Exception2String( FdoException* e, char* buffer )
 
 void UnitTestUtil::PrintException( FdoException* e, FILE* fp, FdoBoolean stripLineNo )
 {
-    FdoStringP userDSPref = UnitTestUtil::GetEnviron("datastore", "");
+    FdoStringP userDSPref = UnitTestUtil::GetEnviron("datastore", L"");
 
     FdoPtr<FdoException> currE = e;
     // Add ref to prevent smart pointer from destroying exception.
@@ -1119,10 +1119,10 @@ void UnitTestUtil::PrintException( FdoException* e, const char* fileName, FdoBoo
     fclose( fp );
 }
 
-char *UnitTestUtil::GetEnviron(const char *name, const char *suffix)
+FdoStringP UnitTestUtil::GetEnviron(const char *name, FdoString *suffix)
 {
-    char* pRet = (char*)UnitTestUtil::InfoUtilConnection->GetEnviron(name, suffix);
-    return (pRet != NULL) ? pRet : (char *) "";
+    FdoStringP pRet = UnitTestUtil::InfoUtilConnection->GetEnviron(name, suffix);
+    return pRet;
 }
 
 const char* UnitTestUtil::GetEnv( const char* pVar, const char* pDefault )
@@ -1139,11 +1139,11 @@ void  UnitTestUtil::SetProvider( const char *providerName )
 	UnitTestUtil::InfoUtilConnection->SetProvider(providerName);
 }
 
-void UnitTestUtil::CloseConnection( FdoIConnection* connection, bool bDelete, char *suffix )
+void UnitTestUtil::CloseConnection( FdoIConnection* connection, bool bDelete, FdoString *suffix )
 {
-    char *pDatastore = UnitTestUtil::GetEnviron("datastore", suffix);
-    char *pPassword = UnitTestUtil::GetEnviron("password");
-    char *pService = UnitTestUtil::GetEnviron("service");
+    FdoStringP pDatastore = UnitTestUtil::GetEnviron("datastore", suffix);
+    FdoStringP pPassword = UnitTestUtil::GetEnviron("password");
+    FdoStringP pService = UnitTestUtil::GetEnviron("service");
 
     if ( bDelete ) {
          DropDb( connection, pDatastore, pPassword, pService );
@@ -1154,7 +1154,7 @@ void UnitTestUtil::CloseConnection( FdoIConnection* connection, bool bDelete, ch
 FdoIConnection* UnitTestUtil::CreateConnection(
     bool bPredelete,
     bool bCreate,
-    const char *suffix,
+    FdoString *suffix,
     const char *schemaType,
     bool* bCreated,
     int   lt_method,
@@ -1166,10 +1166,10 @@ FdoIConnection* UnitTestUtil::CreateConnection(
     if ( bCreated )
         (*bCreated) = false;
 
-    const char *pDatastore = UnitTestUtil::GetEnviron("datastore", suffix);
-    const char *pPassword = UnitTestUtil::GetEnviron("password");
-    const char *pService = UnitTestUtil::GetEnviron("service");
-    const char *pSchemaType = schemaType;
+    FdoStringP pDatastore = UnitTestUtil::GetEnviron("datastore", suffix);
+    FdoStringP pPassword = UnitTestUtil::GetEnviron("password");
+    FdoStringP pService = UnitTestUtil::GetEnviron("service");
+    FdoStringP pSchemaType = schemaType;
 
     // Long Transaction method defaults to the one passed in.
     // If it is not fixed, it can be overridden by ltmethod from
@@ -1210,7 +1210,7 @@ FdoIConnection* UnitTestUtil::CreateConnection(
 
     if ( bCreate && !bExists ) {
   
-        CreateDB( connectionMetadata, (char *)pDatastore, (char *)"", (char *)pPassword, (char *)pSchemaType, local_lt_method );
+        CreateDB( connectionMetadata, pDatastore, L"", pPassword, (char *)(const char*)pSchemaType, local_lt_method );
 
         if ( bCreated )
             (*bCreated) = true;
@@ -1226,17 +1226,17 @@ FdoIConnection* UnitTestUtil::CreateConnection(
 
 void UnitTestUtil::DropDb()
 {
-    char *service = UnitTestUtil::GetEnviron("service");
-    char *username = UnitTestUtil::GetEnviron("username");
-    char *password = UnitTestUtil::GetEnviron("password");
-    char *datastore = UnitTestUtil::GetEnviron("datastore");
+    FdoStringP service = UnitTestUtil::GetEnviron("service");
+    FdoStringP username = UnitTestUtil::GetEnviron("username");
+    FdoStringP password = UnitTestUtil::GetEnviron("password");
+    FdoStringP datastore = UnitTestUtil::GetEnviron("datastore");
     bool bExists = DatastoreExists();
 
     if (bExists)
     {
         //FdoRdbmsConnection::DeleteDb(context, datastore, password, service);
 
-        FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore, "");
+        FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore);
 
         FdoPtr<FdoIConnection> connection = GetProviderConnectionObject();
         connection->SetConnectionString( userConnectString );
@@ -1251,37 +1251,35 @@ void UnitTestUtil::DropDb()
 
 }
 
-void UnitTestUtil::DropDb( FdoIConnection *connection, const char* pDatastore, const char* pPassword, const char* pService )
+void UnitTestUtil::DropDb( FdoIConnection *connection, FdoString* pDatastore, FdoString* pPassword, FdoString* pService )
 {
     FdoPtr<FdoIDestroyDataStore> pDelCmd = (FdoIDestroyDataStore*)connection->CreateCommand( FdoCommandType_DestroyDataStore );
 
 	FdoPtr<FdoIDataStorePropertyDictionary> dictionary = pDelCmd->GetDataStoreProperties();
 		
-	dictionary->SetProperty( L"DataStore", FdoStringP::Format(L"%hs",pDatastore) );
+	dictionary->SetProperty( L"DataStore", pDatastore );
 
 	// NO provider requires the password 
-//	dictionary->SetProperty( L"Password", FdoStringP(pPassword) );
+//	dictionary->SetProperty( L"Password", pPassword );
 
 	// What happens with the service? is it really necessay?
 	pDelCmd->Execute();
 }
 
-bool UnitTestUtil::DatastoreExists(const char *suffix)
+bool UnitTestUtil::DatastoreExists(FdoString *suffix)
 {
     StaticConnection* staticConn;
 
     staticConn = UnitTestUtil::NewStaticConnection();
     staticConn->connect();
 
-    char *mbDatastore = GetEnviron("datastore", suffix);
-    wchar_t *wDatastore = NULL;
-    multibyte_to_wide(wDatastore, mbDatastore);
+    FdoStringP datastore = GetEnviron("datastore", suffix);
     bool found = false;
 
     FdoSchemaManagerP mgr = staticConn->CreateSchemaManager();
     FdoSmPhMgrP ph = mgr->GetPhysicalSchema();
 
-    if ( FdoSmPhOwnerP(ph->FindOwner(wDatastore, L"", false)) )
+    if ( FdoSmPhOwnerP(ph->FindOwner(datastore, L"", false)) )
         found = true;
 
     ph = NULL;
@@ -1292,7 +1290,7 @@ bool UnitTestUtil::DatastoreExists(const char *suffix)
     return(found);
 }
 
-FdoIConnection* UnitTestUtil::GetConnection(char *suffix, bool bCreate, StringConnTypeRequest pTypeReq, int lt_method, bool lt_method_fixed)
+FdoIConnection* UnitTestUtil::GetConnection(FdoString *suffix, bool bCreate, StringConnTypeRequest pTypeReq, int lt_method, bool lt_method_fixed)
 {
     FdoIConnection* connection = GetProviderConnectionObject();
 

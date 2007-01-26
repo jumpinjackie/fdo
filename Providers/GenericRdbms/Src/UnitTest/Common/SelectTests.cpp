@@ -20,7 +20,7 @@
 #include "UnitTestUtil.h"
 #include "SelectTests.h"
 
-#define DB_SUFFIX "_rdbitest"
+#define DB_SUFFIX L"_rdbitest"
 
 SelectTests::SelectTests (void)
 {
@@ -44,7 +44,7 @@ void SelectTests::setUp ()
         {
 	        try
             {
-		        FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore, "");
+		        FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore);
                 FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
                 connection->SetConnectionString( userConnectString );
                 connection->Open();

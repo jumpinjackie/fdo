@@ -113,14 +113,14 @@ FdoIConnection * OdbcOracleFdoMultiThreadTest::GetConnection()
     if (!m_SetupDone)
     {
 	    OdbcBaseSetup pOdbcSetup(DataBaseType_Oracle);
-	    mConnection->SetConnectionString ( UnitTestUtil::GetConnectionString(Connection_OraSetup, "") );
+	    mConnection->SetConnectionString ( UnitTestUtil::GetConnectionString(Connection_OraSetup) );
 	    mConnection->Open();
-	    pOdbcSetup.CreateDataStore(mConnection, "");
+	    pOdbcSetup.CreateDataStore(mConnection, L"");
 	    mConnection->Close();
         m_SetupDone = true;
     }
     // open with DSN
-    mConnection->SetConnectionString(UnitTestUtil::GetConnectionString(Connection_WithDSN, ""));
+    mConnection->SetConnectionString(UnitTestUtil::GetConnectionString(Connection_WithDSN));
     mConnection->Open();
 	return mConnection;
 }
@@ -150,7 +150,7 @@ void OdbcAccessFdoMultiThreadTest::QueryTest()
 FdoIConnection * OdbcAccessFdoMultiThreadTest::GetConnection()
 {
     FdoIConnection* mConnection = UnitTestUtil::GetProviderConnectionObject();
-	mConnection->SetConnectionString(UnitTestUtil::GetConnectionString(Connection_WithDSN, ""));
+	mConnection->SetConnectionString(UnitTestUtil::GetConnectionString(Connection_WithDSN));
     mConnection->Open();
 	return mConnection;
 }

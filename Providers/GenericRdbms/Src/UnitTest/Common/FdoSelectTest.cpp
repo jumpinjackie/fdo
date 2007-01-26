@@ -33,9 +33,9 @@ FdoSelectTest::FdoSelectTest(void)
     mSuffix[0] = '\0';
 }
 
-FdoSelectTest::FdoSelectTest(char *suffix)
+FdoSelectTest::FdoSelectTest(wchar_t *suffix)
 {
-    strncpy(mSuffix, suffix, 11 );
+    wcsncpy(mSuffix, suffix, 11 );
     mSuffix[11] = '\0';
 }
 

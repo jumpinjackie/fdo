@@ -81,10 +81,10 @@ public:
     static const char* GetEnv( const char* pVar, const char* pDefault );
 
 	static FdoIConnection* GetProviderConnectionObject();
-	static wchar_t *GetConnectionString(StringConnTypeRequest pTypeReq = Connection_WithDatastore, const char *suffix = "");
-    static void CreateDB(bool addSchema = true, bool useBaseMapping=false, char *suffix = "", int lt_method = 0, bool lt_method_fixed = false );
-	static void CreateDB( FdoIConnection* connection, char *username, char *description, char *password, char *schemaType, int local_lt_method );   
-	static char *GetEnviron(const char *name, const char *suffix = "");
+	static wchar_t *GetConnectionString(StringConnTypeRequest pTypeReq = Connection_WithDatastore, FdoString *suffix = L"");
+    static void CreateDB(bool addSchema = true, bool useBaseMapping=false, FdoString *suffix = L"", int lt_method = 0, bool lt_method_fixed = false );
+	static void CreateDB( FdoIConnection* connection, FdoString *username, FdoString *description, FdoString *password, char *schemaType, int local_lt_method );   
+	static FdoStringP GetEnviron(const char *name, FdoString *suffix = L"");
 	static void SetProvider( const char *providerName );
 
     // Set up and open a connection to a Database.
@@ -116,7 +116,7 @@ public:
     static FdoIConnection*  CreateConnection(
         bool bPredelete,
         bool bCreate,
-        const char *suffix,
+        FdoString *suffix,
         const char *schemaType = NULL,
         bool* bCreated = NULL,
         int  lt_method = -1,
@@ -135,19 +135,19 @@ public:
     static void CloseConnection(
         FdoIConnection* connection,
         bool bDelete,
-        char *suffix
+        FdoString *suffix
     );
 	static void DropDb();
-	static void DropDb( FdoIConnection *connection, const char* pDatastore, const char* pPassword, const char* pService );
+	static void DropDb( FdoIConnection *connection, FdoString* pDatastore, FdoString* pPassword, FdoString* pService );
     
 	// Check if the given connect contains the given datastore.
     //
     // Returns:
     //      true - datastore exists.
     //      false - otherwise.
-    static bool DatastoreExists(const char *suffix = "");
+    static bool DatastoreExists(FdoString *suffix = L"");
     
-	static FdoIConnection* GetConnection(char *suffix = "", bool bCreate = false, StringConnTypeRequest pTypeReq = Connection_WithDatastore, int lt_method = 0, bool lt_method_fixed = false );
+	static FdoIConnection* GetConnection(FdoString *suffix = L"", bool bCreate = false, StringConnTypeRequest pTypeReq = Connection_WithDatastore, int lt_method = 0, bool lt_method_fixed = false );
     static StaticConnection* NewStaticConnection();
 
 	// compares two doubles for *approximate* equality:

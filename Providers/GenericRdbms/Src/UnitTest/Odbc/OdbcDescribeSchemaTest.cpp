@@ -20,7 +20,7 @@
 #include "OdbcDescribeSchemaTest.h"
 #include "UnitTestUtil.h"
 
-#define SUFFIX_TEST "_describeschema"
+#define SUFFIX_TEST L"_describeschema"
 
 CPPUNIT_TEST_SUITE_REGISTRATION (OdbcMySqlDescribeSchemaTest);
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcMySqlDescribeSchemaTest, "DescribeSchemaTest");
@@ -56,7 +56,7 @@ void OdbcDescribeSchemaTest::describe()
     try
     {
         printf( "Initializing Connection ... \n" );
-		FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore, "");
+		FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore);
 		// Create/open primary connection:
 		connection = UnitTestUtil::GetProviderConnectionObject();
 		connection->SetConnectionString ( userConnectString);
@@ -132,7 +132,7 @@ void OdbcTextDescribeSchemaTest::describe()
     try
     {
         connection = UnitTestUtil::GetProviderConnectionObject();
-		connection->SetConnectionString(UnitTestUtil::GetConnectionString(Connection_WithDSN, ""));
+		connection->SetConnectionString(UnitTestUtil::GetConnectionString(Connection_WithDSN));
         connection->Open();
 
         // The data source has dot '.' and hyphen '-' characters that shows up in the

@@ -22,7 +22,8 @@
 #include "ConnectionUtil.h"
 #include "MySqlConnectionUtil.h"
 
-#define UNSIGNED_SUFFIX "_unsigned"
+#define UNSIGNED_SUFFIX L"_unsigned"
+#define CHARSET_SUFFIX L"_charset"
 
 CPPUNIT_TEST_SUITE_REGISTRATION( MySqlFdoInsertTest );
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( MySqlFdoInsertTest, "FdoInsertTest");
@@ -198,10 +199,7 @@ void MySqlFdoInsertTest::insertBoundaryUnsigned()
         FdoSmPhMgrP phMgr = mgr->GetPhysicalSchema();
 
         FdoStringP datastore = phMgr->GetDcOwnerName(
-            FdoStringP::Format(
-                L"%hs",
-                UnitTestUtil::GetEnviron("datastore", UNSIGNED_SUFFIX)
-            )
+            UnitTestUtil::GetEnviron("datastore", UNSIGNED_SUFFIX)
         );
 
         FdoSmPhDatabaseP database = phMgr->GetDatabase();
@@ -304,3 +302,156 @@ void MySqlFdoInsertTest::insertBoundaryUnsigned()
     }
 }
 
+void MySqlFdoInsertTest::characterSets()
+{
+    StaticConnection* conn = new MySqlStaticConnection();
+
+    try {
+
+        UnitTestUtil::SetProvider( conn->GetServiceName() ); 
+
+        conn->connect();
+
+        FdoSchemaManagerP mgr = conn->CreateSchemaManager();
+
+        FdoSmPhMgrP phMgr = mgr->GetPhysicalSchema();
+
+        FdoStringP datastore = phMgr->GetDcOwnerName(
+            UnitTestUtil::GetEnviron("datastore", CHARSET_SUFFIX)
+        );
+
+        FdoSmPhDatabaseP database = phMgr->GetDatabase();
+
+        FdoSmPhOwnerP owner = phMgr->FindOwner( datastore, L"", false );
+        if ( owner ) {
+            owner->SetElementState( FdoSchemaElementState_Deleted );
+            owner->Commit();
+        }
+
+        owner = database->CreateOwner(
+            datastore, 
+            false
+        );
+        owner->SetPassword( L"test" );
+        owner->Commit();
+        owner->SetCurrent();
+
+        GdbiConnection* gdbiConnection = phMgr->SmartCast<FdoSmPhGrdMgr>()->GetGdbiConnection();
+
+        // Create tables for various combinations of character set and types of characters
+        // that will be stored in the table. 
+        charSetCreateTable( gdbiConnection, L"latin1", L"ascii7" );
+        charSetCreateTable( gdbiConnection, L"latin1", L"8bit" );
+        charSetCreateTable( gdbiConnection, L"utf8", L"ascii7" );
+        charSetCreateTable( gdbiConnection, L"utf8", L"8bit" );
+        charSetCreateTable( gdbiConnection, L"utf8", L"japan" );
+        charSetCreateTable( gdbiConnection, L"ucs2", L"ascii7" );
+        charSetCreateTable( gdbiConnection, L"ucs2", L"8bit" );
+        charSetCreateTable( gdbiConnection, L"ucs2", L"japan" );
+        charSetCreateTable( gdbiConnection, L"cp932", L"ascii7" );
+        charSetCreateTable( gdbiConnection, L"cp932", L"japan" );
+
+        // A couple of combinations are not tried:
+        //  - latin11 character set, Japanese characters
+        //  = cp932 character set, 8 bit characters
+        // since these are expected to fail (characters not in character set).
+
+        FdoPtr<FdoIConnection> connection = UnitTestUtil::GetConnection(CHARSET_SUFFIX, false);
+
+        // Round-trip insert/select test each table.
+        charSetTestTable( connection, L"latin1", L"ascii7", L"abc", L"a" );
+        charSetTestTable( connection, L"latin1", L"8bit", L"\x00e4\x00e5", L"\x00e4" );
+        charSetTestTable( connection, L"utf8", L"ascii7", L"abc", L"a" );
+        charSetTestTable( connection, L"utf8", L"8bit", L"\x00e4\x00e5", L"\x00e4" );
+        charSetTestTable( connection, L"utf8", L"japan", L"\x30b0\x30b1", L"\x30b0" );
+        charSetTestTable( connection, L"ucs2", L"ascii7", L"abc", L"a" );
+        charSetTestTable( connection, L"ucs2", L"8bit", L"\x00e4\x00e5", L"\x00e4" );
+        charSetTestTable( connection, L"ucs2", L"japan", L"\x30b0\x30b1", L"\x30b0" );
+        charSetTestTable( connection, L"cp932", L"ascii7", L"abc", L"a" );
+        charSetTestTable( connection, L"cp932", L"japan", L"\x30b0\x30b1", L"\x30b0" );
+    }
+    catch (FdoCommandException *ex)
+    {
+        UnitTestUtil::FailOnException(ex);
+    }
+    catch (FdoException *ex)
+    {
+        UnitTestUtil::FailOnException(ex);
+    }
+}
+
+void MySqlFdoInsertTest::charSetCreateTable( GdbiConnection* gdbiConnection, FdoString* charSet, FdoString* dataCharSet )
+{
+    FdoStringP sqlStmt = FdoStringP::Format( 
+        L"create table %ls_%ls ( data varchar(10) not null, chardata char(1), primary key (data)) character set %ls collate %ls_bin",
+        charSet,
+        dataCharSet,
+        charSet,
+        charSet
+    );
+
+    gdbiConnection->ExecuteNonQuery( (FdoString*) sqlStmt, true );
+}
+
+void MySqlFdoInsertTest::charSetTestTable( FdoIConnection* connection, FdoString* charSet, FdoString* dataCharSet, FdoString* stringVal, FdoString* charVal )
+{
+    FdoStringP className = FdoStringP::Format( L"%ls_%ls", charSet, dataCharSet );
+
+    FdoPtr<FdoIInsert> insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
+    FdoPtr<FdoPropertyValueCollection> propertyValues;
+    FdoPtr<FdoDataValue> dataValue;
+    FdoPtr<FdoPropertyValue> propertyValue;
+
+    insertCommand->SetFeatureClassName(className);
+
+    propertyValues = insertCommand->GetPropertyValues();
+    propertyValue =  FdoPropertyValue::Create();
+    propertyValue->SetName( L"data" );
+    propertyValues->Add( propertyValue );
+
+    dataValue = FdoDataValue::Create(stringVal);
+    propertyValue->SetValue(dataValue);
+
+    propertyValue =  FdoPropertyValue::Create();
+    propertyValue->SetName( L"chardata" );
+    propertyValues->Add( propertyValue );
+
+    dataValue = FdoDataValue::Create(charVal);
+    propertyValue->SetValue(dataValue);
+
+    insertCommand->Execute();
+
+  	FdoPtr<FdoISelect>selCmd = (FdoISelect*)connection->CreateCommand( FdoCommandType_Select );
+    selCmd->SetFeatureClassName(className);
+
+    FdoPtr<FdoIFeatureReader>myReader = selCmd->Execute();
+    CPPUNIT_ASSERT( myReader->ReadNext() );
+    charSetVldValue( className, stringVal, myReader->GetString(L"data") );
+    charSetVldValue( className, charVal, myReader->GetString(L"chardata") );
+
+    CPPUNIT_ASSERT( !(myReader->ReadNext()) );
+
+}
+
+void MySqlFdoInsertTest::charSetVldValue( FdoString* className, FdoString* expectedVal, FdoString* val )
+{
+    if ( wcscmp(expectedVal, val) != 0 )
+    {
+        FdoStringP msg = FdoStringP::Format( 
+            L"Select failed: %ls: Unexpected value '%ls'", 
+            (FdoString*) className,
+            val 
+        );
+
+        printf( "%ls\n", (FdoString*) msg );
+ 
+        printf( "   selValue %d: ", wcslen(val) );
+        for ( int j = 0; j < wcslen(val); j++ ) 
+            printf( "%x ", val[j] );
+
+        printf( "\n" );
+
+        CPPUNIT_FAIL( (const char*) msg );
+    }
+}
+ 

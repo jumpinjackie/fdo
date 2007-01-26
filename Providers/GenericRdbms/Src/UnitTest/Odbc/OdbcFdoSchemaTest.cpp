@@ -21,7 +21,7 @@
 #include "UnitTestUtil.h"
 #include "OdbcBaseSetup.h"
 
-#define DB_SUFFIX "_nometaschema"
+#define DB_SUFFIX L"_nometaschema"
 
 CPPUNIT_TEST_SUITE_REGISTRATION( OdbcMySqlFdoSchemaTest );
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcMySqlFdoSchemaTest, "FdoSchemaTest");
@@ -45,7 +45,7 @@ void OdbcFdoSchemaTest::DropDatastore()
     // Drop the old datastore, if it exists:
     try
     {
-        FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore, "");
+        FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore);
         FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
         connection->SetConnectionString( userConnectString );
         connection->Open();
@@ -63,7 +63,7 @@ void OdbcFdoSchemaTest::CreateFreshDb()
         // Create a datastore (will create metaschema tables automatically, unfortunately):
 		try
 		{
-			FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore, "");
+			FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore);
 			FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
 			connection->SetConnectionString( userConnectString );
 			connection->Open();

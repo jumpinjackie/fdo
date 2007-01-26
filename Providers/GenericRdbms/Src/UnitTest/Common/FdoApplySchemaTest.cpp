@@ -22,15 +22,15 @@
 #include <Sm/Ph/Rd/DbObjectReader.h>
 #include "../SchemaMgr/Ph/Owner.h"
 
-char*    FdoApplySchemaTest::DB_NAME_SUFFIX                    = "_apply_schema";
-char*    FdoApplySchemaTest::DB_NAME_COPY_SUFFIX               = "_apply_copy";
-char*    FdoApplySchemaTest::DB_NAME_OVERRIDE_SUFFIX           = "_apply_override";
-char*    FdoApplySchemaTest::DB_NAME_OVERRIDE_DEFAULT_SUFFIX   = "_apply_overridedef";
-char*    FdoApplySchemaTest::DB_NAME_FOREIGN_SUFFIX            = "_apply_foreign";
-char*    FdoApplySchemaTest::DB_NAME_CONFIG_SUFFIX             = "_apply_config";
+FdoString*    FdoApplySchemaTest::DB_NAME_SUFFIX                    = L"_apply_schema";
+FdoString*    FdoApplySchemaTest::DB_NAME_COPY_SUFFIX               = L"_apply_copy";
+FdoString*    FdoApplySchemaTest::DB_NAME_OVERRIDE_SUFFIX           = L"_apply_override";
+FdoString*    FdoApplySchemaTest::DB_NAME_OVERRIDE_DEFAULT_SUFFIX   = L"_apply_overridedef";
+FdoString*    FdoApplySchemaTest::DB_NAME_FOREIGN_SUFFIX            = L"_apply_foreign";
+FdoString*    FdoApplySchemaTest::DB_NAME_CONFIG_SUFFIX             = L"_apply_config";
 
-wchar_t* FdoApplySchemaTest::LT_NAME                           = L"ApplyTest";
-char*    FdoApplySchemaTest::DB_NAME_LT_SUFFIX                 = "_apply_lt";
+FdoString*    FdoApplySchemaTest::LT_NAME                           = L"ApplyTest";
+FdoString*    FdoApplySchemaTest::DB_NAME_LT_SUFFIX                 = L"_apply_lt";
 
 
 FdoPropertyValue* FdoApplySchemaTest::AddNewProperty( FdoPropertyValueCollection* propertyValues, const wchar_t *name )
@@ -434,8 +434,7 @@ void FdoApplySchemaTest::TestOverrides ()
         owner->Commit();
 
         // Create RDBMS-specific elements (such as filegroups on SQL Server, tablespaces on Oracle, etc):
-        wchar_t *wDatastore = NULL;
-        multibyte_to_wide(wDatastore, UnitTestUtil::GetEnviron("datastore", DB_NAME_OVERRIDE_SUFFIX));
+        FdoStringP wDatastore = UnitTestUtil::GetEnviron("datastore", DB_NAME_OVERRIDE_SUFFIX);
         CreateRdbmsSpecificElements(connection, wDatastore);
 
 		// The following tests must be run in the following order to get the expected results.
@@ -527,8 +526,8 @@ void FdoApplySchemaTest::TestOverrides ()
         UnitTestUtil::Sql2Db( 
             FdoStringP::Format( 
                         L"grant select on %ls.storage to %ls",
-                        (FdoString*) FdoStringP(UnitTestUtil::GetEnviron("datastore", DB_NAME_OVERRIDE_SUFFIX)),
-                        (FdoString*) FdoStringP(UnitTestUtil::GetEnviron("datastore", DB_NAME_FOREIGN_SUFFIX))
+                        (FdoString*) UnitTestUtil::GetEnviron("datastore", DB_NAME_OVERRIDE_SUFFIX),
+                        (FdoString*) UnitTestUtil::GetEnviron("datastore", DB_NAME_FOREIGN_SUFFIX)
                     ),
                     connection
                 );
@@ -536,8 +535,8 @@ void FdoApplySchemaTest::TestOverrides ()
         UnitTestUtil::Sql2Db( 
             FdoStringP::Format( 
                         L"grant select on %ls.oneforeign to %ls",
-                        (FdoString*) FdoStringP(UnitTestUtil::GetEnviron("datastore", DB_NAME_OVERRIDE_SUFFIX)),
-                        (FdoString*) FdoStringP(UnitTestUtil::GetEnviron("datastore", DB_NAME_FOREIGN_SUFFIX))
+                        (FdoString*) UnitTestUtil::GetEnviron("datastore", DB_NAME_OVERRIDE_SUFFIX),
+                        (FdoString*) UnitTestUtil::GetEnviron("datastore", DB_NAME_FOREIGN_SUFFIX)
                     ),
                     connection
                 );
@@ -553,8 +552,8 @@ void FdoApplySchemaTest::TestOverrides ()
         UnitTestUtil::Sql2Db( 
             FdoStringP::Format( 
                         L"grant select on %ls.storage_floor to %ls",
-                        (FdoString*) FdoStringP(UnitTestUtil::GetEnviron("datastore", DB_NAME_OVERRIDE_SUFFIX)),
-                        (FdoString*) FdoStringP(UnitTestUtil::GetEnviron("datastore", DB_NAME_FOREIGN_SUFFIX))
+                        (FdoString*) UnitTestUtil::GetEnviron("datastore", DB_NAME_OVERRIDE_SUFFIX),
+                        (FdoString*) UnitTestUtil::GetEnviron("datastore", DB_NAME_FOREIGN_SUFFIX)
             ),
             connection
         );
@@ -628,7 +627,7 @@ void FdoApplySchemaTest::TestOverrides ()
         fdoClasses->RemoveAt( fdoClasses->IndexOf(L"view_op") );
 
         FdoRdbmsOvSchemaMappingP mapping = (FdoRdbmsOvPhysicalSchemaMapping*) mappings->GetItem( connection, pSchema->GetName());
-        ShemaOvSetOwner(mapping, FdoStringP(UnitTestUtil::GetEnviron("datastore", DB_NAME_OVERRIDE_SUFFIX)) );
+        ShemaOvSetOwner(mapping, UnitTestUtil::GetEnviron("datastore", DB_NAME_OVERRIDE_SUFFIX) );
 
         // Apply the foreign schema
         FdoPtr<FdoIApplySchema>  pApplyCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
@@ -769,8 +768,7 @@ void FdoApplySchemaTest::TestOverrideDefaults ()
         staticConn->SetSchema( DB_NAME_OVERRIDE_DEFAULT_SUFFIX );
 
         // Create RDBMS-specific elements (such as filegroups on SQL Server, tablespaces on Oracle, etc):
-        wchar_t *wDatastore = NULL;
-        multibyte_to_wide(wDatastore, UnitTestUtil::GetEnviron("datastore", DB_NAME_OVERRIDE_DEFAULT_SUFFIX));
+        FdoStringP wDatastore = UnitTestUtil::GetEnviron("datastore", DB_NAME_OVERRIDE_DEFAULT_SUFFIX);
         CreateRdbmsSpecificElements(connection, wDatastore);
 
 		// The following tests must be run in the following order to get the expected results.
@@ -892,7 +890,7 @@ void FdoApplySchemaTest::TestOverrideErrors ()
 		);
 
 		// Compare output files with expected results.
-	    FdoStringP provider = UnitTestUtil::GetEnviron("provider","");
+	    FdoStringP provider = UnitTestUtil::GetEnviron("provider");
    		UnitTestUtil::CheckOutput( 
             "apply_schema_overrides_err1_master.txt",
             UnitTestUtil::GetOutputFileName( L"apply_schema_overrides_err1.txt" )
@@ -1785,7 +1783,7 @@ void FdoApplySchemaTest::CreateSystemSchema( FdoIConnection* connection )
 	   with this name.
      */
 
-    datastoreName = FdoStringP::Format( L"%hs", UnitTestUtil::GetEnviron("datastore", DB_NAME_SUFFIX ) ).Upper();
+    datastoreName = UnitTestUtil::GetEnviron("datastore", DB_NAME_SUFFIX ).Upper();
     if ( mIsLowerDatastoreName ) 
         datastoreName = datastoreName.Lower();
 
@@ -4437,7 +4435,7 @@ void FdoApplySchemaTest::CreateForeignErrorSchema( FdoIConnection* connection )
     FdoPropertiesP(pClass->GetProperties())->Add( pProp );
 
     FdoOracleOvSchemaMappingP mapping = FdoOracleOvPhysicalSchemaMapping::Create( L"ForeignError");
-    mapping->SetOwner( FdoStringP(UnitTestUtil::GetEnviron("datastore", DB_NAME_OVERRIDE_SUFFIX)) );
+    mapping->SetOwner( UnitTestUtil::GetEnviron("datastore", DB_NAME_OVERRIDE_SUFFIX) );
 
     pCmd->SetFeatureSchema( pSchema );
     pCmd->SetPhysicalMapping( mapping );

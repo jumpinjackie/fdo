@@ -197,15 +197,15 @@ protected:
     FdoStringP mDatastore;
 	bool mIsLowerDatastoreName;
 
-    static char*      DB_NAME_SUFFIX;
-    static char*      DB_NAME_COPY_SUFFIX;
-    static char*      DB_NAME_OVERRIDE_SUFFIX;
-    static char*      DB_NAME_OVERRIDE_DEFAULT_SUFFIX;
-    static char*      DB_NAME_FOREIGN_SUFFIX;
-    static char*      DB_NAME_CONFIG_SUFFIX;
+    static FdoString*      DB_NAME_SUFFIX;
+    static FdoString*      DB_NAME_COPY_SUFFIX;
+    static FdoString*      DB_NAME_OVERRIDE_SUFFIX;
+    static FdoString*      DB_NAME_OVERRIDE_DEFAULT_SUFFIX;
+    static FdoString*      DB_NAME_FOREIGN_SUFFIX;
+    static FdoString*      DB_NAME_CONFIG_SUFFIX;
 
-    static wchar_t*   LT_NAME;
-    static char*      DB_NAME_LT_SUFFIX;
+    static FdoString*      LT_NAME;
+    static FdoString*      DB_NAME_LT_SUFFIX;
 
 };
 
