@@ -203,8 +203,8 @@ void ArcSDETests::SetClassCapabilities(FdoClassDefinition *cls, bool bSupportLoc
 
 int ArcSDETests::Insert (FdoIConnection* connection, UnitTestClass* definition, size_t index)
 {
-    wchar_t* id;
-    wchar_t* name;
+    FdoString* id;
+    FdoString* name;
     FdoPtr<FdoValueExpression> expression;
     FdoPtr<FdoPropertyValue> value;
     int ret;
@@ -264,7 +264,7 @@ void ArcSDETests::Update (FdoIConnection* connection, UnitTestClass* definition,
     FdoPtr<FdoFilter> filter;
     FdoPtr<FdoIUpdate> update;
     FdoPtr<FdoPropertyValueCollection> values;
-    wchar_t* name;
+    FdoString* name;
     FdoPtr<FdoValueExpression> expression;
     FdoPtr<FdoPropertyValue> value;
     int count;
@@ -723,7 +723,7 @@ FdoExpression* ArcSDETests::ParseByDataType(const wchar_t* data, FdoDataType dat
 }
 
 
-void ArcSDETests::checkEqual(FdoPtr<FdoIFeatureReader> reader, wchar_t* propertyName, FdoDataType propertyType, const wchar_t* propertyData)
+void ArcSDETests::checkEqual(FdoPtr<FdoIFeatureReader> reader, FdoString* propertyName, FdoDataType propertyType, FdoString* propertyData)
 {
     // Get the literal expression we're comparing against:
     FdoPtr<FdoExpression> expression = ArcSDETests::ParseByDataType(propertyData,propertyType);

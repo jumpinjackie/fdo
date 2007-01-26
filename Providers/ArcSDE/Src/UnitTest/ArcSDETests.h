@@ -23,13 +23,31 @@
 #pragma once
 #endif // _WIN32
 
+// Updates the given name based on whether the unit tests are being run in
+// release mode or debug mode.  This is necessary following recent performance
+// changes which cause the provider to behave differently if run in
+// debug vs release mode, namely that FDO metadata that impacts FDO class/property
+// names is only retrieved in debug mode since ApplySchema is only supported in debug mode.
+static FdoString* AdjustRdbmsName(FdoString* name)
+{
+    static int bufferIndex=0;
+    static wchar_t buffer[10][1000];
+#ifdef _DEBUG
+    return name;
+#else
+    bufferIndex = (bufferIndex+1) % 10;
+    wcscpy(buffer[bufferIndex], name);
+    return FdoCommonOSUtil::wcsupr(buffer[bufferIndex]);
+#endif
+}
+
 
 // Represents one FDO data property with a corresponding data value
 class UnitTestData
 {
 public:
-    wchar_t*    mPropertyName;
-    wchar_t*    mPropertyDescription;
+    FdoString*  mPropertyName;
+    FdoString*  mPropertyDescription;
     FdoDataType mPropertyType;
     int         mPropertyLength;
     int         mPropertyPrecision;
@@ -40,8 +58,8 @@ public:
     std::vector<const wchar_t*> mPropertyData;
 
     UnitTestData (
-        wchar_t*    property_name,
-        wchar_t*    property_description,
+        FdoString*  property_name,
+        FdoString*  property_description,
         FdoDataType property_type,
         int         property_length,
         int         property_precision,
@@ -62,6 +80,7 @@ public:
     {
         const wchar_t* data;
         va_list varArgs;
+        mPropertyName = AdjustRdbmsName(mPropertyName);
 
         // Handle random list of property data:
         va_start (varArgs, property_auto);
@@ -132,7 +151,7 @@ public:
     static FdoExpression* ParseByDataType(const wchar_t* data, FdoDataType dataType);
 
     // Check that the given property in the given reader matches the given value:
-    void checkEqual(FdoPtr<FdoIFeatureReader> reader, wchar_t* propertyName, FdoDataType propertyType, const wchar_t* propertyData);
+    void checkEqual(FdoPtr<FdoIFeatureReader> reader, FdoString* propertyName, FdoDataType propertyType, FdoString* propertyData);
 
     // add the given class to the default schema
     static void CreateSchema (FdoIConnection* connection, UnitTestClass* cls);
@@ -528,7 +547,7 @@ public:
 
 #define DECLARE_CLASS(DBMETHODNAME, USERMETHODNAME, CLASSMETHODNAME, REALCLASSNAME) \
 static FdoStringP ClassSchema##CLASSMETHODNAME() { return FdoStringP::Format(L"%ls%ls", (FdoString*)FdoSchemaPrefix##DBMETHODNAME(), (FdoString*)UserName##USERMETHODNAME()); } \
-static FdoStringP ClassName##CLASSMETHODNAME()  { return REALCLASSNAME; } \
+static FdoStringP ClassName##CLASSMETHODNAME()  { return AdjustRdbmsName(REALCLASSNAME); } \
 static FdoStringP QClassName##CLASSMETHODNAME() { return FdoStringP::Format(L"%ls:%ls", (FdoString*)ClassSchema##CLASSMETHODNAME(), (FdoString*)ClassName##CLASSMETHODNAME()); }
 
     DECLARE_CLASS(Sde, Metadcov, TestClassSimple, L"TESTA");

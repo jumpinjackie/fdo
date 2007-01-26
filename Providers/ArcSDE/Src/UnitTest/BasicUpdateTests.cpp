@@ -489,21 +489,21 @@ void BasicUpdateTests::update_on_lock_enabled_table ()
         insert->SetFeatureClassName (ArcSDETestConfig::QClassNameSample());
         FdoPtr<FdoPropertyValueCollection> values = insert->GetPropertyValues ();
         FdoPtr<FdoStringValue> expression = FdoStringValue::Create (L"Zozo");
-        FdoPtr<FdoPropertyValue> value = FdoPropertyValue::Create (L"LockProperty", expression);
+        FdoPtr<FdoPropertyValue> value = FdoPropertyValue::Create (AdjustRdbmsName(L"LockProperty"), expression);
         values->Add (value);
         FdoPtr<FdoIFeatureReader> reader = insert->Execute ();
         FdoInt32 newId = 0;
         if (reader->ReadNext())
-            newId = reader->GetInt32(L"Id");
+            newId = reader->GetInt32(AdjustRdbmsName(L"Id"));
 
         FdoPtr<FdoIUpdate> update = (FdoIUpdate*)mConnection->CreateCommand (FdoCommandType_Update);
         update->SetFeatureClassName (ArcSDETestConfig::QClassNameSample());
         wchar_t filter[1024];
-        FdoCommonOSUtil::swprintf(filter, ELEMENTS(filter), L"Id = %d", newId);
+        FdoCommonOSUtil::swprintf(filter, ELEMENTS(filter), L"%ls = %d", AdjustRdbmsName(L"Id"), newId);
         update->SetFilter (FdoPtr<FdoFilter>(FdoFilter::Parse (filter)));
 	    values = update->GetPropertyValues ();
 	    value = FdoPropertyValue::Create ();
-        value->SetName (L"LockProperty");
+        value->SetName (AdjustRdbmsName(L"LockProperty"));
 		value->SetValue (L"'All mimsy were the borogoves'");
         values->Add (value);
         if (1 != update->Execute ())
@@ -515,7 +515,7 @@ void BasicUpdateTests::update_on_lock_enabled_table ()
         reader = select->Execute ();
         while (reader->ReadNext ())
         {
-            CPPUNIT_ASSERT_MESSAGE ("incorrect value", 0 == wcscmp (L"All mimsy were the borogoves", reader->GetString (L"LockProperty")));
+            CPPUNIT_ASSERT_MESSAGE ("incorrect value", 0 == wcscmp (L"All mimsy were the borogoves", reader->GetString (AdjustRdbmsName(L"LockProperty"))));
         }
         reader->Close();
 

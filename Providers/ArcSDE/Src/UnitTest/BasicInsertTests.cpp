@@ -890,6 +890,8 @@ void BasicInsertTests::batch_insert ()
 /* Test default values and read-only properties in insert operation. */
 void BasicInsertTests::defaults_insert ()
 {
+// This test relies on metadata created by ApplySchema which is only available in Debug mode, so skip this test if not running in debug mode
+#ifdef _DEBUG
     if (CreateSchemaOnly())  return;
 
     try
@@ -909,7 +911,7 @@ void BasicInsertTests::defaults_insert ()
             FdoPtr<FdoPropertyValue> value;
             FdoPtr<FdoValueExpression> expression;
             expression = (FdoValueExpression*)ArcSDETests::ParseByDataType (L"'Inserted String 1'", FdoDataType_String);
-            value = FdoPropertyValue::Create(L"StringWithDefault1", expression);
+            value = FdoPropertyValue::Create(AdjustRdbmsName(L"StringWithDefault1"), expression);
             values->Add(value);
         }
         FdoPtr<FdoIFeatureReader> reader = insert->Execute ();
@@ -920,9 +922,9 @@ void BasicInsertTests::defaults_insert ()
         selectCmd->SetFeatureClassName (ArcSDETestConfig::QClassNameTestClassNew());
         reader = selectCmd->Execute ();
         CPPUNIT_ASSERT_MESSAGE("Failed to read 1st inserted row", reader->ReadNext());
-        checkEqual(reader, L"ReadOnlyInt", FdoDataType_Int32, L"255");
-        checkEqual(reader, L"StringWithDefault1", FdoDataType_String, L"'Inserted String 1'");
-        checkEqual(reader, L"StringWithDefault2", FdoDataType_String, L"'Default String 2'");
+        checkEqual(reader, AdjustRdbmsName(L"ReadOnlyInt"), FdoDataType_Int32, L"255");
+        checkEqual(reader, AdjustRdbmsName(L"StringWithDefault1"), FdoDataType_String, L"'Inserted String 1'");
+        checkEqual(reader, AdjustRdbmsName(L"StringWithDefault2"), FdoDataType_String, L"'Default String 2'");
         CPPUNIT_ASSERT_MESSAGE("Shouldn't be anymore rows", !reader->ReadNext());
         reader->Close ();
 
@@ -936,7 +938,7 @@ void BasicInsertTests::defaults_insert ()
             FdoPtr<FdoPropertyValue> value;
             FdoPtr<FdoValueExpression> expression;
             expression = (FdoValueExpression*)ArcSDETests::ParseByDataType (L"123", FdoDataType_Int32);
-            value = FdoPropertyValue::Create(L"ReadOnlyInt", expression);
+            value = FdoPropertyValue::Create(AdjustRdbmsName(L"ReadOnlyInt"), expression);
             values->Add(value);
         }
         try
@@ -956,6 +958,7 @@ void BasicInsertTests::defaults_insert ()
     {
         fail (ge);
     }
+#endif
 }
 
 
@@ -1090,7 +1093,7 @@ void BasicInsertTests::geometry_insert_ZM()
             FdoPtr<FdoIGeometry> aGeometry = collection->GetItem(i);
             FdoPtr<FdoByteArray> byteArray = gf->GetFgf(aGeometry);
             FdoPtr<FdoGeometryValue> geomExpression = FdoGeometryValue::Create(byteArray);
-            FdoPtr<FdoPropertyValue> value = FdoPropertyValue::Create (L"MyGeometry", geomExpression);
+            FdoPtr<FdoPropertyValue> value = FdoPropertyValue::Create (AdjustRdbmsName(L"MyGeometry"), geomExpression);
             values->Add (value);
             FdoPtr<FdoIFeatureReader> reader = insert->Execute ();
             // none returned: reader->Close ();
@@ -1100,7 +1103,7 @@ void BasicInsertTests::geometry_insert_ZM()
             selectCmd->SetFeatureClassName (ArcSDETestConfig::QClassNameTestClassGeomZm3());
             reader = selectCmd->Execute ();
             CPPUNIT_ASSERT_MESSAGE("Should have retrieved 1 row, got 0 rows", reader->ReadNext());
-            FdoPtr<FdoByteArray> fetched = reader->GetGeometry (L"MyGeometry");
+            FdoPtr<FdoByteArray> fetched = reader->GetGeometry (AdjustRdbmsName(L"MyGeometry"));
             FdoPtr<FdoByteArray> reference = geomExpression->GetGeometry ();
             FdoPtr<FdoIGeometry> fetchedGeom = gf->CreateGeometryFromFgf(fetched);
             FdoPtr<FdoIGeometry> referenceGeom = gf->CreateGeometryFromFgf(reference);
@@ -1188,7 +1191,7 @@ void BasicInsertTests::user_managed_ids()
             propValues->Add (propVal);
             FdoPtr<FdoExpression> valueExpr1 = FdoExpression::Parse(geom1);
             FdoGeometryValue* geomVal1 = dynamic_cast<FdoGeometryValue*>(valueExpr1.p);
-            propVal = FdoPropertyValue::Create (L"MyGeometry", geomVal1);
+            propVal = FdoPropertyValue::Create (AdjustRdbmsName(L"MyGeometry"), geomVal1);
             propValues->Add (propVal);
             reader = insert->Execute();
             CPPUNIT_ASSERT_MESSAGE("Expected to receive one id from FdoIInsert::Execute(), got none.", reader->ReadNext());
@@ -1204,7 +1207,7 @@ void BasicInsertTests::user_managed_ids()
             propVal = propValues->GetItem(Data[5]->mPropertyName);
             FdoPtr<FdoInt32Value> intValId2 = FdoInt32Value::Create(int2);
             propVal->SetValue(intValId2);
-            propVal = propValues->GetItem(L"MyGeometry");
+            propVal = propValues->GetItem(AdjustRdbmsName(L"MyGeometry"));
             FdoPtr<FdoExpression> valueExpr2 = FdoExpression::Parse(geom2);
             FdoGeometryValue* geomVal2 = dynamic_cast<FdoGeometryValue*>(valueExpr2.p);
             propVal->SetValue(geomVal2);
@@ -1223,7 +1226,7 @@ void BasicInsertTests::user_managed_ids()
             propVal = propValues->GetItem(Data[5]->mPropertyName);
             FdoPtr<FdoInt32Value> intValId3 = FdoInt32Value::Create(int2);
             propVal->SetValue(intValId3);
-            propVal = propValues->GetItem(L"MyGeometry");
+            propVal = propValues->GetItem(AdjustRdbmsName(L"MyGeometry"));
             FdoPtr<FdoExpression> valueExpr3 = FdoExpression::Parse(geom2);
             FdoGeometryValue* geomVal3 = dynamic_cast<FdoGeometryValue*>(valueExpr3.p);
             propVal->SetValue(geomVal3);
@@ -1435,7 +1438,7 @@ void BasicInsertTests::nullable_insert ()
         selectCmd->SetFeatureClassName (ArcSDETestConfig::QClassNameTestClassNullable());
         reader = selectCmd->Execute ();
         CPPUNIT_ASSERT_MESSAGE("Failed to read 1st inserted row", reader->ReadNext());
-        checkEqual(reader, L"String1", FdoDataType_String, L"NULL");
+        checkEqual(reader, AdjustRdbmsName(L"String1"), FdoDataType_String, L"NULL");
         CPPUNIT_ASSERT_MESSAGE("Shouldn't be anymore rows", !reader->ReadNext());
         reader->Close ();
     }

@@ -240,7 +240,7 @@ void RecommitTest::AddData ()
     values->Add (area);
     FdoPtr<FdoIFeatureReader> reader = insert->Execute ();
     reader->ReadNext();
-    iCityId1 = reader->GetInt32(L"Id");
+    iCityId1 = reader->GetInt32(AdjustRdbmsName(L"Id"));
     reader->Close();
 
     males->SetValue (L"254000");
@@ -248,7 +248,7 @@ void RecommitTest::AddData ()
     area->SetValue (L"'VANCOUVER, BC'");
     reader = insert->Execute ();
     reader->ReadNext();
-    iCityId2 = reader->GetInt32(L"Id");
+    iCityId2 = reader->GetInt32(AdjustRdbmsName(L"Id"));
     reader->Close();
 
     insert->SetFeatureClassName (ArcSDETestConfig::QClassNameBeach());
@@ -263,14 +263,14 @@ void RecommitTest::AddData ()
     values->Add (county);
     reader = insert->Execute ();
     reader->ReadNext();
-    iBeachId1 = reader->GetInt32(L"Id");
+    iBeachId1 = reader->GetInt32(AdjustRdbmsName(L"Id"));
     reader->Close();
 
     owner->SetValue (L"'LOFT PROPERTIES'");
     county->SetValue (L"'OO'");
     reader = insert->Execute ();
     reader->ReadNext();
-    iBeachId2 = reader->GetInt32(L"Id");
+    iBeachId2 = reader->GetInt32(AdjustRdbmsName(L"Id"));
     reader->Close();
 
     transaction->Commit ();
@@ -394,7 +394,7 @@ void RecommitTest::multibranch (void)
     bool found = false;
     while (reader->ReadNext ())
     {
-        if (iCityId2 == reader->GetInt32 (L"Id"))
+        if (iCityId2 == reader->GetInt32 (AdjustRdbmsName(L"Id")))
         {
             CPPUNIT_ASSERT_MESSAGE ("LT1 edit missing", 0 == wcscmp (L"CALGARY, ALBERTA" , reader->GetString (L"AREANAME")));
             found = true;
@@ -408,11 +408,11 @@ void RecommitTest::multibranch (void)
     bool found4 = false;
     while (reader->ReadNext ())
     {
-        if (iBeachId1 == reader->GetInt32 (L"Id"))
+        if (iBeachId1 == reader->GetInt32 (AdjustRdbmsName(L"Id")))
             CPPUNIT_FAIL ("child didn't win the delete");
-        else if (iBeachId3 == reader->GetInt32 (L"Id"))
+        else if (iBeachId3 == reader->GetInt32 (AdjustRdbmsName(L"Id")))
             found3 = true;
-        else if (iBeachId4 == reader->GetInt32 (L"Id"))
+        else if (iBeachId4 == reader->GetInt32 (AdjustRdbmsName(L"Id")))
             found4 = true;
     }
     CPPUNIT_ASSERT_MESSAGE ("LT1 feature not found", found3);
@@ -554,7 +554,7 @@ void RecommitTest::insertData1 ()
 	properties->Add (value);
 	FdoPtr<FdoIFeatureReader> reader = insert->Execute ();
     reader->ReadNext();
-    iBeachId4 = reader->GetInt32(L"Id");
+    iBeachId4 = reader->GetInt32(AdjustRdbmsName(L"Id"));
     reader->Close();
     transaction->Commit();
 }
@@ -609,7 +609,7 @@ void RecommitTest::insertData2 ()
 	properties->Add (value);
 	FdoPtr<FdoIFeatureReader> reader = insert->Execute ();
     reader->ReadNext();
-    iBeachId3 = reader->GetInt32(L"Id");
+    iBeachId3 = reader->GetInt32(AdjustRdbmsName(L"Id"));
     reader->Close();
     transaction->Commit();
 }
