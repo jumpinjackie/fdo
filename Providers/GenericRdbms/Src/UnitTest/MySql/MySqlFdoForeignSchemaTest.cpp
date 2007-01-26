@@ -20,7 +20,7 @@
 #include "MySqlFdoForeignSchemaTest.h"
 #include "UnitTestUtil.h"
 
-#define   DB_NAME_SUFFIX            "_fs"
+#define   DB_NAME_SUFFIX            L"_fs"
 
 CPPUNIT_TEST_SUITE_REGISTRATION( MySqlFdoForeignSchemaTest );
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( MySqlFdoForeignSchemaTest, "FdoForeignSchemaTest");
@@ -32,7 +32,7 @@ void MySqlFdoForeignSchemaTest::set_provider()
 void MySqlFdoForeignSchemaTest::create_foreign_datastore()
 {
 	bool dbExists = UnitTestUtil::DatastoreExists(DB_NAME_SUFFIX);
-	FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore, "");
+	FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore, L"");
 	FdoIConnection* connection = UnitTestUtil::GetProviderConnectionObject();
 
     connection->SetConnectionString ( userConnectString);
