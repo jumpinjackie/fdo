@@ -121,8 +121,12 @@ FdoBoolean FdoConstraintsTest::CanRestrictCheckConstraint()
     return true;
 }
 
-FdoBoolean FdoConstraintsTest::CanHandleExactFloatValue()
+FdoDouble FdoConstraintsTest::GetDoubleRounding( FdoDataType dataType )
 {
-    return false;
+    if ( dataType == FdoDataType_Decimal ) 
+        return (FdoDouble) 0.05;
+    else
+        return (FdoDouble) 0.000000000001;
 }
+
 

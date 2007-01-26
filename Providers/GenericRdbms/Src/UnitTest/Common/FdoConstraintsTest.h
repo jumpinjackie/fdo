@@ -43,7 +43,7 @@ public:
 protected:
     virtual FdoIConnection* CreateConnection( FdoBoolean recreateDb = false );
     virtual FdoBoolean CanRestrictCheckConstraint();
-    virtual FdoBoolean CanHandleExactFloatValue();
+    virtual FdoDouble GetDoubleRounding( FdoDataType dataType );
     virtual void  set_provider() {};
 
 };
