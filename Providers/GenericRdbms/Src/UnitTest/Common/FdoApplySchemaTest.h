@@ -70,7 +70,7 @@ protected:
 	void CreateErrorSchema( FdoIConnection* connection );
 
 	void CreateLongStringSchema( FdoIConnection* connection );
-	void CreateOverrideSchema( FdoIConnection* connection, FdoRdbmsOvPhysicalSchemaMapping* pOverrides = NULL, bool nnull = false );
+	void CreateOverrideSchema( FdoIConnection* connection, FdoRdbmsOvPhysicalSchemaMapping* pOverrides = NULL, bool nnull = false, bool addConstraints = true );
     void CreateForeignBasedSchema( FdoIConnection* connection, FdoFeatureSchema* pBaseSchema, FdoRdbmsOvPhysicalSchemaMapping* pOverrides = NULL );
 /*
     void CreateForeignErrorSchema( FdoIConnection* connection );

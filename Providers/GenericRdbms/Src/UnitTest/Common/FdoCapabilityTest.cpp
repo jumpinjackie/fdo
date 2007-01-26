@@ -65,8 +65,6 @@ void FdoCapabilityTest::Connection ()
 
     try {
 
-      connection = UnitTestUtil::GetConnection(L"", true);
-
 	  //const wchar_t **strings;
 	  //const wchar_t **strings2;
 	  //int count;
@@ -81,6 +79,8 @@ void FdoCapabilityTest::Connection ()
 
       for (i = 0; i < 20; i++)
         m_supportedFunctions[i] = NULL;
+
+      connection = UnitTestUtil::GetConnection(L"", true);
 
 	  FdoPtr<FdoIConnectionCapabilities> connectionCapabilities = connection->GetConnectionCapabilities();
       FdoSpatialContextExtentType *contextExtentType = connectionCapabilities->GetSpatialContextTypes(size);

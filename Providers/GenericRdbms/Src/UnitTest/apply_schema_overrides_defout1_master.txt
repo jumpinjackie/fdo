@@ -95,7 +95,6 @@
 </element>
 </complexType>
 <complexType name="OvClassJType">
-<Table pkeyName="PK_OV_TABLE_J" name="OV_TABLE_J"/>
 <element name="DataJ">
 <Column name="OV_COL_J"/>
 </element>

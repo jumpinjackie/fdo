@@ -776,7 +776,9 @@ void FdoApplySchemaTest::TestOverrideDefaults ()
 		printf( "Creating Override Schema ... \n" );
 		CreateOverrideSchema( 
             connection, 
-            FdoRdbmsOvSchemaMappingP( CreateOverrideDefaults(connection, 1) )
+            FdoRdbmsOvSchemaMappingP( CreateOverrideDefaults(connection, 1) ),
+            false,
+            false
         );
 
 		printf( "Writing 1st LogicalPhysical Schema ... \n" );
@@ -891,10 +893,13 @@ void FdoApplySchemaTest::TestOverrideErrors ()
 
 		// Compare output files with expected results.
 	    FdoStringP provider = UnitTestUtil::GetEnviron("provider");
+      
+#ifdef _WIN32
    		UnitTestUtil::CheckOutput( 
             "apply_schema_overrides_err1_master.txt",
             UnitTestUtil::GetOutputFileName( L"apply_schema_overrides_err1.txt" )
         );
+#endif
 
 	}
 	catch ( FdoException* e ) 
@@ -4157,7 +4162,7 @@ void FdoApplySchemaTest::CopySchemas(FdoFeatureSchemaCollection* pSchemas, FdoFe
 
 }
 
-void FdoApplySchemaTest::CreateOverrideSchema( FdoIConnection* connection, FdoRdbmsOvPhysicalSchemaMapping* pOverrides, bool nnull )
+void FdoApplySchemaTest::CreateOverrideSchema( FdoIConnection* connection, FdoRdbmsOvPhysicalSchemaMapping* pOverrides, bool nnull, bool addConstraints )
 {
 	FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
 	FdoFeatureSchemaP                   pSchema = FdoFeatureSchema::Create( L"OverridesA", L"AutoCAD schema" );
@@ -4266,7 +4271,7 @@ void FdoApplySchemaTest::CreateOverrideSchema( FdoIConnection* connection, FdoRd
 	        FdoPropertiesP(pFeatClass->GetProperties())->Add( pGeomProp3 );
         }
 
-        if ( idx == 9 ) {
+        if ( addConstraints && (idx == 9) ) {
             FdoPtr<FdoReadOnlyPropertyDefinitionCollection> pBaseProps = pBaseClass->GetBaseProperties();
 
             FdoPtr<FdoUniqueConstraint> constr = FdoUniqueConstraint::Create();
