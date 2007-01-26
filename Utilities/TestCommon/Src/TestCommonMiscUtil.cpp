@@ -133,6 +133,7 @@ FdoPtr<FdoDataValue> TestCommonMiscUtil::ArgsToDataValue( va_list& arguments )
     FdoByte byteArg;
     FdoInt32 int32Arg;
     FdoFloat floatArg;
+    FdoDouble doubleArg;
     FdoString* strArg;
 
     FdoDataType dataType = (FdoDataType) va_arg(arguments,int);
@@ -153,6 +154,11 @@ FdoPtr<FdoDataValue> TestCommonMiscUtil::ArgsToDataValue( va_list& arguments )
     case FdoDataType_Single:
         floatArg = (FdoFloat) va_arg(arguments,double);
         dataValue = FdoDataValue::Create(floatArg);
+        break;
+    case FdoDataType_Double:
+    case FdoDataType_Decimal:
+        doubleArg = (FdoDouble) va_arg(arguments,double);
+        dataValue = FdoDataValue::Create(doubleArg, dataType);
         break;
     case FdoDataType_String:
         strArg = va_arg(arguments,FdoString*);

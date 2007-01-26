@@ -1296,34 +1296,31 @@ void TestCommonConstraints::CreateConstraintsSchema( FdoIConnection* connection 
         CPPUNIT_ASSERT_MESSAGE("Should get check constraint violation prop #3", checkSuccess == false );
 
 
-        if ( CanHandleExactFloatValue() ) {
+        TestCommonMiscUtil::InsertObject(
+            connection,
+            insertCmd,
+            SCHEMA_NAME,
+            CLASS_NAME,
+            PROP_FEATID, FdoDataType_Int32, 99999999,
+            PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 10,
+            PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
+            PROP_STRING_L,  FdoDataType_String, L"open",
+            PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 8000,
+            PROP_UNIQUE2_1,  FdoDataType_Int32,  (FdoInt32) 8000,
+            (FdoString*) NULL
+        );
 
-            TestCommonMiscUtil::InsertObject(
-                connection,
-                insertCmd,
-                SCHEMA_NAME,
-                CLASS_NAME,
-                PROP_FEATID, FdoDataType_Int32, 99999999,
-                PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 10,
-                PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
-                PROP_STRING_L,  FdoDataType_String, L"open",
-                PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 8000,
-                PROP_UNIQUE2_1,  FdoDataType_Int32,  (FdoInt32) 8000,
-                (FdoString*) NULL
-            );
+        UpdateAllValues( connection, CLASS_NAME, 99999999);
 
-            UpdateAllValues( connection, CLASS_NAME, 99999999);
-
-            TestCommonMiscUtil::DeleteObjects( 
-                connection,
-                SCHEMA_NAME,
-                CLASS_NAME,
-                PROP_FEATID,
-                FdoDataType_Int32,
-                (FdoInt32) 99999999,
-                NULL
-            );
-        }
+        TestCommonMiscUtil::DeleteObjects( 
+            connection,
+            SCHEMA_NAME,
+            CLASS_NAME,
+            PROP_FEATID,
+            FdoDataType_Int32,
+            (FdoInt32) 99999999,
+            NULL
+        );
     }
 }
 
@@ -1338,7 +1335,7 @@ void TestCommonConstraints::UpdateAllValues(
     UpdateRangeIntegralValues( connection, pClassName, PROP_FEATID, featId, PROP_INT32_R, INT32_RANGE );
     UpdateRangeIntegralValues( connection, pClassName, PROP_FEATID, featId, PROP_INT64_R, INT64_RANGE );
     UpdateRangeDoubleValues( connection, pClassName, PROP_FEATID, featId, PROP_DOUBLE_R, FdoDataType_Double, DOUBLE_RANGE );
-    if ( CanHandleExactFloatValue() )
+    if ( GetDoubleRounding(FdoDataType_Decimal) == 0 )
         UpdateRangeDoubleValues( connection, pClassName, PROP_FEATID, featId, PROP_DECIMAL_R, FdoDataType_Decimal, DOUBLE_RANGE );
     UpdateRangeSingleValues( connection, pClassName, PROP_FEATID, featId);
     UpdateRangeStringValues( connection, pClassName, PROP_FEATID, featId);
@@ -1348,7 +1345,7 @@ void TestCommonConstraints::UpdateAllValues(
     UpdateListValues( connection, pClassName, PROP_FEATID, featId, PROP_INT32_L, INT32_LIST[1], (FdoInt32) 500 );
     UpdateListValues( connection, pClassName, PROP_FEATID, featId, PROP_INT64_L, INT64_LIST[1], (FdoInt64) 800 );
     
-    if ( this->CanHandleExactFloatValue() ) {
+    if ( GetDoubleRounding(FdoDataType_Decimal) == 0 ) {
         UpdateListDoubleValues( connection, pClassName, PROP_FEATID, featId, PROP_DOUBLE_L, FdoDataType_Double);
         UpdateListValues( connection, pClassName, PROP_FEATID, featId, PROP_SINGLE_L, SINGLE_LIST[1], (FdoFloat) 200.43 );
     }
@@ -1371,24 +1368,10 @@ void TestCommonConstraints::UpdateRangeDoubleValues(
     FdoPtr<FdoDataValueCollection> badValues = FdoDataValueCollection::Create();
     FdoPtr<FdoDataValueCollection> goodValues = FdoDataValueCollection::Create();
 
-    badValues->Add( 
-        FdoPtr<FdoDataValue>(
-            FdoDataValue::Create(
-               this->CanHandleExactFloatValue() ? (FdoDouble) pRange[0] : (FdoDouble)(pRange[0] - 0.01), 
-                dataType
-            )
-        ) 
-    );
-    badValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create((FdoDouble)(pRange[1] + 0.01), dataType)) );
-    goodValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create((FdoDouble) (pRange[0] + 0.01), dataType)) );
-    goodValues->Add( 
-        FdoPtr<FdoDataValue>(
-            FdoDataValue::Create(
-                this->CanHandleExactFloatValue() ? (FdoDouble)pRange[1] : (FdoDouble)(pRange[1] - 0.01), 
-                dataType
-            )
-        ) 
-    );
+    badValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create((FdoDouble)(pRange[0] - GetDoubleRounding(dataType)), dataType)) );
+    badValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create((FdoDouble)(pRange[1] + 0.05), dataType)) );
+    goodValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create((FdoDouble) (pRange[0] + 0.05), dataType)) );
+    goodValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create((FdoDouble)(pRange[1] - GetDoubleRounding(dataType)), dataType)) );
 
     UpdateRangeValues( connection, pClassName, pIdName, idValue, pPropName, goodValues, badValues );
 }
@@ -1442,10 +1425,10 @@ void TestCommonConstraints::UpdateRangeDateValues(
     badValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create(dateTime)) );
     dateTime = minDateTime;
     dateTime.minute = dateTime.minute - 1;
-    dateTime.seconds = (FdoFloat)(dateTime.seconds + 0.001);
+    dateTime.seconds = (FdoFloat)(dateTime.seconds + GetSecondsIncrement());
     badValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create(dateTime)) );
     dateTime = minDateTime;
-    dateTime.seconds = (FdoFloat)(dateTime.seconds - 0.001);
+    dateTime.seconds = (FdoFloat)(dateTime.seconds - GetSecondsIncrement());
     badValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create(dateTime)) );
 
     dateTime = maxDateTime;
@@ -1467,9 +1450,9 @@ void TestCommonConstraints::UpdateRangeDateValues(
     dateTime = maxDateTime;
     dateTime.minute = dateTime.minute + 1;
     badValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create(dateTime)) );
-    dateTime.seconds = (FdoFloat)(dateTime.seconds - 0.001);
+    dateTime.seconds = (FdoFloat)(dateTime.seconds - GetSecondsIncrement());
     dateTime = maxDateTime;
-    dateTime.seconds = (FdoFloat)(dateTime.seconds + 0.001);
+    dateTime.seconds = (FdoFloat)(dateTime.seconds + GetSecondsIncrement());
     badValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create(dateTime)) );
 
     UpdateRangeValues( connection, pClassName, pIdName, idValue, PROP_DATE_R, goodValues, badValues );
@@ -3424,9 +3407,14 @@ FdoBoolean TestCommonConstraints::CanRestrictCheckConstraint()
     return true;
 }
 
-FdoBoolean TestCommonConstraints::CanHandleExactFloatValue()
+FdoDouble TestCommonConstraints::GetDoubleRounding(FdoDataType dataType)
 {
-    return true;
+    return (FdoDouble) 0.0;
+}
+
+FdoFloat TestCommonConstraints::GetSecondsIncrement()
+{
+    return (FdoFloat) 0.001;
 }
 
 FdoInt32 TestCommonConstraints::GetExpectedCheckConstraintCount( FdoIConnection* connection )
