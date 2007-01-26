@@ -24,7 +24,7 @@
 #include "FdoWfsFeatureType.h"
 
 
-FdoWfsSpatialExtentsAggregateReader::FdoWfsSpatialExtentsAggregateReader(FdoWfsConnection* conn, FdoString* layerName, FdoString* aliasName) :
+FdoWfsSpatialExtentsAggregateReader::FdoWfsSpatialExtentsAggregateReader(FdoWfsConnection* conn, FdoIdentifier* className, FdoString* aliasName) :
     m_ReaderIndex(-1),
     m_AliasName(aliasName)
 {
@@ -34,10 +34,13 @@ FdoWfsSpatialExtentsAggregateReader::FdoWfsSpatialExtentsAggregateReader(FdoWfsC
     FdoPtr<FdoWfsFeatureTypeCollection> featTypes = featTypeList->GetFeatureTypes ();
 
     // Get the class name and feature type 
-    FdoPtr<FdoWfsFeatureType> featureType = featTypes->FindItem (layerName);
+    FdoPtr<FdoWfsFeatureType> featureType = featTypes->FindItem (className->GetName());
     if (featureType == NULL) {
-        throw FdoCommandException::Create (
-            NlsMsgGet(FDO_NLSID(WFS_NAMED_FEATURETYPE_NOT_FOUND), (FdoString*)layerName));
+        featureType = featTypes->FindItem (className->GetText());
+        if (featureType == NULL) {
+            throw FdoCommandException::Create (
+                NlsMsgGet(FDO_NLSID(WFS_NAMED_FEATURETYPE_NOT_FOUND), (FdoString*)className->GetText()));
+        }
     }
 
     // Get the total extent of the feature type
@@ -48,26 +51,26 @@ FdoWfsSpatialExtentsAggregateReader::FdoWfsSpatialExtentsAggregateReader(FdoWfsC
     {
         // Get the extents from the bounding box collection
         FdoOwsGeographicBoundingBoxP bbox = extents->GetExtents();
-	    
+        
         // Copy the extent values to an array of doubles
         double ordinates[10];
-	    ordinates[0] = bbox->GetWestBoundLongitude ();
-	    ordinates[1] = bbox->GetSouthBoundLatitude ();
-	    ordinates[2] = bbox->GetEastBoundLongitude ();
-	    ordinates[3] = bbox->GetSouthBoundLatitude ();
-	    ordinates[4] = bbox->GetEastBoundLongitude ();
-	    ordinates[5] = bbox->GetNorthBoundLatitude ();
-	    ordinates[6] = bbox->GetWestBoundLongitude ();
-	    ordinates[7] = bbox->GetNorthBoundLatitude ();
-	    ordinates[8] = bbox->GetWestBoundLongitude ();
-	    ordinates[9] = bbox->GetSouthBoundLatitude ();
+        ordinates[0] = bbox->GetWestBoundLongitude ();
+        ordinates[1] = bbox->GetSouthBoundLatitude ();
+        ordinates[2] = bbox->GetEastBoundLongitude ();
+        ordinates[3] = bbox->GetSouthBoundLatitude ();
+        ordinates[4] = bbox->GetEastBoundLongitude ();
+        ordinates[5] = bbox->GetNorthBoundLatitude ();
+        ordinates[6] = bbox->GetWestBoundLongitude ();
+        ordinates[7] = bbox->GetNorthBoundLatitude ();
+        ordinates[8] = bbox->GetWestBoundLongitude ();
+        ordinates[9] = bbox->GetSouthBoundLatitude ();
 
         // Create a linear ring using the bounding box ordinates 
-	    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-	    FdoPtr<FdoILinearRing> linearRing = gf->CreateLinearRing(FdoDimensionality_XY, 10, ordinates);
+        FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+        FdoPtr<FdoILinearRing> linearRing = gf->CreateLinearRing(FdoDimensionality_XY, 10, ordinates);
 
         // Create a polygon geometry representing the extents from the linear ring
-	    m_Extents = gf->CreatePolygon(linearRing, NULL);
+        m_Extents = gf->CreatePolygon(linearRing, NULL);
     }
 }
 

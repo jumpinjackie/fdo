@@ -151,19 +151,27 @@ FdoIDataReader* FdoWfsSelectAggregatesCommand::Execute ()
                 NlsMsgGet(FDO_NLSID(WFS_CANNOT_QUERY_ABSTRACT_CLASS), (FdoString*)className));
         }
 
-        FdoPtr<FdoGeometricPropertyDefinition> geomProp = featureClass->GetGeometryProperty();
-        if (!geomProp) {
-            throw FdoCommandException::Create (
-                NlsMsgGet(FDO_NLSID(WFS_FEATURE_NO_GEOMETRY_PROPERTY), (FdoString*)className));
+        FdoBoolean bGeomPropertyFound = false;
+        FdoPtr<FdoPropertyDefinitionCollection> props = classDef->GetProperties();
+        for (int k = 0; k < props->GetCount(); k++)
+        {
+            FdoPtr<FdoPropertyDefinition> prop = props->GetItem(k);
+            if (prop->GetPropertyType() == FdoPropertyType_GeometricProperty)
+            {
+                FdoGeometricPropertyDefinition* geomProp = static_cast<FdoGeometricPropertyDefinition*>(prop.p);
+                if (wcscmp(argId->GetName(), geomProp->GetName()) == 0) {
+                    bGeomPropertyFound = true;
+                    break;
+                }
+            }
         }
-
-        if (wcscmp(argId->GetName(), geomProp->GetName()) != 0) {
+        if (!bGeomPropertyFound) {
             throw FdoCommandException::Create (
                 NlsMsgGet(FDO_NLSID(WFS_SELECTAGGREGATES_INVALID_ARGUMENT_TYPE), argId->GetName(), (FdoString*)className));
         }
     }
 
-    return new FdoWfsSpatialExtentsAggregateReader(mConnection, (FdoString*)className, computedIdentifier->GetName());
+    return new FdoWfsSpatialExtentsAggregateReader(mConnection, mClassName, computedIdentifier->GetName());
 }
 
 

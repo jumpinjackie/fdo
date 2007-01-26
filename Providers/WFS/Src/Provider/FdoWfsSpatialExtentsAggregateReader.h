@@ -20,7 +20,7 @@ class FdoWfsSpatialExtentsAggregateReader : public FdoCommonReader<FdoIDataReade
 {
 public:
 
-    FdoWfsSpatialExtentsAggregateReader(FdoWfsConnection* con, FdoString* layerName, FdoString* aliasName);
+    FdoWfsSpatialExtentsAggregateReader(FdoWfsConnection* con, FdoIdentifier* className, FdoString* aliasName);
     virtual ~FdoWfsSpatialExtentsAggregateReader();
 
 protected:
