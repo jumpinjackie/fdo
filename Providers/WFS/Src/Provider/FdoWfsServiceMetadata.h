@@ -27,6 +27,7 @@
 
 class FdoWfsFeatureTypeList;
 class FdoWfsOgcFilterCapabilities;
+class FdoWfsFeatureType;
 
 class FdoWfsServiceMetadata : public FdoOwsServiceMetadata
 {
@@ -65,7 +66,7 @@ public:
 
     virtual FdoXmlSaxContext* GetSaxContext();
 
-
+    FdoWfsFeatureType* GetFeatureType(FdoIdentifier* className);
 };
 
 

@@ -30,18 +30,10 @@ FdoWfsSpatialExtentsAggregateReader::FdoWfsSpatialExtentsAggregateReader(FdoWfsC
 {
     // Get the cached metadata and feature types 
     FdoPtr<FdoWfsServiceMetadata> serviceMetadata = conn->GetServiceMetadata ();
-    FdoPtr<FdoWfsFeatureTypeList> featTypeList = serviceMetadata->GetFeatureTypeList ();
-    FdoPtr<FdoWfsFeatureTypeCollection> featTypes = featTypeList->GetFeatureTypes ();
-
-    // Get the class name and feature type 
-    FdoPtr<FdoWfsFeatureType> featureType = featTypes->FindItem (className->GetName());
-    if (featureType == NULL) {
-        featureType = featTypes->FindItem (className->GetText());
-        if (featureType == NULL) {
-            throw FdoCommandException::Create (
-                NlsMsgGet(FDO_NLSID(WFS_NAMED_FEATURETYPE_NOT_FOUND), (FdoString*)className->GetText()));
-        }
-    }
+    FdoPtr<FdoWfsFeatureType> featureType = serviceMetadata->GetFeatureType(className);
+    if (featureType == NULL)
+        throw FdoCommandException::Create (
+            NlsMsgGet(FDO_NLSID(WFS_NAMED_FEATURETYPE_NOT_FOUND), (FdoString*)className->GetText()));
 
     // Get the total extent of the feature type
     FdoOwsGeographicBoundingBoxCollectionP extents = featureType->GetSRSExtents();

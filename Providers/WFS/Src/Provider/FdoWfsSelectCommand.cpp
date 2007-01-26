@@ -139,16 +139,12 @@ FdoIFeatureReader* FdoWfsSelectCommand::Execute ()
 	// validate the featureType by service metadata
 	// and at the same time find out the srs name that this feature type uses
 	FdoString* srsName = L"EPSG:4326";
-	if (featureTypeName != NULL) {
+	if (featureTypeName != NULL)
+    {
         FdoPtr<FdoWfsServiceMetadata> metadata = mConnection->GetServiceMetadata();
-        FdoPtr<FdoWfsFeatureTypeList> typeList = metadata->GetFeatureTypeList();
-        FdoPtr<FdoWfsFeatureTypeCollection> featTypes = typeList->GetFeatureTypes();
-        FdoPtr<FdoWfsFeatureType> featureType = featTypes->FindItem (mClassName->GetName());
-        if (featureType == NULL) {
-            featureType = featTypes->FindItem (mClassName->GetText());
-            if (featureType != NULL)
+        FdoPtr<FdoWfsFeatureType> featureType = metadata->GetFeatureType(mClassName);
+        if (featureType != NULL)
             srsName = featureType->GetSRS();
-        }
 	}
 
 	if (featureTypeName == NULL || srsName == NULL) { // no match found

@@ -209,3 +209,39 @@ void FdoWfsServiceMetadata::_getTotalExtent (FdoOwsGeographicBoundingBox* desBox
 		desBox->SetSouthBoundLatitude (srcBox->GetSouthBoundLatitude ());
 }
 
+FdoWfsFeatureType* FdoWfsServiceMetadata::GetFeatureType(FdoIdentifier* className)
+{
+    FdoPtr<FdoWfsFeatureTypeCollection> featTypes = m_featureTypeList->GetFeatureTypes();
+    FdoPtr<FdoWfsFeatureType> featureType = featTypes->FindItem (className->GetName());
+    if (featureType == NULL)
+    {
+        featureType = featTypes->FindItem (className->GetText());
+        if (featureType == NULL)
+        {
+            std::wstring lhs = className->GetName();
+	        for (int i = 0; i < featTypes->GetCount(); i++)
+            {
+		        FdoPtr<FdoWfsFeatureType> fType = featTypes->GetItem(i);
+                std::wstring rhs = fType->GetName();
+                std::wstring::size_type idxSep = rhs.find(L':');
+                bool foundit = false;
+                if (idxSep != std::wstring::npos)
+                {
+                    std::wstring::size_type szComp = rhs.size() - (idxSep+1);
+                    if(lhs.size() == szComp && !rhs.compare(idxSep+1, szComp < lhs.size() ? lhs.size() : szComp, lhs))
+                        foundit = true;
+                }
+                else {
+                    if (rhs == className->GetName())
+                        foundit = true;
+                }
+                if (foundit)
+                {
+                    featureType = fType;
+                    break;
+                }
+            }
+        }
+    }
+    return FDO_SAFE_ADDREF (featureType.p);
+}
