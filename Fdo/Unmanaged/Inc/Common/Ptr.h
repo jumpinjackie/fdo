@@ -30,8 +30,8 @@ template <class T>
 class _NoAddRefReleaseOnFdoPtr : public T
 {
     private:
-        virtual void AddRef()  = 0;
-        virtual void Release() = 0;
+        virtual FdoInt32 AddRef()  = 0;
+        virtual FdoInt32 Release() = 0;
 };
 
 template <class T>

@@ -60,7 +60,7 @@ public:
     /// \return
     /// Returns the new reference count (value for debugging use only).
     /// 
-    FDO_API_COMMON FdoInt32 AddRef() { return ++m_refCount; }
+    FDO_API_COMMON virtual FdoInt32 AddRef() { return ++m_refCount; }
 
     /// \brief
     /// Decrease the reference count.
@@ -68,7 +68,7 @@ public:
     /// \return
     /// Returns the new reference count (value for debugging use only).
     /// 
-    FDO_API_COMMON FdoInt32 Release() { if (0 != --m_refCount ) return m_refCount; Dispose(); return 0; }
+    FDO_API_COMMON virtual FdoInt32 Release() { if (0 != --m_refCount ) return m_refCount; Dispose(); return 0; }
 
     /// \brief
     /// Retrieves the reference count.
@@ -76,7 +76,7 @@ public:
     /// \return
     /// Returns the existing reference count value.
     /// 
-    FDO_API_COMMON FdoInt32 GetRefCount() { return m_refCount; }
+    FDO_API_COMMON virtual FdoInt32 GetRefCount() { return m_refCount; }
 
 private:
     FdoInt32    m_refCount;
