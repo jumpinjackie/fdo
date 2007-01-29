@@ -32,31 +32,33 @@ const wchar_t* mysql_nls_msg_get(int msg_num, char* default_msg,  ...)
     return ret;
 }
 
-const wchar_t* mysql_nls_version( int msg_num, char* default_msg, unsigned long mysql_version )
+const wchar_t* mysql_nls_version( int msg_num, char* default_msg, unsigned long mysql_version, FdoString* req_version )
 {
     // Parse out version components from integer version.
     FdoInt32 major = (FdoInt32) (mysql_version / 10000);
     FdoInt32 minor1 = (FdoInt32)((mysql_version - (major * 10000 )) / 100 );
     FdoInt32 minor2 = (FdoInt32)(mysql_version - (major * 10000 ) - (minor1 * 100));
 
-    return mysql_nls_msg_get( msg_num, default_msg, major, minor1, minor2 );
+    return mysql_nls_msg_get( msg_num, default_msg, major, minor1, minor2, req_version );
 }
 
 const wchar_t* mysql_nls_client_version( unsigned long client_version )
 {
     return mysql_nls_version( 
         FDORDBMS_493, 
-        "MySQL client (libmysql) version %1$d.%2$d.%3$d is too old, FDO requires at least version 5; ",
-        client_version
+        "MySQL client (libmysql) version %1$d.%2$d.%3$d is too old, FDO requires at least version %4$ls; ",
+        client_version,
+        L"5"
     );
 }
 
-const wchar_t* mysql_nls_server_version( unsigned long client_version )
+const wchar_t* mysql_nls_server_version( unsigned long server_version )
 {
     return mysql_nls_version( 
         FDORDBMS_494, 
-        "MySQL database version %1$d.%2$d.%3$d is too old, FDO requires at least version 5.0.15; ",
-        client_version
+        "MySQL database version %1$d.%2$d.%3$d is too old, FDO requires at least version %4$ls; ",
+        server_version,
+        L"5.0.22"
     );
 }
 
