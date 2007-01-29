@@ -156,8 +156,13 @@ FdoSmPhReaderP FdoSmPhRdOraOdbcDbObjectReader::MakeQueryReader(
 	if ( dblinkName.GetLength() > 0 )
 		readerName += FdoStringP::Format(L"_%ls", (FdoString*)dblinkName );
 
+#ifdef ODBCORA_USE_STATIC_CURSORS
+    // Using static cursors is currently turned off due to a defect
+    // in ODBC with re-use of bound values.
     FdoSmPhReaderP reader = mgr->GetStaticReader ( readerName );
-
+#else
+    FdoSmPhReaderP reader;
+#endif
     if ( !reader ) {
         // Create binds for owner and optional object names
         FdoSmPhRdDbObjectBindsP binds = new FdoSmPhRdDbObjectBinds(
@@ -211,9 +216,12 @@ FdoSmPhReaderP FdoSmPhRdOraOdbcDbObjectReader::MakeQueryReader(
         FdoSmPhRowP row = rows->GetItem(0);
         reader = new FdoSmPhRdGrdQueryReader(row, sqlString, mgr, binds->GetBinds() );
 
+#ifdef ODBCORA_USE_STATIC_CURSORS
 		if (reader && !join)
 			mgr->SetStaticReader ( readerName, reader );
+#endif
     }
+#ifdef ODBCORA_USE_STATIC_CURSORS
     else {
         // Re-executing so update bind variables first.
         FdoSmPhRdGrdQueryReader* pReader = (FdoSmPhRdGrdQueryReader*)(FdoSmPhReader*) reader;
@@ -242,6 +250,7 @@ FdoSmPhReaderP FdoSmPhRdOraOdbcDbObjectReader::MakeQueryReader(
 
         pReader->Execute();
     }
+#endif
 
     return reader;
 }
