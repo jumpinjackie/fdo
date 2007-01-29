@@ -305,7 +305,11 @@ void InsertTests::insert_locale (char *orig_locale, char *new_locale, FdoString 
 		FdoString *esriCodepage = (FdoString *)cpg->GetCodePage();
 		if (VERBOSE) printf("CPG: %ls\n", (FdoString*)esriCodepage );
 
+#pragma message ("TODO: Test on LINUX. ")
+
+#ifdef _WIN32
         CPPUNIT_ASSERT_MESSAGE ("incorrect value for ESRI codepage", wcscmp( esriCodepage, expected_cpg)==0);
+#endif
 		delete cpg;
 
 		FdoString *esriCodepage2 = dbf->GetCodePage();
@@ -313,8 +317,11 @@ void InsertTests::insert_locale (char *orig_locale, char *new_locale, FdoString 
 
 		// Apparenttly LDID supports code pages <= 1257
 		FdoStringP	codepage = FdoStringP(expected_cpg);
+
+#ifdef _WIN32
 		if ( codepage.ToLong() <= 1257 )
 			CPPUNIT_ASSERT_MESSAGE ("incorrect value for ESRI codepage2", wcscmp( esriCodepage2, expected_cpg)==0);
+#endif
 		delete dbf;
 
         FdoPtr<FdoIInsert> insert = (FdoIInsert*)mConnection->CreateCommand (FdoCommandType_Insert);
