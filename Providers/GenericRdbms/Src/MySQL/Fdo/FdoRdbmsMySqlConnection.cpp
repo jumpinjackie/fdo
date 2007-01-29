@@ -424,6 +424,8 @@ void FdoRdbmsMySqlConnection::delOpen()
 		rc = gdbiStmt->ExecuteNonQuery();
 		gdbiStmt->Free();
 
+		delete gdbiStmt;
+
 		SetUserNum(-1);
         SetUserSessionId(-1);
 	}

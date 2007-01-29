@@ -326,24 +326,24 @@ FdoSmPhColumnP FdoSmPhMySqlDbObject::NewColumnInt16(
     FdoStringP columnName,
     FdoSchemaElementState elementState,
     bool bNullable,
-    bool bIsAutoincremented,    // Not supported
+    bool bIsAutoincremented,
     FdoStringP rootColumnName,
     FdoSmPhRdColumnReader* colRdr
 )
 {
-    return new FdoSmPhMySqlColumnInt16(columnName, elementState, this, bNullable, rootColumnName, colRdr);
+    return new FdoSmPhMySqlColumnInt16(columnName, elementState, this, bNullable, bIsAutoincremented, rootColumnName, colRdr);
 }
 
 FdoSmPhColumnP FdoSmPhMySqlDbObject::NewColumnInt32(
     FdoStringP columnName,
     FdoSchemaElementState elementState,
     bool bNullable,
-    bool bIsAutoincremented,    // Not supported
+    bool bIsAutoincremented,
     FdoStringP rootColumnName,
     FdoSmPhRdColumnReader* colRdr
 )
 {
-    return new FdoSmPhMySqlColumnInt32(columnName, elementState, this, bNullable, rootColumnName, colRdr);
+    return new FdoSmPhMySqlColumnInt32(columnName, elementState, this, bNullable, bIsAutoincremented, rootColumnName, colRdr);
 }
 
 FdoSmPhColumnP FdoSmPhMySqlDbObject::NewColumnInt64(

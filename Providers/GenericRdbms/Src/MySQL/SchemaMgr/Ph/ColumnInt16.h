@@ -36,12 +36,15 @@ public:
         FdoSchemaElementState elementState,
         FdoSmPhDbObject* parentObject,
         bool bNullable,
+		bool bIsAutoincremented,
         FdoStringP rootColumnName = L"",
         FdoSmPhRdColumnReader* reader = NULL
     ) :
         FdoSmPhMySqlColumn (reader),
         FdoSmPhColumn     ( columnName, L"SMALLINT", elementState, parentObject, bNullable, rootColumnName)
-    {}
+    {
+		FdoSmPhColumn::SetAutoincrement(bIsAutoincremented); 
+	}
 
     virtual ~FdoSmPhMySqlColumnInt16(void) {}
 
