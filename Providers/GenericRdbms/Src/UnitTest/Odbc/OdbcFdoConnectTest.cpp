@@ -281,9 +281,9 @@ void OdbcOracleFdoConnectTest::ConfigFileTest()
             }
         }
 
-        // Read the features too.  While this hard-codes the class name,
-        // note that it is the only one reported earlier (e.g. other tables are
-        // invisible with the configuration file in place).
+        // Read the features too.  Note that these hard-coded class names
+        // "Polyline" and "Table1" are the only ones reported earlier
+        // (e.g. other tables are invisible with the configuration file in place).
         FdoPtr<FdoISelect> selectCmd = (FdoISelect*)connection->CreateCommand(FdoCommandType_Select);
         selectCmd->SetFeatureClassName(L"Acdb:Polyline");
         FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
@@ -293,7 +293,18 @@ void OdbcOracleFdoConnectTest::ConfigFileTest()
             numFeatures++;
             UnitTestUtil::ProcessFeature(reader);
         }
-        printf("   %i feature(s) read\n", numFeatures);
+        printf("   %i feature(s) read from Polyline\n", numFeatures);
+        reader->Close();
+
+        selectCmd->SetFeatureClassName(L"Acdb:Table1");
+        reader = selectCmd->Execute();
+        numFeatures = 0;
+        while (reader->ReadNext())
+        {
+            numFeatures++;
+            UnitTestUtil::ProcessFeature(reader);
+        }
+        printf("   %i feature(s) read from Table1\n", numFeatures);
         reader->Close();
 
         // This is not currently written to a file for checking, but it is handy
