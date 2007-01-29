@@ -67,7 +67,7 @@
                         <xs:element name="ClassId" type="fdo:int64" />
                         <xs:element name="RevisionNumber" type="xs:double" />
                         <xs:element name="PolylineDate" type="xs:dateTime" />
-						<xs:element name="Geometry" type="gml:AbstractGeometryType" fdo:hasElevation="false" fdo:geometricTypes="Point" associatedSCName="AcdbSc" />
+						<xs:element name="Geometry" type="gml:AbstractGeometryType" fdo:hasElevation="false" fdo:geometricTypes="Point" fdo:srsName="AcdbSc" />
 		        	</xs:sequence>
       			</xs:extension>
    			</xs:complexContent>

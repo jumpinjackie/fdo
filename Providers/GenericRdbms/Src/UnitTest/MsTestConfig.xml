@@ -66,7 +66,7 @@
 					<xs:sequence>
 						<xs:element name="Id" type="fdo:int64" />
 						<xs:element name="SoundingDate" type="xs:dateTime" />
-						<xs:element name="Geometry" type="gml:AbstractGeometryType" fdo:hasElevation="true" fdo:geometricTypes="Point" associatedSCName="survey1" />
+						<xs:element name="Geometry" type="gml:AbstractGeometryType" fdo:hasElevation="true" fdo:geometricTypes="Point" fdo:srsName="survey1" />
 		        	</xs:sequence>
       			</xs:extension>
    			</xs:complexContent>
