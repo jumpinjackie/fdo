@@ -116,9 +116,14 @@ bool FdoSmPhRdSpatialContextReader::ReadNext()
     // Arrange for a single row (already initialized to the defaults)
     // to be read.
 
-	// Note the subreader is null and initially eof=true; 
-
-	SetEOF(!IsEOF());
+    if ( IsBOF() )
+    {
+        SetBOF(false);
+    }
+    else
+    {
+        SetEOF(true);
+    }
 
     return(!IsEOF());
 }
