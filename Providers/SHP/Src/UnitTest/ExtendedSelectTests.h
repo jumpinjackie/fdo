@@ -13,8 +13,6 @@ class ExtendedSelectTests : public ShpTests
 {
   CPPUNIT_TEST_SUITE( ExtendedSelectTests );
   CPPUNIT_TEST( WorldTest );
-  CPPUNIT_TEST( WithNullValues );
-  CPPUNIT_TEST( WithFilter );
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -24,9 +22,6 @@ public:
 
 protected:
 	void WorldTest();
-	void WithNullValues();
-	void WithFilter();
-
 };
 
 

@@ -603,6 +603,11 @@ void FilterTests::featid_optimizer_tests ()
 		
 		long	 expected[100];
 
+        query = L"FeatId = 10 - 20";
+        count = featid_roads_query( query, 1, 0, NULL );
+
+		// Write more binary expressions...
+
         query = L"FeatId = 41";
 		expected[0] = 41; 
         count = featid_roads_query( query, 1, 1, expected );
