@@ -18,7 +18,11 @@
 #ifndef _GDBITYPES_H_
 #define _GDBITYPES_H_
 
+#ifdef USE_NONRDBMS_HEADER
+#include <inc/rdbi.h>
+#else
 #include <Inc/rdbi.h>
+#endif
 
 #define         GDBI_NI_TYPE    long
 
