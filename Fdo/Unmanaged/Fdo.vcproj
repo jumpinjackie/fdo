@@ -555,14 +555,6 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath=".\Src\Fdo\Schema\SchemaInternal.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Src\Fdo\Schema\SchemaInternal.h"
-					>
-				</File>
-				<File
 					RelativePath="Src\Fdo\Schema\TopoFeaturePropertyDefinition.cpp"
 					>
 				</File>
