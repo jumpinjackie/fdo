@@ -71,8 +71,7 @@ int odbcdr_vndr_info(
 	vndr_info->minStrLen = 1;
 	vndr_info->maxStrLen = 8000;
     vndr_info->dbversion = ODBCVER; 
-	/* cannot fetch more than an array of 10 rows with Geometry */
-	vndr_info->maxFetchSize = 10;
+	vndr_info->maxFetchSize = ODBCDR_MAX_ARRAY_SIZE;
 
     // Initialize the dbversion with a more precise value
     if( context->odbcdr_conns[0] != NULL )

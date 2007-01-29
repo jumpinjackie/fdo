@@ -226,10 +226,10 @@ int odbcdr_fetch2(
     /* Translate geometry columns from SqlServer . */
     if ( c->defined_geometries != NULL && rows_in_last_fetch > 0 )
     {
-        if ( rows_in_last_fetch > ODBCDR_MAX_GEOM_ROWS )
+        if ( rows_in_last_fetch > ODBCDR_MAX_ARRAY_SIZE )
         {
 	//		char buffer[256];
-	//		sprintf(buffer, "TOO MANY GEOMETRY ROWS: %d (max is %d)", rows_in_last_fetch, ODBCDR_MAX_GEOM_ROWS);
+	//		sprintf(buffer, "TOO MANY GEOMETRY ROWS: %d (max is %d)", rows_in_last_fetch, ODBCDR_MAX_ARRAY_SIZE);
 	//		msg_issue(buffer, 'e');
             goto the_exit;
         }

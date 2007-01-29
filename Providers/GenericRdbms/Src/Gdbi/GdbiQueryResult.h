@@ -32,6 +32,7 @@ class GdbiQueryIdentifier;
 #define GDBI_COLUMN_SIZE   255
 
 typedef struct _col_type_ {
+	wchar_t	*name;
     int     original_type;
     int     type;
     int     size;
@@ -51,12 +52,13 @@ private:
 	int				  mArrayTCount; // total number of fetched rows
 	int				  mArrayCCount; // number of fetched rows in a sngle fetch;
 	int				  mArrayPos; // position within array of fetched rows
-    std::map<std::wstring,GdbiColumnInfoType*> *mColMap;
+	std::vector<GdbiColumnInfoType*> *mColList;
     wchar_t           *mUnicodeBuffer;   // Used to return wchar string that should be copied
     int               mUnicodeBufferSize;
     char              *mAsciiValBuffer;
     int               mAsciiValBufferSize;
 	GdbiQueryIdentifier	*m_QueryId;
+	int				  m_missed;
 
 private:
     GdbiQueryResult( GdbiCommands* command, int qid, bool ownsQid = true  );
@@ -66,7 +68,7 @@ private:
 	void define_exec();
 
    int GetAsciiValue(
-        const wchar_t *ColName,
+        GdbiColumnInfoType *colInfo,
         int length,
         char *ascii,
         bool *isnull,
@@ -79,6 +81,8 @@ private:
         int *ccode
         );
 
+	GdbiColumnInfoType *FindColumnCache(const wchar_t *colName );
+
 public:
     ~GdbiQueryResult(void);
 
@@ -90,8 +94,7 @@ public:
             int *ccode
             );
 
- 
-
+	/// By char Name
     FdoDouble GetDouble( const char *ColName, bool *isnull, int *ccode );
 
     FdoInt32 GetInt32( const char *ColName, bool *isnull, int *ccode );
@@ -110,6 +113,7 @@ public:
 
     bool GetIsNull( const char *ColName );
 
+	/// By wchar Name
 	FdoDouble GetDouble( const wchar_t *ColName, bool *isnull, int *ccode );
 
     FdoInt32 GetInt32( const wchar_t *ColName, bool *isnull, int *ccode );
@@ -126,9 +130,13 @@ public:
 
     FdoBoolean GetBoolean( const wchar_t *ColName, bool *isnull, int *ccode );
 
-	FdoString* GetString( int index, bool *isnull, int *ccode );
-
     bool GetIsNull( const wchar_t *ColName );
+
+	// Gets the column index (1 based) into the cached column list.
+	// Can be used in the getters as column position instead of column name.
+	int		GetColumnIndex( const wchar_t *colName );
+
+    FdoString* GetString( int colIndex, bool *isnull, int *ccode );
 
     int ReadNext();
 
@@ -139,6 +147,8 @@ public:
     int GetColumnCount( );
 
     int GetColumnDesc( int colIdx, GdbiColumnDesc &desc );
+
+    FdoByteArray * GetFgfFromGeomInfo( char * geomInfo );
 };
 
 #endif

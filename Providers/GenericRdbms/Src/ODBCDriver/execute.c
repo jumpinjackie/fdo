@@ -185,7 +185,7 @@ int odbcdr_execute(						/* execute an SQL statement		  */
 
     if ( rc == SQL_NEED_DATA && c->bound_geometries != NULL )
     {
-        assert(count <= ODBCDR_MAX_GEOM_ROWS);
+        assert(count <= ODBCDR_MAX_ARRAY_SIZE);
 
         /* Free any Oracle objects from previous executions/fetches. */
         ODBCDR_RDBI_ERR( odbcdr_geom_freeSqlServerGeometries( context, c ) );

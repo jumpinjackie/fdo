@@ -49,18 +49,7 @@
 ** for the buffers. An estimate of array size is used because you do not know
 ** the actual array size until execute time. 
 */
-#define ODBCDR_MAX_ARRAY_SIZE 500
-
-/* Limit on maximum number of rows with SqlServer geometries.
- * We buffer geometries for translation on-the-fly and won't 
- * generally know the correct buffer size
- * until after the bind/define operations.  Thus, the buffers are
- * always pre-allocated to the maximum size in order to avoid
- * studying the consequences of re-bind/define operations.
- * The maximum should be at least the maximum size given by the 
- * client code expected to be using our geometries).
- */
-#define ODBCDR_MAX_GEOM_ROWS         (150)
+#define ODBCDR_MAX_ARRAY_SIZE 150//500
 
 /* SQLBindParameter requires the size of data, although data is inserted
  * using SQLPutData() and teoretically this will be redundant.

@@ -25,6 +25,9 @@
 #endif
 #include "FdoCommonOSUtil.h"
 #include "GdbiQueryIdentifier.h"
+#ifdef HAVE_GEOM_INFO_TYPE
+#include <inc/geometry/fgf/AllGeometry_c.h>
+#endif
 
 // Arbitrary size which should be more than enough for the 
 // the ASCII or UNICODE representation of any numeric value.
@@ -66,6 +69,7 @@ mArrayTCount( 0 )
 {
 	m_QueryId = new GdbiQueryIdentifier(command, qid);
 	define_exec();
+	m_missed=0;
 }
 GdbiQueryResult::GdbiQueryResult(GdbiCommands* command, GdbiQueryIdentifier *queryObj):
 m_pGdbiCommands( command ),
@@ -79,29 +83,45 @@ mArrayTCount( 0 )
 {
 	m_QueryId = FDO_SAFE_ADDREF(queryObj);
 	define_exec();
+	m_missed=0;
 }
 
 
 void GdbiQueryResult::define_exec()
 {
-    GdbiColumnInfoType*      colInfo = new GdbiColumnInfoType;
     char        buffer[16];
-    int name_length = GDBI_COLUMN_SIZE;
-    wchar_t colName[GDBI_COLUMN_SIZE];
-    mColMap = new std::map<std::wstring,GdbiColumnInfoType*>();
+    int			name_length = GDBI_COLUMN_SIZE;
+    wchar_t		colName[GDBI_COLUMN_SIZE];
+    int			colType;
+    int			colSize;
+	int			colNullAllowed;
+
+
+	mColList = new std::vector<GdbiColumnInfoType*>();
+
     int  idx = 1;
 	bool status = false;
 
-    while( m_pGdbiCommands->desc_slct( m_QueryId->GetQueryId(), idx++, name_length, colName, &colInfo->type, &colInfo->size, &colInfo->null_allowed) == RDBI_SUCCESS )
+    while( m_pGdbiCommands->desc_slct( m_QueryId->GetQueryId(), idx++, name_length, colName, &colType, &colSize, &colNullAllowed) == RDBI_SUCCESS )
     {
 
         FdoStringP  upperName = FdoStringP(colName).Upper();
         const wchar_t* name = (const wchar_t*)upperName;
-        if (mColMap->find (name) != mColMap->end())
-            continue; // TODO: throw new GdbiException(FdoCommonNlsUtil::NLSGetMessage( FDORDBMS_495, "Duplicate columns of name '%1$ls' found in query result.", fdordbms_cat, name));
-        mColMap->insert( std::pair<std::wstring,GdbiColumnInfoType*> ( name, colInfo ) );
+
+		GdbiColumnInfoType*      colInfo = new GdbiColumnInfoType;
+		
+        mColList->push_back( colInfo );
+		
+		// Copy info
+		colInfo->name = new wchar_t[wcslen(name) + 1];
+		wcscpy(colInfo->name, name );
+
+		colInfo->type = colType;
+		colInfo->size = colSize;
+		colInfo->null_allowed = colNullAllowed;
+
         colInfo->original_type = colInfo->type;
-        colInfo->index = idx-1;
+        colInfo->index = idx - 1;
 
 		m_pGdbiCommands->alcnullind(m_pGdbiCommands->get_array_size(), &(colInfo->isNull));
 
@@ -110,7 +130,7 @@ void GdbiQueryResult::define_exec()
 			colInfo->type = RDBI_STRING;
 		else
 		{
-			if (colInfo->type == RDBI_FIXED_CHAR || colInfo->type == RDBI_STRING)
+			if (colInfo->type == RDBI_FIXED_CHAR || colInfo->type == RDBI_STRING || colInfo->type == RDBI_WSTRING)
 				// allocate space for null indicator
 				colInfo->size++;
 		}
@@ -151,11 +171,8 @@ void GdbiQueryResult::define_exec()
 
 			m_pGdbiCommands->define( m_QueryId->GetQueryId(), FdoCommonOSUtil::itoa(colInfo->index, buffer), colInfo->type, colInfo->size, (colInfo->type == RDBI_BLOB_REF) ? (char *)&(colInfo->value) : (char*)colInfo->value, colInfo->isNull );
 		
-		}
-        
-        colInfo = new GdbiColumnInfoType;
+		}   
     }
-    delete colInfo;
 
     m_pGdbiCommands->execute( m_QueryId->GetQueryId(), 0, 0 );
 }
@@ -167,11 +184,12 @@ GdbiQueryResult::~GdbiQueryResult(void)
         m_pGdbiCommands->end_select( m_QueryId->GetQueryId());
     }
 
-    if( mColMap )
+    if( mColList )
     {
-        for (std::map <std::wstring,GdbiColumnInfoType*>::iterator i = mColMap->begin(); i != mColMap->end(); ++i )
+        for (size_t i = 0; i < mColList->size(); i++ )
         {
-            GdbiColumnInfoType *colInfo = i->second;
+            GdbiColumnInfoType *colInfo = mColList->at(i);
+
 			if( colInfo->value && colInfo->type == RDBI_BLOB_REF )
 			{
 				if (m_QueryId)
@@ -189,9 +207,13 @@ GdbiQueryResult::~GdbiQueryResult(void)
 
 			if( colInfo->isNull )
 				free( (void*)colInfo->isNull );
+
+			if ( colInfo->name )
+				delete [] colInfo->name;
+
             delete colInfo;
         }
-        delete mColMap;
+        delete mColList;
     }
 	FDO_SAFE_RELEASE(m_QueryId);
 
@@ -248,25 +270,22 @@ void GdbiQueryResult::End()
 
 int GdbiQueryResult::GetColumnCount( )
 {
-    if( mColMap )
-        return (int)mColMap->size();
+    if( mColList )
+        return (int)mColList->size();
 
     return 0;
 }
 
 int GdbiQueryResult::GetColumnDesc( int colIdx, GdbiColumnDesc &desc )
 {
-    int idx = colIdx;
-    std::map <std::wstring,GdbiColumnInfoType*>::iterator iter = mColMap->begin();
-    for( iter = mColMap->begin(); iter != mColMap->end(); iter++ )
-        if( idx == iter->second->index )
-            break;
+    int idx = colIdx; // 1 based
 
-    if( iter == mColMap->end() )  // error
-        return false;
+	if ( colIdx > (int)mColList->size() ) // error
+		return false; 
 
-    GdbiColumnInfoType *colInfo = iter->second;
-    strncpy( desc.column, (const char*)FdoStringP(iter->first.c_str(),true), sizeof(desc.column) - 1);
+	GdbiColumnInfoType *colInfo = mColList->at(idx-1);
+
+	strncpy( desc.column, (const char*)FdoStringP(colInfo->name), sizeof(desc.column) - 1);
     desc.column[sizeof(desc.column)-1]=0;
     desc.datatype = colInfo->original_type;
 	desc.size = (colInfo->type == RDBI_CHAR || colInfo->type == RDBI_FIXED_CHAR || colInfo->type == RDBI_STRING) ? colInfo->size-1 : colInfo->size;
@@ -277,122 +296,104 @@ int GdbiQueryResult::GetColumnDesc( int colIdx, GdbiColumnDesc &desc )
 
 int GdbiQueryResult::GetBinaryValue( const wchar_t *colName, int length, char *address, bool *null_ind, int *ccode )
 {
-    std::map <std::wstring,GdbiColumnInfoType*>::iterator iter;
-	bool isNull;
-    FdoStringP  upperName = FdoStringP(colName).Upper();
-    const wchar_t* name = (const wchar_t*)upperName;
-    iter = mColMap->find( StripTable(name) );
-    if( iter != mColMap->end() )
-    {
-        GdbiColumnInfoType *colInfo = iter->second;
-		isNull = (m_pGdbiCommands->is_null(colInfo->isNull, mArrayPos) == 1);
-		if (isNull == false)
+	GdbiColumnInfoType *colInfo = FindColumnCache(colName);
+
+	bool isNull = (m_pGdbiCommands->is_null(colInfo->isNull, mArrayPos) == 1);
+
+	if (isNull == false)
+	{
+		if (colInfo->type == RDBI_CHAR || colInfo->type == RDBI_BOOLEAN)
 		{
-			if (colInfo->type == RDBI_CHAR || colInfo->type == RDBI_BOOLEAN)
+			memcpy(address, (char*)(colInfo->value) + mArrayPos*colInfo->size, 1);
+			if (length != 1)
+				address[1] = '\0';
+		}
+		else
+		{
+			int  size = ( length > colInfo->size )? colInfo->size : length;
+			memcpy(address, ((char*)colInfo->value) + mArrayPos*colInfo->size, size );
+		}
+	}
+    if( null_ind )
+        *null_ind = isNull;
+
+    if( ccode )
+        *ccode = RDBI_SUCCESS;
+
+    return RDBI_SUCCESS;
+ }
+
+int GdbiQueryResult::GetAsciiValue( GdbiColumnInfoType *colInfo, int length, char *address, bool *null_ind, int *ccode )
+{
+    char    tmpDblBuffer[60];
+	char	lascii[200];
+	int		lccode = RDBI_SUCCESS;
+
+	bool isNull = (m_pGdbiCommands->is_null(colInfo->isNull, mArrayPos) == 1);
+	if (isNull == false)
+	{
+		int  size = ( length > colInfo->size )? colInfo->size : length;
+
+		switch (colInfo->type)
+		{
+		case RDBI_SHORT:
+			sprintf(lascii, "%d", (*(short *)((char*)colInfo->value + mArrayPos*colInfo->size)));
+			do_copy(lascii, address, length, &lccode); 
+			break;
+		case RDBI_INT:
+		case RDBI_LONG:
+			sprintf(lascii, "%ld", (*(long *)((char*)colInfo->value + mArrayPos*colInfo->size)));
+			do_copy(lascii, address, length, &lccode); 
+			break;
+		case RDBI_LONGLONG:
+#ifdef _WIN32
+			sprintf(lascii, "%I64d", (*(FdoInt64 *)((char*)colInfo->value + mArrayPos*colInfo->size)));
+#else
+			sprintf(lascii, "%lld", (*(FdoInt64 *)((char*)colInfo->value + mArrayPos*colInfo->size)));
+#endif
+			do_copy(lascii, address, length, &lccode); 
+			break;
+		case RDBI_FLOAT:
+			sprintf(lascii, "%s", ut_dtoa( (double) (*(float *)((char*)colInfo->value + mArrayPos*colInfo->size)), tmpDblBuffer) );
+			do_copy(lascii, address, length, &lccode);
+			break;
+		case RDBI_DOUBLE:
+			sprintf(lascii, "%s", ut_dtoa( (*(double *)((char*)colInfo->value + mArrayPos*colInfo->size)), tmpDblBuffer ) );
+			do_copy(lascii, address, length, &lccode);
+			break;
+		default:
+			if (colInfo->type == RDBI_CHAR)
 			{
-				memcpy(address, (char*)(colInfo->value) + mArrayPos*colInfo->size, 1);
+				// Oracle and MySQL do not put null indicators
+				memcpy(address, (char*)(colInfo->value) + mArrayPos*colInfo->size, colInfo->size);
 				if (length != 1)
 					address[1] = '\0';
 			}
 			else
-			{
-				int  size = ( length > colInfo->size )? colInfo->size : length;
-				memcpy(address, ((char*)colInfo->value) + mArrayPos*colInfo->size, size );
-			}
+				memcpy(address, (char*)(colInfo->value) + mArrayPos*colInfo->size, size); 
+			
+            if (size < colInfo->size)
+            {
+                address[size-1] = '\0';
+                lccode = RDBI_DATA_TRUNCATED;
+            }
+			break;
 		}
-        if( null_ind )
-            *null_ind = isNull;
+	}
+    if( null_ind )
+        *null_ind = isNull;
 
-        if( ccode )
-            *ccode = RDBI_SUCCESS;
+    if( ccode )
+        *ccode = lccode;
 
-        return RDBI_SUCCESS;
-    }
-
-    throw new GdbiException(L"Column X not selected");
-}
-
-int GdbiQueryResult::GetAsciiValue( const wchar_t *colName, int length, char *address, bool *null_ind, int *ccode )
-{
-    std::map <std::wstring,GdbiColumnInfoType*>::iterator iter;
-    char    tmpDblBuffer[60];
-	char	lascii[200];
-	int		lccode = RDBI_SUCCESS;
-    FdoStringP  upperName = FdoStringP(colName).Upper();
-    const wchar_t* name = (const wchar_t*)upperName;
-    iter = mColMap->find( StripTable(name) );
-	bool isNull;
-    if( iter != mColMap->end() )
-    {
-        GdbiColumnInfoType *colInfo = iter->second;
-		isNull = (m_pGdbiCommands->is_null(colInfo->isNull, mArrayPos) == 1);
-		if (isNull == false)
-		{
-			int  size = ( length > colInfo->size )? colInfo->size : length;
-
-			switch (colInfo->type)
-			{
-			case RDBI_SHORT:
-				sprintf(lascii, "%d", (*(short *)((char*)colInfo->value + mArrayPos*colInfo->size)));
-				do_copy(lascii, address, length, &lccode); 
-				break;
-			case RDBI_INT:
-			case RDBI_LONG:
-				sprintf(lascii, "%ld", (*(long *)((char*)colInfo->value + mArrayPos*colInfo->size)));
-				do_copy(lascii, address, length, &lccode); 
-				break;
-			case RDBI_LONGLONG:
-#ifdef _WIN32
-				sprintf(lascii, "%I64d", (*(FdoInt64 *)((char*)colInfo->value + mArrayPos*colInfo->size)));
-#else
-				sprintf(lascii, "%lld", (*(FdoInt64 *)((char*)colInfo->value + mArrayPos*colInfo->size)));
-#endif
-				do_copy(lascii, address, length, &lccode); 
-				break;
-			case RDBI_FLOAT:
-				sprintf(lascii, "%s", ut_dtoa( (double) (*(float *)((char*)colInfo->value + mArrayPos*colInfo->size)), tmpDblBuffer) );
-				do_copy(lascii, address, length, &lccode);
-				break;
-			case RDBI_DOUBLE:
-				sprintf(lascii, "%s", ut_dtoa( (*(double *)((char*)colInfo->value + mArrayPos*colInfo->size)), tmpDblBuffer ) );
-				do_copy(lascii, address, length, &lccode);
-				break;
-			default:
-				if (colInfo->type == RDBI_CHAR)
-				{
-					// Oracle and MySQL do not put null indicators
-					memcpy(address, (char*)(colInfo->value) + mArrayPos*colInfo->size, colInfo->size);
-					if (length != 1)
-						address[1] = '\0';
-				}
-				else
-					memcpy(address, (char*)(colInfo->value) + mArrayPos*colInfo->size, size); 
-				
-                if (size < colInfo->size)
-                {
-                    address[size-1] = '\0';
-                    lccode = RDBI_DATA_TRUNCATED;
-                }
-				break;
-			}
-		}
-        if( null_ind )
-            *null_ind = isNull;
-
-        if( ccode )
-            *ccode = lccode;
-
-        return RDBI_SUCCESS;
-    }
-
-    throw new GdbiException(L"Column X not selected");
-}
+    return RDBI_SUCCESS;
+ }
 
 template<typename T> T GdbiQueryResult::GetNumber(
-        const wchar_t *colName,
-        bool *null_ind,
+		const wchar_t *colName,
+		bool *null_ind,
         int *ccode
-        )
+	)
 {
 	T val = 0;
 	short  shortVal;
@@ -402,83 +403,75 @@ template<typename T> T GdbiQueryResult::GetNumber(
 	double doubleVal;
 	FdoInt64  int64Val;
 
-	std::map <std::wstring,GdbiColumnInfoType*>::iterator iter;
-    FdoStringP  upperName = FdoStringP(colName).Upper();
-    const wchar_t* name = (const wchar_t*)upperName;
-    iter = mColMap->find( StripTable(name) );
-	bool isNull;
-    if( iter != mColMap->end() )
-    {
-        GdbiColumnInfoType *colInfo = iter->second;
-		isNull = (m_pGdbiCommands->is_null(colInfo->isNull, mArrayPos) == 1);
-		
-		if( null_ind )
-            *null_ind = isNull;
+	GdbiColumnInfoType *colInfo = FindColumnCache(colName);
 
- 		if( ccode )
-			*ccode = RDBI_SUCCESS;
+	bool isNull = (m_pGdbiCommands->is_null(colInfo->isNull, mArrayPos) == 1);
+	
+	if( null_ind )
+        *null_ind = isNull;
 
-		if (isNull == false)
+	if( ccode )
+		*ccode = RDBI_SUCCESS;
+
+	if (isNull == false)
+	{
+		switch (colInfo->type)
 		{
-			switch (colInfo->type)
-			{
-				case RDBI_SHORT:
-					memcpy(&shortVal, ((char*)colInfo->value) + mArrayPos*colInfo->size, sizeof(short) );
-					val = (T)shortVal;
-					break;
+			case RDBI_SHORT:
+				memcpy(&shortVal, ((char*)colInfo->value) + mArrayPos*colInfo->size, sizeof(short) );
+				val = (T)shortVal;
+				break;
 
-				case RDBI_INT:
-					memcpy(&intVal, ((char*)colInfo->value) + mArrayPos*colInfo->size, sizeof(int) );
-					val = (T)intVal;
-					break;
+			case RDBI_INT:
+				memcpy(&intVal, ((char*)colInfo->value) + mArrayPos*colInfo->size, sizeof(int) );
+				val = (T)intVal;
+				break;
 
-				case RDBI_LONG:
-					memcpy(&longVal, ((char*)colInfo->value) + mArrayPos*colInfo->size, sizeof(long) );
-					val = (T)longVal;
-					break;
+			case RDBI_LONG:
+				memcpy(&longVal, ((char*)colInfo->value) + mArrayPos*colInfo->size, sizeof(long) );
+				val = (T)longVal;
+				break;
 
-				case RDBI_LONGLONG:
-					memcpy(&int64Val, ((char*)colInfo->value) + mArrayPos*colInfo->size, sizeof(FdoInt64) );
+			case RDBI_LONGLONG:
+				memcpy(&int64Val, ((char*)colInfo->value) + mArrayPos*colInfo->size, sizeof(FdoInt64) );
+				val = (T)int64Val;
+				break;
+
+			case RDBI_FLOAT:
+				memcpy(&floatVal, ((char*)colInfo->value) + mArrayPos*colInfo->size, sizeof(float) );
+				val = (T)floatVal;
+				break;
+
+			case RDBI_DOUBLE:
+				memcpy(&doubleVal, ((char*)colInfo->value) + mArrayPos*colInfo->size, sizeof(double) );
+				val = (T)doubleVal;
+				break;
+
+			case RDBI_STRING:
+				if( sizeof(T) == sizeof(FdoInt64) )
+				{
+					// Sql server workaround
+					sscanf((char*)colInfo->value+ mArrayPos*colInfo->size,"%lld", &int64Val);
 					val = (T)int64Val;
 					break;
+				}
 
-				case RDBI_FLOAT:
-					memcpy(&floatVal, ((char*)colInfo->value) + mArrayPos*colInfo->size, sizeof(float) );
-					val = (T)floatVal;
+			case RDBI_WSTRING:
+				if( sizeof(T) == sizeof(FdoInt64) )
+				{
+					// Sql server workaround
+					swscanf((wchar_t*)colInfo->value+ mArrayPos*colInfo->size/sizeof(wchar_t),L"%lld", &int64Val);
+					val = (T)int64Val;
 					break;
+				}
+			default:
+				(void)GetBinaryValue(colInfo->name, sizeof(T), (char*)&val, null_ind, NULL );
+				break;
 
-				case RDBI_DOUBLE:
-					memcpy(&doubleVal, ((char*)colInfo->value) + mArrayPos*colInfo->size, sizeof(double) );
-					val = (T)doubleVal;
-					break;
-
-				case RDBI_STRING:
-					if( sizeof(T) == sizeof(FdoInt64) )
-					{
-						// Sql server workaround
-						sscanf((char*)colInfo->value+ mArrayPos*colInfo->size,"%lld", &int64Val);
-						val = (T)int64Val;
-						break;
-					}
-
-				case RDBI_WSTRING:
-					if( sizeof(T) == sizeof(FdoInt64) )
-					{
-						// Sql server workaround
-						swscanf((wchar_t*)colInfo->value+ mArrayPos*colInfo->size/sizeof(wchar_t),L"%lld", &int64Val);
-						val = (T)int64Val;
-						break;
-					}
-				default:
-					(void)GetBinaryValue(colName, sizeof(T), (char*)&val, null_ind, ccode );
-					break;
-
-			}
 		}
+	}
 
-        return val;
-    }
-    throw new GdbiException(L"Column X not selected");
+    return val;
 }
 
 FdoDouble GdbiQueryResult::GetDouble( const wchar_t *ColName, bool *isnull, int *ccode )
@@ -506,92 +499,72 @@ FdoInt64 GdbiQueryResult::GetInt64( const wchar_t *ColName, bool *isnull, int *c
     return GetNumber<FdoInt64>(ColName, isnull, ccode);
 }
 
-FdoFloat GdbiQueryResult::GetFloat( const wchar_t *ColName, bool *isnull, int *ccode )
+FdoFloat GdbiQueryResult::GetFloat( const wchar_t *ColName, bool *isnull, int *ccode)
 {
     return GetNumber<float>(ColName, isnull, ccode);
 }
 
-
 // Return a const wchar_t that must be copied ASP
-FdoString* GdbiQueryResult::GetString( const wchar_t *colName, bool *isnull, int *ccode )
+FdoString* GdbiQueryResult::GetString( const wchar_t *colName, bool *isnull, int *ccode)
 {
-    std::map <std::wstring,GdbiColumnInfoType*>::iterator iter;
+	GdbiColumnInfoType *colInfo = FindColumnCache(colName);
 
-    FdoStringP  upperName = FdoStringP(colName).Upper();
-    const wchar_t* name = (const wchar_t*)upperName;
-    iter = mColMap->find( StripTable(name) );
-    if( iter != mColMap->end() )
+	if( isnull )
+		*isnull = (m_pGdbiCommands->is_null(colInfo->isNull, mArrayPos) == 1);
+
+    bool isNull = (m_pGdbiCommands->is_null(colInfo->isNull, mArrayPos) == 1);
+    if (isNull == false)
     {
-        GdbiColumnInfoType *colInfo = iter->second;
+		if( ( m_pGdbiCommands->SupportsUnicode() && colInfo->original_type == RDBI_STRING ) || 
+			colInfo->original_type == RDBI_WSTRING  )
+		{	
+			if( ccode )
+				*ccode = RDBI_SUCCESS;
+			return (const wchar_t*)(((char*)colInfo->value) + mArrayPos*colInfo->size);
+		}
 
-		if( isnull )
-			*isnull = (m_pGdbiCommands->is_null(colInfo->isNull, mArrayPos) == 1);
-
-        bool isNull = (m_pGdbiCommands->is_null(colInfo->isNull, mArrayPos) == 1);
-        if (isNull == false)
+        if ((mAsciiValBuffer != NULL) && (mAsciiValBufferSize <= colInfo->size))
         {
-			if( ( m_pGdbiCommands->SupportsUnicode() && colInfo->original_type == RDBI_STRING ) || 
-				colInfo->original_type == RDBI_WSTRING  )
-			{	
-				if( ccode )
-					*ccode = RDBI_SUCCESS;
-				return (const wchar_t*)(((char*)colInfo->value) + mArrayPos*colInfo->size);
-			}
-
-            if ((mAsciiValBuffer != NULL) && (mAsciiValBufferSize <= colInfo->size))
-            {
-                delete [] mAsciiValBuffer;
-                mAsciiValBuffer = NULL;
-            }
-            if (mAsciiValBuffer == NULL)
-            {
-                mAsciiValBufferSize = (colInfo->size < GDBI_MIN_STRING_BUFFER_SIZE) ? GDBI_MIN_STRING_BUFFER_SIZE : colInfo->size;
-                mAsciiValBuffer = new char[mAsciiValBufferSize];
-            }
-        
-            if (GetAsciiValue( name, mAsciiValBufferSize, mAsciiValBuffer, NULL, NULL) != RDBI_SUCCESS)
-                return NULL;
+            delete [] mAsciiValBuffer;
+            mAsciiValBuffer = NULL;
+        }
+        if (mAsciiValBuffer == NULL)
+        {
+            mAsciiValBufferSize = (colInfo->size < GDBI_MIN_STRING_BUFFER_SIZE) ? GDBI_MIN_STRING_BUFFER_SIZE : colInfo->size;
+            mAsciiValBuffer = new char[mAsciiValBufferSize];
+        }
     
-            if ((mUnicodeBuffer != NULL) && (mUnicodeBufferSize < mAsciiValBufferSize)) 
-            {
-                delete[] mUnicodeBuffer;
-                mUnicodeBuffer = NULL;
-            }
-            if( mUnicodeBuffer == NULL )
-            {
-                mUnicodeBufferSize = mAsciiValBufferSize;
-                mUnicodeBuffer = new wchar_t[mUnicodeBufferSize];
-            }
+        if (GetAsciiValue( colInfo, mAsciiValBufferSize, mAsciiValBuffer, NULL, NULL ) != RDBI_SUCCESS)
+            return NULL;
 
-			if( mAsciiValBuffer[0] == '\0' )
-				mUnicodeBuffer[0] = '\0';
-            else if( ! ut_utf8_to_unicode( mAsciiValBuffer, mUnicodeBuffer,  mUnicodeBufferSize ) )
-                throw GdbiException::Create(NlsMsgGet(FDORDBMS_47, "UTF8 conversion failed"));
-        }
-
-        if( ccode )
-            *ccode = RDBI_SUCCESS;
-
-        return mUnicodeBuffer;
-    }
-
-    throw new GdbiException(L"Column X not selected");
-}
-
-FdoString* GdbiQueryResult::GetString( int index, bool *isnull, int *ccode )
-{
-   if( mColMap )
-    {
-        for (std::map <std::wstring,GdbiColumnInfoType*>::iterator i = mColMap->begin(); i != mColMap->end(); ++i )
+        if ((mUnicodeBuffer != NULL) && (mUnicodeBufferSize < mAsciiValBufferSize)) 
         {
-            GdbiColumnInfoType *colInfo = i->second;
-            if( colInfo->index == index )
-			{
-				return GetString( i->first.c_str() , isnull, ccode );
-			}
+            delete[] mUnicodeBuffer;
+            mUnicodeBuffer = NULL;
         }
+        if( mUnicodeBuffer == NULL )
+        {
+            mUnicodeBufferSize = mAsciiValBufferSize;
+            mUnicodeBuffer = new wchar_t[mUnicodeBufferSize];
+        }
+
+		if( mAsciiValBuffer[0] == '\0' )
+			mUnicodeBuffer[0] = '\0';
+        else if( ! ut_utf8_to_unicode( mAsciiValBuffer, mUnicodeBuffer,  mUnicodeBufferSize ) )
+            throw GdbiException::Create(NlsMsgGet(FDORDBMS_47, "UTF8 conversion failed"));
     }
-   throw new GdbiException(L"Column X not selected");
+
+    if( ccode )
+        *ccode = RDBI_SUCCESS;
+
+    return mUnicodeBuffer;
+ }
+
+FdoString* GdbiQueryResult::GetString(int index, bool *isnull, int *ccode)
+{
+	FdoStringP	colName = FdoStringP::Format(L"%ld", index );
+
+	return GetString( (const wchar_t *)colName, isnull, ccode);
 }
 
 FdoBoolean GdbiQueryResult::GetBoolean( const wchar_t *ColName, bool *isnull, int *ccode )
@@ -605,19 +578,11 @@ FdoBoolean GdbiQueryResult::GetBoolean( const wchar_t *ColName, bool *isnull, in
 
 bool GdbiQueryResult::GetIsNull( const wchar_t *colName )
 {
-    std::map <std::wstring,GdbiColumnInfoType*>::iterator iter;
+	GdbiColumnInfoType *colInfo = FindColumnCache(colName );
 
-    FdoStringP  upperName = FdoStringP(colName).Upper();
-    const wchar_t* name = (const wchar_t*)upperName;
-    iter = mColMap->find( StripTable(name) );
-    if( iter != mColMap->end() )
-    {
-        GdbiColumnInfoType *colInfo = iter->second;
-
-        return ( m_pGdbiCommands->is_null( colInfo->isNull, mArrayPos ) == 1 );
-    }
-    throw new GdbiException(L"Column X not selected");
+    return ( m_pGdbiCommands->is_null( colInfo->isNull, mArrayPos ) == 1 );
 }
+
 void GdbiQueryResult::do_copy(char *ascii_I, char *ascii_O, int len, int *ccode)
 {
 	int	llen = (int)strlen(ascii_I);
@@ -676,4 +641,56 @@ FdoBoolean GdbiQueryResult::GetBoolean( const char *ColName, bool *isnull, int *
 bool GdbiQueryResult::GetIsNull( const char *ColName )
 {
 	return GetIsNull( (const wchar_t*) FdoStringP( ColName ) );
+}
+
+FdoByteArray * GdbiQueryResult::GetFgfFromGeomInfo( char * geomInfo )
+{
+#ifdef HAVE_GEOM_INFO_TYPE
+    FdoByteArray * byteArray = NULL;
+    (void) m_pGdbiCommands->geom_to_fgf( m_QueryId->GetQueryId(), geomInfo, (void **)(&byteArray) );
+    return byteArray;
+#else
+    return NULL;
+#endif
+}
+
+int	GdbiQueryResult::GetColumnIndex( const wchar_t *colName )
+{
+	GdbiColumnInfoType *colInfoCached = FindColumnCache( colName );
+
+	return colInfoCached->index; // 1 - based
+}
+
+GdbiColumnInfoType *GdbiQueryResult::FindColumnCache( const wchar_t *colName )
+{
+	GdbiColumnInfoType *colInfo = NULL;
+	bool				found = false;
+
+	int		colIndex = FdoCommonOSUtil::wtoi( colName );
+
+	// Number ?
+	if ( colIndex > 0 )
+	{
+		if( mColList && colIndex <= (int)mColList->size())
+		{
+			colInfo = mColList->at( colIndex - 1);
+			found = true;
+		}
+	}
+	else
+	{
+		FdoStringP  upperName = FdoStringP(colName).Upper();
+		const wchar_t* name = StripTable(upperName);
+
+		for ( size_t i = 0; !found && i < mColList->size(); i++ )
+		{
+			colInfo = mColList->at(i);
+			found = ( wcscmp( colInfo->name, name ) == 0 );
+		}
+	}
+
+	if ( !found )
+		throw FdoCommandException::Create(NlsMsgGet1(FDORDBMS_42, "Column %1$ls not found", colName));
+
+	return colInfo;
 }

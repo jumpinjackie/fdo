@@ -142,7 +142,7 @@ int odbcdr_define(
 
         ODBCDR_RDBI_ERR( odbcdr_geom_defineColumn(context, c, position, address));
 
-        ODBCDR_RDBI_ERR( odbcdr_geom_setNumRows(context, c, ODBCDR_MAX_GEOM_ROWS));
+        ODBCDR_RDBI_ERR( odbcdr_geom_setNumRows(context, c, ODBCDR_MAX_ARRAY_SIZE));
 
         ODBCDR_RDBI_ERR( odbcdr_geom_getSqlServerBuffAddr(
 											context,

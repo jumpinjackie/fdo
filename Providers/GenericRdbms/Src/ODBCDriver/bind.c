@@ -199,7 +199,7 @@ int odbcdr_bind(
 
         ODBCDR_RDBI_ERR( odbcdr_geom_bindColumn( context, c, bindnum, address ) );
 
-        ODBCDR_RDBI_ERR( odbcdr_geom_setNumRows( context, c, ODBCDR_MAX_GEOM_ROWS ) );
+        ODBCDR_RDBI_ERR( odbcdr_geom_setNumRows( context, c, ODBCDR_MAX_ARRAY_SIZE) );
 
         /* 
         ** For geometries, pass the parameter number in ParameterValuePtr 

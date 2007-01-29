@@ -170,6 +170,10 @@ int local_odbcdr_desc_slct(
             }
 
             break;
+		case SQL_WCHAR :
+            *rdbi_type	= RDBI_WSTRING;
+            *binary_size = odbc_precision;
+            break;
         case SQL_BIT:
             /* Handle much like a CHAR. */
             *rdbi_type = RDBI_BOOLEAN;
