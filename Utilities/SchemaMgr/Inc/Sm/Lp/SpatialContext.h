@@ -36,6 +36,7 @@
 class FdoSmLpSpatialContext : public FdoSmLpSchemaElement
 {
 	friend class FdoSmLpSpatialContextCollection;
+	friend class FdoRdbmsOptimizedAggregateReader;
 
 public:
     ~FdoSmLpSpatialContext(void);
