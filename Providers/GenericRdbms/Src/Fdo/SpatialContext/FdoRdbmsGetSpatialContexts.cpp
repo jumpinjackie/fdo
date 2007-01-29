@@ -30,6 +30,11 @@ FdoRdbmsCommand<FdoIGetSpatialContexts>(connection)
     mActiveOnly = false;
 }
 
+FdoRdbmsGetSpatialContexts::FdoRdbmsGetSpatialContexts()
+{
+    mActiveOnly = false;
+}
+
 FdoRdbmsGetSpatialContexts::~FdoRdbmsGetSpatialContexts()
 {
 }

@@ -40,6 +40,7 @@ protected:
     //    Constructs an instance of a FdoRdbmsGetSpatialContexts using the
     //    specified arguments.
     FdoRdbmsGetSpatialContexts (FdoIConnection *connection);
+    FdoRdbmsGetSpatialContexts ();
 
 public:
     // Gets a Boolean flag that indicates if the GetSpatialContexts command
