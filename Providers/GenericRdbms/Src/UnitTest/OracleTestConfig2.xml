@@ -48,7 +48,7 @@
 	 elementFormDefault="qualified" 
 	 attributeFormDefault="qualified"
 	>
-		<!-- Only one class (Polyline). The following element specifies the identityProperties -->
+		<!-- Define Class Polyline. The following element specifies the identityProperties -->
 		<xs:element name="Polyline" type="Acdb:PolylineType" abstract="false"
 		 substitutionGroup="gml:_Feature"
 		>
@@ -65,7 +65,29 @@
 					<xs:sequence>
 						<xs:element name="Id" type="fdo:int64" />
 						<xs:element name="PolylineDate" type="xs:dateTime" />
-						<xs:element name="Geometry" type="gml:AbstractGeometryType" fdo:hasElevation="false" fdo:geometricTypes="Point" associatedSCName="AcdbSc" />
+						<xs:element name="Geometry" type="gml:AbstractGeometryType" fdo:hasElevation="false" fdo:geometricTypes="Point" fdo:srsName="AcdbSc" />
+		        	</xs:sequence>
+      			</xs:extension>
+   			</xs:complexContent>
+		</xs:complexType>
+
+		<!-- Define Class Table1 -->
+		<xs:element name="Table1" type="Acdb:Table1Type" abstract="false"
+		 substitutionGroup="gml:_Feature"
+		>
+			<xs:key name="Table1Key"> 
+  				<xs:selector xpath=".//Table1"/>
+				<xs:field xpath="Id"/>
+			</xs:key>
+ 		</xs:element>
+		<xs:complexType name="Table1Type" abstract="false" >
+			<xs:complexContent>
+				<!-- following extension defines Table1 as a Feature Class -->
+				<xs:extension base="gml:AbstractFeatureType">
+					<xs:sequence>
+						<xs:element name="Id" type="fdo:int64" />
+						<xs:element name="Name" type="xs:string" />
+						<xs:element name="Geometry" type="gml:AbstractGeometryType" fdo:hasElevation="false" fdo:geometricTypes="Point" fdo:srsName="AcdbSc" />
 		        	</xs:sequence>
       			</xs:extension>
    			</xs:complexContent>
@@ -90,6 +112,19 @@
 			</element>
                   <!-- Geometry ordinate columns are overridden -->
 			<element name="Geometry" xColumnName="DOUBLE" yColumnName="SINGLE" />
+		</complexType>
+
+		<!-- Schema Overrides for Table1 Feature Class -->
+		<complexType name="Table1Type">
+			<Table name="TABLE1"/>
+			<element name="Id">
+				<Column name="FEATID1"/>
+			</element>
+			<element name="Name">
+				<Column name="NAME"/>
+			</element>
+                  <!-- Geometry ordinate columns are overridden -->
+			<element name="Geometry" xColumnName="X" yColumnName="Y" />
 		</complexType>
 	</SchemaMapping>
 </fdo:DataStore>
