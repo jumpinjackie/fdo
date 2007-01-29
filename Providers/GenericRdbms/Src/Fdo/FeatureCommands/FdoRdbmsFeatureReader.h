@@ -60,6 +60,14 @@ typedef struct {
     size_t      len;
 } ValueDef;
 
+typedef struct {
+	wchar_t           propertyName[GDBI_SCHEMA_ELEMENT_NAME_SIZE];
+    char              columnQName[GDBI_SCHEMA_ELEMENT_NAME_SIZE*2 + 1];
+	wchar_t           columnNameW[GDBI_SCHEMA_ELEMENT_NAME_SIZE * sizeof(wchar_t) + 1]; // Not table qualified
+	wchar_t           columnPosition[3 * sizeof(wchar_t) + 1];  // 1- based
+    FdoPropertyType   propertyType;
+} FdoRdbmsPropertyInfoDef;
+
 typedef std::map<std::string, ValueDef *> StrMap;
 typedef std::pair<std::string, ValueDef *> ModulePair;
 typedef StrMap::iterator StringMapIterator;
@@ -134,9 +142,11 @@ class FdoRdbmsFeatureReader: public FdoIFeatureReader
 
       FdoRdbmsFeatureReader & operator=(const FdoRdbmsFeatureReader &right);
 
-      const wchar_t* Property2ColName( const wchar_t *propName, FdoPropertyType *type, bool *found = NULL );
+      const char*	 Property2ColName( const wchar_t *propName, FdoPropertyType *type, bool *found = NULL, int *index = NULL );
+      const wchar_t* Property2ColNameW( const wchar_t *propName, FdoPropertyType *type, bool *found = NULL, int *index = NULL );
+      const char*	 Property2ColNameChar( const wchar_t *propName, FdoPropertyType *type, bool *found = NULL, int *index = NULL );
 
-      const char* GetDbAliasName( const wchar_t *propName );
+      const char* GetDbAliasName( const wchar_t *propName, FdoPropertyType *type = NULL );
 
       int GetAttributeQuery( wchar_t* className );
 
@@ -149,6 +159,9 @@ class FdoRdbmsFeatureReader: public FdoIFeatureReader
       void AddToList(FdoPropertyDefinitionCollection *propertyDefinitions, FdoPropertyDefinition *propertyDefinition);
 
       FdoIFeatureReader* GetAssociatedObject( const FdoSmLpAssociationPropertyDefinition *propertyDefinition );
+
+	  // Derive the given expression's property type and data type:
+	  void GetExpressionType(FdoIConnection* connection, FdoClassDefinition* classDef, const char* colName, FdoExpression* expr, FdoPropertyType &propType, FdoDataType &dataType);
 
 protected:
     virtual ~FdoRdbmsFeatureReader();
@@ -262,7 +275,13 @@ public:
     // secondary spatial filtering).
     FdoRdbmsSecondarySpatialFilters     mSecondarySpatialFilters;
 
-
+	// A cache of property definition names to avoid expensive string conversions
+	FdoRdbmsPropertyInfoDef   *mPropertyInfoDefs;
+	int                       mNumPropertyInfoDefs;
+	int                       mLastPropertyInfoDef;
+	int						  m_cacheHits;
+	int						  m_cacheMissed1;
+	int						  m_cacheMissed2;
 };
 
 #endif // FDORDBMSFEATUREREADER_H

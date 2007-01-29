@@ -30,12 +30,16 @@
 #include "Inc/ut.h"
 
 #include "FdoCommonOSUtil.h"
+#include "FdoCommonFilterExecutor.h"
 
 #include <limits>       // For quiet_NaN()
 using namespace std;
 
-#define  PROPERTY2COLNAME( p1, p2 ) mConnection->GetUtility()->UnicodeToUtf8(Property2ColName( p1, p2 ))
-#define  PROPERTY2COLNAME_EXT( p1, p2, p3 ) mConnection->GetUtility()->UnicodeToUtf8(Property2ColName( p1, p2, p3 ))
+//#define FDORDBMS_SHOW_CACHE_PERF
+
+#define  PROPERTY2COLNAME( p1, p2 ) (Property2ColName( p1, p2))
+#define  PROPERTY2COLNAME_IDX( p1, p2, p3, p4 ) (Property2ColName( p1, p2, p3, p4))
+#define  PROPERTY2COLNAME_IDX_W( p1, p2, p3, p4 ) (Property2ColNameW( p1, p2, p3, p4))
 
 static  char  *strEndOfRecordExp = "End of feature data or NextFeature not called";
 static  char  *strObjPropetryExp = "Property '%1$ls' is an object property and cannot be returned through a basic type; use GetFeatureObject";
@@ -60,6 +64,10 @@ public:
 
         if (mFdoClassDefinition)
             mFdoClassDefinition->AddRef();
+
+        mPropertyInfoDefs = NULL;
+        mNumPropertyInfoDefs = 0;
+        mLastPropertyInfoDef = 0;
     }
 
     virtual bool     ReadNext( )
@@ -96,19 +104,16 @@ private:
     try \
     { \
         FdoPropertyType proptype; \
-        const char *colName = PROPERTY2COLNAME( propertyName, &proptype );\
-        if (colName == NULL) \
-        { \
-             colName = GetDbAliasName( propertyName ); \
-        } \
-        if (colName == NULL) \
-        { \
-            if( proptype != FdoPropertyType_DataProperty ) \
-                throw FdoCommandException::Create(NlsMsgGet1( FDORDBMS_67, strObjPropetryExp,  propertyName )); \
-            throw ""; \
-        } \
+		int		cacheIndex; \
+        const wchar_t *colNameW = PROPERTY2COLNAME_IDX_W( propertyName, &proptype, NULL, &cacheIndex );\
+		if (colNameW == NULL) \
+		{ \
+			if( proptype != FdoPropertyType_DataProperty ) \
+				throw FdoCommandException::Create(NlsMsgGet1( FDORDBMS_67, strObjPropetryExp,  propertyName )); \
+			throw ""; \
+		} \
         bool isNull = false; \
-        value = function( (char *) colName, &isNull, NULL); \
+		value = function( mPropertyInfoDefs[cacheIndex].columnPosition, &isNull, NULL ); \
         if( isNull ) \
             throw FdoCommandException::Create(NlsMsgGet1( FDORDBMS_385, strNUllPropetryExp,  propertyName )); \
     } \
@@ -177,16 +182,25 @@ FdoRdbmsFeatureReader::FdoRdbmsFeatureReader( FdoIConnection *connection, GdbiQu
     mUnskippedColCount = -1;
     mColList = NULL;
 
+	// Columns cache for fast property-column match retrieval
+    mPropertyInfoDefs = NULL;
+    mNumPropertyInfoDefs = 0;
+    mLastPropertyInfoDef = 0;
+
+	m_cacheHits	= 0;
+	m_cacheMissed1 = 0;
+	m_cacheMissed2 = 0;
+
     const FdoSmLpDataPropertyDefinition* featIdProp = classDef->RefFeatIdProperty();
     if ( featIdProp ) {
-        const FdoSmPhColumn* featIdCol = featIdProp->RefColumn();
-        if ( featIdCol )
-            mFeatIdColName = featIdCol->GetName();
-    }
+		// Cache the property in the 1st slot, followed by class id and revisionnumber.
+		// This is the order used by ReadNext()
+		mFeatIdColName = Property2ColName( featIdProp->GetName(), NULL );
+    }	
 
     // TODO: push down to Schema Manager, rather than hard-code property names.
-    mRevNumColName = Property2ColName( L"RevisionNumber", NULL );
     mClassIdColName = Property2ColName( L"ClassId", NULL );
+    mRevNumColName = Property2ColName( L"RevisionNumber", NULL );
 
     // Change the active SC if contains geometries
     ChangeActiveSpatialContext();
@@ -215,60 +229,209 @@ FdoRdbmsFeatureReader::~FdoRdbmsFeatureReader()
   if( mColList != NULL )
       delete[] mColList;
 
+  if ( mPropertyInfoDefs != NULL )
+      delete[] mPropertyInfoDefs;
+
   // Restore the active Spatial Context.
   RestoreActiveSpatialContext();
+
+#ifdef	FDORDBMS_SHOW_CACHE_PERF
+  printf("[Columns cache: Hits=%ld Missed1==%ld Missed2==%ld]\n", m_cacheHits, m_cacheMissed1, m_cacheMissed2);
+#endif
 
   if( mFdoConnection )
     mFdoConnection->Release();
 }
 
-const wchar_t* FdoRdbmsFeatureReader::Property2ColName( const wchar_t *propName, FdoPropertyType *type, bool *found )
+const char* FdoRdbmsFeatureReader::Property2ColName( const wchar_t *propName, FdoPropertyType *type, bool *found, int *index )
 {
-    wchar_t* string = NULL;
+	return Property2ColNameChar( propName, type, found, index );
+}
 
-    if( found )
-        *found = false;
+const wchar_t* FdoRdbmsFeatureReader::Property2ColNameW( const wchar_t *propName, FdoPropertyType *type, bool *found, int *index )
+{
+	const char*  col = Property2ColNameChar( propName, type, found, index );
+	return ( col ? mPropertyInfoDefs[*index].columnNameW : (const wchar_t*)NULL );
+}
 
-    if( type )
-        *type = FdoPropertyType_DataProperty;
+const char* FdoRdbmsFeatureReader::Property2ColNameChar( const wchar_t *propName, FdoPropertyType *type, bool *found, int *index )
+{
+    const char*             string = NULL;
+	FdoStringP				colName;
+    FdoRdbmsPropertyInfoDef *cacheElem = NULL;
+    bool                    found2 = false;
+    int                     cacheIndex;
+	FdoPropertyType			propType;
 
     if( mClassDefinition == NULL )
         return NULL;
 
-    const FdoSmLpPropertyDefinitionCollection *propertyDefinitions = mClassDefinition->RefProperties();
-    for (int i=0; i<propertyDefinitions->GetCount(); i++)
+    if( found )
+        *found = false;
+
+    if ( mPropertyInfoDefs == NULL )
     {
-        const FdoSmLpPropertyDefinition *propertyDefinition = propertyDefinitions->RefItem(i);
-
-        if (wcscmp(propertyDefinition->GetName(), propName) == 0)
-        {
-            if( found )
-                *found = true;
-
-            if( type != NULL )
-                *type = propertyDefinition->GetPropertyType();
-            if (propertyDefinition->GetPropertyType() == FdoPropertyType_DataProperty ||
-                propertyDefinition->GetPropertyType() == FdoPropertyType_GeometricProperty)
-            {
-                const FdoSmLpSimplePropertyDefinition* dataProp =
-                    static_cast<const FdoSmLpSimplePropertyDefinition*>(propertyDefinition);
-                const FdoSmPhColumn *column = dataProp->RefColumn();
-                if( column == NULL )
-                    return NULL;
-				string = mConnection->GetUtility()->newWcharP();
-				wcscpy( string, (const wchar_t*)FdoStringP::Format(L"%ls.%ls",(const wchar_t *)mClassDefinition->GetDbObjectName(), column->GetName() ) );
-                break;
-            }
-            break;
-        }
+        const FdoSmLpPropertyDefinitionCollection *propertyDefinitions = mClassDefinition->RefProperties();
+        int numProps = propertyDefinitions->GetCount();
+        mPropertyInfoDefs = new FdoRdbmsPropertyInfoDef[ numProps ];
+        mNumPropertyInfoDefs = 0;
     }
-    return string;
+
+    // Optimize the linear search in the cache: 
+    // Chances are it's the A) next property (usually fetched in order) 
+    // or B) the current property (after IsNull)
+    for ( int i = mLastPropertyInfoDef; !found2 && i < mNumPropertyInfoDefs; i++ )
+    {
+        cacheElem = &mPropertyInfoDefs[i];
+	
+       found2 = ( FdoCommonOSUtil::wcsicmp( propName, cacheElem->propertyName ) == 0);
+       cacheIndex = i;	
+    }
+
+    for ( int i = 0; !found2 && i < mLastPropertyInfoDef; i++ )
+    {
+        cacheElem = &mPropertyInfoDefs[i];
+
+		found2 = ( FdoCommonOSUtil::wcsicmp( propName, cacheElem->propertyName ) == 0);
+        cacheIndex = i;
+    }
+
+    // Fast return if property found in the cache 
+    if ( found2 )
+    {
+		m_cacheHits++;
+
+        if ( found )
+            *found = true;
+        if ( type )
+            *type = cacheElem->propertyType;
+        if ( index )
+            *index = cacheIndex;  
+
+        mLastPropertyInfoDef = cacheIndex;
+
+		// Initialize Gdbi column position in case not initialize before. 
+		if ( ( wcslen(cacheElem->columnPosition) == 0 ) && mQueryResult )
+		{
+			FdoStringP	colPos = FdoStringP::Format(L"%ld", mQueryResult->GetColumnIndex(cacheElem->columnNameW));
+			wcscpy( cacheElem->columnPosition, colPos );
+		}
+
+        return cacheElem->columnQName;
+    }
+
+    if( type )
+        *type = FdoPropertyType_DataProperty;
+
+    const FdoSmLpPropertyDefinitionCollection *propertyDefinitions = mClassDefinition->RefProperties();
+    const FdoSmLpPropertyDefinition *propertyDefinition = propertyDefinitions->RefItem(propName);
+
+    if ( propertyDefinition != NULL )
+	{	
+		m_cacheMissed1++;
+
+        if( found )
+            *found = true;
+
+        propType = propertyDefinition->GetPropertyType();
+        if( type != NULL )
+            *type = propType;
+
+		if ( propType == FdoPropertyType_DataProperty ||
+             propType == FdoPropertyType_GeometricProperty)
+		{
+			const FdoSmLpSimplePropertyDefinition* dataProp = 
+				static_cast<const FdoSmLpSimplePropertyDefinition*>(propertyDefinition);
+			const FdoSmPhColumn *column = dataProp->RefColumn();
+            if( column == NULL )
+                return NULL;
+			
+			colName = FdoStringP(column->GetName()).Upper();
+            string = mConnection->GetUtility()->UnicodeToUtf8((const wchar_t *)colName);
+
+            // Cache
+            cacheElem = &mPropertyInfoDefs[mNumPropertyInfoDefs];
+
+            wcscpy( cacheElem->propertyName, propName );
+            strcpy( cacheElem->columnQName, string );
+			wcscpy( cacheElem->columnNameW, colName );
+            cacheElem->propertyType = propType;
+			wcscpy(cacheElem->columnPosition, L""); 
+
+			cacheIndex = mNumPropertyInfoDefs;
+
+            if ( index )
+                *index = cacheIndex;
+
+            // Remember this
+            mLastPropertyInfoDef = mNumPropertyInfoDefs;
+
+            mNumPropertyInfoDefs++;
+		}
+		else // Object, Association properties etc.
+		{
+			if ( index )
+				*index = -1;  
+
+			return NULL;
+		}
+	}
+	else
+	{
+		m_cacheMissed2++;
+
+		// May be a computed identifier.
+		colName = GetDbAliasName( propName, &propType );
+
+		// Use the propName as col name.
+		if (colName == NULL )
+			return NULL;
+
+		colName = FdoStringP(colName).Upper();
+        string = mConnection->GetUtility()->UnicodeToUtf8((const wchar_t *)colName);
+
+        // Cache
+        cacheElem = &mPropertyInfoDefs[mNumPropertyInfoDefs];
+
+        wcscpy( cacheElem->propertyName, propName );
+		strcpy( cacheElem->columnQName, string );
+		wcscpy( cacheElem->columnNameW, colName );
+
+        cacheElem->propertyType = FdoPropertyType_DataProperty;
+		wcscpy(cacheElem->columnPosition, L""); 
+
+		cacheIndex = mNumPropertyInfoDefs;
+
+        if ( index )
+            *index = cacheIndex;
+
+		if( type != NULL )
+			*type = propType;
+
+        // Remember this
+        mLastPropertyInfoDef = mNumPropertyInfoDefs;
+
+        mNumPropertyInfoDefs++;
+	}
+
+	// Initialize Gdbi column index in case not initialize before. 
+	// (Except for "classid" and "revisionumber" which may not be selected)
+	if ( (wcslen(cacheElem->columnPosition) == 0) && mQueryResult && type )
+	{
+		FdoStringP	colPos = FdoStringP::Format(L"%ld", mQueryResult->GetColumnIndex(cacheElem->columnNameW));
+		wcscpy( cacheElem->columnPosition, colPos );
+	}
+
+	return mPropertyInfoDefs[cacheIndex].columnQName;
 }
 
-const char* FdoRdbmsFeatureReader::GetDbAliasName( const wchar_t *propName )
+const char* FdoRdbmsFeatureReader::GetDbAliasName( const wchar_t *propName, FdoPropertyType *type )
 {
     if( mProperties == NULL || mProperties->GetCount() == 0 )
         return NULL;
+
+	if ( type )
+		*type = FdoPropertyType_DataProperty;
 
     for (int i=0; i<mProperties->GetCount(); i++)
     {
@@ -280,6 +443,36 @@ const char* FdoRdbmsFeatureReader::GetDbAliasName( const wchar_t *propName )
         }
     }
     return NULL;
+}
+
+void FdoRdbmsFeatureReader::GetExpressionType(FdoIConnection* connection, FdoClassDefinition* classDef, const char* colName, FdoExpression* expr, FdoPropertyType &propType, FdoDataType &dataType)
+{
+    try
+    {
+        FdoCommonFilterExecutor::GetExpressionType(connection, classDef, expr, propType, dataType);
+    }
+    catch (FdoException *e)
+    {
+        e->Release();
+
+        // The expression was not recognized, use RDBI to determine types:
+        for ( int k=0; k<mColCount; k++ ) 
+        {
+            if( _stricmp(colName, mColList[k].c_alias) == 0 )
+            {
+                if (mColList[k].datatype == RDBI_GEOMETRY)
+                {
+                    propType = FdoPropertyType_GeometricProperty;
+                }
+                else
+                {
+                    propType = FdoPropertyType_DataProperty;
+                    dataType = FdoRdbmsUtil::DbiToFdoType( mColList[k].datatype );
+                }
+                break;
+            }
+        }
+   }
 }
 
 // This is an internal method to support the DataReader
@@ -505,7 +698,7 @@ void  FdoRdbmsFeatureReader::FetchProperties ()
             FdoPropertyType type;
             FdoPtr<FdoPropertyValue> FeatIdProp = mCurrentFeatId->GetItem(0);
             FdoPtr<FdoIdentifier> id = FeatIdProp->GetName();
-            const wchar_t *primKey = Property2ColName( id->GetText(), &type );
+            const char *primKey = Property2ColName( id->GetText(), &type );
             if( primKey == NULL || type != FdoPropertyType_DataProperty )
                 throw "";
 
@@ -1120,25 +1313,23 @@ const wchar_t* FdoRdbmsFeatureReader::GetString( const wchar_t *propertyName )
     try
     {
         FdoPropertyType type;
-        const char *colName = PROPERTY2COLNAME( propertyName, &type );
-        if (colName == NULL)
-        {
-            // May be an alias of a computed identifier
-             colName = GetDbAliasName( propertyName );
-        }
+		int				cacheIndex;
+        const	char	*colName = PROPERTY2COLNAME_IDX( propertyName, &type, NULL, &cacheIndex );
 
-        if (colName == NULL)
+        if (strlen(colName) == 0)
         {
-            if( type != FdoPropertyType_DataProperty )
-                throw FdoCommandException::Create(NlsMsgGet1( FDORDBMS_67, strObjPropetryExp, propertyName ));
+			if( type != FdoPropertyType_DataProperty )
+				throw FdoCommandException::Create(NlsMsgGet1( FDORDBMS_67, strObjPropetryExp, propertyName ));
 
-            // The catch block will create the message string
-            throw "";
-        }
-        const wchar_t* value = mAttrQueryCache[mAttrsQidIdx].query->GetString( (char *) colName, &isNull, NULL );
+			// The catch block will create the message string
+			throw "";
+		}
+
+        const wchar_t* value = mAttrQueryCache[mAttrsQidIdx].query->GetString( mPropertyInfoDefs[cacheIndex].columnPosition, &isNull, NULL );
         if( isNull )
             throw FdoCommandException::Create(NlsMsgGet1( FDORDBMS_385, strNUllPropetryExp,  propertyName ));
-        propertyValue = mStringMap.AddtoMap((char *) colName, value, mConnection->GetUtility() );
+
+		propertyValue = mStringMap.AddtoMap( (char *)colName, value, mConnection->GetUtility() );
 
     }
     catch ( FdoCommandException* exc )
@@ -1296,28 +1487,24 @@ bool FdoRdbmsFeatureReader::IsNull( const wchar_t *propertyName )
     try
     {
         FdoPropertyType type;
-        const char *colName = PROPERTY2COLNAME( propertyName, &type );
-        if (colName == NULL)
-        {
-            // May be an alias of a computed identifier
-             colName = GetDbAliasName( propertyName );
-        }
+		int				cacheIndex;
+
+		const wchar_t *colNameW = PROPERTY2COLNAME_IDX_W( propertyName, &type, NULL, &cacheIndex );
 
         switch( type )
         {
             case FdoPropertyType_DataProperty:
-                if (colName != NULL)
-                    return mAttrQueryCache[mAttrsQidIdx].query->GetIsNull( (char *) colName );
+                if (colNameW != NULL)
+                    return mAttrQueryCache[mAttrsQidIdx].query->GetIsNull( mPropertyInfoDefs[cacheIndex].columnPosition );
 
                 throw "";
 
             case FdoPropertyType_GeometricProperty:
                 try
                 {
-                    if( FdoPtr<FdoByteArray> (this->GetGeometry( propertyName, true )) != NULL )
-                        return false;
-                    else
-                        return true;
+					FdoPtr<FdoByteArray> ba = this->GetGeometry( propertyName, true);
+
+					return ( ba == NULL );
                 }
                 catch(FdoCommandException *exp )
                 {
@@ -1433,7 +1620,7 @@ void FdoRdbmsFeatureReader::ThrowPropertyNotFoundExp( const wchar_t* propertyNam
 
     FdoPropertyType type;
     bool found;
-    const char *colName = PROPERTY2COLNAME_EXT( propertyName, &type, &found );
+    const char *colName = PROPERTY2COLNAME_IDX( propertyName, &type, &found, NULL );
     if( colName == NULL )
     {
         if (exc)
@@ -1452,7 +1639,7 @@ FdoByteArray* FdoRdbmsFeatureReader::GetGeometry(const wchar_t* propertyName)
 
 FdoByteArray* FdoRdbmsFeatureReader::GetGeometry(const wchar_t* propertyName, bool checkIsNullOnly)
 {
-    return GetGeometry( propertyName, false, mAttrQueryCache[mAttrsQidIdx].query );
+    return GetGeometry( propertyName, checkIsNullOnly, mAttrQueryCache[mAttrsQidIdx].query );
 }
 
 FdoByteArray* FdoRdbmsFeatureReader::GetGeometry(const wchar_t* propertyName, bool checkIsNullOnly, GdbiQueryResult *query)
@@ -1485,27 +1672,22 @@ FdoByteArray* FdoRdbmsFeatureReader::GetGeometry(const wchar_t* propertyName, bo
         FdoSmOvGeometricColumnType columnType = pGeometricPropertyNonConst->GetGeometricColumnType();
         FdoSmOvGeometricContentType contentType = pGeometricPropertyNonConst->GetGeometricContentType();
         const char *    colName = NULL;
+		const wchar_t	*colNameW = NULL;
         const char *    colNameX = NULL;
         const char *    colNameY = NULL;
         const char *    colNameZ = NULL;
 
+		int		cacheIndex;
+
         if (FdoSmOvGeometricColumnType_Double != columnType)
         {
             FdoPropertyType type;
-            colName = PROPERTY2COLNAME( propertyName, &type );
-            if (colName == NULL)
-            {
-                // May be an alias of a computed identifier
-                colName = GetDbAliasName( propertyName );
-            }
-            if (colName == NULL)
-            {
-                throw FdoRdbmsException::Create(NlsMsgGet1(
-                        FDORDBMS_468,
-                        "No column for geometric property '%1$ls'.",
-                        pPropertyDefinition->GetName()));
-            }
-        }
+            colNameW = PROPERTY2COLNAME_IDX_W( propertyName, &type, NULL, &cacheIndex );
+
+			// The catch block will create the message string
+			if (colNameW == NULL)
+				throw "";
+		}
         else
         {
             FdoString *colNameXW = pGeometricProperty->GetColumnNameX();
@@ -1534,8 +1716,9 @@ FdoByteArray* FdoRdbmsFeatureReader::GetGeometry(const wchar_t* propertyName, bo
                FdoSmOvGeometricContentType_Default == contentType ) )
         {
         	FdoIGeometry	*geom = NULL;
-            query->GetBinaryValue( (const wchar_t *) FdoStringP(colName), sizeof(FdoIGeometry *), (char*)&geom, &isNull,NULL);
-            pgeom = FDO_SAFE_ADDREF(geom);
+            query->GetBinaryValue( mPropertyInfoDefs[cacheIndex].columnPosition, sizeof(FdoIGeometry *), (char*)&geom, &isNull, NULL);
+
+			pgeom = FDO_SAFE_ADDREF(geom);
         }
         else if ( FdoSmOvGeometricColumnType_Double == columnType &&
                   FdoSmOvGeometricContentType_Ordinates == contentType )
@@ -1574,8 +1757,8 @@ FdoByteArray* FdoRdbmsFeatureReader::GetGeometry(const wchar_t* propertyName, bo
         {
             if ( isSupportedType )
             {
-                FdoPtr<FdoFgfGeometryFactory>  gf = FdoFgfGeometryFactory::GetInstance();
-                byteArray = gf->GetFgf( pgeom );
+				FdoPtr<FdoFgfGeometryFactory>  gf = FdoFgfGeometryFactory::GetInstance();
+				byteArray = gf->GetFgf( pgeom );
             }
             else
             {
@@ -1590,7 +1773,7 @@ FdoByteArray* FdoRdbmsFeatureReader::GetGeometry(const wchar_t* propertyName, bo
                 }
             }
         }
-        else // isNull indicator is not set by dbi_get_val_b for geometry columns
+        else if (!checkIsNullOnly)// isNull indicator is not set by GDBI for geometry columns
         {
             throw FdoCommandException::Create(NlsMsgGet1( FDORDBMS_385, strNUllPropetryExp, propertyName ));
         }
@@ -1628,6 +1811,7 @@ FdoByteArray* FdoRdbmsFeatureReader::GetGeometry(const wchar_t* propertyName, bo
         }
         throw;
     }
+
     return byteArray;
 }
 
@@ -1811,24 +1995,40 @@ bool FdoRdbmsFeatureReader::ReadNext( )
         bool        isNull = false;
 
         mPropertiesFetched = false;
+		
+		int cacheIndex;
+
+		// Reinitialize cache cursor
+		mLastPropertyInfoDef = 0;
 
         if ( mFeatIdColName == L"" )
             dbiFeature.feat_num = 0;
         else
-            mQueryResult->GetBinaryValue( (const wchar_t*) mFeatIdColName, sizeof(long),
+		{
+			PROPERTY2COLNAME_IDX( mFeatIdColName, NULL, NULL, &cacheIndex );
+            mQueryResult->GetBinaryValue( mPropertyInfoDefs[cacheIndex].columnPosition, sizeof(long),
                         (char *)&dbiFeature.feat_num, NULL, NULL );
+		}
 
         if ( mClassIdColName == L"" )
             dbiFeature.classid = (long)mClassDefinition->GetId();
         else
-            mQueryResult->GetBinaryValue( (const wchar_t*) mClassIdColName, sizeof(long),
+		{
+			mLastPropertyInfoDef++;
+			PROPERTY2COLNAME_IDX( mClassIdColName, NULL, NULL, &cacheIndex );
+            mQueryResult->GetBinaryValue( mPropertyInfoDefs[cacheIndex].columnPosition, sizeof(long),
                         (char *)&dbiFeature.classid, NULL, NULL );
+		}
 
         if ( mRevNumColName == L"" )
             dbiFeature.changeseq = 0;
         else
-            mQueryResult->GetBinaryValue( (const wchar_t*) mRevNumColName, sizeof(long),
+		{
+			mLastPropertyInfoDef++;
+			PROPERTY2COLNAME_IDX( mRevNumColName, NULL, NULL, &cacheIndex );
+            mQueryResult->GetBinaryValue( mPropertyInfoDefs[cacheIndex].columnPosition, sizeof(long),
                         (char *)&dbiFeature.changeseq, &isNull, NULL );
+		}
 
         // RevisionNumber could be null or RevisionColumn does not exist.
         if (isNull == false)
