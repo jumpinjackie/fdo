@@ -51,6 +51,7 @@ class LongTransactionTests : public ArcSDETests
     CPPUNIT_TEST (rollback_arccatalog_version);
     CPPUNIT_TEST (activate_arccatalog_version);
     CPPUNIT_TEST (commit_arccatalog_version);
+    CPPUNIT_TEST (read_protected_version);
     CPPUNIT_TEST_SUITE_END ();
 
     static FdoPtr<FdoIConnection> mConnection;
@@ -68,7 +69,7 @@ protected:
     void MakeTwoObjectsInTwoVersions (int* item1, int* item2);
     void MakeUpdateConflict (int* item1);
     void CommitUpdateConflict (bool child);
-    FdoStringP CreateArcCatalogLikeVersion();
+    FdoStringP CreateArcCatalogLikeVersion(long accessLevel);
 
     // data:
     static FdoString* NAME() { return L"My Long Transaction"; };
@@ -132,6 +133,7 @@ protected:
     void rollback_arccatalog_version ();
     void activate_arccatalog_version();
     void commit_arccatalog_version();
+    void read_protected_version();
 };
 
 #endif // CPP_UNIT_LongTransactionTests_H

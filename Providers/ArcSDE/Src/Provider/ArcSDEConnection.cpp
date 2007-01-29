@@ -1107,13 +1107,6 @@ void ArcSDEConnection::SetActiveVersion (LONG id)
         result = SE_version_get_info_by_id (mConnection, id, version);
         handle_sde_err<FdoCommandException> (mConnection, result, __FILE__, __LINE__, ARCSDE_VERSION_INFO, "Version info for '%1$ls' could not be retrieved.", FdoCommonOSUtil::itow (id, buffer, ELEMENTS(buffer)));
 
-        // check the access
-        result = SE_versioninfo_get_access (version, &access);
-        handle_sde_err<FdoCommandException> (mConnection, result, __FILE__, __LINE__, ARCSDE_VERSION_INFO_ITEM, "Version info item '%1$ls' could not be retrieved.", L"access");
-        if (!(SE_VERSION_ACCESS_PUBLIC == access))
-            if (!ArcSDELongTransactionUtility::IsOurVersion (mConnection, version))
-                throw FdoException::Create (NlsMsgGet (ARCSDE_NOT_OWNER, "User is not the version owner."));
-
         // lock the state
         SetActiveState (ArcSDELongTransactionUtility::LockVersion (this, version));
     }

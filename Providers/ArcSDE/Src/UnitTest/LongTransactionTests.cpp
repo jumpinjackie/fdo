@@ -1408,7 +1408,7 @@ void LongTransactionTests::rollback_arccatalog_version ()
     try
     {
         // Create an ArcCatalog-like version:
-        FdoStringP wNewVersionName = CreateArcCatalogLikeVersion();
+        FdoStringP wNewVersionName = CreateArcCatalogLikeVersion(SE_VERSION_ACCESS_PRIVATE);
 
         // Rollback the new version using our ArcSDE Provider:
         rollback = (FdoIRollbackLongTransaction*)mConnection->CreateCommand (FdoCommandType_RollbackLongTransaction);
@@ -1444,7 +1444,7 @@ void LongTransactionTests::activate_arccatalog_version ()
     try
     {
         // Create an ArcCatalog-like version:
-        FdoStringP wNewVersionName = CreateArcCatalogLikeVersion();
+        FdoStringP wNewVersionName = CreateArcCatalogLikeVersion(SE_VERSION_ACCESS_PRIVATE);
 
         // Activate this new version:
         activate = (FdoIActivateLongTransaction*)mConnection->CreateCommand (FdoCommandType_ActivateLongTransaction);
@@ -1512,7 +1512,7 @@ void LongTransactionTests::commit_arccatalog_version ()
     try
     {
         // Create an ArcCatalog-like version:
-        FdoStringP wNewVersionName = CreateArcCatalogLikeVersion();
+        FdoStringP wNewVersionName = CreateArcCatalogLikeVersion(SE_VERSION_ACCESS_PRIVATE);
 
         // Commit the new version:
         commit = (FdoICommitLongTransaction*)mConnection->CreateCommand (FdoCommandType_CommitLongTransaction);
@@ -1538,7 +1538,7 @@ void LongTransactionTests::commit_arccatalog_version ()
 
 
 
-FdoStringP LongTransactionTests::CreateArcCatalogLikeVersion()
+FdoStringP LongTransactionTests::CreateArcCatalogLikeVersion(long accessLevel)
 {
     // Establish a low-level connection with ArcSDE server:
     SE_ERROR error;
@@ -1580,7 +1580,7 @@ FdoStringP LongTransactionTests::CreateArcCatalogLikeVersion()
     CPPUNIT_ASSERT(result == SE_SUCCESS);
     result = SE_versioninfo_set_state_id (versioninfo, state_id);
     CPPUNIT_ASSERT(result == SE_SUCCESS);
-    result = SE_versioninfo_set_access (versioninfo, SE_VERSION_ACCESS_PRIVATE);
+    result = SE_versioninfo_set_access (versioninfo, accessLevel);
     CPPUNIT_ASSERT(result == SE_SUCCESS);
     result = SE_version_create(connection, versioninfo, TRUE, versioninfo);
     CPPUNIT_ASSERT(result == SE_SUCCESS);
@@ -1592,4 +1592,54 @@ FdoStringP LongTransactionTests::CreateArcCatalogLikeVersion()
 
     FdoStringP wNewVersionName(newVersionName);
     return wNewVersionName;
+}
+
+
+void LongTransactionTests::read_protected_version()
+{
+    if (CreateSchemaOnly())  return;
+
+    FdoStringP wNewVersionName;
+    FdoPtr <FdoIActivateLongTransaction> activate;
+
+    try
+    {
+        // Create an ArcCatalog-like *protected* version:
+        wNewVersionName = CreateArcCatalogLikeVersion(SE_VERSION_ACCESS_PROTECTED);
+
+        // Establish a second connection as a different user:
+    	FdoPtr<FdoIConnection> conn2 = ArcSDETests::GetConnection ();
+        conn2->SetConnectionString (ArcSDETestConfig::ConnStringOzzie());
+        conn2->Open ();
+
+        // Activate this new version, as different user:
+        activate = (FdoIActivateLongTransaction*)conn2->CreateCommand (FdoCommandType_ActivateLongTransaction);
+        activate->SetName (wNewVersionName);
+        activate->Execute ();
+
+        // Try selecting data from versioned table, as different user:
+        FdoPtr<FdoISelect> select = (FdoISelect*)conn2->CreateCommand(FdoCommandType_Select);
+        select->SetFeatureClassName(ArcSDETestConfig::QClassNameTrees());
+        FdoPtr<FdoIFeatureReader> rdr = select->Execute();
+        while (rdr->ReadNext())
+        {
+            // do nothing
+        }
+    }
+    catch (FdoException* ge)
+    {
+        fail (ge);
+    }
+
+    // clean up this new version:
+    try
+    {
+        FdoPtr <FdoIRollbackLongTransaction> rollback = (FdoIRollbackLongTransaction*)mConnection->CreateCommand (FdoCommandType_RollbackLongTransaction);
+        rollback->SetName (wNewVersionName);
+        rollback->Execute ();
+    }
+    catch (FdoException* ge)
+    {
+        // ignore error here
+    }
 }

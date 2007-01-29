@@ -272,8 +272,12 @@ void ArcSDELongTransactionUtility::VersionDelete (SE_CONNECTION conn, FdoString*
     // NOTE: the state may be in use if this version's state matches its parent's version state, in which case the delete will fail
     // (with one of a variety of errors, depending on the condition the state is in) and we should leave the state alone without throwing an exception.
     result = SE_state_delete (conn, state);
-    if ((result != SE_STATE_INUSE) && (result != SE_STATE_USED_BY_VERSION) && (result != SE_STATE_HAS_CHILDREN))
-        handle_sde_err<FdoCommandException> (conn, result, __FILE__, __LINE__, ARCSDE_STATE_DELETE, "Cannot delete state.");
+    // NOTE: we purposefully ignore any errors returned from SE_state_delete() for two reasons:
+    // 1) This function's main purpose is to delete the version, not the state. If we get this far, te
+    //     version has been deleted successfully.
+    // 2) SE_state_delete() may throw many different exceptions if the state still in use after the version is
+    // deleted, since states can be shared by multiple versions (e.g. SE_STATE_USED_BY_VERSION, SE_STATE_INUSE,
+    // SE_STATE_HAS_CHILDREN, SE_NO_PERMISSIONS, etc)
 
     SE_versioninfo_free (version);
 }
