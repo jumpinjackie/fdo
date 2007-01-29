@@ -617,6 +617,7 @@ int GdbiCommands::autocommit_mode()
 
 	return autoCmt;
 }
+
 int GdbiCommands::geom_to_fgf ( 
     int             sqlid,
     void *          rdbmsGeometryInfo_I,
@@ -632,6 +633,7 @@ int GdbiCommands::geom_to_fgf (
     return FALSE;
 #endif
 }
+
 int GdbiCommands::geom_srid_set(
 	int				sqlid,
 	char			*geom_col_name,
