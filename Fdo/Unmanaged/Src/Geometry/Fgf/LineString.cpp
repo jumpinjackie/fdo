@@ -71,7 +71,6 @@ void FdoFgfLineString::Reset(FdoDirectPositionCollection* positions)
 }
 
 
-
 /************************************************************************/
 /* Constructor                                                                     */
 /************************************************************************/
@@ -88,6 +87,10 @@ FdoFgfLineString::FdoFgfLineString(
 
 void FdoFgfLineString::Reset(FdoInt32 dimensionType, FdoInt32 numOrdinates, double* ordinates)
 {
+	if ( (numOrdinates <= 0) ||
+		 (NULL == ordinates) )
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
+
     FdoByteArray * newByteArray = m_factory->GetByteArray();
 
     m_previousPositionIndex = -1;
@@ -105,6 +108,7 @@ void FdoFgfLineString::Reset(FdoInt32 dimensionType, FdoInt32 numOrdinates, doub
     FDO_SAFE_RELEASE(newByteArray);
 }
 
+
 /************************************************************************/
 /* Constructor                                                                     */
 /************************************************************************/
@@ -114,8 +118,19 @@ FdoFgfLineString::FdoFgfLineString(
     const FdoByte * data,
     FdoInt32 count
     )
-    : FdoFgfGeometryImpl<FdoILineString>(factory, byteArray, data, count), m_previousPositionIndex(-1)
+    : FdoFgfGeometryImpl<FdoILineString>(factory), m_previousPositionIndex(-1)
 {
+    Reset(byteArray, data, count);
+}
+
+void FdoFgfLineString::Reset(
+    FdoByteArray * byteArray,
+    const FdoByte * data,
+    FdoInt32 count
+    )
+{
+    m_previousPositionIndex = -1;
+    SetFgf(byteArray, data, count);
 }
 
 

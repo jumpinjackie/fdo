@@ -40,21 +40,16 @@ public:
 	// Copy the positions.  Dimensionality is taken from the first position.
 	FdoFgfLineString(FdoFgfGeometryFactory * factory, FdoDirectPositionCollection* positions);
 
-	// Copying the ordinates.
+	// Copy the ordinates.
 	FdoFgfLineString(FdoFgfGeometryFactory * factory, FdoInt32 dimensionType, FdoInt32 numOrdinates, double* ordinates);
 
-    /*
-     * Constructors supporting internal needs of this package.
-     */
-
-	// Just latch onto the data stream.
+	// (internal use) Just latch onto the data stream.
 	FdoFgfLineString(FdoFgfGeometryFactory * factory, FdoByteArray * byteArray, const FdoByte * data, FdoInt32 count);
 
-	virtual ~FdoFgfLineString();
-
     // Support object re-use, matching the constructors.
-	virtual void Reset(FdoDirectPositionCollection* positions);
-	virtual void Reset(FdoInt32 dimensionType, FdoInt32 numOrdinates, double* ordinates);
+	void Reset(FdoDirectPositionCollection* positions);
+	void Reset(FdoInt32 dimensionType, FdoInt32 numOrdinates, double* ordinates);
+	void Reset(FdoByteArray * byteArray, const FdoByte * data, FdoInt32 count);
 
 	// From FdoIGeometry
 	virtual FdoIEnvelope* GetEnvelope() const;
@@ -79,6 +74,8 @@ public:
 protected:
 
 	FdoFgfLineString() {}; // Default constructor to satisfy FdoPtr on Linux
+
+	virtual ~FdoFgfLineString();
 
 	mutable FdoInt32		 m_previousPositionIndex;
 

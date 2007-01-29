@@ -71,8 +71,18 @@ FdoFgfPolygon::FdoFgfPolygon(
     const FdoByte * data,
     FdoInt32 count
     )
-    : FdoFgfGeometryImpl<FdoIPolygon>(factory, byteArray, data, count)
+    : FdoFgfGeometryImpl<FdoIPolygon>(factory)
 {
+    Reset(byteArray, data, count);
+}
+
+void FdoFgfPolygon::Reset(
+    FdoByteArray * byteArray,
+    const FdoByte * data,
+    FdoInt32 count
+    )
+{
+    SetFgf(byteArray, data, count);
 }
 
 

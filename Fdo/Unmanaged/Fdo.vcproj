@@ -555,6 +555,14 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath=".\Src\Fdo\Schema\SchemaInternal.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Src\Fdo\Schema\SchemaInternal.h"
+					>
+				</File>
+				<File
 					RelativePath="Src\Fdo\Schema\TopoFeaturePropertyDefinition.cpp"
 					>
 				</File>
@@ -2147,6 +2155,10 @@
 			<Filter
 				Name="Raster"
 				>
+				<File
+					RelativePath="Inc\Fdo\Raster\DataValueCollection.h"
+					>
+				</File>
 				<File
 					RelativePath="Inc\Fdo\Raster\IRaster.h"
 					>

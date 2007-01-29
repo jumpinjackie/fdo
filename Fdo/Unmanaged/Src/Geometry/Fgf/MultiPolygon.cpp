@@ -61,8 +61,18 @@ FdoFgfMultiPolygon::FdoFgfMultiPolygon(
     const FdoByte * data,
     FdoInt32 count
     )
-    : FdoFgfGeometryImpl<FdoIMultiPolygon>(factory, byteArray, data, count)
+    : FdoFgfGeometryImpl<FdoIMultiPolygon>(factory)
 {
+    Reset(byteArray, data, count);
+}
+
+void FdoFgfMultiPolygon::Reset(
+    FdoByteArray * byteArray,
+    const FdoByte * data,
+    FdoInt32 count
+    )
+{
+    SetFgf(byteArray, data, count);
 }
 
 

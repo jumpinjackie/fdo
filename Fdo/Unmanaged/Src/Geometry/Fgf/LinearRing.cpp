@@ -268,10 +268,9 @@ bool FdoFgfLinearRing::IsClosed(FdoInt32 dimensionality, FdoInt32 numOrdinates, 
     }
 
 	// Note: no tolerance here -- being topological, start and end positions must
-    // be identical, not just close.
+    // be identical, not just close. Ignore Z ordinate checking.
 	return ( (x1 == x2) &&
-			 (y1 == y2) &&
-			 (z1 == z2) );
+			 (y1 == y2) );
 }
 
 /************************************************************************/

@@ -1,6 +1,6 @@
 /*
  * 
-* Copyright (C) 2004-2006  Autodesk, Inc.
+* Copyright (C) 2004-2007  Autodesk, Inc.
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
@@ -1646,7 +1646,11 @@ bool FdoSpatialUtility::PolygonContains(FdoIPolygon* poly, FdoIGeometry* geom, b
             int dim;
             GET_POSITION(pt, &x, &y, &dim);
 
-            return PointInPolygon(poly, x, y);
+            bool isOnExtBoundary = false;
+            bool isInside = PointInPolygon(poly, x, y, &isOnExtBoundary);
+            if (isOnExtBoundary)
+                isInside = !strictInside;
+            return isInside;
         }
     case FdoGeometryType_LineString : 
         return PolygonContainsLineString(poly, (FdoILineString*)geom, strictInside);
