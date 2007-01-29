@@ -69,9 +69,10 @@ static int indexof_field (MYSQL_RES *prepare_meta_result, char *name)
 /// MYSQL_TYPE_MEDIUM_BLOB MEDIUMBLOB/MEDIUMTEXT  
 /// MYSQL_TYPE_LONG_BLOB   LONGBLOB/LONGTEXT  
 /// </pre>
-static unsigned long field_size (enum enum_field_types type, unsigned long length)
+static unsigned long field_size (enum enum_field_types type, unsigned long length, bool *valid)
 {
-    unsigned long ret;
+    unsigned long ret = 0;
+	*valid = true;
 
     switch (type)
     {
@@ -130,13 +131,13 @@ static unsigned long field_size (enum enum_field_types type, unsigned long lengt
         case MYSQL_TYPE_NEWDATE:
         case MYSQL_TYPE_ENUM:
         case MYSQL_TYPE_SET:
-            ret = -1;
+            *valid = false;
             break;
         case MYSQL_TYPE_GEOMETRY:
             ret = sizeof (void*);
             break;
         default:
-            ret = -1;
+            *valid = false;
             break;
     }
 
@@ -161,6 +162,7 @@ static MYSQL_BIND *make_defines (MYSQL_RES *prepare_meta_result)
     unsigned long* lengths;
     my_bool* nulls;
     MYSQL_BIND *ret;
+	bool valid;
 
     ret = (MYSQL_BIND*)NULL;
 
@@ -172,8 +174,8 @@ static MYSQL_BIND *make_defines (MYSQL_RES *prepare_meta_result)
     {
         type = fields[i].type;
         length = fields[i].length;
-        size = field_size (type, length);
-        if (0 > size)
+        size = field_size (type, length, &valid );
+        if (!valid)
             return (ret);
         buffer_size += size;
     }
@@ -195,7 +197,7 @@ static MYSQL_BIND *make_defines (MYSQL_RES *prepare_meta_result)
     {
         type = fields[i].type;
         length = fields[i].length;
-        size = field_size (type, length);
+        size = field_size (type, length, &valid);
         p->buffer_type = fields[i].type; /* The type of the buffer. The allowable buffer_type values are listed later in this section. For input, buffer_type indicates what type of value you are binding to a statement parameter. For output, it indicates what type of value you expect to receive in a result buffer. */
         p->buffer = buffer; /* For input, this is a pointer to the buffer in which a statement parameter's data value is stored. For output, it is a pointer to the buffer in which to return a result set column value. For numeric column types, buffer should point to a variable of the proper C type. (If you are associating the variable with a column that has the UNSIGNED attribute, the variable should be an unsigned C type. Indicate whether the variable is signed or unsigned by using the is_unsigned member, described later in this list.) For date and time column types, buffer should point to a MYSQL_TIME structure. For character and binary string column types, buffer should point to a character buffer. */
         buffer += size;
