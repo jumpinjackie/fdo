@@ -156,18 +156,41 @@ void FdoSqlCmdTest::Delete ()
 
 }
 
+static void ProcessSpatialContextReader( FdoISpatialContextReader * reader )
+{
+    int                         count = 0;
+
+    while ( reader->ReadNext() )
+    {
+        const wchar_t* sc_name = reader->GetName();
+        const wchar_t* cs_name = reader->GetCoordinateSystem();
+        const wchar_t* descr = reader->GetDescription();
+        const wchar_t* cs_wkt = reader->GetCoordinateSystemWkt();
+
+        FdoPtr<FdoByteArray> extent = reader->GetExtent();
+        FdoSpatialContextExtentType type = reader->GetExtentType();
+        bool is_active = reader->IsActive();
+
+        DBG(printf("\tsc_name=%ls\n\t\t   cs_name=%ls\n\t\t   descr=%ls\n\t\t   type=%d\n\t\t   active=%d\n", 
+                 sc_name, cs_name, descr, type, is_active));
+        DBG(printf("\tWKT: '%ls'\n", cs_wkt ));
+        count++;
+    }
+    DBG(printf("\t    retrieved %d SCs\n", count));
+    CPPUNIT_ASSERT( count >= 1 );
+}
+
 void FdoSqlCmdTest::doGetSC()
 {
-    FdoPtr<FdoRdbmsGetSpatialContexts> gscCmd;
-    FdoPtr<FdoISpatialContextReader> reader;
-    int                         n = 0;
-    bool        active_only = true;
-
-    DBG(printf("\n.Getting Spatial Contexts (active_only=%s)\n", active_only? "true":"false" ));
+    bool        active_only = false;
     if( mConnection != NULL )
     {
         try
         {
+            FdoPtr<FdoRdbmsGetSpatialContexts> gscCmd;
+            FdoPtr<FdoISpatialContextReader> reader;
+            DBG(printf("\n.Getting Spatial Contexts (active_only=%s)\n", active_only? "true":"false" ));
+
             ///////////////////////////////////////////////////////////////////////////////////////////
             // This will initialize for fetching the SC
             gscCmd = (FdoRdbmsGetSpatialContexts *)mConnection->CreateCommand( FdoCommandType_GetSpatialContexts );
@@ -177,28 +200,13 @@ void FdoSqlCmdTest::doGetSC()
             // Get a SC reader
             reader = gscCmd->Execute();
 
-            // Iterate ...
-            while ( reader->ReadNext() )
-            {
-                const wchar_t* sc_name = reader->GetName();
-    	        const wchar_t* cs_name = reader->GetCoordinateSystem();
-                const wchar_t* descr = reader->GetDescription();
-                const wchar_t* cs_wkt = reader->GetCoordinateSystemWkt();
+            ProcessSpatialContextReader(reader);
 
-                FdoPtr<FdoByteArray> extent = reader->GetExtent();
-                FdoSpatialContextExtentType type = reader->GetExtentType();
-                bool is_active = reader->IsActive();
-     
-                if ( true )
-                {
-                    DBG(printf("\tsc_name=%ls\n\t\t   cs_name=%ls\n\t\t   descr=%ls\n\t\t   type=%d\n\t\t   active=%d\n", 
-                             sc_name, cs_name, descr, type, is_active));
-                    DBG(printf("\tWKT: '%ls'\n", cs_wkt ));
-                }
-                n++;
-            }
-            if (true )
-                DBG(printf("\t    retrieved %d SCs\n", n));
+            ///////////////////////////////////////////////////////////////////////////////////////////
+            // Now try again, fetching all spatial contexts.
+            active_only = false;
+            reader = gscCmd->Execute();
+            ProcessSpatialContextReader(reader);
         }
         catch (FdoException *ex )
         {

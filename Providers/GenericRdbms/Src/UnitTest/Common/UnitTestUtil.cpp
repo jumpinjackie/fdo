@@ -1787,6 +1787,7 @@ void UnitTestUtil::ProcessFeature(FdoIFeatureReader* featureReader)
                     ( NULL != scName &&
                       (   wcscmp(scName, L"Default") == 0 ||
                         ( wcscmp(scName, L"survey1") == 0 && wcscmp(className, L"Sounding") == 0 ) ||
+                        ( wcscmp(scName, L"AcdbSc") == 0 && wcscmp(className, L"Table1") == 0 ) ||
                         ( wcscmp(scName, L"AcdbSc") == 0 && wcscmp(className, L"Polyline") == 0 ) ) );
                 CPPUNIT_ASSERT_MESSAGE("Wrong SpatialContextAssociation name", scNameOk);
                 if (!featureReader->IsNull(propName))
