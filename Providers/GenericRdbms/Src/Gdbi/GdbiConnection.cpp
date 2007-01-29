@@ -19,7 +19,6 @@
 #include "GdbiConnection.h"
 #include "GdbiQueryResult.h"
 #include "GdbiStatement.h"
-#include <Inc/Util/thread.h>
 
 
 GdbiConnection::GdbiConnection( rdbi_context_def* rdbi_context ):
