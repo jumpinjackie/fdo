@@ -22,7 +22,11 @@
 #pragma once
 #endif
 #include <Sm/SchemaManager.h>
+#ifdef USE_NONRDBMS_HEADER
+#include <inc/rdbi/context.h>
+#else
 #include <Inc/Rdbi/context.h>
+#endif
 #include "../Gdbi/GdbiTypes.h"
 #include "../Gdbi/GdbiQueryResult.h"
 #include "../Gdbi/GdbiStatement.h"
