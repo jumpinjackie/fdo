@@ -135,6 +135,7 @@ class OdbcSqlServerFdoSelectTest : public OdbcFdoSelectTest
 class OdbcAccessFdoSelectTest : public OdbcFdoSelectTest
 {
     CPPUNIT_TEST_SUB_SUITE (OdbcAccessFdoSelectTest, OdbcFdoSelectTest);
+    CPPUNIT_TEST (TestDefect889655);
     CPPUNIT_TEST (Table1Test);
     //CPPUNIT_TEST (Table2Test);
     CPPUNIT_TEST (ComparisonFilterTable1Test);
@@ -147,6 +148,7 @@ class OdbcAccessFdoSelectTest : public OdbcFdoSelectTest
 
 public:
     virtual void Table1Test();
+    virtual void TestDefect889655();
     void Table2Test();
     void ComparisonFilterTable1Test();  // Contains a spatial query
     void RestrictedPropertiesTable1Test();

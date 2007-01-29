@@ -229,6 +229,37 @@ void OdbcAccessFdoSelectTest::Table1Test()
     }
 }
 
+void OdbcAccessFdoSelectTest::TestDefect889655()
+{
+    if( mConnection != NULL )
+    {
+        try
+        {
+            // This works much like any other Select, but includes a column (NAME) that internally
+            // maps to an ODBC SQL_WCHAR column type.
+            FdoPtr<FdoISelect> selectCmd = (FdoISelect*)mConnection->CreateCommand(FdoCommandType_Select);
+            selectCmd->SetFeatureClassName(L"hospital");
+            FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+            FdoPtr<FdoClassDefinition> classDef = reader->GetClassDefinition();
+            int numFeatures = 0;
+            while (reader->ReadNext())
+            {
+                numFeatures++;
+                UnitTestUtil::ProcessFeature(reader);
+            }
+
+            printf("   %i feature(s) read\n", numFeatures);
+
+            // close the reader
+            reader->Close();
+        }
+        catch (FdoException* e)
+        {
+            TestCommonFail (e);
+        }
+    }
+}
+
 void OdbcAccessFdoSelectTest::ComparisonFilterTable1Test()
 {
     if( mConnection != NULL )
