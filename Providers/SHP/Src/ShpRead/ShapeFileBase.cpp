@@ -138,14 +138,26 @@ void ShapeFileBase::GetFileHeaderDetails ()
 
     // Read the File Header details
     if (!ReadFile (&shpHeader, SHPHeaderSize))
-        throw FdoCommonFile::LastErrorToException (L"ShapeFileBase::GetFileHeaderDetails");
-    // Check version
+	{
+		FdoException*  ex = FdoCommonFile::LastErrorToException (L"ShapeFileBase::GetFileHeaderDetails");
+		if ( ex )
+			throw ex;
+		else
+			throw FdoException::Create (NlsMsgGet(SHP_READ_FILE_ERROR, "Error occured reading file '%1$ls'.", FileName() ));
+	}
+
+    // We need to swap the BigEndian values
+    m_nFileCode = shpHeader.nFileCode = SWAPLONG(shpHeader.nFileCode);
+
+	// Check file code
+	if ( m_nFileCode != nSHP_FILE_CODE )
+		throw FdoException::Create (NlsMsgGet(SHP_CONNECTION_FILE_INVALID_FILECODE, "The file '%1$ls' has an invalid File Code number (%2$d).", FileName (), m_nFileCode));
+
+	// Check version
     m_nFileVersion = shpHeader.nFileVersion;
 
     if(m_nFileVersion == nSHP_FILE_VERSION)
     {
-        // We need to swap the BigEndian values
-        m_nFileCode = shpHeader.nFileCode = SWAPLONG(shpHeader.nFileCode);
         m_nFileLength = shpHeader.nFileLength = SWAPLONG(shpHeader.nFileLength);
         m_nFileShapeType = (eShapeTypes)shpHeader.nFileShapeType;
 
