@@ -180,7 +180,7 @@ FdoIFeatureReader* SdfInsert::Execute()
 		m_connection->FlushAll( clas, true );
 	
 		// Re-synch with the on-disk id pool
-		m_connection->ReSyncData();
+		m_connection->ReSyncData(clas);
 		m_NeedSync = false;
 	}
 
@@ -271,7 +271,7 @@ FdoIFeatureReader* SdfInsert::Execute()
 						rt->Insert(bounds, 0, rtkey);
 					}
 				}
-			}
+            }
         }
     }
 

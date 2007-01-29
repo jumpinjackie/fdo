@@ -173,7 +173,7 @@ public:
     // Used to re-sync with the data on disk. This is needed if 2 or more connections are writting to the same file
     // Before a new connection writes to the file it needs to re-synch with the id pool. Otherwise the ids may overlap
     // with the existing ids.
-    void ReSyncData();
+    void ReSyncData(FdoClassDefinition *clas);
 
     FdoConnectionState Open( SdfCompareHandler* cmpHandler );
 

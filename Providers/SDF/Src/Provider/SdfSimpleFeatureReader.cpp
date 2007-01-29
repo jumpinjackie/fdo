@@ -912,6 +912,7 @@ bool SdfSimpleFeatureReader::ReadNext()
                 throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_10_ERROR_ACCESSING_SDFDB)));
 
             m_dataReader->Reset((unsigned char*)m_currentData->get_data(), m_currentData->get_size());
+            m_dbData->SetTag((void*)this);
 
             //we can skip the filter if the feature class
             //doesn't match the query base class
@@ -957,6 +958,7 @@ bool SdfSimpleFeatureReader::ReadNext()
                 throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_10_ERROR_ACCESSING_SDFDB)));
 
             m_dataReader->Reset((unsigned char*)m_currentData->get_data(), m_currentData->get_size());
+            m_dbData->SetTag((void*)this);
             
             //we can skip the filter if the feature class
             //doesn't match the query base class

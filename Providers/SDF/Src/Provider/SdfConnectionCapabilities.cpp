@@ -56,7 +56,7 @@ void SdfConnectionCapabilities::Dispose()
 // level of thread safety.
 FdoThreadCapability SdfConnectionCapabilities::GetThreadCapability()
 {
-    return FdoThreadCapability_PerCommandThreaded;
+    return FdoThreadCapability_PerConnectionThreaded;
 }
 
 

@@ -678,6 +678,10 @@ void SdfConnection::InitDatabases()
 //close feature data databases
 void SdfConnection::DestroyDatabases()
 {
+    // Make sure that all updates are committed in an orderly fashion; one class at a time
+    // an with a proper low level transaction.
+    Flush();
+
     //iterate over hashmap and close Data databases here..
     //stdext::hash_map<FdoClassDefinition*, DataDb*>::iterator dblist;
     stdext::hash_map<void*, void*>::iterator dblist;
@@ -759,38 +763,19 @@ void SdfConnection::DestroyDatabases()
     m_hPropertyIndices.clear();
     
 }
-void SdfConnection::ReSyncData()
-{
-    stdext::hash_map<void*, void*>::iterator dblist;
-    
-    for (dblist = m_hDataDbs.begin(); dblist != m_hDataDbs.end(); dblist++)
-    {
-        //only synch the ids for every base class
-        //child classes share the same db
-        FdoPtr<FdoClassDefinition> base = ((FdoClassDefinition*)dblist->first)->GetBaseClass();
-        if (base == NULL)
-        {
-            if (dblist->second != NULL)
-            {
-                ((DataDb*)dblist->second)->SyncIdPool();
-            }
-        }
-    }
 
-    stdext::hash_map<void*, void*>::iterator treelist;
-    for (treelist = m_hRTrees.begin(); treelist != m_hRTrees.end(); treelist++)
-    {
-        //Need to re-read the root node in case it was updated by a different connection.
-        FdoPtr<FdoClassDefinition> base = ((FdoClassDefinition*)treelist->first)->GetBaseClass();
-        if (base == NULL)
-        {
-            if (treelist->second != NULL)
-            {
-                ((SdfRTree*)treelist->second)->UpdateRootNode();
-            }
-        }
-    }
+void SdfConnection::ReSyncData(FdoClassDefinition *clas)
+{
+    DataDb  *dataDb = GetDataDb(clas);
+    SdfRTree* rt = GetRTree(clas);
+
+    if( dataDb )
+        dataDb->SyncIdPool();
+
+    if( rt )
+        rt->UpdateRootNode();
 }
+
 
 void SdfConnection::RegenIndex( FdoClassDefinition *clas, KeyDb* keys, DataDb  *dataDb )
 {
@@ -874,7 +859,7 @@ void SdfConnection::FlushAll( FdoClassDefinition *clas, bool forUpdate )
     // the database since the user is only reading this database.
     if( keys && forUpdate && keys->IndexNeedsRegen() )
     {
-        
+    
         RegenIndex( clas, keys, dataDb );
         keys->Flush();
         keys->Regened();
@@ -991,36 +976,7 @@ void SdfConnection::Flush()
         FdoPtr<FdoClassDefinition> base = ((FdoClassDefinition*)dblist->first)->GetBaseClass();
         if (base == NULL)
         {
-            if (dblist->second != NULL)
-            {
-                ((DataDb*)dblist->second)->Flush();
-            }
-        }
-    }
-
-    stdext::hash_map<void*, void*>::iterator keylist;
-    for (keylist = m_hKeyDbs.begin(); keylist != m_hKeyDbs.end(); keylist++)
-    {
-        FdoPtr<FdoClassDefinition> base = ((FdoClassDefinition*)keylist->first)->GetBaseClass();
-        if (base == NULL)
-        {
-            if (keylist->second != NULL)
-            {
-                ((KeyDb*)keylist->second)->Flush();
-            }
-        }
-    }
-
-    stdext::hash_map<void*, void*>::iterator treelist;
-    for (treelist = m_hRTrees.begin(); treelist != m_hRTrees.end(); treelist++)
-    {
-        FdoPtr<FdoClassDefinition> base = ((FdoClassDefinition*)treelist->first)->GetBaseClass();
-        if (base == NULL)
-        {
-            if (treelist->second != NULL)
-            {
-                ((SdfRTree*)treelist->second)->Flush();
-            }
+            FlushAll( (FdoClassDefinition*)dblist->first, true );
         }
     }
 }

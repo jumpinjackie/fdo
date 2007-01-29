@@ -64,6 +64,7 @@ void SdfIndexedScrollableFeatureReader::InitDataReader()
 	m_dataReader->Reset((unsigned char*)m_currentData->get_data(), m_currentData->get_size());
 
 	m_currentFeatureRecno = *(REC_NO*)(m_currentKey->get_data());
+    m_Sourcedata->SetTag((void*)this);
 
 	if (!m_stringPropsCache.empty())
     {
