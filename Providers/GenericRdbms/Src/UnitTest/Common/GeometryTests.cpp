@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2006  Autodesk, Inc.
+ * Copyright (C) 2004-2007  Autodesk, Inc.
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser
@@ -265,7 +265,7 @@ void GeometryTests::define ()
             if ((RDBI_END_OF_FETCH != rc) && (0 != rows))
             {
                 q = get_geometry_text (answer);
-                panswer = answer;
+                panswer = FDO_SAFE_ADDREF(answer);
                 CPPUNIT_ASSERT_MESSAGE ("fetched value incorrect", 0 == strcmp (p, q));
                 delete[] q;
                 count++;
@@ -370,7 +370,7 @@ void GeometryTests::bind ()
             if ((RDBI_END_OF_FETCH != rc) && (0 != rows))
             {
                 q = get_geometry_text (answer);
-                panswer = answer;
+                panswer = FDO_SAFE_ADDREF(answer);
                 CPPUNIT_ASSERT_MESSAGE ("fetched value incorrect", 0 == strcmp (p, q));
                 delete[] q;
                 count++;
