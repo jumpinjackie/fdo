@@ -57,6 +57,8 @@ int mysql_connect (
     MYSQL *handle;
     int rows_processed;
     int ret;
+    unsigned long server_client_version = 0;
+    const wchar_t* server_client_msg = NULL;
 
     ret = mysql_xlt_status(context, MYSQL_SUCCESS, (MYSQL*) NULL, (MYSQL_STMT*) NULL);
 
@@ -123,32 +125,49 @@ int mysql_connect (
                     }
                     else
                     {
-						if (context->mysql_current_connect == -1)
-						{
-							context->mysql_connect_count++;
-							context->mysql_current_connect = index;
-							context->mysql_connections[index] = handle;
+                        server_client_version = mysql_get_client_version();
+                        if ( server_client_version < MIN_CLIENT_VER )
+                            server_client_msg = mysql_nls_client_version( server_client_version );
+                        
+                        server_client_version = mysql_get_server_version( handle );
+                        if ( server_client_version < MIN_SERVER_VER )
+                            server_client_msg = mysql_nls_server_version( server_client_version );
 
-							*connect_id = index;
-                            // The following allows RDBMS object names to be double quote
-                            // delimited in SQL statements, thus allowing queries on tables
-                            // and columns with special characters in their names.
-                            ret = mysql_run_sql( context, "set sql_mode='ANSI_QUOTES'", false, &rows_processed );
-                            if ( ret == 0 ) 
-                                ret = set_characterset( context, false );
-						}
-						else if (context->mysql_current_connect2 == -1)
-						{
-							context->mysql_connect_count++;
-							context->mysql_current_connect2 = index;
-							context->mysql_connections[index] = handle;
-                            // See note 10 lines above.
-                            ret = mysql_run_sql( context, "set sql_mode='ANSI_QUOTES'", true, &rows_processed );
-                            if ( ret == 0 ) 
-                                ret = set_characterset( context, true );
-							break;
-						}
+                        if ( server_client_msg != NULL)
+                        {
+                            swprintf(context->mysql_last_err_msg, RDBI_MSG_SIZE, L"%ls", server_client_msg);
+                            mysql_close (handle);
+                            context->mysql_last_err_msg[RDBI_MSG_SIZE - 1] = 0;
+                            ret = RDBI_GENERIC_ERROR;
+                        }
+                        else
+                        {
+						    if (context->mysql_current_connect == -1)
+						    {
+							    context->mysql_connect_count++;
+							    context->mysql_current_connect = index;
+							    context->mysql_connections[index] = handle;
 
+							    *connect_id = index;
+                                // The following allows RDBMS object names to be double quote
+                                // delimited in SQL statements, thus allowing queries on tables
+                                // and columns with special characters in their names.
+                                ret = mysql_run_sql( context, "set sql_mode='ANSI_QUOTES'", false, &rows_processed );
+                                if ( ret == 0 ) 
+                                    ret = set_characterset( context, false );
+						    }
+						    else if (context->mysql_current_connect2 == -1)
+						    {
+							    context->mysql_connect_count++;
+							    context->mysql_current_connect2 = index;
+							    context->mysql_connections[index] = handle;
+                                // See note 10 lines above.
+                                ret = mysql_run_sql( context, "set sql_mode='ANSI_QUOTES'", true, &rows_processed );
+                                if ( ret == 0 ) 
+                                    ret = set_characterset( context, true );
+							    break;
+						    }
+                        }
                     }
                 }
             }

@@ -45,3 +45,8 @@
 // Helper macro that determines the number of elements in a statically-sized array
 // (this doesn't work for dynamically-sized arrays)
 #define ELEMENTS(x) (sizeof(x)/sizeof(x[0]))
+
+// defines minimum client version accepted
+#define MIN_CLIENT_VER 50000
+// defines minimum server version accepted
+#define MIN_SERVER_VER 50022
