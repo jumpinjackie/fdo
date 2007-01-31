@@ -251,6 +251,14 @@
 			Name="Feature"
 			>
 			<File
+				RelativePath=".\DeleteCommand.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DeleteCommand.h"
+				>
+			</File>
+			<File
 				RelativePath=".\FeatureCommand.h"
 				>
 			</File>
@@ -263,11 +271,27 @@
 				>
 			</File>
 			<File
+				RelativePath=".\InsertCommand.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\InsertCommand.h"
+				>
+			</File>
+			<File
 				RelativePath=".\SelectCommand.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\SelectCommand.h"
+				>
+			</File>
+			<File
+				RelativePath=".\UpdateCommand.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\UpdateCommand.h"
 				>
 			</File>
 		</Filter>
