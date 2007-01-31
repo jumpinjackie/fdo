@@ -45,5 +45,10 @@
 // Windows Header Files
 #include <windows.h>
 
+// FDO
+#include <Fdo.h>
+
+// PostGIS Overrides
+#include "XmlGlobals.h"
 
 #endif // POSTGISOVERRIDES_STDAFX_H_INCLUDED
