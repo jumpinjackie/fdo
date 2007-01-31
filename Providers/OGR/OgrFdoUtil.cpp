@@ -306,6 +306,10 @@ void OgrFdoUtil::ApplyFilter(OGRLayer* layer, FdoFilter* filter)
     FdoFilter* spatial = NULL;
     FdoFilter* attr = NULL;
 
+    //zero out the filters
+    layer->SetAttributeFilter(NULL);
+    layer->SetSpatialFilter(NULL);
+    
     //this is lame, but much shorter than implementing
     //all of FdoIFilterProcessor and FdoIExpressionProcessor
     if (dynamic_cast<FdoSpatialCondition*>(filter))
@@ -364,7 +368,29 @@ void OgrFdoUtil::ApplyFilter(OGRLayer* layer, FdoFilter* filter)
         }
         else if (sc->GetOperation() == FdoSpatialOperations_Intersects)
         {
-            //TODO: must implement this for selection to work in the AJAX viewer.
+            //Intersects is used for selection of features by the MapGuide AJAX viewer
+
+            FdoPtr<FdoExpression> expr = sc->GetGeometry();
+            FdoGeometryValue* geomval = dynamic_cast<FdoGeometryValue*>(expr.p);
+
+            if (geomval)
+            {
+                FdoPtr<FdoByteArray> fgf = geomval->GetGeometry();
+
+                unsigned char* wkb = (unsigned char*) alloca(fgf->GetCount());
+
+                int len = Fgf2Wkb(fgf->GetData(), wkb);
+
+                OGRGeometry* geom = NULL;
+                OGRGeometryFactory::createFromWkb(wkb, NULL, &geom, len);
+
+                if (geom)
+                    layer->SetSpatialFilter(geom);
+                else
+                    printf ("failed to convert intersects spatial filter geometry value");
+
+                OGRFree(geom);
+            }
         }
     }
 }
