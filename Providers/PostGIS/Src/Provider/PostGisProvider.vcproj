@@ -347,6 +347,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SQLCommand.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SQLCommand.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SQLDataReader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SQLDataReader.h"
+				>
+			</File>
+			<File
 				RelativePath=".\stdafx.cpp"
 				>
 			</File>
