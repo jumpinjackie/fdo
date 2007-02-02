@@ -17,10 +17,6 @@
 #ifndef FDOPOSTGIS_CONNECTIONINFO_H_INCLUDED
 #define FDOPOSTGIS_CONNECTIONINFO_H_INCLUDED
 
-//
-// Forward declarations
-//
-
 
 namespace fdo { namespace postgis {
 
@@ -32,8 +28,48 @@ class ConnectionInfo : public FdoIConnectionInfo
 {
 public:
 
+    /// Default constructor.
     ConnectionInfo();
+
+    /// Destructor.
     virtual ~ConnectionInfo();
+
+    //
+    // FdoIDisposable interface
+    //
+
+    /// Dispose this object.
+    void Dispose();
+
+    //
+    // FdoIConnectionInfo interface
+    //
+
+    /// Get name of the feature provider - PostGIS Provider.
+    FdoString* GetProviderName();
+
+    /// Get display name of the feature provider.
+    FdoString* GetProviderDisplayName();
+
+    /// Get description of the feature provider.
+    FdoString* GetProviderDescription();
+ 	
+    /// Get version of the feature provider.
+    FdoString* GetProviderVersion();
+ 	
+    /// Get version of the Feature Data Objects specification with which 
+    /// this PostGIS provider is compatible.
+    FdoString* GetFeatureDataObjectsVersion();
+ 	
+    /// Get pointer to FdoIConnectionPropertyDictionary interface that can be used to
+    /// dynamically query and set properties required to establish a connection.
+    FdoIConnectionPropertyDictionary* GetConnectionProperties();
+ 	
+    /// Returns the provider type.
+    FdoProviderDatastoreType GetProviderDatastoreType();
+ 	
+    /// File-based providers depend on a various files.
+    FdoStringCollection* GetDependentFileNames();
 
 protected:
 

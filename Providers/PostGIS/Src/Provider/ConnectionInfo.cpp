@@ -17,7 +17,9 @@
 #include "stdafx.h"
 
 #include "PostGisProvider.h"
-#include "FdoConnectionInfo.h"
+#include "ConnectionInfo.h"
+
+#include <cassert>
 
 namespace fdo { namespace postgis {
 
@@ -27,6 +29,67 @@ ConnectionInfo::ConnectionInfo()
 
 ConnectionInfo::~ConnectionInfo()
 {
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoIDisposable interface
+///////////////////////////////////////////////////////////////////////////////
+
+void ConnectionInfo::Dispose()
+{
+    delete this;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoIConnectionInfo interface
+///////////////////////////////////////////////////////////////////////////////
+
+FdoString* ConnectionInfo::GetProviderName()
+{
+    assert(!"NOT IMPLEMENTED");
+    return NULL;
+}
+
+FdoString* ConnectionInfo::GetProviderDisplayName()
+{
+    assert(!"NOT IMPLEMENTED");
+    return NULL;
+}
+
+FdoString* ConnectionInfo::GetProviderDescription()
+{
+    assert(!"NOT IMPLEMENTED");
+    return NULL;
+}
+
+FdoString* ConnectionInfo::GetProviderVersion()
+{
+    assert(!"NOT IMPLEMENTED");
+    return NULL;
+}
+
+FdoString* ConnectionInfo::GetFeatureDataObjectsVersion()
+{
+    assert(!"NOT IMPLEMENTED");
+    return NULL;
+}
+
+FdoIConnectionPropertyDictionary* ConnectionInfo::GetConnectionProperties()
+{
+    assert(!"NOT IMPLEMENTED");
+    return NULL;
+}
+
+FdoProviderDatastoreType ConnectionInfo::GetProviderDatastoreType()
+{
+    assert(!"NOT IMPLEMENTED");
+    return FdoProviderDatastoreType_DatabaseServer;
+}
+
+FdoStringCollection* ConnectionInfo::GetDependentFileNames()
+{
+    assert(!"NOT IMPLEMENTED");
+    return NULL;
 }
 
 }} // namespace fdo::postgis
