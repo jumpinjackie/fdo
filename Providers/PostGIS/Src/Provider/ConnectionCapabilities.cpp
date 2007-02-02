@@ -17,8 +17,9 @@
 #include "stdafx.h"
 
 #include "PostGisProvider.h"
-#include "FdoConnectionCapabilities.h"
+#include "ConnectionCapabilities.h"
 
+#include <cassert>
 
 namespace fdo { namespace postgis {
 
@@ -28,6 +29,103 @@ ConnectionCapabilities::ConnectionCapabilities()
 
 ConnectionCapabilities::~ConnectionCapabilities()
 {
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoIDisposable interface
+///////////////////////////////////////////////////////////////////////////////
+
+void ConnectionCapabilities::Dispose()
+{
+    delete this;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoIConnectionCapabilities interface
+///////////////////////////////////////////////////////////////////////////////
+
+FdoThreadCapability ConnectionCapabilities::GetThreadCapability()
+{
+    assert(!"NOT IMPLEMENTED");
+    return FdoThreadCapability_SingleThreaded;
+}
+
+FdoSpatialContextExtentType* ConnectionCapabilities::GetpatialContextTypes(FdoInt32& size)
+{
+    assert(!"NOT IMPLEMENTED");
+    return NULL;
+}
+
+FdoLockType* ConnectionCapabilities::GetLockTypes(FdoInt32& size)
+{
+    assert(!"NOT IMPLEMENTED");
+    return NULL;
+}
+
+bool ConnectionCapabilities::SupportsLocking()
+{
+    assert(!"NOT IMPLEMENTED");
+    return false;
+}
+
+bool ConnectionCapabilities::SupportsTimeout()
+{
+    assert(!"NOT IMPLEMENTED");
+    return false;
+}
+
+bool ConnectionCapabilities::SupportsTransactions()
+{
+    assert(!"NOT IMPLEMENTED");
+    return false;
+}
+
+bool ConnectionCapabilities::SupportsLongTransactions()
+{
+    assert(!"NOT IMPLEMENTED");
+    return false;
+}
+
+bool ConnectionCapabilities::SupportsSQL()
+{
+    assert(!"NOT IMPLEMENTED");
+    return false;
+}
+
+bool ConnectionCapabilities::SupportsConfiguration()
+{
+    assert(!"NOT IMPLEMENTED");
+    return false;
+}
+
+bool ConnectionCapabilities::SupportsMultipleSpatialContexts()
+{
+    assert(!"NOT IMPLEMENTED");
+    return false;
+}
+
+bool ConnectionCapabilities::SupportsCSysWKTFromCSysName()
+{
+    assert(!"NOT IMPLEMENTED");
+    return false;
+}
+
+bool ConnectionCapabilities::SupportsWrite()
+{
+    assert(!"NOT IMPLEMENTED");
+    return false;
+}
+
+bool ConnectionCapabilities::SupportsMultiUserWrite()
+{
+    assert(!"NOT IMPLEMENTED");
+    return false;
+}
+
+bool ConnectionCapabilities::SupportsFlush()
+{
+    assert(!"NOT IMPLEMENTED");
+    return false;
 }
 
 }} // namespace fdo::postgis
