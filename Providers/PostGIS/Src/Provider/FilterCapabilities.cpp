@@ -17,8 +17,9 @@
 #include "stdafx.h"
 
 #include "PostGisProvider.h"
-#include "FdoFilterCapabilities.h"
+#include "FilterCapabilities.h"
 
+#include <cassert>
 
 namespace fdo { namespace postgis {
 
@@ -28,6 +29,49 @@ FilterCapabilities::FilterCapabilities()
 
 FilterCapabilities::~FilterCapabilities()
 {
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoIDisposable interface
+///////////////////////////////////////////////////////////////////////////////
+
+void FilterCapabilities::Dispose()
+{
+    delete this;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoIFilterCapabilities interface
+///////////////////////////////////////////////////////////////////////////////
+
+FdoConditionType* GetConditionTypes(FdoInt32& size)
+{
+    assert(!"NOT IMPLEMENTED");
+    return NULL;
+}
+
+FdoSpatialOperations* GetSpatialOperations(FdoInt32& size)
+{
+    assert(!"NOT IMPLEMENTED");
+    return NULL;
+}
+
+FdoDistanceOperations* GetDistanceOperations(FdoInt32& size)
+{
+    assert(!"NOT IMPLEMENTED");
+    return NULL;
+}
+
+bool SupportsGeodesicDistance()
+{
+    assert(!"NOT IMPLEMENTED");
+    return false;
+}
+
+bool SupportsNonLiteralGeometricOperations()
+{
+    assert(!"NOT IMPLEMENTED");
+    return false;
 }
 
 }} // namespace fdo::postgis

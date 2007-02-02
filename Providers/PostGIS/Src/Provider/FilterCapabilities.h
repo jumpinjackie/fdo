@@ -17,24 +17,51 @@
 #ifndef FDOPOSTGIS_FILTERCAPABILITIES_H_INCLUDED
 #define FDOPOSTGIS_FILTERCAPABILITIES_H_INCLUDED
 
-//
-// Forward declarations
-//
-
 
 namespace fdo { namespace postgis {
 
 
-/// Implementation of ...
+/// Implementation of interface describing capabilities about
+/// filter expression tree supported by PostGIS provider.
 ///
 class FilterCapabilities : public FdoIFilterCapabilities
 {
 public:
 
+    /// Default constructor.
     FilterCapabilities();
-    virtual ~FilterCapabilities();
+
+    //
+    // FdoIFilterCapabilities interface
+    //
+
+    /// Return array of FdoConditionType objects the feature provider supports.
+    FdoConditionType* GetConditionTypes(FdoInt32& size);
+
+    /// Return array of FdoSpatialOperation objects the feature provider supports.
+    FdoSpatialOperations* GetSpatialOperations(FdoInt32& size);
+
+    /// Return array of FdoDistanceOperation objects the feature provider supports.
+    FdoDistanceOperations* GetDistanceOperations(FdoInt32& size);
+
+    /// Determine if the feature provider supports geodesic distance measurement.
+    bool SupportsGeodesicDistance();
+
+    /// Determine if spatial and distance operations can be applied between two
+    /// geometric properties. 
+    bool SupportsNonLiteralGeometricOperations();
 
 protected:
+
+    /// Destructor.
+    virtual ~FilterCapabilities();
+
+    //
+    // FdoIDisposable interface
+    //
+
+    /// Dispose this object.
+    void Dispose();
 
 private:
 	
