@@ -8,7 +8,7 @@
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Lesser General Public License for more details.
+// Lesser General Public License for more/// Details.
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
@@ -17,22 +17,80 @@
 #ifndef FDOPOSTGIS_CONNECTIONCAPABILITIES_H_INCLUDED
 #define FDOPOSTGIS_CONNECTIONCAPABILITIES_H_INCLUDED
 
-//
-// Forward declarations
-//
-
 
 namespace fdo { namespace postgis {
 
 
-/// Implementation of ...
+/// Implementation of interface/// Describing connection capabilities
+/// supported by PostGIS provider.
 ///
 class ConnectionCapabilities : public FdoIConnectionCapabilities
 {
 public:
 
+    /// Default constructor.
     ConnectionCapabilities();
+
+    /// Destructor.
     virtual ~ConnectionCapabilities();
+
+    //
+    // FdoIDisposable interface
+    //
+
+    /// Dispose this object.
+    void Dispose();
+
+    //
+    // FdoIConnectionCapabilities interface
+    //
+
+    /// Get FdoThreadCapability enumerator that declares level of thread safety
+    /// supported by PostGIS provider.
+    FdoThreadCapability GetThreadCapability();
+
+    /// Get spatial context extent types supported by the PostGIS provider.
+    FdoSpatialContextExtentType* GetpatialContextTypes(FdoInt32& size);
+
+    /// Get array of the FdoLockType values supported by the feature provider.
+    FdoLockType* GetLockTypes(FdoInt32& size);
+
+    /// Determine if the PostGIS provider supports persistent locking.
+    bool SupportsLocking();
+
+    /// Determine if the PostGIS provider supports connection timeout.
+    bool SupportsTimeout();
+
+    /// Determine if the PostGIS provider supports transactions.
+    bool SupportsTransactions();
+
+    /// Determine if the PostGIS provider supports long transactions.
+    bool SupportsLongTransactions();
+
+    /// Determine if the PostGIS provider supports SQL commands.
+    bool SupportsSQL();
+
+    /// Determine if the PostGIS provider supports XML configuration.
+    bool SupportsConfiguration();
+
+    /// Determine if the PostGIS provider supports multiple spatial contexts.
+    bool SupportsMultipleSpatialContexts();
+
+    /// Determine if the PostGIS provider supports coordinate system specification by
+    /// name or ID without specifying WKT, during new spatial context creation.
+    bool SupportsCSysWKTFromCSysName();
+
+    /// Determine if write operation is supported.
+    /// Write operation support can be provided by the provider or by datastore,
+    /// depending on whether this request is at the provider or datastore level.
+    bool SupportsWrite();
+
+    /// Determine if the provider or datastore supports more than one writing
+    /// actions to a single datastore at once.
+    bool SupportsMultiUserWrite();
+
+    /// Determine if the provider supports the flush function. 
+    bool SupportsFlush();
 
 protected:
 
