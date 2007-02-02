@@ -17,27 +17,66 @@
 #ifndef FDOPOSTGIS_COMMANDCAPABILITIES_H_INCLUDED
 #define FDOPOSTGIS_COMMANDCAPABILITIES_H_INCLUDED
 
-//
-// Forward declarations
-//
-
 
 namespace fdo { namespace postgis {
 
 
-/// Implementation of ...
+/// Implementation of interface describing command capabilities
+/// supported by PostGIS provider.
 ///
 class CommandCapabilities : public FdoICommandCapabilities
 {
 public:
 
+    /// Default constructor.
     CommandCapabilities();
-    virtual ~CommandCapabilities();
+
+    //
+    // FdoICommandCapabilities interface
+    //
+
+    /// Get array of the FdoCommandType values supported by the feature provider.
+    FdoInt32* GetCommands(FdoInt32& size);
+ 	
+    /// Determine if commands support parameterization.
+    bool SupportsParameters();
+ 	
+    /// Determine if the feature provider supports command execution timeout.
+    bool SupportsTimeout();
+ 	
+    /// Determine if the feature provider can use expressions for properties.
+    /// Expressions are used with commands Select and SelectAggregate.
+    bool SupportsSelectExpressions();
+ 	
+    /// Determine if simple functions in select commands.
+    /// Functions are used with commands Select and SelectAggregates.
+    bool SupportsSelectFunctions();
+ 	
+    /// Determine if Distinct can be used with SelectAggregates.
+    bool SupportsSelectDistinct();
+ 	
+    /// Determine if ordering is supported by select commands.
+    /// Ordering is used with commands Select and SelectAggregates.
+    bool SupportsSelectOrdering();
+ 	
+    /// Determine if grouping criteria use is supported.
+    /// Grouping is available to use with SelectAggregates command.
+    bool SupportsSelectGrouping();
 
 protected:
 
+    /// Destructor.
+    virtual ~CommandCapabilities();
+
+    //
+    // FdoIDisposable interface
+    //
+
+    /// Dispose this object.
+    void Dispose();
+
 private:
-	
+
 };
 
 }} // namespace fdo::postgis

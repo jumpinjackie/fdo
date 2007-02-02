@@ -17,8 +17,9 @@
 #include "stdafx.h"
 
 #include "PostGisProvider.h"
-#include "FdoCommandCapabilities.h"
+#include "CommandCapabilities.h"
 
+#include <cassert>
 
 namespace fdo { namespace postgis {
 
@@ -28,6 +29,67 @@ CommandCapabilities::CommandCapabilities()
 
 CommandCapabilities::~CommandCapabilities()
 {
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoIDisposable interface
+///////////////////////////////////////////////////////////////////////////////
+
+void CommandCapabilities::Dispose()
+{
+    delete this;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoICommandCapabilities interface
+///////////////////////////////////////////////////////////////////////////////
+
+FdoInt32* CommandCapabilities::GetCommands(FdoInt32& size)
+{
+    assert(!"NOT IMPLEMENTED");
+    return NULL;
+}
+
+bool CommandCapabilities::SupportsParameters()
+{
+    assert(!"NOT IMPLEMENTED");
+    return false;
+}
+
+bool CommandCapabilities::SupportsTimeout()
+{
+    assert(!"NOT IMPLEMENTED");
+    return false;
+}
+
+bool CommandCapabilities::SupportsSelectExpressions()
+{
+    assert(!"NOT IMPLEMENTED");
+    return false;
+}
+
+bool CommandCapabilities::SupportsSelectFunctions()
+{
+    assert(!"NOT IMPLEMENTED");
+    return false;
+}
+
+bool CommandCapabilities::SupportsSelectDistinct()
+{
+    assert(!"NOT IMPLEMENTED");
+    return false;
+}
+
+bool CommandCapabilities::SupportsSelectOrdering()
+{
+    assert(!"NOT IMPLEMENTED");
+    return false;
+}
+
+bool CommandCapabilities::SupportsSelectGrouping()
+{
+    assert(!"NOT IMPLEMENTED");
+    return false;
 }
 
 }} // namespace fdo::postgis
