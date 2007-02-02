@@ -6,7 +6,7 @@
 	>
 	<Tool
 		Name="VCCLCompilerTool"
-		AdditionalIncludeDirectories="$(FDO)\Unmanaged\Inc"
+		AdditionalIncludeDirectories="..\..\Inc;&quot;$(FDO)\Unmanaged\Inc&quot;"
 	/>
 	<Tool
 		Name="VCLinkerTool"
