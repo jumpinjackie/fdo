@@ -20,6 +20,7 @@
 
 namespace fdo { namespace postgis {
 
+
 /// Implementation of interface describing capabilities of expressions.
 /// supported by PostGIS provider.
 ///
