@@ -17,10 +17,6 @@
 #ifndef FDOPOSTGIS_CONNECTION_H_INCLUDED
 #define FDOPOSTGIS_CONNECTION_H_INCLUDED
 
-//
-// Forward declarations
-//
-
 
 namespace fdo { namespace postgis {
 
@@ -51,84 +47,89 @@ public:
     // FdoIConnection interface
     //
 
-    // Get pointer to FdoIConnectionCapabilities interface describing
-    // capabilities of the connection.
+    /// Get pointer to FdoIConnectionCapabilities interface describing
+    /// capabilities of the connection.
     FdoIConnectionCapabilities* GetConnectionCapabilities();
 
-    // Get pointer to FdoISchemaCapabilities interface describing
-    // support for the feature schema provided by PostGIS Provider.
+    /// Get pointer to FdoISchemaCapabilities interface describing
+    /// support for the feature schema provided by PostGIS Provider.
     FdoISchemaCapabilities* GetSchemaCapabilities();
  	
-    // Get pointer to FdoICommandCapabilities interface describing supported commands.
+    /// Get pointer to FdoICommandCapabilities interface describing supported commands.
     FdoICommandCapabilities* GetCommandCapabilities();
 
-    // Get pointer to FdoIFilterCapabilities interface describing 
-    // support for filters.
+    /// Get pointer to FdoIFilterCapabilities interface describing 
+    /// support for filters.
     FdoIFilterCapabilities* GetFilterCapabilities();
 
-    // Get pointer to FdoIExpressionCapabilities interface describing
-    // support for expressions.
+    /// Get pointer to FdoIExpressionCapabilities interface describing
+    /// support for expressions.
     FdoIExpressionCapabilities* GetExpressionCapabilities();
 
-    // Get pointer to FdoIRasterCapabilities interface describing
-    // support for raster images.
+    /// Get pointer to FdoIRasterCapabilities interface describing
+    /// support for raster images.
     FdoIRasterCapabilities* GetRasterCapabilities();
 
-    // Get pointer to FdoITopologyCapabilities interface describing support for topology.
+    /// Get pointer to FdoITopologyCapabilities interface describing support for topology.
     FdoITopologyCapabilities* GetTopologyCapabilities();
 
-    // Get pointer to FdoIGeometryCapabilities interface describing support for geometry.
+    /// Get pointer to FdoIGeometryCapabilities interface describing support for geometry.
     FdoIGeometryCapabilities* GetGeometryCapabilities();
 
-    // Get connection string used to establish connection with a DataStore.
+    /// Get connection string used to establish connection with a DataStore.
     FdoString* GetConnectionString();
 
-    // Set connection string used to establish connection with a DataStore.
+    /// Set connection string used to establish connection with a DataStore.
     void SetConnectionString(FdoString* value);
 
-    // Get pointer to FdoIConnectionInfo interface that can be used to interrogate
-    // and set connection properties.
+    /// Get pointer to FdoIConnectionInfo interface that can be used to interrogate
+    /// and set connection properties.
     FdoIConnectionInfo* GetConnectionInfo();
 
-    // Get state of current connection.
+    /// Get state of current connection.
     FdoConnectionState GetConnectionState();
 
-    // Get number of milliseconds to wait while trying to establish a connection
-    // before terminating the attempt and generating an error.
+    /// Get number of milliseconds to wait while trying to establish a connection
+    /// before terminating the attempt and generating an error.
     FdoInt32 GetConnectionTimeout();
 
-    // Set number of milliseconds to wait while trying to establish a connection
-    // before terminating the attempt and generating an error.
+    /// Set number of milliseconds to wait while trying to establish a connection
+    /// before terminating the attempt and generating an error.
     void SetConnectionTimeout(FdoInt32 value);
 
-    // Establish connection with a datastore using settings
-    // specified by ConnectionString attribute.
+    /// Establish connection with a datastore using settings
+    /// specified by ConnectionString attribute.
     FdoConnectionState Open();
 
-    // Close current connection.
+    /// Close current connection.
     void Close();
 
-    // Begin transaction and return pointer to FdoITransaction interface realizing
-    // transaction operations support.
+    /// Begin transaction and return pointer to FdoITransaction interface realizing
+    /// transaction operations support.
     FdoITransaction* BeginTransaction();
 
-    // Create command object of specified type and return pointer to interface realizing
-    // command capabilities associated with the connection.
+    /// Create command object of specified type and return pointer to interface realizing
+    /// command capabilities associated with the connection.
     FdoICommand* CreateCommand(FdoInt32 type);
 
-    // Factory function that creates an empty Schema Override mapping specific
-    // for PostGIS Provider.
+    /// Factory function that creates an empty Schema Override mapping specific
+    /// for PostGIS Provider.
     FdoPhysicalSchemaMapping* CreateSchemaMapping();
 
-    // Set XML configuration stream used to configure connected datastore.
+    /// Set XML configuration stream used to configure connected datastore.
     void SetConfiguration(FdoIoStream* configStream);
 
-    // Force to write any cached data to currently connected datastore
+    /// Force to write any cached data to currently connected datastore
     void Flush();
 
 protected:
 
 private:
+
+    // Connection information object.
+    // It's of lazy-creation object, delayed until first request,
+    // on GetConnectionInfo() call.
+    FdoPtr<FdoIConnectionInfo> mConnectionInfo;
 
 
 };
