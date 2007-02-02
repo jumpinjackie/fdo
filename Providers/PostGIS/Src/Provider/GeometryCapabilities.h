@@ -17,24 +17,45 @@
 #ifndef FDOPOSTGIS_GEOMETRYCAPABILITIES_H_INCLUDED
 #define FDOPOSTGIS_GEOMETRYCAPABILITIES_H_INCLUDED
 
-//
-// Forward declarations
-//
-
 
 namespace fdo { namespace postgis {
 
 
-/// Implementation of ...
+/// Implementation of interface describing geometry capabilities
+/// supported by PostGIS provider.
 ///
 class GeometryCapabilities : public FdoIGeometryCapabilities
 {
 public:
 
+    /// Default constructor.
     GeometryCapabilities();
-    virtual ~GeometryCapabilities();
+
+    //
+    // FdoIGeometryCapabilities interface
+    //
+
+    /// Return list of supported geometry types.
+    FdoGeometryType* GetGeometryTypes(FdoInt32& size);
+ 	
+    /// Return the list of supported component types.
+    FdoGeometryComponentType* GetGeometryComponentTypes(FdoInt32& size);
+ 	
+    /// Return supported dimensionalities which are based on the bit masks defined
+    /// in the FdoDimensionality enumeration.
+    FdoInt32 GetDimensionalities();
 
 protected:
+
+    /// Destructor.
+    virtual ~GeometryCapabilities();
+
+    //
+    // FdoIDisposable interface
+    //
+
+    /// Dispose this object.
+    void Dispose();
 
 private:
 	

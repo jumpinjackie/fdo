@@ -17,8 +17,9 @@
 #include "stdafx.h"
 
 #include "PostGisProvider.h"
-#include "FdoGeometryCapabilities.h"
+#include "GeometryCapabilities.h"
 
+#include <cassert>
 
 namespace fdo { namespace postgis {
 
@@ -29,5 +30,37 @@ GeometryCapabilities::GeometryCapabilities()
 GeometryCapabilities::~GeometryCapabilities()
 {
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoIDisposable interface
+///////////////////////////////////////////////////////////////////////////////
+
+void GeometryCapabilities::Dispose()
+{
+    delete this;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoIGeometryCapabilities interface
+///////////////////////////////////////////////////////////////////////////////
+
+FdoGeometryType* GeometryCapabilities::GetGeometryTypes(FdoInt32& size)
+{
+    assert(!"NOT IMPLEMENTED");
+    return NULL;
+}
+
+FdoGeometryComponentType* GeometryCapabilities::GetGeometryComponentTypes(FdoInt32& size)
+{
+    assert(!"NOT IMPLEMENTED");
+    return NULL;
+}
+
+FdoInt32 GeometryCapabilities::GetDimensionalities()
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
+}
+
 
 }} // namespace fdo::postgis
