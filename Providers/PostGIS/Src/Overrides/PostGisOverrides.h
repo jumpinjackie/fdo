@@ -18,4 +18,15 @@
 #define POSTGISOVERRIDES_H_INCLUDED
 
 
+namespace fdo { namespace postgis {
+
+/// \brief
+/// Dedicated for Schema Overrides mapping defined for PostGIS provider.
+///
+namespace ov {
+
+const wchar_t* VERSION = L"1.0.0.0"
+
+}}} // namespace fdo::postgis::ov
+
 #endif // POSTGISOVERRIDES_H_INCLUDED
