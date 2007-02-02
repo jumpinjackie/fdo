@@ -17,7 +17,7 @@
 #ifndef POSTGISPROVIDER_H_INCLUDED
 #define POSTGISPROVIDER_H_INCLUDED
 
-
+#include <PostGIS/FdoPostGisProvider.h>
 #include <FdoCommon.h>
 #include <FdoSpatial.h>
 #include <FdoGeometry.h>
