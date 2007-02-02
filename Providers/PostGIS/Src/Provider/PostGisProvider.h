@@ -23,11 +23,9 @@
 #include <FdoGeometry.h>
 #include <Fdo.h>
 
-/// \namespace fdo
-///
+
 /// \brief
-/// The main top-level namespace providing context for all FDO items,
-/// prototypes and definitions.
+/// The main top-level namespace providing context for all FDO items.
 ///
 /// Currently, this namespace is only used by the FDO provider for PostGIS
 /// and consist of single nested namespace named postgis.
@@ -35,10 +33,8 @@
 namespace fdo
 {
 
-/// \namespace postgis
-///
 /// \brief
-/// Nested namespaces dedicated for PostGIS provider elements
+/// Dedicated for PostGIS provider elements.
 ///
 namespace postgis
 {
@@ -46,11 +42,11 @@ namespace postgis
 //
 // General descriptive information about PostGIS Provier
 //
-const wchar_t* PROVIDER_NAME = L"OSGeo.PostGIS.1.0"
-const wchar_t* PROVIDER_DEFAULT_DISPLAY_NAME = L"OSGeo FDO Provider for PostGIS"
-const wchar_t* PROVIDER_DEFAULT_DESCRIPTION = L"Read/write access to PostGIS-based data store. Supports spatial data types and spatial query operations."
-const wchar_t* PROVIDER_VERSION = L"3.2.0.0"
-const wchar_t* FDO_VERSION = L"3.2.0.0"
+FdoString* PROVIDER_NAME = L"OSGeo.PostGIS.1.0";
+FdoString* PROVIDER_DEFAULT_DISPLAY_NAME = L"OSGeo FDO Provider for PostGIS";
+FdoString* PROVIDER_DEFAULT_DESCRIPTION = L"Read/write access to PostGIS-based data store. Supports spatial data types and spatial query operations.";
+FdoString* PROVIDER_VERSION = L"1.0.0.0";
+FdoString* FDO_VERSION = L"3.2.0.0";
 
 }} // namespace fdo::postgis
 
