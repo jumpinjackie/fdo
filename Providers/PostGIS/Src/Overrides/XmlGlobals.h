@@ -19,16 +19,19 @@
 
 namespace fdo { namespace postgis { namespace ov {
 
+/// \brief
+/// Dedicated for XML names used by Schema Overrides mapping.
+///
 namespace xml
 {
-    // TODO: Remove 'static' qualifiers but add 'const'
+// TODO: Remove 'static' qualifiers but add 'const'
 
-    static FdoString* SchemaMapping          = L"SchemaMapping";
-    static FdoString* ClassDefinitionElement = L"ComplexType";
-    static FdoString* FullTableNameAttribute = L"FullTableName";
-    static FdoString* PropertyElement        = L"Element";
-    static FdoString* ColumnElement          = L"Column";
-    static FdoString* XmlnsValue             = L"http://fdopostgis.osgeo.org/schemas";
+static FdoString* SchemaMapping          = L"SchemaMapping";
+static FdoString* ClassDefinitionElement = L"ComplexType";
+static FdoString* FullTableNameAttribute = L"FullTableName";
+static FdoString* PropertyElement        = L"Element";
+static FdoString* ColumnElement          = L"Column";
+static FdoString* XmlnsValue             = L"http://fdopostgis.osgeo.org/schemas";
 
 } // namespace xml
 
