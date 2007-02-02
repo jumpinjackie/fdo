@@ -21,7 +21,7 @@
 namespace fdo { namespace postgis {
 
 
-/// Implementation of interface/// Describing connection capabilities
+/// Implementation of interface describing connection capabilities
 /// supported by PostGIS provider.
 ///
 class ConnectionCapabilities : public FdoIConnectionCapabilities

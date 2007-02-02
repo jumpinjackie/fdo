@@ -76,10 +76,10 @@ public:
     /// Get pointer to FdoIGeometryCapabilities interface describing support for geometry.
     FdoIGeometryCapabilities* GetGeometryCapabilities();
 
-    /// Get connection string used to establish connection with a DataStore.
+    /// Get connection string used to establish connection with a datastore.
     FdoString* GetConnectionString();
 
-    /// Set connection string used to establish connection with a DataStore.
+    /// Set connection string used to establish connection with a datastore.
     void SetConnectionString(FdoString* value);
 
     /// Get pointer to FdoIConnectionInfo interface that can be used to interrogate
