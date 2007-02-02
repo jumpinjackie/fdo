@@ -75,6 +75,9 @@ protected:
 
 private:
 	
+    // Dictionary of connection properties.
+    // Created upon first request in GetConnectionProperties() function.
+    FdoPtr<FdoCommonConnPropDictionary> mPropertyDictionary;
 };
 
 }} // namespace fdo::postgis
