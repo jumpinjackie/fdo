@@ -17,10 +17,6 @@
 #ifndef FDOPOSTGIS_TOPOLOGYCAPABILITIES_H_INCLUDED
 #define FDOPOSTGIS_TOPOLOGYCAPABILITIES_H_INCLUDED
 
-//
-// Forward declarations
-//
-
 
 namespace fdo { namespace postgis {
 
@@ -31,10 +27,65 @@ class TopologyCapabilities : public FdoITopologyCapabilities
 {
 public:
 
+    /// Default constructor.
     TopologyCapabilities();
-    virtual ~TopologyCapabilities();
+    
+    //
+    // FdoITopologyCapabilities interface
+    //
+
+    /// Determine if topology features are supported by the PostGIS provider.
+    /// If topology is not supported, any attempt to create topology-specific
+    /// schema will fail.
+    ///
+    /// \return true if topology is supported; false otherwise.
+    ///
+    bool SupportsTopology();
+ 	
+    /// Determine if hierarchical dependencies topology properties are supported.
+    ///
+    /// If the capability is not supported, any attempt of setting a non-NULL for
+    /// FdoTopoGeometryPropertyDefinition's "DependsOnTopoGeometry" property will fail.
+    ///
+    /// \return true if the provider supports TopoGeometry properties that
+    /// depend on each other in a hierarchy; false otherwise.
+    bool SupportsTopologicalHierarchy();
+ 	
+    /// Determine if 
+    ///
+    /// \return true if the provider automatically (as a result of geometry assignment)
+    /// breaks curves and inserts nodes wherever curves cross or touch,
+    /// or where a node touches a curve; false otherwise.
+    ///
+    bool BreaksCurveCrossingsAutomatically();
+ 	
+    /// Determine if 
+    /// This capability, if supported, may involve the use of pessimistic locking.
+    ///
+    /// \return true if the provider supports the activation of a topology
+    /// using an area (surface) restriction; false otherwise.
+    ///
+    bool ActivatesTopologyByArea();
+
+    /// Determine if 
+    ///
+    /// \return true if the provider constrains edits of TopoGeometry properties
+    /// (by geometry value) to those that do not change topological relationships;
+    /// false otherwise.
+    ///
+    bool ConstrainsFeatureMovements();
 
 protected:
+
+    /// Destructor.
+    virtual ~TopologyCapabilities();
+
+    //
+    // FdoIDisposable interface
+    //
+
+    /// Dispose this object.
+    void Dispose();
 
 private:
 	
