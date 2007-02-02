@@ -17,24 +17,42 @@
 #ifndef FDOPOSTGIS_EXPRESSIONCAPABILITIES_H_INCLUDED
 #define FDOPOSTGIS_EXPRESSIONCAPABILITIES_H_INCLUDED
 
-//
-// Forward declarations
-//
-
 
 namespace fdo { namespace postgis {
 
-
-/// Implementation of ...
+/// Implementation of interface describing capabilities of expressions.
+/// supported by PostGIS provider.
 ///
 class ExpressionCapabilities : public FdoIExpressionCapabilities
 {
 public:
 
+    /// Default constructor.
     ExpressionCapabilities();
-    virtual ~ExpressionCapabilities();
+
+    //
+    // FdoIExpressionCapabilities interface
+    //
+
+    /// Return array of FdoExpressionType objects supported
+    /// by the PostGIS provider.
+    FdoExpressionType* GetExpressionTypes(FdoInt32& size);
+
+    /// Return collection of FdoFunctionDefinition objects suported
+    /// by the PostGISprovider within expressions. 
+    FdoFunctionDefinitionCollection* GetFunctions();
 
 protected:
+
+    /// Destructor.
+    virtual ~ExpressionCapabilities();
+
+    //
+    // FdoIDisposable interface
+    //
+
+    /// Dispose this object.
+    void Dispose();
 
 private:
 	

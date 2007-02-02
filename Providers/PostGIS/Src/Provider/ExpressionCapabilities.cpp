@@ -17,8 +17,9 @@
 #include "stdafx.h"
 
 #include "PostGisProvider.h"
-#include "FdoExpressionCapabilities.h"
+#include "ExpressionCapabilities.h"
 
+#include <cassert>
 
 namespace fdo { namespace postgis {
 
@@ -28,6 +29,31 @@ ExpressionCapabilities::ExpressionCapabilities()
 
 ExpressionCapabilities::~ExpressionCapabilities()
 {
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoIDisposable interface
+///////////////////////////////////////////////////////////////////////////////
+
+void ExpressionCapabilities::Dispose()
+{
+    delete this;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoIExpressionCapabilities interface
+///////////////////////////////////////////////////////////////////////////////
+
+FdoExpressionType* GetExpressionTypes(FdoInt32& size)
+{
+    assert(!"NOT IMPLEMENTED");
+    return NULL;
+}
+
+FdoFunctionDefinitionCollection* GetFunctions()
+{
+    assert(!"NOT IMPLEMENTED");
+    return NULL;
 }
 
 }} // namespace fdo::postgis
