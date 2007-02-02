@@ -17,8 +17,9 @@
 #include "stdafx.h"
 
 #include "PostGisProvider.h"
-#include "FdoTopologyCapabilities.h"
+#include "TopologyCapabilities.h"
 
+#include <cassert>
 
 namespace fdo { namespace postgis {
 
@@ -28,6 +29,49 @@ TopologyCapabilities::TopologyCapabilities()
 
 TopologyCapabilities::~TopologyCapabilities()
 {
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoIDisposable interface
+///////////////////////////////////////////////////////////////////////////////
+
+void TopologyCapabilities::Dispose()
+{
+    delete this;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoITopologyCapabilities interface
+///////////////////////////////////////////////////////////////////////////////
+
+bool TopologyCapabilities::SupportsTopology()
+{
+    assert(!"NOT IMPLEMENTED");
+    return false;
+}
+
+bool TopologyCapabilities::SupportsTopologicalHierarchy()
+{
+    assert(!"NOT IMPLEMENTED");
+    return false;
+}
+
+bool TopologyCapabilities::BreaksCurveCrossingsAutomatically()
+{
+    assert(!"NOT IMPLEMENTED");
+    return false;
+}
+
+bool TopologyCapabilities::ActivatesTopologyByArea()
+{
+    assert(!"NOT IMPLEMENTED");
+    return false;
+}
+
+bool TopologyCapabilities::ConstrainsFeatureMovements()
+{
+    assert(!"NOT IMPLEMENTED");
+    return false;
 }
 
 }} // namespace fdo::postgis
