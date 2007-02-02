@@ -31,16 +31,6 @@ public:
     /// Default constructor.
     ConnectionCapabilities();
 
-    /// Destructor.
-    virtual ~ConnectionCapabilities();
-
-    //
-    // FdoIDisposable interface
-    //
-
-    /// Dispose this object.
-    void Dispose();
-
     //
     // FdoIConnectionCapabilities interface
     //
@@ -93,6 +83,16 @@ public:
     bool SupportsFlush();
 
 protected:
+
+    /// Destructor.
+    virtual ~ConnectionCapabilities();
+
+    //
+    // FdoIDisposable interface
+    //
+
+    /// Dispose this object.
+    void Dispose();
 
 private:
 	
