@@ -6,7 +6,8 @@
 	>
 	<Tool
 		Name="VCCLCompilerTool"
-		AdditionalIncludeDirectories="..\..\Inc;&quot;$(FDO)\Unmanaged\Inc&quot;"
+		AdditionalIncludeDirectories="..\..\Inc;&quot;$(FDO)\Unmanaged\Inc&quot;;&quot;$(FDOUTILITIES)\Common\Inc&quot;"
+		PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE"
 	/>
 	<Tool
 		Name="VCLinkerTool"
