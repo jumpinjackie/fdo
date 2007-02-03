@@ -25,7 +25,7 @@ namespace fdo { namespace postgis {
 ///
 namespace ov {
 
-const wchar_t* VERSION = L"1.0.0.0"
+const wchar_t* VERSION = L"1.0.0.0";
 
 }}} // namespace fdo::postgis::ov
 

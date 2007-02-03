@@ -19,22 +19,34 @@
 #include "PostGisProvider.h"
 #include "ListDataStores.h"
 
+#include <cassert>
+
 namespace fdo { namespace postgis {
 
 ListDataStores::ListDataStores()
 {
+    assert(!"NOT IMPLEMENTED");
 }
 
 ListDataStores::~ListDataStores()
 {
+    assert(!"NOT IMPLEMENTED");
 }
 
-FdoIDataStorePropertyDictionary* ListDataStores::GetDataStoreProperties()
+bool ListDataStores::GetIncludeNonFdoEnabledDatastores()
 {
+    return mIncludeNonFdo;
 }
 
-void ListDataStores::Execute()
+void ListDataStores::SetIncludeNonFdoEnabledDatastores(bool includeNonFdo)
 {
+    mIncludeNonFdo = includeNonFdo;
+}
+
+FdoIDataStoreReader* ListDataStores::Execute()
+{
+    assert(!"NOT IMPLEMENTED");
+    return NULL;
 }
 
 }} // namespace fdo::postgis

@@ -16,6 +16,8 @@
 //
 #include "stdafx.h"
 
+#include "GetSpatialContextsCommand.h"
+#include "Connection.h"
 #include "SpatialContext.h"
 
 namespace fdo { namespace postgis {

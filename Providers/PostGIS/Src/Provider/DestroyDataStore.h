@@ -17,6 +17,8 @@
 #ifndef FDOPOSTGIS_DESTROYDATASTORE_H_INCLUDED
 #define FDOPOSTGIS_DESTROYDATASTORE_H_INCLUDED
 
+#include "Command.h"
+
 //
 // Forward declarations
 //
@@ -31,11 +33,21 @@ class DestroyDataStore : public Command<FdoIDestroyDataStore>
 {
 public:
 
+    /// Default constructor.
     DestroyDataStore();
+
+    /// Destructor.
     virtual ~DestroyDataStore();
 
+    //
+    // FdoIDestroyDataStore interface
+    //
+
+    /// Get interface for dynamic queries and modification of properties
+    /// required to create a new datastore.
     FdoIDataStorePropertyDictionary* GetDataStoreProperties();
 
+    /// Execute command.
     void Execute();
 	
 };

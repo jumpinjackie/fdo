@@ -17,6 +17,7 @@
 #ifndef FDOPOSTGIS_INSERTCOMMAND_H_INCLUDED
 #define FDOPOSTGIS_INSERTCOMMAND_H_INCLUDED
 
+#include "FeatureCommand.h"
 //
 // Forward declarations
 //

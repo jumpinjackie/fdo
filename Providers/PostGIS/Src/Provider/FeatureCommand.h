@@ -18,7 +18,7 @@
 #define FDOPOSTGIS_FEATURECOMMAND_H_INCLUDED
 
 #include "Command.h"
-
+#include "Connection.h"
 //
 // Forward declarations
 //
@@ -29,8 +29,8 @@ namespace fdo { namespace postgis {
 
 /// Implementation of ...
 ///
-template <typename T, typename C>
-class FeatureCommand : public Command<T, C>
+template <typename T>
+class FeatureCommand : public Command<T>
 {
 public:
 
@@ -45,18 +45,18 @@ private:
 	
 }; // class FeatureCommand
 
-template <typename C, typename T>
-FeatureCommand<C, T>::FeatureCommand()
+template <typename C>
+FeatureCommand<C>::FeatureCommand()
 {
 }
 
-template <typename C, typename T>
-FeatureCommand<C, T>::~FeatureCommand()
+template <typename C>
+FeatureCommand<C>::~FeatureCommand()
 {
 }
 
-template <typename C, typename T>
-inline void FeatureCommand<C, T>::Dispose()
+template <typename C>
+inline void FeatureCommand<C>::Dispose()
 {
     delete this;
 }

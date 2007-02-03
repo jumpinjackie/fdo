@@ -17,6 +17,8 @@
 #ifndef FDOPOSTGIS_SQLCOMMAND_H_INCLUDED
 #define FDOPOSTGIS_SQLCOMMAND_H_INCLUDED
 
+#include "Command.h"
+
 //
 // Forward declarations
 //
@@ -35,7 +37,7 @@ public:
     virtual ~SQLCommand();
 
     virtual FdoString* GetSQLStatement() const;
-    virtual void SetSQLStatement(FdoString const* sql);
+    virtual void SetSQLStatement(FdoString* sql);
     
     virtual FdoInt32 ExecuteNonQuery();
     virtual FdoISQLDataReader* ExecuteReader();
