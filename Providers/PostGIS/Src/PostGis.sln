@@ -14,6 +14,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		TODO.txt = TODO.txt
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PostGisMessage", "Message\PostGisMessage.vcproj", "{04CC6BCD-179D-4627-A183-4E628580B4FB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -28,6 +30,10 @@ Global
 		{A250F14F-E1A9-4F17-9E35-2D2CA8013AA4}.Debug|Win32.Build.0 = Debug|Win32
 		{A250F14F-E1A9-4F17-9E35-2D2CA8013AA4}.Release|Win32.ActiveCfg = Release|Win32
 		{A250F14F-E1A9-4F17-9E35-2D2CA8013AA4}.Release|Win32.Build.0 = Release|Win32
+		{04CC6BCD-179D-4627-A183-4E628580B4FB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{04CC6BCD-179D-4627-A183-4E628580B4FB}.Debug|Win32.Build.0 = Debug|Win32
+		{04CC6BCD-179D-4627-A183-4E628580B4FB}.Release|Win32.ActiveCfg = Release|Win32
+		{04CC6BCD-179D-4627-A183-4E628580B4FB}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
