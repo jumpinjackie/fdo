@@ -178,6 +178,10 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
+			<File
+				RelativePath=".\providers.xml"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Tests"
@@ -228,6 +232,88 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="Symbolic Targets"
+			>
+			<File
+				RelativePath="CopyFdo"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Copying FDO files"
+						CommandLine="copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDO.dll $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDO.pdb $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDOCommon.pdb $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDOGeometry.pdb $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDOSpatial.pdb $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDO.dll;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDOCommon.dll;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDO.pdb;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDOCommon.pdb;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDOGeometry.pdb;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDOSpatial.pdb"
+						Outputs="$(OutDir)\CopyFdo.ilk"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Copying FDO files"
+						CommandLine="copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDO.dll $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDO.pdb $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOCommon.pdb $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOGeometry.pdb $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOSpatial.pdb $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDO.dll;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOCommon.dll;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOGeometry.dll;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOSpatial.dll;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDO.pdb;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOCommon.pdb;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOGeometry.pdb;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOSpatial.pdb"
+						Outputs="$(OutDir)\CopyFdo.ilk"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="CopyThirdparty"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Copying thirdparty dlls"
+						CommandLine="copy $(FDOTHIRDPARTY)\cppunit\lib\testrunnerd.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\cppunitd_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\Xalan-C_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\XalanMessages_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Debug\xerces-c_2_5_0D.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="$(FDOTHIRDPARTY)\cppunit\lib\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\lib\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC7\Debug\Xalan-C_1_7_0D.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC7\Debug\XalanMessages_1_7_0D.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC7\Debug\xerces-c_2_5_0D.dll"
+						Outputs="$(OutDir)\CopyThirdparty.ilk"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Copying thirdparty dlls"
+						CommandLine="copy $(FDOTHIRDPARTY)\cppunit\lib\testrunner.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\cppunit_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\Xalan-C_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\XalanMessages_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Release\xerces-c_2_5_0.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="$(FDOTHIRDPARTY)\cppunit\lib\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\lib\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC7\Release\Xalan-C_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC7\Release\XalanMessages_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC7\Release\xerces-c_2_5_0.dll"
+						Outputs="$(OutDir)\CopyThirdparty.ilk"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="FakeInstall"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing fake install"
+						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;"
+						AdditionalDependencies="providers.xml"
+						Outputs="$(OutDir)\providers.xml"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing fake install"
+						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;"
+						AdditionalDependencies="providers.xml"
+						Outputs="$(OutDir)\providers.xml"
 					/>
 				</FileConfiguration>
 			</File>
