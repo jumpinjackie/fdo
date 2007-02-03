@@ -17,24 +17,54 @@
 #include "stdafx.h"
 
 #include "PostGisProvider.h"
-#include "ListDataStores.h"
+#include "DataStoreReader.h"
+
+#include <cassert>
+
 
 namespace fdo { namespace postgis {
 
-ListDataStores::ListDataStores()
+DataStoreReader::DataStoreReader()
 {
 }
 
-ListDataStores::~ListDataStores()
+DataStoreReader::~DataStoreReader()
 {
 }
 
-FdoIDataStorePropertyDictionary* ListDataStores::GetDataStoreProperties()
+FdoString* DataStoreReader::GetName()
 {
+    assert(!"NOT IMPLEMENTED");
+    return NULL;
 }
 
-void ListDataStores::Execute()
+FdoString* DataStoreReader::GetDescription()
 {
+    assert(!"NOT IMPLEMENTED");
+    return NULL;
+}
+
+bool DataStoreReader::GetIsFdoEnabled()
+{
+    assert(!"NOT IMPLEMENTED");
+    return false;
+}
+
+FdoIDataStorePropertyDictionary* DataStoreReader::GetDataStoreProperties()
+{
+    assert(!"NOT IMPLEMENTED");
+    return NULL;
+}
+
+bool DataStoreReader::ReadNext()
+{
+    assert(!"NOT IMPLEMENTED");
+    return false;
+}
+
+void DataStoreReader::Close()
+{
+    assert(!"NOT IMPLEMENTED");
 }
 
 }} // namespace fdo::postgis

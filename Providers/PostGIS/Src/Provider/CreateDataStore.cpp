@@ -19,6 +19,8 @@
 #include "PostGisProvider.h"
 #include "CreateDataStore.h"
 
+#include <cassert>
+
 namespace fdo { namespace postgis {
 
 CreateDataStore::CreateDataStore()
@@ -31,10 +33,13 @@ CreateDataStore::~CreateDataStore()
 
 FdoIDataStorePropertyDictionary* CreateDataStore::GetDataStoreProperties()
 {
+    assert(!"NOT IMPLEMENTED");
+    return NULL;
 }
 
 void CreateDataStore::Execute()
 {
+    assert(!"NOT IMPLEMENTED");
 }
 
 }} // namespace fdo::postgis

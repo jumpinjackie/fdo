@@ -17,6 +17,8 @@
 #ifndef FDOPOSTGIS_LISTDATASTORES_H_INCLUDED
 #define FDOPOSTGIS_LISTDATASTORES_H_INCLUDED
 
+#include "Command.h"
+
 //
 // Forward declarations
 //
@@ -25,22 +27,35 @@
 namespace fdo { namespace postgis {
 
 
-/// Implementation of ...
+/// Implementation of list datastores command from a particular server.
 ///
 class ListDataStores : public Command<FdoIListDataStores>
 {
 public:
 
+    /// Default constructor.
     ListDataStores();
+
+    /// Destructor.
     virtual ~ListDataStores();
 
-	virtual bool GetIncludeNonFdoEnabledDatastores();
-	virtual void SetIncludeNonFdoEnabledDatastores(bool listNonFdo);
-    virtual FdoIDataStoreReader* Execute();
+    //
+    // FdoIListDataStores interface
+    //
+
+    /// Check if non-FDO datastores have been requested in the returned list.
+	bool GetIncludeNonFdoEnabledDatastores();
+
+    /// Set flag indicating that non-FDO datastores should be included
+    /// in the returned list.
+	void SetIncludeNonFdoEnabledDatastores(bool includeNonFdo);
+
+    /// Executes the FdoIListDataStores command.
+    FdoIDataStoreReader* Execute();
 
 protected:
 
-    bool mListNonFdo;
+    bool mIncludeNonFdo;
 };
 
 }} // namespace fdo::postgis

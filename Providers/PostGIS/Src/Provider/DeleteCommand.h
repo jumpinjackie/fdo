@@ -17,6 +17,9 @@
 #ifndef FDOPOSTGIS_DELETECOMMAND_H_INCLUDED
 #define FDOPOSTGIS_DELETECOMMAND_H_INCLUDED
 
+#include "FeatureCommand.h"
+#include <Fdo/Commands/Feature/IDelete.h>
+
 //
 // Forward declarations
 //

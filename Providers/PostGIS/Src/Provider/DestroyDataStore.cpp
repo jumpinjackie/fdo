@@ -19,6 +19,8 @@
 #include "PostGisProvider.h"
 #include "DestroyDataStore.h"
 
+#include <cassert>
+
 namespace fdo { namespace postgis {
 
 DestroyDataStore::DestroyDataStore()
@@ -31,10 +33,13 @@ DestroyDataStore::~DestroyDataStore()
 
 FdoIDataStorePropertyDictionary* DestroyDataStore::GetDataStoreProperties()
 {
+    assert(!"NOT IMPLEMENTED");
+    return NULL;
 }
 
 void DestroyDataStore::Execute()
 {
+    assert(!"NOT IMPLEMENTED");
 }
 
 }} // namespace fdo::postgis

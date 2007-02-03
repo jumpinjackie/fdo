@@ -17,18 +17,15 @@
 #ifndef FDOPOSTGIS_COMMAND_H_INCLUDED
 #define FDOPOSTGIS_COMMAND_H_INCLUDED
 
-//
-// Forward declarations
-//
-
+#include "Connection.h"
 
 namespace fdo { namespace postgis {
 
 
 /// Implementation of ...
 ///
-template <typename COMMAND>
-class Command : public COMMAND
+template <typename BASECMD>
+class Command : public BASECMD
 {
     friend class Connection;
 

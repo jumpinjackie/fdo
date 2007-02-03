@@ -19,7 +19,8 @@
 
 namespace fdo { namespace postgis {
 
-/// Implementation of ...
+/// Implementation of forward-only and read-only iterator for
+/// reading feature data from a datastore.
 ///
 class DataStoreReader : public FdoIDataStoreReader
 {
@@ -27,6 +28,32 @@ public:
 
     DataStoreReader();
     virtual ~DataStoreReader();
+
+    //
+    // FdoIDataStoreReader
+    //
+
+    /// Get name of the datastore being read.
+    FdoString* GetName();
+
+    /// Get description of the datastore being read.
+    FdoString* GetDescription();
+
+ 	/// Get flag that indicates whether the datastore is FDO enabled or not.
+    bool GetIsFdoEnabled();
+
+ 	/// Get dictionary of properties set during datastore creation.
+    /// Password property is not included.
+    FdoIDataStorePropertyDictionary* GetDataStoreProperties();
+
+ 	/// Advances the reader iterator to next item.
+    /// It returns true if there is any object to read or false if reading is complete.
+    bool ReadNext();
+
+ 	// Close the reader object, freeing any resources it may be holding.
+    void Close();
+
+private:
 
 };
 

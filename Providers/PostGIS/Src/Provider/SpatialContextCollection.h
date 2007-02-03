@@ -17,6 +17,8 @@
 #ifndef FDOPOSTGIS_SPATIALCONTEXTCOLLECTION_H_INCLUDED
 #define FDOPOSTGIS_SPATIALCONTEXTCOLLECTION_H_INCLUDED
 
+#include "PostGisProvider.h"
+
 //
 // Forward declarations
 //

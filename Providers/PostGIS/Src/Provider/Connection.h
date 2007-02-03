@@ -17,7 +17,6 @@
 #ifndef FDOPOSTGIS_CONNECTION_H_INCLUDED
 #define FDOPOSTGIS_CONNECTION_H_INCLUDED
 
-
 namespace fdo { namespace postgis {
 
 
