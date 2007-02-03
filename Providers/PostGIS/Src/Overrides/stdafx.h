@@ -48,6 +48,9 @@
 // FDO
 #include <Fdo.h>
 
+// PostGIS Provider
+#include <PostGIS/FdoPostGisProvider.h>
+
 // PostGIS Overrides
 #include "XmlGlobals.h"
 

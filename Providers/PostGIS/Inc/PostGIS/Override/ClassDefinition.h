@@ -17,10 +17,9 @@
 #ifndef FDOPOSTGIS_CLASSDEFINITION_H_INCLUDED
 #define FDOPOSTGIS_CLASSDEFINITION_H_INCLUDED
 
-
 namespace fdo { namespace postgis { namespace ov {
 
-
+/// \todo To be documented
 class ClassDefinition : public FdoPhysicalClassMapping
 {
 public:
@@ -29,11 +28,19 @@ public:
 
     FDOPOSTGIS_API static ClassDefinition* Create();
 
-protected:
-
+    /// Default constructor.
     ClassDefinition();
+
+    /// Destructor.
     virtual ~ClassDefinition();
-    virtual void Dispose();
+
+    //
+    // FdoIDisposable
+    //
+
+    void Dispose();
+
+protected:
 
 private:
 

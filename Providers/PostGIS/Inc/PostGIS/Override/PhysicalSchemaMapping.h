@@ -21,7 +21,7 @@
 
 namespace fdo { namespace postgis { namespace ov {
 
-
+/// \todo To be documented
 class PhysicalSchemaMapping : public FdoPhysicalSchemaMapping
 {
 public:

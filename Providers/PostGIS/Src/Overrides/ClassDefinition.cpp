@@ -14,32 +14,39 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 //
-#ifndef FDOPOSTGIS_CLASSCOLLECTION_H_INCLUDED
-#define FDOPOSTGIS_CLASSCOLLECTION_H_INCLUDED
+#include "stdafx.h"
+
+#include <PostGIS/Override/ClassDefinition.h>
+
+#include <cassert>
 
 namespace fdo { namespace postgis { namespace ov {
 
-/// \todo To be documented
-class ClassCollection : public FdoPhysicalElementMappingCollection<ClassCollection>
+ClassDefinition::ClassDefinition()
 {
-public:
-    
-    typedef FdoPtr<ClassCollection> Ptr;
+}
 
-    FDOPOSTGIS_API static ClassCollection* Create();
-    FDOPOSTGIS_API static ClassCollection* Create(FdoPhysicalElementMapping* parent);
+ClassDefinition::~ClassDefinition()
+{
+}
 
-protected:
+///////////////////////////////////////////////////////////////////////////////
+// FdoIDisposable interface
+///////////////////////////////////////////////////////////////////////////////
 
-    ClassCollection();
-    ClassCollection(FdoPhysicalElementMapping* parent);
-    virtual ~ClassCollection();
-    virtual void Dispose();
+void ClassDefinition::Dispose()
+{
+    delete this;
+}
 
-private:
+///////////////////////////////////////////////////////////////////////////////
+// ClassDefinition interface
+///////////////////////////////////////////////////////////////////////////////
 
-};
+ClassDefinition* ClassDefinition::Create()
+{
+    ClassDefinition* def = new ClassDefinition();
+    return def;
+}
 
 }}} // namespace fdo::postgis::ov
-
-#endif // FDOPOSTGIS_CLASSCOLLECTION_H_INCLUDED

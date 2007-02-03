@@ -20,7 +20,7 @@
 
 namespace fdo { namespace postgis { namespace ov {
 
-
+/// \todo To be documented
 class PropertyDefinition : public FdoPhysicalPropertyMapping
 {
 public:
