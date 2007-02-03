@@ -18,6 +18,7 @@
 
 #include "PostGisProvider.h"
 #include "Connection.h"
+#include "ConnectionInfo.h"
 
 #include <cassert>  
 
@@ -111,7 +112,10 @@ void Connection::SetConnectionString(FdoString* value)
 
 FdoIConnectionInfo* Connection::GetConnectionInfo()
 {
-    assert(!"NOT IMPLEMENTED");
+    if (NULL == mConnectionInfo)
+        mConnectionInfo = new ConnectionInfo(this);
+    
+    FDO_SAFE_ADDREF(mConnectionInfo.p);
     return NULL;
 }
 
