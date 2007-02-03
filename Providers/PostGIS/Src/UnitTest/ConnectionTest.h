@@ -17,7 +17,9 @@
 #ifndef FDOPOSTGIS_CONNECTIONTEST_H_INCLUDED
 #define FDOPOSTGIS_CONNECTIONTEST_H_INCLUDED
 
-class ConnectionTest : public CppUnit::TestCase
+#include "BaseTestCase.h"
+
+class ConnectionTest : public fdo::postgis::test::BaseTestCase
 {
     CPPUNIT_TEST_SUITE(ConnectionTest);
     CPPUNIT_TEST(testConstructor);
