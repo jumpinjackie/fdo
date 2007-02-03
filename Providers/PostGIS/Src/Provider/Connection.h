@@ -33,16 +33,6 @@ public:
     /// Default constructor.
     Connection();
 
-    /// Destructor.
-    virtual ~Connection();
-
-    //
-    // FdoIDisposable interface
-    //
-
-    /// Dispose this object.
-    void Dispose();
-
     //
     // FdoIConnection interface
     //
@@ -123,6 +113,16 @@ public:
     void Flush();
 
 protected:
+
+    /// Destructor.
+    virtual ~Connection();
+
+    //
+    // FdoIDisposable interface
+    //
+
+    /// Dispose this object.
+    void Dispose();
 
 private:
 
