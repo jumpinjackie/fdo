@@ -23,7 +23,12 @@
 
 namespace fdo { namespace postgis {
 
-ConnectionInfo::ConnectionInfo()
+ConnectionInfo::ConnectionInfo() : mConnection(NULL)
+{
+}
+
+ConnectionInfo::ConnectionInfo(Connection* connection) :
+    mConnection(connection)
 {
 }
 

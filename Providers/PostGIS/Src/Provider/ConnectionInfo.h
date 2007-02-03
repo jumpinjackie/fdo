@@ -17,6 +17,11 @@
 #ifndef FDOPOSTGIS_CONNECTIONINFO_H_INCLUDED
 #define FDOPOSTGIS_CONNECTIONINFO_H_INCLUDED
 
+//
+// Forward declarations
+//
+class Connection;
+
 
 namespace fdo { namespace postgis {
 
@@ -31,15 +36,7 @@ public:
     /// Default constructor.
     ConnectionInfo();
 
-    /// Destructor.
-    virtual ~ConnectionInfo();
-
-    //
-    // FdoIDisposable interface
-    //
-
-    /// Dispose this object.
-    void Dispose();
+    ConnectionInfo(Connection* connection);
 
     //
     // FdoIConnectionInfo interface
@@ -73,8 +70,21 @@ public:
 
 protected:
 
+    /// Destructor.
+    virtual ~ConnectionInfo();
+
+    //
+    // FdoIDisposable interface
+    //
+
+    /// Dispose this object.
+    void Dispose();
+
 private:
 	
+    // Weak reference to connection object of current session.
+    Connection* mConnection;
+
     // Dictionary of connection properties.
     // Created upon first request in GetConnectionProperties() function.
     FdoPtr<FdoCommonConnPropDictionary> mPropertyDictionary;
