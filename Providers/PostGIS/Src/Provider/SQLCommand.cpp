@@ -16,7 +16,10 @@
 //
 #include "stdafx.h"
 
+#include "PostGisProvider.h"
 #include "SQLCommand.h"
+
+#include <cassert>
 
 namespace fdo { namespace postgis {
 
@@ -30,18 +33,25 @@ SQLCommand::~SQLCommand()
 
 FdoString* SQLCommand::GetSQLStatement() const
 {
+    assert(!"NOT IMPLEMENTED");
+    return NULL;
 }
 
 void SQLCommand::SetSQLStatement(FdoString const* sql)
 {
+    assert(!"NOT IMPLEMENTED");
 }
     
 FdoInt32 SQLCommand::ExecuteNonQuery()
 {
+    assert(!"NOT IMPLEMENTED");
+    return 0;
 }
 
 FdoISQLDataReader* SQLCommand::ExecuteReader()
 {
+    assert(!"NOT IMPLEMENTED");
+    return NULL;
 }
 
 }} // namespace fdo::postgis

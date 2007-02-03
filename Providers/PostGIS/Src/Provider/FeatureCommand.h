@@ -34,29 +34,36 @@ class FeatureCommand : public Command<T>
 {
 public:
 
+    /// Default constructor.
     FeatureCommand();
+
+    /// Destructor.
     virtual ~FeatureCommand();
 
-    virtual void Dispose();
-
 protected:
+
+    //
+    // FdoIDisposable interface
+    //
+
+    virtual void Dispose();
 
 private:
 	
 }; // class FeatureCommand
 
-template <typename C>
-FeatureCommand<C>::FeatureCommand()
+template <typename T>
+FeatureCommand<T>::FeatureCommand()
 {
 }
 
-template <typename C>
-FeatureCommand<C>::~FeatureCommand()
+template <typename T>
+FeatureCommand<T>::~FeatureCommand()
 {
 }
 
-template <typename C>
-inline void FeatureCommand<C>::Dispose()
+template <typename T>
+inline void FeatureCommand<T>::Dispose()
 {
     delete this;
 }

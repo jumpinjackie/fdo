@@ -25,21 +25,27 @@
 namespace fdo { namespace postgis {
 
 
-/// Implementation of ...
+/// Implementation of interface defining DescribeSchema command.
+/// This command describes feature schemas available from currently
+/// connected PostGIS datastore.
 ///
-
-//class DescribeSchemaCommand : public Command<FdoIDescribeSchema>
-
 class DescribeSchemaCommand : public FdoIDescribeSchema
+//class DescribeSchemaCommand : public Command<FdoIDescribeSchema>
 {
 public:
 
     DescribeSchemaCommand();
-    virtual ~DescribeSchemaCommand();
-
-    virtual void Dispose();
 
 protected:
+
+    /// Destructor.
+    virtual ~DescribeSchemaCommand();
+
+    //
+    // FdoDisposable interface
+    //
+
+    void Dispose();
 
 private:
 	

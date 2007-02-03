@@ -22,15 +22,15 @@ namespace fdo { namespace postgis {
 
 /// Implementation of ...
 ///
-template <typename READER>
-class Reader : public READER
+template <typename BASEREADER>
+class Reader : public BASEREADER
 {
 public:
 
     Reader();
     virtual ~Reader();
 
-    virtual void Dispose();
+    void Dispose();
 
 protected:
 

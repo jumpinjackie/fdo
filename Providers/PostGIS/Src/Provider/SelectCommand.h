@@ -18,6 +18,7 @@
 #define FDOPOSTGIS_SELECTCOMMAND_H_INCLUDED
 
 #include "FeatureCommand.h"
+#include <Fdo/Commands/Feature/ISelect.h>
 
 //
 // Forward declarations

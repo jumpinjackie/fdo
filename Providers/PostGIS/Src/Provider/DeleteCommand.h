@@ -24,25 +24,22 @@
 // Forward declarations
 //
 
-
 namespace fdo { namespace postgis {
 
-
-/// Implementation of ...
+/// Implementation of interface of Delete command which deletes features.
+/// The command deletes instances of a given class that match specified criteria.
 ///
 class DeleteCommand : public FeatureCommand<FdoIDelete>
 {
 public:
 
     DeleteCommand();
-    virtual ~DeleteCommand();
-
-    virtual void Dispose();
 
 protected:
 
 private:
-	
+
+    virtual ~DeleteCommand();
 };
 
 }} // namespace fdo::postgis

@@ -18,6 +18,7 @@
 #define FDOPOSTGIS_SQLCOMMAND_H_INCLUDED
 
 #include "Command.h"
+#include <Fdo/Commands/Sql/ISQLCommand.h>
 
 //
 // Forward declarations

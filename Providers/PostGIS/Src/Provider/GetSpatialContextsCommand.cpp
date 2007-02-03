@@ -16,9 +16,12 @@
 //
 #include "stdafx.h"
 
+#include "PostGisProvider.h"
 #include "GetSpatialContextsCommand.h"
 #include "Connection.h"
 #include "SpatialContext.h"
+
+#include <cassert>
 
 namespace fdo { namespace postgis {
 
@@ -34,16 +37,21 @@ GetSpatialContextsCommand::~GetSpatialContextsCommand()
 {
 }
 
-bool GetSpatialContextsCommand::GetActiveOnly() const
+const bool GetSpatialContextsCommand::GetActiveOnly()
 {
+    assert(!"NOT IMPLEMENTED");
+    return false;
 }
 
-void GetSpatialContextsCommand::SetActiveOnly(bool activeOnly)
+void GetSpatialContextsCommand::SetActiveOnly(const bool activeOnly)
 {
+    assert(!"NOT IMPLEMENTED");
 }
 
 FdoISpatialContextReader* GetSpatialContextsCommand::Execute()
 {
+    assert(!"NOT IMPLEMENTED");
+    return NULL;
 }
 
 }} // namespace fdo::postgis

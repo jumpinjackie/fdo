@@ -30,6 +30,7 @@ SpatialContextReader::~SpatialContextReader()
 
 void SpatialContextReader::Dispose()
 {
+    delete this;
 }
 
 }} // namespace fdo::postgis

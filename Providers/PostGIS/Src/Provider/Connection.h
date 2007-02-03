@@ -17,8 +17,9 @@
 #ifndef FDOPOSTGIS_CONNECTION_H_INCLUDED
 #define FDOPOSTGIS_CONNECTION_H_INCLUDED
 
-namespace fdo { namespace postgis {
+#include <Fdo/Connections/IConnection.h>
 
+namespace fdo { namespace postgis {
 
 /// Implementation of connection interface for PostGIS provider.
 /// It represents a unique session with FDO datastore.

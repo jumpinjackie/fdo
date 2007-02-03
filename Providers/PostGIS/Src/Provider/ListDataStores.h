@@ -27,7 +27,8 @@
 namespace fdo { namespace postgis {
 
 
-/// Implementation of list datastores command from a particular server.
+/// Implementation of list datastores command from a particular
+/// PostgreSQL instance.
 ///
 class ListDataStores : public Command<FdoIListDataStores>
 {
