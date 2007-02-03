@@ -17,26 +17,32 @@
 #ifndef FDOPOSTGIS_FEATUREREADER_H_INCLUDED
 #define FDOPOSTGIS_FEATUREREADER_H_INCLUDED
 
-//
-// Forward declarations
-//
-
+#include "Reader.h"
 
 namespace fdo { namespace postgis {
 
-
-/// Implementation of ...
+/// Implementation of forward-only and read-only iterator for reading
+/// feature data.
+/// This reader works against PostGIS datastore.
 ///
 class FeatureReader : public Reader<FdoIFeatureReader>
 {
 public:
 
-    Reader();
-    virtual ~Reader();
+    /// Default constructor.
+    FeatureReader();
 
-    virtual void Dispose();
 
 protected:
+
+    /// Destructor
+    virtual ~FeatureReader();
+
+    //
+    // FdoIDisposable
+    //
+
+    void Dispose();
 
 private:
 	

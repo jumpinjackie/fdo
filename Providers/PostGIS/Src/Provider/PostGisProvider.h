@@ -45,11 +45,11 @@ namespace postgis
 //
 // General descriptive information about PostGIS Provier
 //
-FdoString* PROVIDER_NAME = L"OSGeo.PostGIS.1.0";
-FdoString* PROVIDER_DEFAULT_DISPLAY_NAME = L"OSGeo FDO Provider for PostGIS";
-FdoString* PROVIDER_DEFAULT_DESCRIPTION = L"Read/write access to PostGIS-based data store. Supports spatial data types and spatial query operations.";
-FdoString* PROVIDER_VERSION = L"1.0.0.0";
-FdoString* FDO_VERSION = L"3.2.0.0";
+extern FdoString* PROVIDER_NAME;
+extern FdoString* PROVIDER_DEFAULT_DISPLAY_NAME;
+extern FdoString* PROVIDER_DEFAULT_DESCRIPTION;
+extern FdoString* PROVIDER_VERSION;
+extern FdoString* FDO_VERSION;
 
 }} // namespace fdo::postgis
 

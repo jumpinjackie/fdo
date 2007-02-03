@@ -18,10 +18,7 @@
 #define FDOPOSTGIS_INSERTCOMMAND_H_INCLUDED
 
 #include "FeatureCommand.h"
-//
-// Forward declarations
-//
-
+#include <Fdo/Commands/Feature/IInsert.h>
 
 namespace fdo { namespace postgis {
 
@@ -33,14 +30,13 @@ class InsertCommand : public FeatureCommand<FdoIInsert>
 public:
 
     InsertCommand();
-    virtual ~InsertCommand();
-
-    virtual void Dispose();
 
 protected:
 
 private:
-	
+
+    /// Destructor.
+    virtual ~InsertCommand();
 };
 
 }} // namespace fdo::postgis

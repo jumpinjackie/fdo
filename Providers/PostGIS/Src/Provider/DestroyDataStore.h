@@ -27,7 +27,8 @@
 namespace fdo { namespace postgis {
 
 
-/// Implementation of ...
+/// Implementation of destroy command that can be used to remove
+/// an existing datastore from a particular PostgreSQL instance.
 ///
 class DestroyDataStore : public Command<FdoIDestroyDataStore>
 {

@@ -29,9 +29,4 @@ DeleteCommand::~DeleteCommand()
 {
 }
 
-void DeleteCommand::Dispose()
-{
-    delete this;
-}
-
 }} // namespace fdo::postgis

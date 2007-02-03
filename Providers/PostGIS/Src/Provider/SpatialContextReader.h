@@ -17,26 +17,31 @@
 #ifndef FDOPOSTGIS_SPATIALCONTEXTREADER_H_INCLUDED
 #define FDOPOSTGIS_SPATIALCONTEXTREADER_H_INCLUDED
 
-//
-// Forward declarations
-//
-
+#include <Fdo/Commands/SpatialContext/SpatialContextExtentType.h>
+#include <Fdo/Commands/SpatialContext/ISpatialContextReader.h>
 
 namespace fdo { namespace postgis {
 
 
-/// Implementation of ...
+/// Implementation of forward-only, read-only iterator for spatial contexts.
 ///
 class SpatialContextReader : public FdoISpatialContextReader
 {
 public:
 
+    /// Default constructor.
     SpatialContextReader();
-    virtual ~SpatialContextReader();
-
-    virtual void Dispose();
 
 protected:
+
+    /// Destructor.
+    virtual ~SpatialContextReader();
+
+    //
+    // FdoDisposable interface
+    //
+
+    void Dispose();
 
 private:
 	

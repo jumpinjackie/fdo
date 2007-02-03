@@ -19,30 +19,107 @@
 
 #include "PostGisProvider.h"
 
-//
-// Forward declarations
-//
-
+#include <cassert>
 
 namespace fdo { namespace postgis {
 
-
-/// Implementation of ...
+/// Defines concept of Spatial Context for PostGIS provider.
 ///
 class SpatialContext : public FdoDisposable
 {
 public:
 
+    /// Default constructor.
     SpatialContext();
-    virtual ~SpatialContext();
 
-    virtual void Dispose();
+    /// Destructor.
+    virtual ~SpatialContext();
+    
+    /// \todo To be documented
+    virtual FdoString* GetName() const;
+
+    /// \todo To be documented
+    virtual void SetName(FdoString* name);
+
+    /// \todo To be documented
+    virtual FdoString* GetDescription() const;
+
+    /// \todo To be documented
+    virtual void SetDescription(FdoString* desc);
+
+    /// \todo To be documented
+    virtual FdoString* GetCoordinateSystem() const;
+
+    /// \todo To be documented
+    virtual void SetCoordSysName(FdoString* csName);
+
+    /// \todo To be documented
+    virtual FdoString* GetCoordinateSystemWkt() const;
+
+    /// \todo To be documented
+    virtual void SetCoordinateSystemWkt(FdoString* wkt);
+
+    /// \todo To be documented
+    virtual FdoSpatialContextExtentType GetExtentType() const;
+
+    /// \todo To be documented
+    virtual void SetExtentType(FdoSpatialContextExtentType type);
+
+    /// \todo To be documented
+    virtual FdoByteArray* GetExtent() const;
+
+    /// \todo To be documented
+    virtual void SetExtent(FdoByteArray* extent);
+
+    /// \todo To be documented
+    virtual double GetXYTolerance() const;
+
+    /// \todo To be documented
+    virtual void SetXYTolerance(double tol);
+
+    /// \todo To be documented
+    virtual double GetZTolerance() const;
+
+    /// \todo To be documented
+    virtual void SetZTolerance(double tol);
+
+    /// \todo To be documented
+	bool GetIsExtentUpdated() const;
+
+    /// \todo To be documented
+	void SetIsExtentUpdated(bool value);
+
+    //
+    // FdoNamedCollection interface
+    //
+
+    /// Check if the object does allow to change its name.
+    /// Not allowing name change allows more efficient random access to FdoDictionary.
+    FdoBoolean CanSetName() const;
+
 
 protected:
 
 private:
 	
 };
+
+
+inline bool SpatialContext::CanSetName() const
+{
+    return true;
+}
+
+inline bool SpatialContext::GetIsExtentUpdated() const
+{
+    assert(!"NOT IMPLEMENTED");
+    return false;
+}
+
+inline void SpatialContext::SetIsExtentUpdated(bool value)
+{
+    assert(!"NOT IMPLEMENTED");
+}
 
 }} // namespace fdo::postgis
 

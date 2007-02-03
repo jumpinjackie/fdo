@@ -28,9 +28,4 @@ InsertCommand::~InsertCommand()
 {
 }
 
-void InsertCommand::Dispose()
-{
-    delete this;
-}
-
 }} // namespace fdo::postgis

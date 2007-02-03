@@ -18,16 +18,17 @@
 #define FDOPOSTGIS_UPDATECOMMAND_H_INCLUDED
 
 #include "FeatureCommand.h"
+#include <Fdo/Commands/Feature/IUpdate.h>
 
 //
 // Forward declarations
 //
 
-
 namespace fdo { namespace postgis {
 
 
-/// Implementation of ...
+/// Implementation of interface of Update command which modifies features.
+/// The command updates instances of a given class that match specified criteria.
 ///
 class UpdateCommand : public FeatureCommand<FdoIUpdate>
 {

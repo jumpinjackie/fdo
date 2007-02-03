@@ -17,15 +17,18 @@
 #ifndef FDOPOSTGIS_GETSPATIALCONTEXTCOMMAND_H_INCLUDED
 #define FDOPOSTGIS_GETSPATIALCONTEXTCOMMAND_H_INCLUDED
 
-//
-// Forward declarations
-//
-
+#include "Command.h"
 
 namespace fdo { namespace postgis {
 
+//
+// Forward declarations
+//
+class Connection;
 
-/// Implementation of ...
+
+/// Implementation of interface of command which enumerates the existing
+/// spatial contexts.
 ///
 class GetSpatialContextsCommand : public Command<FdoIGetSpatialContexts>
 {
@@ -39,9 +42,9 @@ public:
     // FdoIGetSpatialContexts interface
     //
 
-    virtual bool GetActiveOnly() const;
-    virtual void SetActiveOnly(bool activeOnly);
-    virtual FdoISpatialContextReader* Execute();
+    const bool GetActiveOnly();
+    void SetActiveOnly(const bool activeOnly);
+    FdoISpatialContextReader* Execute();
 
 protected:
 

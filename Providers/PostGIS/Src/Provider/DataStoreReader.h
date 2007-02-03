@@ -20,7 +20,7 @@
 namespace fdo { namespace postgis {
 
 /// Implementation of forward-only and read-only iterator for
-/// reading feature data from a datastore.
+/// reading feature data from a PostGIS datastore.
 ///
 class DataStoreReader : public FdoIDataStoreReader
 {

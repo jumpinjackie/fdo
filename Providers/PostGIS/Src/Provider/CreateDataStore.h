@@ -27,7 +27,8 @@
 namespace fdo { namespace postgis {
 
 
-/// Implementation of ...
+/// Implementation of create command, that can be used to create new
+/// datastore on a particular PostgreSQL instance.
 ///
 class CreateDataStore : public Command<FdoICreateDataStore>
 {

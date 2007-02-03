@@ -16,6 +16,7 @@
 //
 #include "stdafx.h"
 
+#include "PostGisProvider.h"
 #include "SpatialContextCollection.h"
 
 namespace fdo { namespace postgis {

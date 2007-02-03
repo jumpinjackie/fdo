@@ -17,7 +17,7 @@
 #ifndef FDOPOSTGIS_SPATIALCONTEXTCOLLECTION_H_INCLUDED
 #define FDOPOSTGIS_SPATIALCONTEXTCOLLECTION_H_INCLUDED
 
-#include "PostGisProvider.h"
+#include "SpatialContext.h"
 
 //
 // Forward declarations
@@ -35,10 +35,20 @@ public:
 
     typedef FdoPtr<SpatialContextCollection> Ptr;
 
+    /// Default constructor
     SpatialContextCollection();
+
+protected:
+
+    /// Destructor.
     virtual ~SpatialContextCollection();
 
-    virtual void Dispose();
+    //
+    // FdoDisposable interface
+    //
+
+    void Dispose();
+
 };
 
 }} // namespace fdo::postgis
