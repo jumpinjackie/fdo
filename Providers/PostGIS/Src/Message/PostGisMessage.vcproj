@@ -61,9 +61,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				LinkIncremental="2"
+				IgnoreImportLibrary="true"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
 				SubSystem="2"
+				ResourceOnlyDLL="true"
 				TargetMachine="1"
 			/>
 			<Tool

@@ -41,6 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="..\..\Inc"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOPOSTGIS_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -61,7 +62,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="FDO.lib FDOCommon.lib"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="$(FDO)\Unmanaged\Lib\Win32\Debug"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"
@@ -177,7 +180,31 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\ClassCollection.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ClassDefinition.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ColumnDefinition.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PhysicalSchemaMapping.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\PostGisOverrides.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PropertyDefinition.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PropertyDefinitionCollection.cpp"
 				>
 			</File>
 			<File
