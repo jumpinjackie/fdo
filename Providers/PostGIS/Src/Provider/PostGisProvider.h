@@ -18,10 +18,13 @@
 #define POSTGISPROVIDER_H_INCLUDED
 
 #include <PostGIS/FdoPostGisProvider.h>
+
+// FDO Core API
+#include <Fdo.h>
 #include <FdoCommon.h>
 #include <FdoSpatial.h>
 #include <FdoGeometry.h>
-#include <Fdo.h>
+#include <FdoCommonConnPropDictionary.h>
 
 
 /// \brief

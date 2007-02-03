@@ -248,54 +248,6 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Feature"
-			>
-			<File
-				RelativePath=".\DeleteCommand.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\DeleteCommand.h"
-				>
-			</File>
-			<File
-				RelativePath=".\FeatureCommand.h"
-				>
-			</File>
-			<File
-				RelativePath=".\FeatureReader.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\FeatureReader.h"
-				>
-			</File>
-			<File
-				RelativePath=".\InsertCommand.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\InsertCommand.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SelectCommand.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SelectCommand.h"
-				>
-			</File>
-			<File
-				RelativePath=".\UpdateCommand.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\UpdateCommand.h"
-				>
-			</File>
-		</Filter>
-		<Filter
 			Name="DataStore"
 			>
 			<File
@@ -448,6 +400,54 @@
 			</File>
 			<File
 				RelativePath=".\SpatialContextReader.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Feature"
+			>
+			<File
+				RelativePath=".\DeleteCommand.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DeleteCommand.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FeatureCommand.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FeatureReader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FeatureReader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\InsertCommand.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\InsertCommand.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SelectCommand.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SelectCommand.h"
+				>
+			</File>
+			<File
+				RelativePath=".\UpdateCommand.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\UpdateCommand.h"
 				>
 			</File>
 		</Filter>
