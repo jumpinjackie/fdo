@@ -188,19 +188,27 @@
 			Filter="*Test.*"
 			>
 			<File
+				RelativePath=".\BaseTestCase.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\BaseTestCase.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CapabilitiesTest.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CapabilitiesTest.h"
+				>
+			</File>
+			<File
 				RelativePath=".\ConnectionTest.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\ConnectionTest.h"
-				>
-			</File>
-			<File
-				RelativePath=".\PostGisTestCase.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\PostGisTestCase.h"
 				>
 			</File>
 		</Filter>
