@@ -44,13 +44,13 @@ void ExpressionCapabilities::Dispose()
 // FdoIExpressionCapabilities interface
 ///////////////////////////////////////////////////////////////////////////////
 
-FdoExpressionType* GetExpressionTypes(FdoInt32& size)
+FdoExpressionType* ExpressionCapabilities::GetExpressionTypes(FdoInt32& size)
 {
     assert(!"NOT IMPLEMENTED");
     return NULL;
 }
 
-FdoFunctionDefinitionCollection* GetFunctions()
+FdoFunctionDefinitionCollection* ExpressionCapabilities::GetFunctions()
 {
     assert(!"NOT IMPLEMENTED");
     return NULL;
