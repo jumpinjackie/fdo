@@ -24,15 +24,15 @@ namespace fdo { namespace postgis {
 
 /// Implementation of ...
 ///
-template <typename BASECMD>
-class Command : public BASECMD
+template <typename T>
+class Command : public T
 {
     friend class Connection;
 
 public:
 
-    Command();
-    virtual ~Command();
+    Command() {}
+    virtual ~Command() {}
 
 protected:
 

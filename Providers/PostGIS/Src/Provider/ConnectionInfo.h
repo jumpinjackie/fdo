@@ -17,14 +17,12 @@
 #ifndef FDOPOSTGIS_CONNECTIONINFO_H_INCLUDED
 #define FDOPOSTGIS_CONNECTIONINFO_H_INCLUDED
 
+namespace fdo { namespace postgis {
+
 //
 // Forward declarations
 //
 class Connection;
-
-
-namespace fdo { namespace postgis {
-
 
 /// Implementation of interface providing access to information
 /// about the feature provider and connection properties for PostGIS provider.

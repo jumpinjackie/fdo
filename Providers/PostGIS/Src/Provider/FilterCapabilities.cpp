@@ -44,31 +44,31 @@ void FilterCapabilities::Dispose()
 // FdoIFilterCapabilities interface
 ///////////////////////////////////////////////////////////////////////////////
 
-FdoConditionType* GetConditionTypes(FdoInt32& size)
+FdoConditionType* FilterCapabilities::GetConditionTypes(FdoInt32& size)
 {
     assert(!"NOT IMPLEMENTED");
     return NULL;
 }
 
-FdoSpatialOperations* GetSpatialOperations(FdoInt32& size)
+FdoSpatialOperations* FilterCapabilities::GetSpatialOperations(FdoInt32& size)
 {
     assert(!"NOT IMPLEMENTED");
     return NULL;
 }
 
-FdoDistanceOperations* GetDistanceOperations(FdoInt32& size)
+FdoDistanceOperations* FilterCapabilities::GetDistanceOperations(FdoInt32& size)
 {
     assert(!"NOT IMPLEMENTED");
     return NULL;
 }
 
-bool SupportsGeodesicDistance()
+bool FilterCapabilities::SupportsGeodesicDistance()
 {
     assert(!"NOT IMPLEMENTED");
     return false;
 }
 
-bool SupportsNonLiteralGeometricOperations()
+bool FilterCapabilities::SupportsNonLiteralGeometricOperations()
 {
     assert(!"NOT IMPLEMENTED");
     return false;
