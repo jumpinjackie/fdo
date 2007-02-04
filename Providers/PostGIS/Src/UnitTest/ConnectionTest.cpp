@@ -20,24 +20,34 @@
 CPPUNIT_TEST_SUITE_REGISTRATION(ConnectionTest);
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(ConnectionTest, "ConnectionTest");
 
-ConnectionTest::ConnectionTest()
+ConnectionTest::ConnectionTest() : mConnection(NULL)
 {
 }
 
 ConnectionTest::~ConnectionTest()
 {
-    //mConnection->Release();
 }
 
-void ConnectionTest::setUp ()
+void ConnectionTest::setUp()
 {
 }
 
-void ConnectionTest::tearDown ()
+void ConnectionTest::tearDown()
 {
+    mConnection = NULL;
+    FdoPtr<IConnectionManager> mgr = FdoFeatureAccessManager::GetConnectionManager();
+    mgr->FreeLibrary(fdo::postgis::test::providerName);
 }
 
-void ConnectionTest::testConstructor()
+void ConnectionTest::testGetConnectionManager()
 {
-  CPPUNIT_FAIL("Not implemented");
+    FdoPtr<IConnectionManager> mgr = FdoFeatureAccessManager::GetConnectionManager();
+    CPPUNIT_ASSERT_MESSAGE("Connection manager is NULL", NULL != mgr);
+}
+
+void ConnectionTest::testCreateConnection()
+{
+    FdoPtr<IConnectionManager> mgr = FdoFeatureAccessManager::GetConnectionManager();
+    mConnection = mgr->CreateConnection(fdo::postgis::test::providerName);
+    CPPUNIT_ASSERT_MESSAGE("Connection is NULL", NULL != mConnection);
 }

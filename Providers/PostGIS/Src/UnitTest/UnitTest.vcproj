@@ -20,6 +20,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
+			InheritedPropertySheets="..\PostGis.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -40,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\include&quot;;..\..\inc;..\Provider"
+				AdditionalIncludeDirectories="&quot;$(FDOTHIRDPARTY)\cppunit\include&quot;"
 				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -64,7 +65,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\cppunit\lib&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Debug&quot;"
+				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\cppunit\lib&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\debug&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="1"
@@ -99,6 +100,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
+			InheritedPropertySheets="..\PostGis.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -215,6 +217,14 @@
 		<Filter
 			Name="Framework"
 			>
+			<File
+				RelativePath=".\Conv.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Conv.h"
+				>
+			</File>
 			<File
 				RelativePath=".\Pch.cpp"
 				>

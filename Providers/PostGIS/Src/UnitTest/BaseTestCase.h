@@ -17,12 +17,18 @@
 #ifndef FDOPOSTGIS_BASETESTCASE_H_INCLUDED
 #define FDOPOSTGIS_BASETESTCASE_H_INCLUDED
 
+//
+// Forward declarations
+//
+class FdoException;
+
+
 namespace fdo { namespace postgis { namespace test {
 
 extern const wchar_t* providerName;
 
-/// Common base test case for PostGIS tests.
-///
+// Common base test case for PostGIS tests.
+//
 class BaseTestCase : public CppUnit::TestCase
 {
 public:
@@ -43,6 +49,9 @@ public:
 
     // Factory method creating new instance of PostGIS connection.
     virtual FdoIConnection* GetConnection();
+
+    static void fail(FdoException* ex);
+    static void fail(char const* error);
 
 private:
 
