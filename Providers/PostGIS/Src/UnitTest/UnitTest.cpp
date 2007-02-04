@@ -50,18 +50,18 @@ int main (int argc, char *argv[])
         {
             if (!strstr (argv[i], "="))
             {
-                CppUnit::TestFactoryRegistry& registry = CppUnit::TestFactoryRegistry::getRegistry (argv[i]);
-                runner.addTest (registry.makeTest ());
+                CppUnit::TestFactoryRegistry& registry = CppUnit::TestFactoryRegistry::getRegistry(argv[i]);
+                runner.addTest(registry.makeTest());
                 all = false;
             }
         }
     }
     if (all)
-        runner.addTest (CppUnit::TestFactoryRegistry::getRegistry ().makeTest ());
+        runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
 
-    runner.setOutputter (new CppUnit::CompilerOutputter (&runner.result (), std::cerr));
-    ret = runner.run () ? 0 : 1;
+    runner.setOutputter(new CppUnit::CompilerOutputter(&runner.result(), std::cerr));
+    ret = runner.run() ? 0 : 1;
 
     return (ret);
 }
