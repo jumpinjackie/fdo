@@ -22,6 +22,7 @@
 #include <tchar.h>
 #endif // _WIN32
 
+// std
 // TODO: replace with C++ headers
 //#include <malloc.h>
 //#include <math.h>
@@ -30,10 +31,17 @@
 //#include <float.h>      // For _isnan()
 //#include <stdlib.h>
 
+// FDO
 #include <Fdo.h>
 #include <FdoCommon.h>
+
+// CppUnit
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
+
+// PostGIS UnitTest
+#include "Conv.h"
+
 
 #define _CRTDBG_MAP_ALLOC
 

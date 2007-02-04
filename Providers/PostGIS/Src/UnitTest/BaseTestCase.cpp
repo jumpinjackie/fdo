@@ -17,6 +17,11 @@
 #include "Pch.h"
 #include "BaseTestCase.h"
 
+// std
+#include <sstream>
+#include <string>
+#include <iomanip>
+
 namespace fdo { namespace postgis { namespace test {
 
 const wchar_t* providerName = L"OSGeo.PostGIS.3.2";
@@ -29,13 +34,13 @@ BaseTestCase::~BaseTestCase()
 {
 }
 
-void BaseTestCase::setUp ()
+void BaseTestCase::setUp()
 {
     FdoPtr<IConnectionManager> mgr = FdoFeatureAccessManager::GetConnectionManager();
     mConnection = mgr->CreateConnection(providerName);
 }
 
-void BaseTestCase::tearDown ()
+void BaseTestCase::tearDown()
 {
     mConnection = NULL;
     FdoPtr<IConnectionManager> mgr = FdoFeatureAccessManager::GetConnectionManager();
@@ -44,7 +49,36 @@ void BaseTestCase::tearDown ()
 
 FdoIConnection* BaseTestCase::GetConnection()
 {
-    return NULL;
+    FDO_SAFE_ADDREF(mConnection.p);
+    return mConnection.p;
+}
+
+void BaseTestCase::fail(FdoException* ex)
+{
+    std::streamsize offset = 5; // number of blanks + asterix characters
+
+    std::wostringstream msg;
+    msg << L"\n*** FDO FAILURE ***\n";
+    msg << std::setw(++offset) << L"*** " << ex->GetExceptionMessage() << std::endl;
+    
+    FdoPtr<FdoException> cause(ex->GetCause());
+    while(NULL != cause)
+    {
+        msg << std::setw(++offset)
+             << L"*** " << cause->GetExceptionMessage() << std::endl;
+        cause = cause->GetCause();
+    }
+    ex->Release();
+
+    std::string tmp(fdo::conv::tonarrow(msg.str()));
+    CPPUNIT_FAIL(tmp);
+}
+
+void BaseTestCase::fail(char const* error)
+{
+    std::string msg("\n*** FAILURE ***\n");
+    msg += error;
+    CPPUNIT_FAIL(msg);
 }
 
 }}} // namespace fdo::postgis::test

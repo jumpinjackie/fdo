@@ -16,6 +16,7 @@
 //
 #include "Pch.h"
 #include "CapabilitiesTest.h"
+#include "BaseTestCase.h"
 
 CPPUNIT_TEST_SUITE_REGISTRATION(CapabilitiesTest);
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(CapabilitiesTest, "CapabilitiesTest");
@@ -28,22 +29,28 @@ CapabilitiesTest::~CapabilitiesTest()
 {
 }
 
-void CapabilitiesTest::setUp ()
-{
-}
-
-void CapabilitiesTest::tearDown ()
-{
-}
-
 void CapabilitiesTest::testConnectionCapabilities()
 {
-  CPPUNIT_FAIL("Not implemented");
+    try
+    {
+        CPPUNIT_ASSERT(true);
+    }
+    catch (FdoException* ex)
+    {
+        BaseTestCase::fail(ex);
+    }
 }
 
 void CapabilitiesTest::testCommandsCapabilities()
 {
-  CPPUNIT_FAIL("Not implemented");
+    try
+    {
+        CPPUNIT_ASSERT(true);
+    }
+    catch (FdoException* ex)
+    {
+        BaseTestCase::fail(ex);
+    }
 }
 
 void CapabilitiesTest::testSchemaCapabilities()

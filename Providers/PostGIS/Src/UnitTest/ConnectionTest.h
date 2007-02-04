@@ -19,24 +19,31 @@
 
 #include "BaseTestCase.h"
 
-class ConnectionTest : public fdo::postgis::test::BaseTestCase
+class ConnectionTest : public CppUnit::TestCase
 {
     CPPUNIT_TEST_SUITE(ConnectionTest);
-    CPPUNIT_TEST(testConstructor);
+    CPPUNIT_TEST(testGetConnectionManager);
+    CPPUNIT_TEST(testCreateConnection);
     CPPUNIT_TEST_SUITE_END();
-
-    //FdoIConnection* mConnection;
 
 public:
 
     ConnectionTest();
     virtual ~ConnectionTest();
 
-    void setUp();
-	void tearDown();
+	virtual void setUp();
+	virtual void tearDown();
 
-    void testConstructor();
+    //
+    // Tests
+    //
 
+    void testGetConnectionManager();
+    void testCreateConnection();
+
+private:
+    
+    FdoPtr<FdoIConnection> mConnection;
 };
 
 #endif // FDOPOSTGIS_CONNECTIONTEST_H_INCLUDED
