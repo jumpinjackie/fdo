@@ -23,7 +23,8 @@
 //
 // Forward declarations
 //
-
+class fdo::postgis::Connection;
+class FdoISQLDataReader;
 
 namespace fdo { namespace postgis {
 
@@ -47,6 +48,7 @@ protected:
 
 private:
 	
+    typedef Command<FdoISQLCommand> Base;
 };
 
 }} // namespace fdo::postgis

@@ -18,12 +18,13 @@
 
 #include "PostGisProvider.h"
 #include "SQLCommand.h"
+#include "Connection.h"
 
 #include <cassert>
 
 namespace fdo { namespace postgis {
 
-SQLCommand::SQLCommand(Connection* Connection)
+SQLCommand::SQLCommand(Connection* conn) : Base(conn)
 {
 }
 
