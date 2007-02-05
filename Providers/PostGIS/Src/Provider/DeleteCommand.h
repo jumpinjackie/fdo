@@ -33,7 +33,24 @@ class DeleteCommand : public FeatureCommand<FdoIDelete>
 {
 public:
 
+    /// Default constructor.
     DeleteCommand();
+
+    //
+    // FdoIDelete interface
+    //
+
+    /// Execute delete command and returns the number of affected instances.
+    FdoInt32 Execute();
+
+    /// Get a lock conflict reader providing access to conflicts that occured
+    /// during delete command execution.
+    ///
+    /// Deleting objects might result in lock conflicts if objects to be
+    /// deleted are not exclusively locked for the user attempting to
+    /// delete the object. A lock conflict report is generated.
+    ///
+    FdoILockConflictReader* GetLockConflicts();
 
 protected:
 

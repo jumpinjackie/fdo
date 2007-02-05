@@ -19,6 +19,8 @@
 #include "PostGisProvider.h"
 #include "DeleteCommand.h"
 
+#include <cassert>
+
 namespace fdo { namespace postgis {
 
 DeleteCommand::DeleteCommand()
@@ -27,6 +29,22 @@ DeleteCommand::DeleteCommand()
 
 DeleteCommand::~DeleteCommand()
 {
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoIDisposable interface
+///////////////////////////////////////////////////////////////////////////////
+
+FdoInt32 DeleteCommand::Execute()
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
+}
+
+FdoILockConflictReader* DeleteCommand::GetLockConflicts()
+{
+    assert(!"NOT IMPLEMENTED");
+    return NULL;
 }
 
 }} // namespace fdo::postgis
