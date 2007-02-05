@@ -229,6 +229,10 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath=".\XmlGlobals.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
