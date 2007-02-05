@@ -17,10 +17,11 @@
 #include "stdafx.h"
 
 #include "InsertCommand.h"
+#include "Connection.h"
 
 namespace fdo { namespace postgis {
 
-InsertCommand::InsertCommand()
+InsertCommand::InsertCommand(Connection* conn) : Base(conn)
 {
 }
 
@@ -29,3 +30,4 @@ InsertCommand::~InsertCommand()
 }
 
 }} // namespace fdo::postgis
+
