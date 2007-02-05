@@ -35,7 +35,7 @@ class CreateDataStore : public Command<FdoICreateDataStore>
 public:
 
     /// Default constructor.
-    CreateDataStore();
+    CreateDataStore(Connection* conn);
 
     /// Destructor.
     virtual ~CreateDataStore();
@@ -50,7 +50,10 @@ public:
 
     /// Execute command.
     void Execute();
-	
+
+private:
+
+    typedef Command<FdoICreateDataStore> Base;
 };
 
 }} // namespace fdo::postgis
