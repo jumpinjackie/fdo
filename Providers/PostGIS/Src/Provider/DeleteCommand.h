@@ -33,8 +33,8 @@ class DeleteCommand : public FeatureCommand<FdoIDelete>
 {
 public:
 
-    /// Default constructor.
-    DeleteCommand();
+    /// Construction of command operating on given connection.
+    DeleteCommand(Connection* conn);
 
     //
     // FdoIDelete interface
