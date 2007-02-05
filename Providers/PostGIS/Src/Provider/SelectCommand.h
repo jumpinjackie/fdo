@@ -23,26 +23,35 @@
 //
 // Forward declarations
 //
-
+class fdo::postgis::Connection;
 
 namespace fdo { namespace postgis {
 
-
-/// Implementation of ...
+/// Implementation of Select command interface for PostGIS provider.
+/// The Select command queries for features of a given class that
+/// match the specified criteria.
 ///
 class SelectCommand : public FeatureCommand<FdoISelect>
 {
 public:
 
-    SelectCommand();
-    virtual ~SelectCommand();
+    SelectCommand(Connection* conn);
+
+    //
+    // FdoIDisposable interface
+    //
 
     virtual void Dispose();
 
 protected:
 
+    /// Destructor.
+    virtual ~SelectCommand();
+
 private:
-	
+
+    typedef FeatureCommand<FdoISelect> Base;
+
 };
 
 }} // namespace fdo::postgis

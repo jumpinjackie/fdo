@@ -16,11 +16,13 @@
 //
 #include "stdafx.h"
 
+#include "PostGisProvider.h"
 #include "SelectCommand.h"
+#include "Connection.h"
 
 namespace fdo { namespace postgis {
 
-SelectCommand::SelectCommand()
+SelectCommand::SelectCommand(Connection* conn) : Base(conn)
 {
 }
 
