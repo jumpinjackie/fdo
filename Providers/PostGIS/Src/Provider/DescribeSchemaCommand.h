@@ -29,12 +29,62 @@ namespace fdo { namespace postgis {
 /// This command describes feature schemas available from currently
 /// connected PostGIS datastore.
 ///
+/// \todo Check correct base class
+///
 class DescribeSchemaCommand : public FdoIDescribeSchema
 //class DescribeSchemaCommand : public Command<FdoIDescribeSchema>
 {
 public:
 
+    /// Default constructor.
     DescribeSchemaCommand();
+
+    //
+    // FdoICommand interface
+    //
+
+    /// Get instance of connection that this command will operate on.
+    FdoIConnection* GetConnection();
+ 	
+    /// Get transaction in frames of which the command executes.
+    FdoITransaction* GetTransaction();
+
+    /// Set transaction for the command.
+    void SetTransaction(FdoITransaction* value);
+ 	
+    /// Get number of milliseconds to wait before terminating execution of the command.
+    /// Termination take place before generating any error.
+    FdoInt32 GetCommandTimeout();
+ 	
+    /// Set number of milliseconds to wait before terminating execution of the command.
+    /// Termination take place before generating any error.
+    void SetCommandTimeout(FdoInt32 value);
+ 	
+    /// Return an FdoParameterValueCollection.
+    /// If the command requires any parameters, the literal values to bind to
+    /// each of those named parameters must be added to this collection.
+    FdoParameterValueCollection* GetParameterValues();
+ 	
+    /// Prepare command for execution.
+    /// Preparation is used to validate and optimization of the command.
+    void Prepare();
+ 	
+    /// Send request to cancel command execution.
+    void Cancel();
+
+    //
+    // FdoIDescribeSchema interface
+    //
+
+    /// Get name of the schema requetsed to describe.
+    FdoString* GetSchemaName();
+ 	
+    /// Sets the name of the schema to describe.
+    void SetSchemaName(FdoString* value);
+ 	
+    /// Execute the DescribeSchema command and return collection of
+    /// feature schemas available from the connection.
+    FdoFeatureSchemaCollection* Execute();
 
 protected:
 
