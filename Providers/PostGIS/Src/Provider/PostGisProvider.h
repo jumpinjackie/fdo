@@ -45,11 +45,11 @@ namespace postgis
 //
 // General descriptive information about PostGIS Provier
 //
-extern FdoString* PROVIDER_NAME;
-extern FdoString* PROVIDER_DEFAULT_DISPLAY_NAME;
-extern FdoString* PROVIDER_DEFAULT_DESCRIPTION;
-extern FdoString* PROVIDER_VERSION;
-extern FdoString* FDO_VERSION;
+extern FdoString* ProviderName;
+extern FdoString* ProviderDisplayName;
+extern FdoString* ProviderDescription;
+extern FdoString* ProviderVersion;
+extern FdoString* FdoVersion;
 
 }} // namespace fdo::postgis
 
