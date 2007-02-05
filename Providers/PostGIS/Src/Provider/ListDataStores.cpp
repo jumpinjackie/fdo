@@ -18,12 +18,17 @@
 
 #include "PostGisProvider.h"
 #include "ListDataStores.h"
+#include "Connection.h"
 
 #include <cassert>
 
 namespace fdo { namespace postgis {
 
-ListDataStores::ListDataStores()
+ListDataStores::ListDataStores() : Base(NULL)
+{
+}
+
+ListDataStores::ListDataStores(Connection* conn) : Base(conn)
 {
     assert(!"NOT IMPLEMENTED");
 }
