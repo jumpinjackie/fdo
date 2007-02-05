@@ -22,6 +22,8 @@
 //
 // Forward declarations
 //
+class fdo::postgis::Connection;
+class FdoIDataStoreReader;
 
 
 namespace fdo { namespace postgis {
@@ -36,6 +38,9 @@ public:
 
     /// Default constructor.
     ListDataStores();
+
+    /// Constructor creates command for given connection.
+    ListDataStores(Connection* conn);
 
     /// Destructor.
     virtual ~ListDataStores();
@@ -57,6 +62,10 @@ public:
 protected:
 
     bool mIncludeNonFdo;
+
+private:
+
+    typedef Command<FdoIListDataStores> Base;
 };
 
 }} // namespace fdo::postgis
