@@ -18,12 +18,13 @@
 
 #include "PostGisProvider.h"
 #include "CreateDataStore.h"
+#include "Connection.h"
 
 #include <cassert>
 
 namespace fdo { namespace postgis {
 
-CreateDataStore::CreateDataStore()
+CreateDataStore::CreateDataStore(Connection* conn) : Base(conn)
 {
 }
 
