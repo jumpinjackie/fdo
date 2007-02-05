@@ -20,20 +20,28 @@
 #include "FeatureCommand.h"
 #include <Fdo/Commands/Feature/IInsert.h>
 
+//
+// Forward declarations
+//
+class fdo::postgis::Connection;
+
 namespace fdo { namespace postgis {
 
-
-/// Implementation of ...
+/// Implementation of interface of Insert command for PostGIS provider.
+/// The Insert command inserts a new instance of a given class to the datastore.
 ///
 class InsertCommand : public FeatureCommand<FdoIInsert>
 {
 public:
 
-    InsertCommand();
+    /// Create command for given connection instance.
+    InsertCommand(Connection* conn);
 
 protected:
 
 private:
+
+    typedef FeatureCommand<FdoIInsert> Base;
 
     /// Destructor.
     virtual ~InsertCommand();
