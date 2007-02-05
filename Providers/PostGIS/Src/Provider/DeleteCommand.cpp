@@ -18,12 +18,15 @@
 
 #include "PostGisProvider.h"
 #include "DeleteCommand.h"
+#include "FeatureCommand.h"
+#include "Connection.h"
 
 #include <cassert>
 
 namespace fdo { namespace postgis {
 
-DeleteCommand::DeleteCommand()
+DeleteCommand::DeleteCommand(Connection* conn)
+    : FeatureCommand(conn)
 {
 }
 
