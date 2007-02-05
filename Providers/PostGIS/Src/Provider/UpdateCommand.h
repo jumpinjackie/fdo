@@ -23,6 +23,7 @@
 //
 // Forward declarations
 //
+class fdo::postgis::Connection;
 
 namespace fdo { namespace postgis {
 
@@ -34,14 +35,22 @@ class UpdateCommand : public FeatureCommand<FdoIUpdate>
 {
 public:
 
-    UpdateCommand();
-    virtual ~UpdateCommand();
+    UpdateCommand(Connection* conn);
+
+    //
+    // FdoIDisposable interface
+    //
 
     virtual void Dispose();
 
 protected:
 
+    /// Destructor.
+    virtual ~UpdateCommand();
+
 private:
+
+    typedef FeatureCommand<FdoIUpdate> Base;
 	
 };
 
