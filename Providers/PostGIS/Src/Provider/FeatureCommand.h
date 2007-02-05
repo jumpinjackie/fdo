@@ -19,28 +19,55 @@
 
 #include "Command.h"
 #include "Connection.h"
+
+#include <cassert>
+
 //
 // Forward declarations
 //
-
+class FdoFilter;
+class FdoIdentifier;
+class FdoParameterValueCollection;
 
 namespace fdo { namespace postgis {
 
-
-/// Implementation of ...
+/// Implementation of common interface for commands operating on
+/// instances of feature class, in PostGIS provider for FDO.
 ///
 template <typename T>
 class FeatureCommand : public Command<T>
 {
 public:
 
-    /// Default constructor.
-    FeatureCommand();
+    //
+    // FdoIFeatureCommand interface
+    //
+
+    /// Get name of the class to be operated upon as an identifier.
+    virtual FdoIdentifier* GetFeatureClassName();
+ 	
+    /// Set name of the class to be operated upon as an identifier.
+    virtual void SetFeatureClassName(FdoIdentifier* value);
+ 	
+    /// Set name of the class to be operated upon as an identifier.
+    virtual void SetFeatureClassName(FdoString* value);
+
+    /// Get filter as a filter tree.
+    virtual FdoFilter* GetFilter();
+
+    /// Set filter as a Filter tree.
+    virtual void SetFilter(FdoFilter* value);
+ 	
+    /// Set filter as a Filter tree.
+    virtual void SetFilter(FdoString* value);
+
+protected:
+
+    /// Construct instance of a command for the given connection.
+    FeatureCommand(Connection* conn);
 
     /// Destructor.
     virtual ~FeatureCommand();
-
-protected:
 
     //
     // FdoIDisposable interface
@@ -48,12 +75,19 @@ protected:
 
     virtual void Dispose();
 
+    //
+    // FdoICommand interface
+    //
+    
+    /// Return collection of command parameters and its values.
+    virtual FdoParameterValueCollection* GetParameterValues();
+
 private:
 	
 }; // class FeatureCommand
 
 template <typename T>
-FeatureCommand<T>::FeatureCommand()
+FeatureCommand<T>::FeatureCommand(Connection* conn) : Command<T>(conn)
 {
 }
 
@@ -66,6 +100,59 @@ template <typename T>
 inline void FeatureCommand<T>::Dispose()
 {
     delete this;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoICommand interface
+///////////////////////////////////////////////////////////////////////////////
+
+template <typename T>
+FdoParameterValueCollection* FeatureCommand<T>::GetParameterValues()
+{
+    assert(!"NOT IMPLEMENTED");
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoIFeatureCommand interface
+///////////////////////////////////////////////////////////////////////////////
+
+template <typename T>
+FdoIdentifier* FeatureCommand<T>::GetFeatureClassName()
+{
+    assert(!"NOT IMPLEMENTED");
+    return NULL;
+}
+
+template <typename T>
+void FeatureCommand<T>::SetFeatureClassName(FdoIdentifier* value)
+{
+    assert(!"NOT IMPLEMENTED");
+}
+
+template <typename T>
+void FeatureCommand<T>::SetFeatureClassName(FdoString* value)
+{
+    assert(!"NOT IMPLEMENTED");
+}
+
+template <typename T>
+FdoFilter* FeatureCommand<T>::GetFilter()
+{
+    assert(!"NOT IMPLEMENTED");
+    return NULL;
+}
+
+template <typename T>
+void FeatureCommand<T>::SetFilter(FdoFilter* value)
+{
+    assert(!"NOT IMPLEMENTED");
+}
+
+template <typename T>
+void FeatureCommand<T>::SetFilter(FdoString* value)
+{
+    assert(!"NOT IMPLEMENTED");
 }
 
 }} // namespace fdo::postgis
