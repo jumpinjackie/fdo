@@ -14,26 +14,16 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 //
-#ifndef FDOPOSTGIS_XMLGLOBALS_H_INCLUDED
-#define FDOPOSTGIS_XMLGLOBALS_H_INCLUDED
+#include "stdafx.h"
 
-namespace fdo { namespace postgis { namespace ov {
+namespace fdo { namespace postgis { namespace ov { namespace xml {
 
-/// \brief
-/// Dedicated for XML names used by Schema Overrides mapping.
-///
-namespace xml
-{
+FdoString* SchemaMapping          = L"SchemaMapping";
+FdoString* ClassDefinitionElement = L"ComplexType";
+FdoString* FullTableNameAttribute = L"FullTableName";
+FdoString* PropertyElement        = L"Element";
+FdoString* ColumnElement          = L"Column";
+FdoString* XmlnsValue             = L"http://fdopostgis.osgeo.org/schemas";
 
-extern FdoString* SchemaMapping;
-extern FdoString* ClassDefinitionElement;
-extern FdoString* FullTableNameAttribute;
-extern FdoString* PropertyElement;
-extern FdoString* ColumnElement;
-extern FdoString* XmlnsValue;
+}}}} // namespace fdo::postgis::ov::xml
 
-} // namespace xml
-
-}}} // namespace fdo::postgis::ov
-
-#endif // FDOPOSTGIS_XMLGLOBALS_H_INCLUDED
