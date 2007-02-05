@@ -60,7 +60,7 @@ public:
     /// Termination take place before generating any error.
     void SetCommandTimeout(FdoInt32 value);
  	
-    /// Return an FdoParameterValueCollection.
+    /// Return collection of command parameters and its values.
     /// If the command requires any parameters, the literal values to bind to
     /// each of those named parameters must be added to this collection.
     FdoParameterValueCollection* GetParameterValues();
