@@ -22,6 +22,8 @@
 //
 // Forward declarations
 //
+class fdo::postgis::Connection;
+class FdoIDataStorePropertyDictionary;
 
 
 namespace fdo { namespace postgis {
@@ -37,6 +39,9 @@ public:
     /// Default constructor.
     DestroyDataStore();
 
+    /// Creates command for given connection.
+    DestroyDataStore(Connection* conn);
+
     /// Destructor.
     virtual ~DestroyDataStore();
 
@@ -50,7 +55,10 @@ public:
 
     /// Execute command.
     void Execute();
-	
+
+private:
+
+    typedef Command<FdoIDestroyDataStore> Base;
 };
 
 }} // namespace fdo::postgis

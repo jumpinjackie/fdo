@@ -18,12 +18,17 @@
 
 #include "PostGisProvider.h"
 #include "DestroyDataStore.h"
+#include "Connection.h"
 
 #include <cassert>
 
 namespace fdo { namespace postgis {
 
-DestroyDataStore::DestroyDataStore()
+DestroyDataStore::DestroyDataStore() : Base(NULL)
+{
+}
+
+DestroyDataStore::DestroyDataStore(Connection* conn) : Base(conn)
 {
 }
 
