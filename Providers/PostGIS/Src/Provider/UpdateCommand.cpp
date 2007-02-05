@@ -16,11 +16,13 @@
 //
 #include "stdafx.h"
 
+#include "PostGisProvider.h"
 #include "UpdateCommand.h"
+#include "Connection.h"
 
 namespace fdo { namespace postgis {
 
-UpdateCommand::UpdateCommand()
+UpdateCommand::UpdateCommand(Connection* conn) : Base(conn)
 {
 }
 
