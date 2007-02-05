@@ -25,11 +25,12 @@
 
 namespace fdo { namespace postgis {
 
-GetSpatialContextsCommand::GetSpatialContextsCommand()
-{
-}
+//GetSpatialContextsCommand::GetSpatialContextsCommand()
+//{
+//}
 
-GetSpatialContextsCommand::GetSpatialContextsCommand(Connection* connection)
+GetSpatialContextsCommand::GetSpatialContextsCommand(Connection* conn)
+    : Base(conn)
 {
 }
 

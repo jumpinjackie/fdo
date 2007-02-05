@@ -50,6 +50,7 @@ protected:
 
 private:
 	
+    typedef Command<FdoIGetSpatialContexts> Base;
 };
 
 }} // namespace fdo::postgis
