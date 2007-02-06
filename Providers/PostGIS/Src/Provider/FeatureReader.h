@@ -19,6 +19,12 @@
 
 #include "Reader.h"
 
+//
+// Forward declarations
+//
+class fdo::postgis::Connection;
+
+
 namespace fdo { namespace postgis {
 
 /// Implementation of forward-only and read-only iterator for reading
@@ -30,9 +36,31 @@ class FeatureReader : public Reader<FdoIFeatureReader>
 public:
 
     /// Default constructor.
-    FeatureReader();
+    FeatureReader(Connection* conn);
 
+    //
+    // FdoIFeatureReader interface
+    //
 
+    /// Get definition of the object currently being read.
+    virtual FdoClassDefinition* GetClassDefinition();
+ 	
+    /// Get value indicating depth of nesting for the current reader.
+    ///
+    /// \todo What is readers nesting?
+    ///
+    virtual FdoInt32 GetDepth();
+ 	
+    /// Get geometry value of the specified property as a byte array in FGF format.
+    virtual const FdoByte* GetGeometry(FdoString* propertyName, FdoInt32* count);
+ 	
+    /// Get geometry value of the specified property as a byte array in FGF format.
+    virtual FdoByteArray* GetGeometry(FdoString* propertyName);
+ 	
+    /// Get reference to instance of FdoIFeatureReader to read the data contained
+    /// in the object or object collection property. 
+    virtual FdoIFeatureReader* GetFeatureObject(FdoString* propertyName);
+ 	
 protected:
 
     /// Destructor
@@ -42,9 +70,11 @@ protected:
     // FdoIDisposable
     //
 
-    void Dispose();
+    virtual void Dispose();
 
 private:
+
+    typedef Reader<FdoIFeatureReader> Base;
 	
 };
 

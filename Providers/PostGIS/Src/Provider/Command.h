@@ -68,9 +68,6 @@ public:
 
 protected:
 
-    // The connection this command was created from.
-    FdoPtr<Connection> mConn;
-
     /// Construct instance of a command for the given connection.
     Command(Connection* conn);
 
@@ -83,6 +80,12 @@ protected:
     
     void Dispose();
 
+    //
+    // Data members
+    //
+
+    // The connection this command was created from.
+    FdoPtr<Connection> mConn;
 private:
 	
 }; // class Command
