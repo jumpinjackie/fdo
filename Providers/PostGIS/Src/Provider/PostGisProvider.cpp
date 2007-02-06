@@ -38,16 +38,28 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// General information about PostGIS Provier
+// Definition of various properties used by PostGIS Provier
 ///////////////////////////////////////////////////////////////////////////////
 
 namespace fdo { namespace postgis {
 
+//
+// General descriptive information about PostGIS Provier
+//
 FdoString* ProviderName = L"OSGeo.PostGIS.1.0";
 FdoString* ProviderVersion = L"1.0.0.0";
 FdoString* FdoVersion = L"3.2.0.0";
 
 char const* ProviderDisplayName = "OSGeo FDO Provider for PostGIS";
 char const* ProviderDescription = "Read/write access to PostGIS-based data store. Supports spatial data types and spatial query operations.";
+
+//
+// Connection properties defined for PostGIS Provier
+//
+
+FdoString* PropertyUsername = L"Username";
+FdoString* PropertyPassword = L"Password";
+FdoString* PropertyService = L"Service";
+FdoString* PropertyDatastore = L"Datastore";
 
 }} // namespace fdo::postgis

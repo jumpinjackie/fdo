@@ -62,10 +62,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONLS.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONLS.lib ProvidersCommon.lib"
 				OutputFile="$(OutDir)\PostGISProvider.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(FDO)\Unmanaged\Lib\Win32\debug"
+				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win32\debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="0"
 				TargetMachine="1"

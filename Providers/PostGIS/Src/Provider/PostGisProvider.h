@@ -47,12 +47,22 @@ namespace postgis
 //
 // General descriptive information about PostGIS Provier
 //
+
 extern FdoString* ProviderName;
 extern FdoString* ProviderVersion;
 extern FdoString* FdoVersion;
 
 extern char const* ProviderDisplayName;
 extern char const* ProviderDescription;
+
+//
+// Connection properties defined for PostGIS Provier
+//
+
+extern FdoString* PropertyUsername;
+extern FdoString* PropertyPassword;
+extern FdoString* PropertyService;
+extern FdoString* PropertyDatastore;
 
 }} // namespace fdo::postgis
 
