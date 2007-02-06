@@ -38,7 +38,7 @@ public:
     /// Default constructor.
     ConnectionInfo();
 
-    ConnectionInfo(Connection* connection);
+    ConnectionInfo(Connection* conn);
 
     //
     // FdoIConnectionInfo interface
@@ -65,9 +65,11 @@ public:
     FdoIConnectionPropertyDictionary* GetConnectionProperties();
  	
     /// Returns the provider type.
+    /// \return Value of FdoProviderDatastoreType_DatabaseServer enumerator.
     FdoProviderDatastoreType GetProviderDatastoreType();
  	
-    /// File-based providers depend on a various files.
+    /// This is file-based providers specific function.
+    /// \return For the PostGIS provider it always returns NULL.
     FdoStringCollection* GetDependentFileNames();
 
 protected:
@@ -85,11 +87,11 @@ protected:
 private:
 	
     // Weak reference to connection object of current session.
-    Connection* mConnection;
+    Connection* mConn;
 
     // Dictionary of connection properties.
     // Created upon first request in GetConnectionProperties() function.
-    FdoPtr<FdoCommonConnPropDictionary> mPropertyDictionary;
+    FdoPtr<FdoCommonConnPropDictionary> mPropertyDict;
 };
 
 }} // namespace fdo::postgis

@@ -19,24 +19,25 @@
 
 // Default message catalog filename
 #ifdef _WIN32
-char* PostGisMsgCat = "PostGisMessage.dll";
+char const* PostGisMsgCat = "PostGisMessage.dll";
 #else
-char* PostGisMsgCat = "PostGisMessage.cat";
+char const* PostGisMsgCat = "PostGisMessage.cat";
 #endif // _WIN32
 
-FdoString* NlsMsgGet(int msg_num, char* default_msg, ...)
+FdoString* NlsMsgGet(int msgNum, char* defaultMsg, ...)
 {
     va_list varargs;
-    va_start(varargs, default_msg);
-    FdoString* ret = FdoException::NLSGetMessage(msg_num, default_msg, fdoshp_cat, varargs);
+    va_start(varargs, defaultMsg);
+    FdoString* ret = FdoException::NLSGetMessage(msgNum, defaultMsg,
+                     const_cast<char*>(PostGisMsgCat), varargs);
     va_end(varargs);
     return ret;
 }
 
 #else // FDOPOSTGIS_MESSAGE_DEFINE
 
-extern char* PostGisMsgCat;
-extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
+extern char const* PostGisMsgCat;
+extern FdoString* NlsMsgGet(int msgNum, char* defaultMsg, ...);
 
 #endif // FDOPOSTGIS_MESSAGE_DEFINE
 

@@ -693,12 +693,12 @@ Geometry creation failed for '%1$ls'.
 ;//************************************************************************************
 
 MessageId=14001
-SymbolicName=M_KGORA_PROVIDER_DISPLAY_NAME
+SymbolicName=MSG_POSTGIS_PROVIDER_DISPLAY_NAME
 Language=English
-KingOracle FDO Provider for Oracle Spatial
+KingOracle FDO Provider for PostGIS
 .
 MessageId=14002
-SymbolicName=M_KGORA_PROVIDER_DESCRIPTION
+SymbolicName=MSG_POSTGIS_PROVIDER_DESCRIPTION
 Language=English
-Read/write access to spatial and attribute data in an Oracle Spatial.
+Read/write access to spatial and attribute data in an PostGIS.
 .
