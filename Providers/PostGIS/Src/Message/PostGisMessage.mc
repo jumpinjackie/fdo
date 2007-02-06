@@ -84,7 +84,7 @@ Language=English
 Connection timeout is not supported.
 .
 MessageId=2002
-SymbolicName=M_KGORA_CONNECTION_COMMAND_NOT_SUPPORTED
+SymbolicName=MSG_POSTGIS_COMMAND_NOT_SUPPORTED
 Language=English
 The command %1$d is not supported.
 .
@@ -94,7 +94,7 @@ Language=English
 King.Oracle Provider does not support configuration files.
 .
 MessageId=2004
-SymbolicName=M_KGORA_CONNECTION_INVALID
+SymbolicName=MSG_POSTGIS_CONNECTION_INVALID
 Language=English
 Connection is invalid.
 .

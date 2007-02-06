@@ -41,7 +41,7 @@ public:
     SQLCommand(Connection* Connection);
     virtual ~SQLCommand();
 
-    virtual FdoString* GetSQLStatement() const;
+    virtual FdoString* GetSQLStatement();
     virtual void SetSQLStatement(FdoString* sql);
     
     virtual FdoInt32 ExecuteNonQuery();

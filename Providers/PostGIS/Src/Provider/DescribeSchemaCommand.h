@@ -17,9 +17,15 @@
 #ifndef FDOPOSTGIS_DESCRIBESCHEMACOMMAND_H_INCLUDED
 #define FDOPOSTGIS_DESCRIBESCHEMACOMMAND_H_INCLUDED
 
+#include "Connection.h"
+
 //
 // Forward declarations
 //
+class FdoIConnection;
+class FdoITransaction;
+class FdoFeatureSchemaCollection;
+class FdoParameterValueCollection;
 
 
 namespace fdo { namespace postgis {
@@ -37,7 +43,7 @@ class DescribeSchemaCommand : public FdoIDescribeSchema
 public:
 
     /// Default constructor.
-    DescribeSchemaCommand();
+    DescribeSchemaCommand(Connection* conn);
 
     //
     // FdoICommand interface
@@ -99,6 +105,8 @@ protected:
 
 private:
 	
+    // The connection this command was created from.
+    FdoPtr<Connection> mConn;
 };
 
 }} // namespace fdo::postgis

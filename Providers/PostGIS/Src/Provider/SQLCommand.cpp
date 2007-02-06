@@ -32,7 +32,7 @@ SQLCommand::~SQLCommand()
 {
 }
 
-FdoString* SQLCommand::GetSQLStatement() const
+FdoString* SQLCommand::GetSQLStatement()
 {
     assert(!"NOT IMPLEMENTED");
     return NULL;

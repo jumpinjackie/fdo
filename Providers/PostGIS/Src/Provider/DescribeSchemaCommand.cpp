@@ -23,7 +23,8 @@
 
 namespace fdo { namespace postgis {
 
-DescribeSchemaCommand::DescribeSchemaCommand()
+DescribeSchemaCommand::DescribeSchemaCommand(Connection* conn)
+    : mConn(conn)
 {
 }
 

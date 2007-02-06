@@ -86,6 +86,7 @@ protected:
 
     // The connection this command was created from.
     FdoPtr<Connection> mConn;
+
 private:
 	
 }; // class Command

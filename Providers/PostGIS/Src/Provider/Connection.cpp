@@ -19,6 +19,17 @@
 #include "PostGisProvider.h"
 #include "Connection.h"
 #include "ConnectionInfo.h"
+#include "SQLCommand.h"
+#include "DeleteCommand.h"
+#include "InsertCommand.h"
+#include "SelectCommand.h"
+#include "UpdateCommand.h"
+#include "DescribeSchemaCommand.h"
+#include "GetSpatialContextsCommand.h"
+#include "ListDataStores.h"
+#include "CreateDataStore.h"
+#include "DestroyDataStore.h"
+
 #define FDOPOSTGIS_MESSAGE_DEFINE
 #include "../Message/inc/PostGisMessage.h"
 
@@ -199,8 +210,63 @@ FdoITransaction* Connection::BeginTransaction()
 
 FdoICommand* Connection::CreateCommand(FdoInt32 type)
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    FdoPtr<FdoICommand> cmd;
+
+    if (FdoConnectionState_Closed == GetConnectionState()
+        || FdoConnectionState_Pending == GetConnectionState())
+    {
+        throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_CONNECTION_INVALID,
+                                   "Connection is invalid."));
+    }
+
+    // Create command of requested type
+    switch(type)
+    {
+    case FdoCommandType_SQLCommand:
+        cmd = new SQLCommand(this);
+        break;
+    case FdoCommandType_Select:
+        cmd = new SelectCommand(this);
+        break;
+    case FdoCommandType_Insert:
+        cmd = new InsertCommand(this);
+        break;
+    case FdoCommandType_Update:
+        cmd = new UpdateCommand(this);
+        break;
+    case FdoCommandType_Delete:
+        cmd = new DeleteCommand(this);
+        break;
+    case FdoCommandType_DescribeSchema:
+        cmd = new DescribeSchemaCommand(this);
+        break;   
+    case FdoCommandType_DestroySchema:
+        //cmd = new DestroySchemaCommand(this);
+        assert(!"NOT IMPLEMENTED YET");
+        break;
+    case FdoCommandType_CreateDataStore:
+        cmd = new CreateDataStore(this);
+        break;
+    case FdoCommandType_DestroyDataStore:
+        cmd = new DestroyDataStore(this);
+        break;
+    case FdoCommandType_ListDataStores:
+        cmd = new ListDataStores(this);
+        break;
+    case FdoCommandType_GetSpatialContexts:
+        cmd = new GetSpatialContextsCommand(this);
+        break;
+    default:
+        {
+            FdoStringP cmdString(FdoCommonMiscUtil::FdoCommandTypeToString(type));
+            throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_COMMAND_NOT_SUPPORTED,
+                  "The command %1$ls is not supported.",
+                  static_cast<FdoString*>(cmdString)));
+        }
+    }
+
+    FDO_SAFE_ADDREF(cmd.p);
+    return cmd;
 }
 
 FdoPhysicalSchemaMapping* Connection::CreateSchemaMapping()
