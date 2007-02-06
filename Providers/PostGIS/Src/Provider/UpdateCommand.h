@@ -24,9 +24,11 @@
 // Forward declarations
 //
 class fdo::postgis::Connection;
+class FdoPropertyValueCollection;
+class FdoILockConflictReader;
+
 
 namespace fdo { namespace postgis {
-
 
 /// Implementation of interface of Update command which modifies features.
 /// The command updates instances of a given class that match specified criteria.
@@ -35,13 +37,22 @@ class UpdateCommand : public FeatureCommand<FdoIUpdate>
 {
 public:
 
+    /// Constructor creates update command associated with given connection.
     UpdateCommand(Connection* conn);
 
     //
-    // FdoIDisposable interface
+    // FdoIUpdate interface
     //
 
-    virtual void Dispose();
+    /// Get collection of names and values of properties to be updated by the command.
+    virtual FdoPropertyValueCollection* GetPropertyValues();
+ 	
+    /// Execute update command and return the number of affected instances of features.
+    virtual FdoInt32 Execute();
+ 	
+    /// Updating objects might result in lock conflicts if objects to be updated
+    /// are not exclusively locked for the user attempting to update the object. 
+    virtual FdoILockConflictReader* GetLockConflicts();
 
 protected:
 
@@ -51,7 +62,12 @@ protected:
 private:
 
     typedef FeatureCommand<FdoIUpdate> Base;
-	
+
+    //
+    // Data members
+    //
+
+    FdoPtr<FdoPropertyValueCollection> mPropertyValues;
 };
 
 }} // namespace fdo::postgis
