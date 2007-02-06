@@ -17,11 +17,13 @@
 #ifndef FDOPOSTGIS_PROPERTYDEFINITIONCOLLECTION_H_INCLUDED
 #define FDOPOSTGIS_PROPERTYDEFINITIONCOLLECTION_H_INCLUDED
 
+#include <Fdo.h>
 #include <PostGIS/Override/PropertyDefinition.h>
 
 namespace fdo { namespace postgis { namespace ov {
 
 /// \todo To be documented
+///
 class PropertyDefinitionCollection :
     public FdoPhysicalElementMappingCollection<PropertyDefinition>
 {
@@ -41,6 +43,7 @@ protected:
 
 private:
 
+    typedef FdoPhysicalElementMappingCollection<PropertyDefinition> Base;
 };
 
 }}} // namespace fdo::postgis::ov

@@ -15,9 +15,49 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 //
 #include "stdafx.h"
+#include <PostGIS/Override/PropertyDefinitionCollection.h>
+#include <PostGIS/Override/PropertyDefinition.h>
 
 #include <cassert>
 
 namespace fdo { namespace postgis { namespace ov {
+
+PropertyDefinitionCollection::PropertyDefinitionCollection()
+{
+}
+
+PropertyDefinitionCollection::PropertyDefinitionCollection(FdoPhysicalElementMapping* parent)
+    : Base(parent)
+{
+}
+
+PropertyDefinitionCollection::~PropertyDefinitionCollection()
+{
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoIDisposable interface
+///////////////////////////////////////////////////////////////////////////////
+
+void PropertyDefinitionCollection::Dispose()
+{
+    delete this;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// PropertyDefinitionCollection interface
+///////////////////////////////////////////////////////////////////////////////
+
+PropertyDefinitionCollection* PropertyDefinitionCollection::Create()
+{
+    PropertyDefinitionCollection* pdc = new PropertyDefinitionCollection();
+    return pdc;
+}
+
+PropertyDefinitionCollection* PropertyDefinitionCollection::Create(FdoPhysicalElementMapping* parent)
+{
+    PropertyDefinitionCollection* pdc = new PropertyDefinitionCollection(parent);
+    return pdc;
+}
 
 }}} // namespace fdo::postgis::ov
