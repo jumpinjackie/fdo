@@ -18,20 +18,63 @@
 
 #include "PostGisProvider.h"
 #include "FeatureReader.h"
+#include "Connection.h"
 
+#include <cassert>
 
 namespace fdo { namespace postgis {
 
-FeatureReader::FeatureReader()
+FeatureReader::FeatureReader(Connection* conn) : Base(conn)
 {
+    assert(!"TODO - Add missing parameters");
 }
 
 FeatureReader::~FeatureReader()
 {
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// FdoIDisposable interface
+///////////////////////////////////////////////////////////////////////////////
+
 void FeatureReader::Dispose()
 {
+    delete this;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoIFeatureReader interface
+///////////////////////////////////////////////////////////////////////////////
+
+FdoClassDefinition* FeatureReader::GetClassDefinition()
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
+}
+
+FdoInt32 FeatureReader::GetDepth()
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
+}
+
+const FdoByte* FeatureReader::GetGeometry(FdoString* propertyName, FdoInt32* count)
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
+}
+
+FdoByteArray* FeatureReader::GetGeometry(FdoString* propertyName)
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
+}
+
+FdoIFeatureReader* FeatureReader::GetFeatureObject(FdoString* propertyName)
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
 }
 
 }} // namespace fdo::postgis
