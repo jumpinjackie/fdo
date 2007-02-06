@@ -29,10 +29,11 @@
 #include "ListDataStores.h"
 #include "CreateDataStore.h"
 #include "DestroyDataStore.h"
-
+// Message
 #define FDOPOSTGIS_MESSAGE_DEFINE
 #include "../Message/inc/PostGisMessage.h"
-
+// Overrides
+#include <PostGIS/Override/PhysicalSchemaMapping.h>
 // std
 #include <cassert>
 
@@ -266,13 +267,16 @@ FdoICommand* Connection::CreateCommand(FdoInt32 type)
     }
 
     FDO_SAFE_ADDREF(cmd.p);
-    return cmd;
+    return cmd.p;
 }
 
 FdoPhysicalSchemaMapping* Connection::CreateSchemaMapping()
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    typedef fdo::postgis::ov::PhysicalSchemaMapping Mapping;
+    Mapping::Ptr psm = Mapping::Create();
+    
+    FDO_SAFE_ADDREF(psm.p);
+    return psm.p;
 }
 
 void Connection::SetConfiguration(FdoIoStream* configStream)
