@@ -20,6 +20,8 @@
 #include "SelectCommand.h"
 #include "Connection.h"
 
+#include <cassert>
+
 namespace fdo { namespace postgis {
 
 SelectCommand::SelectCommand(Connection* conn) : Base(conn)
@@ -30,8 +32,84 @@ SelectCommand::~SelectCommand()
 {
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// FdoIDisposable interface
+///////////////////////////////////////////////////////////////////////////////
+
 void SelectCommand::Dispose()
 {
+    delete this;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoIBaseSelect interface
+///////////////////////////////////////////////////////////////////////////////
+
+FdoIdentifierCollection* SelectCommand::GetPropertyNames()
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
+}
+ 	
+FdoIdentifierCollection* SelectCommand::GetOrdering()
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
+}
+
+void SelectCommand::SetOrderingOption(FdoOrderingOption option)
+{
+    assert(!"NOT IMPLEMENTED");
+}
+
+FdoOrderingOption SelectCommand::GetOrderingOption()
+{
+    assert(!"NOT IMPLEMENTED");
+    return FdoOrderingOption_Ascending;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoISelect interface
+///////////////////////////////////////////////////////////////////////////////
+
+FdoLockType SelectCommand::GetLockType()
+{
+    assert(!"NOT IMPLEMENTED");
+    return FdoLockType_Unsupported;
+}
+    
+void SelectCommand::SetLockType(FdoLockType value)
+{
+    assert(!"NOT IMPLEMENTED");
+}
+    
+FdoLockStrategy SelectCommand::GetLockStrategy()
+{
+    assert(!"NOT IMPLEMENTED");
+    return FdoLockStrategy_All;
+}
+    
+void SelectCommand::SetLockStrategy(FdoLockStrategy value)
+{
+    assert(!"NOT IMPLEMENTED");
+}
+    
+FdoIFeatureReader* SelectCommand::Execute()
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
+}
+    
+FdoIFeatureReader* SelectCommand::ExecuteWithLock()
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
+}
+    
+FdoILockConflictReader* SelectCommand::GetLockConflicts()
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
 }
 
 }} // namespace fdo::postgis
