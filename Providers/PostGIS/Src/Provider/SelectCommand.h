@@ -35,7 +35,11 @@ class SelectCommand : public FeatureCommand<FdoISelect>
 {
 public:
 
+    /// Constructor creates Select command for given connection.
     SelectCommand(Connection* conn);
+
+    /// Destructor.
+    virtual ~SelectCommand();
 
     //
     // FdoIDisposable interface
@@ -43,10 +47,48 @@ public:
 
     virtual void Dispose();
 
-protected:
+    //
+    // FdoIBaseSelect interface
+    //
 
-    /// Destructor.
-    virtual ~SelectCommand();
+    /// Get interface to collection of list of property names to return with the result.
+    virtual FdoIdentifierCollection* GetPropertyNames();
+ 
+ /// Get FdoIdentifierCollection that holds the list of order by property names.
+    virtual FdoIdentifierCollection* GetOrdering();
+
+    /// Set ordering option of the selection.
+    virtual void SetOrderingOption(FdoOrderingOption option);
+ 
+    /// Get ordering option. 
+    virtual FdoOrderingOption GetOrderingOption();
+
+    //
+    // FdoISelect interface
+    //
+
+    /// Get type of command locking (see "Locking Commands").
+    virtual FdoLockType GetLockType();
+    
+    /// Set type of command locking (see "Locking Commands").
+    virtual void SetLockType(FdoLockType value);
+    
+    /// Get command locking strategy enumerator (see "Locking Commands").
+    virtual FdoLockStrategy GetLockStrategy();
+    
+    /// Set command locking strategy enumerator (see "Locking Commands").
+    virtual void SetLockStrategy(FdoLockStrategy value);
+    
+    /// Execute select command and returns pointer to FdoIFeatureReader interface.
+    virtual FdoIFeatureReader* Execute();
+    
+    /// Executes select command and returns pointer to FdoIFeatureReader interface.
+    virtual FdoIFeatureReader* ExecuteWithLock();
+    
+    /// When executing the operation ExecuteWithLock lock conflicts may occur.
+    virtual FdoILockConflictReader* GetLockConflicts();
+
+protected:
 
 private:
 
