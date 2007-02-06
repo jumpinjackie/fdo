@@ -19,6 +19,13 @@
 
 #include <PostGIS/Override/ClassCollection.h>
 
+//
+// Forward declarations
+//
+class fdo::postgis::ov::ClassDefinition;
+class fdo::postgis::ov::ClassCollection;
+
+
 namespace fdo { namespace postgis { namespace ov {
 
 /// \todo To be documented
@@ -40,7 +47,12 @@ protected:
 
     PhysicalSchemaMapping();
     virtual ~PhysicalSchemaMapping();
-    virtual void Dispose(void);
+
+    //
+    // FdoIDisposable interface
+    //
+
+    virtual void Dispose();
 
 private:
 
