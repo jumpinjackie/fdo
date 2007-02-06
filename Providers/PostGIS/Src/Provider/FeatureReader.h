@@ -23,7 +23,7 @@
 // Forward declarations
 //
 class fdo::postgis::Connection;
-
+class FdoClassDefinition;
 
 namespace fdo { namespace postgis {
 

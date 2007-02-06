@@ -35,7 +35,7 @@ DeleteCommand::~DeleteCommand()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// FdoIDisposable interface
+// FdoIDelete interface
 ///////////////////////////////////////////////////////////////////////////////
 
 FdoInt32 DeleteCommand::Execute()
@@ -47,7 +47,7 @@ FdoInt32 DeleteCommand::Execute()
 FdoILockConflictReader* DeleteCommand::GetLockConflicts()
 {
     assert(!"NOT IMPLEMENTED");
-    return NULL;
+    return 0;
 }
 
 }} // namespace fdo::postgis
