@@ -17,26 +17,44 @@
 #ifndef FDOPOSTGIS_CLASSCOLLECTION_H_INCLUDED
 #define FDOPOSTGIS_CLASSCOLLECTION_H_INCLUDED
 
+#include <Fdo.h>
+#include <PostGIS/Override/ClassDefinition.h>
+
 namespace fdo { namespace postgis { namespace ov {
 
 /// \todo To be documented
-class ClassCollection : public FdoPhysicalElementMappingCollection<ClassCollection>
+class ClassCollection : public FdoPhysicalElementMappingCollection<ClassDefinition>
 {
 public:
     
     typedef FdoPtr<ClassCollection> Ptr;
 
+    /// Factory creates collection without parent specified.
     FDOPOSTGIS_API static ClassCollection* Create();
+
+    /// Factory creates collection with parent specified.
     FDOPOSTGIS_API static ClassCollection* Create(FdoPhysicalElementMapping* parent);
 
 protected:
 
+    /// Default constructor creates class collection with no parent.
     ClassCollection();
+
+    /// Constructor creates class collection with specified parent.
     ClassCollection(FdoPhysicalElementMapping* parent);
+
+    /// Destructor
     virtual ~ClassCollection();
+
+    //
+    // FdoIDisposable interface
+    //
+
     virtual void Dispose();
 
 private:
+
+    typedef FdoPhysicalElementMappingCollection<ClassDefinition> Base;
 
 };
 

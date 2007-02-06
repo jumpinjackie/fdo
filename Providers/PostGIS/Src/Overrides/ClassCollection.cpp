@@ -15,9 +15,47 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 //
 #include "stdafx.h"
+#include <PostGIS/Override/ClassCollection.h>
 
 #include <cassert>
 
 namespace fdo { namespace postgis { namespace ov {
+
+ClassCollection::ClassCollection()
+{
+}
+
+ClassCollection::ClassCollection(FdoPhysicalElementMapping* parent)
+    : Base(parent)
+{
+}
+
+ClassCollection::~ClassCollection()
+{
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoIDisposable interface
+///////////////////////////////////////////////////////////////////////////////
+
+void ClassCollection::Dispose()
+{
+    delete this;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// ClassCollection interface
+///////////////////////////////////////////////////////////////////////////////
+
+ClassCollection* ClassCollection::Create()
+{
+    return ClassCollection::Create(NULL);
+}
+
+ClassCollection* ClassCollection::Create(FdoPhysicalElementMapping* parent)
+{
+    ClassCollection* col = new ClassCollection(parent);
+    return col;
+}
 
 }}} // namespace fdo::postgis::ov

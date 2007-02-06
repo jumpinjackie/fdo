@@ -27,17 +27,24 @@ public:
     
     typedef FdoPtr<ColumnDefinition> Ptr;
 
+    /// Factory creates instance of column definition object.
     FDOPOSTGIS_API static ColumnDefinition* Create();
 
 protected:
 
     ColumnDefinition();
     virtual ~ColumnDefinition();
+
+    //
+    // FdoIDisposable interface
+    //
+
     virtual void Dispose();
 
 private:
 
     typedef FdoPhysicalElementMapping BaseType;
+
 };
 
 }}} // namespace fdo::postgis::ov

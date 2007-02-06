@@ -15,9 +15,53 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 //
 #include "stdafx.h"
+#include <PostGIS/Override/PhysicalSchemaMapping.h>
+#include "../Provider/PostGisProvider.h"
 
 #include <cassert>
 
 namespace fdo { namespace postgis { namespace ov {
+
+PhysicalSchemaMapping::PhysicalSchemaMapping()
+{
+}
+
+PhysicalSchemaMapping::~PhysicalSchemaMapping()
+{
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoIDisposable interface
+///////////////////////////////////////////////////////////////////////////////
+
+void PhysicalSchemaMapping::Dispose()
+{
+    delete this;
+}
+
+PhysicalSchemaMapping* PhysicalSchemaMapping::Create()
+{
+    PhysicalSchemaMapping* psm = new PhysicalSchemaMapping();
+    return psm;
+}
+
+FdoString* PhysicalSchemaMapping::GetProvider()
+{
+    ///return fdo::postgis::ProviderName;
+    assert(!"NOT IMPLEMENTED");
+    return 0;
+}
+
+ClassCollection* PhysicalSchemaMapping::GetClasses() const
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
+}
+
+ClassDefinition* PhysicalSchemaMapping::FindByClassName(FdoString* name)
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
+}
 
 }}} // namespace fdo::postgis::ov
