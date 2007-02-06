@@ -24,6 +24,7 @@
 #include <FdoCommon.h>
 #include <FdoSpatial.h>
 #include <FdoGeometry.h>
+#include <FdoCommonMiscUtil.h>
 #include <FdoCommonConnPropDictionary.h>
 
 // PostGIS Messages
