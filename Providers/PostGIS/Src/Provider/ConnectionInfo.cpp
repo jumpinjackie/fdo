@@ -19,7 +19,9 @@
 #include "PostGisProvider.h"
 #include "ConnectionInfo.h"
 #include "Connection.h"
-
+// FDO
+#include <FdoCommonStringUtil.h>
+// std
 #include <cassert>
 
 namespace fdo { namespace postgis {
@@ -81,9 +83,42 @@ FdoIConnectionPropertyDictionary* ConnectionInfo::GetConnectionProperties()
 {
     if (NULL == mPropertyDict)
     {
-        mPropertyDict = new ::FdoCommonConnPropDictionary(mConn);
+        mPropertyDict = new FdoCommonConnPropDictionary(mConn);
+
+        char* name = NULL;
+        FdoPtr<ConnectionProperty> prop;
+
+        // Username: isRequired
+        wide_to_multibyte(name, PropertyUsername);
+        prop = new ConnectionProperty(PropertyUsername,
+               NlsMsgGet(MSG_POSTGIS_CONNECTION_PROPERTY_USERNAME, name),
+               L"", true, false, false, false, false, false, false, 0, NULL);
+        mPropertyDict->AddProperty(prop);
+
+        // Password: isRequired + isProtected
+        wide_to_multibyte(name, PropertyPassword);
+        prop = new ConnectionProperty(PropertyPassword,
+               NlsMsgGet(MSG_POSTGIS_CONNECTION_PROPERTY_PASSWORD, name),
+               L"", true, true, false, false, false, false, false, 0, NULL);
+        mPropertyDict->AddProperty(prop);
+
+        // Service: isRequired
+        wide_to_multibyte(name, PropertyService);
+        prop = new ConnectionProperty(PropertyService,
+               NlsMsgGet(MSG_POSTGIS_CONNECTION_PROPERTY_SERVICE_NAME, name),
+               L"", true, false, false, true, true, false, false, 0, NULL);
+        mPropertyDict->AddProperty(prop);
+
+        // Datastore: isEnumerable + isDatastoreName
+        wide_to_multibyte(name, PropertyDatastore);
+        prop = new ConnectionProperty(PropertyDatastore,
+               NlsMsgGet(MSG_POSTGIS_CONNECTION_PROPERTY_DATASTORE, name),
+               L"", false, false, true, false, false, true, false, 0, NULL);
+        mPropertyDict->AddProperty(prop);
     }
-    return NULL;
+
+    FDO_SAFE_ADDREF(mPropertyDict.p);
+    return mPropertyDict;
 }
 
 FdoProviderDatastoreType ConnectionInfo::GetProviderDatastoreType()

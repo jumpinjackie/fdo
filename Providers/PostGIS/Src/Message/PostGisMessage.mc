@@ -199,27 +199,27 @@ TemporaryFileLocation
 .
 
 MessageId=3003
-SymbolicName=M_KGORA_CONNECTION_PROPERTY_SERVICE_NAME
+SymbolicName=MSG_POSTGIS_CONNECTION_PROPERTY_SERVICE_NAME
 Language=English
 ServiceName
 .
 
 MessageId=3004
-SymbolicName=M_KGORA_CONNECTION_PROPERTY_USERNAME
+SymbolicName=MSG_POSTGIS_CONNECTION_PROPERTY_USERNAME
 Language=English
-ServiceName
+UserName
 .
 
 MessageId=3005
-SymbolicName=M_KGORA_CONNECTION_PROPERTY_PASSWORD
+SymbolicName=MSG_POSTGIS_CONNECTION_PROPERTY_PASSWORD
 Language=English
-ServiceName
+Password
 .
 
 MessageId=3006
-SymbolicName=M_KGORA_CONNECTION_PROPERTY_ORACLE_SCHEMA
+SymbolicName=MSG_POSTGIS_CONNECTION_PROPERTY_DATASTORE
 Language=English
-OracleSchema
+DataStore
 .
 
 
