@@ -17,6 +17,8 @@
 #ifndef FDOPOSTGIS_PROPERTYDEFINITION_H_INCLUDED
 #define FDOPOSTGIS_PROPERTYDEFINITION_H_INCLUDED
 
+#include <Fdo.h>
+#include <PostGIS/Override/ColumnDefinition.h>
 
 namespace fdo { namespace postgis { namespace ov {
 
@@ -29,10 +31,18 @@ public:
 
     FDOPOSTGIS_API static PropertyDefinition* Create();
 
+    FDOPOSTGIS_API ColumnDefinition* GetColumn() const;
+    FDOPOSTGIS_API void SetColumn(ColumnDefinition * columnDef);
+
 protected:
 
     PropertyDefinition();
     virtual ~PropertyDefinition();
+
+    //
+    // FdoIDisposable interface
+    //
+
     virtual void Dispose();
 
 private:

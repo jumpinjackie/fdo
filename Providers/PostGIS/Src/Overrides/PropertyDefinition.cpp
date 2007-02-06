@@ -16,8 +16,50 @@
 //
 #include "stdafx.h"
 
+#include <PostGIS/Override/ColumnDefinition.h>
+#include <PostGIS/Override/PropertyDefinition.h>
+
 #include <cassert>
 
 namespace fdo { namespace postgis { namespace ov {
+
+PropertyDefinition::PropertyDefinition()
+{
+}
+
+PropertyDefinition::~PropertyDefinition()
+{
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoIDisposable interface
+///////////////////////////////////////////////////////////////////////////////
+
+void PropertyDefinition::Dispose()
+{
+    delete this;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// ClassDefinition interface
+///////////////////////////////////////////////////////////////////////////////
+
+PropertyDefinition* PropertyDefinition::Create()
+{
+    PropertyDefinition* def = new PropertyDefinition();
+    return def;
+}
+
+ColumnDefinition* PropertyDefinition::GetColumn() const
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
+}
+
+void PropertyDefinition::SetColumn(ColumnDefinition * columnDef)
+{
+    assert(!"NOT IMPLEMENTED");
+}
+
 
 }}} // namespace fdo::postgis::ov
