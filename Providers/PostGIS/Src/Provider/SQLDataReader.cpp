@@ -18,11 +18,13 @@
 
 #include "PostGisProvider.h"
 #include "SQLDataReader.h"
+#include "Connection.h"
 
+#include <cassert>
 
 namespace fdo { namespace postgis {
 
-SQLDataReader::SQLDataReader()
+SQLDataReader::SQLDataReader(Connection* conn) : mConn(conn)
 {
 }
 
@@ -30,9 +32,130 @@ SQLDataReader::~SQLDataReader()
 {
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// FdoIDisposable interface
+///////////////////////////////////////////////////////////////////////////////
+
 void SQLDataReader::Dispose()
 {
     delete this;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoISQLDataReader interface
+///////////////////////////////////////////////////////////////////////////////
+
+FdoInt32 SQLDataReader::GetColumnCount()
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
+}
+
+FdoString* SQLDataReader::GetColumnName(FdoInt32 index)
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
+}
+
+FdoDataType SQLDataReader::GetColumnType(FdoString* columnName)
+{
+    assert(!"NOT IMPLEMENTED");
+    return FdoDataType();
+}
+
+FdoPropertyType SQLDataReader::GetPropertyType(FdoString* columnName)
+{
+    assert(!"NOT IMPLEMENTED");
+    return FdoPropertyType_DataProperty; // dummy value
+}
+
+bool SQLDataReader::GetBoolean(FdoString* columnName)
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
+}
+
+FdoByte SQLDataReader::GetByte(FdoString* columnName)
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
+}
+
+FdoDateTime SQLDataReader::GetDateTime(FdoString* columnName)
+{
+    assert(!"NOT IMPLEMENTED");
+    return FdoDateTime();
+}
+
+double SQLDataReader::GetDouble(FdoString* columnName)
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
+}
+
+FdoInt16 SQLDataReader::GetInt16(FdoString* columnName)
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
+}
+
+FdoInt32 SQLDataReader::GetInt32(FdoString* columnName)
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
+}
+
+FdoInt64 SQLDataReader::GetInt64(FdoString* columnName)
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
+}
+
+float SQLDataReader::GetSingle(FdoString* columnName)
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
+}
+
+FdoString* SQLDataReader::GetString(FdoString* columnName)
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
+}
+
+FdoLOBValue* SQLDataReader::GetLOB(FdoString* columnName)
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
+}
+
+FdoIStreamReader* SQLDataReader::GetLOBStreamReader(wchar_t const* columnName)
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
+}
+
+bool SQLDataReader::IsNull(FdoString* columnName)
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
+}
+
+FdoByteArray* SQLDataReader::GetGeometry(FdoString* columnName)
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
+}
+
+bool SQLDataReader::ReadNext()
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
+}
+
+void SQLDataReader::Close()
+{
+    assert(!"NOT IMPLEMENTED");
 }
 
 }} // namespace fdo::postgis
