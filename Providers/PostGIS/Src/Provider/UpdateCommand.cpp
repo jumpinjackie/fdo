@@ -20,6 +20,8 @@
 #include "UpdateCommand.h"
 #include "Connection.h"
 
+#include <cassert>
+
 namespace fdo { namespace postgis {
 
 UpdateCommand::UpdateCommand(Connection* conn) : Base(conn)
@@ -30,9 +32,26 @@ UpdateCommand::~UpdateCommand()
 {
 }
 
-void UpdateCommand::Dispose()
+///////////////////////////////////////////////////////////////////////////////
+// FdoIUpdate interface
+///////////////////////////////////////////////////////////////////////////////
+
+FdoPropertyValueCollection* UpdateCommand::GetPropertyValues()
 {
-    delete this;
+    assert(!"NOT IMPLEMENTED");
+    return 0;
+}
+ 	
+FdoInt32 UpdateCommand::Execute()
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
+}
+ 	
+FdoILockConflictReader* UpdateCommand::GetLockConflicts()
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
 }
 
 }} // namespace fdo::postgis
