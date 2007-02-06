@@ -114,7 +114,7 @@ Language=English
 The connection property '%1$ls' was not found.
 .
 MessageId=2008
-SymbolicName=M_KGORA_CONNECTION_ALREADY_OPEN
+SymbolicName=MSG_POSTGIS_CONNECTION_ALREADY_OPEN
 Language=English
 The connection is already open.
 .

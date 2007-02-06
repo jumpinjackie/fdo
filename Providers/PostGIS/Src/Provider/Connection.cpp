@@ -22,7 +22,8 @@
 #define FDOPOSTGIS_MESSAGE_DEFINE
 #include "../Message/inc/PostGisMessage.h"
 
-#include <cassert>  
+// std
+#include <cassert>
 
 // External access to connection for client services
 extern "C" FDOPOSTGIS_API FdoIConnection* CreateConnection()
@@ -32,12 +33,16 @@ extern "C" FDOPOSTGIS_API FdoIConnection* CreateConnection()
 
 namespace fdo { namespace postgis {
 
-Connection::Connection()
+Connection::Connection() :
+    mConnInfo(NULL),
+    mConnState(FdoConnectionState_Closed),
+    mPgConn(NULL)
 {
 }
 
 Connection::~Connection()
 {
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -103,50 +108,87 @@ FdoIGeometryCapabilities* Connection::GetGeometryCapabilities()
 
 FdoString* Connection::GetConnectionString()
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    return mConnString;
 }
 
 void Connection::SetConnectionString(FdoString* value)
 {
-    assert(!"NOT IMPLEMENTED");
+    if (FdoConnectionState_Closed == GetConnectionState()
+        || FdoConnectionState_Pending == GetConnectionState())
+    {
+        // Assign new connection string
+        mConnString = value;
+
+        // Update the connection property dictionary
+        FdoPtr<ConnectionInfo> info = static_cast<ConnectionInfo*>(GetConnectionInfo());
+        
+        FdoPtr<FdoCommonConnPropDictionary> dict = 
+            static_cast<FdoCommonConnPropDictionary*>(info->GetConnectionProperties());
+        dict->UpdateFromConnectionString(mConnString);
+    }
+    else
+    {
+        throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_CONNECTION_ALREADY_OPEN,
+                                   "The connection is already open."));
+    }
 }
 
 FdoIConnectionInfo* Connection::GetConnectionInfo()
 {
-    if (NULL == mConnectionInfo)
-        mConnectionInfo = new ConnectionInfo(this);
+    if (NULL == mConnInfo)
+        mConnInfo = new ConnectionInfo(this);
     
-    FDO_SAFE_ADDREF(mConnectionInfo.p);
+    FDO_SAFE_ADDREF(mConnInfo.p);
     return NULL;
 }
 
 FdoConnectionState Connection::GetConnectionState()
 {
-    assert(!"NOT IMPLEMENTED");
-    return FdoConnectionState_Closed;
+    return mConnState;
 }
 
 FdoInt32 Connection::GetConnectionTimeout()
 {
-    assert(!"NOT IMPLEMENTED");
+    assert(!"NOT SUPPORTED");
     return 0;
 }
 
 void Connection::SetConnectionTimeout(FdoInt32 value)
 {
-    assert(!"NOT IMPLEMENTED");
+    assert(!"NOT SUPPORTED");
 }
 
 FdoConnectionState Connection::Open()
 {
-    assert(!"NOT IMPLEMENTED");
-    return FdoConnectionState_Closed;
+    if (FdoConnectionState_Open == GetConnectionState())
+    {
+        throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_CONNECTION_ALREADY_OPEN,
+                                   "The connection is already open."));
+    }
+
+    FdoPtr<FdoIConnectionInfo> info = GetConnectionInfo();
+    FdoPtr<FdoIConnectionPropertyDictionary> dict = info->GetConnectionProperties();
+    
+    FdoStringP username = dict->GetProperty(PropertyUsername);
+    FdoStringP password = dict->GetProperty(PropertyPassword);
+    FdoStringP service = dict->GetProperty(PropertyService);
+    FdoStringP datastore = dict->GetProperty(PropertyDatastore);
+
+
+    // Establish connection with PostgreSQL database
+    //mPgConn = PQsetdbLogin(pghost, pgport, pgoptions, pgtty, dbname, pglogin, pgpwd);
+
+    return mConnState;
 }
 
 void Connection::Close()
 {
-    assert(!"NOT IMPLEMENTED");
+    PQfinish(mPgConn);
+
+    // Must not be used again after PQfinish has been called
+    mPgConn = NULL;
+
+    mConnState = FdoConnectionState_Closed;
 }
 
 FdoITransaction* Connection::BeginTransaction()

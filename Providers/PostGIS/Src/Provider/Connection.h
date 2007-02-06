@@ -19,6 +19,9 @@
 
 #include <Fdo/Connections/IConnection.h>
 
+// PostgreSQL client library
+#include <libpq-fe.h>
+
 namespace fdo { namespace postgis {
 
 /// Implementation of connection interface for PostGIS provider.
@@ -129,8 +132,16 @@ private:
     // Connection information object.
     // It's of lazy-creation object, delayed until first request,
     // on GetConnectionInfo() call.
-    FdoPtr<FdoIConnectionInfo> mConnectionInfo;
+    FdoPtr<FdoIConnectionInfo> mConnInfo;
 
+    // Connection string.
+    FdoStringP mConnString;
+
+    // Connection state flag (closed, pending, open).
+    FdoConnectionState mConnState;
+
+    // Pointer to PostgreSQL connection object of current session.
+    PGconn* mPgConn;
 
 };
 
