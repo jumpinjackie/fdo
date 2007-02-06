@@ -22,12 +22,13 @@
 //
 // Forward declarations
 //
-class fdo::postgis::Connection;
 class FdoIDataStoreReader;
 
 
 namespace fdo { namespace postgis {
 
+// Forward declarations of internal types
+class Connection;
 
 /// Implementation of list datastores command from a particular
 /// PostgreSQL instance.

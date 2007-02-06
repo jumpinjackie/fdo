@@ -22,12 +22,13 @@
 //
 // Forward declarations
 //
-class fdo::postgis::Connection;
 class FdoIDataStorePropertyDictionary;
 
 
 namespace fdo { namespace postgis {
 
+// Forward declarations of internal types
+class Connection;
 
 /// Implementation of destroy command that can be used to remove
 /// an existing datastore from a particular PostgreSQL instance.

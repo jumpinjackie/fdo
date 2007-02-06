@@ -23,7 +23,6 @@
 //
 // Forward declarations
 //
-class fdo::postgis::Connection;
 class FdoIdentifier;
 class FdoIFeatureReader;
 class FdoPropertyValueCollection;
@@ -31,6 +30,9 @@ class FdoBatchParameterValueCollection;
 
 
 namespace fdo { namespace postgis {
+
+// Forward declarations of internal types
+class Connection;
 
 /// Implementation of interface of Insert command for PostGIS provider.
 /// The Insert command inserts a new instance of a given class to the datastore.

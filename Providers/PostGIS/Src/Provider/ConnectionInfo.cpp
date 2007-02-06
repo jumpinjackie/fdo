@@ -18,6 +18,7 @@
 
 #include "PostGisProvider.h"
 #include "ConnectionInfo.h"
+#include "Connection.h"
 
 #include <cassert>
 

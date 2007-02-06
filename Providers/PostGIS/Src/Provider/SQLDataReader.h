@@ -17,18 +17,19 @@
 #ifndef FDOPOSTGIS_SQLDATAREADER_H_INCLUDED
 #define FDOPOSTGIS_SQLDATAREADER_H_INCLUDED
 
-#include "Connection.h"
 #include <Fdo/Commands/Sql/ISQLDataReader.h>
 
 //
 // Forward declarations
 //
-class fdo::postgis::Connection;
 class FdoLOBValue;
 class FdoIStreamReader;
 
 
 namespace fdo { namespace postgis {
+
+// Forward declarations of internal types
+class Connection;
 
 /// Implementation of interface providing forward-only and read-only iterator
 /// for reading relational table data.

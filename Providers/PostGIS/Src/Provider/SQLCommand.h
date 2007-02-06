@@ -23,13 +23,16 @@
 //
 // Forward declarations
 //
-class fdo::postgis::Connection;
 class FdoISQLDataReader;
 
 namespace fdo { namespace postgis {
 
+// Forward declarations of internal types
+class Connection;
 
-/// Implementation of ...
+/// Implementation of SQL command interface.
+/// This command is used for execution of SQL statement against
+/// currently connected PostgreSQL/PostGIS datastore.
 ///
 class SQLCommand : public Command<FdoISQLCommand>
 {

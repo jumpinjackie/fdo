@@ -23,12 +23,14 @@
 //
 // Forward declarations
 //
-class fdo::postgis::Connection;
 class FdoPropertyValueCollection;
 class FdoILockConflictReader;
 
 
 namespace fdo { namespace postgis {
+
+// Forward declarations of internal types
+class Connection;
 
 /// Implementation of interface of Update command which modifies features.
 /// The command updates instances of a given class that match specified criteria.
