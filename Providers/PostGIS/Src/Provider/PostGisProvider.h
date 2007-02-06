@@ -26,6 +26,8 @@
 #include <FdoGeometry.h>
 #include <FdoCommonConnPropDictionary.h>
 
+// PostGIS Messages
+#include "../Message/inc/PostGisMessage.h"
 
 /// \brief
 /// The main top-level namespace providing context for all FDO items.
@@ -46,10 +48,11 @@ namespace postgis
 // General descriptive information about PostGIS Provier
 //
 extern FdoString* ProviderName;
-extern FdoString* ProviderDisplayName;
-extern FdoString* ProviderDescription;
 extern FdoString* ProviderVersion;
 extern FdoString* FdoVersion;
+
+extern char const* ProviderDisplayName;
+extern char const* ProviderDescription;
 
 }} // namespace fdo::postgis
 

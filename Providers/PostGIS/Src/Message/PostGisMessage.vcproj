@@ -177,50 +177,52 @@
 	</References>
 	<Files>
 		<Filter
-			Name="Source Files"
-			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
-			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
-			>
-		</Filter>
-		<Filter
-			Name="Header Files"
-			Filter="h;hpp;hxx;hm;inl;inc;xsd"
-			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
+			Name="Generated"
 			>
 			<File
-				RelativePath=".\PostGisMessageStatic.h"
+				RelativePath=".\inc\PostGisMessage.h"
 				>
 			</File>
-		</Filter>
-		<Filter
-			Name="Resource Files"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
-			>
 			<File
-				RelativePath=".\PostGisMessage.mc"
+				RelativePath=".\PostGisMessage.rc"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
+					ExcludedFromBuild="true"
 					>
 					<Tool
-						Name="VCCustomBuildTool"
-						Description="Performing Custom Build Step:  Creating PostGisMessage.h and PostGisMessage.rc from PostGisMessage.mc"
-						CommandLine="echo Compiling PostGIS message definition file&#x0D;&#x0A;mc -U -h inc\ -r .\ ./PostGisMessage.mc&#x0D;&#x0A;&#x0D;&#x0A;echo Generating RC script with PostGIS messages&#x0D;&#x0A;ren .\PostGisMessage.rc PostGisMessageDynamic.rc&#x0D;&#x0A;copy .\PostGisMessageStatic.rc+.\PostGisMessageDynamic.rc .\PostGisMessage.rc&#x0D;&#x0A;del .\PostGisMessageDynamic.rc&#x0D;&#x0A;&#x0D;&#x0A;echo Generating HEADER script with PostGIS messages&#x0D;&#x0A;ren inc\PostGisMessage.h PostGisMessageDynamic.h&#x0D;&#x0A;copy PostGisMessageStatic.h+inc\PostGisMessageDynamic.h inc\PostGisMessage.h&#x0D;&#x0A;del inc\PostGisMessageDynamic.h&#x0D;&#x0A;"
-						AdditionalDependencies="PostGisMessage.mc;PostGisMessageStatic.h"
-						Outputs="inc\PostGisMessage.h;.\PostGisMessage.rc"
+						Name="VCResourceCompilerTool"
 					/>
 				</FileConfiguration>
 			</File>
-			<File
-				RelativePath=".\PostGisMessageStatic.rc"
-				>
-			</File>
-			<File
-				RelativePath=".\resource.h"
-				>
-			</File>
 		</Filter>
+		<File
+			RelativePath=".\PostGisMessage.mc"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Performing Custom Build Step:  Creating PostGisMessage.h and PostGisMessage.rc from PostGisMessage.mc"
+					CommandLine="echo *** Compiling PostGIS message definition file&#x0D;&#x0A;mc -U -h inc\ -r .\ ./PostGisMessage.mc&#x0D;&#x0A;&#x0D;&#x0A;echo *** Generating RC script with PostGIS messages&#x0D;&#x0A;ren .\PostGisMessage.rc PostGisMessageDynamic.rc&#x0D;&#x0A;copy .\PostGisMessageStatic.rc+.\PostGisMessageDynamic.rc .\PostGisMessage.rc&#x0D;&#x0A;del .\PostGisMessageDynamic.rc&#x0D;&#x0A;&#x0D;&#x0A;echo *** Generating HEADER script with PostGIS messages&#x0D;&#x0A;ren inc\PostGisMessage.h PostGisMessageDynamic.h&#x0D;&#x0A;copy PostGisMessageStatic.h+inc\PostGisMessageDynamic.h inc\PostGisMessage.h&#x0D;&#x0A;del inc\PostGisMessageDynamic.h&#x0D;&#x0A;"
+					AdditionalDependencies="PostGisMessage.mc;PostGisMessageStatic.h"
+					Outputs="inc\PostGisMessage.h;.\PostGisMessage.rc"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\PostGisMessageStatic.h"
+			>
+		</File>
+		<File
+			RelativePath=".\PostGisMessageStatic.rc"
+			>
+		</File>
+		<File
+			RelativePath=".\resource.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

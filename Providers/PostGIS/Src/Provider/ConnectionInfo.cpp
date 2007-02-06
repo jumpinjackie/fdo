@@ -24,12 +24,12 @@
 
 namespace fdo { namespace postgis {
 
-ConnectionInfo::ConnectionInfo() : mConnection(NULL)
+ConnectionInfo::ConnectionInfo() : mConn(NULL)
 {
 }
 
-ConnectionInfo::ConnectionInfo(Connection* connection) :
-    mConnection(connection)
+ConnectionInfo::ConnectionInfo(Connection* conn) :
+    mConn(conn)
 {
 }
 
@@ -52,49 +52,47 @@ void ConnectionInfo::Dispose()
 
 FdoString* ConnectionInfo::GetProviderName()
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    return ProviderName;
 }
 
 FdoString* ConnectionInfo::GetProviderDisplayName()
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    return NlsMsgGet(MSG_POSTGIS_PROVIDER_DISPLAY_NAME,
+                     const_cast<char*>(ProviderDisplayName));
 }
 
 FdoString* ConnectionInfo::GetProviderDescription()
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    return NlsMsgGet(MSG_POSTGIS_PROVIDER_DESCRIPTION,
+                     const_cast<char*>(ProviderDescription));
 }
 
 FdoString* ConnectionInfo::GetProviderVersion()
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    return ProviderVersion;
 }
 
 FdoString* ConnectionInfo::GetFeatureDataObjectsVersion()
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    return FdoVersion;
 }
 
 FdoIConnectionPropertyDictionary* ConnectionInfo::GetConnectionProperties()
 {
-    assert(!"NOT IMPLEMENTED");
+    if (NULL == mPropertyDict)
+    {
+        mPropertyDict = new ::FdoCommonConnPropDictionary(mConn);
+    }
     return NULL;
 }
 
 FdoProviderDatastoreType ConnectionInfo::GetProviderDatastoreType()
 {
-    assert(!"NOT IMPLEMENTED");
     return FdoProviderDatastoreType_DatabaseServer;
 }
 
 FdoStringCollection* ConnectionInfo::GetDependentFileNames()
 {
-    assert(!"NOT IMPLEMENTED");
     return NULL;
 }
 

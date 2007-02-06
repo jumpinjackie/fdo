@@ -44,9 +44,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
 namespace fdo { namespace postgis {
 
 FdoString* ProviderName = L"OSGeo.PostGIS.1.0";
-FdoString* ProviderDisplayName = L"OSGeo FDO Provider for PostGIS";
-FdoString* ProviderDescription = L"Read/write access to PostGIS-based data store. Supports spatial data types and spatial query operations.";
 FdoString* ProviderVersion = L"1.0.0.0";
 FdoString* FdoVersion = L"3.2.0.0";
+
+char const* ProviderDisplayName = "OSGeo FDO Provider for PostGIS";
+char const* ProviderDescription = "Read/write access to PostGIS-based data store. Supports spatial data types and spatial query operations.";
 
 }} // namespace fdo::postgis

@@ -45,5 +45,4 @@
 // Windows Header Files
 #include <windows.h>
 
-
 #endif // POSTGISPROVIDER_STDAFX_H_INCLUDED

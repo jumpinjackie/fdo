@@ -19,6 +19,8 @@
 #include "PostGisProvider.h"
 #include "Connection.h"
 #include "ConnectionInfo.h"
+#define FDOPOSTGIS_MESSAGE_DEFINE
+#include "../Message/inc/PostGisMessage.h"
 
 #include <cassert>  
 
