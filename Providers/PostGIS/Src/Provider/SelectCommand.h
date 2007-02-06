@@ -20,12 +20,10 @@
 #include "FeatureCommand.h"
 #include <Fdo/Commands/Feature/ISelect.h>
 
-//
-// Forward declarations
-//
-class fdo::postgis::Connection;
-
 namespace fdo { namespace postgis {
+
+// Forward declarations of internal types
+class Connection;
 
 /// Implementation of Select command interface for PostGIS provider.
 /// The Select command queries for features of a given class that

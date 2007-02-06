@@ -22,10 +22,12 @@
 //
 // Forward declarations
 //
-class fdo::postgis::Connection;
 class FdoClassDefinition;
 
 namespace fdo { namespace postgis {
+
+// Forward declarations of internal types
+class Connection;
 
 /// Implementation of forward-only and read-only iterator for reading
 /// feature data.
