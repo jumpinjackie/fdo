@@ -79,10 +79,10 @@ public:
     /// Set command locking strategy enumerator (see "Locking Commands").
     virtual void SetLockStrategy(FdoLockStrategy value);
     
-    /// Execute select command and returns pointer to FdoIFeatureReader interface.
+    /// Execute select command and return pointer to FdoIFeatureReader interface.
     virtual FdoIFeatureReader* Execute();
     
-    /// Executes select command and returns pointer to FdoIFeatureReader interface.
+    /// Executes select command and return pointer to FdoIFeatureReader interface.
     virtual FdoIFeatureReader* ExecuteWithLock();
     
     /// When executing the operation ExecuteWithLock lock conflicts may occur.

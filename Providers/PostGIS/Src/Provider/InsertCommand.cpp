@@ -19,6 +19,8 @@
 #include "InsertCommand.h"
 #include "Connection.h"
 
+#include <cassert>
+
 namespace fdo { namespace postgis {
 
 InsertCommand::InsertCommand(Connection* conn) : Base(conn)
@@ -27,6 +29,44 @@ InsertCommand::InsertCommand(Connection* conn) : Base(conn)
 
 InsertCommand::~InsertCommand()
 {
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoIInsert interface
+///////////////////////////////////////////////////////////////////////////////
+
+FdoIdentifier* InsertCommand::GetFeatureClassName()
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
+}
+    
+void InsertCommand::SetFeatureClassName(FdoIdentifier* value)
+{
+    assert(!"NOT IMPLEMENTED");
+}
+    
+void InsertCommand::SetFeatureClassName(FdoString* value)
+{
+    assert(!"NOT IMPLEMENTED");
+}
+    
+FdoPropertyValueCollection* InsertCommand::GetPropertyValues()
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
+}
+    
+FdoBatchParameterValueCollection* InsertCommand::GetBatchParameterValues()
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
+}
+    
+FdoIFeatureReader* InsertCommand::Execute()
+{
+    assert(!"NOT IMPLEMENTED");
+    return 0;
 }
 
 }} // namespace fdo::postgis

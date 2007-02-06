@@ -24,6 +24,11 @@
 // Forward declarations
 //
 class fdo::postgis::Connection;
+class FdoIdentifier;
+class FdoIFeatureReader;
+class FdoPropertyValueCollection;
+class FdoBatchParameterValueCollection;
+
 
 namespace fdo { namespace postgis {
 
@@ -36,6 +41,30 @@ public:
 
     /// Create command for given connection instance.
     InsertCommand(Connection* conn);
+
+    //
+    // FdoIInsert interface
+    //
+
+    /// Get name of the class to be operated upon as an FdoIdentifier.
+    virtual FdoIdentifier* GetFeatureClassName();
+    
+    /// Set name of the class to be operated upon as an FdoIdentifier.
+    virtual void SetFeatureClassName(FdoIdentifier* value);
+    
+    /// Set name of the class to be operated upon as an FdoIdentifier.
+    virtual void SetFeatureClassName(FdoString* value);
+    
+    /// Get collection of names and values of properties for the instance to be inserted.
+    virtual FdoPropertyValueCollection* GetPropertyValues();
+    
+    /// Get collection of parameters dedicated for batch insert commands.
+    /// It can be used for optimized batch inserts of multiple features
+    /// with a single insert command.
+    virtual FdoBatchParameterValueCollection* GetBatchParameterValues();
+    
+    /// Execute the insert command and return pointer to FdoIFeatureReader interface.. 
+    virtual FdoIFeatureReader* Execute();
 
 protected:
 
