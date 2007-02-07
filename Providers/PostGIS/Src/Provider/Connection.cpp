@@ -36,6 +36,15 @@
 #include <PostGIS/Override/PhysicalSchemaMapping.h>
 // std
 #include <cassert>
+#include <string>
+#include <vector>
+// boost
+#include <boost/tuple/tuple.hpp>
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/classification.hpp>
+// PostgreSQL client library
+#include <libpq-fe.h>
+
 
 // External access to connection for client services
 extern "C" FDOPOSTGIS_API FdoIConnection* CreateConnection()
@@ -181,16 +190,29 @@ FdoConnectionState Connection::Open()
     FdoPtr<FdoIConnectionInfo> info = GetConnectionInfo();
     FdoPtr<FdoIConnectionPropertyDictionary> dict = info->GetConnectionProperties();
     
-    FdoStringP username = dict->GetProperty(PropertyUsername);
-    FdoStringP password = dict->GetProperty(PropertyPassword);
-    FdoStringP service = dict->GetProperty(PropertyService);
-    FdoStringP datastore = dict->GetProperty(PropertyDatastore);
-
-
     // Establish connection with PostgreSQL database
-    //mPgConn = PQsetdbLogin(pghost, pgport, pgoptions, pgtty, dbname, pglogin, pgpwd);
+    pgconn_params_t pgParams = GetPgConnectionParams(dict);
 
-    return mConnState;
+    mPgConn = PQsetdbLogin(pgParams.get<0>().c_str(),
+                           pgParams.get<1>().c_str(),
+                           NULL, NULL, 
+                           pgParams.get<4>().c_str(),
+                           pgParams.get<5>().c_str(),
+                           pgParams.get<6>().c_str());
+
+    if (CONNECTION_OK != PQstatus(mPgConn))
+    {
+        Close();
+
+        // TODO: How to shout about not being able to connect?
+    }
+    else
+    {
+        // Connected
+        mConnState = FdoConnectionState_Open;
+    }
+
+    return GetConnectionState();
 }
 
 void Connection::Close()
@@ -285,4 +307,65 @@ void Connection::Flush()
     assert(!"NOT IMPLEMENTED");
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// Private operations
+///////////////////////////////////////////////////////////////////////////////
+
+Connection::pgconn_params_t Connection::GetPgConnectionParams(
+    FdoPtr<FdoIConnectionPropertyDictionary> dict)
+{
+    using boost::tuples::tuple;
+    using boost::tuples::make_tuple;
+    using boost::algorithm::split;
+    using boost::algorithm::is_any_of;
+    
+    // Collect connection details
+    FdoStringP fdoUsername = dict->GetProperty(PropertyUsername);
+    FdoStringP fdoPassword = dict->GetProperty(PropertyPassword);
+    FdoStringP fdoService = dict->GetProperty(PropertyService);
+    FdoStringP fdoHostname = PropertyDefaultHostname;
+    FdoStringP fdoPort = PropertyDefaultPort;
+
+    // Convert to char-string
+    std::string login(static_cast<const char*>(fdoUsername));
+    std::string pwd(static_cast<const char*>(fdoPassword));
+    std::string service(static_cast<const char*>(fdoService));
+
+    // Split service string of possible formats:
+    // - database - use default localhost and port (DEF_PGPORT_STR)
+    // - database@host - use default port
+    // - database@host:port
+
+    std::vector<std::string> tokens;
+    split(tokens, service, is_any_of("@:"));
+
+    // TODO: Replace with FDO exception
+    assert(1 <= tokens.size() && tokens.size() <= 3);
+
+    std::string db(tokens.at(0));
+    std::string host(static_cast<const char*>(fdoHostname));
+    std::string port(static_cast<const char*>(fdoPort));
+
+    // deatabase@host
+    if (tokens.size() > 1)
+    {
+        host = tokens.at(1);
+    
+        // deatabase@host:port
+        if (tokens.size() > 2)
+        {
+            port = tokens.at(2);
+        }
+    }
+
+    // NOTE: The pgconn_params_t has room for these values,
+    //       but they are not used now, so empty strings are passed.
+    std::string opts;
+    std::string tty;
+
+    // pghost, pgport, pgoptions, pgtty, dbname, pglogin, pgpwd
+    return make_tuple(host, port, opts, tty, db, login, pwd);
+}
+
 }} // namespace fdo::postgis
+
