@@ -17,6 +17,7 @@
 #ifndef FDOPOSTGIS_CONNECTION_H_INCLUDED
 #define FDOPOSTGIS_CONNECTION_H_INCLUDED
 
+#include <PostGIS/FdoPostGisProvider.h>
 #include <Fdo/Connections/IConnection.h>
 // boost
 #include <boost/tuple/tuple.hpp>
@@ -48,64 +49,64 @@ public:
 
     /// Get pointer to FdoIConnectionCapabilities interface describing
     /// capabilities of the connection.
-    FdoIConnectionCapabilities* GetConnectionCapabilities();
+    FDOPOSTGIS_API FdoIConnectionCapabilities* GetConnectionCapabilities();
 
     /// Get pointer to FdoISchemaCapabilities interface describing
     /// support for the feature schema provided by PostGIS Provider.
-    FdoISchemaCapabilities* GetSchemaCapabilities();
+    FDOPOSTGIS_API FdoISchemaCapabilities* GetSchemaCapabilities();
  	
     /// Get pointer to FdoICommandCapabilities interface describing supported commands.
-    FdoICommandCapabilities* GetCommandCapabilities();
+    FDOPOSTGIS_API FdoICommandCapabilities* GetCommandCapabilities();
 
     /// Get pointer to FdoIFilterCapabilities interface describing 
     /// support for filters.
-    FdoIFilterCapabilities* GetFilterCapabilities();
+    FDOPOSTGIS_API FdoIFilterCapabilities* GetFilterCapabilities();
 
     /// Get pointer to FdoIExpressionCapabilities interface describing
     /// support for expressions.
-    FdoIExpressionCapabilities* GetExpressionCapabilities();
+    FDOPOSTGIS_API FdoIExpressionCapabilities* GetExpressionCapabilities();
 
     /// Get pointer to FdoIRasterCapabilities interface describing
     /// support for raster images.
-    FdoIRasterCapabilities* GetRasterCapabilities();
+    FDOPOSTGIS_API FdoIRasterCapabilities* GetRasterCapabilities();
 
     /// Get pointer to FdoITopologyCapabilities interface describing support for topology.
-    FdoITopologyCapabilities* GetTopologyCapabilities();
+    FDOPOSTGIS_API FdoITopologyCapabilities* GetTopologyCapabilities();
 
     /// Get pointer to FdoIGeometryCapabilities interface describing support for geometry.
-    FdoIGeometryCapabilities* GetGeometryCapabilities();
+    FDOPOSTGIS_API FdoIGeometryCapabilities* GetGeometryCapabilities();
 
     /// Get connection string used to establish connection with a datastore.
-    FdoString* GetConnectionString();
+    FDOPOSTGIS_API FdoString* GetConnectionString();
 
     /// Set connection string used to establish connection with a datastore.
-    void SetConnectionString(FdoString* value);
+    FDOPOSTGIS_API void SetConnectionString(FdoString* value);
 
     /// Get pointer to FdoIConnectionInfo interface that can be used to interrogate
     /// and set connection properties.
-    FdoIConnectionInfo* GetConnectionInfo();
+    FDOPOSTGIS_API FdoIConnectionInfo* GetConnectionInfo();
 
     /// Get state of current connection.
-    FdoConnectionState GetConnectionState();
+    FDOPOSTGIS_API FdoConnectionState GetConnectionState();
 
     /// Get number of milliseconds to wait while trying to establish a connection
     /// before terminating the attempt and generating an error.
-    FdoInt32 GetConnectionTimeout();
+    FDOPOSTGIS_API FdoInt32 GetConnectionTimeout();
 
     /// Set number of milliseconds to wait while trying to establish a connection
     /// before terminating the attempt and generating an error.
-    void SetConnectionTimeout(FdoInt32 value);
+    FDOPOSTGIS_API void SetConnectionTimeout(FdoInt32 value);
 
     /// Establish connection with a datastore using settings
     /// specified by ConnectionString attribute.
-    FdoConnectionState Open();
+    FDOPOSTGIS_API FdoConnectionState Open();
 
     /// Close current connection.
-    void Close();
+    FDOPOSTGIS_API void Close();
 
     /// Begin transaction and return pointer to FdoITransaction interface realizing
     /// transaction operations support.
-    FdoITransaction* BeginTransaction();
+    FDOPOSTGIS_API FdoITransaction* BeginTransaction();
 
     /// Create command object of specified type and return pointer to interface realizing
     /// command capabilities associated with the connection.
