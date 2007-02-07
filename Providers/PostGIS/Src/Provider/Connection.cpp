@@ -151,7 +151,7 @@ FdoIConnectionInfo* Connection::GetConnectionInfo()
         mConnInfo = new ConnectionInfo(this);
     
     FDO_SAFE_ADDREF(mConnInfo.p);
-    return NULL;
+    return mConnInfo.p;
 }
 
 FdoConnectionState Connection::GetConnectionState()
@@ -240,10 +240,6 @@ FdoICommand* Connection::CreateCommand(FdoInt32 type)
         break;
     case FdoCommandType_DescribeSchema:
         cmd = new DescribeSchemaCommand(this);
-        break;   
-    case FdoCommandType_DestroySchema:
-        //cmd = new DestroySchemaCommand(this);
-        assert(!"NOT IMPLEMENTED YET");
         break;
     case FdoCommandType_CreateDataStore:
         cmd = new CreateDataStore(this);
