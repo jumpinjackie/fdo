@@ -18,9 +18,15 @@
 #define FDOPOSTGIS_CONNECTION_H_INCLUDED
 
 #include <Fdo/Connections/IConnection.h>
-
+// boost
+#include <boost/tuple/tuple.hpp>
 // PostgreSQL client library
 #include <libpq-fe.h>
+
+//
+// Forward declarations
+//
+//class FdoIConnectionPropertyDictionary;
 
 namespace fdo { namespace postgis {
 
@@ -129,6 +135,10 @@ protected:
 
 private:
 
+    //
+    // Data members
+    //
+
     // Connection information object.
     // It's of lazy-creation object, delayed until first request,
     // on GetConnectionInfo() call.
@@ -142,6 +152,20 @@ private:
 
     // Pointer to PostgreSQL connection object of current session.
     PGconn* mPgConn;
+
+    //
+    // Private operations
+    //
+
+    // Tuple with PostgreSQL connection string tokens.
+    typedef boost::tuples::tuple
+        <
+        std::string, std::string, std::string, std::string, std::string, std::string, std::string
+        >
+        pgconn_params_t;
+
+    // Get PostgreSQL connection parameters from FDO connection properties.
+    pgconn_params_t GetPgConnectionParams(FdoPtr<FdoIConnectionPropertyDictionary> dict);
 
 };
 

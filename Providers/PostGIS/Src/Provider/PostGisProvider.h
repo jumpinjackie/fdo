@@ -65,6 +65,10 @@ extern FdoString* PropertyPassword;
 extern FdoString* PropertyService;
 extern FdoString* PropertyDatastore;
 
+// Custom connection properties
+extern FdoString* PropertyDefaultHostname;
+extern FdoString* PropertyDefaultPort;
+
 }} // namespace fdo::postgis
 
 #endif // POSTGISPROVIDER_H_INCLUDED
