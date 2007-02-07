@@ -118,7 +118,7 @@ FdoIConnectionPropertyDictionary* ConnectionInfo::GetConnectionProperties()
     }
 
     FDO_SAFE_ADDREF(mPropertyDict.p);
-    return mPropertyDict;
+    return mPropertyDict.p;
 }
 
 FdoProviderDatastoreType ConnectionInfo::GetProviderDatastoreType()
