@@ -17,6 +17,8 @@
 #ifndef FDOPOSTGIS_CONNECTIONINFO_H_INCLUDED
 #define FDOPOSTGIS_CONNECTIONINFO_H_INCLUDED
 
+#include <PostGIS/FdoPostGisProvider.h>
+
 //
 // Forward declarations
 //
@@ -45,24 +47,24 @@ public:
     //
 
     /// Get name of the feature provider - PostGIS Provider.
-    FdoString* GetProviderName();
+    FDOPOSTGIS_API FdoString* GetProviderName();
 
     /// Get display name of the feature provider.
-    FdoString* GetProviderDisplayName();
+    FDOPOSTGIS_API FdoString* GetProviderDisplayName();
 
     /// Get description of the feature provider.
-    FdoString* GetProviderDescription();
+    FDOPOSTGIS_API FdoString* GetProviderDescription();
  	
     /// Get version of the feature provider.
-    FdoString* GetProviderVersion();
+    FDOPOSTGIS_API FdoString* GetProviderVersion();
  	
     /// Get version of the Feature Data Objects specification with which 
     /// this PostGIS provider is compatible.
-    FdoString* GetFeatureDataObjectsVersion();
+    FDOPOSTGIS_API FdoString* GetFeatureDataObjectsVersion();
  	
     /// Get pointer to FdoIConnectionPropertyDictionary interface that can be used to
     /// dynamically query and set properties required to establish a connection.
-    FdoIConnectionPropertyDictionary* GetConnectionProperties();
+    FDOPOSTGIS_API FdoIConnectionPropertyDictionary* GetConnectionProperties();
  	
     /// Returns the provider type.
     /// \return Value of FdoProviderDatastoreType_DatabaseServer enumerator.
