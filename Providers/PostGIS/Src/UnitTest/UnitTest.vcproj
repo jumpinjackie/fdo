@@ -198,6 +198,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CapabilitiesTest.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CapabilitiesTest.h"
+				>
+			</File>
+			<File
 				RelativePath=".\ConnectionInfoTest.cpp"
 				>
 			</File>

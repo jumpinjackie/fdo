@@ -19,8 +19,6 @@
 #include "PostGisProvider.h"
 #include "ConnectionCapabilities.h"
 
-#include <cassert>
-
 namespace fdo { namespace postgis {
 
 ConnectionCapabilities::ConnectionCapabilities()
@@ -46,85 +44,91 @@ void ConnectionCapabilities::Dispose()
 
 FdoThreadCapability ConnectionCapabilities::GetThreadCapability()
 {
-    assert(!"NOT IMPLEMENTED");
-    return FdoThreadCapability_SingleThreaded;
+    // TODO: Verify threading model
+
+    return FdoThreadCapability_PerConnectionThreaded;
 }
 
-FdoSpatialContextExtentType* ConnectionCapabilities::GetpatialContextTypes(FdoInt32& size)
+FdoSpatialContextExtentType* ConnectionCapabilities::GetSpatialContextTypes(FdoInt32& size)
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    static FdoSpatialContextExtentType types[] = {
+        FdoSpatialContextExtentType_Static
+    };
+
+    size = (sizeof(types) / sizeof(FdoSpatialContextExtentType));
+
+    return types;
 }
 
 FdoLockType* ConnectionCapabilities::GetLockTypes(FdoInt32& size)
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    // TODO: Verify supported types of locks
+
+    static FdoLockType types[] = {
+        FdoLockType_Transaction
+
+        //FdoLockType_Shared,
+        //FdoLockType_Exclusive,
+        //FdoLockType_AllLongTransactionExclusive,
+        //FdoLockType_LongTransactionExclusive
+    };
+
+    size = (sizeof(types) / sizeof(FdoLockType));
+    return types;
 }
 
 bool ConnectionCapabilities::SupportsLocking()
 {
-    assert(!"NOT IMPLEMENTED");
     return false;
 }
 
 bool ConnectionCapabilities::SupportsTimeout()
 {
-    assert(!"NOT IMPLEMENTED");
     return false;
 }
 
 bool ConnectionCapabilities::SupportsTransactions()
 {
-    assert(!"NOT IMPLEMENTED");
     return false;
 }
 
 bool ConnectionCapabilities::SupportsLongTransactions()
 {
-    assert(!"NOT IMPLEMENTED");
     return false;
 }
 
 bool ConnectionCapabilities::SupportsSQL()
 {
-    assert(!"NOT IMPLEMENTED");
-    return false;
+    return true;
 }
 
 bool ConnectionCapabilities::SupportsConfiguration()
 {
-    assert(!"NOT IMPLEMENTED");
     return false;
 }
 
 bool ConnectionCapabilities::SupportsMultipleSpatialContexts()
 {
-    assert(!"NOT IMPLEMENTED");
-    return false;
+    return true;
 }
 
 bool ConnectionCapabilities::SupportsCSysWKTFromCSysName()
 {
-    assert(!"NOT IMPLEMENTED");
     return false;
 }
 
 bool ConnectionCapabilities::SupportsWrite()
 {
-    assert(!"NOT IMPLEMENTED");
     return false;
 }
 
 bool ConnectionCapabilities::SupportsMultiUserWrite()
 {
-    assert(!"NOT IMPLEMENTED");
     return false;
 }
 
 bool ConnectionCapabilities::SupportsFlush()
 {
-    assert(!"NOT IMPLEMENTED");
     return false;
 }
 

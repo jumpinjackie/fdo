@@ -33,17 +33,23 @@ BaseTestCase::~BaseTestCase()
 {
 }
 
-//void BaseTestCase::tearDown()
-//{
-//    mConnection = NULL;
-//    FdoPtr<IConnectionManager> mgr = FdoFeatureAccessManager::GetConnectionManager();
-//    mgr->FreeLibrary(gTestConfig.getProviderName());
-//}
+void BaseTestCase::setUp()
+{
+    FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager ();
+    mConn = manager->CreateConnection (gTestConfig.getProviderName());
+}
+
+void BaseTestCase::tearDown()
+{
+    mConn = NULL;
+    FdoPtr<IConnectionManager> mgr = FdoFeatureAccessManager::GetConnectionManager();
+    mgr->FreeLibrary(gTestConfig.getProviderName());
+}
 
 FdoIConnection* BaseTestCase::GetConnection()
-{
-    FdoPtr<IConnectionManager> mgr = FdoFeatureAccessManager::GetConnectionManager();
-    return mgr->CreateConnection(gTestConfig.getProviderName());
+{    
+    FDO_SAFE_ADDREF(mConn.p);
+    return mConn.p;
 }
 
 void BaseTestCase::fail(FdoException* e)

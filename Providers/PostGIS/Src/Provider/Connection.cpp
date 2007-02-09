@@ -19,6 +19,7 @@
 #include "PostGisProvider.h"
 #include "Connection.h"
 #include "ConnectionInfo.h"
+#include "ConnectionCapabilities.h"
 #include "SQLCommand.h"
 #include "DeleteCommand.h"
 #include "InsertCommand.h"
@@ -85,8 +86,7 @@ void Connection::Dispose()
 
 FdoIConnectionCapabilities* Connection::GetConnectionCapabilities()
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    return (new ConnectionCapabilities());
 }
 
 FdoISchemaCapabilities* Connection::GetSchemaCapabilities()

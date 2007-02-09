@@ -32,22 +32,12 @@ ConnectionInfoTest::~ConnectionInfoTest()
 {
 }
 
-void ConnectionInfoTest::setUp()
-{
-    mConn = BaseTestCase::GetConnection();
-    mConn->SetConnectionString(gTestConfig.getConnectionString());
-}
-void ConnectionInfoTest::tearDown()
-{
-    mConn->Close ();
-	FDO_SAFE_RELEASE(mConn.p);
-}
-
 void ConnectionInfoTest::testProviderName()
 {
     try
     {
-        FdoPtr<FdoIConnectionInfo> info = mConn->GetConnectionInfo();
+        FdoPtr<FdoIConnection> conn = GetConnection();
+        FdoPtr<FdoIConnectionInfo> info = conn->GetConnectionInfo();
 
         CPPUNIT_ASSERT_EQUAL(gTestConfig.getProviderName(),
             FdoStringP(info->GetProviderName()));
@@ -62,7 +52,8 @@ void ConnectionInfoTest::testProviderVersion()
 {
     try
     {
-        FdoPtr<FdoIConnectionInfo> info = mConn->GetConnectionInfo();
+        FdoPtr<FdoIConnection> conn = GetConnection();
+        FdoPtr<FdoIConnectionInfo> info = conn->GetConnectionInfo();
 
         CPPUNIT_ASSERT_EQUAL(gTestConfig.getProviderVersion(),
             FdoStringP(info->GetProviderVersion()));
@@ -77,7 +68,8 @@ void ConnectionInfoTest::testFeatureDataObjectsVersion()
 {
     try
     {
-        FdoPtr<FdoIConnectionInfo> info = mConn->GetConnectionInfo();
+        FdoPtr<FdoIConnection> conn = GetConnection();
+        FdoPtr<FdoIConnectionInfo> info = conn->GetConnectionInfo();
 
         CPPUNIT_ASSERT_EQUAL(gTestConfig.getFdoVersion(),
             FdoStringP(info->GetFeatureDataObjectsVersion()));
@@ -92,8 +84,9 @@ void ConnectionInfoTest::testConnectionProperties()
 {
     try
     {
-        mConn->SetConnectionString(L"service=mydb@name.domain.net:2345;username=root;password=secret;datastore=myfdo");
-        FdoPtr<FdoIConnectionInfo> info = mConn->GetConnectionInfo();
+        FdoPtr<FdoIConnection> conn = GetConnection();
+        conn->SetConnectionString(L"service=mydb@name.domain.net:2345;username=root;password=secret;datastore=myfdo");
+        FdoPtr<FdoIConnectionInfo> info = conn->GetConnectionInfo();
         FdoPtr<FdoIConnectionPropertyDictionary> dict = 
             info->GetConnectionProperties();
 
@@ -137,7 +130,8 @@ void ConnectionInfoTest::testProviderDatastoreType()
 {
     try
     {
-        FdoPtr<FdoIConnectionInfo> info = mConn->GetConnectionInfo();
+        FdoPtr<FdoIConnection> conn = GetConnection();
+        FdoPtr<FdoIConnectionInfo> info = conn->GetConnectionInfo();
 
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect datastore type",
             FdoProviderDatastoreType_DatabaseServer,
@@ -153,7 +147,8 @@ void ConnectionInfoTest::testDependentFileNames()
 {
     try
     {
-        FdoPtr<FdoIConnectionInfo> info = mConn->GetConnectionInfo();
+        FdoPtr<FdoIConnection> conn = GetConnection();
+        FdoPtr<FdoIConnectionInfo> info = conn->GetConnectionInfo();
 
         CPPUNIT_ASSERT_MESSAGE("Expected empty list of dependant files",
             NULL == info->GetDependentFileNames());
