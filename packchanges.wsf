@@ -91,6 +91,14 @@
                         oinfFile.WriteLine("*")
                         oinfFile.WriteLine("******WMS******")
                         activeRelPath = "Providers/WMS/"
+                    Case "$(KingOracle)"
+                        oinfFile.WriteLine("*")
+                        oinfFile.WriteLine("******KingOracle******")
+                        activeRelPath = "Providers/KingOracle/"
+                    Case "$(OGR)"
+                        oinfFile.WriteLine("*")
+                        oinfFile.WriteLine("******OGR******")
+                        activeRelPath = "Providers/OGR/"
                     Case Else
                         modLine = Left(lineFile, 7)
                         If not Instr(modLine, "M") = 0 Then

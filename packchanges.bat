@@ -21,6 +21,7 @@ if (%1)==() goto custom_error
 
 if "%1"=="-h"       goto help_show
 if "%1"=="-help"    goto help_show
+
 SET CHANGENAME=%1
 
 echo Please wait... Scanning changes!
@@ -31,55 +32,77 @@ if exist Read_Me_FilesChanges.txt del /F /Q Read_Me_FilesChanges.txt
 
 echo $(.)>> FilesChanges.log
 svn status -q >> FilesChanges.log
+
 pushd Thirdparty
 echo $(Thirdparty)>> ..\FilesChanges.log
 svn status -q >> ..\FilesChanges.log
 popd
+
 pushd Fdo
 echo $(Fdo)>> ..\FilesChanges.log
 svn status -q >> ..\FilesChanges.log
 popd
+
 pushd Utilities
 echo $(Utilities)>> ..\FilesChanges.log
 svn status -q >> ..\FilesChanges.log
 popd
+
 pushd www
 echo $(www)>> ..\FilesChanges.log
 svn status -q >> ..\FilesChanges.log
 popd
+
 pushd Providers\ArcSDE
 echo $(ArcSDE)>> ..\..\FilesChanges.log
 svn status -q >> ..\..\FilesChanges.log
 popd
+
 pushd Providers\GenericRdbms
 echo $(GenericRdbms)>> ..\..\FilesChanges.log
 svn status -q >> ..\..\FilesChanges.log
 popd
+
 pushd Providers\GDAL
 echo $(GDAL)>> ..\..\FilesChanges.log
 svn status -q >> ..\..\FilesChanges.log
 popd
+
 pushd Providers\SDF
 echo $(SDF)>> ..\..\FilesChanges.log
 svn status -q >> ..\..\FilesChanges.log
 popd
+
 pushd Providers\SHP
 echo $(SHP)>> ..\..\FilesChanges.log
 svn status -q >> ..\..\FilesChanges.log
 popd
+
 pushd Providers\WFS
 echo $(WFS)>> ..\..\FilesChanges.log
 svn status -q >> ..\..\FilesChanges.log
 popd
+
 pushd Providers\WMS
 echo $(WMS)>> ..\..\FilesChanges.log
 svn status -q >> ..\..\FilesChanges.log
 popd
+
+pushd Providers\KingOracle
+echo $(KingOracle)>> ..\..\FilesChanges.log
+svn status -q >> ..\..\FilesChanges.log
+popd
+
+pushd Providers\OGR
+echo $(OGR)>> ..\..\FilesChanges.log
+svn status -q >> ..\..\FilesChanges.log
+popd
+
 echo end>> FilesChanges.log
 
 echo Please wait... Creating zip file!
 cscript //Nologo //job:pack packchanges.wsf
-echo End action
+
 exit /B 0
 
 :custom_error

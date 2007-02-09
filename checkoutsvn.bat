@@ -32,6 +32,7 @@ SET ARCENABLECHK=no
 SET RDBMSENABLECHK=no
 SET GDALENABLECHK=no
 SET KINGENABLECHK=no
+SET OGRENABLECHK=no
 
 if (%FDO_SVN_SOURCEDIR%)==() SET FDO_SVN_SOURCEDIR=trunk
 if (%FDO_SVN_DESTDIR%)==() SET FDO_SVN_DESTDIR=%cd%
@@ -86,6 +87,7 @@ if "%DEFMODIFYCHK%"=="yes" goto stp0_get_with
 	SET UTILENABLECHK=no
 	SET GDALENABLECHK=no
 	SET KINGENABLECHK=no
+	SET OGRENABLECHK=no
 :stp0_get_with
 if not "%2"=="providers" goto stp1_get_with
 	SET FDOPROVIDERSENABLECHK=yes
@@ -106,6 +108,7 @@ if not "%2"=="all" goto stp2_get_with
 	SET RDBMSENABLECHK=no
 	SET GDALENABLECHK=no
 	SET KINGENABLECHK=no
+	SET OGRENABLECHK=no
 	goto next_param
 :stp2_get_with
 if not "%2"=="fdocore" goto stp3_get_with
@@ -155,8 +158,12 @@ if not "%2"=="gdal" goto stp13_get_with
 	SET GDALENABLECHK=yes
     goto next_param
 :stp13_get_with
-if not "%2"=="king" goto custom_error
+if not "%2"=="king" goto stp14_get_with
 	SET KINGENABLECHK=yes
+    goto next_param
+:stp14_get_with
+if not "%2"=="ogr" goto custom_error
+	SET OGRENABLECHK=yes
     goto next_param
 
 :get_source
@@ -276,9 +283,15 @@ svn checkout https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Providers/GDAL "%FDO_
 if errorlevel 1 goto error
 
 :checkout_king
-if "%KINGENABLECHK%"=="no" goto end
+if "%KINGENABLECHK%"=="no" goto checkout_ogr
 echo Checking out https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Providers/KingOracle
 svn checkout https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Providers/KingOracle "%FDO_SVN_DESTDIR%\Providers\KingOracle" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
+if errorlevel 1 goto error
+
+:checkout_ogr
+if "%OGRENABLECHK%"=="no" goto end
+echo Checking out https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Providers/OGR
+svn checkout https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Providers/OGR "%FDO_SVN_DESTDIR%\Providers\OGR" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
 
 :end
@@ -317,7 +330,8 @@ echo                         wms,
 echo                         arcsde, 
 echo                         rdbms, 
 echo                         gdal,
-echo                         king
+echo                         king,
+echo                         ogr
 echo User:           -u[ser]=user id
 echo Password:       -p[assword]=user password
 echo **************************************************************
