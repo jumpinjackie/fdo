@@ -78,6 +78,10 @@ bool TestConfig::isReady() const
     return ready_;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// Configuration settings accessors
+///////////////////////////////////////////////////////////////////////////////
+
 FdoStringP TestConfig::getProviderName() const
 {
     return getProperty("provider");
@@ -109,6 +113,22 @@ FdoStringP TestConfig::getPropertyDatastore() const
     return getProperty("datastore");
 }
 
+FdoStringP TestConfig::getConnectionString() const
+{
+    FdoStringP cs =
+        FdoStringP::Format(L"service=%ls;username=%ls;password=%ls;datastore=%ls",
+        getPropertyService(),
+        getPropertyUsername(),
+        getPropertyPassword(),
+        getPropertyDatastore());
+
+    return cs;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Private function members
+///////////////////////////////////////////////////////////////////////////////
+
 void TestConfig::validate() const
 {
     if (!ready_)
@@ -129,5 +149,7 @@ FdoStringP TestConfig::getProperty(std::string const& name) const
 
     return FdoStringP(pos->second.c_str());
 }
+
+
 
 }}} // namespace fdo::postgis::test

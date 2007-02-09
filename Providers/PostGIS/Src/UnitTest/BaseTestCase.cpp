@@ -73,11 +73,24 @@ void BaseTestCase::fail(FdoException* ex)
     CPPUNIT_FAIL(tmp);
 }
 
+void BaseTestCase::fail(std::exception const& e)
+{
+    std::string msg("\n*** STD FAILURE ***\n");
+    msg += e.what();
+    CPPUNIT_FAIL(msg);
+}
+
 void BaseTestCase::fail(char const* error)
 {
     std::string msg("\n*** FAILURE ***\n");
     msg += error;
     CPPUNIT_FAIL(msg);
 }
+
+void BaseTestCase::unknown()
+{
+    CPPUNIT_FAIL("Unhandled or unknown failure");
+}
+
 
 }}} // namespace fdo::postgis::test

@@ -50,6 +50,7 @@ public:
     FdoStringP getPropertyPassword() const;
     FdoStringP getPropertyService() const;
     FdoStringP getPropertyDatastore() const;
+    FdoStringP getConnectionString() const;
 
 private:
  

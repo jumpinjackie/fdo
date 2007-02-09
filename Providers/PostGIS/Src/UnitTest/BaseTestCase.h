@@ -49,10 +49,16 @@ public:
     virtual FdoIConnection* GetConnection();
 
     // Handles failure with FDO exception
-    static void fail(FdoException* ex);
+    static void fail(FdoException* e);
+
+    // Handles failure with standard exception
+    static void fail(std::exception const& e);
 
     // Handles failure with error message
-    static void fail(char const* error);
+    static void fail(char const* e);
+
+    // Process unknown and unhandled exception
+    static void unknown();
 
 private:
 
