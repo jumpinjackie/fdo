@@ -21,7 +21,7 @@ dnl Configure.in for OSGeo FDO GDAL Raster Provider
 # Variables
 # Following are the makefile directories 
 #----------------------------------------------------------------------
-AC_INIT(FDORASTER,3.2.0,https://www.fdoraster.osgeo.org)
+AC_INIT(FDORASTER,3.3.0,https://www.fdoraster.osgeo.org)
 AC_CONFIG_SRCDIR(configure.in)
 AM_INIT_AUTOMAKE
 
@@ -35,10 +35,10 @@ AC_PROG_YACC
 AC_DISABLE_STATIC
 AM_PROG_LIBTOOL
 
-AC_SUBST(VERSION, "3.2.0")
+AC_SUBST(VERSION, "3.3.0")
 
 dnl *******************************************************
-dnl FDO 3.2.0 Configuration
+dnl FDO 3.3.0 Configuration
 dnl FDO / FDO Utilities / FDO Thirdpary paths
 dnl *******************************************************
 # custom Fdo path specification 
