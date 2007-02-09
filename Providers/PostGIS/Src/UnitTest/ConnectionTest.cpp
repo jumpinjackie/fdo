@@ -23,7 +23,7 @@ CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(ConnectionTest, "ConnectionTest");
 
 using namespace fdo::postgis::test;
 
-ConnectionTest::ConnectionTest() : mConnection(NULL)
+ConnectionTest::ConnectionTest() : mConn(NULL)
 {
 }
 
@@ -37,23 +37,62 @@ void ConnectionTest::setUp()
 
 void ConnectionTest::tearDown()
 {
-    mConnection = NULL;
+    FDO_SAFE_RELEASE(mConn.p);
+
+    mConn = NULL;
     FdoPtr<IConnectionManager> mgr = FdoFeatureAccessManager::GetConnectionManager();
     mgr->FreeLibrary(gTestConfig.getProviderFullName());
-
 }
 
 void ConnectionTest::testGetConnectionManager()
 {
     FdoPtr<IConnectionManager> mgr = FdoFeatureAccessManager::GetConnectionManager();
-    
     CPPUNIT_ASSERT_MESSAGE("Connection manager is NULL", NULL != mgr);
 }
 
 void ConnectionTest::testCreateConnection()
 {
     FdoPtr<IConnectionManager> mgr = FdoFeatureAccessManager::GetConnectionManager();
-    mConnection = mgr->CreateConnection(gTestConfig.getProviderFullName());
-
-    CPPUNIT_ASSERT_MESSAGE("Connection is NULL", NULL != mConnection);
+    FdoPtr<FdoIConnection> tmpConn =
+        mgr->CreateConnection(gTestConfig.getProviderFullName());
+    CPPUNIT_ASSERT_MESSAGE("Connection is NULL", NULL != tmpConn);
 }
+
+void ConnectionTest::testConnect()
+{  
+    FdoPtr<IConnectionManager> mgr = FdoFeatureAccessManager::GetConnectionManager();
+    mConn = mgr->CreateConnection(gTestConfig.getProviderFullName());
+    CPPUNIT_ASSERT_MESSAGE("Connection is NULL", NULL != mConn);
+    CPPUNIT_ASSERT_MESSAGE("Connection not closed",
+        FdoConnectionState_Closed == mConn->GetConnectionState());
+
+    try
+    {
+        mConn->SetConnectionString(gTestConfig.getConnectionString());
+        CPPUNIT_ASSERT_MESSAGE("Connection not closed",
+            FdoConnectionState_Closed == mConn->GetConnectionState());
+        
+        FdoConnectionState state = mConn->Open();
+        CPPUNIT_ASSERT_MESSAGE("Connection not open",
+            FdoConnectionState_Open == state);
+        CPPUNIT_ASSERT_MESSAGE("Connection not open",
+            FdoConnectionState_Open == mConn->GetConnectionState());
+
+        mConn->Close();
+        CPPUNIT_ASSERT_MESSAGE("Connection not closed",
+            FdoConnectionState_Closed == mConn->GetConnectionState());
+    }
+    catch (FdoException* e)
+    {
+        BaseTestCase::fail(e);
+    }
+    catch (std::runtime_error& e)
+    {
+        BaseTestCase::fail(e);
+    }
+    catch (...)
+    {
+        BaseTestCase::unknown();
+    }
+}
+
