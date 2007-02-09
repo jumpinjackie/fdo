@@ -21,6 +21,7 @@
 #include "ConnectionInfo.h"
 #include "ConnectionCapabilities.h"
 #include "CommandCapabilities.h"
+#include "SchemaCapabilities.h"
 #include "ListDataStores.h"
 #include "CreateDataStore.h"
 #include "DestroyDataStore.h"
@@ -93,8 +94,7 @@ FdoIConnectionCapabilities* Connection::GetConnectionCapabilities()
 
 FdoISchemaCapabilities* Connection::GetSchemaCapabilities()
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    return (new SchemaCapabilities());
 }
 
 FdoICommandCapabilities* Connection::GetCommandCapabilities()
