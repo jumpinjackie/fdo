@@ -22,6 +22,7 @@
 #include "ConnectionCapabilities.h"
 #include "CommandCapabilities.h"
 #include "SchemaCapabilities.h"
+#include "FilterCapabilities.h"
 #include "ListDataStores.h"
 #include "CreateDataStore.h"
 #include "DestroyDataStore.h"
@@ -104,8 +105,7 @@ FdoICommandCapabilities* Connection::GetCommandCapabilities()
 
 FdoIFilterCapabilities* Connection::GetFilterCapabilities()
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    return (new FilterCapabilities());
 }
 
 FdoIExpressionCapabilities* Connection::GetExpressionCapabilities()
