@@ -25,7 +25,7 @@ class CapabilitiesTest : public fdo::postgis::test::BaseTestCase
     CPPUNIT_TEST_SUITE(CapabilitiesTest);
     CPPUNIT_TEST(testConnectionCapabilities);
     CPPUNIT_TEST(testCommandsCapabilities);
-    //CPPUNIT_TEST(testSchemaCapabilities);
+    CPPUNIT_TEST(testSchemaCapabilities);
     //CPPUNIT_TEST(testFilterCapabilities);
     //CPPUNIT_TEST(testExpressionCapabilities);
     //CPPUNIT_TEST(testGeometryCapabilities);
