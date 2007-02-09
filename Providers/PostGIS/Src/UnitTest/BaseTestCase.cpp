@@ -25,7 +25,7 @@
 
 namespace fdo { namespace postgis { namespace test {
 
-BaseTestCase::BaseTestCase() : mConnection(NULL)
+BaseTestCase::BaseTestCase()
 {
 }
 
@@ -33,41 +33,35 @@ BaseTestCase::~BaseTestCase()
 {
 }
 
-void BaseTestCase::setUp()
-{
-    FdoPtr<IConnectionManager> mgr = FdoFeatureAccessManager::GetConnectionManager();
-    mConnection = mgr->CreateConnection(gTestConfig.getProviderName());
-}
-
-void BaseTestCase::tearDown()
-{
-    mConnection = NULL;
-    FdoPtr<IConnectionManager> mgr = FdoFeatureAccessManager::GetConnectionManager();
-    mgr->FreeLibrary(gTestConfig.getProviderName());
-}
+//void BaseTestCase::tearDown()
+//{
+//    mConnection = NULL;
+//    FdoPtr<IConnectionManager> mgr = FdoFeatureAccessManager::GetConnectionManager();
+//    mgr->FreeLibrary(gTestConfig.getProviderName());
+//}
 
 FdoIConnection* BaseTestCase::GetConnection()
 {
-    FDO_SAFE_ADDREF(mConnection.p);
-    return mConnection.p;
+    FdoPtr<IConnectionManager> mgr = FdoFeatureAccessManager::GetConnectionManager();
+    return mgr->CreateConnection(gTestConfig.getProviderName());
 }
 
-void BaseTestCase::fail(FdoException* ex)
+void BaseTestCase::fail(FdoException* e)
 {
     std::streamsize offset = 5; // number of blanks + asterix characters
 
     std::wostringstream msg;
     msg << L"\n*** FDO FAILURE ***\n";
-    msg << std::setw(++offset) << L"*** " << ex->GetExceptionMessage() << std::endl;
+    msg << std::setw(++offset) << L"*** " << e->GetExceptionMessage() << std::endl;
     
-    FdoPtr<FdoException> cause(ex->GetCause());
+    FdoPtr<FdoException> cause(e->GetCause());
     while(NULL != cause)
     {
         msg << std::setw(++offset)
              << L"*** " << cause->GetExceptionMessage() << std::endl;
         cause = cause->GetCause();
     }
-    ex->Release();
+    FDO_SAFE_RELEASE(e);
 
     std::string tmp(fdo::conv::tonarrow(msg.str()));
     CPPUNIT_FAIL(tmp);

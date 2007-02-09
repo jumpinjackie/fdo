@@ -39,14 +39,8 @@ public:
     // Nothing is uninitialized here.
     virtual ~BaseTestCase();
 
-    // Named constructor initializes internal state of test case.
-	virtual void setUp();
-
-    // Named destructor uninitializes the test case.
-	virtual void tearDown();
-
     // Factory method creating new instance of PostGIS connection.
-    virtual FdoIConnection* GetConnection();
+    static FdoIConnection* GetConnection();
 
     // Handles failure with FDO exception
     static void fail(FdoException* e);
@@ -60,9 +54,6 @@ public:
     // Process unknown and unhandled exception
     static void unknown();
 
-private:
-
-    FdoPtr<FdoIConnection> mConnection;
 };
 
 }}} // namespace fdo::postgis::test

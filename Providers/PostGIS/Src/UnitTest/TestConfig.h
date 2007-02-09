@@ -45,7 +45,9 @@ public:
     //
 
     FdoStringP getProviderName() const;
-    FdoStringP getProviderFullName() const;
+    FdoStringP getProviderVersion() const;
+    FdoStringP getFdoVersion() const;
+    FdoStringP getPropertyProvider() const;
     FdoStringP getPropertyUsername() const;
     FdoStringP getPropertyPassword() const;
     FdoStringP getPropertyService() const;

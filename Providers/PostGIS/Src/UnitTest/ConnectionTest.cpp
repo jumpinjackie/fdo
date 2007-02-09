@@ -17,11 +17,10 @@
 #include "Pch.h"
 #include "ConnectionTest.h"
 #include "TestConfig.h"
+using namespace fdo::postgis::test;
 
 CPPUNIT_TEST_SUITE_REGISTRATION(ConnectionTest);
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(ConnectionTest, "ConnectionTest");
-
-using namespace fdo::postgis::test;
 
 ConnectionTest::ConnectionTest() : mConn(NULL)
 {
@@ -41,7 +40,7 @@ void ConnectionTest::tearDown()
 
     mConn = NULL;
     FdoPtr<IConnectionManager> mgr = FdoFeatureAccessManager::GetConnectionManager();
-    mgr->FreeLibrary(gTestConfig.getProviderFullName());
+    mgr->FreeLibrary(gTestConfig.getProviderName());
 }
 
 void ConnectionTest::testGetConnectionManager()
@@ -54,14 +53,14 @@ void ConnectionTest::testCreateConnection()
 {
     FdoPtr<IConnectionManager> mgr = FdoFeatureAccessManager::GetConnectionManager();
     FdoPtr<FdoIConnection> tmpConn =
-        mgr->CreateConnection(gTestConfig.getProviderFullName());
+        mgr->CreateConnection(gTestConfig.getProviderName());
     CPPUNIT_ASSERT_MESSAGE("Connection is NULL", NULL != tmpConn);
 }
 
 void ConnectionTest::testConnect()
 {  
     FdoPtr<IConnectionManager> mgr = FdoFeatureAccessManager::GetConnectionManager();
-    mConn = mgr->CreateConnection(gTestConfig.getProviderFullName());
+    mConn = mgr->CreateConnection(gTestConfig.getProviderName());
     CPPUNIT_ASSERT_MESSAGE("Connection is NULL", NULL != mConn);
     CPPUNIT_ASSERT_MESSAGE("Connection not closed",
         FdoConnectionState_Closed == mConn->GetConnectionState());
@@ -92,3 +91,24 @@ void ConnectionTest::testConnect()
     }
 }
 
+void ConnectionTest::testEmptyConnectionString()
+{  
+    try
+    {
+        FdoPtr<IConnectionManager> mgr = FdoFeatureAccessManager::GetConnectionManager();
+        mConn = mgr->CreateConnection(gTestConfig.getProviderName());
+        CPPUNIT_ASSERT_MESSAGE("Connection is NULL", NULL != mConn);
+        CPPUNIT_ASSERT_MESSAGE("Connection not closed",
+            FdoConnectionState_Closed == mConn->GetConnectionState());
+
+        // Use empty connection string
+        mConn->SetConnectionString(L"");
+
+        CPPUNIT_ASSERT_MESSAGE("Empty connection string not reported", false);
+    }
+    catch (FdoException* e)
+    {
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_ASSERT(true);
+    }
+}

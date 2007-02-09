@@ -25,6 +25,7 @@ class ConnectionTest : public CppUnit::TestCase
     CPPUNIT_TEST(testGetConnectionManager);
     CPPUNIT_TEST(testCreateConnection);
     CPPUNIT_TEST(testConnect);
+    CPPUNIT_TEST(testEmptyConnectionString);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -42,6 +43,7 @@ public:
     void testGetConnectionManager();
     void testCreateConnection();
     void testConnect();
+    void testEmptyConnectionString();
 
 private:
     

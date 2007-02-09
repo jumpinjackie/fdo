@@ -24,8 +24,6 @@ class ConnectionInfoTest : public fdo::postgis::test::BaseTestCase
 {
     CPPUNIT_TEST_SUITE(ConnectionInfoTest);
     CPPUNIT_TEST(testProviderName);
-    CPPUNIT_TEST(testProviderDisplayName);
-    CPPUNIT_TEST(testProviderDescription);
     CPPUNIT_TEST(testProviderVersion);
     CPPUNIT_TEST(testFeatureDataObjectsVersion);
     CPPUNIT_TEST(testConnectionProperties);
@@ -37,6 +35,9 @@ public:
 
     ConnectionInfoTest();
     virtual ~ConnectionInfoTest();
+
+	virtual void setUp();
+	virtual void tearDown();
 
     //
     // Tests
@@ -50,6 +51,10 @@ public:
     void testConnectionProperties();
     void testProviderDatastoreType();
     void testDependentFileNames();
+
+private:
+
+    FdoPtr<FdoIConnection> mConn;
 
 };
 
