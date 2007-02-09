@@ -24,6 +24,7 @@ class ConnectionTest : public CppUnit::TestCase
     CPPUNIT_TEST_SUITE(ConnectionTest);
     CPPUNIT_TEST(testGetConnectionManager);
     CPPUNIT_TEST(testCreateConnection);
+    CPPUNIT_TEST(testConnect);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -40,10 +41,11 @@ public:
 
     void testGetConnectionManager();
     void testCreateConnection();
+    void testConnect();
 
 private:
     
-    FdoPtr<FdoIConnection> mConnection;
+    FdoPtr<FdoIConnection> mConn;
 };
 
 #endif // FDOPOSTGIS_CONNECTIONTEST_H_INCLUDED
