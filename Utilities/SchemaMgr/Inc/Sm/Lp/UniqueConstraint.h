@@ -23,6 +23,8 @@
 #include <Sm/Lp/DataPropertyDefinitionCollection.h>
 #include <Sm/Collection.h>
 
+class FdoSmLpClassBase;
+
 // Represents a collection of DataPropertyDefinitions.
 class FdoSmLpUniqueConstraint : public FdoIDisposable
 {
