@@ -46,14 +46,42 @@ void FilterCapabilities::Dispose()
 
 FdoConditionType* FilterCapabilities::GetConditionTypes(FdoInt32& size)
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    // TODO: Verify types of supported conditions
+
+    static FdoConditionType types[] =
+    {
+        FdoConditionType_Comparison,
+        FdoConditionType_Like,
+        FdoConditionType_In,
+        FdoConditionType_Null,
+        FdoConditionType_Spatial,
+    };
+
+    size = (sizeof(types) / sizeof(FdoConditionType));
+    return types;
 }
 
 FdoSpatialOperations* FilterCapabilities::GetSpatialOperations(FdoInt32& size)
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    // TODO: Verify types of supported operations
+
+    static FdoSpatialOperations operations[] =
+    {
+        FdoSpatialOperations_Contains,
+        FdoSpatialOperations_Crosses,
+        FdoSpatialOperations_Disjoint,
+        FdoSpatialOperations_Equals,
+        FdoSpatialOperations_Intersects,
+        FdoSpatialOperations_Overlaps,
+        FdoSpatialOperations_Touches,
+        FdoSpatialOperations_Within,
+        //FdoSpatialOperations_CoveredBy,
+        //FdoSpatialOperations_Inside,
+        //FdoSpatialOperations_EnvelopeIntersects
+    };
+
+    size = (sizeof(operations) / sizeof(FdoConditionType));
+    return operations;
 }
 
 FdoDistanceOperations* FilterCapabilities::GetDistanceOperations(FdoInt32& size)

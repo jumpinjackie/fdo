@@ -146,7 +146,6 @@ void CapabilitiesTest::testSchemaCapabilities()
         CPPUNIT_ASSERT(NULL == sipt);
         CPPUNIT_ASSERT_EQUAL(0, size);
 
-
         // TODO: Add tests for following features
         //FdoInt64 GetMaximumDataValueLength(FdoDataType type);
         //FdoInt32 GetMaximumDecimalPrecision();
@@ -172,7 +171,6 @@ void CapabilitiesTest::testSchemaCapabilities()
         CPPUNIT_ASSERT_EQUAL(true, sc->SupportsSchemaOverrides());
         CPPUNIT_ASSERT_EQUAL(false, sc->SupportsUniqueValueConstraints());
         CPPUNIT_ASSERT_EQUAL(false, sc->SupportsValueConstraintsList());
-
     }
     catch (FdoException* ex)
     {
@@ -182,20 +180,92 @@ void CapabilitiesTest::testSchemaCapabilities()
 
 void CapabilitiesTest::testFilterCapabilities()
 {
-  CPPUNIT_FAIL("Not implemented");
+    try
+    {
+        FdoPtr<FdoIConnection> conn = GetConnection();
+        FdoPtr<FdoIFilterCapabilities> fc = conn->GetFilterCapabilities();
+
+        FdoInt32 size = 0;
+
+        FdoConditionType* ct = fc->GetConditionTypes(size);
+        CPPUNIT_ASSERT(NULL != ct);
+        CPPUNIT_ASSERT_EQUAL(5, size);
+        CPPUNIT_ASSERT_EQUAL(FdoConditionType_Comparison, ct[0]);
+        CPPUNIT_ASSERT_EQUAL(FdoConditionType_Like, ct[1]);
+        CPPUNIT_ASSERT_EQUAL(FdoConditionType_In, ct[2]);
+        CPPUNIT_ASSERT_EQUAL(FdoConditionType_Null, ct[3]);
+        CPPUNIT_ASSERT_EQUAL(FdoConditionType_Spatial, ct[4]);
+
+        FdoSpatialOperations* sop = fc->GetSpatialOperations(size);
+        CPPUNIT_ASSERT(NULL != sop);
+        CPPUNIT_ASSERT_EQUAL(8, size);
+        CPPUNIT_ASSERT_EQUAL(FdoSpatialOperations_Contains, sop[0]);
+        CPPUNIT_ASSERT_EQUAL(FdoSpatialOperations_Crosses, sop[1]);
+        CPPUNIT_ASSERT_EQUAL(FdoSpatialOperations_Disjoint, sop[2]);
+        CPPUNIT_ASSERT_EQUAL(FdoSpatialOperations_Equals, sop[3]);
+        CPPUNIT_ASSERT_EQUAL(FdoSpatialOperations_Intersects, sop[4]);
+        CPPUNIT_ASSERT_EQUAL(FdoSpatialOperations_Overlaps, sop[5]);
+        CPPUNIT_ASSERT_EQUAL(FdoSpatialOperations_Touches, sop[6]);
+        CPPUNIT_ASSERT_EQUAL(FdoSpatialOperations_Within, sop[7]);
+
+        // TODO: Add tests after implemetned
+        //FilterCapabilities::GetDistanceOperations(FdoInt32& size)
+        //FilterCapabilities::SupportsGeodesicDistance()
+        //FilterCapabilities::SupportsNonLiteralGeometricOperations()
+    }
+    catch (FdoException* ex)
+    {
+        BaseTestCase::fail(ex);
+    }
 }
 
 void CapabilitiesTest::testExpressionCapabilities()
 {
-  CPPUNIT_FAIL("Not implemented");
+    try
+    {
+        FdoPtr<FdoIConnection> conn = GetConnection();
+        FdoPtr<FdoIFilterCapabilities> fc = conn->GetFilterCapabilities();
+
+        FdoInt32 size = 0;
+
+        CPPUNIT_FAIL("NOT IMPLEMENTED");
+    }
+    catch (FdoException* ex)
+    {
+        BaseTestCase::fail(ex);
+    }
 }
 
 void CapabilitiesTest::testGeometryCapabilities()
 {
-  CPPUNIT_FAIL("Not implemented");
+    try
+    {
+        FdoPtr<FdoIConnection> conn = GetConnection();
+        FdoPtr<FdoIFilterCapabilities> fc = conn->GetFilterCapabilities();
+
+        FdoInt32 size = 0;
+
+        CPPUNIT_FAIL("NOT IMPLEMENTED");
+    }
+    catch (FdoException* ex)
+    {
+        BaseTestCase::fail(ex);
+    }
 }
 
 void CapabilitiesTest::testTopologyCapabilities()
 {
-  CPPUNIT_FAIL("Not implemented");
+    try
+    {
+        FdoPtr<FdoIConnection> conn = GetConnection();
+        FdoPtr<FdoIFilterCapabilities> fc = conn->GetFilterCapabilities();
+
+        FdoInt32 size = 0;
+
+        CPPUNIT_FAIL("NOT IMPLEMENTED");
+    }
+    catch (FdoException* ex)
+    {
+        BaseTestCase::fail(ex);
+    }
 }
