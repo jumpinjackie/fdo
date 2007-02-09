@@ -16,6 +16,7 @@
 //
 #include "Pch.h"
 #include "BaseTestCase.h"
+#include "TestConfig.h"
 
 // std
 #include <sstream>
@@ -23,8 +24,6 @@
 #include <iomanip>
 
 namespace fdo { namespace postgis { namespace test {
-
-const wchar_t* providerName = L"OSGeo.PostGIS.3.2";
 
 BaseTestCase::BaseTestCase() : mConnection(NULL)
 {
@@ -37,14 +36,14 @@ BaseTestCase::~BaseTestCase()
 void BaseTestCase::setUp()
 {
     FdoPtr<IConnectionManager> mgr = FdoFeatureAccessManager::GetConnectionManager();
-    mConnection = mgr->CreateConnection(providerName);
+    mConnection = mgr->CreateConnection(gTestConfig.getProviderName());
 }
 
 void BaseTestCase::tearDown()
 {
     mConnection = NULL;
     FdoPtr<IConnectionManager> mgr = FdoFeatureAccessManager::GetConnectionManager();
-    mgr->FreeLibrary(providerName);
+    mgr->FreeLibrary(gTestConfig.getProviderName());
 }
 
 FdoIConnection* BaseTestCase::GetConnection()

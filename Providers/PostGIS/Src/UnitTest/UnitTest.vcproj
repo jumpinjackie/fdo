@@ -65,7 +65,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\cppunit\lib&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\debug&quot;;&quot;$(FDOTHIRDPARTY)\boost_1_32_0\bin\boost\libs\program_options\build\boost_program_options.dll\vc-8_0\debug\threading-multi&quot;"
+				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\cppunit\lib&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\debug&quot;;&quot;$(FDOTHIRDPARTY)\boost_1_32_0\bin\boost\libs\program_options\build\libboost_program_options.lib\vc-8_0\debug\threading-multi&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="1"
@@ -219,6 +219,14 @@
 			</File>
 			<File
 				RelativePath=".\ConnectionTest.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TestConfig.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\TestConfig.h"
 				>
 			</File>
 		</Filter>
