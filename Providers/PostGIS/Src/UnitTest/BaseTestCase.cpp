@@ -73,16 +73,16 @@ void BaseTestCase::fail(FdoException* ex)
     CPPUNIT_FAIL(tmp);
 }
 
-void BaseTestCase::fail(std::exception const& e)
+void BaseTestCase::fail(std::exception& e)
 {
-    std::string msg("\n*** STD FAILURE ***\n");
+    std::string msg("\n*** STD FAILURE ***\n *** ");
     msg += e.what();
     CPPUNIT_FAIL(msg);
 }
 
 void BaseTestCase::fail(char const* error)
 {
-    std::string msg("\n*** FAILURE ***\n");
+    std::string msg("\n*** FAILURE ***\n *** ");
     msg += error;
     CPPUNIT_FAIL(msg);
 }

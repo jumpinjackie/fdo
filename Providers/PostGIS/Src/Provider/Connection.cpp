@@ -206,15 +206,18 @@ FdoConnectionState Connection::Open()
 
     if (CONNECTION_OK != PQstatus(mPgConn))
     {
-        Close();
+        // Ask for failure reason
+        FdoStringP msg(PQerrorMessage(mPgConn));
 
-        // TODO: How to shout about not being able to connect?
+        // Release server-side resources
+        Close();
+        assert(NULL == mPgConn);
+
+        throw FdoConnectionException::Create(msg);
     }
-    else
-    {
-        // Connected
-        mConnState = FdoConnectionState_Open;
-    }
+
+    // Connected
+    mConnState = FdoConnectionState_Open;
 
     return GetConnectionState();
 }

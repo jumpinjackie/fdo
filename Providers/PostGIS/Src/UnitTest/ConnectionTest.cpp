@@ -90,9 +90,5 @@ void ConnectionTest::testConnect()
     {
         BaseTestCase::fail(e);
     }
-    catch (...)
-    {
-        BaseTestCase::unknown();
-    }
 }
 

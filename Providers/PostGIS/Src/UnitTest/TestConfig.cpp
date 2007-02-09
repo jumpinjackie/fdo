@@ -117,10 +117,10 @@ FdoStringP TestConfig::getConnectionString() const
 {
     FdoStringP cs =
         FdoStringP::Format(L"service=%ls;username=%ls;password=%ls;datastore=%ls",
-        getPropertyService(),
-        getPropertyUsername(),
-        getPropertyPassword(),
-        getPropertyDatastore());
+        static_cast<FdoString*>(getPropertyService()),
+        static_cast<FdoString*>(getPropertyUsername()),
+        static_cast<FdoString*>(getPropertyPassword()),
+        static_cast<FdoString*>(getPropertyDatastore()));
 
     return cs;
 }
@@ -139,11 +139,10 @@ FdoStringP TestConfig::getProperty(std::string const& name) const
 {
     validate();
 
-    Data::connstr_t::const_iterator pos = data_.connstr.find("username");
+    Data::connstr_t::const_iterator pos = data_.connstr.find(name);
     if (data_.connstr.end() == pos)
     {
-        std::string msg("Can not find property: ");
-        msg += "username";
+        std::string msg("Can not find property: " + name);
         throw std::runtime_error(msg);
     }
 
