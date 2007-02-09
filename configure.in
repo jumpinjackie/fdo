@@ -35,7 +35,7 @@ AC_PROG_YACC
 AC_DISABLE_STATIC
 AM_PROG_LIBTOOL
 
-AC_SUBST(VERSION, "3.2.0")
+AC_SUBST(VERSION, "3.3.0")
 
 dnl *******************************************************
 dnl FDO 3.3.0 Configuration
