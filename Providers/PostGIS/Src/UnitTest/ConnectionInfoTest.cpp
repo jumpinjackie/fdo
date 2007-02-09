@@ -17,6 +17,9 @@
 #include "Pch.h"
 #include "ConnectionInfoTest.h"
 #include "BaseTestCase.h"
+#include "TestConfig.h"
+using namespace fdo::postgis::test;
+#include <iostream>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(ConnectionInfoTest);
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(ConnectionInfoTest, "ConnectionInfoTest");
@@ -29,11 +32,25 @@ ConnectionInfoTest::~ConnectionInfoTest()
 {
 }
 
+void ConnectionInfoTest::setUp()
+{
+    mConn = BaseTestCase::GetConnection();
+    mConn->SetConnectionString(gTestConfig.getConnectionString());
+}
+void ConnectionInfoTest::tearDown()
+{
+    mConn->Close ();
+	FDO_SAFE_RELEASE(mConn.p);
+}
+
 void ConnectionInfoTest::testProviderName()
 {
     try
     {
-        CPPUNIT_ASSERT(false);
+        FdoPtr<FdoIConnectionInfo> info = mConn->GetConnectionInfo();
+
+        CPPUNIT_ASSERT_EQUAL(gTestConfig.getProviderName(),
+            FdoStringP(info->GetProviderName()));
     }
     catch (FdoException* ex)
     {
@@ -41,34 +58,14 @@ void ConnectionInfoTest::testProviderName()
     }
 }
 
-void ConnectionInfoTest::testProviderDisplayName()
-{
-    try
-    {
-        CPPUNIT_ASSERT(false);
-    }
-    catch (FdoException* ex)
-    {
-        BaseTestCase::fail(ex);
-    }
-}
-
-void ConnectionInfoTest::testProviderDescription()
-{
-    try
-    {
-        CPPUNIT_ASSERT(false);
-    }
-    catch (FdoException* ex)
-    {
-        BaseTestCase::fail(ex);
-    }
-}
 void ConnectionInfoTest::testProviderVersion()
 {
     try
     {
-        CPPUNIT_ASSERT(false);
+        FdoPtr<FdoIConnectionInfo> info = mConn->GetConnectionInfo();
+
+        CPPUNIT_ASSERT_EQUAL(gTestConfig.getProviderVersion(),
+            FdoStringP(info->GetProviderVersion()));
     }
     catch (FdoException* ex)
     {
@@ -80,7 +77,10 @@ void ConnectionInfoTest::testFeatureDataObjectsVersion()
 {
     try
     {
-        CPPUNIT_ASSERT(false);
+        FdoPtr<FdoIConnectionInfo> info = mConn->GetConnectionInfo();
+
+        CPPUNIT_ASSERT_EQUAL(gTestConfig.getFdoVersion(),
+            FdoStringP(info->GetFeatureDataObjectsVersion()));
     }
     catch (FdoException* ex)
     {
@@ -92,7 +92,40 @@ void ConnectionInfoTest::testConnectionProperties()
 {
     try
     {
-        CPPUNIT_ASSERT(false);
+        mConn->SetConnectionString(L"service=mydb@name.domain.net:2345;username=root;password=secret;datastore=myfdo");
+        FdoPtr<FdoIConnectionInfo> info = mConn->GetConnectionInfo();
+        FdoPtr<FdoIConnectionPropertyDictionary> dict = 
+            info->GetConnectionProperties();
+
+        FdoInt32 size = 0;
+        FdoString** names = dict->GetPropertyNames(size);
+        CPPUNIT_ASSERT(NULL != names);
+
+        for (FdoInt32 i = 0; i < size; i++)
+        {
+            FdoStringP name(names[i]);
+
+            if (name == L"service")
+            {
+                CPPUNIT_ASSERT_MESSAGE("Incorrect service",
+                    FdoStringP(L"mydb@name.domain.net:2345") == dict->GetProperty(name));
+            }
+            else if (name == L"username")
+            {
+                CPPUNIT_ASSERT_MESSAGE("Incorrect username",
+                    FdoStringP(L"root") == dict->GetProperty(name));
+            }
+            else if (name == L"password")
+            {
+                CPPUNIT_ASSERT_MESSAGE("Incorrect password",
+                    FdoStringP(L"secret") == dict->GetProperty(name));
+            }
+            else if (name == L"datastore")
+            {
+                CPPUNIT_ASSERT_MESSAGE("Incorrect datastore",
+                    FdoStringP(L"myfdo") == dict->GetProperty(name));
+            }
+        }
     }
     catch (FdoException* ex)
     {
@@ -100,10 +133,15 @@ void ConnectionInfoTest::testConnectionProperties()
     }
 }
 
-void ConnectionInfoTest::testProviderDatastoreType(){
+void ConnectionInfoTest::testProviderDatastoreType()
+{
     try
     {
-        CPPUNIT_ASSERT(false);
+        FdoPtr<FdoIConnectionInfo> info = mConn->GetConnectionInfo();
+
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect datastore type",
+            FdoProviderDatastoreType_DatabaseServer,
+            info->GetProviderDatastoreType());
     }
     catch (FdoException* ex)
     {
@@ -115,7 +153,10 @@ void ConnectionInfoTest::testDependentFileNames()
 {
     try
     {
-        CPPUNIT_ASSERT(false);
+        FdoPtr<FdoIConnectionInfo> info = mConn->GetConnectionInfo();
+
+        CPPUNIT_ASSERT_MESSAGE("Expected empty list of dependant files",
+            NULL == info->GetDependentFileNames());
     }
     catch (FdoException* ex)
     {

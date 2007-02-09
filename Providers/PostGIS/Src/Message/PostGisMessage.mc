@@ -174,7 +174,12 @@ Language=English
 A temporary file could not be created in directory '%1$ls'.
 .
 MessageId=2020
-SymbolicName=M_KGORA_INVALID_CONNECTION_STRING
+SymbolicName=MSG_POSTGIS_EMPTY_CONNECTION_STRING
+Language=English
+Connection string is empty.
+.
+MessageId=2021
+SymbolicName=MSG_POSTGIS_INVALID_CONNECTION_STRING
 Language=English
 Invalid connection string '%1$ls'
 .

@@ -46,7 +46,7 @@ namespace fdo { namespace postgis {
 //
 // General descriptive information about PostGIS Provier
 //
-FdoString* ProviderName = L"OSGeo.PostGIS.1.0";
+FdoString* ProviderName = L"OSGeo.PostGIS.3.2";
 FdoString* ProviderVersion = L"1.0.0.0";
 FdoString* FdoVersion = L"3.2.0.0";
 

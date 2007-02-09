@@ -138,6 +138,12 @@ FdoString* Connection::GetConnectionString()
 
 void Connection::SetConnectionString(FdoString* value)
 {
+    if (FdoStringP(value).GetLength() <= 0)
+    {
+        throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_EMPTY_CONNECTION_STRING,
+                                   "Connection string is empty."));
+    }
+
     if (FdoConnectionState_Closed == GetConnectionState()
         || FdoConnectionState_Pending == GetConnectionState())
     {
@@ -154,7 +160,7 @@ void Connection::SetConnectionString(FdoString* value)
     else
     {
         throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_CONNECTION_ALREADY_OPEN,
-                                   "The connection is already open."));
+                                   "Connection is already open."));
     }
 }
 
@@ -228,7 +234,6 @@ void Connection::Close()
 
     // Must not be used again after PQfinish has been called
     mPgConn = NULL;
-
     mConnState = FdoConnectionState_Closed;
 }
 
