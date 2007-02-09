@@ -52,7 +52,7 @@ public:
     static void fail(FdoException* e);
 
     // Handles failure with standard exception
-    static void fail(std::exception const& e);
+    static void fail(std::exception& e);
 
     // Handles failure with error message
     static void fail(char const* e);
