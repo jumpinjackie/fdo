@@ -25,8 +25,6 @@ class FdoException;
 
 namespace fdo { namespace postgis { namespace test {
 
-extern const wchar_t* providerName;
-
 // Common base test case for PostGIS tests.
 //
 class BaseTestCase : public CppUnit::TestCase
@@ -50,7 +48,10 @@ public:
     // Factory method creating new instance of PostGIS connection.
     virtual FdoIConnection* GetConnection();
 
+    // Handles failure with FDO exception
     static void fail(FdoException* ex);
+
+    // Handles failure with error message
     static void fail(char const* error);
 
 private:
