@@ -20,16 +20,18 @@
 #include "Connection.h"
 #include "ConnectionInfo.h"
 #include "ConnectionCapabilities.h"
-#include "SQLCommand.h"
+#include "CommandCapabilities.h"
+#include "ListDataStores.h"
+#include "CreateDataStore.h"
+#include "DestroyDataStore.h"
+#include "DescribeSchemaCommand.h"
+#include "GetSpatialContextsCommand.h"
 #include "DeleteCommand.h"
 #include "InsertCommand.h"
 #include "SelectCommand.h"
 #include "UpdateCommand.h"
-#include "DescribeSchemaCommand.h"
-#include "GetSpatialContextsCommand.h"
-#include "ListDataStores.h"
-#include "CreateDataStore.h"
-#include "DestroyDataStore.h"
+#include "SQLCommand.h"
+
 // Message
 #define FDOPOSTGIS_MESSAGE_DEFINE
 #include "../Message/inc/PostGisMessage.h"
@@ -97,8 +99,7 @@ FdoISchemaCapabilities* Connection::GetSchemaCapabilities()
 
 FdoICommandCapabilities* Connection::GetCommandCapabilities()
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    return (new CommandCapabilities());
 }
 
 FdoIFilterCapabilities* Connection::GetFilterCapabilities()

@@ -74,9 +74,33 @@ void CapabilitiesTest::testConnectionCapabilities()
 
 void CapabilitiesTest::testCommandsCapabilities()
 {
-    try
-    {
-        CPPUNIT_ASSERT(true);
+   try
+   {
+        FdoPtr<FdoIConnection> conn = GetConnection();
+        FdoPtr<FdoICommandCapabilities> cc = conn->GetCommandCapabilities();
+
+        FdoInt32 size = 0;
+        FdoInt32* commands = cc->GetCommands(size);
+        CPPUNIT_ASSERT(10 == size);
+        CPPUNIT_ASSERT(NULL != commands);
+        CPPUNIT_ASSERT(commands[0] == FdoCommandType_Select);
+        CPPUNIT_ASSERT(commands[1] == FdoCommandType_Insert);
+		CPPUNIT_ASSERT(commands[2] == FdoCommandType_Update);
+        CPPUNIT_ASSERT(commands[3] == FdoCommandType_Delete);
+        CPPUNIT_ASSERT(commands[4] == FdoCommandType_SQLCommand);
+        CPPUNIT_ASSERT(commands[5] == FdoCommandType_DescribeSchema);
+        CPPUNIT_ASSERT(commands[6] == FdoCommandType_CreateDataStore);
+		CPPUNIT_ASSERT(commands[7] == FdoCommandType_DestroyDataStore);
+        CPPUNIT_ASSERT(commands[8] == FdoCommandType_ListDataStores);
+        CPPUNIT_ASSERT(commands[9] == FdoCommandType_GetSpatialContexts);
+
+        CPPUNIT_ASSERT_EQUAL(false, cc->SupportsParameters());
+        CPPUNIT_ASSERT_EQUAL(false, cc->SupportsTimeout());
+        CPPUNIT_ASSERT_EQUAL(false, cc->SupportsSelectExpressions());
+        CPPUNIT_ASSERT_EQUAL(false, cc->SupportsSelectFunctions());
+        CPPUNIT_ASSERT_EQUAL(false, cc->SupportsSelectDistinct());
+        CPPUNIT_ASSERT_EQUAL(false, cc->SupportsSelectOrdering());
+        CPPUNIT_ASSERT_EQUAL(false, cc->SupportsSelectGrouping());
     }
     catch (FdoException* ex)
     {

@@ -46,49 +46,59 @@ void CommandCapabilities::Dispose()
 
 FdoInt32* CommandCapabilities::GetCommands(FdoInt32& size)
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    // TODO: Verify list of commands
+
+    static FdoCommandType commands[] =
+    {
+        FdoCommandType_Select,
+        FdoCommandType_Insert,
+        FdoCommandType_Update,
+        FdoCommandType_Delete,
+        FdoCommandType_SQLCommand,
+        FdoCommandType_DescribeSchema,
+        FdoCommandType_CreateDataStore,
+        FdoCommandType_DestroyDataStore,
+        FdoCommandType_ListDataStores,
+        FdoCommandType_GetSpatialContexts
+    };
+
+    size = (sizeof(commands) / sizeof(FdoCommandType));
+
+    return (reinterpret_cast<FdoInt32*>(commands));
 }
 
 bool CommandCapabilities::SupportsParameters()
 {
-    assert(!"NOT IMPLEMENTED");
     return false;
 }
 
 bool CommandCapabilities::SupportsTimeout()
 {
-    assert(!"NOT IMPLEMENTED");
     return false;
 }
 
 bool CommandCapabilities::SupportsSelectExpressions()
 {
-    assert(!"NOT IMPLEMENTED");
     return false;
 }
 
 bool CommandCapabilities::SupportsSelectFunctions()
 {
-    assert(!"NOT IMPLEMENTED");
     return false;
 }
 
 bool CommandCapabilities::SupportsSelectDistinct()
 {
-    assert(!"NOT IMPLEMENTED");
     return false;
 }
 
 bool CommandCapabilities::SupportsSelectOrdering()
 {
-    assert(!"NOT IMPLEMENTED");
     return false;
 }
 
 bool CommandCapabilities::SupportsSelectGrouping()
 {
-    assert(!"NOT IMPLEMENTED");
     return false;
 }
 
