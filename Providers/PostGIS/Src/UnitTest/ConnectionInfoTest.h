@@ -36,9 +36,6 @@ public:
     ConnectionInfoTest();
     virtual ~ConnectionInfoTest();
 
-	virtual void setUp();
-	virtual void tearDown();
-
     //
     // Tests
     //
@@ -51,10 +48,6 @@ public:
     void testConnectionProperties();
     void testProviderDatastoreType();
     void testDependentFileNames();
-
-private:
-
-    FdoPtr<FdoIConnection> mConn;
 
 };
 

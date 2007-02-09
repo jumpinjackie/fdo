@@ -17,6 +17,7 @@
 #include "Pch.h"
 #include "CapabilitiesTest.h"
 #include "BaseTestCase.h"
+#include "TestConfig.h"
 
 CPPUNIT_TEST_SUITE_REGISTRATION(CapabilitiesTest);
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(CapabilitiesTest, "CapabilitiesTest");
@@ -33,7 +34,37 @@ void CapabilitiesTest::testConnectionCapabilities()
 {
     try
     {
-        CPPUNIT_ASSERT(true);
+        FdoPtr<FdoIConnection> conn = GetConnection();
+        FdoPtr<FdoIConnectionCapabilities> cc = conn->GetConnectionCapabilities();
+
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect threading capability",
+            FdoThreadCapability_PerConnectionThreaded,
+            cc->GetThreadCapability());
+
+        FdoInt32 size = 0;
+        FdoSpatialContextExtentType* sct = cc->GetSpatialContextTypes(size);
+        CPPUNIT_ASSERT(NULL != sct);
+        CPPUNIT_ASSERT(1 == size);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect spatial context type",
+            FdoSpatialContextExtentType_Static, sct[0]);
+
+        FdoLockType* lkt = cc->GetLockTypes(size);
+        CPPUNIT_ASSERT(NULL != lkt);
+        CPPUNIT_ASSERT(1 == size);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect lock type",
+            FdoLockType_Transaction, lkt[0]);
+
+        CPPUNIT_ASSERT_EQUAL(false, cc->SupportsLocking());
+        CPPUNIT_ASSERT_EQUAL(false, cc->SupportsTimeout());
+        CPPUNIT_ASSERT_EQUAL(false, cc->SupportsTransactions());
+        CPPUNIT_ASSERT_EQUAL(false, cc->SupportsLongTransactions());
+        CPPUNIT_ASSERT_EQUAL(true, cc->SupportsSQL());
+        CPPUNIT_ASSERT_EQUAL(false, cc->SupportsConfiguration());
+        CPPUNIT_ASSERT_EQUAL(true, cc->SupportsMultipleSpatialContexts());
+        CPPUNIT_ASSERT_EQUAL(false, cc->SupportsCSysWKTFromCSysName());
+        CPPUNIT_ASSERT_EQUAL(false, cc->SupportsWrite());
+        CPPUNIT_ASSERT_EQUAL(false, cc->SupportsMultiUserWrite());
+        CPPUNIT_ASSERT_EQUAL(false, cc->SupportsFlush());
     }
     catch (FdoException* ex)
     {

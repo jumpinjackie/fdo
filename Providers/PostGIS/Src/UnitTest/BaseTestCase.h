@@ -39,8 +39,14 @@ public:
     // Nothing is uninitialized here.
     virtual ~BaseTestCase();
 
+    // Named constructor initializes connection instance.
+    virtual void setUp();
+
+    // Named destructor uninitializes connection instance.
+	virtual void tearDown();
+
     // Factory method creating new instance of PostGIS connection.
-    static FdoIConnection* GetConnection();
+    FdoIConnection* GetConnection();
 
     // Handles failure with FDO exception
     static void fail(FdoException* e);
@@ -53,6 +59,10 @@ public:
 
     // Process unknown and unhandled exception
     static void unknown();
+
+private:
+
+    FdoPtr<FdoIConnection> mConn;
 
 };
 

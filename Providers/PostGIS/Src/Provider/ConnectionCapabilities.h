@@ -40,7 +40,7 @@ public:
     FdoThreadCapability GetThreadCapability();
 
     /// Get spatial context extent types supported by the PostGIS provider.
-    FdoSpatialContextExtentType* GetpatialContextTypes(FdoInt32& size);
+    FdoSpatialContextExtentType* GetSpatialContextTypes(FdoInt32& size);
 
     /// Get array of the FdoLockType values supported by the feature provider.
     FdoLockType* GetLockTypes(FdoInt32& size);
