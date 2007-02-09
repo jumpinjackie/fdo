@@ -21,7 +21,7 @@ dnl Configure.in for OSGeo FDO Core (Fdo, Utilities, Thirdparty)
 # Variables
 # Following are the makefile directories 
 #----------------------------------------------------------------------
-AC_INIT(FDO,3.2.0,https://fdocore.osgeo.org)
+AC_INIT(FDO,3.3.0,https://fdocore.osgeo.org)
 AC_CONFIG_SRCDIR(configure.in)
 AM_INIT_AUTOMAKE
 
@@ -38,7 +38,7 @@ AM_PROG_LIBTOOL
 AC_SUBST(VERSION, "3.2.0")
 
 dnl *******************************************************
-dnl FDO 3.2.0 Configuration
+dnl FDO 3.3.0 Configuration
 dnl FDO / FDO Utilities / FDO Thirdpary paths
 dnl *******************************************************
 # custom Fdo path specification 

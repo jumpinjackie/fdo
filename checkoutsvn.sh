@@ -56,6 +56,7 @@ ARCENABLECHK=no
 RDBMSENABLECHK=no
 GDALENABLECHK=no
 KINGENABLECHK=no
+OGRENABLECHK=no
 SHOWHELP=no
 
 FDO_SVN_USERNAME=
@@ -132,6 +133,7 @@ do
         UTILENABLECHK=no
         GDALENABLECHK=no
         KINGENABLECHK=no
+        OGRENABLECHK=no
      fi
      if test -z "$1"; then
         echo "Invalid parameter"
@@ -153,6 +155,7 @@ do
         RDBMSENABLECHK=no
         GDALENABLECHK=no
         KINGENABLECHK=no
+        OGRENABLECHK=no
      elif test "$1" == fdocore; then
         FDOCOREENABLECHK=yes
         THRPENABLECHK=no
@@ -180,6 +183,8 @@ do
         GDALENABLECHK=yes
      elif test "$1" == king; then
         KINGENABLECHK=yes
+     elif test "$1" == ogr; then
+        OGRENABLECHK=yes
      else
         echo "Invalid parameter"
 	exit 1
@@ -239,6 +244,7 @@ if test "$SHOWHELP" == yes; then
    echo "                         rdbms"
    echo "                         gdal"
    echo "                         king"
+   echo "                         ogr"
    echo "User:           --u[ser]=user id"
    echo "Password:       --p[assword]=user password"
    echo "**********************************************************"
@@ -322,5 +328,10 @@ fi
 if test "$KINGENABLECHK" == yes; then
    echo "Checking out https://osgeo.org/svn/fdo/$FDO_SVN_SOURCEDIR/Providers/KingOracle"
    svn checkout https://osgeo.org/svn/fdo/$FDO_SVN_SOURCEDIR/Providers/KingOracle "$FDO_SVN_DESTDIR/Providers/KingOracle" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
+fi
+# Check out OGR Provider source files
+if test "$OGRENABLECHK" == yes; then
+   echo "Checking out https://osgeo.org/svn/fdo/$FDO_SVN_SOURCEDIR/Providers/OGR"
+   svn checkout https://osgeo.org/svn/fdo/$FDO_SVN_SOURCEDIR/Providers/OGR "$FDO_SVN_DESTDIR/Providers/OGR" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
 fi
 exit 0

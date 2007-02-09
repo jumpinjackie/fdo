@@ -50,7 +50,11 @@ WMSENABLECHK=yes
 ARCENABLECHK=yes
 RDBMSENABLECHK=yes
 GDALENABLECHK=yes
+KINGENABLECHK=yes
+OGRENABLECHK=yes
+
 SHOWHELP=no
+
 FDOTARZIPFOLDER=/OpenSource_FDO
 FDOBUILDNUMBER=GXXX
 
@@ -70,7 +74,7 @@ do
   -b | --b | --build)
      if test -z	 "$1"; then
         echo "build number cannot be empty"
-	exit 1
+	    exit 1
      else 
         FDOBUILDNUMBER="$1"
      fi
@@ -79,7 +83,7 @@ do
   -o | --o | --outpath)
      if test -z	 "$1"; then
         echo "Destination folder can not be empty"
-	exit 1
+	    exit 1
      else 
         FDOTARZIPFOLDER="$1"
      fi
@@ -88,7 +92,7 @@ do
   -i | --i | --inpath)
      if test -z	 "$1"; then
         echo "Destination folder can not be empty"
-	exit 1
+	    exit 1
      else 
         FDOSVNROOT="$1"
      fi
@@ -96,41 +100,47 @@ do
     ;;
   -w | --w | --with)
      if test "$DEFMODIFYCHK" == no; then
-	DEFMODIFYCHK=yes
-	FDOCOREENABLECHK=no
-	SHPENABLECHK=no
-	SDFENABLECHK=no
-	WFSENABLECHK=no
-	WMSENABLECHK=no
-	ARCENABLECHK=no
-	RDBMSENABLECHK=no
-	GDALENABLECHK=no
+	    DEFMODIFYCHK=yes
+	    FDOCOREENABLECHK=no
+	    SHPENABLECHK=no
+	    SDFENABLECHK=no
+	    WFSENABLECHK=no
+	    WMSENABLECHK=no
+	    ARCENABLECHK=no
+	    RDBMSENABLECHK=no
+	    GDALENABLECHK=no
+	    KINGENABLECHK=no
+	    OGRENABLECHK=no
      fi
      if test -z "$1"; then
         echo "Invalid parameter"
-	exit 1
+	    exit 1
      elif test "$1" == providers; then
-	SHPENABLECHK=yes
-	SDFENABLECHK=yes
-	WFSENABLECHK=yes
-	WMSENABLECHK=yes
-	ARCENABLECHK=yes
-	RDBMSENABLECHK=yes
-	GDALENABLECHK=yes
+	    SHPENABLECHK=yes
+	    SDFENABLECHK=yes
+	    WFSENABLECHK=yes
+	    WMSENABLECHK=yes
+	    ARCENABLECHK=yes
+	    RDBMSENABLECHK=yes
+	    GDALENABLECHK=yes
+	    KINGENABLECHK=yes
+	    OGRENABLECHK=yes
      elif test "$1" == all; then
-	FDOCOREENABLECHK=yes
-	SHPENABLECHK=yes
-	SDFENABLECHK=yes
-	WFSENABLECHK=yes
-	WMSENABLECHK=yes
-	ARCENABLECHK=yes
-	RDBMSENABLECHK=yes
-	GDALENABLECHK=yes
+	    FDOCOREENABLECHK=yes
+	    SHPENABLECHK=yes
+	    SDFENABLECHK=yes
+	    WFSENABLECHK=yes
+	    WMSENABLECHK=yes
+	    ARCENABLECHK=yes
+	    RDBMSENABLECHK=yes
+	    GDALENABLECHK=yes
+	    KINGENABLECHK=yes
+	    OGRENABLECHK=yes
      elif test "$1" == fdo; then
-	FDOCOREENABLECHK=yes
-	THRPENABLECHK=no
-	FDOENABLECHK=no
-	UTILENABLECHK=no
+	    FDOCOREENABLECHK=yes
+	    THRPENABLECHK=no
+	    FDOENABLECHK=no
+	    UTILENABLECHK=no
      elif test "$1" == shp; then
         SHPENABLECHK=yes
      elif test "$1" == sdf; then
@@ -145,6 +155,10 @@ do
         RDBMSENABLECHK=yes
      elif test "$1" == gdal; then
         GDALENABLECHK=yes
+     elif test "$1" == king; then
+        KINGENABLECHK=yes
+     elif test "$1" == ogr; then
+        OGRENABLECHK=yes
      else
         echo "Invalid parameter"
 	exit 1
@@ -189,6 +203,8 @@ if test "$SHOWHELP" == yes; then
    echo "                         arcsde"
    echo "                         rdbms"
    echo "                         gdal"
+   echo "                         king"
+   echo "                         ogr"
    echo "BuildNumber:    --b[uild]=User-Defined build number appended"
    echo "                          to the end of the tar.gz files"
    echo "**************************************************************************"
@@ -276,6 +292,26 @@ if test "$GDALENABLECHK" == yes; then
    tar -cf fdogdal-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
    rm -f fdogdal-3.3.0_"$FDOBUILDNUMBER".tar.gz
    gzip -9 fdogdal-3.3.0_"$FDOBUILDNUMBER".tar
+   rm -rf "$FDOTARZIPFOLDER"
+fi
+if test "$KINGENABLECHK" == yes; then
+   mkdir -p "$FDOTARZIPFOLDER"/Providers/KingOracle
+   svn export "$FDOSVNROOT"/Providers/KingOracle "$FDOTARZIPFOLDER"/Providers/KingOracle --force
+   find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
+   rm -f fdoking-3.3.0_"$FDOBUILDNUMBER".tar
+   tar -cf fdoking-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
+   rm -f fdoking-3.3.0_"$FDOBUILDNUMBER".tar.gz
+   gzip -9 fdoking-3.3.0_"$FDOBUILDNUMBER".tar
+   rm -rf "$FDOTARZIPFOLDER"
+fi
+if test "$OGRENABLECHK" == yes; then
+   mkdir -p "$FDOTARZIPFOLDER"/Providers/OGR
+   svn export "$FDOSVNROOT"/Providers/OGR "$FDOTARZIPFOLDER"/Providers/OGR --force
+   find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
+   rm -f fdoogr-3.3.0_"$FDOBUILDNUMBER".tar
+   tar -cf fdoogr-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
+   rm -f fdoogr-3.3.0_"$FDOBUILDNUMBER".tar.gz
+   gzip -9 fdoogr-3.3.0_"$FDOBUILDNUMBER".tar
    rm -rf "$FDOTARZIPFOLDER"
 fi
 
