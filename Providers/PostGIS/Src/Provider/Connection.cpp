@@ -139,6 +139,7 @@ FdoString* Connection::GetConnectionString()
 
 void Connection::SetConnectionString(FdoString* value)
 {
+    // TODO: Replace with connection string parsing utils recommended by Romica
     if (FdoStringP(value).GetLength() <= 0)
     {
         throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_EMPTY_CONNECTION_STRING,
