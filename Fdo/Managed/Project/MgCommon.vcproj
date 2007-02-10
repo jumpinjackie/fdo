@@ -101,7 +101,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.2.0.0%FDO_VERSION%&quot; -v&quot;..\Managed\Fdo.version&quot; $(OutDir)\OSGeo.FDO.Common.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.3.0.0%FDO_VERSION%&quot; -v&quot;..\Managed\Fdo.version&quot; $(OutDir)\OSGeo.FDO.Common.dll"
 			/>
 		</Configuration>
 		<Configuration
@@ -183,7 +183,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.2.0.0%FDO_VERSION%&quot; -v&quot;..\Managed\Fdo.version&quot; $(OutDir)\OSGeo.FDO.Common.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.3.0.0%FDO_VERSION%&quot; -v&quot;..\Managed\Fdo.version&quot; $(OutDir)\OSGeo.FDO.Common.dll"
 			/>
 		</Configuration>
 	</Configurations>
