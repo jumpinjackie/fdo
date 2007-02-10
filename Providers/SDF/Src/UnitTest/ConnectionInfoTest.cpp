@@ -131,7 +131,7 @@ FdoIConnection *ConnectionInfoTest::CreateDb()
 
 	delete[] mbsPath;
     FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager ();
-    connection = manager->CreateConnection (L"OSGeo.SDF.3.2");
+    connection = manager->CreateConnection (L"OSGeo.SDF.3.3");
 
     FdoPtr<FdoICreateSDFFile> crsdf = (FdoICreateSDFFile*)(connection->CreateCommand(SdfCommandType_CreateSDFFile));
 

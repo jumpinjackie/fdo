@@ -64,7 +64,7 @@ void ExtendedSelectTest::MainTest(bool fileSort, bool extendProps)
     {
         FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager ();
 
-        FdoPtr<FdoIConnection> connection = manager->CreateConnection (L"OSGeo.SDF.3.2");
+        FdoPtr<FdoIConnection> connection = manager->CreateConnection (L"OSGeo.SDF.3.3");
         OpenConnection(connection,SDF_FILE);
 
         FdoPtr<SdfIExtendedSelect> select = (SdfIExtendedSelect*)connection->CreateCommand(SdfCommandType_ExtendedSelect); 
@@ -318,7 +318,7 @@ void ExtendedSelectTest::WorldTest_SDF()
     {
         FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager ();
 
-        FdoPtr<FdoIConnection> connection = manager->CreateConnection (L"OSGeo.SDF.3.2");
+        FdoPtr<FdoIConnection> connection = manager->CreateConnection (L"OSGeo.SDF.3.3");
         OpenConnection(connection,WORLD);
 
         WorldTest( connection );
@@ -336,7 +336,7 @@ void ExtendedSelectTest::WorldTest_SDF_name1()
     {
         FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager ();
 
-        FdoPtr<FdoIConnection> connection = manager->CreateConnection (L"OSGeo.SDF.3.2");
+        FdoPtr<FdoIConnection> connection = manager->CreateConnection (L"OSGeo.SDF.3.3");
         OpenConnection(connection,WORLD_N1);
 
         WorldTest( connection );
@@ -354,7 +354,7 @@ void ExtendedSelectTest::WorldTest_SDF_name2()
     {
         FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager ();
 
-        FdoPtr<FdoIConnection> connection = manager->CreateConnection (L"OSGeo.SDF.3.2");
+        FdoPtr<FdoIConnection> connection = manager->CreateConnection (L"OSGeo.SDF.3.3");
         OpenConnection(connection, WORLD_N2, true);
 
         WorldTest( connection );
@@ -372,7 +372,7 @@ void ExtendedSelectTest::WorldTest_SDF_name3()
     {
         FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager ();
 
-        FdoPtr<FdoIConnection> connection = manager->CreateConnection (L"OSGeo.SDF.3.2");
+        FdoPtr<FdoIConnection> connection = manager->CreateConnection (L"OSGeo.SDF.3.3");
         OpenConnection(connection, WORLD_N2);
 
         CPPUNIT_ASSERT_MESSAGE ("open connection should fail", false);
@@ -393,7 +393,7 @@ void ExtendedSelectTest::WorldTest_SDF_name4()
     {
         FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager ();
 
-        FdoPtr<FdoIConnection> connection = manager->CreateConnection (L"OSGeo.SDF.3.2");
+        FdoPtr<FdoIConnection> connection = manager->CreateConnection (L"OSGeo.SDF.3.3");
         connection->SetConnectionString(L"Fi_le=\"../../TestData/C~`!@#$%^&()_-+=}{[];',re.sdf\"");
         connection->Open();
 
@@ -415,7 +415,7 @@ void ExtendedSelectTest::CreateSDF_SPchars()
     {
         FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager ();
 
-        FdoPtr<FdoIConnection> connection = manager->CreateConnection (L"OSGeo.SDF.3.2");
+        FdoPtr<FdoIConnection> connection = manager->CreateConnection (L"OSGeo.SDF.3.3");
 
         std::wstring connStr = std::wstring(L"File=\"") + std::wstring(WORLD_N3) + std::wstring(L"\";ReadOnly=FALSE");
         connection->SetConnectionString(connStr.c_str());
@@ -496,7 +496,7 @@ void ExtendedSelectTest::UpdateTest()
     {
         FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager ();
 
-        FdoPtr<FdoIConnection> conn = manager->CreateConnection (L"OSGeo.SDF.3.2");
+        FdoPtr<FdoIConnection> conn = manager->CreateConnection (L"OSGeo.SDF.3.3");
 
         OpenConnection(conn, DEST_FILE);    
 
@@ -548,7 +548,7 @@ void ExtendedSelectTest::Test_Fix823645()
     {
         FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager ();
 
-        FdoPtr<FdoIConnection> connection = manager->CreateConnection (L"OSGeo.SDF.3.2");
+        FdoPtr<FdoIConnection> connection = manager->CreateConnection (L"OSGeo.SDF.3.3");
         FdoPtr<FdoIConnectionInfo> pInfo = connection->GetConnectionInfo();
         FdoPtr<FdoIConnectionPropertyDictionary> pProps = pInfo->GetConnectionProperties();
         pProps->SetProperty(L"File", std::wstring(WORLD_N3).c_str());

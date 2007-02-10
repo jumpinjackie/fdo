@@ -128,7 +128,7 @@ void FdoMultiThreadTest::StartTest ( FunctionInfo *funInfo )
         for (int i = 0; i < NUMBER_OF_THREADS; i++)
 	    {
             info[i].connectionId = i;
-            info[i].mConn = manager->CreateConnection (L"OSGeo.SDF.3.2");
+            info[i].mConn = manager->CreateConnection (L"OSGeo.SDF.3.3");
 			OpenConnection(info[i].mConn,SDF_FILE);
 	    } 
     }
