@@ -93,7 +93,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning WFSProvider.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.2.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\WFSProvider.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\WFSProvider.dll"
 			/>
 		</Configuration>
 		<Configuration
@@ -171,7 +171,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning WFSProvider.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.2.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\WFSProvider.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\WFSProvider.dll"
 			/>
 		</Configuration>
 	</Configurations>
