@@ -3,8 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PostGisProvider", "Provider\PostGisProvider.vcproj", "{81A1E411-2952-42B5-8430-B588A89D9BE2}"
 	ProjectSection(ProjectDependencies) = postProject
-		{04CC6BCD-179D-4627-A183-4E628580B4FB} = {04CC6BCD-179D-4627-A183-4E628580B4FB}
 		{A250F14F-E1A9-4F17-9E35-2D2CA8013AA4} = {A250F14F-E1A9-4F17-9E35-2D2CA8013AA4}
+		{04CC6BCD-179D-4627-A183-4E628580B4FB} = {04CC6BCD-179D-4627-A183-4E628580B4FB}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PostGisOverrides", "Overrides\PostGisOverrides.vcproj", "{A250F14F-E1A9-4F17-9E35-2D2CA8013AA4}"
@@ -19,8 +19,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PostGisMessage", "Message\P
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTest", "UnitTest\UnitTest.vcproj", "{7F2484C6-7E04-494F-AC89-87AD765CC311}"
 	ProjectSection(ProjectDependencies) = postProject
-		{A250F14F-E1A9-4F17-9E35-2D2CA8013AA4} = {A250F14F-E1A9-4F17-9E35-2D2CA8013AA4}
 		{81A1E411-2952-42B5-8430-B588A89D9BE2} = {81A1E411-2952-42B5-8430-B588A89D9BE2}
+		{A250F14F-E1A9-4F17-9E35-2D2CA8013AA4} = {A250F14F-E1A9-4F17-9E35-2D2CA8013AA4}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_connect", "..\..\test\test_connect.vcproj", "{989C1379-E4EE-401E-A9DB-2CF1898303C6}"
@@ -29,6 +29,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_connect", "..\..\test\
 		{A250F14F-E1A9-4F17-9E35-2D2CA8013AA4} = {A250F14F-E1A9-4F17-9E35-2D2CA8013AA4}
 		{04CC6BCD-179D-4627-A183-4E628580B4FB} = {04CC6BCD-179D-4627-A183-4E628580B4FB}
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_list_datastores", "..\..\test\test_list_datastores.vcproj", "{DB4BB42A-CF6A-4D51-85E1-ECA24BCD7D00}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -56,6 +58,10 @@ Global
 		{989C1379-E4EE-401E-A9DB-2CF1898303C6}.Debug|Win32.Build.0 = Debug|Win32
 		{989C1379-E4EE-401E-A9DB-2CF1898303C6}.Release|Win32.ActiveCfg = Release|Win32
 		{989C1379-E4EE-401E-A9DB-2CF1898303C6}.Release|Win32.Build.0 = Release|Win32
+		{DB4BB42A-CF6A-4D51-85E1-ECA24BCD7D00}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DB4BB42A-CF6A-4D51-85E1-ECA24BCD7D00}.Debug|Win32.Build.0 = Debug|Win32
+		{DB4BB42A-CF6A-4D51-85E1-ECA24BCD7D00}.Release|Win32.ActiveCfg = Release|Win32
+		{DB4BB42A-CF6A-4D51-85E1-ECA24BCD7D00}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
