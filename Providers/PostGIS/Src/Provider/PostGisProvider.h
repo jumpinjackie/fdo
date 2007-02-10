@@ -26,6 +26,7 @@
 #include <FdoGeometry.h>
 #include <FdoCommonMiscUtil.h>
 #include <FdoCommonConnPropDictionary.h>
+#include <FdoCommonConnStringParser.h>
 
 // PostGIS Messages
 #include "../Message/inc/PostGisMessage.h"
