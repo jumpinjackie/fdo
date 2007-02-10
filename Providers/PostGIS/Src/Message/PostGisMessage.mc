@@ -183,7 +183,16 @@ SymbolicName=MSG_POSTGIS_INVALID_CONNECTION_STRING
 Language=English
 Invalid connection string '%1$ls'
 .
-
+MessageId=2022
+SymbolicName=MSG_POSTGIS_CONNECTION_MISSING_REQUIRED_PROPERTY
+Language=English
+The connection property '%1$ls' is required but wasn't specified.
+.
+MessageId=2023
+SymbolicName=MSG_POSTGIS_INVALID_CONNECTION_PROPERTY
+Language=English
+Invalid connection property name '%1$ls'
+.
 
 ;//************************************************************************************
 ;//************************************************************************************
