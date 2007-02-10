@@ -5,8 +5,8 @@
     <DisplayName>OSGeo FDO Provider for ArcSDE</DisplayName>
     <Description>FDO Provider for ESRI ArcSDE</Description>
     <IsManaged>False</IsManaged>
-    <Version>3.2.0.0</Version>
-    <FeatureDataObjectsVersion>3.2.0.0</FeatureDataObjectsVersion>
+    <Version>3.3.0.0</Version>
+    <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion>
     <LibraryPath>.\ArcSDEProvider.dll</LibraryPath>
   </FeatureProvider>
 </FeatureProviderRegistry>

@@ -22,8 +22,8 @@
 #define ARCSDE_PROVIDER_NAME						L"OSGeo.ArcSDE.3.2"
 #define ARCSDE_PROVIDER_DEFAULT_DISPLAY_NAME	"OSGeo FDO Provider for ArcSDE"
 #define ARCSDE_PROVIDER_DEFAULT_DESCRIPTION		"Read/write access to an ESRI ArcSDE-based data store, using Oracle and SQL Server."
-#define ARCSDE_PROVIDER_VERSION					L"3.2.0.0"
-#define ARCSDE_FDO_VERSION						L"3.2.0.0"
+#define ARCSDE_PROVIDER_VERSION					L"3.3.0.0"
+#define ARCSDE_FDO_VERSION						L"3.3.0.0"
 
 // Hardcode datastore names:
 #define ArcSDEDefaultDataStore L"Default Datastore"
