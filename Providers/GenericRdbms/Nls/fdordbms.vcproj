@@ -107,7 +107,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Creating library and Versioning RdbmsMsg.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.2.0.0%PROVIDERS_VERSION%&quot; -v&quot;..\..\SubDoc\Providers.version&quot; $(OutDir)\RdbmsMsg.dll&#x0D;&#x0A;"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; -v&quot;..\..\SubDoc\Providers.version&quot; $(OutDir)\RdbmsMsg.dll&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -203,7 +203,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Creating library and Versioning RdbmsMsg.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.2.0.0%PROVIDERS_VERSION%&quot; -v&quot;..\..\SubDoc\Providers.version&quot; $(OutDir)\RdbmsMsg.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; -v&quot;..\..\SubDoc\Providers.version&quot; $(OutDir)\RdbmsMsg.dll"
 			/>
 		</Configuration>
 	</Configurations>

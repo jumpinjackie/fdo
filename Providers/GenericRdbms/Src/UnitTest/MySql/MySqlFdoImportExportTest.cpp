@@ -30,7 +30,7 @@ void MySqlFdoImportExportTest::set_provider()
 
 void MySqlFdoImportExportTest::AddMapping( FdoXmlWriter* writer, FdoString* name, FdoInt32 providerVersion )
 {
-    _addMapping( writer, name, (providerVersion == 3) ? L"OSGeo.MySQL.3.2" :
+    _addMapping( writer, name, (providerVersion == 3) ? L"OSGeo.MySQL.3.3" :
         ((providerVersion == 2) ? L"OSGeo.MySQL.2.1" : L"OSGeo.MySQL.1.9"),L"http://fdomysql.osgeo.org/schemas");
 }
 
@@ -38,7 +38,7 @@ FdoStringP MySqlFdoImportExportTest::OverrideBend( FdoString* inFile )
 {
     FdoStringP outFile = UnitTestUtil::GetOutputFileName( inFile);
 
-    _overrideBend( inFile, outFile, L"OSGeo.MySQL.3.2", L"http://fdomysql.osgeo.org/schemas" );
+    _overrideBend( inFile, outFile, L"OSGeo.MySQL.3.3", L"http://fdomysql.osgeo.org/schemas" );
 
     return outFile;
 }

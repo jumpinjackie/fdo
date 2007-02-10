@@ -41,7 +41,7 @@ FdoIoStream* MySqlSchemaMgrTests::OverrideBend( FdoIoStream* stream1, FdoStringP
     UnitTestUtil::OverrideBend( 
         stream1, 
         stream2, 
-        "OSGeo.MySQL.3.2", 
+        "OSGeo.MySQL.3.3", 
         "http://fdomysql.osgeo.org/schemas",
         oldOwnerPrefix,
         newOwnerPrefix

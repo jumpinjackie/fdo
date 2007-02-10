@@ -31,7 +31,7 @@ using namespace System::Security::Permissions;
 [assembly:AssemblyConfigurationAttribute("")];
 [assembly:AssemblyCompanyAttribute("Open Source Geospatial Foundation")]; 
 [assembly:AssemblyProductAttribute("Feature Data Objects")];
-[assembly:AssemblyCopyrightAttribute("Copyright (C) 2006")]; 
+[assembly:AssemblyCopyrightAttribute("Copyright (C) 2007")]; 
 [assembly:AssemblyTrademarkAttribute("")];
 [assembly:AssemblyCultureAttribute("")];
 
