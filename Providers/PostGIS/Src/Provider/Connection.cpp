@@ -55,7 +55,7 @@
 // External access to connection for client services
 extern "C" FDOPOSTGIS_API FdoIConnection* CreateConnection()
 {
-    FDOLOG_MARKER(_T("fdo::postgis::CreateConnection"));
+    FDOLOG_MARKER("fdo::postgis::CreateConnection");
 
     return (new fdo::postgis::Connection());
 }
@@ -138,6 +138,8 @@ FdoString* Connection::GetConnectionString()
 
 void Connection::SetConnectionString(FdoString* value)
 {
+    FDOLOG_MARKER("Connection::+SetConnectionString");
+
     // TODO: Replace with connection string parsing utils recommended by Romica
     if (FdoStringP(value).GetLength() <= 0)
     {
@@ -192,48 +194,152 @@ void Connection::SetConnectionTimeout(FdoInt32 value)
 
 FdoConnectionState Connection::Open()
 {
+    FDOLOG_MARKER("Connection::+Open");
+
+    // TODO: Should we replace FdoException with FdoConnectionException?
+
     if (FdoConnectionState_Open == GetConnectionState())
     {
-        throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_CONNECTION_ALREADY_OPEN,
-                                   "The connection is already open."));
+        throw FdoConnectionException::Create(
+            NlsMsgGet(MSG_POSTGIS_CONNECTION_ALREADY_OPEN,
+                "The connection is already open."));
     }
 
     FdoPtr<FdoIConnectionInfo> info = GetConnectionInfo();
-    FdoPtr<FdoIConnectionPropertyDictionary> dict = info->GetConnectionProperties();
-    
-    // Establish connection with PostgreSQL database
-    pgconn_params_t pgParams = GetPgConnectionParams(dict);
+    //FdoPtr<FdoIConnectionPropertyDictionary> dict = info->GetConnectionProperties();
+    FdoPtr<FdoCommonConnPropDictionary> dict = 
+        static_cast<FdoCommonConnPropDictionary*>(info->GetConnectionProperties());
 
-    mPgConn = PQsetdbLogin(pgParams.get<0>().c_str(),
-                           pgParams.get<1>().c_str(),
-                           NULL, NULL, 
-                           pgParams.get<4>().c_str(),
-                           pgParams.get<5>().c_str(),
-                           pgParams.get<6>().c_str());
+    //
+    // Validate connection properties
+    //
 
-    if (CONNECTION_OK != PQstatus(mPgConn))
+    FdoStringP connStr(GetConnectionString());
+    if (connStr.GetLength() <= 0)
     {
-        // Ask for failure reason
-        FdoStringP msg(PQerrorMessage(mPgConn));
-
-        // Release server-side resources
-        Close();
-        assert(NULL == mPgConn);
-
-        throw FdoConnectionException::Create(msg);
+        throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_EMPTY_CONNECTION_STRING,
+            "Connection string is empty."));
     }
 
-    // Connected
-    mConnState = FdoConnectionState_Open;
+    FdoCommonConnStringParser parser(NULL, connStr);
+    if (!parser.IsConnStringValid())
+    {
+        throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_INVALID_CONNECTION_STRING,
+            "Invalid connection string '%1$ls'", connStr));
+    }
+
+    if (parser.HasInvalidProperties(dict))
+    {
+        throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_INVALID_CONNECTION_PROPERTY,
+            "Invalid connection property name '%1$ls'",
+             parser.GetFirstInvalidPropertyName(dict)));
+    }
+
+    //
+    // Check for all required properties
+    //
+
+    FdoInt32 size = 0;
+    FdoString** propNames = dict->GetPropertyNames(size);
+    for (FdoInt32 i = 0; i < size; i++)
+    {
+        if (dict->IsPropertyRequired(propNames[i]))
+        {
+            FdoStringP propValue(dict->GetProperty(propNames[i]));
+            if (propValue.GetLength() <= 0)
+            {
+                throw FdoException::Create(
+                    NlsMsgGet(MSG_POSTGIS_CONNECTION_MISSING_REQUIRED_PROPERTY,
+                              "The connection property '%1$ls' is required but wasn't set.",
+                              propNames[i]));
+            }
+        }
+    }
+
+    if (FdoConnectionState_Pending == GetConnectionState())
+    {
+
+        //
+        // Two-step connection - open FDO datastore
+        //
+
+        FdoPtr<ConnectionProperty> prop(dict->FindProperty(PropertyDatastore));
+        if (prop && prop->GetIsPropertyRequired())
+        {
+            FdoStringP datastore(prop->GetValue());
+            if (datastore.GetLength() <= 0)
+            {
+                throw FdoConnectionException::Create(
+                    NlsMsgGet(MSG_POSTGIS_CONNECTION_MISSING_REQUIRED_PROPERTY,
+                        "The connection property '%1$ls' is required but wasn't set.",
+                        PropertyDatastore));
+            }
+
+            // TODO: Set current schema
+        }
+    }
+    else
+    {
+        //
+        // Connect to PostgreSQL server
+        //
+   
+        assert(FdoConnectionState_Open != GetConnectionState());
+        assert(FdoConnectionState_Pending != GetConnectionState());
+
+        // Generate PostgreSQL connection params from FDO connection properties
+        pgconn_params_t pgParams = GetPgConnectionParams(dict);
+
+        // Establish connection to database
+        mPgConn = PQsetdbLogin(pgParams.get<0>().c_str(),
+            pgParams.get<1>().c_str(),
+            NULL, NULL, 
+            pgParams.get<4>().c_str(),
+            pgParams.get<5>().c_str(),
+            pgParams.get<6>().c_str());
+
+        if (CONNECTION_OK != PQstatus(mPgConn))
+        {
+            // Ask for failure reason
+            FdoStringP msg(PQerrorMessage(mPgConn));
+
+            // Release server-side resources
+            Close();
+            assert(NULL == mPgConn);
+
+            throw FdoConnectionException::Create(msg);
+        }
+
+        mConnState = FdoConnectionState_Pending;
+
+        // Try to open FDO datastore
+        FdoStringP prop(dict->GetProperty(PropertyDatastore));
+        if (prop.GetLength() > 0)
+        {
+            // TODO: Set current schema
+
+            mConnState = FdoConnectionState_Open;
+        }
+        else
+        {
+            assert(FdoConnectionState_Pending == GetConnectionState());
+
+            FdoPtr<ConnectionProperty> prop(dict->FindProperty(PropertyDatastore));
+            if (prop)
+                prop->SetIsPropertyRequired(true);
+        }
+    }
 
     return GetConnectionState();
 }
 
 void Connection::Close()
 {
+    FDOLOG_MARKER("Connection::+Close");
+
+    // Close connection to the server
     PQfinish(mPgConn);
 
-    // Must not be used again after PQfinish has been called
     mPgConn = NULL;
     mConnState = FdoConnectionState_Closed;
 }
@@ -246,6 +352,8 @@ FdoITransaction* Connection::BeginTransaction()
 
 FdoICommand* Connection::CreateCommand(FdoInt32 type)
 {
+    FDOLOG_MARKER("Connection::+CreateCommand");
+
     FdoPtr<FdoICommand> cmd;
 
     if (FdoConnectionState_Closed == GetConnectionState()
@@ -325,8 +433,10 @@ void Connection::Flush()
 ///////////////////////////////////////////////////////////////////////////////
 
 Connection::pgconn_params_t Connection::GetPgConnectionParams(
-    FdoPtr<FdoIConnectionPropertyDictionary> dict)
+    FdoPtr<FdoCommonConnPropDictionary> dict)
 {
+    FDOLOG_MARKER("Connection::-GetPgConnectionParams");
+
     using boost::tuples::tuple;
     using boost::tuples::make_tuple;
     using boost::algorithm::split;
@@ -375,6 +485,9 @@ Connection::pgconn_params_t Connection::GetPgConnectionParams(
     //       but they are not used now, so empty strings are passed.
     std::string opts;
     std::string tty;
+
+    FDOLOG_WRITE("Connection string:\n\thost=%s\n\tport=%s\n\tdb=%s\n\tlogin=%s",
+                 host.c_str(), port.c_str(), db.c_str(), login.c_str());
 
     // pghost, pgport, pgoptions, pgtty, dbname, pglogin, pgpwd
     return make_tuple(host, port, opts, tty, db, login, pwd);

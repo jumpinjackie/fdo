@@ -166,7 +166,7 @@ private:
         pgconn_params_t;
 
     // Get PostgreSQL connection parameters from FDO connection properties.
-    pgconn_params_t GetPgConnectionParams(FdoPtr<FdoIConnectionPropertyDictionary> dict);
+    pgconn_params_t GetPgConnectionParams(FdoPtr<FdoCommonConnPropDictionary> dict);
 
 };
 
