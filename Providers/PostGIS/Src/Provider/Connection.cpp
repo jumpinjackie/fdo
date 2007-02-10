@@ -55,8 +55,7 @@
 // External access to connection for client services
 extern "C" FDOPOSTGIS_API FdoIConnection* CreateConnection()
 {
-    std::ofstream s("log.txt");
-    s << "CreateConnection";
+    FDOLOG_MARKER(_T("fdo::postgis::CreateConnection"));
 
     return (new fdo::postgis::Connection());
 }

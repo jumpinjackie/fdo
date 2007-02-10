@@ -45,4 +45,7 @@
 // Windows Header Files
 #include <windows.h>
 
+// FDO PostGIS Logger
+#include "Logger.h"
+
 #endif // POSTGISPROVIDER_STDAFX_H_INCLUDED
