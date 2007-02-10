@@ -73,14 +73,14 @@
 // add the line  LPCTSTR cszLogFileName = _T("C:\\LogFile");
 //#define FDOLOG_FILENAME extern LPCTSTR cszLogFileName;
 
-
 #define FDOLOG_MAXCOUNTERS 30
 
+// This definition controls if logger should write quad part or milliseconds.
+//#define FDOLOG_USE_PERFORMANCE_COUNTER
 
-
-#define FDOLOG_USE_PERFORMANCE_COUNTER
-
+// This definition controls multithreading support
 #define FDOLOG_MULTITHREADING
+
 /*USAGE::
 #include this file into any header that will be included in all files.
 For VC projects using precompiled headers the ideal place would be stdafx.h
@@ -191,10 +191,13 @@ how to create it and others.
 	#ifdef FDOLOG_FILENAME
 		FDOLOG_FILENAME;
 	#endif
+
 	static int ___g_nCounterIndex___ = 0;
+
 	class CSTLogFile  
 	{
 	public:
+
 		static CSTLogFile *GetLogFile() 
 		{
 			static CSTLogFile LogFile;
@@ -216,7 +219,7 @@ how to create it and others.
 			int nIndent = reinterpret_cast<int>(TlsGetValue(m_dwTLSIndex));
 			*(szIndent + nIndent) = 0;
 #ifdef FDOLOG_MULTITHREADING
-#define	FDOLOG_MULTITHREADING_STUB1 "thr 0x%08X"
+#define	FDOLOG_MULTITHREADING_STUB1 "th 0x%08X"
 #define	FDOLOG_MULTITHREADING_STUB2 GetCurrentThreadId(),
 #else
 #define	FDOLOG_MULTITHREADING_STUB1 
@@ -228,7 +231,6 @@ how to create it and others.
 #else
 			int nBytes = _snprintf(buffer, sizeof(buffer), "%s,"FDOLOG_MULTITHREADING_STUB1" : %s%s\r\n", szTimeString, FDOLOG_MULTITHREADING_STUB2 szIndent, szEntry);
 #endif
-
 			bOk = (nBytes > 0);
 			if (!bOk) goto exit_function;
 			DWORD dwWrittenBytes;
@@ -250,6 +252,7 @@ how to create it and others.
 			::WriteFile(m_hFile, "\r\n", 2, &dwWrittenBytes, NULL);
 			Write("***End binary data (written %d bytes)", dwWrittenBytes);
 		}
+
 		inline void Write(LPCSTR szEntry, ...)
 		{
 			BOOL bOk = TRUE;
@@ -325,7 +328,6 @@ how to create it and others.
 			}
 		}
 
-
 		void Start() 
 		{
 			TlsSetValue(m_dwTLSIndex, 0);
@@ -358,8 +360,14 @@ how to create it and others.
 				DWORD dwProcID = GetCurrentProcessId();
 				SYSTEMTIME st;
 				GetLocalTime(&st);
-				Write(TEXT("============================================="));
-				Write(TEXT("Log is started on %02u.%02u.%04u, at %02u:%02u:%02u:%03u, executable: %s (ProcID: 0x%08x), compile time : %s %s"), st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds, szExecutable, dwProcID, TEXT(__DATE__) , TEXT(__TIME__));
+				Write(TEXT("======================================================================\n")
+				      TEXT("\tLog started on %02u.%02u.%04u, at %02u:%02u:%02u:%03u\n")
+                      TEXT("\tModule: %s (ProcID: 0x%08x)\n")
+                      TEXT("\tCompile time: %s %s"),
+                      st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds,
+                      szExecutable, dwProcID,
+                      TEXT(__DATE__) , TEXT(__TIME__));
+                Write(TEXT("======================================================================"));
 			}
 			::LeaveCriticalSection(&m_crit);
 		}
@@ -377,6 +385,7 @@ how to create it and others.
 		}
 
 	protected:
+
 		CSTLogFile() 
 			: m_bIsStarted(FALSE), nLastCounter(0)
 		{
@@ -387,7 +396,9 @@ how to create it and others.
 			::QueryPerformanceCounter(&m_nStartTime);
 #endif 
 		}
+
 	public:
+
 		virtual ~CSTLogFile() 
 		{
 			if (m_bIsStarted)
@@ -423,7 +434,9 @@ how to create it and others.
 
 
 		}
+
 	public:
+
 		inline DWORD GetIndent()
 		{
 			return reinterpret_cast<DWORD>(TlsGetValue(m_dwTLSIndex));
@@ -446,8 +459,11 @@ how to create it and others.
 			TlsSetValue(m_dwTLSIndex, reinterpret_cast<LPVOID>(dwIndent));
 
 		}
+
 	private:
-		void GetLogFileName(LPTSTR szFileName) {
+
+		void GetLogFileName(LPTSTR szFileName)
+        {
 			TCHAR wszExecutableFilePath[MAX_PATH];
 			::GetModuleFileName(NULL, wszExecutableFilePath, MAX_PATH);
 #ifdef FDOLOG_CREATE_FILE_IN_THE_SAME_DIRECTORY
@@ -455,7 +471,6 @@ how to create it and others.
 #else
 			TCHAR *wszExecutableFileName = ::_tcsrchr(wszExecutableFilePath, _T('\\'));
 #endif
-
 			TCHAR *wszLastDot = ::_tcsrchr(wszExecutableFileName, _T('.'));
 
 #ifdef FDOLOG_CREATE_NEW
@@ -474,16 +489,16 @@ how to create it and others.
 					nFreeNumber++;
 				}
 			}
-
 #else 
 			::_tcscpy(wszLastDot, _T("_fdo.log"));
 #endif 
-
 			::_tcscpy(szFileName, wszExecutableFileName);
 		}
+
 	public:
 		
-		class Counter{
+		class Counter
+        {
 		public:
 			Counter(char *szFile, int nLine) : m_nCounter(0), m_szFile(szFile), m_nLine(nLine)
 			{
@@ -538,6 +553,7 @@ how to create it and others.
 			}
 
 		private:
+
 			LARGE_INTEGER m_StartTime;
 			LARGE_INTEGER m_MaxTime;
 			LARGE_INTEGER m_MinTime;
@@ -550,6 +566,7 @@ how to create it and others.
 			int m_nLine;
 			int m_nCounterIndex ;
 		};
+
 		struct CounterAux
 		{
 			CounterAux(Counter *pCounter) : m_pCounter(pCounter) { if (pCounter) pCounter->StartSection();}
@@ -559,6 +576,7 @@ how to create it and others.
 
 		Counter *m_counters[FDOLOG_MAXCOUNTERS];
 		int nLastCounter;
+
 		static Counter *GetStaticCounter(char *szFile, int nLine) 
 		{
 			CSTLogFile* pLogFile = GetLogFile();
@@ -581,21 +599,20 @@ how to create it and others.
 				delete m_counters[--nLastCounter];
 			}
 		}
-		struct Marker 
+
+		struct Marker
 		{
-			Marker(LPCSTR szEntry)
+            Marker(LPCSTR szEntry)
+                : m_szEntry(szEntry), m_szEntryW(NULL), m_bWide(FALSE)
 			{
-				m_bWide = FALSE;
-				m_szEntry = szEntry;
 				CSTLogFile::GetLogFile()->Write(">>[%s]", m_szEntry);	
 				if (CSTLogFile::GetLogFile()->GetIndent() < FDOLOG_MAXINDENT)
 					CSTLogFile::GetLogFile()->IncrIndent();
 			}
 			Marker(LPCWSTR szEntry)
+                : m_szEntry(NULL), m_szEntryW(NULL), m_bWide(TRUE)
 			{
-				m_bWide = TRUE;
-				m_szEntry = (LPCSTR) szEntry;
-				CSTLogFile::GetLogFile()->Write(L">>[%s]", m_szEntry);
+				CSTLogFile::GetLogFile()->Write(L">>[%s]", m_szEntryW);
 				if (CSTLogFile::GetLogFile()->GetIndent() < FDOLOG_MAXINDENT)
 					CSTLogFile::GetLogFile()->IncrIndent();
 			}
@@ -605,14 +622,13 @@ how to create it and others.
 					CSTLogFile::GetLogFile()->DecrIndent();
 
 				if (m_bWide)
-					CSTLogFile::GetLogFile()->Write(_T("<<[%s]"), (LPCWSTR)m_szEntry);
+					CSTLogFile::GetLogFile()->Write(_T("<<[%s]"), m_szEntryW);
 				else
-					CSTLogFile::GetLogFile()->Write(_T("<<[%s]"), m_szEntry);
-
-
+					CSTLogFile::GetLogFile()->Write("<<[%s]", m_szEntry);
 			}
 		private:
 			LPCSTR m_szEntry;
+            LPCWSTR m_szEntryW;
 			BOOL m_bWide;
 		};
 
