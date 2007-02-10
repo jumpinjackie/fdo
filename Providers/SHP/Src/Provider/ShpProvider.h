@@ -21,11 +21,11 @@
 #define SHPPROVIDER_H
 
 // General descriptive items of Shp Provier:
-#define SHP_PROVIDER_NAME					L"OSGeo.SHP.3.2"
+#define SHP_PROVIDER_NAME					L"OSGeo.SHP.3.3"
 #define SHP_PROVIDER_DEFAULT_DISPLAY_NAME	"OSGeo FDO Provider for SHP"
 #define SHP_PROVIDER_DEFAULT_DESCRIPTION	"Read/write access to spatial and attribute data in an ESRI SHP file."
-#define SHP_PROVIDER_VERSION				L"3.2.0.0"
-#define SHP_FDO_VERSION						L"3.2.0.0"
+#define SHP_PROVIDER_VERSION				L"3.3.0.0"
+#define SHP_FDO_VERSION						L"3.3.0.0"
 
 // Shp Provier identifier names
 #define SHP_PROVIDER_AUTHOR L"OSGeo"

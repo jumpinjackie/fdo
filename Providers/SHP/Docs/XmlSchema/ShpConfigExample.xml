@@ -77,7 +77,7 @@
 	</xs:schema>
 
 	<!-- Schema Overrides for Hydrographic Feature Schema -->
-	<SchemaMapping provider="OSGeo.SHP.3.2" name="Hydrographic" xmlns="http://fdoshp.osgeo.org/schemas">
+	<SchemaMapping provider="OSGeo.SHP.3.3" name="Hydrographic" xmlns="http://fdoshp.osgeo.org/schemas">
 		<!-- Schema Overrides for Sounding Feature Class -->
 		<complexType name="SoundingType" shapeFile="d:/hydrographic/soundings.shp">
 		    <!-- Schema Overrides for Sounding Feature Class Properties-->
