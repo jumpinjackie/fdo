@@ -68,6 +68,8 @@ public:
 
 protected:
 
+    typedef Command<T> Base;
+
     /// Construct instance of a command for the given connection.
     Command(Connection* conn);
 

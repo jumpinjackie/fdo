@@ -66,7 +66,6 @@ protected:
 
 private:
 
-    typedef Command<FdoIListDataStores> Base;
 };
 
 }} // namespace fdo::postgis
