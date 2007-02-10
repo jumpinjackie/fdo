@@ -496,7 +496,7 @@ public:
     OGR_API virtual FdoString* GetProviderVersion()
         { return L"0.1.0.0"; }
     OGR_API virtual FdoString* GetFeatureDataObjectsVersion()
-        { return L"3.2.0.0"; }
+        { return L"3.3.0.0"; }
     OGR_API virtual FdoIConnectionPropertyDictionary* GetConnectionProperties()
         { return FDO_SAFE_ADDREF((FdoIConnectionPropertyDictionary*)this); }
     
