@@ -98,7 +98,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning $(ProjectName).dll"
-				CommandLine="..\..\..\..\thirdparty\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;0.3.2.0%PROVIDERS_VERSION%&quot; $(OutDir)\$(ProjectName).dll"
+				CommandLine="..\..\..\..\thirdparty\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;0.3.3.0%PROVIDERS_VERSION%&quot; $(OutDir)\$(ProjectName).dll"
 			/>
 		</Configuration>
 		<Configuration
@@ -190,7 +190,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning $(ProjectName).dll"
-				CommandLine="..\..\..\..\thirdparty\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;0.3.2.0%PROVIDERS_VERSION%&quot; $(OutDir)\$(ProjectName).dll"
+				CommandLine="..\..\..\..\thirdparty\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;0.3.3.0%PROVIDERS_VERSION%&quot; $(OutDir)\$(ProjectName).dll"
 			/>
 		</Configuration>
 		<Configuration
@@ -282,7 +282,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning $(ProjectName).dll"
-				CommandLine="..\..\..\..\thirdparty\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;0.3.2.0%PROVIDERS_VERSION%&quot; $(OutDir)\$(ProjectName).dll"
+				CommandLine="..\..\..\..\thirdparty\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;0.3.3.0%PROVIDERS_VERSION%&quot; $(OutDir)\$(ProjectName).dll"
 			/>
 		</Configuration>
 	</Configurations>

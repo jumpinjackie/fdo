@@ -65,8 +65,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_CAN
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,1,1,0
- PRODUCTVERSION 0,1,1,0
+ FILEVERSION 3,3,0,0
+ PRODUCTVERSION 3,3,0,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -84,9 +84,9 @@ BEGIN
             VALUE "Comments", "King FDO Provider for Oracle Spatial"
             VALUE "CompanyName", "SL-King"
             VALUE "FileDescription", "King FDO Provider for Oracle Spatial Component"
-            VALUE "FileVersion", "3.1.0.R000"
+            VALUE "FileVersion", "3.3.0.R000"
             VALUE "InternalName", "KingOracleprovider"
-            VALUE "LegalCopyright", "Copyright © 2006"
+            VALUE "LegalCopyright", "Copyright © 2007"
             VALUE "OriginalFilename", "KingOracleProvider.dll"
             VALUE "ProductName", "Feature Data Objects"
             VALUE "ProductVersion", "0.1.1.0"
