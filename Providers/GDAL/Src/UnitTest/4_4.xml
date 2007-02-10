@@ -67,7 +67,7 @@
 		</xs:complexType>
 	</xs:schema>
 	<!-- Schema Overrides for Photos Feature Schema -->
-	<SchemaMapping name="photos" provider="OSGeo.Gdal.3.2" xmlns="http://fdogrfp.osgeo.org/schemas" xsi:schemaLocation="http://fdogrfp.osgeo.org/schemas
+	<SchemaMapping name="photos" provider="OSGeo.Gdal.3.3" xmlns="http://fdogrfp.osgeo.org/schemas" xsi:schemaLocation="http://fdogrfp.osgeo.org/schemas
 		FdoRfpConfig.xsd">
 	>
 		<!-- Schema Overrides for Photo Feature Class -->

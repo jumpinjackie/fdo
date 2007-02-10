@@ -8,8 +8,8 @@
     <DisplayName>FDO Provider for Images via GDAL</DisplayName>
     <Description>FDO Provider for Images via GDAL</Description>
     <IsManaged>False</IsManaged>
-    <Version>1.0.0.0</Version>
-    <FeatureDataObjectsVersion>3.2.0.0</FeatureDataObjectsVersion>
+    <Version>3.3.0.0</Version>
+    <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion>
     <LibraryPath>/home/warmerda/fdogdal/Src/.libs/libGRFPProvider.so</LibraryPath>
   </FeatureProvider>
 </FeatureProviderRegistry>

@@ -60,7 +60,7 @@ int main( int argc, char ** argv )
     // Call the manager’s CreateConnection() method using the provider
     // internal name as an argument to obtain a connection object.
     FdoPtr<FdoIConnection> conn;
-    conn = manager->CreateConnection (L"OSGeo.Gdal.3.2");
+    conn = manager->CreateConnection (L"OSGeo.Gdal.3.3");
     if (0 == conn)
     {
         printf("CreateConnection returned nullptr.\n");

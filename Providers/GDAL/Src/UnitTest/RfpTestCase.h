@@ -30,7 +30,7 @@ public:
     virtual FdoIConnection* CreateConnection ()
         {
             FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager ();
-            return (manager->CreateConnection (L"OSGeo.Gdal.3.2"));
+            return (manager->CreateConnection (L"OSGeo.Gdal.3.3"));
         }
 
 protected:

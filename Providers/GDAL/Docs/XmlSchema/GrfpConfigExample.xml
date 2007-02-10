@@ -67,7 +67,7 @@
 		</xs:complexType>
 	</xs:schema>
 	<!-- Schema Overrides for Photos Feature Schema -->
-	<SchemaMapping name="photos" provider="OSGeo.Gdal.3.2" xmlns="http://fdogrfp.osgeo.org/schemas">
+	<SchemaMapping name="photos" provider="OSGeo.Gdal.3.3" xmlns="http://fdogrfp.osgeo.org/schemas">
 		<!-- Schema Overrides for Photo Feature Class -->
 		<complexType name="PhotoType">
 			<!-- Soundings kept in SNDG table and geometry columns are overridden -->
