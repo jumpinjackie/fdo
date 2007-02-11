@@ -5,8 +5,8 @@
     <DisplayName>OSGeo FDO Provider for SDF</DisplayName>
     <Description>Read/write access to Autodesk's spatial database format, a file-based personal geodatabase that supports multiple features/attributes, spatial indexing, and file-locking.</Description>
     <IsManaged>False</IsManaged>
-    <Version>3.2.0.0</Version>
-    <FeatureDataObjectsVersion>3.2.0.0</FeatureDataObjectsVersion>
+    <Version>3.3.0.0</Version>
+    <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion>
     <LibraryPath>%FDOBINPATHFDO%\SDFProvider.dll</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
@@ -14,8 +14,8 @@
     <DisplayName>OSGeo FDO Provider for SHP</DisplayName>
     <Description>Read/write access to spatial and attribute data in an ESRI SHP file.</Description>
     <IsManaged>False</IsManaged>
-    <Version>3.2.0.0</Version>
-    <FeatureDataObjectsVersion>3.2.0.0</FeatureDataObjectsVersion>
+    <Version>3.3.0.0</Version>
+    <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion>
     <LibraryPath>%FDOBINPATHFDO%\SHPProvider.dll</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
@@ -23,8 +23,8 @@
     <DisplayName>OSGeo FDO Provider for ArcSDE</DisplayName>
     <Description>Read/write access to an ESRI ArcSDE-based data store, using Oracle and SQL Server.</Description>
     <IsManaged>False</IsManaged>
-    <Version>3.2.0.0</Version>
-    <FeatureDataObjectsVersion>3.2.0.0</FeatureDataObjectsVersion>
+    <Version>3.3.0.0</Version>
+    <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion>
     <LibraryPath>%FDOBINPATHFDO%\ArcSDEProvider.dll</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
@@ -32,8 +32,8 @@
     <DisplayName>OSGeo FDO Provider for WFS</DisplayName>
     <Description>Read access to OGC WFS-based data store.</Description>
     <IsManaged>False</IsManaged>
-    <Version>3.2.0.0</Version>
-    <FeatureDataObjectsVersion>3.2.0.0</FeatureDataObjectsVersion>
+    <Version>3.3.0.0</Version>
+    <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion>
     <LibraryPath>%FDOBINPATHFDO%\WFSProvider.dll</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
@@ -41,8 +41,8 @@
     <DisplayName>OSGeo FDO Provider for WMS</DisplayName>
     <Description>Read access to OGC WMS-based data store.</Description>
     <IsManaged>False</IsManaged>
-    <Version>3.2.0.0</Version>
-    <FeatureDataObjectsVersion>3.2.0.0</FeatureDataObjectsVersion>
+    <Version>3.3.0.0</Version>
+    <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion>
     <LibraryPath>%FDOBINPATHFDO%\WMSProvider.dll</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
@@ -50,8 +50,8 @@
     <DisplayName>OSGeo FDO Provider for ODBC</DisplayName> 
     <Description>FDO Provider for ODBC</Description> 
     <IsManaged>False</IsManaged> 
-    <Version>3.2.0.0</Version> 
-    <FeatureDataObjectsVersion>3.2.0.0</FeatureDataObjectsVersion>
+    <Version>3.3.0.0</Version> 
+    <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion>
     <LibraryPath>%FDOBINPATHFDO%\ODBCProvider.dll</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
@@ -59,8 +59,8 @@
     <DisplayName>OSGeo FDO Provider for MySQL</DisplayName> 
     <Description>FDO Provider for MySql</Description>
     <IsManaged>False</IsManaged>
-    <Version>3.2.0.0</Version>
-    <FeatureDataObjectsVersion>3.2.0.0</FeatureDataObjectsVersion>
+    <Version>3.3.0.0</Version>
+    <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion>
     <LibraryPath>%FDOBINPATHFDO%\MySQLProvider.dll</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
@@ -68,8 +68,8 @@
     <DisplayName>OSGeo FDO Provider for GDAL</DisplayName>
     <Description>FDO Provider for GDAL</Description>
     <IsManaged>False</IsManaged>
-    <Version>3.2.0.0</Version>
-    <FeatureDataObjectsVersion>3.2.0.0</FeatureDataObjectsVersion>
+    <Version>3.3.0.0</Version>
+    <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion>
     <LibraryPath>%FDOBINPATHFDO%\GRFPProvider.dll</LibraryPath>
   </FeatureProvider>
 </FeatureProviderRegistry>

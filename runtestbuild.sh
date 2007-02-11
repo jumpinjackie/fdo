@@ -161,7 +161,7 @@ fi
       done
       FDOBUILDNUMBERRTB=`awk -F: '{print $m}' $FDOSOURCETARGZ/release.txt`
    fi
-   rm -rf "/usr/local/fdo-3.2.0"
+   rm -rf "/usr/local/fdo-3.3.0"
    rm -rf "$FDOTARGETFOLDER"
 
    mkdir -p "$FDOTARGETFOLDER"
@@ -202,8 +202,8 @@ fi
    export FDO="$PWD/Fdo"
    export FDOUTILITIES="$PWD/Utilities"
    export FDOTHIRDPARTY="$PWD/Thirdparty"
-   mkdir -p "/usr/local/fdo-3.2.0/lib"
-   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/fdo-3.2.0/lib:$SDEHOME/lib
+   mkdir -p "/usr/local/fdo-3.3.0/lib"
+   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/fdo-3.3.0/lib:$SDEHOME/lib
    popd >& /dev/null
    
    echo "*Starting thirdparty build"

@@ -293,10 +293,10 @@ if test "$FDOENABLE" == yes; then
    fi
    
    if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
-      rm -rf "/usr/local/fdo-3.2.0/docs/HTML/FDO_API"
-      mkdir -p "/usr/local/fdo-3.2.0/docs/HTML"
-      if test -e "Docs/HTML/FDO_API"; then
-         cp --force --recursive "Docs/HTML/FDO_API" "/usr/local/fdo-3.2.0/docs/HTML"
+      rm -rf "/usr/local/fdo-3.3.0/docs/HTML/FDO_API"
+      mkdir -p "/usr/local/fdo-3.3.0/docs/HTML"
+      if test -e "Docs/HTML/FDO_API"; then  
+         cp --force --recursive "Docs/HTML/FDO_API" "/usr/local/fdo-3.3.0/docs/HTML"
       fi
    fi
    
