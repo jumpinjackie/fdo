@@ -63,8 +63,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,2,0,0
- PRODUCTVERSION 3,2,0,0
+ FILEVERSION 3,3,0,0
+ PRODUCTVERSION 3,3,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -83,7 +83,7 @@ BEGIN
             VALUE "FileDescription", " SDF ODBC Setup Dynamic Link Library"
             VALUE "FileVersion", "3, 2, 0, 0"
             VALUE "InternalName", "ODBCSetup.dll"
-            VALUE "LegalCopyright", "Copyright © 2006.  All rights reserved."
+            VALUE "LegalCopyright", "Copyright © 2007.  All rights reserved."
             VALUE "OriginalFilename", "ODBCSetup.dll"
             VALUE "ProductName", "Feature Data Objects"
             VALUE "ProductVersion", "3, 2, 0, 0"
