@@ -428,7 +428,7 @@ PACKAGE_STRING='FDOSHP 3.3.0'
 PACKAGE_BUGREPORT='http://fdo.osgeo.org'
 
 ac_unique_file="configure.in"
-ac_default_prefix=/usr/local/fdo-3.2.0
+ac_default_prefix=/usr/local/fdo-3.3.0
 # Factoring default headers for most tests.
 ac_includes_default="\
 #include <stdio.h>
