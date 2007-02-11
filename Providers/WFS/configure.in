@@ -25,7 +25,7 @@ AC_INIT(FDOWFS,3.3.0,http://fdo.osgeo.org)
 AC_CONFIG_SRCDIR(configure.in)
 AM_INIT_AUTOMAKE
 
-AC_PREFIX_DEFAULT(/usr/local/fdo-3.2.0)
+AC_PREFIX_DEFAULT(/usr/local/fdo-3.3.0)
 
 AC_LANG_C
 AC_PROG_CC
