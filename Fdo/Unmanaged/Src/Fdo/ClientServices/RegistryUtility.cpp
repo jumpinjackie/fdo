@@ -784,7 +784,7 @@ wchar_t *FdoRegistryUtility::GetFileName()
             const char *me;
             char *home;
             char *last;
-            char *install = "/usr/local/fdo-3.2.0/lib/";
+            char *install = "/usr/local/fdo-3.3.0/lib/";
 
             // try where we are
             me = SELFPATH;
