@@ -21,7 +21,7 @@ FdoOdbcDbcHandle::FdoOdbcDbcHandle(void)
     :m_Handle(NULL)
 {
     FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager ();
-    m_Handle = manager->CreateConnection (L"OSGeo.SDF.3.2");
+    m_Handle = manager->CreateConnection (L"OSGeo.SDF.3.3");
 }
 
 FdoOdbcDbcHandle::FdoOdbcDbcHandle(FdoIConnection* handle)

@@ -19,7 +19,7 @@
 #define [!output UPPER_PREFIX]PROVIDER_H
 
 // General descriptive items of [!output PREFIX] Provier:
-#define [!output PREFIX]ProviderName L"Autodesk.[!output PREFIX].3.2"
+#define [!output PREFIX]ProviderName L"Autodesk.[!output PREFIX].3.3"
 #define [!output PREFIX]ProviderDisplayName L"OSGeo FDO Provider for [!output PREFIX]"
 #define [!output PREFIX]ProviderDescription L"OSGeo FDO Provider for [!output PREFIX]"
 #define [!output PREFIX]ProviderVersion L"3.3.0.0"

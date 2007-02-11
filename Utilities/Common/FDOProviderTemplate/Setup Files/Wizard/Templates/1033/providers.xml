@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <FeatureProviderRegistry>
   <FeatureProvider>
-    <Name>OSGeo.[!output PREFIX].3.2</Name>
+    <Name>OSGeo.[!output PREFIX].3.3</Name>
     <DisplayName>OSGeo FDO Provider for [!output PREFIX]</DisplayName>
     <Description>OSGeo FDO Provider for [!output PREFIX]</Description>
     <IsManaged>False</IsManaged>
