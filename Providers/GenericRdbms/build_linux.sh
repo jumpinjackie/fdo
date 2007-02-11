@@ -161,14 +161,14 @@ if test "$BUILDDOCS" == yes ; then
 fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
-   rm -rf "/usr/local/fdo-3.2.0/docs/HTML/Providers/MySQL"
-   rm -rf "/usr/local/fdo-3.2.0/docs/HTML/Providers/ODBC"
-   mkdir -p "/usr/local/fdo-3.2.0/docs/HTML/Providers"
+   rm -rf "/usr/local/fdo-3.3.0/docs/HTML/Providers/MySQL"
+   rm -rf "/usr/local/fdo-3.3.0/docs/HTML/Providers/ODBC"
+   mkdir -p "/usr/local/fdo-3.3.0/docs/HTML/Providers"
    if test -e "Docs/HTML/MySQL"; then
-      cp --force --recursive "Docs/HTML/MySQL" "/usr/local/fdo-3.2.0/docs/HTML/Providers"
+      cp --force --recursive "Docs/HTML/MySQL" "/usr/local/fdo-3.3.0/docs/HTML/Providers"
    fi
    if test -e "Docs/HTML/ODBC"; then
-      cp --force --recursive "Docs/HTML/ODBC" "/usr/local/fdo-3.2.0/docs/HTML/Providers"
+      cp --force --recursive "Docs/HTML/ODBC" "/usr/local/fdo-3.3.0/docs/HTML/Providers"
    fi
 fi
 

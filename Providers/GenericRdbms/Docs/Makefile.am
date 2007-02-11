@@ -17,7 +17,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-INSTALL_DIR  = /usr/local/fdo-3.2.0
+INSTALL_DIR  = /usr/local/fdo-3.3.0
 
 SUBDIRS = doc_src
 
