@@ -26,8 +26,8 @@ FDOCORE = ${HOME}/dev/fdo/fdocore/_svn/fdocore
 # - fdogdal top level sources directory
 FDOGDAL = ${HOME}/dev/fdo/fdogdal/_svn/fdogdal
 #
-# - fdocore installation prefix (default: /usr/local/fdo-3.2.0)
-FDOCOREPREFIX = /usr/local/fdo-3.2.0
+# - fdocore installation prefix (default: /usr/local/fdo-3.3.0)
+FDOCOREPREFIX = /usr/local/fdo-3.3.0
 #
 # - fdogdal installation prefix
 FDOGDALPREFIX = ${HOME}/usr

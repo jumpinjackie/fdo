@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 
-<!-- This file belongs in /usr/local/fdo-3.2.0/lib -->
+<!-- This file belongs in /usr/local/fdo-3.3.0/lib -->
 
 <FeatureProviderRegistry>
   <FeatureProvider>
