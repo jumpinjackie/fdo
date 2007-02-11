@@ -153,10 +153,10 @@ if test "$BUILDDOCS" == yes ; then
 fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
-   rm -rf "/usr/local/fdo-3.2.0/docs/HTML/Providers/SDF"
-   mkdir -p "/usr/local/fdo-3.2.0/docs/HTML/Providers"
+   rm -rf "/usr/local/fdo-3.3.0/docs/HTML/Providers/SDF"
+   mkdir -p "/usr/local/fdo-3.3.0/docs/HTML/Providers"
    if test -e "Docs/HTML/SDF"; then
-      cp --force --recursive "Docs/HTML/SDF" "/usr/local/fdo-3.2.0/docs/HTML/Providers"
+      cp --force --recursive "Docs/HTML/SDF" "/usr/local/fdo-3.3.0/docs/HTML/Providers"
    fi
 fi
 
