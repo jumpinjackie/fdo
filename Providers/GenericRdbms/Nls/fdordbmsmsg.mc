@@ -1900,3 +1900,8 @@ SymbolicName=FDORDBMS_530
 Language=English
 Cannot start transaction; request to rollback long transaction '%1$ls' canceled
 .
+MessageId=2756
+SymbolicName=FDORDBMS_531
+Language=English
+%1$ls: Cannot execute request because Workspace Manager is not installed
+.
