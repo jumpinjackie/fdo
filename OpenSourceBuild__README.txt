@@ -591,7 +591,7 @@ II. Build Notes
            BuildDocs:       --d[ocs] skip(default), build
            ConfigMakefiles: --m[akefile] configure(default), noconfigure
            WithModule:      --w[ith] all(default), 
-									 fdocore, 
+                                     fdocore, 
                                      fdo, 
                                      thirdparty, 
                                      providers, 
