@@ -398,19 +398,24 @@ I. Build Instructions
 
   1. cd [FDO OpenSource]
 
-  2. Open and modify setenvironment.bat to specify the locations of the Thirdparty SDK 
-     components and build tools. (Refer to the Build Notes below)
+  2. Open and modify setenvironment.sh to specify the locations of the 
+     Thirdparty SDK components and build tools. (Refer to the Build Notes 
+     below)
 
-  3. source ./setenvironment.sh
+  3.  Source set environment script (bash or bourne compatible shells)
+
+      source ./setenvironment.sh
 
   4. ./build_thirdparty.sh
 
   5. ./build_linux.sh
 
-  NOTE: build_linux.sh is a simple helper script that assists developers to build the FDO 
-        components. These scripts supplement standard support of configure and make. 
+  NOTE: build_linux.sh is a simple helper script that assists developers to 
+        build the FDO components. These scripts supplement standard support of 
+        configure and make. 
 
-        The implementation of the above build_linux.sh script in essence calls ...
+        The implementation of the above build_linux.sh script in essence 
+        calls ...
  
         aclocal
         libtoolize --force
@@ -420,9 +425,10 @@ I. Build Instructions
         make
         make install
 
-        for the fdo core API components as well as the set of FDO providers that are 
-        currently supported in the automated build process. Users are free to call configure 
-        and make without using the build_linux.sh helper script.
+        for the fdo core API components as well as the set of FDO providers 
+        that are currently supported in the automated build process. Users are 
+        free to call configure and make without using the build_linux.sh helper
+        script.
 
 II. Build Notes
 
@@ -441,23 +447,24 @@ II. Build Notes
        FDOTHIRDPARTY = [FDO OpenSource]/ThirdParty
  
   3. In order to build the ArcSDE Provider, you will need to have the
-     ArcSDE 9.1 Client SDK installed and the following environment variable set that 
-     points to the installation location:
+     ArcSDE 9.1 Client SDK installed and the following environment variable set
+     that points to the installation location:
 
        SDEHOME=[ArcSDE developer components path] 
 
-     Note that ArcSDE is licensed software and must be obtained from an ESRI vendor.
+     Note that ArcSDE is licensed software and must be obtained from an ESRI 
+     vendor.
 
-  4. In order to build the MySQL Provider, you will need to download and extract 
-     the MySQL client and MySQL 5.0 devloper components from MySQL. These 
-     components are located at:
+  4. In order to build the MySQL Provider, you will need to download and 
+     extract the MySQL client and MySQL 5.0 devloper components from MySQL. 
+     These components are located at:
  
        http://dev.mysql.com/downloads/mysql/5.0.html
         
      For example, for Red Hat Enterprise Linux 3 RPM (x86)
        
-       Client:                      MySQL-client-standard-5.0.22-0.rhel3.i386.rpm
-       Headers and Libraries:       MySQL-devel-standard-5.0.22-0.rhel3.i386.rpm
+       Client:                   MySQL-client-standard-5.0.22-0.rhel3.i386.rpm
+       Headers and Libraries:    MySQL-devel-standard-5.0.22-0.rhel3.i386.rpm
 
      NOTE: Choosing the RPM install of the MySQL components is *strongly* 
      recommended. However, if a non-RPM installation of MySQL is chosen, 
@@ -467,8 +474,8 @@ II. Build Notes
  
   5. In order to build the ODBC Provider, you will need to either 
      
-     a) download and install the Linux ODBC driver Manager, specifically 
-        the unixODBC-CORE and unixODBC-devel packages relased by www.unixodbc.org
+     a) download and install the Linux ODBC driver Manager, specifically the 
+        unixODBC-CORE and unixODBC-devel packages relased by www.unixodbc.org
  
            Home Page: 
            http://www.unixodbc.org/
@@ -485,30 +492,34 @@ II. Build Notes
 
            usr/lib and usr/include
 
-           The FDO ODBC provider build will automatically locate thee files in this liocation.
+           The FDO ODBC provider build will automatically locate thee files in 
+           this liocation.
 
-     b) install an unixODBC driver such as the EasySofy Oracle ODBC driver. This installation 
-        will include the driver libraries as well as the unixODBC manager libraries. 
-        If such an installation occurs the manager libraries and headers will not be 
-        installed under /usr/lib or usr/include but will be installed in a custom location
-        as specified by the driver RPM package. If this is the case, you will need to set 
-        the following FDO environment variable to point to the location of the unixODBC 
-        components:
+     b) install an unixODBC driver such as the EasySofy Oracle ODBC driver. 
+        This installation will include the driver libraries as well as the 
+        unixODBC manager libraries. 
+
+        If such an installation occurs the manager libraries and headers will 
+        not be installed under /usr/lib or usr/include but will be installed 
+        in a custom location as specified by the driver RPM package. If this 
+        is the case, you will need to set the following FDO environment 
+        variable to point to the location of the unixODBC components:
 
            FDOODBC=[unixODBC developer components path]
 
-  6. OPTIONAL: The FDO build process allows it's documentation to be regenerated. 
-     If this is required, install the OpenSource Doxygen documentation generation
-     software.  Doxygen is a documentation system for C++, C, Java, Objective-C, 
-     Python, IDL (Corba and Microsoft flavors) and to some extent PHP, C#, and D. 
-     Doxygen is often automataically installed on Fedora Core and RedHat systems.
+  6. OPTIONAL: The FDO build process allows it's documentation to be 
+     regenerated.  If this is required, install the OpenSource Doxygen 
+     documentation generation software.  Doxygen is a documentation system for 
+     C++, C, Java, Objective-C, Python, IDL (Corba and Microsoft flavors) and 
+     to some extent PHP, C#, and D.  Doxygen is often automataically installed 
+     on Fedora Core and RedHat systems.
   
      To install Doxygen, refer to: http://www.stack.nl/~dimitri/doxygen/
      
-     The FDO Doxygen documentation generation process will also use the "dot" tool  
-     from graphviz 1.5 to generate more advanced diagrams and graphs. Graphviz is an 
-     "open-sourced", cross-platform graph drawing toolkit from AT&T and Lucent 
-     Bell Labs.
+     The FDO Doxygen documentation generation process will also use the "dot" 
+     tool from graphviz 1.5 to generate more advanced diagrams and graphs. 
+     Graphviz is an "open-sourced", cross-platform graph drawing toolkit from 
+     AT&T and Lucent Bell Labs.
      
      To install graphviz, refer to: http://www.graphviz.org/ 
 
@@ -517,21 +528,22 @@ II. Build Notes
        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/fdo-3.3.0/lib
        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$SDEHOME/lib:$FDOTHIRDPARTY/ESRI/ArcSDEClient91/Linux/lib
  
-  8. NOTE: Several known problems exist if auto-mounted drives are used as locations 
-     for the FDO Linux builds. It is recommended that users not use auto-mounted drives 
-     when building FDO.
+  8. NOTE: Several known problems exist if auto-mounted drives are used as 
+     locations for the FDO Linux builds. It is recommended that users not use 
+     auto-mounted drives when building FDO.
 
-  9. NOTE: The FDO expression scripts (.y) are not automatially recompiled as a part of the 
-     FDO build process. In order to recompile the .y files into their .cpp and .h
-     counterparts, execute the build_parse.sh script.
+  9. NOTE: The FDO expression scripts (.y) are not automatially recompiled as a
+     part of the FDO build process. In order to recompile the .y files into 
+     their .cpp and .h counterparts, execute the build_parse.sh script.
 
- 10. NOTE: Use the [FDO OpenSource]\setenvironment.sh script to assist in setting and
-     maintaing the correct environment settings for the FDO build process. 
-     This script can be modifed and used to set the correct environment variables 
-     and PATH settings.
+ 10. NOTE: Use the [FDO OpenSource]\setenvironment.sh script to assist in 
+     setting and maintaing the correct environment settings for the FDO build 
+     process.  This script can be modifed and used to set the correct 
+     environment variables and PATH settings.
 
- 11. The build_thirdparty.sh script is used to build the FDO Thirdparty binaries. 
-     The following is a general guideline on how to use the build_thirdparty.bat build script.
+ 11. The build_thirdparty.sh script is used to build the FDO Thirdparty 
+     binaries.  The following is a general guideline on how to use the 
+     build_thirdparty.bat build script.
   
            **************************************************************
            build_thirdparty.sh [--h] [--a Action] [--m ConfigMakefiles]
@@ -558,7 +570,8 @@ II. Build Notes
 
 
  12. The build_linux.sh script is used to build and install the FDO OpenSource 
-     libraries. The following is a general guideline on how to use build_linux.sh
+     libraries. The following is a general guideline on how to use 
+     build_linux.sh
 
            **************************************************************
            build_linux.sh [--h] 
@@ -577,7 +590,8 @@ II. Build Notes
                                        clean
            BuildDocs:       --d[ocs] skip(default), build
            ConfigMakefiles: --m[akefile] configure(default), noconfigure
-           WithModule:      --w[ith] fdocore(default), 
+           WithModule:      --w[ith] all(default), 
+									 fdocore, 
                                      fdo, 
                                      thirdparty, 
                                      providers, 
