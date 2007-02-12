@@ -19,7 +19,7 @@
     <LibraryPath>/usr/local/fdo-3.3.0/lib/libSHPProvider.so</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
-    <Name>OSGeo.ArcSDE.3.3/Name>
+    <Name>OSGeo.ArcSDE.3.3</Name>
     <DisplayName>OSGeo FDO Provider for ArcSDE</DisplayName>
     <Description>Read/write access to an ESRI ArcSDE-based data store, using Oracle and SQL Server.</Description>
     <IsManaged>False</IsManaged>
