@@ -87,7 +87,7 @@ void WmsTestDescribeSchema::testServer4 ()
 {
     try 
     {
-	    TestServer(L"http://fbinter.stadt-berlin.de/fb/wms/oma_ogc_capabilitiesrequest.jsp", 373);
+	    TestServer(L"http://fbinter.stadt-berlin.de/fb/wms/oma_ogc_capabilitiesrequest.jsp", 395);
     }
     catch (FdoException* e)
     {

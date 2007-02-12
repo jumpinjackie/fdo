@@ -788,7 +788,7 @@ void WmsTestSelect::testCubeServer ()
 #endif//_DEBUG
 
         FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*>(conn->CreateCommand(FdoCommandType_Select));
-        cmdSelect->SetFeatureClassName(L"Trails DEMIS World Map");
+        cmdSelect->SetFeatureClassName(L"LANDICEA_1M Foundation");
 
         FdoPtr<FdoIFeatureReader> featureReader = cmdSelect->Execute();
         FdoPtr<FdoClassDefinition> classDef2 = featureReader->GetClassDefinition();
@@ -823,7 +823,7 @@ void WmsTestSelect::testCubeServer ()
 
         CPPUNIT_ASSERT (FdoConnectionState_Open == conn->Open ());
         cmdSelect = static_cast<FdoISelect*>(conn->CreateCommand(FdoCommandType_Select));
-        cmdSelect->SetFeatureClassName(L"TopographyDemisWorldMap");
+        cmdSelect->SetFeatureClassName(L"WorldFaultLines");
         featureReader = cmdSelect->Execute();
         while (featureReader->ReadNext ())
         {
@@ -1643,7 +1643,7 @@ void WmsTestSelect::testLibcwms ()
         FdoPtr<FdoPropertyDefinition> prop = props->GetItem (L"Raster");
         FdoRasterPropertyDefinition* rasterProp = (FdoRasterPropertyDefinition*)(prop.p);
         FdoStringP rasterAssoc = rasterProp->GetSpatialContextAssociation();
-        CPPUNIT_ASSERT (rasterAssoc == L"EPSG:102190");
+        CPPUNIT_ASSERT (rasterAssoc == L"EPSG:4326");
 
         FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*> (connection->CreateCommand (FdoCommandType_Select));
         cmdSelect->SetFeatureClassName (L"DBM_7H_MIL_BOUNDARIES_LINE");
@@ -1759,7 +1759,7 @@ void WmsTestSelect::testLinuxgurrl ()
         FdoPtr<FdoPropertyDefinition> prop = props->GetItem (L"Raster");
         FdoRasterPropertyDefinition* rasterProp = (FdoRasterPropertyDefinition*)(prop.p);
         FdoStringP rasterAssoc = rasterProp->GetSpatialContextAssociation();
-        CPPUNIT_ASSERT (rasterAssoc == L"EPSG:42304");
+        CPPUNIT_ASSERT (rasterAssoc == L"EPSG:4326");
 
         FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*> (connection->CreateCommand (FdoCommandType_Select));
         cmdSelect->SetFeatureClassName (L"ecodistricts");
