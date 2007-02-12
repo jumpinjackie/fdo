@@ -894,25 +894,47 @@ void FdoWmsConnection::_setDefaultSpatialContextAssociation (FdoClassDefinition*
 	FdoString* className = featClass->GetName ();
 	FdoPtr<FdoDictionaryElement> element = mLayerMappings->GetItem (className);
 	FdoString* layerName = element->GetValue ();
-	FdoString* crsName   = NULL;
+	FdoString* crsName = NULL;
 	FdoWmsLayerP layer;
 
-	// search the layer in the layers
+	// If a layer name is associated to the class definition find the associated layer 
 	if (layerName != NULL)
 	{
-		FdoPtr<FdoWmsCapabilities> capa = dynamic_cast<FdoWmsCapabilities *>(mWmsServiceMetadata->GetCapabilities ());
+		// Retrieve the WMS capabilities returned by the WMS server
+        FdoPtr<FdoWmsCapabilities> capa = dynamic_cast<FdoWmsCapabilities *>(mWmsServiceMetadata->GetCapabilities ());
 		FdoPtr<FdoWmsLayerCollection> layers = capa->GetLayers ();		
 
-		layer = FindLayer (layers, layerName);
+		// Search for the list of layers with the specified name in all the layers and child layers
+        // returned by the server
+        layer = FindLayer (layers, layerName);
 		while (layer != NULL)
 		{
-			FdoStringsP crsNames = layer->GetCoordinateReferenceSystems ();
+			// Get the CRS names associated to the WMS layers, as defined by the server's capabilities response
+            FdoStringsP crsNames = layer->GetCoordinateReferenceSystems ();
 			if (crsNames->GetCount () > 0)
 			{
-				// Get the first spatial context found in the list of the spatial contexts
+				// If the layer supports the default CRS (EPSG:4326) find the index of the default CRS
+                // (Use both default CRS names in the search. A server may support one or both)
+				FdoInt32 indexDefaultCRS = crsNames->IndexOf(FdoWmsGlobals::DefaultEPSGCode);
+                if (indexDefaultCRS == -1) 
+                {
+                    indexDefaultCRS = crsNames->IndexOf(FdoWmsGlobals::DefaultEPSGCode2);
+                }
+                
+                // If the index of the default CRS was found, use it to retrieve the CRS name
+                if (indexDefaultCRS != -1) 
+                {
+				    crsName = crsNames->GetString (indexDefaultCRS);
+                }
+                // Otherwise, get the first spatial context found in the list of the spatial contexts
 				// associated to the WMS layer
-				crsName = crsNames->GetString (0);
-				break;
+                else
+                {
+				    crsName = crsNames->GetString (0);
+                }
+
+				// Stop processing layers
+                break;
 			}
 			else
 			{
@@ -922,9 +944,10 @@ void FdoWmsConnection::_setDefaultSpatialContextAssociation (FdoClassDefinition*
 			}
 		}
 
-		if (crsName != NULL)
+		// If a CRS name is associated to the layer, use it to set the classes spatial context association
+        if (crsName != NULL)
 		{
-			// firstly we search the raster property in the BaseProperties
+			// First we search the raster property in the BaseProperties
 			FdoPtr<FdoReadOnlyPropertyDefinitionCollection> baseProps = featClass->GetBaseProperties ();
 			for (FdoInt32 i=0; i<baseProps->GetCount (); i++)
 			{
@@ -932,13 +955,17 @@ void FdoWmsConnection::_setDefaultSpatialContextAssociation (FdoClassDefinition*
 				FdoRasterPropertyDefinition* rasterProp = dynamic_cast<FdoRasterPropertyDefinition *> (baseProp.p);
 				if (rasterProp != NULL)
 				{
-					if (rasterProp->GetSpatialContextAssociation() == NULL ||
-						(rasterProp->GetSpatialContextAssociation(), L"") == 0)
-					rasterProp->SetSpatialContextAssociation (crsName);
+                    FdoString* scName = rasterProp->GetSpatialContextAssociation();
+                    if (scName == NULL || wcslen(scName) == 0) 
+                    {
+					    rasterProp->SetSpatialContextAssociation (crsName);
+                    }
+
 					return;
 				}
 			}
 
+			// If the raster property does not exist in the base properties, check the properties list
 			FdoPtr<FdoPropertyDefinitionCollection> props = featClass->GetProperties ();
 			for (FdoInt32 i=0; i<props->GetCount (); i++)
 			{
@@ -946,10 +973,20 @@ void FdoWmsConnection::_setDefaultSpatialContextAssociation (FdoClassDefinition*
 				FdoRasterPropertyDefinition* rasterProp = dynamic_cast<FdoRasterPropertyDefinition *> (prop.p);
 				if (rasterProp != NULL)
 				{
-					rasterProp->SetSpatialContextAssociation (crsName);
+                    FdoString* scName = rasterProp->GetSpatialContextAssociation();
+                    if (scName == NULL || wcslen(scName) == 0) 
+                    {
+					    rasterProp->SetSpatialContextAssociation (crsName);
+                    }
+
 					return;
 				}
 			}
+
+		    // The class does not have a raster property
+			if (!featClass->GetIsAbstract())
+                throw FdoException::Create (NlsMsgGet (FDOWMS_FEATURE_NO_RASTER_PROPERTY, "Class '%1$ls' does not contain a Raster property.", className));
+
 		}
 		else
 		{
@@ -960,7 +997,8 @@ void FdoWmsConnection::_setDefaultSpatialContextAssociation (FdoClassDefinition*
 	}
 	else
 	{
-		throw FdoException::Create (NlsMsgGet (FDOWMS_12001_LAYER_NOT_EXIST, "The WMS layer '%1$ls' does not exist.", className));
+		// A layer was not associated to the FDO class
+        throw FdoException::Create (NlsMsgGet (FDOWMS_12001_LAYER_NOT_EXIST, "The WMS layer '%1$ls' does not exist.", className));
 	}
 }
 
