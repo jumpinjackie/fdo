@@ -427,3 +427,130 @@ FdoXmlGeometryHandler::GmlGeometryType FdoXmlGeometryHandler::getGmlGeometryType
 
 	return geoType;
 }
+
+FdoXmlSaxHandler* FdoXmlGeometryHandler::SkipFirstParseStep()
+{
+	FdoXmlSaxHandler* nextHandler = NULL;
+	FdoXmlGeometry* newGeometry = NULL;
+
+	GmlGeometryType curType = m_typeGeomExpected;
+    m_typeGeomExpected = GmlGeometryType_Unknown;
+    
+	switch(curType)
+	{
+	//Point
+	case GmlGeometryType_Point:
+
+		m_coordinates = FdoXmlCoordinateGroup::Create();
+		newGeometry = FdoXmlPoint::Create();
+		newGeometry->SetCoordinates(m_coordinates);
+		m_geometryStack.push_back(newGeometry);
+
+		break;
+
+	//LinearRing
+	case GmlGeometryType_LinearRing:
+
+		m_coordinates = FdoXmlCoordinateGroup::Create();
+		newGeometry = FdoXmlLinearRing::Create();
+		newGeometry->SetCoordinates(m_coordinates);
+		m_geometryStack.push_back(newGeometry);
+
+		break;
+
+	//LineString
+	case GmlGeometryType_LineString:
+
+		m_coordinates = FdoXmlCoordinateGroup::Create();
+		newGeometry = FdoXmlLineString::Create();
+		newGeometry->SetCoordinates(m_coordinates);
+		m_geometryStack.push_back(newGeometry);
+
+		break;
+
+
+	//Polygon
+	case GmlGeometryType_Polygon:
+		
+		//NOTE: polygon is treated as a collection of Linear rings
+		//the first is the outer boundary
+		//the rest are the inner boundary
+		m_isMultiGeometry = true;
+
+		m_coordinates = FdoXmlCoordinateGroup::Create();
+		newGeometry = FdoXmlPolygon::Create();
+		newGeometry->SetCoordinates(m_coordinates);
+		m_geometryStack.push_back(newGeometry);
+
+		break;
+
+	//MultiPoint
+	case GmlGeometryType_MultiPoint:
+		m_isMultiGeometry = true;
+
+		newGeometry = FdoXmlMultiPoint::Create();
+		m_geometryStack.push_back(newGeometry);
+
+		break;
+
+	//MultiLineString
+	case GmlGeometryType_MultiLineString:
+		m_isMultiGeometry = true;
+
+		newGeometry = FdoXmlMultiLineString::Create();
+		m_geometryStack.push_back(newGeometry);
+
+		break;
+
+	//MultiPolygon
+	case GmlGeometryType_MultiPolygon:
+		m_isMultiGeometry = true;
+
+		newGeometry = FdoXmlMultiPolygon::Create();
+		m_geometryStack.push_back(newGeometry);
+
+		break;
+
+	//MultiGeometry
+	case GmlGeometryType_MultiGeometry:
+		m_isMultiGeometry = true;
+
+		newGeometry = FdoXmlMultiGeometry::Create();
+		m_geometryStack.push_back(newGeometry);
+
+		break;
+
+	//Geometry Association
+	case GmlGeometryType_GeometryAssociation:
+	
+		m_nestedHandler = new FdoXmlGeometryHandler();
+		nextHandler = m_nestedHandler;
+		break;
+
+	default:
+		m_parsingStateStack.push_back(ParsingState_Unknown);
+		break;
+	}
+
+	return nextHandler;
+}
+
+void FdoXmlGeometryHandler::RunLastParseStep(FdoString* name, GmlGeometryType typeGeomExpected)
+{
+    FdoXmlGeometry* curGeometry = NULL;
+    FdoPtr<FdoXmlGeometry> nestedGeometry;
+	if (m_nestedHandler != NULL && typeGeomExpected == GmlGeometryType_GeometryAssociation)
+    {
+	    if(!m_geometryStack.empty())
+		    curGeometry = m_geometryStack.back();
+
+		nestedGeometry = m_nestedHandler->GetGeometry();
+
+		if(m_isMultiGeometry){
+			curGeometry->AddGeometryMember(nestedGeometry);
+		}
+		else{
+			curGeometry->AddGeometricProperty(name, nestedGeometry);
+		}
+    }
+}

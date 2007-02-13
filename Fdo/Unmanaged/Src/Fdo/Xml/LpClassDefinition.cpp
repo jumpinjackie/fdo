@@ -24,6 +24,7 @@ FdoXmlLpClassDefinition::FdoXmlLpClassDefinition( FdoClassDefinition* classDefin
 m_class(classDefinition), m_mapping(classMapping) {
     FDO_SAFE_ADDREF(m_class.p);
     FDO_SAFE_ADDREF(m_mapping.p);
+    m_mainGeometryPropertyName = NULL;
 }
 
 FdoXmlLpClassDefinition::~FdoXmlLpClassDefinition() {
@@ -193,4 +194,30 @@ FdoString* FdoXmlLpClassDefinition::PropertyMappingNameFromGmlAlias(FdoString* g
         }
     }
     return NULL;
+}
+
+FdoString* FdoXmlLpClassDefinition::GetMainGeometryPropertyName()
+{
+    if (m_mainGeometryPropertyName == NULL)
+    {
+        FdoPtr<FdoXmlLpPropertyCollection> props = GetProperties();
+        FdoInt32 count = props->GetCount();
+        for (int i = 0; i < count; i++)
+        {
+            FdoPtr<FdoXmlLpPropertyDefinition> prop = props->GetItem(i);
+            FdoPtr<FdoPropertyDefinition> propDef = prop->GetPropertyDefinition();
+            if (propDef != NULL && FdoPropertyType_GeometricProperty == propDef->GetPropertyType())
+            {
+                if (m_mainGeometryPropertyName == NULL)
+                    m_mainGeometryPropertyName = propDef->GetName();
+                else
+                {
+                    // if there is more than one geometry prop return NULL
+                    m_mainGeometryPropertyName = NULL;
+                    break;
+                }
+            }
+        }
+    }
+    return m_mainGeometryPropertyName;
 }

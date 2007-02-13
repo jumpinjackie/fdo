@@ -92,7 +92,8 @@ private:
         GmlBaseType_Pending,
         GmlBaseType_hexBinary,
         GmlBaseType_base64Binary,
-		GmlBaseType_GmlGeometryAssociation
+		GmlBaseType_GmlGeometryAssociation,
+		GmlBaseType_GmlDirectGeometry
 	};
 
 	enum ParsingState{
@@ -108,7 +109,8 @@ private:
         ParsingState_ElementPending,
         ParsingState_hexBinary,
         ParsingState_base64Binary,
-		ParsingState_GmlGeometryAssociation
+		ParsingState_GmlGeometryAssociation,
+        ParsingState_GmlDirectGeometry
 	};
 
 

@@ -73,6 +73,9 @@ public:
     // get a mapping property name using an gml alias name if exist
     FdoString* PropertyMappingNameFromGmlAlias(FdoString* gmlName);
 
+    // get main geometry property name. If there are more than one geometry prop NULL will be returned
+    FdoString* GetMainGeometryPropertyName();
+
 protected:
     FdoXmlLpClassDefinition();
 	FdoXmlLpClassDefinition( FdoClassDefinition* classDefinition, FdoXmlClassMapping* classMapping );
@@ -85,6 +88,7 @@ private:
     FdoPtr<FdoXmlClassMapping> m_mapping;
     FdoPtr<FdoXmlLpClassDefinition> m_baseClass;
     FdoPtr<FdoXmlLpPropertyCollection> m_properties;
+    FdoString* m_mainGeometryPropertyName;
 
 // helper
 private:
