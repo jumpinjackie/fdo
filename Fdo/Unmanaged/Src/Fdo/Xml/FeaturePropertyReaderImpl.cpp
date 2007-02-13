@@ -234,6 +234,17 @@ FdoXmlSaxHandler* FdoXmlFeaturePropertyReaderImpl::XmlStartElement(
 			    break;
             }
 
+		//direct gml geometry association
+		case GmlBaseType_GmlDirectGeometry:
+			m_parsingStateStack.push_back(ParsingState_GmlDirectGeometry);
+			
+			m_geometryHandler = FdoXmlGeometryHandler::Create();
+            m_geometryHandler->SetExpectedGmlGeometry((FdoXmlGeometryHandler::GmlGeometryType)m_activeGmlGeometryType);
+            nextSaxHandler = m_geometryHandler->SkipFirstParseStep();
+            if (nextSaxHandler == NULL)
+                nextSaxHandler = m_geometryHandler;
+			break;
+
 		//gml geometry association
 		case GmlBaseType_GmlGeometryAssociation:
 			m_parsingStateStack.push_back(ParsingState_GmlGeometryAssociation);
@@ -395,111 +406,66 @@ FdoBoolean FdoXmlFeaturePropertyReaderImpl::XmlEndElement(
 	case ParsingState_BoundingShape:
 
 		//"Bounds" is FDO property for gml:boundedBy
-        try
-        {
-		    tempGeometry =  m_geometryHandler->GetGeometry();
-		    if (tempGeometry)
-		    {
-			    tempByteArray = tempGeometry->GetFgf();
-
-			    isPauseParsing = curFeatureHandler->FeatureGeometricProperty(m_featureContext, 
-				    L"Bounds", 
-				    tempByteArray->GetData(), 
-				    tempByteArray->GetCount());
-		    }		
-        }
-        catch(FdoException* ex)
-        {ex->Release();}
-        catch(...)
-        {}
-		FDO_SAFE_RELEASE(tempGeometry);
+	    tempGeometry =  m_geometryHandler->GetGeometry();
+	    if (tempGeometry)
+	    {
+		    tempByteArray = tempGeometry->GetFgf();
+            if (tempByteArray != NULL)
+		        isPauseParsing = curFeatureHandler->FeatureGeometricProperty(m_featureContext, 
+			                L"Bounds", tempByteArray->GetData(), tempByteArray->GetCount());
+	    }		
 		FDO_SAFE_RELEASE(tempByteArray);
+		FDO_SAFE_RELEASE(tempGeometry);
 
 		break;
-
-	//gml geometry association
-	case ParsingState_GmlGeometryAssociation:
-        try
-        {
-            tempGeometry =  m_geometryHandler->GetGeometry();
-            if (tempGeometry)
-            {
-		        tempByteArray = tempGeometry->GetFgf();
-                FdoStringP pPropName = name;
-                bool found = false;
-                if (NULL != m_lpClassStack.back())
-                {
-                    FdoXmlLpClassDefinition* classDef = m_lpClassStack.back();
-                    FdoString* pBaseName = classDef->PropertyMappingNameFromGmlAlias(name);
-                    if (pBaseName != NULL)
-                    {
-                        pPropName = pBaseName;
-                        found = true;
-                    }
-                }
-                if (!found)
-                {
-                    pPropName = L"gml/";
-                    pPropName += name;
-                }
-                if (tempByteArray != NULL)
-                {
-                    isPauseParsing = curFeatureHandler->FeatureGeometricProperty(m_featureContext, 
-			            pPropName,
-			            tempByteArray->GetData(), 
-			            tempByteArray->GetCount());
-                } else
-                {
-		            isPauseParsing = curFeatureHandler->FeatureGeometricProperty(m_featureContext, 
-			            pPropName,
-			            NULL, 
-			            0);
-                }
-            }
-        }
-        catch(FdoException* ex)
-        {ex->Release();}
-        catch(...)
-        {}
-		FDO_SAFE_RELEASE(tempGeometry);
-		FDO_SAFE_RELEASE(tempByteArray);
-		break;
-
 	//geometry association
+	case ParsingState_GmlDirectGeometry:
+	case ParsingState_GmlGeometryAssociation:
 	case ParsingState_GeometryAssociation:
-        try
         {
+            if (curState == ParsingState_GmlDirectGeometry) // run last step only in this case
+                m_geometryHandler->RunLastParseStep(name, (FdoXmlGeometryHandler::GmlGeometryType)m_activeGmlGeometryType);
             tempGeometry =  m_geometryHandler->GetGeometry();
-            if (tempGeometry)
+            FdoStringP pPropName = name;
+            bool found = false;
+            FdoXmlLpClassDefinition* classDef = m_lpClassStack.back();
+            if (NULL != classDef)
             {
-		        tempByteArray = tempGeometry->GetFgf();
-                FdoStringP pPropName = name;
-                if (NULL != m_lpClassStack.back())
+                FdoString* pBaseName = classDef->PropertyMappingNameFromGmlAlias(name);
+                if (pBaseName != NULL)
                 {
-                    FdoXmlLpClassDefinition* classDef = m_lpClassStack.back();
-                    FdoString* pBaseName = classDef->PropertyMappingNameFromGmlAlias(name);
-                    if (pBaseName != NULL)
-                        pPropName = pBaseName;
-                }
-                if (tempByteArray != NULL) {
-		            isPauseParsing = curFeatureHandler->FeatureGeometricProperty(m_featureContext, 
-			            pPropName,
-			            tempByteArray->GetData(), 
-			            tempByteArray->GetCount());
-                } else {
-		            isPauseParsing = curFeatureHandler->FeatureGeometricProperty(m_featureContext, 
-			            pPropName,
-			            NULL, 
-			            0);
+                    pPropName = pBaseName;
+                    found = true;
                 }
             }
+            // only in gml geometry association add in front gml/ 
+            if (!found && curState == ParsingState_GmlGeometryAssociation)
+            {
+                pPropName = L"gml/";
+                pPropName += name;
+            }
+            // match the names of geometry field
+            if (NULL != classDef)
+            {
+                FdoString* pMainGeomPropName = classDef->GetMainGeometryPropertyName();
+                // in case we have only one geometry and the names are different 
+                if (pMainGeomPropName != NULL && pPropName != pMainGeomPropName)
+                    pPropName = pMainGeomPropName;
+            }
+            FdoByte* arrayData = NULL;
+            FdoInt32 szArrayData = 0;
+	        if (tempGeometry){
+		        tempByteArray = tempGeometry->GetFgf();
+                if (tempByteArray != NULL){
+                arrayData = tempByteArray->GetData();
+                szArrayData = tempByteArray->GetCount();
+                }
+            }
+	        isPauseParsing = curFeatureHandler->FeatureGeometricProperty(m_featureContext, 
+		                pPropName, arrayData, szArrayData);
         }
-        catch(FdoException* ex)
-        {ex->Release();}
-        catch(...)
-        {}
+		FDO_SAFE_RELEASE(tempByteArray);
 	    FDO_SAFE_RELEASE(tempGeometry);
-	    FDO_SAFE_RELEASE(tempByteArray);
 		break;
 
 	//Generic Complex Type
@@ -532,7 +498,7 @@ FdoBoolean FdoXmlFeaturePropertyReaderImpl::XmlEndElement(
         break;
     case ParsingState_base64Binary:
         {
-            unsigned int len;
+            FdoSize len;
             XMLByte* decoded = XERCES_CPP_NAMESPACE::Base64::decode((const XMLByte*)(const char*)m_dataProperty, &len);
             if (decoded != NULL) {
                 curFeatureHandler->FeatureBinaryData(m_featureContext, decoded, len);
@@ -690,6 +656,54 @@ FdoXmlFeaturePropertyReaderImpl::GmlBaseType FdoXmlFeaturePropertyReaderImpl::ge
                                 wcscmp(elementName, L"multiExtentOf") == 0)
                     {
                         rv = GmlBaseType_GmlGeometryAssociation;
+                    }
+                    else if (wcscmp(elementName, L"Point") == 0)
+                    {
+                        m_activeGmlGeometryType = FdoXmlGeometryHandler::GmlGeometryType_Point;
+                        rv = GmlBaseType_GmlDirectGeometry;
+                    }
+                    else if (wcscmp(elementName, L"Polygon") == 0)
+                    {
+                        m_activeGmlGeometryType = FdoXmlGeometryHandler::GmlGeometryType_Polygon;
+                        rv = GmlBaseType_GmlDirectGeometry;
+                    }
+                    else if (wcscmp(elementName, L"LineString") == 0)
+                    {
+                        m_activeGmlGeometryType = FdoXmlGeometryHandler::GmlGeometryType_LineString;
+                        rv = GmlBaseType_GmlDirectGeometry;
+                    }
+                    else if (wcscmp(elementName, L"LinearRing") == 0)
+                    {
+                        m_activeGmlGeometryType = FdoXmlGeometryHandler::GmlGeometryType_LinearRing;
+                        rv = GmlBaseType_GmlDirectGeometry;
+                    }
+                    else if (wcscmp(elementName, L"MultiPoint") == 0)
+                    {
+                        m_activeGmlGeometryType = FdoXmlGeometryHandler::GmlGeometryType_MultiPoint;
+                        rv = GmlBaseType_GmlDirectGeometry;
+                    }
+                    else if (wcscmp(elementName, L"MultiLineString") == 0)
+                    {
+                        m_activeGmlGeometryType = FdoXmlGeometryHandler::GmlGeometryType_MultiLineString;
+                        rv = GmlBaseType_GmlDirectGeometry;
+                    }
+                    else if (wcscmp(elementName, L"MultiPolygon") == 0)
+                    {
+                        m_activeGmlGeometryType = FdoXmlGeometryHandler::GmlGeometryType_MultiPolygon;
+                        rv = GmlBaseType_GmlDirectGeometry;
+                    }
+                    else if (wcscmp(elementName, L"MultiGeometry") == 0)
+                    {
+                        m_activeGmlGeometryType = FdoXmlGeometryHandler::GmlGeometryType_MultiGeometry;
+                        rv = GmlBaseType_GmlDirectGeometry;
+                    }
+                    else if (wcscmp(elementName, L"pointMember") == 0 ||
+                                wcscmp(elementName, L"lineStringMember") == 0 ||
+                                wcscmp(elementName, L"polygonMember") == 0 ||
+                                wcscmp(elementName, L"geometryMember") == 0)
+                    {
+                        m_activeGmlGeometryType = FdoXmlGeometryHandler::GmlGeometryType_GeometryAssociation;
+                        rv = GmlBaseType_GmlDirectGeometry;
                     }
                 }
                 if (rv != GmlBaseType_Unknown)

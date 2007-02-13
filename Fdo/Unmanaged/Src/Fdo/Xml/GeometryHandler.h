@@ -116,6 +116,8 @@ private:
 
     void SetExpectedGmlGeometry(GmlGeometryType typeGeomExpected){m_typeGeomExpected = typeGeomExpected;};
     GmlGeometryType m_typeGeomExpected;
+    FdoXmlSaxHandler* SkipFirstParseStep();
+    void RunLastParseStep(FdoString* name, GmlGeometryType typeGeomExpected);
 };
 
 typedef FdoPtr<FdoXmlGeometryHandler> FdoXmlGeometryHandlerP;
