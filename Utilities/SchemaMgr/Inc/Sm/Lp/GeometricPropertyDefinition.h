@@ -173,25 +173,25 @@ public:
 	FdoString* GetRootColumnNameSi1() const;
 	const FdoSmPhColumn* RefColumnSi1() const;
     FdoSmPhColumnP GetColumnSi1();
-    bool GetIsFixedColumnSi1() const { return mbFixedColumnSi1; }
-    bool GetIsColumnCreatorSi1() const { return mbColumnCreatorSi1; }
+    // SI column fixed name and FDO ownership status not tracked in MetaSchema.
+    // However, these are in lock step with equivalent statuses for geometric column.
+    bool GetIsFixedColumnSi1() const { return GetIsFixedColumn(); }
+    bool GetIsColumnCreatorSi1() const { return GetIsColumnCreator(); }
 	void SetColumnNameSi1( FdoString* columnName );
 	void SetRootColumnNameSi1( FdoString* columnName );
 	void SetColumnSi1( FdoSmPhColumnP pColumn );
-    void SetIsFixedColumnSi1( bool bFixedColumn ) { mbFixedColumnSi1 = bFixedColumn; }
-    void SetIsColumnCreatorSi1( bool bColumnCreator ) { mbColumnCreatorSi1 = bColumnCreator; }
 
 	FdoString* GetColumnNameSi2() const;
 	FdoString* GetRootColumnNameSi2() const;
 	const FdoSmPhColumn* RefColumnSi2() const;
     FdoSmPhColumnP GetColumnSi2();
-    bool GetIsFixedColumnSi2() const { return mbFixedColumnSi2; }
-    bool GetIsColumnCreatorSi2() const { return mbColumnCreatorSi2; }
+    // SI column fixed name and FDO ownership status not tracked in MetaSchema.
+    // However, these are in lock step with equivalent statuses for geometric column.
+    bool GetIsFixedColumnSi2() const { return GetIsFixedColumn(); }
+    bool GetIsColumnCreatorSi2() const { return GetIsColumnCreator(); }
 	void SetColumnNameSi2( FdoString* columnName );
 	void SetRootColumnNameSi2( FdoString* columnName );
 	void SetColumnSi2( FdoSmPhColumnP pColumn );
-    void SetIsFixedColumnSi2( bool bFixedColumn ) { mbFixedColumnSi2 = bFixedColumn; }
-    void SetIsColumnCreatorSi2( bool bColumnCreator ) { mbColumnCreatorSi2 = bColumnCreator; }
 
     //////////////////////////////////////////////////////////////////////
 
@@ -396,15 +396,11 @@ private:
     FdoStringP mRootColumnNameSi1;
     FdoStringP mCandRootColumnNameSi1;
 	FdoSmPhColumnP mColumnSi1;
-    bool mbFixedColumnSi1;
-    bool mbColumnCreatorSi1;
 
 	FdoStringP mColumnNameSi2;
     FdoStringP mRootColumnNameSi2;
     FdoStringP mCandRootColumnNameSi2;
 	FdoSmPhColumnP mColumnSi2;
-    bool mbFixedColumnSi2;
-    bool mbColumnCreatorSi2;
 };
 
 typedef FdoPtr<FdoSmLpGeometricPropertyDefinition> FdoSmLpGeometricPropertyP;

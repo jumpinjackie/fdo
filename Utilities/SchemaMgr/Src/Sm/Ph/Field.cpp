@@ -130,7 +130,6 @@ FdoStringP FdoSmPhField::GetSelect()
             // no default value, just select by qualified name. 
 
             selectSyntax = GetQName();
-
         }
         else { 
             // default value, generate syntax for a function that
@@ -147,8 +146,9 @@ FdoStringP FdoSmPhField::GetSelect()
     else {
         // column does not exist.
         // return the default value as a literal plus an alias (the field name).
+
         selectSyntax = FdoStringP(L"(") + 
-            GetManager()->FormatSQLVal(mDefaultValue, pColumn->GetType()) + L") \"" + GetName() + L"\"";
+            GetManager()->FormatSQLVal(mDefaultValue, pColumn->GetType()) + L") as \"" + GetName() + L"\"";
     }
 
     return selectSyntax;
@@ -159,7 +159,7 @@ FdoStringP FdoSmPhField::GetUpdCol()
     FdoStringP colSyntax;
 
     if ( GetColumn() ) {
-        colSyntax = GetName();
+        colSyntax = GetColumn()->GetName();
     }
 
     return colSyntax;

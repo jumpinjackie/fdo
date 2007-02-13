@@ -184,7 +184,61 @@ void SchemaMgrTests::testGenDefault ()
         column = view2->CreateColumnDouble( L"DOUBLE_COLUMN", true, L"DOUBLE_COLUMN" );
         column = view2->CreateColumnGeom( L"GEOM_COLUMN", (FdoSmPhScInfo*) NULL, true, true, false, L"GEOM_COLUMN" );
 
+#ifndef RDBI_DEF_SSQL
+        table = owner->CreateTable( phMgr->GetDcDbObjectName(L"TABLE5" ));
+        column = table->CreateColumnDecimal( L"ID", false, 10, 2 );
+        table->AddPkeyCol( column->GetName() );
+        column = table->CreateColumnChar( L"STRING_COLUMN", false, 50 );
+
+        table = owner->CreateTable( phMgr->GetDcDbObjectName(L"RTABLE5" ));
+        column = table->CreateColumnDecimal( L"ID", false, 10, 2 );
+        table->AddPkeyCol( column->GetName() );
+        FdoSmPhColumnP fkeyColumn5 = table->CreateColumnDouble( L"TABLE5_ID", false );
+        column = table->CreateColumnChar( L"STRING_COLUMN", false, 50 );
+
+        fkey = table->CreateFkey( "FK_RTABLE5_TABLE5", phMgr->GetDcDbObjectName("TABLE5" ));
+        fkey->AddFkeyColumn( fkeyColumn5, L"ID" );
+
+        table = owner->CreateTable( phMgr->GetDcDbObjectName(L"TABLE6" ));
+        column = table->CreateColumnDecimal( L"ID1", false, 10, 2 );
+        table->AddPkeyCol( column->GetName() );
+        column = table->CreateColumnChar( L"ID2", false, 50 );
+        table->AddPkeyCol( column->GetName() );
+        column = table->CreateColumnChar( L"STRING_COLUMN", false, 50 );
+
+        table = owner->CreateTable( phMgr->GetDcDbObjectName(L"RTABLE6" ));
+        column = table->CreateColumnDecimal( L"ID", false, 10, 2 );
+        table->AddPkeyCol( column->GetName() );
+        FdoSmPhColumnP fkeyColumn6a = table->CreateColumnDouble( L"TABLE6_ID1", false );
+        FdoSmPhColumnP fkeyColumn6b = table->CreateColumnChar( L"TABLE6_ID2", false, 50 );
+        column = table->CreateColumnChar( L"STRING_COLUMN", false, 50 );
+
+        fkey = table->CreateFkey( "FK_RTABLE6_TABLE6", phMgr->GetDcDbObjectName("TABLE6" ));
+        fkey->AddFkeyColumn( fkeyColumn6a, L"ID1" );
+        fkey->AddFkeyColumn( fkeyColumn6b, L"ID2" );
+#endif
+
+        table = owner->CreateTable( phMgr->GetDcDbObjectName(L"TABLE7" ));
+        column = table->CreateColumnInt64( L"ID", false, true);
+        table->AddPkeyCol( column->GetName() );
+        column = table->CreateColumnChar( L"STRING_COLUMN", false, 50 );
+
+        table = owner->CreateTable( phMgr->GetDcDbObjectName(L"RTABLE7" ));
+        column = table->CreateColumnInt64( L"ID", false);
+        table->AddPkeyCol( column->GetName() );
+        FdoSmPhColumnP fkeyColumn7 = table->CreateColumnInt64( L"TABLE7_ID", false, true);
+        column = table->CreateColumnChar( L"STRING_COLUMN", false, 50 );
+
+        fkey = table->CreateFkey( "FK_RTABLE7_TABLE7", phMgr->GetDcDbObjectName("TABLE7" ));
+        fkey->AddFkeyColumn( fkeyColumn7, L"ID" );
+
+        FdoSmPhBatchColumnsP ukeys = table->GetUkeyColumns(); 
+        FdoSmPhColumnsP	ukeyColumns = new FdoSmPhColumnCollection();
+        ukeys->Add( ukeyColumns );
+    	table->AddUkeyCol( ukeys->GetCount() - 1, L"TABLE7_ID" );
+
         database->Commit();
+        
         owner->DiscardDbObject(table);
         // Make sure RTABLE2 got removed from the not found list.
         CPPUNIT_ASSERT( owner->FindDbObject(phMgr->GetDcDbObjectName(L"RTABLE2")) != NULL );
