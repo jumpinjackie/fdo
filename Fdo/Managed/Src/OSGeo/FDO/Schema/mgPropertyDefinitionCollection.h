@@ -25,13 +25,32 @@ public __gc class PropertyDefinition;
 public __gc class SchemaElement;
 
 /// \brief
-/// The FdoPropertyDefinitionCollection class represents a collection of FdoPropertyDefinition objects.
+/// The PropertyDefinitionCollection class represents a collection of PropertyDefinition objects.
 [System::Reflection::DefaultMemberAttribute("RealTypeItem")]
 public __sealed __gc class PropertyDefinitionCollection : public NAMESPACE_OSGEO_RUNTIME::Disposable, public System::Collections::IList
 {
+/// \cond DOXYGEN-IGNORE
 private:
     /// \brief
-    /// 		nested class defined to provide Enumerator.
+    /// A Nested class defined to provide enumeration of Dictionary elements
+    ///
+    /// Enumerators can be used to read the data in the collection, 
+    /// but they cannot be used to modify the underlying collection.
+    ///
+    /// An enumerator remains valid as long as the collection remains unchanged. 
+    /// If changes are made to the collection, such as adding, modifying, or deleting 
+    /// elements, the enumerator is irrecoverably invalidated and the next call to 
+    /// MoveNext or Reset throws an InvalidOperationException. If the collection is 
+    /// modified between MoveNext and Current, Current returns the element that it is 
+    /// set to, even if the enumerator is already invalidated.
+    ///
+    /// The enumerator does not have exclusive access to the collection; therefore, 
+    /// enumerating through a collection is intrinsically not a thread-safe procedure. 
+    /// Even when a collection is synchronized, other threads can still modify the 
+    /// collection, which causes the enumerator to throw an exception. To guarantee 
+    /// thread safety during enumeration, you can either lock the collection during 
+    /// the entire enumeration or catch the exceptions resulting from changes made 
+    /// by other threads.
     /// 
 	__gc class Enumerator : public System::Collections::IEnumerator
 	{
@@ -40,15 +59,47 @@ private:
 		System::Int32 m_nIdx;
 
 	public:
+        /// \brief
+        /// Constructs a new Collection Enumerator
+        /// 
+        /// \param col 
+        /// Input The collection to enumerate.
+        /// 
 		Enumerator(PropertyDefinitionCollection* elements) : m_pCol(elements), m_nIdx(-1) 
 		{
 
 		}
 
-		__property System::Object* get_Current();
+        /// \brief
+        /// Retrieves the current object at the enumerator location
+        /// 
+        /// \return
+        /// Retuns the current object referenced by the enumerator
+        /// 
+		__property System::Object *get_Current();
 
+        /// \brief
+        /// Initially, the enumerator is positioned before the first object in the collection. 
+        /// At this position, calling the Current property throws an exception. 
+        /// Therefore, you must call the MoveNext method to advance the enumerator 
+        /// to the first element of the collection before reading the value of Current.
+        /// If MoveNext passes the end of the collection, the enumerator is positioned 
+        /// after the last element in the collection and MoveNext returns false. 
+        /// When the enumerator is at this position, subsequent calls to MoveNext also return false. 
+        /// If the last call to MoveNext returned false, calling Current throws an exception. 
+        /// To set Current to the first element of the collection again, you can call Reset 
+        /// followed by MoveNext.
+        /// 
+        /// \return
+        /// Retuns true if the Enumerator is able to move to a valid element
+        /// otherwise false.
+        /// 
 		System::Boolean MoveNext();
 
+        /// \brief
+        /// Initially, the enumerator is positioned before the first element in the collection. 
+        /// The Reset method brings the enumerator back to this position. 
+        /// 
 		System::Void Reset();
 	};
 
@@ -56,55 +107,72 @@ public private:
 	inline FdoPropertyDefinitionCollection* GetImpObj();
 
 private:
-    /// System::Collections::ICollection interfaces
-	System::Void System::Collections::ICollection::CopyTo(System::Array* array,System::Int32 index);
+    // System::Collections::ICollection interface properties
+    __property System::Object* System::Collections::ICollection::get_SyncRoot();
+    __property System::Boolean System::Collections::ICollection::get_IsSynchronized();
 
-	__property System::Object* System::Collections::ICollection::get_SyncRoot();
+    // System::Collections::ICollection interface methods
+    System::Void System::Collections::ICollection::CopyTo(System::Array* array,System::Int32 index);
 
-	__property System::Boolean System::Collections::ICollection::get_IsSynchronized();
+    // System::Collections::IList interface properties
+    __property System::Boolean System::Collections::IList::get_IsFixedSize();
+    __property System::Boolean System::Collections::IList::get_IsReadOnly();
+    __property Object* System::Collections::IList::get_Item(System::Int32 index);
+    __property System::Void  System::Collections::IList::set_Item(System::Int32 index, Object* value);
 
-    // System::Collections::IList interfaces
-	__property System::Boolean System::Collections::IList::get_IsFixedSize();
-
-	__property System::Boolean System::Collections::IList::get_IsReadOnly();
-
-	System::Int32 System::Collections::IList::Add(Object* value);
-
-	System::Boolean System::Collections::IList::Contains(Object* value);
-
-	System::Int32 System::Collections::IList::IndexOf(Object* value);
-
-	System::Void System::Collections::IList::Insert(System::Int32 index, Object* value);
-
-	System::Void System::Collections::IList::Remove(Object* value);
-
-	__property Object* System::Collections::IList::get_Item(System::Int32 index);
-
-	__property System::Void  System::Collections::IList::set_Item(System::Int32 index, Object* value);
+    // System::Collections::IList interface methods
+    System::Int32 System::Collections::IList::Add(Object* value);
+    System::Boolean System::Collections::IList::Contains(Object* value);
+    System::Int32 System::Collections::IList::IndexOf(Object* value);
+    System::Void System::Collections::IList::Insert(System::Int32 index, Object* value);
+    System::Void System::Collections::IList::Remove(Object* value);
 
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 
 public:
+    /// \brief
+    /// Constructs a PropertyDefinitionCollection object
+    /// 
+    /// \param parent 
+    /// Input A Pointer to the parent schema object of the collection
+    /// 
 	PropertyDefinitionCollection(NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement* parent);
 
+    /// \brief
+    /// Constructs a PropertyDefinitionCollection object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	PropertyDefinitionCollection(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_RUNTIME::Disposable(unmanaged, autoDelete)
 	{
 
 	}
 
     /// \brief
-    ///    Gets the count of items in collection.
+    /// Gets the count of items in collection.
+    /// 
+    /// \return
+    /// Returns the number of items in the collection.
     /// 
 	__property System::Int32 get_Count(System::Void);
 
     /// \brief
-    ///    Gets an enumerator that can iterate through a collection.
+    /// Gets an enumerator that can iterate through a collection.
+    /// 
+    /// \return
+    /// Returns an enumerator on the dictionary.
     /// 
 	__sealed System::Collections::IEnumerator* GetEnumerator(System::Void);
 
     /// \brief
-    ///     Removes the index-th PropertyDefinition from this collection.
+    /// Removes the index-th PropertyDefinition from this collection.
     /// 
     /// \param index 
     /// Input index of the element to remove.
@@ -112,36 +180,45 @@ public:
 	System::Void RemoveAt(System::Int32 index);
 
     /// \brief
-    ///     Removes all elements from the collection.
+    /// Removes all elements from the collection.
     /// 
 	System::Void  Clear();
 
     /// \brief
-    ///     Adds a PropertyDefinition object into the collection.
+    /// Adds a PropertyDefinition object into the collection.
     /// 
     /// \param value 
     /// Input the PropertyDefinition object to add.
     /// 
     /// \return
-    /// 		Returns the position into which the new element was inserted.
+    /// Returns the position into which the new element was inserted.
     /// 
 	System::Int32 Add(PropertyDefinition* value);
 
     /// \brief
-    ///     Determines the index of a specific PropertyDefinition object.
+    /// Determines the index of a specific PropertyDefinition object.
     /// 
     /// \param value 
     /// Input the PropertyDefinition object to locate in the collection.
     /// 
     /// \return
-    /// 		The index of value if found in the collection; otherwise, -1.
+    /// The index of value if found in the collection; otherwise, -1.
     /// 
 	System::Int32 IndexOf(PropertyDefinition* value);
 
+    /// \brief
+    /// Determines the index of a specific PropertyDefinition object.
+    /// 
+    /// \param name 
+    /// Input the name of the PropertyDefinition object to locate in the collection.
+    /// 
+    /// \return
+    /// The index of value if found in the collection; otherwise, -1.
+    /// 
 	System::Int32 IndexOf(String* name);
 
     /// \brief
-    ///     Inserts a PropertyDefinition object into the collection at the specified position.
+    /// Inserts a PropertyDefinition object into the collection at the specified position.
     /// 
     /// \param index 
     /// Input the zero-based index at which value should be inserted.
@@ -151,7 +228,7 @@ public:
 	System::Void Insert(System::Int32 index, PropertyDefinition* value);
 
     /// \brief
-    ///     Removes the first occurrence of a specific PropertyDefinition object.
+    /// Removes the first occurrence of a specific PropertyDefinition object.
     /// 
     /// \param value 
     /// Input the PropertyDefinition object to remove from the collection.
@@ -159,43 +236,91 @@ public:
 	System::Void Remove(PropertyDefinition* value);
 
     /// \brief
-    ///     Determines whether the collection contains a specific PropertyDefinition object.
+    /// Determines whether the collection contains a specific PropertyDefinition object.
     /// 
     /// \param value 
     /// Input The PropertyDefinition object to search in the collection.
     /// 
     /// \return
-    /// 		Returns true if the value is found in the collection; otherwise, false.
+    /// Returns true if the value is found in the collection; otherwise, false.
     /// 
 	System::Boolean Contains(PropertyDefinition* value);
 
+    /// \brief
+    /// Determines whether the collection contains a specific PropertyDefinition object.
+    /// 
+    /// \param name 
+    /// Input The name of the PropertyDefinition object to search in the collection.
+    /// 
+    /// \return
+    /// Returns true if the value is found in the collection; otherwise, false.
+    /// 
 	System::Boolean Contains(String* name);
 
     /// \brief
-    ///     Copies the elements of the collection to an array.
+    /// Copies the elements of the collection to an array.
     /// 
     /// \param array 
     /// Output the one-dimensional Array that is the destination of the elements copied from this collection.
     /// \param startAt 
     /// Input an integer that represents the index in array at which copying begins.
     /// 
-	System::Void CopyTo(PropertyDefinition* array[],System::Int32 size);
-
+	System::Void CopyTo(PropertyDefinition* array[],System::Int32 startAt);
 
     /// \brief
-    ///     Gets or sets a PropertyDefinition in the collection.
+    /// Gets the item in the collection at the specified index. 
     /// 
     /// \param index 
-    /// Input index of the PropertyDefinition to retrieve or set (System::Int32).
+    /// The index of the item in the collection. The index is 0 based.
+    /// 
+    /// \return
+    /// Returns an instance of a the collected item.
+    /// Throws an instance of Exception if the index is out of range or an error occurs.
     /// 
 	__property PropertyDefinition* get_RealTypeItem(System::Int32 index);
 
+    /// \brief
+    /// Gets the item in the collection by name. 
+    /// 
+    /// \param index 
+    /// The name of the item in the collection.
+    /// 
+    /// \return
+    /// Returns an instance of a the collected item.
+    /// 
 	__property PropertyDefinition* get_RealTypeItem(System::String* index);
 
+    /// \brief
+    /// Sets the value of the item at the specified index
+    /// 
+    /// \param index 
+    /// Input index of the item to set.
+    /// 
+    /// \param value 
+    /// Input the value of the item
+    /// 
 	__property System::Void  set_RealTypeItem(System::Int32 index, PropertyDefinition* value);
 
+    /// \brief
+    /// Gets an item in the collection.
+    /// 
+    /// \param index 
+    /// Input index of the item to retrieve.
+    /// 
+    /// \return
+    /// Returns the item at the specified index
+    /// 
 	__property PropertyDefinition* get_Item(System::Int32 index);
 
+    /// \brief
+    /// Sets the value of the item at the specified index
+    /// 
+    /// \param index 
+    /// Input index of the item to set.
+    /// 
+    /// \param value 
+    /// Input the value of the item
+    /// 
 	__property System::Void  set_Item(System::Int32 index, PropertyDefinition* value);
 };
 

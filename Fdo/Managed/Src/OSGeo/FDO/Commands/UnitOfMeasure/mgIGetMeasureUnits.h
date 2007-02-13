@@ -24,13 +24,13 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE
 public __gc __interface IMeasureUnitReader;
 
 /// \brief
-/// The FdoIGetMeasureUnits interface defines the GetMeasureUnits command, which
+/// The IGetMeasureUnits interface defines the GetMeasureUnits command, which
 /// enumerates the existing measurement units.
 public __gc __interface IGetMeasureUnits : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
 {
 public:
     /// \brief
-    /// Executes the GetMeasureUnits command and returns an FdoIMeasureUnitReader.
+    /// Executes the GetMeasureUnits command and returns an IMeasureUnitReader.
     /// 
     /// \return
     /// Returns the measure unit reader

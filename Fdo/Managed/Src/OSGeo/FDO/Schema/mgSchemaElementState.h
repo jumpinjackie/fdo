@@ -21,20 +21,20 @@
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 
 /// \brief
-/// The FdoSchemaElementState enumeration defines the current state of the schema element
-/// <param name="FdoSchemaElementState_Added">
+/// The SchemaElementState enumeration defines the current state of the schema element
+/// <param name="SchemaElementState_Added">
 /// Indicates the schema element has been added
 /// </param>
-/// <param name="FdoSchemaElementState_Deleted">
+/// <param name="SchemaElementState_Deleted">
 /// Indicates the schema element is marked for deletion
 /// </param>
-/// <param name="FdoSchemaElementState_Detached">
-/// Indicates the schema element is not associated with an FdoFeatureSchema
+/// <param name="SchemaElementState_Detached">
+/// Indicates the schema element is not associated with an FeatureSchema
 /// </param>
-/// <param name="FdoSchemaElementState_Modified">
+/// <param name="SchemaElementState_Modified">
 /// Indicates the schema element has been modified in some way
 /// </param>
-/// <param name="FdoSchemaElementState_Unchanged">
+/// <param name="SchemaElementState_Unchanged">
 /// Indicates the schema element has not been changed
 /// </param>
 public __value enum SchemaElementState
@@ -45,7 +45,7 @@ public __value enum SchemaElementState
     /// Indicates the schema element is marked for deletion.
 	SchemaElementState_Deleted = FdoSchemaElementState_Deleted,
 
-    /// Indicates the schema element is not associated with an FdoFeatureSchema.
+    /// Indicates the schema element is not associated with an FeatureSchema.
 	SchemaElementState_Detached = FdoSchemaElementState_Detached,
 
     /// Indicates the schema element has been modified in some way.

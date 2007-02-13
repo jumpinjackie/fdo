@@ -48,6 +48,9 @@ public:
     /// \brief
     /// Gets the position at the specified (zero-based) index.
     /// 
+    /// \param index 
+    /// Input Zero-based index in the object's list of positions.
+    /// 
     /// \return
     /// Returns the position
     /// 

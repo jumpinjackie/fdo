@@ -27,25 +27,25 @@ BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 public __gc class NetworkLayerClass;
 
 /// \brief
-/// FdoNetworkClass derives from FdoClassDefinition and can be used to represent a 
-/// linear network. The FdoNetworkClass type has 2 pre-defined base properties. The first is a FdoBoolean 
-/// type called "Directed". And the second is a FdoObjectPropertyDefinition of an ordered collection called "Layers".
+/// The NetworkClass derives from ClassDefinition and can be used to represent a 
+/// linear network. The NetworkClass has 2 pre-defined base properties. The first is a Boolean 
+/// type called "Directed". And the second is a ObjectPropertyDefinition of an ordered collection called "Layers".
 /// The "Directed" property is used to indicate if the network is directed or undirected. 
 /// The network is directed if the Directed property is set to true. Otherwise, it is undirected. The Layers property
-/// is used to contain the ordered list of layers. The class of the layers object property must be of type FdoNetworkLayer.
+/// is used to contain the ordered list of layers. The class of the layers object property must be of type NetworkLayer.
 /// <p><b>Note:</b> <span class="red_text">This Help topic is provided for informational use only. There is
-/// no interface or support provided. Autodesk reserves the right to change
+/// no interface or support provided. OSGeo reserves the right to change
 /// the software related to the content herein.</span>
 public __gc class NetworkClass : public NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition
 {
 public:
     /// \brief
-    /// Constructs a default instance of an FdoNetworkClass.
+    /// Constructs a default instance of an NetworkClass.
     /// 
 	NetworkClass();
 
     /// \brief
-    /// Constructs an instance of an FdoNetworkClass using the specified arguments.
+    /// Constructs an instance of an NetworkClass using the specified arguments.
     /// 
     /// \param name 
     /// Input name
@@ -82,6 +82,16 @@ public:
     /// 
 	__property  System::Void set_LayerClass(NAMESPACE_OSGEO_FDO_SCHEMA::NetworkLayerClass* value);
 
+    /// \brief
+    /// Constructs a NetworkClass object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	NetworkClass(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition(unmanaged, autoDelete)
 	{
 

@@ -36,7 +36,7 @@ public __gc class XmlFeatureFlags;
 public __gc class XmlFeaturePropertyReader;
 
 /// \brief
-/// FdoXmlFeatureReader reads GML format features from a XML
+/// XmlFeatureReader reads GML format features from a XML
 /// document. The reading is done procedurally, rather than through events.
 /// \remarks
 /// Each feature can be read in 3 steps:
@@ -47,7 +47,7 @@ public __gc class XmlFeaturePropertyReader;
 /// </ol>
 /// This class allows random access to the properties of the current feature, meaning that 
 /// ReadNext() accumulates a list of these properties. This may have slight performance implications.
-/// If performance is a concern then FdoXmlFeaturePropertyReader should be used instead.
+/// If performance is a concern then XmlFeaturePropertyReader should be used instead.
 public __gc class XmlFeatureReader : public NAMESPACE_OSGEO_FDO_XML::XmlFeatureHandler, public NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader
 {
 public:
@@ -56,8 +56,20 @@ public:
     /// 
     /// \param reader 
     /// Input XML document reader. Please refer to the reader parameter of 
-    /// FdoXmlFeaturePropertyReader::Create() for a description of how the features are
-    /// read from the document. An FdoXmlFeaturePropertyReader is automatically wrapped 
+    /// XmlFeaturePropertyReader::Create() for a description of how the features are
+    /// read from the document. An XmlFeaturePropertyReader is automatically wrapped 
+    /// around this reader. This Feature Property Reader can be retrieved by calling 
+    /// GetFeaturePropertyReader().
+    /// 
+	XmlFeatureReader(NAMESPACE_OSGEO_COMMON_XML::XmlReader* reader);
+
+    /// \brief
+    /// creates a Feature Reader for reading features from XML.
+    /// 
+    /// \param reader 
+    /// Input XML document reader. Please refer to the reader parameter of 
+    /// XmlFeaturePropertyReader::Create() for a description of how the features are
+    /// read from the document. An XmlFeaturePropertyReader is automatically wrapped 
     /// around this reader. This Feature Property Reader can be retrieved by calling 
     /// GetFeaturePropertyReader().
     /// \param flags 
@@ -65,15 +77,13 @@ public:
     /// deserializing of the features. If NULL then the 
     /// default flags are used.
     /// 
-	XmlFeatureReader(NAMESPACE_OSGEO_COMMON_XML::XmlReader* reader);
-
 	XmlFeatureReader(NAMESPACE_OSGEO_COMMON_XML::XmlReader* reader, NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags* flags);
 
     /// \brief
     /// Gets the feature property reader that was passed to this object.
     /// 
     /// \return
-    /// Returns FdoXmlFeaturePropertyReader
+    /// Returns XmlFeaturePropertyReader
     /// 
 	NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyReader* GetFeaturePropertyReader();
 
@@ -81,7 +91,7 @@ public:
     /// Gets the feature schemas describing the features being read.
     /// 
     /// \return
-    /// Returns FdoFeatureSchemaCollection
+    /// Returns FeatureSchemaCollection
     /// 
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchemaCollection* get_FeatureSchemas();
 
@@ -101,17 +111,15 @@ public:
     ///       Normal.
     /// </ul>
     /// 
-    /// \param value 
+    /// \param schemas 
     /// Input the feature schemas
-    /// 
-    /// \return
-    /// Returns nothing
     /// 
 	__property System::Void set_FeatureSchemas(NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchemaCollection* schemas);
 
 	/*
 		IFeatureReader implementation
 	*/
+
     /// \brief
     /// Gets the definition of the object currently being read. If the user
     /// has requested only a subset of the class properties, the class 
@@ -134,7 +142,7 @@ public:
 	System::Int32 GetDepth();
 
     /// \brief
-    /// Gets a reference to an FdoIFeatureReader to read the data contained in
+    /// Gets a reference to an IFeatureReader to read the data contained in
     /// the object or object collection property. If the property is not an
     /// object property, an exception is thrown.
     /// 
@@ -149,9 +157,10 @@ public:
 	/*
 		IReader implementation
 	*/
+
     /// \brief
     /// Gets the Boolean value of the specified property. No conversion is
-    /// performed, thus the property must be FdoDataType_Boolean or an 
+    /// performed, thus the property must be DataType_Boolean or an 
     /// exception is thrown.
     /// 
     /// \param name 
@@ -164,7 +173,7 @@ public:
 
     /// \brief
     /// Gets the byte value of the specified property. No conversion is 
-    /// performed, thus the property must be FdoDataType_Byte or an 
+    /// performed, thus the property must be DataType_Byte or an 
     /// exception is thrown.
     /// 
     /// \param name 
@@ -177,7 +186,7 @@ public:
 
     /// \brief
     ///  Gets the date and time value of the specified property. No conversion is 
-    /// performed, thus the property must be FdoDataType_DateTime or an 
+    /// performed, thus the property must be DataType_DateTime or an 
     /// exception is thrown.
     /// 
     /// \param name 
@@ -190,7 +199,7 @@ public:
 
     /// \brief
     /// Gets the double-precision floating point value of the specified property. No
-    /// conversion is performed, thus the property must be FdoDataType_Double
+    /// conversion is performed, thus the property must be DataType_Double
     /// or an exception is thrown.
     /// 
     /// \param name 
@@ -203,7 +212,7 @@ public:
 
     /// \brief
     /// Gets the 16-bit integer value of the specified property. No conversion is
-    /// performed, thus the property must be FdoDataType_Int16 or an exception
+    /// performed, thus the property must be DataType_Int16 or an exception
     /// is thrown.
     /// 
     /// \param name 
@@ -216,7 +225,7 @@ public:
 
     /// \brief
     /// Gets the 32-bit integer value of the specified property. No conversion is
-    /// performed, thus the property must be FdoDataType_Int32 or an exception
+    /// performed, thus the property must be DataType_Int32 or an exception
     /// is thrown.
     /// 
     /// \param name 
@@ -229,7 +238,7 @@ public:
 
     /// \brief
     /// Gets the 64-bit integer value of the specified property. No conversion is
-    /// performed, thus the property must be FdoDataType_Int64 or an exception
+    /// performed, thus the property must be DataType_Int64 or an exception
     /// is thrown.
     /// 
     /// \param name 
@@ -242,7 +251,7 @@ public:
 
     /// \brief
     /// Gets the Single floating point value of the specified property. No
-    /// conversion is performed, thus the property must be FdoDataType_Single
+    /// conversion is performed, thus the property must be DataType_Single
     /// or an exception is thrown.
     /// 
     /// \param name 
@@ -255,7 +264,7 @@ public:
 
     /// \brief
     /// Gets the string value of the specified property. No conversion is
-    /// performed, thus the property must be FdoDataType_String or an exception
+    /// performed, thus the property must be DataType_String or an exception
     /// is thrown.
     /// 
     /// \param name 
@@ -268,8 +277,8 @@ public:
 
     /// \brief
     /// Gets a LOBValue reference. The LOB is fully read in and data available.
-    /// Because no conversion is performed, the property must be FdoDataType_BLOB or
-    /// FdoDataType_CLOB etc. (a LOB type)
+    /// Because no conversion is performed, the property must be DataType_BLOB or
+    /// DataType_CLOB etc. (a LOB type)
     /// 
     /// \param name 
     /// Input the property name.
@@ -280,11 +289,11 @@ public:
 	NAMESPACE_OSGEO_FDO_EXPRESSION::LOBValue* GetLOB(System::String* name);
 
     /// \brief
-    /// Gets a reference of the specified LOB property as a FdoBLOBStreamReader or
-    /// FdoCLOBStreamReader etc. to allow reading in blocks of data.
-    /// Because no conversion is performed, the property must be FdoDataType_BLOB 
-    /// or FdoDataType_CLOB etc. (a LOB type)
-    /// Cast the FdoIStreamReader to the appropiate LOB Stream Reader.
+    /// Gets a reference of the specified LOB property as a BLOBStreamReader or
+    /// CLOBStreamReader etc. to allow reading in blocks of data.
+    /// Because no conversion is performed, the property must be DataType_BLOB 
+    /// or DataType_CLOB etc. (a LOB type)
+    /// Cast the IStreamReader to the appropiate LOB Stream Reader.
     /// 
     /// \param name 
     /// Input the property name.
@@ -343,10 +352,7 @@ public:
 	System::Boolean ReadNext();
 
     /// \brief
-    /// Closes the FdoIFeatureReader object, freeing any resources it may be holding.
-    /// 
-    /// \return
-    /// Returns nothing
+    /// Closes the IFeatureReader object, freeing any resources it may be holding.
     /// 
 	System::Void Close();
 

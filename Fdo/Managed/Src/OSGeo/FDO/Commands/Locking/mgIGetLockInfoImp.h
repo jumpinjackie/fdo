@@ -27,14 +27,16 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 public __gc __interface ILockedObjectReader;
 
 /// \brief
-/// The FdoIGetLockInfo interface defines the GetLockInfo command, which gets a
+/// The IGetLockInfoImp class is a concrete implementation of IGetLockedObjects.
+/// The IGetLockInfo interface defines the GetLockInfo command, which gets a
 /// lock information for the feature instances of a given class that match the
 /// specified filter. If the filter is empty, all feature instances of the given class are selected.
-private __gc class IGetLockInfoImp : public NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp, public NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IGetLockInfo
+private __gc class IGetLockInfoImp : public NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp, 
+                                     public NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IGetLockInfo
 {
 public:
     /// \brief
-    /// Executes the GetLockInfo command, returning an FdoILockedObjectReader.
+    /// Executes the GetLockInfo command, returning an ILockedObjectReader.
     /// 
     /// \return
     /// Returns a locked object reader.
@@ -42,6 +44,16 @@ public:
 	NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockedObjectReader* Execute();
 
 public:
+    /// \brief
+    /// Constructs an IGetLockInfoImp managed object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	IGetLockInfoImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp(unmanaged, autoDelete)
 	{
 

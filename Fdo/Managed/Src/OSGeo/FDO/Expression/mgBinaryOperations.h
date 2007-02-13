@@ -21,18 +21,18 @@
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 
 /// \brief
-/// The FdoBinaryOperations enumeration lists the binary expression operations
+/// The BinaryOperations enumeration lists the binary expression operations
 /// available.
-/// <param name="FdoBinaryOperations_Add">
+/// <param name="BinaryOperations_Add">
 /// Add the two expressions or concatenate two string expressions
 /// </param>
-/// <param name="FdoBinaryOperations_Subtract">
+/// <param name="BinaryOperations_Subtract">
 /// Subtract the two expressions
 /// </param>
-/// <param name="FdoBinaryOperations_Multiply">
+/// <param name="BinaryOperations_Multiply">
 /// Multiply the two expressions
 /// </param>
-/// <param name="FdoBinaryOperations_Divide">
+/// <param name="BinaryOperations_Divide">
 /// Divide the two expressions
 /// </param>
 [System::FlagsAttribute]

@@ -45,7 +45,7 @@ public:
     /// Gets the dimensionality of ordinates in this object.
     /// 
     /// \remarks
-    ///  Values are from the Dimensionality enum.
+    /// Values are from the Dimensionality enum.
     /// A return type of "Int32" is used instead of the enum, catering to typical use with bit masking.
     /// 
     /// \return

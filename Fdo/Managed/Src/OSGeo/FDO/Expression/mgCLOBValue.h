@@ -31,35 +31,35 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 public __gc __interface IExpressionProcessor;
 
 /// \brief
-/// The FdoCLOBValue class derives from FdoLOBValue and represents a literal
+/// The CLOBValue class derives from LOBValue and represents a literal
 /// CLOB value.
 public __gc class CLOBValue : public NAMESPACE_OSGEO_FDO_EXPRESSION::LOBValue 
 {
 public:
     /// \brief
-    /// Constructs a default instance of an FdoCLOBValue with a value of null.
+    /// Constructs a default instance of an CLOBValue with a value of null.
     /// 
     /// \return
-    /// Returns the created FdoCLOBValue
+    /// Returns the created CLOBValue
     /// 
 	CLOBValue();
 
     /// \brief
-    /// Constructs a default instance of an FdoCLOBValue using the specified arguments.
+    /// Constructs a default instance of an CLOBValue using the specified arguments.
     /// 
     /// \param value 
     /// Input a byte array
     /// 
     /// \return
-    /// Returns the created FdoCLOBValue
+    /// Returns the created CLOBValue
     /// 
 	CLOBValue(System::Byte value []);
 
     /// \brief
-    /// Gets the data type of the FdoCLOBValue.
+    /// Gets the data type of the CLOBValue.
     /// 
     /// \return
-    /// Returns an FdoDataType
+    /// Returns an DataType
     /// 
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::DataType get_DataType();
 
@@ -91,11 +91,11 @@ public:
 	System::Void SetNull();
 
     /// \brief
-    /// Overrides FdoExpression.Process to pass the FdoCLOBValue to the appropriate
+    /// Overrides Expression.Process to pass the CLOBValue to the appropriate
     /// expression processor operation.
     /// 
     /// \param processor 
-    /// Input an FdoIExpressionProcessor
+    /// Input an IExpressionProcessor
     /// 
     /// \return
     /// Returns nothing
@@ -110,6 +110,16 @@ public:
     /// 
 	System::String* ToString();
 
+    /// \brief
+    /// Constructs a CLOBValue object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	CLOBValue(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:

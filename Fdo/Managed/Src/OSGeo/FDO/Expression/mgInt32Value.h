@@ -31,7 +31,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 public __gc __interface IExpressionProcessor;
 
 /// \brief
-/// The FdoInt32Value class derives from FdoDataValue and represents a 32-bit signed integer value.
+/// The Int32Value class derives from DataValue and represents a 32-bit signed integer value.
 public __gc class Int32Value : public NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue
 {
 public:
@@ -44,7 +44,7 @@ public:
 	static System::Int32 op_Explicit( NAMESPACE_OSGEO_FDO_EXPRESSION::Int32Value* value );
 
     /// \brief
-    /// Constructs a default instance of an FdoInt32Value with a value of null.
+    /// Constructs a default instance of an Int32Value with a value of null.
     /// 
     /// \return
     /// Returns nothing
@@ -52,7 +52,7 @@ public:
 	Int32Value();
 
     /// \brief
-    /// Constructs a default instance of an FdoInt32Value using the specified arguments.
+    /// Constructs a default instance of an Int32Value using the specified arguments.
     /// 
     /// \param value 
     /// Input a 32 bit integer
@@ -63,15 +63,15 @@ public:
 	Int32Value(System::Int32 value);
 
     /// \brief
-    /// Gets the data type of the FdoInt32Value.
+    /// Gets the data type of the Int32Value.
     /// 
     /// \return
-    /// Returns an FdoDataType
+    /// Returns an DataType
     /// 
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::DataType get_DataType();
 
     /// \brief
-    /// Gets the FdoInt32Value.
+    /// Gets the Int32Value.
     /// 
     /// \return
     /// Returns a 32 bit integer
@@ -79,7 +79,7 @@ public:
 	__property System::Int32 get_Int32();
 
     /// \brief
-    /// Sets the FdoInt32Value.
+    /// Sets the Int32Value.
     /// 
     /// \param value 
     /// Input a 32 bit integer
@@ -90,11 +90,11 @@ public:
 	__property System::Void set_Int32(System::Int32 value);
 
     /// \brief
-    /// Overrides FdoExpression.Process to pass the FdoInt32Value to the appropriate
+    /// Overrides Expression.Process to pass the Int32Value to the appropriate
     /// expression processor operation.
     /// 
     /// \param processor 
-    /// Input an FdoIExpressionProcessor
+    /// Input an IExpressionProcessor
     /// 
     /// \return
     /// Returns nothing
@@ -109,6 +109,16 @@ public:
     /// 
 	System::String* ToString();
 
+    /// \brief
+    /// Constructs an Int32Value object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	Int32Value(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:

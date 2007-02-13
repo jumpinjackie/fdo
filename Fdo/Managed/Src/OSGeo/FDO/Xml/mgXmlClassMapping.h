@@ -36,9 +36,8 @@ public:
     /// 
     /// \param name 
     /// Input class name
-    /// \param GmlName 
-    /// Input corresponding type name in GML version of the
-    /// class's schema.
+    /// \param schemaName 
+    /// Input corresponding type name in GML version of the class's schema.
     /// \param wkBaseName 
     /// Input name of the most specialized well-known type. This is 
     /// set when the type represents geometries and indicates what kind of geometries the type
@@ -46,6 +45,20 @@ public:
     /// 
 	XmlClassMapping(System::String* name, System::String* schemaName, System::String* wkBaseName);
 
+    /// \brief
+    /// Constructs an object describing the GML-FDO mappings for an FDO class.
+    /// 
+    /// \param name 
+    /// Input class name
+    /// \param schemaName 
+    /// Input corresponding type name in GML version of the class's schema.
+    /// \param wkBaseName 
+    /// Input name of the most specialized well-known type. This is 
+    /// set when the type represents geometries and indicates what kind of geometries the type
+    /// represents. 
+    /// \param wkSchemaName 
+    /// Input name of the most specialized well-known schema base type. 
+    /// 
 	XmlClassMapping(System::String* name, System::String* schemaName, System::String* wkBaseName, System::String* wkSchemaName);
 		
     /// \brief

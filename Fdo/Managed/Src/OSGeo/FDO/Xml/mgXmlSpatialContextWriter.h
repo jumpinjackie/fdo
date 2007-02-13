@@ -26,7 +26,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_XML
 public __gc class XmlSpatialContextFlags;
 
 /// \brief
-/// FdoXmlSpatialContextWriter writes Spatial Contexts to an 
+/// XmlSpatialContextWriter writes Spatial Contexts to an 
 /// XML document. This is done by calling the various setter functions 
 /// to set the spatial context attributes and then calling 
 /// WriteSpatialContext() to write the spatial context using the current 
@@ -40,16 +40,20 @@ public:
     /// \param writer 
     /// Input XML document writer. Specifies the XML
     /// document that the Spatial Contexts will be written to.
+    /// 
+	XmlSpatialContextWriter(NAMESPACE_OSGEO_COMMON_XML::XmlWriter* writer);
+
+    /// \brief
+    /// creates a Spatial Context Writer.
+    /// 
+    /// \param writer 
+    /// Input XML document writer. Specifies the XML
+    /// document that the Spatial Contexts will be written to.
     /// \param flags 
     /// Input options for controlling the 
     /// deserializing of the Spatial Contexts. If NULL then the 
     /// default flags are used.
     /// 
-    /// \return
-    /// Returns FdoXmlSpatialContextWriter
-    /// 
-	XmlSpatialContextWriter(NAMESPACE_OSGEO_COMMON_XML::XmlWriter* writer);
-
 	XmlSpatialContextWriter(NAMESPACE_OSGEO_COMMON_XML::XmlWriter* writer, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags* flags);
 
     /// \brief
@@ -162,7 +166,7 @@ public:
     /// Sets the extent of the context to create as a byte array in FGF format.
     /// If the extent type is dynamic this is optional and any value specified is ignored.
     /// 
-    /// \param value 
+    /// \param buffer 
     /// Input the extent of the spatial context
     /// 
     /// \return
@@ -237,8 +241,10 @@ public private:
 
 	inline FdoXmlSpatialContextWriter* GetImpObj();
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 };
 
 END_NAMESPACE_OSGEO_FDO_XML

@@ -48,7 +48,7 @@ public:
     /// Input the sub-elements are written to this XML writer.
     /// 
     /// \return
-    /// Returns FdoXmlCopyHandler
+    /// Returns XmlCopyHandler
     /// 
 	XmlCopyHandler( NAMESPACE_OSGEO_COMMON_XML:: XmlWriter* writer );
 
@@ -59,13 +59,13 @@ public:
     /// 
     /// \param writer 
     /// Input the sub-elements are written to this XML writer.
-    /// \param uri 
+    /// \param resourceLocation 
     /// Input current element's Universal Resource Indicator
     /// \param name 
     /// Input the unqualified name of the current element (doesn't include namespace)
-    /// \param qname 
+    /// \param qualifiedName 
     /// Input the qualified name of the current element(includes namespace)
-    /// \param atts 
+    /// \param attributes 
     /// Input the attributes for the current element. 
     /// <p><b>Note:</b> If the 
     /// current element will become the root element in the destination 
@@ -80,10 +80,22 @@ public:
     /// 
 	NAMESPACE_OSGEO_COMMON_XML::XmlCopyHandler(NAMESPACE_OSGEO_COMMON_XML::XmlWriter* writer, String* resourceLocation, String* name,  String* qualifiedName,  XmlAttributeCollection* attributes, DictionaryElementCollection* namespaces);
 		
+    /// \brief
+    /// Constructs a CopyHandler based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	XmlCopyHandler(System::IntPtr unmanaged, System::Boolean autoDelete);
 
+/// \cond DOXYGEN-IGNORE
 public private:
 	inline FdoXmlCopyHandler* GetImpObj();
+/// \endcond
 };
 
 END_NAMESPACE_OSGEO_COMMON_XML

@@ -32,9 +32,9 @@ public __gc class ReadOnlyDataPropertyDefinitionCollection;
 public __gc class ClassCapabilities;
 
 /// \brief
-/// FdoClassDefinition is an abstract class that derives from FdoSchemaElement.
-/// FdoClassDefinition is a base class for all concrete class types (e.g., FdoClass,
-/// FdoFeatureClass) in the Schema package.
+/// ClassDefinition is an abstract class that derives from SchemaElement.
+/// ClassDefinition is a base class for all concrete class types (e.g., FdoClass,
+/// FeatureClass) in the Schema package.
 public __gc class ClassDefinition : public NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement
 {
 public:
@@ -43,23 +43,23 @@ public:
     /// the concrete class type.
     /// 
     /// \return
-    /// Returns FdoClassType
+    /// Returns the ClassType
     /// 
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::ClassType get_ClassType();
 
     /// \brief
-    /// Gets the base FdoClassDefinition this class is derived from.
+    /// Gets the base ClassDefinition this class is derived from.
     /// 
     /// \return
-    /// Returns the base FdoClassDefinition
+    /// Returns the base ClassDefinition
     /// 
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition* get_BaseClass();
 
     /// \brief
-    /// Sets the base FdoClassDefinition this class is derived from.
+    /// Sets the base ClassDefinition this class is derived from.
     /// 
     /// \param value 
-    /// Input FdoClassDefinition this class is derived from
+    /// Input ClassDefinition this class is derived from
     /// 
     /// \return
     /// Returns nothing
@@ -67,17 +67,17 @@ public:
 	__property System::Void set_BaseClass(NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition* value);
 
     /// \brief
-    /// Gets the abstraction state of the FdoClassDefinition. Classes marked as abstract
+    /// Gets the abstraction state of ClassDefinition. Classes marked as abstract
     /// cannot be created via FDO commands and cannot be used as properties of
     /// another class.
     /// 
     /// \return
-    /// Returns if the FdoClassDefinition is abstract
+    /// Returns true if the ClassDefinition is abstract
     /// 
 	__property System::Boolean get_IsAbstract();
 
     /// \brief
-    /// Sets the abstraction state of the FdoClassDefinition. Classes marked as abstract
+    /// Sets the abstraction state of ClassDefinition. Classes marked as abstract
     /// cannot be created via FDO commands and cannot be used as properties of
     /// another class.
     /// 
@@ -94,7 +94,7 @@ public:
     /// input collection must also be properties of the class.
     /// 
     /// \param value 
-    /// Input collection of FdoPropertyDefinition values
+    /// Input collection of PropertyDefinition values
     /// 
     /// \return
     /// Returns nothing
@@ -105,18 +105,18 @@ public:
 	System::Void SetBaseProperties(NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection* value);
 
     /// \brief
-    /// Returns an FdoReadOnlyPropertyDefinitionCollection containing the properties
+    /// Returns an ReadOnlyPropertyDefinitionCollection containing the properties
     /// defined by base classes or by the concrete class type, itself. This
-    /// collection is only populated when the FdoClassDefinition is returned by the
+    /// collection is only populated when ClassDefinition is returned by the
     /// DescribeSchema command.
     /// 
     /// \return
-    /// Returns FdoReadOnlyPropertyDefinitionCollection
+    /// Returns ReadOnlyPropertyDefinitionCollection
     /// 
 	NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyPropertyDefinitionCollection* GetBaseProperties();
 
     /// \brief
-    /// Returns an FdoDataPropertyDefinitionCollection containing references to the
+    /// Returns an DataPropertyDefinitionCollection containing references to the
     /// data properties that can be used to uniquely identify instances of the
     /// class. The contained properties must already be defined in either the
     /// properties or baseProperties collection. If GetBaseClass() returns non
@@ -128,7 +128,7 @@ public:
 	__property  NAMESPACE_OSGEO_FDO_SCHEMA::DataPropertyDefinitionCollection* get_IdentityProperties();
 
     /// \brief
-    /// Returns an FdoReadOnlyDataPropertyDefinitionCollection containing the identity
+    /// Returns an ReadOnlyDataPropertyDefinitionCollection containing the identity
     /// properties for the base class.
     /// 
     /// \return
@@ -137,11 +137,11 @@ public:
 	__property  NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyDataPropertyDefinitionCollection* get_BaseIdentityProperties();
 
     /// \brief
-    /// Returns an FdoPropertyCollection containing the FdoDataProperties,
-    /// FdoClassProperties, and FdoGeometricProperties defined for this class.
+    /// Returns an PropertyCollection containing DataProperties,
+    /// ClassProperties, and GeometricProperties defined for this class.
     /// 
     /// \return
-    /// Returns FdoPropertyDefinitionCollection
+    /// Returns PropertyDefinitionCollection
     /// 
 	__property  NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection* get_Properties();
 
@@ -154,17 +154,17 @@ public:
 	__property  System::String* get_QualifiedName();
 
     /// \brief
-    /// Gets the computed state of the FdoClassDefinition. Computed classes cannot be made persistent or added to 
+    /// Gets the computed state of ClassDefinition. Computed classes cannot be made persistent or added to 
     /// FDO schema. The computed classes are used as a transient classes that can be returned by a feature or data reader. 
     /// They describe the result of a select expression, select function and select distinct.
     /// 
     /// \return
-    /// Returns if the FdoClassDefinition is a computed class
+    /// Returns true if the ClassDefinition is a computed class
     /// 
 	__property  System::Boolean get_IsComputed();
 
     /// \brief
-    /// Sets the computed state of the FdoClassDefinition. This is an internal method that 
+    /// Sets the computed state of ClassDefinition. This is an internal method that 
     /// can only be called by providers. Application should not use this method.
     /// 
     /// \param value 
@@ -192,21 +192,31 @@ public:
     /// This function must only be called by an FDO Provider. It would be 
     /// typically called by the DescribeSchema command implementation.
     /// 
-    /// \param capabilities 
+    /// \param value 
     /// Input the class capabilities.
     /// 
 	__property  System::Void set_Capabilities(NAMESPACE_OSGEO_FDO_SCHEMA::ClassCapabilities* value);
 
     /// \brief
-    /// Gets a FdoUniqueConstraintCollection containing all unique constraints applied to properties of this class.
+    /// Gets a UniqueConstraintCollection containing all unique constraints applied to properties of this class.
     /// The contained properties must already be defined in either the
     /// properties or baseProperties collections.
     /// 
     /// \return
-    /// A FdoUniqueConstraintCollection containing all unique constraints defined for properties of this class.
+    /// A UniqueConstraintCollection containing all unique constraints defined for properties of this class.
     /// 
 	__property  NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection* get_UniqueConstraints();
 
+    /// \brief
+    /// Constructs a ClassDefinition object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	ClassDefinition(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement(unmanaged, autoDelete)
 	{
 

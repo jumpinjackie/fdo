@@ -28,22 +28,22 @@ public __gc class Expression;
 public __gc __interface IExpressionProcessor;
 
 /// \brief
-/// The FdoUnaryExpression class derives from FdoExpression and allows negation of
+/// The UnaryExpression class derives from Expression and allows negation of
 /// arithmetic expressions.
 public __gc class UnaryExpression : public NAMESPACE_OSGEO_FDO_EXPRESSION::Expression
 {
 public:
 
     /// \brief
-    /// Constructs a default instance of an FdoUnaryExpression.
+    /// Constructs a default instance of an UnaryExpression.
     /// 
     /// \return
-    /// Returns FdoUnaryExpression
+    /// Returns UnaryExpression
     /// 
 	UnaryExpression();
 
     /// \brief
-    /// Constructs an instance of an FdoUnaryExpression using the specified arguments.
+    /// Constructs an instance of an UnaryExpression using the specified arguments.
     /// 
     /// \param operation 
     /// Input the type of unary operation
@@ -51,7 +51,7 @@ public:
     /// Input the expression
     /// 
     /// \return
-    /// Returns FdoUnaryExpression
+    /// Returns UnaryExpression
     /// 
 	UnaryExpression(NAMESPACE_OSGEO_FDO_EXPRESSION::UnaryOperations operation, NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* expression);
 
@@ -94,7 +94,7 @@ public:
 	__property System::Void  set_Expressions(NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* value);
 
     /// \brief
-    /// Overrides FdoExpression.Process to pass the FdoUnaryExpression to the
+    /// Overrides Expression.Process to pass the UnaryExpression to the
     /// appropriate expression processor operation.
     /// 
     /// \param processor 
@@ -113,6 +113,16 @@ public:
     /// 
 	System::String* ToString();
 
+    /// \brief
+    /// Constructs a UnaryExpression object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	UnaryExpression(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:

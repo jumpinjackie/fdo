@@ -169,6 +169,8 @@
 // Spatial
 #define NAMESPACE_OSGEO_SPATIAL NAMESPACE_OSGEO_FDO::Spatial
 
+/// \cond DOXYGEN-IGNORE
+
 //----------------------------------------------------------------
 // Exception handler definition
 //----------------------------------------------------------------
@@ -189,4 +191,4 @@
 //---------------------------------------------------------------
 #define CHECK_STRING(result) NULL == result ? static_cast<System::String*>(NULL) : result;
 
-
+/// \endcond

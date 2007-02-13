@@ -25,16 +25,14 @@ class FdoIGeometryCapabilities;
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 
 /// \brief
-/// The FdoIGeometryCapabilities class delineates available support for raster processing from a provider.
-private __gc class IGeometryCapabilitiesImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IGeometryCapabilities
+/// The IGeometryCapabilities class delineates available support for raster processing from a provider.
+private __gc class IGeometryCapabilitiesImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 
+                                              public NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IGeometryCapabilities
 {
 public:
     /// \brief
     /// Return the list of supported geometry types. For example, if a client wanted to know if a provider supported
     /// multi-polygons, it would call GetGeometryTypes and check if the MultiPolygon type was listed.
-    /// 
-    /// \param length 
-    /// Output the number of geometry types.
     /// 
     /// \return
     /// Returns the list of geometry types
@@ -44,9 +42,6 @@ public:
     /// \brief
     /// Return the list of supported component types. For example, if a client wanted to know if circular arcs were supported 
     /// by a provider, it would call GetGeometryComponentTypes and check for CircularArcSegment in the returned list.
-    /// 
-    /// \param length 
-    /// Output the number of component types.
     /// 
     /// \return
     /// Returns the list of component types
@@ -62,8 +57,10 @@ public:
     /// 
 	__property System::Int32 get_Dimensionalities();
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 
 public private:
 	IGeometryCapabilitiesImp(System::IntPtr unmanaged, System::Boolean autoDelete);

@@ -27,26 +27,26 @@ public __gc class FeatureSchema;
 public __gc class SchemaAttributeDictionary;
 
 /// \brief
-/// FdoSchemaElement is an abstract class that acts as a base class for all classes
+/// SchemaElement is an abstract class that acts as a base class for all classes
 /// in the Schema package.
 public __gc class SchemaElement : public NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler
 {
 public:
     /// \brief
-    /// Gets the parent of this FdoSchemaElement or null if this object has not
+    /// Gets the parent of this SchemaElement or null if this object has not
     /// been added to a parent object.
     /// 
     /// \return
-    /// Returns FdoSchemaElement of parent
+    /// Returns the SchemaElement of the parent
     /// 
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement* get_Parent();
 
     /// \brief
-    /// Gets the FdoFeatureSchema this object is a part of. Returns null if this
+    /// Gets the FeatureSchema this object is a part of. Returns null if this
     /// object has not been added to a feature schema.
     /// 
     /// \return
-    /// Returns FdoFeatureSchema this object is a part of
+    /// Returns the FeatureSchema this object is a part of
     /// 
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema* get_FeatureSchema();
 
@@ -59,11 +59,11 @@ public:
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElementState get_ElementState();
 
     /// \brief
-    /// Gets an FdoSchemaAttributeDictionary that contains the attributes 
-    /// associated with this FdoSchemaElement.
+    /// Gets an SchemaAttributeDictionary that contains the attributes 
+    /// associated with this SchemaElement.
     /// 
     /// \return
-    /// Returns an FdoSchemaAttributeDictionary
+    /// Returns an SchemaAttributeDictionary
     /// 
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary* get_Attributes();
 
@@ -89,19 +89,14 @@ public:
     /// \param value 
     /// Input the name of the schema object
     /// 
-    /// \return
-    /// Returns nothing
-    /// 
 	__property System::Void set_Name(System::String* value);
 
     /// \brief
-    /// Sets the name of the schema object.
-    /// 
-    /// \param value 
-    /// Input the name of the schema object
+    /// Indicates whether the name of the Element can be changed once
+    /// it has been created.
     /// 
     /// \return
-    /// Returns nothing
+    /// Returns true if the Element name can be changed; otherwise false.
     /// 
 	__property System::Boolean get_CanSetName();
 
@@ -119,30 +114,36 @@ public:
     /// \param value 
     /// Input the description of the schema object
     /// 
-    /// \return
-    /// Returns nothing
-    /// 
 	__property System::Void set_Description(System::String* value);
 
     /// \brief
     /// Marks the schema element for deletion by setting the element state to
-    /// FdoSchemaElementState_Deleted. If the schema elements current state is
-    /// FdoSchemaElementState_Added then the element is physically removed. If
-    /// the current state is FdoSchemaElementState_Detached this method does
+    /// SchemaElementState_Deleted. If the schema elements current state is
+    /// SchemaElementState_Added then the element is physically removed. If
+    /// the current state is SchemaElementState_Detached this method does
     /// nothing.
-    /// 
-    /// \return
-    /// Returns nothing
     /// 
 	System::Void Delete();
 
+    /// \brief
+    /// Constructs a SchemaElement object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	SchemaElement(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler(unmanaged, autoDelete)
 	{
 
 	}
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 
 public private:
 	inline FdoSchemaElement* GetImpObj();

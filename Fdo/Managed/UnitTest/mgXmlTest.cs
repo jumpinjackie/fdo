@@ -16,10 +16,10 @@
 using System;
 using System.Text;
 using System.Diagnostics;
-using OSGeo.Common;
-using OSGeo.Common.Io;
-using OSGeo.Common.Xml;
-using OSGeo.Common.Xsl;
+using OSGeo.FDO.Common;
+using OSGeo.FDO.Common.Io;
+using OSGeo.FDO.Common.Xml;
+using OSGeo.FDO.Common.Xsl;
 
 namespace Fdo_Test
 {
@@ -129,7 +129,7 @@ namespace Fdo_Test
                 {
                     tfmr.Transform();
                 }
-                catch ( OSGeo.Common.Exception e ) 
+                catch ( OSGeo.FDO.Common.Exception e ) 
                 {
                     Debug.Assert(e.Message.IndexOf(" Cannot XSL Transform XML document whose stream is at end-of-file. ") != -1);                   
                     bFailed = true;
@@ -146,7 +146,7 @@ namespace Fdo_Test
                 {
                     tfmr.Transform();
                 }
-                catch ( OSGeo.Common.Exception e ) 
+                catch ( OSGeo.FDO.Common.Exception e ) 
                 {
                     Debug.Assert(e.Message.IndexOf(" Cannot read XSL stylesheet whose stream is at end-of-file. ") != -1);
                     bFailed = true;
@@ -163,7 +163,7 @@ namespace Fdo_Test
                 {
                     tfmr = new XslTransformer(new XmlReader(inStream), new XmlReader(stylesheetStream), null);                        
                 }
-                catch ( OSGeo.Common.Exception e ) 
+                catch ( OSGeo.FDO.Common.Exception e ) 
                 {
                     Debug.Assert(e.Message.IndexOf(" Bad outDoc value '(NULL)' passed to GisXslTransformer::SetOutDoc. ") != -1);
                     bFailed = true;
@@ -179,7 +179,7 @@ namespace Fdo_Test
                 {
                     tfmr = new XslTransformer(new XmlReader(inStream), null, null);                        
                 }
-                catch ( OSGeo.Common.Exception e ) 
+                catch ( OSGeo.FDO.Common.Exception e ) 
                 {
                     Debug.Assert(e.Message.IndexOf(" Bad stylesheet value '(NULL)' passed to GisXslTransformer::SetStylesheet. ") != -1);
                     bFailed = true;
@@ -195,7 +195,7 @@ namespace Fdo_Test
                 {
                     tfmr = new XslTransformer(null, null, null);
                 }
-                catch ( OSGeo.Common.Exception e ) 
+                catch ( OSGeo.FDO.Common.Exception e ) 
                 {
                     Debug.Assert(e.Message.IndexOf(" Bad inDoc value '(NULL)' passed to GisXslTransformer::SetInDoc. ") != -1);
                     bFailed = true;
@@ -219,7 +219,7 @@ namespace Fdo_Test
                 {
                     tfmr.Transform();   
                 }
-                catch ( OSGeo.Common.Exception e ) 
+                catch ( OSGeo.FDO.Common.Exception e ) 
                 {
                     bFailed = true;
                 }
@@ -234,7 +234,7 @@ namespace Fdo_Test
                 tfmr = new XslTransformer(new XmlReader(new mgStringStream(pXmlIn)), new XmlReader(new mgStringStream(pStylesheet)), new XmlWriter(outStream, false));
                 tfmr.Transform(); 
             }
-            catch (OSGeo.Common.Exception e)
+            catch (OSGeo.FDO.Common.Exception e)
             {
                 Debug.Assert(false, e.Message);
             }
@@ -288,7 +288,7 @@ namespace Fdo_Test
                 Debug.Assert( name2 == "-x2d-xab" );
                 Debug.Assert( name1 == reader.DecodeName(name2) );
             }
-            catch (OSGeo.Common.Exception)
+            catch (OSGeo.FDO.Common.Exception)
             {
                 Debug.Assert(false);
             }
@@ -316,7 +316,7 @@ namespace Fdo_Test
                 {
                     reader = new XmlReader("TestFiles\\nonexistent.xml");
                 }
-                catch ( OSGeo.Common.Exception e ) 
+                catch ( OSGeo.FDO.Common.Exception e ) 
                 {
                     bFailed = true;
                 }
@@ -331,7 +331,7 @@ namespace Fdo_Test
                 {
                     reader = new XmlReader( (IoStream) null );
                 }
-                catch ( OSGeo.Common.Exception e ) 
+                catch ( OSGeo.FDO.Common.Exception e ) 
                 {
                     bFailed = true;
                 }
@@ -346,7 +346,7 @@ namespace Fdo_Test
                 {
                     reader =  new XmlReader( (IoTextReader) null );
                 }
-                catch ( OSGeo.Common.Exception e ) 
+                catch ( OSGeo.FDO.Common.Exception e ) 
                 {
                     bFailed = true;
                 }
@@ -373,7 +373,7 @@ namespace Fdo_Test
                 {
                     reader.Parse( nester );
                 }
-                catch ( OSGeo.Common.Exception e ) 
+                catch ( OSGeo.FDO.Common.Exception e ) 
                 {
                     bFailed = true;
                 }
@@ -390,7 +390,7 @@ namespace Fdo_Test
 
                 Debug.Assert(counter.Count == 9);                                                                                   
             }
-            catch (OSGeo.Common.Exception)
+            catch (OSGeo.FDO.Common.Exception)
             {
                 Debug.Assert(false);
             }
@@ -419,7 +419,7 @@ namespace Fdo_Test
                 {
                     writer = new XmlWriter( (IoStream) null );
                 }
-                catch ( OSGeo.Common.Exception e ) 
+                catch ( OSGeo.FDO.Common.Exception e ) 
                 {
                     Debug.Assert(e.Message.IndexOf(" Bad stream value '(NULL)' passed to GisIoTextWriter::Create. ") != -1);
                     bFailed = true;
@@ -435,7 +435,7 @@ namespace Fdo_Test
                 {
                     writer = new XmlWriter( (IoTextWriter) null );
                 }
-                catch ( OSGeo.Common.Exception e ) 
+                catch ( OSGeo.FDO.Common.Exception e ) 
                 {
                     Debug.Assert(e.Message.IndexOf(" Bad writer value '(NULL)' passed to GisXmlWriter::Create. ") != -1);
                     bFailed = true;
@@ -453,7 +453,7 @@ namespace Fdo_Test
                 {
                     writer.WriteCharacters( "abcd" );
                 }
-                catch ( OSGeo.Common.Exception e ) 
+                catch ( OSGeo.FDO.Common.Exception e ) 
                 {
                     bFailed = true;
                 }
@@ -468,7 +468,7 @@ namespace Fdo_Test
                 {
                     writer.WriteStartElement(null);
                 }
-                catch ( OSGeo.Common.Exception e ) 
+                catch ( OSGeo.FDO.Common.Exception e ) 
                 {
                     bFailed = true;
                 }
@@ -483,7 +483,7 @@ namespace Fdo_Test
                 {
                     writer.WriteStartElement("bad element name");
                 }
-                catch ( OSGeo.Common.Exception e ) 
+                catch ( OSGeo.FDO.Common.Exception e ) 
                 {
                     bFailed = true;
                 }
@@ -500,7 +500,7 @@ namespace Fdo_Test
                 {
                     writer.WriteAttribute(null, "test");
                 }
-                catch ( OSGeo.Common.Exception e ) 
+                catch ( OSGeo.FDO.Common.Exception e ) 
                 {
                     bFailed = true;
                 }
@@ -515,7 +515,7 @@ namespace Fdo_Test
                 {
                     writer.WriteAttribute("bad attribute name", "test");
                 }
-                catch ( OSGeo.Common.Exception e ) 
+                catch ( OSGeo.FDO.Common.Exception e ) 
                 {
                     bFailed = true;
                 }
@@ -532,7 +532,7 @@ namespace Fdo_Test
                 {
                     writer.WriteAttribute("noElement", "test");
                 }
-                catch ( OSGeo.Common.Exception e ) 
+                catch ( OSGeo.FDO.Common.Exception e ) 
                 {
                     bFailed = true;
                 }
@@ -547,7 +547,7 @@ namespace Fdo_Test
                 {
                     writer.DefaultRoot = true;
                 }
-                catch ( OSGeo.Common.Exception e ) 
+                catch ( OSGeo.FDO.Common.Exception e ) 
                 {
                     bFailed = true;
                 }
@@ -563,7 +563,7 @@ namespace Fdo_Test
                 {
                     writer.WriteEndElement();
                 }
-                catch ( OSGeo.Common.Exception e ) 
+                catch ( OSGeo.FDO.Common.Exception e ) 
                 {
                     bFailed = true;
                 }
@@ -578,7 +578,7 @@ namespace Fdo_Test
                 {
                     writer.WriteStartElement("root2");
                 }
-                catch ( OSGeo.Common.Exception e ) 
+                catch ( OSGeo.FDO.Common.Exception e ) 
                 {
                     bFailed = true;
                 }
@@ -588,7 +588,7 @@ namespace Fdo_Test
                 }
                 Debug.Assert( bFailed,   "Writing 2nd root element should have failed" );
             }
-            catch (OSGeo.Common.Exception)
+            catch (OSGeo.FDO.Common.Exception)
             {
                 Debug.Assert(false);
             }
@@ -634,7 +634,7 @@ namespace Fdo_Test
                 writer.Close();
                 WriteAfterClose( writer );
             }
-            catch ( OSGeo.Common.Exception ) {
+            catch ( OSGeo.FDO.Common.Exception ) {
 		        Debug.Assert(false);
             }
 
@@ -660,7 +660,7 @@ namespace Fdo_Test
                 {
                     reader.Parse();
                 }
-                catch ( OSGeo.Common.Exception e ) 
+                catch ( OSGeo.FDO.Common.Exception e ) 
                 {
                     bFailed = true;
                 }
@@ -682,7 +682,7 @@ namespace Fdo_Test
                 reader = new XmlReader(new mgStringStream(pXmlIn));
                 reader.Parse();
             }
-            catch (OSGeo.Common.Exception)
+            catch (OSGeo.FDO.Common.Exception)
             {
                 Debug.Assert(false);
             }
@@ -786,7 +786,7 @@ namespace Fdo_Test
                     Debug.Assert(buf2[j] == bufE[j]);
                 }
             }
-            catch (OSGeo.Common.Exception)
+            catch (OSGeo.FDO.Common.Exception)
             {
                 Debug.Assert(false);
             }
@@ -809,7 +809,7 @@ namespace Fdo_Test
             try {
                 writer.WriteStartElement("element10");
             }
-            catch ( OSGeo.Common.Exception e ) 
+            catch ( OSGeo.FDO.Common.Exception e ) 
             {
                 bFailed = true;
             }

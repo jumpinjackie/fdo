@@ -24,7 +24,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 public __gc __interface ILongTransactionPrivilegeReader;
 
 /// \brief
-/// The FdoIGetLongTransactionPrivileges interface defines the
+/// The IGetLongTransactionPrivileges interface defines the
 /// GetLongTransactionPrivileges command, which allows the user to enumerate the
 /// privileges of a long transaction established for each user. The ability to 
 /// successfully execute the command might be restricted by the datastore security 
@@ -55,7 +55,7 @@ public:
 
     /// \brief
     /// Executes the GetLongTransactionPrivileges command, returning a reference
-    /// to an FdoILongTransactionPrivilegeReader.
+    /// to an ILongTransactionPrivilegeReader.
     /// 
     /// \return
     /// Returns the long transaction privilege reader.

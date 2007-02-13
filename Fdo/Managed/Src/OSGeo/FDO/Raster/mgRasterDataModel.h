@@ -27,10 +27,10 @@ class FdoRasterDataModel;
 BEGIN_NAMESPACE_OSGEO_FDO_RASTER
 
 /// \brief
-/// The FdoRasterDataModel specifies the data type and organization
+/// The RasterDataModel specifies the data type and organization
 /// of raster data retrieved and stored. Using this class and the image
 /// extents in width and length, the binary format of the image data returned
-/// by and accepted by the FdoIStreamReader class can be interpreted.
+/// by and accepted by the IStreamReader class can be interpreted.
 public __gc class RasterDataModel: public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
 public:
@@ -72,11 +72,11 @@ public:
     /// \brief
     /// Set the number of bits per pixel.
     /// 
-    /// \param bpp 
+    /// \param bitsPerPixel 
     /// The number of bits per pixel desired.
     /// Values of 1, 4, 8, 16, 24, 32, 48 and 64 bits per channel may
     /// be supported. Others values (i.e. indivisible by the number of channels)
-    /// are likely to raise a FdoException.
+    /// are likely to raise a Exception.
     /// 
 	__property System ::Void set_BitsPerPixel (System::Int32 bitsPerPixel);
 
@@ -143,15 +143,27 @@ public:
     /// \brief
     /// Sets the data type.
     /// 
-    /// \param value 
+    /// \param dataType 
     /// Specifies the data type the raster data is to be returned in.
     /// 
 	__property System::Void set_DataType (NAMESPACE_OSGEO_FDO_RASTER::RasterDataType dataType);
 
+    /// \brief
+    /// Constructs a RasterDataModel object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	RasterDataModel(System::IntPtr unmanaged, System::Boolean autoDelete);
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 
 public private:
 	inline FdoRasterDataModel* GetImpObj();

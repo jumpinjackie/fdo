@@ -24,7 +24,7 @@
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT
 
 /// \brief
-/// The FdoICreateSpatialContext interface defines the CreateSpatialContext
+/// The ICreateSpatialContext interface defines the CreateSpatialContext
 /// command, which creates a new spatial context. Input to the command includes
 /// the name, description, coordinate system, extent type, and extent for the
 /// new context. Command execution will fail if the context already exists, or
@@ -151,7 +151,7 @@ public:
     /// Sets the extent of the context to create as a byte array in FGF format.
     /// If the extent type is dynamic this is optional and any value specified is ignored.
     /// 
-    /// \param value 
+    /// \param buffer 
     /// Input the extent of the spatial context
     /// 
     /// \return

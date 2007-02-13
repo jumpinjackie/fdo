@@ -27,7 +27,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 public __gc __interface IExpressionProcessor;
 
 /// \brief
-/// The FdoIdentifier class derives from FdoExpression and represents an 
+/// The Identifier class derives from Expression and represents an 
 /// identifier, such as a class name or property name. Identifiers can be just a name 
 /// or they can be scoped to a particular context. For example, consider a Person class 
 /// that has a DataProperty called "Name" and a ClassProperty called "Address". 
@@ -42,7 +42,7 @@ public:
     /// Constructs a default instance of an identifier.
     /// 
     /// \return
-    /// Returns the FdoIdentifier
+    /// Returns the Identifier
     /// 
 	Identifier();
 
@@ -53,7 +53,7 @@ public:
     /// Input identifier text
     /// 
     /// \return
-    /// Returns the FdoIdentifier
+    /// Returns the Identifier
     /// 
 	Identifier(System::String* text);
 
@@ -87,9 +87,6 @@ public:
     /// \brief
     /// Gets the scope of the identifier as an array of strings.
     /// 
-    /// \param length 
-    /// Output number of strings
-    /// 
     /// \return
     /// Returns scope as array of strings
     /// 
@@ -104,7 +101,7 @@ public:
 	__property System::String* get_SchemaName();
 
     /// \brief
-    /// Overrides FdoExpression.Process to pass the FdoIdentifier to the appropriate
+    /// Overrides Expression.Process to pass the Identifier to the appropriate
     /// expression processor operation.
     /// 
     /// \param processor 
@@ -123,6 +120,16 @@ public:
     /// 
 	System::String* ToString();
 
+    /// \brief
+    /// Constructs a Identifier object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	Identifier(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:

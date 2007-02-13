@@ -23,15 +23,15 @@
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE
 
 /// \brief
-///  The FdoBaseUnit enumeration defines the well known base unit used to
+///  The BaseUnit enumeration defines the well known base unit used to
 /// establish a measure unit.
-/// <param name="FdoBaseUnit_None">
+/// <param name="BaseUnit_None">
 /// Input no base unit
 /// </param>
-/// <param name="FdoBaseUnit_Meters">
+/// <param name="BaseUnit_Meters">
 /// Input base unit meters
 /// </param>
-/// <param name="FdoBaseUnit_Radians">
+/// <param name="BaseUnit_Radians">
 /// Input base unit radians
 /// </param>
 public __value enum BaseUnit

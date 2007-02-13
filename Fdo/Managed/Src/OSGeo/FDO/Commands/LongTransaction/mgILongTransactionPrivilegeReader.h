@@ -20,6 +20,13 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
+/// \brief
+/// The ILongTransactionPrivilegeReader interface provides forward only,
+/// read-only functionality for enumerating long transaction privileges.
+/// A reference to an FdoILongTransactionPrivilegeReader is returned from
+/// the GetLongTransactionPrivileges command. The initial position of
+/// the ILongTransactionPrivilegeReader is prior to the first item.
+/// Thus, you must call ReadNext to begin accessing any data.
 public __gc __interface ILongTransactionPrivilegeReader : public System::IDisposable
 {
 public:
@@ -34,11 +41,11 @@ public:
     /// \brief
     /// Gets the privileges granted to the user currently being read. The
     /// returned value may be any combination of the values from the
-    /// FdoLongTransactionPrivileges enumeration combined via a bit-wise or
+    /// LongTransactionPrivileges enumeration combined via a bit-wise or
     /// operation.
     /// 
     /// \return
-    /// Returns the privileges as a bit masked value based on FdoLongTransactionPrivileges enumeration
+    /// Returns the privileges as a bit masked value based on LongTransactionPrivileges enumeration
     /// 
 	System::Int32 GetPrivileges();
 
@@ -53,7 +60,7 @@ public:
 	System::Boolean ReadNext();
 
     /// \brief
-    /// Closes the FdoILongTransactionPrivilegesReader object, freeing any
+    /// Closes the ILongTransactionPrivilegesReader object, freeing any
     /// resources it may be holding.
     /// 
     /// \return

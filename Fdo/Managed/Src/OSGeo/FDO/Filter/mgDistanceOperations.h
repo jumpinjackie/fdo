@@ -21,12 +21,12 @@
 BEGIN_NAMESPACE_OSGEO_FDO_FILTER
 
 /// \brief
-/// The FdoDistanceOperations enumeration lists the distance conditions available.
-/// <param name="FdoDistanceOperations_Beyond">
+/// The DistanceOperations enumeration lists the distance conditions available.
+/// <param name="DistanceOperations_Beyond">
 /// Test to see if the geometric property value lies beyond a specified
 /// distance of a literal geometric value
 /// </param>
-/// <param name="FdoDistanceOperations_Within">
+/// <param name="DistanceOperations_Within">
 /// Test to see if the geometric property value lies within a specified
 /// distance of a literal geometric value
 /// </param>

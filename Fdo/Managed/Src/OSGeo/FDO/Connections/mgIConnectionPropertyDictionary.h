@@ -21,7 +21,7 @@
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS
 
 /// \brief
-/// The FdoIConnectionPropertyDictionary exposes a dictionary style interface
+/// The IConnectionPropertyDictionary exposes a dictionary style interface
 /// to the connection properties. The properties required to establish a connection
 /// can be determined and their values can be set through this interface.
 /// Modifying connection properties through this
@@ -32,15 +32,12 @@ public __gc __interface IConnectionPropertyDictionary : public System::IDisposab
 {
 public:
     /// \brief
-    ///  Gets the names of all the properties that can appear in a connection string
+    /// Gets the names of all the properties that can appear in a connection string
     /// for this feature provider as an array of Strings. The order of the property
     /// names in the resulting array dictate the order in which they need to be 
     /// specified. This is especially important for the success of the 
     /// EnumeratePropertyValues method because properties that occur earlier in the array
     /// may be required for successful enumeration of properties that appear later.
-    /// 
-    /// \param count 
-    /// Output the number of parameters
     /// 
     /// \return
     /// Returns the list of parameter names
@@ -118,12 +115,10 @@ public:
 	System::Boolean IsPropertyEnumerable(System::String* name);
 
     /// \brief
-    ///  Returns an array of possible values for the specified property.
+    /// Returns an array of possible values for the specified property.
     /// 
     /// \param name 
     /// Input the property name.
-    /// \param count 
-    /// Output the number of values.
     /// 
     /// \return
     /// Returns the list of values for this property.
@@ -131,7 +126,7 @@ public:
 	System::String* EnumeratePropertyValues(System::String* name) [];
 
     /// \brief
-    ///  Gets a localized name for the property (for NLS purposes).
+    /// Gets a localized name for the property (for NLS purposes).
     /// 
     /// \param name 
     /// Input the property name.

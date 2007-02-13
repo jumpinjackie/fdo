@@ -35,12 +35,12 @@ public:
     ///     Constructs a text writer on a file.
     /// 
     /// \param fileName 
-    /// Input name of the file to write to. The file is created
-    /// if it does not yet exist. If it already exists, its previous contents are 
-    /// completely overwritten.
+    ///     Input name of the file to write to. The file is created
+    ///     if it does not yet exist. If it already exists, its previous contents are 
+    ///     completely overwritten.
     /// 
     /// \return
-    ///     Returns FdoIoTextWriter
+    ///     Returns IoTextWriter
     /// 
     ///  
 	IoTextWriter(System::String* fileName);
@@ -49,11 +49,11 @@ public:
     ///     Constructs a text writer on a stream.
     /// 
     /// \param stream 
-    /// Input the stream to write to. Writing starts at the 
-    /// stream's current position.
+    ///     Input the stream to write to. Writing starts at the 
+    ///     stream's current position.
     /// 
     /// \return
-    ///     Returns FdoIoTextWriter
+    ///     Returns IoTextWriter
     /// 
     ///  
 	IoTextWriter(NAMESPACE_OSGEO_COMMON_IO::IoStream* stream);
@@ -74,7 +74,7 @@ public:
     ///     Writes to this text writer. The text is written in UTF8 format.
     /// 
     /// \param data 
-    /// The text to write.
+    ///     The text to write.
     /// 
 	System::Void Write(System::String* data);
 
@@ -83,17 +83,29 @@ public:
     ///     the text.
     /// 
     /// \param data 
-    /// The text to write.
+    ///     The text to write.
     /// 
 	System::Void WriteLine(System::String* data);
 
+    /// \brief
+    ///     Constructs a text writer based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    ///     Input A Pointer to the unmanaged writer.
+    /// 
+    /// \param autoDelete 
+    ///     Input Indicates if the constructed object should be automatically deleted 
+    ///     once it no longer referenced.
+    /// 
 	IoTextWriter(System::IntPtr unmanaged, System::Boolean autoDelete);
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
 
 public private:
 	inline FdoIoTextWriter* GetImpObj();
+/// \endcond
 };
 
 END_NAMESPACE_OSGEO_COMMON_IO

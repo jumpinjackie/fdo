@@ -15,9 +15,9 @@
 
 using System;
 using System.Diagnostics;
-using OSGeo.Common.Xml;
+using OSGeo.FDO.Common.Xml;
 using OSGeo.FDO.Xml;
-using OSGeo.Common.Gml212;
+using OSGeo.FDO.Common.Gml212;
 using OSGeo.FDO.Commands.Schema;
 using OSGeo.FDO.Schema;
 using OSGeo.FDO.Commands.Feature;
@@ -121,8 +121,8 @@ namespace Fdo_Test
                     Debug.Assert(name != null);
 
                     testGeometryProperty(featureReader, "Bounds");
-                    testGeometryProperty(featureReader, "pointProperty");
-                    testGeometryProperty(featureReader, "lineStringProperty");
+                    testGeometryProperty(featureReader, "gml/pointProperty");
+                    testGeometryProperty(featureReader, "gml/lineStringProperty");
                 }
                 Debug.Assert(count == 2);
             }
@@ -150,8 +150,8 @@ namespace Fdo_Test
                     Debug.Assert(name != null);
 
                     testGeometryProperty(featureReader, "Bounds");
-                    testGeometryProperty(featureReader, "pointProperty");
-                    testGeometryProperty(featureReader, "lineStringProperty");
+                    testGeometryProperty(featureReader, "gml/pointProperty");
+                    testGeometryProperty(featureReader, "gml/lineStringProperty");
                 }
                 Debug.Assert(count == 2);
             }
@@ -181,7 +181,7 @@ namespace Fdo_Test
                     Debug.Assert(name != null);
 
                     testGeometryProperty(featureReader, "Bounds");
-                    testGeometryProperty(featureReader, "polygonProperty");
+                    testGeometryProperty(featureReader, "gml/polygonProperty");
                 }
 
                 Debug.Assert(count == 2);
@@ -211,7 +211,7 @@ namespace Fdo_Test
                     Debug.Assert(name != null);
 
                     testGeometryProperty(featureReader, "Bounds");
-                    testGeometryProperty(featureReader, "polygonProperty");
+                    testGeometryProperty(featureReader, "gml/polygonProperty");
                 }
 
                 Debug.Assert(count == 2);
@@ -240,11 +240,11 @@ namespace Fdo_Test
         
                         string name = featureReader.GetString("NAME");
                         Debug.Assert(name != null);
-        
-                        testGeometryProperty(featureReader, "multiPointProperty");
-                        testGeometryProperty(featureReader, "multiLineStringProperty");
-                        testGeometryProperty(featureReader, "multiPolygonProperty");
-                        testGeometryProperty(featureReader, "multiGeometryProperty");
+
+                        testGeometryProperty(featureReader, "gml/multiPointProperty");
+                        testGeometryProperty(featureReader, "gml/multiLineStringProperty");
+                        testGeometryProperty(featureReader, "gml/multiPolygonProperty");
+                        testGeometryProperty(featureReader, "gml/multiGeometryProperty");
                     }
         
                     Debug.Assert(count == 2);
@@ -272,11 +272,11 @@ namespace Fdo_Test
         
                         string name = featureReader.GetString("NAME");
                         Debug.Assert(name != null);
-        
-                        testGeometryProperty(featureReader, "multiPointProperty");
-                        testGeometryProperty(featureReader, "multiLineStringProperty");
-                        testGeometryProperty(featureReader, "multiPolygonProperty");
-                        testGeometryProperty(featureReader, "multiGeometryProperty");
+
+                        testGeometryProperty(featureReader, "gml/multiPointProperty");
+                        testGeometryProperty(featureReader, "gml/multiLineStringProperty");
+                        testGeometryProperty(featureReader, "gml/multiPolygonProperty");
+                        testGeometryProperty(featureReader, "gml/multiGeometryProperty");
                     }
         
                     Debug.Assert(count == 2);

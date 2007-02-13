@@ -25,11 +25,21 @@ class FdoLiteralValue;
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 
 /// \brief
-/// FdoLiteralValue is an abstract base class that derives from FdoValueExpression to
+/// LiteralValue is an abstract base class that derives from ValueExpression to
 /// form the root for all literal value types.
 public __gc class LiteralValue : public NAMESPACE_OSGEO_FDO_EXPRESSION::ValueExpression
 {
 public:
+    /// \brief
+    /// Constructs a LiteralValue object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	LiteralValue(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:

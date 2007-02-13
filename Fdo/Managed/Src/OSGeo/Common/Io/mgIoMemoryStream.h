@@ -38,15 +38,27 @@ public:
     ///     creates the memory stream. The stream manages its own storage.
     /// 
     /// \param bufferSize 
-    /// Input memory allocation increment. Amount of new memory to 
-    /// allocated when the stream needs more memory.
+    ///     Input memory allocation increment. Amount of new memory to 
+    ///     allocated when the stream needs more memory.
     /// 
 	IoMemoryStream(System::UInt32 bufferSize);
 
+    /// \brief
+    ///     Constructs a stream based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    ///     Input A Pointer to the unmanaged stream.
+    /// 
+    /// \param autoDelete 
+    ///     Input Indicates if the constructed object should be automatically deleted 
+    ///     once it no longer referenced.
+    /// 
 	IoMemoryStream(System::IntPtr unmanaged, System::Boolean autoDelete);
 
+/// \cond DOXYGEN-IGNORE
 public private:
 	inline FdoIoMemoryStream* GetImpObj();
+/// \endcond
 };
 
 END_NAMESPACE_OSGEO_COMMON_IO

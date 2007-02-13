@@ -30,12 +30,14 @@ END_NAMESPACE_OSGEO_FDO_SCHEMA
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 
 /// \brief
-/// The FdoIFeatureReader interface provides a forward-only, read-only iterator
-/// for reading feature data.  A reference to an FdoIFeatureReader is returned
+/// The IFeatureReaderImp class is a concrete implementation class for interface IFeatureReader.
+/// The IFeatureReader interface provides a forward-only, read-only iterator
+/// for reading feature data.  A reference to an IFeatureReader is returned
 /// from the Select and SelectAndLock commands. Because the initial position of the
-/// FdoIFeatureReader is prior to the first item, you must call
+/// IFeatureReader is prior to the first item, you must call
 /// ReadNext to begin accessing any data.
-private __gc class IFeatureReaderImp : public NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp, public NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader
+private __gc class IFeatureReaderImp : public NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp, 
+                                       public NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader
 {
 public:
     /// \brief
@@ -55,7 +57,7 @@ public:
     /// reader is returned. The outermost reader has a depth of 0.
     /// 
     /// \return
-    /// Returns the depth
+    /// Returns the feature reader depth
     /// 
 	System::Int32 GetDepth();
 
@@ -71,8 +73,6 @@ public:
     /// 
     /// \param propertyName 
     /// Input the property name.
-    /// \param count 
-    /// Output the number of bytes in the array.
     /// 
     /// \return
     /// Returns a pointer to the byte array in FGF format.
@@ -80,7 +80,7 @@ public:
 	System::Byte GetGeometry(System::String* propertyName) [];
 
     /// \brief
-    /// Gets a reference to an FdoIFeatureReader to read the data contained in
+    /// Gets a reference to an IFeatureReader to read the data contained in
     /// the object or object collection property. If the property is not an
     /// object property, an exception is thrown.
     /// 

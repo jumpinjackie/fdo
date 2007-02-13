@@ -26,8 +26,8 @@ BEGIN_NAMESPACE_OSGEO_FDO_FILTER
 public __gc __interface IFilterProcessor;;
 
 /// \brief
-/// The FdoFilter abstract class is a base class for condition and operator classes
-/// that can occur in a filter expression tree. The FdoFilter class contains
+/// Filter is an abstract class which acts as a base class for condition and operator classes
+/// that can occur in a filter expression tree. The Filter class contains
 /// operations for converting between the text and expression tree representation
 /// of a filter.
 public __gc class Filter : public NAMESPACE_OSGEO_RUNTIME::Disposable
@@ -46,7 +46,7 @@ public:
 	 static NAMESPACE_OSGEO_FDO_FILTER::Filter* Parse(System::String* filterText);
 
     /// \brief
-    /// Abstract operation that takes an FdoIFilterProcessor as an argument.
+    /// Abstract operation that takes an IFilterProcessor as an argument.
     /// Concrete filter subclasses must override this method and pass themselves
     /// as an argument to the appropriate filter processor operation.
     /// 
@@ -71,11 +71,11 @@ public:
     /// Static operation that combines two filters using the specified binary
     /// logical operation.
     /// 
-    /// \param lhs 
+    /// \param leftFilter 
     /// Input left hand expression as filter expression
     /// \param operation 
     /// Input binary logical operation
-    /// \param rhs 
+    /// \param rightFilter 
     /// Input right hand expression as filter expression
     /// 
     /// \return
@@ -103,11 +103,11 @@ public:
     /// Static operation that combines two filters using the specified binary
     /// logical operation.
     /// 
-    /// \param lhs 
+    /// \param leftFilter 
     /// Input left hand expression as filter expression
     /// \param operation 
     /// Input binary logical operation
-    /// \param rhs 
+    /// \param rightFilter 
     /// Input right hand expression as well defined text string
     /// 
     /// \return
@@ -119,11 +119,11 @@ public:
     /// Static operation that combines two filters using the specified binary
     /// logical operation.
     /// 
-    /// \param lhs 
+    /// \param leftFilter 
     /// Input left hand expression as well defined text string
     /// \param operation 
     /// Input binary logical operation
-    /// \param rhs 
+    /// \param rightFilter 
     /// Input right hand expression as well defined text string
     /// 
     /// \return
@@ -131,13 +131,25 @@ public:
     /// 
 	NAMESPACE_OSGEO_FDO_FILTER::Filter* Combine(System::String* leftFilter, NAMESPACE_OSGEO_FDO_FILTER::BinaryLogicalOperations operation, System::String* rightFilter);
 
+    /// \brief
+    /// Constructs a Filter object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	Filter(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:
 	inline FdoFilter* GetImpObj();
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 };
 
 END_NAMESPACE_OSGEO_FDO_FILTER

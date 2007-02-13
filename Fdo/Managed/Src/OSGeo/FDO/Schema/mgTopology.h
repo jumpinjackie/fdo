@@ -24,9 +24,25 @@ class FdoTopology;
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 
+/// \brief
+/// This class is used to represent a topology.
+/// \note
+/// This Help topic is provided for informational use only. There is
+/// no interface or support provided. OSGeo reserves the right to change
+/// the software related to the content herein.
 public __gc class Topology : public NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition
 {
 public:
+    /// \brief
+    /// Constructs a Topology object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	Topology(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition(unmanaged, autoDelete)
 	{
 

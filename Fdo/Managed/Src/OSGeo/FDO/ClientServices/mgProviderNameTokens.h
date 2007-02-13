@@ -25,15 +25,29 @@ class FdoVectorP;
 
 BEGIN_NAMESPACE_OSGEO_FDO_CLIENTSERVICES
 
+/// \brief
+/// Class ProviderNameTokens represents an FDO provider name that has been tokenized into its company, name and version parts.
 public __gc class ProviderNameTokens : public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
 public private:
 	inline FdoProviderNameTokens* GetImpObj();
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 
 public:
+    /// \brief
+    /// Constructs an ProviderNameTokens managed object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	ProviderNameTokens(System::IntPtr unmanaged, System::Boolean autoDelete)
 		: Disposable(unmanaged, autoDelete)
 	{
@@ -42,13 +56,13 @@ public:
     /// \brief
     /// Tokenize a full provider name
     /// The name is usually of the form "[Company].[Provider].[Version]",
-    /// e.g. "Autodesk.Oracle.3.2".
+    /// e.g. "OSGeo.SDF.3.2".
     /// 
-    /// \param names 
+    /// \param name 
     /// Input the provider name to tokenize
     /// 
     /// \return
-    /// Returns FdoProviderNameTokens
+    /// Returns ProviderNameTokens
     /// 
 	ProviderNameTokens(System::String* name);
 
@@ -68,8 +82,8 @@ public:
     /// 
     /// \return
     /// Returns the collection of version number components. For
-    /// example, if the full provider name is "Autodesk.Oracle.3.1" then 
-    /// {2,1} is returned.
+    /// example, if the full provider name is "OSGeo.SDF.3.2" then 
+    /// {3,2} is returned.
     /// 
 	System::Double GetVersionTokens()[];
 
@@ -78,10 +92,11 @@ public:
     /// 
     /// \return
     /// Returns the local name ( without company and version ). For
-    /// example, if the full provider name is "Autodesk.Oracle.3.1" then 
-    /// "Oracle" is returned.
+    /// example, if the full provider name is "OSGeo.SDF.3.2" then 
+    /// "SDF" is returned.
     /// 
 	System::String *GetLocalName();
+
 private:
 	static System::String *FdoStringsToStringArray(const FdoStringsP &sa)[];
 	static System::Double FdoVectorToDoubleArrary(const FdoVectorP &da)[];

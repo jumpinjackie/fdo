@@ -31,6 +31,16 @@ public __gc class ISurfaceAbstractImp :
 	public NAMESPACE_OSGEO_GEOMETRY::IGeometryImp, public NAMESPACE_OSGEO_GEOMETRY::ISurfaceAbstract
 {
 public:
+    /// \brief
+    /// Constructs a managed object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed element should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	ISurfaceAbstractImp(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:

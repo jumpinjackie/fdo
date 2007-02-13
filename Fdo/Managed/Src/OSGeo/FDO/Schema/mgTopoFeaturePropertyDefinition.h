@@ -25,17 +25,17 @@ class FdoTopoFeaturePropertyDefinition;
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 
 /// \brief
-/// FdoTopoFeaturePropertyDefinition derives from FdoPropertyDefinition and its
+/// TopoFeaturePropertyDefinition derives PropertyDefinition and its
 /// values can be used to relate topological primitives to one or more
 /// application domain features. One can use the short form "TopoFeature" to
 /// refer to these properties. The semantics of this property are similar to
-/// Object properties. One uses FdoIFeatureReader::GetObject() to retrieve
+/// Object properties. One uses IFeatureReader::GetObject() to retrieve
 /// values.
 /// <p><b>Note:</b> <span class="red_text">This Help topic is provided for informational use only. There is
-/// no interface or support provided. Autodesk reserves the right to change
+/// no interface or support provided. OSGeo reserves the right to change
 /// the software related to the content herein.</span>
 /// \remarks
-/// FdoTopoFeaturePropertyDefinition and FdoTopoGeometryPropertyDefinition are
+/// TopoFeaturePropertyDefinition and TopoGeometryPropertyDefinition are
 /// the matching roles of many:many relationships between topological primitives
 /// and application domain features. FDO Association properties are not used for
 /// these roles because topological relationships are not between fixed classes.
@@ -46,13 +46,22 @@ public __gc class TopoFeaturePropertyDefinition : public NAMESPACE_OSGEO_FDO_SCH
 {
 public:
     /// \brief
-    /// Constructs an instance of an FdoTopoFeaturePropertyDefinition using the
+    /// Constructs an instance of an TopoFeaturePropertyDefinition using the
     /// specified arguments.
     /// 
 	TopoFeaturePropertyDefinition(System::String* name, System::String* description);
-
 	TopoFeaturePropertyDefinition(System::String* name, System::String* description, System::Boolean system);
 
+    /// \brief
+    /// Constructs a TopoFeaturePropertyDefinition object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	TopoFeaturePropertyDefinition(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinition(unmanaged, autoDelete)
 	{
 

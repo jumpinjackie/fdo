@@ -21,8 +21,8 @@
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 
 /// \brief
-/// The FdoUnaryOperations enumeration lists the unary expression operations available.
-/// <param name="FdoUnaryOperations_Negate">
+/// The UnaryOperations enumeration lists the unary expression operations available.
+/// <param name="UnaryOperations_Negate">
 /// Negate the expression
 /// </param>
 [System::FlagsAttribute]

@@ -28,10 +28,10 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
 public __gc class PhysicalSchemaMapping;
 
 /// \brief
-/// The FdoIApplySchema interface defines the ApplySchema command, which creates or
+/// The IApplySchema interface defines the ApplySchema command, which creates or
 /// updates a feature schema within the DataStore. Input to the ApplySchema
 /// command is the feature schema instance to be created or updated. Optionally, 
-/// a provider-specific FdoIPhysicalSchemaMapping interface can be specified that can be
+/// a provider-specific IPhysicalSchemaMapping interface can be specified that can be
 /// used to control how the feature schema elements are mapped into physical
 /// storage.
 public __gc __interface IApplySchema : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
@@ -57,20 +57,20 @@ public:
 	__property System::Void set_FeatureSchema(NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema* value);
 
     /// \brief
-    ///  Gets the FdoPhysicalSchemaMapping used to specify how the schema definition
+    ///  Gets the PhysicalSchemaMapping used to specify how the schema definition
     /// gets mapped into physical storage.
     /// 
     /// \return
-    /// Returns FdoPhysicalSchemaMapping
+    /// Returns PhysicalSchemaMapping
     /// 
 	__property NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping* get_PhysicalMapping();
 
     /// \brief
-    /// Sets the FdoPhysicalSchemaMapping used to specify how the schema definition
+    /// Sets the PhysicalSchemaMapping used to specify how the schema definition
     /// gets mapped into physical storage.
     /// 
     /// \param value 
-    /// Input the FdoPhysicalSchemaMapping
+    /// Input the PhysicalSchemaMapping
     /// 
     /// \return
     /// Returns nothing
@@ -110,7 +110,7 @@ public:
     /// or the schema itself, then those classes (or the schema, if it is marked
     /// as deleted) must not contain any instance data. If they do, an exception
     /// will be thrown.
-    /// Implementors must call FdoFeatureSchema::AcceptChanges() when Execute() succeeds.
+    /// Implementors must call FeatureSchema::AcceptChanges() when Execute() succeeds.
     /// It must be called after the schema has been successfully applied, in
     /// order to synchronize the states of the schema elements.
     /// 

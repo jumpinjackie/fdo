@@ -28,18 +28,37 @@ BEGIN_NAMESPACE_OSGEO_COMMON
 /// \brief
 ///     The IStreamReader class is a top level interface for stream reader classes. 
 ///     The API it provides allows the user to read large streams of data in blocks of items. 
-public __gc class IStreamReaderImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_COMMON::IStreamReader
+public __gc class IStreamReaderImp : 
+    public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_COMMON::IStreamReader
 {
 public:
+    /// \brief
+    ///     Constructs a IStreamReader object based on an unmanaged instance of the stream
+    /// 
+    /// \param unmanaged 
+    ///     Input A Pointer to the unmanaged Stream Reader.
+    /// 
+    /// \param autoDelete 
+    ///     Input Indicates if the constructed dictionary should be automatically deleted 
+    ///     once it no longer referenced.
+    /// 
 	IStreamReaderImp(System::IntPtr unmanaged, System::Boolean autoDelete);
 
+    /// \brief
+    /// Gets the type of the Stream Reader
+    /// 
+    /// \return
+    /// Returns the Stream Reader type
+    /// 
 	__property StreamReaderType get_Type();
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	__sealed System::Void ReleaseUnmanagedObject();
 
 public private:
 	inline  FdoIStreamReader* GetImpObj();
+/// \endcond
 };
 
 END_NAMESPACE_OSGEO_COMMON

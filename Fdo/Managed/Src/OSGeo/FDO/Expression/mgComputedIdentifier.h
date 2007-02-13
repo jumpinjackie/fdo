@@ -28,21 +28,9 @@ public __gc class Expression;
 public __gc __interface IExpressionProcessor;
 
 /// \brief
-/// The FdoComputedIdentifier class derives from FdoIdentifier and represents an expression
+/// The ComputedIdentifier class derives from Identifier and represents an expression
 /// with alias. The name or alias must be a simple name and should not be scoped or contain the
-/// the schema name. The FdoComputedIdentifier can be used to provide an alias to an expression. For
-/// example the expression Length*NumLanes can be refered to as MaxTraficCapacity. In this case, a 
-/// computed identifier can be created as: 
-/// \code
-///    FdoComputedIdentifier::Create(L"MaxTraficCapacity", 
-///        FdoBinaryExpression::Create( FdoIdentifier(L"Length"),
-///                                     FdoBinaryOperations_Multiply,
-///                                     FdoIdentifier(L"NumLanes")
-///         );
-/// );
-/// \endcode
-/// \note
-/// For clarity, the example omits the release code needed to free the various created objects.
+/// the schema name. The ComputedIdentifier can be used to provide an alias to an expression. 
 /// 
 public __gc class ComputedIdentifier : public NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier
 {
@@ -51,7 +39,7 @@ public:
     /// Constructs a default instance of an identifier.
     /// 
     /// \return
-    /// Returns the FdoComputedIdentifier
+    /// Returns the ComputedIdentifier
     /// 
 	ComputedIdentifier();
 
@@ -61,10 +49,10 @@ public:
     /// \param name 
     /// Input the computed identifier name
     /// \param expression 
-    /// Input the fdo expression
+    /// Input  expression
     /// 
     /// \return
-    /// Returns the FdoComputedIdentifier
+    /// Returns the ComputedIdentifier
     /// 
 	ComputedIdentifier(System::String* name, NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* expression);
 
@@ -88,7 +76,7 @@ public:
 	System::Void set_Expression(NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* value);
 
     /// \brief
-    /// Overrides FdoExpression.Process to pass the FdoComputedIdentifier to the appropriate
+    /// Overrides Expression.Process to pass the ComputedIdentifier to the appropriate
     /// expression processor operation.
     /// 
     /// \param processor 
@@ -107,6 +95,16 @@ public:
     /// 
 	System::String* ToString();
 
+    /// \brief
+    /// Constructs a ComputedIdentifier object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	ComputedIdentifier(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:

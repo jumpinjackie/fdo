@@ -25,9 +25,9 @@ class FdoPropertyValueConstraint;
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 
 /// \brief
-/// FdoPropertyValueConstraint is an abstract class that derives from FdoIDisposable.
-/// FdoPropertyValueConstraint is the base class of FdoPropertyValueConstraintRange 
-/// and FdoPropertyValueConstraintList.
+/// PropertyValueConstraint is an abstract class that derives from IDisposable.
+/// PropertyValueConstraint is the base class of PropertyValueConstraintRange 
+/// and PropertyValueConstraintList.
 public __gc class PropertyValueConstraint : public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
 public private:
@@ -35,8 +35,10 @@ public private:
 
 	inline FdoPropertyValueConstraint* GetImpObj();
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 
 public:
     /// \brief

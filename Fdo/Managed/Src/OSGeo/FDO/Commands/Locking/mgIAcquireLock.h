@@ -26,32 +26,32 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 public __gc __interface ILockConflictReader;
 
 /// \brief
-/// The FdoIAcquireLock interface locks feature instances of a given class 
+/// The IAcquireLock interface locks feature instances of a given class 
 /// that match the specified criteria. Input to the acquire lock command
 /// includes the name of the class, the lock type, the lock strategy, and
 /// filter criteria by which to identify the instances to be locked. The
 /// filter may be specified either as text or as an expression tree (most 
 /// likely produced by a query builder). The lock type value is one of 
-/// <p> - FdoLockType_Shared
-/// <p> - FdoLockType_Exclusive
-/// <p> - FdoLockType_Transaction
-/// <p> - FdoLockType_LongTransactionExclusive
-/// <p> - FdoLockType_AllLongTransactionExclusive
+/// <p> - LockType_Shared
+/// <p> - LockType_Exclusive
+/// <p> - LockType_Transaction
+/// <p> - LockType_LongTransactionExclusive
+/// <p> - LockType_AllLongTransactionExclusive
 /// \remarks
 /// If the lock strategy has a value of all and at least one of the feature
 /// instances specified in the filter is locked by someone else, the command
-/// returns an FdoILockConflictReader list which contains all of the feature
+/// returns an ILockConflictReader list which contains all of the feature
 /// instances specified in the filter.
 /// <p>If the lock strategy has a value of partial, the command returns an
-/// FdoILockConflictReader list which contains all of the feature instances
+/// ILockConflictReader list which contains all of the feature instances
 /// specified in the filter that are already locked by someone else.
-/// The command returns an empty FdoILockConflictReader list if all of the
+/// The command returns an empty ILockConflictReader list if all of the
 /// feature instances specified in the filter were successfully locked.
 public __gc __interface IAcquireLock : public NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommand
 {
 public:
     /// \brief
-    /// Gets the FdoLockType value.
+    /// Gets the LockType value.
     /// 
     /// \return
     /// Returns the lock type.
@@ -59,7 +59,7 @@ public:
 	__property NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockType get_LockType();
 
     /// \brief
-    /// Sets the FdoLockType value.
+    /// Sets the LockType value.
     /// 
     /// \param value 
     /// Input the lock type
@@ -70,7 +70,7 @@ public:
 	__property System::Void set_LockType(NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockType value);
 
     /// \brief
-    /// Gets the FdoLockStrategy value.
+    /// Gets the LockStrategy value.
     /// 
     /// \return
     /// Returns the strategy value (all or partial).
@@ -78,7 +78,7 @@ public:
 	__property NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockStrategy get_LockStrategy();
 
     /// \brief
-    /// Sets the FdoLockStrategy value (all or partial).
+    /// Sets the LockStrategy value (all or partial).
     /// 
     /// \param value 
     /// Input the lock strategy used for locking objects
@@ -89,7 +89,7 @@ public:
 	__property System::Void set_LockStrategy(NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockStrategy value);
 
     /// \brief
-    /// Executes the AcquireLock command, returning an FdoILockConflictReader.
+    /// Executes the AcquireLock command, returning an ILockConflictReader.
     /// 
     /// \return
     /// Returns a list of feature instances which could not be locked.

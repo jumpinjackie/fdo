@@ -21,7 +21,7 @@
 BEGIN_NAMESPACE_OSGEO_FDO_FILTER
 
 /// \brief
-/// The FdoIFilterProcessor interface can be used to process the nodes in a filter
+/// The IFilterProcessor interface can be used to process the nodes in a filter
 /// tree. It declares a process operation for each concrete class in the filter
 /// hierarchy. Providers or client applications can create classes that realize
 /// this interface to do something meaningful with a filter hierarchy. For

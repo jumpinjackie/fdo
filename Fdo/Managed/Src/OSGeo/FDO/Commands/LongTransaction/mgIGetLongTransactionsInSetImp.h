@@ -27,15 +27,17 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 public __gc __interface ILongTransactionSetReader;
 
 /// \brief
-/// The FdoIGetLongTransactionsInSet interface defines the GetLongTransactionsInSet
+/// The IGetLongTransactionsInSetImp class is a concrete implementation of IGetLongTransactionsInSet.
+/// The IGetLongTransactionsInSet interface defines the GetLongTransactionsInSet
 /// command, which allows the user to enumerate the list of versions
 /// participating in the long transaction selection set.
-private __gc class IGetLongTransactionsInSetImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, public NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IGetLongTransactionsInSet
+private __gc class IGetLongTransactionsInSetImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 
+                                                  public NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IGetLongTransactionsInSet
 {
 public:
     /// \brief
     /// Executes the GetLongTransactionsInSet command, returning a reference
-    /// to an FdoILongTransactionSetReader.
+    /// to an ILongTransactionSetReader.
     /// 
     /// \return
     /// Returns the long transaction reader

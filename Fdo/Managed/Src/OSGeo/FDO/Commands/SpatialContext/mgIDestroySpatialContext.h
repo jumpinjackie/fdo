@@ -23,7 +23,7 @@
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT
 
 /// \brief
-/// The FdoIDestroySpatialContext interface defines the DestroySpatialContext
+/// The IDestroySpatialContext interface defines the DestroySpatialContext
 /// command, which destroys an existing spatial context. Input to the command is
 /// the name of the context to destroy. Destroying a spatial context destroys
 /// all data stored in that context.

@@ -21,169 +21,219 @@
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS
 
 /// \brief
-/// The FdoOrderingOption enumeration defines the list acceptable values that 
-/// can be specified as order by clause to the select and select aggregate commands.
-/// <param name="FdoOrderingOption_Ascending">
-/// Used for ascending option
-/// </param>
-/// <param name="FdoOrderingOption_Descending">
-/// Used for descending option
-/// </param>
+/// The CommandType enumeration defines the list of abstract commands a feature provider can support.
+///
+/// \param CommandType_Select
+/// Represents the Select command
+///
+/// \param CommandType_Insert
+/// Represents the Insert command
+///
+/// \param CommandType_Delete
+/// Represents the Delete command
+///
+/// \param CommandType_Update
+/// Represents the Update command
+///
+/// \param CommandType_DescribeSchema
+/// Represents the DescribeSchema command
+///
+/// \param CommandType_DescribeSchemaMapping
+/// Represents the DescribeSchemaMapping command
+///
+/// \param CommandType_ApplySchema
+/// Represents the ApplySchema command.
+///
+/// \param CommandType_DestroySchema
+/// Represents the DestroySchema command.
+///
+/// \param CommandType_ActivateSpatialContext
+/// Represents the ActivateSpatialContext command.
+///
+/// \param CommandType_CreateSpatialContext
+/// Represents the CreateSpatialContext command.
+///
+/// \param CommandType_DestroySpatialContext
+/// Represents the DestroySpatialContext command.
+///
+/// \param CommandType_GetSpatialContexts
+/// Represents the GetSpatialContexts command.
+///
+/// \param CommandType_CreateMeasureUnit
+/// Represents the CreateMeasureUnit command.
+///
+/// \param CommandType_DestroyMeasureUnit
+/// Represents the DestroyMeasureUnit command.
+///
+/// \param CommandType_GetMeasureUnits
+/// Represents the GetMeasureUnits command.
+///
+/// \param CommandType_SQLCommand
+/// Represents the SQLCommand command.
+///
+/// \param CommandType_AcquireLock
+/// Represents the AcquireLock command.
+///
+/// \param CommandType_GetLockInfo
+/// Represents the GetLockInfo command.
+///
+/// \param CommandType_GetLockedObjects
+/// Represents the GetLockedObjects command.
+///
+/// \param CommandType_GetLockOwners
+/// Represents the GetLockOwners command.
+///
+/// \param CommandType_ReleaseLock
+/// Represents the ReleaseLock command.
+///
+/// \param CommandType_ActivateLongTransaction
+/// Represents the ActivateLongTransaction command.
+///
+/// \param CommandType_CommitLongTransaction
+/// Represents the CommitLongTransaction command.
+///
+/// \param CommandType_CreateLongTransaction
+/// Represents the CreateLongTransaction command.
+///
+/// \param CommandType_GetLongTransactions
+/// Represents the GetLongTransactions command.
+///
+/// \param CommandType_FreezeLongTransaction
+/// Represents the FreezeLongTransaction command.
+///
+/// \param CommandType_RollbackLongTransaction
+/// Represents the RollbackLongTransaction command.
+///
+/// \param CommandType_ActivateLongTransactionCheckpoint
+/// Represents the ActivateLongTransactionCheckpoint command.
+///
+/// \param CommandType_CreateLongTransactionCheckpoint
+/// Represents the CreateLongTransactionCheckpoint command.
+///
+/// \param CommandType_GetLongTransactionCheckpoints
+/// Represents the GetLongTransactionCheckpoints command.
+///
+/// \param CommandType_RollbackLongTransactionCheckpoint
+/// Represents the RollbackLongTransactionCheckpoint command.
+///
+/// \param CommandType_ChangeLongTransactionPrivileges
+/// Represents the ChangeLongTransactionPrivileges command.
+///
+/// \param CommandType_GetLongTransactionPrivileges
+/// Represents the GetLongTransactionPrivileges command.
+///
+/// \param CommandType_ChangeLongTransactionSet
+/// Represents the ChangeLongTransactionSet command.
+///
+/// \param CommandType_GetLongTransactionsInSet
+/// Represents the GetLongTransactionsInSet command.
+///
+/// \param CommandType_FirstProviderCommand
+/// Represents the index of the first provider specific command.
+///
+/// \param CommandType_SelectAggregates
+/// Represents the SelectAggregate command.
+///
+/// \param CommandType_NetworkShortestPath
+/// Represents the NetworkShortestPath command (see <b>remarks</b>).
+///
+/// \param CommandType_NetworkAllPaths
+/// Represents the NetworkAllPaths command (see <b>remarks</b>).
+///
+/// \param CommandType_NetworkReachableNodes
+/// Represents the NetworkReachableNodes command (see <b>remarks</b>).
+///
+/// \param CommandType_NetworkReachingNodes
+/// Represents the NetworkReachingNodes command (see <b>remarks</b>).
+///
+/// \param CommandType_NetworkNearestNeighbors
+/// Represents the NetworkNearestNeighbors command (see <b>remarks</b>).
+///
+/// \param CommandType_NetworkWithinCost
+/// Represents the NetworkWithinCost command (see <b>remarks</b>).
+///
+/// \param CommandType_NetworkTSP
+/// Represents the NetworkTSP command (see <b>remarks</b>).
+///
+/// \param CommandType_ActivateTopologyArea
+/// Represents the ActivateTopologyArea command (see <b>remarks</b>).
+///
+/// \param CommandType_DeactivateTopologyArea
+/// Represents the DeactivateTopologyArea command (see <b>remarks</b>).
+///
+/// \param CommandType_ActivateTopologyInCommandResult
+/// Represents the ActivateTopologyInCommandResult command (see <b>remarks</b>).
+///
+/// \param CommandType_DeactivateTopologyInCommandResults
+/// Represents the DeactivateTopologyInCommandResults command (see <b>remarks</b>).
+///
+/// \param CommandType_CreateDataStore
+/// Represents the CreateDataStore command.
+///
+/// \param CommandType_DestroyDataStore
+/// Represents the DestroyDataStore command.
+///
+/// \param CommandType_ListDataStores
+/// Represents the ListDataStores command.
+///
+/// \remarks
+/// These parameters are not supported in this release. 
+/// They are provided here for informational use only. OSGeo 
+/// reserves the right to change the software related to the content herein.
+///
+
 public __value enum CommandType {
-    /// Represents the Select Command.
 	CommandType_Select = FdoCommandType_Select,
-
-    /// Represents the Insert Command.
 	CommandType_Insert = FdoCommandType_Insert,
-
-    /// Represents the Delete Command.
 	CommandType_Delete = FdoCommandType_Delete,
-
-    /// Represents the Update Command.
 	CommandType_Update = FdoCommandType_Update,
-
-    /// Represents the DescribeSchema Command.
 	CommandType_DescribeSchema = FdoCommandType_DescribeSchema,
-
-    /// Represents the DescribeSchemaMapping Command.
 	CommandType_DescribeSchemaMapping = FdoCommandType_DescribeSchemaMapping,
-
-    /// Represents the ApplySchema command.
 	CommandType_ApplySchema = FdoCommandType_ApplySchema,
-
-    /// Represents the DestroySchema command.
 	CommandType_DestroySchema = FdoCommandType_DestroySchema,
-
-    /// Represents the ActivateSpatialContext command.
 	CommandType_ActivateSpatialContext = FdoCommandType_ActivateSpatialContext,
-
-    /// Represents the CreateSpatialContext command.
 	CommandType_CreateSpatialContext = FdoCommandType_CreateSpatialContext,
-
-    /// Represents the DestroySpatialContext command.
 	CommandType_DestroySpatialContext = FdoCommandType_DestroySpatialContext,
-
-    /// Represents the GetSpatialContexts command.
 	CommandType_GetSpatialContexts = FdoCommandType_GetSpatialContexts,
-
-    /// Represents the CreateMeasureUnit command.
 	CommandType_CreateMeasureUnit = FdoCommandType_CreateMeasureUnit,
-
-    /// Represents the DestroyMeasureUnit command.
 	CommandType_DestroyMeasureUnit = FdoCommandType_DestroyMeasureUnit,
-
-    /// Represents the GetMeasureUnits command.
 	CommandType_GetMeasureUnits = FdoCommandType_GetMeasureUnits,
-
-    /// Represents the SQLCommand command.
 	CommandType_SQLCommand = FdoCommandType_SQLCommand,
-
-    /// Represents the AcquireLock command.
 	CommandType_AcquireLock = FdoCommandType_AcquireLock,
-
-    /// Represents the GetLockInfo command.
 	CommandType_GetLockInfo = FdoCommandType_GetLockInfo,
-
-    /// Represents the GetLockedObjects command.
 	CommandType_GetLockedObjects = FdoCommandType_GetLockedObjects,
-
-    /// Represents the GetLockOwners command.
 	CommandType_GetLockOwners = FdoCommandType_GetLockOwners,
-
-    /// Represents the ReleaseLock command.
 	CommandType_ReleaseLock = FdoCommandType_ReleaseLock,
-
-    /// Represents the ActivateLongTransaction command.
 	CommandType_ActivateLongTransaction = FdoCommandType_ActivateLongTransaction,
-
-    /// Represents the DeactivateLongTransaction command.
 	CommandType_DeactivateLongTransaction = FdoCommandType_DeactivateLongTransaction,
-
-    /// Represents the CommitLongTransaction command.
 	CommandType_CommitLongTransaction = FdoCommandType_CommitLongTransaction,
-
-    /// Represents the CreateLongTransaction command.
 	CommandType_CreateLongTransaction = FdoCommandType_CreateLongTransaction,
-
-    /// Represents the GetLongTransactions command.
 	CommandType_GetLongTransactions = FdoCommandType_GetLongTransactions,
-
-    /// Represents the FreezeLongTransaction command.
 	CommandType_FreezeLongTransaction = FdoCommandType_FreezeLongTransaction,
-
-    /// Represents the RollbackLongTransaction command.
 	CommandType_RollbackLongTransaction = FdoCommandType_RollbackLongTransaction,
-
-    /// Represents the ActivateLongTransactionCheckpoint command.
 	CommandType_ActivateLongTransactionCheckpoint = FdoCommandType_ActivateLongTransactionCheckpoint,
-
-    /// Represents the CreateLongTransactionCheckpoint command.
 	CommandType_CreateLongTransactionCheckpoint = FdoCommandType_CreateLongTransactionCheckpoint,
-
-    /// Represents the GetLongTransactionCheckpoints command.
 	CommandType_GetLongTransactionCheckpoints = FdoCommandType_GetLongTransactionCheckpoints,
-
-    /// Represents the RollbackLongTransactionCheckpoint command.
 	CommandType_RollbackLongTransactionCheckpoint = FdoCommandType_RollbackLongTransactionCheckpoint,
-
-    /// Represents the ChangeLongTransactionPrivileges command.
 	CommandType_ChangeLongTransactionPrivileges = FdoCommandType_ChangeLongTransactionPrivileges,
-
-    /// Represents the GetLongTransactionPrivileges command.
 	CommandType_GetLongTransactionPrivileges = FdoCommandType_GetLongTransactionPrivileges,
-
-    /// Represents the ChangeLongTransactionSet command.
 	CommandType_ChangeLongTransactionSet = FdoCommandType_ChangeLongTransactionSet,
-
-    /// Represents the GetLongTransactionsInSet command.
 	CommandType_GetLongTransactionsInSet = FdoCommandType_GetLongTransactionsInSet,
-
-    /// Represents the NetworkShortestPath command.
 	CommandType_NetworkShortestPath = FdoCommandType_NetworkShortestPath,
-
-    /// Represents the NetworkAllPaths command.
 	CommandType_NetworkAllPaths = FdoCommandType_NetworkAllPaths,
-
-    /// Represents the NetworkReachableNodes command.
 	CommandType_NetworkReachableNodes = FdoCommandType_NetworkReachableNodes,
-
-    /// Represents the NetworkReachingNodes command.
 	CommandType_NetworkReachingNodes = FdoCommandType_NetworkReachingNodes,
-
-    /// Represents the NetworkNearestNeighbors command.
 	CommandType_NetworkNearestNeighbors = FdoCommandType_NetworkNearestNeighbors,
-
-    /// Represents the NetworkWithinCost command.
 	CommandType_NetworkWithinCost = FdoCommandType_NetworkWithinCost,
-
-    /// Represents the NetworkTSP command.
 	CommandType_NetworkTSP = FdoCommandType_NetworkTSP,
-
-    /// Represents the ActivateTopologyArea command.
 	CommandType_ActivateTopologyArea = FdoCommandType_ActivateTopologyArea,
-
-    /// Represents the DeactivateTopologyArea command.
 	CommandType_DeactivateTopologyArea = FdoCommandType_DeactivateTopologyArea,
-
-    /// Represents the ActivateTopologyInCommandResult command.
 	CommandType_ActivateTopologyInCommandResult = FdoCommandType_ActivateTopologyInCommandResult,
-
-    /// Represents the DeactivateTopologyInCommandResults command.
 	CommandType_DeactivateTopologyInCommandResults = FdoCommandType_DeactivateTopologyInCommandResults,
-
-    /// Represents the SelectAggregates command.
 	CommandType_SelectAggregates = FdoCommandType_SelectAggregates,
-
-    /// Represents the index of the first provider specific command.
 	CommandType_FirstProviderCommand = FdoCommandType_FirstProviderCommand,
-
-    /// Represents the CreateDataStore command.
     CommandType_CreateDataStore = FdoCommandType_CreateDataStore,
-
-    /// Represents the DestroyDataStore command.
     CommandType_DestroyDataStore = FdoCommandType_DestroyDataStore,
-
-    /// Represents the ListDatastores command
 	CommandType_ListDataStores = FdoCommandType_ListDataStores,
 };
 

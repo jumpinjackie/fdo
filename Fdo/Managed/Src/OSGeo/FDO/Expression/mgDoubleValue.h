@@ -31,7 +31,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 public __gc __interface IExpressionProcessor;
 
 /// \brief
-/// The FdoDoubleValue class derives from FdoDataValue and represents a double-precision floating point number.
+/// The DoubleValue class derives from DataValue and represents a double-precision floating point number.
 public __gc class DoubleValue : public NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue
 {
 public:
@@ -44,29 +44,29 @@ public:
 	static System::Double op_Explicit( NAMESPACE_OSGEO_FDO_EXPRESSION::DoubleValue* value );
 
     /// \brief
-    /// Constructs a default instance of an FdoDoubleValue with a value of null.
+    /// Constructs a default instance of an DoubleValue with a value of null.
     /// 
     /// \return
-    /// Returns the created FdoDoubleValue
+    /// Returns the created DoubleValue
     /// 
 	DoubleValue();
 
     /// \brief
-    /// Constructs a default instance of an FdoDoubleValue using the specified arguments.
+    /// Constructs a default instance of an DoubleValue using the specified arguments.
     /// 
     /// \param value 
     /// Input a double
     /// 
     /// \return
-    /// Returns the created FdoDoubleValue
+    /// Returns the created DoubleValue
     /// 
 	DoubleValue(System::Double value);
 
     /// \brief
-    /// Gets the data type of the FdoDoubleValue.
+    /// Gets the data type of the DoubleValue.
     /// 
     /// \return
-    /// Returns an FdoDataType
+    /// Returns an DataType
     /// 
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::DataType get_DataType();
 
@@ -90,11 +90,11 @@ public:
 	__property System::Void set_Double(System::Double value);
 
     /// \brief
-    /// Overrides FdoExpression.Process to pass the FdoDoubleValue to the appropriate
+    /// Overrides Expression.Process to pass the DoubleValue to the appropriate
     /// expression processor operation.
     /// 
     /// \param processor 
-    /// Input an FdoIExpressionProcessor
+    /// Input an IExpressionProcessor
     /// 
     /// \return
     /// Returns nothing
@@ -109,6 +109,16 @@ public:
     /// 
 	System::String* ToString();
 
+    /// \brief
+    /// Constructs a DoubleValue object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	DoubleValue(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:

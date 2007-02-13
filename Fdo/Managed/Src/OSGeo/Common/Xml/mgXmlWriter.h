@@ -75,7 +75,7 @@ public:
     /// element written (via  WriteStartElement() ) becomes the root element. 
     /// The caller is responsible for ensuring that only one root element is written 
     /// (the XML standard disallows multiple root elements).
-    /// \param indent 
+    /// \param lineFormat 
     /// Input indentation string for XML elements. If NULL
     /// the XML document contains no line breaks and elements are not indented. 
     /// if L"" then the XML document has a line break after every end element
@@ -89,13 +89,51 @@ public:
     /// written, if the attribute would have caused the current line to exceed
     /// this length.
     /// 
-    /// \return
-    /// Returns XmlWriter
-    /// 
 	XmlWriter(System::String* fileName, System::Boolean defaultRoot, NAMESPACE_OSGEO_COMMON_XML::XmlWriter::LineFormat lineFormat, System::UInt32 lineLength);
-	XmlWriter(System::String* fileName, System::Boolean defaultRoot, NAMESPACE_OSGEO_COMMON_XML::XmlWriter::LineFormat lineFormat);
+
+    /// \brief
+    /// Constructs an XML writer on a file
+    /// 
+    /// \param fileName 
+    /// Input name of the file to write.
+    /// \param defaultRoot 
+    /// true: all elements written are wrapped in a default root element, named "DataStore".
+    /// false: the default root element is not written. In this case, the first 
+    /// element written (via  WriteStartElement() ) becomes the root element. 
+    /// The caller is responsible for ensuring that only one root element is written 
+    /// (the XML standard disallows multiple root elements).
+    /// \param lineFormat 
+    /// Input indentation string for XML elements. If NULL
+    /// the XML document contains no line breaks and elements are not indented. 
+    /// if L"" then the XML document has a line break after every end element
+    /// tag but no elements are indented. Otherwise, this string must only 
+    /// contain spaces or tabs; the XML document has a line break after every end element
+    /// and each element start is prepended with a repetition of this string.
+    /// The string is repeated according to the element's nesting level.
+    /// 
+    XmlWriter(System::String* fileName, System::Boolean defaultRoot, NAMESPACE_OSGEO_COMMON_XML::XmlWriter::LineFormat lineFormat);
+
+    /// \brief
+    /// Constructs an XML writer on a file
+    /// 
+    /// \param fileName 
+    /// Input name of the file to write.
+    /// \param defaultRoot 
+    /// true: all elements written are wrapped in a default root element, named "DataStore".
+    /// false: the default root element is not written. In this case, the first 
+    /// element written (via  WriteStartElement() ) becomes the root element. 
+    /// The caller is responsible for ensuring that only one root element is written 
+    /// (the XML standard disallows multiple root elements).
+    /// 
 	XmlWriter(System::String* fileName, System::Boolean defaultRoot);
-	XmlWriter(System::String* fileName);
+
+    /// \brief
+    /// Constructs an XML writer on a file
+    /// 
+    /// \param fileName 
+    /// Input name of the file to write.
+    /// 
+    XmlWriter(System::String* fileName);
 
     /// \brief
     /// Constructs an XML writer on a stream
@@ -108,7 +146,7 @@ public:
     /// element written (via  WriteStartElement() ) becomes the root element. 
     /// The caller is responsible for ensuring that only one root element is written 
     /// (the XML standard disallows multiple root elements).
-    /// \param indent 
+    /// \param lineFormat 
     /// Input indentation string for XML elements. If NULL
     /// the XML document contains no line breaks and elements are not indented. 
     /// if L"" then the XML document has a line break after every end element
@@ -122,18 +160,49 @@ public:
     /// written, if the attribute would have caused the current line to exceed
     /// this length.
     /// 
-    /// \return
-    /// Returns XmlWriter
-    /// 
 	XmlWriter(NAMESPACE_OSGEO_COMMON_IO::IoStream* stream, System::Boolean defaultRoot, NAMESPACE_OSGEO_COMMON_XML::XmlWriter::LineFormat lineFormat, System::UInt32 lineLength);
-	XmlWriter(NAMESPACE_OSGEO_COMMON_IO::IoStream* stream, System::Boolean defaultRoot, NAMESPACE_OSGEO_COMMON_XML::XmlWriter::LineFormat lineFormat);
-	XmlWriter(NAMESPACE_OSGEO_COMMON_IO::IoStream* stream, System::Boolean defaultRoot);
+
+    /// \brief
+    /// Constructs an XML writer on a stream
+    /// 
+    /// \param stream 
+    /// Input the stream to write.
+    /// \param defaultRoot 
+    /// true: all elements written are wrapped in a default root element, named "DataStore".
+    /// false: the default root element is not written. In this case, the first 
+    /// element written (via  WriteStartElement() ) becomes the root element. 
+    /// The caller is responsible for ensuring that only one root element is written 
+    /// (the XML standard disallows multiple root elements).
+    /// \param lineFormat 
+    /// 
+    XmlWriter(NAMESPACE_OSGEO_COMMON_IO::IoStream* stream, System::Boolean defaultRoot, NAMESPACE_OSGEO_COMMON_XML::XmlWriter::LineFormat lineFormat);
+
+    /// \brief
+    /// Constructs an XML writer on a stream
+    /// 
+    /// \param stream 
+    /// Input the stream to write.
+    /// \param defaultRoot 
+    /// true: all elements written are wrapped in a default root element, named "DataStore".
+    /// false: the default root element is not written. In this case, the first 
+    /// element written (via  WriteStartElement() ) becomes the root element. 
+    /// The caller is responsible for ensuring that only one root element is written 
+    /// (the XML standard disallows multiple root elements).
+    /// 
+    XmlWriter(NAMESPACE_OSGEO_COMMON_IO::IoStream* stream, System::Boolean defaultRoot);
+
+    /// \brief
+    /// Constructs an XML writer on a stream
+    /// 
+    /// \param stream 
+    /// Input the stream to write.
+    /// 
 	XmlWriter(NAMESPACE_OSGEO_COMMON_IO::IoStream* stream);
 
     /// \brief
     /// Constructs an XML writer on a text writer
     /// 
-    /// \param reader 
+    /// \param writer 
     /// Input the text writer.
     /// \param defaultRoot 
     /// true: all elements written are wrapped in a default root element, named "DataStore".
@@ -141,7 +210,7 @@ public:
     /// element written (via  WriteStartElement() ) becomes the root element. 
     /// The caller is responsible for ensuring that only one root element is written 
     /// (the XML standard disallows multiple root elements).
-    /// \param indent 
+    /// \param lineFormat 
     /// Input indentation string for XML elements. If NULL
     /// the XML document contains no line breaks and elements are not indented. 
     /// if L"" then the XML document has a line break after every end element
@@ -155,13 +224,51 @@ public:
     /// written, if the attribute would have caused the current line to exceed
     /// this length.
     /// 
-    /// \return
-    /// Returns XmlWriter
-    /// 
 	XmlWriter(NAMESPACE_OSGEO_COMMON_IO::IoTextWriter* writer, System::Boolean defaultRoot, NAMESPACE_OSGEO_COMMON_XML::XmlWriter::LineFormat lineFormat, System::UInt32 lineLength);
-	XmlWriter(NAMESPACE_OSGEO_COMMON_IO::IoTextWriter* writer, System::Boolean defaultRoot, NAMESPACE_OSGEO_COMMON_XML::XmlWriter::LineFormat lineFormat);
-	XmlWriter(NAMESPACE_OSGEO_COMMON_IO::IoTextWriter* writer, System::Boolean defaultRoot);
-	XmlWriter(NAMESPACE_OSGEO_COMMON_IO::IoTextWriter* writer);
+
+    /// \brief
+    /// Constructs an XML writer on a text writer
+    /// 
+    /// \param writer 
+    /// Input the text writer.
+    /// \param defaultRoot 
+    /// true: all elements written are wrapped in a default root element, named "DataStore".
+    /// false: the default root element is not written. In this case, the first 
+    /// element written (via  WriteStartElement() ) becomes the root element. 
+    /// The caller is responsible for ensuring that only one root element is written 
+    /// (the XML standard disallows multiple root elements).
+    /// \param lineFormat 
+    /// Input indentation string for XML elements. If NULL
+    /// the XML document contains no line breaks and elements are not indented. 
+    /// if L"" then the XML document has a line break after every end element
+    /// tag but no elements are indented. Otherwise, this string must only 
+    /// contain spaces or tabs; the XML document has a line break after every end element
+    /// and each element start is prepended with a repetition of this string.
+    /// The string is repeated according to the element's nesting level.
+    /// 
+    XmlWriter(NAMESPACE_OSGEO_COMMON_IO::IoTextWriter* writer, System::Boolean defaultRoot, NAMESPACE_OSGEO_COMMON_XML::XmlWriter::LineFormat lineFormat);
+
+    /// \brief
+    /// Constructs an XML writer on a text writer
+    /// 
+    /// \param writer 
+    /// Input the text writer.
+    /// \param defaultRoot 
+    /// true: all elements written are wrapped in a default root element, named "DataStore".
+    /// false: the default root element is not written. In this case, the first 
+    /// element written (via  WriteStartElement() ) becomes the root element. 
+    /// The caller is responsible for ensuring that only one root element is written 
+    /// (the XML standard disallows multiple root elements).
+    /// 
+    XmlWriter(NAMESPACE_OSGEO_COMMON_IO::IoTextWriter* writer, System::Boolean defaultRoot);
+
+    /// \brief
+    /// Constructs an XML writer on a text writer
+    /// 
+    /// \param writer 
+    /// Input the text writer.
+    /// 
+    XmlWriter(NAMESPACE_OSGEO_COMMON_IO::IoTextWriter* writer);
 
     /// \brief
     /// Gets the underlying text writer. If a text writer was passed to this object
@@ -223,13 +330,13 @@ public:
 
     /// \brief
     /// Writes the end tag for the current element to the document.
-    /// An FdoException is thrown if there is no element to end.
+    /// An Exception is thrown if there is no element to end.
     /// 
 	System::Void WriteEndElement();
 
     /// \brief
     /// Writes an attribute to the current element.
-    /// A FdoException is thrown if this function is called immediately after
+    /// An Exception is thrown if this function is called immediately after
     /// WriteEndElement().
     /// 
     /// \param attributeName 
@@ -243,7 +350,7 @@ public:
     /// \brief
     /// Writes simple (character) content for the current element. This function
     /// can be called multiple times for the same element. The characters are appended
-    /// to the element's content. A FdoException is thrown if there is no current 
+    /// to the element's content. An Exception is thrown if there is no current 
     /// element.
     /// 
     /// \param characters 
@@ -256,8 +363,11 @@ public:
     /// for ensuring that the text does not introduce any errors into the 
     /// XML document.
     /// 
-    /// \param characters 
+    /// \param bytes 
     /// Input characters to write.
+    /// 
+    /// \param count 
+    /// Input the number of bytes to write
     /// 
 	System::Void WriteBytes( System::Byte bytes [],  System::UInt32 count );
 
@@ -285,9 +395,40 @@ public:
     /// 
     System::Boolean IsValidName(System::String* name);
 
+    /// \brief
+    /// Given an element's or attribute's globally unique name ( uri and local name ),
+    /// this function returns its fully qualified name as per the
+    /// XML document being written, or the unqualified name if the uri is 
+    /// the default namespace. This is done by searching for the current 
+    /// namespace declaration that references the uri. 
+    /// 
+    /// \remarks
+    /// If a matching default namespace declaration ( "xmlns=<uri>" ) was
+    /// found and the name is for an element then the localName is returned.
+    /// \note
+	/// According to the XML 1.0 specification, default namespaces do 
+    /// not apply to attribute names, so the default namespace is ignored when the 
+    /// given name is not for an element.
+    /// \n
+    /// Otherwise, if a matching namespace declaration was found then 
+    /// "[namespace]:[localName]" is returned.
+    /// \n
+    /// Otherwise, L"" is returned (unable to determine qualified name).
+    /// 
+    /// \param location 
+    /// Input the URI corresponding to an element.
+    /// \param localName 
+    /// Input the local name corresponding to an element.
+    /// \param isElement 
+    /// Input a boolean flag indicating that the URI corresponds to an element.
+    /// 
+    /// \return
+    /// Returns the fully qualified name corresponding to the uri.
+    /// 
 	System::String* UriToQName( System::String* location, System::String* localName, System::Boolean isElement);
 	System::String* UriToQName( System::String* location, System::String* localName);
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
 
@@ -295,6 +436,7 @@ public private:
     XmlWriter(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoXmlWriter* GetImpObj();
+/// \endcond
 };
 END_NAMESPACE_OSGEO_COMMON_XML
 

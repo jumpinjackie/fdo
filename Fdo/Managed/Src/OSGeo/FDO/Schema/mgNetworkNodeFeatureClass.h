@@ -27,21 +27,21 @@ BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 public __gc class AssociationPropertyDefinition;
 
 /// \brief
-/// FdoNetworkNodeFeature derives from FdoNetworkFeature and can be used to represent a 
+/// NetworkNodeFeature derives from NetworkFeature and can be used to represent a 
 /// logical node feature.
 /// <p><b>Note:</b> <span class="red_text">This Help topic is provided for informational use only. There is
-/// no interface or support provided. Autodesk reserves the right to change
+/// no interface or support provided. OSGeo reserves the right to change
 /// the software related to the content herein.</span>
 public __gc class NetworkNodeFeatureClass : public NAMESPACE_OSGEO_FDO_SCHEMA::NetworkFeatureClass
 {
 public:
     /// \brief
-    /// Constructs a default instance of an FdoNetworkNodeFeatureClass.
+    /// Constructs a default instance of an NetworkNodeFeatureClass.
     /// 
 	NetworkNodeFeatureClass();
 
     /// \brief
-    /// Constructs an instance of an FdoNetworkNodeFeatureClass using the specified arguments.
+    /// Constructs an instance of an NetworkNodeFeatureClass using the specified arguments.
     /// 
     /// \param name 
     /// Input name
@@ -68,7 +68,7 @@ public:
 
     /// \brief
     /// Sets a reference to the layer property. The associated class of the layer
-    /// association property must be an FdoNetworkLayer.
+    /// association property must be an NetworkLayer.
     /// 
     /// \param value 
     /// Input an association property definition
@@ -78,6 +78,16 @@ public:
     /// 
 	__property System::Void set_LayerProperty(NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition* value);
 
+    /// \brief
+    /// Constructs a NetworkNodeFeatureClass object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	NetworkNodeFeatureClass(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_SCHEMA::NetworkFeatureClass(unmanaged, autoDelete)
 	{
 

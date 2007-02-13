@@ -31,13 +31,16 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 public __gc __interface IExpressionProcessor;
 
 /// \brief
-/// The FdoLOBValue class derives from FdoDataValue and represents a literal
+/// The LOBValue class derives from DataValue and represents a literal
 /// BLOB value.
 public __gc class LOBValue : public NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue
 {
 public:
     /// \brief
-    /// A cast operator to get the BLOB value.
+    /// Transforms the FDO LOB value into a byte array.
+    /// 
+    /// \param value 
+    /// Input an FDO LOBValue object
     /// 
     /// \return
     /// Returns a byte array
@@ -45,15 +48,15 @@ public:
 	static System::Byte op_Explicit( NAMESPACE_OSGEO_FDO_EXPRESSION::LOBValue* value ) [];
 
     /// \brief
-    /// Gets the data type of the FdoLOBValue.
+    /// Gets the data type of the LOBValue.
     /// 
     /// \return
-    /// Returns an FdoDataType
+    /// Returns an DataType
     /// 
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::DataType get_DataType();
 
     /// \brief
-    /// Gets the LOB value.
+    /// Gets the LOB data.
     /// 
     /// \return
     /// Returns a byte array
@@ -61,7 +64,7 @@ public:
 	__property System::Byte get_Data() [];
 
     /// \brief
-    /// Sets the LOB value.
+    /// Sets the LOB data.
     /// 
     /// \param value 
     /// Input an array of bytes
@@ -72,7 +75,7 @@ public:
 	__property System::Void set_Data(System::Byte value []);
 
     /// \brief
-    /// Sets the FdoLOBValue to a null value.
+    /// Sets the LOBValue to a null value.
     /// 
     /// \return
     /// Returns nothing
@@ -80,11 +83,11 @@ public:
 	System::Void SetNull();
 
     /// \brief
-    /// Overrides FdoExpression.Process to pass the FdoLOBValue to the appropriate
+    /// Overrides Expression.Process to pass the LOBValue to the appropriate
     /// expression processor operation.
     /// 
     /// \param processor 
-    /// Input the FdoIExpressionProcessor
+    /// Input the IExpressionProcessor
     /// 
     /// \return
     /// Returns nothing
@@ -99,6 +102,16 @@ public:
     /// 
 	System::String* ToString(); 
 
+    /// \brief
+    /// Constructs a LOBValue object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	LOBValue(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:

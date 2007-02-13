@@ -35,16 +35,18 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 public __gc __interface IDataReader;
 
 /// \brief
-/// The FdoISelectAggregate interface defines a Select command that handle selection of properties that include 
-/// the use of aggregate functions. This command differs from the FdoISelect command in a number of ways. 
+/// The ISelectAggregateImp class is a cocrete implementation of interface ISelectAggregates.
+/// The ISelectAggregate interface defines a Select command that handle selection of properties that include 
+/// the use of aggregate functions. This command differs from the ISelect command in a number of ways. 
 /// It handles selection of properties that are aggregate functions and supports selecting distinct property values. 
 /// It also includes grouping criteria. The execute method returns an IDataReader which is not tied to a specific class. 
-/// Unlike Select, FdoISelectAggregate does not include any locking functions.
-private __gc class ISelectAggregatesImp : public NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IBaseSelectImp, public NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectAggregates
+/// Unlike Select, ISelectAggregate does not include any locking functions.
+private __gc class ISelectAggregatesImp : public NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IBaseSelectImp, 
+                                          public NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectAggregates
 {
 public:
     /// \brief
-    /// Executes the select command and returns a reference to an FdoIDataReader.
+    /// Executes the select command and returns a reference to an IDataReader.
     /// 
     /// \return
     /// Returns the data reader.
@@ -73,7 +75,7 @@ public:
 	__property System::Boolean get_Distinct();
 
     /// \brief
-    /// Gets the FdoIdentifierCollection that holds the list of group by property names. If empty no grouping is used. This list is initially
+    /// Gets the IdentifierCollection that holds the list of group by property names. If empty no grouping is used. This list is initially
     /// empty and the caller need to add the property that the command should use as a group by criteria. No LOB or Geometry type properties
     /// can be used for ordering.
     /// 
@@ -84,7 +86,7 @@ public:
 
     /// \brief
     /// Set the grouping by filter. Use the grouping filter to restrict the groups of returned properties to those groups for 
-    /// which the specified filter is TRUE. For example "order by city" and  "min(lanes) = 2". The FdoFilter have to evalute to a 
+    /// which the specified filter is TRUE. For example "order by city" and  "min(lanes) = 2". The Filter have to evalute to a 
     /// binary value(true or false).
     /// 
     /// \param filter 

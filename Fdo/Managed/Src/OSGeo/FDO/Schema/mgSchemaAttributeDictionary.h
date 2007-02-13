@@ -23,7 +23,7 @@ class FdoSchemaAttributeDictionary;
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 
 /// \brief
-/// The FdoSchemaAttributeDictionary class maintains a dictionary of named 
+/// The SchemaAttributeDictionary class maintains a dictionary of named 
 /// attributes that provide a generic extensibility mechanism for objects
 /// in the feature schema. This mechanism can be used to dynamically extend 
 /// schema elements in either an application- or provider-specific manner.
@@ -40,9 +40,6 @@ public:
 
     /// \brief
     /// Gets an array containing all of the attribute names in the dictionary.
-    /// 
-    /// \param length 
-    /// Output number of attribute names
     /// 
     /// \return
     /// Returns an array containing all of the attribute names in the dictionary
@@ -116,13 +113,25 @@ public:
     /// 
 	System::Void Clear();
 
+    /// \brief
+    /// Constructs a SchemaAttributeDictionary object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	SchemaAttributeDictionary(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler(unmanaged, autoDelete)
 	{
 		
 	}
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 
 public private:
 	inline FdoSchemaAttributeDictionary* GetImpObj();

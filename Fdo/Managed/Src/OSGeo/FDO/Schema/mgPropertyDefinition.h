@@ -26,9 +26,9 @@ class FdoPropertyDefinition;
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 
 /// \brief
-/// FdoPropertyDefinition is an abstract class that derives from FdoSchemaElement.
-/// FdoPropertyDefinition is the base class of FdoDataPropertyDefinition, 
-/// FdoGeometricPropertyDefinition, and FdoObjectPropertyDefinition.
+/// PropertyDefinition is an abstract class that derives from SchemaElement.
+/// PropertyDefinition is the base class of DataPropertyDefinition, 
+/// GeometricPropertyDefinition, and ObjectPropertyDefinition.
 public __gc class PropertyDefinition : public NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement
 {
 public:
@@ -67,6 +67,16 @@ public:
     /// 
 	__property System::Void set_IsSystem(System::Boolean value);
 
+    /// \brief
+    /// Constructs a PropertyDefinition object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	PropertyDefinition(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement(unmanaged, autoDelete)
 	{
 		

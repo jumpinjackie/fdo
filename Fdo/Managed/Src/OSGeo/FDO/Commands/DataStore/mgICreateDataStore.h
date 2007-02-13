@@ -24,24 +24,24 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE
 public __gc __interface IDataStorePropertyDictionary;
 
 /// \brief
-/// The FdoICreateDataStore interface defines the create datastore command,
+/// The ICreateDataStore interface defines the create datastore command,
 /// which can be used to create new provider specific datastores. The input is provided
 /// through a dictionary of name value pairs that is provider dependant. 
 public __gc __interface ICreateDataStore : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
 {
 public:
     /// \brief
-    /// Gets the FdoIDataStorePropertyDictionary interface that	
-    /// can be used to dynamically query	and	set	the	properties required	
+    /// Gets the IDataStorePropertyDictionary interface that	
+    /// can be used to dynamically query and set the properties required	
     /// to create a new datastore.
     /// 
     /// \return
-    /// Returns the property dictionary
+    /// Returns the DataStore property dictionary
     /// 
     __property NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStorePropertyDictionary* get_DataStoreProperties();
 
     /// \brief
-    /// Executes the FdoICreateDataStore command.
+    /// Executes the ICreateDataStore command.
     /// 
     /// \return
     /// Returns nothing

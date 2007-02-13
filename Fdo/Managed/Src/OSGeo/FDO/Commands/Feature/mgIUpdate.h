@@ -31,7 +31,7 @@ END_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 
 /// \brief
-/// The FdoIUpdate interface defines the Update command, which modifies instances
+/// The IUpdate interface defines the Update command, which modifies instances
 /// of a given class that match the specified criteria. Input to the update
 /// command includes the name of the class, the list of property name/value
 /// pairs to be updated, and the filter criteria by which to identify the
@@ -46,7 +46,7 @@ public __gc __interface IUpdate : public NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureC
 {
 public:
     /// \brief
-    /// Gets the FdoPropertyValueCollection that specifies the names and values of the 
+    /// Gets the PropertyValueCollection that specifies the names and values of the 
     /// properties to be updated.
     /// 
     /// \return
@@ -64,11 +64,11 @@ public:
 	System::Int32 Execute();
 
     /// \brief
-    ///  Updating objects might result in lock conflicts if objects
+    /// Updating objects might result in lock conflicts if objects
     /// to be updated are not exclusively locked for the user attempting to
     /// update the object. If objects to be updated are not exclusively locked for the 
     /// user attempting to update the object, a lock conflict report is generated.
-    /// The function GetLockConflicts returns a lock conflict reader providing
+    /// This function returns a lock conflict reader providing
     /// access to the list of lock conflicts that occurred during the execution
     /// of the update operation.
     /// 

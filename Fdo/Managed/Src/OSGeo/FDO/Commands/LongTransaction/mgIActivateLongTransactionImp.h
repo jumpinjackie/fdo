@@ -26,13 +26,15 @@ class FdoIActivateLongTransaction;
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
 /// \brief
-/// The FdoIActivateLongTransaction interface defines the ActivateLongTransaction
+/// The IActivateLongTransactionImp class is a concrete implementation of IActivateLongTransaction.
+/// The IActivateLongTransaction interface defines the ActivateLongTransaction
 /// command, which activates a long transaction where feature manipulation and
 /// locking commands operate on it. Input to the activate
 /// long transaction command is the long transaction name. The Execute operation
 /// activates the identified long transaction if the user has access privileges
 /// for it.
-private __gc class IActivateLongTransactionImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, public NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IActivateLongTransaction
+private __gc class IActivateLongTransactionImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 
+                                                 public NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IActivateLongTransaction
 {
 public:
     /// \brief

@@ -94,9 +94,6 @@ public:
     /// \brief
     ///  Gets an array of ArgumentDefinition objects required for the function.
     /// 
-    /// \param length 
-    /// Output the number of argument definitions.
-    /// 
     /// \return
     /// Returns the list of argument definitions
     /// 
@@ -123,7 +120,7 @@ public:
     /// defined so that this class can be a NamedCollection element.
     /// 
     /// \return
-    /// Returns false
+    /// Returns true if the name of the object can be changed.
     /// 
 	__property System::Boolean get_CanSetName();
 
@@ -138,8 +135,10 @@ public:
 	/// Returns true if the function is an aggregate function and false if it is a simple function.
     __property System::Boolean get_IsAggregate();
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 
 public private:
 	FunctionDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);

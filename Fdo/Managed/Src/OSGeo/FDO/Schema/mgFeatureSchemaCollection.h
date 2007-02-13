@@ -40,13 +40,32 @@ public __gc class FeatureSchema;
 public __gc class SchemaElement;
 
 /// \brief
-/// The FdoFeatureSchemaCollection class represents a collection of FdoFeatureSchema objects.
+/// The FeatureSchemaCollection class represents a collection of FeatureSchema objects.
 [System::Reflection::DefaultMemberAttribute("RealTypeItem")]
 public __sealed __gc class FeatureSchemaCollection : public NAMESPACE_OSGEO_RUNTIME::Disposable, public System::Collections::IList, public NAMESPACE_OSGEO_FDO_XML::IXmlDeserializable, public NAMESPACE_OSGEO_FDO_XML::IXmlSerializable
 {
+/// \cond DOXYGEN-IGNORE
 private:
     /// \brief
-    /// 		Nested class defined to provide Enumerator.
+    /// A Nested class defined to provide enumeration of Dictionary elements
+    ///
+    /// Enumerators can be used to read the data in the collection, 
+    /// but they cannot be used to modify the underlying collection.
+    ///
+    /// An enumerator remains valid as long as the collection remains unchanged. 
+    /// If changes are made to the collection, such as adding, modifying, or deleting 
+    /// elements, the enumerator is irrecoverably invalidated and the next call to 
+    /// MoveNext or Reset throws an InvalidOperationException. If the collection is 
+    /// modified between MoveNext and Current, Current returns the element that it is 
+    /// set to, even if the enumerator is already invalidated.
+    ///
+    /// The enumerator does not have exclusive access to the collection; therefore, 
+    /// enumerating through a collection is intrinsically not a thread-safe procedure. 
+    /// Even when a collection is synchronized, other threads can still modify the 
+    /// collection, which causes the enumerator to throw an exception. To guarantee 
+    /// thread safety during enumeration, you can either lock the collection during 
+    /// the entire enumeration or catch the exceptions resulting from changes made 
+    /// by other threads.
     /// 
 	__gc class Enumerator : public System::Collections::IEnumerator
 	{
@@ -55,15 +74,47 @@ private:
 		System::Int32 m_nIdx;
 
 	public:
+        /// \brief
+        /// Constructs a new Collection Enumerator
+        /// 
+        /// \param col 
+        /// Input The collection to enumerate.
+        /// 
 		Enumerator(FeatureSchemaCollection* elements) : m_pCol(elements), m_nIdx(-1) 
 		{
 
 		}
 
-		__property System::Object* get_Current();
+        /// \brief
+        /// Retrieves the current object at the enumerator location
+        /// 
+        /// \return
+        /// Retuns the current object referenced by the enumerator
+        /// 
+		__property System::Object *get_Current();
 
+        /// \brief
+        /// Initially, the enumerator is positioned before the first object in the collection. 
+        /// At this position, calling the Current property throws an exception. 
+        /// Therefore, you must call the MoveNext method to advance the enumerator 
+        /// to the first element of the collection before reading the value of Current.
+        /// If MoveNext passes the end of the collection, the enumerator is positioned 
+        /// after the last element in the collection and MoveNext returns false. 
+        /// When the enumerator is at this position, subsequent calls to MoveNext also return false. 
+        /// If the last call to MoveNext returned false, calling Current throws an exception. 
+        /// To set Current to the first element of the collection again, you can call Reset 
+        /// followed by MoveNext.
+        /// 
+        /// \return
+        /// Retuns true if the Enumerator is able to move to a valid element
+        /// otherwise false.
+        /// 
 		System::Boolean MoveNext();
 
+        /// \brief
+        /// Initially, the enumerator is positioned before the first element in the collection. 
+        /// The Reset method brings the enumerator back to this position. 
+        /// 
 		System::Void Reset();
 	};
 
@@ -71,55 +122,71 @@ public private:
 	inline FdoFeatureSchemaCollection* GetImpObj();
 
 private:
-    // System::Collections::ICollection interfaces
-	System::Void System::Collections::ICollection::CopyTo(System::Array* array,System::Int32 index);
+    // System::Collections::ICollection interface properties
+    __property System::Object* System::Collections::ICollection::get_SyncRoot();
+    __property System::Boolean System::Collections::ICollection::get_IsSynchronized();
 
-	__property System::Object* System::Collections::ICollection::get_SyncRoot();
+    // System::Collections::ICollection interface methods
+    System::Void System::Collections::ICollection::CopyTo(System::Array* array,System::Int32 index);
 
-	__property System::Boolean System::Collections::ICollection::get_IsSynchronized();
+    // System::Collections::IList interface properties
+    __property System::Boolean System::Collections::IList::get_IsFixedSize();
+    __property System::Boolean System::Collections::IList::get_IsReadOnly();
+    __property Object* System::Collections::IList::get_Item(System::Int32 index);
+    __property System::Void  System::Collections::IList::set_Item(System::Int32 index, Object* value);
 
-    // System::Collections::IList interfaces
-	__property System::Boolean System::Collections::IList::get_IsFixedSize();
-
-	__property System::Boolean System::Collections::IList::get_IsReadOnly();
-
-	System::Int32 System::Collections::IList::Add(Object* value);
-
-	System::Boolean System::Collections::IList::Contains(Object* value);
-
-	System::Int32 System::Collections::IList::IndexOf(Object* value);
-
-	System::Void System::Collections::IList::Insert(System::Int32 index, Object* value);
-
-	System::Void System::Collections::IList::Remove(Object* value);
-
-	__property Object* System::Collections::IList::get_Item(System::Int32 index);
-
-	__property System::Void  System::Collections::IList::set_Item(System::Int32 index, Object* value);
+    // System::Collections::IList interface methods
+    System::Int32 System::Collections::IList::Add(Object* value);
+    System::Boolean System::Collections::IList::Contains(Object* value);
+    System::Int32 System::Collections::IList::IndexOf(Object* value);
+    System::Void System::Collections::IList::Insert(System::Int32 index, Object* value);
+    System::Void System::Collections::IList::Remove(Object* value);
 
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 
 public:
+    /// \brief
+    /// Constructs a FeatureSchemaCollection object
+    /// 
+    /// \param parent 
+    /// Input A Pointer to the parent schema object of the collection
+    /// 
 	FeatureSchemaCollection(NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement* parent);
 
+    /// \brief
+    /// Constructs a FeatureSchemaCollection object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	FeatureSchemaCollection(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_RUNTIME::Disposable(unmanaged, autoDelete)
 	{
-
 	}
 
     /// \brief
-    ///    Gets the count of items in collection.
+    /// Gets the count of items in collection.
+    /// 
+    /// \return
+    /// Returns the number of items in the collection.
     /// 
 	__property System::Int32 get_Count(System::Void);
 
     /// \brief
-    ///    Gets an enumerator that can iterate through a collection.
+    /// Gets an enumerator that can iterate through a collection.
+    /// 
+    /// \return
+    /// Returns an enumerator on the dictionary.
     /// 
 	__sealed System::Collections::IEnumerator* GetEnumerator(System::Void);
 
     /// \brief
-    ///     Removes the index-th FeatureSchema from this collection.
+    /// Removes the index-th FeatureSchema from this collection.
     /// 
     /// \param index 
     /// Input index of the element to remove.
@@ -127,36 +194,45 @@ public:
 	System::Void RemoveAt(System::Int32 index);
 
     /// \brief
-    ///     Removes all elements from the collection.
+    /// Removes all elements from the collection.
     /// 
 	System::Void  Clear();
 
     /// \brief
-    ///     Adds a FeatureSchema object into the collection.
+    /// Adds a FeatureSchema object into the collection.
     /// 
     /// \param value 
     /// Input the FeatureSchema object to add.
     /// 
     /// \return
-    /// 		Returns the position into which the new element was inserted.
+    /// Returns the position into which the new element was inserted.
     /// 
 	System::Int32 Add(FeatureSchema* value);
 
     /// \brief
-    ///     Determines the index of a specific FeatureSchema object.
+    /// Determines the index of a specific FeatureSchema object.
     /// 
     /// \param value 
     /// Input the FeatureSchema object to locate in the collection.
     /// 
     /// \return
-    /// 		The index of value if found in the collection; otherwise, -1.
+    /// The index of value if found in the collection; otherwise, -1.
     /// 
 	System::Int32 IndexOf(FeatureSchema* value);
 
+    /// \brief
+    /// Determines the index of a specific FeatureSchema object.
+    /// 
+    /// \param name 
+    /// Input the name of the FeatureSchema object to locate in the collection.
+    /// 
+    /// \return
+    /// The index of value if found in the collection; otherwise, -1.
+    /// 
 	System::Int32 IndexOf(String* name);
 
     /// \brief
-    ///     Inserts a FeatureSchema object into the collection at the specified position.
+    /// Inserts a FeatureSchema object into the collection at the specified position.
     /// 
     /// \param index 
     /// Input the zero-based index at which value should be inserted.
@@ -166,7 +242,7 @@ public:
 	System::Void Insert(System::Int32 index, FeatureSchema* value);
 
     /// \brief
-    ///     Removes the first occurrence of a specific FeatureSchema object.
+    /// Removes the first occurrence of a specific FeatureSchema object.
     /// 
     /// \param value 
     /// Input the FeatureSchema object to remove from the collection.
@@ -174,42 +250,91 @@ public:
 	System::Void Remove(FeatureSchema* value);
 
     /// \brief
-    ///     Determines whether the collection contains a specific FeatureSchema object.
+    /// Determines whether the collection contains a specific FeatureSchema object.
     /// 
     /// \param value 
     /// Input The FeatureSchema object to search in the collection.
     /// 
     /// \return
-    /// 		Returns true if the value is found in the collection; otherwise, false.
+    /// Returns true if the value is found in the collection; otherwise, false.
     /// 
 	System::Boolean Contains(FeatureSchema* value);
 
+    /// \brief
+    /// Determines whether the collection contains a specific FeatureSchema object.
+    /// 
+    /// \param name 
+    /// Input The name of the FeatureSchema object to search in the collection.
+    /// 
+    /// \return
+    /// Returns true if the value is found in the collection; otherwise, false.
+    /// 
 	System::Boolean Contains(String* name);
 
     /// \brief
-    ///     Copies the elements of the collection to an array.
+    /// Copies the elements of the collection to an array.
     /// 
     /// \param array 
     /// Output the one-dimensional Array that is the destination of the elements copied from this collection.
     /// \param startAt 
     /// Input an integer that represents the index in array at which copying begins.
     /// 
-	System::Void CopyTo(FeatureSchema* array[],System::Int32 size);
+	System::Void CopyTo(FeatureSchema* array[],System::Int32 startAt);
 
     /// \brief
-    ///     Gets or sets a FeatureSchema in the collection.
+    /// Gets the item in the collection at the specified index. 
     /// 
     /// \param index 
-    /// Input index of the FeatureSchema to retrieve or set (System::Int32).
+    /// The index of the item in the collection. The index is 0 based.
+    /// 
+    /// \return
+    /// Returns an instance of a the collected item.
+    /// Throws an instance of Exception if the index is out of range or an error occurs.
     /// 
 	__property FeatureSchema* get_RealTypeItem(System::Int32 index);
 
+    /// \brief
+    /// Gets the item in the collection by name. 
+    /// 
+    /// \param index 
+    /// The name of the item in the collection.
+    /// 
+    /// \return
+    /// Returns an instance of a the collected item.
+    /// 
 	__property FeatureSchema* get_RealTypeItem(System::String* index);
 
+    /// \brief
+    /// Sets the value of the item at the specified index
+    /// 
+    /// \param index 
+    /// Input index of the item to set.
+    /// 
+    /// \param value 
+    /// Input the value of the item
+    /// 
 	__property System::Void  set_RealTypeItem(System::Int32 index, FeatureSchema* value);
 
+    /// \brief
+    /// Gets an item in the collection.
+    /// 
+    /// \param index 
+    /// Input index of the item to retrieve.
+    /// 
+    /// \return
+    /// Returns the item at the specified index
+    /// 
 	__property FeatureSchema* get_Item(System::Int32 index);
 
+    /// \brief
+    /// Sets the value of the item at the specified index
+    /// 
+    /// \param index 
+    /// Input index of the item to set.
+    /// 
+    /// \param value 
+    /// Input the value of the item
+    /// 
 	__property System::Void  set_Item(System::Int32 index, FeatureSchema* value);
 
 	/*
@@ -253,10 +378,10 @@ public:
     /// that describes the mappings between the elements in the GML Schema that were read
     /// and the FDO Feature Schema Elements that were created. This function returns the 
     /// Schema Mapping Collection generated by the last call to ReadXml(). The collection
-    /// contains one FdoXmlSchemaMapping per schema that was read.
+    /// contains one XmlSchemaMapping per schema that was read.
     /// 
     /// \return
-    /// Returns FdoPhysicalSchemaMappingCollection*. Returns NULL if ReadXml() has not been
+    /// Returns PhysicalSchemaMappingCollection*. Returns NULL if ReadXml() has not been
     /// called on this object.
     /// 
 	__property NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMappingCollection* get_XmlSchemaMappings();
@@ -264,8 +389,9 @@ public:
 	/*
 		IXmlSaxHandler Implemenations
 	*/
+
     /// \brief
-    /// Default Sax callback that is called when the FdoXmlReader 
+    /// Default Sax callback that is called when the XmlReader 
     /// starts reading an XML document. Does nothing.
     /// 
     /// \param context 
@@ -278,7 +404,7 @@ public:
 	NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler* XmlStartDocument(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* context);
 
     /// \brief
-    /// Default Sax callback that is called when the FdoXmlReader 
+    /// Default Sax callback that is called when the XmlReader 
     /// finishes reading an XML document. Does nothing
     /// 
     /// \param context 
@@ -287,7 +413,7 @@ public:
 	System::Void XmlEndDocument(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* context);
 
     /// \brief
-    /// Default Sax callback that is called when the FdoXmlReader 
+    /// Default Sax callback that is called when the XmlReader 
     /// reads the start tag for an XML element in the document. Does nothing.
     /// 
     /// \param context 
@@ -308,7 +434,7 @@ public:
 	NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler* XmlStartElement(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* context, String* resourceLocation, String* name, String* qualifiedName, NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection* attributes);
 
     /// \brief
-    /// Default Sax callback that is called when the FdoXmlReader 
+    /// Default Sax callback that is called when the XmlReader 
     /// reads the end tag for an XML element in the document. Does nothing.
     /// 
     /// \param context 
@@ -323,12 +449,12 @@ public:
     /// \return
     /// Returning true causes the current parse to stop. Returning false
     /// cause the parse to continue. Return value is ignored if the current parse
-    /// is not an incremental parse ( see FdoXmlReader::Parse())
+    /// is not an incremental parse ( see XmlReader::Parse())
     /// 
 	System::Boolean XmlEndElement(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* context, System::String* resourceLocation, System::String* name, System::String* qualifiedName);
 
     /// \brief
-    /// Default Sax callback that is called when the FdoXmlReader 
+    /// Default Sax callback that is called when the XmlReader 
     /// reads a chunk of simple content for the current element. Does nothing by default.
     /// This function may be called multiple times for the same element, if the 
     /// the content is long. Applications must not make any assumptions about the
@@ -344,6 +470,15 @@ public:
 	/*
 		IXmlDeserializable Implemenations
 	*/
+
+    /// \brief
+    /// Reads from an XML document in a file.
+    /// 
+    /// \param fileName 
+    /// Input the file name. Must consist of an XML document.
+    /// 
+	System::Void ReadXml(System::String* fileName);
+
     /// \brief
     /// Reads from an XML document in a file.
     /// 
@@ -353,55 +488,73 @@ public:
     /// Input controls the reading of the elements from the document.
     /// If NULL then the default flags are used (see NAMESPACE_OSGEO_FDO_XML::XmlFlags::Create())
     /// 
-	System::Void ReadXml(System::String* fileName);
-
 	System::Void ReadXml(System::String* fileName, NAMESPACE_OSGEO_FDO_XML::XmlFlags* flags);
 
     /// \brief
     /// Reads an XML document from an XML reader.
     /// 
-    /// \param reader 
+    /// \param xmlReader 
+    /// Input the XML reader.
+    /// 
+	System::Void ReadXml(NAMESPACE_OSGEO_COMMON_XML::XmlReader* xmlReader);
+
+    /// \brief
+    /// Reads an XML document from an XML reader.
+    /// 
+    /// \param xmlReader 
     /// Input the XML reader.
     /// \param flags 
     /// Input controls the reading of the elements from the document. 
     /// If NULL then the default flags are used (see NAMESPACE_OSGEO_FDO_XML::XmlFlags::Create())
     /// 
-	System::Void ReadXml(NAMESPACE_OSGEO_COMMON_XML::XmlReader* xmlReader);
-
 	System::Void ReadXml(NAMESPACE_OSGEO_COMMON_XML::XmlReader* xmlReader, NAMESPACE_OSGEO_FDO_XML::XmlFlags* flags);
 
     /// \brief
     /// Reads an XML document from a text reader.
     /// 
-    /// \param reader 
+    /// \param textReader 
+    /// Input the text reader. Must be positioned at the
+    /// start of an XML document.
+    /// 
+	System::Void ReadXml(NAMESPACE_OSGEO_COMMON_IO::IoTextReader* textReader);
+
+    /// \brief
+    /// Reads an XML document from a text reader.
+    /// 
+    /// \param textReader 
     /// Input the text reader. Must be positioned at the
     /// start of an XML document.
     /// \param flags 
     /// Input controls the reading of the elements from the document. 
     /// If NULL then the default flags are used (see NAMESPACE_OSGEO_FDO_XML::XmlFlags::Create())
     /// 
-	System::Void ReadXml(NAMESPACE_OSGEO_COMMON_IO::IoTextReader* textReader);
-
 	System::Void ReadXml(NAMESPACE_OSGEO_COMMON_IO::IoTextReader* textReader, NAMESPACE_OSGEO_FDO_XML::XmlFlags* flags);
 
     /// \brief
     /// Reads an XML document from a stream.
     /// 
-    /// \param reader 
+    /// \param stream 
+    /// Input the stream. Must be positioned at the
+    /// start of an XML document.
+    /// 
+	System::Void ReadXml(NAMESPACE_OSGEO_COMMON_IO::IoStream* stream);
+
+    /// \brief
+    /// Reads an XML document from a stream.
+    /// 
+    /// \param stream 
     /// Input the stream. Must be positioned at the
     /// start of an XML document.
     /// \param flags 
     /// Input controls the reading of the elements from the document. 
     /// If NULL then the default flags are used (see NAMESPACE_OSGEO_FDO_XML::XmlFlags::Create())
     /// 
-	System::Void ReadXml(NAMESPACE_OSGEO_COMMON_IO::IoStream* stream);
-
 	System::Void ReadXml(NAMESPACE_OSGEO_COMMON_IO::IoStream* stream, NAMESPACE_OSGEO_FDO_XML::XmlFlags* flags);
 
     /// \brief
     /// Gets the XML Flags that were passed to the ReadXml() 
     /// function that is currently being executed. This function would 
-    /// typically be called by the FdoXmlSaxHandler callbacks.
+    /// typically be called by the XmlSaxHandler callbacks.
     /// 
     /// \return
     /// Returns the XML Flags
@@ -410,7 +563,7 @@ public:
 
     /// \brief
     /// Gets the current XML Reader. This function would 
-    /// typically be called by the FdoXmlSaxHandler callbacks when 
+    /// typically be called by the XmlSaxHandler callbacks when 
     /// ReadXml() is being invoked. When ReadXml() reads from a file, stream,
     /// or text reader, a wrapping XML reader is automatically created.
     /// 
@@ -421,7 +574,7 @@ public:
 
     /// \brief
     /// Gets the stylesheet for converting the XML document from 
-    /// external to internal format. When classes derived from FdoXmlDeserializable
+    /// external to internal format. When classes derived from XmlDeserializable
     /// define an internal format, they must override this function to return a
     /// stylesheet that does the conversion.
     /// 
@@ -432,8 +585,8 @@ public:
     // NAMESPACE_OSGEO_COMMON_XML::XmlReader* GetFromExternalStylesheet();
 
     /// \brief
-    /// Gets the SAX context to pass to the FdoXmlSaxHandler callbacks.
-    /// Classes derived from FdoXmlDeserializable can override this function to 
+    /// Gets the SAX context to pass to the XmlSaxHandler callbacks.
+    /// Classes derived from XmlDeserializable can override this function to 
     /// specify a SAX context with class-specific information.
     /// 
     /// \return
@@ -445,6 +598,16 @@ public:
 	/*
 		IXmlSerializable Implemenations
 	*/
+
+    /// \brief
+    /// Writes this object to a file. A complete XML document,
+    /// containing this object, is written.
+    /// 
+    /// \param fileName 
+    /// Input the file name.
+    /// 
+	System::Void WriteXml(String* fileName);
+
     /// \brief
     /// Writes this object to a file. A complete XML document,
     /// containing this object, is written.
@@ -453,11 +616,20 @@ public:
     /// Input the file name.
     /// \param flags 
     /// Input controls the writing of the elements to the document.
-    /// If NULL then the default flags are used (see FdoXmlFlags::Create())
+    /// If NULL then the default flags are used (see XmlFlags::Create())
     /// 
-	System::Void WriteXml(String* fileName);
-
 	System::Void WriteXml(String* fileName, NAMESPACE_OSGEO_FDO_XML::XmlFlags* flags);
+
+    /// \brief
+    /// Writes to an XML writer. This object is appended to the XML document
+    /// being written. Unlike the other WriteXml() functions it is not necessarily 
+    /// the only object in its document.
+    /// 
+    /// \param xmlWriter 
+    /// Input the XML writer. When this function completes, the
+    /// XML writer's current position will be just after this object.
+    /// 
+	System::Void WriteXml(NAMESPACE_OSGEO_COMMON_XML::XmlWriter* xmlWriter);
 
     /// \brief
     /// Writes to an XML writer. This object is appended to the XML document
@@ -469,11 +641,19 @@ public:
     /// XML writer's current position will be just after this object.
     /// \param flags 
     /// Input controls the writing of the elements to the writer.
-    /// If NULL then the default flags are used (see FdoXmlFlags::Create())
+    /// If NULL then the default flags are used (see XmlFlags::Create())
     /// 
-	System::Void WriteXml(NAMESPACE_OSGEO_COMMON_XML::XmlWriter* xmlWriter);
-
 	System::Void WriteXml(NAMESPACE_OSGEO_COMMON_XML::XmlWriter* xmlWriter, NAMESPACE_OSGEO_FDO_XML::XmlFlags* flags);
+
+    /// \brief
+    /// Writes to a text writer. A complete XML document,
+    /// containing this object, is written.
+    /// 
+    /// \param textWriter 
+    /// Input the text writer.When this function completes, the
+    /// text writer's current position will be just after this object.
+    /// 
+	System::Void WriteXml(NAMESPACE_OSGEO_COMMON_IO::IoTextWriter* textWriter);
 
     /// \brief
     /// Writes to a text writer. A complete XML document,
@@ -484,11 +664,19 @@ public:
     /// text writer's current position will be just after this object.
     /// \param flags 
     /// Input controls the writing of the elements to the writer.
-    /// If NULL then the default flags are used (see FdoXmlFlags::Create())
+    /// If NULL then the default flags are used (see XmlFlags::Create())
     /// 
-	System::Void WriteXml(NAMESPACE_OSGEO_COMMON_IO::IoTextWriter* textWriter);
-
 	System::Void WriteXml(NAMESPACE_OSGEO_COMMON_IO::IoTextWriter* textWriter, NAMESPACE_OSGEO_FDO_XML::XmlFlags* flags);
+
+    /// \brief
+    /// Writes to a stream. A complete XML document,
+    /// containing this object, is written.
+    /// 
+    /// \param stream 
+    /// Input the stream. When this function completes, the
+    /// stream's current position will be just after this object.
+    /// 
+	System::Void WriteXml(NAMESPACE_OSGEO_COMMON_IO::IoStream* stream);
 
     /// \brief
     /// Writes to a stream. A complete XML document,
@@ -499,23 +687,9 @@ public:
     /// stream's current position will be just after this object.
     /// \param flags 
     /// Input controls the writing of the elements to the stream.
-    /// If NULL then the default flags are used (see FdoXmlFlags::Create())
+    /// If NULL then the default flags are used (see XmlFlags::Create())
     /// 
-	System::Void WriteXml(NAMESPACE_OSGEO_COMMON_IO::IoStream* stream);
-
 	System::Void WriteXml(NAMESPACE_OSGEO_COMMON_IO::IoStream* stream, NAMESPACE_OSGEO_FDO_XML::XmlFlags* flags);
-
-    /// \brief
-    /// Gets the stylesheet for converting the XML document from 
-    /// internal to external format. When classes derived from FdoXmlSerializable
-    /// define an internal format, they must override this function to return a
-    /// stylesheet that does the conversion.
-    /// 
-    /// \return
-    /// Returns NULL by default (no internal format defined)
-    /// 
-    /// It has beed implemented in Additional Interfaces.
-    // NAMESPACE_OSGEO_COMMON_XML::XmlReader* GetFromInternalStylesheet();
 };
 
 END_NAMESPACE_OSGEO_FDO_SCHEMA

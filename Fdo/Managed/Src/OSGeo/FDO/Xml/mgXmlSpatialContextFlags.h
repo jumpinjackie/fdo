@@ -24,23 +24,24 @@ class FdoXmlSpatialContextFlags;
 
 BEGIN_NAMESPACE_OSGEO_FDO_XML
 
+/// \brief
+/// FdoXmlSpatialContextFlags extends FdoXmlFlags to specify flags specific to Spatial Contexts.
 public __gc class XmlSpatialContextFlags : public NAMESPACE_OSGEO_FDO_XML::XmlFlags
 {
 public:
     /// \brief
-    /// The FdoXmlSpatialContextFlags::ConflictOption specifies how 
+    /// XmlSpatialContextFlags::ConflictOption specifies how 
     /// to handle Spatial Contexts that are already in the DataStore, 
-    ///  when Deserializing:
+    /// when Deserializing:
     /// 
     /// \param ConflictOption_Add 
-    /// just add new spatial contexts to the
-    /// FDO DataStore. If the Spatial Context already exists, an exception 
-    /// is thrown.
+    /// just add new spatial contexts to the FDO DataStore. 
+    /// If the Spatial Context already exists, an exception is thrown.
     /// \param ConflictOption_Update 
     /// Update the spatial context if it already
     /// exists, add it if it doesn't exist.
     /// \param ConflictOption_Skip 
-    /// ?just add new spatial contexts. 
+    /// Just add new spatial contexts. 
     /// Silently skip spatial contexts already in the DataStore.
     /// 
 	__value enum ConflictOption 
@@ -51,7 +52,48 @@ public:
 	};
 
     /// \brief
-    /// Constructs an FdoXmlSpatialContextFlags object.
+    /// Constructs an XmlSpatialContextFlags object.
+    /// 
+	XmlSpatialContextFlags();
+
+    /// \brief
+    /// Constructs an XmlSpatialContextFlags object.
+    /// 
+    /// \param location 
+    /// Base URL for generating well-known references to 
+    /// GML coordinate systems and transformations
+    /// 
+	XmlSpatialContextFlags(System::String* location);
+
+    /// \brief
+    /// Constructs an XmlSpatialContextFlags object.
+    /// 
+    /// \param location 
+    /// Base URL for generating well-known references to 
+    /// GML coordinate systems and transformations
+    /// \param errorLevel 
+    /// Input The error level for reading spatial contexts. Controls how 
+    /// strict the error reporting is.
+    /// 
+	XmlSpatialContextFlags(System::String* location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel);
+
+    /// \brief
+    /// Constructs an XmlSpatialContextFlags object.
+    /// 
+    /// \param location 
+    /// Base URL for generating well-known references to 
+    /// GML coordinate systems and transformations
+    /// \param errorLevel 
+    /// Input The error level for reading spatial contexts. Controls how 
+    /// strict the error reporting is.
+    /// \param nameAdjust 
+    /// Input true: apply name adjustment to all elements. 
+    /// false: apply name adjustment only to elements with fdo:nameAdjust="true"
+    /// 
+	XmlSpatialContextFlags(System::String* location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel, System::Boolean nameAdjust);
+
+    /// \brief
+    /// Constructs an XmlSpatialContextFlags object.
     /// 
     /// \param location 
     /// Base URL for generating well-known references to 
@@ -64,22 +106,30 @@ public:
     /// false: apply name adjustment only to elements with fdo:nameAdjust="true"
     /// \param conflictOption 
     /// Input option for Deserializing Spatial Contexts. 
-    /// Specified how Spatial Contexts, already in the FDO connection, are handled.
+    /// Specified how Spatial Contexts, already in  connection, are handled.
+    /// 
+	XmlSpatialContextFlags(System::String* location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel, System::Boolean nameAdjust, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags::ConflictOption conflictOption);
+
+    /// \brief
+    /// Constructs an XmlSpatialContextFlags object.
+    /// 
+    /// \param location 
+    /// Base URL for generating well-known references to 
+    /// GML coordinate systems and transformations
+    /// \param errorLevel 
+    /// Input The error level for reading spatial contexts. Controls how 
+    /// strict the error reporting is.
+    /// \param nameAdjust 
+    /// Input true: apply name adjustment to all elements. 
+    /// false: apply name adjustment only to elements with fdo:nameAdjust="true"
+    /// \param conflictOption 
+    /// Input option for Deserializing Spatial Contexts. 
+    /// Specified how Spatial Contexts, already in  connection, are handled.
     /// \param includeDefault 
     /// Input true: When Serializing Spatial Contexts, serialize
     /// all contexts including the default.
     /// false: skip the default Spatial Context.
     /// 
-	XmlSpatialContextFlags();
-
-	XmlSpatialContextFlags(System::String* location);
-
-	XmlSpatialContextFlags(System::String* location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel);
-
-	XmlSpatialContextFlags(System::String* location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel, System::Boolean nameAdjust);
-
-	XmlSpatialContextFlags(System::String* location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel, System::Boolean nameAdjust, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags::ConflictOption conflictOption);
-
 	XmlSpatialContextFlags(System::String* location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel, System::Boolean nameAdjust, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags::ConflictOption conflictOption, System::Boolean includeDefault);
 
     /// \brief
@@ -119,15 +169,27 @@ public:
     /// 
 	__property System::Boolean get_IncludeDefault();
 
+    /// \brief
+    /// Constructs a XmlSpatialContextFlags object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	XmlSpatialContextFlags(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_XML::XmlFlags(unmanaged, autoDelete)
 	{
 		
 	}
 
+/// \cond DOXYGEN-IGNORE
 	inline FdoXmlSpatialContextFlags* GetImpObj()
 	{
 		return static_cast<FdoXmlSpatialContextFlags*>(__super::UnmanagedObject.ToPointer());
 	}
+/// \endcond
 };
 
 END_NAMESPACE_OSGEO_FDO_XML

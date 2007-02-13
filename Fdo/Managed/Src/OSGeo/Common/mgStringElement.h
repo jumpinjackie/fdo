@@ -29,15 +29,33 @@ BEGIN_NAMESPACE_OSGEO_COMMON
 public __sealed __gc class StringElement : public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
 public:
+    /// \brief
+    ///     Constructs a new string element based on an input string
+    /// 
+    /// \param value 
+    ///     The string value of the element.
+    /// 
 	StringElement(System::String* value);
 
+    /// \brief
+    ///     Constructs a string elemnet based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    ///     Input A Pointer to the unmanaged string element.
+    /// 
+    /// \param autoDelete 
+    ///     Input Indicates if the constructed element should be automatically deleted 
+    ///     once it no longer referenced.
+    /// 
 	StringElement(System::IntPtr unmanaged, System::Boolean autoDelete);
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
 
 public private:
 	inline FdoStringElement* GetImpObj();
+/// \endcond
 };
 
 END_NAMESPACE_OSGEO_COMMON

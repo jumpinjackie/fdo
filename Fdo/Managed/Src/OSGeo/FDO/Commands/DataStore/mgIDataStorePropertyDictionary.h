@@ -23,7 +23,7 @@
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE
 
 /// \brief
-/// The FdoIDataStorePropertyDictionary exposes a dictionary style interface
+/// The IDataStorePropertyDictionary exposes a dictionary style interface
 /// to the datastore properties. The properties required to create or destroy a datastore
 /// can be determined and their values can be set through this interface.
 public __gc __interface IDataStorePropertyDictionary : public NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionPropertyDictionary

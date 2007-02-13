@@ -57,7 +57,7 @@ public:
     /// Input name of the file to read.
     /// 
     /// \return
-    /// Returns FdoXmlReader
+    /// Returns XmlReader
     /// 
 	XmlReader( System::String* fileName );
 
@@ -68,7 +68,7 @@ public:
     /// Input the stream to read.
     /// 
     /// \return
-    /// Returns FdoXmlReader
+    /// Returns XmlReader
     /// 
 	XmlReader(NAMESPACE_OSGEO_COMMON_IO::IoStream* stream);
 
@@ -79,7 +79,7 @@ public:
     /// Input the text reader.
     /// 
     /// \return
-    /// Returns FdoXmlReader
+    /// Returns XmlReader
     /// 
 	XmlReader( NAMESPACE_OSGEO_COMMON_IO::IoTextReader* reader );
 
@@ -109,6 +109,49 @@ public:
     /// \brief
     /// Parses the XML document.
     /// 
+    /// \return
+    /// Returns true if the end of the document has not yet been reached
+    /// 
+    System::Boolean Parse();
+
+    /// \brief
+    /// Parses the XML document.
+    /// 
+    /// \param saxHandler 
+    /// Input SAX Handler to receive the SaxHandler events.
+    /// This object is pushed onto the SAX Handler stack when parse() starts and popped
+    /// when parse() is finished. If NULL then no handler is pushed, meaning that
+    /// the current top SAX Handler receives the events. If saxHander is NULL
+    /// and there is on current top SAX Handler then this function does a 
+    /// parse and reports syntax errors, but does no semantic processing.
+    /// 
+    /// \return
+    /// Returns true if the end of the document has not yet been reached
+    /// 
+    System::Boolean Parse(NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler* saxHandler);
+
+    /// \brief
+    /// Parses the XML document.
+    /// 
+    /// \param saxHandler 
+    /// Input SAX Handler to receive the SaxHandler events.
+    /// This object is pushed onto the SAX Handler stack when parse() starts and popped
+    /// when parse() is finished. If NULL then no handler is pushed, meaning that
+    /// the current top SAX Handler receives the events. If saxHander is NULL
+    /// and there is on current top SAX Handler then this function does a 
+    /// parse and reports syntax errors, but does no semantic processing.
+    /// \param saxContext 
+    /// Input Caller-specific contextual information that is 
+    /// pass to all SAX callbacks.
+    /// 
+    /// \return
+    /// Returns true if the end of the document has not yet been reached
+    /// 
+    System::Boolean Parse(NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler* saxHandler, NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* saxContext);
+
+    /// \brief
+    /// Parses the XML document.
+    /// 
     /// \param saxHandler 
     /// Input SAX Handler to receive the SaxHandler events.
     /// This object is pushed onto the SAX Handler stack when parse() starts and popped
@@ -127,23 +170,17 @@ public:
     /// or the end of the document is reached. On subsequent calls to Parse() the 
     /// read continues where the previous call left off. 
     /// false: the whole document is parsed in a single call to XmlReader::Parse(). 
-    /// The FdoXmlSaxHandler::EndElement() return value is ignored. If a previous call 
+    /// The XmlSaxHandler::EndElement() return value is ignored. If a previous call 
     /// was made to XmlReader::Parse(), with incremental = true, then the rest of the 
     /// document is parsed ( the EndElement() return value is ignored ).
     /// 
     /// \return
     /// Returns true if the end of the document has not yet been reached
     /// 
-    System::Boolean Parse();
-
-    System::Boolean Parse(NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler* saxHandler);
-
-    System::Boolean Parse(NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler* saxHandler, NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* saxContext);
-
     System::Boolean Parse(NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler* saxHandler, NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* saxContext, System::Boolean incremental);
 
     /// \brief
-    /// utility function that is typically called for element names or 
+    /// Utility function that is typically called for element names or 
     /// name type attributes that were adjusted when they were written to XML. 
     /// FDO names that correspond to XML names, but aren't valid XML names, are 
     /// adjusted. This function undoes the name adjustment.
@@ -187,6 +224,7 @@ public:
     /// 
 	System::String* PrefixToUri( System::String* prefix );	
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
 
@@ -194,6 +232,7 @@ public private:
     XmlReader(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoXmlReader* GetImpObj();
+/// \endcond
 };
 
 END_NAMESPACE_OSGEO_COMMON_XML

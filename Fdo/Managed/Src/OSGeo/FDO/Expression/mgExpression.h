@@ -25,8 +25,8 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 public __gc __interface IExpressionProcessor;
 
 /// \brief
-/// FdoExpression is an abstract base class that forms the root of an expression
-/// tree. The FdoExpression class contains operations for converting between the
+/// Expression is an abstract base class that forms the root of an expression
+/// tree. The Expression class contains operations for converting between the
 /// well defined text representation and the object representation of an
 /// expression.
 public __gc class Expression : public NAMESPACE_OSGEO_RUNTIME::Disposable
@@ -46,7 +46,7 @@ public:
 	static NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* Parse(System::String* expressionText);
 
     /// \brief
-    /// Abstract operation that takes an FdoIExpressionProcessor as an argument.
+    /// Abstract operation that takes an IExpressionProcessor as an argument.
     /// Concrete expression subclasses must override this method and pass
     /// themselves as an argument to the appropriate expression processor
     /// operation.
@@ -68,10 +68,22 @@ public:
     /// 
 	System::String* ToString();
 
+    /// \brief
+    /// Constructs a Expression object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	Expression(System::IntPtr unmanaged, System::Boolean autoDelete);
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 
 public private:
 	inline FdoExpression* GetImpObj();

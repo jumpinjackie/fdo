@@ -27,7 +27,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS
 public __gc class ParameterValueCollection;
 
 /// \brief
-/// The FdoICommand interface defines behavior common to all commands in FDO. In
+/// The ICommand interface defines behavior common to all commands in FDO. In
 /// order to be executed, commands must have an association to a connection.
 /// Commands can also be optionally associated with a transaction if the
 /// connection supports transactions. The parameter values collection allows
@@ -36,7 +36,7 @@ public __gc __interface ICommand : public System::IDisposable
 {
 public:
     /// \brief
-    /// Gets the FdoIConnection that this command will operate on.
+    /// Gets the IConnection that this command will operate on.
     /// 
     /// \return
     /// Returns the connection object
@@ -87,7 +87,7 @@ public:
 	__property System::Void set_CommandTimeOut(System::Int32 value);
 
     /// \brief
-    /// Returns an FdoParameterValueCollection. If the command requires parameters, the 
+    /// Returns an ParameterValueCollection. If the command requires parameters, the 
     /// literal values to bind to each of those named parameters must be added to
     /// this collection.
     /// 

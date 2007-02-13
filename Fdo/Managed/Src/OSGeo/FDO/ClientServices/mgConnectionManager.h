@@ -24,6 +24,20 @@ class FdoConnectionManager;
 
 BEGIN_NAMESPACE_OSGEO_FDO_CLIENTSERVICES
 
+/// \brief
+/// The ConnectionManager class supports dynamic creation of connection objects 
+/// given a provider name. Derives from ConnectionManager interface.
+///
+/// \remarks
+/// In order for dynamic creation to work, each dynamic link library, shared library, 
+/// or assembly that implements a provider must supply a well-defined entry point function that 
+/// takes as input a provider name and returns an IConnection instance. The definition of the 
+/// entry point function is language- and platform-dependent. For this release of FDO, the 
+/// windows libraries supporting FDO providers will be expected to support the following well-known 
+/// unmanaged entry point function, which will create and return an unitialized connection object:
+///
+///     FdoIConnection * CreateConnection();
+///
 public __sealed __gc class ConnectionManager : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_FDO::IConnectionManager
 {
 public:
@@ -35,7 +49,7 @@ public:
     /// [Company].[Provider].[Version].
     /// 
     /// \return
-    /// Returns an instance of an FdoIConnection object. Throws an instance of FdoException * if an error occurs.
+    /// Returns an instance of an IConnection object. Throws an instance of Exception if an error occurs.
     /// 
 	NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection* CreateConnection(String* providerName);
 
@@ -47,7 +61,7 @@ public:
     /// [Company].[Provider].[Version].
     /// 
     /// \return
-    /// Returns nothing. Throws an instance of FdoException * if an error occurs.
+    /// Returns nothing. Throws an instance of Exception if an error occurs.
     /// 
 	System::Void FreeLibrary(String* providerName);
 
@@ -56,8 +70,10 @@ public private:
 
 	inline FdoConnectionManager* GetImpObj();
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 };
 
 END_NAMESPACE_OSGEO_FDO_CLIENTSERVICES

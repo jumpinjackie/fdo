@@ -27,13 +27,15 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
 public __gc class PhysicalSchemaMappingCollection;
 
 /// \brief
-/// The FdoIDescribeSchemaMapping interface defines the DescribeSchemaMapping command, which
+/// The IDescribeSchemaMappingImp class is a concrete implementation of IDescribeSchemaMapping.
+/// The IDescribeSchemaMapping interface defines the DescribeSchemaMapping command, which
 /// describes the logical to physical schema mappings for feature schemas 
 /// available from the connection. The DescribeSchemaMapping
 /// command can describe the mappings for a single schema or all schemas available from
-/// the connection. The Execute operation returns an FdoPhysicalSchemaMappingCollection
+/// the connection. The Execute operation returns an PhysicalSchemaMappingCollection
 /// object.
-private __gc class IDescribeSchemaMappingImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDescribeSchemaMapping
+private __gc class IDescribeSchemaMappingImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 
+                                               public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDescribeSchemaMapping
 {
 public:
     /// \brief
@@ -83,7 +85,7 @@ public:
 
     /// \brief
     /// Executes the DescribeSchemaMapping command and returns a 
-    /// FdoPhysicalSchemaMappingCollection. If the specified schema name does not exist,
+    /// PhysicalSchemaMappingCollection. If the specified schema name does not exist,
     /// the Execute method throws an exception.
     /// 
     /// \return

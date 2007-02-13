@@ -31,7 +31,7 @@ public __gc class RasterDataModel;
 public __gc __interface IRasterPropertyDictionary;
 
 /// \brief
-/// The FdoIRaster specifies the data type and organization
+/// The IRaster interface specifies the data type and organization
 /// of raster data retrieved and stored. Using this class and the image
 /// extents in width and length, the binary format of the image data returned
 /// by and accepted by the IoStreamReader class can be interpreted.
@@ -40,15 +40,15 @@ public __gc __interface IRaster : public System::IDisposable
 public:
 
     /// \brief
-    /// Returns true if the FdoIRaster represents a null value.
+    /// Returns true if the IRaster represents a null value.
     /// 
     /// \return
-    /// Returns true if the FdoIRaster represents a null value.
+    /// Returns true if the IRaster represents a null value.
     /// 
 	System::Boolean IsNull ();
 
     /// \brief
-    /// Sets the FdoIRaster to a null value.
+    /// Sets the IRaster to a null value.
     /// 
     /// \return
     /// Returns nothing
@@ -56,56 +56,65 @@ public:
 	System::Void SetNull ();
 
     /// \brief
-    ///  Gets the number of bands/channels contained in the raster image.
+    /// Gets the number of bands/channels contained in the raster image.
     /// 
     /// \return
-    ///  Returns the numbers of bands/channels contained in the raster image. 
+    /// Returns the numbers of bands/channels contained in the raster image. 
     /// 
 	__property System::Int32 get_NumberOfBands();
 
     /// \brief
-    ///  Sets the number of bands/channels contained in the raster image.
+    /// Sets the number of bands/channels contained in the raster image.
     /// 
     /// \return
-    ///  Returns nothing. 
+    /// Returns nothing. 
     /// 
 	__property System::Void set_NumberOfBands (System::Int32 value);
 
     /// \brief
-    ///  Gets the currently active band/channel.
+    /// Gets the currently active band/channel.
     /// 
     /// \remarks
-    ///  The FdoIRaster Bounds, DataModel, ImageSize, AuxilliaryProperties and Stream 
+    /// IRaster Bounds, DataModel, ImageSize, AuxilliaryProperties and Stream 
     /// accessors all conform to the current band. 
     /// 
     /// \return
-    ///  Returns the current active band/channel. 
+    /// Returns the current active band/channel. 
     /// 
 	__property System::Int32 get_CurrentBand ();
 
     /// \brief
-    ///  Sets the currently active band/channel.
+    /// Sets the currently active band/channel.
     /// 
     /// \remarks
-    ///  Setting the current band will mean that the Bounds, DataModel, ImageSize, 
-    /// AuxilliaryProperties and Stream accessors of FdoIRaster 
+    /// Setting the current band will mean that the Bounds, DataModel, ImageSize, 
+    /// AuxilliaryProperties and Stream accessors of IRaster 
     /// will all switch to the specified band. 
     /// 
     /// \return
-    ///  Returns nothing. 
+    /// Returns nothing. 
     /// 
 	__property System::Void set_CurrentBand (System::Int32 value);
 
-    /// Get the minimum bounding box around the image.
-    /// The bounds are transformed to the active spatial context.
+    /// \brief
+    /// Get the minimum bounding box around the curent band of the image.
+    ///
+    /// \return
+    /// Returns the bounds of the raster image
+    /// 
 	__property System::Byte get_Bounds () [];
 
+    /// \brief
     /// Set the minimum bounding box around the image.
     /// For georeferenced images, the coordinate system is specified by the
     /// spatial context in force when the object is created.  The act of
     /// setting this property georeferences the image.  In order to provide
     /// for non-georeferenced images, this property is Nullable (doesn't
     /// need to be set).
+    ///
+    /// \param bounds 
+    /// The new bounds of the raster image.
+    /// 
 	__property System::Void set_Bounds (System::Byte bounds[]);
 
     /// \brief
@@ -120,6 +129,8 @@ public:
     /// Sets the data model used by this raster property.
     /// Allowed values are only those data models that are acceptable to the
     /// SupportsDataModel capability.
+    ///
+    /// \remarks
     /// This attribute specifies the colour/palette model, bits per pixel,
     /// tiling and interleaving. For example, if the bits per pixel of the
     /// data model is 8 and it is set to 24, a conversion would be performed
@@ -128,7 +139,7 @@ public:
     /// transformed and saved.  The next time this image is retrieved
     /// by the client the bits per pixel value would indicate 24.
     /// 
-    /// \param datamodel 
+    /// \param dataModel 
     /// The datamodel to be used.
     /// 
 	__property System::Void set_DataModel (NAMESPACE_OSGEO_FDO_RASTER::RasterDataModel* dataModel);
@@ -152,7 +163,7 @@ public:
     /// the amount of data shipped by the reader and reduce processing
     /// time significantly.  For example, a certain query in the
     /// coordinate system of the raster object class returns a
-    /// FdoIRaster object with image size 12091 by 8043.  But the
+    /// IRaster object with image size 12091 by 8043.  But the
     /// image only needs to be displayed in an area 1167 by 776 on
     /// the users monitor. 
     /// <p>(<b>Note:</b> The aspect ratios are the same
@@ -196,7 +207,7 @@ public:
     /// Get a dictionary style interface to the raster properties.
     /// Through this interface the non-standard properties of a raster
     /// image can be determined and their values can be retrieved and set.
-    /// Data values are exchanged through the FdoDataValue object to
+    /// Data values are exchanged through the DataValue object to
     /// accommodate various data types, boolean, integer, double, string,
     /// etc.
     /// 
@@ -206,17 +217,17 @@ public:
 	NAMESPACE_OSGEO_FDO_RASTER::IRasterPropertyDictionary* GetAuxiliaryProperties();
 
     /// \brief
-    ///  Gets the pixel value that represents a NULL value in the available raster stream. 
+    /// Gets the pixel value that represents a NULL value in the available raster stream. 
     /// 
     /// \remarks
-    ///  The Null Pixel Value is Data Model dependent. The value of the Null pixel
+    /// The Null Pixel Value is Data Model dependent. The value of the Null pixel
     /// will change depending on which data model is set. If the client application changes 
-    /// the Data Model using SetDataModel(FdoRasterDataModel* datamodel) a subsequent 
+    /// the Data Model using SetDataModel(RasterDataModel* datamodel) a subsequent 
     /// call to GetNullPixelValue will need to be made in order to determine the valid Null 
     /// value for the current data model.
     /// 
     /// \return
-    ///  Returns the FdoDataType value that can be used to identify the Null value. 
+    /// Returns the DataType value that can be used to identify the Null value. 
     /// 
 	__property NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue* get_NullPixelValue ();
 
@@ -225,7 +236,7 @@ public:
     /// Image data is shipped using a paradigm similar to BLOB I/O.
     /// When inserting or updating an object with a raster property,
     /// the SetStreamReader method provides a means to set a
-    /// FdoIStreamReader callback.
+    /// IStreamReader callback.
     /// On execution of an insert or update command, requests are made on
     /// the reader for the image data (which is supplied by the FDO client
     /// application).
@@ -242,7 +253,7 @@ public:
     /// Get the source of image data.
     /// Image data is shipped using a paradigm similar to BLOB I/O.
     /// When fetching a raster image the GetStreamReader() method provides
-    /// a FdoIStreamReader from which the client may request the image data.
+    /// a IStreamReader from which the client may request the image data.
     /// The format of the image data expected is determined by the
     /// DataModel property.  The data type, bit depth, tiling and
     /// organization specify the meaning of the image data.
@@ -266,7 +277,7 @@ public:
     /// Gets the Vertical Unit of Measure corresponding to the Raster Band.
     /// The string value returned will be a considered lookup value that
     /// will be used to identify the properties of the Unit of Measure using
-    /// the FDO FdoIGetMeasureUnits command.
+    /// the IGetMeasureUnits command.
     ///
     /// \return
     /// Returns the Unit of Measure type of data associated to the Raster Band.
@@ -279,7 +290,7 @@ public:
     /// \param units
     /// The Unit of Measure type for the current band.
     /// The units string value corresponds to a Unit of Measure supported
-    /// through the FdoIGetMeasureUnits command.
+    /// through the IGetMeasureUnits command.
 	__property System::Void set_VerticalUnits (System::String* units);
 
 };

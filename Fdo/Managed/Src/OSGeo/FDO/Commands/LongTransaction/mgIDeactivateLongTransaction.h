@@ -23,7 +23,7 @@
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
 /// \brief
-/// The FdoIDeactivateLongTransaction interface defines the 
+/// The IDeactivateLongTransaction interface defines the 
 /// DeactivateLongTransaction command, which deactivates the active long 
 /// transaction where feature manipulation commands operate on it. If the 
 /// active long transaction is the root long transaction, then no long

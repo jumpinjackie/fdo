@@ -31,7 +31,7 @@ END_NAMESPACE_OSGEO_FDO_FILTER
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS
 
 /// \brief
-/// The FdoIFeatureCommand interface defines the behavior common 
+/// The IFeatureCommand interface defines the behavior common 
 /// to all commands that operate on feature instances. The features to 
 /// be operated on are identified by their class and a filter. If the feature 
 /// provider supports inheritance in the schema capabilities, then the command 

@@ -25,16 +25,16 @@
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS
 
 /// \brief
-///  The FdoITransaction interface represents a transaction to be performed in a DataStore, and is implemented
+/// The ITransaction interface represents a transaction to be performed in a DataStore, and is implemented
 /// by feature providers that support transactions.
 private __gc class ITransactionImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_FDO_CONNECTIONS::ITransaction
 {
 public:
     /// \brief
-    ///  Gets the FdoIConnection object associated with the transaction.
+    ///  Gets the IConnection object associated with the transaction.
     /// 
     /// \return
-    /// Returns FdoIConnection object
+    /// Returns IConnection object
     /// 
 	__property NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection* get_Connection();
 
@@ -59,8 +59,10 @@ public private:
 
 	inline FdoITransaction* GetImpObj();
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 };
 
 END_NAMESPACE_OSGEO_FDO_CONNECTIONS

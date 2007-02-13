@@ -42,7 +42,7 @@ namespace Fdo_Test
 			{
 				pFilter = Filter.Parse(pwzFilter);
 			}
-			catch(OSGeo.Common.Exception ex)
+			catch(OSGeo.FDO.Common.Exception ex)
 			{
                 Debug.Assert(ex.Message.IndexOf("String does not represent a valid filter") != -1, "Exception null should be another exception.");
 			}

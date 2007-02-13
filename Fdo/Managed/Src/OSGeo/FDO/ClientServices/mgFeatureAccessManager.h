@@ -26,15 +26,18 @@ END_NAMESPACE_OSGEO_FDO
 
 BEGIN_NAMESPACE_OSGEO_FDO_CLIENTSERVICES
 
+/// \brief
+/// The FeatureAccessManager class manages the set of feature providers stored in the FDO provider registry
+/// and provides support for dynamic discovery and binding to registered feature providers
 public __sealed __gc class FeatureAccessManager 
 {
 public:
     /// \brief
-    /// Static method that gets an object that implements IConnection Manager
+    /// Static method that gets an object that implements IConnectionManager
     /// 
     /// \return
     /// Returns a static instance of an IConnectionManager object. 
-    /// Throws an instance of FdoException * if an error occurs.
+    /// Throws an instance of Exception if an error occurs.
     /// 
 	static NAMESPACE_OSGEO_FDO::IConnectionManager* GetConnectionManager();
 
@@ -43,7 +46,7 @@ public:
     /// 
     /// \return
     /// Returns a static instance of an IProviderRegistry object. 
-    /// Throws an instance of FdoException * if an error occurs.
+    /// Throws an instance of Exception if an error occurs.
     /// 
 	static NAMESPACE_OSGEO_FDO::IProviderRegistry* GetProviderRegistry();
 

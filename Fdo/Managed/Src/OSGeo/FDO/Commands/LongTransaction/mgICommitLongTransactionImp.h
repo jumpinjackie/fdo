@@ -27,7 +27,9 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 public __gc __interface ILongTransactionConflictDirectiveEnumerator;
 
 /// \brief
-/// The FdoICommitLongTransaction interface defines the CommitLongTransaction
+/// The ICommitLongTransactionImp class is a 
+/// concrete implementation of ICommitLongTransaction.
+/// The ICommitLongTransaction interface defines the CommitLongTransaction
 /// command, which allows a user to execute commit operations on a long
 /// transaction. Two different commit operations are distinguished: full and partial.
 ///
@@ -42,7 +44,8 @@ public __gc __interface ILongTransactionConflictDirectiveEnumerator;
 /// In addition, a full commit can be performed on a leaf long transaction
 /// only. A long transaction is a leaf long transaction if it does not
 /// have descendent versions.
-private __gc class ICommitLongTransactionImp : public NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp, public NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ICommitLongTransaction
+private __gc class ICommitLongTransactionImp : public NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp, 
+                                               public NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ICommitLongTransaction
 {
 public:
     /// \brief
@@ -65,7 +68,7 @@ public:
 	__property System::Void set_Name(System::String* value);
 
     /// Executes the commit long transaction command and returns an
-    /// FdoILongTransactionConflictDirectiveEnumerator.
+    /// ILongTransactionConflictDirectiveEnumerator.
     /// If the returned enumerator's count is 0 then
     /// no conflicts were detected and the command was executed successfully.
     /// Otherwise conflicts were detected and the user must specify how to

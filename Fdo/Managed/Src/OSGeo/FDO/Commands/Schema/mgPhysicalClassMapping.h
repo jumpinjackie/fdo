@@ -36,7 +36,7 @@ END_NAMESPACE_OSGEO_FDO_XML
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
 
 /// \brief
-/// FdoPhysicalClassMapping is an abstract class that acts as a base class for all 
+/// PhysicalClassMapping is an abstract class that acts as a base class for all 
 /// Physical Schema Mapping class overrides.
 public __gc class PhysicalClassMapping : public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping
 {
@@ -65,7 +65,7 @@ public:
     /// suffix to the name. Can be extended to handle 
     /// particular XML attributes for derived classes.
     /// <p><b>Note:</b> Schema Override elements that do not require name encoding
-    /// should be based on FdoPhysicalElementMapping instead of this class.
+    /// should be based on PhysicalElementMapping instead of this class.
     /// 
     /// \param xmlWriter 
     /// Input write the class to this XML writer
@@ -78,8 +78,10 @@ public:
     /// Write this element to XML.
 	System::Void WriteXml(NAMESPACE_OSGEO_COMMON_XML::XmlWriter* xmlWriter, NAMESPACE_OSGEO_FDO_XML::XmlFlags* flags);
 
+/// \cond DOXYGEN-IGNORE
 public protected:
 	PhysicalClassMapping(System::IntPtr unmanaged, System::Boolean autoDelete);
+/// \endcond
 
 public private:
 	inline FdoPhysicalClassMapping* GetImpObj();

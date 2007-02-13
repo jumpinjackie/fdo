@@ -22,6 +22,9 @@ class FdoSpatialGridTransform;
 
 BEGIN_NAMESPACE_OSGEO_SPATIAL
 
+/// \brief
+/// Class to handle transformations of ordinates between double precision
+/// and integers.  The integer format models a fine grid.
 public __gc class SpatialGridTransform: public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
 public:
@@ -43,41 +46,47 @@ public:
     /// \brief
     /// Transform floating-point ordinates to integer ordinates on the grid.
     /// 
-    /// \param x 
+    /// \param coordinateX 
     /// Input Floating-point X ordinate.
-    /// \param y 
+    /// \param coordinateY 
     /// Input Floating-point Y ordinate.
-    /// \param xGrid 
+    /// \param gridX 
     /// Output Integer X ordinate.
-    /// \param yGrid 
+    /// \param gridY 
     /// Output Integer Y ordinate.
-    /// 
-    /// \return
-    /// Returns Nothing.
     /// 
 	System::Void TransformToGrid(System::Double coordinateX, System::Double coordinateY, System::Int64* gridX, System::Int64* gridY);
 
     /// \brief
     /// Transform integer ordinates on the grid to floating-point ordinates.
     /// 
-    /// \param x 
-    /// Input Floating-point X ordinate.
-    /// \param y 
-    /// Input Floating-point Y ordinate.
-    /// \param x 
-    /// Output Integer X ordinate.
-    /// \param y 
-    /// Output Integer Y ordinate.
-    /// 
-    /// \return
-    /// Returns Nothing.
+    /// \param gridX 
+    /// Input Integer X ordinate.
+    /// \param gridY 
+    /// Input Integer Y ordinate.
+    /// \param coordinateX 
+    /// Output Floating-point X ordinate.
+    /// \param coordinateY 
+    /// Output Floating-point Y ordinate.
     /// 
 	System::Void TransformFromGrid(System::Int64 gridX, System::Int64 gridY, System::Double* coordinateX, System::Double* coordinateY);
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 
 public:
+    /// \brief
+    /// Constructs an SpatialGridTransform managed object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	SpatialGridTransform(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:

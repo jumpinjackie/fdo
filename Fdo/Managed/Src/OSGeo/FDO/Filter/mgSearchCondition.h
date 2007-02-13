@@ -25,12 +25,22 @@ class FdoSearchCondition;
 BEGIN_NAMESPACE_OSGEO_FDO_FILTER
 
 /// \brief
-/// FdoSearchCondition is an abstract base class. FdoSpatialCondition,
-/// FdoComparisonCondition, FdoLikeCondition, FdoInCondition, and FdoNullCondition derive
-/// from the FdoSearchCondition class.
+/// The SearchCondition is an abstract base class. SpatialCondition,
+/// ComparisonCondition, LikeCondition, InCondition, and NullCondition derive
+/// from the SearchCondition class.
 public __gc class SearchCondition : public NAMESPACE_OSGEO_FDO_FILTER::Filter
 {
 public:
+    /// \brief
+    /// Constructs a SearchCondition object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	SearchCondition(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:

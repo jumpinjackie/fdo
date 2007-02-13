@@ -27,21 +27,21 @@ BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 public __gc class AssociationPropertyDefinition;
 
 /// \brief
-/// FdoNetworkLinkFeature derives from FdoNetworkFeature 
+/// NetworkLinkFeature derives NetworkFeature 
 /// and can be used to represent a logical link feature.
 /// <p><b>Note:</b> <span class="red_text">This Help topic is provided for informational use only. There is
-/// no interface or support provided. Autodesk reserves the right to change
+/// no interface or support provided. OSGeo reserves the right to change
 /// the software related to the content herein.</span>
 public __gc class NetworkLinkFeatureClass : public NAMESPACE_OSGEO_FDO_SCHEMA::NetworkFeatureClass
 {
 public:
     /// \brief
-    /// Constructs a default instance of an FdoNetworkLinkFeatureClass.
+    /// Constructs a default instance of an NetworkLinkFeatureClass.
     /// 
 	NetworkLinkFeatureClass();
 
     /// \brief
-    /// Constructs an instance of an FdoNetworkLinkFeatureClass using the specified arguments.
+    /// Constructs an instance of an NetworkLinkFeatureClass using the specified arguments.
     /// 
     /// \param name 
     /// Input name
@@ -96,6 +96,16 @@ public:
     /// 
 	__property System::Void set_EndNodeProperty(NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition* value);
 
+    /// \brief
+    /// Constructs a NetworkLinkFeatureClass object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	NetworkLinkFeatureClass(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_SCHEMA::NetworkFeatureClass(unmanaged, autoDelete)
 	{
 

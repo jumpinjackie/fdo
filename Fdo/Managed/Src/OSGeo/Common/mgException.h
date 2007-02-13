@@ -22,26 +22,35 @@ class FdoException;
 
 BEGIN_NAMESPACE_OSGEO_COMMON
 
+/// \brief
+/// Exception is a root class for the exception type thrown from classes. It derives from a language 
+/// level exception class that is environment specific.
 [System::SerializableAttribute]
 public __gc class Exception : public System::Exception
 {
 public:
+    /// \brief
+    /// Constructs an Exception managed object based on an unmanaged instance of the object
+    /// 
+    /// \param ex 
+    /// Input A Pointer to the unmanaged object.
+    /// 
 	static NAMESPACE_OSGEO_COMMON::Exception* Create(System::IntPtr ex);
 
 public:
+    /// \brief
+    /// Constructs a new empty Exception object
+    /// 
 	NAMESPACE_OSGEO_COMMON::Exception() : System::Exception()
 	{
 		
 	}
 
     /// \brief
-    /// Returns an instance of a FdoException using the specified arguments.
+    /// Creates an instance of an Exception using the specified arguments.
     /// 
-    /// \param message 
+    /// \param msg 
     /// Input the error message
-    /// 
-    /// \return
-    /// Returns the FdoException object
     /// 
 	NAMESPACE_OSGEO_COMMON::Exception(String* msg) : System::Exception(msg)
 	{
@@ -49,26 +58,26 @@ public:
 	}
 
     /// \brief
-    ///  Returns an instance of a FdoException using the specified arguments.
+    ///  Returns an instance of a Exception using the specified arguments.
     /// 
-    /// \param message 
+    /// \param msg 
     /// Input the error message
+    ///
     /// \param cause 
     /// Input the cause of the error
-    /// 
-    /// \return
-    /// Returns the FdoException object
     /// 
 	NAMESPACE_OSGEO_COMMON::Exception(System::String* msg, System::Exception* cause) : System::Exception(msg, cause)
 	{
 		
 	}
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	NAMESPACE_OSGEO_COMMON::Exception(System::Runtime::Serialization::SerializationInfo* info, System::Runtime::Serialization::StreamingContext context) : System::Exception(info, context)
 	{
 		
 	}
+/// \endcond
 };
 END_NAMESPACE_OSGEO_COMMON
 

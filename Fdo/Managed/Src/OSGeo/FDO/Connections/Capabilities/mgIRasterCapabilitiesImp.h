@@ -25,8 +25,9 @@ class FdoIRasterCapabilities;
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 
 /// \brief
-/// The FdoIRasterCapabilities class delineates available support for raster processing from a provider.
-private __gc class IRasterCapabilitiesImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IRasterCapabilities
+/// The IRasterCapabilities class delineates available support for raster processing from a provider.
+private __gc class IRasterCapabilitiesImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 
+                                            public NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IRasterCapabilities
 {
 public:
     /// \brief
@@ -45,8 +46,8 @@ public:
     /// 
     /// \return
     /// Returns false if this capability is not supported, and hence the
-    /// FdoIFeatureReader object returned from a select command will have one feature
-    /// for each of the FdoIRaster objects that match the select filter.
+    /// IFeatureReader object returned from a select command will have one feature
+    /// for each of the IRaster objects that match the select filter.
     /// Returns true if this capability is supported. If the MOSAIC function
     /// is specified in the select command, then a single image that is a combination
     /// of the selected images is returned.
@@ -57,12 +58,12 @@ public:
     /// Returns true if the provider can reduce the resolution of an image.
     /// 
     /// \return
-    /// Returns true if this capability is supported, and hence the FdoIRaster
-    /// object returned by the FdoIFeatureReader from a query will honour the
+    /// Returns true if this capability is supported, and hence the IRaster
+    /// object returned by the IFeatureReader from a query will honour the
     /// SetImageXSize() and SetImageYSize() methods and reduce the resolution of the
     /// image by one of several means of subsampling. Returns false if attempting to set
-    /// the image size of an FdoIRaster object returned by a FdoIFeatureReader will
-    /// throw an FdoException.
+    /// the image size of an IRaster object returned by a IFeatureReader will
+    /// throw an Exception.
     /// 
 	System::Boolean SupportsSubsampling ();
 
@@ -76,13 +77,15 @@ public:
     /// 
     /// \return
     /// Returns true if the specified data model is supported, and hence the
-    /// FdoIRaster object will dynamically transform an image to the specified data model.
+    /// IRaster object will dynamically transform an image to the specified data model.
     /// Returns false if the specified data model is not supported.
     /// 
 	System::Boolean SupportsDataModel (NAMESPACE_OSGEO_FDO_RASTER::RasterDataModel* model);
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 
 public private:
 	IRasterCapabilitiesImp(System::IntPtr unmanaged, System::Boolean autoDelete);

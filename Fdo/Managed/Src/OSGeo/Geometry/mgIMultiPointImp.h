@@ -33,6 +33,16 @@ private __gc class IMultiPointImp :
 	public NAMESPACE_OSGEO_GEOMETRY::IGeometricAggregateAbstractImp, public NAMESPACE_OSGEO_GEOMETRY::IMultiPoint
 {
 public:
+    /// \brief
+    /// Constructs a managed object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed element should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	IMultiPointImp(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:

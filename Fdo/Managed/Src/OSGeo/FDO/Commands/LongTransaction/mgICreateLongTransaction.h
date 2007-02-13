@@ -23,7 +23,7 @@
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
 /// \brief
-/// The FdoICreateLongTransaction interface defines the CreateLongTransaction
+/// The ICreateLongTransaction interface defines the CreateLongTransaction
 /// command which creates a long transaction that is based upon the currently
 /// active long transaction. If no long transaction is active, then the long
 /// transaction is based upon the root data. Input to the create long

@@ -23,7 +23,7 @@
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
 /// \brief
-/// The FdoIActivateLongTransaction interface defines the ActivateLongTransaction
+/// The IActivateLongTransaction interface defines the ActivateLongTransaction
 /// command, which activates a long transaction where feature manipulation and
 /// locking commands operate on it. Input to the activate
 /// long transaction command is the long transaction name. The Execute operation

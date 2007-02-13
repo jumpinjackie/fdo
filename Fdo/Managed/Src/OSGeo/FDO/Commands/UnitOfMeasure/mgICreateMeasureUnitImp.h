@@ -28,7 +28,8 @@ class FdoICreateMeasureUnit;
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE
 
 /// \brief
-/// The FdoICreateMeasureUnit interface defines the CreateMeasureUnit command,
+/// The ICreateMeasureUnitImp class is a concrete implementation of ICreateMeasureUnit.
+/// The ICreateMeasureUnit interface defines the CreateMeasureUnit command,
 /// which creates or updates a measurement unit. Input to the command includes
 /// the abbreviation, name, description, measure type, base unit, and scale
 /// factor that defines the measure unit. The update existing flag indicates how
@@ -36,7 +37,8 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE
 /// false, and the specified measure unit already exists, command execution will
 /// fail. If it is true, the command will either create a new measure unit or update an
 /// existing one.
-private __gc class ICreateMeasureUnitImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, public NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::ICreateMeasureUnit
+private __gc class ICreateMeasureUnitImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 
+                                           public NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::ICreateMeasureUnit
 {
 public:
     /// \brief
@@ -102,7 +104,7 @@ public:
 
     /// \brief
     /// Gets the base units that define the measure unit to create or update
-    /// as an FdoBaseUnit value.
+    /// as an BaseUnit value.
     /// 
     /// \return
     /// Returns the base units
@@ -111,7 +113,7 @@ public:
 
     /// \brief
     /// Sets the base units that define the measure unit to create or update
-    /// as an FdoBaseUnit value.
+    /// as an BaseUnit value.
     /// 
     /// \param value 
     /// Input the base units

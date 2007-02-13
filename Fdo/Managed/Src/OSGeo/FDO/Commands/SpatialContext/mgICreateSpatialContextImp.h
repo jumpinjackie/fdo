@@ -27,7 +27,8 @@ class FdoICreateSpatialContext;
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT
 
 /// \brief
-/// The FdoICreateSpatialContext interface defines the CreateSpatialContext
+/// The ICreateSpatialContextImp class is a concrete implementation of ICreateSpatialContext.
+/// The ICreateSpatialContext interface defines the CreateSpatialContext
 /// command, which creates a new spatial context. Input to the command includes
 /// the name, description, coordinate system, extent type, and extent for the
 /// new context. Command execution will fail if the context already exists, or
@@ -38,7 +39,8 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT
 /// non-rectangular area is passed in and the provider supports only a
 /// rectangular extent, the provider will compute the minimum box that
 /// encloses the given geometry and use that for the extent value.
-private __gc class ICreateSpatialContextImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, public NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::ICreateSpatialContext
+private __gc class ICreateSpatialContextImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 
+                                              public NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::ICreateSpatialContext
 {
 public:
     /// \brief
@@ -154,7 +156,7 @@ public:
     /// Sets the extent of the context to create as a byte array in FGF format.
     /// If the extent type is dynamic this is optional and any value specified is ignored.
     /// 
-    /// \param value 
+    /// \param buffer 
     /// Input the extent of the spatial context
     /// 
     /// \return

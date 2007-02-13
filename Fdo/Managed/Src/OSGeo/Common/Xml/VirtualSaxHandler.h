@@ -61,5 +61,3 @@ private:
 
 	mutable FdoInt32 wrapperCallBits;
 };
-
-

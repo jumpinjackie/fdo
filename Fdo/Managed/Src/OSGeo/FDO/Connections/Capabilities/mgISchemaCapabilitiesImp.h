@@ -25,16 +25,14 @@ class FdoISchemaCapabilities;
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 
 /// \brief
-/// The FdoISchemaCapbilities interface declares the feature provider's level 
+/// The ISchemaCapbilities interface declares the feature provider's level 
 /// of support for the Feature Schema.
-private __gc class ISchemaCapabilitiesImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ISchemaCapabilities
+private __gc class ISchemaCapabilitiesImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 
+                                            public NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ISchemaCapabilities
 {
 public:
     /// \brief
-    /// Returns an array of the FdoClassType objects the feature provider supports.
-    /// 
-    /// \param length 
-    /// Output the number of class types.
+    /// Returns an array of the ClassType objects the feature provider supports.
     /// 
     /// \return
     /// Returns the list of class types.
@@ -42,10 +40,7 @@ public:
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::ClassType get_ClassTypes() [];
 
     /// \brief
-    /// Returns an array of the FdoDataType objects the feature provider supports.
-    /// 
-    /// \param length 
-    /// Output the number of data types.
+    /// Returns an array of the DataType objects the feature provider supports.
     /// 
     /// \return
     /// Returns the list of data types
@@ -69,9 +64,6 @@ public:
     /// \brief
     /// Returns the maximum supported precision for a decimal data property.
     ///
-    /// \param
-    /// None.
-    ///
     /// \return
     /// Returns the maximum supported precision for a decimal data property.
     ///
@@ -79,9 +71,6 @@ public:
 
     /// \brief
     /// Returns the maximum supported scale for a decimal data property.
-    ///
-    /// \param
-    /// None.
     ///
     /// \return
     /// Returns the maximum supported scale for a decimal data property.
@@ -95,9 +84,9 @@ public:
     ///
     /// \param name
     /// The schema element name type identifier for which the information is to
-    /// be retrieved. Can be any of the following options: FdoSchemaElementNameType_Datastore,
-    /// FdoSchemaElementNameType_Schema, FdoSchemaElementNameType_Class, FdoSchemaElementNameType_Property or 
-    /// FdoSchemaElementNameType_Description
+    /// be retrieved. Can be any of the following options: SchemaElementNameType_Datastore,
+    /// SchemaElementNameType_Schema, SchemaElementNameType_Class, SchemaElementNameType_Property or 
+    /// SchemaElementNameType_Description
     ///
     /// \return
     /// Returns the size limitation for the identified schema element.
@@ -108,19 +97,13 @@ public:
     /// Returns a string that includes all the reserved characters that cannot be
     /// used for the various schema element names for the provider.
     ///
-    /// \param
-    /// None
-    ///
     /// \return
     /// Returns a string with the reserved characters for the identified schema element.
     ///
     __property System::String* get_ReservedCharactersForName();
 
     /// \brief
-    /// Returns an array of the FdoDataType objects the feature provider supports for auto-generation.
-    /// 
-    /// \param length 
-    /// Output the number of data types.
+    /// Returns an array of the DataType objects the feature provider supports for auto-generation.
     /// 
     /// \return
     /// Returns the list of data types
@@ -129,9 +112,6 @@ public:
 
     /// \brief
     /// Returns a list of property types that can be used for identity properties.
-    ///
-    /// \param length
-    /// Output the number of data types.
     ///
     /// \return
     /// Returns a string with the reserved characters for the identified schema element.
@@ -181,9 +161,6 @@ public:
     /// \brief
     /// Returns TRUE if default values can be specified for a data property
     /// definition, FALSE otherwise.
-    ///
-    /// \param
-    /// None
     ///
     /// \return
     /// Returns TRUE if default values can be specified for a data property
@@ -284,14 +261,10 @@ public:
     /// 
 	__property System::Boolean get_SupportsValueConstraintsList();
 
-
-
-
-
-
-
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 
 public private:
 	ISchemaCapabilitiesImp(System::IntPtr unmanaged, System::Boolean autoDelete);

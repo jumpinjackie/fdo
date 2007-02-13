@@ -35,12 +35,14 @@ public:
     /// an XML document containing the GML 2.1.2 and Xlinks schemas.
     /// 
     /// \return
-    /// Returns XmlReader
+    /// Returns a new XmlReader
     /// 
 	static NAMESPACE_OSGEO_COMMON_XML::XmlReader* CreateReader();
 
+/// \cond DOXYGEN-IGNORE
 private:
 	Schema(){}
+/// \endcond
 };
 
 END_NAMESPACE_OSGEO_COMMON_GML212

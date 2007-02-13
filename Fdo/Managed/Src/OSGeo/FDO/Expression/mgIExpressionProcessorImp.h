@@ -25,20 +25,32 @@ class FdoIExpressionProcessor;
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 
 /// \brief
-/// The FdoIExpressionProcessor interface can be used to process the nodes in an
+/// The IExpressionProcessor interface can be used to process the nodes in an
 /// Expression tree. It declares an process operation for each concrete class in
-/// the FdoExpression hierarchy. Providers or client applications can create
+/// the Expression hierarchy. Providers or client applications can create
 /// classes that realize this interface to do something meaningful with an
-/// FdoExpression hierarchy. For example, an RDBMS feature provider implements a
-/// processor class to convert an FdoExpression hierarchy to the SQL equivalent
+/// Expression hierarchy. For example, an RDBMS feature provider implements a
+/// processor class to convert an Expression hierarchy to the SQL equivalent
 /// syntax.
 private __gc class IExpressionProcessorImp  : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor
 {
 public:
+    /// \brief
+    /// Constructs a IExpressionProcessorImp object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	IExpressionProcessorImp(System::IntPtr unmanaged, System::Boolean autoDelete);
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 
 public private:
 	inline FdoIExpressionProcessor* GetImpObj();

@@ -21,9 +21,9 @@ using OSGeo.FDO.Expression;
 using OSGeo.FDO.Commands;
 using OSGeo.FDO.Raster;
 using OSGeo.FDO.Xml;
-using OSGeo.Common.Io;
-using OSGeo.Common.Xml;
-using OSGeo.Common.Gml212;
+using OSGeo.FDO.Common.Io;
+using OSGeo.FDO.Common.Xml;
+using OSGeo.FDO.Common.Gml212;
 using OSGeo.FDO.Commands.Schema;
 
 namespace Fdo_Test
@@ -70,7 +70,7 @@ namespace Fdo_Test
                 pDict.Add("Test", "this");
                 Debug.Assert(false);         // should have failed and throw exception
             }
-            catch (OSGeo.Common.Exception)
+            catch (OSGeo.FDO.Common.Exception)
             {
             }
             pDict.Add("test", "this");     // case sensitive, so should succeed
@@ -81,7 +81,7 @@ namespace Fdo_Test
                 pDict.SetAttributeValue("NoMatch", "other");
                 Debug.Assert(false);         // should have failed and throw exception
             }
-            catch (OSGeo.Common.Exception)
+            catch (OSGeo.FDO.Common.Exception)
             {
             }
 
@@ -117,7 +117,7 @@ namespace Fdo_Test
                 pDict.Remove("4");
                 Debug.Assert(false);         // should have failed and throw exception
             }
-            catch (OSGeo.Common.Exception)
+            catch (OSGeo.FDO.Common.Exception)
             {
             }
 
@@ -126,7 +126,7 @@ namespace Fdo_Test
                 pDict.Remove("b10ab");
                 Debug.Assert(false);         // should have failed and throw exception
             }
-            catch (OSGeo.Common.Exception)
+            catch (OSGeo.FDO.Common.Exception)
             {
             }
 
@@ -308,7 +308,7 @@ namespace Fdo_Test
             {
                 pdataprop.Precision = -1;
             }
-            catch (OSGeo.Common.Exception)
+            catch (OSGeo.FDO.Common.Exception)
             {
                 bCaughtPrecisionException = true;
                 pdataprop.Precision = 10;
@@ -321,7 +321,7 @@ namespace Fdo_Test
             {
                 pdataprop.Length = -1;
             }
-            catch (OSGeo.Common.Exception)
+            catch (OSGeo.FDO.Common.Exception)
             {
                 bCaughtLengthException = true;
                 pdataprop.Length = 20;
@@ -333,7 +333,7 @@ namespace Fdo_Test
             {
                 FeatureClass pFClass = new FeatureClass("bad:name", pDesc);
             }
-            catch (OSGeo.Common.Exception e)
+            catch (OSGeo.FDO.Common.Exception e)
             {
                 Debug.Assert(e.Message.Substring(e.Message.LastIndexOf(") ") + 1) == " Invalid Feature schema element name 'bad:name'; must not contain ':'. ");
                 bFailed = true;
@@ -359,7 +359,7 @@ namespace Fdo_Test
             {
                 pAutogenProp.ReadOnly = false;
             }
-            catch (OSGeo.Common.Exception)
+            catch (OSGeo.FDO.Common.Exception)
             {
                 bCaughtAutoGenException = true;
             }
@@ -395,7 +395,7 @@ namespace Fdo_Test
                 pfeatureclassidprops.Add(pdataprop);   // should fail, not member of Properties yet
                 Debug.Assert(false);
             }
-            catch (OSGeo.Common.Exception)
+            catch (OSGeo.FDO.Common.Exception)
             {
             }
 
@@ -570,7 +570,7 @@ namespace Fdo_Test
                 pfeatureclass.BaseClass = pfeatureclass2;
                 Debug.Assert(false);  // should never reach this, an exception should be thrown because pclass would become its own grandparent
             }
-            catch (OSGeo.Common.Exception)
+            catch (OSGeo.FDO.Common.Exception)
             {
             }
             pFSchema.AcceptChanges();
@@ -622,7 +622,7 @@ namespace Fdo_Test
             {
                 pFSchema = new FeatureSchema("bad.name", pDesc);
             }
-            catch (OSGeo.Common.Exception e)
+            catch (OSGeo.FDO.Common.Exception e)
             {
                 Debug.Assert(e.Message.Substring(e.Message.LastIndexOf(") ") + 1) == " Invalid Feature schema element name 'bad.name'; must not contain '.'. ");
                 bFailed = true;
@@ -634,7 +634,7 @@ namespace Fdo_Test
             {
                 pdataprop = new DataPropertyDefinition("bad.name", pDesc);
             }
-            catch (OSGeo.Common.Exception e)
+            catch (OSGeo.FDO.Common.Exception e)
             {
                 Debug.Assert(e.Message.Substring(e.Message.LastIndexOf(") ") + 1) == " Invalid Feature schema element name 'bad.name'; must not contain '.'. ");
                 bFailed = true;
@@ -681,7 +681,7 @@ namespace Fdo_Test
             {
                 pFClass = new FeatureClass("bad:name", pDesc);
             }
-            catch (OSGeo.Common.Exception e)
+            catch (OSGeo.FDO.Common.Exception e)
             {
                 //  string pMessage = wcschr( e.GetExceptionMessage(), ')' ) + 1;
                 Debug.Assert(e.Message.Substring(e.Message.LastIndexOf(") ") + 1) == " Invalid Feature schema element name 'bad:name'; must not contain ':'. ");
@@ -699,7 +699,7 @@ namespace Fdo_Test
             {
                 pFClass = new FeatureClass("bad.name", pDesc);
             }
-            catch (OSGeo.Common.Exception e)
+            catch (OSGeo.FDO.Common.Exception e)
             {
                 //Todo: get this working for Linux (likely need to set up message catalogue
                 Debug.Assert(e.Message.Substring(e.Message.LastIndexOf(") ") + 1) == " Invalid Feature schema element name 'bad.name'; must not contain '.'. ");
@@ -744,7 +744,7 @@ namespace Fdo_Test
                 pClass.IdentityProperties.Add(pProp);
                 Debug.Assert(false);  // should never reach this, an exception should be thrown because tried to add an id property to class with base class
             }
-            catch (OSGeo.Common.Exception)
+            catch (OSGeo.FDO.Common.Exception)
             {
             }
 
@@ -762,7 +762,7 @@ namespace Fdo_Test
                 pClass.BaseClass = pBaseClass;
                 Debug.Assert(false);  // should never reach this, an exception should be thrown because tried to base class for class with id properties
             }
-            catch (OSGeo.Common.Exception)
+            catch (OSGeo.FDO.Common.Exception)
             {
             }
 
@@ -945,7 +945,7 @@ namespace Fdo_Test
             {
                 pFSchema.AcceptChanges();
             }
-            catch (OSGeo.Common.Exception)
+            catch (OSGeo.FDO.Common.Exception)
             {
                 // Expected exception
                 pFSchema.RejectChanges();
@@ -1018,7 +1018,7 @@ namespace Fdo_Test
             {
                 pFSchema.AcceptChanges();
             }
-            catch (OSGeo.Common.Exception)
+            catch (OSGeo.FDO.Common.Exception)
             {
                 // Expected exception
                 pFSchema.RejectChanges();
@@ -1094,7 +1094,7 @@ namespace Fdo_Test
             {
                 pFSchema.AcceptChanges();
             }
-            catch (OSGeo.Common.Exception)
+            catch (OSGeo.FDO.Common.Exception)
             {
                 // Expected exception
                 pFSchema.RejectChanges();
@@ -1187,7 +1187,7 @@ namespace Fdo_Test
             {
                 pFSchema.AcceptChanges();
             }
-            catch (OSGeo.Common.Exception)
+            catch (OSGeo.FDO.Common.Exception)
             {
             }
 
@@ -1281,7 +1281,7 @@ namespace Fdo_Test
                 networkLink.StartNodeProperty = nodeAssoc;
                 networkLink.EndNodeProperty = nodeAssoc;
             }
-            catch (OSGeo.Common.Exception)
+            catch (OSGeo.FDO.Common.Exception)
             {
                 // Excepted exception
                 failed = true;
@@ -1332,7 +1332,7 @@ namespace Fdo_Test
             {
                 networkNode.CostProperty = pProp;
             }
-            catch (OSGeo.Common.Exception)
+            catch (OSGeo.FDO.Common.Exception)
             {
                 // Excepted exception
                 failed = true;
@@ -1388,7 +1388,7 @@ namespace Fdo_Test
                 Debug.Assert(mgUnitTestUtil.CheckOutput("TestFiles\\schema_all1_master.txt", "TestFiles\\schema_all1.txt"), "schema_all1_master.txt", "schema_all1.txt");
                 Debug.Assert(mgUnitTestUtil.CheckOutput("TestFiles\\schema_all1_master.txt", "TestFiles\\schema_all2.txt"), "schema_all1_master.txt", "schema_all2.txt");                
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Assert(false, ex.Message);
             }
@@ -1497,7 +1497,7 @@ namespace Fdo_Test
                 {
                     schemas.ReadXml(schemaStreamC);
                 }
-                catch (OSGeo.Common.Exception)
+                catch (OSGeo.FDO.Common.Exception)
                 {
                     bFailed = true;
                 }
@@ -1509,7 +1509,7 @@ namespace Fdo_Test
                 Debug.Assert(mgUnitTestUtil.CheckOutput("TestFiles\\schema_refs1c_master.txt", "TestFiles\\schema_refs1c.xml"), "schema_refs1c_master.txt", "schema_refs1c.xml");
                 Debug.Assert(mgUnitTestUtil.CheckOutput("TestFiles\\schema_refs2_master.txt", "TestFiles\\schema_refs2.xml"), "schema_refs2_master.txt", "schema_refs2.xml");
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Assert(false, ex.Message);
             }
@@ -1572,7 +1572,7 @@ namespace Fdo_Test
                 {
                     schemas.ReadXml("TestFiles\\schema_merge_err.xml", new XmlFlags("www.autodesk.com", XmlFlags.ErrorLevel.ErrorLevel_High));
                 }
-                catch (OSGeo.Common.Exception e)
+                catch (OSGeo.FDO.Common.Exception e)
                 {
                     Debug.Assert(e.Message.IndexOf("Failed to open file 'TestFiles\\schema_merge_err.xml' with access modes: 'rt'. ") != -1);
                     bFailed = true;
@@ -1608,7 +1608,7 @@ namespace Fdo_Test
                Debug.Assert(mgUnitTestUtil.CheckOutput("TestFiles\\schema_merge2b_master.txt", "TestFiles\\schema_merge2b.txt"), "schema_merge2b_master.txt", "schema_merge2b.txt");
                Debug.Assert(mgUnitTestUtil.CheckOutput("TestFiles\\schema_merge2b_master.txt", "TestFiles\\schema_merge3b.txt"), "schema_merge2b_master.txt", "schema_merge3b.txt");               
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Assert(false, ex.Message);
             }
@@ -1635,7 +1635,7 @@ namespace Fdo_Test
                 eachUnsupported(XmlFlags.ErrorLevel.ErrorLevel_Low, "TestFiles\\schema_uns_low_master.txt", "TestFiles\\schema_uns_low.txt");
                 eachUnsupported(XmlFlags.ErrorLevel.ErrorLevel_VeryLow, "TestFiles\\schema_uns_vlow_master.txt", "TestFiles\\schema_uns_vlow.txt");
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Assert(false, ex.Message);
             }
@@ -1693,7 +1693,7 @@ namespace Fdo_Test
                 {
                     schema2.WriteXml(schemaStream);
                 }
-                catch (OSGeo.Common.Exception)
+                catch (OSGeo.FDO.Common.Exception)
                 {
                     bFailed = true;
                 }
@@ -1707,14 +1707,14 @@ namespace Fdo_Test
                 {
                     schemas.WriteXml(schemaStream);
                 }
-                catch (OSGeo.Common.Exception)
+                catch (OSGeo.FDO.Common.Exception)
                 {
                     bFailed = true;
                 }
 
                 Debug.Assert(bFailed, "WriteXml of schema collection should have failed");
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Assert(false, ex.Message);
             }
@@ -1753,7 +1753,7 @@ namespace Fdo_Test
                 // Compare output and expected results.
                 Debug.Assert(mgUnitTestUtil.CheckOutput("TestFiles\\schema_ext_a_master.txt", "TestFiles\\schema_ext2a.txt"));
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Assert(false, ex.Message);
             }
@@ -1843,7 +1843,7 @@ namespace Fdo_Test
                 Debug.Assert( subElemMapping.GmlUri == "http://www.autodesk.com/External");
                 Debug.Assert( subElemMapping.GmlLocalName =="GrpDouble");
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
@@ -1865,7 +1865,7 @@ namespace Fdo_Test
             {
                 schemas.ReadXml("TestFiles\\schema_unsupported.xsd", new XmlFlags("fdo.osgeo.org/schemas/feature", level));
             }
-            catch (OSGeo.Common.Exception e)
+            catch (OSGeo.FDO.Common.Exception e)
             {
                 mgUnitTestUtil.PrintException(e.Message, outFile);
                 if (level == XmlFlags.ErrorLevel.ErrorLevel_VeryLow)

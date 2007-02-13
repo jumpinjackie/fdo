@@ -21,16 +21,16 @@
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 
 /// \brief
-/// The FdoDeleteRule enumeration specifies the action to take when a delete
+/// The DeleteRule enumeration specifies the action to take when a delete
 /// operation is executed on the class instance at the other end of the
 /// relation.
-/// <param name="FdoDeleteRule_Cascade">
+/// <param name="DeleteRule_Cascade">
 /// Cascade the delete operation to class instances at this end of the relation
 /// </param>
-/// <param name="FdoDeleteRule_Prevent">
+/// <param name="DeleteRule_Prevent">
 /// Prevent the delete operation if there are class instances at this end of the relation
 /// </param>
-/// <param name="FdoDeleteRule_Break">
+/// <param name="DeleteRule_Break">
 /// Break the relationship by setting the identifying properties at this end to null values
 /// </param>
 public __value enum DeleteRule

@@ -24,7 +24,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT
 public __gc __interface ISpatialContextReader;
 
 /// \brief
-/// The FdoIGetSpatialContexts interface defines the GetSpatialContexts command,
+/// IGetSpatialContexts interface defines the GetSpatialContexts command,
 /// which enumerates the existing spatial contexts.
 public __gc __interface IGetSpatialContexts : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
 {
@@ -53,7 +53,7 @@ public:
 	__property System::Void set_ActiveOnly(System::Boolean value);
 
     /// \brief
-    /// Executes the GetSpatialContexts command returning an FdoISpatialContextReader.
+    /// Executes the GetSpatialContexts command returning an ISpatialContextReader.
     /// 
     /// \return
     /// Returns nothing

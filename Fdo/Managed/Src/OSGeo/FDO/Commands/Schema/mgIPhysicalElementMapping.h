@@ -37,36 +37,36 @@ public __gc __interface IPhysicalElementMapping;
 public __gc class PhysicalSchemaMapping;
 
 /// \brief
-/// FdoPhysicalElementMapping is an abstract class that acts as a base class for all 
+/// PhysicalElementMapping is an abstract class that acts as a base class for all 
 /// Physical Schema Mapping Override classes. FDO also provides a number of sub-classes
 /// for particular types of Provider-specific override classes:
 ///
-/// \li \c FdoPhysicalClassMapping: All classes corresponding to Feature Classes
-/// must be based on FdoPhysicalClassMapping.
-/// \li \c FdoPhysicalPropertyMapping: Must be the base for all classes corresponding to 
+/// \li \c PhysicalClassMapping: All classes corresponding to Feature Classes
+/// must be based on PhysicalClassMapping.
+/// \li \c PhysicalPropertyMapping: Must be the base for all classes corresponding to 
 /// Properties.
-/// \li \c FdoPhysicalSchemaMapping: Must be the base for all types of schema override sets.
+/// \li \c PhysicalSchemaMapping: Must be the base for all types of schema override sets.
 /// \li \c Other types of schema override classes can be based directly on 
-/// FdoPhysicalElementMapping.
+/// PhysicalElementMapping.
 /// 
 public __gc __interface IPhysicalElementMapping : public NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler
 {
 public:
     /// \brief
-    /// Gets the parent of this FdoPhysicalElementMapping or null if this object has not
+    /// Gets the parent of this PhysicalElementMapping or null if this object has not
     /// been added to a parent object.
     /// 
     /// \return
-    /// Returns FdoPhysicalElementMapping of parent
+    /// Returns the PhysicalElementMapping of the parent
     /// 
 	__property NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IPhysicalElementMapping* get_Parent();
 
     /// \brief
-    /// Gets the FdoPhysicalSchemaMapping that this element is a part of. Returns null if this
+    /// Gets the PhysicalSchemaMapping that this element is a part of. Returns null if this
     /// object has not been added to a feature schema.
     /// 
     /// \return
-    /// Returns FdoPhysicalSchemaMapping this object is a part of
+    /// Returns PhysicalSchemaMapping this object is a part of
     /// 
 	__property NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping* get_SchemaMapping();
 
@@ -87,19 +87,20 @@ public:
 	__property System::String* get_Name();
 	
     /// \brief
-    /// Sets the name of this element.
-    /// 
-    /// \param value 
-    /// Input the name of this element.
+    /// Gets the fully qualified name of this element.
     /// 
     /// \return
-    /// Returns nothing
+    /// Returns the qualified name of this element. 
     /// 
 	__property System::String* get_QualifiedName();
 
-    // Indicates that this object allows its name
-    // to change. This function is defined so that this class can 
-    // be a NamedCollection element.
+    /// \brief
+    /// Indicates whether the name of the Element can be changed once
+    /// it has been created.
+    /// 
+    /// \return
+    /// Returns true if the Element name can be changed; otherwise false.
+    /// 
 	__property System::Boolean get_CanSetName();
 
     /// \brief
@@ -132,16 +133,67 @@ public:
     /// 
 	System::Void WriteXml(NAMESPACE_OSGEO_COMMON_XML::XmlWriter* xmlWriter, NAMESPACE_OSGEO_FDO_XML::XmlFlags* flags);
 
-    /// Various error reporting functions that are not yet part of the supported
-    /// FDO API.
-    /// All of them return a FdoXmlSkipElementHandler, which can be used to skip
-    /// over the element in error.
+    /// \brief
+    /// Error reporting function that are not yet part of the supported FDO API.
+    /// Return a XmlSkipElementHandler, which can be used to skip over the element in error.
+    ///
+    /// \param context 
+    /// Input context contain information about the current deserialization operation
+    ///
+    /// \param parentElement 
+    /// Input the XML parent element
+    ///
+    /// \param subElement 
+    /// Input the XML sub element
+    ///
 	NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler* SubElementError(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* context, System::String* parentElement, System::String* subElement);
 
+    /// \brief
+    /// Error reporting function that are not yet part of the supported FDO API.
+    /// Return a XmlSkipElementHandler, which can be used to skip over the element in error.
+    ///
+    /// \param context 
+    /// Input context contain information about the current deserialization operation
+    ///
+    /// \param parentElement 
+    /// Input the XML parent element
+    ///
+    /// \param subElement 
+    /// Input the XML sub element
+    ///
 	NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler* MultiSubElementError(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* context, System::String* parentElement, System::String* subElement);
 
+    /// \brief
+    /// Error reporting function that are not yet part of the supported FDO API.
+    /// Return a XmlSkipElementHandler, which can be used to skip over the element in error.
+    ///
+    /// \param context 
+    /// Input context contain information about the current deserialization operation
+    ///
+    /// \param parentElement 
+    /// Input the XML parent element
+    ///
+    /// \param subElements 
+    /// Input the list of the XML sub elements
+    ///
 	NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler* ChoiceSubElementError(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* context, System::String* parentElement, NAMESPACE_OSGEO_COMMON::StringCollection* subElements);
 
+    /// \brief
+    /// Error reporting function that are not yet part of the supported FDO API.
+    /// Return a XmlSkipElementHandler, which can be used to skip over the element in error.
+    ///
+    /// \param context 
+    /// Input context contain information about the current deserialization operation
+    ///
+    /// \param parentElement 
+    /// Input the XML parent element
+    ///
+    /// \param subElement 
+    /// Input the XML sub element
+    ///
+    /// \param subElementName 
+    /// Input the XML sub element name
+    ///
 	NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler* DuplicateSubElementError(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* context, System::String* parentElement, System::String* subElement, System::String* subElementName);
 };
 

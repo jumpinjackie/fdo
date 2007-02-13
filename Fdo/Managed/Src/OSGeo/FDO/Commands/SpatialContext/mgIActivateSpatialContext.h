@@ -23,7 +23,7 @@
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT
 
 /// \brief
-/// The FdoIActivateSpatialContext interface defines the ActivateSpatialContext
+/// The IActivateSpatialContext interface defines the ActivateSpatialContext
 /// command, which activates a specified spatial context. Input to the command
 /// is the name of the context to activate.
 public __gc __interface IActivateSpatialContext : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand

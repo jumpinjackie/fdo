@@ -26,12 +26,15 @@ class FdoIDeactivateLongTransaction;
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
 /// \brief
-/// The FdoIDeactivateLongTransaction interface defines the 
+/// The IDeactivateLongTransactionImp class is a 
+/// concrete implementation of IDeactivateLongTransaction.
+/// The IDeactivateLongTransaction interface defines the 
 /// DeactivateLongTransaction command, which deactivates the active long 
 /// transaction where feature manipulation commands operate on it. If the 
 /// active long transaction is the root long transaction, then no long
 /// transaction will be deactivated.
-private __gc class IDeactivateLongTransactionImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, public NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IDeactivateLongTransaction
+private __gc class IDeactivateLongTransactionImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 
+                                                   public NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IDeactivateLongTransaction
 {
 public:
     /// \brief

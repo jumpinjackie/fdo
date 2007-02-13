@@ -25,15 +25,17 @@ class FdoILockOwnersReader;
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 
 /// \brief
-/// The FdoILockOwnersReader interface provides forward-only, read-only functionality
+/// The ILockOwnersReaderImp class is a concrete implementation of ILockOwnersReader.
+/// The ILockOwnersReader interface provides forward-only, read-only functionality
 /// for identifying users. A connected user has status of lock owner even if he has
 /// no locks or has released his locks.
 /// \remarks
 /// A reference to an
-/// FdoILockOwnersReader interface is returned from the GetLockOwners command. The initial
-/// position of the FdoILockOwnersReader interface is prior to the first item. Thus, you
+/// ILockOwnersReader interface is returned from the GetLockOwners command. The initial
+/// position of the ILockOwnersReader interface is prior to the first item. Thus, you
 /// must call ReadNext to begin accessing any data.
-private __gc class ILockOwnersReaderImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockOwnersReader
+private __gc class ILockOwnersReaderImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 
+                                          public NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockOwnersReader
 {
 public:
     /// \brief
@@ -55,7 +57,7 @@ public:
 	System::Boolean ReadNext();
 
     /// \brief
-    /// Closes the FdoILockOwnersReader object, freeing any resources it may be
+    /// Closes the ILockOwnersReader object, freeing any resources it may be
     /// holding.
     /// 
     /// \return
@@ -63,8 +65,10 @@ public:
     /// 
 	System::Void Close();
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	__sealed System::Void ReleaseUnmanagedObject();
+/// \endcond
 
 public private:
 	ILockOwnersReaderImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_RUNTIME::Disposable(unmanaged, autoDelete)

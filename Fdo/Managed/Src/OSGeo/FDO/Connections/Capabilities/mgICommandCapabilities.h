@@ -21,16 +21,13 @@
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 
 /// \brief
-/// The FdoICommandCapabilities interface declares the feature provider's level
+/// The ICommandCapabilities interface declares the feature provider's level
 /// of support for Commands.
 public __gc __interface ICommandCapabilities : public System::IDisposable
 {
 public:
     /// \brief
-    /// Gets an array of the FdoCommandType values supported by the feature provider.
-    /// 
-    /// \param size 
-    /// Output the number of commands
+    /// Gets an array of the CommandType values supported by the feature provider.
     /// 
     /// \return
     /// Returns the list of commands

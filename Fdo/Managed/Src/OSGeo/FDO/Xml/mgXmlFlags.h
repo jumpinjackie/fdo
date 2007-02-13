@@ -28,7 +28,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_XML
 public __gc class PhysicalElementMapping;
 
 /// \brief
-/// FdoXmlFlags defines various options for serializing and deserializing
+/// XmlFlags defines various options for serializing and deserializing
 /// FDO element to and from XML Documents.
 public __gc class XmlFlags : public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
@@ -78,9 +78,38 @@ public:
 	};
 
     /// \brief
-    /// Constructs an FdoXmlFlags object.
+    /// Constructs an XmlFlags object.
     /// 
-    /// \param url 
+	XmlFlags();
+
+    /// \brief
+    /// Constructs an XmlFlags object.
+    /// 
+    /// \param location 
+    /// Input When writing  Feature Schemas, this specifies the 
+    /// prefix for the target namespace for any schemas that are written. The XML 
+    /// format for Feature Schemas is OGC GML, so a targetNamespace for the 
+    /// xs:schema element is required. This namespace will be http://[url]/[schema_name].
+    /// 
+	XmlFlags(System::String* location);
+
+    /// \brief
+    /// Constructs an XmlFlags object.
+    /// 
+    /// \param location 
+    /// Input When writing  Feature Schemas, this specifies the 
+    /// prefix for the target namespace for any schemas that are written. The XML 
+    /// format for Feature Schemas is OGC GML, so a targetNamespace for the 
+    /// xs:schema element is required. This namespace will be http://[url]/[schema_name].
+    /// \param errorLevel 
+    /// Input The error level for reading feature schemas.
+    /// 
+	XmlFlags(System::String* location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel);
+
+    /// \brief
+    /// Constructs an XmlFlags object.
+    /// 
+    /// \param location 
     /// Input When writing  Feature Schemas, this specifies the 
     /// prefix for the target namespace for any schemas that are written. The XML 
     /// format for Feature Schemas is OGC GML, so a targetNamespace for the 
@@ -91,19 +120,10 @@ public:
     /// Input true: apply name adjustment to all elements. 
     /// false: apply name adjustment only to elements with fdo:nameAdjust="true"
     /// 
-    /// \return
-    /// Returns FdoXmlFlags
-    /// 
-	XmlFlags();
-
-	XmlFlags(System::String* location);
-
-	XmlFlags(System::String* location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel);
-
 	XmlFlags(System::String* location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel, System::Boolean nameAdjust);
 
     /// \brief
-    /// Sets the target namespace prefix, see FdoXmlFlags::Create().
+    /// Sets the target namespace prefix, see XmlFlags::Create().
     /// 
     /// \param location 
     /// Input the target namespace prefix.
@@ -111,7 +131,7 @@ public:
     __property System::Void set_Url(System::String* location);
 
     /// \brief
-    /// Gets the target namespace prefix, see FdoXmlFlags::Create().
+    /// Gets the target namespace prefix, see XmlFlags::Create().
     /// 
     /// \return
     /// Returns the target namespace prefix.
@@ -119,7 +139,7 @@ public:
 	__property System::String* get_Url();
 
     /// \brief
-    /// Sets the error level, see FdoXmlFlags::Create().
+    /// Sets the error level, see XmlFlags::Create().
     /// 
     /// \param value 
     /// Input the error level.
@@ -127,7 +147,7 @@ public:
 	__property System::Void set_Errorlevel(NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel value);
 
     /// \brief
-    /// Gets the current error level, see FdoXmlFlags::Create().
+    /// Gets the current error level, see XmlFlags::Create().
     /// 
     /// \return
     /// Returns the error level.
@@ -135,7 +155,7 @@ public:
 	__property NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel get_Errorlevel();
 
     /// \brief
-    /// Sets the name adjustment flag, see FdoXmlFlags::Create().
+    /// Sets the name adjustment flag, see XmlFlags::Create().
     /// 
     /// \param nameAdjust 
     /// Input the name adjustment flag.
@@ -143,7 +163,7 @@ public:
   	__property System::Void set_NameAdjust(System::Boolean nameAdjust);
 
     /// \brief
-    /// Gets the name adjustment flag, see FdoXmlFlags::Create().
+    /// Gets the name adjustment flag, see XmlFlags::Create().
     /// 
     /// \return
     /// Returns the name adjustment flag.
@@ -181,7 +201,7 @@ public:
     /// \brief
     /// Sets the Use GML ID flag.
     /// 
-    /// \param schemaNameAsPrefix 
+    /// \param id 
     /// Input when true, the feature id ( fid in GML 2, gml:id in GML 3)
     /// becomes the identity property of all feature classes.
     /// 
@@ -201,9 +221,9 @@ public:
     /// 
     /// \param mappings 
     /// Input the Schema Mapping Overrides. This collection
-    /// can contain an FdoXmlSchemaMapping element for each Feature Schema that
+    /// can contain an XmlSchemaMapping element for each Feature Schema that
     /// may be written or read. When a Feature Schema is read or written to or 
-    /// from GML, this collection is checked for an FdoXmlSchemaMapping item named 
+    /// from GML, this collection is checked for an XmlSchemaMapping item named 
     /// the same as the feature schema. If present, the hints in this item 
     /// affect how the feature schema is read or written. The Schema Mapping 
     /// Overrides also control how features are read since they 
@@ -216,7 +236,7 @@ public:
     /// Gets the current Schema Mapping Overrides.
     /// 
     /// \return
-    /// Returns FdoXmlSchemaMappingCollection*.
+    /// Returns XmlSchemaMappingCollection*.
     /// 
     __property NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMappingCollection* get_SchemaMappings();
 
@@ -228,8 +248,10 @@ public private:
 
 	inline FdoXmlFlags* GetImpObj();
 
+/// \cond DOXYGEN-IGNORE
 protected:
-    System::Void ReleaseUnmanagedObject();
+	System::Void ReleaseUnmanagedObject();
+/// \endcond
 };
 
 END_NAMESPACE_OSGEO_FDO_XML

@@ -21,15 +21,15 @@
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
 /// \brief
-/// The FdoLongTransactionSetOperations enumeration defines the list of
+/// The LongTransactionSetOperations enumeration defines the list of
 /// available operations that can be performed by the ChangeLongTransactionSet command.
-/// <param name="FdoLongTransactionSetOperations_Add">
+/// <param name="LongTransactionSetOperations_Add">
 /// Add the specified long transaction to the selection set.
 /// </param>
-/// <param name="FdoLongTransactionSetOperations_Remove">
+/// <param name="LongTransactionSetOperations_Remove">
 /// Remove the specified long transaction from the selection set.
 /// </param>
-/// <param name="FdoLongTransactionSetOperations_Clear">
+/// <param name="LongTransactionSetOperations_Clear">
 /// Clear the selection set.
 /// </param>
 [System::FlagsAttribute]

@@ -30,28 +30,44 @@ BEGIN_NAMESPACE_OSGEO_COMMON
 public __sealed __gc class DictionaryElement : public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
 public:
+    /// \brief
+    ///     Constructs a new empty dictionary element
+    /// 
+    /// \param name 
+    ///     The name of the element.
+    /// 
+    /// \param value 
+    ///     The value of the element.
+    /// 
 	DictionaryElement(System::String* name, System::String* value);
 
+    /// \brief
+    ///     Constructs an elemnet based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    ///     Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    ///     Input Indicates if the constructed object should be automatically deleted 
+    ///     once it no longer referenced.
+    /// 
 	DictionaryElement(System::IntPtr unmanaged, System::Boolean autoDelete);
 
     /// \brief
-    ///     Gets the name of this element
+    ///     Gets the name of this dictionary element
     /// 
     /// \return
-    ///     Returns the element name
+    ///     Returns the dictionary element name
     /// 
-    ///  
 	__property String* get_Name();
 
     /// \brief
-    ///     Indicates that this object does not allow its name
-    ///     to change. Not allowing name change allows more efficient 
-    ///     random access to FdoDictionary.
+    ///     Indicates whether the name of the DictionaryElement can be changed once
+    ///     it has been created.
     /// 
     /// \return
-    ///     Returns false
+    ///     Returns true if the DictionaryElement name can be changed; otherwise false.
     /// 
-    ///  
 	__property System::Boolean get_CanSetName();
 
     /// \brief
@@ -60,22 +76,23 @@ public:
     /// \return
     ///     Returns the element value
     /// 
-    ///  
 	__property System::String* get_Value();
 
     /// \brief
     ///     Sets the value of this dictionary element
     /// 
     /// \param value 
-    /// Input the element value
+    ///     Input the value of the dictionary element
     /// 
 	__property System::Void set_Value(String* value);
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
 
 public private:
 	inline FdoDictionaryElement* GetImpObj();
+/// \endcond
 };
 
 END_NAMESPACE_OSGEO_COMMON

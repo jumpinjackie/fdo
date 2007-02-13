@@ -36,7 +36,7 @@ public:
     ///     Constructs a text reader on a file
     /// 
     /// \param fileName 
-    /// Input name of the file to read.
+    ///     Input name of the file to read.
     /// 
 	IoTextReader(System::String* fileName);
 
@@ -44,7 +44,7 @@ public:
     ///     Constructs a text reader on a stream
     /// 
     /// \param stream 
-    /// Input the stream to read.
+    ///     Input the stream to read.
     /// 
 	IoTextReader(NAMESPACE_OSGEO_COMMON_IO::IoStream* stream);
 
@@ -60,13 +60,25 @@ public:
     ///  
 	__property NAMESPACE_OSGEO_COMMON_IO::IoStream* get_Stream();
 
+    /// \brief
+    ///     Constructs a text reader based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    ///     Input A Pointer to the unmanaged reader.
+    /// 
+    /// \param autoDelete 
+    ///     Input Indicates if the constructed object should be automatically deleted 
+    ///     once it no longer referenced.
+    /// 
 	IoTextReader(System::IntPtr unmanaged, System::Boolean autoDelete);
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
 
 public private:
 	inline FdoIoTextReader* GetImpObj();
+/// \endcond
 };
 
 END_NAMESPACE_OSGEO_COMMON_IO

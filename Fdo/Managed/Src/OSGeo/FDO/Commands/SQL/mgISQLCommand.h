@@ -24,7 +24,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SQL
 public __gc __interface ISQLDataReader;
 
 /// \brief
-/// The FdoISQLCommand interface defines the SQL command, which supports the
+/// The ISQLCommand interface defines the SQL command, which supports the
 /// execution of a SQL statement against an underlying RDBMS. Two execute
 /// methods are provided to distinguish between statements that return table data
 /// versus those that execute non query type operations.
@@ -61,7 +61,7 @@ public:
 
     /// \brief
     /// Executes the SQL statement against the connection object and returns
-    /// an FdoISQLDataReader.
+    /// an ISQLDataReader.
     /// 
     /// \return
     /// Returns the data reader.

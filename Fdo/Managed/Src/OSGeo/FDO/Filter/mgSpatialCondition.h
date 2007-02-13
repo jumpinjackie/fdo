@@ -32,7 +32,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_FILTER
 public __gc __interface IFilterProcessor;
 
 /// \brief
-/// The FdoSpatialCondition class derives from FdoGeometricCondition and can be used
+/// The SpatialCondition class derives from GeometricCondition and can be used
 /// to test whether the value of a geometric property (referenced using the name
 /// of the property) and another geometric value satisfy the spatial
 /// relationship implied by the operation. Some feature providers may only
@@ -42,15 +42,15 @@ public __gc class SpatialCondition : public NAMESPACE_OSGEO_FDO_FILTER::Geometri
 {
 public:
     /// \brief
-    /// Constructs a default instance of an FdoSpatialCondition.
+    /// Constructs a default instance of an SpatialCondition.
     /// 
     /// \return
-    /// Returns FdoSpatialCondition
+    /// Returns SpatialCondition
     /// 
 	SpatialCondition();
 
     /// \brief
-    /// Constructs an instance of an FdoSpatialCondition using the specified arguments.
+    /// Constructs an instance of an SpatialCondition using the specified arguments.
     /// 
     /// \param propertyName 
     /// Input property name
@@ -60,12 +60,12 @@ public:
     /// Input geometry
     /// 
     /// \return
-    /// Returns FdoSpatialCondition
+    /// Returns SpatialCondition
     /// 
 	SpatialCondition(System::String* propertyName, NAMESPACE_OSGEO_FDO_FILTER::SpatialOperations operation, NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* geometry);
 
     /// \brief
-    /// Constructs an instance of an FdoSpatialCondition using the specified arguments.
+    /// Constructs an instance of an SpatialCondition using the specified arguments.
     /// 
     /// \param propertyName 
     /// Input property name
@@ -75,7 +75,7 @@ public:
     /// Input geometry
     /// 
     /// \return
-    /// Returns FdoSpatialCondition
+    /// Returns SpatialCondition
     /// 
 	SpatialCondition(NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier* propertyName, NAMESPACE_OSGEO_FDO_FILTER::SpatialOperations operation,  NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* geometry);
 
@@ -118,7 +118,7 @@ public:
 	__property System::Void set_Geometry(NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* value);
 
     /// \brief
-    /// Overrides FdoFilter.Process to pass the FdoSpatialCondition to the
+    /// Overrides Filter.Process to pass SpatialCondition to the
     /// appropriate filter processor operation.
     /// 
     /// \param processor 
@@ -129,6 +129,16 @@ public:
     /// 
 	System::Void Process(NAMESPACE_OSGEO_FDO_FILTER::IFilterProcessor* processor);
 
+    /// \brief
+    /// Constructs a SpatialCondition object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	SpatialCondition(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:

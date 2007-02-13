@@ -26,11 +26,21 @@ class FdoLogicalOperator;
 BEGIN_NAMESPACE_OSGEO_FDO_FILTER
 
 /// \brief
-/// FdoLogicalOperator is an abstract base class. FdoBinaryLogicalOperator and
-/// FdoUnaryLogicalOperator derive from the FdoLogicalOperator class.
+/// The LogicalOperator is an abstract base class. BinaryLogicalOperator and
+/// UnaryLogicalOperator derive from the LogicalOperator class.
 public __gc class LogicalOperator : public NAMESPACE_OSGEO_FDO_FILTER::Filter
 {
 public:
+    /// \brief
+    /// Constructs a LogicalOperator object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	LogicalOperator(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:
