@@ -264,6 +264,185 @@ geographic</gml:derivedCRSType>
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
+<xs:element name="RTABLE5" type="AutoGen:RTABLE5Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="RTABLE5Key">
+<xs:selector xpath=".//RTABLE5"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:complexType name="RTABLE5Type" abstract="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="fdo:ClassType">
+<xs:sequence>
+<xs:element name="ID">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value="2"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="STRING_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="50"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="TABLE5_ID">
+<xs:simpleType>
+<xs:restriction base="xs:double"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:element name="RTABLE6" type="AutoGen:RTABLE6Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="RTABLE6Key">
+<xs:selector xpath=".//RTABLE6"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:complexType name="RTABLE6Type" abstract="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="fdo:ClassType">
+<xs:sequence>
+<xs:element name="ID">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value="2"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="STRING_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="50"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="TABLE6_ID1">
+<xs:simpleType>
+<xs:restriction base="xs:double"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="TABLE6_ID2">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="50"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:element name="RTABLE7" type="AutoGen:RTABLE7Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="RTABLE7Key">
+<xs:selector xpath=".//RTABLE7"/>
+<xs:field xpath="ID"/>
+</xs:key>
+<xs:unique name="RTABLE7Key_0">
+<xs:selector xpath=".//RTABLE7"/>
+<xs:field xpath="TABLE7_ID"/>
+</xs:unique>
+</xs:element>
+<xs:complexType name="RTABLE7Type" abstract="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="fdo:ClassType">
+<xs:sequence>
+<xs:element name="FK_RTABLE7_TABLE7" minOccurs="0" maxOccurs="1" fdo:multiplicity="" fdo:deleteRule="Break" fdo:defaultIdentity="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexType>
+<xs:sequence>
+<xs:element name="TABLE7_ID">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="20"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+<xs:keyref name="AutoGen_RTABLE7_FK_RTABLE7_TABLE7" refer="AutoGen:TABLE7_RTABLE7AKey">
+<xs:selector xpath=".//RTABLE7"/>
+<xs:field xpath="ID"/>
+</xs:keyref>
+</xs:element>
+<xs:element name="ID">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="20"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="STRING_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="50"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="TABLE7_ID">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="20"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
 <xs:element name="TABLE1" type="AutoGen:TABLE1Type" abstract="false" substitutionGroup="gml:_Feature">
 <xs:key name="TABLE1Key">
 <xs:selector xpath=".//TABLE1"/>
@@ -528,6 +707,135 @@ geographic</gml:derivedCRSType>
 <xs:simpleType>
 <xs:restriction base="xs:decimal">
 <xs:totalDigits value="5"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="STRING_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="50"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:element name="TABLE5" type="AutoGen:TABLE5Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="TABLE5Key">
+<xs:selector xpath=".//TABLE5"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:complexType name="TABLE5Type" abstract="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="fdo:ClassType">
+<xs:sequence>
+<xs:element name="ID">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value="2"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="STRING_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="50"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:element name="TABLE6" type="AutoGen:TABLE6Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="TABLE6Key">
+<xs:selector xpath=".//TABLE6"/>
+<xs:field xpath="ID1"/>
+<xs:field xpath="ID2"/>
+</xs:key>
+</xs:element>
+<xs:complexType name="TABLE6Type" abstract="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="fdo:ClassType">
+<xs:sequence>
+<xs:element name="ID1">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value="2"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="ID2">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="50"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="STRING_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="50"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:element name="TABLE7" type="AutoGen:TABLE7Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="TABLE7Key">
+<xs:selector xpath=".//TABLE7"/>
+<xs:field xpath="ID"/>
+</xs:key>
+<xs:key name="TABLE7_RTABLE7AKey">
+<xs:selector xpath=".//AutoGen"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:complexType name="TABLE7Type" abstract="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="fdo:ClassType">
+<xs:sequence>
+<xs:element name="ID">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="20"/>
 <xs:fractionDigits value=""/>
 </xs:restriction>
 </xs:simpleType>

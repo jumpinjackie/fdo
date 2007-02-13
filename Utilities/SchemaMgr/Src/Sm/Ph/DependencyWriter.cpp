@@ -99,7 +99,7 @@ void FdoSmPhDependencyWriter::SetOrderType(FdoStringP sValue)
 
 void FdoSmPhDependencyWriter::SetCardinality(long lValue)
 {
-	SetDouble(L"",L"fkcardinality", lValue);
+	SetLong(L"",L"fkcardinality", lValue);
 }
 
 void FdoSmPhDependencyWriter::Modify( FdoStringP pkTableName, FdoStringP fkTableName )

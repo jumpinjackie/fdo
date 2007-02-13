@@ -159,7 +159,7 @@ A Data Property cannot have a negative precision.
 MessageId=1017
 SymbolicName=SCHEMA_17_ASSOCIATIONMISSMATCHERROR
 Language=English
-Type or number missmatch between the identity properties and the reverse identity properties. 
+Association Property '%1$ls' has type or number missmatch between the identity properties and the reverse identity properties. 
 .
 MessageId=1018
 SymbolicName=SCHEMA_18_ASSOCIATIONIDENTITYERROR
@@ -339,7 +339,7 @@ Invalid Feature schema element name '%1$ls'; must not contain '%2$c'.
 MessageId=1053
 SymbolicName=SCHEMA_53_BADASSOCREVERSEPROP
 Language=English
-Cannot use auto-generated or system properties as reverse identity properties
+Cannot use auto-generated or system properties as reverse identity properties for association property '%1$ls'
 .
 MessageId=1054
 SymbolicName=SCHEMA_54_AUTOGENREADONLY
