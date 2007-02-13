@@ -81,8 +81,7 @@ DbiConnection::DbiConnection( ):
     mFilterProcessor( NULL ),
     mSchemaUtil( NULL ),
     mIndex(0),
-    mContext(NULL),
-    mParsedConnection(NULL)
+    mContext(NULL)
 {
     // Set the flag that indicates whether or not the RDBMS user has a Workspace
     // Manager environment.
@@ -92,7 +91,7 @@ DbiConnection::DbiConnection( ):
     //       Workspace Manager or Alternate API.
 
     mIsWorkspaceManagerEnvironment = FALSE;
-
+    mParsedConnection = new ParseInfo();
 
 }
 
@@ -181,8 +180,6 @@ FdoConnectionState DbiConnection::Open (
             mGdbiConnection->SetIsGeometryFromOrdinatesWanted((char*)(const char*)(mParsedConnection->mIsGeometryFromOrdinatesWanted));
     }
     
-    mDbSchemaName = mParsedConnection->mSchema;
-
     return mOpen;
 }
 
@@ -204,7 +201,7 @@ void DbiConnection::Close ()
         rdbi_disconnect( mContext );
         mOpen = FdoConnectionState_Closed;
 		mGdbiConnection->Close();
-        mDbSchemaName = L"";
+        mParsedConnection->mSchema = L"";
         mDbiContextId  = -1;
     }
 }
@@ -264,23 +261,27 @@ bool DbiConnection::SetTransactionLock( const char *sqlStatement )
 
 FdoStringP DbiConnection::GetUser()
 {
-    return (NULL == mParsedConnection) ? L"" : mParsedConnection->mUser;
+    return mParsedConnection->mUser;
 }
 
 FdoStringP DbiConnection::GetPassword()
 {
-    return (NULL == mParsedConnection) ? L"" : mParsedConnection->mPassword;
+    return mParsedConnection->mPassword;
 }
 
 FdoStringP DbiConnection::GetSchema()
 {
-    return (NULL == mParsedConnection) ? L"" : mParsedConnection->mSchema;
+    return mParsedConnection->mSchema;
 }
-
 
 FdoStringP DbiConnection::GetDataSource()
 {
-    return (NULL == mParsedConnection) ? L"" : mParsedConnection->mDataSource;
+    return mParsedConnection->mDataSource;
+}
+
+FdoStringP DbiConnection::GetConnectionString()
+{
+    return mParsedConnection->mConnectionStringProperty;
 }
 
 void DbiConnection::SetConnectData (FdoString *datasource, FdoString *user, FdoString *password, FdoString *schema, FdoString *connectionString, FdoString *defaultGeometryWanted)
@@ -760,12 +761,12 @@ int DbiConnection::dbi_index_deac()
 
 FdoStringP DbiConnection::GetDbSchemaName()
 {
-    return mDbSchemaName;
+    return mParsedConnection->mSchema;
 }
 
 void DbiConnection::SetDbSchemaName(const wchar_t * schemaName)
 {
-    mDbSchemaName = schemaName;
+    mParsedConnection->mSchema = schemaName;
 }
 
 
@@ -1096,3 +1097,12 @@ FdoSchemaManagerP DbiConnection::GetSchemaManager()
     return GetSchemaUtil()->GetSchemaManager();
 }
 
+unsigned long DbiConnection::GetDbVersion()
+{
+    if (mContext == NULL)
+        return RDBI_DBVERSION_UNKNOW;
+    rdbi_vndr_info_def info;
+	rdbi_vndr_info( mContext, &info );
+
+    return info.dbversion;
+}

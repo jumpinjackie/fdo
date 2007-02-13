@@ -22,6 +22,13 @@
 
 #ifdef _WIN32
 #include <tchar.h>
+#include<odbcinst.h>
+#else
+// remove #if 0 when FdoRdbmsOdbcConnection::GetSchemaNameFromDsn is active on Linux
+#if 0
+#include<odbcinst.h>
+#endif
+
 #endif
 
 #include <Inc/ut.h>
@@ -45,6 +52,7 @@
 #include "FdoRdbmsOdbcSpatialManager.h"
 
 #include "DbiConnection.h"
+#include <FdoCommonConnStringParser.h>
 
 #include <Inc/Rdbi/proto.h>
 #include "../../ODBCDriver/context.h"
@@ -174,17 +182,30 @@ FdoSchemaManagerP FdoRdbmsOdbcConnection::NewSchemaManager(
 
 FdoSchemaManagerP FdoRdbmsOdbcConnection::CreateSchemaManager()
  {
-    FdoStringP userName = GetDbiConnection()->GetUser();
-    FdoStringP schemaName = GetSchemaNameFromDsn();
-
-    if (schemaName.GetLength() > 0)
+    DbiConnection* pConn = GetDbiConnection();
+    FdoStringP userName = pConn->GetUser();
+    FdoStringP schemaName = pConn->GetDbSchemaName();
+    if (schemaName.GetLength() == 0)
     {
-        // If the DSN contained a schema name, take that as the only one that
-        // we want to see, and which will be specified in all future requests
-        // from this provider.
-        // If this is not set, all schemas will be visible (occasionally more
-        // useful, but also can be slow).
-        GetDbiConnection()->SetDbSchemaName(schemaName);
+        FdoStringP connectionStringProperty = pConn->GetConnectionString();
+        if (connectionStringProperty.GetLength() != 0 && pConn->GetDbVersion() == RDBI_DBVERSION_ODBC_ORACLE)
+        {
+            FdoCommonConnStringParser parser (NULL, connectionStringProperty);
+            if (parser.IsConnStringValid())
+                schemaName = parser.GetPropertyValueW(L"XSM");
+        }
+        if (schemaName.GetLength() == 0)
+            schemaName = GetSchemaNameFromDsn();
+
+        if (schemaName.GetLength() > 0)
+        {
+            // If the DSN contained a schema name, take that as the only one that
+            // we want to see, and which will be specified in all future requests
+            // from this provider.
+            // If this is not set, all schemas will be visible (occasionally more
+            // useful, but also can be slow).
+            pConn->SetDbSchemaName(schemaName);
+        }
     }
 
 #if 0
@@ -197,7 +218,7 @@ FdoSchemaManagerP FdoRdbmsOdbcConnection::CreateSchemaManager()
     {
         // Set sane default for the RDBMS' schema (where things go for cases where
         // we do not specify a schema in this provider).
-        GetDbiConnection()->SetActiveSchema(schemaName);
+        pConn->SetActiveSchema(schemaName);
     }
 
     // Call base class' method.
@@ -419,86 +440,42 @@ FdoRdbmsLockManager *FdoRdbmsOdbcConnection::CreateLockManager()
 }
 
 #ifdef _WIN32
-static HKEY GetRegistryKey(HKEY topkey, const char * subkeyName)
-{
-    HKEY hkey = NULL;
-    TCHAR value[ODBCDR_CONNECTION_SIZE];
-    DWORD size = sizeof(value) / sizeof(value[0]);;
-    LONG errStatus = ERROR_SUCCESS;
-    int status = FALSE;
-
-    if (ERROR_SUCCESS != RegOpenKeyEx (
-        topkey,
-        _T(subkeyName),     /* subkey name */
-        0L,                 /* reserved */
-        KEY_QUERY_VALUE,    /* security access mask */
-        &hkey))             /* handle to open key */
-    {
-        hkey = NULL;
-    }
-    return hkey;
-}
-
-static FdoStringP GetRegistryValue(HKEY hkey, const char * name)
-{
-    TCHAR value[ODBCDR_CONNECTION_SIZE];
-    DWORD size = sizeof(value) / sizeof(value[0]);;
-    LONG errStatus = ERROR_SUCCESS;
-    DWORD type;
-    FdoStringP valueP;
-
-    errStatus = RegQueryValueEx (
-        hkey,         /* handle to key */
-        _T(name),     /* value name */
-        NULL,         /* reserved */
-        &type,        /* type buffer */
-        (LPBYTE)value,/* data buffer */
-        &size);       /* size of data buffer */
-
-    if (ERROR_SUCCESS == errStatus)
-    {
-        valueP = FdoStringP::Format(L"%hs", (char *) value);
-    }
-    return valueP;
-}
-
-#endif
-
-#define SUBKEYNAME_PREFIX           "Software\\ODBC\\ODBC.INI\\"
-#define KEYNAME_DRIVER              "Driver"
-#define KEYNAME_USERID_ORACLENATIVE "UserID"
-#define DRIVER_NAME_ORACLENATIVE    L"SQORA32"
-
+#define ODBC_FODBC_INI        L"ODBC.INI"
 FdoStringP FdoRdbmsOdbcConnection::GetSchemaNameFromDsn()
 {
     FdoStringP schemaName;
 
-#ifdef _WIN32
     // For Oracle on Windows, get the UserId field.
     // This field is normally just a default for the username, so this use does overload
     // it.  However, Oracle's driver does not offer a separate "schema" field as other
     // drivers do.
-
-    FdoStringP dsn = GetDbiConnection()->GetDataSource();
-    HKEY hkey = NULL;
-    char subkeyName[ODBCDR_CONNECTION_SIZE];
-    size_t subkeyNameSize = sizeof(subkeyName) / sizeof(subkeyName[0]);
-    (void) _snprintf(subkeyName, subkeyNameSize-1, "%s%ls", SUBKEYNAME_PREFIX, (const wchar_t *)dsn);
-
-    hkey = GetRegistryKey(HKEY_CURRENT_USER, subkeyName);
-    if (NULL == hkey)
-        hkey = GetRegistryKey(HKEY_LOCAL_MACHINE, subkeyName);
-    if (NULL != hkey)
+    DbiConnection* pConn = GetDbiConnection();
+    FdoStringP dsn = pConn->GetDataSource();
+    wchar_t buffValue[ODBCDR_CONNECTION_SIZE];
+    if (pConn->GetDbVersion() == RDBI_DBVERSION_ODBC_ORACLE)
     {
-        FdoStringP driver = GetRegistryValue(hkey, KEYNAME_DRIVER);
-        if (driver.Contains(DRIVER_NAME_ORACLENATIVE))
-        {
-            FdoStringP userId = GetRegistryValue(hkey, KEYNAME_USERID_ORACLENATIVE);
-            if (userId.GetLength() > 0)
-                schemaName = userId;
-        }
+        if(0 != ::SQLGetPrivateProfileStringW( dsn, L"UserID", L"", buffValue, ODBCDR_CONNECTION_SIZE, ODBC_FODBC_INI ))
+	        schemaName = buffValue;
     }
-#endif
-
     return schemaName;
 }
+#else
+#define ODBC_FODBC_INI        "ODBC.INI"
+FdoStringP FdoRdbmsOdbcConnection::GetSchemaNameFromDsn()
+{
+    FdoStringP schemaName;
+#if 0
+    // this code is intended for Linux but is untested. 
+    // not sure if SQLGetPrivateProfileString is implemented on Linux
+    DbiConnection* pConn = GetDbiConnection();
+    FdoStringP dsn = pConn->GetDataSource();
+    char buffValue[ODBCDR_CONNECTION_SIZE];
+    if (pConn->GetDbVersion() == RDBI_DBVERSION_ODBC_ORACLE)
+    {
+        if(0 != ::SQLGetPrivateProfileString( dsn, "UserID", "", buffValue, ODBCDR_CONNECTION_SIZE, ODBC_FODBC_INI ))
+	        schemaName = buffValue;
+    }
+#endif
+    return schemaName;
+}
+#endif
