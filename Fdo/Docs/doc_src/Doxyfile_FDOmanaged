@@ -1,4 +1,4 @@
-# Doxyfile 1.4.6
+# Doxyfile 1.5.1-p1
 
 #---------------------------------------------------------------------------
 # Project related configuration options
@@ -63,10 +63,10 @@ FILE_VERSION_FILTER    =
 # configuration options related to warning and progress messages
 #---------------------------------------------------------------------------
 QUIET                  = NO
-WARNINGS               = NO
-WARN_IF_UNDOCUMENTED   = NO
-WARN_IF_DOC_ERROR      = NO
-WARN_NO_PARAMDOC       = NO
+WARNINGS               = YES
+WARN_IF_UNDOCUMENTED   = YES
+WARN_IF_DOC_ERROR      = YES
+WARN_NO_PARAMDOC       = YES
 WARN_FORMAT            = "$file:$line: $text"
 WARN_LOGFILE           = warning_logfile.txt
 #---------------------------------------------------------------------------
@@ -78,7 +78,12 @@ FILE_PATTERNS          = *.h
 RECURSIVE              = YES
 EXCLUDE                = 
 EXCLUDE_SYMLINKS       = NO
-EXCLUDE_PATTERNS       = 
+EXCLUDE_PATTERNS       = stdafx.h \
+                         VirtualSaxHandler.h \
+                         VirtualFdoIoStream.h \
+                         resource.h \
+                         ProtocolExt.h \
+                         define_pages.h
 EXAMPLE_PATH           = headers_and_footers
 EXAMPLE_PATTERNS       = *
 EXAMPLE_RECURSIVE      = YES
@@ -94,6 +99,7 @@ INLINE_SOURCES         = NO
 STRIP_CODE_COMMENTS    = NO
 REFERENCED_BY_RELATION = YES
 REFERENCES_RELATION    = YES
+REFERENCES_LINK_SOURCE = YES
 USE_HTAGS              = NO
 VERBATIM_HEADERS       = NO
 #---------------------------------------------------------------------------
@@ -184,14 +190,7 @@ SEARCH_INCLUDES        = YES
 INCLUDE_PATH           = 
 INCLUDE_FILE_PATTERNS  = 
 PREDEFINED             = 
-EXPAND_AS_DEFINED      = NAMESPACE_COMMON \
-                         NAMESPACE_COMMON_IO \
-                         NAMESPACE_COMMON_XML \
-                         NAMESPACE_FDO_COMMANDS \
-                         NAMESPACE_FDO_COMMANDS_SCHEMA \
-                         NAMESPACE_FDO_CONNECTIONS_CAPABILITIES \
-                         NAMESPACE_FDO_EXPRESSION \
-                         NAMESPACE_FDO_SCHEMA
+EXPAND_AS_DEFINED      = 
 SKIP_FUNCTION_MACROS   = YES
 #---------------------------------------------------------------------------
 # Configuration::additions related to external references   
@@ -215,6 +214,7 @@ TEMPLATE_RELATIONS     = NO
 INCLUDE_GRAPH          = YES
 INCLUDED_BY_GRAPH      = YES
 CALL_GRAPH             = YES
+CALLER_GRAPH           = NO
 GRAPHICAL_HIERARCHY    = YES
 DIRECTORY_GRAPH        = YES
 DOT_IMAGE_FORMAT       = png
