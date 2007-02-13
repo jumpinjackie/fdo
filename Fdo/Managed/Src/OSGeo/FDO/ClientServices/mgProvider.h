@@ -23,7 +23,8 @@ class FdoProvider;
 BEGIN_NAMESPACE_OSGEO_FDO_CLIENTSERVICES
 
 /// \brief
-/// Provides information about a feature provider, including name, description, library, and version information.
+/// The Provides class provides information about a feature provider, including name, 
+/// description, library, and version information.
 public __sealed __gc class Provider : public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
 public:
@@ -32,8 +33,8 @@ public:
     /// [Company].[Provider].[Version].
     /// 
     /// \return
-    /// Returns the name as a constant wchar_t*.
-    /// Throws an instance of FdoException * if an error occurs.
+    /// Returns the name of the Provider.
+    /// Throws an instance of Exception if an error occurs.
     /// 
 	__property System::String* get_Name();
 
@@ -41,8 +42,8 @@ public:
     /// Gets a user friendly display name of the feature provider.
     /// 
     /// \return
-    /// Returns the display name as a constant wchar_t*.
-    /// Throws an instance of FdoException * if an error occurs.
+    /// Returns the display name of the Provider.
+    /// Throws an instance of Exception if an error occurs.
     /// 
 	__property System::String* get_DisplayName();
     
@@ -50,8 +51,8 @@ public:
     /// Gets a brief description of the feature provider.
     /// 
     /// \return
-    /// Returns the description as a constant wchar_t*.
-    /// Throws an instance of FdoException * if an error occurs.
+    /// Returns the description of the Provider.
+    /// Throws an instance of Exception if an error occurs.
     /// 
 	__property System::String* get_Description();
     
@@ -60,8 +61,8 @@ public:
     /// [VersionMajor].[VersionMinor].[BuildMajor].[BuildMinor].
     /// 
     /// \return
-    /// Returns the version as a constant wchar_t*.
-    /// Throws an instance of FdoException * if an error occurs.
+    /// Returns the version of the Provider.
+    /// Throws an instance of Exception if an error occurs.
     /// 
 	__property System::String* get_Version();
 
@@ -70,8 +71,8 @@ public:
     /// The version number string has the form [VersionMajor].[VersionMinor].[BuildMajor].[BuildMinor].
     /// 
     /// \return
-    /// Returns the Feature Data Objects version as a constant wchar_t*.
-    /// Throws an instance of FdoException * if an error occurs.
+    /// Returns the Feature Data Objects version of the Provider.
+    /// Throws an instance of Exception if an error occurs.
     /// 
 	__property System::String* get_FeatureDataObjectsVersion();
 
@@ -79,8 +80,8 @@ public:
     /// Gets the FULL library path + library name of the provider. 
     /// 
     /// \return
-    /// Returns the library path as a constant wchar_t*.
-    /// Throws an instance of FdoException * if an error occurs.
+    /// Returns the library path of the Provider.
+    /// Throws an instance of Exception if an error occurs.
     /// 
 	__property System::String* get_LibraryPath();
 
@@ -89,7 +90,7 @@ public:
     /// 
     /// \return
     /// Returns the managed state flag as a bool.
-    /// Throws an instance of FdoException * if an error occurs.
+    /// Throws an instance of Exception if an error occurs.
     /// 
 	__property System::Boolean get_IsManaged();
 
@@ -100,8 +101,10 @@ public private:
 
 	inline FdoProvider* GetImpObj();
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 };
 
 END_NAMESPACE_OSGEO_FDO_CLIENTSERVICES

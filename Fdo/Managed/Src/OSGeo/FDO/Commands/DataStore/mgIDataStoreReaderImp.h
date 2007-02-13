@@ -26,10 +26,12 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE
 public __gc __interface IDataStorePropertyDictionary;
 
 /// \brief
-/// The FdoISQLCommand interface defines the SQL command, which supports the
-/// execution of a SQL statement against an underlying RDBMS. Two execute
-/// methods are provided to distinguish between statements that return table data
-/// versus those that execute non query type operations.
+/// The IDataStoreReaderImp class is a concrete implementation class of the
+/// IDataStoreReader interface. IDataStoreReaderImp provides a forward-only, read-only iterator
+/// for reading feature data.  A reference to an IDataStoreReader is returned
+/// from the IListDataStores command. Because the initial position of the
+/// IDataStoreReader is prior to the first item, you must call
+/// ReadNext to begin accessing any data.
 private __gc class IDataStoreReaderImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStoreReader
 {
 public:
@@ -59,7 +61,7 @@ public:
 	System::Boolean GetIsFdoEnabled();
 
     /// \brief
-    /// Gets the FdoIConnectionPropertyDictionary interface that 
+    /// Gets the IDataStorePropertyDictionary interface that 
     /// includes the properties of the datastores set at datastore create 
     /// time, with the exception of password.
     /// 
@@ -80,7 +82,7 @@ public:
 	System::Boolean ReadNext();
 
     /// \brief
-    /// Closes the FdoIDataStoreReader object, freeing any resources it may be holding.
+    /// Closes the IDataStoreReader object, freeing any resources it may be holding.
     /// 
     /// \return
     /// Returns nothing
@@ -92,8 +94,10 @@ public private:
 
 	inline FdoIDataStoreReader* GetImpObj();
 
+/// \cond DOXYGEN-IGNORE
 protected:
-	System::Void ReleaseUnmanagedObject();	
+	System::Void ReleaseUnmanagedObject();
+/// \endcond
 };
 
 END_NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE

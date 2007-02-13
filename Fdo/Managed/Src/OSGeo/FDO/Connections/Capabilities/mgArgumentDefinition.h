@@ -27,12 +27,12 @@ using namespace NAMESPACE_OSGEO_FDO_SCHEMA;
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 
 /// \brief
-/// The FdoArgumentDefinition class contains metadata that describes an argument to a function.
+/// The ArgumentDefinition class contains metadata that describes an argument to a function.
 public __gc class ArgumentDefinition : public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
 public:
     /// \brief
-    /// Constructs an instance of an FdoArgumentDefinition using the specified arguments.
+    /// Constructs an instance of an ArgumentDefinition using the specified arguments.
     /// 
     /// \param name 
     /// Input the name of the argument.
@@ -42,7 +42,7 @@ public:
     /// Input the type of argument.
     /// 
     /// \return
-    /// Returns FdoArgumentDefinition
+    /// Returns ArgumentDefinition
     /// 
 	ArgumentDefinition(System::String* name, System::String* description, NAMESPACE_OSGEO_FDO_SCHEMA::DataType dataType);
 
@@ -63,7 +63,7 @@ public:
 	__property System::String* get_Description();
 
     /// \brief
-    /// Gets the FdoDataType of the argument.
+    /// Gets the PropertyType of the argument.
     /// 
     /// \return
     /// Returns the property type of the argument
@@ -71,15 +71,17 @@ public:
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType get_PropertyType();
 
     /// \brief
-    /// Gets the FdoDataType of the argument.
+    /// Gets the DataType of the argument.
     /// 
     /// \return
     /// Returns the data type of the argument
     /// 
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::DataType get_DataType();
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 
 public private:
 	ArgumentDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);

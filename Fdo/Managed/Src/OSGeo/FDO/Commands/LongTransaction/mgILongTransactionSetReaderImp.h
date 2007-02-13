@@ -25,11 +25,12 @@ class FdoILongTransactionSetReader;
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
 /// \brief
-/// The FdoILongTransactionSetReader interface provides forward only, read-only
+/// The ILongTransactionSetReaderImp class is a concrete implementation of ILongTransactionSetReader.
+/// The ILongTransactionSetReader interface provides forward only, read-only
 /// functionality for enumerating the versions in the long transaction selection
-/// set.  A reference to an FdoILongTransactionSetReader is returned from the
+/// set.  A reference to an ILongTransactionSetReader is returned from the
 /// GetLongTransactionsInSet command. The initial position of the
-/// FdoILongTransactionSetReader is prior to the first item. Thus, you must
+/// ILongTransactionSetReader is prior to the first item. Thus, you must
 /// call ReadNext to begin accessing any data.
 private __gc class ILongTransactionSetReaderImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionSetReader
 {
@@ -63,7 +64,7 @@ public:
 	System::Boolean ReadNext();
 
     /// \brief
-    /// Closes the FdoILongTransactionSetReader object, freeing any resources
+    /// Closes the ILongTransactionSetReader object, freeing any resources
     /// it may be holding.
     /// 
     /// \return
@@ -71,8 +72,10 @@ public:
     /// 
 	System::Void Close();
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 
 public private:
 	ILongTransactionSetReaderImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_RUNTIME::Disposable(unmanaged, autoDelete)

@@ -39,7 +39,7 @@ namespace Fdo_Test
 			{
 				pExpression = Expression.Parse(pwzExpression);
 			}
-			catch(OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
 			{
                 Debug.Assert(ex.Message.IndexOf("String does not represent a valid expression") != -1, "Exception null should be another exception.");
 			}
@@ -95,7 +95,7 @@ namespace Fdo_Test
 			ParseExpression("'abc'");
 			ParseExpression("'abc''def'");
 			ParseExpression("a+b*34/12");
-			ParseExpression("12345678901234567", "1.23456789012346e+016"); 
+            ParseExpression("12345678901234567", "12345678901234567"); 
 			ParseExpression("1.2e13", 	"12000000000000");
 			ParseExpression("-2 --2 +2 ++2", "-2--2+2+2");
 			
@@ -303,7 +303,7 @@ namespace Fdo_Test
                 }
                 ParseExpression(new string(veryLargeLiteralString));
             }
-            catch (OSGeo.Common.Exception)
+            catch (OSGeo.FDO.Common.Exception)
             {
                 Debug.Assert(false);
             }

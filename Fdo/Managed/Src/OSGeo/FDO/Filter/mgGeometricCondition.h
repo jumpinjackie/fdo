@@ -31,10 +31,10 @@ using namespace NAMESPACE_OSGEO_FDO_EXPRESSION;
 BEGIN_NAMESPACE_OSGEO_FDO_FILTER
 
 /// \brief
-/// The FdoGeometricCondition abstract class derives from FdoSearchCondition and can
+/// GeometricCondition is an abstract class that derives from SearchCondition and can
 /// be used to test whether the value of a geometric property meets a particular
-/// spatial criteria. FdoGeometricCondition is the base class for FdoDistanceCondition
-/// and FdoSpatialCondition.
+/// spatial criteria. GeometricCondition is the base class for DistanceCondition
+/// and SpatialCondition.
 public __gc class GeometricCondition : public NAMESPACE_OSGEO_FDO_FILTER::SearchCondition
 {
 public:
@@ -57,6 +57,16 @@ public:
     /// 
 	__property System::Void set_PropertyName(NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier* value);
 
+    /// \brief
+    /// Constructs a GeometricCondition object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	GeometricCondition(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:

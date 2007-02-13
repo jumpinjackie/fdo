@@ -31,7 +31,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 public __gc __interface IExpressionProcessor;
 
 /// \brief
-/// The FdoSingleValue class derives from FdoDataValue and represents a single precision floating point number.
+/// The SingleValue class derives from DataValue and represents a single precision floating point number.
 public __gc class SingleValue : public NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue
 {
 public:
@@ -44,34 +44,34 @@ public:
 	static System::Single op_Explicit( NAMESPACE_OSGEO_FDO_EXPRESSION::SingleValue* value );
 
     /// \brief
-    /// Constructs a default instance of an FdoSingleValue with a value of null.
+    /// Constructs a default instance of an SingleValue with a value of null.
     /// 
     /// \return
-    /// Returns the created FdoSingleValue
+    /// Returns the created SingleValue
     /// 
 	SingleValue();
 
     /// \brief
-    /// Constructs a default instance of an FdoSingleValue using the specified arguments.
+    /// Constructs a default instance of an SingleValue using the specified arguments.
     /// 
     /// \param value 
     /// Input a single precision floating point value
     /// 
     /// \return
-    /// Returns the created FdoSingleValue
+    /// Returns the created SingleValue
     /// 
 	SingleValue(System::Single value);
 
     /// \brief
-    /// Gets the data type of the FdoSingleValue.
+    /// Gets the data type of the SingleValue.
     /// 
     /// \return
-    /// Returns an FdoDataType
+    /// Returns an DataType
     /// 
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::DataType get_DataType();
 
     /// \brief
-    /// Gets the FdoSingleValue as a single precision floating point number.
+    /// Gets the SingleValue as a single precision floating point number.
     /// 
     /// \return
     /// Returns a single precision floating point value
@@ -79,7 +79,7 @@ public:
 	__property System::Single get_Single();
 
     /// \brief
-    /// Sets the FdoSingleValue as a single precision floating point number.
+    /// Sets the SingleValue as a single precision floating point number.
     /// 
     /// \param value 
     /// Input a single precision floating point value
@@ -90,11 +90,11 @@ public:
 	__property System::Void set_Single(System::Single value);
 
     /// \brief
-    /// Overrides FdoExpression.Process to pass the FdoSingleValue to the appropriate
+    /// Overrides Expression.Process to pass the SingleValue to the appropriate
     /// expression processor operation.
     /// 
     /// \param processor 
-    /// Input an FdoIExpressionProcessor
+    /// Input an IExpressionProcessor
     /// 
     /// \return
     /// Returns nothing
@@ -109,6 +109,16 @@ public:
     /// 
 	System::String* ToString();
 
+    /// \brief
+    /// Constructs a SingleValue object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	SingleValue(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:

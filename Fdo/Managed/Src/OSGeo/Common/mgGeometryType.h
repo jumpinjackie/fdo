@@ -79,7 +79,7 @@ public __value enum GeometryType
 /// \brief
 ///  Enumeration for components of Geometry.
 /// \remarks
-///  This enumeration applies to certain helper types that are used to compose other types which derive from FdoIGeometry.
+///  This enumeration applies to certain helper types that are used to compose other types which derive from IGeometry.
 /// <param name="GeometryComponentType_LinearRing">
 /// LinearRing type
 /// </param>

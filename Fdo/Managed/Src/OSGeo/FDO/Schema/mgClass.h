@@ -27,7 +27,7 @@ class FdoClass;
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 
 /// \brief
-/// The FdoClass class derives from FdoClassDefinition and can be used to represent any type of
+/// Class derives ClassDefinition and can be used to represent any type of
 /// non-spatial data within a feature schema. Typically, classes are used in the
 /// feature schema to define complex properties of other feature types by
 /// containment. However, they can also be used at global scope and
@@ -37,31 +37,41 @@ public __gc class Class : public NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition
 {
 public:
     /// \brief
-    /// Constructs a default instance of an FdoClass.
+    /// Constructs a default instance of an Class.
     /// 
 	Class();
 
     /// \brief
-    /// Constructs an instance of an FdoClass using the specified arguments.
+    /// Constructs an instance of an FDO Class using the specified arguments.
     /// 
     /// \param name 
-    /// Input name
+    /// Input the name of the class
     /// \param description 
-    /// Input description
+    /// Input the description of the class
     /// 
     /// \return
-    /// Returns FdoClass
+    /// Returns an FDO Class
     /// 
 	Class(System::String* name, System::String* description);
 
     /// \brief
-    /// Gets the concrete class type.
+    /// Gets the concrete FDO class type.
     /// 
     /// \return
-    /// Returns class type
+    /// Returns the FDO class type
     /// 
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::ClassType get_ClassType();
 
+    /// \brief
+    /// Constructs an FDO Class object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	Class(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition(unmanaged, autoDelete)
 	{
 

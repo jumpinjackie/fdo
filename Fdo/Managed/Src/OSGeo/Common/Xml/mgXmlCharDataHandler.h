@@ -36,9 +36,6 @@ public:
     /// \brief
     /// Constructs a Char Data Handler.
     /// 
-    /// \return
-    /// Returns FdoXmlCharDataHandler
-    /// 
 	XmlCharDataHandler();
 
     /// \brief
@@ -50,10 +47,22 @@ public:
     /// 
 	__property System::String* get_RetString();
 	
+    /// \brief
+    /// Constructs a DataHandler based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	XmlCharDataHandler(System::IntPtr unmanaged, System::Boolean autoDelete);
 
+/// \cond DOXYGEN-IGNORE
 public private:
 	inline FdoXmlCharDataHandler* GetImpObj();
+/// \endcond
 };
 END_NAMESPACE_OSGEO_COMMON_XML
 

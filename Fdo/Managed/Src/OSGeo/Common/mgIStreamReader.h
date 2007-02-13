@@ -22,6 +22,8 @@
 
 BEGIN_NAMESPACE_OSGEO_COMMON
 
+/// \brief
+/// Enumeration for datatypes used by stream readers.
 public __value enum StreamReaderType
 {
 	StreamReaderType_Byte = FdoStreamReaderType_Byte,
@@ -29,11 +31,17 @@ public __value enum StreamReaderType
 };
 
 /// \brief
-///     The IStreamReader class is a top level interface for stream reader classes. 
-///     The API it provides allows the user to read large streams of data in blocks of items. 
+/// The IStreamReader class is a top level interface for stream reader classes. 
+/// The API it provides allows the user to read large streams of data in blocks of items. 
 public __gc __interface IStreamReader : public System::IDisposable
 {
 public:
+    /// \brief
+    /// Gets the type of the Stream Reader
+    /// 
+    /// \return
+    /// Returns the Stream Reader type
+    /// 
 	__property StreamReaderType get_Type();
 };
 

@@ -24,14 +24,14 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 public __gc __interface ILockOwnersReader;
 
 /// \brief
-/// The FdoIGetLockOwners interface defines the GetLockOwners command, which gets a
+/// The IGetLockOwners interface defines the GetLockOwners command, which gets a
 /// list of all lock owners. A connected user has the status of being a lock owner as
 /// does a user who has released all of his locks.
 public __gc __interface IGetLockOwners : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
 {
 public:
     /// \brief
-    /// Executes the GetLockOwners command, returning an FdoILockOwnersReader.
+    /// Executes the GetLockOwners command, returning an ILockOwnersReader.
     /// 
     /// \return
     /// Returns the lock owners reader.

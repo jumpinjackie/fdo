@@ -24,9 +24,9 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 public __gc __interface ILongTransactionReader;
 
 /// \brief
-/// The FdoIGetLongTransactions interface defines the GetLongTransactions
+/// The IGetLongTransactions interface defines the GetLongTransactions
 /// command. It allows a user to retrieve long transaction information for all or
-/// a specific long transaction. The command returns a FdoILongTransactionReader
+/// a specific long transaction. The command returns a ILongTransactionReader
 /// object enumerating the identified long transactions.
 public __gc __interface IGetLongTransactions : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
 {
@@ -55,7 +55,7 @@ public:
 
     /// \brief
     /// Executes the GetLongTransactions command returning a reference to an
-    /// FdoILongTransactionReader.
+    /// ILongTransactionReader.
     /// 
     /// \return
     /// Returns a long transaction reader

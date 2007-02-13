@@ -27,14 +27,16 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 public __gc __interface ILockOwnersReader;
 
 /// \brief
-/// The FdoIGetLockOwners interface defines the GetLockOwners command, which gets a
+/// The IGetLockOwnersImp class is a concrete implementation of IGetLockedObjects.
+/// The IGetLockOwners interface defines the GetLockOwners command, which gets a
 /// list of all lock owners. A connected user has the status of being a lock owner as
 /// does a user who has released all of his locks.
-private __gc class IGetLockOwnersImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, public NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IGetLockOwners
+private __gc class IGetLockOwnersImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 
+                                       public NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IGetLockOwners
 {
 public:
     /// \brief
-    /// Executes the GetLockOwners command, returning an FdoILockOwnersReader.
+    /// Executes the GetLockOwners command, returning an ILockOwnersReader.
     /// 
     /// \return
     /// Returns the lock owners reader.

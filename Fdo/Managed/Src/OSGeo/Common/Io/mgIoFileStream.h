@@ -33,17 +33,30 @@ public:
     ///     creates the stream for a named file.
     /// 
     /// \param fileName 
-    /// Input the file name
+    ///     Input the file name
+    ///
     /// \param accessModes 
-    /// Input File access modes. Same as the fopen() C run-time library function
-    /// (mode parameter).
+    ///     Input File access modes. Same as the fopen() C run-time library function
+    ///     (mode parameter).
     /// 
 	IoFileStream(System::String* fileName, System::String* accessModes);
 
+    /// \brief
+    ///     Constructs a stream reader based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    ///     Input A Pointer to the unmanaged stream reader.
+    /// 
+    /// \param autoDelete 
+    ///     Input Indicates if the constructed object should be automatically deleted 
+    ///     once it no longer referenced.
+    /// 
 	IoFileStream(System::IntPtr unmanaged, System::Boolean autoDelete);
 
+/// \cond DOXYGEN-IGNORE
 public private:
 	inline FdoIoFileStream* GetImpObj();
+/// \endcond
 };
 
 END_NAMESPACE_OSGEO_COMMON_IO

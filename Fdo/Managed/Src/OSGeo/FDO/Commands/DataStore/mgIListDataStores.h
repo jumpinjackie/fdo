@@ -24,7 +24,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE
 public __gc __interface IDataStoreReader;
 
 /// \brief
-/// The FdoIListDataStores interface defines the list datastores command,
+/// The IListDataStores interface defines the list datastores command,
 /// which provides a way to get a list of datastores at a particular server. 
 public __gc __interface IListDataStores : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
 {
@@ -32,7 +32,7 @@ public:
     /// \brief
     /// Gets the flag that indicates whether to include or
     /// not include Non-FDO enabled datastores in the returned list.
-    /// These are also referred to as “Foreign?datastores.
+    /// These are also referred to as 'Foreign' datastores.
     /// 
     /// \return
     /// Returns the flag
@@ -42,7 +42,7 @@ public:
     /// \brief
     /// Sets the flag to indicate whether to include or not include
     /// Non-FDO enabled datastores in the returned list. These are also
-    /// referred to as “Foreign?datastores.
+    /// referred to as 'Foreign' datastores.
     /// 
     /// \return
     /// Returns nothing
@@ -50,7 +50,7 @@ public:
 	__property System::Void set_IncludeNonFdoEnabledDatastores(System::Boolean include);
 
     /// \brief
-    /// Executes the FdoIListDataStores command.
+    /// Executes the IListDataStores command.
     /// 
     /// \return
     /// Returns nothing

@@ -31,7 +31,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 public __gc __interface IExpressionProcessor;
 
 /// \brief
-/// The FdoBooleanValue class derives from FdoDataValue and represents a Boolean
+/// The BooleanValue class derives from DataValue and represents a Boolean
 /// value.
 public __gc class BooleanValue : public NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue
 {
@@ -42,34 +42,34 @@ public:
 	static System::Boolean op_Explicit( NAMESPACE_OSGEO_FDO_EXPRESSION::BooleanValue* value);
 
     /// \brief
-    /// Constructs a default instance of an FdoBooleanValue with a value of null.
+    /// Constructs a default instance of an BooleanValue with a value of null.
     /// 
     /// \return
-    /// Returns the created FdoBooleanValue
+    /// Returns the created BooleanValue
     /// 
 	BooleanValue();
 
     /// \brief
-    /// Constructs a default instance of an FdoBooleanValue using the specified arguments.
+    /// Constructs a default instance of an BooleanValue using the specified arguments.
     /// 
     /// \param value 
     /// Input a Boolean value
     /// 
     /// \return
-    /// Returns the created FdoBooleanValue
+    /// Returns the created BooleanValue
     /// 
 	BooleanValue(System::Boolean value);
 
     /// \brief
-    /// Gets the data type of the FdoBooleanValue.
+    /// Gets the data type of the BooleanValue.
     /// 
     /// \return
-    /// Returns an FdoDataType
+    /// Returns an DataType
     /// 
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::DataType get_DataType();
 
     /// \brief
-    /// Gets the FdoBooleanValue.
+    /// Gets the BooleanValue.
     /// 
     /// \return
     /// Returns a Boolean value
@@ -88,11 +88,11 @@ public:
 	__property System::Void set_Boolean(System::Boolean value);
 
     /// \brief
-    ///  Overrides FdoExpression.Process to pass the FdoBooleanValue to the appropriate
+    ///  Overrides Expression.Process to pass the BooleanValue to the appropriate
     /// expression processor operation.
     /// 
     /// \param processor 
-    /// Input the FdoIExpressionProcessor
+    /// Input the IExpressionProcessor
     /// 
     /// \return
     /// Returns nothing
@@ -107,6 +107,16 @@ public:
     /// 
 	System::String* ToString();
 
+    /// \brief
+    /// Constructs a BooleanValue object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	BooleanValue(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:

@@ -30,7 +30,8 @@ END_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 
 /// \brief
-/// The FdoIDelete interface defines the Delete command, which deletes instances of
+/// The IDeleteImp class is a concrete implementation class for interface IDelete.
+/// The IDelete interface defines the FDO Delete command, which deletes instances of
 /// a given class that match the specified criteria. Input to the delete command
 /// includes the name of the class, and filter criteria by which to identify the
 /// instances to be deleted. The filter may be specified either as text or as an
@@ -40,7 +41,8 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 /// to simply by the class name. Instances at a nested scope (i.e. instances
 /// within a object collection property) are referred to by the containing class
 /// name, followed by a '.', followed by the object collection property name.
-private __gc class IDeleteImp : public NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp, public NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IDelete
+private __gc class IDeleteImp : public NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp, 
+                                public NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IDelete
 {
 public:
     /// \brief
@@ -53,10 +55,10 @@ public:
 	System::Int32 Execute();
 
     /// \brief
-    ///  Deleting objects might result in lock conflicts if objects
+    /// Deleting objects might result in lock conflicts if objects
     /// to be deleted are not exclusively locked for the user attempting to
     /// delete the object. A lock conflict report is generated.
-    /// The function GetLockConflicts returns a lock conflict reader that provides
+    /// This function returns a lock conflict reader that provides
     /// access to the list of lock conflicts that occurred during the execution
     /// of the delete operation.
     /// 

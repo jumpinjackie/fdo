@@ -38,16 +38,16 @@ public:
     ///     The stream’s current position is moved ahead by the number of bytes read.
     /// 
     /// \param buffer 
-    /// Output read into this buffer
+    ///     Output read into this buffer
+    ///
     /// \param count 
-    /// Input read this number of bytes into the buffer.
-    /// The caller is responsible for allocating a buffer that is large enough to hold the bytes.
+    ///     Input read this number of bytes into the buffer.
+    ///     The caller is responsible for allocating a buffer that is large enough to hold the bytes.
     /// 
     /// \return
     ///     Returns the number of bytes that were read. 0 if already at the
     ///     end of the stream.
     /// 
-    ///  
 	virtual System::UInt32 Read(System::Byte buffer[], System::UInt32 count);
 
     /// \brief
@@ -55,14 +55,15 @@ public:
     ///     to the stream. The current position is moved ahead by the number of bytes 
     ///     written.
     /// 
+    /// \param buffer 
+    ///     Intput write from this buffer
+    ///
+    /// \param count 
+    ///     Input number of bytes to write
+    /// 
     /// \remarks
     ///     Note: Write will overwrite some of the contents of the stream 
     ///     if the current position is not at the end of the stream.
-    /// 
-    /// \param buffer 
-    /// Intput write from this buffer
-    /// \param count 
-    /// Input number of bytes to write
     /// 
 	virtual System::Void Write(System::Byte buffer[], System::UInt32 count);
 
@@ -70,14 +71,22 @@ public:
     ///     reads the number of bytes from the given stream, and writes them 
     ///     to this stream. 
     /// 
-    /// \param buffer 
-    /// Input write from this buffer
-    /// \param count 
-    /// Input the maximum number of bytes to read and write.
-    /// When 0, all remaining bytes are read from the given stream.
-    /// 
+    /// \param stream 
+    ///     Input write from this buffer
+    ///
 	virtual System::Void Write(NAMESPACE_OSGEO_COMMON_IO::IoStream* stream);
 
+    /// \brief
+    ///     reads the number of bytes from the given stream, and writes them 
+    ///     to this stream. 
+    /// 
+    /// \param stream 
+    ///     Input write from this buffer
+    ///
+    /// \param count 
+    ///     Input the maximum number of bytes to read and write.
+    ///     When 0, all remaining bytes are read from the given stream.
+    /// 
 	virtual System::Void Write(NAMESPACE_OSGEO_COMMON_IO::IoStream* stream, System::UInt32 count);
 
     /// \brief
@@ -88,13 +97,13 @@ public:
     /// \brief
     ///     skips over part of the stream.
     /// 
-    /// \param offset 
-    /// The number of bytes to skip. if position then 
-    /// the current position is moved forward. If negative, the position is
-    /// moved backward. The position will remain between the start and end 
-    /// of the stream. The position is set to the end of the stream if the 
-    /// given offset would put it past the end. Similarily, the position is 
-    /// set to the start if the offset would put it before the start.
+    /// \param count 
+    ///     The number of bytes to skip. if positive then 
+    ///     the current position is moved forward. If negative, the position is
+    ///     moved backward. The position will remain between the start and end 
+    ///     of the stream. The position is set to the end of the stream if the 
+    ///     given offset would put it past the end. Similarily, if the position is 
+    ///     set to the start if the offset would put it before the start.
     /// 
 	virtual System::Void Skip(System::Int64 count);
 
@@ -102,9 +111,9 @@ public:
     ///     truncates the stream to the indicated length.
     /// 
     /// \param length 
-    /// Input the new length (in bytes) for the stream. If this is 
-    /// longer than the current stream length then the stream's length
-    /// is not changed.
+    ///     Input the new length (in bytes) for the stream. If this is 
+    ///     longer than the current stream length then the stream's length
+    ///     is not changed.
     /// 
 	__property virtual System::Void set_Length(System::Int64 length);
 
@@ -122,27 +131,25 @@ public:
     /// 
     /// \return
     ///     Returns the position in bytes from the start. When 0, the 
-    ///     the position is at the start of the stream. When GetIndex() ==
-    ///     GetLength() the position is at the end of the stream.
+    ///     the position is at the start of the stream. When Index() ==
+    ///     Length() the position is at the end of the stream.
     /// 
 	__property virtual System::Int64 get_Index();
 
     /// \brief
-    ///     gets the reading capability.
+    ///     Gets the reading capability of the stream.
     /// 
     /// \return
     ///     Returns true if the stream can be read.
     /// 
-    ///  
     __property virtual System::Boolean get_CanRead();
 
     /// \brief
-    ///     gets the writing capability.
+    ///     Gets the writing capability of the stream.
     /// 
     /// \return
     ///     Returns true if the stream can be written to.
     /// 
-    ///  
 	__property virtual System::Boolean get_CanWrite();
 
     /// \brief
@@ -158,6 +165,16 @@ public:
     ///  
 	__property virtual System::Boolean get_HasContext();
 
+    /// \brief
+    ///     Constructs a stream based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    ///     Input A Pointer to the unmanaged stream.
+    /// 
+    /// \param autoDelete 
+    ///     Input Indicates if the constructed object should be automatically deleted 
+    ///     once it no longer referenced.
+    /// 
 	IoStream(System::IntPtr unmanaged, System::Boolean autoDelete);
 
     /// \brief
@@ -170,6 +187,7 @@ public:
     /// 
 	System::Void Close();
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	IoStream();
 
@@ -177,6 +195,7 @@ protected:
 
 public private:
 	inline FdoIoStream* GetImpObj();
+/// \endcond
 };
 
 END_NAMESPACE_OSGEO_COMMON_IO

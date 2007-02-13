@@ -27,8 +27,8 @@ BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 public __gc class GeometricPropertyDefinition;
 
 /// \brief
-/// The FdoFeatureClass class can be used to represent spatial or non-spatial features.
-/// Spatial features must have at lease one geometric property. The FdoFeatureClass
+/// The FeatureClass class can be used to represent spatial or non-spatial features.
+/// Spatial features must have at lease one geometric property. FeatureClass
 /// type has one pre-defined base property "Bounds". The "Bounds" read-only
 /// property can be used to get the geometric boundary of the spatial feature.
 /// The value of this property will be null if the feature is not a spatial
@@ -37,12 +37,12 @@ public __gc class FeatureClass : public NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinit
 {
 public:
     /// \brief
-    /// Constructs a default instance of an FdoFeatureClass.
+    /// Constructs a default instance of an FeatureClass.
     /// 
 	FeatureClass();
 
     /// \brief
-    /// Constructs an instance of an FdoFeatureClass using the specified arguments.
+    /// Constructs an instance of an FeatureClass using the specified arguments.
     /// 
     /// \param name 
     /// Input name
@@ -70,8 +70,8 @@ public:
 
     /// \brief
     /// Sets the geometric property that defines the geometry for this spatial 
-    /// feature class. The specified FdoGeometricPropertyDefinition must be a member 
-    /// of either the FdoClassDefinition.GetBaseProperties or FdoClassDefinition.GetProperties 
+    /// feature class. The specified GeometricPropertyDefinition must be a member 
+    /// of either ClassDefinition.GetBaseProperties or ClassDefinition.GetProperties 
     /// collection.
     /// 
     /// \param value 
@@ -82,6 +82,16 @@ public:
     /// 
 	__property System::Void set_GeometryProperty(NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition* value);
 
+    /// \brief
+    /// Constructs a FeatureClass object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	FeatureClass(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition(unmanaged, autoDelete)
 	{
 

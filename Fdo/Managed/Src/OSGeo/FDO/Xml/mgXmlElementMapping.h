@@ -26,7 +26,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_XML
 public __gc class XmlClassMapping;
 
 /// \brief
-/// FdoXmlElementMapping describes GML to FDO mappings for a particular GML Schema
+/// XmlElementMapping describes GML to FDO mappings for a particular GML Schema
 /// element. Only mappings that cannot be represented in FDO are described.
 public __gc class XmlElementMapping : public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping
 {
@@ -46,7 +46,7 @@ public:
     /// \param classMapping 
     /// Input the class mapping
     /// 
-	__property System::Void set_ClassMapping(NAMESPACE_OSGEO_FDO_XML::XmlClassMapping* value);
+	__property System::Void set_ClassMapping(NAMESPACE_OSGEO_FDO_XML::XmlClassMapping* classMapping);
 
     /// \brief
     /// Gets the class mapping for this element. The class mapping provides
@@ -65,7 +65,7 @@ public:
     /// Input name of the FDO class corresponding to the 
     /// element's type.
     /// 
-	__property System::Void set_ClassName(System::String* value);
+	__property System::Void set_ClassName(System::String* className);
 
     /// \brief
     /// Gets the FDO Class name.
@@ -82,7 +82,7 @@ public:
     /// Input name of the Feature Schema containing the FDO class. If
     /// L"" then it defaults to the schema containing this element.
     /// 
-	__property System::Void set_SchemaName(System::String* value);
+	__property System::Void set_SchemaName(System::String* schemaName);
 
     /// \brief
     /// Gets the Schema Name for the FDO Class.
@@ -95,7 +95,7 @@ public:
     /// \brief
     /// Sets the namespace URI for this element. 
     /// 
-    /// \param schemaName 
+    /// \param value 
     /// Input a URI. Defaults to the targetNamespace
     /// for the schema containing this element.
     /// 
@@ -112,7 +112,7 @@ public:
     /// \brief
     /// Sets the local name for this element. 
     /// 
-    /// \param schemaName 
+    /// \param value 
     /// Input the local name (unprefixed name) of this
     /// element. Defaults to the element name.
     /// 

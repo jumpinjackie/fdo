@@ -25,31 +25,31 @@ class FdoXmlFeatureFlags;
 BEGIN_NAMESPACE_OSGEO_FDO_XML
 
 /// \brief
-/// FdoXmlFeatureFlags extends FdoXmlFlags to specify flags specific to feature 
+/// XmlFeatureFlags extends XmlFlags to specify flags specific to feature 
 /// serialization.
 /// \remarks
-/// The Error Levels inherited from FdoXmlFlags take on the following meaning when
+/// The Error Levels inherited from XmlFlags take on the following meaning when
 /// applied to features. Suppose we have GML Document A that conforms to GML Schema A.
 /// If Document A is read into FDO and then written to Document B then the Error Levels
 /// applied to the Document A read have the following meaning:
 /// <ul>
-///    <li>ErrorLevel_High: Document B will be structurally identical to Document A.
-///    Errors are issued if this cannot be guaranteed. Document B will have the 
-///    exact same elements and attributes as Document A.
-///    <li>ErrorLevel_Normal: There is no information loss. Document B contains
-///    all of the information from Document A and Document B conforms to Schema A.
-///    Errors are issued if this cannot be guaranteed.
-///    However, Documents A and B might not look exactly alike; some Document A elements
-///    may have an equivalent but different structure in Document B.
-///    <li>ErrorLevel_Low: There can be information loss. Document B is a subset
-///    of Document A but still conforms to Schema A. Errors are issued if 
-///    this cannot be guaranteed. Any Document A elements, not recognized by
-///    FDO, are discarded on read.
-///    <li>ErrorLevel_VeryLow: FDO does a best effort read of Document A and write of
-///    Document B. There is no guarantee that Document B will look anything like 
-///    Document A or that Document B will conform to Schema A.
+/// <li>ErrorLevel_High: Document B will be structurally identical to Document A.
+/// Errors are issued if this cannot be guaranteed. Document B will have the 
+/// exact same elements and attributes as Document A.
+/// <li>ErrorLevel_Normal: There is no information loss. Document B contains
+/// all of the information from Document A and Document B conforms to Schema A.
+/// Errors are issued if this cannot be guaranteed.
+/// However, Documents A and B might not look exactly alike; some Document A elements
+/// may have an equivalent but different structure in Document B.
+/// <li>ErrorLevel_Low: There can be information loss. Document B is a subset
+/// of Document A but still conforms to Schema A. Errors are issued if 
+/// this cannot be guaranteed. Any Document A elements, not recognized by
+/// FDO, are discarded on read.
+/// <li>ErrorLevel_VeryLow: FDO does a best effort read of Document A and write of
+/// Document B. There is no guarantee that Document B will look anything like 
+/// Document A or that Document B will conform to Schema A.
 /// </ul>
-///    
+/// 
 /// The above assumes that FDO is not provided the GML form of Schema A when writing
 /// Document B. For example, supposed that FDO can write a Schema A conformant 
 /// Document B only when supplied the GML version of Schema A. FDO will still generate 
@@ -58,7 +58,7 @@ public __gc class XmlFeatureFlags : public NAMESPACE_OSGEO_FDO_XML::XmlFlags
 {
 public:
     /// \brief
-    /// The FdoXmlFeatureFlags::ConflictOption specifies how to handle features that 
+    /// The XmlFeatureFlags::ConflictOption specifies how to handle features that 
     /// are already in the DataStore, when Deserializing:
     /// 
     /// \param ConflictOption_Add 
@@ -79,29 +79,53 @@ public:
 	};
 
     /// \brief
-    /// Constructs an FdoXmlFeatureFlags object.
+    /// Constructs an XmlFeatureFlags object.
     /// 
-    /// \param url 
-    /// See FdoXmlFlags::Create()
+	XmlFeatureFlags();
+
+    /// \brief
+    /// Constructs an XmlFeatureFlags object.
+    /// 
+    /// \param location 
+    /// See XmlFlags::Create()
+    /// 
+	XmlFeatureFlags(System::String* location);
+
+    /// \brief
+    /// Constructs an XmlFeatureFlags object.
+    /// 
+    /// \param location 
+    /// See XmlFlags::Create()
     /// \param errorLevel 
-    /// See FdoXmlFlags::Create()
+    /// See XmlFlags::Create()
+    /// 
+	XmlFeatureFlags(System::String* location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel);
+
+    /// \brief
+    /// Constructs an XmlFeatureFlags object.
+    /// 
+    /// \param location 
+    /// See XmlFlags::Create()
+    /// \param errorLevel 
+    /// See XmlFlags::Create()
     /// \param nameAdjust 
-    /// See FdoXmlFlags::Create()
+    /// See XmlFlags::Create()
+    /// 
+	XmlFeatureFlags(System::String* location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel, System::Boolean nameAdjust);
+
+    /// \brief
+    /// Constructs an XmlFeatureFlags object.
+    /// 
+    /// \param location 
+    /// See XmlFlags::Create()
+    /// \param errorLevel 
+    /// See XmlFlags::Create()
+    /// \param nameAdjust 
+    /// See XmlFlags::Create()
     /// \param conflictOption 
     /// Conflict option to apply to pre-existing features, when deserializing features
     /// into an FDO datastore.
     /// 
-    /// \return
-    /// Returns FdoXmlFeatureFlags
-    /// 
-	XmlFeatureFlags();
-
-	XmlFeatureFlags(System::String* location);
-
-	XmlFeatureFlags(System::String* location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel);
-
-	XmlFeatureFlags(System::String* location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel, System::Boolean nameAdjust);
-
 	XmlFeatureFlags(System::String* location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel, System::Boolean nameAdjust, NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags::ConflictOption conflictOption);
 
     /// \brief
@@ -111,10 +135,11 @@ public:
     /// \param conflictOption 
     /// Specifies how feaures, already in the datastore, are handled.
     /// 
-	__property System::Void set_Conflictoption(NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags::ConflictOption value);
+	__property System::Void set_Conflictoption(NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags::ConflictOption conflictOption);
 
     /// \brief
     /// Get the current option for handling feature already in the connection datastore.
+    ///
     /// \return
     /// Returns the current conflict option.
 	__property NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags::ConflictOption get_Conflictoption();
@@ -127,7 +152,7 @@ public:
     /// true: The serialized features are wrapped in a GML FeatureCollection element.
     /// false: features are serialize without a wrapping collection element.
     /// 
-	__property System::Void set_WriteCollection(System::Boolean value);
+	__property System::Void set_WriteCollection(System::Boolean writeMember);
 
     /// \brief
     /// Gets the write feature collection flag.
@@ -147,7 +172,7 @@ public:
     /// writeMember would only be set to false when writing values to a collection
     /// object property.
     /// 
-	__property System::Void set_WriteMember( System::Boolean value );
+	__property System::Void set_WriteMember( System::Boolean writeMember );
 
     /// \brief
     /// Gets the write feature member flag.
@@ -164,7 +189,7 @@ public:
     /// \param uri 
     /// Input the URI. If NULL or blank, the URI reverts back to the initial value.
     /// 
-	__property System::Void set_CollectionUri(System::String* value);
+	__property System::Void set_CollectionUri(System::String* uri);
 
     /// \brief
     /// Gets the feature collection element URI.
@@ -181,7 +206,7 @@ public:
     /// \param name 
     /// Input the name. If NULL or blank, the name reverts back to the initial value.
     /// 
-	__property System::Void set_CollectionName(System::String* value);
+	__property System::Void set_CollectionName(System::String* name);
 
     /// \brief
     /// Gets the feature collection element name.
@@ -200,7 +225,7 @@ public:
     /// collection element's sub-element. If this sub-element cannot be determined 
     /// then the URI defaults to the initial value
     /// 
-	__property System::Void set_MemberUri(System::String* value);
+	__property System::Void set_MemberUri(System::String* uri);
 
     /// \brief
     /// Gets the feature member element URI.
@@ -219,7 +244,7 @@ public:
     /// collection element's sub-element. If this sub-element cannot be determined then
     /// the name defaults to the initial value
     /// 
-	__property System::Void set_MemberName(System::String* value);
+	__property System::Void set_MemberName(System::String* name);
 
     /// \brief
     /// Gets the feature member element name.
@@ -239,7 +264,7 @@ public:
     /// \param prefix 
     /// Input the GML ID Prefix
     /// 
-	__property System::Void set_GmlIdPrefix(System::String* value);
+	__property System::Void set_GmlIdPrefix(System::String* prefix);
 
     /// \brief
     /// Gets the current GML ID prefix.
@@ -257,7 +282,7 @@ public:
     /// two namespaces. But the user can still set values to override the default values. The
     /// user could call this function multiple times to set schema location for multiple namespace. 
     /// 
-    /// \param nameSpace 
+    /// \param schemaNamespace 
     /// Namespace of which the schema location is to be set. Like "http://www.opengis.net/wfs" 
     /// for wfs namespace.
     /// \param schemaLocation 
@@ -269,7 +294,7 @@ public:
     /// \brief
     /// Gets the schema location for the specified namespace.
     /// 
-    /// \param nameSpace 
+    /// \param schemaNamespace 
     /// Namespace of which the schema location is to be retrieved. Like "http://www.opengis.net/wfs"
     /// 
     /// \return
@@ -311,8 +336,10 @@ public private:
 
 	inline FdoXmlFeatureFlags* GetImpObj();
 	
+/// \cond DOXYGEN-IGNORE
 protected:
     virtual System::Void ReleaseUnmanagedObject();
+/// \endcond
 };
 
 END_NAMESPACE_OSGEO_FDO_XML

@@ -89,7 +89,7 @@ public:
     /// \return
     /// Returning true causes the current parse to stop. Returning false
     /// cause the parse to continue. Return value is ignored if the current parse
-    /// is not an incremental parse ( see FdoXmlReader::Parse())
+    /// is not an incremental parse ( see XmlReader::Parse())
     /// 
 	System::Boolean XmlEndElement(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* context, System::String* resourceLocation, System::String* name, System::String* qualifiedName);
 

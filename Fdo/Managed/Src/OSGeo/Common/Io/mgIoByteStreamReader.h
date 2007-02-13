@@ -26,16 +26,15 @@ BEGIN_NAMESPACE_OSGEO_COMMON_IO
 public __gc class IoStream;
 
 /// \brief
-///     IoByteStreamReader
+///     IoByteStreamReader is an FDO reader for a Byte stream.
 public __sealed __gc class IoByteStreamReader : public NAMESPACE_OSGEO_COMMON::IStreamReaderImp
 {
 public:
     /// \brief
-    ///     Creates a Byte Stream reader. Reads binary data from
-    ///     an IoStream
+    ///     Creates a Byte Stream reader. Reads binary data from an IoStream
     /// 
     /// \param stream 
-    /// Input the stream to read from
+    ///     Input the stream to read from
     /// 
 	IoByteStreamReader(NAMESPACE_OSGEO_COMMON_IO::IoStream* stream);
 	
@@ -43,15 +42,27 @@ public:
     ///     Skips a number of items
     /// 
     /// \param offset 
-    /// Input number of items to skip
+    ///     Input number of items to skip
     /// 
 	System::Void Skip(System::Int32 offset);
 
     /// \brief
-    ///     Reset the current index to the stream start. Allows re-reading.
+    ///     Resets the current index to the stream start. Allows re-reading.
     /// 
-    ///  
 	System::Void Reset();  
+
+    /// \brief
+    ///     Reads in the next block of items. The caller is responsible to allocate a buffer large 
+    ///     enough to store data.
+    /// 
+    /// \param buffer 
+    ///     Output array holding data read in.
+    ///
+    /// \return
+    ///     Returns the number of items actually read in. When 0 (zero) then the 
+    ///     end-of-stream was reached.
+    /// 
+	System::Int32 ReadNext(System::Byte buffer[]);
 
     /// \brief
     ///     Reads in the next block of items. Use ReadNext( buffer) to read in 
@@ -59,24 +70,41 @@ public:
     ///     enough to store data.
     /// 
     /// \param buffer 
-    /// Output array holding data read in.
+    ///     Output array holding data read in.
+    ///
     /// \param offset 
-    /// Input index in the array indicating the beginning of the output buffer. 
-    /// If zero, then the buffer is reused. If the end of the buffer, then read in 
-    /// appending mode. Throws "out-of-bounds" exception if not in this range.
+    ///     Input index in the array indicating the beginning of the output buffer. 
+    ///     If zero, then the buffer is reused. If the end of the buffer, then read in 
+    ///     appending mode. Throws "out-of-bounds" exception if not in this range.
+    ///
+    /// \return
+    ///     Returns the number of items actually read in. When 0 (zero) then the 
+    ///     end-of-stream was reached.
+    /// 
+	System::Int32 ReadNext(System::Byte buffer[], System::Int32 offset);
+
+    /// \brief
+    ///     Reads in the next block of items. Use ReadNext( buffer) to read in 
+    ///     the entire stream. The caller is responsible to allocate a buffer large 
+    ///     enough to store data.
+    /// 
+    /// \param buffer 
+    ///     Output array holding data read in.
+    ///
+    /// \param offset 
+    ///     Input index in the array indicating the beginning of the output buffer. 
+    ///     If zero, then the buffer is reused. If the end of the buffer, then read in 
+    ///     appending mode. Throws "out-of-bounds" exception if not in this range.
+    ///
     /// \param count 
-    /// Input number of items to be read in. If -1 read the entire stream.
-    /// Throws "out-of-bounds"  exception if not a positive value or -1.
+    ///     Input number of items to be read in. If -1 read the entire stream.
+    ///     Throws "out-of-bounds"  exception if not a positive value or -1.
     /// 
     /// \return
     ///     Returns the number of items actually read in. When 0 (zero) then the 
     ///     end-of-stream was reached.
     /// 
-	System::Int32 ReadNext(System::Byte buffer[]);
-
-	System::Int32 ReadNext(System::Byte buffer[], System::Int32 offset);
-
-	System::Int32 ReadNext(System::Byte buffer[], System::Int32 offset, System::Int32 count);
+    System::Int32 ReadNext(System::Byte buffer[], System::Int32 offset, System::Int32 count);
 
     /// \brief
     ///     Gets the stream length
@@ -96,10 +124,22 @@ public:
     /// 
 	__property System::Int64 get_Index();  
 
+    /// \brief
+    ///     Constructs a stream reader based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    ///     Input A Pointer to the unmanaged stream reader.
+    /// 
+    /// \param autoDelete 
+    ///     Input Indicates if the constructed object should be automatically deleted 
+    ///     once it no longer referenced.
+    /// 
 	IoByteStreamReader(System::IntPtr unmanaged, System::Boolean autoDelete);
 
+/// \cond DOXYGEN-IGNORE
 public private:
 	inline FdoIoByteStreamReader* GetImpObj();
+/// \endcond
 };
 
 END_NAMESPACE_OSGEO_COMMON_IO

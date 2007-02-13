@@ -15,7 +15,7 @@
 
 using System;
 using System.Text;
-using OSGeo.Common.Io;
+using OSGeo.FDO.Common.Io;
 
 namespace Fdo_Test
 {

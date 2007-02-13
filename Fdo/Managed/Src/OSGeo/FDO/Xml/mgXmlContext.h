@@ -25,25 +25,34 @@ public __gc class XmlFlags;
 
 /// \brief
 /// Default context for deserializing from XML documents via
-/// FdoXmlDeserializable.
+/// XmlDeserializable.
 public __gc class XmlContext : public NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext
 {
 public:
     /// \brief
     /// Constructs a context for parsing FDO Deserializable items
     /// 
-    /// \param schemas 
-    /// Read the Feature Schemas into this collection.
+    /// \param flags 
+    /// Input controls the reading of the elements from the document.
+    /// 
+    /// \param xmlReader 
+    /// Input the XML reader.
     /// 
 	XmlContext(NAMESPACE_OSGEO_FDO_XML::XmlFlags* flags, NAMESPACE_OSGEO_COMMON_XML::XmlReader* xmlReader);
 
     /// \brief
     /// Decodes any element name that was encoded to be XML-compatible.
     /// 
+    /// \param name 
+    /// Input the name to Decode.
+    /// 
 	System::String* DecodeName (System::String* name);
 
     /// \brief
     /// Retrieves the current XML flags.
+    /// 
+    /// \return
+    /// Returns the XML flags associated to the Context
     /// 
 	NAMESPACE_OSGEO_FDO_XML::XmlFlags* GetFlags();
 

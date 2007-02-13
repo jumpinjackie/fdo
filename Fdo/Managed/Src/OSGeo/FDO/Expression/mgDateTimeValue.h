@@ -31,7 +31,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 public __gc __interface IExpressionProcessor;
 
 /// \brief
-/// The FdoDateTimeValue class derives from FdoDataValue and represents a date or time.
+/// The DateTimeValue class derives from DataValue and represents a date or time.
 public __gc class DateTimeValue : public NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue
 {
 public:
@@ -39,34 +39,34 @@ public:
     /// A cast operator to get the date time value.
     /// 
     /// \return
-    /// Returns a FdoDateTime
+    /// Returns a DateTime
     /// 
 	static System::DateTime op_Explicit(NAMESPACE_OSGEO_FDO_EXPRESSION::DateTimeValue* value);
 
     /// \brief
-    /// Constructs a default instance of an FdoDateTimeValue with a value of null.
+    /// Constructs a default instance of an DateTimeValue with a value of null.
     /// 
     /// \return
-    /// Returns the created FdoDateTimeValue
+    /// Returns the created DateTimeValue
     /// 
 	DateTimeValue();
 
     /// \brief
-    /// Constructs a default instance of an FdoDateTimeValue using the specified arguments.
+    /// Constructs a default instance of an DateTimeValue using the specified arguments.
     /// 
     /// \param value 
-    /// Input a FdoDateTime
+    /// Input a DateTime
     /// 
     /// \return
-    /// Returns the created FdoDateTimeValue
+    /// Returns the created DateTimeValue
     /// 
 	DateTimeValue(System::DateTime value);
 
     /// \brief
-    /// Gets the data type of the FdoDateTimeValue.
+    /// Gets the data type of the DateTimeValue.
     /// 
     /// \return
-    /// Returns an FdoDataType
+    /// Returns an DataType
     /// 
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::DataType get_DataType();
 
@@ -74,7 +74,7 @@ public:
     /// Gets the date time value.
     /// 
     /// \return
-    /// Returns a FdoDateTime
+    /// Returns a DateTime
     /// 
 	__property System::DateTime get_DateTime();
 
@@ -82,7 +82,7 @@ public:
     /// Sets the date time value.
     /// 
     /// \param value 
-    /// Input a FdoDateTime
+    /// Input a DateTime
     /// 
     /// \return
     /// Returns nothing
@@ -90,11 +90,11 @@ public:
 	__property System::Void set_DateTime(System::DateTime value);
 
     /// \brief
-    /// Overrides FdoExpression.Process to pass the FdoDateTimeValue to the appropriate
+    /// Overrides Expression.Process to pass the DateTimeValue to the appropriate
     /// expression processor operation.
     /// 
     /// \param processor 
-    /// Input an FdoIExpressionProcessor
+    /// Input an IExpressionProcessor
     /// 
     /// \return
     /// Returns nothing
@@ -109,6 +109,16 @@ public:
     /// 
 	System::String* ToString();
 
+    /// \brief
+    /// Constructs a DateTimeValue object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	DateTimeValue(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:

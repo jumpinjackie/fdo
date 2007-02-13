@@ -27,10 +27,10 @@ END_NAMESPACE_OSGEO_FDO_SCHEMA
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 
 /// \brief
-/// The FdoIFeatureReader interface provides a forward-only, read-only iterator
-/// for reading feature data.  A reference to an FdoIFeatureReader is returned
+/// The IFeatureReader interface provides a forward-only, read-only iterator
+/// for reading feature data.  A reference to an IFeatureReader is returned
 /// from the Select and SelectAndLock commands. Because the initial position of the
-/// FdoIFeatureReader is prior to the first item, you must call
+/// IFeatureReader is prior to the first item, you must call
 /// ReadNext to begin accessing any data.
 public __gc __interface IFeatureReader : public NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReader
 {
@@ -52,7 +52,7 @@ public:
     /// reader is returned. The outermost reader has a depth of 0.
     /// 
     /// \return
-    /// Returns the depth
+    /// Returns the reader depth
     /// 
 	System::Int32 GetDepth();
 
@@ -66,10 +66,8 @@ public:
     /// until a call to ReadNext() or Close(), or the disposal of this reader
     /// object.
     /// 
-    /// \param propertyName 
+    /// \param name 
     /// Input the property name.
-    /// \param count 
-    /// Output the number of bytes in the array.
     /// 
     /// \return
     /// Returns a pointer to the byte array in FGF format.
@@ -77,7 +75,7 @@ public:
 	System::Byte GetGeometry(System::String* name) [];
 
     /// \brief
-    /// Gets a reference to an FdoIFeatureReader to read the data contained in
+    /// Gets a reference to an IFeatureReader to read the data contained in
     /// the object or object collection property. If the property is not an
     /// object property, an exception is thrown.
     /// 

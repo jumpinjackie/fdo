@@ -35,12 +35,14 @@ END_NAMESPACE_OSGEO_COMMON
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SQL
 
 /// \brief
-/// The FdoISQLDataReader interface provides a forward-only, read-only
+/// The ISQLDataReaderImp class is a concrete implementation of ISQLDataReader.
+/// The ISQLDataReader interface provides a forward-only, read-only
 /// iterator for reading relational table data. A reference to an
-/// FdoISQLDataReader is returned from the SQLCommands ExecuteReader method.
-/// The initial position of the FdoISQLDataReader interface is prior to the first item.
+/// ISQLDataReader is returned from the SQLCommands ExecuteReader method.
+/// The initial position of the ISQLDataReader interface is prior to the first item.
 /// Thus, you must call ReadNext to begin accessing any data.
-private __gc class ISQLDataReaderImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReader
+private __gc class ISQLDataReaderImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 
+                                       public NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReader
 {
 public:
     /// \brief
@@ -74,21 +76,21 @@ public:
 	NAMESPACE_OSGEO_FDO_SCHEMA::DataType GetColumnType(System::String* name);
 
     /// \brief
-    /// Gets the FDO property type of the column with the specified name. This is used
-    ///  to indicate if a given column is a geometric property or a data property. If the column is
-    ///  a FdoPropertyType_DataProperty, then GetColumnType can be used to find the data type of the column.
+    /// Gets  property type of the column with the specified name. This is used
+    /// to indicate if a given column is a geometric property or a data property. If the column is
+    /// a PropertyType_DataProperty, then GetColumnType can be used to find the data type of the column.
     /// 
-    /// \param propertyName 
+    /// \param name 
     /// Input the column name.
     /// 
     /// \return
-    /// Returns the FDO property type of the column.
+    /// Returns  property type of the column.
     /// 
 	NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType GetPropertyType(System::String* name);
 
     /// \brief
     /// Gets the Boolean value of the specified column. No conversion is
-    /// performed, thus the column must be FdoDataType_Boolean or an
+    /// performed, thus the column must be DataType_Boolean or an
     /// exception is thrown.
     /// 
     /// \param name 
@@ -101,7 +103,7 @@ public:
 
     /// \brief
     /// Gets the byte value of the specified column. No conversion is
-    /// performed, thus the column must be FdoDataType_Byte or an
+    /// performed, thus the column must be DataType_Byte or an
     /// exception is thrown.
     /// 
     /// \param name 
@@ -114,7 +116,7 @@ public:
 
     /// \brief
     /// Gets the date time value of the specified column. No conversion
-    /// is performed, thus the column must be FdoDataType_DateTime or
+    /// is performed, thus the column must be DataType_DateTime or
     /// an exception is thrown.
     /// 
     /// \param name 
@@ -140,46 +142,46 @@ public:
 
     /// \brief
     /// Gets the signed 16-bit integer value of the specified column. No conversion is
-    /// performed, thus the column must be FdoDataType_Int16 or an
+    /// performed, thus the column must be DataType_Int16 or an
     /// exception is thrown.
     /// 
     /// \param name 
     /// Input the column name.
     /// 
     /// \return
-    /// Returns the FdoInt16 value.
+    /// Returns the Int16 value.
     /// 
 	System::Int16 GetInt16(System::String* name);
 
     /// \brief
     /// Gets the signed 32-bit integer value of the specified column. No conversion is
-    /// performed, thus the column must be FdoDataType_Int32 or an
+    /// performed, thus the column must be DataType_Int32 or an
     /// exception is thrown.
     /// 
     /// \param name 
     /// Input the column name.
     /// 
     /// \return
-    /// Returns the FdoInt32 value.
+    /// Returns the Int32 value.
     /// 
 	System::Int32 GetInt32(System::String* name);
 
     /// \brief
     /// Gets the signed 64-bit integer value of the specified column. No conversion
-    /// is performed, thus the column must be FdoDataType_Int64 or an
+    /// is performed, thus the column must be DataType_Int64 or an
     /// exception is thrown.
     /// 
     /// \param name 
     /// Input the column name.
     /// 
     /// \return
-    /// Returns the FdoInt64 value.
+    /// Returns the Int64 value.
     /// 
 	System::Int64 GetInt64(System::String* name);
 
     /// \brief
     /// Gets the single-precision floating point value of the specified column.
-    /// No conversion is performed, thus the column must be FdoDataType_Single
+    /// No conversion is performed, thus the column must be DataType_Single
     /// or an exception is thrown.
     /// 
     /// \param name 
@@ -192,7 +194,7 @@ public:
 
     /// \brief
     /// Gets the string value of the specified column. No conversion is
-    /// performed, thus the column must be FdoDataType_String or an
+    /// performed, thus the column must be DataType_String or an
     /// exception is thrown.
     /// 
     /// \param name 
@@ -205,10 +207,10 @@ public:
 
     /// \brief
     /// Gets a LOBValue reference. The LOB is fully read in and data available.
-    /// Because no conversion is performed, the property must be FdoDataType_BLOB or
-    /// FdoDataType_CLOB etc. (a LOB type)
+    /// Because no conversion is performed, the property must be DataType_BLOB or
+    /// DataType_CLOB etc. (a LOB type)
     /// 
-    /// \param propertyName 
+    /// \param name 
     /// Input the property name.
     /// 
     /// \return
@@ -217,13 +219,13 @@ public:
 	NAMESPACE_OSGEO_FDO_EXPRESSION::LOBValue* GetLOB(System::String* name);
 
     /// \brief
-    /// Gets a reference of the specified LOB property as a FdoBLOBStreamReader or
-    /// FdoCLOBStreamReader etc. to allow reading in blocks of data.
-    /// Because no conversion is performed, the property must be FdoDataType_BLOB 
-    /// or FdoDataType_CLOB etc. (a LOB type)
-    /// Cast the FdoIStreamReader to the appropiate LOB Stream Reader.
+    /// Gets a reference of the specified LOB property as a BLOBStreamReader or
+    /// CLOBStreamReader etc. to allow reading in blocks of data.
+    /// Because no conversion is performed, the property must be DataType_BLOB 
+    /// or DataType_CLOB etc. (a LOB type)
+    /// Cast the IStreamReader to the appropiate LOB Stream Reader.
     /// 
-    /// \param propertyName 
+    /// \param name 
     /// Input the property name.
     /// 
     /// \return
@@ -266,15 +268,17 @@ public:
 	System::Boolean ReadNext();
 
     /// \brief
-    /// Closes the FdoISQLDataReader object, freeing any resources it may be holding.
+    /// Closes the ISQLDataReader object, freeing any resources it may be holding.
     /// 
     /// \return
     /// Returns nothing
     /// 
 	System::Void Close();
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	__sealed System::Void ReleaseUnmanagedObject();
+/// \endcond
 
 public private:
 	ISQLDataReaderImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_RUNTIME::Disposable(unmanaged, autoDelete)

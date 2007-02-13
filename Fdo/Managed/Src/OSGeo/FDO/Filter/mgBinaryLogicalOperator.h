@@ -28,21 +28,21 @@ public __gc class Filter;
 public __gc __interface IFilterProcessor;
 
 /// \brief
-/// The FdoBinaryLogicalOperator class derives from FdoLogicalOperator and allows two
+/// The BinaryLogicalOperator class derives from LogicalOperator and allows two
 /// filters to be combined via a logical "and" or a logical "or".
 public __gc class BinaryLogicalOperator : public NAMESPACE_OSGEO_FDO_FILTER::LogicalOperator
 {
 public:
     /// \brief
-    /// Constructs a default instance of an FdoBinaryLogicalOperator.
+    /// Constructs a default instance of an BinaryLogicalOperator.
     /// 
     /// \return
-    /// Returns FdoBinaryLogicalOperator
+    /// Returns BinaryLogicalOperator
     /// 
 	BinaryLogicalOperator();
 
     /// \brief
-    /// Constructs an instance of an FdoBinaryLogicalOperator using the specified arguments.
+    /// Constructs an instance of an BinaryLogicalOperator using the specified arguments.
     /// 
     /// \param leftOperand 
     /// Input left hand operand
@@ -52,7 +52,7 @@ public:
     /// Input right hand operand
     /// 
     /// \return
-    /// Returns FdoBinaryLogicalOperator
+    /// Returns BinaryLogicalOperator
     /// 
 	BinaryLogicalOperator(NAMESPACE_OSGEO_FDO_FILTER::Filter* leftOperand, NAMESPACE_OSGEO_FDO_FILTER::BinaryLogicalOperations operation, NAMESPACE_OSGEO_FDO_FILTER::Filter* rightOperand);
 
@@ -114,7 +114,7 @@ public:
 	__property System::Void set_RightOperand(NAMESPACE_OSGEO_FDO_FILTER::Filter* value);
 
     /// \brief
-    /// Overrides FdoFilter.Process to pass the FdoBinaryLogicalOperator to the
+    /// Overrides Filter.Process to pass BinaryLogicalOperator to the
     /// appropriate filter processor operation.
     /// 
     /// \param processor 
@@ -125,6 +125,16 @@ public:
     /// 
 	System::Void Process(NAMESPACE_OSGEO_FDO_FILTER::IFilterProcessor* processor);
 
+    /// \brief
+    /// Constructs a BinaryLogicalOperator object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	BinaryLogicalOperator(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:

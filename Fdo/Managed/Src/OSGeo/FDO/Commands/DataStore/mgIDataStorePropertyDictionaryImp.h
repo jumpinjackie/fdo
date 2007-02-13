@@ -26,10 +26,10 @@ class FdoIDataStorePropertyDictionary;
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE
 
 /// \brief
-/// The FdoISQLCommand interface defines the SQL command, which supports the
-/// execution of a SQL statement against an underlying RDBMS. Two execute
-/// methods are provided to distinguish between statements that return table data
-/// versus those that execute non query type operations.
+/// The IDataStorePropertyDictionaryImp class represents a concret implementation of interface 
+/// IDataStorePropertyDictionary. IDataStorePropertyDictionaryImp exposes a dictionary style interface
+/// to the datastore properties. The properties required to create or destroy a datastore
+/// can be determined and their values can be set through this interface.
 private __gc class IDataStorePropertyDictionaryImp : public NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionPropertyDictionaryImp, public NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStorePropertyDictionary
 {
 public:

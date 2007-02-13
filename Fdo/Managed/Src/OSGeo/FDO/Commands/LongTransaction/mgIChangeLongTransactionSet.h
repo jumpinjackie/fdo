@@ -24,7 +24,7 @@
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
 /// \brief
-/// The FdoIChangeLongTransactionSet interface defines the ChangeLongTransactionSet
+/// The IChangeLongTransactionSet interface defines the ChangeLongTransactionSet
 /// command, which allows the user to add a transaction to, remove a transaction
 /// from, or clear the long transaction selection set. Users can add or remove
 /// long transactions to the selection set for which they have access

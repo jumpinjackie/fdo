@@ -27,8 +27,8 @@ public __gc class DataPropertyDefinition;
 public __gc class AssociationPropertyDefinition;
 
 /// \brief
-/// FdoNetworkFeature is an abstract class that derives from FdoFeatureClass and is a base 
-/// for the FdoNetworkNodeFeature and FdoNetworkLinkFeature.
+/// NetworkFeature is an abstract class that derives from FeatureClass and is a base 
+/// for NetworkNodeFeature and NetworkLinkFeature.
 /// <p><b>Note:</b> <span class="red_text">This Help topic is provided for informational use only. There is
 /// no interface or support provided. Autodesk reserves the right to change
 /// the software related to the content herein.</span>
@@ -111,6 +111,16 @@ public:
     /// 
 	__property System::Void set_ParentNetworkFeatureProperty(NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition* value);
 
+    /// \brief
+    /// Constructs a NetworkFeatureClass object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	NetworkFeatureClass(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_SCHEMA::FeatureClass(unmanaged, autoDelete)
 	{
 

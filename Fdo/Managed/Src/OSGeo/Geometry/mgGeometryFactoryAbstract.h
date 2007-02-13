@@ -53,31 +53,43 @@ END_NAMESPACE_OSGEO_GEOMETRY
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 
 /// \brief
-///  
+/// 
 /// The GeometryFactoryAbstract class is a factory (abstract, non-pure) for Geometry objects and Geometry helper objects.
 public __gc class GeometryFactoryAbstract : public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
 public:
+    /// \brief
+    /// Constructs an GeometryFactoryAbstract managed object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	GeometryFactoryAbstract(System::IntPtr unmanaged, System::Boolean autoDelete);
 
+/// \cond DOXYGEN-IGNORE
 public private:
 	FdoGeometryFactoryAbstract *GetImpObj();
 
 protected:
 	__sealed System::Void ReleaseUnmanagedObject();
+/// \endcond
 
 public:
     /// \brief
-    ///  Creates a position object using X and Y ordinates.
+    /// Creates a position object using X and Y ordinates.
     /// 
     /// \remarks
-    ///  The resulting object's accessor methods for ordinates
+    /// The resulting object's accessor methods for ordinates
     /// that are not given here as input parameters will return the default
     /// value of 0.0.
     /// 
-    /// \param x 
+    /// \param coordinateX 
     /// Input X ordinate value
-    /// \param y 
+    /// \param coordinateY 
     /// Input Y ordinate value
     /// 
     /// \return
@@ -86,18 +98,18 @@ public:
 	NAMESPACE_OSGEO_GEOMETRY::IDirectPosition* CreatePositionXY(System::Double coordinateX,	System::Double coordinateY);
 
     /// \brief
-    ///  Creates a position object using X, Y and Z ordinates.
+    /// Creates a position object using X, Y and Z ordinates.
     /// 
     /// \remarks
-    ///  The resulting object's accessor methods for ordinates
+    /// The resulting object's accessor methods for ordinates
     /// that are not given here as input parameters will return the default
     /// value of 0.0.
     /// 
-    /// \param x 
+    /// \param coordinateX 
     /// Input X ordinate value
-    /// \param y 
+    /// \param coordinateY 
     /// Input Y ordinate value
-    /// \param z 
+    /// \param coordinateZ 
     /// Input Z ordinate value
     /// 
     /// \return
@@ -106,18 +118,18 @@ public:
 	NAMESPACE_OSGEO_GEOMETRY::IDirectPosition* CreatePositionXYZ(System::Double coordinateX, System::Double coordinateY, System::Double coordinateZ);
 
     /// \brief
-    ///  Creates a position object using X, Y and M ordinates.
+    /// Creates a position object using X, Y and M ordinates.
     /// 
     /// \remarks
-    ///  The resulting object's accessor methods for ordinates
+    /// The resulting object's accessor methods for ordinates
     /// that are not given here as input parameters will return the default
     /// value of 0.0.
     /// 
-    /// \param x 
+    /// \param coordinateX 
     /// Input X ordinate value
-    /// \param y 
+    /// \param coordinateY 
     /// Input Y ordinate value
-    /// \param m 
+    /// \param coordinateM 
     /// Input M ordinate value
     /// 
     /// \return
@@ -126,15 +138,15 @@ public:
 	NAMESPACE_OSGEO_GEOMETRY::IDirectPosition* CreatePositionXYM(System::Double coordinateX, System::Double coordinateY, System::Double coordinateM);
 
     /// \brief
-    ///  Creates a position object using X, Y, Z and M ordinates.
+    /// Creates a position object using X, Y, Z and M ordinates.
     /// 
-    /// \param x 
+    /// \param coordinateX 
     /// Input X ordinate value
-    /// \param y 
+    /// \param coordinateY 
     /// Input Y ordinate value
-    /// \param z 
+    /// \param coordinateZ 
     /// Input Z ordinate value
-    /// \param m 
+    /// \param coordinateM 
     /// Input M ordinate value
     /// 
     /// \return
@@ -143,7 +155,7 @@ public:
 	NAMESPACE_OSGEO_GEOMETRY::IDirectPosition* CreatePositionXYZM(System::Double coordinateX, System::Double coordinateY, System::Double coordinateZ, System::Double coordinateM);
 
     /// \brief
-    ///  Creates a position object by copying from an existing position.
+    /// Creates a position object by copying from an existing position.
     /// 
     /// \param position 
     /// Input position to copy
@@ -156,7 +168,7 @@ public:
     /// Envelope
 
     /// \brief
-    ///  Creates an envelope object using two positions.
+    /// Creates an envelope object using two positions.
     /// 
     /// \param lowerLeft 
     /// Input lower-left position
@@ -169,7 +181,7 @@ public:
 	NAMESPACE_OSGEO_GEOMETRY::IEnvelope* CreateEnvelope(NAMESPACE_OSGEO_GEOMETRY::IDirectPosition * lowerLeft, NAMESPACE_OSGEO_GEOMETRY::IDirectPosition * upperRight);
 
     /// \brief
-    ///  Creates an envelope object by copying from an array of ordinates.
+    /// Creates an envelope object by copying from an array of ordinates.
     /// 
     /// \param dimensionType 
     /// Input dimensionality of the ordinates (see Dimensionality)
@@ -182,7 +194,7 @@ public:
 	NAMESPACE_OSGEO_GEOMETRY::IEnvelope* CreateEnvelope(System::Int32 dimensionType, System::Double ordinates __gc []);
 
     /// \brief
-    ///  Creates an envelope object using X and Y ordinates.
+    /// Creates an envelope object using X and Y ordinates.
     /// 
     /// \param lowerLeftX 
     /// Input lower-left X ordinate
@@ -203,7 +215,7 @@ public:
         System::Double upperRightY);
 
     /// \brief
-    ///  Creates an envelope object using X, Y and Z ordinates.
+    /// Creates an envelope object using X, Y and Z ordinates.
     /// 
     /// \param lowerLeftX 
     /// Input lower-left, rear X ordinate
@@ -230,7 +242,7 @@ public:
         System::Double upperRightZ);
 
     /// \brief
-    ///  Creates a envelope object by copying from another envelope.
+    /// Creates a envelope object by copying from another envelope.
     /// 
     /// \param envelope 
     /// Input Source envelope
@@ -243,7 +255,7 @@ public:
     /// LineString
 
     /// \brief
-    ///  Creates a LineString object by copying from a collection of positions.
+    /// Creates a LineString object by copying from a collection of positions.
     /// 
     /// \param positions 
     /// Input collection of positions to copy
@@ -254,7 +266,7 @@ public:
 	NAMESPACE_OSGEO_GEOMETRY::ILineString* CreateLineString(NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection* positions);
 
     /// \brief
-    ///  Creates a LineString object by copying from an array of ordinates.
+    /// Creates a LineString object by copying from an array of ordinates.
     /// 
     /// \param dimensionType 
     /// Input dimensionality of the ordinates (see Dimensionality)
@@ -271,10 +283,10 @@ public:
     /// Geometry
 
     /// \brief
-    ///  Creates a Geometry object by copying from another Geometry.
+    /// Creates a Geometry object by copying from another Geometry.
     /// 
     /// \remarks
-    ///  This is a pseudo-copy-constructor.
+    /// This is a pseudo-copy-constructor.
     /// It is required that any implementation use only public methods on the underlying 
     /// Geometry object, thus enabling conversion from geometries of the same (or any
     /// other) implementation of this Geometry package.
@@ -288,10 +300,10 @@ public:
 	NAMESPACE_OSGEO_GEOMETRY::IGeometry * CreateGeometry(NAMESPACE_OSGEO_GEOMETRY::IGeometry * geometry);
 
     /// \brief
-    ///  Creates a Geometry object by converting from a text string.
+    /// Creates a Geometry object by converting from a text string.
     /// 
     /// \remarks
-    ///  While this method is not pure virtual, its default implementation will
+    /// While this method is not pure virtual, its default implementation will
     /// throw an exception if called.  A concrete, derived class should override this
     /// method if conversion from text is required.
     /// 
@@ -304,10 +316,10 @@ public:
 	NAMESPACE_OSGEO_GEOMETRY::IGeometry * CreateGeometry(System::String* text);
 
     /// \brief
-    ///  Creates a Geometry object by converting from an envelope.
+    /// Creates a Geometry object by converting from an envelope.
     /// 
     /// \remarks
-    ///  This method will produce a new Geometry 
+    /// This method will produce a new Geometry 
     /// based on the given envelope.  The actual geometry type produced is implementation-dependent.
     /// 
     /// \param envelope 
@@ -321,7 +333,7 @@ public:
     /// Point
 
     /// \brief
-    ///  Creates a point object by copying from a position.
+    /// Creates a point object by copying from a position.
     /// 
     /// \param position 
     /// Input position to copy
@@ -332,7 +344,7 @@ public:
 	NAMESPACE_OSGEO_GEOMETRY::IPoint* CreatePoint(NAMESPACE_OSGEO_GEOMETRY::IDirectPosition* position);
 
     /// \brief
-    ///  Creates a point object by copying from an array of ordinates.
+    /// Creates a point object by copying from an array of ordinates.
     /// 
     /// \param dimensionality 
     /// Input dimensionality of the ordinates (see Dimensionality)
@@ -347,10 +359,10 @@ public:
     /// LinearRing
 
     /// \brief
-    ///  Creates a LinearRing object by copying from a collection of positions.
+    /// Creates a LinearRing object by copying from a collection of positions.
     /// 
     /// \remarks
-    ///  The first and last positions must be equal.
+    /// The first and last positions must be equal.
     /// 
     /// \param positions 
     /// Input collection of positions to copy
@@ -361,10 +373,10 @@ public:
 	NAMESPACE_OSGEO_GEOMETRY::ILinearRing* CreateLinearRing(NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection* positions);
 
     /// \brief
-    ///  Creates a LinearRing object by copying from an array of ordinates.
+    /// Creates a LinearRing object by copying from an array of ordinates.
     /// 
     /// \remarks
-    ///  The ordinates representing the first and last positions must be equal.
+    /// The ordinates representing the first and last positions must be equal.
     /// 
     /// \param dimensionality 
     /// Input dimensionality of the ordinates (see Dimensionality)
@@ -384,7 +396,7 @@ public:
     /// LineStringSegment
 
     /// \brief
-    ///  Creates a LineStringSegment object by copying from a collection of positions.
+    /// Creates a LineStringSegment object by copying from a collection of positions.
     /// 
     /// \param positions 
     /// Input collection of positions to copy
@@ -395,9 +407,9 @@ public:
 	NAMESPACE_OSGEO_GEOMETRY::ILineStringSegment* CreateLineStringSegment(NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection* positions);
 
     /// \brief
-    ///  Creates a LineStringSegment object by copying from an array of ordinates.
+    /// Creates a LineStringSegment object by copying from an array of ordinates.
     /// 
-    /// \param dimtype 
+    /// \param dimType 
     /// Input dimensionality of the ordinates (see Dimensionality)
     /// \param ordinateNumber 
     /// Input total number of ordinates in the array
@@ -415,7 +427,7 @@ public:
     /// Polygon
 
     /// \brief
-    ///  Creates a polygon object by copying from given LinearRing objects.
+    /// Creates a polygon object by copying from given LinearRing objects.
     /// 
     /// \param exteriorRing 
     /// Input exterior ring to copy
@@ -432,7 +444,7 @@ public:
     /// MultiPoint
 
     /// \brief
-    ///  Creates a MultiPoint object by copying from a collection of point objects.
+    /// Creates a MultiPoint object by copying from a collection of point objects.
     /// 
     /// \param points 
     /// Input collection of point objects to copy
@@ -443,7 +455,7 @@ public:
 	NAMESPACE_OSGEO_GEOMETRY::IMultiPoint* CreateMultiPoint(NAMESPACE_OSGEO_GEOMETRY::PointCollection* points);
 
     /// \brief
-    ///  Creates a MultiPoint object by copying from an array of ordinates.
+    /// Creates a MultiPoint object by copying from an array of ordinates.
     /// 
     /// \param dimensionality 
     /// Input dimensionality of the ordinates (see Dimensionality)
@@ -463,7 +475,7 @@ public:
     /// MultiLineString
 
     /// \brief
-    ///  Creates a MultiLineString object by copying from a collection of LineString objects.
+    /// Creates a MultiLineString object by copying from a collection of LineString objects.
     /// 
     /// \param lineStrings 
     /// Input collection of LineString objects to copy
@@ -476,7 +488,7 @@ public:
     //MultiPolygon
 
     /// \brief
-    ///  Creates a MultiPolygon object by copying from a collection of polygon objects.
+    /// Creates a MultiPolygon object by copying from a collection of polygon objects.
     /// 
     /// \param polygons 
     /// Input collection of polygon objects to copy
@@ -489,7 +501,7 @@ public:
     /// CircularArcSegment
 
     /// \brief
-    ///  Creates a CircularArcSegment object by copying from three points on the arc.
+    /// Creates a CircularArcSegment object by copying from three points on the arc.
     /// 
     /// \param startPosition 
     /// Input starting position of the arc
@@ -509,7 +521,7 @@ public:
     /// CurveString
 
     /// \brief
-    ///  Creates a CurveString object by copying from a collection of CurveSegment objects.
+    /// Creates a CurveString object by copying from a collection of CurveSegment objects.
     /// 
     /// \param curveSegments 
     /// Input collection of CurveSegment objects to copy
@@ -522,7 +534,7 @@ public:
     /// MultiCurveString
 
     /// \brief
-    ///  Creates an MultiCurveString object by copying from a collection of CurveString objects.
+    /// Creates an MultiCurveString object by copying from a collection of CurveString objects.
     /// 
     /// \param curveStrings 
     /// Input collection of CurveString objects to copy
@@ -535,7 +547,7 @@ public:
     /// Ring
 
     /// \brief
-    ///  Creates a ring object by copying from a collection of CurveSegment objects.
+    /// Creates a ring object by copying from a collection of CurveSegment objects.
     /// 
     /// \param curveSegments 
     /// Input collection of CurveSegment objects to copy
@@ -549,7 +561,7 @@ public:
     /// CurvePolygon
 
     /// \brief
-    ///  Creates a CurvePolygon object by copying from given ring objects.
+    /// Creates a CurvePolygon object by copying from given ring objects.
     /// 
     /// \param exteriorRing 
     /// Input exterior ring to copy
@@ -566,7 +578,7 @@ public:
     /// MultiCurvePolygon
 
     /// \brief
-    ///  Creates a MultiCurvePolygon object by copying from a collection of CurvePolygon objects.
+    /// Creates a MultiCurvePolygon object by copying from a collection of CurvePolygon objects.
     /// 
     /// \param curvePolygons 
     /// Input collection of CurvePolygon objects to copy
@@ -579,7 +591,7 @@ public:
     /// MultiGeometry
 
     /// \brief
-    ///  Creates a MultiGeometry object by copying from a collection of Geometry objects.
+    /// Creates a MultiGeometry object by copying from a collection of Geometry objects.
     /// 
     /// \param geometries 
     /// Input collection of Geometry objects to copy

@@ -26,19 +26,29 @@ class FdoDataPropertyDefinition;
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 
 /// \brief
-/// The FdoDataPropertyDefinition class derives from FdoPropertyDefinition and represents simple
-/// values or collections of simple values. FdoDataPropertyDefinitions can take on
-/// any of the data types listed in the FdoDataType enumeration.
+/// The DataPropertyDefinition class derives PropertyDefinition and represents simple
+/// values or collections of simple values. DataPropertyDefinitions can take on
+/// any of the data types listed in DataType enumeration.
 public __gc class DataPropertyDefinition : public NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinition
 {
 public:
     /// \brief
-    /// Constructs a default instance of an FdoDataPropertyDefinition.
+    /// Constructs a default instance of an DataPropertyDefinition.
     /// 
 	DataPropertyDefinition();
 
     /// \brief
-    /// Constructs an instance of an FdoDataPropertyDefinition using the specified arguments
+    /// Constructs an instance of an DataPropertyDefinition using the specified arguments
+    /// 
+    /// \param name 
+    /// Input name
+    /// \param description 
+    /// Input description
+    /// 
+	DataPropertyDefinition(System::String* name, System::String* description);
+
+    /// \brief
+    /// Constructs an instance of an DataPropertyDefinition using the specified arguments
     /// 
     /// \param name 
     /// Input name
@@ -47,8 +57,6 @@ public:
     /// \param system 
     /// Input true if this is a system generated property, otherwise falseds.
     /// 
-	DataPropertyDefinition(System::String* name, System::String* description);
-
 	DataPropertyDefinition(System::String* name, System::String* description, System::Boolean system);
 
     /// \brief
@@ -58,18 +66,18 @@ public:
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType get_PropertyType();
 
     /// \brief
-    /// Gets the FdoDataType of this property.
+    /// Gets the DataType of this property.
     /// 
     /// \return
-    /// Returns FdoDataType of this property
+    /// Returns the DataType of this property
     /// 
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::DataType get_DataType();
 
     /// \brief
-    /// Sets the FdoDataType of this property.
+    /// Sets the DataType of this property.
     /// 
-    /// \param dataType 
-    /// Input the FdoDataType of this property
+    /// \param value 
+    /// Input the DataType of this property
     /// 
     /// \return
     /// Returns nothing
@@ -97,7 +105,7 @@ public:
 
     /// \brief
     /// Gets the length of a String, BLOB, or CLOB data property. This value
-    /// does not apply to any other FdoDataType.
+    /// does not apply to any other DataType.
     /// 
     /// \return
     /// Returns the length of a String, BLOB, or CLOB data property
@@ -106,7 +114,7 @@ public:
 
     /// \brief
     /// Sets the length of a String, BLOB, or CLOB data property. This value is
-    /// ignored for all other FdoDataType values.
+    /// ignored for all other DataType values.
     /// 
     /// \param value 
     /// Input the length of a String, BLOB, or CLOB data property
@@ -118,7 +126,7 @@ public:
 
     /// \brief
     /// Gets the precision (total number of digits) of a decimal data property.
-    /// This value does not apply to any other FdoDataType.
+    /// This value does not apply to any other DataType.
     /// 
     /// \return
     /// Returns the precision
@@ -127,7 +135,7 @@ public:
 
     /// \brief
     /// Sets the precision (total number of digits) of a decimal data property.
-    /// This value is ignored for all other FdoDataType values.
+    /// This value is ignored for all other DataType values.
     /// 
     /// \param value 
     /// Input the precision
@@ -139,7 +147,7 @@ public:
 
     /// \brief
     /// Gets the scale (number of digits to the right of the decimal point) of a
-    /// decimal data property. This value does not apply to any other FdoDataType.
+    /// decimal data property. This value does not apply to any other DataType.
     /// 
     /// \return
     /// Returns the scale
@@ -148,7 +156,7 @@ public:
 
     /// \brief
     /// Sets the scale (number of digits to the right of the decimal point) of a
-    /// decimal data property. This value is ignored for all other FdoDataType values.
+    /// decimal data property. This value is ignored for all other DataType values.
     /// 
     /// \param value 
     /// Input the scale
@@ -232,7 +240,7 @@ public:
     /// Returns the value constraint of this data property.
     /// 
     /// \return
-    /// Returns the FdoPropertyValueConstraint or NULL if not set.
+    /// Returns PropertyValueConstraint or NULL if not set.
     /// 
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraint* get_ValueConstraint();
 
@@ -247,6 +255,16 @@ public:
     /// 
 	__property System::Void set_ValueConstraint(NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraint* value );
 
+    /// \brief
+    /// Constructs a DataPropertyDefinition object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	DataPropertyDefinition(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinition(unmanaged, autoDelete)
 	{
 

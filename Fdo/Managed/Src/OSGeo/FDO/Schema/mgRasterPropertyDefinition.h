@@ -29,7 +29,7 @@ END_NAMESPACE_OSGEO_FDO_RASTER
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 
 /// \brief
-/// The FdoRasterPropertyDefinition has the information needed to
+/// RasterPropertyDefinition has the information needed to
 /// create or completely describe a raster property. This class encapsulates
 /// the information necessary to insert a 'new' raster, in the absence of
 /// any other information, for the properties defined using this schema
@@ -38,12 +38,23 @@ public __gc class RasterPropertyDefinition : public NAMESPACE_OSGEO_FDO_SCHEMA::
 {
 public:
     /// \brief
-    /// Constructs a default instance of an FdoRasterPropertyDefinition.
+    /// Constructs a default instance of an RasterPropertyDefinition.
     /// 
 	RasterPropertyDefinition();
 
     /// \brief
-    /// Constructs an instance of an FdoRasterPropertyDefinition using the
+    /// Constructs an instance of an RasterPropertyDefinition using the
+    /// specified arguments.
+    /// 
+    /// \param name 
+    /// Input name
+    /// \param description 
+    /// Input description
+    /// 
+	RasterPropertyDefinition(System::String* name, System::String* description);
+
+    /// \brief
+    /// Constructs an instance of an RasterPropertyDefinition using the
     /// specified arguments.
     /// 
     /// \param name 
@@ -54,12 +65,10 @@ public:
     /// Input true if this is a system generated property, false otherwise.
     /// <p><b>Note:</b> A client would never set system to true, only a provider.
     /// 
-	RasterPropertyDefinition(System::String* name, System::String* description);
-
 	RasterPropertyDefinition(System::String* name, System::String* description, System::Boolean system);
 
     // 
-    // FdoPropertyDefinition interface
+    // PropertyDefinition interface
     // 
 
     /// \brief
@@ -116,11 +125,11 @@ public:
     /// Allowed values are only those data models that are acceptable to the
     /// SupportsDataModel capability.
     /// 
-    /// \param datamodel 
+    /// \param dataModel 
     /// The datamodel to be used for newly created
     /// rasters, or the default datamodel to be used when returning raster data.
     /// 
-	__property System::Void set_DefaultDataModel (NAMESPACE_OSGEO_FDO_RASTER::RasterDataModel* value);
+	__property System::Void set_DefaultDataModel (NAMESPACE_OSGEO_FDO_RASTER::RasterDataModel* dataModel);
 
     /// \brief
     /// Gets the default size of image file in the horizontal
@@ -140,7 +149,7 @@ public:
     /// The desired default horizontal image size in pixels
     /// (number of columns).
     /// 
-	__property System::Void set_DefaultImageXSize (System::Int32 value);
+	__property System::Void set_DefaultImageXSize (System::Int32 size);
 
     /// \brief
     /// Gets the default size of an image file in the vertical
@@ -160,7 +169,7 @@ public:
     /// The desired default vertical image size in pixels
     /// (number of rows).
     /// 
-	__property System::Void set_DefaultImageYSize (System::Int32 value);
+	__property System::Void set_DefaultImageYSize (System::Int32 size);
 
     //
     /// Spatial Context Support.
@@ -169,7 +178,7 @@ public:
     /// \brief
     /// Sets a Spatial Context association for this raster property.
     /// 
-    /// \param value 
+    /// \param spatialContextName 
     /// Input the Spatial Context name to be set. 
     /// Defaults to the active Spatial Context.
     /// 
@@ -186,6 +195,16 @@ public:
     /// 
 	__property System::String* get_SpatialContextAssociation();
 
+    /// \brief
+    /// Constructs a RasterPropertyDefinition object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	RasterPropertyDefinition(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinition(unmanaged, autoDelete)
 	{
 

@@ -16,12 +16,12 @@
 
 using System;
 using System.Diagnostics;
-using OSGeo.Common.Io;
-using OSGeo.Spatial;
+using OSGeo.FDO.Common.Io;
+using OSGeo.FDO.Spatial;
 using OSGeo.FDO.Xml;
-using OSGeo.Common.Xml;
+using OSGeo.FDO.Common.Xml;
 using OSGeo.FDO.Commands.SpatialContext;
-using OSGeo.Geometry;
+using OSGeo.FDO.Geometry;
 
 namespace Fdo_Test
 {
@@ -52,7 +52,7 @@ namespace Fdo_Test
                 {
                     writer.WriteSpatialContext();
                 }
-                catch ( OSGeo.Common.Exception e ) 
+                catch ( OSGeo.FDO.Common.Exception e ) 
                 {
                     Debug.Assert( e.Message.Substring(e.Message.LastIndexOf(") ") + 1) == " Current spatial context has no name; cannot write to XML. ");
                     bFailed = true;
@@ -68,7 +68,7 @@ namespace Fdo_Test
                 {
                     writer.WriteSpatialContext();
                 }
-                catch ( OSGeo.Common.Exception e ) 
+                catch ( OSGeo.FDO.Common.Exception e ) 
                 {
                     Debug.Assert( e.Message.Substring(e.Message.LastIndexOf(") ") + 1) == " Current spatial context 'SC_0' has no extents; cannot write to XML. ");
                     bFailed = true;
@@ -154,7 +154,7 @@ namespace Fdo_Test
                 mgUnitTestUtil.CheckOutput("TestFiles\\sc2a_master.txt", "TestFiles\\sc2a.xml");
                 mgUnitTestUtil.CheckOutput("TestFiles\\sc2b_master.txt", "TestFiles\\sc2b.xml");
             }
-            catch ( OSGeo.Common.Exception e) 
+            catch ( OSGeo.FDO.Common.Exception e) 
             {
                 Console.WriteLine(e.Message);
             }            
@@ -172,7 +172,7 @@ namespace Fdo_Test
                 // Retry with lax error checking, should get fewer errors
                 XmlErrorLevel( "TestFiles\\sc_err1b_master.txt", "TestFiles\\sc_err1b.txt", XmlFlags.ErrorLevel.ErrorLevel_Normal);
             }
-            catch ( OSGeo.Common.Exception e ) 
+            catch ( OSGeo.FDO.Common.Exception e ) 
             {
                 Console.WriteLine(e.Message);
             }
@@ -237,7 +237,7 @@ namespace Fdo_Test
                 formatter1.Format();
                 stream.Reset();
             }
-            catch ( OSGeo.Common.Exception e ) 
+            catch ( OSGeo.FDO.Common.Exception e ) 
             {
                 Console.WriteLine(e.Message);
             }
@@ -295,7 +295,7 @@ namespace Fdo_Test
                 {
                     more = reader.ReadNext();
                 }
-                catch ( OSGeo.Common.Exception e ) 
+                catch ( OSGeo.FDO.Common.Exception e ) 
                 {
                     //Console.WriteLine(e.Message);
                 }

@@ -27,12 +27,14 @@ class ISpatialContextReader;
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT
 
 /// \brief
-/// The FdoISpatialContextReader interface provides forward-only, read-only
+/// The ISpatialContextReaderImp class is a concrete implementation of ISpatialContextReader.
+/// The ISpatialContextReader interface provides forward-only, read-only
 /// functionality for enumerating spatial contexts. A reference to an
-/// FdoISpatialContextReader is returned from the GetSpatialContexts command.
-/// The initial position of the FdoISpatialContextReader interface is prior to the
+/// ISpatialContextReader is returned from the GetSpatialContexts command.
+/// The initial position of the ISpatialContextReader interface is prior to the
 /// first item. Thus, you must call ReadNext to begin accessing any data.
-private __gc class ISpatialContextReaderImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::ISpatialContextReader
+private __gc class ISpatialContextReaderImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 
+                                              public NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::ISpatialContextReader
 {
 public:
     /// \brief
@@ -82,9 +84,6 @@ public:
     /// \brief
     /// Gets the extent of the spatial context currently being read as a byte
     /// array in FGF format.
-    /// 
-    /// \param length 
-    /// Output the length of the returned byte array.
     /// 
     /// \return
     /// Returns the extent as a byte array in FGF format.
@@ -136,8 +135,10 @@ public:
     /// 
 	System::Boolean ReadNext();
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	__sealed System::Void ReleaseUnmanagedObject();
+/// \endcond
 
 public private:
 	ISpatialContextReaderImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_RUNTIME::Disposable(unmanaged, autoDelete)

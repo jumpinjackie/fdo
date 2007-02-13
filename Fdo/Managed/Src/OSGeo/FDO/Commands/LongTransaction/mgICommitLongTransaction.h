@@ -24,7 +24,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 public __gc __interface ILongTransactionConflictDirectiveEnumerator;
 
 /// \brief
-/// The FdoICommitLongTransaction interface defines the CommitLongTransaction
+/// The ICommitLongTransaction interface defines the CommitLongTransaction
 /// command, which allows a user to execute commit operations on a long
 /// transaction. Two different commit operations are distinguished: full and partial.
 ///
@@ -62,7 +62,7 @@ public:
 	__property System::Void set_Name(System::String* value);
 
     /// Executes the commit long transaction command and returns an
-    /// FdoILongTransactionConflictDirectiveEnumerator.
+    /// ILongTransactionConflictDirectiveEnumerator.
     /// If the returned enumerator's count is 0 then
     /// no conflicts were detected and the command was executed successfully.
     /// Otherwise conflicts were detected and the user must specify how to

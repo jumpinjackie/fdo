@@ -16,7 +16,7 @@
 using System;
 using System.Diagnostics;
 
-using OSGeo.Common;
+using OSGeo.FDO.Common;
 
 namespace Fdo_Test
 {
@@ -78,7 +78,7 @@ namespace Fdo_Test
             {
                 notexist = dictionary["MCMIX"];
             }
-            catch (OSGeo.Common.Exception)
+            catch (OSGeo.FDO.Common.Exception)
             {
                 failed = true;
             }
@@ -97,7 +97,7 @@ namespace Fdo_Test
             {
                 dictionary.Add(new DictionaryElement("MCMLXXX", "1980"));
             }
-            catch (OSGeo.Common.Exception)
+            catch (OSGeo.FDO.Common.Exception)
             {
                 failed = true;
             }
@@ -109,7 +109,7 @@ namespace Fdo_Test
             {
                 dictionary.Insert(0, new DictionaryElement("CM", "900"));
             }
-            catch (OSGeo.Common.Exception)
+            catch (OSGeo.FDO.Common.Exception)
             {
                 failed = true;
             }
@@ -121,7 +121,7 @@ namespace Fdo_Test
             {
                 dictionary[0] = new DictionaryElement("MMIII", "2003");
             }
-            catch (OSGeo.Common.Exception)
+            catch (OSGeo.FDO.Common.Exception)
             {
                 failed = true;
             }

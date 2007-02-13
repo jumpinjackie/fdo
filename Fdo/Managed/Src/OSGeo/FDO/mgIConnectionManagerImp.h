@@ -28,7 +28,22 @@ END_NAMESPACE_OSGEO_FDO_CONNECTIONS
 
 BEGIN_NAMESPACE_OSGEO_FDO
 
-private __gc class IConnectionManagerImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_FDO::IConnectionManager
+/// \brief
+/// The IConnectionManagerImp class supports dynamic creation of connection objects 
+/// given a provider name. Derives from IConnectionManager interface.
+
+/// \remarks
+/// In order for dynamic creation to work, each dynamic link library, shared library, 
+/// or assembly that implements a provider must supply a well-defined entry point function that 
+/// takes as input a provider name and returns an FdoIConnection instance. The definition of the 
+/// entry point function is language- and platform-dependent. For this release of FDO, the 
+/// windows libraries supporting FDO providers will be expected to support the following well-known 
+/// entry point function, which will create and return an unitialized connection object:
+///
+///        IConnection * CreateConnection();
+///
+private __gc class IConnectionManagerImp : 
+    public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_FDO::IConnectionManager
 {
 public:
     /// \brief
@@ -39,7 +54,7 @@ public:
     /// [Company].[Provider].[Version].
     /// 
     /// \return
-    /// Returns an instance of an FdoIConnection object. Throws an instance of FdoException * if an error occurs.
+    /// Returns an instance of an IConnection object. Throws an instance of Exception if an error occurs.
     /// 
 	NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection* CreateConnection(String* providerName);
 
@@ -51,7 +66,7 @@ public:
     /// [Company].[Provider].[Version].
     /// 
     /// \return
-    /// Returns nothing. Throws an instance of FdoException * if an error occurs.
+    /// Returns nothing. Throws an instance of Exception if an error occurs.
     /// 
 	System::Void FreeLibrary(String* providerName);
 

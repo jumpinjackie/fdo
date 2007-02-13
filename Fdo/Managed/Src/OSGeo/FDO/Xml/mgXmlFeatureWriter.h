@@ -37,20 +37,20 @@ public __gc class XmlFeaturePropertyWriter;
 public __gc class XmlFeatureFlags;
 
 /// \brief
-/// FdoXmlFeatureWriter writes features to an XML document. The features are 
+/// XmlFeatureWriter writes features to an XML document. The features are 
 /// written in GML format. Each feature is written in 3 steps:
 /// <ol>
 /// 	<li> call SetClassDefintion() to define the feature's class name,
-///     schema name, and list of valid properties.
+/// schema name, and list of valid properties.
 /// 	<li> call SetProperty() for each feature property value to set.
 /// 	<li> call WriteFeature() to write the feature with the current 
-///     property values. The feature's element name is derived from the
-///     class and schema name.
+/// property values. The feature's element name is derived from the
+/// class and schema name.
 /// </ol>
 /// WriteFeature() ensures that the properties are written in their proper order. This 
 /// may have slight performance implications since this writer has to accumulate the 
 /// property values before writing them. If performance is a concern then 
-/// FdoXmlFeaturePropertyWriter should be used instead.
+/// XmlFeaturePropertyWriter should be used instead.
 public __gc class XmlFeatureWriter : public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
 public:
@@ -65,7 +65,7 @@ public:
     /// flags passed to the document writer are used.
     /// 
     /// \return
-    /// Returns FdoXmlFeatureWriter
+    /// Returns XmlFeatureWriter
     /// 
 	XmlFeatureWriter(NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter* writer, NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags* flags);
 	XmlFeatureWriter(NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter* writer);
@@ -75,7 +75,7 @@ public:
     /// 
     /// \param writer 
     /// Input XML document writer. Specifies the XML document that the features will be written    
-    /// to . An FdoXmlFeaturePropertyWriter is automatically wrapped 
+    /// to . An XmlFeaturePropertyWriter is automatically wrapped 
     /// around this writer. This Feature Property Writer can be retrieved by calling 
     /// GetFeaturePropertyWriter().
     /// \param flags 
@@ -83,7 +83,7 @@ public:
     /// flags passed to the document writer are used.
     /// 
     /// \return
-    /// Returns FdoXmlFeatureWriter
+    /// Returns XmlFeatureWriter
     /// 
 	XmlFeatureWriter(NAMESPACE_OSGEO_COMMON_XML::XmlWriter* writer, NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags* flags);
 	XmlFeatureWriter(NAMESPACE_OSGEO_COMMON_XML::XmlWriter* writer);
@@ -92,7 +92,7 @@ public:
     /// Gets the feature property writer that was passed to this object.
     /// 
     /// \return
-    /// Returns FdoXmlFeaturePropertyWriter
+    /// Returns XmlFeaturePropertyWriter
     /// 
 	__property NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter* get_FeaturePropertyWriter();
 
@@ -100,14 +100,14 @@ public:
     /// Gets the class definition for the current feature being written.
     /// 
     /// \return
-    /// Returns FdoClassDefinition
+    /// Returns ClassDefinition
     /// 
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition* get_ClassDefinition();
 
     /// \brief
     /// Sets the class definition for the current feature being written.
     /// 
-    /// \param value 
+    /// \param classDefinition 
     /// Input the class definition
     /// 
     /// \return
@@ -127,7 +127,7 @@ public:
 	__property System::Void set_Property(NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue* propertyValue);
 
     /// \brief
-    /// Gets a reference to an FdoXmlFeatureWriter to write the data contained
+    /// Gets a reference to an XmlFeatureWriter to write the data contained
     /// in a collection object property. If the property is not an object property, an 
     /// exception is thrown.
     /// 
@@ -140,7 +140,7 @@ public:
 	__property NAMESPACE_OSGEO_FDO_XML::XmlFeatureWriter* get_ObjectWriter(System::String* propertyName);
 
     /// \brief
-    /// Gets a reference to an FdoXmlFeatureWriter to write the data contained
+    /// Gets a reference to an XmlFeatureWriter to write the data contained
     /// in an association property. If the property is not an association property, an 
     /// exception is thrown.
     /// 
@@ -174,8 +174,10 @@ public private:
 
 	inline FdoXmlFeatureWriter* GetImpObj();
 
+/// \cond DOXYGEN-IGNORE
 protected:
-    System::Void ReleaseUnmanagedObject();
+	System::Void ReleaseUnmanagedObject();
+/// \endcond
 };
 
 END_NAMESPACE_OSGEO_FDO_XML

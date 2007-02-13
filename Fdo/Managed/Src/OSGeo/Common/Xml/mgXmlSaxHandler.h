@@ -41,7 +41,7 @@ public:
     /// Default Sax callback that is called when the XmlReader 
     /// starts reading an XML document. Does nothing.
     /// 
-    /// \param saxContext 
+    /// \param context 
     /// Input caller specified contextual information
     /// 
     /// \return
@@ -54,7 +54,7 @@ public:
     /// Default Sax callback that is called when the XmlReader 
     /// finishes reading an XML document. Does nothing.
     /// 
-    /// \param saxContext 
+    /// \param context 
     /// Input caller specified contextual information
     /// 
 	virtual System::Void XmlEndDocument(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* context);
@@ -63,15 +63,15 @@ public:
     /// Default Sax callback that is called when the XmlReader 
     /// reads the start tag for an XML element in the document. Does nothing.
     /// 
-    /// \param saxContext 
+    /// \param context 
     /// Input caller specified contextual information
-    /// \param uri 
+    /// \param resourceLocation 
     /// Input the element's Universal Resource Indicator
     /// \param name 
     /// Input the unqualified element name (doesn't include namespace)
-    /// \param qname 
+    /// \param qualifiedName 
     /// Input the qualified element name (includes namespace)
-    /// \param atts 
+    /// \param attributes 
     /// Input the attributes for the element.
     /// 
     /// \return
@@ -84,13 +84,13 @@ public:
     /// Default Sax callback that is called when the XmlReader 
     /// reads the end tag for an XML element in the document. Does nothing.
     /// 
-    /// \param saxContext 
+    /// \param context 
     /// Input caller specified contextual information
-    /// \param uri 
+    /// \param resourceLocation 
     /// Input the element's Universal Resource Indicator
     /// \param name 
     /// Input the unqualified element name (doesn't include namespace)
-    /// \param qname 
+    /// \param qualifiedName 
     /// Input the qualified element name (includes namespace)
     /// 
     /// \return
@@ -107,20 +107,32 @@ public:
     /// the content is long. Applications must not make any assumptions about the
     /// chunk size or number of chunks for each element
     /// 
-    /// \param saxContext 
+    /// \param context 
     /// Input caller specified contextual information
-    /// \param chars 
+    /// \param characters 
     /// Input the next chunk of simple content
     /// 
 	virtual System::Void XmlCharacters(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* context, System::String* characters);
 	
+    /// \brief
+    /// Constructs a SaxHandler based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
     XmlSaxHandler(System::IntPtr unmanaged, System::Boolean autoDelete);
 
+/// \cond DOXYGEN-IGNORE
 public private:
 	inline FdoXmlSaxHandler* GetImpObj();	
 
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 };
 END_NAMESPACE_OSGEO_COMMON_XML
 

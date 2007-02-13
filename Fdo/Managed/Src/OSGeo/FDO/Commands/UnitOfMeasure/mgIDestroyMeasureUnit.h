@@ -23,7 +23,7 @@
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE
 
 /// \brief
-/// The FdoIDestroyMeasureUnit interface defines the DestroyMeasureUnit command,
+/// The IDestroyMeasureUnit interface defines the DestroyMeasureUnit command,
 /// which deletes a measurement unit. Input to the command is simply the
 /// abbreviation of the measure unit to be destroyed.
 public __gc __interface IDestroyMeasureUnit : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand

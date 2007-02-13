@@ -27,13 +27,13 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 public __gc __interface IExpressionProcessor;
 
 /// \brief
-/// The FdoParameter class derives from FdoValueExpression and represents a
-/// substitution parameter in the expression. FdoParameters are represented by a
+/// The Parameter class derives from ValueExpression and represents a
+/// substitution parameter in the expression. Parameters are represented by a
 /// name: when expressions are evaluated, the caller must supply a value to be
 /// bound to each parameter name.
 /// \remarks
 /// For information on how to set the value of a parameter, see the 
-/// FdoICommand interface and FdoParameterValue.
+/// ICommand interface and ParameterValue.
 public __gc class Parameter : public NAMESPACE_OSGEO_FDO_EXPRESSION::ValueExpression
 {
 public:
@@ -42,7 +42,7 @@ public:
     /// Constructs a default instance of a parameter.
     /// 
     /// \return
-    /// Returns FdoParameter
+    /// Returns Parameter
     /// 
 	Parameter();
 
@@ -53,7 +53,7 @@ public:
     /// Input parameter name
     /// 
     /// \return
-    /// Returns FdoParameter
+    /// Returns Parameter
     /// 
 	Parameter(System::String* name);
 
@@ -77,11 +77,11 @@ public:
 	__property System::Void set_Name(System::String* value);
 
     /// \brief
-    /// Overrides FdoExpression.Process to pass the FdoParameter to the appropriate
+    /// Overrides Expression.Process to pass the Parameter to the appropriate
     /// expression processor operation.
     /// 
     /// \param processor 
-    /// Input an FdoIExpressionProcessor
+    /// Input an IExpressionProcessor
     /// 
     /// \return
     /// Returns nothing
@@ -96,6 +96,16 @@ public:
     /// 
 	System::String* ToString();
 
+    /// \brief
+    /// Constructs a Parameter object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	Parameter(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:

@@ -28,22 +28,22 @@ public __gc class Express;
 public __gc __interface IExpressionProcessor;
 
 /// \brief
-/// The FdoBinaryExpression class derives from FdoExpression and represents string
+/// The BinaryExpression class derives from Expression and represents string
 /// concatenation and the simple arithmetic operations add, subtract, multiply,
 /// and divide.
 public __gc class BinaryExpression : public NAMESPACE_OSGEO_FDO_EXPRESSION::Expression
 {
 public:
     /// \brief
-    /// Constructs a default instance of an FdoBinaryExpression.
+    /// Constructs a default instance of an BinaryExpression.
     /// 
     /// \return
-    /// Returns FdoBinaryExpression
+    /// Returns BinaryExpression
     /// 
 	BinaryExpression();
 
     /// \brief
-    /// Constructs an instance of an FdoBinaryExpression using the specified arguments.
+    /// Constructs an instance of an BinaryExpression using the specified arguments.
     /// 
     /// \param leftExpression 
     /// Input left hand expression
@@ -53,7 +53,7 @@ public:
     /// Input right hand expression
     /// 
     /// \return
-    /// Returns FdoBinaryExpression
+    /// Returns BinaryExpression
     /// 
 	BinaryExpression(NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* leftExpression, NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryOperations operation, NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* rightExpression);
 
@@ -115,10 +115,10 @@ public:
 	__property System::Void set_RightExpression(NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* value);
 
     /// \brief
-    /// Overrides FdoExpression.Process to pass the FdoBinaryOperation to the appropriate expression processor operation.
+    /// Overrides Expression.Process to pass the BinaryOperation to the appropriate expression processor operation.
     /// 
     /// \param processor 
-    /// Input the FdoIExpressionProcessor
+    /// Input the IExpressionProcessor
     /// 
     /// \return
     /// Returns nothing
@@ -133,6 +133,16 @@ public:
     /// 
 	System::String* ToString();
 
+    /// \brief
+    /// Constructs a BinaryExpression object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	BinaryExpression(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:

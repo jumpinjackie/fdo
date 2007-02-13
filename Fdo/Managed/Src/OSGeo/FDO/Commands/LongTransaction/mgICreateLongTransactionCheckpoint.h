@@ -23,7 +23,7 @@
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
 /// \brief
-/// The FdoICreateLongTransactionCheckpoint interface defines the
+/// The ICreateLongTransactionCheckpoint interface defines the
 /// CreateLongTransactionCheckpoint command, which allows the user to create a
 /// checkpoint for any long transaction to which the user has the access privileges.
 public __gc __interface ICreateLongTransactionCheckpoint : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand

@@ -31,7 +31,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 public __gc __interface IExpressionProcessor;
 
 /// \brief
-/// The FdoInt64Value class derives from FdoDataValue and represents a 64-bit signed integer value.
+/// The Int64Value class derives from DataValue and represents a 64-bit signed integer value.
 public __gc class Int64Value : public NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue
 {
 public:
@@ -44,34 +44,34 @@ public:
 	static System::Int64 op_Explicit( NAMESPACE_OSGEO_FDO_EXPRESSION::Int64Value* value );
 
     /// \brief
-    /// Constructs a default instance of an FdoInt64Value with a value of null.
+    /// Constructs a default instance of an Int64Value with a value of null.
     /// 
     /// \return
-    /// Returns the created FdoInt64Value
+    /// Returns the created Int64Value
     /// 
 	Int64Value();
 
     /// \brief
-    /// Constructs a default instance of an FdoInt64Value using the specified arguments.
+    /// Constructs a default instance of an Int64Value using the specified arguments.
     /// 
     /// \param value 
     /// Input a 64 bit integer
     /// 
     /// \return
-    /// Returns the created FdoInt64Value
+    /// Returns the created Int64Value
     /// 
 	Int64Value(System::Int64 value);
 
     /// \brief
-    /// Gets the data type of the FdoInt64Value.
+    /// Gets the data type of the Int64Value.
     /// 
     /// \return
-    /// Returns an FdoDataType
+    /// Returns an DataType
     /// 
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::DataType get_DataType();
 
     /// \brief
-    /// Gets the FdoInt64Value.
+    /// Gets the Int64Value.
     /// 
     /// \return
     /// Returns a 64 bit integer
@@ -79,7 +79,7 @@ public:
 	__property System::Int64 get_Int64();
 
     /// \brief
-    /// Sets the FdoInt64Value.
+    /// Sets the Int64Value.
     /// 
     /// \param value 
     /// Input a 64 bit integer
@@ -90,11 +90,11 @@ public:
 	__property System::Void set_Int64(System::Int64 value);
 
     /// \brief
-    /// Overrides FdoExpression.Process to pass the FdoInt64Value to the appropriate
+    /// Overrides Expression.Process to pass the Int64Value to the appropriate
     /// expression processor operation.
     /// 
     /// \param processor 
-    /// Input an FdoIExpressionProcessor
+    /// Input an IExpressionProcessor
     /// 
     /// \return
     /// Returns nothing
@@ -109,6 +109,16 @@ public:
     /// 
 	System::String* ToString();
 
+    /// \brief
+    /// Constructs an Int64Value object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	Int64Value(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:

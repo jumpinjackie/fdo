@@ -39,6 +39,16 @@ private __gc class ILineStringSegmentImp
 : public NAMESPACE_OSGEO_GEOMETRY::ICurveSegmentAbstractImp, public NAMESPACE_OSGEO_GEOMETRY::ILineStringSegment
 {
 public:
+    /// \brief
+    /// Constructs a managed object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed element should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	ILineStringSegmentImp(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:

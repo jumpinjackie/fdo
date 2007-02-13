@@ -23,12 +23,12 @@
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 
 /// \brief
-/// The FdoIExpressionProcessor interface can be used to process the nodes in an
+/// The IExpressionProcessor interface can be used to process the nodes in an
 /// Expression tree. It declares an process operation for each concrete class in
-/// the FdoExpression hierarchy. Providers or client applications can create
+/// the Expression hierarchy. Providers or client applications can create
 /// classes that realize this interface to do something meaningful with an
-/// FdoExpression hierarchy. For example, an RDBMS feature provider implements a
-/// processor class to convert an FdoExpression hierarchy to the SQL equivalent
+/// Expression hierarchy. For example, an RDBMS feature provider implements a
+/// processor class to convert an Expression hierarchy to the SQL equivalent
 /// syntax.
 public __gc __interface IExpressionProcessor  : public System::IDisposable
 {

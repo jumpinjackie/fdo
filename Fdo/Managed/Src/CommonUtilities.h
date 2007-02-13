@@ -21,6 +21,8 @@
 #include <string.h>
 #include <FdoCommon.h>
 
+/// \cond DOXYGEN-IGNORE
+
 class StringToUni
 {
 private:
@@ -136,4 +138,4 @@ inline static FdoBoolean* BooleanToFdoBool(System::Boolean* b)
 	return bb;
 }
 
-
+/// \endcond

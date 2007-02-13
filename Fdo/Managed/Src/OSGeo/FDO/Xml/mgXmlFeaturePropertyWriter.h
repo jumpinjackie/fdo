@@ -48,8 +48,8 @@ BEGIN_NAMESPACE_OSGEO_FDO_XML
 public __gc class XmlFlags;
 
 /// \brief
-/// FdoXmlFeaturePropertyWriter writes features in GML format. It is similar to 
-/// FdoXmlFeatureWriter, except that it provides better performance. However, the 
+/// XmlFeaturePropertyWriter writes features in GML format. It is similar to 
+/// XmlFeatureWriter, except that it provides better performance. However, the 
 /// caller is responsible for ensuring that properties are written in proper order. 
 public __gc class XmlFeaturePropertyWriter : public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
@@ -60,12 +60,19 @@ public:
     /// \param writer 
     /// Input XML document writer. Specifies the XML document that the features will be
     /// written to.
+    /// 
+	XmlFeaturePropertyWriter(NAMESPACE_OSGEO_COMMON_XML::XmlWriter* writer);
+
+    /// \brief
+    /// Creates a Feature Property Writer for writing FDO features to XML.
+    /// 
+    /// \param writer 
+    /// Input XML document writer. Specifies the XML document that the features will be
+    /// written to.
     /// \param flags 
     /// Input options for controlling the writing of the features. If NULL then the 
     /// default flags are used.
     /// 
-	XmlFeaturePropertyWriter(NAMESPACE_OSGEO_COMMON_XML::XmlWriter* writer);
-
 	XmlFeaturePropertyWriter(NAMESPACE_OSGEO_COMMON_XML::XmlWriter* writer, NAMESPACE_OSGEO_FDO_XML::XmlFlags* flags);
 
     /// \brief
@@ -80,7 +87,7 @@ public:
     /// Gets the class definition for the current feature being written.
     /// 
     /// \return
-    /// Returns FdoClassDefinition
+    /// Returns ClassDefinition
     /// 
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition* get_ClassDefinition();
 
@@ -100,7 +107,7 @@ public:
     /// element and the feature's actual element are written. The feature element name
     /// is derived from the feature's class and schema names.
     /// 
-    /// \param stargTag 
+    /// \param startTag 
     /// The start tag for the feature element. If it is null, the
     /// feature's class name used.
     /// 
@@ -121,7 +128,20 @@ public:
     /// \brief
     /// Writes a feature property to XML.
     /// 
+    /// \param name 
+    /// Input the property name
     /// \param value 
+    /// Input the property value as an FDO property
+    /// 
+    /// \return
+    /// Returns nothing
+    /// 
+	System::Void WriteProperty(System::String* name, NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue* value);
+
+    /// \brief
+    /// Writes a feature property to XML.
+    /// 
+    /// \param name 
     /// Input the property name
     /// \param value 
     /// Input the property value as an FDO property
@@ -132,14 +152,25 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void WriteProperty(System::String* name, NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue* value);
-
 	System::Void WriteProperty(System::String* name, NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue* value, System::Boolean valueOnly);
 
     /// \brief
     /// Writes a feature property to XML.
     /// 
+    /// \param name 
+    /// Input the property name
     /// \param value 
+    /// Input the property value as a string
+    /// 
+    /// \return
+    /// Returns nothing
+    /// 
+	System::Void WriteProperty(System::String* name, System::String* value);
+
+    /// \brief
+    /// Writes a feature property to XML.
+    /// 
+    /// \param name 
     /// Input the property name
     /// \param value 
     /// Input the property value as a string
@@ -150,8 +181,6 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void WriteProperty(System::String* name, System::String* value);
-
 	System::Void WriteProperty(System::String* name, System::String* value, System::Boolean valueOnly);
 
     // TODO: do we need functions for other basic types or make the caller do the
@@ -160,7 +189,20 @@ public:
     /// \brief
     /// Writes a raster property to XML.
     /// 
+    /// \param name 
+    /// Input the property name
     /// \param value 
+    /// Input the raster property value
+    /// 
+    /// \return
+    /// Returns nothing
+    /// 
+	System::Void WriteProperty(System::String* name, NAMESPACE_OSGEO_FDO_RASTER::IRaster* value);
+
+    /// \brief
+    /// Writes a raster property to XML.
+    /// 
+    /// \param name 
     /// Input the property name
     /// \param value 
     /// Input the raster property value
@@ -171,14 +213,25 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void WriteProperty(System::String* name, NAMESPACE_OSGEO_FDO_RASTER::IRaster* value);
-
 	System::Void WriteProperty(System::String* name, NAMESPACE_OSGEO_FDO_RASTER::IRaster* value, System::Boolean valueOnly);
 
     /// \brief
     /// Writes a lob property to XML.
     /// 
+    /// \param name 
+    /// Input the property name
     /// \param value 
+    /// Input the lob property value
+    /// 
+    /// \return
+    /// Returns nothing
+    /// 
+	System::Void WriteProperty(System::String* name, NAMESPACE_OSGEO_FDO_EXPRESSION::LOBValue* value);
+
+    /// \brief
+    /// Writes a lob property to XML.
+    /// 
+    /// \param name 
     /// Input the property name
     /// \param value 
     /// Input the lob property value
@@ -189,9 +242,20 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void WriteProperty(System::String* name, NAMESPACE_OSGEO_FDO_EXPRESSION::LOBValue* value);
-
 	System::Void WriteProperty(System::String* name, NAMESPACE_OSGEO_FDO_EXPRESSION::LOBValue* value, System::Boolean valueOnly);
+
+    /// \brief
+    /// Writes a LOB feature property from a stream reader to XML.
+    /// 
+    /// \param name 
+    /// Input the property name
+    /// \param lobReader 
+    /// Input the reader for retrieving the lob
+    /// 
+    /// \return
+    /// Returns nothing
+    /// 
+	System::Void WriteProperty(System::String* name, NAMESPACE_OSGEO_COMMON::IStreamReader* lobReader);
 
     /// \brief
     /// Writes a LOB feature property from a stream reader to XML.
@@ -207,8 +271,6 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void WriteProperty(System::String* name, NAMESPACE_OSGEO_COMMON::IStreamReader* lobReader);
-
 	System::Void WriteProperty(System::String* name, NAMESPACE_OSGEO_COMMON::IStreamReader* lobReader, System::Boolean valueOnly);
 
     /// \brief
@@ -216,10 +278,21 @@ public:
     /// 
     /// \param name 
     /// Input the property name
-    /// \param value 
+    /// \param buffer 
     /// Input the property value as an array of bytes
-    /// \param count 
-    /// Input the number of bytes in the byte array
+    /// 
+    /// \return
+    /// Returns nothing
+    /// 
+	System::Void WriteGeometricProperty(System::String* name, System::Byte buffer[]);
+
+    /// \brief
+    /// Writes a geometric property to XML.
+    /// 
+    /// \param name 
+    /// Input the property name
+    /// \param buffer 
+    /// Input the property value as an array of bytes
     /// \param valueOnly 
     /// false: wrap the property value in a property element
     /// true: just write the property value
@@ -227,8 +300,6 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void WriteGeometricProperty(System::String* name, System::Byte buffer[]);
-
 	System::Void WriteGeometricProperty(System::String* name, System::Byte buffer[], System::Boolean valueOnly);
 
     /// \brief
@@ -259,8 +330,10 @@ public private:
 
 	inline FdoXmlFeaturePropertyWriter* GetImpObj();
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 };
 
 END_NAMESPACE_OSGEO_FDO_XML

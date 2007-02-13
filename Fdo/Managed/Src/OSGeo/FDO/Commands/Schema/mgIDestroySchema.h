@@ -23,7 +23,7 @@
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
 
 /// \brief
-/// The FdoIDestroySchema interface defines the DestroySchema command, which
+/// The IDestroySchema interface defines the DestroySchema command, which
 /// destroys a schema definition, including all class definitions, relationship
 /// definitions, and instance data within it. If elements in other schemas refer
 /// to the schema to be destroyed command, execution will fail. Input to the

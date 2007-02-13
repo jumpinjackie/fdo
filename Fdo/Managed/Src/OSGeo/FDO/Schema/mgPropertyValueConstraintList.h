@@ -29,7 +29,7 @@ END_NAMESPACE_OSGEO_FDO_EXPRESSION
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 
 /// \brief
-/// FdoPropertyValueConstraintList is used to specify a list of allowed values for a particular property. 
+/// PropertyValueConstraintList is used to specify a list of allowed values for a particular property. 
 /// It can be used for all data property types except for Boolean, BLOB, or CLOB.
 /// This constraint is represented by a list of values of the same type as the corresponding data property. 
 /// The list cannot be empty. The list could be a single value. While that may not seem very useful it could serve as a 
@@ -54,10 +54,10 @@ public private:
 
 public:    
     /// \brief
-    /// Constructs an empty instance of an FdoPropertyValueConstraintList.
+    /// Constructs an empty instance of an PropertyValueConstraintList.
     /// 
     /// \return
-    /// Returns an FdoPropertyValueConstraintList
+    /// Returns an PropertyValueConstraintList
     /// 
     PropertyValueConstraintList();
 
@@ -65,7 +65,7 @@ public:
     /// Returns the list of allowed values for a particular property.
     /// 
     /// \return
-    /// Returns na instance of FdoDataValueCollection.
+    /// Returns an instance of DataValueCollection.
     /// 
 	__property NAMESPACE_OSGEO_FDO_EXPRESSION::DataValueCollection* get_ConstraintList();
 	

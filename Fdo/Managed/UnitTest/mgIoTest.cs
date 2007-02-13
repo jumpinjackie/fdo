@@ -16,7 +16,7 @@
 using System;
 using System.Diagnostics;
 using System.Text;
-using OSGeo.Common.Io;
+using OSGeo.FDO.Common.Io;
 
 #pragma warning disable
 
@@ -73,7 +73,7 @@ namespace Fdo_Test
 
                 gisArrayRead(memStream3);
             }
-            catch (OSGeo.Common.Exception e)
+            catch (OSGeo.FDO.Common.Exception e)
             {
                 Debug.Assert(false, e.Message);
             }
@@ -145,7 +145,7 @@ namespace Fdo_Test
 		
                 fileStream = new IoFileStream( "c:\\testFile.txt", "w" );
             }
-            catch (OSGeo.Common.Exception e)
+            catch (OSGeo.FDO.Common.Exception e)
             {
                 Debug.Assert(false, e.Message);
             }
@@ -177,7 +177,7 @@ namespace Fdo_Test
                 {
                     count = fileStream.Read( null, 5 );
                 }
-                catch ( OSGeo.Common.Exception e) 
+                catch ( OSGeo.FDO.Common.Exception e) 
                 {                   
                     bFailed = true;
                 }
@@ -193,7 +193,7 @@ namespace Fdo_Test
                 {
                     count = fileStream.Read( buffer, 5 );
                 }
-                catch ( OSGeo.Common.Exception e) 
+                catch ( OSGeo.FDO.Common.Exception e) 
                 {
                     bFailed = true;
                 }
@@ -231,7 +231,7 @@ namespace Fdo_Test
                 {
                     fileStream.Write( (byte[])null, 5 );
                 }
-                catch ( OSGeo.Common.Exception e ) 
+                catch ( OSGeo.FDO.Common.Exception e ) 
                 {                  
                     bFailed = true;
                 }
@@ -247,7 +247,7 @@ namespace Fdo_Test
                 {
                     fileStream.Write( buffer, 5 );
                 }
-                catch ( OSGeo.Common.Exception e ) 
+                catch ( OSGeo.FDO.Common.Exception e ) 
                 {                  
                     bFailed = true;
                 }
@@ -263,7 +263,7 @@ namespace Fdo_Test
                 {
                     fileStream.Write( (IoStream) null, 5 );
                 }
-                catch ( OSGeo.Common.Exception e ) 
+                catch ( OSGeo.FDO.Common.Exception e ) 
                 {
                     bFailed = true;
                 }
@@ -278,7 +278,7 @@ namespace Fdo_Test
                 {
                     fileStream.Write( memoryStream );
                 }
-                catch ( OSGeo.Common.Exception e ) 
+                catch ( OSGeo.FDO.Common.Exception e ) 
                 {
                     bFailed = true;
                 }
@@ -288,7 +288,7 @@ namespace Fdo_Test
                 }
                 Debug.Assert(bFailed, "Writing to read-only file should have failed." );
             }
-            catch ( OSGeo.Common.Exception e ) 
+            catch ( OSGeo.FDO.Common.Exception e ) 
             {
                 Debug.Assert(false, e.Message);
             }
@@ -329,7 +329,7 @@ namespace Fdo_Test
                 Debug.Assert( fileStream.CanWrite == true );
                 Debug.Assert( fileStream.HasContext == true );        
             }
-            catch ( OSGeo.Common.Exception e ) 
+            catch ( OSGeo.FDO.Common.Exception e ) 
             {
                 Debug.Assert(false, e.Message);
             }
@@ -358,7 +358,7 @@ namespace Fdo_Test
                 {
                     memoryStream.Read( null, 5 );
                 }
-                catch ( OSGeo.Common.Exception e ) 
+                catch ( OSGeo.FDO.Common.Exception e ) 
                 {
                     bFailed = true;
                 }
@@ -375,7 +375,7 @@ namespace Fdo_Test
                 {
                     memoryStream.Write( (byte[]) null, 5 );
                 }
-                catch ( OSGeo.Common.Exception e ) 
+                catch ( OSGeo.FDO.Common.Exception e ) 
                 {
                     bFailed = true;
                 }
@@ -392,7 +392,7 @@ namespace Fdo_Test
                 {
                     memoryStream.Write( (IoStream) null, 5 );
                 }
-                catch ( OSGeo.Common.Exception e ) 
+                catch ( OSGeo.FDO.Common.Exception e ) 
                 {
                     bFailed = true;
                 }
@@ -402,7 +402,7 @@ namespace Fdo_Test
                 }
                 Debug.Assert(bFailed, "Writing from null stream should have failed." );
             }
-            catch ( OSGeo.Common.Exception e ) 
+            catch ( OSGeo.FDO.Common.Exception e ) 
             {
                 Debug.Assert(false, e.Message);
             }
@@ -495,7 +495,7 @@ namespace Fdo_Test
                     Debug.Assert(buffer[i] == compb[i]);
                 }  
             }
-            catch ( OSGeo.Common.Exception e ) 
+            catch ( OSGeo.FDO.Common.Exception e ) 
             {
                 Console.WriteLine(e.Message);
             }

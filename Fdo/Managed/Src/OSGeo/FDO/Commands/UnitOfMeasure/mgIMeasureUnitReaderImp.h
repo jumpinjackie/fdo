@@ -26,12 +26,14 @@ class FdoIMeasureUnitReader;
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE
 
 /// \brief
-/// The FdoIMeasureUnitReader interface provides forward-only, read-only
+/// The IMeasureUnitReaderImp class is a concrete implementation of IMeasureUnitReader.
+/// The IMeasureUnitReader interface provides forward-only, read-only
 /// functionality for enumerating measurement units.  A reference to an
-/// FdoIMeasureUnitReader interface is returned from the GetMeasureUnits command.
-/// The initial position of the FdoIMeasureUnitReader is prior to the
+/// IMeasureUnitReader interface is returned from the GetMeasureUnits command.
+/// The initial position of the IMeasureUnitReader is prior to the
 /// first item. Thus, you must call ReadNext to begin accessing any data.
-private __gc class IMeasureUnitReaderImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::IMeasureUnitReader
+private __gc class IMeasureUnitReaderImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 
+                                           public NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::IMeasureUnitReader
 {
 public:
     /// \brief
@@ -85,15 +87,17 @@ public:
 	System::Boolean ReadNext();
 
     /// \brief
-    /// Closes the FdoIMeasureUnitReader object, freeing any resources it may be holding.
+    /// Closes the IMeasureUnitReader object, freeing any resources it may be holding.
     /// 
     /// \return
     /// Returns nothing
     /// 
 	System::Void Close();
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 
 public private:
 	IMeasureUnitReaderImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_RUNTIME::Disposable(unmanaged, autoDelete)

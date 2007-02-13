@@ -27,16 +27,16 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE
 public __gc __interface IDataStorePropertyDictionary;
 
 /// \brief
-/// The FdoISQLCommand interface defines the SQL command, which supports the
-/// execution of a SQL statement against an underlying RDBMS. Two execute
-/// methods are provided to distinguish between statements that return table data
-/// versus those that execute non query type operations.
+/// The ICreateDataStoreImp class is a concrete implementation of interface ICreateDataStore.
+/// ICreateDataStoreImp defines the create datastore command, which can be used to create new 
+/// provider specific datastores. The input is provided through a dictionary of name value 
+/// pairs that is provider dependant. 
 private __gc class ICreateDataStoreImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, public NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::ICreateDataStore
 {
 public:
     /// \brief
-    /// Gets the FdoIDataStorePropertyDictionary interface that	
-    /// can be used to dynamically query	and	set	the	properties required	
+    /// Gets the IDataStorePropertyDictionary interface that	
+    /// can be used to dynamically query and set the properties required	
     /// to create a new datastore.
     /// 
     /// \return
@@ -45,7 +45,7 @@ public:
     __property NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStorePropertyDictionary* get_DataStoreProperties();
 
     /// \brief
-    /// Executes the FdoICreateDataStore command.
+    /// Executes the ICreateDataStore command.
     /// 
     /// \return
     /// Returns nothing

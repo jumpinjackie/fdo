@@ -20,7 +20,7 @@
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS
 
 /// \brief
-/// The FdoProviderDatastoreType enumeration lists all of the concrete provider
+/// The ProviderDatastoreType enumeration lists all of the concrete provider
 /// types supported by FDO.
 /// <param name="ProviderDatastoreType_DatabaseServer">
 /// Indicates that the provider is a database-based provider.

@@ -16,9 +16,9 @@
 using System;
 using System.Diagnostics;
 
-using OSGeo.Common;
-using OSGeo.Spatial;
-using OSGeo.Geometry;
+using OSGeo.FDO.Common;
+using OSGeo.FDO.Spatial;
+using OSGeo.FDO.Geometry;
 
 namespace Fdo_Test
 {

@@ -24,10 +24,10 @@ BEGIN_NAMESPACE_OSGEO_FDO_XML
 public __gc class XmlFeaturePropertyReader;
 
 /// \brief
-/// FdoXmlFeatureContext provides contextual information to the FdoXmlFeatureHandler 
+/// XmlFeatureContext provides contextual information to the XmlFeatureHandler 
 /// callback implementations when an XML document parse is in progress. This class 
 /// provides very rudimentary functionality such as error reporting and access to the 
-/// FdoXmlFeaturePropertyReader doing the parse. Applications can pass extra information
+/// XmlFeaturePropertyReader doing the parse. Applications can pass extra information
 /// by sub-classing from this class.
 public __gc class XmlFeatureContext : public NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext
 {
@@ -35,16 +35,16 @@ public:
     /// \brief
     /// Constructs an XML  feature context
     /// 
-    /// \param reader 
-    /// Input the FdoXmlFeaturePropertyReader that is parsing the XML document.
+    /// \param value 
+    /// Input the XmlFeaturePropertyReader that is parsing the XML document.
     /// 
 	XmlFeatureContext(NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyReader* value);
 
     /// \brief
-    /// Gets the FdoXmlFeaturePropertyReader that is parsing the XML document.
+    /// Gets the XmlFeaturePropertyReader that is parsing the XML document.
     /// 
     /// \return
-    /// Returns FdoXmlFeaturePropertyReader
+    /// Returns XmlFeaturePropertyReader
     /// 
 	NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyReader* GetFeaturePropertyReader();
 

@@ -21,15 +21,15 @@
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 
 /// \brief
-/// The FdoExpressionType enumeration defines the expression types available. This
+/// The ExpressionType enumeration defines the expression types available. This
 /// enumeration is used in the capabilities metadata.
-/// <param name="FdoExpressionType_Basic">
+/// <param name="ExpressionType_Basic">
 /// Basic arithmetic expressions e.g.: +, -, *, /, negate, and string concatenation.
 /// </param>
-/// <param name="FdoExpressionType_Function">
+/// <param name="ExpressionType_Function">
 /// Function evaluations
 /// </param>
-/// <param name="FdoExpressionType_Parameter">
+/// <param name="ExpressionType_Parameter">
 /// Parameter substitutions
 /// </param>
 public __value enum ExpressionType

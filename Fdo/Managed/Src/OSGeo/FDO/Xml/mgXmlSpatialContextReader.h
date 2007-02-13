@@ -27,14 +27,23 @@ BEGIN_NAMESPACE_OSGEO_FDO_XML
 public __gc class XmlSpatialContextFlags;
 
 /// \brief
-/// FdoXmlSpatialContextReader reads Spatial Contexts from an XML 
+/// XmlSpatialContextReader reads Spatial Contexts from an XML 
 /// document. Unlike other XML Readers, the reading is done procedurally, 
-/// rather than through events. FdoXmlSpatialContextReader implements 
-/// FdoISpatialContextReader to provide the functions for retrieving the 
+/// rather than through events. XmlSpatialContextReader implements 
+/// ISpatialContextReader to provide the functions for retrieving the 
 /// spatial contexts that were read.
 public __gc class XmlSpatialContextReader : public NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler, public NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::ISpatialContextReader
 {
 public:
+    /// \brief
+    /// creates a Spatial Context Reader.
+    /// 
+    /// \param reader 
+    /// Input XML document reader. Specifies the XML
+    /// document that the Spatial Contexts will be read from.
+    /// 
+	XmlSpatialContextReader(NAMESPACE_OSGEO_COMMON_XML::XmlReader* reader);
+
     /// \brief
     /// creates a Spatial Context Reader.
     /// 
@@ -46,8 +55,6 @@ public:
     /// deserializing of the Spatial Contexts. If NULL then the 
     /// default flags are used.
     /// 
-	XmlSpatialContextReader(NAMESPACE_OSGEO_COMMON_XML::XmlReader* reader);
-
 	XmlSpatialContextReader(NAMESPACE_OSGEO_COMMON_XML::XmlReader* reader, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags* flags);
 
     /// \brief
@@ -58,7 +65,7 @@ public:
     /// 
 	NAMESPACE_OSGEO_COMMON_XML::XmlReader* GetXmlReader();
 
-    /// FdoISpatialContextReader implementation
+    /// ISpatialContextReader implementation
 
     /// \brief
     /// Gets the name of the spatial context currently being read.
@@ -107,9 +114,6 @@ public:
     /// \brief
     /// Gets the extent of the spatial context currently being read as a byte
     /// array in FGF format.
-    /// 
-    /// \param length 
-    /// Output the length of the returned byte array.
     /// 
     /// \return
     /// Returns the extent as a byte array in FGF format.
@@ -169,8 +173,10 @@ public private:
 
 	inline FdoXmlSpatialContextReader* GetImpObj();
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 };
 
 END_NAMESPACE_OSGEO_FDO_XML

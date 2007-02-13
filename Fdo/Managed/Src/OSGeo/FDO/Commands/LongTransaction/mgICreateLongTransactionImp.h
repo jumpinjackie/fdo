@@ -26,13 +26,15 @@ class FdoICreateLongTransaction;
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
 /// \brief
-/// The FdoICreateLongTransaction interface defines the CreateLongTransaction
+/// The ICreateLongTransactionImp class is a 
+/// concrete implementation of ICreateLongTransaction.
 /// command which creates a long transaction that is based upon the currently
 /// active long transaction. If no long transaction is active, then the long
 /// transaction is based upon the root data. Input to the create long
 /// transaction command includes a name and description for the new long
 /// transaction.
-private __gc class ICreateLongTransactionImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, public NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ICreateLongTransaction
+private __gc class ICreateLongTransactionImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 
+                                               public NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ICreateLongTransaction
 {
 public:
     /// \brief

@@ -24,6 +24,14 @@ class IProviderRegistry;
 
 BEGIN_NAMESPACE_OSGEO_FDO
 
+/// \brief
+///  
+/// The IProviderRegistryImp class is a concrete implementation of IProviderRegistry.
+/// IProviderRegistryImp supports registering, un-registering, and enumerating 
+/// registered feature providers. 
+///
+/// \note
+/// This is not the Windows registry.
 private __gc class IProviderRegistryImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_FDO::IProviderRegistry
 {
 public:
@@ -31,7 +39,7 @@ public:
     /// Gets a read only collection of information describing each of the registered feature providers. 
     /// 
     /// \return
-    /// Returns an an instance of FdoProviderCollection. Throws an instance of FdoException * if an error occurs.
+    /// Returns an an instance of ProviderCollection. Throws an instance of Exception if an error occurs.
     /// 
 	NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection* GetProviders();
 	
@@ -58,7 +66,7 @@ public:
     /// A flag indicating if the provider is a managed or unmanaged .Net provider.
     /// 
     /// \return
-    /// Returns nothing. Throws an instance of FdoException * if an error occurs.
+    /// Returns nothing. Throws an instance of Exception if an error occurs.
     /// 
 	System::Void RegisterProvider(String * name, 
                                           String * displayName, 
@@ -76,7 +84,7 @@ public:
     /// [Company].[Provider].[Version].
     /// 
     /// \return
-    /// Returns nothing. Throws an instance of FdoException * if an error occurs.
+    /// Returns nothing. Throws an instance of Exception if an error occurs.
     /// 
 	System::Void UnregisterProvider(String * name);
 
@@ -85,8 +93,10 @@ public private:
 
 	::IProviderRegistry *GetImpObj();
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 };
 
 END_NAMESPACE_OSGEO_FDO

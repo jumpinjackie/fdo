@@ -31,6 +31,16 @@ public __gc class ICircularArcSegmentImp :
 	public NAMESPACE_OSGEO_GEOMETRY::ICircularArcSegment, public NAMESPACE_OSGEO_GEOMETRY::IArcSegmentAbstractImp
 {
 public:
+    /// \brief
+    /// Constructs an ICircularArcSegmentImp managed object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	ICircularArcSegmentImp(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:

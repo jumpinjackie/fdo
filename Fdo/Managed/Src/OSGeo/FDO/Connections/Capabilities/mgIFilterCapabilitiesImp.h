@@ -25,15 +25,13 @@ class FdoIFilterCapabilities;
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 
 /// \brief
-/// The FdoIFilterCapabilities interface declares the feature provider's level of support for FdoFilter classes.
-private __gc class IFilterCapabilitiesImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IFilterCapabilities
+/// The IFilterCapabilities interface declares the feature provider's level of support for Filter classes.
+private __gc class IFilterCapabilitiesImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 
+                                            public NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IFilterCapabilities
 {
 public:
     /// \brief
-    /// Returns an array of FdoConditionType objects the feature provider supports.
-    /// 
-    /// \param length 
-    /// Output the number of condition types
+    /// Returns an array of ConditionType objects the feature provider supports.
     /// 
     /// \return
     /// Returns the list of condition types
@@ -41,10 +39,7 @@ public:
 	__property NAMESPACE_OSGEO_FDO_FILTER::ConditionType get_ConditionTypes() [];
 
     /// \brief
-    /// Returns an array of FdoSpatialOperation objects the feature provider supports.
-    /// 
-    /// \param length 
-    /// Output the number of spatial operations
+    /// Returns an array of SpatialOperation objects the feature provider supports.
     /// 
     /// \return
     /// Returns the list of spartial operations
@@ -52,10 +47,7 @@ public:
 	__property NAMESPACE_OSGEO_FDO_FILTER::SpatialOperations get_SpatialOperations() [];
 
     /// \brief
-    /// Returns an array of FdoDistanceOperation objects the feature provider supports.
-    /// 
-    /// \param length 
-    /// Output the number of distance operations
+    /// Returns an array of DistanceOperation objects the feature provider supports.
     /// 
     /// \return
     /// Returns the list of distance operations
@@ -80,8 +72,10 @@ public:
     /// 
 	System::Boolean SupportsNonLiteralGeometricOperations();
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 
 public private:
 	IFilterCapabilitiesImp(System::IntPtr unmanaged, System::Boolean autoDelete);

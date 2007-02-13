@@ -26,12 +26,15 @@ class FdoIRollbackLongTransactionCheckpoint;
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
 /// \brief
-/// The FdoIRollbackLongTransactionCheckpoint interface defines the
+/// The IRollbackLongTransactionCheckpointImp class is a concrete 
+/// implementation of IRollbackLongTransactionCheckpoint.
+/// The IRollbackLongTransactionCheckpoint interface defines the
 /// RollbackLongTransactionCheckpoint command, which allows the user to roll back
 /// changes to a named checkpoint for the given long transaction. The user
 /// requires the access privilege on the long transaction for which the user tries
 /// to perform the operation.
-private __gc class IRollbackLongTransactionCheckpointImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, public NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IRollbackLongTransactionCheckpoint
+private __gc class IRollbackLongTransactionCheckpointImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 
+                                                           public NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IRollbackLongTransactionCheckpoint
 {
 public:
     /// \brief

@@ -27,32 +27,32 @@ END_NAMESPACE_OSGEO_FDO_EXPRESSION
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS
 
 /// \brief
-/// The FdoParameterValue class specifies a value for a particular parameter.
+/// The ParameterValue class specifies a value for a particular parameter.
 /// Instances of this class are used to specify a value to bind to a parameter
 /// when a command is executed.
 public __sealed __gc class ParameterValue : public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
 public:
     /// \brief
-    /// Constructs a default instance of an FdoParameterValue.
+    /// Constructs a default instance of an ParameterValue.
     /// 
 	ParameterValue();
 	
     /// \brief
-    /// Constructs an instance of an FdoParameterValue using the specified arguments.
+    /// Constructs an instance of an ParameterValue using the specified arguments.
     /// 
     /// \param name 
-    /// Input name
+    /// Input the name of the parameter value
     /// 
 	ParameterValue(System::String* name);
 
     /// \brief
-    /// Constructs an instance of an FdoParameterValue using the specified arguments.
+    /// Constructs an instance of an ParameterValue using the specified arguments.
     /// 
     /// \param name 
-    /// Input name
+    /// Input the name of the parameter value
     /// \param value 
-    /// Input literal value
+    /// Input the literal parameter value
     /// 
 	ParameterValue(System::String* name, NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue* value);
 
@@ -60,7 +60,7 @@ public:
     /// Gets the parameter name the value should bind to as a string.
     /// 
     /// \return
-    /// Returns parameter name
+    /// Returns the parameter name
     /// 
 	__property System::String* get_Name();
 
@@ -68,7 +68,7 @@ public:
     /// Sets the parameter name the value should bind to as a string.
     /// 
     /// \param value 
-    /// Input parameter name
+    /// Input the parameter name
     /// 
     /// \return
     /// Returns nothing
@@ -76,7 +76,7 @@ public:
 	__property System::Void set_Name(System::String* value);
 
     /// \brief
-    /// Gets the value to bind to the parameter as an FdoLiteralValue.
+    /// Gets the value to bind to the parameter as an LiteralValue.
     /// 
     /// \return
     /// Returns literal value
@@ -84,10 +84,10 @@ public:
 	__property NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue* get_Value();
 
     /// \brief
-    /// Sets the value to bind to the parameter as an FdoLiteralValue.
+    /// Sets the value to bind to the parameter as an LiteralValue.
     /// 
     /// \param value 
-    /// Input literal value
+    /// Input the literal value
     /// 
     /// \return
     /// Returns nothing
@@ -98,15 +98,17 @@ public:
     /// Sets the value to bind to the parameter as a string.
     /// 
     /// \param value 
-    /// Input string
+    /// Input the string value to bind to the parameter
     /// 
     /// \return
     /// Returns nothing
     /// 
 	__property System::Void set_Value(System::String* value);
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 
 public private:
 	ParameterValue(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_RUNTIME::Disposable(unmanaged, autoDelete)

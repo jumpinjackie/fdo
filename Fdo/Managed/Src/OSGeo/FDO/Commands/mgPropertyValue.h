@@ -32,37 +32,37 @@ END_NAMESPACE_OSGEO_FDO_EXPRESSION
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS
 
 /// \brief
-/// The FdoPropertyValue class represents a property name/value pair. Instances of
+/// The PropertyValue class represents a property name/value pair. Instances of
 /// this class are used to specify or hold onto a reference to a property name
 /// and the properties value.
 public __gc class PropertyValue : public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
 public:
     /// \brief
-    /// Constructs a default instance of an FdoPropertyValue.
+    /// Constructs a default instance of an PropertyValue.
     /// 
 	PropertyValue();
 
     /// \brief
-    /// Constructs an instance of an FdoPropertyValue using the specified arguments.
+    /// Constructs an instance of an PropertyValue using the specified arguments.
     /// 
     /// \param name 
     /// Input property name as identifier
     /// \param value 
-    /// Input value of property
+    /// Input the value of property as an expression
     /// 
 	PropertyValue(NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier* name, NAMESPACE_OSGEO_FDO_EXPRESSION::ValueExpression* value);
 
     /// \brief
-    /// Constructs an instance of an FdoPropertyValue using the specified arguments.
+    /// Constructs an instance of an PropertyValue using the specified arguments.
     /// 
     /// \param name 
     /// Input property name as a string
     /// \param value 
-    /// Input value of property
+    /// Input the value of property as an expression
     /// 
     /// \return
-    /// Returns FdoPropertyValue
+    /// Returns PropertyValue
     /// 
 	PropertyValue(System::String* name, NAMESPACE_OSGEO_FDO_EXPRESSION::ValueExpression* value);
 
@@ -70,7 +70,7 @@ public:
     /// Gets the property name as an identifier.
     /// 
     /// \return
-    /// Returns identifier
+    /// Returns the PropertyValue Identifier
     /// 
 	__property NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier* get_Name();
 
@@ -78,7 +78,7 @@ public:
     /// Sets the property name as an identifier.
     /// 
     /// \param value 
-    /// Input identifier
+    /// Input the PropertyValue Identifier
     /// 
     /// \return
     /// Returns nothing
@@ -89,7 +89,7 @@ public:
     /// Sets the property name as a string.
     /// 
     /// \param value 
-    /// Input string
+    /// Input property name as a string
     /// 
     /// \return
     /// Returns nothing
@@ -97,18 +97,18 @@ public:
 	System::Void SetName(System::String* value);
 
     /// \brief
-    /// Gets the value of the property as an FdoValueExpression.
+    /// Gets the value of the property as an ValueExpression.
     /// 
     /// \return
-    /// Returns FdoValueExpression
+    /// Returns the Property value as a ValueExpression
     /// 
 	__property NAMESPACE_OSGEO_FDO_EXPRESSION::ValueExpression* get_Value();
 
     /// \brief
-    /// Sets the value of the property as an FdoValueExpression.
+    /// Sets the value of the property as an ValueExpression.
     /// 
     /// \param value 
-    /// Input value
+    /// Input the Property value as a ValueExpression
     /// 
     /// \return
     /// Returns nothing
@@ -117,10 +117,10 @@ public:
 
     /// \brief
     /// Sets the value of the property as a string. The string content 
-    /// will be parsed to produce the required FdoValueExpression.
+    /// will be parsed to produce the required ValueExpression.
     /// 
     /// \param value 
-    /// Input value
+    /// Input the Property value as a String
     /// 
     /// \return
     /// Returns nothing
@@ -143,12 +143,14 @@ public:
     /// Gets the value of the property as an Stream Reader.
     /// 
     /// \return
-    /// Returns FdoIStreamReader
+    /// Returns the value of the propery as an IStreamReader
     /// 
 	__property NAMESPACE_OSGEO_COMMON::IStreamReader* get_StreamReader();
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 
 public private:
 	PropertyValue(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_RUNTIME::Disposable(unmanaged, autoDelete)

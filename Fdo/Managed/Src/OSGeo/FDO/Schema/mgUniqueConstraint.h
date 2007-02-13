@@ -25,15 +25,17 @@ class FdoUniqueConstraint;
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 
 /// \brief
-/// FdoUniqueConstraint can be used to specify that a property or list of properties taken together 
+/// UniqueConstraint can be used to specify that a property or list of properties taken together 
 /// have unique values for all objects of that class in a datastore. A unique constraint that is based on a list 
 /// of two or more properties is called a composite unique constraint.
 /// This constraint type applies to all data property types except for Boolean, BLOB, and CLOB. A Boolean property 
 /// can be included if it’s part of a composite unique constraint.
 public __gc class UniqueConstraint : public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 
 public private:
 	UniqueConstraint(System::IntPtr unmanaged, System::Boolean autoDelete);
@@ -42,10 +44,10 @@ public private:
 
 public:    
     /// \brief
-    /// Constructs an empty instance of an FdoUniqueConstraint.
+    /// Constructs an empty instance of an UniqueConstraint.
     /// 
     /// \return
-    /// Returns an FdoUniqueConstraint.
+    /// Returns an UniqueConstraint.
     /// 
     UniqueConstraint( );
 

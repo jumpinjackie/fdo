@@ -26,10 +26,10 @@
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 
 /// \brief
-/// The FdoIDataReader interface provides a forward-only, read-only
+/// The IDataReader interface provides a forward-only, read-only
 /// iterator for reading relational table data. A reference to an
-/// FdoIDataReader is returned from the SQLCommands ExecuteReader method.
-/// The initial position of the FdoIDataReader interface is prior to the first item.
+/// IDataReader is returned from the ISQLCommands ExecuteReader method.
+/// The initial position of the IDataReader interface is prior to the first item.
 /// Thus, you must call ReadNext to begin accessing any data.
 public __gc __interface IDataReader : public NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReader
 {
@@ -60,20 +60,20 @@ public:
     /// Input the property name.
     /// 
     /// \return
-    /// Returns the type of the property.
+    /// Returns the data type of the property corresponding to the property name.
     /// 
 	NAMESPACE_OSGEO_FDO_SCHEMA::DataType GetDataType(System::String* name);
 
     /// \brief
-    /// Gets the FDO property type of a given property. This is used
-    ///  to indicate if a given property is a geometric property or a data property. If the property is
-    ///  a FdoPropertyType_DataProperty, then GetDataType can be used to to find the data type of the property.
+    /// Gets the property type of a given property. This is used
+    /// to indicate if a given property is a geometric property or a data property. If the property is
+    /// a PropertyType_DataProperty, then GetDataType can be used to to find the data type of the property.
     /// 
     /// \param name 
     /// Input the property name.
     /// 
     /// \return
-    /// Returns the FDO property type.
+    /// Returns the property type corresponding to the property name.
     /// 
 	NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType GetPropertyType(System::String* name);
 };

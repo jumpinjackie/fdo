@@ -26,10 +26,12 @@ class FdoIActivateSpatialContext;
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT
 
 /// \brief
-/// The FdoIActivateSpatialContext interface defines the ActivateSpatialContext
+/// The IActivateSpatialContextImp class is a concrete implementation of IActivateSpatialContext.
+/// The IActivateSpatialContext interface defines the ActivateSpatialContext
 /// command, which activates a specified spatial context. Input to the command
 /// is the name of the context to activate.
-private __gc class IActivateSpatialContextImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, public NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::IActivateSpatialContext
+private __gc class IActivateSpatialContextImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 
+                                                public NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::IActivateSpatialContext
 {
 public:
     /// \brief
@@ -70,5 +72,3 @@ public private:
 };
 
 END_NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT
-
-

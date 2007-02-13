@@ -36,6 +36,16 @@ private __gc class IMultiCurveStringImp :
 	public NAMESPACE_OSGEO_GEOMETRY::IGeometricAggregateAbstractImp, public NAMESPACE_OSGEO_GEOMETRY::IMultiCurveString
 {
 public:
+    /// \brief
+    /// Constructs a managed object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed element should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	IMultiCurveStringImp(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:

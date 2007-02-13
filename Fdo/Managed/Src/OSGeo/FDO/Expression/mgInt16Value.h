@@ -31,7 +31,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 public __gc __interface IExpressionProcessor;
 
 /// \brief
-/// The FdoInt16Value class derives from FdoDataValue and represents a 16-bit signed integer value.
+/// The Int16Value class derives from DataValue and represents a 16-bit signed integer value.
 public __gc class Int16Value : public NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue
 {
 public:
@@ -44,34 +44,34 @@ public:
 	static System::Int16 op_Explicit( NAMESPACE_OSGEO_FDO_EXPRESSION::Int16Value* value );
 
     /// \brief
-    /// Constructs a default instance of an FdoInt16Value with a value of null.
+    /// Constructs a default instance of an Int16Value with a value of null.
     /// 
     /// \return
-    /// Returns the created FdoInt16Value
+    /// Returns the created Int16Value
     /// 
 	Int16Value();
 
     /// \brief
-    /// Constructs a default instance of an FdoInt16Value using the specified arguments.
+    /// Constructs a default instance of an Int16Value using the specified arguments.
     /// 
     /// \param value 
     /// Input a 16 bit integer
     /// 
     /// \return
-    /// Returns the created FdoInt16Value
+    /// Returns the created Int16Value
     /// 
 	Int16Value(System::Int16 value);
 
     /// \brief
-    /// Gets the data type of the FdoInt16Value.
+    /// Gets the data type of the Int16Value.
     /// 
     /// \return
-    /// Returns an FdoDataType
+    /// Returns an DataType
     /// 
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::DataType get_DataType();
 
     /// \brief
-    /// Gets the FdoInt16Value.
+    /// Gets the Int16Value.
     /// 
     /// \return
     /// Returns a 16 bit integer
@@ -79,7 +79,7 @@ public:
 	__property System::Int16 get_Int16();
 
     /// \brief
-    /// Sets the FdoInt16Value.
+    /// Sets the Int16Value.
     /// 
     /// \param value 
     /// Input a 16 bit integer
@@ -90,11 +90,11 @@ public:
 	__property System::Void set_Int16(System::Int16 value);
 
     /// \brief
-    /// Overrides FdoExpression.Process to pass the FdoInt16Value to the appropriate
+    /// Overrides Expression.Process to pass the Int16Value to the appropriate
     /// expression processor operation.
     /// 
     /// \param processor 
-    /// Input an FdoIExpressionProcessor
+    /// Input an IExpressionProcessor
     /// 
     /// \return
     /// Returns nothing
@@ -109,6 +109,16 @@ public:
     /// 
 	System::String* ToString();
 
+    /// \brief
+    /// Constructs an Int16Value object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	Int16Value(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:

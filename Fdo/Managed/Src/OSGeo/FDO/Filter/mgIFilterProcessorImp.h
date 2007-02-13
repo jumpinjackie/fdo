@@ -25,7 +25,7 @@ class FdoIFilterProcessor;
 BEGIN_NAMESPACE_OSGEO_FDO_FILTER
 
 /// \brief
-/// The FdoIFilterProcessor interface can be used to process the nodes in a filter
+/// The IFilterProcessor interface can be used to process the nodes in a filter
 /// tree. It declares a process operation for each concrete class in the filter
 /// hierarchy. Providers or client applications can create classes that realize
 /// this interface to do something meaningful with a filter hierarchy. For
@@ -34,13 +34,25 @@ BEGIN_NAMESPACE_OSGEO_FDO_FILTER
 private __gc class IFilterProcessorImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_FDO_FILTER::IFilterProcessor
 {
 public:
+    /// \brief
+    /// Constructs a IFilterProcessorImp object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	IFilterProcessorImp(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:
 	inline FdoIFilterProcessor* GetImpObj();
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 };
 END_NAMESPACE_OSGEO_FDO_FILTER
 

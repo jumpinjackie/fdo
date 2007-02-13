@@ -18,24 +18,24 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_RASTER
 /// \brief
-/// The FdoRasterDataOrganization enumeration specifies the way
+/// The RasterDataOrganization enumeration specifies the way
 /// pixel data is interleaved. Data is stored/retrieved in left to right,
 /// and secondarily top to bottom order within the interleave order.
 /// Tiles are also stored/retrieved in left to right, top to bottom order.
 /// For tiled data, data for one tile is completely stored/retrieved before
-/// the next tile, so for example, with 'FdoRasterDataOrganization_Image'
+/// the next tile, so for example, with 'RasterDataOrganization_Image'
 /// organization of RGB data with 24 bits per pixel, the TileSizeX by
 /// TileSizeY 8 bit data values for the red channel are stored first
 /// followed by the same number of green bytes, followed by the same
 /// number of blue bytes. This organization dependant storage should be
 /// considered when 'skipping' to the middle of an image.
-/// <param name="FdoRasterDataOrganization_Pixel">
+/// <param name="RasterDataOrganization_Pixel">
 /// Data is interleaved by pixel, with all data for a pixel contiguous in memory.
 /// </param>
-/// <param name="FdoRasterDataOrganization_Row">
+/// <param name="RasterDataOrganization_Row">
 /// Data is interleaved by row, with all data of a channel for one row contiguous in memory, followed by a rows worth of the next channel, etc.
 /// </param>
-/// <param name="FdoRasterDataOrganization_Image">
+/// <param name="RasterDataOrganization_Image">
 /// Data is interleaved by image, with all data of a channel for a complete image contiguous in memory, followed by a complete image of the next channel, etc.
 /// </param>
 public __value enum RasterDataOrganization

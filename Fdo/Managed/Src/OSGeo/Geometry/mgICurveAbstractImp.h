@@ -34,6 +34,16 @@ private __gc class ICurveAbstractImp :
 public NAMESPACE_OSGEO_GEOMETRY::ICurveAbstract, public NAMESPACE_OSGEO_GEOMETRY::IGeometryImp
 {
 public:
+    /// \brief
+    /// Constructs an ICurveAbstractImp managed object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	ICurveAbstractImp(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:
@@ -44,7 +54,7 @@ public:
     /// Gets the starting position of this Curve.
     /// 
     /// \remarks
-    ///  This is the start of the entire curve.  In cases where a derived type
+    /// This is the start of the entire curve.  In cases where a derived type
     /// is composed of multiple contiguous parts, this position is the start of the
     /// first of those parts.
     /// 
@@ -57,7 +67,7 @@ public:
     /// Gets the ending position of this Curve.
     /// 
     /// \remarks
-    ///  This is the end of the entire curve.  In cases where a derived type
+    /// This is the end of the entire curve.  In cases where a derived type
     /// is composed of multiple contiguous parts, this position is the end of the
     /// last of those parts.
     /// 

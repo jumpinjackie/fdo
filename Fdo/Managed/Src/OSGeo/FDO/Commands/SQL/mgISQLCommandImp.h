@@ -27,11 +27,13 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SQL
 public __gc __interface ISQLDataReader;
 
 /// \brief
-/// The FdoISQLCommand interface defines the SQL command, which supports the
+/// The ISQLCommandImp class is a concrete implementation of ISQLCommand.
+/// The ISQLCommand interface defines the SQL command, which supports the
 /// execution of a SQL statement against an underlying RDBMS. Two execute
 /// methods are provided to distinguish between statements that return table data
 /// versus those that execute non query type operations.
-private __gc class ISQLCommandImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, public NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLCommand
+private __gc class ISQLCommandImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 
+                                    public NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLCommand
 {
 public:
     /// \brief
@@ -64,7 +66,7 @@ public:
 
     /// \brief
     /// Executes the SQL statement against the connection object and returns
-    /// an FdoISQLDataReader.
+    /// an ISQLDataReader.
     /// 
     /// \return
     /// Returns the data reader.

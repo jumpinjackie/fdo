@@ -23,10 +23,10 @@
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT
 
 /// \brief
-/// The FdoISpatialContextReader interface provides forward-only, read-only
+/// ISpatialContextReader interface provides forward-only, read-only
 /// functionality for enumerating spatial contexts. A reference to an
-/// FdoISpatialContextReader is returned from the GetSpatialContexts command.
-/// The initial position of the FdoISpatialContextReader interface is prior to the
+/// ISpatialContextReader is returned from the GetSpatialContexts command.
+/// The initial position of the ISpatialContextReader interface is prior to the
 /// first item. Thus, you must call ReadNext to begin accessing any data.
 public __gc __interface ISpatialContextReader : public System::IDisposable
 {
@@ -78,9 +78,6 @@ public:
     /// \brief
     /// Gets the extent of the spatial context currently being read as a byte
     /// array in FGF format.
-    /// 
-    /// \param length 
-    /// Output the length of the returned byte array.
     /// 
     /// \return
     /// Returns the extent as a byte array in FGF format.

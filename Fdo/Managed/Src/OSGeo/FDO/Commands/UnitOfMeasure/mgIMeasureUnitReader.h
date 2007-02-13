@@ -23,10 +23,10 @@
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE
 
 /// \brief
-/// The FdoIMeasureUnitReader interface provides forward-only, read-only
+/// The IMeasureUnitReader interface provides forward-only, read-only
 /// functionality for enumerating measurement units.  A reference to an
-/// FdoIMeasureUnitReader interface is returned from the GetMeasureUnits command.
-/// The initial position of the FdoIMeasureUnitReader is prior to the
+/// IMeasureUnitReader interface is returned from the GetMeasureUnits command.
+/// The initial position of the IMeasureUnitReader is prior to the
 /// first item. Thus, you must call ReadNext to begin accessing any data.
 public __gc __interface IMeasureUnitReader : public System::IDisposable
 {
@@ -82,7 +82,7 @@ public:
 	System::Boolean ReadNext();
 
     /// \brief
-    /// Closes the FdoIMeasureUnitReader object, freeing any resources it may be holding.
+    /// Closes the IMeasureUnitReader object, freeing any resources it may be holding.
     /// 
     /// \return
     /// Returns nothing

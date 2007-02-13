@@ -30,16 +30,18 @@ END_NAMESPACE_OSGEO_FDO_COMMANDS
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 
 /// \brief
-/// The FdoILockConflictReader interface provides forward only, read-only
+/// The ILockConflictReaderImp class is a concrete implementation of ILockConflictReaderImp.
+/// The ILockConflictReader interface provides forward only, read-only
 /// functionality for identifying features that have a lock conflict.
 /// Features with a lock conflict are those that the caller is attempting to modify 
 /// that are already locked by someone else. 
 /// \remarks
-/// A reference to an FdoILockConflictReader is returned from the
-/// FdoIAcquireLock, FdoISelect, FdoIReleaseLock, FdoIUpdate, and FdoIDelete commands. The
-/// initial position of the FdoILockConflictReader is prior to the first item,
+/// A reference to an ILockConflictReader is returned from the
+/// IAcquireLock, ISelect, IReleaseLock, IUpdate, and IDelete commands. The
+/// initial position of the ILockConflictReader is prior to the first item,
 /// thus you must call ReadNext to begin accessing any data.
-private __gc class ILockConflictReaderImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockConflictReader
+private __gc class ILockConflictReaderImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 
+                                            public NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockConflictReader
 {
 public:
     /// \brief
@@ -57,7 +59,7 @@ public:
 	System::String* GetFeatureClassName();
 
     /// \brief
-    /// Returns an FdoPropertyValueCollection containing the property values
+    /// Returns an PropertyValueCollection containing the property values
     /// that uniquely identify the feature currently being read.
     /// 
     /// \return
@@ -103,7 +105,7 @@ public:
 	System::Boolean ReadNext();
 
     /// \brief
-    /// Closes the FdoILockConflictReader object, freeing any resources it may
+    /// Closes the ILockConflictReader object, freeing any resources it may
     /// be holding.
     /// 
     /// \return
@@ -111,8 +113,10 @@ public:
     /// 
 	System::Void Close();
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 
 public private:
 	ILockConflictReaderImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_RUNTIME::Disposable(unmanaged, autoDelete)

@@ -33,17 +33,17 @@ BEGIN_NAMESPACE_OSGEO_FDO_FILTER
 public __gc __interface IFilterProcessor;
 
 /// \brief
-/// The FdoComparisonCondition class derives from FdoSearchCondition and can be used
+/// The ComparisonCondition class derives SearchCondition and can be used
 /// to test the equality of two expressions.
 public __gc class ComparisonCondition : public NAMESPACE_OSGEO_FDO_FILTER::SearchCondition
 {
 public:
 
     /// \brief
-    /// Constructs a default instance of an FdoComparisonCondition.
+    /// Constructs a default instance of an ComparisonCondition.
     /// 
     /// \return
-    /// Returns FdoComparisonCondition
+    /// Returns ComparisonCondition
     /// 
 	ComparisonCondition();
 
@@ -58,7 +58,7 @@ public:
     /// Input the expression that defines the right side of the comparison
     /// 
     /// \return
-    /// Returns FdoComparisonCondition
+    /// Returns ComparisonCondition
     /// 
 	ComparisonCondition( NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* leftExpression, NAMESPACE_OSGEO_FDO_FILTER::ComparisonOperations operation, NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* rightExpression);
 
@@ -120,7 +120,7 @@ public:
 	__property System::Void set_RightExpression( NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* value);
 
     /// \brief
-    /// Overrides FdoFilter.Process to pass the FdoComparisonCondition to the
+    /// Overrides Filter.Process to pass ComparisonCondition to the
     /// appropriate filter processor operation.
     /// 
     /// \param processor 
@@ -131,6 +131,16 @@ public:
     /// 
 	System::Void Process(NAMESPACE_OSGEO_FDO_FILTER::IFilterProcessor* processor);
 
+    /// \brief
+    /// Constructs a ComparisonCondition object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	ComparisonCondition(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:

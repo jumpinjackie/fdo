@@ -28,17 +28,17 @@ public __gc class ExpressionCollection;
 public __gc __interface IExpressionProcessor;
 
 /// \brief
-/// The FdoFunction class derives from FdoExpression and represents a function call. As
+/// The Function class derives from Expression and represents a function call. As
 /// such it defines the name of the function and the collection of arguments to
 /// be passed to it.
 public __gc class Function : public NAMESPACE_OSGEO_FDO_EXPRESSION::Expression
 {
 public:
     /// \brief
-    /// Constructs a default instance of an FdoFunction.
+    /// Constructs a default instance of an Function.
     /// 
     /// \return
-    /// Returns FdoFunction class
+    /// Returns Function class
     /// 
 	Function();
 
@@ -49,11 +49,9 @@ public:
     /// Input name of the function
     /// \param arguments 
     /// Input pointer to arguments
-    /// \param numArgs 
-    /// Input number of arguments
     /// 
     /// \return
-    /// Returns FdoFunction
+    /// Returns Function
     /// 
 	Function(System::String* name, NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* arguments []);
 
@@ -66,7 +64,7 @@ public:
     /// Input arguments as collection
     /// 
     /// \return
-    /// Returns FdoFunction
+    /// Returns Function
     /// 
 	Function(System::String* name, NAMESPACE_OSGEO_FDO_EXPRESSION::ExpressionCollection* arguments);
 
@@ -90,7 +88,7 @@ public:
 	__property System::Void set_Name(System::String* value);
 
     /// \brief
-    /// Gets the FdoExpressionCollection that contains the arguments to the
+    /// Gets the ExpressionCollection that contains the arguments to the
     /// function.
     /// 
     /// \return
@@ -99,7 +97,7 @@ public:
 	__property NAMESPACE_OSGEO_FDO_EXPRESSION::ExpressionCollection* get_Arguments();
 
     /// \brief
-    /// Overrides FdoExpression.Process to pass the FdoFunction to the appropriate
+    /// Overrides Expression.Process to pass the Function to the appropriate
     /// expression processor operation.
     /// 
     /// \param processor 
@@ -118,6 +116,16 @@ public:
     /// 
 	System::String* ToString();
 
+    /// \brief
+    /// Constructs a Function object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	Function(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:

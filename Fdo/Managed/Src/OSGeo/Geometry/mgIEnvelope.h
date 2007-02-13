@@ -23,14 +23,12 @@ BEGIN_NAMESPACE_OSGEO_GEOMETRY
 
 /// \brief
 /// The IEnvelope class is a three-dimensional, axis-aligned box.  This is a
-/// helper type for Geometries, and does not itself inherit from
-/// IGeometry.
+/// helper type for Geometries, and does not itself inherit from IGeometry.
 /// This type is typically used to record the "extents" of a shape, also
 /// known in 2 dimensions as an MBR ("Minimum Bounding Rectangle").
-/// The box may be initially empty, meaning that no dimensions have an
-/// assigned value.
-/// each individual extent may be unassigned, in which case using its
-/// accessor will return numeric_limits<double>::quiet_NaN().
+/// The box may be initially empty, meaning that no dimensions have an assigned value.
+/// Each individual extent may be unassigned, in which case using its
+/// accessor will return numeric_limits::quiet_NaN().
 public __gc __interface IEnvelope : public System::IDisposable
 {
 public:
@@ -44,7 +42,7 @@ public:
     /// corner of the envelope.
     /// 
     /// \return
-    /// Returns the miniumum X ordinate; numeric_limits<double>::quiet_NaN() by default
+    /// Returns the miniumum X ordinate; numeric_limits::quiet_NaN() by default
     /// 
 	__property System::Double get_MinX();
 
@@ -58,7 +56,7 @@ public:
     /// corner of the envelope.
     /// 
     /// \return
-    /// Returns the miniumum Y ordinate; numeric_limits<double>::quiet_NaN() by default
+    /// Returns the miniumum Y ordinate; numeric_limits::quiet_NaN() by default
     /// 
 	__property System::Double get_MinY();
 
@@ -72,7 +70,7 @@ public:
     /// corner of the envelope.
     /// 
     /// \return
-    /// Returns the miniumum Z ordinate; numeric_limits<double>::quiet_NaN() by default
+    /// Returns the miniumum Z ordinate; numeric_limits::quiet_NaN() by default
     /// 
 	__property System::Double get_MinZ();
 
@@ -86,7 +84,7 @@ public:
     /// corner of the envelope.
     /// 
     /// \return
-    /// Returns the maxiumum X ordinate; numeric_limits<double>::quiet_NaN() by default
+    /// Returns the maxiumum X ordinate; numeric_limits::quiet_NaN() by default
     /// 
 	__property System::Double get_MaxX();
 
@@ -100,7 +98,7 @@ public:
     /// corner of the envelope.
     /// 
     /// \return
-    /// Returns the maxiumum Y ordinate; numeric_limits<double>::quiet_NaN() by default
+    /// Returns the maxiumum Y ordinate; numeric_limits::quiet_NaN() by default
     /// 
 	__property System::Double get_MaxY();
 
@@ -114,7 +112,7 @@ public:
     /// corner of the envelope.
     /// 
     /// \return
-    /// Returns the maxiumum Z ordinate; numeric_limits<double>::quiet_NaN() by default
+    /// Returns the maxiumum Z ordinate; numeric_limits::quiet_NaN() by default
     /// 
 	__property System::Double get_MaxZ();
 

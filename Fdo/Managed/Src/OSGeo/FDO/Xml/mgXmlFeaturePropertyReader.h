@@ -34,10 +34,10 @@ public __gc class XmlFeatureHandler;
 public __gc class XmlFeatureFlags;
 
 /// \brief
-/// FdoXmlFeaturePropertyReader reads features from an XML document. The reading
+/// XmlFeaturePropertyReader reads features from an XML document. The reading
 /// is event driven. As features and properties within features are encountered, the 
-/// invoker is notified through the FdoXmlFeatureHandler interface. This class is 
-/// similar to FdoXmlFeatureReader except that it provides better performance.
+/// invoker is notified through the XmlFeatureHandler interface. This class is 
+/// similar to XmlFeatureReader except that it provides better performance.
 public __gc class XmlFeaturePropertyReader : public NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler
 {
 public:
@@ -51,7 +51,30 @@ public:
     /// 	<li> GML FeatureCollection element
     /// 	<li> the element specified by flags->collectionUri and flags->collectionName
     /// 	<li> it has a corresponding class definition, in the given schemas, that 
-    ///       derives from the GML AbstractFeatureCollectionType.
+    ///   derives from the GML AbstractFeatureCollectionType.
+    /// </ul>
+    /// 
+    /// \param reader 
+    /// Input XML document reader.
+    /// If this reader is currently positioned at a feature 
+    /// collection type element then all features in this element are read. Otherwise, 
+    /// it processes all Feature Collection type sub-elements of the current element 
+    /// and reads their features. Therefore, if the reader is at the start of the XML 
+    /// document, all top-level feature collections in the document are read.
+    /// 
+	XmlFeaturePropertyReader(NAMESPACE_OSGEO_COMMON_XML::XmlReader* reader);
+
+    /// \brief
+    /// creates a Feature Property Reader.
+    /// 
+    /// \remarks
+    /// The XML element, at the document reader's current position, is recognized as a feature 
+    /// collection if it is one or more of the following: 
+    /// <ul>
+    /// 	<li> GML FeatureCollection element
+    /// 	<li> the element specified by flags->collectionUri and flags->collectionName
+    /// 	<li> it has a corresponding class definition, in the given schemas, that 
+    ///   derives from the GML AbstractFeatureCollectionType.
     /// </ul>
     /// 
     /// \param reader 
@@ -65,18 +88,13 @@ public:
     /// Input options for controlling the deserializing of the features. If NULL then 
     /// the default flags are used.
     /// 
-    /// \return
-    /// Returns FdoXmlFeaturePropertyReader
-    /// 
-	XmlFeaturePropertyReader(NAMESPACE_OSGEO_COMMON_XML::XmlReader* reader);
-
 	XmlFeaturePropertyReader(NAMESPACE_OSGEO_COMMON_XML::XmlReader* reader, NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags* flags);
 
     /// \brief
     /// Gets the Xml document reader that was passed to this object.
     /// 
     /// \return
-    /// Returns FdoXmlReader.
+    /// Returns XmlReader.
     /// 
 	NAMESPACE_OSGEO_COMMON_XML::XmlReader* GetXmlReader();
 
@@ -84,7 +102,7 @@ public:
     /// Gets the feature schemas describing the features being read.
     /// 
     /// \return
-    /// Returns FdoFeatureSchemaCollection
+    /// Returns FeatureSchemaCollection
     /// 
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchemaCollection* get_FeatureSchemas();
 
@@ -98,9 +116,9 @@ public:
     /// in these schemas, is encountered then one of the following is done:
     /// <ul>
     /// 	<li> an exception is thrown when flags->errorLevel is Normal or higher. The 
-    ///       exception reports all such features.
+    ///   exception reports all such features.
     /// 	<li> the feature is read according to a best default translation when the 
-    ///       flags->errorLevel is below Normal.
+    ///   flags->errorLevel is below Normal.
     /// </ul>
     /// 
     /// \param schemas 
@@ -110,6 +128,41 @@ public:
     /// Returns nothing
     /// 
 	__property System::Void set_FeatureSchemas(NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchemaCollection* schemas);
+
+    /// \brief
+    /// Parses the XML document.
+    /// 
+    /// \return
+    /// Returns false if no feature(s) were read.
+    /// 
+	System::Boolean Parse();
+
+    /// \brief
+    /// Parses the XML document.
+    /// 
+    /// \param featureHandler 
+    /// Input handler to receive events. Parse() fires various events as features and
+    /// properties are encountered.
+    /// 
+    /// \return
+    /// Returns false if no feature(s) were read.
+    /// 
+    System::Boolean Parse(NAMESPACE_OSGEO_FDO_XML::XmlFeatureHandler* featureHandler);
+
+    /// \brief
+    /// Parses the XML document.
+    /// 
+    /// \param featureHandler 
+    /// Input handler to receive events. Parse() fires various events as features and
+    /// properties are encountered.
+    /// \param featureContext 
+    /// Input Caller-specific contextual information that is pass to the feature 
+    /// handler event callbacks.
+    /// 
+    /// \return
+    /// Returns false if no feature(s) were read.
+    /// 
+    System::Boolean Parse(NAMESPACE_OSGEO_FDO_XML::XmlFeatureHandler* featureHandler, NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext* featureContext);
 
     /// \brief
     /// Parses the XML document.
@@ -124,18 +177,12 @@ public:
     /// Input 
     /// true: an incremental (progressive) parse is performed. This function returns after the 
     /// next feature is read. 
-    /// false ?this function keeps going until all features have been read.
+    /// false: this function keeps going until all features have been read.
     /// 
     /// \return
     /// Returns false if no feature(s) were read.
     /// 
-	System::Boolean Parse();
-
-	System::Boolean Parse(NAMESPACE_OSGEO_FDO_XML::XmlFeatureHandler* featureHandler);
-
-	System::Boolean Parse(NAMESPACE_OSGEO_FDO_XML::XmlFeatureHandler* featureHandler, NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext* featureContext);
-
-	System::Boolean Parse(NAMESPACE_OSGEO_FDO_XML::XmlFeatureHandler* featureHandler, NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext* featureContext, System::Boolean incremental);
+    System::Boolean Parse(NAMESPACE_OSGEO_FDO_XML::XmlFeatureHandler* featureHandler, NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext* featureContext, System::Boolean incremental);
 
     /// \brief
     /// Indicates whether all features have been read
@@ -153,8 +200,10 @@ public private:
 
 	inline FdoXmlFeaturePropertyReader* GetImpObj();
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 };
 
 END_NAMESPACE_OSGEO_FDO_XML

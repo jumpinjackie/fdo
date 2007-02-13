@@ -27,7 +27,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 /// FDO supports properties that inform the client code about capabilities that
 /// may vary between providers. 
 /// <p><b>Note:</b> <span class="red_text">This Help topic is provided for informational use only. There is
-/// no interface or support provided. Autodesk reserves the right to change
+/// no interface or support provided. OSGeo reserves the right to change
 /// the software related to the content herein.</span>
 public __gc __interface ITopologyCapabilities : public System::IDisposable
 {
@@ -38,7 +38,7 @@ public:
 
     /// True if the provider supports TopoGeometry properties that depend on
     /// each other in a hierarchy; if this is false, attempting to set a
-    /// non-NULL for FdoTopoGeometryPropertyDefinition's "DependsOnTopoGeometry"
+    /// non-NULL for TopoGeometryPropertyDefinition's "DependsOnTopoGeometry"
     /// property will fail.
 	System::Boolean SupportsTopologicalHierarchy();
 

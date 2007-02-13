@@ -28,21 +28,21 @@ public __gc class Filter;
 public __gc __interface IFilterProcessor;
 
 /// \brief
-/// The FdoUnaryLogicalOperator class derives from FdoLogicalOperator and allows a
+/// The UnaryLogicalOperator class derives from LogicalOperator and allows a
 /// logical "Not" to be performed against a filter.
 public __gc class UnaryLogicalOperator : public NAMESPACE_OSGEO_FDO_FILTER::LogicalOperator
 {
 public:
     /// \brief
-    /// Constructs a default instance of an FdoUnaryLogicalOperator.
+    /// Constructs a default instance of an UnaryLogicalOperator.
     /// 
     /// \return
-    /// Returns FdoUnaryLogicalOperator
+    /// Returns UnaryLogicalOperator
     /// 
 	UnaryLogicalOperator();
 
     /// \brief
-    /// Constructs an instance of an FdoUnaryLogicalOperator using the specified arguments.
+    /// Constructs an instance of an UnaryLogicalOperator using the specified arguments.
     /// 
     /// \param operand 
     /// Input operand
@@ -50,7 +50,7 @@ public:
     /// Input operation
     /// 
     /// \return
-    /// Returns FdoUnaryLogicalOperator
+    /// Returns UnaryLogicalOperator
     /// 
 	UnaryLogicalOperator(NAMESPACE_OSGEO_FDO_FILTER::Filter* operand, NAMESPACE_OSGEO_FDO_FILTER::UnaryLogicalOperations operation);
 
@@ -74,7 +74,7 @@ public:
 	__property System::Void set_Operation(NAMESPACE_OSGEO_FDO_FILTER::UnaryLogicalOperations value);
 
     /// \brief
-    /// Gets the FdoFilter operand to apply the operator to.
+    /// Gets Filter operand to apply the operator to.
     /// 
     /// \return
     /// Returns filter
@@ -82,7 +82,7 @@ public:
 	__property NAMESPACE_OSGEO_FDO_FILTER::Filter* get_Operand();
 
     /// \brief
-    /// Sets the FdoFilter operand to apply the operator to.
+    /// Sets Filter operand to apply the operator to.
     /// 
     /// \param value 
     /// Input filter
@@ -93,7 +93,7 @@ public:
 	__property System::Void set_Operand(NAMESPACE_OSGEO_FDO_FILTER::Filter* value);
 
     /// \brief
-    /// Overrides FdoFilter.Process to pass the FdoUnaryLogicalOperator to the
+    /// Overrides Filter.Process to pass UnaryLogicalOperator to the
     /// appropriate filter processor operation.
     /// 
     /// \param processor 
@@ -104,6 +104,16 @@ public:
     /// 
 	System::Void Process(NAMESPACE_OSGEO_FDO_FILTER::IFilterProcessor* processor);
 
+    /// \brief
+    /// Constructs a UnaryLogicalOperator object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	UnaryLogicalOperator(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:

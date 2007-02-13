@@ -34,15 +34,16 @@ END_NAMESPACE_OSGEO_FDO_FILTER
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS
 
 /// \brief
-/// The FdoIFeatureCommand interface defines the behavior common 
-/// to all commands that operate on feature instances. The features to 
-/// be operated on are identified by their class and a filter. If the feature 
-/// provider supports inheritance in the schema capabilities, then the command 
+/// The IFeatureCommandImp class is a concrete implementation of IFeatureCommand.
+/// IFeatureCommandImp defines the behavior common to all commands that operate on feature instances. 
+/// The features to be operated on are identified by their class and a filter. 
+/// If the feature provider supports inheritance in the schema capabilities, then the command 
 /// will operate on instances of that class and any derived classes. 
 /// In addition, feature commands can operate on related features if one or 
 /// more relation directives are specified. Each relation directive specifies 
 /// the relation to follow and how many levels of depth to follow it.
-private __gc class IFeatureCommandImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, public NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommand
+private __gc class IFeatureCommandImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 
+                                        public NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommand
 {
 public:
     /// \brief

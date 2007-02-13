@@ -27,7 +27,9 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 public __gc __interface ILongTransactionCheckpointReader;
 
 /// \brief
-/// The FdoIGetLongTransactionCheckpoints interface defines the
+/// The IGetLongTransactionCheckpointsImp class is a 
+/// concrete implementation of IGetLongTransactionCheckpoints.
+/// The IGetLongTransactionCheckpoints interface defines the
 /// GetLongTransactionCheckpoints command, which allows the user to enumerate
 /// the checkpoints for a given long transaction. To execute the operation, the
 /// user must have access privilege to the long transaction.
@@ -55,7 +57,7 @@ public:
 
     /// \brief
     /// Executes the get long transaction checkpoints command, returning a
-    /// reference to an FdoILongTransactionCheckpointReader.
+    /// reference to an ILongTransactionCheckpointReader.
     /// 
     /// \return
     /// Returns nothing

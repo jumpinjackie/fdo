@@ -24,10 +24,10 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE
 public __gc __interface IDataStorePropertyDictionary;
 
 /// \brief
-/// The FdoIDataStoreReader interface provides a forward-only, read-only iterator
-/// for reading feature data.  A reference to an FdoIDataStoreReader is returned
+/// The IDataStoreReader interface provides a forward-only, read-only iterator
+/// for reading feature data.  A reference to an IDataStoreReader is returned
 /// from the IListDataStores command. Because the initial position of the
-/// FdoIDataStoreReader is prior to the first item, you must call
+/// IDataStoreReader is prior to the first item, you must call
 /// ReadNext to begin accessing any data.
 public __gc __interface IDataStoreReader : public System::IDisposable
 {
@@ -50,7 +50,7 @@ public:
 
     /// \brief
     /// Gets the flag that indicates whether the datastore is FDO enabled.
-    /// Non-FDO databases are also referred to as “Foreign?datastores.
+    /// Non-FDO databases are also referred to as 'Foreign' datastores.
     /// 
     /// \return
     /// Returns the flag
@@ -58,7 +58,7 @@ public:
 	System::Boolean GetIsFdoEnabled();
 
     /// \brief
-    /// Gets the FdoIConnectionPropertyDictionary interface that 
+    /// Gets the IDataStorePropertyDictionary interface that 
     /// includes the properties of the datastores set at datastore create 
     /// time, with the exception of password.
     /// 
@@ -79,7 +79,7 @@ public:
 	System::Boolean ReadNext();
 
     /// \brief
-    /// Closes the FdoIDataStoreReader object, freeing any resources it may be holding.
+    /// Closes the IDataStoreReader object, freeing any resources it may be holding.
     /// 
     /// \return
     /// Returns nothing

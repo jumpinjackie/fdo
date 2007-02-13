@@ -24,7 +24,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 public __gc __interface ILockConflictReader;
 
 /// \brief
-/// The FdoIReleaseLock interface defines the ReleaseLock command, which releases
+/// The IReleaseLock interface defines the ReleaseLock command, which releases
 /// locks from feature instances of a given class that match the specified
 /// criteria. Input to the release lock command includes the name of the class
 /// and filter criteria by which to identify the instances to be unlocked. The
@@ -55,7 +55,7 @@ public:
 	__property System::Void set_LockOwner(System::String* value);
 
     /// \brief
-    /// Executes the release lock command, returning an FdoILockConflictReader.
+    /// Executes the release lock command, returning an ILockConflictReader.
     /// 
     /// \return
     /// Returns a list of feature instances whose lock is owned by someone else.

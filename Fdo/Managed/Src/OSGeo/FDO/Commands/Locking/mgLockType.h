@@ -21,63 +21,63 @@
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 
 /// \brief
-/// The FdoLockType enumeration defines lock types. The lock type for 
+/// The LockType enumeration defines lock types. The lock type for 
 /// a locked object indicates a user's access privileges (including the user 
 /// who applied the persistent lock) to an object.
 /// <p>
-/// The enumeration values are used with the commands FdoIAcquireLock, FdoISelect 
-/// and FdoIGetLockInfo. With the command FdoIAcquireLock or FdoISelect, the 
+/// The enumeration values are used with the AcquireLock, Select 
+/// and GetLockInfo commands. With the command AcquireLock or Select, the 
 /// specified value indicates the lock type to be used when applying a lock on
-/// an object. With the command FdoIGetLockInfo, the enumaration values are used
+/// an object. With the command IGetLockInfo, the enumaration values are used
 /// to report lock types back to the user.
 /// <p>
-/// The enumeration contains some special lock types (FdoLockType_None and FdoLockType_Unsupported) 
+/// The enumeration contains some special lock types (LockType_None and LockType_Unsupported) 
 /// that are used only when reporting lock type information.
 /// These special lock types cannot be used to specify a lock type to be applied 
 /// to an object.
-/// <param name="FdoLockType_None">
+/// <param name="LockType_None">
 /// Indicates that an object is unlocked. 
-/// This type cannot be used with the commands FdoIAcquireLock and FdoISelect.
+/// This type cannot be used with the commands AcquireLock and Select.
 /// </param>
-/// <param name="FdoLockType_Unsupported">
+/// <param name="LockType_Unsupported">
 /// Indicates that an unsupported lock 
 /// type has been encountered. This type cannot be used with the commands 
-/// FdoIAcquireLock and FdoISelect.
+/// AcquireLock and Select.
 /// </param>
-/// <param name="FdoLockType_Shared">
+/// <param name="LockType_Shared">
 /// Indicates a shared lock type. The type can 
-/// be used with the commands FdoIAcquireLock and FdoISelect.
+/// be used with the commands AcquireLock and Select.
 /// </param>
-/// <param name="FdoLockType_Transaction">
+/// <param name="LockType_Transaction">
 /// Indicates that a transaction lock 
 /// should be applied on an object. This type can be used with the commands 
-/// FdoIAcquireLock and FdoISelect.
+/// AcquireLock and Select.
 /// </param>
-/// <param name="FdoLockType_Exclusive">
+/// <param name="LockType_Exclusive">
 /// Indicates that only this user can modify 
 /// this object. In a long transaction situation, any user can modify the object in any 
 /// other long transaction, including the root long transaction if it is not the current 
 /// long transaction. 
 /// <P>
-/// The type can be used with the commands FdoIAcquireLock and FdoISelect.
+/// The type can be used with the commands AcquireLock and Select.
 /// </param>
-/// <param name="FdoLockType_LongTransactionExclusive">
+/// <param name="LockType_LongTransactionExclusive">
 /// Indicates that only this user can 
 /// modify this object in the long transaction containing the object or any long 
 /// transaction created as a descendent of that one. When not in a long transaction 
 /// situation (for example, if only a root long transaction exists), the lock behaves 
 /// like an Exclusive lock. 
 /// <P>
-/// The type can be used with the commands FdoIAcquireLock and FdoISelect.
+/// The type can be used with the commands AcquireLock and Select.
 /// </param>
-/// <param name="FdoLockType_AllLongTransactionExclusive">
+/// <param name="LockType_AllLongTransactionExclusive">
 /// Indicates that only this user can 
 /// modify this object in this long transaction. No user, not even the user locking the object, 
 /// can modify the object in any long transaction created as a descendent of the one 
 /// containing the object being locked. When not in a long transaction situation (for example, 
 /// if only a root long transaction exists), the lock behaves like an Exclusive lock. 
 /// <P>
-/// This type can be used with the commands FdoIAcquireLock and FdoISelect.
+/// This type can be used with the commands AcquireLock and Select.
 /// </param>
 
 public __value enum LockType

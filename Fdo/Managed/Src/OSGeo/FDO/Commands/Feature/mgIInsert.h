@@ -33,7 +33,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 public __gc __interface IFeatureReader;
 
 /// \brief
-/// The FdoIInsert interface defines the Insert command, which inserts a new
+/// The IInsert interface defines the Insert command, which inserts a new
 /// instance of a given class. Input to the insert command includes the name of
 /// the class and a collection of property values. Properties that are
 /// not specified and do not have a default value will be assigned a null value
@@ -47,7 +47,7 @@ public __gc __interface IInsert : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
 {
 public:
     /// \brief
-    /// Gets the name of the class to be operated upon as an FdoIdentifier.
+    /// Gets the name of the class to be operated upon as an Identifier.
     /// 
     /// \return
     /// Returns the class name.
@@ -55,7 +55,7 @@ public:
 	__property NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier* get_FeatureClassName();
 
     /// \brief
-    /// Sets the name of the class to be operated upon as an FdoIdentifier.
+    /// Sets the name of the class to be operated upon as an Identifier.
     /// 
     /// \param value 
     /// Input the identifier for the class.
@@ -66,7 +66,7 @@ public:
 	__property System::Void set_FeatureClassName(NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier* value);
 
     /// \brief
-    /// Sets the name of the class to be operated upon as an FdoIdentifier.
+    /// Sets the name of the class to be operated upon as an Identifier.
     /// 
     /// \param value 
     /// Input the class name.
@@ -77,7 +77,7 @@ public:
 	System::Void SetFeatureClassName(System::String* value);
 
     /// \brief
-    /// Gets the FdoPropertyValueCollection that specifies the names and values
+    /// Gets the PropertyValueCollection that specifies the names and values
     /// of the properties for the instance to be inserted.
     /// 
     /// \return
@@ -86,31 +86,31 @@ public:
 	__property NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection* get_PropertyValues();
 
     /// \brief
-    /// Gets the FdoBatchParameterValueCollection that can be used for optimized
+    /// Gets the BatchParameterValueCollection that can be used for optimized
     /// batch inserts of multiple features with a single insert command. Batch
     /// inserts can be performed by using Parameters for each of the property
     /// values, then adding collections of parameter values to the
-    /// FdoBatchParameterValueCollection. Each FdoParameterValueCollection in the
-    /// FdoBatchParameterValueCollection should contain one FdoParameterValue for each
+    /// BatchParameterValueCollection. Each ParameterValueCollection in the
+    /// BatchParameterValueCollection should contain one ParameterValue for each
     /// of the parameters specified for property values.
     /// 
     /// \return
-    /// Returns FdoBatchParameterValueCollection
+    /// Returns BatchParameterValueCollection
     /// 
 	__property NAMESPACE_OSGEO_FDO_COMMANDS::BatchParameterValueCollection* get_BatchParameterValues();
 
     /// \brief
     /// Executes the insert command and returns a reference to an
-    /// FdoIFeatureReader. Some feature providers can generate automatic identity
+    /// IFeatureReader. Some feature providers can generate automatic identity
     /// values for features. This will happen automatically as the features are
-    /// inserted. The returned FdoIFeatureReader allows the client to obtain the
+    /// inserted. The returned IFeatureReader allows the client to obtain the
     /// automatic identity property value(s) of newly inserted object(s). The
     /// returned feature reader at a minimum will read the unique identity
     /// properties of the objects just inserted. Multiple objects will be
     /// returned through the reader in the case of a batch insert.
     /// 
     /// \return
-    /// Returns an FdoIFeatureReader
+    /// Returns an IFeatureReader
     /// 
 	NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader* Execute();
 };

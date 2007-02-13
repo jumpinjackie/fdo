@@ -26,21 +26,20 @@ class FdoNetworkLayerClass;
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 
 /// \brief
-/// FdoNetworkLayerClass derives from FdoClassDefinition and can be used to represent a 
-/// network layer.
+/// NetworkLayerClass derives from ClassDefinition and can be used to represent a network layer.
 /// <p><b>Note:</b> <span class="red_text">This Help topic is provided for informational use only. There is
-/// no interface or support provided. Autodesk reserves the right to change
+/// no interface or support provided. OSGeo reserves the right to change
 /// the software related to the content herein.</span>
 public __gc class NetworkLayerClass : public NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition
 {
 public:
     /// \brief
-    /// Constructs a default instance of an FdoNetworkLayerClass.
+    /// Constructs a default instance of an NetworkLayerClass.
     /// 
 	NetworkLayerClass();
 
     /// \brief
-    /// Constructs an instance of an FdoNetworkLayerClass using the specified arguments.
+    /// Constructs an instance of an NetworkLayerClass using the specified arguments.
     /// 
     /// \param name 
     /// Input name
@@ -57,6 +56,16 @@ public:
     /// 
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::ClassType get_ClassType();
 
+    /// \brief
+    /// Constructs a NetworkLayerClass object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	NetworkLayerClass(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition(unmanaged, autoDelete)
 	{
 

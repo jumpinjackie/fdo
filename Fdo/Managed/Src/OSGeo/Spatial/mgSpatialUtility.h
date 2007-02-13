@@ -33,6 +33,8 @@ class FdoSpatialUtility;
 
 BEGIN_NAMESPACE_OSGEO_SPATIAL
 
+/// \brief
+/// A Spatial utility class.
 public __gc __sealed class SpatialUtility
 {
 public:
@@ -72,12 +74,8 @@ public:
     /// 
     /// \param geometry 
     /// Input Geometry to validate
-    /// \param geometryTypesCount 
-    /// Input Number of elements in the array given by geometryTypes. If zero, no constraint is used.
     /// \param geometryTypes 
     /// Input Array of allowed geometry types. NULL is valid if geometryTypesCount is zero.
-    /// \param geometryComponentTypesCount 
-    /// Input Number of elements in the array given by geometryComponentTypes. If zero, no constraint is used.
     /// \param geometryComponentTypes 
     /// Input Array of allowed geometry component types. NULL is valid if geometryComponentTypesCount is zero.
     /// \param dimensionality 
@@ -88,12 +86,67 @@ public:
     /// 
 	static NAMESPACE_OSGEO_SPATIAL::SpatialGeometryValidity ValidateGeometryByType(NAMESPACE_OSGEO_GEOMETRY::IGeometry * geometry, NAMESPACE_OSGEO_COMMON::GeometryType geometryTypes [], NAMESPACE_OSGEO_COMMON::GeometryComponentType geometryComponentTypes [], System::Int32 dimensionality);
 
+    /// \brief
+    /// Evaluates if two FDO geometric objects spatially interact with each other based on a user supplied spatial operator.
+    /// For example: Contains, Crosses, Disjoint, Equals, Intersects, Overlaps, Touches, Within, CoveredBy, Inside, EnvelopeIntersects.
+    /// 
+    /// \param g1 
+    /// Input Left hand Geometry to Evaluate
+    /// \param op 
+    /// Input The spatial operation to apply to the left and right hand geometries 
+    /// \param g2 
+    /// Input Right hand Geometry to Evaluate
+    /// 
+    /// \return
+    /// Returns The tesselated Geometry.
+    /// 
 	static System::Boolean Evaluate(NAMESPACE_OSGEO_GEOMETRY::IGeometry * g1, NAMESPACE_OSGEO_FDO_FILTER::SpatialOperations op, NAMESPACE_OSGEO_GEOMETRY::IGeometry * g2);
 
+    /// \brief
+    /// Tesselates a curve geometry into a set of line strings that approximate the curve geometry.
+    /// 
+    /// \param curve 
+    /// Input Geometry to tesselate 
+    /// 
+    /// \return
+    /// Returns The tesselated Geometry.
+    /// 
 	static NAMESPACE_OSGEO_GEOMETRY::IGeometry* TesselateCurve( NAMESPACE_OSGEO_GEOMETRY::IGeometry* curve);
 
+    /// \brief
+    /// Gets the extents of a geometry contained in a byte array.
+    /// 
+    /// \param bytes 
+    /// Input Geometry whose extents will be returned
+    /// \param minX 
+    /// Output The minimim x position of the geometry
+    /// \param minY 
+    /// Output The minimim y position of the geometry
+    /// \param maxX 
+    /// Output The maximum x position of the geometry
+    /// \param maxY 
+    /// Output The maximum y position of the geometry
+    /// 
 	static System::Void GetExtents(System::Byte bytes [],  System::Double* minX, System::Double* minY, System::Double* maxX,  System::Double* maxY);
 
+    /// \brief
+    /// Gets the extents of a geometry contained in a byte array.
+    /// 
+    /// \param bytes 
+    /// Input Geometry whose extents will be returned
+    /// \param minX 
+    /// Output The minimim x position of the geometry
+    /// \param minY 
+    /// Output The minimim y position of the geometry
+    /// \param minZ 
+    /// Output The minimim z position of the geometry
+    /// \param maxX 
+    /// Output The maximum x position of the geometry
+    /// \param maxY 
+    /// Output The maximum y position of the geometry
+    /// \param maxZ 
+    /// Output The maximum z position of the geometry
+    /// 
 	static System::Void GetExtents(System::Byte bytes [],  System::Double* minX, System::Double* minY, System::Double* minZ, System::Double* maxX,  System::Double* maxY, System::Double* maxZ);
 
     /// \brief
@@ -101,38 +154,88 @@ public:
     /// 
     /// \param ring 
     /// Input Ring to test
-    /// \param x 
+    /// \param coordinateX 
     /// Input X ordinate.
-    /// \param y 
+    /// \param coordinateY 
     /// Input Y ordinate.
+    /// \param isOnBoundary 
+    /// Output Specifies if the specified point is on the boundary of the ring.
     /// 
     /// \return
     /// Returns TRUE if the point is within ring or on its boundary, FALSE otherwise.
     /// 
 	static System::Boolean PointInRing( NAMESPACE_OSGEO_GEOMETRY::ILinearRing* ring, System::Double coordinateX, System::Double coordinateY, System::Boolean* isOnBoundary);
-	static System::Boolean PointInRing( NAMESPACE_OSGEO_GEOMETRY::ILinearRing* ring, System::Double coordinateX, System::Double coordinateY);
+
+    /// \brief
+    /// Tests whether a point is within a ring or not.
+    /// 
+    /// \param ring 
+    /// Input Ring to test
+    /// \param coordinateX 
+    /// Input X ordinate.
+    /// \param coordinateY 
+    /// Input Y ordinate.
+    /// 
+    /// \return
+    /// Returns TRUE if the point is within ring or on its boundary, FALSE otherwise.
+    /// 
+    static System::Boolean PointInRing( NAMESPACE_OSGEO_GEOMETRY::ILinearRing* ring, System::Double coordinateX, System::Double coordinateY);
 
     /// \brief
     /// Tests whether a point is within a polygon (including its islands) or not.
     /// 
-    /// \param poly 
+    /// \param polygon 
     /// Input Polygon to test
-    /// \param x 
+    /// \param coordinateX 
     /// Input X ordinate.
-    /// \param y 
+    /// \param coordinateY 
     /// Input Y ordinate.
+    /// \param isOnExtBoundary 
+    /// Output Specifies if the specified point is on the exterior boundary of the polygon.
+    /// \param isOnInBoundary 
+    /// Output Specifies if the specified point is on the interior boundary of the polygon.
     /// 
     /// \return
     /// Returns TRUE if the point is within polygon or on its boundary, FALSE otherwise.
     /// 
 	static System::Boolean PointInPolygon(NAMESPACE_OSGEO_GEOMETRY::IPolygon* polygon, System::Double coordinateX, System::Double coordinateY, System::Boolean * isOnExtBoundary, System::Boolean * isOnInBoundary);
-	static System::Boolean PointInPolygon(NAMESPACE_OSGEO_GEOMETRY::IPolygon* polygon, System::Double coordinateX, System::Double coordinateY, System::Boolean * isOnExtBoundary);
-	static System::Boolean PointInPolygon(NAMESPACE_OSGEO_GEOMETRY::IPolygon* polygon, System::Double coordinateX, System::Double coordinateY);
+
+    /// \brief
+    /// Tests whether a point is within a polygon (including its islands) or not.
+    /// 
+    /// \param polygon 
+    /// Input Polygon to test
+    /// \param coordinateX 
+    /// Input X ordinate.
+    /// \param coordinateY 
+    /// Input Y ordinate.
+    /// \param isOnExtBoundary 
+    /// Output Specifies if the specified point is on the exterior boundary of the polygon.
+    /// 
+    /// \return
+    /// Returns TRUE if the point is within polygon or on its boundary, FALSE otherwise.
+    /// 
+    static System::Boolean PointInPolygon(NAMESPACE_OSGEO_GEOMETRY::IPolygon* polygon, System::Double coordinateX, System::Double coordinateY, System::Boolean * isOnExtBoundary);
+
+    /// \brief
+    /// Tests whether a point is within a polygon (including its islands) or not.
+    /// 
+    /// \param polygon 
+    /// Input Polygon to test
+    /// \param coordinateX 
+    /// Input X ordinate.
+    /// \param coordinateY 
+    /// Input Y ordinate.
+    /// 
+    /// \return
+    /// Returns TRUE if the point is within polygon or on its boundary, FALSE otherwise.
+    /// 
+    static System::Boolean PointInPolygon(NAMESPACE_OSGEO_GEOMETRY::IPolygon* polygon, System::Double coordinateX, System::Double coordinateY);
 
     /// \brief
     /// Computes the area of a ring.
     /// 
-    /// \param poly 
+    /// \param ring 
     /// Input Ring to test
     /// 
     /// \return
@@ -144,7 +247,7 @@ public:
     /// \brief
     /// Computes the length (perimeter) of a ring.
     /// 
-    /// \param poly 
+    /// \param ring 
     /// Input Ring to test
     /// 
     /// \return

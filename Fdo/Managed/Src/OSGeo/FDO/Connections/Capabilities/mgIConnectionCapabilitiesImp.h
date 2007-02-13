@@ -27,12 +27,13 @@ BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 public __value enum ThreadCapability;
 
 /// \brief
-/// The FdoIConnectionCapabilities interface declares the feature provider's capabilities.
-private __gc class IConnectionCapabilitiesImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IConnectionCapabilities
+/// The IConnectionCapabilities interface declares the feature provider's capabilities.
+private __gc class IConnectionCapabilitiesImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 
+                                                public NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IConnectionCapabilities
 {
 public:
     /// \brief
-    /// Gets an FdoThreadCapability value that declares the feature provider's level of thread safety.
+    /// Gets an ThreadCapability value that declares the feature provider's level of thread safety.
     /// 
     /// \return
     /// Returns the connection thread capability.
@@ -41,9 +42,6 @@ public:
 
     /// \brief
     /// Gets the spatial context extent types supported by the feature provider.
-    /// 
-    /// \param length 
-    /// Output the number of spatial context types.
     /// 
     /// \return
     /// Returns the list of spatial context extent types.
@@ -59,10 +57,7 @@ public:
 	System::Boolean SupportsLocking();
 
     /// \brief
-    /// Gets an array of the FdoLockType values supported by the feature provider.
-    /// 
-    /// \param size 
-    /// Output the number of lock types
+    /// Gets an array of the LockType values supported by the feature provider.
     /// 
     /// \return
     /// Returns the list of lock types
@@ -141,8 +136,10 @@ public private:
 
 	inline FdoIConnectionCapabilities* GetImpObj();
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 };
 
 END_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES

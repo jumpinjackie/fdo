@@ -234,8 +234,6 @@ public:
     static NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinitionCollection* CreateSignatureDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose);
     static NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlySignatureDefinitionCollection* CreateReadOnlySignatureDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose);
 
-
-
     static NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection* CreateIConnection(System::IntPtr ptr, System::Boolean autoDispose);
     static NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionInfo* CreateIConnectionInfo(System::IntPtr ptr, System::Boolean autoDispose);
     static NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionPropertyDictionary* CreateIConnectionPropertyDictionary(System::IntPtr ptr, System::Boolean autoDispose);

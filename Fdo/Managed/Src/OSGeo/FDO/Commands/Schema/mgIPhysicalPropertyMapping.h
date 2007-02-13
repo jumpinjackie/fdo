@@ -33,7 +33,7 @@ END_NAMESPACE_OSGEO_FDO_XML
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
 
 /// \brief
-/// FdoPhysicalPropertyMapping is an abstract class that acts as a base class for all 
+/// PhysicalPropertyMapping is an abstract class that acts as a base class for all 
 /// Physical Schema Mapping property overrides.
 public __gc __interface IPhysicalPropertyMapping : public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IPhysicalElementMapping
 {
@@ -60,7 +60,7 @@ public:
     /// property names to be valid XML element names. Can be extended to handle 
     /// particular XML attributes and sub-elements for derived classes.
     /// <p><b>Note:</b> Schema Override elements that do not require name encoding
-    /// should be based on FdoPhysicalElementMapping instead of this class.
+    /// should be based on PhysicalElementMapping instead of this class.
     /// 
     /// \param xmlWriter 
     /// Input write the element to this XML writer

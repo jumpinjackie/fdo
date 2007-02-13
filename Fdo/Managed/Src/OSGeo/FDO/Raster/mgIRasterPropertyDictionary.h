@@ -30,11 +30,11 @@ BEGIN_NAMESPACE_OSGEO_FDO_RASTER
 public __gc class DataValueCollection;
 
 /// \brief
-/// The FdoIRasterPropertyDictionary exposes a dictionary style
+/// The IRasterPropertyDictionary exposes a dictionary style
 /// interface to the raster properties. Through this interface the
 /// non-standard properties of a raster image can be determined and
 /// their values can be retrieved and set.  Data values are exchanged
-/// through the FdoDataValue object to accommodate various data types,
+/// through the DataValue object to accommodate various data types,
 /// boolean, integer, double, string etc.
 public __gc __interface IRasterPropertyDictionary: public System::IDisposable
 {

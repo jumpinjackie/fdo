@@ -34,8 +34,17 @@ public __gc __sealed class XmlSpatialContextSerializer
 {
 public:
     /// \brief
-    /// reads all Spatial Contexts from an XML document to an FDO 
-    /// connection.
+    /// Reads all Spatial Contexts from an XML document to an FDO connection.
+    /// 
+    /// \param connection 
+    /// Input the FDO connection.
+    /// \param reader 
+    /// Input XML document reader.
+    /// 
+	static System::Void XmlDeserialize(NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection* connection, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextReader* reader);
+
+    /// \brief
+    /// Reads all Spatial Contexts from an XML document to an FDO connection.
     /// 
     /// \param connection 
     /// Input the FDO connection.
@@ -46,13 +55,20 @@ public:
     /// deserializing of the Spatial Contexts. If NULL then the 
     /// default flags are used.
     /// 
-	static System::Void XmlDeserialize(NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection* connection, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextReader* reader);
-
 	static System::Void XmlDeserialize(NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection* connection, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextReader* reader, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags* flags);
 
     /// \brief
-    /// writes all Spatial Contexts from the FDO connection to 
-    /// an XML document.
+    /// writes all Spatial Contexts from the FDO connection to an XML document.
+    /// 
+    /// \param connection 
+    /// Input the FDO connection.
+    /// \param writer 
+    /// Input XML document writer.
+    /// 
+	static System::Void XmlSerialize(NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection* connection, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter* writer);
+
+    /// \brief
+    /// writes all Spatial Contexts from the FDO connection to an XML document.
     /// 
     /// \param connection 
     /// Input the FDO connection.
@@ -63,8 +79,6 @@ public:
     /// serializing of the Spatial Contexts. If NULL then the 
     /// default flags are used.
     /// 
-	static System::Void XmlSerialize(NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection* connection, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter* writer);
-
 	static System::Void XmlSerialize(NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection* connection, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter* writer, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags* flags);
 
 private:

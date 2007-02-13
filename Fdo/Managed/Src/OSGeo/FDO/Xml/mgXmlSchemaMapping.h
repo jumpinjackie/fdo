@@ -28,7 +28,7 @@ public __gc class XmlElementMappingCollection;
 public __gc class XmlClassMappingCollection;
 
 /// \brief
-/// FdoXmlSchemaMapping specifies overrides for translating a feature schema between 
+/// XmlSchemaMapping specifies overrides for translating a feature schema between 
 /// FDO and GML.
 public __gc class XmlSchemaMapping : public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping
 {
@@ -65,15 +65,15 @@ public:
     /// Gets the mappings between GML global elements and their types as Fdo Classes. These
     /// mappings are used in two circumstances:
     /// <ul>
-    ///     <li> when features are read from a GML Document, these mappings determine the Feature
-    ///     class of each feature, based on its element name. If the element name is not 
-    ///     in these mappings then the class name defaults to the element name.
-    ///     <li> when the Feature Schema for these overrides is written to GML, a global element
-    ///     is created from each item in element mappings collection. 
+    /// <li> when features are read from a GML Document, these mappings determine the Feature
+    /// class of each feature, based on its element name. If the element name is not 
+    /// in these mappings then the class name defaults to the element name.
+    /// <li> when the Feature Schema for these overrides is written to GML, a global element
+    /// is created from each item in element mappings collection. 
     /// </ul>
     /// 
     /// \return
-    /// Returns FdoXmlElementMappingCollection*
+    /// Returns XmlElementMappingCollection
     /// 
 	NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection* GetElementMappings();
 
@@ -81,7 +81,7 @@ public:
     /// Gets the mappings for FDO Classes.
     /// 
     /// \return
-    /// Returns FdoXmlClassMappingCollection*
+    /// Returns XmlClassMappingCollection
     /// 
 	NAMESPACE_OSGEO_FDO_XML::XmlClassMappingCollection* GetClassMappings();
 

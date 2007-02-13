@@ -26,7 +26,9 @@ class FdoICreateLongTransactionCheckpoint;
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
 /// \brief
-/// The FdoICreateLongTransactionCheckpoint interface defines the
+/// The ICreateLongTransactionCheckpointImp class is a 
+/// concrete implementation of ICreateLongTransactionCheckpoint.
+/// The ICreateLongTransactionCheckpoint interface defines the
 /// CreateLongTransactionCheckpoint command, which allows the user to create a
 /// checkpoint for any long transaction to which the user has the access privileges.
 private __gc class ICreateLongTransactionCheckpointImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, public NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ICreateLongTransactionCheckpoint

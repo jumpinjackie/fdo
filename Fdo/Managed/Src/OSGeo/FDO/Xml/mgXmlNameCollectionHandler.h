@@ -23,7 +23,7 @@ class FdoXmlNameCollectionHandler;
 BEGIN_NAMESPACE_OSGEO_FDO_XML
 
 /// \brief
-/// FdoXmlNameCollectionHandler is a class for serializing and 
+/// XmlNameCollectionHandler is a class for serializing and 
 /// deserializing fdo:NameCollectionType elements.
 public __gc class XmlNameCollectionHandler : public NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler
 {
@@ -31,13 +31,16 @@ public:
     /// \brief
     /// Constructs an Fdo XML Name Collection Handler.
     /// 
-    /// \param pNames 
+	XmlNameCollectionHandler();
+
+    /// \brief
+    /// Constructs an Fdo XML Name Collection Handler.
+    /// 
+    /// \param names 
     /// Input the collection of names. Any names deserialized
     /// will be added to this collection. If NULL then an internal empty
     /// name collection is created.
     /// 
-	XmlNameCollectionHandler();
-
 	XmlNameCollectionHandler(NAMESPACE_OSGEO_COMMON::StringCollection* names);
 
     /// \brief
@@ -56,8 +59,10 @@ public private:
 
 	inline FdoXmlNameCollectionHandler* GetImpObj();
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 };
 
 END_NAMESPACE_OSGEO_FDO_XML

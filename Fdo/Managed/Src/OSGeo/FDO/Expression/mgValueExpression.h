@@ -26,11 +26,21 @@ class FdoValueExpression;
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 
 /// \brief
-/// FdoValueExpression is an abstract base class that derives from FdoExpression to
+/// ValueExpression is an abstract base class that derives from Expression to
 /// form the root for all value expression types.
 public __gc class ValueExpression : public NAMESPACE_OSGEO_FDO_EXPRESSION::Expression
 {
 public:
+    /// \brief
+    /// Constructs a ValueExpression object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	ValueExpression(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:

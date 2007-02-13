@@ -31,42 +31,86 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 public __gc __interface IExpressionProcessor;
 
 /// \brief
-/// The FdoBLOBValue class derives from FdoLOBValue and represents a literal
+/// The BLOBValue class derives from LOBValue and represents a literal
 /// BLOB value.
 public __gc class BLOBValue : public NAMESPACE_OSGEO_FDO_EXPRESSION::LOBValue 
 {
 public:
     /// \brief
-    /// Constructs a default instance of an FdoBLOBValue with a value of null.
+    /// Constructs a default instance of an BLOBValue with a value of null.
     /// 
     /// \return
-    /// Returns the created FdoBLOBValue
+    /// Returns the created BLOBValue
     /// 
 	BLOBValue();
 
     /// \brief
-    /// Constructs an instance of an FdoBLOBValue using the specified arguments.
+    /// Constructs an instance of an BLOBValue using the specified arguments.
     /// 
     /// \param value 
     /// Input a byte array
     /// 
     /// \return
-    /// Returns the created FdoBLOBValue
+    /// Returns the created BLOBValue
     /// 
 	BLOBValue(System::Byte value []);
 
+    /// \brief
+    /// Gets the FDO DataType of the BLOB
+    /// 
+    /// \return
+    /// Returns the FDO DataType
+    /// 
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::DataType get_DataType();
 
+    /// \brief
+    /// Gets the data associated to the blob as an Byte Array
+    /// 
+    /// \return
+    /// Returns the Byte Array containing the BLOB data
+    /// 
 	__property System::Byte get_Data() [];
 
+    /// \brief
+    /// Sets the data associated to the BLOB using an FDO ByteArray
+    /// 
+    /// \param value
+    /// Input the FDO Byte Array
+    /// 
 	__property System::Void set_Data(System::Byte value []);
 
+    /// \brief
+    /// Sets the value of the BLOB to NULL.
+    /// 
 	System::Void SetNull();
 
+    /// \brief
+    /// Overrides FdoIExpression::Process to pass the DataValue to the appropriate
+    /// expression processor operation.
+    /// 
+    /// \param processor
+    /// Input the pointer to the FDO expression processor
+    /// 
 	System::Void Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor* processor);
 
+    /// \brief
+    /// Gets the value of the BLOB as a string.
+    /// 
+    /// \return
+    /// Returns the well defined text representation of the BLOB
+    /// 
 	System::String* ToString();
 
+    /// \brief
+    /// Constructs a BLOBValue object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	BLOBValue(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:

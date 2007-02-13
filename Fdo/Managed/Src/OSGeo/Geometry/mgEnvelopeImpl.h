@@ -37,16 +37,11 @@ BEGIN_NAMESPACE_OSGEO_GEOMETRY
 public __gc class EnvelopeImpl : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_GEOMETRY::IEnvelope
 {
 public:
-	static System::Boolean op_Inequality(EnvelopeImpl *left, EnvelopeImpl* right);
-
     /// \brief
     /// Constructs a default instance of a EnvelopeImpl object.
     /// 
     /// \remarks
-    ///  Ordinate values default to System::Double::NaN.
-    /// 
-    /// \return
-    /// Returns nothing
+    /// Ordinate values default to System::Double::NaN.
     /// 
     EnvelopeImpl();
 
@@ -54,7 +49,7 @@ public:
     /// Constructs a 2D EnvelopeImpl object from X and Y ordinates.
     /// 
     /// \remarks
-    ///  Z ordinate value defaults to System::Double::NaN.
+    /// Z ordinate value defaults to System::Double::NaN.
     /// 
     /// \param minX 
     /// Input Lower-left X ordinate
@@ -64,9 +59,6 @@ public:
     /// Input Upper-right X ordinate
     /// \param maxY 
     /// Input Upper-right Y ordinate
-    /// 
-    /// \return
-    /// Returns nothing
     /// 
 	EnvelopeImpl(System::Double minX, System::Double minY,
 		System::Double maxX, System::Double maxY);
@@ -87,9 +79,6 @@ public:
     /// \param maxZ 
     /// Input Upper-right, front Z ordinate
     /// 
-    /// \return
-    /// Returns nothing
-    /// 
 	EnvelopeImpl(System::Double minX, System::Double minY, System::Double minZ,
 		System::Double maxX, System::Double maxY, System::Double maxZ);
 
@@ -98,9 +87,6 @@ public:
     /// 
     /// \param envelopeImpl 
     /// Input envelope to copy
-    /// 
-    /// \return
-    /// Returns nothing
     /// 
     EnvelopeImpl(EnvelopeImpl* envelopeImpl);
 
@@ -112,44 +98,66 @@ public:
     /// \param upperRight 
     /// Input Upper-right position
     /// 
-    /// \return
-    /// Returns nothing
-    /// 
 	EnvelopeImpl(NAMESPACE_OSGEO_GEOMETRY::IDirectPosition* lowerLeft, NAMESPACE_OSGEO_GEOMETRY::IDirectPosition * upperRight);
 
     /// \brief
-    ///  Constructs a EnvelopeImpl object by copying from an array of ordinates.
+    /// Constructs a EnvelopeImpl object by copying from an array of ordinates.
     /// 
     /// \param dimensionType 
     /// Input dimensionality of the ordinates (see Dimensionality)
     /// \param ordinates 
     /// Input ordinate array representing two positions
     /// 
-    /// \return
-    /// Returns nothing
-    /// 
 	EnvelopeImpl(System::Int32 dimensionType, System::Double ordinates __gc[]);
 
     /// \brief
-    /// Equality operator for EnvelopeImpl.
+    /// Equality function for EnvelopeImpl.
     /// 
     /// \param right 
     /// Input envelope for comparison (right-hand-side of equation)
+    /// 
+    /// \param left 
+    /// Input envelope for comparison (left-hand-side of equation)
     /// 
     /// \return
     /// Returns true if all non-NaN ordinates exactly equal.  All NaN values compare as equal to each other.
     /// 
 	static System::Boolean op_Equality(EnvelopeImpl *left, EnvelopeImpl* right);
 
+    /// \brief
+    /// InEquality function for EnvelopeImpl.
+    /// 
+    /// \param right 
+    /// Input envelope for comparison (right-hand-side of equation)
+    /// 
+    /// \param left 
+    /// Input envelope for comparison (left-hand-side of equation)
+    /// 
+    /// \return
+    /// Returns true if the envelope ordinates are not equal.
+    /// 
+	static System::Boolean op_Inequality(EnvelopeImpl *left, EnvelopeImpl* right);
+
+    /// \brief
+    /// Equality function for EnvelopeImpl.
+    /// 
+    /// \param obj 
+    /// Input envelope for comparison (right-hand-side of equation)
+    /// 
+    /// \return
+    /// Returns true if all non-NaN ordinates exactly equal to this instance.  All NaN values compare as equal to each other.
+    /// 
 	System::Boolean Equals(System::Object* obj);
 
+/// \cond DOXYGEN-IGNORE
 	System::Int32 GetHashCode();
+/// \endcond
 
     /// \brief
     /// Gets the minimum X coordinate value.
     /// 
     /// \return
-    /// Returns the minimum X ordinate; numeric_limits<double>::quiet_NaN() by default
+    /// Returns the minimum X ordinate; numeric_limits::quiet_NaN() by default
     /// 
 	__property System::Double get_MinX();
 
@@ -168,7 +176,7 @@ public:
     /// Gets the minimum Y coordinate value.
     /// 
     /// \return
-    /// Returns the minimum Y ordinate; numeric_limits<double>::quiet_NaN() by default
+    /// Returns the minimum Y ordinate; numeric_limits::quiet_NaN() by default
     /// 
     __property System::Double get_MinY();
 
@@ -187,7 +195,7 @@ public:
     /// Gets the minimum Z coordinate value.
     /// 
     /// \return
-    /// Returns the minimum Z ordinate; numeric_limits<double>::quiet_NaN() by default
+    /// Returns the minimum Z ordinate; numeric_limits::quiet_NaN() by default
     /// 
 	__property System::Double get_MinZ();
 
@@ -206,7 +214,7 @@ public:
     /// Gets the maximum X coordinate value.
     /// 
     /// \return
-    /// Returns the maximum X ordinate; numeric_limits<double>::quiet_NaN() by default
+    /// Returns the maximum X ordinate; numeric_limits::quiet_NaN() by default
     /// 
 	__property System::Double get_MaxX();
 
@@ -225,9 +233,10 @@ public:
     /// Gets the maximum Y coordinate value.
     /// 
     /// \return
-    /// Returns the maximum Y ordinate; numeric_limits<double>::quiet_NaN() by default
+    /// Returns the maximum Y ordinate; numeric_limits::quiet_NaN() by default
     /// 
 	__property System::Double get_MaxY();
+
     /// \brief
     /// Sets the maximum Y coordinate value.
     /// 
@@ -243,7 +252,7 @@ public:
     /// Gets the maximum Z coordinate value.
     /// 
     /// \return
-    /// Returns the maximum Z ordinate; numeric_limits<double>::quiet_NaN() by default
+    /// Returns the maximum Z ordinate; numeric_limits::quiet_NaN() by default
     /// 
 	__property System::Double get_MaxZ();
 
@@ -289,13 +298,25 @@ public:
 	System::Void Expand(NAMESPACE_OSGEO_GEOMETRY::IEnvelope* envelope);
 
 public:
+    /// \brief
+    /// Constructs an Envelope based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed element should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	EnvelopeImpl(System::IntPtr unmanaged, System::Boolean autoDelete);
 
+/// \cond DOXYGEN-IGNORE
 protected:
     System::Void ReleaseUnmanagedObject();
 
 public private:
 	FdoEnvelopeImpl* GetImpObj();
+/// \endcond
 };
 
 END_NAMESPACE_OSGEO_GEOMETRY

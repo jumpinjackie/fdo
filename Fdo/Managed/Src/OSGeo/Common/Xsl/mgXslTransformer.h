@@ -43,6 +43,45 @@ public:
     /// \brief
     /// Constructs an XSL Transformer object.
     /// 
+	XslTransformer();
+
+    /// \brief
+    /// Constructs an XSL Transformer object.
+    /// 
+    /// \param inDoc 
+    /// Input the XML document to transform.
+    /// 
+    XslTransformer(NAMESPACE_OSGEO_COMMON_XML::XmlReader* inDoc);
+
+    /// \brief
+    /// Constructs an XSL Transformer object.
+    /// 
+    /// \param inDoc 
+    /// Input the XML document to transform.
+    /// \param stylesheet 
+    /// Input the XSL stylesheet with transformation instructions.
+    /// 
+    XslTransformer(NAMESPACE_OSGEO_COMMON_XML::XmlReader* inDoc, NAMESPACE_OSGEO_COMMON_XML::XmlReader* stylesheet);
+
+    /// \brief
+    /// Constructs an XSL Transformer object.
+    /// 
+    /// \param inDoc 
+    /// Input the XML document to transform.
+    /// \param stylesheet 
+    /// Input the XSL stylesheet with transformation instructions.
+    /// \param outDoc 
+    /// Output the transformed XML document.
+    /// <p><b>Note:</b> The transformed document is not completely written until 'outDoc'
+    /// and this transformer are destroyed by releasing all references to them.
+    /// Therefore, these objects must be destroyed before reading back the 
+    /// transformed document.
+    /// 
+	XslTransformer(NAMESPACE_OSGEO_COMMON_XML::XmlReader* inDoc, NAMESPACE_OSGEO_COMMON_XML::XmlReader* stylesheet, NAMESPACE_OSGEO_COMMON_XML::XmlWriter* outDoc);
+
+    /// \brief
+    /// Constructs an XSL Transformer object.
+    /// 
     /// \param inDoc 
     /// Input the XML document to transform.
     /// \param stylesheet 
@@ -56,14 +95,6 @@ public:
     /// \param log 
     /// Input the logging object.
     /// 
-	XslTransformer();
-
-	XslTransformer(NAMESPACE_OSGEO_COMMON_XML::XmlReader* inDoc);
-
-	XslTransformer(NAMESPACE_OSGEO_COMMON_XML::XmlReader* inDoc, NAMESPACE_OSGEO_COMMON_XML::XmlReader* stylesheet);
-
-	XslTransformer(NAMESPACE_OSGEO_COMMON_XML::XmlReader* inDoc, NAMESPACE_OSGEO_COMMON_XML::XmlReader* stylesheet, NAMESPACE_OSGEO_COMMON_XML::XmlWriter* outDoc);
-
     XslTransformer(NAMESPACE_OSGEO_COMMON_XML::XmlReader* inDoc, NAMESPACE_OSGEO_COMMON_XML::XmlReader* stylesheet, NAMESPACE_OSGEO_COMMON_XML::XmlWriter* outDoc, NAMESPACE_OSGEO_COMMON_IO::IoTextWriter* log);
 
     /// \brief
@@ -80,7 +111,7 @@ public:
     /// \param inDoc 
     /// Input the XML document to transform.
     /// 
-	__property System::Void set_InDoc(NAMESPACE_OSGEO_COMMON_XML::XmlReader* value );
+	__property System::Void set_InDoc(NAMESPACE_OSGEO_COMMON_XML::XmlReader* inDoc );
 
     /// \brief
     /// Gets the XSL Stylesheet
@@ -96,7 +127,7 @@ public:
     /// \param stylesheet 
     /// Input the stylesheet
     /// 
-	__property System::Void set_Stylesheet(NAMESPACE_OSGEO_COMMON_XML::XmlReader* value);
+	__property System::Void set_Stylesheet(NAMESPACE_OSGEO_COMMON_XML::XmlReader* stylesheet);
 
     /// \brief
     /// Gets the output document.
@@ -114,7 +145,7 @@ public:
     /// <p><b>Note:</b> The output document is not completely written until outDoc
     /// and this transformer are destroyed by releasing all references to them.
     /// 
-	__property System::Void set_OutDoc(NAMESPACE_OSGEO_COMMON_XML::XmlWriter* value);
+	__property System::Void set_OutDoc(NAMESPACE_OSGEO_COMMON_XML::XmlWriter* outDoc);
 
     /// \brief
     /// Gets the input logging object.
@@ -130,7 +161,7 @@ public:
     /// \param outDoc 
     /// Input the logging object
     /// 
-	__property System::Void set_Log(NAMESPACE_OSGEO_COMMON_IO::IoTextWriter* value);
+	__property System::Void set_Log(NAMESPACE_OSGEO_COMMON_IO::IoTextWriter* outDoc);
 
     /// \brief
     /// Gets the list of parameters that will be passed to the 
@@ -150,16 +181,28 @@ public:
     /// 
 	System::Void Transform();
 
+    /// \brief
+    /// Constructs an XslTransformer based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	XslTransformer(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_RUNTIME::Disposable(unmanaged, autoDelete)
 	{
 
 	}
 
+/// \cond DOXYGEN-IGNORE
 public private:
 	inline FdoXslTransformer* GetImpObj();
 
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 };
 
 END_NAMESPACE_OSGEO_COMMON_XSL

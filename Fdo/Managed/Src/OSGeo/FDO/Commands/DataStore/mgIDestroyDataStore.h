@@ -24,16 +24,16 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE
 public __gc __interface IDataStorePropertyDictionary;
 
 /// \brief
-/// The FdoIDestroyDataStore interface defines the create datastore command,
+/// The IDestroyDataStore interface defines the destroy datastore command,
 /// which can be used to create new provider specific datastores. The input is provided
 /// through a dictionary of name value pairs that is provider dependant. 
 public __gc __interface IDestroyDataStore : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
 {
 public:
     /// \brief
-    /// Gets the FdoIDataStorePropertyDictionary interface that	
-    /// can be used to dynamically query	and	set	the	properties required	
-    /// to create a new datastore.
+    /// Gets the IDataStorePropertyDictionary interface that	
+    /// can be used to dynamically query and set the properties required	
+    /// to destroy a datastore.
     /// 
     /// \return
     /// Returns the property dictionary
@@ -41,7 +41,7 @@ public:
     __property NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStorePropertyDictionary* get_DataStoreProperties();
 
     /// \brief
-    /// Executes the FdoIDestroyDataStore command.
+    /// Executes the IDestroyDataStore command.
     /// 
     /// \return
     /// Returns nothing

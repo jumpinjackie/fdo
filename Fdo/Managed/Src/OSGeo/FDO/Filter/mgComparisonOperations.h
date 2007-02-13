@@ -21,21 +21,21 @@
 BEGIN_NAMESPACE_OSGEO_FDO_FILTER
 
 /// \brief
-/// The FdoComparisonOperations enumeration lists the comparison operations
+/// The ComparisonOperations enumeration lists the comparison operations
 /// available.
-/// \param FdoComparisonOperations_EqualTo
+/// \param ComparisonOperations_EqualTo
 /// Test to see if the left and right expressions are equal
-/// \param FdoComparisonOperations_NotEqualTo
+/// \param ComparisonOperations_NotEqualTo
 /// Test to see if the left and right expressions are not equal
-/// \param FdoComparisonOperations_GreaterThan
+/// \param ComparisonOperations_GreaterThan
 /// Test to see if the left expression is greater than the right expression
-/// \param FdoComparisonOperations_GreaterThanOrEqualTo
+/// \param ComparisonOperations_GreaterThanOrEqualTo
 /// Test to see if the left expression is greater than or equal to the right expression
-/// \param FdoComparisonOperations_LessThan
+/// \param ComparisonOperations_LessThan
 /// Test to see if the left expression is less than the right expression
-/// \param FdoComparisonOperations_LessThanOrEqualTo
+/// \param ComparisonOperations_LessThanOrEqualTo
 /// Test to see if the left expression is less than or equal to the right expression
-/// \param FdoComparisonOperations_Like
+/// \param ComparisonOperations_Like
 /// Test to see if the left expression matches the pattern specified by the
 /// right expression.  Wildcard characters supported in the pattern are:
 ///

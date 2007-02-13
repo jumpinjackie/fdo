@@ -31,18 +31,17 @@ BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 public __gc class ClassDefinition;
 
 /// \brief
-/// The FdoClassCapabilites class describes various capabilities
+/// The ClassCapabilites class describes various capabilities
 /// for a particular FDO Class Definition and an FDO Provider datastore.
 public __gc class ClassCapabilities : public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
 public:
     /// \brief
-    /// Constructs an FdoClassCapabilities instance. This function
+    /// Constructs an ClassCapabilities instance. This function
     /// should only be called from an FDO Provider.
     /// 
     /// \param parent 
-    /// Input The Fdo Class Definition that owns these
-    /// capabilities.
+    /// Input The FDO Class Definition that owns these capabilities.
     /// 
 	ClassCapabilities(NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition* parent);
 
@@ -64,10 +63,7 @@ public:
 	__property System::Void set_SupportsLocking(System::Boolean value);
 
     /// \brief
-    /// Gets an array of the FdoLockType values supported by the feature provider.
-    /// 
-    /// \param size 
-    /// Output the number of lock types
+    /// Gets an array of LockType values supported by the feature provider.
     /// 
     /// \return
     /// Returns the list of lock types
@@ -80,8 +76,6 @@ public:
     /// 
     /// \param types 
     /// The supported array of lock types
-    /// \param size 
-    /// The number of lock types
     /// 
 	__property System::Void set_LockTypes(NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockType types[]);
 
@@ -107,7 +101,7 @@ public:
     /// Gets the parent of this Class Capabilites object.
     /// 
     /// \return
-    /// Returns FdoClassDefinition
+    /// Returns ClassDefinition
     /// 
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition* get_Parent();
 
@@ -121,8 +115,10 @@ public private:
 
 	inline FdoClassCapabilities* GetImpObj();
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 
 private:
 	typedef FdoArray<FdoLockType> FdoLockTypeArray;

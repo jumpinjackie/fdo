@@ -27,32 +27,32 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 public __gc __interface IExpressionProcessor;
 
 /// \brief
-/// The FdoGeometryValue class derives from FdoLiteralValue and represents a geometric value.
+/// The GeometryValue class derives from LiteralValue and represents a geometric value.
 public __gc class GeometryValue : public NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue
 {
 public:
 
     /// \brief
-    /// Constructs a default instance of an FdoGeometryValue with a value of null.
+    /// Constructs a default instance of an GeometryValue with a value of null.
     /// 
     /// \return
-    /// Returns FdoGeometryValue
+    /// Returns GeometryValue
     /// 
 	GeometryValue();
 
     /// \brief
-    /// Constructs an instance of an FdoGeometryValue using the specified arguments.
+    /// Constructs an instance of an GeometryValue using the specified arguments.
     /// 
     /// \param geometry 
     /// Input geometry byte array
     /// 
     /// \return
-    /// Returns FdoGeometryValue
+    /// Returns GeometryValue
     /// 
 	GeometryValue(System::Byte geometry []);
 
     /// \brief
-    /// Returns true if the FdoGeometryValue represents a null value.
+    /// Returns true if the GeometryValue represents a null value.
     /// 
     /// \return
     /// Returns true if null geometry
@@ -81,7 +81,7 @@ public:
 	__property System::Void set_Geometry(System::Byte value []);
 
     /// \brief
-    /// Sets the FdoGeometryValue to a null value.
+    /// Sets the GeometryValue to a null value.
     /// 
     /// \return
     /// Returns nothing
@@ -89,7 +89,7 @@ public:
 	System::Void SetNull();
 
     /// \brief
-    /// Overrides FdoExpression.Process to pass the FdoGeometryValue to the
+    /// Overrides Expression.Process to pass the GeometryValue to the
     /// appropriate expression processor operation.
     /// 
     /// \param processor 
@@ -108,6 +108,16 @@ public:
     /// 
 	System::String* ToString();
 
+    /// \brief
+    /// Constructs a GeometryValue object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	GeometryValue(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:

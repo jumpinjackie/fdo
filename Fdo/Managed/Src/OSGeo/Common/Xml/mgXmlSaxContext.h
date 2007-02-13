@@ -39,7 +39,7 @@ public:
     /// Constructs the default Sax Context
     /// 
     /// \param reader 
-    /// Input the FdoXmlReader that is parsing the XML document.
+    /// Input the XmlReader that is parsing the XML document.
     /// 
     /// \return
     /// Returns XmlSaxContext
@@ -47,21 +47,33 @@ public:
 	XmlSaxContext(NAMESPACE_OSGEO_COMMON_XML::XmlReader* reader);
 
     /// \brief
-    /// Gets the FdoXmlReader that is parsing the XML document.
+    /// Gets the XmlReader that is parsing the XML document.
     /// 
     /// \return
     /// Returns XmlReader
     /// 
 	__property NAMESPACE_OSGEO_COMMON_XML::XmlReader* get_Reader();
 
+    /// \brief
+    /// Constructs an XmlSaxContext object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	XmlSaxContext(System::IntPtr unmanaged, System::Boolean autoDelete);
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
 
 public private:
 	inline FdoXmlSaxContext* GetImpObj();
 };
+/// \endcond
 
 END_NAMESPACE_OSGEO_COMMON_XML
 

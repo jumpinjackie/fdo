@@ -21,18 +21,18 @@
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS
 
 /// \brief
-/// The FdoConnectionState enumeration indicates the current state of the connection
-/// <param name="FdoConnectionState_Busy">
+/// The ConnectionState enumeration indicates the current state of the connection
+/// <param name="ConnectionState_Busy">
 /// The connection is busy executing one or more commands. Executing another
 /// command while the connection is busy will result in an exception.
 /// </param>
-/// <param name="FdoConnectionState_Closed">
+/// <param name="ConnectionState_Closed">
 /// The connection is closed.
 /// </param>
-/// <param name="FdoConnectionState_Open">
+/// <param name="ConnectionState_Open">
 /// The connection is open.
 /// </param>
-/// <param name="FdoConnectionState_Pending">
+/// <param name="ConnectionState_Pending">
 /// The connection is pending. this is used to indicate that the application has 
 /// issued an Open request, but the open is not completed because the application needs to include additional connection property values.
 /// </param>

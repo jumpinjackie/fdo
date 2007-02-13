@@ -27,14 +27,14 @@ END_NAMESPACE_OSGEO_FDO_COMMANDS
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 
 /// \brief
-/// The FdoILockConflictReader interface provides forward only, read-only
+/// The ILockConflictReader interface provides forward only, read-only
 /// functionality for identifying features that have a lock conflict.
 /// Features with a lock conflict are those that the caller is attempting to modify 
 /// that are already locked by someone else. 
 /// \remarks
-/// A reference to an FdoILockConflictReader is returned from the
-/// FdoIAcquireLock, FdoISelect, FdoIReleaseLock, FdoIUpdate, and FdoIDelete commands. The
-/// initial position of the FdoILockConflictReader is prior to the first item,
+/// A reference to an ILockConflictReader is returned from the
+/// AcquireLock, Select, ReleaseLock, Update, and Delete commands. The
+/// initial position of the ILockConflictReader is prior to the first item,
 /// thus you must call ReadNext to begin accessing any data.
 public __gc __interface ILockConflictReader : public System::IDisposable
 {
@@ -54,7 +54,7 @@ public:
 	System::String* GetFeatureClassName();
 
     /// \brief
-    /// Returns an FdoPropertyValueCollection containing the property values
+    /// Returns an PropertyValueCollection containing the property values
     /// that uniquely identify the feature currently being read.
     /// 
     /// \return
@@ -100,7 +100,7 @@ public:
 	System::Boolean ReadNext();
 
     /// \brief
-    /// Closes the FdoILockConflictReader object, freeing any resources it may
+    /// Closes the ILockConflictReader object, freeing any resources it may
     /// be holding.
     /// 
     /// \return

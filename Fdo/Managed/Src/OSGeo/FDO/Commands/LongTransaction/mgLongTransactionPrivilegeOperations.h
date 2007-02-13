@@ -21,13 +21,13 @@
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
 /// \brief
-/// The FdoLongTransactionPrivilegeOperations enumeration defines the list
+/// The LongTransactionPrivilegeOperations enumeration defines the list
 /// of available operations that can be performed by the
 /// ChangeLongTransactionPrivileges command.
-/// <param name="FdoLongTransactionPrivilegeOperations_Grant">
+/// <param name="LongTransactionPrivilegeOperations_Grant">
 /// Indicates the user is to be granted the specified privileges.
 /// </param>
-/// <param name="FdoLongTransactionPrivilegeOperations_Revoke">
+/// <param name="LongTransactionPrivilegeOperations_Revoke">
 /// Indicates the specified privileges are to be revoked from the user.
 /// </param>
 [System::FlagsAttribute]

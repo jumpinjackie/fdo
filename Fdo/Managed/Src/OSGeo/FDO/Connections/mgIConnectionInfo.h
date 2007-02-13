@@ -25,8 +25,8 @@ BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS
 public __gc __interface IConnectionPropertyDictionary;
 
 /// \brief
-/// The FdoIConnectionInfo interface exposes information about the feature provider
-/// and provides access to the FdoIConnectionPropertyDictionary interface.
+/// The IConnectionInfo interface exposes information about the feature provider
+/// and provides access to the IConnectionPropertyDictionary interface.
 public __gc __interface IConnectionInfo : public System::IDisposable
 {
 public:
@@ -71,7 +71,7 @@ public:
 	__property System::String* get_FeatureDataObjectsVersion();
 
     /// \brief
-    /// Gets the FdoIConnectionPropertyDictionary interface that can be used to dynamically query and set the properties required to establish a connection.
+    /// Gets the IConnectionPropertyDictionary interface that can be used to dynamically query and set the properties required to establish a connection.
     /// 
     /// \return
     /// Returns the property dictionary
@@ -81,9 +81,9 @@ public:
     /// \brief
     /// Returns the provider type. A provider can be a file-based, database-based or
     /// web-based provider. The valid values the function may return are defined in
-    /// the enumeration FdoProviderDatastoreType. The enumeration includes the following
-    /// values: FdoProviderDatastoreType_Unknown, FdoProviderDatastoreType_File,
-    /// FdoProviderDatastoreType_DatabaseServer, FdoProviderDatastoreType_WebServer.
+    /// the enumeration ProviderDatastoreType. The enumeration includes the following
+    /// values: ProviderDatastoreType_Unknown, ProviderDatastoreType_File,
+    /// ProviderDatastoreType_DatabaseServer, ProviderDatastoreType_WebServer.
     /// 
     /// \return
     /// Returns the provider data store type.

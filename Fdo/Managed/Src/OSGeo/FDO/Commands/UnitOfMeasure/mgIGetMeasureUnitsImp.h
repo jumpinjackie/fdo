@@ -27,13 +27,15 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE
 public __gc __interface IMeasureUnitReader;
 
 /// \brief
-/// The FdoIGetMeasureUnits interface defines the GetMeasureUnits command, which
+/// The IGetMeasureUnitsImp class is a concrete implementation of IGetMeasureUnits.
+/// The IGetMeasureUnits interface defines the GetMeasureUnits command, which
 /// enumerates the existing measurement units.
-private __gc class IGetMeasureUnitsImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, public NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::IGetMeasureUnits
+private __gc class IGetMeasureUnitsImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 
+                                         public NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::IGetMeasureUnits
 {
 public:
     /// \brief
-    /// Executes the GetMeasureUnits command and returns an FdoIMeasureUnitReader.
+    /// Executes the GetMeasureUnits command and returns an IMeasureUnitReader.
     /// 
     /// \return
     /// Returns the measure unit reader
@@ -41,6 +43,16 @@ public:
 	NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::IMeasureUnitReader* Execute();
 
 public:
+    /// \brief
+    /// Constructs an IGetMeasureUnitsImp object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	IGetMeasureUnitsImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp(unmanaged, autoDelete)
 	{
 

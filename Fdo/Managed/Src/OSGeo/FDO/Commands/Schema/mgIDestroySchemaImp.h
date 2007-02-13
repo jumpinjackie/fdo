@@ -26,12 +26,14 @@ class FdoIDestroySchema;
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
 
 /// \brief
-/// The FdoIDestroySchema interface defines the DestroySchema command, which
+/// The IDestroySchemaImp class is a concrete implementation of IDestroySchema.
+/// The IDestroySchema interface defines the DestroySchema command, which
 /// destroys a schema definition, including all class definitions, relationship
 /// definitions, and instance data within it. If elements in other schemas refer
 /// to the schema to be destroyed command, execution will fail. Input to the
 /// delete schema command is the name of the schema to be destroyed.
-private __gc class IDestroySchemaImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDestroySchema
+private __gc class IDestroySchemaImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 
+                                       public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDestroySchema
 {
 public:
     /// \brief

@@ -25,14 +25,14 @@ class FdoIConnection;
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS
 
 /// \brief
-/// The FdoIConnection interface enables a feature provider to implement a
+/// The IConnection interface enables a feature provider to implement a
 /// connection class, which represents a unique session with a data
 /// store.
 public __gc class IConnectionImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection
 {
 public:
     /// \brief
-    /// Gets an FdoIConnectionCapabilities interface describing the capabilities
+    /// Gets an IConnectionCapabilities interface describing the capabilities
     /// of the connection.
     /// 
     /// \return
@@ -41,7 +41,7 @@ public:
 	__property NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IConnectionCapabilities* get_ConnectionCapabilities();
 
     /// \brief
-    /// Gets an FdoISchemaCapabilities interface describing the provider's support for the feature schema.
+    /// Gets an ISchemaCapabilities interface describing the provider's support for the feature schema.
     /// 
     /// \return
     /// Returns schema capabilities
@@ -49,7 +49,7 @@ public:
 	__property NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ISchemaCapabilities* get_SchemaCapabilities();
 
     /// \brief
-    /// Gets an FdoICommandCapabilities interface describing the commands a provider supports.
+    /// Gets an ICommandCapabilities interface describing the commands a provider supports.
     /// 
     /// \return
     /// Returns the command capabilities
@@ -57,7 +57,7 @@ public:
 	__property NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ICommandCapabilities* get_CommandCapabilities();
 
     /// \brief
-    /// Gets an FdoIFilterCapabilities interface describing the provider's support for filters.
+    /// Gets an IFilterCapabilities interface describing the provider's support for filters.
     /// 
     /// \return
     /// Returns the filter capabilities
@@ -65,7 +65,7 @@ public:
 	__property NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IFilterCapabilities* get_FilterCapabilities();
 
     /// \brief
-    /// Gets an FdoIExpressionCapabilities interface describing the provider's support for expressions.
+    /// Gets an IExpressionCapabilities interface describing the provider's support for expressions.
     /// 
     /// \return
     /// Returns the expression capabilities
@@ -73,7 +73,7 @@ public:
 	__property NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IExpressionCapabilities* get_ExpressionCapabilities();
 
     /// \brief
-    /// Gets an FdoIRasterCapabilities interface describing the provider's support for raster images.
+    /// Gets an IRasterCapabilities interface describing the provider's support for raster images.
     /// 
     /// \return
     /// Returns the raster capabilities
@@ -81,7 +81,7 @@ public:
 	__property NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IRasterCapabilities* get_RasterCapabilities();
 
     /// \brief
-    /// Gets an FdoITopologyCapabilities interface describing the provider's support for topology.
+    /// Gets an ITopologyCapabilities interface describing the provider's support for topology.
     /// 
     /// \return
     /// Returns the topology capabilities
@@ -89,7 +89,7 @@ public:
 	__property NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ITopologyCapabilities* get_TopologyCapabilities();
 
     /// \brief
-    /// Gets an FdoIGeometryCapabilities interface describing the provider's support for geometry.
+    /// Gets an IGeometryCapabilities interface describing the provider's support for geometry.
     /// 
     /// \return
     /// Returns the geometry capabilities
@@ -117,7 +117,7 @@ public:
 	__property System::Void set_ConnectionString( System::String* value);
 
     /// \brief
-    /// Gets an FdoIConnectionInfo interface that can be used to interrogate and set connection properties.
+    /// Gets an IConnectionInfo interface that can be used to interrogate and set connection properties.
     /// 
     /// \return
     /// Returns the connection info
@@ -176,7 +176,7 @@ public:
 
     /// \brief
     /// Begins a transaction and returns an object that realizes
-    /// FdoITransaction.
+    /// ITransaction.
     /// 
     /// \return
     /// Returns the transaction
@@ -200,7 +200,7 @@ public:
     /// to this FDO Provider.
     /// 
     /// \return
-    /// Returns FdoPhysicalSchemaMapping
+    /// Returns PhysicalSchemaMapping
     /// 
 	NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping* CreateSchemaMapping();
 
@@ -229,8 +229,10 @@ public private:
 
 	inline FdoIConnection* GetImpObj();
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 };
 
 END_NAMESPACE_OSGEO_FDO_CONNECTIONS

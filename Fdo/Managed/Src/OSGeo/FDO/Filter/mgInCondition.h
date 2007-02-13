@@ -36,52 +36,48 @@ public __gc __interface IFilterProcessor;
 public __gc class ValueExpressionCollection;
 
 /// \brief
-/// The FdoInCondition class derives from FdoSearchCondition and can be used to test
+/// The InCondition class derives from SearchCondition and can be used to test
 /// if the value of a specified data property is within a given set of literal
 /// values.
 public __gc class InCondition : public NAMESPACE_OSGEO_FDO_FILTER::SearchCondition
 {
 public:
     /// \brief
-    /// Constructs a default instance of an FdoInCondition.
+    /// Constructs a default instance of an InCondition.
     /// 
     /// \return
-    /// Returns FdoInCondition
+    /// Returns InCondition
     /// 
 	InCondition();
 
     /// \brief
-    /// Constructs an instance of an FdoInCondition using the specified arguments.
+    /// Constructs an instance of an InCondition using the specified arguments.
     /// 
     /// \param propertyName 
     /// Input property name
     /// \param values 
     /// Input array of values
-    /// \param length 
-    /// Input number of values
     /// 
     /// \return
-    /// Returns FdoInCondition
+    /// Returns InCondition
     /// 
 	InCondition(System::String* propertyName, System::String* values []);
 
     /// \brief
-    /// Constructs an instance of an FdoInCondition using the specified arguments.
+    /// Constructs an instance of an InCondition using the specified arguments.
     /// 
     /// \param propertyName 
     /// Input property name
     /// \param values 
     /// Input array of values
-    /// \param length 
-    /// Input number of values
     /// 
     /// \return
-    /// Returns FdoInCondition
+    /// Returns InCondition
     /// 
 	InCondition(NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier* propertyName, System::String* values []);
 
     /// \brief
-    /// Constructs an instance of an FdoInCondition using the specified arguments.
+    /// Constructs an instance of an InCondition using the specified arguments.
     /// 
     /// \param propertyName 
     /// Input property name
@@ -89,7 +85,7 @@ public:
     /// Input collection of values
     /// 
     /// \return
-    /// Returns FdoInCondition
+    /// Returns InCondition
     /// 
 	InCondition(NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier* propertyName, NAMESPACE_OSGEO_FDO_FILTER::ValueExpressionCollection* collection);
 
@@ -113,15 +109,15 @@ public:
 	__property System::Void set_PropertyName(NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier* value);
 
     /// \brief
-    ///  Gets the FdoLiteralCollection that contains the literal values.
+    ///  Gets LiteralCollection that contains the literal values.
     /// 
     /// \return
-    /// Returns FdoValueExpressionCollection
+    /// Returns ValueExpressionCollection
     /// 
 	__property NAMESPACE_OSGEO_FDO_FILTER::ValueExpressionCollection* get_Values();
 
     /// \brief
-    /// Overrides FdoFilter.Process to pass the FdoInCondition to the appropriate
+    /// Overrides Filter.Process to pass InCondition to the appropriate
     /// filter processor operation.
     /// 
     /// \param processor 
@@ -140,6 +136,16 @@ public:
     /// 
 	System::String* ToStringInternal( NAMESPACE_OSGEO_FDO_COMMANDS::IdentifierCollection *idCollection );
 
+    /// \brief
+    /// Constructs a InCondition object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	InCondition(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:

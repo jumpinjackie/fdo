@@ -24,6 +24,12 @@ class FdoProviderRegistry;
 
 BEGIN_NAMESPACE_OSGEO_FDO_CLIENTSERVICES
 
+/// \brief
+/// The ProviderRegistry class supports registering, un-registering, and enumerating 
+/// registered feature providers. ProviderRegistry is derived from interface IProviderRegistry.
+///
+/// \note
+/// This is not the MS-Windows registry.
 public __gc class ProviderRegistry : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_FDO::IProviderRegistry
 {
 public:
@@ -31,7 +37,7 @@ public:
     /// Gets a read only collection of information describing each of the registered feature providers. 
     /// 
     /// \return
-    /// Returns an an instance of FdoProviderCollection. Throws an instance of FdoException * if an error occurs.
+    /// Returns an an instance of ProviderCollection. Throws an instance of Exception if an error occurs.
     /// 
 	NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection* GetProviders();
 	
@@ -58,15 +64,15 @@ public:
     /// A flag indicating if the provider is a managed or unmanaged .Net provider.
     /// 
     /// \return
-    /// Returns nothing. Throws an instance of FdoException * if an error occurs.
+    /// Returns nothing. Throws an instance of Exception if an error occurs.
     /// 
 	System::Void RegisterProvider(String * name, 
-                                          String * displayName, 
-                                          String * description, 
-                                          String * version, 
-                                          String * fdoVersion, 
-                                          String * libraryPath,
-										  System::Boolean isManaged);
+                                  String * displayName, 
+                                  String * description, 
+                                  String * version, 
+                                  String * fdoVersion, 
+                                  String * libraryPath,
+								  System::Boolean isManaged);
 
     /// \brief
     /// Unregisters the provider with the specified name. 
@@ -76,7 +82,7 @@ public:
     /// [Company].[Provider].[Version].
     /// 
     /// \return
-    /// Returns nothing. Throws an instance of FdoException * if an error occurs.
+    /// Returns nothing. Throws an instance of Exception if an error occurs.
     /// 
 	System::Void UnregisterProvider(String * name);
 
@@ -85,8 +91,10 @@ public private:
 
 	inline FdoProviderRegistry* GetImpObj();
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 };
 
 END_NAMESPACE_OSGEO_FDO_CLIENTSERVICES

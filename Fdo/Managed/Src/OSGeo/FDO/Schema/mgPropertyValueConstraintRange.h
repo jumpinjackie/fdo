@@ -29,7 +29,7 @@ END_NAMESPACE_OSGEO_FDO_EXPRESSION
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 
 /// \brief
-/// FdoPropertyValueConstraintRange is used to specify minimum and / or maximum allowed values for a particular property. 
+/// PropertyValueConstraintRange is used to specify minimum and / or maximum allowed values for a particular property. 
 /// It can be used for all data property types except for Boolean, BLOB, or CLOB.
 /// One or the other or both of MinValue and MaxValue must be specified. If both are specified, then MaxValue must be greater 
 /// than or equal to MinValue and if either MinInclusive or MaxInclusive are false, then MaxValue must be greater than MinValue. 
@@ -46,15 +46,15 @@ public private:
 
 public:    
     /// \brief
-    /// Constructs an empty instance of an FdoPropertyValueConstraintRange.
+    /// Constructs an empty instance of an PropertyValueConstraintRange.
     /// 
     /// \return
-    /// Returns an FdoPropertyValueConstraintRange
+    /// Returns an PropertyValueConstraintRange
     /// 
     PropertyValueConstraintRange();
 
     /// \brief
-    /// Constructs and populates an instance of an FdoPropertyValueConstraintRange.
+    /// Constructs and populates an instance of an PropertyValueConstraintRange.
     /// 
     /// \param minValue 
     /// Minimum allowed value
@@ -62,7 +62,7 @@ public:
     /// Maximum allowed value
     /// 
     /// \return
-    /// Returns an FdoPropertyValueConstraintRange
+    /// Returns an PropertyValueConstraintRange
     /// 
 	PropertyValueConstraintRange(NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue* minValue, NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue* maxValue );
 	

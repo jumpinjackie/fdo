@@ -29,16 +29,13 @@ BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 public __gc class FunctionDefinitionCollection;
 
 /// \brief
-/// The FdoIExpressionCapbilities interface declares the feature provider's level
-/// of support for FdoExpression classes.
+/// The IExpressionCapbilities interface declares the feature provider's level
+/// of support for Expression classes.
 public __gc __interface IExpressionCapabilities : public System::IDisposable
 {
 public:
     /// \brief
-    /// Returns an array of FdoExpressionType objects the feature provider supports.
-    /// 
-    /// \param length 
-    /// Input the number of expression types
+    /// Returns an array of ExpressionType objects the feature provider supports.
     /// 
     /// \return
     /// Returns the list of expression types
@@ -46,7 +43,7 @@ public:
 	__property NAMESPACE_OSGEO_FDO_EXPRESSION::ExpressionType get_ExpressionTypes() [];
 
     /// \brief
-    /// Returns a collection of FdoFunctionDefinition objects the feature provider supports within expressions.
+    /// Returns a collection of FunctionDefinition objects the feature provider supports within expressions.
     /// 
     /// \return
     /// Returns the collection of function definitions

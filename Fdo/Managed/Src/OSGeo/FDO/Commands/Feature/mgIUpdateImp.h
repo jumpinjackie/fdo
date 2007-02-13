@@ -26,7 +26,8 @@ class FdoIUpdate;
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 
 /// \brief
-/// The FdoIUpdate interface defines the Update command, which modifies instances
+/// The IUpdateImp class is a concrete implementation of interface IUpdate.
+/// The IUpdate interface defines the Update command, which modifies instances
 /// of a given class that match the specified criteria. Input to the update
 /// command includes the name of the class, the list of property name/value
 /// pairs to be updated, and the filter criteria by which to identify the
@@ -37,11 +38,12 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 /// by the class name. Instances at a nested scope (i.e., instances within an
 /// object collection property) are referred to by the containing class name,
 /// followed by a '.', followed by the object collection property name.
-private __gc class IUpdateImp : public NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp, public NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IUpdate
+private __gc class IUpdateImp : public NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp, 
+                                public NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IUpdate
 {
 public:
     /// \brief
-    /// Gets the FdoPropertyValueCollection that specifies the names and values of the 
+    /// Gets the PropertyValueCollection that specifies the names and values of the 
     /// properties to be updated.
     /// 
     /// \return

@@ -23,7 +23,7 @@
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
 /// \brief
-/// The FdoIRollbackLongTransactionCheckpoint interface defines the
+/// The IRollbackLongTransactionCheckpoint interface defines the
 /// RollbackLongTransactionCheckpoint command, which allows the user to roll back
 /// changes to a named checkpoint for the given long transaction. The user
 /// requires the access privilege on the long transaction for which the user tries

@@ -27,13 +27,16 @@ class FdoIChangeLongTransactionSet;
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
 /// \brief
-/// The FdoIChangeLongTransactionSet interface defines the ChangeLongTransactionSet
+/// The IChangeLongTransactionSetImp class is a 
+/// concrete implementation of IChangeLongTransactionSet.
+/// The IChangeLongTransactionSet interface defines the ChangeLongTransactionSet
 /// command, which allows the user to add a transaction to, remove a transaction
 /// from, or clear the long transaction selection set. Users can add or remove
 /// long transactions to the selection set for which they have access
 /// privileges. Any attempt to add a long transaction for which the user does
 /// not have the access privilege will result in a failure of the command.
-private __gc class IChangeLongTransactionSetImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, public NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IChangeLongTransactionSet
+private __gc class IChangeLongTransactionSetImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 
+                                                  public NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IChangeLongTransactionSet
 {
 public:
     /// \brief
@@ -43,6 +46,7 @@ public:
     /// \return
     /// Returns the name of the long transaction
     /// 
+    /// \remarks
     /// Note: This function is not required for the Clear operation.
 	__property System::String* get_LongTransactionName();
 
@@ -56,6 +60,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
+    /// \remarks
     /// Note: This function is not required for the Clear operation.
 	__property System::Void set_LongTransactionName(System::String* value);
 

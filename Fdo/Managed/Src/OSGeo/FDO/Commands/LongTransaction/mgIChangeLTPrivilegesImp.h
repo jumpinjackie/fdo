@@ -27,12 +27,15 @@ class FdoIChangeLongTransactionPrivileges;
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
 /// \brief
-/// The FdoIChangeLongTransactionPrivileges interface defines the
+/// The IChangeLongTransactionPrivileges class is a 
+/// concrete implementation of IChangeLongTransactionPrivileges.
+/// The IChangeLongTransactionPrivileges interface defines the
 /// ChangeLongTransactionPrivileges command, which grants or revokes long
 /// transaction privileges for the named user. The ability to change the 
 /// privileges might be restricted by the datastore security if the long 
 /// transaction doesn’t belong to the user executing the command.
-private __gc class IChangeLongTransactionPrivilegesImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, public NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IChangeLongTransactionPrivileges
+private __gc class IChangeLongTransactionPrivilegesImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 
+                                                         public NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IChangeLongTransactionPrivileges
 {
 public:
     /// \brief
@@ -77,21 +80,21 @@ public:
 
     /// \brief
     /// Gets the privilege flags to grant or revoke.The returned value may be
-    /// any combination of the values from the FdoLongTransactionPrivileges
+    /// any combination of the values from the LongTransactionPrivileges
     /// enumeration combined via a bit-wise or operation.
     /// 
     /// \return
-    /// Returns the privileges as a bit masked value based on FdoLongTransactionPrivileges enumeration
+    /// Returns the privileges as a bit masked value based on LongTransactionPrivileges enumeration
     /// 
 	__property System::Int32 get_Privileges();
 
     /// \brief
     /// Sets the privilege flags to grant or revoke. The privileges value may be
-    /// any combination of the values from the FdoLongTransactionPrivileges
+    /// any combination of the values from the LongTransactionPrivileges
     /// enumeration combined via a bit-wise or operation.
     /// 
     /// \param value 
-    /// Input the privileges as a bit masked value based on FdoLongTransactionPrivileges enumeration
+    /// Input the privileges as a bit masked value based on LongTransactionPrivileges enumeration
     /// 
     /// \return
     /// Returns nothing

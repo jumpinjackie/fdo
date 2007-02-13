@@ -34,7 +34,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_FILTER
 public __gc __interface IFilterProcessor;
 
 /// \brief
-/// The FdoDistanceCondition class derives from FdoGeometricCondition and can be used
+/// The DistanceCondition class derives GeometricCondition and can be used
 /// to test whether the value of a geometric property is within or beyond a
 /// specified distance of the specified geometric value. Some feature providers
 /// may only support literal geometric values; if so, the provider's capabilities
@@ -44,15 +44,15 @@ public __gc class DistanceCondition : public NAMESPACE_OSGEO_FDO_FILTER::Geometr
 public:
 
     /// \brief
-    /// Constructs a default instance of an FdoDistanceCondition.
+    /// Constructs a default instance of an DistanceCondition.
     /// 
     /// \return
-    /// Returns FdoDistanceCondition
+    /// Returns DistanceCondition
     /// 
 	DistanceCondition();
 
     /// \brief
-    /// Constructs an instance of an FdoDistanceCondition using the specified arguments.
+    /// Constructs an instance of an DistanceCondition using the specified arguments.
     /// 
     /// \param propertyName 
     /// Input property name
@@ -64,12 +64,12 @@ public:
     /// Input distance
     /// 
     /// \return
-    /// Returns FdoDistanceCondition
+    /// Returns DistanceCondition
     /// 
 	DistanceCondition(System::String* propertyName, NAMESPACE_OSGEO_FDO_FILTER::DistanceOperations operation, NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* geometry, System::Double distance);
 
     /// \brief
-    /// Constructs an instance of an FdoDistanceCondition using the specified arguments.
+    /// Constructs an instance of an DistanceCondition using the specified arguments.
     /// 
     /// \param propertyName 
     /// Input property name
@@ -81,7 +81,7 @@ public:
     /// Input distance
     /// 
     /// \return
-    /// Returns FdoDistanceCondition
+    /// Returns DistanceCondition
     /// 
 	DistanceCondition(NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier* propertyName, NAMESPACE_OSGEO_FDO_FILTER::DistanceOperations operation, NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* geometry, System::Double distance);
 
@@ -143,7 +143,7 @@ public:
 	__property System::Void set_Distance( System::Double value);
 
     /// \brief
-    /// Overrides FdoFilter.Process to pass the FdoDistanceCondition to the
+    /// Overrides Filter.Process to pass DistanceCondition to the
     /// appropriate filter processor operation.
     /// 
     /// \param processor 
@@ -154,6 +154,16 @@ public:
     /// 
 	System::Void Process(NAMESPACE_OSGEO_FDO_FILTER::IFilterProcessor* processor);
 
+    /// \brief
+    /// Constructs a DistanceCondition object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	DistanceCondition(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:

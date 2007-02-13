@@ -27,7 +27,9 @@ class FdoIFreezeLongTransaction;
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
 /// \brief
-/// The FdoIFreezeLongTransaction interface defines the FreezeLongTransaction
+/// The IFreezeLongTransactionImp class is a 
+/// concrete implementation of IFreezeLongTransaction.
+/// The IFreezeLongTransaction interface defines the FreezeLongTransaction
 /// command, which freezes or thaws a long transaction. When a long transaction
 /// is frozen the user who froze it gains exclusive access to it. Other users can
 /// read it, but not apply any updates.
@@ -35,7 +37,8 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 /// the operation to perform. The Execute method performs the specified
 /// operation on the identified long transaction if the user has access
 /// privileges for the indicated long transaction.
-private __gc class IFreezeLongTransactionImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, public NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IFreezeLongTransaction
+private __gc class IFreezeLongTransactionImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 
+                                               public NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IFreezeLongTransaction
 {
 public:
     /// \brief

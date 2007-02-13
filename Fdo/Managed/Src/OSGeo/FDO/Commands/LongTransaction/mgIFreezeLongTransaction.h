@@ -24,7 +24,7 @@
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
 /// \brief
-/// The FdoIFreezeLongTransaction interface defines the FreezeLongTransaction
+/// The IFreezeLongTransaction interface defines the FreezeLongTransaction
 /// command, which freezes or thaws a long transaction. When a long transaction
 /// is frozen the user who froze it gains exclusive access to it. Other users can
 /// read it, but not apply any updates.

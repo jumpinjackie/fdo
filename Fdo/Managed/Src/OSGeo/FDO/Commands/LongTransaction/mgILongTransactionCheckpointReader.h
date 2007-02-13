@@ -21,11 +21,11 @@
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
 /// \brief
-/// The FdoILongTransactionCheckpointReader interface provides forward only,
+/// The ILongTransactionCheckpointReader interface provides forward only,
 /// read-only functionality for enumerating long transaction checkpoints.
-/// A reference to an FdoILongTransactionCheckpointReader is returned from
+/// A reference to an ILongTransactionCheckpointReader is returned from
 /// the GetLongTransactionCheckpoints command. The initial position of
-/// the FdoILongTransactionCheckpointReader is prior to the first item.
+/// the ILongTransactionCheckpointReader is prior to the first item.
 /// Thus, you must call ReadNext to begin accessing any data.
 public __gc __interface ILongTransactionCheckpointReader : public System::IDisposable
 {
@@ -74,7 +74,7 @@ public:
 	System::Boolean ReadNext();
 
     /// \brief
-    /// Closes the FdoILongTransactionCheckpointReader object, freeing any
+    /// Closes the ILongTransactionCheckpointReader object, freeing any
     /// resources it may be holding.
     /// 
     /// \return

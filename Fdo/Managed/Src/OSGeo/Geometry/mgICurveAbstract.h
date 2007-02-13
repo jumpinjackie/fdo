@@ -35,7 +35,7 @@ public:
     /// Gets the starting position of this Curve.
     /// 
     /// \remarks
-    ///  This is the start of the entire curve.  In cases where a derived type
+    /// This is the start of the entire curve.  In cases where a derived type
     /// is composed of multiple contiguous parts, this position is the start of the
     /// first of those parts.
     /// 
@@ -48,7 +48,7 @@ public:
     /// Gets the ending position of this Curve.
     /// 
     /// \remarks
-    ///  This is the end of the entire curve.  In cases where a derived type
+    /// This is the end of the entire curve.  In cases where a derived type
     /// is composed of multiple contiguous parts, this position is the end of the
     /// last of those parts.
     /// 

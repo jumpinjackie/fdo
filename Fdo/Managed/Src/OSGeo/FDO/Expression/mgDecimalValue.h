@@ -31,7 +31,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 public __gc __interface IExpressionProcessor;
 
 /// \brief
-/// The FdoDecimalValue class derives from FdoDataValue and represents a decimal value.
+/// The DecimalValue class derives from DataValue and represents a decimal value.
 public __gc class DecimalValue : public NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue
 {
 public:
@@ -44,7 +44,7 @@ public:
 	static System::Double op_Explicit( NAMESPACE_OSGEO_FDO_EXPRESSION::DecimalValue* value );
 
     /// \brief
-    /// Constructs a default instance of an FdoDecimalValue with a value of null.
+    /// Constructs a default instance of an DecimalValue with a value of null.
     /// 
     /// \return
     /// Returns nothing
@@ -52,7 +52,7 @@ public:
 	DecimalValue();
 
     /// \brief
-    /// Constructs an instance of an FdoDecimalValue using the specified arguments.
+    /// Constructs an instance of an DecimalValue using the specified arguments.
     /// 
     /// \param value 
     /// Input a double
@@ -63,10 +63,10 @@ public:
 	DecimalValue(System::Double value);
 
     /// \brief
-    /// Gets the data type of the FdoDecimalValue.
+    /// Gets the data type of the DecimalValue.
     /// 
     /// \return
-    /// Returns an FdoDataType
+    /// Returns an DataType
     /// 
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::DataType get_DataType();
 
@@ -90,11 +90,11 @@ public:
 	__property System::Void set_Decimal(System::Double value);
 
     /// \brief
-    /// Overrides FdoExpression.Process to pass the FdoDecimalValue to the appropriate
+    /// Overrides Expression.Process to pass the DecimalValue to the appropriate
     /// expression processor operation.
     /// 
     /// \param processor 
-    /// Input an FdoIExpressionProcessor
+    /// Input an IExpressionProcessor
     /// 
     /// \return
     /// Returns nothing
@@ -109,6 +109,16 @@ public:
     /// 
 	System::String* ToString();
 
+    /// \brief
+    /// Constructs a DecimalValue object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	DecimalValue(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:

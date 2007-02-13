@@ -30,7 +30,7 @@ END_NAMESPACE_OSGEO_FDO_COMMANDS
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
 /// \brief
-/// The FdoILongTransactionConflictDirective interface is used to specify how
+/// The ILongTransactionConflictDirective interface is used to specify how
 /// conflict should be resolved for a particular object.
 public __gc __interface ILongTransactionConflictDirectiveEnumerator : public System::IDisposable
 {
@@ -44,29 +44,29 @@ public:
 	__property System::String* get_FeatureClassName();
 
     /// \brief
-    /// Returns FdoPropertyValueCollection containing the property values that
+    /// Returns PropertyValueCollection containing the property values that
     /// uniquely identify the current feature in conflict.
     /// 
     /// \return
-    /// Returns FdoPropertyValueCollection
+    /// Returns PropertyValueCollection
     /// 
 	__property NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection* get_Identity();
 
     /// \brief
-    /// Gets the FdoLongTransactionConflictResolution value to use for the current
-    /// feature. The default value is FdoLongTransactionConflictResolution_Child.
+    /// Gets the LongTransactionConflictResolution value to use for the current
+    /// feature. The default value is LongTransactionConflictResolution_Child.
     /// 
     /// \return
-    /// Returns FdoLongTransactionConflictResolution value
+    /// Returns LongTransactionConflictResolution value
     /// 
 	__property NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::LongTransactionConflictResolution get_Resolution();
 
     /// \brief
-    /// Sets the FdoLongTransactionConflictResolution value to use for the current
-    /// feature. The default value is FdoLongTransactionConflictResolution_Child.
+    /// Sets the LongTransactionConflictResolution value to use for the current
+    /// feature. The default value is LongTransactionConflictResolution_Child.
     /// 
     /// \param value 
-    /// Input the FdoLongTransactionConflictResolution value
+    /// Input the LongTransactionConflictResolution value
     /// 
     /// \return
     /// Returns nothing

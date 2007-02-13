@@ -25,16 +25,14 @@ class FdoICommandCapabilities;
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 
 /// \brief
-/// The FdoICommandCapabilities interface declares the feature provider's level
+/// The ICommandCapabilities interface declares the feature provider's level
 /// of support for Commands.
-public __gc class ICommandCapabilitiesImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ICommandCapabilities
+public __gc class ICommandCapabilitiesImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 
+                                            public NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ICommandCapabilities
 {
 public:
     /// \brief
-    /// Gets an array of the FdoCommandType values supported by the feature provider.
-    /// 
-    /// \param size 
-    /// Output the number of commands
+    /// Gets an array of the CommandType values supported by the feature provider.
     /// 
     /// \return
     /// Returns the list of commands
@@ -103,8 +101,10 @@ public:
     /// (but not vice versa).
 	System::Boolean SupportsSelectGrouping();
 
+/// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
+/// \endcond
 
 public private:
 	ICommandCapabilitiesImp(System::IntPtr unmanaged, System::Boolean autoDelete);

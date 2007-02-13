@@ -33,17 +33,16 @@ END_NAMESPACE_OSGEO_FDO_RASTER
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 
 /// \brief
-/// The FdoIFeatureReader interface provides a forward-only, read-only iterator
-/// for reading feature data.  A reference to an FdoIFeatureReader is returned
-/// from the Select and SelectAndLock commands. Because the initial position of the
-/// FdoIFeatureReader is prior to the first item, you must call
+/// The IReader interface provides a forward-only, read-only iterator
+/// for reading data. Because the initial position of the
+/// IReader is prior to the first item, you must call
 /// ReadNext to begin accessing any data.
 public __gc __interface IReader : public System::IDisposable
 {
 public:
     /// \brief
     /// Gets the Boolean value of the specified property. No conversion is
-    /// performed, thus the property must be FdoDataType_Boolean or an 
+    /// performed, thus the property must be DataType_Boolean or an 
     /// exception is thrown.
     /// 
     /// \param name 
@@ -56,7 +55,7 @@ public:
 
     /// \brief
     /// Gets the byte value of the specified property. No conversion is 
-    /// performed, thus the property must be FdoDataType_Byte or an 
+    /// performed, thus the property must be DataType_Byte or an 
     /// exception is thrown.
     /// 
     /// \param name 
@@ -69,7 +68,7 @@ public:
 
     /// \brief
     ///  Gets the date and time value of the specified property. No conversion is 
-    /// performed, thus the property must be FdoDataType_DateTime or an 
+    /// performed, thus the property must be DataType_DateTime or an 
     /// exception is thrown.
     /// 
     /// \param name 
@@ -82,7 +81,7 @@ public:
 
     /// \brief
     /// Gets the double-precision floating point value of the specified property. No
-    /// conversion is performed, thus the property must be FdoDataType_Double
+    /// conversion is performed, thus the property must be DataType_Double
     /// or an exception is thrown.
     /// 
     /// \param name 
@@ -95,7 +94,7 @@ public:
 
     /// \brief
     /// Gets the 16-bit integer value of the specified property. No conversion is
-    /// performed, thus the property must be FdoDataType_Int16 or an exception
+    /// performed, thus the property must be DataType_Int16 or an exception
     /// is thrown.
     /// 
     /// \param name 
@@ -108,7 +107,7 @@ public:
 
     /// \brief
     /// Gets the 32-bit integer value of the specified property. No conversion is
-    /// performed, thus the property must be FdoDataType_Int32 or an exception
+    /// performed, thus the property must be DataType_Int32 or an exception
     /// is thrown.
     /// 
     /// \param name 
@@ -121,7 +120,7 @@ public:
 
     /// \brief
     /// Gets the 64-bit integer value of the specified property. No conversion is
-    /// performed, thus the property must be FdoDataType_Int64 or an exception
+    /// performed, thus the property must be DataType_Int64 or an exception
     /// is thrown.
     /// 
     /// \param name 
@@ -134,7 +133,7 @@ public:
 
     /// \brief
     /// Gets the Single floating point value of the specified property. No
-    /// conversion is performed, thus the property must be FdoDataType_Single
+    /// conversion is performed, thus the property must be DataType_Single
     /// or an exception is thrown.
     /// 
     /// \param name 
@@ -147,7 +146,7 @@ public:
 
     /// \brief
     /// Gets the string value of the specified property. No conversion is
-    /// performed, thus the property must be FdoDataType_String or an exception
+    /// performed, thus the property must be DataType_String or an exception
     /// is thrown.
     /// 
     /// \param name 
@@ -160,8 +159,8 @@ public:
 
     /// \brief
     /// Gets a LOBValue reference. The LOB is fully read in and data available.
-    /// Because no conversion is performed, the property must be FdoDataType_BLOB or
-    /// FdoDataType_CLOB etc. (a LOB type)
+    /// Because no conversion is performed, the property must be DataType_BLOB or
+    /// DataType_CLOB etc. (a LOB type)
     /// 
     /// \param name 
     /// Input the property name.
@@ -172,11 +171,11 @@ public:
 	NAMESPACE_OSGEO_FDO_EXPRESSION::LOBValue* GetLOB(System::String* name);
 
     /// \brief
-    /// Gets a reference of the specified LOB property as a FdoBLOBStreamReader or
-    /// FdoCLOBStreamReader etc. to allow reading in blocks of data.
-    /// Because no conversion is performed, the property must be FdoDataType_BLOB 
-    /// or FdoDataType_CLOB etc. (a LOB type)
-    /// Cast the FdoIStreamReader to the appropiate LOB Stream Reader.
+    /// Gets a reference of the specified LOB property as a BLOBStreamReader or
+    /// CLOBStreamReader etc. to allow reading in blocks of data.
+    /// Because no conversion is performed, the property must be DataType_BLOB 
+    /// or DataType_CLOB etc. (a LOB type)
+    /// Cast the IStreamReader to the appropiate LOB Stream Reader.
     /// 
     /// \param name 
     /// Input the property name.
@@ -235,7 +234,7 @@ public:
 	System::Boolean ReadNext();
 
     /// \brief
-    /// Closes the FdoIFeatureReader object, freeing any resources it may be holding.
+    /// Closes the IReader object, freeing any resources it may be holding.
     /// 
     /// \return
     /// Returns nothing

@@ -27,11 +27,11 @@ END_NAMESPACE_OSGEO_FDO_COMMANDS
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 
 /// \brief
-/// The FdoILockedObjectReader interface provides forward-only, read-only
+/// The ILockedObjectReader interface provides forward-only, read-only
 /// functionality to identify lock information for a set of objects.
 /// \remarks
-/// A reference to an FdoILockedObjectReader interface is returned from the GetLockedObjects
-/// and GetLockInfo commands. The initial position of the FdoILockInfoReader is
+/// A reference to an ILockedObjectReader interface is returned from the GetLockedObjects
+/// and GetLockInfo commands. The initial position of the ILockInfoReader is
 /// prior to the first item. Thus, you must call ReadNext to begin accessing
 /// any data.
 public __gc __interface ILockedObjectReader : public System::IDisposable
@@ -51,7 +51,7 @@ public:
 	System::String* GetFeatureClassName();
 
     /// \brief
-    /// Gets an FdoPropertyValueCollection containing the property values
+    /// Gets an PropertyValueCollection containing the property values
     /// that uniquely identify the feature currently being read.
     /// 
     /// \return
@@ -97,7 +97,7 @@ public:
 	System::Boolean ReadNext();
 
     /// \brief
-    /// Closes the FdoILockInfoReader object, freeing any resources it may
+    /// Closes the ILockInfoReader object, freeing any resources it may
     /// be holding.
     /// 
     /// \return

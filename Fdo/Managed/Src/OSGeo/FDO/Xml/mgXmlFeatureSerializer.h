@@ -47,7 +47,21 @@ public:
     /// writes the features retrieved by a feature reader to 
     /// an XML document.
     /// 
-    /// \param connection 
+    /// \param reader 
+    /// Input the Feature Reader.
+    /// \param writer 
+    /// Input XML document writer. By default, the features written are wrapped in a 
+    /// GML FeatureCollection element. This behaviour can be changed by setting 
+    /// flags->writeCollection. The name of the collection element can also be 
+    /// customized by setting flags->collectionUri and flags->collectionName.
+    /// 
+	static System::Void XmlSerialize(NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader* reader, NAMESPACE_OSGEO_FDO_XML::XmlFeatureWriter* writer);
+
+    /// \brief
+    /// writes the features retrieved by a feature reader to 
+    /// an XML document.
+    /// 
+    /// \param reader 
     /// Input the Feature Reader.
     /// \param writer 
     /// Input XML document writer. By default, the features written are wrapped in a 
@@ -58,8 +72,6 @@ public:
     /// Input options for controlling the serializing of the features. If NULL then the 
     /// flags passed to the document writer are used.
     /// 
-	static System::Void XmlSerialize(NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader* reader, NAMESPACE_OSGEO_FDO_XML::XmlFeatureWriter* writer);
-
 	static System::Void XmlSerialize(NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader* reader, NAMESPACE_OSGEO_FDO_XML::XmlFeatureWriter* writer, NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags* flags);
 
 private:

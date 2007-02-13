@@ -30,7 +30,7 @@ public __gc class DataPropertyDefinitionCollection;
 public __gc class ClassDefinition;
 
 /// \brief
-/// The FdoAssociationPropertyDefinition class derives from FdoPropertyDefinition and represents
+/// AssociationPropertyDefinition class derives PropertyDefinition and represents
 /// the association between two classes.
 /// The class of the associated class must already be defined in the feature
 /// schema and cannot be abstract.
@@ -38,27 +38,33 @@ public __gc class AssociationPropertyDefinition : public NAMESPACE_OSGEO_FDO_SCH
 {
 public:
     /// \brief
-    /// Constructs a default instance of an FdoAssociationPropertyDefinition.
+    /// Constructs a default instance of an AssociationPropertyDefinition.
     /// 
 	AssociationPropertyDefinition();
 
     /// \brief
-    /// Constructs an instance of an FdoAssociationPropertyDefinition using the specified
+    /// Constructs an instance of an AssociationPropertyDefinition using the specified
     /// arguments.
     /// 
     /// \param name 
-    /// Input name
+    /// Input the property definition name
     /// \param description 
-    /// Input description
+    /// Input the property definition description
+    /// 
+	AssociationPropertyDefinition(System::String* name, System::String* description);
+
+    /// \brief
+    /// Constructs an instance of an AssociationPropertyDefinition using the specified
+    /// arguments.
+    /// 
+    /// \param name 
+    /// Input the property definition name
+    /// \param description 
+    /// Input the property definition description
     /// \param system 
     /// Input true if this is a system generated property, false otherwise.
     /// <p><b>Note:</b> A client would never set system to true, only a provider.
     /// 
-    /// \return
-    /// Returns FdoAssociationPropertyDefinition
-    /// 
-	AssociationPropertyDefinition(System::String* name, System::String* description);
-
 	AssociationPropertyDefinition(System::String* name, System::String* description, System::Boolean system);
 
     /// \brief
@@ -82,9 +88,6 @@ public:
     /// 
     /// \param value 
     /// Input class definition
-    /// 
-    /// \return
-    /// Returns nothing
     /// 
 	__property System::Void set_AssociatedClass(NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition* value);
 
@@ -136,9 +139,6 @@ public:
     /// \param name 
     /// Input reverse name
     /// 
-    /// \return
-    /// Returns nothing
-    /// 
 	__property System::Void set_ReverseName(System::String* name);
 
     /// \brief
@@ -155,9 +155,6 @@ public:
     /// \param value 
     /// Input the delete rule
     /// 
-    /// \return
-    /// Returns nothing
-    /// 
 	__property System::Void set_DeleteRule(NAMESPACE_OSGEO_FDO_SCHEMA::DeleteRule value);
 
     /// \brief
@@ -173,9 +170,6 @@ public:
     /// 
     /// \param value 
     /// Input the lock cascade option.
-    /// 
-    /// \return
-    /// Returns nothing
     /// 
 	__property System::Void set_LockCascade(System::Boolean value);
 
@@ -200,9 +194,6 @@ public:
     /// \param value 
     /// Input the read-only flag
     /// 
-    /// \return
-    /// Returns nothing.
-    /// 
 	__property System::Void set_IsReadOnly(System::Boolean value);
 
     /// \brief
@@ -224,9 +215,6 @@ public:
     /// \param value 
     /// The multiplicity from the property owner class side. Valid values are:  ?? or “m?
     /// 
-    /// \return
-    /// Returns nothing.
-    /// 
 	__property System::Void set_Multiplicity(System::String* value);
 
     /// \brief
@@ -247,11 +235,18 @@ public:
     /// \param value 
     /// The multiplicity from the associated class side. Valid values are:  ?? or ??
     /// 
-    /// \return
-    /// Returns nothing.
-    /// 
 	__property System::Void set_ReverseMultiplicity(System::String* value);
 
+    /// \brief
+    /// Constructs a AssociationPropertyDefinition object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	AssociationPropertyDefinition(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinition(unmanaged, autoDelete)
 	{
 

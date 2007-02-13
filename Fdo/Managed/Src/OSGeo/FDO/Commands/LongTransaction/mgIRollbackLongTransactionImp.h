@@ -26,7 +26,8 @@ class FdoIRollbackLongTransactionImp;
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
 /// \brief
-/// The FdoIRollbackLongTransaction interface defines the RollbackLongTransaction
+/// The IRollbackLongTransactionImp class is a concrete implementation of IRollbackLongTransaction.
+/// The IRollbackLongTransaction interface defines the RollbackLongTransaction
 /// command, which allows a user to execute rollback operations on a long
 /// transaction. Two different rollback operations are distinguished: full and partial.
 ///

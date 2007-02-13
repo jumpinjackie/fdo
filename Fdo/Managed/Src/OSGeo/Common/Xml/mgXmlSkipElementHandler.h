@@ -26,7 +26,7 @@ BEGIN_NAMESPACE_OSGEO_COMMON_XML
 
 /// \brief
 /// XmlSkipHandler can be used to skip an XML element, when reading an 
-/// XML document via FdoXmlReader. It is a XmlSaxHandler with no callback 
+/// XML document via XmlReader. It is a XmlSaxHandler with no callback 
 /// implementations. Therefore, if another XmlSaxHandler's XmlStartElement
 /// callback returns a XmlSkipElementHandler then there are no more SAX events
 /// until the end of the current element is reached.
@@ -41,10 +41,22 @@ public:
     /// 
 	XmlSkipElementHandler();
 
+    /// \brief
+    /// Constructs a XmlSkipElementHandler based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	XmlSkipElementHandler(System::IntPtr unmanaged, System::Boolean autoDelete);
 
+/// \cond DOXYGEN-IGNORE
 public private:
 	inline FdoXmlSkipElementHandler* GetImpObj();
+/// \endcond
 };
 
 END_NAMESPACE_OSGEO_COMMON_XML

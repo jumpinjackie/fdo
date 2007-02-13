@@ -31,7 +31,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 public __gc __interface IExpressionProcessor;
 
 /// \brief
-/// The FdoStringValue class derives from FdoDataValue and represents a literal string.
+/// The StringValue class derives from DataValue and represents a literal string.
 public __gc class StringValue : public NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue
 {
 public:
@@ -44,34 +44,34 @@ public:
 	static System::String* op_Explicit( NAMESPACE_OSGEO_FDO_EXPRESSION::StringValue* value );
 
     /// \brief
-    /// Constructs a default instance of an FdoStringValue with a value of null.
+    /// Constructs a default instance of an StringValue with a value of null.
     /// 
     /// \return
-    /// Returns the created FdoStringValue
+    /// Returns the created StringValue
     /// 
 	StringValue();
 
     /// \brief
-    /// Constructs a default instance of an FdoStringValue using the specified arguments.
+    /// Constructs a default instance of an StringValue using the specified arguments.
     /// 
     /// \param value 
     /// Input a character string
     /// 
     /// \return
-    /// Returns the created FdoStringValue
+    /// Returns the created StringValue
     /// 
 	StringValue(System::String* value);
 
     /// \brief
-    /// Gets the data type of the FdoStringValue.
+    /// Gets the data type of the StringValue.
     /// 
     /// \return
-    /// Returns FdoDataType
+    /// Returns DataType
     /// 
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::DataType get_DataType();
 
     /// \brief
-    /// Gets the FdoStringValue as a string.
+    /// Gets the StringValue as a string.
     /// 
     /// \return
     /// Returns a character string
@@ -79,7 +79,7 @@ public:
 	__property System::String* get_String();
 
     /// \brief
-    /// Sets the FdoStringValue as a string.
+    /// Sets the StringValue as a string.
     /// 
     /// \param value 
     /// Input a character string
@@ -90,7 +90,7 @@ public:
 	__property System::Void set_String(System::String* value);
 
     /// \brief
-    /// Sets the FdoStringValue to a null value.
+    /// Sets the StringValue to a null value.
     /// 
     /// \return
     /// Returns nothing
@@ -98,11 +98,11 @@ public:
 	System::Void SetNull();
 
     /// \brief
-    /// Overrides FdoExpression.Process to pass the FdoStringValue to the appropriate
+    /// Overrides Expression.Process to pass the StringValue to the appropriate
     /// expression processor operation.
     /// 
     /// \param processor 
-    /// Input an FdoIExpressionProcessor
+    /// Input an IExpressionProcessor
     /// 
     /// \return
     /// Returns nothing
@@ -117,6 +117,16 @@ public:
     /// 
 	System::String* ToString();
 
+    /// \brief
+    /// Constructs a StringValue object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
 	StringValue(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 public private:
