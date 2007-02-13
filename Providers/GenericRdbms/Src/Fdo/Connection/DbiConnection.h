@@ -62,15 +62,14 @@ private:
             FdoStringP mConnectionStringProperty;    // A connection property actually named "ConnectionString"
             FdoStringP mIsGeometryFromOrdinatesWanted;   // Unspecified if empty.  Can be "true" or "false".
 
-            ParseInfo (FdoString *datasource, FdoString *user, FdoString *password, FdoString *schema, FdoString *connectionString, FdoString *defaultGeometryWanted);
+            ParseInfo (FdoString *datasource = L"", FdoString *user = L"", FdoString *password = L"", FdoString *schema = L"", 
+                FdoString *connectionString = L"", FdoString *defaultGeometryWanted = L"");
             virtual ~ParseInfo ();
     };
 
     int     mDbiContextId; // Dbi database id
 
     ParseInfo* mParsedConnection;
-
-    FdoStringP mDbSchemaName;
 
     FdoConnectionState     mOpen;     // if the database is open
 
@@ -106,6 +105,8 @@ public:
     FdoStringP GetPassword();
     FdoStringP GetSchema ();
     FdoStringP GetDataSource ();
+    FdoStringP GetConnectionString ();
+    unsigned long GetDbVersion();
     FDORDBMS_TEST  void Close ();
 
     //dbi_context_def *GetCtxt() { return mContext; }
