@@ -71,6 +71,11 @@ SymbolicName=M_KGORA_UNSUPPORTED_FILE_FORMAT_ERROR
 Language=English
 The file '%1$ls' has an unsupported format (%2$ld).
 .
+MessageId=1010
+SymbolicName=MSG_POSTGIS_SQL_COMMAND_FAILED
+Language=English
+SQL command failed with PostgreSQL error code: %1$ls. %2$ls.
+.
 
 ;//************************************************************************************
 ;//************************************************************************************
@@ -192,6 +197,11 @@ MessageId=2023
 SymbolicName=MSG_POSTGIS_INVALID_CONNECTION_PROPERTY
 Language=English
 Invalid connection property name '%1$ls'
+.
+MessageId=2024
+SymbolicName=MSG_POSTGIS_INVALID_PGSQL_CONNECTION_STATE
+Language=English
+Invalid state of PostgreSQL connection.
 .
 
 ;//************************************************************************************

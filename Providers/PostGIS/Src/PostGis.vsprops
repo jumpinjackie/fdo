@@ -13,4 +13,42 @@
 		Name="VCLinkerTool"
 		AdditionalLibraryDirectories="$(FDOPOSTGRESQL)\lib\ms"
 	/>
+	<UserMacro
+		Name="FDOCORE"
+		Value="D:\dev\fdopostgis\_svn\fdocore"
+	/>
+	<UserMacro
+		Name="FDO"
+		Value="$(FDOCORE)\Fdo"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="FDOUTILITIES"
+		Value="$(FDOCORE)\Utilities"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="FDOTHIRDPARTY"
+		Value="$(FDOCORE)\Thirdparty"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="FDOPOSTGRESQL"
+		Value="C:\Program Files\PostgreSQL\8.2"
+	/>
+	<UserMacro
+		Name="XALANROOT"
+		Value="$(FDOTHIRDPARTY)\apache\xml-xalan\c"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="XERCESCROOT"
+		Value="$(FDOTHIRDPARTY)\apache\xml-xerces\c"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="NLSDIR"
+		Value="$(XALANROOT)\Src\xalanc\NLS"
+		PerformEnvironmentSet="true"
+	/>
 </VisualStudioPropertySheet>

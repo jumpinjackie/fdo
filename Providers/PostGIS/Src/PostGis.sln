@@ -26,11 +26,12 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_connect", "..\..\test\test_connect.vcproj", "{989C1379-E4EE-401E-A9DB-2CF1898303C6}"
 	ProjectSection(ProjectDependencies) = postProject
 		{81A1E411-2952-42B5-8430-B588A89D9BE2} = {81A1E411-2952-42B5-8430-B588A89D9BE2}
-		{A250F14F-E1A9-4F17-9E35-2D2CA8013AA4} = {A250F14F-E1A9-4F17-9E35-2D2CA8013AA4}
-		{04CC6BCD-179D-4627-A183-4E628580B4FB} = {04CC6BCD-179D-4627-A183-4E628580B4FB}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_list_datastores", "..\..\test\test_list_datastores.vcproj", "{DB4BB42A-CF6A-4D51-85E1-ECA24BCD7D00}"
+	ProjectSection(ProjectDependencies) = postProject
+		{81A1E411-2952-42B5-8430-B588A89D9BE2} = {81A1E411-2952-42B5-8430-B588A89D9BE2}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
