@@ -877,7 +877,7 @@ bool FdoLex::getnumber(FdoParse *pParse, bool sign)
         if ( checkStr == str ) {
             // String converted to in64 ok.
 
-            if (i64num <= LONG_MAX && i64num >= LONG_MIN) 
+            if (i64num <= INT_MAX && i64num >= INT_MIN) 
 		    {
                 // In Int32 range so wrap in int32
 			    try  
