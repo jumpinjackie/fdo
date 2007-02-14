@@ -498,7 +498,7 @@ FdoBoolean FdoXmlFeaturePropertyReaderImpl::XmlEndElement(
         break;
     case ParsingState_base64Binary:
         {
-            FdoSize len;
+            unsigned int len;
             XMLByte* decoded = XERCES_CPP_NAMESPACE::Base64::decode((const XMLByte*)(const char*)m_dataProperty, &len);
             if (decoded != NULL) {
                 curFeatureHandler->FeatureBinaryData(m_featureContext, decoded, len);
