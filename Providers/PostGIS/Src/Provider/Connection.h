@@ -18,7 +18,9 @@
 #define FDOPOSTGIS_CONNECTION_H_INCLUDED
 
 #include <PostGIS/FdoPostGisProvider.h>
-#include <Fdo/Connections/IConnection.h>
+// FDO
+#include <Fdo.h>
+#include <FdoCommonConnPropDictionary.h>
 // boost
 #include <boost/tuple/tuple.hpp>
 // PostgreSQL client library
@@ -158,6 +160,17 @@ private:
     // Private operations
     //
 
+    // Check internal state of connection to PostgreSQL server.
+    void ValidateConnectionState();
+
+    // Validate connection string assigned to current connection instance.
+    // The function throws exception on errors detected.
+    void ValidateConnectionString();
+
+    // Validate connection properties in ConnectionInfo dictionary.
+    // The function throws exception on errors detected.
+    void ValidateRequiredProperties();
+
     // Tuple with PostgreSQL connection string tokens.
     typedef boost::tuples::tuple
         <
@@ -167,6 +180,8 @@ private:
 
     // Get PostgreSQL connection parameters from FDO connection properties.
     pgconn_params_t GetPgConnectionParams(FdoPtr<FdoCommonConnPropDictionary> dict);
+
+    void SetPgActiveSchema(FdoStringP schema);
 
 };
 
