@@ -20,6 +20,8 @@
 #include "TestProcessor.h"
 #endif
 
+#define DEBUG_DETAIL	1
+
 #include "UnitTestUtil.h"
 #include "malloc.h"  // for alloca()
 
@@ -395,17 +397,17 @@ void ExpressionParseTest::testBoundaryValues()
         CPPUNIT_ASSERT(pLVal2 != NULL);   
         CPPUNIT_ASSERT(pLVal2->GetInt32() == SHRT_MAX);  
 
-        pVal = FdoInt32Value::Create(LONG_MIN);
+        pVal = FdoInt32Value::Create(INT_MIN);
         pVal2 = roundTripBoundaryValue(pVal);
         pLVal2 = dynamic_cast<FdoInt32Value*>((FdoDataValue*) pVal2);
         CPPUNIT_ASSERT(pLVal2 != NULL);   
-        CPPUNIT_ASSERT(pLVal2->GetInt32() == LONG_MIN);   
+        CPPUNIT_ASSERT(pLVal2->GetInt32() == INT_MIN);   
     
-        pVal = FdoInt32Value::Create(LONG_MAX);
+        pVal = FdoInt32Value::Create(INT_MAX);
         pVal2 = roundTripBoundaryValue(pVal);
         pLVal2 = dynamic_cast<FdoInt32Value*>((FdoDataValue*) pVal2);
         CPPUNIT_ASSERT(pLVal2 != NULL);   
-        CPPUNIT_ASSERT(pLVal2->GetInt32() == LONG_MAX);  
+        CPPUNIT_ASSERT(pLVal2->GetInt32() == INT_MAX);  
 
         pVal = FdoInt64Value::Create(LLONG_MIN);
         pVal2 = roundTripBoundaryValue(pVal);
@@ -419,17 +421,17 @@ void ExpressionParseTest::testBoundaryValues()
         CPPUNIT_ASSERT(pLLVal2 != NULL);   
         CPPUNIT_ASSERT(pLLVal2->GetInt64() == LLONG_MAX);   
 
-        pVal = FdoInt64Value::Create(LONG_MIN);
+        pVal = FdoInt64Value::Create(INT_MIN);
         pVal2 = roundTripBoundaryValue(pVal);
         pLVal2 = dynamic_cast<FdoInt32Value*>((FdoDataValue*) pVal2);
         CPPUNIT_ASSERT(pLVal2 != NULL);   
-        CPPUNIT_ASSERT(pLVal2->GetInt32() == LONG_MIN);   
+        CPPUNIT_ASSERT(pLVal2->GetInt32() == INT_MIN);   
     
-        pVal = FdoInt64Value::Create(LONG_MAX);
+        pVal = FdoInt64Value::Create(INT_MAX);
         pVal2 = roundTripBoundaryValue(pVal);
         pLVal2 = dynamic_cast<FdoInt32Value*>((FdoDataValue*) pVal2);
         CPPUNIT_ASSERT(pLVal2 != NULL);   
-        CPPUNIT_ASSERT(pLVal2->GetInt32() == LONG_MAX);   
+        CPPUNIT_ASSERT(pLVal2->GetInt32() == INT_MAX);   
     }
     catch (FdoException *e)
     {
