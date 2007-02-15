@@ -19,35 +19,27 @@
 #pragma once
 
 BEGIN_NAMESPACE_OSGEO_SPATIAL
+
+/// \ingroup (enums)
 /// \brief
 ///  SpatialGeometryValidity is an enumeration to denote the validity of a Geometry
 /// during a test of type and dimensionality..
-/// <param name="SpatialGeometryValidity_None">
-/// Indicates no specific validity; used for unknown or default states.
-/// </param>
-/// <param name="SpatialGeometryValidity_Valid">
-/// Geometry passes a test.
-/// </param>
-/// <param name="SpatialGeometryValidity_Invalid">
-/// Geometry fails a test.
-/// </param>
-/// <param name="SpatialGeometryValidity_InvalidButCanBeApproximated">
-/// Geometry fails a test, but could be approximated 
-/// using allowed types.
-/// </param>
-/// <param name="SpatialGeometryValidity_InvalidDueToDimensionality">
-/// Geometry fails a test due to having an disallowed dimensionality.
-/// </param>
 public __value enum SpatialGeometryValidity
 {
+    /// Indicates no specific validity; used for unknown or default states.
 	SpatialGeometryValidity_None = FdoSpatialGeometryValidity_None,
 
+    /// Geometry passes a test.
 	SpatialGeometryValidity_Valid = FdoSpatialGeometryValidity_Valid,
 
+    /// Geometry fails a test.
 	SpatialGeometryValidity_Invalid = FdoSpatialGeometryValidity_Invalid,
 
+    /// Geometry fails a test, but could be approximated 
+    /// using allowed types.
 	SpatialGeometryValidity_InvalidButCanBeApproximated = FdoSpatialGeometryValidity_InvalidButCanBeApproximated,
 
+    /// Geometry fails a test due to having an disallowed dimensionality.
 	SpatialGeometryValidity_InvalidDueToDimensionality = FdoSpatialGeometryValidity_InvalidDueToDimensionality,
 };
 END_NAMESPACE_OSGEO_SPATIAL
