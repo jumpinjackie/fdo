@@ -61,7 +61,7 @@ public:
     /// Input current element's Universal Resource Indicator
     /// \param name 
     /// Input the unqualified name of the current element (doesn't include namespace)
-    /// \param qname 
+    /// \param qName 
     /// Input the qualified name of the current element(includes namespace)
     /// \param atts 
     /// Input the attributes for the current element. 
@@ -88,8 +88,8 @@ public:
         return new FdoXmlCopyHandler( writer, uri, name, qName, atts, namespaces );
     }
 
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     FdoXmlCopyHandler() {}
 /// \endcond
 
@@ -147,7 +147,7 @@ protected:
     /// Input the namespace URI for attribute's containing element.
     /// \param name 
     /// Input the local name for attribute's containing element.
-    /// \param qname 
+    /// \param qName 
     /// Input the fully qualified name from attribute's containing element.
     /// \param att 
     /// Input the attribute to check.
@@ -171,7 +171,7 @@ private:
     FdoBoolean mWroteCurrElement;
 };
 
-
+/// \ingroup (typedefs)
 /// \brief
 /// FdoXmlCopyHandlerP is a FdoPtr on FdoXmlCopyHandler, provided for convenience.
 typedef FdoPtr<FdoXmlCopyHandler> FdoXmlCopyHandlerP;

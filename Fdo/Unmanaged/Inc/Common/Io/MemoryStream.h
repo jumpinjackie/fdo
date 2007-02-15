@@ -92,6 +92,7 @@ private:
 
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoIoMemoryStreamP is a FdoPtr on FdoIoMemoryStream, provided for convenience.
 typedef FdoPtr<FdoIoMemoryStream> FdoIoMemoryStreamP;

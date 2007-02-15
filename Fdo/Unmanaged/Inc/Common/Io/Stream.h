@@ -67,7 +67,7 @@ public:
     /// reads the number of bytes from the given stream, and writes them 
     /// to this stream. 
     /// 
-    /// \param buffer 
+    /// \param stream 
     /// Input write from this buffer
     /// \param count 
     /// Input the maximum number of bytes to read and write. 
@@ -83,7 +83,7 @@ public:
     /// longer than the current stream length then the stream's length
     /// is not changed.
     /// 
-	FDO_API_COMMON virtual void SetLength( FdoInt64 ) = 0;
+	FDO_API_COMMON virtual void SetLength( FdoInt64 length) = 0;
 
     /// \brief
     /// gets the current length of the stream.
@@ -162,6 +162,7 @@ public:
 protected:
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoIoStreamP is a FdoPtr on FdoIoStream, provided for convenience.
 typedef FdoPtr<FdoIoStream> FdoIoStreamP;

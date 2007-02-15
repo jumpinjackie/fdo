@@ -25,6 +25,7 @@
 
 #include <Common/Std.h>
 
+/// \ingroup (enums)
 /// \brief
 /// Enumeration for datatypes used by stream readers.
 enum FdoStreamReaderType {

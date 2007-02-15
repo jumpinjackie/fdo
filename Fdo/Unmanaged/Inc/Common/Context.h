@@ -81,6 +81,7 @@ private:
     FdoPtr<Errors> mErrors;
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoContextP is a FdoPtr on FdoContext, provided for convenience.
 typedef FdoPtr<FdoContext> FdoContextP;

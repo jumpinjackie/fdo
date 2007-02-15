@@ -158,7 +158,7 @@ public:
     /// \brief
     /// Adds a number to the end of this vector.
     /// 
-    /// \param src 
+    /// \param value 
     /// Input the source collection
     /// 
 	FDO_API_COMMON int Add( double value );
@@ -396,8 +396,8 @@ public:
     /// 
 	FDO_API_COMMON FdoBoolean operator<=( const FdoVectorP vec2 ) const;
 
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// General function to do the vector comparisons.
     FdoBoolean Compare( const FdoVectorP vec2, FdoBoolean lt, FdoBoolean eq, FdoBoolean gt ) const;
 /// \endcond

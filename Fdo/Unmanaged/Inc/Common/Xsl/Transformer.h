@@ -140,8 +140,8 @@ public:
     /// 
     FDO_API_COMMON virtual void Transform() = 0;
 
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     FdoXslTransformer( 
         FdoXmlReader* inDoc = NULL, 
         FdoXmlReader* stylesheet = NULL, 
@@ -165,6 +165,7 @@ private:
     FdoIoTextWriterP mLog;
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoXslTransformerP is a FdoPtr on FdoXslTransformer, provided for convenience.
 typedef FdoPtr<FdoXslTransformer> FdoXslTransformerP;

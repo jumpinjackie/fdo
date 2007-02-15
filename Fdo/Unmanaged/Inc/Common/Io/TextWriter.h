@@ -92,6 +92,7 @@ private:
     FdoIoStreamP mStream;
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoIoTextWriterP is a FdoPtr on FdoIoTextWriter, provided for convenience.
 typedef FdoPtr<FdoIoTextWriter> FdoIoTextWriterP;

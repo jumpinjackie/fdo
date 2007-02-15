@@ -24,6 +24,7 @@
 #endif
 
 /// \cond DOXYGEN-IGNORE
+
 /// \brief
 /// FdoStack is an abstract template for a Stack ADT. This class is not yet
 /// part of the FDOCommon API. However, doc comments have been added since it might

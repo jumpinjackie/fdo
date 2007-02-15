@@ -181,6 +181,7 @@ private:
     FdoStringP mValuePrefix;
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoXmlAttributeP is a FdoPtr on FdoXmlAttribute, provided for convenience.
 typedef FdoPtr<FdoXmlAttribute> FdoXmlAttributeP;

@@ -30,8 +30,8 @@
 /// FDO XML package
 class FdoXmlException : public FdoException
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// \brief
     ///  Constructs a default instance of an FdoXmlException.
     /// 
@@ -95,6 +95,7 @@ public:
 
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoXmlExceptionP is a FdoPtr on FdoXmlException, provided for convenience.
 typedef FdoPtr<FdoXmlException> FdoXmlExceptionP;

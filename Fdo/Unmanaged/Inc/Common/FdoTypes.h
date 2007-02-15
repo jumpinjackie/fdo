@@ -27,19 +27,24 @@
 #include <stdint.h>
 #endif
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoByte is used to store a single byte of data
 typedef unsigned char   FdoByte;
 #ifdef _WIN32
+/// \ingroup (typedefs)
 /// \brief
 /// FdoInt8 is used to store a 8 bit signed integer
 typedef _int8           FdoInt8;
+/// \ingroup (typedefs)
 /// \brief
 /// FdoInt16 is used to store a 16 bit signed integer
 typedef _int16          FdoInt16;
+/// \ingroup (typedefs)
 /// \brief
 /// FdoInt32 is used to store a 32 bit signed integer
 typedef _int32          FdoInt32;
+/// \ingroup (typedefs)
 /// \brief
 /// FdoInt64 is used to store a 64 bit signed integer
 typedef _int64          FdoInt64;
@@ -51,26 +56,33 @@ typedef int32_t		FdoInt32;
 typedef int64_t		FdoInt64;
 /// \endcond
 #endif
+/// \ingroup (typedefs)
 /// \brief
 /// FdoCharacter is used to store a wide character
 typedef wchar_t         FdoCharacter;
+/// \ingroup (typedefs)
 /// \brief
 /// FdoString is used to store a constant wide character.
 /// Variables declared as FdoString* point to constant wide character strings.
 typedef const wchar_t   FdoString;
+/// \ingroup (typedefs)
 /// \brief
 /// FdoBoolean is used to store a boolean (true/false) value
 typedef bool            FdoBoolean;
+/// \ingroup (typedefs)
 /// \brief
 /// FdoVoid is used to reference a void (type undetermined)
 typedef void            FdoVoid;
+/// \ingroup (typedefs)
 /// \brief
 /// FdoDouble is used to store a double precision floating point number
 typedef double          FdoDouble;
+/// \ingroup (typedefs)
 /// \brief
 /// FdoFloat is used to store a single precision floating point number
 typedef float           FdoFloat;
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoSize is used to store a size value (e.g. number of elements in an array)
 typedef size_t          FdoSize;
@@ -79,24 +91,14 @@ typedef size_t          FdoSize;
 /// FdoDateTime is used to store dates, times, or both.  After constructing 
 /// the class you determine which portion has been specified.  The data members
 /// are public so they can be accessed directly. No range checking is performed.
-/// <param name="year">
-/// Year in the range of 1 to 9999
-/// </param>
-/// <param name="month">
-/// Month in the range of 1 to 12 inclusive (January = 1)
-/// </param>
-/// <param name="day">
-/// Day of the month in the range of 1 to 31 inclusive
-/// </param>
-/// <param name="hour">
-/// Hour since midnight in the range of 0 to 23
-/// </param>
-/// <param name="minute">
-/// Minutes after hour in the range of 0 to 59
-/// </param>
-/// <param name="seconds">
-/// Seconds after minute in the range of 0 to 59.9999999
-/// </param>
+/// <ul>
+/// <li>Year is in the range of 1 to 9999</li>
+/// <li>Month is in the range of 1 to 12 inclusive (January = 1)</li>
+/// <li>Day of the month is in the range of 1 to 31 inclusive</li>
+/// <li>Hour is since midnight in the range of 0 to 23</li>
+/// <li>Minutes are after hour in the range of 0 to 59</li>
+/// <li>Seconds are after minute in the range of 0 to 59.9999999</li>
+/// </ul>
 class FdoDateTime
 {
 public:

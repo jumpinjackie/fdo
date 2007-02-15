@@ -23,64 +23,51 @@
 #endif
 
 #ifdef __cplusplus
+/// \ingroup (enums)
     /// \brief
     ///  FdoGeometryType is an enumeration to denote the type of a Geometry.
     /// 
     /// \remarks
     ///  This enumeration applies to types that derive from FdoIGeometry.
-    /// 
-    /// \param FdoGeometryType_None 
-    /// Indicates no specific type; used for "unknown", "don't care" or an incompletely constructed Geometry object.
-    /// \param FdoGeometryType_Point 
-    /// Point type (FdoIPoint).
-    /// \param FdoGeometryType_LineString 
-    /// LineString type (FdoILineString).
-    /// \param FdoGeometryType_Polygon 
-    /// Polygon type (FdoIPolygon).
-    /// \param FdoGeometryType_MultiPoint 
-    /// MultiPoint type (FdoIMultiPoint).
-    /// \param FdoGeometryType_MultiLineString 
-    /// MultiLineString type (FdoIMultiLineString).
-    /// \param FdoGeometryType_MultiPolygon 
-    /// MultiPolygon type (FdoIMultiPolygon).
-    /// \param FdoGeometryType_MultiGeometry 
-    /// MultiGeometry type (FdoIMultiGeometry).
-    /// \param FdoGeometryType_CurveString 
-    /// CurveString type (FdoICurveString).
-    /// \param FdoGeometryType_CurvePolygon 
-    /// CurvePolygon type (FdoICurvePolygon).
-    /// \param FdoGeometryType_MultiCurveString 
-    /// MultiCurveString type (FdoIMultiCurveString).
-    /// \param FdoGeometryType_MultiCurvePolygon 
-    /// MultiCurvePolygon type (FdoIMultiCurvePolygon).
-    /// 
     enum FdoGeometryType
 #else
     typedef enum
 #endif
 {
+    /// Indicates no specific type; used for "unknown", "don't care" or an incompletely constructed Geometry object.
     FdoGeometryType_None = 0,
 
+    /// Point type (FdoIPoint).
     FdoGeometryType_Point = 1,
 
+    /// LineString type (FdoILineString).
     FdoGeometryType_LineString = 2,
 
+    /// Polygon type (FdoIPolygon).
     FdoGeometryType_Polygon = 3,
 
+    /// MultiPoint type (FdoIMultiPoint).
     FdoGeometryType_MultiPoint = 4,
 
+    /// MultiLineString type (FdoIMultiLineString).
     FdoGeometryType_MultiLineString = 5,
 
+    /// MultiPolygon type (FdoIMultiPolygon).
     FdoGeometryType_MultiPolygon = 6,
 
+    /// MultiGeometry type (FdoIMultiGeometry).
     FdoGeometryType_MultiGeometry = 7,
 
+    /// CurveString type (FdoICurveString).
     FdoGeometryType_CurveString = 10,
 
+    /// CurvePolygon type (FdoICurvePolygon).
     FdoGeometryType_CurvePolygon = 11,
 
+    /// MultiCurveString type (FdoIMultiCurveString).
     FdoGeometryType_MultiCurveString = 12,
     
+    /// MultiCurvePolygon type (FdoIMultiCurvePolygon).
     FdoGeometryType_MultiCurvePolygon = 13
 
 #ifdef __cplusplus
@@ -91,32 +78,27 @@
 
 
 #ifdef __cplusplus
+	/// \ingroup (enums)
     /// \brief
     ///  Enumeration for components of Geometry.
     /// 
     /// \remarks
     ///  This enumeration applies to certain helper types that are used to compose other types which derive from FdoIGeometry.
-    /// 
-    /// \param FdoGeometryComponentType_LinearRing 
-    /// LinearRing type (FdoILinearRing).
-    /// \param FdoGeometryComponentType_CircularArcSegment 
-    /// CircularArcSegment type (FdoICircularArcSegment).
-    /// \param FdoGeometryComponentType_LineStringSegment 
-    /// LineStringSegment type (FdoILineStringSegment).
-    /// \param FdoGeometryComponentType_Ring 
-    /// Ring type (FdoIRing).
-    /// 
     enum FdoGeometryComponentType
 #else
     typedef enum
 #endif
 {
+    /// LinearRing type (FdoILinearRing).
     FdoGeometryComponentType_LinearRing = 129,
 
+    /// CircularArcSegment type (FdoICircularArcSegment).
     FdoGeometryComponentType_CircularArcSegment = 130,
 
+    /// LineStringSegment type (FdoILineStringSegment).
     FdoGeometryComponentType_LineStringSegment = 131,
 
+    /// Ring type (FdoIRing).
     FdoGeometryComponentType_Ring = 132
 
 #ifdef __cplusplus

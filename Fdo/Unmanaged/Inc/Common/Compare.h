@@ -23,6 +23,7 @@
 #endif
 
 /// \cond DOXYGEN-IGNORE
+
 /// \brief
 ///  FdoCompareType is an enumeration of different value comparison results when comparing
 ///  value1 and value2
@@ -43,7 +44,9 @@ enum FdoCompareType
     FdoCompareType_Greater,
     FdoCompareType_Equal
 };
+/// \endcond
 
+/// \cond DOXYGEN-IGNORE
 // General function for comparing values of simple types or types that define the comparison operators.
 template< class T> FdoCompareType FdoCompare( T val1, T val2 )
 {

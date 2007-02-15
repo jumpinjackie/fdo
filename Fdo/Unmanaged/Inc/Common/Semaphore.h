@@ -20,6 +20,7 @@
 //
 
 /// \cond DOXYGEN-IGNORE
+
 /// \brief 
 /// FdoSemaphore is a semaphore class. It is used to prevent operations
 /// from happening concurrently or re-entrantly. FdoSemaphore is not currently part

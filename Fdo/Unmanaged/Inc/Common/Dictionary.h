@@ -46,6 +46,7 @@ protected:
 
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoDictionaryP is a FdoPtr on FdoDictionary, provided for convenience.
 typedef FdoPtr<FdoDictionary> FdoDictionaryP;

@@ -67,6 +67,7 @@ private:
 
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoXmlCharDataHandlerP is a FdoPtr on FdoXmlCharDataHandler, provided for convenience.
 typedef FdoPtr<FdoXmlCharDataHandler> FdoXmlCharDataHandlerP;

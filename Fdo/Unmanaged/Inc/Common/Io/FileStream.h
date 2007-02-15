@@ -64,9 +64,9 @@ public:
     FDO_API_COMMON virtual FdoBoolean CanRead();
 	FDO_API_COMMON virtual FdoBoolean CanWrite();
 	FDO_API_COMMON virtual FdoBoolean HasContext();
-
-protected:
+	
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Default constructor to satisfy Linux
     FdoIoFileStream() {}
     FdoIoFileStream(FdoString* fileName, FdoString* accessModes );
@@ -99,6 +99,7 @@ private:
     FdoBoolean    mbTextMode;
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoIoFileStreamP is a FdoPtr on FdoIoFileStream, provided for convenience.
 typedef FdoPtr<FdoIoFileStream> FdoIoFileStreamP;

@@ -45,14 +45,14 @@ public:
         return new FdoXmlSkipElementHandler();
     }
 
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     FdoXmlSkipElementHandler() {}
     ~FdoXmlSkipElementHandler() {}
 /// \endcond
 };
 
-
+/// \ingroup (typedefs)
 /// \brief
 /// FdoXmlSkipElementHandlerP is a FdoPtr on FdoXmlSkipElementHandler, provided for convenience.
 typedef FdoPtr<FdoXmlSkipElementHandler> FdoXmlSkipElementHandlerP;

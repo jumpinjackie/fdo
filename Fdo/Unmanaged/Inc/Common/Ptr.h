@@ -215,7 +215,7 @@ public:
     /// \brief
     /// Less than operator
     /// 
-    /// \param lp 
+    /// \param pT
     /// Input the object to compare
     /// 
     /// \return
@@ -230,7 +230,7 @@ public:
     /// \brief
     /// Equals operator
     /// 
-    /// \param lp 
+    /// \param pT
     /// Input the object to compare
     /// 
     /// \return
@@ -300,6 +300,7 @@ public:
     }
 
 /// \cond DOXYGEN-IGNORE
+
     /// Release the object and set to NULL
     void Release() throw()
     {

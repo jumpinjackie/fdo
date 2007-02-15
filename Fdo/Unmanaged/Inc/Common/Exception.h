@@ -217,8 +217,8 @@ public:
     /// 
     FDO_API_COMMON static FdoString* NLSGetMessage(FdoInt32 msgNum, char* defMsg, char* catalog, va_list arguments);
 
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     wchar_t*        m_message;
     FdoException*   m_cause;
 
@@ -226,6 +226,9 @@ protected:
 /// \endcond
 
 };
+
+/// \ingroup (typedefs)
+/// \brief
 /// FdoExceptionP is a FdoPtr on FdoException, provided for convenience.
 typedef FdoPtr<FdoException> FdoExceptionP;
 
