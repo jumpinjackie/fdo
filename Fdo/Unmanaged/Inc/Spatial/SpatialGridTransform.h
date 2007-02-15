@@ -114,6 +114,7 @@ protected:
     virtual ~FdoSpatialGridTransform();
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoSpatialGridTransformP is a FdoPtr on FdoSpatialGridTransform, provided for convenience.
 typedef FdoPtr<FdoSpatialGridTransform> FdoSpatialGridTransformP;

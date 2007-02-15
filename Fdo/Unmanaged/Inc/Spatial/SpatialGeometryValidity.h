@@ -20,35 +20,27 @@
 #ifdef _WIN32
 #pragma once
 #endif
+
+/// \ingroup (enums)
 /// \brief
 ///  FdoSpatialGeometryValidity is an enumeration to denote the validity of a Geometry
 /// during a test of type and dimensionality..
-/// <param name="FdoSpatialGeometryValidity_None">
-/// Indicates no specific validity; used for unknown or default states.
-/// </param>
-/// <param name="FdoSpatialGeometryValidity_Valid">
-/// Geometry passes a test.
-/// </param>
-/// <param name="FdoSpatialGeometryValidity_Invalid">
-/// Geometry fails a test.
-/// </param>
-/// <param name="FdoSpatialGeometryValidity_InvalidButCanBeApproximated">
-/// Geometry fails a test, but could be approximated 
-/// using allowed types.
-/// </param>
-/// <param name="FdoSpatialGeometryValidity_InvalidDueToDimensionality">
-/// Geometry fails a test due to having an disallowed dimensionality.
-/// </param>
 enum FdoSpatialGeometryValidity
 {
+    /// Indicates no specific validity; used for unknown or default states.
     FdoSpatialGeometryValidity_None = 0,
 
+    /// Geometry passes a test.
     FdoSpatialGeometryValidity_Valid = 1,
 
+    /// Geometry fails a test.
     FdoSpatialGeometryValidity_Invalid = 2,
 
+    /// Geometry fails a test, but could be approximated 
+    /// using allowed types.
     FdoSpatialGeometryValidity_InvalidButCanBeApproximated = 3,
 
+    /// Geometry fails a test due to having an disallowed dimensionality.
     FdoSpatialGeometryValidity_InvalidDueToDimensionality = 4
 };
 
