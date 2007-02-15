@@ -143,8 +143,12 @@ echo Creating ODBC provider html and chm documentation
 if exist "Docs\HTML\ODBC" rmdir /S /Q "Docs\HTML\ODBC"
 if not exist "Docs\HTML\ODBC" mkdir "Docs\HTML\ODBC"
 if exist Docs\ODBC_Provider_API.chm attrib -r Docs\ODBC_Provider_API.chm
+if exist "Docs\HTML\ODBC_managed" rmdir /S /Q "Docs\HTML\ODBC_managed"
+if not exist "Docs\HTML\ODBC_managed" mkdir "Docs\HTML\ODBC_managed"
+if exist Docs\ODBC_Provider_API_managed.chm attrib -r Docs\ODBC_Provider_API_managed.chm
 pushd Docs\doc_src
 doxygen Doxyfile_ODBC
+doxygen Doxyfile_ODBC_managed
 popd
 popd
 
@@ -154,6 +158,9 @@ pushd ..\..\
 if exist "%FDODOCPATHODBC%\HTML\Providers\ODBC" rmdir /S /Q "%FDODOCPATHODBC%\HTML\Providers\ODBC"
 if exist Docs\HTML\ODBC xcopy/CQEYI Docs\HTML\ODBC\* "%FDODOCPATHODBC%\HTML\Providers\ODBC"
 if exist "Docs\ODBC_Provider_API.chm" copy /y "Docs\ODBC_Provider_API.chm" "%FDODOCPATHODBC%"
+if exist "%FDODOCPATHODBC%\HTML\Providers\ODBC_managed" rmdir /S /Q "%FDODOCPATHODBC%\HTML\Providers\ODBC_managed"
+if exist Docs\HTML\ODBC_managed xcopy/CQEYI Docs\HTML\ODBC_managed\* "%FDODOCPATHODBC%\HTML\Providers\ODBC_managed"
+if exist "Docs\ODBC_Provider_API_managed.chm" copy /y "Docs\ODBC_Provider_API_managed.chm" "%FDODOCPATHODBC%"
 popd
 
 :end
