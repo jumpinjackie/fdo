@@ -20,15 +20,10 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_FILTER
 
+/// \ingroup (enums)
 /// \brief
 /// The BinaryLogicalOperations enumeration lists the binary logical operations
 /// available.
-/// <param name="BinaryLogicalOperations_And">
-/// Perform a logical And between the two filters
-/// </param>
-/// <param name="BinaryLogicalOperations_Or">
-/// Perform a logical Or between the two filters
-/// </param>
 [System::FlagsAttribute]
 public __value enum BinaryLogicalOperations
 {

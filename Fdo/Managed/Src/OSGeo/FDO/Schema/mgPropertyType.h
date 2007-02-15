@@ -20,23 +20,9 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 
+/// \ingroup (enums)
 /// \brief
 /// The PropertyType enumeration lists the possible types that a Property can be.
-/// <param name="PropertyType_DataProperty">
-/// Represents a Data Property type
-/// </param>
-/// <param name="PropertyType_ObjectProperty">
-/// Represents an Object Property type
-/// </param>
-/// <param name="PropertyType_GeometricProperty">
-/// Represents a Geometric Property type
-/// </param>
-/// <param name="PropertyType_AssociationProperty">
-/// Represents an Association Property type
-/// </param>
-/// <param name="PropertyType_RasterProperty">
-/// Represents a Raster (image) Property type
-/// </param>
 public __value enum PropertyType
 {
     /// Represents a Data Property type.

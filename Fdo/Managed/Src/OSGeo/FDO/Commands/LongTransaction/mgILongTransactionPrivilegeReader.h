@@ -20,6 +20,8 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
+/// \ingroup (interfaces)
+/// \interface ILongTransactionPrivilegeReader
 /// \brief
 /// The ILongTransactionPrivilegeReader interface provides forward only,
 /// read-only functionality for enumerating long transaction privileges.

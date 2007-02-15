@@ -20,15 +20,10 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 
+/// \ingroup (enums)
 /// \brief
 /// The OrderType enumeration list contains two values to indicate if the
 /// object collection is to be ordered in ascending or descending fashion.
-/// <param name="OrderType_Ascending">
-/// Specifies the collection is to be ordered from the smallest value to the largest value
-/// </param>
-/// <param name="OrderType_Descending">
-/// Specifies the collection is to be ordered from the largest value to the smallest value
-/// </param>
 public __value enum OrderType
 {
     /// Specifies the collection is to be ordered from the smallest value to the largest value.

@@ -22,6 +22,8 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
+/// \ingroup (interfaces)
+/// \interface IDeactivateLongTransaction
 /// \brief
 /// The IDeactivateLongTransaction interface defines the 
 /// DeactivateLongTransaction command, which deactivates the active long 

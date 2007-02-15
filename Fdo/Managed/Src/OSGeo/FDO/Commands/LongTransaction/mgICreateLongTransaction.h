@@ -22,6 +22,8 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
+/// \ingroup (interfaces)
+/// \interface ICreateLongTransaction
 /// \brief
 /// The ICreateLongTransaction interface defines the CreateLongTransaction
 /// command which creates a long transaction that is based upon the currently

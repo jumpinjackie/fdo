@@ -20,9 +20,13 @@
 
 #include "FDO\Commands\mgICommand.h"
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 public __gc __interface ILongTransactionCheckpointReader;
+/// \endcond
 
+/// \ingroup (interfaces)
+/// \interface IGetLongTransactionCheckpoints
 /// \brief
 /// The IGetLongTransactionCheckpoints interface defines the
 /// GetLongTransactionCheckpoints command, which allows the user to enumerate

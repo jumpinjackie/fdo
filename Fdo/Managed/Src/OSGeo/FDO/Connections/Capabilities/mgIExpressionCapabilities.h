@@ -28,6 +28,8 @@ BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 
 public __gc class FunctionDefinitionCollection;
 
+/// \ingroup (interfaces)
+/// \interface IExpressionCapabilities
 /// \brief
 /// The IExpressionCapbilities interface declares the feature provider's level
 /// of support for Expression classes.

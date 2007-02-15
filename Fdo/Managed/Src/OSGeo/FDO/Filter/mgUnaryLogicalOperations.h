@@ -20,12 +20,10 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_FILTER
 
+/// \ingroup (enums)
 /// \brief
 /// The UnaryLogicalOperations enumeration lists the unary logical operations
 /// available.
-/// <param name="UnaryLogicalOperations_Not">
-/// Perform a logical Not of the filter
-/// </param>
 [System::FlagsAttribute]
 public __value enum UnaryLogicalOperations
 {

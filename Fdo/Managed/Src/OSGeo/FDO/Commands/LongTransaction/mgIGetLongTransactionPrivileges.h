@@ -20,9 +20,13 @@
 
 #include "FDO\Commands\mgICommand.h"
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 public __gc __interface ILongTransactionPrivilegeReader;
+/// \endcond
 
+/// \ingroup (interfaces)
+/// \interface IGetLongTransactionPrivileges
 /// \brief
 /// The IGetLongTransactionPrivileges interface defines the
 /// GetLongTransactionPrivileges command, which allows the user to enumerate the

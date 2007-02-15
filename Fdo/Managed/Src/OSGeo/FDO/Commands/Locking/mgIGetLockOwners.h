@@ -20,9 +20,13 @@
 
 #include "FDO\Commands\mgICommand.h"
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 public __gc __interface ILockOwnersReader;
+/// \endcond
 
+/// \ingroup (interfaces)
+/// \interface IGetLockOwners
 /// \brief
 /// The IGetLockOwners interface defines the GetLockOwners command, which gets a
 /// list of all lock owners. A connected user has the status of being a lock owner as

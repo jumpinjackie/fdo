@@ -20,19 +20,11 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 
+/// \ingroup (enums)
 /// \brief
 /// The DeleteRule enumeration specifies the action to take when a delete
 /// operation is executed on the class instance at the other end of the
 /// relation.
-/// <param name="DeleteRule_Cascade">
-/// Cascade the delete operation to class instances at this end of the relation
-/// </param>
-/// <param name="DeleteRule_Prevent">
-/// Prevent the delete operation if there are class instances at this end of the relation
-/// </param>
-/// <param name="DeleteRule_Break">
-/// Break the relationship by setting the identifying properties at this end to null values
-/// </param>
 public __value enum DeleteRule
 {
     /// Cascade the delete operation to class instances at this end of the relation.

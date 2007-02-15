@@ -22,6 +22,8 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 
+/// \ingroup (interfaces)
+/// \interface IExpressionProcessor
 /// \brief
 /// The IExpressionProcessor interface can be used to process the nodes in an
 /// Expression tree. It declares an process operation for each concrete class in

@@ -20,6 +20,7 @@
 
 #include "FDO\Commands\Feature\mgIBaseSelect.h"
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS
 public __gc class IdentifierCollection;
 END_NAMESPACE_OSGEO_FDO_COMMANDS
@@ -30,7 +31,10 @@ END_NAMESPACE_OSGEO_FDO_FILTER
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 public __gc __interface IDataReader;
+/// \endcond
 
+/// \ingroup (interfaces)
+/// \interface ISelectAggregates
 /// \brief
 /// The ISelectAggregate interface defines a Select command that handle selection of properties that include 
 /// the use of aggregate functions. This command differs from the ISelect command in a number of ways. 

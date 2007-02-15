@@ -26,6 +26,8 @@ END_NAMESPACE_OSGEO_FDO_SCHEMA
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 
+/// \ingroup (interfaces)
+/// \interface IFeatureReader
 /// \brief
 /// The IFeatureReader interface provides a forward-only, read-only iterator
 /// for reading feature data.  A reference to an IFeatureReader is returned

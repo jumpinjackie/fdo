@@ -25,6 +25,8 @@ END_NAMESPACE_OSGEO_FDO_RASTER
 
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 
+/// \ingroup (interfaces)
+/// \interface IRasterCapabilities
 /// \brief
 /// The IRasterCapabilities class delineates available support for raster processing from a provider.
 public __gc __interface IRasterCapabilities : public System::IDisposable

@@ -20,25 +20,21 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
+/// \ingroup (enums)
 /// \brief
 /// The LongTransactionConflictResolution enumeration defines the list of
 /// available options for resolving conflict.
-///
-/// \param LongTransactionConflictResolution_Unresolved
-/// Indicates that the conflict cannot be resolved.
-///
-/// \param LongTransactionConflictResolution_Child
-/// Indicates the data is to be kept as defined in the long transaction to be committed,
-/// overwriting the data in the long transaction's parent.
-///
-/// \param LongTransactionConflictResolution_Parent
-/// Indicates the data is to be kept as defined in the versions parent, discarding the data
-/// as defined in the long transaction to be committed.
-///
 public __value enum LongTransactionConflictResolution
 {
+    /// Indicates that the conflict cannot be resolved.
 	LongTransactionConflictResolution_Unresolved = FdoLongTransactionConflictResolution_Unresolved,
+
+    /// Indicates the data is to be kept as defined in the long transaction to be committed,
+    /// overwriting the data in the long transaction's parent.
 	LongTransactionConflictResolution_Child = FdoLongTransactionConflictResolution_Child,
+
+    /// Indicates the data is to be kept as defined in the versions parent, discarding the data
+    /// as defined in the long transaction to be committed.
 	LongTransactionConflictResolution_Parent = FdoLongTransactionConflictResolution_Parent
 };
 

@@ -24,6 +24,8 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE
 
+/// \ingroup (interfaces)
+/// \interface ICreateMeasureUnit
 /// \brief
 /// The ICreateMeasureUnit interface defines the CreateMeasureUnit command,
 /// which creates or updates a measurement unit. Input to the command includes

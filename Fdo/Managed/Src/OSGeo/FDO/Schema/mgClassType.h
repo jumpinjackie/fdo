@@ -20,27 +20,10 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 
+/// \ingroup (enums)
 /// \brief
 /// The ClassType enumeration lists all of the concrete class types defined in
 /// the Schema package.
-/// <param name="ClassType_Class">
-/// Represents the concrete class type Class
-/// </param>
-/// <param name="ClassType_FeatureClass">
-/// Represents the concrete class type FeatureClass
-/// </param>
-/// <param name="ClassType_NetworkClass">
-/// Represents the concrete class type NetworkClass
-/// </param>
-/// <param name="ClassType_NetworkLayerClass">
-/// Represents the concrete class type NetworkLayerClass
-/// </param>
-/// <param name="ClassType_NetworkNodeClass">
-/// Represents the concrete class type NetworkNodeClass
-/// </param>
-/// <param name="ClassType_NetworkLinkClass">
-/// Represents the concrete class type NetworkLinkClass
-/// </param>
 public __value enum ClassType
 {
     /// Represents the concrete class type Class.

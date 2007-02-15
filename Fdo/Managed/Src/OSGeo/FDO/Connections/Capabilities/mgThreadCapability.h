@@ -20,26 +20,9 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 
+/// \ingroup (enums)
 /// \brief
 /// The ThreadCapability enumeration defines the threading capabilities of a feature provider.
-/// <param name="ThreadCapability_SingleThreaded">
-/// The feature provider is not thread safe.
-/// </param>
-/// <param name="ThreadCapability_PerConnectionThreaded">
-/// The feature provider supports a single thread per connection. Multiple concurrent threads
-/// cannot access the same connection object and only one command can be executing per
-/// connection. Multiple connections can be active concurrently as long as each is
-/// executing on its own thread.
-/// </param>
-/// <param name="ThreadCapability_PerCommandThreaded">
-/// The feature provider supports a single thread per command. Multiple concurrent threads
-/// cannot access the same command object, however multiple commands can be executing
-/// concurrently against a single connection.
-/// </param>
-/// <param name="ThreadCapability_MultiThreaded">
-/// The feature provider is fully multi-threaded. Concurrent thread access is safe
-/// for all objects.
-/// </param>
 public __value enum ThreadCapability
 {
     /// The feature provider is not thread safe.

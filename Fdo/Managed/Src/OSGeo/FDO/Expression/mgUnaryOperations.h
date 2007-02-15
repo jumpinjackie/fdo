@@ -20,14 +20,13 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 
+/// \ingroup (enums)
 /// \brief
 /// The UnaryOperations enumeration lists the unary expression operations available.
-/// <param name="UnaryOperations_Negate">
-/// Negate the expression
-/// </param>
 [System::FlagsAttribute]
 public __value enum UnaryOperations
 {
+    /// Negate the expression
 	UnaryOperations_Negate = FdoUnaryOperations_Negate
 };
 END_NAMESPACE_OSGEO_FDO_EXPRESSION

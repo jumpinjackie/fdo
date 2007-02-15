@@ -22,6 +22,8 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE
 
+/// \ingroup (interfaces)
+/// \interface IDataStorePropertyDictionary
 /// \brief
 /// The IDataStorePropertyDictionary exposes a dictionary style interface
 /// to the datastore properties. The properties required to create or destroy a datastore

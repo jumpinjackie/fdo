@@ -22,9 +22,13 @@
 #include "FDO\Commands\Locking\mgLockType.h"
 #include "FDO\Commands\Locking\mgLockStrategy.h"
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 public __gc __interface ILockConflictReader;
+/// \endcond
 
+/// \ingroup (interfaces)
+/// \interface IAcquireLock
 /// \brief
 /// The IAcquireLock interface locks feature instances of a given class 
 /// that match the specified criteria. Input to the acquire lock command

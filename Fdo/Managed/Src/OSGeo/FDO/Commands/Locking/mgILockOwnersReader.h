@@ -20,6 +20,8 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 
+/// \ingroup (interfaces)
+/// \interface ILockOwnersReader
 /// \brief
 /// The ILockOwnersReader interface provides forward-only, read-only functionality
 /// for identifying users. A connected user has status of lock owner even if he has

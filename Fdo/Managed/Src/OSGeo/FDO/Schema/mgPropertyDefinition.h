@@ -54,7 +54,9 @@ public:
     /// \return
     /// Returns true if this property is system generated, false otherwise.
     /// 
+    /// \remarks
     /// System properties are not written out to the XML schema file, which remains provider-portable.
+    ///
 	__property System::Boolean get_IsSystem();
 
     /// \brief

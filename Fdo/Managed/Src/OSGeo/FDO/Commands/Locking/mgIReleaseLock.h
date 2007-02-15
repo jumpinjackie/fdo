@@ -20,9 +20,13 @@
 
 #include "FDO\Commands\mgIFeatureCommand.h"
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 public __gc __interface ILockConflictReader;
+/// \endcond
 
+/// \ingroup (interfaces)
+/// \interface IReleaseLock
 /// \brief
 /// The IReleaseLock interface defines the ReleaseLock command, which releases
 /// locks from feature instances of a given class that match the specified

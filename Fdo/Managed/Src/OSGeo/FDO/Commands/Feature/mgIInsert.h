@@ -20,6 +20,7 @@
 
 #include "FDO\Commands\mgICommand.h"
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 public __gc class Identifier;
 END_NAMESPACE_OSGEO_FDO_EXPRESSION
@@ -31,7 +32,10 @@ END_NAMESPACE_OSGEO_FDO_COMMANDS
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 public __gc __interface IFeatureReader;
+/// \endcond
 
+/// \ingroup (interfaces)
+/// \interface IInsert
 /// \brief
 /// The IInsert interface defines the Insert command, which inserts a new
 /// instance of a given class. Input to the insert command includes the name of

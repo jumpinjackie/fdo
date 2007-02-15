@@ -20,9 +20,13 @@
 
 #include "FDO\Commands\mgICommand.h"
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 public __gc __interface ILongTransactionSetReader;
+/// \endcond
 
+/// \ingroup (interfaces)
+/// \interface IGetLongTransactionsInSet
 /// \brief
 /// The IGetLongTransactionsInSet interface defines the GetLongTransactionsInSet
 /// command, which allows the user to enumerate the list of versions

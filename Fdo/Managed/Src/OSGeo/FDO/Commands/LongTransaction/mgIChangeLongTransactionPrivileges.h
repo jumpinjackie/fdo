@@ -23,6 +23,8 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
+/// \ingroup (interfaces)
+/// \interface IChangeLongTransactionPrivileges
 /// \brief
 /// The IChangeLongTransactionPrivileges interface defines the
 /// ChangeLongTransactionPrivileges command, which grants or revokes long

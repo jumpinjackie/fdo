@@ -20,12 +20,16 @@
 
 #include "FDO\Commands\Locking\mgConflictType.h"
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS
 public __gc class PropertyValueCollection;
 END_NAMESPACE_OSGEO_FDO_COMMANDS
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
+/// \endcond
 
+/// \ingroup (interfaces)
+/// \interface ILockConflictReader
 /// \brief
 /// The ILockConflictReader interface provides forward only, read-only
 /// functionality for identifying features that have a lock conflict.

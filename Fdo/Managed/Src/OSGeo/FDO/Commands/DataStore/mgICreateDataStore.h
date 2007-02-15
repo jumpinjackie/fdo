@@ -20,9 +20,13 @@
 
 #include "FDO\Commands\mgICommand.h"
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE
 public __gc __interface IDataStorePropertyDictionary;
+/// \endcond
 
+/// \ingroup (interfaces)
+/// \interface ICreateDataStore
 /// \brief
 /// The ICreateDataStore interface defines the create datastore command,
 /// which can be used to create new provider specific datastores. The input is provided
