@@ -135,8 +135,12 @@ echo Creating SHP provider html and chm documentation
 if exist "Docs\HTML\SHP" rmdir /S /Q "Docs\HTML\SHP"
 if not exist "Docs\HTML\SHP" mkdir "Docs\HTML\SHP"
 if exist Docs\SHP_Provider_API.chm attrib -r Docs\SHP_Provider_API.chm
+if exist "Docs\HTML\SHP_managed" rmdir /S /Q "Docs\HTML\SHP_managed"
+if not exist "Docs\HTML\SHP_managed" mkdir "Docs\HTML\SHP_managed"
+if exist Docs\SHP_Provider_API_managed.chm attrib -r Docs\SHP_Provider_API_managed.chm
 pushd Docs\doc_src
 doxygen Doxyfile_SHP
+doxygen Doxyfile_SHP_managed
 popd
 
 :install_docs
@@ -144,6 +148,9 @@ if "%TYPEACTIONSHP%"=="build" goto end
 if exist "%FDODOCPATHSHP%\HTML\Providers\SHP" rmdir /S /Q "%FDODOCPATHSHP%\HTML\Providers\SHP"
 if exist Docs\HTML\SHP xcopy/CQEYI Docs\HTML\SHP\* "%FDODOCPATHSHP%\HTML\Providers\SHP"
 if exist "Docs\SHP_Provider_API.chm" copy /y "Docs\SHP_Provider_API.chm" "%FDODOCPATHSHP%"
+if exist "%FDODOCPATHSHP%\HTML\Providers\SHP_managed" rmdir /S /Q "%FDODOCPATHSHP%\HTML\Providers\SHP_managed"
+if exist Docs\HTML\SHP_managed xcopy/CQEYI Docs\HTML\SHP_managed\* "%FDODOCPATHSHP%\HTML\Providers\SHP_managed"
+if exist "Docs\SHP_Provider_API_managed.chm" copy /y "Docs\SHP_Provider_API_managed.chm" "%FDODOCPATHSHP%"
 
 :end
 echo End SHP %MSACTIONSHP%
