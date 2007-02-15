@@ -55,8 +55,8 @@ class FdoConnectionManager : public IConnectionManager
     /// 
     friend class FdoFeatureAccessManager;
 
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default instance of a FdoProviderRegistry object.
     FdoConnectionManager();
 

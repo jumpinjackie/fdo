@@ -43,8 +43,8 @@ class FdoProviderRegistry : public IProviderRegistry
 /// lifespan of FdoProviderRegistry.
     friend class FdoFeatureAccessManager;
 
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default instance of a FdoProviderRegistry object.
     FdoProviderRegistry();
 
