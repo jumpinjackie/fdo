@@ -37,8 +37,8 @@
 class FdoNetworkFeatureClass : public FdoFeatureClass
 {
 
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default instance of an FdoNetworkFeatureClass.
     /// To make a class of this type, you need to either create a FdoNetworkNodeFeatureClass
     /// or FdoNetworkLinkFeatureClass.
@@ -192,6 +192,7 @@ protected:
 /// \endcond
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoNetworkFeatureClassP is a FdoPtr on FdoNetworkFeatureClass, provided for convenience.
 typedef FdoPtr<FdoNetworkFeatureClass> FdoNetworkFeatureClassP;

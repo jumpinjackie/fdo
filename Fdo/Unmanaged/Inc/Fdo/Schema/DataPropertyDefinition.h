@@ -38,8 +38,8 @@ class FdoDataPropertyDefinition : public FdoPropertyDefinition
     template <class OBJ> friend class FdoSchemaCollection;
     friend class FdoObjectPropertyDefinition;
 
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default instance of an FdoDataPropertyDefinition.
     FdoDataPropertyDefinition();
 
@@ -333,6 +333,7 @@ protected:
 /// \endcond
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoDataPropertyP is a FdoPtr on FdoDataPropertyDefinition, provided for convenience.
 typedef FdoPtr<FdoDataPropertyDefinition> FdoDataPropertyP;

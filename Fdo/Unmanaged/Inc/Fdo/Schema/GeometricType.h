@@ -22,21 +22,11 @@
 #pragma once
 #endif
 
+
+/// \ingroup (enums)
 /// \brief
 /// The FdoGeometricType enumeration categorizes all of the geometry types
 /// supported by FDO based on their geometric dimensionality.
-/// <param name="FdoGeometricType_Point">
-/// Represents 0-dimensional geometric primitives, such as Points
-/// </param>
-/// <param name="FdoGeometricType_Curve">
-/// Represents 1 dimensional geometric primitives, such as Curves and Lines
-/// </param>
-/// <param name="FdoGeometricType_Surface">
-/// Represents 2 dimensional geometric primitives, such as Polygons
-/// </param>
-/// <param name="FdoGeometricType_Solid">
-/// Represents 3 dimensional geometric primitives, such as Cubes
-/// </param>
 enum FdoGeometricType
 {
     /// Represents 0-dimensional geometric primitives, such as Points.

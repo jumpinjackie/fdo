@@ -38,8 +38,8 @@ class FdoFeatureSchemaCollection :
     public FdoXmlDeserializable,
     public FdoXmlSerializable
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     FdoFeatureSchemaCollection()
 	{
 	}
@@ -119,7 +119,8 @@ public:
     /// 
 	FDO_API FdoPhysicalSchemaMappingCollection* GetXmlSchemaMappings();
 
-    /// \cond DOXYGEN-IGNORE
+/// \cond DOXYGEN-IGNORE
+
     /// FdoXmlDeserializable override for getting the SAX Context for reading 
     /// Feature Schemas. Not exposed via the FDO API.
     virtual FdoXmlSaxContext* GetSaxContext();
@@ -145,6 +146,7 @@ private:
 
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoFeatureSchemasP is a FdoPtr on FdoFeatureSchemaCollection, provided for convenience.
 typedef FdoPtr<FdoFeatureSchemaCollection> FdoFeatureSchemasP;

@@ -47,8 +47,8 @@ class FdoGeometricPropertyDefinition : public FdoPropertyDefinition
 {
     friend class FdoFeatureClass;
 
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default instance of an FdoGeometricPropertyDefinition.
     FdoGeometricPropertyDefinition();
 
@@ -325,6 +325,7 @@ protected:
 /// \endcond
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoGeometricPropertyP is a FdoPtr on FdoGeometricPropertyDefinition, provided for convenience.
 typedef FdoPtr<FdoGeometricPropertyDefinition> FdoGeometricPropertyP;

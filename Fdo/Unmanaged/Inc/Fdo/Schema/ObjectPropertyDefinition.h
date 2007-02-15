@@ -215,6 +215,7 @@ protected:
 /// \endcond
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoObjectPropertyP is a FdoPtr on FdoObjectPropertyDefinition, provided for convenience.
 typedef FdoPtr<FdoObjectPropertyDefinition> FdoObjectPropertyP;

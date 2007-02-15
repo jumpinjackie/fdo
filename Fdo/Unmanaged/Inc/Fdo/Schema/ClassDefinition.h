@@ -47,8 +47,8 @@ class FdoClassDefinition : public FdoSchemaElement
     friend class FdoRelation;
     friend class FdoObjectPropertyDefinition;
 
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default instance of a ClassDefinition.
     FdoClassDefinition();
 
@@ -227,6 +227,7 @@ public:
     FDO_API FdoUniqueConstraintCollection* GetUniqueConstraints();
 
 /// \cond DOXYGEN-IGNORE
+
     // Public non-API functions for XML and Schema Merge support
 
     // Update a class definition from the given definition.
@@ -318,6 +319,7 @@ protected:
 /// \endcond
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoClassDefinitionP is a FdoPtr on FdoClassDefinition, provided for convenience.
 typedef FdoPtr<FdoClassDefinition> FdoClassDefinitionP;

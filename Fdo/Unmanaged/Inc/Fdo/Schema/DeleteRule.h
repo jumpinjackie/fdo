@@ -22,19 +22,11 @@
 #pragma once
 #endif
 
+/// \ingroup (enums)
 /// \brief
 /// The FdoDeleteRule enumeration specifies the action to take when a delete
 /// operation is executed on the class instance at the other end of the
 /// relation.
-/// <param name="FdoDeleteRule_Cascade">
-/// Cascade the delete operation to class instances at this end of the relation
-/// </param>
-/// <param name="FdoDeleteRule_Prevent">
-/// Prevent the delete operation if there are class instances at this end of the relation
-/// </param>
-/// <param name="FdoDeleteRule_Break">
-/// Break the relationship by setting the identifying properties at this end to null values
-/// </param>
 enum FdoDeleteRule
 {
     /// Cascade the delete operation to class instances at this end of the relation.

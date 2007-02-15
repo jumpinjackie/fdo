@@ -39,8 +39,8 @@ class FdoRasterPropertyDefinition : public FdoPropertyDefinition
 
     friend class FdoFeatureClass;
 
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default instance of an FdoRasterPropertyDefinition.
     FdoRasterPropertyDefinition ();
 
@@ -214,7 +214,7 @@ public:
     /// \brief
     /// Sets a Spatial Context association for this raster property.
     /// 
-    /// \param value 
+    /// \param spatialContextName 
     /// Input the Spatial Context name to be set. 
     /// Defaults to the active Spatial Context.
     /// 
@@ -233,6 +233,7 @@ public:
 
 
 /// \cond DOXYGEN-IGNORE
+
     /// Public non-API functions for XML and Schema Merge support
 
     /// Update this property from the given property.
@@ -280,6 +281,7 @@ protected:
 /// \endcond
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoRasterPropertyP is a FdoPtr on FdoRasterPropertyDefinition, provided for convenience.
 typedef FdoPtr<FdoRasterPropertyDefinition> FdoRasterPropertyP;

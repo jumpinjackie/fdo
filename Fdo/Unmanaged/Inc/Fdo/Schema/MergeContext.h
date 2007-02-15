@@ -31,6 +31,7 @@
 #include <Fdo/Xml/Flags.h>
 
 /// \cond DOXYGEN-IGNORE
+
 /// \brief
 /// FdoSchemaMergeContext provides support for updating a set of feature schemas
 /// base on a second set of schemas. It's main purpose is to support the reading 

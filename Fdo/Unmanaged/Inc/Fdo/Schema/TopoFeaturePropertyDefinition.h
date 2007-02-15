@@ -60,6 +60,7 @@ public:
     );
 
 /// \cond DOXYGEN-IGNORE
+
     /// Public non-API functions for XML support
 
     /// Initialize the class from its XML attributes

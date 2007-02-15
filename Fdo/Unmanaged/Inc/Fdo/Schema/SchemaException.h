@@ -30,8 +30,8 @@
 /// environment-specific.
 class FdoSchemaException : public FdoException
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default instance of an FdoSchemaException.
     FdoSchemaException();
 
@@ -82,6 +82,7 @@ public:
     FDO_API static FdoSchemaException* Create(FdoString* name, FdoException* cause);
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoSchemaExceptionP is a FdoPtr on FdoSchemaException, provided for convenience.
 typedef FdoPtr<FdoSchemaException> FdoSchemaExceptionP;

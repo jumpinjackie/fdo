@@ -22,23 +22,9 @@
 #pragma once
 #endif
 
+/// \ingroup (enums)
 /// \brief
 /// The FdoPropertyType enumeration lists the possible types that a Property can be.
-/// <param name="FdoPropertyType_DataProperty">
-/// Represents a Data Property type
-/// </param>
-/// <param name="FdoPropertyType_ObjectProperty">
-/// Represents an Object Property type
-/// </param>
-/// <param name="FdoPropertyType_GeometricProperty">
-/// Represents a Geometric Property type
-/// </param>
-/// <param name="FdoPropertyType_AssociationProperty">
-/// Represents an Association Property type
-/// </param>
-/// <param name="FdoPropertyType_RasterProperty">
-/// Represents a Raster (image) Property type
-/// </param>
 enum FdoPropertyType
 {
     /// Represents a Data Property type.

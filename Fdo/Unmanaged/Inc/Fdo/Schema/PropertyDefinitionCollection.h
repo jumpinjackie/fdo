@@ -88,6 +88,7 @@ public:
     FDO_API virtual void RemoveAt(FdoInt32 index);
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoPropertiesP is a FdoPtr on FdoPropertyDefinitionCollection, provided for convenience.
 typedef FdoPtr<FdoPropertyDefinitionCollection> FdoPropertiesP;

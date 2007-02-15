@@ -116,6 +116,7 @@ public:
     FDO_API virtual void Insert(FdoInt32 index, FdoDataPropertyDefinition* value);
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoDataPropertiesP is a FdoPtr on FdoDataPropertyDefinitionCollection, provided for convenience.
 typedef FdoPtr<FdoDataPropertyDefinitionCollection> FdoDataPropertiesP;

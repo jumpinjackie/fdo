@@ -22,15 +22,10 @@
 #pragma once
 #endif
 
+/// \ingroup (enums)
 /// \brief
 /// The FdoOrderType enumeration list contains two values to indicate if the
 /// object collection is to be ordered in ascending or descending fashion.
-/// <param name="FdoOrderType_Ascending">
-/// Specifies the collection is to be ordered from the smallest value to the largest value
-/// </param>
-/// <param name="FdoOrderType_Descending">
-/// Specifies the collection is to be ordered from the largest value to the smallest value
-/// </param>
 enum FdoOrderType
 {
     /// Specifies the collection is to be ordered from the smallest value to the largest value.

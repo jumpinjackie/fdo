@@ -55,6 +55,9 @@ public:
     FDO_API static FdoUniqueConstraintCollection* Create();
 };
 
+/// \ingroup (typedefs)
+/// \brief
+/// FdoUniqueConstraintCollectionP is a FdoPtr on FdoUniqueConstraintCollection, provided for convenience.
 typedef FdoPtr<FdoUniqueConstraintCollection> FdoUniqueConstraintCollectionP;
 
 #endif

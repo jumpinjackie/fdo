@@ -23,23 +23,9 @@
 #pragma once
 #endif
 
+/// \ingroup (enums)
 /// \brief
 /// The FdoSchemaElementState enumeration defines the current state of the schema element
-/// <param name="FdoSchemaElementState_Added">
-/// Indicates the schema element has been added
-/// </param>
-/// <param name="FdoSchemaElementState_Deleted">
-/// Indicates the schema element is marked for deletion
-/// </param>
-/// <param name="FdoSchemaElementState_Detached">
-/// Indicates the schema element is not associated with an FdoFeatureSchema
-/// </param>
-/// <param name="FdoSchemaElementState_Modified">
-/// Indicates the schema element has been modified in some way
-/// </param>
-/// <param name="FdoSchemaElementState_Unchanged">
-/// Indicates the schema element has not been changed
-/// </param>
 enum FdoSchemaElementState
 {
     /// Indicates the schema element has been added.

@@ -45,8 +45,8 @@ class FdoFeatureSchema :
     public FdoSchemaElement,
     public FdoXmlSerializable
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default empty instance of an FdoFeatureSchema.
     FdoFeatureSchema();
 
@@ -135,6 +135,7 @@ public:
     FDO_API virtual FdoXmlReader* GetFromInternalStylesheet();
 
 /// \cond DOXYGEN-IGNORE
+
     /// Public non-API functions for XML serialization and Schema Merge
 
     /// Merge the given schema into this schema. An additive merge
@@ -169,6 +170,7 @@ private:
     FdoClassCollection*         m_classes;
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoFeatureSchemaP is a FdoPtr on FdoFeatureSchema, provided for convenience.
 typedef FdoPtr<FdoFeatureSchema> FdoFeatureSchemaP;

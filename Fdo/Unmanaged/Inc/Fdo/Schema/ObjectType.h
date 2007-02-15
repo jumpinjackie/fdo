@@ -22,18 +22,10 @@
 #pragma once
 #endif
 
+/// \ingroup (enums)
 /// \brief
 /// The FdoObjectType enumeration defines whether an object property is a single 
 /// value, a collection, or an ordered collection.
-/// <param name="FdoObjectType_Value">
-/// Represents a simple value property
-/// </param>
-/// <param name="FdoObjectType_Collection">
-/// Represents a property that is a collection of values
-/// </param>
-/// <param name="FdoObjectType_OrderedCollection">
-/// Represents a property that is an ordered collection of values
-/// </param>
 enum FdoObjectType
 {
     /// Represents a simple value property.

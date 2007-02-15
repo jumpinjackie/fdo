@@ -345,6 +345,7 @@ protected:
 /// \endcond
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoAssociationPropertyP is a FdoPtr on FdoAssociationPropertyDefinition, provided for convenience.
 typedef FdoPtr<FdoAssociationPropertyDefinition> FdoAssociationPropertyP;

@@ -38,8 +38,8 @@ class FdoSchemaAttributeDictionary :
 {
     friend class FdoSchemaElement;
 
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     FdoSchemaAttributeDictionary()
 	{
 	}	
@@ -141,6 +141,7 @@ public:
     FDO_API void Clear();
 
 /// \cond DOXYGEN-IGNORE
+
     /// Public non-API functions for XML support
 
     /// Handle the start of a dictionary element
@@ -195,6 +196,7 @@ protected:
 /// \endcond
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoSADP is a FdoPtr on FdoSchemaAttributeDictionary, provided for convenience.
 typedef FdoPtr<FdoSchemaAttributeDictionary> FdoSADP;

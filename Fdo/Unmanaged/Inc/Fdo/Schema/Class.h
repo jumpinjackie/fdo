@@ -35,8 +35,8 @@
 /// commands. The Class type does not pre-define any base properties.
 class FdoClass : public FdoClassDefinition
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default instance of an FdoClass.
     FdoClass();
 
@@ -79,6 +79,7 @@ public:
     FDO_API virtual FdoClassType GetClassType();
 
 /// \cond DOXYGEN-IGNORE
+
     /// Public non-API functions for XML support
 
     /// Initialize this class from its XML attributes
@@ -89,6 +90,7 @@ public:
 /// \endcond
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoClassP is a FdoPtr on FdoClass, provided for convenience.
 typedef FdoPtr<FdoClass> FdoClassP;
