@@ -31,8 +31,8 @@
 /// The FdoDateTimeValue class derives from FdoDataValue and represents a date or time.
 class FdoDateTimeValue : public FdoDataValue
 {
+/// \cond DOXYGEN-IGNORE
 protected:
-// // \cond DOXYGEN-IGNORE
     /// \brief
     /// Constructs a default instance of an FdoDateTimeValue with a
     /// value of null.
@@ -63,7 +63,7 @@ protected:
     virtual ~FdoDateTimeValue();
 
     virtual void Dispose();
-// // \endcond
+    /// \endcond
 
 public:
     /// \brief
@@ -143,14 +143,14 @@ public:
         return m_data;
     }
 
+/// \cond DOXYGEN-IGNORE
 protected:
     // See FdoDataValue::DoCompare()
     virtual FdoCompareType DoCompare( FdoDataValue* other );
 
-/// \cond DOXYGEN-IGNORE
     FdoDateTime m_data;
-};
 /// \endcond
+};
 #endif
 
 

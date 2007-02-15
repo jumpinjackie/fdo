@@ -61,8 +61,8 @@ public:
     FDO_API FdoString* ToString();
 
 
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// \brief
     /// Constructs a default instance of an FdoBLOBValue with a value of null.
     /// \return
@@ -88,9 +88,9 @@ protected:
     virtual ~FdoBLOBValue();
 
     virtual void Dispose();
+/// \endcond
 
 };
-/// \endcond
 #endif
 
 

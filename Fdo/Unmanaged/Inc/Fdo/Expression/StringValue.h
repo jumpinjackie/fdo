@@ -31,8 +31,8 @@
 /// The FdoStringValue class derives from FdoDataValue and represents a literal string.
 class FdoStringValue : public FdoDataValue
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// \brief
     /// Constructs a default instance of an FdoStringValue with a
     /// value of null.

@@ -37,8 +37,8 @@
 /// property name "Address.City".
 class FdoIdentifier : public FdoExpression
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default instance of an identifier.
     FdoIdentifier();
 

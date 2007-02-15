@@ -32,8 +32,8 @@
 /// arithmetic expressions.
 class FdoUnaryExpression : public FdoExpression
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default instance of an FdoUnaryExpression.
     FdoUnaryExpression();
 

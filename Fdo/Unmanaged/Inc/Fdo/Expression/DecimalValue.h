@@ -31,13 +31,13 @@
 /// The FdoDecimalValue class derives from FdoDataValue and represents a decimal value.
 class FdoDecimalValue : public FdoDataValue
 {
+/// \cond DOXYGEN-IGNORE
     friend class FdoByteValue;
     friend class FdoInt16Value;
     friend class FdoInt32Value;
     friend class FdoInt64Value;
     friend class FdoSingleValue;
 protected:
-/// \cond DOXYGEN-IGNORE
     /// \brief
     /// Constructs a default instance of an FdoDecimalValue with a
     /// value of null.
@@ -145,8 +145,7 @@ public:
         return m_data;
     }
 
-
-
+/// \cond DOXYGEN-IGNORE
 protected:
     /// \brief
     /// Constructs an instance of an FdoDecimalValue from another FdoDataValue.
@@ -181,10 +180,9 @@ protected:
     // See FdoDataValue::DoCompare()
     virtual FdoCompareType DoCompare( FdoDataValue* other );
 
-/// \cond DOXYGEN-IGNORE
     double  m_data;
-};
 /// \endcond
+};
 #endif
 
 

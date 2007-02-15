@@ -32,6 +32,7 @@
 /// value such as a string or a number.
 class FdoDataValue : public FdoLiteralValue
 {
+/// \cond DOXYGEN-IGNORE
     friend class FdoInternalDataValue;
     friend class FdoByteValue;
     friend class FdoDecimalValue;
@@ -41,7 +42,6 @@ class FdoDataValue : public FdoLiteralValue
     friend class FdoInt64Value;
     friend class FdoSingleValue;
 protected:
-/// \cond DOXYGEN-IGNORE
     /// \brief
     ///  Constructs a default instance of an FdoDataValue with data type string and a
     /// value of null.
@@ -223,6 +223,7 @@ public:
     // Get the value as an XML format string.
     FdoString* GetXmlValue();
 
+/// \cond DOXYGEN-IGNORE
 protected:
     /// \brief
     /// Compares this data value with another data value
@@ -269,12 +270,12 @@ protected:
     /// 
     virtual FdoCompareType DoCompare( FdoDataValue* other );
 
-/// \cond DOXYGEN-IGNORE
     bool        m_isNull;
     FdoStringP  m_XmlValue; // Manages GetXmlValue return string when datatype is datetime.
-};
 /// \endcond
+};
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoDataValueP is a FdoPtr on FdoDataValue, provided for convenience.
 typedef FdoPtr<FdoDataValue> FdoDataValueP;

@@ -31,9 +31,9 @@
 /// The FdoInt16Value class derives from FdoDataValue and represents a 16-bit signed integer value.
 class FdoInt16Value : public FdoDataValue
 {
+/// \cond DOXYGEN-IGNORE
     friend class FdoByteValue;
 protected:
-/// \cond DOXYGEN-IGNORE
     /// \brief
     /// Constructs a default instance of an FdoInt16Value with a
     /// value of null.
@@ -141,6 +141,7 @@ public:
         return m_data;
     }
 
+/// \cond DOXYGEN-IGNORE
 protected:
     /// \brief
     /// Constructs an instance of an FdoInt16Value from another FdoDataValue.
@@ -173,6 +174,7 @@ protected:
     virtual FdoCompareType DoCompare( FdoDataValue* other );
 
     FdoInt16    m_data;
+/// \endcond
 };
 #endif
 

@@ -31,11 +31,11 @@
 /// The FdoInt64Value class derives from FdoDataValue and represents a 64-bit signed integer value.
 class FdoInt64Value : public FdoDataValue
 {
+/// \cond DOXYGEN-IGNORE
     friend class FdoByteValue;
     friend class FdoInt16Value;
     friend class FdoInt32Value;
 protected:
-/// \cond DOXYGEN-IGNORE
     /// \brief
     /// Constructs a default instance of an FdoInt64Value with a
     /// value of null.
@@ -140,6 +140,7 @@ public:
         return m_data;
     }
 
+/// \cond DOXYGEN-IGNORE
 protected:
     /// \brief
     /// Constructs an instance of an FdoInt64Value from another FdoDataValue.
@@ -174,6 +175,7 @@ protected:
     virtual FdoCompareType DoCompare( FdoDataValue* other );
 
     FdoInt64    m_data;
+/// \endcond
 };
 #endif
 

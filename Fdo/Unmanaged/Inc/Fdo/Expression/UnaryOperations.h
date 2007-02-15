@@ -23,13 +23,13 @@
 #pragma once
 #endif
 
+
+/// \ingroup (enums)
 /// \brief
 /// The FdoUnaryOperations enumeration lists the unary expression operations available.
-/// <param name="FdoUnaryOperations_Negate">
-/// Negate the expression
-/// </param>
 enum FdoUnaryOperations
 {
+    /// Negate the expression
     FdoUnaryOperations_Negate
 
 };

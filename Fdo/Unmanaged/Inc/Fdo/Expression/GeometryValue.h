@@ -30,8 +30,8 @@
 /// The FdoGeometryValue class derives from FdoLiteralValue and represents a geometric value.
 class FdoGeometryValue : public FdoLiteralValue
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default instance of an FdoGeometryValue with a value of null.
     FdoGeometryValue();
 
@@ -122,8 +122,10 @@ public:
     /// 
     FDO_API FdoString* ToString();
 
+/// \cond DOXYGEN-IGNORE
 protected:
     FdoByteArray*    m_geometry;
+/// \endcond
 };
 #endif
 

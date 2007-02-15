@@ -36,8 +36,8 @@
 /// FdoICommand interface and FdoParameterValue.
 class FdoParameter : public FdoValueExpression
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default instance of a parameter.
     FdoParameter();
 
