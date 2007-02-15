@@ -22,6 +22,7 @@
 
 class FdoFdoICommand;
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS
 public __gc __interface IConnection;
 public __gc __interface ITransaction;
@@ -29,6 +30,7 @@ END_NAMESPACE_OSGEO_FDO_CONNECTIONS
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS
 public __gc class ParameterValueCollection;
+/// \endcond
 
 /// \brief
 /// The ICommandImp class is a concrete instantiation of interface ICommand. 

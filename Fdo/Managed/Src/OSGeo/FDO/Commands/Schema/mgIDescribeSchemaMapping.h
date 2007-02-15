@@ -23,6 +23,8 @@
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
 public __gc class PhysicalSchemaMappingCollection;
 
+/// \ingroup (interfaces)
+/// \interface IDescribeSchemaMapping
 /// \brief
 /// The IDescribeSchemaMapping interface defines the DescribeSchemaMapping command, which
 /// describes the logical to physical schema mappings for feature schemas 

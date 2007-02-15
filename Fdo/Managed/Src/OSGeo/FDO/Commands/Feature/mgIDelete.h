@@ -20,12 +20,16 @@
 
 #include "FDO\Commands\mgIFeatureCommand.h"
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 public __gc __interface ILockConflictReader;
 END_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
+/// \endcond
 
+/// \ingroup (interfaces)
+/// \interface IDelete
 /// \brief
 /// The IDelete interface defines the FDO Delete command, which deletes instances of
 /// a given class that match the specified criteria. Input to the delete command

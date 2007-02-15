@@ -23,8 +23,10 @@
 
 class FdoICreateDataStore;
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE
 public __gc __interface IDataStorePropertyDictionary;
+/// \endcond
 
 /// \brief
 /// The ICreateDataStoreImp class is a concrete implementation of interface ICreateDataStore.

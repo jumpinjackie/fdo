@@ -20,52 +20,9 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_FILTER
 
+/// \ingroup (enums)
 /// \brief
 /// The SpatialOperations enumeration lists the spatial conditions available.
-/// <param name="SpatialOperations_Contains">
-/// Test to see if the geometric property value spatially contains the
-/// literal geometric value
-/// </param>
-/// <param name="SpatialOperations_Crosses">
-/// Test to see if the geometric property value spatially crosses the given
-/// geometry
-/// </param>
-/// <param name="SpatialOperations_Disjoint">
-/// Test to see if the geometric property value spatially is spatially
-/// disjoint from the given geometry
-/// </param>
-/// <param name="SpatialOperations_Equals">
-/// Test to see if the geometric property value is spatially equal to the
-/// given geometry
-/// </param>
-/// <param name="SpatialOperations_Intersects">
-/// Test to see if the geometric property value spatially intersects the
-/// given geometry
-/// </param>
-/// <param name="SpatialOperations_Overlaps">
-/// Test to see if the geometric property value spatially overlaps the given
-/// geometry
-/// </param>
-/// <param name="SpatialOperations_Touches">
-/// Test to see if the geometric property value spatially touches the given
-/// geometry
-/// </param>
-/// <param name="SpatialOperations_Within">
-/// Test to see if the geometric property value is spatially within the
-/// given geometry
-/// </param>
-/// <param name="SpatialOperations_CoveredBy">
-/// Test to see if the geometric property value is covered by the interior
-/// and boundary of the given geometry
-/// </param>
-/// <param name="SpatialOperations_Inside">
-/// Test to see if the geometric property value is inside the interior
-/// of the given geometry, not touching the boundary
-/// </param>
-/// <param name="SpatialOperations_EnvelopeIntersects">
-/// Test to see if the envelope of the referenced geometric property value intersects the
-/// given geometry
-/// </param>
 [System::FlagsAttribute]
 public __value enum SpatialOperations
 {

@@ -22,9 +22,11 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
+/// \ingroup (interfaces)
+/// \interface IActivateLongTransactionCheckpoint
 /// \brief
 /// The IActivateLongTransactionCheckpoint interface defines the
-/// IActivateLongTransactionCheckpointImp command, which allows the user to
+/// ActivateLongTransactionCheckpoint command, which allows the user to
 /// activate the named checkpoint for the given long transaction. As a result, 
 /// the long transaction that owns the checkpoint will be activated as well if
 /// it is not already the active long transaction. The user requires the access

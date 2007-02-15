@@ -22,6 +22,8 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT
 
+/// \ingroup (interfaces)
+/// \interface IDestroySpatialContext
 /// \brief
 /// The IDestroySpatialContext interface defines the DestroySpatialContext
 /// command, which destroys an existing spatial context. Input to the command is

@@ -20,17 +20,10 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT
 
+/// \ingroup (enums)
 /// \brief
 /// The SpatialContextExtentType enumeration defines how the extent of
 /// a context should be handled by the provider.
-/// <param name="SpatialContextExtentType_Static">
-/// The spatial extent of the context is static and must be specified
-/// when the context is created.
-/// </param>
-/// <param name="SpatialContextExtentType_Dynamic">
-/// The spatial extent of the context is dynamic and changes as data is
-/// added and removed from the context.
-/// </param>
 public __value enum SpatialContextExtentType
 {
     /// The spatial extent of the context is static and must be specified

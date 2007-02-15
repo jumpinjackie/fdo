@@ -18,12 +18,16 @@
 
 #pragma once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS
 public __gc __interface IConnection;
 END_NAMESPACE_OSGEO_FDO_CONNECTIONS
 
 BEGIN_NAMESPACE_OSGEO_FDO
+/// \endcond
 
+/// \ingroup (interfaces)
+/// \interface IConnectionManager
 /// \brief
 /// The IConnectionManager interface supports dynamic creation of connection objects 
 /// given a provider name.

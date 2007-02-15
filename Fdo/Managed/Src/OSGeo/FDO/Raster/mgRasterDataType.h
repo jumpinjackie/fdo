@@ -20,33 +20,24 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_RASTER
 
+/// \ingroup (enums)
 /// \brief
 /// The RasterDataType enumeration specifies the type of data stored in the Raster Image.
-/// <param name="RasterDataType_Unknown">
-/// Data is organized in an unknown or provider specific manner.
-/// </param>
-/// <param name="RasterDataType_UnsignedInteger">
-/// Data is organized as Unsigned Integers.
-/// </param>
-/// <param name="RasterDataType_Integer">
-/// Data is organized as Signed Integers.
-/// </param>
-/// <param name="RasterDataType_Float">
-/// Data is organized as Floats.
-/// </param>
-/// <param name="RasterDataType_Double">
-/// Data is organized as Doubles.
-/// </param>
 public __value enum RasterDataType
 {
+    /// Data is organized in an unknown or provider specific manner.
     RasterDataType_Unknown = FdoRasterDataType_Unknown,
 
+    /// Data is organized as Unsigned Integers.
     RasterDataType_UnsignedInteger = FdoRasterDataType_UnsignedInteger,
 
+    /// Data is organized as Signed Integers.
     RasterDataType_Integer = FdoRasterDataType_Integer,
 
+    /// Data is organized as Floats.
     RasterDataType_Float = FdoRasterDataType_Float,
 
+    /// Data is organized as Doubles.
     RasterDataType_Double = FdoRasterDataType_Double
 };
 

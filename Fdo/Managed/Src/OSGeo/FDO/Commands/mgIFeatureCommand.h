@@ -30,6 +30,8 @@ END_NAMESPACE_OSGEO_FDO_FILTER
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS
 
+/// \ingroup (interfaces)
+/// \interface IFeatureCommand
 /// \brief
 /// The IFeatureCommand interface defines the behavior common 
 /// to all commands that operate on feature instances. The features to 

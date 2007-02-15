@@ -22,6 +22,8 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE
 
+/// \ingroup (interfaces)
+/// \interface IDestroyMeasureUnit
 /// \brief
 /// The IDestroyMeasureUnit interface defines the DestroyMeasureUnit command,
 /// which deletes a measurement unit. Input to the command is simply the

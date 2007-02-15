@@ -20,23 +20,18 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
+/// \ingroup (enums)
 /// \brief
 /// The LongTransactionPrivilegeOperations enumeration defines the list
 /// of available operations that can be performed by the
 /// ChangeLongTransactionPrivileges command.
-/// <param name="LongTransactionPrivilegeOperations_Grant">
-/// Indicates the user is to be granted the specified privileges.
-/// </param>
-/// <param name="LongTransactionPrivilegeOperations_Revoke">
-/// Indicates the specified privileges are to be revoked from the user.
-/// </param>
 [System::FlagsAttribute]
 public __value enum LongTransactionPrivilegeOperations
 {
-    /// Grant the user the specified privileges.
+    /// Indicates the user is to be granted the specified privileges.
 	LongTransactionPrivilegeOperations_Grant = FdoLongTransactionPrivilegeOperations_Grant,
 
-    /// Revoke the specified privileges from the user.
+    /// Indicates the specified privileges are to be revoked from the user.
 	LongTransactionPrivilegeOperations_Revoke = FdoLongTransactionPrivilegeOperations_Revoke
 };
 

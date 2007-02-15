@@ -21,6 +21,8 @@
 BEGIN_NAMESPACE_OSGEO_FDO_XML
 public __gc class XmlFlags;
 
+/// \ingroup (interfaces)
+/// \interface IXmlDeserializable
 /// \brief
 /// XmlDeserializable provides the ability to deserialize an FDO object 
 /// from an XML Document. Deserialization support can be added to any class by basing

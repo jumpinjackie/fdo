@@ -25,13 +25,14 @@
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 public __value enum ClassType;
 public __value enum DataType;
-// public __value enum SchemaElementNameType;
 END_NAMESPACE_OSGEO_FDO_SCHEMA
 
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 
 public __value enum SchemaElementNameType;
 
+/// \ingroup (interfaces)
+/// \interface ISchemaCapabilities
 /// \brief
 /// The ISchemaCapbilities interface declares the feature provider's level 
 /// of support for the Feature Schema.

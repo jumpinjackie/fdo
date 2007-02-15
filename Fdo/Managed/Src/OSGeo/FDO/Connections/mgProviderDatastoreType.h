@@ -19,22 +19,10 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS
 
+/// \ingroup (enums)
 /// \brief
 /// The ProviderDatastoreType enumeration lists all of the concrete provider
 /// types supported by FDO.
-/// <param name="ProviderDatastoreType_DatabaseServer">
-/// Indicates that the provider is a database-based provider.
-/// </param>
-/// <param name="ProviderDatastoreType_File">
-/// Indicates that the provider is a file-based provider.
-/// </param>
-/// <param name="ProviderDatastoreType_WebServer">
-/// Indicates that the provider is a web-based provider.
-/// </param>
-/// <param name="ProviderDatastoreType_Unknown">
-/// Indicates that the provider is of an unknown provider type.
-/// </param>
-
 public __value enum ProviderDatastoreType
 {
 
@@ -50,6 +38,6 @@ public __value enum ProviderDatastoreType
     /// Indicates that the provider is of an unknown provider type.
     ProviderDatastoreType_Unknown = FdoProviderDatastoreType_Unknown
 
-};  //  ProviderDatastoreType
+};  
 
 END_NAMESPACE_OSGEO_FDO_CONNECTIONS

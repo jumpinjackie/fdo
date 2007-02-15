@@ -20,10 +20,13 @@
 
 #include "FDO\Connections\mgProviderDatastoreType.h"
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS
-
 public __gc __interface IConnectionPropertyDictionary;
+/// \endcond
 
+/// \ingroup (interfaces)
+/// \interface IConnectionInfo
 /// \brief
 /// The IConnectionInfo interface exposes information about the feature provider
 /// and provides access to the IConnectionPropertyDictionary interface.

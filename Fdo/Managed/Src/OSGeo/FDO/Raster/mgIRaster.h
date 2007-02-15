@@ -18,6 +18,7 @@
 
 #pragma once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_COMMON
 public __gc __interface IStreamReader;
 END_NAMESPACE_OSGEO_COMMON
@@ -29,7 +30,10 @@ END_NAMESPACE_OSGEO_FDO_EXPRESSION
 BEGIN_NAMESPACE_OSGEO_FDO_RASTER
 public __gc class RasterDataModel;
 public __gc __interface IRasterPropertyDictionary;
+/// \endcond
 
+/// \ingroup (interfaces)
+/// \interface IRaster
 /// \brief
 /// The IRaster interface specifies the data type and organization
 /// of raster data retrieved and stored. Using this class and the image

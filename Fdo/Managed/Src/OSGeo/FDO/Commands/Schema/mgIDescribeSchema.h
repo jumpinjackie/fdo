@@ -26,6 +26,8 @@ END_NAMESPACE_OSGEO_FDO_SCHEMA
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
 
+/// \ingroup (interfaces)
+/// \interface IDescribeSchema
 /// \brief
 /// The IDescribeSchema interface defines the DescribeSchema command, which
 /// describes the feature schemas available from the connection. The DescribeSchema

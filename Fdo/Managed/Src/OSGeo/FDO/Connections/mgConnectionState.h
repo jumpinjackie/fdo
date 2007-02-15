@@ -20,22 +20,9 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS
 
+/// \ingroup (enums)
 /// \brief
 /// The ConnectionState enumeration indicates the current state of the connection
-/// <param name="ConnectionState_Busy">
-/// The connection is busy executing one or more commands. Executing another
-/// command while the connection is busy will result in an exception.
-/// </param>
-/// <param name="ConnectionState_Closed">
-/// The connection is closed.
-/// </param>
-/// <param name="ConnectionState_Open">
-/// The connection is open.
-/// </param>
-/// <param name="ConnectionState_Pending">
-/// The connection is pending. this is used to indicate that the application has 
-/// issued an Open request, but the open is not completed because the application needs to include additional connection property values.
-/// </param>
 public __value enum ConnectionState
 {
     /// The connection is busy executing one or more commands. Executing another
@@ -48,7 +35,8 @@ public __value enum ConnectionState
     /// The connection is open.
 	ConnectionState_Open = FdoConnectionState_Open,
 
-    /// The connection is open.
+    /// The connection is pending. this is used to indicate that the application has 
+    /// issued an Open request, but the open is not completed because the application needs to include additional connection property values.
 	ConnectionState_Pending = FdoConnectionState_Pending
 };
 END_NAMESPACE_OSGEO_FDO_CONNECTIONS

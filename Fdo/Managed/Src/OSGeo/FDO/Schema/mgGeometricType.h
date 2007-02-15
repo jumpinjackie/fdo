@@ -20,21 +20,10 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 
+/// \ingroup (enums)
 /// \brief
 /// The GeometricType enumeration categorizes all of the geometry types
 /// supported by FDO based on their geometric dimensionality.
-/// <param name="GeometricType_Point">
-/// Represents 0-dimensional geometric primitives, such as Points
-/// </param>
-/// <param name="GeometricType_Curve">
-/// Represents 1 dimensional geometric primitives, such as Curves and Lines
-/// </param>
-/// <param name="GeometricType_Surface">
-/// Represents 2 dimensional geometric primitives, such as Polygons
-/// </param>
-/// <param name="GeometricType_Solid">
-/// Represents 3 dimensional geometric primitives, such as Cubes
-/// </param>
 public __value enum GeometricType
 {
     /// Represents 0-dimensional geometric primitives, such as Points.

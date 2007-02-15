@@ -23,6 +23,8 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT
 
+/// \ingroup (interfaces)
+/// \interface ICreateSpatialContext
 /// \brief
 /// The ICreateSpatialContext interface defines the CreateSpatialContext
 /// command, which creates a new spatial context. Input to the command includes

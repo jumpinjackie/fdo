@@ -20,29 +20,26 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 
+/// \ingroup (enums)
 /// \brief
 /// The ConflictType enumeration defines conflict types required to
 /// identify the lock type of a conflict reported with the lock conflict reader.
-/// <param name="ConflictType_LockConflict">
-/// Identifies a reported conflict
-/// in the lock conflict reader as a lock conflict. A conflict represents a
-/// lock conflict if an object the user requests to be locked is already locked
-/// by a different user.
-/// </param>
-/// <param name="ConflictType_VersionConflict">
-/// Identifies a reported conflict
-/// in the lock conflict reader as a version conflict. A conflict represents a
-/// version conflict if an object the user requests to be locked has already been
-/// versioned.
-/// </param>
-/// <param name="ConflictType_Unsupported">
-/// Indicates that an unsupported or
-/// unknown conflict type has been encountered.
-/// </param>
 public __value enum ConflictType
 {
+    /// Identifies a reported conflict
+    /// in the lock conflict reader as a lock conflict. A conflict represents a
+    /// lock conflict if an object the user requests to be locked is already locked
+    /// by a different user.
 	ConflictType_LockConflict = FdoConflictType_LockConflict,
+
+    /// Identifies a reported conflict
+    /// in the lock conflict reader as a version conflict. A conflict represents a
+    /// version conflict if an object the user requests to be locked has already been
+    /// versioned.
 	ConflictType_VersionConflict = FdoConflictType_VersionConflict,
+
+    /// Indicates that an unsupported or
+    /// unknown conflict type has been encountered.
 	ConflictType_Unsupported = FdoConflictType_Unsupported
 };
 

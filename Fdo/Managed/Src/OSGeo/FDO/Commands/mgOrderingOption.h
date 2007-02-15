@@ -20,15 +20,10 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS
 
+/// \ingroup (enums)
 /// \brief
 /// The OrderingOption enumeration defines the list acceptable values that 
 /// can be specified as order by clause to the select and select aggregate commands.
-/// <param name="OrderingOption_Ascending">
-/// Used for ascending option
-/// </param>
-/// <param name="OrderingOption_Descending">
-/// Used for descending option
-/// </param>
 public __value enum OrderingOption{
     /// Used for ascending option.
 	OrderingOption_Ascending = FdoOrderingOption_Ascending,

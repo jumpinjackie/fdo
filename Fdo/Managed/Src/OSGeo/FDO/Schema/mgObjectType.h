@@ -20,18 +20,10 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 
+/// \ingroup (enums)
 /// \brief
 /// The ObjectType enumeration defines whether an object property is a single 
 /// value, a collection, or an ordered collection.
-/// <param name="ObjectType_Value">
-/// Represents a simple value property
-/// </param>
-/// <param name="ObjectType_Collection">
-/// Represents a property that is a collection of values
-/// </param>
-/// <param name="ObjectType_OrderedCollection">
-/// Represents a property that is an ordered collection of values
-/// </param>
 public __value enum ObjectType
 {
     /// Represents a simple value property.

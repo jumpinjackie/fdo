@@ -27,6 +27,8 @@ END_NAMESPACE_OSGEO_FDO_SCHEMA
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
 public __gc class PhysicalSchemaMapping;
 
+/// \ingroup (interfaces)
+/// \interface IApplySchema
 /// \brief
 /// The IApplySchema interface defines the ApplySchema command, which creates or
 /// updates a feature schema within the DataStore. Input to the ApplySchema

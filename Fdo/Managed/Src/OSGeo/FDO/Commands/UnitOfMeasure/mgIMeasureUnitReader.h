@@ -22,6 +22,8 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE
 
+/// \ingroup (interfaces)
+/// \interface IMeasureUnitReader
 /// \brief
 /// The IMeasureUnitReader interface provides forward-only, read-only
 /// functionality for enumerating measurement units.  A reference to an

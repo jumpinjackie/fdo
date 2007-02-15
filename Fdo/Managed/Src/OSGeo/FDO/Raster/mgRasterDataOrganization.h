@@ -14,9 +14,12 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
+
 #pragma once
 
 BEGIN_NAMESPACE_OSGEO_FDO_RASTER
+
+/// \ingroup (enums)
 /// \brief
 /// The RasterDataOrganization enumeration specifies the way
 /// pixel data is interleaved. Data is stored/retrieved in left to right,
@@ -29,18 +32,8 @@ BEGIN_NAMESPACE_OSGEO_FDO_RASTER
 /// followed by the same number of green bytes, followed by the same
 /// number of blue bytes. This organization dependant storage should be
 /// considered when 'skipping' to the middle of an image.
-/// <param name="RasterDataOrganization_Pixel">
-/// Data is interleaved by pixel, with all data for a pixel contiguous in memory.
-/// </param>
-/// <param name="RasterDataOrganization_Row">
-/// Data is interleaved by row, with all data of a channel for one row contiguous in memory, followed by a rows worth of the next channel, etc.
-/// </param>
-/// <param name="RasterDataOrganization_Image">
-/// Data is interleaved by image, with all data of a channel for a complete image contiguous in memory, followed by a complete image of the next channel, etc.
-/// </param>
 public __value enum RasterDataOrganization
 {
-
     /// Data is interleaved by pixel, with all data for a pixel contiguous in memory.
 	RasterDataOrganization_Pixel = FdoRasterDataOrganization_Pixel,
 

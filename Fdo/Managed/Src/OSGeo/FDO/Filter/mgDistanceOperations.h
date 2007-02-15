@@ -20,16 +20,9 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_FILTER
 
+/// \ingroup (enums)
 /// \brief
 /// The DistanceOperations enumeration lists the distance conditions available.
-/// <param name="DistanceOperations_Beyond">
-/// Test to see if the geometric property value lies beyond a specified
-/// distance of a literal geometric value
-/// </param>
-/// <param name="DistanceOperations_Within">
-/// Test to see if the geometric property value lies within a specified
-/// distance of a literal geometric value
-/// </param>
 [System::FlagsAttribute]
 public __value enum DistanceOperations
 {

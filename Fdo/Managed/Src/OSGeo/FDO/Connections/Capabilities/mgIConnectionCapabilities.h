@@ -32,6 +32,8 @@ END_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 
+/// \ingroup (interfaces)
+/// \interface IConnectionCapabilities
 /// \brief
 /// The IConnectionCapabilities interface declares the feature provider's capabilities.
 public __gc __interface IConnectionCapabilities : public System::IDisposable

@@ -20,36 +20,9 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 
+/// \ingroup (enums)
 /// \brief
 /// The DataType enumeration lists all of the base data types supported by FDO.
-/// \param DataType_Boolean
-/// Represents a Boolean value of true or false
-/// \param DataType_Byte
-/// Represents unsigned 8-bit integers with values between 0 and 255
-/// \param DataType_DateTime
-/// Represents a date and time value
-/// \param DataType_Decimal
-/// Represents values ranging from 1.0 x 10^-28 to approximately 7.9 x 10^28, 
-/// with 28-29 significant digits
-/// \param DataType_Double
-/// Represents a floating point value ranging from approximately 5.0 
-/// x 10^-324 to 1.7 x 10^308 with a precision of 15-16 digits
-/// \param DataType_Int16
-/// Represents signed 16-bit integers with values between -32768 and 32767
-/// \param DataType_Int32
-/// Represents signed 32-bit integers with values between -2147483648 and 2147483647
-/// \param DataType_Int64
-/// Represents signed 64-bit integers with values between -9223372036854775808 and 9223372036854775807
-/// \param DataType_Single
-/// Represents floating point values ranging from approximately 1.5 x 10^-45
-/// to 3.4 x 10^38, with a precision of 7 digits
-/// \param DataType_String
-/// Represents a Unicode character string
-/// \param DataType_BLOB
-/// Represents a binary large object stored as a collection of bytes
-/// \param DataType_CLOB
-/// Represents a character large object stored as a collection of
-/// characters
 public __value enum DataType
 {
     /// Represents a Boolean value of true or false.

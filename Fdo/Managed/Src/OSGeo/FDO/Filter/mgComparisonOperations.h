@@ -20,25 +20,12 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_FILTER
 
+/// \ingroup (enums)
 /// \brief
 /// The ComparisonOperations enumeration lists the comparison operations
 /// available.
-/// \param ComparisonOperations_EqualTo
-/// Test to see if the left and right expressions are equal
-/// \param ComparisonOperations_NotEqualTo
-/// Test to see if the left and right expressions are not equal
-/// \param ComparisonOperations_GreaterThan
-/// Test to see if the left expression is greater than the right expression
-/// \param ComparisonOperations_GreaterThanOrEqualTo
-/// Test to see if the left expression is greater than or equal to the right expression
-/// \param ComparisonOperations_LessThan
-/// Test to see if the left expression is less than the right expression
-/// \param ComparisonOperations_LessThanOrEqualTo
-/// Test to see if the left expression is less than or equal to the right expression
-/// \param ComparisonOperations_Like
-/// Test to see if the left expression matches the pattern specified by the
-/// right expression.  Wildcard characters supported in the pattern are:
-///
+/// \remarks
+/// For the Like Operation, wildcard characters supported in the pattern are:
 /// \li \c %    Any string of zero or more characters;
 /// \li \c _    Any single character;
 /// \li \c []   Any single character within the specified range ([a-f]) or set 
@@ -68,14 +55,7 @@ public __value enum ComparisonOperations
 	ComparisonOperations_LessThanOrEqualTo = FdoComparisonOperations_LessThanOrEqualTo,
 
     /// Test to see if the left expression matches the pattern specified by the
-    /// right expression.  Wildcard characters supported in the pattern are:
-    // 
-    /// \li \c %    Any string of zero or more characters
-    /// \li \c _    Any single character
-    /// \li \c []   Any single character within the specified range ([a-f]) or set 
-    /// ([abcdef]).
-    /// \li \c [^]  Any single character not within the specified range ([^a-f]) or 
-    /// set ([^abcdef]).
+    /// right expression.
 	ComparisonOperations_Like = FdoComparisonOperations_Like
 };
 END_NAMESPACE_OSGEO_FDO_FILTER

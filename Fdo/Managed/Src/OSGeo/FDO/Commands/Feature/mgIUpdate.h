@@ -20,6 +20,7 @@
 
 #include "FDO\Commands\mgIFeatureCommand.h"
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS
 public __gc class PropertyValueCollection;
 END_NAMESPACE_OSGEO_FDO_COMMANDS
@@ -29,7 +30,10 @@ public __gc __interface ILockConflictReader;
 END_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
+/// \endcond
 
+/// \ingroup (interfaces)
+/// \interface IUpdate
 /// \brief
 /// The IUpdate interface defines the Update command, which modifies instances
 /// of a given class that match the specified criteria. Input to the update
