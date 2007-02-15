@@ -41,8 +41,8 @@ class FdoProvider : public FdoIDisposable
     friend class FdoRegistryUtility;
     friend class FdoProviderCollection;
 
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default instance of a FdoProvider.
 
 	FdoProvider();

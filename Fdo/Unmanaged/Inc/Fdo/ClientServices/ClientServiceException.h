@@ -35,8 +35,8 @@
 /// calling applications. Derives from base FdoException class. 
 class FdoClientServiceException : public FdoException
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default instance of a FdoClientServiceException.
     FdoClientServiceException(void);
 
@@ -51,9 +51,6 @@ public:
 
     /// \brief
     /// Default destructor for FdoClientServiceException.
-    /// 
-    /// \param void 
-    /// Void.
     /// 
     /// \return
     /// Returns nothing.

@@ -41,7 +41,7 @@ public:
     /// The name is usually of the form "[Company].[Provider].[Version]",
     /// e.g. "Autodesk.Oracle.3.2".
     /// 
-    /// \param names 
+    /// \param name 
     /// Input the provider name to tokenize
     /// 
     /// \return
@@ -80,8 +80,8 @@ public:
     /// 
     FDO_API  FdoStringP GetLocalName() const;
 
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     FdoProviderNameTokens() {}
     FdoProviderNameTokens(FdoString* name);
 
@@ -242,12 +242,12 @@ public:
     /// 
 	FDO_API FdoBoolean operator<=( const FdoProviderNameTokensP name2 ) const;
 
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     FdoBoolean Compare( const FdoProviderNameTokensP name2 ) const;
+/// \endcond
 
 };
-/// \endcond
 #endif
 
 
