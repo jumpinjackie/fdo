@@ -23,33 +23,24 @@
 
 #include <FdoStd.h>
 
+/// \ingroup (enums)
 /// \brief
 /// The FdoRasterDataType enumeration specifies the type of data stored in the Raster Image.
-/// <param name="FdoRasterDataType_Unknown">
-/// Data is organized in an unknown or provider specific manner.
-/// </param>
-/// <param name="FdoRasterDataType_UnsignedInteger">
-/// Data is organized as Unsigned Integers.
-/// </param>
-/// <param name="FdoRasterDataType_Integer">
-/// Data is organized as Signed Integers.
-/// </param>
-/// <param name="FdoRasterDataType_Float">
-/// Data is organized as Floats.
-/// </param>
-/// <param name="FdoRasterDataType_Double">
-/// Data is organized as Doubles.
-/// </param>
 enum FdoRasterDataType
 {
+    /// Data is organized in an unknown or provider specific manner.
     FdoRasterDataType_Unknown,
 
+    /// Data is organized as Unsigned Integers.
     FdoRasterDataType_UnsignedInteger,
 
+    /// Data is organized as Signed Integers.
     FdoRasterDataType_Integer,
 
+    /// Data is organized as Floats.
     FdoRasterDataType_Float,
 
+    /// Data is organized as Doubles.
     FdoRasterDataType_Double
 };
 

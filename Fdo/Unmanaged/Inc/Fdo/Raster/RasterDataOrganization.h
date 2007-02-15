@@ -23,6 +23,7 @@
 
 #include <FdoStd.h>
 
+/// \ingroup (enums)
 /// \brief
 /// The FdoRasterDataOrganization enumeration specifies the way
 /// pixel data is interleaved. Data is stored/retrieved in left to right,
@@ -35,14 +36,6 @@
 /// followed by the same number of green bytes, followed by the same
 /// number of blue bytes. This organization dependant storage should be
 /// considered when 'skipping' to the middle of an image.
-/// <param name="FdoRasterDataOrganization_Pixel">
-/// Data is interleaved by pixel, with all data for a pixel contiguous in memory.
-/// </param>
-/// <param name="FdoRasterDataOrganization_Row">
-/// Data is interleaved by row, with all data of a channel for one row contiguous in memory, followed by a rows worth of the next channel, etc.
-/// </param>
-/// <param name="FdoRasterDataOrganization_Image">
-/// Data is interleaved by image, with all data of a channel for a complete image contiguous in memory, followed by a complete image of the next channel, etc.
 /// </param>
 enum FdoRasterDataOrganization
 {
