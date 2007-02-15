@@ -1,7 +1,6 @@
 /*! \mainpage Introduction
 <div class="mainpage">
 <!-- This is the index.html page that the user first sees. -->
-
 <p>The Feature Data Objects (FDO) application
 programming interface (API) is a set of APIs used to
 manipulate, define, and analyze geospatial information.
@@ -38,7 +37,6 @@ the same capabilities for these operations.
 <h2>
   Architecture
 </h2>
-
 <p>
 The high-level architecture of FDO comprises feature
 providers that plug into an application to expose a
@@ -63,12 +61,11 @@ that connect directly to the FDO API.
 For more information, see <i>The Essential FDO</i> (FET_TheEssentialFDO.pdf) 
 and the <i>FDO Developer's Guide</i> (FDG_FDODevGuide.pdf).
 </p>
-
 \image html FDO_architecture.png
 <br>
 </div>
 */
-
-
-
+/// \defgroup typedefs
+/// \defgroup enums
+/// \defgroup interfaces
 

@@ -108,7 +108,6 @@ VERBATIM_HEADERS       = NO
 ALPHABETICAL_INDEX     = YES
 COLS_IN_ALPHA_INDEX    = 5
 IGNORE_PREFIX          = Fdo \
-                         Gis \
                          Mg
 #---------------------------------------------------------------------------
 # configuration options related to the HTML output
