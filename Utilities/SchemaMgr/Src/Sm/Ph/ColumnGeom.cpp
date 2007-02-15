@@ -101,6 +101,25 @@ void FdoSmPhColumnGeom::DiscardSpatialIndex( FdoSmPhSpatialIndex* index )
     mSpatialIndex = NULL;
 }
 
+bool FdoSmPhColumnGeom::DefinitionEquals( FdoSmPhColumnP otherColumn )
+{
+    bool equals = FdoSmPhColumn::DefinitionEquals( otherColumn );
+
+    if ( equals ) {
+        equals = false;
+
+        FdoSmPhColumnGeomP otherGeomColumn = otherColumn->SmartCast<FdoSmPhColumnGeom>();
+
+        if ( otherGeomColumn &&
+             (GetDimensionality() == otherGeomColumn->GetDimensionality()) &&
+             (GetSRID() == otherGeomColumn->GetSRID())
+        ) 
+            equals = true;
+    }
+
+    return equals;
+}
+
 void FdoSmPhColumnGeom::SetSpatialIndex( FdoSmPhSpatialIndexP spatialIndex )
 {
     FdoSmPhTableP table = 

@@ -32,30 +32,6 @@ class FdoSmPhOwner;
 class FdoSmPhView : virtual public FdoSmPhDbObject
 {
 public:
-    /// Get the underlying table if this is a view over a foreign table
-    const FdoSmPhDbObject* RefRootObject() const;
-    FdoSmPhDbObjectP GetRootObject();
-
-    virtual FdoSmPhDbObjectP GetLowestRootObject();
-
-    /// Get the underlying table name if this is a view over a foreign table
-    FdoStringP GetRootObjectName() const
-    {
-        return mRootObjectName;
-    }
-
-    /// Get the underlying table owner if this is a view over a foreign table
-    FdoStringP GetRootOwner() const
-    {
-        return mRootOwner;
-    }
-
-    /// Get the underlying table database if this is a view over a foreign table
-    FdoStringP GetRootDatabase() const
-    {
-        return mRootDatabase;
-    }
-
     void SetRootObject( FdoSmPhDbObjectP rootObject );
 
     /// Serialize the table to an XML file.
@@ -104,12 +80,6 @@ protected:
     virtual FdoStringP GetRootNameSql() = 0;
 
 private:
-    /// The following three are only set when this "table" is actually a view.
-    FdoStringP mRootObjectName;
-    FdoStringP mRootDatabase;
-    FdoStringP mRootOwner;
-
-    FdoSmPhDbObjectP mRootObject;
 };
 
 typedef FdoPtr<FdoSmPhView> FdoSmPhViewP;

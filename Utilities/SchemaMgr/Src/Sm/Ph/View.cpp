@@ -28,48 +28,21 @@ FdoSmPhView::FdoSmPhView(
     const FdoSmPhOwner* pOwner,
     FdoSchemaElementState elementState
 ) : 
-    FdoSmPhDbObject(viewName, pOwner, elementState ),
-    mRootDatabase(rootDatabase),
-    mRootOwner(rootOwner),
-    mRootObjectName(rootObjectName)
+    FdoSmPhDbObject(viewName, pOwner, elementState )
 {
+    if ( rootObjectName != L"" ) {
+        FdoSmPhBaseObjectP baseObject = NewBaseObject( rootObjectName, rootOwner, rootDatabase );
+        GetBaseObjects()->Add( baseObject );
+    }
 }
 
 FdoSmPhView::~FdoSmPhView(void)
 {
 }
 
-const FdoSmPhDbObject* FdoSmPhView::RefRootObject() const
-{
-    FdoSmPhDbObjectP rootObject = ((FdoSmPhView*) this)->GetRootObject();
-
-    return (FdoSmPhDbObject*) rootObject;
-}
-
-FdoSmPhDbObjectP FdoSmPhView::GetRootObject()
-{
-    if ( (mRootObjectName.GetLength() > 0) && (!mRootObject) ) 
-        mRootObject = GetManager()->FindDbObject( mRootObjectName, mRootDatabase, mRootOwner );
-
-    return mRootObject;
-}
-
-FdoSmPhDbObjectP FdoSmPhView::GetLowestRootObject()
-{
-    FdoSmPhDbObjectP rootObject = GetRootObject();
-
-    if ( rootObject ) 
-        rootObject = rootObject->GetLowestRootObject();
-
-    return rootObject;
-}
-
 void FdoSmPhView::SetRootObject( FdoSmPhDbObjectP rootObject )
 {
-    mRootObject = rootObject;
-    mRootObjectName = rootObject ? rootObject->GetName() : L"";
-    mRootOwner = rootObject ? rootObject->GetParent()->GetName() : L"";
-    mRootDatabase = rootObject ? rootObject->GetParent()->GetParent()->GetName() : L"";
+    FdoSmPhDbObject::SetRootObject( rootObject );
 }
 
 void FdoSmPhView::XMLSerialize( FILE* xmlFp, int ref ) const
@@ -116,6 +89,17 @@ void FdoSmPhView::CommitChildren( bool isBeforeParent )
                     columns->Remove( (FdoSmPhColumn*) column );
                 }
             }
+        }
+    }
+
+    // After view commit, just commit the columns to update their element states.
+    if ( !isBeforeParent ) {
+        FdoSmPhColumnsP columns = GetColumns();
+
+        for ( i = (columns->GetCount() - 1); i >= 0; i-- ) {
+            FdoSmPhColumnP column = columns->GetItem(i);
+
+            column->Commit( true, isBeforeParent );
         }
     }
 }

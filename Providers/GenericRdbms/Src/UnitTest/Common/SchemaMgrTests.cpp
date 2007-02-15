@@ -22,6 +22,7 @@
 #include "ConnectionUtil.h"
 #include <Sm/Ph/Rd/ConstraintReader.h>
 #include <Sm/Ph/SpatialIndex.h>
+#include "../SchemaMgr/Ph/Owner.h"
 
 FdoString* SchemaMgrTests::DB_NAME_SUFFIX =           L"_schema_mgr";
 FdoString* SchemaMgrTests::DB_NAME_COPY_SUFFIX =      L"_schema_mgr_copy";
@@ -139,6 +140,8 @@ void SchemaMgrTests::testGenDefault ()
 
         FdoSmPhViewP view1 = owner->CreateView( phMgr->GetDcDbObjectName(L"VIEW1"), L"", owner->GetName(), phMgr->GetDcDbObjectName(L"TABLE1" ));
         column = view1->CreateColumnInt32( L"ID", false, false, L"ID" );
+        if ( SupportsViewPkey() ) 
+            view1->AddPkeyCol( L"ID" );
         column = view1->CreateColumnDecimal( L"DEC_COL_RENAME", true, 10, 5, L"DECIMAL_COLUMN" );
         column = view1->CreateColumnByte( L"BYTE_COLUMN", true, L"BYTE_COLUMN" );
 
@@ -181,8 +184,17 @@ void SchemaMgrTests::testGenDefault ()
         FdoSmPhViewP view2 = owner->CreateView( phMgr->GetDcDbObjectName(L"VIEW2"), L"", owner->GetName(), phMgr->GetDcDbObjectName(L"TABLE2" ));
         column = view2->CreateColumnInt32( L"ID", false, false, L"ID" );
         column = view2->CreateColumnChar( L"STRING_COLUMN", false, 50, L"STRING_COLUMN" );
+
         column = view2->CreateColumnDouble( L"DOUBLE_COLUMN", true, L"DOUBLE_COLUMN" );
         column = view2->CreateColumnGeom( L"GEOM_COLUMN", (FdoSmPhScInfo*) NULL, true, true, false, L"GEOM_COLUMN" );
+
+        FdoSmPhViewP view3 = owner->CreateView( phMgr->GetDcDbObjectName(L"VIEW3"), L"", owner->GetName(), phMgr->GetDcDbObjectName(L"TABLE4" ));
+        column = view3->CreateColumnInt32( L"ID", false, false, L"ID" );
+        column = view3->CreateColumnChar( L"STRING_COLUMN", false, 50, L"STRING_COLUMN" );
+        if ( SupportsViewPkey() ) 
+            view3->AddPkeyCol( column->GetName() );
+        column = view3->CreateColumnInt16( L"INT16_COLUMN", true, false, L"INT16_COLUMN" );
+        column = view3->CreateColumnGeom( L"GEOM_COLUMN", (FdoSmPhScInfo*) NULL, true, true, false, L"GEOM_COLUMN" );
 
 #ifndef RDBI_DEF_SSQL
         table = owner->CreateTable( phMgr->GetDcDbObjectName(L"TABLE5" ));
@@ -352,6 +364,19 @@ void SchemaMgrTests::testGenDefault ()
                     (FdoPhysicalSchemaMapping*) mappings->GetItem( fdoConn, schema->GetName() );
                 if ( overrides )
                     pCmd->SetPhysicalMapping( overrides );
+            }
+
+            // Special case for MySQL. Classes from views do not get identity.
+            // class "view3" is a feature class since it has geometry.
+            // However, feature classes without identity are not allowed in FDO-enabled 
+            // datastores, so remove this class when it has no identity.
+
+            FdoClassesP classes = schema->GetClasses();
+            FdoClassDefinitionP view3Class = classes->FindItem( L"view3" );
+            if ( view3Class && (view3Class->GetClassType() == FdoClassType_FeatureClass) ) {
+                FdoDataPropertiesP idProps = view3Class->GetIdentityProperties();
+                if ( idProps->GetCount() == 0 )
+                    classes->Remove( view3Class );
             }
 
             pCmd->Execute();
@@ -743,10 +768,25 @@ void SchemaMgrTests::testGenKeys ()
         AddPkey( table );
         AddIndex( table, true, L"ALT_KEY1", L"INT16_COL1" );
 
+        FdoSmPhViewP view = CreateIxView( owner, phMgr->GetDcDbObjectName(L"VIEW_IX1A"), table->GetName() );
+        view = CreateIxView( owner, phMgr->GetDcDbObjectName(L"VIEW_IX1B"), view->GetName() );
+        FdoSmPhColumnsP columns = view->GetColumns();
+        columns->RemoveAt( columns->IndexOf(phMgr->GetDcColumnName(L"ID")) );
+
         // Tests choosing heavier index with fewer columns
         table = CreateIxTable(owner, L"TABLE_IX2", 0 );
         AddIndex( table, true, L"IX_21", L"INT16_COL1 INT16_COL2" );
         AddIndex( table, true, L"IX_22", L"STRING_COL5" );
+
+        view = CreateIxView( owner, phMgr->GetDcDbObjectName(L"VIEW_IX2A"), table->GetName() );
+        view = CreateIxView( owner, phMgr->GetDcDbObjectName(L"VIEW_IX2B"), view->GetName() );
+        columns = view->GetColumns();
+        columns->RemoveAt( columns->IndexOf(phMgr->GetDcColumnName(L"STRING_COL5")) );
+
+        FdoStringP createIx2cSql = FdoStringP::Format( 
+            L"create view view_ix2c ( id, int16_col1 ) as select id, int16_col1 from %ls", 
+            (FdoString*)(view->GetDbQName())
+        );
 
         // Multi-column index tests
         table = CreateIxTable(owner, L"TABLE_IX3", 0 );
@@ -754,11 +794,18 @@ void SchemaMgrTests::testGenKeys ()
         AddIndex( table, true, L"IX_32", L"STRING_COL1 STRING_COL2" );
         AddIndex( table, true, L"IX_33", L"INT16_COL1 STRING_COL1" );
 
+        view = CreateIxView( owner, phMgr->GetDcDbObjectName(L"VIEW_IX3A"), table->GetName() );
+        view = CreateIxView( owner, phMgr->GetDcDbObjectName(L"VIEW_IX3B"), view->GetName() );
+        view = CreateIxView( owner, phMgr->GetDcDbObjectName(L"VIEW_IX3C"), view->GetName() );
+        view = CreateIxView( owner, phMgr->GetDcDbObjectName(L"VIEW_IX3D"), view->GetName() );
+
         // string column tests
         table = CreateIxTable(owner, L"TABLE_IX4", 0 );
         AddIndex( table, true, L"IX_41", L"STRING_COL1" );
         AddIndex( table, true, L"IX_42", L"INT16_COL1" );
         AddIndex( table, true, L"IX_43", L"STRING_COL2" );
+
+        view = CreateIxView( owner, phMgr->GetDcDbObjectName(L"VIEW_IX4A"), table->GetName() );
 
         // Test skipping index that is too heavy.
         // This index is too long to create on MySql or SqlServer so
@@ -766,6 +813,7 @@ void SchemaMgrTests::testGenKeys ()
 #ifdef RDBI_DEF_ORA
         table = CreateIxTable(owner, L"TABLE_IX5", 0 );
         AddIndex( table, true, L"IX_51", L"STRING_COL3 STRING_COL4" );
+        view = CreateIxView( owner, phMgr->GetDcDbObjectName(L"VIEW_IX5A"), table->GetName() );
 #endif
 
         // Test skipping non-unique index
@@ -774,16 +822,49 @@ void SchemaMgrTests::testGenKeys ()
         AddIndex( table, true, L"IX_62", L"STRING_COL1 STRING_COL2" );
         AddIndex( table, false, L"IX_63", L"INT16_COL1 STRING_COL2" );
 
+        view = CreateIxView( owner, phMgr->GetDcDbObjectName(L"VIEW_IX6A"), table->GetName() );
+        FdoStringP createIx6bSql = FdoStringP::Format( 
+            L"create view view_ix6b ( icol1, icol2, string_col1, string_col2 ) as select int16_col1, int16_col2, string_col1, string_col2 from %ls", 
+            (FdoString*)(view->GetDbQName())
+        );
+
+        FdoStringP createIx6cSql = FdoStringP::Format( 
+            L"create view view_ix6c ( string_col1, int16_col2, int16_col1, string_col2 ) as select int16_col1, int16_col2, string_col1, string_col2 from %ls", 
+            (FdoString*)(view->GetDbQName())
+        );
+
         // Test date columns
         table = CreateIxTable(owner, L"TABLE_IX7", 0 );
         AddIndex( table, true, L"IX_71", L"DATE_COL1 STRING_COL2" );
         AddIndex( table, true, L"IX_72", L"STRING_COL5 STRING_COL2" );
         AddIndex( table, true, L"IX_73", L"STRING_COL6 STRING_COL2" );
 
+        view = CreateIxView( owner, phMgr->GetDcDbObjectName(L"VIEW_IX7A"), table->GetName() );
+
         // Test id'less table.
         table = CreateIxTable(owner, phMgr->GetDcDbObjectName(L"TABLE_IX8"), 0 );
 
+        view = CreateIxView( owner, phMgr->GetDcDbObjectName(L"VIEW_IX8A"), table->GetName() );
+
+        FdoStringP createJoinSql = L"create view view_join ( id, string_col5 ) as select a.id, b.string_col5 from table_ix1 a, table_ix2 b";
+
         database->Commit();
+
+        FdoSmPhGrdOwnerP grdOwner = owner->SmartCast<FdoSmPhGrdOwner>();
+
+        grdOwner->ActivateAndExecute( (FdoString*) createIx2cSql );
+        grdOwner->ActivateAndExecute( (FdoString*) createIx6bSql );
+        grdOwner->ActivateAndExecute( (FdoString*) createIx6cSql );
+        grdOwner->ActivateAndExecute( (FdoString*) createJoinSql );
+
+        mgr = NULL;
+        phMgr = NULL;
+        conn->disconnect();
+        delete conn;
+        conn = CreateStaticConnection();
+        conn->connect();
+        mgr = conn->CreateSchemaManager();
+        phMgr = mgr->GetPhysicalSchema()->SmartCast<FdoSmPhGrdMgr>();
 
         printf( "Autogenerating schema from datastore ...\n" );
 
@@ -799,62 +880,143 @@ void SchemaMgrTests::testGenKeys ()
         FdoClassesP classes = schema->GetClasses();
 
 #ifdef RDBI_DEF_ORA
-        CPPUNIT_ASSERT( classes->GetCount() == 8 );
+        CPPUNIT_ASSERT( classes->GetCount() == 25 );
 #else
-        CPPUNIT_ASSERT( classes->GetCount() == 7 );
+        CPPUNIT_ASSERT( classes->GetCount() == 23 );
 #endif
+        FdoInt32 pass;
+        FdoClassDefinitionP featClass;
+        FdoDataPropertiesP idProps;
+        FdoDataPropertyP prop;
 
-        FdoClassDefinitionP featClass = classes->GetItem( table2class(phMgr,L"TABLE_IX1") );
-        FdoDataPropertiesP idProps = featClass->GetIdentityProperties();
-        CPPUNIT_ASSERT( idProps->GetCount() == 1 );
-        FdoDataPropertyP prop = idProps->GetItem(0);
-        CPPUNIT_ASSERT( wcscmp(prop->GetName(), phMgr->GetDcColumnName(L"ID")) == 0 );
+        for ( pass = 0; pass < 2; pass++ ) {
+            featClass = classes->GetItem( table2class(phMgr, (pass==0) ? L"TABLE_IX1" : L"VIEW_IX1A") );
+            idProps = featClass->GetIdentityProperties();
+            if ( SupportsBaseObjects() || (pass == 0) ) {
+                CPPUNIT_ASSERT( idProps->GetCount() == 1 );
+                prop = idProps->GetItem(0);
+                CPPUNIT_ASSERT( wcscmp(prop->GetName(), phMgr->GetDcColumnName(L"ID")) == 0 );
+            }
+            else {
+                CPPUNIT_ASSERT( idProps->GetCount() == 0 );
+            }
 
-        featClass = classes->GetItem( table2class(phMgr,"TABLE_IX2") );
-        idProps = featClass->GetIdentityProperties();
-        CPPUNIT_ASSERT( idProps->GetCount() == 1 );
-        prop = idProps->GetItem(0);
-        CPPUNIT_ASSERT( wcscmp(prop->GetName(), phMgr->GetDcColumnName(L"STRING_COL5")) == 0 );
+            featClass = classes->GetItem( table2class(phMgr,(pass==0) ? L"TABLE_IX2" : L"VIEW_IX2A") );
+            idProps = featClass->GetIdentityProperties();
+            if ( SupportsBaseObjects() || (pass == 0) ) {
+                CPPUNIT_ASSERT( idProps->GetCount() == 1 );
+                prop = idProps->GetItem(0);
+                CPPUNIT_ASSERT( wcscmp(prop->GetName(), phMgr->GetDcColumnName(L"STRING_COL5")) == 0 );
+            }
+            else {
+                CPPUNIT_ASSERT( idProps->GetCount() == 0 );
+            }
 
-        featClass = classes->GetItem( table2class(phMgr,L"TABLE_IX3") );
-        idProps = featClass->GetIdentityProperties();
-        CPPUNIT_ASSERT( idProps->GetCount() == 2 );
-        prop = idProps->GetItem(0);
-        CPPUNIT_ASSERT( wcscmp(prop->GetName(), phMgr->GetDcColumnName(L"INT16_COL1")) == 0 );
-        prop = idProps->GetItem(1);
-        CPPUNIT_ASSERT( wcscmp(prop->GetName(), phMgr->GetDcColumnName(L"INT16_COL2")) == 0 );
+            featClass = classes->GetItem( table2class(phMgr,(pass==0) ? L"TABLE_IX3" : L"VIEW_IX3A") );
+            idProps = featClass->GetIdentityProperties();
+            if ( SupportsBaseObjects() || (pass == 0) ) {
+                CPPUNIT_ASSERT( idProps->GetCount() == 2 );
+                prop = idProps->GetItem(0);
+                CPPUNIT_ASSERT( wcscmp(prop->GetName(), phMgr->GetDcColumnName(L"INT16_COL1")) == 0 );
+                prop = idProps->GetItem(1);
+                CPPUNIT_ASSERT( wcscmp(prop->GetName(), phMgr->GetDcColumnName(L"INT16_COL2")) == 0 );
+            }
+            else {
+                CPPUNIT_ASSERT( idProps->GetCount() == 0 );
+            }
 
-        featClass = classes->GetItem( table2class(phMgr,L"TABLE_IX4") );
-        idProps = featClass->GetIdentityProperties();
-        CPPUNIT_ASSERT( idProps->GetCount() == 1 );
-        prop = idProps->GetItem(0);
+            featClass = classes->GetItem( table2class(phMgr,(pass==0) ? L"TABLE_IX4" : L"VIEW_IX4A") );
+            idProps = featClass->GetIdentityProperties();
+            if ( SupportsBaseObjects() || (pass == 0) ) {
+                CPPUNIT_ASSERT( idProps->GetCount() == 1 );
+                prop = idProps->GetItem(0);
 #ifdef RDBI_DEF_ORA
-        CPPUNIT_ASSERT( wcscmp(prop->GetName(), phMgr->GetDcColumnName(L"STRING_COL2")) == 0 );
-		featClass = classes->GetItem( table2class(phMgr,L"TABLE_IX5") );
-		idProps = featClass->GetIdentityProperties();
-		CPPUNIT_ASSERT( idProps->GetCount() == 0 );        
+                CPPUNIT_ASSERT( wcscmp(prop->GetName(), phMgr->GetDcColumnName(L"STRING_COL2")) == 0 );
+		        featClass = classes->GetItem( table2class(phMgr,(pass==0) ? L"TABLE_IX5" : L"VIEW_IX5A") );
+		        idProps = featClass->GetIdentityProperties();
+		        CPPUNIT_ASSERT( idProps->GetCount() == 0 );        
 #else
-        CPPUNIT_ASSERT( wcscmp(prop->GetName(), phMgr->GetDcColumnName(L"INT16_COL1")) == 0 );
+                CPPUNIT_ASSERT( wcscmp(prop->GetName(), phMgr->GetDcColumnName(L"INT16_COL1")) == 0 );
 #endif
-        featClass = classes->GetItem( table2class(phMgr,L"TABLE_IX6") );
-        idProps = featClass->GetIdentityProperties();
-        CPPUNIT_ASSERT( idProps->GetCount() == 2 );
-        prop = idProps->GetItem(0);
-        CPPUNIT_ASSERT( wcscmp(prop->GetName(), phMgr->GetDcColumnName(L"INT16_COL1")) == 0 );
-        prop = idProps->GetItem(1);
-        CPPUNIT_ASSERT( wcscmp(prop->GetName(), phMgr->GetDcColumnName(L"INT16_COL2")) == 0 );
+            }
 
-        featClass = classes->GetItem( table2class(phMgr,"TABLE_IX7") );
-        idProps = featClass->GetIdentityProperties();
-        CPPUNIT_ASSERT( idProps->GetCount() == 2 );
-        prop = idProps->GetItem(0);
-        CPPUNIT_ASSERT( wcscmp(prop->GetName(), phMgr->GetDcColumnName(L"STRING_COL5")) == 0 );
-        prop = idProps->GetItem(1);
-        CPPUNIT_ASSERT( wcscmp(prop->GetName(), phMgr->GetDcColumnName(L"STRING_COL2")) == 0 );
+            featClass = classes->GetItem( table2class(phMgr,(pass==0) ? L"TABLE_IX6" : L"VIEW_IX6A") );
+            idProps = featClass->GetIdentityProperties();
+            if ( SupportsBaseObjects() || (pass == 0) ) {
+                CPPUNIT_ASSERT( idProps->GetCount() == 2 );
+                prop = idProps->GetItem(0);
+                CPPUNIT_ASSERT( wcscmp(prop->GetName(), phMgr->GetDcColumnName(L"INT16_COL1")) == 0 );
+                prop = idProps->GetItem(1);
+                CPPUNIT_ASSERT( wcscmp(prop->GetName(), phMgr->GetDcColumnName(L"INT16_COL2")) == 0 );
+            }
+            else {
+                CPPUNIT_ASSERT( idProps->GetCount() == 0 );
+            }
 
-        featClass = classes->GetItem( table2class(phMgr,L"TABLE_IX8") );
-        idProps = featClass->GetIdentityProperties();
-        CPPUNIT_ASSERT( idProps->GetCount() == 0 );        
+            featClass = classes->GetItem( table2class(phMgr,(pass==0) ? L"TABLE_IX7" : L"VIEW_IX7A") );
+            idProps = featClass->GetIdentityProperties();
+            if ( SupportsBaseObjects() || (pass == 0) ) {
+                CPPUNIT_ASSERT( idProps->GetCount() == 2 );
+                prop = idProps->GetItem(0);
+                CPPUNIT_ASSERT( wcscmp(prop->GetName(), phMgr->GetDcColumnName(L"STRING_COL5")) == 0 );
+                prop = idProps->GetItem(1);
+                CPPUNIT_ASSERT( wcscmp(prop->GetName(), phMgr->GetDcColumnName(L"STRING_COL2")) == 0 );
+            }
+            else {
+                CPPUNIT_ASSERT( idProps->GetCount() == 0 );
+            }
+
+            featClass = classes->GetItem( table2class(phMgr,(pass==0) ? L"TABLE_IX8" : L"VIEW_IX8A") );
+            idProps = featClass->GetIdentityProperties();
+            CPPUNIT_ASSERT( idProps->GetCount() == 0 );        
+        }
+
+        if ( SupportsBaseObjects() ) {
+            featClass = classes->GetItem( table2class(phMgr, L"VIEW_IX1B") );
+            idProps = featClass->GetIdentityProperties();
+            CPPUNIT_ASSERT( idProps->GetCount() == 1 );
+            prop = idProps->GetItem(0);
+            CPPUNIT_ASSERT( wcscmp(prop->GetName(), phMgr->GetDcColumnName(L"INT16_COL1")) == 0 );
+
+            featClass = classes->GetItem( table2class(phMgr, L"VIEW_IX2B") );
+            idProps = featClass->GetIdentityProperties();
+            CPPUNIT_ASSERT( idProps->GetCount() == 2 );
+            prop = idProps->GetItem(0);
+            CPPUNIT_ASSERT( wcscmp(prop->GetName(), phMgr->GetDcColumnName(L"INT16_COL1")) == 0 );
+            prop = idProps->GetItem(1);
+            CPPUNIT_ASSERT( wcscmp(prop->GetName(), phMgr->GetDcColumnName(L"INT16_COL2")) == 0 );
+
+            featClass = classes->GetItem( table2class(phMgr, L"VIEW_IX2C") );
+            idProps = featClass->GetIdentityProperties();
+            CPPUNIT_ASSERT( idProps->GetCount() == 0 );
+
+            for ( pass = 0; pass < 3; pass++ ) {
+                FdoStringP viewName = FdoStringP::Format( L"VIEW_IX3%c", 'B' + pass );
+                featClass = classes->GetItem( table2class(phMgr, viewName) );
+                idProps = featClass->GetIdentityProperties();
+                CPPUNIT_ASSERT( idProps->GetCount() == 2 );
+                prop = idProps->GetItem(0);
+                CPPUNIT_ASSERT( wcscmp(prop->GetName(), phMgr->GetDcColumnName(L"INT16_COL1")) == 0 );
+                prop = idProps->GetItem(1);
+                CPPUNIT_ASSERT( wcscmp(prop->GetName(), phMgr->GetDcColumnName(L"INT16_COL2")) == 0 );
+            }
+
+            featClass = classes->GetItem( table2class(phMgr, L"VIEW_IX6B") );
+            idProps = featClass->GetIdentityProperties();
+            CPPUNIT_ASSERT( idProps->GetCount() == 2 );
+            prop = idProps->GetItem(0);
+            CPPUNIT_ASSERT( wcscmp(prop->GetName(), phMgr->GetDcColumnName(L"STRING_COL1")) == 0 );
+            prop = idProps->GetItem(1);
+            CPPUNIT_ASSERT( wcscmp(prop->GetName(), phMgr->GetDcColumnName(L"STRING_COL2")) == 0 );
+
+            featClass = classes->GetItem( table2class(phMgr, L"VIEW_IX6C") );
+            idProps = featClass->GetIdentityProperties();
+            CPPUNIT_ASSERT( idProps->GetCount() == 0 );
+
+            featClass = classes->GetItem( table2class(phMgr, L"VIEW_JOIN") );
+            idProps = featClass->GetIdentityProperties();
+            CPPUNIT_ASSERT( idProps->GetCount() == 0 );
+        }
 
         UnitTestUtil::CloseConnection( fdoConn, false, L"_schema_mgr" );
 
@@ -906,9 +1068,9 @@ void SchemaMgrTests::testGenKeys ()
         classes = schema->GetClasses();
 
 #ifdef RDBI_DEF_ORA
-        CPPUNIT_ASSERT( classes->GetCount() == 8 );
+        CPPUNIT_ASSERT( classes->GetCount() == 25 );
 #else
-        CPPUNIT_ASSERT( classes->GetCount() == 7 );
+        CPPUNIT_ASSERT( classes->GetCount() ==  23);
 #endif
         featClass = classes->GetItem( table2class(phMgr,L"TABLE_IX2") );
         idProps = featClass->GetIdentityProperties();
@@ -1231,6 +1393,35 @@ FdoSmPhTableP SchemaMgrTests::CreateIxTable( FdoSmPhOwnerP owner, FdoStringP tab
     return table;
 }
 
+FdoSmPhViewP SchemaMgrTests::CreateIxView( FdoSmPhOwnerP owner, FdoStringP viewName, FdoStringP tableName )   
+{
+    FdoSmPhMgrP phMgr = owner->GetManager();
+
+    FdoSmPhViewP view = owner->CreateView( phMgr->GetDcDbObjectName(viewName), L"", owner->GetName(), tableName );
+    FdoStringP columnName = phMgr->GetDcColumnName(L"ID");
+    FdoSmPhColumnP column = view->CreateColumnInt32( columnName, false, false, columnName );
+    columnName = phMgr->GetDcColumnName(L"INT16_COL1");
+    column = view->CreateColumnInt16( columnName, false, false, columnName );
+    columnName = phMgr->GetDcColumnName(L"INT16_COL2");
+    column = view->CreateColumnInt16( columnName, false, false, columnName );
+    columnName = phMgr->GetDcColumnName(L"STRING_COL1");
+    column = view->CreateColumnChar( columnName, false, 10, columnName );
+    columnName = phMgr->GetDcColumnName(L"STRING_COL2");
+    column = view->CreateColumnChar( columnName, false, 7, columnName );
+    columnName = phMgr->GetDcColumnName(L"STRING_COL3");
+    column = view->CreateColumnChar( columnName, false, 2500, columnName );
+    columnName = phMgr->GetDcColumnName(L"STRING_COL4");
+    column = view->CreateColumnChar( columnName, false, 2501, columnName );
+    columnName = phMgr->GetDcColumnName(L"STRING_COL5");
+    column = view->CreateColumnChar( columnName, false, 49, columnName );
+    columnName = phMgr->GetDcColumnName(L"STRING_COL6");
+    column = view->CreateColumnChar( columnName, false, 51, columnName );
+    columnName = phMgr->GetDcColumnName(L"DATE_COL1");
+    column = view->CreateColumnDate( columnName, false, columnName );
+
+    return view;
+}
+
 void SchemaMgrTests::AddPkey( FdoSmPhTableP table )
 {
     if ( FdoPtr<FdoSmPhColumn>(table->GetColumns()->FindItem(L"ID")) ) 
@@ -1420,4 +1611,14 @@ FdoStringP SchemaMgrTests::AssocNameTestFkeys( FdoSmPhGrdMgrP mgr, FdoInt32 asso
     }
 
     return assocName;
+}
+
+bool SchemaMgrTests::SupportsBaseObjects()
+{
+    return false;
+}
+
+bool SchemaMgrTests::SupportsViewPkey()
+{
+    return false;
 }

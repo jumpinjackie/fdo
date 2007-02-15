@@ -23,7 +23,6 @@
 #endif
 
 #include <Sm/Ph/DbObject.h>
-#include <Sm/Ph/FkeyCollection.h>
 #include <Sm/Ph/IndexCollection.h>
 #include <Sm/Ph/ColumnBatchCollection.h>
 #include <Sm/Ph/CheckConstraintCollection.h>
@@ -31,8 +30,6 @@
 class FdoSmPhMgr;
 class FdoSmPhOwner;
 class FdoSmPhReader;
-class FdoSmPhRdPkeyReader;
-class FdoSmPhRdFkeyReader;
 class FdoSmPhRdConstraintReader;
 class FdoSmPhRdIndexReader;
 class FdoSmPhTableComponentReader;
@@ -47,10 +44,6 @@ public:
     /// Provider specific derivations must override this function if they don't
     /// support adding not-null columns.
     virtual bool SupportsAddNotNullColumn() const;
-
-    /// Returns all the primary key columns in this table.
-    const FdoSmPhColumnCollection* RefPkeyColumns() const;
-    FdoSmPhColumnsP GetPkeyColumns();
 
     /// Returns all the unique columns in this table.
     const FdoSmPhBatchColumnCollection* RefUkeyColumns() const;
@@ -70,26 +63,17 @@ public:
     const FdoSmPhIndexCollection* RefIndexes() const;
     FdoSmPhIndexesP GetIndexes();
 
-    /// Returns the table's best identity columns.
+    /// Returns the table's best identity columns, where all columns are in the given
+    /// database object (the given object is typically a view based on this table).
     /// These are the primary key columns if the table has a primary key.
     /// Otherwise, the columns for the table's lightest unique index are returned.
     /// NULL is returned if the table has no identity.
-    FdoSmPhColumnsP GetBestIdentity();
+    virtual FdoSmPhColumnsP GetBestIdentity( FdoSmPhDbObjectP dbObject );
     
-    /// Returns all foreign keys for which this table is the foreign table
-    const FdoSmPhFkeyCollection* RefFkeysUp() const;
-    FdoSmPhFkeysP GetFkeysUp();
-
-    /// Returns the name of this table's primary key
-	FdoStringP GetPkeyName() const;
-
     /// Returns an array of all types of locking supported on this Database Object.
     /// size is set to the size of the array.
     /// Returns NULL when size is 0.
 	virtual const FdoLockType* GetLockTypes(FdoInt32& size) const;
-
-    // Returns true if the given unique key has the same columns as the primary key.
-    FdoBoolean IsUkeyPkey( FdoSmPhColumnsP ukeyColumns );
 
     /// Get SQL "create table" statement.
     virtual FdoStringP GetAddSql();
@@ -115,9 +99,6 @@ public:
 	/// Get SQL clause for adding a constraint
 	virtual FdoStringP GetAddConstraintSql(FdoStringP constraint);
 
-    /// Get SQL for creating primary key on new table
-    FdoStringP GetAddPkeySql();
-
     /// Get SQL for creating UNIQUE constraints on new table
     FdoStringP GetAddUkeysSql();
 
@@ -138,16 +119,9 @@ public:
     /// Can only be changed on new tables.
     virtual void SetLtMode( FdoLtLockModeType mode );
 
-    /// Sets the primary key name for this table.
-    /// Can only be called for new tables.
-    virtual void SetPkeyName( FdoStringP pkeyName );
-
     /// Set the locking mode.
     /// Can only be changed on new tables.
     virtual void SetLockingMode( FdoLtLockModeType mode );
-
-    /// Add a column to the primary key.
-	void AddPkeyCol(FdoStringP columnName );
 
     /// Add a column to a collection of unique keys 
 	void AddUkeyCol(int uCollNum, FdoStringP columnName );
@@ -167,13 +141,6 @@ public:
         bool isUnique
     );
 
-    /// Add a foreign key to this table
-    FdoSmPhFkeyP CreateFkey(
-        FdoStringP name, 
-        FdoStringP pkeyTableName,
-        FdoStringP pkeyTableOwner = L""
-    );
-
 	/// Return the list of constraints marked for drop
 	FdoStringsP	GetDeletedConstraints();
 
@@ -181,17 +148,11 @@ public:
     /// deleting it from the datastore.
     void DiscardIndex( FdoSmPhIndex* index );
 
-    /// Commit modifications to foreign keys.
-    virtual void CommitFkeys( bool isBeforeParent );
-
     /// Deletes all rows from this table.
     virtual void ClearRows() = 0;
 
     /// Set the modification state of this table.
 	virtual void SetElementState(FdoSchemaElementState elementState);
-
-    /// Drops the table whether or not it has data.
-    void ForceDelete();
 
     // Load this table's unique constraints from the given reader
     virtual void CacheUkeys( FdoPtr<FdoSmPhRdConstraintReader> rdr );
@@ -199,14 +160,8 @@ public:
     // Load this table's check constraints from the given reader
     virtual void CacheCkeys( FdoPtr<FdoSmPhRdConstraintReader> rdr );
 
-    // Load this table's foreign keys from the given reader
-    virtual void CacheFkeys( FdoPtr<FdoSmPhRdFkeyReader> rdr );
-
     // Load this table's indexes from the given reader
     virtual void CacheIndexes( FdoPtr<FdoSmPhRdIndexReader> rdr );
-
-    // Load this table's primary key from the given reader
-    virtual void CachePkeys( FdoPtr<FdoSmPhRdPkeyReader> rdr );
 
     /// Gather all errors for this element and child elements into a chain of exceptions.
     /// Adds each error as an exception, to the given exception chain and returns
@@ -246,10 +201,8 @@ protected:
         FdoPtr<FdoSmPhTableIndexReader> rdr
     );
 
-    /// Readers for Primary Key, Constraints, Foreign Keys and Indexes.
+    /// Readers for Constraints and Indexes.
     /// All have provider-specific implementations
-    virtual FdoPtr<FdoSmPhRdPkeyReader> CreatePkeyReader() const = 0;
-    virtual FdoPtr<FdoSmPhRdFkeyReader> CreateFkeyReader() const = 0;
 	virtual FdoPtr<FdoSmPhRdConstraintReader> CreateConstraintReader(FdoString* type) const = 0;
     virtual FdoPtr<FdoSmPhRdIndexReader> CreateIndexReader() const = 0;
 
@@ -267,14 +220,6 @@ protected:
 		FdoSchemaElementState elementState = FdoSchemaElementState_Added
     ) = 0;
 
-    /// Foreign key object creator
-    virtual FdoSmPhFkeyP NewFkey(
-        FdoStringP name, 
-        FdoStringP pkeyTableName,
-        FdoStringP pkeyTableOwner,
-		FdoSchemaElementState elementState = FdoSchemaElementState_Added
-    ) = 0;
-
     /// Commit modifications to child objects
     virtual void CommitChildren( bool isBeforeParent );
 
@@ -287,9 +232,6 @@ protected:
 	/// Commit new added Check constraints
 	virtual void CommitCConstraints( bool isBeforeParent );
 
-    /// Autogenerate a unique primary key name for this table.
-	virtual FdoStringP GenPkeyName();
-
     /// Column update functions, each provider must implement.
     virtual bool AddColumn( FdoSmPhColumnP column ) = 0;
     virtual bool ModifyColumn( FdoSmPhColumnP column ) = 0;
@@ -301,19 +243,9 @@ protected:
 	/// Add a constrait given the fully qualified string.
 	virtual bool AddConstraint( FdoStringP constraint ) = 0;
 
-    void LoadPkeys( FdoPtr<FdoSmPhReader> pkeyRdr, bool isSkipAdd = false );
-
-    virtual void AddPkeyColumnError(FdoStringP columnName);
     virtual void AddIndexColumnError(FdoStringP columnName);
 
-    FdoSmPhColumnsP mPkeyColumns;
-
 private:
-    /// Load Primary Key if not yet loaded
-    void LoadPkeys();
-    /// Load Foreign Keys if not yet loaded
-    void LoadFkeys();
-    void LoadFkeys( FdoPtr<FdoSmPhReader> fkeyRdr, bool isSkipAdd );
     /// Load Unique Keys if not yet loaded
 	void LoadUkeys();
 	void LoadUkeys( FdoPtr<FdoSmPhReader> ukeyRdr, bool isSkipAdd );
@@ -331,16 +263,9 @@ private:
     // Create new check constraint group reader
     virtual FdoPtr<FdoSmPhTableComponentReader> NewTableCkeyReader( FdoPtr<FdoSmPhRdConstraintReader> rdr );
 
-    // Create new foreign key group reader
-    virtual FdoPtr<FdoSmPhTableComponentReader> NewTableFkeyReader( FdoPtr<FdoSmPhRdFkeyReader> rdr );
-
     // Create new index group reader
     virtual FdoPtr<FdoSmPhTableIndexReader> NewTableIndexReader( FdoPtr<FdoSmPhRdIndexReader> rdr );
 
-    // Create new primary key group reader
-    virtual FdoPtr<FdoSmPhTableComponentReader> NewTablePkeyReader( FdoPtr<FdoSmPhRdPkeyReader> rdr );
-
-    void AddFkeyColumnError(FdoStringP columnName);
 	void AddUkeyColumnError(FdoStringP columnName);
 	void AddUkeyError(FdoStringP columnNames);
     void AddCkeyColumnError(FdoStringP columnName);
@@ -351,11 +276,8 @@ private:
 	FdoSmPhCheckConstraintsP	mCkeysCollection;
 	FdoStringsP					mDeletedConstraints;
 
-    FdoSmPhFkeysP mFkeysUp;
-
     FdoSmPhIndexesP mIndexes;
 
-	FdoStringP mPkeyName;
 };
 
 typedef FdoPtr<FdoSmPhTable> FdoSmPhTableP;

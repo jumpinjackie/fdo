@@ -69,6 +69,11 @@ public:
     /// Get a read-write smart pointer, throws FdoSchemaException if owner not in database
     FdoSmPhOwnerP GetOwner(FdoStringP owner);
 
+    // Get a currently cached owner at the given 0-based index.
+    // Returns NULL if the index is out of range.
+    // This function does not add owners to the cache.
+    FdoSmPhOwnerP GetCachedOwner(FdoInt32 idx);
+
     /// Create a new owner.
     virtual FdoSmPhOwnerP CreateOwner(FdoStringP owner, bool hasMetaSchema = true );
 

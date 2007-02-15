@@ -138,6 +138,11 @@ public:
 	{
 		return 0;
 	}
+
+    // Returns true if this column has the same definition (type,dimensionality,srid,nullability)
+    // as the given column.
+    virtual bool DefinitionEquals( FdoSmPhColumnP otherColumn );
+
 protected:
 
     // unused constructor needed only to build on Linux

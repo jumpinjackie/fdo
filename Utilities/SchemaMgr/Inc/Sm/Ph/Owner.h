@@ -36,6 +36,7 @@ class FdoSmPhRdDbObjectReader;
 class FdoSmPhRdCoordSysReader;
 class FdoSmPhRdConstraintReader;
 class FdoSmPhRdColumnReader;
+class FdoSmPhRdBaseObjectReader;
 class FdoSmPhRdTableJoin;
 class FdoSmPhRdSpatialContextReader;
 
@@ -110,6 +111,11 @@ public:
     /// as a read-write smart pointer (exception thrown if not found)
     FdoSmPhDbObjectP GetDbObject(FdoStringP dbObject);
 
+    // Get a currently cached database object at the given 0-based index.
+    // Returns NULL if the index is out of range.
+    // This function does not add database objects to the cache.
+    FdoSmPhDbObjectP GetCachedDbObject(FdoInt32 idx);
+
     // Gets the physical spatial contexts for this owner. 
     // it contains the spatial contexts reverse-engineered from the RDBMS.
     FdoSmPhSpatialContextsP GetSpatialContexts();
@@ -178,6 +184,9 @@ public:
 
     // Create a reader to get all columns for this owner and join
     virtual FdoPtr<FdoSmPhRdColumnReader> CreateColumnReader( FdoPtr<FdoSmPhRdTableJoin> join ) const;
+
+    // Create a reader to get all base object references for this owner
+    virtual FdoPtr<FdoSmPhRdBaseObjectReader> CreateBaseObjectReader() const;
 
     /// Create a new table. Table is not posted to the datastore until its Commit() function
     /// is called.

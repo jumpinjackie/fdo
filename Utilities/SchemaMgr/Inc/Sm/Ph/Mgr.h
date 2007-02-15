@@ -289,6 +289,10 @@ public:
     /// Get read-write pointer to database, Throws exception if database not found
     FdoSmPhDatabaseP GetDatabase(FdoStringP database = L"");
 
+    // Get a currently cached database at the given 0-based index.
+    // Returns NULL if the index is out of range.
+    // This function does not add databases to the cache.
+    FdoSmPhDatabaseP GetCachedDatabase(FdoInt32 idx);
 
     /// Get read-write pointer to an owner, NULL if owner not found
     FdoSmPhOwnerP FindOwner(FdoStringP ownerName = L"", FdoStringP database = L"", bool caseSensitive = true);

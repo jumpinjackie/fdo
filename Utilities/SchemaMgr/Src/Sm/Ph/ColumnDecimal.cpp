@@ -28,3 +28,20 @@ FdoSmPhColumnDecimal::FdoSmPhColumnDecimal(
 {
 }
 
+bool FdoSmPhColumnDecimal::DefinitionEquals( FdoSmPhColumnP otherColumn )
+{
+    bool equals = FdoSmPhColumnVarlen::DefinitionEquals( otherColumn );
+
+    if ( equals ) {
+        equals = false;
+
+        FdoSmPhColumnDecimalP otherDecimalColumn = otherColumn->SmartCast<FdoSmPhColumnDecimal>();
+
+        if ( otherDecimalColumn && (GetScale() == otherDecimalColumn->GetScale()) ) 
+            equals = true;
+    }
+
+    return equals;
+}
+
+

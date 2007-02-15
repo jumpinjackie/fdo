@@ -867,5 +867,39 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
+<xs:complexType name="view1Type" abstract="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:sequence>
+<xs:element name="BYTE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="fdo:byte"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="DEC_COL_RENAME" minOccurs="0">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value="5"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="ID">
+<xs:simpleType>
+<xs:restriction base="fdo:int32"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
 </xs:schema>
 </fdo:DataStore>

@@ -185,6 +185,11 @@ public:
     /// Returns true if this column has any not null values.
     virtual bool GetHasValues();
 
+    // Returns true if this column has the same definition (type,nullability)
+    // as the given column.
+    // Subclasses must extend this function if more definition attributes need to be checked.
+    virtual bool DefinitionEquals( FdoPtr<FdoSmPhColumn> otherColumn );
+
 // TODO:
 //    void ChangeAssociatedSpatialContext();
 

@@ -107,7 +107,6 @@ private:
     void AddUsedName( FdoStringP propName );
 
     FdoSmPhDbObjectP mDbObject;
-    FdoSmPhTable* mpTable;
     FdoSmPhColumnsP mIdCols;
     FdoDictionaryP mUsedNames;
     int mFkeyCount;
