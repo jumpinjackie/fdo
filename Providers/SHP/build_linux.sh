@@ -147,9 +147,12 @@ if test "$BUILDDOCS" == yes ; then
    echo Creating SHP provider html documentation
    rm -rf Docs/HTML/SHP
    mkdir -p Docs/HTML/SHP
+   rm -rf Docs/HTML/SHP_managed
+   mkdir -p Docs/HTML/SHP_managed
 
    pushd Docs/doc_src >& /dev/null
    doxygen Doxyfile_SHP >& /dev/null
+   doxygen Doxyfile_SHP_managed >& /dev/null
    popd >& /dev/null
 fi
 
