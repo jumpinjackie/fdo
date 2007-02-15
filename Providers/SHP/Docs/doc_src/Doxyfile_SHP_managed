@@ -1,4 +1,4 @@
-# Doxyfile 1.4.6
+# Doxyfile 1.5.1-p1
 
 #---------------------------------------------------------------------------
 # Project related configuration options
@@ -15,7 +15,7 @@ ABBREVIATE_BRIEF       =
 ALWAYS_DETAILED_SEC    = NO
 INLINE_INHERITED_MEMB  = NO
 FULL_PATH_NAMES        = NO
-STRIP_FROM_PATH        = "C:/Program Files/doxygen/bin/"
+STRIP_FROM_PATH        = 
 STRIP_FROM_INC_PATH    = 
 SHORT_NAMES            = NO
 JAVADOC_AUTOBRIEF      = NO
@@ -63,17 +63,17 @@ FILE_VERSION_FILTER    =
 # configuration options related to warning and progress messages
 #---------------------------------------------------------------------------
 QUIET                  = NO
-WARNINGS               = NO
-WARN_IF_UNDOCUMENTED   = NO
-WARN_IF_DOC_ERROR      = NO
-WARN_NO_PARAMDOC       = NO
+WARNINGS               = YES
+WARN_IF_UNDOCUMENTED   = YES
+WARN_IF_DOC_ERROR      = YES
+WARN_NO_PARAMDOC       = YES
 WARN_FORMAT            = "$file:$line: $text"
-WARN_LOGFILE           = warning_logfile.txt
+WARN_LOGFILE           = warning_logfile_managed.txt
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
 INPUT                  = group_and_page_definitions \
-                         ../../Inc/SHP/Override
+                         ../../Managed/Src/OSGeo/FDO/Providers/SHP/Override
 FILE_PATTERNS          = *.h
 RECURSIVE              = YES
 EXCLUDE                = 
@@ -94,6 +94,7 @@ INLINE_SOURCES         = NO
 STRIP_CODE_COMMENTS    = NO
 REFERENCED_BY_RELATION = YES
 REFERENCES_RELATION    = YES
+REFERENCES_LINK_SOURCE = YES
 USE_HTAGS              = NO
 VERBATIM_HEADERS       = YES
 #---------------------------------------------------------------------------
@@ -101,19 +102,20 @@ VERBATIM_HEADERS       = YES
 #---------------------------------------------------------------------------
 ALPHABETICAL_INDEX     = YES
 COLS_IN_ALPHA_INDEX    = 5
-IGNORE_PREFIX          = Fdo
+IGNORE_PREFIX          = Fdo \
+                         Mg
 #---------------------------------------------------------------------------
 # configuration options related to the HTML output
 #---------------------------------------------------------------------------
 GENERATE_HTML          = YES
-HTML_OUTPUT            = ../HTML/SHP
+HTML_OUTPUT            = ../HTML/SHP_managed
 HTML_FILE_EXTENSION    = .html
-HTML_HEADER            = headers_and_footers/header.html
-HTML_FOOTER            = headers_and_footers/footer.html
+HTML_HEADER            = headers_and_footers/header_managed.html
+HTML_FOOTER            = headers_and_footers/footer_managed.html
 HTML_STYLESHEET        = headers_and_footers/custom.css
 HTML_ALIGN_MEMBERS     = YES
 GENERATE_HTMLHELP      = YES
-CHM_FILE               = ../../SHP_Provider_API.chm
+CHM_FILE               = ../../SHP_Provider_API_managed.chm
 HHC_LOCATION           = "C:/Program Files/HTML Help Workshop/hhc.exe"
 GENERATE_CHI           = NO
 BINARY_TOC             = YES
@@ -206,6 +208,7 @@ TEMPLATE_RELATIONS     = NO
 INCLUDE_GRAPH          = YES
 INCLUDED_BY_GRAPH      = YES
 CALL_GRAPH             = YES
+CALLER_GRAPH           = NO
 GRAPHICAL_HIERARCHY    = YES
 DIRECTORY_GRAPH        = YES
 DOT_IMAGE_FORMAT       = png
