@@ -29,12 +29,10 @@
 #include <libpq-fe.h>
 
 
-//
-// Forward declarations
-//
-//class FdoIConnectionPropertyDictionary;
-
 namespace fdo { namespace postgis {
+
+// Forward declarations of internal types
+class PgCursor;
 
 /// Implementation of connection interface for PostGIS provider.
 /// It represents a unique session with FDO datastore.
@@ -131,9 +129,12 @@ public:
     // Connection custom interface
     //
 
+    ExecStatusType PgExecuteCommand(char const* sql);
     ExecStatusType PgExecuteCommand(char const* sql, FdoSize& affected);
-
+    
     PGresult* PgExecuteQuery(char const* sql);
+
+    PgCursor* PgCreateCursor(char const* name);
 
 
 protected:

@@ -33,12 +33,13 @@
 #include "SelectCommand.h"
 #include "UpdateCommand.h"
 #include "SQLCommand.h"
-
+#include "PgCursor.h"
 // Message
 #define FDOPOSTGIS_MESSAGE_DEFINE
 #include "../Message/inc/PostGisMessage.h"
 // Overrides
 #include <PostGIS/Override/PhysicalSchemaMapping.h>
+
 // std
 #include <cassert>
 #include <string>
@@ -382,6 +383,12 @@ void Connection::Flush()
 // Connection custom interface
 ///////////////////////////////////////////////////////////////////////////////
 
+ExecStatusType Connection::PgExecuteCommand(char const* sql)
+{
+    FdoSize cmdTuples = 0;
+    return PgExecuteCommand(sql, cmdTuples);
+}
+
 ExecStatusType Connection::PgExecuteCommand(char const* sql, FdoSize& cmdTuples)
 {
     FDOLOG_MARKER("Connection::+PgExecuteCommand");
@@ -392,28 +399,24 @@ ExecStatusType Connection::PgExecuteCommand(char const* sql, FdoSize& cmdTuples)
     ExecStatusType pgResStatus = PQresultStatus(pgRes.get());
     if (PGRES_COMMAND_OK != pgResStatus)
     {
-        FdoStringP errStatus(PQresStatus(pgResStatus));
-        FdoStringP errMsg();
-
-        FDOLOG_WRITE("PostgreSQL failed executing SQL command:\nCODE: %s\n%s\nSQL: %s",
+        FDOLOG_WRITE("PostgreSQL failed executing SQL command:\n\tCODE: %s\n\t%s\n\tSQL: %s",
             PQresStatus(pgResStatus), PQresultErrorMessage(pgRes.get()), sql);
 
         // TODO: Consider throwing instead of returning result status
-
         //throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_SQL_COMMAND_FAILED,
         //    "SQL command failed with PostgreSQL error code: %1$ls. %2$ls.",
         //    static_cast<FdoString*>(errStatus), static_cast<FdoString*>(errMsg)));
     }
     else
     {
-        FDOLOG_WRITE("SQL command status: %s", PQcmdStatus(pgRes.get()));
-
         try
         {
             std::string num(PQcmdTuples(pgRes.get()));
             cmdTuples = boost::lexical_cast<std::size_t>(num);
         }
-        catch (boost::bad_lexical_cast& e) { /* cmdTuples = 0; */ }
+        catch (boost::bad_lexical_cast& e) { e; /* cmdTuples = 0; */ }
+
+        FDOLOG_WRITE("SQL command: %s (%u)", PQcmdStatus(pgRes.get()), cmdTuples);
     }
 
     return pgResStatus;
@@ -421,8 +424,33 @@ ExecStatusType Connection::PgExecuteCommand(char const* sql, FdoSize& cmdTuples)
 
 PGresult* Connection::PgExecuteQuery(char const* sql)
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    FDOLOG_MARKER("Connection::+PgExecuteQuery");
+
+    PGresult* pgRes = NULL;
+    ExecStatusType pgStatus = PGRES_FATAL_ERROR;
+    
+    pgRes = PQexec(mPgConn, sql);
+    if (NULL != pgRes)
+    {
+        pgStatus = PQresultStatus(pgRes);
+    }
+    
+    if (PGRES_TUPLES_OK != pgStatus)
+    {
+        // TODO: Consider throwing an exception
+        FDOLOG_WRITE("SQL query: [%s] %s",
+            PQresStatus(pgStatus), PQresultErrorMessage(pgRes));
+    }
+
+    assert(NULL != pgRes);
+    return pgRes;
+}
+
+
+fdo::postgis::PgCursor* Connection::PgCreateCursor(char const* name)
+{
+    // TODO: Make ownership transfer exception-safe. See DataStoreReader.
+    return (new fdo::postgis::PgCursor(this, name));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
