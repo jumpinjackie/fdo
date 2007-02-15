@@ -23,6 +23,7 @@
 
 #include <FdoStd.h>
 
+/// \ingroup (enums)
 /// \brief
 /// The FdoRasterDataModelType enumeration specifies the type of
 /// data within each pixel. In all cases the data is 'packed', that is,
@@ -38,28 +39,6 @@
 /// allocated to each band, so for example RGBT data with eight bits for red,
 /// would also have eight bits for each of the three other bands totaling
 /// thirty-two bits (BitsPerPixel=32).
-/// <param name="FdoRasterDataModelType_Unknown">
-/// Data is organized in an unknown or provider specific manner.
-/// </param>
-/// <param name="FdoRasterDataModelType_Bitonal">
-/// Data is organized as one bit (black/white - bitonal) data.
-/// </param>
-/// <param name="FdoRasterDataModelType_Gray">
-/// Data is monochrome (black->gray->white) pixels.
-/// It is necessary to know the BitsPerPixel value to interpret the data.
-/// </param>
-/// <param name="FdoRasterDataModelType_RGB">
-/// Data is red/green/blue (in that order) pixels.
-/// It is necessary to know the BitsPerPixel value to interpret the data.
-/// </param>
-/// <param name="FdoRasterDataModelType_RGBA">
-/// Data is red/green/blue/alpha (in that order) pixels; RGB with transparency.
-/// It is necessary to know the BitsPerPixel value to interpret the data.
-/// </param>
-/// <param name="FdoRasterDataModelType_Palette">
-/// Data is monochrome but backed by a pallette (value->pallette->colour) pixels.
-/// It is necessary to know the BitsPerPixel value to interpret the data.
-/// </param>
 enum FdoRasterDataModelType
 {
     /// Data is organized in an unknown or provider specific manner.

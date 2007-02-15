@@ -155,7 +155,7 @@ public:
     /// \brief
     /// Sets the data type.
     /// 
-    /// \param value 
+    /// \param dataType
     /// Specifies the data type the raster data is to be returned in.
     /// 
     FDO_API virtual void SetDataType (FdoRasterDataType dataType);
@@ -163,7 +163,7 @@ public:
     /// \brief
     /// Compares this raster data model with another one.
     /// 
-    /// \param value 
+    /// \param pModel
     /// The Raster Data Model to compare with
     /// 
     /// \return
