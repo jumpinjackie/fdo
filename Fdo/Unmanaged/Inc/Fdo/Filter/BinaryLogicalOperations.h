@@ -23,15 +23,10 @@
 #pragma once
 #endif
 
+/// \ingroup (enums)
 /// \brief
 /// The FdoBinaryLogicalOperations enumeration lists the binary logical operations
 /// available.
-/// <param name="FdoBinaryLogicalOperations_And">
-/// Perform a logical And between the two filters
-/// </param>
-/// <param name="FdoBinaryLogicalOperations_Or">
-/// Perform a logical Or between the two filters
-/// </param>
 enum FdoBinaryLogicalOperations
 {
     /// Perform a logical And between the two filters.

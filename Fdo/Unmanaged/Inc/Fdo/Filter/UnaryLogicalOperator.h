@@ -33,8 +33,8 @@
 /// logical "Not" to be performed against a filter.
 class FdoUnaryLogicalOperator : public FdoLogicalOperator
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default instance of a UnaryLogicalOperator.
     FdoUnaryLogicalOperator();
 
@@ -120,6 +120,7 @@ public:
     FDO_API void Process(FdoIFilterProcessor* p);
 
 /// \cond DOXYGEN-IGNORE
+
     /// \brief
     /// This is an internal method. It returns the well defined text representation of the filter. 
     /// 

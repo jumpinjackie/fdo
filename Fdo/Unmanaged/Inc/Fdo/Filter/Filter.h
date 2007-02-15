@@ -36,8 +36,8 @@ class FdoIFilterProcessor;
 /// of a filter.
 class FdoFilter : public FdoIDisposable
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     FdoFilter();
     virtual ~FdoFilter();
 /// \endcond
@@ -78,6 +78,7 @@ public:
     FDO_API FdoString* ToString();
 
 /// \cond DOXYGEN-IGNORE
+
     /// \brief
     /// This is an internal method. It returns the well defined text representation of the filter. 
     /// 
@@ -154,8 +155,8 @@ public:
     /// 
     FDO_API static FdoFilter* Combine(FdoString* lhs, FdoBinaryLogicalOperations operation, FdoString* rhs);
 
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     wchar_t*    m_toString;
 /// \endcond
 };

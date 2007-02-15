@@ -23,16 +23,9 @@
 #pragma once
 #endif
 
+/// \ingroup (enums)
 /// \brief
 /// The FdoDistanceOperations enumeration lists the distance conditions available.
-/// <param name="FdoDistanceOperations_Beyond">
-/// Test to see if the geometric property value lies beyond a specified
-/// distance of a literal geometric value
-/// </param>
-/// <param name="FdoDistanceOperations_Within">
-/// Test to see if the geometric property value lies within a specified
-/// distance of a literal geometric value
-/// </param>
 enum FdoDistanceOperations
 {
     /// Test to see if the geometric property value lies beyond a specified

@@ -34,8 +34,8 @@
 /// values.
 class FdoInCondition : public FdoSearchCondition
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default instance of an FdoInCondition.
     FdoInCondition();
 

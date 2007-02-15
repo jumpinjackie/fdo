@@ -22,12 +22,10 @@
 #pragma once
 #endif
 
+/// \ingroup (enums)
 /// \brief
 /// The FdoUnaryLogicalOperations enumeration lists the unary logical operations
 /// available.
-/// <param name="FdoUnaryLogicalOperations_Not">
-/// Perform a logical Not of the filter
-/// </param>
 enum FdoUnaryLogicalOperations
 {
     /// Perform a logical Not of the filter.

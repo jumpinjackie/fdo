@@ -32,8 +32,8 @@
 /// The FdoValueExpressionCollection class represents a collection of FdoValueExpression classes.
 class FdoValueExpressionCollection: public FdoCollection<FdoValueExpression, FdoFilterException> 
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default empty instance of a ValueCollection.
     FdoValueExpressionCollection():FdoCollection<FdoValueExpression, FdoFilterException>()
     {
