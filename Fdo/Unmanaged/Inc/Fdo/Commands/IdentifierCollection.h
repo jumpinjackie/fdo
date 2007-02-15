@@ -31,8 +31,8 @@
 /// The FdoIdentifierCollection class represents a collection of FdoIdentifier objects.
 class FdoIdentifierCollection : public FdoCollection<FdoIdentifier, FdoCommandException>
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     virtual void Dispose();
 /// \endcond
 
@@ -96,33 +96,33 @@ public:
     /// 
     FDO_API FdoIdentifier* FindItem(const wchar_t* name)
     {
-    /// trigger the building of a map when the collection reaches the threshold size.
+    // trigger the building of a map when the collection reaches the threshold size.
         ((FdoIdentifierCollection*) this)->InitMap();
 
         FdoIdentifier* obj = NULL;
 
         if ( mpNameMap ) {
-    /// Accessing the map is faster for large collections, so use it if built.
+    // Accessing the map is faster for large collections, so use it if built.
             obj = GetMap(name);
 
-    /// If the object name can't be modified then we're done.
-    /// Otherwise, there's a chance the object name was modified,
-    /// meaning that it can be in the collection but not the map,
-    /// or in the wrong place in the map.
+    // If the object name can't be modified then we're done.
+    // Otherwise, there's a chance the object name was modified,
+    // meaning that it can be in the collection but not the map,
+    // or in the wrong place in the map.
     /*  FdoIdentifier supports SetText() so we have to assume the text might have changed
             if ( (obj != NULL) && !obj->CanSetName() )
                 return(obj);
     */
 
-    /// If the found object's name is the same as the given name
-    /// then we're done. Otherwise, this object's name has changed
-    /// and a linear search is needed to find the requested object.
+    // If the found object's name is the same as the given name
+    // then we're done. Otherwise, this object's name has changed
+    // and a linear search is needed to find the requested object.
             if ( (obj != NULL) && (Compare(obj->GetText(), name) != 0) )
                 FDO_SAFE_RELEASE( obj );
         }
 
         if ( obj == NULL ) {
-    /// No map so do linear search.
+    // No map so do linear search.
             for ( FdoInt32 i = 0; i < FdoCollection<FdoIdentifier, FdoCommandException>::GetCount(); i++ ) {
                 FdoIdentifier* obj = GetItem(i);
 
@@ -151,15 +151,15 @@ public:
     {
         CheckDuplicate( value, index );
 
-    /// Remove the old item from the map 
+    // Remove the old item from the map 
         if ( mpNameMap ) 
             RemoveMapAt(index);
 
-    /// Add the new item to the map
+    // Add the new item to the map
         if ( mpNameMap && value ) 
             InsertMap( value );
 
-    /// Set the new item in the collection.
+    // Set the new item in the collection.
         FdoCollection<FdoIdentifier, FdoCommandException>::SetItem(index, value);
     }
 
@@ -176,12 +176,12 @@ public:
     {
         CheckDuplicate( value, -1 );
 
-    /// Insert the new item in the map
+    // Insert the new item in the map
         if ( mpNameMap && value ) {
             InsertMap(value);
         }
 
-    /// add it to the list.
+    // add it to the list.
         return( FdoCollection<FdoIdentifier, FdoCommandException>::Add(value) );
     }
 
@@ -190,7 +190,7 @@ public:
     /// Items following the insertion point are moved down to accommodate the new item. 
     /// Throws an invalid argument exception if the specified index is out of range.
     /// 
-    /// \param index 
+    /// \param item 
     /// Input index
     /// \param value 
     /// Input value
@@ -202,12 +202,12 @@ public:
     {
         CheckDuplicate( value, -1 );
 
-    /// Insert the new item in the map
+    // Insert the new item in the map
         if ( mpNameMap ) {
             InsertMap(value);
         }
 
-    /// Insert it in the list
+    // Insert it in the list
         return( FdoCollection<FdoIdentifier, FdoCommandException>::Insert(item, value) );
     }
 
@@ -219,13 +219,13 @@ public:
     /// 
     virtual void Clear()
     {
-    /// Clear the map
+    // Clear the map
         if (mpNameMap ) {
             delete mpNameMap;
             mpNameMap = NULL;
         }
 
-    /// Clear the list
+    // Clear the list
         FdoCollection<FdoIdentifier, FdoCommandException>::Clear();
     }
 
@@ -240,11 +240,11 @@ public:
     /// 
     virtual void Remove(const FdoIdentifier* value)
     {
-    /// Remove the item from the map.
+    // Remove the item from the map.
         if ( mpNameMap ) 
             RemoveMap( value );
 
-    /// Remove it from the list
+    // Remove it from the list
         FdoCollection<FdoIdentifier, FdoCommandException>::Remove(value);
     }
 
@@ -259,11 +259,11 @@ public:
     /// 
     virtual void RemoveAt(FdoInt32 index)
     {
-    /// Remove the item from the map.
+    // Remove the item from the map.
         if ( mpNameMap ) 
             RemoveMapAt(index);
 
-    /// Remove it from the list
+    // Remove it from the list
         FdoCollection<FdoIdentifier, FdoCommandException>::RemoveAt(index);
     }
 
@@ -278,12 +278,12 @@ public:
     /// 
     virtual bool Contains(const FdoIdentifier* value)
     {
-    /// trigger the building of a map when the collection reaches the threshold size.
+    // trigger the building of a map when the collection reaches the threshold size.
         ((FdoIdentifierCollection*) this)->InitMap();
 
         if (mpNameMap )
         {
-    /// If map is built, use it since it is faster. 
+    // If map is built, use it since it is faster. 
             FdoPtr <FdoIDisposable> temp = GetMap (((FdoIdentifier*)value)->GetText());
             bool ret = (temp != NULL);
             return (ret);
@@ -381,7 +381,7 @@ protected:
         if ( mbCaseSensitive )
             return ( wcscmp(str1, str2) );
 
-    /// Try case-insensitive comparison.
+    // Try case-insensitive comparison.
 #ifdef _WIN32
         return ( _wcsicmp(str1, str2) );
 #else
@@ -412,11 +412,11 @@ protected:
 private:
     void InitMap()
     {
-    /// Build the map if not already built and the collection has hit the threshold
+    // Build the map if not already built and the collection has hit the threshold
         if ( !mpNameMap && ( FdoCollection<FdoIdentifier, FdoCommandException>::GetCount() > FDO_COLL_MAP_THRESHOLD ) ) {
             mpNameMap = new std::map<FdoStringP,FdoIdentifier*>();
 
-    /// Put all the current elements into the map
+    // Put all the current elements into the map
             for ( FdoInt32 i = (FdoCollection<FdoIdentifier, FdoCommandException>::GetCount() - 1); i >= 0; i-- ) 
                 InsertMap( FdoPtr<FdoIdentifier>(GetItem(i)) );
         }
@@ -424,18 +424,18 @@ private:
 
     void InsertMap( FdoIdentifier* value ) const
     {
-    /// Add an element to the map. Elements are keyed by name, which may or may not be case sensitive.
-    /// Case insensitive names are stored in lower case.
+    // Add an element to the map. Elements are keyed by name, which may or may not be case sensitive.
+    // Case insensitive names are stored in lower case.
         if ( mbCaseSensitive ) 
             mpNameMap->insert( std::pair<FdoStringP,FdoIdentifier*> ( value->GetText(), value ) );
         else
             mpNameMap->insert( std::pair<FdoStringP,FdoIdentifier*> ( FdoStringP(value->GetText()).Lower(), value ) );            
     }
 
-    /// Remove the element at the specified index, from the map
+    // Remove the element at the specified index, from the map
     void RemoveMapAt( FdoInt32 index )
     {
-    /// Remove the old item from the map 
+    // Remove the old item from the map 
         FdoIdentifier* pItem = FdoCollection<FdoIdentifier, FdoCommandException>::GetItem(index);
 
         if ( pItem ) {
@@ -444,17 +444,17 @@ private:
         }
     }
 
-    /// Remove the given element from the map.
+    // Remove the given element from the map.
     void RemoveMap( const FdoIdentifier* value )
     {
-    /// handle the current case sensitivity of the element name.
+    // handle the current case sensitivity of the element name.
         if ( mbCaseSensitive ) 
             mpNameMap->erase( FdoStringP( ((FdoIdentifier*)value)->GetText() ) );
         else
             mpNameMap->erase( FdoStringP( ((FdoIdentifier*)value)->GetText() ).Lower() );            
     }
 
-    /// Get the named element from the map. Returns NULL if element not in map.
+    // Get the named element from the map. Returns NULL if element not in map.
     FdoIdentifier* GetMap( const wchar_t* name ) const
     {
         FdoIdentifier* pItem = NULL;
@@ -464,7 +464,7 @@ private:
         if ( mbCaseSensitive )
             iter = mpNameMap->find( FdoStringP(name) );
         else 
-    /// Case sensitive names are stored in lower case.
+    // Case sensitive names are stored in lower case.
             iter = mpNameMap->find( FdoStringP(name).Lower() );
 
         if ( iter != mpNameMap->end() ) { 
@@ -477,7 +477,7 @@ private:
 
     bool mbCaseSensitive;
 
-    /// A map keyed by name, to help performance of large collections.
+    // A map keyed by name, to help performance of large collections.
     std::map<FdoStringP,FdoIdentifier*> *mpNameMap;
 
 };

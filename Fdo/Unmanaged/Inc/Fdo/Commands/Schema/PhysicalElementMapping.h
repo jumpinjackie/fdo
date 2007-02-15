@@ -141,6 +141,7 @@ public:
 	);
 
 /// \cond DOXYGEN-IGNORE
+
     /// Various error reporting functions that are not yet part of the supported
     /// FDO API.
     /// All of them return a FdoXmlSkipElementHandler, which can be used to skip
@@ -201,6 +202,7 @@ protected:
     FDO_API void SetParent(FdoPhysicalElementMapping* value);
 
 /// \cond DOXYGEN-IGNORE
+
     /// retrieves a FdoXmlSkipElementHandler for skipping an entire XML element
     FDO_API FdoXmlSaxHandler* GetSkipper();
 
@@ -227,6 +229,7 @@ private:
     FdoStringP                              m_description;
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoPhysicalElementMappingP is a FdoPtr on FdoPhysicalElementMapping, provided for convenience.
 typedef FdoPtr<FdoPhysicalElementMapping> FdoPhysicalElementMappingP;

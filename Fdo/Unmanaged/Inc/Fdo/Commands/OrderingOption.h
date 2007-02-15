@@ -23,15 +23,10 @@
 #pragma once
 #endif
 
+/// \ingroup (enums)
 /// \brief
 /// The FdoOrderingOption enumeration defines the list acceptable values that 
 /// can be specified as order by clause to the select and select aggregate commands.
-/// <param name="FdoOrderingOption_Ascending">
-/// Used for ascending option
-/// </param>
-/// <param name="FdoOrderingOption_Descending">
-/// Used for descending option
-/// </param>
 enum FdoOrderingOption{
     /// Used for ascending option.
     FdoOrderingOption_Ascending,

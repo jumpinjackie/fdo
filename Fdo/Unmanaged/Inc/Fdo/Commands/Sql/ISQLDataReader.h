@@ -67,7 +67,7 @@ public:
     ///  to indicate if a given column is a geometric property or a data property. If the column is
     ///  a FdoPropertyType_DataProperty, then GetColumnType can be used to find the data type of the column.
     /// 
-    /// \param propertyName 
+    /// \param columnName 
     /// Input the column name.
     /// 
     /// \return

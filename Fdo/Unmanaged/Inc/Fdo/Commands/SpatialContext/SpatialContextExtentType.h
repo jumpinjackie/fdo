@@ -23,17 +23,10 @@
 #pragma once
 #endif
 
+/// \ingroup (enums)
 /// \brief
 /// The FdoSpatialContextExtentType enumeration defines how the extent of
 /// a context should be handled by the provider.
-/// <param name="FdoSpatialContextExtentType_Static">
-/// The spatial extent of the context is static and must be specified
-/// when the context is created.
-/// </param>
-/// <param name="FdoSpatialContextExtentType_Dynamic">
-/// The spatial extent of the context is dynamic and changes as data is
-/// added and removed from the context.
-/// </param>
 enum FdoSpatialContextExtentType
 {
     /// The spatial extent of the context is static and must be specified

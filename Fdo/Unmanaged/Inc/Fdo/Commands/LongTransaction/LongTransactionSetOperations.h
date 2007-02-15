@@ -23,18 +23,10 @@
 #pragma once
 #endif
 
+/// \ingroup (enums)
 /// \brief
 /// The FdoLongTransactionSetOperations enumeration defines the list of
 /// available operations that can be performed by the ChangeLongTransactionSet command.
-/// <param name="FdoLongTransactionSetOperations_Add">
-/// Add the specified long transaction to the selection set.
-/// </param>
-/// <param name="FdoLongTransactionSetOperations_Remove">
-/// Remove the specified long transaction from the selection set.
-/// </param>
-/// <param name="FdoLongTransactionSetOperations_Clear">
-/// Clear the selection set.
-/// </param>
 enum FdoLongTransactionSetOperations
 {
     /// Add the specified long transaction to the selection set.

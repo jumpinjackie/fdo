@@ -23,18 +23,10 @@
 #pragma once
 #endif
 
+/// \ingroup (enums)
 /// \brief
 ///  The FdoBaseUnit enumeration defines the well known base unit used to
 /// establish a measure unit.
-/// <param name="FdoBaseUnit_None">
-/// Input no base unit
-/// </param>
-/// <param name="FdoBaseUnit_Meters">
-/// Input base unit meters
-/// </param>
-/// <param name="FdoBaseUnit_Radians">
-/// Input base unit radians
-/// </param>
 enum FdoBaseUnit
 {
     /// Represents an unspecified base unit, it can be used to create an

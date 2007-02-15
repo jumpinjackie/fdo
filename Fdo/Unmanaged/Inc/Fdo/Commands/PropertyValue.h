@@ -35,8 +35,8 @@
 /// and the properties value.
 class FdoPropertyValue : public FdoIDisposable
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default instance of an FdoPropertyValue.
     FdoPropertyValue();
 

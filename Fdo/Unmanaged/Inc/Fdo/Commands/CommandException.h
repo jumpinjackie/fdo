@@ -111,6 +111,7 @@ public:
     FDO_API static FdoCommandException* Create(FdoString* message, FdoException* cause);
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoCommandExceptionP is a FdoPtr on FdoCommandException, provided for convenience.
 typedef FdoPtr<FdoCommandException> FdoCommandExceptionP;

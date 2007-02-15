@@ -23,14 +23,9 @@
 #pragma once
 #endif
 
+/// \ingroup (enums)
 /// \brief
 /// The FdoLongTransactionFreezeOperations enumeration defines the list of available operations that can be performed by the FreezeLongTransaction command.
-/// <param name="FdoLongTransactionFreezeOperations_Freeze">
-/// Freeze the long transaction for exclusive update
-/// </param>
-/// <param name="FdoLongTransactionFreezeOperations_Thaw">
-/// Thaw the long transaction
-/// </param>
 enum FdoLongTransactionFreezeOperations
 {
     /// Freeze the long transaction for exclusive update.

@@ -33,8 +33,8 @@
 /// when a command is executed.
 class FdoParameterValue : public FdoIDisposable
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default instance of a ParameterValue.
     FdoParameterValue();
 
