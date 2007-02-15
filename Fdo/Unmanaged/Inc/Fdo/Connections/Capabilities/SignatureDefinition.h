@@ -59,8 +59,8 @@ public:
     FDO_API FdoDataType GetReturnType ();
 
 
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs an instance of a SignatureDefinition using the specified arguments.
     FdoSignatureDefinition (FdoDataType                     returnType,
                             FdoArgumentDefinitionCollection *arguments);
@@ -127,8 +127,8 @@ class FdoReadOnlySignatureDefinitionCollection : public FdoReadOnlyUnnamedCollec
                                                                                      FdoSignatureDefinitionCollection, 
                                                                                      FdoSchemaException>
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs an instance of a SignatureDefinition using the specified arguments.
     FdoReadOnlySignatureDefinitionCollection ();
 
@@ -144,7 +144,7 @@ public:
     /// \brief
     /// Constructs an instance of an FdoReadOnlySignatureDefinitionCollection by providing a non-readonly collection.
     /// 
-    /// \param collection 
+    /// \param col 
     /// Input a signature collection
     /// 
     /// \return

@@ -31,8 +31,8 @@
 /// The FdoArgumentDefinition class contains metadata that describes an argument to a function.
 class FdoArgumentDefinition : public FdoIDisposable
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs an instance of an FdoArgumentDefinition using the specified arguments.
     FdoArgumentDefinition(FdoString* name, FdoString* description, FdoDataType dataType);
 

@@ -23,22 +23,9 @@
 #pragma once
 #endif
 
+/// \ingroup (enums)
 /// \brief
 /// The FdoConnectionState enumeration indicates the current state of the connection
-/// <param name="FdoConnectionState_Busy">
-/// The connection is busy executing one or more commands. Executing another
-/// command while the connection is busy will result in an exception.
-/// </param>
-/// <param name="FdoConnectionState_Closed">
-/// The connection is closed.
-/// </param>
-/// <param name="FdoConnectionState_Open">
-/// The connection is open.
-/// </param>
-/// <param name="FdoConnectionState_Pending">
-/// The connection is pending. this is used to indicate that the application has 
-/// issued an Open request, but the open is not completed because the application needs to include additional connection property values.
-/// </param>
 enum FdoConnectionState
 {
     /// The connection is busy executing one or more commands. Executing another
@@ -51,7 +38,9 @@ enum FdoConnectionState
     /// The connection is open.
     FdoConnectionState_Open,
 
-    /// The connection is open.
+    /// The connection is pending. this is used to indicate that the application has 
+    /// issued an Open request, but the open is not completed because the application
+    /// needs to include additional connection property values.
     FdoConnectionState_Pending
 };
 #endif

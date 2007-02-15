@@ -22,24 +22,10 @@
 #pragma once
 #endif
 
+/// \ingroup (enums)
 /// \brief
 /// The FdoSchemaElementNameType enumeration lists all of the concrete schema name
 /// types defined to address schema limitation information.
-/// <param name="FdoSchemaElementNameType_Datastore">
-/// Represents the identifier to address a data store name
-/// </param>
-/// <param name="FdoSchemaElementNameType_Schema">
-/// Represents the identifier to address a schema
-/// </param>
-/// <param name="FdoSchemaElementNameType_Class">
-/// Represents the identifier to address a class
-/// </param>
-/// <param name="FdoSchemaElementNameType_Property">
-/// Represents the identifier to address a property
-/// </param>
-/// <param name="FdoSchemaElementNameType_Description">
-/// Represents the identifier to address a description
-/// </param>
 
 enum FdoSchemaElementNameType
 {

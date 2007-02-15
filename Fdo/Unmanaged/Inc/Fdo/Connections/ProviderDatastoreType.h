@@ -22,21 +22,10 @@
 #pragma once
 #endif
 
+/// \ingroup (enums)
 /// \brief
 /// The FdoProviderDatastoreType enumeration lists all of the concrete provider
 /// types supported by FDO.
-/// <param name="FdoProviderDatastoreType_DatabaseServer">
-/// Indicates that the provider is a database-based provider.
-/// </param>
-/// <param name="FdoProviderDatastoreType_File">
-/// Indicates that the provider is a file-based provider.
-/// </param>
-/// <param name="FdoProviderDatastoreType_WebServer">
-/// Indicates that the provider is a web-based provider.
-/// </param>
-/// <param name="FdoProviderDatastoreType_Unknown">
-/// Indicates that the provider is of an unknown provider type.
-/// </param>
 
 enum FdoProviderDatastoreType
 {

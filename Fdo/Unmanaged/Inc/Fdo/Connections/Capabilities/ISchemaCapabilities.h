@@ -73,9 +73,6 @@ public:
     /// \brief
     /// Returns the maximum supported precision for a decimal data property.
     ///
-    /// \param
-    /// None.
-    ///
     /// \return
     /// Returns the maximum supported precision for a decimal data property.
     ///
@@ -83,9 +80,6 @@ public:
 
     /// \brief
     /// Returns the maximum supported scale for a decimal data property.
-    ///
-    /// \param
-    /// None.
     ///
     /// \return
     /// Returns the maximum supported scale for a decimal data property.
@@ -111,9 +105,6 @@ public:
     /// \brief
     /// Returns a string that includes all the reserved characters that cannot be
     /// used for the various schema element names for the provider.
-    ///
-    /// \param
-    /// None
     ///
     /// \return
     /// Returns a string with the reserved characters for the identified schema element.
@@ -186,9 +177,6 @@ public:
     /// Returns TRUE if default values can be specified for a data property
     /// definition, FALSE otherwise.
     ///
-    /// \param
-    /// None
-    ///
     /// \return
     /// Returns TRUE if default values can be specified for a data property
     /// definition, FALSE otherwise.
@@ -212,6 +200,7 @@ public:
 	FDO_API virtual bool SupportsInclusiveValueRangeConstraints() = 0;
 
 /// \cond DOXYGEN-IGNORE
+
     /// \brief
     /// DEPRECATED: Use SupportsInheritance() instead.
     ///          Determines if the feature provider supports inheritance.
