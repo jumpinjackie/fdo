@@ -29,8 +29,8 @@
 /// The FdoFeatureClassCollection class represents a collection of FdoFeatureClasse objects.
 class FdoFeatureClassCollection: public FdoSchemaCollection<FdoFeatureClass> 
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs an instance of a FeatureClassCollection using the specified argument.
     FdoFeatureClassCollection(FdoSchemaElement* parent) : FdoSchemaCollection<FdoFeatureClass>(parent)
     {

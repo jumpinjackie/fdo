@@ -36,8 +36,8 @@
 class FdoNetworkLayerClass : public FdoClassDefinition
 {
 
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default instance of an FdoNetworkLayerClass.
     FdoNetworkLayerClass();
 
@@ -80,6 +80,7 @@ public:
     FDO_API virtual FdoClassType GetClassType();
 
 /// \cond DOXYGEN-IGNORE
+
     /// Public non-API functions for XML and Schema Merge support
 
     /// Update this property from the given property.
@@ -101,6 +102,7 @@ protected:
 /// \endcond
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoNetworkLayerClassP is a FdoPtr on FdoNetworkLayerClass, provided for convenience.
 typedef FdoPtr<FdoNetworkLayerClass> FdoNetworkLayerClassP;

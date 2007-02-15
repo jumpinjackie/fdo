@@ -35,8 +35,8 @@
 template <class OBJ> class FdoSchemaCollection : public FdoNamedCollection<OBJ, FdoSchemaException>
 {
 
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     FdoSchemaCollection()
     {
     }
@@ -356,8 +356,8 @@ public:
         FdoNamedCollection<OBJ, FdoSchemaException>::RemoveAt(index);
     }
 
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// States stored in the m_changeInfoState bitfield flag
     static const unsigned int   CHANGEINFO_PRESENT      = 0x00000001;
     static const unsigned int   CHANGEINFO_PROCESSING   = 0x00000002;

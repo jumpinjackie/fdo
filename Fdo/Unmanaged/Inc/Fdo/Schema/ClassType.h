@@ -22,27 +22,10 @@
 #pragma once
 #endif
 
+/// \ingroup (enums)
 /// \brief
 /// The FdoClassType enumeration lists all of the concrete class types defined in
 /// the Schema package.
-/// <param name="FdoClassType_Class">
-/// Represents the concrete class type Class
-/// </param>
-/// <param name="FdoClassType_FeatureClass">
-/// Represents the concrete class type FeatureClass
-/// </param>
-/// <param name="FdoClassType_NetworkClass">
-/// Represents the concrete class type NetworkClass
-/// </param>
-/// <param name="FdoClassType_NetworkLayerClass">
-/// Represents the concrete class type NetworkLayerClass
-/// </param>
-/// <param name="FdoClassType_NetworkNodeClass">
-/// Represents the concrete class type NetworkNodeClass
-/// </param>
-/// <param name="FdoClassType_NetworkLinkClass">
-/// Represents the concrete class type NetworkLinkClass
-/// </param>
 enum FdoClassType
 {
     /// Represents the concrete class type Class.

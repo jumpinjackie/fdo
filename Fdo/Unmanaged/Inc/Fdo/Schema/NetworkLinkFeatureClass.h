@@ -37,8 +37,8 @@
 class FdoNetworkLinkFeatureClass : public FdoNetworkFeatureClass
 {
 
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default instance of an FdoNetworkLinkFeatureClass.
     FdoNetworkLinkFeatureClass();
 
@@ -174,6 +174,7 @@ protected:
 /// \endcond
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoNetworkLinkFeatureClassP is a FdoPtr on FdoNetworkLinkFeatureClass, provided for convenience.
 typedef FdoPtr<FdoNetworkLinkFeatureClass> FdoNetworkLinkFeatureClassP;

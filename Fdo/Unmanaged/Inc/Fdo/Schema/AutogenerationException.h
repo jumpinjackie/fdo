@@ -33,8 +33,8 @@
 /// or possibly because of provider-specific errors.
 class FdoAutogenerationException : public FdoSchemaException
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default instance of an FdoAutogenerationException.
     FdoAutogenerationException();
 
@@ -85,6 +85,7 @@ public:
     FDO_API static FdoAutogenerationException* Create(FdoString* name, FdoException* cause);
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoSchemaExceptionP is a FdoPtr on FdoAutogenerationException, provided for convenience.
 typedef FdoPtr<FdoAutogenerationException> FdoAutogenerationExceptionP;

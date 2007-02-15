@@ -68,6 +68,7 @@ private:
 	FdoDataPropertyDefinitionCollection*  m_properties;
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoUniqueConstraintP is a FdoPtr on FdoUniqueConstraint, provided for convenience.
 typedef FdoPtr<FdoUniqueConstraint> FdoUniqueConstraintP;

@@ -50,8 +50,8 @@ class FdoSchemaElement :
     friend class FdoNetworkFeatureClass;
     friend class FdoNetworkLinkFeatureClass;
 
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default instance of an FdoSchemaElement.
     FdoSchemaElement();
 
@@ -268,7 +268,7 @@ protected:
 /// \endcond
 
 };
-
+/// \ingroup (typedefs)
 /// \brief
 /// FdoSchemaElementP is a FdoPtr on FdoSchemaElement, provided for convenience.
 typedef FdoPtr<FdoSchemaElement> FdoSchemaElementP;

@@ -66,6 +66,7 @@ public:
     FDO_API static FdoClassCollection* Create(FdoSchemaElement* parent);
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoClassesP is a FdoPtr on FdoClassCollection, provided for convenience.
 typedef FdoPtr<FdoClassCollection> FdoClassesP;

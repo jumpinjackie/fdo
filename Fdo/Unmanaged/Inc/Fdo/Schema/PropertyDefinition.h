@@ -32,8 +32,8 @@
 /// FdoGeometricPropertyDefinition, and FdoObjectPropertyDefinition.
 class FdoPropertyDefinition : public FdoSchemaElement
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default instance of a PropertyDefinition.
     FdoPropertyDefinition();
 
@@ -81,6 +81,7 @@ public:
     FDO_API virtual void SetIsSystem( bool value );
 
 /// \cond DOXYGEN-IGNORE
+
     /// Public non-API functions for XML and Schema Merge support
 
     /// Update this property from the given property.
@@ -98,6 +99,7 @@ protected:
 /// \endcond
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoPropertyP is a FdoPtr on FdoPropertyDefinition, provided for convenience.
 typedef FdoPtr<FdoPropertyDefinition> FdoPropertyP;

@@ -117,7 +117,8 @@ protected:
     /// 
     virtual void Dispose ();
  
- /// \cond DOXYGEN-IGNORE
+/// \cond DOXYGEN-IGNORE
+
     /// Hide default constructor to ensure that it cannot be used.
     FdoTopology() {};
     virtual ~FdoTopology();

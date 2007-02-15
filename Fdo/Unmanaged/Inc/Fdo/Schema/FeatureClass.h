@@ -38,8 +38,8 @@ class FdoFeatureClass : public FdoClassDefinition
 {
     template <class OBJ> friend class FdoSchemaCollection;
 
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default instance of an FdoFeatureClass.
     FdoFeatureClass();
 
@@ -136,6 +136,7 @@ protected:
 /// \endcond
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoFeatureClassP is a FdoPtr on FdoFeatureClass, provided for convenience.
 typedef FdoPtr<FdoFeatureClass> FdoFeatureClassP;

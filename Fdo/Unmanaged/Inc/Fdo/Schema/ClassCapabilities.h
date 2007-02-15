@@ -146,6 +146,7 @@ private:
 
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoClassCapabilitiesP is a FdoPtr on FdoClassCapabilities, provided for convenience.
 typedef FdoPtr<FdoClassCapabilities> FdoClassCapabilitiesP;

@@ -22,21 +22,18 @@
 #pragma once
 #endif
 
+/// \ingroup (enums)
 /// \brief
 /// The FdoPropertyValueConstraintType enumeration categorizes the
 /// supported constraint.
-/// <param name="FdoPropertyValueConstraintType_Range">
-/// This constraint specifies minimum and / or maximum allowed values for a particular property. It can be used for all data property types except for Boolean, BLOB, or CLOB
-/// </param>
-/// <param name="FdoPropertyValueConstraintType_List">
-/// This constraint specifies a list of allowed values for a particular property. It can be used for all data property types except for Boolean, BLOB, or CLOB
-/// </param>
 enum FdoPropertyValueConstraintType
 {
-    /// Represents a range constaint.
+    /// Specifies minimum and / or maximum allowed values for a particular property.
+    /// It can be used for all data property types except for Boolean, BLOB, or CLOB.
     FdoPropertyValueConstraintType_Range = 0x01,
 
-    /// Represents a list constraint.
+    /// Specifies a list of allowed values for a particular property.
+    /// It can be used for all data property types except for Boolean, BLOB, or CLOB.
     FdoPropertyValueConstraintType_List = 0x02
 };
 
