@@ -677,10 +677,18 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
+<xs:element name="view1" type="dbo:view1Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="view1Key">
+<xs:selector xpath=".//view1"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
 <xs:complexType name="view1Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
+<xs:complexContent>
+<xs:extension base="fdo:ClassType">
 <xs:sequence>
 <xs:element name="BYTE_COLUMN" minOccurs="0">
 <xs:simpleType>
@@ -710,11 +718,21 @@
 </xs:annotation>
 </xs:element>
 </xs:sequence>
+</xs:extension>
+</xs:complexContent>
 </xs:complexType>
+<xs:element name="view3" type="dbo:view3Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="view3Key">
+<xs:selector xpath=".//view3"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
 <xs:complexType name="view3Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
+<xs:complexContent>
+<xs:extension base="fdo:ClassType">
 <xs:sequence>
 <xs:element name="GEOM_COLUMN" minOccurs="0">
 <xs:simpleType>
@@ -751,6 +769,8 @@
 </xs:simpleType>
 </xs:element>
 </xs:sequence>
+</xs:extension>
+</xs:complexContent>
 </xs:complexType>
 </xs:schema>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://fdo.osgeo.org/schemas/feature/guest" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:gml="http://www.opengis.net/gml" xmlns:guest="http://fdo.osgeo.org/schemas/feature/guest" elementFormDefault="qualified" attributeFormDefault="unqualified">
@@ -1831,6 +1851,12 @@
 </complexType>
 <complexType name="table7Type" identityIsGloballyUnique="false" identitySeed="1" identityIncrement="1" identityPropertyName="ID">
 <Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_dbo_table7" name="dbo.table7"/>
+</complexType>
+<complexType name="view1Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
+<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_dbo_view1" name="dbo.view1"/>
+</complexType>
+<complexType name="view3Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
+<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_dbo_view3" name="dbo.view3"/>
 </complexType>
 </SchemaMapping>
 <SchemaMapping xmlns:rdb="http://fdordbms.osgeo.org/schemas" xmlns="http://www.autodesk.com/isd/fdo/SqlServerProvider" textInRow="NotInRow" provider="Autodesk.SqlServer.3.2" name="guest">

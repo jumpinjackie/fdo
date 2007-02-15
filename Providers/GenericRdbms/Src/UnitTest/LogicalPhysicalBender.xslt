@@ -10,9 +10,9 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 >
 
 <xsl:param name="providerName"/>
-<xsl:template match="lp:schema[@name='F_MetaClass' or starts-with(@name,'abcdef1234567890')]"/>
+<xsl:template match="lp:schema[@name='F_MetaClass' or (not($providerName='Oracle') and starts-with(@name,'abcdef1234567890'))]"/>
 <xsl:template match="lp:class[@name='aCxdATA' and $providerName='SqlServer']"/>
-<xsl:template match="lp:class[@name='Zoning' and ($providerName='SqlServer' or $providerName='MySql')]">
+<xsl:template match="lp:class[@name='Zoning']">
   <xsl:copy>
     <xsl:apply-templates select="@*"/>
     <xsl:apply-templates select="lp:tableMapping|lp:identityProperties|lp:properties"/>
@@ -39,7 +39,12 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 			</xsl:variable>
 			<xsl:element name="column">
 				<xsl:attribute name="name">
-					<xsl:value-of select="concat($upperName,'_SI_1')"/>
+					<xsl:choose>
+						<xsl:when test="string-length(substring-after($upperName,'GEOMETRY')) = 1">GEOMETRY__SI_1</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="concat($upperName,'_SI_1')"/>
+						</xsl:otherwise>
+					</xsl:choose>
 				</xsl:attribute>
 				<xsl:attribute name="description"/>
 				<xsl:attribute name="dataType">VARCHAR</xsl:attribute>
@@ -49,7 +54,12 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 			</xsl:element>
 			<xsl:element name="column">
 				<xsl:attribute name="name">
-					<xsl:value-of select="concat($upperName,'_SI_2')"/>
+					<xsl:choose>
+						<xsl:when test="string-length(substring-after($upperName,'GEOMETRY')) = 1">GEOMETRY__SI_2</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="concat($upperName,'_SI_2')"/>
+						</xsl:otherwise>
+					</xsl:choose>
 				</xsl:attribute>
 				<xsl:attribute name="description"/>
 				<xsl:attribute name="dataType">VARCHAR</xsl:attribute>
@@ -240,7 +250,8 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 									<xsl:attribute name="dataType">DOUBLE</xsl:attribute>	
 								</xsl:when>
 								<xsl:when test="$providerName = 'SqlServer'">
-									<xsl:attribute name="dataType">REAL</xsl:attribute>	
+									<!-- logged as defect 772006 <xsl:attribute name="dataType">REAL</xsl:attribute>	-->
+									<xsl:attribute name="dataType">FLOAT</xsl:attribute>
 								</xsl:when>
 							</xsl:choose>
 							<xsl:attribute name="length">0</xsl:attribute>	
@@ -288,7 +299,7 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 </xsl:template>
 <xsl:template match="@tableName">
 	<xsl:attribute name="tableName">
-		<xsl:call-template name="bendTableName">
+		<xsl:call-template name="prefixTableName">
 			<xsl:with-param name="inName" select="."/>
 		</xsl:call-template>
 	</xsl:attribute>
@@ -316,7 +327,7 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 </xsl:template>
 <xsl:template match="@name[local-name(..)='table']">
 	<xsl:attribute name="name">
-		<xsl:call-template name="bendTableName">
+		<xsl:call-template name="prefixTableName">
 			<xsl:with-param name="inName" select="."/>
 		</xsl:call-template>
 	</xsl:attribute>
@@ -345,9 +356,26 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 	<xsl:choose>
 		<xsl:when test="$providerName='Oracle'">
 			<xsl:choose>
+				<xsl:when test="$inName='ACDBHATCH_POLYLINE_ACDBVERTEX1'">ACDBHATCH_POLYLINE_AC1_ACDB1</xsl:when>
+				<xsl:when test="$inName='ACDBHATCH_POLYLINE_ACDBVERTEX2'">ACDBHATCH_POLYLINE_AC1_SEQ</xsl:when>
+				<xsl:when test="$inName='ACDB3DPOLYLINE_ACDBVERTEXDATA1'">ACDB3DPOLYLINE_ACDBVE1_ACDB1</xsl:when>
+				<xsl:when test="$inName='ACDB3DPOLYLINE_ACDBVERTEXDATA2'">ACDB3DPOLYLINE_ACDBVE1_SEQ</xsl:when>
+				<xsl:when test="$inName='ELECTRICDEVICE_MAINT_HISTORY_1'">ELECTRICDEVICE_MAINT_1_ELEC1</xsl:when>
+				<xsl:when test="$inName='ELECTRICDEVICE_MAINT_HISTORY_2'">ELECTRICDEVICE_MAINT_1_DATE1</xsl:when>
+				<xsl:when test="$inName='EMPLOYEE_A_ADDRESS_EMPLOYEE_F1'">EMPLOYEE_A_ADDRESS_EMPLOYEE1</xsl:when>
+				<xsl:when test="$inName='EMPLOYEE_A_ADDRESS_EMPLOYEE_L1'">EMPLOYEE_A_ADDRESS_EMPLOYEE2</xsl:when>
+				<xsl:when test="$inName='MAINTENANCE_HISTORY_DESCRIPTI1'">MAINTENANCE_HISTORY_DESCRIP1</xsl:when>
 				<xsl:when test="$inName='OVCLASSC111_OPC_TABLE_HD_OVCL1'">OVCLASSC111_OPC_TABLE1_OVCL1</xsl:when>
 				<xsl:when test="$inName='OVCLASSC111_OPC_TABLE_HD_OPID1'">OVCLASSC111_OPC_TABLE1_OPID1</xsl:when>
 				<xsl:when test="$inName='OVCLASSH_FTABLED_OVCLASSH_FEA1'">OVCLASSH_FTABLED_OVCLASSH_F1</xsl:when>
+				<xsl:when test="$inName='POLYLINE_ACDBVERTEXDATA_SEQ'">POLYLINE_ACDBVERTEXDA1_SEQ</xsl:when>
+				<xsl:when test="$inName='POLYLINE_ACDBVERTEXDATA_POLYL1'">POLYLINE_ACDBVERTEXDA1_POLY1</xsl:when>
+				<xsl:when test="$inName='ABCDEF1234567890ABCDEF12345671'">ABCDEF1234567890ABCDEF123451</xsl:when>
+				<xsl:when test="$inName='ABCDEF1234567890ABCDEF12345672' and ../@tableName='ABCDEF1234567890ABCDEF12345675'">ABCDEF1234567890ABCDE4_ABCD1</xsl:when>
+				<xsl:when test="$inName='ABCDEF1234567890ABCDEF12345672' and ../@tableName='ABCDEF1234567890ABCDEF12345673'">ABCDEF1234567890ABCDE2_ABCD1</xsl:when>
+				<xsl:when test="$inName='ABCDEF1234567890ABCDEF12345672'">ABCDEF1234567890ABCDE1_ABCD1</xsl:when>
+				<!--<xsl:when test="$inName='ABCDEF1234567890ABCDEF12345672'"><xsl:value-of select="../@tableName"/></xsl:when>-->
+				<xsl:when test="$inName='GBCDEF1234567890ABCDEF12345671'">GBCDEF1234567890ABCDEF123451</xsl:when>
 				<xsl:otherwise>
 					<xsl:value-of select="$inName"/>
 				</xsl:otherwise>
@@ -355,16 +383,17 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 		</xsl:when>
 		<xsl:otherwise>
 			<xsl:choose>
-				<xsl:when test="$inName='ACDB3DPOLYLINE_ACDBVERTEXDATA1'">acdb3dpolyline_acdbvertexdata_acdb3dpolyline_featid</xsl:when>
-				<xsl:when test="$inName='ACDB3DPOLYLINE_ACDBVERTEXDATA2'">acdb3dpolyline_acdbvertexdata_seq</xsl:when>
-				<xsl:when test="$inName='ACDBHATCH_POLYLINE_ACDBVERTEX1'">acdbhatch_polyline_acdbvertexdata_acdbhatch_polyline_featid</xsl:when>
-				<xsl:when test="$inName='ACDBHATCH_POLYLINE_ACDBVERTEX2'">acdbhatch_polyline_acdbvertexdata_seq</xsl:when>
-				<xsl:when test="$inName='POLYLINE_ACDBVERTEXDATA_POLYL1'">polyline_acdbvertexdata_polyline_featid</xsl:when>
-				<xsl:when test="$inName='MAINTENANCE_HISTORY_DESCRIPTI1'">maintenance_history_description</xsl:when>
-				<xsl:when test="$inName='ELECTRICDEVICE_MAINT_HISTORY_1'">electricdevice_maint_history_electricdevice_featid</xsl:when>
-				<xsl:when test="$inName='ELECTRICDEVICE_MAINT_HISTORY_2'">electricdevice_maint_history_date1</xsl:when>
-				<xsl:when test="$inName='EMPLOYEE_A_ADDRESS_EMPLOYEE_F1'">employee_a_address_employee_first_name</xsl:when>
-				<xsl:when test="$inName='EMPLOYEE_A_ADDRESS_EMPLOYEE_L1'">employee_a_address_employee_last_name</xsl:when>
+				<xsl:when test="$inName='ACDB3DPOLYLINE_ACDBVE1_ACDB1'">acdb3dpolyline_acdbvertexdata_acdb3dpolyline_featid</xsl:when>
+				<xsl:when test="$inName='ACDB3DPOLYLINE_ACDBVE1_SEQ'">acdb3dpolyline_acdbvertexdata_seq</xsl:when>
+				<xsl:when test="$inName='ACDBHATCH_POLYLINE_AC1_ACDB1'">acdbhatch_polyline_acdbvertexdata_acdbhatch_polyline_featid</xsl:when>
+				<xsl:when test="$inName='ACDBHATCH_POLYLINE_AC1_SEQ'">acdbhatch_polyline_acdbvertexdata_seq</xsl:when>
+				<xsl:when test="$inName='POLYLINE_ACDBVERTEXDA1_POLY1'">polyline_acdbvertexdata_polyline_featid</xsl:when>
+				<xsl:when test="$inName='POLYLINE_ACDBVERTEXDA1_SEQ'">polyline_acdbvertexdata_seq</xsl:when>
+				<xsl:when test="$inName='MAINTENANCE_HISTORY_DESCRIP1'">maintenance_history_description</xsl:when>
+				<xsl:when test="$inName='ELECTRICDEVICE_MAINT_1_ELEC1'">electricdevice_maint_history_electricdevice_featid</xsl:when>
+				<xsl:when test="$inName='ELECTRICDEVICE_MAINT_1_DATE1'">electricdevice_maint_history_date1</xsl:when>
+				<xsl:when test="$inName='EMPLOYEE_A_ADDRESS_EMPLOYEE1'">employee_a_address_employee_first_name</xsl:when>
+				<xsl:when test="$inName='EMPLOYEE_A_ADDRESS_EMPLOYEE2'">employee_a_address_employee_last_name</xsl:when>
 				<xsl:when test="$inName='REFIXA_PREFIXA_PREFIXA_OPA'">prefixa_prefixa_prefixa_opa</xsl:when>
 				<xsl:when test="$inName='REFIXA_PREFIXA_PREFIXA_OPB'">prefixa_prefixa_prefixa_opb</xsl:when>
 				<xsl:when test="$inName='BJECTA_PREFIXA_PREFIXA_OPA'">objecta_prefixa_prefixa_opa</xsl:when>
@@ -389,6 +418,20 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 		</xsl:otherwise>
 	</xsl:choose>
   </xsl:template>
+  <xsl:template name="prefixTableName">
+	<xsl:param name="inName"/>
+	<xsl:variable name="prefix">
+		<xsl:choose>
+			<xsl:when test="$providerName='SqlServer'">dbo.</xsl:when>
+		</xsl:choose>
+	</xsl:variable>
+	<xsl:variable name="bentName">
+		<xsl:call-template name="bendTableName">
+			<xsl:with-param name="inName" select="$inName"/>
+		</xsl:call-template>
+	</xsl:variable>
+	<xsl:value-of select="concat($prefix,$bentName)"/>
+  </xsl:template>
   <xsl:template name="bendTableName">
 	<xsl:param name="inName"/>
 	<xsl:choose>
@@ -397,6 +440,33 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 				<xsl:when test="$inName='OVCLASSC111_OPC_TABLE_HD'">OVCLASSC111_OPC_TABLE1</xsl:when>
 				<xsl:when test="$inName='OVCLASSC111_OPC_TABLE_HD_OPC_1'">OVCLASSC111_OPC_TABLE2</xsl:when>
 				<xsl:when test="$inName='OVCLASSC111_OPS_TABLE_HA'">OVCLASSC111_OPS_TABLE1</xsl:when>
+				<xsl:when test="$inName='ACDB3DPOLYLINE_ACDBVERTEXDATA'">ACDB3DPOLYLINE_ACDBVE1</xsl:when>
+				<xsl:when test="$inName='ACDB3DPOLYLINE_ACDBVERTEXDATA1'">ACDB3DPOLYLINE_ACDBVE2</xsl:when>
+				<xsl:when test="$inName='ACDB3DPOLYLINE_ACDBVERTEXDATA2'">ACDB3DPOLYLINE_ACDBVE3</xsl:when>
+				<xsl:when test="$inName='ACDBHATCH_POLYLINE_ACDBVERTEX1'">ACDBHATCH_POLYLINE_AC1</xsl:when>
+				<xsl:when test="$inName='ACDBHATCH_POLYLINE_ACDBVERTEX2'">ACDBHATCH_POLYLINE_AC2</xsl:when>
+				<xsl:when test="$inName='ACDBHATCH_POLYLINE_ACDBVERTEX3'">ACDBHATCH_POLYLINE_AC3</xsl:when>
+				<xsl:when test="$inName='ACDBHATCH_POLYLINE_ACXDATA'">ACDBHATCH_POLYLINE_AC4</xsl:when>
+				<xsl:when test="$inName='ACDBVERTEXCOORDINATEVALUE'">ACDBVERTEXCOORDINATEV1</xsl:when>
+				<xsl:when test="$inName='ACDBVERTEXDATA_ACDBVERTEXCOOR1'">ACDBVERTEXDATA_ACDBVE1</xsl:when>
+				<xsl:when test="$inName='ACDBVERTEXDATA_ACDBVERTEXCOOR2'">ACDBVERTEXDATA_ACDBVE2</xsl:when>
+				<xsl:when test="$inName='ELECTRICDEVICE_ENTITY_ACXDATA'">ELECTRICDEVICE_ENTITY1</xsl:when>
+				<xsl:when test="$inName='ELECTRICDEVICE_MAINT_HISTORY'">ELECTRICDEVICE_MAINT_1</xsl:when>
+				<xsl:when test="$inName='ELECTRICDEVICE_MAINT_HISTORY_1'">ELECTRICDEVICE_MAINT_2</xsl:when>
+				<xsl:when test="$inName='EMPLOYEE_A_ADDRESS_STREET'">EMPLOYEE_A_ADDRESS_ST1</xsl:when>
+				<xsl:when test="$inName='MAINT_HISTORY_MAINT_HISTORY_I1'">MAINT_HISTORY_MAINT_H1</xsl:when>
+				<xsl:when test="$inName='POLYLINE_ACDBVERTEXDATA'">POLYLINE_ACDBVERTEXDA1</xsl:when>
+				<xsl:when test="$inName='POLYLINE_ACDBVERTEXDATA_ACDBV1'">POLYLINE_ACDBVERTEXDA2</xsl:when>
+				<xsl:when test="$inName='POLYLINE_ACDBVERTEXDATA_ACDBV2'">POLYLINE_ACDBVERTEXDA3</xsl:when>
+				<xsl:when test="$inName='ABCDEF1234567890ABCDEF12345671'">ABCDEF1234567890ABCDE1</xsl:when>
+				<xsl:when test="$inName='ABCDEF1234567890ABCDEF12345672'">ABCDEF1234567890ABCDE2</xsl:when>
+				<xsl:when test="$inName='ABCDEF1234567890ABCDEF12345673'">ABCDEF1234567890ABCDE3</xsl:when>
+				<xsl:when test="$inName='ABCDEF1234567890ABCDEF12345674'">ABCDEF1234567890ABCDE4</xsl:when>
+				<xsl:when test="$inName='ABCDEF1234567890ABCDEF12345675'">ABCDEF1234567890ABCDE5</xsl:when>
+				<xsl:when test="$inName='BBCDEF1234567890ABCDEF12345671'">BBCDEF1234567890ABCDE1</xsl:when>
+				<xsl:when test="$inName='OACDEF1234567890ABCDEF12345671'">OACDEF1234567890ABCDE1</xsl:when>
+				<xsl:when test="$inName='OBCDEF1234567890ABCDEF12345671'">OBCDEF1234567890ABCDE1</xsl:when>
+				<xsl:when test="$inName='OBCDEF1234567890ABCDEF12345672'">OBCDEF1234567890ABCDE2</xsl:when>
 				<xsl:otherwise>
 					<xsl:value-of select="$inName"/>
 				</xsl:otherwise>
@@ -404,17 +474,24 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 		</xsl:when>
 		<xsl:otherwise>
 			<xsl:choose>
-				<xsl:when test="$inName='ACDB3DPOLYLINE_ACDBVERTEXDATA1'">acdb3dpolyline_acdbvertexdata_acdbvertexcoordinatevalue</xsl:when>
-				<xsl:when test="$inName='ACDB3DPOLYLINE_ACDBVERTEXDATA2'">acdb3dpolyline_acdbvertexdata_acdbvertexcoordinatevalue1</xsl:when>
-				<xsl:when test="$inName='ACDBHATCH_POLYLINE_ACDBVERTEX1'">acdbhatch_polyline_acdbvertexdata</xsl:when>
-				<xsl:when test="$inName='ACDBHATCH_POLYLINE_ACDBVERTEX2'">acdbhatch_polyline_acdbvertexdata_acdbvertexcoordinatevalue</xsl:when>
-				<xsl:when test="$inName='ACDBHATCH_POLYLINE_ACDBVERTEX3'">acdbhatch_polyline_acdbvertexdata_acdbvertexcoordinatevalue1</xsl:when>
-				<xsl:when test="$inName='ACDBVERTEXDATA_ACDBVERTEXCOOR1'">acdbvertexdata_acdbvertexcoordinatevalue</xsl:when>
-				<xsl:when test="$inName='ACDBVERTEXDATA_ACDBVERTEXCOOR2'">acdbvertexdata_acdbvertexcoordinatevalue1</xsl:when>
-				<xsl:when test="$inName='POLYLINE_ACDBVERTEXDATA_ACDBV1'">polyline_acdbvertexdata_acdbvertexcoordinatevalue</xsl:when>
-				<xsl:when test="$inName='POLYLINE_ACDBVERTEXDATA_ACDBV2'">polyline_acdbvertexdata_acdbvertexcoordinatevalue1</xsl:when>
-				<xsl:when test="$inName='ELECTRICDEVICE_MAINT_HISTORY_1'">electricdevice_maint_history_maint_history_item</xsl:when>
-				<xsl:when test="$inName='MAINT_HISTORY_MAINT_HISTORY_I1'">maint_history_maint_history_item</xsl:when>
+				<xsl:when test="$inName='ACDB3DPOLYLINE_ACDBVE1'">acdb3dpolyline_acdbvertexdata</xsl:when>
+				<xsl:when test="$inName='ACDB3DPOLYLINE_ACDBVE2'">acdb3dpolyline_acdbvertexdata_acdbvertexcoordinatevalue</xsl:when>
+				<xsl:when test="$inName='ACDB3DPOLYLINE_ACDBVE3'">acdb3dpolyline_acdbvertexdata_acdbvertexcoordinatevalue1</xsl:when>
+				<xsl:when test="$inName='ACDBHATCH_POLYLINE_AC1'">acdbhatch_polyline_acdbvertexdata</xsl:when>
+				<xsl:when test="$inName='ACDBHATCH_POLYLINE_AC2'">acdbhatch_polyline_acdbvertexdata_acdbvertexcoordinatevalue</xsl:when>
+				<xsl:when test="$inName='ACDBHATCH_POLYLINE_AC4'">acdbhatch_polyline_acdbvertexdata_acdbvertexcoordinatevalue1</xsl:when>
+				<xsl:when test="$inName='ACDBHATCH_POLYLINE_AC3'">acdbhatch_polyline_acxdata</xsl:when>
+				<xsl:when test="$inName='ACDBVERTEXCOORDINATEV1'">acdbvertexcoordinatevalue</xsl:when>
+				<xsl:when test="$inName='ACDBVERTEXDATA_ACDBVE1'">acdbvertexdata_acdbvertexcoordinatevalue</xsl:when>
+				<xsl:when test="$inName='ACDBVERTEXDATA_ACDBVE2'">acdbvertexdata_acdbvertexcoordinatevalue1</xsl:when>
+				<xsl:when test="$inName='ELECTRICDEVICE_ENTITY1'">electricdevice_entity_acxdata</xsl:when>
+				<xsl:when test="$inName='ELECTRICDEVICE_MAINT_1'">electricdevice_maint_history</xsl:when>
+				<xsl:when test="$inName='ELECTRICDEVICE_MAINT_2'">electricdevice_maint_history_maint_history_item</xsl:when>
+				<xsl:when test="$inName='EMPLOYEE_A_ADDRESS_ST1'">employee_a_address_street</xsl:when>
+				<xsl:when test="$inName='POLYLINE_ACDBVERTEXDA1'">polyline_acdbvertexdata</xsl:when>
+				<xsl:when test="$inName='POLYLINE_ACDBVERTEXDA2'">polyline_acdbvertexdata_acdbvertexcoordinatevalue</xsl:when>
+				<xsl:when test="$inName='POLYLINE_ACDBVERTEXDA3'">polyline_acdbvertexdata_acdbvertexcoordinatevalue1</xsl:when>
+				<xsl:when test="$inName='MAINT_HISTORY_MAINT_H1'">maint_history_maint_history_item</xsl:when>
 				<xsl:when test="$inName='OVCLASSC111_OPC_TABLE1'">ovclassc111_opc_table_hd</xsl:when>
 				<xsl:when test="$inName='OVCLASSC111_OPC_TABLE2'">ovclassc111_opc_table_hd_opc_table_hda</xsl:when>
 				<xsl:when test="$inName='OVCLASSC111_OPS_TABLE1'">ovclassc111_ops_table_ha</xsl:when>

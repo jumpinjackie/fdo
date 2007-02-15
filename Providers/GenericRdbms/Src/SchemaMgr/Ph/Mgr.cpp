@@ -116,29 +116,25 @@ FdoStringP FdoSmPhGrdMgr::ClassifyDbObject( FdoStringP tableName, FdoRdbmsOvSche
         
             // Table is not in any table list so check if it matches the table prefix
 
-            // Keyless objects are skipped unless explicitly referenced
-            // by the table list.
-            if ( hasKey ) {
-                // Not in the list so check if it starts with the table prefix
+            // Not in the list so check if it starts with the table prefix
 
-                FdoStringP tablePrefix = autoGen->GetGenTablePrefix();
+            FdoStringP tablePrefix = autoGen->GetGenTablePrefix();
 
-                if ( tablePrefix != L"" ) {
-                    if ( tableName.Mid( 0, tablePrefix.GetLength()).ICompare(tablePrefix) == 0 ) {
-                        // Table name starts with the prefix. Remove prefix to generate class name
-                        // if directed to do so.
-                        if ( autoGen->GetRemoveTablePrefix() )
-                            className = tableName.Mid( tablePrefix.GetLength(), 9999 );
-                        else
-                            className = tableName;
-                    }
-                }
-                else {
-                    if ( tableList->GetCount() == 0 ) {
-                        // Special case. If table list is empty and table prefix blank then 
-                        // always reverse-engineer this table.
+            if ( tablePrefix != L"" ) {
+                if ( tableName.Mid( 0, tablePrefix.GetLength()).ICompare(tablePrefix) == 0 ) {
+                    // Table name starts with the prefix. Remove prefix to generate class name
+                    // if directed to do so.
+                    if ( autoGen->GetRemoveTablePrefix() )
+                        className = tableName.Mid( tablePrefix.GetLength(), 9999 );
+                    else
                         className = tableName;
-                    }
+                }
+            }
+            else {
+                if ( tableList->GetCount() == 0 ) {
+                    // Special case. If table list is empty and table prefix blank then 
+                    // always reverse-engineer this table.
+                    className = tableName;
                 }
             }
         }

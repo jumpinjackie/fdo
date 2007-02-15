@@ -29,7 +29,7 @@
 <Table pkeyName="PK_CUSTOMER___BUSINESS" name="CUSTOMER___BUSINESS"/>
 </complexType>
 <complexType name="Customer-x20---x20-ResidentialType" tableMapping="Concrete">
-<Table pkeyName="PK_CUSTOMER___RESIDENTIAL" name="CUSTOMER___RESIDENTIAL"/>
+<Table pkeyName="PK_CUSTOMER___RESIDEN1" name="CUSTOMER___RESIDENTIAL"/>
 </complexType>
 <complexType name="ElectricDeviceType" tableMapping="Concrete">
 <Table pkeyName="PK_ELECTRICDEVICE" name="ELECTRICDEVICE"/>
@@ -47,7 +47,7 @@
 </element>
 <element name="graphic">
 <PropertyMappingConcrete>
-<Table pkeyName="PK_ELECTRICDEVICE_ENTITY" name="ELECTRICDEVICE_ENTITY"/>
+<Table pkeyName="PK_ELECTRICDEVICE_ENT2" name="ELECTRICDEVICE_ENTITY"/>
 <element name="FeatId">
 <Column name="FEATID"/>
 </element>
@@ -59,7 +59,7 @@
 </element>
 <element name="xdata">
 <PropertyMappingConcrete>
-<Table pkeyName="PK_ELECTRICDEVICE_ENTITY_ACXD1" name="ELECTRICDEVICE_ENTITY_ACXDATA"/>
+<Table pkeyName="PK_ELECTRICDEVICE_ENT1" name="ELECTRICDEVICE_ENTITY1"/>
 <element name="Datavalue">
 <Column name="DATAVALUE"/>
 </element>
@@ -78,16 +78,16 @@
 </element>
 <element name="maintenance-x20-history">
 <PropertyMappingConcrete>
-<Table pkeyName="PK_ELECTRICDEVICE_MAINT_HISTO2" name="ELECTRICDEVICE_MAINT_HISTORY"/>
+<Table pkeyName="PK_ELECTRICDEVICE_MAI2" name="ELECTRICDEVICE_MAINT_1"/>
 <element name="Date">
 <Column name="DATE1"/>
 </element>
 <element name="Maintenance-x20-History-x20-Description">
-<Column name="MAINTENANCE_HISTORY_DESCRIPTI1"/>
+<Column name="MAINTENANCE_HISTORY_DESCRIP1"/>
 </element>
 <element name="work-x20-items">
 <PropertyMappingConcrete>
-<Table pkeyName="PK_ELECTRICDEVICE_MAINT_HISTO1" name="ELECTRICDEVICE_MAINT_HISTORY_1"/>
+<Table pkeyName="PK_ELECTRICDEVICE_MAI1" name="ELECTRICDEVICE_MAINT_2"/>
 <element name="It-x27-m-x20--x23-">
 <Column name="IT_M__"/>
 </element>
@@ -101,10 +101,10 @@
 <Column name="CLASSNAME1"/>
 </element>
 <element name="ElectricDevice_FeatId">
-<Column name="ELECTRICDEVICE_MAINT_HISTORY_1"/>
+<Column name="ELECTRICDEVICE_MAINT_1_ELEC1"/>
 </element>
 <element name="Maint-x20-History_Date">
-<Column name="ELECTRICDEVICE_MAINT_HISTORY_2"/>
+<Column name="ELECTRICDEVICE_MAINT_1_DATE1"/>
 </element>
 </PropertyMappingConcrete>
 </element>
@@ -120,11 +120,11 @@
 <Column name="DATE1"/>
 </element>
 <element name="Maintenance-x20-History-x20-Description">
-<Column name="MAINTENANCE_HISTORY_DESCRIPTI1"/>
+<Column name="MAINTENANCE_HISTORY_DESCRIP1"/>
 </element>
 <element name="work-x20-items">
 <PropertyMappingConcrete>
-<Table name="MAINT_HISTORY_MAINT_HISTORY_I1"/>
+<Table name="MAINT_HISTORY_MAINT_H1"/>
 <element name="It-x27-m-x20--x23-">
 <Column name="IT_M__"/>
 </element>

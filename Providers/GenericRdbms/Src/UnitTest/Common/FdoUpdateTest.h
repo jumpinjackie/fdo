@@ -59,6 +59,7 @@ protected:
     virtual void  set_provider() {};   
 
     void CreateExternalTable( FdoSmPhOwnerP owner, FdoStringP tableName, bool hasKey, bool hasGeom, bool hasAssoc );
+    void CreateExternalView( FdoSmPhOwnerP owner, FdoStringP viewName, FdoStringP tableName, bool hasKey, bool hasGeom, bool hasAssoc );
     void CreateExternalData( FdoPtr<FdoIConnection> connection, FdoSmPhMgrP phMgr, FdoStringP tableName, bool hasGeom, bool hasAssoc );
     void SelectNoMetaAll( FdoPtr<FdoIConnection> connection, FdoSmPhMgrP phMgr, FdoStringP tableName, bool hasGeom, bool hasAssoc );
     void SelectNoMetaFilter( FdoPtr<FdoIConnection> connection, FdoSmPhMgrP phMgr, FdoStringP tableName, bool hasGeom, bool hasAssoc );

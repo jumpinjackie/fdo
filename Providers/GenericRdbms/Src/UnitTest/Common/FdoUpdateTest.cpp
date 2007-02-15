@@ -1800,8 +1800,10 @@ void FdoUpdateTest::UpdateNoMeta()
         owner->SetPassword( L"test" );
 
         CreateExternalTable( owner, table_id_geom, true, m_hasGeom, m_hasAssoc );
+        CreateExternalView( owner, L"VIEW_ID_GEOM", table_id_geom, true, m_hasGeom, false );
         CreateExternalTable( owner, L"TABLE_NOID_GEOM", false, m_hasGeom, false );
         CreateExternalTable( owner, table_noid_nogeom, false, false, false );
+
 
         owner->Commit();
 
@@ -1854,19 +1856,23 @@ void FdoUpdateTest::UpdateNoMeta()
         // Select and verify all data (post-update state).
 
         SelectNoMetaAll( connection, phMgr, table_id_geom, m_hasGeom, m_hasAssoc );
+        SelectNoMetaAll( connection, phMgr, L"VIEW_ID_GEOM", m_hasGeom, false );
         SelectNoMetaAll( connection, phMgr, L"TABLE_NOID_GEOM", m_hasGeom, false );
         SelectNoMetaAll( connection, phMgr, table_noid_nogeom, false, false );
 
         SelectNoMetaFilter( connection, phMgr, table_id_geom, m_hasGeom, m_hasAssoc );
+        SelectNoMetaFilter( connection, phMgr, L"VIEW_ID_GEOM", m_hasGeom, false );
         SelectNoMetaFilter( connection, phMgr, L"TABLE_NOID_GEOM", m_hasGeom, false );
         SelectNoMetaFilter( connection, phMgr, table_noid_nogeom, false, false );
 
         SelectNoMetaProps( connection, phMgr, table_id_geom, m_hasGeom );
+        SelectNoMetaProps( connection, phMgr, L"VIEW_ID_GEOM", m_hasGeom );
         SelectNoMetaProps( connection, phMgr, L"TABLE_NOID_GEOM", m_hasGeom );
         SelectNoMetaProps( connection, phMgr, table_noid_nogeom, false );
 
 #ifndef RDBI_DEF_SSQL
 		SelectNoMetaSpatial( connection, phMgr, table_id_geom, m_hasAssoc );
+		SelectNoMetaSpatial( connection, phMgr, L"VIEW_ID_GEOM", false );
 		SelectNoMetaSpatial( connection, phMgr, L"TABLE_NOID_GEOM", false );
 #endif
 
@@ -1940,6 +1946,27 @@ void FdoUpdateTest::CreateExternalTable( FdoSmPhOwnerP owner, FdoStringP tableNa
         );
         fkey->AddFkeyColumn( fkColumn, pkColumn->GetName() );
     }
+}
+
+void FdoUpdateTest::CreateExternalView( FdoSmPhOwnerP owner, FdoStringP viewName, FdoStringP tableName, bool hasKey, bool hasGeom, bool hasAssoc )
+{
+    FdoSmPhMgrP phMgr = owner->GetManager();
+
+    FdoSmPhViewP view = owner->CreateView( phMgr->GetDcDbObjectName(viewName), L"", owner->GetName(), phMgr->GetDcDbObjectName(tableName) );
+    
+    FdoStringP columnName = phMgr->GetDcColumnName(L"KEY1");
+    FdoSmPhColumnP column = view->CreateColumnChar( columnName, false, 10, columnName );
+    
+    columnName = phMgr->GetDcColumnName(Key2ColName());
+    FdoSmPhColumnP fkColumn = view->CreateColumnChar( columnName, false, 10, columnName );
+
+    if ( hasGeom ) {
+        columnName = phMgr->GetDcColumnName(L"GEOMETRY");
+        column = view->CreateColumnGeom( columnName, (FdoSmPhScInfo*) NULL, true, false, false, columnName );
+    }
+
+    columnName = phMgr->GetDcColumnName(ValueColName());
+    column = view->CreateColumnChar( columnName, true, 20, columnName );
 }
 
 void FdoUpdateTest::CreateExternalData( FdoPtr<FdoIConnection> connection, FdoSmPhMgrP phMgr, FdoStringP tableName, bool hasGeom, bool hasAssoc )

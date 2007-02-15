@@ -25,7 +25,6 @@
 
 FdoRdbmsOvGeometricPropertyDefinition::FdoRdbmsOvGeometricPropertyDefinition()
 :
-    mColumn(NULL),
     mGeometricColumnType(FdoSmOvGeometricColumnType_Default),
     mGeometricContentType(FdoSmOvGeometricContentType_Default)
 {
@@ -33,7 +32,6 @@ FdoRdbmsOvGeometricPropertyDefinition::FdoRdbmsOvGeometricPropertyDefinition()
 
 FdoRdbmsOvGeometricPropertyDefinition::FdoRdbmsOvGeometricPropertyDefinition(FdoString* name)
 :
-    mColumn(NULL),
     FdoRdbmsOvPropertyDefinition(name),
     mGeometricColumnType(FdoSmOvGeometricColumnType_Default),
     mGeometricContentType(FdoSmOvGeometricContentType_Default)

@@ -149,7 +149,7 @@ void FdoSmLpGrdObjectPropertyDefinition::Update(
 
     // Extract the physical overrides
     if ( pObjectPropOverrides ) {
-        mMappingOverrides = FDO_SAFE_ADDREF(pObjectPropOverrides->GetMappingDefinition());
+        mMappingOverrides = pObjectPropOverrides->GetMappingDefinition();
 
         FdoRdbmsOvPropertyMappingSingleP singleMapping =
             FDO_SAFE_ADDREF(dynamic_cast<FdoRdbmsOvPropertyMappingSingle*>(mMappingOverrides.p));

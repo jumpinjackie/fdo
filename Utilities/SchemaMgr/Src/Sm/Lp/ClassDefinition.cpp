@@ -1853,7 +1853,7 @@ void FdoSmLpClassBase::CreateUkeysFromFdo()
                 // other classes derived from it. 
                 if ( (Get_TableMapping() == FdoSmOvTableMappingType_BaseTable) && (pLpDataProp->GetBaseProperty()) )
                     AddUkeyBasePropError( pFdoDataProp );
-                pLpUniqueC->GetProperties()->Add( pLpDataProp );
+                FdoSmLpDataPropertiesP(pLpUniqueC->GetProperties())->Add( pLpDataProp );
             }
             else {
                 AddUkeyPropMissingError( pFdoDataProp );

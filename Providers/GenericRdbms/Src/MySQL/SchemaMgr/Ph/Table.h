@@ -24,8 +24,8 @@
 
 #include "DbObject.h"
 #include "../../../SchemaMgr/Ph/Table.h"
-#include "Fkey.h"
 #include "Index.h"
+#include "Fkey.h"
 
 // MySql Provider implementation of a Table.
 // Represents an MySql schema (user)
@@ -54,10 +54,8 @@ public:
     // No lock types currently supported in MySql.
 	virtual const FdoLockType* GetLockTypes(FdoInt32& size) const;
 
-    // Implementations for creating primary key, foreign key and
+    // Implementations for creating constraint and
     // index readers.
-    virtual FdoPtr<FdoSmPhRdPkeyReader> CreatePkeyReader() const;
-    virtual FdoPtr<FdoSmPhRdFkeyReader> CreateFkeyReader() const;
     virtual FdoPtr<FdoSmPhRdConstraintReader> CreateConstraintReader( FdoString* type ) const;
     virtual FdoPtr<FdoSmPhRdIndexReader> CreateIndexReader() const;
 

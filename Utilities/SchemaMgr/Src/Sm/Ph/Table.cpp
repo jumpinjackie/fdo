@@ -588,7 +588,9 @@ FdoStringsP FdoSmPhTable::GetAddColsSql()
     FdoStringsP     colClauses = FdoStringCollection::Create();
 
     for ( i = 0; i < columns->GetCount(); i++ ) {
-        colClauses->Add( FdoSmPhColumnP(columns->GetItem(i))->GetAddSql() );
+        FdoStringP colSql = FdoSmPhColumnP(columns->GetItem(i))->GetAddSql();
+        if ( colSql != L"" ) 
+            colClauses->Add( colSql );
     }
 
     return colClauses;
