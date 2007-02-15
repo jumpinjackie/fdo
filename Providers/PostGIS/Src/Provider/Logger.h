@@ -219,7 +219,7 @@ how to create it and others.
 			int nIndent = reinterpret_cast<int>(TlsGetValue(m_dwTLSIndex));
 			*(szIndent + nIndent) = 0;
 #ifdef FDOLOG_MULTITHREADING
-#define	FDOLOG_MULTITHREADING_STUB1 "th 0x%08X"
+#define	FDOLOG_MULTITHREADING_STUB1 "(0x%08X)"
 #define	FDOLOG_MULTITHREADING_STUB2 GetCurrentThreadId(),
 #else
 #define	FDOLOG_MULTITHREADING_STUB1 
@@ -229,7 +229,10 @@ how to create it and others.
 #ifdef FDOLOG_PRINT_COMPILE_INFO
 			int nBytes = _snprintf(buffer, sizeof(buffer), "%s "FDOLOG_MULTITHREADING_STUB1" : %s%s\t(from %s,%d)\r\n", szTimeString, FDOLOG_MULTITHREADING_STUB2 szIndent, szEntry, CURRENT_FILE, CURRENT_LINE);
 #else
-			int nBytes = _snprintf(buffer, sizeof(buffer), "%s,"FDOLOG_MULTITHREADING_STUB1" : %s%s\r\n", szTimeString, FDOLOG_MULTITHREADING_STUB2 szIndent, szEntry);
+            // XXX: mloskot - thread info customizations
+			//int nBytes = _snprintf(buffer, sizeof(buffer), "%s,"FDOLOG_MULTITHREADING_STUB1" : %s%s\r\n", szTimeString, FDOLOG_MULTITHREADING_STUB2 szIndent, szEntry);
+
+            int nBytes = _snprintf(buffer, sizeof(buffer), "%s "FDOLOG_MULTITHREADING_STUB1" : %s%s\r\n", szTimeString, FDOLOG_MULTITHREADING_STUB2 szIndent, szEntry);
 #endif
 			bOk = (nBytes > 0);
 			if (!bOk) goto exit_function;
@@ -360,14 +363,14 @@ how to create it and others.
 				DWORD dwProcID = GetCurrentProcessId();
 				SYSTEMTIME st;
 				GetLocalTime(&st);
-				Write(TEXT("======================================================================\n")
+				Write(TEXT("==========================================================\n")
 				      TEXT("\tLog started on %02u.%02u.%04u, at %02u:%02u:%02u:%03u\n")
                       TEXT("\tModule: %s (ProcID: 0x%08x)\n")
                       TEXT("\tCompile time: %s %s"),
                       st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds,
                       szExecutable, dwProcID,
                       TEXT(__DATE__) , TEXT(__TIME__));
-                Write(TEXT("======================================================================"));
+                Write(TEXT("=========================================================="));
 			}
 			::LeaveCriticalSection(&m_crit);
 		}
@@ -406,7 +409,9 @@ how to create it and others.
 			::DeleteCriticalSection(&m_crit);
 			TlsFree(m_dwTLSIndex);
 		}
+
 	private:
+
 		HANDLE m_hFile;
 		CRITICAL_SECTION m_crit;
 		BOOL m_bIsStarted;
@@ -430,9 +435,6 @@ how to create it and others.
 #else
 			return (0 < _snprintf(szString, nStringSize, "%02u:%02u:%02u:%03u", st.wHour, st.wMinute, st.wSecond, st.wMilliseconds));
 #endif
-
-
-
 		}
 
 	public:
@@ -441,23 +443,24 @@ how to create it and others.
 		{
 			return reinterpret_cast<DWORD>(TlsGetValue(m_dwTLSIndex));
 		}
+
 		inline void SetIndent(DWORD dwIndent)
 		{
 			TlsSetValue(m_dwTLSIndex, reinterpret_cast<LPVOID>(dwIndent));
 		}
+
 		inline void IncrIndent()
 		{
 			DWORD dwIndent = reinterpret_cast<DWORD>(TlsGetValue(m_dwTLSIndex));
 			dwIndent++;
 			TlsSetValue(m_dwTLSIndex, reinterpret_cast<LPVOID>(dwIndent));
-
 		}
+
 		inline void DecrIndent()
 		{
 			DWORD dwIndent = reinterpret_cast<DWORD>(TlsGetValue(m_dwTLSIndex));
 			dwIndent--;
 			TlsSetValue(m_dwTLSIndex, reinterpret_cast<LPVOID>(dwIndent));
-
 		}
 
 	private:
@@ -500,6 +503,7 @@ how to create it and others.
 		class Counter
         {
 		public:
+
 			Counter(char *szFile, int nLine) : m_nCounter(0), m_szFile(szFile), m_nLine(nLine)
 			{
 				m_nCounterIndex = ___g_nCounterIndex___++;
@@ -507,12 +511,14 @@ how to create it and others.
 				CSTLogFile::GetLogFile()->Write("***Counter %d at %s,%d initialized", m_nCounterIndex, szFile, nLine);
 				m_TotalTime.QuadPart = 0;
 			}
+
 			~Counter()	
 			{
 				CSTLogFile::GetLogFile()->Write("Counter %d statistics\r\n\tCounts: %d,\r\n\tMinTime: %I64d ms,\r\n\tMaxTime: %I64d ms,\r\n\tTotalTime: %I64d ms,\r\n\tAverageTime: %I64d ms", 
 					m_nCounterIndex, m_nCounter, m_MinTime.QuadPart, m_MaxTime.QuadPart, m_TotalTime.QuadPart, m_TotalTime.QuadPart / m_nCounter); 
 				::DeleteCriticalSection(&m_crit);
 			}
+
 			inline void StartSection() 
 			{	
 				::EnterCriticalSection(&m_crit);
@@ -522,6 +528,7 @@ how to create it and others.
 				m_LastCheckPoint.QuadPart = m_StartTime.QuadPart;
 				::LeaveCriticalSection(&m_crit);
 			}
+
 			inline void StopSection() 
 			{
 				::EnterCriticalSection(&m_crit);
@@ -532,10 +539,9 @@ how to create it and others.
 				if (m_nCounter == 1 || m_MinTime.QuadPart > liCurrentTime.QuadPart) m_MinTime.QuadPart = liCurrentTime.QuadPart;
 				if (m_nCounter == 1 || m_MaxTime.QuadPart < liCurrentTime.QuadPart) m_MaxTime.QuadPart = liCurrentTime.QuadPart;
 				m_TotalTime.QuadPart += liCurrentTime.QuadPart;
-
-
 				::LeaveCriticalSection(&m_crit);
 			}
+
 			inline void CheckPoint(int nLine) 
 			{
 				::EnterCriticalSection(&m_crit);
@@ -544,6 +550,7 @@ how to create it and others.
 				m_LastCheckPoint.QuadPart = liCheckPoint.QuadPart;
 				::LeaveCriticalSection(&m_crit);
 			}
+
 			inline LARGE_INTEGER GetTimeFromStart() 
 			{
 				LARGE_INTEGER liCurrentTime;
@@ -565,7 +572,8 @@ how to create it and others.
 			char *m_szFile;
 			int m_nLine;
 			int m_nCounterIndex ;
-		};
+		
+        }; // class Counter
 
 		struct CounterAux
 		{
@@ -585,7 +593,6 @@ how to create it and others.
 				pLogFile->Write("*****Max counters (%d) reached, the counter at %s, %d will not be created", FDOLOG_MAXCOUNTERS, szFile, nLine);
 				return 0;
 			}
-
 
 			Counter *p = new Counter(szFile, nLine);
 			pLogFile->m_counters[pLogFile->nLastCounter++] = p;
@@ -609,6 +616,7 @@ how to create it and others.
 				if (CSTLogFile::GetLogFile()->GetIndent() < FDOLOG_MAXINDENT)
 					CSTLogFile::GetLogFile()->IncrIndent();
 			}
+
 			Marker(LPCWSTR szEntry)
                 : m_szEntry(NULL), m_szEntryW(NULL), m_bWide(TRUE)
 			{
@@ -616,6 +624,7 @@ how to create it and others.
 				if (CSTLogFile::GetLogFile()->GetIndent() < FDOLOG_MAXINDENT)
 					CSTLogFile::GetLogFile()->IncrIndent();
 			}
+
 			~Marker()
 			{
 				if (CSTLogFile::GetLogFile()->GetIndent() > 0)
@@ -626,13 +635,16 @@ how to create it and others.
 				else
 					CSTLogFile::GetLogFile()->Write("<<[%s]", m_szEntry);
 			}
+
 		private:
+
 			LPCSTR m_szEntry;
             LPCWSTR m_szEntryW;
 			BOOL m_bWide;
-		};
+		
+        }; // struct Marker
 
-	};
+	}; // class CSTLogFile
 
 #endif
 
