@@ -102,7 +102,7 @@ public:
     ///       Normal.
     /// </ul>
     /// 
-    /// \param value 
+    /// \param schemas 
     /// Input the feature schemas
     /// 
     /// \return
@@ -112,6 +112,7 @@ public:
 
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoXmlFeatureReaderP is a FdoPtr on FdoXmlFeatureReader, provided for convenience.
 typedef FdoPtr<FdoXmlFeatureReader> FdoXmlFeatureReaderP;

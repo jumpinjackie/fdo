@@ -46,7 +46,7 @@ public:
     /// \brief
     /// Reads an XML document from an XML reader.
     /// 
-    /// \param reader 
+    /// \param xmlReader 
     /// Input the XML reader.
     /// \param flags 
     /// Input controls the reading of the elements from the document. 
@@ -60,7 +60,7 @@ public:
     /// \brief
     /// Reads an XML document from a text reader.
     /// 
-    /// \param reader 
+    /// \param textReader 
     /// Input the text reader. Must be positioned at the
     /// start of an XML document.
     /// \param flags 
@@ -75,7 +75,7 @@ public:
     /// \brief
     /// Reads an XML document from a stream.
     /// 
-    /// \param reader 
+    /// \param stream 
     /// Input the stream. Must be positioned at the
     /// start of an XML document.
     /// \param flags 
@@ -135,9 +135,9 @@ protected:
     FDO_API virtual ~FdoXmlDeserializable();
 
 private:
-    /// current XML flags
+    // current XML flags
     FdoXmlFlagsP mFlags;
-    /// current XML reader
+    // current XML reader
     FdoXmlReaderP mInternalReader;
 
 };

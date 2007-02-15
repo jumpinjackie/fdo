@@ -118,9 +118,6 @@ public:
     /// Gets the extent of the spatial context currently being read as a byte
     /// array in FGF format.
     /// 
-    /// \param length 
-    /// Output the length of the returned byte array.
-    /// 
     /// \return
     /// Returns the extent as a byte array in FGF format.
     /// 
@@ -171,12 +168,12 @@ public:
     /// 
     FDO_API virtual bool ReadNext();
 
-    FDO_API virtual FdoXmlSaxHandler* XmlStartDocument(FdoXmlSaxContext*);
+    FDO_API virtual FdoXmlSaxHandler* XmlStartDocument(FdoXmlSaxContext* saxContext);
 
     /// The following callbacks catch the start element and end element
     /// SAX events.
     FDO_API virtual FdoXmlSaxHandler* XmlStartElement( 
-        FdoXmlSaxContext* context, 
+        FdoXmlSaxContext* saxContext, 
         FdoString* uri, 
         FdoString* name, 
         FdoString* qname, 
@@ -184,7 +181,7 @@ public:
     );
 
     FDO_API virtual FdoBoolean XmlEndElement( 
-        FdoXmlSaxContext* context, 
+        FdoXmlSaxContext* saxContext, 
         FdoString* uri, 
         FdoString* name, 
         FdoString* qname
@@ -219,6 +216,7 @@ private:
     FdoXmlSCReadHandler*     mSCHandler;
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoXmlSpatialContextReaderP is a FdoPtr on FdoXmlSpatialContextReader, provided for convenience.
 typedef FdoPtr<FdoXmlSpatialContextReader> FdoXmlSpatialContextReaderP;

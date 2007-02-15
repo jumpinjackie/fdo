@@ -107,7 +107,7 @@ public:
     /// \brief
     /// Sets the namespace URI for this element. 
     /// 
-    /// \param schemaName 
+    /// \param gmlUri 
     /// Input a URI. Defaults to the targetNamespace
     /// for the schema containing this element.
     /// 
@@ -126,7 +126,7 @@ public:
     /// \brief
     /// Sets the local name for this element. 
     /// 
-    /// \param schemaName 
+    /// \param gmlLocalName 
     /// Input the local name (unprefixed name) of this
     /// element. Defaults to the element name.
     /// 
@@ -146,6 +146,7 @@ public:
     /// Functions for XML support
 
 /// \cond DOXYGEN-IGNORE
+//
     /// \brief
     /// Initializes this Xml Element Mapping from its XML attributes. Called when
     /// the element is deserialized from XML. 
@@ -184,8 +185,8 @@ public:
     virtual void SetChoiceName(FdoString* pChoiceName){m_choiceName = pChoiceName;}
     virtual FdoString* GetChoiceName(){return m_choiceName;}
 
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     FdoXmlElementMapping() {}
 
     FdoXmlElementMapping(
@@ -207,6 +208,7 @@ private:
     FdoStringP                  m_choiceName;
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoXmlElementMappingP is a FdoPtr on FdoXmlElementMapping, provided for convenience.
 typedef FdoPtr<FdoXmlElementMapping> FdoXmlElementMappingP;

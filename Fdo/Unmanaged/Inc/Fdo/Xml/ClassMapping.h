@@ -45,6 +45,8 @@ public:
     /// set when the type represents geometries and indicates what kind of geometries the type
     /// represents. wkBaseName must be L"" or one of the constants defined in 
     /// commonGml212Gml212.h.
+	 /// \param wkSchemaName
+	 /// Well-known schema name.
     /// 
     /// \return
     /// Returns FdoXmlClassMapping
@@ -90,6 +92,7 @@ public:
 	FDO_API FdoXmlElementMappingCollection* GetElementMappings();
 
 /// \cond DOXYGEN-IGNORE
+
     /// \brief
     /// Writes this XML Class Mapping to XML. Called when
     /// the element is serialized to XML. 
@@ -108,8 +111,8 @@ public:
 	);
 /// \endcond
 
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     FdoXmlClassMapping() {}
 
     FdoXmlClassMapping(
@@ -148,6 +151,7 @@ private:
     FdoXmlElementMappingsP mElementMappings;
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoXmlClassMappingP is a FdoPtr on FdoXmlClassMapping, provided for convenience.
 typedef FdoPtr<FdoXmlClassMapping> FdoXmlClassMappingP;

@@ -262,6 +262,7 @@ private:
 
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoXmlSpatialContextWriterP is a FdoPtr on FdoXmlSpatialContextWriter, provided for convenience.
 typedef FdoPtr<FdoXmlSpatialContextWriter> FdoXmlSpatialContextWriterP;

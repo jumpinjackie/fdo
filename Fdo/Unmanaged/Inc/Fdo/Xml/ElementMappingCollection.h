@@ -44,8 +44,8 @@ public:
     /// 
     FDO_API static FdoXmlElementMappingCollection* Create(FdoPhysicalElementMapping* parent);
 
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     FdoXmlElementMappingCollection() : FdoPhysicalElementMappingCollection<FdoXmlElementMapping>()
     {
     }
@@ -61,6 +61,7 @@ protected:
 /// \endcond
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoXmlElementMappingsP is a FdoPtr on FdoXmlElementMappingCollection, provided for convenience.
 typedef FdoPtr<FdoXmlElementMappingCollection> FdoXmlElementMappingsP;

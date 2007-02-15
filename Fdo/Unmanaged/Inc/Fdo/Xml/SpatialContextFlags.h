@@ -31,25 +31,20 @@
 class FdoXmlSpatialContextFlags : public FdoXmlFlags
 {
 public:
-    /// \brief
-    /// The FdoXmlSpatialContextFlags::ConflictOption specifies how 
-    /// to handle Spatial Contexts that are already in the DataStore, 
-    ///  when Deserializing:
-    /// 
-    /// \param ConflictOption_Add 
-    /// just add new spatial contexts to the
-    /// FDO DataStore. If the Spatial Context already exists, an exception 
-    /// is thrown.
-    /// \param ConflictOption_Update 
-    /// Update the spatial context if it already
-    /// exists, add it if it doesn't exist.
-    /// \param ConflictOption_Skip 
-    /// just add new spatial contexts. 
-    /// Silently skip spatial contexts already in the DataStore.
-    /// 
+    	/// \brief
+    	/// The FdoXmlSpatialContextFlags::ConflictOption specifies how 
+    	/// to handle Spatial Contexts that are already in the DataStore, 
+    	///  when Deserializing:
 	enum ConflictOption {
+    		/// Add new spatial contexts to the FDO DataStore and
+		/// if the Spatial Context already exists, throw an exception.
+    		/// is thrown.
 		ConflictOption_Add,
+    		/// Update the spatial context if it already exists and
+    		/// add it if it doesn't exist.
 		ConflictOption_Update,
+    		/// Add new spatial contexts and
+    		/// silently skip spatial contexts already in the DataStore.
 		ConflictOption_Skip
 	};
 
@@ -139,6 +134,7 @@ private:
 	FdoBoolean				mIncludeDefault;
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoXmlSpatialContextFlagsP is a FdoPtr on FdoXmlSpatialContextFlags, provided for convenience.
 typedef FdoPtr<FdoXmlSpatialContextFlags> FdoXmlSpatialContextFlagsP;
