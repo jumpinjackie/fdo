@@ -9,25 +9,35 @@ Provider for ESRI ArcSDE provides FDO with access to an ArcSDE-based data store
 (that is, with an underlying, supported Oracle or SQL Server 
 database).
 </p>
-<p>The FDO Provider for ArcSDE has the following characteristics: 
 
+<p>You can connect via ArcSDE to an underlying Oracle or SQL Server database. 
+You can insert, select, update, and delete feature data in existing ArcSDE 
+schemas. However, you cannot create or modify an ArcSDE schema.
 </p>
-<ul>
-<li>You can connect to the FDO Provider for ArcSDE in one step if
-    you already know the name of the data store that you want to
-    use. Otherwise, you must connect in two steps.</li>
-<li>With the FDO Provider for ArcSDE, you can either lock rows in a table or 
-    version a table. You cannot do both at the
-    same time. To do either one, you must first alter the table’s
-    registration.</li>
-<li>The FDO Provider for ArcSDE does not support the creation or
-    destruction of feature schema (that is,it does not support the
-    FdoIApplySchema and FdoIDestroySchema commands.) However, it
-    does support the FdoIDescribeSchema command. The FDO Provider 
-    for ArcSDE is intended to operate on already existing
-    feature schemas, and it supports inserting,
-    selecting, updating, and deleting data in existing schemas.</li>
-</ul>
+
+<p>To work with ArcSDE, you must install ArcSDE 9.1 and a supported data source, 
+such as Oracle 9<i>i</i>, in the network. The host machine running AutoCAD Map 
+3D, for example, must also have the required DLLs (three dynamically linked 
+libraries, sde91.dll, sg91.dll, and pe91.dll) and the PATH environment variable 
+must reference the local folder containing these DLLs. To accomplish this, you 
+can install an ArcGIS 9.1 Desktop application or the ArcSDE SDK. For more 
+information about ArcGIS 9.1 Desktop applications and the ArcSDE SDK, refer to 
+the ESRI documentation.
+</p>
+
+<p>Furthermore, AutoCAD Map 3D uses facilities provided by ArcSDE for long 
+transaction versioning and persistent locking. (ArcSDE supports one or the 
+other, but not both, on the same class). ProductName uses the standard 
+ArcSDE API and ArcSDE-supported storage on both the Oracle and SQL Server 
+platforms. AutoCAD Map 3D does not use FDO metadata for ArcSDE schema—it uses 
+existing metadata only.
+</p>
+
+<p>If ArcSDE encounters curved segments, it converts them to a series of line 
+segments that approximate the original arc segment (an approximation of the 
+original geometry). 
+</p>
+
 <p>
 For more information, see <i>The Essential FDO</i> (FET_TheEssentialFDO.pdf) 
 and the <i>FDO Developer's Guide</i> (FDG_FDODevGuide.pdf).
