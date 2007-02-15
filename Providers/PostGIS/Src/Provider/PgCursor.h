@@ -32,12 +32,25 @@ class PgCursor : private boost::noncopyable
 {
 public:
 
+    enum Direction
+    {
+        eForward = 0,
+        eBackward,
+    };
+
     /// Constructor creates a named cursor associated with given connection.
     /// It throws an exception if connection is invalid.
     PgCursor(Connection* conn, std::string const& name);
 
     /// Destructor closes a cursor on destroy.
     ~PgCursor();
+
+    /// Get name of a cursor.
+    /// \return String with name used in DECLARE statement.
+    char const* GetName() const;
+
+    // Get read-only pointer to results associated with FETCH command.
+    PGresult const* GetFetchResult() const;
 
     /// Declare a cursor using given SELECT query.
     /// \remarks
@@ -47,7 +60,6 @@ public:
     /// DECLARE <name> CURSOR FOR SELECT <...>;
     /// \endcode
     ///
-    void Declare(std::string const& query);
     void Declare(char const* query);
 
     /// Close a cursor.
@@ -58,6 +70,9 @@ public:
     /// CLOSE <name>; \endcode
     ///
     void Close();
+
+    /// Fetch tuples.
+    PGresult const* FetchNext();
 
 private:
 
@@ -72,7 +87,7 @@ private:
     std::string mName;
 
     // Pointer to result structure used by cursor.
-    PGresult* mPgResult;
+    PGresult* mFetchRes;
 
     //
     // Private operations
@@ -80,6 +95,8 @@ private:
 
     // Check pre-conditions before running cursor operations.
     void Validate();
+
+    void ClearFetchResult();
 
 };
 

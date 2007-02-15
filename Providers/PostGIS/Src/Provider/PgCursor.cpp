@@ -18,18 +18,17 @@
 #include "PostGisProvider.h"
 #include "PgCursor.h"
 #include "Connection.h"
-
 // std
 #include <cassert>
 #include <string>
 
 namespace fdo { namespace postgis {
 
-
 PgCursor::PgCursor(Connection* conn, std::string const& name)
-    : mConn(conn), mName(name), mPgResult(NULL)
+    : mConn(conn), mName(name), mFetchRes(NULL)
 {
     FDO_SAFE_ADDREF(mConn.p);
+
     Validate();
 }
 
@@ -38,19 +37,66 @@ PgCursor::~PgCursor()
     Close();
 }
 
-void PgCursor::Declare(std::string const& query)
+const char* PgCursor::GetName() const
 {
-    Declare(query.c_str());
+    return mName.c_str();
+}
+
+PGresult const* PgCursor::GetFetchResult() const
+{
+    // TODO: Handling of nothing fetched case.
+    assert(NULL != mFetchRes);
+
+    return mFetchRes;
 }
 
 void PgCursor::Declare(char const* query)
 {
+    assert(NULL == mFetchRes);
+    Validate();
 
+    ExecStatusType pgStatus = PGRES_FATAL_ERROR;
+
+    // Begin transaction block
+    pgStatus = mConn->PgExecuteCommand("BEGIN");
+    assert(PGRES_COMMAND_OK == pgStatus);
+
+    // Declare cursor
+    std::string sql("DECLARE " + mName);
+    sql += " CURSOR FOR ";
+    sql += query;
+
+    pgStatus = mConn->PgExecuteCommand(sql.c_str());
+    assert(PGRES_COMMAND_OK == pgStatus);
 }
 
 void PgCursor::Close()
 {
+    Validate();
 
+    ClearFetchResult();
+
+    ExecStatusType pgStatus = PGRES_FATAL_ERROR;
+
+    // End transaction block
+    pgStatus = mConn->PgExecuteCommand("COMMIT");
+    assert(PGRES_COMMAND_OK == pgStatus);
+
+    // Close cursor
+    std::string sql("CLOSE " + mName);
+    pgStatus = mConn->PgExecuteCommand(sql.c_str());
+    assert(PGRES_COMMAND_OK == pgStatus);
+}
+
+PGresult const* PgCursor::FetchNext()
+{
+    ClearFetchResult();
+
+    assert(NULL == mFetchRes);
+
+    std::string sql("FETCH NEXT FROM " + mName);
+    mFetchRes = mConn->PgExecuteQuery(sql.c_str());
+    return mFetchRes; 
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -63,6 +109,15 @@ void PgCursor::Validate()
     {
         throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_CONNECTION_INVALID,
             "Connection is invalid."));
+    }
+}
+
+void PgCursor::ClearFetchResult()
+{
+    if (NULL != mFetchRes)
+    {
+        PQclear(mFetchRes);
+        mFetchRes = NULL;
     }
 }
 
