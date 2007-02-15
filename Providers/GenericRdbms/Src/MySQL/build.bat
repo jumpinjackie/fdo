@@ -149,8 +149,12 @@ echo Creating MySQL provider html and chm documentation
 if exist "Docs\HTML\MYSQL" rmdir /S /Q "Docs\HTML\MYSQL"
 if not exist "Docs\HTML\MySQL" mkdir "Docs\HTML\MySQL"
 if exist Docs\MySQL_Provider_API.chm attrib -r Docs\MySQL_Provider_API.chm
+if exist "Docs\HTML\MYSQL_managed" rmdir /S /Q "Docs\HTML\MYSQL_managed"
+if not exist "Docs\HTML\MySQL_managed" mkdir "Docs\HTML\MySQL_managed"
+if exist Docs\MySQL_Provider_API_managed.chm attrib -r Docs\MySQL_Provider_API_managed.chm
 pushd Docs\doc_src
 doxygen Doxyfile_MySQL
+doxygen Doxyfile_MySQL_managed
 popd
 popd
 
@@ -160,6 +164,9 @@ pushd ..\..\
 if exist "%FDODOCPATHMYSQL%\HTML\Providers\MYSQL" rmdir /S /Q "%FDODOCPATHMYSQL%\HTML\Providers\MYSQL"
 if exist Docs\HTML\MySQL xcopy/CQEYI Docs\HTML\MySQL\* "%FDODOCPATHMYSQL%\HTML\Providers\MySQL"
 if exist "Docs\MySQL_Provider_API.chm" copy /y "Docs\MySQL_Provider_API.chm" "%FDODOCPATHMYSQL%"
+if exist "%FDODOCPATHMYSQL%\HTML\Providers\MYSQL_managed" rmdir /S /Q "%FDODOCPATHMYSQL%\HTML\Providers\MYSQL_managed"
+if exist Docs\HTML\MySQL_managed xcopy/CQEYI Docs\HTML\MySQL_managed\* "%FDODOCPATHMYSQL%\HTML\Providers\MySQL_managed"
+if exist "Docs\MySQL_Provider_API_managed.chm" copy /y "Docs\MySQL_Provider_API_managed.chm" "%FDODOCPATHMYSQL%"
 popd
 
 :end
