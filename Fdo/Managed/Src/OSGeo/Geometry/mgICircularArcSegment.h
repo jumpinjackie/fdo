@@ -22,6 +22,8 @@
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 
+/// \ingroup (interfaces)
+/// \interface ICircularArcSegment
 /// \brief
 /// The ICircularArcSegment class is a circular arc curve segment
 public __gc __interface ICircularArcSegment : public NAMESPACE_OSGEO_GEOMETRY::IArcSegmentAbstract

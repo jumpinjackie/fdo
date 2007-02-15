@@ -23,6 +23,8 @@
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 
+/// \ingroup (interfaces)
+/// \interface IGeometricAggregateAbstract
 /// \brief
 /// The IGeometricAggregateAbstract class is an aggregate Geometry (abstract) type.
 /// IGeometricAggregateAbstract is a single Geometry that is a collection of other geometries.

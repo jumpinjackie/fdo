@@ -20,12 +20,16 @@
 #pragma once
 #include "mgIGeometry.h"
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 public __gc __interface IDirectPosition;
 END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
+/// \endcond
 
+/// \ingroup (interfaces)
+/// \interface ICurveAbstract
 /// \brief
 /// The ICurveAbstract class is a curve Geometry type (abstract). ICurveAbstract is the most general curve type.  
 public __gc __interface ICurveAbstract : public NAMESPACE_OSGEO_GEOMETRY::IGeometry

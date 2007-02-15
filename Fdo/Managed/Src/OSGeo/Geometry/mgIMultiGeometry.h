@@ -22,12 +22,17 @@
 #include "mgIGeometricAggregateAbstract.h"
 
 class FdoIMultiGeometry;
+
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 public __gc __interface IGeometry;
 END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
+/// \endcond
 
+/// \ingroup (interfaces)
+/// \interface IMultiGeometry
 /// \brief
 /// The IMultiGeometry class is a heterogeneous MultiGeometry type.
 /// One MultiGeometry containing another MultiGeometry
