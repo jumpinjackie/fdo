@@ -31,6 +31,9 @@
 // PostGIS Messages
 #include "../Message/inc/PostGisMessage.h"
 
+// PostgreSQL client library imported to dedicated namespace
+#include <libpq-fe.h>
+
 /// \brief
 /// The main top-level namespace providing context for all FDO items.
 ///

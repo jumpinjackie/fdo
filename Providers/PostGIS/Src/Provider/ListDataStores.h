@@ -38,7 +38,7 @@ class ListDataStores : public Command<FdoIListDataStores>
 public:
 
     /// Default constructor.
-    ListDataStores();
+    //ListDataStores();
 
     /// Constructor creates command for given connection.
     ListDataStores(Connection* conn);
