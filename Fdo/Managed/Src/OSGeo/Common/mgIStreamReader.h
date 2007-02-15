@@ -22,14 +22,20 @@
 
 BEGIN_NAMESPACE_OSGEO_COMMON
 
+/// \ingroup (enums)
 /// \brief
 /// Enumeration for datatypes used by stream readers.
 public __value enum StreamReaderType
 {
+    /// Byte Stream Reader type
 	StreamReaderType_Byte = FdoStreamReaderType_Byte,
+
+    /// Char Stream Reader type
 	StreamReaderType_Char = FdoStreamReaderType_Char,
 };
 
+/// \ingroup (interfaces)
+/// \interface IStreamReader
 /// \brief
 /// The IStreamReader class is a top level interface for stream reader classes. 
 /// The API it provides allows the user to read large streams of data in blocks of items. 
