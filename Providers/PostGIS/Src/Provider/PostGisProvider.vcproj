@@ -317,6 +317,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\PgCursor.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PgCursor.h"
+				>
+			</File>
+			<File
 				RelativePath=".\PostGisProvider.cpp"
 				>
 			</File>

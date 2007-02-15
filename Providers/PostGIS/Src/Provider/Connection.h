@@ -21,10 +21,13 @@
 // FDO
 #include <Fdo.h>
 #include <FdoCommonConnPropDictionary.h>
+// std
+#include <string>
 // boost
 #include <boost/tuple/tuple.hpp>
-// PostgreSQL client library
+// libpq
 #include <libpq-fe.h>
+
 
 //
 // Forward declarations
@@ -124,6 +127,15 @@ public:
     /// Force to write any cached data to currently connected datastore
     void Flush();
 
+    //
+    // Connection custom interface
+    //
+
+    ExecStatusType PgExecuteCommand(char const* sql, FdoSize& affected);
+
+    PGresult* PgExecuteQuery(char const* sql);
+
+
 protected:
 
     /// Destructor.
@@ -137,6 +149,10 @@ protected:
     void Dispose();
 
 private:
+
+    // Connection is a noncopyable type
+    Connection(Connection const&);
+    Connection& operator=(Connection const&);
 
     //
     // Data members
@@ -155,6 +171,9 @@ private:
 
     // Pointer to PostgreSQL connection object of current session.
     PGconn* mPgConn;
+
+    // Pointer to PostgreSQL query result
+    PGresult* mPgResult;
 
     //
     // Private operations

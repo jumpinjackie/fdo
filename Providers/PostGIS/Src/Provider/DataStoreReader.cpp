@@ -18,13 +18,15 @@
 
 #include "PostGisProvider.h"
 #include "DataStoreReader.h"
+#include "Connection.h"
 
 #include <cassert>
 
 
 namespace fdo { namespace postgis {
 
-DataStoreReader::DataStoreReader()
+DataStoreReader::DataStoreReader(Connection* conn, std::string const& cursor)
+    : mConn(conn), mCursor(cursor)
 {
 }
 
@@ -58,7 +60,8 @@ FdoIDataStorePropertyDictionary* DataStoreReader::GetDataStoreProperties()
 
 bool DataStoreReader::ReadNext()
 {
-    assert(!"NOT IMPLEMENTED");
+
+
     return false;
 }
 

@@ -45,14 +45,11 @@
 #include <vector>
 // boost
 #include <boost/shared_ptr.hpp>
+#include <boost/lexical_cast.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
-// PostgreSQL client library
-#include <libpq-fe.h>
 
-
-#include <fstream>
 // External access to connection for client services
 extern "C" FDOPOSTGIS_API FdoIConnection* CreateConnection()
 {
@@ -66,13 +63,13 @@ namespace fdo { namespace postgis {
 Connection::Connection() :
     mConnInfo(NULL),
     mConnState(FdoConnectionState_Closed),
-    mPgConn(NULL)
+    mPgConn(NULL),
+    mPgResult(NULL)
 {
 }
 
 Connection::~Connection()
 {
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -379,6 +376,53 @@ void Connection::SetConfiguration(FdoIoStream* configStream)
 void Connection::Flush()
 {
     assert(!"NOT IMPLEMENTED");
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Connection custom interface
+///////////////////////////////////////////////////////////////////////////////
+
+ExecStatusType Connection::PgExecuteCommand(char const* sql, FdoSize& cmdTuples)
+{
+    FDOLOG_MARKER("Connection::+PgExecuteCommand");
+
+    cmdTuples = 0;
+    boost::shared_ptr<PGresult> pgRes(PQexec(mPgConn, sql), PQclear);
+
+    ExecStatusType pgResStatus = PQresultStatus(pgRes.get());
+    if (PGRES_COMMAND_OK != pgResStatus)
+    {
+        FdoStringP errStatus(PQresStatus(pgResStatus));
+        FdoStringP errMsg();
+
+        FDOLOG_WRITE("PostgreSQL failed executing SQL command:\nCODE: %s\n%s\nSQL: %s",
+            PQresStatus(pgResStatus), PQresultErrorMessage(pgRes.get()), sql);
+
+        // TODO: Consider throwing instead of returning result status
+
+        //throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_SQL_COMMAND_FAILED,
+        //    "SQL command failed with PostgreSQL error code: %1$ls. %2$ls.",
+        //    static_cast<FdoString*>(errStatus), static_cast<FdoString*>(errMsg)));
+    }
+    else
+    {
+        FDOLOG_WRITE("SQL command status: %s", PQcmdStatus(pgRes.get()));
+
+        try
+        {
+            std::string num(PQcmdTuples(pgRes.get()));
+            cmdTuples = boost::lexical_cast<std::size_t>(num);
+        }
+        catch (boost::bad_lexical_cast& e) { /* cmdTuples = 0; */ }
+    }
+
+    return pgResStatus;
+}
+
+PGresult* Connection::PgExecuteQuery(char const* sql)
+{
+    assert(!"NOT IMPLEMENTED");
+    return NULL;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

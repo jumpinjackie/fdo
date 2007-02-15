@@ -17,6 +17,9 @@
 #ifndef FDOPOSTGIS_DATASTOREREADER_H_INCLUDED
 #define FDOPOSTGIS_DATASTOREREADER_H_INCLUDED
 
+#include "Connection.h"
+#include <string>
+
 namespace fdo { namespace postgis {
 
 /// Implementation of forward-only and read-only iterator for
@@ -26,7 +29,7 @@ class DataStoreReader : public FdoIDataStoreReader
 {
 public:
 
-    DataStoreReader();
+    DataStoreReader(Connection* conn, std::string const& cursor);
     virtual ~DataStoreReader();
 
     //
@@ -54,6 +57,10 @@ public:
     void Close();
 
 private:
+
+    FdoPtr<Connection> mConn;
+
+    std::string mCursor;
 
 };
 

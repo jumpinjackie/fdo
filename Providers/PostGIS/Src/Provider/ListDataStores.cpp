@@ -24,18 +24,16 @@
 
 namespace fdo { namespace postgis {
 
-ListDataStores::ListDataStores() : Base(NULL)
-{
-}
+//ListDataStores::ListDataStores() : Base(NULL)
+//{
+//}
 
 ListDataStores::ListDataStores(Connection* conn) : Base(conn)
 {
-    assert(!"NOT IMPLEMENTED");
 }
 
 ListDataStores::~ListDataStores()
 {
-    assert(!"NOT IMPLEMENTED");
 }
 
 bool ListDataStores::GetIncludeNonFdoEnabledDatastores()
@@ -50,7 +48,25 @@ void ListDataStores::SetIncludeNonFdoEnabledDatastores(bool includeNonFdo)
 
 FdoIDataStoreReader* ListDataStores::Execute()
 {
-    assert(!"NOT IMPLEMENTED");
+    
+    FdoSize cmdTuples = 0;
+    ExecStatusType pgStatus = PGRES_FATAL_ERROR;
+    pgStatus = mConn->PgExecuteCommand("BEGIN work", cmdTuples);
+
+    std::string cursor("crsFdoListDatastore");
+    std::string qry("SELECT ns.nspname AS schemaname, r.rolname AS ownername "
+                    "FROM pg_catalog.pg_namespace ns "
+                    "JOIN pg_catalog.pg_roles r ON ns.nspowner=r.oid"
+                    "WHERE ns.nspname !~ \'^pg_\' AND ns.nspname != \'information_schema\'"
+                    "ORDER BY 1");
+
+    
+    std::string sql("DECLARE " + cursor + " CURSOR FOR ");
+    sql += qry;
+    
+    pgStatus = mConn->PgExecuteCommand(sql.c_str(), cmdTuples);
+
+
     return NULL;
 }
 
