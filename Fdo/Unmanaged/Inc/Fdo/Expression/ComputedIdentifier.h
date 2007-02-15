@@ -45,8 +45,8 @@
 /// 
 class FdoComputedIdentifier : public FdoIdentifier
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default instance of an identifier.
     FdoComputedIdentifier();
 

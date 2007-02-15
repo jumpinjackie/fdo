@@ -55,6 +55,7 @@ public:
     FDO_API static FdoDataValueCollection* Create();
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoDataValueCollectionP is a FdoPtr on FdoDataValueCollection, provided for convenience.
 typedef FdoPtr<FdoDataValueCollection> FdoDataValueCollectionP;

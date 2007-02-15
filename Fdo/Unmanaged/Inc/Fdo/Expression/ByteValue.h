@@ -32,8 +32,8 @@
 /// byte value.
 class FdoByteValue : public FdoDataValue
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// \brief
     /// Constructs a default instance of an FdoByteValue with a value of null.
     /// \return
@@ -136,14 +136,14 @@ public:
         return m_data;
     }
 
+/// \cond DOXYGEN-IGNORE
 protected:
     // See FdoDataValue::DoCompare()
     virtual FdoCompareType DoCompare( FdoDataValue* other );
 
-/// \cond DOXYGEN-IGNORE
     FdoByte m_data;
-};
 /// \endcond
+};
 #endif
 
 

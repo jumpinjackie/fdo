@@ -32,8 +32,8 @@
 /// CLOB value.
 class FdoCLOBValue : public FdoLOBValue 
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// \brief
     /// Constructs a default instance of an FdoCLOBValue with a value of null.
     /// 

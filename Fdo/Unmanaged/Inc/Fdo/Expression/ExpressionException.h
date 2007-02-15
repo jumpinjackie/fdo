@@ -31,8 +31,8 @@
 /// environment specific.
 class FdoExpressionException : public FdoException
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default instance of an FdoExpressionException.
     FdoExpressionException();
 

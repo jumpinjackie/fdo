@@ -23,24 +23,19 @@
 #pragma once
 #endif
 
+/// \ingroup (enums)
 /// \brief
 /// The FdoExpressionType enumeration defines the expression types available. This
 /// enumeration is used in the capabilities metadata.
-/// <param name="FdoExpressionType_Basic">
-/// Basic arithmetic expressions e.g.: +, -, *, /, negate, and string concatenation.
-/// </param>
-/// <param name="FdoExpressionType_Function">
-/// Function evaluations
-/// </param>
-/// <param name="FdoExpressionType_Parameter">
-/// Parameter substitutions
-/// </param>
 enum FdoExpressionType
 {
+    /// Basic arithmetic expressions e.g.: +, -, *, /, negate, and string concatenation.
     FdoExpressionType_Basic,
 
+    /// Function evaluations
     FdoExpressionType_Function,
 
+    /// Parameter substitutions
     FdoExpressionType_Parameter
 
 };

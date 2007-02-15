@@ -33,8 +33,8 @@
 /// and divide.
 class FdoBinaryExpression : public FdoExpression
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default instance of an FdoBinaryExpression.
     FdoBinaryExpression();
 

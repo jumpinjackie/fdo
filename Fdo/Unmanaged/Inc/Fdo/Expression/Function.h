@@ -33,8 +33,8 @@
 /// be passed to it.
 class FdoFunction : public FdoExpression
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default instance of an FdoFunction.
     FdoFunction();
 

@@ -31,8 +31,8 @@
 /// value.
 class FdoBooleanValue : public FdoDataValue
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// \brief
     /// Constructs a default instance of an FdoBooleanValue with a
     /// value of null.

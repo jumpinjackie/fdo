@@ -23,29 +23,22 @@
 #pragma once
 #endif
 
+/// \ingroup (enums)
 /// \brief
 /// The FdoBinaryOperations enumeration lists the binary expression operations
 /// available.
-/// <param name="FdoBinaryOperations_Add">
-/// Add the two expressions or concatenate two string expressions
-/// </param>
-/// <param name="FdoBinaryOperations_Subtract">
-/// Subtract the two expressions
-/// </param>
-/// <param name="FdoBinaryOperations_Multiply">
-/// Multiply the two expressions
-/// </param>
-/// <param name="FdoBinaryOperations_Divide">
-/// Divide the two expressions
-/// </param>
 enum FdoBinaryOperations
 {
+    /// Add the two expressions or concatenate two string expressions
     FdoBinaryOperations_Add,
 
+    /// Subtract the two expressions
     FdoBinaryOperations_Subtract,
 
+    /// Multiply the two expressions
     FdoBinaryOperations_Multiply,
 
+    /// Divide the two expressions
     FdoBinaryOperations_Divide
 };
 #endif

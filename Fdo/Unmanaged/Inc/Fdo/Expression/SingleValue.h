@@ -31,12 +31,12 @@
 /// The FdoSingleValue class derives from FdoDataValue and represents a single precision floating point number.
 class FdoSingleValue : public FdoDataValue
 {
+/// \cond DOXYGEN-IGNORE
     friend class FdoByteValue;
     friend class FdoInt16Value;
     friend class FdoInt32Value;
     friend class FdoInt64Value;
 protected:
-/// \cond DOXYGEN-IGNORE
     /// \brief
     /// Constructs a default instance of an FdoSingleValue with a
     /// value of null.
@@ -141,6 +141,7 @@ public:
         return m_data;
     }
 
+/// \cond DOXYGEN-IGNORE
 protected:
     /// \brief
     /// Constructs an instance of an FdoSingleValue from another FdoDataValue.
@@ -176,6 +177,7 @@ protected:
     virtual FdoCompareType DoCompare( FdoDataValue* other );
 
     float   m_data;
+/// \endcond
 };
 #endif
 

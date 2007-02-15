@@ -31,10 +31,10 @@
 /// The FdoInt32Value class derives from FdoDataValue and represents a 32-bit signed integer value.
 class FdoInt32Value : public FdoDataValue
 {
+/// \cond DOXYGEN-IGNORE
     friend class FdoByteValue;
     friend class FdoInt16Value;
 protected:
-/// \cond DOXYGEN-IGNORE
     /// \brief
     /// Constructs a default instance of an FdoInt32Value with a
     /// value of null.
@@ -141,6 +141,7 @@ public:
         return m_data;
     }
 
+/// \cond DOXYGEN-IGNORE
 protected:
     /// \brief
     /// Constructs an instance of an FdoInt32Value from another FdoDataValue.
@@ -174,6 +175,7 @@ protected:
     virtual FdoCompareType DoCompare( FdoDataValue* other );
 
     FdoInt32    m_data;
+/// \endcond
 };
 #endif
 
