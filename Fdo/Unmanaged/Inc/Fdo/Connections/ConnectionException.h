@@ -31,8 +31,8 @@
 /// specific.
 class FdoConnectionException : public FdoException
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// \brief
     /// Constructs a default instance of an FdoConnectionException.
     /// 

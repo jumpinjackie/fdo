@@ -33,8 +33,8 @@
 ///  The FdoFunctionDefinition class contains metadata that describes a function and its arguments.
 class FdoFunctionDefinition : public FdoIDisposable
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs an instance of an FdoFunctionDefinition using the specified arguments.
     FdoFunctionDefinition (FdoString                       *name,
                            FdoString                       *description,
@@ -91,7 +91,7 @@ public:
     /// Input the name of the function.
     /// \param description 
     /// Input a brief description.
-    /// \param returnProperty Type 
+    /// \param returnPropertyType 
     /// Input the function return property type
     /// \param returnType 
     /// Input the function return data type (ignore it property type is not data)
@@ -143,9 +143,6 @@ public:
     FDO_API FdoString *GetDescription();
     /// \brief
     ///  Gets an array of FdoArgumentDefinition objects required for the function.
-    /// 
-    /// \param length 
-    /// Output the number of argument definitions.
     /// 
     /// \return
     /// Returns the list of argument definitions
