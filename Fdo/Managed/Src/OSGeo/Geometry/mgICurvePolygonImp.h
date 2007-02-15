@@ -23,11 +23,13 @@
 
 class FdoICurvePolygon;
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 public __gc __interface IRing;
 END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
+/// \endcond
 
 /// \brief
 /// The ICurvePolygonImp class is a concrete geometric CurvePolygon geometry type.  

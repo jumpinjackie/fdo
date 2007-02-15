@@ -22,12 +22,16 @@
 
 class FdoPointCollection;
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 public __gc __interface IDirectPosition;
 END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
+/// \endcond
 
+/// \ingroup (interfaces)
+/// \interface IPoint
 /// \brief
 /// The IPoint class is a point Geometry type.
 public __gc __interface IPoint : public NAMESPACE_OSGEO_GEOMETRY::IGeometry

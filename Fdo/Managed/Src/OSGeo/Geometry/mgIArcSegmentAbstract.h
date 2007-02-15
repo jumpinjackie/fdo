@@ -21,13 +21,17 @@
 
 #include "mgICurveSegmentAbstract.h"
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 public __gc __interface ICurveSegmentAbstract;
 public __gc __interface IDirectPosition;
 END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
+/// \endcond
 
+/// \ingroup (interfaces)
+/// \interface IArcSegmentAbstract
 /// \brief
 /// The IArcSegmentAbstract class is an arc curve segment (abstract)
 public __gc __interface IArcSegmentAbstract : public NAMESPACE_OSGEO_GEOMETRY::ICurveSegmentAbstract

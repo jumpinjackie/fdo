@@ -21,13 +21,17 @@
 
 #include "mgICurveSegmentAbstract.h"
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 public __gc __interface IDirectPosition;
 public __gc class DirectPositionCollection;
 END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
+/// \endcond
 
+/// \ingroup (interfaces)
+/// \interface ILineStringSegment
 /// \brief
 /// The ILineStringSegment class is a LineString curve segment type.  
 /// The shape of ILineStringSegment is the set of positions defined by the contained collection, 

@@ -23,6 +23,8 @@
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 
+/// \ingroup (interfaces)
+/// \interface ISurfaceAbstract
 /// \brief
 /// The ISurfaceAbstract class is a surface (abstract) Geometry type.
 public __gc __interface ISurfaceAbstract : public NAMESPACE_OSGEO_GEOMETRY::IGeometry

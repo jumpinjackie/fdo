@@ -22,12 +22,16 @@
 
 class FdoPolygonCollection;
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 public __gc __interface ILinearRing;
 END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
+/// \endcond
 
+/// \ingroup (interfaces)
+/// \interface IPolygon
 /// \brief
 /// The IPolygon class is a polygon Geometry type.  
 /// IPolygon is defined by one exterior boundary and zero or more 

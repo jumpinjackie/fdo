@@ -20,12 +20,16 @@
 
 #include "mgIGeometricAggregateAbstract.h"
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 public __gc __interface ILineString;
 END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
+/// \endcond
 
+/// \ingroup (interfaces)
+/// \interface IMultiLineString
 /// \brief
 /// The IMultiLineString class is a multi-LineString collection geometry type.
 /// The curves contained here do not have to

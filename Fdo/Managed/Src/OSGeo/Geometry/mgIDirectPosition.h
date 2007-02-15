@@ -22,6 +22,8 @@ class FdoDirectPositionCollection;
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 
+/// \ingroup (interfaces)
+/// \interface IDirectPosition
 /// \brief
 /// The IDirectPosition class is a direct position object.  
 /// IDirectPosition is a simple coordinate position in any allowed dimension.  
