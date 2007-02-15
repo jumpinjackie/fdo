@@ -35,8 +35,8 @@
 class FdoDirectPositionImpl : public FdoIDirectPosition
 {
 
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructors
 
     /// \brief
@@ -415,9 +415,9 @@ public:
     /// 
     FDO_GEOM_API void SetDimensionality(FdoInt32 dimensionality);
 
+/// \cond DOXYGEN-IGNORE
 protected:
 
-/// \cond DOXYGEN-IGNORE
     void Dispose();
 
     double      m_x;

@@ -34,8 +34,8 @@
 class FdoEnvelopeImpl : public FdoIEnvelope
 {
 
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// \brief
     /// Constructs a default instance of a FdoEnvelopeImpl object.
     /// 
@@ -398,9 +398,9 @@ public:
     /// 
     FDO_GEOM_API void Expand(FdoIEnvelope* envelope);
     
+/// \cond DOXYGEN-IGNORE
 protected:
 
-/// \cond DOXYGEN-IGNORE
     void Dispose();
 
     double  m_minX;
