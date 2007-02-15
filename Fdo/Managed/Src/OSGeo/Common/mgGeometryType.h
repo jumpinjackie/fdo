@@ -20,83 +20,67 @@
 
 BEGIN_NAMESPACE_OSGEO_COMMON
 
+/// \ingroup (enums)
 /// \brief
-///  GeometryType is an enumeration to denote the type of a Geometry.
+/// GeometryType is an enumeration to denote the type of a Geometry.
 /// \remarks
-///  This enumeration applies to types that derive from IGeometry.
-/// <param name="GeometryType_None">
-/// Indicates no specific type; used for "unknown", "don't care" or an incompletely constructed Geometry object.
-/// </param>
-/// <param name="GeometryType_Point">
-/// Point type 
-/// </param>
-/// <param name="GeometryType_LineString">
-/// LineString type 
-/// </param>
-/// <param name="GeometryType_Polygon">
-/// Polygon type 
-/// </param>
-/// <param name="GeometryType_MultiPoint">
-/// MultiPoint type 
-/// </param>
-/// <param name="GeometryType_MultiLineString">
-/// MultiLineString type 
-/// </param>
-/// <param name="GeometryType_MultiPolygon">
-/// MultiPolygon type 
-/// </param>
-/// <param name="GeometryType_MultiGeometry">
-/// MultiGeometry type
-/// </param>
-/// <param name="GeometryType_CurveString">
-/// CurveString type 
-/// </param>
-/// <param name="GeometryType_CurvePolygon">
-/// CurvePolygon type 
-/// </param>
-/// <param name="GeometryType_MultiCurveString">
-/// MultiCurveString type 
-/// </param>
-/// <param name="GeometryType_MultiCurvePolygon">
-/// MultiCurvePolygon type 
-/// </param>
+/// This enumeration applies to types that derive from IGeometry.
 public __value enum GeometryType
 {
+    /// Indicates no specific type; used for "unknown", "don't care" or an incompletely constructed Geometry object.
     GeometryType_None = FdoGeometryType_None,
+
+    /// Point type 
     GeometryType_Point = FdoGeometryType_Point,
+
+    /// LineString type 
     GeometryType_LineString = FdoGeometryType_LineString,
+
+    /// Polygon type 
     GeometryType_Polygon = FdoGeometryType_Polygon,
+
+    /// MultiPoint type 
     GeometryType_MultiPoint = FdoGeometryType_MultiPoint,
+    
+    /// MultiLineString type 
     GeometryType_MultiLineString = FdoGeometryType_MultiLineString,
+    
+    /// MultiPolygon type 
     GeometryType_MultiPolygon = FdoGeometryType_MultiPolygon,
+    
+    /// MultiGeometry type
     GeometryType_MultiGeometry = FdoGeometryType_MultiGeometry,
+    
+    /// CurveString type 
     GeometryType_CurveString = FdoGeometryType_CurveString,
+    
+    /// CurvePolygon type 
     GeometryType_CurvePolygon = FdoGeometryType_CurvePolygon,
+    
+    /// MultiCurveString type 
     GeometryType_MultiCurveString = FdoGeometryType_MultiCurveString,
+    
+    /// MultiCurvePolygon type 
     GeometryType_MultiCurvePolygon = FdoGeometryType_MultiCurvePolygon
 };
 
+/// \ingroup (enums)
 /// \brief
-///  Enumeration for components of Geometry.
+/// Enumeration for components of Geometry.
 /// \remarks
-///  This enumeration applies to certain helper types that are used to compose other types which derive from IGeometry.
-/// <param name="GeometryComponentType_LinearRing">
-/// LinearRing type
-/// </param>
-/// <param name="GeometryComponentType_CircularArcSegment">
-/// CircularArcSegment type 
-/// </param>
-/// <param name="GeometryComponentType_LineStringSegment">
-/// LineStringSegment type 
-/// </param>
-/// <param name="GeometryComponentType_Ring">
-/// Ring type 
-/// </param>
+/// This enumeration applies to certain helper types that are used to compose other types which derive from IGeometry.
 public __value enum GeometryComponentType
 {
+    /// LinearRing type
     GeometryComponentType_LinearRing = FdoGeometryComponentType_LinearRing,
+    
+    /// CircularArcSegment type 
     GeometryComponentType_CircularArcSegment = FdoGeometryComponentType_CircularArcSegment,
+    
+    /// LineStringSegment type 
     GeometryComponentType_LineStringSegment = FdoGeometryComponentType_LineStringSegment,
+    
+    /// Ring type 
     GeometryComponentType_Ring = FdoGeometryComponentType_Ring
 };
 
