@@ -34,8 +34,8 @@
 /// and FdoSpatialCondition.
 class FdoGeometricCondition : public FdoSearchCondition
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default instance of an FdoGeometricCondition.
     FdoGeometricCondition();
 

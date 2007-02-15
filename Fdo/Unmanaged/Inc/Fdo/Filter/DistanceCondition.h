@@ -40,8 +40,8 @@ class FdoGeometry;
 /// will indicate this limitation.
 class FdoDistanceCondition : public FdoGeometricCondition
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default instance of an FdoDistanceCondition.
     FdoDistanceCondition();
 
@@ -172,6 +172,7 @@ public:
     FDO_API void Process(FdoIFilterProcessor* p);
 
 /// \cond DOXYGEN-IGNORE
+
     /// \brief
     /// This is an internal method. It returns the well defined text representation of the filter. 
     /// 

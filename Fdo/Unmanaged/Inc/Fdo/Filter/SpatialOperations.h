@@ -23,52 +23,9 @@
 #pragma once
 #endif
 
+/// \ingroup (enums)
 /// \brief
 /// The FdoSpatialOperations enumeration lists the spatial conditions available.
-/// <param name="FdoSpatialOperations_Contains">
-/// Test to see if the geometric property value spatially contains the
-/// literal geometric value
-/// </param>
-/// <param name="FdoSpatialOperations_Crosses">
-/// Test to see if the geometric property value spatially crosses the given
-/// geometry
-/// </param>
-/// <param name="FdoSpatialOperations_Disjoint">
-/// Test to see if the geometric property value spatially is spatially
-/// disjoint from the given geometry
-/// </param>
-/// <param name="FdoSpatialOperations_Equals">
-/// Test to see if the geometric property value is spatially equal to the
-/// given geometry
-/// </param>
-/// <param name="FdoSpatialOperations_Intersects">
-/// Test to see if the geometric property value spatially intersects the
-/// given geometry
-/// </param>
-/// <param name="FdoSpatialOperations_Overlaps">
-/// Test to see if the geometric property value spatially overlaps the given
-/// geometry
-/// </param>
-/// <param name="FdoSpatialOperations_Touches">
-/// Test to see if the geometric property value spatially touches the given
-/// geometry
-/// </param>
-/// <param name="FdoSpatialOperations_Within">
-/// Test to see if the geometric property value is spatially within the
-/// given geometry
-/// </param>
-/// <param name="FdoSpatialOperations_CoveredBy">
-/// Test to see if the geometric property value is covered by the interior
-/// and boundary of the given geometry
-/// </param>
-/// <param name="FdoSpatialOperations_Inside">
-/// Test to see if the geometric property value is inside the interior
-/// of the given geometry, not touching the boundary
-/// </param>
-/// <param name="FdoSpatialOperations_EnvelopeIntersects">
-/// Test to see if the envelope of the referenced geometric property value intersects the
-/// given geometry
-/// </param>
 enum FdoSpatialOperations
 {
     /// Test to see if the geometric property value spatially contains the
@@ -79,7 +36,7 @@ enum FdoSpatialOperations
     /// geometry.
     FdoSpatialOperations_Crosses,
 
-    /// Test to see if the geometric property value spatially is spatially
+    /// Test to see if the geometric property value is spatially
     /// disjoint from the given geometry.
     FdoSpatialOperations_Disjoint,
 

@@ -33,8 +33,8 @@
 /// filters to be combined via a logical "and" or a logical "or".
 class FdoBinaryLogicalOperator : public FdoLogicalOperator
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default instance of an FdoBinaryLogicalOperator.
     FdoBinaryLogicalOperator();
 
@@ -141,6 +141,7 @@ public:
     FDO_API void Process(FdoIFilterProcessor* p);
 
 /// \cond DOXYGEN-IGNORE
+
     /// \brief
     /// This is an internal method. It returns the well defined text representation of the filter. 
     /// 

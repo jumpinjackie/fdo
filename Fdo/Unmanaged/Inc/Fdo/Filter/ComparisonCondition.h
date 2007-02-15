@@ -33,8 +33,8 @@
 /// to test the equality of two expressions.
 class FdoComparisonCondition : public FdoSearchCondition
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default instance of an FdoComparisonCondition.
     FdoComparisonCondition();
 
@@ -142,6 +142,7 @@ public:
     FDO_API void Process(FdoIFilterProcessor* p);
 
 /// \cond DOXYGEN-IGNORE
+
     /// \brief
     /// This is an internal method. It returns the well defined text representation of the filter. 
     /// 

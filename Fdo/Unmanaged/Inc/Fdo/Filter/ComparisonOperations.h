@@ -23,38 +23,10 @@
 #pragma once
 #endif
 
+/// \ingroup (enums)
 /// \brief
 /// The FdoComparisonOperations enumeration lists the comparison operations
 /// available.
-/// <param name="FdoComparisonOperations_EqualTo">
-/// Test to see if the left and right expressions are equal
-/// </param>
-/// <param name="FdoComparisonOperations_NotEqualTo">
-/// Test to see if the left and right expressions are not equal
-/// </param>
-/// <param name="FdoComparisonOperations_GreaterThan">
-/// Test to see if the left expression is greater than the right expression
-/// </param>
-/// <param name="FdoComparisonOperations_GreaterThanOrEqualTo">
-/// Test to see if the left expression is greater than or equal to the right expression
-/// </param>
-/// <param name="FdoComparisonOperations_LessThan">
-/// Test to see if the left expression is less than the right expression
-/// </param>
-/// <param name="FdoComparisonOperations_LessThanOrEqualTo">
-/// Test to see if the left expression is less than or equal to the right expression
-/// </param>
-/// <param name="FdoComparisonOperations_Like">
-/// Test to see if the left expression matches the pattern specified by the
-/// right expression.  Wildcard characters supported in the pattern are:
-///
-/// %    Any string of zero or more characters;
-/// _    Any single character;
-/// []   Any single character within the specified range ([a-f]) or set 
-/// ([abcdef]);
-/// [^]  Any single character not within the specified range ([^a-f]) or 
-/// set ([^abcdef]).
-/// </param>
 enum FdoComparisonOperations
 {
     /// Test to see if the left and right expressions are equal.

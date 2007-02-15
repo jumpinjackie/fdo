@@ -32,8 +32,8 @@
 /// if the value of a specified data property is null.
 class FdoNullCondition : public FdoSearchCondition
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default instance of an FdoNullCondition.
     FdoNullCondition();
 
@@ -111,6 +111,7 @@ public:
     FDO_API void Process(FdoIFilterProcessor* p);
 
 /// \cond DOXYGEN-IGNORE
+
     /// \brief
     /// This is an internal method. It returns the well defined text representation of the filter. 
     /// 
