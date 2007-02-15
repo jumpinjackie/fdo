@@ -171,6 +171,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Src\Sm\Ph\BaseObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Src\Sm\Ph\CharacterSet.cpp"
 				>
 			</File>
@@ -219,11 +223,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\Sm\Ph\ColumnList.cpp"
+				RelativePath=".\Src\Sm\Ph\ColumnList.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\Src\Sm\Ph\ColumnList.cpp"
+				RelativePath=".\src\Sm\Ph\ColumnList.cpp"
 				>
 			</File>
 			<File
@@ -444,6 +448,10 @@
 							ObjectFile="$(IntDir)/$(InputName)1.obj"
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\Src\Sm\Ph\Rd\BaseObjectReader.cpp"
+					>
 				</File>
 				<File
 					RelativePath=".\Src\Sm\Ph\Rd\CharacterSetReader.cpp"
@@ -975,6 +983,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Inc\Sm\Ph\BaseObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Inc\Sm\Ph\BaseObjectCollection.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Inc\Sm\Ph\CharacterSet.h"
 				>
 			</File>
@@ -1347,6 +1363,10 @@
 				>
 				<File
 					RelativePath="Inc\Sm\Ph\Rd\AssociationReader.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Inc\Sm\Ph\Rd\BaseObjectReader.h"
 					>
 				</File>
 				<File

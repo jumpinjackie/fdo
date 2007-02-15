@@ -91,12 +91,16 @@ protected:
     void CreateTableGroup( FdoSmPhOwnerP owner, FdoStringP prefix, FdoInt32 count, int lt_mode );
     void CreateFkey( FdoSmPhOwnerP owner, FdoStringP fTableName, FdoStringP pTableName, FdoStringP pOwnerName = L"" );
 
+    virtual bool SupportsBaseObjects();
+    virtual bool SupportsViewPkey();
+
     static FdoString* DB_NAME_SUFFIX;
     static FdoString* DB_NAME_COPY_SUFFIX;
     static FdoString* DB_NAME_FOREIGN_SUFFIX;
 
 private:
     FdoSmPhTableP CreateIxTable( FdoSmPhOwnerP owner, FdoStringP tableName, int lt_mode );
+    FdoSmPhViewP CreateIxView( FdoSmPhOwnerP owner, FdoStringP viewName, FdoStringP tableName );
     void AddPkey( FdoSmPhTableP table );
     void AddIndex( FdoSmPhTableP table, bool unique, FdoStringP indexName, FdoStringP columns );
     void SetLtLck( FdoSmPhTableP table, int lt_mode );

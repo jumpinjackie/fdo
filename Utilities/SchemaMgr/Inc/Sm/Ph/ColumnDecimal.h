@@ -68,6 +68,10 @@ public:
         return FdoStringP::Format( L"%ls (%d, %d)", (FdoString*) GetTypeName(), GetLength(), GetScale() );
     }
 
+    // Returns true if this column has the same definition (type,length,scale,nullability)
+    // as the given column.
+    virtual bool DefinitionEquals( FdoSmPhColumnP otherColumn );
+
 protected:
     /// unused constructor needed only to build on Linux
     FdoSmPhColumnDecimal() {}

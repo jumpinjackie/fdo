@@ -262,6 +262,16 @@ bool FdoSmPhColumn::GetHasValues()
     return hasData;
 }
 
+bool FdoSmPhColumn::DefinitionEquals( FdoSmPhColumnP otherColumn )
+{
+    bool equals = false;
+
+    if ( (GetType() == otherColumn->GetType()) && (GetNullable() == otherColumn->GetNullable()) )
+        equals = true;
+
+    return equals;
+}
+
 void FdoSmPhColumn::SetElementState(FdoSchemaElementState elementState)
 {
     FdoSchemaElementState oldState = GetElementState();

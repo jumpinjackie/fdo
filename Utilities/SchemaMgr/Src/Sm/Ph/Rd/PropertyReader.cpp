@@ -43,7 +43,6 @@ FdoSmPhRdPropertyReader::FdoSmPhRdPropertyReader(FdoSmPhDbObjectP dbObject, FdoS
     mFieldIdx(-1),
     mFkeyIdx(-1),
     mDbObject(dbObject),
-    mpTable(NULL),
     m_IsGeometryFromOrdinatesWanted(mgr->IsGeometryFromOrdinatesWanted()),
     mFkeyCount(0)
 {
@@ -54,11 +53,8 @@ FdoSmPhRdPropertyReader::FdoSmPhRdPropertyReader(FdoSmPhDbObjectP dbObject, FdoS
         SetEOF(true);
     }
     else {
-        // Count the number of foreign keys in the database object. Only
-        // tables have foreign keys.
-        mpTable = dynamic_cast<FdoSmPhTable*>((FdoSmPhDbObject*) mDbObject);
-        if ( mpTable ) 
-            mFkeyCount = mpTable->RefFkeysUp()->GetCount();
+        // Count the number of foreign keys in the database object.
+        mFkeyCount = mDbObject->RefFkeysUp()->GetCount();
 
         // Determine the identity properties (columns)
         ResolveIdentity();
@@ -165,7 +161,7 @@ bool FdoSmPhRdPropertyReader::ReadNext()
 
                     // No more columns; get the next foreign key, and turn it into 
                     // an association property.
-					FdoSmPhFkeysP	pFkeys = mpTable->GetFkeysUp();
+					FdoSmPhFkeysP	pFkeys = mDbObject->GetFkeysUp();
                     FdoSmPhFkeyP pFkey = pFkeys->GetItem(mFkeyIdx);
                     const FdoSmPhTable* pPkeyTable = pFkey->RefPkeyTable();
 
@@ -252,10 +248,7 @@ FdoSmPhRowsP FdoSmPhRdPropertyReader::MakeRows( FdoSmPhMgrP mgr )
 
 void FdoSmPhRdPropertyReader::ResolveIdentity()
 {
-    mIdCols = NULL;
-
-    if ( mpTable ) 
-        mIdCols = mpTable->GetBestIdentity();
+    mIdCols = mDbObject->GetBestIdentity();
 }
 
 FdoStringP FdoSmPhRdPropertyReader::GetIdPosn( FdoStringP colName )
@@ -280,20 +273,18 @@ bool FdoSmPhRdPropertyReader::InFkey( FdoSmPhColumnP column )
     FdoStringP colName = column->GetName();
     int idx;
 
-    if ( mpTable ) {
-        // Special case: do not weed out identity columns. Data properties need to 
-        // be generated for them.
-        if ( FdoSmPhColumnP(FdoSmPhColumnsP(mpTable->GetPkeyColumns())->FindItem( colName )) ) 
-            return false;
+    // Special case: do not weed out identity columns. Data properties need to 
+    // be generated for them.
+    if ( FdoSmPhColumnP(FdoSmPhColumnsP(mDbObject->GetPkeyColumns())->FindItem( colName )) ) 
+        return false;
 
-        // Check if the column is in a foreign key.
-		FdoSmPhFkeysP	pFkeys = mpTable->GetFkeysUp();
-		for ( idx = 0; idx < pFkeys->GetCount(); idx++ ) {
-            FdoSmPhFkeyP fkey = pFkeys->GetItem(idx);
-			FdoSmPhColumnsP	columns = fkey->GetFkeyColumns();
-            if ( FdoSmPhColumnP(columns->FindItem(colName)) ) 
-                return true;
-        }
+    // Check if the column is in a foreign key.
+    FdoSmPhFkeysP	pFkeys = mDbObject->GetFkeysUp();
+	for ( idx = 0; idx < pFkeys->GetCount(); idx++ ) {
+        FdoSmPhFkeyP fkey = pFkeys->GetItem(idx);
+    	FdoSmPhColumnsP	columns = fkey->GetFkeyColumns();
+        if ( FdoSmPhColumnP(columns->FindItem(colName)) ) 
+            return true;
     }
 
     return false;

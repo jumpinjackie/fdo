@@ -44,13 +44,13 @@ FdoSmPhRdClassReader::FdoSmPhRdClassReader(
     FdoStringP schemaName, 
     FdoStringP className, 
     FdoSmPhMgrP mgr,
-    FdoBoolean keyedOnly,
+    FdoBoolean classifyDefaultTypes,
     FdoStringP database,
     FdoStringP owner
 
 ) :
 	FdoSmPhReader(mgr, froms),
-    mKeyedOnly(keyedOnly),
+    mClassifyDefaultTypes(classifyDefaultTypes),
     m_IsGeometryFromOrdinatesWanted(mgr->IsGeometryFromOrdinatesWanted()),
     mSchemaName(schemaName),
     mCurrDbObject(-1)
@@ -114,13 +114,11 @@ bool FdoSmPhRdClassReader::ReadNext()
             // Get the current object and determine whether table or view 
             FdoSmPhDbObjectP pObject = mDbObjects->GetItem( mCurrDbObject );
             objectName = pObject->GetName();
-            FdoSmPhTableP pTable = pObject->SmartCast<FdoSmPhTable>();
-            FdoSmPhViewP pView = pObject->SmartCast<FdoSmPhView>();
-
+ 
             // Only classification of tables or views is supported
-            if ( pTable || pView ) {
+            if ( ClassifyObjectType(pObject, mClassifyDefaultTypes) ) {
                 // Check if class can be generated from this table or view.
-                classifiedObjectName = ClassifyObject( objectName, pTable ? FdoSmPhDbObjType_Table : FdoSmPhDbObjType_View );
+                classifiedObjectName = ClassifyObject( pObject );
                 if ( classifiedObjectName.GetLength() > 0 ) {
                     found = true;
 
@@ -201,35 +199,26 @@ bool FdoSmPhRdClassReader::ReadNext()
 	return(!IsEOF());
 }
 
-FdoStringP FdoSmPhRdClassReader::ClassifyObject( FdoStringP objectName, FdoSmPhDbObjType objectType )
+bool FdoSmPhRdClassReader::ClassifyObjectType( FdoSmPhDbObjectP dbObject, FdoBoolean classifyDefaultTypes )
 {
-    FdoStringP classifiedObjectName = objectName;
+    FdoSmPhTableP pTable = dbObject->SmartCast<FdoSmPhTable>();
+    FdoSmPhViewP pView = dbObject->SmartCast<FdoSmPhView>();
+
+    return ( pTable || pView );
+}
+
+FdoStringP FdoSmPhRdClassReader::ClassifyObject( FdoSmPhDbObjectP dbObject )
+{
+    FdoStringP classifiedObjectName = dbObject->GetName();
     bool hasKey = false;
 
-    if ( (classifiedObjectName.GetLength() > 0) &&
-         (objectType == FdoSmPhDbObjType_Table) 
-    ) {
-        FdoSmPhDbObjectP dbObject;
-
-        dbObject = mOwner->FindDbObject( classifiedObjectName );
-
-        if ( dbObject ) {
-            if ( (mSchemaName == L"") || (dbObject->GetBestSchemaName() == mSchemaName) ) {
-                // Find out if the table has a key.
-                FdoSmPhTable* pTable = dbObject ? dynamic_cast<FdoSmPhTable*>((FdoSmPhDbObject*) dbObject) : NULL;
-                if ( pTable ) {
-                    hasKey = (pTable->GetBestIdentity() != NULL);
-                }
-            }
-            else {
-                // DbObject is for a different feature schema.
-                classifiedObjectName = L"";
-            }
+    if ( classifiedObjectName.GetLength() > 0 ) {
+        if ( (mSchemaName == L"") || (dbObject->GetBestSchemaName() == mSchemaName) ) {
+            // Find out if the database object has a key.
+            hasKey = (dbObject->GetBestIdentity() != NULL);
         }
         else {
-             // DbObject can't be found, skip it.
-            // This can happen in the Oracle Provider for a number of 
-            // tables named 'bin$...'. These definitely need to be skipped.
+            // DbObject is for a different feature schema.
             classifiedObjectName = L"";
         }
     }
@@ -239,7 +228,7 @@ FdoStringP FdoSmPhRdClassReader::ClassifyObject( FdoStringP objectName, FdoSmPhD
     // Classify only if the object is a table or we were asked to 
     // include any objects.
     // TODO: change the name of mKeyedOnly to reflect its new purpose.
-    return ( (!mKeyedOnly) || (objectType == FdoSmPhDbObjType_Table)) ? classifiedObjectName : FdoStringP(L"");
+    return classifiedObjectName;
 }
 
 FdoStringP FdoSmPhRdClassReader::FindGeometryProperty( FdoSmPhColumnsP cols, bool& hasGeom )
@@ -303,4 +292,10 @@ FdoStringP FdoSmPhRdClassReader::FindGeometryProperty( FdoSmPhColumnsP cols, boo
     }
 
     return geomPropName;
+}
+
+// This function is now obsolete; override or extend ClassifyObject( FdoSmPhDbObjectP ) instead.
+FdoStringP FdoSmPhRdClassReader::ClassifyObject( FdoStringP objectName, FdoSmPhDbObjType objectType )
+{
+    throw FdoException::Create( L"Internal error, obsolete function FdoSmPhRdClassReader::ClassifyObject( FdoStringP , FdoSmPhDbObjType ) should never be called" );
 }

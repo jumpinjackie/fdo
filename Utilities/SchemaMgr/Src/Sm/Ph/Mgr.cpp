@@ -208,6 +208,16 @@ FdoSmPhDatabaseP FdoSmPhMgr::GetDatabase(FdoStringP database)
     return(pDatabase);
 }
 
+FdoSmPhDatabaseP FdoSmPhMgr::GetCachedDatabase(FdoInt32 idx)
+{
+    FdoSmPhDatabaseP database;
+
+    if ( mDatabases && (idx >= 0) && (idx < mDatabases->GetCount()) ) 
+        database = mDatabases->GetItem( idx );
+
+    return database;
+}
+
 FdoSmPhOwnerP FdoSmPhMgr::FindOwner(FdoStringP ownerName, FdoStringP database, bool caseSensitive)
 {
     FdoSmPhDatabaseP pDatabase = FindDatabase(database, caseSensitive);

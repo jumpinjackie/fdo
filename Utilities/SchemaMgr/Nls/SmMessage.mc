@@ -161,6 +161,11 @@ SymbolicName=FDOSM_29
 Language=English
 Class '%1$ls' uses Base table mapping; Cannot include base property '%2$ls' in unique constraint
 .
+MessageId=2235
+SymbolicName=FDOSM_30
+Language=English
+Cannot add foreign key '%1$ls' to '%2$ls'; adding foreign key to this type of object is not supported
+.
 MessageId=2327
 SymbolicName=FDOSM_122
 Language=English

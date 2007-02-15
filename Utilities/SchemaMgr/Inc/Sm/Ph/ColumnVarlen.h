@@ -48,6 +48,10 @@ public:
         );
     }
 
+    // Returns true if this column has the same definition (type,length,nullability)
+    // as the given column.
+    virtual bool DefinitionEquals( FdoSmPhColumnP otherColumn );
+
 protected:
     /// unused constructor needed only to build on Linux
     FdoSmPhColumnVarlen() {}
@@ -65,6 +69,8 @@ protected:
 
 	int mLength;
 };
+
+typedef FdoPtr<FdoSmPhColumnVarlen> FdoSmPhColumnVarlenP;
 
 #endif
 

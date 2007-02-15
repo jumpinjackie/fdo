@@ -23,8 +23,12 @@
 #include <Sm/Ph/DependencyCollection.h>
 #include <Sm/Ph/Rd/QueryReader.h>
 #include <Sm/Ph/Rd/ColumnReader.h>
+#include <Sm/Ph/Rd/BaseObjectReader.h>
+#include <Sm/Ph/Rd/PkeyReader.h>
+#include <Sm/Ph/Rd/FkeyReader.h>
 #include <Sm/Ph/DependencyReader.h>
 #include <Sm/Ph/TableComponentReader.h>
+#include <Sm/Error.h>
 
 FdoSmPhDbObject::FdoSmPhDbObject(
     FdoStringP name, 
@@ -59,6 +63,31 @@ FdoSmPhColumnsP FdoSmPhDbObject::GetColumns()
 	return mColumns;
 }
 
+const FdoSmPhColumnCollection* FdoSmPhDbObject::RefPkeyColumns() const
+{
+    FdoSmPhColumnsP columns = ((FdoSmPhDbObject*) this)->GetPkeyColumns();
+
+    return (FdoSmPhColumnCollection*) columns;
+}
+
+FdoSmPhColumnsP FdoSmPhDbObject::GetPkeyColumns()
+{
+    LoadPkeys();
+
+	return mPkeyColumns;
+}
+
+const FdoSmPhFkeyCollection* FdoSmPhDbObject::RefFkeysUp() const
+{
+    return (FdoSmPhFkeyCollection*) ((FdoSmPhDbObject*) this)->GetFkeysUp();
+}
+
+FdoSmPhFkeysP FdoSmPhDbObject::GetFkeysUp()
+{
+    LoadFkeys();
+
+	return mFkeysUp;
+}
 
 const FdoSmPhDependencyCollection* FdoSmPhDbObject::GetDependenciesDown() const
 {
@@ -74,10 +103,147 @@ const FdoSmPhDependencyCollection* FdoSmPhDbObject::GetDependenciesUp() const
 	return (FdoSmPhDependencyCollection*) mDependenciesUp;
 }
 
+FdoSmPhColumnsP FdoSmPhDbObject::GetBestIdentity()
+{
+    FdoSmPhColumnsP bestIdentity = GetBestIdentity( (FdoSmPhDbObject*) NULL );
+
+    // Choose primary key only if present
+
+    FdoSmPhDbObjectP rootObject = FDO_SAFE_ADDREF(this);
+
+    // If this database object does not have best identity of its own, look for a 
+    // best identity from its root objects. 
+    FdoInt32 level = 1;
+    while ( bestIdentity == NULL ) {
+        rootObject = rootObject->GetRootObject();
+        if ( rootObject ) 
+            bestIdentity = rootObject->GetBestIdentity( FDO_SAFE_ADDREF(this) );
+        else
+            break;
+
+        // Give up if this object has circular root object dependencies. 
+        if ( !CheckRootObjectLoop(level) )
+            break;
+    }
+
+    return bestIdentity;
+}
+
+FdoSmPhColumnsP FdoSmPhDbObject::GetBestIdentity( FdoSmPhDbObjectP dbObject )
+{
+    FdoSmPhColumnsP bestIdentity = GetPkeyColumns();
+
+    // Choose primary key only if present
+    if ( bestIdentity->GetCount() == 0 ) {
+        bestIdentity = NULL;
+    }
+
+    if ( bestIdentity ) {
+        if ( dbObject && !dbObject->HasColumns(bestIdentity) ) 
+            bestIdentity = NULL;
+    }
+
+    return bestIdentity;
+}
+
+FdoStringP FdoSmPhDbObject::GetPkeyName() const
+{
+    // Trip a load of the primary key.
+	RefPkeyColumns();
+
+	return mPkeyName;
+}
+
+const FdoSmPhDbObject* FdoSmPhDbObject::RefRootObject() const
+{
+    FdoSmPhDbObjectP rootObject = ((FdoSmPhDbObject*) this)->GetRootObject();
+
+    return (FdoSmPhDbObject*) rootObject;
+}
+
+FdoSmPhDbObjectP FdoSmPhDbObject::GetRootObject()
+{
+    FdoSmPhDbObjectP rootObject;
+
+    FdoSmPhBaseObjectsP baseObjects = GetBaseObjects();
+
+    if ( baseObjects->GetCount() == 1 ) {
+        FdoSmPhBaseObjectP baseObject = baseObjects->GetItem(0);
+        rootObject = baseObject->GetDbObject();
+    }
+
+    return rootObject;
+}
+
 FdoSmPhDbObjectP FdoSmPhDbObject::GetLowestRootObject()
 {
-    return FDO_SAFE_ADDREF(this);
+    FdoSmPhDbObjectP rootObject = GetRootObject();
+
+    if ( rootObject ) 
+        rootObject = rootObject->GetLowestRootObject();
+    else
+        rootObject = FDO_SAFE_ADDREF(this);
+
+    return rootObject;
 }
+
+FdoStringP FdoSmPhDbObject::GetRootObjectName() const
+{
+    FdoStringP rootObjectName;
+
+    const FdoSmPhBaseObjectCollection* baseObjects = RefBaseObjects();
+
+    if ( baseObjects->GetCount() == 1 ) {
+        const FdoSmPhBaseObject* baseObject = baseObjects->RefItem(0);
+        rootObjectName = baseObject->GetName();
+    }
+
+    return rootObjectName;
+}
+
+FdoStringP FdoSmPhDbObject::GetRootOwner() const
+{
+    FdoStringP rootOwnerName;
+
+    const FdoSmPhBaseObjectCollection* baseObjects = RefBaseObjects();
+
+    if ( baseObjects->GetCount() == 1 ) {
+        const FdoSmPhBaseObject* baseObject = baseObjects->RefItem(0);
+        rootOwnerName = baseObject->GetOwnerName();
+    }
+
+    return rootOwnerName;
+}
+
+FdoStringP FdoSmPhDbObject::GetRootDatabase() const
+{
+    FdoStringP rootDatabaseName;
+
+    const FdoSmPhBaseObjectCollection* baseObjects = RefBaseObjects();
+
+    if ( baseObjects->GetCount() == 1 ) {
+        const FdoSmPhBaseObject* baseObject = baseObjects->RefItem(0);
+        rootDatabaseName = baseObject->GetDatabaseName();
+    }
+
+    return rootDatabaseName;
+}
+
+
+const FdoSmPhBaseObjectCollection* FdoSmPhDbObject::RefBaseObjects() const
+{
+    FdoSmPhBaseObjectsP baseObjects = ((FdoSmPhDbObject*) this)->GetBaseObjects();
+
+    return (FdoSmPhBaseObjectCollection*) baseObjects;
+}
+
+FdoSmPhBaseObjectsP FdoSmPhDbObject::GetBaseObjects()
+{
+    LoadBaseObjects();
+
+	return mBaseObjects;
+}
+
 
 FdoStringP FdoSmPhDbObject::GetDDLName() const
 {
@@ -144,6 +310,45 @@ const FdoLockType* FdoSmPhDbObject::GetLockTypes(FdoInt32& size) const
 	return NULL;
 }
 
+FdoBoolean FdoSmPhDbObject::IsUkeyPkey( FdoSmPhColumnsP ukeyColumns )
+{
+    FdoBoolean      isUkeyPkey  = false;
+    FdoInt32        idx;
+    FdoSmPhColumnsP pkeyColumns = GetPkeyColumns();
+
+    if ( (ukeyColumns->GetCount() > 0) && (ukeyColumns->GetCount() == pkeyColumns->GetCount()) ) {
+        isUkeyPkey = true;
+
+        for ( idx = 0; idx < ukeyColumns->GetCount(); idx++ ) {
+            FdoSmPhColumnP ukeyColumn = ukeyColumns->GetItem( idx );
+
+            if ( pkeyColumns->IndexOf(ukeyColumn->GetName()) < 0 ) {
+                isUkeyPkey = false;
+                break;
+            }
+        }
+    }
+
+    return isUkeyPkey;
+}
+
+FdoBoolean FdoSmPhDbObject::HasColumns( FdoSmPhColumnsP columns )
+{
+    FdoBoolean hasColumns = true;
+    FdoInt32 ix;
+
+    for ( ix = 0; ix < columns->GetCount(); ix++ ) {
+        FdoSmPhColumnP column = columns->GetItem( ix );
+        FdoSmPhColumnP thisColumn = GetColumns()->FindItem(column->GetName());
+        if ( (!thisColumn) || !column->DefinitionEquals(thisColumn) ) {
+            hasColumns = false;
+            break;
+        }
+    }
+
+    return hasColumns;
+}
+
 FdoStringsP FdoSmPhDbObject::GetRefColsSql()
 {
 	FdoSmPhColumnsP columns = GetColumns();
@@ -157,6 +362,58 @@ FdoStringsP FdoSmPhDbObject::GetKeyColsSql( FdoSmPhColumnCollection* columns )
     return _getRefColsSql( columns );
 }
    
+FdoStringP FdoSmPhDbObject::GetAddPkeySql()
+{
+    FdoSmPhColumnsP     pkeyColumns = GetPkeyColumns();
+    FdoStringP          pkeySql;
+    bool                ansiQuotes = GetManager()->SupportsAnsiQuotes();
+
+    if ( pkeyColumns->GetCount() > 0 ) {
+        FdoStringsP pkColNames = GetKeyColsSql( pkeyColumns );
+        
+        pkeySql = FdoStringP::Format( 
+            L"constraint %ls%ls%ls primary key ( %ls )",
+            ansiQuotes ? L"\"" : L"",
+            (FdoString*) this->GenPkeyName(),
+            ansiQuotes ? L"\"" : L"",
+            (FdoString*) pkColNames->ToString()
+        );
+    }
+
+    return pkeySql;
+}
+
+void FdoSmPhDbObject::SetPkeyName( FdoStringP pkeyName )
+{
+    if ( GetElementState() != FdoSchemaElementState_Added )
+        throw FdoSchemaException::Create(
+            FdoSmError::NLSGetMessage(
+                FDO_NLSID(FDOSM_20), 
+				(FdoString*) GetQName()
+            )
+        );
+
+    mPkeyName = pkeyName;
+}
+
+void FdoSmPhDbObject::AddPkeyCol(FdoStringP columnName )
+{
+    LoadPkeys();
+
+	FdoSmPhColumnP column = GetColumns()->FindItem( columnName );
+
+	if ( column ) 
+		mPkeyColumns->Add( column );
+	else
+		throw FdoSchemaException::Create(
+            FdoSmError::NLSGetMessage(
+			    FDO_NLSID(FDOSM_213),				
+   				(FdoString*) columnName, 
+				GetName()
+			)
+		);
+}
+
 FdoStringP FdoSmPhDbObject::XMLSerializeProviderAtts() const
 {
     return FdoStringP::mEmptyString;
@@ -461,6 +718,38 @@ FdoSmPhColumnP FdoSmPhDbObject::CreateColumnDbObject(
 
     return column;
 }
+
+FdoSmPhFkeyP FdoSmPhDbObject::CreateFkey(
+    FdoStringP name, 
+    FdoStringP pkeyTableName,
+    FdoStringP pkeyTableOwner
+)
+{
+    FdoStringP lTableOwner = pkeyTableOwner;
+
+    if ( lTableOwner == L"" ) 
+        lTableOwner = GetParent()->GetName();
+
+    FdoSmPhFkeyP fkey = NewFkey( name, pkeyTableName, lTableOwner );
+    if ( fkey == NULL ) 
+        AddCreateFkeyError( name );
+
+    FdoSmPhFkeysP fkeys = GetFkeysUp();
+    fkeys->Add( fkey );
+
+    return fkey;
+}
+
+void FdoSmPhDbObject::Commit( bool fromParent, bool isBeforeParent )
+{
+    FdoSmPhDbObjectP rootObject = this->GetRootObject();
+
+    if ( rootObject ) 
+        rootObject->Commit(fromParent, isBeforeParent);
+
+    FdoSmPhDbElement::Commit( fromParent, isBeforeParent );
+}
+
 /*
 void FdoSmPhDbObject::CheckNewColumn(
     FdoStringP columnName, 
@@ -533,6 +822,44 @@ void FdoSmPhDbObject::CacheColumns( FdoSmPhRdColumnReaderP rdr )
     }
 }
 
+void FdoSmPhDbObject::CacheBaseObjects( FdoSmPhRdBaseObjectReaderP rdr )
+{
+    // Do nothing if base objects already loaded
+	if ( !mBaseObjects ) {
+		mBaseObjects = new FdoSmPhBaseObjectCollection( this );
+
+        FdoSmPhTableComponentReaderP groupReader = NewTableBaseReader(
+            rdr
+        );
+
+        LoadBaseObjects( groupReader );
+    }
+}
+
+void FdoSmPhDbObject::CachePkeys( FdoSmPhRdPkeyReaderP rdr )
+{
+    // Do nothing if primary key already loaded
+	if ( !mPkeyColumns ) {
+        mPkeyColumns = new FdoSmPhColumnCollection();
+
+        LoadPkeys( NewTablePkeyReader(rdr)->SmartCast<FdoSmPhReader>(), false );
+    }
+    else
+        LoadPkeys( NewTablePkeyReader(rdr)->SmartCast<FdoSmPhReader>(), true );
+}
+
+void FdoSmPhDbObject::CacheFkeys( FdoSmPhRdFkeyReaderP rdr )
+{
+    // Do nothing if foreign keys already loaded.
+    if ( !mFkeysUp ) {
+        mFkeysUp = new FdoSmPhFkeyCollection();
+
+        LoadFkeys( NewTableFkeyReader(rdr)->SmartCast<FdoSmPhReader>(), false );
+    }
+    else
+        LoadFkeys( NewTableFkeyReader(rdr)->SmartCast<FdoSmPhReader>(), true );
+}
+
 void FdoSmPhDbObject::CacheDependenciesUp( FdoSmPhDependencyReaderP rdr )
 {
     // Do nothing if "up" dependencies already loaded
@@ -557,6 +884,30 @@ void FdoSmPhDbObject::CacheDependenciesUp( FdoSmPhDependencyReaderP rdr )
     }
 }
 
+void FdoSmPhDbObject::CommitFkeys( bool isBeforeParent )
+{
+    FdoInt32        i;
+    FdoSmPhFkeysP   fkeys = GetFkeysUp();
+    FdoStringsP     fkeyClauses = FdoStringCollection::Create();
+
+    for ( i = (fkeys->GetCount() - 1); i >= 0; i-- ) {
+        FdoSmPhFkeyP(fkeys->GetItem(i))->Commit(true, isBeforeParent);
+    }
+}
+
+void FdoSmPhDbObject::ForceDelete()
+{
+    FdoInt32 i;
+
+  	FdoSmPhSchemaElement::SetElementState( FdoSchemaElementState_Deleted );
+
+    // Must explicitly delete any foreign keys when table is deleted.
+    FdoSmPhFkeysP   fkeys = GetFkeysUp();
+    for ( i = 0; i < fkeys->GetCount(); i++ ) {
+        FdoSmPhFkeyP(fkeys->GetItem(i))->SetElementState(FdoSchemaElementState_Deleted);
+    }
+}
+
 FdoSchemaExceptionP FdoSmPhDbObject::Errors2Exception(FdoSchemaException* pFirstException ) const
 {
 
@@ -564,10 +915,18 @@ FdoSchemaExceptionP FdoSmPhDbObject::Errors2Exception(FdoSchemaException* pFirst
 	FdoSchemaExceptionP pException = FdoSmPhDbElement::Errors2Exception(pFirstException);
 
     const FdoSmPhColumnCollection* pColumns = RefColumns();
+    int i;
 
 	// Add errors for the database object's columns.
-	for ( int i = 0; i < pColumns->GetCount(); i++ )
+	for ( i = 0; i < pColumns->GetCount(); i++ )
 		pException = pColumns->RefItem(i)->Errors2Exception(pException);
+
+    if ( mFkeysUp ) {
+
+	    // Add errors for the database object's foreign keys.
+	    for ( i = 0; i < mFkeysUp->GetCount(); i++ )
+		    pException = mFkeysUp->RefItem(i)->Errors2Exception(pException);
+    }
 
 	return pException;
 }
@@ -630,13 +989,33 @@ void FdoSmPhDbObject::LoadDependenciesUp( FdoPtr<FdoSmPhTableDependencyReader> d
     }
 }
 
+FdoPtr<FdoSmPhTableComponentReader> FdoSmPhDbObject::NewTablePkeyReader( FdoSmPhRdPkeyReaderP rdr )
+{
+    return new FdoSmPhTableComponentReader(
+        GetName(),
+        L"",
+        L"table_name",
+        rdr->SmartCast<FdoSmPhReader>()
+    );
+}
+
+FdoPtr<FdoSmPhTableComponentReader> FdoSmPhDbObject::NewTableFkeyReader( FdoSmPhRdFkeyReaderP rdr )
+{
+    return new FdoSmPhTableComponentReader(
+        GetName(),
+        L"",
+        L"table_name",
+        rdr->SmartCast<FdoSmPhReader>()
+    );
+}
+
 FdoStringsP FdoSmPhDbObject::_getRefColsSql( FdoSmPhColumnCollection* columns )
 {
     FdoInt32        i;
     FdoStringsP     colClauses = FdoStringCollection::Create();
 
     for ( i = 0; i < columns->GetCount(); i++ ) {
-        colClauses->Add( columns->GetItem(i)->GetDbName() );
+        colClauses->Add( columns->RefItem(i)->GetDbName() );
     }
 
     return colClauses;
@@ -650,6 +1029,16 @@ void FdoSmPhDbObject::SetLtMode( FdoLtLockModeType mode )
 void FdoSmPhDbObject::SetLockingMode( FdoLtLockModeType mode )
 {
     mLockingMode = mode;
+}
+
+void FdoSmPhDbObject::SetRootObject( FdoSmPhDbObjectP rootObject )
+{
+    mBaseObjects->Clear();
+
+    if ( rootObject ) {
+        FdoSmPhBaseObjectP baseObject = NewBaseObject( rootObject );
+        mBaseObjects->Add( baseObject );
+    }
 }
 
 void FdoSmPhDbObject::LoadColumns()
@@ -680,8 +1069,143 @@ void FdoSmPhDbObject::LoadColumns( FdoPtr<FdoSmPhTableColumnReader> colRdr )
 {
     while ( colRdr->ReadNext() ) {
         FdoSmPhColumnP newColumn = NewColumn( colRdr->GetColumnReader() );
-        mColumns->Add( newColumn );
+        if ( newColumn ) 
+            mColumns->Add( newColumn );
     }
+}
+
+void FdoSmPhDbObject::LoadBaseObjects()
+{
+    if ( !mBaseObjects ) {
+        // Base objects not loaded so initialize the list.
+        mBaseObjects = new FdoSmPhBaseObjectCollection( this );
+
+        // Skip database access when not necessary: object is new or has no name.
+        // Some temporary objects created by various readers have no name.
+        if ( (GetElementState() != FdoSchemaElementState_Added) && (wcslen(GetName()) > 0) ) {
+            FdoPtr<FdoSmPhRdBaseObjectReader> baseObjRdr = CreateBaseObjectReader();
+
+            // Read each column from the database and add it to this database object.
+            if ( baseObjRdr ) {
+                FdoSmPhTableComponentReaderP groupReader = NewTableBaseReader(
+                    baseObjRdr
+                );
+
+                LoadBaseObjects( groupReader );
+            }
+        }
+    }
+}
+
+void FdoSmPhDbObject::LoadBaseObjects( FdoPtr<FdoSmPhTableComponentReader> baseObjRdr )
+{
+    while ( baseObjRdr->ReadNext() ) {
+        FdoSmPhBaseObjectP newBaseObject = NewBaseObject( baseObjRdr );
+        if ( newBaseObject ) 
+            mBaseObjects->Add( newBaseObject );
+    }
+}
+
+void FdoSmPhDbObject::LoadPkeys(void)
+{
+    // Do nothing if primary key already loaded
+	if ( !mPkeyColumns ) {
+        mPkeyColumns = new FdoSmPhColumnCollection();
+
+        // Skip load if new table.
+        if ( GetElementState() != FdoSchemaElementState_Added ) {
+            FdoPtr<FdoSmPhRdPkeyReader> pkeyRdr = CreatePkeyReader();
+
+            if ( pkeyRdr ) 
+                LoadPkeys( pkeyRdr->SmartCast<FdoSmPhReader>(), false );
+        }
+    }
+}
+
+void FdoSmPhDbObject::LoadPkeys( FdoSmPhReaderP pkeyRdr, bool isSkipAdd )
+{
+    // read each primary key column.
+    while (pkeyRdr->ReadNext() ) {
+        mPkeyName = pkeyRdr->GetString(L"", L"constraint_name");
+        FdoStringP columnName = pkeyRdr->GetString(L"",L"column_name");
+
+        FdoSmPhColumnP pkeyColumn = GetColumns()->FindItem( columnName );
+
+        if ( pkeyColumn == NULL ) {
+            // Primary Key column must be in this table.
+            if ( GetElementState() != FdoSchemaElementState_Deleted )
+		        AddPkeyColumnError( columnName );
+	    }
+	    else if( ! isSkipAdd ) {
+	        mPkeyColumns->Add(pkeyColumn);
+	    }
+    }
+}
+
+void FdoSmPhDbObject::LoadFkeys(void)
+{
+    // Do nothing if already loaded
+	if ( !mFkeysUp ) {
+        mFkeysUp = new FdoSmPhFkeyCollection();
+
+        // Skip load for new tables
+        if ( GetElementState() != FdoSchemaElementState_Added ) {
+            FdoPtr<FdoSmPhRdFkeyReader> fkeyRdr = CreateFkeyReader();
+
+            if ( fkeyRdr ) 
+                LoadFkeys( fkeyRdr->SmartCast<FdoSmPhReader>(), false );
+        }
+    }
+}
+
+void FdoSmPhDbObject::LoadFkeys( FdoSmPhReaderP fkeyRdr, bool isSkipAdd  )
+{
+    FdoStringP                  nextFkey;
+    FdoSmPhFkeyP                fkey;
+
+    // Read each foreign key and column
+    while ( fkeyRdr->ReadNext() ) {
+        nextFkey = fkeyRdr->GetString(L"",L"constraint_name");
+
+        if ( !fkey || (nextFkey != fkey->GetName()) ) {
+            // hit the next foreign key. Create an object for it
+            fkey = NewFkey(
+                nextFkey, 
+                fkeyRdr->GetString(L"", "r_table_name"),
+                fkeyRdr->GetString(L"", "r_owner_name"),
+                FdoSchemaElementState_Unchanged
+            );
+
+            if( fkey && ! isSkipAdd )
+                mFkeysUp->Add(fkey);
+        }
+
+        // Add the column to the foreign key
+        FdoStringP columnName = fkeyRdr->GetString(L"",L"column_name");
+        FdoSmPhColumnP column = GetColumns()->FindItem(columnName);
+
+        if ( fkey && column ) {
+            fkey->AddFkeyColumn( 
+                column,
+                fkeyRdr->GetString(L"", "r_column_name")
+            );
+        }
+        else {
+            // Foreign Key column must be in this table.
+	        if ( GetElementState() != FdoSchemaElementState_Deleted )
+		        AddFkeyColumnError( columnName );
+        }
+    }
+}
+
+FdoPtr<FdoSmPhTableComponentReader> FdoSmPhDbObject::NewTableBaseReader( FdoSmPhRdBaseObjectReaderP rdr )
+{
+    return new FdoSmPhTableComponentReader(
+        GetName(),
+        L"",
+        L"name",
+        rdr->SmartCast<FdoSmPhReader>()
+    );
 }
 
 FdoSmPhColumnP FdoSmPhDbObject::NewColumn(
@@ -826,6 +1350,68 @@ FdoSmPhColumnP FdoSmPhDbObject::NewColumn(
     }
 }
 
+FdoSmPhBaseObjectP FdoSmPhDbObject::NewBaseObject(
+    FdoPtr<FdoSmPhTableComponentReader> baseObjRdr
+)
+{
+    return NewBaseObject(
+        baseObjRdr->GetString(L"",L"base_name"),
+        baseObjRdr->GetString(L"",L"base_owner"),
+        baseObjRdr->GetString(L"",L"base_database")
+    );
+}
+
+FdoSmPhBaseObjectP FdoSmPhDbObject::NewBaseObject(
+    FdoStringP name,
+    FdoStringP ownerName,
+    FdoStringP databaseName
+)
+{
+    return new FdoSmPhBaseObject( name, FDO_SAFE_ADDREF(this), ownerName, databaseName );
+}
+
+FdoSmPhBaseObjectP FdoSmPhDbObject::NewBaseObject(
+    FdoPtr<FdoSmPhDbObject> dbObject
+)
+{
+    return new FdoSmPhBaseObject( dbObject, FDO_SAFE_ADDREF(this));
+}
+
+FdoStringP FdoSmPhDbObject::GenPkeyName()
+{
+    if ( mPkeyName == L"" ) {
+        FdoSmPhOwner* pOwner = dynamic_cast<FdoSmPhOwner*>((FdoSmPhSchemaElement*) GetParent());
+        mPkeyName = pOwner->UniqueDbObjectName( FdoStringP(L"PK_") + FdoStringP(GetName()) ).Replace(L".",L"_");
+    }
+
+    return mPkeyName;
+}
+
+FdoSmPhFkeyP FdoSmPhDbObject::NewFkey(
+    FdoStringP name, 
+    FdoStringP pkeyTableName,
+    FdoStringP pkeyTableOwner,
+    FdoSchemaElementState elementState
+)
+{
+    return (FdoSmPhFkey*) NULL;
+}
+
+FdoPtr<FdoSmPhRdBaseObjectReader> FdoSmPhDbObject::CreateBaseObjectReader() const
+{
+    return (FdoSmPhRdBaseObjectReader*) NULL;
+}
+
+FdoPtr<FdoSmPhRdPkeyReader> FdoSmPhDbObject::CreatePkeyReader() const
+{
+    return (FdoSmPhRdPkeyReader*) NULL;
+}
+
+FdoPtr<FdoSmPhRdFkeyReader> FdoSmPhDbObject::CreateFkeyReader() const
+{
+    return (FdoSmPhRdFkeyReader*) NULL;
+}
+
 void FdoSmPhDbObject::UpdRollbackCache()
 {
     GetManager()->AddRollbackTable( GetQName(), GetCommitState() );
@@ -836,6 +1422,94 @@ void FdoSmPhDbObject::Discard()
     ((FdoSmPhOwner*) GetParent())->DiscardDbObject( this );
 }
 
+void FdoSmPhDbObject::AddPkeyColumnError(FdoStringP columnName)
+{
+	GetErrors()->Add( FdoSmErrorType_Other, 
+        FdoSchemaException::Create(
+            FdoSmError::NLSGetMessage(
+                FDO_NLSID(FDOSM_217), 
+				(FdoString*) columnName, 
+				(FdoString*) GetQName()
+            )
+        )
+	);
+}
+
+bool FdoSmPhDbObject::CheckRootObjectLoop( FdoInt32& level )
+{
+    bool ok = true;
+
+    // When there are 100 or levels of object dependencies, there is likely something wrong.
+    // Check for a dependency loop in this case. This is done by counting the total number
+    // of DbObjects currently in the cache. If there are fewer objects than dependency levels
+    // we must have visited an object more than once, meaning that there is a dependency loop.
+    if ( (level % 100) == 0 ) {
+        FdoInt32 totalObjectCount = 0;
+        FdoInt32 ixD = 0;
+        
+        // Count objects for each database
+        for ( ixD = 0; ; ixD++ ) {
+            FdoSmPhDatabaseP database = GetManager()->GetCachedDatabase( ixD );
+            if ( database == NULL ) 
+                break;
+
+            FdoInt32 ixO;
+
+            // Count objects for each owner within database
+            for ( ixO = 0; ; ixO++ ) {
+                FdoSmPhOwnerP owner = database->GetCachedOwner( ixO );
+                if ( owner == NULL ) 
+                    break;
+
+                FdoInt32 ixB;
+
+                // Count each object for each owner.
+                for ( ixB = 0; ; ixB++ ) {
+                    FdoSmPhDbObjectP dbObject = owner->GetCachedDbObject( ixB );
+                    if ( dbObject == NULL ) 
+                        break;
+
+                    totalObjectCount++;
+                }
+            }
+        }
+        
+        // Add 1 to be on the safe side.
+        if ( level > (totalObjectCount + 1) ) {
+            ok = false;
+        }
+    }
+
+    level++;
+
+    return ok;
+}
+
+void FdoSmPhDbObject::AddFkeyColumnError(FdoStringP columnName)
+{
+	GetErrors()->Add( FdoSmErrorType_Other, 
+        FdoSchemaException::Create(
+            FdoSmError::NLSGetMessage(
+                FDO_NLSID(FDOSM_2), 
+				(FdoString*) columnName, 
+				(FdoString*) GetQName()
+            )
+        )
+	);
+}
+
+void FdoSmPhDbObject::AddCreateFkeyError(FdoStringP fkeyName)
+{
+	GetErrors()->Add( FdoSmErrorType_Other, 
+        FdoSchemaException::Create(
+            FdoSmError::NLSGetMessage(
+                FDO_NLSID(FDOSM_30), 
+				(FdoString*) fkeyName, 
+				(FdoString*) GetQName()
+            )
+        )
+	);
+}
 
 /*
 void FdoSmPhDbObject::AddReferenceLoopError(void)
@@ -846,35 +1520,6 @@ void FdoSmPhDbObject::AddReferenceLoopError(void)
 				FDORDBMS_215,
 				"Tried to finalize table %1$ls when already finalizing",
 				GetName()
-			)
-		)
-	);
-}
-
-
-void FdoSmPhDbObject::AddPkeyColumnError(FdoStringP columnName)
-{
-	mpErrors->Add( FdoRdbmsSmErrorType_Other, 
-		FdoStringP( 
-			NlsMsgGet2(
-				FDORDBMS_217,
-				"Primary Key column %1$ls is not a column in table %2$ls",
-				(FdoString*) columnName, 
-				GetName()
-			)
-		)
-	);
-}
-
-void FdoSmPhDbObject::AddNotNullColError(FdoStringP columnName)
-{
-	mpErrors->Add( FdoRdbmsSmErrorType_Other, 
-		FdoStringP( 
-			NlsMsgGet2(
-				FDORDBMS_218,
-				"Table %1$ls has rows; cannot add non nullable column %2$ls to it",
-				GetName(), 
-				(FdoString*) columnName 
 			)
 		)
 	);

@@ -85,6 +85,17 @@ FdoSmPhOwnerP FdoSmPhDatabase::GetOwner(FdoStringP owner)
     return(pOwner);
 }
 
+FdoSmPhOwnerP FdoSmPhDatabase::GetCachedOwner(FdoInt32 idx)
+{
+    FdoSmPhOwnerP owner;
+    FdoSmPhOwnersP owners = GetOwners();
+
+    if ( (idx >= 0) && (idx < owners->GetCount()) ) 
+        owner = owners->GetItem( idx );
+
+    return owner;
+}
+
 const FdoSmPhCharacterSet* FdoSmPhDatabase::RefCharacterSet(FdoStringP characterSetName) const
 {
     return (FdoSmPhCharacterSet*) ((FdoSmPhDatabase*) this)->FindCharacterSet(characterSetName);

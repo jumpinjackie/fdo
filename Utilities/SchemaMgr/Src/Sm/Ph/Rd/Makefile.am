@@ -21,6 +21,7 @@ noinst_LTLIBRARIES = libSmPhRd.la
 
 libSmPhRd_la_SOURCES = \
   AssociationReader.cpp \
+  BaseObjectReader.cpp \
   CharacterSetReader.cpp \
   ClassReader.cpp \
   CollationReader.cpp \

@@ -40,3 +40,19 @@ int FdoSmPhColumnVarlen::GetMinLength() const
     return 1;
 }
 
+bool FdoSmPhColumnVarlen::DefinitionEquals( FdoSmPhColumnP otherColumn )
+{
+    bool equals = FdoSmPhColumn::DefinitionEquals( otherColumn );
+
+    if ( equals ) {
+        equals = false;
+
+        FdoSmPhColumnVarlenP otherVarColumn = otherColumn->SmartCast<FdoSmPhColumnVarlen>();
+
+        if ( otherVarColumn && (GetLength() == otherVarColumn->GetLength()) ) 
+            equals = true;
+    }
+
+    return equals;
+}
+

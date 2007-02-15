@@ -37,7 +37,8 @@ public:
         FdoStringP schemaName,      // name of Feature Schema that will contain the classes
         FdoStringP className,      // name of Feature class 
         FdoSmPhMgrP mgr,            // Physical Schema Manager
-        FdoBoolean keyedOnly = true,// If true, skip tables without key.
+        FdoBoolean classifyDefaultTypes = true,// If true, classify only types of objects that are classified by default
+                                               // If false, classify all types of object than can be classified
         FdoStringP database = L"",  // Database where RDBMS schema resides (current connection by default)
         FdoStringP owner = L""      // the RDBMS schema (defaults to current schema)
     );
@@ -54,8 +55,24 @@ protected:
 
     bool IsOrdinate(FdoSmPhColumnP column);
 
-    virtual FdoStringP ClassifyObject( FdoStringP objectName, FdoSmPhDbObjType objectType );
+    // The following two functions control which database objects are reverse-engineered
+    // into FDO Class Definitions:
 
+    // Returns true if the type for the given object is one for which an FDO class definition
+    // can be generated. 
+    // Returns true if the object is a table or view. Sub-classes can override this function
+    // to allow RDBMS-specific types to be classified.
+    // The classifyDefaultTypes parameter has no effect in this function. However, specific 
+    // RDBMS's might have some types that can be classified but are not classified by default.
+    // When classifyDefaultTypes is true then this function must return true only for types
+    // that can be classified by default. 
+    // 
+    virtual bool ClassifyObjectType( FdoSmPhDbObjectP dbObject, FdoBoolean classifyDefaultTypes );
+
+    // Returns true if the given database object's corresponding class is in the Feature Schema
+    // for this class reader. 
+    // No checking is done against the object's type. This is performed by ClassifyObjectType()
+    virtual FdoStringP ClassifyObject( FdoSmPhDbObjectP dbObject );
     // Find the main geometric property for the class from the given column collection.
     // Returns the main geometric property, L"" if none could be determined
     // (non geometric properties, or there was a tie for best main geometry).
@@ -64,9 +81,16 @@ protected:
     virtual FdoStringP FindGeometryProperty( FdoSmPhColumnsP cols,  bool& hasGeom );
 
 private:
+    // This function is now obsolete; override or extend ClassifyObject( FdoSmPhDbObjectP ) instead.
+#ifdef _WIN32
+    virtual FdoStringP ClassifyObject( FdoStringP objectName, FdoSmPhDbObjType objectType ) sealed;
+#else
+    virtual FdoStringP ClassifyObject( FdoStringP objectName, FdoSmPhDbObjType objectType );
+#endif
+
 
     FdoStringP mSchemaName;
-    FdoBoolean mKeyedOnly;
+    FdoBoolean mClassifyDefaultTypes;
 
     FdoSmPhOwnerP mOwner;
     FdoSmPhDbObjectsP mDbObjects;

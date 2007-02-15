@@ -20,8 +20,6 @@
 #include <Sm/Ph/Table.h>
 #include <Sm/Ph/TableComponentReader.h>
 #include <Sm/Ph/Mgr.h>
-#include <Sm/Ph/Rd/PkeyReader.h>
-#include <Sm/Ph/Rd/FkeyReader.h>
 #include <Sm/Ph/Rd/ConstraintReader.h>
 #include <Sm/Ph/Rd/IndexReader.h>
 #include <Sm/Ph/Rd/ConstraintReader.h>
@@ -37,7 +35,7 @@ FdoSmPhTable::FdoSmPhTable(
 {
     if ( !GetExists() )
         // Use given primary key name for new tables.
-        mPkeyName = pkeyName;
+        SetPkeyName(pkeyName);
 
 	mDeletedConstraints = FdoStringCollection::Create();
 }
@@ -49,20 +47,6 @@ FdoSmPhTable::~FdoSmPhTable(void)
 bool FdoSmPhTable::SupportsAddNotNullColumn() const
 {
     return true;
-}
-
-const FdoSmPhColumnCollection* FdoSmPhTable::RefPkeyColumns() const
-{
-    FdoSmPhColumnsP columns = ((FdoSmPhTable*) this)->GetPkeyColumns();
-
-    return (FdoSmPhColumnCollection*) columns;
-}
-
-FdoSmPhColumnsP FdoSmPhTable::GetPkeyColumns()
-{
-    LoadPkeys();
-
-	return mPkeyColumns;
 }
 
 const FdoSmPhBatchColumnCollection* FdoSmPhTable::RefUkeyColumns() const
@@ -105,79 +89,63 @@ FdoSmPhIndexesP FdoSmPhTable::GetIndexes()
 	return mIndexes;
 }
 
-FdoSmPhColumnsP FdoSmPhTable::GetBestIdentity()
+FdoSmPhColumnsP FdoSmPhTable::GetBestIdentity( FdoSmPhDbObjectP dbObject )
 {
     int idx = 0;
     long ixSize = (FdoSmPhIndex::mMaxWeight * 2);
     long bestIxSize = (FdoSmPhIndex::mMaxWeight * 2);
-
-    FdoSmPhColumnsP pkeyCols = GetPkeyColumns();
     FdoSmPhIndexP bestIndex;
 
-    // Choose primary key if present
-    if ( pkeyCols->GetCount() > 0 ) {
-        return pkeyCols;
-    }
+    FdoSmPhColumnsP bestIdentity = FdoSmPhDbObject::GetBestIdentity( dbObject );
 
-    // No primary key, use best unique index.
-    FdoSmPhIndexesP indexes = GetIndexes();
+    if ( bestIdentity == NULL ) {
 
-    for ( idx = 0; idx < indexes->GetCount(); idx++ ) {
-        FdoSmPhIndexP index = indexes->GetItem(idx);
+        // No primary key, use best unique index.
+        FdoSmPhIndexesP indexes = GetIndexes();
 
-        // Calculate index compactness score.
-        ixSize = index->GetWeight();
+        for ( idx = 0; idx < indexes->GetCount(); idx++ ) {
+            FdoSmPhIndexP index = indexes->GetItem(idx);
+            FdoSmPhColumnsP idxCols = index->GetColumns();
 
-        // Weed out non-unique indexes or indexes whose columns are too big.
-        if ( index->GetIsUnique() && (index->RefColumns()->GetCount() > 0) && (ixSize < FdoSmPhIndex::mMaxWeight) ) {
-            if ( bestIndex ) {
-                // Index already chosen, see if this one is better.
-                FdoSmPhColumnsP idxCols = index->GetColumns();
-                if (idxCols->GetCount() < bestIndex->RefColumns()->GetCount() ) {
-                    // This one has few columns, take it instead.
-                    bestIndex = index;
-                    bestIxSize = ixSize;
-                }
-                else if ( idxCols->GetCount() == bestIndex->RefColumns()->GetCount() ) {
-                    // same number of columns, take this index only if it has a better
-                    // compactness score.
-                    if ( ixSize < bestIxSize ) {
+            // Weed out non-unique indexes or indexes with no columns
+            if ( index->GetIsUnique() && (index->RefColumns()->GetCount() > 0) ) {
+                // Calculate index compactness score.
+                ixSize = index->GetWeight();
+
+                // Weed out indexes whose columns are too big.
+                // If a database object was specified, skip indexes whose columns
+                // are not all present on the database object.
+                if ( (ixSize < FdoSmPhIndex::mMaxWeight) && ((!dbObject) || dbObject->HasColumns(idxCols)) ) {
+                    if ( bestIndex ) {
+                        // Index already chosen, see if this one is better.
+                        if (idxCols->GetCount() < bestIndex->RefColumns()->GetCount() ) {
+                            // This one has few columns, take it instead.
+                            bestIndex = index;
+                            bestIxSize = ixSize;
+                        }
+                        else if ( idxCols->GetCount() == bestIndex->RefColumns()->GetCount() ) {
+                            // same number of columns, take this index only if it has a better
+                            // compactness score.
+                            if ( ixSize < bestIxSize ) {
+                                bestIndex = index;
+                                bestIxSize = ixSize;
+                            }
+                        }
+                    }
+                    else {
+                        // No index chosen yet, chose this one initially.
                         bestIndex = index;
                         bestIxSize = ixSize;
                     }
                 }
             }
-            else {
-                // No index chosen yet, chose this one initially.
-                bestIndex = index;
-                bestIxSize = ixSize;
-            }
         }
+
+        if ( bestIndex )
+            bestIdentity = bestIndex->GetColumns();
     }
 
-    if ( bestIndex )
-        return bestIndex->GetColumns();
-
-    return (FdoSmPhColumnCollection*) NULL;
-}
-
-const FdoSmPhFkeyCollection* FdoSmPhTable::RefFkeysUp() const
-{
-    return (FdoSmPhFkeyCollection*) ((FdoSmPhTable*) this)->GetFkeysUp();
-}
-
-FdoSmPhFkeysP FdoSmPhTable::GetFkeysUp()
-{
-    LoadFkeys();
-
-	return mFkeysUp;
-}
-
-FdoStringP FdoSmPhTable::GetPkeyName() const
-{
-	((FdoSmPhTable*) this)->GetPkeyColumns();
-
-	return mPkeyName;
+    return bestIdentity;
 }
 
 const FdoLockType* FdoSmPhTable::GetLockTypes(FdoInt32& size) const
@@ -186,41 +154,6 @@ const FdoLockType* FdoSmPhTable::GetLockTypes(FdoInt32& size) const
 
     // Get the supported lock types for this table's locking mode.
     return pOwner->GetLockTypes( GetLockingMode(), size );
-}
-
-void FdoSmPhTable::SetPkeyName( FdoStringP pkeyName )
-{
-    if ( GetElementState() != FdoSchemaElementState_Added )
-        throw FdoSchemaException::Create(
-            FdoSmError::NLSGetMessage(
-                FDO_NLSID(FDOSM_20), 
-				(FdoString*) GetQName()
-            )
-        );
-
-    mPkeyName = pkeyName;
-}
-
-FdoBoolean FdoSmPhTable::IsUkeyPkey( FdoSmPhColumnsP ukeyColumns )
-{
-    FdoBoolean      isUkeyPkey  = false;
-    FdoInt32        idx;
-    FdoSmPhColumnsP pkeyColumns = GetPkeyColumns();
-
-    if ( (ukeyColumns->GetCount() > 0) && (ukeyColumns->GetCount() == pkeyColumns->GetCount()) ) {
-        isUkeyPkey = true;
-
-        for ( idx = 0; idx < ukeyColumns->GetCount(); idx++ ) {
-            FdoSmPhColumnP ukeyColumn = ukeyColumns->GetItem( idx );
-
-            if ( pkeyColumns->IndexOf(ukeyColumn->GetName()) < 0 ) {
-                isUkeyPkey = false;
-                break;
-            }
-        }
-    }
-
-    return isUkeyPkey;
 }
 
 void FdoSmPhTable::SetLtMode( FdoLtLockModeType mode )
@@ -249,24 +182,6 @@ void FdoSmPhTable::SetLockingMode( FdoLtLockModeType mode )
     }
 
     FdoSmPhDbObject::SetLockingMode( mode );
-}
-
-void FdoSmPhTable::AddPkeyCol(FdoStringP columnName )
-{
-    LoadPkeys();
-
-	FdoSmPhColumnP column = GetColumns()->FindItem( columnName );
-
-	if ( column ) 
-		mPkeyColumns->Add( column );
-	else
-		throw FdoSchemaException::Create(
-            FdoSmError::NLSGetMessage(
-			    FDO_NLSID(FDOSM_213),				
-   				(FdoString*) columnName, 
-				GetName()
-			)
-		);
 }
 
 void FdoSmPhTable::AddUkeyCol(int uCollNum, FdoStringP columnName )
@@ -309,40 +224,10 @@ FdoSmPhIndexP FdoSmPhTable::CreateIndex(
     return index;
 }
 
-FdoSmPhFkeyP FdoSmPhTable::CreateFkey(
-    FdoStringP name, 
-    FdoStringP pkeyTableName,
-    FdoStringP pkeyTableOwner
-)
-{
-    FdoStringP lTableOwner = pkeyTableOwner;
-
-    if ( lTableOwner == L"" ) 
-        lTableOwner = GetParent()->GetName();
-
-    FdoSmPhFkeyP fkey = NewFkey( name, pkeyTableName, lTableOwner );
-
-    FdoSmPhFkeysP fkeys = GetFkeysUp();
-    fkeys->Add( fkey );
-
-    return fkey;
-}
-
 void FdoSmPhTable::DiscardIndex( FdoSmPhIndex* index )
 {
     FdoSmPhIndexesP indexes = GetIndexes();
     indexes->Remove( index );
-}
-
-void FdoSmPhTable::CommitFkeys( bool isBeforeParent )
-{
-    FdoInt32        i;
-    FdoSmPhFkeysP   fkeys = GetFkeysUp();
-    FdoStringsP     fkeyClauses = FdoStringCollection::Create();
-
-    for ( i = (fkeys->GetCount() - 1); i >= 0; i-- ) {
-        FdoSmPhFkeyP(fkeys->GetItem(i))->Commit(true, isBeforeParent);
-    }
 }
 
 void FdoSmPhTable::SetElementState(FdoSchemaElementState elementState)
@@ -359,19 +244,6 @@ void FdoSmPhTable::SetElementState(FdoSchemaElementState elementState)
 	}
     else {
         FdoSmPhSchemaElement::SetElementState( elementState );
-    }
-}
-
-void FdoSmPhTable::ForceDelete()
-{
-    FdoInt32 i;
-
-  	FdoSmPhSchemaElement::SetElementState( FdoSchemaElementState_Deleted );
-
-    // Must explicitly delete any foreign keys when table is deleted.
-    FdoSmPhFkeysP   fkeys = GetFkeysUp();
-    for ( i = 0; i < fkeys->GetCount(); i++ ) {
-        FdoSmPhFkeyP(fkeys->GetItem(i))->SetElementState(FdoSchemaElementState_Deleted);
     }
 }
 
@@ -399,18 +271,6 @@ void FdoSmPhTable::CacheCkeys( FdoSmPhRdConstraintReaderP rdr )
         LoadCkeys( NewTableCkeyReader(rdr)->SmartCast<FdoSmPhReader>(), true );
 }
 
-void FdoSmPhTable::CacheFkeys( FdoSmPhRdFkeyReaderP rdr )
-{
-    // Do nothing if foreign keys already loaded.
-    if ( !mFkeysUp ) {
-        mFkeysUp = new FdoSmPhFkeyCollection();
-
-        LoadFkeys( NewTableFkeyReader(rdr)->SmartCast<FdoSmPhReader>(), false );
-    }
-    else
-        LoadFkeys( NewTableFkeyReader(rdr)->SmartCast<FdoSmPhReader>(), true );
-}
-
 void FdoSmPhTable::CacheIndexes( FdoSmPhRdIndexReaderP rdr )
 {
     // Do nothing if indexes already loaded
@@ -421,18 +281,6 @@ void FdoSmPhTable::CacheIndexes( FdoSmPhRdIndexReaderP rdr )
     }
     else
         LoadIndexes( NewTableIndexReader(rdr), true );
-}
-
-void FdoSmPhTable::CachePkeys( FdoSmPhRdPkeyReaderP rdr )
-{
-    // Do nothing if primary key already loaded
-	if ( !mPkeyColumns ) {
-        mPkeyColumns = new FdoSmPhColumnCollection();
-
-        LoadPkeys( NewTablePkeyReader(rdr)->SmartCast<FdoSmPhReader>(), false );
-    }
-    else
-        LoadPkeys( NewTablePkeyReader(rdr)->SmartCast<FdoSmPhReader>(), true );
 }
 
 FdoSchemaExceptionP FdoSmPhTable::Errors2Exception(FdoSchemaException* pFirstException ) const
@@ -456,13 +304,6 @@ FdoSchemaExceptionP FdoSmPhTable::Errors2Exception(FdoSchemaException* pFirstExc
         // Add errors for the table's columns.
 	    for ( i = 0; i < mIndexes->GetCount(); i++ )
 		    pException = mIndexes->RefItem(i)->Errors2Exception(pException);
-    }
-
-    if ( mFkeysUp ) {
-
-	    // Add errors for the table's columns.
-	    for ( i = 0; i < mFkeysUp->GetCount(); i++ )
-		    pException = mFkeysUp->RefItem(i)->Errors2Exception(pException);
     }
 
     if ( (GetElementState() == FdoSchemaElementState_Unchanged) ||
@@ -787,27 +628,6 @@ FdoStringP FdoSmPhTable::GetAddConstraintSql(FdoStringP constraint)
     );
 }
 
-FdoStringP FdoSmPhTable::GetAddPkeySql()
-{
-    FdoSmPhColumnsP     pkeyColumns = GetPkeyColumns();
-    FdoStringP          pkeySql;
-    bool                ansiQuotes = GetManager()->SupportsAnsiQuotes();
-
-    if ( pkeyColumns->GetCount() > 0 ) {
-        FdoStringsP pkColNames = GetKeyColsSql( pkeyColumns );
-        
-        pkeySql = FdoStringP::Format( 
-            L"constraint %ls%ls%ls primary key ( %ls )",
-            ansiQuotes ? L"\"" : L"",
-            (FdoString*) this->GenPkeyName(),
-            ansiQuotes ? L"\"" : L"",
-            (FdoString*) pkColNames->ToString()
-        );
-    }
-
-    return pkeySql;
-}
-
 FdoStringP FdoSmPhTable::GetAddUkeysSql()
 {
     FdoSmPhBatchColumnsP     ukeyColumnsColl = GetUkeyColumns();
@@ -894,52 +714,6 @@ FdoStringP FdoSmPhTable::GetAddCkeySql(int uCollNum)
 FdoStringP FdoSmPhTable::GetConstraintDDLName( FdoStringP constraintName ) const
 {
     return constraintName;
-}
-
-
-FdoStringP FdoSmPhTable::GenPkeyName()
-{
-    if ( mPkeyName == L"" ) {
-        FdoSmPhOwner* pOwner = dynamic_cast<FdoSmPhOwner*>((FdoSmPhSchemaElement*) GetParent());
-        mPkeyName = pOwner->UniqueDbObjectName( FdoStringP(L"PK_") + FdoStringP(GetName()) ).Replace(L".",L"_");
-    }
-
-    return mPkeyName;
-}
-
-void FdoSmPhTable::LoadPkeys(void)
-{
-    // Do nothing if primary key already loaded
-	if ( !mPkeyColumns ) {
-        mPkeyColumns = new FdoSmPhColumnCollection();
-
-        // Skip load if new table.
-        if ( GetElementState() != FdoSchemaElementState_Added ) {
-            FdoPtr<FdoSmPhRdPkeyReader> pkeyRdr = CreatePkeyReader();
-
-            LoadPkeys( pkeyRdr->SmartCast<FdoSmPhReader>(), false );
-        }
-    }
-}
-
-void FdoSmPhTable::LoadPkeys( FdoSmPhReaderP pkeyRdr, bool isSkipAdd )
-{
-    // read each primary key column.
-    while (pkeyRdr->ReadNext() ) {
-        mPkeyName = pkeyRdr->GetString(L"", L"constraint_name");
-        FdoStringP columnName = pkeyRdr->GetString(L"",L"column_name");
-
-        FdoSmPhColumnP pkeyColumn = GetColumns()->FindItem( columnName );
-
-        if ( pkeyColumn == NULL ) {
-            // Primary Key column must be in this table.
-            if ( GetElementState() != FdoSchemaElementState_Deleted )
-		        AddPkeyColumnError( columnName );
-	    }
-	    else if( ! isSkipAdd ) {
-	        mPkeyColumns->Add(pkeyColumn);
-	    }
-    }
 }
 
 void FdoSmPhTable::LoadUkeys()
@@ -1074,61 +848,6 @@ void FdoSmPhTable::LoadCkeys( FdoSmPhReaderP ckeyRdr, bool isSkipAdd )
 }
 
 
-void FdoSmPhTable::LoadFkeys(void)
-{
-    // Do nothing if already loaded
-	if ( !mFkeysUp ) {
-        mFkeysUp = new FdoSmPhFkeyCollection();
-
-        // Skip load for new tables
-        if ( GetElementState() != FdoSchemaElementState_Added ) {
-            FdoPtr<FdoSmPhRdFkeyReader> fkeyRdr = CreateFkeyReader();
-
-            LoadFkeys( fkeyRdr->SmartCast<FdoSmPhReader>(), false );
-        }
-    }
-}
-
-void FdoSmPhTable::LoadFkeys( FdoSmPhReaderP fkeyRdr, bool isSkipAdd  )
-{
-    FdoStringP                  nextFkey;
-    FdoSmPhFkeyP                fkey;
-
-    // Read each foreign key and column
-    while ( fkeyRdr->ReadNext() ) {
-        nextFkey = fkeyRdr->GetString(L"",L"constraint_name");
-
-        if ( !fkey || (nextFkey != fkey->GetName()) ) {
-            // hit the next foreign key. Create an object for it
-            fkey = NewFkey(
-                nextFkey, 
-                fkeyRdr->GetString(L"", "r_table_name"),
-                fkeyRdr->GetString(L"", "r_owner_name"),
-                FdoSchemaElementState_Unchanged
-            );
-
-            if( ! isSkipAdd )
-                mFkeysUp->Add(fkey);
-        }
-
-        // Add the column to the foreign key
-        FdoStringP columnName = fkeyRdr->GetString(L"",L"column_name");
-        FdoSmPhColumnP column = GetColumns()->FindItem(columnName);
-
-        if ( column ) {
-            fkey->AddFkeyColumn( 
-                column,
-                fkeyRdr->GetString(L"", "r_column_name")
-            );
-        }
-        else {
-            // Foreign Key column must be in this table.
-	        if ( GetElementState() != FdoSchemaElementState_Deleted )
-		        AddFkeyColumnError( columnName );
-        }
-    }
-}
-
 void FdoSmPhTable::LoadIndexes(void)
 {
     // Do nothing if already loaded
@@ -1196,31 +915,11 @@ FdoPtr<FdoSmPhTableComponentReader> FdoSmPhTable::NewTableCkeyReader( FdoSmPhRdC
     );
 }
 
-FdoPtr<FdoSmPhTableComponentReader> FdoSmPhTable::NewTableFkeyReader( FdoSmPhRdFkeyReaderP rdr )
-{
-    return new FdoSmPhTableComponentReader(
-        GetName(),
-        L"",
-        L"table_name",
-        rdr->SmartCast<FdoSmPhReader>()
-    );
-}
-
 FdoPtr<FdoSmPhTableIndexReader> FdoSmPhTable::NewTableIndexReader( FdoSmPhRdIndexReaderP rdr )
 {
     return new FdoSmPhTableIndexReader(
         GetName(),
         rdr
-    );
-}
-
-FdoPtr<FdoSmPhTableComponentReader> FdoSmPhTable::NewTablePkeyReader( FdoSmPhRdPkeyReaderP rdr )
-{
-    return new FdoSmPhTableComponentReader(
-        GetName(),
-        L"",
-        L"table_name",
-        rdr->SmartCast<FdoSmPhReader>()
     );
 }
 
@@ -1251,19 +950,6 @@ FdoSmPhIndexP FdoSmPhTable::CreateIndex(
     return index;
 }
 
-void FdoSmPhTable::AddPkeyColumnError(FdoStringP columnName)
-{
-	GetErrors()->Add( FdoSmErrorType_Other, 
-        FdoSchemaException::Create(
-            FdoSmError::NLSGetMessage(
-                FDO_NLSID(FDOSM_217), 
-				(FdoString*) columnName, 
-				(FdoString*) GetQName()
-            )
-        )
-	);
-}
-
 void FdoSmPhTable::AddUkeyColumnError(FdoStringP columnName)
 {
 	GetErrors()->Add( FdoSmErrorType_Other, 
@@ -1290,18 +976,6 @@ void FdoSmPhTable::AddCkeyColumnError(FdoStringP columnName)
 	);
 }
 
-void FdoSmPhTable::AddFkeyColumnError(FdoStringP columnName)
-{
-	GetErrors()->Add( FdoSmErrorType_Other, 
-        FdoSchemaException::Create(
-            FdoSmError::NLSGetMessage(
-                FDO_NLSID(FDOSM_2), 
-				(FdoString*) columnName, 
-				(FdoString*) GetQName()
-            )
-        )
-	);
-}
 void FdoSmPhTable::AddIndexColumnError(FdoStringP columnName)
 {
 	GetErrors()->Add( FdoSmErrorType_Other, 

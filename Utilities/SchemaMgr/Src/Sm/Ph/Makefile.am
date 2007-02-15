@@ -24,6 +24,7 @@ noinst_LTLIBRARIES = libSmPhysical.la
 libSmPhysical_la_SOURCES = \
   AssociationReader.cpp \
   AssociationWriter.cpp \
+  BaseObject.cpp \
   CharacterSet.cpp \
   ClassPropertyReader.cpp \
   ClassPropertySADReader.cpp \

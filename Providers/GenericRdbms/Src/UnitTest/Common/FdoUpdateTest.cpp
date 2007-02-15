@@ -1919,7 +1919,7 @@ void FdoUpdateTest::CreateExternalTable( FdoSmPhOwnerP owner, FdoStringP tableNa
         table->AddPkeyCol( fkColumn->GetName() );
 
     if ( hasGeom )
-        column = table->CreateColumnGeom( phMgr->GetDcColumnName(L"GEOMETRY"), (FdoSmPhScInfo*) NULL, true, true );
+        column = table->CreateColumnGeom( phMgr->GetDcColumnName(L"GEOMETRY"), (FdoSmPhScInfo*) NULL, true, false );
 
     column = table->CreateColumnChar( phMgr->GetDcColumnName(ValueColName()), true, 20 );
 
@@ -2014,8 +2014,8 @@ void FdoUpdateTest::CreateExternalData( FdoPtr<FdoIConnection> connection, FdoSm
     propertyValue = FdoUpdateTest::AddNewProperty( propertyValues, phMgr->GetDcColumnName(ValueColName()) );
     propertyValue->SetValue(dataValue);
     
-    double       coordsBuffer[3];
-    int          segCount = 1;
+    double       coordsBuffer[4];
+    int          segCount = 2;
     FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
 
     if ( hasGeom ) {
@@ -2023,6 +2023,8 @@ void FdoUpdateTest::CreateExternalData( FdoPtr<FdoIConnection> connection, FdoSm
 		// Use 2D to accomodate MySql
         coordsBuffer[0] = 5;
         coordsBuffer[1] = 10;
+        coordsBuffer[2] = 15;
+        coordsBuffer[3] = 20;
 
         propertyValue = FdoUpdateTest::AddNewProperty( propertyValues, phMgr->GetDcColumnName(L"GEOMETRY") );
         FdoPtr<FdoILineString> line1 = gf->CreateLineString(FdoDimensionality_XY, segCount*2, coordsBuffer);

@@ -23,6 +23,7 @@
 #include <Sm/Ph/Mgr.h>
 #include <Sm/Ph/Rd/QueryReader.h>
 #include <Sm/Ph/Rd/ColumnReader.h>
+#include <Sm/Ph/Rd/BaseObjectReader.h>
 #include <Sm/Ph/Rd/DbObjectReader.h>
 #include <Sm/Ph/Rd/CoordSysReader.h>
 #include <Sm/Ph/Rd/ConstraintReader.h>
@@ -235,6 +236,17 @@ FdoSmPhDbObjectP FdoSmPhOwner::GetDbObject(FdoStringP dbObject)
     return(pDbObject);
 }
 
+FdoSmPhDbObjectP FdoSmPhOwner::GetCachedDbObject(FdoInt32 idx)
+{
+    FdoSmPhDbObjectP dbObject;
+    FdoSmPhDbObjectsP dbObjects = GetDbObjects();
+
+    if ( (idx >= 0) && (idx < dbObjects->GetCount()) ) 
+        dbObject = dbObjects->GetItem( idx );
+
+    return dbObject;
+}
+
 FdoSmPhSpatialContextsP FdoSmPhOwner::GetSpatialContexts()
 {
     LoadSpatialContexts();
@@ -356,6 +368,11 @@ FdoPtr<FdoSmPhRdColumnReader> FdoSmPhOwner::CreateColumnReader( FdoSmPhRdTableJo
     return (FdoSmPhRdColumnReader*) NULL;
 }
 
+FdoPtr<FdoSmPhRdBaseObjectReader> FdoSmPhOwner::CreateBaseObjectReader() const
+{
+    return (FdoSmPhRdBaseObjectReader*) NULL;
+}
+
 FdoPtr<FdoSmPhRdSpatialContextReader> FdoSmPhOwner::CreateRdSpatialContextReader()
 {
     return new FdoSmPhRdSpatialContextReader(FDO_SAFE_ADDREF(this) );
@@ -423,6 +440,7 @@ FdoSmPhDbObjectsP FdoSmPhOwner::CacheDbObjects( bool cacheComponents )
 
         FdoSmPhRdDbObjectReaderP objReader;
         FdoSmPhRdColumnReaderP columnReader;
+        FdoSmPhRdBaseObjectReaderP baseObjectReader;
         FdoSmPhRdConstraintReaderP ukeyReader;
         FdoSmPhRdConstraintReaderP ckeyReader;
         FdoSmPhRdFkeyReaderP fkeyReader;
@@ -440,6 +458,7 @@ FdoSmPhDbObjectsP FdoSmPhOwner::CacheDbObjects( bool cacheComponents )
             // Doing a single query per owner for each component is more efficient than
             // a query per dbObject.
             columnReader = CreateColumnReader();
+            baseObjectReader = CreateBaseObjectReader();
             ukeyReader = CreateConstraintReader( L"", L"U" );
             ckeyReader = CreateConstraintReader( L"", L"C" );
             fkeyReader = CreateFkeyReader();
@@ -456,6 +475,15 @@ FdoSmPhDbObjectsP FdoSmPhOwner::CacheDbObjects( bool cacheComponents )
                 if ( columnReader ) 
                     dbObject->CacheColumns( columnReader );
 
+                if ( baseObjectReader ) 
+                    dbObject->CacheBaseObjects( baseObjectReader );
+
+                if ( fkeyReader ) 
+                    dbObject->CacheFkeys( fkeyReader );
+
+                if ( pkeyReader ) 
+                    dbObject->CachePkeys( pkeyReader );
+
                 // Load the components into the db object.
                 FdoSmPhTableP table = dbObject->SmartCast<FdoSmPhTable>();
 
@@ -466,14 +494,8 @@ FdoSmPhDbObjectsP FdoSmPhOwner::CacheDbObjects( bool cacheComponents )
                     if ( ckeyReader ) 
                         table->CacheCkeys( ckeyReader );
 
-                    if ( fkeyReader ) 
-                        table->CacheFkeys( fkeyReader );
-
                     if ( indexReader ) 
                         table->CacheIndexes( indexReader );
-
-                    if ( pkeyReader ) 
-                        table->CachePkeys( pkeyReader );
                 }
             }
         }
@@ -642,10 +664,8 @@ void FdoSmPhOwner::CommitFkeys( bool isBeforeParent )
 
     if ( mDbObjects ) {
         for ( i = (mDbObjects->GetCount() - 1); i >= 0; i-- ) {
-            // Only tables have foreign keys.
-            FdoSmPhTableP table = mDbObjects->GetItem(i)->SmartCast<FdoSmPhTable>(true);
-            if ( table ) 
-                table->CommitFkeys( isBeforeParent );
+            FdoSmPhDbObjectP dbObject = mDbObjects->GetItem(i);
+            dbObject->CommitFkeys( isBeforeParent );
         }
     }
 }
