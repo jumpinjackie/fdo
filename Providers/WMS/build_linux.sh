@@ -146,9 +146,12 @@ if test "$BUILDDOCS" == yes ; then
    echo Creating WMS provider html documentation
    rm -rf Docs/HTML/WMS
    mkdir -p Docs/HTML/WMS
+   rm -rf Docs/HTML/WMS_managed
+   mkdir -p Docs/HTML/WMS_managed
 
    pushd Docs/doc_src >& /dev/null
    doxygen Doxyfile_WMS >& /dev/null
+   doxygen Doxyfile_WMS_managed >& /dev/null
    popd >& /dev/null
 fi
 

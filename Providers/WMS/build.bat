@@ -140,6 +140,7 @@ if not exist "Docs\HTML\WMS" mkdir "Docs\HTML\WMS"
 if exist Docs\WMS_Provider_API.chm attrib -r Docs\WMS_Provider_API.chm
 pushd Docs\doc_src
 doxygen Doxyfile_WMS
+doxygen Doxyfile_WMS_managed
 popd
 
 :install_docs
@@ -147,6 +148,9 @@ if "%TYPEACTIONWMS%"=="build" goto end
 if exist "%FDODOCPATHWMS%\HTML\Providers\WMS" rmdir /S /Q "%FDODOCPATHWMS%\HTML\Providers\WMS"
 if exist Docs\HTML\WMS xcopy/CQEYI Docs\HTML\WMS\* "%FDODOCPATHWMS%\HTML\Providers\WMS"
 if exist "Docs\WMS_Provider_API.chm" copy /y "Docs\WMS_Provider_API.chm" "%FDODOCPATHWMS%"
+if exist "%FDODOCPATHWMS%\HTML\Providers\WMS_managed" rmdir /S /Q "%FDODOCPATHWMS%\HTML\Providers\WMS_managed"
+if exist Docs\HTML\WMS_managed xcopy/CQEYI Docs\HTML\WMS_managed\* "%FDODOCPATHWMS%\HTML\Providers\WMS_managed"
+if exist "Docs\WMS_Provider_API_managed.chm" copy /y "Docs\WMS_Provider_API_managed.chm" "%FDODOCPATHWMS%"
 
 :end
 echo End WMS %MSACTIONWMS%
