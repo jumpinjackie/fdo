@@ -18,15 +18,13 @@
 
 #include "PostGisProvider.h"
 #include "ListDataStores.h"
+#include "DataStoreReader.h"
 #include "Connection.h"
-
+#include "PgCursor.h"
+// std
 #include <cassert>
 
 namespace fdo { namespace postgis {
-
-//ListDataStores::ListDataStores() : Base(NULL)
-//{
-//}
 
 ListDataStores::ListDataStores(Connection* conn) : Base(conn)
 {
@@ -48,26 +46,20 @@ void ListDataStores::SetIncludeNonFdoEnabledDatastores(bool includeNonFdo)
 
 FdoIDataStoreReader* ListDataStores::Execute()
 {
-    
-    FdoSize cmdTuples = 0;
-    ExecStatusType pgStatus = PGRES_FATAL_ERROR;
-    pgStatus = mConn->PgExecuteCommand("BEGIN work", cmdTuples);
-
-    std::string cursor("crsFdoListDatastore");
-    std::string qry("SELECT ns.nspname AS schemaname, r.rolname AS ownername "
+    std::string cursorName("crsFdoListDatastore");
+    std::string sql("SELECT ns.nspname AS schemaname, r.rolname AS ownername "
                     "FROM pg_catalog.pg_namespace ns "
-                    "JOIN pg_catalog.pg_roles r ON ns.nspowner=r.oid"
-                    "WHERE ns.nspname !~ \'^pg_\' AND ns.nspname != \'information_schema\'"
+                    "JOIN pg_catalog.pg_roles r ON ns.nspowner=r.oid "
+                    "WHERE ns.nspname !~ \'^pg_\' "
+                    "AND ns.nspname != \'information_schema\' "
+                    //"AND ns.nspname = \'XXX\' "
                     "ORDER BY 1");
-
     
-    std::string sql("DECLARE " + cursor + " CURSOR FOR ");
-    sql += qry;
-    
-    pgStatus = mConn->PgExecuteCommand(sql.c_str(), cmdTuples);
+    // Create a cursor associated with query fetching data stores 
+    fdo::postgis::PgCursor* cursor = mConn->PgCreateCursor(cursorName.c_str());
+    cursor->Declare(sql.c_str());
 
-
-    return NULL;
+    return (new DataStoreReader(cursor));
 }
 
 }} // namespace fdo::postgis
