@@ -83,6 +83,7 @@ public:
     FDO_API static FdoSpatialContextMismatchException* Create(FdoString* message, FdoException* cause);
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoSpatialContextMismatchExceptionP is a FdoPtr on FdoSpatialContextMismatchException, provided for convenience.
 typedef FdoPtr<FdoSpatialContextMismatchException> FdoSpatialContextMismatchExceptionP;

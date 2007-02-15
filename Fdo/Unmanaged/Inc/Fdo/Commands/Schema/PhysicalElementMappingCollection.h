@@ -34,8 +34,8 @@
 template <class OBJ> class FdoPhysicalElementMappingCollection : public FdoNamedCollection<OBJ, FdoCommandException>
 {
 
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
 	FdoPhysicalElementMappingCollection()  : FdoNamedCollection<OBJ, FdoCommandException>(),
 		m_parent(NULL)
 	{
@@ -54,16 +54,16 @@ protected:
             {
                 FdoPtr<OBJ>    pitem = FdoNamedCollection<OBJ, FdoCommandException>::GetItem(i);
 
-    /// When the collection disappears, the ownership does too.
-    /// So NULL out the parent.  This is necessary because the
-    /// parent reference within items is not refcounted to avoid
-    /// circular references/memory leaks.
-    /// 
-    /// \warning
-	/// The pitem->GetParent() should always equal m_parent, but we cannot verify this
-    /// because the call to pitem->GetParent() might AddRef() an item that has already
-    /// been disposed.  So we just NULL it out.
-    /// 
+    // When the collection disappears, the ownership does too.
+    // So NULL out the parent.  This is necessary because the
+    // parent reference within items is not refcounted to avoid
+    // circular references/memory leaks.
+    // 
+    // \warning
+	// The pitem->GetParent() should always equal m_parent, but we cannot verify this
+    // because the call to pitem->GetParent() might AddRef() an item that has already
+    // been disposed.  So we just NULL it out.
+    // 
                 pitem->SetParent(NULL);
             }
         }
@@ -84,15 +84,15 @@ public:
     /// 
     virtual void SetItem(FdoInt32 index, OBJ* value)
     {
-		/// Verify index is in bounds.
+		// Verify index is in bounds.
         if (index < FdoNamedCollection<OBJ, FdoCommandException>::GetCount() && index >= 0)
         {
             if (m_parent)
             {
-			/// Validate parentage for object to add.  Membership in a
-			/// collection implys parentage, and a object can only have
-			/// one parent.
-            /// 
+			// Validate parentage for object to add.  Membership in a
+			// collection implys parentage, and a object can only have
+			// one parent.
+            // 
                 FdoPhysicalElementMappingP   pparent = value->GetParent();
                 if (pparent && (pparent != m_parent) )
                     throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(COMMANDS_7_OBJECTHASPARENT),value->GetName()));
@@ -105,10 +105,10 @@ public:
             FdoPhysicalElementMappingP   pparentOldItem = pitemOld->GetParent();
             if ( pparentOldItem == m_parent )
             {
-    /// When an object is removed from a collection, that
-    /// collection's owner is no longer the object's
-    /// parent.
-    /// 
+    // When an object is removed from a collection, that
+    // collection's owner is no longer the object's
+    // parent.
+    //
                 pitemOld->SetParent(NULL);
             }
         }
@@ -129,10 +129,10 @@ public:
     {
         if (m_parent)
         {
-		/// Validate parentage for object to add.  Membership in a
-		/// collection implys parentage, and a object can only have
-		/// one parent.
-        /// 
+		// Validate parentage for object to add.  Membership in a
+		// collection implys parentage, and a object can only have
+		// one parent.
+        // 
             FdoPhysicalElementMappingP   pparent = value->GetParent();
             if (pparent && (pparent != m_parent) )
                 throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(COMMANDS_7_OBJECTHASPARENT),value->GetName()));
@@ -161,10 +161,10 @@ public:
     {
         if (m_parent)
         {
-		/// Validate parentage for object to add.  Membership in a
-		/// collection implys parentage, and a object can only have
-		/// one parent.
-        /// 
+		// Validate parentage for object to add.  Membership in a
+		// collection implys parentage, and a object can only have
+		// one parent.
+        // 
             FdoPhysicalElementMappingP  pparent = value->GetParent();
             if (pparent && (pparent != m_parent) )
                 throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(COMMANDS_7_OBJECTHASPARENT),value->GetName()));
@@ -193,10 +193,9 @@ public:
 
                 if ( pparent == m_parent )
                 {
-				/// When an object is removed from a collection, that
-				/// collection's owner is no longer the object's
-				/// parent.
-                ///     //
+				// When an object is removed from a collection, that
+				// collection's owner is no longer the object's
+				// parent.
                     pitem->SetParent(NULL);
                 }
             }
@@ -218,16 +217,16 @@ public:
     {
         if (m_parent)
         {
-            /// Cast drops const
+            // Cast drops const
             FdoPtr<OBJ>    pitem = (OBJ*)value;
             FdoPhysicalElementMappingP   pparent = pitem->GetParent();
 
             if ( pparent == m_parent )
             {
-			/// When an object is removed from a collection, that
-			/// collection's owner is no longer the object's
-			/// parent.
-            /// 
+			// When an object is removed from a collection, that
+			// collection's owner is no longer the object's
+			// parent.
+            // 
                 pitem->SetParent(NULL);
             }
         }
@@ -254,10 +253,10 @@ public:
 
             if ( pparent == m_parent )
             {
-			/// When an object is removed from a collection, that
-			/// collection's owner is no longer the object's
-			/// parent.
-            /// 
+			// When an object is removed from a collection, that
+			// collection's owner is no longer the object's
+			// parent.
+            // 
                 pitem->SetParent(NULL);
             }
 
@@ -266,9 +265,9 @@ public:
         FdoNamedCollection<OBJ, FdoCommandException>::RemoveAt(index);
     }
 
+/// \cond DOXYGEN-IGNORE
 protected:
 
-/// \cond DOXYGEN-IGNORE
     /// m_parent is a non-refcounted reference, to avoid circular references that prevent
     /// elements from being freed.
     FdoPhysicalElementMapping*   m_parent;

@@ -90,6 +90,7 @@ protected:
 
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoIPhysicalSchemaMappingP is a FdoPtr on FdoIPhysicalSchemaMapping, provided for convenience.
 typedef FdoPtr<FdoPhysicalSchemaMapping> FdoPhysicalSchemaMappingP;

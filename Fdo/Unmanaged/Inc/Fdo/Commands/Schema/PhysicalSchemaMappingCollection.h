@@ -46,9 +46,6 @@ public:
     /// \brief
     /// Constructs an instance of an FdoPhysicalSchemaMappingCollection .
     /// 
-    /// \param parent 
-    /// Input parent
-    /// 
     /// \return
     /// Returns FdoPhysicalSchemaMappingCollection
     /// 
@@ -57,8 +54,8 @@ public:
     /// \brief
     /// Gets the Schema Override set in the collection at the specified index. Throws an invalid argument exception if the index is out of range.
     /// 
-    /// \param index 
-    /// Input index
+    /// \param item 
+    /// Input item
     /// 
     /// \return
     /// Returns the Schema Override set at the specified index
@@ -108,6 +105,7 @@ public:
 	);
 
 /// \cond DOXYGEN-IGNORE
+//
     /// FdoXmlDeserializable overrides for deserializing a Schema Override set collection 
     /// from XML. These are not exposed via the FDO API.
 
@@ -143,6 +141,7 @@ private:
     FdoPtr<FdoXmlSkipElementHandler> m_XmlSkipper;
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoSchemaMappingsP is a FdoPtr on FdoPhysicalSchemaMappingCollection, provided for convenience.
 typedef FdoPtr<FdoPhysicalSchemaMappingCollection> FdoSchemaMappingsP;

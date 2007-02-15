@@ -23,16 +23,11 @@
 #pragma once
 #endif
 
+/// \ingroup (enums)
 /// \brief
 /// The FdoLongTransactionPrivilegeOperations enumeration defines the list
 /// of available operations that can be performed by the
 /// ChangeLongTransactionPrivileges command.
-/// <param name="FdoLongTransactionPrivilegeOperations_Grant">
-/// Indicates the user is to be granted the specified privileges.
-/// </param>
-/// <param name="FdoLongTransactionPrivilegeOperations_Revoke">
-/// Indicates the specified privileges are to be revoked from the user.
-/// </param>
 enum FdoLongTransactionPrivilegeOperations
 {
     /// Grant the user the specified privileges.

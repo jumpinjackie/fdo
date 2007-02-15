@@ -23,23 +23,13 @@
 #pragma once
 #endif
 
+/// \ingroup (enums)
 /// \brief
 /// The FdoLongTransactionConflictResolution enumeration defines the list of
 /// available options for resolving conflict.
-/// <param name="FdoLongTransactionConflictResolution_Unresolved">
-/// Indicates that the conflict cannot be resolved.
-/// </param>
-/// <param name="FdoLongTransactionConflictResolution_Child">
-/// Indicates the data is to be kept as defined in the long transaction to be committed,
-/// overwriting the data in the long transaction's parent.
-/// </param>
-/// <param name="FdoLongTransactionConflictResolution_Parent">
-/// Indicates the data is to be kept as defined in the versions parent, discarding the data
-/// as defined in the long transaction to be committed.
-/// </param>
 enum FdoLongTransactionConflictResolution
 {
-    //
+    /// Indicates that the conflict cannot be resolved.
     FdoLongTransactionConflictResolution_Unresolved,
 
     /// Keep the data as defined in the long transaction to be committed,

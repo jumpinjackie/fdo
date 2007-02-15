@@ -100,6 +100,7 @@ protected:
 
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoPhysicalClassMappingP is a FdoPtr on FdoPhysicalClassMapping, provided for convenience.
 typedef FdoPtr<FdoPhysicalClassMapping> FdoPhysicalClassMappingP;

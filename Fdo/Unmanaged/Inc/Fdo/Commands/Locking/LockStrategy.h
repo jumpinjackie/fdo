@@ -23,17 +23,14 @@
 #pragma once
 #endif
 
+/// \ingroup (enums)
 /// \brief
 /// The FdoLockStrategy enumeration defines how lock acquisition should proceed.
-/// <param name="FdoLockStrategy_All">
-/// Declares that either all of the locks must be acquired or none should be acquired.
-/// </param>
-/// <param name="FdoLockStrategy_Partial">
-/// Declares that all of the locks that can be acquired should be acquired.
-/// </param>
 enum FdoLockStrategy
 {
+    /// Declares that either all of the locks must be acquired or none should be acquired.
     FdoLockStrategy_All,
+    /// Declares that all of the locks that can be acquired should be acquired.
     FdoLockStrategy_Partial
 
 };

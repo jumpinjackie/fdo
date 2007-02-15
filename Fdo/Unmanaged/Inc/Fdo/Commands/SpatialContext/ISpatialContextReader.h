@@ -82,9 +82,6 @@ public:
     /// Gets the extent of the spatial context currently being read as a byte
     /// array in FGF format.
     /// 
-    /// \param length 
-    /// Output the length of the returned byte array.
-    /// 
     /// \return
     /// Returns the extent as a byte array in FGF format.
     /// 

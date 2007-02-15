@@ -33,8 +33,8 @@
 /// insert and update commands.
 class FdoPropertyValueCollection : public FdoCollection<FdoPropertyValue, FdoCommandException>
 {
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default empty instance of an FdoPropertyValueCollection.
     FdoPropertyValueCollection():FdoCollection<FdoPropertyValue, FdoCommandException>()
     {

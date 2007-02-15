@@ -98,6 +98,7 @@ protected:
 
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoPhysicalPropertyMappingP is a FdoPtr on FdoPhysicalPropertyMapping, provided for convenience.
 typedef FdoPtr<FdoPhysicalPropertyMapping> FdoPhysicalPropertyMappingP;
