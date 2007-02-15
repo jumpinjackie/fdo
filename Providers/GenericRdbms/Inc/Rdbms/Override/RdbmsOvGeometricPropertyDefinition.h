@@ -110,7 +110,7 @@ protected:
     FDORDBMS_OV_API virtual void _writeXmlContents(FdoXmlWriter* xmlWriter, const FdoXmlFlags* flags);
 
 private:
-    FdoRdbmsOvGeometricColumn* mColumn;
+    FdoPtr<FdoRdbmsOvGeometricColumn> mColumn;
     FdoSmOvGeometricColumnType  mGeometricColumnType;
     FdoSmOvGeometricContentType mGeometricContentType;
     FdoStringP                     mXColumnName;

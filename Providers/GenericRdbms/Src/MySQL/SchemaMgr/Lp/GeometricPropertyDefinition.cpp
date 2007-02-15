@@ -142,12 +142,12 @@ void FdoSmLpMySqlGeometricPropertyDefinition::Update(
     FdoMySQLOvGeometricPropertyDefinition* mqlGeomPropOverrides = dynamic_cast<FdoMySQLOvGeometricPropertyDefinition*>(pPropOverrides);
     if (mqlGeomPropOverrides)
     {
-        FdoMySQLOvGeometricColumn* mqlGeomColOverrides = mqlGeomPropOverrides->GetColumn();
+        FdoMySQLOvGeometricColumnP mqlGeomColOverrides = mqlGeomPropOverrides->GetColumn();
         if (mqlGeomColOverrides)
         {
             // Handle mappings for new objects or ones that originated from FDO config doc.
             if ( (elementState == FdoSchemaElementState_Added) || GetIsFromFdo() ) {
-                // no SQL Server-specific mappings to update, currently.
+                // no MySQL-specific mappings to update, currently.
             }
             else
             {

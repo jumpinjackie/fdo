@@ -245,7 +245,6 @@ void FdoApplySchemaTest::TestSchema ()
 
 		// First do xml dumps of LogicalPhysical schema
 
-#ifndef RDBI_DEF_SSQL
         FdoStringP out1master = LogicalPhysicalBend(L"apply_schema_test1_master.txt");
         FdoStringP out1       = LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_test1.xml" ) );
 
@@ -262,6 +261,11 @@ void FdoApplySchemaTest::TestSchema ()
         UnitTestUtil::CheckOutput( (const char*) out2master,(const char*) out2 );
         UnitTestUtil::CheckOutput( (const char*) out3master,(const char*) out3 );
         UnitTestUtil::CheckOutput( (const char*) out4master,(const char*) out4 );
+#ifdef RDBI_DEF_ORA
+        // TODO: This comparison gets differences on MySQL and SqlServer
+        // The differences are due to different  table name max lengths in 
+        // Oracle, MySQL, SqlServer. Some enhancements to the LogicalPhysicalBender
+        // might resolve this one.
         UnitTestUtil::CheckOutput( (const char*) out5master,(const char*) out5 );
 #endif
 
@@ -709,6 +713,7 @@ void FdoApplySchemaTest::TestOverrides ()
 			false,
             DB_NAME_FOREIGN_SUFFIX
 		);
+
     }
 	catch ( FdoException* e ) 
 	{
@@ -5327,7 +5332,7 @@ FdoRdbmsOvPhysicalSchemaMapping* FdoApplySchemaTest::CreateForeignBasedOverrides
     mapping->SetPrefix( L"FLRC" );
 
     pClass = CreateOvClassDefinition( L"OneForeign" );
-    ClassOvSetTable( pClass, CreateOvTable(L"oneforeign") );
+    ClassOvSetTable( pClass, FdoRdbmsOvTableP(CreateOvTable(L"oneforeign")) );
     ClassesOvAdd(pOverrides, pClass);
 
     return pOverrides;
@@ -5858,7 +5863,7 @@ void FdoApplySchemaTest::InsertObject( FdoIConnection* connection, bool conditio
         }
     }
         
-	insertCommand->Execute();
+	FdoPtr<FdoIFeatureReader> rdr = insertCommand->Execute();
 
     trans->Commit();
     FDO_SAFE_RELEASE(trans);

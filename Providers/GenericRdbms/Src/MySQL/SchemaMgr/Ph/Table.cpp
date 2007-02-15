@@ -20,8 +20,6 @@
 #include "Table.h"
 #include "Owner.h"
 #include "Mgr.h"
-#include "Rd/PkeyReader.h"
-#include "Rd/FkeyReader.h"
 #include "Rd/ConstraintReader.h"
 #include "Rd/IndexReader.h"
 
@@ -50,20 +48,6 @@ const FdoLockType* FdoSmPhMySqlTable::GetLockTypes(FdoInt32& size) const
     return (FdoLockType*) NULL;
     // TODO call base GetLockTypes when storage engine is InnoDB or BDB 
     // (these engines do support transactions).
-}
-
-FdoPtr<FdoSmPhRdPkeyReader> FdoSmPhMySqlTable::CreatePkeyReader() const
-{
-    FdoSmPhMySqlTable* pTable = (FdoSmPhMySqlTable*) this;
-
-    return new FdoSmPhRdMySqlPkeyReader( pTable->GetManager(), FDO_SAFE_ADDREF(pTable) );
-}
-
-FdoPtr<FdoSmPhRdFkeyReader> FdoSmPhMySqlTable::CreateFkeyReader() const
-{
-    FdoSmPhMySqlTable* pTable = (FdoSmPhMySqlTable*) this;
-
-    return new FdoSmPhRdMySqlFkeyReader( pTable->GetManager(), FDO_SAFE_ADDREF(pTable) );
 }
 
 FdoPtr<FdoSmPhRdIndexReader> FdoSmPhMySqlTable::CreateIndexReader() const

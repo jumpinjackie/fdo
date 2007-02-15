@@ -46,7 +46,7 @@ FdoSmLpGrdPropertyMappingConcrete::FdoSmLpGrdPropertyMappingConcrete(
                         pParentType, 
                         this, 
                         FdoSmLpPropertyMappingType_Concrete, 
-                        pConcreteOverrides ? pConcreteOverrides->GetInternalClass() : NULL
+                        pConcreteOverrides ? FdoRdbmsOvClassP(pConcreteOverrides->GetInternalClass()) : FdoRdbmsOvClassP()
                    ) 
         );
 	}

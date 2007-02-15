@@ -20,6 +20,8 @@
 #include "DbObject.h"
 #include "Owner.h"
 #include "Rd/ColumnReader.h"
+#include "Rd/PkeyReader.h"
+#include "Rd/FkeyReader.h"
 #include "ColumnChar.h"
 #include "ColumnBool.h"
 #include "ColumnByte.h"
@@ -396,6 +398,19 @@ FdoPtr<FdoSmPhRdColumnReader> FdoSmPhMySqlDbObject::CreateColumnReader()
     return new FdoSmPhRdMySqlColumnReader( GetManager(), FDO_SAFE_ADDREF(this) );
 }
 
+FdoPtr<FdoSmPhRdPkeyReader> FdoSmPhMySqlDbObject::CreatePkeyReader() const
+{
+    FdoSmPhMySqlDbObject* pDbObject = (FdoSmPhMySqlDbObject*) this;
+
+    return new FdoSmPhRdMySqlPkeyReader( pDbObject->GetManager(), FDO_SAFE_ADDREF(pDbObject) );
+}
+
+FdoPtr<FdoSmPhRdFkeyReader> FdoSmPhMySqlDbObject::CreateFkeyReader() const
+{
+    FdoSmPhMySqlDbObject* pDbObject = (FdoSmPhMySqlDbObject*) this;
+
+    return new FdoSmPhRdMySqlFkeyReader( pDbObject->GetManager(), FDO_SAFE_ADDREF(pDbObject) );
+}
 
 MySQLOvStorageEngineType FdoSmPhMySqlDbObject::StorageEngineStringToEnum(FdoString* storageEngine)
 {

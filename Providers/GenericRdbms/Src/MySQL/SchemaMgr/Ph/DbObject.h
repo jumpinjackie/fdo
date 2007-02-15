@@ -218,8 +218,10 @@ protected:
         FdoSmPhRdColumnReader* colRdr = NULL
     );
 
-    // Column reader creator implementation.
+    // Implementations for creating column, primary key and foreign key readers
     virtual FdoPtr<FdoSmPhRdColumnReader> CreateColumnReader();
+    virtual FdoPtr<FdoSmPhRdPkeyReader> CreatePkeyReader() const;
+    virtual FdoPtr<FdoSmPhRdFkeyReader> CreateFkeyReader() const;
 
 private:
 	FdoStringP mAutoIncrementColumnName;
