@@ -104,9 +104,7 @@ VERBATIM_HEADERS       = YES
 #---------------------------------------------------------------------------
 ALPHABETICAL_INDEX     = YES
 COLS_IN_ALPHA_INDEX    = 5
-IGNORE_PREFIX          = Fdo \
-                         Gis \
-                         Mg
+IGNORE_PREFIX          = Fdo
 #---------------------------------------------------------------------------
 # configuration options related to the HTML output
 #---------------------------------------------------------------------------
@@ -122,7 +120,7 @@ CHM_FILE               = ../../FDO_API.chm
 HHC_LOCATION           = "C:/Program Files/HTML Help Workshop/hhc.exe"
 GENERATE_CHI           = NO
 BINARY_TOC             = YES
-TOC_EXPAND             = YES
+TOC_EXPAND             = NO
 DISABLE_INDEX          = NO
 ENUM_VALUES_PER_LINE   = 4
 GENERATE_TREEVIEW      = YES
