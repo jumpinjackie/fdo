@@ -17,4 +17,4 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-EXTRA_DIST = custom.css footer.html header.html
+EXTRA_DIST = custom.css footer.html header.html header_managed.html footer_managed.html
