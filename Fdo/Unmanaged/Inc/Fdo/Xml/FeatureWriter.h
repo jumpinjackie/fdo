@@ -103,7 +103,7 @@ public:
     /// \brief
     /// Sets the class definition for the current feature being written.
     /// 
-    /// \param value 
+    /// \param classDefinition 
     /// Input the class definition
     /// 
     /// \return
@@ -193,6 +193,7 @@ protected:
 
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoXmlFeatureWriterP is a FdoPtr on FdoXmlFeatureWriter, provided for convenience.
 typedef FdoPtr<FdoXmlFeatureWriter> FdoXmlFeatureWriterP;

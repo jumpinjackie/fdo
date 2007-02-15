@@ -32,28 +32,6 @@ public:
     /// The FdoXmlFlags::ErrorLevel determines how strict the error reporting 
     /// is when a Feature Schema is read from an XML Document. For each errorLevel a 
     /// certain level of round-trip fidelity is guaranteed if the read succeeds.
-    /// 
-    /// \param ErrorLevel_High 
-    /// the read fails with an exception when the 
-    /// Feature Schema cannot be read without alteration. If the Feature Schema 
-    /// is read successfully from document A and then written to document B, 
-    /// documents A and B are guaranteed to be identical. This errorLevel should be 
-    /// used when no alterations to the Feature Schema can be tolerated
-    /// \param ErrorLevel_Normal 
-    /// fails if the Feature Schema cannot be read 
-    /// without changing the domain of its conforming instance documents. If the 
-    /// Feature Schema is read successfully from document A and then written to 
-    /// document B, any instance document that conforms to the document A schema 
-    /// will also conform to the document B schema. Any instance document that does
-    /// not conform to A does not conform to B. However, documents A and B will not 
-    /// necessarily be identical.
-    /// \param ErrorLevel_Low 
-    /// similar to ErrorLevel_Normal except that the 
-    /// instance document domain is allowed to grow. If the Feature Schema is read 
-    /// successfully from document A and then written to document B, any instance 
-    /// document that conforms to the document A schema will also conform to the 
-    /// document B schema. However a document that does not conform to the A schema 
-    /// may or may not conform to the B schema.
     /// \param ErrorLevel_VeryLow 
     /// the read succeeds even if no level of 
     /// round-trip fidelity is maintained. If the Feature Schema is read successfully 
@@ -65,9 +43,35 @@ public:
     /// altered during the read.
     /// 
 	enum ErrorLevel {
+    		/// The read fails with an exception when the Feature Schema cannot be read without alteration.
+		/// If the Feature Schema is read successfully from document A and then written to document B, 
+    		/// documents A and B are guaranteed to be identical.
+		/// This errorLevel should be used when no alterations to the Feature Schema can be tolerated
 		ErrorLevel_High,
+    		/// Fails if the Feature Schema cannot be read 
+    		/// without changing the domain of its conforming instance documents.
+		/// If the Feature Schema is read successfully from document A
+		/// and then written to document B,
+    		/// any instance document that conforms to the document A schema 
+    		/// will also conform to the document B schema.
+		/// Any instance document that does not conform to A does not conform to B.
+		/// However, documents A and B will not necessarily be identical.
 		ErrorLevel_Normal,
+    		/// Similar to ErrorLevel_Normal except that the 
+    		/// instance document domain is allowed to grow.
+		/// If the Feature Schema is read 
+    		/// successfully from document A and then written to document B,
+		/// any instance document that conforms to the document A schema will also conform to the document B schema.
+		/// However a document that does not conform to the A schema 
+    		/// may or may not conform to the B schema.
 		ErrorLevel_Low,
+    		/// The read succeeds even if no level of round-trip fidelity is maintained.
+		/// If the Feature Schema is read successfully from document A and then written to document B,
+		/// any instance document thatconforms to the document A schema
+		/// may or may not conform to the document B schema.
+    		/// A document that does not conform to the A schema may or may not conform to the B schema.
+		/// This errorLevel is useful for reading schemas from external sources into FDO
+		/// when it doesn’t matter how much the schemas are altered during the read.
 		ErrorLevel_VeryLow
 	};
 
@@ -113,7 +117,7 @@ public:
     /// \brief
     /// Sets the error level, see FdoXmlFlags::Create().
     /// 
-    /// \param url 
+    /// \param errorLevel 
     /// Input the error level.
     /// 
 	FDO_API void SetErrorLevel( ErrorLevel errorLevel );
@@ -129,7 +133,7 @@ public:
     /// \brief
     /// Sets the name adjustment flag, see FdoXmlFlags::Create().
     /// 
-    /// \param url 
+    /// \param nameAdjust 
     /// Input the name adjustment flag.
     /// 
   	FDO_API void SetNameAdjust( FdoBoolean nameAdjust );
@@ -247,6 +251,7 @@ public:
 /// \endcond
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoXmlFlagsP is a FdoPtr on FdoXmlFlags, provided for convenience.
 typedef FdoPtr<FdoXmlFlags> FdoXmlFlagsP;

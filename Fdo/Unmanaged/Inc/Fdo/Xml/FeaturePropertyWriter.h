@@ -81,7 +81,7 @@ public:
     /// element and the feature's actual element are written. The feature element name
     /// is derived from the feature's class and schema names.
     /// 
-    /// \param stargTag 
+    /// \param startTag 
     /// The start tag for the feature element. If it is null, the
     /// feature's class name used.
     /// 
@@ -102,7 +102,7 @@ public:
     /// \brief
     /// Writes a feature property to XML.
     /// 
-    /// \param value 
+    /// \param name 
     /// Input the property name
     /// \param value 
     /// Input the property value as an FDO property
@@ -118,7 +118,7 @@ public:
     /// \brief
     /// Writes a feature property to XML.
     /// 
-    /// \param value 
+    /// \param name 
     /// Input the property name
     /// \param value 
     /// Input the property value as a string
@@ -136,7 +136,7 @@ public:
     /// \brief
     /// Writes a raster property to XML.
     /// 
-    /// \param value 
+    /// \param name 
     /// Input the property name
     /// \param value 
     /// Input the raster property value
@@ -152,7 +152,7 @@ public:
     /// \brief
     /// Writes a lob property to XML.
     /// 
-    /// \param value 
+    /// \param name 
     /// Input the property name
     /// \param value 
     /// Input the lob property value
@@ -239,6 +239,7 @@ private:
 
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoXmlFeaturePropertyReaderP is a FdoPtr on FdoXmlFeaturePropertyReader, provided for convenience.
 typedef FdoPtr<FdoXmlFeaturePropertyWriter> FdoXmlFeaturePropertyWriterP;

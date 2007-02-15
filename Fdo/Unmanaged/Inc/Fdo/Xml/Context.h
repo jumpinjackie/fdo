@@ -30,19 +30,31 @@ public:
     /// \brief
     /// Constructs a context for parsing FDO Deserializable items
     /// 
-    /// \param schemas 
-    /// Read the Feature Schemas into this collection.
+    /// \param flags 
+    /// Input flags.
+	 ///
+	 /// \param xmlReader
+	 /// Input xmlReader.
     /// 
+	 /// \return
+	 /// Returns FdoXmlContext.
 	FDO_API static FdoXmlContext* Create( FdoXmlFlags* flags, FdoXmlReader* xmlReader );
 
     /// \brief
     /// Decodes any element name that was encoded to be XML-compatible.
     /// 
+	 /// \param name
+	 /// Input name.
+	 ///
+	 /// \return
+	 /// Returns FdoStringP.
     FDO_API FdoStringP DecodeName ( FdoStringP name );
 
     /// \brief
     /// Retrieves the current XML flags.
     /// 
+	 /// \return
+	 /// Returns FdoXmlFlags.
     FDO_API FdoXmlFlags* GetFlags();
 
 
@@ -56,6 +68,9 @@ private:
     FdoXmlFlagsP mFlags;
 };
 
+/// \ingroup (typedefs)
+/// \brief
+/// FdoXmlContextP is an FdoPtr on FdoXmlContext provided for convenience.
 typedef FdoPtr<FdoXmlContext> FdoXmlContextP;
 
 #endif

@@ -55,6 +55,7 @@ protected:
 /// \endcond
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoXmlClassMappingsP is a FdoPtr on FdoXmlClassMappingCollection, provided for convenience.
 typedef FdoPtr<FdoXmlClassMappingCollection> FdoXmlClassMappingsP;

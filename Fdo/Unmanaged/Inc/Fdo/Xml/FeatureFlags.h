@@ -58,23 +58,18 @@
 class FdoXmlFeatureFlags : public FdoXmlFlags
 {
 public:
-    /// \brief
-    /// The FdoXmlFeatureFlags::ConflictOption specifies how to handle features that 
-    /// are already in the DataStore, when Deserializing:
-    /// 
-    /// \param ConflictOption_Add 
-    /// just add new features to the FDO DataStore. If a feature already exists, an 
-    /// exception is thrown.
-    /// \param ConflictOption_Update 
-    /// Update the feature if it already exists, add it if it doesn't exist. This is 
-    /// the slowest option, since the feature must be queried from the DataStore before
-    /// it is inserted or updated.
-    /// \param ConflictOption_Skip 
-    /// just add new features. Silently skip features already in the DataStore.
-    /// 
+    	/// \brief
+    	/// The FdoXmlFeatureFlags::ConflictOption specifies how to handle features that 
+    	/// are already in the DataStore, when Deserializing:
 	enum ConflictOption {
+    		/// Add new features to the FDO DataStore and if a feature already exists, 
+    		/// throw an exception.
 		ConflictOption_Add,
+    		/// Update the feature if it already exists, add it if it doesn't exist.
+		/// This is the slowest option, since the feature must be queried from the DataStore
+    		/// before it is inserted or updated.
 		ConflictOption_Update,
+    		/// Add new features and silently skip features already in the DataStore.
 		ConflictOption_Skip
 	};
 
@@ -121,7 +116,7 @@ public:
     /// \brief
     /// Sets the write feature collection flag. This flag is initially set to true.
     /// 
-    /// \param writeMember 
+    /// \param writeCollection 
     /// Input 
     /// true: The serialized features are wrapped in a GML FeatureCollection element.
     /// false: features are serialize without a wrapping collection element.
@@ -322,6 +317,7 @@ private:
 
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoXmlFeatureFlagsP is a FdoPtr on FdoXmlFeatureFlags, provided for convenience.
 typedef FdoPtr<FdoXmlFeatureFlags> FdoXmlFeatureFlagsP;

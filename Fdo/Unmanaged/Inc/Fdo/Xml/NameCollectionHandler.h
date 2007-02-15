@@ -58,7 +58,7 @@ public:
     virtual void _writeXml(FdoXmlWriter* xmlWriter, const FdoXmlFlags* flags);
 
     virtual FdoXmlSaxHandler* XmlStartElement(
-        FdoXmlSaxContext* context, 
+        FdoXmlSaxContext* saxContext, 
         FdoString* uri, 
         FdoString* name, 
         FdoString* qname, 
@@ -66,7 +66,7 @@ public:
     );
 
     virtual FdoBoolean XmlEndElement(
-        FdoXmlSaxContext* context, 
+        FdoXmlSaxContext* saxContext, 
         FdoString* uri, 
         FdoString* name, 
         FdoString* qname
@@ -87,6 +87,7 @@ private:
     FdoXmlSkipElementHandlerP   mXmlSkipper;
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoXmlNameCollectionHandlerP is a FdoPtr on FdoXmlNameCollectionHandler, provided for convenience.
 typedef FdoPtr<FdoXmlNameCollectionHandler> FdoXmlNameCollectionHandlerP;

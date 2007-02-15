@@ -51,7 +51,7 @@ public:
     /// Returns the feature Handler for all sub-elements of the element that was current
     /// when the read started. If NULL, this feature handler remains in effect.
     /// 
-    FDO_API virtual FdoXmlFeatureHandler* FeatureDocumentStart(FdoXmlFeatureContext*);
+    FDO_API virtual FdoXmlFeatureHandler* FeatureDocumentStart(FdoXmlFeatureContext* featureContext);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -61,7 +61,7 @@ public:
     /// \param featureContext 
     /// Input caller specified contextual information
     /// 
-    FDO_API virtual void FeatureDocumentEnd(FdoXmlFeatureContext*);
+    FDO_API virtual void FeatureDocumentEnd(FdoXmlFeatureContext* featureContext);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -71,11 +71,14 @@ public:
     /// \param featureContext 
     /// Input caller specified contextual information
     /// 
+    /// \param classDefinition 
+    /// Input class definition.
+    /// 
     /// \return
     /// Returns the feature Handler for the features in this collection.
     /// If NULL, this feature handler remains in effect.
     /// 
-    FDO_API virtual FdoXmlFeatureHandler* FeatureCollectionStart(FdoXmlFeatureContext*,FdoClassDefinition*);
+    FDO_API virtual FdoXmlFeatureHandler* FeatureCollectionStart(FdoXmlFeatureContext* featureContext, FdoClassDefinition* classDefinition);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -90,7 +93,7 @@ public:
     /// to continue. Return value is ignored if the current parse is not an incremental 
     /// parse ( see FdoXmlFeaturePropertyReader::Parse())
     /// 
-    FDO_API virtual FdoBoolean FeatureCollectionEnd(FdoXmlFeatureContext*);
+    FDO_API virtual FdoBoolean FeatureCollectionEnd(FdoXmlFeatureContext* featureContext);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -106,7 +109,7 @@ public:
     /// Returns the feature Handler for the feature's properties. If NULL, this feature 
     /// handler remains in effect.
     /// 
-    FDO_API virtual FdoXmlFeatureHandler* FeatureStart(FdoXmlFeatureContext*,FdoClassDefinition*);
+    FDO_API virtual FdoXmlFeatureHandler* FeatureStart(FdoXmlFeatureContext* featureContext, FdoClassDefinition* classDefinition);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -120,7 +123,7 @@ public:
     /// parse to continue. Return value is ignored if the current parse is not an 
     /// incremental parse ( see FdoXmlFeaturePropertyReader::Parse())
     /// 
-    FDO_API virtual FdoBoolean FeatureEnd(FdoXmlFeatureContext*);
+    FDO_API virtual FdoBoolean FeatureEnd(FdoXmlFeatureContext* featureContext);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -132,15 +135,15 @@ public:
     /// Input caller specified contextual information
     /// \param name 
     /// Input property name
-    /// \param name 
-    /// Input property value
+    /// \param  boolPropertyValue
+    /// Input value of boolean property.
     /// 
     /// \return
     /// Returning true causes the current parse to stop. Returning false causes
     /// the parse to continue. Return value is ignored if the current parse is not an
     /// incremental parse ( see FdoXmlFeaturePropertyReader::Parse())
     /// 
-    FDO_API virtual FdoBoolean FeatureProperty(FdoXmlFeatureContext*, FdoString*, FdoBoolean);
+    FDO_API virtual FdoBoolean FeatureProperty(FdoXmlFeatureContext* featureContext, FdoString* name, FdoBoolean boolPropertyValue);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -152,15 +155,15 @@ public:
     /// Input caller specified contextual information
     /// \param name 
     /// Input property name
-    /// \param name 
-    /// Input property value
+    /// \param bytePropertyValue 
+    /// Input byte property value
     /// 
     /// \return
     /// Returning true causes the current parse to stop. Returning false causes
     /// the parse to continue. Return value is ignored if the current parse is not an
     /// incremental parse ( see FdoXmlFeaturePropertyReader::Parse())
     /// 
-    FDO_API virtual FdoBoolean FeatureProperty(FdoXmlFeatureContext*, FdoString*, FdoByte);
+    FDO_API virtual FdoBoolean FeatureProperty(FdoXmlFeatureContext* featureContext, FdoString* name, FdoByte bytePropertyValue);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -172,15 +175,15 @@ public:
     /// Input caller specified contextual information
     /// \param name 
     /// Input property name
-    /// \param name 
-    /// Input property value
+    /// \param dateTimePropertyValue 
+    /// Input FdoDateTime property value
     /// 
     /// \return
     /// Returning true causes the current parse to stop. Returning false causes
     /// the parse to continue. Return value is ignored if the current parse is not an
     /// incremental parse ( see FdoXmlFeaturePropertyReader::Parse())
     /// 
-    FDO_API virtual FdoBoolean FeatureProperty(FdoXmlFeatureContext*, FdoString*, FdoDateTime);
+    FDO_API virtual FdoBoolean FeatureProperty(FdoXmlFeatureContext* featureContext, FdoString* name, FdoDateTime dateTimePropertyValue);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -192,15 +195,15 @@ public:
     /// Input caller specified contextual information
     /// \param name 
     /// Input property name
-    /// \param name 
-    /// Input property value
+    /// \param doublePropertyValue 
+    /// Input double property value
     /// 
     /// \return
     /// Returning true causes the current parse to stop. Returning false causes
     /// the parse to continue. Return value is ignored if the current parse is not an
     /// incremental parse ( see FdoXmlFeaturePropertyReader::Parse())
     /// 
-    FDO_API virtual FdoBoolean FeatureProperty(FdoXmlFeatureContext*, FdoString*, FdoDouble);
+    FDO_API virtual FdoBoolean FeatureProperty(FdoXmlFeatureContext* featureContext, FdoString* name, FdoDouble doublePropertyValue);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -212,15 +215,15 @@ public:
     /// Input caller specified contextual information
     /// \param name 
     /// Input property name
-    /// \param name 
-    /// Input property value
+    /// \param int16PropertyValue 
+    /// Input Int16 property value
     /// 
     /// \return
     /// Returning true causes the current parse to stop. Returning false causes
     /// the parse to continue. Return value is ignored if the current parse is not an
     /// incremental parse ( see FdoXmlFeaturePropertyReader::Parse())
     /// 
-    FDO_API virtual FdoBoolean FeatureProperty(FdoXmlFeatureContext*, FdoString*, FdoInt16);
+    FDO_API virtual FdoBoolean FeatureProperty(FdoXmlFeatureContext* featureContext, FdoString* name, FdoInt16 int16PropertyValue);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -232,15 +235,15 @@ public:
     /// Input caller specified contextual information
     /// \param name 
     /// Input property name
-    /// \param name 
-    /// Input property value
+    /// \param int32PropertyValue 
+    /// Input Int32 property value
     /// 
     /// \return
     /// Returning true causes the current parse to stop. Returning false causes
     /// the parse to continue. Return value is ignored if the current parse is not an
     /// incremental parse ( see FdoXmlFeaturePropertyReader::Parse())
     /// 
-    FDO_API virtual FdoBoolean FeatureProperty(FdoXmlFeatureContext*, FdoString*, FdoInt32);
+    FDO_API virtual FdoBoolean FeatureProperty(FdoXmlFeatureContext* featureContext, FdoString* name, FdoInt32 int32PropertyValue);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -252,15 +255,15 @@ public:
     /// Input caller specified contextual information
     /// \param name 
     /// Input property name
-    /// \param name 
-    /// Input property value
+    /// \param int64PropertyValue 
+    /// Input Int64 property value
     /// 
     /// \return
     /// Returning true causes the current parse to stop. Returning false causes
     /// the parse to continue. Return value is ignored if the current parse is not an
     /// incremental parse ( see FdoXmlFeaturePropertyReader::Parse())
     /// 
-    FDO_API virtual FdoBoolean FeatureProperty(FdoXmlFeatureContext*, FdoString*, FdoInt64);
+    FDO_API virtual FdoBoolean FeatureProperty(FdoXmlFeatureContext* featureContext, FdoString* name, FdoInt64 int64PropertyValue);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -272,15 +275,15 @@ public:
     /// Input caller specified contextual information
     /// \param name 
     /// Input property name
-    /// \param name 
-    /// Input property value
+    /// \param floatPropertyValue 
+    /// Input float property value
     /// 
     /// \return
     /// Returning true causes the current parse to stop. Returning false causes
     /// the parse to continue. Return value is ignored if the current parse is not an
     /// incremental parse ( see FdoXmlFeaturePropertyReader::Parse())
     /// 
-    FDO_API virtual FdoBoolean FeatureProperty(FdoXmlFeatureContext*, FdoString*, FdoFloat);
+    FDO_API virtual FdoBoolean FeatureProperty(FdoXmlFeatureContext* featureContext, FdoString* name, FdoFloat floatPropertyValue);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -292,15 +295,15 @@ public:
     /// Input caller specified contextual information
     /// \param name 
     /// Input property name
-    /// \param name 
-    /// Input property value
+    /// \param stringPropertyValue 
+    /// Input string property value
     /// 
     /// \return
     /// Returning true causes the current parse to stop. Returning false causes
     /// the parse to continue. Return value is ignored if the current parse is not an
     /// incremental parse ( see FdoXmlFeaturePropertyReader::Parse())
     /// 
-    FDO_API virtual FdoBoolean FeatureProperty(FdoXmlFeatureContext*, FdoString*, FdoString*);
+    FDO_API virtual FdoBoolean FeatureProperty(FdoXmlFeatureContext* featureContext, FdoString* name, FdoString* stringPropertyValue);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -313,7 +316,7 @@ public:
     /// Input caller specified contextual information
     /// \param name 
     /// Input property name
-    /// \param raster 
+    /// \param rasterPropertyValue 
     /// Input raster image properties. This object always has a NULL stream reader. The image is
     /// handled by the FeatureBinaryData() callback.
     /// 
@@ -322,7 +325,7 @@ public:
     /// parse to continue. Return value is ignored if the current parse is not an 
     /// incremental parse ( see FdoXmlFeaturePropertyReader::Parse())
     /// 
-    FDO_API virtual FdoBoolean FeatureStartRasterProperty(FdoXmlFeatureContext*, FdoString*, FdoIRaster*);
+    FDO_API virtual FdoBoolean FeatureStartRasterProperty(FdoXmlFeatureContext* featureContext, FdoString* name, FdoIRaster* rasterPropertyValue);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -337,7 +340,7 @@ public:
     /// to continue. Return value is ignored if the current parse is not an incremental 
     /// parse ( see FdoXmlFeaturePropertyReader::Parse())
     /// 
-    FDO_API virtual FdoBoolean FeatureEndRasterProperty(FdoXmlFeatureContext*);
+    FDO_API virtual FdoBoolean FeatureEndRasterProperty(FdoXmlFeatureContext* featureContext);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -356,7 +359,7 @@ public:
     /// to continue. Return value is ignored if the current parse is not an incremental 
     /// parse ( see FdoXmlFeaturePropertyReader::Parse())
     /// 
-    FDO_API virtual FdoBoolean FeatureStartLobProperty(FdoXmlFeatureContext*, FdoString*);
+    FDO_API virtual FdoBoolean FeatureStartLobProperty(FdoXmlFeatureContext* featureContext, FdoString* name);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -371,7 +374,7 @@ public:
     /// to continue. Return value is ignored if the current parse is not an incremental 
     /// parse ( see FdoXmlFeaturePropertyReader::Parse())
     /// 
-    FDO_API virtual FdoBoolean FeatureEndLobProperty(FdoXmlFeatureContext*);
+    FDO_API virtual FdoBoolean FeatureEndLobProperty(FdoXmlFeatureContext* featureContext);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -382,9 +385,9 @@ public:
     /// Input caller specified contextual information
     /// \param name 
     /// Input property name
-    /// \param bytes 
+    /// \param geometryByteArray 
     /// Input pointer to the byte array defining the geometry value
-    /// \param count 
+    /// \param byteCount 
     /// Input number of bytes in the byte array
     /// 
     /// \return
@@ -392,7 +395,7 @@ public:
     /// continue. Return value is ignored if the current parse is not an incremental 
     /// parse ( see FdoXmlFeaturePropertyReader::Parse())
     /// 
-    FDO_API virtual FdoBoolean FeatureGeometricProperty(FdoXmlFeatureContext*, FdoString*, FdoByte*, FdoInt32);
+    FDO_API virtual FdoBoolean FeatureGeometricProperty(FdoXmlFeatureContext* featureContext, FdoString*name, FdoByte* geometryByteArray, FdoInt32 byteCount);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -410,7 +413,7 @@ public:
     /// Returns the feature Handler for the current object property's sub-properties. 
     /// If NULL, this feature handler remains in effect.
     /// 
-    FDO_API virtual FdoXmlFeatureHandler* FeatureStartObjectProperty(FdoXmlFeatureContext*, FdoString*, FdoClassDefinition*);
+    FDO_API virtual FdoXmlFeatureHandler* FeatureStartObjectProperty(FdoXmlFeatureContext* featureContext, FdoString* name, FdoClassDefinition* classDefinition);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -425,7 +428,7 @@ public:
     /// to continue. Return value is ignored if the current parse is not an incremental 
     /// parse ( see FdoXmlFeaturePropertyReader::Parse())
     /// 
-    FDO_API virtual FdoBoolean FeatureEndObjectProperty(FdoXmlFeatureContext*);
+    FDO_API virtual FdoBoolean FeatureEndObjectProperty(FdoXmlFeatureContext* featureContext);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -458,7 +461,7 @@ public:
     /// Returns the feature Handler for the current association property's sub-properties. 
     /// If NULL, this feature handler remains in effect.
     /// 
-    FDO_API virtual FdoXmlFeatureHandler* FeatureStartAssociationProperty(FdoXmlFeatureContext*, FdoString*, FdoClassDefinition*);
+    FDO_API virtual FdoXmlFeatureHandler* FeatureStartAssociationProperty(FdoXmlFeatureContext* featureContext, FdoString* name, FdoClassDefinition* classDefinition);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -473,7 +476,7 @@ public:
     /// to continue. Return value is ignored if the current parse is not an incremental 
     /// parse ( see FdoXmlFeaturePropertyReader::Parse())
     /// 
-    FDO_API virtual FdoBoolean FeatureEndAssociationProperty(FdoXmlFeatureContext*);
+    FDO_API virtual FdoBoolean FeatureEndAssociationProperty(FdoXmlFeatureContext* featureContext);
 
     /// \brief
     /// Default Feature Handle callback that is called when the FdoXmlFeaturePropertyReader 
@@ -492,7 +495,7 @@ public:
     /// to continue. Return value is ignored if the current parse is not an incremental 
     /// parse ( see FdoXmlFeaturePropertyReader::Parse())
     /// 
-    FDO_API virtual FdoBoolean FeatureCharacters(FdoXmlFeatureContext*, FdoString*);
+    FDO_API virtual FdoBoolean FeatureCharacters(FdoXmlFeatureContext* featureContext, FdoString* chars);
 
     /// \brief
     /// Default Feature callback that is called when the FdoXmlFeaturePropertyReader 
@@ -515,7 +518,7 @@ public:
     /// to continue. Return value is ignored if the current parse is not an incremental 
     /// parse ( see FdoXmlFeaturePropertyReader::Parse())
     /// 
-    FDO_API virtual FdoBoolean FeatureBinaryData(FdoXmlFeatureContext*, FdoByte*, FdoSize);
+    FDO_API virtual FdoBoolean FeatureBinaryData(FdoXmlFeatureContext* featureContext, FdoByte* bytes, FdoSize count);
 
 };
 

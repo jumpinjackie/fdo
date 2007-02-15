@@ -60,6 +60,7 @@ protected:
 	virtual ~FdoXmlFeatureContext();
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoXmlFeatureContextP is a FdoPtr on FdoXmlFeatureContext, provided for convenience.
 typedef FdoPtr<FdoXmlFeatureContext> FdoXmlFeatureContextP;

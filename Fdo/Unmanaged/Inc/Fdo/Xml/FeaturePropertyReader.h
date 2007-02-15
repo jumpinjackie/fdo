@@ -147,6 +147,7 @@ public:
 
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoXmlFeaturePropertyReaderP is a FdoPtr on FdoXmlFeaturePropertyReader, provided for convenience.
 typedef FdoPtr<FdoXmlFeaturePropertyReader> FdoXmlFeaturePropertyReaderP;

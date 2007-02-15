@@ -97,8 +97,8 @@ public:
     /// 
 	FDO_API FdoXmlClassMappingCollection* GetClassMappings();
 
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     FdoXmlSchemaMapping() {}
 
     FdoXmlSchemaMapping( FdoString* name );
@@ -147,6 +147,7 @@ private:
     FdoXmlClassMappingsP mClassMappings;
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoXmlSchemaMappingP is a FdoPtr on FdoXmlSchemaMapping, provided for convenience.
 typedef FdoPtr<FdoXmlSchemaMapping> FdoXmlSchemaMappingP;
