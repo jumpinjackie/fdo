@@ -15,28 +15,44 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 //
 #include "stdafx.h"
-
 #include "PostGisProvider.h"
 #include "DataStoreReader.h"
 #include "Connection.h"
-
+#include "PgCursor.h"
+// std
 #include <cassert>
-
 
 namespace fdo { namespace postgis {
 
-DataStoreReader::DataStoreReader(Connection* conn, std::string const& cursor)
-    : mConn(conn), mCursor(cursor)
+DataStoreReader::DataStoreReader(PgCursor* cursor) : mCursor(cursor)
 {
+    assert(NULL != cursor);
 }
 
 DataStoreReader::~DataStoreReader()
 {
 }
 
-FdoString* DataStoreReader::GetName()
+///////////////////////////////////////////////////////////////////////////////
+// FdoIDisposable interface
+///////////////////////////////////////////////////////////////////////////////
+
+void DataStoreReader::Dispose()
 {
-    assert(!"NOT IMPLEMENTED");
+    Close();
+    delete this;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoIDataStoreReader interface
+///////////////////////////////////////////////////////////////////////////////
+
+FdoString* DataStoreReader::GetName()
+{   
+    PGresult const* pgRes = mCursor->GetFetchResult();
+
+
     return NULL;
 }
 
@@ -60,14 +76,25 @@ FdoIDataStorePropertyDictionary* DataStoreReader::GetDataStoreProperties()
 
 bool DataStoreReader::ReadNext()
 {
+    bool eof = true;
 
+    PGresult const* pgRes = mCursor->FetchNext();
+    if (PGRES_TUPLES_OK == PQresultStatus(pgRes))
+    {
+        if (0 != PQntuples(pgRes))
+        {
+            eof = false;
+        }
+    }
 
-    return false;
+    return (!eof);
 }
 
 void DataStoreReader::Close()
 {
-    assert(!"NOT IMPLEMENTED");
+    // TODO: Temporary solution. Make ownership transfer exception safe.
+
+    delete mCursor;
 }
 
 }} // namespace fdo::postgis

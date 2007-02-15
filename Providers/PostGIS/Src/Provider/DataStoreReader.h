@@ -17,20 +17,28 @@
 #ifndef FDOPOSTGIS_DATASTOREREADER_H_INCLUDED
 #define FDOPOSTGIS_DATASTOREREADER_H_INCLUDED
 
-#include "Connection.h"
 #include <string>
 
 namespace fdo { namespace postgis {
 
+// Forward declarations of internal types
+class PgCursor;
+
 /// Implementation of forward-only and read-only iterator for
 /// reading feature data from a PostGIS datastore.
+///
+/// \todo Transfer ownership of cursor during reader creation.
 ///
 class DataStoreReader : public FdoIDataStoreReader
 {
 public:
 
-    DataStoreReader(Connection* conn, std::string const& cursor);
-    virtual ~DataStoreReader();
+    /// Constructor creates a reader associated with given cursor.
+    /// Cursor is required to be declared and usable.
+    DataStoreReader(PgCursor* cursor);
+
+    /// Destructor.
+    ~DataStoreReader();
 
     //
     // FdoIDataStoreReader
@@ -56,11 +64,20 @@ public:
  	// Close the reader object, freeing any resources it may be holding.
     void Close();
 
+protected:
+
+    //
+    // FdoIDisposable interface
+    //
+
+    /// Dispose this object.
+    void Dispose();
+
 private:
 
-    FdoPtr<Connection> mConn;
+    //FdoPtr<Connection> mConn;
 
-    std::string mCursor;
+    PgCursor* mCursor;
 
 };
 
