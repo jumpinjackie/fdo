@@ -34,7 +34,7 @@ public:
     /// 
     /// \param name 
     /// Input the name of the element (required)
-    /// \param name 
+    /// \param value
     /// Input the value of the element. Can be blank (L"")
     /// 
     /// \return
@@ -79,8 +79,8 @@ public:
     /// 
     FDO_API_COMMON virtual void SetValue(FdoString* value);
 
-protected:
 /// \cond DOXYGEN-IGNORE
+protected:
     /// Constructs a default instance of a FdoDictionaryElement.
     FDO_API_COMMON FdoDictionaryElement()
     {
@@ -101,6 +101,7 @@ private:
     FdoStringP                        mValue;
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoDictionaryElementP is a FdoPtr on FdoDictionaryElement, provided for convenience.
 typedef FdoPtr<FdoDictionaryElement> FdoDictionaryElementP;

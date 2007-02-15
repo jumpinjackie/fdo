@@ -74,6 +74,7 @@ private:
     FdoIoStreamP mStream;
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoIoTextReaderP is a FdoPtr on FdoIoTextReader, provided for convenience.
 typedef FdoPtr<FdoIoTextReader> FdoIoTextReaderP;

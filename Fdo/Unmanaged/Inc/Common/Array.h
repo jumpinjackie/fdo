@@ -344,14 +344,17 @@ void FdoArray<T>::SetValue(FdoInt32 i, T newElement)
     *(this->GetData()+i) = newElement;
 }
 
+/// \ingroup (typedefs)
 /// \brief
 /// Dynamic array of bytes (FdoByte).
 typedef FdoArray<FdoByte>   FdoByteArray;
 
+/// \ingroup (typedefs)
 /// \brief
 /// Dynamic array of doubles (FdoDouble).
 typedef FdoArray<FdoDouble> FdoDoubleArray;
 
+/// \ingroup (typedefs)
 /// \brief
 /// Dynamic array of integers (FdoInt32).
 typedef FdoArray<FdoInt32>  FdoIntArray;

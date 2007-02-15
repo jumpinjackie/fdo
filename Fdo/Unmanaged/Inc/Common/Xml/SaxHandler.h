@@ -41,7 +41,7 @@ public:
     /// Returns the SAX Handler for the document's root element. If NULL then 
     /// this SAX handler will handle the root element
     /// 
-    FDO_API_COMMON virtual FdoXmlSaxHandler* XmlStartDocument(FdoXmlSaxContext*);
+    FDO_API_COMMON virtual FdoXmlSaxHandler* XmlStartDocument(FdoXmlSaxContext* saxContext);
 
     /// \brief
     /// Default Sax callback that is called when the FdoXmlReader 
@@ -50,7 +50,7 @@ public:
     /// \param saxContext 
     /// Input caller specified contextual information
     /// 
-    FDO_API_COMMON virtual void XmlEndDocument(FdoXmlSaxContext*);
+    FDO_API_COMMON virtual void XmlEndDocument(FdoXmlSaxContext* saxContext);
 
     /// \brief
     /// Default Sax callback that is called when the FdoXmlReader 
@@ -71,7 +71,7 @@ public:
     /// Returns the SAX Handler for the element's sub-elements. If NULL then 
     /// this SAX handler will handle the sub-elements
     /// 
-    FDO_API_COMMON virtual FdoXmlSaxHandler* XmlStartElement(FdoXmlSaxContext*, FdoString*, FdoString* name, FdoString*, FdoXmlAttributeCollection*);
+    FDO_API_COMMON virtual FdoXmlSaxHandler* XmlStartElement(FdoXmlSaxContext* saxContext, FdoString* uri, FdoString* name, FdoString* qname, FdoXmlAttributeCollection* atts);
 
     /// \brief
     /// Default Sax callback that is called when the FdoXmlReader 
@@ -91,7 +91,7 @@ public:
     /// cause the parse to continue. Return value is ignored if the current parse
     /// is not an incremental parse ( see FdoXmlReader::Parse())
     /// 
-    FDO_API_COMMON virtual FdoBoolean XmlEndElement(FdoXmlSaxContext*, FdoString*, FdoString*, FdoString*);
+    FDO_API_COMMON virtual FdoBoolean XmlEndElement(FdoXmlSaxContext* saxContext, FdoString* uri, FdoString* name, FdoString* qname);
 
     /// \brief
     /// Default Sax callback that is called when the FdoXmlReader 
@@ -105,7 +105,7 @@ public:
     /// \param chars 
     /// Input the next chunk of simple content
     /// 
-    FDO_API_COMMON virtual void XmlCharacters(FdoXmlSaxContext*, FdoString*);
+    FDO_API_COMMON virtual void XmlCharacters(FdoXmlSaxContext* saxContext, FdoString* chars);
 };
 
 #endif

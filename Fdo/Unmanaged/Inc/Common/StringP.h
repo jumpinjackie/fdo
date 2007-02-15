@@ -73,7 +73,7 @@ public:
     /// \brief
     /// Copies a string from a string pointer.
     /// 
-    /// \param oValue 
+    /// \param oString 
     /// Source string to copy from.
     /// 
     /// \return
@@ -84,7 +84,7 @@ public:
     /// \brief
     /// Copies a string from a utf8 string.
     /// 
-    /// \param sValue 
+    /// \param sString 
     /// Utf8 string to copy from.
     /// 
     /// \return
@@ -95,7 +95,7 @@ public:
     /// \brief
     /// Copies a string from a unicode string.
     /// 
-    /// \param sValue 
+    /// \param wString 
     /// Unicode string to copy from.
     /// 
     /// \return
@@ -303,7 +303,7 @@ public:
     /// \brief
     /// Gets the characters to the left of the given sub-string.
     /// 
-    /// \param delimeter 
+    /// \param delimiter 
     /// The substring.
     /// 
     /// \return
@@ -319,7 +319,7 @@ public:
     /// \brief
     /// Gets the characters to the right of the given sub-string.
     /// 
-    /// \param delimeter 
+    /// \param delimiter 
     /// The substring.
     /// 
     /// \return
@@ -441,6 +441,7 @@ public:
     FDO_API_COMMON static const wchar_t* mEmptyString;
 
 /// \cond DOXYGEN-IGNORE
+
     /// Utility function for converting from unicode to utf8.
     /// returned value is allocated and must be deleted by caller.
 	FDO_API_COMMON static int Utf8FromUnicode(

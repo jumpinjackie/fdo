@@ -31,28 +31,24 @@
 class FdoXmlWriter : public FdoDisposable
 {
 public:
-    /// \brief
-    /// FdoXmlWriter::LineFormat specifies whether the output XML document
-    /// has line breaks or indentation.
-    /// 
-    /// \param LineFormat_None 
-    /// The document is written without line breaks or element indentation.
-    /// \param LineFormat_Break 
-    /// The document is written with a line break after:
-    /// <ul>
-    /// <li> every end element tag
-    /// <li> every start tag for elements with complex content (sub-elements)
-    /// </ul>
-    /// Elements are not indented.
-    /// \param LineFormat_Indent 
-    /// Same as LineFormat_Break, except that each element immediately following 
-    /// a line break is indented by a certain number of spaces. The number of
-    /// spaces is the element's nesting level within the document X 3. The root
-    /// element has nesting level 0.
-    /// 
+
+	/// \brief
+	/// Specifies whether the output XML document
+	/// has line breaks or indentation.
 	enum LineFormat {
+		/// The document is written without line breaks or element indentation.
 		LineFormat_None,
+		/// The document is written with a line break after:
+		/// <ul>
+		/// <li>every end element tag</li>
+		/// <li>every start tag for elements with complex content (sub-elements)</li>
+		/// </ul>
+		/// Elements are not indented.
 		LineFormat_Break,
+		/// Same as LineFormat_Break, except that each element immediately following 
+		/// a line break is indented by a certain number of spaces. The number of
+		/// spaces is the element's nesting level within the document X 3. The root
+		/// element has nesting level 0.
 		LineFormat_Indent
 	};
 
@@ -119,7 +115,7 @@ public:
     /// \brief
     /// Constructs an XML writer on a text writer
     /// 
-    /// \param reader 
+    /// \param writer 
     /// Input the text writer.
     /// \param defaultRoot 
     /// true: all elements written are wrapped in a default root element, named "DataStore".
@@ -148,7 +144,7 @@ public:
 
     /// \brief
     /// Gets the underlying text writer. If a text writer was passed to this object
-    /// then this text writeer is returned.
+    /// then this text writer is returned.
     /// Otherwise, an auto-generated text writer is returned (a text writer
     /// wrapped around the file name or stream that was passed to this object)
     /// 
@@ -244,9 +240,12 @@ public:
     /// Writes arbitrary bytes to the XML Writer. Caller is responsible
     /// for ensuring that the text does not introduce any errors into the 
     /// XML document.
-    /// 
-    /// \param characters 
-    /// Input characters to write.
+    ///
+    /// \param bytes
+    /// Input bytes to write.
+    ///
+    /// \param count
+    /// Input count of bytes to write.
     /// 
     FDO_API_COMMON void WriteBytes( FdoByte* bytes, FdoSize count );
 
@@ -296,7 +295,7 @@ public:
     /// 
     /// \param uri 
     /// Input the URI corresponding to an element.
-    /// \param uri 
+    /// \param localName 
     /// Input the local name corresponding to an element.
     /// \param isElement 
     /// Input a boolean flag indicating that the URI corresponds to an element.
@@ -332,17 +331,17 @@ private:
             return mName;
         }
     
-    /// returns true if this element declares any namespaces.
+        /// returns true if this element declares any namespaces.
         bool GetHasNsDecl();
 
-    /// set an attribute value for this element.
+        /// set an attribute value for this element.
 	    void SetAttribute( FdoString* attributeName, FdoString* attributeValue );
         
-    /// Flush all the attributes to the output document
+        /// Flush all the attributes to the output document
 		void FlushAttributes( FdoIoTextWriterP pWriter );
 
-    /// Generates fully qualified name for the given element from
-    /// namespace declarations in this element.
+        /// Generates fully qualified name for the given element from
+        /// namespace declarations in this element.
 	    FdoStringP UriToQName( FdoString* uri, FdoString* localName, FdoBoolean isElement );
 
         static FdoStringP EncodeValue ( FdoStringP value );
@@ -368,8 +367,8 @@ private:
     public:
         static ElementStack* Create() {return new ElementStack();}
 
-    /// Generates fully qualified name for the given element or attribute from
-    /// namespace declarations in the stacked elements.
+        /// Generates fully qualified name for the given element or attribute from
+        /// namespace declarations in the stacked elements.
 	    FdoStringP UriToQName( FdoString* uri, FdoString* localName, FdoBoolean isElement );
 
     protected:
@@ -417,6 +416,7 @@ private:
 	FdoSize     mCharWritten;
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoXmlWriterP is a FdoPtr on FdoXmlWriter, provided for convenience.
 typedef FdoPtr<FdoXmlWriter> FdoXmlWriterP;

@@ -24,6 +24,7 @@
 #pragma once
 #endif
 #ifdef __cplusplus
+    /// \ingroup (enums)
     /// \brief
     ///  FdoDimensionality is an enumeration to describe the presence of spatial dimensions in ordinated data.
     /// 
@@ -31,24 +32,19 @@
     ///  Values of this enumeration are bit-field definitions.
     /// They can be combined via bitwise OR or separated via bitwise AND.
     /// \remarks
-    /// ///  The XY value is zero, thus indicating that all spatial data 
+    /// The XY value is zero, thus indicating that all spatial data 
     /// is assumed to carry X and Y dimensions.
-    /// 
-    /// 
-    /// \param FdoDimensionality_XY 
-    /// X and Y dimensions are present.
-    /// \param FdoDimensionality_Z 
-    /// Z dimension is present.
-    /// \param FdoDimensionality_M 
-    /// M ('measure') dimension is present.
     /// 
 enum FdoDimensionality
 #else
     typedef enum
 #endif
 {
+    /// X and Y dimensions are present.
     FdoDimensionality_XY = 0,
+    /// Z dimension is present.
     FdoDimensionality_Z  = 1,
+    /// M ('measure') dimension is present.
     FdoDimensionality_M  = 2
 #ifdef __cplusplus
 };

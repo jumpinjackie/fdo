@@ -50,6 +50,7 @@ protected:
     }
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoXmlAttributeCollectionP is a FdoPtr on FdoXmlAttributeCollection, provided for convenience.
 typedef FdoPtr<FdoXmlAttributeCollection> FdoXmlAttributesP;

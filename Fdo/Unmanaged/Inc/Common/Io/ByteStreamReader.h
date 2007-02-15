@@ -57,6 +57,7 @@ protected:
 
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoIoByteStreamReaderP is a FdoPtr on FdoIoByteStreamReader, provided for convenience.
 typedef FdoPtr<FdoIoByteStreamReader> FdoIoByteStreamReaderP;

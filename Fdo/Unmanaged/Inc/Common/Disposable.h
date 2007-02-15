@@ -22,7 +22,7 @@
 #include <Common/IDisposable.h>
 
 /// \cond DOXYGEN-IGNORE
-/// \brief
+// \brief
 /// FdoDisposable is a default implementor for the FdoIDisposable interface.
 /// It simply deletes itself
 class FdoDisposable : public virtual FdoIDisposable

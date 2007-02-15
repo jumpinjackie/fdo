@@ -62,6 +62,7 @@ private:
     FdoXmlReader*  mpReader;
 };
 
+/// \ingroup (typedefs)
 /// \brief
 /// FdoXmlSaxContextP is a FdoPtr on FdoXmlSaxContext, provided for convenience.
 typedef FdoPtr<FdoXmlSaxContext> FdoXmlSaxContextP;
