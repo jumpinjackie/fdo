@@ -103,7 +103,7 @@ void SpatialContextTest::testXml()
             bFailed = true;
         }
         if ( !bFailed ) 
-            CPPUNIT_FAIL( "Writing nameless spatial context should have failed." );
+            CPPUNIT_FAIL( "Writing extentless spatial context should have failed." );
 
         // now for the happy tests.
 
@@ -326,6 +326,59 @@ void SpatialContextTest::testXmlNesting()
 
         // Shouldn't be any more spatial contexts at this point.
         FDO_CPPUNIT_ASSERT( reader->ReadNext() == false );
+    }
+    catch ( FdoException* e ) {
+		UnitTestUtil::FailOnException( e );
+    }
+}
+
+void SpatialContextTest::testXmlDotColon()
+{
+    try {
+        FdoInt32 pass;
+
+        // pass 0 writes SC without WKT, pass1 writes it with WKT.
+        for ( pass = 0; pass < 2; pass++ ) {
+            FdoIoMemoryStreamP stream = FdoIoMemoryStream::Create();
+            FdoIoMemoryStreamP stream2 = FdoIoMemoryStream::Create();
+            FdoXmlWriterP xmlWriter = FdoXmlWriter::Create(stream);
+
+            FdoXmlSpatialContextWriterP writer = FdoXmlSpatialContextWriter::Create( 
+                xmlWriter
+            );
+
+            writer->SetName( L"EPSG:123.4" );
+            writer->SetDescription( L". and : test" );
+            writer->SetCoordinateSystem( L"EPSG:1234" );
+            if ( pass == 1 ) 
+                writer->SetCoordinateSystemWkt( L"LOCAL_CS [ \"Non-Earth (Meter)\", LOCAL_DATUM [\"Local Datum\", 0], UNIT [\"Meter\", 1.0], AXIS [\"X\", EAST], AXIS[\"Y\", NORTH]]" );
+            FdoPtr<FdoByteArray> extent = SerializeExtent( 0, 0, 15000, 10000 );
+            writer->SetExtent( extent );
+            writer->SetExtentType( FdoSpatialContextExtentType_Dynamic );
+            writer->SetXYTolerance( 0.1 );
+            writer->SetZTolerance( 0.01 );
+
+            writer->WriteSpatialContext();
+
+            writer = NULL;
+            xmlWriter = NULL;
+            stream->Reset();
+
+            FdoXmlSpatialContextReaderP reader =
+                FdoXmlSpatialContextReader::Create(
+                    FdoXmlReaderP( FdoXmlReader::Create(stream) ),
+                    FdoXmlSpatialContextFlagsP(
+                        FdoXmlSpatialContextFlags::Create( NULL, FdoXmlFlags::ErrorLevel_High ) 
+                    )
+                );
+
+            FDO_CPPUNIT_ASSERT( reader->ReadNext() );
+            FDO_CPPUNIT_ASSERT( wcscmp(reader->GetName(), L"EPSG:123.4") == 0 );
+            FDO_CPPUNIT_ASSERT( wcscmp(reader->GetCoordinateSystem(), L"EPSG:1234") == 0 );
+            FDO_CPPUNIT_ASSERT( wcscmp(reader->GetDescription(), L". and : test") == 0 );
+         
+            FDO_CPPUNIT_ASSERT( !reader->ReadNext() );
+        }
     }
     catch ( FdoException* e ) {
 		UnitTestUtil::FailOnException( e );

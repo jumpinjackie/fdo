@@ -27,6 +27,7 @@ class SpatialContextTest : public CppUnit::TestCase
     FDO_CPPUNIT_DEFINE(testXmlV2);
     FDO_CPPUNIT_DEFINE(testXmlError);
     FDO_CPPUNIT_DEFINE(testXmlNesting);
+    FDO_CPPUNIT_DEFINE(testXmlDotColon);
 
     CPPUNIT_TEST_SUITE(SpatialContextTest);
 
@@ -35,6 +36,7 @@ class SpatialContextTest : public CppUnit::TestCase
     CPPUNIT_TEST(testXmlV2);
     CPPUNIT_TEST(testXmlError);
     CPPUNIT_TEST(testXmlNesting);
+    CPPUNIT_TEST(testXmlDotColon);
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -56,6 +58,9 @@ protected:
     // Test the reading of Spatial Contexts that are 2 levels down from the 
     // root element.
     void testXmlNesting();
+
+    // Test round-tripping spatial contexts with dots and/or colons in name and coordsys name,
+    void testXmlDotColon();
 
     // Convert extents from doubles to byte array
     FdoByteArray* SerializeExtent( double minX, double minY, double maxX, double maxY );
