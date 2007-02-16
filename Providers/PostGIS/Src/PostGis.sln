@@ -9,7 +9,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PostGisProvider", "Provider
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PostGisOverrides", "Overrides\PostGisOverrides.vcproj", "{A250F14F-E1A9-4F17-9E35-2D2CA8013AA4}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B89B5877-EF2A-40AC-9F65-2C3597B0AFAF}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{B89B5877-EF2A-40AC-9F65-2C3597B0AFAF}"
 	ProjectSection(SolutionItems) = preProject
 		README.txt = README.txt
 		TODO.txt = TODO.txt
@@ -23,15 +23,17 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTest", "UnitTest\UnitTe
 		{A250F14F-E1A9-4F17-9E35-2D2CA8013AA4} = {A250F14F-E1A9-4F17-9E35-2D2CA8013AA4}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_connect", "..\..\test\test_connect.vcproj", "{989C1379-E4EE-401E-A9DB-2CF1898303C6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "connect", "..\..\..\Samples\connect\connect.vcproj", "{49A2CD46-D915-41B5-B45B-44B2139F6452}"
 	ProjectSection(ProjectDependencies) = postProject
 		{81A1E411-2952-42B5-8430-B588A89D9BE2} = {81A1E411-2952-42B5-8430-B588A89D9BE2}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_list_datastores", "..\..\test\test_list_datastores.vcproj", "{DB4BB42A-CF6A-4D51-85E1-ECA24BCD7D00}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "list_datastores", "..\..\..\Samples\list_datastores\list_datastores.vcproj", "{5E43AD6D-7A5F-4A65-B04E-07033EA24340}"
 	ProjectSection(ProjectDependencies) = postProject
 		{81A1E411-2952-42B5-8430-B588A89D9BE2} = {81A1E411-2952-42B5-8430-B588A89D9BE2}
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{6F922396-7A7B-48E3-9F14-29FAFBE41301}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,16 +57,20 @@ Global
 		{7F2484C6-7E04-494F-AC89-87AD765CC311}.Debug|Win32.Build.0 = Debug|Win32
 		{7F2484C6-7E04-494F-AC89-87AD765CC311}.Release|Win32.ActiveCfg = Release|Win32
 		{7F2484C6-7E04-494F-AC89-87AD765CC311}.Release|Win32.Build.0 = Release|Win32
-		{989C1379-E4EE-401E-A9DB-2CF1898303C6}.Debug|Win32.ActiveCfg = Debug|Win32
-		{989C1379-E4EE-401E-A9DB-2CF1898303C6}.Debug|Win32.Build.0 = Debug|Win32
-		{989C1379-E4EE-401E-A9DB-2CF1898303C6}.Release|Win32.ActiveCfg = Release|Win32
-		{989C1379-E4EE-401E-A9DB-2CF1898303C6}.Release|Win32.Build.0 = Release|Win32
-		{DB4BB42A-CF6A-4D51-85E1-ECA24BCD7D00}.Debug|Win32.ActiveCfg = Debug|Win32
-		{DB4BB42A-CF6A-4D51-85E1-ECA24BCD7D00}.Debug|Win32.Build.0 = Debug|Win32
-		{DB4BB42A-CF6A-4D51-85E1-ECA24BCD7D00}.Release|Win32.ActiveCfg = Release|Win32
-		{DB4BB42A-CF6A-4D51-85E1-ECA24BCD7D00}.Release|Win32.Build.0 = Release|Win32
+		{49A2CD46-D915-41B5-B45B-44B2139F6452}.Debug|Win32.ActiveCfg = Debug|Win32
+		{49A2CD46-D915-41B5-B45B-44B2139F6452}.Debug|Win32.Build.0 = Debug|Win32
+		{49A2CD46-D915-41B5-B45B-44B2139F6452}.Release|Win32.ActiveCfg = Release|Win32
+		{49A2CD46-D915-41B5-B45B-44B2139F6452}.Release|Win32.Build.0 = Release|Win32
+		{5E43AD6D-7A5F-4A65-B04E-07033EA24340}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5E43AD6D-7A5F-4A65-B04E-07033EA24340}.Debug|Win32.Build.0 = Debug|Win32
+		{5E43AD6D-7A5F-4A65-B04E-07033EA24340}.Release|Win32.ActiveCfg = Release|Win32
+		{5E43AD6D-7A5F-4A65-B04E-07033EA24340}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{49A2CD46-D915-41B5-B45B-44B2139F6452} = {6F922396-7A7B-48E3-9F14-29FAFBE41301}
+		{5E43AD6D-7A5F-4A65-B04E-07033EA24340} = {6F922396-7A7B-48E3-9F14-29FAFBE41301}
 	EndGlobalSection
 EndGlobal
