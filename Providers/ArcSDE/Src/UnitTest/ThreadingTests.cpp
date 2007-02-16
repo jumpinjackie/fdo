@@ -121,7 +121,7 @@ FDOCOMMON_THREAD_FUNCTION_SIGNATURE Worker (void* arg)
             int iRandomIndex = rand() % iFeatureCount;
             iFeatNum = iFeatNums[iRandomIndex];
 
-            swprintf (filter, 1023, L"%ls = %d", property0->mPropertyName, iFeatNum);
+            swprintf (filter, 1023, L"%ls = %d", (FdoString*)property0->mPropertyName, iFeatNum);
             //printf ("\nthread %d: id %d", context->mId, iFeatNum);
             //fflush (stdout);
 

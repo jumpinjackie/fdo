@@ -46,6 +46,7 @@ class SelectTests :
     CPPUNIT_TEST (spatial_query_outside_coordsys_extents);
     CPPUNIT_TEST (multiple_databases);
     CPPUNIT_TEST (spatial_filter_buffer_outside_extents);
+    CPPUNIT_TEST (simple_unique);
     CPPUNIT_TEST_SUITE_END ();
 
     static FdoPtr<FdoIConnection> mConnection;
@@ -81,6 +82,7 @@ protected:
     void multiple_databases();
     void spatial_filter_buffer_outside_extents();
     void select_large_table_with_geom();
+    void simple_unique();
 
     // helper methods:
     void create_large_table_with_geom();

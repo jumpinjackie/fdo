@@ -32,11 +32,11 @@ static FdoString* AdjustRdbmsName(FdoString* name)
 {
     static int bufferIndex=0;
     static wchar_t buffer[10][1000];
-#ifdef _DEBUG
-    return name;
-#else
     bufferIndex = (bufferIndex+1) % 10;
     wcscpy(buffer[bufferIndex], name);
+#ifdef _DEBUG
+    return buffer[bufferIndex];
+#else
     return FdoCommonOSUtil::wcsupr(buffer[bufferIndex]);
 #endif
 }
@@ -46,8 +46,8 @@ static FdoString* AdjustRdbmsName(FdoString* name)
 class UnitTestData
 {
 public:
-    FdoString*  mPropertyName;
-    FdoString*  mPropertyDescription;
+    FdoStringP  mPropertyName;
+    FdoStringP  mPropertyDescription;
     FdoDataType mPropertyType;
     int         mPropertyLength;
     int         mPropertyPrecision;
@@ -577,6 +577,10 @@ static FdoStringP QClassName##CLASSMETHODNAME() { return FdoStringP::Format(L"%l
     DECLARE_CLASS(TestSingleDb, Metadcov, TestClassComplex, L"TESTB");
     DECLARE_CLASS(TestMultiDb, Metadcov, TestClassSimpleMultiDb, L"TESTA");
     DECLARE_CLASS(Sde, Australia, LargeWithGeom, L"LARGEWITHGEOM");
+
+    static FdoStringP ClassSchemaTreesUniqueName() { return FdoStringP::Format(L"%ls%ls", (FdoString*)FdoSchemaPrefixSde(), (FdoString*)UserNameMetadcov()); } \
+    static FdoStringP ClassNameTreesUniqueName()   { return AdjustRdbmsName((FdoString*)FdoStringP::Format(L"TREES_%ls", (FdoString*)DatasetName())); } \
+    static FdoStringP QClassNameTreesUniqueName()  { return FdoStringP::Format(L"%ls:%ls", (FdoString*)ClassSchemaTreesUniqueName(), (FdoString*)ClassNameTreesUniqueName()); }
 };
 
 #endif // CPP_UNIT_ArcSDETests_H
