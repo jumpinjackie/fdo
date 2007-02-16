@@ -73,10 +73,12 @@ BOOL APIENTRY DllMain (HANDLE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
 #else
 void _load();
 void _unload();
+void _loadFdoCommon();
+void _unloadFdoCommon();
 
 /*
-   This is temporary code to call _load/_unload in FdoGeometryDll.cpp
-   when the shared library is loaded/unloaded.
+   This is to call _load/_unload methods in FdoGeometry and FdoCommon
+   packages when the FDO shared library is loaded/unloaded.
 */
 class InitClass
 {
@@ -84,10 +86,12 @@ public:
     InitClass()
     {
         _load();
+        _loadFdoCommon();
     };
     ~InitClass()
     {
         _unload();
+        _unloadFdoCommon();
     };
 };
 

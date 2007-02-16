@@ -34,13 +34,13 @@ public:
      * Constructors matching public factory methods.
      */
 
-	FdoFgfMultiLineString(FdoFgfGeometryFactory * factory, FdoLineStringCollection* lineStrings);
+	FdoFgfMultiLineString(FdoFgfGeometryFactory * factory, FdoFgfGeometryPools * pools, FdoLineStringCollection* lineStrings);
 
     /*
      * Constructors supporting internal needs of this package.
      */
 
-	FdoFgfMultiLineString(FdoFgfGeometryFactory * factory, FdoByteArray * byteArray, const FdoByte * data, FdoInt32 count);
+	FdoFgfMultiLineString(FdoFgfGeometryFactory * factory, FdoFgfGeometryPools * pools, FdoByteArray * byteArray, const FdoByte * data, FdoInt32 count);
 
     // Support object re-use, matching the constructor.
 	void Reset(FdoByteArray * byteArray, const FdoByte * data, FdoInt32 count);

@@ -23,16 +23,18 @@
 #include "LineString.h"
 #include "Util.h"
 #include <Geometry/DirectPositionImpl.h>
+#include "GeometryThreadData.h"
 
 
 /************************************************************************/
 /* Constructor                                                                     */
 /************************************************************************/
 FdoFgfLineString::FdoFgfLineString(
-    FdoFgfGeometryFactory * factory, 
+    FdoFgfGeometryFactory * factory,
+    FdoFgfGeometryPools * pools, 
     FdoDirectPositionCollection* positions
     )
-    : FdoFgfGeometryImpl<FdoILineString>(factory), m_previousPositionIndex(-1)
+    : FdoFgfGeometryImpl<FdoILineString>(factory, pools), m_previousPositionIndex(-1)
 {
     Reset(positions);
 }
@@ -45,7 +47,7 @@ void FdoFgfLineString::Reset(FdoDirectPositionCollection* positions)
                                                                L"FdoFgfLineString::Reset",
                                                                L"positions"));
 
-    FdoByteArray * newByteArray = m_factory->GetByteArray();
+    FdoByteArray * newByteArray = FgfUtil::GetPoolsNoRef(m_pools)->GetByteArray();
 
     m_previousPositionIndex = -1;
 
@@ -76,11 +78,12 @@ void FdoFgfLineString::Reset(FdoDirectPositionCollection* positions)
 /************************************************************************/
 FdoFgfLineString::FdoFgfLineString(
     FdoFgfGeometryFactory * factory,
+    FdoFgfGeometryPools * pools,
     FdoInt32 dimensionType,
     FdoInt32 numOrdinates,
     double * ordinates
     )
-    : FdoFgfGeometryImpl<FdoILineString>(factory), m_previousPositionIndex(-1)
+    : FdoFgfGeometryImpl<FdoILineString>(factory, pools), m_previousPositionIndex(-1)
 {
     Reset(dimensionType, numOrdinates, ordinates);
 }
@@ -91,7 +94,7 @@ void FdoFgfLineString::Reset(FdoInt32 dimensionType, FdoInt32 numOrdinates, doub
 		 (NULL == ordinates) )
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_2_BADPARAMETER)));
 
-    FdoByteArray * newByteArray = m_factory->GetByteArray();
+    FdoByteArray * newByteArray = FgfUtil::GetPoolsNoRef(m_pools)->GetByteArray();
 
     m_previousPositionIndex = -1;
 
@@ -114,11 +117,12 @@ void FdoFgfLineString::Reset(FdoInt32 dimensionType, FdoInt32 numOrdinates, doub
 /************************************************************************/
 FdoFgfLineString::FdoFgfLineString(
     FdoFgfGeometryFactory * factory,
+    FdoFgfGeometryPools * pools,
     FdoByteArray * byteArray,
     const FdoByte * data,
     FdoInt32 count
     )
-    : FdoFgfGeometryImpl<FdoILineString>(factory), m_previousPositionIndex(-1)
+    : FdoFgfGeometryImpl<FdoILineString>(factory, pools), m_previousPositionIndex(-1)
 {
     Reset(byteArray, data, count);
 }
@@ -229,7 +233,8 @@ FdoIDirectPosition* FdoFgfLineString::GetItem(FdoInt32 index)	const	// 0 based
 
 	FGFUTIL_SKIP_DIRECTPOSITIONS(&m_streamPtr, m_streamEnd, numOrdsPerPos, index);
 
-	FdoPtr<FdoIDirectPosition> pos = FgfUtil::ReadDirectPosition(m_factory, dimension, &m_streamPtr, m_streamEnd);
+    FdoPtr<FdoFgfGeometryFactory> gf = GetFactory();
+	FdoPtr<FdoIDirectPosition> pos = FgfUtil::ReadDirectPosition(gf, dimension, &m_streamPtr, m_streamEnd);
 
 	return FDO_SAFE_ADDREF(pos.p);
 }
@@ -330,6 +335,7 @@ void FdoFgfLineString::SetFgf(FdoByteArray * fgf, const FdoByte * fgfData, FdoIn
 
 void FdoFgfLineString::Dispose()
 {
-	delete this;
+    SurrenderByteArray();
+    FGFUTIL_DISPOSE_TO_POOL_OR_HEAP(LineString);
 }
 

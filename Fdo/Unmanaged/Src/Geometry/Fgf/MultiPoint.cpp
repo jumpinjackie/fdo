@@ -21,6 +21,7 @@
 #include <Geometry/DirectPositionImpl.h>
 #include <Geometry/EnvelopeImpl.h>
 #include "Util.h"
+#include "GeometryFactory2.h"
 
 
 /************************************************************************/
@@ -28,11 +29,12 @@
 /************************************************************************/
 FdoFgfMultiPoint::FdoFgfMultiPoint(
     FdoFgfGeometryFactory * factory,
+    FdoFgfGeometryPools * pools,
     FdoInt32 dimensionality,
     FdoInt32 numOrdinates, 
     double* ordinates
     )
-    : FdoFgfGeometryImpl<FdoIMultiPoint>(factory),
+    : FdoFgfGeometryImpl<FdoIMultiPoint>(factory, pools),
       m_ordinates(NULL)
 {
 	if ( (NULL == ordinates) ||
@@ -41,7 +43,7 @@ FdoFgfMultiPoint::FdoFgfMultiPoint(
                                                                L"FdoFgfMultiPoint",
                                                                L"ordinates/factory"));
 
-    FdoByteArray * newByteArray = m_factory->GetByteArray();
+    FdoByteArray * newByteArray = FgfUtil::GetPoolsNoRef(m_pools)->GetByteArray();
 
 	FdoPtr<FdoDirectPositionImpl> pos = FdoDirectPositionImpl::Create();
 	pos->SetDimensionality(dimensionality);
@@ -79,9 +81,10 @@ FdoFgfMultiPoint::FdoFgfMultiPoint(
 /************************************************************************/
 FdoFgfMultiPoint::FdoFgfMultiPoint(
     FdoFgfGeometryFactory * factory,
+    FdoFgfGeometryPools * pools,
     FdoPointCollection* points
     )
-    : FdoFgfGeometryImpl<FdoIMultiPoint>(factory),
+    : FdoFgfGeometryImpl<FdoIMultiPoint>(factory, pools),
       m_ordinates(NULL)
 {
 	if ( (NULL == points) ||
@@ -91,7 +94,7 @@ FdoFgfMultiPoint::FdoFgfMultiPoint(
                                                                L"FdoFgfMultiPoint",
                                                                L"points/factory"));
 
-    FdoByteArray * newByteArray = m_factory->GetByteArray();
+    FdoByteArray * newByteArray = FgfUtil::GetPoolsNoRef(m_pools)->GetByteArray();
 
 	FGFUTIL_WRITE_INT32(&newByteArray, FdoGeometryType_MultiPoint);
 
@@ -114,11 +117,12 @@ FdoFgfMultiPoint::FdoFgfMultiPoint(
 
 FdoFgfMultiPoint::FdoFgfMultiPoint(
     FdoFgfGeometryFactory * factory,
+    FdoFgfGeometryPools * pools,
     FdoByteArray * byteArray,
     const FdoByte * data,
     FdoInt32 count
     )
-    : FdoFgfGeometryImpl<FdoIMultiPoint>(factory),
+    : FdoFgfGeometryImpl<FdoIMultiPoint>(factory, pools),
       m_ordinates(NULL)
 {
     Reset(byteArray, data, count);
@@ -152,7 +156,8 @@ FdoFgfMultiPoint::~FdoFgfMultiPoint()
 /************************************************************************/
 void FdoFgfMultiPoint::Dispose()
 {
-	delete this;
+    SurrenderByteArray();
+    FGFUTIL_DISPOSE_TO_POOL_OR_HEAP(MultiPoint);
 }
 
 /************************************************************************/
@@ -192,8 +197,10 @@ FdoIPoint* FdoFgfMultiPoint::GetItem(FdoInt32 Index) const
 {
 	m_streamPtr = m_data;
 
+    FdoPtr<FdoFgfGeometryFactory> gf = GetFactory();
+
     FdoPtr<FdoIGeometry> geometry =
-        FgfUtil::ReadGeometryFromAggregate(m_factory, Index, FdoGeometryType_Point, &m_streamPtr, m_streamEnd);
+        FgfUtil::ReadGeometryFromAggregate(gf, Index, FdoGeometryType_Point, &m_streamPtr, m_streamEnd);
 
     // Smart pointer assignments have problems with non-identical types.  Work around...
     FdoIPoint * derivedGeometry = static_cast<FdoIPoint *>(geometry.p);

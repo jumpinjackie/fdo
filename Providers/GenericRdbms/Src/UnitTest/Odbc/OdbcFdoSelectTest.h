@@ -53,6 +53,7 @@ protected:
 class OdbcOracleFdoSelectTest : public OdbcFdoSelectTest
 {
     CPPUNIT_TEST_SUB_SUITE (OdbcOracleFdoSelectTest, OdbcFdoSelectTest);
+    CPPUNIT_TEST (View1Test);
     CPPUNIT_TEST_SUITE_END ();
 
 public:
@@ -85,6 +86,8 @@ public:
 
         TestCommonFeatureCommands::secondComputedIdTest(mConnection, fcn, L"CLASSID");
     }
+
+    virtual void View1Test();
 };
 
 class OdbcMySqlFdoSelectTest : public OdbcFdoSelectTest
@@ -137,7 +140,9 @@ class OdbcAccessFdoSelectTest : public OdbcFdoSelectTest
     CPPUNIT_TEST_SUB_SUITE (OdbcAccessFdoSelectTest, OdbcFdoSelectTest);
     CPPUNIT_TEST (TestDefect889655);
     CPPUNIT_TEST (Table1Test);
-    //CPPUNIT_TEST (Table2Test);
+    CPPUNIT_TEST (Table2Test);
+    CPPUNIT_TEST (View1Test);
+    CPPUNIT_TEST (View2Test);
     CPPUNIT_TEST (ComparisonFilterTable1Test);
     CPPUNIT_TEST (RestrictedPropertiesTable1Test);
     CPPUNIT_TEST (TestDateFilter);
@@ -150,6 +155,8 @@ public:
     virtual void Table1Test();
     virtual void TestDefect889655();
     void Table2Test();
+    void View1Test();
+    void View2Test();
     void ComparisonFilterTable1Test();  // Contains a spatial query
     void RestrictedPropertiesTable1Test();
     void TestDefect779194();

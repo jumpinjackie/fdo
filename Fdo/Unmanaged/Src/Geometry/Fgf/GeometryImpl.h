@@ -24,6 +24,9 @@
 #include "../GeometryImpl.h"
 
 #include <Geometry/Fgf/Factory.h>
+//#include "GeometryFactory2.h"
+class FdoFgfGeometryPools;  // Forward declaration
+#include "Util.h"
 
 // This template extends FdoGeometryImpl with some common code, also in aid
 // of avoiding "diamond inheritance", but is specifically for FGF-related
@@ -33,21 +36,6 @@ template <class FDO_GEOMETRY_CLASS> class FdoFgfGeometryImpl: public FdoGeometry
 {
 
 public:
-
-    // Constructor that just latches onto a stream (of FGF data).
-    FdoFgfGeometryImpl(FdoFgfGeometryFactory * factory, FdoByteArray * byteArray, const FdoByte * data, FdoInt32 count)
-        : FdoGeometryImpl<FDO_GEOMETRY_CLASS>(), m_factory(factory),
-          m_data(NULL), m_streamEnd(NULL), m_streamPtr(NULL)
-    {
-        if ((NULL == byteArray && NULL == data) ||
-            (NULL != byteArray && byteArray->GetCount() <= 0) ||
-            (NULL != data && count <= 0))
-		    throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
-                                                                   L"FdoFgfGeometryImpl",
-                                                                   L"byteArray/data/count"));
-
-	    SetFgf(byteArray, data, count);
-    }
 
 	// Get the FGF array from the geometry.
 	virtual FdoByteArray * GetFgf()
@@ -77,7 +65,7 @@ public:
 	virtual void SetFgf(FdoByteArray * fgf, const FdoByte* fgfData, FdoInt32 count)
     {
         if (m_byteArray != NULL)
-            m_factory->TakeReleasedByteArray(m_byteArray);
+            FgfUtil::GetPoolsNoRef(m_pools)->TakeReleasedByteArray(m_byteArray);
 
         if (NULL != fgf)
         {
@@ -111,7 +99,8 @@ public:
         }
     }
 
-    FdoFgfGeometryFactory *        m_factory;  // FGF geometry factory (lightweight to avoid circular reference)
+    FdoFgfGeometryFactory *         m_factoryy;  // FGF geometry factory (lightweight to avoid circular reference)
+    FdoFgfGeometryPools *           m_pools;  // Geometry pools (lightweight to avoid circular reference)
 
 
 	// Storage of FGF bytestream data (non-NULL if the data is at least partly owned here)
@@ -131,10 +120,10 @@ protected:
     // Protect default constructor so that a factory must be used.
     FdoFgfGeometryImpl() {};
 
-    // This constructor is extended by some geometry types that copy an input
-    // FGF data stream.
-    FdoFgfGeometryImpl(FdoFgfGeometryFactory * factory)
-        : FdoGeometryImpl<FDO_GEOMETRY_CLASS>(), m_factory(factory),
+    // This constructor is used during auto-initialization in most 
+    // geometry types.
+    FdoFgfGeometryImpl(FdoFgfGeometryFactory * factory, FdoFgfGeometryPools * pools)
+        : FdoGeometryImpl<FDO_GEOMETRY_CLASS>(), m_factoryy(factory), m_pools(pools),
           m_data(NULL), m_streamEnd(NULL), m_streamPtr(NULL)
     {
     };
@@ -142,9 +131,31 @@ protected:
     // Destructor
 	virtual ~FdoFgfGeometryImpl()
     {
+        SurrenderByteArray();
+    }
+
+    // Get pointer to geometry factory.
+    inline FdoFgfGeometryFactory * GetFactory() const
+    {
+        FdoFgfGeometryFactory * factory =
+            (NULL == m_factoryy) ?
+            FdoFgfGeometryFactory::GetInstance() :
+            factory = FDO_SAFE_ADDREF(m_factoryy);
+
+        return factory;
+    }
+
+    inline void SurrenderByteArray()
+    {
+        if (m_byteArray != NULL)
+        {
+            FdoFgfGeometryPools * pools = FgfUtil::GetPoolsNoRef(m_pools);
+            if (NULL != pools)
+                pools->TakeReleasedByteArray(m_byteArray);
+            m_byteArray = NULL;
+        }
     }
 };
-
 
 #endif
 

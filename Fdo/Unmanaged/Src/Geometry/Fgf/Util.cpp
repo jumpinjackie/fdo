@@ -19,7 +19,24 @@
 
 
 #include "Util.h"
-#include "GeometryUtility.h"
+#include "GeometryThreadData.h"
+#include <Geometry/DirectPositionImpl.h>
+#include <Geometry/EnvelopeImpl.h>
+#include "LineString.h"
+#include "Point.h"
+#include "LinearRing.h"
+#include "LineStringSegment.h"
+#include "Polygon.h"
+#include "MultiGeometry.h"
+#include "MultiPoint.h"
+#include "MultiLineString.h"
+#include "MultiPolygon.h"
+#include "CircularArcSegment.h"
+#include "CurveString.h"
+#include "MultiCurveString.h"
+#include "Ring.h"
+#include "CurvePolygon.h"
+#include "MultiCurvePolygon.h"
 
 
 /************************************************************************/
@@ -581,3 +598,14 @@ void FgfUtil::SkipCurveSegments(
 	} // of for
 }
 
+FdoFgfGeometryPools * FgfUtil::GetPoolsNoRef(
+          FdoFgfGeometryPools *   privatePools)
+{
+    FdoFgfGeometryPools * pools = privatePools;
+    if (NULL == pools)
+    {
+        FdoGeometryThreadData * threadData = FdoGeometryThreadData::GetValue();
+        pools = threadData->geometryPools;
+    }
+    return pools;
+}

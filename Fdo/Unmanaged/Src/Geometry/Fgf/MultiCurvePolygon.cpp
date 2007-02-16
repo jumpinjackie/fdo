@@ -20,15 +20,17 @@
 #include "MultiCurvePolygon.h"
 #include "Util.h"
 #include <Geometry/EnvelopeImpl.h>
+#include "GeometryFactory2.h"
 
 /************************************************************************/
 /* Constructor                                                                     */
 /************************************************************************/
 FdoFgfMultiCurvePolygon::FdoFgfMultiCurvePolygon(
     FdoFgfGeometryFactory * factory,
+    FdoFgfGeometryPools * pools,
     FdoCurvePolygonCollection* curvePolygons
     )
-    : FdoFgfGeometryImpl<FdoIMultiCurvePolygon>(factory)
+    : FdoFgfGeometryImpl<FdoIMultiCurvePolygon>(factory, pools)
 {
 	if ( (NULL == curvePolygons) ||
          (0 == curvePolygons->GetCount()) ||
@@ -37,7 +39,7 @@ FdoFgfMultiCurvePolygon::FdoFgfMultiCurvePolygon(
                                                                L"FdoFgfMultiCurvePolygon",
                                                                L"curvePolygons/factory"));
 
-    FdoByteArray * newByteArray = m_factory->GetByteArray();
+    FdoByteArray * newByteArray = FgfUtil::GetPoolsNoRef(m_pools)->GetByteArray();
 
     // FdoGeometryType
 	FGFUTIL_WRITE_INT32(&newByteArray, FdoGeometryType_MultiCurvePolygon);
@@ -60,11 +62,12 @@ FdoFgfMultiCurvePolygon::FdoFgfMultiCurvePolygon(
 
 FdoFgfMultiCurvePolygon::FdoFgfMultiCurvePolygon(
     FdoFgfGeometryFactory * factory,
+    FdoFgfGeometryPools * pools,
     FdoByteArray * byteArray,
     const FdoByte * data,
     FdoInt32 count
     )
-    : FdoFgfGeometryImpl<FdoIMultiCurvePolygon>(factory)
+    : FdoFgfGeometryImpl<FdoIMultiCurvePolygon>(factory, pools)
 {
     Reset(byteArray, data, count);
 }
@@ -142,8 +145,10 @@ FdoICurvePolygon* FdoFgfMultiCurvePolygon::GetItem(FdoInt32 Index) const
 {
 	m_streamPtr = m_data;
 
+    FdoPtr<FdoFgfGeometryFactory> gf = GetFactory();
+
     FdoPtr<FdoIGeometry> geometry =
-        FgfUtil::ReadGeometryFromAggregate(m_factory, Index, FdoGeometryType_CurvePolygon, &m_streamPtr, m_streamEnd);
+        FgfUtil::ReadGeometryFromAggregate(gf, Index, FdoGeometryType_CurvePolygon, &m_streamPtr, m_streamEnd);
 
     // Smart pointer assignments have problems with non-identical types.  Work around...
     FdoICurvePolygon * derivedGeometry = static_cast<FdoICurvePolygon *>(geometry.p);
@@ -157,7 +162,8 @@ FdoICurvePolygon* FdoFgfMultiCurvePolygon::GetItem(FdoInt32 Index) const
 /************************************************************************/
 void FdoFgfMultiCurvePolygon::Dispose()
 {
-	delete this;
+    SurrenderByteArray();
+    FGFUTIL_DISPOSE_TO_POOL_OR_HEAP(MultiCurvePolygon);
 }
 
 

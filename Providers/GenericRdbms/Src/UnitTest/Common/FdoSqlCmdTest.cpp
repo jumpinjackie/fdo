@@ -354,10 +354,10 @@ void FdoSqlCmdTest::ReadQueryResult( FdoISQLDataReader *myReader )
                 break;
 
             case FdoDataType_DateTime:
-                {
-                 FdoDateTime  time = myReader->GetDateTime( name );
-                 DBG(printf("%s ", ctime((const time_t*)&time )));
-                }
+				{
+				 FdoDateTime  time = myReader->GetDateTime( name );
+				 DBG(printf("year=%d, month=%d, day=%d, hour=%d, minute=%d, seconds=%d", time.year, time.month, time.day, time.hour, time.minute, time.seconds));
+				}
                 break;
 
             case FdoDataType_Decimal:

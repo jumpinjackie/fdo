@@ -33,14 +33,14 @@ public:
      * Constructors matching public factory methods.
      */
 
-	FdoFgfMultiPoint(FdoFgfGeometryFactory * factory, FdoInt32 dimensionality, FdoInt32 numOrdinates, double* ordinates);
-	FdoFgfMultiPoint(FdoFgfGeometryFactory * factory, FdoPointCollection* points);
+	FdoFgfMultiPoint(FdoFgfGeometryFactory * factory, FdoFgfGeometryPools * pools, FdoInt32 dimensionality, FdoInt32 numOrdinates, double* ordinates);
+	FdoFgfMultiPoint(FdoFgfGeometryFactory * factory, FdoFgfGeometryPools * pools, FdoPointCollection* points);
 
     /*
      * Constructors supporting internal needs of this package.
      */
 
-	FdoFgfMultiPoint(FdoFgfGeometryFactory * factory, FdoByteArray * byteArray, const FdoByte * data, FdoInt32 count);
+	FdoFgfMultiPoint(FdoFgfGeometryFactory * factory, FdoFgfGeometryPools * pools, FdoByteArray * byteArray, const FdoByte * data, FdoInt32 count);
 
     // Support object re-use, matching the constructor.
 	void Reset(FdoByteArray * byteArray, const FdoByte * data, FdoInt32 count);

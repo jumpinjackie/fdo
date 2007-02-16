@@ -49,6 +49,9 @@ public:
     /// The object returned may maintain internal pools
     /// of other objects in this package, for performance.
     /// Pools will be small, tuned to transient object use.
+    /// Objects returned by this factory are safe to pass
+    /// to other threads (i.e. they won't try to interact
+    /// with the originating thread).
     /// 
     /// \return
     /// Returns a FdoFgfGeometryFactory object
@@ -61,7 +64,8 @@ public:
     /// \remarks
     /// This class is its own factory. 
     /// This method will return a new, private instance, with any internal
-    /// object pools tuned to the input parameters.
+    /// object pools tuned to the input parameters.  NOTE:  objects created
+    /// by this factory should NOT be passed between threads.
     /// 
     /// \param numGeometries 
     /// Input Minimum number of geometries to pool.
@@ -543,6 +547,16 @@ protected:
     /// Returns nothing
     /// 
     FDO_GEOM_API ~FdoFgfGeometryFactory();
+
+/// \cond DOXYGEN-IGNORE
+    /// Constructor for a private instance.
+    FdoFgfGeometryFactory(
+        FdoInt32 numGeometries,
+        FdoInt32 numPositions,
+        FdoInt32 numEnvelopes,
+        FdoInt32 numCurveSegments,
+        FdoInt32 numRings);
+/// \endcond
 
 };
 #endif

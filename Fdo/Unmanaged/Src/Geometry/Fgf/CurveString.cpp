@@ -33,9 +33,10 @@
 /************************************************************************/
 FdoFgfCurveString::FdoFgfCurveString(
     FdoFgfGeometryFactory * factory,
+    FdoFgfGeometryPools * pools,
     FdoCurveSegmentCollection* curveSegs
     )
-    : FdoFgfGeometryImpl<FdoICurveString>(factory)
+    : FdoFgfGeometryImpl<FdoICurveString>(factory, pools)
 {
 	if ( (NULL == curveSegs) ||
 		  (NULL == factory) ||
@@ -44,7 +45,7 @@ FdoFgfCurveString::FdoFgfCurveString(
                                                                 L"FdoFgfCurveString",
                                                                 L"curveSegs/factory"));
 
-    FdoByteArray * newByteArray = m_factory->GetByteArray();
+    FdoByteArray * newByteArray = FgfUtil::GetPoolsNoRef(m_pools)->GetByteArray();
 
 	// Geometrytype
 	FGFUTIL_WRITE_INT32(&newByteArray, FdoGeometryType_CurveString);
@@ -74,11 +75,12 @@ FdoFgfCurveString::FdoFgfCurveString(
 
 FdoFgfCurveString::FdoFgfCurveString(
     FdoFgfGeometryFactory * factory,
+    FdoFgfGeometryPools * pools,
     FdoByteArray * byteArray,
     const FdoByte * data,
     FdoInt32 count
     )
-    : FdoFgfGeometryImpl<FdoICurveString>(factory)
+    : FdoFgfGeometryImpl<FdoICurveString>(factory, pools)
 {
     Reset(byteArray, data, count);
 }
@@ -142,8 +144,10 @@ FdoIDirectPosition* FdoFgfCurveString::GetStartPosition() const
 	// read FdoDimensionality
 	FdoInt32 dimensionality = FgfUtil::ReadInt32(&m_streamPtr, m_streamEnd);
 	
-	// Read startPos
-	return FgfUtil::ReadDirectPosition(m_factory, dimensionality, &m_streamPtr, m_streamEnd);
+    FdoPtr<FdoFgfGeometryFactory> gf = GetFactory();
+
+    // Read startPos
+	return FgfUtil::ReadDirectPosition(gf, dimensionality, &m_streamPtr, m_streamEnd);
 }
 
 /************************************************************************/
@@ -174,7 +178,9 @@ FdoIDirectPosition* FdoFgfCurveString::GetEndPosition() const
 
     m_streamPtr -= numOrdsPerPos * sizeof(double);       // Back up on stream.
 
-	return FgfUtil::ReadDirectPosition(m_factory, dimensionality, &m_streamPtr, m_streamEnd);
+    FdoPtr<FdoFgfGeometryFactory> gf = GetFactory();
+
+    return FgfUtil::ReadDirectPosition(gf, dimensionality, &m_streamPtr, m_streamEnd);
 }
 
 /************************************************************************/
@@ -237,6 +243,8 @@ FdoICurveSegmentAbstract* FdoFgfCurveString::GetItem(FdoInt32 Index) const
 		 (Index < 0) )
 		 throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INDEXOUTOFBOUNDS)));
 
+    FdoPtr<FdoFgfGeometryFactory> gf = GetFactory();
+
 	/*
 	 *	Note: The first position for the segment to be returned is
 	 *  stored as part of last position of immediately previous segment.
@@ -275,7 +283,7 @@ FdoICurveSegmentAbstract* FdoFgfCurveString::GetItem(FdoInt32 Index) const
 
 		// Read Startpos of curvesegment
         FdoPtr<FdoIDirectPosition> startPosPrevSeg =
-            FgfUtil::ReadDirectPosition(m_factory, dimensionality, &m_streamPtr, m_streamEnd);
+            FgfUtil::ReadDirectPosition(gf, dimensionality, &m_streamPtr, m_streamEnd);
 
 		// Skip numSegments
 		FGFUTIL_SKIP_INT32S(&m_streamPtr, m_streamEnd, 1);
@@ -283,7 +291,7 @@ FdoICurveSegmentAbstract* FdoFgfCurveString::GetItem(FdoInt32 Index) const
 		// Skip to curve segment just before the one that we need
         FgfUtil::SkipCurveSegments(Index-1, dimensionality, &m_streamPtr, m_streamEnd);
 		FdoPtr<FdoICurveSegmentAbstract> prevCurveSeg =
-            FgfUtil::ReadCurveSegment(m_factory, dimensionality, startPosPrevSeg, &m_streamPtr, m_streamEnd);
+            FgfUtil::ReadCurveSegment(gf, dimensionality, startPosPrevSeg, &m_streamPtr, m_streamEnd);
 
 		// And Read its last position
 		// which will be startPos for the segment
@@ -293,7 +301,7 @@ FdoICurveSegmentAbstract* FdoFgfCurveString::GetItem(FdoInt32 Index) const
 
 	// Read the CurveSegment we are interested in
 	// We are already pointing at it
-	FdoPtr<FdoICurveSegmentAbstract> thisCurveSeg = FgfUtil::ReadCurveSegment(m_factory, dimensionality, startPos, &m_streamPtr, m_streamEnd);
+	FdoPtr<FdoICurveSegmentAbstract> thisCurveSeg = FgfUtil::ReadCurveSegment(gf, dimensionality, startPos, &m_streamPtr, m_streamEnd);
 
 	return FDO_SAFE_ADDREF(thisCurveSeg.p);
 }
@@ -324,7 +332,8 @@ FdoCurveSegmentCollection* FdoFgfCurveString::GetCurveSegments() const
 /************************************************************************/
 void FdoFgfCurveString::Dispose()
 {
-	delete this;
+    SurrenderByteArray();
+    FGFUTIL_DISPOSE_TO_POOL_OR_HEAP(CurveString);
 }
 
 

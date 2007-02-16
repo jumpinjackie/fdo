@@ -29,9 +29,10 @@
 /************************************************************************/
 FdoFgfMultiCurveString::FdoFgfMultiCurveString(
     FdoFgfGeometryFactory * factory, 
+    FdoFgfGeometryPools * pools,
     FdoCurveStringCollection* curveStrings
     )
-    : FdoFgfGeometryImpl<FdoIMultiCurveString>(factory)
+    : FdoFgfGeometryImpl<FdoIMultiCurveString>(factory, pools)
 {
 	if ( (NULL == curveStrings) ||
          (0 == curveStrings->GetCount()) )
@@ -39,7 +40,7 @@ FdoFgfMultiCurveString::FdoFgfMultiCurveString(
                                                                L"FdoFgfMultiCurveString",
                                                                L"curveStrings"));
 
-    FdoByteArray * newByteArray = m_factory->GetByteArray();
+    FdoByteArray * newByteArray = FgfUtil::GetPoolsNoRef(m_pools)->GetByteArray();
 
 	// FdoGeometryType
 	FGFUTIL_WRITE_INT32(&newByteArray, FdoGeometryType_MultiCurveString);
@@ -61,11 +62,12 @@ FdoFgfMultiCurveString::FdoFgfMultiCurveString(
 
 FdoFgfMultiCurveString::FdoFgfMultiCurveString(
     FdoFgfGeometryFactory * factory,
+    FdoFgfGeometryPools * pools,
     FdoByteArray * byteArray,
     const FdoByte * data,
     FdoInt32 count
     )
-    : FdoFgfGeometryImpl<FdoIMultiCurveString>(factory)
+    : FdoFgfGeometryImpl<FdoIMultiCurveString>(factory, pools)
 {
     Reset(byteArray, data, count);
 }
@@ -143,8 +145,10 @@ FdoICurveString* FdoFgfMultiCurveString::GetItem(FdoInt32 Index) const
 {
 	m_streamPtr = m_data;
 
+    FdoPtr<FdoFgfGeometryFactory> gf = GetFactory();
+
     FdoPtr<FdoIGeometry> geometry =
-        FgfUtil::ReadGeometryFromAggregate(m_factory, Index, FdoGeometryType_CurveString, &m_streamPtr, m_streamEnd);
+        FgfUtil::ReadGeometryFromAggregate(gf, Index, FdoGeometryType_CurveString, &m_streamPtr, m_streamEnd);
 
     // Smart pointer assignments have problems with non-identical types.  Work around...
     FdoICurveString * derivedGeometry = static_cast<FdoICurveString *>(geometry.p);
@@ -158,7 +162,8 @@ FdoICurveString* FdoFgfMultiCurveString::GetItem(FdoInt32 Index) const
 /************************************************************************/
 void FdoFgfMultiCurveString::Dispose()
 {
-	delete this;
+    SurrenderByteArray();
+    FGFUTIL_DISPOSE_TO_POOL_OR_HEAP(MultiCurveString);
 }
 
 

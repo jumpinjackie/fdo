@@ -34,13 +34,13 @@ public:
      */
 
 	// Copy the rings.
-	FdoFgfPolygon(FdoFgfGeometryFactory * factory, FdoILinearRing* exteriorRing, FdoLinearRingCollection* interiorRings);
+	FdoFgfPolygon(FdoFgfGeometryFactory * factory, FdoFgfGeometryPools * pools, FdoILinearRing* exteriorRing, FdoLinearRingCollection* interiorRings);
 
     /*
      * Constructors supporting internal needs of this package.
      */
 
-	FdoFgfPolygon(FdoFgfGeometryFactory * factory, FdoByteArray * byteArray, const FdoByte * data, FdoInt32 count);
+	FdoFgfPolygon(FdoFgfGeometryFactory * factory, FdoFgfGeometryPools * pools, FdoByteArray * byteArray, const FdoByte * data, FdoInt32 count);
 
     // Support object re-use, matching the constructor.
 	void Reset(FdoByteArray * byteArray, const FdoByte * data, FdoInt32 count);

@@ -22,7 +22,9 @@
 #endif
 
 #include <Geometry/GeometryStd.h>
-#include "GeometryFactory2.h"
+#include "GeometryUtility.h"
+#include <Geometry/Fgf/Factory.h>
+class FdoFgfGeometryPools;   // Forward declaration
 
 // Use lots of macros here, rather than inline functions, to force inline expansion
 // of code for performance.
@@ -131,6 +133,17 @@
     (*streamPtr) = FdoByteArray::Append(*(streamPtr), (numValues) * sizeof(double), (FdoByte*) values); \
 }
 
+#define FGFUTIL_DISPOSE_TO_POOL_OR_HEAP(type) \
+{ \
+    FdoFgfGeometryPools * pools = FgfUtil::GetPoolsNoRef(m_pools); \
+    if (NULL == pools || \
+        pools->m_Pool##type == NULL || \
+        !pools->m_Pool##type->AddItem(this)) \
+    { \
+        delete this; \
+    } \
+}
+
 class FgfUtil
 {
 public:
@@ -188,6 +201,12 @@ public:
 
         FGFUTIL_WRITE_DOUBLES(outputStream, numDimensions, ordinates);
     }
+
+    // Get object pools (no ref counting, for performance).
+    static FdoFgfGeometryPools * GetPoolsNoRef(
+          FdoFgfGeometryPools *   privatePools);
+
 };
+
 #endif
 

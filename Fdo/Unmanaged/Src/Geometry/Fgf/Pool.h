@@ -26,156 +26,135 @@
 
 #include <Common/Collection.h>
 
-#define GET_REFCOUNT(obj)   ((obj)->GetRefCount())
-
 /// <library>FdoGeometry.lib</library>
 
-/// <summary>FdoPool supports a fixed-size cache of objects.  Because this type extends
-/// FdoCollection, the cached objects must descend from FdoIDisposable.
+/// <summary>
+/// FdoPool supports a fixed-size pool of instantiated objects.  This is
+/// appropriate for writing high-performance code in a style that would
+/// normally involve many expensive heap interactions.
 /// </summary>
+/// <remarks>
+/// Don't panic.  This template just augments FdoCollection with two new methods
+/// to use it as a stack.  Some handy macros are provided to simplify calling
+/// code.
+///
+/// An FdoPool can be used in two distinct ways:
+/// <ol>
+/// <li> The pool owner can manually control it.  Contained objects
+/// do not control being pooled.
+/// <li> The pool owner can set it up and fetch from it, but the objects
+/// add themselves to it when warranted.
+/// </ol>
+/// The conventions for pooled objects are:
+/// <ol>
+/// <li> Support the required methods of FdoIDisposable -- 
+/// AddRef, Release, GetRefCount and Dispose().  Actually deriving from
+/// FdoIDisposable is not required.
+/// <li> Support at least one method to reset the object for re-use, possibly
+/// with parameters matching the object's constructors.  Ideally, the matching
+/// constructor would just call the matching reset method too.
+/// <li> If the object-adds-itself approach is used, Dispose() should try
+/// calling FdoPool's "AddItem" method before using "delete".
+/// E.g. "if (!myPool->AddItem(this)) delete this;".
+/// To support this, the object should either keep a lightweight pointer to
+/// its pool, or use thread-local storage for the pool.
+/// </ol>
+/// 
+/// See the FDOPOOL_* macros below, which  provide some shorthand for using
+/// pools in calling code.
+/// </remarks>
 template <class OBJ, class EXC> class FdoPool : public FdoCollection <OBJ, EXC>
 {
 public:
-    ///<summary>Find a re-usable item from the cache, if cache is full.</summary>
+    ///<summary>Find a re-usable item from the pool.</summary>
     /// <remarks> 
-    /// This method actually tries NOT to find a re-usable item, so that the cache
-    /// can fill up with them during heavy use.  A re-usable item
-    /// is one which only the cache owns (its reference count is 1).  This method will 
-    /// behave as follows (in order):
-	/// <ol>
-    /// <li> If the cache is not full, it returns NULL.
-    /// <li> If the cache is full, but a re-usable item is found, that item is returned,
-    /// and is RELEASED from the cache.
-    /// <li> If the cache is full with non-re-usable items, NULL is returned.
-	/// </ol>
+    /// This method finds a re-usable item in the pool, if there is one.
+    /// It returns NULL if there are none available.
     ///
     /// From the caller's perspective, receiving NULL from this method should be
     /// followed by the creation of a new object; receiving a re-usable item from this 
-    /// method should be followed by whatever is required to re-use the object.  In BOTH
-    /// cases, the caller should call AddItem() to put the object back into the cache.
+    /// method should be followed by calling the appropriate "reset" method, if that
+    /// convention has been followed.
     ///
-    /// Performance will be best if interaction with this class is one object at a time, 
-    /// i.e. call FindReusableItem() and then AddItem() for the same object.
-    ///
-    /// When returning a re-usable object, this method releases it from the cache in order
-    /// to give the caller unshared ownership.  This allows the caller full authority
-    /// to change the object's state as needed, or even to re-allocate it if this is later
-    /// found to be necessary.
+    /// When returning a re-usable object, this method releases it from the pool in order
+    /// to give the caller unshared ownership.  This method will ONLY return an object
+    /// that is unshared.
     /// </remarks>
-    /// <returns>A re-usable item from the cache, or NULL if the caller should create a new object.</returns> 
+    /// <returns>A re-usable item from the pool, or NULL if the caller should create a new object.</returns> 
     virtual OBJ* FindReusableItem()
     {
-        FdoInt32 freeIndex = -1;
-        FdoInt32 reusableIndex = -1;
-        FdoInt32 startIndex = m_LastVisitedIndex+1;
-        FdoPtr<OBJ> reusableItem;
-        FdoInt32 count = FdoCollection <OBJ, EXC>::GetCount();
+        OBJ * reusableItem = NULL;
+        FdoInt32 count = FdoCollection<OBJ, EXC>::GetCount();
+        FdoInt32 reusableIndex = count - 1;
 
-        // Nothing notably clever here -- linear search for re-usable item, also
-        // noting a free entry, if found.
-        for (FdoInt32 i=startIndex;  -1 == reusableIndex && i < count;  i++)
+        // Search backwards from the end of the collection.
+        // Get rid of any NULL or shared entries; they only would have gotten
+        // here due to a caller's activities that are not appropriate for pooling.
+
+        while ( reusableIndex >= 0 &&
+                NULL == reusableItem )
         {
-            FdoPtr<OBJ> candidate = FdoCollection<OBJ, EXC>::GetItem(i);
-            if (candidate != NULL && -1 == reusableIndex && 2 == GET_REFCOUNT(candidate.p))   // '2' == 1 for cache + 1 for 'candidate'
+            reusableItem = FdoCollection<OBJ, EXC>::GetItem(reusableIndex);
+
+            if (NULL != reusableItem && reusableItem->GetRefCount() > 2)
             {
-                reusableIndex = i;
-                reusableItem = candidate;
+                // Item is shared.
+                reusableItem->Release();
+                reusableItem = NULL;
             }
-            else if (candidate == NULL && -1 == freeIndex)
-            {
-                freeIndex = i;
-            }
-        }
-        for (FdoInt32 i=0;  -1 == reusableIndex && i < startIndex;  i++)
-        {
-            FdoPtr<OBJ> candidate = FdoCollection<OBJ, EXC>::GetItem(i);
-            if (candidate != NULL && -1 == reusableIndex && 2 == GET_REFCOUNT(candidate.p))   // '2' == 1 for cache + 1 for 'candidate'
-            {
-                reusableIndex = i;
-                reusableItem = candidate;
-            }
-            else if (candidate == NULL && -1 == freeIndex)
-            {
-                freeIndex = i;
-            }
+            FdoCollection<OBJ, EXC>::RemoveAt(reusableIndex);
+            reusableIndex--;
         }
 
-        if (reusableItem != NULL)
-        {
-            // We found a re-usable item.
-            // Remember where we found it and release our ownership.
-            m_LastVisitedIndex = reusableIndex;
-            FDO_SAFE_ADDREF(reusableItem.p);    // This increases share for the return value.
-            FdoCollection<OBJ, EXC>::SetItem(reusableIndex, NULL);
 #ifdef EXTRA_DEBUG
+        if (NULL != reusableItem)
             m_ReusableHits++;
-#endif
-        }
-        else if (-1 != freeIndex)
-        {
-            // We found an empty entry in the cache.  We'll return NULL,
-            // and internally remember where we found the entry for when
-            // the caller calls AddItem().
-            reusableItem = NULL;
-            m_LastVisitedIndex = freeIndex;
-#ifdef EXTRA_DEBUG
-            m_EmptyHits++;
-#endif
-        }
         else
-        {
-            // We didn't find anything we wanted.  Release the next entry,
-            // effecting a round-robin procedure for a full pool.
-            m_LastVisitedIndex++;
-            if (m_LastVisitedIndex >= count)
-                m_LastVisitedIndex = 0;
-            FdoCollection<OBJ, EXC>::SetItem(m_LastVisitedIndex, NULL);
-#ifdef EXTRA_DEBUG
             m_Misses++;
 #endif
-        }
 
         return reusableItem;
     }
 
-    ///<summary>Adds the specified item to the cache. Depending on the state of the
-    /// cache, this may result in an actual addition to the cache, or the replacement
-    /// of a cache entry.</summary>
+    ///<summary>Adds the specified item to the pool, if there is room.
+    /// </summary>
+    /// <remarks> 
+    /// We do not check for a shared object here, because the caller might still have
+    /// a brief hold on it.  We check later, though, in FindReusableItem().
+    /// </remarks>
     /// <param name="value">Input value</param> 
-    /// <returns>Returns nothing</returns> 
-    virtual void AddItem(OBJ* value)
+    /// <returns>Returns true if the object was added; false otherwise</returns> 
+    virtual bool AddItem(OBJ* value)
     {
-        FdoPtr<OBJ> oldItem = FdoCollection<OBJ, EXC>::GetItem(m_LastVisitedIndex);
-
-        if (oldItem != NULL)
+        bool ret = false;
+        if (m_AllowAdds && value->GetRefCount() <= 1)
         {
-            // The entry is not empty.  The caller didn't precede with
-            // FindReusableItem().  We'll do it anyway, ignoring the 
-            // result and using the intended hint in m_LastVisitedIndex.
-            FdoPtr<OBJ> dummyItem = FindReusableItem();
+            FdoInt32 count = FdoCollection <OBJ, EXC>::GetCount();
+            if (count < m_MaxSize)
+            {
+                FdoCollection <OBJ, EXC>::Add(value);
+                ret = true;
+            }
         }
-
-        FdoCollection<OBJ, EXC>::SetItem(m_LastVisitedIndex, value);
+        return ret;
     }
 
 #ifdef EXTRA_DEBUG
     void GetStats(FdoInt32 * emptyHits, FdoInt32 * reusableHits, FdoInt32 * misses)
     {
-        if (NULL != emptyHits)
-            *emptyHits = m_EmptyHits;
-        if (NULL != emptyHits)
+        if (NULL != reusableHits)
             *reusableHits = m_ReusableHits;
-        if (NULL != emptyHits)
+        if (NULL != misses)
             *misses = m_Misses;
     }
 #endif
 
 protected:
+    // Constructor.  As a debugging aid, m_AllowAdds to false to disable pooling.
     FdoPool( FdoInt32 size )
-        : m_LastVisitedIndex(0)
+        : m_MaxSize(size), m_AllowAdds(true)
 #ifdef EXTRA_DEBUG
-        ,m_EmptyHits(0),
-        m_ReusableHits(0),
+        , m_ReusableHits(0),
         m_Misses(0)
 #endif
     {
@@ -184,24 +163,27 @@ protected:
                                                           L"FdoPool",
                                                           L"size"));
 
-        // Set exact size.
-
-        if (size < FdoCollection <OBJ, EXC>::GetCount())
-            FdoCollection <OBJ, EXC>::Clear();
+        // FdoCollection doesn't support manual setting of allocation size
+        //, but we can do the same by adding NULL values.
 
         while (FdoCollection <OBJ, EXC>::GetCount() < size)
             FdoCollection <OBJ, EXC>::Add(NULL);
+
+        // Clear collection for zero size (though allocated space remains).
+        FdoCollection <OBJ, EXC>::Clear();
     }
 
     FdoPool() {} // Default constructor to satisfy FdoPtr on Linux
 
     virtual ~FdoPool(void)
     {
+        m_AllowAdds = false;
+        Clear();
     }
 private:
-    FdoInt32    m_LastVisitedIndex; // Slight performance help, plus guarantees rotating cache.
+    FdoInt32    m_MaxSize;  // Maximum number of objects in the pool.
+    bool        m_AllowAdds;    // Suppress new items (during destruction)
 #ifdef EXTRA_DEBUG
-    FdoInt32    m_EmptyHits;
     FdoInt32    m_ReusableHits;
     FdoInt32    m_Misses;   // No available, re-usable entries.
 #endif
@@ -257,8 +239,6 @@ private:
     { \
         ret->resetCall_I; \
     } \
- \
-    (pool_I)->AddItem(ret); \
  \
     return ret; \
 }

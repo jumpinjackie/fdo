@@ -34,13 +34,13 @@ public:
      * Constructors matching public factory methods.
      */
 
-	FdoFgfCurvePolygon(FdoFgfGeometryFactory * factory, FdoIRing* exteriorRing, FdoRingCollection* interiorRings);
+	FdoFgfCurvePolygon(FdoFgfGeometryFactory * factory, FdoFgfGeometryPools * pools, FdoIRing* exteriorRing, FdoRingCollection* interiorRings);
 
     /*
      * Constructors supporting internal needs of this package.
      */
 
-	FdoFgfCurvePolygon(FdoFgfGeometryFactory * factory, FdoByteArray * byteArray, const FdoByte * data, FdoInt32 count);
+	FdoFgfCurvePolygon(FdoFgfGeometryFactory * factory, FdoFgfGeometryPools * pools, FdoByteArray * byteArray, const FdoByte * data, FdoInt32 count);
 
     // Support object re-use, matching the constructor.
 	void Reset(FdoByteArray * byteArray, const FdoByte * data, FdoInt32 count);

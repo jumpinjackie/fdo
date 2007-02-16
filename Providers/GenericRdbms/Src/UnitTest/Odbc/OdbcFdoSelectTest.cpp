@@ -144,6 +144,55 @@ void OdbcFdoSelectTest::feature_query()
     }
 }
 
+void OdbcOracleFdoSelectTest::View1Test()
+{
+    if( mConnection != NULL )
+    {
+        try
+        {
+            FdoPtr<FdoISelect> selectCmd = (FdoISelect*)mConnection->CreateCommand(FdoCommandType_Select);
+
+            selectCmd->SetFeatureClassName(L"VIEW1");
+
+            FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+
+            FdoPtr<FdoClassDefinition> classDef = reader->GetClassDefinition();
+            CPPUNIT_ASSERT_MESSAGE("Class should not have IsComputed=true", !classDef->GetIsComputed());
+            FdoFeatureSchemaP pSchema =  classDef->GetFeatureSchema(); 
+            FdoPtr<FdoDataPropertyDefinitionCollection> idPropDefs = classDef->GetIdentityProperties();
+            FdoInt32 numIdProps = 0;
+            if (idPropDefs != NULL)
+            {
+                numIdProps = idPropDefs->GetCount();
+                for (FdoInt32 i=0;  i < numIdProps;  i++)
+                {
+                    FdoPtr<FdoDataPropertyDefinition> idPropDef = idPropDefs->GetItem(i);
+                    printf("    Found identity property '%ls'.\n", idPropDef->GetName());
+                }
+                printf("  Found total %d identity properties.\n", numIdProps);
+                CPPUNIT_ASSERT_MESSAGE("Expected no identity properties", 0==numIdProps);
+            }
+
+            // read through all the features
+            int numFeatures = 0;
+            while (reader->ReadNext())
+            {
+                numFeatures++;
+                UnitTestUtil::ProcessFeature(reader);
+            }
+
+            printf("   %i feature(s) read\n", numFeatures);
+
+            // close the reader
+            reader->Close();
+        }
+        catch (FdoException* e)
+        {
+            TestCommonFail (e);
+        }
+    }
+}
+
 void OdbcMySqlFdoSelectTest::ConfigFileTest()
 {
     if( mConnection != NULL ) try
@@ -436,6 +485,114 @@ void OdbcAccessFdoSelectTest::Table2Test()
             reader = selectCmd->Execute();
             // read through all the features
             numFeatures = 0;
+            while (reader->ReadNext())
+            {
+                numFeatures++;
+                UnitTestUtil::ProcessFeature(reader);
+            }
+
+            printf("   %i feature(s) read\n", numFeatures);
+
+            // close the reader
+            reader->Close();
+        }
+        catch (FdoException* e)
+        {
+            TestCommonFail (e);
+        }
+    }
+}
+
+void OdbcAccessFdoSelectTest::View1Test()
+{
+    if( mConnection != NULL )
+    {
+        try
+        {
+            FdoPtr<FdoISelect> selectCmd = (FdoISelect*)mConnection->CreateCommand(FdoCommandType_Select);
+
+            // must set the feature class name
+            FdoStringP fcn = GetSchemaName();
+            fcn += L":";
+            fcn += L"VIEW1";
+            selectCmd->SetFeatureClassName(fcn);
+
+            // execute the command
+            FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+
+            FdoPtr<FdoClassDefinition> classDef = reader->GetClassDefinition();
+            CPPUNIT_ASSERT_MESSAGE("Class should not have IsComputed=true", !classDef->GetIsComputed());
+            FdoFeatureSchemaP pSchema =  classDef->GetFeatureSchema(); 
+            FdoPtr<FdoDataPropertyDefinitionCollection> idPropDefs = classDef->GetIdentityProperties();
+            FdoInt32 numIdProps = 0;
+            if (idPropDefs != NULL)
+            {
+                numIdProps = idPropDefs->GetCount();
+                for (FdoInt32 i=0;  i < numIdProps;  i++)
+                {
+                    FdoPtr<FdoDataPropertyDefinition> idPropDef = idPropDefs->GetItem(i);
+                    printf("    Found identity property '%ls'.\n", idPropDef->GetName());
+                }
+                printf("  Found total %d identity properties.\n", numIdProps);
+                CPPUNIT_ASSERT_MESSAGE("Expected no identity properties", 0==numIdProps);
+            }
+
+            // read through all the features
+            int numFeatures = 0;
+            while (reader->ReadNext())
+            {
+                numFeatures++;
+                UnitTestUtil::ProcessFeature(reader);
+            }
+
+            printf("   %i feature(s) read\n", numFeatures);
+
+            // close the reader
+            reader->Close();
+        }
+        catch (FdoException* e)
+        {
+            TestCommonFail (e);
+        }
+    }
+}
+
+void OdbcAccessFdoSelectTest::View2Test()
+{
+    if( mConnection != NULL )
+    {
+        try
+        {
+            FdoPtr<FdoISelect> selectCmd = (FdoISelect*)mConnection->CreateCommand(FdoCommandType_Select);
+
+            // must set the feature class name
+            FdoStringP fcn = GetSchemaName();
+            fcn += L":";
+            fcn += L"VIEW2";
+            selectCmd->SetFeatureClassName(fcn);
+
+            // execute the command
+            FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+
+            FdoPtr<FdoClassDefinition> classDef = reader->GetClassDefinition();
+            CPPUNIT_ASSERT_MESSAGE("Class should not have IsComputed=true", !classDef->GetIsComputed());
+            FdoFeatureSchemaP pSchema =  classDef->GetFeatureSchema(); 
+            FdoPtr<FdoDataPropertyDefinitionCollection> idPropDefs = classDef->GetIdentityProperties();
+            FdoInt32 numIdProps = 0;
+            if (idPropDefs != NULL)
+            {
+                numIdProps = idPropDefs->GetCount();
+                for (FdoInt32 i=0;  i < numIdProps;  i++)
+                {
+                    FdoPtr<FdoDataPropertyDefinition> idPropDef = idPropDefs->GetItem(i);
+                    printf("    Found identity property '%ls'.\n", idPropDef->GetName());
+                }
+                printf("  Found total %d identity properties.\n", numIdProps);
+                CPPUNIT_ASSERT_MESSAGE("Expected 1 identity property", 1==numIdProps);
+            }
+
+            // read through all the features
+            int numFeatures = 0;
             while (reader->ReadNext())
             {
                 numFeatures++;

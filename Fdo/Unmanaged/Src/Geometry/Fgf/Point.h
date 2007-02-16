@@ -34,17 +34,17 @@ public:
      */
 
 	// Copy the ordinates.
-	FdoFgfPoint(FdoFgfGeometryFactory * factory, FdoInt32 dimensionType, double* ordinates);
+	FdoFgfPoint(FdoFgfGeometryFactory * factory, FdoFgfGeometryPools * pools, FdoInt32 dimensionType, double* ordinates);
 
 	//	Copy from a DirectPosition
-	FdoFgfPoint(FdoFgfGeometryFactory * factory, FdoIDirectPosition* position);
+	FdoFgfPoint(FdoFgfGeometryFactory * factory, FdoFgfGeometryPools * pools, FdoIDirectPosition* position);
 
     /*
      * Constructors supporting internal needs of this package.
      */
 
 	// Just latch onto the data stream.
-	FdoFgfPoint(FdoFgfGeometryFactory * factory, FdoByteArray * byteArray, const FdoByte * data, FdoInt32 count);
+	FdoFgfPoint(FdoFgfGeometryFactory * factory, FdoFgfGeometryPools * pools, FdoByteArray * byteArray, const FdoByte * data, FdoInt32 count);
 
     // Support object re-use, matching the constructor.
 	void Reset(FdoByteArray * byteArray, const FdoByte * data, FdoInt32 count);

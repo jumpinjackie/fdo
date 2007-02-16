@@ -31,11 +31,13 @@ typedef pthread_key_t FdoGeometryThreadDataKey;
 struct FdoGeometryThreadData
 {
     FdoPtr<FdoFgfGeometryFactory> geometryFactory;
+    FdoPtr<FdoFgfGeometryPools>   geometryPools;
 
     static FdoGeometryThreadData *      GetValue();
     static void                         ReleaseValue();
     static FdoGeometryThreadDataKey     GetKey();
     static void                         SetKey(FdoGeometryThreadDataKey key);
+    static FdoFgfGeometryPools *        GetPoolsNoRef();
 };
 
 #endif
