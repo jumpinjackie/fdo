@@ -675,7 +675,7 @@ void SelectTests::simple_filter2()
         // Clean up leftovers from previous tests:
         FdoPtr<FdoIDelete> deleteCmd = (FdoIDelete*)mConnection->CreateCommand (FdoCommandType_Delete);
         deleteCmd->SetFeatureClassName(ArcSDETestConfig::QClassNameSoils());
-        deleteCmd->SetFilter(L"NAME like '%\\_%' ESCAPE '\\'");
+        deleteCmd->SetFilter(L"NAME like '%\\_%'");
         deleteCmd->Execute();
 
         // Insert some test data (there is no native data that has names containing "[" special character):
@@ -701,7 +701,7 @@ void SelectTests::simple_filter2()
         // Test LIKE operator with escape character:
         FdoPtr<FdoISelect> select = (FdoISelect*)mConnection->CreateCommand (FdoCommandType_Select);
         select->SetFeatureClassName (ArcSDETestConfig::QClassNameSoils());
-        select->SetFilter (FdoPtr<FdoFilter>(FdoFilter::Parse (L"NAME like '%\\_%' ESCAPE '\\'")));
+        select->SetFilter (FdoPtr<FdoFilter>(FdoFilter::Parse (L"NAME like '%\\_%'")));
         reader = select->Execute ();
         long lCount=0;
         FdoPtr<FdoFeatureClass> classDef = (FdoFeatureClass*)reader->GetClassDefinition();
@@ -718,7 +718,7 @@ void SelectTests::simple_filter2()
         // Clean up after test:
         deleteCmd = (FdoIDelete*)mConnection->CreateCommand (FdoCommandType_Delete);
         deleteCmd->SetFeatureClassName(ArcSDETestConfig::QClassNameSoils());
-        deleteCmd->SetFilter(L"NAME like '%\\_%' ESCAPE '\\'");
+        deleteCmd->SetFilter(L"NAME like '%\\_%'");
         deleteCmd->Execute();
 
 
@@ -1702,5 +1702,31 @@ void SelectTests::create_large_table_with_geom()
     catch (FdoException* ge) 
     {
         fail (ge);
+    }
+}
+
+
+void SelectTests::simple_unique ()
+{
+    if (CreateSchemaOnly()) return;
+
+    try
+    {
+        // Close/re-open the connection, to flush schema cache to make sure we are exercising the code in
+        // DescribeSchema that optimally fetches only the requested class even if its name is not qualified:
+        mConnection->Close ();
+        mConnection->Open ();
+
+        FdoPtr<FdoISelect> select = (FdoISelect*)mConnection->CreateCommand (FdoCommandType_Select);
+        select->SetFeatureClassName (ArcSDETestConfig::ClassNameTreesUniqueName());
+        FdoPtr<FdoIFeatureReader> reader = select->Execute ();
+        FdoPtr<FdoFeatureClass> classDef = (FdoFeatureClass*)reader->GetClassDefinition();
+        while (reader->ReadNext ())
+            ProcessFeature (reader, classDef);
+        reader->Close();
+    }
+    catch (FdoException *e)
+    {
+        fail(e);
     }
 }

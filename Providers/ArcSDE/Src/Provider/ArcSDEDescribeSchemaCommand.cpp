@@ -594,7 +594,8 @@ void ArcSDEDescribeSchemaCommand::addTable (
 		// optimization: only load information for a specific class if only that class is requested:
 		if ((preloadedClass==NULL)
 		  && ((mFdoClassIdToLoad==NULL)
-		    || ((0==wcscmp(mFdoClassIdToLoad->GetSchemaName(),fdoSchemaName)) && (0==wcscmp(mFdoClassIdToLoad->GetName(),fdoClassName)))))
+		    || (((mFdoClassIdToLoad->GetSchemaName()==NULL) || (mFdoClassIdToLoad->GetSchemaName()[0]=='\0') || 0==wcscmp(mFdoClassIdToLoad->GetSchemaName(),fdoSchemaName))
+                && (0==wcscmp(mFdoClassIdToLoad->GetName(),fdoClassName)))))
 		{
 			// Store the overrides always:
 			FdoPtr<ArcSDEClassMapping> classMapping = mConnection->GetClassMapping(fdoSchemaName, fdoClassName, false);

@@ -325,7 +325,7 @@ foreach $RDBMS ("ORACLE", "SQLSERVER")
 
   # On both Oracle and SQL Server:
 
-  print "\n" . $ACTION . " tables TREES, SOILS and PARCELS for " . $RDBMS . " ... \n";
+  print "\n" . $ACTION . " tables TREES, TREES_" . $DATASETNAME . ", SOILS and PARCELS for " . $RDBMS . " ... \n";
 
   if ($INSTALLACTION ne "U") {
     system "shp2sde -o create -l TREES,SHAPE -f " . $SHP_ROOT . "\\Metadcov\\Trees.shp -e p -a all -C OBJECTID,USER,0 -u " . $username_metadcov . " -p test " . $DB_INST;
@@ -334,10 +334,15 @@ foreach $RDBMS ("ORACLE", "SQLSERVER")
     system "echo y | sdetable -o alter_reg -t SOILS -V MULTI -c FID -C SDE -u " . $username_australia . " -p test " . $DB_INST;
     system "shp2sde -o create -l PARCELS,SHAPE -f " . $SHP_ROOT . "\\Australia\\PARCELS.shp -e a -a all -C FID,USER,0 -u " . $username_australia . " -p test " . $DB_INST;
     system "echo y | sdetable -o alter_reg -t PARCELS -c FID -C SDE -u " . $username_australia . " -p test " . $DB_INST;
+
+    # create a table with a unique name, to test code that deals with unqualified FDO class names:
+    system "shp2sde -o create -l TREES_" . $DATASETNAME . ",SHAPE -f " . $SHP_ROOT . "\\Metadcov\\Trees.shp -e p -a all -C OBJECTID,USER,0 -u " . $username_metadcov . " -p test " . $DB_INST;
+    system "echo y | sdetable -o alter_reg -t TREES_" . $DATASETNAME . " -V MULTI -c OBJECTID -C SDE -u " . $username_metadcov . " -p test " . $DB_INST;
   } else {
     system "echo y | sdetable -o delete -t TREES -u " . $username_metadcov . " -p test " . $DB_INST;
     system "echo y | sdetable -o delete -t SOILS -u " . $username_australia . " -p test " . $DB_INST;
     system "echo y | sdetable -o delete -t PARCELS -u " . $username_australia . " -p test " . $DB_INST;
+    system "echo y | sdetable -o delete -t TREES_" . $DATASETNAME . " -u " . $username_metadcov . " -p test " . $DB_INST;
   }
 
   # On both Oracle and SQL Server:

@@ -1344,7 +1344,7 @@ void BasicInsertTests::user_managed_ids()
             update->Execute();
 
             // Select back the result to see if it changed properly:
-            FdoCommonOSUtil::swprintf(buff, ELEMENTS(buff), L"%ls = '%ls'", Data[0]->mPropertyName, id2);
+            FdoCommonOSUtil::swprintf(buff, ELEMENTS(buff), L"%ls = '%ls'", (FdoString*)Data[0]->mPropertyName, id2);
             select->SetFilter(buff);
             reader = select->Execute();
             CPPUNIT_ASSERT_MESSAGE("Expected to receive one row from FdoISelect::Execute(), got none.", reader->ReadNext());
@@ -1357,7 +1357,7 @@ void BasicInsertTests::user_managed_ids()
             FdoString* updatedId1 = L"BobTwo";
             update = (FdoIUpdate*)mConnection->CreateCommand(FdoCommandType_Update);
             update->SetFeatureClassName(ArcSDETestConfig::QClassNameTestUserManagedId());
-            FdoCommonOSUtil::swprintf(buff, ELEMENTS(buff), L"%ls = '%ls'", Data[0]->mPropertyName, id1);
+            FdoCommonOSUtil::swprintf(buff, ELEMENTS(buff), L"%ls = '%ls'", (FdoString*)Data[0]->mPropertyName, id1);
             update->SetFilter(buff);
             propValues = update->GetPropertyValues();
             FdoPtr<FdoStringValue> strVal1 = FdoStringValue::Create(updatedId1);
@@ -1366,7 +1366,7 @@ void BasicInsertTests::user_managed_ids()
             update->Execute();
 
             // Select back the result to see if it changed properly:
-            FdoCommonOSUtil::swprintf(buff, ELEMENTS(buff), L"%ls = '%ls'", Data[0]->mPropertyName, updatedId1);
+            FdoCommonOSUtil::swprintf(buff, ELEMENTS(buff), L"%ls = '%ls'", (FdoString*)Data[0]->mPropertyName, updatedId1);
             select->SetFilter(buff);
             reader = select->Execute();
             CPPUNIT_ASSERT_MESSAGE("Expected to receive one row from FdoISelect::Execute(), got none.", reader->ReadNext());
@@ -1381,7 +1381,7 @@ void BasicInsertTests::user_managed_ids()
             // delete the first row:
             FdoPtr<FdoIDelete> deleteCmd = (FdoIDelete*)mConnection->CreateCommand(FdoCommandType_Delete);
             deleteCmd->SetFeatureClassName(ArcSDETestConfig::QClassNameTestUserManagedId());
-            FdoCommonOSUtil::swprintf(buff, ELEMENTS(buff), L"%ls = '%ls'", Data[0]->mPropertyName, updatedId1);
+            FdoCommonOSUtil::swprintf(buff, ELEMENTS(buff), L"%ls = '%ls'", (FdoString*)Data[0]->mPropertyName, updatedId1);
             deleteCmd->SetFilter(buff);
             deleteCmd->Execute();
 
