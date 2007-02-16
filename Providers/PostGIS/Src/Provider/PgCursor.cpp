@@ -121,7 +121,7 @@ void PgCursor::Validate()
     if (FdoConnectionState_Open != mConn->GetConnectionState())
     {
         throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_CONNECTION_INVALID,
-            "Connection is invalid."));
+            "Connection is closed or invalid."));
     }
 }
 
