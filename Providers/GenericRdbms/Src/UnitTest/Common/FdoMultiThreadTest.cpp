@@ -29,12 +29,6 @@
 #define   NUMBER_OF_THREADS     10
 static    bool   use_threads = true;
 
-struct ConnectInfo {
-    int   connectionId;
-    FdoIConnection  *mConn;
-    FdoStringP msgException;
-};
-
 FdoMultiThreadTest::FdoMultiThreadTest(void)
 {
 }

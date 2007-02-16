@@ -29,7 +29,6 @@ public:
 	{
 		m_OdbcSetup.SetTypeDB(typeDB);
 	}
-	virtual void DropDatastore();
     virtual void CreateFreshDb();
 
     virtual void OverrideXmlAllTest() {};
@@ -38,9 +37,10 @@ public:
 protected:
 	OdbcBaseSetup m_OdbcSetup;
 
-	static const wchar_t* mApplySchema[];
 	static const wchar_t* mApplySchemaSqlServerCt[];
 	static const wchar_t* mApplySchemaMySqlCt[];
+	static const wchar_t* mApplySchemaOracleCt[];
+	static const wchar_t* mApplySchemaOracleCtTrigger;
 };
 
 class OdbcMySqlFdoSchemaTest : public OdbcFdoSchemaTest
@@ -50,6 +50,18 @@ class OdbcMySqlFdoSchemaTest : public OdbcFdoSchemaTest
 
 public:
 	OdbcMySqlFdoSchemaTest() : OdbcFdoSchemaTest(DataBaseType_MySQL){}
+
+protected:
+    virtual void set_provider();
+};
+
+class OdbcOracleFdoSchemaTest : public OdbcFdoSchemaTest
+{
+    CPPUNIT_TEST_SUB_SUITE (OdbcOracleFdoSchemaTest, FdoSchemaTest);
+    CPPUNIT_TEST_SUITE_END ();
+
+public:
+	OdbcOracleFdoSchemaTest() : OdbcFdoSchemaTest(DataBaseType_Oracle){}
 
 protected:
     virtual void set_provider();

@@ -20,7 +20,8 @@
 #include "OdbcBaseSetup.h"
 #include "UnitTestUtil.h"
 
-bool OdbcBaseSetup::OracleDataSupportCreated = false;
+FdoPtr<FdoStringCollection> OdbcBaseSetup::OracleDataSupportCreated = FdoStringCollection::Create();
+
 
 void OdbcBaseSetup::DestroyDataStore(FdoIConnection* pConnection, FdoString *suffix)
 {
@@ -53,7 +54,7 @@ void OdbcBaseSetup::DestroyDataStore(FdoIConnection* pConnection, FdoString *suf
 
 void OdbcBaseSetup::CreateDataStore(FdoIConnection* pConnection, FdoString *suffix)
 {
-	if (DataBaseType_Oracle == m_typeDB && OdbcBaseSetup::OracleDataSupportCreated == true)
+	if (DataBaseType_Oracle == m_typeDB && OdbcBaseSetup::OracleDataSupportCreated->IndexOf(suffix)!=-1)
 		return;
 	FdoStringP pDatastore = UnitTestUtil::GetEnviron("datastore", suffix);
 	// clean the before start
@@ -62,7 +63,7 @@ void OdbcBaseSetup::CreateDataStore(FdoIConnection* pConnection, FdoString *suff
 	FdoStringP pQueryStringDrp;
 	if (DataBaseType_Oracle == m_typeDB)
 	{
-		OdbcBaseSetup::OracleDataSupportCreated = true;
+        OdbcBaseSetup::OracleDataSupportCreated->Add(suffix);
 		FdoStringP pUDatastore = pDatastore;
 		pUDatastore = pUDatastore.Upper();
 		pQueryStringDrp = (FdoStringP)L"CREATE USER \"" + pUDatastore + L"\"  PROFILE \"DEFAULT\" IDENTIFIED BY \"";
@@ -74,6 +75,8 @@ void OdbcBaseSetup::CreateDataStore(FdoIConnection* pConnection, FdoString *suff
 		pQueryStringDrp = (FdoStringP)L"GRANT CREATE PROCEDURE TO " + pUDatastore;
 		UnitTestUtil::Sql2Db( (const wchar_t*) pQueryStringDrp, pConnection );
 		pQueryStringDrp = (FdoStringP)L"GRANT CREATE SEQUENCE TO " + pUDatastore;
+		UnitTestUtil::Sql2Db( (const wchar_t*) pQueryStringDrp, pConnection );
+		pQueryStringDrp = (FdoStringP)L"GRANT CREATE TRIGGER TO " + pUDatastore;
 		UnitTestUtil::Sql2Db( (const wchar_t*) pQueryStringDrp, pConnection );
 		pQueryStringDrp = (FdoStringP)L"GRANT CREATE SESSION TO " + pUDatastore;
 		UnitTestUtil::Sql2Db( (const wchar_t*) pQueryStringDrp, pConnection );
@@ -97,7 +100,7 @@ void OdbcBaseSetup::CreateDataStore(FdoIConnection* pConnection, FdoString *suff
 		UnitTestUtil::Sql2Db( (const wchar_t*) pQueryStringDrp, pConnection );
 
 		pConnection->Close();
-		pConnection->SetConnectionString ( UnitTestUtil::GetConnectionString(Connection_NoDatastore) );
+		pConnection->SetConnectionString ( UnitTestUtil::GetConnectionString(Connection_NoDatastore, suffix) );
 		pConnection->Open();
 		UnitTestUtil::Sql2Db( (const wchar_t**) mOracleAcadTestData, pConnection );
 		UnitTestUtil::Sql2Db( (const wchar_t**) mOracleNonAcadTest, pConnection );

@@ -85,7 +85,7 @@ public:
 	static const wchar_t* mOracleAcadTestData[];
 	static const wchar_t* mOracleNonAcadTest[];
 
-	static bool OracleDataSupportCreated;
+    static FdoPtr<FdoStringCollection> OracleDataSupportCreated;
 };
 
 #endif // ODBC_BASESETUP_H

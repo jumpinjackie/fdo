@@ -29,6 +29,13 @@ struct FunctionInfo {
 #endif
 };
 
+struct ConnectInfo {
+    int   connectionId;
+    FdoIConnection  *mConn;
+    FdoStringP msgException;
+};
+
+
 class FdoMultiThreadTest : public CppUnit::TestCase
 {
   CPPUNIT_TEST_SUITE( FdoMultiThreadTest );
