@@ -40,10 +40,6 @@ void OdbcOracleFdoMultiThreadTest::set_provider()
 	UnitTestUtil::SetProvider( "OdbcOracle" );
 }
 
-struct ConnectInfo {
-    int   connectionId;
-    FdoIConnection  *mConn;
-};
 
 #ifdef _WIN32
 DWORD WINAPI StartOdbcQuery(LPVOID lpParameter)
@@ -86,7 +82,8 @@ void * StartOdbcQuery(void * lpParameter)
         }
         catch (FdoException* e)
         {
-            TestCommonFail (e);
+            cnInfo->msgException = e->GetExceptionMessage();
+            e->Release();
         }
     }
     return 0;

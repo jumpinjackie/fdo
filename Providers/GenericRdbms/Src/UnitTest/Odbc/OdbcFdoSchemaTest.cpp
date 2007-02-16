@@ -28,6 +28,11 @@ CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcMySqlFdoSchemaTest, "FdoSchemaTest");
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcMySqlFdoSchemaTest, "OdbcMySqlFdoSchemaTest");
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcMySqlFdoSchemaTest, "OdbcMySqlTests");
 
+CPPUNIT_TEST_SUITE_REGISTRATION( OdbcOracleFdoSchemaTest );
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcOracleFdoSchemaTest, "FdoSchemaTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcOracleFdoSchemaTest, "OdbcOracleFdoSchemaTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcOracleFdoSchemaTest, "OdbcOracleTests");
+
 #ifdef _WIN32
 CPPUNIT_TEST_SUITE_REGISTRATION( OdbcSqlServerFdoSchemaTest );
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcSqlServerFdoSchemaTest, "FdoSchemaTest");
@@ -40,30 +45,19 @@ CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcAccessFdoSchemaTest, "OdbcAccessFdoSc
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcAccessFdoSchemaTest, "OdbcAccessTests");
 #endif
 
-void OdbcFdoSchemaTest::DropDatastore()
-{
-    // Drop the old datastore, if it exists:
-    try
-    {
-        FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore);
-        FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
-        connection->SetConnectionString( userConnectString );
-        connection->Open();
-		m_OdbcSetup.DestroyDataStore( connection.p, DB_SUFFIX );
-        connection->Close();
-    }
-    catch(...) { }
-}
 
 void OdbcFdoSchemaTest::CreateFreshDb()
 {
     if (!m_bDatabaseCreated)
     {
-		DropDatastore();
         // Create a datastore (will create metaschema tables automatically, unfortunately):
 		try
 		{
-			FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore);
+            FdoStringP userConnectString;
+            if (DataBaseType_Oracle == m_OdbcSetup.GetTypeDB())
+                userConnectString = UnitTestUtil::GetConnectionString(Connection_OraSetup);
+            else
+			    userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore);
 			FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
 			connection->SetConnectionString( userConnectString );
 			connection->Open();
@@ -81,9 +75,16 @@ void OdbcFdoSchemaTest::CreateFreshDb()
 
 		if (DataBaseType_MySQL == m_OdbcSetup.GetTypeDB())
 			UnitTestUtil::Sql2Db( (const wchar_t**) mApplySchemaMySqlCt, connection.p );
-		else 
-			if (DataBaseType_SqlServer == m_OdbcSetup.GetTypeDB())
+		else if (DataBaseType_SqlServer == m_OdbcSetup.GetTypeDB())
 			UnitTestUtil::Sql2Db( (const wchar_t**) mApplySchemaSqlServerCt, connection.p );
+		else if (DataBaseType_Oracle == m_OdbcSetup.GetTypeDB())
+        {
+            UnitTestUtil::Sql2Db( (const wchar_t**) mApplySchemaOracleCt, connection.p );
+            // NOTE: since Sql2Db(const wchar_t**) strips out ";" terminators that are vital to trigger
+            // definitions, we have to use the other Sql2Db(const wchar_t*) to create the trigger:
+            UnitTestUtil::Sql2Db( mApplySchemaOracleCtTrigger, connection.p );
+        }
+
 
         // Insert some data:
 		FdoPtr<FdoISQLCommand> sql = (FdoISQLCommand*)connection->CreateCommand(FdoCommandType_SQLCommand);
@@ -156,10 +157,35 @@ const wchar_t* OdbcFdoSchemaTest::mApplySchemaMySqlCt[] = {
     NULL
 };
 
+const wchar_t* OdbcFdoSchemaTest::mApplySchemaOracleCt[] = {
+	L"create table lowercaseclass (",
+	L"classid NUMBER(20) NOT NULL,",
+	L"featid NUMBER(20) NOT NULL UNIQUE,",
+	L"revisionnumber NUMBER NOT NULL,",
+	L"z NUMBER NOT NULL,",
+	L"y NUMBER NOT NULL,",
+	L"x NUMBER NOT NULL,",
+	L"id NUMBER(10) NOT NULL PRIMARY KEY,",
+	L"realgeometry MDSYS.SDO_GEOMETRY",
+	L");",
+	L"CREATE SEQUENCE lowercaseclass_sequence START WITH 1 INCREMENT BY 1;",
+    NULL
+};
+const wchar_t* OdbcFdoSchemaTest::mApplySchemaOracleCtTrigger = 
+	L"CREATE OR REPLACE TRIGGER lowercaseclass_seq_trigger BEFORE INSERT ON lowercaseclass REFERENCING NEW AS NEW FOR EACH ROW BEGIN SELECT lowercaseclass_sequence.nextval INTO :NEW.FEATID FROM dual; END;";
+
+
+
 void OdbcMySqlFdoSchemaTest::set_provider()
 {
 	UnitTestUtil::SetProvider( "OdbcMySql" );
 }
+
+void OdbcOracleFdoSchemaTest::set_provider()
+{
+	UnitTestUtil::SetProvider( "OdbcOracle" );
+}
+
 #ifdef _WIN32
 void OdbcSqlServerFdoSchemaTest::set_provider()
 {
