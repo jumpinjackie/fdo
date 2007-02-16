@@ -20,6 +20,7 @@
 #include "MultiPolygon.h"
 #include <Geometry/EnvelopeImpl.h>
 #include "Util.h"
+#include "GeometryFactory2.h"
 
 
 /************************************************************************/
@@ -27,9 +28,10 @@
 /************************************************************************/
 FdoFgfMultiPolygon::FdoFgfMultiPolygon(
     FdoFgfGeometryFactory * factory,
+    FdoFgfGeometryPools * pools,
     FdoPolygonCollection* polygons
     )
-    : FdoFgfGeometryImpl<FdoIMultiPolygon>(factory)
+    : FdoFgfGeometryImpl<FdoIMultiPolygon>(factory, pools)
 {
 	if ( (NULL == polygons) ||
          (0 == polygons->GetCount()) ||
@@ -38,7 +40,7 @@ FdoFgfMultiPolygon::FdoFgfMultiPolygon(
                                                                L"FdoFgfMultiPolygon",
                                                                L"polygons/factory"));
 
-    FdoByteArray * newByteArray = m_factory->GetByteArray();
+    FdoByteArray * newByteArray = FgfUtil::GetPoolsNoRef(m_pools)->GetByteArray();
 
     FdoInt32 numPolygons = polygons->GetCount();
 
@@ -57,11 +59,12 @@ FdoFgfMultiPolygon::FdoFgfMultiPolygon(
 
 FdoFgfMultiPolygon::FdoFgfMultiPolygon(
     FdoFgfGeometryFactory * factory,
+    FdoFgfGeometryPools * pools,
     FdoByteArray * byteArray,
     const FdoByte * data,
     FdoInt32 count
     )
-    : FdoFgfGeometryImpl<FdoIMultiPolygon>(factory)
+    : FdoFgfGeometryImpl<FdoIMultiPolygon>(factory, pools)
 {
     Reset(byteArray, data, count);
 }
@@ -137,8 +140,10 @@ FdoIPolygon* FdoFgfMultiPolygon::GetItem(FdoInt32 Index) const
 {
     m_streamPtr = m_data;
 
+    FdoPtr<FdoFgfGeometryFactory> gf = GetFactory();
+
     FdoPtr<FdoIGeometry> geometry =
-        FgfUtil::ReadGeometryFromAggregate(m_factory, Index, FdoGeometryType_Polygon, &m_streamPtr, m_streamEnd);
+        FgfUtil::ReadGeometryFromAggregate(gf, Index, FdoGeometryType_Polygon, &m_streamPtr, m_streamEnd);
 
     // Smart pointer assignments have problems with non-identical types.  Work around...
     FdoIPolygon * derivedGeometry = static_cast<FdoIPolygon *>(geometry.p);
@@ -152,7 +157,8 @@ FdoIPolygon* FdoFgfMultiPolygon::GetItem(FdoInt32 Index) const
 /************************************************************************/
 void FdoFgfMultiPolygon::Dispose()
 {
-	delete this;
+    SurrenderByteArray();
+    FGFUTIL_DISPOSE_TO_POOL_OR_HEAP(MultiPolygon);
 }
 
 

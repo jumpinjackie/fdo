@@ -19,7 +19,8 @@
 
 
 #include "LinearRing.h"
-#include "GeometryFactory2.h"
+#include "GeometryThreadData.h"
+#include "Util.h"
 
 
 /************************************************************************/
@@ -27,9 +28,11 @@
 /************************************************************************/
 FdoFgfLinearRing::FdoFgfLinearRing(
     FdoFgfGeometryFactory * factory, 
+    FdoFgfGeometryPools * pools,
     FdoInt32 dimensionType,
     FdoInt32 numOrdinates,
     double* ordinates)
+    : m_pools(pools)
 {
 	if ( (NULL == ordinates) ||
 		 (NULL == factory) )
@@ -81,7 +84,9 @@ void FdoFgfLinearRing::Reset(FdoInt32 dimensionType, FdoInt32 numOrdinates, doub
 /************************************************************************/
 FdoFgfLinearRing::FdoFgfLinearRing(
     FdoFgfGeometryFactory * factory, 
+    FdoFgfGeometryPools * pools,
     FdoDirectPositionCollection* positions)
+    : m_pools(pools)
 {
     if ( NULL == positions || positions->GetCount() < 3)
 		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
@@ -278,6 +283,6 @@ bool FdoFgfLinearRing::IsClosed(FdoInt32 dimensionality, FdoInt32 numOrdinates, 
 /************************************************************************/
 void FdoFgfLinearRing::Dispose()
 {
-	delete this;
+    FGFUTIL_DISPOSE_TO_POOL_OR_HEAP(LinearRing);
 }
 

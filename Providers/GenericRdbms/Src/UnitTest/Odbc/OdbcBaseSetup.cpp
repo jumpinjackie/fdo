@@ -346,6 +346,8 @@ const wchar_t* OdbcBaseSetup::mOracleNonAcadTest[] = {
 	L"( FEATID1, NAME, X, Y )",
 	L" values ",
 	L"( 2, 'His''Name', 20, 25 );",
+    L"",
+	L"create view VIEW1 as select FEATID1, NAME, X, Y from TABLE1;",
 #ifdef _WIN32
     L"",
 	L"create table ALLDBTYPES (",

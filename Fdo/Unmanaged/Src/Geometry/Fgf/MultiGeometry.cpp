@@ -44,9 +44,10 @@
 /************************************************************************/
 FdoFgfMultiGeometry::FdoFgfMultiGeometry(
     FdoFgfGeometryFactory * factory,
+    FdoFgfGeometryPools * pools,
     FdoGeometryCollection* geometries
     )
-    : FdoFgfGeometryImpl<FdoIMultiGeometry>(factory)
+    : FdoFgfGeometryImpl<FdoIMultiGeometry>(factory, pools)
 {
 	if ( (NULL == geometries) ||
          (0 == geometries->GetCount()) ||
@@ -55,7 +56,7 @@ FdoFgfMultiGeometry::FdoFgfMultiGeometry(
                                                                L"FdoFgfMultiGeometry",
                                                                L"geometries/factory"));
 
-    FdoByteArray * newByteArray = m_factory->GetByteArray();
+    FdoByteArray * newByteArray = FgfUtil::GetPoolsNoRef(m_pools)->GetByteArray();
 
     FdoInt32 numGeometries = geometries->GetCount();
 
@@ -74,11 +75,12 @@ FdoFgfMultiGeometry::FdoFgfMultiGeometry(
 
 FdoFgfMultiGeometry::FdoFgfMultiGeometry(
     FdoFgfGeometryFactory * factory,
+    FdoFgfGeometryPools * pools,
     FdoByteArray * byteArray,
     const FdoByte * data,
     FdoInt32 count
     )
-    : FdoFgfGeometryImpl<FdoIMultiGeometry>(factory)
+    : FdoFgfGeometryImpl<FdoIMultiGeometry>(factory, pools)
 {
     Reset(byteArray, data, count);
 }
@@ -158,8 +160,10 @@ FdoIGeometry* FdoFgfMultiGeometry::GetItem(FdoInt32 Index) const
 {
 	m_streamPtr = m_data;
 
+    FdoPtr<FdoFgfGeometryFactory> gf = GetFactory();
+
     FdoPtr<FdoIGeometry> geometry =
-        FgfUtil::ReadGeometryFromAggregate(m_factory, Index, FdoGeometryType_None, &m_streamPtr, m_streamEnd);
+        FgfUtil::ReadGeometryFromAggregate(gf, Index, FdoGeometryType_None, &m_streamPtr, m_streamEnd);
 
     return FDO_SAFE_ADDREF(geometry.p);
 }
@@ -170,7 +174,8 @@ FdoIGeometry* FdoFgfMultiGeometry::GetItem(FdoInt32 Index) const
 /************************************************************************/
 void FdoFgfMultiGeometry::Dispose()
 {
-	delete this;
+    SurrenderByteArray();
+    FGFUTIL_DISPOSE_TO_POOL_OR_HEAP(MultiGeometry);
 }
 
 /************************************************************************/

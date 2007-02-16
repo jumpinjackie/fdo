@@ -33,13 +33,13 @@ public:
      * Constructors matching public factory methods.
      */
 
-	FdoFgfMultiGeometry(FdoFgfGeometryFactory * factory, FdoGeometryCollection* geometries);
+	FdoFgfMultiGeometry(FdoFgfGeometryFactory * factory, FdoFgfGeometryPools * pools, FdoGeometryCollection* geometries);
 
     /*
      * Constructors supporting internal needs of this package.
      */
 
-	FdoFgfMultiGeometry(FdoFgfGeometryFactory * factory, FdoByteArray * byteArray, const FdoByte * data, FdoInt32 count);
+	FdoFgfMultiGeometry(FdoFgfGeometryFactory * factory, FdoFgfGeometryPools * pools, FdoByteArray * byteArray, const FdoByte * data, FdoInt32 count);
 
     // Support object re-use, matching the constructor.
 	void Reset(FdoByteArray * byteArray, const FdoByte * data, FdoInt32 count);

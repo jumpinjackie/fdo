@@ -33,13 +33,13 @@ public:
      * Constructors matching public factory methods.
      */
 
-	FdoFgfMultiCurvePolygon(FdoFgfGeometryFactory * factory, FdoCurvePolygonCollection* curvePolygons);
+	FdoFgfMultiCurvePolygon(FdoFgfGeometryFactory * factory, FdoFgfGeometryPools * pools, FdoCurvePolygonCollection* curvePolygons);
 
     /*
      * Constructors supporting internal needs of this package.
      */
 
-	FdoFgfMultiCurvePolygon(FdoFgfGeometryFactory * factory, FdoByteArray * byteArray, const FdoByte * data, FdoInt32 count);
+	FdoFgfMultiCurvePolygon(FdoFgfGeometryFactory * factory, FdoFgfGeometryPools * pools, FdoByteArray * byteArray, const FdoByte * data, FdoInt32 count);
 
     // Support object re-use, matching the constructor.
 	void Reset(FdoByteArray * byteArray, const FdoByte * data, FdoInt32 count);

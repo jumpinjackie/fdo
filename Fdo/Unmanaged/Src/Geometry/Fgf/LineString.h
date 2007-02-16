@@ -38,13 +38,13 @@ public:
      */
 
 	// Copy the positions.  Dimensionality is taken from the first position.
-	FdoFgfLineString(FdoFgfGeometryFactory * factory, FdoDirectPositionCollection* positions);
+	FdoFgfLineString(FdoFgfGeometryFactory * factory, FdoFgfGeometryPools * pools, FdoDirectPositionCollection* positions);
 
 	// Copy the ordinates.
-	FdoFgfLineString(FdoFgfGeometryFactory * factory, FdoInt32 dimensionType, FdoInt32 numOrdinates, double* ordinates);
+	FdoFgfLineString(FdoFgfGeometryFactory * factory, FdoFgfGeometryPools * pools, FdoInt32 dimensionType, FdoInt32 numOrdinates, double* ordinates);
 
 	// (internal use) Just latch onto the data stream.
-	FdoFgfLineString(FdoFgfGeometryFactory * factory, FdoByteArray * byteArray, const FdoByte * data, FdoInt32 count);
+	FdoFgfLineString(FdoFgfGeometryFactory * factory, FdoFgfGeometryPools * pools, FdoByteArray * byteArray, const FdoByte * data, FdoInt32 count);
 
     // Support object re-use, matching the constructors.
 	void Reset(FdoDirectPositionCollection* positions);

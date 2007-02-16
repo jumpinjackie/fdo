@@ -22,6 +22,7 @@
 #include <Geometry/DirectPositionImpl.h>
 #include <Geometry/EnvelopeImpl.h>
 #include "Util.h"
+#include "GeometryThreadData.h"
 
 
 /************************************************************************/
@@ -29,10 +30,11 @@
 /************************************************************************/
 FdoFgfPoint::FdoFgfPoint(
         FdoFgfGeometryFactory * factory,
+        FdoFgfGeometryPools * pools,
         FdoInt32 dimensionType,
         double* ordinates
         )
-    : FdoFgfGeometryImpl<FdoIPoint>(factory)
+    : FdoFgfGeometryImpl<FdoIPoint>(factory, pools)
 {
 	if ( (NULL == factory) ||
 		 (NULL == ordinates) )
@@ -41,7 +43,7 @@ FdoFgfPoint::FdoFgfPoint(
                                                                L"ordinates/factory"));
 
     // Cannot use smart pointer for updating a FdoArray.
-    FdoByteArray * newByteArray = m_factory->GetByteArray();
+    FdoByteArray * newByteArray = FgfUtil::GetPoolsNoRef(m_pools)->GetByteArray();
 
 	FGFUTIL_WRITE_INT32(&newByteArray, FdoGeometryType_Point);
 	FGFUTIL_WRITE_INT32(&newByteArray, dimensionType);
@@ -60,9 +62,10 @@ FdoFgfPoint::FdoFgfPoint(
 /************************************************************************/
 FdoFgfPoint::FdoFgfPoint(
     FdoFgfGeometryFactory * factory,
+    FdoFgfGeometryPools * pools,
     FdoIDirectPosition* position
     )
-    : FdoFgfGeometryImpl<FdoIPoint>(factory)
+    : FdoFgfGeometryImpl<FdoIPoint>(factory, pools)
 {
 	if ( (NULL == factory) ||
 		 (NULL == position) )
@@ -70,7 +73,7 @@ FdoFgfPoint::FdoFgfPoint(
                                                                L"FdoFgfPoint",
                                                                L"position/factory"));
 
-    FdoByteArray * newByteArray = m_factory->GetByteArray();
+    FdoByteArray * newByteArray = FgfUtil::GetPoolsNoRef(m_pools)->GetByteArray();
 
 	FGFUTIL_WRITE_INT32(&newByteArray, FdoGeometryType_Point);
 	FGFUTIL_WRITE_INT32(&newByteArray, position->GetDimensionality());
@@ -82,11 +85,12 @@ FdoFgfPoint::FdoFgfPoint(
 
 FdoFgfPoint::FdoFgfPoint(
     FdoFgfGeometryFactory * factory,
+    FdoFgfGeometryPools * pools,
     FdoByteArray * byteArray,
     const FdoByte * data,
     FdoInt32 count
     )
-    : FdoFgfGeometryImpl<FdoIPoint>(factory)
+    : FdoFgfGeometryImpl<FdoIPoint>(factory, pools)
 {
     Reset(byteArray, data, count);
 }
@@ -118,7 +122,8 @@ FdoIDirectPosition* FdoFgfPoint::GetPosition() const
 	FdoInt32 dimensionality = GetDimensionality();
 	m_streamPtr = m_data;
 	FGFUTIL_SKIP_INT32S(&m_streamPtr, m_streamEnd, 2);      // Skip over geomtype and dimtype
-    return FgfUtil::ReadDirectPosition(m_factory, dimensionality, &m_streamPtr, m_streamEnd);
+    FdoPtr<FdoFgfGeometryFactory> gf = GetFactory();
+    return FgfUtil::ReadDirectPosition(gf, dimensionality, &m_streamPtr, m_streamEnd);
 }
 
 void FdoFgfPoint::GetPositionByMembers(double *x, double *y, double *z, double *m, FdoInt32 *dimensionality) const
@@ -180,6 +185,7 @@ FdoGeometryType FdoFgfPoint::GetDerivedType() const
 /************************************************************************/
 void FdoFgfPoint::Dispose()
 {
-	delete this;
+    SurrenderByteArray();
+    FGFUTIL_DISPOSE_TO_POOL_OR_HEAP(Point);
 }
 

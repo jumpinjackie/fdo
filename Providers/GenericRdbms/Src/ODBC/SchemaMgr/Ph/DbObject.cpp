@@ -23,6 +23,7 @@
 #include "Rd/OraColumnReader.h"
 #include "Rd/DbObjectReader.h"
 #include "Sm/Ph/Rd/DbObjectReader.h"
+#include "Rd/PkeyReader.h"
 #include "ColumnChar.h"
 #include "ColumnBool.h"
 #include "ColumnByte.h"
@@ -265,3 +266,11 @@ FdoPtr<FdoSmPhRdColumnReader> FdoSmPhOdbcDbObject::CreateColumnReader()
     else
         return new FdoSmPhRdOdbcColumnReader( GetManager(), FDO_SAFE_ADDREF(this) );
 }
+
+FdoPtr<FdoSmPhRdPkeyReader> FdoSmPhOdbcDbObject::CreatePkeyReader() const
+{
+    FdoSmPhOdbcDbObject* pDbObject = (FdoSmPhOdbcDbObject*) this;
+
+    return new FdoSmPhRdOdbcPkeyReader( pDbObject->GetManager(), FDO_SAFE_ADDREF(pDbObject) );
+}
+

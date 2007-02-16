@@ -21,6 +21,7 @@
 #include "LinearRing.h"
 #include <Geometry/EnvelopeImpl.h>
 #include "Util.h"
+#include "GeometryFactory2.h"
 
 
 /************************************************************************/
@@ -28,17 +29,18 @@
 /************************************************************************/
 FdoFgfPolygon::FdoFgfPolygon(
     FdoFgfGeometryFactory * factory,
+    FdoFgfGeometryPools * pools,
     FdoILinearRing* exteriorRing,
     FdoLinearRingCollection* interiorRings
     )
-    : FdoFgfGeometryImpl<FdoIPolygon>(factory)
+    : FdoFgfGeometryImpl<FdoIPolygon>(factory, pools)
 {
 	if (NULL == exteriorRing)
 		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
                                                                L"FdoFgfPolygon",
                                                                L"exteriorRing"));
 
-    FdoByteArray * newByteArray = m_factory->GetByteArray();
+    FdoByteArray * newByteArray = FgfUtil::GetPoolsNoRef(m_pools)->GetByteArray();
 
 	// FdoGeometryType
 	FGFUTIL_WRITE_INT32(&newByteArray, FdoGeometryType_Polygon);
@@ -67,11 +69,12 @@ FdoFgfPolygon::FdoFgfPolygon(
 
 FdoFgfPolygon::FdoFgfPolygon(
     FdoFgfGeometryFactory * factory,
+    FdoFgfGeometryPools * pools,
     FdoByteArray * byteArray,
     const FdoByte * data,
     FdoInt32 count
     )
-    : FdoFgfGeometryImpl<FdoIPolygon>(factory)
+    : FdoFgfGeometryImpl<FdoIPolygon>(factory, pools)
 {
     Reset(byteArray, data, count);
 }
@@ -99,7 +102,8 @@ FdoFgfPolygon::~FdoFgfPolygon()
 /************************************************************************/
 void FdoFgfPolygon::Dispose()
 {
-	delete this;
+    SurrenderByteArray();
+    FGFUTIL_DISPOSE_TO_POOL_OR_HEAP(Polygon);
 }
 
 
@@ -229,7 +233,8 @@ FdoILinearRing* FdoFgfPolygon::ReadLinearRing(
 	double * ords = (double *)(*inputStream);
     *inputStream += numBytes;
 
-    FdoPtr<FdoILinearRing> lRing = m_factory->CreateLinearRing(dimensionality, numOrds, ords);
+    FdoPtr<FdoFgfGeometryFactory> gf = GetFactory();
+    FdoPtr<FdoILinearRing> lRing = gf->CreateLinearRing(dimensionality, numOrds, ords);
 
 	return FDO_SAFE_ADDREF(lRing.p);
 }

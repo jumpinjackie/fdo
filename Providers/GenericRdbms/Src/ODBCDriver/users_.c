@@ -64,6 +64,8 @@ int local_odbcdr_users_act(
 	int rdbi_status = RDBI_GENERIC_ERROR;
 	int target_set;
     SQLUINTEGER schemaUsages = 0;
+    int schemaUsagesSupported = TRUE;
+    short	_odbcValue = SQL_ERROR;
     // vectors can be used as SQLCHAR
     wchar_t    schemaToGet[10];
     SQLWCHAR    szSchemaBuf[ODBCDR_MAX_BUFF_SIZE];
@@ -96,14 +98,15 @@ int local_odbcdr_users_act(
 	_check_status;
 
     if (context->odbcdr_UseUnicode){
-        ODBCDR_ODBC_ERR( SQLGetInfoW(connData->hDbc, SQL_SCHEMA_USAGE, (SQLPOINTER)&schemaUsages,
-            0, NULL),SQL_HANDLE_DESC, connData->hDbc, "SQLGetInfo", "Fetching schemas" );
+	    _odbcValue = SQLGetInfoW(connData->hDbc, SQL_SCHEMA_USAGE, (SQLPOINTER)&schemaUsages, 0, NULL);
     }else{
-        ODBCDR_ODBC_ERR( SQLGetInfo(connData->hDbc, SQL_SCHEMA_USAGE, (SQLPOINTER)&schemaUsages,
-            0, NULL),SQL_HANDLE_DESC, connData->hDbc, "SQLGetInfo", "Fetching schemas" );
+        _odbcValue = SQLGetInfo(connData->hDbc, SQL_SCHEMA_USAGE, (SQLPOINTER)&schemaUsages, 0, NULL);
     }
 
-    if (schemaUsages & SQL_SU_DML_STATEMENTS)
+    if (_odbcValue != ODBCDR_SUCCESS)
+        schemaUsagesSupported = FALSE;
+
+    if (schemaUsagesSupported && (schemaUsages & SQL_SU_DML_STATEMENTS))
     {
 	    c = connData->users;
 

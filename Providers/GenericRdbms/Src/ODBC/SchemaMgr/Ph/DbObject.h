@@ -180,6 +180,8 @@ protected:
     // Column reader creator implementation.
     virtual FdoPtr<FdoSmPhRdColumnReader> CreateColumnReader();
 
+    virtual FdoPtr<FdoSmPhRdPkeyReader> CreatePkeyReader() const;
+
 protected:
 
     // Overrideable settings:

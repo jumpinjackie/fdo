@@ -24,6 +24,7 @@
 #include <Geometry/ILinearRing.h>
 #include <Geometry/ILineString.h>
 
+class FdoFgfGeometryPools;  // Forward declaration
 class FdoFgfGeometryFactory;   // Forward declaration
 
 
@@ -35,8 +36,8 @@ public:
      * Constructors matching public factory methods.
      */
 
-	FdoFgfLinearRing(FdoFgfGeometryFactory * factory, FdoInt32 dimensionType, FdoInt32 numOrdinates, double* ordinates);
-	FdoFgfLinearRing(FdoFgfGeometryFactory * factory, FdoDirectPositionCollection* positions);
+	FdoFgfLinearRing(FdoFgfGeometryFactory * factory, FdoFgfGeometryPools * pools, FdoInt32 dimensionType, FdoInt32 numOrdinates, double* ordinates);
+	FdoFgfLinearRing(FdoFgfGeometryFactory * factory, FdoFgfGeometryPools * pools, FdoDirectPositionCollection* positions);
 
 	virtual ~FdoFgfLinearRing();
 
@@ -61,11 +62,11 @@ protected:
 	FdoFgfLinearRing() {}; // Default constructor to satisfy FdoPtr on Linux
 
 	FdoPtr<FdoILineString>	m_lineString;
+    FdoFgfGeometryPools *   m_pools;  // Geometry pools (lightweight to avoid circular reference)
 
 	bool IsClosed(FdoInt32 dimensionality, FdoInt32 numOrdinates, double* ordinates) const;
 
 	void Dispose();
-
 
 };
 #endif

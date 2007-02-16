@@ -20,6 +20,7 @@
 #include <Geometry/EnvelopeImpl.h>
 #include "CurvePolygon.h"
 #include "Util.h"
+#include "GeometryFactory2.h"
 
 
 /************************************************************************/
@@ -27,10 +28,11 @@
 /************************************************************************/
 FdoFgfCurvePolygon::FdoFgfCurvePolygon(
     FdoFgfGeometryFactory * factory,
+    FdoFgfGeometryPools * pools,
     FdoIRing* exteriorRing,
     FdoRingCollection* interiorRings
     )
-    : FdoFgfGeometryImpl<FdoICurvePolygon>(factory)
+    : FdoFgfGeometryImpl<FdoICurvePolygon>(factory, pools)
 {
 	if (NULL == exteriorRing)
          throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
@@ -38,7 +40,7 @@ FdoFgfCurvePolygon::FdoFgfCurvePolygon(
                                                                 L"exteriorRing"));
 
     // Cannot use smart pointer for updating a FdoArray.
-    FdoByteArray * newByteArray = m_factory->GetByteArray();
+    FdoByteArray * newByteArray = FgfUtil::GetPoolsNoRef(m_pools)->GetByteArray();
 
 	// FdoGeometryType
 	FGFUTIL_WRITE_INT32(&newByteArray, FdoGeometryType_CurvePolygon);
@@ -68,11 +70,12 @@ FdoFgfCurvePolygon::FdoFgfCurvePolygon(
 
 FdoFgfCurvePolygon::FdoFgfCurvePolygon(
     FdoFgfGeometryFactory * factory,
+    FdoFgfGeometryPools * pools,
     FdoByteArray * byteArray,
     const FdoByte * data,
     FdoInt32 count
     )
-    : FdoFgfGeometryImpl<FdoICurvePolygon>(factory)
+    : FdoFgfGeometryImpl<FdoICurvePolygon>(factory, pools)
 {
     Reset(byteArray, data, count);
 }
@@ -226,9 +229,11 @@ FdoIRing* FdoFgfCurvePolygon::ReadRing(
     const FdoByte ** inputStream,
     const FdoByte * streamEnd ) const
 {
+    FdoPtr<FdoFgfGeometryFactory> gf = GetFactory();
+
 	// StartPosition
 	FdoPtr<FdoIDirectPosition> startPos =
-        FgfUtil::ReadDirectPosition(m_factory, dimensionality, inputStream, streamEnd);
+        FgfUtil::ReadDirectPosition(gf, dimensionality, inputStream, streamEnd);
 
 	// NumRings
 	FdoInt32 numCurveSegments = FgfUtil::ReadInt32(inputStream, streamEnd);
@@ -239,12 +244,12 @@ FdoIRing* FdoFgfCurvePolygon::ReadRing(
 	for (FdoInt32 i=0; i<numCurveSegments; i++)
 	{
 		FdoPtr<FdoICurveSegmentAbstract> curveSeg =
-            FgfUtil::ReadCurveSegment(m_factory, dimensionality, startPos, inputStream, streamEnd);
+            FgfUtil::ReadCurveSegment(gf, dimensionality, startPos, inputStream, streamEnd);
         curveSegs->Add(curveSeg);
 		startPos = curveSeg->GetEndPosition();
 	}
 
-	FdoPtr<FdoIRing> ring = m_factory->CreateRing(curveSegs);
+	FdoPtr<FdoIRing> ring = gf->CreateRing(curveSegs);
 
 	return FDO_SAFE_ADDREF(ring.p);
 }
@@ -255,6 +260,7 @@ FdoIRing* FdoFgfCurvePolygon::ReadRing(
 /************************************************************************/
 void FdoFgfCurvePolygon::Dispose()
 {
-	delete this;
+    SurrenderByteArray();
+    FGFUTIL_DISPOSE_TO_POOL_OR_HEAP(CurvePolygon);
 }
 

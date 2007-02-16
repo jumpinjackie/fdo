@@ -33,13 +33,13 @@ public:
      * Constructors matching public factory methods.
      */
 
-	FdoFgfMultiCurveString(FdoFgfGeometryFactory * factory, FdoCurveStringCollection* curveStrings);
+	FdoFgfMultiCurveString(FdoFgfGeometryFactory * factory, FdoFgfGeometryPools * pools, FdoCurveStringCollection* curveStrings);
 
     /*
      * Constructors supporting internal needs of this package.
      */
 
-	FdoFgfMultiCurveString(FdoFgfGeometryFactory * factory, FdoByteArray * byteArray, const FdoByte * data, FdoInt32 count);
+	FdoFgfMultiCurveString(FdoFgfGeometryFactory * factory, FdoFgfGeometryPools * pools, FdoByteArray * byteArray, const FdoByte * data, FdoInt32 count);
 
     // Support object re-use, matching the constructor.
 	void Reset(FdoByteArray * byteArray, const FdoByte * data, FdoInt32 count);
