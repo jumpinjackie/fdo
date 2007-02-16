@@ -44,6 +44,8 @@ public:
     // Initializes the handler. Must be called before reading each spatial context.
     void Setup( FdoXmlFlags* pXmlFlags );
 
+    // Decodes any escaped characters in Spatial Context and Coordinate System names. 
+    FdoStringP DecodeName ( FdoStringP name, FdoXmlReader* reader );
 
 protected:
     FdoXmlSCReadHandler() {}

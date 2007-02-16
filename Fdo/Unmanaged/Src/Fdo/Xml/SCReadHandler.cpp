@@ -146,6 +146,22 @@ void FdoXmlSCReadHandler::Setup( FdoXmlFlags* pXmlFlags )
     mElementPrefix = L"";
 }
 
+FdoStringP FdoXmlSCReadHandler::DecodeName ( FdoStringP name, FdoXmlReader* reader )
+{
+    FdoStringP outName = name;
+    
+    if ( mXmlFlags->GetNameAdjust() ) {
+        //Workaround: '.' and ':' are not allowed in schema element names so DecodeName replaces
+        //them with '-dot-' and '-colon'. However '.' and ':' are allowed in spatial context names
+        //so change them back.
+        //The ideal fix is to move the '.' and ':' replacement up from FdoXmlReader to the 
+        //Fdo/Schema level but this would be a bit riskier and should be done in a later version.
+        outName = reader->DecodeName(name).Replace( L"-colon-", L":" ).Replace( L"-dot-", L"." );
+    }
+
+    return outName;
+}
+
 FdoXmlSaxHandler* FdoXmlSCReadHandler::doTransition( 
     FdoBoolean isStart, 
     FdoXmlSaxContext* context, 
@@ -337,9 +353,7 @@ FdoXmlSaxHandler* FdoXmlSCReadHandler::doTransition(
         attr = atts->FindItem( FdoXml::mGmlUri + L":id" );
 
         if ( attr ) {
-            mID = mXmlFlags->GetNameAdjust() ?
-                (FdoString*) reader->DecodeName(attr->GetValue()) :
-                attr->GetValue();
+            mID = DecodeName( attr->GetValue(), reader );
         }
 
         break;
@@ -479,7 +493,7 @@ FdoXmlSaxHandler* FdoXmlSCReadHandler::doTransition(
                     );
                 }
                 else {
-                    mCoordSysName = tokens->GetString(1);
+                    mCoordSysName = DecodeName( tokens->GetString(1), reader );
                 }
             }
         }
@@ -714,9 +728,7 @@ FdoXmlSaxHandler* FdoXmlSCReadHandler::doTransition(
         attr = atts->FindItem( FdoXml::mGmlUri + L":id" );
 
         if ( attr ) {
-            mCsysID = mXmlFlags->GetNameAdjust() ?
-                (FdoString*) reader->DecodeName(attr->GetValue()) :
-                attr->GetValue();
+            mCsysID = DecodeName( attr->GetValue(), reader );
         }
 
         break;

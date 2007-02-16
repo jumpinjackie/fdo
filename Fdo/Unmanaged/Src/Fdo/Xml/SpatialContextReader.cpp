@@ -160,10 +160,6 @@ bool FdoXmlSpatialContextReader::ReadNext()
         mExtent =  gf->GetFgf(geom);
         mSCHandler->mFirst = false;
 
-        // Decode the coordinate system name.
-        if ( mXmlFlags->GetNameAdjust() ) {
-            mSCHandler->mCoordSysName = mXmlReader->DecodeName( mSCHandler->mCoordSysName );
-        }
         return true;
     }
     else {
