@@ -89,6 +89,9 @@ private:
     // Pointer to result structure used by cursor.
     PGresult* mFetchRes;
 
+    // Flag indicating if cursor is closed or active.
+    bool mIsClosed;
+
     //
     // Private operations
     //

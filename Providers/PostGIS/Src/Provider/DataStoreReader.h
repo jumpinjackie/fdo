@@ -75,9 +75,22 @@ protected:
 
 private:
 
-    //FdoPtr<Connection> mConn;
-
+    //
+    // Private data members
+    //
+    
+    // Cursor used to iterate through list of data stores.
     PgCursor* mCursor;
+
+    FdoStringP mDsName;
+    FdoStringP mDsDesc;
+    //FdoPtr<FdoIDataStorePropertyDictionary> mDsProps;
+
+    //
+    // Private operations
+    //
+    
+    void ValidateReadableState();
 
 };
 

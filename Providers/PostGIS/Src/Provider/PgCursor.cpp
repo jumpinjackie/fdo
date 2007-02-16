@@ -25,7 +25,7 @@
 namespace fdo { namespace postgis {
 
 PgCursor::PgCursor(Connection* conn, std::string const& name)
-    : mConn(conn), mName(name), mFetchRes(NULL)
+    : mConn(conn), mName(name), mFetchRes(NULL), mIsClosed(true)
 {
     FDO_SAFE_ADDREF(mConn.p);
 
@@ -52,12 +52,17 @@ PGresult const* PgCursor::GetFetchResult() const
 
 void PgCursor::Declare(char const* query)
 {
-    assert(NULL == mFetchRes);
+    if (!mIsClosed)
+    {
+        Close();
+    }
+
     Validate();
+    assert(NULL == mFetchRes);
 
     ExecStatusType pgStatus = PGRES_FATAL_ERROR;
 
-    // Begin transaction block
+    // Begin transaction
     pgStatus = mConn->PgExecuteCommand("BEGIN");
     assert(PGRES_COMMAND_OK == pgStatus);
 
@@ -68,30 +73,38 @@ void PgCursor::Declare(char const* query)
 
     pgStatus = mConn->PgExecuteCommand(sql.c_str());
     assert(PGRES_COMMAND_OK == pgStatus);
+
+    mIsClosed = false;
 }
 
 void PgCursor::Close()
 {
-    Validate();
+    if (!mIsClosed)
+    {
+        Validate();
+        ClearFetchResult();
 
-    ClearFetchResult();
+        ExecStatusType pgStatus = PGRES_FATAL_ERROR;
 
-    ExecStatusType pgStatus = PGRES_FATAL_ERROR;
+        // Close cursor
+        std::string sql("CLOSE " + mName);
+        pgStatus = mConn->PgExecuteCommand(sql.c_str());
+        assert(PGRES_COMMAND_OK == pgStatus);
 
-    // End transaction block
-    pgStatus = mConn->PgExecuteCommand("COMMIT");
-    assert(PGRES_COMMAND_OK == pgStatus);
+        // End transaction
+        pgStatus = mConn->PgExecuteCommand("COMMIT");
+        assert(PGRES_COMMAND_OK == pgStatus);
 
-    // Close cursor
-    std::string sql("CLOSE " + mName);
-    pgStatus = mConn->PgExecuteCommand(sql.c_str());
-    assert(PGRES_COMMAND_OK == pgStatus);
+        // Mark cursor as released
+        mIsClosed = true;
+    }
 }
 
 PGresult const* PgCursor::FetchNext()
 {
-    ClearFetchResult();
+    assert(false == mIsClosed);
 
+    ClearFetchResult();
     assert(NULL == mFetchRes);
 
     std::string sql("FETCH NEXT FROM " + mName);

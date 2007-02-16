@@ -24,7 +24,8 @@
 
 namespace fdo { namespace postgis {
 
-DataStoreReader::DataStoreReader(PgCursor* cursor) : mCursor(cursor)
+DataStoreReader::DataStoreReader(PgCursor* cursor)
+    : mCursor(cursor)
 {
     assert(NULL != cursor);
 }
@@ -39,7 +40,9 @@ DataStoreReader::~DataStoreReader()
 
 void DataStoreReader::Dispose()
 {
-    Close();
+    delete mCursor;
+    mCursor = NULL;
+
     delete this;
 }
 
@@ -50,26 +53,36 @@ void DataStoreReader::Dispose()
 
 FdoString* DataStoreReader::GetName()
 {   
+    ValidateReadableState();
+
     PGresult const* pgRes = mCursor->GetFetchResult();
+    assert(PGRES_TUPLES_OK == PQresultStatus(pgRes) && 0 != PQntuples(pgRes));
 
+    int const fn = PQfnumber(pgRes, "schemaname");
+    assert(-1 != fn);
 
-    return NULL;
+    std::string val(PQgetvalue(pgRes, 0, fn));
+    mDsName = val.c_str();
+
+    return mDsName;
 }
 
 FdoString* DataStoreReader::GetDescription()
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    ValidateReadableState();
+    return mDsDesc;
 }
 
 bool DataStoreReader::GetIsFdoEnabled()
 {
-    assert(!"NOT IMPLEMENTED");
+    ValidateReadableState();
     return false;
 }
 
 FdoIDataStorePropertyDictionary* DataStoreReader::GetDataStoreProperties()
 {
+    ValidateReadableState();
+
     assert(!"NOT IMPLEMENTED");
     return NULL;
 }
@@ -83,6 +96,7 @@ bool DataStoreReader::ReadNext()
     {
         if (0 != PQntuples(pgRes))
         {
+            ValidateReadableState();
             eof = false;
         }
     }
@@ -94,7 +108,21 @@ void DataStoreReader::Close()
 {
     // TODO: Temporary solution. Make ownership transfer exception safe.
 
-    delete mCursor;
+    if (NULL != mCursor)
+        mCursor->Close();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Private operations
+///////////////////////////////////////////////////////////////////////////////
+
+void DataStoreReader::ValidateReadableState()
+{
+    // TODO: Replace assertions to exceptions.
+
+    PGresult const* pgRes = mCursor->GetFetchResult();
+    assert(PGRES_TUPLES_OK == PQresultStatus(pgRes));
+    assert(0 != PQntuples(pgRes));
 }
 
 }} // namespace fdo::postgis
