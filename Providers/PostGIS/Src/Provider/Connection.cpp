@@ -307,11 +307,14 @@ FdoICommand* Connection::CreateCommand(FdoInt32 type)
 
     FdoPtr<FdoICommand> cmd;
 
-    if (FdoConnectionState_Closed == GetConnectionState()
-        || FdoConnectionState_Pending == GetConnectionState())
+    // TODO: Verify what connection state is required for what commands
+
+    //        || FdoConnectionState_Pending == GetConnectionState())
+
+    if (FdoConnectionState_Closed == GetConnectionState())
     {
         throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_CONNECTION_INVALID,
-                                   "Connection is invalid."));
+                                   "Connection is closed or invalid."));
     }
 
     // Create command of requested type

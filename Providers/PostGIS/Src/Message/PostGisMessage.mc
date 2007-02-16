@@ -101,7 +101,7 @@ King.Oracle Provider does not support configuration files.
 MessageId=2004
 SymbolicName=MSG_POSTGIS_CONNECTION_INVALID
 Language=English
-Connection is invalid.
+Connection is closed or invalid.
 .
 MessageId=2005
 SymbolicName=M_KGORA_CONNECTION_REQUIRED_PROPERTY_NULL

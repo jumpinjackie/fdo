@@ -59,6 +59,7 @@ FdoIDataStoreReader* ListDataStores::Execute()
     fdo::postgis::PgCursor* cursor = mConn->PgCreateCursor(cursorName.c_str());
     cursor->Declare(sql.c_str());
 
+    // Cursor ownership is transfered to the reader
     return (new DataStoreReader(cursor));
 }
 
