@@ -56,7 +56,7 @@ FdoIDataStoreReader* ListDataStores::Execute()
                     "ORDER BY 1");
     
     // Create a cursor associated with query fetching data stores 
-    fdo::postgis::PgCursor* cursor = mConn->PgCreateCursor(cursorName.c_str());
+    PgCursor::Ptr cursor = mConn->PgCreateCursor(cursorName.c_str());
     cursor->Declare(sql.c_str());
 
     // Cursor ownership is transfered to the reader
