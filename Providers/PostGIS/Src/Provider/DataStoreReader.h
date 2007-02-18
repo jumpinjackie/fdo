@@ -18,11 +18,9 @@
 #define FDOPOSTGIS_DATASTOREREADER_H_INCLUDED
 
 #include <string>
+#include "PgCursor.h"
 
 namespace fdo { namespace postgis {
-
-// Forward declarations of internal types
-class PgCursor;
 
 /// Implementation of forward-only and read-only iterator for
 /// reading feature data from a PostGIS datastore.
@@ -80,7 +78,7 @@ private:
     //
     
     // Cursor used to iterate through list of data stores.
-    PgCursor* mCursor;
+    PgCursor::Ptr mCursor;
 
     FdoStringP mDsName;
     FdoStringP mDsDesc;

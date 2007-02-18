@@ -28,6 +28,8 @@ DataStoreReader::DataStoreReader(PgCursor* cursor)
     : mCursor(cursor)
 {
     assert(NULL != cursor);
+
+    FDO_SAFE_ADDREF(mCursor.p);
 }
 
 DataStoreReader::~DataStoreReader()
@@ -40,9 +42,6 @@ DataStoreReader::~DataStoreReader()
 
 void DataStoreReader::Dispose()
 {
-    delete mCursor;
-    mCursor = NULL;
-
     delete this;
 }
 

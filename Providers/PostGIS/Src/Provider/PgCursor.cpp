@@ -34,8 +34,21 @@ PgCursor::PgCursor(Connection* conn, std::string const& name)
 
 PgCursor::~PgCursor()
 {
-    Close();
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoIDisposable interface
+///////////////////////////////////////////////////////////////////////////////
+
+void PgCursor::Dispose()
+{
+    Close();
+    delete this;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// PgCursor interface
+///////////////////////////////////////////////////////////////////////////////
 
 const char* PgCursor::GetName() const
 {
@@ -79,7 +92,7 @@ void PgCursor::Declare(char const* query)
 
 void PgCursor::Close()
 {
-    if (!mIsClosed)
+  //  if (!mIsClosed)
     {
         Validate();
         ClearFetchResult();
@@ -118,7 +131,7 @@ PGresult const* PgCursor::FetchNext()
 
 void PgCursor::Validate()
 {
-    if (FdoConnectionState_Open != mConn->GetConnectionState())
+    if (FdoConnectionState_Closed == mConn->GetConnectionState())
     {
         throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_CONNECTION_INVALID,
             "Connection is closed or invalid."));

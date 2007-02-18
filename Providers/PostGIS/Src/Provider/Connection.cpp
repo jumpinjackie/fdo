@@ -305,17 +305,15 @@ FdoICommand* Connection::CreateCommand(FdoInt32 type)
 {
     FDOLOG_MARKER("Connection::+CreateCommand");
 
-    FdoPtr<FdoICommand> cmd;
-
     // TODO: Verify what connection state is required for what commands
-
     //        || FdoConnectionState_Pending == GetConnectionState())
-
     if (FdoConnectionState_Closed == GetConnectionState())
     {
         throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_CONNECTION_INVALID,
                                    "Connection is closed or invalid."));
     }
+
+    FdoPtr<FdoICommand> cmd;
 
     // Create command of requested type
     switch(type)
@@ -452,8 +450,10 @@ PGresult* Connection::PgExecuteQuery(char const* sql)
 
 fdo::postgis::PgCursor* Connection::PgCreateCursor(char const* name)
 {
-    // TODO: Make ownership transfer exception-safe. See DataStoreReader.
-    return (new fdo::postgis::PgCursor(this, name));
+    PgCursor::Ptr cursor = new PgCursor(this, name);
+
+    FDO_SAFE_ADDREF(cursor.p);
+    return cursor.p;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

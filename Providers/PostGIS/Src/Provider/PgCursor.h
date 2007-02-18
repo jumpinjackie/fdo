@@ -28,9 +28,11 @@ namespace fdo { namespace postgis {
 /// This class declares cursor in frame of a transaction,
 /// also provides interface to fetch and access data.
 ///
-class PgCursor : private boost::noncopyable
+class PgCursor : public FdoIDisposable //private boost::noncopyable
 {
 public:
+
+    typedef FdoPtr<PgCursor> Ptr;
 
     enum Direction
     {
@@ -41,9 +43,6 @@ public:
     /// Constructor creates a named cursor associated with given connection.
     /// It throws an exception if connection is invalid.
     PgCursor(Connection* conn, std::string const& name);
-
-    /// Destructor closes a cursor on destroy.
-    ~PgCursor();
 
     /// Get name of a cursor.
     /// \return String with name used in DECLARE statement.
@@ -73,6 +72,19 @@ public:
 
     /// Fetch tuples.
     PGresult const* FetchNext();
+
+
+protected:
+
+    /// Destructor closes a cursor on destroy.
+    virtual ~PgCursor();
+
+    //
+    // FdoIDisposable interface
+    //
+
+    /// Dispose this object.
+    void Dispose();
 
 private:
 
