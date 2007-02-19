@@ -555,10 +555,20 @@ SymbolicName=MSG_POSTGIS_COMMAND_CREATEDATASTORE_FAILED
 Language=English
 Attempt to create new datastore with name '%1$ls' failed.
 .
-MessageId=7019
+MessageId=7020
 SymbolicName=MSG_POSTGIS_COMMAND_COMMENT_FAILED
 Language=English
 Attempt to assign description for '%1$ls' object failed.
+.
+MessageId=7021
+SymbolicName=MSG_POSTGIS_COMMAND_DESTROYDATASTORE_FAILED
+Language=English
+Attempt to destroy datastore '%1$ls' failed.
+.
+MessageId=7022
+SymbolicName=MSG_POSTGIS_COMMAND_REMOVE_COMMENT_FAILED
+Language=English
+Attempt to remove description for '%1$ls' object failed.
 .
 
 ;//************************************************************************************
