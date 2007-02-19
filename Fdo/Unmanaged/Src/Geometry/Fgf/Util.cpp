@@ -609,3 +609,8 @@ FdoFgfGeometryPools * FgfUtil::GetPoolsNoRef(
     }
     return pools;
 }
+
+void FgfUtil::TakeReleasedByteArray(FdoFgfGeometryPools * pools, FdoByteArray * byteArray)
+{
+    pools->TakeReleasedByteArray(byteArray);
+}

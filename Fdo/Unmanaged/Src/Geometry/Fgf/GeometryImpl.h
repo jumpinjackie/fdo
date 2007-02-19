@@ -64,8 +64,7 @@ public:
     // The array can be either in a FdoByteArray or a native C++ array.
 	virtual void SetFgf(FdoByteArray * fgf, const FdoByte* fgfData, FdoInt32 count)
     {
-        if (m_byteArray != NULL)
-            FgfUtil::GetPoolsNoRef(m_pools)->TakeReleasedByteArray(m_byteArray);
+        SurrenderByteArray();
 
         if (NULL != fgf)
         {
@@ -151,7 +150,7 @@ protected:
         {
             FdoFgfGeometryPools * pools = FgfUtil::GetPoolsNoRef(m_pools);
             if (NULL != pools)
-                pools->TakeReleasedByteArray(m_byteArray);
+                FgfUtil::TakeReleasedByteArray(pools, m_byteArray);
             m_byteArray = NULL;
         }
     }

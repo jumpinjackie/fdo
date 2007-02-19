@@ -206,6 +206,10 @@ public:
     static FdoFgfGeometryPools * GetPoolsNoRef(
           FdoFgfGeometryPools *   privatePools);
 
+    // Wrapper around pools' byte array.  Some compilers (e.g. GNU 3.4.x)
+    // won't allow directly calling from a forward declaration in 
+    // FdoFgfGeometryImpl, so we make the call available here too.
+    static void TakeReleasedByteArray(FdoFgfGeometryPools * pools, FdoByteArray * byteArray);
 };
 
 #endif
