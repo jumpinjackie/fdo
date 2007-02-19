@@ -992,7 +992,6 @@ void FdoRdbmsFilterProcessor::AppendGroupBy( FdoRdbmsFilterUtilConstrainDef *fil
     }
 }
 
-
 bool FdoRdbmsFilterProcessor::ContainsAggregateFunctions( FdoIdentifierCollection *identifiers )
 {
     class FindAggregate : public FdoRdbmsBaseFilterProcessor
@@ -1042,7 +1041,6 @@ bool FdoRdbmsFilterProcessor::ContainsAggregateFunctions( FdoIdentifierCollectio
 
     return false;
 }
-
 
 void FdoRdbmsFilterProcessor::PrependTables()
 {
@@ -1191,8 +1189,13 @@ void FdoRdbmsFilterProcessor::GetLtQualificationClause( const FdoSmLpClassDefini
 
 //
 // The implementation of the public method that converts FDO filter to dbi SQL strings.
-const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter  *filter, const wchar_t *className, SqlCommandType cmdType, FdoCommandType callerFdoCommand, FdoRdbmsFilterUtilConstrainDef *inFilterConstrain,
-                                             bool forUpdate )
+const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter                      *filter,
+                                                     const wchar_t                  *className,
+                                                     SqlCommandType                 cmdType,
+                                                     FdoCommandType                 callerFdoCommand,
+                                                     FdoRdbmsFilterUtilConstrainDef *inFilterConstrain,
+                                                     bool                           forUpdate,
+                                                     FdoInt16                       callerId )
 
 {
     int j;
@@ -1533,7 +1536,9 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter  *filter, const w
             // the featid column.
             // Also if the we have a distinct clause, we should not be adding any columns as that will
             // change the returned result.
-            if( (! isFeatIdOnlyQuery && ! filterConstraint->distinct) && !( useAggregateFunctions && !mRequiresDistinct  ))
+            if( (! isFeatIdOnlyQuery && ! filterConstraint->distinct) && 
+                !( useAggregateFunctions && !mRequiresDistinct  ) && 
+                !( callerId == FdoCommandType_SelectAggregates && !mRequiresDistinct ) )
             {
                 FdoStringP sqlTableName = mDbiConnection->GetSchemaUtil()->GetDbObjectSqlName(mDbiConnection->GetSchemaUtil()->GetClass(mCurrentClassName));
                 const  wchar_t* table = GetTableAlias(sqlTableName);
