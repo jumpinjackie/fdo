@@ -24,7 +24,7 @@
 
 namespace fdo { namespace postgis {
 
-CreateDataStore::CreateDataStore(Connection* conn) : Base(conn)
+CreateDataStore::CreateDataStore(Connection* conn) : Base(conn), mProps(NULL)
 {
 }
 
@@ -32,15 +32,100 @@ CreateDataStore::~CreateDataStore()
 {
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// FdoICreateDataStore interface
+///////////////////////////////////////////////////////////////////////////////
+
 FdoIDataStorePropertyDictionary* CreateDataStore::GetDataStoreProperties()
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    if (NULL == mProps)
+    {
+        FdoPtr<ConnectionProperty> prop;
+
+        // TODO: Connection passed as a weak reference?
+        mProps = new FdoCommonDataStorePropDictionary(mConn);
+
+        // Datastore: isRequired
+        prop = new ConnectionProperty(PropertyDatastoreName,
+            NlsMsgGet(MSG_POSTGIS_PROPERTY_DATASTORE_NAME, "DataStore"),
+            L"", true, false, false, false, false, true, false, 0, NULL);
+        mProps->AddProperty(prop);
+
+        // Description
+        prop = new ConnectionProperty(PropertyDatastoreDescription,
+            NlsMsgGet(MSG_POSTGIS_PROPERTY_DATASTORE_DESCRIPTION, "Description"),
+            L"", false, false, false, false, false, false, false, 0, NULL);
+        mProps->AddProperty(prop);
+    }
+
+    FDO_SAFE_ADDREF(mProps.p);
+    return mProps.p;
 }
 
 void CreateDataStore::Execute()
 {
-    assert(!"NOT IMPLEMENTED");
+    FDOLOG_MARKER("CreateDataStore::+Execute");
+
+    ValidateRequiredProperties();
+
+    FdoStringP dsName(mProps->GetProperty(PropertyDatastoreName));
+    assert(dsName.GetLength() > 0);
+
+    std::string sql("CREATE SCHEMA ");
+    sql += static_cast<char const*>(dsName);
+
+    // Create new schema - FDO datastore
+    ExecStatusType pgStatus = PGRES_FATAL_ERROR;
+    pgStatus = mConn->PgExecuteCommand(sql.c_str());
+    if (PGRES_COMMAND_OK != pgStatus)
+    {
+        throw FdoCommandException::Create(
+            NlsMsgGet(MSG_POSTGIS_COMMAND_CREATEDATASTORE_FAILED,
+            "Attempt to create new datastore with name '%1$ls' failed.",
+            static_cast<FdoString*>(dsName)));
+    }
+
+    // Insert datastore description as a comment for PostgreSQL schema
+    FdoStringP dsDescription(mProps->GetProperty(PropertyDatastoreDescription));
+    if (dsDescription.GetLength() > 0)
+    {
+        sql = "COMMENT ON SCHEMA ";
+        sql += static_cast<char const*>(dsName);
+        sql += " IS \'";
+        sql += static_cast<char const*>(dsDescription);
+        sql += "\'";
+
+        pgStatus = mConn->PgExecuteCommand(sql.c_str());
+        if (PGRES_COMMAND_OK != pgStatus)
+        {
+            throw FdoCommandException::Create(
+                NlsMsgGet(MSG_POSTGIS_COMMAND_COMMENT_FAILED,
+                "Attempt to assign description for '%1$ls' object failed.",
+                static_cast<FdoString*>(dsName)));
+        }
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Private operations
+///////////////////////////////////////////////////////////////////////////////
+
+void CreateDataStore::ValidateRequiredProperties() const
+{
+    assert(NULL != mProps);
+
+    FdoPtr<ConnectionProperty> prop(mProps->FindProperty(PropertyDatastoreName));
+    if( prop && prop->GetIsPropertyRequired())
+    {
+        FdoStringP dsName(prop->GetValue());
+        if (dsName.GetLength() <= 0)
+        {
+            throw FdoCommandException::Create(
+                NlsMsgGet(MSG_POSTGIS_COMMAND_MISSING_REQUIRED_PROPERTY,
+                "The command property '%1$ls' is required but wasn't specified.",
+                PropertyDatastoreName));
+        }
+    }
 }
 
 }} // namespace fdo::postgis

@@ -69,6 +69,12 @@ extern FdoString* PropertyPassword;
 extern FdoString* PropertyService;
 extern FdoString* PropertyDatastore;
 
+//
+// Create datastore command properties
+//
+extern FdoString* PropertyDatastoreName;
+extern FdoString* PropertyDatastoreDescription;
+
 // Custom connection properties
 extern FdoString* PropertyDefaultHostname;
 extern FdoString* PropertyDefaultPort;

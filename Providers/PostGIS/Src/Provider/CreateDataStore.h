@@ -53,7 +53,19 @@ public:
 
 private:
 
+    //
+    // Private data members
+    //
+
     typedef Command<FdoICreateDataStore> Base;
+
+    FdoPtr<FdoCommonDataStorePropDictionary> mProps;
+
+    //
+    // Private operations
+    //
+
+    void ValidateRequiredProperties() const;
 };
 
 }} // namespace fdo::postgis
