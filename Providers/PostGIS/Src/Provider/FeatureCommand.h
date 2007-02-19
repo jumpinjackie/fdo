@@ -99,6 +99,8 @@ FeatureCommand<T>::~FeatureCommand()
 template <typename T>
 inline void FeatureCommand<T>::Dispose()
 {
+    FDOLOG_MARKER("FeatureCommand::#Dispose()");
+
     delete this;
 }
 

@@ -41,18 +41,9 @@ class SQLDataReader : public FdoISQLDataReader
 {
 public:
 
-    /// Construcor creates instance of SQL data reader associated
+    /// Constructor creates instance of SQL data reader associated
     /// with given connection.
     SQLDataReader(Connection* conn);
-    
-    /// Destructor.
-    virtual ~SQLDataReader();
-
-    //
-    // FdoIDisposable interface
-    //
-
-    virtual void Dispose();
 
     //
     // FdoISQLDataReader interface
@@ -117,6 +108,15 @@ public:
     void Close();
 
 protected:
+
+    /// Destructor.
+    virtual ~SQLDataReader();
+
+    //
+    // FdoIDisposable interface
+    //
+
+    virtual void Dispose();
 
 private:
 
