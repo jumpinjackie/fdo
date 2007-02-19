@@ -72,9 +72,14 @@ Language=English
 The file '%1$ls' has an unsupported format (%2$ld).
 .
 MessageId=1010
-SymbolicName=MSG_POSTGIS_SQL_COMMAND_FAILED
+SymbolicName=MSG_POSTGIS_SQL_STATEMENT_EXECUTION_FAILED
 Language=English
-SQL command failed with PostgreSQL error code: %1$ls. %2$ls.
+The execution of SQL statement failed with PostgreSQL error code: %1$ls, %2$ls.
+.
+MessageId=1011
+SymbolicName=MSG_POSTGIS_COMMAND_SQL_FAILED
+Language=English
+The execution of SQL command failed.
 .
 
 ;//************************************************************************************
@@ -569,6 +574,11 @@ MessageId=7022
 SymbolicName=MSG_POSTGIS_COMMAND_REMOVE_COMMENT_FAILED
 Language=English
 Attempt to remove description for '%1$ls' object failed.
+.
+MessageId=7023
+SymbolicName=MSG_POSTGIS_COMMAND_SQL_INVALID
+Language=English
+The passed SQL statement is invalid or empty: '%1$ls'.
 .
 
 ;//************************************************************************************

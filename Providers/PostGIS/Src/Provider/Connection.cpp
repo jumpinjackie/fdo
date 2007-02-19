@@ -400,33 +400,40 @@ ExecStatusType Connection::PgExecuteCommand(char const* sql, FdoSize& cmdTuples)
     FDOLOG_MARKER("Connection::+PgExecuteCommand");
     FDOLOG_WRITE("SQL command: %s", sql);
 
-    cmdTuples = 0;
+    ValidateConnectionState();
+
     boost::shared_ptr<PGresult> pgRes(PQexec(mPgConn, sql), PQclear);
 
-    ExecStatusType pgResStatus = PQresultStatus(pgRes.get());
-    if (PGRES_COMMAND_OK != pgResStatus)
+    ExecStatusType pgStatus = PQresultStatus(pgRes.get());
+    if (PGRES_COMMAND_OK != pgStatus)
     {
-        FDOLOG_WRITE("PostgreSQL failed executing SQL command:\n\tCODE: %s\n\t%s\n\tSQL: %s",
-            PQresStatus(pgResStatus), PQresultErrorMessage(pgRes.get()), sql);
+        // TODO: What about automatically logging exception?
+        // FDOLOG_WRITE("PostgreSQL failed executing SQL command:\n\tCODE: %s\n\t%s\n\tSQL: %s",
+        //    PQresStatus(pgStatus), PQresultErrorMessage(pgRes.get()), sql);
 
-        // TODO: Consider throwing instead of returning result status
-        //throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_SQL_COMMAND_FAILED,
-        //    "SQL command failed with PostgreSQL error code: %1$ls. %2$ls.",
-        //    static_cast<FdoString*>(errStatus), static_cast<FdoString*>(errMsg)));
-    }
-    else
-    {
-        try
-        {
-            std::string num(PQcmdTuples(pgRes.get()));
-            cmdTuples = boost::lexical_cast<std::size_t>(num);
-        }
-        catch (boost::bad_lexical_cast& e) { e; /* cmdTuples = 0; */ }
+        FdoStringP errCode(PQresStatus(pgStatus));
+        FdoStringP errMsg(PQresultErrorMessage(pgRes.get()));
 
-        FDOLOG_WRITE("SQL affected tuples: %u", cmdTuples);
+        // TODO: Consider translation of PostgreSQL status to FDO exception (new types?)
+        throw FdoCommandException::Create(NlsMsgGet(MSG_POSTGIS_SQL_STATEMENT_EXECUTION_FAILED,
+            "The execution of SQL statement failed with PostgreSQL error code: %1$ls, %2$ls.",
+            static_cast<FdoString*>(errCode), static_cast<FdoString*>(errMsg)));
     }
 
-    return pgResStatus;
+    try
+    {
+        std::string num(PQcmdTuples(pgRes.get()));
+        cmdTuples = boost::lexical_cast<std::size_t>(num);
+    }
+    catch (boost::bad_lexical_cast& e)
+    {
+        cmdTuples = 0;
+        e; // Anti-warning hack
+    }
+
+    FDOLOG_WRITE("SQL affected tuples: %u", cmdTuples);
+
+    return pgStatus;
 }
 
 PGresult* Connection::PgExecuteQuery(char const* sql)
@@ -636,7 +643,7 @@ void Connection::SetPgActiveSchema(FdoStringP schema)
         FdoStringP errStatus(PQresStatus(pgResStatus));
         FdoStringP errMsg(PQresultErrorMessage(pgRes.get()));
 
-        throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_SQL_COMMAND_FAILED,
+        throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_SQL_STATEMENT_EXECUTION_FAILED,
             "SQL command failed with PostgreSQL error code: %1$ls. %2$ls.",
             static_cast<FdoString*>(errStatus), static_cast<FdoString*>(errMsg)));
     }

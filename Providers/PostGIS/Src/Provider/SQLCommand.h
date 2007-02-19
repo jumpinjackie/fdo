@@ -38,20 +38,53 @@ class SQLCommand : public Command<FdoISQLCommand>
 {
 public:
 
+    /// Constructor create new SQL command associated with given connection.
     SQLCommand(Connection* Connection);
-    virtual ~SQLCommand();
 
+    //
+    // FdoISQLCommand interface
+    //
+
+    /// Get a string with SQL statement assigned to the command.
     virtual FdoString* GetSQLStatement();
+
+    /// Set new SQL statement to be executed by the command.
     virtual void SetSQLStatement(FdoString* sql);
     
+    /// Execute assigned SQL statement against current connection.
+    ///
+    /// \return
+    /// Number of rows (tuples) affected by the command execution.
+    ///
     virtual FdoInt32 ExecuteNonQuery();
+
+    /// Execute assigned SQL statement against current connection and
+    /// create data reader associated with the result set.
+    /// 
+    /// \return
+    /// Returns the data reader.
+    /// 
     virtual FdoISQLDataReader* ExecuteReader();
 
 protected:
 
+    // Destructor.
+    virtual ~SQLCommand();
+
 private:
 	
+    //
+    // Private data members
+    //
+
     typedef Command<FdoISQLCommand> Base;
+
+    FdoStringP mSql;
+
+    //
+    // Private operations
+    //
+
 };
 
 }} // namespace fdo::postgis
