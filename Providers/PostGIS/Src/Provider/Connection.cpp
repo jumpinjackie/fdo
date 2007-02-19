@@ -393,6 +393,7 @@ ExecStatusType Connection::PgExecuteCommand(char const* sql)
 ExecStatusType Connection::PgExecuteCommand(char const* sql, FdoSize& cmdTuples)
 {
     FDOLOG_MARKER("Connection::+PgExecuteCommand");
+    FDOLOG_WRITE("SQL command: %s", sql);
 
     cmdTuples = 0;
     boost::shared_ptr<PGresult> pgRes(PQexec(mPgConn, sql), PQclear);
@@ -417,7 +418,7 @@ ExecStatusType Connection::PgExecuteCommand(char const* sql, FdoSize& cmdTuples)
         }
         catch (boost::bad_lexical_cast& e) { e; /* cmdTuples = 0; */ }
 
-        FDOLOG_WRITE("SQL command: %s (%u)", PQcmdStatus(pgRes.get()), cmdTuples);
+        FDOLOG_WRITE("SQL affected tuples: %u", cmdTuples);
     }
 
     return pgResStatus;
@@ -426,6 +427,7 @@ ExecStatusType Connection::PgExecuteCommand(char const* sql, FdoSize& cmdTuples)
 PGresult* Connection::PgExecuteQuery(char const* sql)
 {
     FDOLOG_MARKER("Connection::+PgExecuteQuery");
+    FDOLOG_WRITE("SQL command: %s", sql);
 
     PGresult* pgRes = NULL;
     ExecStatusType pgStatus = PGRES_FATAL_ERROR;
@@ -450,6 +452,9 @@ PGresult* Connection::PgExecuteQuery(char const* sql)
 
 fdo::postgis::PgCursor* Connection::PgCreateCursor(char const* name)
 {
+    FDOLOG_MARKER("Connection::+PgCreateCursor");
+    FDOLOG_WRITE("Cursor name: %s", name);
+
     PgCursor::Ptr cursor = new PgCursor(this, name);
 
     FDO_SAFE_ADDREF(cursor.p);
