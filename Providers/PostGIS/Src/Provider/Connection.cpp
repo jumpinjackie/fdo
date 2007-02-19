@@ -304,6 +304,9 @@ FdoITransaction* Connection::BeginTransaction()
 FdoICommand* Connection::CreateCommand(FdoInt32 type)
 {
     FDOLOG_MARKER("Connection::+CreateCommand");
+    FDOLOG_WRITE(L"Command type: %s",
+        static_cast<FdoString*>(FdoCommonMiscUtil::FdoCommandTypeToString(type)));
+    
 
     // TODO: Verify what connection state is required for what commands
     //        || FdoConnectionState_Pending == GetConnectionState())

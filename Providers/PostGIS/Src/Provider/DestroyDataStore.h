@@ -24,7 +24,6 @@
 //
 class FdoIDataStorePropertyDictionary;
 
-
 namespace fdo { namespace postgis {
 
 // Forward declarations of internal types
@@ -36,9 +35,6 @@ class Connection;
 class DestroyDataStore : public Command<FdoIDestroyDataStore>
 {
 public:
-
-    /// Default constructor.
-    DestroyDataStore();
 
     /// Creates command for given connection.
     DestroyDataStore(Connection* conn);
@@ -59,7 +55,19 @@ public:
 
 private:
 
+    //
+    // Private data members
+    //
+
     typedef Command<FdoIDestroyDataStore> Base;
+
+    FdoPtr<FdoCommonDataStorePropDictionary> mProps;
+
+    //
+    // Private operations
+    //
+
+    void ValidateRequiredProperties() const;
 };
 
 }} // namespace fdo::postgis
