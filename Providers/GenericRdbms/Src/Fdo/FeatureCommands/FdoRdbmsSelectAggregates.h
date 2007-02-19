@@ -81,7 +81,7 @@ public:
         if( NULL == pSelect.p )
             throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_22, errorMsg ));
 
-        return new FdoRdbmsDataReader( FdoPtr<FdoRdbmsFeatureReader>((FdoRdbmsFeatureReader*)pSelect->Execute( mbDistinct ) ) );
+        return new FdoRdbmsDataReader( FdoPtr<FdoRdbmsFeatureReader>((FdoRdbmsFeatureReader*)pSelect->Execute( mbDistinct, FdoCommandType_SelectAggregates ) ) );
     }
 
     /// <summary>Set the distinct option of the selection. Note that grouping criteria is not supported with Distinct.
