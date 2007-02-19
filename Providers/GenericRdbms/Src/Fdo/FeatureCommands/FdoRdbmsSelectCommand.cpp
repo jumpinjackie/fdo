@@ -79,7 +79,7 @@ FdoRdbmsSelectCommand::~FdoRdbmsSelectCommand()
     FDO_SAFE_RELEASE(mOrderingIdentifiers);
 }
 
-FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct )
+FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 callerId  )
 {
     int                 qid = -1;
     bool                res = false;
@@ -102,7 +102,13 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct )
         filterConstrain.orderByProperties = mOrderingIdentifiers;
 
         // Call FilterToSql just to populate the filter's list of geometric conditions;
-        FdoString * sqlString = flterProcessor->FilterToSql( this->GetFilterRef(), this->GetClassNameRef()->GetText(), SqlCommandType_Select, FdoCommandType_Select, &filterConstrain, isForUpdate );
+        FdoString * sqlString = flterProcessor->FilterToSql( this->GetFilterRef(),
+                                                             this->GetClassNameRef()->GetText(),
+                                                             SqlCommandType_Select,
+                                                             FdoCommandType_Select,
+                                                             &filterConstrain,
+                                                             isForUpdate,
+                                                             callerId );
 
         FdoPtr<FdoRdbmsSecondarySpatialFilterCollection> geometricConditions = flterProcessor->GetGeometricConditions();
         FdoPtr<FdoIdentifierCollection> idsWithGeoms = FdoIdentifierCollection::Create();
@@ -136,7 +142,13 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct )
                         idsWithGeoms->Insert(0, id);
                     }
                     filterConstrain.selectedProperties = idsWithGeoms;
-                    sqlString = flterProcessor->FilterToSql( this->GetFilterRef(), this->GetClassNameRef()->GetText(), SqlCommandType_Select, FdoCommandType_Select, &filterConstrain, isForUpdate );
+                    sqlString = flterProcessor->FilterToSql( this->GetFilterRef(),
+                                                             this->GetClassNameRef()->GetText(),
+                                                             SqlCommandType_Select,
+                                                             FdoCommandType_Select,
+                                                             &filterConstrain,
+                                                             isForUpdate,
+                                                             callerId );
                 }
             }
         }
