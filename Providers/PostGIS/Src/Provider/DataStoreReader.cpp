@@ -69,6 +69,16 @@ FdoString* DataStoreReader::GetName()
 FdoString* DataStoreReader::GetDescription()
 {
     ValidateReadableState();
+
+    PGresult const* pgRes = mCursor->GetFetchResult();
+    assert(PGRES_TUPLES_OK == PQresultStatus(pgRes) && 0 != PQntuples(pgRes));
+
+    int const fn = PQfnumber(pgRes, "description");
+    assert(-1 != fn);
+
+    std::string val(PQgetvalue(pgRes, 0, fn));
+    mDsDesc = val.c_str();
+
     return mDsDesc;
 }
 
@@ -82,7 +92,14 @@ FdoIDataStorePropertyDictionary* DataStoreReader::GetDataStoreProperties()
 {
     ValidateReadableState();
 
-    assert(!"NOT IMPLEMENTED");
+    // TODO: To be implemented
+    // Create a provider specific datastore dictionary property.
+    //if (NULL != mDsProps)
+    //{
+    //    mDsProps = mConn->CreateDataStoreProperties( FDO_RDBMS_DATASTORE_FOR_READ );
+    //}
+    //FDO_SAFE_ADDREF(mDsProps.p);
+
     return NULL;
 }
 

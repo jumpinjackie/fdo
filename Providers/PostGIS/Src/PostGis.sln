@@ -23,11 +23,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTest", "UnitTest\UnitTe
 		{A250F14F-E1A9-4F17-9E35-2D2CA8013AA4} = {A250F14F-E1A9-4F17-9E35-2D2CA8013AA4}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "connect", "..\..\..\Samples\connect\connect.vcproj", "{49A2CD46-D915-41B5-B45B-44B2139F6452}"
-	ProjectSection(ProjectDependencies) = postProject
-		{81A1E411-2952-42B5-8430-B588A89D9BE2} = {81A1E411-2952-42B5-8430-B588A89D9BE2}
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "list_datastores", "..\..\..\Samples\list_datastores\list_datastores.vcproj", "{5E43AD6D-7A5F-4A65-B04E-07033EA24340}"
 	ProjectSection(ProjectDependencies) = postProject
 		{81A1E411-2952-42B5-8430-B588A89D9BE2} = {81A1E411-2952-42B5-8430-B588A89D9BE2}
@@ -57,10 +52,6 @@ Global
 		{7F2484C6-7E04-494F-AC89-87AD765CC311}.Debug|Win32.Build.0 = Debug|Win32
 		{7F2484C6-7E04-494F-AC89-87AD765CC311}.Release|Win32.ActiveCfg = Release|Win32
 		{7F2484C6-7E04-494F-AC89-87AD765CC311}.Release|Win32.Build.0 = Release|Win32
-		{49A2CD46-D915-41B5-B45B-44B2139F6452}.Debug|Win32.ActiveCfg = Debug|Win32
-		{49A2CD46-D915-41B5-B45B-44B2139F6452}.Debug|Win32.Build.0 = Debug|Win32
-		{49A2CD46-D915-41B5-B45B-44B2139F6452}.Release|Win32.ActiveCfg = Release|Win32
-		{49A2CD46-D915-41B5-B45B-44B2139F6452}.Release|Win32.Build.0 = Release|Win32
 		{5E43AD6D-7A5F-4A65-B04E-07033EA24340}.Debug|Win32.ActiveCfg = Debug|Win32
 		{5E43AD6D-7A5F-4A65-B04E-07033EA24340}.Debug|Win32.Build.0 = Debug|Win32
 		{5E43AD6D-7A5F-4A65-B04E-07033EA24340}.Release|Win32.ActiveCfg = Release|Win32
@@ -70,7 +61,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{49A2CD46-D915-41B5-B45B-44B2139F6452} = {6F922396-7A7B-48E3-9F14-29FAFBE41301}
 		{5E43AD6D-7A5F-4A65-B04E-07033EA24340} = {6F922396-7A7B-48E3-9F14-29FAFBE41301}
 	EndGlobalSection
 EndGlobal

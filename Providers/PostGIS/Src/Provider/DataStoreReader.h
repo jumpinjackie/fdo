@@ -82,7 +82,9 @@ private:
 
     FdoStringP mDsName;
     FdoStringP mDsDesc;
-    //FdoPtr<FdoIDataStorePropertyDictionary> mDsProps;
+
+    // TODO: Waiting for DataStoreReader::GetDataStoreProperties()
+    FdoPtr<FdoIDataStorePropertyDictionary> mDsProps;
 
     //
     // Private operations

@@ -92,7 +92,7 @@ void PgCursor::Declare(char const* query)
 
 void PgCursor::Close()
 {
-  //  if (!mIsClosed)
+    if (!mIsClosed)
     {
         Validate();
         ClearFetchResult();
@@ -131,8 +131,12 @@ PGresult const* PgCursor::FetchNext()
 
 void PgCursor::Validate()
 {
+    FDOLOG_MARKER("PgCursor::Validate");
+
     if (FdoConnectionState_Closed == mConn->GetConnectionState())
     {
+        FDOLOG_WRITE("Connection is closed or invalid.");
+
         throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_CONNECTION_INVALID,
             "Connection is closed or invalid."));
     }
