@@ -178,7 +178,7 @@ protected:
     virtual ~FdoPool(void)
     {
         m_AllowAdds = false;
-        Clear();
+        FdoCollection <OBJ, EXC>::Clear();
     }
 private:
     FdoInt32    m_MaxSize;  // Maximum number of objects in the pool.
