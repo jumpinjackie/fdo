@@ -65,7 +65,7 @@ class FdoRdbmsSelectCommand : public FdoRdbmsFeatureCommand<FdoISelect>
 
       //    Executes the select command and returns an object that
       //    implements IFeatureReader. Only distinct properties will be returned if distinct is set to true
-      FdoIFeatureReader *Execute ( bool distinct );
+      FdoIFeatureReader *Execute ( bool distinct, FdoInt16 callerId = FdoCommandType_Select );
 
       virtual ~FdoRdbmsSelectCommand();
 
@@ -97,7 +97,7 @@ class FdoRdbmsSelectCommand : public FdoRdbmsFeatureCommand<FdoISelect>
 
       //    Executes the select command and returns an object that
       //    implements IFeatureReader.
-      virtual FdoIFeatureReader *Execute () { return Execute( false ); }
+      virtual FdoIFeatureReader *Execute () { return Execute( false, FdoCommandType_Select ); }
 
     /// <summary>Gets the IdentifierCollection that holds the list of property names to
     /// return with the result. If empty all properties of the specified class
