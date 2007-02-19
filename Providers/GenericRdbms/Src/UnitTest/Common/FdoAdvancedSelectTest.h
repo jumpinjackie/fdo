@@ -34,6 +34,10 @@ class FdoAdvancedSelectTest : public CppUnit::TestCase
   CPPUNIT_TEST (getDataTypeTest);
   //CPPUNIT_TEST( orderByTest2 );
   CPPUNIT_TEST( groupByorderByTest );
+  CPPUNIT_TEST( checkDataReaderContentOnSelAggRequestWithAggrFunction );
+  CPPUNIT_TEST( checkDataReaderContentOnSelAggRequestWithNumCharFunction );
+  CPPUNIT_TEST( checkFeatureReaderContentOnSelRequestWithAggrFunction );
+  CPPUNIT_TEST( checkFeatureReaderContentOnSelRequestWithNumCharFunction );
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -53,6 +57,10 @@ public:
 	virtual void groupByorderByTest();
 	virtual void orderByTest2();
     virtual void getDataTypeTest();
+    virtual void checkDataReaderContentOnSelAggRequestWithAggrFunction();
+    virtual void checkDataReaderContentOnSelAggRequestWithNumCharFunction();
+    virtual void checkFeatureReaderContentOnSelRequestWithAggrFunction();
+    virtual void checkFeatureReaderContentOnSelRequestWithNumCharFunction();
 
 protected:
 	virtual void connect ();
