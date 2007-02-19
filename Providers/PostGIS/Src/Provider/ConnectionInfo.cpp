@@ -45,6 +45,8 @@ ConnectionInfo::~ConnectionInfo()
 
 void ConnectionInfo::Dispose()
 {
+    FDOLOG_MARKER("ConnectionInfo::#Dispose");
+
     delete this;
 }
 

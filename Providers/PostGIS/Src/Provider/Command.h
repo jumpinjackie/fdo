@@ -111,6 +111,9 @@ Command<T>::~Command()
 template <typename T>
 void Command<T>::Dispose()
 {
+    FDOLOG_MARKER("Command::#Dispose()");
+
+    delete this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

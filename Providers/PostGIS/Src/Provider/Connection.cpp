@@ -79,6 +79,8 @@ Connection::~Connection()
 
 void Connection::Dispose()
 {
+    FDOLOG_MARKER("Connection::#Dispose");
+
     delete this;
 }
 

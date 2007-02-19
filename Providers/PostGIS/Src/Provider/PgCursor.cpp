@@ -42,6 +42,8 @@ PgCursor::~PgCursor()
 
 void PgCursor::Dispose()
 {
+    FDOLOG_MARKER("PgCursor::#Dispose");
+
     Close();
     delete this;
 }
@@ -65,6 +67,8 @@ PGresult const* PgCursor::GetFetchResult() const
 
 void PgCursor::Declare(char const* query)
 {
+    FDOLOG_MARKER("PgCursor::+Declare");
+
     if (!mIsClosed)
     {
         Close();
@@ -92,6 +96,8 @@ void PgCursor::Declare(char const* query)
 
 void PgCursor::Close()
 {
+    FDOLOG_MARKER("PgCursor::+Close");
+
     if (!mIsClosed)
     {
         Validate();
