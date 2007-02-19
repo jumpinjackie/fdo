@@ -221,31 +221,36 @@ SymbolicName=M_KGORA_CONNECTION_PROPERTY_TEMPORARY_FILE_LOCATION
 Language=English
 TemporaryFileLocation
 .
-
 MessageId=3003
 SymbolicName=MSG_POSTGIS_CONNECTION_PROPERTY_SERVICE_NAME
 Language=English
 ServiceName
 .
-
 MessageId=3004
 SymbolicName=MSG_POSTGIS_CONNECTION_PROPERTY_USERNAME
 Language=English
 UserName
 .
-
 MessageId=3005
 SymbolicName=MSG_POSTGIS_CONNECTION_PROPERTY_PASSWORD
 Language=English
 Password
 .
-
 MessageId=3006
 SymbolicName=MSG_POSTGIS_CONNECTION_PROPERTY_DATASTORE
 Language=English
 DataStore
 .
-
+MessageId=3007
+SymbolicName=MSG_POSTGIS_PROPERTY_DATASTORE_NAME
+Language=English
+DataStore
+.
+MessageId=3008
+SymbolicName=MSG_POSTGIS_PROPERTY_DATASTORE_DESCRIPTION
+Language=English
+Description
+.
 
 ;//************************************************************************************
 ;//************************************************************************************
@@ -456,7 +461,7 @@ Invalid parameter type.
 
 ;//************************************************************************************
 ;//************************************************************************************
-;//** FEATURE COMMAND MESSAGES 
+;//** COMMAND MESSAGES 
 ;//************************************************************************************
 ;//************************************************************************************
 
@@ -469,7 +474,6 @@ MessageId=7002
 SymbolicName=M_KGORA_COMMAND_TIMEOUT_NOT_SUPPORTED
 Language=English
 Command timeout is not supported.
-
 .
 MessageId=7004
 SymbolicName=M_KGORA_COMMAND_PROPERTY_NOT_FOUND
@@ -541,7 +545,21 @@ SymbolicName=M_KGORA_READ_ONLY_DELETE
 Language=English
 Cannot delete from read-only file '%1$ls'.
 .
-
+MessageId=7018
+SymbolicName=MSG_POSTGIS_COMMAND_MISSING_REQUIRED_PROPERTY
+Language=English
+The command property '%1$ls' is required but wasn't specified.
+.
+MessageId=7019
+SymbolicName=MSG_POSTGIS_COMMAND_CREATEDATASTORE_FAILED
+Language=English
+Attempt to create new datastore with name '%1$ls' failed.
+.
+MessageId=7019
+SymbolicName=MSG_POSTGIS_COMMAND_COMMENT_FAILED
+Language=English
+Attempt to assign description for '%1$ls' object failed.
+.
 
 ;//************************************************************************************
 ;//************************************************************************************
@@ -726,3 +744,4 @@ SymbolicName=MSG_POSTGIS_PROVIDER_DESCRIPTION
 Language=English
 Read/write access to spatial and attribute data in an PostGIS.
 .
+
