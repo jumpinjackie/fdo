@@ -117,8 +117,6 @@ public:
 
     SDF_API virtual void ProcessGeometryValue(FdoGeometryValue& expr);
 
-    static void ValidateFilter( FdoClassDefinition *cls, FdoFilter *filter );
-
 public:
 
     //-----------------------------------------------------------------

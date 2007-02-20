@@ -585,6 +585,43 @@ void MasterTest::spatialFilter()
     conn->Close();
 }
 
+void MasterTest::spatialInsideFilter()
+{
+    FdoPtr<FdoIConnection> conn = CreateConnection();
+
+    openConnection(conn, SHP_PATH);    
+    
+    FdoPtr<FdoISelect> select = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+
+    select->SetFeatureClassName(L"World_Countries");
+
+   
+    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+    // 
+    double coords[] = { -18.6448,49.1377,
+                        35.8678, 49.1377, 
+                        35.8678,11.7581, 
+                        -18.6448, 11.7581, 
+                        -18.6448,49.1377 }; //last pt equals first for rings
+
+    FdoPtr<FdoILinearRing> outer = gf->CreateLinearRing(0, 10, coords);
+    FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(outer, NULL);
+
+
+    FdoPtr<FdoByteArray> polyfgf = gf->GetFgf(poly);
+    FdoPtr<FdoGeometryValue> gv = FdoGeometryValue::Create(polyfgf);
+    FdoPtr<FdoSpatialCondition> filter = FdoSpatialCondition::Create(L"SHPGEOM", FdoSpatialOperations_Inside, gv);
+    select->SetFilter(filter);
+    FdoPtr<FdoIFeatureReader> rdr = select->Execute();
+    int count2 = 0;
+    while (rdr->ReadNext())
+        count2++;
+
+    rdr->Close();
+    conn->Close();
+
+    CPPUNIT_ASSERT(count2 == 53);
+}
 
 void MasterTest::coordSysTest()
 {

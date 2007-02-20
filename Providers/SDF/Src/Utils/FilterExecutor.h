@@ -20,7 +20,7 @@
 #include "DataValue.h"
 #include "DataValueStack.h"
 
-typedef DataValueStack<DataValue> retval_stack;
+typedef DataValueStack<DataValue> sdf_retval_stack;
 
 //forward declare
 class DataValuePool;
@@ -130,7 +130,7 @@ public:
 
 protected:
     //execution stack
-    retval_stack m_retvals;
+    sdf_retval_stack m_retvals;
 
     //feature reader
     FdoIFeatureReader* m_reader;

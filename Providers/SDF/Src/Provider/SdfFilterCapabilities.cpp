@@ -87,7 +87,7 @@ FdoSpatialOperations* SdfFilterCapabilities::GetSpatialOperations(FdoInt32& leng
 //      FdoSpatialOperations_Touches,
         FdoSpatialOperations_Within,
 //      FdoSpatialOperations_CoveredBy
-//      FdoSpatialOperations_Inside
+        FdoSpatialOperations_Inside,
         FdoSpatialOperations_EnvelopeIntersects
     };
 

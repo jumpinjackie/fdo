@@ -21,7 +21,7 @@
 #include "SdfQueryOptimizer.h"
 #include "SdfSimpleFeatureReader.h"
 #include "FilterExecutor.h"
-
+#include "FdoCommonFilterExecutor.h"
 //-------------------------------------------------------
 // Constructor / destructor
 //-------------------------------------------------------
@@ -117,7 +117,11 @@ FdoIFeatureReader* SdfSelect::Execute()
         throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_75_CLASS_NOTFOUND), m_className->GetName()));
     
     if( m_filter != NULL )
-        SdfQueryOptimizer::ValidateFilter( clas, m_filter );
+	{
+		FdoPtr<FdoIFilterCapabilities> filterCaps = m_connection->GetFilterCapabilities();
+
+        FdoCommonFilterExecutor::ValidateFilter( clas, m_filter, m_properties, filterCaps );
+	}
 
     //get the R-Tree for this feature class... 
     SdfRTree* rt = m_connection->GetRTree(clas);
