@@ -23,7 +23,7 @@
 #include "SdfDeletingFeatureReader.h"
 #include "DataDb.h"
 #include "PropertyIndex.h"
-
+#include "FdoCommonFilterExecutor.h"
 
 //-------------------------------------------------------
 // Constructor / destructor
@@ -73,8 +73,12 @@ FdoInt32 SdfDelete::Execute()
         m_connection->GetSchema()->GetClasses())->FindItem(m_className->GetName());
     if( clas == NULL )
         throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_75_CLASS_NOTFOUND), m_className->GetName()));
+
     if( m_filter != NULL )
-        SdfQueryOptimizer::ValidateFilter( clas, m_filter );
+	{
+		FdoPtr<FdoIFilterCapabilities> filterCaps = m_connection->GetFilterCapabilities();
+        FdoCommonFilterExecutor::ValidateFilter( clas, m_filter, NULL, filterCaps );
+	}
 
 	m_connection->FlushAll( clas, true );
 

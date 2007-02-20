@@ -80,6 +80,7 @@ class MasterTest : public CppUnit::TestFixture
     CPPUNIT_TEST_SUITE(MasterTest);
     CPPUNIT_TEST(rtreeFilter);
     CPPUNIT_TEST(spatialFilter);
+    CPPUNIT_TEST(spatialInsideFilter);
     CPPUNIT_TEST(stringFilter);
     CPPUNIT_TEST(computedPropTest);
     CPPUNIT_TEST(keyFilterBeforeDelete);
@@ -118,6 +119,7 @@ public:
     void stringFilter();
     void rtreeFilter();
     void spatialFilter();
+    void spatialInsideFilter();
     void coordSysTest();
     void computedPropTest();
     void selectDistinctTests();

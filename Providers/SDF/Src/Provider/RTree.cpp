@@ -852,8 +852,28 @@ int SdfRTree::Delete(Bounds& bounds, SQLiteData& featureKey)
             DeleteNode(*rootRecno);
 
             //set new root
-            *rootNode = tmpNode;
-            *rootRecno = tmpRecno;
+            if( *rootRecno == m_rootRecno )
+            {
+                // a special handling is required if we delete the root record.
+                m_rootNode = *rootNode = tmpNode;
+                m_rootRecno = *rootRecno = tmpRecno;
+                // The old root node record is deleted, we need save the new root node record in the boot
+                // record
+                REC_NO bootRecno = 1;
+                SQLiteData keyboot(&bootRecno, sizeof(REC_NO));
+                SQLiteData databoot(&m_rootRecno, sizeof(REC_NO));
+
+                if (m_db->put(0, &keyboot, &databoot, 0) != 0)
+                    throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_19_SPATIAL_INDEX_ERROR)));
+
+		        m_oldRootRecno = m_rootRecno;
+
+            }
+            else
+            {  
+                *rootNode = tmpNode;
+                *rootRecno = tmpRecno;
+            }
         }
         return 0;
     }
