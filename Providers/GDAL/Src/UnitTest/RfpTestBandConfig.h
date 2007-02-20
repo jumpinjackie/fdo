@@ -36,7 +36,7 @@ class RfpTestBandConfig : public RfpTestCase
 
 	CPPUNIT_TEST_SUITE(RfpTestBandConfig);
 	CPPUNIT_TEST(testOverrides);
-	CPPUNIT_TEST(testGeoReference);
+//	CPPUNIT_TEST(testGeoReference);
 	CPPUNIT_TEST(testNoGeoReference);
 	CPPUNIT_TEST(testMixDataModel1);
 	CPPUNIT_TEST(testMixDataModel2);
