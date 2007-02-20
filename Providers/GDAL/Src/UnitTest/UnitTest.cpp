@@ -72,6 +72,8 @@ void UnitTestMainProc()
 {
 	CppUnit::TextUi::TestRunner runner;
 
+        std::cout << "Test Report\n";
+
 #ifdef TEST_JPG	
 	runner.addTest(RfpTestJpg::suite());
 #endif
@@ -172,10 +174,10 @@ void UnitTestMainProc()
 
 	runner.run("", wait); 
 #else
-	runner.setOutputter( new CppUnit::XmlOutputter( 
+	runner.setOutputter( new CppUnit::TextOutputter( 
                            &runner.result(),
                            std::cout ) );
-	runner.run("", true); 
+	runner.run("", false); 
 
 #endif
 }
