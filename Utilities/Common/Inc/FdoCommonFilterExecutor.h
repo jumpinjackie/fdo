@@ -72,6 +72,14 @@ public:
     static FdoCommonFilterExecutor* Create (FdoIReader* featureReader, FdoIdentifierCollection* compIdents);
 
     /// \brief
+    /// Validate the properties mentioned in the filter against class properties and identifiers.
+    /// 
+    /// \return
+	/// Throws "The identifier 'IdName' was not recognized" exception.
+    /// 
+	static void ValidateFilter( FdoClassDefinition *cls, FdoFilter *filter, FdoIdentifierCollection *selIds = NULL, FdoIFilterCapabilities *filterCapabilities = NULL);
+
+    /// \brief
     /// Increase the reference count.
     /// 
     /// \return
