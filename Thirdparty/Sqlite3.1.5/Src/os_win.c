@@ -112,7 +112,7 @@ int sqlite3OsOpenReadWrite(
      FILE_SHARE_READ | FILE_SHARE_WRITE,
      NULL,
      OPEN_ALWAYS,
-     FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS,
+     FILE_ATTRIBUTE_NORMAL, /* OSGeo removed FILE_FLAG_RANDOM_ACCESS as it triggers an excessive disk cache usage */
      NULL
   );
   if( h==INVALID_HANDLE_VALUE ){
@@ -121,7 +121,7 @@ int sqlite3OsOpenReadWrite(
        FILE_SHARE_READ,
        NULL,
        OPEN_ALWAYS,
-       FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS,
+       FILE_ATTRIBUTE_NORMAL, /* OSGeo removed FILE_FLAG_RANDOM_ACCESS as it triggers an excessive disk cache usage */
        NULL
     );
     if( h==INVALID_HANDLE_VALUE ){
@@ -202,7 +202,7 @@ int sqlite3OsOpenReadOnly(const char *zFilename, OsFile *id){
      0,
      NULL,
      OPEN_EXISTING,
-     FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS,
+     FILE_ATTRIBUTE_NORMAL, /* OSGeo removed FILE_FLAG_RANDOM_ACCESS as it triggers an excessive disk cache usage */
      NULL
   );
   if( h==INVALID_HANDLE_VALUE ){
