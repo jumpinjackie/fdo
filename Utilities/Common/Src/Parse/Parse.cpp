@@ -62,6 +62,10 @@ FdoCommonParse::~FdoCommonParse()
     FDO_SAFE_RELEASE(m_ComputedIdentifiers);
 	if (m_lex != NULL)
 		delete m_lex;
+#ifndef _WIN32
+    free(fdo_constraint_yyss);
+    free(fdo_constraint_yyvs);
+#endif
 }
 
 FdoIDisposable* FdoCommonParse::AddNode(FdoIDisposable* pNode)
