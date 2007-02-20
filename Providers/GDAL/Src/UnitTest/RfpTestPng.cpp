@@ -52,7 +52,11 @@ void RfpTestPng::testLoad()
 	    connection->Open();
 
 	    FdoICommand* cmd = connection->CreateCommand(FdoCommandType_Select);
+#ifndef WIN32
+	    FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*>(cmd);
+#else
 	    FdoPtr<FdoISelect> cmdSelect = dynamic_cast<FdoISelect*>(cmd);
+#endif
 	    cmdSelect->SetFeatureClassName(L"default");
 	    FdoPtr<FdoIFeatureReader> featureReader = cmdSelect->Execute();
 
@@ -116,7 +120,11 @@ void RfpTestPng::testSpecialCharacters()
 	    connection->Open();
 
 	    FdoICommand* cmd = connection->CreateCommand(FdoCommandType_Select);
+#ifndef WIN32
+	    FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*>(cmd);
+#else
 	    FdoPtr<FdoISelect> cmdSelect = dynamic_cast<FdoISelect*>(cmd);
+#endif
 	    cmdSelect->SetFeatureClassName(L"default");
 	    FdoPtr<FdoIFeatureReader> featureReader = cmdSelect->Execute();
 
