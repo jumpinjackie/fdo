@@ -67,6 +67,13 @@ FdoParse::~FdoParse()
     FDO_SAFE_RELEASE(m_ComputedIdentifiers);
 	if (m_lex != NULL)
 		delete m_lex;
+#ifndef _WIN32
+        free(fdo_expression_yyss);
+        free(fdo_expression_yyvs);
+        free(fdo_filter_yyss);
+        free(fdo_filter_yyvs);
+#endif
+
 }
 
 FdoIDisposable* FdoParse::AddNode(FdoIDisposable* pNode)
