@@ -323,7 +323,13 @@ void RfpTestBandConfig::testGetNullValue1()
 	connection->Open();
 
 	FdoICommand* cmd = connection->CreateCommand(FdoCommandType_Select);
+
+// for static_cast info see http://trac.osgeo.org/fdo/ticket/12#comment:2
+#ifndef WIN32
+	FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*>(cmd);
+#else
 	FdoPtr<FdoISelect> cmdSelect = dynamic_cast<FdoISelect*>(cmd);
+#endif
 	cmdSelect->SetFeatureClassName(L"Photo");
 	FdoPtr<FdoIFeatureReader> featureReader = cmdSelect->Execute();
 
@@ -334,9 +340,7 @@ void RfpTestBandConfig::testGetNullValue1()
 	FdoDataValue* nullVal = raster->GetNullPixelValue();
 	FdoPtr<FdoInt32Value> val = static_cast<FdoInt32Value*>(nullVal);
 
-	CPPUNIT_ASSERT(nullVal != NULL);
-	CPPUNIT_ASSERT(nullVal->GetDataType() == FdoDataType_Int32);
-	CPPUNIT_ASSERT(val->GetInt32 () == 0);
+	CPPUNIT_ASSERT(nullVal == NULL);
 
 	connection->Close();
 }
@@ -344,14 +348,17 @@ void RfpTestBandConfig::testGetNullValue1()
 // 
 void RfpTestBandConfig::testGetNullValue2()
 {
-#ifdef _WIN32
 	FdoPtr<FdoIConnection> connection = CreateConnection();
 	FdoPtr<FdoIoStream> stream = FdoIoFileStream::Create(L"../../TestData/band/getnullvalue2.xml", L"r");
 	connection->SetConfiguration(stream);
 	connection->Open();
 
 	FdoICommand* cmd = connection->CreateCommand(FdoCommandType_Select);
+#ifndef WIN32
+	FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*>(cmd);
+#else
 	FdoPtr<FdoISelect> cmdSelect = dynamic_cast<FdoISelect*>(cmd);
+#endif
 	cmdSelect->SetFeatureClassName(L"Photo");
 	FdoPtr<FdoIFeatureReader> featureReader = cmdSelect->Execute();
 
@@ -359,14 +366,13 @@ void RfpTestBandConfig::testGetNullValue2()
 	CPPUNIT_ASSERT(featureReader->ReadNext());
 
 	FdoPtr<FdoIRaster> raster = featureReader->GetRaster(L"Image");
-    FdoDataValue* nullVal = raster->GetNullPixelValue();
+        FdoDataValue* nullVal = raster->GetNullPixelValue();
 	FdoPtr<FdoInt16Value> val = static_cast<FdoInt16Value*>(nullVal);
 
 	CPPUNIT_ASSERT(nullVal->GetDataType() == FdoDataType_Int16);	
 	CPPUNIT_ASSERT(val->GetInt16() == -32767);
 
 	connection->Close();
-#endif
 }
 
 // --------------------------------------------------------------
@@ -381,7 +387,11 @@ void RfpTestBandConfig::testResolution()
 	connection->Open();
 
 	FdoICommand* cmd = connection->CreateCommand(FdoCommandType_Select);
+#ifndef WIN32
+	FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*>(cmd);
+#else
 	FdoPtr<FdoISelect> cmdSelect = dynamic_cast<FdoISelect*>(cmd);
+#endif
 	cmdSelect->SetFeatureClassName(L"Photo");
 	FdoPtr<FdoIFeatureReader> featureReader = cmdSelect->Execute();
 
