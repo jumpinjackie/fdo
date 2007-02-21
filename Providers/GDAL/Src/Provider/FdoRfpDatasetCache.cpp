@@ -114,6 +114,9 @@ GDALDatasetH FdoRfpDatasetCache::LockDataset( FdoStringP filePath, bool failQuie
     // Add our new handle at the beginning of the list. 
     pahDatasetList[nDatasetCount++] = hDS;
 
+    // Take a reference on behalf of the caller.
+    GDALReferenceDataset( hDS );
+
     return hDS;
 }
 
@@ -155,7 +158,7 @@ void FdoRfpDatasetCache::CloseUnlocked()
     for( iDS = nDatasetCount-1; iDS >= 0; iDS-- )
     {
         GDALReferenceDataset( pahDatasetList[iDS] );
-        if( GDALDereferenceDataset( pahDatasetList[iDS] ) == 1 )
+        if( GDALDereferenceDataset( pahDatasetList[iDS] ) <= 1 )
             CloseDataset( iDS );
     }
 }
