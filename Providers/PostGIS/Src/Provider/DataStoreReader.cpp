@@ -42,6 +42,7 @@ DataStoreReader::~DataStoreReader()
 
 void DataStoreReader::Dispose()
 {
+    Close();
     delete this;
 }
 
