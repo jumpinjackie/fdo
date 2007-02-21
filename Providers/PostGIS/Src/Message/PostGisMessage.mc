@@ -81,6 +81,11 @@ SymbolicName=MSG_POSTGIS_COMMAND_SQL_FAILED
 Language=English
 The execution of SQL command failed.
 .
+MessageId=1012
+SymbolicName=MSG_POSTGIS_CURSOR_CREATION_FAILED
+Language=English
+The creation of PostgreSQL cursor '%1$ls' failed.
+.
 
 ;//************************************************************************************
 ;//************************************************************************************
