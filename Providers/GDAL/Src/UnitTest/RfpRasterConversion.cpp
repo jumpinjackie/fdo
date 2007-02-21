@@ -47,14 +47,13 @@ void RfpTestRasterConversion::_setUp()
 	m_raster = reader->GetRaster(L"Image");
 
 	reader->Close();
-
-
 }
 
 void RfpTestRasterConversion::_tearDown()
 {
 	m_raster = NULL;
 	m_connection->Close();	
+        m_connection = NULL;
 }
 
 void RfpTestRasterConversion::testRgbToBitonal()
