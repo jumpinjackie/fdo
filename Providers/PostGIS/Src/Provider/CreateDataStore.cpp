@@ -68,41 +68,51 @@ void CreateDataStore::Execute()
 
     ValidateRequiredProperties();
 
+    //
+    // Create new schema - FDO datastore
+    //
     FdoStringP dsName(mProps->GetProperty(PropertyDatastoreName));
     assert(dsName.GetLength() > 0);
-
+    
     std::string sql("CREATE SCHEMA ");
     sql += static_cast<char const*>(dsName);
 
-    // Create new schema - FDO datastore
-    ExecStatusType pgStatus = PGRES_FATAL_ERROR;
-    pgStatus = mConn->PgExecuteCommand(sql.c_str());
-    if (PGRES_COMMAND_OK != pgStatus)
+    try
+    {
+        mConn->PgExecuteCommand(sql.c_str());
+    }
+    catch (FdoException* e)
     {
         throw FdoCommandException::Create(
             NlsMsgGet(MSG_POSTGIS_COMMAND_CREATEDATASTORE_FAILED,
             "Attempt to create new datastore with name '%1$ls' failed.",
-            static_cast<FdoString*>(dsName)));
+            static_cast<FdoString*>(dsName)), e);    	
     }
 
+    //
     // Insert datastore description as a comment for PostgreSQL schema
-    FdoStringP dsDescription(mProps->GetProperty(PropertyDatastoreDescription));
-    if (dsDescription.GetLength() > 0)
-    {
-        sql = "COMMENT ON SCHEMA ";
-        sql += static_cast<char const*>(dsName);
-        sql += " IS \'";
-        sql += static_cast<char const*>(dsDescription);
-        sql += "\'";
+    //
 
-        pgStatus = mConn->PgExecuteCommand(sql.c_str());
-        if (PGRES_COMMAND_OK != pgStatus)
+    try
+    {
+        FdoStringP dsDescription(mProps->GetProperty(PropertyDatastoreDescription));
+        if (dsDescription.GetLength() > 0)
         {
-            throw FdoCommandException::Create(
-                NlsMsgGet(MSG_POSTGIS_COMMAND_COMMENT_FAILED,
-                "Attempt to assign description for '%1$ls' object failed.",
-                static_cast<FdoString*>(dsName)));
+            sql = "COMMENT ON SCHEMA ";
+            sql += static_cast<char const*>(dsName);
+            sql += " IS \'";
+            sql += static_cast<char const*>(dsDescription);
+            sql += "\'";
+
+            mConn->PgExecuteCommand(sql.c_str());
         }
+    }
+    catch (FdoException* e)
+    {
+        throw FdoCommandException::Create(
+            NlsMsgGet(MSG_POSTGIS_COMMAND_COMMENT_FAILED,
+            "Attempt to assign description for '%1$ls' object failed.",
+            static_cast<FdoString*>(dsName)), e);
     }
 }
 

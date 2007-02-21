@@ -70,18 +70,22 @@ void DestroyDataStore::Execute()
     std::string sql("DROP SCHEMA ");
     sql += static_cast<char const*>(dsName);
 
+    //
     // Destroy specified FDO datastore - drop a PostgreSQL schema
-    ExecStatusType pgStatus = PGRES_FATAL_ERROR;
-    pgStatus = mConn->PgExecuteCommand(sql.c_str());
-    if (PGRES_COMMAND_OK != pgStatus)
+    //
+    try
+    {
+        mConn->PgExecuteCommand(sql.c_str());
+    }
+    catch (FdoException* e)
     {
         throw FdoCommandException::Create(
             NlsMsgGet(MSG_POSTGIS_COMMAND_DESTROYDATASTORE_FAILED,
             "Attempt to destroy datastore '%1$ls' failed.",
-            static_cast<FdoString*>(dsName)));
+            static_cast<FdoString*>(dsName)), e);
     }
 
-    // No need to remove a datastore description, because:
+    // NOTE: No need to remove a datastore description, because:
     // Comments are automatically dropped when the object is dropped.
 }
 
