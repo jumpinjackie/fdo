@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2006  Autodesk, Inc.
+ * Copyright (C) 2006 Frank Warmerdam
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser
@@ -14,13 +14,14 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
+ **************************************************************************
+ * 
+ * Purpose: 
+ *
+ * This is a commandline utility to interogate information about a raster
+ * connection, and to dump read rasters to TIFF files. 
+ *
  */
-
-#include <malloc.h>
-#include <stdlib.h>
-#include <math.h>
-#include <time.h>
-#include <dlfcn.h>
 
 #include <Fdo.h>
 #include <FdoCommonOSUtil.h>
@@ -36,6 +37,33 @@
 
 static void TranslateTo( FdoPtr<FdoIRaster> raster, 
                          const char *pszOutFilename );
+static void ReportSchemas( FdoPtr<FdoIConnection> conn, FdoStringP &FeatureClassName,
+                           FdoStringP &FeatureIdName, FdoStringP &RasterName,
+                           int bActuallyReport );
+
+/************************************************************************/
+/*                               Usage()                                */
+/************************************************************************/
+
+static void Usage()
+
+{
+    printf( "\n"
+            "Usage: fdorastutil [-schema] [-sc] [-dump] [-nofeatures]\n"
+            "                   [-p <provider>] [-fc <featureclass>]\n"
+            "                   [-config <file>] [<target>]\n"
+            "\n"
+            "  -schema: Report schema\n"
+            "  -sc: Report spatial contexts.\n"
+            "  -dump: Dump rasters to TIFF files.\n"
+            "  -nofeatures: Don't report feature records.\n"
+            "  -p <provider>: Provider.  ie. OSGeo.Gdal.3.3\n"
+            "  -fc <featureclass>: feature class to report/dump (default is first)\n"
+            "  -config <file>: Use XML configuration file for connection.\n"
+            "  <target>: Use file or directory as DefaultRasterFileLocation for\n"
+            "            connection.\n" );
+    exit( 1 );
+}
 
 /************************************************************************/
 /*                                main()                                */
@@ -43,6 +71,45 @@ static void TranslateTo( FdoPtr<FdoIRaster> raster,
 
 int main( int argc, char ** argv )
 {
+    const char *targetConfig = NULL;
+    const char *targetFileDir = NULL;
+    int         bReportSchema = FALSE;
+    int         bReportSpatialContexts = FALSE;
+    int         bReportFeatures = TRUE;
+    int         bTranslateFeatures = FALSE;
+    int         iArg;
+    FdoStringP  provider = "OSGeo.Gdal.3.3";
+    FdoStringP  FeatureClassName;
+
+/* -------------------------------------------------------------------- */
+/*      Process arguments.                                              */
+/* -------------------------------------------------------------------- */
+    for( iArg = 1; iArg < argc; iArg++ )
+    {
+        if( EQUAL(argv[iArg],"-schema") )
+            bReportSchema = TRUE;
+        else if( EQUAL(argv[iArg],"-sc") )
+            bReportSpatialContexts = TRUE;
+        else if( EQUAL(argv[iArg],"-dump") )
+            bTranslateFeatures = TRUE;
+        else if( EQUAL(argv[iArg],"-nofeatures") )
+            bReportFeatures = FALSE;
+        else if( iArg < argc-1 && EQUAL(argv[iArg],"-p") )
+            provider = argv[++iArg];
+        else if( iArg < argc-1 && EQUAL(argv[iArg],"-fc") )
+            FeatureClassName = argv[++iArg];
+        else if( iArg < argc-1 && EQUAL(argv[iArg],"-config") )
+            targetConfig = argv[++iArg];
+        else if( argv[iArg][0] == '-' )
+            Usage();
+        else if( targetFileDir == NULL )
+            targetFileDir = argv[iArg];
+        else
+            Usage();
+    }
+
+    if( targetConfig == NULL && targetFileDir == NULL )
+        Usage();
 
 /* -------------------------------------------------------------------- */
 /*      Setup connection                                                */
@@ -60,26 +127,23 @@ int main( int argc, char ** argv )
     // Call the manager’s CreateConnection() method using the provider
     // internal name as an argument to obtain a connection object.
     FdoPtr<FdoIConnection> conn;
-    conn = manager->CreateConnection (L"OSGeo.Gdal.3.3");
+    conn = manager->CreateConnection (provider);
     if (0 == conn)
     {
         printf("CreateConnection returned nullptr.\n");
         return 0;
     }
 
-    printf( "conn = %p\n", (void *) conn );
-
 /* -------------------------------------------------------------------- */
-/*      Setup connection configuration if we don't have a filename      */
-/*      supplied on the commandline.                                    */
+/*      Setup for a configuration file.                                 */
 /* -------------------------------------------------------------------- */
-    if( argc < 2 )
+    if( targetConfig != NULL )
     {
-        printf("Setting up connection config file: RfpConfigExample.xml\n");
+        printf("Setting up connection config file: %s\n", targetConfig );
 
         try
         {
-            FdoStringP configFile(L"RfpConfigExample.xml");
+            FdoStringP configFile(targetConfig);
             FdoStringP configMode(L"rb");
             FdoIoFileStreamP configStream = 
                 FdoIoFileStream::Create( configFile, configMode );
@@ -93,21 +157,32 @@ int main( int argc, char ** argv )
     }
 
 /* -------------------------------------------------------------------- */
-/*      Open specific shapefile.                                        */
+/*      Setup for a file for directory.                                 */
 /* -------------------------------------------------------------------- */
-    try
+    else
     {
-        if( argc == 2 )
+        try
         {
             FdoStringP defaultLocation;
 
             defaultLocation = L"DefaultRasterFileLocation=";
-            defaultLocation += argv[1];
+            defaultLocation += targetFileDir;
             conn->SetConnectionString (defaultLocation);
         }
+        catch (FdoException* ge) 
+        {
+            printf( "Trapped exception: %ls\n", ge->GetExceptionMessage() );
+            exit( 1 );
+        }
+    }
 
+/* -------------------------------------------------------------------- */
+/*      Open the connection.                                            */
+/* -------------------------------------------------------------------- */
+    try
+    {
         FdoConnectionState state = conn->Open ();
-
+        
         if( state != FdoConnectionState_Open )
         {
             printf( "State = %d, not open.\n", (int) state );
@@ -118,192 +193,20 @@ int main( int argc, char ** argv )
     catch (FdoException* ge) 
     {
         printf( "Trapped exception: %ls\n", ge->GetExceptionMessage() );
+        exit( 1 );
     }
 
 /* -------------------------------------------------------------------- */
 /*      Describe layer.                                                 */
 /* -------------------------------------------------------------------- */
-    FdoStringP  FeatureClassName;
     FdoStringP  FeatureIdName;
     FdoStringP  RasterName;
 
-    try
-    {
-        FdoPtr<FdoIDescribeSchema> describe = 
-            (FdoIDescribeSchema*)conn->CreateCommand(
-                FdoCommandType_DescribeSchema);
-        FdoPtr<FdoFeatureSchemaCollection> schemas = describe->Execute ();
-
-        FdoFeatureSchema* schema = schemas->GetItem (0);
-
-        printf ("Schema: %ls\n", schema->GetName());
-
-        if ((schema->GetDescription () != NULL) 
-            && (0 != wcscmp (schema->GetDescription (), L"")))
-            printf ("    Description: %ls\n", schema->GetDescription ());
-
-        FdoClassCollection* classes = schema->GetClasses ();
-        for (int j = 0; j < classes->GetCount (); j++)
-        {
-            FdoClassDefinition* cls = classes->GetItem (j);
-
-            // Output basic class info:
-            if (FdoClassType_FeatureClass == cls->GetClassType ())
-                printf ("    Feature Class: %ls\n", cls->GetName ());
-            else
-                printf ("    Class: %ls\n", cls->GetName ());
-
-            FeatureClassName = cls->GetName();
-
-            if ((cls->GetDescription () != NULL) && (0 != wcscmp (cls->GetDescription (), L"")))
-                printf ("        Description: %ls\n", cls->GetDescription ());
-
-            FdoPtr<FdoClassCapabilities> classCapabilities = cls->GetCapabilities();
-            printf ("        Class Capabilities:\n");
-            if (classCapabilities == NULL)
-                printf ("            (Not available).\n");
-            else
-            {
-                printf ("            Supports locking: %s\n", classCapabilities->SupportsLocking() ? "yes" : "no");
-                printf ("            Supports long transactions: %s\n", classCapabilities->SupportsLongTransactions() ? "yes" : "no");
-            }
-
-            // Output identity properties:
-            FdoDataPropertyDefinitionCollection* identity = cls->GetIdentityProperties ();
-            for (int k = 0; k < identity->GetCount (); k++)
-            {
-                FdoDataPropertyDefinition* definition = identity->GetItem (k);
-                printf ("        Id: %ls\n", definition->GetName ());
-                FeatureIdName = definition->GetName();
-
-                if ((definition->GetDescription () != NULL) && (0 != wcscmp (definition->GetDescription (), L"")))
-                    printf ("            Description: %ls\n", definition->GetDescription ());
-                printf ("            Type: %d Length: %d Precision: %d %ls\n",
-                        (int) definition->GetDataType (),
-                        definition->GetLength (),
-                        definition->GetPrecision (),
-                        definition->GetNullable () ? L"Nullable" : L"NotNull");
-                definition->Release ();
-            }
-
-            // Output regular properties:
-            FdoPropertyDefinitionCollection* properties = cls->GetProperties ();
-            for (int k = 0; k < properties->GetCount (); k++)
-            {
-                FdoPropertyDefinition* definition = properties->GetItem (k);
-                if (definition->GetPropertyType () == FdoPropertyType_DataProperty)
-                {
-                    FdoDataPropertyDefinition* data_definition = (FdoDataPropertyDefinition*)definition;
-                    printf ("        Property: %ls\n", definition->GetName ());
-
-                    if (!identity->Contains (data_definition))
-                    {
-                        if ((data_definition->GetDescription () != NULL) && (0 != wcscmp (data_definition->GetDescription (), L"")))
-                            printf ("            Description: %ls\n", data_definition->GetDescription ());
-                        printf ("            Type: %d Length: %d Precision: %d %ls\n",
-                                (int) data_definition->GetDataType (),
-                                data_definition->GetLength (),
-                                data_definition->GetPrecision (),
-                                data_definition->GetNullable () ? L"Nullable" : L"NotNull");
-                    }
-                    else
-                        printf( "            (no data definition)\n" );
-                }
-                else if (definition->GetPropertyType () == FdoPropertyType_ObjectProperty)
-                {
-                    printf ("       Object Property: %ls\n", definition->GetName ());
-                    if ((definition->GetDescription () != NULL) && (0 != wcscmp (definition->GetDescription (), L"")))
-                        printf ("            Description: %ls\n", definition->GetDescription ());
-                }
-                else if (definition->GetPropertyType () == FdoPropertyType_GeometricProperty)
-                {
-                    FdoGeometricPropertyDefinition* geometry_definition = (FdoGeometricPropertyDefinition*)definition;
-                    printf ("        Geometric Property: %ls\n", geometry_definition->GetName ());
-                    if ((geometry_definition->GetDescription () != NULL) && (0 != wcscmp (geometry_definition->GetDescription (), L"")))
-                        printf ("            Description: %ls\n", geometry_definition->GetDescription ());
-                    int types = geometry_definition->GetGeometryTypes ();
-                    if (0 != (types & FdoGeometricType_Point))
-                        printf ("            FdoGeometricType_Point types allowed\n");
-                    if (0 != (types & FdoGeometricType_Curve))
-                        printf ("            FdoGeometricType_Curve types allowed\n");
-                    if (0 != (types & FdoGeometricType_Surface))
-                        printf ("            FdoGeometricType_Surface types allowed\n");
-                    if (0 != (types & FdoGeometricType_Solid))
-                        printf ("            FdoGeometricType_Solid types allowed\n");
-                }
-                else if (definition->GetPropertyType () == FdoPropertyType_RasterProperty)
-                {
-                    FdoRasterPropertyDefinition *r_definition = (FdoRasterPropertyDefinition*) definition;
-                    FdoStringP srs;
-                    FdoRasterDataModel *data_model;
-
-                    printf ("        Raster: %ls\n", definition->GetName ());
-                    RasterName = definition->GetName();
-
-                    srs = r_definition->GetSpatialContextAssociation();
-                    if( srs != NULL )
-                        printf( "          SRS = %p\n", (const char *) srs );
-                    else
-                        printf( "          SRS = NULL\n" );
-
-                    data_model = r_definition->GetDefaultDataModel();
-                    printf( "          data_model = %p\n", data_model );
-                    if( data_model != NULL )
-                    {
-                        printf( "            ModelType = %d\n", 
-                                (int) data_model->GetDataModelType() );
-                        printf( "            BitsPerPixel = %d\n", 
-                                data_model->GetBitsPerPixel() );
-                        printf( "            Organization = %d\n", 
-                                (int) data_model->GetOrganization() );
-                        printf( "            Data Type = %d\n", 
-                                (int) data_model->GetDataType() );
-                    }
-
-                    printf( "            SRS = %ls\n", 
-                            r_definition->GetSpatialContextAssociation() );
-                }
-                else
-                {
-                    printf ("        Unsupported Property: %ls\n", definition->GetName ());
-                }
-                definition->Release ();
-            }
-            identity->Release ();
-            properties->Release ();
-
-            // Output schema attribute dictionary:
-            FdoSchemaAttributeDictionary* dictionary = cls->GetAttributes ();
-            int count;
-            const wchar_t **names = dictionary->GetAttributeNames (count);
-            if ((0 != count) && (NULL != names))
-            {
-                printf ("        MetaData:");
-                const wchar_t *name = *names;
-                for (int i = 0; i < count; i++)
-                {
-                    if (0 != i)
-                        printf (",");
-                    const wchar_t* value = dictionary->GetAttributeValue (name);
-                    printf (" %ls=%ls", name, value);
-                    name++;
-                }
-                printf ("\n");
-            }
-            dictionary->Release ();
-
-            cls->Release ();
-        }
-        classes->Release ();
-        schema->Release ();
-    }
-    catch (FdoException* ge) 
-    {
-        printf( "Trapped exception: %ls\n", ge->GetExceptionMessage() );
-    }
+    ReportSchemas( conn, FeatureClassName, FeatureIdName, RasterName, 
+                   bReportSchema );
 
 /* -------------------------------------------------------------------- */
-/*      Setup query.                                                    */
+/*      Actually scan raster records, reporting on them.                */
 /* -------------------------------------------------------------------- */
     try
     {
@@ -411,17 +314,24 @@ int main( int argc, char ** argv )
                 }
 
                 // For now, only translate the first file. 
-                if( iCounter == 0 )
+                if( iCounter == 0 && bTranslateFeatures )
                     TranslateTo( raster, 
-                                 CPLString().Printf( "out_%d.tif", iCounter++) );
+                                 CPLString().Printf( "out_%d.tif", iCounter) );
+
+                iCounter++;
             }
+        }
+
+        if( iCounter == 0 )
+        {
+            printf( "No features found for class %s.\n", 
+                    (const char *) FeatureClassName );
         }
     }
     catch (FdoException* ge) 
     {
         printf( "Trapped exception: %ls\n", ge->GetExceptionMessage() );
     }
-
 
     conn->Close();
 }
@@ -603,4 +513,219 @@ static void TranslateTo( FdoPtr<FdoIRaster> raster,
 /*      Close and cleanup.                                              */
 /* -------------------------------------------------------------------- */
     GDALClose( hOutDS );
+}
+
+/************************************************************************/
+/*                           ReportSchemas()                            */
+/************************************************************************/
+
+static void ReportSchemas( FdoPtr<FdoIConnection> conn, 
+                           FdoStringP &FeatureClassName,
+                           FdoStringP &FeatureIdName,
+                           FdoStringP &RasterName,
+                           int bActuallyReport )
+
+{
+    try
+    {
+        FdoPtr<FdoIDescribeSchema> describe = 
+            (FdoIDescribeSchema*)conn->CreateCommand(
+                FdoCommandType_DescribeSchema);
+        FdoPtr<FdoFeatureSchemaCollection> schemas = describe->Execute ();
+
+        FdoFeatureSchema* schema = schemas->GetItem (0);
+
+        if( bActuallyReport )
+            printf ("Schema: %ls\n", schema->GetName());
+
+        if ((schema->GetDescription () != NULL) 
+            && bActuallyReport
+            && (0 != wcscmp (schema->GetDescription (), L"")))
+            printf ("    Description: %ls\n", schema->GetDescription ());
+
+        FdoClassCollection* classes = schema->GetClasses ();
+        for (int j = 0; j < classes->GetCount (); j++)
+        {
+            FdoClassDefinition* cls = classes->GetItem (j);
+
+            // Output basic class info:
+            if( bActuallyReport )
+            {
+                if (FdoClassType_FeatureClass == cls->GetClassType ())
+                    printf ("    Feature Class: %ls\n", cls->GetName ());
+                else
+                    printf ("    Class: %ls\n", cls->GetName ());
+            }
+
+            // pick first feature class encountered.
+            if( wcscmp(FeatureClassName,L"") == 0 )
+                FeatureClassName = cls->GetName();
+
+            if ((cls->GetDescription () != NULL) 
+                && (0 != wcscmp (cls->GetDescription (), L""))
+                && bActuallyReport )
+                printf ("        Description: %ls\n", cls->GetDescription ());
+
+            FdoPtr<FdoClassCapabilities> classCapabilities = cls->GetCapabilities();
+            if( bActuallyReport )
+            {
+                printf ("        Class Capabilities:\n");
+                if (classCapabilities == NULL)
+                    printf ("            (Not available).\n");
+                else
+                {
+                    printf ("            Supports locking: %s\n", classCapabilities->SupportsLocking() ? "yes" : "no");
+                    printf ("            Supports long transactions: %s\n", classCapabilities->SupportsLongTransactions() ? "yes" : "no");
+                }
+            }
+                
+            // Output identity properties:
+            FdoDataPropertyDefinitionCollection* identity = cls->GetIdentityProperties ();
+            for (int k = 0; k < identity->GetCount (); k++)
+            {
+                FdoDataPropertyDefinition* definition = identity->GetItem (k);
+                FeatureIdName = definition->GetName();
+
+                if( bActuallyReport )
+                {
+                    printf ("        Id: %ls\n", definition->GetName ());
+
+                    if ((definition->GetDescription () != NULL) 
+                        && (0 != wcscmp (definition->GetDescription (), L"")))
+                        printf ("            Description: %ls\n", definition->GetDescription ());
+                    printf ("            Type: %d Length: %d Precision: %d %ls\n",
+                            (int) definition->GetDataType (),
+                            definition->GetLength (),
+                            definition->GetPrecision (),
+                            definition->GetNullable () ? L"Nullable" : L"NotNull");
+                }
+                definition->Release ();
+            }
+
+            // Output regular properties:
+            FdoPropertyDefinitionCollection* properties = cls->GetProperties ();
+            for (int k = 0; k < properties->GetCount (); k++)
+            {
+                FdoPropertyDefinition* definition = properties->GetItem (k);
+
+                if (definition->GetPropertyType () == FdoPropertyType_RasterProperty)
+                {
+                    FdoRasterPropertyDefinition *r_definition = 
+                        (FdoRasterPropertyDefinition*) definition;
+                    RasterName = definition->GetName();
+                }
+
+                if( !bActuallyReport )
+                    continue;
+
+                if (definition->GetPropertyType () == FdoPropertyType_DataProperty)
+                {
+                    FdoDataPropertyDefinition* data_definition = (FdoDataPropertyDefinition*)definition;
+                    printf ("        Property: %ls\n", definition->GetName ());
+
+                    if (!identity->Contains (data_definition))
+                    {
+                        if ((data_definition->GetDescription () != NULL) && (0 != wcscmp (data_definition->GetDescription (), L"")))
+                            printf ("            Description: %ls\n", data_definition->GetDescription ());
+                        printf ("            Type: %d Length: %d Precision: %d %ls\n",
+                                (int) data_definition->GetDataType (),
+                                data_definition->GetLength (),
+                                data_definition->GetPrecision (),
+                                data_definition->GetNullable () ? L"Nullable" : L"NotNull");
+                    }
+                    else
+                        printf( "            (no data definition)\n" );
+                }
+                else if (definition->GetPropertyType () == FdoPropertyType_ObjectProperty)
+                {
+                    printf ("       Object Property: %ls\n", definition->GetName ());
+                    if ((definition->GetDescription () != NULL) && (0 != wcscmp (definition->GetDescription (), L"")))
+                        printf ("            Description: %ls\n", definition->GetDescription ());
+                }
+                else if (definition->GetPropertyType () == FdoPropertyType_GeometricProperty)
+                {
+                    FdoGeometricPropertyDefinition* geometry_definition = (FdoGeometricPropertyDefinition*)definition;
+                    printf ("        Geometric Property: %ls\n", geometry_definition->GetName ());
+                    if ((geometry_definition->GetDescription () != NULL) && (0 != wcscmp (geometry_definition->GetDescription (), L"")))
+                        printf ("            Description: %ls\n", geometry_definition->GetDescription ());
+                    int types = geometry_definition->GetGeometryTypes ();
+                    if (0 != (types & FdoGeometricType_Point))
+                        printf ("            FdoGeometricType_Point types allowed\n");
+                    if (0 != (types & FdoGeometricType_Curve))
+                        printf ("            FdoGeometricType_Curve types allowed\n");
+                    if (0 != (types & FdoGeometricType_Surface))
+                        printf ("            FdoGeometricType_Surface types allowed\n");
+                    if (0 != (types & FdoGeometricType_Solid))
+                        printf ("            FdoGeometricType_Solid types allowed\n");
+                }
+                else if (definition->GetPropertyType () == FdoPropertyType_RasterProperty)
+                {
+                    FdoRasterPropertyDefinition *r_definition = (FdoRasterPropertyDefinition*) definition;
+                    FdoStringP srs;
+                    FdoRasterDataModel *data_model;
+
+                    printf ("        Raster: %ls\n", definition->GetName ());
+                    RasterName = definition->GetName();
+
+                    srs = r_definition->GetSpatialContextAssociation();
+                    if( srs != NULL )
+                        printf( "          SRS = %s\n", (const char *) srs );
+                    else
+                        printf( "          SRS = NULL\n" );
+
+                    data_model = r_definition->GetDefaultDataModel();
+                    printf( "          data_model = %p\n", data_model );
+                    if( data_model != NULL )
+                    {
+                        printf( "            ModelType = %d\n", 
+                                (int) data_model->GetDataModelType() );
+                        printf( "            BitsPerPixel = %d\n", 
+                                data_model->GetBitsPerPixel() );
+                        printf( "            Organization = %d\n", 
+                                (int) data_model->GetOrganization() );
+                        printf( "            Data Type = %d\n", 
+                                (int) data_model->GetDataType() );
+                    }
+
+                    printf( "            SRS = %ls\n", 
+                            r_definition->GetSpatialContextAssociation() );
+                }
+                else
+                {
+                    printf ("        Unsupported Property: %ls\n", definition->GetName ());
+                }
+                definition->Release ();
+            }
+            identity->Release ();
+            properties->Release ();
+
+            // Output schema attribute dictionary:
+            FdoSchemaAttributeDictionary* dictionary = cls->GetAttributes ();
+            int count;
+            const wchar_t **names = dictionary->GetAttributeNames (count);
+            if ((0 != count) && (NULL != names) && bActuallyReport )
+            {
+                printf ("        MetaData:");
+                const wchar_t *name = *names;
+                for (int i = 0; i < count; i++)
+                {
+                    if (0 != i)
+                        printf (",");
+                    const wchar_t* value = dictionary->GetAttributeValue (name);
+                    printf (" %ls=%ls", name, value);
+                    name++;
+                }
+                printf ("\n");
+            }
+            dictionary->Release ();
+            cls->Release ();
+        }
+        classes->Release ();
+        schema->Release ();
+    }
+    catch (FdoException* ge) 
+    {
+        printf( "Trapped exception: %ls\n", ge->GetExceptionMessage() );
+        exit( 1 );
+    }
 }
