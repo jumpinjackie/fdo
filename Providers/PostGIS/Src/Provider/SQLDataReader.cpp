@@ -19,13 +19,21 @@
 #include "PostGisProvider.h"
 #include "SQLDataReader.h"
 #include "Connection.h"
+#include "PgCursor.h"
 
 #include <cassert>
 
 namespace fdo { namespace postgis {
 
-SQLDataReader::SQLDataReader(Connection* conn) : mConn(conn)
+SQLDataReader::SQLDataReader(PgCursor* cursor) : mCursor(cursor)
 {
+    assert(NULL != cursor);
+    
+    FDO_SAFE_ADDREF(mCursor.p);
+
+    // TODO: Move describe logic to PgCursor
+    //PQdescribePortal()
+
 }
 
 SQLDataReader::~SQLDataReader()
@@ -38,6 +46,9 @@ SQLDataReader::~SQLDataReader()
 
 void SQLDataReader::Dispose()
 {
+    FDOLOG_MARKER("SQLDataReader::#Dispose");
+
+    Close();
     delete this;
 }
 
@@ -47,8 +58,15 @@ void SQLDataReader::Dispose()
 
 FdoInt32 SQLDataReader::GetColumnCount()
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    FDOLOG_MARKER("SQLDataReader::+GetColumnCount");
+
+    PgCursor::ResultPtr pgRes = mCursor->GetFetchResult();
+    assert(NULL != pgRes);
+    
+    FdoInt32 fields = static_cast<FdoInt32>(PQnfields(pgRes));
+    
+    FDOLOG_WRITE("Number of fields: %d", fields);
+    return fields;
 }
 
 FdoString* SQLDataReader::GetColumnName(FdoInt32 index)
@@ -149,13 +167,33 @@ FdoByteArray* SQLDataReader::GetGeometry(FdoString* columnName)
 
 bool SQLDataReader::ReadNext()
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    FDOLOG_MARKER("SQLDataReader::+ReadNext");
+
+    bool eof = true;
+
+    PgCursor::ResultPtr pgRes = mCursor->FetchNext();
+    if (PGRES_TUPLES_OK == PQresultStatus(pgRes))
+    {
+        if (0 != PQntuples(pgRes))
+        {
+            // TODO: Readable state validation
+            //ValidateReadableState();
+
+            eof = false;
+        }
+    }
+
+    return (!eof);
 }
 
 void SQLDataReader::Close()
 {
-    assert(!"NOT IMPLEMENTED");
+    FDOLOG_MARKER("SQLDataReader::+Close");
+
+    // TODO: Temporary solution. Make ownership transfer exception safe.
+
+    if (NULL != mCursor)
+        mCursor->Close();
 }
 
 }} // namespace fdo::postgis

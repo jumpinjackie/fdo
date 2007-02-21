@@ -18,6 +18,7 @@
 
 #include "PostGisProvider.h"
 #include "SQLCommand.h"
+#include "SQLDataReader.h"
 #include "Connection.h"
 
 #include <cassert>
@@ -64,6 +65,10 @@ FdoInt32 SQLCommand::ExecuteNonQuery()
 {
     FDOLOG_MARKER("SQLCommand::+ExecuteNonQuery");
 
+    // TODO: Add support of DDL statements detection
+
+    // TODO: Add DDL flag to PgExecuteCommand calls
+
     // TODO: Add support for collection of input parameters
     //FdoPtr<FdoParameterValueCollection> cmdParams = GetParameterValues();
 
@@ -73,8 +78,7 @@ FdoInt32 SQLCommand::ExecuteNonQuery()
     try
     {
         std::string sql(static_cast<char const*>(mSql));
-        pgStatus = mConn->PgExecuteCommand(sql.c_str(), cmdTuples);
-        assert(PGRES_COMMAND_OK == pgStatus);
+        mConn->PgExecuteCommand(sql.c_str(), cmdTuples);
     }
     catch (FdoException* e)
     {
@@ -85,15 +89,35 @@ FdoInt32 SQLCommand::ExecuteNonQuery()
         throw de;
     }
 
-    
-
-    return static_cast<FdoInt32>(cmdTuples);
+    return (static_cast<FdoInt32>(cmdTuples));
 }
 
 FdoISQLDataReader* SQLCommand::ExecuteReader()
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    FDOLOG_MARKER("SQLCommand::+ExecuteReader");
+
+    PgCursor::Ptr cursor(NULL);
+
+    try
+    {
+        std::string cursorName("crsFdoISQLCommand");
+        std::string sql(static_cast<char const*>(mSql));
+
+        // Create a cursor associated with query results reader
+        cursor = mConn->PgCreateCursor(cursorName.c_str());
+        cursor->Declare(sql.c_str());
+    }
+    catch (FdoException* e)
+    {
+        FdoCommandException* de = NULL;
+        de = FdoCommandException::Create(NlsMsgGet(MSG_POSTGIS_COMMAND_SQL_FAILED,
+            "The execution of SQL command failed."), e);
+        e->Release();
+        throw de;
+    }
+
+    assert(NULL != cursor);
+    return (new SQLDataReader(cursor));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
