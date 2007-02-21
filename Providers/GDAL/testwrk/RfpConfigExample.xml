@@ -71,7 +71,7 @@
     <!-- Schema Overrides for Photo Feature Class -->
     <complexType name="PhotoType">
       <RasterDefinition name="photos">
-        <Location name="/home/warmerda/openev">
+        <Location name="/home/warmerda">
           <Feature name="Airport2">
             <band name="RGB" number="1">
               <Image name="utm.tif">

@@ -21,24 +21,21 @@
 ###### CONFIGURATION ######
 #
 # - fdocore top level sources directory
-FDOCORE = ${HOME}/dev/fdo/fdocore/_svn/fdocore
+FDOCORE = ${HOME}/fdobase
 #
 # - fdogdal top level sources directory
-FDOGDAL = ${HOME}/dev/fdo/fdogdal/_svn/fdogdal
+FDOGDAL = ${FDOCORE}/Providers/GDAL
 #
 # - fdocore installation prefix (default: /usr/local/fdo-3.3.0)
 FDOCOREPREFIX = /usr/local/fdo-3.3.0
 #
-# - fdogdal installation prefix
-FDOGDALPREFIX = ${HOME}/usr
-#
 # - GDAL installation prefix
-GDALPREFIX = ${HOME}/usr
+GDALPREFIX = ${FDOCORE}/Thirdparty/GDAL1.3/linux
 #
 ###### END OF CONFIGURATION ######
 
 CXX = g++
-CXXFLAGS = -g # -Wall -pedantic
+CXXFLAGS = -g # -Wall
 
 FDO = ${FDOCORE}/Fdo
 FDOUTILITIES = ${FDOCORE}/Utilities
@@ -67,12 +64,12 @@ LIBS = \
 	-lxalan-c \
 	-lxalanMsg
 
-all : rtest
+all : fdorastutil
 
-rtest: rtest.cpp
-	${CXX} rtest.cpp -o $@ ${CXXFLAGS} ${INCLUDES} ${LIBDIRS} ${LIBS}
+fdorastutil: fdorastutil.cpp
+	${CXX} fdorastutil.cpp -o $@ ${CXXFLAGS} ${INCLUDES} ${LIBDIRS} ${LIBS}
 
 clean :
 	${RM} ~*
 	${RM} *.o
-	${RM} rtest
+	${RM} fdorastutil
