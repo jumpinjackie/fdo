@@ -185,7 +185,8 @@ const wchar_t* FdoRdbmsOdbcFilterProcessor::FilterToSql(
     SqlCommandType cmdType, 
     FdoCommandType callerFdoCommand, 
     FdoRdbmsFilterUtilConstrainDef *inFilterConstrain,
-    bool forUpdate )
+    bool forUpdate,
+    FdoInt16 callerId )
 {
     const wchar_t * ret = NULL;
 
@@ -220,7 +221,7 @@ const wchar_t* FdoRdbmsOdbcFilterProcessor::FilterToSql(
         addedPropDefs = true;
     }
 
-    ret = FdoRdbmsFilterProcessor::FilterToSql(filter, className, cmdType, callerFdoCommand, filterConstraint, forUpdate);
+    ret = FdoRdbmsFilterProcessor::FilterToSql(filter, className, cmdType, callerFdoCommand, filterConstraint, forUpdate, callerId);
 
     if (addedPropDefs)
         filterConstraint->selectedProperties = NULL;
