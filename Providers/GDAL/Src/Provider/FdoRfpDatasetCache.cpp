@@ -169,5 +169,14 @@ void FdoRfpDatasetCache::CloseAll()
     int iDS;
 
     for( iDS = nDatasetCount-1; iDS >= 0; iDS-- )
+    {
+        GDALReferenceDataset( pahDatasetList[iDS] );
+        if( GDALDereferenceDataset( pahDatasetList[iDS] ) > 1 )
+            CPLDebug( "RfpDatasetCache::CloseAll()",
+                      "Forcing closure of %s even though there\n"
+                      "are still references against it.", 
+                      GDALGetDescription( pahDatasetList[iDS] ) );
+        
         CloseDataset( iDS );
+    }
 }
