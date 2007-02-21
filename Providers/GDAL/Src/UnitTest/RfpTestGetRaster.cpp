@@ -231,7 +231,7 @@ void RfpTestGetRaster::testGetRasterAllInOnce()
     }
 
     CPPUNIT_ASSERT(nRasterCount == 4 * 4);
-    delete buff;
+    delete[] buff;
 }
 
 #define orgX 200000.0
