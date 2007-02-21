@@ -43,6 +43,9 @@ class Connection : public FdoIConnection
 {
 public:
 
+    /// Type of FDO smart pointer for Connection class.
+    typedef FdoPtr<Connection> Ptr;
+
     /// Default constructor.
     Connection();
 
@@ -129,13 +132,14 @@ public:
     // Connection custom interface
     //
 
-    ExecStatusType PgExecuteCommand(char const* sql);
-    ExecStatusType PgExecuteCommand(char const* sql, FdoSize& affected);
+    void PgExecuteCommand(char const* sql);
+    void PgExecuteCommand(char const* sql, FdoSize& affected);
     
     PGresult* PgExecuteQuery(char const* sql);
 
     PgCursor* PgCreateCursor(char const* name);
 
+    PGresult* PgDescribeCursor(char const* name);
 
 protected:
 

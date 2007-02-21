@@ -389,13 +389,13 @@ void Connection::Flush()
 // Connection custom interface
 ///////////////////////////////////////////////////////////////////////////////
 
-ExecStatusType Connection::PgExecuteCommand(char const* sql)
+void Connection::PgExecuteCommand(char const* sql)
 {
     FdoSize cmdTuples = 0;
-    return PgExecuteCommand(sql, cmdTuples);
+    PgExecuteCommand(sql, cmdTuples);
 }
 
-ExecStatusType Connection::PgExecuteCommand(char const* sql, FdoSize& cmdTuples)
+void Connection::PgExecuteCommand(char const* sql, FdoSize& cmdTuples)
 {
     FDOLOG_MARKER("Connection::+PgExecuteCommand");
     FDOLOG_WRITE("SQL command: %s", sql);
@@ -405,7 +405,7 @@ ExecStatusType Connection::PgExecuteCommand(char const* sql, FdoSize& cmdTuples)
     boost::shared_ptr<PGresult> pgRes(PQexec(mPgConn, sql), PQclear);
 
     ExecStatusType pgStatus = PQresultStatus(pgRes.get());
-    if (PGRES_COMMAND_OK != pgStatus)
+    if (PGRES_COMMAND_OK != pgStatus && PGRES_TUPLES_OK != pgStatus)
     {
         // TODO: What about automatically logging exception?
         // FDOLOG_WRITE("PostgreSQL failed executing SQL command:\n\tCODE: %s\n\t%s\n\tSQL: %s",
@@ -432,14 +432,14 @@ ExecStatusType Connection::PgExecuteCommand(char const* sql, FdoSize& cmdTuples)
     }
 
     FDOLOG_WRITE("SQL affected tuples: %u", cmdTuples);
-
-    return pgStatus;
 }
 
 PGresult* Connection::PgExecuteQuery(char const* sql)
 {
     FDOLOG_MARKER("Connection::+PgExecuteQuery");
     FDOLOG_WRITE("SQL command: %s", sql);
+
+    ValidateConnectionState();
 
     PGresult* pgRes = NULL;
     ExecStatusType pgStatus = PGRES_FATAL_ERROR;
@@ -467,10 +467,38 @@ fdo::postgis::PgCursor* Connection::PgCreateCursor(char const* name)
     FDOLOG_MARKER("Connection::+PgCreateCursor");
     FDOLOG_WRITE("Cursor name: %s", name);
 
+    ValidateConnectionState();
+
     PgCursor::Ptr cursor = new PgCursor(this, name);
 
     FDO_SAFE_ADDREF(cursor.p);
     return cursor.p;
+}
+
+PGresult* Connection::PgDescribeCursor(char const* name)
+{
+    ValidateConnectionState();
+
+    PGresult* pgRes = NULL;
+    ExecStatusType pgStatus = PGRES_FATAL_ERROR;
+
+    pgRes = PQdescribePortal(mPgConn, name);
+    if (NULL != pgRes)
+    {
+        pgStatus = PQresultStatus(pgRes);
+    }
+
+    if (PGRES_COMMAND_OK != pgStatus)
+    {
+        // TODO: Consider throwing an exception
+        FDOLOG_WRITE("Describe portal command failed: [%s] %s",
+            PQresStatus(pgStatus), PQresultErrorMessage(pgRes));
+
+        assert(!"Describe portal command failed");
+    }
+
+    assert(NULL != pgRes);
+    return pgRes;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
