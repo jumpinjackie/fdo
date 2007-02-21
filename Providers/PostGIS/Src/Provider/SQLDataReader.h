@@ -17,6 +17,8 @@
 #ifndef FDOPOSTGIS_SQLDATAREADER_H_INCLUDED
 #define FDOPOSTGIS_SQLDATAREADER_H_INCLUDED
 
+#include "PgCursor.h"
+#include "Connection.h"
 #include <Fdo/Commands/Sql/ISQLDataReader.h>
 
 //
@@ -25,11 +27,7 @@
 class FdoLOBValue;
 class FdoIStreamReader;
 
-
 namespace fdo { namespace postgis {
-
-// Forward declarations of internal types
-class Connection;
 
 /// Implementation of interface providing forward-only and read-only iterator
 /// for reading relational table data.
@@ -43,7 +41,7 @@ public:
 
     /// Constructor creates instance of SQL data reader associated
     /// with given connection.
-    SQLDataReader(Connection* conn);
+    SQLDataReader(PgCursor* cursor);
 
     //
     // FdoISQLDataReader interface
@@ -120,8 +118,7 @@ protected:
 
 private:
 
-    /// \todo Weak reference of ref-counted?
-    Connection* mConn;
+    PgCursor::Ptr mCursor;
 
 };
 
