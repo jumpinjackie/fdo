@@ -32,8 +32,14 @@ class PgCursor : public FdoIDisposable //private boost::noncopyable
 {
 public:
 
+    /// Type of FDO smart pointer for PgCursor class.
     typedef FdoPtr<PgCursor> Ptr;
 
+    /// Type of pointer to PostgreSQL result set accessible through the cursor.
+    typedef PGresult const* ResultPtr;
+
+    /// Enumeration describes supported directions for moving cursor.
+    /// \todo Not used yet!
     enum Direction
     {
         eForward = 0,
@@ -48,8 +54,21 @@ public:
     /// \return String with name used in DECLARE statement.
     char const* GetName() const;
 
-    // Get read-only pointer to results associated with FETCH command.
-    PGresult const* GetFetchResult() const;
+    /// Get read-only pointer to results associated with FETCH command.
+    ResultPtr GetFetchResult() const;
+
+    /// Get number of columns (fields) returned in each row of the query result.
+    FdoSize GetFieldsCount() const;
+
+    /// Get column name associated with the given column number.
+    /// Column numbers start at 0.
+    FdoStringP GetFieldName(FdoSize number) const;
+
+    /// Get column number associated with the given column name.
+    FdoSize GetFieldNumber(FdoStringP const& name) const;
+    
+    /// Get FDO type of field associated with the given column name.
+    FdoDataType GetFieldType(FdoStringP const& name) const;
 
     /// Declare a cursor using given SELECT query.
     /// \remarks
@@ -71,7 +90,7 @@ public:
     void Close();
 
     /// Fetch tuples.
-    PGresult const* FetchNext();
+    ResultPtr FetchNext();
 
 
 protected:
@@ -93,12 +112,15 @@ private:
     //
 
     // Pointer to connection object of current session.
-    FdoPtr<Connection> mConn;
+    Connection::Ptr mConn;
 
     // Name of declared cursor.
-    std::string mName;
+    FdoStringP mName;
 
-    // Pointer to result structure used by cursor.
+    // Handle to result of describe portal command executed on the cursor.
+    PGresult* mDescRes;
+
+    // Handle to result of FETCH command executed on the cursor.
     PGresult* mFetchRes;
 
     // Flag indicating if cursor is closed or active.
@@ -111,7 +133,14 @@ private:
     // Check pre-conditions before running cursor operations.
     void Validate();
 
+    // Release resources associated with describe portal result.
+    void ClearDescribeResult();
+
+    // Release resources associated with fetch data result.
     void ClearFetchResult();
+
+    // Request to re-run describe portal command.
+    void Describe();
 
 };
 
