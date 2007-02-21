@@ -399,7 +399,7 @@ void FdoRfpConnection::Close()
     m_activeSpatialContext = L"";
     m_defaultRasterLocation = L"";
     m_connectionString = L"";
-    
+    m_datasetCache = NULL;
     m_state = FdoConnectionState_Closed;
 }
 
