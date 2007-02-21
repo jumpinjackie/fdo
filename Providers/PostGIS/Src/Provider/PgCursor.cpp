@@ -25,7 +25,7 @@
 namespace fdo { namespace postgis {
 
 PgCursor::PgCursor(Connection* conn, std::string const& name)
-    : mConn(conn), mName(name), mFetchRes(NULL), mIsClosed(true)
+    : mConn(conn), mName(name.c_str()), mDescRes(NULL), mFetchRes(NULL), mIsClosed(true)
 {
     FDO_SAFE_ADDREF(mConn.p);
 
@@ -54,15 +54,59 @@ void PgCursor::Dispose()
 
 const char* PgCursor::GetName() const
 {
-    return mName.c_str();
+    return (static_cast<char const*>(mName));
 }
 
-PGresult const* PgCursor::GetFetchResult() const
+PgCursor::ResultPtr PgCursor::GetFetchResult() const
 {
     // TODO: Handling of nothing fetched case.
     assert(NULL != mFetchRes);
 
     return mFetchRes;
+}
+
+FdoSize PgCursor::GetFieldsCount() const
+{
+    assert(NULL != mDescRes);
+    int nfields = PQnfields(mDescRes);
+    return static_cast<FdoSize>(nfields);
+}
+
+FdoStringP PgCursor::GetFieldName(FdoSize number) const
+{
+    if (GetFieldsCount() >= number)
+    {
+        // TODO: Throw about column index out of range
+        assert(false);
+    }
+
+    char const* fname = PQfname(mDescRes, static_cast<int>(number));
+    assert(NULL != fname);
+
+    return FdoStringP(fname);
+}
+
+FdoSize PgCursor::GetFieldNumber(FdoStringP const& name) const
+{
+    int fnumber = PQfnumber(mDescRes, static_cast<const char*>(name));
+    if (-1 == fnumber)
+    {
+        // -1 is returned if the given name does not match any column.
+        // TODO: throw an exception
+        assert(false);
+    }
+
+    return fnumber;
+}
+
+FdoDataType PgCursor::GetFieldType(FdoStringP const& name) const
+{
+    FdoSize fnumber = GetFieldNumber(name);
+    Oid ftype = PQftype(mDescRes, static_cast<int>(fnumber));
+
+    assert(!"NOT FINISHED YET");
+
+    return FdoDataType_Int32;
 }
 
 void PgCursor::Declare(char const* query)
@@ -77,19 +121,28 @@ void PgCursor::Declare(char const* query)
     Validate();
     assert(NULL == mFetchRes);
 
-    ExecStatusType pgStatus = PGRES_FATAL_ERROR;
+    try
+    {
+        // Begin transaction
+        mConn->PgExecuteCommand("BEGIN");
 
-    // Begin transaction
-    pgStatus = mConn->PgExecuteCommand("BEGIN");
-    assert(PGRES_COMMAND_OK == pgStatus);
+        // Declare cursor
+        std::string sql("DECLARE ");
+        sql += static_cast<char const*>(mName);
+        sql += " CURSOR FOR ";
+        sql += query;
 
-    // Declare cursor
-    std::string sql("DECLARE " + mName);
-    sql += " CURSOR FOR ";
-    sql += query;
+        mConn->PgExecuteCommand(sql.c_str());
 
-    pgStatus = mConn->PgExecuteCommand(sql.c_str());
-    assert(PGRES_COMMAND_OK == pgStatus);
+        // Call for describe cursor results
+        Describe();
+    }
+    catch (FdoException* e)
+    {
+        throw FdoCommandException::Create(NlsMsgGet(MSG_POSTGIS_CURSOR_CREATION_FAILED,
+            "The creation of PostgreSQL cursor '%1$ls' failed.",
+            static_cast<FdoString*>(mName)), e);  
+    }
 
     mIsClosed = false;
 }
@@ -101,32 +154,33 @@ void PgCursor::Close()
     if (!mIsClosed)
     {
         Validate();
+        ClearDescribeResult();
         ClearFetchResult();
 
-        ExecStatusType pgStatus = PGRES_FATAL_ERROR;
-
         // Close cursor
-        std::string sql("CLOSE " + mName);
-        pgStatus = mConn->PgExecuteCommand(sql.c_str());
-        assert(PGRES_COMMAND_OK == pgStatus);
+        std::string sql("CLOSE ");
+        sql += static_cast<char const*>(mName);
 
+        mConn->PgExecuteCommand(sql.c_str());
+        
         // End transaction
-        pgStatus = mConn->PgExecuteCommand("COMMIT");
-        assert(PGRES_COMMAND_OK == pgStatus);
-
+        mConn->PgExecuteCommand("COMMIT");
+        
         // Mark cursor as released
         mIsClosed = true;
     }
 }
 
-PGresult const* PgCursor::FetchNext()
+PgCursor::ResultPtr  PgCursor::FetchNext()
 {
     assert(false == mIsClosed);
 
     ClearFetchResult();
     assert(NULL == mFetchRes);
 
-    std::string sql("FETCH NEXT FROM " + mName);
+    std::string sql("FETCH NEXT FROM ");
+    sql += static_cast<char const*>(mName);
+
     mFetchRes = mConn->PgExecuteQuery(sql.c_str());
     return mFetchRes; 
 }
@@ -148,12 +202,32 @@ void PgCursor::Validate()
     }
 }
 
+void PgCursor::ClearDescribeResult()
+{
+    if (NULL != mDescRes)
+    {
+        PQclear(mDescRes);
+        mDescRes = NULL;
+    }
+}
+
 void PgCursor::ClearFetchResult()
 {
     if (NULL != mFetchRes)
     {
         PQclear(mFetchRes);
         mFetchRes = NULL;
+    }
+}
+
+
+void PgCursor::Describe()
+{
+    Validate();
+
+    if (NULL == mDescRes)
+    {
+        mDescRes = mConn->PgDescribeCursor(static_cast<char const*>(mName));
     }
 }
 
