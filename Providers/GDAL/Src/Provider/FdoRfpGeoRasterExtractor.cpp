@@ -187,7 +187,10 @@ void FdoRfpGeoRasterExtractor::ExtractRasters(FdoRfpConnection* conn,
 
         // if there is no georeference associated, just ignore this image.
         if (FdoRfpRasterUtil::GetGeoReferenceInfo(hDS, geoRef) == false)
+        {
+            datasetCache->UnlockDataset( hDS );
             continue;
+        }
 
         datasetCache->UnlockDataset( hDS );
 
