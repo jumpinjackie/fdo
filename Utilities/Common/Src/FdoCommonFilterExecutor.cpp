@@ -3788,12 +3788,9 @@ void FdoCommonFilterExecutor::GetExpressionType(FdoIConnection* conn, FdoClassDe
             }
         }
 
-        // If no matching signature was found, revert to 'default' return property/data type:
-        if (!bFound)  
-        {
-            retPropType = funcDef->GetReturnPropertyType();
-            retDataType = funcDef->GetReturnType();
-        }
+        // If no matching signature was found, throw an exception:
+        if (!bFound)
+            throw FdoException::Create(FdoException::NLSGetMessage(FDO_183_INVALID_FUNCTION_ARG, "One or more arguments for function '%1$ls' did not match the expected argument types.", function->GetName()));
     }
 }
 

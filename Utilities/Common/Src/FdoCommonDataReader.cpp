@@ -411,9 +411,14 @@ FdoCommonPropertyIndex* FdoCommonDataReader::GetPropertyIndex()
 
 FdoArray<FdoFunction*>* FdoCommonDataReader::GetAggregateFunctions(FdoIdentifierCollection* selectedIds, FdoCommonExpressionType &exprType)
 {
-    VALIDATE_ARGUMENT(selectedIds);
-
     FdoArray<FdoFunction*>* aggrIdents = NULL;
+
+    // If no identifiers have been explicitly selected, this implies a per-row expression type with no aggregate functions:
+    if (selectedIds == NULL)
+    {
+        exprType = FdoCommonExpressionType_PerRow;
+        return NULL;
+    }
 
     bool bContainsAggregateExpressions = false;
     bool bContainsPerRowExpressions = false;

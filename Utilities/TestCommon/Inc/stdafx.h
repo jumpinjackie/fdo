@@ -72,6 +72,14 @@ namespace stdext = ::__gnu_cxx;
 using namespace std;
 #endif
 
+#ifdef _WIN32
+#include <io.h>
+#include <stddef.h>
+#else
+#include <sys/time.h>
+#endif
+
+#include <math.h>
 
 #include <FdoStd.h>
 #include <Fdo/Expression/DataValueCollection.h>
