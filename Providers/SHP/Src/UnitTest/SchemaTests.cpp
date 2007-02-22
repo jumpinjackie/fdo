@@ -77,7 +77,7 @@ void SchemaTests::setUp ()
     }
     catch (FdoException* ge)
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -86,9 +86,9 @@ void SchemaTests::tearDown ()
     try
     {
         // delete the classes, if they're there:
-        CleanUpClass(mConnection, NULL, L"Test");
-        CleanUpClass(mConnection, NULL, L"Test1");
-        CleanUpClass(mConnection, NULL, L"Test2");
+        TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, L"Test");
+        TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, L"Test1");
+        TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, L"Test2");
 
         mConnection->Close ();
 		FDO_SAFE_RELEASE(mConnection.p);
@@ -102,7 +102,7 @@ void SchemaTests::tearDown ()
     }
     catch (FdoException *ge)
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -159,7 +159,7 @@ void SchemaTests::show_schema (FdoFeatureSchemaCollection* schemas)
                 if ((definition->GetDescription () != NULL) && (0 != wcscmp (definition->GetDescription (), L"")))
                     printf ("            Description: %ls\n", definition->GetDescription ());
                 printf ("            Type: %ls Length: %d Precision: %d %ls\n",
-                    ShpTests::GetDataTypeString (definition->GetDataType ()),
+                    FdoCommonMiscUtil::FdoDataTypeToString (definition->GetDataType ()),
                     definition->GetLength (),
                     definition->GetPrecision (),
                     definition->GetNullable () ? L"Nullable" : L"NotNull");
@@ -180,7 +180,7 @@ void SchemaTests::show_schema (FdoFeatureSchemaCollection* schemas)
                         if ((data_definition->GetDescription () != NULL) && (0 != wcscmp (data_definition->GetDescription (), L"")))
                             printf ("            Description: %ls\n", data_definition->GetDescription ());
                         printf ("            Type: %ls Length: %d Precision: %d %ls\n",
-                            ShpTests::GetDataTypeString (data_definition->GetDataType ()),
+                            FdoCommonMiscUtil::FdoDataTypeToString (data_definition->GetDataType ()),
                             data_definition->GetLength (),
                             data_definition->GetPrecision (),
                             data_definition->GetNullable () ? L"Nullable" : L"NotNull");
@@ -252,7 +252,7 @@ void SchemaTests::describe ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -278,7 +278,7 @@ void SchemaTests::describe_bogus ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -299,7 +299,7 @@ void SchemaTests::apply_nameless ()
         FdoString* NEW_CLASS_NAME = L"Test";
 
         // Clean up leftovers from previous tests:
-        CleanUpClass(mConnection, NULL, NEW_CLASS_NAME);
+        TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, NEW_CLASS_NAME);
 
         FdoPtr<FdoIApplySchema> apply = (FdoIApplySchema*)mConnection->CreateCommand (FdoCommandType_ApplySchema);
         FdoPtr<FdoFeatureSchema> schema = FdoFeatureSchema::Create (NEW_SCHEMA_NAME, L"");
@@ -366,7 +366,7 @@ void SchemaTests::apply_nameless ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -379,7 +379,7 @@ void SchemaTests::create_nameless ()
         FdoString* NEW_CLASS_NAME = L"";
 
         // Clean up leftovers from previous tests:
-        CleanUpClass(mConnection, NULL, NEW_CLASS_NAME);
+        TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, NEW_CLASS_NAME);
 
         FdoPtr<FdoIApplySchema> apply = (FdoIApplySchema*)mConnection->CreateCommand (FdoCommandType_ApplySchema);
         FdoPtr<FdoFeatureSchema> schema = FdoFeatureSchema::Create (NEW_SCHEMA_NAME, L"");
@@ -446,7 +446,7 @@ void SchemaTests::create_nameless ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -478,7 +478,7 @@ void SchemaTests::schema_mapping_defaults_test()
     }
     catch (FdoException* e)
     {
-        fail (e);
+        TestCommonFail (e);
     }
 }
 
@@ -500,7 +500,7 @@ void SchemaTests::schema_mapping_no_defaults_test()
     }
     catch (FdoException* e)
     {
-        fail (e);
+        TestCommonFail (e);
     }
 }
 
@@ -625,7 +625,7 @@ void SchemaTests::add_class ()
 {
     try
     {
-        CleanUpClass (mConnection, L"Default", L"Test");
+        TestCommonSchemaUtil::CleanUpClass (mConnection, L"Default", L"Test");
 
         FdoPtr<FdoIDescribeSchema> describe = (FdoIDescribeSchema*)mConnection->CreateCommand (FdoCommandType_DescribeSchema);
         FdoPtr<FdoFeatureSchemaCollection> schemas = describe->Execute ();
@@ -701,7 +701,7 @@ void SchemaTests::add_class ()
     }
     catch (FdoException* e)
     {
-        fail (e);
+        TestCommonFail (e);
     }
 }
 
@@ -714,7 +714,7 @@ void SchemaTests::apply_two ()
         FdoString* NEW_CLASS_NAME = L"Test";
 
         // Clean up leftovers from previous tests:
-        CleanUpClass(mConnection, NULL, NEW_CLASS_NAME);
+        TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, NEW_CLASS_NAME);
 
 
         FdoPtr<FdoIApplySchema> apply = (FdoIApplySchema*)mConnection->CreateCommand (FdoCommandType_ApplySchema);
@@ -775,7 +775,7 @@ void SchemaTests::apply_two ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -788,7 +788,7 @@ void SchemaTests::apply_three ()
         FdoString* NEW_CLASS_NAME = L"Test";
 
         // Clean up leftovers from previous tests:
-        CleanUpClass(mConnection, NULL, NEW_CLASS_NAME);
+        TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, NEW_CLASS_NAME);
 
         FdoPtr<FdoIApplySchema> apply = (FdoIApplySchema*)mConnection->CreateCommand (FdoCommandType_ApplySchema);
         FdoPtr<FdoFeatureSchema> schema = FdoFeatureSchema::Create (NEW_SCHEMA_NAME, L"");
@@ -845,7 +845,7 @@ void SchemaTests::apply_three ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -853,7 +853,7 @@ void SchemaTests::add_class_no_identity ()
 {
     try
     {
-        CleanUpClass (mConnection, L"Default", L"Test");
+        TestCommonSchemaUtil::CleanUpClass (mConnection, L"Default", L"Test");
 
         FdoPtr<FdoIDescribeSchema> describe = (FdoIDescribeSchema*)mConnection->CreateCommand (FdoCommandType_DescribeSchema);
         FdoPtr<FdoFeatureSchemaCollection> schemas = describe->Execute ();
@@ -923,7 +923,7 @@ void SchemaTests::add_class_no_identity ()
     }
     catch (FdoException* e)
     {
-        fail (e);
+        TestCommonFail (e);
     }
 }
 
@@ -969,7 +969,7 @@ void SchemaTests::switch_schema ()
     }
     catch (FdoException* e)
     {
-        fail (e);
+        TestCommonFail (e);
     }
 }
 
@@ -1031,7 +1031,7 @@ void SchemaTests::destroy_schema ()
     }
     catch (FdoException* ge)
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -1043,7 +1043,7 @@ void SchemaTests::non_ascii_property_name ()
         FdoString* NEW_CLASS_NAME = L"Test";
 
         // Clean up leftovers from previous tests:
-        CleanUpClass(mConnection, NULL, NEW_CLASS_NAME);
+        TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, NEW_CLASS_NAME);
 
 
         FdoPtr<FdoIApplySchema> apply = (FdoIApplySchema*)mConnection->CreateCommand (FdoCommandType_ApplySchema);
@@ -1123,7 +1123,7 @@ void SchemaTests::non_ascii_property_name ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -1135,7 +1135,7 @@ void SchemaTests::non_ascii_class_name1 ()
         FdoString* NEW_CLASS_NAME = L"T\x00E9st";
 
         // Clean up leftovers from previous tests:
-        CleanUpClass(mConnection, NULL, NEW_CLASS_NAME);
+        TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, NEW_CLASS_NAME);
 
         FdoPtr<FdoIApplySchema> apply = (FdoIApplySchema*)mConnection->CreateCommand (FdoCommandType_ApplySchema);
         FdoPtr<FdoFeatureSchema> schema = FdoFeatureSchema::Create (NEW_SCHEMA_NAME, L"");
@@ -1214,7 +1214,7 @@ void SchemaTests::non_ascii_class_name1 ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -1226,7 +1226,7 @@ void SchemaTests::non_ascii_class_name2 ()
         FdoString* NEW_CLASS_NAME = L"T\x5348\x524dst";
 
         // Clean up leftovers from previous tests:
-        CleanUpClass(mConnection, NULL, NEW_CLASS_NAME);
+        TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, NEW_CLASS_NAME);
 
         FdoPtr<FdoIApplySchema> apply = (FdoIApplySchema*)mConnection->CreateCommand (FdoCommandType_ApplySchema);
         FdoPtr<FdoFeatureSchema> schema = FdoFeatureSchema::Create (NEW_SCHEMA_NAME, L"");
@@ -1305,7 +1305,7 @@ void SchemaTests::non_ascii_class_name2 ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -1317,7 +1317,7 @@ void SchemaTests::non_ascii_schema_name ()
         FdoString* NEW_CLASS_NAME = L"T\x5348\x524dst";
 
         // Clean up leftovers from previous tests:
-        CleanUpClass(mConnection, NULL, NEW_CLASS_NAME);
+        TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, NEW_CLASS_NAME);
 
         FdoPtr<FdoIApplySchema> apply = (FdoIApplySchema*)mConnection->CreateCommand (FdoCommandType_ApplySchema);
         FdoPtr<FdoFeatureSchema> schema = FdoFeatureSchema::Create (NEW_SCHEMA_NAME, L"");
@@ -1396,7 +1396,7 @@ void SchemaTests::non_ascii_schema_name ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -1416,13 +1416,13 @@ void SchemaTests::non_ascii_directory ()
         }
         catch (FdoException* ge)
         {
-            fail (ge);
+            TestCommonFail (ge);
         }
         FdoString* NEW_SCHEMA_NAME = L"N\x5348\x524dwSchema";
         FdoString* NEW_CLASS_NAME = L"T\x5348\x524dst";
 
         // Clean up leftovers from previous tests:
-        CleanUpClass(mConnection, NULL, NEW_CLASS_NAME);
+        TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, NEW_CLASS_NAME);
 
         FdoPtr<FdoIApplySchema> apply = (FdoIApplySchema*)mConnection->CreateCommand (FdoCommandType_ApplySchema);
         FdoPtr<FdoFeatureSchema> schema = FdoFeatureSchema::Create (NEW_SCHEMA_NAME, L"");
@@ -1510,7 +1510,7 @@ void SchemaTests::non_ascii_directory ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -1524,7 +1524,7 @@ void SchemaTests::modify_class()
         FdoString* NEW_CLASS_NAME = L"TestModify";
 
         // Clean up leftovers from previous tests:
-        CleanUpClass(mConnection, NULL, NEW_CLASS_NAME);
+        TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, NEW_CLASS_NAME);
 
 
         // Create new schema with one class :
@@ -1645,7 +1645,7 @@ void SchemaTests::modify_class()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -1658,7 +1658,7 @@ void SchemaTests::ignore_states()
         FdoString* NEW_CLASS_NAME = L"TestModify";
 
         // Clean up leftovers from previous tests:
-        CleanUpClass(mConnection, NULL, NEW_CLASS_NAME);
+        TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, NEW_CLASS_NAME);
 
 
         // Create new schema with one class :
@@ -1720,7 +1720,7 @@ void SchemaTests::ignore_states()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -1773,7 +1773,7 @@ void SchemaTests::apply_schema()
 	}
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -1797,7 +1797,7 @@ void SchemaTests::test_create_PRJ()
 		mConnection->Open();
 
 		// Clean up leftovers from previous tests:
-        CleanUpClass(mConnection, NULL, NEW_CLASS_NAME);
+        TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, NEW_CLASS_NAME);
 
 		//Generating default data property
 		FdoPtr<FdoDataPropertyDefinition> featid = FdoDataPropertyDefinition::Create(L"FeatId",L"Default identity property");
@@ -1930,7 +1930,7 @@ void SchemaTests::test_create_PRJ()
 	}
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -1981,7 +1981,7 @@ void SchemaTests::describe_Fix784301 ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -2047,7 +2047,7 @@ void SchemaTests::read_only_files ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -2073,7 +2073,7 @@ void SchemaTests::apply_helper(bool bUseSpecificGeometryTypes)
         FdoString* NEW_CLASS_NAME = L"Test";
 
         // Clean up leftovers from previous tests:
-        CleanUpClass(mConnection, NULL, NEW_CLASS_NAME);
+        TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, NEW_CLASS_NAME);
 
 
         FdoPtr<FdoIApplySchema> apply = (FdoIApplySchema*)mConnection->CreateCommand (FdoCommandType_ApplySchema);
@@ -2180,6 +2180,6 @@ void SchemaTests::apply_helper(bool bUseSpecificGeometryTypes)
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }

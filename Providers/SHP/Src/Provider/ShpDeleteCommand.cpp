@@ -82,7 +82,7 @@ FdoInt32 ShpDeleteCommand::Execute ()
         while (reader->ReadNext ())
         {
             id = (int)reader->GetInt32 (featid);
-            id--;  // featids are 0-based internally and 1-basd externally (outside the FDO API)
+            id--;  // featids are 0-based internally and 1-based externally (outside the FDO API)
             fileset->DeleteObjectAt (id);
             ret++;
         }

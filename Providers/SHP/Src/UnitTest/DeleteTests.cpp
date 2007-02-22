@@ -57,7 +57,7 @@ void DeleteTests::setUp ()
 void DeleteTests::tearDown ()
 {
     // delete the class, if its there:
-    CleanUpClass(mConnection, NULL, L"Test");
+    TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, L"Test");
 
     mConnection->Close ();
 
@@ -74,7 +74,7 @@ void DeleteTests::tearDown ()
 void DeleteTests::create_schema (FdoGeometricType type, bool elevation, bool measure)
 {
     // delete the class, if its there:
-    CleanUpClass(mConnection, NULL, L"Test");
+    TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, L"Test");
 
     // create the class
     FdoPtr<FdoFeatureSchema> schema = FdoFeatureSchema::Create (L"TheSchema", L" test schema");
@@ -179,7 +179,7 @@ void DeleteTests::del ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -228,7 +228,7 @@ void DeleteTests::del_geometry ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -368,7 +368,7 @@ void DeleteTests::del_one ()
         FdoPtr<FdoByteArray> geomWritten1 = geometry1->GetGeometry();
         FdoPtr<FdoIGeometry> geomRead1B = agf->CreateGeometryFromFgf(geomRead1);
         FdoPtr<FdoIGeometry> geomWritten1B = agf->CreateGeometryFromFgf(geomWritten1);
-        CPPUNIT_ASSERT_MESSAGE ("wrong geometry", ShpTests::GeometriesEquivalent(geomRead1B, geomWritten1B));
+        CPPUNIT_ASSERT_MESSAGE ("wrong geometry", TestCommonGeomUtil::GeometriesEquivalent(geomRead1B, geomWritten1B));
 
         // Check feature #3  (it is #2 due to compressing and renumbering)
         CPPUNIT_ASSERT_MESSAGE ("not enough features", reader2->ReadNext ());
@@ -380,7 +380,7 @@ void DeleteTests::del_one ()
         FdoPtr<FdoByteArray> geomWritten3 = geometry3->GetGeometry();
         FdoPtr<FdoIGeometry> geomRead3B = agf->CreateGeometryFromFgf(geomRead3);
         FdoPtr<FdoIGeometry> geomWritten3B = agf->CreateGeometryFromFgf(geomWritten3);
-        CPPUNIT_ASSERT_MESSAGE ("wrong geometry", ShpTests::GeometriesEquivalent(geomRead3B, geomWritten3B));
+        CPPUNIT_ASSERT_MESSAGE ("wrong geometry", TestCommonGeomUtil::GeometriesEquivalent(geomRead3B, geomWritten3B));
 
         // Make sure nothing is left:
         CPPUNIT_ASSERT_MESSAGE ("still features left", !reader2->ReadNext ());
@@ -401,7 +401,7 @@ void DeleteTests::del_one ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -416,7 +416,7 @@ void DeleteTests::del_without_dbf ()
         CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == conn->Open ());
 
         // Delete any old data:
-        CleanUpClass(mConnection, NULL, L"ShpWithoutDbf");
+        TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, L"ShpWithoutDbf");
 
         // Get existing schema:
         FdoPtr<FdoIDescribeSchema> descSchema = (FdoIDescribeSchema*)conn->CreateCommand(FdoCommandType_DescribeSchema);
@@ -526,6 +526,6 @@ void DeleteTests::del_without_dbf ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }

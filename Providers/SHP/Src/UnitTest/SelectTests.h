@@ -46,6 +46,9 @@ class SelectTests :
     CPPUNIT_TEST (select_date_time);
     CPPUNIT_TEST (select_large_geometries);
     CPPUNIT_TEST (analyze_polygons);
+    CPPUNIT_TEST (select_with_aggregates_should_fail);
+    CPPUNIT_TEST (upper_lower);
+    CPPUNIT_TEST (ceil_floor);
     CPPUNIT_TEST_SUITE_END ();
 
     static FdoPtr<FdoIConnection> mConnection;
@@ -71,9 +74,14 @@ protected:
     void select_date_time ();
     void select_large_geometries ();
     void analyze_polygons();
+    void select_with_aggregates_should_fail();
+    void upper_lower();
+    void ceil_floor();
 
 private:
+    // utility methods:
     void get_spatial_context (FdoIConnection* connection, FdoString* cs_name, int expected_num_sc);
+    void create_schema (FdoString *schemaName, FdoString* className, FdoGeometricType type, bool elevation, bool measure, bool bInsertTestData, bool bUseDoubleType);
 };
 
 #endif // SELECTTESTS_H

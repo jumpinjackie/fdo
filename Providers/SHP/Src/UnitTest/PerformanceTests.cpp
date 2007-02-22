@@ -80,7 +80,7 @@ void PerformanceTests::select ()
     }
     catch (FdoException* ge)
     {
-        ShpTests::fail (ge);
+        TestCommonFail (ge);
     }
 }
 

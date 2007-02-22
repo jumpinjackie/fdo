@@ -104,7 +104,7 @@ void ComparisonTests::compare1 ()
     }
     catch (FdoException* ge)
     {
-        ShpTests::fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -160,7 +160,7 @@ void ComparisonTests::compare2 ()
     }
     catch (FdoException* ge)
     {
-        ShpTests::fail (ge);
+        TestCommonFail (ge);
     }
 }
 

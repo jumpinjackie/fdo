@@ -19,7 +19,6 @@
 
 #include "Pch.h"
 #include "FilterTests.h"
-#include "UnitTestUtil.h"
 
 CPPUNIT_TEST_SUITE_REGISTRATION (FilterTests);
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION (FilterTests, "FilterTests");
@@ -81,7 +80,7 @@ void FilterTests::equal ()
     }
     catch (FdoException *e)
     {
-        fail(e);
+        TestCommonFail(e);
     }
 }
 
@@ -115,7 +114,7 @@ void FilterTests::less ()
     }
     catch (FdoException *e)
     {
-        fail(e);
+        TestCommonFail(e);
     }
 }
 
@@ -149,7 +148,7 @@ void FilterTests::greater ()
     }
     catch (FdoException *e)
     {
-        fail(e);
+        TestCommonFail(e);
     }
 }
 
@@ -184,7 +183,7 @@ void FilterTests::not_equal ()
     }
     catch (FdoException *e)
     {
-        fail(e);
+        TestCommonFail(e);
     }
 }
 
@@ -219,7 +218,7 @@ void FilterTests::in ()
     }
     catch (FdoException *e)
     {
-        fail(e);
+        TestCommonFail(e);
     }
 }
 
@@ -265,7 +264,7 @@ void FilterTests::combined ()
     }
     catch (FdoException *e)
     {
-        fail(e);
+        TestCommonFail(e);
     }
 }
 
@@ -299,7 +298,7 @@ void FilterTests::is_null ()
     }
     catch (FdoException *e)
     {
-        fail(e);
+        TestCommonFail(e);
     }
 }
 
@@ -334,7 +333,7 @@ void FilterTests::arithmetic_expression ()
     }
     catch (FdoException *e)
     {
-        fail(e);
+        TestCommonFail(e);
     }
 }
 
@@ -368,7 +367,7 @@ void FilterTests::logical_expression ()
     }
     catch (FdoException *e)
     {
-        fail(e);
+        TestCommonFail(e);
     }
 }
 
@@ -402,7 +401,7 @@ void FilterTests::string_expression ()
     }
     catch (FdoException *e)
     {
-        fail(e);
+        TestCommonFail(e);
     }
 }
 
@@ -436,7 +435,7 @@ void FilterTests::functions ()
     }
     catch (FdoException *e)
     {
-        fail(e);
+        TestCommonFail(e);
     }
 }
 
@@ -465,7 +464,7 @@ void FilterTests::computed ()
     }
     catch (FdoException *e)
     {
-        fail(e);
+        TestCommonFail(e);
     }
 }
 
@@ -493,7 +492,7 @@ void FilterTests::computed_geometry ()
     }
     catch (FdoException *e)
     {
-        fail(e);
+        TestCommonFail(e);
     }
 }
 
@@ -540,7 +539,7 @@ void FilterTests::non_existent_featid ()
     }
     catch (FdoException *e)
     {
-        fail(e);
+        TestCommonFail(e);
     }
 }
 
@@ -668,7 +667,7 @@ void FilterTests::featid_optimizer_tests ()
     }
     catch (FdoException *e)
     {
-        fail(e);
+        TestCommonFail(e);
     }
 }
 
@@ -682,27 +681,21 @@ void FilterTests::featid_performance_tests ()
         int         count = 0;
         FdoString*  query;
 
-#ifdef _WIN32       
-        double time1 = UnitTestUtil::GetTime_S();
-#endif
+        double time1 = TestCommonMiscUtil::GetTime_S();
 
         // This is the max featId, should return 1 row.
         query = L"FeatId = 1087";
         count = featid_roads_query( query, NUM_RUNS );
         CPPUNIT_ASSERT_MESSAGE ("P. not 2 feature selected", NUM_RUNS == count);
 
-#ifdef _WIN32
-        double time2 = UnitTestUtil::GetTime_S();
+        double time2 = TestCommonMiscUtil::GetTime_S();
         double elapsed = time2 - time1;
 
         if (VERBOSE)
 			printf("Elapsed: %lf sec\n",elapsed);
-#endif
     }
     catch (FdoException *e)
     {
-        fail(e);
+        TestCommonFail(e);
     }
 }
-
-

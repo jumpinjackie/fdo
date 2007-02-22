@@ -33,13 +33,12 @@ class SelectAggregatesTests :
     CPPUNIT_TEST (select_aggregates_null);
     CPPUNIT_TEST (select_orderby);
     CPPUNIT_TEST (count);
-	CPPUNIT_TEST (ceil_floor);
-	CPPUNIT_TEST (upper_lower);
     CPPUNIT_TEST (select_orderby_decimal);
     CPPUNIT_TEST (select_orderby_scrambled_property_ids);
     CPPUNIT_TEST (select_orderby_empty_select_list);
     CPPUNIT_TEST (selectAggregatesSpatialExtentsTest);
 	CPPUNIT_TEST (performance_count_mbr);
+    CPPUNIT_TEST (select_aggregates_fdoclass);
     CPPUNIT_TEST_SUITE_END ();
 
     static FdoPtr<FdoIConnection> mConnection;
@@ -56,13 +55,12 @@ protected:
     void select_aggregates_null ();
     void select_orderby();
     void count ();
-	void ceil_floor ();
-	void upper_lower();
     void select_orderby_decimal ();
     void select_orderby_scrambled_property_ids();
     void select_orderby_empty_select_list();
     void selectAggregatesSpatialExtentsTest();  // This test is ported from SDF Provider
 	void performance_count_mbr ();
+    void select_aggregates_fdoclass();
 
     // utility methods:
     void create_schema (FdoString *schemaName, FdoString* className, FdoGeometricType type, bool elevation, bool measure, bool bInsertTestData);

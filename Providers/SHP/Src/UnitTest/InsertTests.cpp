@@ -69,9 +69,9 @@ void InsertTests::tearDown ()
 	mConnection->Open ();
 
     // Delete old class, if its there:
-    CleanUpClass(mConnection, NULL, L"Test");
-	CleanUpClass(mConnection, NULL, L"Test2");
-	CleanUpClass(mConnection, NULL, L"TestFdoClass");
+    TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, L"Test");
+	TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, L"Test2");
+	TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, L"TestFdoClass");
 
     mConnection->Close ();
 	FDO_SAFE_RELEASE(mConnection.p);
@@ -85,9 +85,9 @@ void InsertTests::tearDown ()
 void InsertTests::create_schema (FdoGeometricType type, bool elevation, bool measure)
 {
     // Delete old class, if its still there:
-    CleanUpClass(mConnection, L"TheSchema", L"Test");
-	CleanUpClass(mConnection, L"TheSchema", L"Test2");
-    CleanUpClass(mConnection, L"TheSchema", L"TestFdoClass");
+    TestCommonSchemaUtil::CleanUpClass(mConnection, L"TheSchema", L"Test");
+	TestCommonSchemaUtil::CleanUpClass(mConnection, L"TheSchema", L"Test2");
+    TestCommonSchemaUtil::CleanUpClass(mConnection, L"TheSchema", L"TestFdoClass");
 
 
     // Create the FdoFeatureClass "Test":
@@ -400,7 +400,7 @@ void InsertTests::insert_locale (char *orig_locale, char *new_locale, FdoString 
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -523,7 +523,7 @@ void InsertTests::wide2mbPerformaceTest()
    }
    catch (FdoException* ge) 
    {
-       	fail (ge);
+       	TestCommonFail (ge);
    }
 }
 
@@ -606,7 +606,7 @@ void InsertTests::insert ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -699,7 +699,7 @@ void InsertTests::insert_geometry_point_xy ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -810,7 +810,7 @@ void InsertTests::insert_geometry_point_xyz ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -921,7 +921,7 @@ void InsertTests::insert_geometry_point_xym ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -1032,7 +1032,7 @@ void InsertTests::insert_geometry_point_xyzm ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -1126,7 +1126,7 @@ void InsertTests::insert_geometry_points_xy ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -1237,7 +1237,7 @@ void InsertTests::insert_geometry_points_xyz ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -1348,7 +1348,7 @@ void InsertTests::insert_geometry_points_xym ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -1459,7 +1459,7 @@ void InsertTests::insert_geometry_points_xyzm ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -1570,7 +1570,7 @@ void InsertTests::insert_geometry_line_xy ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -1681,7 +1681,7 @@ void InsertTests::insert_geometry_line_xyz ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -1792,7 +1792,7 @@ void InsertTests::insert_geometry_line_xym ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -1903,7 +1903,7 @@ void InsertTests::insert_geometry_line_xyzm ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -2014,7 +2014,7 @@ void InsertTests::insert_geometry_polygon_xy ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -2125,7 +2125,7 @@ void InsertTests::insert_geometry_polygon_xyz ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -2236,7 +2236,7 @@ void InsertTests::insert_geometry_polygon_xym ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -2347,7 +2347,7 @@ void InsertTests::insert_geometry_polygon_xyzm ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -2458,7 +2458,7 @@ void InsertTests::insert_geometry_multilinestring_xy ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -2569,7 +2569,7 @@ void InsertTests::insert_geometry_multilinestring_xyz ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -2680,7 +2680,7 @@ void InsertTests::insert_geometry_multilinestring_xym ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -2791,7 +2791,7 @@ void InsertTests::insert_geometry_multilinestring_xyzm ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -2913,7 +2913,7 @@ void InsertTests::insert_geometry_multipolygon_xy ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -3035,7 +3035,7 @@ void InsertTests::insert_geometry_multipolygon_xyz ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -3157,7 +3157,7 @@ void InsertTests::insert_geometry_multipolygon_xym ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -3279,7 +3279,7 @@ void InsertTests::insert_geometry_multipolygon_xyzm ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -3372,7 +3372,7 @@ void InsertTests::insert_invalid_polygons()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -3602,7 +3602,7 @@ void InsertTests::batch_insert ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -3879,7 +3879,7 @@ void InsertTests::null_geometry_insert ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -3933,7 +3933,7 @@ void InsertTests::null_data_insert ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -4452,7 +4452,7 @@ void InsertTests::insert_large_first_geometry ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -4606,7 +4606,7 @@ void InsertTests::insert_no_geometry ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -4660,7 +4660,7 @@ void InsertTests::insert_2connects ()
 	}
 	catch (FdoException* ge) 
 	{
-		fail (ge);
+		TestCommonFail (ge);
 	}
 }
 
@@ -4749,7 +4749,7 @@ void InsertTests::insert_2connects_flush ()
 	}
 	catch (FdoException* ge) 
 	{
-		fail (ge);
+		TestCommonFail (ge);
 	}
 }
 

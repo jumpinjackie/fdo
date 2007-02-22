@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\cppunit\include;$(FDOUTILITIES)\Common\inc;..\ShpRead;..\ShpSpatialIndex;..\..\inc;..\Provider"
+				AdditionalIncludeDirectories="$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\cppunit\include;$(FDOUTILITIES)\Common\inc;..\ShpRead;..\ShpSpatialIndex;..\..\inc;..\Provider;$(FDOUTILITIES)\TestCommon\Inc"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE"
 				GeneratePreprocessedFile="0"
 				KeepComments="false"
@@ -132,7 +132,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\cppunit\include;$(FDOUTILITIES)\Common\inc;..\ShpRead;..\ShpSpatialIndex;..\..\inc;..\Provider"
+				AdditionalIncludeDirectories="$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\cppunit\include;$(FDOUTILITIES)\Common\inc;..\ShpRead;..\ShpSpatialIndex;..\..\inc;..\Provider;$(FDOUTILITIES)\TestCommon\Inc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"
 				MinimalRebuild="true"
@@ -298,10 +298,6 @@
 				>
 			</File>
 			<File
-				RelativePath="UnitTestUtil.cpp"
-				>
-			</File>
-			<File
 				RelativePath="UpdateTests.cpp"
 				>
 			</File>
@@ -392,10 +388,6 @@
 			</File>
 			<File
 				RelativePath="SpatialFilterTests.h"
-				>
-			</File>
-			<File
-				RelativePath="UnitTestUtil.h"
 				>
 			</File>
 			<File

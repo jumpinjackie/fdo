@@ -19,7 +19,6 @@
 
 #include "Pch.h"
 #include "OverridesTest.h"
-#include "UnitTestUtil.h"
 #include "XmlFormatter.h"
 #include "FdoCommonFile.h"
 #include <Fdo/Xml/SpatialContextSerializer.h>
@@ -142,7 +141,7 @@ void OverridesTest::TestCreateSchemaOverrides()
     }
 	catch (FdoException* e) 
     {
-        fail (e);
+        TestCommonFail (e);
 	}
 }
 
@@ -187,7 +186,7 @@ void OverridesTest::TestNewConfiguration(FdoShpOvPhysicalSchemaMapping* schemaMa
     }
 	catch (FdoException* e) 
     {
-        fail (e);
+        TestCommonFail (e);
 	}
 }
 
@@ -221,18 +220,18 @@ void OverridesTest::TestSimple ()
         Stream2File(configStream, configFileName);
 
 #ifdef _WIN32
-        UnitTestUtil::CheckOutput(baseConfigFileName, configFileName);
+        TestCommonFileUtil::CompareFilesAndThrow(baseConfigFileName, configFileName);
 #else
         // throw FdoCommandException::Create(L"Test Not Supported yet on Linux");
 #endif
     }
 	catch (FdoException* e) 
     {
-        fail (e);
+        TestCommonFail (e);
 	}
 	catch (char* error) 
     {
-        fail (error);
+        TestCommonFail (error);
 	}
 }
 
@@ -264,11 +263,11 @@ void OverridesTest::TestConfiguration(FdoShpOvPhysicalSchemaMapping* schemaMappi
     }
 	catch (FdoException* e) 
     {
-        fail (e);
+        TestCommonFail (e);
 	}
 	catch (char* error) 
     {
-        fail (error);
+        TestCommonFail (error);
 	}
 }
 
@@ -282,11 +281,11 @@ void OverridesTest::TestBaseProperties(FdoPhysicalElementMapping* elementMapping
     }
 	catch (FdoException* e) 
     {
-        fail (e);
+        TestCommonFail (e);
 	}
 	catch (char* error) 
     {
-        fail (error);
+        TestCommonFail (error);
 	}
 }
 
@@ -330,7 +329,7 @@ void OverridesTest::TestSetConfiguration()
     }
 	catch (FdoException* e) 
     {
-        fail (e);
+        TestCommonFail (e);
 	}
 }
 
@@ -371,7 +370,7 @@ void OverridesTest::TestSetEmptyConfiguration ()
     }
 	catch (FdoException* e) 
     {
-        fail (e);
+        TestCommonFail (e);
 	}
 }
 
@@ -617,7 +616,7 @@ void OverridesTest::TestReadWithOverrides ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -748,8 +747,8 @@ void OverridesTest::TestWriteWithOverrides ()
         conn->Open();
 
         // Clean up leftovers from previous tests:
-        CleanUpClass(conn, NULL, L"NewOntario");
-        CleanUpClass(conn, NULL, L"NewNanboku");
+        TestCommonSchemaUtil::CleanUpClass(conn, NULL, L"NewOntario");
+        TestCommonSchemaUtil::CleanUpClass(conn, NULL, L"NewNanboku");
 
 
         // Create the new classes using ApplySchema and the overrides:
@@ -791,7 +790,7 @@ void OverridesTest::TestWriteWithOverrides ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 

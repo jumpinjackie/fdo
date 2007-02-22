@@ -117,12 +117,6 @@ public:
 	static wchar_t* sLocation;
     static FdoIConnection* GetConnection ();
 
-    static void fail (FdoException* ge);
-    static void fail (char* error);
-
-	// Converts the given FdoDataType to an equivalent string representation:
-	static wchar_t* GetDataTypeString (FdoDataType type);
-
     // Parses the given Fdo string into an FdoExpression, making sure to validate and convert to the given type:
     static FdoExpression* ParseByDataType (const wchar_t* data, FdoDataType dataType);
 
@@ -132,31 +126,14 @@ public:
     // check for the objects in the map (pairs of property index values & id numbers) by doing a select
     static void Expect (FdoIConnection* connection, UnitTestClass* definition, std::vector<int*> *map);
 
-    // check that 2 doubles are roughly equal:
-    static bool fuzzyEqual (const double d1, const double d2);
-
     // Accesses all the data on the current feature.
     void ProcessFeature (FdoIFeatureReader* featureReader, FdoIdentifierCollection* IDs = NULL);
 
     // Activate the given spatial context; don't report error if spatial context not found:
     void ActivateSpatialContext (FdoIConnection* connection, FdoString* scName);
 
-    // Compare two geometries for equivalence:
-    bool GeometriesEquivalent (FdoIGeometry *geom1, FdoIGeometry *geom2);
-    bool LinearRingsEquivalent (FdoILinearRing* lr1, FdoILinearRing* lr2);
-    bool PointsEquivalent (FdoIDirectPosition* pos1, FdoIDirectPosition* pos2);
-
     // DBF column type to string
     static wchar_t* ColumnTypeToString (eDBFColumnType type);
-
-    // Delete a class (if bDeleteRowsOnly==false) or delete the rows of a class (if bDeleteRowsOnly==true):
-    void CleanUpClass(FdoIConnection *connection, const wchar_t* schema_name, const wchar_t* class_name, bool bDeleteRowsOnly=false);
-
-    // Print out info about the given geometry:
-    void AnalyzeGeometry( const wchar_t *class_name, int index, FdoByteArray * geom_fgf, double length, double area );
-
-    // Compare two files, FileUnderTest (fut) vs. a reference file (ref)
-    void Compare (const wchar_t* fut, const wchar_t* ref, unsigned long start = 0L, unsigned long end = (unsigned long) -1L);
 
     /// <summary>Copy a class.</summary>
     /// <param name="target_connection">A connection for the source class.</param> 
