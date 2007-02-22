@@ -33,10 +33,6 @@ public:
     /// 
     /// \param name 
     /// The fully qualified SDF+ file name.
-    /// 
-    /// \return
-    /// Returns nothing.
-    /// 
     FDO_API virtual void SetFileName(FdoString* name) = 0;
 
     /// \brief
@@ -53,10 +49,6 @@ public:
     /// 
     /// \param name 
     /// Input the name of the spatial context.
-    /// 
-    /// \return
-    /// Returns nothing.
-    /// 
     FDO_API virtual void SetSpatialContextName(FdoString* name) = 0;
 
     /// \brief
@@ -74,10 +66,6 @@ public:
     /// 
     /// \param description 
     /// Input the description of the spatial context.
-    /// 
-    /// \return
-    /// Returns nothing.
-    /// 
     FDO_API virtual void SetSpatialContextDescription(FdoString* description) = 0;
 
     /// \brief
@@ -94,10 +82,6 @@ public:
     /// 
     /// \param wkt 
     /// Input the coordinate system.
-    /// 
-    /// \return
-    /// Returns nothing.
-    /// 
     FDO_API virtual void SetCoordinateSystemWKT(FdoString* wkt) = 0;
 
     /// \brief
@@ -119,14 +103,12 @@ public:
     /// 
     /// \param tolerance 
     /// Input the tolerance.
-    /// 
-    /// \return
-    /// Returns nothing.
-    /// 
     FDO_API virtual void SetXYTolerance(double tolerance) = 0;
 
     /// \brief
     /// Gets the tolerance value for X/Y ordinates of the spatial context.
+	 ///
+	 /// \remarks
     /// Tolerances are used in some geometric tests,
     /// mostly for equality between coordinates. This occurs frequently in spatial
     /// queries, especially with "on boundary" or "just touching" conditions.
@@ -139,7 +121,10 @@ public:
     FDO_API virtual double GetXYTolerance() = 0;
     
     /// \brief
-    /// Sets the tolerance value to use for Z ordinates. Tolerances are used in
+    /// Sets the tolerance value to use for Z ordinates.
+	 ///
+	 /// \remarks
+	 /// Tolerances are used in
     /// some geometric tests, mostly for equality between coordinates. This
     /// occurs frequently in spatial queries, especially with "on boundary" or "just
     /// touching" conditions. It is also an objective amount that can be used
@@ -147,14 +132,12 @@ public:
     /// 
     /// \param tolerance 
     /// Input the tolerance.
-    /// 
-    /// \return
-    /// Returns nothing.
-    /// 
     FDO_API virtual void SetZTolerance(double tolerance) = 0;
 
     /// \brief
     /// Gets the tolerance value for Z ordinates of the spatial context.
+	 ///
+	 /// \remarks
     /// Tolerances are used in some geometric tests,
     /// mostly for equality between coordinates. This occurs a frequently in spatial
     /// queries, especially with "on boundary" or "just touching" conditions.
@@ -169,10 +152,6 @@ public:
     /// \brief
     /// Executes the command. An exception is thrown if the file fails to be 
     /// created.
-    /// 
-    /// \return
-    /// Returns nothing.
-    /// 
     FDO_API virtual void Execute() = 0;
 
 };

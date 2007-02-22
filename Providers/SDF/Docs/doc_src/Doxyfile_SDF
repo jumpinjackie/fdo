@@ -1,4 +1,4 @@
-# Doxyfile 1.4.6
+# Doxyfile 1.5.1
 
 #---------------------------------------------------------------------------
 # Project related configuration options
@@ -107,7 +107,7 @@ IGNORE_PREFIX          =
 #---------------------------------------------------------------------------
 GENERATE_HTML          = YES
 HTML_OUTPUT            = ../HTML/SDF
-HTML_FILE_EXTENSION    = .html
+HTML_FILE_EXTENSION    = .htm
 HTML_HEADER            = headers_and_footers/header.html
 HTML_FOOTER            = headers_and_footers/footer.html
 HTML_STYLESHEET        = headers_and_footers/custom.css
