@@ -67,5 +67,4 @@ and the <i>FDO Developer's Guide</i> (FDG_FDODevGuide.pdf).
 */
 /// \defgroup typedefs
 /// \defgroup enums
-/// \defgroup interfaces
 

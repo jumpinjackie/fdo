@@ -17,4 +17,4 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-EXTRA_DIST = define_pages.h
+EXTRA_DIST = define_pages.h define_pages_managed.h

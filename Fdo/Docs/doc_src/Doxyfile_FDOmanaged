@@ -68,12 +68,13 @@ WARN_IF_UNDOCUMENTED   = YES
 WARN_IF_DOC_ERROR      = YES
 WARN_NO_PARAMDOC       = YES
 WARN_FORMAT            = "$file:$line: $text"
-WARN_LOGFILE           = warning_logfile.txt
+WARN_LOGFILE           = warning_logfile_managed.txt
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
 INPUT                  = ../../Managed/src \
-                         group_and_page_definitions/define_pages.h
+                         group_and_page_definitions/chm_usage_notes \
+                         group_and_page_definitions/define_pages_managed.h
 FILE_PATTERNS          = *.h
 RECURSIVE              = YES
 EXCLUDE                = 
@@ -83,7 +84,7 @@ EXCLUDE_PATTERNS       = stdafx.h \
                          VirtualFdoIoStream.h \
                          resource.h \
                          ProtocolExt.h \
-                         define_pages.h
+                         define_pages_managed.h
 EXAMPLE_PATH           = headers_and_footers
 EXAMPLE_PATTERNS       = *
 EXAMPLE_RECURSIVE      = YES
@@ -106,7 +107,7 @@ VERBATIM_HEADERS       = NO
 # configuration options related to the alphabetical class index
 #---------------------------------------------------------------------------
 ALPHABETICAL_INDEX     = YES
-COLS_IN_ALPHA_INDEX    = 5
+COLS_IN_ALPHA_INDEX    = 1
 IGNORE_PREFIX          = Fdo \
                          Mg
 #---------------------------------------------------------------------------
@@ -114,9 +115,9 @@ IGNORE_PREFIX          = Fdo \
 #---------------------------------------------------------------------------
 GENERATE_HTML          = YES
 HTML_OUTPUT            = ../HTML/FDO_API_managed
-HTML_FILE_EXTENSION    = .html
-HTML_HEADER            = headers_and_footers/header.html
-HTML_FOOTER            = headers_and_footers/footer.html
+HTML_FILE_EXTENSION    = .htm
+HTML_HEADER            = headers_and_footers/header_managed.html
+HTML_FOOTER            = headers_and_footers/footer_managed.html
 HTML_STYLESHEET        = headers_and_footers/custom.css
 HTML_ALIGN_MEMBERS     = YES
 GENERATE_HTMLHELP      = YES
@@ -126,7 +127,7 @@ GENERATE_CHI           = NO
 BINARY_TOC             = YES
 TOC_EXPAND             = YES
 DISABLE_INDEX          = NO
-ENUM_VALUES_PER_LINE   = 4
+ENUM_VALUES_PER_LINE   = 1
 GENERATE_TREEVIEW      = YES
 TREEVIEW_WIDTH         = 250
 #---------------------------------------------------------------------------
@@ -188,7 +189,99 @@ EXPAND_ONLY_PREDEF     = YES
 SEARCH_INCLUDES        = YES
 INCLUDE_PATH           = 
 INCLUDE_FILE_PATTERNS  = 
-PREDEFINED             = 
+PREDEFINED             = "BEGIN_NAMESPACE_OSGEO=namespace OSGeo {" \
+                         "END_NAMESPACE_OSGEO=}" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO=BEGIN_NAMESPACE_OSGEO namespace FDO {" \
+                         "END_NAMESPACE_OSGEO_FDO=END_NAMESPACE_OSGEO }" \
+                         "BEGIN_NAMESPACE_OSGEO_RUNTIME=BEGIN_NAMESPACE_OSGEO_FDO namespace Runtime {" \
+                         "END_NAMESPACE_OSGEO_RUNTIME=END_NAMESPACE_OSGEO_FDO }" \
+                         "BEGIN_NAMESPACE_OSGEO_COMMON=BEGIN_NAMESPACE_OSGEO_FDO namespace Common {" \
+                         "END_NAMESPACE_OSGEO_COMMON=END_NAMESPACE_OSGEO_FDO }" \
+                         "BEGIN_NAMESPACE_OSGEO_COMMON_IO=BEGIN_NAMESPACE_OSGEO_COMMON namespace Io {" \
+                         "END_NAMESPACE_OSGEO_COMMON_IO=END_NAMESPACE_OSGEO_COMMON }" \
+                         "BEGIN_NAMESPACE_OSGEO_COMMON_XML=BEGIN_NAMESPACE_OSGEO_COMMON namespace Xml {" \
+                         "END_NAMESPACE_OSGEO_COMMON_XML=END_NAMESPACE_OSGEO_COMMON }" \
+                         "BEGIN_NAMESPACE_OSGEO_COMMON_XSL=BEGIN_NAMESPACE_OSGEO_COMMON namespace Xsl {" \
+                         "END_NAMESPACE_OSGEO_COMMON_XSL=END_NAMESPACE_OSGEO_COMMON }" \
+                         "BEGIN_NAMESPACE_OSGEO_COMMON_GML212=BEGIN_NAMESPACE_OSGEO_COMMON namespace Gml212 {" \
+                         "END_NAMESPACE_OSGEO_COMMON_GML212=END_NAMESPACE_OSGEO_COMMON }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_XML=BEGIN_NAMESPACE_OSGEO_FDO namespace Xml {" \
+                         "END_NAMESPACE_OSGEO_FDO_XML=END_NAMESPACE_OSGEO_FDO }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS=BEGIN_NAMESPACE_OSGEO_FDO namespace Connections {" \
+                         "END_NAMESPACE_OSGEO_FDO_CONNECTIONS=END_NAMESPACE_OSGEO_FDO }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS=BEGIN_NAMESPACE_OSGEO_FDO namespace Commands {" \
+                         "END_NAMESPACE_OSGEO_FDO_COMMANDS=END_NAMESPACE_OSGEO_FDO }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA=BEGIN_NAMESPACE_OSGEO_FDO namespace Schema {" \
+                         "END_NAMESPACE_OSGEO_FDO_SCHEMA=END_NAMESPACE_OSGEO_FDO }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA=BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS namespace Schema {" \
+                         "END_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA=END_NAMESPACE_OSGEO_FDO_COMMANDS }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION=BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS namespace LongTransaction {" \
+                         "END_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION=END_NAMESPACE_OSGEO_FDO_COMMANDS }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE=BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS namespace Feature {" \
+                         "END_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE=END_NAMESPACE_OSGEO_FDO_COMMANDS }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING=BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS namespace Locking {" \
+                         "END_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING=END_NAMESPACE_OSGEO_FDO_COMMANDS }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SQL=BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS namespace SQL {" \
+                         "END_NAMESPACE_OSGEO_FDO_COMMANDS_SQL=END_NAMESPACE_OSGEO_FDO_COMMANDS }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE=BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS namespace UnitOfMeasure {" \
+                         "END_NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE=END_NAMESPACE_OSGEO_FDO_COMMANDS }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT=BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS namespace SpatialContext {" \
+                         "END_NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT=END_NAMESPACE_OSGEO_FDO_COMMANDS }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_NETWORK=BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS namespace Network {" \
+                         "END_NAMESPACE_OSGEO_FDO_COMMANDS_NETWORK=END_NAMESPACE_OSGEO_FDO_COMMANDS }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_TOPOLOGY=BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS namespace Topology {" \
+                         "END_NAMESPACE_OSGEO_FDO_COMMANDS_TOPOLOGY=END_NAMESPACE_OSGEO_FDO_COMMANDS }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE=BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS namespace DataStore {" \
+                         "END_NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE=END_NAMESPACE_OSGEO_FDO_COMMANDS }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION=BEGIN_NAMESPACE_OSGEO_FDO namespace Expression {" \
+                         "END_NAMESPACE_OSGEO_FDO_EXPRESSION=END_NAMESPACE_OSGEO_FDO }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS=BEGIN_NAMESPACE_OSGEO_FDO namespace Connections {" \
+                         "END_NAMESPACE_OSGEO_FDO_CONNECTIONS=END_NAMESPACE_OSGEO_FDO }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES=BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS namespace Capabilities {" \
+                         "END_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES=END_NAMESPACE_OSGEO_FDO_CONNECTIONS }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_FILTER=BEGIN_NAMESPACE_OSGEO_FDO namespace Filter {" \
+                         "END_NAMESPACE_OSGEO_FDO_FILTER=END_NAMESPACE_OSGEO_FDO }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_RASTER=BEGIN_NAMESPACE_OSGEO_FDO namespace Raster {" \
+                         "END_NAMESPACE_OSGEO_FDO_RASTER=END_NAMESPACE_OSGEO_FDO }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_CLIENTSERVICES=BEGIN_NAMESPACE_OSGEO_FDO namespace ClientServices {" \
+                         "END_NAMESPACE_OSGEO_FDO_CLIENTSERVICES=END_NAMESPACE_OSGEO_FDO }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS=BEGIN_NAMESPACE_OSGEO_FDO namespace Providers {" \
+                         "END_NAMESPACE_OSGEO_FDO_PROVIDERS=END_NAMESPACE_OSGEO_FDO }" \
+                         "BEGIN_NAMESPACE_OSGEO_GEOMETRY=BEGIN_NAMESPACE_OSGEO_FDO namespace Geometry {" \
+                         "END_NAMESPACE_OSGEO_GEOMETRY=END_NAMESPACE_OSGEO_FDO }" \
+                         "BEGIN_NAMESPACE_OSGEO_SPATIAL=BEGIN_NAMESPACE_OSGEO_FDO namespace Spatial {" \
+                         "END_NAMESPACE_OSGEO_SPATIAL=END_NAMESPACE_OSGEO_FDO }" \
+                         "NAMESPACE_OSGEO=OSGeo" \
+                         "NAMESPACE_OSGEO_FDO=NAMESPACE_OSGEO::FDO" \
+                         "NAMESPACE_OSGEO_RUNTIME=NAMESPACE_OSGEO_FDO::Runtime" \
+                         "NAMESPACE_OSGEO_COMMON=NAMESPACE_OSGEO_FDO::Common" \
+                         "NAMESPACE_OSGEO_COMMON_IO=NAMESPACE_OSGEO_COMMON::Io" \
+                         "NAMESPACE_OSGEO_COMMON_XML=NAMESPACE_OSGEO_COMMON::Xml" \
+                         "NAMESPACE_OSGEO_COMMON_XSL=NAMESPACE_OSGEO_COMMON::Xsl" \
+                         "NAMESPACE_OSGEO_COMMON_GML212=NAMESPACE_OSGEO_COMMON::Gml212" \
+                         "NAMESPACE_OSGEO_FDO_XML=NAMESPACE_OSGEO_FDO::Xml" \
+                         "NAMESPACE_OSGEO_FDO_SCHEMA=NAMESPACE_OSGEO_FDO::Schema" \
+                         "NAMESPACE_OSGEO_FDO_COMMANDS=NAMESPACE_OSGEO_FDO::Commands" \
+                         "NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA=NAMESPACE_OSGEO_FDO_COMMANDS::Schema" \
+                         "NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION=NAMESPACE_OSGEO_FDO_COMMANDS::LongTransaction" \
+                         "NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE=NAMESPACE_OSGEO_FDO_COMMANDS::Feature" \
+                         "NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING=NAMESPACE_OSGEO_FDO_COMMANDS::Locking" \
+                         "NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE=NAMESPACE_OSGEO_FDO_COMMANDS::UnitOfMeasure" \
+                         "NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT=NAMESPACE_OSGEO_FDO_COMMANDS::SpatialContext" \
+                         "NAMESPACE_OSGEO_FDO_COMMANDS_TOPOLOGY=NAMESPACE_OSGEO_FDO_COMMANDS::Topology" \
+                         "NAMESPACE_OSGEO_FDO_COMMANDS_NETWORK=NAMESPACE_OSGEO_FDO_COMMANDS::Network" \
+                         "NAMESPACE_OSGEO_FDO_COMMANDS_SQL=NAMESPACE_OSGEO_FDO_COMMANDS::SQL" \
+                         "NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE=NAMESPACE_OSGEO_FDO_COMMANDS::DataStore" \
+                         "NAMESPACE_OSGEO_FDO_EXPRESSION=NAMESPACE_OSGEO_FDO::Expression" \
+                         "NAMESPACE_OSGEO_FDO_CONNECTIONS=NAMESPACE_OSGEO_FDO::Connections" \
+                         "NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES=NAMESPACE_OSGEO_FDO_CONNECTIONS::Capabilities" \
+                         "NAMESPACE_OSGEO_FDO_FILTER=NAMESPACE_OSGEO_FDO::Filter" \
+                         "NAMESPACE_OSGEO_FDO_RASTER=NAMESPACE_OSGEO_FDO::Raster" \
+                         "NAMESPACE_OSGEO_FDO_CLIENTSERVICES=NAMESPACE_OSGEO_FDO::ClientServices" \
+                         "NAMESPACE_OSGEO_FDO_PROVIDERS=NAMESPACE_OSGEO_FDO::Providers" \
+                         "NAMESPACE_OSGEO_GEOMETRY=NAMESPACE_OSGEO_FDO::Geometry" \
+                         "NAMESPACE_OSGEO_SPATIAL=NAMESPACE_OSGEO_FDO::Spatial"
+
 EXPAND_AS_DEFINED      = 
 SKIP_FUNCTION_MACROS   = YES
 #---------------------------------------------------------------------------

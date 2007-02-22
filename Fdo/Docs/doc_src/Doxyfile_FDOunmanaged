@@ -1,4 +1,4 @@
-# Doxyfile 1.4.6
+# Doxyfile 1.5.1
 
 #---------------------------------------------------------------------------
 # Project related configuration options
@@ -63,10 +63,10 @@ FILE_VERSION_FILTER    =
 # configuration options related to warning and progress messages
 #---------------------------------------------------------------------------
 QUIET                  = NO
-WARNINGS               = NO
-WARN_IF_UNDOCUMENTED   = NO
-WARN_IF_DOC_ERROR      = NO
-WARN_NO_PARAMDOC       = NO
+WARNINGS               = YES
+WARN_IF_UNDOCUMENTED   = YES
+WARN_IF_DOC_ERROR      = YES
+WARN_NO_PARAMDOC       = YES
 WARN_FORMAT            = "$file:$line: $text"
 WARN_LOGFILE           = warning_logfile.txt
 #---------------------------------------------------------------------------
@@ -79,7 +79,8 @@ RECURSIVE              = YES
 EXCLUDE                = ../../Unmanaged/Inc/Spatial/SpatialGridTransform.h \
                          ../../Unmanaged/Inc/Spatial/SpatialStd.h \
                          ../../Unmanaged/Inc/Spatial/SpatialUtility.h \
-                         ../../Unmanaged/Inc/Spatial/SpatialGeometryValidity.h
+                         ../../Unmanaged/Inc/Spatial/SpatialGeometryValidity.h \
+                         ../../Unmanaged/Inc/Fdo/Raster/DataValueCollection.h
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = 
 EXAMPLE_PATH           = headers_and_footers
@@ -103,14 +104,14 @@ VERBATIM_HEADERS       = YES
 # configuration options related to the alphabetical class index
 #---------------------------------------------------------------------------
 ALPHABETICAL_INDEX     = YES
-COLS_IN_ALPHA_INDEX    = 5
+COLS_IN_ALPHA_INDEX    = 2
 IGNORE_PREFIX          = Fdo
 #---------------------------------------------------------------------------
 # configuration options related to the HTML output
 #---------------------------------------------------------------------------
 GENERATE_HTML          = YES
 HTML_OUTPUT            = ../HTML/FDO_API
-HTML_FILE_EXTENSION    = .html
+HTML_FILE_EXTENSION    = .htm
 HTML_HEADER            = headers_and_footers/header.html
 HTML_FOOTER            = headers_and_footers/footer.html
 HTML_STYLESHEET        = headers_and_footers/custom.css
@@ -120,9 +121,9 @@ CHM_FILE               = ../../FDO_API.chm
 HHC_LOCATION           = "C:/Program Files/HTML Help Workshop/hhc.exe"
 GENERATE_CHI           = NO
 BINARY_TOC             = YES
-TOC_EXPAND             = NO
+TOC_EXPAND             = YES
 DISABLE_INDEX          = NO
-ENUM_VALUES_PER_LINE   = 4
+ENUM_VALUES_PER_LINE   = 1
 GENERATE_TREEVIEW      = YES
 TREEVIEW_WIDTH         = 250
 #---------------------------------------------------------------------------
@@ -180,11 +181,11 @@ PERLMOD_MAKEVAR_PREFIX =
 #---------------------------------------------------------------------------
 ENABLE_PREPROCESSING   = YES
 MACRO_EXPANSION        = YES
-EXPAND_ONLY_PREDEF     = NO
+EXPAND_ONLY_PREDEF     = YES
 SEARCH_INCLUDES        = YES
 INCLUDE_PATH           = 
 INCLUDE_FILE_PATTERNS  = 
-PREDEFINED             = 
+PREDEFINED             = __cplusplus
 EXPAND_AS_DEFINED      = 
 SKIP_FUNCTION_MACROS   = YES
 #---------------------------------------------------------------------------
