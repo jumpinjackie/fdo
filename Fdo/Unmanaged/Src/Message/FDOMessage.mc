@@ -2276,3 +2276,13 @@ SymbolicName=FDO_181_LDAP_INVALID_URL
 Language=English
 Invalid LDAP URL.
 .
+MessageId=9182
+SymbolicName=FDO_182_AGGREGATE_IN_SELECT
+Language=English
+Aggregate functions are not supported by the Select command; use the SelectAggregates command instead.
+.
+MessageId=9183
+SymbolicName=FDO_183_INVALID_FUNCTION_ARG
+Language=English
+One or more arguments for function '%1$ls' did not match the expected argument types.
+.
