@@ -38,64 +38,131 @@ protected:
 	SDF_API virtual void Dispose() { delete this; }
 
 public:
-	/// <summary>The factory function that can be used to create new instance of this class.</summary>
-    /// <returns>Returns a new instance of theSdfCompareHandler class.</returns> 
+	/// \brief
+	/// The factory function that can be used to create new instance of this class.
+	///
+    /// \return
+	 /// Returns a new instance of theSdfCompareHandler class.
 	SDF_API static SdfCompareHandler* Create();
 
-	/// <summary>Compares double values.</summary>
-	/// <param name="name">Is the property name.</param> 
-	/// <param name="val1">Is the value of the first object.</param> 
-	/// <param name="val1">Is the value of the second object.</param> 
-    /// <returns>Returns a positive value if val1 is greater than val2, negative if val1 is smaller than val2 or zero if both val1 and val2 are equal.</returns> 
+	/// \brief
+	/// Compares double values.
+	///
+	/// \param name
+	/// Is the property name.</param>
+	//
+	/// \param val1
+	/// Is the value of the first object.
+	/// \param val2
+	/// Is the value of the second object.
+	///
+	/// \return
+    /// Returns a positive value if val1 is greater than val2, negative if val1 is smaller than val2 or zero if both val1 and val2 are equal.
 	SDF_API virtual int Compare( const wchar_t* name, double val1, double val2 );
 
-	/// <summary>Compares float values.</summary>
-	/// <param name="name">Is the property name.</param> 
-	/// <param name="val1">Is the value of the first object.</param> 
-	/// <param name="val1">Is the value of the second object.</param> 
-    /// <returns>Returns a positive value if val1 is greater than val2, negative if val1 is smaller than val2 or zero if both val1 and val2 are equal.</returns> 
+	/// \brief
+	/// Compares float values.
+	///
+	/// \param name
+	/// Is the property name.</param>
+	//
+	/// \param val1
+	/// Is the value of the first object.
+	/// \param val2
+	/// Is the value of the second object.
+	///
+	/// \return
+    /// Returns a positive value if val1 is greater than val2, negative if val1 is smaller than val2 or zero if both val1 and val2 are equal.
 	SDF_API virtual int Compare( const wchar_t* name, float val1, float val2 );
 
-	/// <summary>Compares int64 values.</summary>
-	/// <param name="name">Is the property name.</param> 
-	/// <param name="val1">Is the value of the first object.</param> 
-	/// <param name="val1">Is the value of the second object.</param> 
-    /// <returns>Returns a positive value if val1 is greater than val2, negative if val1 is smaller than val2 or zero if both val1 and val2 are equal.</returns> 
+	/// \brief
+	/// Compares int64 values.
+	///
+	/// \param name
+	/// Is the property name.</param>
+	//
+	/// \param val1
+	/// Is the value of the first object.
+	/// \param val2
+	/// Is the value of the second object.
+	///
+	/// \return
+    /// Returns a positive value if val1 is greater than val2, negative if val1 is smaller than val2 or zero if both val1 and val2 are equal.
 	SDF_API virtual int Compare( const wchar_t* name, FdoInt64 val1, FdoInt64 val2 );
 
-	/// <summary>Compares int32 values.</summary>
-	/// <param name="name">Is the property name.</param> 
-	/// <param name="val1">Is the value of the first object.</param> 
-	/// <param name="val1">Is the value of the second object.</param> 
-    /// <returns>Returns a positive value if val1 is greater than val2, negative if val1 is smaller than val2 or zero if both val1 and val2 are equal.</returns> 
+	/// \brief
+	/// Compares int32 values.
+	///
+	/// \param name
+	/// Is the property name.</param>
+	//
+	/// \param val1
+	/// Is the value of the first object.
+	/// \param val2
+	/// Is the value of the second object.
+	///
+	/// \return
+    /// Returns a positive value if val1 is greater than val2, negative if val1 is smaller than val2 or zero if both val1 and val2 are equal.
 	SDF_API virtual int Compare( const wchar_t* name, FdoInt32 val1, FdoInt32 val2 );
 
-	/// <summary>Compares int16 values.</summary>
-	/// <param name="name">Is the property name.</param> 
-	/// <param name="val1">Is the value of the first object.</param> 
-	/// <param name="val1">Is the value of the second object.</param> 
-    /// <returns>Returns a positive value if val1 is greater than val2, negative if val1 is smaller than val2 or zero if both val1 and val2 are equal.</returns> 
+	/// \brief
+	/// Compares int16 values.
+	///
+	/// \param name
+	/// Is the property name.</param>
+	//
+	/// \param val1
+	/// Is the value of the first object.
+	/// \param val2
+	/// Is the value of the second object.
+	///
+	/// \return
+    /// Returns a positive value if val1 is greater than val2, negative if val1 is smaller than val2 or zero if both val1 and val2 are equal.
 	SDF_API virtual int Compare( const wchar_t* name, FdoInt16 val1, FdoInt16 val2 );
 
-	/// <summary>Compares string values.</summary>
-	/// <param name="name">Is the property name.</param> 
-	/// <param name="val1">Is the value of the first object.</param> 
-	/// <param name="val1">Is the value of the second object.</param> 
-    /// <returns>Returns a positive value if val1 is greater than val2, negative if val1 is smaller than val2 or zero if both val1 and val2 are equal.</returns> 
+	/// \brief
+	/// Compares string values.
+	///
+	/// \param name
+	/// Is the property name.</param>
+	//
+	/// \param val1
+	/// Is the value of the first object.
+	/// \param val2
+	/// Is the value of the second object.
+	///
+	/// \return
+    /// Returns a positive value if val1 is greater than val2, negative if val1 is smaller than val2 or zero if both val1 and val2 are equal.
 	SDF_API virtual int Compare( const wchar_t* name, const wchar_t* val1, const wchar_t* val2 );
 
-	/// <summary>Compares date time values.</summary>
-	/// <param name="name">Is the property name.</param> 
-	/// <param name="val1">Is the value of the first object.</param> 
-	/// <param name="val1">Is the value of the second object.</param> 
-    /// <returns>Returns a positive value if val1 is greater than val2, negative if val1 is smaller than val2 or zero if both val1 and val2 are equal.</returns> 
+	/// \brief
+	/// Compares date time values.
+	///
+	/// \param name
+	/// Is the property name.</param>
+	//
+	/// \param val1
+	/// Is the value of the first object.
+	/// \param val2
+	/// Is the value of the second object.
+	///
+	/// \return
+    /// Returns a positive value if val1 is greater than val2, negative if val1 is smaller than val2 or zero if both val1 and val2 are equal.
 	SDF_API virtual int Compare( const wchar_t* name, FdoDateTime val1, FdoDateTime val2 );
 
-	/// <summary>Compares unsigned char values.</summary>
-	/// <param name="name">Is the property name.</param> 
-	/// <param name="val1">Is the value of the first object.</param> 
-	/// <param name="val1">Is the value of the second object.</param> 
-    /// <returns>Returns a positive value if val1 is greater than val2, negative if val1 is smaller than val2 or zero if both val1 and val2 are equal.</returns> 
+	/// \brief
+	/// Compares unsigned char values.
+	///
+	/// \param name
+	/// Is the property name.</param>
+	//
+	/// \param val1
+	/// Is the value of the first object.
+	/// \param val2
+	/// Is the value of the second object.
+	///
+	/// \return
+    /// Returns a positive value if val1 is greater than val2, negative if val1 is smaller than val2 or zero if both val1 and val2 are equal.
 	SDF_API virtual int Compare( const wchar_t* name, unsigned char val1, unsigned char val2 );
 
 };
