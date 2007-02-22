@@ -520,17 +520,16 @@ public:
     /// Pool this array, released from some geometry.
     FDO_GEOM_API virtual void TakeReleasedByteArray(FdoByteArray * byteArray);
 
-protected:
 /// \cond DOXYGEN-IGNORE
+
+protected:
+
     FdoFgfGeometryFactory2 *         m_private;
-/// \endcond
 
     FDO_GEOM_API void Dispose();
 
-/// \cond DOXYGEN-IGNORE
     /// Union of public CreateGeometryFromFgf methods. One of byteArray or byteArrayData must be non-NULL.
     FdoIGeometry * CreateGeometryFromFgf(FdoByteArray * byteArray, const FdoByte * byteArrayData, FdoInt32 count);
-/// \endcond
 
     /// \brief
     /// Constructs a default instance of a FdoFgfGeometryFactory.
@@ -548,7 +547,6 @@ protected:
     /// 
     FDO_GEOM_API ~FdoFgfGeometryFactory();
 
-/// \cond DOXYGEN-IGNORE
     /// Constructor for a private instance.
     FdoFgfGeometryFactory(
         FdoInt32 numGeometries,
@@ -556,8 +554,8 @@ protected:
         FdoInt32 numEnvelopes,
         FdoInt32 numCurveSegments,
         FdoInt32 numRings);
-/// \endcond
 
+/// \endcond
 };
 #endif
 
