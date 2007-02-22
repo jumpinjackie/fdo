@@ -110,7 +110,7 @@ IGNORE_PREFIX          = Fdo
 #---------------------------------------------------------------------------
 GENERATE_HTML          = YES
 HTML_OUTPUT            = ../HTML/MySQL
-HTML_FILE_EXTENSION    = .html
+HTML_FILE_EXTENSION    = .htm
 HTML_HEADER            = headers_and_footers/MySQL/header.html
 HTML_FOOTER            = headers_and_footers/MySQL/footer.html
 HTML_STYLESHEET        = headers_and_footers/MySQL/custom.css
