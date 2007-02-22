@@ -67,8 +67,14 @@ public:
     /// Get column number associated with the given column name.
     FdoSize GetFieldNumber(FdoStringP const& name) const;
     
+    /// Get FDO type of field associated with the given column number.
+    FdoDataType GetFieldType(FdoSize number) const;
+
     /// Get FDO type of field associated with the given column name.
     FdoDataType GetFieldType(FdoStringP const& name) const;
+
+    /// Check if given field is of geometry type.
+    bool IsFieldGeometryType(FdoSize number) const;
 
     /// Declare a cursor using given SELECT query.
     /// \remarks
@@ -130,8 +136,8 @@ private:
     // Private operations
     //
 
-    // Check pre-conditions before running cursor operations.
-    void Validate();
+    // Request to re-run describe portal command.
+    void Describe();
 
     // Release resources associated with describe portal result.
     void ClearDescribeResult();
@@ -139,8 +145,14 @@ private:
     // Release resources associated with fetch data result.
     void ClearFetchResult();
 
-    // Request to re-run describe portal command.
-    void Describe();
+    // Check pre-conditions about connection state.
+    void ValidateConnectionState() const;
+
+    // Check pre-conditions related to cursor state.
+    void ValidateDeclaredState() const;
+
+    // Check pre-conditions about readable state of cursor.
+    void ValidateFetchedState() const;
 
 };
 

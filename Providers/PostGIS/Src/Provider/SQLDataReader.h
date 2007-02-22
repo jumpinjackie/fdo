@@ -118,7 +118,16 @@ protected:
 
 private:
 
+    //
+    // Private data members
+    //
+
+    // Handler to cursor instance defined for current reader.
     PgCursor::Ptr mCursor;
+
+    // Buffer for most recently read name of column.
+    FdoStringP mColumnName;
+
 
 };
 

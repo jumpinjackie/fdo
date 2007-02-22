@@ -48,7 +48,9 @@ FdoIDataStoreReader* ListDataStores::Execute()
 {
     FDOLOG_MARKER("ListDataStores::+Execute");
 
-    std::string cursorName("crsFdoIListDataStores");
+    // TODO: Should we catch-and-throw more specific exception here
+
+    std::string cursorName("curFdoListDataStores");
     std::string sql("SELECT ns.nspname AS schemaname, r.rolname AS ownername, "
                     "pg_catalog.obj_description(ns.oid, 'pg_namespace') as description "
                     "FROM pg_catalog.pg_namespace ns "
