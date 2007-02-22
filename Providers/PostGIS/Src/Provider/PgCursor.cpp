@@ -21,6 +21,9 @@
 // std
 #include <cassert>
 #include <string>
+// boost
+#include <boost/shared_ptr.hpp>
+#include <boost/lexical_cast.hpp>
 
 namespace fdo { namespace postgis {
 
@@ -29,11 +32,21 @@ PgCursor::PgCursor(Connection* conn, std::string const& name)
 {
     FDO_SAFE_ADDREF(mConn.p);
 
-    Validate();
+    ValidateConnectionState();
+
+    // Cursor name is a regular SQL identifier and if unquoted it's implicitly
+    // converted to lower-case. We need to make it lower-case to avoid problems
+    // when using cursor name with libpq functions, ie. PQdescribePortal().
+    FdoStringP tmp(mName);
+    mName = tmp.Lower();
+
 }
 
 PgCursor::~PgCursor()
 {
+    assert(mIsClosed);
+    assert(NULL == mDescRes);
+    assert(NULL == mFetchRes);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -43,8 +56,10 @@ PgCursor::~PgCursor()
 void PgCursor::Dispose()
 {
     FDOLOG_MARKER("PgCursor::#Dispose");
-
+    
+    // May throw, do not call from the destructor!
     Close();
+
     delete this;
 }
 
@@ -59,22 +74,26 @@ const char* PgCursor::GetName() const
 
 PgCursor::ResultPtr PgCursor::GetFetchResult() const
 {
-    // TODO: Handling of nothing fetched case.
-    assert(NULL != mFetchRes);
-
+    ValidateFetchedState();
+ 
     return mFetchRes;
 }
 
 FdoSize PgCursor::GetFieldsCount() const
 {
+    ValidateDeclaredState();
     assert(NULL != mDescRes);
+
     int nfields = PQnfields(mDescRes);
     return static_cast<FdoSize>(nfields);
 }
 
 FdoStringP PgCursor::GetFieldName(FdoSize number) const
 {
-    if (GetFieldsCount() >= number)
+    ValidateDeclaredState();
+    assert(NULL != mDescRes);
+
+    if (GetFieldsCount() <= number)
     {
         // TODO: Throw about column index out of range
         assert(false);
@@ -88,6 +107,9 @@ FdoStringP PgCursor::GetFieldName(FdoSize number) const
 
 FdoSize PgCursor::GetFieldNumber(FdoStringP const& name) const
 {
+    ValidateDeclaredState();
+    assert(NULL != mDescRes);
+
     int fnumber = PQfnumber(mDescRes, static_cast<const char*>(name));
     if (-1 == fnumber)
     {
@@ -101,12 +123,122 @@ FdoSize PgCursor::GetFieldNumber(FdoStringP const& name) const
 
 FdoDataType PgCursor::GetFieldType(FdoStringP const& name) const
 {
-    FdoSize fnumber = GetFieldNumber(name);
-    Oid ftype = PQftype(mDescRes, static_cast<int>(fnumber));
+    FdoSize const fnumber = GetFieldNumber(name);
+    return GetFieldType(fnumber);
+}
 
-    assert(!"NOT FINISHED YET");
+FdoDataType PgCursor::GetFieldType(FdoSize number) const
+{
+    ValidateDeclaredState();
+    assert(NULL != mDescRes);
+    
+    Oid const ftype = PQftype(mDescRes, static_cast<int>(number));
 
-    return FdoDataType_Int32;
+    // TODO: Currently it's a simple mapping of hardcoded OIDs to FDO data types.
+    //       In future, consider replacing it with SELECT * FROM pg_type; solution
+
+    // NOTE: The following list of OIDs was taken from the pg_type table.
+    //       We do not claim that this list is exhaustive, correct or even up to date.
+
+    FdoDataType fdoType;
+
+    switch (ftype)
+    {
+    case 16:   // bool
+        fdoType = FdoDataType_Boolean;
+        break;
+    case 21:   // int2
+        fdoType = FdoDataType_Int16;
+        break;
+    case 23:   // int4
+        fdoType = FdoDataType_Int32;
+        break;
+    case 20:   // int8
+        fdoType = FdoDataType_Int64;
+        break;
+    case 700:  // float4, real
+        fdoType = FdoDataType_Single;
+        break;
+    case 701:  // float8, double precision
+        fdoType = FdoDataType_Double;
+        break;
+    case 1700: // numeric
+        fdoType = FdoDataType_Decimal;
+        break;
+    case 18:   // char
+    case 25:   // text
+    case 1042: // bpchar
+    case 1043: // varchar
+    case 2275: // cstring
+        fdoType = FdoDataType_String;
+        break;
+    case 702:  // abstime
+    case 703:  // reltime
+    case 1082: // date
+    case 1083: // time
+    case 1114: // timestamp
+    case 1184: // timestamptz
+    case 1266: // timetz
+        fdoType = FdoDataType_DateTime;
+        break;
+    case 17:   // bytea
+        assert(!"TYPE MAPPING TO BE REVIEWED");
+        fdoType = FdoDataType_BLOB;
+        break;
+    case 26:   // oid
+        assert(!"TYPE MAPPING TO BE REVIEWED");
+        fdoType = FdoDataType_Int32;
+        break;
+    default:
+        // TODO: What about mapping of FdoDataType_Byte and FdoDataType_CLOB
+
+        FdoStringP unknown(PQfname(mDescRes, static_cast<int>(number)));
+        throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_UNKNOWN_COLUMN_TYPE,
+            "The type of column '%1$s' of number %2$d is unknown.",
+            static_cast<FdoString*>(unknown), number));
+    }
+
+    return fdoType;
+}
+
+bool PgCursor::IsFieldGeometryType(FdoSize number) const
+{
+    ///////////////////////////////////////////////////////////////////////////
+    // TODO: Move the geometry OID retrival somewhere near Connection::Open
+    //       and buffer the OID value then.
+    //       This way it can be: FASTER and a kind of VALIDATION of PostGIS support
+    ///////////////////////////////////////////////////////////////////////////
+
+    ValidateDeclaredState();
+    assert(NULL != mDescRes);
+
+    bool isGeometry = false;
+
+    char const* sql = "SELECT oid FROM pg_type WHERE typname = 'geometry'";
+    boost::shared_ptr<PGresult> pgRes(mConn->PgExecuteQuery(sql), PQclear);
+    
+    // TODO: If caught, it likely means the PostGIS support is not installed!
+    assert(PGRES_TUPLES_OK == PQresultStatus(pgRes.get()) && 1 == PQntuples(pgRes.get()));
+    
+    Oid geometryType = 0;
+    try
+    {
+        std::string val(PQgetvalue(pgRes.get(), 0, 0));
+        geometryType = boost::lexical_cast<Oid>(val);
+    }
+    catch (boost::bad_lexical_cast& e)
+    {
+        geometryType = 0;
+        e; // Anti-warning hack
+    }
+    
+    Oid const ftype = PQftype(mDescRes, static_cast<int>(number));
+    if (ftype == geometryType)
+    {
+        isGeometry = true;
+    }
+
+    return isGeometry;
 }
 
 void PgCursor::Declare(char const* query)
@@ -118,11 +250,12 @@ void PgCursor::Declare(char const* query)
         Close();
     }
 
-    Validate();
-    assert(NULL == mFetchRes);
-
     try
     {
+        ValidateConnectionState();
+        assert(NULL == mDescRes);
+        assert(NULL == mFetchRes);
+
         // Begin transaction
         mConn->PgExecuteCommand("BEGIN");
 
@@ -139,7 +272,7 @@ void PgCursor::Declare(char const* query)
     }
     catch (FdoException* e)
     {
-        throw FdoCommandException::Create(NlsMsgGet(MSG_POSTGIS_CURSOR_CREATION_FAILED,
+        throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_CURSOR_CREATION_FAILED,
             "The creation of PostgreSQL cursor '%1$ls' failed.",
             static_cast<FdoString*>(mName)), e);  
     }
@@ -153,7 +286,10 @@ void PgCursor::Close()
 
     if (!mIsClosed)
     {
-        Validate();
+        // TODO: Throwing from here seems to be like walking on a thin line!
+        // ValidateDeclaredState();
+        assert(FdoConnectionState_Closed != mConn->GetConnectionState());
+
         ClearDescribeResult();
         ClearFetchResult();
 
@@ -171,10 +307,11 @@ void PgCursor::Close()
     }
 }
 
-PgCursor::ResultPtr  PgCursor::FetchNext()
+PgCursor::ResultPtr PgCursor::FetchNext()
 {
-    assert(false == mIsClosed);
+    // TODO: Add try-catch and re-throw with specific message/code
 
+    ValidateDeclaredState();
     ClearFetchResult();
     assert(NULL == mFetchRes);
 
@@ -182,24 +319,23 @@ PgCursor::ResultPtr  PgCursor::FetchNext()
     sql += static_cast<char const*>(mName);
 
     mFetchRes = mConn->PgExecuteQuery(sql.c_str());
-    return mFetchRes; 
+    return mFetchRes;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // Private operations
 ///////////////////////////////////////////////////////////////////////////////
 
-void PgCursor::Validate()
+void PgCursor::Describe()
 {
-    FDOLOG_MARKER("PgCursor::Validate");
+    ValidateConnectionState();
 
-    if (FdoConnectionState_Closed == mConn->GetConnectionState())
+    if (NULL == mDescRes)
     {
-        FDOLOG_WRITE("Connection is closed or invalid.");
-
-        throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_CONNECTION_INVALID,
-            "Connection is closed or invalid."));
+        mDescRes = mConn->PgDescribeCursor(static_cast<char const*>(mName));
     }
+
+    assert(NULL != mDescRes);
 }
 
 void PgCursor::ClearDescribeResult()
@@ -220,14 +356,42 @@ void PgCursor::ClearFetchResult()
     }
 }
 
-
-void PgCursor::Describe()
+void PgCursor::ValidateConnectionState() const
 {
-    Validate();
+    FDOLOG_MARKER("PgCursor::Validate");
 
-    if (NULL == mDescRes)
+    if (FdoConnectionState_Closed == mConn->GetConnectionState())
     {
-        mDescRes = mConn->PgDescribeCursor(static_cast<char const*>(mName));
+        FDOLOG_WRITE("Connection is closed or invalid.");
+
+        throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_CONNECTION_INVALID,
+            "Connection is closed or invalid."));
+    }
+}
+
+void PgCursor::ValidateDeclaredState() const
+{
+    ValidateConnectionState();
+
+    if (mIsClosed || NULL == mDescRes)
+    {
+        FDOLOG_WRITE("Cursor is not defined.");
+
+        throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_CURSOR_NOT_DEFINED,
+            "Cursor is not defined."));
+    }
+}
+
+void PgCursor::ValidateFetchedState() const
+{
+    ValidateDeclaredState();
+
+    if (mIsClosed || NULL == mFetchRes)
+    {
+        FDOLOG_WRITE("The fetch command was not issued yet.");
+
+        throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_CURSOR_NOT_FETCHED,
+            "The fetch command was not issued yet."));
     }
 }
 

@@ -58,33 +58,31 @@ void SQLDataReader::Dispose()
 
 FdoInt32 SQLDataReader::GetColumnCount()
 {
-    FDOLOG_MARKER("SQLDataReader::+GetColumnCount");
-
-    PgCursor::ResultPtr pgRes = mCursor->GetFetchResult();
-    assert(NULL != pgRes);
-    
-    FdoInt32 fields = static_cast<FdoInt32>(PQnfields(pgRes));
-    
-    FDOLOG_WRITE("Number of fields: %d", fields);
-    return fields;
+    FdoSize const nfields = mCursor->GetFieldsCount();
+    return static_cast<FdoInt32>(nfields);
 }
 
 FdoString* SQLDataReader::GetColumnName(FdoInt32 index)
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    // Returning raw pointer requires buffered value
+    mColumnName = mCursor->GetFieldName(static_cast<FdoSize>(index));
+    return static_cast<FdoString*>(mColumnName);
 }
 
 FdoDataType SQLDataReader::GetColumnType(FdoString* columnName)
 {
-    assert(!"NOT IMPLEMENTED");
-    return FdoDataType();
+    return mCursor->GetFieldType(columnName);
 }
 
 FdoPropertyType SQLDataReader::GetPropertyType(FdoString* columnName)
 {
-    assert(!"NOT IMPLEMENTED");
-    return FdoPropertyType_DataProperty; // dummy value
+    FdoSize fnumber = mCursor->GetFieldNumber(columnName);
+    if (mCursor->IsFieldGeometryType(fnumber))
+    {
+        return FdoPropertyType_GeometricProperty;
+    }
+    
+    return FdoPropertyType_DataProperty;
 }
 
 bool SQLDataReader::GetBoolean(FdoString* columnName)
