@@ -86,6 +86,16 @@ SymbolicName=MSG_POSTGIS_CURSOR_CREATION_FAILED
 Language=English
 The creation of PostgreSQL cursor '%1$ls' failed.
 .
+MessageId=1013
+SymbolicName=MSG_POSTGIS_CURSOR_NOT_DEFINED
+Language=English
+Cursor is not defined.
+.
+MessageId=1014
+SymbolicName=MSG_POSTGIS_CURSOR_NOT_FETCHED
+Language=English
+The fetch command was not issued yet.
+.
 
 ;//************************************************************************************
 ;//************************************************************************************
@@ -269,19 +279,19 @@ Description
 ;//************************************************************************************
 
 MessageId=4001
-SymbolicName=M_KGORA_OBJECT_PROPERTIES_NOT_SUPPORTED
+SymbolicName=MSG_POSTGISOBJECT_PROPERTIES_NOT_SUPPORTED
 Language=English
 Object properties are not supported.
 .
 MessageId=4002
-SymbolicName=M_KGORA_UNSUPPORTED_DATATYPE
+SymbolicName=MSG_POSTGIS_UNSUPPORTED_DATATYPE
 Language=English
 The '%1$ls' data type is not supported by King.Oracle.
 .
 MessageId=4003
-SymbolicName=M_KGORA_UNKNOWN_COLUMN_TYPE
+SymbolicName=MSG_POSTGIS_UNKNOWN_COLUMN_TYPE
 Language=English
-The '%1$d' column type is unknown.
+The type of column '%1$s' of number %2$d is unknown.
 .
 MessageId=4004
 SymbolicName=M_KGORA_UNKNOWN_SHAPE_TYPE
