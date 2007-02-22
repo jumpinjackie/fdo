@@ -20,8 +20,9 @@
 #include "stdafx.h"
 #include "ShpSelectCommand.h"
 #include "ShpFeatureReader.h"
+#include <algorithm>
+#include "FdoCommonDataReader.h"
 
-#include <malloc.h>
 
 ShpSelectCommand::ShpSelectCommand (ShpConnection* connection) :
     FdoCommonFeatureCommand<FdoISelect, ShpConnection> (connection)
@@ -92,9 +93,37 @@ FdoIFeatureReader* ShpSelectCommand::Execute ()
     FdoString* class_name;
     FdoPtr<ShpFeatureReader> ret;
 
+    // Validate that there are no aggregate functions:
+    FdoCommonExpressionType exprType;
+    FdoPtr< FdoArray<FdoFunction*> > functions = FdoCommonDataReader::GetAggregateFunctions(mPropertiesToSelect, exprType);
+    if (exprType == FdoCommonExpressionType_Aggregate)
+        throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_182_AGGREGATE_IN_SELECT, "Aggregate functions are not supported by the Select command; use the SelectAggregates command instead."));
+
+    FdoPtr<ShpConnection> shpConn = (ShpConnection*)GetConnection ();
     id = GetFeatureClassName ();
     class_name = id->GetText ();
-    FdoPtr<ShpConnection> shpConn = (ShpConnection*)GetConnection ();
+
+    // Validate that the expressions are correct:
+    FdoPtr<FdoClassDefinition> fdoClass = FdoPtr<ShpLpClassDefinition>(ShpSchemaUtilities::GetLpClassDefinition (mConnection, class_name))->GetLogicalClass();
+    FdoPropertyType propType;
+    FdoDataType dataType;
+    for (int i=0; mPropertiesToSelect && i<mPropertiesToSelect->GetCount(); i++)
+    {
+        FdoPtr<FdoIdentifier> id = mPropertiesToSelect->GetItem(i);
+        FdoCommonFilterExecutor::GetExpressionType(shpConn, fdoClass, id, propType, dataType);
+    }
+
+    // Create the reader:
+
+	// Validate the filter. The filter may contain computed expressions involving not selected properties.
+	// Also check for unsupported spatial operations.
+	if( mFilter != NULL )
+	{
+		FdoPtr<FdoClassDefinition> classDef = ShpSchemaUtilities::GetLogicalClassDefinition (shpConn, class_name, NULL);
+		FdoPtr<FdoIFilterCapabilities> filterCaps = shpConn->GetFilterCapabilities();
+        FdoCommonFilterExecutor::ValidateFilter( classDef, mFilter, mPropertiesToSelect, filterCaps );
+	}
+
     ret = new ShpFeatureReader (shpConn, class_name, mFilter, mPropertiesToSelect);
 
     return (FDO_SAFE_ADDREF (ret.p));

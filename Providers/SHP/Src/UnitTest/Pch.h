@@ -47,6 +47,10 @@
 #include <FdoCommonMiscUtil.h>
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include <TestCommonMiscUtil.h>
+#include <TestCommonFileUtil.h>
+#include <TestCommonGeomUtil.h>
+#include <TestCommonSchemaUtil.h>
 
 #define _CRTDBG_MAP_ALLOC
 

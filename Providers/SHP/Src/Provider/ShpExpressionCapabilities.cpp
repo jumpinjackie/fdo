@@ -115,6 +115,8 @@ FdoFunctionDefinitionCollection* ShpExpressionCapabilities::GetFunctions()
         desc = FdoException::NLSGetMessage(FUNCTION_MIN, "Returns the minimum value of an expression");
         function = FdoCommonMiscUtil::CreateFunctionDefinition(FDO_FUNCTION_MIN, desc, true, 2,
             FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Decimal, 
+            FdoPropertyType_DataProperty, FdoDataType_DateTime, 1, FdoPropertyType_DataProperty, FdoDataType_DateTime,
+            FdoPropertyType_DataProperty, FdoDataType_String, 1, FdoPropertyType_DataProperty, FdoDataType_String,
             FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Int32);
         m_supportedFunctions->Add(function);
 
@@ -127,6 +129,8 @@ FdoFunctionDefinitionCollection* ShpExpressionCapabilities::GetFunctions()
         desc = FdoException::NLSGetMessage(FUNCTION_MAX, "Returns the maximum value of an expression");
         function = FdoCommonMiscUtil::CreateFunctionDefinition(FDO_FUNCTION_MAX, desc, true, 2,
             FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Decimal, 
+            FdoPropertyType_DataProperty, FdoDataType_DateTime, 1, FdoPropertyType_DataProperty, FdoDataType_DateTime,
+            FdoPropertyType_DataProperty, FdoDataType_String, 1, FdoPropertyType_DataProperty, FdoDataType_String,
             FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Int32);
         m_supportedFunctions->Add(function);
     }

@@ -56,7 +56,7 @@ void SelectAggregatesTests::setUp ()
 void SelectAggregatesTests::tearDown ()
 {
     // Delete old class, if its there:
-    CleanUpClass (mConnection, NULL, L"MyClass");
+    TestCommonSchemaUtil::CleanUpClass (mConnection, NULL, L"MyClass");
 
     mConnection->Close ();
 	FDO_SAFE_RELEASE(mConnection.p);
@@ -117,7 +117,7 @@ void SelectAggregatesTests::select_distinct ()
     }
     catch (FdoException* e)
     {
-        fail(e);
+        TestCommonFail(e);
     }
 }
 
@@ -162,7 +162,7 @@ void SelectAggregatesTests::select_aggregates ()
     }
     catch (FdoException* e)
     {
-        fail(e);
+        TestCommonFail(e);
     }
 }
 
@@ -180,7 +180,7 @@ void SelectAggregatesTests::select_aggregates_null ()
         FdoString *schemaName = L"MySchema";
 
         create_schema(schemaName, className, FdoGeometricType_Curve, false, false, true);
-        CleanUpClass(mConnection, schemaName, className, true);
+        TestCommonSchemaUtil::CleanUpClass(mConnection, schemaName, className, true);
 
 
         //////////////////////////////////////////////////////////////////////
@@ -301,10 +301,29 @@ void SelectAggregatesTests::select_aggregates_null ()
         CPPUNIT_ASSERT_MESSAGE("Expected 1 aggregate result", !datareader->ReadNext ());
         datareader->Close();
         datareader = NULL;
+
+
+        //////////////////////////////////////////////////////////////////////
+        // Try sum with filter
+        //////////////////////////////////////////////////////////////////////
+
+        select = (FdoISelectAggregates*)mConnection->CreateCommand (FdoCommandType_SelectAggregates);
+        select->SetFeatureClassName (className);
+        select->SetDistinct(false);
+        selectedIds = select->GetPropertyNames();
+        selectedIds->Clear();
+        selectedIds->Add(FdoPtr<FdoComputedIdentifier>(FdoComputedIdentifier::Create(L"SumWithFilter", FdoPtr<FdoExpression>(FdoExpression::Parse(L"Sum(HeadCount)")))));
+        select->SetFilter(L"Street > 'B'");
+        datareader = select->Execute ();
+        CPPUNIT_ASSERT_MESSAGE("Expected 1 aggregate result", datareader->ReadNext ());
+        CPPUNIT_ASSERT_MESSAGE("Didn't get expected aggregate result", datareader->GetDouble(L"SumWithFilter")==12);
+        CPPUNIT_ASSERT_MESSAGE("Expected 1 aggregate result", !datareader->ReadNext ());
+        datareader->Close();
+        datareader = NULL;
     }
     catch (FdoException* e)
     {
-        fail(e);
+        TestCommonFail(e);
     }
 }
 
@@ -312,7 +331,7 @@ void SelectAggregatesTests::select_aggregates_null ()
 void SelectAggregatesTests::create_schema (FdoString *schemaName, FdoString* className, FdoGeometricType type, bool elevation, bool measure, bool bInsertTestData)
 {
     // Clean up leftover class, if any:
-    CleanUpClass(mConnection, NULL, className);
+    TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, className);
 
     //////////////////////////////////////////////////////////////////////
     // Create the schema:
@@ -345,26 +364,39 @@ void SelectAggregatesTests::create_schema (FdoString *schemaName, FdoString* cla
     date->SetDataType (FdoDataType_DateTime);
 
     // build a location geometry property
-    FdoPtr<FdoGeometricPropertyDefinition> location = FdoGeometricPropertyDefinition::Create (L"Geometry", L"geometry");
-    location->SetGeometryTypes (type);
-    location->SetHasElevation (elevation);
-    location->SetHasMeasure (measure);
+    FdoPtr<FdoGeometricPropertyDefinition> location;
+    if (type != -1)
+    {
+        location = FdoGeometricPropertyDefinition::Create (L"Geometry", L"geometry");
+        location->SetGeometryTypes (type);
+        location->SetHasElevation (elevation);
+        location->SetHasMeasure (measure);
+    }
 
-    //// assemble the feature class
-    FdoPtr<FdoFeatureClass> feature = FdoFeatureClass::Create (className, L"test class created with apply schema");
-    FdoPtr<FdoPropertyDefinitionCollection> properties = feature->GetProperties ();
-    FdoPtr<FdoDataPropertyDefinitionCollection> identities = feature->GetIdentityProperties ();
+    //// assemble the class
+    FdoPtr<FdoClassDefinition> classDef;
+    if (type != -1)
+        classDef = FdoFeatureClass::Create (className, L"test feature class created with apply schema");
+    else
+        classDef = FdoClass::Create(className, L"test non-feature class created with apply schema");
+    FdoPtr<FdoPropertyDefinitionCollection> properties = classDef->GetProperties ();
+    FdoPtr<FdoDataPropertyDefinitionCollection> identities = classDef->GetIdentityProperties ();
     properties->Add (featid);
     identities->Add (featid);
     properties->Add (street);
     properties->Add (date);
     properties->Add (lotsize);
     properties->Add (headcount);
-    properties->Add (location);
-    feature->SetGeometryProperty (location);
+    if (type != -1)
+    {
+        properties->Add (location);
+        FdoFeatureClass *featureClassDef = (FdoFeatureClass*)classDef.p;
+        featureClassDef->SetGeometryProperty (location);
+    }
+    classes->Add (classDef);
+
 
     // submit the new schema
-    classes->Add (feature);
     FdoPtr<FdoIApplySchema> apply = (FdoIApplySchema*)mConnection->CreateCommand (FdoCommandType_ApplySchema);
     apply->SetFeatureSchema (schema);
     apply->Execute ();
@@ -390,9 +422,12 @@ void SelectAggregatesTests::create_schema (FdoString *schemaName, FdoString* cla
         expr = FdoExpression::Parse(L"DATE '1999-12-31'");
         propVal = FdoPropertyValue::Create(L"Date", (FdoValueExpression*)expr.p);
         propVals->Add(propVal);
-        expr = FdoExpression::Parse(L"GEOMFROMTEXT('LINESTRING XY (1.0 1.0, 2.0 2.0, 1.0 3.0)')");
-        propVal = FdoPropertyValue::Create(L"Geometry", (FdoValueExpression*)expr.p);
-        propVals->Add(propVal);
+        if (type != -1)
+        {
+            expr = FdoExpression::Parse(L"GEOMFROMTEXT('LINESTRING XY (1.0 1.0, 2.0 2.0, 1.0 3.0)')");
+            propVal = FdoPropertyValue::Create(L"Geometry", (FdoValueExpression*)expr.p);
+            propVals->Add(propVal);
+        }
         expr = ShpTests::ParseByDataType(L"5", FdoDataType_Decimal);
         propVal = FdoPropertyValue::Create(L"HeadCount", (FdoValueExpression*)expr.p);
         propVals->Add(propVal);
@@ -408,9 +443,12 @@ void SelectAggregatesTests::create_schema (FdoString *schemaName, FdoString* cla
         expr = FdoExpression::Parse(L"DATE '2003-05-21'");
         propVal = FdoPropertyValue::Create(L"Date", (FdoValueExpression*)expr.p);
         propVals->Add(propVal);
-        expr = FdoExpression::Parse(L"GEOMFROMTEXT('LINESTRING XY (10.0 10.0, 20.0 20.0, 10.0 30.0)')");
-        propVal = FdoPropertyValue::Create(L"Geometry", (FdoValueExpression*)expr.p);
-        propVals->Add(propVal);
+        if (type != -1)
+        {
+            expr = FdoExpression::Parse(L"GEOMFROMTEXT('LINESTRING XY (10.0 10.0, 20.0 20.0, 10.0 30.0)')");
+            propVal = FdoPropertyValue::Create(L"Geometry", (FdoValueExpression*)expr.p);
+            propVals->Add(propVal);
+        }
         expr = ShpTests::ParseByDataType(L"3", FdoDataType_Decimal);
         propVal = FdoPropertyValue::Create(L"HeadCount", (FdoValueExpression*)expr.p);
         propVals->Add(propVal);
@@ -426,9 +464,12 @@ void SelectAggregatesTests::create_schema (FdoString *schemaName, FdoString* cla
         expr = FdoExpression::Parse(L"DATE '2003-05-21'");
         propVal = FdoPropertyValue::Create(L"Date", (FdoValueExpression*)expr.p);
         propVals->Add(propVal);
-        expr = FdoExpression::Parse(L"GEOMFROMTEXT('LINESTRING XY (3.0 3.0, 4.0 4.0, 5.0 5.0)')");
-        propVal = FdoPropertyValue::Create(L"Geometry", (FdoValueExpression*)expr.p);
-        propVals->Add(propVal);
+        if (type != -1)
+        {
+            expr = FdoExpression::Parse(L"GEOMFROMTEXT('LINESTRING XY (3.0 3.0, 4.0 4.0, 5.0 5.0)')");
+            propVal = FdoPropertyValue::Create(L"Geometry", (FdoValueExpression*)expr.p);
+            propVals->Add(propVal);
+        }
         expr = ShpTests::ParseByDataType(L"4", FdoDataType_Decimal);
         propVal = FdoPropertyValue::Create(L"HeadCount", (FdoValueExpression*)expr.p);
         propVals->Add(propVal);
@@ -444,9 +485,12 @@ void SelectAggregatesTests::create_schema (FdoString *schemaName, FdoString* cla
         expr = FdoExpression::Parse(L"DATE '2003-05-21'");
         propVal = FdoPropertyValue::Create(L"Date", (FdoValueExpression*)expr.p);
         propVals->Add(propVal);
-        expr = FdoExpression::Parse(L"GEOMFROMTEXT('LINESTRING XY (1.0 1.0, -2.0 -2.0, -1.0 -3.0)')");
-        propVal = FdoPropertyValue::Create(L"Geometry", (FdoValueExpression*)expr.p);
-        propVals->Add(propVal);
+        if (type != -1)
+        {
+            expr = FdoExpression::Parse(L"GEOMFROMTEXT('LINESTRING XY (1.0 1.0, -2.0 -2.0, -1.0 -3.0)')");
+            propVal = FdoPropertyValue::Create(L"Geometry", (FdoValueExpression*)expr.p);
+            propVals->Add(propVal);
+        }
         expr = ShpTests::ParseByDataType(L"7", FdoDataType_Decimal);
         propVal = FdoPropertyValue::Create(L"HeadCount", (FdoValueExpression*)expr.p);
         propVals->Add(propVal);
@@ -505,7 +549,7 @@ void SelectAggregatesTests::select_orderby ()
     }
     catch (FdoException* e)
     {
-        fail(e);
+        TestCommonFail(e);
     }
 }
 
@@ -547,229 +591,7 @@ void SelectAggregatesTests::count ()
     }
     catch (FdoException* e)
     {
-        fail(e);
-    }
-}
-
-void SelectAggregatesTests::ceil_floor ()
-{
-    try
-    {
-        //////////////////////////////////////////////////////////////////////
-        // Create a SHP file:
-        //////////////////////////////////////////////////////////////////////
-
-        FdoString *className  = L"MyClass";
-        FdoString *schemaName = L"MySchema";
-
-        create_schema(schemaName, className, FdoGeometricType_Curve, false, false, true);
-
-
-        //////////////////////////////////////////////////////////////////////
-        // Try numerical function ceil():
-        //////////////////////////////////////////////////////////////////////
-
-        FdoPtr<FdoISelect> select = (FdoISelect*)mConnection->CreateCommand (FdoCommandType_Select);
-
-        select->SetFeatureClassName (className);
-        FdoPtr<FdoIdentifierCollection> selectedIds = select->GetPropertyNames();
-        selectedIds->Clear();
-
-        FdoPtr<FdoComputedIdentifier> cid = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Ceil(LotSize)) AS TestCeil");
-		selectedIds->Add(cid);
-
-		FdoPtr<FdoIReader> datareader = select->Execute ();
-
-		// [2702.7, 10000]
-        long count = 0;
-        while (datareader->ReadNext ())
-        {
-            double result = datareader->GetDouble(L"TestCeil");
-            CPPUNIT_ASSERT_MESSAGE("Ceil wrong", result >= 2703 && result <= 10000);
-            count++;
-        }
-        CPPUNIT_ASSERT_MESSAGE("Wrong count(*) rowcount", count==4);
-        datareader->Close();
-        datareader = NULL;
-
-        //////////////////////////////////////////////////////////////////////
-        // Try numerical function floor():
-        //////////////////////////////////////////////////////////////////////
-        selectedIds = select->GetPropertyNames();
-        selectedIds->Clear();
-
-        cid = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Floor(LotSize)) AS TestFloor");
-		selectedIds->Add(cid);
-
-		datareader = select->Execute ();
-
-		// [2702.7, 10000]
-        count = 0;
-        while (datareader->ReadNext ())
-        {
-            double result = datareader->GetDouble(L"TestFloor");
-            CPPUNIT_ASSERT_MESSAGE("Floor wrong",  result >= 2702 && result <= 10000);
-            count++;
-        }
-        CPPUNIT_ASSERT_MESSAGE("Wrong count(*) rowcount", count==4);
-        datareader->Close();
-        datareader = NULL;
-
-        //////////////////////////////////////////////////////////////////////
-        // Try numerical function floor() with Int32:
-        //////////////////////////////////////////////////////////////////////
-        selectedIds->Clear();
-
-        cid = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Floor(FeatId)) AS TestFloor");
-		selectedIds->Add(cid);
-
-		datareader = select->Execute ();
-
-        count = 0;
-        while (datareader->ReadNext ())
-        {
-            double result = datareader->GetDouble(L"TestFloor");
-            CPPUNIT_ASSERT_MESSAGE("Floor(FeatId) wrong",  result >= 1 && result <= 4);
-            count++;
-        }
-        CPPUNIT_ASSERT_MESSAGE("Wrong count(*) rowcount", count==4);
-        datareader->Close();
-        datareader = NULL;
-
-        //////////////////////////////////////////////////////////////////////
-        // Try some wrong datatypes:
-        //////////////////////////////////////////////////////////////////////
-
-		bool error = false;
-		try
-		{
-			selectedIds->Clear();
-
-			FdoPtr<FdoComputedIdentifier> cid = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Ceil(Street)) AS TestCeil");
-			selectedIds->Add(cid);
-
-			datareader = select->Execute ();
-			while (datareader->ReadNext ())
-			{
-				double result = datareader->GetDouble(L"TestCeil");
-			}
-		}
-		catch (FdoException* e)
-		{
-			//printf("Expected: %ls\n", e->GetExceptionMessage());
-			e->Release();
-			error = true;
-		}
-		datareader->Close();
-		datareader = NULL;
-
-		CPPUNIT_ASSERT_MESSAGE("Ceil succeeded with wrong datatype", error == true );
-    }
-    catch (FdoException* e)
-    {
-        fail(e);
-    }
-}
-
-void SelectAggregatesTests::upper_lower ()
-{
-    try
-    {
-        //////////////////////////////////////////////////////////////////////
-        // Create a SHP file:
-        //////////////////////////////////////////////////////////////////////
-
-        FdoString *className  = L"MyClass";
-        FdoString *schemaName = L"MySchema";
-
-        create_schema(schemaName, className, FdoGeometricType_Curve, false, false, true);
-
-        //////////////////////////////////////////////////////////////////////
-        // Try numerical function upper():
-        //////////////////////////////////////////////////////////////////////
-
-        FdoPtr<FdoISelect> select = (FdoISelect*)mConnection->CreateCommand (FdoCommandType_Select);
-        select->SetFeatureClassName (className);
-        FdoPtr<FdoIdentifierCollection> selectedIds = select->GetPropertyNames();
-        selectedIds->Clear();
-
-        FdoPtr<FdoComputedIdentifier> cid = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Upper(Street)) AS TestUpper");
-		selectedIds->Add(cid);
-
-		FdoPtr<FdoIReader>  datareader = select->Execute ();
-
-        long count = 0;
-        while (datareader->ReadNext ())
-        {
-            FdoString *street = datareader->GetString(L"TestUpper");
-            CPPUNIT_ASSERT_MESSAGE("Upper wrong",          
-				(0==wcscmp(street, L"SLATER")) || (0==wcscmp(street, L"ALBERT")) || (0==wcscmp(street, L"QUEEN")) );
-
-            count++;
-        }
-        CPPUNIT_ASSERT_MESSAGE("Wrong count(*) rowcount", count==4);
-        datareader->Close();
-        datareader = NULL;
-
-
-        //////////////////////////////////////////////////////////////////////
-        // Try numerical function lower():
-        //////////////////////////////////////////////////////////////////////
-        selectedIds = select->GetPropertyNames();
-        selectedIds->Clear();
-
-        cid = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Lower(Street)) AS TestLower");
-
-		selectedIds->Add(cid);
-
-		datareader = select->Execute ();
-
-        count = 0;
-        while (datareader->ReadNext ())
-        {
-            FdoString *street = datareader->GetString(L"TestLower");
-            CPPUNIT_ASSERT_MESSAGE("Lower wrong",          
-				(0==wcscmp(street, L"slater")) || (0==wcscmp(street, L"albert")) || (0==wcscmp(street, L"queen")) );
-
-            count++;
-        }
-        CPPUNIT_ASSERT_MESSAGE("Wrong count(*) rowcount", count==4);
-        datareader->Close();
-        datareader = NULL;
-
-        //////////////////////////////////////////////////////////////////////
-        // Try some wrong datatypes:
-        //////////////////////////////////////////////////////////////////////
-
-		bool error = false;
-		try
-		{
-			selectedIds->Clear();
-
-			FdoPtr<FdoComputedIdentifier> cid = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Upper(LotSize)) AS TestUpper");
-
-			selectedIds->Add(cid);
-
-			datareader = select->Execute ();
-			while (datareader->ReadNext ())
-			{
-				double result = datareader->GetDouble(L"TestUpper");
-			}
-		}
-		catch (FdoException* e)
-		{
-			//printf("Expected: %ls\n", e->GetExceptionMessage());
-			e->Release();
-			error = true;
-		}
-		datareader->Close();
-		datareader = NULL;
-
-		CPPUNIT_ASSERT_MESSAGE("Upper succeeded with wrong datatype", error == true );
-    }
-    catch (FdoException* e)
-    {
-        fail(e);
+        TestCommonFail(e);
     }
 }
 
@@ -818,7 +640,7 @@ void SelectAggregatesTests::select_orderby_decimal ()
     }
     catch (FdoException* e)
     {
-        fail(e);
+        TestCommonFail(e);
     }
 }
 
@@ -882,7 +704,7 @@ void SelectAggregatesTests::select_orderby_scrambled_property_ids ()
     }
     catch (FdoException* e)
     {
-        fail(e);
+        TestCommonFail(e);
     }
 }
 
@@ -939,7 +761,7 @@ void SelectAggregatesTests::select_orderby_empty_select_list ()
     }
     catch (FdoException* e)
     {
-        fail(e);
+        TestCommonFail(e);
     }
 }
 
@@ -1208,7 +1030,7 @@ void SelectAggregatesTests::selectAggregatesSpatialExtentsTest()
 		}
 	catch (FdoException* e)
 	{
-		fail(e);
+		TestCommonFail(e);
 	}
 
 }
@@ -1348,6 +1170,51 @@ void SelectAggregatesTests::performance_count_mbr ()
     }
     catch (FdoException* e)
     {
-        fail(e);
+        TestCommonFail(e);
     }
 }
+
+
+void SelectAggregatesTests::select_aggregates_fdoclass()
+{
+    try
+    {
+        //////////////////////////////////////////////////////////////////////
+        // Create a SHP file:
+        //////////////////////////////////////////////////////////////////////
+
+        FdoString *className  = L"MyClass";
+        FdoString *schemaName = L"MySchema";
+
+        create_schema(schemaName, className, (FdoGeometricType)-1, false, false, true);
+
+
+        //////////////////////////////////////////////////////////////////////
+        // Select some data via aggregate sum:
+        //////////////////////////////////////////////////////////////////////
+
+        FdoPtr<FdoISelectAggregates> select = (FdoISelectAggregates*)mConnection->CreateCommand (FdoCommandType_SelectAggregates);
+        select->SetFeatureClassName (className);
+        select->SetDistinct(false);
+        FdoPtr<FdoIdentifierCollection> selectedIds = select->GetPropertyNames();
+        selectedIds->Clear();
+        selectedIds->Add(FdoPtr<FdoComputedIdentifier>(FdoComputedIdentifier::Create(L"HeadTally", FdoPtr<FdoExpression>(FdoExpression::Parse(L"Max(HeadCount)")))));
+        FdoPtr<FdoIDataReader> datareader = select->Execute ();
+        long count = 0;
+        FdoInt32 headcounttally = 0;
+        while (datareader->ReadNext ())
+        {
+            headcounttally = (FdoInt32)datareader->GetDouble(L"HeadTally");
+            count++;
+        }
+        CPPUNIT_ASSERT_MESSAGE("Wrong sum rowcount", count==1);
+        CPPUNIT_ASSERT_MESSAGE("Wrong headcount sum", headcounttally==7);
+        datareader->Close();
+        datareader = NULL;
+    }
+    catch (FdoException* e)
+    {
+        TestCommonFail(e);
+    }
+}
+

@@ -18,6 +18,18 @@
 #ifndef SHP_STDAFX_H
 #define SHP_STDAFX_H
 
+//defines that helps us use hash_map (and similar STL classes) in the same way 
+//under Linux and Windows.
+#ifdef WIN32
+#include <hash_map>
+#include <functional>
+#else
+#include <ext/hash_map>
+#include <ext/functional>
+namespace stdext = ::__gnu_cxx;
+using namespace std;
+#endif
+
 #ifdef _WIN32
 #pragma once
 
@@ -68,9 +80,6 @@ DWORD dwHighDateTime;
 
 
 #endif // _WIN32
-
-// number of elements in an array
-#define ELEMENTS(x) (sizeof(x)/sizeof(x[0]))
 
 
 // Base FDO headers

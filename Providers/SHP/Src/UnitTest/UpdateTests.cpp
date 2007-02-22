@@ -54,7 +54,7 @@ void UpdateTests::setUp ()
 void UpdateTests::tearDown ()
 {
     // delete the class, if its there:
-    CleanUpClass(mConnection, NULL, L"Test");
+    TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, L"Test");
 
     mConnection->Close ();
 	FDO_SAFE_RELEASE(mConnection.p);
@@ -66,7 +66,7 @@ void UpdateTests::tearDown ()
 void UpdateTests::create_schema (FdoGeometricType type, bool elevation, bool measure)
 {
     // delete the class, if its there:
-    CleanUpClass(mConnection, NULL, L"Test");
+    TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, L"Test");
 
     // create the class
     FdoPtr<FdoFeatureSchema> schema = FdoFeatureSchema::Create (L"TheSchema", L" test schema");
@@ -192,7 +192,7 @@ void UpdateTests::update ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -270,7 +270,7 @@ void UpdateTests::update_geometry_point_xy ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -403,7 +403,7 @@ void UpdateTests::update_geometry_line_xy ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -535,7 +535,7 @@ void UpdateTests::update_geometry_polygon_xy ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -609,7 +609,7 @@ void UpdateTests::update_null_data_values ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -723,7 +723,7 @@ void UpdateTests::update_int32 ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 

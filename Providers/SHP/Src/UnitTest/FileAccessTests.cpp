@@ -168,7 +168,7 @@ void FileAccessTests::create_shx ()
     try
     {
         // diff
-        Compare (GENERATED_SHX_FILE, REFERENCE_SHX_FILE);
+        TestCommonFileUtil::CompareFiles (GENERATED_SHX_FILE, REFERENCE_SHX_FILE);
     }
     catch (...)
     {
@@ -232,7 +232,7 @@ void FileAccessTests::only_shp ()
     }
     catch (FdoException *e)
     {
-        fail(e);
+        TestCommonFail(e);
     }
 }
 
@@ -251,7 +251,7 @@ void FileAccessTests::delete_shp ()
         CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == connection->Open ());
 
         // Clean up leftovers from previous tests:
-        CleanUpClass (connection, NULL, NEW_CLASS_NAME);
+        TestCommonSchemaUtil::CleanUpClass (connection, NULL, NEW_CLASS_NAME);
 
         FdoPtr<FdoIApplySchema> apply = (FdoIApplySchema*)connection->CreateCommand (FdoCommandType_ApplySchema);
         FdoPtr<FdoFeatureSchema> schema = FdoFeatureSchema::Create (NEW_SCHEMA_NAME, L"");
@@ -332,7 +332,7 @@ void FileAccessTests::delete_shp ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 
     // reopen, read and close the connection
@@ -366,7 +366,7 @@ void FileAccessTests::delete_shp ()
     }
     catch (FdoException* ge) 
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 
     // OK, now delete the file

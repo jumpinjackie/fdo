@@ -88,7 +88,7 @@ void ConnectTests::connect ()
     }
     catch (FdoException* ge)
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
     catch (...)
     {
@@ -111,7 +111,7 @@ void ConnectTests::connect2 ()
     }
     catch (FdoException* ge)
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
     catch (...)
     {
@@ -150,7 +150,7 @@ void ConnectTests::connect3 ()
     }
     catch (FdoException* ge)
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
     catch (...)
     {
@@ -177,7 +177,7 @@ void ConnectTests::connect4 ()
     }
     catch (FdoException* ge)
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
     catch (...)
     {
@@ -256,7 +256,7 @@ void ConnectTests::dual_connect ()
     }
     catch (FdoException* ge)
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
     catch (...)
     {
@@ -291,7 +291,7 @@ void ConnectTests::connect_no_slash ()
     }
     catch (FdoException* ge)
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -322,7 +322,7 @@ void ConnectTests::connect_back_slash ()
     }
     catch (FdoException* ge)
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -353,7 +353,7 @@ void ConnectTests::connect_double_slash ()
     }
     catch (FdoException* ge)
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -418,7 +418,7 @@ void ConnectTests::connect_params1 ()
     }
     catch (FdoException* ge)
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
     catch (...)
     {
@@ -467,7 +467,7 @@ void ConnectTests::connect_params3 ()
     }
     catch (FdoException* ge)
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
     catch (...)
     {
@@ -493,7 +493,7 @@ void ConnectTests::connect_params4 ()
     }
     catch (FdoException* ge)
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
     catch (...)
     {
@@ -542,7 +542,7 @@ void ConnectTests::connect_params6 ()
     }
     catch (FdoException* ge)
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
     catch (...)
     {
@@ -570,7 +570,7 @@ void ConnectTests::connect_params7 ()
     }
     catch (FdoException* ge)
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
     catch (...)
     {

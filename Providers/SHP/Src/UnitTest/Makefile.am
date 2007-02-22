@@ -47,7 +47,6 @@ UnitTest_SOURCES = \
   PerformanceTests.cpp \
   UpdateTests.cpp \
   FidelityTests.cpp \
-  UnitTestUtil.cpp \
   BigPerformanceTests.cpp \
   ExtendedSelectTests.cpp
 
@@ -69,7 +68,6 @@ noinst_HEADERS = $(UnitTest_SOURCES) \
   DeleteTests.h \
   InsertTests.h \
   SchemaTests.h \
-  UnitTestUtil.h \
   FidelityTests.h \
   OverridesTest.h \
   SelectAggregatesTests.h \
@@ -82,6 +80,7 @@ INCLUDES = \
   -I$(FDO)/Unmanaged/Inc \
   -I$(FDOTHIRDPARTY)/linux/cppunit/include \
   -I$(FDOUTILITIES)/Common/Inc \
+  -I$(FDOUTILITIES)/TestCommon/Inc \
   -I../../Inc  \
   -I../Provider
 
@@ -90,6 +89,7 @@ UnitTest_LDADD = \
   ../ShpSpatialIndex/libSHPSpatialIndex.la \
   ../Overrides/libSHPOverridesSrc.la \
   $(FDOUTILITIES)/Common/libProvidersCommon.la \
+  $(FDOUTILITIES)/TestCommon/libTestCommon.la \
   $(FDOTHIRDPARTY)/linux/cppunit/lib/libcppunit.a \
   $(FDO)/Unmanaged/Src/libFDO.la \
   -lxerces-c \

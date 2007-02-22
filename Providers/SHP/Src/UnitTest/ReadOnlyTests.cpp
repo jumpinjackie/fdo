@@ -55,7 +55,7 @@ void ReadOnlyTests::tearDown ()
 void ReadOnlyTests::create_schema (FdoGeometricType type, bool elevation, bool measure)
 {
     // delete the class, if its there:
-    CleanUpClass (mConnection, NULL, L"Test");
+    TestCommonSchemaUtil::CleanUpClass (mConnection, NULL, L"Test");
 
     // create the class
     FdoPtr<FdoFeatureSchema> schema = FdoFeatureSchema::Create (L"TheSchema", L" test schema");
@@ -167,13 +167,13 @@ void ReadOnlyTests::select ()
             reader->GetDouble (L"ONTARIO_ID");
             FdoPtr<FdoByteArray> geometry = reader->GetGeometry (L"Geometry");
 
-            AnalyzeGeometry( L"ontario", count, geometry, length, area);
+            TestCommonGeomUtil::PrintGeometryAnalysis( L"ontario", count, geometry, length, area, VERBOSE);
         }
         CPPUNIT_ASSERT_MESSAGE ("no ontario features selected", 0 != count);
     }
     catch (FdoException* ge)
     {
-        fail(ge);
+        TestCommonFail(ge);
     }
     catch(...)
     {

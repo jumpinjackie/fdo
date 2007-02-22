@@ -56,7 +56,7 @@ void FidelityTests::setUp ()
     }
     catch (FdoException* ge)
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -65,8 +65,8 @@ void FidelityTests::tearDown ()
     try
     {
         // delete the class, if its there:
-        CleanUpClass(mConnection, NULL, L"Test");
-        CleanUpClass(mConnection, NULL, L"coundist01_n83");
+        TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, L"Test");
+        TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, L"coundist01_n83");
 
         mConnection->Close ();
 		FDO_SAFE_RELEASE(mConnection.p);
@@ -78,7 +78,7 @@ void FidelityTests::tearDown ()
     }
     catch (FdoException *ge)
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -112,7 +112,7 @@ void FidelityTests::compare (const wchar_t* target_class_name, const wchar_t* fi
     reference = (wchar_t*)alloca (length);
     FdoCommonOSUtil::swprintf (reference, length, format, LOCATION, separator, target_class_name, extension);
     
-    Compare (target, reference, skip);
+    TestCommonFileUtil::CompareFiles (target, reference, skip);
 }
 
 void FidelityTests::ontario ()
@@ -133,7 +133,7 @@ void FidelityTests::ontario ()
     }
     catch (FdoException* ge)
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -155,7 +155,7 @@ void FidelityTests::lakes ()
     }
     catch (FdoException* ge)
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -177,7 +177,7 @@ void FidelityTests::nanboku ()
     }
     catch (FdoException* ge)
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -199,7 +199,7 @@ void FidelityTests::ignore_states ()
     }
     catch (FdoException* ge)
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 

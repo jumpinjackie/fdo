@@ -95,7 +95,7 @@ void BigPerformanceTests::select ()
     }
     catch (FdoException* ge)
     {
-        ShpTests::fail (ge);
+        TestCommonFail (ge);
     }
 }
 

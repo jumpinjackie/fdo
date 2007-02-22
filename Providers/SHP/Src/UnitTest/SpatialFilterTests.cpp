@@ -19,7 +19,6 @@
 
 #include "Pch.h"
 #include "SpatialFilterTests.h"
-#include "UnitTestUtil.h"
 
 #include <ShpSpatialIndex.h>
 #include <ShapeFile.h>
@@ -181,7 +180,7 @@ void SpatialFilterTests::SelectAll_USA_3G ()
 		FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance ();
 
 #ifdef _WIN32       
-		double time1 = UnitTestUtil::GetTime_S();
+		double time1 = TestCommonMiscUtil::GetTime_S();
 #endif
 
 		FdoPtr<FdoIConnection> connection = ShpTests::GetConnection ();
@@ -194,13 +193,13 @@ void SpatialFilterTests::SelectAll_USA_3G ()
 		FdoPtr<FdoIFeatureReader> reader = select->Execute ();
 
 #ifdef _WIN32       
-		double time2 = UnitTestUtil::GetTime_S();
+		double time2 = TestCommonMiscUtil::GetTime_S();
 		double elapsed = time2 - time1;
 		printf("Elapsed select->Execute(): %lf sec\n",elapsed);
 #endif
 
 #ifdef _WIN32       
-		time1 = UnitTestUtil::GetTime_S();
+		time1 = TestCommonMiscUtil::GetTime_S();
 #endif
 
 		int count = 0;
@@ -222,7 +221,7 @@ void SpatialFilterTests::SelectAll_USA_3G ()
 			}
 		}
 #ifdef _WIN32       
-		time2 = UnitTestUtil::GetTime_S();
+		time2 = TestCommonMiscUtil::GetTime_S();
 		elapsed = time2 - time1;
 		printf("Elapsed select->ReadNext(): %lf sec\n",elapsed);
 #endif
@@ -230,7 +229,7 @@ void SpatialFilterTests::SelectAll_USA_3G ()
 	}
     catch( FdoException* ex)
     {
-        fail (ex);
+        TestCommonFail (ex);
     }
 }
 
@@ -269,7 +268,7 @@ int SpatialFilterTests::runSpatialQuery( FdoString* class_name, FdoSpatialOperat
         select->SetFilter(filter);
 
 #ifdef _WIN32       
-        double time1 = UnitTestUtil::GetTime_S();
+        double time1 = TestCommonMiscUtil::GetTime_S();
 #endif
 
         FdoPtr<FdoIFeatureReader> reader = select->Execute();
@@ -288,7 +287,7 @@ int SpatialFilterTests::runSpatialQuery( FdoString* class_name, FdoSpatialOperat
             printf("Count = %d\n", count);
 
 #ifdef _WIN32       
-        double time2 = UnitTestUtil::GetTime_S();
+        double time2 = TestCommonMiscUtil::GetTime_S();
         double elapsed = time2 - time1;
         if (VERBOSE)
 			printf("Elapsed: %lf sec\n",elapsed);
@@ -296,7 +295,7 @@ int SpatialFilterTests::runSpatialQuery( FdoString* class_name, FdoSpatialOperat
     }
     catch( FdoException* ex)
     {
-        fail (ex);
+        TestCommonFail (ex);
     }
     catch( ... )
     {

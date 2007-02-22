@@ -301,7 +301,7 @@ void IndexTests::check_z ()
     }
     catch (FdoException* ge)
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -387,7 +387,7 @@ void IndexTests::check_limits ()
     }
     catch (FdoException* ge)
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -477,7 +477,7 @@ void IndexTests::check_remove ()
     }
     catch (FdoException* ge)
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
@@ -564,7 +564,7 @@ void IndexTests::check_defragment ()
     }
     catch (FdoException* ge)
     {
-        fail (ge);
+        TestCommonFail (ge);
     }
 }
 
