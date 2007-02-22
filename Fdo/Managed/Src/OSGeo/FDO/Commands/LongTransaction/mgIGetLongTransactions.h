@@ -20,13 +20,11 @@
 
 #include "FDO\Commands\mgICommand.h"
 
-/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 public __gc __interface ILongTransactionReader;
-/// \endcond
 
-/// \ingroup (interfaces)
-/// \interface IGetLongTransactions
+/// \ingroup (OSGeoFDOCommandsLongTransaction)
+/// \interface OSGeo::FDO::Commands::LongTransaction::IGetLongTransactions
 /// \brief
 /// The IGetLongTransactions interface defines the GetLongTransactions
 /// command. It allows a user to retrieve long transaction information for all or

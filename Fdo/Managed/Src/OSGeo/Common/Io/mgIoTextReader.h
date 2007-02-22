@@ -25,6 +25,7 @@ class FdoIoTextReader;
 BEGIN_NAMESPACE_OSGEO_COMMON_IO
 public __gc class IoStream;
 
+/// \ingroup (OSGeoFDOCommonIo)
 /// \brief
 ///     IoTextReader reads from a binary stream containing UTF8 characters.
 ///     It formats these UTF8 characters into Unicode wide characters. This class is 

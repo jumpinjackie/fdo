@@ -26,6 +26,7 @@ class FdoIFreezeLongTransaction;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
+/// \ingroup (OSGeoFDOCommandsLongTransaction)
 /// \brief
 /// The IFreezeLongTransactionImp class is a 
 /// concrete implementation of IFreezeLongTransaction.

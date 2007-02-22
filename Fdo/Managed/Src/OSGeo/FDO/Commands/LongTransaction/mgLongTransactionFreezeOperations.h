@@ -18,9 +18,11 @@
 
 #pragma  once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOCommandsLongTransaction)
 /// \brief
 /// The LongTransactionFreezeOperations enumeration defines the 
 /// list of available operations that can be performed by the FreezeLongTransaction command.
@@ -34,6 +36,6 @@ public __value enum LongTransactionFreezeOperations
 	LongTransactionFreezeOperations_Thaw = FdoLongTransactionFreezeOperations_Thaw
 };
 
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
-
-
+/// \endcond

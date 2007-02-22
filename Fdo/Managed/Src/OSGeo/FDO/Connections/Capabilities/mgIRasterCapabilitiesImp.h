@@ -24,6 +24,7 @@ class FdoIRasterCapabilities;
 
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 
+/// \ingroup (OSGeoFDOConnectionsCapabilities)
 /// \brief
 /// The IRasterCapabilities class delineates available support for raster processing from a provider.
 private __gc class IRasterCapabilitiesImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 

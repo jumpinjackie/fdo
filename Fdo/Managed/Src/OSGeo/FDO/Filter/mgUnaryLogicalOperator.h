@@ -27,6 +27,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_FILTER
 public __gc class Filter;
 public __gc __interface IFilterProcessor;
 
+/// \ingroup (OSGeoFDOFilter)
 /// \brief
 /// The UnaryLogicalOperator class derives from LogicalOperator and allows a
 /// logical "Not" to be performed against a filter.

@@ -26,6 +26,7 @@ END_NAMESPACE_OSGEO_FDO_EXPRESSION
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS
 
+/// \ingroup (OSGeoFDOCommands)
 /// \brief
 /// The ParameterValue class specifies a value for a particular parameter.
 /// Instances of this class are used to specify a value to bind to a parameter

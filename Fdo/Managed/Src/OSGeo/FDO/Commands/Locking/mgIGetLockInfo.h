@@ -20,13 +20,11 @@
 
 #include "FDO\Commands\mgIFeatureCommand.h"
 
-/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 public __gc __interface ILockedObjectReader;
-/// \endcond
 
-/// \ingroup (interfaces)
-/// \interface IGetLockInfo
+/// \ingroup (OSGeoFDOCommandsLocking)
+/// \interface OSGeo::FDO::Commands::Locking::IGetLockInfo
 /// \brief
 /// The IGetLockInfo interface defines the GetLockInfo command, which gets a
 /// lock information for the feature instances of a given class that match the

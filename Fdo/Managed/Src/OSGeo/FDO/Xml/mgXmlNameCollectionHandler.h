@@ -22,6 +22,7 @@ class FdoXmlNameCollectionHandler;
 
 BEGIN_NAMESPACE_OSGEO_FDO_XML
 
+/// \ingroup (OSGeoFDOXml)
 /// \brief
 /// XmlNameCollectionHandler is a class for serializing and 
 /// deserializing fdo:NameCollectionType elements.

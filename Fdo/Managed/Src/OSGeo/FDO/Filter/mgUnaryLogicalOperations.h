@@ -18,9 +18,11 @@
 
 #pragma once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_FILTER
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOFilter)
 /// \brief
 /// The UnaryLogicalOperations enumeration lists the unary logical operations
 /// available.
@@ -30,6 +32,7 @@ public __value enum UnaryLogicalOperations
     /// Perform a logical Not of the filter.
 	UnaryLogicalOperations_Not = FdoUnaryLogicalOperations_Not
 };
+
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_FILTER
-
-
+/// \endcond

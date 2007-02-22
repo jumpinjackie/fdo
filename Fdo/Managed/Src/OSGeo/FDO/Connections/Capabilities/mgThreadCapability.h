@@ -18,9 +18,11 @@
 
 #pragma once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOConnectionsCapabilities)
 /// \brief
 /// The ThreadCapability enumeration defines the threading capabilities of a feature provider.
 public __value enum ThreadCapability
@@ -43,6 +45,7 @@ public __value enum ThreadCapability
     /// for all objects.
 	ThreadCapability_MultiThreaded = FdoThreadCapability_MultiThreaded
 };
+
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
-
-
+/// \endcond

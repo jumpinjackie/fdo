@@ -22,6 +22,7 @@ class FdoException;
 
 BEGIN_NAMESPACE_OSGEO_COMMON
 
+/// \ingroup (OSGeoFDOCommon)
 /// \brief
 /// Exception is a root class for the exception type thrown from classes. It derives from a language 
 /// level exception class that is environment specific.

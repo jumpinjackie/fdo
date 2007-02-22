@@ -25,8 +25,10 @@ class FdoVectorP;
 
 BEGIN_NAMESPACE_OSGEO_FDO_CLIENTSERVICES
 
+/// \ingroup (OSGeoFDOClientServices)
 /// \brief
-/// Class ProviderNameTokens represents an FDO provider name that has been tokenized into its company, name and version parts.
+/// Class ProviderNameTokens represents an FDO provider name that 
+/// has been tokenized into its company, name and version parts.
 public __gc class ProviderNameTokens : public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
 public private:

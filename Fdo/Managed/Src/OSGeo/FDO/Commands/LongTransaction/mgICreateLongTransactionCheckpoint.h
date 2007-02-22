@@ -22,8 +22,8 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
-/// \ingroup (interfaces)
-/// \interface ICreateLongTransactionCheckpoint
+/// \ingroup (OSGeoFDOCommandsLongTransaction)
+/// \interface OSGeo::FDO::Commands::LongTransaction::ICreateLongTransactionCheckpoint
 /// \brief
 /// The ICreateLongTransactionCheckpoint interface defines the
 /// CreateLongTransactionCheckpoint command, which allows the user to create a

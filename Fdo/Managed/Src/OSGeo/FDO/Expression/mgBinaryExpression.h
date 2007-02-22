@@ -27,6 +27,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 public __gc class Express;
 public __gc __interface IExpressionProcessor;
 
+/// \ingroup (OSGeoFDOExpression)
 /// \brief
 /// The BinaryExpression class derives from Expression and represents string
 /// concatenation and the simple arithmetic operations add, subtract, multiply,

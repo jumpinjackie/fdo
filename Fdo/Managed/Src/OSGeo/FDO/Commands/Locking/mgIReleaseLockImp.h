@@ -26,6 +26,7 @@ class FdoIReleaseLock;
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 public __gc __interface ILockConflictReader;
 
+/// \ingroup (OSGeoFDOCommandsLocking)
 /// \brief
 /// The IReleaseLockImp class is a concrete implementation of IReleaseLock.
 /// The IReleaseLock interface defines the ReleaseLock command, which releases

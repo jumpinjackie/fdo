@@ -24,6 +24,7 @@ class FdoDictionaryElement;
 
 BEGIN_NAMESPACE_OSGEO_COMMON
 
+/// \ingroup (OSGeoFDOCommon)
 /// \brief
 ///     DictionaryElement is an element in a DictionaryElementCollection. It consists of a
 ///     name-value pair.

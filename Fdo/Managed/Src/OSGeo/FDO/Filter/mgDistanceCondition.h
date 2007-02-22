@@ -33,6 +33,7 @@ using namespace NAMESPACE_OSGEO_FDO_EXPRESSION;
 BEGIN_NAMESPACE_OSGEO_FDO_FILTER
 public __gc __interface IFilterProcessor;
 
+/// \ingroup (OSGeoFDOFilter)
 /// \brief
 /// The DistanceCondition class derives GeometricCondition and can be used
 /// to test whether the value of a geometric property is within or beyond a

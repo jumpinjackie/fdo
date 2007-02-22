@@ -25,6 +25,7 @@ class FdoIMeasureUnitReader;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE
 
+/// \ingroup (OSGeoFDOCommandsUnitOfMeasure)
 /// \brief
 /// The IMeasureUnitReaderImp class is a concrete implementation of IMeasureUnitReader.
 /// The IMeasureUnitReader interface provides forward-only, read-only

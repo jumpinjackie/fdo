@@ -18,9 +18,11 @@
 
 #pragma once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOExpression)
 /// \brief
 /// The ExpressionType enumeration defines the expression types available. This
 /// enumeration is used in the capabilities metadata.
@@ -36,6 +38,7 @@ public __value enum ExpressionType
 	ExpressionType_Parameter = FdoExpressionType_Parameter
 
 };
+
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_EXPRESSION
-
-
+/// \endcond

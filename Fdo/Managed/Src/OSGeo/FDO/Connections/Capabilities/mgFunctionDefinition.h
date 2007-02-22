@@ -30,6 +30,7 @@ public __gc class ReadOnlyArgumentDefinitionCollection;
 public __gc class SignatureDefinitionCollection;
 public __gc class ReadOnlySignatureDefinitionCollection;
 
+/// \ingroup (OSGeoFDOConnectionsCapabilities)
 /// \brief
 ///  The FunctionDefinition class contains metadata that describes a function and its arguments.
 public __gc class FunctionDefinition : public NAMESPACE_OSGEO_RUNTIME::Disposable

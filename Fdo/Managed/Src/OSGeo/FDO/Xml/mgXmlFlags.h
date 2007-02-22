@@ -27,6 +27,7 @@ END_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
 BEGIN_NAMESPACE_OSGEO_FDO_XML
 public __gc class PhysicalElementMapping;
 
+/// \ingroup (OSGeoFDOXml)
 /// \brief
 /// XmlFlags defines various options for serializing and deserializing
 /// FDO element to and from XML Documents.

@@ -26,6 +26,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 
 public __gc __interface IExpressionProcessor;
 
+/// \ingroup (OSGeoFDOExpression)
 /// \brief
 /// The Identifier class derives from Expression and represents an 
 /// identifier, such as a class name or property name. Identifiers can be just a name 

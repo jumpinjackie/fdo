@@ -27,8 +27,8 @@ END_NAMESPACE_OSGEO_FDO_COMMANDS
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 
-/// \ingroup (interfaces)
-/// \interface IBaseSelect
+/// \ingroup (OSGeoFDOCommandsFeature)
+/// \interface OSGeo::FDO::Commands::Feature::IBaseSelect
 /// \brief
 /// The IBaseSelect interface defines a base interface for the the 
 /// FDO ISelect command, which queries for features

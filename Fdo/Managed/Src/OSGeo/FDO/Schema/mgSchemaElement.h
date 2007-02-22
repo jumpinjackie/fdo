@@ -26,6 +26,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 public __gc class FeatureSchema;
 public __gc class SchemaAttributeDictionary;
 
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// SchemaElement is an abstract class that acts as a base class for all classes
 /// in the Schema package.

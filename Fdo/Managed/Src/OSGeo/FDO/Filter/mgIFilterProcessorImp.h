@@ -24,6 +24,7 @@ class FdoIFilterProcessor;
 
 BEGIN_NAMESPACE_OSGEO_FDO_FILTER
 
+/// \ingroup (OSGeoFDOFilter)
 /// \brief
 /// The IFilterProcessor interface can be used to process the nodes in a filter
 /// tree. It declares a process operation for each concrete class in the filter

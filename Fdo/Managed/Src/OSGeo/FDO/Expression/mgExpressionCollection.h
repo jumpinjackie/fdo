@@ -23,6 +23,7 @@ class FdoExpressionCollection;
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 public __gc class Expression;
 
+/// \ingroup (OSGeoFDOExpression)
 /// \brief
 /// ExpressionCollection is a collection of Expression objects.
 [System::Reflection::DefaultMemberAttribute("RealTypeItem")]

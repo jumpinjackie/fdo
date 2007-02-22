@@ -18,9 +18,11 @@
 
 #pragma  once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOCommandsLongTransaction)
 /// \brief
 /// The LongTransactionPrivileges enumeration defines the long transaction
 /// privilege flags.
@@ -60,6 +62,6 @@ public __value enum LongTransactionPrivileges
 	LongTransactionPrivileges_Freeze = FdoLongTransactionPrivileges_Freeze
 };
 
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
-
-
+/// \endcond

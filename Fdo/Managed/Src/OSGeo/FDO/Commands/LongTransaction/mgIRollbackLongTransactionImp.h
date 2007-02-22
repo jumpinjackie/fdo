@@ -25,6 +25,7 @@ class FdoIRollbackLongTransactionImp;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
+/// \ingroup (OSGeoFDOCommandsLongTransaction)
 /// \brief
 /// The IRollbackLongTransactionImp class is a concrete implementation of IRollbackLongTransaction.
 /// The IRollbackLongTransaction interface defines the RollbackLongTransaction

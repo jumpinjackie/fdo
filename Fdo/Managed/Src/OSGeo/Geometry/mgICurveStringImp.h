@@ -30,6 +30,7 @@ END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 
+/// \ingroup (OSGeoFDOGeometry)
 /// \brief
 /// The ICurveStringImp class is a concrete geometric CurveString Geometry type. ICurveString is the most general non-abstract curve type.  
 /// It is defined by an ordered collection of contiguous curve segments.

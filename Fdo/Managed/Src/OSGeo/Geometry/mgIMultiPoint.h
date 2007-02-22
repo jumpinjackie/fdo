@@ -20,16 +20,14 @@
 
 #include "mgIGeometricAggregateAbstract.h"
 
-/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 public __gc __interface IPoint;
 END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
-/// \endcond
 
-/// \ingroup (interfaces)
-/// \interface IMultiPoint
+/// \ingroup (OSGeoFDOGeometry)
+/// \interface OSGeo::FDO::Geometry::IMultiPoint
 /// \brief
 /// The IMultiPoint class is a multi-point aggregate Geometry type.
 public __gc __interface IMultiPoint : public NAMESPACE_OSGEO_GEOMETRY::IGeometricAggregateAbstract

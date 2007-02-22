@@ -56,6 +56,7 @@ END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 
+/// \ingroup (OSGeoFDOGeometry)
 /// \brief
 /// The FgfGeometryFactory class is an FGF-based Geometry factory, a concrete class that
 /// implements all the members from GeometryFactoryAbstract

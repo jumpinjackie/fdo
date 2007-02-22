@@ -24,6 +24,7 @@ class FdoIConnectionInfo;
 
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS
 
+/// \ingroup (OSGeoFDOConnections)
 /// \brief
 /// The IConnectionInfo interface exposes information about the feature provider
 /// and provides access to the IConnectionPropertyDictionary interface.

@@ -24,6 +24,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 public __gc class DataPropertyDefinition;
 public __gc class SchemaElement;
 
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// The DataPropertyDefinitionCollection class represents a collection of DataPropertyDefinition objects.
 [System::Reflection::DefaultMemberAttribute("RealTypeItem")]

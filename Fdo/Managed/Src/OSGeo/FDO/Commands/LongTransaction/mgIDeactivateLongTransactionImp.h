@@ -25,6 +25,7 @@ class FdoIDeactivateLongTransaction;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
+/// \ingroup (OSGeoFDOCommandsLongTransaction)
 /// \brief
 /// The IDeactivateLongTransactionImp class is a 
 /// concrete implementation of IDeactivateLongTransaction.

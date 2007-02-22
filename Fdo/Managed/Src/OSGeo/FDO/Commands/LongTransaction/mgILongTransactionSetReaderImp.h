@@ -24,6 +24,7 @@ class FdoILongTransactionSetReader;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
+/// \ingroup (OSGeoFDOCommandsLongTransaction)
 /// \brief
 /// The ILongTransactionSetReaderImp class is a concrete implementation of ILongTransactionSetReader.
 /// The ILongTransactionSetReader interface provides forward only, read-only

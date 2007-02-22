@@ -18,9 +18,11 @@
 
 #pragma  once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOCommandsLongTransaction)
 /// \brief
 /// The LongTransactionSetOperations enumeration defines the list of
 /// available operations that can be performed by the ChangeLongTransactionSet command.
@@ -37,6 +39,6 @@ public __value enum LongTransactionSetOperations
 	LongTransactionSetOperations_Clear = FdoLongTransactionSetOperations_Clear
 };
 
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
-
-
+/// \endcond

@@ -23,6 +23,7 @@ class FdoPropertyValueCollection;
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS
 public __gc class PropertyValue;
 
+/// \ingroup (OSGeoFDOCommands)
 /// \brief
 /// The PropertyValueCollection class represents a collection of PropertyValue objects.
 [System::Reflection::DefaultMemberAttribute("RealTypeItem")]

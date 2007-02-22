@@ -26,6 +26,7 @@ END_NAMESPACE_OSGEO_FDO_EXPRESSION
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS
 
+/// \ingroup (OSGeoFDOCommands)
 /// \brief
 /// The IdentifierCollection class represents a collection of FDO Identifier objects.
 [System::Reflection::DefaultMemberAttribute("RealTypeItem")]

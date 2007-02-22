@@ -17,9 +17,11 @@
 
 #pragma once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_RASTER
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDORaster)
 /// \brief
 /// The RasterDataOrganization enumeration specifies the way
 /// pixel data is interleaved. Data is stored/retrieved in left to right,
@@ -47,6 +49,6 @@ public __value enum RasterDataOrganization
 	RasterDataOrganization_Image = FdoRasterDataOrganization_Image
 };
 
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_RASTER
-
-
+/// \endcond

@@ -18,9 +18,11 @@
 
 #pragma  once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// The PropertyValueConstraintType enumeration categorizes the
 /// supported constraint.
@@ -33,6 +35,6 @@ public __value enum PropertyValueConstraintType
     PropertyValueConstraintType_List = 0x02
 };
 
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_SCHEMA
-
-
+/// \endcond

@@ -24,6 +24,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 
 public __gc __interface IExpressionProcessor;
 
+/// \ingroup (OSGeoFDOExpression)
 /// \brief
 /// Expression is an abstract base class that forms the root of an expression
 /// tree. The Expression class contains operations for converting between the

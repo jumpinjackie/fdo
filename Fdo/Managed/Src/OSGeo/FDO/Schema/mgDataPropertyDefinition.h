@@ -25,6 +25,7 @@ class FdoDataPropertyDefinition;
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// The DataPropertyDefinition class derives PropertyDefinition and represents simple
 /// values or collections of simple values. DataPropertyDefinitions can take on

@@ -20,32 +20,25 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 
+/// \ingroup (OSGeoFDOExpression)
 /// \brief
-/// The BinaryOperations enumeration lists the binary expression operations
-/// available.
-/// <param name="BinaryOperations_Add">
-/// Add the two expressions or concatenate two string expressions
-/// </param>
-/// <param name="BinaryOperations_Subtract">
-/// Subtract the two expressions
-/// </param>
-/// <param name="BinaryOperations_Multiply">
-/// Multiply the two expressions
-/// </param>
-/// <param name="BinaryOperations_Divide">
-/// Divide the two expressions
-/// </param>
+/// The BinaryOperations enumeration lists the binary expression operations available.
 [System::FlagsAttribute]
 public  __value enum BinaryOperations
 {
+    /// Add the two expressions or concatenate two string expressions
 	BinaryOperations_Add = FdoBinaryOperations_Add,
 
+    /// Subtract the two expressions
 	BinaryOperations_Subtract = FdoBinaryOperations_Subtract,
 
+    /// Multiply the two expressions
 	BinaryOperations_Multiply = FdoBinaryOperations_Multiply,
 
+    /// Divide the two expressions
 	BinaryOperations_Divide = FdoBinaryOperations_Divide
 };
+
 END_NAMESPACE_OSGEO_FDO_EXPRESSION
 
 

@@ -25,6 +25,7 @@ class FdoICreateLongTransaction;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
+/// \ingroup (OSGeoFDOCommandsLongTransaction)
 /// \brief
 /// The ICreateLongTransactionImp class is a 
 /// concrete implementation of ICreateLongTransaction.

@@ -28,6 +28,7 @@ using namespace NAMESPACE_OSGEO_FDO_EXPRESSION;
 
 BEGIN_NAMESPACE_OSGEO_FDO_RASTER
 
+/// \ingroup (OSGeoFDORaster)
 /// \brief
 /// DataValueCollection is a collection of DataValue objects.
 [System::Reflection::DefaultMemberAttribute("RealTypeItem")]

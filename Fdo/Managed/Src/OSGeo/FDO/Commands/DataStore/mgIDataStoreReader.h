@@ -20,13 +20,11 @@
 
 #include "FDO\Commands\mgICommand.h"
 
-/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE
 public __gc __interface IDataStorePropertyDictionary;
-/// \endcond
 
-/// \ingroup (interfaces)
-/// \interface IDataStoreReader
+/// \ingroup (OSGeoFDOCommandsDataStore)
+/// \interface OSGeo::FDO::Commands::DataStore::IDataStoreReader
 /// \brief
 /// The IDataStoreReader interface provides a forward-only, read-only iterator
 /// for reading feature data.  A reference to an IDataStoreReader is returned

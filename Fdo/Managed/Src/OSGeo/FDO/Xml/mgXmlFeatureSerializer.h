@@ -37,6 +37,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_XML
 public __gc class XmlFeatureFlags;
 public __gc class XmlFeatureWriter;
 
+/// \ingroup (OSGeoFDOXml)
 /// \brief
 /// This static class provides the ability to serialize and deserialize features
 /// to and from GML.

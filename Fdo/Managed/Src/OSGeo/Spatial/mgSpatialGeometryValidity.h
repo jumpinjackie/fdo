@@ -18,11 +18,13 @@
 
 #pragma once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_SPATIAL
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOSpatial)
 /// \brief
-///  SpatialGeometryValidity is an enumeration to denote the validity of a Geometry
+/// SpatialGeometryValidity is an enumeration to denote the validity of a Geometry
 /// during a test of type and dimensionality..
 public __value enum SpatialGeometryValidity
 {
@@ -42,6 +44,7 @@ public __value enum SpatialGeometryValidity
     /// Geometry fails a test due to having an disallowed dimensionality.
 	SpatialGeometryValidity_InvalidDueToDimensionality = FdoSpatialGeometryValidity_InvalidDueToDimensionality,
 };
+
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_SPATIAL
-
-
+/// \endcond

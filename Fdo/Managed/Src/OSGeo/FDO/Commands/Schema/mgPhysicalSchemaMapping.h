@@ -24,6 +24,7 @@ class FdoPhysicalSchemaMapping;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
 
+/// \ingroup (OSGeoFDOCommandsSchema)
 /// \brief
 /// PhysicalSchemaMapping is an  abstract class that is the base class of
 /// all Schema Override sets. Each instance contains the overrides for a 

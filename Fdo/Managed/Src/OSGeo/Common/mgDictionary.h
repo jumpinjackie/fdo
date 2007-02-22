@@ -25,6 +25,7 @@ class FdoDictionary;
 BEGIN_NAMESPACE_OSGEO_COMMON
 public __gc class DictionaryElement;
 
+/// \ingroup (OSGeoFDOCommon)
 /// \brief
 /// DictionaryElementCollection is a collection of DictionaryElement objects(name-value pairs).
 [System::Reflection::DefaultMemberAttribute("RealTypeItem")]

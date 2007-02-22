@@ -28,6 +28,7 @@ class FdoIDataReader;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 
+/// \ingroup (OSGeoFDOCommandsFeature)
 /// \brief
 /// The IDataReaderImp class is a concrete implementation class for 
 /// IDataReader. The IDataReader interface provides a forward-only, read-only

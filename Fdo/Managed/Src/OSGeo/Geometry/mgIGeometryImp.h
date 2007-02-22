@@ -29,6 +29,7 @@ END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 
+/// \ingroup (OSGeoFDOGeometry)
 /// \brief
 /// The IGeometryImp class defines the properties and methods common to all geometric types. 
 /// IGeometryImp is a concreate implementation of IGeometry.

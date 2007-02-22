@@ -29,6 +29,7 @@ END_NAMESPACE_OSGEO_FDO_SCHEMA
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 
+/// \ingroup (OSGeoFDOCommandsFeature)
 /// \brief
 /// The IFeatureReaderImp class is a concrete implementation class for interface IFeatureReader.
 /// The IFeatureReader interface provides a forward-only, read-only iterator

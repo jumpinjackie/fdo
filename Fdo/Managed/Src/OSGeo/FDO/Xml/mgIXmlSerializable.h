@@ -21,8 +21,8 @@
 BEGIN_NAMESPACE_OSGEO_FDO_XML
 public __gc class XmlFlags;
 
-/// \ingroup (interfaces)
-/// \interface IXmlSerializable
+/// \ingroup (OSGeoFDOXml)
+/// \interface OSGeo::FDO::Xml::IXmlSerializable
 /// \brief
 /// XmlSerializable provides the ability to serialize an FDO object 
 /// to an XML Document. Serialization support can be added to any class by basing

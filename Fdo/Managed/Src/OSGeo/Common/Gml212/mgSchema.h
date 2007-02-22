@@ -24,6 +24,7 @@ END_NAMESPACE_OSGEO_COMMON_XML
 
 BEGIN_NAMESPACE_OSGEO_COMMON_GML212
 
+/// \ingroup (OSGeoFDOCommonGML212)
 /// \brief
 /// Schema is a utility class for handling the GML 2.1.2 
 /// version of the GML Sschema.

@@ -20,13 +20,11 @@
 
 #include "FDO\Commands\mgICommand.h"
 
-/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SQL
 public __gc __interface ISQLDataReader;
-/// \endcond
 
-/// \ingroup (interfaces)
-/// \interface ISQLCommand
+/// \ingroup (OSGeoFDOCommandsSQL)
+/// \interface OSGeo::FDO::Commands::SQL::ISQLCommand
 /// \brief
 /// The ISQLCommand interface defines the SQL command, which supports the
 /// execution of a SQL statement against an underlying RDBMS. Two execute

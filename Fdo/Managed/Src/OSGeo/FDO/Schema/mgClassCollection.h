@@ -24,6 +24,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 public __gc class ClassDefinition;
 public __gc class SchemaElement;
 
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// The ClassCollection class represents a collection of ClassDefinition objects.
 [System::Reflection::DefaultMemberAttribute("RealTypeItem")]

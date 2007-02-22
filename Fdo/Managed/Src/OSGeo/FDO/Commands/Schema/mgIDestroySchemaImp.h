@@ -25,6 +25,7 @@ class FdoIDestroySchema;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
 
+/// \ingroup (OSGeoFDOCommandsSchema)
 /// \brief
 /// The IDestroySchemaImp class is a concrete implementation of IDestroySchema.
 /// The IDestroySchema interface defines the DestroySchema command, which

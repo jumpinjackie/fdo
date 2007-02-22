@@ -26,6 +26,7 @@ class FdoIGetLongTransactionPrivileges;
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 public __gc __interface ILongTransactionPrivilegeReader;
 
+/// \ingroup (OSGeoFDOCommandsLongTransaction)
 /// \brief
 /// The IGetLongTransactionPrivilegesImp class is a 
 /// concrete implementation of IGetLongTransactionPrivileges.

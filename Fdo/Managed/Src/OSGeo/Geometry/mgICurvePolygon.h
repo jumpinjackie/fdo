@@ -22,16 +22,14 @@
 
 class FdoCurvePolygonCollection;
 
-/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 public __gc __interface IRing;
 END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
-/// \endcond
 
-/// \ingroup (interfaces)
-/// \interface ICurvePolygon
+/// \ingroup (OSGeoFDOGeometry)
+/// \interface OSGeo::FDO::Geometry::ICurvePolygon
 /// \brief
 /// The ICurvePolygon class is a CurvePolygon geometry type.  
 /// This type is defined by one exterior boundary and zero or more 

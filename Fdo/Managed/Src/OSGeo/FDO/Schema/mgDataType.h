@@ -18,9 +18,11 @@
 
 #pragma  once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// The DataType enumeration lists all of the base data types supported by FDO.
 public __value enum DataType
@@ -68,6 +70,6 @@ public __value enum DataType
 	DataType_CLOB = FdoDataType_CLOB,
 };
 
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_SCHEMA
-
-
+/// \endcond

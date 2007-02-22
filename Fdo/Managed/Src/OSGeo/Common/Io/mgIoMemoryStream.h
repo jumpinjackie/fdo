@@ -24,6 +24,7 @@ class FdoIoMemoryStream;
 
 BEGIN_NAMESPACE_OSGEO_COMMON_IO
 
+/// \ingroup (OSGeoFDOCommonIo)
 /// \brief
 ///     IoMemoryStream provides streamed I/O to and from memory.
 public __sealed __gc class IoMemoryStream : public NAMESPACE_OSGEO_COMMON_IO::IoStream

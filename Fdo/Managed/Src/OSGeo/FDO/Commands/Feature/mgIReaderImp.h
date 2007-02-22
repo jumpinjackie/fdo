@@ -36,6 +36,7 @@ END_NAMESPACE_OSGEO_FDO_RASTER
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 
+/// \ingroup (OSGeoFDOCommandsFeature)
 /// \brief
 /// The IReaderImp class is a concrete implementation class for interface IReader.
 /// The IReader interface provides a forward-only, read-only iterator for reading data. 

@@ -46,6 +46,7 @@ public __gc class DictionaryElement;
 public __gc class DictionaryElementCollection;
 public __gc class StringCollection;
 
+/// \ingroup (OSGeoFDOCommon)
 public __gc __sealed class ObjectFactory
 {
 public:

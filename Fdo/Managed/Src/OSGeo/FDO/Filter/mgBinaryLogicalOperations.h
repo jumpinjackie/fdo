@@ -18,9 +18,11 @@
 
 #pragma once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_FILTER
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOFilter)
 /// \brief
 /// The BinaryLogicalOperations enumeration lists the binary logical operations
 /// available.
@@ -34,6 +36,7 @@ public __value enum BinaryLogicalOperations
 	BinaryLogicalOperations_Or = FdoBinaryLogicalOperations_Or
 
 };
+
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_FILTER
-
-
+/// \endcond

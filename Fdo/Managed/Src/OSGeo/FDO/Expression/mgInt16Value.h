@@ -30,6 +30,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 
 public __gc __interface IExpressionProcessor;
 
+/// \ingroup (OSGeoFDOExpression)
 /// \brief
 /// The Int16Value class derives from DataValue and represents a 16-bit signed integer value.
 public __gc class Int16Value : public NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue

@@ -24,6 +24,7 @@ class FdoProviderRegistry;
 
 BEGIN_NAMESPACE_OSGEO_FDO_CLIENTSERVICES
 
+/// \ingroup (OSGeoFDOClientServices)
 /// \brief
 /// The ProviderRegistry class supports registering, un-registering, and enumerating 
 /// registered feature providers. ProviderRegistry is derived from interface IProviderRegistry.

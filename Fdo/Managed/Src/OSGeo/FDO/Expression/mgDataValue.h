@@ -25,6 +25,7 @@ class FdoDataValue;
 
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 
+/// \ingroup (OSGeoFDOExpression)
 /// \brief
 /// The DataValue class derives from LiteralValue and represents a literal
 /// value such as a string or a number.

@@ -22,6 +22,7 @@ class FdoIDisposableCollection;
 
 BEGIN_NAMESPACE_OSGEO_FDO
 
+/// \ingroup (OSGeoFDO)
 /// \brief
 /// The IDisposableCollection class represents a collection of IDisposable objects.
 [System::Reflection::DefaultMemberAttribute("RealTypeItem")]

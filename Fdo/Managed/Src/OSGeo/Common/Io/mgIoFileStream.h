@@ -24,6 +24,7 @@ class FdoIoFileStream;
 
 BEGIN_NAMESPACE_OSGEO_COMMON_IO
 
+/// \ingroup (OSGeoFDOCommonIo)
 /// \brief
 ///     IoFileStream provides streamed I/O on a disk file.
 public __sealed __gc class IoFileStream : public NAMESPACE_OSGEO_COMMON_IO::IoStream

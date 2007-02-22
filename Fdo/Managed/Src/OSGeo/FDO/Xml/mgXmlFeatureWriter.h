@@ -36,6 +36,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_XML
 public __gc class XmlFeaturePropertyWriter;
 public __gc class XmlFeatureFlags;
 
+/// \ingroup (OSGeoFDOXml)
 /// \brief
 /// XmlFeatureWriter writes features to an XML document. The features are 
 /// written in GML format. Each feature is written in 3 steps:

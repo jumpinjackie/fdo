@@ -26,6 +26,7 @@ class FdoNetworkNodeFeatureClass;
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 public __gc class AssociationPropertyDefinition;
 
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// NetworkNodeFeature derives from NetworkFeature and can be used to represent a 
 /// logical node feature.

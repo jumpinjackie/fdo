@@ -18,9 +18,11 @@
 
 #pragma once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOConnections)
 /// \brief
 /// The ConnectionState enumeration indicates the current state of the connection
 public __value enum ConnectionState
@@ -39,6 +41,7 @@ public __value enum ConnectionState
     /// issued an Open request, but the open is not completed because the application needs to include additional connection property values.
 	ConnectionState_Pending = FdoConnectionState_Pending
 };
+
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_CONNECTIONS
-
-
+/// \endcond

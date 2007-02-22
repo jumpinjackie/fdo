@@ -24,6 +24,7 @@ class FdoISchemaCapabilities;
 
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 
+/// \ingroup (OSGeoFDOConnectionsCapabilities)
 /// \brief
 /// The ISchemaCapbilities interface declares the feature provider's level 
 /// of support for the Feature Schema.

@@ -18,9 +18,11 @@
 
 #pragma once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOCommands)
 /// \brief
 /// The OrderingOption enumeration defines the list acceptable values that 
 /// can be specified as order by clause to the select and select aggregate commands.
@@ -32,6 +34,8 @@ public __value enum OrderingOption{
 	OrderingOption_Descending = FdoOrderingOption_Descending
 };
 
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_COMMANDS
+/// \endcond
 
 

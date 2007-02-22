@@ -24,6 +24,7 @@ class FdoStringElement;
 
 BEGIN_NAMESPACE_OSGEO_COMMON
 
+/// \ingroup (OSGeoFDOCommon)
 /// \brief
 ///     StringElement is an element in a StringCollection.
 public __sealed __gc class StringElement : public NAMESPACE_OSGEO_RUNTIME::Disposable

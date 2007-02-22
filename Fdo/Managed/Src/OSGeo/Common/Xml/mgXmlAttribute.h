@@ -24,6 +24,7 @@ class FdoXmlAttribute;
 
 BEGIN_NAMESPACE_OSGEO_COMMON_XML
 
+/// \ingroup (OSGeoFDOCommonXml)
 /// \brief
 /// XmlAttribute contains the name and value of a single attribute
 /// from an XML document.

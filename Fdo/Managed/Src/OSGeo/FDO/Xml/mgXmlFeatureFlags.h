@@ -24,6 +24,7 @@ class FdoXmlFeatureFlags;
 
 BEGIN_NAMESPACE_OSGEO_FDO_XML
 
+/// \ingroup (OSGeoFDOXml)
 /// \brief
 /// XmlFeatureFlags extends XmlFlags to specify flags specific to feature 
 /// serialization.

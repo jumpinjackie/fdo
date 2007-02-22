@@ -23,17 +23,15 @@
 
 class FdoCurveStringCollection;
 
-/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 public __gc __interface ICurveSegmentAbstract;
 public __gc class CurveSegmentCollection;
 END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
-/// \endcond
 
-/// \ingroup (interfaces)
-/// \interface ICurveString
+/// \ingroup (OSGeoFDOGeometry)
+/// \interface OSGeo::FDO::Geometry::ICurveString
 /// \brief
 /// The ICurveString class is a CurveString Geometry type. ICurveString is the most general non-abstract curve type.  
 /// It is defined by an ordered collection of contiguous curve segments.

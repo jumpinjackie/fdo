@@ -18,9 +18,11 @@
 
 #pragma once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_RASTER
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDORaster)
 /// \brief
 /// The RasterDataModelType enumeration specifies the type of
 /// data within each pixel. In all cases the data is 'packed', that is,
@@ -64,6 +66,6 @@ public __value enum RasterDataModelType
 	RasterDataModelType_Palette = FdoRasterDataModelType_Palette
 };
 
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_RASTER
-
-
+/// \endcond

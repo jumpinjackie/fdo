@@ -27,6 +27,7 @@ END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 
+/// \ingroup (OSGeoFDOGeometry)
 /// \brief
 /// The IMultiPolygonImp class is a multi-polygon aggregate Geometry type.
 private __gc class IMultiPolygonImp : 

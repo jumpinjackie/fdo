@@ -22,6 +22,7 @@ class FdoSpatialGridTransform;
 
 BEGIN_NAMESPACE_OSGEO_SPATIAL
 
+/// \ingroup (OSGeoFDOSpatial)
 /// \brief
 /// Class to handle transformations of ordinates between double precision
 /// and integers.  The integer format models a fine grid.

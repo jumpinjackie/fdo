@@ -25,11 +25,10 @@
 
 class FdoIAcquireLock;
 
-/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 public __gc __interface ILockConflictReader;
-/// \endcond
 
+/// \ingroup (OSGeoFDOCommandsLocking)
 /// \brief
 /// The IAcquireLockImp class is a concrete implementation of IAcquireLock.
 /// The IAcquireLock interface locks feature instances of a given class 

@@ -25,6 +25,7 @@ class FdoFilter;
 BEGIN_NAMESPACE_OSGEO_FDO_FILTER
 public __gc __interface IFilterProcessor;;
 
+/// \ingroup (OSGeoFDOFilter)
 /// \brief
 /// Filter is an abstract class which acts as a base class for condition and operator classes
 /// that can occur in a filter expression tree. The Filter class contains

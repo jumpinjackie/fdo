@@ -33,6 +33,7 @@ public __gc class XmlFeatureContext;
 public __gc class XmlFeatureHandler;
 public __gc class XmlFeatureFlags;
 
+/// \ingroup (OSGeoFDOXml)
 /// \brief
 /// XmlFeaturePropertyReader reads features from an XML document. The reading
 /// is event driven. As features and properties within features are encountered, the 

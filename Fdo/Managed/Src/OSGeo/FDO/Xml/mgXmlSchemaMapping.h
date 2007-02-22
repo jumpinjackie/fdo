@@ -27,6 +27,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_XML
 public __gc class XmlElementMappingCollection;
 public __gc class XmlClassMappingCollection;
 
+/// \ingroup (OSGeoFDOXml)
 /// \brief
 /// XmlSchemaMapping specifies overrides for translating a feature schema between 
 /// FDO and GML.

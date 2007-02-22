@@ -29,8 +29,8 @@ END_NAMESPACE_OSGEO_FDO_EXPRESSION
 BEGIN_NAMESPACE_OSGEO_FDO_RASTER
 public __gc class DataValueCollection;
 
-/// \ingroup (interfaces)
-/// \interface IRasterPropertyDictionary
+/// \ingroup (OSGeoFDORaster)
+/// \interface OSGeo::FDO::Raster::IRasterPropertyDictionary
 /// \brief
 /// The IRasterPropertyDictionary exposes a dictionary style
 /// interface to the raster properties. Through this interface the

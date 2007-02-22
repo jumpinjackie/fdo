@@ -25,6 +25,7 @@ class FdoIDirectPosition;
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 
+/// \ingroup (OSGeoFDOGeometry)
 /// \brief
 /// The IDirectPositionImp class is a default implementation of the IDirectPosition object.  
 /// IDirectPosition is a simple coordinate position in any allowed dimension.  

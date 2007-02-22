@@ -29,6 +29,7 @@ END_NAMESPACE_OSGEO_FDO_SCHEMA
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
 
+/// \ingroup (OSGeoFDOCommandsSchema)
 /// \brief
 /// The IDescribeSchemaImp class is a concrete implementation of IDescribeSchema.
 /// The IDescribeSchema interface defines the DescribeSchema command, which

@@ -23,17 +23,15 @@
 
 class FdoRingCollection;
 
-/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 public __gc __interface ICurveSegmentAbstract;
 public __gc class CurveSegmentCollection;
 END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
-/// \endcond
 
-/// \ingroup (interfaces)
-/// \interface IRing
+/// \ingroup (OSGeoFDOGeometry)
+/// \interface OSGeo::FDO::Geometry::IRing
 /// \brief
 /// The IRing class is ring Geometry helper type.  This is the most general non-abstract ring type.  
 /// FdoIRing is defined by an ordered collection of contiguous curve segments.

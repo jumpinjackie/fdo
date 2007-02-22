@@ -31,6 +31,7 @@ END_NAMESPACE_OSGEO_FDO_SCHEMA
 BEGIN_NAMESPACE_OSGEO_FDO_XML
 public __gc class XmlFeatureContext;
 
+/// \ingroup (OSGeoFDOXml)
 /// \brief
 /// XmlFeatureHandler defines the callback interface for reading features from XML.
 /// It is not an interface in the strict sense, since each function has a default 

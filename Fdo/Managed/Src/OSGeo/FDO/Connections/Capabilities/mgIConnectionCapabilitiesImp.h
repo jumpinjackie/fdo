@@ -26,6 +26,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 
 public __value enum ThreadCapability;
 
+/// \ingroup (OSGeoFDOConnectionsCapabilities)
 /// \brief
 /// The IConnectionCapabilities interface declares the feature provider's capabilities.
 private __gc class IConnectionCapabilitiesImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 

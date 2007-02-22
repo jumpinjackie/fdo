@@ -24,6 +24,7 @@ class FdoTopoFeaturePropertyDefinition;
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// TopoFeaturePropertyDefinition derives PropertyDefinition and its
 /// values can be used to relate topological primitives to one or more

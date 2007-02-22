@@ -31,6 +31,7 @@ END_NAMESPACE_OSGEO_FDO_EXPRESSION
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS
 
+/// \ingroup (OSGeoFDOCommands)
 /// \brief
 /// The PropertyValue class represents a property name/value pair. Instances of
 /// this class are used to specify or hold onto a reference to a property name

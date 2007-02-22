@@ -26,6 +26,7 @@ class FdoNetworkClass;
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 public __gc class NetworkLayerClass;
 
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// The NetworkClass derives from ClassDefinition and can be used to represent a 
 /// linear network. The NetworkClass has 2 pre-defined base properties. The first is a Boolean 

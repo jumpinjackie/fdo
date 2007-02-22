@@ -24,6 +24,7 @@ class FdoPropertyValueConstraint;
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// PropertyValueConstraint is an abstract class that derives from IDisposable.
 /// PropertyValueConstraint is the base class of PropertyValueConstraintRange 

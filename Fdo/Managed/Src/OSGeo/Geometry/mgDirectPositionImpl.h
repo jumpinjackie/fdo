@@ -25,6 +25,7 @@ class FdoDirectPositionImpl;
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 
+/// \ingroup (OSGeoFDOGeometry)
 /// \brief
 /// The DirectPositionImpl class is a default implementation of IDirectPosition.
 /// DirectPositionImpl implements accessors from IDirectPosition, matching mutators, and simple data members.

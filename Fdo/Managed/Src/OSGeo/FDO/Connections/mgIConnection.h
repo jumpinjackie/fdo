@@ -21,7 +21,6 @@
 #include "FDO\Connections\mgConnectionState.h"
 #include "FDO\Commands\mgCommandType.h"
 
-/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 public __gc __interface IConnectionCapabilities;
 public __gc __interface ISchemaCapabilities;
@@ -52,10 +51,9 @@ using namespace NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA;
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS
 public __gc __interface IConnectionInfo;
 public __gc __interface ITransaction;
-/// \endcond
 
-/// \ingroup (interfaces)
-/// \interface IConnection
+/// \ingroup (OSGeoFDOConnections)
+/// \interface OSGeo::FDO::Connections::IConnection
 /// \brief
 /// The IConnection interface enables a feature provider to implement a
 /// connection class, which represents a unique session with a data

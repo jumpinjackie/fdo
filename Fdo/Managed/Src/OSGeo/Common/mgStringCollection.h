@@ -25,6 +25,7 @@ class FdoStringCollection;
 BEGIN_NAMESPACE_OSGEO_COMMON
 public __gc class StringElement;
 
+/// \ingroup (OSGeoFDOCommon)
 /// \brief
 ///     StringCollection is a collection of name-value pairs.
 [System::Reflection::DefaultMemberAttribute("RealTypeItem")]

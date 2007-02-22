@@ -34,6 +34,7 @@ END_NAMESPACE_OSGEO_COMMON
 
 BEGIN_NAMESPACE_OSGEO_COMMON_XSL
 
+/// \ingroup (OSGeoFDOCommonXsl)
 /// \brief
 /// XslTransformer provides a way to execute an XSL stylesheet
 /// on an XML document.

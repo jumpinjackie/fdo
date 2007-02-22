@@ -27,8 +27,8 @@ END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 
-/// \ingroup (interfaces)
-/// \interface IMultiCurvePolygon
+/// \ingroup (OSGeoFDOGeometry)
+/// \interface OSGeo::FDO::Geometry::IMultiCurvePolygon
 /// \brief
 /// The IMultiCurvePolygon class is a multi-CurvePolygon aggregate Geometry type.
 public __gc __interface IMultiCurvePolygon : public IGeometricAggregateAbstract

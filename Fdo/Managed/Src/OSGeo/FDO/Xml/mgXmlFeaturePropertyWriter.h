@@ -47,6 +47,7 @@ END_NAMESPACE_OSGEO_FDO_EXPRESSION
 BEGIN_NAMESPACE_OSGEO_FDO_XML
 public __gc class XmlFlags;
 
+/// \ingroup (OSGeoFDOXml)
 /// \brief
 /// XmlFeaturePropertyWriter writes features in GML format. It is similar to 
 /// XmlFeatureWriter, except that it provides better performance. However, the 

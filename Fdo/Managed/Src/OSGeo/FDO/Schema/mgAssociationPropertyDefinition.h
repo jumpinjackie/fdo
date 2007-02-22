@@ -29,6 +29,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 public __gc class DataPropertyDefinitionCollection;
 public __gc class ClassDefinition;
 
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// AssociationPropertyDefinition class derives PropertyDefinition and represents
 /// the association between two classes.

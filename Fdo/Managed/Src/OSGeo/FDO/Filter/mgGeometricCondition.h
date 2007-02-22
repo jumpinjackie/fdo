@@ -30,6 +30,7 @@ using namespace NAMESPACE_OSGEO_FDO_EXPRESSION;
 
 BEGIN_NAMESPACE_OSGEO_FDO_FILTER
 
+/// \ingroup (OSGeoFDOFilter)
 /// \brief
 /// GeometricCondition is an abstract class that derives from SearchCondition and can
 /// be used to test whether the value of a geometric property meets a particular

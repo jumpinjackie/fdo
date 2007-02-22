@@ -18,9 +18,11 @@
 
 #pragma  once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// The ClassType enumeration lists all of the concrete class types defined in
 /// the Schema package.
@@ -45,6 +47,6 @@ public __value enum ClassType
 	ClassType_NetworkLinkClass = FdoClassType_NetworkLinkClass
 };
 
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_SCHEMA
-
-
+/// \endcond

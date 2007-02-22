@@ -22,6 +22,7 @@ class FdoProvider;
 
 BEGIN_NAMESPACE_OSGEO_FDO_CLIENTSERVICES
 
+/// \ingroup (OSGeoFDOClientServices)
 /// \brief
 /// The Provides class provides information about a feature provider, including name, 
 /// description, library, and version information.

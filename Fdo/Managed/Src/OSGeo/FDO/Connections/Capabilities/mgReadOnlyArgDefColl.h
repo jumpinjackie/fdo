@@ -23,6 +23,7 @@ class FdoReadOnlyArgumentDefinitionCollection;
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 public __gc class ArgumentDefinition;
 
+/// \ingroup (OSGeoFDOConnectionsCapabilities)
 /// \brief
 /// ReadOnlyArgumentDefinitionCollection is a collection of ReadOnlyArgumentDefinition objects.
 [System::Reflection::DefaultMemberAttribute("RealTypeItem")]

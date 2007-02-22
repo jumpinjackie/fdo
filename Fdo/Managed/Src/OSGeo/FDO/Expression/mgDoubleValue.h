@@ -30,6 +30,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 
 public __gc __interface IExpressionProcessor;
 
+/// \ingroup (OSGeoFDOExpression)
 /// \brief
 /// The DoubleValue class derives from DataValue and represents a double-precision floating point number.
 public __gc class DoubleValue : public NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue

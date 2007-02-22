@@ -25,6 +25,7 @@ class FdoValueExpression;
 
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 
+/// \ingroup (OSGeoFDOExpression)
 /// \brief
 /// ValueExpression is an abstract base class that derives from Expression to
 /// form the root for all value expression types.

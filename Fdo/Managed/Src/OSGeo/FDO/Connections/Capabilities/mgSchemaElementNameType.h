@@ -17,9 +17,11 @@
 
 #pragma  once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOConnectionsCapabilities)
 /// \brief
 /// The SchemaElementNameType enumeration lists all of the concrete schema name
 /// types defined to address schema limitation information.
@@ -42,4 +44,6 @@ public __value enum SchemaElementNameType
 
 };
 
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
+/// \endcond

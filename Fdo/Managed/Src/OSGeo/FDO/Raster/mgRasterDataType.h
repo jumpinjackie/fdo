@@ -18,9 +18,11 @@
 
 #pragma once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_RASTER
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDORaster)
 /// \brief
 /// The RasterDataType enumeration specifies the type of data stored in the Raster Image.
 public __value enum RasterDataType
@@ -41,6 +43,6 @@ public __value enum RasterDataType
     RasterDataType_Double = FdoRasterDataType_Double
 };
 
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_RASTER
-
-
+/// \endcond

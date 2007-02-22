@@ -25,6 +25,7 @@ class FdoIoTextWriter;
 BEGIN_NAMESPACE_OSGEO_COMMON_IO
 public __gc class IoStream;
 
+/// \ingroup (OSGeoFDOCommonIo)
 /// \brief
 ///     IoTextWriter writes Unicode wide character text to a binary stream.
 ///     The text is written in UTF8 format.

@@ -23,11 +23,10 @@
 
 class FdoICommitLongTransaction;
 
-/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 public __gc __interface ILongTransactionConflictDirectiveEnumerator;
-/// \endcond
 
+/// \ingroup (OSGeoFDOCommandsLongTransaction)
 /// \brief
 /// The ICommitLongTransactionImp class is a 
 /// concrete implementation of ICommitLongTransaction.

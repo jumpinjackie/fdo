@@ -18,9 +18,11 @@
 
 #pragma  once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// The ObjectType enumeration defines whether an object property is a single 
 /// value, a collection, or an ordered collection.
@@ -36,6 +38,6 @@ public __value enum ObjectType
 	ObjectType_OrderedCollection = FdoObjectType_OrderedCollection
 };
 
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_SCHEMA
-
-
+/// \endcond

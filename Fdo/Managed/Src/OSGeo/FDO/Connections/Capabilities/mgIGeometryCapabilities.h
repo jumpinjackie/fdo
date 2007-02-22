@@ -20,8 +20,8 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 
-/// \ingroup (interfaces)
-/// \interface IGeometryCapabilities
+/// \ingroup (OSGeoFDOConnectionsCapabilities)
+/// \interface OSGeo::FDO::Connections::Capabilities::IGeometryCapabilities
 /// \brief
 /// The IGeometryCapabilities class delineates available support for raster processing from a provider.
 public __gc __interface IGeometryCapabilities : public System::IDisposable

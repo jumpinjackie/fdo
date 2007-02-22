@@ -18,9 +18,11 @@
 
 #pragma  once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// The DeleteRule enumeration specifies the action to take when a delete
 /// operation is executed on the class instance at the other end of the
@@ -37,6 +39,6 @@ public __value enum DeleteRule
 	DeleteRule_Break = FdoDeleteRule_Break
 };
 
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_SCHEMA
-
-
+/// \endcond

@@ -18,9 +18,11 @@
 
 #pragma once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_COMMON
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOCommon)
 /// \brief
 /// GeometryType is an enumeration to denote the type of a Geometry.
 /// \remarks
@@ -64,7 +66,7 @@ public __value enum GeometryType
     GeometryType_MultiCurvePolygon = FdoGeometryType_MultiCurvePolygon
 };
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOCommon)
 /// \brief
 /// Enumeration for components of Geometry.
 /// \remarks
@@ -84,6 +86,8 @@ public __value enum GeometryComponentType
     GeometryComponentType_Ring = FdoGeometryComponentType_Ring
 };
 
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_COMMON
+/// \endcond
 
 

@@ -23,6 +23,7 @@ class FdoDataValueCollection;
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 public __gc class DataValue;
 
+/// \ingroup (OSGeoFDOExpression)
 /// \brief
 /// DataValueCollection is a collection of DataValue objects.
 [System::Reflection::DefaultMemberAttribute("RealTypeItem")]

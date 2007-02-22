@@ -23,6 +23,7 @@ class FdoXmlFeatureContext;
 BEGIN_NAMESPACE_OSGEO_FDO_XML
 public __gc class XmlFeaturePropertyReader;
 
+/// \ingroup (OSGeoFDOXml)
 /// \brief
 /// XmlFeatureContext provides contextual information to the XmlFeatureHandler 
 /// callback implementations when an XML document parse is in progress. This class 

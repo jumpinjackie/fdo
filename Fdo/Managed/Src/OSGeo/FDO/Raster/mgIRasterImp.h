@@ -24,6 +24,7 @@ class FdoIRaster;
 
 BEGIN_NAMESPACE_OSGEO_FDO_RASTER
 
+/// \ingroup (OSGeoFDORaster)
 /// \brief
 /// IRasterImp specifies the data type and organization
 /// of raster data retrieved and stored. Using this class and the image

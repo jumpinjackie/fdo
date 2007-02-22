@@ -27,6 +27,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_FILTER
 public __gc class Filter;
 public __gc __interface IFilterProcessor;
 
+/// \ingroup (OSGeoFDOFilter)
 /// \brief
 /// The BinaryLogicalOperator class derives from LogicalOperator and allows two
 /// filters to be combined via a logical "and" or a logical "or".

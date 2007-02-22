@@ -25,9 +25,10 @@ class FdoIDataStorePropertyDictionary;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE
 
+/// \ingroup (OSGeoFDOCommandsDataStore)
 /// \brief
 /// The IDataStorePropertyDictionaryImp class represents a concret implementation of interface 
-/// IDataStorePropertyDictionary. IDataStorePropertyDictionaryImp exposes a dictionary style interface
+/// IDataStorePropertyDictionary. IDataStorePropertyDictionary exposes a dictionary style interface
 /// to the datastore properties. The properties required to create or destroy a datastore
 /// can be determined and their values can be set through this interface.
 private __gc class IDataStorePropertyDictionaryImp : public NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionPropertyDictionaryImp, public NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStorePropertyDictionary

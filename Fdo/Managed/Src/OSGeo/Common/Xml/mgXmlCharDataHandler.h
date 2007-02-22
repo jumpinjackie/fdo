@@ -24,6 +24,7 @@ class FdoXmlCharDataHandler;
 
 BEGIN_NAMESPACE_OSGEO_COMMON_XML
 
+/// \ingroup (OSGeoFDOCommonXml)
 /// \brief
 /// XmlCharDataHandler is convenience class for reading XML element content.
 /// When XmlReader encounters the start of an element with simple content, an object

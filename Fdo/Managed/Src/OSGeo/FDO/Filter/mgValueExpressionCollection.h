@@ -28,6 +28,7 @@ using namespace NAMESPACE_OSGEO_FDO_EXPRESSION;
 
 BEGIN_NAMESPACE_OSGEO_FDO_FILTER
 
+/// \ingroup (OSGeoFDOFilter)
 /// \brief
 /// The ValueExpressionCollection is a collection of ValueExpression objects.
 [System::Reflection::DefaultMemberAttribute("RealTypeItem")]

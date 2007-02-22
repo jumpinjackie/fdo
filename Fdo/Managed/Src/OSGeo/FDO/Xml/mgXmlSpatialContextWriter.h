@@ -25,6 +25,7 @@ class FdoXmlSpatialContextWriter;
 BEGIN_NAMESPACE_OSGEO_FDO_XML
 public __gc class XmlSpatialContextFlags;
 
+/// \ingroup (OSGeoFDOXml)
 /// \brief
 /// XmlSpatialContextWriter writes Spatial Contexts to an 
 /// XML document. This is done by calling the various setter functions 

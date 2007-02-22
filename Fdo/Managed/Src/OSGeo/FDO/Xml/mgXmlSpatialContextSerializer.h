@@ -27,6 +27,7 @@ public __gc class XmlSpatialContextReader;
 public __gc class XmlSpatialContextWriter;
 public __gc class XmlSpatialContextFlags;
 
+/// \ingroup (OSGeoFDOXml)
 /// \brief
 /// This static class provides the ability to serialize and deserialize spatial contexts
 /// to and from GML.

@@ -26,6 +26,7 @@ BEGIN_NAMESPACE_OSGEO_COMMON_XML
 
 public __gc class XmlAttribute;
 
+/// \ingroup (OSGeoFDOCommonXml)
 /// \brief
 /// The XmlAttributeCollection class represents a collection of XmlAttribute objects.
 [System::Reflection::DefaultMemberAttribute("RealTypeItem")]

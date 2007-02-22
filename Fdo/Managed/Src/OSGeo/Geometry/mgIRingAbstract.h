@@ -19,16 +19,14 @@
 
 #pragma once
 
-/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 public __gc __interface IEnvelope;
 END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
-/// \endcond
 
-/// \ingroup (interfaces)
-/// \interface IRingAbstract
+/// \ingroup (OSGeoFDOGeometry)
+/// \interface OSGeo::FDO::Geometry::IRingAbstract
 /// \brief
 /// The IRingAbstract class is a ring Geometry helper type (abstract). IRingAbstract is the most general ring type.
 /// It is similar to CurveAbstract, but is always closed.

@@ -20,13 +20,11 @@
 
 #include "FDO\Commands\mgICommand.h"
 
-/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 public __gc __interface ILockedObjectReader;
-/// \endcond
 
-/// \ingroup (interfaces)
-/// \interface IGetLockedObjects
+/// \ingroup (OSGeoFDOCommandsLocking)
+/// \interface OSGeo::FDO::Commands::Locking::IGetLockedObjects
 /// \brief
 /// The IGetLockedObjects interface defines the GetLockedObjects command, which
 /// gets a list of all objects that are currently locked by a particular user.

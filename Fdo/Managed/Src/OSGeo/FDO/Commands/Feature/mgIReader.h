@@ -32,8 +32,8 @@ END_NAMESPACE_OSGEO_FDO_RASTER
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 
-/// \ingroup (interfaces)
-/// \interface IReader
+/// \ingroup (OSGeoFDOCommandsFeature)
+/// \interface OSGeo::FDO::Commands::Feature::IReader
 /// \brief
 /// The IReader interface provides a forward-only, read-only iterator
 /// for reading data. Because the initial position of the

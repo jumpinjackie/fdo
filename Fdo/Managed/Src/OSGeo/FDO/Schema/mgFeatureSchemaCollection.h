@@ -39,6 +39,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 public __gc class FeatureSchema;
 public __gc class SchemaElement;
 
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// The FeatureSchemaCollection class represents a collection of FeatureSchema objects.
 [System::Reflection::DefaultMemberAttribute("RealTypeItem")]

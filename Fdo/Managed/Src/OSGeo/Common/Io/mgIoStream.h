@@ -25,6 +25,7 @@ class FdoIoStream;
 
 BEGIN_NAMESPACE_OSGEO_COMMON_IO
 
+/// \ingroup (OSGeoFDOCommonIo)
 /// \brief
 ///    IoStream defines the interface for all FDO streams. Streamed I/O support
 ///    for various locations, such as files, memory, etc. can be provided by classes

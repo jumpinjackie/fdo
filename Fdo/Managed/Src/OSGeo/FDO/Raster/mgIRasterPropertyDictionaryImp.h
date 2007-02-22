@@ -22,6 +22,7 @@ class FdoIRasterPropertyDictionary;
 
 BEGIN_NAMESPACE_OSGEO_FDO_RASTER
 
+/// \ingroup (OSGeoFDORaster)
 /// \brief
 /// The IRasterPropertyDictionary exposes a dictionary style
 /// interface to the raster properties. Through this interface the

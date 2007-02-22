@@ -18,9 +18,11 @@
 
 #pragma  once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOCommandsSpatialContext)
 /// \brief
 /// The SpatialContextExtentType enumeration defines how the extent of
 /// a context should be handled by the provider.
@@ -35,6 +37,6 @@ public __value enum SpatialContextExtentType
 	SpatialContextExtentType_Dynamic = FdoSpatialContextExtentType_Dynamic
 };
 
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT
-
-
+/// \endcond

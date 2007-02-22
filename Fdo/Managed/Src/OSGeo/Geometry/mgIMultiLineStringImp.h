@@ -27,6 +27,7 @@ END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 
+/// \ingroup (OSGeoFDOGeometry)
 /// \brief
 /// The IMultiLineStringImp class is a multi-LineString collection geometry type.
 /// The curves contained here do not have to

@@ -23,6 +23,7 @@ class FdoXmlContext;
 BEGIN_NAMESPACE_OSGEO_FDO_XML
 public __gc class XmlFlags;
 
+/// \ingroup (OSGeoFDOXml)
 /// \brief
 /// Default context for deserializing from XML documents via
 /// XmlDeserializable.

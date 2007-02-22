@@ -29,6 +29,7 @@ END_NAMESPACE_OSGEO_FDO_COMMANDS
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 
+/// \ingroup (OSGeoFDOCommandsLocking)
 /// \brief
 /// The ILockConflictReaderImp class is a concrete implementation of ILockConflictReaderImp.
 /// The ILockConflictReader interface provides forward only, read-only

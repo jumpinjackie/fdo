@@ -26,6 +26,7 @@ class FdoICreateSpatialContext;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT
 
+/// \ingroup (OSGeoFDOCommandsSpatialContext)
 /// \brief
 /// The ICreateSpatialContextImp class is a concrete implementation of ICreateSpatialContext.
 /// The ICreateSpatialContext interface defines the CreateSpatialContext

@@ -25,6 +25,7 @@ class FdoIActivateSpatialContext;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT
 
+/// \ingroup (OSGeoFDOCommandsSpatialContext)
 /// \brief
 /// The IActivateSpatialContextImp class is a concrete implementation of IActivateSpatialContext.
 /// The IActivateSpatialContext interface defines the ActivateSpatialContext

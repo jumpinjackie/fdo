@@ -26,6 +26,7 @@ class FdoIStreamReaderTmpl;
 BEGIN_NAMESPACE_OSGEO_COMMON_IO
 public __gc class IoStream;
 
+/// \ingroup (OSGeoFDOCommonIo)
 /// \brief
 ///     IoCharStreamReader reads items from a stream of chars.
 public __sealed __gc class IoCharStreamReader : public NAMESPACE_OSGEO_COMMON::IStreamReaderImp

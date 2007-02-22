@@ -25,6 +25,7 @@ class FdoIDestroyMeasureUnit;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE
 
+/// \ingroup (OSGeoFDOCommandsUnitOfMeasure)
 /// \brief
 /// The IDestroyMeasureUnitImp class is a concrete implementation of IDestroyMeasureUnit.
 /// The IDestroyMeasureUnit interface defines the DestroyMeasureUnit command,

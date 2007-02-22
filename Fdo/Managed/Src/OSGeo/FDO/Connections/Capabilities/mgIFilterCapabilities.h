@@ -30,8 +30,8 @@ END_NAMESPACE_OSGEO_FDO_FILTER
 
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 
-/// \ingroup (interfaces)
-/// \interface IFilterCapabilities
+/// \ingroup (OSGeoFDOConnectionsCapabilities)
+/// \interface OSGeo::FDO::Connections::Capabilities::IFilterCapabilities
 /// \brief
 /// The IFilterCapabilities interface declares the feature provider's level of support for Filter classes.
 public __gc __interface IFilterCapabilities : public System::IDisposable

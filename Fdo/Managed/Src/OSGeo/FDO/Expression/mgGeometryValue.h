@@ -26,6 +26,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 
 public __gc __interface IExpressionProcessor;
 
+/// \ingroup (OSGeoFDOExpression)
 /// \brief
 /// The GeometryValue class derives from LiteralValue and represents a geometric value.
 public __gc class GeometryValue : public NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue

@@ -26,6 +26,7 @@ class FdoArgumentDefinition;
 using namespace NAMESPACE_OSGEO_FDO_SCHEMA;
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 
+/// \ingroup (OSGeoFDOConnectionsCapabilities)
 /// \brief
 /// The ArgumentDefinition class contains metadata that describes an argument to a function.
 public __gc class ArgumentDefinition : public NAMESPACE_OSGEO_RUNTIME::Disposable

@@ -18,9 +18,11 @@
 
 #pragma  once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// The PropertyType enumeration lists the possible types that a Property can be.
 public __value enum PropertyType
@@ -41,6 +43,6 @@ public __value enum PropertyType
 	PropertyType_RasterProperty = FdoPropertyType_RasterProperty,
 };
 
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_SCHEMA
-
-
+/// \endcond

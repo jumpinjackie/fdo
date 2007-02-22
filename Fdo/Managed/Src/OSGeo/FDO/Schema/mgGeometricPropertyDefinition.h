@@ -25,6 +25,7 @@ class FdoGeometricPropertyDefinition;
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// GeometricPropertyDefinition derives from PropertyDefinition and represents a
 /// geometric value. Geometric properties can take on any of the geometric types

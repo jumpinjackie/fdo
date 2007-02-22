@@ -29,6 +29,7 @@ END_NAMESPACE_OSGEO_FDO_COMMANDS
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 
+/// \ingroup (OSGeoFDOCommandsLocking)
 /// \brief
 /// The ILockedObjectReaderImp class is a concrete implementation of ILockedObjectReader.
 /// The ILockedObjectReader interface provides forward-only, read-only

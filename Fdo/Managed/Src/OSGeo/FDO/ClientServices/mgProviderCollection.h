@@ -26,6 +26,7 @@ END_NAMESPACE_OSGEO_FDO_CLIENTSERVICES
 
 BEGIN_NAMESPACE_OSGEO_FDO_CLIENTSERVICES
 
+/// \ingroup (OSGeoFDOClientServices)
 /// \brief
 /// Class ProviderCollection is a read-only collection consisting of the FDO Providers that are currently registered. 
 /// Each collected Provider object describes an installed and registered FDO Feature Provider.

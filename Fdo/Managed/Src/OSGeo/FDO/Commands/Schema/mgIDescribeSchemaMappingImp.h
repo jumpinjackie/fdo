@@ -26,6 +26,7 @@ class FdoIDescribeSchemaMapping;
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
 public __gc class PhysicalSchemaMappingCollection;
 
+/// \ingroup (OSGeoFDOCommandsSchema)
 /// \brief
 /// The IDescribeSchemaMappingImp class is a concrete implementation of IDescribeSchemaMapping.
 /// The IDescribeSchemaMapping interface defines the DescribeSchemaMapping command, which

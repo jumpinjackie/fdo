@@ -18,9 +18,11 @@
 
 #pragma once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_FILTER
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOFilter)
 /// \brief
 /// The ComparisonOperations enumeration lists the comparison operations
 /// available.
@@ -58,6 +60,7 @@ public __value enum ComparisonOperations
     /// right expression.
 	ComparisonOperations_Like = FdoComparisonOperations_Like
 };
+
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_FILTER
-
-
+/// \endcond

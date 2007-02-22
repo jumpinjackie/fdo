@@ -42,6 +42,7 @@ public __gc __interface ICircularArcSegment;
 public __gc __interface ICurveSegmentAbstract;
 public __gc __interface ICurveSegmentAbstract;
 
+/// \ingroup (OSGeoFDOGeometry)
 public __gc __sealed class ObjectFactory
 {
 public:

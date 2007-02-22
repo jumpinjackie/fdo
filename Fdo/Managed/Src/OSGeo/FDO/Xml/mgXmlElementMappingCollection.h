@@ -27,6 +27,7 @@ END_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
 BEGIN_NAMESPACE_OSGEO_FDO_XML
 public __gc class XmlElementMapping;
 
+/// \ingroup (OSGeoFDOXml)
 /// \brief
 /// XmlElementMappingCollection is a collection of FDO-GML Class Mapping objects.
 [System::Reflection::DefaultMemberAttribute("RealTypeItem")]
