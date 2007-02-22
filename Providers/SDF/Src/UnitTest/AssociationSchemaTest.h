@@ -24,6 +24,7 @@
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include <map>
+#include <TestCommonMiscUtil.h>
 
 /* 
  * The unit test of the association schema.

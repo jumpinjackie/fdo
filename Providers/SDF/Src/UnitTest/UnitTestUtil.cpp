@@ -1,4 +1,5 @@
 #include "UnitTestUtil.h"
+#include "FdoCommonFile.h"
 #include "SDF/SdfCommandType.h"
 #include "SDF/ICreateSDFFile.h"
 #ifndef _WIN32
@@ -39,19 +40,7 @@ FdoIConnection* UnitTestUtil::OpenConnection( FdoString* fileName, bool re_creat
     FdoIConnection *conn = manager->CreateConnection (L"OSGeo.SDF.3.3");
 	if( re_create )
 	{
-		size_t len = wcstombs(NULL, fileName, 0);
-		char* mbsPath = new char[len+1];
-		wcstombs(mbsPath, fileName, len+1);
-
-#ifdef _WIN32    
-		SetFileAttributes(mbsPath, FILE_ATTRIBUTE_NORMAL);
-		DeleteFile(mbsPath);
-#else
-		unlink(mbsPath);
-#endif
-
-		delete[] mbsPath;
-
+        FdoCommonFile::Delete(fileName, true);
 
 		FdoPtr<FdoICreateSDFFile> crsdf = (FdoICreateSDFFile*)(conn->CreateCommand(SdfCommandType_CreateSDFFile));
 
@@ -81,8 +70,6 @@ void UnitTestUtil::ExportDb(
     FdoXmlSpatialContextFlags* flags
 )
 {
-//    FdoInt32 i;
-
     stream->Reset();
     FdoXmlWriterP writer = FdoXmlWriter::Create(stream, true, FdoXmlWriter::LineFormat_Indent);
 /*
@@ -110,37 +97,9 @@ void UnitTestUtil::ExportDb(
     reader->Parse( copier );
 }
 
-void UnitTestUtil::FailOnException( FdoException* e )
-{
-    char buffer[5000];
-
-    PrintException( e );
-    Exception2String( e, buffer );
-    e->Release ();
-
-
-    CPPUNIT_FAIL( buffer );
-}
-
-
-void UnitTestUtil::Exception2String( FdoException* e, char* buffer )
-{
-    FdoPtr<FdoException> innerE = e;
-    // Add ref to prevent smart pointer from destroying exception.
-    FDO_SAFE_ADDREF(e);
-
-    while ( innerE->GetCause() )
-        innerE = innerE->GetCause();
-
-    if ( innerE == e )
-        sprintf( buffer, "%ls", e->GetExceptionMessage() );
-    else
-        sprintf( buffer, "%ls ... %ls", innerE->GetExceptionMessage(), e->GetExceptionMessage() );
-}
 
 void UnitTestUtil::PrintException( FdoException* e, FILE* fp, FdoBoolean stripLineNo )
 {
-
     FdoPtr<FdoException> currE = e;
     // Add ref to prevent smart pointer from destroying exception.
     FDO_SAFE_ADDREF(e);
@@ -247,57 +206,3 @@ void UnitTestUtil::PrintException( FdoException* e, const char* fileName, FdoBoo
 
     fclose( fp );
 }
-
-void UnitTestUtil::CheckOutput( const char* masterFileName, const char* outFileName )
-{
-    if ( CompareFiles( masterFileName, outFileName ) != 0 ) {
-        char buffer[5000];
-        sprintf( buffer, "Output file %s differs from expected output file %s", outFileName, masterFileName );
-        CPPUNIT_FAIL( buffer );
-    }
-}
-
-int UnitTestUtil::CompareFiles( const char* file1Name, const char* file2Name )
-{
-    char buffer[500];
-    char buffer1[5000];
-    char buffer2[5000];
-
-    int retcode = -1;
-
-    FILE* fp1 = fopen( file1Name, "r" );
-    FILE* fp2 = fopen( file2Name, "r" );
-
-    if ( fp1 == NULL ) {
-        sprintf( buffer, "UnitTestUtil::CompareFiles: failed to open file %s", file1Name );
-        CPPUNIT_FAIL( buffer );
-    }
-
-    if ( fp2 == NULL ) {
-        sprintf( buffer, "UnitTestUtil::CompareFiles: failed to open file %s", file2Name );
-        CPPUNIT_FAIL( buffer );
-    }
-
-    while ( fgets( buffer1, 4999, fp1 ) != NULL ) {
-        if ( !fgets( buffer2, 4999, fp2  ) )
-            // different: file2 has fewer lines.
-            goto the_exit;
-
-        if ( strcmp( buffer1, buffer2 ) )
-            // different: a line is different
-            goto the_exit;
-    }
-
-    if ( fgets( buffer2, 4999, fp2 ) )
-        // different: file2 has more lines.
-        goto the_exit;
-
-    retcode = 0;
-
-the_exit:
-    fclose(fp1);
-    fclose(fp2);
-
-    return( retcode );
-}
-

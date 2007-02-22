@@ -24,6 +24,7 @@
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include "Fdo.h"
+#include <TestCommonMiscUtil.h>
 
 struct ConnectInfo {
     int   connectionId;

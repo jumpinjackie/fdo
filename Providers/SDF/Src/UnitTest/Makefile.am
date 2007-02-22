@@ -38,6 +38,7 @@ UnitTest_SOURCES = \
   ExtendedSelectTest.cpp \
   NlsTest.cpp \
   SelectTest.cpp \
+  SchemaTest.cpp \
   SpatialContextTest.cpp \
   UnitTestUtil.cpp
 
@@ -56,6 +57,7 @@ noinst_HEADERS = $(UnitTest_SOURCES) \
   MasterTest.h \
   NlsTest.h \
   SelectTest.h \
+  SchemaTest.h \
   SpatialContextTest.h \
   UnitTestUtil.h \
   tester-linux.h
@@ -63,11 +65,13 @@ noinst_HEADERS = $(UnitTest_SOURCES) \
 INCLUDES = \
   -I$(FDO)/Unmanaged/Inc \
   -I$(FDOUTILITIES)/TestCommon/Inc \
+  -I$(FDOUTILITIES)/Common/Inc \
   -I$(FDOTHIRDPARTY)/linux/cppunit/include/ \
   -I../../Inc
 
 UnitTest_LDADD = \
   $(FDOUTILITIES)/TestCommon/libTestCommon.la \
+  $(FDOUTILITIES)/Common/libProvidersCommon.la \
   $(FDO)/Unmanaged/Src/libFDO.la \
   $(FDOTHIRDPARTY)/linux/cppunit/lib/libcppunit.a \
   -ldl \

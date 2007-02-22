@@ -82,7 +82,7 @@ void SpatialContextTest::TestFdo309 ()
     }
     catch ( FdoException* e )
 	{
-		UnitTestUtil::FailOnException( e );
+		TestCommonFail( e );
 	}
 	catch ( CppUnit::Exception e ) 
 	{

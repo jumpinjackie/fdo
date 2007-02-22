@@ -16,12 +16,7 @@
 
 #include "ApplySchemaTest.h"
 #include "UnitTestUtil.h"
-/*
-#include "XmlFormatter.h"
-#include <Inc/Fdo/Rdbms/FdoIDescribeSchema.h>
-#include <Inc/Fdo/Rdbms/FdoRdbmsDescribeSchemaMappingCommand.h>
-#include <Inc/Fdo/Rdbms/FdoRdbmsDestroySchemaCommand.h>
-*/
+
 #ifdef _WIN32
 #include <windows.h>
 #else
@@ -208,36 +203,32 @@ void ApplySchemaTest::TestSchema ()
 		// Compare output files with expected results.
 
 
-        UnitTestUtil::CheckOutput( "apply_schema_test1_master.xml", "apply_schema_test1.xml" );
-        UnitTestUtil::CheckOutput( "apply_schema_test2_master.xml", "apply_schema_test2.xml" );
-        UnitTestUtil::CheckOutput( "apply_schema_test3_master.xml", "apply_schema_test3.xml" );
-        UnitTestUtil::CheckOutput( "apply_schema_test4_master.xml", "apply_schema_test4.xml" );
-        UnitTestUtil::CheckOutput( "apply_schema_test5_master.xml", "apply_schema_test5.xml" );
+        TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_test1_master.xml", "apply_schema_test1.xml" );
+        TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_test2_master.xml", "apply_schema_test2.xml" );
+        TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_test3_master.xml", "apply_schema_test3.xml" );
+        TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_test4_master.xml", "apply_schema_test4.xml" );
+        TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_test5_master.xml", "apply_schema_test5.xml" );
 
         // Next do the error messages. Some checks are not done for some providers
         // since their expect output is different from the master
         // TODO: create special masters for these cases.
 
 #ifdef _WIN32
-        UnitTestUtil::CheckOutput( "apply_schema_err1_master.txt", "apply_schema_err1.txt" );
-        UnitTestUtil::CheckOutput( "apply_schema_err2_master.txt", "apply_schema_err2.txt" );
-        UnitTestUtil::CheckOutput( "apply_schema_err3_imaster.txt", "apply_schema_err3.txt" );
-        UnitTestUtil::CheckOutput( "apply_schema_err4_master.txt", "apply_schema_err4.txt" );
-        UnitTestUtil::CheckOutput( "apply_schema_err5_imaster.txt", "apply_schema_err5.txt" );
-        UnitTestUtil::CheckOutput( "apply_schema_err6_imaster.txt", "apply_schema_err6.txt" );
-        UnitTestUtil::CheckOutput( "apply_schema_err7_master.txt", "apply_schema_err7.txt" );
-		UnitTestUtil::CheckOutput( "apply_schema_err8_master.txt", "apply_schema_err8.txt" );
-        UnitTestUtil::CheckOutput( "apply_schema_err10_master.txt", "apply_schema_err10.txt" );
+        TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_err1_master.txt", "apply_schema_err1.txt" );
+        TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_err2_master.txt", "apply_schema_err2.txt" );
+        TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_err3_imaster.txt", "apply_schema_err3.txt" );
+        TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_err4_master.txt", "apply_schema_err4.txt" );
+        TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_err5_imaster.txt", "apply_schema_err5.txt" );
+        TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_err6_imaster.txt", "apply_schema_err6.txt" );
+        TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_err7_master.txt", "apply_schema_err7.txt" );
+		TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_err8_master.txt", "apply_schema_err8.txt" );
+        TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_err10_master.txt", "apply_schema_err10.txt" );
 #endif
 
     }
 	catch ( FdoException* e ) 
 	{
-		UnitTestUtil::FailOnException( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
+		TestCommonFail( e );
 	}
    	catch (...)
    	{
@@ -274,11 +265,7 @@ void ApplySchemaTest::TestDelete ()
     }
 	catch ( FdoException* e ) 
 	{
-		UnitTestUtil::FailOnException( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
+		TestCommonFail( e );
 	}
    	catch (...)
    	{
@@ -311,11 +298,7 @@ void ApplySchemaTest::TestReformatTable()
     }
 	catch ( FdoException* e ) 
 	{
-		UnitTestUtil::FailOnException( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
+		TestCommonFail( e );
 	}
    	catch (...)
    	{

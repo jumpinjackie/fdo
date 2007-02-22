@@ -180,7 +180,7 @@ void SelectTest::DoTest (
 	catch ( FdoException* e ) 
 	{
         connection->Close();
-        printf( "Exception: %ls\n", e->GetExceptionMessage() );
+        TestCommonFail(e);
 	}
 
 	connection->Close();
@@ -337,4 +337,29 @@ FdoIConnection* SelectTest::CreateDb()
     FdoPtr<FdoIFeatureReader> reader = insertCommand->Execute();        
 
     return connection;
+}
+
+
+
+void SelectTest::select_aggregates_should_fail()
+{
+    try
+    {
+        FdoPtr<FdoIConnection> mConnection = CreateDb();
+
+        FdoPtr<FdoISelect> select = (FdoISelect*)mConnection->CreateCommand (FdoCommandType_Select);
+        select->SetFeatureClassName (L"Class3");
+        FdoPtr <FdoIdentifierCollection> ids = select->GetPropertyNames ();
+        FdoPtr <FdoIdentifier> id = FdoComputedIdentifier::Create(L"AVG_ID", FdoPtr<FdoExpression>(FdoExpression::Parse(L"Avg(Prop1)")));
+        ids->Add(id);
+        FdoPtr<FdoIFeatureReader> reader = select->Execute ();
+        while (reader->ReadNext ())
+        {
+            double avg_computed_id = reader->GetDouble (L"AVG_ID");
+        }
+    }
+    catch (FdoException* e)
+    {
+        TestCommonFail(e);
+    }
 }
