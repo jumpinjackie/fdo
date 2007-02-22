@@ -10,6 +10,7 @@
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include <Fdo.h>
+#include <TestCommonMiscUtil.h>
 
 /* 
  * A test case for the schema.
@@ -26,6 +27,7 @@ class SelectTest : public CppUnit::TestCase
   CPPUNIT_TEST( TestBaseProps );
   CPPUNIT_TEST( TestBothProps );
   CPPUNIT_TEST( TestAllProps );
+  CPPUNIT_TEST( select_aggregates_should_fail );
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -38,6 +40,7 @@ protected:
     void TestBaseProps();
     void TestBothProps();
     void TestAllProps();
+    void select_aggregates_should_fail();
 
     FdoIConnection* CreateDb();
     void DoTest ( 

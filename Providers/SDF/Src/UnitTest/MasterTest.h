@@ -91,9 +91,11 @@ class MasterTest : public CppUnit::TestFixture
     CPPUNIT_TEST(coordSysTest);
     CPPUNIT_TEST(selectDistinctTests);
     CPPUNIT_TEST(selectAggregatesTest);
+    CPPUNIT_TEST(selectAggregatesFailureTests);
 	CPPUNIT_TEST(selectSpatialExtentsTest);
 	CPPUNIT_TEST(concurencyTest);
     CPPUNIT_TEST(descReadOnly);
+    CPPUNIT_TEST(test_aggregates_datetime_string);
     CPPUNIT_TEST_SUITE_END();
 
     // You may define any private variables that are used in your test
@@ -124,10 +126,11 @@ public:
     void computedPropTest();
     void selectDistinctTests();
     void selectAggregatesTest();
+    void selectAggregatesFailureTests();
 	void concurencyTest();
     void selectSpatialExtentsTest();
     void descReadOnly();
-
+    void test_aggregates_datetime_string();
 };
 
 #endif

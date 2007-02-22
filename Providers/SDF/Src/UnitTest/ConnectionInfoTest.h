@@ -10,6 +10,7 @@
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include <Fdo.h>
+#include <TestCommonMiscUtil.h>
 
 /* 
  * Checks whether or not the provider type and list of dependent files

@@ -24,7 +24,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include <Fdo.h>
 #include <TestCommonMiscUtil.h>
-
+#include <TestCommonFileUtil.h>
 
 /* 
  * A test case for ApplySchemaCommand.
@@ -44,31 +44,12 @@ public:
         FdoXmlSpatialContextFlags* flags = NULL
     );
 
-//    void DeleteSchema( FdoIConnection* connection, GisString* schemaName );
-    
-    // Fail the current Unit Test, showing the given exception's message.
-    static void FailOnException( FdoException* e );
-
-    static void Exception2String( FdoException* e, char* buffer );
-
     // Print an exception, and all it's cause exceptions to a file
     // or stdout by default.
     static void PrintException( FdoException* e, FILE* fp = stdout, FdoBoolean stripLineNo = false );
 
     // Print an exception, and all it's cause exceptions to the given file.
     static void PrintException( FdoException* e, const char* fileName, FdoBoolean stripLineNo = false );
-
-    // Compare an output file against its master (expected) copy.
-    // Fail if they are different.
-    static void CheckOutput( const char* masterFileName, const char* outFileName );
-
-    // Compare to files.
-    //
-    // Returns:
-    //      0 - they are the same
-    //      -1 - they are different.
-    static int CompareFiles( const char* file1Name, const char* file2Name );
-
 };
 
 #endif
