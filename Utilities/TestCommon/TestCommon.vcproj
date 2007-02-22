@@ -195,7 +195,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Src\TestCommonFileUtil.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Src\TestCommonGeomUtil.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Src\TestCommonMiscUtil.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Src\TestCommonSchemaUtil.cpp"
 				>
 			</File>
 		</Filter>
@@ -216,7 +228,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Inc\TestCommonFileUtil.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Inc\TestCommonGeomUtil.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Inc\TestCommonMiscUtil.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Inc\TestCommonSchemaUtil.h"
 				>
 			</File>
 		</Filter>

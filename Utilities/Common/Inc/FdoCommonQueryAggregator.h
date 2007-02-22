@@ -23,11 +23,13 @@
 
 struct AggregateStats
 {
-    double   doubleVal;
-    double   doubleValAccumulator;
-    FdoInt64 int64Val;
+    double               doubleVal;
+    double               doubleValAccumulator;
+    FdoInt64             int64Val;
+    FdoStringP           stringVal;
+    FdoDateTime          dateTimeVal;
     FdoPtr<FdoIGeometry> geomVal;
-    bool     isNull;
+    bool                 isNull;
 };
 
 

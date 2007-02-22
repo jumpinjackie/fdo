@@ -50,6 +50,15 @@ void TestCommonFail (FdoException* ge)
     CPPUNIT_FAIL (multibyte);
 }
 
+
+void TestCommonFail (char* error)
+{
+    char message[4096];
+    sprintf (message, "\nFAILURE: %s\n", error);
+    CPPUNIT_FAIL (message);
+}
+
+
 FdoPropertyValue* TestCommonMiscUtil::AddNewProperty( FdoPropertyValueCollection* propertyValues, FdoString* name )
 {
     FdoPropertyValue*  propertyValue = propertyValues->FindItem( name );
@@ -256,3 +265,43 @@ int TestCommonMiscUtil::LeakReportHook( int reportType, char *message, int *retu
     return(0);
 }
 #endif
+
+
+
+// Get time on system clock (in seconds) -- used for computing elapsed time.
+double TestCommonMiscUtil::GetTime_S(void)
+{
+#ifdef _WIN32   
+
+   double our_time;
+ 
+   our_time = GetTickCount() / 1000.0;
+   return our_time;
+ 
+#else
+
+	struct timeval			this_time;
+	static struct timezone	time_zone = { 0, 0 };
+	double					sec, micro, time;
+
+
+	if (gettimeofday(&this_time, &time_zone) == -1)
+		return (double) 0.0;
+
+	micro = (double) ((double) this_time.tv_usec / (double) 1000000.0);
+	sec = (double) this_time.tv_sec;
+	time = micro + sec;
+	return time;
+	
+#endif 
+}
+
+
+bool TestCommonMiscUtil::FuzzyEqual (const double d1, const double d2)
+{
+    if ((d1==0.0) || (d2==0.0))
+        return 1e-5 > fabs(d1 - d2);
+    else
+        return 1e-5 > fabs(1.0 - (d2 / d1));
+}
+

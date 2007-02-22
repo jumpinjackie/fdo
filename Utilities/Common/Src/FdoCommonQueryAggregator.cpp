@@ -219,6 +219,20 @@ void FdoCommonQueryAggregator::ProcessFunction(FdoFunction& expr)
                                 dv = FdoDoubleValue::Create(aggrStats.doubleVal);
                         break;
 
+                        case FdoDataType_String:
+                            if (aggrStats.isNull)
+                                dv = FdoStringValue::Create();  // defaults to NULL
+                            else
+                                dv = FdoStringValue::Create(aggrStats.stringVal);
+                        break;
+
+                        case FdoDataType_DateTime:
+                            if (aggrStats.isNull)
+                                dv = FdoDateTimeValue::Create();  // defaults to NULL
+                            else
+                                dv = FdoDateTimeValue::Create(aggrStats.dateTimeVal);
+                        break;
+
                         default:
                             throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_57_UNEXPECTEDERROR)));
                         }
@@ -260,34 +274,63 @@ void FdoCommonQueryAggregator::ProcessFunction(FdoFunction& expr)
             // If it is a number, get the result (cast to double); in the case of COUNT(),
             // this could be any type (e.g. geometry) so don't complain if not numeric:
             double d = 0.0;
+            FdoString* strResult = NULL;
+            FdoDateTime dateTimeResult;
             bool bValueIsNull = false;
+            FdoDataType resultDataType;
             if (GetResultPropertyType() == FdoPropertyType_DataProperty)
             {
-                FdoDataType dataType = GetResultDataType();
-                if (dataType == FdoDataType_Double)
+                resultDataType = GetResultDataType();
+                if (resultDataType == FdoDataType_Double)
                     d = GetDoubleResult(bValueIsNull);
-                else if (dataType == FdoDataType_Single)
+                else if (resultDataType == FdoDataType_Single)
                     d = (double)GetSingleResult(bValueIsNull);
-                else if (dataType == FdoDataType_Decimal)
+                else if (resultDataType == FdoDataType_Decimal)
                     d = (double)GetDecimalResult(bValueIsNull);
-                else if (dataType == FdoDataType_Byte)
+                else if (resultDataType == FdoDataType_Byte)
                     d = (double)GetByteResult(bValueIsNull);
-                else if (dataType == FdoDataType_Int16)
+                else if (resultDataType == FdoDataType_Int16)
                     d = (double)GetInt16Result(bValueIsNull);
-                else if (dataType == FdoDataType_Int32)
+                else if (resultDataType == FdoDataType_Int32)
                     d = (double)GetInt32Result(bValueIsNull);
-                else if (dataType == FdoDataType_Int64)
+                else if (resultDataType == FdoDataType_Int64)
                     d = (double)GetInt64Result(bValueIsNull);
+                else if (resultDataType == FdoDataType_String)
+                    strResult = GetStringResult(bValueIsNull);
+                else if (resultDataType == FdoDataType_DateTime)
+                    dateTimeResult = GetDateTimeResult(bValueIsNull);
             }
 
             // Handle the aggregate function logic:
             AggregateStats &aggrStats = m_aggrStats.at(m_aggrStatsIndex);
             if (0==wcscmp(expr.GetName(), FDO_FUNCTION_MIN))
             {
-                if (!bValueIsNull && (aggrStats.isNull || (d < aggrStats.doubleVal)))
+                if (!bValueIsNull)
                 {
-                    aggrStats.doubleVal = d;
-                    aggrStats.isNull = false;
+                    if (resultDataType==FdoDataType_String)
+                    {
+                        if (aggrStats.isNull || (0>wcscmp(strResult, aggrStats.stringVal)))
+                        {
+                            aggrStats.stringVal = strResult;
+                            aggrStats.isNull = false;
+                        }
+                    }
+                    else if (resultDataType==FdoDataType_DateTime)
+                    {
+                        if (aggrStats.isNull || (0>FdoCommonMiscUtil::CompareDateTimes(dateTimeResult, aggrStats.dateTimeVal)))
+                        {
+                            aggrStats.dateTimeVal = dateTimeResult;
+                            aggrStats.isNull = false;
+                        }
+                    }
+                    else  // datatype is decimal, double, single, int16, int32, etc
+                    {
+                        if (aggrStats.isNull || (d < aggrStats.doubleVal))
+                        {
+                            aggrStats.doubleVal = d;
+                            aggrStats.isNull = false;
+                        }
+                    }
                 }
             }
             else if (0==wcscmp(expr.GetName(), FDO_FUNCTION_AVG))
@@ -310,10 +353,32 @@ void FdoCommonQueryAggregator::ProcessFunction(FdoFunction& expr)
             }
             else if (0==wcscmp(expr.GetName(), FDO_FUNCTION_MAX))
             {
-                if (!bValueIsNull && (aggrStats.isNull || (d > aggrStats.doubleVal)))
+                if (!bValueIsNull)
                 {
-                    aggrStats.doubleVal = d;
-                    aggrStats.isNull = false;
+                    if (resultDataType==FdoDataType_String)
+                    {
+                        if (aggrStats.isNull || (0<wcscmp(strResult, aggrStats.stringVal)))
+                        {
+                            aggrStats.stringVal = strResult;
+                            aggrStats.isNull = false;
+                        }
+                    }
+                    else if (resultDataType==FdoDataType_DateTime)
+                    {
+                        if (aggrStats.isNull || (0<FdoCommonMiscUtil::CompareDateTimes(dateTimeResult, aggrStats.dateTimeVal)))
+                        {
+                            aggrStats.dateTimeVal = dateTimeResult;
+                            aggrStats.isNull = false;
+                        }
+                    }
+                    else  // datatype is decimal, double, single, int16, int32, etc
+                    {
+                        if (aggrStats.isNull || (d > aggrStats.doubleVal))
+                        {
+                            aggrStats.doubleVal = d;
+                            aggrStats.isNull = false;
+                        }
+                    }
                 }
             }
             else if (0==wcscmp(expr.GetName(), FDO_FUNCTION_SUM))

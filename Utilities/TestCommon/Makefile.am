@@ -27,12 +27,18 @@ libTestCommon_la_SOURCES = \
   Src/TestCommonConstraints.cpp \
   Src/TestCommonFeatureCommands.cpp \
   Src/TestCommonMiscUtil.cpp \
+  Src/TestCommonFileUtil.cpp \
+  Src/TestCommonGeomUtil.cpp \
+  Src/TestCommonSchemaUtil.cpp \
   Src/stdafx.cpp
 
 noinst_HEADERS = $(libTestCommon_la_SOURCES) \
   Inc/TestCommonConstraints.h \
   Inc/TestCommonFeatureCommands.h \
   Inc/TestCommonMiscUtil.h \
+  Inc/TestCommonFileUtil.h \
+  Inc/TestCommonGeomUtil.h \
+  Inc/TestCommonSchemaUtil.h \
   Inc/TestCommon.h \
   Inc/stdafx.h
 

@@ -33,15 +33,13 @@
 //
 // Misc commonly-used utility functions:
 void TestCommonFail (FdoException* ge);
-
+void TestCommonFail (char* error);
 
 //
-// Common select-related tests
+// Utilities common to many unit tests
 class TestCommonMiscUtil
 {
 public:
-    void duplicateComputedIdTest (FdoIConnection* conn, FdoString* className, FdoString* propName);
-
     // Retrieve the named property value from a property value collection.
     // Create and add the property value to the collection if it is not already there.
     static FdoPropertyValue* AddNewProperty( FdoPropertyValueCollection* propertyValues, FdoString* name );
@@ -93,6 +91,13 @@ public:
     // the more interesting memory leaks have usually been reported at this point.
     static void SetupLeakReport();
 #endif
+
+    // Get time on system clock (in seconds) -- used for computing elapsed time.
+    static double GetTime_S(void);
+
+    // check that 2 doubles are roughly equal:
+    static bool FuzzyEqual (const double d1, const double d2);
+
 
 protected:
 
