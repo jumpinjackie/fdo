@@ -96,7 +96,7 @@ FdoDataValue* FdoRfpRasterPropertyDictionay::GetProperty (FdoString* name)
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_2_BADPARAMETER, "Bad parameter to method."));
 
     FdoDataValue* rv;
-    FdoRfpImage *image = m_raster->GetImage();
+    FdoPtr<FdoRfpImage> image = m_raster->GetImage();
     GDALColorTableH hCT = GDALGetRasterColorTable( GDALGetRasterBand( image->GetDS(), image->m_bandList[0] ) );
     int numOfEntries = 0;
 
