@@ -40,6 +40,7 @@ END_NAMESPACE_OSGEO_FDO_CONNECTIONS
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
 public __gc class PhysicalSchemaMapping;
 
+/// \ingroup (OSGeoFDOCommandsSchema)
 /// \brief
 /// PhysicalSchemaMappingCollection defines a collection of Schema Override
 /// sets. This is a generic collection which can contain override sets for different 

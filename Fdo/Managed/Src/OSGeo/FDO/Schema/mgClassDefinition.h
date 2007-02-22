@@ -31,6 +31,7 @@ public __gc class DataPropertyDefinitionCollection;
 public __gc class ReadOnlyDataPropertyDefinitionCollection;
 public __gc class ClassCapabilities;
 
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// ClassDefinition is an abstract class that derives from SchemaElement.
 /// ClassDefinition is a base class for all concrete class types (e.g., FdoClass,

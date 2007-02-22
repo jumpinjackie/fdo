@@ -18,7 +18,6 @@
 
 #pragma once
 
-/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_COMMON
 public __gc class StringCollection;
 END_NAMESPACE_OSGEO_COMMON
@@ -36,12 +35,11 @@ END_NAMESPACE_OSGEO_FDO_XML
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
 public __gc __interface IPhysicalElementMapping;
 public __gc class PhysicalSchemaMapping;
-/// \endcond
 
-/// \ingroup (interfaces)
-/// \interface IPhysicalElementMapping
+/// \ingroup (OSGeoFDOCommandsSchema)
+/// \interface OSGeo::FDO::Commands::Schema::IPhysicalElementMapping
 /// \brief
-/// PhysicalElementMapping is an abstract class that acts as a base class for all 
+/// IPhysicalElementMapping is an abstract interface that acts as a base interface for all 
 /// Physical Schema Mapping Override classes. FDO also provides a number of sub-classes
 /// for particular types of Provider-specific override classes:
 ///

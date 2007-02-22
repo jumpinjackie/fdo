@@ -20,9 +20,11 @@
 
 #include <Fdo\Commands\UnitOfMeasure\BaseUnit.h>
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOCommandsUnitOfMeasure)
 /// \brief
 /// The BaseUnit enumeration defines the well known base unit used to
 /// establish a measure unit.
@@ -40,6 +42,6 @@ public __value enum BaseUnit
 	BaseUnit_Radians = FdoBaseUnit_Radians
 };
 
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE
-
-
+/// \endcond

@@ -22,8 +22,8 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
 
-/// \ingroup (interfaces)
-/// \interface IDestroySchema
+/// \ingroup (OSGeoFDOCommandsSchema)
+/// \interface OSGeo::FDO::Commands::Schema::IDestroySchema
 /// \brief
 /// The IDestroySchema interface defines the DestroySchema command, which
 /// destroys a schema definition, including all class definitions, relationship

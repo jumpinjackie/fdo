@@ -27,6 +27,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 public __gc class Expression;
 public __gc __interface IExpressionProcessor;
 
+/// \ingroup (OSGeoFDOExpression)
 /// \brief
 /// The ComputedIdentifier class derives from Identifier and represents an expression
 /// with alias. The name or alias must be a simple name and should not be scoped or contain the

@@ -23,6 +23,7 @@ class FdoFunctionDefinitionCollection;
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 public __gc class FunctionDefinition;
 
+/// \ingroup (OSGeoFDOConnectionsCapabilities)
 /// \brief
 /// FunctionDefinitionCollection is a collection of FunctionDefinition objects.
 [System::Reflection::DefaultMemberAttribute("RealTypeItem")]

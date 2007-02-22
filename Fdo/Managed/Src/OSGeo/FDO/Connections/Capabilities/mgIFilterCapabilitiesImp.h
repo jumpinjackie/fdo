@@ -24,6 +24,7 @@ class FdoIFilterCapabilities;
 
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 
+/// \ingroup (OSGeoFDOConnectionsCapabilities)
 /// \brief
 /// The IFilterCapabilities interface declares the feature provider's level of support for Filter classes.
 private __gc class IFilterCapabilitiesImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 

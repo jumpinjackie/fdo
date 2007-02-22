@@ -34,6 +34,7 @@ END_NAMESPACE_OSGEO_COMMON
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SQL
 
+/// \ingroup (OSGeoFDOCommandsSQL)
 /// \brief
 /// The ISQLDataReaderImp class is a concrete implementation of ISQLDataReader.
 /// The ISQLDataReader interface provides a forward-only, read-only

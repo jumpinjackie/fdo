@@ -25,6 +25,7 @@ class FdoISelect;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 
+/// \ingroup (OSGeoFDOCommandsFeature)
 /// \brief
 /// The ISelectImp class is a concrete implementation of interface ISelect.
 /// The ISelect interface defines the Select command, which queries for features

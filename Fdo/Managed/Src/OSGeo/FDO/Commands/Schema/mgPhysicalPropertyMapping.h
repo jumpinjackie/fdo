@@ -35,6 +35,7 @@ END_NAMESPACE_OSGEO_FDO_XML
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
 
+/// \ingroup (OSGeoFDOCommandsSchema)
 /// \brief
 /// PhysicalPropertyMapping is an abstract class that acts as a base class for all 
 /// Physical Schema Mapping property overrides.

@@ -20,8 +20,8 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
-/// \ingroup (interfaces)
-/// \interface ILongTransactionCheckpointReader
+/// \ingroup (OSGeoFDOCommandsLongTransaction)
+/// \interface OSGeo::FDO::Commands::LongTransaction::ILongTransactionCheckpointReader
 /// \brief
 /// The ILongTransactionCheckpointReader interface provides forward only,
 /// read-only functionality for enumerating long transaction checkpoints.

@@ -26,8 +26,9 @@ class FdoIChangeLongTransactionPrivileges;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
+/// \ingroup (OSGeoFDOCommandsLongTransaction)
 /// \brief
-/// The IChangeLongTransactionPrivileges class is a 
+/// The IChangeLongTransactionPrivilegesImp class is a 
 /// concrete implementation of IChangeLongTransactionPrivileges.
 /// The IChangeLongTransactionPrivileges interface defines the
 /// ChangeLongTransactionPrivileges command, which grants or revokes long

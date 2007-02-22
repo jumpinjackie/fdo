@@ -26,6 +26,7 @@ class FdoIGetLockOwners;
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 public __gc __interface ILockOwnersReader;
 
+/// \ingroup (OSGeoFDOCommandsLocking)
 /// \brief
 /// The IGetLockOwnersImp class is a concrete implementation of IGetLockedObjects.
 /// The IGetLockOwners interface defines the GetLockOwners command, which gets a

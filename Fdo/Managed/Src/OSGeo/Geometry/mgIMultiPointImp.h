@@ -27,6 +27,7 @@ END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 
+/// \ingroup (OSGeoFDOGeometry)
 /// \brief
 /// The IMultiPointImp class is a multi-point aggregate Geometry type.
 private __gc class IMultiPointImp : 

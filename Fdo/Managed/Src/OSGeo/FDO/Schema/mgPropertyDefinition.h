@@ -25,6 +25,7 @@ class FdoPropertyDefinition;
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// PropertyDefinition is an abstract class that derives from SchemaElement.
 /// PropertyDefinition is the base class of DataPropertyDefinition, 

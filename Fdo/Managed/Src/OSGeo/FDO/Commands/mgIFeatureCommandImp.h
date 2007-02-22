@@ -33,9 +33,10 @@ END_NAMESPACE_OSGEO_FDO_FILTER
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS
 
+/// \ingroup (OSGeoFDOCommands)
 /// \brief
 /// The IFeatureCommandImp class is a concrete implementation of IFeatureCommand.
-/// IFeatureCommandImp defines the behavior common to all commands that operate on feature instances. 
+/// IFeatureCommand defines the behavior common to all commands that operate on feature instances. 
 /// The features to be operated on are identified by their class and a filter. 
 /// If the feature provider supports inheritance in the schema capabilities, then the command 
 /// will operate on instances of that class and any derived classes. 

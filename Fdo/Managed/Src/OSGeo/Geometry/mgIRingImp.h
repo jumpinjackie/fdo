@@ -31,6 +31,7 @@ END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 
+/// \ingroup (OSGeoFDOGeometry)
 /// \brief
 /// The IRingImp class is ring Geometry helper type.  This is the most general non-abstract ring type.  
 /// FdoIRing is defined by an ordered collection of contiguous curve segments.

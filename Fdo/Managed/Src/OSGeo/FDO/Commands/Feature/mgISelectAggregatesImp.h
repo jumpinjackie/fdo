@@ -34,6 +34,7 @@ END_NAMESPACE_OSGEO_FDO_FILTER
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 public __gc __interface IDataReader;
 
+/// \ingroup (OSGeoFDOCommandsFeature)
 /// \brief
 /// The ISelectAggregateImp class is a cocrete implementation of interface ISelectAggregates.
 /// The ISelectAggregate interface defines a Select command that handle selection of properties that include 

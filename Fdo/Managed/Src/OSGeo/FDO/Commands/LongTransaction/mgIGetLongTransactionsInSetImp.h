@@ -26,6 +26,7 @@ class FdoIGetLongTransactionsInSet;
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 public __gc __interface ILongTransactionSetReader;
 
+/// \ingroup (OSGeoFDOCommandsLongTransaction)
 /// \brief
 /// The IGetLongTransactionsInSetImp class is a concrete implementation of IGetLongTransactionsInSet.
 /// The IGetLongTransactionsInSet interface defines the GetLongTransactionsInSet

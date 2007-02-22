@@ -20,13 +20,11 @@
 
 #include "FDO\Commands\mgIFeatureCommand.h"
 
-/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 public __gc __interface ILongTransactionConflictDirectiveEnumerator;
-/// \endcond
 
-/// \ingroup (interfaces)
-/// \interface ICommitLongTransaction
+/// \ingroup (OSGeoFDOCommandsLongTransaction)
+/// \interface OSGeo::FDO::Commands::LongTransaction::ICommitLongTransaction
 /// \brief
 /// The ICommitLongTransaction interface defines the CommitLongTransaction
 /// command, which allows a user to execute commit operations on a long

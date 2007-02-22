@@ -30,6 +30,7 @@ END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 
+/// \ingroup (OSGeoFDOGeometry)
 /// \brief
 /// The ILineStringImp class is a LineString Geometry type.  
 /// The shape of ILineStringImp is the set of positions defined by the contained collection, 

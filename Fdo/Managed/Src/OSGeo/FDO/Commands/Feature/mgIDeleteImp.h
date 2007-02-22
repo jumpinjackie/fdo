@@ -29,6 +29,7 @@ END_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 
+/// \ingroup (OSGeoFDOCommandsFeature)
 /// \brief
 /// The IDeleteImp class is a concrete implementation class for interface IDelete.
 /// The IDelete interface defines the FDO Delete command, which deletes instances of

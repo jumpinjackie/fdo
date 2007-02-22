@@ -28,6 +28,7 @@ END_NAMESPACE_OSGEO_FDO_RASTER
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// RasterPropertyDefinition has the information needed to
 /// create or completely describe a raster property. This class encapsulates

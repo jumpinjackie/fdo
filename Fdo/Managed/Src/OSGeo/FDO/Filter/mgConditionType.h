@@ -18,9 +18,11 @@
 
 #pragma once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_FILTER
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOFilter)
 /// \brief
 /// The ConditionType enumeration defines the filter condition types available. 
 /// This enumeration is used in the capabilities.
@@ -48,6 +50,7 @@ public __value enum ConditionType
     /// specified distance of a literal geometric value.
 	ConditionType_Distance = FdoConditionType_Distance
 };
+
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_FILTER
-
-
+/// \endcond

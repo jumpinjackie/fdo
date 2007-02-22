@@ -25,8 +25,8 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 
-/// \ingroup (interfaces)
-/// \interface IDataReader
+/// \ingroup (OSGeoFDOCommandsFeature)
+/// \interface OSGeo::FDO::Commands::Feature::IDataReader
 /// \brief
 /// The IDataReader interface provides a forward-only, read-only
 /// iterator for reading relational table data. A reference to an

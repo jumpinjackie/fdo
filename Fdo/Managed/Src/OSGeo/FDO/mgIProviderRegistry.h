@@ -24,8 +24,8 @@ END_NAMESPACE_OSGEO_FDO_CLIENTSERVICES
 
 BEGIN_NAMESPACE_OSGEO_FDO
 
-/// \ingroup (interfaces)
-/// \interface IProviderRegistry
+/// \ingroup (OSGeoFDO)
+/// \interface OSGeo::FDO::IProviderRegistry
 /// \brief
 /// The IProviderRegistry interface supports registering, un-registering, and enumerating 
 /// registered feature providers. 

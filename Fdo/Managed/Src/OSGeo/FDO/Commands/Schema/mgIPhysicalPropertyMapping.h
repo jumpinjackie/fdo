@@ -32,10 +32,10 @@ END_NAMESPACE_OSGEO_FDO_XML
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
 
-/// \ingroup (interfaces)
-/// \interface IPhysicalPropertyMapping
+/// \ingroup (OSGeoFDOCommandsSchema)
+/// \interface OSGeo::FDO::Commands::Schema::IPhysicalPropertyMapping
 /// \brief
-/// PhysicalPropertyMapping is an abstract class that acts as a base class for all 
+/// IPhysicalPropertyMapping is an abstract interface that acts as a base interface for all 
 /// Physical Schema Mapping property overrides.
 public __gc __interface IPhysicalPropertyMapping : public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IPhysicalElementMapping
 {

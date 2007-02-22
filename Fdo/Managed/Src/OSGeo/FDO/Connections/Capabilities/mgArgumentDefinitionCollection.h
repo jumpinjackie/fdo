@@ -23,6 +23,7 @@ class FdoArgumentDefinitionCollection;
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 public __gc class ArgumentDefinition;
 
+/// \ingroup (OSGeoFDOConnectionsCapabilities)
 /// \brief
 /// ArgumentDefinitionCollection is a collection of ArgumentDefinition objects.
 [System::Reflection::DefaultMemberAttribute("RealTypeItem")]

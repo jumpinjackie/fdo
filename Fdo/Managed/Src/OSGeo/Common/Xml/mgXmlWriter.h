@@ -30,6 +30,8 @@ END_NAMESPACE_OSGEO_COMMON_IO
 using namespace NAMESPACE_OSGEO_COMMON_IO;
 
 BEGIN_NAMESPACE_OSGEO_COMMON_XML
+
+/// \ingroup (OSGeoFDOCommonXml)
 /// \brief
 /// XmlWriter writes an XML document to a text or binary stream. 
 /// Note: The XML document is not completely written until this object

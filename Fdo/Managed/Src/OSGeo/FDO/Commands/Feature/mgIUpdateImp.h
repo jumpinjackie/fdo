@@ -25,6 +25,7 @@ class FdoIUpdate;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 
+/// \ingroup (OSGeoFDOCommandsFeature)
 /// \brief
 /// The IUpdateImp class is a concrete implementation of interface IUpdate.
 /// The IUpdate interface defines the Update command, which modifies instances

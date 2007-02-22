@@ -26,6 +26,7 @@ class ISpatialContextReader;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT
 
+/// \ingroup (OSGeoFDOCommandsSpatialContext)
 /// \brief
 /// The ISpatialContextReaderImp class is a concrete implementation of ISpatialContextReader.
 /// The ISpatialContextReader interface provides forward-only, read-only

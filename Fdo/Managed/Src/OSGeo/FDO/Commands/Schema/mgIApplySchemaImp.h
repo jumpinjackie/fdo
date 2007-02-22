@@ -30,6 +30,7 @@ END_NAMESPACE_OSGEO_FDO_SCHEMA
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
 public __gc class PhysicalSchemaMapping;
 
+/// \ingroup (OSGeoFDOCommandsSchema)
 /// \brief
 /// The IApplySchemaImp class is a concrete implementation of IApplySchema.
 /// The IApplySchema interface defines the ApplySchema command, which creates or

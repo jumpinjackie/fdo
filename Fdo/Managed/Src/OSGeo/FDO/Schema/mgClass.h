@@ -26,6 +26,7 @@ class FdoClass;
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// Class derives ClassDefinition and can be used to represent any type of
 /// non-spatial data within a feature schema. Typically, classes are used in the

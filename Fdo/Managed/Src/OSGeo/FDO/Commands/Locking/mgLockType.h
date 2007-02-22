@@ -18,9 +18,11 @@
 
 #pragma once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOCommandsLocking)
 /// \brief
 /// The LockType enumeration defines lock types. The lock type for 
 /// a locked object indicates a user's access privileges (including the user 
@@ -78,6 +80,6 @@ public __value enum LockType
 	LockType_LongTransactionExclusive = FdoLockType_LongTransactionExclusive
 };
 
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
-
-
+/// \endcond

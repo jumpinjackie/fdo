@@ -21,15 +21,13 @@
 
 class FdoCurveSegmentCollection;
 
-/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 
 public __gc __interface IEnvelope;
 public __gc __interface IDirectPosition;
-/// \endcond
 
-/// \ingroup (interfaces)
-/// \interface ICurveSegmentAbstract
+/// \ingroup (OSGeoFDOGeometry)
+/// \interface OSGeo::FDO::Geometry::ICurveSegmentAbstract
 /// \brief
 /// The ICurveSegmentAbstract class is an abstract geometric Curve Segment object.  
 /// This class is used strictly as a component of curves 

@@ -24,6 +24,7 @@ class FdoSearchCondition;
 
 BEGIN_NAMESPACE_OSGEO_FDO_FILTER
 
+/// \ingroup (OSGeoFDOFilter)
 /// \brief
 /// The SearchCondition is an abstract base class. SpatialCondition,
 /// ComparisonCondition, LikeCondition, InCondition, and NullCondition derive

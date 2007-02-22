@@ -28,6 +28,7 @@ BEGIN_NAMESPACE_OSGEO_GEOMETRY
 public __gc __interface IEnvelope;
 public __gc __interface IDirectPosition;
 
+/// \ingroup (OSGeoFDOGeometry)
 /// \brief
 /// The ICurveSegmentAbstractImp class is a concrete geometric Curve Segment object.  
 /// This class is used strictly as a component of curves and, thus, does not inherit from IGeometry.

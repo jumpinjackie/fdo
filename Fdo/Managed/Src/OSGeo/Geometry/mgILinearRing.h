@@ -23,17 +23,15 @@
 
 class FdoLinearRingCollection;
 
-/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 public __gc __interface IDirectPosition;
 public __gc class DirectPositionCollection;
 END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
-/// \endcond
 
-/// \ingroup (interfaces)
-/// \interface ILinearRing
+/// \ingroup (OSGeoFDOGeometry)
+/// \interface OSGeo::FDO::Geometry::ILinearRing
 /// \brief
 /// The ILinearRing class is a linear ring helper type.
 /// The shape of ILinearRing is the set of positions defined by the contained collection, 

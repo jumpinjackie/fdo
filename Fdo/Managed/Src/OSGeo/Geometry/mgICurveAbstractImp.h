@@ -23,14 +23,13 @@
 
 class FdoICurveAbstract;
 
-/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 public __gc __interface IDirectPosition;
 END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
-/// \endcond
 
+/// \ingroup (OSGeoFDOGeometry)
 /// \brief
 /// The ICurveAbstractImp class is a curve Geometry type (concrete). ICurveAbstractImp is the most general curve type.  
 private __gc class ICurveAbstractImp :

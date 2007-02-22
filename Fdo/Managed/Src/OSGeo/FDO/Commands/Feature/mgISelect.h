@@ -22,17 +22,15 @@
 #include "FDO\Commands\Locking\mgLockType.h"
 #include "FDO\Commands\Locking\mgLockStrategy.h"
 
-/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 public __gc __interface ILockConflictReader;
 END_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 public __gc __interface IFeatureReader;
-/// \endcond
 
-/// \ingroup (interfaces)
-/// \interface ISelect
+/// \ingroup (OSGeoFDOCommandsFeature)
+/// \interface OSGeo::FDO::Commands::Feature::ISelect
 /// \brief
 /// The ISelect interface defines the Select command, which queries for features
 /// of a given class that match the specified criteria. Input to the select

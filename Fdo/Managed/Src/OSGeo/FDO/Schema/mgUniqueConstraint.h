@@ -24,6 +24,7 @@ class FdoUniqueConstraint;
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// UniqueConstraint can be used to specify that a property or list of properties taken together 
 /// have unique values for all objects of that class in a datastore. A unique constraint that is based on a list 

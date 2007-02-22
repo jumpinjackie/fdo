@@ -25,6 +25,7 @@ class FdoIGeometricAggregateAbstract;
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 
+/// \ingroup (OSGeoFDOGeometry)
 /// \brief
 /// The IGeometricAggregateAbstractImp class is a default implementation of the aggregate Geometry type.
 /// IGeometricAggregateAbstract is a single Geometry that is a collection of other geometries.

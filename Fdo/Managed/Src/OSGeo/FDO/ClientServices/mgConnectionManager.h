@@ -24,9 +24,10 @@ class FdoConnectionManager;
 
 BEGIN_NAMESPACE_OSGEO_FDO_CLIENTSERVICES
 
+/// \ingroup (OSGeoFDOClientServices)
 /// \brief
 /// The ConnectionManager class supports dynamic creation of connection objects 
-/// given a provider name. Derives from ConnectionManager interface.
+/// given a provider name. Derives from the IConnectionManager interface.
 ///
 /// \remarks
 /// In order for dynamic creation to work, each dynamic link library, shared library, 

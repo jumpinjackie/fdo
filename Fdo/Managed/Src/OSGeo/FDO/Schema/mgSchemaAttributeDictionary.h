@@ -22,6 +22,7 @@ class FdoSchemaAttributeDictionary;
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// The SchemaAttributeDictionary class maintains a dictionary of named 
 /// attributes that provide a generic extensibility mechanism for objects

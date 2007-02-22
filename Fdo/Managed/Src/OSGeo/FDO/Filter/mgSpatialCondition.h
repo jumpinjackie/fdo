@@ -31,6 +31,7 @@ END_NAMESPACE_OSGEO_FDO_EXPRESSION
 BEGIN_NAMESPACE_OSGEO_FDO_FILTER
 public __gc __interface IFilterProcessor;
 
+/// \ingroup (OSGeoFDOFilter)
 /// \brief
 /// The SpatialCondition class derives from GeometricCondition and can be used
 /// to test whether the value of a geometric property (referenced using the name

@@ -35,6 +35,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_XML
 public __gc class XmlFeatureFlags;
 public __gc class XmlFeaturePropertyReader;
 
+/// \ingroup (OSGeoFDOXml)
 /// \brief
 /// XmlFeatureReader reads GML format features from a XML
 /// document. The reading is done procedurally, rather than through events.

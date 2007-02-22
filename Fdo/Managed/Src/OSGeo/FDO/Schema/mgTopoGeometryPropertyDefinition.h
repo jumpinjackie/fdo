@@ -24,6 +24,7 @@ class FdoTopoGeometryPropertyDefinition;
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// TopoGeometryPropertyDefinition derives from
 /// GeometricPropertyDefinition, but it has behavior of both geometry and

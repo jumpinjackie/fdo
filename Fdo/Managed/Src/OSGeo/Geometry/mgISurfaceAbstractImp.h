@@ -25,6 +25,7 @@ class FdoISurfaceAbstract;
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 
+/// \ingroup (OSGeoFDOGeometry)
 /// \brief
 /// The ISurfaceAbstractImp class is a surface (concrete) Geometry type.
 public __gc class ISurfaceAbstractImp :

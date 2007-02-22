@@ -21,16 +21,14 @@
 
 #include "mgIGeometricAggregateAbstract.h"
 
-/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 public __gc __interface ICurveString;
 END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
-/// \endcond
 
-/// \ingroup (interfaces)
-/// \interface IMultiCurveString
+/// \ingroup (OSGeoFDOGeometry)
+/// \interface OSGeo::FDO::Geometry::IMultiCurveString
 /// \brief
 /// The IMultiCurveString class is a multi-CurveString collection Geometry type.
 /// The curves contained here do not have to

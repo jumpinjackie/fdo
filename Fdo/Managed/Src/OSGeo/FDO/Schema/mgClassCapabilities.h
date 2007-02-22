@@ -30,6 +30,7 @@ enum FdoLockType;
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 public __gc class ClassDefinition;
 
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// The ClassCapabilites class describes various capabilities
 /// for a particular FDO Class Definition and an FDO Provider datastore.

@@ -26,6 +26,7 @@ class FdoISQLCommand;
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SQL
 public __gc __interface ISQLDataReader;
 
+/// \ingroup (OSGeoFDOCommandsSQL)
 /// \brief
 /// The ISQLCommandImp class is a concrete implementation of ISQLCommand.
 /// The ISQLCommand interface defines the SQL command, which supports the

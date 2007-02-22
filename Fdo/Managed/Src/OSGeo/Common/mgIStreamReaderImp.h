@@ -25,6 +25,7 @@ class FdoIStreamReader;
 
 BEGIN_NAMESPACE_OSGEO_COMMON
 
+/// \ingroup (OSGeoFDOCommon)
 /// \brief
 ///     The IStreamReader class is a top level interface for stream reader classes. 
 ///     The API it provides allows the user to read large streams of data in blocks of items. 

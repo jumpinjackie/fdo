@@ -29,8 +29,8 @@ END_NAMESPACE_OSGEO_FDO_COMMANDS
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
-/// \ingroup (interfaces)
-/// \interface ILongTransactionConflictDirectiveEnumerator
+/// \ingroup (OSGeoFDOCommandsLongTransaction)
+/// \interface OSGeo::FDO::Commands::LongTransaction::ILongTransactionConflictDirectiveEnumerator
 /// \brief
 /// The ILongTransactionConflictDirective interface is used to specify how
 /// conflict should be resolved for a particular object.

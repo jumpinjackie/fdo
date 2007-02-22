@@ -28,6 +28,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 public __gc class ClassDefinition;
 public __gc class DataPropertyDefinition;
 
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// ObjectPropertyDefinition class derives PropertyDefinition and represents
 /// containment of an object or a collection of objects within another class.

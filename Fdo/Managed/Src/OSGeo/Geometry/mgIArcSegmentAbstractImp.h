@@ -29,6 +29,7 @@ END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 
+/// \ingroup (OSGeoFDOGeometry)
 /// \brief
 /// The IArcSegmentAbstract class is an arc curve segment (abstract)
 public __gc class IArcSegmentAbstractImp :

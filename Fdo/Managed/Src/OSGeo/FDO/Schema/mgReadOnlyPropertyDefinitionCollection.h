@@ -24,6 +24,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 public __gc class PropertyDefinition;
 public __gc class PropertyDefinitionCollection;
 
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// The ReadOnlyPropertyDefinitionCollection class represents a collection of PropertyDefinition objects.
 [System::Reflection::DefaultMemberAttribute("RealTypeItem")]

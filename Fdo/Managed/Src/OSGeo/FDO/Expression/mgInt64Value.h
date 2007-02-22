@@ -30,6 +30,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 
 public __gc __interface IExpressionProcessor;
 
+/// \ingroup (OSGeoFDOExpression)
 /// \brief
 /// The Int64Value class derives from DataValue and represents a 64-bit signed integer value.
 public __gc class Int64Value : public NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue

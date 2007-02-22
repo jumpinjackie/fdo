@@ -25,6 +25,7 @@ class FdoLogicalOperator;
 
 BEGIN_NAMESPACE_OSGEO_FDO_FILTER
 
+/// \ingroup (OSGeoFDOFilter)
 /// \brief
 /// The LogicalOperator is an abstract base class. BinaryLogicalOperator and
 /// UnaryLogicalOperator derive from the LogicalOperator class.

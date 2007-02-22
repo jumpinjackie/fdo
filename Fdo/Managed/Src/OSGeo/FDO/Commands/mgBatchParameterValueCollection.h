@@ -23,6 +23,7 @@ class FdoBatchParameterValueCollection;
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS
 public __gc class ParameterValueCollection;
 
+/// \ingroup (OSGeoFDOCommands)
 /// \brief
 /// The BatchParameterValueCollection class represents a collection of parameter value collections that is used for
 /// optimized batch inserts.

@@ -20,13 +20,11 @@
 
 #include "FDO\Commands\mgICommand.h"
 
-/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE
 public __gc __interface IMeasureUnitReader;
-/// \endcond
 
-/// \ingroup (interfaces)
-/// \interface IGetMeasureUnits
+/// \ingroup (OSGeoFDOCommandsUnitOfMeasure)
+/// \interface OSGeo::FDO::Commands::UnitOfMeasure::IGetMeasureUnits
 /// \brief
 /// The IGetMeasureUnits interface defines the GetMeasureUnits command, which
 /// enumerates the existing measurement units.

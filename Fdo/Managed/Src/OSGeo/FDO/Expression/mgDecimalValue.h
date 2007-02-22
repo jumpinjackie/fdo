@@ -30,6 +30,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 
 public __gc __interface IExpressionProcessor;
 
+/// \ingroup (OSGeoFDOExpression)
 /// \brief
 /// The DecimalValue class derives from DataValue and represents a decimal value.
 public __gc class DecimalValue : public NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue

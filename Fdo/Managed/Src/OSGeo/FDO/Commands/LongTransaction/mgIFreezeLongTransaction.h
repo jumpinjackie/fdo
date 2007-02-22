@@ -23,8 +23,8 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
-/// \ingroup (interfaces)
-/// \interface IFreezeLongTransaction
+/// \ingroup (OSGeoFDOCommandsLongTransaction)
+/// \interface OSGeo::FDO::Commands::LongTransaction::IFreezeLongTransaction
 /// \brief
 /// The IFreezeLongTransaction interface defines the FreezeLongTransaction
 /// command, which freezes or thaws a long transaction. When a long transaction

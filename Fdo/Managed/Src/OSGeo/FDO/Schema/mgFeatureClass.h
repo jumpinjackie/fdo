@@ -26,6 +26,7 @@ class FdoFeatureClass;
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 public __gc class GeometricPropertyDefinition;
 
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// The FeatureClass class can be used to represent spatial or non-spatial features.
 /// Spatial features must have at lease one geometric property. FeatureClass

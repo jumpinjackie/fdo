@@ -18,9 +18,11 @@
 
 #pragma once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOExpression)
 /// \brief
 /// The UnaryOperations enumeration lists the unary expression operations available.
 [System::FlagsAttribute]
@@ -29,6 +31,7 @@ public __value enum UnaryOperations
     /// Negate the expression
 	UnaryOperations_Negate = FdoUnaryOperations_Negate
 };
+
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_EXPRESSION
-
-
+/// \endcond

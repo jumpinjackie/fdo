@@ -22,8 +22,8 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
-/// \ingroup (interfaces)
-/// \interface IRollbackLongTransaction
+/// \ingroup (OSGeoFDOCommandsLongTransaction)
+/// \interface OSGeo::FDO::Commands::LongTransaction::IRollbackLongTransaction
 /// \brief
 /// The IRollbackLongTransaction interface defines the RollbackLongTransaction
 /// command, which allows a user to execute rollback operations on a long

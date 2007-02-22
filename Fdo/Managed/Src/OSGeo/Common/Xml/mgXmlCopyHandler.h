@@ -30,6 +30,7 @@ BEGIN_NAMESPACE_OSGEO_COMMON_XML
 public __gc class XmlWriter;
 public __gc class XmlAttributeCollection;
 
+/// \ingroup (OSGeoFDOCommonXml)
 /// \brief
 /// XmlCopyHandler can be used to copy a set of elements from one XML
 /// document to another. It can be created and set as the SAX Handler for an XML Reader

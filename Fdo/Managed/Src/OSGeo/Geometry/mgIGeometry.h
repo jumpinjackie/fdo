@@ -21,16 +21,14 @@
 
 class FdoGeometryCollection;
 
-/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 public __gc __interface IEnvelope;
 END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
-/// \endcond
 
-/// \ingroup (interfaces)
-/// \interface IGeometry
+/// \ingroup (OSGeoFDOGeometry)
+/// \interface OSGeo::FDO::Geometry::IGeometry
 /// \brief
 /// The IGeometry class defines the properties and methods common to all geometric
 /// types.  IGeometry is an abstract type.

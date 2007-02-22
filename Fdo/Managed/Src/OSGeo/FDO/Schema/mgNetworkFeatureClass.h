@@ -26,6 +26,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 public __gc class DataPropertyDefinition;
 public __gc class AssociationPropertyDefinition;
 
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// NetworkFeature is an abstract class that derives from FeatureClass and is a base 
 /// for NetworkNodeFeature and NetworkLinkFeature.

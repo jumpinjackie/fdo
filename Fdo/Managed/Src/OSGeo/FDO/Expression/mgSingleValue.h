@@ -30,6 +30,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 
 public __gc __interface IExpressionProcessor;
 
+/// \ingroup (OSGeoFDOExpression)
 /// \brief
 /// The SingleValue class derives from DataValue and represents a single precision floating point number.
 public __gc class SingleValue : public NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue

@@ -18,9 +18,11 @@
 
 #pragma  once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// The SchemaElementState enumeration defines the current state of the schema element
 public __value enum SchemaElementState
@@ -41,6 +43,6 @@ public __value enum SchemaElementState
 	SchemaElementState_Unchanged = FdoSchemaElementState_Unchanged
 };
 
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_SCHEMA
-
-
+/// \endcond

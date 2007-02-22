@@ -29,6 +29,7 @@ class FdoReadOnlySignatureDefinitionCollection;
 using namespace NAMESPACE_OSGEO_FDO_SCHEMA;
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 
+/// \ingroup (OSGeoFDOConnectionsCapabilities)
 /// \brief
 /// The FDO SignatureDefinition class allows the signatures of FDO FunctionDefinition objects to be defined.
 public __gc class SignatureDefinition : public NAMESPACE_OSGEO_RUNTIME::Disposable
@@ -73,6 +74,7 @@ public private:
 // -----------------------------------------------------------------------------------------------------
 
 
+/// \ingroup (OSGeoFDOConnectionsCapabilities)
 /// \brief
 /// SignatureDefinitionCollection is a collection of SignatureDefinition elements.
 ///
@@ -327,6 +329,7 @@ protected:
 
 // -----------------------------------------------------------------------------------------------------
 
+/// \ingroup (OSGeoFDOConnectionsCapbilities)
 /// \brief
 /// The ReadOnlySignatureDefinitionCollection class represents a collection of ReadOnlySignatureDefinition objects.
 [System::Reflection::DefaultMemberAttribute("RealTypeItem")]
@@ -490,7 +493,7 @@ public:
     /// \brief
     /// Gets the item in the collection at the specified index. 
     /// 
-    /// \param index 
+    /// \param name 
     /// The name of the item in the collection.
     /// 
     /// \return

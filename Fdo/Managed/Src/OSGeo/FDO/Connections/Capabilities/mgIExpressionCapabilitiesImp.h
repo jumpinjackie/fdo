@@ -24,6 +24,7 @@ class FdoIExpressionCapabilities;
 
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 
+/// \ingroup (OSGeoFDOConnectionsCapabilities)
 /// \brief
 /// The IExpressionCapbilities interface declares the feature provider's level
 /// of support for Expression classes.

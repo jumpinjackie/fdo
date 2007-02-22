@@ -27,6 +27,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 public __gc class Expression;
 public __gc __interface IExpressionProcessor;
 
+/// \ingroup (OSGeoFDOExpression)
 /// \brief
 /// The UnaryExpression class derives from Expression and allows negation of
 /// arithmetic expressions.

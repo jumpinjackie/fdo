@@ -22,8 +22,8 @@ BEGIN_NAMESPACE_OSGEO_COMMON_XML
 public __gc class XmlAttributeCollection;
 public __gc class XmlSaxContext;
 
-/// \ingroup (interfaces)
-/// \interface IXmlSaxHandler
+/// \ingroup (OSGeoFDOCommonXml)
+/// \interface OSGeo::FDO::Common::Xml::IXmlSaxHandler
 /// \brief
 /// IXmlSaxHandler defines the SAX Handler callback interface.
 /// It is not an interface in the strict sense, since each function has a 

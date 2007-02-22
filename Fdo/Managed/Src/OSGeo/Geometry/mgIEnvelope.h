@@ -21,8 +21,8 @@
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 
-/// \ingroup (interfaces)
-/// \interface IEnvelope
+/// \ingroup (OSGeoFDOGeometry)
+/// \interface OSGeo::FDO::Geometry::IEnvelope
 /// \brief
 /// The IEnvelope class is a three-dimensional, axis-aligned box.  This is a
 /// helper type for Geometries, and does not itself inherit from IGeometry.

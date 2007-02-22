@@ -18,9 +18,11 @@
 
 #pragma once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_FILTER
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOFilter)
 /// \brief
 /// The DistanceOperations enumeration lists the distance conditions available.
 [System::FlagsAttribute]
@@ -34,6 +36,7 @@ public __value enum DistanceOperations
     /// distance of a literal geometric value.
 	DistanceOperations_Within = FdoDistanceOperations_Within
 };
+
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_FILTER
-
-
+/// \endcond

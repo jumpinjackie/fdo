@@ -30,6 +30,7 @@ END_NAMESPACE_OSGEO_FDO_XML
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 public __gc class ClassCollection;
 
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// The FeatureSchema class derives from SchemaElement.
 /// A feature schema contains all of the classes and relationships

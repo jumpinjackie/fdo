@@ -25,6 +25,7 @@ class FdoXmlClassMapping;
 BEGIN_NAMESPACE_OSGEO_FDO_XML
 public __gc class XmlElementMappingCollection;
 
+/// \ingroup (OSGeoFDOXml)
 /// \brief
 /// XmlClassMapping describes GML to FDO mappings for a particular FDO class
 /// Only mappings that cannot be represented in FDO are described.

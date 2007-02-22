@@ -22,8 +22,8 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT
 
-/// \ingroup (interfaces)
-/// \interface ISpatialContextReader
+/// \ingroup (OSGeoFDOCommandsSpatialContext)
+/// \interface OSGeo::FDO::Commands::SpatialContext::ISpatialContextReader
 /// \brief
 /// ISpatialContextReader interface provides forward-only, read-only
 /// functionality for enumerating spatial contexts. A reference to an

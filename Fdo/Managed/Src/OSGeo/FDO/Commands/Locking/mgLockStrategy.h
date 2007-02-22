@@ -18,9 +18,11 @@
 
 #pragma once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOCommandsLocking)
 /// \brief
 /// The LockStrategy enumeration defines how lock acquisition should proceed.
 public __value enum LockStrategy
@@ -32,6 +34,6 @@ public __value enum LockStrategy
 	LockStrategy_Partial = FdoLockStrategy_Partial
 };
 
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
-
-
+/// \endcond

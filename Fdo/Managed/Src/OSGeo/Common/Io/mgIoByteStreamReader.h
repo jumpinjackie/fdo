@@ -25,6 +25,7 @@ class FdoIoByteStreamReader;
 BEGIN_NAMESPACE_OSGEO_COMMON_IO
 public __gc class IoStream;
 
+/// \ingroup (OSGeoFDOCommonIo)
 /// \brief
 ///     IoByteStreamReader is an FDO reader for a Byte stream.
 public __sealed __gc class IoByteStreamReader : public NAMESPACE_OSGEO_COMMON::IStreamReaderImp

@@ -20,19 +20,17 @@
 
 #include "FDO\mgIConnectionManager.h"
 
-class IConnectionManager;
-
-/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS
 public __gc __interface IConnection;
 END_NAMESPACE_OSGEO_FDO_CONNECTIONS
 
 BEGIN_NAMESPACE_OSGEO_FDO
-/// \endcond
 
+/// \ingroup (OSGeoFDO)
 /// \brief
-/// The IConnectionManagerImp class supports dynamic creation of connection objects 
-/// given a provider name. Derives from IConnectionManager interface.
+/// The IConnectionManagerImp class is a concrete implementation of IConnectionManager.
+/// IConnectionManager supports dynamic creation of connection objects 
+/// given a provider name. 
 
 /// \remarks
 /// In order for dynamic creation to work, each dynamic link library, shared library, 

@@ -28,6 +28,7 @@ END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 
+/// \ingroup (OSGeoFDOGeometry)
 /// \brief
 /// The IRingAbstractImp class is a ring Geometry helper type (abstract). FdoIRingAbstract is the most general ring type.
 /// It is similar to CurveAbstract, but is always closed.

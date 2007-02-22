@@ -26,6 +26,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 
 public __gc __interface IExpressionProcessor;
 
+/// \ingroup (OSGeoFDOExpression)
 /// \brief
 /// The Parameter class derives from ValueExpression and represents a
 /// substitution parameter in the expression. Parameters are represented by a

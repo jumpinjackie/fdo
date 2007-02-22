@@ -25,9 +25,10 @@ class FdoIDataStoreReader;
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE
 public __gc __interface IDataStorePropertyDictionary;
 
+/// \ingroup (OSGeoFDOCommandsDataStore)
 /// \brief
 /// The IDataStoreReaderImp class is a concrete implementation class of the
-/// IDataStoreReader interface. IDataStoreReaderImp provides a forward-only, read-only iterator
+/// IDataStoreReader interface. IDataStoreReader provides a forward-only, read-only iterator
 /// for reading feature data.  A reference to an IDataStoreReader is returned
 /// from the IListDataStores command. Because the initial position of the
 /// IDataStoreReader is prior to the first item, you must call

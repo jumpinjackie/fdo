@@ -24,6 +24,7 @@ class FdoITopologyCapabilities;
 
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 
+/// \ingroup (OSGeoFDOConnectionsCapabilities)
 /// \brief
 /// FDO supports properties that inform the client code about capabilities that
 /// may vary between providers. 

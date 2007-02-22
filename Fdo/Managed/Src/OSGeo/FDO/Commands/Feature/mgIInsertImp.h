@@ -35,6 +35,7 @@ END_NAMESPACE_OSGEO_FDO_COMMANDS
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 public __gc __interface IFeatureReader;
 
+/// \ingroup (OSGeoFDOCommandsFeature)
 /// \brief
 /// The IInsertImp class is a concrete implementation class for interface IInsert.
 /// The IInsert interface defines the Insert command, which inserts a new

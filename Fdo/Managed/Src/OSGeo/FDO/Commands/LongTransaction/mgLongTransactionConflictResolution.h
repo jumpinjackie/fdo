@@ -18,9 +18,11 @@
 
 #pragma  once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOCommandsLongTransaction)
 /// \brief
 /// The LongTransactionConflictResolution enumeration defines the list of
 /// available options for resolving conflict.
@@ -38,6 +40,6 @@ public __value enum LongTransactionConflictResolution
 	LongTransactionConflictResolution_Parent = FdoLongTransactionConflictResolution_Parent
 };
 
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
-
-
+/// \endcond

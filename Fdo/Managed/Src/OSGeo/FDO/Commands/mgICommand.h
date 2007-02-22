@@ -18,7 +18,6 @@
 
 #pragma once
 
-/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS
 public __gc __interface IConnection;
 public __gc __interface ITransaction;
@@ -26,10 +25,9 @@ END_NAMESPACE_OSGEO_FDO_CONNECTIONS
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS
 public __gc class ParameterValueCollection;
-/// \endcond
 
-/// \ingroup (interfaces)
-/// \interface ICommand
+/// \ingroup (OSGeoFDOCommands)
+/// \interface OSGeo::FDO::Commands::ICommand
 /// \brief
 /// The ICommand interface defines behavior common to all commands in FDO. In
 /// order to be executed, commands must have an association to a connection.

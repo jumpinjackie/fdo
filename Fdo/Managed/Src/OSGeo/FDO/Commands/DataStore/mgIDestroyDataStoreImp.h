@@ -27,8 +27,9 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE
 public __gc __interface IDataStorePropertyDictionary;
 
 /// \brief
+/// \ingroup (OSGeoFDOCommandsDataStore)
 /// The IDestroyDataStoreImp class is a concrete implementation of interface IDestroyDataStore.
-/// The IDestroyDataStoreImp class defines the destroy datastore command,
+/// The IDestroyDataStore class defines the destroy datastore command,
 /// which can be used to create new provider specific datastores. The input is provided
 /// through a dictionary of name value pairs that is provider dependant. 
 private __gc class IDestroyDataStoreImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 

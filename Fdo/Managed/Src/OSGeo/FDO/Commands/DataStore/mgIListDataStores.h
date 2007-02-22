@@ -20,13 +20,11 @@
 
 #include "FDO\Commands\mgICommand.h"
 
-/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE
 public __gc __interface IDataStoreReader;
-/// \endcond
 
-/// \ingroup (interfaces)
-/// \interface IListDataStores
+/// \ingroup (OSGeoFDOCommandsDataStore)
+/// \interface OSGeo::FDO::Commands::DataStore::IListDataStores
 /// \brief
 /// The IListDataStores interface defines the list datastores command,
 /// which provides a way to get a list of datastores at a particular server. 

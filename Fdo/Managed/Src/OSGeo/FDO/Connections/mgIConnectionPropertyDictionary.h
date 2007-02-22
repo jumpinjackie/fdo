@@ -20,8 +20,8 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS
 
-/// \ingroup (interfaces)
-/// \interface IConnectionPropertyDictionary
+/// \ingroup (OSGeoFDOConnections)
+/// \interface OSGeo::FDO::Connections::IConnectionPropertyDictionary
 /// \brief
 /// The IConnectionPropertyDictionary exposes a dictionary style interface
 /// to the connection properties. The properties required to establish a connection

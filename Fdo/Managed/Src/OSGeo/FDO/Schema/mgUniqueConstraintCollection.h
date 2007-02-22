@@ -24,6 +24,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 
 public __gc class UniqueConstraint;
 
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// The UniqueConstraintCollection class represents a collection of UniqueConstraint objects.
 [System::Reflection::DefaultMemberAttribute("RealTypeItem")]

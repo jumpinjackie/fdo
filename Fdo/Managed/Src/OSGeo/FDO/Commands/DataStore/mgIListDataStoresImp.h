@@ -27,6 +27,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE
 public __gc __interface IDataStoreReader;
 
 /// \brief
+/// \ingroup (OSGeoFDOCommandsDataStore)
 /// The IListDataStoresImp class is a concrete implementation of interface IListDataStores.
 /// The IListDataStores interface defines the list datastores command,
 /// which provides a way to get a list of datastores at a particular server. 

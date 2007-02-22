@@ -21,7 +21,6 @@
 #include "FDO\Schema\mgDataType.h"
 #include "FDO\Schema\mgPropertyType.h"
 
-/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 public __gc class LOBValue;
 END_NAMESPACE_OSGEO_FDO_EXPRESSION
@@ -31,10 +30,9 @@ public __gc __interface IStreamReader;
 END_NAMESPACE_OSGEO_COMMON
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SQL
-/// \endcond
 
-/// \ingroup (interfaces)
-/// \interface ISQLDataReader
+/// \ingroup (OSGeoFDOCommandsSQL)
+/// \interface OSGeo::FDO::Commands::SQL::ISQLDataReader
 /// \brief
 /// The ISQLDataReader interface provides a forward-only, read-only
 /// iterator for reading relational table data. A reference to an

@@ -25,6 +25,7 @@ class FdoNetworkLayerClass;
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// NetworkLayerClass derives from ClassDefinition and can be used to represent a network layer.
 /// <p><b>Note:</b> <span class="red_text">This Help topic is provided for informational use only. There is

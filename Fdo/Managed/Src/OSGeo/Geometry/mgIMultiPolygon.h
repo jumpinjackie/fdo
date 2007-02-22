@@ -20,16 +20,14 @@
 
 #include "mgIGeometricAggregateAbstract.h"
 
-/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 public __gc __interface IPolygon;
 END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
-/// \endcond
 
-/// \ingroup (interfaces)
-/// \interface IMultiPolygon
+/// \ingroup (OSGeoFDOGeometry)
+/// \interface OSGeo::FDO::Geometry::IMultiPolygon
 /// \brief
 /// The IMultiPolygon class is a multi-polygon aggregate Geometry type.
 public __gc __interface IMultiPolygon : public NAMESPACE_OSGEO_GEOMETRY::IGeometricAggregateAbstract

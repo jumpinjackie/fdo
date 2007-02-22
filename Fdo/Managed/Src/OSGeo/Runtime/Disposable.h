@@ -22,6 +22,7 @@ class FdoIDisposable;
 
 BEGIN_NAMESPACE_OSGEO_RUNTIME
 
+/// \ingroup (OSGeoFDORuntime)
 /// \brief
 ///  
 ///     This class should be used as a base class for the managed classes

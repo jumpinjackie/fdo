@@ -31,8 +31,8 @@ BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 
 public __value enum SchemaElementNameType;
 
-/// \ingroup (interfaces)
-/// \interface ISchemaCapabilities
+/// \ingroup (OSGeoFDOConnectionsCapabilities)
+/// \interface OSGeo::FDO::Connections::Capabilities::ISchemaCapabilities
 /// \brief
 /// The ISchemaCapbilities interface declares the feature provider's level 
 /// of support for the Feature Schema.

@@ -18,14 +18,12 @@
 
 #pragma once
 
-/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS
 
 public __gc __interface IConnection;
-/// \endcond
 
-/// \ingroup (interfaces)
-/// \interface ITransaction
+/// \ingroup (OSGeoFDOConnections)
+/// \interface OSGeo::FDO::Connections::ITransaction
 /// \brief
 /// The ITransaction interface represents a transaction to be performed in a DataStore, and is implemented
 /// by feature providers that support transactions.

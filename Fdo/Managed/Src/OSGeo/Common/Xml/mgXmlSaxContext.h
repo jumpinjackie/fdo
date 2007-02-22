@@ -26,6 +26,7 @@ BEGIN_NAMESPACE_OSGEO_COMMON_XML
 
 public __gc class XmlReader;
 
+/// \ingroup (OSGeoFDOCommonXml)
 /// \brief
 /// XmlSaxContext provides contextual information to the 
 /// SaxHandler callback implementations when an XML document parse

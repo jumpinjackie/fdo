@@ -18,9 +18,11 @@
 
 #pragma once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOCommandsLocking)
 /// \brief
 /// The ConflictType enumeration defines conflict types required to
 /// identify the lock type of a conflict reported with the lock conflict reader.
@@ -43,6 +45,8 @@ public __value enum ConflictType
 	ConflictType_Unsupported = FdoConflictType_Unsupported
 };
 
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
+/// \endcond
 
 

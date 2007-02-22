@@ -26,6 +26,7 @@ class FdoIGetSpatialContexts;
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT
 public __gc __interface ISpatialContextReader;
 
+/// \ingroup (OSGeoFDOCommandsSpatialContext)
 /// \brief
 /// The IGetSpatialContextsImp class is a concrete implementation of IGetSpatialContexts.
 /// The IGetSpatialContexts interface defines the GetSpatialContexts command,

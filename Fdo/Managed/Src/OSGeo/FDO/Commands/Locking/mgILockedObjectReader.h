@@ -26,8 +26,8 @@ END_NAMESPACE_OSGEO_FDO_COMMANDS
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 
-/// \ingroup (interfaces)
-/// \interface ILockedObjectReader
+/// \ingroup (OSGeoFDOCommandsLocking)
+/// \interface OSGeo::FDO::Commands::Locking::ILockedObjectReader
 /// \brief
 /// The ILockedObjectReader interface provides forward-only, read-only
 /// functionality to identify lock information for a set of objects.

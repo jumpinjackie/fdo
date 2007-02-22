@@ -24,6 +24,7 @@ class FdoXmlSpatialContextFlags;
 
 BEGIN_NAMESPACE_OSGEO_FDO_XML
 
+/// \ingroup (OSGeoFDOXml)
 /// \brief
 /// FdoXmlSpatialContextFlags extends FdoXmlFlags to specify flags specific to Spatial Contexts.
 public __gc class XmlSpatialContextFlags : public NAMESPACE_OSGEO_FDO_XML::XmlFlags

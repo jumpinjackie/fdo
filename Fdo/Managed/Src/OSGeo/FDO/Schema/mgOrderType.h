@@ -18,9 +18,11 @@
 
 #pragma  once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// The OrderType enumeration list contains two values to indicate if the
 /// object collection is to be ordered in ascending or descending fashion.
@@ -33,6 +35,6 @@ public __value enum OrderType
 	OrderType_Descending = FdoOrderType_Descending
 };
 
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_SCHEMA
-
-
+/// \endcond

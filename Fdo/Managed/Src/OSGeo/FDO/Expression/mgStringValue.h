@@ -30,6 +30,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 
 public __gc __interface IExpressionProcessor;
 
+/// \ingroup (OSGeoFDOExpression)
 /// \brief
 /// The StringValue class derives from DataValue and represents a literal string.
 public __gc class StringValue : public NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue

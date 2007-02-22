@@ -24,6 +24,7 @@ class FdoILockOwnersReader;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 
+/// \ingroup (OSGeoFDOCommandsLocking)
 /// \brief
 /// The ILockOwnersReaderImp class is a concrete implementation of ILockOwnersReader.
 /// The ILockOwnersReader interface provides forward-only, read-only functionality

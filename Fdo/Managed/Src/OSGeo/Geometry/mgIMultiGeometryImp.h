@@ -28,6 +28,7 @@ END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 
+/// \ingroup (OSGeoFDOGeometry)
 /// \brief
 /// The IMultiGeometryImp class is a heterogeneous MultiGeometry type.
 /// One MultiGeometry containing another MultiGeometry

@@ -38,6 +38,7 @@ BEGIN_NAMESPACE_OSGEO_COMMON_XML
 public __gc __interface IXmlSaxHandler;
 public __gc class XmlSaxContext;
 
+/// \ingroup (OSGeoFDOCommonXml)
 /// \brief
 /// XmlReader reads an XML document from a text or binary stream. As various
 /// document fragments are read, it calls the appropriate SAX Handler callback on 

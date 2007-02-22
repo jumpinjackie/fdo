@@ -27,6 +27,7 @@ class FdoICreateMeasureUnit;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE
 
+/// \ingroup (OSGeoFDOCommandsUnitOfMeasure)
 /// \brief
 /// The ICreateMeasureUnitImp class is a concrete implementation of ICreateMeasureUnit.
 /// The ICreateMeasureUnit interface defines the CreateMeasureUnit command,

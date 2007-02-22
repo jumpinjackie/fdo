@@ -52,6 +52,7 @@ END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 
+/// \ingroup (OSGeoFDOGeometry)
 /// \brief
 /// 
 /// The GeometryFactoryAbstract class is a factory (abstract, non-pure) for Geometry objects and Geometry helper objects.

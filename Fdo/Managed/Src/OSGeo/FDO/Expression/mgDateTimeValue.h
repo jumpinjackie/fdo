@@ -30,6 +30,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 
 public __gc __interface IExpressionProcessor;
 
+/// \ingroup (OSGeoFDOExpression)
 /// \brief
 /// The DateTimeValue class derives from DataValue and represents a date or time.
 public __gc class DateTimeValue : public NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue

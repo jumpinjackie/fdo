@@ -24,6 +24,7 @@ class FdoIConnection;
 
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS
 
+/// \ingroup (OSGeoFDOConnections)
 /// \brief
 /// The IConnection interface enables a feature provider to implement a
 /// connection class, which represents a unique session with a data

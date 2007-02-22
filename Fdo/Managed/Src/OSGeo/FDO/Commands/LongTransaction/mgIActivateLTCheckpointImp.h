@@ -25,6 +25,7 @@ class FdoIActivateLongTransactionCheckpoint;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
+/// \ingroup (OSGeoFDOCommandsLongTransaction)
 /// \brief
 /// The IActivateLongTransactionCheckpointImp class is a 
 /// concrete implementation of IActivateLongTransactionCheckpoint.

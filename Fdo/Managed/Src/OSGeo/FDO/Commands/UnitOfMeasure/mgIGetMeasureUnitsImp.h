@@ -26,6 +26,7 @@ class FdoIGetMeasureUnits;
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE
 public __gc __interface IMeasureUnitReader;
 
+/// \ingroup (OSGeoFDOCommandsUnitOfMeasure)
 /// \brief
 /// The IGetMeasureUnitsImp class is a concrete implementation of IGetMeasureUnits.
 /// The IGetMeasureUnits interface defines the GetMeasureUnits command, which

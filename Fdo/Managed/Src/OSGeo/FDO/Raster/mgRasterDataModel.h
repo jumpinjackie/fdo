@@ -26,6 +26,7 @@ class FdoRasterDataModel;
 
 BEGIN_NAMESPACE_OSGEO_FDO_RASTER
 
+/// \ingroup (OSGeoFDORaster)
 /// \brief
 /// The RasterDataModel specifies the data type and organization
 /// of raster data retrieved and stored. Using this class and the image

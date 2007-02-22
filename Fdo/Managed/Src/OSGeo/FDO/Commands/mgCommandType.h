@@ -18,9 +18,11 @@
 
 #pragma once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOCommands)
 /// \brief
 /// The CommandType enumeration defines the list of abstract commands a feature provider can support.
 public __value enum CommandType {
@@ -181,6 +183,8 @@ public __value enum CommandType {
 	CommandType_FirstProviderCommand = FdoCommandType_FirstProviderCommand
 };
 
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_COMMANDS
+/// \endcond
 
 

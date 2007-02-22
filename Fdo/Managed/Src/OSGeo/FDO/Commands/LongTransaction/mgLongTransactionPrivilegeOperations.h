@@ -18,9 +18,11 @@
 
 #pragma  once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOCommandsLongTransaction)
 /// \brief
 /// The LongTransactionPrivilegeOperations enumeration defines the list
 /// of available operations that can be performed by the
@@ -35,6 +37,6 @@ public __value enum LongTransactionPrivilegeOperations
 	LongTransactionPrivilegeOperations_Revoke = FdoLongTransactionPrivilegeOperations_Revoke
 };
 
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
-
-
+/// \endcond

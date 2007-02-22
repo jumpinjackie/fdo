@@ -20,8 +20,8 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
-/// \ingroup (interfaces)
-/// \interface ILongTransactionSetReader
+/// \ingroup (OSGeoFDOCommandsLongTransaction)
+/// \interface OSGeo::FDO::Commands::LongTransaction::ILongTransactionSetReader
 /// \brief
 /// The ILongTransactionSetReader interface provides forward only, read-only
 /// functionality for enumerating the versions in the long transaction selection

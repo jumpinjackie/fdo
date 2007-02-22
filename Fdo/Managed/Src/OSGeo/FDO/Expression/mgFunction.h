@@ -27,6 +27,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 public __gc class ExpressionCollection;
 public __gc __interface IExpressionProcessor;
 
+/// \ingroup (OSGeoFDOExpression)
 /// \brief
 /// The Function class derives from Expression and represents a function call. As
 /// such it defines the name of the function and the collection of arguments to

@@ -18,9 +18,11 @@
 
 #pragma  once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// The GeometricType enumeration categorizes all of the geometry types
 /// supported by FDO based on their geometric dimensionality.
@@ -41,6 +43,6 @@ public __value enum GeometricType
 	GeometricType_All = 0x01|0x02|0x04|0x08
 };
 
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_SCHEMA
-
-
+/// \endcond

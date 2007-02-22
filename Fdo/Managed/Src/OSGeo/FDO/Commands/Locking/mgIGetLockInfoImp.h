@@ -26,6 +26,7 @@ class FdoIGetLockInfo;
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 public __gc __interface ILockedObjectReader;
 
+/// \ingroup (OSGeoFDOCommandsLocking)
 /// \brief
 /// The IGetLockInfoImp class is a concrete implementation of IGetLockedObjects.
 /// The IGetLockInfo interface defines the GetLockInfo command, which gets a

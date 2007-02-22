@@ -24,6 +24,7 @@ class IProviderRegistry;
 
 BEGIN_NAMESPACE_OSGEO_FDO
 
+/// \ingroup (OSGeoFDO)
 /// \brief
 ///  
 /// The IProviderRegistryImp class is a concrete implementation of IProviderRegistry.

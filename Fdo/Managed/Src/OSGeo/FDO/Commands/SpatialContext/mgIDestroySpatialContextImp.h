@@ -25,6 +25,7 @@ class FdoIDestroySpatialContext;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT
 
+/// \ingroup (OSGeoFDOCommandsSpatialContext)
 /// \brief
 /// The IDestroySpatialContextImp class is a concrete implementation of IDestroySpatialContext.
 /// The IDestroySpatialContext interface defines the DestroySpatialContext

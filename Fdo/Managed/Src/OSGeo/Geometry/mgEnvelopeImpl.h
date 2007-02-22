@@ -30,6 +30,7 @@ END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 
+/// \ingroup (OSGeoFDOGeometry)
 /// \brief
 /// The EnvelopeImpl class is a default implementation of IEnvelope.
 /// EnvelopeImpl implements accessors from IEnvelope, matching mutators, and simple data members.

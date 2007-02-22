@@ -20,13 +20,11 @@
 
 #include "FDO\Commands\mgICommand.h"
 
-/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT
 public __gc __interface ISpatialContextReader;
-/// \endcond
 
-/// \ingroup (interfaces)
-/// \interface IGetSpatialContexts
+/// \ingroup (OSGeoFDOCommandsSpatialContext)
+/// \interface OSGeo::FDO::Commands::SpatialContext::IGetSpatialContexts
 /// \brief
 /// IGetSpatialContexts interface defines the GetSpatialContexts command,
 /// which enumerates the existing spatial contexts.

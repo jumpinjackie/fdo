@@ -33,6 +33,7 @@ class FdoSpatialUtility;
 
 BEGIN_NAMESPACE_OSGEO_SPATIAL
 
+/// \ingroup (OSGeoFDOSpatial)
 /// \brief
 /// A Spatial utility class.
 public __gc __sealed class SpatialUtility

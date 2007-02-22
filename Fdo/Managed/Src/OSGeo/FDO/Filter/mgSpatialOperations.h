@@ -18,9 +18,11 @@
 
 #pragma once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_FILTER
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOFilter)
 /// \brief
 /// The SpatialOperations enumeration lists the spatial conditions available.
 [System::FlagsAttribute]
@@ -72,6 +74,6 @@ public __value enum SpatialOperations
 
 };
 
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_FILTER
-
-
+/// \endcond

@@ -28,6 +28,7 @@ END_NAMESPACE_OSGEO_FDO_EXPRESSION
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// PropertyValueConstraintList is used to specify a list of allowed values for a particular property. 
 /// It can be used for all data property types except for Boolean, BLOB, or CLOB.

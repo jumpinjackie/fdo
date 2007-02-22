@@ -26,6 +26,7 @@ class FdoXmlSpatialContextReader;
 BEGIN_NAMESPACE_OSGEO_FDO_XML
 public __gc class XmlSpatialContextFlags;
 
+/// \ingroup (OSGeoFDOXml)
 /// \brief
 /// XmlSpatialContextReader reads Spatial Contexts from an XML 
 /// document. Unlike other XML Readers, the reading is done procedurally, 

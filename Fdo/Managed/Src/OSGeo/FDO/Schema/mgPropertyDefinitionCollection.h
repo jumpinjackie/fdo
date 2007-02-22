@@ -24,6 +24,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 public __gc class PropertyDefinition;
 public __gc class SchemaElement;
 
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// The PropertyDefinitionCollection class represents a collection of PropertyDefinition objects.
 [System::Reflection::DefaultMemberAttribute("RealTypeItem")]

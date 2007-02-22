@@ -29,6 +29,7 @@ END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 
+/// \ingroup (OSGeoFDOGeometry)
 /// \brief
 /// The ILineStringSegmentImp class is a LineString curve segment type.  
 /// The shape of ILineStringSegmentImp is the set of positions defined by the contained collection, 

@@ -31,6 +31,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_FILTER
 
 public __gc __interface IFilterProcessor;
 
+/// \ingroup (OSGeoFDOFilter)
 /// \brief
 /// The NullCondition class derives from SearchCondition and can be used to test
 /// if the value of a specified data property is null.

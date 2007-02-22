@@ -24,6 +24,7 @@ class FdoTopology;
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 
+/// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// This class is used to represent a topology.
 /// \note

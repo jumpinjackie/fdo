@@ -20,8 +20,8 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 
-/// \ingroup (interfaces)
-/// \interface ICommandCapabilities
+/// \ingroup (OSGeoFDOConnectionsCapabilities)
+/// \interface OSGeo::FDO::Connections::Capabilities::ICommandCapabilities
 /// \brief
 /// The ICommandCapabilities interface declares the feature provider's level
 /// of support for Commands.

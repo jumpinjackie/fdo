@@ -26,6 +26,7 @@ class FdoIChangeLongTransactionSet;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
+/// \ingroup (OSGeoFDOCommandsLongTransaction)
 /// \brief
 /// The IChangeLongTransactionSetImp class is a 
 /// concrete implementation of IChangeLongTransactionSet.

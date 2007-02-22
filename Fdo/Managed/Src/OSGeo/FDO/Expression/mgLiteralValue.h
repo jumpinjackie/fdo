@@ -24,6 +24,7 @@ class FdoLiteralValue;
 
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 
+/// \ingroup (OSGeoFDOExpression)
 /// \brief
 /// LiteralValue is an abstract base class that derives from ValueExpression to
 /// form the root for all literal value types.

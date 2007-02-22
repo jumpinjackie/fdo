@@ -28,6 +28,7 @@ END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 
+/// \ingroup (OSGeoFDOGeometry)
 /// \brief
 /// The IMultiCurvePolygonImp class is a multi-CurvePolygon aggregate Geometry type.
 private __gc class IMultiCurvePolygonImp

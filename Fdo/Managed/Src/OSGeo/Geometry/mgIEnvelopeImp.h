@@ -24,6 +24,7 @@ class FdoIEnvelope;
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 
+/// \ingroup (OSGeoFDOGeometry)
 /// \brief
 /// The IEnvelopeImp class is a three-dimensional, axis-aligned box.  This is a
 /// helper type for Geometries, and does not itself inherit from

@@ -26,6 +26,7 @@ class FdoIGetLongTransactionCheckpoints;
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 public __gc __interface ILongTransactionCheckpointReader;
 
+/// \ingroup (OSGeoFDOCommandsLongTransaction)
 /// \brief
 /// The IGetLongTransactionCheckpointsImp class is a 
 /// concrete implementation of IGetLongTransactionCheckpoints.

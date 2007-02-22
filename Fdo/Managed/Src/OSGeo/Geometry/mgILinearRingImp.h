@@ -30,6 +30,7 @@ END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 
+/// \ingroup (OSGeoFDOGeometry)
 /// \brief
 /// The ILinearRingImp class is a linear ring helper type.
 /// The shape of ILinearRingImp is the set of positions defined by the contained collection, 

@@ -23,6 +23,7 @@ class FdoParameterValueCollection;
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS
 public __gc class ParameterValue;
 
+/// \ingroup (OSGeoFDOCommands)
 /// \brief
 /// The ParameterValueCollection class represents a collection of ParameterValue objects.
 [System::Reflection::DefaultMemberAttribute("RealTypeItem")]

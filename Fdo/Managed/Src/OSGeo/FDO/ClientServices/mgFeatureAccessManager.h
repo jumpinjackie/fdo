@@ -26,6 +26,7 @@ END_NAMESPACE_OSGEO_FDO
 
 BEGIN_NAMESPACE_OSGEO_FDO_CLIENTSERVICES
 
+/// \ingroup (OSGeoFDOClientServices)
 /// \brief
 /// The FeatureAccessManager class manages the set of feature providers stored in the FDO provider registry
 /// and provides support for dynamic discovery and binding to registered feature providers

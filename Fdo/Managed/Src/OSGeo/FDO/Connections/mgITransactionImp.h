@@ -24,6 +24,7 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS
 
+/// \ingroup (OSGeoFDOConnections)
 /// \brief
 /// The ITransaction interface represents a transaction to be performed in a DataStore, and is implemented
 /// by feature providers that support transactions.

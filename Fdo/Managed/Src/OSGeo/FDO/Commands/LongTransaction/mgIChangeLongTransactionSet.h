@@ -23,8 +23,8 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 
-/// \ingroup (interfaces)
-/// \interface IChangeLongTransactionSet
+/// \ingroup (OSGeoFDOCommandsLongTransaction)
+/// \interface OSGeo::FDO::Commands::LongTransaction::IChangeLongTransactionSet
 /// \brief
 /// The IChangeLongTransactionSet interface defines the ChangeLongTransactionSet
 /// command, which allows the user to add a transaction to, remove a transaction

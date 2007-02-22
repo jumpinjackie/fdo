@@ -17,9 +17,11 @@
 
 #pragma  once
 
+/// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS
+/// \endcond
 
-/// \ingroup (enums)
+/// \ingroup (OSGeoFDOConnections)
 /// \brief
 /// The ProviderDatastoreType enumeration lists all of the concrete provider
 /// types supported by FDO.
@@ -40,4 +42,6 @@ public __value enum ProviderDatastoreType
 
 };  
 
+/// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_CONNECTIONS
+/// \endcond

@@ -24,6 +24,7 @@ class FdoXmlSkipElementHandler;
 
 BEGIN_NAMESPACE_OSGEO_COMMON_XML
 
+/// \ingroup (OSGeoFDOCommonXml)
 /// \brief
 /// XmlSkipHandler can be used to skip an XML element, when reading an 
 /// XML document via XmlReader. It is a XmlSaxHandler with no callback 

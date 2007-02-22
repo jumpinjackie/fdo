@@ -40,6 +40,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
 public __gc __interface IPhysicalElementMapping;
 public __gc class PhysicalSchemaMapping;
 
+/// \ingroup (OSGeoFDOCommandsSchema)
 /// \brief
 /// PhysicalElementMapping is an abstract class that acts as a base class for all 
 /// Physical Schema Mapping Override classes. FDO also provides a number of sub-classes
