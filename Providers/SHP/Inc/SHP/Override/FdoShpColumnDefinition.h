@@ -40,6 +40,10 @@ protected:
     virtual void Dispose(void);
 };
 
+/// \ingroup (typedefs)
+/// \brief
+/// FdoShpOvColumnDefinitionP is an FdoPtr on FdoShpOvColumnDefinition
+/// provided for convenience.
 typedef FdoPtr<FdoShpOvColumnDefinition> FdoShpOvColumnDefinitionP;
 
 #endif // FDOSHPCOLUMNDEFINITION_H

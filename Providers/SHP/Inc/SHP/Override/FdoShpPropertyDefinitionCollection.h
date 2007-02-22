@@ -36,6 +36,10 @@ protected:
     virtual void Dispose();
 };
 
+/// \ingroup (typedefs)
+/// \brief
+/// FdoShpOvPropertyDefinitionCollectionP is an FdoPtr on FdoShpOvPropertyDefinitionCollection
+/// provided for convenience.
 typedef FdoPtr<FdoShpOvPropertyDefinitionCollection> FdoShpOvPropertyDefinitionCollectionP;
 
 

@@ -47,7 +47,4 @@ and the <i>FDO Developer's Guide</i> (FDG_FDODevGuide.pdf).
 <br>
 </div>
 */
-
-
-
-
+/// \defgroup typedefs

@@ -53,6 +53,10 @@ private:
     FdoShpOvClassCollectionP m_Classes;
 };
 
+/// \ingroup (typedefs)
+/// \brief
+/// FdoShpOvPhysicalSchemaMappingP is an FdoPtr on FdoShpOvPhysicalSchemaMapping
+/// provided for convenience.
 typedef FdoPtr<FdoShpOvPhysicalSchemaMapping> FdoShpOvPhysicalSchemaMappingP;
 
 #endif // FDOSHPPHYSICALSCHEMAMAPPING_H
