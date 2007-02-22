@@ -48,6 +48,10 @@ private:
     FdoShpOvColumnDefinitionP m_ColumnDefinition;
 };
 
+/// \ingroup (typedefs)
+/// \brief
+/// FdoShpOvPropertyDefinition is an FdoPtr on FdoShpOvPropertyDefinition
+/// provided for convenience.
 typedef FdoPtr<FdoShpOvPropertyDefinition> FdoShpOvPropertyDefinitionP;
 
 #endif // FDOSHPPROPERTYDEFINITION_H

@@ -36,6 +36,10 @@ protected:
     virtual void Dispose();
 };
 
+/// \ingroup (typedefs)
+/// \brief
+/// FdoShpOvClassCollectionP is an FdoPtr on FdoShpOvClassCollection
+/// provided for convenience.
 typedef FdoPtr<FdoShpOvClassCollection> FdoShpOvClassCollectionP;
 
 #endif // FDOSHPCLASSCOLLECTION_H

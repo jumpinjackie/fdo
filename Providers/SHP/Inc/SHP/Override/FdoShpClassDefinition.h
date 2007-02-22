@@ -57,6 +57,10 @@ private:
     FdoShpOvPropertyDefinitionCollectionP m_Properties;
 };
 
+/// \ingroup (typedefs)
+/// \brief
+/// FdoShpOvClassDefinitionP is an FdoPtr on FdoShpOvClassDefinition
+/// provided for convenience.
 typedef FdoPtr<FdoShpOvClassDefinition> FdoShpOvClassDefinitionP;
 
 #endif // FDOSHPCLASSDEFINITION_H

@@ -63,16 +63,17 @@ FILE_VERSION_FILTER    =
 # configuration options related to warning and progress messages
 #---------------------------------------------------------------------------
 QUIET                  = NO
-WARNINGS               = NO
-WARN_IF_UNDOCUMENTED   = NO
-WARN_IF_DOC_ERROR      = NO
-WARN_NO_PARAMDOC       = NO
+WARNINGS               = YES
+WARN_IF_UNDOCUMENTED   = YES
+WARN_IF_DOC_ERROR      = YES
+WARN_NO_PARAMDOC       = YES
 WARN_FORMAT            = "$file:$line: $text"
 WARN_LOGFILE           = warning_logfile.txt
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
 INPUT                  = group_and_page_definitions \
+                         ../../Inc/SHP \
                          ../../Inc/SHP/Override
 FILE_PATTERNS          = *.h
 RECURSIVE              = YES
@@ -107,7 +108,7 @@ IGNORE_PREFIX          = Fdo
 #---------------------------------------------------------------------------
 GENERATE_HTML          = YES
 HTML_OUTPUT            = ../HTML/SHP
-HTML_FILE_EXTENSION    = .html
+HTML_FILE_EXTENSION    = .htm
 HTML_HEADER            = headers_and_footers/header.html
 HTML_FOOTER            = headers_and_footers/footer.html
 HTML_STYLESHEET        = headers_and_footers/custom.css
