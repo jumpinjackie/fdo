@@ -106,6 +106,8 @@ FdoIDataStorePropertyDictionary* DataStoreReader::GetDataStoreProperties()
 
 bool DataStoreReader::ReadNext()
 {
+    // TODO: Add fetching tuples in batches, ie. per 50 or 100
+
     bool eof = true;
 
     PGresult const* pgRes = mCursor->FetchNext();

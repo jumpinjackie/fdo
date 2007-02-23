@@ -272,9 +272,12 @@ void PgCursor::Declare(char const* query)
     }
     catch (FdoException* e)
     {
-        throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_CURSOR_CREATION_FAILED,
-            "The creation of PostgreSQL cursor '%1$ls' failed.",
-            static_cast<FdoString*>(mName)), e);  
+        FdoException* ne = NULL;
+        ne = FdoException::Create(NlsMsgGet(MSG_POSTGIS_CURSOR_CREATION_FAILED,
+                "The creation of PostgreSQL cursor '%1$ls' failed.",
+                static_cast<FdoString*>(mName)), e);
+        e->Release();
+        throw ne;
     }
 
     mIsClosed = false;

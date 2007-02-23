@@ -83,10 +83,13 @@ void CreateDataStore::Execute()
     }
     catch (FdoException* e)
     {
-        throw FdoCommandException::Create(
+        FdoCommandException* ne = NULL;
+        ne = FdoCommandException::Create(
             NlsMsgGet(MSG_POSTGIS_COMMAND_CREATEDATASTORE_FAILED,
-            "Attempt to create new datastore with name '%1$ls' failed.",
-            static_cast<FdoString*>(dsName)), e);    	
+                "Attempt to create new datastore with name '%1$ls' failed.",
+                static_cast<FdoString*>(dsName)), e);
+        e->Release();
+        throw ne;
     }
 
     //
@@ -109,10 +112,12 @@ void CreateDataStore::Execute()
     }
     catch (FdoException* e)
     {
-        throw FdoCommandException::Create(
-            NlsMsgGet(MSG_POSTGIS_COMMAND_COMMENT_FAILED,
-            "Attempt to assign description for '%1$ls' object failed.",
-            static_cast<FdoString*>(dsName)), e);
+        FdoCommandException* ne = NULL;
+        ne = FdoCommandException::Create(NlsMsgGet(MSG_POSTGIS_COMMAND_COMMENT_FAILED,
+                "Attempt to assign description for '%1$ls' object failed.",
+                static_cast<FdoString*>(dsName)), e);
+        e->Release();
+        throw ne;
     }
 }
 

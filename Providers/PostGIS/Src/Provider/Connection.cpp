@@ -309,6 +309,10 @@ FdoICommand* Connection::CreateCommand(FdoInt32 type)
     FDOLOG_WRITE(L"Command type: %s",
         static_cast<FdoString*>(FdoCommonMiscUtil::FdoCommandTypeToString(type)));
     
+    // NOTE: A minimum required connection state for a datastore command is pending.
+    // A minimum required state for feature command is open.
+    // More details available in following discussion:
+    // http://lists.osgeo.org/pipermail/fdo-internals/2007-February/000805.html
 
     // TODO: Verify what connection state is required for what commands
     //        || FdoConnectionState_Pending == GetConnectionState())
@@ -494,7 +498,7 @@ PGresult* Connection::PgDescribeCursor(char const* name)
         FDOLOG_WRITE("Describe portal command failed: [%s] %s",
             PQresStatus(pgStatus), PQresultErrorMessage(pgRes));
 
-        assert(!"Describe portal command failed");
+        throw FdoException::Create(L"Describe portal command failed.");
     }
 
     assert(NULL != pgRes);

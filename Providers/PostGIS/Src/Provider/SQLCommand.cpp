@@ -82,11 +82,11 @@ FdoInt32 SQLCommand::ExecuteNonQuery()
     }
     catch (FdoException* e)
     {
-        FdoCommandException* de = NULL;
-        de = FdoCommandException::Create(NlsMsgGet(MSG_POSTGIS_COMMAND_SQL_FAILED,
+        FdoCommandException* ne = NULL;
+        ne = FdoCommandException::Create(NlsMsgGet(MSG_POSTGIS_COMMAND_SQL_FAILED,
             "The execution of SQL command failed."), e);
         e->Release();
-        throw de;
+        throw ne;
     }
 
     return (static_cast<FdoInt32>(cmdTuples));
@@ -109,11 +109,11 @@ FdoISQLDataReader* SQLCommand::ExecuteReader()
     }
     catch (FdoException* e)
     {
-        FdoCommandException* de = NULL;
-        de = FdoCommandException::Create(NlsMsgGet(MSG_POSTGIS_COMMAND_SQL_FAILED,
+        FdoCommandException* ne = NULL;
+        ne = FdoCommandException::Create(NlsMsgGet(MSG_POSTGIS_COMMAND_SQL_FAILED,
             "The execution of SQL command failed."), e);
         e->Release();
-        throw de;
+        throw ne;
     }
 
     assert(NULL != cursor);
