@@ -43,6 +43,8 @@ public:
   static int GetTablePkeyColumns(oracle::occi::Connection * OcciConnection,const char* Owner,const char* TableName,vector<string>& ColNames);
   
   static FdoCommonThreadMutex m_Mutex;
+
+  static oracle::occi::Environment* GetEnvironment();
   
 private:
   static oracle::occi::StatelessConnectionPool* c_OCCI_API::GetConnPool(const char*User,const char*Password,const char* DbLink,int& IndCpDesc);

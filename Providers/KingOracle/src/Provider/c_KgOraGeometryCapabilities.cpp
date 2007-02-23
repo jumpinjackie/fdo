@@ -64,7 +64,7 @@ FdoGeometryComponentType* c_KgOraGeometryCapabilities::GetGeometryComponentTypes
     static const FdoGeometryComponentType geomComponentTypes[] =
     {
         FdoGeometryComponentType_LinearRing,
-        GisGeometryComponentType_CircularArcSegment,
+        FdoGeometryComponentType_CircularArcSegment,
         FdoGeometryComponentType_LineStringSegment,
         FdoGeometryComponentType_Ring,
     };

@@ -206,3 +206,152 @@ bool c_KgOraSchemaCapabilities::SupportsCompositeId()
 {
     return false;
 }
+
+#ifdef _FDO_3_2
+
+/// \brief
+/// Returns the maximum supported length of String, BLOB, or CLOB data
+/// properties. For decimal, it is typically the combination of the maximum
+/// scale and precision. For other data types that are not variable in size,
+/// the value returned is the byte length.
+///
+/// \param dataType
+/// The data type for which the information is to retrieved.
+///
+/// \return
+/// Returns the maximum data value length for the identified data type.
+///
+FdoInt64 c_KgOraSchemaCapabilities::GetMaximumDataValueLength(FdoDataType DataType)
+{
+   switch (DataType)
+    {
+        case FdoDataType_String:   return (FdoInt64)-1;
+        case FdoDataType_BLOB:     return (FdoInt64)-1;
+        case FdoDataType_CLOB:     return (FdoInt64)-1;
+        case FdoDataType_Decimal:  return (FdoInt64)-1;
+        case FdoDataType_Boolean:  return (FdoInt64)sizeof(FdoBoolean);
+        case FdoDataType_Byte:     return (FdoInt64)sizeof(FdoByte);
+        case FdoDataType_DateTime: return (FdoInt64)sizeof(FdoDateTime);
+        case FdoDataType_Double:   return (FdoInt64)sizeof(FdoDouble);
+        case FdoDataType_Int16:    return (FdoInt64)sizeof(FdoInt16);
+        case FdoDataType_Int32:    return (FdoInt64)sizeof(FdoInt32);
+        case FdoDataType_Int64:    return (FdoInt64)sizeof(FdoInt64);
+        case FdoDataType_Single:   return (FdoInt64)sizeof(FdoFloat);
+    }
+    return (FdoInt64)-1;
+}
+
+/// \brief
+/// Returns the maximum supported precision for a decimal data property.
+///
+/// \param
+/// None.
+///
+/// \return
+/// Returns the maximum supported precision for a decimal data property.
+///
+FdoInt32 c_KgOraSchemaCapabilities::GetMaximumDecimalPrecision()
+{
+  return -1;
+}
+
+/// \brief
+/// Returns the maximum supported scale for a decimal data property.
+///
+/// \param
+/// None.
+///
+/// \return
+/// Returns the maximum supported scale for a decimal data property.
+///
+FdoInt32 c_KgOraSchemaCapabilities::GetMaximumDecimalScale()
+{
+  return -1;
+}
+
+/// \brief
+/// Returns the maximum size of a value of the given type. It includes
+/// limits for the data store name, shema name, class name, property name
+/// and description.
+///
+/// \param name
+/// The schema element name type identifier for which the information is to
+/// be retrieved. Can be any of the following options: FdoSchemaElementNameType_Datastore,
+/// FdoSchemaElementNameType_Schema, FdoSchemaElementNameType_Class, FdoSchemaElementNameType_Property or 
+/// FdoSchemaElementNameType_Description
+///
+/// \return
+/// Returns the size limitation for the identified schema element.
+///
+FDOKGORA_API FdoInt32 c_KgOraSchemaCapabilities::GetNameSizeLimit(FdoSchemaElementNameType NameType)
+{
+   switch (NameType)
+    {
+        case FdoSchemaElementNameType_Datastore:   return 30;  // the max filename length on linux/windows
+        case FdoSchemaElementNameType_Schema:      return 30;
+        case FdoSchemaElementNameType_Class:       return 30;
+        case FdoSchemaElementNameType_Property:    return 30;
+        case FdoSchemaElementNameType_Description: return -1;
+    }
+    return -1;
+}
+
+/// \brief
+/// Returns a string that includes all the reserved characters that cannot be
+/// used for the various schema element names for the provider.
+///
+/// \param
+/// None
+///
+/// \return
+/// Returns a string with the reserved characters for the identified schema element.
+///
+FDOKGORA_API FdoString* c_KgOraSchemaCapabilities::GetReservedCharactersForName()
+{
+  return L"";
+}
+
+/// \brief
+/// Returns a list of property types that can be used for identity properties.
+///
+/// \param length
+/// Output the number of data types.
+///
+/// \return
+/// Returns a string with the reserved characters for the identified schema element.
+///
+FdoDataType* c_KgOraSchemaCapabilities::GetSupportedIdentityPropertyTypes(FdoInt32& Length)
+{
+  Length = 0;
+  static FdoDataType supportedIdentityTypes[15];
+  supportedIdentityTypes[Length++] = FdoDataType_Boolean;
+  supportedIdentityTypes[Length++] = FdoDataType_Byte;
+  supportedIdentityTypes[Length++] = FdoDataType_DateTime;
+  supportedIdentityTypes[Length++] = FdoDataType_Decimal;
+  supportedIdentityTypes[Length++] = FdoDataType_Double;
+  supportedIdentityTypes[Length++] = FdoDataType_Int16;
+  supportedIdentityTypes[Length++] = FdoDataType_Int32;
+  supportedIdentityTypes[Length++] = FdoDataType_Int64;
+  supportedIdentityTypes[Length++] = FdoDataType_Single;
+  supportedIdentityTypes[Length++] = FdoDataType_String;
+
+  return supportedIdentityTypes;
+}
+
+/// \brief
+/// Returns TRUE if default values can be specified for a data property
+/// definition, FALSE otherwise.
+///
+/// \param
+/// None
+///
+/// \return
+/// Returns TRUE if default values can be specified for a data property
+/// definition, FALSE otherwise.
+///
+bool c_KgOraSchemaCapabilities::SupportsDefaultValue()
+{
+  return false;
+}
+
+#endif    

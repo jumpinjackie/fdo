@@ -105,7 +105,7 @@ FdoIFeatureReader* c_KgOraSelectCommand::Execute ()
     if( !classdef.p ) return NULL;
     
     int geom_sqlcol_index;
-    FdoPtr<FdoStringCollection> sqlcols = GisStringCollection::Create();
+    FdoPtr<FdoStringCollection> sqlcols = FdoStringCollection::Create();
     
     c_KgOraSridDesc orasrid;
     {
@@ -206,10 +206,13 @@ string c_KgOraSelectCommand::CreateSqlString(c_KgOraFilterProcessor& FilterProc,
     FdoPtr<FdoClassDefinition> classdef;
     if( fschemas && (fschemas->GetCount() > 0) )
     {
-      FdoPtr<FdoFeatureSchema> schm = fschemas->GetItem(0);      
-      FdoPtr<FdoClassCollection> classes = schm->GetClasses();
+      //FdoPtr<FdoFeatureSchema> schm = fschemas->GetItem(0);      
+      //FdoPtr<FdoClassCollection> classes = schm->GetClasses();
+      //classdef = classes->FindItem( classid->GetName() );
       
-      classdef = classes->FindItem( classid->GetName() );
+      FdoPtr<FdoIDisposableCollection> classes = fschemas->FindClass(classid->GetText());
+      classdef = (FdoClassDefinition*)classes->GetItem( 0 );
+      
       
       if( !classdef.p ) return "";
           
@@ -217,8 +220,14 @@ string c_KgOraSelectCommand::CreateSqlString(c_KgOraFilterProcessor& FilterProc,
 
     string sqlstr;
     
+    FdoPtr<FdoKgOraClassDefinition> phys_class = schemadesc->FindClassMapping(classid);
+    FdoStringP fultablename = phys_class->GetOracleFullTableName();
+    FdoStringP table_alias = phys_class->GetOraTableAlias();
+    
     /* Define properties to be included in SELECT statement */    
     FdoPtr<FdoPropertyDefinition> propdef;
+    FdoStringP sql_select_columns_part;
+    FdoStringP sep;
     
     GeomSqlColumnIndex=-1;
     FdoPtr<FdoPropertyDefinitionCollection> propcol = classdef->GetProperties();
@@ -239,6 +248,31 @@ string c_KgOraSelectCommand::CreateSqlString(c_KgOraFilterProcessor& FilterProc,
         m_Connection->GetOracleSridDesc(geomprop,orasrid);
         
         GeomSqlColumnIndex=ind;
+        
+        if( phys_class->GetIsPointGeometry() && (_wcsicmp(propname,phys_class->GetPoinGeometryPropertyName())==0) )
+        {
+        // this is geometry created as point from numeric columns
+          
+          FdoStringP pointstr;
+          if( phys_class->GetPointZOraColumn() && (wcslen(phys_class->GetPointZOraColumn()) > 0) )
+            pointstr = pointstr.Format(L" SDO_GEOMETRY(2001,NULL,SDO_POINT_TYPE(%s,%s,%s),NULL,NULL) as %s ",phys_class->GetPointXOraColumn(),phys_class->GetPointYOraColumn(),phys_class->GetPointZOraColumn(),propname);
+          else
+            pointstr = pointstr.Format(L" SDO_GEOMETRY(2001,NULL,SDO_POINT_TYPE(%s,%s,NULL),NULL,NULL) as %s ",phys_class->GetPointXOraColumn(),phys_class->GetPointYOraColumn(),propname);
+                    
+          sql_select_columns_part += sep + pointstr;  // this is for just column -> sql_select_columns_part += sep + table_alias + "." + propname;  
+          sep = ",";
+        }
+        else
+        {
+        // this is normal geomerty property - oracle column
+        // add just property name in select
+          sql_select_columns_part += sep + table_alias + "." + propname;  sep = ",";
+        }
+      }
+      else
+      {
+      // add property name in select
+        sql_select_columns_part += sep + table_alias + "." + propname;  sep = ",";
       }
 
     }
@@ -257,22 +291,9 @@ string c_KgOraSelectCommand::CreateSqlString(c_KgOraFilterProcessor& FilterProc,
     else filtertext = NULL;
 
     
-    FdoPtr<FdoKgOraClassDefinition> phys_class = schemadesc->FindClassMapping(classid);
-    FdoStringP fultablename = phys_class->GetOracleFullTableName();
-    FdoStringP table_alias = phys_class->GetOraTableAlias();
-    
-    FdoStringP cols;
-    FdoStringP sep;
-
-    for ( int i = 0; i < SqlColumns->GetCount(); i++ ) 
-    {
-        cols += sep + table_alias + "." + SqlColumns->GetString(i);
-        sep = ",";
-    }
-    
     
     char* sbuff = new char[1024];
-    sprintf(sbuff, "SELECT %s FROM %s %s",(const char*)cols,(const char*)fultablename,(const char*)table_alias);
+    sprintf(sbuff, "SELECT %s FROM %s %s",(const char*)sql_select_columns_part,(const char*)fultablename,(const char*)table_alias);
     
     
     sqlstr = sbuff;

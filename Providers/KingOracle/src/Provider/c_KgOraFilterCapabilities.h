@@ -40,7 +40,7 @@ public:
     /// \return
     /// Returns the list of condition types
     /// 
-    FDOKGORA_API virtual FdoConditionType* GetConditionTypes(GisInt32& length);
+    FDOKGORA_API virtual FdoConditionType* GetConditionTypes(FdoInt32& length);
 
     /// \brief
     /// Returns an array of FdoSpatialOperation objects the feature provider supports.
@@ -51,7 +51,7 @@ public:
     /// \return
     /// Returns the list of spartial operations
     /// 
-    FDOKGORA_API virtual FdoSpatialOperations* GetSpatialOperations(GisInt32& length);
+    FDOKGORA_API virtual FdoSpatialOperations* GetSpatialOperations(FdoInt32& length);
 
     /// \brief
     /// Returns an array of FdoDistanceOperation objects the feature provider supports.
@@ -62,7 +62,7 @@ public:
     /// \return
     /// Returns the list of distance operations
     /// 
-    FDOKGORA_API virtual FdoDistanceOperations* GetDistanceOperations(GisInt32& length);
+    FDOKGORA_API virtual FdoDistanceOperations* GetDistanceOperations(FdoInt32& length);
 
     /// \brief
     /// Determines if the feature provider supports geodesic distance measurement. Returns false if the feature provider supports only linear distance measurement.

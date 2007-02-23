@@ -340,7 +340,7 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
           if( wcscmp(propid->GetName(),ident_for_seq->GetName()) == 0 )
           {
             long seqval = c_Ora_API::GetSequenceNextVal(m_Connection->GetOcciConnection(),seqname);
-            FdoPtr<FdoDataValue> newval = FdoDataValue::Create((GisInt32)seqval);
+            FdoPtr<FdoDataValue> newval = FdoDataValue::Create((FdoInt32)seqval);
             propval->SetValue(newval);
             found_identity = true;
             break;
@@ -351,7 +351,7 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
         {
           
           long seqval = c_Ora_API::GetSequenceNextVal(m_Connection->GetOcciConnection(),seqname);
-          FdoPtr<FdoDataValue> newval = FdoDataValue::Create((GisInt32)seqval);
+          FdoPtr<FdoDataValue> newval = FdoDataValue::Create((FdoInt32)seqval);
           
           FdoPtr<FdoPropertyValue> propval = FdoPropertyValue::Create(ident_for_seq->GetName(),newval);
           m_PropertyValues->Insert(0,propval);

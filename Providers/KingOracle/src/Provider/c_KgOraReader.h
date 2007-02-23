@@ -85,7 +85,7 @@ template <class FDO_READER> class c_KgOraReader : public FDO_READER
     /// \return
     /// Returns a pointer to the byte array in AGF format.
     /// 
-    FDOKGORA_API virtual const GisByte * GetGeometry(GisString* propertyName, GisInt32 * count);
+    FDOKGORA_API virtual const FdoByte * GetGeometry(FdoString* propertyName, FdoInt32 * count);
 
     /// \brief
     /// Gets the geometry value of the specified property as a byte array in 
@@ -98,7 +98,7 @@ template <class FDO_READER> class c_KgOraReader : public FDO_READER
     /// \return
     /// Returns the byte array in AGF format.
     /// 
-    FDOKGORA_API virtual GisByteArray* GetGeometry(GisString* propertyName);
+    FDOKGORA_API virtual FdoByteArray* GetGeometry(FdoString* propertyName);
 
    
 

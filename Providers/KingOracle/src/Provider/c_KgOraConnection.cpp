@@ -217,7 +217,7 @@ void c_KgOraConnection::SetConnectionString (FdoString* value)
         connDict->UpdateFromConnectionString(m_ConnectionString);
     }
     else
-        throw GisException::Create (NlsMsgGet(M_KGORA_CONNECTION_ALREADY_OPEN, "The connection is already open."));
+        throw FdoException::Create (NlsMsgGet(M_KGORA_CONNECTION_ALREADY_OPEN, "The connection is already open."));
 }
 
 /// <summary>Gets an FdoIConnectionInfo interface that can be used to interrogate and set connection properties.</summary>
@@ -257,7 +257,7 @@ FdoInt32 c_KgOraConnection::GetConnectionTimeout ()
 void c_KgOraConnection::SetConnectionTimeout (FdoInt32 value)
 {
   D_KGORA_ELOG_WRITE("c_KgOraConnection::SetConnectionTimeout ");
-    throw GisException::Create (NlsMsgGet(M_KGORA_CONNECTION_TIMEOUT_UNSUPPORTED, "Connection timeout is not supported."));
+    throw FdoException::Create (NlsMsgGet(M_KGORA_CONNECTION_TIMEOUT_UNSUPPORTED, "Connection timeout is not supported."));
 }
 
 
@@ -277,7 +277,11 @@ FdoConnectionState c_KgOraConnection::Open ()
     if (GetConnectionState() == FdoConnectionState_Open)
     {
       D_KGORA_ELOG_WRITE("c_KgOraConnection::Open Exception: Already open");
-        throw GisException::Create(GisException::NLSGetMessage(GIS_NLSID(GIS_103_CONNECTION_ALREADY_OPEN)));
+        #ifdef _FDO_3_1
+          throw GisException::Create(GisException::NLSGetMessage(FDO_NLSID(FDO_103_CONNECTION_ALREADY_OPEN)));
+        #else
+          throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_103_CONNECTION_ALREADY_OPEN)));
+        #endif
     }
 
   if( !c_OCCI_API::IsInit() )
@@ -294,6 +298,7 @@ FdoConnectionState c_KgOraConnection::Open ()
     FdoStringP password = dictionary->GetProperty (D_CONN_PROPERTY_PASSWORD);
     FdoStringP service = dictionary->GetProperty (D_CONN_PROPERTY_SERVICE_NAME);
     FdoStringP oraschema = dictionary->GetProperty (D_CONN_PROPERTY_ORACLE_SCHEMA);
+    FdoStringP fdoviewstable = dictionary->GetProperty (D_CONN_PROPERTY_KING_FDO_CLASS);
 		
 		
 		//FdoStringP username = dictionary->GetProperty (L"Username");
@@ -310,6 +315,7 @@ FdoConnectionState c_KgOraConnection::Open ()
 	  m_OraConnectionPassword = password;
 	  m_OraConnectionDbLink = service;
 	  m_OraSchemaName = oraschema.Upper();
+	  m_FdoViewsTable = fdoviewstable.Upper();
 	  
 	  
 	  if( !c_Ora_API::GetOracleVersion(m_OcciConnection,m_OracleMainVersion,m_OracleSubVersion) )
@@ -374,7 +380,7 @@ void c_KgOraConnection::Close ()
   catch(oracle::occi::SQLException& ea)
   {
     FdoStringP gstr = ea.getMessage().c_str();
-    throw GisException::Create( gstr );
+    throw FdoException::Create( gstr );
   }
     // Connection is now closed:
     m_ConnectionState = FdoConnectionState_Closed;
@@ -390,7 +396,7 @@ void c_KgOraConnection::Close ()
 FdoITransaction* c_KgOraConnection::BeginTransaction ()
 {
   D_KGORA_ELOG_WRITE("c_KgOraConnection::BeginTransaction ");
-    throw GisException::Create(NlsMsgGet(M_KGORA_CONNECTION_TRANSACTIONS_NOT_SUPPORTED, "King.Oracle Provider does not support transactions."));
+    throw FdoException::Create(NlsMsgGet(M_KGORA_CONNECTION_TRANSACTIONS_NOT_SUPPORTED, "King.Oracle Provider does not support transactions."));
 }
 
 /// <summary>Creates and returns the specified type of command object associated with
@@ -404,7 +410,7 @@ FdoICommand* c_KgOraConnection::CreateCommand (FdoInt32 CommandId)
   D_KGORA_ELOG_WRITE2("c_KgOraConnection::CreateCommand %ld '%s'",(long)CommandId,(const char*)FdoCommonMiscUtil::FdoCommandTypeToString (CommandId));
   
     if ((GetConnectionState() == FdoConnectionState_Closed) || (GetConnectionState() == FdoConnectionState_Pending))
-        throw GisException::Create(NlsMsgGet(M_KGORA_CONNECTION_INVALID, "Connection is invalid."));
+        throw FdoException::Create(NlsMsgGet(M_KGORA_CONNECTION_INVALID, "Connection is invalid."));
     switch (CommandId)
     {
         case FdoCommandType_Select:
@@ -461,7 +467,11 @@ FdoICommand* c_KgOraConnection::CreateCommand (FdoInt32 CommandId)
         {
           D_KGORA_ELOG_WRITE2("c_KgOraConnection::CreateCommand Unsupported command %ld '%s'",(long)CommandId,(const char*)FdoCommonMiscUtil::FdoCommandTypeToString (CommandId));
           printf("\n****   Unkown Command: %d     ********************",CommandId);
-            throw GisException::Create (GisException::NLSGetMessage (GIS_102_COMMAND_NOT_SUPPORTED, "The command '%1$ls' is not supported.", (FdoString*)(FdoCommonMiscUtil::FdoCommandTypeToString (CommandId))));
+          #ifdef _FDO_3_1
+          throw GisException::Create (GisException::NLSGetMessage (FDO_102_COMMAND_NOT_SUPPORTED, "The command '%1$ls' is not supported.", (FdoString*)(FdoCommonMiscUtil::FdoCommandTypeToString (CommandId))));
+          #else
+          throw FdoException::Create (FdoException::NLSGetMessage (FDO_102_COMMAND_NOT_SUPPORTED, "The command '%1$ls' is not supported.", (FdoString*)(FdoCommonMiscUtil::FdoCommandTypeToString (CommandId))));
+          #endif
         }
     }
 
@@ -495,7 +505,18 @@ void c_KgOraConnection::SetConfiguration(FdoIoStream* configStream)
 {
    D_KGORA_ELOG_WRITE("c_KgOraConnection::SetConfiguration ");
 }
-
+#ifdef _FDO_3_2
+/// \brief
+/// Forces the writes of any cached data to the targed datastore.
+/// 
+/// \return
+/// Returns nothing
+/// 
+void c_KgOraConnection::Flush()
+{
+}
+#endif
+    
 c_KgOraSpatialContextCollection* c_KgOraConnection::GetSpatialContexts ( bool bDynamic )
 {
   FdoPtr<c_KgOraSchemaDesc> schemadesc = GetSchemaDesc();
@@ -565,7 +586,7 @@ c_KgOraSchemaDesc* c_KgOraConnection::GetSchemaDesc()
 {
   if( m_SchemaDesc.p == NULL )
   {
-    m_SchemaDesc = c_FdoOra_API::DescribeSchema(this,m_OraSchemaName.c_str());
+    m_SchemaDesc = c_FdoOra_API::DescribeSchema(this,m_OraSchemaName.c_str(),m_FdoViewsTable.c_str());
   }
   return FDO_SAFE_ADDREF(m_SchemaDesc.p);
 }//end of c_KgOraConnection::GetSchemaDesc
@@ -678,7 +699,7 @@ void c_KgOraConnection::TestArrayFetch(FdoIdentifier* ClassId, FdoFilter* Filter
     
     /* Define properties to be included in SELECT statement */    
     FdoPtr<FdoPropertyDefinition> propdef;
-    FdoPtr<GisStringCollection> sqlcols = GisStringCollection::Create();
+    FdoPtr<FdoStringCollection> sqlcols = FdoStringCollection::Create();
     int geom_prop_sqlindex=-1;
     FdoPtr<FdoPropertyDefinitionCollection> propcol = classdef->GetProperties();
     
@@ -831,7 +852,7 @@ void c_KgOraConnection::TestArrayFetch(FdoIdentifier* ClassId, FdoFilter* Filter
         FdoStringP gstr = ea.getMessage().c_str();
         printf("\nTest occi exception: %s",(const char*)gstr);
         //throw FdoConnectionException::Create( gstr );
-        //throw GisException::Create (NlsMsgGet(KGORA_CONNECTION_ALREADY_OPEN, "The connection is already open."));
+        //throw FdoException::Create (NlsMsgGet(KGORA_CONNECTION_ALREADY_OPEN, "The connection is already open."));
         //throw c_KgDbException(ea.getErrorCode(),ea.getMessage().data(),"c_KgDbBsAPI::Init");
       }
     
@@ -841,7 +862,7 @@ void c_KgOraConnection::TestArrayFetch(FdoIdentifier* ClassId, FdoFilter* Filter
         FdoStringP gstr = ea->getMessage().c_str();
         printf("\nTest occi exception: %s",(const char*)gstr);
         //throw FdoConnectionException::Create( gstr );
-        //throw GisException::Create (NlsMsgGet(KGORA_CONNECTION_ALREADY_OPEN, "The connection is already open."));
+        //throw FdoException::Create (NlsMsgGet(KGORA_CONNECTION_ALREADY_OPEN, "The connection is already open."));
         //throw c_KgDbException(ea.getErrorCode(),ea.getMessage().data(),"c_KgDbBsAPI::Init");
       }
       catch (exception& )                                                      

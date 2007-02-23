@@ -29,7 +29,7 @@ class c_KgOraFeatureReader : public c_KgOraReader< FdoIFeatureReader>
         c_KgOraFeatureReader(c_KgOraConnection * Connection
                             ,oracle::occi::Statement* OcciStatement ,oracle::occi::ResultSet* OcciResultSet
                             ,FdoClassDefinition* ClassDef
-                            ,int GeomPropSqlIndex,GisStringCollection* SqlColumns
+                            ,int GeomPropSqlIndex,FdoStringCollection* SqlColumns
                             , FdoIdentifierCollection* Props);
 
     protected:
@@ -72,7 +72,7 @@ class c_KgOraFeatureReader : public c_KgOraReader< FdoIFeatureReader>
     /// \return
     /// Returns the depth
     /// 
-    FDOKGORA_API virtual GisInt32 GetDepth();
+    FDOKGORA_API virtual FdoInt32 GetDepth();
 
    
 
@@ -87,7 +87,7 @@ class c_KgOraFeatureReader : public c_KgOraReader< FdoIFeatureReader>
     /// \return
     /// Returns the nested feature reader
     /// 
-    FDOKGORA_API virtual FdoIFeatureReader* GetFeatureObject(GisString* propertyName);
+    FDOKGORA_API virtual FdoIFeatureReader* GetFeatureObject(FdoString* propertyName);
        
 
     private:

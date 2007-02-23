@@ -81,7 +81,7 @@ public:
     /// Returns true if elements states will be ignored, false otherwise. 
     /// 
     ///  
-    FDOKGORA_API virtual GisBoolean GetIgnoreStates();
+    FDOKGORA_API virtual FdoBoolean GetIgnoreStates();
 
     /// \brief
     /// Changes the handling of element states by Execute().
@@ -96,7 +96,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-    FDOKGORA_API virtual void SetIgnoreStates( GisBoolean ignoreStates );
+    FDOKGORA_API virtual void SetIgnoreStates( FdoBoolean ignoreStates );
 
 
 

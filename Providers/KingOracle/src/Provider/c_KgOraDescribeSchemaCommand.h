@@ -53,7 +53,7 @@ public:
     /// \return
     /// Returns the schema name
     /// 
-    FDOKGORA_API virtual GisString* GetSchemaName();
+    FDOKGORA_API virtual FdoString* GetSchemaName();
 
     /// \brief
     /// Sets the name of the schema to describe. This function is optional; if not
@@ -65,7 +65,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-    FDOKGORA_API virtual void SetSchemaName(GisString* SchemaName);
+    FDOKGORA_API virtual void SetSchemaName(FdoString* SchemaName);
 
     /// \brief
     /// Executes the DescribeSchema command and returns a 
@@ -121,7 +121,7 @@ public:
     /// \return
     /// Returns the time (in milliseconds)
     /// 
-    FDOKGORA_API virtual GisInt32 GetCommandTimeout();
+    FDOKGORA_API virtual FdoInt32 GetCommandTimeout();
 
     /// \brief
     /// Sets the number of milliseconds to wait before terminating the attempt
@@ -135,7 +135,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-    FDOKGORA_API virtual void SetCommandTimeout(GisInt32 value);
+    FDOKGORA_API virtual void SetCommandTimeout(FdoInt32 value);
 
     /// \brief
     /// Returns an FdoParameterValueCollection. If the command requires parameters, the 

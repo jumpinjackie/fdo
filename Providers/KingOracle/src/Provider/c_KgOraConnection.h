@@ -69,6 +69,9 @@ public:
     string m_OraConnectionDbLink; // db link
     string m_OraSchemaName; // if not empty than provider will display classes just from this oracle schema
                               // if empty that will display classes from all schemas
+                              
+    string m_FdoViewsTable;
+                                  
     int m_OracleMainVersion;
 	  int m_OracleSubVersion;
 protected:   
@@ -201,7 +204,15 @@ public:
     /// <returns>Returns nothing</returns> 
     void SetConfiguration(FdoIoStream* configStream);
 
-
+    #ifdef _FDO_3_2
+    /// \brief
+    /// Forces the writes of any cached data to the targed datastore.
+    /// 
+    /// \return
+    /// Returns nothing
+    /// 
+    virtual void Flush();
+    #endif
 
 ////////////////////////////////////////////////////////////////////////
 // Helper functions

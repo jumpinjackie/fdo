@@ -391,7 +391,7 @@ try
 catch(oracle::occi::SQLException& ea)
 {
   m_OcciResultSet = NULL;
-  GisStringP gstr = ea.getMessage().c_str();
+  FdoStringP gstr = ea.getMessage().c_str();
   throw FdoConnectionException::Create( gstr );  
 }
 

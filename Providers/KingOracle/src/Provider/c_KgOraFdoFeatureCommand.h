@@ -94,7 +94,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-    virtual void SetFilter (GisString* value);
+    virtual void SetFilter (FdoString* value);
 
     /// \brief
     /// Gets the name of the class to be operated upon as an identifier.
@@ -124,7 +124,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-    virtual void SetFeatureClassName (GisString* value);
+    virtual void SetFeatureClassName (FdoString* value);
 };
 
 
@@ -160,7 +160,7 @@ void c_KgOraFdoFeatureCommand<FDO_COMMAND>::SetFilter (FdoFilter* Filter)
 /// \return
 /// Returns nothing
 template <class FDO_COMMAND> 
-void c_KgOraFdoFeatureCommand<FDO_COMMAND>::SetFilter (GisString* value)
+void c_KgOraFdoFeatureCommand<FDO_COMMAND>::SetFilter (FdoString* value)
 {
     FdoPtr<FdoFilter> filter = FdoFilter::Parse (value);
     m_Filter = FDO_SAFE_ADDREF(filter.p);
@@ -202,7 +202,7 @@ void c_KgOraFdoFeatureCommand<FDO_COMMAND>::SetFeatureClassName (FdoIdentifier* 
 /// \return
 /// Returns nothing
 template <class FDO_COMMAND> 
-void c_KgOraFdoFeatureCommand<FDO_COMMAND>::SetFeatureClassName (GisString* ClassName)
+void c_KgOraFdoFeatureCommand<FDO_COMMAND>::SetFeatureClassName (FdoString* ClassName)
 {
     FdoPtr<FdoIdentifier> cname;
 
