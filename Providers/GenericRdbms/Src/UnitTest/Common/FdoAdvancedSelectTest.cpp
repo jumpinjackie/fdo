@@ -893,7 +893,7 @@ void FdoAdvancedSelectTest::getDataTypeTest()
     {
         selCmdAggreg = (FdoISelectAggregates*)mConnection->CreateCommand( FdoCommandType_SelectAggregates );
         selCmdAggreg->SetFeatureClassName(L"Acad:AcDb3dPolyline");
-        FdoPtr<FdoComputedIdentifier>cmpId = (FdoComputedIdentifier*)FdoExpression::Parse(L"(ceil(segcount)) AS TestFunc");
+        FdoPtr<FdoComputedIdentifier>cmpId = (FdoComputedIdentifier*)FdoExpression::Parse(L"(ceil(segcount/1.0)) AS TestFunc");
         FdoPtr<FdoIdentifierCollection>idCol = selCmdAggreg->GetPropertyNames();
         idCol->Add( cmpId );
         myDataReader = selCmdAggreg->Execute();
@@ -1005,7 +1005,7 @@ void FdoAdvancedSelectTest::checkDataReaderContentOnSelAggRequestWithAggrFunctio
         printf(">>> ... Executing the select aggregate command \n");
 
         selAggr = (FdoISelectAggregates*)(mConnection->CreateCommand(FdoCommandType_SelectAggregates));
-        selAggr->SetFeatureClassName(L"Acad:AcDb3dPolyline");
+        selAggr->SetFeatureClassName(GetSchemaName() + L":" + AcDb3dPolylineName());
         FdoFilter *aFilter = FdoComparisonCondition::Create(
                                 FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"segcount")),
                                 FdoComparisonOperations_EqualTo, 
@@ -1054,11 +1054,9 @@ void FdoAdvancedSelectTest::checkDataReaderContentOnSelAggRequestWithAggrFunctio
 
     catch( FdoException *ex )
     {
-        printf(" \n");
-        printf("!!! Exception: %ls !!! \n", ex->GetExceptionMessage());
-        printf(" \n");
         printf(">>> Test failed \n");
-        CPPUNIT_FAIL (UnitTestUtil::w2a( ex->GetExceptionMessage()));
+        printf("FDO exception: %ls \n", ex->GetExceptionMessage() );
+        TestCommonFail(ex);
     }
 }
 
@@ -1090,7 +1088,7 @@ void FdoAdvancedSelectTest::checkDataReaderContentOnSelAggRequestWithNumCharFunc
         printf(">>> ... Executing the select aggregate command \n");
 
         selAggr = (FdoISelectAggregates*)(mConnection->CreateCommand(FdoCommandType_SelectAggregates));
-        selAggr->SetFeatureClassName(L"Acad:AcDb3dPolyline");
+        selAggr->SetFeatureClassName(GetSchemaName() + L":" + AcDb3dPolylineName());
         FdoFilter *aFilter = FdoComparisonCondition::Create(
                                 FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"segcount")),
                                 FdoComparisonOperations_EqualTo, 
@@ -1102,7 +1100,7 @@ void FdoAdvancedSelectTest::checkDataReaderContentOnSelAggRequestWithNumCharFunc
             FdoPtr<FdoIdentifier>(FdoComputedIdentifier::Create(
                                       L"MyConcatString",
                                       FdoPtr<FdoExpression>(
-                                            FdoExpression::Parse(L"Concat(layer, color)")))));
+                                            FdoExpression::Parse(L"CONCAT(layer, color)")))));
 
         rdr = selAggr->Execute();
         count = 0;
@@ -1139,11 +1137,9 @@ void FdoAdvancedSelectTest::checkDataReaderContentOnSelAggRequestWithNumCharFunc
 
     catch( FdoException *ex )
     {
-        printf(" \n");
-        printf("!!! Exception: %ls !!! \n", ex->GetExceptionMessage());
-        printf(" \n");
         printf(">>> Test failed \n");
-        CPPUNIT_FAIL (UnitTestUtil::w2a( ex->GetExceptionMessage()));
+        printf("FDO exception: %ls \n", ex->GetExceptionMessage() );
+        TestCommonFail(ex);
     }
 }
 
@@ -1172,7 +1168,7 @@ void FdoAdvancedSelectTest::checkFeatureReaderContentOnSelRequestWithAggrFunctio
         printf(">>> ... Executing the select aggregate command \n");
 
         selCmd = (FdoISelect*)(mConnection->CreateCommand(FdoCommandType_Select));
-        selCmd->SetFeatureClassName(L"Acad:AcDb3dPolyline");
+        selCmd->SetFeatureClassName(GetSchemaName() + L":" + AcDb3dPolylineName());
         ids = selCmd->GetPropertyNames();
         ids->Clear();
         ids->Add(
@@ -1223,11 +1219,9 @@ void FdoAdvancedSelectTest::checkFeatureReaderContentOnSelRequestWithAggrFunctio
 
     catch( FdoException *ex )
     {
-        printf(" \n");
-        printf("!!! Exception: %ls !!! \n", ex->GetExceptionMessage());
-        printf(" \n");
         printf(">>> Test failed \n");
-        CPPUNIT_FAIL (UnitTestUtil::w2a( ex->GetExceptionMessage()));
+        printf("FDO exception: %ls \n", ex->GetExceptionMessage() );
+        TestCommonFail(ex);
     }
 }
 
@@ -1259,7 +1253,7 @@ void FdoAdvancedSelectTest::checkFeatureReaderContentOnSelRequestWithNumCharFunc
         printf(">>> ... Executing the select command \n");
 
         selCmd = (FdoISelect*)(mConnection->CreateCommand(FdoCommandType_Select));
-        selCmd->SetFeatureClassName(L"Acad:AcDb3dPolyline");
+        selCmd->SetFeatureClassName(GetSchemaName() + L":" + AcDb3dPolylineName());
         FdoFilter *aFilter = FdoComparisonCondition::Create(
                                 FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"segcount")),
                                 FdoComparisonOperations_EqualTo, 
@@ -1271,7 +1265,7 @@ void FdoAdvancedSelectTest::checkFeatureReaderContentOnSelRequestWithNumCharFunc
             FdoPtr<FdoIdentifier>(FdoComputedIdentifier::Create(
                                       L"MyConcatString",
                                       FdoPtr<FdoExpression>(
-                                            FdoExpression::Parse(L"Concat(layer, color)")))));
+                                            FdoExpression::Parse(L"CONCAT(layer, color)")))));
 
         rdr = selCmd->Execute();
         count = 0;
@@ -1307,10 +1301,127 @@ void FdoAdvancedSelectTest::checkFeatureReaderContentOnSelRequestWithNumCharFunc
 
     catch( FdoException *ex )
     {
-        printf(" \n");
-        printf("!!! Exception: %ls !!! \n", ex->GetExceptionMessage());
-        printf(" \n");
         printf(">>> Test failed \n");
-        CPPUNIT_FAIL (UnitTestUtil::w2a( ex->GetExceptionMessage()));
+        printf("FDO exception: %ls \n", ex->GetExceptionMessage() );
+        TestCommonFail(ex);
     }
 }
+
+void FdoAdvancedSelectTest::TestMaxBoolProperty()
+{
+	FdoPtr<FdoIDataReader>myDataReader;
+	FdoPtr<FdoISelectAggregates>selCmdAggreg;
+     try
+    {
+        selCmdAggreg = (FdoISelectAggregates*)mConnection->CreateCommand( FdoCommandType_SelectAggregates );
+        selCmdAggreg->SetFeatureClassName(GetSchemaName() + L":" + AcDb3dPolylineName());
+        FdoPtr<FdoComputedIdentifier>cmpId = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Max(boolean)) AS testFld");
+        FdoPtr<FdoIdentifierCollection>idCol = selCmdAggreg->GetPropertyNames();
+        idCol->Add( cmpId );
+        try
+        {
+            myDataReader = selCmdAggreg->Execute();
+            TestCommonFail(FdoException::Create(L"TestUpperDateProperty should fail!"));
+        }
+        catch( FdoException *ex )
+        {
+            printf("Expected error: %ls\n", ex->GetExceptionMessage());
+            ex->Release();
+        }
+    }
+    catch( FdoException *ex )
+    {
+        printf("FDO exception: %ls \n", ex->GetExceptionMessage() );
+        TestCommonFail(ex);
+    }
+}
+
+void FdoAdvancedSelectTest::TestUpperDateProperty()
+{
+	FdoPtr<FdoIDataReader>myDataReader;
+	FdoPtr<FdoISelectAggregates>selCmdAggreg;
+    try
+    {
+        selCmdAggreg = (FdoISelectAggregates*)mConnection->CreateCommand( FdoCommandType_SelectAggregates );
+        selCmdAggreg->SetFeatureClassName(GetSchemaName() + L":" + AcDb3dPolylineName());
+        FdoStringP exec = L"(Upper(";
+        FdoPtr<FdoComputedIdentifier>cmpId = (FdoComputedIdentifier*)FdoExpression::Parse(exec + GetDateTimePropName()+ L")) AS testFld");
+        FdoPtr<FdoIdentifierCollection>idCol = selCmdAggreg->GetPropertyNames();
+        idCol->Add( cmpId );
+        try
+        {
+            myDataReader = selCmdAggreg->Execute();
+            TestCommonFail(FdoException::Create(L"TestUpperDateProperty should fail!"));
+        }
+        catch( FdoException *ex )
+        {
+            printf("Expected error: %ls\n", ex->GetExceptionMessage());
+            ex->Release();
+        }
+    }
+    catch( FdoException *ex )
+    {
+        printf("FDO exception: %ls \n", ex->GetExceptionMessage() );
+        TestCommonFail(ex);
+    }
+}
+
+void FdoAdvancedSelectTest::TestCeillInt64Property()
+{
+	FdoPtr<FdoIDataReader>myDataReader;
+	FdoPtr<FdoISelectAggregates>selCmdAggreg;
+    try
+    {
+        selCmdAggreg = (FdoISelectAggregates*)mConnection->CreateCommand( FdoCommandType_SelectAggregates );
+        selCmdAggreg->SetFeatureClassName(GetSchemaName() + L":" + AcDb3dPolylineName());
+        FdoPtr<FdoComputedIdentifier>cmpId = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Ceil(int64)) AS testFld");
+        FdoPtr<FdoIdentifierCollection>idCol = selCmdAggreg->GetPropertyNames();
+        idCol->Add( cmpId );
+        try
+        {
+            myDataReader = selCmdAggreg->Execute();
+            TestCommonFail(FdoException::Create(L"TestUpperDateProperty should fail!"));
+        }
+        catch( FdoException *ex )
+        {
+            printf("Expected error: %ls\n", ex->GetExceptionMessage());
+            ex->Release();
+        }
+    }
+    catch( FdoException *ex )
+    {
+        printf("FDO exception: %ls \n", ex->GetExceptionMessage() );
+        TestCommonFail(ex);
+    }
+}
+
+void FdoAdvancedSelectTest::TestLowerOnStringProperty()
+{
+	FdoPtr<FdoIDataReader>myDataReader;
+	FdoPtr<FdoISelectAggregates>selCmdAggreg;
+    try
+    {
+        selCmdAggreg = (FdoISelectAggregates*)mConnection->CreateCommand( FdoCommandType_SelectAggregates );
+        selCmdAggreg->SetFeatureClassName(GetSchemaName() + L":" + AcDb3dPolylineName());
+        FdoPtr<FdoComputedIdentifier>cmpId = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Lower(layer)) AS testFld");
+        FdoPtr<FdoIdentifierCollection>idCol = selCmdAggreg->GetPropertyNames();
+        idCol->Add( cmpId );
+        myDataReader = selCmdAggreg->Execute();
+        printf(">>> ... Checking the returned reader \n");
+        while (myDataReader->ReadNext())
+        {
+            if (!myDataReader->IsNull(L"testFld"))
+            {
+                FdoStringP myString = myDataReader->GetString(L"testFld");
+                printf ("String value = %ls\n", (FdoString*)myString);
+            }
+        }
+        myDataReader->Close();
+    }
+    catch( FdoException *ex )
+    {
+        printf("FDO exception: %ls \n", ex->GetExceptionMessage() );
+        TestCommonFail(ex);
+    }
+}
+

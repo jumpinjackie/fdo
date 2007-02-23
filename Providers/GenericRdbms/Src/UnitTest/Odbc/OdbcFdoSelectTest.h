@@ -133,6 +133,7 @@ class OdbcSqlServerFdoSelectTest : public OdbcFdoSelectTest
     virtual void _secondComputedIdTest() {
         TestCommonFeatureCommands::secondComputedIdTest(mConnection, L"acdb3dpolyline", L"featid");
     }
+    virtual int numPropertiesInPolylineClass() { return 17; };
 };
 
 class OdbcAccessFdoSelectTest : public OdbcFdoSelectTest

@@ -187,6 +187,7 @@ const wchar_t* FdoRdbmsOdbcFilterProcessor::FilterToSql(
     FdoRdbmsFilterUtilConstrainDef *inFilterConstrain,
     bool forUpdate,
     FdoInt16 callerId )
+
 {
     const wchar_t * ret = NULL;
 
@@ -229,3 +230,45 @@ const wchar_t* FdoRdbmsOdbcFilterProcessor::FilterToSql(
     return ret;
 }
 
+void FdoRdbmsOdbcFilterProcessor::ProcessFunction(FdoFunction& expr)
+{
+    unsigned long  dbVersion = mFdoConnection->GetDbiConnection()->GetDbVersion();
+    
+    if(dbVersion == RDBI_DBVERSION_ODBC_SQLSERVER || dbVersion == RDBI_DBVERSION_ODBC_ACCESS)
+    {
+        // SQL Server doesn't have a native 'CONCAT' method; instead, use the '+' string concatenation operator:
+        if (0==FdoCommonOSUtil::wcsicmp(expr.GetName(), L"CONCAT"))
+        {
+            AppendString(OPEN_PARENTH);
+            FdoPtr<FdoExpressionCollection> exprCol = expr.GetArguments();
+            for(int i=0; i<exprCol->GetCount(); i++ )
+            {
+                if( i!= 0 )
+                    AppendString( ARITHMETIC_PLUS );
+
+                FdoPtr<FdoExpression>exp = exprCol->GetItem( i );
+                HandleExpr( exp );
+            }
+            AppendString( CLOSE_PARENTH );
+            return;
+        }
+    }
+    FdoRdbmsFilterProcessor::ProcessFunction(expr);
+}
+
+void FdoRdbmsOdbcFilterProcessor::ProcessFunctionName(FdoFunction& expr)
+{
+    unsigned long  dbVersion = mFdoConnection->GetDbiConnection()->GetDbVersion();
+    
+    if(dbVersion == RDBI_DBVERSION_ODBC_SQLSERVER)
+    {
+        // Map 'well-known FDO function names' to SQL Server-specific function names, when they differ:
+        FdoString* sFunctionName = expr.GetName();
+        if (0==FdoCommonOSUtil::wcsicmp(sFunctionName, L"CEIL"))
+        {
+            AppendString(L"CEILING");
+            return;
+        }
+    }
+    FdoRdbmsFilterProcessor::ProcessFunctionName(expr);
+}

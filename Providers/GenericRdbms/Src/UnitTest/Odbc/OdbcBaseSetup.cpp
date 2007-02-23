@@ -169,7 +169,7 @@ const wchar_t* OdbcBaseSetup::mOracleAcadTestData[] = {
 	L"",
     L"insert into ACDB3DPOLYLINE (LAYER, COLOR, SEGCOUNT, CLASSID, REVISIONNUMBER, FEATID, DELSTATUS ) values (200, 256, 7, 11, 0, 2, 10);",
 	L"",
-    L"insert into ACDB3DPOLYLINE (LAYER, COLOR, SEGCOUNT, CLASSID, REVISIONNUMBER, FEATID, DELSTATUS ) values (200, 256, 5, 11, 0, 8, 10);",
+    L"insert into ACDB3DPOLYLINE (LAYER, COLOR, SEGCOUNT, CLASSID, REVISIONNUMBER, FEATID, DELSTATUS ) values (200, 256, 10, 11, 0, 8, 10);",
 	L"",
 	NULL
 };
@@ -195,9 +195,9 @@ const wchar_t* OdbcBaseSetup::mMySqlAcadTest[] = {
 	L"PRIMARY KEY (featid)",
 	L") ENGINE=MyISAM;",
     L"",
-    L"insert into acdb3dpolyline (layer, color, double1, single1, segcount, classid, revisionnumber, featid ) values (200, 256, 1, 2, 7, 11, 0, 2);",
+    L"insert into acdb3dpolyline (layer, color, double1, single1, segcount, classid, revisionnumber, featid ) values ('TestLayer1', '256', 1, 2, 7, 11, 0, 2);",
 	L"",
-    L"insert into acdb3dpolyline (layer, color, double1, single1, segcount, classid, revisionnumber, featid ) values (200, 256, 3, 4, 5, 11, 0, 8);",
+    L"insert into acdb3dpolyline (layer, color, double1, single1, segcount, classid, revisionnumber, featid ) values ('TestLayer2', '156', 3, 4, 10, 11, 0, 8);",
 	L"",
 	L"create table testClass (",
 	L"age int NOT NULL,",
@@ -214,7 +214,7 @@ const wchar_t* OdbcBaseSetup::mSqlServerAcadTest[] = {
 	L"layer varchar(10) NULL,",
 	L"color varchar(32) NULL,",
 	L"segcount int NULL,",
-	L"boolean tinyint NULL,",
+	L"boolean bit NULL,",
 	L"byte tinyint NULL,",
 	L"datetime1 datetime NULL,",
 	L"decimal1 decimal NULL,",
@@ -230,6 +230,10 @@ const wchar_t* OdbcBaseSetup::mSqlServerAcadTest[] = {
 	L"GEOMETRY_SI_2 varchar (255) NULL,",
 	L"featid bigint IDENTITY NOT NULL",
 	L");",
+    L"",
+    L"insert into acdb3dpolyline (layer, color, double1, single1, segcount, classid, revisionnumber ) values ('TestLayer1', '256', 1, 2, 7, 11, 0);",
+    L"",
+    L"insert into acdb3dpolyline (layer, color, double1, single1, segcount, classid, revisionnumber ) values ('TestLayer2', '156', 3, 4, 10, 12, 1);",
     L"",
     NULL
 };

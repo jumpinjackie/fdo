@@ -50,6 +50,10 @@ class OdbcAccessFdoAdvancedSelectTest : public FdoAdvancedSelectTest
     virtual void TestDefect779194() {};
     virtual void TestDefect785616();
 	virtual void getDataTypeTest();
+    virtual void TestMaxBoolProperty(){}
+    virtual void TestUpperDateProperty(){}
+    virtual void TestCeillInt64Property(){}
+    virtual void TestLowerOnStringProperty(){}
 	virtual void groupByorderByTest();
     virtual void checkDataReaderContentOnSelAggRequestWithAggrFunction();
     virtual void checkDataReaderContentOnSelAggRequestWithNumCharFunction();
@@ -67,7 +71,7 @@ class OdbcAccessFdoAdvancedSelectTest : public FdoAdvancedSelectTest
     void TestConcat();
 
 protected:
-    FdoString * GetSchemaName() {return L"Fdo";}
+    FdoStringP GetSchemaName() {return L"Fdo";}
     FdoStringP GetTable1Classname()
     {
         FdoStringP className = GetSchemaName();
@@ -101,17 +105,51 @@ class OdbcMySqlFdoAdvancedSelectTest : public FdoAdvancedSelectTest
     virtual void groupByTest() {};
     virtual void functionTest() {};
     virtual void getDataTypeTest() {};
+    virtual void TestMaxBoolProperty(){}
     virtual void selectDistinctTest() {};
     virtual void TestDefect779194() {};
     virtual void TestDefect785616() {};
 	virtual void groupByorderByTest();
-    virtual void checkDataReaderContentOnSelAggRequestWithAggrFunction();
-    virtual void checkDataReaderContentOnSelAggRequestWithNumCharFunction();
-    virtual void checkFeatureReaderContentOnSelRequestWithAggrFunction();
-    virtual void checkFeatureReaderContentOnSelRequestWithNumCharFunction();
 
 protected:
-    FdoString * GetSchemaName() {return L"Fdo";}
+    FdoStringP GetSchemaName() {return L"Fdo";}
+    FdoStringP AcDb3dPolylineName(){return L"acdb3dpolyline";};
+    FdoStringP GetDateTimePropName(){return L"datetime1";};
+    FdoStringP GetCitiesClassname()
+    {
+        FdoStringP className = GetSchemaName();
+        className += L":";
+        className += L"cities";
+        return className;
+    }
+};
+
+class OdbcSqlServerFdoAdvancedSelectTest : public FdoAdvancedSelectTest
+{
+    CPPUNIT_TEST_SUB_SUITE (OdbcSqlServerFdoAdvancedSelectTest, FdoAdvancedSelectTest);
+    CPPUNIT_TEST (TestLowerOnStringProperty);
+    CPPUNIT_TEST_SUITE_END ();
+
+    void  set_provider();
+
+    // Overridden tests.
+    virtual void connect ();
+    virtual void compIdentFilterTest() {};
+    virtual void compIdentPropertyTest();
+    virtual void orderByTest() {};
+    virtual void groupByTest() {};
+    virtual void functionTest() {};
+    virtual void getDataTypeTest() {};
+    virtual void selectDistinctTest() {};
+    virtual void TestDefect779194() {};
+    virtual void TestDefect785616() {};
+	virtual void groupByorderByTest();
+    //virtual void TestMaxBoolProperty(){}
+
+protected:
+    FdoStringP GetSchemaName() {return L"dbo";}
+    FdoStringP AcDb3dPolylineName(){return L"acdb3dpolyline";};
+    FdoStringP GetDateTimePropName(){return L"datetime1";};
     FdoStringP GetCitiesClassname()
     {
         FdoStringP className = GetSchemaName();
