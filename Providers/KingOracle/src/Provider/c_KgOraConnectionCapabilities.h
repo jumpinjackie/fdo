@@ -51,7 +51,7 @@ public:
     /// \return
     /// Returns the list of spatial context extent types.
     /// 
-    FDOKGORA_API virtual FdoSpatialContextExtentType* GetSpatialContextTypes(GisInt32& Length);
+    FDOKGORA_API virtual FdoSpatialContextExtentType* GetSpatialContextTypes(FdoInt32& Length);
 
     /// \brief
     /// Determines if the feature provider supports persistent locking.
@@ -70,7 +70,7 @@ public:
     /// \return
     /// Returns the list of lock types
     /// 
-    FDOKGORA_API virtual FdoLockType* GetLockTypes(GisInt32& Size);
+    FDOKGORA_API virtual FdoLockType* GetLockTypes(FdoInt32& Size);
 
     /// \brief
     /// Determines if the feature provider supports connection timeout.
@@ -129,6 +129,35 @@ public:
     /// when creating a new spatial context.
     /// 
     FDOKGORA_API virtual bool SupportsCSysWKTFromCSysName();
+    
+    #ifdef _FDO_3_2
+    /// \brief
+    ///	Determines if write is supported by the provider or by the datastore depending on whether this request is at
+    /// the provider or datastore level.
+    ///
+    /// \return
+    ///	Returns true if write is supported by the provider or by the datastore depending on whether this request is at
+    /// the provider or datastore level.
+    FDOKGORA_API virtual bool SupportsWrite();
+
+	/// \brief
+    /// Determines if the provider or datastore can support more than one user writing to a single datastore at
+    /// one time.
+    ///
+    /// \return
+    /// Returns true if the provider or datastore can support more than one user writing to a single datastore at
+    /// one time.
+    FDOKGORA_API virtual bool SupportsMultiUserWrite();
+
+    /// \brief
+    /// Determines if the provider can support the flush function. Flush is used to write any outstanding data
+    /// to the datastore. This is mainly used by the file based providers to ensure that any cached data is writen to the file.
+    ///
+    /// \return
+    /// Returns true if the provider or datastore can support the flush function.
+    ///
+    FDOKGORA_API virtual bool SupportsFlush();
+    #endif
 };
 
 #endif 

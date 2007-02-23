@@ -20,7 +20,7 @@
 #define _c_KgOraSpatialContext_h
 
 
-class c_KgOraSpatialContext : public GisDisposable
+class c_KgOraSpatialContext : public FdoDisposable
 {
 private:
     FdoStringP m_Name;
@@ -72,7 +72,7 @@ public:
 
 
 
-class c_KgOraSpatialContextCollection : public FdoNamedCollection<c_KgOraSpatialContext, GisException>
+class c_KgOraSpatialContextCollection : public FdoNamedCollection<c_KgOraSpatialContext, FdoException>
 {
 public:
     c_KgOraSpatialContextCollection(void) {}

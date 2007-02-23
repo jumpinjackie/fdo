@@ -114,7 +114,7 @@ public:
     /// \return
     /// Returns the byte value.
     /// 
-    FDOKGORA_API virtual GisByte GetByte(FdoString* ColumnName);
+    FDOKGORA_API virtual FdoByte GetByte(FdoString* ColumnName);
 
     /// \brief
     /// Gets the date time value of the specified column. No conversion
@@ -127,7 +127,7 @@ public:
     /// \return
     /// Returns the date and time value.
     /// 
-    FDOKGORA_API virtual GisDateTime GetDateTime(FdoString* ColumnName);
+    FDOKGORA_API virtual FdoDateTime GetDateTime(FdoString* ColumnName);
 
     /// \brief
     /// Gets the double-precision floating point value of the specified column.
@@ -151,9 +151,9 @@ public:
     /// Input the column name.
     /// 
     /// \return
-    /// Returns the GisInt16 value.
+    /// Returns the FdoInt16 value.
     /// 
-    FDOKGORA_API virtual GisInt16 GetInt16(FdoString* ColumnName);
+    FDOKGORA_API virtual FdoInt16 GetInt16(FdoString* ColumnName);
 
     /// \brief
     /// Gets the signed 32-bit integer value of the specified column. No conversion is
@@ -177,9 +177,9 @@ public:
     /// Input the column name.
     /// 
     /// \return
-    /// Returns the GisInt64 value.
+    /// Returns the FdoInt64 value.
     /// 
-    FDOKGORA_API virtual GisInt64 GetInt64(FdoString* ColumnName);
+    FDOKGORA_API virtual FdoInt64 GetInt64(FdoString* ColumnName);
 
     /// \brief
     /// Gets the single-precision floating point value of the specified column.
@@ -225,7 +225,7 @@ public:
     /// FdoCLOBStreamReader etc. to allow reading in blocks of data.
     /// Because no conversion is performed, the property must be FdoDataType_BLOB 
     /// or FdoDataType_CLOB etc. (a LOB type)
-    /// Cast the GisIStreamReader to the appropiate LOB Stream Reader.
+    /// Cast the FdoIStreamReader to the appropiate LOB Stream Reader.
     /// 
     /// \param propertyName 
     /// Input the property name.
@@ -233,7 +233,7 @@ public:
     /// \return
     /// Returns a reference to a LOB stream reader
     /// 
-    FDOKGORA_API virtual GisIStreamReader* GetLOBStreamReader(const wchar_t* propertyName);
+    FDOKGORA_API virtual FdoIStreamReader* GetLOBStreamReader(const wchar_t* propertyName);
 
     /// \brief
     /// Returns true if the value of the specified column is null.

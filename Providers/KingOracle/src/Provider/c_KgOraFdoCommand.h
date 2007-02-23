@@ -71,7 +71,11 @@ public:
     /// and generating an error.
     virtual int GetCommandTimeout ()
     {
-        throw GisException::Create (GisException::NLSGetMessage (GIS_NLSID (GIS_100_COMMAND_TIMEOUT_NOT_SUPPORTED)));
+      #ifdef _FDO_3_1
+        throw GisException::Create (GisException::NLSGetMessage (FDO_NLSID (FDO_100_COMMAND_TIMEOUT_NOT_SUPPORTED)));
+      #else
+        throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_100_COMMAND_TIMEOUT_NOT_SUPPORTED)));
+      #endif
     }
 
     /// Sets the wait time before terminating the attempt to execute a command
@@ -79,7 +83,11 @@ public:
     virtual void SetCommandTimeout (int value)
     {
         (void)value;  // prevent compiler from complaining about unreferenced arguments
-        throw GisException::Create (GisException::NLSGetMessage (GIS_NLSID (GIS_100_COMMAND_TIMEOUT_NOT_SUPPORTED)));
+      #ifdef _FDO_3_1
+        throw GisException::Create (GisException::NLSGetMessage (FDO_NLSID (FDO_100_COMMAND_TIMEOUT_NOT_SUPPORTED)));
+      #else
+        throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_100_COMMAND_TIMEOUT_NOT_SUPPORTED)));
+      #endif
     }
 
     /// Gets the transaction in which the command executes.
@@ -152,7 +160,7 @@ FdoParameterValueCollection* c_KgOraFdoCommand<FDO_COMMAND>::GetParameterValues(
   }
   
   return FDO_SAFE_ADDREF(m_Parameters.p);
-    //throw FdoCommandException::Create (GisException::NLSGetMessage(GIS_68_COMMAND_PARAMETERS_NOT_SUPPORTED, "Command parameters are not supported."));
+    //throw FdoCommandException::Create (FdoException::NLSGetMessage(GIS_68_COMMAND_PARAMETERS_NOT_SUPPORTED, "Command parameters are not supported."));
 }
 
 

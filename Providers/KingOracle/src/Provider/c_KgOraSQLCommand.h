@@ -55,7 +55,7 @@ public:
     /// \return
     /// Returns the number of rows affected.
     /// 
-    FDOKGORA_API virtual GisInt32 ExecuteNonQuery();
+    FDOKGORA_API virtual FdoInt32 ExecuteNonQuery();
 
     /// \brief
     /// Executes the SQL statement against the connection object and returns

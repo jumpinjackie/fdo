@@ -20,7 +20,7 @@
 
 
 
-class c_KgOraSchemaDesc : public GisDisposable
+class c_KgOraSchemaDesc : public FdoDisposable
 {
 
 public:  

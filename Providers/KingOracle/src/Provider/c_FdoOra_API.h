@@ -25,7 +25,7 @@ public:
 public:
   ~c_FdoOra_API(void);
   
-  static c_KgOraSchemaDesc* c_FdoOra_API::DescribeSchema(c_KgOraConnection* KgOraConn,const char* OraSchema);
+  static c_KgOraSchemaDesc* c_FdoOra_API::DescribeSchema(c_KgOraConnection* KgOraConn,const char* OraSchema,const char* KingFdoViews);
   
   static bool c_FdoOra_API::OraTypeToFdoDataType(const char* OraType,int Scale,int Length,FdoDataType & FdoType);
   static bool OraTypeToFdoDataType(oracle::occi::Type OraType,int Scale,int Length,FdoDataType & FdoType);
@@ -36,6 +36,8 @@ public:
   static bool SetOracleStatementData(oracle::occi::Statement* Statement,int SqlParamNum,FdoDataValue* DataValue);
   
 protected:
+  static void c_FdoOra_API::DescribeSchemaSQL(oracle::occi::Connection * OraConn,oracle::occi::Statement* OraStm
+                                                        ,FdoClassCollection* FdoClasses,FdoKgOraClassCollection* PhysClasses,c_KgOraSpatialContextCollection* SC_Collection,long& AliasNum);
   static bool DescribeTableProperties(oracle::occi::Connection * OcciConnection,const char*Schema,const char*TableName,FdoPropertyDefinitionCollection* PropCollection);
 };
 

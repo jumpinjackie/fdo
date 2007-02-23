@@ -177,7 +177,7 @@ c_FgfToSdoGeom::e_TransformResult c_FgfToSdoGeom::ToSdoGeom(const int* FGFbuff,l
       fgf_coorddim = *fbuff++;      
       OraDim(fgf_coorddim);   
       
-      AddOrdinates(fbuff,1,1,0); // Etype 1 Interp 0        
+      AddOrdinates(fbuff,1,1,1); // Etype 1 Interp 0        
     }  
     break;
     

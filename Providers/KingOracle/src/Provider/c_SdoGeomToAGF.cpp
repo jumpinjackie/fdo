@@ -748,7 +748,7 @@ bool c_SdoGeomToAGF::AGF_Get_GType2_CurveOrLine(int& ElemInfo_Index,bool ForceCu
   
   if( !islinear )
   {  
-    AGF_UpdateInt(geometry_type_buffpos,GisGeometryType_CurveString);
+    AGF_UpdateInt(geometry_type_buffpos,FdoGeometryType_CurveString);
     
   }
   
@@ -807,7 +807,7 @@ bool c_SdoGeomToAGF::AGF_Get_GType6_Multi_LineOrCurve(int& ElemInfo_Index)
   if( islinear )
     AGF_WriteGeometryType(FdoGeometryType_MultiLineString);
   else
-    AGF_WriteGeometryType(GisGeometryType_MultiCurveString);
+    AGF_WriteGeometryType(FdoGeometryType_MultiCurveString);
     
   
   int num_strings = 0;
@@ -973,7 +973,7 @@ bool c_SdoGeomToAGF::AGF_Get_CurveArcString(int& ElemInfo_Index)
   // and two points for each arc
   for(int ind=0;ind<numarcs;ind++)
   {
-    AGF_WriteInt(GisGeometryComponentType_CircularArcSegment);
+    AGF_WriteInt(FdoGeometryComponentType_CircularArcSegment);
     AGF_WritePointsFromOrdinates(ord,2);
   }     
  
@@ -1127,7 +1127,7 @@ bool c_SdoGeomToAGF::AGF_Get_CurveString(int& ElemInfo_Index)
     }
     else
     {
-      AGF_WriteInt(GisGeometryComponentType_CircularArcSegment); // arc CurveElmentType
+      AGF_WriteInt(FdoGeometryComponentType_CircularArcSegment); // arc CurveElmentType
       
       
       AGF_WritePointsFromOrdinates(ord,2); // za arc sta dve tocki
@@ -1327,7 +1327,7 @@ bool c_SdoGeomToAGF::AGF_Get_GType3_PolygonOrCurvePolygon(int& ElemInfo_Index,bo
   
   if( !islinear )
   {
-    AGF_UpdateInt(geometry_type_buffpos,GisGeometryType_CurvePolygon);
+    AGF_UpdateInt(geometry_type_buffpos,FdoGeometryType_CurvePolygon);
   }
   
   return true;
@@ -1377,7 +1377,7 @@ bool c_SdoGeomToAGF::AGF_Get_GType7_Multi_PolygonOrCurvePolygon(int& ElemInfo_In
   if( islinear )
     AGF_WriteGeometryType(FdoGeometryType_MultiPolygon);
   else
-    AGF_WriteGeometryType(GisGeometryType_MultiCurvePolygon);
+    AGF_WriteGeometryType(FdoGeometryType_MultiCurvePolygon);
     
   
   int num_poly = 0;

@@ -41,7 +41,7 @@ public:
     /// \return
     /// Returns the list of geometry types
     /// 
-    FDOKGORA_API virtual GisGeometryType* GetGeometryTypes( GisInt32& Length);
+    FDOKGORA_API virtual FdoGeometryType* GetGeometryTypes( FdoInt32& Length);
 
     /// \brief
     /// Return the list of supported component types. For example, if a client wanted to know if circular arcs were supported 
@@ -53,7 +53,7 @@ public:
     /// \return
     /// Returns the list of component types
     /// 
-    FDOKGORA_API virtual GisGeometryComponentType* GetGeometryComponentTypes( GisInt32& Length );
+    FDOKGORA_API virtual FdoGeometryComponentType* GetGeometryComponentTypes( FdoInt32& Length );
 
     /// \brief
     /// Returns the supported dimensionalities which are based on the bit masks defined in the GisDimensionality enum. 
@@ -62,7 +62,7 @@ public:
     /// \return
     /// Returns the dimensionalities
     /// 
-    FDOKGORA_API virtual GisInt32 GetDimensionalities();
+    FDOKGORA_API virtual FdoInt32 GetDimensionalities();
 };
 
 #endif 

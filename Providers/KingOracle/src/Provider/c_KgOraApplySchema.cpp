@@ -92,7 +92,7 @@ void c_KgOraApplySchema::SetPhysicalMapping(FdoPhysicalSchemaMapping* PhysMap)
 /// Returns true if elements states will be ignored, false otherwise. 
 /// 
 ///  
-GisBoolean c_KgOraApplySchema::GetIgnoreStates()
+FdoBoolean c_KgOraApplySchema::GetIgnoreStates()
 {
   return m_IngoreStates;
 }

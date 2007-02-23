@@ -35,7 +35,7 @@
 c_KgOraFeatureReader::c_KgOraFeatureReader(c_KgOraConnection * Connection
                                       ,oracle::occi::Statement* OcciStatement ,oracle::occi::ResultSet* OcciResultSet 
                                         ,FdoClassDefinition* ClassDef
-                                        ,int GeomPropSqlIndex, GisStringCollection* SqlColumns
+                                        ,int GeomPropSqlIndex, FdoStringCollection* SqlColumns
                                         ,FdoIdentifierCollection* Props)
  : c_KgOraReader(Connection,OcciStatement ,OcciResultSet,GeomPropSqlIndex, SqlColumns), m_ClassDef(ClassDef)
 {

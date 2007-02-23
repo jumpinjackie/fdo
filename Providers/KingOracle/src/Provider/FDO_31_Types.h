@@ -1,6 +1,9 @@
 #pragma once
 //  new 3.2 naming
-#define D_FDO_3_1
+#ifdef _FDO_3_1
+  #define D_FDO_3_1
+#endif
+
 #ifdef D_FDO_3_1
 
 #define FdoPtr GisPtr
@@ -43,6 +46,7 @@
 #define FdoGeometryType_MultiCurvePolygon GisGeometryType_MultiCurvePolygon
 #define FdoGeometryComponentType_LinearRing GisGeometryComponentType_LinearRing
 #define FdoGeometryComponentType_LineStringSegment GisGeometryComponentType_LineStringSegment
+#define FdoGeometryComponentType_CircularArcSegment GisGeometryComponentType_CircularArcSegment
 #define FdoGeometryComponentType_Ring GisGeometryComponentType_Ring
 #define FdoGeometryType GisGeometryType
 #define FdoGeometryComponentType GisGeometryComponentType
@@ -51,5 +55,20 @@
 #define FdoDimensionality_M GisDimensionality_M
 
 #define FdoNamedCollection GisNamedCollection
+
+#define FdoXmlSaxContext GisXmlSaxContext
+#define FdoXmlSaxHandler GisXmlSaxHandler
+#define FdoXmlAttributeCollection GisXmlAttributeCollection
+#define FdoXmlWriter GisXmlWriter
+#define FdoDisposable GisDisposable
+#define FdoXmlAttributeP GisXmlAttributeP
+#define FdoXml GisXml
+#define FDO_NLSID GIS_NLSID
+//#define FdoException GisException
+
+#define FDO_100_COMMAND_TIMEOUT_NOT_SUPPORTED GIS_100_COMMAND_TIMEOUT_NOT_SUPPORTED
+#define FDO_103_CONNECTION_ALREADY_OPEN GIS_103_CONNECTION_ALREADY_OPEN
+#define FDO_102_COMMAND_NOT_SUPPORTED GIS_102_COMMAND_NOT_SUPPORTED
+#define FDO_68_COMMAND_PARAMETERS_NOT_SUPPORTED GIS_68_COMMAND_PARAMETERS_NOT_SUPPORTED
 
 #endif

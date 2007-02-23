@@ -122,8 +122,9 @@ double c_KgOraFeatureReaderInsert::GetDouble( const wchar_t *PropName )
       if( propvalue == NULL )
           throw FdoCommandException::Create( L"c_KgOraFeatureReaderInsert::GetDouble Property not found!" );
   }
-  catch ( FdoException * )
+  catch ( FdoException * e)
   {
+    FDO_SAFE_RELEASE(e);
     throw FdoCommandException::Create( L"c_KgOraFeatureReaderInsert::GetDouble Property not found!" );
   }
   FdoPtr<FdoValueExpression> val = propvalue->GetValue();
@@ -152,8 +153,9 @@ const wchar_t* c_KgOraFeatureReaderInsert::GetString( const wchar_t * PropName)
       if( propvalue == NULL )
           throw FdoCommandException::Create( L"c_KgOraFeatureReaderInsert::GetString Property not found!" );
   }
-  catch ( FdoException * )
+  catch ( FdoException * e)
   {
+    FDO_SAFE_RELEASE(e);
     throw FdoCommandException::Create( L"c_KgOraFeatureReaderInsert::GetString Property not found!" );
   }
   FdoPtr<FdoValueExpression> val = propvalue->GetValue();
@@ -182,8 +184,9 @@ short c_KgOraFeatureReaderInsert::GetInt16( const wchar_t *PropName )
       if( propvalue == NULL )
           throw FdoCommandException::Create( L"c_KgOraFeatureReaderInsert::GetInt16 Property not found!" );
   }
-  catch ( FdoException * )
+  catch ( FdoException *e )
   {
+    FDO_SAFE_RELEASE(e);
     throw FdoCommandException::Create( L"c_KgOraFeatureReaderInsert::GetInt16 Property not found!" );
   }
   FdoPtr<FdoValueExpression> val = propvalue->GetValue();
@@ -212,8 +215,9 @@ int c_KgOraFeatureReaderInsert::GetInt32( const wchar_t *PropName )
       if( propvalue == NULL )
           throw FdoCommandException::Create( L"c_KgOraFeatureReaderInsert::GetInt32 Property not found!" );
   }
-  catch ( FdoException * )
+  catch ( FdoException * e )
   {
+    FDO_SAFE_RELEASE(e);
     throw FdoCommandException::Create( L"c_KgOraFeatureReaderInsert::GetInt32 Property not found!" );
   }
   FdoPtr<FdoValueExpression> val = propvalue->GetValue();
@@ -242,8 +246,9 @@ FdoInt64 c_KgOraFeatureReaderInsert::GetInt64( const wchar_t *PropName )
       if( propvalue == NULL )
           throw FdoCommandException::Create( L"c_KgOraFeatureReaderInsert::GetInt64 Property not found!" );
   }
-  catch ( FdoException * )
+  catch ( FdoException *e )
   {
+    FDO_SAFE_RELEASE(e);
     throw FdoCommandException::Create( L"c_KgOraFeatureReaderInsert::GetInt64 Property not found!" );
   }
   FdoPtr<FdoValueExpression> val = propvalue->GetValue();
@@ -278,9 +283,9 @@ bool c_KgOraFeatureReaderInsert::IsNull( const wchar_t *PropName )
         if( propval == NULL )
             throw FdoCommandException::Create( L"c_KgOraFeatureReaderInsert::IsNull Property not found!" );
     }
-    catch( FdoException *exp )
+    catch( FdoException *e )
     {
-        exp = exp;
+        FDO_SAFE_RELEASE(e);
         throw FdoCommandException::Create( L"c_KgOraFeatureReaderInsert::IsNull Property not found!" );
     }
 

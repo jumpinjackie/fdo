@@ -114,9 +114,13 @@ void c_KgOraDescribeSchemaCommand::SetTransaction(FdoITransaction* Transaction)
 /// \return
 /// Returns the time (in milliseconds)
 ///
-GisInt32 c_KgOraDescribeSchemaCommand::GetCommandTimeout()
+FdoInt32 c_KgOraDescribeSchemaCommand::GetCommandTimeout()
 { 
-  throw FdoException::Create (GisException::NLSGetMessage (GIS_NLSID (GIS_100_COMMAND_TIMEOUT_NOT_SUPPORTED)));
+  #ifdef _FDO_3_1
+    throw GisException::Create (GisException::NLSGetMessage (FDO_NLSID (FDO_100_COMMAND_TIMEOUT_NOT_SUPPORTED)));
+  #else
+  throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_100_COMMAND_TIMEOUT_NOT_SUPPORTED)));
+  #endif
 }
 
 /// \brief
@@ -131,9 +135,13 @@ GisInt32 c_KgOraDescribeSchemaCommand::GetCommandTimeout()
 /// \return
 /// Returns nothing
 /// 
-void c_KgOraDescribeSchemaCommand::SetCommandTimeout(GisInt32 Timeout)
+void c_KgOraDescribeSchemaCommand::SetCommandTimeout(FdoInt32 Timeout)
 {
-  throw FdoCommandException::Create (GisException::NLSGetMessage (GIS_NLSID (GIS_100_COMMAND_TIMEOUT_NOT_SUPPORTED)));
+  #ifdef _FDO_3_1
+    throw GisException::Create (GisException::NLSGetMessage (FDO_NLSID (FDO_100_COMMAND_TIMEOUT_NOT_SUPPORTED)));
+  #else
+  throw FdoCommandException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_100_COMMAND_TIMEOUT_NOT_SUPPORTED)));
+  #endif
 }
 
 /// \brief
@@ -146,7 +154,11 @@ void c_KgOraDescribeSchemaCommand::SetCommandTimeout(GisInt32 Timeout)
 /// 
 FdoParameterValueCollection* c_KgOraDescribeSchemaCommand::GetParameterValues()
 {
-  throw FdoCommandException::Create (GisException::NLSGetMessage(GIS_68_COMMAND_PARAMETERS_NOT_SUPPORTED, "Command parameters are not supported."));
+  #ifdef _FDO_3_1
+    throw FdoCommandException::Create (GisException::NLSGetMessage(FDO_68_COMMAND_PARAMETERS_NOT_SUPPORTED, "Command parameters are not supported."));
+  #else
+  throw FdoCommandException::Create (FdoException::NLSGetMessage(FDO_68_COMMAND_PARAMETERS_NOT_SUPPORTED, "Command parameters are not supported."));
+  #endif
 }
 
 /// \brief

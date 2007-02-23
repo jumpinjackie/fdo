@@ -70,20 +70,20 @@ try {
 catch(oracle::occi::SQLException& ea)
 {
   
-  GisStringP gstr = ea.getMessage().c_str();
-  throw GisException::Create (gstr);
+  FdoStringP gstr = ea.getMessage().c_str();
+  throw FdoException::Create (gstr);
   
 }
 catch(...)
 {
-  throw GisException::Create (L"Unknown exception");
+  throw FdoException::Create (L"Unknown exception");
 }  
 
 }//end of c_OCCI_API::OcciInit
 
 bool c_OCCI_API::IsInit() { return g_Env != NULL; }
 
-
+oracle::occi::Environment* c_OCCI_API::GetEnvironment() { return g_Env; }
 
 StatelessConnectionPool* c_OCCI_API::GetConnPool(const char*User,const char*Password,const char* DbLink,int& IndCpDesc)
 {

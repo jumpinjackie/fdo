@@ -40,7 +40,7 @@ public:
     /// \return
     /// Returns the list of expression types
     /// 
-    FDOKGORA_API virtual FdoExpressionType* GetExpressionTypes(GisInt32& length);
+    FDOKGORA_API virtual FdoExpressionType* GetExpressionTypes(FdoInt32& length);
 
     /// \brief
     /// Returns a collection of FdoFunctionDefinition objects the feature provider supports within expressions.

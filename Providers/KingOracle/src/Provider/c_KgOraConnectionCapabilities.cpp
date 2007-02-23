@@ -128,3 +128,41 @@ bool c_KgOraConnectionCapabilities::SupportsCSysWKTFromCSysName()
 {
     return false;
 }
+
+#ifdef _FDO_3_2
+/// \brief
+///	Determines if write is supported by the provider or by the datastore depending on whether this request is at
+/// the provider or datastore level.
+///
+/// \return
+///	Returns true if write is supported by the provider or by the datastore depending on whether this request is at
+/// the provider or datastore level.
+bool c_KgOraConnectionCapabilities::SupportsWrite()
+{
+  return true;
+}
+
+/// \brief
+/// Determines if the provider or datastore can support more than one user writing to a single datastore at
+/// one time.
+///
+/// \return
+/// Returns true if the provider or datastore can support more than one user writing to a single datastore at
+/// one time.
+bool c_KgOraConnectionCapabilities::SupportsMultiUserWrite()
+{
+  return true;
+}
+
+/// \brief
+/// Determines if the provider can support the flush function. Flush is used to write any outstanding data
+/// to the datastore. This is mainly used by the file based providers to ensure that any cached data is writen to the file.
+///
+/// \return
+/// Returns true if the provider or datastore can support the flush function.
+///
+bool c_KgOraConnectionCapabilities::SupportsFlush()
+{
+  return false;
+}
+#endif

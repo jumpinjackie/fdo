@@ -43,7 +43,7 @@ public:
     /// \return
     /// Returns the list of commands
     /// 
-    FDOKGORA_API virtual GisInt32* GetCommands(GisInt32& Size);
+    FDOKGORA_API virtual FdoInt32* GetCommands(FdoInt32& Size);
 
     /// \brief
     /// Determines if commands support parameterization.

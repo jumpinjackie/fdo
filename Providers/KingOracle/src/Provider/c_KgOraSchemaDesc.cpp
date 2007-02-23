@@ -38,12 +38,18 @@ FdoClassDefinition* c_KgOraSchemaDesc::FindClassDefinition(FdoIdentifier* ClassI
   FdoPtr<FdoFeatureSchemaCollection> fschemas = GetFeatureSchema();
   
   FdoPtr<FdoClassDefinition> classdef;
+  
   if( fschemas && (fschemas->GetCount() > 0) )
   {
-    FdoPtr<FdoFeatureSchema> schm = fschemas->GetItem(0);      
-    FdoPtr<FdoClassCollection> classes = schm->GetClasses();
+    FdoStringP fname = ClassId->GetText();
+    FdoPtr<FdoIDisposableCollection> classes = fschemas->FindClass(fname);
     
-    classdef = classes->FindItem( ClassId->GetName() );
+    //FdoPtr<FdoFeatureSchema> schm = fschemas->GetItem(0);      
+    //FdoPtr<FdoClassCollection> classes = schm->GetClasses();
+    
+    //classdef = classes->FindItem( ClassId->GetName() );
+    
+    classdef = (FdoClassDefinition*)classes->GetItem( 0 );
     
     //if( !classdef.p ) return NULL;
     return FDO_SAFE_ADDREF(classdef.p);    
