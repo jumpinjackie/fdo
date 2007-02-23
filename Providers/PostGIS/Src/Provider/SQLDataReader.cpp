@@ -20,20 +20,19 @@
 #include "SQLDataReader.h"
 #include "Connection.h"
 #include "PgCursor.h"
-
+// std
 #include <cassert>
+// boost
+#include <boost/lexical_cast.hpp>
 
 namespace fdo { namespace postgis {
 
-SQLDataReader::SQLDataReader(PgCursor* cursor) : mCursor(cursor)
+SQLDataReader::SQLDataReader(PgCursor* cursor)
+    : mCursor(cursor), mCurrentTuple(0)
 {
     assert(NULL != cursor);
     
     FDO_SAFE_ADDREF(mCursor.p);
-
-    // TODO: Move describe logic to PgCursor
-    //PQdescribePortal()
-
 }
 
 SQLDataReader::~SQLDataReader()
@@ -117,8 +116,32 @@ FdoInt16 SQLDataReader::GetInt16(FdoString* columnName)
 
 FdoInt32 SQLDataReader::GetInt32(FdoString* columnName)
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    try
+    {
+        FdoSize const fnumber = mCursor->GetFieldNumber(columnName);
+        PgCursor::ResultPtr pgRes = mCursor->GetFetchResult();
+
+        FdoInt32 val = 0;
+        try
+        {
+            char const* cval = PQgetvalue(pgRes, mCurrentTuple, fnumber);
+            val = boost::lexical_cast<FdoInt32>(cval);
+        }
+        catch (boost::bad_lexical_cast& e)
+        {
+            e;
+            throw FdoCommandException::Create(L"Field value conversion failed.");
+        }
+
+        return val;
+    }
+    catch (FdoException* e)
+    {
+        FdoCommandException* ne = NULL;
+        ne = FdoCommandException::Create(L"Int32", e);
+        e->Release();
+        throw ne;
+    }
 }
 
 FdoInt64 SQLDataReader::GetInt64(FdoString* columnName)
@@ -153,19 +176,31 @@ FdoIStreamReader* SQLDataReader::GetLOBStreamReader(wchar_t const* columnName)
 
 bool SQLDataReader::IsNull(FdoString* columnName)
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    FdoSize const fnumber = mCursor->GetFieldNumber(columnName);
+    PgCursor::ResultPtr pgRes = mCursor->GetFetchResult();
+
+    // Returns 1 if the field is null and 0 if it contains a non-null value.
+    // The PQgetvalue will return an empty string, not a null pointer, for a null field.
+
+    int const isNull = PQgetisnull(pgRes, mCurrentTuple, fnumber);
+
+    return (1 == isNull);
 }
 
 FdoByteArray* SQLDataReader::GetGeometry(FdoString* columnName)
 {
+    // TODO: How to detect and distinguish following cases:
+    //1. SELECT geom FROM table
+    //2. SELECT AsBinary(geom) FROM table
+
+
     assert(!"NOT IMPLEMENTED");
     return 0;
 }
 
 bool SQLDataReader::ReadNext()
 {
-    FDOLOG_MARKER("SQLDataReader::+ReadNext");
+    // TODO: Add fetching tuples in batches, ie. per 50 or 100
 
     bool eof = true;
 
@@ -174,9 +209,6 @@ bool SQLDataReader::ReadNext()
     {
         if (0 != PQntuples(pgRes))
         {
-            // TODO: Readable state validation
-            //ValidateReadableState();
-
             eof = false;
         }
     }
