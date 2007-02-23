@@ -185,13 +185,13 @@ ServiceName
 MessageId=3004
 SymbolicName=M_KGORA_CONNECTION_PROPERTY_USERNAME
 Language=English
-ServiceName
+Username
 .
 
 MessageId=3005
 SymbolicName=M_KGORA_CONNECTION_PROPERTY_PASSWORD
 Language=English
-ServiceName
+Password
 .
 
 MessageId=3006
@@ -200,6 +200,11 @@ Language=English
 OracleSchema
 .
 
+MessageId=3007
+SymbolicName=M_KGORA_CONNECTION_PROPERTY_FDO_VIEWS_TABLE
+Language=English
+FdoViewsTable
+.
 
 ;//************************************************************************************
 ;//************************************************************************************

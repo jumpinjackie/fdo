@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="gb2312"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="KingOracleOverrides"
 	ProjectGUID="{5B5F49A3-7760-4171-9F3C-47BB775EC4FE}"
 	RootNamespace="KingOracleOverrides"
@@ -16,8 +16,8 @@
 	</ToolFiles>
 	<Configurations>
 		<Configuration
-			Name="Debug|Win32"
-			OutputDirectory="Dbg"
+			Name="Debug_Fdo_3_2|Win32"
+			OutputDirectory="..\..\Bin\Win32\$(ConfigurationName)"
 			IntermediateDirectory="Dbg"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\inc;..\..\..\FdoCommon\inc;..\..\..\..\Fdo\Unmanaged\inc"
+				AdditionalIncludeDirectories="..\..\inc;..\..\..\..\Fdo\Unmanaged\inc;..\..\..\..\Utilities\Common\inc"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				RuntimeLibrary="3"
@@ -65,9 +65,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Fdo.lib GisCommon.lib FdoCommon.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib ProvidersCommon.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\..\..\Fdo\Unmanaged\lib\iwins\debug;..\..\..\FdoCommon\lib\iwins\debug"
+				AdditionalLibraryDirectories="..\..\..\..\Fdo\Unmanaged\Lib\Win32\Debug\;..\..\..\..\Utilities\Common\Lib\Win32\Debug"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				SubSystem="2"
@@ -98,12 +98,12 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning $(ProjectName).dll"
-				CommandLine="..\..\..\..\thirdparty\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;0.3.3.0%PROVIDERS_VERSION%&quot; $(OutDir)\$(ProjectName).dll"
+				CommandLine="..\..\..\..\thirdparty\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;0.5.1.0%PROVIDERS_VERSION%&quot; $(OutDir)\$(ProjectName).dll"
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release|Win32"
-			OutputDirectory="Rel"
+			Name="Release_Fdo_3_2|Win32"
+			OutputDirectory="..\..\Bin\Win32\$(ConfigurationName)"
 			IntermediateDirectory="Rel"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
@@ -129,7 +129,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\..\inc;..\..\..\FdoCommon\inc;..\..\..\..\FDO\Unmanaged\inc"
+				AdditionalIncludeDirectories="..\..\inc;..\..\..\..\Fdo\Unmanaged\inc;..\..\..\..\Utilities\Common\inc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -154,10 +154,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Fdo.lib GisCommon.lib ..\..\..\fdocommon\lib\iwins\release\fdocommon.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib ProvidersCommon.lib"
 				OutputFile="$(OutDir)/$(ProjectName).dll"
 				LinkIncremental="0"
-				AdditionalLibraryDirectories="..\..\..\..\Fdo\Unmanaged\lib\iwins\release;..\..\..\FdoCommon\lib\iwins\release"
+				AdditionalLibraryDirectories="..\..\..\..\Fdo\Unmanaged\Lib\Win32\Release\;..\..\..\..\Utilities\Common\Lib\Win32\Release\"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				SubSystem="2"
@@ -190,12 +190,12 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning $(ProjectName).dll"
-				CommandLine="..\..\..\..\thirdparty\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;0.3.3.0%PROVIDERS_VERSION%&quot; $(OutDir)\$(ProjectName).dll"
+				CommandLine="..\..\..\..\thirdparty\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;0.5.1.0%PROVIDERS_VERSION%&quot; $(OutDir)\$(ProjectName).dll"
 			/>
 		</Configuration>
 		<Configuration
-			Name="InstantClient_Release|Win32"
-			OutputDirectory="$(ConfigurationName)"
+			Name="InstantClient_Release_Fdo_3_2|Win32"
+			OutputDirectory="..\..\Bin\Win32\$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
@@ -221,7 +221,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\..\inc;..\..\..\FdoCommon\inc;..\..\..\..\FDO\Unmanaged\inc"
+				AdditionalIncludeDirectories="..\..\inc;..\..\..\..\Fdo\Unmanaged\inc;..\..\..\..\Utilities\Common\inc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -246,10 +246,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Fdo.lib GisCommon.lib ..\..\..\fdocommon\lib\iwins\release\fdocommon.lib"
+				AdditionalDependencies="FDO.lib FdoCommon.lib ProvidersCommon.lib"
 				OutputFile="$(OutDir)/$(ProjectName).dll"
 				LinkIncremental="0"
-				AdditionalLibraryDirectories="..\..\..\..\Fdo\Unmanaged\lib\iwins\release;..\..\..\FdoCommon\lib\iwins\release"
+				AdditionalLibraryDirectories="..\..\..\..\Fdo\Unmanaged\Lib\Win32\Release\;..\..\..\..\Utilities\Common\Lib\Win32\Release\"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				SubSystem="2"
@@ -282,7 +282,277 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning $(ProjectName).dll"
-				CommandLine="..\..\..\..\thirdparty\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;0.3.3.0%PROVIDERS_VERSION%&quot; $(OutDir)\$(ProjectName).dll"
+				CommandLine="..\..\..\..\thirdparty\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;0.5.1.0%PROVIDERS_VERSION%&quot; $(OutDir)\$(ProjectName).dll"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug_Fdo_3_1|Win32"
+			OutputDirectory="..\..\Bin\Win32\$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\..\inc;&quot;D:\Development\MapGuide OpenSource\v1.0.2\OpenSource_FDO\fdo\Unmanaged\inc&quot;;&quot;D:\Development\MapGuide OpenSource\v1.0.2\OpenSource_FDO\providers\FdoCommon\inc&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_1"
+				MinimalRebuild="true"
+				RuntimeLibrary="3"
+				TreatWChar_tAsBuiltInType="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="Stdafx.h"
+				BrowseInformation="1"
+				WarningLevel="4"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="4"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="Fdo.lib GisCommon.lib FdoCommon.lib"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="&quot;D:\Development\MapGuide OpenSource\v1.0.2\OpenSource_FDO\fdo\Unmanaged\lib\iwins\debug&quot;;&quot;D:\Development\MapGuide OpenSource\v1.0.2\OpenSource_FDO\providers\FdoCommon\lib\iwins\debug&quot;"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
+				SubSystem="2"
+				ImportLibrary="$(OutDir)/$(TargetName).lib"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Versioning $(ProjectName).dll"
+				CommandLine="..\..\..\..\thirdparty\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;0.5.1.0%PROVIDERS_VERSION%&quot; $(OutDir)\$(ProjectName).dll"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release_Fdo_3_1|Win32"
+			OutputDirectory="..\..\Bin\Win32\$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				OmitFramePointers="true"
+				AdditionalIncludeDirectories="..\..\inc;&quot;D:\Development\MapGuide OpenSource\v1.0.2\OpenSource_FDO\fdo\Unmanaged\inc&quot;;&quot;D:\Development\MapGuide OpenSource\v1.0.2\OpenSource_FDO\providers\FdoCommon\inc&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_1"
+				StringPooling="true"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				TreatWChar_tAsBuiltInType="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="Stdafx.h"
+				BrowseInformation="1"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="Fdo.lib GisCommon.lib FdoCommon.lib"
+				OutputFile="$(OutDir)/$(ProjectName).dll"
+				LinkIncremental="0"
+				AdditionalLibraryDirectories="&quot;D:\Development\MapGuide OpenSource\v1.0.2\OpenSource_FDO\fdo\Unmanaged\lib\iwins\release&quot;;&quot;D:\Development\MapGuide OpenSource\v1.0.2\OpenSource_FDO\providers\FdoCommon\lib\iwins\release&quot;"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
+				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				ImportLibrary="$(OutDir)/$(TargetName).lib"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Versioning $(ProjectName).dll"
+				CommandLine="..\..\..\..\thirdparty\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;0.5.1.0%PROVIDERS_VERSION%&quot; $(OutDir)\$(ProjectName).dll"
+			/>
+		</Configuration>
+		<Configuration
+			Name="InstantClient_Release_Fdo_3_1|Win32"
+			OutputDirectory="..\..\Bin\Win32\$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				OmitFramePointers="true"
+				AdditionalIncludeDirectories="..\..\inc;&quot;D:\Development\MapGuide OpenSource\v1.0.2\OpenSource_FDO\fdo\Unmanaged\inc&quot;;&quot;D:\Development\MapGuide OpenSource\v1.0.2\OpenSource_FDO\providers\FdoCommon\inc&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_1"
+				StringPooling="true"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				TreatWChar_tAsBuiltInType="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="Stdafx.h"
+				BrowseInformation="1"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="Fdo.lib GisCommon.lib FdoCommon.lib"
+				OutputFile="$(OutDir)/$(ProjectName).dll"
+				LinkIncremental="0"
+				AdditionalLibraryDirectories="&quot;D:\Development\MapGuide OpenSource\v1.0.2\OpenSource_FDO\fdo\Unmanaged\lib\iwins\release&quot;;&quot;D:\Development\MapGuide OpenSource\v1.0.2\OpenSource_FDO\providers\FdoCommon\lib\iwins\release&quot;"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
+				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				ImportLibrary="$(OutDir)/$(TargetName).lib"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Versioning $(ProjectName).dll"
+				CommandLine="..\..\..\..\thirdparty\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;0.5.1.0%PROVIDERS_VERSION%&quot; $(OutDir)\$(ProjectName).dll"
 			/>
 		</Configuration>
 	</Configurations>
@@ -325,7 +595,7 @@
 				RelativePath="stdafx.cpp"
 				>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Debug_Fdo_3_2|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -333,7 +603,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
+					Name="Release_Fdo_3_2|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -341,7 +611,31 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="InstantClient_Release|Win32"
+					Name="InstantClient_Release_Fdo_3_2|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_Fdo_3_1|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release_Fdo_3_1|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="InstantClient_Release_Fdo_3_1|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"

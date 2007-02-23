@@ -24,18 +24,22 @@ char *g_KgOraMsgCat = "KingOracleMessage.dll";
 #else
 char *g_KgOraMsgCat = "KingOracleMessage.cat";
 #endif
-GisString* NlsMsgGet(int msg_num, char* default_msg, ...)
+FdoString* NlsMsgGet(int msg_num, char* default_msg, ...)
 {
     va_list varargs;
     va_start(varargs, default_msg);
-    GisString* ret = GisException::NLSGetMessage(msg_num, default_msg, g_KgOraMsgCat, varargs);
+    #ifdef _FDO_3_1
+    FdoString* ret = GisException::NLSGetMessage(msg_num, default_msg, g_KgOraMsgCat, varargs);
+    #else
+    FdoString* ret = FdoException::NLSGetMessage(msg_num, default_msg, g_KgOraMsgCat, varargs);
+    #endif
     va_end(varargs);
 
     return ret;
 }
 #else // KGORA_MESSAGE_DEFINE
 extern char *g_KgOraMsgCat;
-extern GisString* NlsMsgGet(int msg_num, char* default_msg, ...);
+extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 #endif // KGORA_MESSAGE_DEFINE
 
 //************************************************************************************
@@ -382,7 +386,7 @@ extern GisString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  ServiceName
+//  Username
 //
 #define M_KGORA_CONNECTION_PROPERTY_USERNAME 0x00000BBCL
 
@@ -391,7 +395,7 @@ extern GisString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  ServiceName
+//  Password
 //
 #define M_KGORA_CONNECTION_PROPERTY_PASSWORD 0x00000BBDL
 
@@ -403,6 +407,15 @@ extern GisString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //  OracleSchema
 //
 #define M_KGORA_CONNECTION_PROPERTY_ORACLE_SCHEMA 0x00000BBEL
+
+//
+// MessageId: M_KGORA_CONNECTION_PROPERTY_FDO_VIEWS_TABLE
+//
+// MessageText:
+//
+//  FdoViewsTable
+//
+#define M_KGORA_CONNECTION_PROPERTY_FDO_VIEWS_TABLE 0x00000BBFL
 
 //************************************************************************************
 //************************************************************************************

@@ -48,17 +48,17 @@ FdoString* FdoKgOraPhysicalSchemaMapping::GetProvider()
 
 FdoKgOraClassCollection* FdoKgOraPhysicalSchemaMapping::GetClasses() const
 {
-    return GIS_SAFE_ADDREF(m_Classes.p);
+    return FDO_SAFE_ADDREF(m_Classes.p);
 }
 
-void FdoKgOraPhysicalSchemaMapping::InitFromXml(GisXmlSaxContext* Context, GisXmlAttributeCollection* Attrs)
+void FdoKgOraPhysicalSchemaMapping::InitFromXml(FdoXmlSaxContext* Context, FdoXmlAttributeCollection* Attrs)
 {
     BaseType::InitFromXml(Context, Attrs);
 }
 
-GisXmlSaxHandler* FdoKgOraPhysicalSchemaMapping::XmlStartElement(GisXmlSaxContext* Context,FdoString* Uri, FdoString* Name, FdoString* QName, GisXmlAttributeCollection* Attrs)
+FdoXmlSaxHandler* FdoKgOraPhysicalSchemaMapping::XmlStartElement(FdoXmlSaxContext* Context,FdoString* Uri, FdoString* Name, FdoString* QName, FdoXmlAttributeCollection* Attrs)
 {
-    GisXmlSaxHandler* ret = NULL;
+    FdoXmlSaxHandler* ret = NULL;
 
   try 
   {
@@ -76,7 +76,7 @@ GisXmlSaxHandler* FdoKgOraPhysicalSchemaMapping::XmlStartElement(GisXmlSaxContex
 			}
 		}
 	}
-  catch (GisException* e) 
+  catch (FdoException* e) 
   {
       Context->AddError(e);
       e->Release();
@@ -86,21 +86,21 @@ GisXmlSaxHandler* FdoKgOraPhysicalSchemaMapping::XmlStartElement(GisXmlSaxContex
   
 }//end of FdoKgOraPhysicalSchemaMapping::XmlStartElement
 
-GisBoolean FdoKgOraPhysicalSchemaMapping::XmlEndElement(GisXmlSaxContext* Context,FdoString* Uri, FdoString* Name, FdoString* QName)
+FdoBoolean FdoKgOraPhysicalSchemaMapping::XmlEndElement(FdoXmlSaxContext* Context,FdoString* Uri, FdoString* Name, FdoString* QName)
 {
 	return BaseType::XmlEndElement(Context, Uri, Name, QName);
 }
 
-void FdoKgOraPhysicalSchemaMapping::_writeXml( GisXmlWriter* Writer, const FdoXmlFlags* Flags )
+void FdoKgOraPhysicalSchemaMapping::_writeXml( FdoXmlWriter* Writer, const FdoXmlFlags* Flags )
 {
 	
 	Writer->WriteStartElement(FdoKgOraXmlGlobals::g_KgOraSchemaMapping);
 
 	BaseType::_writeXml(Writer, Flags);	
 
-  Writer->WriteAttribute(GisXml::mXmlnsPref, FdoKgOraXmlGlobals::g_KgOraXmlnsValue); 
+  Writer->WriteAttribute(FdoXml::mXmlnsPref, FdoKgOraXmlGlobals::g_KgOraXmlnsValue); 
 
-	for (GisInt32 i = 0; i <  m_Classes->GetCount(); i++)	
+	for (FdoInt32 i = 0; i <  m_Classes->GetCount(); i++)	
 	{
 		FdoKgOraClassDefinitionP classDef = m_Classes->GetItem(i);
 		classDef->_writeXml(Writer, Flags);
@@ -114,13 +114,13 @@ void FdoKgOraPhysicalSchemaMapping::_writeXml( GisXmlWriter* Writer, const FdoXm
 FdoKgOraClassDefinition* FdoKgOraPhysicalSchemaMapping::FindByClassName(FdoString *ClassName)
 {
 
-  for (GisInt32 i=0; i<m_Classes->GetCount(); i++)
+  for (FdoInt32 i=0; i<m_Classes->GetCount(); i++)
   {
-    GisPtr<FdoKgOraClassDefinition> classdef = m_Classes->GetItem(i);
+    FdoPtr<FdoKgOraClassDefinition> classdef = m_Classes->GetItem(i);
     // TODO: do case-insensitive compare on WIN32 platform, case-sensitive on other platforms
     if( wcscmp(classdef->GetName(), ClassName) == 0 )
     {
-      return  GIS_SAFE_ADDREF(classdef.p);  
+      return  FDO_SAFE_ADDREF(classdef.p);  
       break;
     }
   }
