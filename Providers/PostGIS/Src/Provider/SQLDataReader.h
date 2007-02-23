@@ -125,10 +125,16 @@ private:
     // Handler to cursor instance defined for current reader.
     PgCursor::Ptr mCursor;
 
+    // Index of current tuple.
+    // Used if FETCH command returns more than 1 tuple.
+    FdoSize mCurrentTuple;
+
     // Buffer for most recently read name of column.
     FdoStringP mColumnName;
 
-
+    //
+    // Private operations
+    //
 };
 
 }} // namespace fdo::postgis
