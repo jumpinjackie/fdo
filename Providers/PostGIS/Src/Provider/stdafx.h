@@ -48,4 +48,7 @@
 // FDO PostGIS Logger
 #include "Logger.h"
 
+// Visual Leak Detector
+#include <vld.h>
+
 #endif // POSTGISPROVIDER_STDAFX_H_INCLUDED
