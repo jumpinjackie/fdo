@@ -352,10 +352,14 @@ void SelectTest::select_aggregates_should_fail()
         FdoPtr <FdoIdentifierCollection> ids = select->GetPropertyNames ();
         FdoPtr <FdoIdentifier> id = FdoComputedIdentifier::Create(L"AVG_ID", FdoPtr<FdoExpression>(FdoExpression::Parse(L"Avg(Prop1)")));
         ids->Add(id);
-        FdoPtr<FdoIFeatureReader> reader = select->Execute ();
-        while (reader->ReadNext ())
+        try
         {
-            double avg_computed_id = reader->GetDouble (L"AVG_ID");
+            FdoPtr<FdoIFeatureReader> reader = select->Execute ();
+            CPPUNIT_FAIL("Expected an exception due to using aggregate functions in select command, but didn't get one");
+        }
+        catch(FdoException *e)
+        {
+            e->Release();
         }
     }
     catch (FdoException* e)
