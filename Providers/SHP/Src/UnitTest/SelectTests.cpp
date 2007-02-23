@@ -49,6 +49,20 @@ void SelectTests::setUp ()
 
 void SelectTests::tearDown ()
 {
+    // Delete old class, if its there:
+    try
+    {
+        TestCommonSchemaUtil::CleanUpClass (mConnection, L"MySchema", L"MyClass");
+    }
+    catch (FdoException* e)
+    {
+        e->Release();
+    }
+    catch (...)
+    {
+        ;
+    }
+
     mConnection->Close ();
 	FDO_SAFE_RELEASE(mConnection.p);
 }
