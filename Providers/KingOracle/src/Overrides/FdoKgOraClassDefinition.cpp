@@ -42,33 +42,33 @@ void FdoKgOraClassDefinition::Dispose(void)
 
 FdoKgOraPropertyDefinitionCollection* FdoKgOraClassDefinition::GetProperties() const
 {
-    return GIS_SAFE_ADDREF(m_Properties.p);
+    return FDO_SAFE_ADDREF(m_Properties.p);
 }
 
 
-void FdoKgOraClassDefinition::InitFromXml(GisXmlSaxContext* Context, GisXmlAttributeCollection* Attrs)
+void FdoKgOraClassDefinition::InitFromXml(FdoXmlSaxContext* Context, FdoXmlAttributeCollection* Attrs)
 {
 	try
 	{
 
     BaseType::InitFromXml(Context, Attrs);
 
-		GisXmlAttributeP att = Attrs->FindItem(FdoKgOraXmlGlobals::g_KgOraFullTableNameAttribute);
+		FdoXmlAttributeP att = Attrs->FindItem(FdoKgOraXmlGlobals::g_KgOraFullTableNameAttribute);
     if (att != NULL) 
     {
         SetOracleFullTableName(att->GetValue());
     }
   }
-	catch (GisException* e)
+	catch (FdoException* e)
 	{
 		Context->AddError(e);
 		e->Release();
 	}
 }//end of FdoKgOraClassDefinition::InitFromXml
 
-GisXmlSaxHandler* FdoKgOraClassDefinition::XmlStartElement(GisXmlSaxContext* Context,FdoString* Uri, FdoString* Name, FdoString* QName, GisXmlAttributeCollection* Attrs)
+FdoXmlSaxHandler* FdoKgOraClassDefinition::XmlStartElement(FdoXmlSaxContext* Context,FdoString* Uri, FdoString* Name, FdoString* QName, FdoXmlAttributeCollection* Attrs)
 {
-	GisXmlSaxHandler* ret = NULL;
+	FdoXmlSaxHandler* ret = NULL;
 
 	try
 	{
@@ -85,7 +85,7 @@ GisXmlSaxHandler* FdoKgOraClassDefinition::XmlStartElement(GisXmlSaxContext* Con
 			}
 		}
 	}
-	catch (GisException* e)
+	catch (FdoException* e)
 	{
 		Context->AddError(e);
 		e->Release();
@@ -94,12 +94,12 @@ GisXmlSaxHandler* FdoKgOraClassDefinition::XmlStartElement(GisXmlSaxContext* Con
 	return ret;
 }//end of FdoKgOraClassDefinition::XmlStartElement
 
-GisBoolean FdoKgOraClassDefinition::XmlEndElement(GisXmlSaxContext* Context, FdoString* Uri, FdoString* Name, FdoString* QName)
+FdoBoolean FdoKgOraClassDefinition::XmlEndElement(FdoXmlSaxContext* Context, FdoString* Uri, FdoString* Name, FdoString* QName)
 {
 	return BaseType::XmlEndElement(Context, Uri, Name, QName);
 }//end of FdoKgOraClassDefinition::XmlEndElement
 
-void FdoKgOraClassDefinition::_writeXml(GisXmlWriter* Writer, const FdoXmlFlags* Flags)
+void FdoKgOraClassDefinition::_writeXml(FdoXmlWriter* Writer, const FdoXmlFlags* Flags)
 {
 
 	Writer->WriteStartElement(FdoKgOraXmlGlobals::g_KgOraClassDefinitionElement);
@@ -108,7 +108,7 @@ void FdoKgOraClassDefinition::_writeXml(GisXmlWriter* Writer, const FdoXmlFlags*
 
   Writer->WriteAttribute(FdoKgOraXmlGlobals::g_KgOraFullTableNameAttribute, GetOracleFullTableName());
 
-  for (GisInt32 i = 0; i <  m_Properties->GetCount(); i++)	
+  for (FdoInt32 i = 0; i <  m_Properties->GetCount(); i++)	
   {
 		FdoKgOraPropertyDefinitionP prop_def = m_Properties->GetItem(i);
 		prop_def->_writeXml(Writer, Flags);
@@ -124,13 +124,13 @@ FdoKgOraPropertyDefinition* FdoKgOraClassDefinition::FindByColumnName(FdoString*
 {
     
   // Find property with column name ColumnName
-  for (GisInt32 i=0; i<m_Properties->GetCount(); i++)
+  for (FdoInt32 i=0; i<m_Properties->GetCount(); i++)
   {
-    GisPtr<FdoKgOraPropertyDefinition> prop_def = m_Properties->GetItem(i);
-    GisPtr<FdoKgOraColumnDefinition> coldef = prop_def->GetColumn();
+    FdoPtr<FdoKgOraPropertyDefinition> prop_def = m_Properties->GetItem(i);
+    FdoPtr<FdoKgOraColumnDefinition> coldef = prop_def->GetColumn();
     if( wcscmp(coldef->GetName(), ColumnName) == 0 )
     {
-      return GIS_SAFE_ADDREF( prop_def.p );        
+      return FDO_SAFE_ADDREF( prop_def.p );        
     }
   }
 

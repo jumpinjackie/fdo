@@ -39,22 +39,22 @@ void FdoKgOraPropertyDefinition::Dispose(void)
 
 FdoKgOraColumnDefinition* FdoKgOraPropertyDefinition::GetColumn() const
 {
-    return GIS_SAFE_ADDREF(m_ColumnDefinition.p);
+    return FDO_SAFE_ADDREF(m_ColumnDefinition.p);
 }
 
 void FdoKgOraPropertyDefinition::SetColumn(FdoKgOraColumnDefinition * Definition)
 {
-    m_ColumnDefinition = GIS_SAFE_ADDREF(Definition);
+    m_ColumnDefinition = FDO_SAFE_ADDREF(Definition);
 }
 
-void FdoKgOraPropertyDefinition::InitFromXml(GisXmlSaxContext* pContext, GisXmlAttributeCollection* attrs)
+void FdoKgOraPropertyDefinition::InitFromXml(FdoXmlSaxContext* pContext, FdoXmlAttributeCollection* attrs)
 {
     BaseType::InitFromXml(pContext, attrs);
 }
 
-GisXmlSaxHandler* FdoKgOraPropertyDefinition::XmlStartElement(GisXmlSaxContext* Context,FdoString* Uri, FdoString* Name, FdoString* QName, GisXmlAttributeCollection* Attrs)
+FdoXmlSaxHandler* FdoKgOraPropertyDefinition::XmlStartElement(FdoXmlSaxContext* Context,FdoString* Uri, FdoString* Name, FdoString* QName, FdoXmlAttributeCollection* Attrs)
 {
-	GisXmlSaxHandler* ret = NULL;
+	FdoXmlSaxHandler* ret = NULL;
 
 	try
 	{
@@ -71,7 +71,7 @@ GisXmlSaxHandler* FdoKgOraPropertyDefinition::XmlStartElement(GisXmlSaxContext* 
 			}
 		}
 	}
-	catch (GisException* e)
+	catch (FdoException* e)
 	{
 		Context->AddError(e);
 		e->Release();
@@ -81,12 +81,12 @@ GisXmlSaxHandler* FdoKgOraPropertyDefinition::XmlStartElement(GisXmlSaxContext* 
 
 }//end of FdoKgOraPropertyDefinition::XmlStartElement
 
-GisBoolean FdoKgOraPropertyDefinition::XmlEndElement(GisXmlSaxContext* Context, FdoString* Uri, FdoString* Name, FdoString* QName)
+FdoBoolean FdoKgOraPropertyDefinition::XmlEndElement(FdoXmlSaxContext* Context, FdoString* Uri, FdoString* Name, FdoString* QName)
 {
 	return BaseType::XmlEndElement(Context, Uri, Name, QName);
 }
 
-void FdoKgOraPropertyDefinition::_writeXml(GisXmlWriter* Writer, const FdoXmlFlags* Flags)
+void FdoKgOraPropertyDefinition::_writeXml(FdoXmlWriter* Writer, const FdoXmlFlags* Flags)
 {
 
     Writer->WriteStartElement(FdoKgOraXmlGlobals::g_KgOraPropertyElement);

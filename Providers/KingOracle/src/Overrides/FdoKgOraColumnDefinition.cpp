@@ -38,22 +38,22 @@ void FdoKgOraColumnDefinition::Dispose(void)
     delete this;
 }
 
-void FdoKgOraColumnDefinition::InitFromXml(GisXmlSaxContext* Context, GisXmlAttributeCollection* Attrs)
+void FdoKgOraColumnDefinition::InitFromXml(FdoXmlSaxContext* Context, FdoXmlAttributeCollection* Attrs)
 {
     BaseType::InitFromXml(Context, Attrs);
 }
 
-GisXmlSaxHandler* FdoKgOraColumnDefinition::XmlStartElement(GisXmlSaxContext* Context,FdoString* Uri, FdoString* Name, FdoString* QName, GisXmlAttributeCollection* Attrs)
+FdoXmlSaxHandler* FdoKgOraColumnDefinition::XmlStartElement(FdoXmlSaxContext* Context,FdoString* Uri, FdoString* Name, FdoString* QName, FdoXmlAttributeCollection* Attrs)
 {
     return BaseType::XmlStartElement(Context, Uri, Name, QName, Attrs);
 }
 
-GisBoolean FdoKgOraColumnDefinition::XmlEndElement(GisXmlSaxContext* Context,FdoString* Uri, FdoString* Name, FdoString* QName)
+FdoBoolean FdoKgOraColumnDefinition::XmlEndElement(FdoXmlSaxContext* Context,FdoString* Uri, FdoString* Name, FdoString* QName)
 {
 	return BaseType::XmlEndElement(Context, Uri, Name, QName);
 }
 
-void FdoKgOraColumnDefinition::_writeXml(GisXmlWriter* Writer, const FdoXmlFlags* Flags)
+void FdoKgOraColumnDefinition::_writeXml(FdoXmlWriter* Writer, const FdoXmlFlags* Flags)
 {
      Writer->WriteStartElement(FdoKgOraXmlGlobals::g_KgOraColumnElement);
 
