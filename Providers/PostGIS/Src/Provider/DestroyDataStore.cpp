@@ -79,10 +79,13 @@ void DestroyDataStore::Execute()
     }
     catch (FdoException* e)
     {
-        throw FdoCommandException::Create(
-            NlsMsgGet(MSG_POSTGIS_COMMAND_DESTROYDATASTORE_FAILED,
-            "Attempt to destroy datastore '%1$ls' failed.",
-            static_cast<FdoString*>(dsName)), e);
+        FdoCommandException* ne = NULL;
+        ne = FdoCommandException::Create(
+                NlsMsgGet(MSG_POSTGIS_COMMAND_DESTROYDATASTORE_FAILED,
+                    "Attempt to destroy datastore '%1$ls' failed.",
+                    static_cast<FdoString*>(dsName)), e);
+        e->Release();
+        throw ne;
     }
 
     // NOTE: No need to remove a datastore description, because:
