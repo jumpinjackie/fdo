@@ -457,7 +457,14 @@ FdoPtr<FdoSmPhRdPkeyReader> FdoSmPhMySqlOwner::CreatePkeyReader() const
 {
     FdoSmPhMySqlOwner* pOwner = (FdoSmPhMySqlOwner*) this;
 
-    return new FdoSmPhRdMySqlPkeyReader( pOwner->GetManager(), FDO_SAFE_ADDREF(pOwner) );
+    return new FdoSmPhRdMySqlPkeyReader( FDO_SAFE_ADDREF(pOwner) );
+}
+
+FdoPtr<FdoSmPhRdPkeyReader> FdoSmPhMySqlOwner::CreatePkeyReader( FdoPtr<FdoSmPhRdTableJoin> join ) const
+{
+    FdoSmPhMySqlOwner* pOwner = (FdoSmPhMySqlOwner*) this;
+
+    return new FdoSmPhRdMySqlPkeyReader( FDO_SAFE_ADDREF(pOwner), join );
 }
 
 FdoPtr<FdoSmPhRdColumnReader> FdoSmPhMySqlOwner::CreateColumnReader() const

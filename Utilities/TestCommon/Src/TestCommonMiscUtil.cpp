@@ -186,7 +186,7 @@ void TestCommonMiscUtil::SetupLeakReport()
 {
     DeleteFile( L"leak_rpt.txt" );
     _CrtSetReportHook( TestCommonMiscUtil::LeakReportHook );
-    _CrtSetBreakAlloc( 15192 );
+    _CrtSetBreakAlloc( 3453788 );
 }
 
 int TestCommonMiscUtil::LeakReportHook( int reportType, char *message, int *returnValue )
@@ -257,6 +257,9 @@ int TestCommonMiscUtil::LeakReportHook( int reportType, char *message, int *retu
 
             fprintf( outFp, "\n" );
             fflush( outFp );
+        }
+        else {
+            fprintf( outFp, "{%d} %s", allocNum, message );
         }
     }
 

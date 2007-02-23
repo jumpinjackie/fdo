@@ -2,7 +2,7 @@
 <fdo:DataStore xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gml="http://www.opengis.net/gml" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:fds="http://fdo.osgeo.org/schemas/fds">
 <SchemaMapping xmlns:rdb="http://fdordbms.osgeo.org/schemas" xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" provider="Autodesk.Oracle.3.2" name="ForeignBased">
 <complexType name="OneForeignType" tableMapping="Concrete">
-<Table owner="fdo_br_apply_override" name="ONEFOREIGN"/>
+<Table owner="FDO_BR_APPLY_OVERRIDE" name="ONEFOREIGN"/>
 <element name="Data">
 <Column name="DATA"/>
 </element>

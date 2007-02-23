@@ -353,6 +353,11 @@ FdoPtr<FdoSmPhRdPkeyReader> FdoSmPhOwner::CreatePkeyReader() const
     return (FdoSmPhRdPkeyReader*) NULL;
 }
 
+FdoPtr<FdoSmPhRdPkeyReader> FdoSmPhOwner::CreatePkeyReader( FdoPtr<FdoSmPhRdTableJoin> join ) const
+{
+    return (FdoSmPhRdPkeyReader*) NULL;
+}
+
 FdoPtr<FdoSmPhRdColumnReader> FdoSmPhOwner::CreateColumnReader() const
 {
     return (FdoSmPhRdColumnReader*) NULL;

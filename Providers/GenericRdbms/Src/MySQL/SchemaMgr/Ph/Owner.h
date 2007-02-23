@@ -109,6 +109,8 @@ public:
 
     virtual FdoPtr<FdoSmPhRdPkeyReader> CreatePkeyReader() const;
 
+    virtual FdoPtr<FdoSmPhRdPkeyReader> CreatePkeyReader( FdoPtr<FdoSmPhRdTableJoin> join ) const;
+
     virtual FdoPtr<FdoSmPhRdColumnReader> CreateColumnReader() const;
 
     virtual FdoPtr<FdoSmPhRdColumnReader> CreateColumnReader( FdoSmPhRdTableJoinP join ) const;

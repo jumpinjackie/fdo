@@ -343,7 +343,7 @@ void FdoApplySchemaTest::TestSchema ()
 
 void FdoApplySchemaTest::TestOverrides ()
 {
-	FdoPtr<FdoIConnection> connection;
+    FdoPtr<FdoIConnection> connection;
     StaticConnection* staticConn = NULL;
 	
 #ifdef RDBI_DEF_SSQL
@@ -574,6 +574,13 @@ void FdoApplySchemaTest::TestOverrides ()
         pDescMappingCmd->SetIncludeDefaults(true);
         mappings = pDescMappingCmd->Execute();
 
+        mgr = NULL;
+        lp = NULL;
+        ph = NULL;
+        staticConn->disconnect();
+        delete staticConn;
+        staticConn = NULL;
+
         printf( "Closing Connection ... \n" );
 		UnitTestUtil::CloseConnection(
 			connection,
@@ -643,20 +650,21 @@ void FdoApplySchemaTest::TestOverrides ()
         CreateForeignBasedSchema( 
             connection, 
             pSchema, 
-            CreateForeignBasedOverrides(connection)
+            FdoRdbmsOvSchemaMappingP(CreateForeignBasedOverrides(connection))
         );
 
         printf( "Writing 1st LogicalPhysical Schema ... \n" );
         mgr = staticConn->CreateSchemaManager();
         lp = mgr->RefLogicalPhysicalSchemas();
         lp->XMLSerialize( UnitTestUtil::GetOutputFileName( L"apply_schema_foreign1.xml" ) );
+        ph = mgr->GetPhysicalSchema();
 
         WriteXmlOverrides( 
             connection, 
             false, 
             L"", 
             UnitTestUtil::GetOutputFileName( L"apply_schema_foreign_out1.xml" ),
-            FdoStringP(DB_NAME_OVERRIDE_SUFFIX)
+            ph->GetDcOwnerName(DB_NAME_OVERRIDE_SUFFIX)
         );
 
         WriteXmlOverrides( 
@@ -664,7 +672,7 @@ void FdoApplySchemaTest::TestOverrides ()
             true, 
             L"", 
             UnitTestUtil::GetOutputFileName( L"apply_schema_foreign_out2.xml" ),
-            FdoStringP(DB_NAME_OVERRIDE_SUFFIX)
+            ph->GetDcOwnerName(DB_NAME_OVERRIDE_SUFFIX)
         );
 
 
@@ -706,6 +714,13 @@ void FdoApplySchemaTest::TestOverrides ()
         UnitTestUtil::CheckOutput( "apply_schema_foreign_out1_master.txt", UnitTestUtil::GetOutputFileName( L"apply_schema_foreign_out1.xml" ) );
 	    UnitTestUtil::CheckOutput( "apply_schema_foreign_out2_master.txt", UnitTestUtil::GetOutputFileName( L"apply_schema_foreign_out2.xml" ) );
 #endif
+
+        mgr = NULL;
+        lp = NULL;
+        ph = NULL;
+        staticConn->disconnect();
+        delete staticConn;
+        staticConn = NULL;
 
         printf( "Closing Connection ... \n" );
 		UnitTestUtil::CloseConnection(
@@ -1286,7 +1301,7 @@ static char* pRmvLpMetaSchema2 =
 
 void FdoApplySchemaTest::TestConfigDoc ()
 {
-	FdoPtr<FdoIConnection> connection;
+    FdoPtr<FdoIConnection> connection;
     StaticConnection* staticConn = NULL;
     FdoIoMemoryStreamP configStream1 = FdoIoMemoryStream::Create();
     FdoIoMemoryStreamP configStream2 = FdoIoMemoryStream::Create();
@@ -5702,7 +5717,9 @@ xmlns:rdb=\"http://fdordbms.osgeo.org/schemas\">\
         <xsl:apply-templates select=\"@*[not(name()='owner')]\"/>\
         <xsl:if test=\"@owner\">\
             <xsl:attribute name=\"owner\">\
-                <xsl:value-of select=\"concat('(fdo_user_prefix)',substring-after(@owner,substring-before(@owner,$ownerSuffix)))\"/>\
+                <xsl:call-template name=\"tolower\">\
+                    <xsl:with-param name=\"inString\" select=\"concat('(fdo_user_prefix)',substring-after(@owner,substring-before(@owner,$ownerSuffix)))\"/>\
+                </xsl:call-template>\
             </xsl:attribute>\
         </xsl:if>\
         <xsl:apply-templates select=\"node()[not(name()='owner')]\"/>\
@@ -5712,6 +5729,10 @@ xmlns:rdb=\"http://fdordbms.osgeo.org/schemas\">\
   <xsl:copy>\
     <xsl:apply-templates select=\"@*|node()\"/>\
   </xsl:copy>\
+</xsl:template>\
+<xsl:template name=\"tolower\">\
+  <xsl:param name=\"inString\"/>\
+  <xsl:value-of select=\"translate($inString,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')\"/>\
 </xsl:template>\
 </stylesheet>";
 

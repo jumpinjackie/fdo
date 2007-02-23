@@ -20,6 +20,7 @@
 #include <Sm/Ph/DependencyReader.h>
 #include <Sm/Ph/Mt/ClassReader.h>
 #include <Sm/Ph/Rd/ColumnReader.h>
+#include <Sm/Ph/Rd/PkeyReader.h>
 
 FdoSmPhMtClassReader::FdoSmPhMtClassReader( FdoSmPhRowsP froms, FdoStringP schemaName, FdoStringP className, FdoSmPhMgrP mgr ) : 
 	FdoSmPhReader( MakeReader(froms, schemaName, mgr, className) )
@@ -59,6 +60,7 @@ void FdoSmPhMtClassReader::CachePhysical( FdoStringP schemaName, FdoSmPhMgrP mgr
 {
     FdoSmPhOwnerP owner = mgr->GetOwner();
     FdoSmPhRdDbObjectReaderP objReader;
+    FdoSmPhRdPkeyReaderP pkeyReader;
     FdoSmPhRdConstraintReaderP ukeyReader;
     FdoSmPhRdConstraintReaderP ckeyReader;
     FdoSmPhRdColumnReaderP columnReader;
@@ -85,6 +87,7 @@ void FdoSmPhMtClassReader::CachePhysical( FdoStringP schemaName, FdoSmPhMgrP mgr
         // Doing a single query per owner for each component is more efficient than
         // a query per dbObject.
         // The join is used to limit results to those needed for this schema.
+        pkeyReader = owner->CreatePkeyReader( join );
         ukeyReader = owner->CreateConstraintReader( join, L"U" );
         ckeyReader = owner->CreateConstraintReader( join, L"C" );
 
@@ -102,6 +105,9 @@ void FdoSmPhMtClassReader::CachePhysical( FdoStringP schemaName, FdoSmPhMgrP mgr
 
                 if ( columnReader ) 
                     dbObject->CacheColumns( columnReader );
+
+                if ( pkeyReader ) 
+                    dbObject->CachePkeys( pkeyReader );
 
                 if ( depReader ) 
                     dbObject->CacheDependenciesUp( depReader );
