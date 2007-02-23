@@ -29,7 +29,9 @@
 #include "FdoRdbmsFeatureSubsetReader.h"
 #include "LockUtility.h"
 #include "FdoRdbmsFilterProcessor.h"
-
+#include <FdoCommonFilterExecutor.h>
+#include <FdoCommonSchemaUtil.h>
+#include <FdoCommonExpressionExecutor.h>
 
 #define SELECT_CLEANUP \
         if ( qid != -1) {\
@@ -92,7 +94,7 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
         throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_13, "Connection not established"));
     try
     {
-        FdoPtr<FdoRdbmsFilterProcessor>flterProcessor = FdoPtr<FdoRdbmsConnection>((FdoRdbmsConnection*)GetConnection())->GetFilterProcessor();
+        FdoPtr<FdoRdbmsFilterProcessor>flterProcessor = mFdoConnection->GetFilterProcessor();
 
         FdoRdbmsFilterUtilConstrainDef filterConstrain;
         filterConstrain.distinct = distinct;
@@ -100,6 +102,14 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
         filterConstrain.selectedProperties = mIdentifiers;
         filterConstrain.groupByProperties = mGroupingCol;
         filterConstrain.orderByProperties = mOrderingIdentifiers;
+
+		// Validate the filter
+		if ( this->GetFilterRef() != NULL )
+		{
+			FdoPtr<FdoIFilterCapabilities> filterCaps = mFdoConnection->GetFilterCapabilities();
+	
+			FdoCommonFilterExecutor::ValidateFilter( NULL, this->GetFilterRef(), NULL, filterCaps);
+		}
 
         // Call FilterToSql just to populate the filter's list of geometric conditions;
         FdoString * sqlString = flterProcessor->FilterToSql( this->GetFilterRef(),
@@ -150,6 +160,14 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
                                                              isForUpdate,
                                                              callerId );
                 }
+            }
+            if (callerId == FdoCommandType_SelectAggregates)
+            {
+                FdoSchemaManagerP pschemaManager = mConnection->GetSchemaUtil()->GetSchemaManager();
+                FdoPtr<FdoFeatureSchemaCollection> schemas = pschemaManager->GetFdoSchemas(L"");
+                FdoPtr<FdoCommonExpressionExecutor> expVer = FdoCommonExpressionExecutor::Create(schemas, GetClassNameRef());
+                FdoPtr<FdoIExpressionCapabilities> expCap = mFdoConnection->GetExpressionCapabilities();
+                expVer->ValidateIdentifiers(mIdentifiers, expCap);
             }
         }
 

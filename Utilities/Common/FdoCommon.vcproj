@@ -351,6 +351,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Inc\FdoCommonExpressionExecutor.h"
+				>
+			</File>
+			<File
 				RelativePath="Inc\FdoCommonFeatureCommand.h"
 				>
 			</File>

@@ -370,7 +370,11 @@ int GdbiQueryResult::GetAsciiValue( GdbiColumnInfoType *colInfo, int length, cha
 					address[1] = '\0';
 			}
 			else
-				memcpy(address, (char*)(colInfo->value) + mArrayPos*colInfo->size, size); 
+            {
+				memcpy(address, (char*)(colInfo->value) + mArrayPos*colInfo->size, size);
+                if (size < length) // ensure we don't get garbage at the end...
+                    address[size] = '\0';
+            }
 			
             if (size < colInfo->size)
             {

@@ -47,4 +47,8 @@ protected:
     virtual bool IsAggregateFunctionName(FdoString* wFunctionName) const;
 
     virtual void ProcessDateTimeValue(FdoDateTimeValue& expr);
+    
+    virtual void ProcessFunction(FdoFunction& expr);
+
+    virtual void ProcessFunctionName(FdoFunction& expr);
 };

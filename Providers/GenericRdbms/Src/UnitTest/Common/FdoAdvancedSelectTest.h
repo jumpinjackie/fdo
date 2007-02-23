@@ -38,6 +38,10 @@ class FdoAdvancedSelectTest : public CppUnit::TestCase
   CPPUNIT_TEST( checkDataReaderContentOnSelAggRequestWithNumCharFunction );
   CPPUNIT_TEST( checkFeatureReaderContentOnSelRequestWithAggrFunction );
   CPPUNIT_TEST( checkFeatureReaderContentOnSelRequestWithNumCharFunction );
+  CPPUNIT_TEST( TestMaxBoolProperty );
+  CPPUNIT_TEST( TestUpperDateProperty );
+  CPPUNIT_TEST( TestCeillInt64Property );
+  CPPUNIT_TEST( TestLowerOnStringProperty );
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -61,7 +65,14 @@ public:
     virtual void checkDataReaderContentOnSelAggRequestWithNumCharFunction();
     virtual void checkFeatureReaderContentOnSelRequestWithAggrFunction();
     virtual void checkFeatureReaderContentOnSelRequestWithNumCharFunction();
+    virtual void TestMaxBoolProperty();
+    virtual void TestUpperDateProperty();
+    virtual void TestCeillInt64Property();
+    virtual void TestLowerOnStringProperty();
 
+    virtual FdoStringP GetSchemaName(){return L"Acad";};
+    virtual FdoStringP AcDb3dPolylineName(){return L"AcDb3dPolyline";};
+    virtual FdoStringP GetDateTimePropName(){return L"datetime";};
 protected:
 	virtual void connect ();
     

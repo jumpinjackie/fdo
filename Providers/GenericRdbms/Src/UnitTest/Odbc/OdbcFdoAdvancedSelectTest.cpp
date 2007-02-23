@@ -31,6 +31,11 @@ CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcMySqlFdoAdvancedSelectTest, "FdoAdvan
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcMySqlFdoAdvancedSelectTest, "OdbcMySqlFdoAdvancedSelectTest");
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcMySqlFdoAdvancedSelectTest, "OdbcMySqlTests");
 
+CPPUNIT_TEST_SUITE_REGISTRATION( OdbcSqlServerFdoAdvancedSelectTest );
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcSqlServerFdoAdvancedSelectTest, "FdoAdvancedSelectTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcSqlServerFdoAdvancedSelectTest, "OdbcSqlServerFdoAdvancedSelectTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcSqlServerFdoAdvancedSelectTest, "OdbcSqlServerTests");
+
 void OdbcAccessFdoAdvancedSelectTest::set_provider()
 {
 	UnitTestUtil::SetProvider( "OdbcAccess" );
@@ -70,6 +75,27 @@ void OdbcMySqlFdoAdvancedSelectTest::connect ()
         TestCommonFail (ex);
     }
 }
+
+void OdbcSqlServerFdoAdvancedSelectTest::set_provider()
+{
+	UnitTestUtil::SetProvider( "OdbcSqlServer" );
+}
+
+void OdbcSqlServerFdoAdvancedSelectTest::connect ()
+{
+    try
+    {
+        mConnection = UnitTestUtil::GetProviderConnectionObject();
+        mConnection->SetConnectionString(UnitTestUtil::GetConnectionString());
+        mConnection->Open();
+    }
+    catch (FdoException *ex)
+    {
+        mConnection= NULL;
+        TestCommonFail (ex);
+    }
+}
+
 
 void OdbcAccessFdoAdvancedSelectTest::TestDefect785616()
 {
@@ -662,6 +688,8 @@ void OdbcMySqlFdoAdvancedSelectTest::groupByorderByTest()
     }
 #endif
 }
+
+
 // A test that is hard-coded for a known table.
 void OdbcAccessFdoAdvancedSelectTest::TestSelectExpressions()
 {
@@ -864,342 +892,108 @@ void OdbcAccessFdoAdvancedSelectTest::getDataTypeTest()
 {
 }
 
-// The following test is to check whether or not an identity property is
-// automatically added to the reader returned by a SelectAggregate request
-// when aa aggregate function is used. In this case, no such property should
-// be returned by the reader.
-void OdbcMySqlFdoAdvancedSelectTest::checkDataReaderContentOnSelAggRequestWithAggrFunction()
+void OdbcSqlServerFdoAdvancedSelectTest::compIdentPropertyTest()
 {
-    FdoPtr<FdoISelectAggregates>    selAggr;
-    FdoPtr<FdoIDataReader>          rdr;
-    FdoPtr<FdoIdentifierCollection> ids;
-    int                             count;
-    bool                            idPropertyFound = false;
-
-	try 
-	{
-        printf(" \n \n");
-        printf(">>> Executing SelectAggregate Function Reader Content Test   \n");
-        printf(" ----------------------------------------------------------- \n");
-        printf("       The test checks whether or not an identity property   \n");
-        printf("       is automatically added to the reader returned by a    \n");
-        printf("       SelectAggregate request when an aggregate function is \n");
-        printf("       used. If the reader contains an identity property the \n");
-        printf("       test issues an exception.                             \n");
-        printf(" ----------------------------------------------------------- \n");
-        printf(">>> ... Executing the select aggregate command \n");
-
-        selAggr = (FdoISelectAggregates*)(mConnection->CreateCommand(FdoCommandType_SelectAggregates));
-        selAggr->SetFeatureClassName(L"Fdo:acdb3dpolyline");
-        FdoFilter *aFilter = FdoComparisonCondition::Create(
-                                FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"segcount")),
-                                FdoComparisonOperations_EqualTo, 
-                                FdoPtr<FdoDataValue>(FdoDataValue::Create(7)));
-        selAggr->SetFilter(aFilter);
-        ids = selAggr->GetPropertyNames();
-        ids->Clear();
-        ids->Add(
-            FdoPtr<FdoIdentifier>(FdoComputedIdentifier::Create(
-                                      L"MyMaxSegcount",
-                                      FdoPtr<FdoExpression>(
-                                            FdoExpression::Parse(L"Max(segcount)")))));
-
-        rdr = selAggr->Execute();
-        count = 0;
-
-        // The following navigates through the reader and checks the requested data.
-        // It is an error if there is an additional identity property (or any other
-        // property) other than the requested one returned by the reader.
-        printf(">>> ... Checking the returned reader \n");
-        while (rdr->ReadNext())
-        {
-            FdoInt64 myMaxSegcount = rdr->GetInt64(L"MyMaxSegcount");
-
-            try
-            {
-                FdoInt64 myid = rdr->GetInt64(L"featid");
-                idPropertyFound = true;
-            }
-            catch ( ... )
-            {
-            }
-
-            count++;
-        }
-        rdr->Close();
-
-        printf(">>> ... Checking for error cases \n");
-        if (idPropertyFound)
-            throw FdoException::Create(L"Id property returned with reader");
-        else
-            printf(">>> ...... Reader content as expected \n");
-
-        printf(">>> Test executed successfully \n");
-    }
-
-    catch( FdoException *ex )
+    try
     {
-        printf(" \n");
-        printf("!!! Exception: %ls !!! \n", ex->GetExceptionMessage());
-        printf(" \n");
-        printf(">>> Test failed \n");
-        CPPUNIT_FAIL (UnitTestUtil::w2a( ex->GetExceptionMessage()));
+        FdoPtr<FdoISelectAggregates> selectAggrCmd = (FdoISelectAggregates*)mConnection->CreateCommand(FdoCommandType_SelectAggregates);
+        selectAggrCmd->SetFeatureClassName(GetCitiesClassname());
+
+        // Control ID's to select:
+        FdoPtr<FdoIdentifierCollection> ids = selectAggrCmd->GetPropertyNames();
+        ids->Clear();
+
+        // Add computed property
+        FdoPtr<FdoIdentifierCollection> groupingIds = selectAggrCmd->GetGrouping();
+        groupingIds->Clear();
+        FdoPtr<FdoExpressionCollection> arguments1 = FdoExpressionCollection::Create();
+        FdoPtr<FdoExpression> argument1 = FdoIdentifier::Create(L"cityid");
+        arguments1->Add(argument1);
+        FdoPtr<FdoExpression> expr1 = FdoFunction::Create(L"COUNT", arguments1);
+        FdoPtr<FdoIdentifier> id1 = FdoComputedIdentifier::Create(L"COUNT_CITYID", expr1);
+        ids->Add(id1);
+
+        // Execute the command:
+        FdoPtr<FdoIDataReader> dataReader = selectAggrCmd->Execute();
+
+        // Iterate results:
+        long lRowCount=0;
+        while (dataReader->ReadNext())
+        {
+            //FdoString *jobTitle = dataReader->GetString(L"name");
+            FdoInt64 foo = dataReader->GetInt64(L"COUNT_CITYID");
+            lRowCount++;
+        }
+
+        // Validate the results:
+        CPPUNIT_ASSERT_MESSAGE("Expected 1 row, got differently", lRowCount==1);
+    }
+    catch (FdoException *e)
+    {
+        TestCommonFail (e);
     }
 }
 
-// The following test is to check whether or not an identity property is
-// automatically added to the reader returned by a SelectAggregate request
-// when a function is used that is not an aggregate function but one of CEIL,
-// CONCAT, FLOOR, LOWER and UPPER. In this case, no such property should be
-// returned by the reader.
-void OdbcMySqlFdoAdvancedSelectTest::checkDataReaderContentOnSelAggRequestWithNumCharFunction()
+void OdbcSqlServerFdoAdvancedSelectTest::groupByorderByTest()
 {
-    FdoPtr<FdoISelectAggregates>    selAggr;
-    FdoPtr<FdoIDataReader>          rdr;
-    FdoPtr<FdoIdentifierCollection> ids;
-    int                             count;
-    bool                            idPropertyFound = false;
-
-	try 
-	{
-        printf(" \n \n");
-        printf(">>> Executing SelectAggregate Function Reader Content Test   \n");
-        printf(" ----------------------------------------------------------- \n");
-        printf("       The test checks whether or not an identity property   \n");
-        printf("       is automatically added to the reader returned by a    \n");
-        printf("       SelectAggregate request when a function is used that  \n");
-        printf("       is not an aggregate function but one of CEIL, CONCAT, \n");
-        printf("       FLOOR, LOWER and UPPER. If the reader contains an     \n");
-        printf("       identity property the test issues an exception.       \n");
-        printf(" ----------------------------------------------------------- \n");
-        printf(">>> ... Executing the select aggregate command \n");
-
-        selAggr = (FdoISelectAggregates*)(mConnection->CreateCommand(FdoCommandType_SelectAggregates));
-        selAggr->SetFeatureClassName(L"Fdo:acdb3dpolyline");
-        FdoFilter *aFilter = FdoComparisonCondition::Create(
-                                FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"segcount")),
-                                FdoComparisonOperations_EqualTo, 
-                                FdoPtr<FdoDataValue>(FdoDataValue::Create(10)));
-        selAggr->SetFilter(aFilter);
-        ids = selAggr->GetPropertyNames();
-        ids->Clear();
-        ids->Add(
-            FdoPtr<FdoIdentifier>(FdoComputedIdentifier::Create(
-                                      L"MyConcatString",
-                                      FdoPtr<FdoExpression>(
-                                            FdoExpression::Parse(L"Concat(layer, color)")))));
-
-        rdr = selAggr->Execute();
-        count = 0;
-
-        // The following navigates through the reader and checks the requested data.
-        // It is an error if there is an additional identity property (or any other
-        // property) other than the requested one returned by the reader.
-        printf(">>> ... Checking the returned reader \n");
-        while (rdr->ReadNext())
-        {
-            FdoStringP myString = rdr->GetString(L"MyConcatString");
-
-            try
-            {
-                FdoInt64 myid = rdr->GetInt64(L"featid");
-                idPropertyFound = true;
-            }
-            catch ( ... )
-            {
-            }
-
-            count++;
-        }
-        rdr->Close();
-
-        printf(">>> ... Checking for error cases \n");
-        if (idPropertyFound)
-            throw FdoException::Create(L"Id property returned with reader");
-        else
-            printf(">>> ...... Reader content as expected \n");
-
-        printf(">>> Test executed successfully \n");
-    }
-
-    catch( FdoException *ex )
+#if 0 
+    try
     {
-        printf(" \n");
-        printf("!!! Exception: %ls !!! \n", ex->GetExceptionMessage());
-        printf(" \n");
-        printf(">>> Test failed \n");
-        CPPUNIT_FAIL (UnitTestUtil::w2a( ex->GetExceptionMessage()));
-    }
-}
+        FdoPtr<FdoISelectAggregates> selectAggrCmd = (FdoISelectAggregates*)mConnection->CreateCommand(FdoCommandType_SelectAggregates);
+        selectAggrCmd->SetFeatureClassName(GetEmployeesClassname());
 
-// The following test is to check whether or not the select command issues
-// an exception if the select statement uses an aggregate function. If this
-// is not the case the test issues an exception.
-void OdbcMySqlFdoAdvancedSelectTest::checkFeatureReaderContentOnSelRequestWithAggrFunction()
-{
-    FdoPtr<FdoISelect>              selCmd;
-    FdoPtr<FdoIFeatureReader>       rdr;
-    FdoPtr<FdoIdentifierCollection> ids;
-    int                             count;
-    bool                            idPropertyFound = false;
-    bool                            expectedExceptionIssued = true;
-
-	try 
-	{
-        printf(" \n \n");
-        printf(">>> Executing Select Function Aggregate Exception Test       \n");
-        printf(" ----------------------------------------------------------- \n");
-        printf("       The test checks whether or not an exception is issued \n");
-        printf("       if the select command is invoked with an aggregate    \n");
-        printf("       function. If the expected exception is not issued the \n");
-        printf("       test issues an exception.                             \n");
-        printf(" ----------------------------------------------------------- \n");
-        printf(">>> ... Executing the select aggregate command \n");
-
-        selCmd = (FdoISelect*)(mConnection->CreateCommand(FdoCommandType_Select));
-        selCmd->SetFeatureClassName(L"Fdo:acdb3dpolyline");
-        ids = selCmd->GetPropertyNames();
+        // Add ids to select:
+        FdoPtr<FdoIdentifierCollection> ids = selectAggrCmd->GetPropertyNames();
         ids->Clear();
-        ids->Add(
-            FdoPtr<FdoIdentifier>(FdoComputedIdentifier::Create(
-                                      L"MyMaxSegcount",
-                                      FdoPtr<FdoExpression>(
-                                            FdoExpression::Parse(L"Max(segcount)")))));
+        FdoPtr<FdoIdentifier> id = FdoIdentifier::Create(L"JOBTITLE");
+        ids->Add(id);
 
-        rdr = selCmd->Execute();
+        // Add groupby info:
+        FdoPtr<FdoIdentifierCollection> groupingIds = selectAggrCmd->GetGrouping();
+        groupingIds->Clear();
+        FdoPtr<FdoIdentifier> groupingId = FdoIdentifier::Create(L"JOBTITLE");
+        groupingIds->Add(groupingId);
 
-        // If this point is reached the expected exception was not issued and hence
-        // an exception needs to be issued to indicate so.
-        expectedExceptionIssued = false;
+        // Add grouping filter:
+        FdoPtr<FdoFilter> groupingFilter = FdoFilter::Parse(L"AVG(SALARY) >= 40000.00");
+        selectAggrCmd->SetGroupingFilter(groupingFilter);
 
-        // Check the content of the reader.
+		FdoPtr<FdoIdentifierCollection>orderCol = selectAggrCmd->GetOrdering();
+		FdoPtr<FdoIdentifier>oId = FdoIdentifier::Create(L"JOBTITLE");
+        orderCol->Add( oId );
 
-        count = 0;
-        printf(">>> ... Checking the returned reader \n");
+        // Execute the command:
+        FdoPtr<FdoIDataReader> dataReader = selectAggrCmd->Execute();
 
-        while (rdr->ReadNext())
+        // Iterate results:
+        long lRowCount=0;
+        bool bFoundBoxAssembler = false;
+        bool bFoundBoxFlattener = false;
+        bool bFoundBoxArtist = false;
+        while (dataReader->ReadNext())
         {
-            FdoInt64 myMaxSegcount = rdr->GetInt64(L"MyMaxSegcount");
-            FdoStringP className = rdr->GetClassDefinition()->GetName();
+            FdoString *jobTitle = dataReader->GetString(L"JOBTITLE");
 
-            try
-            {
-                FdoInt64 myid = rdr->GetInt64(L"featid");
-                idPropertyFound = true;
-            }
-            catch ( ... )
-            {
-            }
+            if (0==wcscmp(jobTitle, L"Box Flattener"))
+                bFoundBoxFlattener = true;
+            else if (0==wcscmp(jobTitle, L"Box Assembler"))
+                bFoundBoxAssembler = true;
+            else if (0==wcscmp(jobTitle, L"Box Artist"))
+                bFoundBoxArtist = true;
 
-            count++;
+            lRowCount++;
         }
-        rdr->Close();
 
-        printf(">>> ... Checking for error cases \n");
-
-        //if (idPropertyFound)
-        //    throw FdoException::Create(L"Identity property found in reader when not expected");
-
-        //if (!expectedExceptionIssued)
-        //    throw FdoException::Create(L"Expected exception not issued");
-
-        printf(">>> Test executed succeeded \n");
+        // Validate the results:
+        CPPUNIT_ASSERT_MESSAGE("Expected 3 rows, got differently", lRowCount==3);
+        CPPUNIT_ASSERT_MESSAGE("Expected to find 'Box Flattener' but didn't", bFoundBoxFlattener);
+        CPPUNIT_ASSERT_MESSAGE("Expected to find 'Box Assembler' but didn't", bFoundBoxAssembler);
+        CPPUNIT_ASSERT_MESSAGE("Expected to find 'Box Artist' but didn't", bFoundBoxArtist);
     }
-
-    catch( FdoException *ex )
+    catch (FdoException *e)
     {
-        printf(" \n");
-        printf("!!! Exception: %ls !!! \n", ex->GetExceptionMessage());
-        printf(" \n");
-        printf(">>> Test failed \n");
-        CPPUNIT_FAIL (UnitTestUtil::w2a( ex->GetExceptionMessage()));
+        TestCommonFail (e);
     }
+#endif
 }
-
-// The following test is to check whether or not an identity property is
-// automatically added to the reader returned by a Select request when a
-// function is used that is not an aggregate function but one of CEIL,
-// CONCAT, FLOOR, LOWER and UPPER. In this case, the reader is expected to
-// return such a property.
-void OdbcMySqlFdoAdvancedSelectTest::checkFeatureReaderContentOnSelRequestWithNumCharFunction()
-{
-    FdoPtr<FdoISelect>              selCmd;
-    FdoPtr<FdoIFeatureReader>       rdr;
-    FdoPtr<FdoIdentifierCollection> ids;
-    int                             count;
-    bool                            idPropertyFound = false;
-
-	try 
-	{
-        printf(" \n \n");
-        printf(">>> Executing Select Function Reader Content Test            \n");
-        printf(" ----------------------------------------------------------- \n");
-        printf(">>>    The test checks whether or not an identity property   \n");
-        printf(">>>    is automatically added to the reader returned by a    \n");
-        printf(">>>    Select request when a function is used that is not an \n");
-        printf(">>>    aggregate function but one of CEIL, CONCAT, FLOOR,    \n");
-        printf(">>>    LOWER and UPPER. In this case, the reader is expected \n");
-        printf(">>>    to return such a property.                            \n");
-        printf(" ----------------------------------------------------------- \n");
-        printf(">>> ... Executing the select command \n");
-
-        selCmd = (FdoISelect*)(mConnection->CreateCommand(FdoCommandType_Select));
-        selCmd->SetFeatureClassName(L"Fdo:acdb3dpolyline");
-        FdoFilter *aFilter = FdoComparisonCondition::Create(
-                                FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"segcount")),
-                                FdoComparisonOperations_EqualTo, 
-                                FdoPtr<FdoDataValue>(FdoDataValue::Create(7)));
-        selCmd->SetFilter(aFilter);
-        ids = selCmd->GetPropertyNames();
-        ids->Clear();
-        ids->Add(
-            FdoPtr<FdoIdentifier>(FdoComputedIdentifier::Create(
-                                      L"MyConcatString",
-                                      FdoPtr<FdoExpression>(
-                                            FdoExpression::Parse(L"Concat(layer, color)")))));
-
-        rdr = selCmd->Execute();
-        count = 0;
-
-        // The following navigates through the reader and checks the requested data.
-        // It is an error if the reader does not return identity properties.
-        printf(">>> ... Checking the returned reader \n");
-        while (rdr->ReadNext())
-        {
-            FdoStringP myString = rdr->GetString(L"MyConcatString");
-
-            try
-            {
-                FdoInt64 myid = rdr->GetInt64(L"featid");
-                idPropertyFound = true;
-            }
-            catch ( ... )
-            {
-            }
-
-            count++;
-        }
-        rdr->Close();
-
-        printf(">>> ... Checking for error cases \n");
-        if (!idPropertyFound)
-            throw FdoException::Create(L"Id property not returned with reader");
-        else
-            printf(">>> ...... Reader content as expected \n");
-
-        printf(">>> Test executed successfully \n");
-    }
-
-    catch( FdoException *ex )
-    {
-        printf(" \n");
-        printf("!!! Exception: %ls !!! \n", ex->GetExceptionMessage());
-        printf(" \n");
-        printf(">>> Test failed \n");
-        CPPUNIT_FAIL (UnitTestUtil::w2a( ex->GetExceptionMessage()));
-    }
-}
-
-
-
 #endif
