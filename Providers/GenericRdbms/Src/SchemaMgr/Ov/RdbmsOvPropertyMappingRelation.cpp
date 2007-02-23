@@ -57,7 +57,7 @@ FdoXmlSaxHandler* FdoRdbmsOvPropertyMappingRelation::XmlStartElement(
     // class definition. Create a class definition and pass the SAX events to it.
 
     if ( !mClassDefinition )
-        CreateInternalClass( true );
+        FdoRdbmsOvClassP( CreateInternalClass(true) );
 
     if ( mClassDefinition ) 
         mClassDefinition->SetParent(this);

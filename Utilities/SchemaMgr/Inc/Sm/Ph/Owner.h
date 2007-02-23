@@ -170,6 +170,10 @@ public:
     // Default implementation returns NULL (not supported).
     virtual FdoPtr<FdoSmPhRdPkeyReader> CreatePkeyReader() const;
 
+    // Create a reader to get all primary keys for this join.
+    // Default implementation returns NULL (not supported).
+    virtual FdoPtr<FdoSmPhRdPkeyReader> CreatePkeyReader( FdoPtr<FdoSmPhRdTableJoin> join ) const;
+
     /// Create a reader to get all constraints for this owner and object name list.
     virtual FdoPtr<FdoSmPhRdConstraintReader> CreateConstraintReader( FdoStringsP objectNames, FdoStringP constraintType ) const;
 

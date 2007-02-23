@@ -402,7 +402,7 @@ FdoPtr<FdoSmPhRdPkeyReader> FdoSmPhMySqlDbObject::CreatePkeyReader() const
 {
     FdoSmPhMySqlDbObject* pDbObject = (FdoSmPhMySqlDbObject*) this;
 
-    return new FdoSmPhRdMySqlPkeyReader( pDbObject->GetManager(), FDO_SAFE_ADDREF(pDbObject) );
+    return new FdoSmPhRdMySqlPkeyReader( FDO_SAFE_ADDREF(pDbObject) );
 }
 
 FdoPtr<FdoSmPhRdFkeyReader> FdoSmPhMySqlDbObject::CreateFkeyReader() const

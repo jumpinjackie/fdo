@@ -60,6 +60,12 @@ void mysql_fre_binds (mysql_cursor_def* cursor)
         cursor->bind_count = 0;
         cursor->binds = (MYSQL_BIND *)NULL;
     }
+
+    if ((int *)NULL != cursor->srids)
+    {
+        free (cursor->srids);
+        cursor->srids = (int *)NULL;
+    }
 }
 
 int mysql_fre_cursor (mysql_context_def *context, char **cursor)

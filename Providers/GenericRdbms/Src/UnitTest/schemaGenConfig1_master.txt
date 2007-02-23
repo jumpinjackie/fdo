@@ -524,6 +524,42 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
+<xs:element name="GH_VIEW1" type="Schema_GH:GH_VIEW1Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="GH_VIEW1Key">
+<xs:selector xpath=".//GH_VIEW1"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:complexType name="GH_VIEW1Type" abstract="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="fdo:ClassType">
+<xs:sequence>
+<xs:element name="ID">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="DOUBLE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="xs:double"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
 </xs:schema>
 <xs:schema xmlns:Schema_AB="http://fdo.osgeo.org/schemas/feature/Schema_AB" targetNamespace="http://fdo.osgeo.org/schemas/feature/Schema_AB" elementFormDefault="qualified" attributeFormDefault="unqualified">
 <xs:annotation>
@@ -751,6 +787,42 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
+<xs:element name="VIEW1" type="Schema_AB:VIEW1Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="VIEW1Key">
+<xs:selector xpath=".//VIEW1"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:complexType name="VIEW1Type" abstract="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="fdo:ClassType">
+<xs:sequence>
+<xs:element name="ID">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="DOUBLE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="xs:double"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
 <xs:element name="CD_TABLEWILD" type="Schema_AB:CD_TABLEWILDType" abstract="false" substitutionGroup="gml:_Feature">
 <xs:key name="CD_TABLEWILDKey">
 <xs:selector xpath=".//CD_TABLEWILD"/>
@@ -789,10 +861,18 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
+<xs:element name="EF_VIEW1" type="Schema_AB:EF_VIEW1Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="EF_VIEW1Key">
+<xs:selector xpath=".//EF_VIEW1"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
 <xs:complexType name="EF_VIEW1Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
+<xs:complexContent>
+<xs:extension base="fdo:ClassType">
 <xs:sequence>
 <xs:element name="ID">
 <xs:annotation>
@@ -814,6 +894,8 @@
 </xs:annotation>
 </xs:element>
 </xs:sequence>
+</xs:extension>
+</xs:complexContent>
 </xs:complexType>
 <xs:element name="GH_TABLEWILD" type="Schema_AB:GH_TABLEWILDType" abstract="false" substitutionGroup="gml:_Feature">
 <xs:key name="GH_TABLEWILDKey">
@@ -1184,6 +1266,42 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
+<xs:element name="CD_VIEW1" type="Schema_CD:CD_VIEW1Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="CD_VIEW1Key">
+<xs:selector xpath=".//CD_VIEW1"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:complexType name="CD_VIEW1Type" abstract="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="fdo:ClassType">
+<xs:sequence>
+<xs:element name="ID">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="DOUBLE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="xs:double"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
 </xs:schema>
 <xs:schema xmlns:Schema_EF="http://fdo.osgeo.org/schemas/feature/Schema_EF" xmlns:Schema_GH="http://fdo.osgeo.org/schemas/feature/Schema_GH" targetNamespace="http://fdo.osgeo.org/schemas/feature/Schema_EF" elementFormDefault="qualified" attributeFormDefault="unqualified">
 <xs:annotation>
@@ -1456,6 +1574,42 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
+<xs:element name="KL_VIEW1" type="Schema_KL:KL_VIEW1Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="KL_VIEW1Key">
+<xs:selector xpath=".//KL_VIEW1"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:complexType name="KL_VIEW1Type" abstract="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="fdo:ClassType">
+<xs:sequence>
+<xs:element name="ID">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="DOUBLE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="xs:double"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
 <xs:element name="MN_TABLE1" type="Schema_KL:MN_TABLE1Type" abstract="false" substitutionGroup="gml:_Feature">
 <xs:key name="MN_TABLE1Key">
 <xs:selector xpath=".//MN_TABLE1"/>
@@ -1541,6 +1695,42 @@
 <xs:maxLength value="50"/>
 </xs:restriction>
 </xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:element name="MN_VIEW1" type="Schema_KL:MN_VIEW1Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="MN_VIEW1Key">
+<xs:selector xpath=".//MN_VIEW1"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:complexType name="MN_VIEW1Type" abstract="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="fdo:ClassType">
+<xs:sequence>
+<xs:element name="ID">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="DOUBLE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="xs:double"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
 </xs:element>
 </xs:sequence>
 </xs:extension>
@@ -1680,6 +1870,15 @@
 <Column name="DOUBLE_COLUMN"/>
 </element>
 </complexType>
+<complexType name="GH_VIEW1Type">
+<Table name="GH_VIEW1"/>
+<element name="ID">
+<Column name="ID"/>
+</element>
+<element name="DOUBLE_COLUMN">
+<Column name="DOUBLE_COLUMN"/>
+</element>
+</complexType>
 </SchemaMapping>
 <SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" provider="Autodesk.Oracle.3.2" name="Schema_AB">
 <complexType name="TABLE1Type">
@@ -1734,6 +1933,15 @@
 </element>
 <element name="STRING_COLUMN">
 <Column name="STRING_COLUMN"/>
+</element>
+</complexType>
+<complexType name="VIEW1Type">
+<Table name="AB_VIEW1"/>
+<element name="ID">
+<Column name="ID"/>
+</element>
+<element name="DOUBLE_COLUMN">
+<Column name="DOUBLE_COLUMN"/>
 </element>
 </complexType>
 <complexType name="CD_TABLEWILDType">
@@ -1825,6 +2033,15 @@
 <Column name="DOUBLE_COLUMN"/>
 </element>
 </complexType>
+<complexType name="CD_VIEW1Type">
+<Table name="CD_VIEW1"/>
+<element name="ID">
+<Column name="ID"/>
+</element>
+<element name="DOUBLE_COLUMN">
+<Column name="DOUBLE_COLUMN"/>
+</element>
+</complexType>
 </SchemaMapping>
 <SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" provider="Autodesk.Oracle.3.2" name="Schema_EF">
 <complexType name="TABLE1Type">
@@ -1892,6 +2109,15 @@
 <Column name="STRING_COLUMN"/>
 </element>
 </complexType>
+<complexType name="KL_VIEW1Type">
+<Table name="KL_VIEW1"/>
+<element name="ID">
+<Column name="ID"/>
+</element>
+<element name="DOUBLE_COLUMN">
+<Column name="DOUBLE_COLUMN"/>
+</element>
+</complexType>
 <complexType name="MN_TABLE1Type">
 <Table pkeyName="PK_MN_TABLE1" name="MN_TABLE1"/>
 <element name="ID">
@@ -1914,6 +2140,15 @@
 </element>
 <element name="STRING_COLUMN">
 <Column name="STRING_COLUMN"/>
+</element>
+</complexType>
+<complexType name="MN_VIEW1Type">
+<Table name="MN_VIEW1"/>
+<element name="ID">
+<Column name="ID"/>
+</element>
+<element name="DOUBLE_COLUMN">
+<Column name="DOUBLE_COLUMN"/>
 </element>
 </complexType>
 </SchemaMapping>
