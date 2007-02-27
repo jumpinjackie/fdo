@@ -17,13 +17,41 @@
 #ifndef FDOPOSTGIS_PGUTILITY_H_INCLUDED
 #define FDOPOSTGIS_PGUTILITY_H_INCLUDED
 
-#include "Connection.h"
+// std
 #include <string>
-#include <boost/lexical_cast.hpp>
-#include <libpq-fe.h>
+#include <vector>
+#include <utility>
+// boost
+#include <boost/tuple/tuple.hpp>
 
 namespace fdo { namespace postgis {
+    
+/// \brief
+/// Namespace for various implementation details, internal definitions.
+///
+///
+namespace details {
 
-}} // namespace fdo::postgis
+/// Type of Septuple (7-elements tuple) for connection info parameters used to
+/// establish connection with PostgreSQL database server.
+typedef boost::tuples::tuple
+    <
+        std::string, std::string, std::string, std::string, std::string, std::string, std::string
+    >
+pgconn_params_t;
+
+
+/// Type of collection for parameters passed to command execution procedures.
+/// Every element of the collection is a pair of character representation o
+/// data value and NULL indicator (0 = non-null; 1 or higher = null value).
+/// If NULL indicator is set with a non-Zero value, then the data compund is ignored,
+/// and should be set to empty string.
+typedef std::vector
+    <
+        std::pair<std::string, int>
+    >
+pgexec_params_t;
+
+}}} // namespace fdo::postgis::details
 
 #endif // FDOPOSTGIS_PGUTILITY_H_INCLUDED
