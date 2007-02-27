@@ -81,7 +81,7 @@ void ShpLpPropertyDefinition::ConvertPhysicalToLogical(FdoPropertyDefinition* co
     {
         int colWidth = info->GetColumnWidthAt(m_physicalColumnIndex);
         int colScale = info->GetColumnScaleAt(m_physicalColumnIndex);
-        m_logicalProperty->SetPrecision(colScale==0 ? colWidth : colWidth-1);  // subtract 1 for the '.'
+        m_logicalProperty->SetPrecision(colWidth);
         m_logicalProperty->SetScale(colScale);
     }
 
@@ -157,7 +157,7 @@ void ShpLpPropertyDefinition::ConvertLogicalToPhysical (int physicalColumnIndex,
             if (logicalPropertyType==FdoDataType_Decimal)
             {
                 info->SetColumnScale (physicalColumnIndex, m_logicalProperty->GetScale());
-                info->SetColumnWidth (physicalColumnIndex, m_logicalProperty->GetScale()==0 ? m_logicalProperty->GetPrecision() : m_logicalProperty->GetPrecision()+1);
+                info->SetColumnWidth (physicalColumnIndex, m_logicalProperty->GetPrecision());
             }
             else  // logicalPropertyType==FdoDataType_Int32
             {
