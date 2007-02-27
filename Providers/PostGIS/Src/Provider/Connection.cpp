@@ -34,6 +34,7 @@
 #include "UpdateCommand.h"
 #include "SQLCommand.h"
 #include "PgCursor.h"
+#include "PgUtility.h"
 // Message
 #define FDOPOSTGIS_MESSAGE_DEFINE
 #include "../Message/inc/PostGisMessage.h"
@@ -47,7 +48,6 @@
 // boost
 #include <boost/shared_ptr.hpp>
 #include <boost/lexical_cast.hpp>
-#include <boost/tuple/tuple.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
 
@@ -230,7 +230,7 @@ FdoConnectionState Connection::Open()
         assert(FdoConnectionState_Pending != GetConnectionState());
 
         // Generate PostgreSQL connection params from FDO connection properties
-        pgconn_params_t pgParams = GetPgConnectionParams(dict);
+        details::pgconn_params_t pgParams = GetPgConnectionParams(dict);
 
         // Establish connection to database
         mPgConn = PQsetdbLogin(pgParams.get<0>().c_str(),
@@ -399,7 +399,7 @@ void Connection::PgExecuteCommand(char const* sql)
     PgExecuteCommand(sql, cmdTuples);
 }
 
-void Connection::PgExecuteCommand(char const* sql, FdoSize& cmdTuples)
+void Connection::PgExecuteCommand(char const* sql, FdoSize& affected)
 {
     FDOLOG_MARKER("Connection::+PgExecuteCommand");
     FDOLOG_WRITE("SQL command: %s", sql);
@@ -427,15 +427,87 @@ void Connection::PgExecuteCommand(char const* sql, FdoSize& cmdTuples)
     try
     {
         std::string num(PQcmdTuples(pgRes.get()));
-        cmdTuples = boost::lexical_cast<std::size_t>(num);
+        affected = boost::lexical_cast<std::size_t>(num);
     }
     catch (boost::bad_lexical_cast& e)
     {
-        cmdTuples = 0;
+        affected = 0;
         e; // Anti-warning hack
     }
 
-    FDOLOG_WRITE("SQL affected tuples: %u", cmdTuples);
+    FDOLOG_WRITE("SQL affected tuples: %u", affected);
+}
+
+void Connection::PgExecuteCommand(char const* sql,
+                                  details::pgexec_params_t const& params,
+                                  FdoSize& affected)
+{
+    FDOLOG_MARKER("Connection::+PgExecuteCommand");
+    FDOLOG_WRITE("SQL command: %s\nNumber of parameters: %u", sql, params.size());
+
+    ValidateConnectionState();
+
+    //
+    // Re-write parameters to array of types accepted by PQexecParams.
+    // The input collection 'params' is required to be ordered in the same way
+    // as SQL placeholders ($1, $2, etc.).
+    //
+    typedef std::vector<char const*> params_t;
+    typedef const char* const* params_ptr_t;
+
+    params_t pgParams(0);
+
+    for (details::pgexec_params_t::const_iterator it = params.begin();
+         it != params.end(); ++it)
+    {
+        if (0 != it->second)
+            pgParams.push_back(NULL);
+        else
+            pgParams.push_back(it->first.c_str());
+    }
+    assert(pgParams.size() == params.size());
+
+    //
+    // Execute the SQL statement and wrap the results with smart pointer
+    //
+    params_ptr_t paramsPtr = (true == pgParams.empty() ? NULL : &pgParams[0]);
+
+    boost::shared_ptr<PGresult> pgRes(
+        PQexecParams(mPgConn, sql,
+            static_cast<int>(pgParams.size()), NULL, paramsPtr, NULL, NULL, 0), PQclear);
+
+    paramsPtr = NULL; // Assure it won't be used
+
+    //
+    // Do some diagnostics
+    //
+    ExecStatusType pgStatus = PQresultStatus(pgRes.get());
+    if (PGRES_COMMAND_OK != pgStatus && PGRES_TUPLES_OK != pgStatus)
+    {
+        FdoStringP errCode(PQresStatus(pgStatus));
+        FdoStringP errMsg(PQresultErrorMessage(pgRes.get()));
+
+        // TODO: Consider translation of PostgreSQL status to FDO exception (new types?)
+        throw FdoCommandException::Create(NlsMsgGet(MSG_POSTGIS_SQL_STATEMENT_EXECUTION_FAILED,
+            "The execution of SQL statement failed with PostgreSQL error code: %1$ls, %2$ls.",
+            static_cast<FdoString*>(errCode), static_cast<FdoString*>(errMsg)));
+    }
+
+    //
+    // Get number of affected tuples
+    //
+    try
+    {
+        std::string num(PQcmdTuples(pgRes.get()));
+        affected = boost::lexical_cast<std::size_t>(num);
+    }
+    catch (boost::bad_lexical_cast& e)
+    {
+        affected = 0;
+        e; // Anti-warning hack
+    }
+
+    FDOLOG_WRITE("SQL affected tuples: %u", affected);
 }
 
 PGresult* Connection::PgExecuteQuery(char const* sql)
@@ -464,7 +536,6 @@ PGresult* Connection::PgExecuteQuery(char const* sql)
     assert(NULL != pgRes);
     return pgRes;
 }
-
 
 fdo::postgis::PgCursor* Connection::PgCreateCursor(char const* name)
 {
@@ -591,7 +662,7 @@ void Connection::ValidateRequiredProperties()
     }
 }
 
-Connection::pgconn_params_t Connection::GetPgConnectionParams(
+details::pgconn_params_t Connection::GetPgConnectionParams(
     FdoPtr<FdoCommonConnPropDictionary> dict)
 {
     FDOLOG_MARKER("Connection::-GetPgConnectionParams");
