@@ -66,19 +66,20 @@ FdoInt32 SQLCommand::ExecuteNonQuery()
     FDOLOG_MARKER("SQLCommand::+ExecuteNonQuery");
 
     // TODO: Add support of DDL statements detection
-
     // TODO: Add DDL flag to PgExecuteCommand calls
 
-    // TODO: Add support for collection of input parameters
-    //FdoPtr<FdoParameterValueCollection> cmdParams = GetParameterValues();
-
-    ExecStatusType pgStatus = PGRES_FATAL_ERROR;
     FdoSize cmdTuples = 0;
-    
+
     try
     {
         std::string sql(static_cast<char const*>(mSql));
-        mConn->PgExecuteCommand(sql.c_str(), cmdTuples);
+
+        // Collect bind parameters
+        details::pgexec_params_t params;
+        Base::PgGenerateExecParams(params);
+        
+        // Execute SQL statement
+        mConn->PgExecuteCommand(sql.c_str(), params, cmdTuples);
     }
     catch (FdoException* e)
     {
@@ -105,7 +106,13 @@ FdoISQLDataReader* SQLCommand::ExecuteReader()
 
         // Create a cursor associated with query results reader
         cursor = mConn->PgCreateCursor(cursorName.c_str());
-        cursor->Declare(sql.c_str());
+
+        // Collect bind parameters
+        details::pgexec_params_t params;
+        Base::PgGenerateExecParams(params);
+
+        // Open new cursor
+        cursor->Declare(sql.c_str(), params);
     }
     catch (FdoException* e)
     {

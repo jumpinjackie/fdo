@@ -182,7 +182,7 @@ bool SQLDataReader::IsNull(FdoString* columnName)
     // Returns 1 if the field is null and 0 if it contains a non-null value.
     // The PQgetvalue will return an empty string, not a null pointer, for a null field.
 
-    int const isNull = PQgetisnull(pgRes, mCurrentTuple, fnumber);
+    int const isNull = PQgetisnull(pgRes, static_cast<int>(mCurrentTuple), fnumber);
 
     return (1 == isNull);
 }
@@ -194,7 +194,7 @@ FdoByteArray* SQLDataReader::GetGeometry(FdoString* columnName)
     //2. SELECT AsBinary(geom) FROM table
 
 
-    assert(!"NOT IMPLEMENTED");
+    assert(!"NOT IMPLEMENTED - EWKB PARSER UNDER CONSTRUCTION");
     return 0;
 }
 
@@ -227,4 +227,3 @@ void SQLDataReader::Close()
 }
 
 }} // namespace fdo::postgis
-
