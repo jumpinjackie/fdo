@@ -46,6 +46,12 @@ void GeometryCapabilities::Dispose()
 
 FdoGeometryType* GeometryCapabilities::GetGeometryTypes(FdoInt32& size)
 {
+    // NOTE: The FdoGeometryType_None does not represent an instantiable type.
+    // An FDO client should not expect an FDO provider to list support
+    // for it in its capabilities.
+
+    
+
     assert(!"NOT IMPLEMENTED");
     return NULL;
 }
