@@ -95,8 +95,9 @@ FdoStringP PgCursor::GetFieldName(FdoSize number) const
 
     if (GetFieldsCount() <= number)
     {
-        // TODO: Throw about column index out of range
-        assert(false);
+        throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_COLUMN_INDEX_OUT_OF_RANGE,
+            "The given column index '%1$d' is out of range (%2$d).",
+            number, GetFieldsCount()));
     }
 
     char const* fname = PQfname(mDescRes, static_cast<int>(number));
@@ -110,12 +111,12 @@ FdoSize PgCursor::GetFieldNumber(FdoStringP const& name) const
     ValidateDeclaredState();
     assert(NULL != mDescRes);
 
-    int fnumber = PQfnumber(mDescRes, static_cast<const char*>(name));
+    int fnumber = PQfnumber(mDescRes, static_cast<char const*>(name));
     if (-1 == fnumber)
     {
-        // -1 is returned if the given name does not match any column.
-        // TODO: throw an exception
-        assert(false);
+        throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_COLUMN_NAME_NOT_FOUND,
+            "The column with given name '%1$ls' is available in query result.",
+            static_cast<FdoString*>(name)));
     }
 
     return fnumber;
@@ -193,7 +194,7 @@ FdoDataType PgCursor::GetFieldType(FdoSize number) const
         // TODO: What about mapping of FdoDataType_Byte and FdoDataType_CLOB
 
         FdoStringP unknown(PQfname(mDescRes, static_cast<int>(number)));
-        throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_UNKNOWN_COLUMN_TYPE,
+        throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_COLUMN_TYPE_UNKNOWN,
             "The type of column '%1$s' of number %2$d is unknown.",
             static_cast<FdoString*>(unknown), number));
     }
