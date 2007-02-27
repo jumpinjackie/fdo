@@ -22,6 +22,7 @@
 #include "PgCursor.h"
 // std
 #include <cassert>
+#include <string>
 // boost
 #include <boost/lexical_cast.hpp>
 
@@ -86,8 +87,28 @@ FdoPropertyType SQLDataReader::GetPropertyType(FdoString* columnName)
 
 bool SQLDataReader::GetBoolean(FdoString* columnName)
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    try
+    {
+        FdoInt32 const fnumber = static_cast<int>(mCursor->GetFieldNumber(columnName));
+        PgCursor::ResultPtr pgRes = mCursor->GetFetchResult();
+
+        FdoBoolean val = false;
+        
+        std::string sval(PQgetvalue(pgRes, static_cast<int>(mCurrentTuple), fnumber));
+        assert(1 == sval.size());
+
+        if (sval == "t")
+            val = true;
+
+        return val;
+    }
+    catch (FdoException* e)
+    {
+        FdoCommandException* ne = NULL;
+        ne = FdoCommandException::Create(L"GetBoolean", e);
+        e->Release();
+        throw ne;
+    }
 }
 
 FdoByte SQLDataReader::GetByte(FdoString* columnName)
@@ -118,18 +139,18 @@ FdoInt32 SQLDataReader::GetInt32(FdoString* columnName)
 {
     try
     {
-        FdoSize const fnumber = mCursor->GetFieldNumber(columnName);
+        FdoInt32 const fnumber = static_cast<int>(mCursor->GetFieldNumber(columnName));
         PgCursor::ResultPtr pgRes = mCursor->GetFetchResult();
 
         FdoInt32 val = 0;
         try
         {
-            char const* cval = PQgetvalue(pgRes, mCurrentTuple, fnumber);
+            char const* cval = PQgetvalue(pgRes, static_cast<int>(mCurrentTuple), fnumber);
             val = boost::lexical_cast<FdoInt32>(cval);
         }
         catch (boost::bad_lexical_cast& e)
         {
-            e;
+            FDOLOG_WRITE("SQLDataReader::GetInt32() - ERROR: %s", e.what());
             throw FdoCommandException::Create(L"Field value conversion failed.");
         }
 
@@ -176,7 +197,7 @@ FdoIStreamReader* SQLDataReader::GetLOBStreamReader(wchar_t const* columnName)
 
 bool SQLDataReader::IsNull(FdoString* columnName)
 {
-    FdoSize const fnumber = mCursor->GetFieldNumber(columnName);
+    FdoInt32 const fnumber = static_cast<int>(mCursor->GetFieldNumber(columnName));
     PgCursor::ResultPtr pgRes = mCursor->GetFetchResult();
 
     // Returns 1 if the field is null and 0 if it contains a non-null value.
