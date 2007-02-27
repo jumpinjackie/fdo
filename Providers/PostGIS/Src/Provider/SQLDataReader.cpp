@@ -113,7 +113,32 @@ bool SQLDataReader::GetBoolean(FdoString* columnName)
 
 FdoByte SQLDataReader::GetByte(FdoString* columnName)
 {
-    assert(!"NOT IMPLEMENTED");
+    try
+    {
+        FdoInt32 const fnumber = static_cast<int>(mCursor->GetFieldNumber(columnName));
+        PgCursor::ResultPtr pgRes = mCursor->GetFetchResult();
+
+        try
+        {
+            FdoByte val = 0;
+            char const* cval = PQgetvalue(pgRes, static_cast<int>(mCurrentTuple), fnumber);
+            val = boost::lexical_cast<char>(cval);
+            return val;
+        }
+        catch (boost::bad_lexical_cast& e)
+        {
+            FDOLOG_WRITE("SQLDataReader::GetInt32() - ERROR: %s", e.what());
+            throw FdoCommandException::Create(L"Field value conversion failed.");
+        }
+    }
+    catch (FdoException* e)
+    {
+        FdoCommandException* ne = NULL;
+        ne = FdoCommandException::Create(L"GetBoolean", e);
+        e->Release();
+        throw ne;
+    }
+
     return 0;
 }
 
@@ -142,19 +167,18 @@ FdoInt32 SQLDataReader::GetInt32(FdoString* columnName)
         FdoInt32 const fnumber = static_cast<int>(mCursor->GetFieldNumber(columnName));
         PgCursor::ResultPtr pgRes = mCursor->GetFetchResult();
 
-        FdoInt32 val = 0;
         try
         {
+            FdoInt32 val = 0;
             char const* cval = PQgetvalue(pgRes, static_cast<int>(mCurrentTuple), fnumber);
             val = boost::lexical_cast<FdoInt32>(cval);
+            return val;
         }
         catch (boost::bad_lexical_cast& e)
         {
             FDOLOG_WRITE("SQLDataReader::GetInt32() - ERROR: %s", e.what());
             throw FdoCommandException::Create(L"Field value conversion failed.");
-        }
-
-        return val;
+        }        
     }
     catch (FdoException* e)
     {
