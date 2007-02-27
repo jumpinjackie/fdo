@@ -18,8 +18,12 @@
 #define FDOPOSTGIS_PGCURSOR_H_INCLUDED
 
 #include "Connection.h"
+#include "PgUtility.h"
+// std
 #include <string>
+// boost
 #include <boost/noncopyable.hpp>
+// libpq
 #include <libpq-fe.h>
 
 namespace fdo { namespace postgis {
@@ -37,6 +41,8 @@ public:
 
     /// Type of pointer to PostgreSQL result set accessible through the cursor.
     typedef PGresult const* ResultPtr;
+
+    typedef std::vector<std::pair<std::string, int> > pgexec_params_t;
 
     /// Enumeration describes supported directions for moving cursor.
     /// \todo Not used yet!
@@ -78,20 +84,32 @@ public:
 
     /// Declare a cursor using given SELECT query.
     /// \remarks
-    /// It's equivalent of sequence of following SQL commands:
+    /// It's equivalent of following commands sequence:
     /// \code
     /// BEGIN work;
-    /// DECLARE <name> CURSOR FOR SELECT <...>;
+    /// DECLARE <name> CURSOR FOR SELECT <columns> FROM <table>;
     /// \endcode
     ///
     void Declare(char const* query);
+
+    /// Declare a cursor using given SELECT query and specified input parameters.
+    /// \remarks
+    /// It's equivalent of following commands sequence:
+    /// \code
+    /// BEGIN work;
+    /// DECLARE <name> CURSOR FOR SELECT <columns> FROM <table>
+    /// WHERE <column> = $1 AND <column> = $2;
+    /// \endcode
+    ///
+    void Declare(char const* query, details::pgexec_params_t const& params);
 
     /// Close a cursor.
     /// \remarks
     /// It's equivalent of sequence of following SQL commands:
     /// \code
     /// COMMIT work;
-    /// CLOSE <name>; \endcode
+    /// CLOSE <name>;
+    /// \endcode
     ///
     void Close();
 
