@@ -113,6 +113,9 @@ FdoISQLDataReader* SQLCommand::ExecuteReader()
 
         // Open new cursor
         cursor->Declare(sql.c_str(), params);
+
+        assert(NULL != cursor);
+        return (new SQLDataReader(cursor));
     }
     catch (FdoException* e)
     {
@@ -122,9 +125,6 @@ FdoISQLDataReader* SQLCommand::ExecuteReader()
         e->Release();
         throw ne;
     }
-
-    assert(NULL != cursor);
-    return (new SQLDataReader(cursor));
 }
 
 ///////////////////////////////////////////////////////////////////////////////

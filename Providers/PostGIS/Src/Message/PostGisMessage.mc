@@ -289,7 +289,7 @@ Language=English
 The '%1$ls' data type is not supported by King.Oracle.
 .
 MessageId=4003
-SymbolicName=MSG_POSTGIS_UNKNOWN_COLUMN_TYPE
+SymbolicName=MSG_POSTGIS_COLUMN_TYPE_UNKNOWN
 Language=English
 The type of column '%1$s' of number %2$d is unknown.
 .
@@ -600,7 +600,16 @@ SymbolicName=MSG_POSTGIS_COMMAND_PARAMETER_MISSING
 Language=English
 The command parameter '%1$ls' is missing or named incorrectly.
 .
-
+MessageId=7025
+SymbolicName=MSG_POSTGIS_COLUMN_INDEX_OUT_OF_RANGE
+Language=English
+The given column index '%1$d' is out of range (%2$d).
+.
+MessageId=7026
+SymbolicName=MSG_POSTGIS_COLUMN_NAME_NOT_FOUND
+Language=English
+The column with given name '%1$ls' is not available in query result.
+.
 ;//************************************************************************************
 ;//************************************************************************************
 ;//** LOCK-RELATED MESSAGES
