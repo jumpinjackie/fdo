@@ -595,6 +595,11 @@ SymbolicName=MSG_POSTGIS_COMMAND_SQL_INVALID
 Language=English
 The passed SQL statement is invalid or empty: '%1$ls'.
 .
+MessageId=7024
+SymbolicName=MSG_POSTGIS_COMMAND_PARAMETER_MISSING
+Language=English
+The command parameter '%1$ls' is missing or named incorrectly.
+.
 
 ;//************************************************************************************
 ;//************************************************************************************
