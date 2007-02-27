@@ -243,6 +243,12 @@ bool PgCursor::IsFieldGeometryType(FdoSize number) const
 
 void PgCursor::Declare(char const* query)
 {
+    details::pgexec_params_t emptyParams(0);
+    Declare(query, emptyParams);
+}
+
+void PgCursor::Declare(char const* query, details::pgexec_params_t const& params)
+{
     FDOLOG_MARKER("PgCursor::+Declare");
 
     if (!mIsClosed)
@@ -265,7 +271,9 @@ void PgCursor::Declare(char const* query)
         sql += " CURSOR FOR ";
         sql += query;
 
-        mConn->PgExecuteCommand(sql.c_str());
+        FdoSize affected = 0; // Not used
+
+        mConn->PgExecuteCommand(sql.c_str(), params, affected);
 
         // Call for describe cursor results
         Describe();
