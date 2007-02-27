@@ -60,16 +60,10 @@ public:
     FdoPropertyType GetPropertyType(FdoString* columnName);
     
     /// Get Boolean value of the specified column.
-    bool GetBoolean(FdoString* columnName);
+    FdoBoolean GetBoolean(FdoString* columnName);
     
     /// Get byte value of the specified column.
     FdoByte GetByte(FdoString* columnName);
-    
-    /// Get date time value of the specified column.
-    FdoDateTime GetDateTime(FdoString* columnName);
-    
-    /// Get double-precision floating point value of the specified column.
-    double GetDouble(FdoString* columnName);
     
     /// Get signed 16-bit integer value of the specified column.
     FdoInt16 GetInt16(FdoString* columnName);
@@ -81,26 +75,32 @@ public:
     FdoInt64 GetInt64(FdoString* columnName);
     
     /// Get single-precision floating point value of the specified column.
-    float GetSingle(FdoString* columnName);
-    
+    FdoFloat GetSingle(FdoString* columnName);
+
+    /// Get double-precision floating point value of the specified column.
+    FdoDouble GetDouble(FdoString* columnName);
+
     /// Get string value of the specified column.
     FdoString* GetString(FdoString* columnName);
     
+    /// Get date time value of the specified column.
+    FdoDateTime GetDateTime(FdoString* columnName);
+
     /// Get LOBValue reference.
     FdoLOBValue* GetLOB(FdoString* columnName);
     
     /// Get reference of the specified LOB property as an instance of
     /// type of FdoBLOBStreamReader or FdoCLOBStreamReader etc.
-    FdoIStreamReader* GetLOBStreamReader(wchar_t const* columnName);
+    FdoIStreamReader* GetLOBStreamReader(FdoString* columnName);
     
     /// Return true if the value of the specified column is null.
-    bool IsNull(FdoString* columnName);
+    FdoBoolean IsNull(FdoString* columnName);
     
     /// Get geometry value of the specified column as a byte array in FGF format.
     FdoByteArray* GetGeometry(FdoString* columnName);
     
     /// Advance the reader to the next item.
-    bool ReadNext();
+    FdoBoolean ReadNext();
     
     /// Close the reader object and release any resources it's holding.
     void Close();
@@ -132,10 +132,47 @@ private:
     // Buffer for most recently read name of column.
     FdoStringP mColumnName;
 
+    // Buffer for string value cache read from a column.
+    // The reader returns raw pointer to a string, but pointee has to be cached somewhere.
+    FdoStringP mCacheString;
+
     //
     // Private operations
     //
-};
+
+    // Column value reader for simple types.
+    // Internally, it does conversion from characters string to target type
+    // using boost::lexical_cast.
+    template <typename T>
+    T GetValue(FdoString* columnName);
+
+}; // SQLDataReader
+
+///////////////////////////////////////////////////////////////////////////////
+// Private operations
+///////////////////////////////////////////////////////////////////////////////
+
+template <typename T>
+T SQLDataReader::GetValue(FdoString* columnName)
+{
+    FdoInt32 const fnumber = static_cast<int>(mCursor->GetFieldNumber(columnName));
+    PgCursor::ResultPtr pgRes = mCursor->GetFetchResult();
+
+    try
+    {
+        T val = T();
+        char const* const cval = PQgetvalue(pgRes, static_cast<int>(mCurrentTuple), fnumber);
+        val = boost::lexical_cast<T>(cval);
+        return val;
+    }
+    catch (boost::bad_lexical_cast& e)
+    {
+        FDOLOG_WRITE(L"SQLDataReader can not read value of column '%s'", columnName);
+        FDOLOG_WRITE("ERROR: %s", e.what());
+
+        throw FdoCommandException::Create(L"Field value conversion failed.");
+    }
+}
 
 }} // namespace fdo::postgis
 
