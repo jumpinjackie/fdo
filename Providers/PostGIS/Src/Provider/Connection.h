@@ -17,14 +17,13 @@
 #ifndef FDOPOSTGIS_CONNECTION_H_INCLUDED
 #define FDOPOSTGIS_CONNECTION_H_INCLUDED
 
+#include "PgUtility.h"
 #include <PostGIS/FdoPostGisProvider.h>
 // FDO
 #include <Fdo.h>
 #include <FdoCommonConnPropDictionary.h>
 // std
 #include <string>
-// boost
-#include <boost/tuple/tuple.hpp>
 // libpq
 #include <libpq-fe.h>
 
@@ -132,13 +131,25 @@ public:
     // Connection custom interface
     //
 
+    /// \todo To be documented.
     void PgExecuteCommand(char const* sql);
+
+    /// \todo To be documented.
     void PgExecuteCommand(char const* sql, FdoSize& affected);
     
+    /// \todo To be documented.
+
+    
+    /// \todo To be documented.
+    void PgExecuteCommand(char const* sql, details::pgexec_params_t const& params, FdoSize& affected);
+
+    /// \todo To be documented.
     PGresult* PgExecuteQuery(char const* sql);
 
+    /// \todo To be documented.
     PgCursor* PgCreateCursor(char const* name);
 
+    /// \todo To be documented.
     PGresult* PgDescribeCursor(char const* name);
 
 protected:
@@ -195,15 +206,9 @@ private:
     // The function throws exception on errors detected.
     void ValidateRequiredProperties();
 
-    // Tuple with PostgreSQL connection string tokens.
-    typedef boost::tuples::tuple
-        <
-        std::string, std::string, std::string, std::string, std::string, std::string, std::string
-        >
-        pgconn_params_t;
 
     // Get PostgreSQL connection parameters from FDO connection properties.
-    pgconn_params_t GetPgConnectionParams(FdoPtr<FdoCommonConnPropDictionary> dict);
+    details::pgconn_params_t GetPgConnectionParams(FdoPtr<FdoCommonConnPropDictionary> dict);
 
     void SetPgActiveSchema(FdoStringP schema);
 
