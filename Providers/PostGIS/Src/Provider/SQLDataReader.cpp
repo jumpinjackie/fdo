@@ -85,7 +85,7 @@ FdoPropertyType SQLDataReader::GetPropertyType(FdoString* columnName)
     return FdoPropertyType_DataProperty;
 }
 
-bool SQLDataReader::GetBoolean(FdoString* columnName)
+FdoBoolean SQLDataReader::GetBoolean(FdoString* columnName)
 {
     try
     {
@@ -115,21 +115,7 @@ FdoByte SQLDataReader::GetByte(FdoString* columnName)
 {
     try
     {
-        FdoInt32 const fnumber = static_cast<int>(mCursor->GetFieldNumber(columnName));
-        PgCursor::ResultPtr pgRes = mCursor->GetFetchResult();
-
-        try
-        {
-            FdoByte val = 0;
-            char const* cval = PQgetvalue(pgRes, static_cast<int>(mCurrentTuple), fnumber);
-            val = boost::lexical_cast<char>(cval);
-            return val;
-        }
-        catch (boost::bad_lexical_cast& e)
-        {
-            FDOLOG_WRITE("SQLDataReader::GetInt32() - ERROR: %s", e.what());
-            throw FdoCommandException::Create(L"Field value conversion failed.");
-        }
+        return GetValue<FdoByte>(columnName);
     }
     catch (FdoException* e)
     {
@@ -138,47 +124,28 @@ FdoByte SQLDataReader::GetByte(FdoString* columnName)
         e->Release();
         throw ne;
     }
-
-    return 0;
-}
-
-FdoDateTime SQLDataReader::GetDateTime(FdoString* columnName)
-{
-    assert(!"NOT IMPLEMENTED");
-    return FdoDateTime();
-}
-
-double SQLDataReader::GetDouble(FdoString* columnName)
-{
-    assert(!"NOT IMPLEMENTED");
-    return 0;
 }
 
 FdoInt16 SQLDataReader::GetInt16(FdoString* columnName)
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    try
+    {
+        return GetValue<FdoInt16>(columnName);      
+    }
+    catch (FdoException* e)
+    {
+        FdoCommandException* ne = NULL;
+        ne = FdoCommandException::Create(L"Int32", e);
+        e->Release();
+        throw ne;
+    }
 }
 
 FdoInt32 SQLDataReader::GetInt32(FdoString* columnName)
 {
     try
     {
-        FdoInt32 const fnumber = static_cast<int>(mCursor->GetFieldNumber(columnName));
-        PgCursor::ResultPtr pgRes = mCursor->GetFetchResult();
-
-        try
-        {
-            FdoInt32 val = 0;
-            char const* cval = PQgetvalue(pgRes, static_cast<int>(mCurrentTuple), fnumber);
-            val = boost::lexical_cast<FdoInt32>(cval);
-            return val;
-        }
-        catch (boost::bad_lexical_cast& e)
-        {
-            FDOLOG_WRITE("SQLDataReader::GetInt32() - ERROR: %s", e.what());
-            throw FdoCommandException::Create(L"Field value conversion failed.");
-        }        
+        return GetValue<FdoInt32>(columnName);      
     }
     catch (FdoException* e)
     {
@@ -191,20 +158,75 @@ FdoInt32 SQLDataReader::GetInt32(FdoString* columnName)
 
 FdoInt64 SQLDataReader::GetInt64(FdoString* columnName)
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    try
+    {
+        return GetValue<FdoInt64>(columnName);      
+    }
+    catch (FdoException* e)
+    {
+        FdoCommandException* ne = NULL;
+        ne = FdoCommandException::Create(L"Int32", e);
+        e->Release();
+        throw ne;
+    }
 }
 
-float SQLDataReader::GetSingle(FdoString* columnName)
+FdoFloat SQLDataReader::GetSingle(FdoString* columnName)
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    try
+    {
+        return GetValue<FdoFloat>(columnName);      
+    }
+    catch (FdoException* e)
+    {
+        FdoCommandException* ne = NULL;
+        ne = FdoCommandException::Create(L"Int32", e);
+        e->Release();
+        throw ne;
+    }
+}
+
+FdoDouble SQLDataReader::GetDouble(FdoString* columnName)
+{
+    try
+    {
+        return GetValue<FdoDouble>(columnName);      
+    }
+    catch (FdoException* e)
+    {
+        FdoCommandException* ne = NULL;
+        ne = FdoCommandException::Create(L"Int32", e);
+        e->Release();
+        throw ne;
+    }
 }
 
 FdoString* SQLDataReader::GetString(FdoString* columnName)
 {
+    try
+    {
+        FdoInt32 const fnumber = static_cast<int>(mCursor->GetFieldNumber(columnName));
+        PgCursor::ResultPtr pgRes = mCursor->GetFetchResult();
+
+        // Read string value and store it in cache buffer
+        std::string sval(PQgetvalue(pgRes, static_cast<int>(mCurrentTuple), fnumber));
+        mCacheString = sval.c_str();
+
+        return mCacheString;
+    }
+    catch (FdoException* e)
+    {
+        FdoCommandException* ne = NULL;
+        ne = FdoCommandException::Create(L"Int32", e);
+        e->Release();
+        throw ne;
+    }
+}
+
+FdoDateTime SQLDataReader::GetDateTime(FdoString* columnName)
+{
     assert(!"NOT IMPLEMENTED");
-    return 0;
+    return FdoDateTime();
 }
 
 FdoLOBValue* SQLDataReader::GetLOB(FdoString* columnName)
@@ -213,13 +235,13 @@ FdoLOBValue* SQLDataReader::GetLOB(FdoString* columnName)
     return 0;
 }
 
-FdoIStreamReader* SQLDataReader::GetLOBStreamReader(wchar_t const* columnName)
+FdoIStreamReader* SQLDataReader::GetLOBStreamReader(FdoString* columnName)
 {
     assert(!"NOT IMPLEMENTED");
     return 0;
 }
 
-bool SQLDataReader::IsNull(FdoString* columnName)
+FdoBoolean SQLDataReader::IsNull(FdoString* columnName)
 {
     FdoInt32 const fnumber = static_cast<int>(mCursor->GetFieldNumber(columnName));
     PgCursor::ResultPtr pgRes = mCursor->GetFetchResult();
