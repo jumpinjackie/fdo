@@ -115,7 +115,7 @@ FdoSize PgCursor::GetFieldNumber(FdoStringP const& name) const
     if (-1 == fnumber)
     {
         throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_COLUMN_NAME_NOT_FOUND,
-            "The column with given name '%1$ls' is available in query result.",
+            "The column with given name '%1$ls' is not available in query result.",
             static_cast<FdoString*>(name)));
     }
 
