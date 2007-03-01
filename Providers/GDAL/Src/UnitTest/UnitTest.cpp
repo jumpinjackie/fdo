@@ -48,6 +48,7 @@
 // The following macros are used as switches to determine
 // which Test Cases will be excuted.
 
+#ifndef notdef
 #define TEST_NO_CONFIG
 #define TEST_EXAMPLE1
 #define TEST_OVERRIDES_SERIALIZE
@@ -61,8 +62,9 @@
 #define TEST_AAIGrid
 #define TEST_PNG
 #define TEST_JPG
+#endif
+#define TEST_SPATIAL_CONTEXT
 
-//#define TEST_SPATIAL_CONTEXT
 //#define TEST_ECW
 //#define TEST_JP2
 //#define TEST_MRSID
@@ -185,8 +187,9 @@ void UnitTestMainProc()
 void prependTabs(FdoInt32 tabLevel)
 {
     for (FdoInt32 i = 0; i < tabLevel; i++)
-        wprintf(L"  ");
+        fprintf( stderr, "  ");
 }
+
 
 void PrintException(FdoException* exception)
 {
@@ -195,7 +198,8 @@ void PrintException(FdoException* exception)
 	while (currentException != NULL) 
 	{
 		prependTabs(tabLevel++);
-		wprintf(L"%s\n", currentException->GetExceptionMessage());
+                fprintf( stderr, "%ls\n", 
+                          currentException->GetExceptionMessage());
 		if (currentException != exception)
 			currentException->Release();
 		currentException = currentException->GetCause();
