@@ -28,6 +28,7 @@ EXTRA_DIST = \
 
 libFDOCommon_la_SOURCES = \
   ArrayHelper.cpp \
+  CommonInternal.cpp \
   Context.cpp \
   DictionaryElement.cpp \
   Exception.cpp  \

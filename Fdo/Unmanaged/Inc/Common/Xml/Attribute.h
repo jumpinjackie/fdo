@@ -26,6 +26,8 @@
 /// from an XML document.
 class FdoXmlAttribute : public FdoDictionaryElement
 {
+    friend class FdoCommonInternal;
+
 public:
     /// \brief
     /// Constructs an XML Attribute object

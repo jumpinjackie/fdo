@@ -101,25 +101,37 @@ public:
         OBJ* obj = NULL;
 
         if ( mpNameMap ) {
-    // Accessing the map is faster for large collections, so use it if built.
+            // Accessing the map is faster for large collections, so use it if built.
             obj = GetMap(name);
 
-    // If the object name can't be modified then we're done.
-    // Otherwise, there's a chance the object name was modified,
-    // meaning that it can be in the collection but not the map,
-    // or in the wrong place in the map.
-            if ( (obj != NULL) && !obj->CanSetName() )
+            // The map can become stale if the name of any item changed after it
+            // was added to the map. Check if the object's class allows name modifications.
+            // Do this check on found object by default
+            OBJ* canSetObj = obj;
+
+            if ( !canSetObj && (GetCount() > 0))
+                // Object was not found, do check on first object in collection.
+                canSetObj = GetItem(0);
+
+            // Check if object name can be modified. 
+            bool canSetName = canSetObj ? canSetObj->CanSetName() : true;
+
+            // If the object name can't be modified then we're done.
+            // Otherwise, there's a chance the object name was modified,
+            // meaning that it can be in the collection but not the map,
+            // or in the wrong place in the map.
+            if ( !canSetName )
                 return(obj);
 
-    // If the found object's name is the same as the given name
-    // then we're done. Otherwise, this object's name has changed
-    // and a linear search is needed to find the requested object.
+            // If the found object's name is the same as the given name
+            // then we're done. Otherwise, this object's name has changed
+            // and a linear search is needed to find the requested object.
             if ( (obj != NULL) && (Compare(obj->GetName(), name) != 0) )
                 FDO_SAFE_RELEASE( obj );
         }
 
         if ( obj == NULL ) {
-    // No map so do linear search.
+            // No map or map might be stale, so do linear search.
             for ( FdoInt32 i = 0; i < FdoCollection<OBJ, EXC>::GetCount(); i++ ) {
                 OBJ* obj = GetItem(i);
 
@@ -425,9 +437,9 @@ private:
     // Add an element to the map. Elements are keyed by name, which may or may not be case sensitive.
     // Case insensitive names are stored in lower case.
         if ( mbCaseSensitive ) 
-            mpNameMap->insert( std::pair<FdoStringP,OBJ*> ( value->GetName(), value ) );
+            mpNameMap->insert( std::pair<FdoStringP,OBJ*> ( FdoStringP(value->GetName(),true), value ) );
         else
-            mpNameMap->insert( std::pair<FdoStringP,OBJ*> ( FdoStringP(value->GetName()).Lower(), value ) );            
+            mpNameMap->insert( std::pair<FdoStringP,OBJ*> ( FdoStringP(value->GetName(),true).Lower(), value ) );            
     }
 
     // Remove the element at the specified index, from the map

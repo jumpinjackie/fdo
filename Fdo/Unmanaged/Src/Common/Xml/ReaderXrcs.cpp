@@ -22,6 +22,7 @@
 #include <xercesc/sax2/XMLReaderFactory.hpp>
 #include <xercesc/sax/SAXParseException.hpp>
 #include <stdio.h>
+#include "../CommonInternal.h"
 
 FdoXmlReaderXrcs::FdoXmlReaderXrcs(FdoIoTextReader* reader) : 
     FdoXmlReader(reader),
@@ -215,21 +216,34 @@ void  FdoXmlReaderXrcs::startElement (
     const XERCES_CPP_NAMESPACE::Attributes &attrs
 )
 {
+    // Reuse current attribute collection if exists and no one else references it.
+    // Saves some memory allocations.
+    if ( mFdoAttrs && (mFdoAttrs->GetRefCount() == 1) ) {
+        mFdoAttrs->Clear();
+    }
+    else {
+        mFdoAttrs = FdoXmlAttributeCollection::Create();
+    }
 
-    FdoXmlAttributesP fdoAttrs = FdoXmlAttributeCollection::Create();
-    FdoSize i;
+    unsigned int i;
+    unsigned int attrCount = attrs.getLength();
 
     // Convert each Xerces XML attribute to a FDO XML attribute.
-    for ( i = 0; i < attrs.getLength(); i++ ) {
+    for ( i = 0; i < attrCount; i++ ) {
+#ifdef _WIN32
+        // on Windows, XMLCh same as FdoString so assign directly to save memory allocations
+        FdoStringP uri((FdoString*) attrs.getURI(i));
+        FdoStringP localName((FdoString*) attrs.getLocalName(i));
+        FdoStringP qName((FdoString*)attrs.getQName(i));
+#else
         FdoStringP uri = FdoXmlUtilXrcs::Xrcs2Unicode(attrs.getURI(i));
         FdoStringP localName = FdoXmlUtilXrcs::Xrcs2Unicode(attrs.getLocalName(i));
         FdoStringP qName = FdoXmlUtilXrcs::Xrcs2Unicode(attrs.getQName(i));
+#endif
         FdoStringP prefix;
 
-        // Parse the namespace prefix from the attribute qualified name. 
-        FdoStringsP tokens = FdoStringCollection::Create( qName, L":" );
-        if ( tokens->GetCount() > 1 ) 
-            prefix = tokens->GetString(0);
+        if ( qName.Contains(L":") )
+            prefix = qName.Left(L":");
 
         // Generate unique name for attribute. For qualified attribute name, concatenate
         // the namespace uri and local name. If name unqualified, use local name as is. 
@@ -237,34 +251,44 @@ void  FdoXmlReaderXrcs::startElement (
                                     uri + L":" + localName :
                                     localName;
 
+#ifdef _WIN32
+        // on Windows, XMLCh same as FdoString so assign directly to save memory allocations
+        FdoStringP value( (FdoString*)(attrs.getValue(i)) );
+#else
         FdoStringP value = FdoXmlUtilXrcs::Xrcs2Unicode(attrs.getValue(i));
+#endif
+
         FdoStringP valueUri;
         FdoStringP valuePrefix;
         FdoStringP localValue = value;
+        FdoStringP leftValue;
+        FdoStringP rightValue;
 
-        tokens = FdoStringCollection::Create( value, L":" );
-        if ( tokens->GetCount() == 2 ) {
-            // Attribute value qualified by namespace prefix.
+        if ( value.Contains(L":") ) {
+            leftValue = value.Left(L":");
+            rightValue = value.Right(L":");
 
-            // Set the uri for the prefix
-            valueUri = PrefixToUri( tokens->GetString(0) );
-            // Set the prefix and unqualified value.
-            if ( valueUri.GetLength() > 0 ) {
-                valuePrefix = tokens->GetString(0);
-                localValue = tokens->GetString(1);
+            if ( !rightValue.Contains(L":") ) {
+                // Attribute value qualified by namespace prefix.
+
+                // Set the prefix and unqualified value.
+                if ( leftValue.GetLength() > 0 ) {
+                    valueUri = PrefixToUri(leftValue);
+                    valuePrefix = leftValue;
+                    localValue = rightValue;
+                }
             }
         }
-        else {
+
+        if ( valuePrefix == L"" ) {
             // Attribute not qualified, set the uri for the 
             // current default namespace.
             valueUri = PrefixToUri( L"" );
-            if ((valueUri.GetLength() > 0) && (tokens->GetCount() > 0))
-                localValue = tokens->GetString(0);
         }
 
-        fdoAttrs->Add( FdoXmlAttributeP( FdoXmlAttribute::Create( 
+        mFdoAttrs->Add( FdoXmlAttributeP( FdoCommonInternal::CreateXmlAttribute( 
             uniqueName, 
-            FdoStringP( FdoXmlUtilXrcs::Xrcs2Unicode(attrs.getValue(i)) ),
+            value,
             localName,
             uri,
             prefix,
@@ -272,16 +296,23 @@ void  FdoXmlReaderXrcs::startElement (
             localValue,
             valuePrefix
         )));
-    }
 
+    }
+ 
     // Call our start element handler. Convert text from Xrcs to FDO Unicode format.
     // Xrcs wide characters are always 2 bytes. FDO wide characters vary according
     // to operating system ( 2 bytes on Windows, 4 on Linux ).
     HandleStartElement( 
+#ifdef _WIN32
+        (FdoString*) uri, 
+        (FdoString*) name, 
+        (FdoString*) qname, 
+#else
         FdoXmlUtilXrcs::Xrcs2Unicode(uri), 
-        FdoXmlUtilXrcs::Xrcs2Unicode(name), 
-        FdoXmlUtilXrcs::Xrcs2Unicode(qname), 
-        fdoAttrs 
+        FdoXmlUtilXrcs::Xrcs2Unicode(name),
+        FdoXmlUtilXrcs::Xrcs2Unicode(qname),
+#endif
+        mFdoAttrs 
     );
 }
 
@@ -293,10 +324,18 @@ void  FdoXmlReaderXrcs::endElement (
 {
     // Call our end element handler.
     HandleEndElement( 
-        FdoStringP(FdoXmlUtilXrcs::Xrcs2Unicode(uri)), 
-        FdoStringP(FdoXmlUtilXrcs::Xrcs2Unicode(name)), 
-        FdoStringP(FdoXmlUtilXrcs::Xrcs2Unicode(qname)) 
+#ifdef _WIN32
+        // on Windows, XMLCh same as FdoString so assign directly to save memory allocations
+        (FdoString*) uri, 
+        (FdoString*) name, 
+        (FdoString*) qname 
+#else
+        FdoXmlUtilXrcs::Xrcs2Unicode(uri), 
+        FdoXmlUtilXrcs::Xrcs2Unicode(name), 
+        FdoXmlUtilXrcs::Xrcs2Unicode(qname) 
+#endif
     );
+
 }
 
 void  FdoXmlReaderXrcs::startPrefixMapping (
@@ -304,9 +343,16 @@ void  FdoXmlReaderXrcs::startPrefixMapping (
     const XMLCh *const uri
 )
 {
+
     HandleStartPrefixMapping( 
+#ifdef _WIN32
+        // on Windows, XMLCh same as FdoString so assign directly to save memory allocations
+        (FdoString*) prefix, 
+        (FdoString*) uri
+#else
         FdoXmlUtilXrcs::Xrcs2Unicode(prefix), 
         FdoXmlUtilXrcs::Xrcs2Unicode(uri)
+#endif
     );
 }
 
@@ -314,15 +360,22 @@ void  FdoXmlReaderXrcs::endPrefixMapping (
     const XMLCh *const prefix 
 )
 {
+
     HandleEndPrefixMapping( 
+#ifdef _WIN32
+        // on Windows, XMLCh same as FdoString so assign directly to save memory allocations
+        (FdoString*) prefix
+#else
         FdoXmlUtilXrcs::Xrcs2Unicode(prefix)
+#endif
     );
 }
 
 void  FdoXmlReaderXrcs::characters (const XMLCh *const chars, const unsigned int length)
 {
+
     // Call our element content handler.
-    HandleCharacters( FdoStringP(FdoXmlUtilXrcs::Xrcs2Unicode(chars,length)) );
+    HandleCharacters( FdoXmlUtilXrcs::Xrcs2Unicode(chars,length) );
 }
 
 XERCES_CPP_NAMESPACE::BinInputStream* FdoXmlReaderXrcs::makeStream ()  const
