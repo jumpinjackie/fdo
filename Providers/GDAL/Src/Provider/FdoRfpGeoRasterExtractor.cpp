@@ -196,8 +196,12 @@ void FdoRfpGeoRasterExtractor::ExtractRasters(FdoRfpConnection* conn,
 
         // coordinate system
         FdoStringP coord;
-        if (geoRef->HasCoordSystem() && FdoRfpRasterUtil::IsCoordinateSystemValid(geoRef->GetCoorSystem())) // there is a coordinate system with the image
-            coord = geoRef->GetCoorSystem();
+        if (geoRef->HasCoordSystem() )
+        {
+            FdoPtr<FdoRfpSpatialContext> context = 
+                conn->GetSpatialContextByWkt( geoRef->GetCoorSystem() );
+            coord = context->GetName();
+        }
 
         // Add the coordinate system names to the collection of Spatial Contexts to be returned to the caller
         // It is the callers responsibility to determine what constitutes an error if more than one spatial context

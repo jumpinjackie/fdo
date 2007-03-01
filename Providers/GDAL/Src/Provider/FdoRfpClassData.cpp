@@ -57,7 +57,6 @@ void FdoRfpClassData::_buildUp(FdoRfpConnection *conn,
         return;
 
     // Initialize class member variables to Nil
-    m_coord = "";
     m_bFirstRaster = true;
 
     // Retrieve the properties from the class definition
@@ -80,13 +79,6 @@ void FdoRfpClassData::_buildUp(FdoRfpConnection *conn,
         throw FdoException::Create(NlsMsgGet1(GRFP_46_CLASS_INVALID, "Feature class '%1$ls' is invalid.", fcName));
     }
 
-    // Retrieve the spatial context association from the Raster Property
-    FdoStringP scName = propraster->GetSpatialContextAssociation();
-
-    // the first one must be the default one or be set by the config file
-    FdoPtr<FdoRfpSpatialContext> defaultContext = contexts->GetItem(0);
-    FdoStringP defaultCoord = defaultContext->GetCoordinateSystem();
-
     // Retrieve the Raster Property Schema Mapping definition
     FdoGrfpRasterDefinitionP rasterDef = classMapping->GetRasterDefinition();
     FdoGrfpRasterLocationsP locations = rasterDef->GetLocations();
@@ -108,38 +100,14 @@ void FdoRfpClassData::_buildUp(FdoRfpConnection *conn,
             _buildUpGeoRastersFromCatalogue(conn, featureCatalogue, coordSystems);
     }
 	
-    // First decide whether the coordinate system is already set for the class
-    // If the Association is set, verify that the SC exists in the SC Collection 
-    // de-serialized from the Configuration file. If the SC Name is already set
-    // then the correlation information specified by each raster file will not 
-    // be used to determine teh SC in FDO
-    bool bSCExists = false;
-    if (scName != L"") {
-        FdoPtr<FdoRfpSpatialContext> context;
-        for (int i = 0; i<contexts->GetCount(); i++)
-        {
-            context = contexts->GetItem(i);
-            if (STREQUAL(context->GetCoordinateSystem(), scName))
-            {
-                bSCExists = true;
-                break;
-            }
-        }
+    // Retrieve the spatial context association from the Raster Property
+    FdoStringP m_coord = propraster->GetSpatialContextAssociation();
 
-        if (!bSCExists) {
-            throw FdoException::Create(
-                NlsMsgGet2(
-                    GRFP_108_CLASS_SPATIAL_CONTEXT_NOT_DEFINED, 
-                    "Spatial Context '%1$ls' defined for Class '%2$ls' was not found.",
-                    (FdoString*)scName, fcName));
-        }
-    }
-    else {
-        // If the Association is not set, the SC name will be determined from
-        // the correlation information from the raster images themselves.
-        // Ensure every feature class has only one single CS name
+    if (m_coord == L"") {
         if (coordSystems->GetCount() == 0) {
-            m_coord = defaultCoord;            
+            FdoPtr<FdoRfpSpatialContext> defaultContext = 
+                conn->GetDefaultSpatialContext();
+            m_coord = defaultContext->GetName();
         }
         else if (coordSystems->GetCount() > 1) { 
             throw FdoException::Create(
@@ -152,53 +120,24 @@ void FdoRfpClassData::_buildUp(FdoRfpConnection *conn,
             m_coord = FdoStringElementP(coordSystems->GetItem(0))->GetString();            
         }
 
-        // we must decide whether the coordinate system already exists in the providers
-        // spatial context collection
-        FdoPtr<FdoRfpSpatialContext> context;
-        for (int i = 0; i<contexts->GetCount(); i++)
-        {
-            context = contexts->GetItem(i);
-            if (STREQUAL(context->GetCoordinateSystem(), m_coord))
-            {
-                bSCExists = true;
-                break;
-            }
-        }
-
-        if (bSCExists) // the coordinate system exists
-        {
-            // Retrieve the SC name
-            scName = context->GetName();
-            FdoPtr<FdoByteArray> extentArr = context->GetExtent();
-    		
-            // Calculate the new extent of the existing spatial context
-            FdoRfpRect extent = FdoRfpUtil::CreateRectFromGeometryAgf(extentArr);
-            extent = extent.Union(m_extent);
-
-            // Set the new extent
-            context->SetExtent(FdoRfpUtil::CreateGeometryAgfFromRect(extent));
-        }
-        else // it's a new coordinate system
-        {
-            // spatial context name is set by coordinate system name
-            // since coordinate system name is unique, the name of spatial context will be also unique.
-            scName = m_coord;
-
-            // Create a new SC
-            context = new FdoRfpSpatialContext();
-
-            // Set the SC properties
-            context->SetName(scName);
-            context->SetCoordinateSystem(m_coord);
-            context->SetExtent(FdoRfpUtil::CreateGeometryAgfFromRect(m_extent));
-            context->SetExtentType(FdoSpatialContextExtentType_Static);
-
-            // Add the SC to the list of SC exposed by the RFP Provider
-            contexts->Add(context);
-        }
-    	
         // Set the Class Definition's Spatial Context Association 
-        propraster->SetSpatialContextAssociation(scName);
+        propraster->SetSpatialContextAssociation(m_coord);
+    }
+
+    // Retrieve the context, so we can merge in our extents.
+    FdoPtr<FdoRfpSpatialContext> context = contexts->GetItem(contexts->IndexOf(m_coord));
+    		
+    // Calculate the new extent of the existing spatial context
+    try {
+        FdoPtr<FdoByteArray> extentArr = context->GetExtent();
+        FdoRfpRect extent = FdoRfpUtil::CreateRectFromGeometryAgf(extentArr);
+        extent = extent.Union(m_extent);
+
+        // Set the new extent
+        context->SetExtent(FdoRfpUtil::CreateGeometryAgfFromRect(extent));
+    }
+    catch( ... ) {
+        context->SetExtent(FdoRfpUtil::CreateGeometryAgfFromRect(m_extent));
     }
 }
 
@@ -269,8 +208,13 @@ void FdoRfpClassData::_buildUpGeoRastersFromCatalogue(FdoRfpConnection *conn,
             //
             // first, get the coordinate system names associated to the rasters in the catalogue
             FdoStringP coord;
-            if (bHasGeoInfo && geoRef->HasCoordSystem() && FdoRfpRasterUtil::IsCoordinateSystemValid(geoRef->GetCoorSystem())) 
-                coord = geoRef->GetCoorSystem(); // it is a valid coordinate system
+            if (bHasGeoInfo && geoRef->HasCoordSystem() 
+                && FdoRfpRasterUtil::IsCoordinateSystemValid(geoRef->GetCoorSystem())) 
+            { 
+                FdoPtr<FdoRfpSpatialContext> context = 
+                    conn->GetSpatialContextByWkt( geoRef->GetCoorSystem() );
+                coord = context->GetName();
+            }
 
             // Add the coordinate system names to the collection of Spatial Contexts to be returned to the caller
             // It is the callers responsibility to determine what constitutes an error if more than one spatial context
