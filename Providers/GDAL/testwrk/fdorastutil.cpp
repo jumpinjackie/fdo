@@ -40,6 +40,7 @@ static void TranslateTo( FdoPtr<FdoIRaster> raster,
 static void ReportSchemas( FdoPtr<FdoIConnection> conn, FdoStringP &FeatureClassName,
                            FdoStringP &FeatureIdName, FdoStringP &RasterName,
                            int bActuallyReport );
+static void ReportSpatialContexts( FdoPtr<FdoIConnection> connection );
 
 /************************************************************************/
 /*                               Usage()                                */
@@ -197,6 +198,12 @@ int main( int argc, char ** argv )
     }
 
 /* -------------------------------------------------------------------- */
+/*      Report on spatial contexts if requested.                        */
+/* -------------------------------------------------------------------- */
+    if( bReportSpatialContexts )
+        ReportSpatialContexts( conn );
+
+/* -------------------------------------------------------------------- */
 /*      Describe layer.                                                 */
 /* -------------------------------------------------------------------- */
     FdoStringP  FeatureIdName;
@@ -215,7 +222,7 @@ int main( int argc, char ** argv )
         FdoPtr<FdoIFeatureReader> reader = select->Execute ();
         int iCounter = 0;
     
-        while (reader->ReadNext ())
+        while (reader->ReadNext () && bReportFeatures )
         {
             FdoPtr<FdoIRaster>  raster;
 
@@ -224,7 +231,6 @@ int main( int argc, char ** argv )
             printf( "  Id = %ls\n", reader->GetString( FeatureIdName ) );
 
             raster = reader->GetRaster( RasterName );
-
             if( raster != NULL || !raster->IsNull() )
             {
                 FdoPtr<FdoRasterDataModel> data_model;
@@ -311,6 +317,7 @@ int main( int argc, char ** argv )
                 }
                 catch(...)
                 {
+                    printf( "    No Palette\n" );
                 }
 
                 // For now, only translate the first file. 
@@ -322,7 +329,7 @@ int main( int argc, char ** argv )
             }
         }
 
-        if( iCounter == 0 )
+        if( iCounter == 0 && bReportFeatures )
         {
             printf( "No features found for class %s.\n", 
                     (const char *) FeatureClassName );
@@ -513,6 +520,43 @@ static void TranslateTo( FdoPtr<FdoIRaster> raster,
 /*      Close and cleanup.                                              */
 /* -------------------------------------------------------------------- */
     GDALClose( hOutDS );
+}
+
+/************************************************************************/
+/*                       ReportSpatialContexts()                        */
+/************************************************************************/
+
+static void ReportSpatialContexts( FdoPtr<FdoIConnection> connection )
+
+{
+    FdoICommand* cmd = connection->CreateCommand(FdoCommandType_GetSpatialContexts);
+    FdoPtr<FdoIGetSpatialContexts> getSpatialContexts = static_cast<FdoIGetSpatialContexts*>(cmd);
+    FdoPtr<FdoISpatialContextReader> spatialContextsReader = getSpatialContexts->Execute();
+	
+    //test the first spatial context
+    while( spatialContextsReader->ReadNext() )
+    {
+        printf( "Spatial Context\n"
+                "  Name:              %ls\n"
+                "  Description:       %ls\n"
+                "  Coordinate System: %ls\n"
+                "  CS WKT:            %ls\n",
+                spatialContextsReader->GetName(),
+                spatialContextsReader->GetDescription(),
+                spatialContextsReader->GetCoordinateSystem(),
+                spatialContextsReader->GetCoordinateSystemWkt() );
+
+        FdoSpatialContextExtentType type = spatialContextsReader->GetExtentType() ;
+	
+        FdoByteArray *byteArray = spatialContextsReader->GetExtent() ;
+        FdoPtr<FdoFgfGeometryFactory> agfFactory = FdoFgfGeometryFactory::GetInstance();
+        FdoPtr<FdoIGeometry> geometry = agfFactory->CreateGeometryFromFgf(byteArray);
+        FdoPtr<FdoIEnvelope> envelope = geometry->GetEnvelope();
+
+        printf( "  Extent: (%g,%g)-(%g,%g)\n",
+                envelope->GetMinX(), envelope->GetMinY(),
+                envelope->GetMaxX(), envelope->GetMaxY() );
+    }
 }
 
 /************************************************************************/
