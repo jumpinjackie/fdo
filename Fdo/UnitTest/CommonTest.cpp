@@ -106,6 +106,46 @@ void CommonTest::testExceptions()
 
 void CommonTest::testCollections()
 {
+    // Test named collection, with hash map, for objects that can be renamed.
+
+    FdoFeatureSchemasP schemas = FdoFeatureSchemaCollection::Create(NULL);
+
+    FdoInt32 idx;
+
+    // Add enough items to force use of hash map
+    for ( idx = 0; idx < 1000; idx++ ) {
+        schemas->Add(
+            FdoFeatureSchemaP(
+                FdoFeatureSchema::Create(
+                    FdoStringP::Format( L"%d", idx ),
+                    L""
+                )
+            )
+        );
+    }
+
+    FdoFeatureSchemaP schema = schemas->FindItem(L"593");
+	FDO_CPPUNIT_ASSERT(schema);
+    // Rename an item. This makes the hash map stale. In hash map, "renamed" schema is still under
+    // key "593".
+    schema->SetName( L"renamed" );
+
+    // Add another "593". should work since other one was renamed
+    schema = FdoFeatureSchema::Create( L"593", L"" );
+    schemas->Add( schema );
+
+    // Add a second "renamed" schema. Must fail since duplicate.
+    schema = FdoFeatureSchema::Create( L"renamed", L"" );
+	bool failed = false;
+	try {
+        schemas->Add( schema );
+	}
+	catch ( FdoException* ex) {
+        ex->Release();
+		failed = true;
+	}
+
+	FDO_CPPUNIT_ASSERT(failed);
 }
 
 // Do some stuff with FdoIntArray, as non-Byte arrays are not currently 
@@ -464,6 +504,40 @@ void CommonTest::testDictionary()
 			L"Nine Hundred" 
 		) == 0 
 	);
+
+    // Test that duplicate name checking works when against the hash map.
+    // First, put lots of items in the dictionary to trigger the user of the map
+
+    int idx;
+
+    for ( idx = 0; idx < 1000; idx++ ) {
+		dictionary->Add( 
+            FdoDictionaryElementP( 
+                FdoDictionaryElement::Create(
+                    FdoStringP::Format( L"%d", idx ),
+                    L""
+                ) 
+            ) 
+        );
+    }
+
+    // Try adding a duplicate entry.
+    failed = false;
+	try {
+		dictionary->Add( 
+            FdoDictionaryElementP( 
+                FdoDictionaryElement::Create(
+                    FdoStringP::Format( L"535", idx ),
+                    L""
+                ) 
+            ) 
+        );
+	}
+	catch ( FdoException* ex) {
+        ex->Release();
+		failed = true;
+	}
+	FDO_CPPUNIT_ASSERT(failed);
 
 }
 

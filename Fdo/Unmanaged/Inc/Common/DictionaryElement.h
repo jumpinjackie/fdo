@@ -26,6 +26,7 @@
 /// name-value pair.
 class FdoDictionaryElement : public FdoDisposable
 {
+    friend class FdoCommonInternal;
 
 public:
 

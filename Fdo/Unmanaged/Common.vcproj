@@ -207,6 +207,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Src\Common\CommonInternal.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Src\Common\CommonInternal.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Src\Common\Context.cpp"
 				>
 			</File>

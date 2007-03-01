@@ -139,6 +139,9 @@ protected:
 
     // Semaphore for prevent re-entrant parsing.
     FdoBoolean mParsing;
+
+private:
+    FdoXmlAttributesP mFdoAttrs;
 };
 /// \endcond
 
