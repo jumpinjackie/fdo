@@ -51,9 +51,11 @@
         }\
         catch (FdoException* exception)\
         {\
+            char szError[5000]; \
+            sprintf( szError, "Unhandled FdoException in " #testMethod ":\n  %ls\n", exception->GetExceptionMessage() ); \
             PrintException(exception);\
             exception->Release();\
-            CPPUNIT_ASSERT_MESSAGE("Unhandled FdoException in " #testMethod, false);\
+            CPPUNIT_ASSERT_MESSAGE(szError, false);\
         }\
     }\
 
