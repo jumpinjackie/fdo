@@ -219,6 +219,9 @@ public:
     //Get active spatial context
     FdoPtr<FdoRfpSpatialContext> GetActiveSpatialContext();
 
+    //Get default spatial context
+    FdoPtr<FdoRfpSpatialContext> GetDefaultSpatialContext();
+
     //Activate spatial context
     void ActivateSpatialContext(FdoString* contextName);
 
@@ -227,6 +230,9 @@ public:
 
     // Destroy a spatial context
     void DestroySpatialContext(FdoString* contextName);
+
+    // Fetch a spatial context by WKT, creating if it does not exist. 
+    FdoPtr<FdoRfpSpatialContext> GetSpatialContextByWkt(FdoString* wkt);
 
     // Fetch the dataset cache
     FdoRfpDatasetCache *GetDatasetCache();

@@ -46,6 +46,7 @@
 #include "FdoRfpGlobals.h"
 #include <GdalFile/Override/FdoGrfpOverrides.h>
 #include <gdal.h>
+#include <ogr_srs_api.h>
 #include <FdoCommonConnStringParser.h>
 
 // external access to connection for client services
@@ -234,6 +235,7 @@ void FdoRfpConnection::_buildUpDefaultSpatialContext()
     defaultSC->SetExtentType(FdoSpatialContextExtentType_Static);
     defaultSC->SetXYTolerance(FdoGrfpGlobals::DefaultSpatialContextXYTolerance);
     defaultSC->SetZTolerance(FdoGrfpGlobals::DefaultSpatialContextZTolerance);
+    defaultSC->SetCoordinateSystem(FdoGrfpGlobals::DefaultSpatialContextName);
     defaultSC->SetCoordinateSystemWkt(FdoGrfpGlobals::DefaultSpatialContextWKTName);
     m_spatialContexts->Add(defaultSC);
 }
@@ -347,10 +349,6 @@ FdoConnectionState FdoRfpConnection::Open()
     // build up spatial contexts
     if (m_spatialContexts == NULL)
         m_spatialContexts = new FdoRfpSpatialContextCollection();
-    if (m_spatialContexts->GetCount() == 0)
-        _buildUpDefaultSpatialContext();
-    //Set the first spatial context as the active one
-    m_activeSpatialContext = FdoRfpSpatialContextP(m_spatialContexts->GetItem(0))->GetName();
 
     //Build up feature schema collection
     if (m_featureSchemas == NULL)
@@ -379,6 +377,13 @@ FdoConnectionState FdoRfpConnection::Open()
 
     //Build up the data for each feature class
     _buildUpSchemaDatas();
+
+    // Create default spatial context if we have none.
+    if (m_spatialContexts->GetCount() == 0)
+        _buildUpDefaultSpatialContext();
+
+    //Set the first spatial context as the active one
+    m_activeSpatialContext = FdoRfpSpatialContextP(m_spatialContexts->GetItem(0))->GetName();
 
     //All done, no exceptions
     m_state = FdoConnectionState_Open;
@@ -560,10 +565,20 @@ FdoPtr<FdoRfpSpatialContextCollection> FdoRfpConnection::GetSpatialContexts()
 
 //Get active spatial context
 FdoPtr<FdoRfpSpatialContext> FdoRfpConnection::GetActiveSpatialContext()
-{
+{ 
     //Ensure the connection is established
     _validateOpen();
+
     return m_spatialContexts->GetItem(m_activeSpatialContext);
+}
+
+//Get default spatial context
+FdoPtr<FdoRfpSpatialContext> FdoRfpConnection::GetDefaultSpatialContext()
+{
+    if( m_spatialContexts->GetCount() == 0 )
+        _buildUpDefaultSpatialContext();
+
+    return m_spatialContexts->GetItem(0);
 }
 
 //Activate spatial context
@@ -588,6 +603,73 @@ void FdoRfpConnection::CreateSpatialContext(FdoRfpSpatialContext* spatialContext
     else
         m_spatialContexts->Add(spatialContext);
 }
+
+// Find or create spatial context by WKT.
+FdoPtr<FdoRfpSpatialContext> FdoRfpConnection::GetSpatialContextByWkt( FdoString *wkt )
+{
+    FdoInt32 i;
+    FdoPtr<FdoRfpSpatialContext> context;
+
+    // Do we have an existing matching SC?
+    for( i = 0; i < m_spatialContexts->GetCount(); i++ )
+    {
+        context = m_spatialContexts->GetItem(i);
+        
+        if( STREQUAL(context->GetCoordinateSystemWkt(),wkt) )
+            return context;
+    }
+
+    // Pick a unique name for this SC.  We try to use the basename from
+    // the WKT, but we will append an index if necessary to make it unique.
+    FdoStringP wkt2( wkt );
+    FdoStringP basename, name;
+    OGRSpatialReferenceH hSRS = OSRNewSpatialReference( wkt2 );
+
+    if( hSRS == NULL )
+        basename = "unnamed";
+    else if( OSRIsGeographic(hSRS) )
+        basename = OSRGetAttrValue( hSRS, "GEOGCS", 0 );
+    else if( OSRIsProjected(hSRS) )
+        basename = OSRGetAttrValue( hSRS, "PROJCS", 0 );
+    else if( OSRIsLocal(hSRS) )
+        basename = OSRGetAttrValue( hSRS, "LOCAL_CS", 0 );
+    else
+        basename = "unnamed";
+
+    for( i = 0; ; i++ )
+    {
+        if( i == 0 )
+            name = basename;
+        else
+        {
+            char id[12];
+
+            sprintf( id, "%d", i );
+            name = basename;
+            name += id;
+        }
+
+        if( m_spatialContexts->IndexOf( name ) == -1 )
+            break;
+    }
+    
+    // Create a new SC
+    context = new FdoRfpSpatialContext();
+
+    
+    // Set the SC properties
+    context->SetName(name);
+    context->SetCoordinateSystem(wkt);
+    context->SetCoordinateSystemWkt(wkt);
+    //context->SetExtent(FdoRfpUtil::CreateGeometryAgfFromRect(m_extent));
+    context->SetExtentType(FdoSpatialContextExtentType_Dynamic);
+
+    // Add the SC to the list of SC exposed by the RFP Provider
+    m_spatialContexts->Add(context);
+    
+    return context;
+}
+
 
 // Destroy a spatial context
 void FdoRfpConnection::DestroySpatialContext(FdoString* contextName)

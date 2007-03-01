@@ -189,11 +189,7 @@ bool FdoRfpRasterUtil::GetGeoReferenceInfo(GDALDatasetH hDS, FdoPtr<FdoRfpGeoref
     const char *pszWKT = GDALGetProjectionRef( hDS );
     if ( pszWKT != NULL && strlen(pszWKT) > 0 )
     {
-        // I think we should just be assigning a coordinate
-        // system name here, not the whole WKT definition.
-
-        // Commented out to avoid "multiple coordinate system" problems.
-        //geoRef->SetCoordSystem(pszWKT);
+        geoRef->SetCoordSystem(pszWKT);
     }
 
     return true;
