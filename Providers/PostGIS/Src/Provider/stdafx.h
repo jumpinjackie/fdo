@@ -42,13 +42,15 @@
 
 #define WIN32_LEAN_AND_MEAN // Exclude rarely-used stuff from Windows headers
 
+// Build-in support of Visual Leak Detector
+#ifdef FDOPOSTGIS_USE_VLD
+#include <vld.h>
+#endif // FDOPOSTGIS_USE_VLD
+
 // Windows Header Files
 #include <windows.h>
 
 // FDO PostGIS Logger
 #include "Logger.h"
-
-// Visual Leak Detector
-#include <vld.h>
 
 #endif // POSTGISPROVIDER_STDAFX_H_INCLUDED
