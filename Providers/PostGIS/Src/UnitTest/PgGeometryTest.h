@@ -44,6 +44,32 @@ class PgGeometryTest : public CppUnit::TestCase
     CPPUNIT_TEST(testPolygonSRIDM);
     CPPUNIT_TEST(testPolygonZM);
     CPPUNIT_TEST(testPolygonSRIDZM);
+    CPPUNIT_TEST(testMultiPoint);
+    CPPUNIT_TEST(testMultiPointSRID);
+    CPPUNIT_TEST(testMultiPointZ);
+    CPPUNIT_TEST(testMultiPointSRIDZ);
+    CPPUNIT_TEST(testMultiPointM);
+    CPPUNIT_TEST(testMultiPointSRIDM);
+    CPPUNIT_TEST(testMultiPointZM);
+    CPPUNIT_TEST(testMultiPointSRIDZM);
+
+    CPPUNIT_TEST(testMultiLineString);
+    CPPUNIT_TEST(testMultiLineStringSRID);
+    CPPUNIT_TEST(testMultiLineStringZ);
+    CPPUNIT_TEST(testMultiLineStringSRIDZ);
+    CPPUNIT_TEST(testMultiLineStringM);
+    CPPUNIT_TEST(testMultiLineStringSRIDM);
+    CPPUNIT_TEST(testMultiLineStringZM);
+    CPPUNIT_TEST(testMultiLineStringSRIDZM);
+
+    CPPUNIT_TEST(testMultiPolygon);
+    CPPUNIT_TEST(testMultiPolygonSRID);
+    CPPUNIT_TEST(testMultiPolygonZ);
+    CPPUNIT_TEST(testMultiPolygonSRIDZ);
+    CPPUNIT_TEST(testMultiPolygonM);
+    CPPUNIT_TEST(testMultiPolygonSRIDM);
+    CPPUNIT_TEST(testMultiPolygonZM);
+    CPPUNIT_TEST(testMultiPolygonSRIDZM);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -84,6 +110,33 @@ public:
     void testPolygonSRIDM();
     void testPolygonZM();
     void testPolygonSRIDZM();
+
+    void testMultiPoint();
+    void testMultiPointSRID();
+    void testMultiPointZ();
+    void testMultiPointSRIDZ();
+    void testMultiPointM();
+    void testMultiPointSRIDM();
+    void testMultiPointZM();
+    void testMultiPointSRIDZM();
+
+    void testMultiLineString();
+    void testMultiLineStringSRID();
+    void testMultiLineStringZ();
+    void testMultiLineStringSRIDZ();
+    void testMultiLineStringM();
+    void testMultiLineStringSRIDM();
+    void testMultiLineStringZM();
+    void testMultiLineStringSRIDZM();
+
+    void testMultiPolygon();
+    void testMultiPolygonSRID();
+    void testMultiPolygonZ();
+    void testMultiPolygonSRIDZ();
+    void testMultiPolygonM();
+    void testMultiPolygonSRIDM();
+    void testMultiPolygonZM();
+    void testMultiPolygonSRIDZM();
 
 private:
 
