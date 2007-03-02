@@ -20,6 +20,7 @@
 #include "SQLDataReader.h"
 #include "Connection.h"
 #include "PgCursor.h"
+#include "PgGeometry.h"
 // std
 #include <cassert>
 #include <string>
@@ -256,13 +257,39 @@ FdoBoolean SQLDataReader::IsNull(FdoString* columnName)
 
 FdoByteArray* SQLDataReader::GetGeometry(FdoString* columnName)
 {
-    // TODO: How to detect and distinguish following cases:
-    //1. SELECT geom FROM table
-    //2. SELECT AsBinary(geom) FROM table
+    // TODO: Consider best strategy to handle NULL geometries
+    //       It will also require some minor changes in EWKB parser.
 
+    try
+    {
+        FdoInt32 const fnumber = static_cast<int>(mCursor->GetFieldNumber(columnName));
+        PgCursor::ResultPtr pgRes = mCursor->GetFetchResult();
 
-    assert(!"NOT IMPLEMENTED - EWKB PARSER UNDER CONSTRUCTION");
-    return 0;
+        // Read string value and store it in cache buffer
+        std::string hexstring(PQgetvalue(pgRes, static_cast<int>(mCurrentTuple), fnumber));
+        
+        ewkb::ewkb_t ewkbData;
+        ewkb::hex_to_bytes(hexstring, ewkbData);
+
+        FdoPtr<FdoIGeometry> fdoGeom = ewkb::CreateGeometryFromExtendedWkb(ewkbData);
+        assert(NULL != fdoGeom);
+
+        FdoPtr<FdoFgfGeometryFactory> factory(FdoFgfGeometryFactory::GetInstance());
+        assert(NULL != factory);
+
+        FdoPtr<FdoByteArray> fgfBytes = factory->GetFgf(fdoGeom);
+        assert(NULL != fgfBytes);
+        
+        FDO_SAFE_ADDREF(fgfBytes.p);
+        return fgfBytes.p;
+    }
+    catch (FdoException* e)
+    {
+        FdoCommandException* ne = NULL;
+        ne = FdoCommandException::Create(L"Int32", e);
+        e->Release();
+        throw ne;
+    }
 }
 
 bool SQLDataReader::ReadNext()
