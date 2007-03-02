@@ -22,6 +22,7 @@
 #include "Rd/ColumnReader.h"
 #include "Rd/OraColumnReader.h"
 #include "Rd/DbObjectReader.h"
+#include "Rd/OraBaseObjectReader.h"
 #include "Sm/Ph/Rd/DbObjectReader.h"
 #include "Rd/PkeyReader.h"
 #include "ColumnChar.h"
@@ -265,6 +266,25 @@ FdoPtr<FdoSmPhRdColumnReader> FdoSmPhOdbcDbObject::CreateColumnReader()
         return new FdoSmPhRdOraOdbcColumnReader( GetManager(), FDO_SAFE_ADDREF(this) );
     else
         return new FdoSmPhRdOdbcColumnReader( GetManager(), FDO_SAFE_ADDREF(this) );
+}
+
+FdoPtr<FdoSmPhRdBaseObjectReader> FdoSmPhOdbcDbObject::CreateBaseObjectReader() const
+{
+    // Need to case away constness of 'this' to get correct version of GetManager.
+    FdoSmPhOdbcMgrP mgr = ((FdoSmPhOdbcDbObject *)this)->GetManager()->SmartCast<FdoSmPhOdbcMgr>();
+    rdbi_vndr_info_def info;
+	rdbi_vndr_info( mgr->GetRdbiContext(), &info );
+
+    if( info.dbversion == RDBI_DBVERSION_ODBC_ORACLE )
+    {
+        FdoSmPhOdbcDbObject* pDbObject = (FdoSmPhOdbcDbObject*) this;
+
+        return new FdoSmPhRdOdbcOraBaseObjectReader( FDO_SAFE_ADDREF(pDbObject) );
+    }
+    else
+    {
+        return (FdoSmPhRdBaseObjectReader*) NULL;
+    }
 }
 
 FdoPtr<FdoSmPhRdPkeyReader> FdoSmPhOdbcDbObject::CreatePkeyReader() const

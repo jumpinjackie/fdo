@@ -20,6 +20,7 @@
 
 #include "../../../SchemaMgr/Ph/Owner.h"
 #include <Sm/Ph/Rd/DbObjectReader.h>
+#include <Sm/Ph/Rd/BaseObjectReader.h>
 #include <Sm/Ph/Rd/ConstraintReader.h>
 
 // Odbc Provider implementation of an Owner.
@@ -54,6 +55,8 @@ public:
     virtual FdoPtr<FdoSmPhRdConstraintReader> CreateConstraintReader( FdoStringP constraintName ) const;
 
 	virtual FdoPtr<FdoSmPhRdConstraintReader> CreateConstraintReader( FdoStringP tableName, FdoStringP constraintType) const;
+
+    virtual FdoPtr<FdoSmPhRdBaseObjectReader> CreateBaseObjectReader() const;
 
     virtual FdoPtr<FdoSmPhRdPkeyReader> CreatePkeyReader() const;
 
