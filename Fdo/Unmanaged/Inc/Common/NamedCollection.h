@@ -109,7 +109,7 @@ public:
             // Do this check on found object by default
             OBJ* canSetObj = obj;
 
-            if ( !canSetObj && (GetCount() > 0))
+            if ( !canSetObj && (FdoCollection<OBJ, EXC>::GetCount() > 0))
                 // Object was not found, do check on first object in collection.
                 canSetObj = GetItem(0);
 
