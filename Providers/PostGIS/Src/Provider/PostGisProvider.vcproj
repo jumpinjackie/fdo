@@ -325,6 +325,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\PgGeometry.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PgGeometry.h"
+				>
+			</File>
+			<File
 				RelativePath=".\PgUtility.h"
 				>
 			</File>
