@@ -16,6 +16,12 @@
 //
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
+
+// Build-in support of Visual Leak Detector
+#ifdef FDOPOSTGIS_USE_VLD
+#include <vld.h>
+#endif // FDOPOSTGIS_USE_VLD
+
 #ifdef GetMessage
 #undef GetMessage
 #endif
