@@ -22,6 +22,12 @@ class PgGeometryTest : public CppUnit::TestCase
     CPPUNIT_TEST_SUITE(PgGeometryTest);
     CPPUNIT_TEST(testPoint);
     CPPUNIT_TEST(testPointSRID);
+    CPPUNIT_TEST(testPointZ);
+    CPPUNIT_TEST(testPointSRIDZ);
+    CPPUNIT_TEST(testPointM);
+    CPPUNIT_TEST(testPointSRIDM);
+    CPPUNIT_TEST(testPointZM);
+    CPPUNIT_TEST(testPointSRIDZM);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -38,6 +44,12 @@ public:
 
     void testPoint();
     void testPointSRID();
+    void testPointZ();
+    void testPointSRIDZ();
+    void testPointM();
+    void testPointSRIDM();
+    void testPointZM();
+    void testPointSRIDZM();
 
 };
 
