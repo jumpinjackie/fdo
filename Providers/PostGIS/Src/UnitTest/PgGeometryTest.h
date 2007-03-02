@@ -52,7 +52,6 @@ class PgGeometryTest : public CppUnit::TestCase
     CPPUNIT_TEST(testMultiPointSRIDM);
     CPPUNIT_TEST(testMultiPointZM);
     CPPUNIT_TEST(testMultiPointSRIDZM);
-
     CPPUNIT_TEST(testMultiLineString);
     CPPUNIT_TEST(testMultiLineStringSRID);
     CPPUNIT_TEST(testMultiLineStringZ);
@@ -61,7 +60,6 @@ class PgGeometryTest : public CppUnit::TestCase
     CPPUNIT_TEST(testMultiLineStringSRIDM);
     CPPUNIT_TEST(testMultiLineStringZM);
     CPPUNIT_TEST(testMultiLineStringSRIDZM);
-
     CPPUNIT_TEST(testMultiPolygon);
     CPPUNIT_TEST(testMultiPolygonSRID);
     CPPUNIT_TEST(testMultiPolygonZ);
@@ -70,6 +68,14 @@ class PgGeometryTest : public CppUnit::TestCase
     CPPUNIT_TEST(testMultiPolygonSRIDM);
     CPPUNIT_TEST(testMultiPolygonZM);
     CPPUNIT_TEST(testMultiPolygonSRIDZM);
+    CPPUNIT_TEST(testGeometryCollection);
+    CPPUNIT_TEST(testGeometryCollectionSRID);
+    CPPUNIT_TEST(testGeometryCollectionZ);
+    CPPUNIT_TEST(testGeometryCollectionSRIDZ);
+    CPPUNIT_TEST(testGeometryCollectionM);
+    CPPUNIT_TEST(testGeometryCollectionSRIDM);
+    CPPUNIT_TEST(testGeometryCollectionZM);
+    CPPUNIT_TEST(testGeometryCollectionSRIDZM);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -138,9 +144,18 @@ public:
     void testMultiPolygonZM();
     void testMultiPolygonSRIDZM();
 
+    void testGeometryCollection();
+    void testGeometryCollectionSRID();
+    void testGeometryCollectionZ();
+    void testGeometryCollectionSRIDZ();
+    void testGeometryCollectionM();
+    void testGeometryCollectionSRIDM();
+    void testGeometryCollectionZM();
+    void testGeometryCollectionSRIDZM();
+
 private:
 
-    std::string BuildTestGeometry(std::string const& ewkbhex);
+    std::string BuildTestGeometry(std::string const& ewkbhex) const;
 
 };
 
