@@ -168,9 +168,16 @@ void OdbcOracleFdoSelectTest::View1Test()
                 {
                     FdoPtr<FdoDataPropertyDefinition> idPropDef = idPropDefs->GetItem(i);
                     printf("    Found identity property '%ls'.\n", idPropDef->GetName());
+                    CPPUNIT_ASSERT_MESSAGE("Expected identity property named FEATID1", 0==wcscmp(L"FEATID1", idPropDef->GetName()));
                 }
                 printf("  Found total %d identity properties.\n", numIdProps);
-                CPPUNIT_ASSERT_MESSAGE("Expected no identity properties", 0==numIdProps);
+#ifdef _WIN32
+                CPPUNIT_ASSERT_MESSAGE("Expected 1 identity property", 1==numIdProps);
+#else
+                // Cannot currently use Oracle metadata views from Easysoft driver.
+                // TODO: revisit with Oracle native driver on Linux.
+                CPPUNIT_ASSERT_MESSAGE("Expected 0 identity properties", 0==numIdProps);
+#endif
             }
 
             // read through all the features
@@ -235,7 +242,107 @@ void OdbcMySqlFdoSelectTest::ConfigFileTest()
     }
 }
 
+void OdbcMySqlFdoSelectTest::View1Test()
+{
+    if( mConnection != NULL )
+    {
+        try
+        {
+            FdoPtr<FdoISelect> selectCmd = (FdoISelect*)mConnection->CreateCommand(FdoCommandType_Select);
+
+            selectCmd->SetFeatureClassName(L"view1");
+
+            FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+
+            FdoPtr<FdoClassDefinition> classDef = reader->GetClassDefinition();
+            CPPUNIT_ASSERT_MESSAGE("Class should not have IsComputed=true", !classDef->GetIsComputed());
+            FdoFeatureSchemaP pSchema =  classDef->GetFeatureSchema(); 
+            FdoPtr<FdoDataPropertyDefinitionCollection> idPropDefs = classDef->GetIdentityProperties();
+            FdoInt32 numIdProps = 0;
+            if (idPropDefs != NULL)
+            {
+                numIdProps = idPropDefs->GetCount();
+                for (FdoInt32 i=0;  i < numIdProps;  i++)
+                {
+                    FdoPtr<FdoDataPropertyDefinition> idPropDef = idPropDefs->GetItem(i);
+                    printf("    Found identity property '%ls'.\n", idPropDef->GetName());
+                    CPPUNIT_ASSERT_MESSAGE("Expected identity property named featid1", 0==wcscmp(L"featid1", idPropDef->GetName()));
+                }
+                printf("  Found total %d identity properties.\n", numIdProps);
+                CPPUNIT_ASSERT_MESSAGE("Expected 1 identity property", 1==numIdProps);
+            }
+
+            // read through all the features
+            int numFeatures = 0;
+            while (reader->ReadNext())
+            {
+                numFeatures++;
+                UnitTestUtil::ProcessFeature(reader);
+            }
+
+            printf("   %i feature(s) read\n", numFeatures);
+
+            // close the reader
+            reader->Close();
+        }
+        catch (FdoException* e)
+        {
+            TestCommonFail (e);
+        }
+    }
+}
+
 #ifdef _WIN32
+
+void OdbcSqlServerFdoSelectTest::View1Test()
+{
+    if( mConnection != NULL )
+    {
+        try
+        {
+            FdoPtr<FdoISelect> selectCmd = (FdoISelect*)mConnection->CreateCommand(FdoCommandType_Select);
+
+            selectCmd->SetFeatureClassName(L"view1");
+
+            FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+
+            FdoPtr<FdoClassDefinition> classDef = reader->GetClassDefinition();
+            CPPUNIT_ASSERT_MESSAGE("Class should not have IsComputed=true", !classDef->GetIsComputed());
+            FdoFeatureSchemaP pSchema =  classDef->GetFeatureSchema(); 
+            FdoPtr<FdoDataPropertyDefinitionCollection> idPropDefs = classDef->GetIdentityProperties();
+            FdoInt32 numIdProps = 0;
+            if (idPropDefs != NULL)
+            {
+                numIdProps = idPropDefs->GetCount();
+                for (FdoInt32 i=0;  i < numIdProps;  i++)
+                {
+                    FdoPtr<FdoDataPropertyDefinition> idPropDef = idPropDefs->GetItem(i);
+                    printf("    Found identity property '%ls'.\n", idPropDef->GetName());
+                    CPPUNIT_ASSERT_MESSAGE("Expected identity property named featid1", 0==wcscmp(L"featid1", idPropDef->GetName()));
+                }
+                printf("  Found total %d identity properties.\n", numIdProps);
+                CPPUNIT_ASSERT_MESSAGE("Expected 1 identity property", 1==numIdProps);
+            }
+
+            // read through all the features
+            int numFeatures = 0;
+            while (reader->ReadNext())
+            {
+                numFeatures++;
+                UnitTestUtil::ProcessFeature(reader);
+            }
+
+            printf("   %i feature(s) read\n", numFeatures);
+
+            // close the reader
+            reader->Close();
+        }
+        catch (FdoException* e)
+        {
+            TestCommonFail (e);
+        }
+    }
+}
 
 void OdbcAccessFdoSelectTest::Table1Test()
 {

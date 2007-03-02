@@ -23,6 +23,7 @@ libFdoRdbmsODBC_SchemaMgr_Ph_Rd_la_SOURCES = \
 ColumnReader.cpp \
 ConstraintReader.cpp \
 DbObjectReader.cpp \
+OraBaseObjectReader.cpp \
 FkeyReader.cpp \
 IndexReader.cpp \
 OraColumnReader.cpp \
@@ -36,6 +37,7 @@ noinst_HEADERS = $(libFdoRdbmsODBC_SchemaMgr_Ph_Rd_la_SOURCES) \
   ColumnReader.h \
   ConstraintReader.h \
   DbObjectReader.h \
+  OraBaseObjectReader.h \
   FkeyReader.h \
   IndexReader.h \
   OraColumnReader.h \

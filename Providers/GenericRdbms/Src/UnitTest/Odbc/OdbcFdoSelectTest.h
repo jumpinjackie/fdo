@@ -94,6 +94,7 @@ class OdbcMySqlFdoSelectTest : public OdbcFdoSelectTest
 {
     CPPUNIT_TEST_SUB_SUITE (OdbcMySqlFdoSelectTest, OdbcFdoSelectTest);
     CPPUNIT_TEST (ConfigFileTest);
+    CPPUNIT_TEST (View1Test);
     CPPUNIT_TEST_SUITE_END ();
 
 public:
@@ -113,12 +114,15 @@ public:
     virtual void _secondComputedIdTest() {
         TestCommonFeatureCommands::secondComputedIdTest(mConnection, L"acdb3dpolyline", L"featid");
     }
+
+    virtual void View1Test();
 };
 
 #ifdef _WIN32
 class OdbcSqlServerFdoSelectTest : public OdbcFdoSelectTest
 {
     CPPUNIT_TEST_SUB_SUITE (OdbcSqlServerFdoSelectTest, OdbcFdoSelectTest);
+    CPPUNIT_TEST (View1Test);
     CPPUNIT_TEST_SUITE_END ();
 
     virtual void concurrent_select() {};    // Need to set up "testClass" class to run this.
@@ -134,6 +138,8 @@ class OdbcSqlServerFdoSelectTest : public OdbcFdoSelectTest
         TestCommonFeatureCommands::secondComputedIdTest(mConnection, L"acdb3dpolyline", L"featid");
     }
     virtual int numPropertiesInPolylineClass() { return 17; };
+
+    virtual void View1Test();
 };
 
 class OdbcAccessFdoSelectTest : public OdbcFdoSelectTest

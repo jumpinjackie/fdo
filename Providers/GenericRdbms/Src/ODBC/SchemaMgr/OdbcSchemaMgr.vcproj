@@ -340,6 +340,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Ph\Rd\OraBaseObjectReader.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Ph\Rd\OraBaseObjectReader.h"
+						>
+					</File>
+					<File
 						RelativePath=".\Ph\Rd\OraColumnReader.cpp"
 						>
 					</File>

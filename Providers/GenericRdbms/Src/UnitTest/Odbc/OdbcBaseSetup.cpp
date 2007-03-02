@@ -272,6 +272,8 @@ const wchar_t* OdbcBaseSetup::mSqlServerNonAcadTest[] = {
 	L"( featid1, name, x, y )",
 	L" values ",
 	L"( 2, 'His''Name', 20, 25 );",
+    L""
+    L"create view view1 ( featid1, name, x, y ) as select featid1, name, x, y from table1", 
     L"",
     NULL
 };
@@ -312,6 +314,8 @@ const wchar_t* OdbcBaseSetup::mMySqlNonAcadTest[] = {
 	L"( featid1, name, x, y )",
 	L" values ",
 	L"( 2, 'His''Name', 20, 25 );",
+    L""
+    L"create view view1 ( featid1, name, x, y ) as select featid1, name, x, y from table1", 
     L"",
     NULL
 };

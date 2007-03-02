@@ -20,6 +20,7 @@
 
 #include <Sm/Ph/DbObject.h>
 #include <Sm/Ph/Rd/ColumnReader.h>
+#include <Sm/Ph/Rd/BaseObjectReader.h>
 
 // Odbc Provider implementation of a Database object.
 class FdoSmPhOdbcDbObject : virtual public FdoSmPhDbObject
@@ -179,6 +180,8 @@ protected:
 
     // Column reader creator implementation.
     virtual FdoPtr<FdoSmPhRdColumnReader> CreateColumnReader();
+
+    virtual FdoPtr<FdoSmPhRdBaseObjectReader> CreateBaseObjectReader() const;
 
     virtual FdoPtr<FdoSmPhRdPkeyReader> CreatePkeyReader() const;
 
