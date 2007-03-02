@@ -82,3 +82,117 @@ void PgGeometryTest::testPointSRID()
     std::string output(static_cast<char const*>(tmp));
     CPPUNIT_ASSERT_EQUAL(original, output);
 }
+
+void PgGeometryTest::testPointZ()
+{
+    //POINT(1.234 5.678 99)
+
+    ewkb_t ewkb;
+    std::string original("POINT XYZ (1.234 5.678 99)");
+    std::string ewkbhex("01010000805839b4c876bef33f83c0caa145b616400000000000c05840");
+
+    hex_to_bytes(ewkbhex, ewkb);
+    CPPUNIT_ASSERT(!ewkb.empty());
+    FdoPtr<FdoIGeometry> g = CreateGeometryFromExtendedWkb(ewkb);
+    CPPUNIT_ASSERT(NULL != g);
+
+    FdoStringP tmp(g->GetText());
+    CPPUNIT_ASSERT(tmp.GetLength() > 0);
+    std::string output(static_cast<char const*>(tmp));
+    CPPUNIT_ASSERT_EQUAL(original, output);
+}
+
+void PgGeometryTest::testPointSRIDZ()
+{
+    //SRID=4326;POINT(1.234 5.678 99)
+
+    ewkb_t ewkb;
+    std::string original("POINT XYZ (1.234 5.678 99)");
+    std::string ewkbhex("01010000a0e61000005839b4c876bef33f83c0caa145b616400000000000c05840");
+
+    hex_to_bytes(ewkbhex, ewkb);
+    CPPUNIT_ASSERT(!ewkb.empty());
+    FdoPtr<FdoIGeometry> g = CreateGeometryFromExtendedWkb(ewkb);
+    CPPUNIT_ASSERT(NULL != g);
+
+    FdoStringP tmp(g->GetText());
+    CPPUNIT_ASSERT(tmp.GetLength() > 0);
+    std::string output(static_cast<char const*>(tmp));
+    CPPUNIT_ASSERT_EQUAL(original, output);
+}
+
+void PgGeometryTest::testPointM()
+{
+    //POINTM(1.234 5.678 99)
+
+    ewkb_t ewkb;
+    std::string original("POINT XYM (1.234 5.678 99)");
+    std::string ewkbhex("01010000405839B4C876BEF33F83C0CAA145B616400000000000C05840");
+
+    hex_to_bytes(ewkbhex, ewkb);
+    CPPUNIT_ASSERT(!ewkb.empty());
+    FdoPtr<FdoIGeometry> g = CreateGeometryFromExtendedWkb(ewkb);
+    CPPUNIT_ASSERT(NULL != g);
+
+    FdoStringP tmp(g->GetText());
+    CPPUNIT_ASSERT(tmp.GetLength() > 0);
+    std::string output(static_cast<char const*>(tmp));
+    CPPUNIT_ASSERT_EQUAL(original, output);
+}
+
+void PgGeometryTest::testPointSRIDM()
+{
+    //SRID=32632;POINTM(1.234 5.678 99)
+
+    ewkb_t ewkb;
+    std::string original("POINT XYM (1.234 5.678 99)");
+    std::string ewkbhex("0101000060787f00005839b4c876bef33f83c0caa145b616400000000000c05840");
+
+    hex_to_bytes(ewkbhex, ewkb);
+    CPPUNIT_ASSERT(!ewkb.empty());
+    FdoPtr<FdoIGeometry> g = CreateGeometryFromExtendedWkb(ewkb);
+    CPPUNIT_ASSERT(NULL != g);
+
+    FdoStringP tmp(g->GetText());
+    CPPUNIT_ASSERT(tmp.GetLength() > 0);
+    std::string output(static_cast<char const*>(tmp));
+    CPPUNIT_ASSERT_EQUAL(original, output);
+}
+
+void PgGeometryTest::testPointZM()
+{
+    //POINT(1.234 5.678 15 79)
+
+    ewkb_t ewkb;
+    std::string original("POINT XYZM (1.234 5.678 15 79)");
+    std::string ewkbhex("01010000C05839B4C876BEF33F83C0CAA145B616400000000000002E400000000000C05340");
+
+    hex_to_bytes(ewkbhex, ewkb);
+    CPPUNIT_ASSERT(!ewkb.empty());
+    FdoPtr<FdoIGeometry> g = CreateGeometryFromExtendedWkb(ewkb);
+    CPPUNIT_ASSERT(NULL != g);
+
+    FdoStringP tmp(g->GetText());
+    CPPUNIT_ASSERT(tmp.GetLength() > 0);
+    std::string output(static_cast<char const*>(tmp));
+    CPPUNIT_ASSERT_EQUAL(original, output);
+}
+
+void PgGeometryTest::testPointSRIDZM()
+{
+    //SRID=4326;POINT(1.234 5.678 15 79)
+
+    ewkb_t ewkb;
+    std::string original("POINT XYZM (1.234 5.678 15 79)");
+    std::string ewkbhex("01010000e0e61000005839b4c876bef33f83c0caa145b616400000000000002e400000000000c05340");
+
+    hex_to_bytes(ewkbhex, ewkb);
+    CPPUNIT_ASSERT(!ewkb.empty());
+    FdoPtr<FdoIGeometry> g = CreateGeometryFromExtendedWkb(ewkb);
+    CPPUNIT_ASSERT(NULL != g);
+
+    FdoStringP tmp(g->GetText());
+    CPPUNIT_ASSERT(tmp.GetLength() > 0);
+    std::string output(static_cast<char const*>(tmp));
+    CPPUNIT_ASSERT_EQUAL(original, output);
+}
