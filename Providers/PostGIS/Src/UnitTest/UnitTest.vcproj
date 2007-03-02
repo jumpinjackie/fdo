@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(FDOTHIRDPARTY)\cppunit\include&quot;"
+				AdditionalIncludeDirectories="..\Provider;&quot;$(FDOTHIRDPARTY)\cppunit\include&quot;"
 				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -222,6 +222,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\PgGeometryTest.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PgGeometryTest.h"
+				>
+			</File>
+			<File
 				RelativePath=".\TestConfig.cpp"
 				>
 			</File>
@@ -366,6 +374,26 @@
 						Outputs="$(OutDir)\providers.xml"
 					/>
 				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="Misc"
+			>
+			<File
+				RelativePath="..\Provider\PgGeometry.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\Provider\PgGeometry.h"
+				>
 			</File>
 		</Filter>
 	</Files>
