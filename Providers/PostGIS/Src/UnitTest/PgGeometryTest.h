@@ -28,6 +28,22 @@ class PgGeometryTest : public CppUnit::TestCase
     CPPUNIT_TEST(testPointSRIDM);
     CPPUNIT_TEST(testPointZM);
     CPPUNIT_TEST(testPointSRIDZM);
+    CPPUNIT_TEST(testLineString);
+    CPPUNIT_TEST(testLineStringSRID);
+    CPPUNIT_TEST(testLineStringZ);
+    CPPUNIT_TEST(testLineStringSRIDZ);
+    CPPUNIT_TEST(testLineStringM);
+    CPPUNIT_TEST(testLineStringSRIDM);
+    CPPUNIT_TEST(testLineStringZM);
+    CPPUNIT_TEST(testLineStringSRIDZM);
+    CPPUNIT_TEST(testPolygon);
+    CPPUNIT_TEST(testPolygonSRID);
+    CPPUNIT_TEST(testPolygonZ);
+    CPPUNIT_TEST(testPolygonSRIDZ);
+    CPPUNIT_TEST(testPolygonM);
+    CPPUNIT_TEST(testPolygonSRIDM);
+    CPPUNIT_TEST(testPolygonZM);
+    CPPUNIT_TEST(testPolygonSRIDZM);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -50,6 +66,28 @@ public:
     void testPointSRIDM();
     void testPointZM();
     void testPointSRIDZM();
+
+    void testLineString();
+    void testLineStringSRID();
+    void testLineStringZ();
+    void testLineStringSRIDZ();
+    void testLineStringM();
+    void testLineStringSRIDM();
+    void testLineStringZM();
+    void testLineStringSRIDZM();
+
+    void testPolygon();
+    void testPolygonSRID();
+    void testPolygonZ();
+    void testPolygonSRIDZ();
+    void testPolygonM();
+    void testPolygonSRIDM();
+    void testPolygonZM();
+    void testPolygonSRIDZM();
+
+private:
+
+    std::string BuildTestGeometry(std::string const& ewkbhex);
 
 };
 
