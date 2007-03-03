@@ -194,104 +194,104 @@ if not exist "%FDO_SVN_DESTDIR%" mkdir "%FDO_SVN_DESTDIR%"
 
 :checkout_all
 if "%FDOALLENABLECHK%"=="no" goto checkout_core
-echo Checking out https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%
-svn checkout https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR% "%FDO_SVN_DESTDIR%" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
+echo Checking out https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%
+svn checkout https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR% "%FDO_SVN_DESTDIR%" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
 
 goto end
 
 :checkout_core
 if "%FDOCOREENABLECHK%"=="no" goto checkout_fdo
-echo Checking out https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Fdo
-svn checkout https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Fdo "%FDO_SVN_DESTDIR%\Fdo" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
+echo Checking out https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Fdo
+svn checkout https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Fdo "%FDO_SVN_DESTDIR%\Fdo" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
-echo Checking out https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Utilities
-svn checkout https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Utilities "%FDO_SVN_DESTDIR%\Utilities" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
+echo Checking out https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Utilities
+svn checkout https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Utilities "%FDO_SVN_DESTDIR%\Utilities" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
-echo Checking out https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Thirdparty
-svn checkout https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Thirdparty "%FDO_SVN_DESTDIR%\Thirdparty" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
+echo Checking out https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Thirdparty
+svn checkout https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Thirdparty "%FDO_SVN_DESTDIR%\Thirdparty" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
 
 goto checkout_providers
 
 :checkout_fdo
 if "%FDOENABLECHK%"=="no" goto checkout_thirdparty
-echo Checking out https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Fdo
-svn checkout https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Fdo "%FDO_SVN_DESTDIR%\Fdo" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
+echo Checking out https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Fdo
+svn checkout https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Fdo "%FDO_SVN_DESTDIR%\Fdo" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
 
 :checkout_thirdparty
 if "%THRPENABLECHK%"=="no" goto checkout_utilities
-echo Checking out https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Thirdparty
-svn checkout https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Thirdparty "%FDO_SVN_DESTDIR%\Thirdparty" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
+echo Checking out https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Thirdparty
+svn checkout https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Thirdparty "%FDO_SVN_DESTDIR%\Thirdparty" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
 
 :checkout_utilities
 if "%UTILENABLECHK%"=="no" goto checkout_providers
-echo Checking out https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Utilities
-svn checkout https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Utilities "%FDO_SVN_DESTDIR%\Utilities" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
+echo Checking out https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Utilities
+svn checkout https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Utilities "%FDO_SVN_DESTDIR%\Utilities" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
 
 :checkout_providers
 if "%FDOPROVIDERSENABLECHK%"=="no" goto checkout_shp
-echo Checking out https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Providers
-svn checkout https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Providers "%FDO_SVN_DESTDIR%\Providers" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
+echo Checking out https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Providers
+svn checkout https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Providers "%FDO_SVN_DESTDIR%\Providers" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
 
 goto end
 
 :checkout_shp
 if "%SHPENABLECHK%"=="no" goto checkout_sdf
-echo Checking out https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Providers/SHP
-svn checkout https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Providers/SHP "%FDO_SVN_DESTDIR%\Providers\SHP" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
+echo Checking out https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Providers/SHP
+svn checkout https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Providers/SHP "%FDO_SVN_DESTDIR%\Providers\SHP" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
 
 :checkout_sdf
 if "%SDFENABLECHK%"=="no" goto checkout_wfs
-echo Checking out https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Providers/SDF
-svn checkout https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Providers/SDF "%FDO_SVN_DESTDIR%\Providers\SDF" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
+echo Checking out https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Providers/SDF
+svn checkout https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Providers/SDF "%FDO_SVN_DESTDIR%\Providers\SDF" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
 
 :checkout_wfs
 if "%WFSENABLECHK%"=="no" goto checkout_wms
-echo Checking out https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Providers/WFS
-svn checkout https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Providers/WFS "%FDO_SVN_DESTDIR%\Providers\WFS" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
+echo Checking out https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Providers/WFS
+svn checkout https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Providers/WFS "%FDO_SVN_DESTDIR%\Providers\WFS" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
 
 :checkout_wms
 if "%WMSENABLECHK%"=="no" goto checkout_arcsde
-echo Checking out https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Providers/WMS
-svn checkout https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Providers/WMS "%FDO_SVN_DESTDIR%\Providers\WMS" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
+echo Checking out https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Providers/WMS
+svn checkout https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Providers/WMS "%FDO_SVN_DESTDIR%\Providers\WMS" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
 
 :checkout_arcsde
 if "%ARCENABLECHK%"=="no" goto checkout_generic
-echo Checking out https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Providers/ArcSDE
-svn checkout https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Providers/ArcSDE "%FDO_SVN_DESTDIR%\Providers\ArcSDE" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
+echo Checking out https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Providers/ArcSDE
+svn checkout https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Providers/ArcSDE "%FDO_SVN_DESTDIR%\Providers\ArcSDE" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
 
 :checkout_generic
 if "%RDBMSENABLECHK%"=="no" goto checkout_gdal
-echo Checking out https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Providers/GenericRdbms
-svn checkout https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Providers/GenericRdbms "%FDO_SVN_DESTDIR%\Providers\GenericRdbms" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
+echo Checking out https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Providers/GenericRdbms
+svn checkout https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Providers/GenericRdbms "%FDO_SVN_DESTDIR%\Providers\GenericRdbms" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
 
 :checkout_gdal
 if "%GDALENABLECHK%"=="no" goto checkout_king
-echo Checking out https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Providers/GDAL
-svn checkout https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Providers/GDAL "%FDO_SVN_DESTDIR%\Providers\GDAL" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
+echo Checking out https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Providers/GDAL
+svn checkout https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Providers/GDAL "%FDO_SVN_DESTDIR%\Providers\GDAL" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
 
 :checkout_king
 if "%KINGENABLECHK%"=="no" goto checkout_ogr
-echo Checking out https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Providers/KingOracle
-svn checkout https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Providers/KingOracle "%FDO_SVN_DESTDIR%\Providers\KingOracle" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
+echo Checking out https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Providers/KingOracle
+svn checkout https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Providers/KingOracle "%FDO_SVN_DESTDIR%\Providers\KingOracle" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
 
 :checkout_ogr
 if "%OGRENABLECHK%"=="no" goto end
-echo Checking out https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Providers/OGR
-svn checkout https://osgeo.org/svn/fdo/%FDO_SVN_SOURCEDIR%/Providers/OGR "%FDO_SVN_DESTDIR%\Providers\OGR" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
+echo Checking out https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Providers/OGR
+svn checkout https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Providers/OGR "%FDO_SVN_DESTDIR%\Providers\OGR" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
 
 :end
