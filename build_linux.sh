@@ -215,6 +215,9 @@ if test "$SHOWHELP" == yes; then
    if test -e "Providers/WMS/build_linux.sh"; then
    HELPSTRINGWITH="$HELPSTRINGWITH, wms"
    fi
+   if test -e "Providers/GDAL/build_linux.sh"; then
+   HELPSTRINGWITH="$HELPSTRINGWITH, gdal"
+   fi
    if test -e "Providers/ArcSDE/build_linux.sh"; then
    HELPSTRINGWITH="$HELPSTRINGWITH, arcsde"
    fi
