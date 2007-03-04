@@ -1,0 +1,8 @@
+base referer
+rect $d1/db0/mg_i_data_reader_8h.htm 163,7 291,33
+rect $d1/d61/mg_i_feature_reader_8h.htm 155,108 299,135
+rect $d5/df3/mg_i_reader_imp_8h.htm 167,57 287,84
+rect $de/dcb/mg_i_data_reader_imp_8h.htm 362,7 511,33
+rect $da/d9a/mg_i_feature_reader_imp_8h.htm 352,57 520,84
+rect $da/d45/mg_xml_feature_reader_8h.htm 355,108 518,135
+rect $da/d18/mg_xml_feature_serializer_8h.htm 348,159 524,185

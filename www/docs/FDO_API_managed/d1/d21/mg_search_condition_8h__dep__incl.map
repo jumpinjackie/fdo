@@ -1,0 +1,7 @@
+base referer
+rect $dc/d46/mg_comparison_condition_8h.htm 208,7 387,33
+rect $d9/de3/mg_geometric_condition_8h.htm 214,57 382,84
+rect $d6/d26/mg_in_condition_8h.htm 239,108 356,135
+rect $d7/d26/mg_null_condition_8h.htm 232,159 363,185
+rect $da/dea/mg_distance_condition_8h.htm 436,32 596,59
+rect $db/d36/mg_spatial_condition_8h.htm 443,83 590,109

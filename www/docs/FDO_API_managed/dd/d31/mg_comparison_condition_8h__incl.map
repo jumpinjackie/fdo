@@ -1,0 +1,5 @@
+base referer
+rect $d9/def/mg_search_condition_8h.htm 256,7 472,34
+rect $df/d15/mg_comparison_operations_8h.htm 237,58 491,84
+rect $db/dfc/mg_filter_8h.htm 541,7 688,34
+rect $de/d09/mg_binary_logical_operations_8h.htm 739,7 1000,34

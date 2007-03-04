@@ -1,0 +1,13 @@
+base referer
+rect $d0/d24/class_o_s_geo_1_1_f_d_o_1_1_commands_1_1_schema_1_1_physical_element_mapping.htm 7,639 399,927
+rect $da/dcd/class_o_s_geo_1_1_f_d_o_1_1_common_1_1_xml_1_1_xml_char_data_handler.htm 423,727 751,839
+rect $d9/de7/class_o_s_geo_1_1_f_d_o_1_1_common_1_1_xml_1_1_xml_copy_handler.htm 775,727 1079,839
+rect $d1/d95/class_o_s_geo_1_1_f_d_o_1_1_common_1_1_xml_1_1_xml_skip_element_handler.htm 1103,735 1450,831
+rect $de/de3/class_o_s_geo_1_1_f_d_o_1_1_schema_1_1_schema_attribute_dictionary.htm 1474,671 1799,895
+rect $d8/dc0/class_o_s_geo_1_1_f_d_o_1_1_schema_1_1_schema_element.htm 1823,647 2087,919
+rect $db/d1f/class_o_s_geo_1_1_f_d_o_1_1_xml_1_1_xml_deserializable.htm 2111,639 2359,927
+rect $d3/d15/class_o_s_geo_1_1_f_d_o_1_1_xml_1_1_xml_feature_property_reader.htm 2383,655 2687,911
+rect $d9/d04/class_o_s_geo_1_1_f_d_o_1_1_xml_1_1_xml_name_collection_handler.htm 2711,711 3015,855
+rect $d8/d01/class_o_s_geo_1_1_f_d_o_1_1_xml_1_1_xml_spatial_context_reader.htm 3039,631 3332,935
+rect $d1/dcb/class_o_s_geo_1_1_f_d_o_1_1_runtime_1_1_disposable.htm 1535,7 1767,359
+rect $df/deb/interface_o_s_geo_1_1_f_d_o_1_1_common_1_1_xml_1_1_i_xml_sax_handler.htm 1791,143 2090,223
