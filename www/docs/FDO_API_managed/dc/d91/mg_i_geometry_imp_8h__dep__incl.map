@@ -1,0 +1,15 @@
+base referer
+rect $de/d57/mg_i_curve_abstract_imp_8h.htm 237,57 400,84
+rect $d0/dc4/mg_i_surface_abstract_imp_8h.htm 232,159 405,185
+rect $d7/da6/mg_i_geometric_aggregate_abstract_imp_8h.htm 193,285 444,312
+rect $d3/d39/mg_i_point_imp_8h.htm 265,336 372,363
+rect $d4/db7/mg_i_curve_string_imp_8h.htm 513,7 660,33
+rect $db/d60/mg_i_line_string_imp_8h.htm 517,57 656,84
+rect $dc/dab/mg_i_curve_polygon_imp_8h.htm 507,108 667,135
+rect $d6/d8c/mg_i_polygon_imp_8h.htm 524,159 649,185
+rect $d3/df1/mg_i_multi_curve_polygon_imp_8h.htm 492,209 681,236
+rect $dd/d69/mg_i_multi_curve_string_imp_8h.htm 499,260 675,287
+rect $d2/da7/mg_i_multi_geometry_imp_8h.htm 504,311 669,337
+rect $d7/dff/mg_i_multi_line_string_imp_8h.htm 504,361 669,388
+rect $d4/dc6/mg_i_multi_point_imp_8h.htm 519,412 655,439
+rect $dd/d0e/mg_i_multi_polygon_imp_8h.htm 509,463 664,489

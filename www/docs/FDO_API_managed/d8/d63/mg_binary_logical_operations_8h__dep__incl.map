@@ -1,0 +1,12 @@
+base referer
+rect $d5/d33/mg_binary_logical_operator_8h.htm 583,7 767,33
+rect $db/dfc/mg_filter_8h.htm 253,57 333,84
+rect $db/d0c/mg_logical_operator_8h.htm 385,57 532,84
+rect $d9/def/mg_search_condition_8h.htm 384,159 533,185
+rect $dd/d61/mg_unary_logical_operator_8h.htm 584,57 765,84
+rect $dc/d46/mg_comparison_condition_8h.htm 585,108 764,135
+rect $d9/de3/mg_geometric_condition_8h.htm 591,159 759,185
+rect $d6/d26/mg_in_condition_8h.htm 616,209 733,236
+rect $d7/d26/mg_null_condition_8h.htm 609,260 740,287
+rect $da/dea/mg_distance_condition_8h.htm 815,133 975,160
+rect $db/d36/mg_spatial_condition_8h.htm 821,184 968,211

@@ -1,0 +1,5 @@
+base referer
+rect $d7/d02/class_o_s_geo_1_1_f_d_o_1_1_geometry_1_1_i_curve_segment_abstract_imp.htm 171,135 512,327
+rect $d5/db8/class_o_s_geo_1_1_f_d_o_1_1_geometry_1_1_i_arc_segment_abstract_imp.htm 7,391 332,503
+rect $d5/daf/class_o_s_geo_1_1_f_d_o_1_1_geometry_1_1_i_line_string_segment_imp.htm 356,375 673,519
+rect $d8/dcb/class_o_s_geo_1_1_f_d_o_1_1_geometry_1_1_i_circular_arc_segment_imp.htm 8,567 331,663
