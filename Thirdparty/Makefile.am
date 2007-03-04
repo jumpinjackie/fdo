@@ -281,7 +281,7 @@ thdlib_DATA = \
   apache/xml-xalan/c/lib/libxalan-c.so.17.0  \
   apache/xml-xalan/c/lib/libxalanMsg.so.17.0 \
   apache/xml-xerces/c/lib/libxerces-c.so.25.0 \
-  gdal/.libs/libgdal.so.1.11.0
+  $(FDOGDAL)/lib/libgdal.so.1.11.0
 
 install-data-hook :
 	@ln -s -f $(thdlibdir)/libxalan-c.so.17.0 $(thdlibdir)/libxalan-c.so.17
