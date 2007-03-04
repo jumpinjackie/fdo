@@ -19,7 +19,7 @@
 
 #############################################
 ## build third party libraries for WMS:    ##
-## boost_1_32_0, libcurl, openssl, GDAL1.3 ##
+## boost_1_32_0, libcurl, openssl, gdal    ##
 #############################################
 
 pushd . >& /dev/null
@@ -57,10 +57,8 @@ popd >& /dev/null
 
 ## Thirdparty_WMS
 pushd . >& /dev/null
-cd GDAL1.3
-echo Building GDAL1.3
-mkdir -p linux/lib/optimized
-rm -f linux/lib/optimized/*.*
+cd gdal
+echo Building gdal
 cd src
 chmod a+x ./configure
 echo Build GDAL library with the following settings:
@@ -75,8 +73,4 @@ echo     OGR support         - no
 echo     postgreSQL support  - no
 ./configure --with-gif=internal --with-jpeg=internal --with-png=internal --with-libtiff=internal --with-geotiff=internal --without-ogr --with-pg=no --with-python=no --with-libz=internal
 make
-cp -f ./.libs/libgdal.a ../linux/lib/optimized
-cp -f ./.libs/libgdal.so ../linux/lib/optimized
-cp -f ./.libs/libgdal.so.1 ../linux/lib/optimized
-cp -f ./.libs/libgdal.so.1.9.0 ../linux/lib/optimized
 popd >& /dev/null

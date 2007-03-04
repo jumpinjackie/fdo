@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".\;$(FDO)\Unmanaged\inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\OWS\inc;..\..\inc;$(FDOTHIRDPARTY)\GDAL1.3\windows\include"
+				AdditionalIncludeDirectories=".\;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;&quot;$(FDOUTILITIES)\OWS\inc&quot;;..\..\inc;&quot;$(FDOGDAL)\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOWMS_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="3"
 				TreatWChar_tAsBuiltInType="true"
@@ -65,7 +65,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib ProvidersCommon.lib OWS.lib WMSOverrides.lib gdal_i.lib FDOSpatial.lib Advapi32.lib"
 				OutputFile="$(OutDir)\WMSProvider.dll"
-				AdditionalLibraryDirectories="$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOUTILITIES)\Common\Lib\Win32\Debug;$(FDOUTILITIES)\OWS\Lib\Win32\Debug;..\..\Lib\Win32\Debug;$(FDOTHIRDPARTY)\GDAL1.3\windows\lib\VC8\debug"
+				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\OWS\Lib\Win32\Debug&quot;;..\..\Lib\Win32\Debug;&quot;$(FDOGDAL)\lib\win32\debug&quot;"
 				IgnoreDefaultLibraryNames="LIBCMTD"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/WMSProvider.pdb"
@@ -123,7 +123,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories=".\;$(FDO)\Unmanaged\inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\OWS\inc;..\..\inc;$(FDOTHIRDPARTY)\GDAL1.3\windows\include"
+				AdditionalIncludeDirectories=".\;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;&quot;$(FDOUTILITIES)\OWS\inc&quot;;..\..\inc;&quot;$(FDOGDAL)\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOWMS_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="2"
 				TreatWChar_tAsBuiltInType="true"
@@ -148,7 +148,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="FDO.lib FDOCommon.lib ProvidersCommon.lib FDOGeometry.lib OWS.lib WMSOverrides.lib gdal_i.lib FDOSpatial.lib Advapi32.lib"
 				OutputFile="$(OutDir)\WMSProvider.dll"
-				AdditionalLibraryDirectories="$(FDO)\Unmanaged\Lib\Win32\Release;$(FDOUTILITIES)\Common\Lib\Win32\Release;$(FDOUTILITIES)\OWS\Lib\Win32\Release;..\..\Lib\Win32\Release;$(FDOTHIRDPARTY)\GDAL1.3\windows\lib\VC8\release"
+				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\OWS\Lib\Win32\Release&quot;;..\..\Lib\Win32\Release;&quot;$(FDOGDAL)\lib\win32\release&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/WMSProvider.pdb"
 				ImportLibrary="..\..\Lib\Win32\Release\WMSProvider.lib"

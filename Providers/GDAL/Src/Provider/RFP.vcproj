@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(FDO)\Unmanaged\Inc;$(FDOUTILITIES)\Common\Inc;$(FDOTHIRDPARTY)\gdal1.3\windows\include;..\..\Inc;..\"
+				AdditionalIncludeDirectories="$(FDO)\Unmanaged\Inc;$(FDOUTILITIES)\Common\Inc;$(FDOGDAL)\include;..\..\Inc;..\"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOGRFP_EXPORTS;;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -67,10 +67,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib gdal.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib gdal_i.lib"
 				OutputFile="$(OutDir)/GRFPProvider.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win32\debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\debug&quot;;&quot;$(FDOTHIRDPARTY)\GDAL1.3\windows\lib\VC8\debug&quot;"
+				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win32\debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\debug&quot;;&quot;$(FDOGDAL)\lib\win32\debug&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/GRFPProvider.pdb"
 				SubSystem="2"
@@ -132,7 +132,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\Inc&quot;;&quot;$(FDOUTILITIES)\Common\Inc&quot;;&quot;$(FDOTHIRDPARTY)\gdal1.3\windows\include&quot;;..\..\Inc;..\"
+				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\Inc&quot;;&quot;$(FDOUTILITIES)\Common\Inc&quot;;&quot;$(FDOGDAL)\include&quot;;..\..\Inc;..\"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOGRFP_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -157,10 +157,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib gdal.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib gdal_i.lib"
 				OutputFile="$(OutDir)/GRFPProvider.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;;&quot;$(FDOTHIRDPARTY)\GDAL1.3\windows\lib\VC8\release&quot;"
+				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;;&quot;$(FDOGDAL)\lib\win32\release&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/GRFPProvider.pdb"
 				SubSystem="2"

@@ -61,6 +61,6 @@ libWMSProvider_la_LIBADD =  \
 libWMSProvider_la_LDFLAGS = \
   -shared \
   -release $(VERSION) \
-  -L$(FDOTHIRDPARTY)/GDAL1.3/linux/lib/optimized
+  -L$(FDOGDAL)/.libs
 
 

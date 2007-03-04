@@ -63,6 +63,19 @@ if test ! -e "$SDEHOME"; then
    echo ""
 fi
 
+export FDOGDAL=$FDOTHIRDPARTY/gdal
+
+if test ! -e "$FDOGDAL"; then
+   echo ""
+   echo "OPTIONAL: The default location for the GDAL SDK files"
+   echo "was not found. The setenvironment script sets the default value to: "
+   echo "$FDOTHIRDPARTY/gdal. "
+   echo "If you need to build the FDO GDAL or WMS Providers, modify the "
+   echo "setenvironment.sh script with a valid path and set FDOGDAL to "
+   echo "point to the location of the GDAL SDK files."
+   echo ""
+fi
+
 export FDOMYSQL=$FDOTHIRDPARTY/mysql/rhlinux
 
 if test ! -e "$FDOMYSQL"; then
