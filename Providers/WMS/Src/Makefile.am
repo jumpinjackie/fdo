@@ -61,6 +61,6 @@ libWMSProvider_la_LIBADD =  \
 libWMSProvider_la_LDFLAGS = \
   -shared \
   -release $(VERSION) \
-  -L$(FDOGDAL)/.libs
+  -L$(FDOGDAL)/lib
 
 
