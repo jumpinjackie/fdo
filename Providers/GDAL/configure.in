@@ -160,4 +160,3 @@ Src/UnitTest/Makefile])
 AC_CONFIG_FILES(Docs/Makefile)
 
 AC_OUTPUT
-
