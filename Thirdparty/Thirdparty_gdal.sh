@@ -39,4 +39,5 @@ echo     OGR support         - no
 echo     postgreSQL support  - no
 ./configure --with-gif=internal --with-jpeg=internal --with-png=internal --with-libtiff=internal --with-geotiff=internal --without-ogr --with-pg=no --with-python=no --with-libz=internal
 make
+make install
 popd >& /dev/null
