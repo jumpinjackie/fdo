@@ -1,5 +1,4 @@
 #!/bin/sh
-
 ##
 ## Copyright (C) 2004-2006  Autodesk, Inc.
 ## 
