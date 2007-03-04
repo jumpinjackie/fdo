@@ -1,7 +1,0 @@
-base referer
-rect $d3/d82/mg_i_feature_command_imp_8h.html 208,7 499,33
-rect $d9/d9f/mg_i_acquire_lock_8h.html 212,57 495,84
-rect $dd/d93/mg_lock_type_8h.html 559,108 823,135
-rect $d8/d4a/mg_lock_strategy_8h.html 549,159 832,185
-rect $d5/d30/mg_i_feature_command_8h.html 556,57 825,84
-rect $d8/d9a/mg_i_command_imp_8h.html 568,7 813,33
