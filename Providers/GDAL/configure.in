@@ -105,20 +105,19 @@ fi
 
 AC_ARG_WITH([fdo-gdal],
         FDO_HELP_STRING([--with-fdo-gdal],
-                        [specifies directory for thirdparty GDAL files [[default=DEFAULT]]]),
+                        [specifies directory for the installed GDAL files [[default=DEFAULT]]]),
         [custom_fdo_gdal=$withval],
         [custom_fdo_gdal=DEFAULT])
 
 if test $custom_fdo_gdal = "DEFAULT"; then
-    FDOTHIRDPARTY="$PWD/Thirdparty/gdal"
-    if test -d $FDOGDAL; then
+    if test -d $FDOGDAL && test ! $FDOGDAL = ""; then
         AC_MSG_NOTICE([Building with default location of thirdparty GDAL files at $FDOGDAL])
     else
        AC_MSG_ERROR([The default GDAL path $custom_fdo_gdal is not a valid directory. Please use the custom option])
     fi
 else 
     if test -d $custom_fdo_gdal; then
-        FDOTHIRDPARTY="$custom_fdo_gdal"
+        FDOGDAL="$custom_fdo_gdal"
         AC_MSG_NOTICE([Building with custom location of thirdparty GDAL files at $FDOGDAL])
     else 
         AC_MSG_ERROR([The specified GDAL path $custom_fdo_gdal is not a valid directory])
