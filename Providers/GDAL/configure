@@ -1053,7 +1053,7 @@ Optional Packages:
                           default=DEFAULT
   --with-fdo-thirdparty   specifies directory for FDO API Thirdparty files
                           default=DEFAULT
-  --with-fdo-gdal         specifies directory for thirdparty GDAL files
+  --with-fdo-gdal         specifies directory for the installed GDAL files
                           default=DEFAULT
 
 Some influential environment variables:
@@ -18767,8 +18767,7 @@ else
 fi;
 
 if test $custom_fdo_gdal = "DEFAULT"; then
-    FDOTHIRDPARTY="$PWD/Thirdparty/gdal"
-    if test -d $FDOGDAL; then
+    if test -d $FDOGDAL && test ! $FDOGDAL = ""; then
         { echo "$as_me:$LINENO: Building with default location of thirdparty GDAL files at $FDOGDAL" >&5
 echo "$as_me: Building with default location of thirdparty GDAL files at $FDOGDAL" >&6;}
     else
@@ -18778,7 +18777,7 @@ echo "$as_me: error: The default GDAL path $custom_fdo_gdal is not a valid direc
     fi
 else
     if test -d $custom_fdo_gdal; then
-        FDOTHIRDPARTY="$custom_fdo_gdal"
+        FDOGDAL="$custom_fdo_gdal"
         { echo "$as_me:$LINENO: Building with custom location of thirdparty GDAL files at $FDOGDAL" >&5
 echo "$as_me: Building with custom location of thirdparty GDAL files at $FDOGDAL" >&6;}
     else
