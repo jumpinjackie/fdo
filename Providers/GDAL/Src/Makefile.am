@@ -56,4 +56,4 @@ libGRFPProvider_la_LIBADD =  \
 libGRFPProvider_la_LDFLAGS = \
   -shared \
   -release $(VERSION) \
-  -L$(FDOGDAL)/.libs
+  -L$(FDOGDAL)/lib
