@@ -33,6 +33,7 @@ SET FDOENABLETHR=yes
 SET SDFENABLETHR=yes
 SET WFSENABLETHR=yes
 SET WMSENABLETHR=yes
+SET GDALENABLETHR=yes
 SET FDOERROR=0
 
 :study_params
@@ -62,12 +63,14 @@ if "%DEFMODIFYTHR%"=="yes" goto stp0_get_with
 	SET SDFENABLETHR=no
 	SET WFSENABLETHR=no
 	SET WMSENABLETHR=no
+	SET GDALENABLETHR=no
 	SET FDOENABLETHR=no
 :stp0_get_with
 if not "%2"=="providers" goto stp1_get_with
 	SET SDFENABLETHR=yes
 	SET WFSENABLETHR=yes
 	SET WMSENABLETHR=yes
+	SET GDALENABLETHR=yes
 	goto next_param
 :stp1_get_with
 if not "%2"=="sdf" goto stp2_get_with
@@ -86,10 +89,15 @@ if not "%2"=="fdo" goto stp5_get_with
 	SET FDOENABLETHR=yes
 	goto next_param
 :stp5_get_with
+if not "%2"=="gdal" goto stp6_get_with
+	SET GDALENABLETHR=yes	
+	goto next_param
+:stp6_get_with
 if not "%2"=="all" goto custom_error
 	SET SDFENABLETHR=yes
 	SET WFSENABLETHR=yes
 	SET WMSENABLETHR=yes
+	SET GDALENABLETHR=yes
 	SET FDOENABLETHR=yes
 goto next_param
 
@@ -195,7 +203,7 @@ rem # End WFS part #
 
 rem # Build WMS Provider Thirdparty Files
 :rebuild_wms
-if "%WMSENABLETHR%"=="no" goto end
+if "%WMSENABLETHR%"=="no" goto rebuild_gdal
 if "%TYPEACTIONTHR%"=="install" goto install_wms_files
 
 echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty WMS dlls
@@ -205,7 +213,7 @@ if "%FDOERROR%"=="1" goto error
 msbuild libcurl\lib\curllib.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
-msbuild GDAL1.3\src\Gdal1.3.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
+msbuild gdal\gdal.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
 msbuild boost_1_32_0\boost_1_32_0.vcproj /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
@@ -217,9 +225,28 @@ if "%TYPEACTIONTHR%"=="clean" goto end
 rem # Install WMS Provider Thirdparty Files
 :install_wms_files
 echo copy %TYPEBUILDTHR% Thirdparty WMS dlls
-copy /y "GDAL1.3\windows\bin\VC8\%TYPEBUILDTHR%\gdal13.dll" "%FDOBINPATHTHR%"
+copy /y "gdal\bin\win32\%TYPEBUILDTHR%\gdal14.dll" "%FDOBINPATHTHR%"
 copy /y "boost_1_32_0\bin\boost\libs\thread\build\boost_thread.dll\vc-8_0\%TYPEBUILDTHR%\threading-multi\boost_thread-vc80-mt%TYPEBUILDTHRPATH%-1_32.dll" "%FDOBINPATHTHR%"
 rem # End WMS part #
+
+
+rem # Build GDAL Provider Thirdparty Files
+:rebuild_gdal
+if "%GDALENABLETHR%"=="no" goto end
+if "%TYPEACTIONTHR%"=="install" goto install_gdal_files
+
+echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty GDAL dlls
+msbuild gdal\gdal.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
+SET FDOERROR=%errorlevel%
+if "%FDOERROR%"=="1" goto error
+if "%TYPEACTIONTHR%"=="build" goto end
+if "%TYPEACTIONTHR%"=="clean" goto end
+
+rem # Install GDAL Provider Thirdparty Files
+:install_gdal_files
+echo copy %TYPEBUILDTHR% Thirdparty GDAL dlls
+copy /y "gdal\bin\win32\%TYPEBUILDTHR%\gdal14.dll" "%FDOBINPATHTHR%"
+rem # End GDAL part #
 
 :end
 echo End Thirdparty %MSACTIONTHR%
@@ -240,6 +267,6 @@ echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
 echo Action:         -a[ction]=build(default), buildinstall, install, clean
-echo WithModule:     -w[ith]=all(default), fdo, providers, sdf, wfs, wms
+echo WithModule:     -w[ith]=all(default), fdo, providers, sdf, wfs, wms, gdal
 echo **************************************************************************
 exit /B 0

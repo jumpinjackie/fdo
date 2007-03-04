@@ -122,7 +122,7 @@ INCLUDES = \
   -I$(FDO)/Unmanaged/Inc \
   -I$(FDOUTILITIES)/Common/Inc \
   -I$(FDOUTILITIES)/OWS/Inc \
-  -I$(FDOTHIRDPARTY)/GDAL1.3/linux/include
+  -I$(FDOGDAL)/include
 
 CXXFLAGS = @CXXFLAGS@ -D__USE_GNU -DLINUX -DLINUX_IA32 -pthread
 

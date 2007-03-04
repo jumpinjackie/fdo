@@ -56,4 +56,4 @@ libGRFPProvider_la_LIBADD =  \
 libGRFPProvider_la_LDFLAGS = \
   -shared \
   -release $(VERSION) \
-  -L$(FDOTHIRDPARTY)/GDAL1.3/linux/lib/optimized
+  -L$(FDOGDAL)/.libs
