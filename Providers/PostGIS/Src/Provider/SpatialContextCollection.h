@@ -19,13 +19,7 @@
 
 #include "SpatialContext.h"
 
-//
-// Forward declarations
-//
-
-
 namespace fdo { namespace postgis {
-
 
 /// Implementation of ...
 ///
