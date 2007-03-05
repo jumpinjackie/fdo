@@ -26,6 +26,7 @@ namespace fdo { namespace postgis {
 DescribeSchemaCommand::DescribeSchemaCommand(Connection* conn)
     : mConn(conn)
 {
+    FDO_SAFE_ADDREF(mConn.p);
 }
 
 DescribeSchemaCommand::~DescribeSchemaCommand()
@@ -38,6 +39,8 @@ DescribeSchemaCommand::~DescribeSchemaCommand()
 
 void DescribeSchemaCommand::Dispose()
 {
+    FDOLOG_MARKER("DescribeSchemaCommand::#Dispose()");
+
     delete this;
 }
 
@@ -47,8 +50,8 @@ void DescribeSchemaCommand::Dispose()
 
 FdoIConnection* DescribeSchemaCommand::GetConnection()
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    FDO_SAFE_ADDREF(mConn.p);
+    return mConn.p;
 }
 
 FdoITransaction* DescribeSchemaCommand::GetTransaction()
@@ -95,14 +98,13 @@ void DescribeSchemaCommand::Cancel()
 
 FdoString* DescribeSchemaCommand::GetSchemaName()
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    return mSchemaName;
 }
 
-
-void DescribeSchemaCommand::SetSchemaName(FdoString* value)
+void DescribeSchemaCommand::SetSchemaName(FdoString* name)
 {
-    assert(!"NOT IMPLEMENTED");
+    assert(NULL != name);
+    mSchemaName = name;
 }
 
 FdoFeatureSchemaCollection* DescribeSchemaCommand::Execute()

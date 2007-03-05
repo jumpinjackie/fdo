@@ -32,18 +32,16 @@ namespace fdo { namespace postgis {
 
 
 /// Implementation of interface defining DescribeSchema command.
-/// This command describes feature schemas available from currently
+/// This command describes feature schema available from currently
 /// connected PostGIS datastore.
 ///
-/// \todo Check correct base class
+/// \todo Check correct base class, ie. Command<FdoIDescribeSchema>
 ///
 class DescribeSchemaCommand : public FdoIDescribeSchema
-//class DescribeSchemaCommand : public Command<FdoIDescribeSchema>
 {
+    friend class Connection;
+    
 public:
-
-    /// Default constructor.
-    DescribeSchemaCommand(Connection* conn);
 
     //
     // FdoICommand interface
@@ -72,27 +70,50 @@ public:
     FdoParameterValueCollection* GetParameterValues();
  	
     /// Prepare command for execution.
-    /// Preparation is used to validate and optimization of the command.
+    /// Preparation is used to validate and optimize command execution.
+    /// Currently, it HAS NO EFFECT for PostGIS.
     void Prepare();
  	
     /// Send request to cancel command execution.
+    /// Currently, it HAS NO EFFECT for PostGIS.
     void Cancel();
 
     //
     // FdoIDescribeSchema interface
     //
 
-    /// Get name of the schema requetsed to describe.
+    /// Get name of the schema requested to describe.
+    /// \return Name of schema being described.
     FdoString* GetSchemaName();
  	
     /// Sets the name of the schema to describe.
-    void SetSchemaName(FdoString* value);
+    /// This function is optional and if not specified, execution of the command will
+    /// describe all schemas.
+    /// \param name [in] - name of schema to describe by the command.
+    void SetSchemaName(FdoString* name);
  	
     /// Execute the DescribeSchema command and return collection of
     /// feature schemas available from the connection.
     FdoFeatureSchemaCollection* Execute();
 
 protected:
+
+    //
+    // Data members
+    //
+
+    /// The connection this command was created from.
+    Connection::Ptr mConn;
+
+    /// Name of schema being described.
+    FdoStringP mSchemaName;
+
+    //
+    // Protected operations
+    //
+
+    /// Default constructor.
+    DescribeSchemaCommand(Connection* conn);
 
     /// Destructor.
     virtual ~DescribeSchemaCommand();
@@ -103,10 +124,10 @@ protected:
 
     void Dispose();
 
+
 private:
 	
-    // The connection this command was created from.
-    FdoPtr<Connection> mConn;
+
 };
 
 }} // namespace fdo::postgis
