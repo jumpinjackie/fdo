@@ -29,6 +29,9 @@ class SpatialContext : public FdoDisposable
 {
 public:
 
+    /// Type of FDO smart pointer for Connection class.
+    typedef FdoPtr<SpatialContext> Ptr;
+    
     /// Default constructor.
     SpatialContext();
 
