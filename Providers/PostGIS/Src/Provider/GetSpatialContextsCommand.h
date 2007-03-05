@@ -1,3 +1,4 @@
+// $Id$
 //
 // Copyright (C) 2007 Refractions Research, Inc. 
 // 
@@ -27,30 +28,53 @@ namespace fdo { namespace postgis {
 class Connection;
 
 
-/// Implementation of interface of command which enumerates the existing
+/// Implementation of interface of command which enumerates set of existing
 /// spatial contexts.
 ///
 class GetSpatialContextsCommand : public Command<FdoIGetSpatialContexts>
 {
 public:
 
-    GetSpatialContextsCommand();
+    /// Constructor create new command retrieving spatial context available
+    /// through current connection.
     GetSpatialContextsCommand(Connection* connection);
-    virtual ~GetSpatialContextsCommand();
 
     //
     // FdoIGetSpatialContexts interface
     //
 
+    /// Get flag indicating if the command will return only active spatial
+    /// context or all spatial contexts.
+    /// \return
+    /// False indicates that all spatial contexts will be returned.
+    ///
     const bool GetActiveOnly();
-    void SetActiveOnly(const bool activeOnly);
+
+    /// Set value for flag indicating if the command will return only active
+    /// spatial context or all spatial contexts.
+    /// \param
+    /// activeOnly [in] - active context retrival indicator.
+    ///
+    void SetActiveOnly(bool const activeOnly);
+
+    /// Execute the command and create spatial contexts reader.
+    /// \return
+    /// Interface to new instance of FdoISpatialContextReader type.
+    ///
     FdoISpatialContextReader* Execute();
 
 protected:
 
+    /// Destructor.
+    virtual ~GetSpatialContextsCommand();    
+
 private:
 	
-    typedef Command<FdoIGetSpatialContexts> Base;
+    //
+    // Private data members
+    //
+
+    bool mActiveOnly;
 };
 
 }} // namespace fdo::postgis
