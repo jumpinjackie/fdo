@@ -39,6 +39,9 @@ class SQLDataReader : public FdoISQLDataReader
 {
 public:
 
+    /// Type of FDO smart pointer for the class.
+    typedef FdoPtr<SQLDataReader> Ptr;
+
     /// Constructor creates instance of SQL data reader associated
     /// with given connection.
     SQLDataReader(PgCursor* cursor);
