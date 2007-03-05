@@ -138,9 +138,6 @@ public:
     void PgExecuteCommand(char const* sql, FdoSize& affected);
     
     /// \todo To be documented.
-
-    
-    /// \todo To be documented.
     void PgExecuteCommand(char const* sql, details::pgexec_params_t const& params, FdoSize& affected);
 
     /// \todo To be documented.
@@ -210,7 +207,7 @@ private:
     // Get PostgreSQL connection parameters from FDO connection properties.
     details::pgconn_params_t GetPgConnectionParams(FdoPtr<FdoCommonConnPropDictionary> dict);
 
-    void SetPgActiveSchema(FdoStringP schema);
+    void SetPgCurrentSchema(FdoStringP schema);
 
 };
 

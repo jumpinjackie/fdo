@@ -268,8 +268,8 @@ FdoConnectionState Connection::Open()
             datastore = prop->GetValue();
             if (datastore.GetLength() > 0)
             {
-                // Set FDO datastore as active schema for current connection
-                SetPgActiveSchema(datastore);
+                // Set FDO datastore as current schema for connection
+                SetPgCurrentSchema(datastore);
 
                 mConnState = FdoConnectionState_Open;
             }
@@ -723,7 +723,7 @@ details::pgconn_params_t Connection::GetPgConnectionParams(
     return make_tuple(host, port, opts, tty, db, login, pwd);
 }
 
-void Connection::SetPgActiveSchema(FdoStringP schema)
+void Connection::SetPgCurrentSchema(FdoStringP schema)
 {
     assert(schema.GetLength() > 0 && "Indicates serious bug in Connection::Open()");
 
