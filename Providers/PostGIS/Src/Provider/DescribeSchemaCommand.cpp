@@ -18,8 +18,10 @@
 
 #include "PostGisProvider.h"
 #include "DescribeSchemaCommand.h"
+#include "PgSpatialTablesReader.h"
 
 #include <cassert>
+#include <iostream>
 
 namespace fdo { namespace postgis {
 
@@ -109,7 +111,18 @@ void DescribeSchemaCommand::SetSchemaName(FdoString* name)
 
 FdoFeatureSchemaCollection* DescribeSchemaCommand::Execute()
 {
-    assert(!"NOT IMPLEMENTED");
+    // XXX - Just testing
+    using std::wcout;
+    
+    PgSpatialTablesReader::Ptr reader(new PgSpatialTablesReader(mConn.p));
+    reader->Open();
+    
+    while (reader->ReadNext())
+    {
+        wcout << reader->GetSchemaName() << L" - ";
+        wcout << reader->GetTableName() << std::endl;
+    }
+    
     return NULL;
 }
 
