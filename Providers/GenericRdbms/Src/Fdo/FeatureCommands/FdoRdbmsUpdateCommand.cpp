@@ -201,13 +201,16 @@ FdoInt32 FdoRdbmsUpdateCommand::Execute ()
         if ( isFeatClass ) {
             featIdProp = classDefinition->RefFeatIdProperty();
             if( featIdProp != NULL ) {
-                prmPrtName = featIdProp->GetName();
-                if ( (prmPrtName == NULL) || (wcslen(prmPrtName) == 0) )
-                    throw FdoCommandException::Create( NlsMsgGet( FDORDBMS_15, "Feature ID does not exist") );
+                const FdoSmPhColumn* featIdCol = featIdProp->RefColumn();
 
-                const wchar_t *colName = mConnection->GetSchemaUtil()->Property2ColName( className->GetText(), prmPrtName );
-                prmColName = (wchar_t*)alloca ((wcslen(colName) + 1)*sizeof( wchar_t ) );
-                wcscpy(prmColName, colName);
+                if ( featIdCol != NULL ) {
+                    const wchar_t *colName = featIdCol->GetName();
+                    prmColName = (wchar_t*)alloca ((wcslen(colName) + 1)*sizeof( wchar_t ) );
+                    wcscpy(prmColName, colName);
+                }
+                else {
+                    featIdProp = NULL;
+                }
             }
         }
 
