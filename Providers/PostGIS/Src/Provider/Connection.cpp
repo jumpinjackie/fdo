@@ -268,7 +268,7 @@ FdoConnectionState Connection::Open()
             datastore = prop->GetValue();
             if (datastore.GetLength() > 0)
             {
-                // Set FDO datastore as current schema for connection
+                // Set FDO datastore as a current schema for connection
                 SetPgCurrentSchema(datastore);
 
                 mConnState = FdoConnectionState_Open;
@@ -361,8 +361,8 @@ FdoICommand* Connection::CreateCommand(FdoInt32 type)
         {
             FdoStringP cmdString(FdoCommonMiscUtil::FdoCommandTypeToString(type));
             throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_COMMAND_NOT_SUPPORTED,
-                  "The command %1$ls is not supported.",
-                  static_cast<FdoString*>(cmdString)));
+                "The command %1$ls is not supported.",
+                static_cast<FdoString*>(cmdString)));
         }
     }
 
