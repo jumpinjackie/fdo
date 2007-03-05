@@ -317,26 +317,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\PgCursor.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\PgCursor.h"
-				>
-			</File>
-			<File
-				RelativePath=".\PgGeometry.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\PgGeometry.h"
-				>
-			</File>
-			<File
-				RelativePath=".\PgUtility.h"
-				>
-			</File>
-			<File
 				RelativePath=".\PostGisProvider.cpp"
 				>
 			</File>
@@ -474,6 +454,38 @@
 			</File>
 			<File
 				RelativePath=".\UpdateCommand.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="PostgreSQL"
+			>
+			<File
+				RelativePath=".\PgCursor.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PgCursor.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PgGeometry.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PgGeometry.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PgSpatialTablesReader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PgSpatialTablesReader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PgUtility.h"
 				>
 			</File>
 		</Filter>
