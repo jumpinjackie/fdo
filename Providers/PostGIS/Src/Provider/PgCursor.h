@@ -32,7 +32,9 @@ namespace fdo { namespace postgis {
 /// This class declares cursor in frame of a transaction,
 /// also provides interface to fetch and access data.
 ///
-class PgCursor : public FdoIDisposable //private boost::noncopyable
+class PgCursor :
+    public FdoIDisposable,
+    private boost::noncopyable
 {
 public:
 
@@ -115,7 +117,6 @@ public:
 
     /// Fetch tuples.
     ResultPtr FetchNext();
-
 
 protected:
 

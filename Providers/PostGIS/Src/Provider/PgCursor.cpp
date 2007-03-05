@@ -39,7 +39,6 @@ PgCursor::PgCursor(Connection* conn, std::string const& name)
     // when using cursor name with libpq functions, ie. PQdescribePortal().
     FdoStringP tmp(mName);
     mName = tmp.Lower();
-
 }
 
 PgCursor::~PgCursor()
@@ -370,8 +369,6 @@ void PgCursor::ClearFetchResult()
 
 void PgCursor::ValidateConnectionState() const
 {
-    FDOLOG_MARKER("PgCursor::Validate");
-
     if (FdoConnectionState_Closed == mConn->GetConnectionState())
     {
         FDOLOG_WRITE("Connection is closed or invalid.");
