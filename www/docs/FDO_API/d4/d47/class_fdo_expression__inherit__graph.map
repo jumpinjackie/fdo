@@ -1,7 +1,0 @@
-base referer
-rect $d3/d0c/class_fdo_binary_expression.html 7,415 185,751
-rect $d9/d40/class_fdo_function.html 209,439 345,727
-rect $df/d7a/class_fdo_identifier.html 369,391 537,775
-rect $d6/d6a/class_fdo_unary_expression.html 561,439 737,727
-rect $dc/de5/class_fdo_value_expression.html 761,543 905,623
-rect $d7/da5/class_fdo_i_disposable.html 381,7 525,167
