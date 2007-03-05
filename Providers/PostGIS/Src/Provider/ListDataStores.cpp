@@ -52,7 +52,7 @@ FdoIDataStoreReader* ListDataStores::Execute()
 
     std::string cursorName("curFdoListDataStores");
     std::string sql("SELECT ns.nspname AS schemaname, r.rolname AS ownername, "
-                    "pg_catalog.obj_description(ns.oid, 'pg_namespace') as description "
+                    "pg_catalog.obj_description(ns.oid, 'pg_namespace') AS description "
                     "FROM pg_catalog.pg_namespace ns "
                     "JOIN pg_catalog.pg_roles r ON ns.nspowner = r.oid "
                     "WHERE ns.nspname !~ \'^pg_\' "
