@@ -22,10 +22,12 @@ SET TYPEBUILD=release
 SET FDOORGPATH=
 
 SET DEFMODIFY=no
-SET SDFENABLE=yes
-SET WFSENABLE=yes
-SET WMSENABLE=yes
-SET FDOENABLE=yes
+SET ALLENABLE=yes
+SET SDFENABLE=no
+SET WFSENABLE=no
+SET WMSENABLE=no
+SET GDALENABLE=no
+SET FDOENABLE=no
 SET FDOERROR=0
 
 :study_params
@@ -53,9 +55,11 @@ if (%2)==() goto custom_error
 
 if "%DEFMODIFY%"=="yes" goto stp1_get_with
 	SET DEFMODIFY=yes
+	SET ALLENABLE=no
 	SET SDFENABLE=no
 	SET WFSENABLE=no
 	SET WMSENABLE=no
+	SET GDALENABLE=no
 	SET FDOENABLE=no
 :stp1_get_with
 if not "%2"=="sdf" goto stp2_get_with
@@ -70,22 +74,29 @@ if not "%2"=="wms" goto stp4_get_with
 	SET WMSENABLE=yes
 	goto next_param
 :stp4_get_with
-if not "%2"=="fdo" goto stp5_get_with
-	SET FDOENABLE=yes
+if not "%2"=="gdal" goto stp5_get_with
+	SET GDALENABLE=yes
 	goto next_param
 :stp5_get_with
-if not "%2"=="providers" goto stp6_get_with
-	SET SDFENABLE=yes
-	SET WFSENABLE=yes
-	SET WMSENABLE=yes
+if not "%2"=="fdo" goto stp6_get_with
+	SET FDOENABLE=yes
 	goto next_param
 :stp6_get_with
-if not "%2"=="all" goto custom_error
+if not "%2"=="providers" goto stp7_get_with
 	SET SDFENABLE=yes
 	SET WFSENABLE=yes
 	SET WMSENABLE=yes
-	SET FDOENABLE=yes
-goto next_param
+	SET GDALENABLE=yes
+	goto next_param
+:stp7_get_with
+if not "%2"=="all" goto custom_error
+	SET ALLENABLE=yes
+	SET SDFENABLE=no
+	SET WFSENABLE=no
+	SET WMSENABLE=no
+	SET GDALENABLE=no
+	SET FDOENABLE=no
+    goto next_param
 
 :get_action
 SET TYPEACTION=%2
@@ -123,6 +134,7 @@ if "%TYPEACTION%"=="clean" goto start_exbuild
 if not ("%FDOORGPATH%")==("") goto start_exbuildinstall
 echo Please provide destination binaries folder using '-o' option.
 exit /B 1
+
 :start_exbuildinstall
 if not exist "%FDOORGPATH%" mkdir "%FDOORGPATH%"
 
@@ -130,19 +142,27 @@ if not exist "%FDOORGPATH%" mkdir "%FDOORGPATH%"
 SET PROVCALLCMD=
 SET PROVCALLCMDEX=-o="%FDOORGPATH%" -c=%TYPEBUILD% -a=%TYPEACTION% -d=%DOCENABLE%
 
-:rebuild_sdf
-if "%SDFENABLE%"=="no" goto rebuild_wfs
+:study_rebuild_all
+if "%ALLENABLE%"=="no" goto study_rebuild_sdf
+SET PROVCALLCMD=%PROVCALLCMD% -w=all
+
+:study_rebuild_sdf
+if "%SDFENABLE%"=="no" goto study_rebuild_wfs
 SET PROVCALLCMD=%PROVCALLCMD% -w=sdf
 
-:rebuild_wfs
-if "%WFSENABLE%"=="no" goto rebuild_wms
+:study_rebuild_wfs
+if "%WFSENABLE%"=="no" goto study_rebuild_gdal
 SET PROVCALLCMD=%PROVCALLCMD% -w=wfs
 
-:rebuild_wms
-if "%WMSENABLE%"=="no" goto study_rebuild
+:study_rebuild_gdal
+if "%GDALENABLE%"=="no" goto study_rebuild_wms
+SET PROVCALLCMD=%PROVCALLCMD% -w=gdal
+
+:study_rebuild_wms
+if "%WMSENABLE%"=="no" goto study_rebuild_fdo
 SET PROVCALLCMD=%PROVCALLCMD% -w=wms
 
-:study_rebuild
+:study_rebuild_fdo
 SET PROVCALLCMDEX=%PROVCALLCMDEX%%PROVCALLCMD%
 if "%FDOENABLE%"=="no" goto rebuild_thp
 SET PROVCALLCMD=%PROVCALLCMD% -w=fdo
