@@ -20,6 +20,14 @@
 TYPEACTION=buildinstall
 TYPECONFIGURE=configure
 
+DEFMODIFY=no
+ALLENABLE=yes
+FDOENABLE=no
+SDFENABLE=no
+WFSENABLE=no
+WMSENABLE=no
+GDALENABLE=no
+
 ### study parameters ###
 while test $# -gt 0
 do
@@ -37,7 +45,7 @@ do
         TYPECONFIGURE=noconfigure
     else
         echo "$arg Invalid parameter $1"
-	exit 1
+	    exit 1
     fi
     shift
     ;;
@@ -54,7 +62,43 @@ do
         TYPEACTION=clean
     else
         echo "$arg Invalid parameter $1"
-	exit 1
+	    exit 1
+    fi
+    shift
+    ;;
+  -w | --w | --with)
+    if test "$DEFMODIFY" == no; then
+       DEFMODIFY=yes
+       ALLENABLE=no
+       FDOENABLE=no
+       SDFENABLE=no
+       WFSENABLE=no
+       WMSENABLE=no
+       GDALENABLE=no
+    fi
+    if test -z "$1"; then
+       echo "$arg Invalid parameter $1"
+       exit 1
+    elif test "$1" == all; then
+       ALLENABLE=yes
+       FDOENABLE=no
+       SDFENABLE=no
+       WFSENABLE=no
+       WMSENABLE=no
+       GDALENABLE=no
+    elif test "$1" == fdo; then
+        FDOENABLE=yes
+    elif test "$1" == sdf; then
+        SDFENABLE=yes
+    elif test "$1" == wfs; then
+        WFSENABLE=yes
+    elif test "$1" == wms; then
+        WMSENABLE=yes
+    elif test "$1" == gdal; then
+        GDALENABLE=yes
+    else
+        echo "$arg Invalid parameter $1"
+        exit 1
     fi
     shift
     ;;
@@ -77,13 +121,26 @@ done
 
 if test "$SHOWHELP" == yes; then
 
-   echo "************************************************************************************************************"
-   echo "build_thirdparty.sh [--h] [--a Action] [--m ConfigMakefiles]"
-   echo "*"
+   echo "*******************************************************************"
+   echo "build_thirdparty.sh [--h]"
+   echo "                    [--a Action]"
+   echo "                    [--w WithModule]"
+   echo "                    [--m ConfigMakefiles]"
+   echo " "
    echo "Help:            --h[elp]"
-   echo "Action:          --a[ction] buildinstall(default), build, install, uninstall, clean"
+   echo "Action:          --a[ction] buildinstall(default), "
+   echo "                            build,"
+   echo "                            install,"
+   echo "                            uninstall,"
+   echo "                            clean"
+   echo "WithModule:      --w[ith] all(default),"
+   echo "                          fdo,"
+   echo "                          sdf,"
+   echo "                          wms,"
+   echo "                          wfs,"
+   echo "                          gdal"
    echo "ConfigMakefiles: --m[akefile] configure(default), noconfigure"
-   echo "************************************************************************************************************"
+   echo "*******************************************************************"
 
    exit 0
 fi
@@ -105,16 +162,25 @@ fi
 pushd "Thirdparty" >& /dev/null
 
 if test "$TYPEACTION" == clean ; then
-  make clean
-fi
-if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
-  ./Thirdparty.sh
-fi
-if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
-  make install
-fi
-if test "$TYPEACTION" == uninstall ; then
-  make uninstall
+    make clean
+elif test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
+    if test "$ALLENABLE" == yes ; then
+      ./Thirdparty.sh
+    elif test "$FDOENABLE" == yes ; then
+      ./Thirdparty_fdo.sh
+    elif test "$SDFENABLE" == yes ; then
+      ./Thirdparty_sdf.sh
+    elif test "$WMSENABLE" == yes ; then
+      ./Thirdparty_wms.sh
+    elif test "$WFSENABLE" == yes ; then
+      ./Thirdparty_wfs.sh
+    elif test "$GDALENABLE" == yes ; then
+      ./Thirdparty_gdal.sh
+    fi
+elif test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
+    make install
+elif test "$TYPEACTION" == uninstall ; then
+    make uninstall
 fi
 
 popd >& /dev/null
