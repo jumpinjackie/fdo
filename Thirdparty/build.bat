@@ -29,11 +29,12 @@ SET TYPEBUILDTHRPATH=
 SET TYPEBUILDTHREX=
 
 SET DEFMODIFYTHR=no
-SET FDOENABLETHR=yes
-SET SDFENABLETHR=yes
-SET WFSENABLETHR=yes
-SET WMSENABLETHR=yes
-SET GDALENABLETHR=yes
+SET ALLENABLETHR=yes
+SET FDOENABLETHR=no
+SET SDFENABLETHR=no
+SET WFSENABLETHR=no
+SET WMSENABLETHR=no
+SET GDALENABLETHR=no
 SET FDOERROR=0
 
 :study_params
@@ -60,6 +61,7 @@ goto custom_error
 if (%2)==() goto custom_error
 if "%DEFMODIFYTHR%"=="yes" goto stp0_get_with
 	SET DEFMODIFYTHR=yes
+	SET ALLENABLETHR=no
 	SET SDFENABLETHR=no
 	SET WFSENABLETHR=no
 	SET WMSENABLETHR=no
@@ -94,11 +96,12 @@ if not "%2"=="gdal" goto stp6_get_with
 	goto next_param
 :stp6_get_with
 if not "%2"=="all" goto custom_error
-	SET SDFENABLETHR=yes
-	SET WFSENABLETHR=yes
-	SET WMSENABLETHR=yes
-	SET GDALENABLETHR=yes
-	SET FDOENABLETHR=yes
+	SET ALLENABLETHR=yes
+	SET SDFENABLETHR=no
+	SET WFSENABLETHR=no
+	SET WMSENABLETHR=no
+	SET GDALENABLETHR=no
+	SET FDOENABLETHR=no
 goto next_param
 
 :get_action
@@ -146,12 +149,50 @@ if not exist "%FDOLIBPATHTHR%" mkdir "%FDOLIBPATHTHR%"
 :start_exbuild
 if "%TYPEACTIONTHR%"=="clean" SET MSACTIONTHR=Clean
 
+rem # Build all Thirdparty Files
+:rebuild_all
+if "%ALLENABLETHR%"=="no" goto rebuild_fdo
+if "%TYPEACTIONTHR%"=="install" goto install_all_files
+
+echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty files
+msbuild Thirdparty_fdo.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
+SET FDOERROR=%errorlevel%
+if "%FDOERROR%"=="1" goto error
+msbuild Thirdparty_sdf.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
+SET FDOERROR=%errorlevel%
+if "%FDOERROR%"=="1" goto error
+msbuild openssl\openssl.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
+SET FDOERROR=%errorlevel%
+if "%FDOERROR%"=="1" goto error
+msbuild libcurl\lib\curllib.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
+SET FDOERROR=%errorlevel%
+if "%FDOERROR%"=="1" goto error
+msbuild boost_1_32_0\boost_1_32_0.vcproj /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
+SET FDOERROR=%errorlevel%
+msbuild gdal\gdal.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
+SET FDOERROR=%errorlevel%
+if "%FDOERROR%"=="1" goto error
+if not exist util\UpdateVersion\bin mkdir util\UpdateVersion\bin
+copy /y util\UpdateVersion\build\UpdateVersion.exe util\UpdateVersion\bin
+if "%TYPEACTIONTHR%"=="build" goto rebuild_fdo
+if "%TYPEACTIONTHR%"=="clean" goto rebuild_fdo
+
+rem # Install all Thirdparty Files
+:install_all_files
+echo copy %TYPEBUILDTHR% Thirdparty files
+copy /y "apache\xml-xalan\c\Build\Win32\vc8\%TYPEBUILDTHR%\Xalan-C_1_7_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
+copy /y "apache\xml-xalan\c\Build\Win32\vc8\%TYPEBUILDTHR%\XalanMessages_1_7_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
+copy /y "apache\xml-xerces\c\Build\Win32\vc8\%TYPEBUILDTHR%\xerces-c_2_5_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
+copy /y "boost_1_32_0\bin\boost\libs\thread\build\boost_thread.dll\vc-8_0\%TYPEBUILDTHR%\threading-multi\boost_thread-vc80-mt%TYPEBUILDTHRPATH%-1_32.dll" "%FDOBINPATHTHR%"
+copy /y "gdal\bin\win32\%TYPEBUILDTHR%\gdal14.dll" "%FDOBINPATHTHR%"
+copy /y "boost_1_32_0\bin\boost\libs\thread\build\boost_thread.dll\vc-8_0\%TYPEBUILDTHR%\threading-multi\boost_thread-vc80-mt%TYPEBUILDTHRPATH%-1_32.dll" "%FDOBINPATHTHR%"
+
 rem # Build FDO API Thirdparty Files
 :rebuild_fdo
 if "%FDOENABLETHR%"=="no" goto rebuild_sdf
 if "%TYPEACTIONTHR%"=="install" goto install_fdo_files
 
-echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty FDO Dlls
+echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty FDO files
 msbuild Thirdparty_fdo.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
@@ -162,7 +203,7 @@ if "%TYPEACTIONTHR%"=="clean" goto rebuild_sdf
 
 rem # Install FDO API Thirdparty Files
 :install_fdo_files
-echo copy %TYPEBUILDTHR% Thirdparty FDO dlls
+echo copy %TYPEBUILDTHR% Thirdparty files
 copy /y "apache\xml-xalan\c\Build\Win32\vc8\%TYPEBUILDTHR%\Xalan-C_1_7_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
 copy /y "apache\xml-xalan\c\Build\Win32\vc8\%TYPEBUILDTHR%\XalanMessages_1_7_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
 copy /y "apache\xml-xerces\c\Build\Win32\vc8\%TYPEBUILDTHR%\xerces-c_2_5_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
@@ -172,7 +213,7 @@ rem # Build SDF Provider Thirdparty Files
 if "%SDFENABLETHR%"=="no" goto rebuild_wfs
 if "%TYPEACTIONTHR%"=="install" goto rebuild_wfs
 
-echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty SDF dlls
+echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty SDF files
 msbuild Thirdparty_sdf.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
@@ -182,7 +223,7 @@ rem # Build WFS Provider Thirdparty Files
 if "%WFSENABLETHR%"=="no" goto rebuild_wms
 if "%TYPEACTIONTHR%"=="install" goto install_wfs_files
 
-echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty WFS dlls
+echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty WFS files
 msbuild openssl\openssl.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
@@ -197,7 +238,7 @@ if "%TYPEACTIONTHR%"=="clean" goto rebuild_wms
 
 rem # Install WFS Provider Thirdparty Files
 :install_wfs_files
-echo copy %TYPEBUILDTHR% Thirdparty WFS dlls
+echo copy %TYPEBUILDTHR% Thirdparty WFS files
 copy /y "boost_1_32_0\bin\boost\libs\thread\build\boost_thread.dll\vc-8_0\%TYPEBUILDTHR%\threading-multi\boost_thread-vc80-mt%TYPEBUILDTHRPATH%-1_32.dll" "%FDOBINPATHTHR%"
 rem # End WFS part #
 
@@ -206,7 +247,7 @@ rem # Build WMS Provider Thirdparty Files
 if "%WMSENABLETHR%"=="no" goto rebuild_gdal
 if "%TYPEACTIONTHR%"=="install" goto install_wms_files
 
-echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty WMS dlls
+echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty WMS files
 msbuild openssl\openssl.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
@@ -224,18 +265,17 @@ if "%TYPEACTIONTHR%"=="clean" goto end
 
 rem # Install WMS Provider Thirdparty Files
 :install_wms_files
-echo copy %TYPEBUILDTHR% Thirdparty WMS dlls
+echo copy %TYPEBUILDTHR% Thirdparty WMS files
 copy /y "gdal\bin\win32\%TYPEBUILDTHR%\gdal14.dll" "%FDOBINPATHTHR%"
 copy /y "boost_1_32_0\bin\boost\libs\thread\build\boost_thread.dll\vc-8_0\%TYPEBUILDTHR%\threading-multi\boost_thread-vc80-mt%TYPEBUILDTHRPATH%-1_32.dll" "%FDOBINPATHTHR%"
 rem # End WMS part #
-
 
 rem # Build GDAL Provider Thirdparty Files
 :rebuild_gdal
 if "%GDALENABLETHR%"=="no" goto end
 if "%TYPEACTIONTHR%"=="install" goto install_gdal_files
 
-echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty GDAL dlls
+echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty GDAL files
 msbuild gdal\gdal.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
@@ -244,7 +284,7 @@ if "%TYPEACTIONTHR%"=="clean" goto end
 
 rem # Install GDAL Provider Thirdparty Files
 :install_gdal_files
-echo copy %TYPEBUILDTHR% Thirdparty GDAL dlls
+echo copy %TYPEBUILDTHR% Thirdparty GDAL files
 copy /y "gdal\bin\win32\%TYPEBUILDTHR%\gdal14.dll" "%FDOBINPATHTHR%"
 rem # End GDAL part #
 
