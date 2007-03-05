@@ -15,22 +15,18 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 //
 #include "stdafx.h"
-
 #include "PostGisProvider.h"
 #include "GetSpatialContextsCommand.h"
 #include "Connection.h"
 #include "SpatialContext.h"
+#include "SpatialContextCollection.h"
 
 #include <cassert>
 
 namespace fdo { namespace postgis {
 
-//GetSpatialContextsCommand::GetSpatialContextsCommand()
-//{
-//}
-
 GetSpatialContextsCommand::GetSpatialContextsCommand(Connection* conn)
-    : Base(conn)
+    : Base(conn), mActiveOnly(false)
 {
 }
 
@@ -38,20 +34,25 @@ GetSpatialContextsCommand::~GetSpatialContextsCommand()
 {
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// FdoIGetSpatialContexts interface
+///////////////////////////////////////////////////////////////////////////////
+
 const bool GetSpatialContextsCommand::GetActiveOnly()
 {
-    assert(!"NOT IMPLEMENTED");
-    return false;
+    return mActiveOnly;
 }
 
-void GetSpatialContextsCommand::SetActiveOnly(const bool activeOnly)
+void GetSpatialContextsCommand::SetActiveOnly(bool const activeOnly)
 {
-    assert(!"NOT IMPLEMENTED");
+    mActiveOnly = activeOnly;
 }
 
 FdoISpatialContextReader* GetSpatialContextsCommand::Execute()
 {
-    assert(!"NOT IMPLEMENTED");
+    SpatialContextCollection::Ptr sc = NULL;
+    //mConn->GetSpatialContexts (true);
+
     return NULL;
 }
 
