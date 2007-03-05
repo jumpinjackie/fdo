@@ -163,7 +163,8 @@ pushd "Thirdparty" >& /dev/null
 
 if test "$TYPEACTION" == clean ; then
     make clean
-elif test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
+fi
+if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
     if test "$ALLENABLE" == yes ; then
       ./Thirdparty.sh
     elif test "$FDOENABLE" == yes ; then
@@ -177,9 +178,11 @@ elif test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
     elif test "$GDALENABLE" == yes ; then
       ./Thirdparty_gdal.sh
     fi
-elif test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
+fi
+if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
     make install
-elif test "$TYPEACTION" == uninstall ; then
+fi
+if test "$TYPEACTION" == uninstall ; then
     make uninstall
 fi
 
