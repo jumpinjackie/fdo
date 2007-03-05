@@ -51,7 +51,7 @@ PgSpatialTablesReader::PgSpatialTablesReader(Connection* conn)
     {
         boost::shared_ptr<PGresult> pgRes(
             mConn->PgExecuteQuery("SELECT current_schema()"), PQclear);
-        assert(PGRES_TUPLES_OK == PQntuples(pgRes.get()));
+        assert(PGRES_TUPLES_OK == PQresultStatus(pgRes.get()));
 
         std::string schemaName(PQgetvalue(pgRes.get(), 0, 0));
         assert(mCurrentSchema == schemaName);
@@ -70,7 +70,7 @@ void PgSpatialTablesReader::Dispose()
 {
     FDOLOG_MARKER("PgSpatialTablesReader::#Dispose");
 
-    // May throw, do not call from the destructor!
+    // This function might hrow, do NOT call from the destructor!
     Close();
 
     delete this;
@@ -96,14 +96,14 @@ void PgSpatialTablesReader::Open()
 
     assert(!mCurrentSchema.empty());
 
-//"g.f_geometry_column AS geomname, g.type, g.coord_dimension, g.srid "     
-  
     std::string sql("SELECT n.nspname AS schemaname, c.relname AS tablename "
                     "FROM pg_class c, pg_namespace n, geometry_columns g "
                     "WHERE c.relkind = 'r' AND c.relname !~ '^(pg_|sql_)' "
                     "AND c.relnamespace = n.oid AND n.nspname = g.f_table_schema "
                     "AND c.relname::TEXT = g.f_table_name::TEXT "
-                    "AND n.nspname = '" + mCurrentSchema + "'");
+                    "AND n.nspname = '"
+                    + mCurrentSchema +
+                    "' GROUP BY schemaname, tablename");
     
     // Query spatial tables and attach results to the SQL data reader
     mCmd = static_cast<FdoISQLCommand*>(mConn->CreateCommand(FdoCommandType_SQLCommand));
@@ -124,6 +124,9 @@ bool PgSpatialTablesReader::ReadNext()
 void PgSpatialTablesReader::Close()
 {
     FDOLOG_MARKER("PgSpatialTablesReader::+Close");
+    
+    if (NULL != mReader)
+        mReader->Close();        
 }
 
 ///////////////////////////////////////////////////////////////////////////////
