@@ -63,7 +63,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib"
+				AdditionalDependencies="cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib libpq.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\cppunit\lib&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\debug&quot;;&quot;$(FDOTHIRDPARTY)\boost_1_32_0\bin\boost\libs\program_options\build\libboost_program_options.lib\vc-8_0\debug\threading-multi&quot;"
 				GenerateDebugInformation="true"
