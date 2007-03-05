@@ -1088,10 +1088,20 @@ void FdoRdbmsPvcInsertHandler::SetBindVariables(const FdoSmLpClassDefinition *cu
                 const FdoSmPhColumn *column = dataProp->RefColumn();
                 if (NULL == column)
                 {
-                    throw FdoRdbmsException::Create(NlsMsgGet1(
-                            FDORDBMS_485,
-                            "No column for property '%1$ls'.",
-                            dataProp->GetName()));
+                    if ( dataProp->GetIsSystem() ) 
+                    {
+                        // It is possible for externally defined tables to not have
+                        // columns for certain system properties. In this case, 
+                        // skip these properties.
+                        continue;
+                    }
+                    else 
+                    {
+                        throw FdoRdbmsException::Create(NlsMsgGet1(
+                                FDORDBMS_485,
+                                "No column for property '%1$ls'.",
+                                dataProp->GetName()));
+                    }
                 }
                 const wchar_t *colName = column->GetName();
 

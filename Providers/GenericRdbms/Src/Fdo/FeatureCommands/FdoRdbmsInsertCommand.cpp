@@ -131,6 +131,9 @@ FdoIFeatureReader* FdoRdbmsInsertCommand::Execute ()
         {
             // check Feat Id property
             const FdoSmLpDataPropertyDefinition *lpFeatIdProp = classDefinition->RefFeatIdProperty();
+            if ( (lpFeatIdProp != NULL) && (lpFeatIdProp->RefColumn() == NULL) ) 
+                lpFeatIdProp = NULL;
+
             if( lpFeatIdProp != NULL ) {
 
                 const wchar_t *featId = lpFeatIdProp->GetName();
@@ -162,29 +165,34 @@ FdoIFeatureReader* FdoRdbmsInsertCommand::Execute ()
                     
                     addedIndentProperties = true;
 
-                    FdoPtr<FdoPropertyValue>classId = FdoPropertyValue::Create();
-                    FdoPtr<FdoDataValue>clidValue = FdoDataValue::Create((FdoInt64) feat_info.classid );
-                    classId->SetValue( clidValue );
-                    classId->SetName( L"ClassId" );
-                    mPropertyValues->Add( classId );
-
-                    FdoPtr<FdoPropertyValue>revNum = FdoPropertyValue::Create();
-                    FdoPtr<FdoDataValue>revValue = FdoDataValue::Create((FdoInt64) 0 );
-                    revNum->SetValue( revValue );
-                    revNum->SetName( L"RevisionNumber" );
-                    mPropertyValues->Add( revNum );
+                    const FdoSmLpDataPropertyDefinition *lpSystemProp = FdoSmLpDataPropertyDefinition::Cast(classDefinition->RefProperties()->RefItem(L"ClassId"));
+                    if ( lpSystemProp && lpSystemProp->RefColumn() ) {
+                        FdoPtr<FdoPropertyValue>classId = FdoPropertyValue::Create();
+                        FdoPtr<FdoDataValue>clidValue = FdoDataValue::Create((FdoInt64) feat_info.classid );
+                        classId->SetValue( clidValue );
+                        classId->SetName( lpSystemProp->GetName() );
+                        mPropertyValues->Add( classId );
+                    }
 
 			        FdoPtr<FdoPropertyValue>featIdProp = FdoPropertyValue::Create();
                     FdoPtr<FdoIdentifier>featIdIdentifier = FeatIdProp->GetName();
                     featIdProp->SetName( featIdIdentifier );
 			        featInfoCol->Add(featIdProp);
 
-			        FdoPtr<FdoPropertyValue>chgSeqProp = FdoPropertyValue::Create();
-                    FdoPtr<FdoDataValue>chgSeqValue = FdoDataValue::Create((FdoInt64) feat_info.changeseq );
-                    chgSeqProp->SetValue( chgSeqValue );
-                    chgSeqProp->SetName( L"RevisionNumber" );
-                    featInfoCol->Add(chgSeqProp);
+                    lpSystemProp = FdoSmLpDataPropertyDefinition::Cast(classDefinition->RefProperties()->RefItem(L"RevisionNumber"));
+                    if ( lpSystemProp && lpSystemProp->RefColumn() ) {
+                        FdoPtr<FdoPropertyValue>revNum = FdoPropertyValue::Create();
+                        FdoPtr<FdoDataValue>revValue = FdoDataValue::Create((FdoInt64) 0 );
+                        revNum->SetValue( revValue );
+                        revNum->SetName( lpSystemProp->GetName() );
+                        mPropertyValues->Add( revNum );
 
+			            FdoPtr<FdoPropertyValue>chgSeqProp = FdoPropertyValue::Create();
+                        FdoPtr<FdoDataValue>chgSeqValue = FdoDataValue::Create((FdoInt64) feat_info.changeseq );
+                        chgSeqProp->SetValue( chgSeqValue );
+                        chgSeqProp->SetName( lpSystemProp->GetName() );
+                        featInfoCol->Add(chgSeqProp);
+                    }
                     //
                     // Set the featID value in the Property value collections
                     if( FeatIdProp.p != NULL && !isFeatIdAutoincremented)
