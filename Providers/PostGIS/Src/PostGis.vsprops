@@ -7,7 +7,7 @@
 	<Tool
 		Name="VCCLCompilerTool"
 		AdditionalIncludeDirectories="..\..\Inc;&quot;$(FDO)\Unmanaged\Inc&quot;;&quot;$(FDOUTILITIES)\Common\Inc&quot;;&quot;$(FDOTHIRDPARTY)\boost_1_32_0&quot;;&quot;$(FDOPOSTGRESQL)\include&quot;"
-		PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE"
+		PreprocessorDefinitions="FDOPOSTGIS_USE_VLD;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE"
 	/>
 	<Tool
 		Name="VCLinkerTool"
