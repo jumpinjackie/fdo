@@ -23,10 +23,10 @@
 
 namespace fdo { namespace postgis {
 
-PgGeometryColumn::PgGeometryColumn(FdoString* name, FdoDimensionality dim,
-                                   FdoGeometryType type, FdoInt32 srid)
-    : mName(name), mDim(dim), mType(type), mSRID(srid)
+PgGeometryColumn::PgGeometryColumn(FdoString* name, FdoGeometryType type, FdoInt32 dim, FdoInt32 srid)
+    : mName(name), mType(type), mDim(dim), mSRID(srid)
 {
+    FDOLOG_WRITE("PgGeometryColumn: %s", static_cast<char const*>(mName));
 }
 
 PgGeometryColumn::~PgGeometryColumn()
@@ -40,7 +40,8 @@ PgGeometryColumn::~PgGeometryColumn()
 void PgGeometryColumn::Dispose()
 {
     FDOLOG_MARKER("PgGeometryColumn::#Dispose");
-
+    FDOLOG_WRITE("Ref count: %d", GetRefCount());
+    
     delete this;
 }
 
@@ -53,14 +54,14 @@ FdoStringP PgGeometryColumn::GetName() const
     return mName;
 }
 
-FdoDimensionality PgGeometryColumn::GetDimensionality() const
-{
-    return mDim;
-}
-
 FdoGeometryType PgGeometryColumn::GetGeometryType() const
 {
     return mType;
+}
+
+FdoInt32 PgGeometryColumn::GetDimensionType() const
+{
+    return mDim;
 }
 
 FdoInt32 PgGeometryColumn::GetSRID() const

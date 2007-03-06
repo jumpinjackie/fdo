@@ -36,15 +36,11 @@ public:
     typedef FdoPtr<PgGeometryColumn> Ptr;
 
     /// Constructor creates new reader instance associated with given connection.
-    PgGeometryColumn(FdoString* name, FdoDimensionality dim, FdoGeometryType type,
-                     FdoInt32 srid);
+    PgGeometryColumn(FdoString* name, FdoGeometryType type, FdoInt32 dim, FdoInt32 srid);
 
     FdoStringP GetName() const;
-
-    FdoDimensionality GetDimensionality() const;
-    
     FdoGeometryType GetGeometryType() const;
-    
+    FdoInt32 GetDimensionType() const;    
     FdoInt32 GetSRID() const;
 
 protected:
@@ -66,8 +62,8 @@ private:
     //
     
     FdoStringP mName;
-    FdoDimensionality mDim;
     FdoGeometryType mType;
+    FdoInt32 mDim;
     FdoInt32 mSRID;
 
     //
