@@ -25,8 +25,8 @@
 namespace FdoGrfpGlobals
 {
     static FdoString* DefaultSpatialContextName			= L"Default";
-    static FdoString* DefaultSpatialContextCoordName	= L"";
-    static FdoString* DefaultSpatialContextWKTName		= L"";
+    static FdoString* DefaultSpatialContextCoordName	        = L"Default";
+    static FdoString* DefaultSpatialContextWKTName		= L"LOCAL_CS[\"*XY-MT*\",LOCAL_DATUM[\"*X-Y*\",10000],UNIT[\"Meter\", 1],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
 
     static double DefaultSpatialContextExtentMinX		= -10000000.0;
     static double DefaultSpatialContextExtentMinY		= -10000000.0;
