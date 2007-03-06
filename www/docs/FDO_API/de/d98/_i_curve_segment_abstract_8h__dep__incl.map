@@ -1,0 +1,11 @@
+base referer
+rect $d8/d88/_i_arc_segment_abstract_8h.htm 231,159 391,185
+rect $df/d2b/_i_curve_string_8h.htm 447,209 553,236
+rect $dd/ddc/_i_line_string_segment_8h.htm 613,311 763,337
+rect $dc/dce/_i_ring_8h.htm 279,260 343,287
+rect $d2/d25/_i_circular_arc_segment_8h.htm 611,159 765,185
+rect $d8/d28/_fdo_geometry_8h.htm 815,159 929,185
+rect $d7/dfb/_geometry_std_8h.htm 816,311 928,337
+rect $d2/de6/_i_multi_curve_string_8h.htm 620,209 756,236
+rect $d6/d7e/_i_curve_polygon_8h.htm 440,260 560,287
+rect $d7/dd3/_i_multi_curve_polygon_8h.htm 613,260 763,287
