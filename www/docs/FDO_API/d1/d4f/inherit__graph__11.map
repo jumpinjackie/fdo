@@ -1,0 +1,4 @@
+base referer
+rect $d4/df4/class_fdo_io_stream.htm 8,32 107,59
+rect $d0/daa/class_fdo_io_file_stream.htm 171,7 291,34
+rect $d4/dbb/class_fdo_io_memory_stream.htm 157,58 304,84

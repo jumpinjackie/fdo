@@ -1,0 +1,5 @@
+base referer
+rect $d9/d82/class_fdo_context.htm 7,32 98,59
+rect $d2/da9/class_fdo_xml_sax_context.htm 147,32 283,59
+rect $de/d12/class_fdo_xml_context.htm 355,7 470,34
+rect $d0/d81/class_fdo_xml_feature_context.htm 332,58 492,84

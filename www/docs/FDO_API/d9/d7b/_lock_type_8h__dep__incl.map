@@ -1,0 +1,13 @@
+base referer
+rect $d0/ded/_i_base_select_8h.htm 548,159 652,185
+rect $d2/d52/_i_select_8h.htm 766,108 840,135
+rect $d8/d82/_fdo_8h.htm 924,336 980,363
+rect $da/d98/_i_acquire_lock_8h.htm 546,412 655,439
+rect $d1/d9a/_i_locked_object_reader_8h.htm 519,463 682,489
+rect $d7/d3d/_i_connection_capabilities_8h.htm 146,311 319,337
+rect $d1/d12/_class_capabilities_8h.htm 534,564 667,591
+rect $df/dcb/_i_select_aggregates_8h.htm 732,209 874,236
+rect $de/daf/_i_get_locked_objects_8h.htm 730,463 876,489
+rect $d5/d98/_i_get_lock_info_8h.htm 748,311 858,337
+rect $de/d25/_i_connection_8h.htm 367,260 471,287
+rect $de/d62/_class_definition_8h.htm 742,615 864,641

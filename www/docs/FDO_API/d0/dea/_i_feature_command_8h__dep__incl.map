@@ -1,0 +1,14 @@
+base referer
+rect $d0/ded/_i_base_select_8h.htm 243,75 347,102
+rect $d2/d52/_i_select_8h.htm 471,24 545,51
+rect $d8/d82/_fdo_8h.htm 628,303 684,330
+rect $df/dcb/_i_select_aggregates_8h.htm 437,126 579,152
+rect $db/dcd/_i_delete_8h.htm 471,227 545,254
+rect $df/d05/_i_insert_8h.htm 473,278 543,304
+rect $d0/d73/_i_update_8h.htm 468,328 548,355
+rect $da/d98/_i_acquire_lock_8h.htm 453,379 563,406
+rect $d5/d98/_i_get_lock_info_8h.htm 240,430 349,456
+rect $d4/d99/_i_release_lock_8h.htm 237,480 352,507
+rect $db/d3e/_i_commit_long_transaction_8h.htm 204,531 385,558
+rect $d9/d8d/_i_rollback_long_transaction_8h.htm 201,582 388,608
+rect $d1/db7/_i_connection_manager_8h.htm 732,303 889,330

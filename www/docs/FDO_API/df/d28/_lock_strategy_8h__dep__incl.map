@@ -1,0 +1,8 @@
+base referer
+rect $d0/ded/_i_base_select_8h.htm 171,96 275,123
+rect $d2/d52/_i_select_8h.htm 361,7 436,34
+rect $d8/d82/_fdo_8h.htm 519,108 575,135
+rect $da/d98/_i_acquire_lock_8h.htm 168,210 277,236
+rect $df/dcb/_i_select_aggregates_8h.htm 328,108 469,135
+rect $d1/db7/_i_connection_manager_8h.htm 623,83 780,110
+rect $dd/d47/_connection_manager_8h.htm 829,108 981,135
