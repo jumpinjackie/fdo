@@ -485,6 +485,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\PgSpatialRefSysReader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PgSpatialRefSysReader.h"
+				>
+			</File>
+			<File
 				RelativePath=".\PgSpatialTablesReader.cpp"
 				>
 			</File>

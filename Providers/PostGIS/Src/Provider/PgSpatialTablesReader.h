@@ -27,8 +27,6 @@
 #include <vector>
 // boost
 #include <boost/noncopyable.hpp>
-// libpq
-#include <libpq-fe.h>
 
 namespace fdo { namespace postgis {
 
