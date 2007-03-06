@@ -17,6 +17,7 @@
 #include "stdafx.h"
 #include "PostGisProvider.h"
 #include "PgSpatialTablesReader.h"
+#include "PgGeometry.h"
 #include "Connection.h"
 // std
 #include <cassert>
@@ -90,6 +91,69 @@ FdoStringP PgSpatialTablesReader::GetTableName() const
     return mReader->GetString(L"tablename");
 }
 
+PgSpatialTablesReader::columns_t PgSpatialTablesReader::GetGeometryColumns() const
+{
+    FDOLOG_MARKER("PgSpatialTablesReader::+GetGeometryColumns");
+
+    std::string sql("SELECT g.f_geometry_column, g.type, g.coord_dimension, g.srid "
+                    "FROM geometry_columns g "
+                    "WHERE  g.f_table_schema = '"
+                    + mCurrentSchema +
+                    "' AND g.f_table_name = '"
+                    + mTableCached + "'");
+
+    // Here, we intentionally DO NOT use FdoISQLCommand to eliminate
+    // unnecessary overhead. It's faster to work as close to libpq API as possible.
+
+    boost::shared_ptr<PGresult> pgRes(mConn->PgExecuteQuery(sql.c_str()), PQclear);
+    assert(PGRES_TUPLES_OK == PQresultStatus(pgRes.get()));
+    assert(4 == PQnfields(pgRes.get()));
+
+    int const ntuples = PQntuples(pgRes.get());
+
+    // Prepare collection for geometry columns
+    columns_t columns;
+    columns.reserve(ntuples);
+    
+    FdoStringP name;
+    FdoGeometryType type = FdoGeometryType_None;
+    FdoInt32 dim = 0;
+    FdoInt32 srid = 0;
+
+    for (int ntuple = 0; ntuple < ntuples; ++ntuple)
+    {
+        // 0 - geometry.columns.f_geometry_name
+        name = PQgetvalue(pgRes.get(), ntuple, 0);
+        
+        try
+        {
+            // 1 - geometry.columns.type
+            std::string stype(PQgetvalue(pgRes.get(), ntuple, 1));
+            type = ewkb::FdoGeometryTypeFromPgType(stype);
+            
+            // 2 - geometry.columns.coord_dimension
+            char const* cdim = PQgetvalue(pgRes.get(), ntuple, 2);
+            FdoInt32 tmp = boost::lexical_cast<FdoInt32>(cdim);
+            dim = ewkb::FdoDimensionTypeFromPgType(tmp, stype);
+            
+            // 3 - geometry.columns.srid
+            char const* csrid = PQgetvalue(pgRes.get(), ntuple, 3);
+            srid = boost::lexical_cast<FdoInt32>(csrid);
+            
+            // Describe geometry column and add to the collection
+            PgGeometryColumn::Ptr col(new PgGeometryColumn(name, type, dim, srid));
+            columns.push_back(col);
+        }
+        catch (boost::bad_lexical_cast& e)
+        {
+            FDOLOG_WRITE("Field value conversion failed: %s", e.what());
+        }
+    }
+
+    assert(ntuples == columns.size());
+    return columns;
+}
+
 void PgSpatialTablesReader::Open()
 {
     FDOLOG_MARKER("PgSpatialTablesReader::+Open");
@@ -118,7 +182,15 @@ void PgSpatialTablesReader::Open()
 
 bool PgSpatialTablesReader::ReadNext()
 {
-    return mReader->ReadNext();
+    bool hasTuples = mReader->ReadNext();
+    
+    // Cache table name
+    if (hasTuples)
+    {
+        mTableCached = static_cast<char const*>(GetTableName());
+    }
+    
+    return hasTuples;
 }
 
 void PgSpatialTablesReader::Close()

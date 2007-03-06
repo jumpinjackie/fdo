@@ -24,6 +24,7 @@
 #include <Fdo/Commands/Sql/ISQLCommand.h>
 // std
 #include <string>
+#include <vector>
 // boost
 #include <boost/noncopyable.hpp>
 // libpq
@@ -45,47 +46,25 @@ public:
     /// Type of FDO smart pointer for the class.
     typedef FdoPtr<PgSpatialTablesReader> Ptr;
     
+    /// Type of geometry columns collection
+    typedef std::vector<PgGeometryColumn::Ptr> columns_t;
+    
     /// Constructor creates new reader instance associated with given connection.
     PgSpatialTablesReader(Connection* conn);
-    
-    FdoStringP GetSchemaName() const;
-    FdoStringP GetTableName() const;
-    
-    ////////////////////////////////////////////////////////////////////////////
-    // FIXME: The collections below and GetGeometryColumns 
-    // is only a presentation of ideal, non-messing with new types of collections,
-    // use of FDO collections. Unfortunately, it's not supported, so we keep it
-    // in SVN for archive purpose only, may be in future there will be a nice
-    // solution for that.
-    // In the meantime, the GetGeometryColumns will be implemented using
-    // std::vector or std::list.
-    ////////////////////////////////////////////////////////////////////////////
-    
-typedef FdoReadOnlyCollection
-    <
-        PgGeometryColumn, FdoCollection<PgGeometryColumn, FdoException>, FdoException
-    >
-    ColumnsCollection;
 
-ColumnsCollection* GetGeometryColumns() const
-{
-    typedef FdoCollection<PgGeometryColumn, FdoException> ColumnsCollectionBase;
-    FdoPtr<ColumnsCollectionBase> intCol = new ColumnsCollectionBase();
+    /// Get name of schema to which a spatial table belongs.
+    FdoStringP GetSchemaName() const;
     
-    PgGeometryColumn::Ptr c1(
-        new PgGeometryColumn(L"g1", FdoDimensionality_XY, FdoGeometryType_Point, -1));
-    intCol->Add(c1);
-    
-    PgGeometryColumn::Ptr c2(
-        new PgGeometryColumn(L"g2", FdoDimensionality_XY, FdoGeometryType_Point, -1));
-    intCol->Add(c2);
-    
-    FdoPtr<ColumnsCollection> columns(new ColumnsCollection());
-    columns->SetBaseCollection(intCol);
-    
-    FDO_SAFE_ADDREF(columns.p);
-    return columns.p;
-}
+    /// Get name of a spatial table.
+    FdoStringP GetTableName() const;
+
+    /// Get collection of geometry columns.
+    /// Every column is described by following elements:
+    ///  - name
+    ///  - coordinates dimension
+    ///  - geometry type
+    ///  - SRID
+    columns_t GetGeometryColumns() const;
     
     /// Open spatial tables reader.
     /// This operation mimics FDO command usually creating instance of a reader.
@@ -133,6 +112,9 @@ private:
     
     // Name of current PostgreSQL schema (FDO datastore).
     std::string mCurrentSchema;
+    
+    // Name of a table currently read and cached.
+    std::string mTableCached;
     
     //
     // Private operations
