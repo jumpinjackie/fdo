@@ -458,7 +458,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="PostgreSQL"
+			Name="PostGIS"
 			>
 			<File
 				RelativePath=".\PgCursor.cpp"
@@ -474,6 +474,14 @@
 			</File>
 			<File
 				RelativePath=".\PgGeometry.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PgGeometryColumn.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PgGeometryColumn.h"
 				>
 			</File>
 			<File

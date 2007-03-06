@@ -17,9 +17,9 @@
 #ifndef FDOPOSTGIS_PGSPATIALTABLESREADER_H_INCLUDED
 #define FDOPOSTGIS_PGSPATIALTABLESREADER_H_INCLUDED
 
-#include "PgSpatialTablesReader.h"
 #include "Connection.h"
 #include "SQLDataReader.h"
+#include "PgGeometryColumn.h"
 // FDO
 #include <Fdo/Commands/Sql/ISQLCommand.h>
 // std
@@ -51,9 +51,41 @@ public:
     FdoStringP GetSchemaName() const;
     FdoStringP GetTableName() const;
     
-    //FdoStringP GetGeometryColumns() const;
+    ////////////////////////////////////////////////////////////////////////////
+    // FIXME: The collections below and GetGeometryColumns 
+    // is only a presentation of ideal, non-messing with new types of collections,
+    // use of FDO collections. Unfortunately, it's not supported, so we keep it
+    // in SVN for archive purpose only, may be in future there will be a nice
+    // solution for that.
+    // In the meantime, the GetGeometryColumns will be implemented using
+    // std::vector or std::list.
+    ////////////////////////////////////////////////////////////////////////////
     
+typedef FdoReadOnlyCollection
+    <
+        PgGeometryColumn, FdoCollection<PgGeometryColumn, FdoException>, FdoException
+    >
+    ColumnsCollection;
+
+ColumnsCollection* GetGeometryColumns() const
+{
+    typedef FdoCollection<PgGeometryColumn, FdoException> ColumnsCollectionBase;
+    FdoPtr<ColumnsCollectionBase> intCol = new ColumnsCollectionBase();
     
+    PgGeometryColumn::Ptr c1(
+        new PgGeometryColumn(L"g1", FdoDimensionality_XY, FdoGeometryType_Point, -1));
+    intCol->Add(c1);
+    
+    PgGeometryColumn::Ptr c2(
+        new PgGeometryColumn(L"g2", FdoDimensionality_XY, FdoGeometryType_Point, -1));
+    intCol->Add(c2);
+    
+    FdoPtr<ColumnsCollection> columns(new ColumnsCollection());
+    columns->SetBaseCollection(intCol);
+    
+    FDO_SAFE_ADDREF(columns.p);
+    return columns.p;
+}
     
     /// Open spatial tables reader.
     /// This operation mimics FDO command usually creating instance of a reader.
@@ -111,4 +143,4 @@ private:
 
 }} // namespace fdo::postgis
 
-#endif // FDOPOSTGIS_PGCURSOR_H_INCLUDED
+#endif // FDOPOSTGIS_PGSPATIALTABLESREADER_H_INCLUDED
