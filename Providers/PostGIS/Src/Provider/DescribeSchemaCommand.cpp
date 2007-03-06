@@ -19,6 +19,7 @@
 #include "PostGisProvider.h"
 #include "DescribeSchemaCommand.h"
 #include "PgSpatialTablesReader.h"
+#include "PgGeometry.h" // TODO: Remove it
 
 #include <cassert>
 #include <iostream>
@@ -121,6 +122,20 @@ FdoFeatureSchemaCollection* DescribeSchemaCommand::Execute()
     {
         wcout << reader->GetSchemaName() << L" - ";
         wcout << reader->GetTableName() << std::endl;
+        
+        PgSpatialTablesReader::columns_t cols;
+        cols = reader->GetGeometryColumns();
+       
+        PgSpatialTablesReader::columns_t::const_iterator it;
+        for (it = cols.begin(); it != cols.end(); ++it)
+        {            
+            wcout << (*it)->GetName() << L" - "
+                  << (*it)->GetGeometryType() << L" - "
+                  << ewkb::GetOrdinatesFromDimension((*it)->GetDimensionType()) << L" - "
+                  << (*it)->GetSRID() << std::endl;
+        }
+        
+        wcout << std::endl;
     }
     
     return NULL;
