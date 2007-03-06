@@ -99,6 +99,11 @@ void hex_to_bytes(std::string const& hexstr, std::vector<boost::uint8_t>& bytes)
 ///
 void bytes_to_hex(std::vector<boost::uint8_t> const& bytes, std::string& hexstr);
 
+FdoGeometryType FdoGeometryTypeFromPgType(std::string const& pgType);
+
+/// Generate FDO coordinates dimension mask from PostGIS dimension value
+/// and geometry type.
+FdoInt32 FdoDimensionTypeFromPgType(FdoInt32 const& pgDim, std::string const& pgType);
 
 /// Calculate number of ordinates based on given dimensionality.
 ///
@@ -107,7 +112,7 @@ void bytes_to_hex(std::vector<boost::uint8_t> const& bytes, std::string& hexstr)
 /// \return
 /// Number of ordinates stored in geometry of given dimensionality.
 ///
-boost::uint32_t GetOrdinatesFromDimensionality(boost::uint32_t const& dim);
+boost::uint32_t GetOrdinatesFromDimension(boost::uint32_t const& dim);
 
 /// Create FDO geometry from PostGIS EWKB stream of bytes.
 ///

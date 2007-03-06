@@ -21,6 +21,7 @@
 #include <cassert>
 #include <iomanip>
 #include <sstream>
+#include <string>
 #include <vector>
 // boost
 #include <boost/cstdint.hpp>
@@ -64,7 +65,103 @@ void bytes_to_hex(std::vector<boost::uint8_t> const& bytes, std::string& hexstr)
     assert(hexstr.size() == bytesSize * 2);
 }
 
-boost::uint32_t GetOrdinatesFromDimensionality(boost::uint32_t const& dim)
+FdoGeometryType FdoGeometryTypeFromPgType(std::string const& pgType)
+{
+    FdoGeometryType fdoType = FdoGeometryType_None;
+
+    try
+    {
+        if (0 == pgType.compare(0, 5, "POINT"))
+        {
+            fdoType = FdoGeometryType_Point;
+        }
+        else if (0 == pgType.compare(0, 10, "LINESTRING"))
+        {
+            fdoType = FdoGeometryType_LineString;
+        }
+        else if (0 == pgType.compare(0, 7, "POLYGON"))
+        {
+            fdoType = FdoGeometryType_Polygon;
+        }
+        else if (0 == pgType.compare(0, 10, "MULTIPOINT"))
+        {
+            fdoType = FdoGeometryType_MultiPoint;
+        }
+        else if (0 == pgType.compare(0, 15, "MULTILINESTRING"))
+        {
+            fdoType = FdoGeometryType_MultiLineString;
+        }
+        else if (0 == pgType.compare(0, 12, "MULTIPOLYGON"))
+        {
+            fdoType = FdoGeometryType_MultiPolygon;
+        }
+        else if (0 == pgType.compare(0, 18, "GEOMETRYCOLLECTION"))
+        {
+            fdoType = FdoGeometryType_MultiGeometry;
+        }
+        
+        // TODO: Add conversion of CURVE types
+        
+        //else if (0 == pgType.compare(0, 0, ""))
+        //{
+        //    fdoType = FdoGeometryType_CurveString;
+        //}
+        //else if (0 == pgType.compare(0, 0, ""))
+        //{
+        //    fdoType = FdoGeometryType_CurvePolygon
+        //}
+        //else if (0 == pgType.compare(0, 0, ""))
+        //{
+        //    fdoType = FdoGeometryType_MultiCurveString;
+        //}
+        //else if (0 == pgType.compare(0, 0, ""))
+        //{
+        //    fdoType = FdoGeometryType_MultiCurvePolygon;
+        //}
+    }
+    catch (std::out_of_range& e)
+    {
+        // TODO: Consider replacing it with an exception
+        FDOLOG_WRITE("FdoGeometryTypeFromPgType failure: %s", e.what());
+        assert(!"INVALID INPUT GEOMETRY NAME");
+    }
+
+    assert(FdoGeometryType_None != fdoType);
+    return fdoType;
+}
+
+FdoInt32 FdoDimensionTypeFromPgType(FdoInt32 const& pgDim, std::string const& pgType)
+{
+    FdoInt32 fdoDim = 0;
+
+    switch (pgDim)
+    {
+    case 2:
+        {
+            fdoDim = FdoDimensionality_XY;
+        }
+        break;
+    case 3:
+        {
+            if (pgType.substr(pgType.size() - 1, 1) == "M")
+                fdoDim = (FdoDimensionality_XY | FdoDimensionality_M);
+            else
+                fdoDim = (FdoDimensionality_XY | FdoDimensionality_Z);
+        }
+        break;
+    case 4:
+        {
+            fdoDim = (FdoDimensionality_XY | FdoDimensionality_Z | FdoDimensionality_M);
+        }
+        break;
+    default:
+        assert(!"SHOULD NEVER GET HERE");
+    }
+    
+    return fdoDim;
+}
+
+boost::uint32_t GetOrdinatesFromDimension(boost::uint32_t const& dim)
 {
     boost::uint32_t value = 0;
 
@@ -211,7 +308,7 @@ FdoByteArray* CreateFgfFromExtendedWkb(ewkb_t const& ewkb,
 
             // Valid combinations: X,Y or X,Y,Z or X,Y,M or X,Y,Z,M
             uint32_t const ordinatesSize =
-                sizeof(double) * GetOrdinatesFromDimensionality(geomDim);
+                sizeof(double) * GetOrdinatesFromDimension(geomDim);
 
             // NOTE: These dirty hacks below are required because
             // FdoByteArray do NOT respect const-correctness for input parameters.
@@ -241,7 +338,7 @@ FdoByteArray* CreateFgfFromExtendedWkb(ewkb_t const& ewkb,
             leftBytes -= sizeof(numCoords);
 
             uint32_t const ordinatesSize =
-                numCoords * sizeof(double) * GetOrdinatesFromDimensionality(geomDim);
+                numCoords * sizeof(double) * GetOrdinatesFromDimension(geomDim);
             bytePtr = const_cast<byte_ptr_t>(&ewkb[currentByte]);
             fdoBytePtr = static_cast<fdo_byte_ptr_t>(bytePtr);
             fgfBytes = FdoByteArray::Append(fgfBytes, ordinatesSize, fdoBytePtr);
@@ -274,7 +371,7 @@ FdoByteArray* CreateFgfFromExtendedWkb(ewkb_t const& ewkb,
                 leftBytes -= sizeof(numCoords);
 
                 uint32_t const numOrdinates =
-                    numCoords * sizeof(double) * GetOrdinatesFromDimensionality(geomDim);
+                    numCoords * sizeof(double) * GetOrdinatesFromDimension(geomDim);
                 bytePtr = const_cast<byte_ptr_t>(&ewkb[currentByte]);
                 fdoBytePtr = static_cast<fdo_byte_ptr_t>(bytePtr);
                 fgfBytes = FdoByteArray::Append(fgfBytes, numOrdinates, fdoBytePtr);
