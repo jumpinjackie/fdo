@@ -252,6 +252,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\Inc\PostGIS\FdoPostGisOverrides.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\Inc\PostGIS\Override\PhysicalSchemaMapping.h"
 				>
 			</File>
