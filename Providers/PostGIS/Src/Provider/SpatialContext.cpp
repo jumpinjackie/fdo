@@ -15,7 +15,7 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 //
 #include "stdafx.h"
-
+#include "PostGisProvider.h"
 #include "SpatialContext.h"
 
 #include <cassert>
@@ -32,46 +32,43 @@ SpatialContext::~SpatialContext()
 
 FdoString* SpatialContext::GetName() const
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    return mName;
 }
 
 void SpatialContext::SetName(FdoString* name)
 {
-    assert(!"NOT IMPLEMENTED");
+    mName = name;
 }
 
 FdoString* SpatialContext::GetDescription() const
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    return mDescription;
 }
 
 void SpatialContext::SetDescription(FdoString* desc)
 {
-    assert(!"NOT IMPLEMENTED");
+    mDescription = desc;
 }
 
 FdoString* SpatialContext::GetCoordinateSystem() const
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    // TODO: Verify this function and value
+    return mCoordSysName;
 }
 
 void SpatialContext::SetCoordSysName(FdoString* csName)
 {
-    assert(!"NOT IMPLEMENTED");
+    mCoordSysName = csName;
 }
 
 FdoString* SpatialContext::GetCoordinateSystemWkt() const
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    return mCoordSysWkt;
 }
 
-void SpatialContext::SetCoordinateSystemWkt(FdoString* wkt)
+void SpatialContext::SetCoordinateSystemWkt(FdoString* csWkt)
 {
-    assert(!"NOT IMPLEMENTED");
+    mCoordSysWkt = csWkt;
 }
 
 FdoSpatialContextExtentType SpatialContext::GetExtentType() const
