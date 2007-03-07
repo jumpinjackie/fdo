@@ -60,7 +60,7 @@ public:
     virtual FdoString* GetCoordinateSystemWkt() const;
 
     /// \todo To be documented
-    virtual void SetCoordinateSystemWkt(FdoString* wkt);
+    virtual void SetCoordinateSystemWkt(FdoString* csWkt);
 
     /// \todo To be documented
     virtual FdoSpatialContextExtentType GetExtentType() const;
@@ -100,11 +100,14 @@ public:
     /// Not allowing name change allows more efficient random access to FdoDictionary.
     FdoBoolean CanSetName() const;
 
-
 protected:
 
 private:
 	
+	FdoStringP mName;
+	FdoStringP mDescription;
+	FdoStringP mCoordSysName;
+	FdoStringP mCoordSysWkt;
 };
 
 
