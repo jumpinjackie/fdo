@@ -54,7 +54,7 @@ export SDEHOME=$FDOTHIRDPARTY/ESRI/ArcSDEClient91/Linux
 
 if test ! -e "$SDEHOME"; then
    echo ""
-   echo "OPTIONAL: The default location for the ArcSDE client SDK files"
+   echo "NOTE: The default location for the ArcSDE client SDK files"
    echo "was not found. The setenvironment script sets the default value to: "
    echo "$FDOTHIRDPARTY/ESRI/ArcSDEClient91/Linux. "
    echo "If you need to build the FDO ArcSDE Provider, modify the "
@@ -63,24 +63,26 @@ if test ! -e "$SDEHOME"; then
    echo ""
 fi
 
-export FDOGDAL=/usr/local
+export FDOGDAL=$FDOTHIRDPARTY/gdal
 
-if test ! -e "$FDOGDAL"; then
-   echo ""
-   echo "OPTIONAL: The default location for the GDAL SDK files"
-   echo "was not found. The setenvironment script sets the default value to: "
-   echo "user/local. "
-   echo "If you need to build the FDO GDAL or WMS Providers, modify the "
-   echo "setenvironment.sh script with a valid path and set FDOGDAL to "
-   echo "point to the location of the GDAL SDK files."
-   echo ""
-fi
+echo ""
+echo "NOTE: The setenvironment.sh script sets the installation location for "
+echo "the GDAL SDK files to $FDOTHIRDPARTY/gdal. "
+echo "If this value remains unchanged, the FDO build process will"
+echo "build the version of GDAL located in Thirdparty/gdal and will "
+echo "install the resulting libraries in /usr/local/fdo-3.3.0. The FDO build"
+echo "process will then use that location when building the GDAL and"
+echo "WMS providers. If you wish to build the FDO GDAL or WMS Providers"
+echo "using a previously installed version of GDAL, modify the setenvironment.sh "
+echo "script and set FDOGDAL to point to the existing GDAL installation."
+echo "For example: /user/local (The default GDAL installation path)."
+echo ""
 
 export FDOMYSQL=$FDOTHIRDPARTY/mysql/rhlinux
 
 if test ! -e "$FDOMYSQL"; then
    echo ""
-   echo "OPTIONAL: The default location for the MySQL SDK files "
+   echo "NOTE: The default location for the MySQL SDK files "
    echo "was not found. The setenvironment script sets the default value to: "
    echo "$FDOTHIRDPARTY/mysql/rhlinux "
    echo "If you need to build the FDO MySQL Provider, and have chosen not "
@@ -88,7 +90,7 @@ if test ! -e "$FDOMYSQL"; then
    echo "process, modify the setenvironment.sh script and set FDOMYSQL to point"
    echo "to the location of the MySQL client installation. If you have chosen "
    echo "to install the MySQL client using the RPM install, this environment "
-   echo "variable does not need to be set"
+   echo "variable does not need to be set and this warning can be ignored."
    echo ""
 fi
 
@@ -96,11 +98,11 @@ export FDOODBC=/usr
 
 if test ! -e "$FDOODBC"; then
    echo ""
-   echo "OPTIONAL: The default path for the ODBC SDK files was not found. "
+   echo "NOTE: The default path for the ODBC SDK files was not found. "
    echo "The setenvironment script sets the default value to: "
    echo "$FDOODBC"
    echo "If you need to build the ODBC prvovider, modify the setenvironment.sh "
-   echo "script and set FDOODBC to point to the location of the ODBC SDK"
+   echo "script and set FDOODBC to point to the location of the ODBC SDK."
    echo ""
 fi
 

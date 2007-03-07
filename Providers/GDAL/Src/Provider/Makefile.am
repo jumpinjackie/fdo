@@ -118,6 +118,6 @@ INCLUDES = \
   -I../Message/Inc/  \
   -I$(FDO)/Unmanaged/Inc \
   -I$(FDOUTILITIES)/Common/Inc \
-  -I$(FDOGDAL)/include
+  -I$(FDOGDAL)/include 
 
 CXXFLAGS = @CXXFLAGS@ -D__USE_GNU -DLINUX -DLINUX_IA32

@@ -55,22 +55,41 @@ mv -f ./libssl.a ./lib/linux/libssl.a
 mv -f ./libcrypto.a ./lib/linux/libcrypto.a
 popd >& /dev/null
 
-## Thirdparty_WMS
-pushd . >& /dev/null
-cd gdal
-echo Building gdal
-cd src
-chmod a+x ./configure
-echo Build GDAL library with the following settings:
-echo     gif support         - internal
-echo     jpeg support        - internal
-echo     png support         - internal
-echo     tiff support        - internal
-echo     geotiff support     - internal
-echo     libz support        - internal
-echo     python support      - no
-echo     OGR support         - no
-echo     postgreSQL support  - no
-./configure --with-gif=internal --with-jpeg=internal --with-png=internal --with-libtiff=internal --with-geotiff=internal --without-ogr --with-pg=no --with-python=no --with-libz=internal
-make
-popd >& /dev/null
+## Thirdparty_WMS/GDAL
+if test "$FDOGDAL" == "$FDOTHIRDPARTY/gdal"; then 
+    pushd . >& /dev/null
+    cd gdal
+    echo Building gdal
+    mkdir -p lib
+    mkdir -p include
+    rm -f lib/*.libgdal.a    
+    rm -f lib/*.libgdal.so    
+    rm -f lib/*.libgdal.so.1    
+    rm -f lib/*.libgdal.so.1.11.0   
+    rm -f include/*
+    chmod a+x ./configure
+    echo Build GDAL library with the following settings:
+    echo     gif support         - internal
+    echo     jpeg support        - internal
+    echo     png support         - internal
+    echo     tiff support        - internal
+    echo     geotiff support     - internal
+    echo     libz support        - internal
+    echo     python support      - no
+    echo     OGR support         - no
+    echo     postgreSQL support  - no
+    ./configure --with-gif=internal --with-jpeg=internal --with-png=internal --with-libtiff=internal --with-geotiff=internal --without-ogr --with-pg=no --with-python=no --with-libz=internal
+    make
+    cp -f .libs/libgdal.a lib/
+    cp -f .libs/libgdal.la lib/
+    cp -f .libs/libgdal.so lib/
+    cp -f .libs/libgdal.so.1 lib/
+    cp -f .libs/libgdal.so.1.11.0 lib/
+    cp -f port/*.h include/
+    cp -f gcore/*.h include/
+    cp -f alg/*.h include/
+    cp -f ogr/*.h include/
+    popd >& /dev/null
+else
+    echo "Building of the Thirdparty/GDAL libraries has been skipped. Environment variable FDOGDAL points to a previously installed version of GDAL at $FDOGDAL. This version of GDAL will be used to build the FDO WMS and GDAL providers."
+fi
