@@ -15,14 +15,22 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 //
 #include "stdafx.h"
-
 #include "PostGisProvider.h"
 #include "DescribeSchemaCommand.h"
+#include "SpatialContextCollection.h"
+#include "PgGeometryColumn.h"
 #include "PgSpatialTablesReader.h"
-#include "PgGeometry.h" // TODO: Remove it
-
+#include "PostGIS/FdoPostGisOverrides.h"
+// std
 #include <cassert>
-#include <iostream>
+#include <string>
+// boost
+#include <boost/lexical_cast.hpp>
+#include <boost/shared_ptr.hpp>
+
+
+#include <iostream> // TODO: Remove it
+#include "PgGeometry.h" // TODO: Remove it
 
 namespace fdo { namespace postgis {
 
@@ -112,33 +120,135 @@ void DescribeSchemaCommand::SetSchemaName(FdoString* name)
 
 FdoFeatureSchemaCollection* DescribeSchemaCommand::Execute()
 {
-    // XXX - Just testing
     using std::wcout;
+
+    FdoPtr<FdoFeatureSchemaCollection> featSchemas = NULL;
+    featSchemas = FdoFeatureSchemaCollection::Create(NULL);
+
+    ov::PhysicalSchemaMapping::Ptr phSmMapping = NULL;
+    phSmMapping = ov::PhysicalSchemaMapping::Create();
+
+    SpatialContextCollection::Ptr spContexts(new SpatialContextCollection());
+    
+    //
+    // Create FDO classes from PostGIS-enabled spatial tables
+    //
+    
+    FdoPtr<FdoFeatureSchema> featSchema(FdoFeatureSchema::Create(L"FdoPostGIS", L""));
+    featSchemas->Add(featSchema.p);
+
+    FdoPtr<FdoClassCollection> featClasses(featSchema->GetClasses());
+    ov::ClassCollection::Ptr phClasses(phSmMapping->GetClasses());
     
     PgSpatialTablesReader::Ptr reader(new PgSpatialTablesReader(mConn.p));
     reader->Open();
     
+    // Process every table to FDO class
     while (reader->ReadNext())
     {
-        wcout << reader->GetSchemaName() << L" - ";
-        wcout << reader->GetTableName() << std::endl;
-        
-        PgSpatialTablesReader::columns_t cols;
-        cols = reader->GetGeometryColumns();
-       
-        PgSpatialTablesReader::columns_t::const_iterator it;
-        for (it = cols.begin(); it != cols.end(); ++it)
-        {            
-            wcout << (*it)->GetName() << L" - "
-                  << (*it)->GetGeometryType() << L" - "
-                  << ewkb::GetOrdinatesFromDimension((*it)->GetDimensionType()) << L" - "
-                  << (*it)->GetSRID() << std::endl;
+        PgSpatialTablesReader::columns_t geometryColumns(reader->GetGeometryColumns());
+        PgGeometryColumn::Ptr geomColumn = geometryColumns[0];
+        SpatialContext::Ptr spContext = NULL;
+
+        FdoInt32 srid = geomColumn->GetSRID();
+        if (srid >= 0)
+        {
+            FdoStringP spContextName = FdoStringP::Format(L"PostGIS_%d", srid);
+            spContext = spContexts->FindItem(spContextName);
+            if (NULL == spContext)
+            {
+                spContext = CreateSpatialContext(spContextName, geomColumn);
+                spContexts->Insert(0, spContext);
+            }
         }
-        
-        wcout << std::endl;
+       
     }
     
+        
+    
+    //while (reader->ReadNext())
+    //{
+    //    wcout << reader->GetSchemaName() << L" - ";
+    //    wcout << reader->GetTableName() << std::endl;
+    //    
+    //    PgSpatialTablesReader::columns_t cols;
+    //    cols = reader->GetGeometryColumns();
+    //   
+    //    PgSpatialTablesReader::columns_t::const_iterator it;
+    //    for (it = cols.begin(); it != cols.end(); ++it)
+    //    {            
+    //        wcout << (*it)->GetName() << L" - "
+    //              << (*it)->GetGeometryType() << L" - "
+    //              << ewkb::GetOrdinatesFromDimension((*it)->GetDimensionType()) << L" - "
+    //              << (*it)->GetSRID() << std::endl;
+    //    }
+    //    
+    //    wcout << std::endl;
+    //}
+    
     return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Private operations interface
+///////////////////////////////////////////////////////////////////////////////
+
+SpatialContext* DescribeSchemaCommand::CreateSpatialContext(
+    FdoStringP spContextName, PgGeometryColumn::Ptr column)
+{
+
+    //
+    // Query for SRS details
+    //
+    
+    std::string srid;
+    try
+    {
+        srid = boost::lexical_cast<std::string>(column->GetSRID());
+    }
+    catch (boost::bad_lexical_cast& e)
+    {
+        srid = "-1";
+        assert(!"FIX HANDLING INVALID SRID");
+    }
+    
+    std::string sql("SELECT srtext FROM spatial_ref_sys WHERE srid = " + srid);
+    
+    boost::shared_ptr<PGresult> pgRes(mConn->PgExecuteQuery(sql.c_str()), PQclear);    
+    if (PGRES_TUPLES_OK != PQresultStatus(pgRes.get()))
+    {
+        // TODO: Replace with exception
+        assert(!"SRS NOT FOUND");
+    }
+    assert(1 == PQntuples(pgRes.get()));
+
+    //
+    // Generate spatial context details
+    // 
+    
+    SpatialContext::Ptr spContext(new SpatialContext());
+    spContext->SetName(spContextName);
+
+    int const nfield = PQfnumber(pgRes.get(), "srtext");
+    std::string wkt(PQgetvalue(pgRes.get(), 0, nfield));
+    
+    // Use substring between first quotes ("") as the SRS name
+    std::string wktName("UNKNOWN");
+    std::string::size_type pos1 = wkt.find_first_of('"') + 1;
+    std::string::size_type pos2 = wkt.find_first_of(',') - 1;
+    if (pos1 != std::string::npos && pos2 != std::string::npos)
+    {
+        wktName = wkt.substr(pos1, pos2 - pos1);
+    }
+    
+    FdoStringP csName(wktName.c_str());
+    spContext->SetCoordSysName(csName);
+
+    FdoStringP csWkt(wkt.c_str());
+    spContext->SetCoordinateSystemWkt(csWkt);
+
+    FDO_SAFE_ADDREF(spContext.p);
+    return spContext.p;
 }
 
 }} // namespace fdo::postgis

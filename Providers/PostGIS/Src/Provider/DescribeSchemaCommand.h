@@ -18,6 +18,7 @@
 #define FDOPOSTGIS_DESCRIBESCHEMACOMMAND_H_INCLUDED
 
 #include "Connection.h"
+#include "PgGeometryColumn.h"
 
 //
 // Forward declarations
@@ -27,9 +28,9 @@ class FdoITransaction;
 class FdoFeatureSchemaCollection;
 class FdoParameterValueCollection;
 
-
 namespace fdo { namespace postgis {
 
+class SpatialContext;
 
 /// Implementation of interface defining DescribeSchema command.
 /// This command describes feature schema available from currently
@@ -126,7 +127,12 @@ protected:
 
 
 private:
-	
+
+    //
+    // Private operations
+    //
+    
+    SpatialContext* CreateSpatialContext(FdoStringP name, PgGeometryColumn::Ptr column);
 
 };
 
