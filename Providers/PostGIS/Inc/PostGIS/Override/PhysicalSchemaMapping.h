@@ -19,15 +19,12 @@
 
 #include <PostGIS/Override/ClassCollection.h>
 
-//
-// Forward declarations
-//
-class fdo::postgis::ov::ClassDefinition;
-class fdo::postgis::ov::ClassCollection;
-
-
 namespace fdo { namespace postgis { namespace ov {
 
+// Forward declarations
+class ClassDefinition;
+class ClassCollection;
+    
 /// \todo To be documented
 class PhysicalSchemaMapping : public FdoPhysicalSchemaMapping
 {
@@ -38,10 +35,11 @@ public:
     FDOPOSTGIS_API static PhysicalSchemaMapping* Create();
 
     FDOPOSTGIS_API virtual FdoString* GetProvider();
+    
     FDOPOSTGIS_API ClassCollection* GetClasses() const; 
 
-    /// find using classname:
-    FDOPOSTGIS_API ClassDefinition* FindByClassName(FdoString *ClassName);
+    /// Find a feature class by name
+    FDOPOSTGIS_API ClassDefinition* FindByClassName(FdoStringP const& name);
 
 protected:
 
@@ -56,7 +54,7 @@ protected:
 
 private:
 
-    ClassCollection::Ptr m_Classes;
+    ClassCollection::Ptr mClasses;
 
     typedef FdoPhysicalSchemaMapping BaseType;
 };

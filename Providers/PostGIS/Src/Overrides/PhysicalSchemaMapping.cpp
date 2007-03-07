@@ -22,8 +22,9 @@
 
 namespace fdo { namespace postgis { namespace ov {
 
-PhysicalSchemaMapping::PhysicalSchemaMapping()
+PhysicalSchemaMapping::PhysicalSchemaMapping() : mClasses(NULL)
 {
+    mClasses = ClassCollection::Create(this);
 }
 
 PhysicalSchemaMapping::~PhysicalSchemaMapping()
@@ -47,20 +48,33 @@ PhysicalSchemaMapping* PhysicalSchemaMapping::Create()
 
 FdoString* PhysicalSchemaMapping::GetProvider()
 {
-    ///return fdo::postgis::ProviderName;
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    // TODO: Replace hardcoded literal with common definition
+    // fdo::postgis::ProviderName
+    return L"OSGeo.PostGIS.3.2";
 }
 
 ClassCollection* PhysicalSchemaMapping::GetClasses() const
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    FDO_SAFE_ADDREF(mClasses.p);
+    return mClasses.p;
 }
 
-ClassDefinition* PhysicalSchemaMapping::FindByClassName(FdoString* name)
+ClassDefinition* PhysicalSchemaMapping::FindByClassName(FdoStringP const& name)
 {
-    assert(!"NOT IMPLEMENTED");
+    // TODO: do case-insensitive compare on WIN32 platform,
+    //       case-sensitive on other platforms
+
+    FdoInt32 const size = mClasses->GetCount();
+    for (FdoInt32 i = 0; i < size; ++i)
+    {
+        FdoPtr<ClassDefinition> classDef(mClasses->GetItem(i));
+        if (name == classDef->GetName())
+        {
+            FDO_SAFE_ADDREF(classDef.p);
+            return classDef.p;
+        }
+    }
+    
     return 0;
 }
 
