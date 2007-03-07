@@ -542,27 +542,48 @@ II. Build Notes
      environment variables and PATH settings.
 
  11. The build_thirdparty.sh script is used to build the FDO Thirdparty 
-     binaries.  The following is a general guideline on how to use the 
-     build_thirdparty.bat build script.
-  
-           **************************************************************
-           build_thirdparty.sh [--h] [--a Action] [--m ConfigMakefiles]
+     open source components used by the FDO API and the FDO providers.  
+     The following is a general guideline on how to use the 
+     build_thirdparty.sh build script.
 
-           Help:            --h[elp]
-           Action:          --a[ction] buildinstall(default), 
-                                       build, 
-                                       install, 
-                                       uninstall, 
-                                       clean
-           ConfigMakefiles: --m[akefile] configure(default), noconfigure
-           **************************************************************
+            *******************************************************
+            build_thirdparty.sh [--h]
+                                [--a Action]
+                                [--w WithModule]
+                                [--m ConfigMakefiles]
+                 
+            Help:            --h[elp]
+            Action:          --a[ction] buildinstall(default),
+                                        build, 
+                                        install,
+                                        uninstall,
+                                        clean
+            WithModule:      --w[ith] all(default),
+                                      fdo,
+                                      sdf,
+                                      wms,
+                                      wfs,
+                                      gdal
+            ConfigMakefiles: --m[akefile] configure(default), 
+                                          noconfigure
+            *******************************************************
 
-           e.g.
+     
+            e.g.
 
             **** Display help for build_thirdparty.sh 
             build_thirdparty --h
             **** Configure, Build and Install all Thirdparty components
             build_thirdparty
+            **** Configure, Build and Install Thirdparty components
+            **** related to the FDO API
+            build_thirdparty --w fdo
+            **** Build and Install Thirdparty components related to 
+            **** the FDO API without running the configure script
+            build_thirdparty --w fdo --m noconfigure
+            **** Configure, Build and Install Thirdparty components
+            **** related to the SDF and gdal providers
+            build_thirdparty --w sdf --w gdal --m noconfigure
             **** Uninstall all Thirdparty components
             build_thirdparty --a uninstall
             **** Clean up all Thirdparty components
@@ -606,7 +627,7 @@ II. Build Notes
 
            e.g.
 
-            **** Display help for build.bat
+            **** Display help for build_linux.sh
             build_linux.sh --h
             **** Configure, Build and Install all components
             build_linux.sh
