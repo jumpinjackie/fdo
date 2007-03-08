@@ -200,7 +200,7 @@ FdoFeatureSchemaCollection* DescribeSchemaCommand::Execute()
         gpd->SetGeometryTypes(fdoGeomType);  
         if (NULL != spContext)
         {
-            gpd->SetSpatialContextAssociation(spContext);
+            gpd->SetSpatialContextAssociation(spContext->GetName());
         }
         pdc->Add(gpd);
         featClass->SetGeometryProperty(gpd);
