@@ -196,7 +196,7 @@ II. Build Notes
      This script can be modifed and used to set the correct environment variables 
      and PATH settings.
 
- 10. The build_thirdparty.bat file is ude to build the FDO Thirdparty binaries. The following 
+ 10. The build_thirdparty.bat file is used to build the FDO Thirdparty binaries. The following 
      is a general guideline on how to use the build_thirdparty.bat build script.
   
            **************************************************************************
@@ -402,7 +402,7 @@ I. Build Instructions
      Thirdparty SDK components and build tools. (Refer to the Build Notes 
      below)
 
-  3.  Source set environment script (bash or bourne compatible shells)
+  3.  Source the setenvironment.sh script (bash or bourne compatible shells)
 
       source ./setenvironment.sh
 
@@ -737,7 +737,7 @@ III. Running the FDO Unit Tests
             initialization file, create your the file with valid values for username, 
             password and the service names. Run the unit test by specifying the 
             initialization file on the command line when executing the unit tests. 
-			   
+
             e.g. ./UnitTestOdbc initfiletest=OdbcInitEx.txt
 
             NOTE: The initialization file must contain values for service, username and password.
