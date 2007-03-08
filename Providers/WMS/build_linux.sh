@@ -160,6 +160,7 @@ if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
    mkdir -p "/usr/local/fdo-3.3.0/docs/HTML/Providers"
    if test -e "Docs/HTML/WMS"; then
       cp --force --recursive "Docs/HTML/WMS" "/usr/local/fdo-3.3.0/docs/HTML/Providers"
+      cp --force --recursive "Docs/HTML/WMS_managed" "/usr/local/fdo-3.3.0/docs/HTML/Providers"
    fi
 fi
 
