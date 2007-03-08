@@ -62,7 +62,6 @@ FdoString* PropertyPassword = L"Password";
 FdoString* PropertyService = L"Service";
 FdoString* PropertyDatastore = L"Datastore";
 FdoString* PropertyDescription = L"Description";
-
 FdoString* PropertyDefaultHostname = L"localhost";
 FdoString* PropertyDefaultPort = L"5432"; // DEF_PGPORT_STR
 
