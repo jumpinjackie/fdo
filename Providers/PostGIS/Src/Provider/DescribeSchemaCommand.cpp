@@ -120,7 +120,7 @@ void DescribeSchemaCommand::SetSchemaName(FdoString* name)
 
 FdoFeatureSchemaCollection* DescribeSchemaCommand::Execute()
 {
-    using std::wcout;
+    using std::wcout; // TODO: remove
 
     FdoPtr<FdoFeatureSchemaCollection> featSchemas = NULL;
     featSchemas = FdoFeatureSchemaCollection::Create(NULL);
@@ -183,6 +183,7 @@ FdoFeatureSchemaCollection* DescribeSchemaCommand::Execute()
             reader->GetSchemaName(), reader->GetTableName());
         assert(!featClasses->FindItem(fdoClassName));
 
+        // TODO: Use table COMMENT as a class description
         FdoPtr<FdoFeatureClass> featClass = FdoFeatureClass::Create(fdoClassName, L"");      
 
         // Physical mapping for the feature class
@@ -196,7 +197,9 @@ FdoFeatureSchemaCollection* DescribeSchemaCommand::Execute()
         FdoInt32 fdoGeomType = geomColumn->GetGeometryType();
         
         FdoPtr<FdoGeometricPropertyDefinition> gpd = NULL;
-        gpd = FdoGeometricPropertyDefinition::Create(geomColumn->GetName(), L"");                        
+        gpd = FdoGeometricPropertyDefinition::Create(
+            geomColumn->GetName(), geomColumn->GetDescription());                        
+            
         gpd->SetGeometryTypes(fdoGeomType);  
         if (NULL != spContext)
         {
