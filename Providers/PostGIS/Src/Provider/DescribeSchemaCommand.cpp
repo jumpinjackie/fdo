@@ -146,10 +146,15 @@ FdoFeatureSchemaCollection* DescribeSchemaCommand::Execute()
     // Process every table to FDO class
     while (reader->ReadNext())
     {
+        // TODO: Fetch all geometries, but not only the first one - default
+        PgSpatialTablesReader::columns_t::size_type const geometryIdx = 0;
+    
         PgSpatialTablesReader::columns_t geometryColumns(reader->GetGeometryColumns());
-        PgGeometryColumn::Ptr geomColumn = geometryColumns[0];
+        PgGeometryColumn::Ptr geomColumn = geometryColumns[geometryIdx];
+        
+        ////////////////// GENERATE SPATIAL CONTEXT //////////////////
+        
         SpatialContext::Ptr spContext = NULL;
-
         FdoInt32 srid = geomColumn->GetSRID();
         if (srid >= 0)
         {
@@ -161,8 +166,49 @@ FdoFeatureSchemaCollection* DescribeSchemaCommand::Execute()
                 spContexts->Insert(0, spContext);
             }
         }
-       
-    }
+        else
+        {
+            // The CS is unknown, so default spatial context is used
+            spContext = spContexts->FindItem(SpatialContextDefaultName);
+        }
+        
+        ////////////////// CALCULATE SPATIAL EXTENT //////////////////
+        
+        // TODO
+        
+        ////////////////// GENERATE CLASS DEFINITION //////////////////
+
+        // TODO: Do we need to have geometry column name in FDO class name?
+        FdoStringP fdoClassName = FdoStringP::Format(L"%s~%s",
+            reader->GetSchemaName(), reader->GetTableName());
+        assert(!featClasses->FindItem(fdoClassName));
+
+        FdoPtr<FdoFeatureClass> featClass = FdoFeatureClass::Create(fdoClassName, L"");      
+
+        // Physical mapping for the feature class
+        ov::ClassDefinition::Ptr classDef = ov::ClassDefinition::Create();
+        classDef->SetName(fdoClassName);
+        
+        FdoPtr<FdoPropertyDefinitionCollection> pdc = featClass->GetProperties();
+        
+        ////////////////// CREATE GEOMETRY PROPERTY //////////////////
+        
+        FdoInt32 fdoGeomType = geomColumn->GetGeometryType();
+        
+        FdoPtr<FdoGeometricPropertyDefinition> gpd = NULL;
+        gpd = FdoGeometricPropertyDefinition::Create(geomColumn->GetName(), L"");                        
+        gpd->SetGeometryTypes(fdoGeomType);  
+        if (NULL != spContext)
+        {
+            gpd->SetSpatialContextAssociation(spContext);
+        }
+        pdc->Add(gpd);
+        featClass->SetGeometryProperty(gpd);
+        
+        ////////////////// CREATE OTHER PROPERTIES //////////////////
+        
+          
+    } // while
     
         
     
@@ -196,6 +242,7 @@ FdoFeatureSchemaCollection* DescribeSchemaCommand::Execute()
 SpatialContext* DescribeSchemaCommand::CreateSpatialContext(
     FdoStringP spContextName, PgGeometryColumn::Ptr column)
 {
+    FDOLOG_MARKER("DescribeSchemaCommand::-CreateSpatialContext");
 
     //
     // Query for SRS details
@@ -209,6 +256,7 @@ SpatialContext* DescribeSchemaCommand::CreateSpatialContext(
     catch (boost::bad_lexical_cast& e)
     {
         srid = "-1";
+        FDOLOG_WRITE("Number to string conversion failed: %s", e.what());
         assert(!"FIX HANDLING INVALID SRID");
     }
     
