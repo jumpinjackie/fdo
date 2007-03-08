@@ -68,16 +68,42 @@ extern FdoString* PropertyUsername;
 extern FdoString* PropertyPassword;
 extern FdoString* PropertyService;
 extern FdoString* PropertyDatastore;
+extern FdoString* PropertyDefaultHostname;
+extern FdoString* PropertyDefaultPort;
 
 //
 // Create datastore command properties
 //
+
 extern FdoString* PropertyDatastoreName;
 extern FdoString* PropertyDatastoreDescription;
 
-// Custom connection properties
-extern FdoString* PropertyDefaultHostname;
-extern FdoString* PropertyDefaultPort;
+//
+// Default properties for Feature Schema
+//
+
+const wchar_t DefaultSchemaXml[12] = L"schema.xml";
+const wchar_t DefaultSchemaName[8] = L"Default";
+const wchar_t DefaultSchemaDescription[40] = L"Default FDO Feature Schema for PostGIS.";
+
+//
+// Default Spatial Context properties
+//
+
+const wchar_t SpatialContextDefaultName[8] = L"Default";
+const wchar_t SpatialContextDefaultCoordSysName[8] = L"Unknown";
+const wchar_t SpatialContextDefaulWkt[2] = L"";
+const double SpatialContextDefaultXYTolerance = 0.05;
+const double SpatialContextDefaultZTolerance = 0.05;
+const double SpatialContextDefaultMTolerance = 0.05;
+const double SpatialContextDefaultMinX = -10000000;
+const double SpatialContextDefaultMinY = -10000000;
+const double SpatialContextDefaultMinZ = -10000000;
+const double SpatialContextDefaultMinM = -10000000;
+const double SpatialContextDefaultMaxX = 10000000;
+const double SpatialContextDefaultMaxY = 10000000;
+const double SpatialContextDefaultMaxZ = 10000000;
+const double SpatialContextDefaultMaxM = 10000000;
 
 }} // namespace fdo::postgis
 
