@@ -54,6 +54,12 @@ FdoStringP PgGeometryColumn::GetName() const
     return mName;
 }
 
+FdoStringP PgGeometryColumn::GetDescription() const
+{
+    // TODO: to implement
+    return L"";
+}
+
 FdoGeometryType PgGeometryColumn::GetGeometryType() const
 {
     return mType;

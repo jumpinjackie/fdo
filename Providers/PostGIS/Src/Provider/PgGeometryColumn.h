@@ -28,6 +28,8 @@ namespace fdo { namespace postgis {
 /// The PgGeometryColumn class describes geometry column from a PostGIS-enabled
 /// spatial table.
 ///
+/// \todo TODO: Add reading column description from COMMENT.
+///
 class PgGeometryColumn : public FdoIDisposable, private boost::noncopyable
 {
 public:
@@ -38,14 +40,35 @@ public:
     /// Constructor creates new reader instance associated with given connection.
     PgGeometryColumn(FdoString* name, FdoGeometryType type, FdoInt32 dim, FdoInt32 srid);
 
+    /// Get name of geometry column.
+    /// \return String with name of the geometry column.
     FdoStringP GetName() const;
+    
+    /// Get description of geometry column.
+    /// The description is retrieved from COMMENT property supported by
+    /// PostgreSQL database catalog.
+    /// \return String with description of the geometry column.
+    ///
+    /// \todo TO BE IMPLEMENTED
+    ///
+    FdoStringP GetDescription() const;
+
+    /// Get FDO type of geometry stored in the column.
+    /// \return Enumerator of FDO geometry type.
     FdoGeometryType GetGeometryType() const;
-    FdoInt32 GetDimensionType() const;    
+    
+    /// Get coordinates dimension of geometry stored in the column.
+    /// \return Bit mask representing combination of FDO coordinates dimension types.
+    /// \sa FdoDimensionality
+    FdoInt32 GetDimensionType() const;
+    
+    /// Get SRID associated with the geometry column.
+    /// \return Number representing SRID identifiers.
     FdoInt32 GetSRID() const;
 
 protected:
 
-    /// Destructor closes reader on destroy.
+    /// Destructor.
     virtual ~PgGeometryColumn();
 
     //
