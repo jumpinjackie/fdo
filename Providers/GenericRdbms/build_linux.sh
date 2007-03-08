@@ -168,11 +168,11 @@ if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
    mkdir -p "/usr/local/fdo-3.3.0/docs/HTML/Providers"
    if test -e "Docs/HTML/MySQL"; then
       cp --force --recursive "Docs/HTML/MySQL" "/usr/local/fdo-3.3.0/docs/HTML/Providers"
-      cp --force --recursive "Docs/HTML/MySQL_managed" "/usr/local/fdo-3.2.0/docs/HTML/Providers"
+      cp --force --recursive "Docs/HTML/MySQL_managed" "/usr/local/fdo-3.3.0/docs/HTML/Providers"
    fi
    if test -e "Docs/HTML/ODBC"; then
       cp --force --recursive "Docs/HTML/ODBC" "/usr/local/fdo-3.3.0/docs/HTML/Providers"
-      cp --force --recursive "Docs/HTML/ODBC_managed" "/usr/local/fdo-3.2.0/docs/HTML/Providers"
+      cp --force --recursive "Docs/HTML/ODBC_managed" "/usr/local/fdo-3.3.0/docs/HTML/Providers"
    fi
 fi
 

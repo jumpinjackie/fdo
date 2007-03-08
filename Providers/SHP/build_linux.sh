@@ -161,6 +161,7 @@ if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
    mkdir -p "/usr/local/fdo-3.3.0/docs/HTML/Providers"
    if test -e "Docs/HTML/SHP"; then
       cp --force --recursive "Docs/HTML/SHP" "/usr/local/fdo-3.3.0/docs/HTML/Providers"
+      cp --force --recursive "Docs/HTML/SHP_managed" "/usr/local/fdo-3.3.0/docs/HTML/Providers"
    fi
 fi
 
