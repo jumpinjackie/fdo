@@ -96,6 +96,7 @@ class MasterTest : public CppUnit::TestFixture
 	CPPUNIT_TEST(concurencyTest);
     CPPUNIT_TEST(descReadOnly);
     CPPUNIT_TEST(test_aggregates_datetime_string);
+	CPPUNIT_TEST(selectFunctionTest);
     CPPUNIT_TEST_SUITE_END();
 
     // You may define any private variables that are used in your test
@@ -131,6 +132,7 @@ public:
     void selectSpatialExtentsTest();
     void descReadOnly();
     void test_aggregates_datetime_string();
+	void selectFunctionTest();
 };
 
 #endif

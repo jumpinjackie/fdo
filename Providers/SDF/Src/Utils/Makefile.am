@@ -55,6 +55,7 @@ INCLUDES = \
   -I../../Inc \
   -I$(FDO)/Unmanaged/Inc \
   -I$(FDO)/Unmanaged/Src/Nls \
+  -I$(FDOUTILITIES)/Common/Inc \
   -I/usr/include 
 
 CXXFLAGS = @CXXFLAGS_SDF@ -DSQLITE 

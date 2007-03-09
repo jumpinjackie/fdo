@@ -35,7 +35,6 @@ libSDFProvider_la_LIBADD =  \
   ./Utils/libSDFUtils.la \
   ./Provider/libSDFProviderSrc.la  \
   $(FDO)/Unmanaged/Src/libFDO.la \
-  $(FDO)/Unmanaged/Src/Spatial/libFDOSpatial.la \
   $(FDOUTILITIES)/SQLiteInterface/libSQLiteInterface.la \
   $(FDOTHIRDPARTY)/Sqlite3.1.5/linux/lib/sqlite3.a \
   $(FDOUTILITIES)/Common/libProvidersCommon.la \

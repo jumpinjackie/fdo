@@ -18,15 +18,14 @@
 
 #define MAX_STRING_LENGTH 256
 
-enum DataValueType
-{
-    Dvt_Int64,
-    Dvt_Double,
-    Dvt_String,
-    Dvt_Boolean,
-    Dvt_DateTime,
-	Dvt_Null
-};
+#define DataValueType		FdoDataType
+#define Dvt_Boolean			FdoDataType_Boolean
+#define Dvt_Int64			FdoDataType_Int64
+#define Dvt_Double			FdoDataType_Double
+#define Dvt_String			FdoDataType_String
+#define Dvt_DateTime		FdoDataType_DateTime
+#define Dvt_Null			(-1) // A null value indicator
+
 
 //forward declare
 class DataValuePool;

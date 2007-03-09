@@ -151,6 +151,8 @@ private:
 
 	void PushIdentifierValue(FdoIFeatureReader* reader, FdoString* name, FdoDataType type );
 
+	void ProcessFunctionCeilFloor( FdoString *name, DataValue* argLeft );
+
     void ExecuteARGB(FdoFunction& function);
     
     //pattern matching
