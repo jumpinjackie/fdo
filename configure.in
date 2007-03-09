@@ -126,8 +126,8 @@ if test $enable_debug = yes; then
  AC_SUBST(CXXFLAGS, ["-g -MMD -MT "])
 else
  AC_MSG_NOTICE([Using optimized configuration])
- CXXFLAGS="-MMD -MT "
- AC_SUBST(CXXFLAGS, ["-MMD -MT "])
+ CXXFLAGS="-O2 -MMD -MT "
+ AC_SUBST(CXXFLAGS, ["-O2 -MMD -MT "])
 fi
 
 ##output Makefiles##
