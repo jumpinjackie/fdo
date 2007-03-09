@@ -123,7 +123,6 @@ UnitTestMySql_LDADD =  \
   ../SchemaMgr/Ph/libSmPhGrd.la   \
   ../SchemaMgr/Ph/Rd/libSmPhRdGrd.la  \
   $(FDO)/Unmanaged/Src/libFDO.la   \
-  $(FDO)/Unmanaged/Src/Spatial/libFDOSpatial.la   \
   $(FDOTHIRDPARTY)/linux/cppunit/lib/libcppunit.a \
   $(FDOUTILITIES)/Common/libProvidersCommon.la \
   $(FDOUTILITIES)/TestCommon/libTestCommon.la \
@@ -172,7 +171,6 @@ UnitTestOdbc_LDADD =  \
   ../SchemaMgr/Ph/Rd/libSmPhRdGrd.la  \
   ../ODBC/SchemaMgr/Ph/Rd/libFdoRdbmsODBC_SchemaMgr_Ph_Rd.la \
   $(FDO)/Unmanaged/Src/libFDO.la   \
-  $(FDO)/Unmanaged/Src/Spatial/libFDOSpatial.la   \
   $(FDOTHIRDPARTY)/linux/cppunit/lib/libcppunit.a \
   $(FDOUTILITIES)/Common/libProvidersCommon.la \
   $(FDOUTILITIES)/TestCommon/libTestCommon.la \
