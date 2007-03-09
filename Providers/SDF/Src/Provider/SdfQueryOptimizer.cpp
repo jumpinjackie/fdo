@@ -153,11 +153,21 @@ void SdfQueryOptimizer::ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator& f
         //update optimized query also by pushing
         //the old filter -- it could not be optimized
         m_filters.push_back(FDO_SAFE_ADDREF(&filter));
-        fLeft->Release();
-        delete argLeft;
+		if( fLeft != NULL )
+			fLeft->Release();
+        
         return;
     }
     
+	if( filter.GetOperation() == FdoBinaryLogicalOperations_And && argLeft != NULL && argLeft->size() > 0 && fLeft == NULL )
+	{
+		// The left side reduced the condidate list to a smaller set and optimized away the left filter
+		// We only need to apply the right filter to the reduced set.
+		m_filters.push_back( right.Detach() );
+		m_retvals.push_back(argLeft);
+        return;
+	}
+
     //evaluate right hand side
     right->Process(this);
     
@@ -406,9 +416,11 @@ void SdfQueryOptimizer::ProcessSpatialCondition(FdoSpatialCondition& filter)
         //by returning only features whose bounding boxes intersect with the 
         //bounding box of the input. The actual query result is guaranteed
         //to be a subset of the R-Tree search.
-        else if (      filter.GetOperation() == FdoSpatialOperations_Intersects 
+        else if ( filter.GetOperation() == FdoSpatialOperations_Intersects 
             || filter.GetOperation() == FdoSpatialOperations_Contains
-            || filter.GetOperation() == FdoSpatialOperations_Within)
+            || filter.GetOperation() == FdoSpatialOperations_Within
+			|| filter.GetOperation() == FdoSpatialOperations_Inside
+			|| filter.GetOperation() == FdoSpatialOperations_Crosses )
         {
 
             FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
@@ -417,7 +429,7 @@ void SdfQueryOptimizer::ProcessSpatialCondition(FdoSpatialCondition& filter)
             Bounds bounds;
             FdoSpatialUtility::GetExtents(fgf, bounds.minx, bounds.miny, bounds.maxx, bounds.maxy);
 
-            if (bounds.maxx >= bounds.minx && bounds.maxy >= bounds.miny)
+            if (bounds.maxx >= bounds.minx && bounds.maxy >= bounds.miny )
             {
                 //expand a little to catch point features that lie exactly on the bounds
                 Bounds bounds2(bounds.minx - SDF_GLOBAL_TOLERANCE, 
