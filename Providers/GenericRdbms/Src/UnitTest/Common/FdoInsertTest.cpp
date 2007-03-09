@@ -64,8 +64,8 @@ typedef struct _featattr_ {
     char layer[12];
 } FeatAttr_t;
 
-FeatInfo_t  feats[10000];
-FeatAttr_t  attrs[1100];
+static FeatInfo_t  feats[10000];
+static FeatAttr_t  attrs[1100];
 
 void FdoInsertTest::insert ()
 {

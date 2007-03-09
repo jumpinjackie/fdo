@@ -22,11 +22,13 @@
 #include "ConnectionUtil.h"
 #include <Sm/Ph/Rd/ConstraintReader.h>
 #include <Sm/Ph/SpatialIndex.h>
+#include <Sm/Ph/Rd/FkeyReader.h>
 #include "../SchemaMgr/Ph/Owner.h"
 
 FdoString* SchemaMgrTests::DB_NAME_SUFFIX =           L"_schema_mgr";
 FdoString* SchemaMgrTests::DB_NAME_COPY_SUFFIX =      L"_schema_mgr_copy";
 FdoString* SchemaMgrTests::DB_NAME_FOREIGN_SUFFIX =   L"_schema_mgr_f";
+FdoString* SchemaMgrTests::DB_NAME_CONFIGERR_SUFFIX =   L"_schema_mgr_configerr";
 
 SchemaMgrTests::SchemaMgrTests (void)
 {
@@ -125,6 +127,8 @@ void SchemaMgrTests::testGenDefault ()
         AddProviderColumns( table );
         FdoSmPhCheckConstraintP constraint = new FdoSmPhCheckConstraint( L"int16_check", L"INT16_COLUMN", L"int16_column < 20000" );
         table->AddCkeyCol( constraint );
+		constraint = new FdoSmPhCheckConstraint( L"decimal_check", L"DECIMAL_COLUMN", L"decimal_column > byte_column" );
+		table->AddCkeyCol( constraint );
         constraint = new FdoSmPhCheckConstraint( L"int32_check", L"INT32_COLUMN", L"int32_column = 45 or int32_column > 100" );
         table->AddCkeyCol( constraint );
         constraint = new FdoSmPhCheckConstraint( L"single_check", L"SINGLE_COLUMN", L"single_column = 45 or double_column > 100" );
@@ -1277,7 +1281,7 @@ void SchemaMgrTests::testConfigError ()
         // Sets the other env.
         UnitTestUtil::SetProvider( conn->GetServiceName() ); 
 
-        fdoConn = UnitTestUtil::GetConnection(L"", true);
+        fdoConn = UnitTestUtil::CreateConnection(false, true, DB_NAME_CONFIGERR_SUFFIX );
         fdoConn->Close();
         fdoConn = NULL;
 
@@ -1335,7 +1339,7 @@ void SchemaMgrTests::CreateTableGroup( FdoSmPhOwnerP owner, FdoStringP prefix, F
         column = table->CreateColumnGeom( L"GEOM_COLUMN", (FdoSmPhScInfo*) NULL );
         column = table->CreateColumnInt32( L"FOREIGN_COLUMN", false );
         column = table->CreateColumnDouble( L"DOUBLE_COLUMN", true );
-/* FUTURE - when defect 761760 fix submitted
+
         if ( (prefix.ICompare(L"gh_") == 0) && (i == 5) ) {
             FdoSmPhCheckConstraintP constraint = new FdoSmPhCheckConstraint( L"double_check", L"DOUBLE_COLUMN", L"double_column < 100.35" );
             table->AddCkeyCol( constraint );
@@ -1345,7 +1349,6 @@ void SchemaMgrTests::CreateTableGroup( FdoSmPhOwnerP owner, FdoStringP prefix, F
             ukeys->Add( ukeyColumns );
     		table->AddUkeyCol( ukeys->GetCount() - 1, L"DOUBLE_COLUMN" );
         }
-*/
     }
 
     FdoStringP wildTablename = FdoStringP::Format( L"%lsTABLEWILD", (FdoString*) prefix, i );
@@ -1621,4 +1624,20 @@ bool SchemaMgrTests::SupportsBaseObjects()
 bool SchemaMgrTests::SupportsViewPkey()
 {
     return false;
+}
+
+SchemaMgrTests::ExpectedClassGeometricProperty::ExpectedClassGeometricProperty ()
+{
+    canBeGeomeytricTypePoint   = false;
+    canBeGeomeytricTypeCurve   = false;
+    canBeGeomeytricTypeSurface = false;
+    canBeGeomeytricTypeSolid   = false;
+    foundGeometricTypePoint    = false;
+    foundGeometricTypeCurve    = false;
+    foundGeometricTypeSurface  = false;
+    foundGeometricTypeSolid    = false;
+}
+
+SchemaMgrTests::ExpectedClassGeometricProperty::~ExpectedClassGeometricProperty ()
+{
 }

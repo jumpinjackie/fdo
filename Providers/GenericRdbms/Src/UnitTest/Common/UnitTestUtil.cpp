@@ -21,8 +21,8 @@
 #include "ConnectionUtil.h"
 #include "FdoInsertTest.h"
 #include "XmlFormatter.h"
-#include "../Fdo/DataStore/FdoRdbmsDeleteDataStore.h"
-#include "../Fdo/DataStore/FdoRdbmsCreateDatastore.h"
+//#include "../Fdo/DataStore/FdoRdbmsDeleteDataStore.h"
+//#include "../Fdo/DataStore/FdoRdbmsCreateDatastore.h"
 #include <Sm/Ph/Rd/DbObjectReader.h>
 #include <TestCommon.h>
 
@@ -82,6 +82,20 @@ xmlns:fdo=\"http://www.autodesk.com/isd/fdo\" \
             <xsl:sort select=\"@name\" />\
         </xsl:apply-templates>\
     </xsl:copy>\
+</xsl:template>\
+<xsl:template match=\"lp:uniqueConstraints\">\
+  <xsl:copy>\
+    <xsl:apply-templates select=\"lp:uniqueConstraint\">\
+		<xsl:sort select=\"count(lp:property)\"/>\
+    </xsl:apply-templates>\
+  </xsl:copy>\
+</xsl:template>\
+<xsl:template match=\"lp:uniqueConstraint\">\
+  <xsl:copy>\
+    <xsl:apply-templates select=\"lp:property\">\
+		<xsl:sort select=\"@name\"/>\
+    </xsl:apply-templates>\
+  </xsl:copy>\
 </xsl:template>\
 <xsl:template match=\"lp:table\">\
     <xsl:copy>\
@@ -652,7 +666,7 @@ void UnitTestUtil::CreateNonUniqueSchema( FdoIConnection* connection )
 
     // If it does, check if it has the current version. The version is kept in
     // the Schema Attribute dictionary.
-/*
+
     if ( pSchema ) {
         if ( (!FdoSADP(pSchema->GetAttributes())->ContainsAttribute(L"version")) ||
              (wcscmp(FdoSADP(pSchema->GetAttributes())->GetAttributeValue(L"version"), currVersion) != 0) ) {
@@ -665,7 +679,7 @@ void UnitTestUtil::CreateNonUniqueSchema( FdoIConnection* connection )
             pSchema = NULL;
         }
     }
-*/
+
     if ( !pSchema )
     {
         FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
@@ -847,9 +861,13 @@ void UnitTestUtil::GetRealUserName(char * user_name, unsigned size )
 
 char *UnitTestUtil::w2a(const wchar_t* wString)
 {
-	char* retVal = NULL;
-	wide_to_multibyte(retVal, wString);
-    return retVal;
+    static char string[2048];
+
+    FdoCommonThreadMutex mutex;
+    mutex.Enter();
+    wcstombs(string, wString, sizeof(string));
+    mutex.Leave();
+    return string;
 }
 
 FdoIConnection* UnitTestUtil::GetProviderConnectionObject()
@@ -876,9 +894,9 @@ FdoIConnection* UnitTestUtil::GetProviderConnectionObject()
     return (ret);
 }
 
-wchar_t *UnitTestUtil::GetConnectionString(StringConnTypeRequest pTypeReq, FdoString *suffix)
+wchar_t *UnitTestUtil::GetConnectionString(StringConnTypeRequest pTypeReq, FdoString *suffix, bool bAddExtraneousSpaces)
 {
-	return UnitTestUtil::InfoUtilConnection->GetConnectionString(pTypeReq, suffix);
+	return UnitTestUtil::InfoUtilConnection->GetConnectionString(pTypeReq, suffix, bAddExtraneousSpaces);
 }
 
 void UnitTestUtil::CreateDB(bool addSchema, bool useBaseMapping, FdoString *suffix, int lt_method, bool lt_method_fixed)
@@ -941,7 +959,7 @@ void UnitTestUtil::CreateDB(bool addSchema, bool useBaseMapping, FdoString *suff
 
 void UnitTestUtil::CreateDB( FdoIConnection* connection, FdoString *datastore, FdoString *description, FdoString *password, char *schemaType, int local_lt_method )
 {
-    FdoPtr<FdoRdbmsCreateDataStore> createCmd = (FdoRdbmsCreateDataStore*)connection->CreateCommand( FdoCommandType_CreateDataStore );
+    FdoPtr<FdoICreateDataStore> createCmd = (FdoICreateDataStore*)connection->CreateCommand( FdoCommandType_CreateDataStore );
 	
 	FdoPtr<FdoIDataStorePropertyDictionary> dictionary = createCmd->GetDataStoreProperties();
 
@@ -968,7 +986,7 @@ void UnitTestUtil::CreateDB( FdoIConnection* connection, FdoString *datastore, F
 			if ( local_lt_method == 0 )
 				dictionary->SetProperty( name, L"NONE" );
 			else if ( local_lt_method == 1 || local_lt_method == 2)
-				dictionary->SetProperty( name, dictionary->GetPropertyDefault(name));
+                dictionary->SetProperty( name, (local_lt_method == 2) ? L"OWM" : L"NONE" );
 		}
 		else if ( wcscmp( name, L"TableSpace" ) == 0 )
 		{
@@ -1128,7 +1146,7 @@ FdoStringP UnitTestUtil::GetEnviron(const char *name, FdoString *suffix)
 const char* UnitTestUtil::GetEnv( const char* pVar, const char* pDefault )
 {
     const char* pRet = getenv( pVar );
-    if ( !pRet )
+    if ( !pRet || (strcmp(pRet,"(null)") == 0) )
         pRet = pDefault;
 
     return(pRet);
@@ -1224,12 +1242,12 @@ FdoIConnection* UnitTestUtil::CreateConnection(
     return(connection);
 }
 
-void UnitTestUtil::DropDb()
+void UnitTestUtil::DropDb(FdoString *suffix)
 {
     FdoStringP service = UnitTestUtil::GetEnviron("service");
     FdoStringP username = UnitTestUtil::GetEnviron("username");
     FdoStringP password = UnitTestUtil::GetEnviron("password");
-    FdoStringP datastore = UnitTestUtil::GetEnviron("datastore");
+    FdoStringP datastore = UnitTestUtil::GetEnviron("datastore", suffix);
     bool bExists = DatastoreExists();
 
     if (bExists)
@@ -1241,7 +1259,7 @@ void UnitTestUtil::DropDb()
         FdoPtr<FdoIConnection> connection = GetProviderConnectionObject();
         connection->SetConnectionString( userConnectString );
         connection->Open();
-        FdoPtr<FdoRdbmsDeleteDataStore> delCmd = (FdoRdbmsDeleteDataStore*)connection->CreateCommand( FdoCommandType_DestroyDataStore );
+        FdoPtr<FdoIDestroyDataStore> delCmd = (FdoIDestroyDataStore*)connection->CreateCommand( FdoCommandType_DestroyDataStore );
 
         if( delCmd )
             DropDb( connection, datastore, password, service );
@@ -1276,14 +1294,14 @@ bool UnitTestUtil::DatastoreExists(FdoString *suffix)
     FdoStringP datastore = GetEnviron("datastore", suffix);
     bool found = false;
 
-    FdoSchemaManagerP mgr = staticConn->CreateSchemaManager();
-    FdoSmPhMgrP ph = mgr->GetPhysicalSchema();
+    {
+        FdoSchemaManagerP mgr = staticConn->CreateSchemaManager();
+        FdoSmPhMgrP ph = mgr->GetPhysicalSchema();
 
-    if ( FdoSmPhOwnerP(ph->FindOwner(datastore, L"", false)) )
-        found = true;
+        if ( FdoSmPhOwnerP(ph->FindOwner(datastore, L"", false)) )
+            found = true;
+    }
 
-    ph = NULL;
-    mgr = NULL;
     staticConn->disconnect();
     delete staticConn;
 
@@ -1630,7 +1648,8 @@ void UnitTestUtil::SortXml( FdoIoStream* inStream, char* styleSheetString, FdoIo
 }
 
 void UnitTestUtil::OverrideBend( FdoIoStream* stream1, FdoIoStream* stream2, FdoStringP providerName, 
-								FdoStringP providerUri, FdoStringP oldOwnerPrefix, FdoStringP newOwnerPrefix )
+								FdoStringP providerUri, FdoStringP oldOwnerPrefix, FdoStringP newOwnerPrefix,
+                                FdoStringP tablespace)
 {
     stream1->Reset();
     FdoXmlReaderP stylesheet = FdoXmlReader::Create( L"OverrideBender.xslt" );
@@ -1674,6 +1693,17 @@ void UnitTestUtil::OverrideBend( FdoIoStream* stream1, FdoIoStream* stream2, Fdo
             ) 
         ) 
     );
+
+    if ( tablespace != L"" ) {
+        params->Add( 
+            FdoDictionaryElementP( 
+                FdoDictionaryElement::Create( 
+                    L"tablespace", 
+                    FdoStringP(L"'") + tablespace + L"'"
+                ) 
+            ) 
+        );
+    }
 
     transformer->Transform();
     transformer = NULL;

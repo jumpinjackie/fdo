@@ -412,7 +412,7 @@ void OdbcConnectionUtil::SetProvider( const char *providerName )
     }
 }
 
-wchar_t *OdbcConnectionUtil::GetConnectionString(StringConnTypeRequest pTypeReq, FdoString *suffix)
+wchar_t *OdbcConnectionUtil::GetConnectionString(StringConnTypeRequest pTypeReq, FdoString *suffix, bool bAddExtraneousSpaces)
 {
     FdoStringP service = UnitTestUtil::GetEnviron("service");
     FdoStringP username = UnitTestUtil::GetEnviron("username");

@@ -18,7 +18,9 @@
 
 #include "Pch.h"
 #include "ConnectionUtil.h"
+#include <FdoCommonFile.h>
 
+#ifndef RDBI_DEF_SA_ORA
 extern    void ut_thread_mutex_init ();
 extern    void ut_thread_mutex_destroy ();
 
@@ -39,6 +41,7 @@ public:
 };
 
 static FdoMsgInitializerSingleton Singleton;
+#endif
 
 StaticConnection::StaticConnection (void) :
     m_rdbi_context(NULL),
@@ -55,10 +58,14 @@ void StaticConnection::SetSchema ( FdoString* suffix )
 {
     mDatastore = UnitTestUtil::GetEnviron("datastore", suffix );
     FdoStringP strDatastore = mDatastore;
+#ifndef RDBI_DEF_SA_ORA
     if (m_rdbi_context->dispatch.capabilities.supports_unicode == 1)
         ::rdbi_set_schemaW( m_rdbi_context, strDatastore );
     else
         ::rdbi_set_schema( m_rdbi_context, strDatastore );
+#else
+        ::rdbi_set_schema( m_rdbi_context, (char*)(const char*)strDatastore );
+#endif
 }
 
 int StaticConnection::do_rdbi_init (rdbi_context_def** rdbi_context)
@@ -80,7 +87,11 @@ void StaticConnection::init ()
     try
     {
         CPPUNIT_ASSERT_MESSAGE ("rdbi_initialize failed", RDBI_SUCCESS == do_rdbi_init (&rdbi_context));
+#ifndef RDBI_DEF_SA_ORA
         CPPUNIT_ASSERT_MESSAGE ("rdbi_term failed", RDBI_SUCCESS == rdbi_term (&rdbi_context));
+#else
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_term failed", RDBI_SUCCESS == rdbi_term (rdbi_context));
+#endif
     }
     catch (CppUnit::Exception exception)
     {
@@ -111,7 +122,11 @@ void StaticConnection::connect ()
         }
         catch (CppUnit::Exception exception)
         {
+#ifndef RDBI_DEF_SA_ORA
             rdbi_term (&m_rdbi_context);
+#else
+            rdbi_term (m_rdbi_context);
+#endif
             throw exception;
         }
     }
@@ -140,7 +155,12 @@ void StaticConnection::disconnect ()
 
         if ( m_rdbi_context ) {
             CPPUNIT_ASSERT_MESSAGE ("rdbi_disconnect failed", RDBI_SUCCESS == rdbi_disconnect (m_rdbi_context));
+#ifndef RDBI_DEF_SA_ORA
             CPPUNIT_ASSERT_MESSAGE ("rdbi_term failed", RDBI_SUCCESS == rdbi_term (&m_rdbi_context));
+#else
+            if ( m_rdbi_context->rdbi_initialized )
+                CPPUNIT_ASSERT_MESSAGE ("rdbi_term failed", RDBI_SUCCESS == rdbi_term (m_rdbi_context));
+#endif
         }
 
     }
@@ -192,7 +212,11 @@ void StaticConnection::name ()
         CPPUNIT_ASSERT_MESSAGE ("rdbi_initialize failed", RDBI_SUCCESS == do_rdbi_init (&rdbi_context));
         name = rdbi_vndr_name (rdbi_context);
         printf ("%s\n", name);
+#ifndef RDBI_DEF_SA_ORA
         CPPUNIT_ASSERT_MESSAGE ("rdbi_term failed", RDBI_SUCCESS == rdbi_term (&rdbi_context));
+#else
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_term failed", RDBI_SUCCESS == rdbi_term (rdbi_context));
+#endif
     }
     catch (CppUnit::Exception exception)
     {
@@ -229,10 +253,18 @@ void StaticConnection::info ()
         }
         catch (CppUnit::Exception exception)
         {
+#ifndef RDBI_DEF_SA_ORA
             rdbi_term (&rdbi_context);
+#else
+            rdbi_term (rdbi_context);
+#endif
             throw exception;
         }
+#ifndef RDBI_DEF_SA_ORA
         CPPUNIT_ASSERT_MESSAGE ("rdbi_term failed", RDBI_SUCCESS == rdbi_term (&rdbi_context));
+#else
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_term failed", RDBI_SUCCESS == rdbi_term (rdbi_context));
+#endif
     }
     catch (CppUnit::Exception exception)
     {
@@ -244,29 +276,32 @@ void StaticConnection::info ()
     }
 }
 
+char *ConnectionUtil::CommandFilesDirectory;
+
 ConnectionUtil::ConnectionUtil(void)
 {
 	m_SetupDone = false;
+    CommandFilesDirectory = NULL;
 }
 
 ConnectionUtil::~ConnectionUtil(void)
 {
-
+    if (NULL != CommandFilesDirectory)
+        delete[] CommandFilesDirectory;
 }
 
-wchar_t *ConnectionUtil::GetConnectionString(StringConnTypeRequest pTypeReq, FdoString *suffix)
+wchar_t *ConnectionUtil::GetConnectionString(StringConnTypeRequest pTypeReq, FdoString *suffix, bool bAddExtraneousSpaces)
 {
     FdoStringP service = UnitTestUtil::GetEnviron("service");
     FdoStringP username = UnitTestUtil::GetEnviron("username");
     FdoStringP password = UnitTestUtil::GetEnviron("password");
     FdoStringP datastore = UnitTestUtil::GetEnviron("datastore", suffix);
 	
-	static wchar_t connectString[200];
-	connectString[0] = L'\0';
+    FdoStringP     connectString;
+	static wchar_t retConnectString[200];
 
     if (Connection_WithDatastore == pTypeReq)
-        swprintf( connectString, 
-            sizeof(connectString)/sizeof(wchar_t), 
+        connectString = FdoStringP::Format(
             L"service=%ls;username=%ls;password=%ls;datastore=%ls", 
             (FdoString*) service, 
             (FdoString*) username, 
@@ -274,16 +309,19 @@ wchar_t *ConnectionUtil::GetConnectionString(StringConnTypeRequest pTypeReq, Fdo
             (FdoString*) datastore
         );
 	else
-        swprintf( 
-            connectString, 
-            sizeof(connectString)/sizeof(wchar_t), 
+        connectString = FdoStringP::Format(
             L"service=%ls;username=%ls;password=%ls;", 
             (FdoString*) service, 
             (FdoString*) username, 
             (FdoString*) password
         );
 
-	return connectString;
+    if ( bAddExtraneousSpaces ) 
+        connectString = FdoStringP(L"  ") + connectString.Replace(L"=",L"  =  ").Replace(L";",L"  ;  ") + L"  ";
+
+    wcscpy(retConnectString, connectString);
+
+	return retConnectString;
 }
 
 FdoStringP ConnectionUtil::GetEnviron(const char *name, FdoString *suffix)
@@ -326,6 +364,54 @@ FdoStringP ConnectionUtil::GetEnviron(const char *name, FdoString *suffix)
     else if (_stricmp(name, "dsnname") == 0)
     {
         return GetEnv("dsnname");
+    }
+    else if (_stricmp(name, "comdir") == 0)
+    {
+#ifdef _WIN32
+        char com_dir[MAX_PATH];
+        wchar_t wcom_dir[MAX_PATH];
+        DWORD result;
+        char* last;
+        char buffer[1024];
+
+        if (NULL == CommandFilesDirectory)
+        {
+            strcpy (com_dir, ".\\");
+            result = GetModuleFileName (
+                NULL, // handle to module
+                com_dir, // path buffer
+                MAX_PATH // size of buffer
+                );
+            if (0 != result)
+            {
+                // scan the string for the last occurrence of a slash
+                last = strrchr (com_dir, '\\');
+                if (NULL != last)
+                {
+                    last++; // move past the slash
+                    *last = '\0'; // null terminate it there
+                }
+            }
+            strcat (com_dir, "com\\");
+
+            swprintf (wcom_dir, MAX_PATH - 1, L"%hs", com_dir ); 
+
+            if ( (!FdoCommonFile::FileExists(wcom_dir)) || (!FdoCommonFile::IsDirectory(wcom_dir)) )
+            {
+                sprintf (buffer, "Command files directory '%s' doesn't exist.", com_dir);
+                CPPUNIT_FAIL (buffer);
+            }
+            else
+            {
+                CommandFilesDirectory = new char[strlen (com_dir) + 1];
+                strcpy (CommandFilesDirectory, com_dir);
+            }
+        }
+        return (CommandFilesDirectory);
+#else
+	char* getComDir ();
+	return getComDir();
+#endif
     }
     return L"";
 }

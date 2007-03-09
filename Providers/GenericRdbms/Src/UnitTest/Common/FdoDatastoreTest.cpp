@@ -121,6 +121,7 @@ int FdoDatastoreTest::ListDatastores( bool include )
 		connection->SetConnectionString ( connectString);
 
 		connection->Open();
+        FdoPtr<FdoIConnectionCapabilities> connectionCapabilities = connection->GetConnectionCapabilities();
 
         FdoPtr<FdoIListDataStores>		pListDataStoresCmd = (FdoIListDataStores*) connection->CreateCommand(FdoCommandType_ListDataStores);
         
@@ -147,12 +148,15 @@ int FdoDatastoreTest::ListDatastores( bool include )
 				FdoPtr<FdoIDataStorePropertyDictionary> dictionary = pReader->GetDataStoreProperties();
 				ListDatabaseProperties( dictionary );
 
-				//FdoStringP ltmode = dictionary->GetProperty(L"LtMode");
-				//FdoStringP lckmode = dictionary->GetProperty(L"LockMode");
+                if ( connectionCapabilities->SupportsLongTransactions() )
+                {
+    				FdoStringP ltmode = dictionary->GetProperty(L"LtMode");
+    				CPPUNIT_ASSERT_MESSAGE("Wrong LT mode", ( wcscmp( ltmode, get_lt_mode() ) == 0 ));
+                }
+       			//FdoStringP lckmode = dictionary->GetProperty(L"LockMode");
 
 				CPPUNIT_ASSERT_MESSAGE("Description doesn't match", ( wcscmp( string2, UNIT_TEST_DB_DESCRIPTION) == 0));			
 				CPPUNIT_ASSERT_MESSAGE("Database is not FDO enabled", bVal == true );
-				//CPPUNIT_ASSERT_MESSAGE("Wrong LT mode", ( wcscmp( ltmode, get_lt_mode() ) == 0 ));
 				//CPPUNIT_ASSERT_MESSAGE("Wrong LT mode", ( wcscmp( lckmode, get_lt_mode()) == 0 ));
 			}
 			

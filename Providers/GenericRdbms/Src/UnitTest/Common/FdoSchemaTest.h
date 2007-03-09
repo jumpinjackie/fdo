@@ -32,6 +32,7 @@ class FdoSchemaTest : public CppUnit::TestCase
   CPPUNIT_TEST( OverrideXmlAllTest );
   CPPUNIT_TEST( OverrideXmlErrTest );
   CPPUNIT_TEST( OverrideTablesWithOddAsciiChars );
+  CPPUNIT_TEST( Test_Defect802102 );
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -49,6 +50,7 @@ protected:
 	virtual void OverrideXmlAllTest();
 	virtual void OverrideXmlErrTest();
     virtual void OverrideTablesWithOddAsciiChars();
+    void Test_Defect802102();
 
     // Helper methods:
     virtual void CreateFreshDb();

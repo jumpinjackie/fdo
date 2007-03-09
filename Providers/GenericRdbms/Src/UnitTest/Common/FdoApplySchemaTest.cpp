@@ -73,12 +73,6 @@ void FdoApplySchemaTest::TestSchema ()
 #ifdef RDBI_DEF_SSQL
     mCanAddNotNullCol = false;
 #endif
-/*
-    if ( strcmp(UnitTestUtil::GetEnv("ltmethod", "-1"), "0") == 0 )
-        mIsOWM = false;
-    else
-        mIsOWM = true;
-*/
 	try {
         FdoSchemaManagerP mgr;
         const FdoSmLpSchemaCollection* lp = NULL;
@@ -349,11 +343,6 @@ void FdoApplySchemaTest::TestOverrides ()
 #ifdef RDBI_DEF_SSQL
     mCanAddNotNullCol = false;
 #endif
-    // Oracle-specific settings:
-    if ( strcmp(UnitTestUtil::GetEnv("ltmethod", "-1"), "0") == 0 )
-        mIsOWM = false;
-    else
-        mIsOWM = true;
 
     mDatastore = UnitTestUtil::GetEnviron("datastore", DB_NAME_OVERRIDE_SUFFIX);
 
@@ -563,6 +552,27 @@ void FdoApplySchemaTest::TestOverrides ()
         );
 #endif
 
+        table = owner->CreateTable( ph->GetDcDbObjectName(L"nofeatid") );
+        column = table->CreateColumnChar( ph->GetDcColumnName(L"id"), false, 20 );
+        column = table->CreateColumnChar( ph->GetDcColumnName(L"data"), true, 50 );
+        column = table->CreateColumnGeom( ph->GetDcColumnName(L"geometry"), (FdoSmPhScInfo*) NULL );
+#ifdef RDBI_DEF_SSQL
+        column = table->CreateColumnChar( ph->GetDcColumnName(L"GEOMETRY_SI_1"), true, 255 );
+        column = table->CreateColumnChar( ph->GetDcColumnName(L"GEOMETRY_SI_2"), true, 255 );
+#endif
+        table->Commit();
+
+#ifdef RDBI_DEF_ORA
+        UnitTestUtil::Sql2Db( 
+            FdoStringP::Format( 
+                        L"grant select, insert, update, delete on %ls.nofeatid to %ls",
+                        (FdoString*) UnitTestUtil::GetEnviron("datastore", DB_NAME_OVERRIDE_SUFFIX),
+                        (FdoString*) UnitTestUtil::GetEnviron("datastore", DB_NAME_FOREIGN_SUFFIX)
+            ),
+            connection
+        );
+#endif
+
         // Grab schemas and overrides to apply to foreign datastore
 
         FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
@@ -684,6 +694,9 @@ void FdoApplySchemaTest::TestOverrides ()
         lp = mgr->RefLogicalPhysicalSchemas();
         lp->XMLSerialize( UnitTestUtil::GetOutputFileName( L"apply_schema_foreign2.xml" ) );
 
+        printf( "Checking access to feature class non-numeric id ... \n" );
+        CheckNonNumericForeignClass( connection );
+
         printf( "Destroying foreign schemas ... \n" );
       	FdoPtr<FdoIDestroySchema>  pDestCmd = (FdoIDestroySchema*) connection->CreateCommand(FdoCommandType_DestroySchema);
     	pDestCmd->SetSchemaName( L"ForeignBased" );
@@ -733,6 +746,7 @@ void FdoApplySchemaTest::TestOverrides ()
 	catch ( FdoException* e ) 
 	{
 		try {
+            if ( staticConn ) delete staticConn;
 			if (connection) connection->Close(); 
 		}
 		catch ( ... ) 
@@ -743,27 +757,23 @@ void FdoApplySchemaTest::TestOverrides ()
 	catch ( CppUnit::Exception e ) 
 	{
 		if (connection) connection->Close(); 
+        if ( staticConn ) delete staticConn;
 		throw;
 	}
    	catch (...)
    	{
 		if (connection) connection->Close(); 
+        if ( staticConn ) delete staticConn;
    		CPPUNIT_FAIL ("caught unexpected exception");
    	}
-		
-	printf( "Done\n" );
 
+    printf( "Done\n" );
 }
 
 void FdoApplySchemaTest::TestOverrideDefaults ()
 {
 	FdoPtr<FdoIConnection> connection;
     StaticConnection* staticConn = NULL;
-
-    if ( strcmp(UnitTestUtil::GetEnv("ltmethod", "-1"), "0") == 0 )
-        mIsOWM = false;
-    else
-        mIsOWM = true;
 
     mDatastore = UnitTestUtil::GetEnviron("datastore", DB_NAME_OVERRIDE_DEFAULT_SUFFIX);
 
@@ -864,11 +874,6 @@ void FdoApplySchemaTest::TestOverrideErrors ()
 {
 	FdoPtr<FdoIConnection> connection;
 
-    if ( strcmp(UnitTestUtil::GetEnv("ltmethod", "-1"), "0") == 0 )
-        mIsOWM = false;
-    else
-        mIsOWM = true;
-
 	try {
 		// delete, re-create and open the datastore
 		printf( "Initializing Connection ... \n" );
@@ -896,7 +901,7 @@ void FdoApplySchemaTest::TestOverrideErrors ()
 		{
 			UnitTestUtil::PrintException(
                 e, 
-                UnitTestUtil::GetOutputFileName( L"apply_schema_overrides_err1.txt" ), 
+                UnitTestUtil::GetOutputFileName( SchemaOvErrFile(1,false) ), 
                 true 
             );
 			FDO_SAFE_RELEASE(e);
@@ -916,8 +921,8 @@ void FdoApplySchemaTest::TestOverrideErrors ()
       
 #ifdef _WIN32
    		UnitTestUtil::CheckOutput( 
-            "apply_schema_overrides_err1_master.txt",
-            UnitTestUtil::GetOutputFileName( L"apply_schema_overrides_err1.txt" )
+            SchemaOvErrFile(1,true),
+            UnitTestUtil::GetOutputFileName( SchemaOvErrFile(1,false) )
         );
 #endif
 
@@ -952,8 +957,6 @@ void FdoApplySchemaTest::TestLT ()
 	FdoPtr<FdoIConnection> connection;
     StaticConnection* staticConn = NULL;
 
-    int LtLckMethod = GetLtLockMethod();
-
 	try {
         FdoSchemaManagerP mgr;
         const FdoSmLpSchemaCollection* lp = NULL;
@@ -961,6 +964,21 @@ void FdoApplySchemaTest::TestLT ()
 
         // delete, re-create and open the datastore
 		printf( "Initializing Connection ... \n" );
+        staticConn = UnitTestUtil::NewStaticConnection();
+        staticConn->connect();
+
+		// The following tests must be run in the following order to get the expected results.
+
+        mgr = staticConn->CreateSchemaManager();
+        ph = mgr->GetPhysicalSchema();
+
+        int LtLckMethod = GetLtLockMethod( ph );
+
+        ph = NULL;
+        lp = NULL;
+        mgr = NULL;
+        staticConn->disconnect();
+
 		connection = UnitTestUtil::CreateConnection(
 			true,
 			true,
@@ -971,15 +989,11 @@ void FdoApplySchemaTest::TestLT ()
             true
 		);
 
-        staticConn = UnitTestUtil::NewStaticConnection();
-        staticConn->connect();
-        staticConn->SetSchema( DB_NAME_LT_SUFFIX );
-
-		// The following tests must be run in the following order to get the expected results.
-
 	    printf( "Creating LT Schema ... \n" );
 	    CreateLTSchema( connection );
 
+        staticConn->connect();
+        staticConn->SetSchema( DB_NAME_LT_SUFFIX );
         mgr = staticConn->CreateSchemaManager();
         lp = mgr->RefLogicalPhysicalSchemas();
         ph = mgr->GetPhysicalSchema();
@@ -1043,7 +1057,7 @@ void FdoApplySchemaTest::TestLT ()
 
         FdoClassDefinitionP pClass = FdoClassesP( pSchema->GetClasses() )->GetItem( L"DelStatus" );
         VldClassCapabilities( LtLckMethod, LtLckMethod, pClass );
-/*
+
         if ( LtLckMethod > 0 ) {
             InsertObject( connection, true, L"LT", L"Circle Lt", L"NextVer", L"1", NULL );
             InsertObject( connection, true, L"LT", L"DelStatus", L"LtLock", L"1", NULL );
@@ -1057,7 +1071,7 @@ void FdoApplySchemaTest::TestLT ()
             }
 	        catch ( FdoSchemaException* e )
 	        {
-		        UnitTestUtil::PrintException(e, UnitTestUtil::GetOutputFileName( "apply_schema_lt_err1.txt" ) );
+		        UnitTestUtil::PrintException(e, UnitTestUtil::GetOutputFileName(L"apply_schema_lt_err1.txt"), true );
 		        FDO_SAFE_RELEASE(e);
 	        }
 
@@ -1074,14 +1088,14 @@ void FdoApplySchemaTest::TestLT ()
             }
 	        catch ( FdoSchemaException* e )
 	        {
-		        UnitTestUtil::PrintException(e, UnitTestUtil::GetOutputFileName( "apply_schema_lt_err2.txt" ) );
+		        UnitTestUtil::PrintException(e, UnitTestUtil::GetOutputFileName(L"apply_schema_lt_err2.txt"), true );
 		        FDO_SAFE_RELEASE(e);
 	        }
 
 	        if ( succeeded ) 
 		        CPPUNIT_FAIL( "2nd Modification was supposed to fail." );
 
-            CPPUNIT_ASSERT( GetActiveLongTransaction(connection) == (FdoStringP(LT_NAME) + L"LT" ) );
+            CPPUNIT_ASSERT( GetActiveLongTransaction(connection) == GenLtName(L"LT") );
             EndLongTransaction( connection );
 
             RollbackLongTransaction(connection, L"LT" );
@@ -1089,20 +1103,27 @@ void FdoApplySchemaTest::TestLT ()
             printf( "Last Modification, should succeed ... \n" );
 	        ModLTSchema( connection ); 
         }
-*/
+
         printf( "Closing Connection ... \n" );
 	    UnitTestUtil::CloseConnection(
 	        connection,
 		    false,
             DB_NAME_SUFFIX
 		);
-/*
+
 		// Compare output files with expected results.
         if ( LtLckMethod > 0 ) {
-    		UnitTestUtil::CheckOutput( "apply_schema_lt_err1_master.txt", UnitTestUtil::GetOutputFileName( "apply_schema_lt_err1.txt" ) );
-	    	UnitTestUtil::CheckOutput( "apply_schema_lt_err1_master.txt", UnitTestUtil::GetOutputFileName( "apply_schema_lt_err2.txt" ) );
+#ifdef _WIN32
+    		UnitTestUtil::CheckOutput( "apply_schema_lt_err1_master.txt", UnitTestUtil::GetOutputFileName( L"apply_schema_lt_err1.txt" ) );
+	    	UnitTestUtil::CheckOutput( "apply_schema_lt_err1_master.txt", UnitTestUtil::GetOutputFileName( L"apply_schema_lt_err2.txt" ) );
+#endif
         }
-*/
+
+        ph = NULL;
+        lp = NULL;
+        mgr = NULL;
+        staticConn->disconnect();
+        delete staticConn;
     }
 	catch ( FdoException* e ) 
 	{
@@ -1128,85 +1149,6 @@ void FdoApplySchemaTest::TestLT ()
 	printf( "Done\n" );
 
 }
-/*
-// Test that various OWM reserved names are being recognized as such 
-void FdoApplySchemaTest::TestLTReserved ()
-{
-	FdoPtr<FdoIConnection> connection;
-
-    mIsOWM = true;
-
-	try {
-		// delete, re-create and open the datastore
-		printf( "Initializing Connection ... \n" );
-		connection = UnitTestUtil::CreateConnection(
-			false,
-			false,
-            ""
-		);
-
-        DbiConnection* dbiConn = connection->GetDbiConnection();
-*/
-        /* Check some names with OWM reserved suffixes */
-/*
-        CPPUNIT_ASSERT( dbiConn->dbi_is_res_object( (char*) (const char*) FdoStringP("circle_aux") ) );
-        CPPUNIT_ASSERT( dbiConn->dbi_is_res_object( (char*) (const char*) FdoStringP("circle_base") ) );
-        CPPUNIT_ASSERT( dbiConn->dbi_is_res_object( (char*) (const char*) FdoStringP("circle_bpkc") ) );
-        CPPUNIT_ASSERT( dbiConn->dbi_is_res_object( (char*) (const char*) FdoStringP("circle_conf") ) );
-        CPPUNIT_ASSERT( dbiConn->dbi_is_res_object( (char*) (const char*) FdoStringP("circle_cons") ) );
-        CPPUNIT_ASSERT( dbiConn->dbi_is_res_object( (char*) (const char*) FdoStringP("circle_diff") ) );
-        CPPUNIT_ASSERT( dbiConn->dbi_is_res_object( (char*) (const char*) FdoStringP("circle_hist") ) );
-        CPPUNIT_ASSERT( dbiConn->dbi_is_res_object( (char*) (const char*) FdoStringP("circle_lock") ) );
-        CPPUNIT_ASSERT( dbiConn->dbi_is_res_object( (char*) (const char*) FdoStringP("circle_lt") ) );
-        CPPUNIT_ASSERT( dbiConn->dbi_is_res_object( (char*) (const char*) FdoStringP("circle_lts") ) );
-        CPPUNIT_ASSERT( dbiConn->dbi_is_res_object( (char*) (const char*) FdoStringP("circle_mw") ) );
-        CPPUNIT_ASSERT( dbiConn->dbi_is_res_object( (char*) (const char*) FdoStringP("circle_pkc") ) );
-        CPPUNIT_ASSERT( dbiConn->dbi_is_res_object( (char*) (const char*) FdoStringP("circle_pkd") ) );
-        CPPUNIT_ASSERT( dbiConn->dbi_is_res_object( (char*) (const char*) FdoStringP("circle_pkdb") ) );
-        CPPUNIT_ASSERT( dbiConn->dbi_is_res_object( (char*) (const char*) FdoStringP("circle_pkdc") ) );
-        CPPUNIT_ASSERT( dbiConn->dbi_is_res_object( (char*) (const char*) FdoStringP("circle_arc_pkdc") ) );
-        CPPUNIT_ASSERT( dbiConn->dbi_is_res_object( (char*) (const char*) FdoStringP("circle_arc_ltb") ) );
-        CPPUNIT_ASSERT( dbiConn->dbi_is_res_object( (char*) (const char*) FdoStringP("circle_arc_ri$b") ) );
-        CPPUNIT_ASSERT( dbiConn->dbi_is_res_object( (char*) (const char*) FdoStringP("circle_arc_ri$t") ) );
-        CPPUNIT_ASSERT( dbiConn->dbi_is_res_object( (char*) (const char*) FdoStringP("circle_arc_vtb") ) );
-*/       
-        /* Check some OWM reserved names */
-/*
-        CPPUNIT_ASSERT( dbiConn->dbi_is_res_object( (char*) (const char*) FdoStringP("childstate") ) );
-        CPPUNIT_ASSERT( dbiConn->dbi_is_res_object( (char*) (const char*) FdoStringP("parentstate") ) );
-        CPPUNIT_ASSERT( dbiConn->dbi_is_res_object( (char*) (const char*) FdoStringP("wm_retiretime") ) );
-        CPPUNIT_ASSERT( dbiConn->dbi_is_res_object( (char*) (const char*) FdoStringP("wm$otherchildsourcever") ) );
-*/       
-        /* Check some non-reserved names */
-/*
-        CPPUNIT_ASSERT( !dbiConn->dbi_is_res_object( (char*) (const char*) FdoStringP("circle_aux1") ) );
-        CPPUNIT_ASSERT( !dbiConn->dbi_is_res_object( (char*) (const char*) FdoStringP("circle_aux_ox") ) );
-	}
-	catch ( FdoException* e ) 
-	{
-		try {
-			if (connection) connection->Close(); 
-		}
-		catch ( ... ) 
-		{
-		}
-		UnitTestUtil::FailOnException( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		if (connection) connection->Close(); 
-		throw;
-	}
-   	catch (...)
-   	{
-		if (connection) connection->Close(); 
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-		
-	printf( "Done\n" );
-
-}
-*/
 
 // The following XSL stylesheet is used in TestConfigDoc, it modifies the 
 // LogicalPhysical Schema XML written from a datastore with MetaSchema, so that
@@ -1252,6 +1194,20 @@ xmlns:fdo=\"http://www.autodesk.com/isd/fdo\" \
             <xsl:sort select=\"@name\" />\
         </xsl:apply-templates>\
     </xsl:copy>\
+</xsl:template>\
+<xsl:template match=\"lp:uniqueConstraints\">\
+  <xsl:copy>\
+    <xsl:apply-templates select=\"lp:uniqueConstraint\">\
+		<xsl:sort select=\"count(lp:property)\"/>\
+    </xsl:apply-templates>\
+  </xsl:copy>\
+</xsl:template>\
+<xsl:template match=\"lp:uniqueConstraint\">\
+  <xsl:copy>\
+    <xsl:apply-templates select=\"lp:property\">\
+		<xsl:sort select=\"@name\"/>\
+    </xsl:apply-templates>\
+  </xsl:copy>\
 </xsl:template>";
 
 static char* pRmvLpMetaSchema2 = 
@@ -2096,10 +2052,13 @@ void FdoApplySchemaTest::CreateElectricSchema( FdoIConnection* connection )
 	FdoSADP(pProp->GetAttributes())->Add( L"Calculable", L"yes" );
 	pProp->SetDataType( FdoDataType_Decimal );
 	pProp->SetPrecision(10);
-/* TODO: -2 on MySql?
-	pProp->SetScale(-2);
-*/
+
+#ifdef RDBI_DEF_ORA
+    pProp->SetScale(-2);
+#else
 	pProp->SetScale(1);
+#endif
+
 	pProp->SetNullable(false);
 	FdoPropertiesP(pClass->GetProperties())->Add( pProp );
 
@@ -2326,12 +2285,17 @@ void FdoApplySchemaTest::CreateLandSchema( FdoFeatureSchemaCollection* pSchemas 
 	FdoPtr<FdoFeatureClass> pClass = FdoFeatureClass::Create( L"Parcel", L"land parcel" );
 	pClass->SetIsAbstract(false);
 
+	FdoPtr<FdoUniqueConstraintCollection> constraints = pClass->GetUniqueConstraints();
+	FdoPtr<FdoUniqueConstraint>  constraint = FdoUniqueConstraint::Create();
+	constraints->Add( constraint );
+
 	pProp = FdoDataPropertyDefinition::Create( L"Province", L"" );
 	pProp->SetDataType( FdoDataType_String );
 	pProp->SetLength(20);
 	pProp->SetNullable(false);
 	FdoPropertiesP(pClass->GetProperties())->Add( pProp );
 	FdoDataPropertiesP(pClass->GetIdentityProperties())->Add( pProp );
+	FdoDataPropertiesP(constraint->GetProperties())->Add( pProp );
 
 	pProp = FdoDataPropertyDefinition::Create( L"PIN", L"parcel id" );
 	pProp->SetDataType( FdoDataType_String );
@@ -2339,6 +2303,7 @@ void FdoApplySchemaTest::CreateLandSchema( FdoFeatureSchemaCollection* pSchemas 
 	pProp->SetNullable(false);
 	FdoPropertiesP(pClass->GetProperties())->Add( pProp );
 	FdoDataPropertiesP(pClass->GetIdentityProperties())->Add( pProp );
+	FdoDataPropertiesP(constraint->GetProperties())->Add( pProp );
 
 	pProp = FdoDataPropertyDefinition::Create( L"Value", L"" );
 	pProp->SetDataType( FdoDataType_Decimal );
@@ -2372,12 +2337,17 @@ void FdoApplySchemaTest::CreateLandSchema( FdoFeatureSchemaCollection* pSchemas 
     FdoPtr<FdoFeatureClass> pBldgClass = FdoFeatureClass::Create( L"Build'g", L"'" );
 	pBldgClass->SetIsAbstract(true);
 
+	constraints = pBldgClass->GetUniqueConstraints();
+	constraint = FdoUniqueConstraint::Create();
+	constraints->Add( constraint );
+
 	pProp = FdoDataPropertyDefinition::Create( L"FeatureId", L"" );
 	pProp->SetDataType( FdoDataType_Int64 );
 	pProp->SetNullable(false);
     pProp->SetIsAutoGenerated(true);
 	FdoPropertiesP(pBldgClass->GetProperties())->Add( pProp );
 	FdoDataPropertiesP(pBldgClass->GetIdentityProperties())->Add( pProp );
+	FdoDataPropertiesP(constraint->GetProperties())->Add( pProp );
 
 	pProp = FdoDataPropertyDefinition::Create( L"# Rooms", L"" );
 	pProp->SetDataType( FdoDataType_Int16 );
@@ -2388,6 +2358,7 @@ void FdoApplySchemaTest::CreateLandSchema( FdoFeatureSchemaCollection* pSchemas 
 	pProp->SetDataType( FdoDataType_Double );
 	pProp->SetNullable(true);
 	FdoPropertiesP(pBldgClass->GetProperties())->Add( pProp );
+	FdoDataPropertiesP(constraint->GetProperties())->Add( pProp );
 
 	// Add a property with same name as a system property except for capitalization.
 	// Since columns are case-insensitve, this property's column should end up being
@@ -3572,14 +3543,12 @@ void FdoApplySchemaTest::ReAddElements( FdoIConnection* connection )
 #endif
 
 	// Re-add deleted data property. Give it different type and nullibility than before. 
-	// Note that "volume" column is still around ( the provider doesn't yet support column deletes )
-	// so the following creates a "volume1" column.
-/*
+
 	pProp = FdoDataPropertyDefinition::Create( L"Volume", L"" );
 	pProp->SetDataType( FdoDataType_Int64 );
 	pProp->SetNullable(true);
 	FdoPropertiesP(pClass->GetProperties())->Add( pProp );
-*/
+
 	// Re-add a nested object property. Since added to base class, this also tests inheritance.
 
 	FdoPtr<FdoClassDefinition> pMaintHist = FdoClassesP(pSchema->GetClasses())->GetItem( L"Maint History" );
@@ -3936,7 +3905,7 @@ void FdoApplySchemaTest::GetJoinTree( FdoRdbmsSchemaManager* sm )
 	// Root table must be Cogo Point class table
 
 #ifdef _WIN32
-	CPPUNIT_ASSERT( wcsicmp( pLpTable->GetName(), L"COGO_POINT" ) == 0 );
+	CPPUNIT_ASSERT( _wcsicmp( pLpTable->GetName(), L"COGO_POINT" ) == 0 );
 #else
 	CPPUNIT_ASSERT( wcscasecmp( pLpTable->GetName(), L"COGO_POINT" ) == 0 );
 #endif
@@ -3951,16 +3920,56 @@ void FdoApplySchemaTest::GetJoinTree( FdoRdbmsSchemaManager* sm )
 	FdoRdbmsLpJoinTreeNode* baseNode = rootNode->GetSourceNodes()->GetItem(0);
 	pLpTable = baseNode->GetTable();
 
-	CPPUNIT_ASSERT( FdoStringP(pLpTable->GetName()).ICompare(L"F_CLASSDEFINITION") == 0 );
-	CPPUNIT_ASSERT( FdoStringP(pLpTable->GetTargetTable()->GetName()).ICompare(L"COGO_POINT") == 0 );
-
-    CPPUNIT_ASSERT( pLpTable->GetSourceColumns()->GetCount() == 1 );
-	CPPUNIT_ASSERT( FdoStringP(pLpTable->GetSourceColumns()->GetItem(0)->GetName()).ICompare(L"CLASSID") == 0 );
+#ifdef _WIN32
+	CPPUNIT_ASSERT( _wcsicmp( pLpTable->GetName(), L"F_FEATURE" ) == 0 );
+	CPPUNIT_ASSERT( _wcsicmp( pLpTable->GetTargetTable()->GetName(), L"COGO_POINT" ) == 0 );
+#else
+	CPPUNIT_ASSERT( wcscasecmp( pLpTable->GetName(), L"F_FEATURE" ) == 0 );
+	CPPUNIT_ASSERT( wcscasecmp( pLpTable->GetTargetTable()->GetName(), L"COGO_POINT" ) == 0 );
+#endif
+	CPPUNIT_ASSERT( pLpTable->GetSourceColumns()->GetCount() == 1 );
+#ifdef _WIN32
+	CPPUNIT_ASSERT( _wcsicmp( pLpTable->GetSourceColumns()->GetItem(0)->GetName(), L"FEATID" ) == 0 );
+#else
+	CPPUNIT_ASSERT( wcscasecmp( pLpTable->GetSourceColumns()->GetItem(0)->GetName(), L"FEATID" ) == 0 );
+#endif
 	CPPUNIT_ASSERT( pLpTable->GetTargetColumns()->GetCount() == 1 );
-	CPPUNIT_ASSERT( FdoStringP(pLpTable->GetTargetColumns()->GetItem(0)->GetName()).ICompare(L"CLASSID") == 0 );
+#ifdef _WIN32
+	CPPUNIT_ASSERT( _wcsicmp( pLpTable->GetTargetColumns()->GetItem(0)->GetName(), L"FEATID" ) == 0 );
+#else
+	CPPUNIT_ASSERT( wcscasecmp( pLpTable->GetTargetColumns()->GetItem(0)->GetName(), L"FEATID" ) == 0 );
+#endif
 
-	CPPUNIT_ASSERT( baseNode->GetSourceNodes()->GetCount() == 0 );
+	CPPUNIT_ASSERT( baseNode->GetSourceNodes()->GetCount() == 1 );
 
+	// F_CLASSDEFINITION is the last table to join
+
+	FdoRdbmsLpJoinTreeNode* metaNode = baseNode->GetSourceNodes()->GetItem(0);
+	pLpTable = metaNode->GetTable();
+
+#ifdef _WIN32
+	CPPUNIT_ASSERT( _wcsicmp( pLpTable->GetName(), L"F_CLASSDEFINITION" ) == 0 );
+	CPPUNIT_ASSERT( _wcsicmp( pLpTable->GetTargetTable()->GetName(), L"F_FEATURE" ) == 0 );
+#else
+	CPPUNIT_ASSERT( wcscasecmp( pLpTable->GetName(), L"F_CLASSDEFINITION" ) == 0 );
+	CPPUNIT_ASSERT( wcscasecmp( pLpTable->GetTargetTable()->GetName(), L"F_FEATURE" ) == 0 );
+#endif
+	CPPUNIT_ASSERT( pLpTable->GetSourceColumns()->GetCount() == 1 );
+#ifdef _WIN32
+	CPPUNIT_ASSERT( _wcsicmp( pLpTable->GetSourceColumns()->GetItem(0)->GetName(), L"CLASSID" ) == 0 );
+#else
+	CPPUNIT_ASSERT( wcscasecmp( pLpTable->GetSourceColumns()->GetItem(0)->GetName(), L"CLASSID" ) == 0 );
+#endif
+	CPPUNIT_ASSERT( pLpTable->GetTargetColumns()->GetCount() == 1 );
+#ifdef _WIN32
+	CPPUNIT_ASSERT( _wcsicmp( pLpTable->GetTargetColumns()->GetItem(0)->GetName(), L"CLASSID" ) == 0 );
+#else
+	CPPUNIT_ASSERT( wcscasecmp( pLpTable->GetTargetColumns()->GetItem(0)->GetName(), L"CLASSID" ) == 0 );
+#endif
+
+	// Should be at the end at this point.
+
+	CPPUNIT_ASSERT( metaNode->GetSourceNodes()->GetCount() == 0 );
 	rootNode->Release();
 }
 #endif
@@ -3977,7 +3986,6 @@ void FdoApplySchemaTest::GetClassCapabilities( FdoIConnection* connection )
 
     pClass = FdoClassesP( pSchema->GetClasses() )->GetItem( L"AcXData" );
     VldClassCapabilities( 0, 0, pClass );
-
 }
 
 void FdoApplySchemaTest::CheckBaseProperties( FdoIConnection* connection )
@@ -4064,6 +4072,52 @@ void FdoApplySchemaTest::CheckBaseProperties( FdoIConnection* connection )
     
     CPPUNIT_ASSERT( FdoPropertyP(pBaseProps->GetItem(L"# Rooms"))->GetQualifiedName() == L"Land:Build'g.# Rooms" );
     CPPUNIT_ASSERT( FdoPropertyP(pBaseProps->GetItem(L"RevisionNumber"))->GetQualifiedName() == L"RevisionNumber" );
+}
+
+void FdoApplySchemaTest::CheckNonNumericForeignClass( FdoIConnection* connection )
+{
+    InsertObject( connection, false, L"OverridesA", L"NOFEATID", L"ID", L"1", L"DATA", L"abcd", NULL );
+    InsertObject( connection, false, L"OverridesA", L"NOFEATID", L"ID", L"2", L"DATA", L"wxyz", NULL );
+
+    FdoPtr<FdoFilter>   filter = FdoComparisonCondition::Create(
+        FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"ID") ), 
+        FdoComparisonOperations_EqualTo, 
+        FdoPtr<FdoDataValue>(FdoDataValue::Create(L"1") ) ); 
+
+    FdoPtr<FdoIUpdate> updateCommand = (FdoIUpdate *) connection->CreateCommand(FdoCommandType_Update);
+    updateCommand->SetFeatureClassName(L"OverridesA:NOFEATID");
+    updateCommand->SetFilter( filter ); 
+    FdoPtr<FdoPropertyValueCollection> propertyValues = updateCommand->GetPropertyValues();
+    FdoPtr<FdoDataValue> dataValue = FdoDataValue::Create(L"efgh");
+    FdoPtr<FdoPropertyValue> propertyValue = FdoPropertyValue::Create(L"DATA", dataValue);
+    propertyValues->Add(propertyValue);
+    updateCommand->Execute();
+
+    FdoPtr<FdoISelect> selectCommand = (FdoISelect *) connection->CreateCommand(FdoCommandType_Select);
+    selectCommand->SetFeatureClassName( L"OverridesA:NOFEATID" );
+    selectCommand->SetFilter( filter ); 
+
+    FdoPtr<FdoIFeatureReader> rdr = selectCommand->Execute();
+
+    CPPUNIT_ASSERT( rdr->ReadNext() );
+    CPPUNIT_ASSERT( wcscmp(rdr->GetString(L"DATA"), L"efgh") == 0 );
+    CPPUNIT_ASSERT( !rdr->ReadNext() );
+
+    FdoPtr<FdoIDelete> deleteCommand = (FdoIDelete *) connection->CreateCommand(FdoCommandType_Delete);
+    deleteCommand->SetFeatureClassName(L"OverridesA:NOFEATID");
+    deleteCommand->SetFilter( filter ); 
+    deleteCommand->Execute();
+
+    selectCommand->SetFilter( (FdoFilter*) NULL ); 
+
+    rdr = selectCommand->Execute();
+
+    CPPUNIT_ASSERT( rdr->ReadNext() );
+    CPPUNIT_ASSERT( wcscmp(rdr->GetString(L"DATA"), L"wxyz") == 0 );
+    CPPUNIT_ASSERT( !rdr->ReadNext() );
+
+    deleteCommand->SetFilter( (FdoFilter*) NULL ); 
+    deleteCommand->Execute( );
 }
 
 void FdoApplySchemaTest::CopySchemas(FdoFeatureSchemaCollection* pSchemas, FdoFeatureSchemaCollection* pSchemas2)
@@ -4396,77 +4450,7 @@ void FdoApplySchemaTest::CreateForeignBasedSchema( FdoIConnection* connection, F
 
 	pCmd->Execute();
 }
-#if 0
-void FdoApplySchemaTest::CreateForeignErrorSchema( FdoIConnection* connection )
-{
-	FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
-	FdoFeatureSchemaP                   pSchema = FdoFeatureSchema::Create( L"ForeignError", L"Foreign Schema with errors" );
-    FdoFeatureClassP                    pClass;
-    FdoDataPropertyP                    pProp;
 
-    pClass = FdoFeatureClass::Create( L"ErrClassA", L"" );
-    FdoClassesP(pSchema->GetClasses())->Add( pClass );
-
-    pProp = FdoDataPropertyDefinition::Create( L"Id", L"id" );
-    pProp->SetDataType( FdoDataType_Int32 );
-    pProp->SetNullable(false);
-    FdoPropertiesP(pClass->GetProperties())->Add( pProp );
-    FdoDataPropertiesP(pClass->GetIdentityProperties())->Add( pProp );
-
-    pProp = FdoDataPropertyDefinition::Create( L"Name", L"" );
-    pProp->SetDataType( FdoDataType_String );
-    pProp->SetLength( 50 );
-    pProp->SetNullable(false);
-    FdoPropertiesP(pClass->GetProperties())->Add( pProp );
-
-    pClass = FdoFeatureClass::Create( L"ErrClassB", L"" );
-    FdoClassesP(pSchema->GetClasses())->Add( pClass );
-
-    pProp = FdoDataPropertyDefinition::Create( L"Id", L"id" );
-    pProp->SetDataType( FdoDataType_Int64 );
-    pProp->SetNullable(false);
-    pProp->SetIsAutoGenerated(true);
-    FdoPropertiesP(pClass->GetProperties())->Add( pProp );
-    FdoDataPropertiesP(pClass->GetIdentityProperties())->Add( pProp );
-
-    pProp = FdoDataPropertyDefinition::Create( L"Name", L"" );
-    pProp->SetDataType( FdoDataType_String );
-    pProp->SetLength( 50 );
-    pProp->SetNullable(false);
-    FdoPropertiesP(pClass->GetProperties())->Add( pProp );
-    FdoDataPropertiesP(pClass->GetIdentityProperties())->Add( pProp );
-
-    pClass = FdoFeatureClass::Create( L"ClassC", L"no errors" );
-    FdoClassesP(pSchema->GetClasses())->Add( pClass );
-
-    pProp = FdoDataPropertyDefinition::Create( L"Id", L"id" );
-    pProp->SetDataType( FdoDataType_Int64 );
-    pProp->SetNullable(false);
-    pProp->SetIsAutoGenerated(true);
-    FdoPropertiesP(pClass->GetProperties())->Add( pProp );
-    FdoDataPropertiesP(pClass->GetIdentityProperties())->Add( pProp );
-
-    pProp = FdoDataPropertyDefinition::Create( L"Name", L"" );
-    pProp->SetDataType( FdoDataType_String );
-    pProp->SetLength( 50 );
-    pProp->SetNullable(false);
-    FdoPropertiesP(pClass->GetProperties())->Add( pProp );
-    FdoDataPropertiesP(pClass->GetIdentityProperties())->Add( pProp );
-
-    pProp = FdoDataPropertyDefinition::Create( L"FeatId", L"id" );
-    pProp->SetDataType( FdoDataType_Int64 );
-    pProp->SetNullable(false);
-    pProp->SetIsAutoGenerated(true);
-    FdoPropertiesP(pClass->GetProperties())->Add( pProp );
-
-    FdoOracleOvSchemaMappingP mapping = FdoOracleOvPhysicalSchemaMapping::Create( L"ForeignError");
-    mapping->SetOwner( UnitTestUtil::GetEnviron("datastore", DB_NAME_OVERRIDE_SUFFIX) );
-
-    pCmd->SetFeatureSchema( pSchema );
-    pCmd->SetPhysicalMapping( mapping );
-	pCmd->Execute();
-}
-#endif
 void FdoApplySchemaTest::ModOverrideSchema1( FdoIConnection* connection, FdoRdbmsOvPhysicalSchemaMapping* pOverrides )
 {
 	FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
@@ -4783,8 +4767,9 @@ void FdoApplySchemaTest::ModOverrideSchemaForeign( FdoFeatureSchema* pSchema, Fd
     pProps->Add( pProp );
 
     // this "if" can be removed when defect 772351 is fixed
+    FdoGeometricPropertyP pGeomProp;
 #ifndef RDBI_DEF_SSQL
-    FdoGeometricPropertyP pGeomProp = FdoGeometricPropertyDefinition::Create( L"Floor", L"location and shape" );
+    pGeomProp = FdoGeometricPropertyDefinition::Create( L"Floor", L"location and shape" );
     pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve );
     pGeomProp->SetHasElevation(true);
     pProps->Add( pGeomProp );
@@ -4793,6 +4778,30 @@ void FdoApplySchemaTest::ModOverrideSchemaForeign( FdoFeatureSchema* pSchema, Fd
     pObProp->SetClass( pOpClass );
     pObProp->SetObjectType( FdoObjectType_Value );
     pProps->Add( pObProp );
+
+    pClass = FdoFeatureClass::Create( L"NOFEATID", L"" );
+    FdoClassesP(pSchema->GetClasses())->Add( pClass );
+    pProps = pClass->GetProperties();
+    pIdProps = pClass->GetIdentityProperties();
+
+    pProp = FdoDataPropertyDefinition::Create( L"ID", L"id" );
+    pProp->SetDataType( FdoDataType_String );
+    pProp->SetNullable(false);
+    pProp->SetLength(20);
+    pProps->Add( pProp );
+    pIdProps->Add( pProp );
+
+    pProp = FdoDataPropertyDefinition::Create( L"DATA", L"" );
+    pProp->SetDataType( FdoDataType_String );
+    pProp->SetNullable(true);
+    pProp->SetLength(50);
+    pProps->Add( pProp );
+
+    pGeomProp = FdoGeometricPropertyDefinition::Create( L"GEOMETRY", L"location and shape" );
+    pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve );
+    pGeomProp->SetHasElevation(true);
+    pProps->Add( pGeomProp );
+    pClass->SetGeometryProperty( pGeomProp );
 }
 
 void FdoApplySchemaTest::ModOverrideSchemaForeign2( FdoIConnection* connection, FdoRdbmsOvPhysicalSchemaMapping* pOverrides )
@@ -5712,7 +5721,7 @@ xmlns:fdo=\"http://fdo.osgeo.org/schemas\" \
 xmlns:ora=\"http://www.autodesk.com/isd/fdo/OracleProvider\" \
 xmlns:rdb=\"http://fdordbms.osgeo.org/schemas\">\
 <xsl:param name=\"ownerSuffix\" />\
-<xsl:template match=\"ora:SchemaMapping\">\
+<xsl:template match=\"ora:SchemaMapping|ora:Table\">\
     <xsl:copy>\
         <xsl:apply-templates select=\"@*[not(name()='owner')]\"/>\
         <xsl:if test=\"@owner\">\
@@ -5787,48 +5796,52 @@ xmlns:rdb=\"http://fdordbms.osgeo.org/schemas\">\
     formatter.Format();
 }
 
+FdoStringP FdoApplySchemaTest::GenLtName( FdoStringP transName )
+{
+    return FdoStringP::Format( 
+        L"%ls_%hs%ls",
+        (FdoString*) UnitTestUtil::GetEnviron( "username" ),
+        LT_NAME,
+        (FdoString*) transName 
+    );
+}
+
 void FdoApplySchemaTest::StartLongTransaction( FdoIConnection* connection, FdoStringP transName )
 {
-    if ( mIsOWM ) {
-        FdoPtr<FdoIGetLongTransactions> gettrans = (FdoIGetLongTransactions *) connection->CreateCommand(FdoCommandType_GetLongTransactions);
-        gettrans->SetName( FdoStringP(LT_NAME) + transName );
-        FdoPtr<FdoILongTransactionReader> rdr = gettrans->Execute();
+    FdoPtr<FdoIGetLongTransactions> gettrans = (FdoIGetLongTransactions *) connection->CreateCommand(FdoCommandType_GetLongTransactions);
+    gettrans->SetName( GenLtName(transName) );
+    FdoPtr<FdoILongTransactionReader> rdr = gettrans->Execute();
 
-        if ( rdr->ReadNext() == 0 ) {
-            FdoPtr<FdoICreateLongTransaction> crtrans = (FdoICreateLongTransaction *) connection->CreateCommand(FdoCommandType_CreateLongTransaction);
-            crtrans->SetName( FdoStringP(LT_NAME) + transName );
-            crtrans->Execute();
-        }
-
-        rdr = NULL;
-
-        FdoPtr<FdoIActivateLongTransaction> acttrans = (FdoIActivateLongTransaction *) connection->CreateCommand(FdoCommandType_ActivateLongTransaction);
-        acttrans->SetName( FdoStringP(LT_NAME) + transName );
-        acttrans->Execute();
+    if ( rdr->ReadNext() == 0 ) {
+        FdoPtr<FdoICreateLongTransaction> crtrans = (FdoICreateLongTransaction *) connection->CreateCommand(FdoCommandType_CreateLongTransaction);
+        crtrans->SetName( GenLtName(transName) );
+        crtrans->Execute();
     }
+
+    rdr = NULL;
+
+    FdoPtr<FdoIActivateLongTransaction> acttrans = (FdoIActivateLongTransaction *) connection->CreateCommand(FdoCommandType_ActivateLongTransaction);
+    acttrans->SetName( GenLtName(transName) );
+    acttrans->Execute();
 }
 
 void FdoApplySchemaTest::EndLongTransaction( FdoIConnection* connection )
 {
-    if ( mIsOWM ) {
-        FdoPtr<FdoIDeactivateLongTransaction> deacttrans = (FdoIDeactivateLongTransaction *) connection->CreateCommand(FdoCommandType_DeactivateLongTransaction);
-        deacttrans->Execute();
-    }
+    FdoPtr<FdoIDeactivateLongTransaction> deacttrans = (FdoIDeactivateLongTransaction *) connection->CreateCommand(FdoCommandType_DeactivateLongTransaction);
+    deacttrans->Execute();
 }
 
 void FdoApplySchemaTest::RollbackLongTransaction( FdoIConnection* connection, FdoStringP transName )
 {
-    if ( mIsOWM ) {
-        FdoPtr<FdoIGetLongTransactions> gettrans = (FdoIGetLongTransactions *) connection->CreateCommand(FdoCommandType_GetLongTransactions);
-        gettrans->SetName( FdoStringP(LT_NAME) + transName );
-        FdoPtr<FdoILongTransactionReader> rdr = gettrans->Execute();
+    FdoPtr<FdoIGetLongTransactions> gettrans = (FdoIGetLongTransactions *) connection->CreateCommand(FdoCommandType_GetLongTransactions);
+    gettrans->SetName( GenLtName(transName) );
+    FdoPtr<FdoILongTransactionReader> rdr = gettrans->Execute();
 
-        if ( rdr->ReadNext() != 0 ) {
-            rdr = NULL;
-            FdoPtr<FdoIRollbackLongTransaction> rbtrans = (FdoIRollbackLongTransaction *) connection->CreateCommand(FdoCommandType_RollbackLongTransaction);
-            rbtrans->SetName( FdoStringP(LT_NAME) + transName );
-            rbtrans->Execute();
-        }
+    if ( rdr->ReadNext() != 0 ) {
+        rdr = NULL;
+        FdoPtr<FdoIRollbackLongTransaction> rbtrans = (FdoIRollbackLongTransaction *) connection->CreateCommand(FdoCommandType_RollbackLongTransaction);
+        rbtrans->SetName( GenLtName(transName) );
+        rbtrans->Execute();
     }
 }
 
@@ -5836,15 +5849,13 @@ FdoStringP FdoApplySchemaTest::GetActiveLongTransaction( FdoIConnection* connect
 {
     FdoStringP activeLT;
 
-    if ( mIsOWM ) {
-        FdoPtr<FdoIGetLongTransactions> gettrans = (FdoIGetLongTransactions *) connection->CreateCommand(FdoCommandType_GetLongTransactions);
-        FdoPtr<FdoILongTransactionReader> rdr = gettrans->Execute();
+    FdoPtr<FdoIGetLongTransactions> gettrans = (FdoIGetLongTransactions *) connection->CreateCommand(FdoCommandType_GetLongTransactions);
+    FdoPtr<FdoILongTransactionReader> rdr = gettrans->Execute();
 
-        while ( rdr->ReadNext() != 0 ) {
-            if ( rdr->IsActive() ) {
-                activeLT = rdr->GetName();
-                break;
-            }
+    while ( rdr->ReadNext() != 0 ) {
+        if ( rdr->IsActive() ) {
+            activeLT = rdr->GetName();
+            break;
         }
     }
 
@@ -5859,10 +5870,10 @@ void FdoApplySchemaTest::InsertObject( FdoIConnection* connection, bool conditio
     va_start(arguments, className);
 
     arg = va_arg(arguments,FdoString*);
-/*
+
     if ( conditional ) 
         StartLongTransaction( connection, schemaName );
-*/
+
     FdoITransaction* trans = (FdoITransaction *) connection->BeginTransaction();
     FdoPtr<FdoIInsert> insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
     FdoPtr<FdoPropertyValueCollection> propertyValues;
@@ -5888,24 +5899,23 @@ void FdoApplySchemaTest::InsertObject( FdoIConnection* connection, bool conditio
 
     trans->Commit();
     FDO_SAFE_RELEASE(trans);
-/*
+
     if ( conditional ) 
         EndLongTransaction( connection );
-*/
+
     va_end(arguments);
 }
 
 void FdoApplySchemaTest::DeleteObjects( FdoIConnection* connection, FdoStringP schemaName, FdoStringP className )
 {
-/*
+
     StartLongTransaction( connection, schemaName );
-*/
+
     FdoPtr<FdoIDelete> deleteCommand = (FdoIDelete *) connection->CreateCommand(FdoCommandType_Delete);
     deleteCommand->SetFeatureClassName(schemaName + L":" + className);
 	deleteCommand->Execute();
-/*
+
     EndLongTransaction( connection );
-*/
 }
 
 void FdoApplySchemaTest::_logicalPhysicalBend( FdoString* inFile, FdoString* outFile, FdoStringP providerName )
@@ -5950,5 +5960,13 @@ FdoStringP FdoApplySchemaTest::SchemaTestErrFile( int fileNum, bool isMaster )
 	if (isMaster)
 		return FdoStringP::Format( L"apply_schema_err%d%ls.txt", fileNum, L"_master");
 	else
-		return UnitTestUtil::GetOutputFileName( FdoStringP::Format( L"apply_schema_err%d%ls.txt", fileNum, L"_master") );
+		return UnitTestUtil::GetOutputFileName( FdoStringP::Format( L"apply_schema_err%d.txt", fileNum) );
+}
+
+FdoStringP FdoApplySchemaTest::SchemaOvErrFile( int fileNum, bool isMaster )
+{
+	if (isMaster)
+		return FdoStringP::Format( L"apply_schema_overrides_err%d%ls.txt", fileNum, L"_master");
+	else
+		return UnitTestUtil::GetOutputFileName( FdoStringP::Format( L"apply_schema_overrides_err%d%ls.txt", fileNum, L"_master") );
 }

@@ -81,9 +81,9 @@ public:
     static const char* GetEnv( const char* pVar, const char* pDefault );
 
 	static FdoIConnection* GetProviderConnectionObject();
-	static wchar_t *GetConnectionString(StringConnTypeRequest pTypeReq = Connection_WithDatastore, FdoString *suffix = L"");
+	static wchar_t *GetConnectionString(StringConnTypeRequest pTypeReq = Connection_WithDatastore, FdoString *suffix = L"", bool bAddExtraneousSpaces = false);
     static void CreateDB(bool addSchema = true, bool useBaseMapping=false, FdoString *suffix = L"", int lt_method = 0, bool lt_method_fixed = false );
-	static void CreateDB( FdoIConnection* connection, FdoString *username, FdoString *description, FdoString *password, char *schemaType, int local_lt_method );   
+	static void CreateDB( FdoIConnection* connection, FdoString *datastore, FdoString *description, FdoString *password, char *schemaType, int local_lt_method );   
 	static FdoStringP GetEnviron(const char *name, FdoString *suffix = L"");
 	static void SetProvider( const char *providerName );
 
@@ -137,7 +137,7 @@ public:
         bool bDelete,
         FdoString *suffix
     );
-	static void DropDb();
+	static void DropDb(FdoString *suffix = L"" );
 	static void DropDb( FdoIConnection *connection, FdoString* pDatastore, FdoString* pPassword, FdoString* pService );
     
 	// Check if the given connect contains the given datastore.
@@ -200,7 +200,7 @@ public:
 	static void SortXml( FdoIoStream* inStream, char* styleSheetString, FdoIoStream* outStream );
 
 	static void OverrideBend( FdoIoStream* stream1, FdoIoStream* stream2, FdoStringP providerName, 
-		FdoStringP providerUri, FdoStringP oldOwnerPrefix, FdoStringP newOwnerPrefix );
+		FdoStringP providerUri, FdoStringP oldOwnerPrefix, FdoStringP newOwnerPrefix, FdoStringP tablespace = L"" );
     static bool DoThisTest( char *testGroupName );
 
 	// Accesses the data on the current feature.

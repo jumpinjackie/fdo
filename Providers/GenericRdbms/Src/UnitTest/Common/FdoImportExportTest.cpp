@@ -84,7 +84,7 @@ xmlns:sqs=\"http://www.autodesk.com/isd/fdo/SQLServerProvider\">\
         </xsl:apply-templates>\
     </xsl:copy>\
 </xsl:template>\
-<xsl:template match=\"ora:SchemaMapping|mql:SchemaMapping|sqs:SchemaMapping\">\
+<xsl:template match=\"node()[local-name() = 'SchemaMapping']\">\
     <xsl:element name=\"SchemaMapping\" namespace=\"{namespace::node()[name()='']}\">\
 		<xsl:for-each select=\"namespace::node()[not(name()='')]\">\
 			<xsl:copy/>\
@@ -211,7 +211,7 @@ void FdoImportExportTest::Test2_3_4 ()
         Stream2SortedFile( stream2A, UnitTestUtil::GetOutputFileName( L"impexp2a.xml" ) );
         Stream2SortedFile( stream2B, UnitTestUtil::GetOutputFileName( L"impexp2b.xml" ) );
 
-/* TODO: activate test 3 when update spatial context supported  
+/* TODO: activate test 3 when update spatial context supported
         // Test 3 is also the same as Test 1 except that the flags allow spatial
         // contexts to be updated. Therefore the test succeeds even though Default
         // is already in the datastore.
@@ -495,7 +495,7 @@ void FdoImportExportTest::Export( FdoIConnection* connection, FdoIoStream* strea
 
     // Serialize the feature schemas.
     mappings->WriteXml( writer );
-#if 1
+
     FdoFeatureSchemaP selSchema = schemas->FindItem( L"Schema1" );
 
     if ( selSchema ) {
@@ -511,7 +511,6 @@ void FdoImportExportTest::Export( FdoIConnection* connection, FdoIoStream* strea
             FdoXmlFeatureSerializer::XmlSerialize( rdr, featureWriter, featureFlags );
         }
     }
-#endif
 }
 
 // Imports spatial contexts and feature schemas from XML to datastore.
@@ -695,13 +694,13 @@ void FdoImportExportTest::AddSchema( FdoXmlWriter* writer, FdoInt32 idx )
     pSubClass->SetBaseClass(pClass);
     pSubClass->SetGeometryProperty(pGeomProp);
     FdoClassesP(pSchema->GetClasses())->Add( pSubClass );
-#if 1
+
     pProp = FdoDataPropertyDefinition::Create( L"SubProp1", L"" );
 	pProp->SetDataType( FdoDataType_String );
     pProp->SetLength(50);
 	pProp->SetNullable(true);
 	FdoPropertiesP(pSubClass->GetProperties())->Add( pProp );
-#endif
+
     pSchema->WriteXml(writer);
 }
 
@@ -737,6 +736,8 @@ void FdoImportExportTest::AddFeature( FdoIInsert* insertCommand, FdoInt32 idx )
     FdoPtr<FdoPropertyValueCollection> propertyValues = insertCommand->GetPropertyValues();
     FdoPtr<FdoDataValue> dataValue;
     FdoPtr<FdoPropertyValue> propertyValue;
+    FdoPtr<FdoIConnection> connection = insertCommand->GetConnection();
+    bool supportsZ = (FdoPtr<FdoIGeometryCapabilities>(connection->GetGeometryCapabilities())->GetDimensionalities() & FdoDimensionality_Z);
 
     dataValue = FdoDataValue::Create((FdoInt64) idx);
     propertyValue = AddNewProperty( propertyValues, L"Prop1");
@@ -753,13 +754,19 @@ void FdoImportExportTest::AddFeature( FdoIInsert* insertCommand, FdoInt32 idx )
     double       coordsBuffer[3];
     int          segCount = 1;
 
-	// Use 2D points to accomodate MySql
     coordsBuffer[0] = 5 * idx;
     coordsBuffer[1] = 10 * idx;
+    coordsBuffer[2] = 0;
 
     propertyValue = AddNewProperty( propertyValues, L"Geometry");
     FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-    FdoPtr<FdoILineString> line1 = gf->CreateLineString(FdoDimensionality_XY, segCount*2, coordsBuffer);
+    
+    FdoPtr<FdoILineString> line1;
+    if ( supportsZ ) 
+        line1 = gf->CreateLineString(FdoDimensionality_XY|FdoDimensionality_Z, segCount*3, coordsBuffer);
+    else
+       line1 = gf->CreateLineString(FdoDimensionality_XY, segCount*2, coordsBuffer);
+    
     FdoPtr<FdoByteArray> byteArray = gf->GetFgf(line1);
     FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray);
     propertyValue->SetValue(geometryValue);
@@ -838,7 +845,13 @@ FdoStringP FdoImportExportTest::GetWKT( FdoString* coordSys )
     return ( L"" );
 }
 
-void FdoImportExportTest::_overrideBend( FdoString* inFile, FdoString* outFile, FdoStringP providerName, FdoStringP xmlns )
+void FdoImportExportTest::_overrideBend( 
+    FdoString* inFile, 
+    FdoString* outFile, 
+    FdoStringP providerName, 
+    FdoStringP xmlns,
+    FdoStringP tablespace
+)
 {
     FdoIoFileStreamP stream1 = FdoIoFileStream::Create( inFile, L"rt" );
     FdoIoMemoryStreamP stream2 = FdoIoMemoryStream::Create();
@@ -848,7 +861,8 @@ void FdoImportExportTest::_overrideBend( FdoString* inFile, FdoString* outFile, 
         providerName, 
         xmlns,
         L"",
-        L""
+        L"",
+        tablespace
     );
 
     stream2->Reset();
