@@ -342,7 +342,6 @@ void FilterExecutor::ProcessSpatialCondition(FdoSpatialCondition& filter)
 void FilterExecutor::ProcessDistanceCondition(FdoDistanceCondition& filter)
 {
     //TODO:
-    printf("distance condition\n");
     throw FdoException::Create(L"DISTANCE condition not supported");
 }
 
@@ -801,7 +800,7 @@ void FilterExecutor::ProcessCLOBValue(FdoCLOBValue& expr)
 void FilterExecutor::ProcessGeometryValue(FdoGeometryValue& expr)
 {
     //m_tokens.push(new GeometryVal());
-    printf("geometry value\n");
+    throw FdoException::Create(L"Geometry not supported");
 }
 
 
@@ -840,7 +839,7 @@ bool FilterExecutor::MatchesHere(wchar_t* pattern, wchar_t* src)
     {
         bMatches = MatchBracket(pattern+1, src);
     }
-	else if(*src != L'\0' && ((*pattern == L'_') || _wcsnicmp(pattern, src, 1) == 0))
+	else if(*src != L'\0' && ((*pattern == L'_') || wcsncmp(pattern, src, 1) == 0))
 	{
 		bMatches = MatchesHere(pattern+1, src+1);
 	}
@@ -937,7 +936,7 @@ bool FilterExecutor::MatchBracket(wchar_t* pattern, wchar_t* src)
     for (unsigned i=0; i<set.size(); i++)
     {
         wchar_t current = set[i];
-        if (_wcsnicmp(&current, &srcchar, 1) == 0)
+        if (wcsncmp(&current, &srcchar, 1) == 0)
         {
             isthere = true;
             break;
