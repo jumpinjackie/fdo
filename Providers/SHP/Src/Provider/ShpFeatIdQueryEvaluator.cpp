@@ -243,6 +243,51 @@ void ShpFeatIdQueryEvaluator::ProcessDistanceCondition (FdoDistanceCondition& fi
     FdoCommonFilterExecutor::ProcessDistanceCondition( filter );
 }
 
+void ShpFeatIdQueryEvaluator::DoSecondaryFilter(FdoIGeometry *filterGeom, FdoSpatialOperations spatialOp )
+{
+	interval_res*    results = new interval_res;
+
+    results->op = ShpComparisonOperation_In;
+	results->depth = m_level - 1;
+
+    recno_list*  secFilterList = &results->queryResults;
+
+    FdoPtr<ShpLpClassDefinition> shpLpClassDef = ShpSchemaUtilities::GetLpClassDefinition(m_Connection, m_Class->GetName());
+
+    ShpFileSet*  fileSet = shpLpClassDef->GetPhysicalFileSet();
+
+	recno_list*    featidPrimarySel = &m_FeatidLists.back()->queryResults;
+	FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+    for ( size_t i = 0; i < featidPrimarySel->size(); i++ )
+    {
+        ULONG    offset;
+        int         length;
+        Shape*      shape = NULL; 
+        eShapeTypes type;
+
+        FdoInt32  featNum = featidPrimarySel->at(i);
+
+        // Get info from the file.
+        fileSet->GetShapeIndexFile()->GetObjectAt( featNum, offset, length);
+        shape = fileSet->GetShapeFile()->GetObjectAt (offset, type);
+		
+        FdoPtr<FdoByteArray>  geomLeftFgf = shape->GetGeometry ();
+        FdoPtr<FdoIGeometry>  geomLeft = gf->CreateGeometryFromFgf( geomLeftFgf );
+        delete shape;
+
+        bool  ret = FdoSpatialUtility::Evaluate( geomLeft, spatialOp, filterGeom);
+        if ( ret )
+            secFilterList->push_back( featNum );
+    }
+
+    //delete featidPrimarySel;
+    retno_lists::iterator  iter_lists = m_FeatidLists.end();
+	--iter_lists;
+    delete *iter_lists;  // delete the memory this vector entry points to
+    m_FeatidLists.erase( iter_lists );  // delete this vector entry
+    m_FeatidLists.push_back( results );
+}
+
 void ShpFeatIdQueryEvaluator::ProcessSpatialCondition(FdoSpatialCondition& filter)
 {  
     FdoPtr<FdoExpression> expr = filter.GetGeometry();
@@ -256,15 +301,31 @@ void ShpFeatIdQueryEvaluator::ProcessSpatialCondition(FdoSpatialCondition& filte
 
     FdoPtr<FdoByteArray>  geomRightFgf = geomRightVal->GetGeometry();
 
-    BoundingBox             searchArea;
-    FdoSpatialUtility::GetExtents( geomRightFgf, searchArea.xMin, searchArea.yMin, searchArea.xMax, searchArea.yMax);
-
     FdoPtr<FdoGeometricPropertyDefinition> gpd = FindGeomProp(m_Class);
     FdoPtr<FdoIdentifier> idname = filter.GetPropertyName();
 
     if (0 != wcscmp (gpd->GetName (), idname->GetName ()))
         throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_104_READER_PROPERTY_NOT_SELECTED), idname->GetName ()));
-	
+	// 
+	if( m_level == 2 && m_LogicalOpsList.size() != 0 && m_FeatidLists.size() != 0 && m_LogicalOpsList.back() == FdoBinaryLogicalOperations_And && m_LeftRightOpsList.back() == 1 )
+	{
+		// skip primary filter and do secondary filtering on the top of the stack of m_FeatidLists
+		m_LogicalOpsList.pop_back();
+		m_LeftRightOpsList.pop_back();
+
+		// pop the left ops as well
+		m_LogicalOpsList.pop_back();
+		m_LeftRightOpsList.pop_back();
+		m_level-=2;
+		FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+		FdoPtr<FdoIGeometry>  filterGeom = gf->CreateGeometryFromFgf( geomRightFgf );
+		DoSecondaryFilter( filterGeom, filter.GetOperation() );
+		return;
+	}
+
+	BoundingBox             searchArea;
+    FdoSpatialUtility::GetExtents( geomRightFgf, searchArea.xMin, searchArea.yMin, searchArea.xMax, searchArea.yMax);
+
     if (m_RTree)
     {
         // For each bounding box build a sorted list of candidates (primary filter) and save it.

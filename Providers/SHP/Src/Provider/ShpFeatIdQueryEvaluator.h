@@ -91,6 +91,7 @@ private:
     size_t                  EvaluateMergedListSize( int maxRecords );
 	void					ProcessLeafExpession( interval_res* curr_filter, int curr_logical_op, int maxRecords );
 	void					PrintFlattenParseTree();
+	void					DoSecondaryFilter(FdoIGeometry *filterGeom, FdoSpatialOperations spatialOp );
 
     FdoGeometricPropertyDefinition* FindGeomProp(FdoClassDefinition* classDef);
 

@@ -116,12 +116,14 @@ FdoIFeatureReader* ShpSelectCommand::Execute ()
     // Create the reader:
 
 	// Validate the filter. The filter may contain computed expressions involving not selected properties.
-	// Also check for unsupported spatial operations.
+	// Also check for unsupported spatial operations and try to optimize the filter
 	if( mFilter != NULL )
 	{
 		FdoPtr<FdoClassDefinition> classDef = ShpSchemaUtilities::GetLogicalClassDefinition (shpConn, class_name, NULL);
 		FdoPtr<FdoIFilterCapabilities> filterCaps = shpConn->GetFilterCapabilities();
         FdoCommonFilterExecutor::ValidateFilter( classDef, mFilter, mPropertiesToSelect, filterCaps );
+
+		mFilter = FdoCommonFilterExecutor::OptimizeFilter( mFilter );
 	}
 
     ret = new ShpFeatureReader (shpConn, class_name, mFilter, mPropertiesToSelect);
