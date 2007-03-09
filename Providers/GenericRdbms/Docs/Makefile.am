@@ -27,7 +27,7 @@ EXTRA_DIST = XmlSchema/FdoMySQLOverride.xsd XmlSchema/FdoRdbmsOverride.xsd XmlSc
 
 #install doc files
 install :
-	@if [ ! -d $(INSTALL_DIR)/Docs ]; then mkdir -p $(INSTALL_DIR)/Docs; fi
-	@if [ ! -d $(INSTALL_DIR)/Docs/XmlSchema ]; then mkdir -p $(INSTALL_DIR)/Docs/XmlSchema; fi
-	@$(FDO)/Install/XsdInstallPaths/XsdInstallPaths ./XmlSchema $(INSTALL_DIR)/Docs/XmlSchema/XmlSchema
+	@if [ ! -d $(INSTALL_DIR)/docs ]; then mkdir -p $(INSTALL_DIR)/docs; fi
+	@if [ ! -d $(INSTALL_DIR)/docs/XmlSchema ]; then mkdir -p $(INSTALL_DIR)/docs/XmlSchema; fi
+	@$(FDO)/Install/XsdInstallPaths/XsdInstallPaths ./XmlSchema $(INSTALL_DIR)/docs/XmlSchema/XmlSchema
 
