@@ -18810,8 +18810,8 @@ echo "$as_me: Using debug configuration" >&6;}
 else
     { echo "$as_me:$LINENO: Using optimized configuration" >&5
 echo "$as_me: Using optimized configuration" >&6;}
-    CXXFLAGS="-MMD -MT "
-    CXXFLAGS="-MMD -MT "
+    CXXFLAGS="-O2 -MMD -MT "
+    CXXFLAGS="-O2 -MMD -MT "
 
 fi
 
