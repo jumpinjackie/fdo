@@ -57,5 +57,5 @@ INCLUDES = \
   -I$(FDO)/Unmanaged/Src/Nls \
   -I/usr/include 
 
-CXXFLAGS = @CXXFLAGS_SDF@ -DSQLITE -O
+CXXFLAGS = @CXXFLAGS_SDF@ -DSQLITE 
 
