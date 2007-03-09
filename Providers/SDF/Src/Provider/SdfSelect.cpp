@@ -121,6 +121,10 @@ FdoIFeatureReader* SdfSelect::Execute()
 		FdoPtr<FdoIFilterCapabilities> filterCaps = m_connection->GetFilterCapabilities();
 
         FdoCommonFilterExecutor::ValidateFilter( clas, m_filter, m_properties, filterCaps );
+		
+		FdoFilter* newFilter = FdoCommonFilterExecutor::OptimizeFilter( m_filter );
+		FDO_SAFE_RELEASE(m_filter);
+		m_filter = newFilter;
 	}
 
     //get the R-Tree for this feature class... 
