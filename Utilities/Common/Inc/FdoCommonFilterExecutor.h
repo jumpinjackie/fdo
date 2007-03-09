@@ -79,6 +79,8 @@ public:
     /// 
 	static void ValidateFilter( FdoClassDefinition *cls, FdoFilter *filter, FdoIdentifierCollection *selIds = NULL, FdoIFilterCapabilities *filterCapabilities = NULL);
 
+	static FdoFilter* OptimizeFilter( FdoFilter *filter );
+
     /// \brief
     /// Increase the reference count.
     /// 

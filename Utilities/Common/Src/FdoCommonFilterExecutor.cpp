@@ -28,6 +28,7 @@
 #include <wctype.h>
 #include <malloc.h>
 #include <math.h>
+#include <limits.h>
 
 FdoCommonFilterExecutor::FdoCommonFilterExecutor (FdoIReader* reader, FdoIdentifierCollection* compIdents)
 {
@@ -3973,3 +3974,156 @@ void FdoCommonFilterExecutor::ValidateFilter( FdoClassDefinition *cls, FdoFilter
     filter->Process( &validator ); 
 }
 
+FdoFilter* FdoCommonFilterExecutor::OptimizeFilter( FdoFilter *filter )
+{
+	// This is mostly a place holder for potential filter optimization
+
+	// For now we just reduce a simple case with potentiel significant performance improvement
+	// This is the case where a filter has 2 and'ed spatial conditions that can be reduced to a 
+	// single spatial condition.
+ class FdoCommonFilterOptimizer :  public virtual FdoIFilterProcessor
+    {
+    private:
+        FdoPtr<FdoFilter>	 m_newFilter;
+		bool				 m_isOptimized;
+		FdoPtr<FdoIGeometry> m_geomRight;
+		FdoPtr<FdoIGeometry> m_geomLeft;
+
+    protected:
+        void HandleFilter( FdoFilter *filter )
+        {
+            filter->Process( this );
+        }
+    public:
+
+		FdoCommonFilterOptimizer( ): m_isOptimized(false),m_newFilter(NULL)
+        {
+        }
+
+		bool IsOptimized() { return m_isOptimized; }
+
+		FdoFilter* OptimizedFilter() { return FDO_SAFE_ADDREF(m_newFilter.p); }
+
+        virtual void Dispose() { delete this; }
+       
+        virtual void ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator& filter)
+        {
+			if( filter.GetOperation() != FdoBinaryLogicalOperations_And )
+			{
+				m_isOptimized = false;
+				return;
+			}
+            HandleFilter( FdoPtr<FdoFilter>(filter.GetLeftOperand()) );
+            HandleFilter( FdoPtr<FdoFilter>(filter.GetRightOperand()) );
+        }
+        virtual void ProcessComparisonCondition(FdoComparisonCondition& filter)
+        {
+            m_isOptimized = false;
+			return;
+        }
+        virtual void ProcessDistanceCondition(FdoDistanceCondition& filter)
+		{  
+			m_isOptimized = false;
+			return;
+		}
+
+        virtual void ProcessInCondition(FdoInCondition& filter)
+        {
+			m_isOptimized = false;
+			return;
+        }
+        virtual void ProcessNullCondition(FdoNullCondition& filter)
+        {
+            m_isOptimized = false;
+			return;
+        }
+        virtual void ProcessSpatialCondition(FdoSpatialCondition& filter)
+		{  
+			bool isleft = ( m_geomLeft == NULL );
+			
+			FdoPtr<FdoExpression> exprRight = filter.GetGeometry ();
+			FdoGeometryValue* gv = dynamic_cast<FdoGeometryValue*>(exprRight.p);
+			if (!gv)
+			{
+				m_isOptimized = false;
+				return;
+			}
+
+			if( filter.GetOperation() == FdoSpatialOperations_Disjoint )
+			{
+				m_isOptimized = false;
+				return;
+			}
+
+			FdoPtr<FdoByteArray> ba = gv->GetGeometry ();
+			FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance ();
+			if( isleft )
+			{
+				m_geomLeft = gf->CreateGeometryFromFgf (ba);
+				m_newFilter = FDO_SAFE_ADDREF(&filter);
+			}
+			else
+			{
+				m_geomRight = gf->CreateGeometryFromFgf (ba);
+
+			
+				bool ret = FdoSpatialUtility::Evaluate (m_geomLeft, FdoSpatialOperations_Inside, m_geomRight);
+				if( ret )
+				{
+					m_isOptimized = true;
+					return;
+				}
+				ret = FdoSpatialUtility::Evaluate (m_geomRight, FdoSpatialOperations_Inside, m_geomLeft );
+				if( ret )
+				{
+					m_isOptimized = true;
+					m_newFilter = FDO_SAFE_ADDREF(&filter);
+					return;
+				}
+				ret = FdoSpatialUtility::Evaluate (m_geomRight, FdoSpatialOperations_Disjoint, m_geomLeft );
+				if( ret )
+				{
+					// If the condition do not overlap, then replace it with a filter that returns 0 features.
+					double small_dbl  =(double)(-9223372036854775807i64 - 1);
+					m_isOptimized = true;
+					FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+
+					double coords[] = { small_dbl, small_dbl, 
+										small_dbl, small_dbl, 
+										small_dbl, small_dbl, 
+										small_dbl, small_dbl, 
+										small_dbl, small_dbl }; 
+
+					FdoPtr<FdoILinearRing> outer = gf->CreateLinearRing(0, 10, coords);
+
+					FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(outer, NULL);
+
+					FdoPtr<FdoByteArray> polyfgf = gf->GetFgf(poly);
+					FdoPtr<FdoGeometryValue> gv = FdoGeometryValue::Create(polyfgf);
+					m_newFilter = FdoSpatialCondition::Create(FdoPtr<FdoIdentifier>(filter.GetPropertyName())->GetName(), FdoSpatialOperations_EnvelopeIntersects, gv);
+					return;
+				}
+
+				// Otherwise we make sure that the condition with the FdoSpatialOperations_EnvelopeIntersects is the left condition
+				if( filter.GetOperation() == FdoSpatialOperations_EnvelopeIntersects )
+				{
+					// Let's re-arrage the filter to favor evaluating the envelope intersect first.
+					m_newFilter = FdoFilter::Combine( &filter  , FdoBinaryLogicalOperations_And,  m_newFilter );
+					m_isOptimized = true;
+					return;
+				}
+			}
+		}
+
+        virtual void ProcessUnaryLogicalOperator(FdoUnaryLogicalOperator& filter)
+        {
+            m_isOptimized = false;
+			return;
+        }
+    };
+
+    FdoCommonFilterOptimizer  optimizer;
+    filter->Process( &optimizer ); 
+
+	return optimizer.IsOptimized()?optimizer.OptimizedFilter():FDO_SAFE_ADDREF(filter);
+}
