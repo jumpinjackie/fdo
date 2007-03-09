@@ -50,8 +50,6 @@ nodist_EXTRA_libWMSProvider_la_SOURCES = dummy.cpp
 libWMSProvider_la_LIBADD =  \
   Provider/libWMSProviderSrc.la \
   $(FDO)/Unmanaged/Src/libFDO.la \
-  $(FDO)/Unmanaged/Src/Geometry/libFDOGeometry.la  \
-  $(FDO)/Unmanaged/Src/Common/libFDOCommon.la  \
   $(FDOUTILITIES)/Common/libProvidersCommon.la \
   $(FDOUTILITIES)/OWS/libFdoOws.la  \
   libWMSOverrides.la \
