@@ -1159,24 +1159,29 @@ bool FdoCommonFile::GetFileDirectoryAndName(const wchar_t *location, FdoStringP&
 
     // extract the filename
     if (pdest) {
-        wchar_t lfilename[500];
+        size_t len = wcslen(pdest + 1) + 1;
+        wchar_t *lfilename = new wchar_t[len];
 #ifdef _WIN32            
-        wcscpy_s(lfilename, 500, pdest + 1);
+        wcscpy_s(lfilename, len, pdest + 1);
 #else
         wcscpy(lfilename, pdest + 1);
 #endif
         filename = lfilename;
+        delete []lfilename;
     }
 
     // extract the directory name
     if (index) {
-        wchar_t path[500];
+        size_t len = index + 1;
+        wchar_t *path = new wchar_t[len];
 #ifdef _WIN32            
-        wcsncpy_s(path, 500, location, index);
+        wcsncpy_s(path, len, location, index);
 #else
         wcsncpy(path, location, index);
+        path[index] = '\0';
 #endif
         directory = path;
+        delete []path;
     }
 
     return true;
