@@ -244,7 +244,7 @@ SdfConnection* SdfImpExtendedSelect::CreateCacheFile( FdoClassDefinition* fdocla
 		realpath(cpath, cfullpath);
 	    
 		mbstowcs(fullpath, cfullpath, 1024);
-		FILE *fp = fopen((const char*)FdoString(fullpath), "r");
+		FILE *fp = fopen((const char*)FdoStringP(fullpath), "r");
 		if( fp )
 		{
 			fclose(fp);

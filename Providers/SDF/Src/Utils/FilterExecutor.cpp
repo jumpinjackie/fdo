@@ -26,7 +26,10 @@
 #include "DateTimeValue.h"
 #include "NullValue.h"
 #include <FdoSpatial.h>
-
+#include "FdoCommonMiscUtil.h"
+#include <wctype.h>
+#include <malloc.h>
+#include <math.h>
 
 FilterExecutor::FilterExecutor(FdoIFeatureReader* featureReader, PropertyIndex* propIndex, FdoIdentifierCollection* compIdents, FdoClassDefinition* classDef)
 {
@@ -437,11 +440,129 @@ void FilterExecutor::ProcessFunction(FdoFunction& expr)
     {
         return ExecuteARGB(expr);
     }
+    else if (wcscmp (name, FDO_FUNCTION_CEIL) == 0 || wcscmp (name, FDO_FUNCTION_FLOOR) == 0)
+    {
+        FdoPtr<FdoExpressionCollection> args = expr.GetArguments ();
+
+        if (args->GetCount () != 1)
+            throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_75_INVALID_NUM_ARGUMENTS), expr.GetName(), 1, args->GetCount()));
+
+        FdoPtr<FdoExpression> left = args->GetItem (0);
+        left->Process (this);
+
+        DataValue* argLeft = m_retvals.pop ();
+
+		ProcessFunctionCeilFloor( name, argLeft );
+
+		m_pPool->RelinquishDataValue(argLeft);
+    }
+    else if (wcscmp (name, FDO_FUNCTION_LOWER) == 0)
+    {
+        FdoPtr<FdoExpressionCollection> args = expr.GetArguments ();
+
+        if (args->GetCount () != 1)
+            throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_75_INVALID_NUM_ARGUMENTS), expr.GetName(), 1, args->GetCount()));
+
+        FdoPtr<FdoExpression> left = args->GetItem (0);
+        left->Process (this);
+
+        DataValue* argLeft = m_retvals.pop ();
+
+        if (FdoDataType_String != argLeft->GetType ())
+            throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_88_INVALID_FUNCTION_ARG_TYPE), 1, name, FdoCommonMiscUtil::FdoDataTypeToString(argLeft->GetType()), FdoCommonMiscUtil::FdoDataTypeToString(FdoDataType_String)));
+
+        if ( argLeft->GetType() == Dvt_Null  )
+            m_retvals.push ( m_pPool->ObtainNullValue() );
+        else
+        {
+            FdoString* arg = argLeft->GetAsString();
+            size_t len = wcslen (arg) + 1;
+            wchar_t* res = new wchar_t[len];
+            wcscpy (res, arg);
+            for (size_t i = 0; i < len; i++)
+                res[i] = towlower (res[i]);
+            m_retvals.push (m_pPool->ObtainStringValue (res,true) );
+        }
+		m_pPool->RelinquishDataValue(argLeft);
+    }
+    else if (wcscmp (name, FDO_FUNCTION_UPPER) == 0)
+    {
+        FdoPtr<FdoExpressionCollection> args = expr.GetArguments ();
+
+        if (args->GetCount () != 1)
+            throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_75_INVALID_NUM_ARGUMENTS), expr.GetName(), 1, args->GetCount()));
+
+        FdoPtr<FdoExpression> left = args->GetItem (0);
+        left->Process (this);
+
+        DataValue* argLeft = m_retvals.pop ();
+
+        if (FdoDataType_String != argLeft->GetType ())
+            throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_88_INVALID_FUNCTION_ARG_TYPE), 1, name, FdoCommonMiscUtil::FdoDataTypeToString(argLeft->GetType()), FdoCommonMiscUtil::FdoDataTypeToString(FdoDataType_String)));
+
+        if ( argLeft->GetType() == Dvt_Null )
+            m_retvals.push ( m_pPool->ObtainNullValue() );
+        else
+        {
+            FdoString* arg = argLeft->GetAsString();
+            size_t len = wcslen (arg) + 1;
+            wchar_t* res = new wchar_t[len];
+            wcscpy (res, arg);
+            for (size_t i = 0; i < len; i++)
+                res[i] = towupper (res[i]);
+            m_retvals.push (m_pPool->ObtainStringValue ( res, true ));
+        }
+		m_pPool->RelinquishDataValue(argLeft);
+    }
     else
     {
-        throw FdoException::Create(L"Function not supported");
+        throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_89_UNSUPPORTED_FUNCTION), name));
     }
 }
+
+void FilterExecutor::ProcessFunctionCeilFloor( FdoString *name, DataValue* argLeft )
+{
+    FdoDataType		type = argLeft->GetType ();
+
+	// TODO: Int16 and Int32 are handled by Int64Value. Therefore for those types the retuned type will be always FdoDataType_Int64
+	//       We need to define a specific Value classes for these types.
+    if ((FdoDataType_Double != type) && (FdoDataType_Single != type) && (FdoDataType_Decimal != type) && (FdoDataType_Int64 != type) &&
+	    (FdoDataType_Int32 != type) && (FdoDataType_Int16 != type) )
+	{
+		FdoStringP	allowedTypes =	FdoStringP(FdoCommonMiscUtil::FdoDataTypeToString(FdoDataType_Double))  + L" / " +
+									FdoStringP(FdoCommonMiscUtil::FdoDataTypeToString(FdoDataType_Single))  + L" / " +
+									FdoStringP(FdoCommonMiscUtil::FdoDataTypeToString(FdoDataType_Decimal)) + L" / " +
+									FdoStringP(FdoCommonMiscUtil::FdoDataTypeToString(FdoDataType_Int32))   + L" / " +
+									FdoStringP(FdoCommonMiscUtil::FdoDataTypeToString(FdoDataType_Int16));
+
+		throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_88_INVALID_FUNCTION_ARG_TYPE), 1, name, 
+																FdoCommonMiscUtil::FdoDataTypeToString(type), 
+	  														    (FdoString *)allowedTypes));
+	}
+	else
+	{
+		if ( argLeft->GetType() == Dvt_Null )
+            m_retvals.push ( m_pPool->ObtainNullValue() );
+        else
+        {
+            double d = 0.0;
+
+            if (FdoDataType_Double == type || FdoDataType_Decimal == type)
+                d = argLeft->GetAsDouble();
+            else if ( FdoDataType_Single == type ) 
+                d = argLeft->GetAsDouble();
+			else if ( FdoDataType_Int32 == type || FdoDataType_Int64 == type ) 
+				d = argLeft->GetAsInt64();
+			else if ( FdoDataType_Int16 == type ) 
+				d = argLeft->GetAsInt64();
+
+			d = ( wcscmp (name, FDO_FUNCTION_CEIL) == 0) ? ceil (d) : floor (d);
+
+            m_retvals.push (m_pPool->ObtainDoubleValue (d));
+        }
+	}
+}
+
 FdoPropertyDefinition* GetProperty(FdoClassDefinition* cls, FdoString* propName )
 {
 	FdoPropertyDefinition* prop = FdoPtr<FdoPropertyDefinitionCollection>(cls->GetProperties())->FindItem( propName );
@@ -679,7 +800,7 @@ void FilterExecutor::ProcessCLOBValue(FdoCLOBValue& expr)
 
 void FilterExecutor::ProcessGeometryValue(FdoGeometryValue& expr)
 {
-    //m_tokens.push_back(new GeometryVal());
+    //m_tokens.push(new GeometryVal());
     printf("geometry value\n");
 }
 

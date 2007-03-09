@@ -34,7 +34,7 @@ DataValue* NullValue::Clone(DataValuePool* pPool)
 
 DataValueType NullValue::GetType()
 {
-    return Dvt_Null;
+    return (DataValueType)Dvt_Null;
 }
 
 DataValue* NullValue::Negate(DataValuePool* pPool)
