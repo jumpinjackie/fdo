@@ -3322,6 +3322,7 @@ void FdoSpatialUtility::GetExtents(FdoByteArray* fgfArray, double& outMinX, doub
                         default:break;
                         }
 
+#ifdef _WIN32
                       
                         //-------------------------------------------------
                         //
@@ -3457,13 +3458,12 @@ void FdoSpatialUtility::GetExtents(FdoByteArray* fgfArray, double& outMinX, doub
                             }
                         }
                         
-
+#else
                         //----------------------------------
                         //
                         //original way of finding min and max in this loop
                         //
                         //----------------------------------
-                        /*
                         if (x > maxx)
                             maxx = x;
                         if (x < minx)
@@ -3472,7 +3472,7 @@ void FdoSpatialUtility::GetExtents(FdoByteArray* fgfArray, double& outMinX, doub
                             maxy = y;
                         if (y < miny)
                             miny = y;
-                          */ 
+#endif
                         num_pts_read++;
                     }
 
