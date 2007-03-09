@@ -14,6 +14,7 @@ xmlns:sqs="http://www.autodesk.com/isd/fdo/SQLServerProvider"
 <xsl:param name="providerUri"/>
 <xsl:param name="oldOwnerPrefix" />
 <xsl:param name="newOwnerPrefix" />
+<xsl:param name="tablespace" />
 <xsl:template match="ora:SchemaMapping|mql:SchemaMapping|sqs:SchemaMapping">
     <xsl:element name="SchemaMapping" namespace="{$providerUri}">
 		<xsl:for-each select="namespace::node()[not(name()='')]">
@@ -79,6 +80,11 @@ xmlns:sqs="http://www.autodesk.com/isd/fdo/SQLServerProvider"
 					<xsl:call-template name="BendPrefix">
 						<xsl:with-param name="inString" select="@owner"/>
 					</xsl:call-template>
+			</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$tablespace">
+			<xsl:attribute name="tablespace" >
+					<xsl:value-of select="$tablespace"/>
 			</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="@tableMapping">

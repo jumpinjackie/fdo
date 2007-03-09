@@ -23,7 +23,7 @@
  Property Electric'l:Dry Transformer.PartNum redefines the characteristics of base property Electric'l:Transformer.PartNum 
  Property Electric'l:Dry Transformer.InstallDate redefines the characteristics of base property Electric'l:ElectricDevice.InstallDate 
  Base Property Electric'l:ElectricDevice.graphic (for property Electric'l:Fuse.graphic) has errors (1st error is ' Cannot change type class for object property Electric'l:ElectricDevice.graphic from 'Acad:Entity' to 'Electric'l:Street' ') 
- Cannot change scale for property Electric'l:Transformer.Voltage from 1 to 8 
+ Cannot change scale for property Electric'l:Transformer.Voltage from -2 to 8 
  Cannot change precision for property Electric'l:Transformer.Voltage from 10 to 45 
  Cannot change property Electric'l:Transformer.Voltage to be nullable 
  Cannot change data type for property Electric'l:Transformer.Voltage from decimal to string 

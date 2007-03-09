@@ -34,9 +34,6 @@ class FdoApplySchemaTest : public CppUnit::TestCase
   CPPUNIT_TEST( TestOverrideDefaults );
   CPPUNIT_TEST( TestOverrideErrors );
   CPPUNIT_TEST( TestLT );
-/*
-  CPPUNIT_TEST( TestLTReserved );
-*/
   CPPUNIT_TEST( TestConfigDoc );
   CPPUNIT_TEST_SUITE_END();
 
@@ -54,9 +51,6 @@ protected:
     void TestOverrideDefaults ();
     void TestOverrideErrors ();
     void TestLT();
-/*
-    void TestLTReserved();
-*/
     void TestConfigDoc();
 
     void DeleteAcadSchema( FdoIConnection* connection );
@@ -99,6 +93,7 @@ protected:
 */
     virtual void GetClassCapabilities( FdoIConnection* connection );
     void CheckBaseProperties( FdoIConnection* connection );
+    void CheckNonNumericForeignClass( FdoIConnection* connection );
 
     void CopySchemas( 
         FdoFeatureSchemaCollection* pSchemas,
@@ -164,12 +159,14 @@ protected:
 
     virtual void VldClassCapabilities( int ltMode, int lckMode, FdoClassDefinition* pClass );
 
-    virtual int GetLtLockMethod()
+    virtual int GetLtLockMethod( FdoSmPhMgrP mgr )
     {
         return 0;
     }
 
     virtual FdoStringP SchemaTestErrFile( int fileNum, bool isMaster );
+
+    virtual FdoStringP SchemaOvErrFile( int fileNum, bool isMaster );
 
     void WriteXmlOverrides(
         FdoIConnection* connection,
@@ -179,6 +176,7 @@ protected:
         FdoString* ownerSuffix = NULL
     );
 
+    FdoStringP GenLtName( FdoStringP transName );
     void StartLongTransaction( FdoIConnection* connection, FdoStringP transName );
     void EndLongTransaction( FdoIConnection* connection );
     void RollbackLongTransaction( FdoIConnection* connection, FdoStringP transName );
@@ -192,7 +190,6 @@ protected:
     virtual FdoStringP LogicalPhysicalBend( FdoString* inFile );
     virtual FdoStringP LogicalPhysicalFormat( FdoString* inFile );
 
-    bool mIsOWM;
     bool mCanAddNotNullCol;
     FdoStringP mDatastore;
 	bool mIsLowerDatastoreName;

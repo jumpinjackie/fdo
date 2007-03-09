@@ -53,6 +53,7 @@ protected:
     virtual void testFKeys();
 
     virtual void testConfigError();
+    void testGeometricProperties();
 
     void constraints ();
     void delFdoBr ();
@@ -97,6 +98,7 @@ protected:
     static FdoString* DB_NAME_SUFFIX;
     static FdoString* DB_NAME_COPY_SUFFIX;
     static FdoString* DB_NAME_FOREIGN_SUFFIX;
+    static FdoString* DB_NAME_CONFIGERR_SUFFIX;
 
 private:
     FdoSmPhTableP CreateIxTable( FdoSmPhOwnerP owner, FdoStringP tableName, int lt_mode );
@@ -104,6 +106,26 @@ private:
     void AddPkey( FdoSmPhTableP table );
     void AddIndex( FdoSmPhTableP table, bool unique, FdoStringP indexName, FdoStringP columns );
     void SetLtLck( FdoSmPhTableP table, int lt_mode );
+
+    class ExpectedClassGeometricProperty
+    {
+        public:
+
+            FdoStringP className;
+            bool       canBeGeomeytricTypePoint;
+            bool       canBeGeomeytricTypeCurve;
+            bool       canBeGeomeytricTypeSurface;
+            bool       canBeGeomeytricTypeSolid;
+            bool       foundGeometricTypePoint;
+            bool       foundGeometricTypeCurve;
+            bool       foundGeometricTypeSurface;
+            bool       foundGeometricTypeSolid;
+
+            ExpectedClassGeometricProperty ();
+            ~ExpectedClassGeometricProperty ();
+
+    };
+
 };
 
 #endif // SCHEMAMGRTESTS_H

@@ -190,6 +190,9 @@
 <element name="Voltage">
 <Column name="VOLTAGE"/>
 </element>
+<element name="Volume">
+<Column name="VOLUME"/>
+</element>
 </complexType>
 <complexType name="Work-x20-ItemType" tableMapping="Concrete">
 <Table name="WORK_ITEM"/>

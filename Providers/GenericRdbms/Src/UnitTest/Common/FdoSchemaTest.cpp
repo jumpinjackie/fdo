@@ -991,4 +991,20 @@ void FdoSchemaTest::OverrideTablesWithOddAsciiChars()
     }
 }
 
-
+void FdoSchemaTest::Test_Defect802102()
+{
+    try
+    {
+        FdoSchemaMappingsP mappings = FdoPhysicalSchemaMappingCollection::Create();
+        mappings->ReadXml( L"tm_802102.xml" );
+        mappings->WriteXml( L"tm_802102_2.xml" );
+        mappings->Clear();
+        mappings->ReadXml( L"tm_802102_2.xml" );
+        mappings->WriteXml( L"tm_802102_3.xml" );
+        UnitTestUtil::CheckOutput( "tm_802102_3.xml", "tm_802102_2.xml" );
+	}
+	catch ( FdoException* e ) 
+	{
+		UnitTestUtil::FailOnException( e );
+	}
+}

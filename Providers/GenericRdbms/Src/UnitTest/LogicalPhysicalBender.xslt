@@ -178,7 +178,14 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 								<xsl:value-of select="@length"/>
 							</xsl:attribute>				
 							<xsl:attribute name="scale">
-								<xsl:value-of select="@scale"/>
+								<xsl:choose>
+									<xsl:when test="@scale=-2">
+										<xsl:value-of select="'1'"/>	
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:value-of select="@scale"/>
+									</xsl:otherwise>
+								</xsl:choose>
 							</xsl:attribute>
 						</xsl:when>
 						<xsl:when test="$propNode/@dataType = 'boolean'" >
@@ -342,7 +349,19 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 				<xsl:value-of select="."/>
 			</xsl:attribute>
 		</xsl:otherwise>
-   </xsl:choose>
+  	</xsl:choose>
+</xsl:template>
+<xsl:template match="@scale">
+	<xsl:choose>
+		<xsl:when test="not($providerName = 'Oracle')and (. = -2)">
+			<xsl:attribute name="scale">1</xsl:attribute>
+		</xsl:when>
+		<xsl:otherwise>
+			<xsl:attribute name="scale">
+				<xsl:value-of select="."/>
+			</xsl:attribute>
+		</xsl:otherwise>
+	</xsl:choose>
 </xsl:template>
 <xsl:template match="@pkeyName"/>
 <xsl:template match="@tablespace[not($providerName = 'Oracle')]"/>

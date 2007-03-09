@@ -77,7 +77,13 @@ protected:
     void Stream2SortedFile( FdoIoStream* stream, FdoString* fileName );
     void Stream2File( FdoIoStream* stream, FdoString* fileName );
 
-    void _overrideBend( FdoString* inFile, FdoString* outFile, FdoStringP providerName, FdoStringP xmlns );
+    void _overrideBend( 
+        FdoString* inFile, 
+        FdoString* outFile, 
+        FdoStringP providerName, 
+        FdoStringP xmlns,
+        FdoStringP tablespace = L""
+    );
     
     virtual void AddMapping( FdoXmlWriter* writer, FdoString* name, FdoInt32 providerVersion );
     virtual FdoStringP GetWKT( FdoString* coordSys );
