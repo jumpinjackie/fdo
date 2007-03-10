@@ -20,9 +20,11 @@
 #include "SQLCommand.h"
 #include "SQLDataReader.h"
 #include "Connection.h"
-
+// std
 #include <cassert>
 #include <string>
+// boost
+#include <boost/lexical_cast.hpp>
 
 namespace fdo { namespace postgis {
 
@@ -101,17 +103,15 @@ FdoISQLDataReader* SQLCommand::ExecuteReader()
 
     try
     {
-        std::string cursorName("crsFdoISQLCommand");
-        std::string sql(static_cast<char const*>(mSql));
-
         // Create a cursor associated with query results reader
-        cursor = mConn->PgCreateCursor(cursorName.c_str());
+        cursor = mConn->PgCreateCursor("crsFdoISQLCommand");
 
         // Collect bind parameters
         details::pgexec_params_t params;
         Base::PgGenerateExecParams(params);
 
         // Open new cursor
+        std::string sql(static_cast<char const*>(mSql));
         cursor->Declare(sql.c_str(), params);
 
         assert(NULL != cursor);
@@ -121,7 +121,7 @@ FdoISQLDataReader* SQLCommand::ExecuteReader()
     {
         FdoCommandException* ne = NULL;
         ne = FdoCommandException::Create(NlsMsgGet(MSG_POSTGIS_COMMAND_SQL_FAILED,
-            "The execution of SQL command failed."), e);
+                "The execution of SQL command failed."), e);
         e->Release();
         throw ne;
     }
