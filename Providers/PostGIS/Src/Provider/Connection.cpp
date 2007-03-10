@@ -56,6 +56,11 @@ extern "C" FDOPOSTGIS_API FdoIConnection* CreateConnection()
 {
     FDOLOG_MARKER("fdo::postgis::CreateConnection");
 
+    // Initialize random numbers generator
+    std::time_t secs;
+    std::time(&secs);
+    std::srand(static_cast<unsigned int>(secs));
+    
     return (new fdo::postgis::Connection());
 }
 
@@ -65,7 +70,8 @@ Connection::Connection() :
     mConnInfo(NULL),
     mConnState(FdoConnectionState_Closed),
     mPgConn(NULL),
-    mPgResult(NULL)
+    mPgResult(NULL),
+    mSoftTransactionLevel(0)
 {
 }
 
@@ -289,6 +295,10 @@ FdoConnectionState Connection::Open()
 void Connection::Close()
 {
     FDOLOG_MARKER("Connection::+Close");
+    
+    // Kill all active transactions
+    //PgFlushSoftTransaction();
+    PgCommitSoftTransaction();
 
     // Close connection to the server
     PQfinish(mPgConn);
@@ -574,6 +584,80 @@ PGresult* Connection::PgDescribeCursor(char const* name)
 
     assert(NULL != pgRes);
     return pgRes;
+}
+
+void Connection::PgBeginSoftTransaction()
+{
+    FDOLOG_MARKER("Connection::+PgBeginSoftTransaction");
+    assert(FdoConnectionState_Open == GetConnectionState());
+    
+    mSoftTransactionLevel++;
+    if (1 == mSoftTransactionLevel)
+    {
+        FDOLOG_WRITE("BEGIN TRANSACTION");
+        
+        boost::shared_ptr<PGresult> pgRes(PQexec(mPgConn, "BEGIN"), PQclear);
+        if (PGRES_COMMAND_OK != PQresultStatus(pgRes.get()))
+        {
+            FDOLOG_WRITE("BEGIN Transaction failed: %s", PQerrorMessage(mPgConn));
+            assert(!"BEGIN FAILED - TO BE REPLACED WITH EXCEPTION");
+        }
+    }
+}
+
+void Connection::PgCommitSoftTransaction()
+{
+    FDOLOG_MARKER("Connection::+PgCommitSoftTransaction");
+    assert(FdoConnectionState_Open == GetConnectionState());
+    
+    if (0 >= mSoftTransactionLevel)
+    {
+        FDOLOG_WRITE("No active transaction to commit");
+    }
+    else
+    {
+        mSoftTransactionLevel--;
+        if (0 == mSoftTransactionLevel)
+        {
+            boost::shared_ptr<PGresult> pgRes(PQexec(mPgConn, "COMMIT"), PQclear);
+            if (PGRES_COMMAND_OK != PQresultStatus(pgRes.get()))
+            {
+                FDOLOG_WRITE("COMMIT Transaction failed: %s", PQerrorMessage(mPgConn));
+                assert(!"COMMIT FAILED - TO BE REPLACED WITH EXCEPTION");
+            }        
+        }
+    }
+}
+void Connection::PgRollbackSoftTransaction()
+{
+    FDOLOG_MARKER("Connection::+PgRollbackSoftTransaction");
+    assert(FdoConnectionState_Open == GetConnectionState());
+    
+    if (0 >= mSoftTransactionLevel)
+    {
+        FDOLOG_WRITE("No active transaction to commit");
+    }
+    else
+    {
+        mSoftTransactionLevel = 0;
+        boost::shared_ptr<PGresult> pgRes(PQexec(mPgConn, "ROLLBACK"), PQclear);
+        if (PGRES_COMMAND_OK != PQresultStatus(pgRes.get()))
+        {
+            FDOLOG_WRITE("COMMIT Transaction failed: %s", PQerrorMessage(mPgConn));
+            assert(!"ROLLBACK FAILED - TO BE REPLACED WITH EXCEPTION");
+        } 
+    }
+}
+void Connection::PgFlushSoftTransaction()
+{
+    FDOLOG_MARKER("Connection::+PgFlushSoftTransaction");
+    assert(FdoConnectionState_Open == GetConnectionState());
+    
+    // Force unwinding and commit of any active transaction
+    //if (mSoftTransactionLevel > 1)
+        mSoftTransactionLevel = 1;
+        
+    PgCommitSoftTransaction();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

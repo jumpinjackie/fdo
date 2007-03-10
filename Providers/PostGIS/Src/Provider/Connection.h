@@ -128,7 +128,7 @@ public:
     void Flush();
 
     //
-    // Connection custom interface
+    // Connection custom interface for PostgreSQL/PostGIS specific operations.
     //
 
     /// \todo To be documented.
@@ -148,6 +148,25 @@ public:
 
     /// \todo To be documented.
     PGresult* PgDescribeCursor(char const* name);
+    
+    /// Create a transaction scope.
+    /// If there is already a transaction active, calling this function
+    /// does not begin a new one, but just increments the scope level counter.
+    /// The idea behind soft transactions has been taken from OGR.
+    ///
+    /// \note PostgreSQL does not support nested transactions.
+    ///
+    void PgBeginSoftTransaction();
+    
+    /// Commit current transaction if the scope level counter hits the outer scope.
+    void PgCommitSoftTransaction();
+    
+    /// Rollback current transaction if there is any transaction active.
+    /// Rollback has effect even for nested level of transactions.
+    void PgRollbackSoftTransaction();
+    
+    /// Force unwinding of any active transaction with commit execution.
+    void PgFlushSoftTransaction();
 
 protected:
 
@@ -187,6 +206,8 @@ private:
 
     // Pointer to PostgreSQL query result
     PGresult* mPgResult;
+    
+    FdoInt32 mSoftTransactionLevel;
 
     //
     // Private operations
