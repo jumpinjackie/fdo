@@ -253,6 +253,7 @@ void PgCursor::Declare(char const* query, details::pgexec_params_t const& params
 
     if (!mIsClosed)
     {
+        mConn->PgFlushSoftTransaction();
         Close();
     }
 
@@ -263,7 +264,7 @@ void PgCursor::Declare(char const* query, details::pgexec_params_t const& params
         assert(NULL == mFetchRes);
 
         // Begin transaction
-        mConn->PgExecuteCommand("BEGIN");
+        mConn->PgBeginSoftTransaction();
 
         // Declare cursor
         std::string sql("DECLARE ");
@@ -311,7 +312,7 @@ void PgCursor::Close()
         mConn->PgExecuteCommand(sql.c_str());
         
         // End transaction
-        mConn->PgExecuteCommand("COMMIT");
+        mConn->PgCommitSoftTransaction();
         
         // Mark cursor as released
         mIsClosed = true;
