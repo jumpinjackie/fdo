@@ -20,6 +20,7 @@
 #include "SpatialContextCollection.h"
 #include "PgGeometryColumn.h"
 #include "PgSpatialTablesReader.h"
+#include "PgTableColumnsReader.h"
 #include "PostGIS/FdoPostGisOverrides.h"
 // std
 #include <cassert>
@@ -140,16 +141,16 @@ FdoFeatureSchemaCollection* DescribeSchemaCommand::Execute()
     FdoPtr<FdoClassCollection> featClasses(featSchema->GetClasses());
     ov::ClassCollection::Ptr phClasses(phSmMapping->GetClasses());
     
-    PgSpatialTablesReader::Ptr reader(new PgSpatialTablesReader(mConn.p));
-    reader->Open();
+    PgSpatialTablesReader::Ptr stReader(new PgSpatialTablesReader(mConn.p));
+    stReader->Open();
     
     // Process every table to FDO class
-    while (reader->ReadNext())
+    while (stReader->ReadNext())
     {
         // TODO: Fetch all geometries, but not only the first one - default
         PgSpatialTablesReader::columns_t::size_type const geometryIdx = 0;
     
-        PgSpatialTablesReader::columns_t geometryColumns(reader->GetGeometryColumns());
+        PgSpatialTablesReader::columns_t geometryColumns(stReader->GetGeometryColumns());
         PgGeometryColumn::Ptr geomColumn = geometryColumns[geometryIdx];
         
         ////////////////// GENERATE SPATIAL CONTEXT //////////////////
@@ -180,8 +181,11 @@ FdoFeatureSchemaCollection* DescribeSchemaCommand::Execute()
 
         // TODO: Do we need to have geometry column name in FDO class name?
         FdoStringP fdoClassName = FdoStringP::Format(L"%s~%s",
-            reader->GetSchemaName(), reader->GetTableName());
+            static_cast<FdoString*>(stReader->GetSchemaName()),
+            static_cast<FdoString*>(stReader->GetTableName()));
         assert(!featClasses->FindItem(fdoClassName));
+        
+        wcout << fdoClassName << std::endl;
 
         // TODO: Use table COMMENT as a class description
         FdoPtr<FdoFeatureClass> featClass = FdoFeatureClass::Create(fdoClassName, L"");      
@@ -210,8 +214,20 @@ FdoFeatureSchemaCollection* DescribeSchemaCommand::Execute()
         
         ////////////////// CREATE OTHER PROPERTIES //////////////////
         
+        PgTableColumnsReader::Ptr tcReader  = new PgTableColumnsReader(
+            mConn, stReader->GetSchemaName(), stReader->GetTableName());
+        tcReader->Open();
+        while(tcReader->ReadNext())
+        {
+            wcout << " + " << tcReader->GetColumnName() << " - " << tcReader->GetColumnPosition() << std::endl;
+        }
+        tcReader->Close();
+        
           
     } // while
+    
+    
+    stReader->Close();
     
         
     
