@@ -43,6 +43,8 @@
 
 // std
 #include <cassert>
+#include <cstdlib>
+#include <ctime>
 #include <string>
 #include <vector>
 // boost
@@ -550,11 +552,32 @@ PGresult* Connection::PgExecuteQuery(char const* sql)
 fdo::postgis::PgCursor* Connection::PgCreateCursor(char const* name)
 {
     FDOLOG_MARKER("Connection::+PgCreateCursor");
-    FDOLOG_WRITE("Cursor name: %s", name);
 
     ValidateConnectionState();
 
-    PgCursor::Ptr cursor = new PgCursor(this, name);
+    //
+    // Generate random suffix for cursor name to make name more unique
+    //
+    std::string suffix("1979"); // Just the year of birth, why not?
+    try
+    {
+        int rn = std::rand() % (500 - 0 + 1) + 0;
+        suffix = boost::lexical_cast<std::string>(rn);
+    }
+    catch (boost::bad_lexical_cast& e)
+    {
+        FDOLOG_WRITE("Types conversion failed: %s", e.what());
+        assert(!"CONVERSION FAILED");
+    }
+
+    std::string cursorName(name);
+    cursorName += "_" + suffix;
+    FDOLOG_WRITE("Cursor name: %s", cursorName.c_str());
+    
+    //
+    // Create new instance of cursor
+    //
+    PgCursor::Ptr cursor = new PgCursor(this, cursorName);
 
     FDO_SAFE_ADDREF(cursor.p);
     return cursor.p;
