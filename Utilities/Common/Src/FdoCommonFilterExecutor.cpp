@@ -3996,7 +3996,7 @@ FdoFilter* FdoCommonFilterExecutor::OptimizeFilter( FdoFilter *filter )
         }
     public:
 
-		FdoCommonFilterOptimizer( ): m_isOptimized(false),m_newFilter(NULL)
+		FdoCommonFilterOptimizer( ): m_isOptimized(false)
         {
         }
 
@@ -4084,7 +4084,11 @@ FdoFilter* FdoCommonFilterExecutor::OptimizeFilter( FdoFilter *filter )
 				if( ret )
 				{
 					// If the condition do not overlap, then replace it with a filter that returns 0 features.
+#ifdef _WIN32
 					double small_dbl  =(double)(-9223372036854775807i64 - 1);
+#else
+					double small_dbl  =(double)(-9223372036854775807LL - 1);
+#endif
 					m_isOptimized = true;
 					FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
 
