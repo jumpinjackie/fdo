@@ -36,7 +36,7 @@ FdoDataType FdoTypeFromPgTypeName(std::string const& typeName)
     
     FdoDataType fdoType;
 
-    if (iequals(typeName, "bool"))
+    if (iequals(typeName, "bool") || iequals(typeName, "boolean"))
     {
         fdoType = FdoDataType_Boolean;
     }
