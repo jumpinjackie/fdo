@@ -286,7 +286,7 @@ Object properties are not supported.
 MessageId=4002
 SymbolicName=MSG_POSTGIS_UNSUPPORTED_DATATYPE
 Language=English
-The '%1$ls' data type is not supported by King.Oracle.
+The '%1$ls' data type is not supported by PostGIS provider.
 .
 MessageId=4003
 SymbolicName=MSG_POSTGIS_COLUMN_TYPE_UNKNOWN
