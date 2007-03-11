@@ -82,7 +82,7 @@ FdoDataType FdoTypeFromPgTypeName(std::string const& typeName)
         || iequals(typeName, "cstring") || iequals(typeName, "name"))
     {
         // The type char(n) is different than "char", see note for FdoDataType_Byte.
-        // Type 'name' is equivalent of VARCHAR(60)
+        // Type 'name' is equivalent of VARCHAR(60).
         fdoType = FdoDataType_String;
     }
     else if (iequals(typeName, "abstime") || iequals(typeName, "reltime")
