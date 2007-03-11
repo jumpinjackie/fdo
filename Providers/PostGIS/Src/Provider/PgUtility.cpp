@@ -42,22 +42,27 @@ FdoDataType FdoTypeFromPgTypeName(std::string const& typeName)
     }
     else if (iequals(typeName, "int2"))
     {
+        // Returned also for types: smallint
         fdoType = FdoDataType_Int16;
     }
     else if (iequals(typeName, "int4"))
     {
+        // Returned also for types: integer, serial
         fdoType = FdoDataType_Int32;
     }
     else if (iequals(typeName, "int8"))
     {
+        // Returned also for types: bigint, bigserial
         fdoType = FdoDataType_Int64;
     }
     else if (iequals(typeName, "float4"))
     {
+        // Returned also for types: real
         fdoType = FdoDataType_Single;
     }
     else if (iequals(typeName, "float8"))
     {
+        // Returned also for types: double precision
         fdoType = FdoDataType_Double;
     }
     else if (iequals(typeName, "numeric"))
@@ -91,6 +96,10 @@ FdoDataType FdoTypeFromPgTypeName(std::string const& typeName)
     {
         if (iequals(typeName, "geometry"))
         {
+            // We should NEVER get here, because SQL queries in PgTableColumnsReader
+            // does NOT query for geometry columns at all.
+            // If by any chance we get here from PgTableColumnsReader, then we have 
+            // somewhere a serious BUG.
             assert(!"GEOMETRY DOES NOT MAP TO FdoDataType");
         }
         
