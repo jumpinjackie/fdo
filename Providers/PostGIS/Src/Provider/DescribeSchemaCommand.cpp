@@ -145,12 +145,13 @@ FdoFeatureSchemaCollection* DescribeSchemaCommand::Execute()
     PgSpatialTablesReader::Ptr stReader(new PgSpatialTablesReader(mConn.p));
     stReader->Open();
     
+    //
     // Process every table to FDO class
+    //
     while (stReader->ReadNext())
     {
         // TODO: Fetch all geometries, but not only the first one - default
         PgSpatialTablesReader::columns_t::size_type const geometryIdx = 0;
-    
         PgSpatialTablesReader::columns_t geometryColumns(stReader->GetGeometryColumns());
         PgGeometryColumn::Ptr geomColumn = geometryColumns[geometryIdx];
         
@@ -213,7 +214,7 @@ FdoFeatureSchemaCollection* DescribeSchemaCommand::Execute()
         pdc->Add(geomPropDef);
         featClass->SetGeometryProperty(geomPropDef);
         
-        ////////////////// CREATE OTHER PROPERTIES //////////////////
+        ////////////////// CREATE DATA PROPERTIES //////////////////
         
         PgTableColumnsReader::Ptr tcReader  = new PgTableColumnsReader(
             mConn, stReader->GetSchemaName(), stReader->GetTableName());
@@ -237,35 +238,20 @@ FdoFeatureSchemaCollection* DescribeSchemaCommand::Execute()
         }
         tcReader->Close();
         
-          
+        
+        
+        featClasses->Add(featClass);
+        phClasses->Add(classDef);
+        
+        
     } // while
-    
     
     stReader->Close();
     
-        
+    assert(NULL != featSchemas);
     
-    //while (reader->ReadNext())
-    //{
-    //    wcout << reader->GetSchemaName() << L" - ";
-    //    wcout << reader->GetTableName() << std::endl;
-    //    
-    //    PgSpatialTablesReader::columns_t cols;
-    //    cols = reader->GetGeometryColumns();
-    //   
-    //    PgSpatialTablesReader::columns_t::const_iterator it;
-    //    for (it = cols.begin(); it != cols.end(); ++it)
-    //    {            
-    //        wcout << (*it)->GetName() << L" - "
-    //              << (*it)->GetGeometryType() << L" - "
-    //              << ewkb::GetOrdinatesFromDimension((*it)->GetDimensionType()) << L" - "
-    //              << (*it)->GetSRID() << std::endl;
-    //    }
-    //    
-    //    wcout << std::endl;
-    //}
-    
-    return NULL;
+    FDO_SAFE_ADDREF(featSchemas.p);
+    return featSchemas.p;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
