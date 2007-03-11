@@ -59,7 +59,26 @@ public:
     
     FdoStringP GetColumnName() const;
     
+    /// \todo TODO - Implement using COMMENT feature.
+    FdoStringP GetColumnDescription() const;
+    
+    /// \todo to be documented
     FdoInt32 GetColumnPosition() const;
+    
+    /// \todo to be documented
+    FdoDataType GetColumnType() const;
+    
+    /// \todo to be documented
+    FdoInt32 GetColumnSize() const;
+    
+    /// \todo to be documented
+    FdoInt32 GetColumnPrecision() const;
+    
+    /// \todo to be documented
+    FdoInt32 GetColumnScale() const;
+    
+    /// \todo to be documented
+    bool GetColumnNullability() const;
     
     /// Open table reader.
     /// This operation mimics FDO command usually creating instance of a reader.

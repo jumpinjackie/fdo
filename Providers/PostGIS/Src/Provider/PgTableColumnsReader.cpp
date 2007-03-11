@@ -17,6 +17,7 @@
 #include "stdafx.h"
 #include "PostGisProvider.h"
 #include "PgTableColumnsReader.h"
+#include "PgUtility.h"
 #include "Connection.h"
 // std
 #include <cassert>
@@ -74,9 +75,73 @@ FdoStringP PgTableColumnsReader::GetColumnName() const
     return mReader->GetString(L"column_name");
 }
 
+FdoStringP PgTableColumnsReader::GetColumnDescription() const
+{
+    return L"";
+}
+
 FdoInt32 PgTableColumnsReader::GetColumnPosition() const
 {
     return mReader->GetInt32(L"ordinal_position");
+}
+
+FdoDataType PgTableColumnsReader::GetColumnType() const
+{
+    FdoStringP pgTypeName(mReader->GetString(L"data_type"));
+    return details::FdoTypeFromPgTypeName(static_cast<char const*>(pgTypeName));
+}
+
+FdoInt32 PgTableColumnsReader::GetColumnSize() const
+{
+    FdoInt32 maxSize = 0;
+    if (FdoDataType_String == GetColumnType())
+    {
+        // TODO: Check this Arbitrarily taken max size of TEXT with unspecified length
+        maxSize = 65536;
+        
+        int const fmod = mReader->GetInt32(L"modifier");
+        if (-1 != fmod)
+        {
+            maxSize = details::GetTypeMaxSize(fmod);
+        }
+        assert(-1 != maxSize && "MAX LENGHT NOT SPECIFIED");
+    }
+    else
+    {
+        maxSize = mReader->GetInt32(L"character_maximum_length");
+    }
+    return maxSize;
+}
+
+FdoInt32 PgTableColumnsReader::GetColumnPrecision() const
+{
+    FdoInt32 precision = 0;
+    if (FdoDataType_Decimal == GetColumnType())
+    {
+        int const fmod = mReader->GetInt32(L"modifier");
+        return details::GetTypePrecision(fmod);
+    }    
+    return precision;
+}
+
+FdoInt32 PgTableColumnsReader::GetColumnScale() const
+{
+    FdoInt32 scale = 0;
+    if (FdoDataType_Decimal == GetColumnType())
+    {
+        int const fmod = mReader->GetInt32(L"modifier");
+        return details::GetTypeScale(fmod);
+    }    
+    return scale;
+}
+
+bool PgTableColumnsReader::GetColumnNullability() const
+{
+    FdoStringP const isNull(mReader->GetString(L"notnull"));
+    if (isNull == L"t")
+        return false;
+    else
+        return true;
 }
 
 void PgTableColumnsReader::Open()
@@ -94,7 +159,7 @@ void PgTableColumnsReader::Open()
         "a.atttypmod AS modifier,a.attnotnull AS notnull,a.atthasdef AS hasdefault "
         "FROM pg_class c, pg_attribute a, pg_type t, pg_namespace n "
         "WHERE a.attnum > 0 AND a.attrelid = c.oid "
-        "AND a.atttypid = t.oid AND c.relnamespace = n.oid "
+        "AND a.atttypid = t.oid AND c.relnamespace = n.oid AND t.typname !~ '^geom' "
         "AND c.relname = '" + table + "' AND n.nspname = '" + schema + "' ORDER BY a.attnum;");
         
     // Query schema details of given table and attach results to the SQL data reader
