@@ -24,6 +24,7 @@ namespace fdo { namespace postgis { namespace ov {
 
 ClassDefinition::ClassDefinition()
 {
+    mProperties = PropertyDefinitionCollection::Create(this);
 }
 
 ClassDefinition::~ClassDefinition()
@@ -40,13 +41,57 @@ void ClassDefinition::Dispose()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// ClassDefinition interface
+// FdoPhysicalClassMapping interface
 ///////////////////////////////////////////////////////////////////////////////
 
 ClassDefinition* ClassDefinition::Create()
 {
     ClassDefinition* def = new ClassDefinition();
     return def;
+}
+
+PropertyDefinitionCollection* ClassDefinition::GetProperties() const
+{
+    FDO_SAFE_ADDREF(mProperties.p);
+    return mProperties.p;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoPhysicalElementMapping interface
+///////////////////////////////////////////////////////////////////////////////
+
+void ClassDefinition::InitFromXml(FdoXmlSaxContext* xmlContext,
+    FdoXmlAttributeCollection* xmlAttrs)
+{
+    FDOLOG_MARKER("ClassDefinition::+InitFromXml");
+}
+
+void ClassDefinition::_writeXml(FdoXmlWriter* xmlWriter, FdoXmlFlags const* xmlFlags)
+{
+    FDOLOG_MARKER("ClassDefinition::+_writeXml");
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoXmlSaxHandler interface
+///////////////////////////////////////////////////////////////////////////////
+
+FdoXmlSaxHandler* ClassDefinition::XmlStartElement(FdoXmlSaxContext *saxContext,
+                                                   FdoString* uri,
+                                                   FdoString* name,
+                                                   FdoString* qname,
+                                                   FdoXmlAttributeCollection* xmlAtts)
+{
+    FDOLOG_MARKER("ClassDefinition::+XmlStartElement");
+    return NULL;
+}
+
+FdoBoolean ClassDefinition::XmlEndElement(FdoXmlSaxContext* saxContext,
+                                          FdoString* uri,
+                                          FdoString* name,
+                                          FdoString* qname)
+{
+    FDOLOG_MARKER("ClassDefinition::+XmlEndElement");
+    return NULL;
 }
 
 }}} // namespace fdo::postgis::ov

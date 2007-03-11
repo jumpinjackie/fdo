@@ -31,15 +31,30 @@ public:
     
     typedef FdoPtr<PropertyDefinitionCollection> Ptr;
 
+    //
+    // FdoPhysicalElementMappingCollection interface
+    //
+    
     FDOPOSTGIS_API static PropertyDefinitionCollection* Create();
-    FDOPOSTGIS_API static PropertyDefinitionCollection* Create(FdoPhysicalElementMapping* parent);
+    FDOPOSTGIS_API static PropertyDefinitionCollection* Create(
+        FdoPhysicalElementMapping* parent);
 
 protected:
 
+    /// Default constructor.
     PropertyDefinitionCollection();
+
+    /// Create collection with parent element assigned.
     PropertyDefinitionCollection(FdoPhysicalElementMapping* parent);
+    
+    /// Destructor.
     virtual ~PropertyDefinitionCollection();
-    virtual void Dispose();
+
+    //
+    // FdoIDisposable
+    //
+
+    void Dispose();
 
 private:
 

@@ -40,6 +40,10 @@ void PhysicalSchemaMapping::Dispose()
     delete this;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// FdoPhysicalClassMapping interface
+///////////////////////////////////////////////////////////////////////////////
+
 PhysicalSchemaMapping* PhysicalSchemaMapping::Create()
 {
     PhysicalSchemaMapping* psm = new PhysicalSchemaMapping();
@@ -48,7 +52,7 @@ PhysicalSchemaMapping* PhysicalSchemaMapping::Create()
 
 FdoString* PhysicalSchemaMapping::GetProvider()
 {
-    // TODO: Replace hardcoded literal with common definition
+    // TODO: Replace hard-coded literal with common definition
     // fdo::postgis::ProviderName
     return L"OSGeo.PostGIS.3.2";
 }
@@ -76,6 +80,45 @@ ClassDefinition* PhysicalSchemaMapping::FindByClassName(FdoStringP const& name)
     }
     
     return 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoPhysicalElementMapping interface
+///////////////////////////////////////////////////////////////////////////////
+
+void PhysicalSchemaMapping::InitFromXml(FdoXmlSaxContext* xmlContext,
+                                        FdoXmlAttributeCollection* xmlAttrs)
+{
+    FDOLOG_MARKER("PhysicalSchemaMapping::+InitFromXml");
+}
+
+void PhysicalSchemaMapping::_writeXml(FdoXmlWriter* xmlWriter,
+                                      FdoXmlFlags const* xmlFlags)
+{
+    FDOLOG_MARKER("PhysicalSchemaMapping::+_writeXml");
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoXmlSaxHandler interface
+///////////////////////////////////////////////////////////////////////////////
+
+FdoXmlSaxHandler* PhysicalSchemaMapping::XmlStartElement(FdoXmlSaxContext *saxContext,
+                                                         FdoString* uri,
+                                                         FdoString* name,
+                                                         FdoString* qname,
+                                                         FdoXmlAttributeCollection* xmlAtts)
+{
+    FDOLOG_MARKER("PhysicalSchemaMapping::+XmlStartElement");
+    return NULL;
+}
+
+FdoBoolean PhysicalSchemaMapping::XmlEndElement(FdoXmlSaxContext* saxContext,
+                                                FdoString* uri,
+                                                FdoString* name,
+                                                FdoString* qname)
+{
+    FDOLOG_MARKER("PhysicalSchemaMapping::+XmlEndElement");
+    return NULL;
 }
 
 }}} // namespace fdo::postgis::ov
