@@ -513,6 +513,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\PgUtility.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\PgUtility.h"
 				>
 			</File>

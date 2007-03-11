@@ -21,6 +21,7 @@
 #include "PgGeometryColumn.h"
 #include "PgSpatialTablesReader.h"
 #include "PgTableColumnsReader.h"
+#include "PgUtility.h"
 #include "PostGIS/FdoPostGisOverrides.h"
 // std
 #include <cassert>
@@ -200,17 +201,17 @@ FdoFeatureSchemaCollection* DescribeSchemaCommand::Execute()
         
         FdoInt32 fdoGeomType = geomColumn->GetGeometryType();
         
-        FdoPtr<FdoGeometricPropertyDefinition> gpd = NULL;
-        gpd = FdoGeometricPropertyDefinition::Create(
+        FdoPtr<FdoGeometricPropertyDefinition> geomPropDef = NULL;
+        geomPropDef = FdoGeometricPropertyDefinition::Create(
             geomColumn->GetName(), geomColumn->GetDescription());                        
             
-        gpd->SetGeometryTypes(fdoGeomType);  
+        geomPropDef->SetGeometryTypes(fdoGeomType);  
         if (NULL != spContext)
         {
-            gpd->SetSpatialContextAssociation(spContext->GetName());
+            geomPropDef->SetSpatialContextAssociation(spContext->GetName());
         }
-        pdc->Add(gpd);
-        featClass->SetGeometryProperty(gpd);
+        pdc->Add(geomPropDef);
+        featClass->SetGeometryProperty(geomPropDef);
         
         ////////////////// CREATE OTHER PROPERTIES //////////////////
         
@@ -219,7 +220,20 @@ FdoFeatureSchemaCollection* DescribeSchemaCommand::Execute()
         tcReader->Open();
         while(tcReader->ReadNext())
         {
-            wcout << " + " << tcReader->GetColumnName() << " - " << tcReader->GetColumnPosition() << std::endl;
+            FdoPtr<FdoDataPropertyDefinition> datPropDef = NULL;
+            datPropDef = FdoDataPropertyDefinition::Create(
+                tcReader->GetColumnName(), tcReader->GetColumnDescription());
+    
+            FdoDataType dataType = tcReader->GetColumnType();
+            datPropDef->SetDataType(dataType);
+            int size = tcReader->GetColumnSize();
+            datPropDef->SetLength(size);
+            int precision = tcReader->GetColumnPrecision();
+            datPropDef->SetPrecision(precision);
+            int scale = tcReader->GetColumnScale();
+            datPropDef->SetPrecision(scale);
+            
+            pdc->Add(datPropDef);
         }
         tcReader->Close();
         
