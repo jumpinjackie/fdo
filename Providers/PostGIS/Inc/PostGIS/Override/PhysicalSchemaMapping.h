@@ -32,6 +32,10 @@ public:
 
     typedef FdoPtr<PhysicalSchemaMapping> Ptr;
 
+    //
+    // FdoPhysicalClassMapping interface
+    //
+    
     FDOPOSTGIS_API static PhysicalSchemaMapping* Create();
 
     FDOPOSTGIS_API virtual FdoString* GetProvider();
@@ -40,6 +44,33 @@ public:
 
     /// Find a feature class by name
     FDOPOSTGIS_API ClassDefinition* FindByClassName(FdoStringP const& name);
+
+    //
+    // FdoPhysicalElementMapping interface
+    //
+
+    /// Initializes this class from its XML attributes.
+    FDOPOSTGIS_API virtual void InitFromXml(FdoXmlSaxContext* xmlContext,
+        FdoXmlAttributeCollection* xmlAttrs);
+
+    /// Writes this class to XML.
+    FDOPOSTGIS_API virtual void _writeXml(FdoXmlWriter* xmlWriter,
+        FdoXmlFlags const* xmlFlags);
+
+    //
+    // FdoXmlSaxHandler interface
+    //
+
+    /// SAX callback called when the FdoXmlReader reads the start tag for
+    /// an XML element in the document.
+    FDOPOSTGIS_API virtual FdoXmlSaxHandler* XmlStartElement(FdoXmlSaxContext *saxContext,
+        FdoString* uri, FdoString* name, FdoString* qname,
+        FdoXmlAttributeCollection* xmlAtts);
+
+    /// SAX callback called when the FdoXmlReader reads the end tag for
+    /// an XML element in the document. 
+    FDOPOSTGIS_API virtual FdoBoolean XmlEndElement(FdoXmlSaxContext* saxContext,
+        FdoString* uri, FdoString* name, FdoString* qname);
 
 protected:
 

@@ -54,4 +54,7 @@
 // PostGIS Overrides
 #include "XmlGlobals.h"
 
+// FDO PostGIS Logger
+#include "../Provider/Logger.h"
+
 #endif // POSTGISOVERRIDES_STDAFX_H_INCLUDED

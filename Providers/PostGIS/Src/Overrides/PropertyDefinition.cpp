@@ -41,7 +41,7 @@ void PropertyDefinition::Dispose()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// ClassDefinition interface
+// FdoPhysicalPropertyMapping interface
 ///////////////////////////////////////////////////////////////////////////////
 
 PropertyDefinition* PropertyDefinition::Create()
@@ -61,5 +61,42 @@ void PropertyDefinition::SetColumn(ColumnDefinition * columnDef)
     assert(!"NOT IMPLEMENTED");
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// FdoPhysicalElementMapping interface
+///////////////////////////////////////////////////////////////////////////////
+
+void PropertyDefinition::InitFromXml(FdoXmlSaxContext* xmlContext,
+                                     FdoXmlAttributeCollection* xmlAttrs)
+{
+    FDOLOG_MARKER("PropertyDefinition::+InitFromXml");
+}
+
+void PropertyDefinition::_writeXml(FdoXmlWriter* xmlWriter, FdoXmlFlags const* xmlFlags)
+{
+    FDOLOG_MARKER("PropertyDefinition::+_writeXml");
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoXmlSaxHandler interface
+///////////////////////////////////////////////////////////////////////////////
+
+FdoXmlSaxHandler* PropertyDefinition::XmlStartElement(FdoXmlSaxContext *saxContext,
+                                                      FdoString* uri,
+                                                      FdoString* name,
+                                                      FdoString* qname,
+                                                      FdoXmlAttributeCollection* xmlAtts)
+{
+    FDOLOG_MARKER("PropertyDefinition::+XmlStartElement");
+    return NULL;
+}
+
+FdoBoolean PropertyDefinition::XmlEndElement(FdoXmlSaxContext* saxContext,
+                                             FdoString* uri,
+                                             FdoString* name,
+                                             FdoString* qname)
+{
+    FDOLOG_MARKER("PropertyDefinition::+XmlEndElement");
+    return NULL;
+}
 
 }}} // namespace fdo::postgis::ov

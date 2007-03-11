@@ -17,6 +17,8 @@
 #ifndef FDOPOSTGIS_CLASSDEFINITION_H_INCLUDED
 #define FDOPOSTGIS_CLASSDEFINITION_H_INCLUDED
 
+#include "PropertyDefinitionCollection.h"
+
 namespace fdo { namespace postgis { namespace ov {
 
 /// \todo To be documented
@@ -26,11 +28,45 @@ public:
     
     typedef FdoPtr<ClassDefinition> Ptr;
 
+    //
+    // FdoPhysicalClassMapping interface
+    //
     FDOPOSTGIS_API static ClassDefinition* Create();
 
+    FDOPOSTGIS_API PropertyDefinitionCollection* GetProperties() const;
+    
+    //
+    // FdoPhysicalElementMapping interface
+    //
+    
+    /// Initializes this class from its XML attributes.
+    FDOPOSTGIS_API virtual void InitFromXml(FdoXmlSaxContext* xmlContext,
+        FdoXmlAttributeCollection* xmlAttrs);
+
+    /// Writes this class to XML.
+    FDOPOSTGIS_API virtual void _writeXml(FdoXmlWriter* xmlWriter,
+        FdoXmlFlags const* xmlFlags);
+        
+    //
+    // FdoXmlSaxHandler interface
+    //
+    
+    /// SAX callback called when the FdoXmlReader reads the start tag for
+    /// an XML element in the document.
+    FDOPOSTGIS_API virtual FdoXmlSaxHandler* XmlStartElement(FdoXmlSaxContext *saxContext,
+        FdoString* uri, FdoString* name, FdoString* qname,
+        FdoXmlAttributeCollection* xmlAtts);
+
+    /// SAX callback called when the FdoXmlReader reads the end tag for
+    /// an XML element in the document. 
+    FDOPOSTGIS_API virtual FdoBoolean XmlEndElement(FdoXmlSaxContext* saxContext,
+        FdoString* uri, FdoString* name, FdoString* qname);
+
+protected:
+    
     /// Default constructor.
     ClassDefinition();
-
+    
     /// Destructor.
     virtual ~ClassDefinition();
 
@@ -39,12 +75,12 @@ public:
     //
 
     void Dispose();
-
-protected:
-
+    
 private:
 
     typedef FdoPhysicalClassMapping BaseType;
+    
+    PropertyDefinitionCollection::Ptr mProperties;
 };
 
 }}} // namespace fdo::postgis::ov

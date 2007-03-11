@@ -44,4 +44,43 @@ void ColumnDefinition::Dispose()
     delete this;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoPhysicalElementMapping interface
+///////////////////////////////////////////////////////////////////////////////
+
+void ColumnDefinition::InitFromXml(FdoXmlSaxContext* xmlContext,
+                                  FdoXmlAttributeCollection* xmlAttrs)
+{
+    FDOLOG_MARKER("ColumnDefinition::+InitFromXml");
+}
+
+void ColumnDefinition::_writeXml(FdoXmlWriter* xmlWriter, FdoXmlFlags const* xmlFlags)
+{
+    FDOLOG_MARKER("ColumnDefinition::+_writeXml");
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoXmlSaxHandler interface
+///////////////////////////////////////////////////////////////////////////////
+
+FdoXmlSaxHandler* ColumnDefinition::XmlStartElement(FdoXmlSaxContext *saxContext,
+                                                    FdoString* uri,
+                                                    FdoString* name,
+                                                    FdoString* qname,
+                                                    FdoXmlAttributeCollection* xmlAtts)
+{
+    FDOLOG_MARKER("ColumnDefinition::+XmlStartElement");
+    return NULL;
+}
+
+FdoBoolean ColumnDefinition::XmlEndElement(FdoXmlSaxContext* saxContext,
+                                           FdoString* uri,
+                                           FdoString* name,
+                                           FdoString* qname)
+{
+    FDOLOG_MARKER("ColumnDefinition::+XmlEndElement");
+    return NULL;
+}
+
 }}} // namespace fdo::postgis::ov
