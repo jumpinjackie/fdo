@@ -73,12 +73,17 @@ Connection::Connection() :
     mConnState(FdoConnectionState_Closed),
     mPgConn(NULL),
     mPgResult(NULL),
-    mSoftTransactionLevel(0)
+    mSoftTransactionLevel(0),
+    mFeatureSchemas(NULL),
+    mPhysicalSchemaMapping(NULL),
+    mSpatialContexts(NULL)
 {
+    // idle
 }
 
 Connection::~Connection()
 {
+    // idle
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -404,6 +409,22 @@ void Connection::Flush()
 ///////////////////////////////////////////////////////////////////////////////
 // Connection custom interface
 ///////////////////////////////////////////////////////////////////////////////
+
+FdoFeatureSchemaCollection* Connection::GetFeatureSchema()
+{
+    if (NULL == mFeatureSchemas)
+    return NULL;
+}
+
+ov::PhysicalSchemaMapping* Connection::GetPhysicalSchemaMapping()
+{
+    return NULL;
+}
+
+SpatialContextCollection* Connection::GetSpatialContexts()
+{
+    return NULL;
+}
 
 void Connection::PgExecuteCommand(char const* sql)
 {

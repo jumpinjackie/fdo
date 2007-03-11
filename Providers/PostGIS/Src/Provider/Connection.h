@@ -17,8 +17,10 @@
 #ifndef FDOPOSTGIS_CONNECTION_H_INCLUDED
 #define FDOPOSTGIS_CONNECTION_H_INCLUDED
 
+#include "SpatialContextCollection.h"
 #include "PgUtility.h"
 #include <PostGIS/FdoPostGisProvider.h>
+#include <PostGIS/Override/PhysicalSchemaMapping.h>
 // FDO
 #include <Fdo.h>
 #include <FdoCommonConnPropDictionary.h>
@@ -32,6 +34,7 @@ namespace fdo { namespace postgis {
 
 // Forward declarations of internal types
 class PgCursor;
+class SpatialContextCollection;
 
 /// Implementation of connection interface for PostGIS provider.
 /// It represents a unique session with FDO datastore.
@@ -128,8 +131,17 @@ public:
     void Flush();
 
     //
-    // Connection custom interface for PostgreSQL/PostGIS specific operations.
+    // Connection custom interface used internally by the provider
     //
+    
+    /// \todo To be documented.
+    FdoFeatureSchemaCollection* GetFeatureSchema();
+    
+    /// \todo To be documented.
+    ov::PhysicalSchemaMapping* GetPhysicalSchemaMapping();
+    
+    /// \todo To be documented.
+    SpatialContextCollection* GetSpatialContexts();
 
     /// \todo To be documented.
     void PgExecuteCommand(char const* sql);
@@ -204,10 +216,15 @@ private:
     // Pointer to PostgreSQL connection object of current session.
     PGconn* mPgConn;
 
-    // Pointer to PostgreSQL query result
+    // Pointer to PostgreSQL query result.
     PGresult* mPgResult;
     
+    // Counter of soft transaction scopes.
     FdoInt32 mSoftTransactionLevel;
+    
+    FdoPtr<FdoFeatureSchemaCollection> mFeatureSchemas;
+    ov::PhysicalSchemaMapping::Ptr mPhysicalSchemaMapping;
+    SpatialContextCollection::Ptr mSpatialContexts;
 
     //
     // Private operations
