@@ -229,14 +229,16 @@ FdoFeatureSchemaCollection* DescribeSchemaCommand::Execute()
             FDOLOG_WRITE(L"+ data property: %s",
                 static_cast<FdoString*>(tcReader->GetColumnName()));
     
-            FdoDataType dataType = tcReader->GetColumnType();
+            FdoDataType const dataType = tcReader->GetColumnType();
             datPropDef->SetDataType(dataType);
-            int size = tcReader->GetColumnSize();
+            int const size = tcReader->GetColumnSize();
             datPropDef->SetLength(size);
-            int precision = tcReader->GetColumnPrecision();
+            int const precision = tcReader->GetColumnPrecision();
             datPropDef->SetPrecision(precision);
-            int scale = tcReader->GetColumnScale();
-            datPropDef->SetPrecision(scale);
+            int const scale = tcReader->GetColumnScale();
+            datPropDef->SetScale(scale);
+            bool const isNullable = tcReader->GetColumnNullability();
+            datPropDef->SetNullable(isNullable);
             
             pdc->Add(datPropDef);
         }
