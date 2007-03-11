@@ -137,11 +137,16 @@ FdoInt32 PgTableColumnsReader::GetColumnScale() const
 
 bool PgTableColumnsReader::GetColumnNullability() const
 {
-    FdoStringP const isNull(mReader->GetString(L"notnull"));
-    if (isNull == L"t")
-        return false;
-    else
-        return true;
+    bool isNullable = true;
+
+    // Check if a column can NOT be NULL.
+    FdoStringP const notNull(mReader->GetString(L"notnull"));
+    if (notNull == L"t")
+    {   
+        isNullable = false;
+    }
+
+    return isNullable;
 }
 
 void PgTableColumnsReader::Open()
