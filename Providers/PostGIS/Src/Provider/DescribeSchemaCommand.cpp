@@ -30,10 +30,6 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/shared_ptr.hpp>
 
-
-#include <iostream> // TODO: Remove it
-#include "PgGeometry.h" // TODO: Remove it
-
 namespace fdo { namespace postgis {
 
 DescribeSchemaCommand::DescribeSchemaCommand(Connection* conn)
@@ -122,8 +118,8 @@ void DescribeSchemaCommand::SetSchemaName(FdoString* name)
 
 FdoFeatureSchemaCollection* DescribeSchemaCommand::Execute()
 {
-    using std::wcout; // TODO: remove
-
+    FDOLOG_MARKER("DescribeSchemaCommand::=Execute");
+    
     FdoPtr<FdoFeatureSchemaCollection> featSchemas = NULL;
     featSchemas = FdoFeatureSchemaCollection::Create(NULL);
 
@@ -135,19 +131,18 @@ FdoFeatureSchemaCollection* DescribeSchemaCommand::Execute()
     //
     // Create FDO classes from PostGIS-enabled spatial tables
     //
-    
     FdoPtr<FdoFeatureSchema> featSchema(FdoFeatureSchema::Create(L"FdoPostGIS", L""));
     featSchemas->Add(featSchema.p);
 
     FdoPtr<FdoClassCollection> featClasses(featSchema->GetClasses());
     ov::ClassCollection::Ptr phClasses(phSmMapping->GetClasses());
     
-    PgSpatialTablesReader::Ptr stReader(new PgSpatialTablesReader(mConn.p));
-    stReader->Open();
-    
     //
     // Process every table to FDO class
     //
+    PgSpatialTablesReader::Ptr stReader(new PgSpatialTablesReader(mConn.p));
+    stReader->Open();
+    
     while (stReader->ReadNext())
     {
         // TODO: Fetch all geometries, but not only the first one - default
@@ -165,6 +160,9 @@ FdoFeatureSchemaCollection* DescribeSchemaCommand::Execute()
             spContext = spContexts->FindItem(spContextName);
             if (NULL == spContext)
             {
+                FDOLOG_WRITE(L"Created spatial context: %s",
+                    static_cast<FdoString*>(spContextName));
+                    
                 spContext = CreateSpatialContext(spContextName, geomColumn);
                 spContexts->Insert(0, spContext);
             }
@@ -187,8 +185,6 @@ FdoFeatureSchemaCollection* DescribeSchemaCommand::Execute()
             static_cast<FdoString*>(stReader->GetTableName()));
         assert(!featClasses->FindItem(fdoClassName));
         
-        wcout << fdoClassName << std::endl;
-
         // TODO: Use table COMMENT as a class description
         FdoPtr<FdoFeatureClass> featClass = FdoFeatureClass::Create(fdoClassName, L"");      
 
@@ -197,6 +193,8 @@ FdoFeatureSchemaCollection* DescribeSchemaCommand::Execute()
         classDef->SetName(fdoClassName);
         
         FdoPtr<FdoPropertyDefinitionCollection> pdc = featClass->GetProperties();
+
+        FDOLOG_WRITE(L"Created feature class: %s", static_cast<FdoString*>(fdoClassName));
         
         ////////////////// CREATE GEOMETRY PROPERTY //////////////////
         
@@ -214,6 +212,9 @@ FdoFeatureSchemaCollection* DescribeSchemaCommand::Execute()
         pdc->Add(geomPropDef);
         featClass->SetGeometryProperty(geomPropDef);
         
+        FDOLOG_WRITE(L"+ geometric property: %s",
+            static_cast<FdoString*>(geomColumn->GetName()));
+
         ////////////////// CREATE DATA PROPERTIES //////////////////
         
         PgTableColumnsReader::Ptr tcReader  = new PgTableColumnsReader(
@@ -224,6 +225,9 @@ FdoFeatureSchemaCollection* DescribeSchemaCommand::Execute()
             FdoPtr<FdoDataPropertyDefinition> datPropDef = NULL;
             datPropDef = FdoDataPropertyDefinition::Create(
                 tcReader->GetColumnName(), tcReader->GetColumnDescription());
+                
+            FDOLOG_WRITE(L"+ data property: %s",
+                static_cast<FdoString*>(tcReader->GetColumnName()));
     
             FdoDataType dataType = tcReader->GetColumnType();
             datPropDef->SetDataType(dataType);
@@ -238,17 +242,18 @@ FdoFeatureSchemaCollection* DescribeSchemaCommand::Execute()
         }
         tcReader->Close();
         
-        
-        
+        //
+        // Add Feature Class and Class Definition to collections
+        //
         featClasses->Add(featClass);
         phClasses->Add(classDef);
-        
         
     } // while
     
     stReader->Close();
     
     assert(NULL != featSchemas);
+    assert(NULL != phClasses);
     
     FDO_SAFE_ADDREF(featSchemas.p);
     return featSchemas.p;
