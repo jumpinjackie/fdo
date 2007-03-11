@@ -71,8 +71,9 @@ FdoDataType FdoTypeFromPgTypeName(std::string const& typeName)
     }
     else if (iequals(typeName, "char") || iequals(typeName, "bpchar")
         || iequals(typeName, "varchar") || iequals(typeName, "text")
-        || iequals(typeName, "cstring"))
+        || iequals(typeName, "cstring") || iequals(typeName, "name"))
     {
+        // Type 'name' is equivalent of VARCHAR(60)
         fdoType = FdoDataType_String;
     }
     else if (iequals(typeName, "abstime") || iequals(typeName, "reltime")
@@ -89,8 +90,15 @@ FdoDataType FdoTypeFromPgTypeName(std::string const& typeName)
     }
     else if (iequals(typeName, "oid"))
     {
-        assert(!"TYPE MAPPING TO BE REVIEWED");
+        // OID size is 4 bytes
         fdoType = FdoDataType_Int32;
+    }
+    else if (iequals(typeName, "money"))
+    {
+        // IMPORTANT: The money type is deprecated. Use numeric or decimal instead,
+        //            in combination with the to_char function.
+        assert(!"MONEY TYPE IS DEPRECATED");
+        fdoType = FdoDataType_Decimal;
     }
     else
     {
