@@ -40,19 +40,27 @@ FdoDataType FdoTypeFromPgTypeName(std::string const& typeName)
     {
         fdoType = FdoDataType_Boolean;
     }
+    else if (iequals(typeName, "\"char\""))
+    {
+        // Single-character internal type in PostgreSQL.
+        // The type "char" (note the quotes) is different from char(1) in that it
+        // only uses one byte of storage.
+        // It is internally used in the system catalogs as a poor-man's enumeration type.
+        fdoType = FdoDataType_Byte;
+    }
     else if (iequals(typeName, "int2"))
     {
         // Returned also for types: smallint
         fdoType = FdoDataType_Int16;
     }
-    else if (iequals(typeName, "int4"))
+    else if (iequals(typeName, "int4") || iequals(typeName, "int"))
     {
-        // Returned also for types: integer, serial
+        // Returned also for types: integer, serial, serial4
         fdoType = FdoDataType_Int32;
     }
     else if (iequals(typeName, "int8"))
     {
-        // Returned also for types: bigint, bigserial
+        // Returned also for types: bigint, bigserial, serial8
         fdoType = FdoDataType_Int64;
     }
     else if (iequals(typeName, "float4"))
@@ -73,6 +81,7 @@ FdoDataType FdoTypeFromPgTypeName(std::string const& typeName)
         || iequals(typeName, "varchar") || iequals(typeName, "text")
         || iequals(typeName, "cstring") || iequals(typeName, "name"))
     {
+        // The type char(n) is different than "char", see note for FdoDataType_Byte.
         // Type 'name' is equivalent of VARCHAR(60)
         fdoType = FdoDataType_String;
     }
