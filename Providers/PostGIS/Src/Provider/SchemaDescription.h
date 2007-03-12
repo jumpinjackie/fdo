@@ -47,8 +47,10 @@ public:
     /// Named constructor used to create new instance of the class.
     static SchemaDescription* Create();
     
-    void DescribeSchema(Connection* conn, FdoString schemaName);
+    // \todo TODO: Add support of describing selected schema instead of all
+    void DescribeSchema(Connection* conn, FdoString* schemaName);
     
+    /// Get flag indicating if schema has been successfully described.
     bool IsDescribed() const;
     
     void SetLogicalSchemas(FdoFeatureSchemaCollection* logicalSchemas);

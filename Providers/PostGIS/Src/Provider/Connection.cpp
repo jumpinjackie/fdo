@@ -408,17 +408,20 @@ void Connection::Flush()
 
 FdoFeatureSchemaCollection* Connection::GetLogicalSchema()
 {
-    return NULL;
+    SchemaDescription::Ptr sc(DescribeSchema());
+    return sc->GetLogicalSchemas();
 }
 
 ov::PhysicalSchemaMapping* Connection::GetPhysicalSchemaMapping()
 {
-    return NULL;
+    SchemaDescription::Ptr sc(DescribeSchema());
+    return sc->GetSchemaMapping();
 }
 
 SpatialContextCollection* Connection::GetSpatialContexts()
 {
-    return NULL;
+    SchemaDescription::Ptr sc(DescribeSchema());
+    return sc->GetSpatialContexts();
 }
 
 void Connection::PgExecuteCommand(char const* sql)
@@ -702,6 +705,20 @@ void Connection::PgFlushSoftTransaction()
 ///////////////////////////////////////////////////////////////////////////////
 // Private operations
 ///////////////////////////////////////////////////////////////////////////////
+
+SchemaDescription* Connection::DescribeSchema()
+{
+    if (NULL == mSchemaDesc)
+    {
+        // TODO: Add support of describing selected schema instead of all
+        mSchemaDesc = SchemaDescription::Create();
+        mSchemaDesc->DescribeSchema(this, L"");
+    }
+    assert(mSchemaDesc->IsDescribed());
+
+    FDO_SAFE_ADDREF(mSchemaDesc.p);
+    return mSchemaDesc.p;
+}
 
 void Connection::ValidateConnectionState()
 {
