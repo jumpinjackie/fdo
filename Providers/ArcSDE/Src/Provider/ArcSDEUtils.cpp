@@ -1146,7 +1146,7 @@ void convert_sde_shape_to_fgf(ArcSDEConnection* connection, SE_SHAPE shape, FdoB
 	{
 		RESIZE(connection->mGeomBuffer_pointsM,LFLOAT*,numPoints * sizeof(LFLOAT));
 	}
-    lResult = SE_shape_get_all_points (shape, SE_DEFAULT_ROTATION, connection->mGeomBuffer_part_offsets, connection->mGeomBuffer_subpart_offsets, connection->mGeomBuffer_pointsXY, connection->mGeomBuffer_pointsZ, connection->mGeomBuffer_pointsM);
+	lResult = SE_shape_get_all_points (shape, SE_DEFAULT_ROTATION, connection->mGeomBuffer_part_offsets, connection->mGeomBuffer_subpart_offsets, connection->mGeomBuffer_pointsXY, bHasZ ? connection->mGeomBuffer_pointsZ:NULL, bHasM ? connection->mGeomBuffer_pointsM:NULL);
     handle_sde_err<FdoCommandException>(lResult, __FILE__, __LINE__, ARCSDE_GEOMETRY_CONVERSION_SHAPE_TO_FGF, "Error encountered while converting ArcSDE shape to FGF.");
 
     // Convert this shape's data to FdoIGeometry:
