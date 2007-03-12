@@ -25,7 +25,7 @@ FdoXmlCoordinateGroup::FdoXmlCoordinateGroup()
 FdoXmlCoordinateGroup::~FdoXmlCoordinateGroup()
 {
 	if(m_doubleArray != NULL)
-		delete m_doubleArray;
+		delete[] m_doubleArray;
 }
 
 
