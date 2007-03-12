@@ -30,7 +30,9 @@ namespace fdo { namespace postgis {
 ///
 /// \todo TODO: Add reading column description from COMMENT.
 ///
-class PgGeometryColumn : public FdoIDisposable, private boost::noncopyable
+class PgGeometryColumn :
+    public FdoIDisposable,
+    private boost::noncopyable
 {
 public:
 
