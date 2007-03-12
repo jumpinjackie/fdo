@@ -33,7 +33,19 @@ public:
     /// Type of FDO smart pointer for the class.
     typedef FdoPtr<SchemaDescription> Ptr;
     
+    /// Named constructor used to create new instance of the class.
     static SchemaDescription* Create();
+    
+    void SetLogicalSchemas(FdoFeatureSchemaCollection* logicalSchemas);
+    void SetSchemaMapping(ov::PhysicalSchemaMapping* phSchemaMapping);
+    void SetSpatialContexts(SpatialContextCollection* spContexts);
+
+    FdoFeatureSchemaCollection* GetLogicalSchemas() const;
+    ov::PhysicalSchemaMapping* GetSchemaMapping() const;
+    SpatialContextCollection* GetSpatialContexts() const;
+    
+    FdoClassDefinition* FindClassDefinition(FdoIdentifier* id);
+    ov::ClassDefinition* FindClassMapping(FdoIdentifier* id);
     
 protected:
 
