@@ -173,7 +173,7 @@ void FdoWmsConnection::SetConnectionString (FdoString* value)
 
         // Update the connection property dictionary:
         FdoPtr<FdoIConnectionInfo> connInfo = GetConnectionInfo();
-        FdoPtr<FdoCommonConnPropDictionary> connDict = dynamic_cast<FdoCommonConnPropDictionary*>(connInfo->GetConnectionProperties());
+        FdoPtr<FdoCommonConnPropDictionary> connDict = static_cast<FdoCommonConnPropDictionary*>(connInfo->GetConnectionProperties());
         connDict->UpdateFromConnectionString(mConnectionString);
     }
     else 
@@ -230,7 +230,7 @@ FdoConnectionState FdoWmsConnection::Open ()
         return FdoConnectionState_Open;
     
     FdoPtr<FdoIConnectionInfo> info = GetConnectionInfo ();
-    FdoPtr<FdoCommonConnPropDictionary> dictionary = dynamic_cast<FdoCommonConnPropDictionary*>(info->GetConnectionProperties ());
+    FdoPtr<FdoCommonConnPropDictionary> dictionary = static_cast<FdoCommonConnPropDictionary*>(info->GetConnectionProperties ());
 
     FdoStringP location = dictionary->GetProperty (FdoWmsGlobals::ConnectionPropertyFeatureServer);
     if (0 == location.GetLength() && !mConfigured) 
@@ -430,7 +430,7 @@ void FdoWmsConnection::SetConfiguration(FdoIoStream* configStream)
     mConfigSchemaMappings = FdoPhysicalSchemaMappingCollection::Create();
     for (FdoInt32 i=0; i<localSchemaMappings->GetCount(); i++) {
         FdoPhysicalSchemaMappingP schemaMapping = localSchemaMappings->GetItem(i);
-        FdoWmsOvPhysicalSchemaMapping* wmsSchemaMapping = dynamic_cast<FdoWmsOvPhysicalSchemaMapping*>(schemaMapping.p);
+        FdoWmsOvPhysicalSchemaMapping* wmsSchemaMapping = static_cast<FdoWmsOvPhysicalSchemaMapping*>(schemaMapping.p);
         if (wmsSchemaMapping != NULL) {
             mConfigSchemaMappings->Add(wmsSchemaMapping);
         }
@@ -445,7 +445,7 @@ void FdoWmsConnection::SetConfiguration(FdoIoStream* configStream)
 		if (schemaMapping == NULL)
 			throw FdoSchemaException::Create (NlsMsgGet (FDOWMS_SCHEMA_MAPPING_NOT_FOUND, "Physical schema mapping '%1$ls' was not found.", schemaName));
 
-		FdoWmsOvPhysicalSchemaMapping* wmsSchemaMapping = dynamic_cast<FdoWmsOvPhysicalSchemaMapping *> (schemaMapping.p);
+		FdoWmsOvPhysicalSchemaMapping* wmsSchemaMapping = static_cast<FdoWmsOvPhysicalSchemaMapping *> (schemaMapping.p);
 		FdoWmsOvClassesP physicalClasses = wmsSchemaMapping->GetClasses ();
 
 		FdoPtr<FdoClassCollection> logicalClasses = logicalSchema->GetClasses ();
@@ -463,7 +463,7 @@ void FdoWmsConnection::SetConfiguration(FdoIoStream* configStream)
 	for (FdoInt32 i=0; i<mConfigSchemaMappings->GetCount(); i++)
 	{
 		FdoPtr<FdoPhysicalSchemaMapping> schemaMapping = mConfigSchemaMappings->GetItem (i);
-		FdoWmsOvPhysicalSchemaMapping* physicalSchema = dynamic_cast<FdoWmsOvPhysicalSchemaMapping *> (schemaMapping.p);
+		FdoWmsOvPhysicalSchemaMapping* physicalSchema = static_cast<FdoWmsOvPhysicalSchemaMapping *> (schemaMapping.p);
 		FdoString* schemaName = physicalSchema->GetName ();
 		FdoPtr<FdoFeatureSchema> logicalSchema = mConfigLogicalSchemas->FindItem (schemaName);
 		if (logicalSchema == NULL)
@@ -485,7 +485,7 @@ void FdoWmsConnection::SetConfiguration(FdoIoStream* configStream)
 	for (FdoInt32 i=0; i<mConfigLogicalSchemas->GetCount (); i++)
 	{
 		FdoFeatureSchemaP featSchema = mConfigLogicalSchemas->GetItem (i);
-		FdoWmsOvPhysicalSchemaMappingP schemaMapping = dynamic_cast<FdoWmsOvPhysicalSchemaMapping *> (mConfigSchemaMappings->GetItem (this, featSchema->GetName ()));
+		FdoWmsOvPhysicalSchemaMappingP schemaMapping = static_cast<FdoWmsOvPhysicalSchemaMapping *> (mConfigSchemaMappings->GetItem (this, featSchema->GetName ()));
 		FdoPtr<FdoClassCollection> featClasses = featSchema->GetClasses ();
 		FdoPtr<FdoWmsOvClassCollection> classMappings = schemaMapping->GetClasses ();
 		for (FdoInt32 j=0; j<featClasses->GetCount(); j++)
@@ -694,7 +694,7 @@ void FdoWmsConnection::_buildUpDefaultSchemaMappings ()
     //
 	if (!mSchemas)
 	{
-		FdoPtr<FdoWmsCapabilities> capa = dynamic_cast<FdoWmsCapabilities *>(mWmsServiceMetadata->GetCapabilities ());
+		FdoPtr<FdoWmsCapabilities> capa = static_cast<FdoWmsCapabilities *>(mWmsServiceMetadata->GetCapabilities ());
 		mSchemas = FdoFeatureSchemaCollection::Create (NULL);
 
         //
@@ -901,7 +901,7 @@ void FdoWmsConnection::_setDefaultSpatialContextAssociation (FdoClassDefinition*
 	if (layerName != NULL)
 	{
 		// Retrieve the WMS capabilities returned by the WMS server
-        FdoPtr<FdoWmsCapabilities> capa = dynamic_cast<FdoWmsCapabilities *>(mWmsServiceMetadata->GetCapabilities ());
+        FdoPtr<FdoWmsCapabilities> capa = static_cast<FdoWmsCapabilities *>(mWmsServiceMetadata->GetCapabilities ());
 		FdoPtr<FdoWmsLayerCollection> layers = capa->GetLayers ();		
 
 		// Search for the list of layers with the specified name in all the layers and child layers
