@@ -50,22 +50,46 @@ FdoGeometryType* GeometryCapabilities::GetGeometryTypes(FdoInt32& size)
     // An FDO client should not expect an FDO provider to list support
     // for it in its capabilities.
 
-    
+    static FdoGeometryType types[] =
+    {
+        FdoGeometryType_Point,
+        FdoGeometryType_LineString,
+        FdoGeometryType_Polygon,
+        FdoGeometryType_MultiPoint,
+        FdoGeometryType_MultiLineString,
+        FdoGeometryType_MultiPolygon,
+        FdoGeometryType_MultiGeometry,
+        
+        // TODO: Waiting for curves supports
+        //FdoGeometryType_CurveString,
+        //FdoGeometryType_CurvePolygon,
+        //FdoGeometryType_MultiCurveString,
+        //FdoGeometryType_MultiCurvePolygon
+    };
 
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    size = (sizeof(types) / sizeof(FdoClassType));
+    return types;
 }
 
 FdoGeometryComponentType* GeometryCapabilities::GetGeometryComponentTypes(FdoInt32& size)
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    static FdoGeometryComponentType types[] =
+    {
+        FdoGeometryComponentType_LinearRing,
+        
+        // TODO: Waiting for curves supports
+        //FdoGeometryComponentType_CircularArcSegment,
+        //FdoGeometryComponentType_LineStringSegment,
+        //FdoGeometryComponentType_Ring,
+    };
+    
+    size = (sizeof(types) / sizeof(FdoClassType));
+    return types;    
 }
 
 FdoInt32 GeometryCapabilities::GetDimensionalities()
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    return (FdoDimensionality_XY | FdoDimensionality_Z | FdoDimensionality_M);
 }
 
 

@@ -15,11 +15,8 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 //
 #include "stdafx.h"
-
 #include "PostGisProvider.h"
 #include "FilterCapabilities.h"
-
-#include <cassert>
 
 namespace fdo { namespace postgis {
 
@@ -86,19 +83,20 @@ FdoSpatialOperations* FilterCapabilities::GetSpatialOperations(FdoInt32& size)
 
 FdoDistanceOperations* FilterCapabilities::GetDistanceOperations(FdoInt32& size)
 {
-    assert(!"NOT IMPLEMENTED");
+    // TODO: Check this
+    size = 0;
     return NULL;
 }
 
 bool FilterCapabilities::SupportsGeodesicDistance()
 {
-    assert(!"NOT IMPLEMENTED");
+    // TODO: Check this
     return false;
 }
 
 bool FilterCapabilities::SupportsNonLiteralGeometricOperations()
 {
-    assert(!"NOT IMPLEMENTED");
+    // TODO: Check this
     return false;
 }
 

@@ -15,11 +15,8 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 //
 #include "stdafx.h"
-
 #include "PostGisProvider.h"
 #include "TopologyCapabilities.h"
-
-#include <cassert>
 
 namespace fdo { namespace postgis {
 
@@ -46,31 +43,26 @@ void TopologyCapabilities::Dispose()
 
 bool TopologyCapabilities::SupportsTopology()
 {
-    assert(!"NOT IMPLEMENTED");
     return false;
 }
 
 bool TopologyCapabilities::SupportsTopologicalHierarchy()
 {
-    assert(!"NOT IMPLEMENTED");
     return false;
 }
 
 bool TopologyCapabilities::BreaksCurveCrossingsAutomatically()
 {
-    assert(!"NOT IMPLEMENTED");
     return false;
 }
 
 bool TopologyCapabilities::ActivatesTopologyByArea()
 {
-    assert(!"NOT IMPLEMENTED");
     return false;
 }
 
 bool TopologyCapabilities::ConstrainsFeatureMovements()
 {
-    assert(!"NOT IMPLEMENTED");
     return false;
 }
 
