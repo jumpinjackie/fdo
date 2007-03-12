@@ -1,4 +1,4 @@
-//
+    //
 // Copyright (C) 2007 Refractions Research, Inc. 
 // 
 // This library is free software; you can redistribute it and/or
@@ -46,14 +46,32 @@ void ExpressionCapabilities::Dispose()
 
 FdoExpressionType* ExpressionCapabilities::GetExpressionTypes(FdoInt32& size)
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    static FdoExpressionType types[] =
+    {
+        FdoExpressionType_Basic,
+        FdoExpressionType_Function,
+    };
+
+    size = sizeof(types) / sizeof(FdoExpressionType);
+
+    return types;
 }
 
 FdoFunctionDefinitionCollection* ExpressionCapabilities::GetFunctions()
-{
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+{    
+    // Collect supported functions from the Well-Known-Functions collection
+    FdoPtr<FdoFunctionDefinitionCollection> wkFunctions;
+    wkFunctions = GetWellKnownFunctions();
+
+    FdoPtr<FdoFunctionDefinitionCollection> supported;
+    supported = FdoFunctionDefinitionCollection::Create();
+    
+    FdoPtr<FdoFunctionDefinition> wkFunction;
+    
+    // TODO: Add supported functions. 
+    
+    FDO_SAFE_ADDREF(supported.p);
+    return supported.p;
 }
 
 }} // namespace fdo::postgis
