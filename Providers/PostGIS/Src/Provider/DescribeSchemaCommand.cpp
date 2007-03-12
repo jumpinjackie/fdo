@@ -115,7 +115,10 @@ FdoFeatureSchemaCollection* DescribeSchemaCommand::Execute()
 {
     FDOLOG_MARKER("DescribeSchemaCommand::+Execute");
    
-    return NULL;
+    FdoPtr<FdoFeatureSchemaCollection> logicalSchema = mConn->GetLogicalSchema();
+    
+    FDO_SAFE_ADDREF(logicalSchema.p);
+    return logicalSchema.p;
 }
 
 }} // namespace fdo::postgis
