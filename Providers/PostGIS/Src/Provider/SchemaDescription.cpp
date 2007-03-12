@@ -52,4 +52,69 @@ SchemaDescription* SchemaDescription::Create()
     return sd.p;
 }
 
+void SchemaDescription::SetLogicalSchemas(FdoFeatureSchemaCollection* logicalSchemas)
+{
+    mLogicalSchemas = logicalSchemas;
+    FDO_SAFE_ADDREF(mLogicalSchemas.p);
+}
+
+void SchemaDescription::SetSchemaMapping(ov::PhysicalSchemaMapping* phSchemaMapping)
+{
+    mSchemaMapping = phSchemaMapping;
+    FDO_SAFE_ADDREF(mSchemaMapping.p);
+}
+
+void SchemaDescription::SetSpatialContexts(SpatialContextCollection* spContexts)
+{
+    mSpatialContexts = spContexts;
+    FDO_SAFE_ADDREF(mSpatialContexts.p);
+}
+
+FdoFeatureSchemaCollection* SchemaDescription::GetLogicalSchemas() const
+{
+    FDO_SAFE_ADDREF(mLogicalSchemas.p);
+    return mLogicalSchemas.p;
+}
+
+ov::PhysicalSchemaMapping* SchemaDescription::GetSchemaMapping() const
+{
+    FDO_SAFE_ADDREF(mSchemaMapping.p);
+    return mSchemaMapping.p;
+}
+
+SpatialContextCollection* SchemaDescription::GetSpatialContexts() const
+{
+    FDO_SAFE_ADDREF(mSpatialContexts.p);
+    return mSpatialContexts.p;
+}
+
+FdoClassDefinition* SchemaDescription::FindClassDefinition(FdoIdentifier* id)
+{
+    assert(NULL != id);
+    
+    FdoPtr<FdoFeatureSchemaCollection> logicalSchemas(GetLogicalSchemas());
+    FdoPtr<FdoClassDefinition> classDef;
+
+    if (NULL != logicalSchemas && logicalSchemas->GetCount() > 0)
+    {
+        FdoStringP name(id->GetText());
+        FdoPtr<FdoIDisposableCollection> featClasses(logicalSchemas->FindClass(name));
+        if (NULL != featClasses)
+        {
+            classDef = static_cast<FdoClassDefinition*>(featClasses->GetItem(0));
+        }
+    }
+
+    FDO_SAFE_ADDREF(classDef.p);            
+    return classDef.p;
+}
+
+ov::ClassDefinition* SchemaDescription::FindClassMapping(FdoIdentifier* id)
+{
+    assert(NULL != id);
+    
+    // TODO: What to do if none class found?
+    return mSchemaMapping->FindByClassName(id->GetName());
+}
+
 }} // namespace fdo::postgis
