@@ -15,11 +15,8 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 //
 #include "stdafx.h"
-
 #include "PostGisProvider.h"
 #include "CommandCapabilities.h"
-
-#include <cassert>
 
 namespace fdo { namespace postgis {
 
@@ -50,10 +47,10 @@ FdoInt32* CommandCapabilities::GetCommands(FdoInt32& size)
 
     static FdoCommandType commands[] =
     {
-        FdoCommandType_Select,
-        FdoCommandType_Insert,
-        FdoCommandType_Update,
-        FdoCommandType_Delete,
+        //FdoCommandType_Select,
+        //FdoCommandType_Insert,
+        //FdoCommandType_Update,
+        //FdoCommandType_Delete,
         FdoCommandType_SQLCommand,
         FdoCommandType_DescribeSchema,
         FdoCommandType_CreateDataStore,

@@ -233,6 +233,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\RasterCapabilities.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\RasterCapabilities.h"
+				>
+			</File>
+			<File
 				RelativePath=".\SchemaCapabilities.cpp"
 				>
 			</File>
@@ -370,6 +378,14 @@
 			</File>
 			<File
 				RelativePath=".\stdafx.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Transaction.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Transaction.h"
 				>
 			</File>
 		</Filter>

@@ -15,11 +15,8 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 //
 #include "stdafx.h"
-
 #include "PostGisProvider.h"
 #include "ExpressionCapabilities.h"
-
-#include <cassert>
 
 namespace fdo { namespace postgis {
 

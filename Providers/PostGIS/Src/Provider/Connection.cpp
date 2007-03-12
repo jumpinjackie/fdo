@@ -18,12 +18,14 @@
 #include "PostGisProvider.h"
 #include "Connection.h"
 #include "ConnectionInfo.h"
-#include "ConnectionCapabilities.h"
 #include "CommandCapabilities.h"
-#include "SchemaCapabilities.h"
-#include "FilterCapabilities.h"
+#include "ConnectionCapabilities.h"
 #include "ExpressionCapabilities.h"
+#include "FilterCapabilities.h"
+#include "GeometryCapabilities.h"
 #include "RasterCapabilities.h"
+#include "SchemaCapabilities.h"
+#include "TopologyCapabilities.h"
 #include "ListDataStores.h"
 #include "CreateDataStore.h"
 #include "DestroyDataStore.h"
@@ -34,6 +36,7 @@
 #include "SelectCommand.h"
 #include "UpdateCommand.h"
 #include "SQLCommand.h"
+#include "Transaction.h"
 #include "PgCursor.h"
 #include "PgUtility.h"
 // Message
@@ -126,19 +129,17 @@ FdoIExpressionCapabilities* Connection::GetExpressionCapabilities()
 
 FdoIRasterCapabilities* Connection::GetRasterCapabilities()
 {
-    return (new RasterC());
+    return (new RasterCapabilities());
 }
 
 FdoITopologyCapabilities* Connection::GetTopologyCapabilities()
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    return (new TopologyCapabilities());
 }
 
 FdoIGeometryCapabilities* Connection::GetGeometryCapabilities()
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    return (new GeometryCapabilities());
 }
 
 FdoString* Connection::GetConnectionString()
@@ -312,7 +313,20 @@ void Connection::Close()
 
 FdoITransaction* Connection::BeginTransaction()
 {
-    assert(!"NOT IMPLEMENTED");
+    FDOLOG_MARKER("Connection::+BeginTransaction");
+
+    // TODO: Need to test the solution for unsupported nested transactions in PostgreSQL
+
+    PgBeginSoftTransaction();
+    if (mSoftTransactionLevel > 0)
+    {
+        Transaction::Ptr trans(new Transaction(this));
+
+        FDO_SAFE_ADDREF(trans.p);
+        return trans.p;
+    }
+
+    // No transaction has been started. A bug?
     return NULL;
 }
 
