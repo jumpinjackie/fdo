@@ -17,12 +17,23 @@
 #ifndef FDOPOSTGIS_SCHEMADESCRIPTION_H_INCLUDED
 #define FDOPOSTGIS_SCHEMADESCRIPTION_H_INCLUDED
 
+#include "Connection.h"
 #include "SpatialContextCollection.h"
 #include <PostGIS/Override/PhysicalSchemaMapping.h>
+// boost
 #include <boost/noncopyable.hpp>
 
 namespace fdo { namespace postgis {
 
+// Forward declarations
+class Connection;
+class PgGeometryColumn;
+class SpatialContext;
+
+/// This is a composite of Logical and Physical Schema details
+/// generated from PostGIS-enabled spatial tables.
+/// Every spatial table in a currently connected FDO datastore is
+/// mapped to a Feature Class.
 ///
 class SchemaDescription :
     public FdoIDisposable,
@@ -35,6 +46,10 @@ public:
     
     /// Named constructor used to create new instance of the class.
     static SchemaDescription* Create();
+    
+    void DescribeSchema(Connection* conn, FdoString schemaName);
+    
+    bool IsDescribed() const;
     
     void SetLogicalSchemas(FdoFeatureSchemaCollection* logicalSchemas);
     void SetSchemaMapping(ov::PhysicalSchemaMapping* phSchemaMapping);
@@ -66,17 +81,22 @@ private:
     //
     // Private data members
     //
-    
-    /// Collection of Feature Schemas read from currently connected datastore.
+
+    // Collection of Feature Schemas read from currently connected datastore.
     FdoPtr<FdoFeatureSchemaCollection> mLogicalSchemas;
     
     ov::PhysicalSchemaMapping::Ptr mSchemaMapping;
     
     SpatialContextCollection::Ptr mSpatialContexts;
     
+    bool mIsDescribed;
+    
     //
     // Private operations
     //
+
+    SpatialContext* CreateSpatialContext(Connection* conn, FdoStringP name,
+        PgGeometryColumn* column);
 
 };
 
