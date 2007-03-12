@@ -249,7 +249,7 @@ FdoIFeatureReader* FdoWmsSelectCommand::Execute ()
 	}
 	
 	FdoWmsServiceMetadataP metadata = mConnection->GetWmsServiceMetadata ();
-	FdoPtr<FdoWmsCapabilities> capa = dynamic_cast<FdoWmsCapabilities *> (metadata->GetCapabilities ());
+	FdoPtr<FdoWmsCapabilities> capa = static_cast<FdoWmsCapabilities *> (metadata->GetCapabilities ());
 	
 	FdoWmsLayerCollectionP layers = capa->GetLayers ();
 	FdoWmsLayerP layer;
