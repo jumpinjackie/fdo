@@ -17,6 +17,7 @@
 #ifndef FDOPOSTGIS_CONNECTION_H_INCLUDED
 #define FDOPOSTGIS_CONNECTION_H_INCLUDED
 
+#include "SchemaDescription.h"
 #include "SpatialContextCollection.h"
 #include "PgUtility.h"
 #include <PostGIS/FdoPostGisProvider.h>
@@ -28,7 +29,6 @@
 #include <string>
 // libpq
 #include <libpq-fe.h>
-
 
 namespace fdo { namespace postgis {
 
@@ -135,14 +135,14 @@ public:
     //
     
     /// \todo To be documented.
-    FdoFeatureSchemaCollection* GetFeatureSchema();
+    FdoFeatureSchemaCollection* GetLogicalSchema();
     
     /// \todo To be documented.
     ov::PhysicalSchemaMapping* GetPhysicalSchemaMapping();
     
     /// \todo To be documented.
     SpatialContextCollection* GetSpatialContexts();
-
+    
     /// \todo To be documented.
     void PgExecuteCommand(char const* sql);
 
@@ -222,9 +222,8 @@ private:
     // Counter of soft transaction scopes.
     FdoInt32 mSoftTransactionLevel;
     
-    FdoPtr<FdoFeatureSchemaCollection> mFeatureSchemas;
-    ov::PhysicalSchemaMapping::Ptr mPhysicalSchemaMapping;
-    SpatialContextCollection::Ptr mSpatialContexts;
+    // Keeps various schema details aggregated in common place.
+    SchemaDescription::Ptr mSchemaDesc;
 
     //
     // Private operations

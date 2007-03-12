@@ -125,15 +125,6 @@ protected:
 
     void Dispose();
 
-
-private:
-
-    //
-    // Private operations
-    //
-    
-    SpatialContext* CreateSpatialContext(FdoStringP name, PgGeometryColumn::Ptr column);
-
 };
 
 }} // namespace fdo::postgis

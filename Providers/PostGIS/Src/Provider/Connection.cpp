@@ -15,7 +15,6 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 //
 #include "stdafx.h"
-
 #include "PostGisProvider.h"
 #include "Connection.h"
 #include "ConnectionInfo.h"
@@ -40,7 +39,6 @@
 #include "../Message/inc/PostGisMessage.h"
 // Overrides
 #include <PostGIS/Override/PhysicalSchemaMapping.h>
-
 // std
 #include <cassert>
 #include <cstdlib>
@@ -74,9 +72,7 @@ Connection::Connection() :
     mPgConn(NULL),
     mPgResult(NULL),
     mSoftTransactionLevel(0),
-    mFeatureSchemas(NULL),
-    mPhysicalSchemaMapping(NULL),
-    mSpatialContexts(NULL)
+    mSchemaDesc(NULL)
 {
     // idle
 }
@@ -410,9 +406,8 @@ void Connection::Flush()
 // Connection custom interface
 ///////////////////////////////////////////////////////////////////////////////
 
-FdoFeatureSchemaCollection* Connection::GetFeatureSchema()
+FdoFeatureSchemaCollection* Connection::GetLogicalSchema()
 {
-    if (NULL == mFeatureSchemas)
     return NULL;
 }
 
