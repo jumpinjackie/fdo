@@ -103,10 +103,11 @@ size_t FdoOwsHttpHandler::_headerCallback( void *ptr, size_t size, size_t nmemb)
         if (len > FdoOwsGlobals::MIN_LEN_HTTP_RESPONSE_FIRST_LINE && 
             strncmp((const char*)ptr, FdoOwsGlobals::HTTP_SLASH, sizeof(FdoOwsGlobals::HTTP_SLASH) - 1) == 0)
         {
-            char retCodeStr[FdoOwsGlobals::LEN_HTTP_RET_CODE];
+            char retCodeStr[FdoOwsGlobals::LEN_HTTP_RET_CODE+1];
             strncpy(retCodeStr, 
                 (const char*)ptr + FdoOwsGlobals::MIN_LEN_HTTP_RESPONSE_FIRST_LINE - FdoOwsGlobals::LEN_HTTP_RET_CODE, 
                 FdoOwsGlobals::LEN_HTTP_RET_CODE);
+            retCodeStr[FdoOwsGlobals::LEN_HTTP_RET_CODE] = '\0';
             int retCode = atoi(retCodeStr);
             if (retCode < FdoOwsGlobals::MIN_HTTP_ERROR_CODE)
                 m_bValidDocument = true;
