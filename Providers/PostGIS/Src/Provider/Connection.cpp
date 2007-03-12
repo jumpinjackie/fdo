@@ -22,6 +22,8 @@
 #include "CommandCapabilities.h"
 #include "SchemaCapabilities.h"
 #include "FilterCapabilities.h"
+#include "ExpressionCapabilities.h"
+#include "RasterCapabilities.h"
 #include "ListDataStores.h"
 #include "CreateDataStore.h"
 #include "DestroyDataStore.h"
@@ -119,14 +121,12 @@ FdoIFilterCapabilities* Connection::GetFilterCapabilities()
 
 FdoIExpressionCapabilities* Connection::GetExpressionCapabilities()
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    return (new ExpressionCapabilities());
 }
 
 FdoIRasterCapabilities* Connection::GetRasterCapabilities()
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    return (new RasterC());
 }
 
 FdoITopologyCapabilities* Connection::GetTopologyCapabilities()
