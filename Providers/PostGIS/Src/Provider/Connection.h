@@ -228,6 +228,8 @@ private:
     //
     // Private operations
     //
+    
+    SchemaDescription* DescribeSchema();
 
     // Check internal state of connection to PostgreSQL server.
     void ValidateConnectionState();

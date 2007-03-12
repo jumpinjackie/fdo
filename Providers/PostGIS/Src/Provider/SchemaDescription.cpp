@@ -138,10 +138,12 @@ ov::ClassDefinition* SchemaDescription::FindClassMapping(FdoIdentifier* id)
 }
 
 
-void SchemaDescription::DescribeSchema(Connection* conn, FdoString schemaName)
+void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
 {
     Connection::Ptr mConn(conn);
     FDO_SAFE_ADDREF(mConn.p);
+    
+    mIsDescribed = false;
     
     // Collection of Logical Schemas
     FdoPtr<FdoFeatureSchemaCollection> logicalSchemas = NULL;
@@ -288,6 +290,8 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString schemaName)
     SetLogicalSchemas(logicalSchemas);
     SetSchemaMapping(schemaMapping);
     SetSpatialContexts(spContexts);
+    
+    mIsDescribed = true;
 }
 
 
