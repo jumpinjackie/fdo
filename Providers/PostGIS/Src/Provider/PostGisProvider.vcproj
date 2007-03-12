@@ -333,6 +333,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SchemaDescription.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SchemaDescription.h"
+				>
+			</File>
+			<File
 				RelativePath=".\SQLCommand.cpp"
 				>
 			</File>
