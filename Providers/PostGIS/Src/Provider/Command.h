@@ -137,34 +137,41 @@ void Command<T>::Dispose()
 template <typename T>
 FdoIConnection* Command<T>::GetConnection()
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    FDO_SAFE_ADDREF(mConn.p);
+    return mConn.p;
 }
 
 template <typename T>
 FdoITransaction* Command<T>::GetTransaction()
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    throw FdoException::Create(
+        NlsMsgGet(MSG_POSTGIS_COMMAND_TRANSACTIONS_NOT_SUPPORTED,
+        "The PostGIS Provider does not support direct transactions access from command."));
 }
 
 template <typename T>
 void Command<T>::SetTransaction(FdoITransaction* value)
 {
-    assert(!"NOT IMPLEMENTED");
+    throw FdoException::Create(
+        NlsMsgGet(MSG_POSTGIS_COMMAND_TRANSACTIONS_NOT_SUPPORTED,
+        "The PostGIS Provider does not support direct transactions access from command."));
+    
 }
 
 template <typename T>
 FdoInt32 Command<T>::GetCommandTimeout()
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    throw FdoException::Create(
+        NlsMsgGet(MSG_POSTGIS_CONNECTION_TIMEOUT_UNSUPPORTED,
+            "Connection timeout is not supported."));
 }
 
 template <typename T>
 void Command<T>::SetCommandTimeout(FdoInt32 value)
 {
-    assert(!"NOT IMPLEMENTED");
+    throw FdoException::Create(
+        NlsMsgGet(MSG_POSTGIS_CONNECTION_TIMEOUT_UNSUPPORTED,
+        "Connection timeout is not supported."));
 }
 
 template <typename T>
@@ -183,13 +190,13 @@ FdoParameterValueCollection* Command<T>::GetParameterValues()
 template <typename T>
 void Command<T>::Prepare()
 {
-    assert(!"NOT IMPLEMENTED");
+    assert(!"NOT SUPPORTED");
 }
 
 template <typename T>
 void Command<T>::Cancel()
 {
-    assert(!"NOT IMPLEMENTED");
+    assert(!"NOT SUPPORTED");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -277,6 +284,7 @@ void Command<T>::PgGenerateExecParams(details::pgexec_params_t& pgParams)
                     }
                     break;
                 case FdoDataType_DateTime:
+                // TODO: Add conversion of DateTime to string.
                     assert(!"TO BE IMPLEMENTED");
                     break;
                 case FdoDataType_BLOB:
