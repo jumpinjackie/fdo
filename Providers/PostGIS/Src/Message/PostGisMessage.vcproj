@@ -143,8 +143,11 @@
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				SubSystem="2"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
+				OptimizeReferences="0"
+				EnableCOMDATFolding="0"
+				LinkTimeCodeGeneration="0"
+				ResourceOnlyDLL="true"
+				ImportLibrary=""
 				TargetMachine="1"
 			/>
 			<Tool
@@ -194,6 +197,14 @@
 						Name="VCResourceCompilerTool"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCResourceCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 		<File
@@ -201,6 +212,17 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Performing Custom Build Step:  Creating PostGisMessage.h and PostGisMessage.rc from PostGisMessage.mc"
+					CommandLine="echo *** Compiling PostGIS message definition file&#x0D;&#x0A;mc -U -h inc\ -r .\ ./PostGisMessage.mc&#x0D;&#x0A;&#x0D;&#x0A;echo *** Generating RC script with PostGIS messages&#x0D;&#x0A;ren .\PostGisMessage.rc PostGisMessageDynamic.rc&#x0D;&#x0A;copy .\PostGisMessageStatic.rc+.\PostGisMessageDynamic.rc .\PostGisMessage.rc&#x0D;&#x0A;del .\PostGisMessageDynamic.rc&#x0D;&#x0A;&#x0D;&#x0A;echo *** Generating HEADER script with PostGIS messages&#x0D;&#x0A;ren inc\PostGisMessage.h PostGisMessageDynamic.h&#x0D;&#x0A;copy PostGisMessageStatic.h+inc\PostGisMessageDynamic.h inc\PostGisMessage.h&#x0D;&#x0A;del inc\PostGisMessageDynamic.h&#x0D;&#x0A;"
+					AdditionalDependencies="PostGisMessage.mc;PostGisMessageStatic.h"
+					Outputs="inc\PostGisMessage.h;.\PostGisMessage.rc"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
 				>
 				<Tool
 					Name="VCCustomBuildTool"

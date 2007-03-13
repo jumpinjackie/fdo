@@ -104,7 +104,7 @@ The fetch command was not issued yet.
 ;//************************************************************************************
 
 MessageId=2001
-SymbolicName=M_KGORA_CONNECTION_TIMEOUT_UNSUPPORTED
+SymbolicName=MSG_POSTGIS_CONNECTION_TIMEOUT_UNSUPPORTED
 Language=English
 Connection timeout is not supported.
 .
@@ -646,9 +646,9 @@ Unsupported option.
 ;//************************************************************************************
 
 MessageId=10001
-SymbolicName=M_KGORA_CONNECTION_TRANSACTIONS_NOT_SUPPORTED
+SymbolicName=MSG_POSTGIS_COMMAND_TRANSACTIONS_NOT_SUPPORTED
 Language=English
-King.Oracle Provider does not support transactions.
+The PostGIS Provider does not support direct transactions access from command.
 .
 
 ;//************************************************************************************
