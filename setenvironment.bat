@@ -73,6 +73,18 @@ SET ACTIVEPATHCHECK="c:\Program Files\GnuWin32\bin"
 if exist %ACTIVEPATHCHECK% set PATH=%PATH%;%ACTIVEPATHCHECK%
 if not exist %ACTIVEPATHCHECK% echo Optional %ACTIVENAMECHECK% package not recognized in the Windows PATH. Update the setenvironment.bat script file with the correct path
 
+SET ACTIVENAMECHECK="Python 2.4"
+SET ACTIVEPATHCHECK=C:\progra~1\Python24
+if exist %ACTIVEPATHCHECK% SET PYTHON_HOME=C:\progra~1\Python24
+if exist %ACTIVEPATHCHECK% set PATH=%PATH%;%ACTIVEPATHCHECK%
+if not exist %ACTIVEPATHCHECK% echo Optional %ACTIVENAMECHECK% package not found. Update the setenvironment.bat script file with the correct path
+
+SET ACTIVENAMECHECK="SWIG 1.3.31"
+SET ACTIVEPATHCHECK=C:\progra~1\swigwin-1.3.31
+if exist %ACTIVEPATHCHECK% SET SWIG_HOME=C:\progra~1\swigwin-1.3.31
+if exist %ACTIVEPATHCHECK% set PATH=%PATH%;%ACTIVEPATHCHECK%
+if not exist %ACTIVEPATHCHECK% echo Optional %ACTIVENAMECHECK% package not found. Update the setenvironment.bat script file with the correct path
+
 :end
 exit /B 0
 

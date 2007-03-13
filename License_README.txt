@@ -534,7 +534,7 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-FDO amd CppUnit are each licensed under the GNU Lesser General 
+FDO, GSAR and CppUnit are each licensed under the GNU Lesser General 
 Public License.
 
 GNU Lesser General Public License

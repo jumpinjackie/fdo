@@ -191,7 +191,26 @@ II. Build Notes
         set PATH=%PATH%;C:\Program Files\doxygen\bin
         set PATH=%PATH%;C:\Program Files\ATT\Graphviz\bin
 
-  9. Use the [FDO OpenSource]\setenvironment.bat script to assist in setting and
+  8. OPTIONAL: The FDO build process supports the generation of a set of python 
+     wrapper scripts for the FDO API. The pyhton scripts are generated using SWIG. To
+	 generate the phyton scripts, you must have Python and SWIG installed.
+  
+     To install SWIG, refer to: http://www.swig.org/
+	 To install Python, refer to: http://www.python.org/
+	 
+	 The FDO python scripts have been tested using SWIG 1.3.31 and Python 2.4.4
+	 
+	 Once SWIG and Phyton have been installed set the PYTHON_HOME and SWIG_HOME environment
+	 variables to point to the respective installation locations.
+	 
+        e.g.
+	 	 
+	    SET PYTHON_HOME=C:\progra~1\Python24
+	    SET SWIG_HOME=C:\progra~1\swigwin-1.3.31
+		
+	 ** NOTE: These variables are maintained in the setenvironment.bat script. 
+
+9. Use the [FDO OpenSource]\setenvironment.bat script to assist in setting and
      maintaing the correct environment settings for the FDO build process. 
      This script can be modifed and used to set the correct environment variables 
      and PATH settings.

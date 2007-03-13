@@ -27,6 +27,7 @@ SET FDOINCPATHFDO=%cd%\Fdo\Inc
 SET FDOLIBPATHFDO=%cd%\Fdo\Lib
 SET FDODOCPATHFDO=%cd%\Fdo\Docs
 SET DOCENABLEFDO=skip
+SET PYTHONENABLE=skip
 SET FDOERROR=0
 
 :study_params
@@ -47,10 +48,19 @@ if "%1"=="-action"  goto get_action
 if "%1"=="-d"       goto get_docs
 if "%1"=="-docs"    goto get_docs
 
+if "%1"=="-p"       goto get_python
+if "%1"=="-python"  goto get_python
+
 goto custom_error
 
 :get_docs
 SET DOCENABLEFDO=%2
+if "%2"=="build" goto next_param
+if "%2"=="skip" goto next_param
+goto custom_error
+
+:get_python
+SET PYTHONENABLE=%2
 if "%2"=="build" goto next_param
 if "%2"=="skip" goto next_param
 goto custom_error
@@ -67,6 +77,7 @@ if "%2"=="install" goto next_param
 if "%2"=="build" goto next_param
 if "%2"=="buildinstall" goto next_param
 if "%2"=="clean" goto next_param
+if "%2"=="builddocsonly" goto next_param
 goto custom_error
 
 :get_path
@@ -93,6 +104,7 @@ if not exist "%FDOTHIRDPARTY%" goto env_path_error
 
 if "%TYPEACTIONFDO%"=="build" goto start_exbuild
 if "%TYPEACTIONFDO%"=="clean" goto start_exbuild
+if "%TYPEACTIONFDO%"=="builddocsonly" goto start_exbuild
 if not exist "%FDOINSPATHFDO%" mkdir "%FDOINSPATHFDO%"
 if not exist "%FDOBINPATHFDO%" mkdir "%FDOBINPATHFDO%"
 if not exist "%FDOINCPATHFDO%" mkdir "%FDOINCPATHFDO%"
@@ -101,14 +113,28 @@ if not exist "%FDODOCPATHFDO%" mkdir "%FDODOCPATHFDO%"
 
 :start_exbuild
 if "%TYPEACTIONFDO%"=="clean" SET MSACTIONFDO=Clean
+if "%TYPEACTIONFDO%"=="builddocsonly" goto generate_docs
 if "%TYPEACTIONFDO%"=="install" goto install_files
 
 echo %MSACTIONFDO% %TYPEBUILDFDO% Fdo dlls
 msbuild FDO.sln /t:%MSACTIONFDO% /p:Configuration=%TYPEBUILDFDO% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
+
+:rebuild_python
+if "%PYTHONENABLE%"=="skip" goto finish_build
+if "%TYPEACTIONFDO%"=="clean" goto finish_build
+if "%TYPEBUILDFDO%"=="debug" goto finish_build
+if not exist Python\build.cmd goto end
+pushd Python
+call build.cmd
+popd
+if "%FDOERROR%"=="1" goto error
+
+:finish_build
 if "%TYPEACTIONFDO%"=="build" goto generate_docs
 if "%TYPEACTIONFDO%"=="clean" goto end
+if "%TYPEACTIONFDO%"=="builddocsonly" goto generate_docs
 
 :install_files
 echo copy FDO %TYPEBUILDFDO% output files
@@ -124,6 +150,7 @@ copy /y "Managed\bin\%TYPEBUILDFDO%\OSGeo.FDO.Spatial.dll" "%FDOBINPATHFDO%"
 copy /y "Unmanaged\Lib\Win32\%TYPEBUILDFDO%\FDO.lib" "%FDOLIBPATHFDO%"
 copy /y "Unmanaged\Lib\Win32\%TYPEBUILDFDO%\FDOCommon.lib" "%FDOLIBPATHFDO%"
 copy /y "Unmanaged\Lib\Win32\%TYPEBUILDFDO%\FDOGeometry.lib" "%FDOLIBPATHFDO%"
+copy /y "Python\Lib\Win32\FDO.py" "%FDOLIBPATHFDO%"
 cscript //Nologo //job:install ../preparebuilds.wsf
 
 echo copy FDO header files
@@ -131,9 +158,8 @@ xcopy /S /C /Q /R /Y Unmanaged\Inc\*.h "%FDOINCPATHFDO%\"
 del /F /Q "%FDOINCPATHFDO%\FdoSpatial.h"
 rmdir /S /Q "%FDOINCPATHFDO%\Spatial"
 
-
 :generate_docs
-if "%DOCENABLEFDO%"=="skip" goto install_docs
+if not "%DOCENABLEFDO%"=="build" goto install_docs
 echo Creating FDO Unmanaged and Managed html and chm API documentation
 if exist "Docs\HTML\FDO_API" rmdir /S /Q "Docs\HTML\FDO_API"
 if exist "Docs\HTML\FDO_API_managed" rmdir /S /Q "Docs\HTML\FDO_API_managed"
@@ -148,6 +174,9 @@ popd
 
 :install_docs
 if "%TYPEACTIONFDO%"=="build" goto end
+if "%TYPEACTIONFDO%"=="clean" goto end
+if "%TYPEACTIONFDO%"=="builddocsonly" goto end
+
 pushd Docs\doc_src
 if exist "%FDODOCPATHFDO%\HTML\FDO_API" rmdir /S /Q "%FDODOCPATHFDO%\HTML\FDO_API"
 if exist "%FDODOCPATHFDO%\HTML\FDO_API_managed" rmdir /S /Q "%FDODOCPATHFDO%\HTML\FDO_API_managed"
@@ -189,13 +218,23 @@ exit /B 1
 echo The command is not recognized.
 echo Please use the format:
 :help_show
-echo **************************************************************************
-echo build.bat [-h] [-o=OutFolder] [-c=BuildType] [-a=Action] [-d=BuildDocs]
+echo ********************************************************************************
+echo build.bat [-h]
+echo           [-o=OutFolder]
+echo           [-c=BuildType]
+echo           [-a=Action]
+echo           [-d=BuildDocs]
+echo           [-p=BuildPythonWrappers]
 echo *
-echo Help:           -h[elp]
-echo OutFolder:      -o[utpath]=destination folder for binaries
-echo BuildType:      -c[onfig]=release(default), debug
-echo Action:         -a[ction]=build(default), buildinstall, install, clean
-echo BuildDocs:      -d[ocs]=skip(default), build
-echo **************************************************************************
+echo Help:                  -h[elp]
+echo OutFolder:             -o[utpath]=destination folder for binaries
+echo BuildType:             -c[onfig]=release(default), debug
+echo Action:                -a[ction]=build(default), 
+echo                                  buildinstall, 
+echo                                  install, 
+echo                                  clean, 
+echo                                  builddocsonly, 
+echo BuildDocs:             -d[ocs]=skip(default), build
+echo BuildPythonWrappers:   -p[ython]=skip(default), build
+echo ********************************************************************************
 exit /B 0

@@ -32,6 +32,7 @@ SET MYSQLENABLE=yes
 SET GDALENABLE=yes
 SET FDOENABLE=yes
 SET DOCENABLE=skip
+SET PYTHONENABLE=skip
 SET FDOERROR=0
 
 :study_params
@@ -54,6 +55,9 @@ if "%1"=="-with"    goto get_with
 
 if "%1"=="-d"       goto get_docs
 if "%1"=="-docs"    goto get_docs
+
+if "%1"=="-p"       goto get_python
+if "%1"=="-python"  goto get_python
 
 goto custom_error
 
@@ -129,10 +133,16 @@ if not "%2"=="all" goto custom_error
 	SET MYSQLENABLE=yes
 	SET FDOENABLE=yes
 	SET GDALENABLE=yes
-goto next_param
+	goto next_param
 
 :get_docs
 SET DOCENABLE=%2
+if "%2"=="build" goto next_param
+if "%2"=="skip" goto next_param
+goto custom_error
+
+:get_python
+SET PYTHONENABLE=%2
 if "%2"=="build" goto next_param
 if "%2"=="skip" goto next_param
 goto custom_error
@@ -171,18 +181,20 @@ if ("%FDOUTILITIES%")==("") SET FDOUTILITIES=%cd%\Utilities
 if "%TYPEACTION%"=="build" goto start_exbuild
 if "%TYPEACTION%"=="clean" goto start_exbuild
 if not ("%FDOORGPATH%")==("") goto start_exbuildinstall
-echo Please provide destination binaries folder using '-o' option.
+echo Please provide destination folder location using '-o' option.
 exit /B 1
+
 :start_exbuildinstall
 if not exist "%FDOORGPATH%" mkdir "%FDOORGPATH%"
 
 :start_exbuild
+SET PROVCALLCMDEXFDO=-o="%FDOORGPATH%" -c=%TYPEBUILD% -a=%TYPEACTION% -d=%DOCENABLE% -p=%PYTHONENABLE%
 SET PROVCALLCMDEX=-o="%FDOORGPATH%" -c=%TYPEBUILD% -a=%TYPEACTION% -d=%DOCENABLE%
 
 :rebuild_fdo
 if "%FDOENABLE%"=="no" goto rebuild_shp
 pushd Fdo
-call build.bat %PROVCALLCMDEX%
+call build.bat %PROVCALLCMDEXFDO%
 popd
 if "%FDOERROR%"=="1" goto error
 
@@ -262,15 +274,26 @@ exit /B 1
 echo The command is not recognized.
 echo Please use the format:
 :help_show
-echo **************************************************************************
-echo build.bat [-h] [-o=OutFolder] [-c=BuildType] [-a=Action] [-w=WithModule] [-d=BuildDocs]
+echo ********************************************************************************
+echo build.bat [-h]
+echo           [-o=OutFolder]
+echo           [-c=BuildType]
+echo           [-a=Action]
+echo           [-w=WithModule]
+echo           [-d=BuildDocs]
+echo           [-p=BuildPythonWrappers]
 echo *
-echo Help:           -h[elp]
-echo OutFolder:      -o[utpath]=destination folder for binaries
-echo BuildType:      -c[onfig]=release(default), debug
-echo Action:         -a[ction]=build(default), buildinstall, install, clean
+echo Help:                  -h[elp]
+echo OutFolder:             -o[utpath]=destination folder for binaries
+echo BuildType:             -c[onfig]=release(default), debug
+echo Action:                -a[ction]=build(default), 
+echo                                  buildinstall, 
+echo                                  install, 
+echo                                  clean
+echo BuildDocs:             -d[ocs]=skip(default), build
+echo BuildPythonWrappers:   -p[ython]=skip(default), build
 SET MROVBYPROVP=
-SET MPROVECAPABP=WithModule:     -w[ith]=all(default), fdo
+SET MPROVECAPABP=WithModule:            -w[ith]=all(default), fdo
 :shp_check
 if not exist Providers\SHP\build.bat goto sdf_check
 	SET MROVBYPROVP=%MROVBYPROVP%, shp
@@ -300,6 +323,5 @@ if ("%MROVBYPROVP%")==("") goto show_capabilities
 	SET MPROVECAPABP=%MPROVECAPABP%, providers%MROVBYPROVP%
 :show_capabilities
 echo %MPROVECAPABP%
-echo BuildDocs:      -d[ocs]=skip(default), build
-echo **************************************************************************
+echo ********************************************************************************
 exit /B 0
