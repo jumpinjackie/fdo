@@ -108,7 +108,7 @@ FdoIConnectionPropertyDictionary* ConnectionInfo::GetConnectionProperties()
         wide_to_multibyte(name, PropertyService);
         prop = new ConnectionProperty(PropertyService,
                NlsMsgGet(MSG_POSTGIS_CONNECTION_PROPERTY_SERVICE_NAME, name),
-               L"", true, false, false, true, true, false, false, 0, NULL);
+               L"", true, false, false, false, false, false, false, 0, NULL);
         mPropertyDict->AddProperty(prop);
 
         // Datastore: isEnumerable + isDatastoreName

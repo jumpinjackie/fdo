@@ -22,6 +22,7 @@ namespace fdo { namespace postgis {
 
 FilterCapabilities::FilterCapabilities()
 {
+    FDOLOG_WRITE("FilterCapabilities created");
 }
 
 FilterCapabilities::~FilterCapabilities()

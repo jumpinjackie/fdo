@@ -51,7 +51,7 @@ FdoString* ProviderVersion = L"1.0.0.0";
 FdoString* FdoVersion = L"3.2.0.0";
 
 char const* ProviderDisplayName = "OSGeo FDO Provider for PostGIS";
-char const* ProviderDescription = "Read/write access to PostGIS-based data store. Supports spatial data types and spatial query operations.";
+char const* ProviderDescription = "Read/write access to spatial and attribute data in an PostGIS.";
 
 //
 // Connection properties defined for PostGIS Provier

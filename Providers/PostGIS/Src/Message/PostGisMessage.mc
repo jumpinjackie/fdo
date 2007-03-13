@@ -786,7 +786,7 @@ Geometry creation failed for '%1$ls'.
 MessageId=14001
 SymbolicName=MSG_POSTGIS_PROVIDER_DISPLAY_NAME
 Language=English
-KingOracle FDO Provider for PostGIS
+OSGeo FDO Provider for PostGIS
 .
 MessageId=14002
 SymbolicName=MSG_POSTGIS_PROVIDER_DESCRIPTION

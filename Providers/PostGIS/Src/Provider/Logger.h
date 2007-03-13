@@ -53,11 +53,11 @@
 
 //Every time the program starts the program will delete the previous file if it uses the 
 // single log (sometime it is not needed, for example you want to have all logs of all program runs)
-#define FDOLOG_DELETE_OLD
+#define FDOLOG_DELETE_OLD 1
 
 //  By default the logfile is created in the root folder, but you 
 // may want to create a log in the directory where the executable is located
-#define FDOLOG_CREATE_FILE_IN_THE_SAME_DIRECTORY
+#define FDOLOG_CREATE_FILE_IN_THE_SAME_DIRECTORY 1
 
 //  Undef this if you don't want compile time info (file name and line number 
 //  where the logging has been called) included in the log
@@ -483,7 +483,7 @@ how to create it and others.
 
 			while (!bFound) {
 
-				_stprintf(wszTemp, _T("_log%02d.txt"), nFreeNumber);
+				_stprintf(wszTemp, _T("_fdopostgis_%02d.log"), nFreeNumber);
 				::_tcscpy(wszLastDot, wszTemp);
 				if (0xFFFFFFFF == ::GetFileAttributes(wszExecutableFileName))
 				{
@@ -493,7 +493,7 @@ how to create it and others.
 				}
 			}
 #else 
-			::_tcscpy(wszLastDot, _T("_fdo.log"));
+			::_tcscpy(wszLastDot, _T("_fdopostgis.log"));
 #endif 
 			::_tcscpy(szFileName, wszExecutableFileName);
 		}
