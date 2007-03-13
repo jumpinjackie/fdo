@@ -22,6 +22,7 @@ namespace fdo { namespace postgis {
 
 RasterCapabilities::RasterCapabilities()
 {
+    FDOLOG_WRITE("RasterCapabilities created");
 }
 
 RasterCapabilities::~RasterCapabilities()

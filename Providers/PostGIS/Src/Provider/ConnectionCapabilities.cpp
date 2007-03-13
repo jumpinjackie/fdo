@@ -22,6 +22,7 @@ namespace fdo { namespace postgis {
 
 ConnectionCapabilities::ConnectionCapabilities()
 {
+    FDOLOG_WRITE("ConnectionCapabilities created");
 }
 
 ConnectionCapabilities::~ConnectionCapabilities()

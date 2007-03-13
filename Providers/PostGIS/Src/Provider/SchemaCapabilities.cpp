@@ -25,6 +25,7 @@ namespace fdo { namespace postgis {
 
 SchemaCapabilities::SchemaCapabilities()
 {
+    FDOLOG_WRITE("SchemaCapabilities created");
 }
 
 SchemaCapabilities::~SchemaCapabilities()
