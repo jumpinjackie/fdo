@@ -30,6 +30,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{6F92
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "describe_schema_command", "..\..\..\Samples\describe_schema_command\describe_schema_command.vcproj", "{74B94AFF-BBC1-445E-8362-DC5D21A4D67B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "get_spatial_contexts", "..\..\..\Samples\get_spatial_contexts\get_spatial_contexts.vcproj", "{351D13C0-10D2-4C40-A505-97E751815E81}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -56,11 +58,16 @@ Global
 		{74B94AFF-BBC1-445E-8362-DC5D21A4D67B}.Debug|Win32.Build.0 = Debug|Win32
 		{74B94AFF-BBC1-445E-8362-DC5D21A4D67B}.Release|Win32.ActiveCfg = Release|Win32
 		{74B94AFF-BBC1-445E-8362-DC5D21A4D67B}.Release|Win32.Build.0 = Release|Win32
+		{351D13C0-10D2-4C40-A505-97E751815E81}.Debug|Win32.ActiveCfg = Debug|Win32
+		{351D13C0-10D2-4C40-A505-97E751815E81}.Debug|Win32.Build.0 = Debug|Win32
+		{351D13C0-10D2-4C40-A505-97E751815E81}.Release|Win32.ActiveCfg = Release|Win32
+		{351D13C0-10D2-4C40-A505-97E751815E81}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{74B94AFF-BBC1-445E-8362-DC5D21A4D67B} = {6F922396-7A7B-48E3-9F14-29FAFBE41301}
+		{351D13C0-10D2-4C40-A505-97E751815E81} = {6F922396-7A7B-48E3-9F14-29FAFBE41301}
 	EndGlobalSection
 EndGlobal
