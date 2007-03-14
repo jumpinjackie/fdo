@@ -36,28 +36,44 @@ public:
     /// Destructor.
     virtual ~SpatialContext();
     
-    /// \todo To be documented
+    /// Get name of the spatial context.
+    /// The PostGIS provider composes spatial context name by concatenating
+    /// "PostGIS" string with SRID number separated by underscore.
+    /// For example: PostGIS_4326
+    ///
     virtual FdoString* GetName() const;
 
-    /// \todo To be documented
+    /// Set name of the spatial context.
     virtual void SetName(FdoString* name);
 
-    /// \todo To be documented
+    /// Get description of the spatial context.
+    /// Currently, full description is only provided for default spatial context.
+    /// PostGIS meta-schema does not include anything like longer
+    /// description that could be returned here.
+    /// 
+    /// \todo Where we could get the SC description from?
+    /// 
     virtual FdoString* GetDescription() const;
 
-    /// \todo To be documented
+    /// Set description of the spatial context.
+    /// Currently, this description is not stored anywhere.
+    /// 
+    /// \todo Where we could store the SC description?
+    /// 
     virtual void SetDescription(FdoString* desc);
 
-    /// \todo To be documented
+    /// Get name of coordinate system.
+    /// The name is taken off from the coordinate system WKT string.
+    /// 
     virtual FdoString* GetCoordinateSystem() const;
 
-    /// \todo To be documented
+    /// Set name of coordinate system.
     virtual void GetCoordinateSystem(FdoString* csName);
 
-    /// \todo To be documented
+    /// Get coordinate system parameters encoded as WKT string.
     virtual FdoString* GetCoordinateSystemWkt() const;
 
-    /// \todo To be documented
+    /// Set coordinate system parameters by passing WKT string.
     virtual void SetCoordinateSystemWkt(FdoString* csWkt);
 
     /// \todo To be documented
@@ -101,7 +117,10 @@ public:
     //
 
     /// Check if the object does allow to change its name.
-    /// Not allowing name change allows more efficient random access to FdoDictionary.
+    /// Not allowing name change allows more efficient random
+    /// access to FdoDictionary.
+    /// \return
+    /// Always return true is returned.
     FdoBoolean CanSetName() const;
 
 private:
