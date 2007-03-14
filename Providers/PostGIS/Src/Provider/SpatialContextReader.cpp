@@ -69,8 +69,7 @@ FdoSpatialContextExtentType SpatialContextReader::GetExtentType()
 
 FdoByteArray* SpatialContextReader::GetExtent()
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    return mCurrentContext->GetExtent();
 }
 
 const double SpatialContextReader::GetXYTolerance()
@@ -85,8 +84,8 @@ const double SpatialContextReader::GetZTolerance()
 
 const bool SpatialContextReader::IsActive()
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    // TODO: It needs to be verified
+    return true;
 }
 
 bool SpatialContextReader::ReadNext()

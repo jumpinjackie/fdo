@@ -22,11 +22,12 @@
 // FDO Core API
 #include <Fdo.h>
 #include <FdoCommon.h>
-#include <FdoSpatial.h>
-#include <FdoGeometry.h>
 #include <FdoCommonMiscUtil.h>
 #include <FdoCommonConnPropDictionary.h>
 #include <FdoCommonConnStringParser.h>
+#include <FdoSpatial.h>
+#include <FdoGeometry.h>
+#include <Geometry/EnvelopeImpl.h>
 
 // PostGIS Messages
 #include "../Message/inc/PostGisMessage.h"
@@ -91,6 +92,7 @@ const wchar_t DefaultSchemaDescription[40] = L"Default FDO Feature Schema for Po
 //
 
 const wchar_t SpatialContextDefaultName[8] = L"Default";
+const wchar_t SpatialContextDefaultDesc[50] = L"Defines default properties of coordinate system.";
 const wchar_t SpatialContextDefaultCoordSysName[8] = L"Unknown";
 const wchar_t SpatialContextDefaulWkt[2] = L"";
 const double SpatialContextDefaultXYTolerance = 0.05;

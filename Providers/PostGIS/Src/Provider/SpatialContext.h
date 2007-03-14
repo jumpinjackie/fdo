@@ -17,9 +17,7 @@
 #ifndef FDOPOSTGIS_SPATIALCONTEXT_H_INCLUDED
 #define FDOPOSTGIS_SPATIALCONTEXT_H_INCLUDED
 
-#include "PostGisProvider.h"
-
-#include <cassert>
+#include "PostGisProvider.h" // Includes FDO headers
 
 namespace fdo { namespace postgis {
 
@@ -78,19 +76,25 @@ public:
     virtual double GetXYTolerance() const;
 
     /// \todo To be documented
-    virtual void SetXYTolerance(double tol);
+    virtual void SetXYTolerance(double xyTolerance);
 
     /// \todo To be documented
     virtual double GetZTolerance() const;
 
     /// \todo To be documented
-    virtual void SetZTolerance(double tol);
+    virtual void SetZTolerance(double zTolerance);
 
+    /// \todo To be documented
+    virtual double GetMTolerance() const;
+
+    /// \todo To be documented
+    virtual void SetMTolerance(double mTolerance);
+    
     /// \todo To be documented
 	bool GetIsExtentUpdated() const;
 
     /// \todo To be documented
-	void SetIsExtentUpdated(bool value);
+	void SetIsExtentUpdated(bool isUpdated);
 
     //
     // FdoNamedCollection interface
@@ -100,14 +104,20 @@ public:
     /// Not allowing name change allows more efficient random access to FdoDictionary.
     FdoBoolean CanSetName() const;
 
-protected:
-
 private:
 	
 	FdoStringP mName;
 	FdoStringP mDescription;
 	FdoStringP mCoordSysName;
 	FdoStringP mCoordSysWkt;
+	
+	FdoSpatialContextExtentType mExtentType;
+	FdoPtr<FdoEnvelopeImpl> mExtent;
+	bool mIsExtentUpdated;
+	
+	double mXYTolerance;
+	double mZTolerance;
+	double mMTolerance;
 };
 
 
@@ -118,13 +128,12 @@ inline bool SpatialContext::CanSetName() const
 
 inline bool SpatialContext::GetIsExtentUpdated() const
 {
-    assert(!"NOT IMPLEMENTED");
-    return false;
+    return mIsExtentUpdated;
 }
 
-inline void SpatialContext::SetIsExtentUpdated(bool value)
+inline void SpatialContext::SetIsExtentUpdated(bool isUpdated)
 {
-    assert(!"NOT IMPLEMENTED");
+    mIsExtentUpdated = isUpdated;
 }
 
 }} // namespace fdo::postgis
