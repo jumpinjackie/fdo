@@ -479,9 +479,11 @@ void Connection::PgExecuteCommand(char const* sql)
 void Connection::PgExecuteCommand(char const* sql, FdoSize& affected)
 {
     FDOLOG_MARKER("Connection::+PgExecuteCommand");
-    FDOLOG_WRITE("SQL command: %s", sql);
+    FDOLOG_WRITE("SQL:\n\t%s", sql);
 
     ValidateConnectionState();
+    
+    affected = 0;
 
     boost::shared_ptr<PGresult> pgRes(PQexec(mPgConn, sql), PQclear);
 
@@ -504,15 +506,18 @@ void Connection::PgExecuteCommand(char const* sql, FdoSize& affected)
     try
     {
         std::string num(PQcmdTuples(pgRes.get()));
-        affected = boost::lexical_cast<std::size_t>(num);
+        if (!num.empty())
+        {
+            affected = boost::lexical_cast<std::size_t>(num);
+        }
     }
     catch (boost::bad_lexical_cast& e)
     {
         affected = 0;
-        e; // Anti-warning hack
+        FDOLOG_WRITE("Types conversion failed: %s", e.what());
     }
 
-    FDOLOG_WRITE("SQL affected tuples: %u", affected);
+    FDOLOG_WRITE("Affected tuples: %u", affected);
 }
 
 void Connection::PgExecuteCommand(char const* sql,
@@ -520,10 +525,12 @@ void Connection::PgExecuteCommand(char const* sql,
                                   FdoSize& affected)
 {
     FDOLOG_MARKER("Connection::+PgExecuteCommand");
-    FDOLOG_WRITE("SQL command: %s\nNumber of parameters: %u", sql, params.size());
+    FDOLOG_WRITE("SQL:\n\t%s\nNumber of parameters: %u", sql, params.size());
 
     ValidateConnectionState();
 
+    affected = 0;
+    
     //
     // Re-write parameters to array of types accepted by PQexecParams.
     // The input collection 'params' is required to be ordered in the same way
@@ -576,21 +583,24 @@ void Connection::PgExecuteCommand(char const* sql,
     try
     {
         std::string num(PQcmdTuples(pgRes.get()));
-        affected = boost::lexical_cast<std::size_t>(num);
+        if (!num.empty())
+        {
+            affected = boost::lexical_cast<std::size_t>(num);
+        }
     }
     catch (boost::bad_lexical_cast& e)
     {
         affected = 0;
-        e; // Anti-warning hack
+        FDOLOG_WRITE("Types conversion failed: %s", e.what());
     }
 
-    FDOLOG_WRITE("SQL affected tuples: %u", affected);
+    FDOLOG_WRITE("Affected tuples: %u", affected);
 }
 
 PGresult* Connection::PgExecuteQuery(char const* sql)
 {
     FDOLOG_MARKER("Connection::+PgExecuteQuery");
-    FDOLOG_WRITE("SQL command: %s", sql);
+    FDOLOG_WRITE("SQL:\n\t%s", sql);
 
     ValidateConnectionState();
 
@@ -606,7 +616,7 @@ PGresult* Connection::PgExecuteQuery(char const* sql)
     if (PGRES_TUPLES_OK != pgStatus)
     {
         // TODO: Consider throwing an exception
-        FDOLOG_WRITE("SQL query: [%s] %s",
+        FDOLOG_WRITE("SQL execution failed: [%s] %s",
             PQresStatus(pgStatus), PQresultErrorMessage(pgRes));
     }
 
