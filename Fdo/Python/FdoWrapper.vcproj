@@ -396,7 +396,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying FDO files"
-						CommandLine="mkdir .\UnitTests\Bin\Win32\Debug&#x0D;&#x0A;&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDO.dll .\UnitTests\Bin\Win32\Debug&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.dll .\UnitTests\Bin\Win32\Debug&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll .\UnitTests\Bin\Win32\Debug&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll .\UnitTests\Bin\Win32\Debug&#x0D;&#x0A;&#x0D;&#x0A;copy $(FDO)\..\Providers\SDF\Bin\Win32\Debug\SDFProvider.dll .\UnitTests\Bin\Win32\Debug&#x0D;&#x0A;copy $(FDO)\..\Providers\SDF\Bin\Win32\Debug\SDFMessage.dll .\UnitTests\Bin\Win32\Debug&#x0D;&#x0A;&#x0D;&#x0A;copy $(FDO)\..\Providers\SHP\Bin\Win32\Debug\SHPProvider.dll .\UnitTests\Bin\Win32\Debug&#x0D;&#x0A;copy $(FDO)\..\Providers\SHP\Bin\Win32\Debug\SHPMessage.dll .\UnitTests\Bin\Win32\Debug&#x0D;&#x0A;copy $(FDO)\..\Providers\SHP\Bin\Win32\Debug\SHPOverrides.dll .\UnitTests\Bin\Win32\Debug&#x0D;&#x0A;&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
+						CommandLine="mkdir .\UnitTest\Bin\Win32\Debug&#x0D;&#x0A;&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDO.dll .\UnitTest\Bin\Win32\Debug&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.dll .\UnitTest\Bin\Win32\Debug&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll .\UnitTest\Bin\Win32\Debug&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll .\UnitTest\Bin\Win32\Debug&#x0D;&#x0A;&#x0D;&#x0A;copy $(FDO)\..\Providers\SDF\Bin\Win32\Debug\SDFProvider.dll .\UnitTest\Bin\Win32\Debug&#x0D;&#x0A;copy $(FDO)\..\Providers\SDF\Bin\Win32\Debug\SDFMessage.dll .\UnitTest\Bin\Win32\Debug&#x0D;&#x0A;&#x0D;&#x0A;copy $(FDO)\..\Providers\SHP\Bin\Win32\Debug\SHPProvider.dll .\UnitTest\Bin\Win32\Debug&#x0D;&#x0A;copy $(FDO)\..\Providers\SHP\Bin\Win32\Debug\SHPMessage.dll .\UnitTest\Bin\Win32\Debug&#x0D;&#x0A;copy $(FDO)\..\Providers\SHP\Bin\Win32\Debug\SHPOverrides.dll .\UnitTest\Bin\Win32\Debug&#x0D;&#x0A;&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
 						AdditionalDependencies="$(FDO)\Unmanaged\Bin\Win32\Debug\FDO.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll;$(FDO)\..\Providers\SDF\Bin\Win32\Debug\SDFProvider.dll;$(FDO)\..\Providers\SDF\Bin\Win32\Debug\SDFMessage.dl;$(FDO)\..\Providers\SHP\Bin\Win32\Debug\SHPProvider.dll;$(FDO)\..\Providers\SHP\Bin\Win32\Debug\SHPMessage.dll;$(FDO)\..\Providers\SHP\Bin\Win32\Debug\SHPOverrides.dll"
 						Outputs="$(OutDir)\CopyFdo.ilk"
 					/>
@@ -407,7 +407,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying FDO files"
-						CommandLine="mkdir .\UnitTests\Bin\Win32\Release&#x0D;&#x0A;&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win32\Release\FDO.dll .\UnitTests\Bin\Win32\Release&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.dll .\UnitTests\Bin\Win32\Release&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.dll .\UnitTests\Bin\Win32\Release&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.dll .\UnitTests\Bin\Win32\Release&#x0D;&#x0A;&#x0D;&#x0A;copy $(FDO)\..\Providers\SDF\Bin\Win32\Release\SDFProvider.dll .\UnitTests\Bin\Win32\Release&#x0D;&#x0A;copy $(FDO)\..\Providers\SDF\Bin\Win32\Release\SDFMessage.dll .\UnitTests\Bin\Win32\Release&#x0D;&#x0A;&#x0D;&#x0A;copy $(FDO)\..\Providers\SHP\Bin\Win32\Release\SHPProvider.dll .\UnitTests\Bin\Win32\Release&#x0D;&#x0A;copy $(FDO)\..\Providers\SHP\Bin\Win32\Release\SHPMessage.dll .\UnitTests\Bin\Win32\Release&#x0D;&#x0A;copy $(FDO)\..\Providers\SHP\Bin\Win32\Release\SHPOverrides.dll .\UnitTests\Bin\Win32\Release&#x0D;&#x0A;&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
+						CommandLine="mkdir .\UnitTest\Bin\Win32\Release&#x0D;&#x0A;&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win32\Release\FDO.dll .\UnitTest\Bin\Win32\Release&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.dll .\UnitTest\Bin\Win32\Release&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.dll .\UnitTest\Bin\Win32\Release&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.dll .\UnitTest\Bin\Win32\Release&#x0D;&#x0A;&#x0D;&#x0A;copy $(FDO)\..\Providers\SDF\Bin\Win32\Release\SDFProvider.dll .\UnitTest\Bin\Win32\Release&#x0D;&#x0A;copy $(FDO)\..\Providers\SDF\Bin\Win32\Release\SDFMessage.dll .\UnitTest\Bin\Win32\Release&#x0D;&#x0A;&#x0D;&#x0A;copy $(FDO)\..\Providers\SHP\Bin\Win32\Release\SHPProvider.dll .\UnitTest\Bin\Win32\Release&#x0D;&#x0A;copy $(FDO)\..\Providers\SHP\Bin\Win32\Release\SHPMessage.dll .\UnitTest\Bin\Win32\Release&#x0D;&#x0A;copy $(FDO)\..\Providers\SHP\Bin\Win32\Release\SHPOverrides.dll .\UnitTest\Bin\Win32\Release&#x0D;&#x0A;&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
 						AdditionalDependencies="$(FDO)\Unmanaged\Bin\Win32\Release\FDO.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.dll;$(FDO)\..\Providers\SDF\Bin\Win32\Release\SDFProvider.dll;$(FDO)\..\Providers\SDF\Bin\Win32\Release\SDFMessage.dl;$(FDO)\..\Providers\SHP\Bin\Win32\Release\SHPProvider.dll;$(FDO)\..\Providers\SHP\Bin\Win32\Release\SHPMessage.dll;$(FDO)\..\Providers\SHP\Bin\Win32\Release\SHPOverrides.dll"
 						Outputs="$(OutDir)\CopyFdo.ilk"
 					/>
@@ -422,7 +422,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying thirdparty dlls"
-						CommandLine="mkdir .\UnitTests\Bin\Win32\Debug&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\Xalan-C_1_7_0D.dll .\UnitTests\Bin\Win32\Debug&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\XalanMessages_1_7_0D.dll .\UnitTests\Bin\Win32\Debug&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Debug\xerces-c_2_5_0D.dll .\UnitTests\Bin\Win32\Debug&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
+						CommandLine="mkdir .\UnitTest\Bin\Win32\Debug&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\Xalan-C_1_7_0D.dll .\UnitTest\Bin\Win32\Debug&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\XalanMessages_1_7_0D.dll .\UnitTest\Bin\Win32\Debug&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Debug\xerces-c_2_5_0D.dll .\UnitTest\Bin\Win32\Debug&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
 						AdditionalDependencies="$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC7\Debug\Xalan-C_1_7_0D.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC7\Debug\XalanMessages_1_7_0D.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC7\Debug\xerces-c_2_5_0D.dll"
 						Outputs="$(OutDir)\CopyThirdparty.ilk"
 					/>
@@ -433,7 +433,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying thirdparty dlls"
-						CommandLine="mkdir .\UnitTests\Bin\Win32\Release&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\Xalan-C_1_7_0.dll .\UnitTests\Bin\Win32\Release&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\XalanMessages_1_7_0.dll .\UnitTests\Bin\Win32\Release&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Release\xerces-c_2_5_0.dll .\UnitTests\Bin\Win32\Release&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
+						CommandLine="mkdir .\UnitTest\Bin\Win32\Release&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\Xalan-C_1_7_0.dll .\UnitTest\Bin\Win32\Release&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\XalanMessages_1_7_0.dll .\UnitTest\Bin\Win32\Release&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Release\xerces-c_2_5_0.dll .\UnitTest\Bin\Win32\Release&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
 						AdditionalDependencies="$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC7\Release\Xalan-C_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC7\Release\XalanMessages_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC7\Release\xerces-c_2_5_0.dll"
 						Outputs="$(OutDir)\CopyThirdparty.ilk"
 					/>
@@ -448,7 +448,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing fake install"
-						CommandLine="mkdir .\UnitTests\Bin\Win32\Debug&#x0D;&#x0A;copy .\UnitTests\providers.xml .\UnitTests\Bin\Win32\Debug&#x0D;&#x0A;"
+						CommandLine="mkdir .\UnitTest\Bin\Win32\Debug&#x0D;&#x0A;copy .\UnitTest\providers.xml .\UnitTest\Bin\Win32\Debug&#x0D;&#x0A;"
 						Outputs="$(OutDir)\providers.xml"
 					/>
 				</FileConfiguration>
@@ -458,7 +458,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing fake install"
-						CommandLine="mkdir .\UnitTests\Bin\Win32\Release&#x0D;&#x0A;copy .\UnitTests\providers.xml .\UnitTests\Bin\Win32\Release&#x0D;&#x0A;"
+						CommandLine="mkdir .\UnitTest\Bin\Win32\Release&#x0D;&#x0A;copy .\UnitTest\providers.xml .\UnitTest\Bin\Win32\Release&#x0D;&#x0A;"
 						Outputs="$(OutDir)\providers.xml"
 					/>
 				</FileConfiguration>
@@ -471,7 +471,7 @@
 				Name="Lib"
 				>
 				<File
-					RelativePath=".\UnitTests\Lib\SdfConnectionFactory.py"
+					RelativePath=".\UnitTest\Lib\SdfConnectionFactory.py"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -490,7 +490,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath=".\UnitTests\Lib\SdfFileCreationParams.py"
+					RelativePath=".\UnitTest\Lib\SdfFileCreationParams.py"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -508,7 +508,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath=".\UnitTests\Lib\SdfFileFactory.py"
+					RelativePath=".\UnitTest\Lib\SdfFileFactory.py"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -530,7 +530,7 @@
 				Name="Tests"
 				>
 				<File
-					RelativePath=".\UnitTests\Src\ApplySchemaTest.py"
+					RelativePath=".\UnitTest\Src\ApplySchemaTest.py"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -548,7 +548,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath=".\UnitTests\Src\CapabilitiesTest.py"
+					RelativePath=".\UnitTest\Src\CapabilitiesTest.py"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -566,7 +566,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath=".\UnitTests\Src\ClientServicesTest.py"
+					RelativePath=".\UnitTest\Src\ClientServicesTest.py"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -584,7 +584,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath=".\UnitTests\Src\CommandTest.py"
+					RelativePath=".\UnitTest\Src\CommandTest.py"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -602,7 +602,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath=".\UnitTests\Src\LOBTest.py"
+					RelativePath=".\UnitTest\Src\LOBTest.py"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -620,7 +620,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath=".\UnitTests\Src\main.py"
+					RelativePath=".\UnitTest\Src\main.py"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -638,7 +638,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath=".\UnitTests\Src\StringBufferTest.py"
+					RelativePath=".\UnitTest\Src\StringBufferTest.py"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -656,7 +656,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath=".\UnitTests\Src\TypeMapTest.py"
+					RelativePath=".\UnitTest\Src\TypeMapTest.py"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -678,7 +678,7 @@
 				Name="Scripts"
 				>
 				<File
-					RelativePath=".\UnitTests\providers.xml"
+					RelativePath=".\UnitTest\providers.xml"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
