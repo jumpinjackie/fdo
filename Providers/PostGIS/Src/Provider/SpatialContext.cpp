@@ -22,8 +22,25 @@
 
 namespace fdo { namespace postgis {
 
-SpatialContext::SpatialContext()
+SpatialContext::SpatialContext() :
+    mName(SpatialContextDefaultName),
+    mDescription(SpatialContextDefaultDesc),
+    mCoordSysName(SpatialContextDefaultCoordSysName),
+    mCoordSysWkt(SpatialContextDefaulWkt),
+    mExtentType(FdoSpatialContextExtentType_Static),
+    mExtent(NULL),
+    mIsExtentUpdated(true),
+    mXYTolerance(SpatialContextDefaultXYTolerance),
+    mZTolerance(SpatialContextDefaultZTolerance),
+    mMTolerance(SpatialContextDefaultMTolerance)
 {
+    FdoPtr<FdoFgfGeometryFactory> factory(FdoFgfGeometryFactory::GetInstance());
+    mExtent = FdoEnvelopeImpl::Create();
+    
+    // No need to initialize the enxtend on construction
+    // SpatialContextDefaultMinX, SpatialContextDefaultMinY, SpatialContextDefaultMinZ,
+    // SpatialContextDefaultMaxX, SpatialContextDefaultMaxY, SpatialContextDefaultMaxZ
+    
 }
 
 SpatialContext::~SpatialContext()
@@ -73,46 +90,74 @@ void SpatialContext::SetCoordinateSystemWkt(FdoString* csWkt)
 
 FdoSpatialContextExtentType SpatialContext::GetExtentType() const
 {
-    assert(!"NOT IMPLEMENTED");
-    return FdoSpatialContextExtentType_Static;
+    return mExtentType;
 }
 
 void SpatialContext::SetExtentType(FdoSpatialContextExtentType type)
 {
-    assert(!"NOT IMPLEMENTED");
+    mExtentType = type;
 }
 
 FdoByteArray* SpatialContext::GetExtent() const
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    FdoPtr<FdoFgfGeometryFactory> factory(FdoFgfGeometryFactory::GetInstance());
+    if (mExtent->GetIsEmpty())
+    {
+        // Build extent based on properties of default Spatial Context
+
+        FdoPtr<FdoIEnvelope> envelope = NULL;
+        envelope = factory->CreateEnvelopeXYZ(
+            SpatialContextDefaultMinX,
+            SpatialContextDefaultMinY,
+            SpatialContextDefaultMinZ,
+            SpatialContextDefaultMaxX,
+            SpatialContextDefaultMaxY,
+            SpatialContextDefaultMaxZ);
+
+        FdoPtr<FdoIGeometry> geometry(factory->CreateGeometry(envelope));
+        return factory->GetFgf(geometry);        
+    }
+    else
+    {
+        FdoPtr<FdoIGeometry> geometry(factory->CreateGeometry(mExtent));
+        return factory->GetFgf(geometry);
+    }
 }
 
 void SpatialContext::SetExtent(FdoByteArray* extent)
 {
-    assert(!"NOT IMPLEMENTED");
+    FDOLOG_MARKER("SpatialContext::+SetExtent");
+    FDOLOG_WRITE("NOT IMPLEMENTED");
 }
 
 double SpatialContext::GetXYTolerance() const
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    return mXYTolerance;
 }
 
-void SpatialContext::SetXYTolerance(double tol)
+void SpatialContext::SetXYTolerance(double xyTolerance)
 {
-    assert(!"NOT IMPLEMENTED");
+    mXYTolerance = xyTolerance;
 }
 
 double SpatialContext::GetZTolerance() const
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    return mZTolerance;
 }
 
-void SpatialContext::SetZTolerance(double tol)
+void SpatialContext::SetZTolerance(double zTolerance)
 {
-    assert(!"NOT IMPLEMENTED");
+    mZTolerance = zTolerance;
+}
+
+double SpatialContext::GetMTolerance() const
+{
+    return mMTolerance;
+}
+
+void SpatialContext::SetMTolerance(double mTolerance)
+{
+    mMTolerance = mTolerance;
 }
 
 }} // namespace fdo::postgis

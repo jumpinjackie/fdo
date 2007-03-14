@@ -343,9 +343,14 @@ SpatialContext* SchemaDescription::CreateSpatialContext(Connection* conn,
 
     SpatialContext::Ptr spContext(new SpatialContext());
     spContext->SetName(spContextName);
+    spContext->SetDescription(L"");    
 
+    // TODO: Replace this hacks with new function like:
+    // CoordinateSystemNameFromWKT
+    // CoordinateSystemDescFromWKT
     int const nfield = PQfnumber(pgRes.get(), "srtext");
     std::string wkt(PQgetvalue(pgRes.get(), 0, nfield));
+    assert(!wkt.empty());
 
     // Use substring between first quotes ("") as the SRS name
     std::string wktName("UNKNOWN");
@@ -361,7 +366,7 @@ SpatialContext* SchemaDescription::CreateSpatialContext(Connection* conn,
 
     FdoStringP csWkt(wkt.c_str());
     spContext->SetCoordinateSystemWkt(csWkt);
-
+    
     FDO_SAFE_ADDREF(spContext.p);
     return spContext.p;
 }
