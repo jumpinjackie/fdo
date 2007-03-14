@@ -12,10 +12,11 @@
 	<Tool
 		Name="VCLinkerTool"
 		AdditionalLibraryDirectories="$(FDOPOSTGRESQL)\lib\ms"
+		ManifestFile="$(IntDir)\$(TargetFileName).intermediate.manifest"
 	/>
 	<UserMacro
 		Name="FDOCORE"
-		Value="D:\dev\fdopostgis\_svn\fdocore"
+		Value="D:\dev\fdopostgis\_svn\fdo-3.2.0"
 	/>
 	<UserMacro
 		Name="FDO"
@@ -35,6 +36,7 @@
 	<UserMacro
 		Name="FDOPOSTGRESQL"
 		Value="C:\Program Files\PostgreSQL\8.2"
+		PerformEnvironmentSet="true"
 	/>
 	<UserMacro
 		Name="XALANROOT"
