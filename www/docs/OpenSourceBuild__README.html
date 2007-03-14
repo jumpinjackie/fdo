@@ -200,7 +200,26 @@ II. Build Notes
         set PATH=%PATH%;C:\Program Files\doxygen\bin
         set PATH=%PATH%;C:\Program Files\ATT\Graphviz\bin
 
-  9. Use the [FDO OpenSource]\setenvironment.bat script to assist in setting and
+  8. OPTIONAL: The FDO build process supports the generation of a set of python 
+     wrapper scripts for the FDO API. The python scripts are generated using SWIG. To
+     generate the python scripts, you must have Python and SWIG installed.
+  
+     To install SWIG, refer to: http://www.swig.org/
+     To install Python, refer to: http://www.python.org/
+     
+     The FDO python scripts have been tested using SWIG 1.3.31 and Python 2.4.4
+     
+     Once SWIG and python have been installed set the PYTHON_HOME and SWIG_HOME environment
+     variables to point to the respective installation locations.
+     
+        e.g.
+          
+        SET PYTHON_HOME=C:\progra~1\Python24
+        SET SWIG_HOME=C:\progra~1\swigwin-1.3.31
+        
+     ** NOTE: These variables are maintained in the setenvironment.bat script. 
+
+ 9. Use the [FDO OpenSource]\setenvironment.bat script to assist in setting and
      maintaing the correct environment settings for the FDO build process. 
      This script can be modifed and used to set the correct environment variables 
      and PATH settings.
@@ -249,26 +268,28 @@ II. Build Notes
                      [-a=Action] 
                      [-w=WithModule] 
                      [-d=BuildDocs]
+                     [-p=BuildPythonWrappers]
 
-           Help:           -h[elp]
-           OutFolder:      -o[utpath]=destination folder for binaries
-           BuildType:      -c[onfig]=release(default), debug
-           Action:         -a[ction]=build(default), 
-                                     buildinstall, 
-                                     install, 
-                                     clean
-           WithModule:     -w[ith]=all(default), 
-                                   fdo, 
-                                   providers, 
-                                   shp, 
-                                   sdf, 
-                                   wfs, 
-                                   wms, 
-                                   arcsde, 
-                                   odbc, 
-                                   mysql,
-                                   gdal
-           BuildDocs:      -d[ocs]=skip(default), build
+           Help:                  -h[elp]
+           OutFolder:             -o[utpath]=destination folder for binaries
+           BuildType:             -c[onfig]=release(default), debug
+           Action:                -a[ction]=build(default), 
+                                            buildinstall, 
+                                            install, 
+                                            clean
+           WithModule:            -w[ith]=all(default), 
+                                          fdo, 
+                                          providers, 
+                                          shp, 
+                                          sdf, 
+                                          wfs, 
+                                          wms, 
+                                          arcsde, 
+                                          odbc, 
+                                          mysql,
+                                          gdal
+           BuildDocs:             -d[ocs]=skip(default), build
+           BuildPythonWrappers:   -p[ython]=skip(default), build
            **************************************************************************
             
             e.g.
@@ -291,6 +312,8 @@ II. Build Notes
             build -w=sdf
             **** Build the FDO WMS and WFS Providers
             build -w=wms -w=wfs
+            **** Build the FDO Python Wrapper scripts
+            build -p=build
             **** Build documentation and install all files to C:\Fdo
             build -a=install -o=C:\Fdo -d=build 
 
@@ -369,18 +392,18 @@ III. Running the FDO Unit Tests
             "OdbcInit.txt" file with valid values for username, password and service
             for the services against which the unit tests should be executed and 
             run "Dbg\UnitTestOdbc.exe" with no additional parameters.
-				
+                
             NOTE: Do not drop OdbcInit.txt in subversion if you choose to modify it
-				
+                
             If you wish to run the unit test and specify your own 
             initialization file, create your the file with valid values for username, 
             password and the service names. Run the unit test by specifying the 
             initialization file on the command line when executing the unit tests. 
-			   
+               
             e.g. Dbg\UnitTestOdbc.exe initfiletest=OdbcInitEx.txt
-			   
+               
             NOTE: The initialization file must contain values for service, username and password.
-			   
+               
             The initialization file must contain service, username and password for each server type 
             DSN name can be specified using DSNOracle, DSNMySql, DSNSqlServer
 
@@ -398,7 +421,12 @@ III. Running the FDO Unit Tests
             Access:      Dbg\UnitTestOdbc.exe OdbcAccessTests
             Excel:       Dbg\UnitTestOdbc.exe OdbcExcelTests
             Text:        Dbg\UnitTestOdbc.exe OdbcTextTests
-						
+                        
+        Python Scripts:
+
+            cd [FDO OpenSource]\Fdo\Python\UnitTest
+            call UnitTests.cmd
+
 -----------------------------
 Linux Instructions
 -----------------------------
@@ -694,7 +722,7 @@ III. Running the FDO Unit Tests
 
             cd [FDO OpenSource]/Providers/ArcSDE/Src/UnitTest
             ./UnitTest [mandatory command-line arguments] 
-	    
+        
             e.g. 
 
             ./UnitTest server=somesite.com port_multi=5151/tcp port_single=5151/tcp sdepwd=test dataset=FC4 rdbms=ORACLE
