@@ -43,7 +43,7 @@ DescribeSchemaCommand::~DescribeSchemaCommand()
 
 void DescribeSchemaCommand::Dispose()
 {
-    FDOLOG_MARKER("DescribeSchemaCommand::#Dispose()");
+    //FDOLOG_MARKER("DescribeSchemaCommand::#Dispose()");
 
     delete this;
 }

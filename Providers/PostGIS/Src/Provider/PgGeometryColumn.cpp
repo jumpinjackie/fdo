@@ -39,8 +39,7 @@ PgGeometryColumn::~PgGeometryColumn()
 
 void PgGeometryColumn::Dispose()
 {
-    FDOLOG_MARKER("PgGeometryColumn::#Dispose");
-    FDOLOG_WRITE("Ref count: %d", GetRefCount());
+    //FDOLOG_MARKER("PgGeometryColumn::#Dispose");
     
     delete this;
 }

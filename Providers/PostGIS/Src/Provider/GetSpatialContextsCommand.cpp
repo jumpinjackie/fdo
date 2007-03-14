@@ -19,6 +19,7 @@
 #include "GetSpatialContextsCommand.h"
 #include "Connection.h"
 #include "SpatialContext.h"
+#include "SpatialContextReader.h"
 #include "SpatialContextCollection.h"
 
 #include <cassert>
@@ -50,10 +51,10 @@ void GetSpatialContextsCommand::SetActiveOnly(bool const activeOnly)
 
 FdoISpatialContextReader* GetSpatialContextsCommand::Execute()
 {
-    SpatialContextCollection::Ptr sc = NULL;
-    //mConn->GetSpatialContexts (true);
+    SpatialContextCollection::Ptr spContexts = NULL;
+    spContexts = mConn->GetSpatialContexts();
 
-    return NULL;
+    return (new SpatialContextReader(spContexts));
 }
 
 }} // namespace fdo::postgis

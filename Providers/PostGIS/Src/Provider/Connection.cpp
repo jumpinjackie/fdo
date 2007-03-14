@@ -93,7 +93,7 @@ Connection::~Connection()
 
 void Connection::Dispose()
 {
-    FDOLOG_MARKER("Connection::#Dispose");
+    //FDOLOG_MARKER("Connection::#Dispose");
     Close();
     delete this;
 }
@@ -325,18 +325,22 @@ FdoConnectionState Connection::Open()
 void Connection::Close()
 {
     FDOLOG_MARKER("Connection::+Close");
-    
-    // Kill all active transactions
-    //PgFlushSoftTransaction();
-    PgCommitSoftTransaction();
 
-    // Close connection to the server
-    PQfinish(mPgConn);
+    if (FdoConnectionState_Closed != GetConnectionState())
+    {
 
-    mPgConn = NULL;
-    mConnState = FdoConnectionState_Closed;
-    
-    FDOLOG_WRITE("Connection is closed.");
+        // Kill all active transactions
+        //PgFlushSoftTransaction();
+        PgCommitSoftTransaction();
+
+        // Close connection to the server
+        PQfinish(mPgConn);
+
+        mPgConn = NULL;
+        mConnState = FdoConnectionState_Closed;
+        
+        FDOLOG_WRITE("Connection is closed.");
+    }
 }
 
 FdoITransaction* Connection::BeginTransaction()

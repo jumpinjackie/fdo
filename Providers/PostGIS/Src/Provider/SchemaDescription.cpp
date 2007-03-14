@@ -50,7 +50,7 @@ SchemaDescription::~SchemaDescription()
 
 void SchemaDescription::Dispose()
 {
-    FDOLOG_MARKER("SchemaDescription::#Dispose");
+    //FDOLOG_MARKER("SchemaDescription::#Dispose");
 
     delete this;
 }

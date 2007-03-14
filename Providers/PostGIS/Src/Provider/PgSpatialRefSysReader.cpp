@@ -37,7 +37,7 @@ PgSpatialRefSysReader::~PgSpatialRefSysReader()
 
 void PgSpatialRefSysReader::Dispose()
 {
-    FDOLOG_MARKER("PgSpatialRefSysReader::#Dispose");
+    //FDOLOG_MARKER("PgSpatialRefSysReader::#Dispose");
 
     // This function might throw, do NOT call from the destructor!
     delete this;
