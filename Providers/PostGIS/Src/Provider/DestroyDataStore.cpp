@@ -26,6 +26,7 @@ namespace fdo { namespace postgis {
 
 DestroyDataStore::DestroyDataStore(Connection* conn) : Base(conn), mProps(NULL)
 {
+    FDOLOG_WRITE("DestroyDataStore command created");
 }
 
 DestroyDataStore::~DestroyDataStore()

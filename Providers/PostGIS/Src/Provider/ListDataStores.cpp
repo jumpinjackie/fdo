@@ -28,6 +28,7 @@ namespace fdo { namespace postgis {
 
 ListDataStores::ListDataStores(Connection* conn) : Base(conn)
 {
+    FDOLOG_WRITE("ListDataStores command created");
 }
 
 ListDataStores::~ListDataStores()
@@ -41,6 +42,8 @@ bool ListDataStores::GetIncludeNonFdoEnabledDatastores()
 
 void ListDataStores::SetIncludeNonFdoEnabledDatastores(bool includeNonFdo)
 {
+    FDOLOG_WRITE("Fetch non-FDO datastores = %d", includeNonFdo);
+    
     mIncludeNonFdo = includeNonFdo;
 }
 

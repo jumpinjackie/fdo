@@ -26,6 +26,7 @@ namespace fdo { namespace postgis {
 
 CreateDataStore::CreateDataStore(Connection* conn) : Base(conn), mProps(NULL)
 {
+    FDOLOG_WRITE("CreateDataStore command created");
 }
 
 CreateDataStore::~CreateDataStore()
