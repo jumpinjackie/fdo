@@ -1,5 +1,5 @@
 @setlocal
-echo off
+@echo off
 
 ::
 :: Copyright (C) 2004-2007  Autodesk, Inc.
@@ -28,7 +28,8 @@ if NOT exist %FDO%\Unmanaged\bin\win32\Release GOTO NO_FDO_SDK
 call .\SetEnvironment.bat
 
 :: Display the current environment
-echo Script: unittest.cmd
+echo ---------------------------------------------------------------------
+echo Script: UnitTests.cmd
 echo ---------------------------------------------------------------------
 echo Using the following environment:
 echo FDO:                %FDO%
@@ -58,4 +59,4 @@ GOTO END
 
 
 :END
-echo Done.
+exit /B 0

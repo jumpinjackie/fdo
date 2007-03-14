@@ -1,4 +1,4 @@
-:@echo off
+@echo off
 
 :: Add FDO to the PATH
 SET PATH=%PATH%;%FDO%\Python\UnitTest\Bin\Win32\Release;%FDO%\Python\Bin\Win32\Release
