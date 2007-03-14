@@ -54,20 +54,17 @@ FdoString* SpatialContextReader::GetDescription()
 
 FdoString* SpatialContextReader::GetCoordinateSystem()
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    return mCurrentContext->GetCoordinateSystem();
 }
 
 FdoString* SpatialContextReader::GetCoordinateSystemWkt()
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+return mCurrentContext->GetCoordinateSystemWkt();
 }
 
 FdoSpatialContextExtentType SpatialContextReader::GetExtentType()
 {
-    assert(!"NOT IMPLEMENTED");
-    return FdoSpatialContextExtentType_Dynamic;
+    return mCurrentContext->GetExtentType();
 }
 
 FdoByteArray* SpatialContextReader::GetExtent()
@@ -78,14 +75,12 @@ FdoByteArray* SpatialContextReader::GetExtent()
 
 const double SpatialContextReader::GetXYTolerance()
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    return mCurrentContext->GetXYTolerance();
 }
 
 const double SpatialContextReader::GetZTolerance()
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    return mCurrentContext->GetZTolerance();
 }
 
 const bool SpatialContextReader::IsActive()

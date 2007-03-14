@@ -60,7 +60,7 @@ void SQLCommand::SetSQLStatement(FdoString* sql)
     
     mSql = sql;
     
-    FDOLOG_WRITE("SQL: %s", static_cast<char const*>(mSql));
+    FDOLOG_WRITE("SQL:\n\t%s", static_cast<char const*>(mSql));
 }
     
 FdoInt32 SQLCommand::ExecuteNonQuery()

@@ -54,7 +54,7 @@ public:
     virtual FdoString* GetCoordinateSystem() const;
 
     /// \todo To be documented
-    virtual void SetCoordSysName(FdoString* csName);
+    virtual void GetCoordinateSystem(FdoString* csName);
 
     /// \todo To be documented
     virtual FdoString* GetCoordinateSystemWkt() const;

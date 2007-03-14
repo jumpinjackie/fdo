@@ -323,7 +323,7 @@ SpatialContext* SchemaDescription::CreateSpatialContext(Connection* conn,
     catch (boost::bad_lexical_cast& e)
     {
         srid = "-1";
-        FDOLOG_WRITE("Number to string conversion failed: %s", e.what());
+        FDOLOG_WRITE("Type conversion failed: %s", e.what());
         assert(!"FIX HANDLING INVALID SRID");
     }
 
@@ -357,7 +357,7 @@ SpatialContext* SchemaDescription::CreateSpatialContext(Connection* conn,
     }
 
     FdoStringP csName(wktName.c_str());
-    spContext->SetCoordSysName(csName);
+    spContext->GetCoordinateSystem(csName);
 
     FdoStringP csWkt(wkt.c_str());
     spContext->SetCoordinateSystemWkt(csWkt);
