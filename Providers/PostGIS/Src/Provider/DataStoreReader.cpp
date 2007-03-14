@@ -30,6 +30,8 @@ DataStoreReader::DataStoreReader(PgCursor* cursor)
     assert(NULL != cursor);
 
     FDO_SAFE_ADDREF(mCursor.p);
+    
+    FDOLOG_WRITE("DataStoreReader created");
 }
 
 DataStoreReader::~DataStoreReader()

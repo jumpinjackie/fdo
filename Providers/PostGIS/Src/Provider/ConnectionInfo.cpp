@@ -83,8 +83,12 @@ FdoString* ConnectionInfo::GetFeatureDataObjectsVersion()
 
 FdoIConnectionPropertyDictionary* ConnectionInfo::GetConnectionProperties()
 {
+    FDOLOG_MARKER("ConnectionInfo::+GetConnectionProperties");
+    
     if (NULL == mPropertyDict)
     {
+        FDOLOG_WRITE("Creating connection properties:");
+        
         mPropertyDict = new FdoCommonConnPropDictionary(mConn);
 
         char* name = NULL;
@@ -96,6 +100,8 @@ FdoIConnectionPropertyDictionary* ConnectionInfo::GetConnectionProperties()
                NlsMsgGet(MSG_POSTGIS_CONNECTION_PROPERTY_USERNAME, name),
                L"", true, false, false, false, false, false, false, 0, NULL);
         mPropertyDict->AddProperty(prop);
+        
+        FDOLOG_WRITE("1. %s", name);
 
         // Password: isRequired + isProtected
         wide_to_multibyte(name, PropertyPassword);
@@ -103,6 +109,8 @@ FdoIConnectionPropertyDictionary* ConnectionInfo::GetConnectionProperties()
                NlsMsgGet(MSG_POSTGIS_CONNECTION_PROPERTY_PASSWORD, name),
                L"", true, true, false, false, false, false, false, 0, NULL);
         mPropertyDict->AddProperty(prop);
+        
+        FDOLOG_WRITE("2. %s", name);
 
         // Service: isRequired
         wide_to_multibyte(name, PropertyService);
@@ -110,13 +118,18 @@ FdoIConnectionPropertyDictionary* ConnectionInfo::GetConnectionProperties()
                NlsMsgGet(MSG_POSTGIS_CONNECTION_PROPERTY_SERVICE_NAME, name),
                L"", true, false, false, false, false, false, false, 0, NULL);
         mPropertyDict->AddProperty(prop);
+        
+        FDOLOG_WRITE("3. %s", name);
 
         // Datastore: isEnumerable + isDatastoreName
         wide_to_multibyte(name, PropertyDatastore);
         prop = new ConnectionProperty(PropertyDatastore,
                NlsMsgGet(MSG_POSTGIS_CONNECTION_PROPERTY_DATASTORE, name),
-               L"", false, false, true, false, false, true, false, 0, NULL);
+               L"", false, false, false, false, false, false, false, 0, NULL);
+               //L"", false, false, true, false, false, true, false, 0, NULL);
         mPropertyDict->AddProperty(prop);
+        
+        FDOLOG_WRITE("4. %s", name);
     }
 
     FDO_SAFE_ADDREF(mPropertyDict.p);
