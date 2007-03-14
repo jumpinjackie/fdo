@@ -54,7 +54,7 @@ PgCursor::~PgCursor()
 
 void PgCursor::Dispose()
 {
-    FDOLOG_MARKER("PgCursor::#Dispose");
+    //FDOLOG_MARKER("PgCursor::#Dispose");
     
     // May throw, do not call from the destructor!
     Close();

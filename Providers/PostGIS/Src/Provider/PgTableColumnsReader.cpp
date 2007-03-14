@@ -48,7 +48,7 @@ PgTableColumnsReader::~PgTableColumnsReader()
 
 void PgTableColumnsReader::Dispose()
 {
-    FDOLOG_MARKER("PgTableColumnsReader::#Dispose");
+    //FDOLOG_MARKER("PgTableColumnsReader::#Dispose");
 
     // This function might throw, do NOT call from the destructor!
     Close();

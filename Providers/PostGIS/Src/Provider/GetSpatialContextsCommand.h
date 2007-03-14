@@ -20,13 +20,15 @@
 
 #include "Command.h"
 
-namespace fdo { namespace postgis {
-
 //
 // Forward declarations
 //
-class Connection;
+class FdoISpatialContextReader;
 
+namespace fdo { namespace postgis {
+
+// Forward declarations of PostGIS classes
+class Connection;
 
 /// Implementation of interface of command which enumerates set of existing
 /// spatial contexts.

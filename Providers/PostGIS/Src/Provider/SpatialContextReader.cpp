@@ -44,14 +44,12 @@ void SpatialContextReader::Dispose()
 
 FdoString* SpatialContextReader::GetName()
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    return mCurrentContext->GetName();
 }
 
 FdoString* SpatialContextReader::GetDescription()
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    return mCurrentContext->GetDescription();
 }
 
 FdoString* SpatialContextReader::GetCoordinateSystem()
@@ -98,8 +96,17 @@ const bool SpatialContextReader::IsActive()
 
 bool SpatialContextReader::ReadNext()
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    bool eof = true;
+    
+    if (mCurrentIndex < mSpatialContexts->GetCount())
+    {
+        int const current = mCurrentIndex;
+        mCurrentContext = mSpatialContexts->GetItem(current);
+        mCurrentIndex++;
+        eof = false;
+    }
+    
+    return (!eof);
 }
 
 }} // namespace fdo::postgis

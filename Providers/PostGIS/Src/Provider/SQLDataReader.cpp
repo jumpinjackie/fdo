@@ -46,7 +46,7 @@ SQLDataReader::~SQLDataReader()
 
 void SQLDataReader::Dispose()
 {
-    FDOLOG_MARKER("SQLDataReader::#Dispose");
+    //FDOLOG_MARKER("SQLDataReader::#Dispose");
 
     Close();
     delete this;

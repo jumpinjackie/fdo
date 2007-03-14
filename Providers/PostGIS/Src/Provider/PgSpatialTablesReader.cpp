@@ -69,7 +69,7 @@ PgSpatialTablesReader::~PgSpatialTablesReader()
 
 void PgSpatialTablesReader::Dispose()
 {
-    FDOLOG_MARKER("PgSpatialTablesReader::#Dispose");
+    //FDOLOG_MARKER("PgSpatialTablesReader::#Dispose");
 
     // This function might throw, do NOT call from the destructor!
     Close();
