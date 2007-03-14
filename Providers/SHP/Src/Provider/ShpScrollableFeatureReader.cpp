@@ -79,7 +79,7 @@ ShpScrollableFeatureReader::~ShpScrollableFeatureReader()
 	if ( m_PropStubs )
 	{
 		for ( int i = 0; i < m_NumProps; i++ )
-			delete [] m_PropStubs->m_name;
+			delete [] m_PropStubs[i].m_name;
 
 		delete[] m_PropStubs;
 	}
