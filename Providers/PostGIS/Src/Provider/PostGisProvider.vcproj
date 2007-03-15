@@ -327,6 +327,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FilterProcessor.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FilterProcessor.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Logger.h"
 				>
 			</File>
