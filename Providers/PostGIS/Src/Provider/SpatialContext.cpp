@@ -73,7 +73,7 @@ FdoString* SpatialContext::GetCoordinateSystem() const
     return mCoordSysName;
 }
 
-void SpatialContext::GetCoordinateSystem(FdoString* csName)
+void SpatialContext::SetCoordinateSystem(FdoString* csName)
 {
     mCoordSysName = csName;
 }
