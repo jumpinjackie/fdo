@@ -23,6 +23,8 @@ SpatialContextReader::SpatialContextReader(SpatialContextCollection*  scc)
     :   mSpatialContexts(scc), mCurrentContext(NULL), mCurrentIndex(0)
 {
     FDO_SAFE_ADDREF(mSpatialContexts.p);
+    
+    FDOLOG_WRITE("SpatialContextReader created");
 }
 
 SpatialContextReader::~SpatialContextReader()
@@ -44,6 +46,9 @@ void SpatialContextReader::Dispose()
 
 FdoString* SpatialContextReader::GetName()
 {
+    FDOLOG_MARKER("SpatialContextReader::+GetName");
+    FDOLOG_WRITE(L"Context name: %s", mCurrentContext->GetName());
+    
     return mCurrentContext->GetName();
 }
 
@@ -54,12 +59,15 @@ FdoString* SpatialContextReader::GetDescription()
 
 FdoString* SpatialContextReader::GetCoordinateSystem()
 {
+    FDOLOG_MARKER("SpatialContextReader::+GetCoordinateSystem");
+    FDOLOG_WRITE(L"Coordinate System: %s", mCurrentContext->GetCoordinateSystem());
+
     return mCurrentContext->GetCoordinateSystem();
 }
 
 FdoString* SpatialContextReader::GetCoordinateSystemWkt()
 {
-return mCurrentContext->GetCoordinateSystemWkt();
+    return mCurrentContext->GetCoordinateSystemWkt();
 }
 
 FdoSpatialContextExtentType SpatialContextReader::GetExtentType()
