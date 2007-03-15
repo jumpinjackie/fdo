@@ -36,7 +36,7 @@ public:
 
     FDOPOSTGIS_API ColumnDefinition* GetColumn() const;
     
-    FDOPOSTGIS_API void SetColumn(ColumnDefinition * columnDef);
+    FDOPOSTGIS_API void SetColumn(ColumnDefinition* columnDef);
 
     //
     // FdoPhysicalElementMapping interface
