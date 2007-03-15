@@ -15,7 +15,6 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 //
 #include "stdafx.h"
-
 #include "PostGisProvider.h"
 #include "DeleteCommand.h"
 #include "FeatureCommand.h"
@@ -25,8 +24,7 @@
 
 namespace fdo { namespace postgis {
 
-DeleteCommand::DeleteCommand(Connection* conn)
-    : FeatureCommand(conn)
+DeleteCommand::DeleteCommand(Connection* conn) : FeatureCommand(conn)
 {
 }
 
@@ -46,7 +44,6 @@ FdoInt32 DeleteCommand::Execute()
 
 FdoILockConflictReader* DeleteCommand::GetLockConflicts()
 {
-    assert(!"NOT IMPLEMENTED");
     return 0;
 }
 

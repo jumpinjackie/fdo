@@ -17,7 +17,7 @@
 #ifndef FDOPOSTGIS_INSERTCOMMAND_H_INCLUDED
 #define FDOPOSTGIS_INSERTCOMMAND_H_INCLUDED
 
-#include "FeatureCommand.h"
+#include "Command.h"
 #include <Fdo/Commands/Feature/IInsert.h>
 
 //
@@ -28,7 +28,6 @@ class FdoIFeatureReader;
 class FdoPropertyValueCollection;
 class FdoBatchParameterValueCollection;
 
-
 namespace fdo { namespace postgis {
 
 // Forward declarations of internal types
@@ -37,7 +36,7 @@ class Connection;
 /// Implementation of interface of Insert command for PostGIS provider.
 /// The Insert command inserts a new instance of a given class to the datastore.
 ///
-class InsertCommand : public FeatureCommand<FdoIInsert>
+class InsertCommand : public Command<FdoIInsert>
 {
 public:
 
@@ -72,7 +71,7 @@ protected:
 
 private:
 
-    typedef FeatureCommand<FdoIInsert> Base;
+    typedef Command<FdoIInsert> Base;
 
     /// Destructor.
     virtual ~InsertCommand();
