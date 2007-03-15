@@ -17,12 +17,13 @@
 #ifndef FDOPOSTGIS_COMMANDCAPABILITIES_H_INCLUDED
 #define FDOPOSTGIS_COMMANDCAPABILITIES_H_INCLUDED
 
-
 namespace fdo { namespace postgis {
-
 
 /// Implementation of interface describing command capabilities
 /// supported by PostGIS provider.
+///
+/// \todo Add missing capabilities to the GetCommands().
+/// \todo Add missing capabilities to the GetCommands().
 ///
 class CommandCapabilities : public FdoICommandCapabilities
 {

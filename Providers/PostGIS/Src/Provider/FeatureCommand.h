@@ -47,10 +47,10 @@ public:
     virtual FdoIdentifier* GetFeatureClassName();
  	
     /// Set name of the class to be operated upon as an identifier.
-    virtual void SetFeatureClassName(FdoIdentifier* value);
+    virtual void SetFeatureClassName(FdoIdentifier* classIdentifier);
  	
     /// Set name of the class to be operated upon as an identifier.
-    virtual void SetFeatureClassName(FdoString* value);
+    virtual void SetFeatureClassName(FdoString* className);
 
     /// Get filter as a filter tree.
     virtual FdoFilter* GetFilter();
@@ -75,25 +75,36 @@ protected:
 
     virtual void Dispose();
 
+    ////
+    //// FdoICommand interface
+    ////
     //
-    // FdoICommand interface
-    //
-    
-    /// Return collection of command parameters and its values.
-    virtual FdoParameterValueCollection* GetParameterValues();
+    ///// Return collection of command parameters and its values.
+    //virtual FdoParameterValueCollection* GetParameterValues();
 
 private:
-	
+
+    // Identifier of the class to be operated upon.
+    FdoPtr<FdoIdentifier> mClassIdentifier;
+
+    // Filter expression tree (most likely produced by a query builder).
+    FdoPtr<FdoFilter> mFilter;
+
 }; // class FeatureCommand
 
 template <typename T>
-FeatureCommand<T>::FeatureCommand(Connection* conn) : Command<T>(conn)
+FeatureCommand<T>::FeatureCommand(Connection* conn) :
+    Command<T>(conn),
+    mClassIdentifier(NULL),
+    mFilter(NULL)
 {
+    // idle
 }
 
 template <typename T>
 FeatureCommand<T>::~FeatureCommand()
 {
+    // idle
 }
 
 template <typename T>
@@ -108,12 +119,13 @@ inline void FeatureCommand<T>::Dispose()
 // FdoICommand interface
 ///////////////////////////////////////////////////////////////////////////////
 
-template <typename T>
-FdoParameterValueCollection* FeatureCommand<T>::GetParameterValues()
-{
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
-}
+//// TODO - REMOVE IT!
+//template <typename T>
+//FdoParameterValueCollection* FeatureCommand<T>::GetParameterValues()
+//{
+//    assert(!"NOT IMPLEMENTED");
+//    return NULL;
+//}
 
 ///////////////////////////////////////////////////////////////////////////////
 // FdoIFeatureCommand interface
@@ -122,39 +134,49 @@ FdoParameterValueCollection* FeatureCommand<T>::GetParameterValues()
 template <typename T>
 FdoIdentifier* FeatureCommand<T>::GetFeatureClassName()
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    FDO_SAFE_ADDREF(mClassIdentifier.p);
+    return mClassIdentifier.p;
 }
 
 template <typename T>
-void FeatureCommand<T>::SetFeatureClassName(FdoIdentifier* value)
+void FeatureCommand<T>::SetFeatureClassName(FdoIdentifier* classIdentifier)
 {
-    assert(!"NOT IMPLEMENTED");
+    mClassIdentifier = classIdentifier;
+    FDO_SAFE_ADDREF(mClassIdentifier.p);
 }
 
 template <typename T>
-void FeatureCommand<T>::SetFeatureClassName(FdoString* value)
+void FeatureCommand<T>::SetFeatureClassName(FdoString* className)
 {
-    assert(!"NOT IMPLEMENTED");
+    FdoPtr<FdoIdentifier> cid;
+    if (NULL != className)
+        cid = FdoIdentifier::Create(className);
+    else
+        cid = NULL;
+        
+    SetFeatureClassName(cid);
 }
 
 template <typename T>
 FdoFilter* FeatureCommand<T>::GetFilter()
 {
-    assert(!"NOT IMPLEMENTED");
-    return NULL;
+    FDO_SAFE_ADDREF(mFilter.p);
+    return mFilter.p;
 }
 
 template <typename T>
-void FeatureCommand<T>::SetFilter(FdoFilter* value)
+void FeatureCommand<T>::SetFilter(FdoFilter* filter)
 {
-    assert(!"NOT IMPLEMENTED");
+    mFilter = filter;
+    FDO_SAFE_ADDREF(mFilter.p);
 }
 
 template <typename T>
-void FeatureCommand<T>::SetFilter(FdoString* value)
+void FeatureCommand<T>::SetFilter(FdoString* filterText)
 {
-    assert(!"NOT IMPLEMENTED");
+    FdoPtr<FdoFilter> filter(FdoFilter::Parse(filterText));
+    mFilter = filter;
+    FDO_SAFE_ADDREF(mFilter.p);
 }
 
 }} // namespace fdo::postgis

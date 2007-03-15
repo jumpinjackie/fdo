@@ -106,17 +106,12 @@ The fetch command was not issued yet.
 MessageId=2001
 SymbolicName=MSG_POSTGIS_CONNECTION_TIMEOUT_UNSUPPORTED
 Language=English
-Connection timeout is not supported.
+The PostGIS provider does not connection timeout.
 .
 MessageId=2002
 SymbolicName=MSG_POSTGIS_COMMAND_NOT_SUPPORTED
 Language=English
 The command %1$d is not supported.
-.
-MessageId=2003
-SymbolicName=M_KGORA_CONNECTION_CONFIGURATION_FILE_NOT_SUPPORTED
-Language=English
-King.Oracle Provider does not support configuration files.
 .
 MessageId=2004
 SymbolicName=MSG_POSTGIS_CONNECTION_INVALID
@@ -606,9 +601,9 @@ The column with given name '%1$ls' is not available in query result.
 ;//************************************************************************************
 
 MessageId=8001
-SymbolicName=M_KGORA_LOCKING_NOT_SUPPORTED
+SymbolicName=MSG_POSTGIS_LOCKING_NOT_SUPPORTED
 Language=English
-Locking not supported (%1$ls).
+The PostGIS provider does not support locking (%1$ls).
 .
 
 ;//************************************************************************************
@@ -637,7 +632,7 @@ Unsupported option.
 MessageId=10001
 SymbolicName=MSG_POSTGIS_COMMAND_TRANSACTIONS_NOT_SUPPORTED
 Language=English
-The PostGIS Provider does not support direct transactions access from command.
+The PostGIS provider does not support direct transactions access from command.
 .
 
 ;//************************************************************************************
