@@ -36,7 +36,8 @@ class SpatialContext;
 /// This command describes feature schema available from currently
 /// connected PostGIS datastore.
 ///
-/// \todo TODO: Add support of reading multiple geometries from PostGIS table.
+/// \todo Implement reading PRIMARY KEY property.
+/// \todo Add support of reading multiple geometries from PostGIS table.
 /// \todo Check correct base class, ie. Command<FdoIDescribeSchema>
 ///
 class DescribeSchemaCommand : public FdoIDescribeSchema

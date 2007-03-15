@@ -19,6 +19,7 @@
 #include "PostGisProvider.h"
 #include "SelectCommand.h"
 #include "Connection.h"
+#include "PostGIS/FdoPostGisOverrides.h"
 
 #include <cassert>
 
@@ -126,7 +127,33 @@ void SelectCommand::SetLockStrategy(FdoLockStrategy value)
     
 FdoIFeatureReader* SelectCommand::Execute()
 {
-    assert(!"NOT IMPLEMENTED");
+    FDOLOG_MARKER("SelectCommand::+Execute");
+    
+    //
+    // Get Logical Schema
+    //
+    FdoPtr<FdoFeatureSchemaCollection> logicalSchemas;
+    logicalSchemas = mConn->GetLogicalSchema();
+    
+    //
+    // Get Feature Class
+    //
+    FdoPtr<FdoIdentifier> classIdentifier = GetFeatureClassName();
+    assert(NULL != classIdentifier);
+    FdoStringP className = classIdentifier->GetText();
+    FdoPtr<FdoClassDefinition> classDef = NULL;
+    
+    // Find definition of the feature class
+    FdoPtr<FdoIDisposableCollection> featureClasses = NULL;
+    featureClasses = logicalSchemas->FindClass(className);
+    if (NULL != featureClasses)
+    {
+        classDef = static_cast<FdoClassDefinition*>(featureClasses->GetItem(0));
+        assert(NULL != classDef);
+    }
+    FDOLOG_WRITE(L"Select feature class: %s", static_cast<FdoString*>(className));
+    
+    
     return 0;
 }
     
