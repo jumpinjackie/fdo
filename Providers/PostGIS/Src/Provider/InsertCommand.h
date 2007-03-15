@@ -51,10 +51,10 @@ public:
     virtual FdoIdentifier* GetFeatureClassName();
     
     /// Set name of the class to be operated upon as an FdoIdentifier.
-    virtual void SetFeatureClassName(FdoIdentifier* value);
+    virtual void SetFeatureClassName(FdoIdentifier* classIdentifier);
     
     /// Set name of the class to be operated upon as an FdoIdentifier.
-    virtual void SetFeatureClassName(FdoString* value);
+    virtual void SetFeatureClassName(FdoString* className);
     
     /// Get collection of names and values of properties for the instance to be inserted.
     virtual FdoPropertyValueCollection* GetPropertyValues();
@@ -69,13 +69,46 @@ public:
 
 protected:
 
+    /// Destructor.
+    virtual ~InsertCommand();
+
 private:
+
+    //
+    // Private data members
+    //
 
     typedef Command<FdoIInsert> Base;
 
-    /// Destructor.
-    virtual ~InsertCommand();
+    // Identifier of the class to be operated upon.
+    FdoPtr<FdoIdentifier> mClassIdentifier;
+
+    FdoPtr<FdoPropertyValueCollection> mProperties;
+    FdoPtr<FdoBatchParameterValueCollection> mBatchParameters;
+    
+    //
+    // Private operations
+    //
+    
+    // Utility template function acting as a proxy preparing internal
+    // collection to return to a user, also creating new collection if required.
+    template <typename T>
+    FdoPtr<T> GetCollection(FdoPtr<T> col);
+
 };
+
+template <typename T>
+FdoPtr<T> InsertCommand::GetCollection(FdoPtr<T> col)
+{
+    if (NULL == col)
+    {
+        col = T::Create();
+        assert(NULL != col);
+    }
+
+    FDO_SAFE_ADDREF(col.p);
+    return col.p;
+}
 
 }} // namespace fdo::postgis
 

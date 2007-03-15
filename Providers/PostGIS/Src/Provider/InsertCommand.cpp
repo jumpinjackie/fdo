@@ -23,12 +23,18 @@
 
 namespace fdo { namespace postgis {
 
-InsertCommand::InsertCommand(Connection* conn) : Base(conn)
+InsertCommand::InsertCommand(Connection* conn) :
+    Base(conn),
+    mClassIdentifier(NULL),
+    mProperties(NULL),
+    mBatchParameters(NULL)
 {
+    // idle
 }
 
 InsertCommand::~InsertCommand()
 {
+    // idle
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -37,30 +43,42 @@ InsertCommand::~InsertCommand()
 
 FdoIdentifier* InsertCommand::GetFeatureClassName()
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    FDO_SAFE_ADDREF(mClassIdentifier.p);
+    return mClassIdentifier.p;
 }
     
-void InsertCommand::SetFeatureClassName(FdoIdentifier* value)
+void InsertCommand::SetFeatureClassName(FdoIdentifier* classIdentifier)
 {
-    assert(!"NOT IMPLEMENTED");
+    mClassIdentifier = classIdentifier;
+    FDO_SAFE_ADDREF(mClassIdentifier.p);
 }
     
-void InsertCommand::SetFeatureClassName(FdoString* value)
+void InsertCommand::SetFeatureClassName(FdoString* className)
 {
-    assert(!"NOT IMPLEMENTED");
+    FdoPtr<FdoIdentifier> cid;
+    if (NULL != className)
+        cid = FdoIdentifier::Create(className);
+    else
+        cid = NULL;
+
+    SetFeatureClassName(cid);
 }
     
 FdoPropertyValueCollection* InsertCommand::GetPropertyValues()
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    if (NULL == mProperties)
+    {
+        mProperties = FdoPropertyValueCollection::Create();
+        assert(NULL != mProperties);
+    }
+
+    FDO_SAFE_ADDREF(mProperties.p);
+    return mProperties.p;
 }
     
 FdoBatchParameterValueCollection* InsertCommand::GetBatchParameterValues()
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    return GetCollection(mBatchParameters);
 }
     
 FdoIFeatureReader* InsertCommand::Execute()
