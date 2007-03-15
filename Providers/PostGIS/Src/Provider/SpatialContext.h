@@ -68,7 +68,7 @@ public:
     virtual FdoString* GetCoordinateSystem() const;
 
     /// Set name of coordinate system.
-    virtual void GetCoordinateSystem(FdoString* csName);
+    virtual void SetCoordinateSystem(FdoString* csName);
 
     /// Get coordinate system parameters encoded as WKT string.
     virtual FdoString* GetCoordinateSystemWkt() const;
