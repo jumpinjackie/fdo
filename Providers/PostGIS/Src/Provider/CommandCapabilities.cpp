@@ -48,12 +48,15 @@ FdoInt32* CommandCapabilities::GetCommands(FdoInt32& size)
 
     static FdoCommandType commands[] =
     {
-        //FdoCommandType_Select,
+        FdoCommandType_Select,
         //FdoCommandType_Insert,
         //FdoCommandType_Update,
         //FdoCommandType_Delete,
         FdoCommandType_SQLCommand,
+        //FdoCommandType_ApplySchema
+        //FdoCommandType_DestroySchema
         FdoCommandType_DescribeSchema,
+        //FdoCommandType_DescribeSchemaMapping,
         FdoCommandType_CreateDataStore,
         FdoCommandType_DestroyDataStore,
         FdoCommandType_ListDataStores,
@@ -67,7 +70,7 @@ FdoInt32* CommandCapabilities::GetCommands(FdoInt32& size)
 
 bool CommandCapabilities::SupportsParameters()
 {
-    return false;
+    return true;
 }
 
 bool CommandCapabilities::SupportsTimeout()
@@ -77,26 +80,27 @@ bool CommandCapabilities::SupportsTimeout()
 
 bool CommandCapabilities::SupportsSelectExpressions()
 {
-    return false;
+    return true;
 }
 
 bool CommandCapabilities::SupportsSelectFunctions()
 {
-    return false;
+    return true;
 }
 
 bool CommandCapabilities::SupportsSelectDistinct()
 {
-    return false;
+    return true;
 }
 
 bool CommandCapabilities::SupportsSelectOrdering()
 {
-    return false;
+    return true;
 }
 
 bool CommandCapabilities::SupportsSelectGrouping()
 {
+    // TODO: Verify grouping
     return false;
 }
 

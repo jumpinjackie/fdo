@@ -362,7 +362,7 @@ SpatialContext* SchemaDescription::CreateSpatialContext(Connection* conn,
     }
 
     FdoStringP csName(wktName.c_str());
-    spContext->GetCoordinateSystem(csName);
+    spContext->SetCoordinateSystem(csName);
 
     FdoStringP csWkt(wkt.c_str());
     spContext->SetCoordinateSystemWkt(csWkt);

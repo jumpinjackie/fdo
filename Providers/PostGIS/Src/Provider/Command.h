@@ -116,6 +116,7 @@ Command<T>::Command(Connection* conn) : mConn(conn), mParams(NULL)
 template <typename T>
 Command<T>::~Command()
 {
+    // idle
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -146,7 +147,7 @@ FdoITransaction* Command<T>::GetTransaction()
 {
     throw FdoException::Create(
         NlsMsgGet(MSG_POSTGIS_COMMAND_TRANSACTIONS_NOT_SUPPORTED,
-        "The PostGIS Provider does not support direct transactions access from command."));
+        "The PostGIS provider does not support direct transactions access from command."));
 }
 
 template <typename T>
@@ -154,7 +155,7 @@ void Command<T>::SetTransaction(FdoITransaction* value)
 {
     throw FdoException::Create(
         NlsMsgGet(MSG_POSTGIS_COMMAND_TRANSACTIONS_NOT_SUPPORTED,
-        "The PostGIS Provider does not support direct transactions access from command."));
+        "The PostGIS provider does not support direct transactions access from command."));
     
 }
 
@@ -163,7 +164,7 @@ FdoInt32 Command<T>::GetCommandTimeout()
 {
     throw FdoException::Create(
         NlsMsgGet(MSG_POSTGIS_CONNECTION_TIMEOUT_UNSUPPORTED,
-            "Connection timeout is not supported."));
+            "The PostGIS provider does not connection timeout."));
 }
 
 template <typename T>
@@ -171,7 +172,7 @@ void Command<T>::SetCommandTimeout(FdoInt32 value)
 {
     throw FdoException::Create(
         NlsMsgGet(MSG_POSTGIS_CONNECTION_TIMEOUT_UNSUPPORTED,
-        "Connection timeout is not supported."));
+        "The PostGIS provider does not connection timeout."));
 }
 
 template <typename T>
@@ -190,13 +191,13 @@ FdoParameterValueCollection* Command<T>::GetParameterValues()
 template <typename T>
 void Command<T>::Prepare()
 {
-    assert(!"NOT SUPPORTED");
+    // Nothing to prepare
 }
 
 template <typename T>
 void Command<T>::Cancel()
 {
-    assert(!"NOT SUPPORTED");
+    // Nothing to cancel or unsupported
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -231,7 +232,6 @@ void Command<T>::PgGenerateExecParams(details::pgexec_params_t& pgParams)
             }
 
             FdoPtr<FdoLiteralValue> literalValue = paramValue->GetValue();
-            
             FdoDataValue* dataValue = static_cast<FdoDataValue*>(literalValue.p);
             assert(NULL != dataValue);
 
@@ -244,8 +244,10 @@ void Command<T>::PgGenerateExecParams(details::pgexec_params_t& pgParams)
             {
                 // Buffer for string representation of a parameter value
                 std::string value;
-
                 FdoDataType type = dataValue->GetDataType();
+                
+                FDOLOG_WRITE("Type of data: %d", type);
+                
                 switch (type)
                 {
                 case FdoDataType_Boolean:
@@ -284,7 +286,7 @@ void Command<T>::PgGenerateExecParams(details::pgexec_params_t& pgParams)
                     }
                     break;
                 case FdoDataType_DateTime:
-                // TODO: Add conversion of DateTime to string.
+                    // TODO: Add conversion of DateTime to string.
                     assert(!"TO BE IMPLEMENTED");
                     break;
                 case FdoDataType_BLOB:
@@ -295,6 +297,7 @@ void Command<T>::PgGenerateExecParams(details::pgexec_params_t& pgParams)
                     break;
                 default:
                     // TODO: Replace with an exception
+                    FDOLOG_WRITE("UNKNOWN TYPE");
                     assert(!"UNKNOWN TYPE");
                 }
 
@@ -307,7 +310,7 @@ void Command<T>::PgGenerateExecParams(details::pgexec_params_t& pgParams)
         assert(pgParams.size() == static_cast<details::pgexec_params_t::size_type>(paramsCount));
     }
 
-    FDOLOG_WRITE("Number of processed parameters: %u", pgParams.size());
+    FDOLOG_WRITE("Number of parameters: %u", pgParams.size());
 }
 
 }} // namespace fdo::postgis

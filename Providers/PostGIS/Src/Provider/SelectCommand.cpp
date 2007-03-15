@@ -24,8 +24,13 @@
 
 namespace fdo { namespace postgis {
 
-SelectCommand::SelectCommand(Connection* conn) : Base(conn)
+SelectCommand::SelectCommand(Connection* conn) :
+    Base(conn),
+    mProperties(NULL),
+    mOrderingProperties(NULL),
+    mOrderingOption(FdoOrderingOption_Ascending)
 {
+    // idle
 }
 
 SelectCommand::~SelectCommand()
@@ -47,25 +52,34 @@ void SelectCommand::Dispose()
 
 FdoIdentifierCollection* SelectCommand::GetPropertyNames()
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    if (NULL == mProperties)
+    {
+        mProperties = FdoIdentifierCollection::Create();
+    }
+
+    FDO_SAFE_ADDREF(mProperties.p);
+    return mProperties.p;
 }
  	
 FdoIdentifierCollection* SelectCommand::GetOrdering()
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    if (NULL == mOrderingProperties)
+    {
+        mOrderingProperties = FdoIdentifierCollection::Create();
+    }
+
+    FDO_SAFE_ADDREF(mOrderingProperties.p);
+    return mOrderingProperties.p;
 }
 
 void SelectCommand::SetOrderingOption(FdoOrderingOption option)
 {
-    assert(!"NOT IMPLEMENTED");
+    mOrderingOption = option;
 }
 
 FdoOrderingOption SelectCommand::GetOrderingOption()
 {
-    assert(!"NOT IMPLEMENTED");
-    return FdoOrderingOption_Ascending;
+    return mOrderingOption;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -74,24 +88,40 @@ FdoOrderingOption SelectCommand::GetOrderingOption()
 
 FdoLockType SelectCommand::GetLockType()
 {
-    assert(!"NOT IMPLEMENTED");
-    return FdoLockType_Unsupported;
+    throw FdoCommandException::Create(
+        NlsMsgGet(MSG_POSTGIS_LOCKING_NOT_SUPPORTED,
+        "The PostGIS provider does not support locking (%1$ls).", L"GetLockType"));
+
+    return FdoLockType_None;
 }
-    
+
 void SelectCommand::SetLockType(FdoLockType value)
 {
-    assert(!"NOT IMPLEMENTED");
+    FdoStringP msg(FdoStringP::Format(L"SetLockType($ls)", value));
+
+    throw FdoCommandException::Create(
+        NlsMsgGet(MSG_POSTGIS_LOCKING_NOT_SUPPORTED,
+        "The PostGIS provider does not support locking (%1$ls).",
+        static_cast<FdoString*>(msg)));
 }
-    
+
 FdoLockStrategy SelectCommand::GetLockStrategy()
 {
-    assert(!"NOT IMPLEMENTED");
+    throw FdoCommandException::Create(
+        NlsMsgGet(MSG_POSTGIS_LOCKING_NOT_SUPPORTED,
+        "The PostGIS provider does not support locking (%1$ls).", L"GetLockStrategy"));
+
     return FdoLockStrategy_All;
 }
-    
+
 void SelectCommand::SetLockStrategy(FdoLockStrategy value)
 {
-    assert(!"NOT IMPLEMENTED");
+    FdoStringP msg(FdoStringP::Format(L"SetLockStrategy($ls)", value));
+
+    throw FdoCommandException::Create(
+        NlsMsgGet(MSG_POSTGIS_LOCKING_NOT_SUPPORTED,
+        "The PostGIS provider does not support locking (%1$ls).",
+        static_cast<FdoString*>(msg)));
 }
     
 FdoIFeatureReader* SelectCommand::Execute()
@@ -102,14 +132,20 @@ FdoIFeatureReader* SelectCommand::Execute()
     
 FdoIFeatureReader* SelectCommand::ExecuteWithLock()
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    throw FdoCommandException::Create(
+        NlsMsgGet(MSG_POSTGIS_LOCKING_NOT_SUPPORTED,
+        "The PostGIS provider does not support locking (%1$ls).", L"ExecuteWithLock"));
+
+    return NULL;
 }
     
 FdoILockConflictReader* SelectCommand::GetLockConflicts()
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    throw FdoCommandException::Create(
+        NlsMsgGet(MSG_POSTGIS_LOCKING_NOT_SUPPORTED,
+        "The PostGIS provider does not support locking (%1$ls).", L"GetLockConflicts"));
+
+    return NULL;
 }
 
 }} // namespace fdo::postgis

@@ -29,6 +29,7 @@ namespace fdo { namespace postgis {
 GetSpatialContextsCommand::GetSpatialContextsCommand(Connection* conn)
     : Base(conn), mActiveOnly(false)
 {
+    FDOLOG_WRITE("GetSpatialContextsCommand created");
 }
 
 GetSpatialContextsCommand::~GetSpatialContextsCommand()
@@ -51,9 +52,13 @@ void GetSpatialContextsCommand::SetActiveOnly(bool const activeOnly)
 
 FdoISpatialContextReader* GetSpatialContextsCommand::Execute()
 {
+    FDOLOG_MARKER("GetSpatialContextsCommand::+Execute");
+    
     SpatialContextCollection::Ptr spContexts = NULL;
     spContexts = mConn->GetSpatialContexts();
 
+    FDOLOG_WRITE("Number of contexts: %d", spContexts->GetCount());
+    
     return (new SpatialContextReader(spContexts));
 }
 

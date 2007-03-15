@@ -69,13 +69,13 @@ public:
     virtual FdoLockType GetLockType();
     
     /// Set type of command locking (see "Locking Commands").
-    virtual void SetLockType(FdoLockType value);
+    virtual void SetLockType(FdoLockType type);
     
     /// Get command locking strategy enumerator (see "Locking Commands").
     virtual FdoLockStrategy GetLockStrategy();
     
     /// Set command locking strategy enumerator (see "Locking Commands").
-    virtual void SetLockStrategy(FdoLockStrategy value);
+    virtual void SetLockStrategy(FdoLockStrategy strategy);
     
     /// Execute select command and return pointer to FdoIFeatureReader interface.
     virtual FdoIFeatureReader* Execute();
@@ -90,8 +90,22 @@ protected:
 
 private:
 
+    //
+    // Private data members
+    //
+    
     typedef FeatureCommand<FdoISelect> Base;
 
+    // List of property names to return with the result.
+    FdoPtr<FdoIdentifierCollection> mProperties;
+        
+    // List of property names of order by clause.
+    FdoPtr<FdoIdentifierCollection> mOrderingProperties;
+    
+    // Type of ordering option.
+    // FdoOrderingOption_Ascending is the default value.
+    FdoOrderingOption mOrderingOption;
+    
 };
 
 }} // namespace fdo::postgis
