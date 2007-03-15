@@ -36,15 +36,6 @@ public:
     /// Constructor creates Select command for given connection.
     SelectCommand(Connection* conn);
 
-    /// Destructor.
-    virtual ~SelectCommand();
-
-    //
-    // FdoIDisposable interface
-    //
-
-    virtual void Dispose();
-
     //
     // FdoIBaseSelect interface
     //
@@ -88,6 +79,15 @@ public:
 
 protected:
 
+    /// Destructor.
+    virtual ~SelectCommand();
+
+    //
+    // FdoIDisposable interface
+    //
+
+    virtual void Dispose();
+    
 private:
 
     //
