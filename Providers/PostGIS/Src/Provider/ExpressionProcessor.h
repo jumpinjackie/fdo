@@ -35,19 +35,69 @@ public:
     // FdoIExpressionProcessor
     //
     
- 	/// Processes the FdoBinaryExpression passed in as an argument.
+ 	/// Process the FdoBinaryExpression passed in as an argument.
  	/// \param
  	/// expre [in] -
  	///
     void ProcessBinaryExpression(FdoBinaryExpression& expr);
     
- 	/// Processes the FdoUnaryExpression passed in as an argument.
+ 	/// Process the FdoUnaryExpression passed in as an argument.
  	/// \param
  	/// expre [in] -
  	///
     void ProcessUnaryExpression(FdoUnaryExpression& expr);
 
-    
+ 	/// Process node of function type passed in as an argument.
+    void ProcessFunction(FdoFunction& expr);
+
+    /// Process node of identifier type passed in as an argument.
+    void ProcessIdentifier(FdoIdentifier& expr);
+     	
+    /// Process node of type of computed identifier passed in as an argument.
+    void ProcessComputedIdentifier(FdoComputedIdentifier& expr);
+
+    /// Process node of type of parameter passed in as an argument.
+    void ProcessParameter(FdoParameter& expr);
+
+    /// Process node of boolean data type passed in as an argument.
+    void ProcessBooleanValue(FdoBooleanValue& expr);
+
+    /// Process node of byte data type passed in as an argument.
+    void ProcessByteValue(FdoByteValue& expr);
+
+    /// Process node of data and time data type passed in as an argument.
+    void ProcessDateTimeValue(FdoDateTimeValue& expr);
+
+    /// Process node of numeric/decimal data type passed in as an argument.
+    void ProcessDecimalValue(FdoDecimalValue& expr);
+
+    /// Process node of double data type passed in as an argument.
+    void ProcessDoubleValue(FdoDoubleValue& expr);
+
+    /// Process 2-bytes long integral data type passed in as an argument.
+    void ProcessInt16Value(FdoInt16Value& expr);
+
+    /// Process 4-bytes long integral data type passed in as an argument.
+    void ProcessInt32Value(FdoInt32Value& expr);
+
+    /// Process 8-bytes long integral data type passed in as an argument.
+    void ProcessInt64Value(FdoInt64Value& expr);
+
+    /// Process single-precision data type passed in as an argument.
+    void ProcessSingleValue(FdoSingleValue& expr);
+
+    /// Process node of string data type passed in as an argument.
+    void ProcessStringValue(FdoStringValue& expr);
+
+    /// Process node of BLOB data type passed in as an argument.
+    void ProcessBLOBValue(FdoBLOBValue& expr);
+
+    /// Process node of CLOB data type passed in as an argument.
+    void ProcessCLOBValue(FdoCLOBValue& expr);
+
+    /// Process node of geometry data type passed in as an argument. 
+    void ProcessGeometryValue(FdoGeometryValue& expr);
+
 protected:
     
     /// Destructor.
