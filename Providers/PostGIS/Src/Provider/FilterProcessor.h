@@ -95,6 +95,8 @@ private:
 
     std::string mSql;
 
+};
+
 }} // namespace fdo::postgis
 
 #endif // FDOPOSTGIS_FILTERPROCESSOR_H_INCLUDED

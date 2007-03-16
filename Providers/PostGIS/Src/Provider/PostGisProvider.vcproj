@@ -327,14 +327,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FilterProcessor.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\FilterProcessor.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Logger.h"
 				>
 			</File>
@@ -560,6 +552,26 @@
 			</File>
 			<File
 				RelativePath=".\PgUtility.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Filter"
+			>
+			<File
+				RelativePath=".\ExpressionProcessor.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ExpressionProcessor.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FilterProcessor.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FilterProcessor.h"
 				>
 			</File>
 		</Filter>
