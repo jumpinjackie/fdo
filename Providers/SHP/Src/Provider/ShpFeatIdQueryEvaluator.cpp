@@ -275,7 +275,11 @@ void ShpFeatIdQueryEvaluator::DoSecondaryFilter(FdoIGeometry *filterGeom, FdoSpa
         FdoPtr<FdoIGeometry>  geomLeft = gf->CreateGeometryFromFgf( geomLeftFgf );
         delete shape;
 
-        bool  ret = FdoSpatialUtility::Evaluate( geomLeft, spatialOp, filterGeom);
+		// The Polygon might be a multi polygon. 
+		FdoPtr<FdoIGeometry> geometry = ReconstructPolygon( geomLeft );
+
+		bool  ret = FdoSpatialUtility::Evaluate( geometry? geometry : geomLeft, spatialOp, filterGeom);
+
         if ( ret )
             secFilterList->push_back( featNum );
     }
@@ -360,10 +364,11 @@ void ShpFeatIdQueryEvaluator::ProcessSpatialCondition(FdoSpatialCondition& filte
         results->searchArea.yMax = searchArea.yMax + xyRes;
 
         bool            done = false;
+        BoundingBoxEx   extents;
+
         do
         {
             unsigned long   offset;
-            BoundingBoxEx     extents;
 
             int nStatus = m_RTree->GetNextObject (offset, extents);
             switch (nStatus)
@@ -424,7 +429,10 @@ void ShpFeatIdQueryEvaluator::ProcessSpatialCondition(FdoSpatialCondition& filte
                 FdoPtr<FdoIGeometry>  geomLeft = gf->CreateGeometryFromFgf( geomLeftFgf );
                 delete shape;
 
-                bool  ret = FdoSpatialUtility::Evaluate( geomLeft, spatialOp, geomRight);
+				// The Polygon might be actually a multi polygon. 
+				FdoPtr<FdoIGeometry> geometry = ReconstructPolygon( geomLeft );
+
+				bool  ret = FdoSpatialUtility::Evaluate( geometry? geometry : geomLeft, spatialOp, geomRight);
                 if ( ret )
                     secFilterList->push_back( featNum );
             }
@@ -471,8 +479,11 @@ recno_list* ShpFeatIdQueryEvaluator::FeatidListsUnion(recno_list* left, recno_li
     if (right == NULL)
         return right;
 
-    std::sort(left->begin(), left->end(), std::less<FdoInt32>());
-    std::sort(right->begin(), right->end(), std::less<FdoInt32>());
+	if ( left->size() > 0 )
+		std::sort(left->begin(), left->end(), std::less<FdoInt32>());
+
+	if ( right->size() > 0 )
+		std::sort(right->begin(), right->end(), std::less<FdoInt32>());
 
     recno_list::iterator iter1 = left->begin();
     recno_list::iterator iter2 = right->begin();
@@ -893,6 +904,27 @@ size_t ShpFeatIdQueryEvaluator::EvaluateMergedListSize( int maxRecords )
     return aproxListSize;
 }
 
+// Returns NULL in case geometry was not reconstructed
+FdoIGeometry *ShpFeatIdQueryEvaluator::ReconstructPolygon( FdoIGeometry *geometry )
+{
+	FdoPtr<FdoIGeometry> newGeometry;
+
+	if ( geometry->GetDerivedType() == FdoGeometryType_Polygon )
+	{
+		FdoIPolygon * poly = (FdoIPolygon *)geometry;
+		if ( poly->GetInteriorRingCount() != 0 )
+		{
+			FdoPtr<FdoLinearRingCollection> rings = FdoLinearRingCollection::Create ();
+			for (int i = 0; i < poly->GetInteriorRingCount(); i++)
+			{
+				FdoPtr<FdoILinearRing>	ring = poly->GetInteriorRing(i);
+				rings->Add(ring);
+			}
+			newGeometry = FdoSpatialUtility::CreateGeometryFromRings (rings, true);
+		}
+	}
+	return FDO_SAFE_ADDREF(newGeometry.p);
+}
 
 void ShpFeatIdQueryEvaluator::PrintFlattenParseTree()
 {
