@@ -154,6 +154,9 @@ private:
 	void ProcessFunctionCeilFloor( FdoString *name, DataValue* argLeft );
 
     void ExecuteARGB(FdoFunction& function);
+
+	FdoIGeometry* ReconstructPolygon( FdoIGeometry *geometry );
+
     
     //pattern matching
     bool MatchesHere(wchar_t* pattern, wchar_t* src);

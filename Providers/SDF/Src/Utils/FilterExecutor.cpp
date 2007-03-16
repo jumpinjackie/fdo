@@ -333,8 +333,11 @@ void FilterExecutor::ProcessSpatialCondition(FdoSpatialCondition& filter)
     FdoPtr<FdoIGeometry> geomRight = gf->CreateGeometryFromFgf(baRight);
     FdoPtr<FdoIGeometry> geomLeft = gf->CreateGeometryFromFgf(fgf, fgfLen);
 
+	// A polygon might be actually a multi polygon. 
+	FdoPtr<FdoIGeometry> geometry = ReconstructPolygon( geomLeft );
+
     //call on the geometry utility to evaluate the spatial operation
-    bool ret = FdoSpatialUtility::Evaluate(geomLeft, filter.GetOperation(), geomRight);
+    bool ret = FdoSpatialUtility::Evaluate( geometry? geometry : geomLeft, filter.GetOperation(), geomRight);
     
     m_retvals.push(m_pPool->ObtainBooleanValue(ret));            
 }
@@ -997,5 +1000,26 @@ void FilterExecutor::ExecuteARGB(FdoFunction& function)
     m_retvals.push(m_pPool->ObtainInt64Value(color));
 }
 
+// Returns NULL in case geometry was not reconstructed
+FdoIGeometry *FilterExecutor::ReconstructPolygon( FdoIGeometry *geometry )
+{
+	FdoPtr<FdoIGeometry> newGeometry;
+
+	if ( geometry->GetDerivedType() == FdoGeometryType_Polygon )
+	{
+		FdoIPolygon * poly = (FdoIPolygon *)geometry;
+		if ( poly->GetInteriorRingCount() != 0 )
+		{
+			FdoPtr<FdoLinearRingCollection> rings = FdoLinearRingCollection::Create ();
+			for (int i = 0; i < poly->GetInteriorRingCount(); i++)
+			{
+				FdoPtr<FdoILinearRing>	ring = poly->GetInteriorRing(i);
+				rings->Add(ring);
+			}
+			newGeometry = FdoSpatialUtility::CreateGeometryFromRings (rings, true);
+		}
+	}
+	return FDO_SAFE_ADDREF(newGeometry.p);
+}
 
 
