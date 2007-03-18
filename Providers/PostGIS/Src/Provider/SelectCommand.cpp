@@ -18,10 +18,15 @@
 
 #include "PostGisProvider.h"
 #include "SelectCommand.h"
+#include "FeatureReader.h"
 #include "Connection.h"
+#include "PgCursor.h"
 #include "PostGIS/FdoPostGisOverrides.h"
 
 #include <cassert>
+#include <string>
+
+#include <iostream> // TODO: To be removed
 
 namespace fdo { namespace postgis {
 
@@ -136,12 +141,12 @@ FdoIFeatureReader* SelectCommand::Execute()
     logicalSchemas = mConn->GetLogicalSchema();
     
     //
-    // Get Feature Class
+    // Get Feature Class definition
     //
+    FdoPtr<FdoClassDefinition> classDef = NULL;
     FdoPtr<FdoIdentifier> classIdentifier = GetFeatureClassName();
     assert(NULL != classIdentifier);
     FdoStringP className = classIdentifier->GetText();
-    FdoPtr<FdoClassDefinition> classDef = NULL;
     
     // Find definition of the feature class
     FdoPtr<FdoIDisposableCollection> featureClasses = NULL;
@@ -153,8 +158,81 @@ FdoIFeatureReader* SelectCommand::Execute()
     }
     FDOLOG_WRITE(L"Select feature class: %s", static_cast<FdoString*>(className));
     
+    std::wcout << L"Class: " << className << std::endl;
+
+    //
+    // Get Physical Schema details
+    //
+    ov::PhysicalSchemaMapping::Ptr schemaMapping;
+    schemaMapping = mConn->GetPhysicalSchemaMapping();
+
+    ov::ClassDefinition::Ptr phClassDef;
+    phClassDef = schemaMapping->FindByClassName(className);
+
+    std::string tablePath(static_cast<char const*>(phClassDef->GetTablePath()));
+
+    //
+    // Read properties definition to SQL columns
+    //
+    std::string sqlColumns;
+
+    FdoPtr<FdoPropertyDefinitionCollection> properties = classDef->GetProperties();
+    int const propsCount = properties->GetCount();
+    for (int propIdx = 0; propIdx < propsCount; propIdx++)
+    {
+        FdoPtr<FdoPropertyDefinition> propDef(properties->GetItem(propIdx));
+
+        assert(FdoPropertyType_DataProperty == propDef->GetPropertyType()
+               || FdoPropertyType_GeometricProperty == propDef->GetPropertyType());
+
+        FdoStringP propName(propDef->GetName());
+        
+        if (propIdx > 0)
+        {
+            sqlColumns += ',';
+        }
+        sqlColumns += tablePath;
+        sqlColumns += '.';
+        sqlColumns += static_cast<char const*>(propName);
+    }
+
+    //
+    // Declare cursor and create feature reader
+    //
+    std::string sql("SELECT ");
+    sql += sqlColumns;
+    sql += " FROM ";
+    sql += tablePath;
+
+    FDOLOG_WRITE("Generated SQL:\n\t%s", sql.c_str());
+
+    try
+    {
+        // Create a cursor associated with query results reader
+        PgCursor::Ptr cursor(NULL);
+        cursor = mConn->PgCreateCursor("crsFdoSelectCommand");
+
+        // Collect bind parameters
+        details::pgexec_params_t params;
+        Base::PgGenerateExecParams(params);
+
+        // Open new cursor
+        cursor->Declare(sql.c_str(), params);
+
+        assert(NULL != cursor);
+        FeatureReader::Ptr reader(new FeatureReader(mConn, cursor, classDef));
     
-    return 0;
+        FDO_SAFE_ADDREF(reader.p);
+        return reader.p;
+    }
+    catch (FdoException* e)
+    {
+        FdoCommandException* ne = NULL;
+        ne = FdoCommandException::Create(NlsMsgGet(MSG_POSTGIS_COMMAND_SELECT_FAILED,
+                "The execution of Select command failed."), e);
+        e->Release();
+        throw ne;
+    }
 }
     
 FdoIFeatureReader* SelectCommand::ExecuteWithLock()

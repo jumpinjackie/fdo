@@ -33,6 +33,9 @@ class SelectCommand : public FeatureCommand<FdoISelect>
 {
 public:
 
+    /// Type of FDO smart pointer for the class.
+    typedef FdoPtr<SelectCommand> Ptr;
+
     /// Constructor creates Select command for given connection.
     SelectCommand(Connection* conn);
 
