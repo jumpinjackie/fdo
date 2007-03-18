@@ -26,6 +26,7 @@ class ClassDefinition : public FdoPhysicalClassMapping
 {
 public:
     
+    /// Type of FDO smart pointer for the class.
     typedef FdoPtr<ClassDefinition> Ptr;
 
     //
@@ -61,6 +62,13 @@ public:
     /// an XML element in the document. 
     FDOPOSTGIS_API virtual FdoBoolean XmlEndElement(FdoXmlSaxContext* saxContext,
         FdoString* uri, FdoString* name, FdoString* qname);
+
+    //
+    // ClassDefinition custom interface
+    //
+    FDOPOSTGIS_API FdoStringP GetSchemaName() const;
+    FDOPOSTGIS_API FdoStringP GetTableName() const;
+    FDOPOSTGIS_API FdoStringP GetTablePath() const;
 
 protected:
     

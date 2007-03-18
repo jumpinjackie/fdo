@@ -27,6 +27,7 @@ class ClassCollection : public FdoPhysicalElementMappingCollection<ClassDefiniti
 {
 public:
     
+    /// Type of FDO smart pointer for the class.
     typedef FdoPtr<ClassCollection> Ptr;
 
     /// Factory creates collection without parent specified.
