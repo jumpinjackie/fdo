@@ -18,6 +18,8 @@
 #define FDOPOSTGIS_READER_H_INCLUDED
 
 #include "Connection.h"
+#include "SQLDataReader.h"
+#include "PgCursor.h"
 #include <cassert>
 
 namespace fdo { namespace postgis {
@@ -32,7 +34,7 @@ public:
 
     /// Constructor creating instance of reader associated with given
     /// connection, statement and query result.
-    Reader(Connection* conn);
+    Reader(Connection* conn, PgCursor* cursor);
 
     //
     // FdoIReader interface.
@@ -108,12 +110,25 @@ protected:
 
 private:
 	
+    // Handler to cursor instance defined for current reader.
+    PgCursor::Ptr mCursor;
+
+    SQLDataReader::Ptr mSQLReader;
+
 }; // class Reader
 
 template <typename T>
-Reader<T>::Reader(Connection* conn) : mConn(conn)
+Reader<T>::Reader(Connection* conn, PgCursor* cursor) :
+    mConn(conn), mCursor(cursor), mSQLReader(new SQLDataReader(mCursor))
 {
-    assert(!"TODO - Add missing parameters");
+    FDOLOG_MARKER("Reader created");
+
+    assert(NULL != mConn);
+    assert(NULL != mCursor);
+    assert(NULL != mSQLReader);
+
+    FDO_SAFE_ADDREF(mConn.p);
+    FDO_SAFE_ADDREF(mCursor.p);
 }
 
 template <typename T>
@@ -128,6 +143,7 @@ Reader<T>::~Reader()
 template <typename T>
 void Reader<T>::Dispose()
 {
+    Close();
     delete this;
 }
 
@@ -138,15 +154,13 @@ void Reader<T>::Dispose()
 template <typename T>
 bool Reader<T>::GetBoolean(FdoString* propertyName)
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    return mSQLReader->GetBoolean(propertyName);
 }
 
 template <typename T>
 FdoByte Reader<T>::GetByte(FdoString* propertyName)
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    return mSQLReader->GetByte(propertyName);
 }
 
 template <typename T>
@@ -159,43 +173,37 @@ FdoDateTime Reader<T>::GetDateTime(FdoString* propertyName)
 template <typename T>
 double Reader<T>::GetDouble(FdoString* propertyName)
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    return mSQLReader->GetDouble(propertyName);
 }
 
 template <typename T>
 FdoInt16 Reader<T>::GetInt16(FdoString* propertyName)
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    return mSQLReader->GetInt16(propertyName);
 }
 
 template <typename T>
 FdoInt32 Reader<T>::GetInt32(FdoString* propertyName)
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    return mSQLReader->GetInt32(propertyName);
 }
 
 template <typename T>
 FdoInt64 Reader<T>::GetInt64(FdoString* propertyName)
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    return mSQLReader->GetInt64(propertyName);
 }
 
 template <typename T>
 float Reader<T>::GetSingle(FdoString* propertyName)
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    return mSQLReader->GetSingle(propertyName);
 }
 
 template <typename T>
 FdoString* Reader<T>::GetString(FdoString* propertyName)
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    return mSQLReader->GetString(propertyName);
 }
 
 template <typename T>
@@ -215,35 +223,41 @@ FdoIStreamReader* Reader<T>::GetLOBStreamReader(wchar_t const* propertyName)
 template <typename T>
 bool Reader<T>::IsNull(FdoString* propertyName)
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    return mSQLReader->IsNull(propertyName);
 }
 
 template <typename T>
 FdoByteArray* Reader<T>::GetGeometry(FdoString* propertyName)
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    return mSQLReader->GetGeometry(propertyName);
 }
 
 template <typename T>
 FdoIRaster* Reader<T>::GetRaster(FdoString* propertyName)
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    // Raster support not available in PostGIS.
+    return NULL;
 }
 
 template <typename T>
 bool Reader<T>::ReadNext()
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    FDOLOG_MARKER("Reader::+ReadNext");
+
+    bool hasTuples = mSQLReader->ReadNext();
+    return hasTuples;
 }
 
 template <typename T>
 void Reader<T>::Close()
 {
-    assert(!"NOT IMPLEMENTED");
+    FDOLOG_MARKER("Reader::+Close");
+
+    if (NULL != mSQLReader)
+        mSQLReader->Close();
+
+    if (NULL != mCursor)
+        mCursor->Close();
 }
 
 }} // namespace fdo::postgis

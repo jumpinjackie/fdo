@@ -28,6 +28,7 @@ namespace fdo { namespace postgis {
 
 // Forward declarations of internal types
 class Connection;
+class PgCursor;
 
 /// Implementation of forward-only and read-only iterator for reading
 /// feature data.
@@ -37,8 +38,11 @@ class FeatureReader : public Reader<FdoIFeatureReader>
 {
 public:
 
+    /// Type of FDO smart pointer for the class.
+    typedef FdoPtr<FeatureReader> Ptr;
+
     /// Default constructor.
-    FeatureReader(Connection* conn);
+    FeatureReader(Connection* conn, PgCursor* cursor, FdoClassDefinition* classDef);
 
     //
     // FdoIFeatureReader interface
@@ -76,8 +80,13 @@ protected:
 
 private:
 
+    //
+    // Private data members
+    //
+
     typedef Reader<FdoIFeatureReader> Base;
 	
+    FdoPtr<FdoClassDefinition> mClassDef;
 };
 
 }} // namespace fdo::postgis
