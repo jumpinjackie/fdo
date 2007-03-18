@@ -94,4 +94,30 @@ FdoBoolean ClassDefinition::XmlEndElement(FdoXmlSaxContext* saxContext,
     return NULL;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// ClassDefinition custom interface
+///////////////////////////////////////////////////////////////////////////////
+
+FdoStringP ClassDefinition::GetSchemaName() const
+{
+    // NOTE: We need this dirty const_cast hack due to lack of
+    // const-correctness in FdoPhysicalClassMapping::GetName() class.
+    // This note also applies to functions below.
+
+    FdoStringP name(const_cast<ClassDefinition*>(this)->GetName());
+    return name.Left(L"~");
+}
+
+FdoStringP ClassDefinition::GetTableName() const
+{
+    FdoStringP name(const_cast<ClassDefinition*>(this)->GetName());
+    return name.Right(L"~");
+}
+
+FdoStringP ClassDefinition::GetTablePath() const
+{
+    FdoStringP path(const_cast<ClassDefinition*>(this)->GetName());
+    return path.Replace(L"~", L".");
+}
+
 }}} // namespace fdo::postgis::ov
