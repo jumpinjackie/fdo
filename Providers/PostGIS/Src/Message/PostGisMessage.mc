@@ -96,6 +96,11 @@ SymbolicName=MSG_POSTGIS_CURSOR_NOT_FETCHED
 Language=English
 The fetch command was not issued yet.
 .
+MessageId=1015
+SymbolicName=MSG_POSTGIS_COMMAND_SELECT_FAILED
+Language=English
+The execution of Select command failed.
+.
 
 ;//************************************************************************************
 ;//************************************************************************************
