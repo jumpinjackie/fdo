@@ -712,6 +712,16 @@ void AddSpatialFilters(ArcSDEConnection* conn, const FdoSpatialOperations fdoSpa
 		arr = (type)malloc(arr##_cursize); \
 	}
 
+#define SETUP_BUFFERS(Z,M) \
+	if (dim & FdoDimensionality_Z) \
+		zBuffer = Z; \
+	else \
+		zBuffer = NULL; \
+	if (dim & FdoDimensionality_M) \
+		mBuffer = M; \
+	else \
+		mBuffer = NULL;
+
 
 void convert_fgf_to_sde_shape(ArcSDEConnection *connection, FdoByteArray* fgf, SE_COORDREF coordref, SE_SHAPE& result_shape, bool bCropToExtents)
 {
@@ -730,6 +740,9 @@ void convert_fgf_to_sde_shape(ArcSDEConnection *connection, FdoByteArray* fgf, S
     SE_ENVELOPE given_coordref_envelope;
     SE_SHAPE *work_shape = NULL;
     FdoException *exception = NULL;
+	LFLOAT *zBuffer = NULL;
+	LFLOAT *mBuffer = NULL;
+
     
     try
     {
@@ -835,7 +848,8 @@ void convert_fgf_to_sde_shape(ArcSDEConnection *connection, FdoByteArray* fgf, S
                 }
 
                 // Populate the SE_SHAPE based on the XY,Z, and M arrays:
-                lResult = SE_shape_generate_point (totalNumPoints, connection->mGeomBuffer_pointsXY, connection->mGeomBuffer_pointsZ, connection->mGeomBuffer_pointsM, *work_shape);
+			    SETUP_BUFFERS(connection->mGeomBuffer_pointsZ, connection->mGeomBuffer_pointsM);
+                lResult = SE_shape_generate_point (totalNumPoints, connection->mGeomBuffer_pointsXY, zBuffer, mBuffer, *work_shape);
                 handle_sde_err<FdoCommandException>(connection->GetConnection(), lResult, __FILE__, __LINE__, ARCSDE_CONVERT_SHAPE_FAILED, "Failed to convert FGF geometry to ArcSDE shape.");
             }
             break;
@@ -856,7 +870,6 @@ void convert_fgf_to_sde_shape(ArcSDEConnection *connection, FdoByteArray* fgf, S
                     RESIZE(connection->mGeomBuffer_pointsM, double*, totalNumPoints * sizeof(double));
                 }
 
-
                 // Populate arrays for XY, Z and M (as required):
                 for (FdoInt32 i=0; i<totalNumPoints; i++)
                 {
@@ -868,7 +881,8 @@ void convert_fgf_to_sde_shape(ArcSDEConnection *connection, FdoByteArray* fgf, S
                 }
 
                 // Populate the SE_SHAPE based on the XY,Z, and M arrays:
-                lResult = SE_shape_generate_line (totalNumPoints, 1, NULL, connection->mGeomBuffer_pointsXY, connection->mGeomBuffer_pointsZ, connection->mGeomBuffer_pointsM, *work_shape);
+  				SETUP_BUFFERS(connection->mGeomBuffer_pointsZ, connection->mGeomBuffer_pointsM);
+                lResult = SE_shape_generate_line (totalNumPoints, 1, NULL, connection->mGeomBuffer_pointsXY, zBuffer, mBuffer, *work_shape);
                 handle_sde_err<FdoCommandException>(connection->GetConnection(), lResult, __FILE__, __LINE__, ARCSDE_CONVERT_SHAPE_FAILED, "Failed to convert FGF geometry to ArcSDE shape.");
             }
             break;
@@ -921,7 +935,8 @@ void convert_fgf_to_sde_shape(ArcSDEConnection *connection, FdoByteArray* fgf, S
                 }
 
                 // Populate the SE_SHAPE based on the XY,Z, and M arrays:
-                lResult = SE_shape_generate_line (totalNumPoints, numLineStrings, connection->mGeomBuffer_offsets, connection->mGeomBuffer_pointsXY, connection->mGeomBuffer_pointsZ, connection->mGeomBuffer_pointsM, *work_shape);
+				SETUP_BUFFERS(connection->mGeomBuffer_pointsZ, connection->mGeomBuffer_pointsM);
+                lResult = SE_shape_generate_line (totalNumPoints, numLineStrings, connection->mGeomBuffer_offsets, connection->mGeomBuffer_pointsXY, zBuffer, mBuffer, *work_shape);
                 handle_sde_err<FdoCommandException>(connection->GetConnection(), lResult, __FILE__, __LINE__, ARCSDE_CONVERT_SHAPE_FAILED, "Failed to convert FGF geometry to ArcSDE shape.");
             }
             break;
@@ -985,7 +1000,8 @@ void convert_fgf_to_sde_shape(ArcSDEConnection *connection, FdoByteArray* fgf, S
                 }
 
                 // Populate the SE_SHAPE based on the XY,Z, and M arrays:
-                lResult = SE_shape_generate_polygon (totalNumPoints, 1, NULL, connection->mGeomBuffer_pointsXY, connection->mGeomBuffer_pointsZ, connection->mGeomBuffer_pointsM, *work_shape);
+				SETUP_BUFFERS(connection->mGeomBuffer_pointsZ, connection->mGeomBuffer_pointsM);
+                lResult = SE_shape_generate_polygon (totalNumPoints, 1, NULL, connection->mGeomBuffer_pointsXY, zBuffer, mBuffer, *work_shape);
                 handle_sde_err<FdoCommandException>(connection->GetConnection(), lResult, __FILE__, __LINE__, ARCSDE_CONVERT_SHAPE_FAILED, "Failed to convert FGF geometry to ArcSDE shape.");
             }
             break;
@@ -1066,7 +1082,8 @@ void convert_fgf_to_sde_shape(ArcSDEConnection *connection, FdoByteArray* fgf, S
                 }
 
                 // Populate the SE_SHAPE based on the XY,Z, and M arrays:
-                lResult = SE_shape_generate_polygon (totalNumPoints, numPolygons, connection->mGeomBuffer_offsets, connection->mGeomBuffer_pointsXY, connection->mGeomBuffer_pointsZ, connection->mGeomBuffer_pointsM, *work_shape);
+				SETUP_BUFFERS(connection->mGeomBuffer_pointsZ, connection->mGeomBuffer_pointsM);
+                lResult = SE_shape_generate_polygon (totalNumPoints, numPolygons, connection->mGeomBuffer_offsets, connection->mGeomBuffer_pointsXY, zBuffer, mBuffer, *work_shape);
                 handle_sde_err<FdoCommandException>(connection->GetConnection(), lResult, __FILE__, __LINE__, ARCSDE_CONVERT_SHAPE_FAILED, "Failed to convert FGF geometry to ArcSDE shape.");
             }
             break;
@@ -1948,6 +1965,8 @@ SE_SHAPE* GetEndPointsAsShapes(ArcSDEConnection *connection, SE_SHAPE shape, lon
     SE_SHAPE *resultShapes = NULL;
     FdoException *exception = NULL;
     SE_COORDREF coordref = NULL;
+	LFLOAT *zBuffer = NULL;
+	LFLOAT *mBuffer = NULL;
 
     try
     {
@@ -1983,7 +2002,8 @@ SE_SHAPE* GetEndPointsAsShapes(ArcSDEConnection *connection, SE_SHAPE shape, lon
         {
             RESIZE(connection->mGeomBuffer_pointsM, double*, numPoints * sizeof(double));
         }
-        lResult = SE_shape_get_all_points (shape, SE_DEFAULT_ROTATION, connection->mGeomBuffer_part_offsets, connection->mGeomBuffer_subpart_offsets, connection->mGeomBuffer_pointsXY, connection->mGeomBuffer_pointsZ, connection->mGeomBuffer_pointsM);
+		SETUP_BUFFERS(connection->mGeomBuffer_pointsZ, connection->mGeomBuffer_pointsM);
+        lResult = SE_shape_get_all_points (shape, SE_DEFAULT_ROTATION, connection->mGeomBuffer_part_offsets, connection->mGeomBuffer_subpart_offsets, connection->mGeomBuffer_pointsXY, zBuffer, mBuffer);
         handle_sde_err<FdoException>(lResult, __FILE__, __LINE__, ARCSDE_FAILED_PROCESSING_SPATIAL_CONDITION, "Failed to process the given spatial condition.");
 
         // Get shape's coordref:
