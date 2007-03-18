@@ -38,6 +38,9 @@ class SQLCommand : public Command<FdoISQLCommand>
 {
 public:
 
+    /// Type of FDO smart pointer for the class.
+    typedef FdoPtr<SQLCommand> Ptr;
+
     /// Constructor create new SQL command associated with given connection.
     SQLCommand(Connection* Connection);
 
