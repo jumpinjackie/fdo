@@ -20,6 +20,8 @@
 namespace fdo { namespace postgis {
 
 /// Definition of processor for expression tree nodes.
+/// The processor translates FdoExpression hierarchy to the SQL equivalent sytanx
+/// supported by PostgreSQL DBMS and PostGIS engine.
 ///
 class ExpressionProcessor : public FdoIExpressionProcessor
 {

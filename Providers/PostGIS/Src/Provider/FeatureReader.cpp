@@ -19,14 +19,16 @@
 #include "PostGisProvider.h"
 #include "FeatureReader.h"
 #include "Connection.h"
+#include "PgCursor.h"
 
 #include <cassert>
 
 namespace fdo { namespace postgis {
 
-FeatureReader::FeatureReader(Connection* conn) : Base(conn)
+FeatureReader::FeatureReader(Connection* conn, PgCursor* cursor, FdoClassDefinition* classDef)
+    : Base(conn, cursor), mClassDef(classDef)
 {
-    assert(!"TODO - Add missing parameters");
+    FDO_SAFE_ADDREF(mClassDef.p);
 }
 
 FeatureReader::~FeatureReader()
@@ -49,13 +51,13 @@ void FeatureReader::Dispose()
 
 FdoClassDefinition* FeatureReader::GetClassDefinition()
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    FDO_SAFE_ADDREF(mClassDef.p);
+    return mClassDef.p;
 }
 
 FdoInt32 FeatureReader::GetDepth()
 {
-    assert(!"NOT IMPLEMENTED");
+    // TODO: Verify this value.
     return 0;
 }
 
@@ -67,14 +69,13 @@ const FdoByte* FeatureReader::GetGeometry(FdoString* propertyName, FdoInt32* cou
 
 FdoByteArray* FeatureReader::GetGeometry(FdoString* propertyName)
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    return Base::GetGeometry(propertyName);
 }
 
 FdoIFeatureReader* FeatureReader::GetFeatureObject(FdoString* propertyName)
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    // TODO: An Association Property not supported yet by PostGIS provider.
+    return NULL;
 }
 
 }} // namespace fdo::postgis
