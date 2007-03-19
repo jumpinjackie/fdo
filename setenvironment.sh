@@ -17,8 +17,8 @@
 ## Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ##
 
+# Fully-qualfied location of the FDO files
 export FDO=$PWD/Fdo
-
 if test ! -e "$FDO"; then
    echo ""
    echo "Invalid FDO path provided. "
@@ -28,8 +28,8 @@ if test ! -e "$FDO"; then
    echo ""
 fi
 
+# Fully-qualfied location of the FDO Utility files
 export FDOUTILITIES=$PWD/Utilities
-
 if test ! -e "$FDOUTILITIES"; then
    echo ""
    echo "Invalid FDO Utilities path provided. "
@@ -39,8 +39,8 @@ if test ! -e "$FDOUTILITIES"; then
    echo ""
 fi
 
+# Fully-qualfied location of the FDO Thirdparty files
 export FDOTHIRDPARTY=$PWD/Thirdparty
-
 if test ! -e "$FDOTHIRDPARTY"; then
    echo ""
    echo "Invalid FDO Thirdparty path provided. "
@@ -50,8 +50,8 @@ if test ! -e "$FDOTHIRDPARTY"; then
    echo ""
 fi
 
+# Fully-qualfied location of the ESRI ArcSDE SDK
 export SDEHOME=$FDOTHIRDPARTY/ESRI/ArcSDEClient91/Linux
-
 if test ! -e "$SDEHOME"; then
    echo ""
    echo "NOTE: The default location for the ArcSDE client SDK files"
@@ -63,8 +63,8 @@ if test ! -e "$SDEHOME"; then
    echo ""
 fi
 
+# Fully-qualfied location of the GDAL Installation
 export FDOGDAL=$FDOTHIRDPARTY/gdal
-
 echo ""
 echo "NOTE: The setenvironment.sh script sets the installation location for "
 echo "the GDAL SDK files to $FDOTHIRDPARTY/gdal. "
@@ -78,8 +78,8 @@ echo "script and set FDOGDAL to point to the existing GDAL installation."
 echo "For example: /user/local (The default GDAL installation path)."
 echo ""
 
+# Fully-qualfied location of the MySQL SDK
 export FDOMYSQL=$FDOTHIRDPARTY/mysql/rhlinux
-
 if test ! -e "$FDOMYSQL"; then
    echo ""
    echo "NOTE: The default location for the MySQL SDK files "
@@ -94,8 +94,8 @@ if test ! -e "$FDOMYSQL"; then
    echo ""
 fi
 
+# Fully-qualfied location of the ODBC SDK
 export FDOODBC=/usr
-
 if test ! -e "$FDOODBC"; then
    echo ""
    echo "NOTE: The default path for the ODBC SDK files was not found. "
@@ -103,6 +103,32 @@ if test ! -e "$FDOODBC"; then
    echo "$FDOODBC"
    echo "If you need to build the ODBC prvovider, modify the setenvironment.sh "
    echo "script and set FDOODBC to point to the location of the ODBC SDK."
+   echo ""
+fi
+
+# Location of the PYTHON lib files. Typically in /usr/lib/pythonXXX
+export PYTHON_LIB_PATH=/usr/lib/python2.4
+if test ! -e "$PYTHON_LIB_PATH"; then
+   echo ""
+   echo "NOTE: The default path for the Python SDK lib files was not found. "
+   echo "The setenvironment script sets the default value to: "
+   echo "$PYTHON_LIB_PATH"
+   echo "If you need to build the FDO Python wrappers, modify the setenvironment.sh "
+   echo "script and set PYTHON_LIB_PATH to point to the location of the Python "
+   echo "lib files."
+   echo ""
+fi
+
+# Location of the PYTHON include files. Typically in /usr/include/pythonXXX
+export PYTHON_INCLUDE_PATH=/usr/include/python2.4
+if test ! -e "$PYTHON_INCLUDE_PATH"; then
+   echo ""
+   echo "NOTE: The default path for the Python SDK header files was not found. "
+   echo "The setenvironment script sets the default value to: "
+   echo "$PYTHON_INCLUDE_PATH"
+   echo "If you need to build the FDO Python wrappers, modify the setenvironment.sh "
+   echo "script and set PYTHON_INCLUDE_PATH to point to the location of the Python "
+   echo "include files."
    echo ""
 fi
 
