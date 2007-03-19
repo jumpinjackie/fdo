@@ -26,8 +26,6 @@
 #include <cassert>
 #include <string>
 
-#include <iostream> // TODO: To be removed
-
 namespace fdo { namespace postgis {
 
 SelectCommand::SelectCommand(Connection* conn) :
@@ -134,80 +132,101 @@ FdoIFeatureReader* SelectCommand::Execute()
 {
     FDOLOG_MARKER("SelectCommand::+Execute");
     
-    //
-    // Get Logical Schema
-    //
-    FdoPtr<FdoFeatureSchemaCollection> logicalSchemas;
-    logicalSchemas = mConn->GetLogicalSchema();
-    
-    //
-    // Get Feature Class definition
-    //
-    FdoPtr<FdoClassDefinition> classDef = NULL;
-    FdoPtr<FdoIdentifier> classIdentifier = GetFeatureClassName();
-    assert(NULL != classIdentifier);
-    FdoStringP className = classIdentifier->GetText();
-    
-    // Find definition of the feature class
-    FdoPtr<FdoIDisposableCollection> featureClasses = NULL;
-    featureClasses = logicalSchemas->FindClass(className);
-    if (NULL != featureClasses)
-    {
-        classDef = static_cast<FdoClassDefinition*>(featureClasses->GetItem(0));
-        assert(NULL != classDef);
-    }
-    FDOLOG_WRITE(L"Select feature class: %s", static_cast<FdoString*>(className));
-    
-    std::wcout << L"Class: " << className << std::endl;
-
-    //
-    // Get Physical Schema details
-    //
-    ov::PhysicalSchemaMapping::Ptr schemaMapping;
-    schemaMapping = mConn->GetPhysicalSchemaMapping();
-
-    ov::ClassDefinition::Ptr phClassDef;
-    phClassDef = schemaMapping->FindByClassName(className);
-
-    std::string tablePath(static_cast<char const*>(phClassDef->GetTablePath()));
-
-    //
-    // Read properties definition to SQL columns
-    //
-    std::string sqlColumns;
-
-    FdoPtr<FdoPropertyDefinitionCollection> properties = classDef->GetProperties();
-    int const propsCount = properties->GetCount();
-    for (int propIdx = 0; propIdx < propsCount; propIdx++)
-    {
-        FdoPtr<FdoPropertyDefinition> propDef(properties->GetItem(propIdx));
-
-        assert(FdoPropertyType_DataProperty == propDef->GetPropertyType()
-               || FdoPropertyType_GeometricProperty == propDef->GetPropertyType());
-
-        FdoStringP propName(propDef->GetName());
-        
-        if (propIdx > 0)
-        {
-            sqlColumns += ',';
-        }
-        sqlColumns += tablePath;
-        sqlColumns += '.';
-        sqlColumns += static_cast<char const*>(propName);
-    }
-
-    //
-    // Declare cursor and create feature reader
-    //
-    std::string sql("SELECT ");
-    sql += sqlColumns;
-    sql += " FROM ";
-    sql += tablePath;
-
-    FDOLOG_WRITE("Generated SQL:\n\t%s", sql.c_str());
-
     try
     {
+        //
+        // Get Logical Schema
+        //
+        FdoPtr<FdoFeatureSchemaCollection> logicalSchemas;
+        logicalSchemas = mConn->GetLogicalSchema();
+
+        //
+        // Get Feature Class definition
+        //
+        FdoPtr<FdoClassDefinition> classDef = NULL;
+        FdoPtr<FdoIdentifier> classIdentifier = GetFeatureClassName();
+        assert(NULL != classIdentifier);
+
+        FdoStringP classId = classIdentifier->GetText();
+        FDOLOG_WRITE(L"Feature class: %s", static_cast<FdoString*>(classId));
+
+        // Find definition of the feature class
+        FdoPtr<FdoIDisposableCollection> featureClasses = NULL;
+        featureClasses = logicalSchemas->FindClass(classId);
+        if (NULL == featureClasses)
+        {
+            FDOLOG_WRITE(L"Logical schema for '%s' not found",
+                static_cast<FdoString*>(classId));
+            return NULL;
+        }
+        FDOLOG_WRITE(L"Number of schemas: %d", featureClasses->GetCount());
+
+        if (featureClasses->GetCount() <= 0)
+        {
+            FDOLOG_WRITE(L"No class definition found for schema '%s'",
+                static_cast<FdoString*>(classId));
+            return NULL;
+        }
+        classDef = static_cast<FdoClassDefinition*>(featureClasses->GetItem(0));
+        assert(NULL != classDef);
+
+        FdoStringP className = classDef->GetName();
+        FDOLOG_WRITE(L"Class definition for: %s", static_cast<FdoString*>(className));
+
+        //
+        // Get Physical Schema details
+        //
+        ov::PhysicalSchemaMapping::Ptr schemaMapping;
+        schemaMapping = mConn->GetPhysicalSchemaMapping();
+        FDOLOG_WRITE(L"Schema mapping for: %", schemaMapping->GetName());
+
+        ov::ClassDefinition::Ptr phClassDef;
+        phClassDef = schemaMapping->FindByClassName(className);
+        if (NULL == phClassDef)
+        {
+            FDOLOG_WRITE(L"Physical schema for '%s' not found",
+                static_cast<FdoString*>(className));
+            return NULL;
+        }
+
+        std::string tablePath(static_cast<char const*>(phClassDef->GetTablePath()));
+        FDOLOG_WRITE("Table: %s", tablePath.c_str());
+
+        //
+        // Read properties definition to SQL columns
+        //
+        std::string sqlColumns("");
+        FdoPtr<FdoPropertyDefinitionCollection> props = classDef->GetProperties();
+
+        int const propsCount = props->GetCount();
+        for (int propIdx = 0; propIdx < propsCount; propIdx++)
+        {
+            FdoPtr<FdoPropertyDefinition> propDef(props->GetItem(propIdx));
+
+            assert(FdoPropertyType_DataProperty == propDef->GetPropertyType()
+                || FdoPropertyType_GeometricProperty == propDef->GetPropertyType());
+
+            FdoStringP propName(propDef->GetName());
+
+            if (propIdx > 0)
+            {
+                sqlColumns += ',';
+            }
+            sqlColumns += tablePath;
+            sqlColumns += '.';
+            sqlColumns += static_cast<char const*>(propName);
+        }
+
+        //
+        // Declare cursor and create feature reader
+        //
+        std::string sql("SELECT ");
+        sql += sqlColumns;
+        sql += " FROM ";
+        sql += tablePath;
+
+        FDOLOG_WRITE("sQL:\n\t%s", sql.c_str());
+
         // Create a cursor associated with query results reader
         PgCursor::Ptr cursor(NULL);
         cursor = mConn->PgCreateCursor("crsFdoSelectCommand");
@@ -227,6 +246,8 @@ FdoIFeatureReader* SelectCommand::Execute()
     }
     catch (FdoException* e)
     {
+        FDOLOG_WRITE("The execution of Select command failed.");
+
         FdoCommandException* ne = NULL;
         ne = FdoCommandException::Create(NlsMsgGet(MSG_POSTGIS_COMMAND_SELECT_FAILED,
                 "The execution of Select command failed."), e);
