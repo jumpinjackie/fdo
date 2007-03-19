@@ -145,17 +145,26 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
     
     mIsDescribed = false;
     
-    // Collection of Logical Schemas
+    // Collection of Logical / Physical Schemas
     FdoPtr<FdoFeatureSchemaCollection> logicalSchemas = NULL;
     logicalSchemas = FdoFeatureSchemaCollection::Create(NULL);
 
     ov::PhysicalSchemaMapping::Ptr schemaMapping = NULL;
     schemaMapping = ov::PhysicalSchemaMapping::Create();
 
+    // Create collection of Spatial Contexts with default context included
     SpatialContextCollection::Ptr spContexts = NULL;
     spContexts = new SpatialContextCollection();
+    //SpatialContext::Ptr spContextDefault(new SpatialContext());
+    //spContexts->Insert(0, spContextDefault);
 
-    FdoPtr<FdoFeatureSchema> featSchema(FdoFeatureSchema::Create(L"FdoPostGIS", L""));
+    // TODO: How does the schema name work?
+    //       There are problems with feature commands, because class name is
+    //       formatted as FdoPostGIS:mydatastore~mytable
+    // FdoPtr<FdoFeatureSchema> featSchema(FdoFeatureSchema::Create(L"FdoPostGIS", L""));
+
+    // TODO: Temporarily reset schema name to empty string
+    FdoPtr<FdoFeatureSchema> featSchema(FdoFeatureSchema::Create(L"", L""));
     logicalSchemas->Add(featSchema.p);
 
     FdoPtr<FdoClassCollection> featClasses(featSchema->GetClasses());
@@ -176,25 +185,24 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
 
         ////////////////// GENERATE SPATIAL CONTEXT //////////////////
 
-        SpatialContext::Ptr spContext = NULL;
         FdoInt32 srid = geomColumn->GetSRID();
-        if (srid >= 0)
+        if (srid <= 0)
         {
-            FdoStringP spContextName = FdoStringP::Format(L"PostGIS_%d", srid);
-            spContext = spContexts->FindItem(spContextName);
-            if (NULL == spContext)
-            {
-                FDOLOG_WRITE(L"Created spatial context: %s",
-                    static_cast<FdoString*>(spContextName));
-
-                spContext = CreateSpatialContext(mConn, spContextName, geomColumn);
-                spContexts->Insert(0, spContext);
-            }
+            // Use WGS 84 if SRS not specified
+            srid = 4326;
+            FDOLOG_WRITE("Use default spatial context with SRID = %d", srid);
         }
-        else
+        FdoStringP spContextName = FdoStringP::Format(L"PostGIS_%d", srid);
+        
+        SpatialContext::Ptr spContext = NULL;
+        spContext = spContexts->FindItem(spContextName);
+        if (NULL == spContext)
         {
-            // The CS is unknown, so default spatial context is used
-            spContext = spContexts->FindItem(SpatialContextDefaultName);
+            FDOLOG_WRITE(L"Created spatial context: %s",
+                static_cast<FdoString*>(spContextName));
+
+            spContext = CreateSpatialContext(mConn, spContextName, geomColumn);
+            spContexts->Insert(0, spContext);
         }
 
         ////////////////// CALCULATE SPATIAL EXTENT //////////////////
@@ -315,27 +323,32 @@ SpatialContext* SchemaDescription::CreateSpatialContext(Connection* conn,
     // Query for SRS details
     //
 
-    std::string srid;
+    std::string sridText("4326");
     try
     {
-        srid = boost::lexical_cast<std::string>(geomColumn->GetSRID());
+        FdoInt32 srid = geomColumn->GetSRID();
+        if (srid <= 0)
+        {
+            // Use WGS 84 if SRS not specified
+            srid = 4326;
+        }
+        sridText = boost::lexical_cast<std::string>(srid);
     }
     catch (boost::bad_lexical_cast& e)
     {
-        srid = "-1";
         FDOLOG_WRITE("Type conversion failed: %s", e.what());
         assert(!"FIX HANDLING INVALID SRID");
     }
 
-    std::string sql("SELECT srtext FROM spatial_ref_sys WHERE srid = " + srid);
+    std::string sql("SELECT srtext FROM spatial_ref_sys WHERE srid = " + sridText);
 
     boost::shared_ptr<PGresult> pgRes(mConn->PgExecuteQuery(sql.c_str()), PQclear);    
-    if (PGRES_TUPLES_OK != PQresultStatus(pgRes.get()))
+    if (PGRES_TUPLES_OK != PQresultStatus(pgRes.get()) || PQntuples(pgRes.get()) < 1)
     {
-        // TODO: Replace with exception
-        assert(!"SRS NOT FOUND");
+        FdoStringP msg = FdoStringP::Format(L"The Spatial Reference System for SRID=%s not found.",
+            sridText.c_str());
+        throw FdoException::Create(static_cast<FdoString*>(msg));
     }
-    assert(1 == PQntuples(pgRes.get()));
 
     //
     // Generate spatial context details
@@ -367,6 +380,9 @@ SpatialContext* SchemaDescription::CreateSpatialContext(Connection* conn,
     FdoStringP csWkt(wkt.c_str());
     spContext->SetCoordinateSystemWkt(csWkt);
     
+    FDOLOG_WRITE(L"CRS: %s", static_cast<FdoString*>(csName));
+    FDOLOG_WRITE(L"WKT: %s", static_cast<FdoString*>(csWkt));
+
     FDO_SAFE_ADDREF(spContext.p);
     return spContext.p;
 }
