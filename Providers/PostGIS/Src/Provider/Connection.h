@@ -118,17 +118,17 @@ public:
 
     /// Create command object of specified type and return pointer to interface realizing
     /// command capabilities associated with the connection.
-    FdoICommand* CreateCommand(FdoInt32 type);
+    FDOPOSTGIS_API FdoICommand* CreateCommand(FdoInt32 type);
 
     /// Factory function that creates an empty Schema Override mapping specific
     /// for PostGIS Provider.
-    FdoPhysicalSchemaMapping* CreateSchemaMapping();
+    FDOPOSTGIS_API FdoPhysicalSchemaMapping* CreateSchemaMapping();
 
     /// Set XML configuration stream used to configure connected datastore.
-    void SetConfiguration(FdoIoStream* configStream);
+    FDOPOSTGIS_API void SetConfiguration(FdoIoStream* configStream);
 
     /// Force to write any cached data to currently connected datastore
-    void Flush();
+    FDOPOSTGIS_API void Flush();
 
     //
     // Connection custom interface used internally by the provider
@@ -248,6 +248,7 @@ private:
 
     void SetPgCurrentSchema(FdoStringP schema);
 
+    FdoStringP Connection::GetPgCurrentSchema();
 };
 
 }} // namespace fdo::postgis
