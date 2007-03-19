@@ -53,13 +53,26 @@ void GetSpatialContextsCommand::SetActiveOnly(bool const activeOnly)
 FdoISpatialContextReader* GetSpatialContextsCommand::Execute()
 {
     FDOLOG_MARKER("GetSpatialContextsCommand::+Execute");
-    
-    SpatialContextCollection::Ptr spContexts = NULL;
-    spContexts = mConn->GetSpatialContexts();
 
-    FDOLOG_WRITE("Number of contexts: %d", spContexts->GetCount());
-    
-    return (new SpatialContextReader(spContexts));
+    try
+    {
+        SpatialContextCollection::Ptr spContexts = NULL;
+        spContexts = mConn->GetSpatialContexts();
+
+        FDOLOG_WRITE("Number of contexts: %d", spContexts->GetCount());
+        return (new SpatialContextReader(spContexts));
+    }
+    catch (FdoException* e)
+    {
+        FDOLOG_WRITE("The execution of GetSpatialContextsCommand command failed.");
+
+        FdoCommandException* ne = NULL;
+        ne = FdoCommandException::Create(L"The execution of GetSpatialContextsCommand command failed.", e);
+        e->Release();
+        throw ne;
+    }
+
+    return NULL;
 }
 
 }} // namespace fdo::postgis

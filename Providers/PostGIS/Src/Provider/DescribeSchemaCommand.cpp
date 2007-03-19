@@ -114,11 +114,27 @@ void DescribeSchemaCommand::SetSchemaName(FdoString* name)
 FdoFeatureSchemaCollection* DescribeSchemaCommand::Execute()
 {
     FDOLOG_MARKER("DescribeSchemaCommand::+Execute");
-   
-    FdoPtr<FdoFeatureSchemaCollection> logicalSchema = mConn->GetLogicalSchema();
-    
-    FDO_SAFE_ADDREF(logicalSchema.p);
-    return logicalSchema.p;
+
+    try
+    {
+        FdoPtr<FdoFeatureSchemaCollection> logicalSchema = mConn->GetLogicalSchema();
+
+        FDOLOG_WRITE("Number of schema elements fetched: %d", logicalSchema->GetCount());
+
+        FDO_SAFE_ADDREF(logicalSchema.p);
+        return logicalSchema.p;
+    }
+    catch (FdoException* e)
+    {
+        FDOLOG_WRITE("The execution of DescribeSchema command failed.");
+
+        FdoCommandException* ne = NULL;
+        ne = FdoCommandException::Create(L"The execution of DescribeSchema command failed.", e);
+        e->Release();
+        throw ne;
+    }
+
+    return NULL;
 }
 
 }} // namespace fdo::postgis

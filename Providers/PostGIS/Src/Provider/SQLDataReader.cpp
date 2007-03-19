@@ -311,8 +311,6 @@ bool SQLDataReader::ReadNext()
 
 void SQLDataReader::Close()
 {
-    FDOLOG_MARKER("SQLDataReader::+Close");
-
     // TODO: Temporary solution. Make ownership transfer exception safe.
 
     if (NULL != mCursor)

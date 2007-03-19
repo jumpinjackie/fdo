@@ -134,6 +134,8 @@ inline void FeatureCommand<T>::Dispose()
 template <typename T>
 FdoIdentifier* FeatureCommand<T>::GetFeatureClassName()
 {
+    FDOLOG_MARKER("FeatureCommand::GetFeatureClassName");
+
     FDO_SAFE_ADDREF(mClassIdentifier.p);
     return mClassIdentifier.p;
 }
@@ -141,6 +143,12 @@ FdoIdentifier* FeatureCommand<T>::GetFeatureClassName()
 template <typename T>
 void FeatureCommand<T>::SetFeatureClassName(FdoIdentifier* classIdentifier)
 {
+    FDOLOG_MARKER("FeatureCommand::SetFeatureClassName(classIdentifier)");
+    if (NULL != classIdentifier)
+    {
+        FDOLOG_WRITE(L"Class name: %s", classIdentifier->GetName());
+    }
+
     mClassIdentifier = classIdentifier;
     FDO_SAFE_ADDREF(mClassIdentifier.p);
 }
@@ -148,6 +156,8 @@ void FeatureCommand<T>::SetFeatureClassName(FdoIdentifier* classIdentifier)
 template <typename T>
 void FeatureCommand<T>::SetFeatureClassName(FdoString* className)
 {
+    FDOLOG_MARKER("FeatureCommand::SetFeatureClassName");
+
     FdoPtr<FdoIdentifier> cid;
     if (NULL != className)
         cid = FdoIdentifier::Create(className);
@@ -160,13 +170,17 @@ void FeatureCommand<T>::SetFeatureClassName(FdoString* className)
 template <typename T>
 FdoFilter* FeatureCommand<T>::GetFilter()
 {
-    FDO_SAFE_ADDREF(mFilter.p);
-    return mFilter.p;
+    FDOLOG_MARKER("FeatureCommand::GetFilter");
+    //FDO_SAFE_ADDREF(mFilter.p);
+    //return mFilter.p;
+    return NULL;
 }
 
 template <typename T>
 void FeatureCommand<T>::SetFilter(FdoFilter* filter)
 {
+    FDOLOG_MARKER("FeatureCommand::SetFilter(filter)");
+
     mFilter = filter;
     FDO_SAFE_ADDREF(mFilter.p);
 }
@@ -174,6 +188,8 @@ void FeatureCommand<T>::SetFilter(FdoFilter* filter)
 template <typename T>
 void FeatureCommand<T>::SetFilter(FdoString* filterText)
 {
+    FDOLOG_MARKER("FeatureCommand::SetFilter");
+
     FdoPtr<FdoFilter> filter(FdoFilter::Parse(filterText));
     mFilter = filter;
     FDO_SAFE_ADDREF(mFilter.p);
