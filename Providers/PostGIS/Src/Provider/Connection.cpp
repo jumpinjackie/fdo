@@ -364,10 +364,6 @@ FdoITransaction* Connection::BeginTransaction()
 
 FdoICommand* Connection::CreateCommand(FdoInt32 type)
 {
-    FDOLOG_MARKER("Connection::+CreateCommand");
-    FDOLOG_WRITE(L"Command type: %s",
-        static_cast<FdoString*>(FdoCommonMiscUtil::FdoCommandTypeToString(type)));
-    
     // NOTE: A minimum required connection state for a datastore command is pending.
     // A minimum required state for feature command is open.
     // More details available in following discussion:
@@ -767,8 +763,12 @@ SchemaDescription* Connection::DescribeSchema()
     if (NULL == mSchemaDesc)
     {
         // TODO: Add support of describing selected schema instead of all
+        // FdoStringP schemaName(GetPgCurrentSchema());
+
+        FdoStringP schemaName(L"FdoPostGIS");
+
         mSchemaDesc = SchemaDescription::Create();
-        mSchemaDesc->DescribeSchema(this, L"");
+        mSchemaDesc->DescribeSchema(this, static_cast<FdoString*>(schemaName));
     }
     assert(mSchemaDesc->IsDescribed());
 
@@ -961,6 +961,29 @@ void Connection::SetPgCurrentSchema(FdoStringP schema)
             "SQL command failed with PostgreSQL error code: %1$ls. %2$ls.",
             static_cast<FdoString*>(errStatus), static_cast<FdoString*>(errMsg)));
     }
+}
+
+FdoStringP Connection::GetPgCurrentSchema()
+{
+    FDOLOG_MARKER("Connection::-GetPgCurrentSchema");
+    
+    ValidateConnectionState();
+
+    // Schema is activated by setting the schema search path:
+    // SET search_path TO <new_schema_name>
+
+    char const* sql = "SELECT current_schema()";
+    boost::shared_ptr<PGresult> pgRes(PgExecuteQuery(sql), PQclear);
+    
+    FdoStringP schemaName;
+    if (PGRES_TUPLES_OK == PQresultStatus(pgRes.get()))
+    {
+        schemaName = PQgetvalue(pgRes.get(), 0, 0);
+    }
+
+    FDOLOG_WRITE(L"Current schema: %s", static_cast<FdoString*>(schemaName));
+
+    return schemaName;
 }
 
 }} // namespace fdo::postgis
