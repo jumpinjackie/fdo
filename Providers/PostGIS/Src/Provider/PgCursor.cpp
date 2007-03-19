@@ -294,8 +294,6 @@ void PgCursor::Declare(char const* query, details::pgexec_params_t const& params
 
 void PgCursor::Close()
 {
-    FDOLOG_MARKER("PgCursor::+Close");
-
     if (!mIsClosed)
     {
         // TODO: Throwing from here seems to be like walking on a thin line!
