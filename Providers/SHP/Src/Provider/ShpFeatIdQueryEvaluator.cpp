@@ -915,6 +915,10 @@ FdoIGeometry *ShpFeatIdQueryEvaluator::ReconstructPolygon( FdoIGeometry *geometr
 		if ( poly->GetInteriorRingCount() != 0 )
 		{
 			FdoPtr<FdoLinearRingCollection> rings = FdoLinearRingCollection::Create ();
+
+			FdoPtr<FdoILinearRing>	ring = poly->GetExteriorRing();
+			rings->Add(ring);
+
 			for (int i = 0; i < poly->GetInteriorRingCount(); i++)
 			{
 				FdoPtr<FdoILinearRing>	ring = poly->GetInteriorRing(i);
