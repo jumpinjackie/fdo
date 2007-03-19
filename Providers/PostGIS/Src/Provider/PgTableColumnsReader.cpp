@@ -106,6 +106,11 @@ FdoInt32 PgTableColumnsReader::GetColumnSize() const
         }
         assert(-1 != maxSize && "MAX LENGHT NOT SPECIFIED");
     }
+    else if (FdoDataType_Decimal == GetColumnType())
+    {
+        // For NUMERIC type, number of digits is returned as column size
+        maxSize = GetColumnPrecision();
+    }
     else
     {
         maxSize = mReader->GetInt32(L"character_maximum_length");
@@ -186,8 +191,6 @@ bool PgTableColumnsReader::ReadNext()
 
 void PgTableColumnsReader::Close()
 {
-    FDOLOG_MARKER("PgTableColumnsReader::+Close");
-
     if (NULL != mReader)
         mReader->Close();        
 }
