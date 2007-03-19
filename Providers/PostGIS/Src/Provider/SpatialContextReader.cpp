@@ -23,8 +23,6 @@ SpatialContextReader::SpatialContextReader(SpatialContextCollection*  scc)
     :   mSpatialContexts(scc), mCurrentContext(NULL), mCurrentIndex(0)
 {
     FDO_SAFE_ADDREF(mSpatialContexts.p);
-    
-    FDOLOG_WRITE("SpatialContextReader created");
 }
 
 SpatialContextReader::~SpatialContextReader()
@@ -67,6 +65,8 @@ FdoString* SpatialContextReader::GetCoordinateSystem()
 
 FdoString* SpatialContextReader::GetCoordinateSystemWkt()
 {
+    FDOLOG_MARKER("SpatialContextReader::+GetCoordinateSystemWkt");
+    FDOLOG_WRITE(L"WKT: %s", mCurrentContext->GetCoordinateSystemWkt());
     return mCurrentContext->GetCoordinateSystemWkt();
 }
 
@@ -98,15 +98,21 @@ const bool SpatialContextReader::IsActive()
 
 bool SpatialContextReader::ReadNext()
 {
+    FDOLOG_MARKER("SpatialContextReader::ReadNext");
+
     bool eof = true;
     
     if (mCurrentIndex < mSpatialContexts->GetCount())
     {
+        FDOLOG("Current: %d", mCurrentIndex);
+
         int const current = mCurrentIndex;
         mCurrentContext = mSpatialContexts->GetItem(current);
         mCurrentIndex++;
         eof = false;
     }
+
+    FDOLOG_WRITE("End of reader: %d", eof);
     
     return (!eof);
 }

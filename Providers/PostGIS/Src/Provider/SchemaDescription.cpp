@@ -159,12 +159,10 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
     //spContexts->Insert(0, spContextDefault);
 
     // TODO: How does the schema name work?
-    //       There are problems with feature commands, because class name is
-    //       formatted as FdoPostGIS:mydatastore~mytable
-    // FdoPtr<FdoFeatureSchema> featSchema(FdoFeatureSchema::Create(L"FdoPostGIS", L""));
+    //       There may be problems with feature commands,
+    //       because class ID is formatted as FdoPostGIS:mydatastore~mytable.
 
-    // TODO: Temporarily reset schema name to empty string
-    FdoPtr<FdoFeatureSchema> featSchema(FdoFeatureSchema::Create(L"", L""));
+    FdoPtr<FdoFeatureSchema> featSchema(FdoFeatureSchema::Create(L"FdoPostGIS", L""));
     logicalSchemas->Add(featSchema.p);
 
     FdoPtr<FdoClassCollection> featClasses(featSchema->GetClasses());
