@@ -33,7 +33,11 @@ StringBuffer::StringBuffer( const wchar_t* str )
 {
 	m_lCapacity = (long)wcslen(str) * 2;
 	m_pBuffer = this->createEmptyBuffer( m_lCapacity );	
-    wcscpy_s(m_pBuffer, m_lCapacity, str);
+#ifdef WIN32    	
+	wcscpy_s(m_pBuffer, m_lCapacity, str);
+#else
+	wcscpy(m_pBuffer, str);
+#endif
 }
 
 StringBuffer::StringBuffer( unsigned long initCapacity )

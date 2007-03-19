@@ -20,24 +20,13 @@
 // are changed infrequently
 //
 
-#pragma once
+#ifdef WIN32
 
+#pragma once
 #define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
+#include <windows.h>
+
+#endif
 
 #include <string.h>
-#include <windows.h>
 #include <stdio.h>
-
-//#if defined(_DEBUG)
-//#define _DEBUG_WAS_DEFINED
-//#undef _DEBUG
-//#pragma message ("Compiling Python header files in Release mode.")
-//#endif
-
-//#include <Python.h>
-
-//#ifdef _DEBUG_WAS_DEFINED
-//#define _DEBUG
-//#undef _DEBUG_WAS_DEFINED
-//#endif
-
