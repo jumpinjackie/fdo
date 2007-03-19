@@ -28,6 +28,8 @@ namespace fdo { namespace postgis {
 FeatureReader::FeatureReader(Connection* conn, PgCursor* cursor, FdoClassDefinition* classDef)
     : Base(conn, cursor), mClassDef(classDef)
 {
+    FDOLOG_MARKER("FeatureReader::FeatureReader");
+
     FDO_SAFE_ADDREF(mClassDef.p);
 }
 
@@ -51,24 +53,30 @@ void FeatureReader::Dispose()
 
 FdoClassDefinition* FeatureReader::GetClassDefinition()
 {
+    FDOLOG_MARKER("FeatureReader::GetClassDefinition");
+
     FDO_SAFE_ADDREF(mClassDef.p);
     return mClassDef.p;
 }
 
 FdoInt32 FeatureReader::GetDepth()
 {
+    FDOLOG_MARKER("FeatureReader::GetDepth");
     // TODO: Verify this value.
     return 0;
 }
 
 const FdoByte* FeatureReader::GetGeometry(FdoString* propertyName, FdoInt32* count)
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    FDOLOG_MARKER("FeatureReader::GetGeometry(propertyName, count)");
+
+    return NULL;
 }
 
 FdoByteArray* FeatureReader::GetGeometry(FdoString* propertyName)
 {
+    FDOLOG_MARKER("FeatureReader::GetGeometry");
+
     return Base::GetGeometry(propertyName);
 }
 

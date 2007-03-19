@@ -49,23 +49,23 @@ public:
     //
 
     /// Get definition of the object currently being read.
-    virtual FdoClassDefinition* GetClassDefinition();
+    FDOPOSTGIS_API virtual FdoClassDefinition* GetClassDefinition();
  	
     /// Get value indicating depth of nesting for the current reader.
     ///
     /// \todo What is readers nesting?
     ///
-    virtual FdoInt32 GetDepth();
+    FDOPOSTGIS_API virtual FdoInt32 GetDepth();
  	
     /// Get geometry value of the specified property as a byte array in FGF format.
-    virtual const FdoByte* GetGeometry(FdoString* propertyName, FdoInt32* count);
+    FDOPOSTGIS_API virtual const FdoByte* GetGeometry(FdoString* propertyName, FdoInt32* count);
  	
     /// Get geometry value of the specified property as a byte array in FGF format.
-    virtual FdoByteArray* GetGeometry(FdoString* propertyName);
+    FDOPOSTGIS_API virtual FdoByteArray* GetGeometry(FdoString* propertyName);
  	
     /// Get reference to instance of FdoIFeatureReader to read the data contained
     /// in the object or object collection property. 
-    virtual FdoIFeatureReader* GetFeatureObject(FdoString* propertyName);
+    FDOPOSTGIS_API virtual FdoIFeatureReader* GetFeatureObject(FdoString* propertyName);
  	
 protected:
 
