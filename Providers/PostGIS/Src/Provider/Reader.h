@@ -78,17 +78,17 @@ public:
     virtual bool IsNull(FdoString* propertyName);
 
     /// Get geometry value of the specified property as a byte array in FGF format.
-    virtual FdoByteArray* GetGeometry(FdoString* propertyName);
+    FDOPOSTGIS_API virtual FdoByteArray* GetGeometry(FdoString* propertyName);
 
     /// Get raster object of the specified property.
-    virtual FdoIRaster* GetRaster(FdoString* propertyName);
+    FDOPOSTGIS_API virtual FdoIRaster* GetRaster(FdoString* propertyName);
 
     /// Advance the reader iterator to next item.
     /// \return true if there is another object to read, false if reading is complete.
-    virtual bool ReadNext();
+    FDOPOSTGIS_API virtual bool ReadNext();
 
     /// Close the reader object and release any of its resources.
-    virtual void Close();
+    FDOPOSTGIS_API virtual void Close();
 
 protected:
 
