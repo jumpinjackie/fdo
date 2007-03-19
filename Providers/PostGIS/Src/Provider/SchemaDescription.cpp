@@ -177,6 +177,7 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
     while (stReader->ReadNext())
     {
         // TODO: Fetch all geometries, but not only the first one - default
+
         PgSpatialTablesReader::columns_t::size_type const geometryIdx = 0;
         PgSpatialTablesReader::columns_t geometryColumns(stReader->GetGeometryColumns());
         PgGeometryColumn::Ptr geomColumn = geometryColumns[geometryIdx];
@@ -205,7 +206,7 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
 
         ////////////////// CALCULATE SPATIAL EXTENT //////////////////
 
-        // TODO
+        // TODO: Do we want to calculate bbox at all?
 
         ////////////////// GENERATE CLASS DEFINITION //////////////////
 
@@ -228,13 +229,32 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
 
         ////////////////// CREATE GEOMETRY PROPERTY //////////////////
 
-        FdoInt32 fdoGeomType = geomColumn->GetGeometryType();
+        FdoGeometryType geomType = geomColumn->GetGeometryType();
 
         FdoPtr<FdoGeometricPropertyDefinition> geomPropDef = NULL;
         geomPropDef = FdoGeometricPropertyDefinition::Create(
             geomColumn->GetName(), geomColumn->GetDescription());                        
 
-        geomPropDef->SetGeometryTypes(fdoGeomType);  
+        FdoInt32 geometricType = 
+            FdoGeometricType_Point|FdoGeometricType_Curve|FdoGeometricType_Surface;
+
+        if (FdoGeometryType_Point == geomType
+            || FdoGeometryType_MultiPoint == geomType)
+        {
+            geometricType = FdoGeometricType_Point;
+        }
+        else if (FdoGeometryType_Point == geomType
+                 || FdoGeometryType_MultiPoint == geomType)
+        {
+            geometricType = FdoGeometricType_Curve;
+        }
+        else if (FdoGeometryType_Polygon == geomType
+                 || FdoGeometryType_MultiPolygon == geomType)
+        {
+            geometricType = FdoGeometricType_Surface;
+        }
+
+        geomPropDef->SetGeometryTypes(geometricType);  
         if (NULL != spContext)
         {
             geomPropDef->SetSpatialContextAssociation(spContext->GetName());
