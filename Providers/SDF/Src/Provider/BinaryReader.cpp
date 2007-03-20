@@ -25,19 +25,27 @@
 //uses 0 as default empty values.
 const int ADD_TO_OFFSET = 1;
 
-BinaryReader::BinaryReader(unsigned char* data, int len)
+BinaryReader::BinaryReader(unsigned char* data, int len, int propCount )
 {
-	Init();
+	Init(propCount);
     m_data = data;
     m_len = len;
 }
 
-BinaryReader::BinaryReader()
+BinaryReader::BinaryReader(unsigned char* data, int len )
 {
-    Init();
+    Init(SDF_STRING_CACHE_COUNT);
+    m_data = data;
+    m_len = len;
+	
 }
 
-void BinaryReader::Init()
+BinaryReader::BinaryReader()
+{
+    Init(SDF_STRING_CACHE_COUNT);
+}
+
+void BinaryReader::Init( int propCount )
 {
 	m_data = NULL;
     m_len = 0;
@@ -45,16 +53,27 @@ void BinaryReader::Init()
     m_wcsCacheLen = 0;
     m_wcsCacheCurrent = 0;
     m_wcsCache = NULL;
+	wcsCacheLastIndex = 0;
+    m_wcsStringCache = NULL;
+	wcsCacheLen = propCount;
+    m_wcsStringCache = new SdfStringCacheDef[propCount];
+    for(int i=0; i<propCount; i++ )
+    {
+        m_wcsStringCache[i].wcsLen = 0;
+        m_wcsStringCache[i].wcsString = NULL;
+    }
 }
 
 BinaryReader::~BinaryReader()
 {
-    //if we used extra string buffers, clear them
-    if (!m_stringCaches.empty())
+    if( m_wcsStringCache != NULL )
     {
-        for (std::list<wchar_t*>::iterator iter=m_stringCaches.begin(); 
-            iter != m_stringCaches.end(); iter++)
-            delete [] (*iter);
+        for(int i=0; i<wcsCacheLen; i++ )
+        {
+            if( m_wcsStringCache[i].wcsString != NULL )
+                delete[] m_wcsStringCache[i].wcsString;
+        }
+        delete[] m_wcsStringCache;
     }
 
     if (m_wcsCache)
@@ -63,25 +82,16 @@ BinaryReader::~BinaryReader()
 
 void BinaryReader::Reset(unsigned char* data, int len)
 {
+    
     m_data = data;
     m_len = len;
     m_pos = 0;
     m_wcsCacheCurrent = 0;
-    
-    if (!(m_wcsCachedStrings).empty())
-    {
-        (m_wcsCachedStrings).clear();
-    }
 
-    //if we used extra string buffers, clear them
-    //and only reuse the last one (pointed to by m_wcsCache)
-    if (!m_stringCaches.empty())
+    for(int i=0; i<wcsCacheLen; i++ )
     {
-        for (std::list<wchar_t*>::iterator iter=m_stringCaches.begin(); 
-            iter != m_stringCaches.end(); iter++)
-            delete [] (*iter);
-
-		 m_stringCaches.clear();
+        if( m_wcsStringCache[i].wcsString != NULL )
+            m_wcsStringCache[i].wcsString[0] = '\0';
     }
 }
 
@@ -206,74 +216,70 @@ const wchar_t* BinaryReader::ReadString()
     return ReadRawString(mbstrlen);
 }
 
-
-const wchar_t* BinaryReader::ReadRawString(unsigned mbstrlen)
-{    
-    
-    //check if we have read this string already (it will be cached)
-    wchar_t* thestring = (m_wcsCachedStrings)[m_pos];
-    if (thestring != NULL)
-	{
-		m_pos += mbstrlen;
-        return thestring;
-	}
-
-    //make sure wchar_t cache size is big enough
-    if (m_wcsCacheLen - m_wcsCacheCurrent < mbstrlen + 1)
+const wchar_t* BinaryReader::ReadRawString( unsigned mbstrlen, int index )
+{
+    if( mbstrlen <= 1 )
     {
-        //pick size -- minimum size is STRING_BUFFER_SIZE
-        m_wcsCacheLen = max(STRING_CACHE_SIZE, m_wcsCacheCurrent + mbstrlen + 1);
-        wchar_t* tmp = new wchar_t[m_wcsCacheLen];
-
-        if (m_wcsCache)
-        {
-            //if we already had a buffer, keep track of it
-            //in the list, but set the new current buffer 
-            //to the newly allocated one
-            m_stringCaches.push_back(m_wcsCache);
-            m_wcsCache = tmp;
-        }
-        else
-        {
-            //otherwise just keep track of cache buffer pointer
-            m_wcsCache = tmp;
-        }
-    }
-
-    //handle empty string
-    if (mbstrlen <= 1)
-    {
-        m_wcsCache[m_wcsCacheCurrent] = 0;
-        (m_wcsCachedStrings)[m_pos] = m_wcsCache + m_wcsCacheCurrent;
-        m_wcsCacheCurrent += 1;
-
-        //skip past null character
         m_pos += mbstrlen;
-
-        return m_wcsCache + m_wcsCacheCurrent - 1;
+        return L"";
     }
-        
-    //Note: we pass in m_len as number of characters to read, but we know
-    //the string must be null terminated, so the function will terminate before that
-    int count = ut_utf8_to_unicode((char*)(m_data + m_pos), mbstrlen, m_wcsCache + m_wcsCacheCurrent, mbstrlen);
+    if( index >= wcsCacheLen )
+        return ReadRawString( mbstrlen );
+
+    if( m_wcsStringCache[index].wcsString != NULL && m_wcsStringCache[index].wcsString[0] != '\0' )
+    {
+        m_pos += mbstrlen;
+		wcsCacheLastIndex = index;
+        return m_wcsStringCache[index].wcsString;
+    }
+
+    if( mbstrlen > m_wcsStringCache[index].wcsLen )
+    {
+        if( NULL != m_wcsStringCache[index].wcsString )
+            delete[] m_wcsStringCache[index].wcsString;
+
+        m_wcsStringCache[index].wcsString = new wchar_t[mbstrlen+1];
+        m_wcsStringCache[index].wcsLen =  mbstrlen;
+    }
+    int count = ut_utf8_to_unicode((char*)(m_data + m_pos), mbstrlen, m_wcsStringCache[index].wcsString, mbstrlen);
 
     _ASSERT(count > 0 && (unsigned int)count < mbstrlen);
 
-    //remember offset of current string
-    unsigned offset = m_wcsCacheCurrent;
-    (m_wcsCachedStrings)[m_pos] = m_wcsCache + offset;
-
-    //increment position count to position after string
-    //note that "count" is the number of unicode characters
-    //read, not the number of bytes we need to increment.
-    m_pos += mbstrlen; 
-
-    //remember where to put next string that we read
-    m_wcsCacheCurrent += (int)wcslen(m_wcsCache + m_wcsCacheCurrent) + 1;
-
-    return m_wcsCache + offset;
+    m_pos += mbstrlen;
+	wcsCacheLastIndex = index;
+    return m_wcsStringCache[index].wcsString;
 }
 
+//
+// Should only be called from internal code that does not require the returned 
+// string to stay around until the next reset. It uses a circular buffer of
+// SDF_STRING_CACHE_COUNT elements and the individual elements may get overwriten before the reset. 
+// The Fdo requirement for feature reader is that string stays around untill the next ReadNext. 
+const wchar_t* BinaryReader::ReadRawString(unsigned mbstrlen)
+{
+    if( mbstrlen <= 1 )
+    {
+        m_pos += mbstrlen;
+        return L"";
+    }
+	if( (++wcsCacheLastIndex) >= wcsCacheLen )
+		wcsCacheLastIndex = 0;
+
+	if( mbstrlen > m_wcsStringCache[wcsCacheLastIndex].wcsLen )
+    {
+        if( NULL != m_wcsStringCache[wcsCacheLastIndex].wcsString )
+            delete[] m_wcsStringCache[wcsCacheLastIndex].wcsString;
+
+        m_wcsStringCache[wcsCacheLastIndex].wcsString = new wchar_t[mbstrlen+1];
+        m_wcsStringCache[wcsCacheLastIndex].wcsLen =  mbstrlen;
+    }
+    int count = ut_utf8_to_unicode((char*)(m_data + m_pos), mbstrlen, m_wcsStringCache[wcsCacheLastIndex].wcsString, mbstrlen);
+
+    _ASSERT(count > 0 && (unsigned int)count < mbstrlen);
+
+    m_pos += mbstrlen;
+    return m_wcsStringCache[wcsCacheLastIndex].wcsString;
+}
 
 //deserializes a FdoDateTime
 FdoDateTime BinaryReader::ReadDateTime()
@@ -420,7 +426,7 @@ const wchar_t* BinaryReader::ReadRawStringNoCache(unsigned mbstrlen)
 			delete[] m_wcsCache;
 		m_wcsCache = NULL;
         //pick size -- minimum size is STRING_BUFFER_SIZE
-        m_wcsCacheLen = max(STRING_CACHE_SIZE, mbstrlen + 1);
+        m_wcsCacheLen = max(SDF_STRING_CACHE_SIZE, mbstrlen + 1);
         m_wcsCache = new wchar_t[m_wcsCacheLen];
     }
 

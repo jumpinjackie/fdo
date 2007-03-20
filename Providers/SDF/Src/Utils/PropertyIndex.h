@@ -65,6 +65,7 @@ private:
     PropertyIndex(){};
 
     int m_numProps;
+	int m_lastIndex;
     PropertyStub* m_vProps;
     FdoClassDefinition* m_baseClass;
     FdoFeatureClass* m_baseFeatureClass;

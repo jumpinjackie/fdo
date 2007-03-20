@@ -30,16 +30,19 @@ using namespace std;
 //if we need bigger, either a new buffer will be allocated or a 
 //the bigger size will be used if it is the first buffer we
 //create
-#define STRING_CACHE_SIZE 256
+#define SDF_STRING_CACHE_SIZE 256
+
+#define SDF_STRING_CACHE_COUNT 10
 
 class BinaryReader
 {
 public:
 
-    BinaryReader(unsigned char* data, int len);
+    BinaryReader(unsigned char* data, int len );
+    BinaryReader(unsigned char* data, int len, int propCount );
 	BinaryReader();
     virtual ~BinaryReader();
-    void Init();
+    void Init( int propCount );
     void Reset(unsigned char* data, int len);
     void SetPosition(int offset);
     int GetPosition();
@@ -57,6 +60,7 @@ public:
     char ReadChar();
     const wchar_t* ReadString(); 
     const wchar_t* ReadRawString(unsigned mbstrlen);
+    const wchar_t* ReadRawString(unsigned mbstrlen, int index);
 	const wchar_t* ReadRawStringNoCache(unsigned mbstrlen);
     FdoDateTime ReadDateTime();
     FdoDataValue* ReadDataValue();
@@ -71,17 +75,19 @@ private:
     //current unicode string buffer
     wchar_t* m_wcsCache;
     unsigned m_wcsCacheCurrent;
-    unsigned m_wcsCacheLen;
+    unsigned m_wcsCacheLen; 
 
-    
-    //maps offset of a string in the data record to an 
-    //offset of the unicode representation in the m_wcsCache
-    stdext::hash_map<int, wchar_t*> m_wcsCachedStrings;
-
-    //since we cannot invalidate pointers to strings we have returned
+	//since we cannot invalidate pointers to strings we have returned
     //we need to keep all previous caches valid until we are reset or
     //destroyed.
-    std::list<wchar_t*> m_stringCaches;
+    typedef struct _wcsStringCache {
+        wchar_t* wcsString;
+        unsigned int wcsLen;
+    } SdfStringCacheDef;
+	
+    SdfStringCacheDef  *m_wcsStringCache;
+    unsigned int wcsCacheLen;
+    unsigned int wcsCacheLastIndex;
 };
 
 #endif
