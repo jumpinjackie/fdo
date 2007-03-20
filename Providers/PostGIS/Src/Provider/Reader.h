@@ -242,8 +242,6 @@ FdoIRaster* Reader<T>::GetRaster(FdoString* propertyName)
 template <typename T>
 bool Reader<T>::ReadNext()
 {
-    FDOLOG_MARKER("Reader::+ReadNext");
-
     bool hasTuples = mSQLReader->ReadNext();
     return hasTuples;
 }
