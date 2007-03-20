@@ -78,6 +78,19 @@ PgCursor::ResultPtr PgCursor::GetFetchResult() const
     return mFetchRes;
 }
 
+FdoSize PgCursor::GetTuplesCount() const
+{
+    ValidateDeclaredState();
+
+    int ntuples = 0;
+    if (NULL != mFetchRes && PGRES_TUPLES_OK == PQresultStatus(mFetchRes))
+    {
+        ntuples = PQntuples(mFetchRes);
+    }
+
+    return static_cast<FdoSize>(ntuples);
+}
+
 FdoSize PgCursor::GetFieldsCount() const
 {
     ValidateDeclaredState();
@@ -329,6 +342,24 @@ PgCursor::ResultPtr PgCursor::FetchNext()
     sql += static_cast<char const*>(mName);
 
     mFetchRes = mConn->PgExecuteQuery(sql.c_str());
+    return mFetchRes;
+}
+
+PgCursor::ResultPtr PgCursor::Fetch(std::size_t count)
+{
+    ValidateDeclaredState();
+    ClearFetchResult();
+    assert(NULL == mFetchRes);
+
+    // TODO: Consider moving this logic to on-construction time.
+    if (mSqlFetch.empty())
+    {
+        std::ostringstream os;
+        os << "FETCH " << count << " FROM " << static_cast<char const*>(mName);
+        mSqlFetch = os.str();
+    }
+
+    mFetchRes = mConn->PgExecuteQuery(mSqlFetch.c_str());
     return mFetchRes;
 }
 
