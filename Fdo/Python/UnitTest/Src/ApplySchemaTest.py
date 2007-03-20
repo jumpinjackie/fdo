@@ -32,7 +32,7 @@ from SdfConnectionFactory import *
 from SdfFileFactory import *
 
 
-G_INI_FILENAME="./input/UnitTestConfig.ini"
+G_INI_FILENAME="./Input/UnitTestConfig.ini"
 
 
 class ApplySchemaTest(unittest.TestCase):

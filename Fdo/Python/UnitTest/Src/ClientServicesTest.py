@@ -70,5 +70,7 @@ class ClientServicesTest(unittest.TestCase):
 				self.assert_(connection.Release() == 0)
 					
 				# Check if the library exists in the path
-				self.assert_(provider.GetLibraryPath() == '.\SDFProvider.dll')
+				path = provider.GetLibraryPath()
+				if path != '.\SDFProvider.dll' and path != '/usr/local/fdo-3.3.0/lib/libSDFProvider.so':
+					self.fail("Invalid provider.GetLibraryPath()")
 				
