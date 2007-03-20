@@ -683,7 +683,7 @@ PGresult* Connection::PgDescribeCursor(char const* name)
 void Connection::PgBeginSoftTransaction()
 {
     FDOLOG_MARKER("Connection::+PgBeginSoftTransaction");
-    assert(FdoConnectionState_Open == GetConnectionState());
+    assert(FdoConnectionState_Closed != GetConnectionState());
     
     mSoftTransactionLevel++;
     if (1 == mSoftTransactionLevel)
@@ -702,7 +702,7 @@ void Connection::PgBeginSoftTransaction()
 void Connection::PgCommitSoftTransaction()
 {
     FDOLOG_MARKER("Connection::+PgCommitSoftTransaction");
-    assert(FdoConnectionState_Open == GetConnectionState());
+    assert(FdoConnectionState_Closed != GetConnectionState());
     
     if (0 >= mSoftTransactionLevel)
     {
@@ -725,7 +725,7 @@ void Connection::PgCommitSoftTransaction()
 void Connection::PgRollbackSoftTransaction()
 {
     FDOLOG_MARKER("Connection::+PgRollbackSoftTransaction");
-    assert(FdoConnectionState_Open == GetConnectionState());
+    assert(FdoConnectionState_Closed != GetConnectionState());
     
     if (0 >= mSoftTransactionLevel)
     {
@@ -745,7 +745,7 @@ void Connection::PgRollbackSoftTransaction()
 void Connection::PgFlushSoftTransaction()
 {
     FDOLOG_MARKER("Connection::+PgFlushSoftTransaction");
-    assert(FdoConnectionState_Open == GetConnectionState());
+    assert(FdoConnectionState_Closed != GetConnectionState());
     
     // Force unwinding and commit of any active transaction
     //if (mSoftTransactionLevel > 1)
