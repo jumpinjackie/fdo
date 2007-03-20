@@ -26,7 +26,7 @@ class LOBTest(unittest.TestCase):
 	Unit test for handling binary LOB values in Python
 	"""
 	def testLOBHandling(self):
-		fileStream1 = FdoIoFileStream.Create( "input/clock.avi", "rb" )
+		fileStream1 = FdoIoFileStream.Create( "Input/clock.avi", "rb" )
 		fileReader1 = FdoIoByteStreamReader.Create( fileStream1 )	
 
 		# Initialize the 'data' property value with the filestream reader
