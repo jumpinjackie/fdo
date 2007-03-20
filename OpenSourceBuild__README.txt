@@ -339,9 +339,9 @@ III. Running the FDO Unit Tests
         ArcSDE:
 
             NOTE: Please refer to [FDO OpenSource]\Providers\ArcSDE\UnitTest_README.txt
-            for details on how to create test users and test data, and which command-line arguments
-            to pass to the ArcSDE Provider UnitTest executable in order to point to your
-            test server and data.
+            for details on how to create test users and test data, and which command-line 
+            arguments to pass to the ArcSDE Provider UnitTest executable in order to 
+            point to your test server and data.
 
             cd [FDO OpenSource]\Providers\ArcSDE\Src\UnitTest
             Run ..\..\bin\win32\Debug\UnitTest.exe [mandatory command-line arguments]
@@ -355,22 +355,25 @@ III. Running the FDO Unit Tests
 
             cd [FDO OpenSource]\Providers\GenericRdbms\Src\UnitTest
 
-            If you wish to run the MySql unit tests without specifying 
-            an initialization file, update the default initialization file 
-            "MySqlInit.txt" file with valid values for username, password and service
-            for the service against which the unit tests should be executed and 
-            run "Dbg\UnitTestMySql.exe" with no additional parameters.
+            If you wish to run the MySql unit tests without specifying an 
+            initialization file, update the default initialization file 
+            "MySqlInit.txt" file with valid values for username, password 
+            and service for the service against which the unit tests should 
+            be executed and run "Dbg\UnitTestMySql.exe" with no additional 
+            parameters.
 
-            NOTE: Do not drop MySqlInit.txt in subversion if you choose to modify it
+            NOTE: Do not drop MySqlInit.txt in subversion if you choose to
+            modify it
 
-            If you wish to run the unit test and specify your own 
-            initialization file, create your the file with valid values for username, 
-            password and service and run the unit test by specifying the initialization file 
-            on the command line when executing the unit tests. 
+            If you wish to run the unit test and specify your own initialization 
+            file, create your the file with valid values for username, password 
+            and service and run the unit test by specifying the initialization 
+            file on the command line when executing the unit tests.
 
             e.g. Dbg\UnitTestMySql.exe initfiletest=MySqlInitEx.txt
 
-            NOTE: The initialization file must contain values for service, username and password.
+            NOTE: The initialization file must contain values for service, 
+            username and password.
 
             e.g.: service=mysqlserver;username=root;password=xxxx;
 
@@ -380,23 +383,25 @@ III. Running the FDO Unit Tests
 
             If you wish to run the ODBC unit tests without specifying 
             an initialization file, update the default initialization file 
-            "OdbcInit.txt" file with valid values for username, password and service
-            for the services against which the unit tests should be executed and 
-            run "Dbg\UnitTestOdbc.exe" with no additional parameters.
+            "OdbcInit.txt" file with valid values for username, password and 
+            service for the services against which the unit tests should be  
+            executed and run "Dbg\UnitTestOdbc.exe" with no additional parameters.
                 
             NOTE: Do not drop OdbcInit.txt in subversion if you choose to modify it
                 
-            If you wish to run the unit test and specify your own 
-            initialization file, create your the file with valid values for username, 
+            If you wish to run the unit test and specify your own initialization 
+            file, create your the file with valid values for username, 
             password and the service names. Run the unit test by specifying the 
             initialization file on the command line when executing the unit tests. 
                
             e.g. Dbg\UnitTestOdbc.exe initfiletest=OdbcInitEx.txt
                
-            NOTE: The initialization file must contain values for service, username and password.
+            NOTE: The initialization file must contain values for service, 
+            username and password.
                
-            The initialization file must contain service, username and password for each server type 
-            DSN name can be specified using DSNOracle, DSNMySql, DSNSqlServer
+            The initialization file must contain service, username and password 
+            for each server type DSN name can be specified using DSNOracle, 
+            DSNMySql, DSNSqlServer
 
             e.g.: 
 
@@ -437,6 +442,7 @@ I. Build Instructions
   4. ./build_thirdparty.sh
 
   5. ./build_linux.sh
+
 
   NOTE: build_linux.sh is a simple helper script that assists developers to 
         build the FDO components. These scripts supplement standard support of 
@@ -551,25 +557,52 @@ II. Build Notes
      
      To install graphviz, refer to: http://www.graphviz.org/ 
 
-  7. NOTE: To run the unit test, you must set LD_LIBRARY_PATH as follows:
+  7. OPTIONAL: The FDO build process supports the generation of a set of python 
+     wrapper scripts for the FDO API. The python scripts are generated using 
+     SWIG. To generate the python scripts, you must have Python and SWIG installed.
+  
+     To install SWIG, refer to: http://www.swig.org/
+     To install Python, refer to: http://www.python.org/
+     
+     The FDO python scripts have been tested using SWIG 1.3.31 and Python 2.4.
+     It is recommended that both SWIG and Python be installed in the /usr 
+     directory.
+     
+     Once SWIG and python have been installed, set the PYTHON_LIB_PATH and 
+     PYTHON_INCLUDE_PATH environment variables to point to the locations of
+     the Python Include and Library files.
+     
+        e.g.
+          
+        export PYTHON_INCLUDE_PATH=/usr/include/python2.4
+        export PYTHON_LIB_PATH=/usr/lib/python2.4
+        
+     ** These variables are maintained in the setenvironment.sh script. 
+     
+     In order to build the FDO Python Wrappers. Build and install the FDO 
+     libraries. Once the install is complete, run the 
+     [FDO OpenSource]/Fdo/Python/build_linux.sh script. 
+     The Python components wil be installed in /usr/local/fdo-3.3.0/lib
+
+  8. NOTE: To run the unit test, you must set LD_LIBRARY_PATH as follows:
 
        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/fdo-3.3.0/lib
        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$SDEHOME/lib:$FDOTHIRDPARTY/ESRI/ArcSDEClient91/Linux/lib
  
-  8. NOTE: Several known problems exist if auto-mounted drives are used as 
+  9. NOTE: Several known problems exist if auto-mounted drives are used as 
      locations for the FDO Linux builds. It is recommended that users not use 
      auto-mounted drives when building FDO.
 
-  9. NOTE: The FDO expression scripts (.y) are not automatially recompiled as a
+ 10. NOTE: The FDO expression scripts (.y) are not automatially recompiled as a
      part of the FDO build process. In order to recompile the .y files into 
      their .cpp and .h counterparts, execute the build_parse.sh script.
 
- 10. NOTE: Use the [FDO OpenSource]\setenvironment.sh script to assist in 
+ 11. NOTE: Use the [FDO OpenSource]\setenvironment.sh script to assist in 
      setting and maintaing the correct environment settings for the FDO build 
      process.  This script can be modifed and used to set the correct 
      environment variables and PATH settings.
 
- 11. The build_thirdparty.sh script is used to build the FDO Thirdparty 
+ 12. The build_thirdparty.sh script is used to build the FDO Thirdparty 
      open source components used by the FDO API and the FDO providers.  
      The following is a general guideline on how to use the 
      build_thirdparty.sh build script.
@@ -618,7 +651,7 @@ II. Build Notes
             build_thirdparty --a clean
 
 
- 12. The build_linux.sh script is used to build and install the FDO OpenSource 
+ 13. The build_linux.sh script is used to build and install the FDO OpenSource 
      libraries. The following is a general guideline on how to use 
      build_linux.sh
 
@@ -679,10 +712,10 @@ II. Build Notes
 
 III. Running the FDO Unit Tests
 
-    The FDO API and the FDO providers come with unit tests that will allow the various 
-    products to be tested once the build is complete. In order to run the FDO API, 
-    WMS, SHP, SDF, ArcSDE, GDAL, MySql and Odbc Provider Unit Tests, follow the following
-    instructions once the build has completed
+    The FDO API and the FDO providers come with unit tests that will allow the  
+    various products to be tested once the build is complete. In order to run 
+    the FDO API, WMS, SHP, SDF, ArcSDE, GDAL, MySql and Odbc Provider Unit 
+    Tests, follow the following instructions once the build has completed
         
         FDO:
 
@@ -729,20 +762,23 @@ III. Running the FDO Unit Tests
 
             If you wish to run the MySql unit tests without specifying 
             an initialization file, update the default initialization file 
-            "MySqlInit.txt" file with valid values for username, password and service
-            for the service against which the unit tests should be executed and 
-            run ./UnitTestMySql with no additional parameters.
+            "MySqlInit.txt" file with valid values for username, password and 
+            service for the service against which the unit tests should be  
+            executed and run ./UnitTestMySql with no additional parameters.
 
-            NOTE: Do not drop MySqlInit.txt in subversion if you choose to modify it
+            NOTE: Do not drop MySqlInit.txt in subversion if you choose to 
+            modify it
 
             If you wish to run the unit test and specify your own 
-            initialization file, create your the file with valid values for username, 
-            password and service and run the unit test by specifying the initialization file 
-            on the command line when executing the unit tests. 
+            initialization file, create your the file with valid values for 
+            username, password and service and run the unit test by specifying
+            the initialization file on the command line when executing the unit
+            tests. 
 
             e.g. ./UnitTestMySql initfiletest=MySqlInitEx.txt
 
-            NOTE: The initialization file must contain values for service, username and password.
+            NOTE: The initialization file must contain values for service, 
+            username and password.
 
             e.g.: service=mysqlserver;username=root;password=xxxx;
 
@@ -751,26 +787,30 @@ III. Running the FDO Unit Tests
             cd [FDO OpenSource]/Providers/GenericRdbms/Src/UnitTest
 
             you must have the DSN created before you will run the unit tests.
-            DSN name can be specified using DSNOracle, DSNMySql, DSNSqlServer
+            DSN name can be specified using DSNOracle, DSNMySql, DSNSqlServer.
 
             If you wish to run the ODBC unit tests without specifying 
             an initialization file, update the default initialization file 
-            "OdbcInit.txt" file with valid values for username, password and service
-            for the services against which the unit tests should be executed and 
-            run ./UnitTestOdbc with no additional parameters.
+            "OdbcInit.txt" file with valid values for username, password and 
+            service for the services against which the unit tests should  
+            be executed and run ./UnitTestOdbc with no additional parameters.
 
-            NOTE: Do not drop OdbcInit.txt in subversion if you choose to modify it
+            NOTE: Do not drop OdbcInit.txt in subversion if you choose to 
+            modify it.
 
             If you wish to run the unit test and specify your own 
-            initialization file, create your the file with valid values for username, 
-            password and the service names. Run the unit test by specifying the 
-            initialization file on the command line when executing the unit tests. 
+            initialization file, create your the file with valid values for  
+            username, password and the service names. Run the unit test by  
+            specifying the initialization file on the command line when 
+            executing the unit tests. 
 
             e.g. ./UnitTestOdbc initfiletest=OdbcInitEx.txt
 
-            NOTE: The initialization file must contain values for service, username and password.
+            NOTE: The initialization file must contain values for service, 
+            username and password.
 
-            The initialization file must contain service, username and password for each server type 
+            The initialization file must contain service, username and 
+            password for each server type.
 
             e.g.: 
 
@@ -781,5 +821,10 @@ III. Running the FDO Unit Tests
 
             MySql:   ./UnitTestOdbc OdbcMySqlTests
             Oracle:  ./UnitTestOdbc OdbcOracleTests
+
+        Python Scripts:
+    
+            cd [FDO OpenSource]/Fdo/Python/UnitTest
+            ./UnitTests.sh
 
 [end]
