@@ -140,6 +140,8 @@ FdoIFeatureReader* SelectCommand::Execute()
         FdoPtr<FdoFeatureSchemaCollection> logicalSchemas;
         logicalSchemas = mConn->GetLogicalSchema();
 
+        FDOLOG_WRITE(L"Number of logical schemas: %d", logicalSchemas->GetCount());
+
         //
         // Get Feature Class definition
         //
@@ -148,7 +150,10 @@ FdoIFeatureReader* SelectCommand::Execute()
         assert(NULL != classIdentifier);
 
         FdoStringP classId = classIdentifier->GetText();
-        FDOLOG_WRITE(L"Feature class: %s", static_cast<FdoString*>(classId));
+        FDOLOG_WRITE(L"Logical schema name: %s",
+            static_cast<FdoString*>(classIdentifier->GetSchemaName()));
+        FDOLOG_WRITE(L"Class name: %s",
+            static_cast<FdoString*>(classIdentifier->GetName()));
 
         // Find definition of the feature class
         FdoPtr<FdoIDisposableCollection> featureClasses = NULL;
@@ -159,7 +164,7 @@ FdoIFeatureReader* SelectCommand::Execute()
                 static_cast<FdoString*>(classId));
             return NULL;
         }
-        FDOLOG_WRITE(L"Number of schemas: %d", featureClasses->GetCount());
+        FDOLOG_WRITE(L"Number of feature schemas: %d", featureClasses->GetCount());
 
         if (featureClasses->GetCount() <= 0)
         {

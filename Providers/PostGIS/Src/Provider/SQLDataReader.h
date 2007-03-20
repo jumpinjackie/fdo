@@ -35,6 +35,9 @@ namespace fdo { namespace postgis {
 ///
 /// \todo Check and move functions to protected area.
 ///
+/// \todo Add new constructor accepting custom coursor page size.
+///       Consider moving the cursor page responsibility to command/PgCursor. 
+///
 class SQLDataReader : public FdoISQLDataReader
 {
 public:
@@ -138,6 +141,9 @@ private:
     // Buffer for string value cache read from a column.
     // The reader returns raw pointer to a string, but pointee has to be cached somewhere.
     FdoStringP mCacheString;
+
+    // Number of rows fetched per every FETCH command.
+    static std::size_t const mCoursorPageSize = 500;
 
     //
     // Private operations

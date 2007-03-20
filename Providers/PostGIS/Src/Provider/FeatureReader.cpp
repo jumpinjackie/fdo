@@ -53,8 +53,6 @@ void FeatureReader::Dispose()
 
 FdoClassDefinition* FeatureReader::GetClassDefinition()
 {
-    FDOLOG_MARKER("FeatureReader::GetClassDefinition");
-
     FDO_SAFE_ADDREF(mClassDef.p);
     return mClassDef.p;
 }
@@ -70,13 +68,13 @@ const FdoByte* FeatureReader::GetGeometry(FdoString* propertyName, FdoInt32* cou
 {
     FDOLOG_MARKER("FeatureReader::GetGeometry(propertyName, count)");
 
+    // TODO: Check where this function is called.
+    assert(!"TO BE TESTED");
     return NULL;
 }
 
 FdoByteArray* FeatureReader::GetGeometry(FdoString* propertyName)
 {
-    FDOLOG_MARKER("FeatureReader::GetGeometry");
-
     return Base::GetGeometry(propertyName);
 }
 

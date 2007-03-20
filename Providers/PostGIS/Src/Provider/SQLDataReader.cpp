@@ -225,6 +225,7 @@ FdoString* SQLDataReader::GetString(FdoString* columnName)
 
 FdoDateTime SQLDataReader::GetDateTime(FdoString* columnName)
 {
+    // TODO: Add translating date/time
     assert(!"NOT IMPLEMENTED");
     return FdoDateTime();
 }
@@ -293,17 +294,25 @@ FdoByteArray* SQLDataReader::GetGeometry(FdoString* columnName)
 
 bool SQLDataReader::ReadNext()
 {
-    // TODO: Add fetching tuples in batches, ie. per 50 or 100
-
     bool eof = true;
 
-    PgCursor::ResultPtr pgRes = mCursor->FetchNext();
-    if (PGRES_TUPLES_OK == PQresultStatus(pgRes))
+    if ((mCurrentTuple + 1 )>= mCursor->GetTuplesCount())
     {
-        if (0 != PQntuples(pgRes))
+        PgCursor::ResultPtr pgRes = mCursor->Fetch(mCoursorPageSize);
+        if (PGRES_TUPLES_OK == PQresultStatus(pgRes))
         {
-            eof = false;
+            mCurrentTuple = 0;
+
+            if (0 != PQntuples(pgRes))
+            {
+                eof = false;
+            }
         }
+    }
+    else
+    {
+        eof = false;
+        mCurrentTuple++;
     }
 
     return (!eof);
