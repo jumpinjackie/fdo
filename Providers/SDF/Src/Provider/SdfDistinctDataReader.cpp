@@ -55,7 +55,7 @@ SdfDistinctDataReader::SdfDistinctDataReader(FdoIFeatureReader* reader, FdoIdent
 
     _ASSERT(ret == 0);
 
-    m_binReader = new BinaryReader(NULL, 0);
+    m_binReader = new BinaryReader(NULL, 0, m_propIndex->GetNumProps() );
 
     m_currentKey = new SQLiteData();
 

@@ -31,7 +31,7 @@ PropertyIndex::PropertyIndex(FdoClassDefinition* clas, unsigned int fcid)
 
     m_numProps = bpdc->GetCount() + pdc->GetCount();
     m_vProps = new PropertyStub[m_numProps];
-
+	m_lastIndex = 0;
     int index = 0;
 
     //now iterate over inherited properties 
@@ -125,12 +125,25 @@ PropertyStub* PropertyIndex::GetPropInfo(FdoString* name)
     //search for the correct PropertyStub -- iterate linearly
     //since we have relatively few properties. Using a hash_map
     //was slow for this
-    for (int i=0; i<m_numProps; i++)
+    for (int i=m_lastIndex; i<m_numProps; i++)
     {
         ps = &m_vProps[i];
 
         if (wcscmp((wchar_t*)name, ps->m_name) == 0)
+		{
+			m_lastIndex = i;
             return ps;
+		}
+    }
+	for (int i=0; i<m_lastIndex; i++)
+    {
+        ps = &m_vProps[i];
+
+        if (wcscmp((wchar_t*)name, ps->m_name) == 0)
+		{
+			m_lastIndex = i;
+            return ps;
+		}
     }
 
     return NULL;

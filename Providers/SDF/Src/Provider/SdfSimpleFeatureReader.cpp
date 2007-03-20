@@ -74,7 +74,7 @@ SdfSimpleFeatureReader::SdfSimpleFeatureReader(SdfConnection* connection, FdoCla
     //this prop index stays fixed
     m_basePropIndex = m_propIndex;
 
-    m_dataReader = new BinaryReader(NULL, 0);
+    m_dataReader = new BinaryReader(NULL, 0, m_propIndex->GetNumProps() );
 
     if (m_filter)
     {
@@ -129,7 +129,7 @@ SdfSimpleFeatureReader::SdfSimpleFeatureReader( SdfSimpleFeatureReader& reader )
 
 	m_filterExec = FilterExecutor::Create(this, m_propIndex, NULL, m_class);
 
-    m_dataReader = new BinaryReader(NULL, 0);
+    m_dataReader = new BinaryReader(NULL, 0, m_propIndex->GetNumProps() );
 
 	m_currentFeatureRecno = reader.m_currentFeatureRecno;
 
@@ -535,7 +535,7 @@ FdoString* SdfSimpleFeatureReader::GetString(FdoString* propertyName)
     //returns a pointer to the BinaryReader string cache memory
     //the pointer is valid until the next call to ReadNext(), when
     //the binary reader is reset
-    FdoString* st = m_dataReader->ReadRawString(len);
+    FdoString* st = m_dataReader->ReadRawString(len, ps->m_recordIndex );
 
     return st;
 }
@@ -739,7 +739,7 @@ FdoIFeatureReader* SdfSimpleFeatureReader::GetFeatureObject(FdoString* propertyN
 						break; // Just bail out. The association is not set therefore no associted objects exist
 
 					if( idProp->GetDataType() == FdoDataType_String )
-						val = FdoStringValue::Create( m_dataReader->ReadRawString( len ) ); // Need to use the raw string getter
+						val = FdoStringValue::Create( m_dataReader->ReadRawString( len, ps->m_recordIndex ) ); // Need to use the raw string getter
 					else
 						val = GetValue( idProp->GetDataType() ); 
 				}
@@ -765,7 +765,7 @@ FdoIFeatureReader* SdfSimpleFeatureReader::GetFeatureObject(FdoString* propertyN
 						break; // Should not happen as it's the primary key of the object; it must exist
 
 					if( idProp->GetDataType() == FdoDataType_String )
-						val = FdoStringValue::Create( m_dataReader->ReadRawString( len ) ); // Need to use the raw string getter
+						val = FdoStringValue::Create( m_dataReader->ReadRawString( len, ps->m_recordIndex ) ); // Need to use the raw string getter
 					else
 						val = GetValue( idProp->GetDataType() ); 
 				}
