@@ -23,19 +23,22 @@ Directory contents:
 -----------------------------------------------------------------------------
 
 Files:
-	build.cmd             (Win32) Build script. Builds wrapper for FDO API and all overrides
-	PythonWrappers.sln    (Win32) Visual Studio .NET solution file for all wrappers
-	Fdo*.vcproj           (Win32) Visual Studio .NET project files	
+	build.cmd             (Win32) Build script for Windows. Builds wrapper for FDO API
+	PythonWrappers.sln    (Win32) Visual Studio .NET solution file for FDO API Python wrappers
+	FdoWrapper.vcproj     (Win32) Visual Studio .NET project file
+	
+	build_linux.sh        (Linux) Build script for Linux. Builds wrapper for FDO API	
+	Makefile              (Linux) Makefile for FDO API wrapper
 	
 Directories:
 	/Inc                  C++ Header files for the wrapper utilities
 	
-	/Fdo_Inc	          Modified FDO C++ header files.  SWIG has problems with some
+	/Fdo_Inc	          Modified FDO C++ header files. SWIG has problems with some
 	                      C++ constructs used in FDO.  /Fdo_Inc contains modified
 	                      versions of the header files to generate the wrappers.
 	                      
-	/Inc_Merged           Temporary directory created by build scripts.  A merge of
-	                      the header files in FDO SDK, and those in /fdo_inc
+	/Inc_Merged           Temporary directory created by build scripts. A merge of
+	                      the header files in FDO SDK, and those in /Fdo_Inc
 	                      
 	/Lib                  Temporary directory created by Visual Studio. Target directory
 	                      of the build process.
