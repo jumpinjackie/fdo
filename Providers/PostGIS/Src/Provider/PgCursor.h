@@ -32,6 +32,8 @@ namespace fdo { namespace postgis {
 /// This class declares cursor in frame of a transaction,
 /// also provides interface to fetch and access data.
 ///
+/// \todo Add function/constructor to pass of FETCH page size and cache generated FETCH command.
+///
 class PgCursor :
     public FdoIDisposable,
     private boost::noncopyable
@@ -64,6 +66,9 @@ public:
 
     /// Get read-only pointer to results associated with FETCH command.
     ResultPtr GetFetchResult() const;
+
+    /// Get number of tuples in current fetch.
+    FdoSize GetTuplesCount() const;
 
     /// Get number of columns (fields) returned in each row of the query result.
     FdoSize GetFieldsCount() const;
@@ -115,8 +120,13 @@ public:
     ///
     void Close();
 
-    /// Fetch tuples.
+    /// Fetch next tuple.
     ResultPtr FetchNext();
+
+    /// Fetch N number of tuples from cursor.
+    /// \param
+    /// count [in] - number of tuples to fetch from the cursor.
+    ResultPtr Fetch(std::size_t count);
 
 protected:
 
@@ -140,6 +150,7 @@ private:
     Connection::Ptr mConn;
 
     // Name of declared cursor.
+    // TODO: Replace with std::string, to avoid narrowing overhead in Fetch calls
     FdoStringP mName;
 
     // Handle to result of describe portal command executed on the cursor.
@@ -150,6 +161,15 @@ private:
 
     // Flag indicating if cursor is closed or active.
     bool mIsClosed;
+
+
+    // Cached version of FETCH command.
+    // The purpose of this cache is optimization, to avoid generating
+    // it on every Fetch() call.
+    // The FETCH command has following format:
+    //  FETCH [ direction { FROM | IN } ] cursorname
+    // See PostgreSQL Documentation for details.
+    std::string mSqlFetch;
 
     //
     // Private operations
