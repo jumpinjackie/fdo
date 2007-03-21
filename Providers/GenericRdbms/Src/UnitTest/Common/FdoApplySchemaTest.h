@@ -46,12 +46,12 @@ protected:
     virtual void  set_provider() {};   
 	static FdoPropertyValue* AddNewProperty( FdoPropertyValueCollection* propertyValues, const wchar_t *name );
 
-    void TestSchema ();
-    void TestOverrides ();
-    void TestOverrideDefaults ();
-    void TestOverrideErrors ();
-    void TestLT();
-    void TestConfigDoc();
+    virtual void TestSchema ();
+    virtual void TestOverrides ();
+    virtual void TestOverrideDefaults ();
+    virtual void TestOverrideErrors ();
+    virtual void TestLT();
+    virtual void TestConfigDoc();
 
     void DeleteAcadSchema( FdoIConnection* connection );
 	void DeleteLandSchema( FdoIConnection* connection );

@@ -30,9 +30,9 @@ void mysql_fre_binds (mysql_cursor_def* cursor)
         for (i = 0; i < cursor->define_count; i++)
             if ((void*)NULL != cursor->redefines[i].geometry)
             {
-#pragma message ("ToDo: Investigate why it leads to a crash in case the geometry is released.")
-            // FreeGeometry (cursor->redefines[i].geometry);
+                FreeGeometry (cursor->redefines[i].geometry);
                 cursor->redefines[i].geometry = (void*)NULL;
+                *((char**)(cursor->redefines[i].original)) = NULL;
             }
         free (cursor->redefines);
         cursor->redefines = (mysql_define_def *)NULL;

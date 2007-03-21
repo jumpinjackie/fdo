@@ -36,6 +36,7 @@ static void fix_geometries (mysql_cursor_def* cursor)
             {
                 FreeGeometry (cursor->redefines[i].geometry);
                 cursor->redefines[i].geometry = (void*)NULL;
+                *((char**)(cursor->redefines[i].original)) = NULL;
             }
             if (0 != *(cursor->defines[i].is_null))
                 *((char**)(cursor->redefines[i].original)) = NULL;
@@ -97,7 +98,8 @@ int mysql_fetch (
 						// helps the caller to handle the TEXT columns.
 						unsigned long	*size = curs->defines[i].length;
 						char			*address = (char *)curs->defines[i].buffer;
-						address[*size] = '\0';
+						if (curs->redefines == NULL || curs->redefines[i].orig_type != MYSQL_TYPE_GEOMETRY)
+							address[*size] = '\0';
 					}
 				}
 

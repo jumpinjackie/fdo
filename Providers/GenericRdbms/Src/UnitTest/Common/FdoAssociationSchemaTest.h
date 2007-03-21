@@ -49,18 +49,18 @@ public:
     void setUp ();
 	void tearDown ();
 
-    void TestCreate_NoIdent () { TestCreate( false, false ); }
+    virtual void TestCreate_NoIdent () { TestCreate( false, false ); }
 
-    void TestCreate_NoIdentAssocFeatClass () { TestCreate( false, false,false,false,true,true ); }
-    void TestCreate_WithIdent (){ TestCreate( true, false ); }
-    void TestCreate_WithIdentNoFeatClass (){ TestCreate( true, false, false, false, true, false, false ); }
-    void TestCreate_WithIdentNoFeatClassSubClass (){ TestCreate( true, false, false, false, true, false, false, true ); }
-    void TestCreate_NoIdentObj () { TestCreate( false, true ); }
-    void TestCreate_WithIdentObj (){ TestCreate( true, true ); }
-    void TestCreate_NoIdentObjNested () { TestCreate( false, true, true ); }
-    void TestCreate_Rollback () { TestCreate( false, false, false, true, false ); }
-    void TestLoadWithObj() { TestLoad(true); }
-    void TestLoadWithNoObj() { TestLoad(false); }
+    virtual void TestCreate_NoIdentAssocFeatClass () { TestCreate( false, false,false,false,true,true ); }
+    virtual void TestCreate_WithIdent (){ TestCreate( true, false ); }
+    virtual void TestCreate_WithIdentNoFeatClass (){ TestCreate( true, false, false, false, true, false, false ); }
+    virtual void TestCreate_WithIdentNoFeatClassSubClass (){ TestCreate( true, false, false, false, true, false, false, true ); }
+    virtual void TestCreate_NoIdentObj () { TestCreate( false, true ); }
+    virtual void TestCreate_WithIdentObj (){ TestCreate( true, true ); }
+    virtual void TestCreate_NoIdentObjNested () { TestCreate( false, true, true ); }
+    virtual void TestCreate_Rollback () { TestCreate( false, false, false, true, false ); }
+    virtual void TestLoadWithObj() { TestLoad(true); }
+    virtual void TestLoadWithNoObj() { TestLoad(false); }
 
     void TestCreate (bool useIdent, bool useObjProp, bool useNetstedObj = false, bool useTransaction = false, 
             bool commitTransaction=true, bool associatedIsFeat=false, bool ownerIsFeat=true, bool addToSubclass=false );
@@ -68,10 +68,10 @@ public:
     void TestLoad ( bool withOjb );
 
     void TestDelete ( bool rollbak );
-    void TestDelete_rollbak (  ) { TestDelete( true ); }
-    void TestDelete_commit (  ) { TestDelete( false ); }
-    void TestCreateMultiple();
-    void TestLoadMultiple();
+    virtual void TestDelete_rollbak (  ) { TestDelete( true ); }
+    virtual void TestDelete_commit (  ) { TestDelete( false ); }
+    virtual void TestCreateMultiple();
+    virtual void TestLoadMultiple();
 
 protected:
     virtual void  set_provider() {};

@@ -38,6 +38,7 @@ FdoInt64 FdoSmPhMySqlColumnGeom::GetSRID()
 				mSRID = gdbiResult->GetInt64(L"srid", NULL, NULL);
 		}
 		gdbiResult->End();
+        delete gdbiResult;
 	}
 	return mSRID;
 }

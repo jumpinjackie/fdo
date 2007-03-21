@@ -147,7 +147,7 @@ void MySqlFdoInsertTest::insertDate ()
             {
                 wprintf(L"    Unexpected Exception: %ls\n", ex->GetExceptionMessage());
                 connection->Close();
-                throw ex;
+                UnitTestUtil::FailOnException(ex);
             }
 
             wchar_t expectedErrMsg[] = L"Incomplete date/time setting. ";
@@ -160,17 +160,17 @@ void MySqlFdoInsertTest::insertDate ()
             {
                 wprintf(L"    Unexpected Exception: %ls\n", ex->GetExceptionMessage());
                 connection->Close();
-                throw ex;
+                UnitTestUtil::FailOnException(ex);
             }
             else
                 wprintf(L"    Expected Exception: %ls\n", ex->GetExceptionMessage());
+            ex->Release();
         }
 
         catch ( ... )
         {
-            wprintf(L"    Unexpected Exception in insertDate()\n");
             connection->Close();
-            throw;
+            UnitTestUtil::FailOnException(FdoException::Create(L"    Unexpected Exception in insertDate()\n"));
         }
 
     }
@@ -238,10 +238,11 @@ void MySqlFdoInsertTest::insertBoundaryUnsigned()
         mgr = NULL;
         conn->disconnect();
         delete conn;
+        conn = NULL;
 
         FdoPtr<FdoIConnection> connection = UnitTestUtil::GetConnection(UNSIGNED_SUFFIX, false);
         FdoPtr<FdoITransaction> featureTransaction = connection->BeginTransaction();
-        FdoIInsert *insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
+        FdoPtr<FdoIInsert> insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
         insertCommand->SetFeatureClassName(tableName);
         FdoPtr<FdoPropertyValueCollection> propertyValues = insertCommand->GetPropertyValues();
 
@@ -267,10 +268,9 @@ void MySqlFdoInsertTest::insertBoundaryUnsigned()
         reader = insertCommand->Execute();
 
         featureTransaction->Commit();
-        insertCommand->Release();
 
         // check 
-    	FdoISelect* selectCmd = (FdoISelect *) connection->CreateCommand(FdoCommandType_Select);
+    	FdoPtr<FdoISelect> selectCmd = (FdoISelect *) connection->CreateCommand(FdoCommandType_Select);
 	    selectCmd->SetFeatureClassName(tableName);
 
     	FdoPtr<FdoIFeatureReader> featureReader = selectCmd->Execute();
@@ -289,15 +289,24 @@ void MySqlFdoInsertTest::insertBoundaryUnsigned()
                 break;
             }
         }
-
         CPPUNIT_ASSERT( rowCount == 2 );    
     }
     catch (FdoCommandException *ex)
     {
+        if (conn)
+        {
+            conn->disconnect();
+            delete conn;
+        }
         UnitTestUtil::FailOnException(ex);
     }
     catch (FdoException *ex)
     {
+        if (conn)
+        {
+            conn->disconnect();
+            delete conn;
+        }
         UnitTestUtil::FailOnException(ex);
     }
 }
@@ -336,7 +345,8 @@ void MySqlFdoInsertTest::characterSets()
         owner->Commit();
         owner->SetCurrent();
 
-        GdbiConnection* gdbiConnection = phMgr->SmartCast<FdoSmPhGrdMgr>()->GetGdbiConnection();
+        FdoSmPhGrdMgrP grdMgr = phMgr->SmartCast<FdoSmPhGrdMgr>();
+        GdbiConnection* gdbiConnection = grdMgr->GetGdbiConnection();
 
         // Create tables for various combinations of character set and types of characters
         // that will be stored in the table. 
@@ -351,6 +361,12 @@ void MySqlFdoInsertTest::characterSets()
         charSetCreateTable( gdbiConnection, L"cp932", L"ascii7" );
         charSetCreateTable( gdbiConnection, L"cp932", L"japan" );
 
+        phMgr = NULL;
+        mgr = NULL;
+        conn->disconnect();
+        delete conn;
+        conn = NULL;
+        
         // A couple of combinations are not tried:
         //  - latin11 character set, Japanese characters
         //  = cp932 character set, 8 bit characters
@@ -372,10 +388,20 @@ void MySqlFdoInsertTest::characterSets()
     }
     catch (FdoCommandException *ex)
     {
+        if (conn)
+        {
+            conn->disconnect();
+            delete conn;
+        }
         UnitTestUtil::FailOnException(ex);
     }
     catch (FdoException *ex)
     {
+        if (conn)
+        {
+            conn->disconnect();
+            delete conn;
+        }
         UnitTestUtil::FailOnException(ex);
     }
 }
@@ -419,7 +445,7 @@ void MySqlFdoInsertTest::charSetTestTable( FdoIConnection* connection, FdoString
     dataValue = FdoDataValue::Create(charVal);
     propertyValue->SetValue(dataValue);
 
-    insertCommand->Execute();
+    FdoPtr<FdoIFeatureReader>rdr = insertCommand->Execute();
 
   	FdoPtr<FdoISelect>selCmd = (FdoISelect*)connection->CreateCommand( FdoCommandType_Select );
     selCmd->SetFeatureClassName(className);

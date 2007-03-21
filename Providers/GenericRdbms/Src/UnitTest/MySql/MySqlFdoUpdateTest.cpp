@@ -55,6 +55,7 @@ void MySqlFdoUpdateTest::testForeignDataStore()
             UnitTestUtil::Sql2Db( (const wchar_t**) mForeignPolygonTest, connection.p );
             connection->Close();
         }
+        catch(FdoException* e){e->Release();}
         catch(...){}
         
         userConnectString = UnitTestUtil::GetConnectionString(Connection_WithDatastore, L"_foreign_sch");

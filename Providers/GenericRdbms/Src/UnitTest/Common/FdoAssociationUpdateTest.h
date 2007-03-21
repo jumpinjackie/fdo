@@ -55,15 +55,15 @@ public:
     virtual ~FdoAssociationUpdateTest(void);
     void setUp () { mSchemaUtil = GetSchemaUtil(); mSchemaUtil->setUp(); }
     void tearDown () { mSchemaUtil->tearDown (); }
-    void update_NoIdent();
-    void update_NoIdentAssocFeatClass ();
-    void update_WithIdent();
-    void update_WithIdentNoFeatClass();
-    void update_WithIdentParent();
-    void update_WithIdentError();
-    void update_NoIdentObj();
-    void update_WithIdentObj();
-    void update_NoIdentObjNested(); 
+    virtual void update_NoIdent();
+    virtual void update_NoIdentAssocFeatClass ();
+    virtual void update_WithIdent();
+    virtual void update_WithIdentNoFeatClass();
+    virtual void update_WithIdentParent();
+    virtual void update_WithIdentError();
+    virtual void update_NoIdentObj();
+    virtual void update_WithIdentObj();
+    virtual void update_NoIdentObjNested(); 
 
 private:
     void masterTestNoObj( AssociationUpdateType type, const wchar_t* name1, const wchar_t* name2, int id, bool assocIsFeat=false, bool ownerIsFeat=true );
