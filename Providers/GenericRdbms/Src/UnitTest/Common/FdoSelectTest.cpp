@@ -17,6 +17,7 @@
 #include "Pch.h"
 #include "FdoSelectTest.h"
 #include "UnitTestUtil.h"
+#include "FdoSpatial.h"
 //#include <Geometry/GeometryStd.h>
 //#include <Geometry/Fgf/Factory.h>
 //#include "FdoGeometry.h"
@@ -430,38 +431,79 @@ void FdoSelectTest::distance_query()
     {
         try
         {
-            selCmd = (FdoISelect*)mConnection->CreateCommand( FdoCommandType_Select );
-            selCmd->SetFeatureClassName(L"Acad:AcDb3dPolyline");
-            FdoPtr<FdoFilter> filterPtr = FdoSelectTest::CreateFilter();
-            double coords[6];
-            double      distance = 300.0;
-            coords[0] = 1410804.854546;
-            coords[1] = 553505.994735;
-            coords[2] = 0.0;
-            coords[3] = 1412350.770162;
-            coords[4] = 554980.139631;
-            coords[5] = 0.0;
-            FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-            FdoPtr<FdoILineString> line1 = gf->CreateLineString(FdoDimensionality_XY|FdoDimensionality_Z, 2*3, coords);
-            FdoPtr<FdoByteArray> byteArray = gf->GetFgf(line1);
+            FdoInt32 size;
 
-            FdoPtr<FdoGeometryValue> geomValue = FdoPtr<FdoGeometryValue>( FdoGeometryValue::Create(byteArray));
-            FdoPtr<FdoDistanceCondition> pSpatialFilter = FdoPtr<FdoDistanceCondition>( FdoDistanceCondition::Create(L"Geometry",
-                                                                                FdoDistanceOperations_Within,
-                                                                                geomValue,
-                                                                                distance ));
-            FdoPtr<FdoFilter> filter = FdoFilter::Combine( filterPtr, FdoBinaryLogicalOperations_And, pSpatialFilter);
-            selCmd->SetFilter(filter);
+            FdoPtr<FdoIFilterCapabilities> filterCapabilities = mConnection->GetFilterCapabilities();
+            FdoDistanceOperations *distanceOperations = filterCapabilities->GetDistanceOperations(size);
 
-            myReader = selCmd->Execute();
-            if( myReader != NULL  )
+            // Do test only if provider supports distance filters.
+            if ( size > 0 ) 
             {
-                while ( myReader->ReadNext() )
-                {
-                    read_feature_data( myReader );
-                }
-            }
+                selCmd = (FdoISelect*)mConnection->CreateCommand( FdoCommandType_Select );
+                selCmd->SetFeatureClassName(L"Acad:AcDb3dPolyline");
+                FdoPtr<FdoFilter> filterPtr = FdoSelectTest::CreateFilter();
+                double coords[6];
+                double      distance = 300.0;
+                coords[0] = 1410804.854546;
+                coords[1] = 553505.994735;
+                coords[2] = 0.0;
+                coords[3] = 1412350.770162;
+                coords[4] = 554980.139631;
+                coords[5] = 0.0;
+                FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+                FdoPtr<FdoILineString> line1 = gf->CreateLineString(FdoDimensionality_XY|FdoDimensionality_Z, 2*3, coords);
+                FdoPtr<FdoByteArray> byteArray = gf->GetFgf(line1);
 
+                FdoPtr<FdoGeometryValue> geomValue = FdoPtr<FdoGeometryValue>( FdoGeometryValue::Create(byteArray));
+                FdoPtr<FdoDistanceCondition> pSpatialFilter = FdoPtr<FdoDistanceCondition>( FdoDistanceCondition::Create(L"Geometry",
+                                                                                    FdoDistanceOperations_Within,
+                                                                                    geomValue,
+                                                                                    distance ));
+                FdoPtr<FdoFilter> filter = FdoFilter::Combine( filterPtr, FdoBinaryLogicalOperations_And, pSpatialFilter);
+                selCmd->SetFilter(filter);
+
+                myReader = selCmd->Execute();
+                if( myReader != NULL  )
+                {
+                    while ( myReader->ReadNext() )
+                    {
+                        read_feature_data( myReader );
+                    }
+                }
+
+                // Try the same query again, but with a dimensionality mismatch between filter and selected geometries.
+                selCmd = (FdoISelect*)mConnection->CreateCommand( FdoCommandType_Select );
+                selCmd->SetFeatureClassName(L"Acad:AcDb3dPolyline");
+			    filterPtr = CreateFilter();
+                double coords2[4];
+                coords2[0] = 1410804.854546;
+                coords2[1] = 553505.994735;
+                coords2[2] = 1412350.770162;
+                coords2[3] = 554980.139631;
+			    line1 = gf->CreateLineString(FdoDimensionality_XY, 4, coords2);
+			    byteArray = gf->GetFgf(line1);
+                printf("Testing DistanceCondition with 2D geometry:\n<<%ls>>\n", line1->GetText());
+     
+			    geomValue = FdoPtr<FdoGeometryValue>( FdoGeometryValue::Create(byteArray));
+		        pSpatialFilter = FdoPtr<FdoDistanceCondition>( FdoDistanceCondition::Create(L"Geometry", 
+																				    FdoDistanceOperations_Within,
+																				    geomValue, 
+																				    distance ));
+			    filter = FdoFilter::Combine( filterPtr, FdoBinaryLogicalOperations_And, pSpatialFilter);
+			    selCmd->SetFilter(filter);
+
+                FdoInt32 numRows = 0;
+                myReader = selCmd->Execute();
+                if( myReader != NULL  )
+                {
+                    while ( myReader->ReadNext() )
+                    {
+                        numRows++;
+                        read_feature_data( myReader );
+                    }
+                }
+                printf("Read %d rows.\n", numRows);
+            }
         }
         catch( FdoException *ex )
         {
@@ -513,6 +555,169 @@ void FdoSelectTest::spatial_query()
         {
             DBG( printf("FDO Feature query error: %ls\n", ex->GetExceptionMessage()) );
             TestCommonFail (ex);
+        }
+    }
+}
+
+void FdoSelectTest::spatial_query_defect792377()
+{
+    FdoPtr<FdoIFeatureReader> myReader;
+	FdoPtr<FdoISelect> selCmd;
+
+    if( mConnection != NULL )
+    {
+        try
+        {
+            FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+            selCmd = (FdoISelect*)mConnection->CreateCommand( FdoCommandType_Select );
+            selCmd->SetFeatureClassName(L"Acad:AcDb3dPolyline");
+			FdoPtr<FdoFilter> filterPtr = CreateFilter();
+
+            // We want a geometry with more than 999 ordinates, which is a limit imposed
+            // by the Oracle parser.  This makes sure that we are binding geometries in
+            // spatial filters -- binding can be done with any legal geometry.
+            // The easiest way to create one here is to linearise a circular arc.
+
+            FdoString * geomText = L"CURVEPOLYGON XYZ ((1410804.854546 553505.994735 0 (CIRCULARARCSEGMENT (1412350.770162 554980.139631 0, 1410804.854546 553505.994735 0))))";
+            FdoPtr<FdoIGeometry> geom = gf->CreateGeometry(geomText);
+
+            FdoPtr<FdoIGeometry> linearizedGeom =
+                FdoSpatialUtility::ApproximateGeometryWithLineStrings(geom, 0, 0.001, gf);
+
+            FdoGeometryType geomType = linearizedGeom->GetDerivedType();
+            CPPUNIT_ASSERT( geomType == FdoGeometryType_Polygon );
+            FdoIPolygon * poly = static_cast<FdoIPolygon *>(linearizedGeom.p);
+            FdoPtr<FdoILinearRing> ring = poly->GetExteriorRing();
+            FdoInt32 numPositions = ring->GetCount();
+            CPPUNIT_ASSERT( numPositions > 333 );
+
+	        FdoPtr<FdoGeometryValue> geomValue = FdoPtr<FdoGeometryValue>(FdoGeometryValue::Create(FdoPtr<FdoByteArray>(gf->GetFgf(linearizedGeom))));
+	        FdoPtr<FdoSpatialCondition> pSpatialFilter = FdoPtr<FdoSpatialCondition>(FdoSpatialCondition::Create(L"Geometry", 
+																	  FdoSpatialOperations_Intersects, 
+																	  geomValue));
+
+			FdoPtr<FdoFilter> filter = FdoFilter::Combine( filterPtr, FdoBinaryLogicalOperations_And, pSpatialFilter);
+			selCmd->SetFilter(filter);
+            
+            FdoInt32 numFeatures = 0;
+
+            myReader = selCmd->Execute();
+            if( myReader != NULL  )
+            {
+                while ( myReader->ReadNext() )
+                {
+                    numFeatures++;
+                    read_feature_data( myReader );
+                }
+            }
+            printf("   %i feature(s) read\n", numFeatures);
+        }
+        catch( FdoException *ex )
+        {
+            printf("FDO Feature query error: %ls\n", ex->GetExceptionMessage());
+            throw;
+        }
+    }
+}
+
+void FdoSelectTest::spatial_query_defect813611 ()
+{
+    FdoPtr<FdoIFeatureReader> myReader;
+	FdoPtr<FdoISelect> selCmd;
+
+    if( mConnection != NULL )
+    {
+        try
+        {
+            FdoInt32 size;
+            FdoInt32 idx;
+            bool found = false;
+            FdoPtr<FdoIFilterCapabilities> filterCapabilities = mConnection->GetFilterCapabilities();
+            FdoSpatialOperations *spatialOperations = filterCapabilities->GetSpatialOperations(size);
+
+            for ( idx = 0; idx < size; idx++ ) 
+            {
+                if ( spatialOperations[idx] == FdoSpatialOperations_Inside )
+                {
+                    found = true;
+                    break;
+                }
+            }
+
+            if ( found ) 
+            {
+                FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+                selCmd = (FdoISelect*)mConnection->CreateCommand( FdoCommandType_Select );
+                selCmd->SetFeatureClassName(L"Acad:AcDb3dPolyline");
+
+                // We want a polygon with one circle formed by two arcs.
+
+                FdoString * geomText = L"CURVEPOLYGON XYZ ((1500876 500030 0 (CIRCULARARCSEGMENT (1400856 600050 0, 1300836 500030 0), CIRCULARARCSEGMENT (1400856 400010 0, 1500876 500030 0))))";
+                FdoPtr<FdoIGeometry> geom = gf->CreateGeometry(geomText);
+
+	            FdoPtr<FdoGeometryValue> geomValue = FdoPtr<FdoGeometryValue>(FdoGeometryValue::Create(FdoPtr<FdoByteArray>(gf->GetFgf(geom))));
+	            FdoPtr<FdoSpatialCondition> pSpatialFilter = FdoPtr<FdoSpatialCondition>(FdoSpatialCondition::Create(L"Geometry", 
+																	      FdoSpatialOperations_Inside, 
+																	      geomValue));
+
+			    selCmd->SetFilter(pSpatialFilter);
+                
+                FdoInt32 numFeatures = 0;
+
+                myReader = selCmd->Execute();
+                if( myReader != NULL  )
+                {
+                    while ( myReader->ReadNext() )
+                    {
+                        numFeatures++;
+                        read_feature_data( myReader );
+                    }
+                }
+                printf("   %i feature(s) read\n", numFeatures);
+            }
+        }
+        catch( FdoException *ex )
+        {
+            printf("FDO Feature query error: %ls\n", ex->GetExceptionMessage());
+            throw;
+        }
+    }
+}
+
+void FdoSelectTest::spatial_query_defect880310 ()
+{
+    FdoPtr<FdoIFeatureReader> myReader;
+	FdoPtr<FdoISelect> selCmd;
+
+    if( mConnection != NULL )
+    {
+        try
+        {
+            FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+            selCmd = (FdoISelect*)mConnection->CreateCommand( FdoCommandType_Select );
+            selCmd->SetFeatureClassName(L"Acad:AcDb3dPolyline");
+
+            // Use multiple spatial filters (tests binding of multiple geometries).
+            selCmd->SetFilter(L"Geometry INTERSECTS geomfromtext('MULTILINESTRING XYZ ((10 48,10 21,10 0), (16 0,16 23,16 48))') "
+                              L"or Geometry INTERSECTS geomfromtext('MULTILINESTRING XYZ ((10 48,10 21,10 0), (16 0,16 23,16 48))')");
+            
+            FdoInt32 numFeatures = 0;
+
+            myReader = selCmd->Execute();
+            if( myReader != NULL  )
+            {
+                while ( myReader->ReadNext() )
+                {
+                    numFeatures++;
+                    read_feature_data( myReader );
+                }
+            }
+            printf("   %i feature(s) read\n", numFeatures);
+        }
+        catch( FdoException *ex )
+        {
+            printf("FDO Feature query error: %ls\n", ex->GetExceptionMessage());
+            throw;
         }
     }
 }
@@ -826,9 +1031,19 @@ void FdoSelectTest::feature_geom_query ()
 
                     if( ! myReader->IsNull(L"Geometry") )
                     {
+                        int count1, count2;
+
+                        const FdoByte* bytes = myReader->GetGeometry(L"Geometry", &count1);
+
                         FdoPtr<FdoByteArray> byteArray = myReader->GetGeometry(L"Geometry");
                         DBG( printf(" \t\tGemetry byte array size: %d\n", byteArray->GetCount()) );
-                        byteArray->GetCount();
+                        count2 = byteArray->GetCount();
+                        printf(" \t\tGeometry byte array size: %d\n", count2);
+                        if ( count1 != count2 )
+                        {
+                            CPPUNIT_FAIL((const char*) FdoStringP::Format(L"FDO Feature query error: count1=%d vs. count2=%d\n", count1, count2));
+                            throw;
+                        }
                     }
                     DBG( printf("\n") );
                 }

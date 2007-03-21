@@ -94,7 +94,7 @@ void FdoCapabilityTest::Connection ()
       FdoLockType* lockTypes = connectionCapabilities->GetLockTypes( size );
 
       printf("SIZE = %d\n", size);
-      CPPUNIT_ASSERT( size == 0 );
+      CPPUNIT_ASSERT( size == GetLockTypeCount() );
 
       for (i = 0; i < size; i++) {
 
@@ -128,8 +128,8 @@ void FdoCapabilityTest::Connection ()
 
       }  //  for ( ...
 
-      //for ( i = 0; i < size; i++ )
-      //    CPPUNIT_ASSERT( lockArray[i] );
+      for ( i = 0; i < size; i++ )
+          CPPUNIT_ASSERT( lockArray[i] );
 
       FdoPtr<FdoICommandCapabilities> commandCapabilities = connection->GetCommandCapabilities();
       FdoInt32 *commands = commandCapabilities->GetCommands(size);
@@ -763,6 +763,10 @@ FdoStringP FdoCapabilityTest::GetUnexpectedFlagValueErrorString (
 
 }  //  GetUnexpectedFlagValueErrorString ()
 
+FdoInt32 FdoCapabilityTest::GetLockTypeCount()
+{
+    return 0;
+}
 
 FdoCapabilityTest::ArgObject *FdoCapabilityTest::InitArgument (
                                                     FdoString   *argName,

@@ -50,6 +50,7 @@ MySqlFdoSqlCmdTest.cpp \
 MySqlFdoUpdateTest.cpp \
 MySqlGeometryTests.cpp \
 MySqlSchemaMgrTests.cpp \
+MySqlSchemaOverrideUtil.cpp \
 MySqlSelectTests.cpp
 
 noinst_HEADERS = $(libMySqlUnitTests_la_SOURCES) \
@@ -81,6 +82,7 @@ MySqlFdoSqlCmdTest.h \
 MySqlFdoUpdateTest.h \
 MySqlGeometryTests.h \
 MySqlSchemaMgrTests.h \
+MySqlSchemaOverrideUtil.h \
 MySqlSelectTests.h
 
 INCLUDES = \
@@ -101,7 +103,8 @@ INCLUDES = \
   -I../ \
   -I../Common \
   -I../../Fdo/FeatureCommands \
-  -I$(FDOUTILITIES)/TestCommon/Inc
+  -I$(FDOUTILITIES)/TestCommon/Inc \
+  -I../../../Inc
 
 libMySqlUnitTests_la_LDFLAGS =
 

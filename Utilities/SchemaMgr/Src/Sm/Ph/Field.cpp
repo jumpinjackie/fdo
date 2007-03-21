@@ -158,8 +158,9 @@ FdoStringP FdoSmPhField::GetUpdCol()
 {
     FdoStringP colSyntax;
 
-    if ( GetColumn() ) {
-        colSyntax = GetColumn()->GetName();
+    FdoSmPhColumnP column = GetColumn();
+    if ( column && column->GetExists() ) {
+        colSyntax = column->GetName();
     }
 
     return colSyntax;

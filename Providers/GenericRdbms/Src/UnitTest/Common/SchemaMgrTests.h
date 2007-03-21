@@ -31,6 +31,7 @@ class SchemaMgrTests : public CppUnit::TestCase
     CPPUNIT_TEST (testGenConfig1);
     CPPUNIT_TEST (testGenKeys);
     CPPUNIT_TEST (testFKeys);
+    CPPUNIT_TEST (testViews);
     CPPUNIT_TEST (testConfigError);
 //    CPPUNIT_TEST (constraints);
 //    CPPUNIT_TEST (delFdoBr);
@@ -51,6 +52,8 @@ protected:
     // Tests name collisions between reverse-engineered data and association properties.
     // Also tests reverse-engineering foreign keys into Association properties for MySQL.
     virtual void testFKeys();
+
+    void testViews();
 
     virtual void testConfigError();
     void testGeometricProperties();

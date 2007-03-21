@@ -163,13 +163,16 @@ void UnitTestUtil::Sql2Db(const wchar_t* sCommand, FdoIConnection* connection)
 void UnitTestUtil::CreateAcadSchema( FdoIConnection* connection, bool useBaseMapping )
 {
     FdoIApplySchema*  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
-//    FdoPtr<FdoOracleOvPhysicalSchemaMapping>pOverrides;
-//    FdoPtr<FdoOracleOvClassDefinition>pOvClass;
-//    if( useBaseMapping )
-//    {
-//        pOverrides =  (FdoOracleOvPhysicalSchemaMapping*) connection->CreateSchemaMapping();
-//        pCmd->SetPhysicalMapping( pOverrides );
-//    }
+    FdoPtr<FdoRdbmsOvPhysicalSchemaMapping>pOverrides;
+    FdoPtr<FdoRdbmsOvClassDefinition>pOvClass;
+    SchemaOverrideUtilP overrideUtil = NewSchemaOverrideUtil();
+
+    if( useBaseMapping )
+    {
+        pOverrides =  (FdoRdbmsOvPhysicalSchemaMapping*) connection->CreateSchemaMapping();
+        pOverrides->SetTableMapping( FdoSmOvTableMappingType_BaseTable  );
+        pCmd->SetPhysicalMapping( pOverrides );
+    }
     FdoPtr<FdoFeatureSchemaCollection> pSchemas = FdoFeatureSchemaCollection::Create(NULL);
 
     FdoFeatureSchema* pSchema = FdoFeatureSchema::Create( L"Acad", L"AutoCAD schema" );
@@ -231,18 +234,18 @@ void UnitTestUtil::CreateAcadSchema( FdoIConnection* connection, bool useBaseMap
     testClass->GetProperties()->Add( pObjPropData );
     FDO_SAFE_RELEASE(pObjPropData);
 
-    //if( useBaseMapping )
-    //{
-    //    // Object Property overrides
-    //    pOvClass = FdoOracleOvClassDefinition::Create( L"testClass" );
-    //    pOvClass->SetTableMapping( FdoSmOvTableMappingType_BaseTable );
-    //    FdoOracleOvClassesP(pOverrides->GetClasses())->Add(pOvClass);
-    //    FdoOracleOvObjectPropertyP pObProp = FdoOracleOvObjectPropertyDefinition::Create( L"Object" );
-    //    FdoOracleOvPropertiesP(pOvClass->GetProperties())->Add(pObProp);
-    //    FdoOracleOvPropertyMappingSingleP mapping = FdoOracleOvPropertyMappingSingle::Create();
-    //    pObProp->SetMappingDefinition(mapping);
-    //    mapping->SetPrefix( L"OvTest" );
-    //}
+    if( useBaseMapping && overrideUtil )
+    {
+        // Object Property overrides
+        pOvClass = overrideUtil->CreateOvClassDefinition( L"testClass" );
+        pOvClass->SetTableMapping( FdoSmOvTableMappingType_BaseTable );
+        overrideUtil->ClassesOvAdd(pOverrides, pOvClass);
+        FdoRdbmsOvObjectPropertyP pObProp = overrideUtil->CreateOvObjectPropertyDefinition( L"Object" );
+        overrideUtil->PropertiesOvAdd(pOvClass, pObProp);
+        FdoRdbmsOvPropertyMappingSingleP mapping = overrideUtil->CreateOvPropertyMappingSingle();
+        overrideUtil->ObjectPropertyOvSetMappingDefinition(pObProp, mapping);
+        mapping->SetPrefix( L"OvTest" );
+    }
 
     FdoPtr<FdoObjectPropertyDefinition>pObjPropData2 = FdoObjectPropertyDefinition::Create( L"Object2", L"object property" );
     pObjPropData2->SetClass( pObjectClass2 );
@@ -309,16 +312,16 @@ void UnitTestUtil::CreateAcadSchema( FdoIConnection* connection, bool useBaseMap
     pObjPropData2->SetObjectType( FdoObjectType_Value );
     pXData->GetProperties()->Add( pObjPropData2 );
 
-    //if( useBaseMapping )
-    //{
-    //    pOvClass = FdoOracleOvClassDefinition::Create( L"AcXData" );
-    //    FdoOracleOvClassesP(pOverrides->GetClasses())->Add(pOvClass);
-    //    FdoOracleOvObjectPropertyP pObProp = FdoOracleOvObjectPropertyDefinition::Create( L"AcXObj" );
-    //    FdoOracleOvPropertiesP(pOvClass->GetProperties())->Add(pObProp);
-    //    FdoOracleOvPropertyMappingSingleP mapping = FdoOracleOvPropertyMappingSingle::Create();
-    //    pObProp->SetMappingDefinition(mapping);
-    //    mapping->SetPrefix( L"OvTest2" );
-    //}
+    if( useBaseMapping && overrideUtil )
+    {
+        pOvClass = overrideUtil->CreateOvClassDefinition( L"AcXData" );
+        overrideUtil->ClassesOvAdd(pOverrides, pOvClass);
+        FdoRdbmsOvObjectPropertyP pObProp = overrideUtil->CreateOvObjectPropertyDefinition( L"AcXObj" );
+        overrideUtil->PropertiesOvAdd(pOvClass, pObProp);
+        FdoRdbmsOvPropertyMappingSingleP mapping = overrideUtil->CreateOvPropertyMappingSingle();
+        overrideUtil->ObjectPropertyOvSetMappingDefinition(pObProp, mapping);
+        mapping->SetPrefix( L"OvTest2" );
+    }
     pSchema->GetClasses()->Add( pXData );
 
     FdoClass* pXData2 = FdoClass::Create( L"AcXData2", L"Xdata2" );
@@ -432,6 +435,7 @@ void UnitTestUtil::CreateAcadSchema( FdoIConnection* connection, bool useBaseMap
     FdoObjectPropertyDefinition* pObjProp = FdoObjectPropertyDefinition::Create( L"xdata", L"xdata" );
     pObjProp->SetClass( pXData );
     pObjProp->SetObjectType( FdoObjectType_Value );
+	//pObjProp->SetIdentityProperty( pXDataSeq );
     pEntClass->GetProperties()->Add( pObjProp );
     FDO_SAFE_RELEASE(pProp);
 
@@ -491,7 +495,8 @@ void UnitTestUtil::CreateLandSchema( FdoIConnection* connection )
 {
     // Version must be incremented each time the following Land schema is updated.
     // This forces a re-create of the Land Schema in existing datastores.
-    static wchar_t* currVersion = L"1.6";
+    static wchar_t* currVersion = L"1.7";
+    FdoPtr<FdoISchemaCapabilities>	schemaCap = connection->GetSchemaCapabilities();    
 
     FdoPtr<FdoIDescribeSchema> pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
 
@@ -502,7 +507,7 @@ void UnitTestUtil::CreateLandSchema( FdoIConnection* connection )
 
     // If it does, check if it has the current version. The version is kept in
     // the Schema Attribute dictionary.
-/*
+
     if ( pSchema ) {
         if ( (!FdoSADP(pSchema->GetAttributes())->ContainsAttribute(L"version")) ||
              (wcscmp(FdoSADP(pSchema->GetAttributes())->GetAttributeValue(L"version"), currVersion) != 0) ) {
@@ -511,13 +516,13 @@ void UnitTestUtil::CreateLandSchema( FdoIConnection* connection )
             // First, delete any objects, since these will prevent schema destruction.
 
             FdoPtr<FdoIDelete> deleteCommand = (FdoIDelete *) connection->CreateCommand(FdoCommandType_Delete);
-            deleteCommand->SetFeatureClassName(L"Ind\x00fcstri\x00e4l P\x00e4rcel");
+            deleteCommand->SetFeatureClassName(L"L\x00e4nd:Ind\x00fcstri\x00e4l P\x00e4rcel");
             deleteCommand->Execute();
 
-            deleteCommand->SetFeatureClassName(L"Municipality");
+            deleteCommand->SetFeatureClassName(L"L\x00e4nd:Municipality");
             deleteCommand->Execute();
 
-            deleteCommand->SetFeatureClassName(L"Parcel");
+            deleteCommand->SetFeatureClassName(L"L\x00e4nd:Parcel");
             deleteCommand->Execute();
 
             FdoPtr<FdoIDestroySchema>  pCmd = (FdoIDestroySchema*) connection->CreateCommand(FdoCommandType_DestroySchema);
@@ -526,7 +531,7 @@ void UnitTestUtil::CreateLandSchema( FdoIConnection* connection )
             pSchema = NULL;
         }
     }
-*/
+
     if ( !pSchema )
     {
         FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
@@ -565,6 +570,22 @@ void UnitTestUtil::CreateLandSchema( FdoIConnection* connection )
         FdoPropertiesP(pParcelClass->GetProperties())->Add( pProp );
         FdoDataPropertiesP(pParcelClass->GetIdentityProperties())->Add( pProp );
 
+/*
+ 	    if ( schemaCap->SupportsExclusiveValueRangeConstraints() && schemaCap->SupportsInclusiveValueRangeConstraints())
+	    {
+		    GisPtr<FdoPropertyValueConstraintRange>  newRangeConstr1 =  FdoPropertyValueConstraintRange::Create();
+		    newRangeConstr1->SetMinInclusive(true);
+
+		    GisPtr<FdoDataValue>   val1 = FdoDataValue::Create( L"A" );
+		    newRangeConstr1->SetMinValue( val1 );
+
+		    newRangeConstr1->SetMaxInclusive(true);
+		    GisPtr<FdoDataValue>   val2 = FdoDataValue::Create( L"z" );
+		    newRangeConstr1->SetMaxValue( val2 );
+		    pProp->SetValueConstraint(newRangeConstr1);
+	    }
+*/
+
         pProp = FdoDataPropertyDefinition::Create( L"PIN", L"parcel id" );
         pProp->SetDataType( FdoDataType_String );
         pProp->SetLength(15);
@@ -578,6 +599,20 @@ void UnitTestUtil::CreateLandSchema( FdoIConnection* connection )
         pProp->SetPrecision( 8 );
         pProp->SetScale( 0 );
         FdoPropertiesP(pParcelClass->GetProperties())->Add( pProp );
+
+ 	    if ( schemaCap->SupportsExclusiveValueRangeConstraints() && schemaCap->SupportsInclusiveValueRangeConstraints())
+	    {
+		    FdoPtr<FdoPropertyValueConstraintRange>  newRangeConstr1 =  FdoPropertyValueConstraintRange::Create();
+		    newRangeConstr1->SetMinInclusive(true);
+
+		    FdoPtr<FdoDataValue>   val1 = FdoDataValue::Create( (double) 0, FdoDataType_Decimal );
+		    newRangeConstr1->SetMinValue( val1 );
+
+		    newRangeConstr1->SetMaxInclusive(true);
+		    FdoPtr<FdoDataValue>   val2 = FdoDataValue::Create( 100000000, FdoDataType_Decimal );
+		    newRangeConstr1->SetMaxValue( val2 );
+		    pProp->SetValueConstraint(newRangeConstr1);
+	    }
 
         pProp = FdoDataPropertyDefinition::Create( L"AUTOGEN1", L"1st autogenerated property" );
         pProp->SetDataType( FdoDataType_Int64 );
@@ -603,6 +638,45 @@ void UnitTestUtil::CreateLandSchema( FdoIConnection* connection )
         FdoPropertiesP(pParcelClass->GetProperties())->Add( pGeomProp );
         pGeomProp->SetHasElevation( true );
         FdoClassesP(pSchema->GetClasses())->Add( pParcelClass );
+
+		FdoPtr<FdoFeatureClass> pParcelAClass = FdoFeatureClass::Create( L"Parcel_A", L"land parcel" );
+		pParcelAClass->SetIsAbstract(false);
+
+		pProp = FdoDataPropertyDefinition::Create( L"Name", L"" );
+		pProp->SetDataType( FdoDataType_String );
+		pProp->SetLength(20);
+		pProp->SetNullable(false);
+		FdoPropertiesP(pParcelAClass->GetProperties())->Add( pProp );
+
+		pProp = FdoDataPropertyDefinition::Create( L"PIN", L"parcel id" );
+		pProp->SetDataType( FdoDataType_String );
+		pProp->SetLength(15);
+		pProp->SetNullable(false);
+		FdoPropertiesP(pParcelAClass->GetProperties())->Add( pProp );
+		FdoDataPropertiesP(pParcelAClass->GetIdentityProperties())->Add( pProp );
+
+		pProp = FdoDataPropertyDefinition::Create( L"Value", L"" );
+		pProp->SetDataType( FdoDataType_Decimal );
+		pProp->SetNullable(true);
+		pProp->SetPrecision( 8 );
+		pProp->SetScale( 0 );
+		FdoPropertiesP(pParcelAClass->GetProperties())->Add( pProp );
+
+ 	    if ( schemaCap->SupportsExclusiveValueRangeConstraints() && schemaCap->SupportsInclusiveValueRangeConstraints())
+	    {
+		    FdoPtr<FdoPropertyValueConstraintRange>  newRangeConstr1 =  FdoPropertyValueConstraintRange::Create();
+		    newRangeConstr1->SetMinInclusive(true);
+
+		    FdoPtr<FdoDataValue>   val1 = FdoDataValue::Create( (double) 0, FdoDataType_Decimal );
+		    newRangeConstr1->SetMinValue( val1 );
+
+		    newRangeConstr1->SetMaxInclusive(true);
+		    FdoPtr<FdoDataValue>   val2 = FdoDataValue::Create( 100000000, FdoDataType_Decimal );
+		    newRangeConstr1->SetMaxValue( val2 );
+		    pProp->SetValueConstraint(newRangeConstr1);
+	    }
+
+		FdoClassesP(pSchema->GetClasses())->Add( pParcelAClass );
 
         FdoPtr<FdoFeatureClass> pClass = FdoFeatureClass::Create( L"Ind\x00fcstri\x00e4l P\x00e4rcel", L"" );
         pClass->SetIsAbstract(false);
@@ -632,6 +706,20 @@ void UnitTestUtil::CreateLandSchema( FdoIConnection* connection )
         pProp->SetNullable(false);
         FdoPropertiesP(pCityClass->GetProperties())->Add( pProp );
 
+ 	    if ( schemaCap->SupportsExclusiveValueRangeConstraints() && schemaCap->SupportsInclusiveValueRangeConstraints())
+	    {
+		    FdoPtr<FdoPropertyValueConstraintRange>  newRangeConstr1 =  FdoPropertyValueConstraintRange::Create();
+		    newRangeConstr1->SetMinInclusive(true);
+
+		    FdoPtr<FdoDataValue>   val1 = FdoDataValue::Create( 0 );
+		    newRangeConstr1->SetMinValue( val1 );
+
+		    newRangeConstr1->SetMaxInclusive(true);
+		    FdoPtr<FdoDataValue>   val2 = FdoDataValue::Create( 100000000 );
+		    newRangeConstr1->SetMaxValue( val2 );
+		    pProp->SetValueConstraint(newRangeConstr1);
+	    }
+
         pObjProp = FdoObjectPropertyDefinition::Create( L"mayor", L"" );
         pObjProp->SetObjectType( FdoObjectType_Value );
         pObjProp->SetClass( pPersonClass );
@@ -645,6 +733,68 @@ void UnitTestUtil::CreateLandSchema( FdoIConnection* connection )
 
         FdoClassesP(pSchema->GetClasses())->Add( pCityClass );
 
+	    FdoFeatureClassP pZoningClass = FdoFeatureClass::Create( L"Zoning", L"land use zone" );
+	    pZoningClass->SetIsAbstract(false);
+
+ 	    pProp = FdoDataPropertyDefinition::Create( L"ByLaw", L"" );
+	    pProp->SetDataType( FdoDataType_String );
+	    pProp->SetLength(20);
+	    pProp->SetNullable(false);
+	    FdoPropertiesP(pZoningClass->GetProperties())->Add( pProp );
+	    FdoDataPropertiesP(pZoningClass->GetIdentityProperties())->Add( pProp );
+
+	    pProp = FdoDataPropertyDefinition::Create( L"ZoningType", L"" );
+	    pProp->SetDataType( FdoDataType_Int32 );
+	    pProp->SetNullable(false);
+	    FdoPropertiesP(pZoningClass->GetProperties())->Add( pProp );
+
+ 	    if ( schemaCap->SupportsExclusiveValueRangeConstraints() && schemaCap->SupportsInclusiveValueRangeConstraints())
+	    {
+		    FdoPtr<FdoPropertyValueConstraintRange>  newRangeConstr1 =  FdoPropertyValueConstraintRange::Create();
+		    newRangeConstr1->SetMinInclusive(true);
+
+		    FdoPtr<FdoDataValue>   val1 = FdoDataValue::Create( 1 );
+		    newRangeConstr1->SetMinValue( val1 );
+
+		    newRangeConstr1->SetMaxInclusive(true);
+		    FdoPtr<FdoDataValue>   val2 = FdoDataValue::Create( 20 );
+    	    newRangeConstr1->SetMaxValue( val2 );
+		    pProp->SetValueConstraint(newRangeConstr1);
+	    }
+
+	    FdoClassesP(pSchema->GetClasses())->Add( pZoningClass );
+
+	    pZoningClass = FdoFeatureClass::Create( L"Zoning_A", L"land use zone" );
+	    pZoningClass->SetIsAbstract(false);
+
+	    pProp = FdoDataPropertyDefinition::Create( L"ByLaw", L"" );
+	    pProp->SetDataType( FdoDataType_String );
+	    pProp->SetLength(20);
+	    pProp->SetNullable(false);
+	    FdoPropertiesP(pZoningClass->GetProperties())->Add( pProp );
+	    FdoDataPropertiesP(pZoningClass->GetIdentityProperties())->Add( pProp );
+
+	    pProp = FdoDataPropertyDefinition::Create( L"ZoningType", L"" );
+	    pProp->SetDataType( FdoDataType_Int32 );
+	    pProp->SetNullable(false);
+	    FdoPropertiesP(pZoningClass->GetProperties())->Add( pProp );
+
+ 	    if ( schemaCap->SupportsExclusiveValueRangeConstraints() && schemaCap->SupportsInclusiveValueRangeConstraints())
+	    {
+		    FdoPtr<FdoPropertyValueConstraintRange>  newRangeConstr1 =  FdoPropertyValueConstraintRange::Create();
+		    newRangeConstr1->SetMinInclusive(true);
+
+		    FdoPtr<FdoDataValue>   val1 = FdoDataValue::Create( 21 );
+		    newRangeConstr1->SetMinValue( val1 );
+
+		    newRangeConstr1->SetMaxInclusive(true);
+		    FdoPtr<FdoDataValue>   val2 = FdoDataValue::Create( 40 );
+		    newRangeConstr1->SetMaxValue( val2 );
+		    pProp->SetValueConstraint(newRangeConstr1);
+	    }
+
+	    FdoClassesP(pSchema->GetClasses())->Add( pZoningClass );
+
         pCmd->SetFeatureSchema( pSchema );
         pCmd->Execute();
     }
@@ -655,7 +805,7 @@ void UnitTestUtil::CreateNonUniqueSchema( FdoIConnection* connection )
 {
     // Version must be incremented each time the following Land schema is updated.
     // This forces a re-create of the NonUnique Schema in existing datastores.
-    static wchar_t* currVersion = L"1.2";
+    static wchar_t* currVersion = L"1.3";
 
     FdoPtr<FdoIDescribeSchema> pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
 
@@ -923,8 +1073,8 @@ void UnitTestUtil::CreateDB(bool addSchema, bool useBaseMapping, FdoString *suff
 
 	// Optimization: This has been already checked in GetConnection(). Make sure the caller 
 	// checks the existence explictly.
-	//bool bExists = DatastoreExists(suffix);
-	bool bExists = false;
+	bool bExists = DatastoreExists(suffix);
+	//bool bExists = false;
 
     if (bExists == false)
     {
@@ -936,7 +1086,6 @@ void UnitTestUtil::CreateDB(bool addSchema, bool useBaseMapping, FdoString *suff
         connection->SetConnectionString ( connectString);
         connection->Open ();
 
-//		connection->GetDbiConnection()->dbi_set_lt_method(local_lt_method);
         if( addSchema )
         {
             try
@@ -1308,37 +1457,45 @@ bool UnitTestUtil::DatastoreExists(FdoString *suffix)
     return(found);
 }
 
-FdoIConnection* UnitTestUtil::GetConnection(FdoString *suffix, bool bCreate, StringConnTypeRequest pTypeReq, int lt_method, bool lt_method_fixed)
+FdoIConnection* UnitTestUtil::GetConnection(FdoString *suffix, bool bCreate, bool bRecreateData, StringConnTypeRequest pTypeReq, int lt_method, bool lt_method_fixed)
 {
     FdoIConnection* connection = GetProviderConnectionObject();
 
     try {
 
-		if (bCreate)
+        bool bCreated = false;
+        if (bCreate)
         {
-            bool bExists = DatastoreExists(suffix);
+            bool bExists = UnitTestUtil::DatastoreExists(suffix);
             if (!bExists)
             {
 				UnitTestUtil::CreateDB(true, false, suffix, lt_method, lt_method_fixed);
-				
-				FdoInsertTest *insert = UnitTestUtil::InfoUtilConnection->GetInsertTest();
-                insert->setUp();
-                insert->insert();
-                delete insert;
-/* TODO
-                insert = new FdoInsertTest();
-                insert->setUp();
-                insert->insert2();
-                delete insert;
-*/
+                bCreated = true;
             }
         }
-        wchar_t *connectionString = UnitTestUtil::GetConnectionString(pTypeReq, suffix);
+        wchar_t *connectionString = UnitTestUtil::GetConnectionString(Connection_WithDatastore, suffix);
 
         FdoConnectionState state = connection->GetConnectionState();
-        connection->SetConnectionString(connectionString);
+      	connection->SetConnectionString(connectionString);
 
         connection->Open();
+        if ( (!bCreated) && bRecreateData ) {
+            TestCommonMiscUtil::DeleteObjects( connection, L"Acad", L"AcDb3dPolyline", NULL );
+            TestCommonMiscUtil::DeleteObjects( connection, L"L\x00e4nd", L"Parcel", NULL );
+            TestCommonMiscUtil::DeleteObjects( connection, L"Acad", L"testClass", NULL );
+        }
+
+        if ( bCreated || bRecreateData ) {
+            FdoInsertTest *insert = new FdoInsertTest(suffix);
+
+            insert->setUp();
+            insert->insert();
+            delete insert;
+            insert = new FdoInsertTest(suffix);
+            insert->setUp();
+            insert->insert2();
+            delete insert;
+        }
     }
     catch ( FdoException* e )
     {
@@ -1360,6 +1517,11 @@ FdoIConnection* UnitTestUtil::GetConnection(FdoString *suffix, bool bCreate, Str
 StaticConnection* UnitTestUtil::NewStaticConnection()
 {
 	return UnitTestUtil::InfoUtilConnection->NewStaticConnection();
+}
+
+SchemaOverrideUtilP UnitTestUtil::NewSchemaOverrideUtil()
+{
+	return UnitTestUtil::InfoUtilConnection->NewSchemaOverrideUtil();
 }
 
 bool UnitTestUtil::fuzzyEqual (const double d1, const double d2)

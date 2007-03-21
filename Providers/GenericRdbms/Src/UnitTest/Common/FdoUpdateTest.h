@@ -60,7 +60,10 @@ protected:
 
     void CreateExternalTable( FdoSmPhOwnerP owner, FdoStringP tableName, bool hasKey, bool hasGeom, bool hasAssoc );
     void CreateExternalView( FdoSmPhOwnerP owner, FdoStringP viewName, FdoStringP tableName, bool hasKey, bool hasGeom, bool hasAssoc );
+	FdoPtr<FdoSmPhScInfo> CreateScInfo( FdoStringP objectName );
+    bool GetHasElevation( FdoStringP objectName );
     void CreateExternalData( FdoPtr<FdoIConnection> connection, FdoSmPhMgrP phMgr, FdoStringP tableName, bool hasGeom, bool hasAssoc );
+    virtual void UpdSpatialMetadata( FdoPtr<FdoIConnection> connection );
     void SelectNoMetaAll( FdoPtr<FdoIConnection> connection, FdoSmPhMgrP phMgr, FdoStringP tableName, bool hasGeom, bool hasAssoc );
     void SelectNoMetaFilter( FdoPtr<FdoIConnection> connection, FdoSmPhMgrP phMgr, FdoStringP tableName, bool hasGeom, bool hasAssoc );
     void SelectNoMetaProps( FdoPtr<FdoIConnection> connection, FdoSmPhMgrP phMgr, FdoStringP tableName, bool hasGeom );
@@ -75,6 +78,7 @@ protected:
         bool hasAssoc
     );
     void CheckGeometry(FdoPtr<FdoIFeatureReader> rdr, FdoString* propName, double expectedX, double expectedY, double expectedZ);
+    virtual void CheckSpatialContexts(FdoPtr<FdoIConnection> connection, int expected);
 
     virtual FdoString* NoMetaSuffix();
     virtual FdoString* MultiIdSuffix();

@@ -357,7 +357,7 @@ void FdoUpdateTest::UpdateAttributesOnly()
         prop = FdoUpdateTest::AddNewProperty( properties, L"layer");
         if( prop )
             prop->SetValue( L"'32001'" );
-#if 0
+#if 1
         prop = FdoUpdateTest::AddNewProperty( properties, L"xdata.seq");
         if( prop )
             prop->SetValue( FdoPtr<FdoDataValue>(FdoDataValue::Create( (int)4 )) );
@@ -419,11 +419,11 @@ void FdoUpdateTest::UpdateNonFeatureClass()
         dataValue = FdoDataValue::Create(5);
         propertyValue = FdoUpdateTest::AddNewProperty( propertyValues, L"Age");
         propertyValue->SetValue(dataValue);
-#if 0
+
         dataValue = FdoDataValue::Create(43);
         propertyValue = FdoUpdateTest::AddNewProperty( propertyValues, L"Object.ObjectWeight");
         propertyValue->SetValue(dataValue);
-#endif
+
         updateCommand->Execute();
 
         featureTransaction->Commit();
@@ -506,7 +506,6 @@ void FdoUpdateTest::FdoUpdateTestTypes ()
         propertyValue->SetValue(dataValue);
 
         dataValue = FdoDataValue::Create((float)((float)INT_MAX/2.0));
-        //dataValue = FdoDataValue::Create(L"Hello");
         propertyValue = FdoUpdateTest::AddNewProperty( propertyValues, L"single");
         propertyValue->SetValue(dataValue);
 
@@ -948,7 +947,7 @@ void FdoUpdateTest::UpdateSingleIdFeatureClass()
     {
         connection = UnitTestUtil::GetConnection(mSuffix, false);
         UnitTestUtil::CreateLandSchema(connection);
-        //UnitTestUtil::CreateNonUniqueSchema(connection);
+        UnitTestUtil::CreateNonUniqueSchema(connection);
 
         featureTransaction = connection->BeginTransaction();
 
@@ -1325,6 +1324,9 @@ void FdoUpdateTest::CheckGeometry(FdoPtr<FdoIFeatureReader> rdr, FdoString* prop
         CPPUNIT_ASSERT( expectedZ == pos->GetZ() );
 }
 
+void FdoUpdateTest::CheckSpatialContexts(FdoPtr<FdoIConnection> connection, int expected)
+{
+}
 
 void FdoUpdateTest::ConditionalUpdate()
 {
@@ -1337,7 +1339,7 @@ void FdoUpdateTest::ConditionalUpdate()
 
 	try
 	{
-        connection = UnitTestUtil::GetConnection(L"LT", true, Connection_WithDatastore, 1, true);
+        connection = UnitTestUtil::GetConnection(L"LT", true, true, Connection_WithDatastore, 1, true);
 
         // Generate the necessary long transaction names.
 
@@ -1804,6 +1806,9 @@ void FdoUpdateTest::UpdateNoMeta()
         CreateExternalTable( owner, L"TABLE_NOID_GEOM", false, m_hasGeom, false );
         CreateExternalTable( owner, table_noid_nogeom, false, false, false );
 
+        // Special tables for special testing. 
+        CreateExternalTable( owner, L"TABLE_ID_GEOM_LL", true, providerName != L"SqlServer", false );
+        CreateExternalTable( owner, L"TABLE_ID_GEOM_XYZM", true, providerName != L"SqlServer", false );
 
         owner->Commit();
 
@@ -1813,6 +1818,7 @@ void FdoUpdateTest::UpdateNoMeta()
             NoMetaSuffix()
         );
 
+        UpdSpatialMetadata( connection );
         CreateExternalData( connection, phMgr, table_id_geom, m_hasGeom, m_hasAssoc );
 
 #ifdef RDBI_DEF_SSQL
@@ -1925,7 +1931,7 @@ void FdoUpdateTest::CreateExternalTable( FdoSmPhOwnerP owner, FdoStringP tableNa
         table->AddPkeyCol( fkColumn->GetName() );
 
     if ( hasGeom )
-        column = table->CreateColumnGeom( phMgr->GetDcColumnName(L"GEOMETRY"), (FdoSmPhScInfo*) NULL, true, false );
+        column = table->CreateColumnGeom( phMgr->GetDcColumnName(L"GEOMETRY"), CreateScInfo(tableName), true, false );
 
     column = table->CreateColumnChar( phMgr->GetDcColumnName(ValueColName()), true, 20 );
 
@@ -1962,11 +1968,57 @@ void FdoUpdateTest::CreateExternalView( FdoSmPhOwnerP owner, FdoStringP viewName
 
     if ( hasGeom ) {
         columnName = phMgr->GetDcColumnName(L"GEOMETRY");
-        column = view->CreateColumnGeom( columnName, (FdoSmPhScInfo*) NULL, true, false, false, columnName );
+        column = view->CreateColumnGeom( columnName, CreateScInfo(tableName), true, false, false, columnName );
     }
 
     columnName = phMgr->GetDcColumnName(ValueColName());
     column = view->CreateColumnChar( columnName, true, 20, columnName );
+}
+
+FdoPtr<FdoSmPhScInfo> FdoUpdateTest::CreateScInfo( FdoStringP objectName )
+{
+    FdoSmPhScInfo *scinfo = NULL;
+		
+	// The tables need to have the same SRID since this test is copying from one another
+	scinfo = FdoSmPhScInfo::Create();
+
+	// The tables need to have the same SRID since this test is copying from one another
+	scinfo->mSrid = 81989; // British National Grid
+	scinfo->mCoordSysName = L"";
+
+	FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+	FdoPtr<FdoIEnvelope>          env;
+
+	if ( objectName == L"TABLE_ID_GEOM" )
+		env = gf->CreateEnvelopeXY( -1001, -1002, 1001, 1002 );
+	else if ( objectName == L"TABLE_ID_GEOM_LL" )
+	{
+		env = gf->CreateEnvelopeXY( -180, -90, 180, 90 );
+		scinfo->mSrid = 524288; // Longitude / Latitude (NAD 83) Datum 33
+	}
+	else if ( objectName == L"TABLE_ID_GEOM_XYZM" )
+	{
+		env = gf->CreateEnvelopeXYZ( -3001, -3002, -3003, 3001, 3002, 3003);
+	}
+	else
+		env = gf->CreateEnvelopeXY( -2001, -2002, 2001, 2002 );
+	
+    FdoPtr<FdoIGeometry>		  geom = gf->CreateGeometry(env); 
+	scinfo->mExtent = gf->GetFgf(geom);
+	scinfo->mXYTolerance = 0.0333;
+	scinfo->mZTolerance = 0.0111;
+
+    return scinfo;
+}
+
+bool FdoUpdateTest::GetHasElevation( FdoStringP objectName )
+{
+	bool						  hasElevation = true;
+
+	if ( objectName == L"TABLE_ID_GEOM_LL" )
+		hasElevation = false;
+
+    return hasElevation;
 }
 
 void FdoUpdateTest::CreateExternalData( FdoPtr<FdoIConnection> connection, FdoSmPhMgrP phMgr, FdoStringP tableName, bool hasGeom, bool hasAssoc )
@@ -2151,6 +2203,10 @@ void FdoUpdateTest::CreateExternalData( FdoPtr<FdoIConnection> connection, FdoSm
     deleteCommand->SetFilter( filter );
     deleteCommand->Execute();
     deleteCommand = NULL;
+}
+
+void FdoUpdateTest::UpdSpatialMetadata( FdoPtr<FdoIConnection> connection )
+{
 }
 
 void FdoUpdateTest::SelectNoMetaAll( FdoPtr<FdoIConnection> connection, FdoSmPhMgrP phMgr, FdoStringP tableName, bool hasGeom, bool hasAssoc )

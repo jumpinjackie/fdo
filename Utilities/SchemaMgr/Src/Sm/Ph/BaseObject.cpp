@@ -28,7 +28,8 @@ FdoSmPhBaseObject::FdoSmPhBaseObject(
 ) : 
     FdoSmPhDbElement(name, (FdoSmPhMgr*) NULL, parent, FdoSchemaElementState_Detached ),
     mOwnerName(ownerName),
-    mDatabaseName(databaseName)
+    mDatabaseName(databaseName),
+    mBaseRefCount(1)
 {
     if ( ownerName == L"" ) 
         mOwnerName = parent->GetParent()->GetName();
@@ -41,7 +42,8 @@ FdoSmPhBaseObject::FdoSmPhBaseObject(
     FdoSmPhDbElement(dbObject->GetName(), (FdoSmPhMgr*) NULL, parent, FdoSchemaElementState_Detached ),
     mOwnerName(dbObject->GetParent()->GetName()),
     mDatabaseName(dbObject->GetParent()->GetParent()->GetName()),
-    mDbObject(dbObject)
+    mDbObject(dbObject),
+    mBaseRefCount(1)
 {
 }
 
@@ -64,9 +66,27 @@ const FdoSmPhDbObject* FdoSmPhBaseObject::RefDbObject() const
 FdoSmPhDbObjectP FdoSmPhBaseObject::GetDbObject()
 {
     if ( (wcslen(GetName()) > 0) && (!mDbObject) ) 
-        mDbObject = GetManager()->FindDbObject( GetName(), GetOwnerName(), GetDatabaseName() );
+        mDbObject = GetManager()->FindDbObject( FdoSmPhDbElement::GetName(), GetOwnerName(), GetDatabaseName() );
 
     return mDbObject;
+}
+
+FdoString* FdoSmPhBaseObject::GetName() const
+{
+    if ( mQName == L"" ) {
+        mQName = FdoStringP(L"\"") + GetOwnerName() + L"\".\"" + FdoSmPhDbElement::GetName() + L"\"";
+
+        if ( GetDatabaseName() != L"" ) {
+            mQName = FdoStringP(L"\"") + GetDatabaseName() + L"\"." + mQName;
+        }
+    }
+
+    return mQName;
+}
+
+FdoStringP FdoSmPhBaseObject::GetObjectName() const
+{
+    return FdoSmPhDbElement::GetName();
 }
 
 FdoStringP FdoSmPhBaseObject::GetOwnerName() const
@@ -79,3 +99,12 @@ FdoStringP FdoSmPhBaseObject::GetDatabaseName() const
     return mDatabaseName;
 }
 
+FdoInt32 FdoSmPhBaseObject::GetBaseRefCount() const
+{
+    return mBaseRefCount;
+}
+
+void FdoSmPhBaseObject::AddBaseRef()
+{
+    mBaseRefCount++;
+}

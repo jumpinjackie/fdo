@@ -18,6 +18,7 @@
 
 #include "Pch.h"
 #include "MySqlConnectionUtil.h"
+#include "MySqlSchemaOverrideUtil.h"
 #include "UnitTestUtil.h"
 #include "MySqlFdoInsertTest.h"
 #include "../../MySQL/SchemaMgr/SchemaManager.h"
@@ -198,6 +199,11 @@ void MySqlConnectionUtil::SetProvider( const char *providerName )
 StaticConnection* MySqlConnectionUtil::NewStaticConnection()
 {
 	return new MySqlStaticConnection();
+}
+
+SchemaOverrideUtilP MySqlConnectionUtil::NewSchemaOverrideUtil()
+{
+    return new MySqlSchemaOverrideUtil();
 }
 
 FdoInsertTest* MySqlConnectionUtil::GetInsertTest ()

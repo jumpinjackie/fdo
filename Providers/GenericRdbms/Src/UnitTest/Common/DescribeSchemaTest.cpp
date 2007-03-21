@@ -93,6 +93,25 @@ void DescribeSchemaTest::describe()
 //      FdoSchemaManagerP sm = connection->GetSchemaManager();
         LoadTestData(connection /*, sm*/ );
 
+        printf( "Closing Connection ... \n" );
+        UnitTestUtil::CloseConnection(
+            connection,
+            false,
+            L"_describeschema"
+        );
+
+        printf( "Re-opening Connection ... \n" );
+        connection = UnitTestUtil::CreateConnection(
+            false,
+            false,
+            L"_describeschema",
+            NULL,
+            NULL,
+            0
+        );
+
+        FdoPtr<FdoIConnectionCapabilities> conCap = connection->GetConnectionCapabilities();
+
         printf( "Performing Describe ... \n" );
         FdoPtr<FdoIDescribeSchema>  pDescSchemaCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
         FdoFeatureSchemasP                     fsc = pDescSchemaCmd->Execute();
@@ -113,7 +132,7 @@ void DescribeSchemaTest::describe()
 
             FdoClassDefinitionP fc = FdoClassesP(fs->GetClasses())->GetItem( L"AcDbEntity" );
             CPPUNIT_ASSERT( fc != NULL );
-     /*
+
             FdoClassCapabilitiesP cc = fc->GetCapabilities();
             CPPUNIT_ASSERT( cc != NULL );
 
@@ -127,9 +146,11 @@ void DescribeSchemaTest::describe()
             FdoInt32 lockTypeCount = 0;
             FdoLockType* lockTypes = cc->GetLockTypes( lockTypeCount );
 
-            CPPUNIT_ASSERT( lockTypeCount == 1 );
-            CPPUNIT_ASSERT( lockTypes[0] == FdoLockType_Transaction );
-    */
+            CPPUNIT_ASSERT( lockTypeCount == GetLockTypeCount() );
+            if ( GetLockTypeCount() > 0 ) {
+                CPPUNIT_ASSERT( lockTypes[0] == FdoLockType_Transaction );
+            }
+
             // Verify that the feature class has the right system properties
             // There are actually 5 system properties, but FeatId is omitted
             // because AcDbEntity.ID gets grafted onto it.
@@ -175,6 +196,11 @@ void DescribeSchemaTest::describe()
     }
 }
 
+FdoInt32 DescribeSchemaTest::GetLockTypeCount()
+{
+    return 1;
+}
+
 void DescribeSchemaTest::LoadTestData(FdoIConnection* connection/*, FdoRdbmsSchemaManager* sm*/)
 {
     static char* id_cols[] = { "ID" };
@@ -185,7 +211,7 @@ void DescribeSchemaTest::LoadTestData(FdoIConnection* connection/*, FdoRdbmsSche
     static char* custid_cols[] = { "NAME", "PROVINCE" };
 
     // Create schema
-    UnitTestUtil::Sql2Db( (const wchar_t**) mInputSchema, connection );
+    UnitTestUtil::Sql2Db( GetSchema(), connection );
 
     // Load data
     UnitTestUtil::Sql2Db( (const wchar_t**) mInputData, connection );
@@ -217,7 +243,9 @@ bool DescribeSchemaTest::Find_ROP( FdoReadOnlyPropertyDefinitionCollection* prop
     return true;
 }
 
-const wchar_t* DescribeSchemaTest::mSchema[] = {
+FdoString** DescribeSchemaTest::GetSchema()
+{
+    static FdoString* theSchema[] = {
     L"create table acdbentity (",
     L"    ID       INT NOT NULL,",
     L"    LAYER    VARCHAR(255)",
@@ -338,8 +366,10 @@ const wchar_t* DescribeSchemaTest::mSchema[] = {
     L"    CUSTOMER_PROVINCE       VARCHAR(50) NOT NULL",
     L");",
     NULL
-};
+    };
 
+    return theSchema;
+}
 
 const wchar_t* DescribeSchemaTest::mData[] = {
     L"",

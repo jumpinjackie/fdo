@@ -422,3 +422,8 @@ FdoStringP ConnectionUtil::GetEnv(const char* name)
 
     return env;
 }
+
+SchemaOverrideUtilP ConnectionUtil::NewSchemaOverrideUtil()
+{
+    return new SchemaOverrideUtil();
+}

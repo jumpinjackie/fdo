@@ -34,6 +34,9 @@
 #define            PROP_UNIQUE1           L"unique1"
 #define            PROP_UNIQUE2_1         L"unique2_1"
 #define            PROP_UNIQUE2_2         L"unique2_2"
+#define			   PROP_UNIQUE3_1		  L"unique3_1"
+#define			   PROP_UNIQUE3_2		  L"unique3_2"
+#define			   PROP_UNIQUE3_3		  L"unique3_3"
 
 #define            PROP_BYTE_R            L"ByteRange"
 #define            PROP_DATE_R            L"DateRange"
@@ -55,7 +58,7 @@
 #define            PROP_STRING_L          L"StringList"
 #define            PROP_LSTR_L            L"LargeStringList"
 
-#define            NUM_UNIQUE_KEYS        3
+#define            NUM_UNIQUE_KEYS        6
 
 #define            MIN_INCLUSIVE          false
 #define            MAX_INCLUSIVE          true
@@ -71,21 +74,22 @@ static FdoInt16   INT16_RANGE[2]          = {-100, 200};
 static FdoInt32   INT32_RANGE[2]          = {10, 20};
 static FdoInt64   INT64_RANGE[2]          = {100, 200};
 static FdoFloat   SINGLE_RANGE[1]         = { (float) 0.000001};
-static FdoString* STRING_RANGE[2]         = {L"MOM", L"PAPA"};
+static FdoString* STRING_RANGE[2]         = {L"MOM", L"PA'PA"};
+static FdoString* DATETIME_RANGE[2]       = { L"2005-05-15-00-02-01", L"2006-02-01-18-00-00"};
 
 static FdoByte    BYTE_LIST[3]            = {1, 2, 3};
-static FdoString* DATE_LIST[3]            = {L"TIMESTAMP '2003-10-31 03:02:01'", L"TIMESTAMP '2005-10-31 03:02:01'", L"TIMESTAMP '2005-10-31 15:02:01'"};
+static FdoString* DATETIME_LIST[3]        = {L"2003-10-31-03-02-01", L"2005-10-31-03-02-01", L"2005-10-31-15-02-01"};
 static FdoDouble  DOUBLE_LIST[3]          = {0.123456789012345678901234567890, 100, 0.123456789012345678901234567890};
 static FdoInt32   INT32_LIST[5]           = {10, 20, 30, LONG_MIN, LONG_MAX};
 static FdoInt64   INT64_LIST[4]           = {LLONG_MIN, 52, LLONG_MAX - 1, LLONG_MAX};
 static FdoFloat   SINGLE_LIST[3]          = { (float) 0.1234567, (float) 100, (float) 1.12345678};
-static FdoString* STRING_LIST[]           = { L"open", L"close" };
+static FdoString* STRING_LIST[]           = { L"op'en", L"close" };
 static wchar_t    LARGE_STRING_LIST[395][20];
 
 static FdoByte    UPD_BYTE_RANGE[2]       = {11, 23};
 static FdoInt32   UPD_INT32_RANGE[2]      = {10, 2001};
 static FdoInt32   UPD_INT32_LIST[6]       = {10, 20, 30, LONG_MIN, LONG_MAX, 77};
-static FdoString* UPD_STRING_LIST[]       = { L"semiclosed", L"close" };
+static FdoString* UPD_STRING_LIST[]       = { L"semiclosed", L"close", L"'enclosed'" };
 
 
 TestCommonConstraints::TestCommonConstraints(void)
@@ -102,278 +106,240 @@ void TestCommonConstraints::setUp ()
 
 void TestCommonConstraints::TestCreateConstraints ()
 {
-    FdoPtr<FdoIConnection> connection;
+    Context context;
 
-    try {
-        // delete, re-create and open the datastore
-        printf( "Initializing Connection ... \n" );
-        connection = CreateConnection( true );
-
-         printf( "Creating Constraints Schema ... \n" );
-        CreateConstraintsSchema( connection );
-
-        printf( "Closing Connection ... \n" );
-        connection->Close();
-    }
-    catch ( FdoException* e ) 
-    {
-        try {
-            if ( connection) connection->Close(); 
-        }
-        catch ( ... ) 
-        {
-        }
-        TestCommonFail( e );
-    }
-    catch ( CppUnit::Exception e ) 
-    {
-        if (connection) connection->Close(); 
-        throw;
-    }
-    catch (...)
-    {
-        try {
-            if (connection) connection->Close(); 
-        }
-        catch ( ... ) 
-        {
-        }
-           CPPUNIT_FAIL ("caught unexpected exception");
-       }
+    DoTestCreateConstraints( context );
 }
 
 void TestCommonConstraints::TestDescribeConstraints ()
 {
-    FdoPtr<FdoIConnection> connection;
+    Context context;
 
-    try
-    {
-        printf( "Initializing Connection ... \n" );
-        connection = CreateConnection();
-
-        printf( "Describe Constraints Schema class %ls... \n", (FdoString *)CLASS_NAME_BASE );
-        DescribeConstraintsSchema( connection, CLASS_NAME_BASE, NUM_UNIQUE_KEYS, GetExpectedCheckConstraintCount(connection), false );
-
-        printf( "Describe Constraints Schema class %ls... \n", (FdoString *)CLASS_NAME );
-        DescribeConstraintsSchema( connection, CLASS_NAME, 0, 0, false );
-
-        printf( "Closing Connection ... \n" );
-        connection->Close();
-    }
-    catch ( FdoException* e ) 
-    {
-        try {
-            if ( connection) connection->Close(); 
-        }
-        catch ( ... ) 
-        {
-        }
-        TestCommonFail( e );
-    }
-    catch ( CppUnit::Exception e ) 
-    {
-        if (connection) connection->Close(); 
-        throw;
-    }
-    catch (...)
-    {
-        try {
-            if (connection) connection->Close(); 
-        }
-        catch ( ... ) 
-        {
-        }
-           CPPUNIT_FAIL ("caught unexpected exception");
-       }
+    DoTestDescribeConstraints( context );
 }
 
 void TestCommonConstraints::TestUpdateCheckConstraints ()
 {
-    FdoPtr<FdoIConnection> connection;
+    Context context;
 
-    try
-    {
-        printf( "Initializing Connection ... \n" );
-        connection = CreateConnection();
-
-        printf( "Describe Constraints Schema ... \n" );
-        UpdateCheckConstraints( connection );
-
-        printf( "Closing Connection ... \n" );
-        connection->Close();
-    }
-    catch ( FdoException* e ) 
-    {
-        try {
-            if ( connection) connection->Close(); 
-        }
-        catch ( ... ) 
-        {
-        }
-        TestCommonFail( e );
-    }
-    catch ( CppUnit::Exception e ) 
-    {
-        try {
-            if ( connection) connection->Close(); 
-        }
-        catch ( ... ) 
-        {
-        }
-        throw;
-    }
-       catch (...)
-       {
-           CPPUNIT_FAIL ("caught unexpected exception");
-       }
+    DoTestUpdateCheckConstraints( context );
 }
 
 void TestCommonConstraints::TestUpdateUniqueConstraints ()
 {
-    FdoPtr<FdoIConnection> connection;
+    Context context;
 
-    try
-    {
-        printf( "Initializing Connection ... \n" );
-        connection = CreateConnection();
-
-        printf( "Updating Constraints Schema ... \n" );
-        UpdateUniqueConstraints( connection );
-
-        connection->Close();
-    }
-    catch ( FdoException* e ) 
-    {
-        try {
-            if ( connection) connection->Close(); 
-        }
-        catch ( ... ) 
-        {
-        }
-        TestCommonFail( e );
-    }
-    catch ( CppUnit::Exception e ) 
-    {
-        try {
-            if ( connection) connection->Close(); 
-        }
-        catch ( ... ) 
-        {
-        }
-        throw;
-    }
-       catch (...)
-       {
-           CPPUNIT_FAIL ("caught unexpected exception");
-       }
+    DoTestUpdateUniqueConstraints( context );
 }
 
 void TestCommonConstraints::TestDescribeUpdatedConstraints ()
 {
-    FdoPtr<FdoIConnection> connection;
+    Context context;
 
+    DoTestDescribeUpdatedConstraints( context );
+}
+
+void TestCommonConstraints::TestCreateLTConstraints ()
+{
+    Context context( GetLtMethod() );
+
+    if ( context.ltMethod > 0 ) 
+        DoTestCreateConstraints( context );
+}
+
+void TestCommonConstraints::TestDescribeLTConstraints ()
+{
+    Context context( GetLtMethod() );
+
+    if ( context.ltMethod > 0 ) 
+        DoTestDescribeConstraints( context );
+}
+
+void TestCommonConstraints::TestUpdateLTCheckConstraints ()
+{
+    Context context( GetLtMethod() );
+
+    if ( context.ltMethod > 0 ) 
+        DoTestUpdateCheckConstraints( context );
+}
+
+void TestCommonConstraints::TestUpdateLTUniqueConstraints ()
+{
+    Context context( GetLtMethod() );
+
+    if ( context.ltMethod > 0 ) 
+        DoTestUpdateUniqueConstraints( context );
+}
+
+void TestCommonConstraints::TestDescribeLTUpdatedConstraints ()
+{
+    Context context( GetLtMethod() );
+
+    if ( context.ltMethod > 0 ) 
+        DoTestDescribeUpdatedConstraints( context );
+}
+
+void TestCommonConstraints::DoTestCreateConstraints (Context& context)
+{
+    try {
+        // delete, re-create and open the datastore
+        printf( "Initializing Connection ... \n" );
+        CreateConnection( context, true );
+
+        printf( "Creating Constraints Schema ... \n" );
+        CreateConstraintsSchema( context );
+    }
+    catch ( FdoException* e ) 
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+    catch (...)
+    {
+        CPPUNIT_FAIL ("caught unexpected exception");
+    }
+}
+
+void TestCommonConstraints::DoTestDescribeConstraints (Context& context)
+{
     try
     {
         printf( "Initializing Connection ... \n" );
-        connection = CreateConnection();
+        CreateConnection( context );
+
+        printf( "Describe Constraints Schema class %ls... \n", (FdoString *)CLASS_NAME_BASE );
+        DescribeConstraintsSchema( context, CLASS_NAME_BASE, NUM_UNIQUE_KEYS, GetExpectedCheckConstraintCount(context.connection), false );
+
+        printf( "Describe Constraints Schema class %ls... \n", (FdoString *)CLASS_NAME );
+        DescribeConstraintsSchema( context, CLASS_NAME, 0, 0, false );
+    }
+    catch ( FdoException* e ) 
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+    catch (...)
+    {
+        CPPUNIT_FAIL ("caught unexpected exception");
+    }
+}
+
+void TestCommonConstraints::DoTestUpdateCheckConstraints (Context& context)
+{
+    try
+    {
+        printf( "Initializing Connection ... \n" );
+        CreateConnection( context );
+
+        printf( "Describe Constraints Schema ... \n" );
+        UpdateCheckConstraints( context );
+    }
+    catch ( FdoException* e ) 
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+    catch (...)
+    {
+        CPPUNIT_FAIL ("caught unexpected exception");
+    }
+}
+
+void TestCommonConstraints::DoTestUpdateUniqueConstraints (Context& context)
+{
+    try
+    {
+        printf( "Initializing Connection ... \n" );
+        CreateConnection( context );
+
+        printf( "Updating Constraints Schema ... \n" );
+        UpdateUniqueConstraints( context );
+    }
+    catch ( FdoException* e ) 
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+    catch (...)
+    {
+        CPPUNIT_FAIL ("caught unexpected exception");
+    }
+}
+
+void TestCommonConstraints::DoTestDescribeUpdatedConstraints (Context& context)
+{
+    try
+    {
+        printf( "Initializing Connection ... \n" );
+        CreateConnection( context );
 
         printf( "Describe Constraints Schema class %ls... \n", (FdoString *)CLASS_NAME_BASE );
 
-        FdoInt32 NumCheckConstraints = GetExpectedCheckConstraintCount(connection);
+        FdoInt32 NumCheckConstraints = GetExpectedCheckConstraintCount(context.connection);
 
         DescribeConstraintsSchema( 
-            connection, 
-            CLASS_NAME_BASE, NUM_UNIQUE_KEYS - 1, 
+            context, 
+            CLASS_NAME_BASE, NUM_UNIQUE_KEYS - 4, 
             CanRestrictCheckConstraint() ? NumCheckConstraints : NumCheckConstraints - 1, 
             true 
         );
 
         printf( "Describe Constraints Schema class %ls... \n", (FdoString *)CLASS_NAME );
-        DescribeConstraintsSchema( connection, CLASS_NAME, 0, 0, false );
-
-        printf( "Closing Connection ... \n" );
-        connection->Close();
+        DescribeConstraintsSchema( context, CLASS_NAME, 0, 0, false );
     }
     catch ( FdoException* e ) 
     {
-        try {
-            if ( connection) connection->Close(); 
-        }
-        catch ( ... ) 
-        {
-        }
         TestCommonFail( e );
     }
     catch ( CppUnit::Exception e ) 
     {
-        try {
-            if ( connection) connection->Close(); 
-        }
-        catch ( ... ) 
-        {
-        }
         throw;
     }
-       catch (...)
-       {
-        try {
-            if (connection) connection->Close(); 
-        }
-        catch ( ... ) 
-        {
-        }
-           CPPUNIT_FAIL ("caught unexpected exception");
-       }
+    catch (...)
+    {
+        CPPUNIT_FAIL ("caught unexpected exception");
+    }
 }
 
 void TestCommonConstraints::TestRestrictCheckConstraints ()
 {
-    FdoPtr<FdoIConnection> connection;
-
     if ( !CanRestrictCheckConstraint() ) {
         try
         {
+            Context context;
+
             // delete, re-create and open the datastore
             printf( "Initializing Connection ... \n" );
-            connection = CreateConnection( true );
+            CreateConnection( context, true );
 
              printf( "Creating Constraints Schema ... \n" );
-            CreateConstraintsSchema( connection );
+            CreateConstraintsSchema( context );
 
             printf( "Restrict Constraints  ... \n" );
-            RestrictCheckConstraints( connection );
-
-            printf( "Closing Connection ... \n" );
-            connection->Close();
+            RestrictCheckConstraints( context );
         }
         catch ( FdoException* e ) 
         {
-            try {
-                if ( connection) connection->Close(); 
-            }
-            catch ( ... ) 
-            {
-            }
             TestCommonFail( e );
         }
         catch ( CppUnit::Exception e ) 
         {
-            try {
-                if ( connection) connection->Close(); 
-            }
-            catch ( ... ) 
-            {
-            }
             throw;
         }
         catch (...)
         {
-            try {
-                if ( connection) connection->Close(); 
-            }
-            catch ( ... ) 
-            {
-            }
             CPPUNIT_FAIL ("caught unexpected exception");
         }
     }
@@ -381,52 +347,31 @@ void TestCommonConstraints::TestRestrictCheckConstraints ()
 
 void TestCommonConstraints::TestDateTimeConstraints ()
 {
-    FdoPtr<FdoIConnection> connection;
-
     if ( !CanRestrictCheckConstraint() ) {
         try
         {
+            Context context;
+
             // delete, re-create and open the datastore
             printf( "Initializing Connection ... \n" );
-            connection = CreateConnection( true );
+            CreateConnection( context, true );
 
              printf( "Creating Constraints Schema ... \n" );
-            CreateConstraintsSchema( connection );
+            CreateConstraintsSchema( context );
 
             printf( "Testing DateTime Constraints  ... \n" );
-            DateTimeConstraints( connection );
-
-            printf( "Closing Connection ... \n" );
-            connection->Close();
+            DateTimeConstraints( context );
         }
         catch ( FdoException* e ) 
         {
-            try {
-                if ( connection) connection->Close(); 
-            }
-            catch ( ... ) 
-            {
-            }
             TestCommonFail( e );
         }
         catch ( CppUnit::Exception e ) 
         {
-            try {
-                if ( connection) connection->Close(); 
-            }
-            catch ( ... ) 
-            {
-            }
             throw;
         }
         catch (...)
         {
-            try {
-                if ( connection) connection->Close(); 
-            }
-            catch ( ... ) 
-            {
-            }
             CPPUNIT_FAIL ("caught unexpected exception");
         }
     }
@@ -434,20 +379,20 @@ void TestCommonConstraints::TestDateTimeConstraints ()
 
 void TestCommonConstraints::TestBaseReferences ()
 {
-    FdoPtr<FdoIConnection> connection;
-
     try
     {
+        Context context;
+
         // delete, re-create and open the datastore
         printf( "Initializing Connection ... \n" );
-        connection = CreateConnection( true );
+        CreateConnection( context, true );
 
         printf( "Creating Constraints Schema ... \n" );
             
-        FdoPtr<FdoISchemaCapabilities>    schemaCap = connection->GetSchemaCapabilities();
+        FdoPtr<FdoISchemaCapabilities>    schemaCap = context.connection->GetSchemaCapabilities();
 
         if ( schemaCap->SupportsUniqueValueConstraints() && schemaCap->SupportsCompositeUniqueValueConstraints() ) {
-            FdoPtr<FdoIApplySchema>            pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
+            FdoPtr<FdoIApplySchema>            pCmd = (FdoIApplySchema*) context.connection->CreateCommand(FdoCommandType_ApplySchema);
 
             FdoFeatureSchemasP pSchemas = FdoFeatureSchemaCollection::Create(NULL);
 
@@ -536,33 +481,33 @@ void TestCommonConstraints::TestBaseReferences ()
 
             // This should succeed
             TestCommonMiscUtil::InsertObject(
-                connection,
+                context.connection,
                 insertCmd,
                 SCHEMA_NAME,
                 CLASS_NAME_BASE,
-                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection,CLASS_NAME_BASE),
+                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection,CLASS_NAME_BASE),
                 PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 1000,
                 (FdoString*) NULL
             );
 
             // Unique constraint not on base class so should succeed.
             TestCommonMiscUtil::InsertObject(
-                connection,
+                context.connection,
                 insertCmd,
                 SCHEMA_NAME,
                 CLASS_NAME_BASE,
-                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME_BASE),
+                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME_BASE),
                 PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 1000,
                 (FdoString*) NULL
             );
 
             // This should succeed
             TestCommonMiscUtil::InsertObject(
-                connection,
+                context.connection,
                 insertCmd,
                 SCHEMA_NAME,
                 CLASS_NAME,
-                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME),
+                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
                 PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 2000,
                 (FdoString*) NULL
             );
@@ -570,11 +515,11 @@ void TestCommonConstraints::TestBaseReferences ()
             bool    uniqueSuccess1 = true;
             try {
                 TestCommonMiscUtil::InsertObject(
-                    connection,
+                    context.connection,
                     insertCmd,
                     SCHEMA_NAME,
                     CLASS_NAME,
-                    PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME),
+                    PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
                     PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 2000,
                     (FdoString*) NULL
                 );
@@ -587,33 +532,33 @@ void TestCommonConstraints::TestBaseReferences ()
 
             // This should succeed
             TestCommonMiscUtil::InsertObject(
-                connection,
+                context.connection,
                 insertCmd,
                 SCHEMA_NAME,
                 CLASS_NAME_BASE,
-                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME_BASE),
+                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME_BASE),
                 PROP_UNIQUE2_1,  FdoDataType_Int32,  (FdoInt32) 1000,
                 (FdoString*) NULL
             );
 
             // Unique constraint not on base class so should succeed.
             TestCommonMiscUtil::InsertObject(
-                connection,
+                context.connection,
                 insertCmd,
                 SCHEMA_NAME,
                 CLASS_NAME_BASE,
-                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME_BASE),
+                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME_BASE),
                 PROP_UNIQUE2_1,  FdoDataType_Int32,  (FdoInt32) 1000,
                 (FdoString*) NULL
                 );
 
             // This should succeed
             TestCommonMiscUtil::InsertObject(
-                connection,
+                context.connection,
                 insertCmd,
                 SCHEMA_NAME,
                 CLASS_NAME,
-                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME),
+                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
                 PROP_UNIQUE2_1,  FdoDataType_Int32,  (FdoInt32) 1000,
                 PROP_UNIQUE2_2,  FdoDataType_Int32,  (FdoInt32) 2000,
                 (FdoString*) NULL
@@ -623,11 +568,11 @@ void TestCommonConstraints::TestBaseReferences ()
 
             try {
                 TestCommonMiscUtil::InsertObject(
-                    connection,
+                    context.connection,
                     insertCmd,
                     SCHEMA_NAME,
                     CLASS_NAME,
-                    PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME),
+                    PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
                     PROP_UNIQUE2_1,  FdoDataType_Int32,  (FdoInt32) 1000,
                     PROP_UNIQUE2_2,  FdoDataType_Int32,  (FdoInt32) 2000,
                     (FdoString*) NULL
@@ -644,11 +589,11 @@ void TestCommonConstraints::TestBaseReferences ()
             // This should succeed
 
             TestCommonMiscUtil::InsertObject(
-                connection,
+                context.connection,
                 insertCmd,
                 SCHEMA_NAME,
                 CLASS_NAME,
-                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME),
+                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
                 PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 3000,
                 PROP_UNIQUE2_1,  FdoDataType_Int32,  (FdoInt32) 2000,
                 PROP_UNIQUE2_2,  FdoDataType_Int32,  (FdoInt32) 2000,
@@ -658,18 +603,18 @@ void TestCommonConstraints::TestBaseReferences ()
             // This should succeed
 
             TestCommonMiscUtil::InsertObject(
-                connection,
+                context.connection,
                 insertCmd,
                 SCHEMA_NAME,
                 CLASS_NAME,
-                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME),
+                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
                 PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 4000,
                 PROP_UNIQUE2_1,  FdoDataType_Int32,  (FdoInt32) 1000,
                 PROP_UNIQUE2_2,  FdoDataType_Int32,  (FdoInt32) 3000,
                 (FdoString*) NULL
                 );
             
-            FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
+            FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) context.connection->CreateCommand(FdoCommandType_DescribeSchema);
 
             pDescCmd->SetSchemaName( SCHEMA_NAME );
             FdoPtr<FdoFeatureSchemaCollection> pSchemas2 = pDescCmd->Execute();
@@ -725,53 +670,30 @@ void TestCommonConstraints::TestBaseReferences ()
             CPPUNIT_ASSERT_MESSAGE("Sub class unique key does not have 1 property ", pProps->GetCount() == 1 );
             pProp = pProps->GetItem(0);
             CPPUNIT_ASSERT( wcscmp(pProp->GetName(), PROP_UNIQUE2_2) == 0);
-
-            printf( "Closing Connection ... \n" );
-            
-            connection->Close();
         }
     }
     catch ( FdoException* e ) 
     {
-        try {
-            if ( connection) connection->Close(); 
-        }
-        catch ( ... ) 
-        {
-        }
         TestCommonFail( e );
     }
     catch ( CppUnit::Exception e ) 
     {
-        try {
-            if ( connection) connection->Close(); 
-        }
-        catch ( ... ) 
-        {
-        }
         throw;
     }
     catch (...)
     {
-        try {
-            if ( connection) connection->Close(); 
-        }
-        catch ( ... ) 
-        {
-        }
-
         CPPUNIT_FAIL ("caught unexpected exception");
     }
 }
 
-void TestCommonConstraints::CreateConstraintsSchema( FdoIConnection* connection )
+void TestCommonConstraints::CreateConstraintsSchema( Context& context )
 {
-    FdoPtr<FdoISchemaCapabilities>    schemaCap = connection->GetSchemaCapabilities();
+    FdoPtr<FdoISchemaCapabilities>    schemaCap = context.connection->GetSchemaCapabilities();
     FdoInt32                          typeCount;
     FdoInt32                          idx;
     FdoDataType*                      supportedTypes = schemaCap->GetDataTypes( typeCount );
 
-    FdoPtr<FdoIApplySchema>            pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
+    FdoPtr<FdoIApplySchema>            pCmd = (FdoIApplySchema*) context.connection->CreateCommand(FdoCommandType_ApplySchema);
 
     FdoFeatureSchemasP pSchemas = FdoFeatureSchemaCollection::Create(NULL);
 
@@ -781,11 +703,11 @@ void TestCommonConstraints::CreateConstraintsSchema( FdoIConnection* connection 
     FdoPtr<FdoFeatureClass> pCData = FdoFeatureClass::Create( CLASS_NAME_BASE, L"Constraints" );
     pCData->SetIsAbstract(true);
 
-    FdoPtr<FdoDataPropertyDefinition> pProp = FdoDataPropertyDefinition::Create( PROP_FEATID, L"" );
-    pProp->SetDataType( FdoDataType_Int32 );
-    pProp->SetNullable(false);
-    FdoPropertiesP(pCData->GetProperties())->Add( pProp );
-    FdoDataPropertiesP(pCData->GetIdentityProperties())->Add( pProp );
+    FdoPtr<FdoDataPropertyDefinition> pIdProp = FdoDataPropertyDefinition::Create( PROP_FEATID, L"" );
+    pIdProp->SetDataType( FdoDataType_Int32 );
+    pIdProp->SetNullable(false);
+    FdoPropertiesP(pCData->GetProperties())->Add( pIdProp );
+    FdoDataPropertiesP(pCData->GetIdentityProperties())->Add( pIdProp );
 
     for ( idx = 0; idx < typeCount; idx++ ) {
         switch ( supportedTypes[idx] ) {
@@ -1115,6 +1037,35 @@ void TestCommonConstraints::CreateConstraintsSchema( FdoIConnection* connection 
         pDataPropColl->Add( pUnique21Int );
         pDataPropColl->Add( pUnique22Int );
         constraints->Add( newUniqueConstr2 );
+
+        //////////////  3rd unique property - Composite ///////////////
+	    FdoPtr<FdoDataPropertyDefinition> pUnique31Int = FdoDataPropertyDefinition::Create( PROP_UNIQUE3_1, L"" );
+	    pUnique31Int->SetDataType( FdoDataType_Int32 );
+	    pUnique31Int->SetNullable(true);
+	    FdoPropertiesP(pCData->GetProperties())->Add( pUnique31Int  );
+
+	    FdoPtr<FdoDataPropertyDefinition> pUnique32Int = FdoDataPropertyDefinition::Create( PROP_UNIQUE3_2, L"" );
+	    pUnique32Int->SetDataType( FdoDataType_Int32 );
+	    pUnique32Int->SetNullable(true);
+	    FdoPropertiesP(pCData->GetProperties())->Add( pUnique32Int  );
+
+	    FdoPtr<FdoDataPropertyDefinition> pUnique33Int = FdoDataPropertyDefinition::Create( PROP_UNIQUE3_3, L"" );
+	    pUnique33Int->SetDataType( FdoDataType_Int32 );
+	    pUnique33Int->SetNullable(true);
+	    FdoPropertiesP(pCData->GetProperties())->Add( pUnique33Int  );
+
+	    FdoPtr<FdoUniqueConstraint>  newUniqueConstr3 = FdoUniqueConstraint::Create();
+	    newUniqueConstr3->GetProperties()->Add( pUnique31Int );
+	    newUniqueConstr3->GetProperties()->Add( pUnique32Int );
+	    newUniqueConstr3->GetProperties()->Add( pUnique33Int );
+	    constraints->Add( newUniqueConstr3 );
+
+	    //////////////  4th unique constraint - on identity property ///////////////
+        //////////////  should be silently ignored                   ///////////////
+
+	    FdoPtr<FdoUniqueConstraint>  newUniqueConstr4 = FdoUniqueConstraint::Create();
+	    newUniqueConstr4->GetProperties()->Add( pIdProp );
+	    constraints->Add( newUniqueConstr4 );
     }
 
     // Create a new class based on the previous ...
@@ -1137,14 +1088,14 @@ void TestCommonConstraints::CreateConstraintsSchema( FdoIConnection* connection 
     {
         // This should succeed
         TestCommonMiscUtil::InsertObject(
-            connection,
+            context.connection,
             insertCmd,
             SCHEMA_NAME,
             CLASS_NAME,
-            PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME),
+            PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
             PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 10,
             PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
-            PROP_STRING_L,  FdoDataType_String, L"open",
+            PROP_STRING_L,  FdoDataType_String, L"op'en",
             PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 1000,
             PROP_STRING_R, FdoDataType_String, L"PA",
             PROP_SINGLE_R, FdoDataType_Single, (FdoFloat) 0.000002,
@@ -1154,15 +1105,16 @@ void TestCommonConstraints::CreateConstraintsSchema( FdoIConnection* connection 
         bool    uniqueSuccess1 = true;
         try {
             TestCommonMiscUtil::InsertObject(
-                connection,
+                context.connection,
                 insertCmd,
                 SCHEMA_NAME,
                 CLASS_NAME,
-                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME),
+                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
                 PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 30,
                 PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 40,
                 PROP_STRING_L,  FdoDataType_String, L"close",
                 PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 1000,
+               PROP_UNIQUE3_1,  FdoDataType_Int32,  (FdoInt32) 1000,
                 (FdoString*) NULL
             );
         } catch (FdoException *ex) {
@@ -1174,33 +1126,35 @@ void TestCommonConstraints::CreateConstraintsSchema( FdoIConnection* connection 
 
         // This should succeed
         TestCommonMiscUtil::InsertObject(
-            connection,
+            context.connection,
             insertCmd,
             SCHEMA_NAME,
             CLASS_NAME,
-            PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME),
+            PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
             PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 10,
             PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
-            PROP_STRING_L,  FdoDataType_String, L"open",
+            PROP_STRING_L,  FdoDataType_String, L"op'en",
             PROP_UNIQUE2_1,  FdoDataType_Int32,  (FdoInt32) 1000,
             PROP_UNIQUE2_2,  FdoDataType_Int32,  (FdoInt32) 2000,
+            PROP_UNIQUE3_1,  FdoDataType_Int32,  (FdoInt32) 1000,
             (FdoString*) NULL
         );
 
         bool    uniqueSuccess2 = true;
         try {
             TestCommonMiscUtil::InsertObject(
-                connection,
+                context.connection,
                 insertCmd,
                 SCHEMA_NAME,
                 CLASS_NAME,
-                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME),
+                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
                 PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 30,
                 PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 40,
                 PROP_STRING_L,  FdoDataType_String, L"close",
                 PROP_UNIQUE2_1,  FdoDataType_Int32,  (FdoInt32) 1000,
                 PROP_UNIQUE2_2,  FdoDataType_Int32,  (FdoInt32) 2000,
-                (FdoString*) NULL
+                PROP_UNIQUE3_1,  FdoDataType_Int32,  (FdoInt32) 2000,
+                 (FdoString*) NULL
             );
         } catch (FdoException *ex) {
             DBG(printf("Expected unique constraint violationexception: %ls", (FdoString* )ex->GetExceptionMessage()));
@@ -1217,15 +1171,18 @@ void TestCommonConstraints::CreateConstraintsSchema( FdoIConnection* connection 
         bool    checkSuccess = true;
         try {
             TestCommonMiscUtil::InsertObject(
-                connection,
+                context.connection,
                 insertCmd,
                 SCHEMA_NAME,
                 CLASS_NAME,
-                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME),
+                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
                 PROP_INT32_R , FdoDataType_Int32,  INT32_RANGE[1],
                 PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
-                PROP_STRING_L,  FdoDataType_String, L"open",
-                (FdoString*) NULL
+                PROP_STRING_L,  FdoDataType_String, L"op'en",
+                PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 3000,
+                PROP_UNIQUE2_2,  FdoDataType_Int32,  (FdoInt32) 3000,
+                PROP_UNIQUE3_1,  FdoDataType_Int32,  (FdoInt32) 3000,
+                 (FdoString*) NULL
             );
         } catch (FdoException *ex) {
             DBG(printf("Expected RangeInt constraint exception: %ls", (FdoString* )ex->GetExceptionMessage()));
@@ -1237,14 +1194,17 @@ void TestCommonConstraints::CreateConstraintsSchema( FdoIConnection* connection 
         checkSuccess = true;
         try {
             TestCommonMiscUtil::InsertObject(
-                connection,
+                context.connection,
                 insertCmd,
                 SCHEMA_NAME,
                 CLASS_NAME,
-                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME),
+                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
                 PROP_INT32_R , FdoDataType_Int32,  INT32_RANGE[0] - 1,
                 PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
-                PROP_STRING_L,  FdoDataType_String, L"open",
+                PROP_STRING_L,  FdoDataType_String, L"op'en",
+                PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 4000,
+                PROP_UNIQUE2_2,  FdoDataType_Int32,  (FdoInt32) 4000,
+                PROP_UNIQUE3_1,  FdoDataType_Int32,  (FdoInt32) 4000,
                 (FdoString*) NULL
             );
         } catch (FdoException *ex) {
@@ -1258,14 +1218,17 @@ void TestCommonConstraints::CreateConstraintsSchema( FdoIConnection* connection 
         checkSuccess = true;
         try {
             TestCommonMiscUtil::InsertObject(
-                connection,
+                context.connection,
                 insertCmd,
                 SCHEMA_NAME,
                 CLASS_NAME,
-                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME),
+                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
                 PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 10,
                 PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 40,
-                PROP_STRING_L,  FdoDataType_String, L"open",
+                PROP_STRING_L,  FdoDataType_String, L"op'en",
+                PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 5000,
+                PROP_UNIQUE2_2,  FdoDataType_Int32,  (FdoInt32) 5000,
+                PROP_UNIQUE3_1,  FdoDataType_Int32,  (FdoInt32) 5000,
                 (FdoString*) NULL
             );
         } catch (FdoException *ex) {
@@ -1278,14 +1241,17 @@ void TestCommonConstraints::CreateConstraintsSchema( FdoIConnection* connection 
         checkSuccess = true;
         try {
             TestCommonMiscUtil::InsertObject(
-                connection,
+                context.connection,
                 insertCmd,
                 SCHEMA_NAME,
                 CLASS_NAME,
-                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME),
+                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
                 PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 10,
                 PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
                 PROP_STRING_L,  FdoDataType_String, L"xxxxx",
+                PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 6000,
+                PROP_UNIQUE2_2,  FdoDataType_Int32,  (FdoInt32) 6000,
+                PROP_UNIQUE3_1,  FdoDataType_Int32,  (FdoInt32) 6000,
                 (FdoString*) NULL
             );
         } catch (FdoException *ex) {
@@ -1297,23 +1263,24 @@ void TestCommonConstraints::CreateConstraintsSchema( FdoIConnection* connection 
 
 
         TestCommonMiscUtil::InsertObject(
-            connection,
+            context.connection,
             insertCmd,
             SCHEMA_NAME,
             CLASS_NAME,
             PROP_FEATID, FdoDataType_Int32, 99999999,
             PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 10,
             PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
-            PROP_STRING_L,  FdoDataType_String, L"open",
+            PROP_STRING_L,  FdoDataType_String, L"op'en",
             PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 8000,
             PROP_UNIQUE2_1,  FdoDataType_Int32,  (FdoInt32) 8000,
+            PROP_UNIQUE3_1,  FdoDataType_Int32,  (FdoInt32) 8000,
             (FdoString*) NULL
         );
 
-        UpdateAllValues( connection, CLASS_NAME, 99999999);
+        UpdateAllValues( context.connection, CLASS_NAME, 99999999);
 
         TestCommonMiscUtil::DeleteObjects( 
-            connection,
+            context.connection,
             SCHEMA_NAME,
             CLASS_NAME,
             PROP_FEATID,
@@ -1651,11 +1618,11 @@ void TestCommonConstraints::UpdateValue(
     }
 }
 
-void TestCommonConstraints::DescribeConstraintsSchema( FdoIConnection* connection, FdoString* className, int numUkeys, int numCkeys, bool afterUpdate )
+void TestCommonConstraints::DescribeConstraintsSchema( Context& context, FdoString* className, int numUkeys, int numCkeys, bool afterUpdate )
 {
-    FdoPtr<FdoISchemaCapabilities>    schemaCap = connection->GetSchemaCapabilities();
+    FdoPtr<FdoISchemaCapabilities>    schemaCap = context.connection->GetSchemaCapabilities();
 
-    FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
+    FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) context.connection->CreateCommand(FdoCommandType_DescribeSchema);
 
     pDescCmd->SetSchemaName( SCHEMA_NAME );
     FdoPtr<FdoFeatureSchemaCollection> pSchemas2 = pDescCmd->Execute();
@@ -1676,8 +1643,11 @@ void TestCommonConstraints::DescribeConstraintsSchema( FdoIConnection* connectio
 
         int        count = 0;
         bool    found_unique1 = false;
-        bool    found_unique2 = false;
-        bool    found_unique3 = false;
+        bool    found_unique2_1 = false;
+        bool    found_unique2_2 = false;
+        bool    found_unique3_1 = false;
+        bool    found_unique3_2 = false;
+        bool    found_unique3_3 = false;
 
         //if ( pUniqueCs->GetCount() == 0 )
         //    pUniqueCs = pClassBase2->GetUniqueConstraints();
@@ -1697,18 +1667,24 @@ void TestCommonConstraints::DescribeConstraintsSchema( FdoIConnection* connectio
                 if ( wcscmp(pProp->GetName(), PROP_UNIQUE1 ) == 0 )
                     found_unique1 = true;
                 else if ( wcscmp(pProp->GetName(), PROP_UNIQUE2_1 ) == 0 )
-                    found_unique2 = true;
+                    found_unique2_1 = true;
                 else if ( wcscmp(pProp->GetName(), PROP_UNIQUE2_2 ) == 0 )
-                    found_unique3 = true;
+                    found_unique2_2 = true;
+                else if ( wcscmp(pProp->GetName(), PROP_UNIQUE3_1 ) == 0 )
+                    found_unique3_1 = true;
+                else if ( wcscmp(pProp->GetName(), PROP_UNIQUE3_2 ) == 0 )
+                    found_unique3_2 = true;
+                else if ( wcscmp(pProp->GetName(), PROP_UNIQUE3_3 ) == 0 )
+                    found_unique3_3 = true;
             }    
         }
 
         CPPUNIT_ASSERT_MESSAGE("Wrong number of unique keys", count == numUkeys );
         if ( numUkeys != 0 ) {
             if ( afterUpdate ) 
-                CPPUNIT_ASSERT_MESSAGE("Unique keys properties not found", found_unique1 && found_unique3);
+                CPPUNIT_ASSERT_MESSAGE("Unique keys properties not found", found_unique1 && found_unique2_2);
             else
-                CPPUNIT_ASSERT_MESSAGE("Unique keys properties not found", found_unique1 && found_unique2 && found_unique3);
+                CPPUNIT_ASSERT_MESSAGE("Unique keys properties not found", found_unique1 && found_unique2_1 && found_unique2_2 && found_unique3_1 && found_unique3_2 && found_unique3_3);
         }
     }
 
@@ -1799,6 +1775,17 @@ void TestCommonConstraints::DescribeConstraintsSchema( FdoIConnection* connectio
                     CPPUNIT_ASSERT_MESSAGE("Wrong Min Value Prop4R",  wcscmp(valMin->ToString(), val1->ToString()) == 0 );
                     CPPUNIT_ASSERT_MESSAGE("Wrong Max Value Prop4R (not null)",  valMax == NULL );
                 }
+			    else if ( wcscmp( pProp->GetName(), PROP_DATE_R) == 0 ) 
+			    {
+				    CPPUNIT_ASSERT_MESSAGE("Wrong MinInclusive", pConstrR->GetMinInclusive() == true );
+				    CPPUNIT_ASSERT_MESSAGE("Wrong MaxInclusive", pConstrR->GetMaxInclusive() == true );
+
+				    FdoDataValue*	valMin = pConstrR->GetMinValue();
+				    FdoDataValue*	valMax = pConstrR->GetMaxValue();
+
+				    CPPUNIT_ASSERT_MESSAGE("Wrong Min Value PropDateR",  wcscmp(FixDatetimeFormat(valMin), DATETIME_RANGE[0]) == 0 );
+				    CPPUNIT_ASSERT_MESSAGE("Wrong Max Value PropDateR",  wcscmp(FixDatetimeFormat(valMax), DATETIME_RANGE[1]) == 0 );
+			    }
                 
                 count++;
             }
@@ -1841,7 +1828,7 @@ void TestCommonConstraints::DescribeConstraintsSchema( FdoIConnection* connectio
                 }
                 else if ( wcscmp( pProp->GetName(), PROP_DATE_L ) == 0) {
                     DBG(printf("Check List key #%d: (%ls in (", count, pProp->GetName()));
-                    CheckDateListConstraint( pProp->GetName(), pList, DATE_LIST, sizeof(DATE_LIST) / sizeof(wchar_t*) );
+                    CheckDateListConstraint( pProp->GetName(), pList, DATETIME_LIST, sizeof(DATETIME_LIST) / sizeof(wchar_t*) );
                     count++;
                 }
                 else if ( wcscmp( pProp->GetName(), PROP_INT64_L ) == 0) {
@@ -1871,20 +1858,20 @@ void TestCommonConstraints::DescribeConstraintsSchema( FdoIConnection* connectio
     }
 }
 
-void TestCommonConstraints::UpdateUniqueConstraints( FdoIConnection* connection )
+void TestCommonConstraints::UpdateUniqueConstraints( Context& context )
 {
     int        count = 0;
     bool    found_unique1 = false;
     bool    found_unique2 = false;
     bool    found_unique3 = false;
 
-    FdoPtr<FdoISchemaCapabilities>    schemaCap = connection->GetSchemaCapabilities();
+    FdoPtr<FdoISchemaCapabilities>    schemaCap = context.connection->GetSchemaCapabilities();
 
     if ( schemaCap->SupportsUniqueValueConstraints() && schemaCap->SupportsCompositeUniqueValueConstraints() )
     {
         printf(".UpdateUniqueConstraints ...\n");
 
-        FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
+        FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) context.connection->CreateCommand(FdoCommandType_DescribeSchema);
 
         pDescCmd->SetSchemaName( SCHEMA_NAME );
         FdoPtr<FdoFeatureSchemaCollection> pSchemas2 = pDescCmd->Execute();
@@ -1896,12 +1883,13 @@ void TestCommonConstraints::UpdateUniqueConstraints( FdoIConnection* connection 
         
         FdoPtr<FdoUniqueConstraintCollection> pUniqueCs = pClass2->GetUniqueConstraints();
 
-        FdoPtr<FdoIApplySchema>  pApplyCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
+        FdoPtr<FdoIApplySchema>  pApplyCmd = (FdoIApplySchema*) context.connection->CreateCommand(FdoCommandType_ApplySchema);
         pApplyCmd->SetFeatureSchema(pSchema2);
 
         /// MySql reverses the order of the constraints and also the constrainted props in the list
         int        index1;
         int        index2 = -1;
+        int        index3 = -1;
 
         for ( index1 = 0; index1 < pUniqueCs->GetCount(); index1++ ) 
         {
@@ -1911,10 +1899,16 @@ void TestCommonConstraints::UpdateUniqueConstraints( FdoIConnection* connection 
             FdoDataPropertyP             pProp1 = pProps1->FindItem(PROP_UNIQUE1);
             if ( pProp1 ) 
                 index2 = index1;
+            pProp1 = pProps1->FindItem(PROP_UNIQUE3_1);
+            if ( pProp1 ) 
+                index3 = index1;
         }
 
         printf("Unique key on (%ls) removed\n", PROP_UNIQUE1);
         pUniqueCs->RemoveAt(index2);
+        if ( index3 > index2 ) 
+            index3--;
+        pUniqueCs->RemoveAt(index3);
         pApplyCmd->Execute();
 
         // Just one constraint left
@@ -1937,14 +1931,14 @@ void TestCommonConstraints::UpdateUniqueConstraints( FdoIConnection* connection 
 
         FdoPtr<FdoIInsert> insertCmd;
         TestCommonMiscUtil::InsertObject(
-            connection,
+            context.connection,
             insertCmd,
             SCHEMA_NAME,
             CLASS_NAME,
-            PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME),
+            PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
             PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 10,
             PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
-            PROP_STRING_L,  FdoDataType_String, L"open",
+            PROP_STRING_L,  FdoDataType_String, L"op'en",
             PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 1000,
             PROP_UNIQUE2_1,  FdoDataType_Int32,  (FdoInt32) 1000,
             PROP_UNIQUE2_2,  FdoDataType_Int32,  value,
@@ -1970,7 +1964,7 @@ void TestCommonConstraints::UpdateUniqueConstraints( FdoIConnection* connection 
 
         // Remove the offending row
         TestCommonMiscUtil::DeleteObjects( 
-            connection,
+            context.connection,
             SCHEMA_NAME,
             CLASS_NAME,
             PROP_UNIQUE2_2,
@@ -1989,6 +1983,20 @@ void TestCommonConstraints::UpdateUniqueConstraints( FdoIConnection* connection 
         pClass2 = pClasses2->GetItem( CLASS_NAME_BASE );
           pUniqueCs = pClass2->GetUniqueConstraints();
 
+	    // Add unique constraint on identity property. Should be ignored.
+	    FdoPtr<FdoDataPropertyDefinition> pUnique5 = FdoDataPropertiesP(pClass2->GetIdentityProperties())->GetItem(0);
+	    FdoPtr<FdoUniqueConstraint>  newUniqueConstr5 = FdoUniqueConstraint::Create();
+	    newUniqueConstr5->GetProperties()->Add( pUnique5 );
+	    pUniqueCs->Add( newUniqueConstr5 );
+
+	    pApplyCmd->Execute();
+
+	    pSchemas2 = pDescCmd->Execute();
+	    pSchema2 = pSchemas2->GetItem( SCHEMA_NAME );
+        pClasses2 = pSchema2->GetClasses();
+	    pClass2 = pClasses2->GetItem( CLASS_NAME_BASE );
+	    pUniqueCs = pClass2->GetUniqueConstraints();
+        
         // Check results
         for ( int i = 0; i < pUniqueCs->GetCount(); i++ ) {
             FdoPtr<FdoUniqueConstraint>  pUniqueC = pUniqueCs->GetItem(i);
@@ -2009,15 +2017,15 @@ void TestCommonConstraints::UpdateUniqueConstraints( FdoIConnection* connection 
             }    
         }
         
-        CPPUNIT_ASSERT_MESSAGE("Wrong number of unique keys", count == NUM_UNIQUE_KEYS - 1);
+        CPPUNIT_ASSERT_MESSAGE("Wrong number of unique keys", count == NUM_UNIQUE_KEYS - 4);
         CPPUNIT_ASSERT_MESSAGE("Unique keys properties not found", found_unique1 && !found_unique2 && found_unique3);
     }
 }
 
-void TestCommonConstraints::UpdateCheckConstraints( FdoIConnection* connection )
+void TestCommonConstraints::UpdateCheckConstraints( Context& context )
 {
 
-    FdoPtr<FdoISchemaCapabilities>    schemaCap = connection->GetSchemaCapabilities();
+    FdoPtr<FdoISchemaCapabilities>    schemaCap = context.connection->GetSchemaCapabilities();
     FdoPtr<FdoIInsert> insertCmd;
 
     // MySql doesn't have check constraints
@@ -2026,7 +2034,7 @@ void TestCommonConstraints::UpdateCheckConstraints( FdoIConnection* connection )
 
     printf(".UpdateCheckConstraints ...\n");
 
-    FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
+    FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) context.connection->CreateCommand(FdoCommandType_DescribeSchema);
 
     pDescCmd->SetSchemaName( SCHEMA_NAME );
     FdoPtr<FdoFeatureSchemaCollection> pSchemas2 = pDescCmd->Execute();
@@ -2034,7 +2042,7 @@ void TestCommonConstraints::UpdateCheckConstraints( FdoIConnection* connection )
     FdoPtr<FdoClassCollection> pClasses2 = pSchema2->GetClasses();
     FdoPtr<FdoClassDefinition> pClass2 = pClasses2->GetItem( CLASS_NAME_BASE );
    
-    FdoPtr<FdoIApplySchema>  pApplyCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
+    FdoPtr<FdoIApplySchema>  pApplyCmd = (FdoIApplySchema*) context.connection->CreateCommand(FdoCommandType_ApplySchema);
     pApplyCmd->SetFeatureSchema(pSchema2);
 
     ///////////////// CHECK() CONSTRAINTS //////////////////////////////////////////
@@ -2064,14 +2072,14 @@ void TestCommonConstraints::UpdateCheckConstraints( FdoIConnection* connection )
                 FdoInt32 value = 2000;
 
                 TestCommonMiscUtil::InsertObject(
-                    connection,
+                    context.connection,
                     insertCmd,
                     SCHEMA_NAME,
                     CLASS_NAME,
-                    PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME),
+                    PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
                     PROP_INT32_R , FdoDataType_Int32,  value,
                     PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
-                    PROP_STRING_L,  FdoDataType_String, L"open",
+                    PROP_STRING_L,  FdoDataType_String, L"op'en",
                     PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 6666,
                     PROP_UNIQUE2_2,  FdoDataType_Int32,  (FdoInt32) 8888,
                     (FdoString*) NULL
@@ -2090,14 +2098,16 @@ void TestCommonConstraints::UpdateCheckConstraints( FdoIConnection* connection )
                 pProp->SetValueConstraint(newRangeConstr1);
 
                 bool error = false;
-                try    {
-                    pApplyCmd->Execute();
-                } catch (FdoException *ex) {
-                    DBG(printf("Expected check constraint violation exception: %ls\n", (FdoString* )ex->GetExceptionMessage()));
-                    ex->Release();
-                    error = true;
+                if ( context.ltMethod != 2 ) {
+                    try    {
+                        pApplyCmd->Execute();
+                    } catch (FdoException *ex) {
+                        DBG(printf("Expected check constraint violation exception: %ls\n", (FdoString* )ex->GetExceptionMessage()));
+                        ex->Release();
+                        error = true;
+                    }
+                    CPPUNIT_ASSERT_MESSAGE("Expected check constraint violation exception on PROPERTY_1", error == true);
                 }
-                CPPUNIT_ASSERT_MESSAGE("Expected check constraint violation exception on PROPERTY_1", error == true);
 
                 // Enlarge the range CHECK constraint
                 newRangeConstr1->SetMaxInclusive(INT_MAX_INCLUSIVE);
@@ -2120,14 +2130,14 @@ void TestCommonConstraints::UpdateCheckConstraints( FdoIConnection* connection )
 
                 // Try insert again. It should succeed.
                 TestCommonMiscUtil::InsertObject(
-                    connection,
+                    context.connection,
                     insertCmd,
                     SCHEMA_NAME,
                     CLASS_NAME,
-                    PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME),
+                    PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
                     PROP_INT32_R , FdoDataType_Int32,  value,
                     PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
-                    PROP_STRING_L,  FdoDataType_String, L"open",
+                    PROP_STRING_L,  FdoDataType_String, L"op'en",
                     PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 6667,
                     PROP_UNIQUE2_2,  FdoDataType_Int32,  (FdoInt32) 8889,
                     (FdoString*) NULL
@@ -2141,15 +2151,15 @@ void TestCommonConstraints::UpdateCheckConstraints( FdoIConnection* connection )
                 bool error = false;
                 try    {
                     TestCommonMiscUtil::InsertObject(
-                        connection,
+                        context.connection,
                         insertCmd,
                         SCHEMA_NAME,
                         CLASS_NAME,
-                        PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME),
+                        PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
                         PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 10,
                         PROP_BYTE_R, FdoDataType_Byte,  value,
                         PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
-                        PROP_STRING_L,  FdoDataType_String, L"open",
+                        PROP_STRING_L,  FdoDataType_String, L"op'en",
                         PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 8000,
                         PROP_UNIQUE2_2,  FdoDataType_Int32,  (FdoInt32) 9000,
                         (FdoString*) NULL
@@ -2171,15 +2181,15 @@ void TestCommonConstraints::UpdateCheckConstraints( FdoIConnection* connection )
 
                 // Try insert again. It should succeed.
                 TestCommonMiscUtil::InsertObject(
-                    connection,
+                    context.connection,
                     insertCmd,
                     SCHEMA_NAME,
                     CLASS_NAME,
-                    PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME),
+                    PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
                     PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 10,
                     PROP_BYTE_R, FdoDataType_Int32,  value,
                     PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
-                    PROP_STRING_L,  FdoDataType_String, L"open",
+                    PROP_STRING_L,  FdoDataType_String, L"op'en",
                     PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 6677,
                     PROP_UNIQUE2_2,  FdoDataType_Int32,  (FdoInt32) 8899,
                     (FdoString*) NULL
@@ -2203,14 +2213,14 @@ void TestCommonConstraints::UpdateCheckConstraints( FdoIConnection* connection )
 
                 // Now try to insert. It should succeed.
                 TestCommonMiscUtil::InsertObject(
-                    connection,
+                    context.connection,
                     insertCmd,
                     SCHEMA_NAME,
                     CLASS_NAME,
-                    PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME),
+                    PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
                     PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 10,
                     PROP_INT32_L,  FdoDataType_Int32,  newValue,
-                    PROP_STRING_L,  FdoDataType_String, L"open",
+                    PROP_STRING_L,  FdoDataType_String, L"op'en",
                     PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 6668,
                     PROP_UNIQUE2_2,  FdoDataType_Int32,  (FdoInt32) 8890,
                     (FdoString*) NULL
@@ -2224,14 +2234,16 @@ void TestCommonConstraints::UpdateCheckConstraints( FdoIConnection* connection )
 
                 // Note: SqlServer doesn't like constraints like "semi-close" or "semi_close"! 
                 // Getting "String or binary data would be truncated" error.
-                FdoString*                newValue = L"semiclosed";
-                FdoPtr<FdoDataValue>   newVal = FdoDataValue::Create( newValue );
+                FdoString*              newValue = L"semiclosed";
+                FdoPtr<FdoDataValue>    newVal = FdoDataValue::Create( newValue );
+				FdoString*				newValue2 = L"'enclosed'";
+				FdoPtr<FdoDataValue>    newVal2 = FdoDataValue::Create( newValue2 );
                
                 FdoInt32 i;
                 for ( i = 0; i < pList->GetCount(); i++ ) 
                 {
                     FdoPtr<FdoDataValue> val = pList->GetItem(i);
-                    if ( wcscmp(((FdoStringValue*)(FdoDataValue*)val)->GetString(),L"open") == 0 ) 
+                    if ( wcscmp(((FdoStringValue*)(FdoDataValue*)val)->GetString(),L"op'en") == 0 ) 
                     {
                         pList->RemoveAt(i);
                         break;
@@ -2239,6 +2251,7 @@ void TestCommonConstraints::UpdateCheckConstraints( FdoIConnection* connection )
                 }
 
                 pList->Add( newVal );
+                pList->Add( newVal2 );
                 pProp->SetValueConstraint( pConstrList );
                 bool error = false;
 
@@ -2254,44 +2267,63 @@ void TestCommonConstraints::UpdateCheckConstraints( FdoIConnection* connection )
 
                 // Now try to delete. It should succeed.
                 TestCommonMiscUtil::DeleteObjects( 
-                    connection,
+                    context.connection,
                     SCHEMA_NAME,
                     CLASS_NAME,
                     PROP_STRING_L,
                     FdoDataType_String,
-                    L"open",
+                    L"op'en",
                     NULL
                 );
 
-                // No "open" stringlist's, ApplySchema should succeed this time.
-                pApplyCmd->Execute();
-                
-                // Now try to insert. It should succeed.
-                TestCommonMiscUtil::InsertObject(
-                    connection,
-                    insertCmd,
-                    SCHEMA_NAME,
-                    CLASS_NAME,
-                    PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME),
-                    PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 10,
-                    PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 10,
-                    PROP_STRING_L,  FdoDataType_String, newValue,
-                    PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 6669,
-                    PROP_UNIQUE2_2,  FdoDataType_Int32,  (FdoInt32) 8891,
-                    (FdoString*) NULL
-                );
+                // For Oracle Workspace Manager, even deletes against the LIVE long transaction are done conditionally
+                // so adding the constraint still fails even if the violating rows are deleted. 
+                // Therefore, skip the rest of this test for OWM.
+                if ( context.ltMethod != 2 ) {
+                    // No "open" stringlist's, ApplySchema should succeed this time.
+                    pApplyCmd->Execute();
+                    
+                    // Now try to insert. It should succeed.
+                    TestCommonMiscUtil::InsertObject(
+                        context.connection,
+                        insertCmd,
+                        SCHEMA_NAME,
+                        CLASS_NAME,
+                        PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
+                        PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 10,
+                        PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 10,
+                        PROP_STRING_L,  FdoDataType_String, newValue,
+                        PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 6669,
+                        PROP_UNIQUE2_2,  FdoDataType_Int32,  (FdoInt32) 8891,
+                        (FdoString*) NULL
+                    );
+
+                    TestCommonMiscUtil::InsertObject(
+                        context.connection,
+                        insertCmd,
+                        SCHEMA_NAME,
+                        CLASS_NAME,
+                        PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
+                        PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 10,
+                        PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 10,
+                        PROP_STRING_L,  FdoDataType_String, newValue,
+                        PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 6670,
+                        PROP_UNIQUE2_2,  FdoDataType_Int32,  (FdoInt32) 8892,
+                        (FdoString*) NULL
+                    );
+                }
             }
         }
     }
 }
 
-void TestCommonConstraints::RestrictCheckConstraints( FdoIConnection* connection )
+void TestCommonConstraints::RestrictCheckConstraints( Context& context )
 {
-    FdoPtr<FdoISchemaCapabilities>    schemaCap = connection->GetSchemaCapabilities();
+    FdoPtr<FdoISchemaCapabilities>    schemaCap = context.connection->GetSchemaCapabilities();
 
     if ( schemaCap->SupportsExclusiveValueRangeConstraints() && schemaCap->SupportsInclusiveValueRangeConstraints())
     {
-        FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
+        FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) context.connection->CreateCommand(FdoCommandType_DescribeSchema);
 
         pDescCmd->SetSchemaName( SCHEMA_NAME );
         FdoPtr<FdoFeatureSchemaCollection> pSchemas2 = pDescCmd->Execute();
@@ -2299,16 +2331,16 @@ void TestCommonConstraints::RestrictCheckConstraints( FdoIConnection* connection
         FdoPtr<FdoClassCollection> pClasses2 = pSchema2->GetClasses();
         FdoPtr<FdoClassDefinition> pClass2 = pClasses2->GetItem( CLASS_NAME_BASE );
        
-        FdoPtr<FdoIApplySchema>  pApplyCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
+        FdoPtr<FdoIApplySchema>  pApplyCmd = (FdoIApplySchema*) context.connection->CreateCommand(FdoCommandType_ApplySchema);
         pApplyCmd->SetFeatureSchema(pSchema2);
 
         FdoPtr<FdoIInsert> insertCmd;
         TestCommonMiscUtil::InsertObject(
-            connection,
+            context.connection,
             insertCmd,
             SCHEMA_NAME,
             CLASS_NAME,
-            PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME),
+            PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
             PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 10,
             PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
             PROP_STRING_L,  FdoDataType_String, L"close",
@@ -3060,7 +3092,7 @@ void TestCommonConstraints::RestrictCheckConstraints( FdoIConnection* connection
             }
 
             TestCommonMiscUtil::DeleteObjects( 
-                connection,
+                context.connection,
                 SCHEMA_NAME,
                 CLASS_NAME_BASE,
                 NULL
@@ -3069,13 +3101,13 @@ void TestCommonConstraints::RestrictCheckConstraints( FdoIConnection* connection
     }
 }
 
-void TestCommonConstraints::DateTimeConstraints( FdoIConnection* connection )
+void TestCommonConstraints::DateTimeConstraints( Context& context )
 {
-    FdoPtr<FdoISchemaCapabilities>    schemaCap = connection->GetSchemaCapabilities();
+    FdoPtr<FdoISchemaCapabilities>    schemaCap = context.connection->GetSchemaCapabilities();
 
     if ( schemaCap->SupportsExclusiveValueRangeConstraints() && schemaCap->SupportsInclusiveValueRangeConstraints())
     {
-        FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
+        FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) context.connection->CreateCommand(FdoCommandType_DescribeSchema);
 
         pDescCmd->SetSchemaName( SCHEMA_NAME );
         FdoPtr<FdoFeatureSchemaCollection> pSchemas2 = pDescCmd->Execute();
@@ -3083,16 +3115,16 @@ void TestCommonConstraints::DateTimeConstraints( FdoIConnection* connection )
         FdoPtr<FdoClassCollection> pClasses2 = pSchema2->GetClasses();
         FdoPtr<FdoClassDefinition> pClass2 = pClasses2->GetItem( CLASS_NAME_BASE );
        
-        FdoPtr<FdoIApplySchema>  pApplyCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
+        FdoPtr<FdoIApplySchema>  pApplyCmd = (FdoIApplySchema*) context.connection->CreateCommand(FdoCommandType_ApplySchema);
         pApplyCmd->SetFeatureSchema(pSchema2);
 
         FdoPtr<FdoIInsert> insertCmd;
         TestCommonMiscUtil::InsertObject(
-            connection,
+            context.connection,
             insertCmd,
             SCHEMA_NAME,
             CLASS_NAME,
-            PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME),
+            PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
             PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 10,
             PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
             PROP_STRING_L,  FdoDataType_String, L"close",
@@ -3263,7 +3295,7 @@ void TestCommonConstraints::DateTimeConstraints( FdoIConnection* connection )
         }
 
         TestCommonMiscUtil::DeleteObjects( 
-            connection,
+            context.connection,
             SCHEMA_NAME,
             CLASS_NAME_BASE,
             NULL
@@ -3302,11 +3334,11 @@ void TestCommonConstraints::DateTimeConstraints( FdoIConnection* connection )
         pApplyCmd->Execute();
 
         TestCommonMiscUtil::InsertObject(
-            connection,
+            context.connection,
             insertCmd,
             SCHEMA_NAME,
             CLASS_NAME,
-            PROP_FEATID, FdoDataType_Int32, GetNextFeatId(connection, CLASS_NAME),
+            PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
             PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 10,
             PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
             PROP_STRING_L,  FdoDataType_String, L"close",
@@ -3397,7 +3429,7 @@ void TestCommonConstraints::DateTimeConstraints( FdoIConnection* connection )
     }
 }
 
-FdoIConnection* TestCommonConstraints::CreateConnection( FdoBoolean )
+void TestCommonConstraints::CreateConnection( Context&, FdoBoolean )
 {
     throw FdoException::Create( L"base TestCommonConstraints::CreateConnection called, need implementation on subclass" );
 }
@@ -3407,7 +3439,7 @@ FdoBoolean TestCommonConstraints::CanRestrictCheckConstraint()
     return true;
 }
 
-FdoDouble TestCommonConstraints::GetDoubleRounding(FdoDataType dataType)
+FdoDouble TestCommonConstraints::GetDoubleRounding(FdoDataType)
 {
     return (FdoDouble) 0.0;
 }
@@ -3415,6 +3447,11 @@ FdoDouble TestCommonConstraints::GetDoubleRounding(FdoDataType dataType)
 FdoFloat TestCommonConstraints::GetSecondsIncrement()
 {
     return (FdoFloat) 0.001;
+}
+
+FdoInt32 TestCommonConstraints::GetLtMethod()
+{
+    return 0; // No long transactions by default
 }
 
 FdoInt32 TestCommonConstraints::GetExpectedCheckConstraintCount( FdoIConnection* connection )
@@ -3485,3 +3522,32 @@ FdoInt32 TestCommonConstraints::GetNextFeatId( FdoIConnection* connection, FdoSt
 
     return nextFeatId; 
 }
+
+FdoStringP	TestCommonConstraints::FixDatetimeFormat( FdoDataValue*  val )
+{
+	FdoStringP	val2 = val->ToString();
+
+	val2 = val2.Replace(L"'", L"");
+	val2 = val2.Replace(L"TIMESTAMP ", L"");
+	val2 = val2.Replace(L" ", L"-");
+	val2 = val2.Replace(L":", L"-");
+   
+	return val2;
+}
+
+TestCommonConstraints::Context::Context( FdoInt32 ltMethodIn ) 
+{
+    ltMethod = ltMethodIn;
+}
+
+TestCommonConstraints::Context::~Context() 
+{
+    if ( connection ) {
+        try {
+            connection->Close();
+        }
+        catch ( ... ) {
+        }
+    }
+}
+

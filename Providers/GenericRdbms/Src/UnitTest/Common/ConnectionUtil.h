@@ -76,6 +76,7 @@ public:
 	virtual FdoStringP GetEnviron( const char *name, FdoString *suffix = L"" );
     virtual FdoStringP GetEnv( const char* name );
 	virtual StaticConnection* NewStaticConnection() = 0;
+    virtual SchemaOverrideUtilP NewSchemaOverrideUtil();
 	virtual void SetProvider( const char *providerName ) = 0;
 	virtual FdoInsertTest* GetInsertTest () = 0;
 	virtual FdoStringP GetOutputFileName (FdoString* pBaseFileName) = 0;

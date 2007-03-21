@@ -55,11 +55,24 @@ public:
     const FdoSmPhDbObject* RefDbObject() const;
     FdoPtr<FdoSmPhDbObject> GetDbObject();
 
+    /// Overridden to generate a unique name qualified by owner and database, since
+    /// a base object collection can contain objects from different owners and databases.
+    virtual FdoString* GetName() const;
+
+    /// Get the referenced object's unqualified name
+    FdoStringP GetObjectName() const;
+
     /// Get the referenced object's owner name
     FdoStringP GetOwnerName() const;
 
     /// Get the referenced object's database name
     FdoStringP GetDatabaseName() const;
+
+    // returns number of times this base is referenced by child.
+    FdoInt32 GetBaseRefCount() const;
+
+    // Increment number of times this base is referenced by child
+    void AddBaseRef();
 
 protected:
     /// unused constructor needed only to build on Linux
@@ -73,11 +86,13 @@ protected:
     virtual bool Delete() {return true;}
 
 private:
+    mutable FdoStringP mQName;
     FdoStringP mOwnerName;
     FdoStringP mDatabaseName;
 
     FdoPtr<FdoSmPhDbObject> mDbObject;
 
+    FdoInt32 mBaseRefCount;
 };
 
 typedef FdoPtr<FdoSmPhBaseObject> FdoSmPhBaseObjectP;

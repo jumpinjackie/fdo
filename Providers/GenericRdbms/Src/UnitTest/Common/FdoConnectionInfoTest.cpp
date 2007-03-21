@@ -86,6 +86,18 @@ void FdoConnectionInfoTest::ClearFileNameList ()
 
 }
 
+void FdoConnectionInfoTest::CheckProviderInfo ()
+{
+    FdoPtr<FdoIConnectionInfo> connectionInfo =
+                                            mConnection->GetConnectionInfo();
+
+    FdoString* featureDataObjectsVersion = connectionInfo->GetFeatureDataObjectsVersion();
+    FdoString* providerDescription = connectionInfo->GetProviderDescription();
+    FdoString* providerName = connectionInfo->GetProviderName();
+    FdoString* providerVersion = connectionInfo->GetProviderVersion();
+
+}  //  CheckDatabaseBasedProviderInfo ()
+
 void FdoConnectionInfoTest::CheckDatabaseBasedProviderInfo ()
 {
 

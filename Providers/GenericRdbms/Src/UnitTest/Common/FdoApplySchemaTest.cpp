@@ -648,7 +648,7 @@ void FdoApplySchemaTest::TestOverrides ()
         fdoClasses->RemoveAt( fdoClasses->IndexOf(L"view_op") );
 
         FdoRdbmsOvSchemaMappingP mapping = (FdoRdbmsOvPhysicalSchemaMapping*) mappings->GetItem( connection, pSchema->GetName());
-        ShemaOvSetOwner(mapping, UnitTestUtil::GetEnviron("datastore", DB_NAME_OVERRIDE_SUFFIX) );
+        SchemaOvSetOwner(mapping, UnitTestUtil::GetEnviron("datastore", DB_NAME_OVERRIDE_SUFFIX) );
 
         // Apply the foreign schema
         FdoPtr<FdoIApplySchema>  pApplyCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
@@ -5969,4 +5969,99 @@ FdoStringP FdoApplySchemaTest::SchemaOvErrFile( int fileNum, bool isMaster )
 		return FdoStringP::Format( L"apply_schema_overrides_err%d%ls.txt", fileNum, L"_master");
 	else
 		return UnitTestUtil::GetOutputFileName( FdoStringP::Format( L"apply_schema_overrides_err%d%ls.txt", fileNum, L"_master") );
+}
+
+FdoRdbmsOvClassDefinition* FdoApplySchemaTest::CreateOvClassDefinition(FdoString *name)
+{
+    return UnitTestUtil::NewSchemaOverrideUtil()->CreateOvClassDefinition(name);
+}
+
+void FdoApplySchemaTest::ClassesOvAdd(FdoRdbmsOvPhysicalSchemaMapping* pSchema, FdoRdbmsOvClassDefinition* pClass)
+{
+    UnitTestUtil::NewSchemaOverrideUtil()->ClassesOvAdd(pSchema, pClass);
+}
+
+FdoRdbmsOvTable* FdoApplySchemaTest::CreateOvTable(FdoString* name)
+{
+    return UnitTestUtil::NewSchemaOverrideUtil()->CreateOvTable(name);
+}
+
+FdoRdbmsOvColumn* FdoApplySchemaTest::CreateOvColumn(FdoString* name)
+{
+    return UnitTestUtil::NewSchemaOverrideUtil()->CreateOvColumn(name);
+}
+
+FdoRdbmsOvGeometricColumn* FdoApplySchemaTest::CreateOvGeometricColumn(FdoString* name)
+{
+    return UnitTestUtil::NewSchemaOverrideUtil()->CreateOvGeometricColumn(name);
+}
+
+FdoRdbmsOvDataPropertyDefinition* FdoApplySchemaTest::CreateOvDataPropertyDefinition(FdoString *name)
+{
+    return UnitTestUtil::NewSchemaOverrideUtil()->CreateOvDataPropertyDefinition(name);
+}
+
+FdoRdbmsOvGeometricPropertyDefinition* FdoApplySchemaTest::CreateOvGeometricPropertyDefinition(FdoString *name)
+{
+    return UnitTestUtil::NewSchemaOverrideUtil()->CreateOvGeometricPropertyDefinition(name);
+}
+
+void FdoApplySchemaTest::PropertiesOvAdd(FdoRdbmsOvClassDefinition* pClass, FdoRdbmsOvPropertyDefinition *pProp)
+{
+    UnitTestUtil::NewSchemaOverrideUtil()->PropertiesOvAdd(pClass, pProp);
+}
+
+void FdoApplySchemaTest::ClassOvSetTable(FdoRdbmsOvClassDefinition* pClass, FdoRdbmsOvTable* pTable)
+{
+    UnitTestUtil::NewSchemaOverrideUtil()->ClassOvSetTable(pClass, pTable);
+}
+
+void FdoApplySchemaTest::TableOvSetTablespace(FdoRdbmsOvTable* pTable, FdoString *tablespace)
+{
+    UnitTestUtil::NewSchemaOverrideUtil()->TableOvSetTablespace(pTable, tablespace);
+}
+
+void FdoApplySchemaTest::DataPropOvSetColumn(FdoRdbmsOvDataPropertyDefinition* pDataProp, FdoRdbmsOvColumn* pDataColumn)
+{
+    UnitTestUtil::NewSchemaOverrideUtil()->DataPropOvSetColumn(pDataProp, pDataColumn);
+}
+
+void FdoApplySchemaTest::GeometricPropOvSetColumn(FdoRdbmsOvGeometricPropertyDefinition* pGeomProp, FdoRdbmsOvGeometricColumn* pGeometricColumn)
+{
+    UnitTestUtil::NewSchemaOverrideUtil()->GeometricPropOvSetColumn(pGeomProp, pGeometricColumn);
+}
+
+void FdoApplySchemaTest::ColumnOvSetSequence(FdoRdbmsOvColumn* pColumn, FdoString *sequence)
+{
+    UnitTestUtil::NewSchemaOverrideUtil()->ColumnOvSetSequence(pColumn, sequence);
+}
+
+FdoRdbmsOvObjectPropertyDefinition* FdoApplySchemaTest::CreateOvObjectPropertyDefinition(FdoString *name)
+{
+    return UnitTestUtil::NewSchemaOverrideUtil()->CreateOvObjectPropertyDefinition(name);
+}
+
+FdoRdbmsOvPropertyMappingSingle* FdoApplySchemaTest::CreateOvPropertyMappingSingle()
+{
+    return UnitTestUtil::NewSchemaOverrideUtil()->CreateOvPropertyMappingSingle();
+}
+
+FdoRdbmsOvPropertyMappingConcrete* FdoApplySchemaTest::CreateOvPropertyMappingConcrete()
+{
+    return UnitTestUtil::NewSchemaOverrideUtil()->CreateOvPropertyMappingConcrete();
+}
+
+void FdoApplySchemaTest::ObjectPropertyOvSetMappingDefinition(FdoRdbmsOvObjectPropertyDefinition* pObProp, FdoRdbmsOvPropertyMappingDefinition* mapping)
+{
+    UnitTestUtil::NewSchemaOverrideUtil()->ObjectPropertyOvSetMappingDefinition(pObProp, mapping);
+}
+
+void FdoApplySchemaTest::PropertyMappingOvSetInternalClass(FdoRdbmsOvPropertyMappingRelation* pMapping, FdoRdbmsOvClassDefinition* pClass)
+{
+    UnitTestUtil::NewSchemaOverrideUtil()->PropertyMappingOvSetInternalClass(pMapping, pClass);
+}
+
+void FdoApplySchemaTest::SchemaOvSetOwner(FdoRdbmsOvPhysicalSchemaMapping *mapping, FdoString* owner)
+{
+    UnitTestUtil::NewSchemaOverrideUtil()->SchemaOvSetOwner(mapping, owner);
 }
