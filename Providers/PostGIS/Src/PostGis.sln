@@ -38,10 +38,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "select_command", "..\..\..\
 		{81A1E411-2952-42B5-8430-B588A89D9BE2} = {81A1E411-2952-42B5-8430-B588A89D9BE2}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "list_datastores", "..\..\..\Samples\list_datastores\list_datastores.vcproj", "{5E43AD6D-7A5F-4A65-B04E-07033EA24340}"
-	ProjectSection(ProjectDependencies) = postProject
-		{81A1E411-2952-42B5-8430-B588A89D9BE2} = {81A1E411-2952-42B5-8430-B588A89D9BE2}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "select_filtered", "..\..\..\Samples\select_filtered\select_filtered.vcproj", "{21A69657-C7E5-4816-846A-11AF3CCC672F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -73,10 +70,10 @@ Global
 		{6B0EC69E-59AE-40F9-A461-CE4AD58D5A23}.Debug|Win32.Build.0 = Debug|Win32
 		{6B0EC69E-59AE-40F9-A461-CE4AD58D5A23}.Release|Win32.ActiveCfg = Release|Win32
 		{6B0EC69E-59AE-40F9-A461-CE4AD58D5A23}.Release|Win32.Build.0 = Release|Win32
-		{5E43AD6D-7A5F-4A65-B04E-07033EA24340}.Debug|Win32.ActiveCfg = Debug|Win32
-		{5E43AD6D-7A5F-4A65-B04E-07033EA24340}.Debug|Win32.Build.0 = Debug|Win32
-		{5E43AD6D-7A5F-4A65-B04E-07033EA24340}.Release|Win32.ActiveCfg = Release|Win32
-		{5E43AD6D-7A5F-4A65-B04E-07033EA24340}.Release|Win32.Build.0 = Release|Win32
+		{21A69657-C7E5-4816-846A-11AF3CCC672F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{21A69657-C7E5-4816-846A-11AF3CCC672F}.Debug|Win32.Build.0 = Debug|Win32
+		{21A69657-C7E5-4816-846A-11AF3CCC672F}.Release|Win32.ActiveCfg = Release|Win32
+		{21A69657-C7E5-4816-846A-11AF3CCC672F}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -84,6 +81,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{74B94AFF-BBC1-445E-8362-DC5D21A4D67B} = {6F922396-7A7B-48E3-9F14-29FAFBE41301}
 		{6B0EC69E-59AE-40F9-A461-CE4AD58D5A23} = {6F922396-7A7B-48E3-9F14-29FAFBE41301}
-		{5E43AD6D-7A5F-4A65-B04E-07033EA24340} = {6F922396-7A7B-48E3-9F14-29FAFBE41301}
+		{21A69657-C7E5-4816-846A-11AF3CCC672F} = {6F922396-7A7B-48E3-9F14-29FAFBE41301}
 	EndGlobalSection
 EndGlobal

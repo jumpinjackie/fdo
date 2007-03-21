@@ -243,8 +243,8 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
         {
             geometricType = FdoGeometricType_Point;
         }
-        else if (FdoGeometryType_Point == geomType
-                 || FdoGeometryType_MultiPoint == geomType)
+        else if (FdoGeometryType_LineString == geomType
+                 || FdoGeometryType_MultiLineString == geomType)
         {
             geometricType = FdoGeometricType_Curve;
         }
