@@ -235,9 +235,11 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
         geomPropDef = FdoGeometricPropertyDefinition::Create(
             geomColumn->GetName(), geomColumn->GetDescription());                        
 
+        // General geometry type mask
         FdoInt32 geometricType = 
             FdoGeometricType_Point|FdoGeometricType_Curve|FdoGeometricType_Surface;
 
+        // Try to match specific geometry type
         if (FdoGeometryType_Point == geomType
             || FdoGeometryType_MultiPoint == geomType)
         {
